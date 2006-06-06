@@ -46,7 +46,7 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	protected boolean collapseExistentParents;
 	protected boolean collapseRecursively;
 	protected boolean multipleEdges;
-
+	protected boolean createMetaRelationshipEdges;
 	/**
 	 * Use metaNodeViewer.actions.ActionFactory instead
 	 *
@@ -57,17 +57,21 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	 * @param collapse_recursively if collapse_existent_parents is true, whether or not to find
 	 * the top-level meta-node parents and collapse them instead of finding the immediate parents
 	 * and collapsing them
+	 * @param create_meta_relationship_edges whether or not "sharedMember" edges between meta-nodes and "childOf" edges
+	 * between meta-nodes and their children should be created
 	 * @param title the title of the AbstractAction (appears as a button's text)
 	 */
 	protected CollapseSelectedNodesAction (AbstractMetaNodeModeler abstracting_modeler,
 			boolean collapse_existent_parents,
 			boolean collapse_recursively,
+			boolean create_meta_relationship_edges,
 			String title){
 		super(title);
 		this.abstractingModeler = abstracting_modeler;
 		this.collapseExistentParents = collapse_existent_parents;
 		this.collapseRecursively = collapse_recursively;
-    this.multipleEdges = abstracting_modeler.getMultipleEdges();
+		this.multipleEdges = abstracting_modeler.getMultipleEdges();
+		this.createMetaRelationshipEdges = create_meta_relationship_edges;
 	}//CollapseSelectedNodesAction
 	
 	/**
@@ -116,6 +120,24 @@ public class CollapseSelectedNodesAction extends AbstractAction {
   public boolean getMultipleEdges (){
     return this.multipleEdges;
   }//getMultipleEdges
+  
+  /**
+   * Sets whether or not "sharedMember" edges between meta-nodes and "childOf" edges
+   * between meta-nodes and their children should be created
+   */
+  public void setCreateMetaRelationshipEdges (boolean create_meta_relationship_edges){
+	  this.createMetaRelationshipEdges = create_meta_relationship_edges;
+  }
+  
+  /**
+   * Gets whether or not "sharedMember" edges between meta-nodes and "childOf" edges
+   * between meta-nodes and their children are to be created
+   * 
+   * @return whether or not to create meta relationship edges
+   */
+  public boolean getCreateMetaRelationshipEdges () {
+	 return this.createMetaRelationshipEdges; 
+  }
 	
 	/**
 	 * Sets whether or not default names should be assigned to newly created metanodes
@@ -131,7 +153,8 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 		collapseSelectedNodes(this.abstractingModeler, 
                           this.collapseExistentParents,
                           this.collapseRecursively,
-                          this.multipleEdges);
+                          this.multipleEdges,
+                          this.createMetaRelationshipEdges);
 	}//actionPerformed
 	
 	
@@ -148,7 +171,8 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	public static void collapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
                                             boolean collapse_existent_parents,
                                             boolean collapse_recursively,
-                                            boolean multiple_edges){
+                                            boolean multiple_edges,
+                                            boolean create_meta_relationship_edges){
 		
 		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
         Iterator it = cyNetwork.getSelectedNodes().iterator();
@@ -183,12 +207,12 @@ public class CollapseSelectedNodesAction extends AbstractAction {
             }
             if(parentMetanodes.size() > 0){
                 it = parentMetanodes.values().iterator();
-                while(it.hasNext()) MetaNodeUtils.collapseMetaNode(cyNetwork,(CyNode)it.next(),multiple_edges);
+                while(it.hasNext()) MetaNodeUtils.collapseMetaNode(cyNetwork,(CyNode)it.next(),multiple_edges, create_meta_relationship_edges);
             }
         }else{
             CyNetwork subnet = Cytoscape.getRootGraph().createNetwork(cyNetwork.getSelectedNodes(), new ArrayList());
             CyNode metanode = MetaNodeUtils.createMetaNode(cyNetwork,subnet);
-            MetaNodeUtils.collapseMetaNode(cyNetwork,metanode,multiple_edges);
+            MetaNodeUtils.collapseMetaNode(cyNetwork,metanode,multiple_edges, create_meta_relationship_edges);
         }
         // This may make the operation slower. It would be nice to have applyAppearances(Collection nodes, Collection edges);
        VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();

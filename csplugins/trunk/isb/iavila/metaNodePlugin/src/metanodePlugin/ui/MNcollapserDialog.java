@@ -48,6 +48,8 @@ public class MNcollapserDialog extends JFrame {
 	protected JCheckBox recursiveCheckBox;
 
 	protected JCheckBox multipleEdgesCheckBox;
+	
+	protected JCheckBox metaRelationshipEdgesCheckBox;
 
 	protected CollapseSelectedNodesAction createMetaNodeAction;
 
@@ -65,6 +67,7 @@ public class MNcollapserDialog extends JFrame {
 
 	protected static final String EXPAND_MN_TITLE = "Expand Children";
 
+
 	/**
 	 * Constructor, sets these defaults: recursive = false, create multiple edges = true
 	 */
@@ -73,6 +76,7 @@ public class MNcollapserDialog extends JFrame {
 		initialize();
 		setRecursiveOperations(false);
 		setMultipleEdges(true);
+		setCreateMetaRelationshipEdges(true);
 		AbstractMetaNodeMenu.setCollapserDialog(this);
 	}// MNcollapserDialog
 
@@ -98,6 +102,19 @@ public class MNcollapserDialog extends JFrame {
 		}
 		this.multipleEdgesCheckBox.setSelected(multiple_edges);
 	}// setMultipleEdges
+	
+	/**
+	 * Whether or not edges between metanodes that have a shared member, and edges between parent metanodes and their
+	 * children, should be created.
+	 * 
+	 * @param meta_edges
+	 */
+	public void setCreateMetaRelationshipEdges (boolean meta_edges){
+		if(this.metaRelationshipEdgesCheckBox == null){
+			this.metaRelationshipEdgesCheckBox = new JCheckBox("Create \"childOf\" and \"sharedChild\" edges");
+		}
+		this.metaRelationshipEdgesCheckBox.setSelected(meta_edges);
+	}
 
 	/**
 	 * @return whether or not the operations are to be performed recursively
@@ -113,6 +130,16 @@ public class MNcollapserDialog extends JFrame {
 	public boolean getMultipleEdges() {
 		return this.multipleEdgesCheckBox.isSelected();
 	}// getMultipleEdges
+	
+	/**
+	 * Whether or not edges between metanodes that have a shared member, and edges between parent metanodes and their
+	 * children, should be created.
+	 * 
+	 * @return whether meta-relationship edges are being created
+	 */
+	public boolean getCreateMetaRelationshipEdges (){
+		return this.metaRelationshipEdgesCheckBox.isSelected();
+	}
 
 	protected void initialize() {
 
@@ -147,6 +174,13 @@ public class MNcollapserDialog extends JFrame {
 		this.multipleEdgesCheckBox
 				.setToolTipText("Multiple edges between meta-nodes and other nodes vs. single edges.");
 
+		if(this.metaRelationshipEdgesCheckBox == null){
+			this.metaRelationshipEdgesCheckBox = new JCheckBox("Create \"childOf\" and \"sharedMember\" edges");
+		}
+		this.metaRelationshipEdgesCheckBox.setSelected(true);
+		this.metaRelationshipEdgesCheckBox.setToolTipText("<HTML>childOf: an edge between a child-node and its parent meta-node<br>"+
+				"sharedMember:an edge between two meta-nodes that share a child node</HTML>");
+		
 		// Set the desired MetaNodeAttributesHandler in ActionFactory.
 		ActionFactory
 				.setMetaNodeAttributesHandler(new AbstractMetaNodeAttsHandler());
@@ -154,7 +188,7 @@ public class MNcollapserDialog extends JFrame {
 		// Attach action listeners to the buttons
 		this.createMetaNodeAction = (CollapseSelectedNodesAction) ActionFactory
 				.createCollapseSelectedNodesAction(false,
-						areOperationsRecursive(), CREATE_MN_TITLE);
+						areOperationsRecursive(),getCreateMetaRelationshipEdges(), CREATE_MN_TITLE);
 		createMetaNodeButton.addActionListener(this.createMetaNodeAction);
 
 		this.destroyMetaNodeAction = (UncollapseSelectedNodesAction) ActionFactory
@@ -164,7 +198,7 @@ public class MNcollapserDialog extends JFrame {
 
 		this.collapseAction = (CollapseSelectedNodesAction) ActionFactory
 				.createCollapseSelectedNodesAction(true,
-						areOperationsRecursive(), COLLAPSE_MN_TITLE);
+						areOperationsRecursive(), getCreateMetaRelationshipEdges(), COLLAPSE_MN_TITLE);
 		collapseButton.addActionListener(this.collapseAction);
 
 		this.expandAction = (UncollapseSelectedNodesAction) ActionFactory
@@ -198,6 +232,14 @@ public class MNcollapserDialog extends JFrame {
 		}// AbstractAction
 
 				);// addActionListener
+		
+		this.metaRelationshipEdgesCheckBox.addActionListener(new AbstractAction (){
+			public void actionPerformed (ActionEvent event){
+				boolean createMetaRelEdges = MNcollapserDialog.this.getCreateMetaRelationshipEdges();
+				MNcollapserDialog.this.createMetaNodeAction.setCreateMetaRelationshipEdges(createMetaRelEdges);
+				MNcollapserDialog.this.collapseAction.setCreateMetaRelationshipEdges(createMetaRelEdges);
+			}
+		});
 
 		// Layout the buttons
 		JPanel gridPanel = new JPanel();
@@ -208,11 +250,19 @@ public class MNcollapserDialog extends JFrame {
 		gridPanel.add(expandButton);
 
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));// rows,
-																	// cols
-		optionsPanel.add(this.recursiveCheckBox);
-		optionsPanel.add(this.multipleEdgesCheckBox);
-
+		optionsPanel.setLayout(new BoxLayout(optionsPanel,BoxLayout.Y_AXIS));
+		
+		JPanel row1 = new JPanel();
+		row1.add(this.recursiveCheckBox);
+		row1.add(this.multipleEdgesCheckBox);
+		
+		optionsPanel.add(row1);
+		
+		JPanel row2 = new JPanel();
+		row2.add(this.metaRelationshipEdgesCheckBox);
+		
+		optionsPanel.add(row2);
+		
 		JPanel operationsPanel = new JPanel();
 		operationsPanel.setLayout(new BoxLayout(operationsPanel,
 				BoxLayout.Y_AXIS));
@@ -236,7 +286,6 @@ public class MNcollapserDialog extends JFrame {
 		mainPanel.add(operationsPanel);
 		mainPanel.add(buttonsPanel);
 		setContentPane(mainPanel);
-
 	}// initialize
 
 	public AbstractAction getCreateMetaNodeAction() {

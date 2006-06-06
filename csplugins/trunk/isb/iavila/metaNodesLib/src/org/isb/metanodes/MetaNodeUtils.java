@@ -55,6 +55,13 @@ import giny.view.*;
  * // when I am sure that I will no longer use the metaNode, remove it
  * MetaNodeUtils.removeMetaNode(network,metaNode,false);
  * </PRE>
+ * Additionally, meta-nodes can optionally have "meta-relationship edges". These edges can be of two types:<br>
+ * <UL>
+ * <LI>"Shared child" edges: if two metaNodes share a child node, there will be an edge between them
+ * <LI>"Child of" edges: if a child node has two metaNode parents, and one of them is collapsed, and
+ * the other one expanded, the child node will be visible and have an edge to the collapsed parent metaNode
+ * </UL>
+ * This option can be given as an argument when calling the collapsing method in this class.
  *
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @since 2.3
@@ -190,7 +197,7 @@ public class MetaNodeUtils {
 	   */
 	  public static boolean removeMetaNode (CyNetwork network, CyNode meta_node, boolean recursive){
 	      boolean removed = false;
-	      if(network == null || meta_node == null){
+	      if(network == null || meta_node == null || !isMetaNode(meta_node)){
 	          return removed;
 	      }
 	      
@@ -234,7 +241,7 @@ public class MetaNodeUtils {
 	  public static boolean expandMetaNode (CyNetwork network, CyNode meta_node, boolean recursive){
 	  	// Uncollapse each node (if it is not a metanode, nothing happens)
 	      boolean expanded = false;
-	      if(network == null || meta_node == null) return expanded;
+	      if(network == null || meta_node == null || !isMetaNode(meta_node)) return expanded;
           
 	      CyNetworkView netView = Cytoscape.getNetworkView(network.getIdentifier());
 	      List childrenNodes = new ArrayList();
@@ -268,13 +275,16 @@ public class MetaNodeUtils {
        * @param create_multiple_edges if true, then multiple edges between the metanode and another node are created to
        * represent the metanode's child-network connections to that node, if false, only one edge is created to represent these
        * connections
+       * @param create_meta_relationship_edges if true, then edges between meta-nodes that share a child ("sharedChild" edges) and edges
+       * between meta-nodes and their children ("childOf" edges) are created
        * @return true if successfully collapsed, false otherwise
 	   */
-	  public static boolean collapseMetaNode (CyNetwork network, CyNode meta_node, boolean create_multiple_edges){
+	  public static boolean collapseMetaNode (CyNetwork network, CyNode meta_node, boolean create_multiple_edges, boolean create_meta_relationship_edges){
 	      
 	      boolean collapsed = false;
-          if(network == null || meta_node == null) return collapsed;
+          if(network == null || meta_node == null || !isMetaNode(meta_node)) return collapsed;
           MetaNodeUtils.abstractModeler.setMultipleEdges(create_multiple_edges);
+          MetaNodeUtils.abstractModeler.setCreateMetaRelationshipEdges(create_meta_relationship_edges);
           collapsed = MetaNodeUtils.abstractModeler.applyModel(network,meta_node);
 	    
 	      return collapsed;

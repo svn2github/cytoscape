@@ -39,10 +39,19 @@ import cern.colt.map.OpenIntIntHashMap;
  * This class models meta-nodes by abstracting the graphs that compose
  * meta-nodes into single nodes that can be 'collapsed' or 'expanded'. Use class
  * metaNodeViewer.model.MetaNodeModelerFactory to get an instance of this class.
+ * <p>
+ * Edges between metaNodes can be of 3 types:<br>
+ * <UL>
+ * <LI>"Transferred edges" from children nodes: Edges between children nodes and other
+ * non-children nodes are transfered to the parent metaNode
+ * <LI>"Shared child" edges: if two metaNodes share a child node, there will be an edge between them
+ * <LI>"Child of" edges: if a child node has two metaNode parents, and one of them is collapsed, and
+ * the other one expanded, the child node will be visible and have an edge to the collapsed parent metaNode
+ * </UL>
+ * A metaNode can have a mix of the above edge types connected to it.
  * 
  * @author Iliana Avila-Campillo iavila@systemsbiology.org,
- *         iliana.avila@gmail.com TODO: Must implement general interface for
- *         meta-node modelers TODO: Optimize more
+ *         iliana.avila@gmail.com
  */
 public class AbstractMetaNodeModeler {
 
@@ -50,7 +59,12 @@ public class AbstractMetaNodeModeler {
 
     protected static final boolean REPORT_TIME = false;
 
-    protected static final String META_EDGE_INTERACTION = "metaEdge";
+    // Types of meta-edges
+    protected static final String TRANSFERRED_EDGE_INTERACTION = "tr";
+    
+    protected static final String CHILD_OF_EDGE_INTERACTION = "childOf";
+    
+    protected static final String SHARED_CHILD_INTERACTION = "sharedChild";
 
     /**
      * A Map from CyNetworks to MetaNodeAttributesHandlers that are used to
@@ -87,6 +101,9 @@ public class AbstractMetaNodeModeler {
     // or not meta)
     // should be created when abstracting the meta-node, true by default
     private boolean multipleEdges = true;
+    
+    // If true, "childOf" and "sharedChild" edges are created
+    private boolean createMetaEdges = true;
 
     /**
      * Since there should only be one AbstractMetaNodeModeler per/Cytoscape, the
@@ -141,6 +158,22 @@ public class AbstractMetaNodeModeler {
     public void setMultipleEdges(boolean multiple_edges) {
         this.multipleEdges = multiple_edges;
     }// setMultipleEdges
+    
+    /**
+     * Sets wether or not edges that represent meta-relationships should be created.
+     * <p>
+     * Edges representing meta-relationships are:<br>
+     *<UL>
+     * <LI>"Shared child" edges: if two metaNodes share a child node, there will be an edge between them
+     * <LI>"Child of" edges: if a child node has two metaNode parents, and one of them is collapsed, and
+     * the other one expanded, the child node will be visible and have an edge to the collapsed parent metaNode
+     * </UL>
+     * 
+     * @param create whether or not to create meta-relationship edges
+     */
+    public void setCreateMetaRelationshipEdges (boolean create){
+    		this.createMetaEdges = create;
+    }
 
     /**
      * @return whether or not multiple edges between a meta-node and another
@@ -150,6 +183,22 @@ public class AbstractMetaNodeModeler {
     public boolean getMultipleEdges() {
         return this.multipleEdges;
     }// getMultipleEdges
+    
+    /**
+     * Gets wether or not edges that represent meta-relationships should be created.
+     * <p>
+     * Edges representing meta-relationships are:<br>
+     *<UL>
+     * <LI>"Shared child" edges: if two metaNodes share a child node, there will be an edge between them
+     * <LI>"Child of" edges: if a child node has two metaNode parents, and one of them is collapsed, and
+     * the other one expanded, the child node will be visible and have an edge to the collapsed parent metaNode
+     * </UL>
+     * 
+     * @return whether or not to create meta-relationship edges
+     */
+    public boolean getCreateMetaRelationshipEdges (){
+    		return this.createMetaEdges;
+    }
 
     /**
      * Gets the MetaNodeAttributesHandler that is being used to transfer node
@@ -587,7 +636,7 @@ public class AbstractMetaNodeModeler {
         ArrayList cnNodes = (ArrayList) this.networkToNodes.get(cy_network);
         if (cnNodes != null) {
             cnNodes.remove(node);
-        }
+        } 
 
         if (REPORT_TIME) {
             long timeToUndo = (System.currentTimeMillis() - startOfUndo) / 1000;
@@ -711,17 +760,18 @@ public class AbstractMetaNodeModeler {
         AbstractIntIntMap metaEdgeToChildEdge = new OpenIntIntHashMap();
         int numNewEdges = 0;
         Map metaedgeToNumChildEdges = new HashMap();
+        CyNode childNode = null;
         for (int child_i = 0; child_i < childrenRindices.length; child_i++) {
 
             int childNodeRindex = childrenRindices[child_i];
-            CyNode childNode = (CyNode) Cytoscape.getRootGraph().getNode(
+            childNode = (CyNode) Cytoscape.getRootGraph().getNode(
                     childNodeRindex);
 
             if (DEBUG) {
                 System.err.println("Child index of "
                         + childNode.getIdentifier() + " is " + childNodeRindex);
             }
-
+          
             int[] adjacentEdgeRindices = this.rootGraph
                     .getAdjacentEdgeIndicesArray(childNodeRindex, true, true,
                             true);
@@ -744,7 +794,42 @@ public class AbstractMetaNodeModeler {
                 // for that node (which is useful information for later)
                 processedEdges = new ArrayList();
             }
-            for (int edge_i = 0; edge_i < adjacentEdgeRindices.length; edge_i++) {
+            
+            
+            // TEST CODE //
+            // whether there is an edge between this metanode and a the current childNode
+           CyEdge metaNodeToChildEdge = null;
+           if(getCreateMetaRelationshipEdges()){
+	           for (int edge_i = 0; edge_i < adjacentEdgeRindices.length; edge_i++) {
+	
+	                int childEdgeRindex = adjacentEdgeRindices[edge_i];
+	                CyEdge childEdge = (CyEdge) this.rootGraph
+	                        .getEdge(childEdgeRindex);
+	
+	                if (DEBUG && childEdge == null) {
+	                    throw new IllegalStateException("CyEdge for index ["
+	                            + childEdgeRindex + "] is null!");
+	                }
+	                
+	                // Identify the node on the other end of the edge
+	                CyNode otherNode = null;
+	                CyNode sourceNode = (CyNode) childEdge.getSource();
+	                CyNode targetNode = (CyNode) childEdge.getTarget();
+	                boolean metaNodeIsSource = false;
+	                if (targetNode.getRootGraphIndex() == childNodeRindex) {
+	                    otherNode = sourceNode;
+	                } else if (sourceNode.getRootGraphIndex() == childNodeRindex) {
+	                    metaNodeIsSource = true;
+	                    otherNode = targetNode;
+	                }
+	                
+	                
+	                if(otherNode == node){metaNodeToChildEdge = childEdge;}
+	            }
+           }
+           // TEST CODE END //
+            
+           for (int edge_i = 0; edge_i < adjacentEdgeRindices.length; edge_i++) {
 
                 int childEdgeRindex = adjacentEdgeRindices[edge_i];
                 CyEdge childEdge = (CyEdge) this.rootGraph
@@ -770,14 +855,6 @@ public class AbstractMetaNodeModeler {
                     continue;
                 }
                 // if (processedEdges == null){
-                // This List will be used later, so create it
-                // Also, note that if the ArrayList for a meta-node is
-                // not null, we know that
-                // prepareNodeForModel(GraphPerspective, meta-node)
-                // has been called before
-                // for that node (which is useful information for later)
-                // processedEdges = new ArrayList();
-                // }
 
                 // If the edge connects two descendants of the meta-node, then
                 // ignore it, and remember this processed edge
@@ -808,6 +885,37 @@ public class AbstractMetaNodeModeler {
                     metaNodeIsSource = true;
                     otherNode = targetNode;
                 }
+                
+                // TEST CODE
+                if(otherNode == node){
+                	// Ignore this edge
+                	System.err.println("This is a childOf edge, continue.");
+                	// Remember that this edge has been processed
+                	processedEdges.add(childEdge);
+                	this.metaNodeToProcessedEdges.put(node, processedEdges);  
+                	continue; // go to the next child-edge
+                }
+                
+                String interactionType = TRANSFERRED_EDGE_INTERACTION + ":" + 
+                		Cytoscape.getNodeAttributes().getStringAttribute(childEdge.getIdentifier(),Semantics.INTERACTION);
+                
+                if(getCreateMetaRelationshipEdges() && isMetaNode(otherNode)){
+                		// This is a childNode that two metanodes are sharing
+                		// If the other metaNode has a sharedMember edge to this metanode, continue
+                	  ArrayList otherProcessedEdges = (ArrayList) this.metaNodeToProcessedEdges
+                      .get(otherNode);
+                	  if (otherProcessedEdges != null
+                		  & metaNodeToChildEdge != null && otherProcessedEdges.contains(metaNodeToChildEdge) ) {
+                		  // Remember that this edge has been processed
+                		  processedEdges.add(childEdge);
+                		  this.metaNodeToProcessedEdges.put(node, processedEdges);
+                		  continue;
+                	  }
+                	  //System.err.println("otherNode [" + otherNode + "] is a metaNode, this should be a sharedMember edge");
+                	  interactionType = SHARED_CHILD_INTERACTION;
+                }// isMetaNode(otherNode)
+                // TEST CODE END
+                
                 if(!getMultipleEdges() && neighborNodeToMetaEdge.containsKey(otherNode)){
                     
                     CyEdge metaedge = (CyEdge)neighborNodeToMetaEdge.get(otherNode);
@@ -825,24 +933,9 @@ public class AbstractMetaNodeModeler {
                     CyEdge newEdge = null;
 
                     if (metaNodeIsSource) {
-
-                        newEdge = createMetaEdge(node, otherNode);
-
-                        // The following code does not allow multiple edges with
-                        // the same interaction type between nodes:
-                        // newEdge =
-                        // Cytoscape.getCyEdge(node,otherNode,Semantics.INTERACTION,META_EDGE_INTERACTION,true);
-                        // newEdgeRindex =
-                        // this.rootGraph.createEdge(node_rindex,otherNodeRindex,
-                        // directedEdge);
-
+                        newEdge = createMetaEdge(node, otherNode, interactionType);
                     } else {
-                        newEdge = createMetaEdge(otherNode, node);
-                        // newEdge =
-                        // Cytoscape.getCyEdge(otherNode,node,Semantics.INTERACTION,META_EDGE_INTERACTION,true);
-                        // newEdgeRindex =
-                        // this.rootGraph.createEdge(otherNodeRindex,
-                        // node_rindex, directedEdge);
+                        newEdge = createMetaEdge(otherNode, node, interactionType);
                     }
                     if (!getMultipleEdges()) {
                         metaedgeToNumChildEdges.put(newEdge, new Integer(1));
@@ -856,6 +949,12 @@ public class AbstractMetaNodeModeler {
                     // removing edges we
                     // created
                     this.metaEdges.add(newEdge);
+                    
+                    // If the edge is of type shared child, set a sharedChild edge attribute with the id of the shared child as a value
+                    if(interactionType.equals(SHARED_CHILD_INTERACTION)){
+                 	   Cytoscape.getEdgeAttributes().setAttribute(newEdge.getIdentifier(),SHARED_CHILD_INTERACTION,childNode.getIdentifier());
+                 	   
+                    }
 
                     // If otherNodeRindex has parents, and the parents have been
                     // processed before,
@@ -907,8 +1006,19 @@ public class AbstractMetaNodeModeler {
                 
                 processedEdges.add(childEdge);
                 this.metaNodeToProcessedEdges.put(node, processedEdges);
-
-            }// for each adjacent edge to child node
+            
+           }// for each adjacent edge to child node
+           
+           
+           
+            if(getCreateMetaRelationshipEdges() && metaNodeToChildEdge == null){
+            		// Create a child edge
+            		CyEdge childOfEdge = createMetaEdge(childNode,node, CHILD_OF_EDGE_INTERACTION);
+            		if(childOfEdge == null){
+            			throw new IllegalStateException("Child edge between meta-node [" + node + "] and child [" + childNode + "] could not be created.");
+            		}//if childOfEdge == null
+            		//System.err.println("Created childOf edge because of child [" + childNode + "]");
+            }// if getCreateMetaRelationshipEdges
 
         }// for each child of node_rindex
 
@@ -934,7 +1044,6 @@ public class AbstractMetaNodeModeler {
                     (Integer)metaedgeToNumChildEdges.get(metaEdge));
             }
         }
-
         if (!attributesSet) {
             if (DEBUG) {
                 System.out
@@ -1299,26 +1408,22 @@ public class AbstractMetaNodeModeler {
      *            the target node
      * @return a new CyEdge
      */
-    protected static CyEdge createMetaEdge(CyNode node_1, CyNode node_2) {
+    protected static CyEdge createMetaEdge(CyNode node_1, CyNode node_2, String interactionType) {
         // create the edge
         CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
                 Cytoscape.getRootGraph().createEdge(node_1, node_2));
 
         // create the edge id
         String edge_name = node_1.getIdentifier() + " ("
-                + META_EDGE_INTERACTION + ") " + node_2.getIdentifier();
+                + interactionType + ") " + node_2.getIdentifier();
         edge.setIdentifier(edge_name);
-
-        // Store Edge Name Mapping within GOB.
-        // Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
-
-        // store edge id as INTERACTION / CANONICAL_NAME Attributes
+        System.err.println(" ----------- Created edge : " + edge_name);
+        	
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
         edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
-                (String) META_EDGE_INTERACTION);
-        //edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME,
-        //        edge_name);
+                (String) interactionType);
         return edge;
     }
+    
 
 }// class AbstractMetaNodeModeler

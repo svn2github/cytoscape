@@ -73,11 +73,13 @@ public class ActionFactory {
    * should be collapsed instead of creating new meta-nodes for them
    * @param collapse_recursively if collapse_existent_parents is true, whether to find the top-level parents
    * of the selected nodes and collapse them, or just find the immediate parents and collapse them
+   * @param create_meta_relationship_edges whether or not "sharedMember" edges between meta-nodes and "childOf" edges
+   * between meta-nodes and their children should be created
    * @param title the title of the action (displayed on buttons, menus, etc)
    * @return an AbstractAction that collapses selected nodes and edges contained in the given CyWindow
    */
   public static AbstractAction createCollapseSelectedNodesAction (boolean collapse_existent_parents, 
-  		boolean collapse_recursively,
+  		boolean collapse_recursively, boolean create_meta_relationship_edges,
   		String title){
     // Get the RootGraph and create or update abstractingModeler
     RootGraph rootGraph = Cytoscape.getRootGraph();
@@ -93,6 +95,7 @@ public class ActionFactory {
     return new CollapseSelectedNodesAction(ActionFactory.abstractingModeler,
                                            collapse_existent_parents,
 										   collapse_recursively,
+										   create_meta_relationship_edges,
                                            title);
     
   }//getCollapseSelectedNodesAction

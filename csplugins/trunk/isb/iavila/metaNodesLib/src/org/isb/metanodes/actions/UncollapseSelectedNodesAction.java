@@ -122,19 +122,26 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
         int numExpanded = 0;
         it = selectedNodes.iterator();
         if(temporary){
-            while(it.hasNext())
-                if(MetaNodeUtils.expandMetaNode(cyNetwork,(CyNode)it.next(),recursive)) numExpanded++;
+            while(it.hasNext()){
+            		CyNode metaNode = (CyNode)it.next();
+            		if(!MetaNodeUtils.isMetaNode(metaNode)) continue;
+            		if(MetaNodeUtils.expandMetaNode(cyNetwork,metaNode,recursive)) numExpanded++;
+            }
         }else{
-            while(it.hasNext())
-                if(MetaNodeUtils.removeMetaNode(cyNetwork,(CyNode)it.next(),recursive)) numExpanded++;
+            while(it.hasNext()){
+            		CyNode metaNode = (CyNode)it.next();
+            		if(!MetaNodeUtils.isMetaNode(metaNode)) continue;
+                if(MetaNodeUtils.removeMetaNode(cyNetwork,metaNode,recursive)) numExpanded++;
+            }
         }
         
-        if(numExpanded == 0)
+        if(numExpanded == 0){
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"None of the selected nodes are meta-nodes.");
-                
-        // This may make the operation slower. It would be nice to have applyAppearances(Collection nodes, Collection edges);
-        VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-        vizmapper.applyAppearances();
+        }else{
+        		// This may make the operation slower. It would be nice to have applyAppearances(Collection nodes, Collection edges);
+        		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+        		vizmapper.applyAppearances();
+        }
 	}//uncollapseSelectedNodes
 	
 }//class UncollapseSelectedNodesAction

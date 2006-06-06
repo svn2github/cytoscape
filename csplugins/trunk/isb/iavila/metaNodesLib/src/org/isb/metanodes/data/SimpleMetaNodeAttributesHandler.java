@@ -5,6 +5,9 @@ import giny.model.*;
 import cern.colt.map.AbstractIntIntMap;
 import cern.colt.function.IntIntProcedure;
 import java.util.*;
+
+import org.mskcc.dataservices.bio.vocab.CommonVocab;
+
 import cytoscape.*;
 
 /**
@@ -96,7 +99,9 @@ public class SimpleMetaNodeAttributesHandler implements
         String[] childrenAtts = nodeAtts.getAttributeNames();
         for (int i = 0; i < childrenAtts.length; i++) {
             String attrName = childrenAtts[i];
-
+            if (attrName.equals(Semantics.IDENTIFIER) || 
+            		attrName.equals(Semantics.CANONICAL_NAME) || attrName.equals(Semantics.COMMON_NAME) || attrName.equals(Semantics.LABEL) )
+                continue; // reserved
             // iterate over children, constructing set of values for this attr
             HashSet uniqueValues = new HashSet();
             Map simpleMap = null;
@@ -212,35 +217,34 @@ public class SimpleMetaNodeAttributesHandler implements
             if (metaEdge == null || childEdge == null) {
                 throw new NullPointerException("metaEdge or childEdge is null");
             }
-            String metaEdgeName = "unknown";
 
-            // infer the metaNode and use it to name the metaEdge
-            String interaction = (String) Cytoscape.getEdgeAttributes().getStringAttribute(childEdge.getIdentifier(),Semantics.INTERACTION);
-            CyNode sourceNode = (CyNode)metaEdge.getSource(); // null 6/24/05, passes ok now 8/10/2005
-            CyNode targetNode = (CyNode)metaEdge.getTarget();
-            // TODO: What if there are multiple edges between two nodes, then
-            // the meta-edges will have
-            // the same name! (is this a problem?)
-            if (rootGraph.nodeMetaChildrenList(sourceNode.getRootGraphIndex()) != null // crash
-                    // 6/24/05,
-                    // ok
-                    // now
-                    // 8/10/2005
-                    && rootGraph.nodeMetaChildrenList(
-                            sourceNode.getRootGraphIndex()).size() > 0) {
-                
-                metaEdgeName = sourceNode.getIdentifier()+" ("+interaction+") "+targetNode.getIdentifier();
-            
-            } else if (rootGraph.nodeMetaChildrenList(targetNode
-                    .getRootGraphIndex()) != null
-                    && rootGraph.nodeMetaChildrenList(
-                            targetNode.getRootGraphIndex()).size() > 0) {
-                
-                metaEdgeName = sourceNode.getIdentifier()+" ("+interaction+") "+targetNode.getIdentifier();
-            
-            
-            }
-            metaEdge.setIdentifier(metaEdgeName);
+            // The code below is problematic, once an edge is given a unique ID, it should not be changed!
+            // AbstractMetaNodeModeler gived names to edges!
+//            String metaEdgeName = "unknown";
+//
+//            // infer the metaNode and use it to name the metaEdge
+//            String interaction = (String) Cytoscape.getEdgeAttributes().getStringAttribute(childEdge.getIdentifier(),Semantics.INTERACTION);
+//            CyNode sourceNode = (CyNode)metaEdge.getSource();
+//            CyNode targetNode = (CyNode)metaEdge.getTarget();
+//            // TODO: What if there are multiple edges between two nodes, then
+//            // the meta-edges will have
+//            // the same name! (is this a problem?)
+//            if (rootGraph.nodeMetaChildrenList(sourceNode.getRootGraphIndex()) != null 
+//                    && rootGraph.nodeMetaChildrenList(
+//                            sourceNode.getRootGraphIndex()).size() > 0) {
+//                
+//                metaEdgeName = sourceNode.getIdentifier()+" ("+interaction+") "+targetNode.getIdentifier();
+//            
+//            } else if (rootGraph.nodeMetaChildrenList(targetNode
+//                    .getRootGraphIndex()) != null
+//                    && rootGraph.nodeMetaChildrenList(
+//                            targetNode.getRootGraphIndex()).size() > 0) {
+//                
+//                metaEdgeName = sourceNode.getIdentifier()+" ("+interaction+") "+targetNode.getIdentifier();
+//            
+//            
+//            }
+//            metaEdge.setIdentifier(metaEdgeName);
 
            
             // Transfer attributes b/w edges--
@@ -251,7 +255,8 @@ public class SimpleMetaNodeAttributesHandler implements
             String[] allAttrNames = edgeAtts.getAttributeNames();
             for (int i = 0; i < allAttrNames.length; i++) {
                 String attrName = allAttrNames[i];
-                if (attrName.equals(Semantics.INTERACTION))
+                if (attrName.equals(Semantics.INTERACTION) || attrName.equals(Semantics.IDENTIFIER) || 
+                		attrName.equals(Semantics.CANONICAL_NAME) || attrName.equals(Semantics.COMMON_NAME) || attrName.equals(Semantics.LABEL) )
                     continue; // reserved
 
                 HashSet uniqueValues = new HashSet();

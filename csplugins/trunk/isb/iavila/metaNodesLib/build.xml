@@ -52,7 +52,8 @@
    <jar jarfile="${jar}/metanodelib.jar">
       <fileset dir="${build}"/>
    </jar>
-   <echo message="metanodelib.jar is complete, it is located in ${jar}"/>
+	<copy file="${jar}/metanodelib.jar" todir="../metaNodePlugin/lib"/>
+   <echo message="metanodelib.jar is complete, it is located in ${jar} and in ../metaNodePlugin/lib"/>
    </target>
 
    <target name="jar_dev" depends="compile_dev" description="makes a jar for Cytoscape under development">
@@ -60,7 +61,8 @@
    <jar jarfile="${jar}/metanodelib.jar">
       <fileset dir="${build}"/>
    </jar>
-   <echo message="metanodelib.jar is complete, it is located in ${jar}"/>
+   	<copy file="${jar}/metanodelib.jar" todir="../metaNodePlugin/lib"/>
+   <echo message="metanodelib.jar is complete, it is located in ${jar} and in ../metaNodePlugin/lib"/>
    </target>
 
    <!-- Target to Run JavaDoc -->
