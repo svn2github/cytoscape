@@ -49,17 +49,22 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
       addNodeView(nodes[i]); }
     for (int i = 0; i < edges.length; i++) {
       addEdgeView(edges[i]); }
-//     java.awt.geom.Rectangle2D rect = new java.awt.geom.Rectangle2D.Double(0.0, 0.0, 100.0, 103.0);
-//     java.awt.TexturePaint tp = null;
+//     java.awt.geom.Rectangle2D rect =
+//       new java.awt.geom.Rectangle2D.Double(-11.0, -15.0, 22.0, 30.0);
+//     java.awt.Paint paint = null;
 //     try {
-//       tp = new java.awt.TexturePaint
+//       paint = new java.awt.TexturePaint
 //         (javax.imageio.ImageIO.read
-//          (new java.net.URL("http://cytoscape.org/cgi-bin/moin.cgi/Welcome?action=AttachFile&do=get&target=logo_small.gif")),
+//          (new java.net.URL("http://cytoscape.org/people_photos/nerius.jpg")),
 //          rect); }
-//     catch (Exception exc) { }
+//     catch (Exception exc) {
+//       paint = java.awt.Color.black; }
 //     for (int i = 0; i < nodes.length; i++) {
 //       ding.view.DNodeView nv = (ding.view.DNodeView) getNodeView(nodes[i]);
-//       nv.addCustomGraphic(rect, tp, 0); }
+//       nv.addCustomGraphic
+//         (new java.awt.geom.Ellipse2D.Double
+//          (-11.0, -15.0, 22.0, 30.0),
+//          paint, 0); }
 
 //       path.moveTo(0.0f, 0.0f);
 //       path.lineTo(10.0f, 0.0f);
