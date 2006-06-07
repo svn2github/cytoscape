@@ -630,12 +630,12 @@ public class InnerCanvas extends JComponent
                                       final IntStack stack)
   {
     m_ptBuff[0] = xMini;
-    m_ptBuff[1] = yMaxi;
+    m_ptBuff[1] = yMini;
     m_view.xformComponentToNodeCoords(m_ptBuff);
     final double xMin = m_ptBuff[0];
     final double yMin = m_ptBuff[1];
     m_ptBuff[0] = xMaxi;
-    m_ptBuff[1] = yMini;
+    m_ptBuff[1] = yMaxi;
     m_view.xformComponentToNodeCoords(m_ptBuff);
     final double xMax = m_ptBuff[0];
     final double yMax = m_ptBuff[1];
