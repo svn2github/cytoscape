@@ -110,8 +110,13 @@ public class NodeTopologyFilter
   public boolean passesFilter ( Object object ) {
     if(object instanceof Node){
       seenNodes = new HashSet();
+      seenNodes.add(object);
       myPerspective = Cytoscape.getCurrentNetwork();
       int totalSum = countNeighbors((Node)object,0);
+      Filter filter = FilterManager.defaultManager().getFilter(this.filter);
+      if(filter.passesFilter((Node)object)){
+	  totalSum -= 1;
+      }
       return totalSum >= count.intValue();
     }else{
       return false;
@@ -119,44 +124,46 @@ public class NodeTopologyFilter
 		
   }
 
-  private int countNeighbors(Node currentNode,int currentDistance){
-    Filter filter = FilterManager.defaultManager().getFilter(this.filter);
-    if (filter == null) {
-      return 0;
-    } 
-    
-    if(currentDistance == distance.intValue()){
-      if(filter.passesFilter(currentNode)){
-	return 1;
-      }
-      else{
-	return 0;
-      }
-    }
-    else{
-      int sum = 0;
-      java.util.List neighbors = myPerspective.neighborsList(currentNode);
-      Iterator nodeIt = neighbors.iterator();
-      while(nodeIt.hasNext() && sum < count.intValue()){
-	Node nextNode = (Node)nodeIt.next();
-	if(!seenNodes.contains(nextNode)){
-	  seenNodes.add(nextNode);
-	  sum += countNeighbors(nextNode,currentDistance+1);
+    private int countNeighbors(Node currentNode,int currentDistance){
+	Filter filter = FilterManager.defaultManager().getFilter(this.filter);
+	int sum = 0;
+	if (filter == null) {
+	    return sum;
 	}
-      }
-      if(sum >= count.intValue()){
-	return sum;
-      }
-      else if(filter.passesFilter(currentNode)){
-	return sum+1;
-      }
-      else{
-	return sum;
-      }
+	if(sum >= count.intValue()){
+	    return sum;
+	}
+	if(currentDistance == distance.intValue()){
+	    if(filter.passesFilter(currentNode)){
+		return 1;
+	    }
+	    else{
+		return 0;
+	    }
+	}
+	else{
+	    java.util.List neighbors = myPerspective.neighborsList(currentNode);
+	    Iterator nodeIt = neighbors.iterator();
+	    while(nodeIt.hasNext() && sum < count.intValue()){
+		Node nextNode = (Node)nodeIt.next();
+		if(!seenNodes.contains(nextNode)){
+		    seenNodes.add(nextNode);
+		    sum += countNeighbors(nextNode,currentDistance+1);
+		}
+		if(sum > count.intValue()){
+		    return sum;
+		}
+	    }
+	    if(filter.passesFilter(currentNode)){
+		return sum+1;
+	    }
+	    else{
+		return sum;
+	    }
+	}
     }
-  }
-  public Class[] getPassingTypes () {
-    return new Class[]{Node.class};
+    public Class[] getPassingTypes () {
+	return new Class[]{Node.class};
   }
 
   public boolean equals ( Object other_object ) {
