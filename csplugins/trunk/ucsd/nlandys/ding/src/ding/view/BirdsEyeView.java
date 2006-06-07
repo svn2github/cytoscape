@@ -83,7 +83,7 @@ public class BirdsEyeView extends Component
       if (m_view.getExtents(m_extents)) {
         m_myXCenter = (m_extents[0] + m_extents[2]) / 2.0d;
         m_myYCenter = (m_extents[1] + m_extents[3]) / 2.0d;
-        m_myScaleFactor = 0.9d * Math.min
+        m_myScaleFactor = 0.8d * Math.min
           (((double) getWidth()) / (m_extents[2] - m_extents[0]),
            ((double) getHeight()) / (m_extents[3] - m_extents[1])); }
       else {
@@ -101,13 +101,13 @@ public class BirdsEyeView extends Component
       (((double) getWidth()) / 2.0d) +
       (m_myScaleFactor * (m_viewXCenter - m_myXCenter));
     final double rectYCenter =
-      (((double) getHeight()) / 2.0d) -
+      (((double) getHeight()) / 2.0d) +
       (m_myScaleFactor * (m_viewYCenter - m_myYCenter));
     final Rectangle2D rect = new Rectangle2D.Double
       (rectXCenter - (rectWidth / 2), rectYCenter - (rectHeight / 2),
        rectWidth, rectHeight);
     final Graphics2D g2 = (Graphics2D) g;
-    g2.setColor(new Color(0, 0, 255, 63));
+    g2.setColor(new Color(63, 63, 255, 63));
     g2.fill(rect);
     g2.setColor(Color.blue);
     g2.draw(rect);
@@ -185,7 +185,7 @@ public class BirdsEyeView extends Component
         final int currX = e.getX();
         final int currY = e.getY();
         final double deltaX = (currX - m_lastXMousePos) / m_myScaleFactor;
-        final double deltaY = (m_lastYMousePos - currY) / m_myScaleFactor;
+        final double deltaY = (currY - m_lastYMousePos) / m_myScaleFactor;
         m_lastXMousePos = currX;
         m_lastYMousePos = currY;
         if (m_view != null) {
