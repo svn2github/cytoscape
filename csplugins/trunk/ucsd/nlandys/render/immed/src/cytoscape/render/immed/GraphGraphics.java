@@ -35,14 +35,9 @@ import java.util.Map;
  * dealing mostly with the node coordinate system, especially when rendering
  * individual nodes and edges.  The clear() method specifies the mapping from
  * the node coordinate system to the image coordinate system.  The two
- * coordinate systems do not have the same orientations: while in the
- * image coordinate system increasing Y values travel towards the bottom of
- * the image, the opposite is true in the node coordinate system.  That is,
- * in the node coordinate system, increasing X values point to the right
- * and increasing Y values point to the top.  This is the "classical"
- * orientation for the XY plane, while we are forced to use the native Java
- * image coordinate system which has a different orientation.  The native
- * Java image coordinate system dictates that (0,0) is the upper left corner
+ * coordinate systems do have the same orientations: increasing X values point
+ * to the right and increasing Y values point to the bottom.
+ * The image coordinate system dictates that (0,0) is the upper left corner
  * of the image and that each unit represents a pixel width (or height).<p>
  * NOTE: Every method on an instance of this class needs to be called by
  * the AWT event dispatching thread save the constructor.  However,
@@ -173,7 +168,7 @@ public final class GraphGraphics
    *   about to be rendered; a node whose center is at the Y coordinate yCenter
    *   will be rendered exactly in the middle of the image going top to bottom;
    *   increasing Y values (in the node coordinate system) result in movement
-   *   towards the top on the image (not the bottom of the image!!!).
+   *   towards the bottom on the image.
    * @param scaleFactor the scaling that is to take place when rendering;
    *   a distance of 1 in node coordinates translates to a distance of
    *   scaleFactor in the image coordinate system (usually one unit in the
@@ -212,7 +207,7 @@ public final class GraphGraphics
 
     m_currXform.setToTranslation(0.5d * image.getWidth(null),
                                  0.5d * image.getHeight(null));
-    m_currXform.scale(scaleFactor, -scaleFactor);
+    m_currXform.scale(scaleFactor, scaleFactor);
     m_currXform.translate(-xCenter, -yCenter);
     m_g2d.transform(m_currXform);
     m_currNativeXform.setTransform(m_g2d.getTransform());
@@ -319,9 +314,9 @@ public final class GraphGraphics
     // Here, double values outside of the range of ints will be cast to
     // the nearest int without overflow.
     final int xNot = (int) m_ptsBuff[0];
-    final int yNot = (int) m_ptsBuff[3]; // y coordinates are inverse.
+    final int yNot = (int) m_ptsBuff[1];
     final int xOne = (int) m_ptsBuff[2];
-    final int yOne = (int) m_ptsBuff[1]; // y coordinates are inverse.
+    final int yOne = (int) m_ptsBuff[3];
     m_gMinimal.setColor(fillColor);
     m_gMinimal.fillRect(xNot, yNot, Math.max(1, xOne - xNot), // Overflow will
                         Math.max(1, yOne - yNot));            // be problem.
@@ -444,7 +439,7 @@ public final class GraphGraphics
         // A general [possibly non-convex] polygon with certain
         // restrictions: no two consecutive line segments can be parallel,
         // each line segment must have nonzero length, the polygon cannot
-        // self-intersect, and the polygon must be counter-clockwise
+        // self-intersect, and the polygon must be clockwise
         // in the node coordinate system.
         m_path2d.reset();
         final double xNot = m_polyCoords[0];
@@ -554,8 +549,8 @@ public final class GraphGraphics
    *     respect to a point (a,b)</i> if and only if for every point (x,y)
    *     in the interior or on the boundary of the polygon, the interior of
    *     the segment (a,b)->(x,y) lies in the interior of the polygon.</li>
-   *   <li>The path traversed by the polygon must be counter-clockwise where
-   *     +X points right and +Y points up.</li>
+   *   <li>The path traversed by the polygon must be clockwise where
+   *     +X points right and +Y points down.</li>
    * </ol><p>
    * In addition to these constraints, when rendering custom nodes with
    * nonzero border width, possible problems may arise if the border width
@@ -642,7 +637,7 @@ public final class GraphGraphics
         final double distCenterFromP0P1 = (x0 * y1 - x1 * y0) / distP0P1;
         if (!((float) distCenterFromP0P1 > 0.0f)) {
           throw new IllegalArgumentException
-            ("polygon is going clockwise or is not star-shaped with " +
+            ("polygon is going counter-clockwise or is not star-shaped with " +
              "respect to center"); }
         if (Math.min(y0, y1) < 0.0d && Math.max(y0, y1) >= 0.0d) {
           yInterceptsCenter++; } }
@@ -757,13 +752,13 @@ public final class GraphGraphics
       break;
     case SHAPE_PARALLELOGRAM:
       m_polyNumPoints = 4;
-      m_polyCoords[0] = (2.0d * xMin + xMax) / 3.0d;
+      m_polyCoords[0] = xMin;
       m_polyCoords[1] = yMin;
-      m_polyCoords[2] = xMax;
+      m_polyCoords[2] = (2.0d * xMax + xMin) / 3.0d;
       m_polyCoords[3] = yMin;
-      m_polyCoords[4] = (2.0d * xMax + xMin) / 3.0d;
+      m_polyCoords[4] = xMax;
       m_polyCoords[5] = yMax;
-      m_polyCoords[6] = xMin;
+      m_polyCoords[6] = (2.0d * xMin + xMax) / 3.0d;
       m_polyCoords[7] = yMax;
       break;
     case SHAPE_ROUNDED_RECTANGLE:
@@ -775,23 +770,23 @@ public final class GraphGraphics
       return m_path2d;
     case SHAPE_TRIANGLE:
       m_polyNumPoints = 3;
-      m_polyCoords[0] = xMin;
+      m_polyCoords[0] = (xMin + xMax) / 2.0d;
       m_polyCoords[1] = yMin;
       m_polyCoords[2] = xMax;
-      m_polyCoords[3] = yMin;
-      m_polyCoords[4] = (xMin + xMax) / 2.0d;
+      m_polyCoords[3] = yMax;
+      m_polyCoords[4] = xMin;
       m_polyCoords[5] = yMax;
       break;
     case SHAPE_VEE:
       m_polyNumPoints = 4;
       m_polyCoords[0] = xMin;
-      m_polyCoords[1] = yMax;
+      m_polyCoords[1] = yMin;
       m_polyCoords[2] = (xMin + xMax) / 2.0d;
-      m_polyCoords[3] = yMin;
+      m_polyCoords[3] = (2.0d * yMin + yMax) / 3.0d;
       m_polyCoords[4] = xMax;
-      m_polyCoords[5] = yMax;
+      m_polyCoords[5] = yMin;
       m_polyCoords[6] = (xMin + xMax) / 2.0d;
-      m_polyCoords[7] = (2.0d * yMax + yMin) / 3.0d;
+      m_polyCoords[7] = yMax;
       break;
     default: // Try a custom node shape or throw an exception.
       final double[] storedPolyCoords = // To optimize don't construct Byte.
@@ -2384,13 +2379,7 @@ public final class GraphGraphics
    * @param yCenter the text string is drawn such that its logical bounds
    *   rectangle with specified font is centered on this Y coordinate
    *   (in the node coordinate system).
-   * @param theta in radians, specifies the angle of the text;
-   *   angle orientation is such that zero radians implies that the text will
-   *   be written starting at lesser X coordinates and ending at greater X
-   *   coordinates with no change in Y coordinate values and pi/2 radians
-   *   implies that the text will be written starting at lesser Y coordinates
-   *   and ending at greater Y coordinates with no change in X coordinate
-   *   values (in the node coordinate system).
+   * @param theta in radians, specifies the angle of the text.
    * @param paint the paint to use in rendering the text.
    * @param drawTextAsShape
    *   this flag controls the way that text is drawn to the underlying
@@ -2428,8 +2417,8 @@ public final class GraphGraphics
       if (!(scaleFactor >= 0.0d))
         throw new IllegalArgumentException("scaleFactor must be positive"); }
     m_g2d.translate(xCenter, yCenter);
-    m_g2d.scale(scaleFactor, -scaleFactor);
-    if (theta != 0.0f) { m_g2d.rotate(-theta); }
+    m_g2d.scale(scaleFactor, scaleFactor);
+    if (theta != 0.0f) { m_g2d.rotate(theta); }
     m_g2d.setPaint(paint);
     if (drawTextAsShape) {
       final GlyphVector glyphV;
