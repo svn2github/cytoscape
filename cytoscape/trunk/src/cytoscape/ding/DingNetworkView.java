@@ -49,9 +49,18 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
       addNodeView(nodes[i]); }
     for (int i = 0; i < edges.length; i++) {
       addEdgeView(edges[i]); }
+//     java.awt.geom.Rectangle2D rect = new java.awt.geom.Rectangle2D.Double(0.0, 0.0, 100.0, 103.0);
+//     java.awt.TexturePaint tp = null;
+//     try {
+//       tp = new java.awt.TexturePaint
+//         (javax.imageio.ImageIO.read
+//          (new java.net.URL("http://cytoscape.org/cgi-bin/moin.cgi/Welcome?action=AttachFile&do=get&target=logo_small.gif")),
+//          rect); }
+//     catch (Exception exc) { }
 //     for (int i = 0; i < nodes.length; i++) {
 //       ding.view.DNodeView nv = (ding.view.DNodeView) getNodeView(nodes[i]);
-//       java.awt.geom.GeneralPath path = new java.awt.geom.GeneralPath();
+//       nv.addCustomGraphic(rect, tp, 0); }
+
 //       path.moveTo(0.0f, 0.0f);
 //       path.lineTo(10.0f, 0.0f);
 //       path.lineTo(0.0f, 10.0f);
