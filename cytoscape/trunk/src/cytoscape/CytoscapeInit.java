@@ -91,12 +91,14 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 	private static Properties properties; 
 	private static Properties visualProperties; 
 	private static Set pluginURLs;
+	private static Set loadedPlugins;
 	private static Set resourcePlugins;
 
 	static { 
 		System.out.println("CytoscapeInit static initialization");
 		pluginURLs = new HashSet();
 		resourcePlugins = new HashSet();
+		loadedPlugins = new HashSet();
 		initProperties();
 	}
 
@@ -672,9 +674,11 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 
 	public void loadPlugin(Class plugin) {
 
-		if (CytoscapePlugin.class.isAssignableFrom(plugin)) {
+		if (CytoscapePlugin.class.isAssignableFrom(plugin) &&
+		    !loadedPlugins.contains(plugin.getName()) ) {
 			try {
 				CytoscapePlugin.loadPlugin(plugin);
+				loadedPlugins.add(plugin.getName());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
