@@ -238,8 +238,10 @@ public class CytoscapeSessionWriter {
 			String curNetworkName = network.getTitle();
 			String xgmmlFileName = curNetworkName + XGMML_EXT;
 
+			xgmmlFileName = getValidFileName(xgmmlFileName);
 			targetFiles[fileCounter] = xgmmlFileName;
 			fileCounter++;
+			
 			makeXGMML(xgmmlFileName, network, view);
 		}
 
@@ -267,6 +269,18 @@ public class CytoscapeSessionWriter {
 		} else {
 			zipUtil.compress2();
 		}
+	}
+	
+	/**
+	 * Utility to replace invalid chars in the XGMML file name.<br>
+	 * 
+	 * @param fileName Original file name directly taken from the title.
+	 * @return Modified file name without invalid chars.
+	 * 
+	 */
+	private String getValidFileName(String fileName) {	
+		//System.out.println("============Network = " + fileName.replaceAll("[\\/:*?\"<>|]", "_"));
+		return fileName.replaceAll("[\\/:*?\"<>|]", "_");
 	}
 
 	/**
@@ -326,8 +340,8 @@ public class CytoscapeSessionWriter {
 	 * @throws URISyntaxException 
 	 * @throws JAXBException 
 	 */
-	private void makeXGMML(String xgmmlFile, CyNetwork network,
-			CyNetworkView view) throws IOException, JAXBException, URISyntaxException {
+	private void makeXGMML(final String xgmmlFile, final CyNetwork network,
+			final CyNetworkView view) throws IOException, JAXBException, URISyntaxException {
 
 		XGMMLWriter wt = new XGMMLWriter(network, view);
 		FileWriter fileWriter2 = null;
@@ -337,7 +351,13 @@ public class CytoscapeSessionWriter {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		} finally {
-			fileWriter2.close();
+			if (fileWriter2 != null) {
+				try {
+					fileWriter2.close();
+				} catch (IOException ioe) {
+				}
+			}
+			
 		}
 
 	}
@@ -423,8 +443,9 @@ public class CytoscapeSessionWriter {
 		int childCount = node.getChildCount();
 
 		// Create Network object for this node.
+		String fileName = node.getUserObject().toString() + XGMML_EXT;
 		Network curNode = factory.createNetwork();
-		curNode.setFilename(node.getUserObject().toString() + XGMML_EXT);
+		curNode.setFilename(getValidFileName(fileName));
 		curNode.setId(node.getUserObject().toString());
 
 		CyNetwork curNet = Cytoscape.getNetwork((String) networkMap.get(node
@@ -487,7 +508,8 @@ public class CytoscapeSessionWriter {
 				// Reached to the leaf of network tree.
 				// Need to create leaf node here.
 				Network leaf = factory.createNetwork();
-				leaf.setFilename(child.getUserObject().toString() + XGMML_EXT);
+				String childFileName = child.getUserObject().toString() + XGMML_EXT;
+				leaf.setFilename(getValidFileName(childFileName));
 				leaf.setId(child.getUserObject().toString());
 				CyNetworkView leafView = Cytoscape
 						.getNetworkView((String) networkMap.get(child

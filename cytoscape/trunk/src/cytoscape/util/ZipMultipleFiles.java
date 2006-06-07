@@ -75,7 +75,8 @@ public class ZipMultipleFiles {
 
 	private Writer[] targets;
 
-	private final String FS = System.getProperty("file.separator");
+	// For zip file, file separator is always "/" in Win, Mac, and Unix.
+	private final String FS = "/";
 
 	public ZipMultipleFiles(String zipFile, String[] fileList) {
 		this.zipFileName = zipFile;
@@ -151,8 +152,7 @@ public class ZipMultipleFiles {
 		for (int i = 0; i < fileCount; i++) {
 
 			byte[] buf = getFileBytes(files[i]);
-			//zent = new ZipEntry(sessionDirName + FS + files[i]);
-			zent = new ZipEntry(sessionDirName + "/" + files[i]);
+			zent = new ZipEntry(sessionDirName + FS + files[i]);
 
 			al.add(zent);
 			zos.putNextEntry(zent);
