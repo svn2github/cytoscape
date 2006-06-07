@@ -25,13 +25,13 @@ public class VAlignTop extends AbstractControlAction {
     while ( sel_nodes.hasNext() ) {
       NodeView n = ( NodeView )sel_nodes.next();
       double h = n.getHeight()/2;
-      n.setYPosition( Y_max - h );
+      n.setYPosition( Y_min + h );
     }                       
   }
 
   protected double getY(NodeView n) {
     double y = n.getYPosition();
     double h = n.getHeight()/2;
-    return y+h;
+    return y-h;
   }
 }

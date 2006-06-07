@@ -33,13 +33,13 @@ public class VDistTop extends AbstractControlAction {
     for ( int i = 0; i < nodes.size(); i++ ) {
        NodeView n = ( NodeView )nodes.get(i);
        double h = n.getHeight()/2; 
-       n.setYPosition( Y_min + i*d - h );
+       n.setYPosition( Y_min + i*d + h );
     }
   }
 
   protected double getY(NodeView n) {
     double y = n.getYPosition();
     double h = n.getHeight()/2;
-    return y+h;
+    return y-h;
   }
 }
