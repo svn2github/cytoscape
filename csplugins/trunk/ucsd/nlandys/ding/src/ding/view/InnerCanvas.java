@@ -435,12 +435,12 @@ public class InnerCanvas extends JComponent
             if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
               if (m_view.m_nodeSelection) {
                 m_ptBuff[0] = m_selectionRect.x;
-                m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
+                m_ptBuff[1] = m_selectionRect.y;
                 m_view.xformComponentToNodeCoords(m_ptBuff);
                 final double xMin = m_ptBuff[0];
                 final double yMin = m_ptBuff[1];
                 m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
-                m_ptBuff[1] = m_selectionRect.y;
+                m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
                 m_view.xformComponentToNodeCoords(m_ptBuff);
                 final double xMax = m_ptBuff[0];
                 final double yMax = m_ptBuff[1];
@@ -468,12 +468,12 @@ public class InnerCanvas extends JComponent
                 if ((m_lastRenderDetail &
                      GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
                   m_ptBuff[0] = m_selectionRect.x;
-                  m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
+                  m_ptBuff[1] = m_selectionRect.y;
                   m_view.xformComponentToNodeCoords(m_ptBuff);
                   final double xMin = m_ptBuff[0];
                   final double yMin = m_ptBuff[1];
                   m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
-                  m_ptBuff[1] = m_selectionRect.y;
+                  m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
                   m_view.xformComponentToNodeCoords(m_ptBuff);
                   final double xMax = m_ptBuff[0];
                   final double yMax = m_ptBuff[1];
@@ -579,7 +579,7 @@ public class InnerCanvas extends JComponent
       m_lastYMousePos = e.getY();
       synchronized (m_lock) {
         m_xCenter -= deltaX / m_scaleFactor;
-        m_yCenter += deltaY / m_scaleFactor;  } // y orientations are opposite.
+        m_yCenter -= deltaY / m_scaleFactor;  }
       m_view.m_viewportChanged = true;
       repaint(); }
     else if (m_currMouseButton == 3) {
