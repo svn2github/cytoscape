@@ -349,7 +349,7 @@ public final class TestBasicPolyEdge
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY();
       m_currXCenter -= deltaX / m_currScale;
-      m_currYCenter += deltaY / m_currScale; // Y orientations are opposite.
+      m_currYCenter -= deltaY / m_currScale;
       repaint(); }
   }
 

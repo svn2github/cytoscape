@@ -457,7 +457,7 @@ public class SampleNetwork1
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY();
       m_currXCenter -= deltaX / m_currScale;
-      m_currYCenter += deltaY / m_currScale; // y orientations are opposite.
+      m_currYCenter -= deltaY / m_currScale;
       repaint(); }
     else if (m_currMouseButton == 2) {
       double deltaY = e.getY() - m_lastYMousePos;
