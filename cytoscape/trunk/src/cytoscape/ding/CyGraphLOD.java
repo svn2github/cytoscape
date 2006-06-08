@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
  */
 public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 {
-      	protected int fullDetailThreshold; 
+      	protected int coarseDetailThreshold; 
 	protected int nodeBorderThreshold;
 	protected int nodeLabelThreshold;
 	protected int edgeArrowThreshold;
@@ -41,14 +41,14 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 
 	protected void init() {
 
-		fullDetailThreshold =  getInt("render.fullDetailThreshold",2000);
-		nodeBorderThreshold = getInt("render.nodeBorderThreshold",400);
-		nodeLabelThreshold = getInt("render.nodeLabelThreshold",150);
-		edgeArrowThreshold = getInt("render.edgeArrowThreshold",500);
-		edgeLabelThreshold = getInt("render.edgeLabelThreshold",180);
+		coarseDetailThreshold =  getInt("render.coarseDetailThreshold",2000);
+		nodeBorderThreshold = getInt("render.nodeBorderThreshold",200);
+		nodeLabelThreshold = getInt("render.nodeLabelThreshold",100);
+		edgeArrowThreshold = getInt("render.edgeArrowThreshold",300);
+		edgeLabelThreshold = getInt("render.edgeLabelThreshold",120);
 /*
 		System.out.println("(re)initializing level of detail (LOD)");
-		System.out.println("  fullDetailThreshold: " + fullDetailThreshold);
+		System.out.println("  coarseDetailThreshold: " + coarseDetailThreshold);
 		System.out.println("  nodeBorderThreshold: " + nodeBorderThreshold);
 		System.out.println("  nodeLabelThreshold: " + nodeLabelThreshold);
 		System.out.println("  edgeArrowThreshold: " + edgeArrowThreshold);
@@ -155,7 +155,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
    */
   public boolean detail(final int renderNodeCount, final int renderEdgeCount)
   {
-    return renderNodeCount + renderEdgeCount < fullDetailThreshold;
+    return renderNodeCount + renderEdgeCount < coarseDetailThreshold;
   }
 
   /**
