@@ -250,21 +250,21 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		main_panel.setLayout(new BorderLayout());
 		// enable context-sensitive help generally
-		getHelpBroker().enableHelpKey(getRootPane(), "intro", null);
+		//getHelpBroker().enableHelpKey(getRootPane(), "intro", null);
 
 		// enable context-sensitive help for main panel
-		getHelpBroker().enableHelp(main_panel, "intro", null);
+		//getHelpBroker().enableHelp(main_panel, "intro", null);
 
 		// ------------------------------//
 		// Set up the Panels, Menus, and Event Firing
 
 		networkPanel = new NetworkPanel(this);
 		// enable context-sensitive help for networkPanel
-		getHelpBroker().enableHelp(networkPanel, "network-view-manager", null);
+		//getHelpBroker().enableHelp(networkPanel, "network-view-manager", null);
 
 		cyMenus = new CyMenus();
 		// enable context-sensitive help for menus/menubar
-		getHelpBroker().enableHelp(cyMenus.getMenuBar(), "menus", null);
+		//getHelpBroker().enableHelp(cyMenus.getMenuBar(), "menus", null);
 
 		networkViewManager = new NetworkViewManager(this);
 

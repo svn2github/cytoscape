@@ -124,6 +124,7 @@ import cytoscape.actions.UnHideSelectedEdgesAction;
 import cytoscape.actions.UnHideSelectedNodesAction;
 import cytoscape.actions.ZoomAction;
 import cytoscape.actions.ZoomSelectedAction;
+import cytoscape.data.annotation.AnnotationGui;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
@@ -132,10 +133,12 @@ import cytoscape.view.cytopanels.CytoPanel;
 //------------------------------------------------------------------------------
 /**
  * This class creates the menu and tool bars for a Cytoscape window object. It
- * also provides access to individual menus and items.<br><br>
+ * also provides access to individual menus and items.
+ * 
+ * Feb. 21, 2006 Refactored by kono@ucsd.edu
  * 
  * Now addAction takes one more optional argument to specify index. Plugin
- * writers can use this function to specify the location of the menu item.<br>
+ * writers can use this function to specify the location of the menu item.
  * 
  */
 public class CyMenus implements GraphViewChangeListener {
@@ -159,7 +162,7 @@ public class CyMenus implements GraphViewChangeListener {
 			networkOverviewAction;
 	JMenuItem vizMenuItem, vizMapperItem;
 	JCheckBoxMenuItem cytoPanelWestItem, cytoPanelEastItem, cytoPanelSouthItem, networkOverviewItem;
-	JMenuItem helpContentsMenuItem, helpContextSensitiveMenuItem,
+	JMenuItem helpContentsMenuItem, //helpContextSensitiveMenuItem,
 			helpAboutMenuItem;
 
 	JButton openSessionButton, saveButton, zoomInButton, zoomOutButton,
@@ -794,6 +797,8 @@ public class CyMenus implements GraphViewChangeListener {
 		// since actions encapsulated by HelpBroker and need run-time data
 		helpContentsMenuItem = new JMenuItem("Contents...", KeyEvent.VK_C);
 		helpContentsMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
+
+/*
 		ImageIcon contextSensitiveHelpIcon = new ImageIcon(getClass()
 				.getResource("images/contextSensitiveHelp.gif"));
 		// ImageIcon contextSensitiveHelpIcon = new ImageIcon(
@@ -802,8 +807,9 @@ public class CyMenus implements GraphViewChangeListener {
 				contextSensitiveHelpIcon);
 		helpContextSensitiveMenuItem.setAccelerator(KeyStroke
 				.getKeyStroke("shift F1"));
+				*/
 		helpMenu.add(helpContentsMenuItem);
-		helpMenu.add(helpContextSensitiveMenuItem);
+		//helpMenu.add(helpContextSensitiveMenuItem);
 		helpMenu.addSeparator();
 		helpMenu.add(helpAboutMenuItem);
 
@@ -954,9 +960,10 @@ public class CyMenus implements GraphViewChangeListener {
 	 * Register the help set and help broker with the various components
 	 */
 	void initializeHelp(HelpBroker hb) {
-		hb.enableHelp(helpContentsMenuItem, "intro", null);
+		hb.enableHelp(helpContentsMenuItem, "index", null);
 		helpContentsMenuItem
 				.addActionListener(new CSH.DisplayHelpFromSource(hb));
+				/*
 		helpContextSensitiveMenuItem
 				.addActionListener(new CSH.DisplayHelpAfterTracking(hb));
 
@@ -974,6 +981,8 @@ public class CyMenus implements GraphViewChangeListener {
 		hb.enableHelp(hideSelectedButton, "toolbar-hide", null);
 		// hb.enableHelp(annotationButton, "toolbar-annotate", null);
 		hb.enableHelp(vizButton, "toolbar-setVisProps", null);
+		*/
 
 	}
+
 }

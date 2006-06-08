@@ -239,7 +239,7 @@
 	<!-- Check to see if the help files need to be indexed... -->
 	<uptodate property="helpIsUpToDate"
 		targetfile="${build.classes}/cytoscape/help/CytoscapeSearch/SCHEMA">
-	  <srcfiles dir= "${basedir}/help/html" includes="**/*.html"/>
+	  <srcfiles dir= "${basedir}/help" includes="**/*"/>
 	</uptodate>
 	<antcall target="buildHelp"/>
     </target>

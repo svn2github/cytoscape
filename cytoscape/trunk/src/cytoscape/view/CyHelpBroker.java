@@ -55,7 +55,7 @@ public class CyHelpBroker {
 
     hb = null;
     hs = null;
-    URL hsURL = getClass().getResource("/cytoscape/help/Cytoscape.hs");
+    URL hsURL = getClass().getResource("/cytoscape/help/jhelpset.hs");
 
     ClassLoader cl = Cytoscape.class.getClassLoader();
     try {

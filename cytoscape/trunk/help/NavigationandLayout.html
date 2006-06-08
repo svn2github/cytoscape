@@ -1,0 +1,112 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Navigation and Layout</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Cytoscape 2.3 User Manual"><link rel="up" href="index.html" title="Cytoscape 2.3 User Manual"><link rel="previous" href="NodeandEdgeAttributes.html" title="Node and Edge Attributes"><link rel="next" href="VisualStyles.html" title="Visual Styles"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="NavigationandLayout"></a>Navigation and Layout</h2></div></div><div></div></div><p></p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="Navigation"></a>Navigation</h3></div></div><div></div></div><p>Use the zooming buttons located on the toolbar to zoom in / out of the interaction network shown in the current network display. Zoom icons are detailed below: </p><div class="itemizedlist"><ul type="disc"><li><p>
+      <span class="inlinemediaobject"><img src="images/image049.jpg" alt="attachment:image049.jpg"></span>
+     </p></li></ul></div><p>From Left to Right: </p><div class="itemizedlist"><ul type="disc"><li>Zoom Out </li><li>Zoom In </li><li>Zoom Selected Region </li><li>Zoom out to Display all of Current Network </li></ul></div><p>You can also zoom in/out by holding down the right mouse button and moving the mouse to the right (zoom in) or left (zoom out).  </p><p>You can pan the network image by holding down the middle mouse button and moving the mouse.  You can also pan the image by holding down the left mouse button over the blue box in the Network Overview panel in the lower left hand of the Cytoscape desktop. </p><p>Click the left mouse button on a node or edge to select that object. You can hold down the Shift key to select more than one node/edge or you can hold down the left mouse button and drag the mouse to select groups of nodes/edges. </p><p>Click the right mouse button on a node/edge to launch a context sensitive menu with additional information about the node/edge. </p><p></p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="AutomaticLayoutAlgorithms"></a>Automatic Layout Algorithms</h3></div></div><div></div></div><p>The <span class="underline">Layout</span> menu has an array of features for organizing the network visually according to one of several algorithms, aligning and rotating groups of nodes, and adjusting the size of the network. Most of these features are available from plugins that are packaged with Cytoscape 2.3. Some of the layout algorithms provided with Cytoscape 2.3 are: </p><p>
+    <span class="strong">Cytoscape Spring-embedded Layout </span>
+   </p><p>Spring-embedded layout is based on a &#8220;force-directed&#8221; paradigm. Network nodes are treated like physical objects that repel each other, such as electrons. The connections between nodes are treated like metal springs attached to the pair of nodes. These springs repel or attract their end points according to a force function. The layout algorithm sets the positions of the nodes in a way that minimizes the sum of forces in the network. This algorithm is available from the <span class="underline">Layout &amp;#8594; Cytoscape Layouts &amp;#8594; Spring Embedded</span> menu item. A sample screen shot is provided below: </p><div class="itemizedlist"><ul type="disc"><li><p>
+      <span class="inlinemediaobject"><img src="images/image051.png" alt="attachment:image051.png"></span>
+     </p></li></ul></div><p>
+    <span class="strong">yFiles Circular Layout </span>
+   </p><p>This algorithm produces layouts that emphasize group and tree structures within a network. It partitions the network by analyzing its connectivity structure, and arranges the partitions as separate circles. The circles themselves are arranged in a radial tree layout fashion. This algorithm is available from the <span class="underline">Layout &amp;#8594; yFiles &amp;#8594; Circular</span> menu item. </p><div class="itemizedlist"><ul type="disc"><li><p>
+      <span class="inlinemediaobject"><img src="images/image053.png" alt="attachment:image053.png"></span>
+     </p></li></ul></div><p>
+    <span class="strong">yFiles Hierarchical Layout </span>
+   </p><p>The hierarchical layout algorithm is good for representing main direction or <span class="emphasis"><em>flow</em></span> within a network. Nodes are placed in hierarchically arranged layers and the ordering of the nodes within each layer is chosen in such a way that minimizes the number of edge crossings. This algorithm is available from the <span class="underline">Layout &amp;#8594; yFiles &amp;#8594; Heirarchical</span> menu item. </p><div class="itemizedlist"><ul type="disc"><li><p>
+      <span class="inlinemediaobject"><img src="images/image055.png" alt="attachment:image055.png"></span>
+     </p></li></ul></div><p>
+    <span class="strong">yFiles Organic Layout </span>
+   </p><p>The organic layout algorithm is a kind of spring-embedded algorithm that combines elements of the other algorithms to show the clustered structure of a graph. This algorithm is available from the <span class="underline">Layout &amp;#8594; yFiles &amp;#8594; Organic</span> menu item. </p><div class="itemizedlist"><ul type="disc"><li><p>
+      <span class="inlinemediaobject"><img src="images/image057.png" alt="attachment:image057.png"></span>
+     </p></li></ul></div><p>Several other alignment algorithms, including a selection from the JGraph project (<a href="http://jgraph.sourceforge.net" target="_top">http://jgraph.sourceforge.net</a>), are also available under the Layout menu. </p><p></p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ManualLayout"></a>Manual Layout</h3></div></div><div></div></div><p>The simplest method to manually layout a network is to click on a node and drag the node.  If you select multiple nodes, all of the selected nodes will be moved together.   </p><p>
+    <span class="strong">Edge Handles</span>
+   </p><p>
+    <span class="emphasis"><em>A little known feature!</em></span>  If you select an edge and then Ctrl-left-click on the edge, an edge "handle" will appear.  This handle can be used to change the shape of the line. To remove a handle, simply Ctrl-left-click on the handle again. </p><p>
+    <span class="inlinemediaobject"><img src="images/edge_handles.png" alt="attachment:edge_handles.png"></span>
+   </p><p>The <span class="underline">Select &amp;#8594; Edges</span> menu has two menu items that provide further control: "Smooth Selected Edges" turns an edge consisting of line segments into a smoothed bezier curve, and "Straighen Selected Edges" turns a curved edge back into line segments.  </p><p>
+    <span class="inlinemediaobject"><img src="images/menu_select_edges.png" alt="attachment:menu_select_edges.png"></span>
+   </p><p>
+    <span class="strong">Rotate</span>
+   </p><p>
+    <span class="inlinemediaobject"><img src="images/rotate_dialog.png" alt="attachment:rotate_dialog.png"></span>
+   </p><p>The <span class="underline">Layout &amp;#8594; Rotate</span> menu opens the Rotate dialog.  Rotate will either rotate the entire network or a selected portion of the network.  The image below shows a network with selected nodes rotated. </p><p>
+    <span class="inlinemediaobject"><img src="images/rotate_network.png" alt="attachment:rotate_network.png"></span>
+   </p><p>
+    <span class="strong">Scale</span>
+   </p><p>
+    <span class="inlinemediaobject"><img src="images/scale_dialog.png" alt="attachment:scale_dialog.png"></span>
+   </p><p>The <span class="underline">Layout &amp;#8594; Scale</span> menu opens the Scale dialog.  Scale will scale the position of the entire network or of the selected portion of the network. Note that only the position of the nodes scale, not the node sizes.  Node size can be adjusted using the <a href="/cgi-bin/moin.cgi/VizMapper" target="_top">VizMapper</a>. The image below shows selected nodes scaled. </p><p>
+    <span class="inlinemediaobject"><img src="images/scale_network.png" alt="attachment:scale_network.png"></span>
+   </p><p>
+    <span class="strong">Align/Distribute</span>
+   </p><p>[attachment:align_distribute_dialong.png] </p><p>The <span class="underline">Layout &amp;#8594; Align/Distribute</span> menu opens the Align/Distribute dialog.  The Align buttons of the dialog provides different options for either vertically or horizontally aligning selected nodes against a line.  The differences are in what part of the node gets aligned, e.g. the center of the node, the top of the node, the left side of the node.  The Distribute buttons evenly distribute  selected nodes between the two most distant nodes along either the vertical or horizontal axis. The differences are again a function what part of the node is used as a reference point for the distribution.  The table below provides a mapping from button to name to result. </p><p>Starting position for all aligned examples. </p><p>
+    <span class="inlinemediaobject"><img src="images/align_begin.png" alt="attachment:align_begin.png"></span>
+   </p><div class="table"><a name="id2961248"></a><p class="title"><b>Table 6. </b></p><div class="caption"></div><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td><p>
+         <span class="strong">Button</span>
+        </p></td><td><p>
+         <span class="strong">Description</span>
+        </p></td><td><p>
+         <span class="strong">Result</span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/V_ALIGN_TOP.gif" alt="attachment:V_ALIGN_TOP.gif"></span>
+        </p></td><td><p>Vertical Align Top - The tops of the selected nodes are aligned with the top-most node.</p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/align_vertical_top.png" alt="attachment:align_vertical_top.png"></span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/V_ALIGN_CENTER.gif" alt="attachment:V_ALIGN_CENTER.gif"></span>
+        </p></td><td><p>Vertical Align Center - The centers of selected nodes are aligned along a line defined by the midpoint between the top and bottom-most nodes.</p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/align_vertical_center.png" alt="attachment:align_vertical_center.png"></span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/V_ALIGN_BOTTOM.gif" alt="attachment:V_ALIGN_BOTTOM.gif"></span>
+        </p></td><td><p>Vertical Align Bottom - The bottoms of the nodes are aligned with the bottom-most node.</p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/align_vertical_bottom.png" alt="attachment:align_vertical_bottom.png"></span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/H_ALIGN_LEFT.gif" alt="attachment:H_ALIGN_LEFT.gif"></span>
+        </p></td><td><p>Horizontal Align Left - The left hand sides of the selected nodes are aligned with the left-most node. </p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/align_horizontal_left.png" alt="attachment:align_horizontal_left.png"></span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/H_ALIGN_CENTER.gif" alt="attachment:H_ALIGN_CENTER.gif"></span>
+        </p></td><td><p>Horizontal Align Center - The centers of selected nodes are aligned along a line defined by the midpoint between the left and right-most nodes.</p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/align_horizontal_center.png" alt="attachment:align_horizontal_center.png"></span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/H_ALIGN_RIGHT.gif" alt="attachment:H_ALIGN_RIGHT.gif"></span>
+        </p></td><td><p>Horizontal Align Right  - The right hand sides of the selected nodes are aligned with the right-most node. </p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/align_horizontal_right.png" alt="attachment:align_horizontal_right.png"></span>
+        </p></td></tr></tbody></table></div><p>Starting position for all vertically distributed examples. </p><p>
+    <span class="inlinemediaobject"><img src="images/distribute_begin_vertical.png" alt="attachment:distribute_begin_vertical.png"></span>
+   </p><div class="table"><a name="id2961708"></a><p class="title"><b>Table 7. </b></p><div class="caption"></div><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td><p>
+         <span class="strong">Button</span>
+        </p></td><td><p>
+         <span class="strong">Description</span>
+        </p></td><td><p>
+         <span class="strong">Result</span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/V_DIST_TOP.gif" alt="attachment:V_DIST_TOP.gif"></span>
+        </p></td><td><p>Vertical Distribute Top - The tops of the selected nodes are distributed evenly between the top-most and bottom-most nodes, which should stay stationary.</p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/distribute_vertical_top.png" alt="attachment:distribute_vertical_top.png"></span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/V_DIST_CENTER.gif" alt="attachment:V_DIST_CENTER.gif"></span>
+        </p></td><td><p>Vertical Distribute Center - The centers of the selected nodes are distributed evenly between the top-most and bottom-most nodes, which should stay stationary. </p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/distribute_vertical_center.png" alt="attachment:distribute_vertical_center.png"></span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/V_DIST_BOTTOM.gif" alt="attachment:V_DIST_BOTTOM.gif"></span>
+        </p></td><td><p>Vertical Distribute Bottom - The bottoms of the selected nodes are distributed evenly between the top-most and bottom-most nodes, which should stay stationary. </p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/distribute_vertical_bottom.png" alt="attachment:distribute_vertical_bottom.png"></span>
+        </p></td></tr></tbody></table></div><p>Starting position for all horizontally distributed examples. </p><p>
+    <span class="inlinemediaobject"><img src="images/distribute_begin_horizontal.png" alt="attachment:distribute_begin_horizontal.png"></span>
+   </p><div class="table"><a name="id2961988"></a><p class="title"><b>Table 8. </b></p><div class="caption"></div><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td><p>
+         <span class="strong">Button</span>
+        </p></td><td><p>
+         <span class="strong">Description</span>
+        </p></td><td><p>
+         <span class="strong">Result</span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/H_DIST_LEFT.gif" alt="attachment:H_DIST_LEFT.gif"></span>
+        </p></td><td><p>Horizontal Distribute Left  - The left hand sides of the selected nodes are distributed evenly between the left-most and rigth-most nodes, which should stay stationary. </p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/distribute_horizontal_left.png" alt="attachment:distribute_horizontal_left.png"></span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/H_DIST_CENTER.gif" alt="attachment:H_DIST_CENTER.gif"></span>
+        </p></td><td><p>Horizontal Distribute Center - The centers of the selected nodes are distributed evenly between the left-most and rigth-most nodes, which should stay stationary.   </p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/distribute_horizontal_center.png" alt="attachment:distribute_horizontal_center.png"></span>
+        </p></td></tr><tr><td><p>
+         <span class="inlinemediaobject"><img src="images/H_DIST_RIGHT.gif" alt="attachment:H_DIST_RIGHT.gif"></span>
+        </p></td><td><p>Horizontal Distribute Right - The right hand sides of the selected nodes are distributed evenly between the left-most and rigth-most nodes, which should stay stationary.  </p></td><td><p>
+         <span class="inlinemediaobject"><img src="images/distribute_horizontal_right.png" alt="attachment:distribute_horizontal_right.png"></span>
+        </p></td></tr></tbody></table></div><p></p></div></div></body></html>
