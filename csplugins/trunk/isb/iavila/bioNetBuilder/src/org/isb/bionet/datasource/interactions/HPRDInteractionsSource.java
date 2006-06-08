@@ -8,11 +8,34 @@ import java.util.Vector;
 
 import org.isb.bionet.datasource.synonyms.SynonymsSource;
 import org.isb.xmlrpc.handler.db.SQLDBHandler;
+import org.isb.xmlrpc.handler.db.SQLUtils;
 
 public class HPRDInteractionsSource extends SimpleInteractionsSource implements InteractionsDataSource {
     
     public static final String NAME = "HPRD";
     public static final String ID_TYPE = SynonymsSource.REFSEQ_ID; // but alternate names are GI and SPROT and PIR in that order
+    
+    // Detection methods
+    public static final String IN_VIVO = "in vivo";
+    public static final String IN_VITRO = "in vitro";
+    public static final String Y2H = "two hybrid";
+    public static final String UNCLASSIFIED = "unclassifi";
+    public static final String [] DETECTION_METHOD_ARRAY = {IN_VIVO, IN_VITRO, Y2H, UNCLASSIFIED};
+    
+    // Arguments:
+    
+    /**
+     * Whether to include interactions for which one of the proteins is not human (for example, the interaction was detected using a mouse protein)
+     * Value is Boolean
+     */
+    public static final String INCLUDE_NON_HUMAN_BAITS = "non-human";
+    
+    /**
+     * Detection methods to use, value is a Vector of recognized detection methods
+     */
+    public static final String DETECTION_METHODS = "detection methods";
+    // Whether to use interactions from the Vidal data set, values are true or false
+    public static final String USE_VIDAL = "include vidal";
     
     /**
      * Empty constructor
@@ -131,8 +154,10 @@ public class HPRDInteractionsSource extends SimpleInteractionsSource implements 
             }
         }catch(Exception e){
             e.printStackTrace();
+            System.err.println("HPRDInteractionsSource: returning an emtpy vector");
             return EMPTY_VECTOR;
         }
+        System.err.println("HPRDInteractionsSource: returning " + interactions.size() + " interactions");
         return interactions;
     }
     
@@ -176,6 +201,430 @@ public class HPRDInteractionsSource extends SimpleInteractionsSource implements 
          }
      }
      return new Vector(filtered);
+    }
+    
+    // Methods that take a Hashtable args. The ones that do not take this argument are handled by SimpleInteractionsSource
+    
+    //------------------------ get interactions en masse --------------------
+    
+    /**
+     * @param taxid
+     * @param args a table of String->Object entries that the implementing
+     * class understands (for example, p-value thresholds, directed interactions, etc)
+     * @return a Vector of Hashtables, each hash contains information about an
+     * interaction and is required to contain the following entries:<br>
+     * INTERACTOR_1 --> String <br>
+     * INTERACTOR_2 --> String <br>
+     * INTERACTION_TYPE -->String <br>
+     * Each implementing class can add additional entries to the Hashtables
+     */
+    public Vector getAllInteractions (String taxid, Hashtable args){
+       
+        if(args.size() == 0) return getAllInteractions(taxid);
+        
+        // Get the arguments
+        Vector detectionMethods = (Vector)args.get(DETECTION_METHODS);
+        boolean includeNonHumanBaits = 
+        		( (Boolean)args.get(INCLUDE_NON_HUMAN_BAITS) != null ? ((Boolean)args.get(INCLUDE_NON_HUMAN_BAITS)).booleanValue() : false);
+        boolean includeVidalInteractions =
+        		( (Boolean)args.get(USE_VIDAL) != null ? ((Boolean)args.get(USE_VIDAL)).booleanValue() : false);
+        
+        if( (detectionMethods == null || detectionMethods.size() == 4) &&
+        		!includeNonHumanBaits && includeVidalInteractions) return getAllInteractions(taxid);
+    		
+        if(detectionMethods != null && detectionMethods.size() == 0) return EMPTY_VECTOR;
+        
+        String methodStatement = null;
+        if(detectionMethods != null && detectionMethods.size() < 4){
+        		Iterator it = detectionMethods.iterator();
+        		if(it.hasNext()) methodStatement = "\"" + (String)it.next() + "\"";
+        		while(it.hasNext()){
+        			methodStatement += ",\"" + (String)it.next() + "\"";
+        		}
+        }
+        
+        String sql = "SELECT i1,interactionType,i2,primaryPubMed,detectionMethod FROM interactions WHERE " + 
+        				(!includeNonHumanBaits ? "taxid1 = " + taxid + " AND taxid2 = " + taxid : "(taxid1 = " + taxid + " OR taxid2 = " + taxid + ")") +
+        				(!includeVidalInteractions ? " AND id NOT LIKE \"VIDAL%\"" : "") +
+        				(methodStatement != null ? " AND detectionMethod IN (" + methodStatement + ")" : "");
+        
+        ResultSet rs = query(sql);
+        return makeInteractions(rs);
+        
+    }
+              
+    /**
+     * @param taxid
+     * @param args a table of String->Object entries that the implementing
+     * class understands (for example, p-value thresholds, directed interactions, etc)
+     * @return the number of interactions
+     */
+    public Integer getNumAllInteractions (String taxid, Hashtable args) {
+    	  	if(args.size() == 0) return getNumAllInteractions(taxid);
+          
+          // Get the arguments
+          Vector detectionMethods = (Vector)args.get(DETECTION_METHODS);
+          boolean includeNonHumanBaits = 
+          		( (Boolean)args.get(INCLUDE_NON_HUMAN_BAITS) != null ? ((Boolean)args.get(INCLUDE_NON_HUMAN_BAITS)).booleanValue() : false);
+          boolean includeVidalInteractions =
+          		( (Boolean)args.get(USE_VIDAL) != null? ((Boolean)args.get(USE_VIDAL)).booleanValue() : false);
+          
+          if( (detectionMethods == null || detectionMethods.size() == 4) &&
+          		!includeNonHumanBaits && includeVidalInteractions) return getNumAllInteractions(taxid);
+          
+          if(detectionMethods.size() == 0) return new Integer(0);
+          
+          String methodStatement = null;
+          if(detectionMethods != null && detectionMethods.size() < 4){
+          		Iterator it = detectionMethods.iterator();
+          		if(it.hasNext()) methodStatement = "\"" + (String)it.next() + "\"";
+          		while(it.hasNext()){
+          			methodStatement += ",\"" + (String)it.next() + "\"";
+          		}
+          }
+          
+          String sql = "SELECT COUNT(*) FROM interactions WHERE " + 
+          				(!includeNonHumanBaits ? "taxid1 = " + taxid + " AND taxid2 = " + taxid : "(taxid1 = " + taxid + " OR taxid2 = " + taxid + ")" ) +
+          				(!includeVidalInteractions ? " AND id not like \"VIDAL%\"" : "") +
+          				(methodStatement != null ? " AND detectionMethod IN (" + methodStatement + ")" : "");
+          
+          ResultSet rs = query(sql);
+          return new Integer(SQLUtils.getInt(rs));
+    }
+   
+    
+    //-------------------------- 1st neighbor methods ---------------------------
+    
+    /**
+     * @param interactor a Vector of Strings (ids that the data source understands)
+     * @param taxid the taxid
+     * @param args a table of String->Object entries that the implementing
+     * class understands (for example, p-value thresholds, directed interactions, etc)
+     * @return a Vector of String ids of all the nodes that
+     * have a direct interaction with the interactors in the given input vector, positions
+     * in the input and output vectors are matched (parallel vectors)
+     */
+    public Vector getFirstNeighbors (Vector interactors, String taxid, Hashtable args){
+        
+        if(interactors.size() == 0) return EMPTY_VECTOR;
+        
+        if(args.size() == 0) return getFirstNeighbors(interactors,taxid);
+        
+        // Get the arguments
+        Vector detectionMethods = (Vector)args.get(DETECTION_METHODS);
+        boolean includeNonHumanBaits = 
+        		( (Boolean)args.get(INCLUDE_NON_HUMAN_BAITS) != null ? ((Boolean)args.get(INCLUDE_NON_HUMAN_BAITS)).booleanValue() : false);
+        boolean includeVidalInteractions =
+        	
+        		( (Boolean)args.get(USE_VIDAL) != null? ((Boolean)args.get(USE_VIDAL)).booleanValue() : false);
+        
+        if( (detectionMethods == null  || detectionMethods.size() == 4) &&
+        		!includeNonHumanBaits && includeVidalInteractions) return getFirstNeighbors(interactors,taxid);
+    		
+        if(detectionMethods.size() == 0) return EMPTY_VECTOR;
+        
+        String methodStatement = null;
+        if(detectionMethods != null && detectionMethods.size() < 4){
+        		Iterator it = detectionMethods.iterator();
+        		if(it.hasNext()) methodStatement = "\"" + (String)it.next() + "\"";
+        		while(it.hasNext()){
+        			methodStatement += ",\"" + (String)it.next() + "\"";
+        		}
+        }
+        
+        Iterator it = filterInteractors(interactors).iterator();
+        String inInteractors = "";
+        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
+        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
+        
+        String sql = "SELECT i2 FROM interactions WHERE " + 
+        				(!includeNonHumanBaits ? "taxid1 = " + taxid + " AND taxid2 = " + taxid : " (taxid1 = " + taxid + " OR taxid2 = " + taxid + ")" ) +
+        				(!includeVidalInteractions ? " AND id not like \"VIDAL%\"" : "") +
+        				(methodStatement != null ? " AND detectionMethod IN (" + methodStatement + ")" : "") +
+        				(inInteractors.length() > 0 ? " AND i1 IN (" + inInteractors + ")" : "");
+        
+        ResultSet rs = query(sql);
+        Vector fNeighbors = makeInteractors(rs);
+        
+
+        sql = "SELECT i1 FROM interactions WHERE " + 
+        				(!includeNonHumanBaits ? "taxid1 = " + taxid + " AND taxid2 = " + taxid : " (taxid1 = " + taxid + " OR taxid2 = " + taxid + ")" ) +
+        				(!includeVidalInteractions ? " AND id not like \"VIDAL%\"" : "") +
+        				(methodStatement != null ? " AND detectionMethod IN (" + methodStatement + ")" : "") +
+        				(inInteractors.length() > 0 ? " AND i2 IN (" + inInteractors + ")" : "");
+        
+        rs = query(sql);
+        Vector fNeighbors2 = makeInteractors(rs);
+       
+        fNeighbors.removeAll(fNeighbors2);
+        fNeighbors.addAll(fNeighbors2);
+        return fNeighbors;
+        
+    }
+
+    
+    /**
+     * @param interactor a Vector of Strings (ids that the data source understands)
+     * @param taxid the taxid
+     * @param args a table of String->Object entries that the implementing
+     * class understands (for example, p-value thresholds, directed interactions, etc)
+     * @return the number of interactors
+     */
+    public Integer getNumFirstNeighbors (Vector interactors, String taxid, Hashtable args){
+        if(interactors.size() == 0) return new Integer(0);
+        
+        
+        if(args.size() == 0) return getNumFirstNeighbors(interactors,taxid);
+        
+        // Get the arguments
+        Vector detectionMethods = (Vector)args.get(DETECTION_METHODS);
+        boolean includeNonHumanBaits = 
+        		( (Boolean)args.get(INCLUDE_NON_HUMAN_BAITS) != null ? ((Boolean)args.get(INCLUDE_NON_HUMAN_BAITS)).booleanValue() : false);
+        boolean includeVidalInteractions =
+        	
+        		( (Boolean)args.get(USE_VIDAL) != null? ((Boolean)args.get(USE_VIDAL)).booleanValue() : false);
+        
+        if( (detectionMethods == null  || detectionMethods.size() == 4) &&
+        		!includeNonHumanBaits && includeVidalInteractions) return getNumFirstNeighbors(interactors,taxid);
+    		
+        if(detectionMethods.size() == 0) return new Integer(0);
+        
+        String methodStatement = null;
+        if(detectionMethods != null && detectionMethods.size() < 4){
+        		Iterator it = detectionMethods.iterator();
+        		if(it.hasNext()) methodStatement = "\"" + (String)it.next() + "\"";
+        		while(it.hasNext()){
+        			methodStatement += ",\"" + (String)it.next() + "\"";
+        		}
+        }
+        
+        Iterator it = filterInteractors(interactors).iterator();
+        String inInteractors = "";
+        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
+        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
+        
+        String sql = "SELECT COUNT(*) FROM interactions WHERE " + 
+        				(!includeNonHumanBaits ? "taxid1 = " + taxid + " AND taxid2 = " + taxid : " (taxid1 = " + taxid + " OR taxid2 = " + taxid + ")" ) +
+        				(!includeVidalInteractions ? " AND id not like \"VIDAL%\"" : "") +
+        				(methodStatement != null ? " AND detectionMethod IN (" + methodStatement + ")" : "") +
+        				(inInteractors.length() > 0 ? " AND ( i1 IN (" + inInteractors + ")" : "") +
+        				(inInteractors.length() > 0 ? " OR i2 IN (" + inInteractors + ") )" : "");
+        
+        ResultSet rs = query(sql);
+        return new Integer (SQLUtils.getInt(rs));
+       
+    }
+
+    /**
+     * @param interactor a Vector of Strings (ids that the data source understands)
+     * @param taxid the taxid
+     * @param args a table of String->Object entries that the implementing
+     * class understands (for example, p-value thresholds, directed interactions only, etc)
+     * @return a Vector of Hashtables, each hash contains information about an
+     * interaction (they are required to contain the following entries:)<br>
+     * INTERACTOR_1 --> String <br>
+     * INTERACTOR_2 --> String <br>
+     * INTERACTION_TYPE -->String <br>
+     * Each implementing class can add additional entries to the Hashtables.<br>
+     * The input and output vectors are parallel.
+     */
+    public Vector getAdjacentInteractions (Vector interactors, String taxid, Hashtable args){
+        
+        if(interactors.size() == 0) return EMPTY_VECTOR;
+        
+        if(args.size() == 0) return getAdjacentInteractions(interactors,taxid);
+        
+        // Get the arguments
+        Vector detectionMethods = (Vector)args.get(DETECTION_METHODS);
+        boolean includeNonHumanBaits = 
+        		( (Boolean)args.get(INCLUDE_NON_HUMAN_BAITS) != null ? ((Boolean)args.get(INCLUDE_NON_HUMAN_BAITS)).booleanValue() : false);
+        boolean includeVidalInteractions =
+        	
+        		( (Boolean)args.get(USE_VIDAL) != null? ((Boolean)args.get(USE_VIDAL)).booleanValue() : false);
+        
+        if( (detectionMethods == null || detectionMethods.size() == 4) &&
+        		!includeNonHumanBaits && includeVidalInteractions) return getAdjacentInteractions(interactors,taxid);
+    		
+        String methodStatement = null;
+        if(detectionMethods != null && detectionMethods.size() < 4){
+        		Iterator it = detectionMethods.iterator();
+        		if(it.hasNext()) methodStatement = "\"" + (String)it.next() + "\"";
+        		while(it.hasNext()){
+        			methodStatement += ",\"" + (String)it.next() + "\"";
+        		}
+        }
+        
+        Iterator it = filterInteractors(interactors).iterator();
+        String inInteractors = "";
+        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
+        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
+        
+        String sql = "SELECT * FROM interactions WHERE " + 
+		(!includeNonHumanBaits ? "taxid1 = " + taxid + " AND taxid2 = " + taxid : " (taxid1 = " + taxid + " OR taxid2 = " + taxid + ")" ) +
+		(!includeVidalInteractions ? " AND id not like \"VIDAL%\"" : "") +
+		(methodStatement != null ? " AND detectionMethod IN (" + methodStatement + ")" : "") +
+		(inInteractors.length() > 0 ? " AND (i1 IN (" + inInteractors + ")" : "") +
+		(inInteractors.length() > 0 ? " OR i2 IN (" + inInteractors + ") )" : "");
+        
+        ResultSet rs = query(sql);
+        return makeInteractions(rs);
+    }
+
+    /**
+     * @param interactor a Vector of Strings (ids that the data source understands)
+     * @param taxid the taxid
+     * @param args a table of String->Object entries that the implementing
+     * class understands (for example, p-value thresholds, directed interactions only, etc)
+     * @return the number of adjacent interations
+     */
+    public Integer getNumAdjacentInteractions (Vector interactors, String taxid, Hashtable args){
+        
+        if(interactors.size() == 0) return new Integer(0);
+        
+        // Get the arguments
+        Vector detectionMethods = (Vector)args.get(DETECTION_METHODS);
+        boolean includeNonHumanBaits = 
+        		( (Boolean)args.get(INCLUDE_NON_HUMAN_BAITS) != null ? ((Boolean)args.get(INCLUDE_NON_HUMAN_BAITS)).booleanValue() : false);
+        boolean includeVidalInteractions =
+        		( (Boolean)args.get(USE_VIDAL) != null? ((Boolean)args.get(USE_VIDAL)).booleanValue() : false);
+        
+        if( (detectionMethods == null || detectionMethods.size() == 4) &&
+        		!includeNonHumanBaits && includeVidalInteractions) return new Integer(0);
+    		if(detectionMethods.size() == 0) return new Integer(0);
+        
+        String methodStatement = null;
+        if(detectionMethods != null && detectionMethods.size() < 4){
+        		Iterator it = detectionMethods.iterator();
+        		if(it.hasNext()) methodStatement = "\"" + (String)it.next() + "\"";
+        		while(it.hasNext()){
+        			methodStatement += ",\"" + (String)it.next() + "\"";
+        		}
+        }
+        
+        Iterator it = filterInteractors(interactors).iterator();
+        String inInteractors = "";
+        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
+        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
+        
+        String sql = "SELECT COUNT(*) FROM interactions WHERE " + 
+		(!includeNonHumanBaits ? "taxid1 = " + taxid + " AND taxid2 = " + taxid : " (taxid1 = " + taxid + " OR taxid2 = " + taxid + ")" ) +
+		(!includeVidalInteractions ? " AND id not like \"VIDAL%\"" : "") +
+		(methodStatement != null ? " AND detectionMethod IN (" + methodStatement + ")" : "") +
+		(inInteractors.length() > 0 ? " AND (i1 IN (" + inInteractors + ")" : "") +
+		(inInteractors.length() > 0 ? " OR i2 IN (" + inInteractors + ") )" : "");
+        
+        ResultSet rs = query(sql);
+        return new Integer(SQLUtils.getInt(rs));
+        
+    }
+
+    //-------------------------- connecting interactions methods -----------------------
+    /**
+     * @param interactors
+     * @param taxid
+     * @param args a table of String->Object entries that the implementing
+     * class understands (for example, p-value thresholds, directed interactions only, etc)
+     * @return a Vector of Hashtables, each hash contains information about an
+     * interaction between the two interactors, each hash contains these entries:<br>
+     * INTERACTOR_1 --> String <br>
+     * INTERACTOR_2 --> String <br>
+     * INTERACTION_TYPE -->String <br>
+     * Each implementing class can add additional entries to the Hashtables 
+     */
+    public Vector getConnectingInteractions (Vector interactors, String taxid, Hashtable args){
+        
+        if(interactors.size() == 0) return EMPTY_VECTOR;
+        
+        // Get the arguments
+        Vector detectionMethods = (Vector)args.get(DETECTION_METHODS);
+        boolean includeNonHumanBaits = 
+        		( (Boolean)args.get(INCLUDE_NON_HUMAN_BAITS) != null ? ((Boolean)args.get(INCLUDE_NON_HUMAN_BAITS)).booleanValue() : false);
+        boolean includeVidalInteractions =
+        		( (Boolean)args.get(USE_VIDAL) != null? ((Boolean)args.get(USE_VIDAL)).booleanValue() : false);
+        
+        if( (detectionMethods == null || detectionMethods.size() == 4) &&
+        		!includeNonHumanBaits && includeVidalInteractions) return getConnectingInteractions(interactors,taxid);
+        
+        if(detectionMethods.size() == 0) return EMPTY_VECTOR;
+    		
+        String methodStatement = null;
+        if(detectionMethods != null && detectionMethods.size() < 4){
+        		Iterator it = detectionMethods.iterator();
+        		if(it.hasNext()) methodStatement = "\"" + (String)it.next() + "\"";
+        		while(it.hasNext()){
+        			methodStatement += ",\"" + (String)it.next() + "\"";
+        		}
+        }
+        
+        Iterator it = filterInteractors(interactors).iterator();
+        String inInteractors = "";
+        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
+        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
+        if(inInteractors.length() == 0)  return EMPTY_VECTOR;
+        
+        String sql = "SELECT * FROM interactions WHERE " + 
+		(!includeNonHumanBaits ? "taxid1 = " + taxid + " AND taxid2 = " + taxid : " (taxid1 = " + taxid + " OR taxid2 = " + taxid + ")" ) +
+		(!includeVidalInteractions ? " AND id not like \"VIDAL%\"" : "") +
+		(methodStatement != null ? " AND detectionMethod IN (" + methodStatement + ")" : "") +
+		(inInteractors.length() > 0 ? " AND (i1 IN (" + inInteractors + ")" : "") +
+		(inInteractors.length() > 0 ? " AND i2 IN (" + inInteractors + ") )" : "") +
+		(inInteractors.length() > 0 ? " OR (i2 IN (" + inInteractors + ")" : "") +
+		(inInteractors.length() > 0 ? " AND i1 IN (" + inInteractors + ") )" : "");
+        
+        ResultSet rs = query(sql);
+        Vector interactions = makeInteractions(rs);
+        return interactions;
+        
+    }
+    
+    /**
+     * @param interactors
+     * @param taxid
+     * @param args a table of String->Object entries that the implementing
+     * class understands (for example, p-value thresholds, directed interactions only, etc)
+     * @return the number of connecting interactions
+     */
+    public Integer getNumConnectingInteractions (Vector interactors, String taxid, Hashtable args){
+      
+        if(interactors.size() == 0) return new Integer(0);
+        // Get the arguments
+        Vector detectionMethods = (Vector)args.get(DETECTION_METHODS);
+        boolean includeNonHumanBaits = 
+        		( (Boolean)args.get(INCLUDE_NON_HUMAN_BAITS) != null ? ((Boolean)args.get(INCLUDE_NON_HUMAN_BAITS)).booleanValue() : false);
+        boolean includeVidalInteractions =
+        	
+        		( (Boolean)args.get(USE_VIDAL) != null? ((Boolean)args.get(USE_VIDAL)).booleanValue() : false);
+        
+        if( (detectionMethods == null || detectionMethods.size() == 0 || detectionMethods.size() == 4) &&
+        		!includeNonHumanBaits && includeVidalInteractions) return getNumConnectingInteractions(interactors,taxid);
+    		
+        String methodStatement = null;
+        if(detectionMethods != null && detectionMethods.size() < 4){
+        		Iterator it = detectionMethods.iterator();
+        		if(it.hasNext()) methodStatement = "\"" + (String)it.next() + "\"";
+        		while(it.hasNext()){
+        			methodStatement += ",\"" + (String)it.next() + "\"";
+        		}
+        }
+        
+        Iterator it = filterInteractors(interactors).iterator();
+        String inInteractors = "";
+        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
+        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
+        if(inInteractors.length() == 0)  return new Integer(0);
+        
+        String sql = "SELECT COUNT(*) FROM interactions WHERE " + 
+		(!includeNonHumanBaits ? "taxid1 = " + taxid + " AND taxid2 = " + taxid : " (taxid1 = " + taxid + " OR taxid2 = " + taxid + ")" ) +
+		(!includeVidalInteractions ? " AND id not like \"VIDAL%\"" : "") +
+		(methodStatement != null ? " AND detectionMethod IN (" + methodStatement + ")" : "") +
+		(inInteractors.length() > 0 ? " AND (i1 IN (" + inInteractors + ")" : "") +
+		(inInteractors.length() > 0 ? " AND i2 IN (" + inInteractors + ") )" : "") +
+		(inInteractors.length() > 0 ? " OR (i2 IN (" + inInteractors + ")" : "") +
+		(inInteractors.length() > 0 ? " AND i1 IN (" + inInteractors + ") )" : "");
+        
+        ResultSet rs = query(sql);
+        return new Integer(SQLUtils.getInt(rs));
+        
     }
     
 }

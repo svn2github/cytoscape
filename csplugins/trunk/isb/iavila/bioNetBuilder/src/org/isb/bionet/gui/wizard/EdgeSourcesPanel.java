@@ -482,12 +482,12 @@ public class EdgeSourcesPanel extends JPanel {
             //TODO: An automated way of finding which class is the GUI for a source and creating it
             
             if(buttonName.equals(HPRDInteractionsSource.NAME)){
-                final HPRDGui hDialog = new HPRDGui();
+                final HPRDParametersDialog hDialog = new HPRDParametersDialog();
                 this.sourceToDialog.put(sourceClass,hDialog);
                 button.addActionListener(
                         new AbstractAction() {
                            public void actionPerformed(ActionEvent event) {
-                               HPRDGui hDialog = (HPRDGui) sourceToDialog
+                               HPRDParametersDialog hDialog = (HPRDParametersDialog) sourceToDialog
                                        .get(sourceClass);
                                hDialog.pack();
                                hDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
