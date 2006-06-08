@@ -755,7 +755,6 @@ public class GMLReader implements GraphReader {
 	protected void readGML(List list) {
 		// Report Progress Message
 		int counter = 0;
-		System.out.println("Reading GML list...");
 		for (Iterator it = list.iterator(); it.hasNext();) {
 
 			// Report Progress Value
