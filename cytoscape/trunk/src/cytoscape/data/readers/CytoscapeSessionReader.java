@@ -373,7 +373,7 @@ public class CytoscapeSessionReader {
 			
 			HiddenNodes hNodes = (HiddenNodes) targetRoot.getHiddenNodes();
 			CyNetworkView curNetView = Cytoscape.getNetworkView(rootNetwork.getIdentifier());
-			if( curNetView != Cytoscape.getNullNetworkView()) {
+			if( curNetView != Cytoscape.getNullNetworkView() && hNodes != null) {
 				setHiddenNodes(curNetView, hNodes);
 			}
 			
