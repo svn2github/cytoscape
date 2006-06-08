@@ -67,6 +67,7 @@ import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.generated.Child;
 import cytoscape.generated.Cysession;
+import cytoscape.generated.HiddenNodes;
 import cytoscape.generated.Network;
 import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
@@ -369,7 +370,13 @@ public class CytoscapeSessionReader {
 			if (sNodes != null) {
 				setSelectedNodes(rootNetwork, sNodes);
 			}
-
+			
+			HiddenNodes hNodes = (HiddenNodes) targetRoot.getHiddenNodes();
+			CyNetworkView curNetView = Cytoscape.getNetworkView(rootNetwork.getIdentifier());
+			if( curNetView != Cytoscape.getNullNetworkView()) {
+				setHiddenNodes(curNetView, hNodes);
+			}
+			
 			SelectedEdges sEdges = (SelectedEdges) targetRoot
 					.getSelectedEdges();
 			if (sEdges != null) {
@@ -416,6 +423,15 @@ public class CytoscapeSessionReader {
 			selectedNodeList.add(Cytoscape.getCyNode(nodeID, false));
 		}
 		network.setSelectedNodeState(selectedNodeList, true);
+	}
+	
+	private void setHiddenNodes(final CyNetworkView view, final HiddenNodes hidden) {
+		final Iterator it = hidden.getNode().iterator();
+		while (it.hasNext()) {
+			final Node hiddenNodeObject = (Node) it.next();
+			final CyNode hiddenNode = Cytoscape.getCyNode(hiddenNodeObject.getId(), false);
+			view.hideGraphObject( view.getNodeView(hiddenNode) );
+		}
 	}
 
 	private void setSelectedEdges(CyNetwork network, SelectedEdges selected) {

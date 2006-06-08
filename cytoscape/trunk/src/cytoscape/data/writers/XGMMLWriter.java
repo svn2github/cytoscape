@@ -253,7 +253,7 @@ public class XGMMLWriter {
 	 * @throws JAXBException
 	 * @throws IOException
 	 */
-	public void write(Writer writer) throws JAXBException, IOException {
+	public void write(final Writer writer) throws JAXBException, IOException {
 
 		writeBaseNodes();
 		writeMetanodes();
@@ -271,7 +271,7 @@ public class XGMMLWriter {
 		// writer.write("<?xml-stylesheet type='text/css' href='" + CSS_FILE
 		// + "' ?>\n");
 
-		Marshaller m = jc.createMarshaller();
+		final Marshaller m = jc.createMarshaller();
 
 		// Set proper namespace prefix (mainly for metadata)
 		try {
@@ -283,7 +283,7 @@ public class XGMMLWriter {
 			// it will throw this exception. Since being unable to specify
 			// a human friendly prefix is not really a fatal problem,
 			// you can just continue marshalling without failing
-			;
+			e.printStackTrace();
 		}
 
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -296,7 +296,7 @@ public class XGMMLWriter {
 	 * @throws JAXBException
 	 */
 	private void writeEdges() throws JAXBException {
-		Iterator it = network.edgesIterator();
+		final Iterator it = network.edgesIterator();
 
 		CyEdge curEdge = null;
 		Edge jxbEdge = null;
@@ -359,7 +359,7 @@ public class XGMMLWriter {
 	 * 
 	 * @throws JAXBException
 	 */
-	protected void attributeWriter(int type, String id, Object target)
+	protected void attributeWriter(final int type, final String id, final Object target)
 			throws JAXBException {
 
 		// process type node
@@ -777,7 +777,7 @@ public class XGMMLWriter {
 	 * @return JAXB-generated Graphics object.
 	 * @throws JAXBException
 	 */
-	private Graphics getGraphics(int type, Object target) throws JAXBException {
+	private Graphics getGraphics(final int type, final Object target) throws JAXBException {
 
 		if (target == null) {
 			return null;
@@ -785,9 +785,22 @@ public class XGMMLWriter {
 
 		Graphics graphics = objFactory.createGraphics();
 
+		/*
+		 * This section is for node graphics
+		 */
 		if (type == NODE) {
 			NodeView curNodeView = (NodeView) target;
-
+			
+			/*
+			 * In case node is hidden, we cannot get the show and extract node view.
+			 */
+			boolean hiddenNodeFlag = false;
+			
+			if(curNodeView.getWidth() == -1) {
+				networkView.showGraphObject(curNodeView);
+				hiddenNodeFlag = true;
+			}
+			
 			/**
 			 * GML compatible attributes
 			 */
@@ -855,10 +868,16 @@ public class XGMMLWriter {
 
 			graphics.getAtt().add(cytoscapeNodeAttr);
 
+			/*
+			 * Hide the node if necessary
+			 */
+			if( hiddenNodeFlag == true ) {
+				networkView.hideGraphObject(curNodeView);
+			}
 			return graphics;
 		} else if (type == EDGE) {
 			EdgeView curEdgeView = (EdgeView) target;
-
+			
 			/**
 			 * GML compatible attributes
 			 */
@@ -955,7 +974,6 @@ public class XGMMLWriter {
 
 			return graphics;
 		}
-
 		return null;
 	}
 
@@ -1398,7 +1416,7 @@ class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 	 * If this method returns "" when requirePrefix=true, the return value will
 	 * be ignored and the system will generate one.
 	 */
-	public String getPreferredPrefix(String namespaceUri, String suggestion,
+	public String getPreferredPrefix(final String namespaceUri, final String suggestion,
 			boolean requirePrefix) {
 		// I want this namespace to be mapped to "xsi"
 		if ("http://www.w3.org/2001/XMLSchema-instance".equals(namespaceUri))

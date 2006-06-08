@@ -368,7 +368,7 @@ class LoadNetworkTask implements Task {
 		} else if (file_type == Cytoscape.FILE_GML) {
 			reader = new GMLReader(location, taskMonitor);
 		} else if (file_type == Cytoscape.FILE_XGMML) {
-			reader = new XGMMLReader(location);
+			reader = new XGMMLReader(location, taskMonitor);
 		} else {
 			throw new IOException("File Type not Supported.");
 		}
