@@ -1,4 +1,3 @@
-
 package cytoscape.ding;
 
 import cytoscape.render.stateful.GraphLOD;
@@ -19,16 +18,11 @@ import java.util.regex.Matcher;
  */
 public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 {
-  	protected byte renderAllEdges; 
       	protected int fullDetailThreshold; 
 	protected int nodeBorderThreshold;
 	protected int nodeLabelThreshold;
-	protected int customGraphicsThreshold;
 	protected int edgeArrowThreshold;
 	protected int edgeLabelThreshold;
-	protected boolean renderDashedEdges;
-	protected boolean renderEdgeAnchors;
-	protected boolean renderTextAsShape;
 
 	public CyGraphLOD() {
 		init();
@@ -47,28 +41,18 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 
 	protected void init() {
 
-		renderAllEdges = (byte)getInt("render.renderAllEdges",0);
-		fullDetailThreshold =  getInt("render.fullDetailThreshold",1200);
-		nodeBorderThreshold = getInt("render.nodeBorderThreshold",200);
-		nodeLabelThreshold = getInt("render.nodeLabelThreshold",100);
-		customGraphicsThreshold = getInt("render.customGraphicsThreshold",60);
-		edgeArrowThreshold = getInt("render.edgeArrowThreshold",300);
-		edgeLabelThreshold = getInt("render.edgeLabelThreshold",80);
-		renderDashedEdges = getBoolean("render.renderDashedEdges",true);
-		renderEdgeAnchors = getBoolean("render.renderEdgeAnchors",true);
-		renderTextAsShape = getBoolean("render.renderTextAsShape",false);
+		fullDetailThreshold =  getInt("render.fullDetailThreshold",2000);
+		nodeBorderThreshold = getInt("render.nodeBorderThreshold",400);
+		nodeLabelThreshold = getInt("render.nodeLabelThreshold",150);
+		edgeArrowThreshold = getInt("render.edgeArrowThreshold",500);
+		edgeLabelThreshold = getInt("render.edgeLabelThreshold",180);
 /*
 		System.out.println("(re)initializing level of detail (LOD)");
-		System.out.println("  renderAllEdges: " + renderAllEdges);
 		System.out.println("  fullDetailThreshold: " + fullDetailThreshold);
 		System.out.println("  nodeBorderThreshold: " + nodeBorderThreshold);
 		System.out.println("  nodeLabelThreshold: " + nodeLabelThreshold);
-		System.out.println("  customGraphicsThreshold: " + customGraphicsThreshold);
 		System.out.println("  edgeArrowThreshold: " + edgeArrowThreshold);
-		System.out.println("  renderDashedEdges: " + renderDashedEdges);
-		System.out.println("  renderEdgeAnchors: " + renderEdgeAnchors);
 		System.out.println("  edgeLabelThreshold: " + edgeLabelThreshold);
-		System.out.println("  renderTextAsShape: " + renderTextAsShape);
 */
 
 		//Cytoscape.getCurrentNetworkView().updateView();
@@ -132,7 +116,10 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
                           final int totalNodeCount,
                           final int totalEdgeCount)
   {
-    return renderAllEdges;
+    if (totalEdgeCount >= Math.min(edgeArrowThreshold, edgeLabelThreshold)) {
+      return (byte) 0; }
+    else {
+      return (byte) 1; }
   }
 
   /**
@@ -219,7 +206,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
   public boolean customGraphics(final int renderNodeCount,
                                 final int renderEdgeCount)
   {
-    return renderNodeCount < customGraphicsThreshold;
+    return renderNodeCount < nodeBorderThreshold;
   }
 
   /**
@@ -256,7 +243,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
   public boolean dashedEdges(final int renderNodeCount,
                              final int renderEdgeCount)
   {
-     return renderDashedEdges;
+     return true;
   }
 
   /**
@@ -274,7 +261,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
   public boolean edgeAnchors(final int renderNodeCount,
                              final int renderEdgeCount)
   {
-    return renderEdgeAnchors;
+    return true;
   }
 
   /**
@@ -310,7 +297,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
   public boolean textAsShape(final int renderNodeCount,
                              final int renderEdgeCount)
   {
-    return renderTextAsShape;
+    return false;
   }
 
 }
