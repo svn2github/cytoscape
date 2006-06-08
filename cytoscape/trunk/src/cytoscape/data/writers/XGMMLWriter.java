@@ -725,8 +725,8 @@ public class XGMMLWriter {
 				attrToReturn = objFactory.createAtt();
 				// we have a another map
 				attrToReturn.setType(getType(dimTypes[dimTypesIndex]));
-				attrToReturn.setLabel((String) key);
-				attrToReturn.setName((String) key);
+				attrToReturn.setLabel(key.toString());
+				attrToReturn.setName(key.toString());
 				attrToReturn.setValue(String
 						.valueOf(((Map) possibleAttributeValue).size()));
 				// walk the next map
