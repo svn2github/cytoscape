@@ -613,8 +613,8 @@ public final class GraphGraphics
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
-          ("calling thread is not AWT event dispatcher");
-      // Test all criteria.
+          ("calling thread is not AWT event dispatcher"); }
+    { // Test all criteria regardless of m_debug.
       int yInterceptsCenter = 0;
       for (int i = 0; i < vertexCount; i++) {
         final double x0 = polyCoords[i * 2];
@@ -644,7 +644,8 @@ public final class GraphGraphics
       if (yInterceptsCenter != 2)
         throw new IllegalArgumentException
           ("the polygon self-intersects (we know this because the winding " +
-           "number of the center is not one)"); }
+           "number of the center is not one)");
+    }
 
     // polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
     // that passes all of the criteria.
