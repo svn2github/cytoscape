@@ -108,7 +108,7 @@ public class XGMMLWriter {
 	// GML-Compatible Pre-defined Shapes
 	protected static final String RECTANGLE = "rectangle";
 	protected static final String ELLIPSE = "ellipse";
-	protected static final String LINE = "Line"; // This is the Polyline object.
+	protected static final String LINE = "Line";
 	protected static final String POINT = "point";
 	protected static final String DIAMOND = "diamond";
 	protected static final String HEXAGON = "hexagon";
@@ -313,16 +313,13 @@ public class XGMMLWriter {
 			jxbEdge.setTarget(Integer.toString(curEdge.getTarget()
 					.getRootGraphIndex()));
 
-			if (networkView != null) {
-				EdgeView curEdgeView = networkView.getEdgeView(curEdge);
-
-				Graphics edgeGraphics = getGraphics(EDGE, curEdgeView);
+			if (networkView != Cytoscape.getNullNetworkView()) {
+				final Graphics edgeGraphics = getGraphics(EDGE, networkView.getEdgeView(curEdge));
 				if (edgeGraphics != null) {
 					jxbEdge.setGraphics(edgeGraphics);
 				}
 			}
 			attributeWriter(EDGE, curEdge.getIdentifier(), jxbEdge);
-
 			edgeList.add(curEdge);
 			graph.getNodeOrEdge().add(jxbEdge);
 		}
@@ -364,14 +361,14 @@ public class XGMMLWriter {
 
 		// process type node
 		if (type == NODE) {
-			Node targetNode = (Node) target;
+			final Node targetNode = (Node) target;
 			// process each attribute type
 			for (int i = 0; i < nodeAttNames.length; i++) {
 				if (nodeAttNames[i] == "node.width"
 						|| nodeAttNames[i] == "node.height") {
 					// Ignore
 				} else if (nodeAttNames[i] == "nodeType") {
-					String nType = nodeAttributes.getStringAttribute(id,
+					final String nType = nodeAttributes.getStringAttribute(id,
 							nodeAttNames[i]);
 					if (nType != null) {
 						targetNode.setName(nType);
@@ -379,9 +376,8 @@ public class XGMMLWriter {
 						targetNode.setName("base");
 					}
 				} else {
-					Att attr = createAttribute(id, nodeAttributes,
-							nodeAttNames[i]);
-					targetNode.getAtt().add(attr);
+					targetNode.getAtt().add(createAttribute(id, nodeAttributes,
+							nodeAttNames[i]));
 				}
 			}
 		}
@@ -389,9 +385,7 @@ public class XGMMLWriter {
 		else if (type == EDGE) {
 			// process each attribute type
 			for (int i = 0; i < edgeAttNames.length; i++) {
-				Att attr = createAttribute(id, edgeAttributes, edgeAttNames[i]);
-				Edge targetEdge = (Edge) target;
-				targetEdge.getAtt().add(attr);
+				((Edge) target).getAtt().add(createAttribute(id, edgeAttributes, edgeAttNames[i]));
 			}
 		}
 		// process type network
@@ -400,9 +394,8 @@ public class XGMMLWriter {
 			for (int i = 0; i < networkAttNames.length; i++) {
 				// ignore Metadata object.
 				if (!networkAttNames[i].equals(METADATA_ATTR_NAME)) {
-					Att attr = createAttribute(id, networkAttributes,
-							networkAttNames[i]);
-					graph.getAtt().add(attr);
+					graph.getAtt().add(createAttribute(id, networkAttributes,
+							networkAttNames[i]));
 				}
 			}
 		}
@@ -423,12 +416,12 @@ public class XGMMLWriter {
 	 * 
 	 * @throws JAXBException
 	 */
-	private Att createAttribute(String id, CyAttributes attributes,
-			String attributeName) throws JAXBException {
+	private Att createAttribute(final String id, final CyAttributes attributes,
+			final String attributeName) throws JAXBException {
 
 		// create an attribute and its type
 		Att attr = objFactory.createAtt();
-		byte attType = attributes.getType(attributeName);
+		final byte attType = attributes.getType(attributeName);
 
 		// process float
 		if (attType == CyAttributes.TYPE_FLOATING) {
@@ -472,16 +465,16 @@ public class XGMMLWriter {
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// get the attribute list
-			List listAttr = attributes.getAttributeList(id, attributeName);
+			final List listAttr = attributes.getAttributeList(id, attributeName);
 			// set attribute name and label
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
 			attr.setType(LIST_TYPE);
 			// interate through the list
-			Iterator listIt = listAttr.iterator();
+			final Iterator listIt = listAttr.iterator();
 			while (listIt.hasNext()) {
 				// get the attribute from the list
-				Object obj = listIt.next();
+				final Object obj = listIt.next();
 				// create a "child" attribute to store in xgmml file
 				Att memberAttr = objFactory.createAtt();
 				// set child attribute value & label
@@ -494,13 +487,13 @@ public class XGMMLWriter {
 		// process simple map
 		else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
 			// get the attribute map
-			Map mapAttr = attributes.getAttributeMap(id, attributeName);
+			final Map mapAttr = attributes.getAttributeMap(id, attributeName);
 			// set our attribute name and label
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
 			attr.setType(MAP_TYPE);
 			// interate through the map
-			Iterator mapIt = mapAttr.keySet().iterator();
+			final Iterator mapIt = mapAttr.keySet().iterator();
 			while (mapIt.hasNext()) {
 				// get the attribute from the map
 				Object obj = mapIt.next();
@@ -783,13 +776,13 @@ public class XGMMLWriter {
 			return null;
 		}
 
-		Graphics graphics = objFactory.createGraphics();
+		final Graphics graphics = objFactory.createGraphics();
 
 		/*
 		 * This section is for node graphics
 		 */
 		if (type == NODE) {
-			NodeView curNodeView = (NodeView) target;
+			final NodeView curNodeView = (NodeView) target;
 			
 			/*
 			 * In case node is hidden, we cannot get the show and extract node view.
@@ -817,23 +810,20 @@ public class XGMMLWriter {
 			graphics.setFill(paint2string(curNodeView.getUnselectedPaint()));
 
 			// Node border basic info.
-			BasicStroke borderType = (BasicStroke) curNodeView.getBorder();
-
-			float borderWidth = borderType.getLineWidth();
-			BigInteger intWidth = BigInteger.valueOf((long) borderWidth);
-			graphics.setWidth(intWidth);
+			final BasicStroke borderType = (BasicStroke) curNodeView.getBorder();
+			graphics.setWidth(BigInteger.valueOf((long) borderType.getLineWidth()));
 			graphics.setOutline(paint2string(curNodeView.getBorderPaint()));
 
 			/**
 			 * Extended attributes supported by GINY
 			 */
 			// Store Cytoscap-local graphical attributes
-			Att cytoscapeNodeAttr = objFactory.createAtt();
+			final Att cytoscapeNodeAttr = objFactory.createAtt();
 			cytoscapeNodeAttr.setName("cytoscapeNodeGraphicsAttributes");
 
-			Att transparency = objFactory.createAtt();
-			Att nodeLabelFont = objFactory.createAtt();
-			Att borderLineType = objFactory.createAtt();
+			final Att transparency = objFactory.createAtt();
+			final Att nodeLabelFont = objFactory.createAtt();
+			final Att borderLineType = objFactory.createAtt();
 
 			transparency.setName("nodeTransparency");
 			nodeLabelFont.setName("nodeLabelFont");
@@ -845,14 +835,14 @@ public class XGMMLWriter {
 					.setValue(encodeFont(curNodeView.getLabel().getFont()));
 
 			// Where should we store line-type info???
-			float[] dash = borderType.getDashArray();
+			final float[] dash = borderType.getDashArray();
 			if (dash == null) {
 				// System.out.println("##Border is NORMAL LINE");
 				borderLineType.setValue("solid");
 			} else {
 				// System.out.println("##Border is DASHED LINE");
 				String dashArray = null;
-				StringBuffer dashBuf = new StringBuffer();
+				final StringBuffer dashBuf = new StringBuffer();
 				for (int i = 0; i < dash.length; i++) {
 					dashBuf.append(Double.toString(dash[i]));
 					if (i < dash.length - 1) {
@@ -871,12 +861,12 @@ public class XGMMLWriter {
 			/*
 			 * Hide the node if necessary
 			 */
-			if( hiddenNodeFlag == true ) {
+			if(hiddenNodeFlag) {
 				networkView.hideGraphObject(curNodeView);
 			}
 			return graphics;
 		} else if (type == EDGE) {
-			EdgeView curEdgeView = (EdgeView) target;
+			final EdgeView curEdgeView = (EdgeView) target;
 			
 			/**
 			 * GML compatible attributes
@@ -891,21 +881,21 @@ public class XGMMLWriter {
 			 * Extended attributes supported by GINY
 			 */
 			// Store Cytoscap-local graphical attributes
-			Att cytoscapeEdgeAttr = objFactory.createAtt();
+			final Att cytoscapeEdgeAttr = objFactory.createAtt();
 			cytoscapeEdgeAttr.setName("cytoscapeEdgeGraphicsAttributes");
 
-			Att sourceArrow = objFactory.createAtt();
-			Att targetArrow = objFactory.createAtt();
-			Att edgeLabelFont = objFactory.createAtt();
-			Att edgeLineType = objFactory.createAtt();
-			Att sourceArrowColor = objFactory.createAtt();
-			Att targetArrowColor = objFactory.createAtt();
+			final Att sourceArrow = objFactory.createAtt();
+			final Att targetArrow = objFactory.createAtt();
+			final Att edgeLabelFont = objFactory.createAtt();
+			final Att edgeLineType = objFactory.createAtt();
+			final Att sourceArrowColor = objFactory.createAtt();
+			final Att targetArrowColor = objFactory.createAtt();
 
 			// Bend
-			Att bend = objFactory.createAtt();
+			final Att bend = objFactory.createAtt();
 
 			// Curved (Bezier Curves) or Straight line
-			Att curved = objFactory.createAtt();
+			final Att curved = objFactory.createAtt();
 
 			sourceArrow.setName("sourceArrow");
 			targetArrow.setName("targetArrow");
@@ -927,15 +917,15 @@ public class XGMMLWriter {
 			edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
 
 			// Extract bend information
-			Bend bendData = curEdgeView.getBend();
-			List handles = bendData.getHandles();
+			final Bend bendData = curEdgeView.getBend();
+			final List handles = bendData.getHandles();
 
-			Iterator bendIt = handles.iterator();
+			final Iterator bendIt = handles.iterator();
 			while (bendIt.hasNext()) {
-				java.awt.geom.Point2D handle = (Point2D) bendIt.next();
-				Att handlePoint = objFactory.createAtt();
-				Att handleX = objFactory.createAtt();
-				Att handleY = objFactory.createAtt();
+				final java.awt.geom.Point2D handle = (Point2D) bendIt.next();
+				final Att handlePoint = objFactory.createAtt();
+				final Att handleX = objFactory.createAtt();
+				final Att handleY = objFactory.createAtt();
 
 				handlePoint.setName("handle");
 				handleX.setName("x");
@@ -1028,7 +1018,7 @@ public class XGMMLWriter {
 	 *            Enumerated node shape.
 	 * @return Shape in string.
 	 */
-	private String number2shape(int type) {
+	private String number2shape(final int type) {
 		if (type == NodeView.ELLIPSE) {
 			return ELLIPSE;
 		} else if (type == NodeView.RECTANGLE) {
@@ -1055,9 +1045,9 @@ public class XGMMLWriter {
 	 *            Paint object to be converted.
 	 * @return Color in RGB string.
 	 */
-	private String paint2string(Paint p) {
+	private String paint2string(final Paint p) {
 
-		Color c = (Color) p;
+		final Color c = (Color) p;
 		return ("#"// +Integer.toHexString(c.getRGB());
 				+ Integer.toHexString(256 + c.getRed()).substring(1)
 				+ Integer.toHexString(256 + c.getGreen()).substring(1) + Integer
@@ -1074,21 +1064,18 @@ public class XGMMLWriter {
 		Node jxbNode = null;
 		CyNode curNode = null;
 
-		Iterator it = network.nodesIterator();
+		final Iterator it = network.nodesIterator();
 
 		while (it.hasNext()) {
 			curNode = (CyNode) it.next();
 			jxbNode = objFactory.createNode();
-
-			String targetnodeID = Integer.toString(curNode.getRootGraphIndex());
-
-			jxbNode.setId(targetnodeID);
+			jxbNode.setId(Integer.toString(curNode.getRootGraphIndex()));
 			jxbNode.setLabel(curNode.getIdentifier());
 			jxbNode.setName("base");
 
 			// Add graphics if available
 			if (networkView != null) {
-				NodeView curNodeView = networkView.getNodeView(curNode);
+				final NodeView curNodeView = networkView.getNodeView(curNode);
 				if (curNodeView != null) {
 					jxbNode.setGraphics(getGraphics(NODE, curNodeView));
 				}
@@ -1115,17 +1102,15 @@ public class XGMMLWriter {
 	 * @return JAXB Node object.
 	 * @throws JAXBException
 	 */
-	private Node buildJAXBNode(CyNode node) throws JAXBException {
+	private Node buildJAXBNode(final CyNode node) throws JAXBException {
 		Node jxbNode = null;
 
 		jxbNode = objFactory.createNode();
-		String targetnodeID = Integer.toString(node.getRootGraphIndex());
-		jxbNode.setId(targetnodeID);
+		jxbNode.setId(Integer.toString(node.getRootGraphIndex()));
 		jxbNode.setLabel(node.getIdentifier());
 
-		if (networkView != null) {
-			NodeView curNodeView = networkView.getNodeView(node);
-			jxbNode.setGraphics(getGraphics(NODE, curNodeView));
+		if (networkView != Cytoscape.getNullNetworkView()) {
+			jxbNode.setGraphics(getGraphics(NODE, networkView.getNodeView(node)));
 		}
 		attributeWriter(NODE, node.getIdentifier(), jxbNode);
 		return jxbNode;
@@ -1137,12 +1122,12 @@ public class XGMMLWriter {
 	 * @param node
 	 * @throws JAXBException
 	 */
-	private void expandChildren(CyNode node) throws JAXBException {
+	private void expandChildren(final CyNode node) throws JAXBException {
 
 		CyNode childNode = null;
 		Node jxbNode = null;
 
-		int[] childrenIndices = network.getRootGraph()
+		final int[] childrenIndices = network.getRootGraph()
 				.getNodeMetaChildIndicesArray(node.getRootGraphIndex());
 
 		for (int i = 0; i < childrenIndices.length; i++) {
@@ -1170,29 +1155,26 @@ public class XGMMLWriter {
 	 * 
 	 */
 	private void writeMetanodes() throws JAXBException {
-		Iterator it = metanodeList.iterator();
+		final Iterator it = metanodeList.iterator();
 
 		while (it.hasNext()) {
-			CyNode curNode = (CyNode) it.next();
+			final CyNode curNode = (CyNode) it.next();
 			Node jxbNode = null;
 			jxbNode = buildJAXBNode(curNode);
-
 			jxbNode.setName("metaNode");
 
-			int[] childrenIndices = network.getRootGraph()
+			final int[] childrenIndices = network.getRootGraph()
 					.getNodeMetaChildIndicesArray(curNode.getRootGraphIndex());
-			Att children = objFactory.createAtt();
+			final Att children = objFactory.createAtt();
 			children.setName("metanodeChildren");
-			Graph subGraph = objFactory.createGraph();
+			final Graph subGraph = objFactory.createGraph();
 
 			for (int i = 0; i < childrenIndices.length; i++) {
-				CyNode childNode = null;
 				Node childJxbNode = null;
 
-				childNode = (CyNode) network.getRootGraph().getNode(
-						childrenIndices[i]);
 				childJxbNode = objFactory.createNode();
-				childJxbNode.setId(childNode.getIdentifier());
+				childJxbNode.setId(((CyNode) network.getRootGraph().getNode(
+						childrenIndices[i])).getIdentifier());
 
 				childJxbNode.setName("reference");
 				subGraph.getNodeOrEdge().add(childJxbNode);
@@ -1211,9 +1193,9 @@ public class XGMMLWriter {
 	 * @param node
 	 * @return
 	 */
-	private boolean isMetanode(CyNode node) {
+	private boolean isMetanode(final CyNode node) {
 
-		int[] childrenIndices = network.getRootGraph()
+		final int[] childrenIndices = network.getRootGraph()
 				.getNodeMetaChildIndicesArray(node.getRootGraphIndex());
 		if (childrenIndices == null || childrenIndices.length == 0) {
 			return false;
@@ -1229,12 +1211,10 @@ public class XGMMLWriter {
 	 *            Font object.
 	 * @return String extracted from the given Font object.
 	 */
-	private String encodeFont(Font font) {
+	private String encodeFont(final Font font) {
 		// Encode font into "fontname-style-pointsize" string
-		String fontString = font.getName() + "-" + font.getStyle() + "-"
-				+ font.getSize();
-
-		return fontString;
+		return font.getName() + "-" + font.getStyle() + "-"
+		+ font.getSize();
 	}
 
 	/**
@@ -1244,7 +1224,7 @@ public class XGMMLWriter {
 	 * @return Attribute type in string.
 	 * 
 	 */
-	private String checkType(Object obj) {
+	private String checkType(final Object obj) {
 		if (obj.getClass() == String.class) {
 			return STRING_TYPE;
 		} else if (obj.getClass() == Integer.class) {
@@ -1266,7 +1246,7 @@ public class XGMMLWriter {
 	 *            byte as described in MultiHashMapDefinition
 	 * @return String
 	 */
-	private String getType(byte dimType) {
+	private String getType(final byte dimType) {
 
 		if (dimType == MultiHashMapDefinition.TYPE_BOOLEAN)
 			return BOOLEAN_TYPE;
@@ -1290,14 +1270,13 @@ public class XGMMLWriter {
 	 * @return LineType of the edge
 	 * 
 	 */
-	private LineType lineTypeBuilder(EdgeView view) {
+	private LineType lineTypeBuilder(final EdgeView view) {
 
 		LineType lineType = LineType.LINE_1;
-		BasicStroke stroke = (BasicStroke) view.getStroke();
-
-		float[] dash = stroke.getDashArray();
-
-		float width = stroke.getLineWidth();
+		final BasicStroke stroke = (BasicStroke) view.getStroke();
+		final float[] dash = stroke.getDashArray();
+		final float width = stroke.getLineWidth();
+		
 		if (dash == null) {
 			// Normal line. check width
 			if (width == 1.0) {
@@ -1340,18 +1319,18 @@ public class XGMMLWriter {
 	private void saveViewZoom() throws JAXBException {
 
 		// the attribute to write
-		Att attr = objFactory.createAtt();
+		final Att attr = objFactory.createAtt();
 
 		// lets get the zoom value
-		Double dAttr = new Double(networkView.getZoom());
+		final Double dAttr = new Double(networkView.getZoom());
 
 		// set the attribute name, label, and value
 		attr.setName(GRAPH_VIEW_ZOOM);
 		attr.setLabel(GRAPH_VIEW_ZOOM);
 		attr.setType(FLOAT_TYPE);
-		if (dAttr != null)
+		if (dAttr != null) {
 			attr.setValue(dAttr.toString());
-
+		}
 		// add attribute to graph object
 		graph.getAtt().add(attr);
 	}
@@ -1362,15 +1341,15 @@ public class XGMMLWriter {
 	private void saveViewCenter() throws JAXBException {
 
 		// attribute names
-		String[] coordinates = { GRAPH_VIEW_CENTER_X, GRAPH_VIEW_CENTER_Y };
+		final String[] coordinates = { GRAPH_VIEW_CENTER_X, GRAPH_VIEW_CENTER_Y };
 
 		// the view center
-		Point2D center = ((DGraphView) networkView).getCenter();
+		final Point2D center = ((DGraphView) networkView).getCenter();
 
 		// process both x & y coordinates
 		for (int lc = 0; lc < 2; lc++) {
 			// the attribute to write - x coord
-			Att attr = objFactory.createAtt();
+			final Att attr = objFactory.createAtt();
 			double doubleCoord = (lc == 0) ? center.getX() : center.getY();
 			Double coord = new Double(doubleCoord);
 			attr.setName(coordinates[lc]);
