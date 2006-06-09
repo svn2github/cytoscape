@@ -88,14 +88,14 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// --------------------//
 	// Static variables
 
-	public static String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
-	public static String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
-	public static String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
-	public static String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
+	public static final String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
+	public static final String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
+	public static final String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
+	public static final String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
 
 	// state variables
-	public static String VISUAL_STYLE = "VISUAL_STYLE";
-	public static String VIZMAP_ENABLED = "VIZMAP_ENABLED";
+	public static final String VISUAL_STYLE = "VISUAL_STYLE";
+	public static final String VIZMAP_ENABLED = "VIZMAP_ENABLED";
 
 	/**
 	 * Cytoscape UndoManager
@@ -105,19 +105,19 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	/**
 	 * Displays all network views in TabbedPanes ( like Mozilla )
 	 */
-	public static int TABBED_VIEW = 0;
+	public static final int TABBED_VIEW = 0;
 
 	/**
 	 * Displays all network views in JInternalFrames, using the mock desktop
 	 * interface. ( like MS Office )
 	 */
-	public static int INTERNAL_VIEW = 1;
+	public static final int INTERNAL_VIEW = 1;
 
 	/**
 	 * Displays all network views in JFrames, so each Network has its own
 	 * window. ( like the GIMP )
 	 */
-	public static int EXTERNAL_VIEW = 2;
+	public static final int EXTERNAL_VIEW = 2;
 
 	// --------------------//
 	// Member varaibles
