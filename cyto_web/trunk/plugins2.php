@@ -160,9 +160,9 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/README.txt">Release Notes</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/cpath-beta2.tar.gz">Download .tar.gz</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/cpath-beta3.tar.gz">Download .tar.gz</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/cpath-beta2.zip">Download .zip</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/cpath-beta3.zip">Download .zip</a>]
 				</td>
 			</tr>
 			<tr>
@@ -832,9 +832,9 @@ Scardoni.
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/README.txt">Release Notes</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/psi-2.tar.gz">Download .tar.gz</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/psi-3.tar.gz">Download .tar.gz</a>]
 <br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/psi-2.zip">Download .zip</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/psi-3.zip">Download .zip</a>]
 
 				</td>
 			</tr>
@@ -969,9 +969,9 @@ The plugin API makes possible to use its functionality from another plugin.
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version3/README.txt">Release Notes</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version3/soft-2.tar.gz">Download .tar.gz</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version3/soft-3.tar.gz">Download .tar.gz</a>]
 <br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version3/soft-2.zip">Download .zip</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version3/soft-3.zip">Download .zip</a>]
 
 				</td>
 			</tr>
