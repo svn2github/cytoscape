@@ -455,7 +455,8 @@ public final class GraphGraphics
         computeInnerPoint(m_ptsBuff, xPrev, yPrev, xCurr, yCurr,
                           xNext, yNext, borderWidth);
         m_path2d.moveTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]);
-        for (int i = 6;;) {
+        int i = 6;
+        while (true) {
           if (i == m_polyNumPoints * 2) {
             computeInnerPoint(m_ptsBuff, xCurr, yCurr, xNext, yNext,
                               xNot, yNot, borderWidth);
@@ -849,6 +850,7 @@ public final class GraphGraphics
   }
 
   /*
+   * This method is used to construct an inner shape for node border.
    * output[0] is the x return value and output[1] is the y return value.
    * The line prev->curr cannot be parallel to curr->next.
    */
@@ -1038,7 +1040,7 @@ public final class GraphGraphics
    * curve would be drawn by specifying consecutive-pairwise disctinct points
    * {(x0,y0), A0, A1, A2, (x1,y1)}; a straight-line edge path would be
    * drawn by specifying {(x0, y0), A0, A0, A1, A1, A2, A2, (x1, y1)}.
-   * @param arrowType0 the type of arrow shape to use for drawing the
+   * @param arrow0Type the type of arrow shape to use for drawing the
    *   arrow at point (x0, y0); this value must be one of the ARROW_*
    *   constants.
    * @param arrow0Size the size of arrow at point (x0, y0); how size is
@@ -1046,7 +1048,7 @@ public final class GraphGraphics
    *   above.
    * @param arrow0Paint the paint to use when drawing the arrow at point
    *   (x0, y0).
-   * @param arrowType1 the type of arrow shape to use for drawing the
+   * @param arrow1Type the type of arrow shape to use for drawing the
    *   arrow at point (x1, y1); this value must be one of the ARROW_*
    *   constants.
    * @param arrow1Size the size of arrow at point (x1, y1); how size is
@@ -1071,10 +1073,10 @@ public final class GraphGraphics
    *   does not meet specified criteria, or if more than
    *   MAX_EDGE_ANCHORS anchors are specified.
    */
-  public final void drawEdgeFull(final byte arrowType0,
+  public final void drawEdgeFull(final byte arrow0Type,
                                  final float arrow0Size,
                                  final Paint arrow0Paint,
-                                 final byte arrowType1,
+                                 final byte arrow1Type,
                                  final float arrow1Size,
                                  final Paint arrow1Paint,
                                  final float x0, final float y0,
@@ -1087,26 +1089,26 @@ public final class GraphGraphics
     final double curveFactor = CURVE_ELLIPTICAL;
     if (anchors == null) { anchors = m_noAnchors; }
     if (m_debug) {
-      edgeFullDebug(arrowType0, arrow0Size, arrowType1, arrow1Size,
+      edgeFullDebug(arrow0Type, arrow0Size, arrow1Type, arrow1Size,
                     edgeThickness, dashLength, anchors); }
 
     if (!computeCubicPolyEdgePath
-        (arrowType0, arrowType0 == ARROW_NONE ? 0.0f : arrow0Size,
-         arrowType1, arrowType1 == ARROW_NONE ? 0.0f : arrow1Size,
+        (arrow0Type, arrow0Type == ARROW_NONE ? 0.0f : arrow0Size,
+         arrow1Type, arrow1Type == ARROW_NONE ? 0.0f : arrow1Size,
          x0, y0, anchors, x1, y1, curveFactor)) {
       // After filtering duplicate start and end points, there are less
       // than 3 total.
       if (m_edgePtsCount == 2) { // Draw an ordinary edge.
-        drawSimpleEdgeFull(arrowType0, arrow0Size, arrow0Paint,
-                           arrowType1, arrow1Size, arrow1Paint,
+        drawSimpleEdgeFull(arrow0Type, arrow0Size, arrow0Paint,
+                           arrow1Type, arrow1Size, arrow1Paint,
                            (float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
                            (float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
                            edgeThickness, edgePaint, dashLength); }
       return; }
 
     { // Render the edge polypath.
-      final boolean simpleSegment = arrowType0 == ARROW_NONE &&
-        arrowType1 == ARROW_NONE && dashLength == 0.0f;
+      final boolean simpleSegment = arrow0Type == ARROW_NONE &&
+        arrow1Type == ARROW_NONE && dashLength == 0.0f;
       setStroke(edgeThickness, dashLength,
                 simpleSegment ? BasicStroke.CAP_ROUND :
                 BasicStroke.CAP_BUTT, false);
@@ -1148,7 +1150,7 @@ public final class GraphGraphics
     if (dashLength == 0.0f)
     { // Render arrow cap at origin of poly path.
       final Shape arrow0Cap = computeUntransformedArrowCap
-        (arrowType0, ((double) arrow0Size) / edgeThickness);
+        (arrow0Type, ((double) arrow0Size) / edgeThickness);
       if (arrow0Cap != null) {
         m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0, cosTheta0,
                                  m_edgePtsBuff[2], m_edgePtsBuff[3]);
@@ -1162,7 +1164,7 @@ public final class GraphGraphics
     if (dashLength == 0.0f)
     { // Render arrow cap at end of poly path.
       final Shape arrow1Cap = computeUntransformedArrowCap
-        (arrowType1, ((double) arrow1Size) / edgeThickness);
+        (arrow1Type, ((double) arrow1Size) / edgeThickness);
       if (arrow1Cap != null) {
         m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1, cosTheta1,
                                  m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 4],
@@ -1175,7 +1177,7 @@ public final class GraphGraphics
     }
 
     { // Render arrow at origin of poly path.
-      final Shape arrow0 = computeUntransformedArrow(arrowType0);
+      final Shape arrow0 = computeUntransformedArrow(arrow0Type);
       if (arrow0 != null) {
         m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0, cosTheta0,
                                  m_edgePtsBuff[0], m_edgePtsBuff[1]);
@@ -1187,7 +1189,7 @@ public final class GraphGraphics
     }
 
     { // Render arrow at end of poly path.
-      final Shape arrow1 = computeUntransformedArrow(arrowType1);
+      final Shape arrow1 = computeUntransformedArrow(arrow1Type);
       if (arrow1 != null) {
         m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1, cosTheta1,
                                  m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2],
@@ -1200,9 +1202,9 @@ public final class GraphGraphics
     }
   }
 
-  private final void edgeFullDebug(final byte arrowType0,
+  private final void edgeFullDebug(final byte arrow0Type,
                                    final float arrow0Size,
-                                   final byte arrowType1,
+                                   final byte arrow1Type,
                                    float arrow1Size,
                                    final float edgeThickness,
                                    final float dashLength,
@@ -1217,7 +1219,7 @@ public final class GraphGraphics
       throw new IllegalArgumentException("edgeThickness < 0");
     if (!(dashLength >= 0.0f))
       throw new IllegalArgumentException("dashLength < 0");
-    switch (arrowType0) {
+    switch (arrow0Type) {
     case ARROW_NONE:
       break;
     case ARROW_MONO:
@@ -1227,7 +1229,7 @@ public final class GraphGraphics
       if (anchors.numAnchors() > 0)
         throw new IllegalArgumentException
           ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported for poly edges");
-      if (arrowType1 != arrowType0)
+      if (arrow1Type != arrow0Type)
         throw new IllegalArgumentException
           ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
            "identical");
@@ -1241,13 +1243,13 @@ public final class GraphGraphics
           ("arrow size must be at least as large as edge thickness");
       break;
     default:
-      throw new IllegalArgumentException("arrowType0 is not recognized"); }
-    switch (arrowType1) {
+      throw new IllegalArgumentException("arrow0Type is not recognized"); }
+    switch (arrow1Type) {
     case ARROW_NONE:
       break;
     case ARROW_BIDIRECTIONAL:
     case ARROW_MONO:
-      if (arrowType0 != arrowType1)
+      if (arrow0Type != arrow1Type)
         throw new IllegalArgumentException
           ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
            "identical");
@@ -1261,16 +1263,16 @@ public final class GraphGraphics
           ("arrow size must be at least as large as edge thickness");
       break;
     default:
-      throw new IllegalArgumentException("arrowType1 is not recognized"); }
+      throw new IllegalArgumentException("arrow1Type is not recognized"); }
     if (anchors.numAnchors() > MAX_EDGE_ANCHORS)
       throw new IllegalArgumentException
         ("at most MAX_EDGE_ANCHORS edge anchors can be specified");
   }
 
-  private final void drawSimpleEdgeFull(final byte arrowType0,
+  private final void drawSimpleEdgeFull(final byte arrow0Type,
                                         final float arrow0Size,
                                         final Paint arrow0Paint,
-                                        final byte arrowType1,
+                                        final byte arrow1Type,
                                         final float arrow1Size,
                                         final Paint arrow1Paint,
                                         final float x0, final float y0,
@@ -1286,7 +1288,7 @@ public final class GraphGraphics
     // us makes this check automatically.
     if (len == 0.0d) return;
 
-    if (arrowType0 == ARROW_BIDIRECTIONAL) { // Draw and return.
+    if (arrow0Type == ARROW_BIDIRECTIONAL) { // Draw and return.
       final double a = (6.0d + Math.sqrt(17.0d) / 2.0d) * edgeThickness;
       m_path2d.reset();
       final double f = ((double) arrow0Size) - edgeThickness;
@@ -1315,7 +1317,7 @@ public final class GraphGraphics
       m_g2d.draw(m_path2d);
       return; } // End ARROW_BIDIRECTIONAL.
 
-    if (arrowType0 == ARROW_MONO) { // Draw and return.
+    if (arrow0Type == ARROW_MONO) { // Draw and return.
       m_g2d.setPaint(edgePaint); // We're going to render at least one segment.
       setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
       final double deltaLen = getT(ARROW_DELTA) * arrow0Size;
@@ -1372,10 +1374,10 @@ public final class GraphGraphics
     final double y1Adj;
     final byte simpleSegment;
     { // Render the line segment if necessary.
-      final double t0 = getT(arrowType0) * arrow0Size / len;
+      final double t0 = getT(arrow0Type) * arrow0Size / len;
       x0Adj = t0 * (((double) x1) - x0) + x0;
       y0Adj = t0 * (((double) y1) - y0) + y0;
-      final double t1 = getT(arrowType1) * arrow1Size / len;
+      final double t1 = getT(arrow1Type) * arrow1Size / len;
       x1Adj = t1 * (((double) x0) - x1) + x1;
       y1Adj = t1 * (((double) y0) - y1) + y1;
       // If the vector point0->point1 is pointing opposite to
@@ -1384,8 +1386,8 @@ public final class GraphGraphics
       if ((((double) x1) - x0) * (x1Adj - x0Adj) +
           (((double) y1) - y0) * (y1Adj - y0Adj) > 0.0d) {
         // Must render the line segment.
-        if (arrowType0 == ARROW_NONE &&
-            arrowType1 == ARROW_NONE && dashLength == 0.0f) {
+        if (arrow0Type == ARROW_NONE &&
+            arrow1Type == ARROW_NONE && dashLength == 0.0f) {
           simpleSegment = 1; }
         else { simpleSegment = -1; }
         setStroke(edgeThickness, dashLength,
@@ -1408,7 +1410,7 @@ public final class GraphGraphics
 
     if (simpleSegment < 0 && dashLength == 0.0f) { // Arrow cap at point 0.
       final Shape arrow0Cap = computeUntransformedArrowCap
-        (arrowType0, ((double) arrow0Size) / edgeThickness);
+        (arrow0Type, ((double) arrow0Size) / edgeThickness);
       if (arrow0Cap != null) {
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0Adj, y0Adj);
@@ -1420,7 +1422,7 @@ public final class GraphGraphics
 
     if (simpleSegment < 0 && dashLength == 0.0f) { // Arrow cap at point 1.
       final Shape arrow1Cap = computeUntransformedArrowCap
-        (arrowType1, ((double) arrow1Size) / edgeThickness);
+        (arrow1Type, ((double) arrow1Size) / edgeThickness);
       if (arrow1Cap != null) {
         m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
                                  x1Adj, y1Adj);
@@ -1431,7 +1433,7 @@ public final class GraphGraphics
         m_g2d.setTransform(m_currNativeXform); } }
 
     { // Render arrow at point 0.
-      final Shape arrow0 = computeUntransformedArrow(arrowType0);
+      final Shape arrow0 = computeUntransformedArrow(arrow0Type);
       if (arrow0 != null) {
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0, y0);
@@ -1443,7 +1445,7 @@ public final class GraphGraphics
     }
 
     { // Render arrow at point 1.
-      final Shape arrow1 = computeUntransformedArrow(arrowType1);
+      final Shape arrow1 = computeUntransformedArrow(arrow1Type);
       if (arrow1 != null) {
         m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
                                  x1, y1);
@@ -1462,11 +1464,11 @@ public final class GraphGraphics
    * points which specify the arrow locations.  Note that this path therefore
    * disregards edge thickness and arrow outline.  Use the same parameter
    * values that were used to render corresponding edge.
-   * @param arrowType0 the type of arrow shape used for drawing the arrow
+   * @param arrow0Type the type of arrow shape used for drawing the arrow
    *   at point (x0, y0); this value must be one of the ARROW_*
    *   constants.
    * @param arrow0Size the size of arrow at point (x0, y0).
-   * @param arrowType1 the type of arrow shape used for drawing the arrow
+   * @param arrow1Type the type of arrow shape used for drawing the arrow
    *   at point (x1, y1); this value must be one of the ARROW_*
    *   constants.
    * @param arrow1Size the size of arrow at point (x1, y1).
@@ -1486,9 +1488,9 @@ public final class GraphGraphics
    * @exception IllegalArgumentException if any one of the edge arrow criteria
    *   specified in drawEdgeFull() is not satisfied.
    */
-  public final boolean getEdgePath(final byte arrowType0,
+  public final boolean getEdgePath(final byte arrow0Type,
                                    final float arrow0Size,
-                                   final byte arrowType1,
+                                   final byte arrow1Type,
                                    final float arrow1Size,
                                    final float x0, final float y0,
                                    EdgeAnchors anchors,
@@ -1501,7 +1503,7 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      switch (arrowType0) {
+      switch (arrow0Type) {
       case ARROW_NONE:
       case ARROW_DELTA:
       case ARROW_DIAMOND:
@@ -1510,7 +1512,7 @@ public final class GraphGraphics
         break;
       case ARROW_BIDIRECTIONAL:
       case ARROW_MONO:
-        if (arrowType1 != arrowType0)
+        if (arrow1Type != arrow0Type)
           throw new IllegalArgumentException
             ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
              "identical");
@@ -1519,8 +1521,8 @@ public final class GraphGraphics
             ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
         break;
       default:
-        throw new IllegalArgumentException("arrowType0 is not recognized"); }
-      switch (arrowType1) {
+        throw new IllegalArgumentException("arrow0Type is not recognized"); }
+      switch (arrow1Type) {
       case ARROW_NONE:
       case ARROW_DELTA:
       case ARROW_DIAMOND:
@@ -1529,19 +1531,19 @@ public final class GraphGraphics
         break;
       case ARROW_BIDIRECTIONAL:
       case ARROW_MONO:
-        if (arrowType0 != arrowType1)
+        if (arrow0Type != arrow1Type)
           throw new IllegalArgumentException
             ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
              "identical");
         break;
       default:
-        throw new IllegalArgumentException("arrowType1 is not recognized"); }
+        throw new IllegalArgumentException("arrow1Type is not recognized"); }
       if (anchors.numAnchors() > MAX_EDGE_ANCHORS)
         throw new IllegalArgumentException
           ("at most MAX_EDGE_ANCHORS edge anchors can be specified"); }
 
-    byte arrow0 = arrowType0;
-    byte arrow1 = arrowType1;
+    byte arrow0 = arrow0Type;
+    byte arrow1 = arrow1Type;
     if (arrow0 == ARROW_BIDIRECTIONAL) { // Assume arrow1 is also.
       // If we wanted to start our path where the bidirectional edge
       // actually started, we'd have to pass edge thickness into this method.
@@ -1704,12 +1706,12 @@ public final class GraphGraphics
   private final float[] m_floatBuff = new float[2];
 
   /*
-   * If arrowType0 is ARROW_NONE, arrow0Size should be zero.
-   * If arrowType1 is ARROW_NONE, arrow1Size should be zero.
+   * If arrow0Type is ARROW_NONE, arrow0Size should be zero.
+   * If arrow1Type is ARROW_NONE, arrow1Size should be zero.
    */
-  private final boolean computeCubicPolyEdgePath(final byte arrowType0,
+  private final boolean computeCubicPolyEdgePath(final byte arrow0Type,
                                                  final float arrow0Size,
-                                                 final byte arrowType1,
+                                                 final byte arrow1Type,
                                                  final float arrow1Size,
                                                  final float x0,
                                                  final float y0,
@@ -1763,10 +1765,10 @@ public final class GraphGraphics
       dx /= len; dy /= len; // Normalized.
       m_edgePtsBuff[m_edgePtsCount * 6 - 4] =
         m_edgePtsBuff[m_edgePtsCount * 6 - 2] +
-        dx * arrow1Size * getT(arrowType1);
+        dx * arrow1Size * getT(arrow1Type);
       m_edgePtsBuff[m_edgePtsCount * 6 - 3] =
         m_edgePtsBuff[m_edgePtsCount * 6 - 1] +
-        dy * arrow1Size * getT(arrowType1);
+        dy * arrow1Size * getT(arrow1Type);
       double candX1 = m_edgePtsBuff[m_edgePtsCount * 6 - 4] +
         dx * 2.0d * arrow1Size;
       double candX2 = m_edgePtsBuff[m_edgePtsCount * 6 - 4] +
@@ -1810,8 +1812,8 @@ public final class GraphGraphics
       double dy = m_edgePtsBuff[3] - m_edgePtsBuff[1];
       double len = Math.sqrt(dx * dx + dy * dy);
       dx /= len; dy /= len; // Normalized.
-      double segStartX = m_edgePtsBuff[0] + dx * arrow0Size * getT(arrowType0);
-      double segStartY = m_edgePtsBuff[1] + dy * arrow0Size * getT(arrowType0);
+      double segStartX = m_edgePtsBuff[0] + dx * arrow0Size * getT(arrow0Type);
+      double segStartY = m_edgePtsBuff[1] + dy * arrow0Size * getT(arrow0Type);
       double candX1 = segStartX + dx * 2.0d * arrow0Size;
       double candX2 = segStartX + curveFactor * (m_edgePtsBuff[2] - segStartX);
       if (Math.abs(candX1 - m_edgePtsBuff[0]) >
