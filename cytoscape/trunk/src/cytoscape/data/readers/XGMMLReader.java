@@ -302,13 +302,10 @@ public class XGMMLReader implements GraphReader {
 
 			rootNodes = new ArrayList();
 
-			// Get all nodes and edges as one List object.
-			final List nodesAndEdges = network.getNodeOrEdge();
-
 			// Split the list into two: node and edge list
 			nodes = new ArrayList();
 			edges = new ArrayList();
-			final Iterator it = nodesAndEdges.iterator();
+			final Iterator it = network.getNodeOrEdge().iterator();
 			while (it.hasNext()) {
 				final Object curObj = it.next();
 				if (curObj.getClass() == cytoscape.generated2.impl.NodeImpl.class) {
