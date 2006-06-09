@@ -104,6 +104,12 @@ public class CyAttributesUtils
               if (l != null && l.size() > 0) {
                 returnThis.put(attrNames[i], l.get(0)); 
 	      } }
+			else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
+				Map m = attrs.getAttributeMap(canonicalName, attrNames[i]);
+				if (m != null && m.size() > 0){
+					returnThis.put(attrNames[i], m);
+				}
+			}
             else if (type == CyAttributes.TYPE_BOOLEAN) {
               returnThis.put(attrNames[i],attrs.getBooleanAttribute(canonicalName, attrNames[i])); }
             else if (type == CyAttributes.TYPE_INTEGER) {
@@ -137,6 +143,9 @@ public class CyAttributesUtils
             case CyAttributes.TYPE_SIMPLE_MAP:
               cl = Map.class;
               break;
+            case CyAttributes.TYPE_COMPLEX:
+				cl = Object.class;
+				break;
             default:
               cl = null;
         }
