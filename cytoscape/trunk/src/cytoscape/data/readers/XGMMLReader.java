@@ -93,7 +93,8 @@ import cytoscape.util.PercentUtil;
 import cytoscape.visual.LineType;
 
 /**
- * XGMMLReader. This version is Metanode-compatible.
+ * XGMML file reader.<br>
+ * This version is Metanode-compatible.
  * 
  * @version 1.0
  * @since Cytoscape 2.3
@@ -218,8 +219,9 @@ public class XGMMLReader implements GraphReader {
 		try {
 			networkStream = new FileInputStream(fileName);
 		} catch (FileNotFoundException e) {
-			if (taskMonitor != null)
+			if (taskMonitor != null) {
 				taskMonitor.setException(e, e.getMessage());
+			}
 			throw new RuntimeException(e.getMessage());
 		}
 		initialize();
@@ -241,7 +243,9 @@ public class XGMMLReader implements GraphReader {
 		try {
 			this.readXGMML();
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			if (taskMonitor != null) {
+				taskMonitor.setException(e, e.getMessage());
+			}
 		}
 	}
 
@@ -269,7 +273,6 @@ public class XGMMLReader implements GraphReader {
 	private void readXGMML() throws JAXBException, IOException {
 
 		try {
-
 			nodeAttributes = Cytoscape.getNodeAttributes();
 			edgeAttributes = Cytoscape.getEdgeAttributes();
 			networkCyAttributes = Cytoscape.getNetworkAttributes();
@@ -307,7 +310,7 @@ public class XGMMLReader implements GraphReader {
 			edges = new ArrayList();
 			final Iterator it = nodesAndEdges.iterator();
 			while (it.hasNext()) {
-				Object curObj = it.next();
+				final Object curObj = it.next();
 				if (curObj.getClass() == cytoscape.generated2.impl.NodeImpl.class) {
 					nodes.add(curObj);
 				} else {
@@ -316,7 +319,7 @@ public class XGMMLReader implements GraphReader {
 			}
 
 			// Build the network
-			createGraph(network);
+			createGraph();
 
 			// It's not generally a good idea to catch OutOfMemoryErrors, but
 			// in this case, where we know the culprit (a file that is too
@@ -329,7 +332,7 @@ public class XGMMLReader implements GraphReader {
 			nodeIDMap = null;
 			nodeMap = null;
 			System.gc();
-			throw new GMLException(
+			throw new XGMMLException(
 					"Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
 		}
 	}
@@ -341,7 +344,7 @@ public class XGMMLReader implements GraphReader {
 	 *            Graph object created by JAXB.
 	 * 
 	 */
-	private void createGraph(final Graph network) {
+	private void createGraph() {
 		
 		// Check capacity
 		Cytoscape.ensureCapacity(nodes.size(), edges.size());
@@ -366,10 +369,10 @@ public class XGMMLReader implements GraphReader {
 			}
 
 			// Get a node object (NOT a giny node. XGMML node!)
-			cytoscape.generated2.Node curNode = (cytoscape.generated2.Node) nodes
+			final cytoscape.generated2.Node curNode = (cytoscape.generated2.Node) nodes
 					.get(idx);
-			String nodeType = curNode.getName();
-			String label = (String) curNode.getLabel();
+			final String nodeType = curNode.getName();
+			final String label = (String) curNode.getLabel();
 
 			readAttributes(label, curNode.getAtt(), NODE);
 
@@ -377,26 +380,18 @@ public class XGMMLReader implements GraphReader {
 
 			if (nodeType != null) {
 				if (nodeType.equals("metaNode")) {
-
-					// List of child nodes under this parent node.
-					List children = null;
-
 					final Iterator it = curNode.getAtt().iterator();
 					while (it.hasNext()) {
-						Att curAttr = (Att) it.next();
-
+						final Att curAttr = (Att) it.next();
 						if (curAttr.getName().equals("metanodeChildren")) {
-							Graph subgraph = (Graph) curAttr.getContent()
-									.get(0);
-							children = subgraph.getNodeOrEdge();
-							metanodeMap.put(label, children);
+							metanodeMap.put(label, ((Graph) curAttr.getContent()
+									.get(0)).getNodeOrEdge());
 						}
 					}
 				}
-
 			}
 			if (nodeNameSet.add(curNode.getId())) {
-				Node node = (Node) Cytoscape.getCyNode(label, true);
+				final Node node = (Node) Cytoscape.getCyNode(label, true);
 
 				giny_nodes.add(node.getRootGraphIndex());
 				nodeIDMap.put(idx, node.getRootGraphIndex());
@@ -429,7 +424,7 @@ public class XGMMLReader implements GraphReader {
 				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(2,
 						idx, edges.size()));
 			}
-			cytoscape.generated2.Edge curEdge = (cytoscape.generated2.Edge) edges
+			final cytoscape.generated2.Edge curEdge = (cytoscape.generated2.Edge) edges
 					.get(idx);
 
 			if (gml_id2order.containsKey(curEdge.getSource())
@@ -502,15 +497,12 @@ public class XGMMLReader implements GraphReader {
 		edgeNameSet = null;
 
 		if (metanodeMap.size() != 0) {
-
-			final Set keySet = metanodeMap.keySet();
-			final Iterator it = keySet.iterator();
+			final Iterator it = metanodeMap.keySet().iterator();
 			while (it.hasNext()) {
 				final String key = (String) it.next();
 				createMetaNode(key, (List) metanodeMap.get(key));
 			}
 		}
-
 	}
 
 	/**
@@ -522,7 +514,7 @@ public class XGMMLReader implements GraphReader {
 	private CyNode createMetaNode(final String name, final List children) {
 		final Iterator it = children.iterator();
 
-		int[] childrenNodeIndices = new int[children.size()];
+		final int[] childrenNodeIndices = new int[children.size()];
 		int counter = 0;
 
 		while (it.hasNext()) {
@@ -635,20 +627,17 @@ public class XGMMLReader implements GraphReader {
 		int tempid = 0;
 		NodeView view = null;
 
-		for (Iterator it = nodes.iterator(); it.hasNext();) {
+		for (final Iterator it = nodes.iterator(); it.hasNext();) {
 			// Extract a node from JAXB-generated object
-			cytoscape.generated2.Node curNode = (cytoscape.generated2.Node) it
+			final cytoscape.generated2.Node curNode = (cytoscape.generated2.Node) it
 					.next();
 
 			label = curNode.getLabel();
 			final Graphics graphics = (Graphics) curNode.getGraphics();
 
 			nodeGraphicsMap.put(label, graphics);
-
-			int nodeID = Cytoscape.getRootGraph().getNode(label)
-					.getRootGraphIndex();
-
-			view = myView.getNodeView(nodeID);
+			view = myView.getNodeView(Cytoscape.getRootGraph().getNode(label)
+					.getRootGraphIndex());
 
 			if (label != null && view != null) {
 				view.getLabel().setText(label);
@@ -673,7 +662,7 @@ public class XGMMLReader implements GraphReader {
 	 *            Actual node view for the target node.
 	 * 
 	 */
-	private void layoutNodeGraphics(final Graphics graphics, NodeView nodeView) {
+	private void layoutNodeGraphics(final Graphics graphics, final NodeView nodeView) {
 
 		// Location and size of the node
 		double x, y, h, w;
@@ -807,25 +796,23 @@ public class XGMMLReader implements GraphReader {
 	 * @param graphics
 	 * @param edgeView
 	 */
-	private void layoutEdgeGraphics(final Graphics graphics, EdgeView edgeView) {
+	private void layoutEdgeGraphics(final Graphics graphics, final EdgeView edgeView) {
 
 		edgeView.setStrokeWidth(((Number) graphics.getWidth()).floatValue());
 		edgeView.setUnselectedPaint(getColor((String) graphics.getFill()));
 
 		if (graphics.getAtt().size() != 0) {
-			// This object includes non-GML graphics property.
-			Att localGraphics = (Att) graphics.getAtt().get(0);
-
-			Iterator it = localGraphics.getContent().iterator();
+			
+			final Iterator it = ((Att) graphics.getAtt().get(0)).getContent().iterator();
 
 			// Extract edge graphics attributes one by one.
 			while (it.hasNext()) {
 				final Object obj = it.next();
 
 				if (obj.getClass() == AttImpl.class) {
-					AttImpl edgeGraphics = (AttImpl) obj;
-					String attName = edgeGraphics.getName();
-					String value = edgeGraphics.getValue();
+					final AttImpl edgeGraphics = (AttImpl) obj;
+					final String attName = edgeGraphics.getName();
+					final String value = edgeGraphics.getValue();
 
 					if (attName.equals("sourceArrow")) {
 						edgeView.setSourceEdgeEnd(Integer.parseInt(value));
@@ -852,9 +839,7 @@ public class XGMMLReader implements GraphReader {
 						while (handleIt.hasNext()) {
 							final Object curObj = handleIt.next();
 							if (curObj.getClass() == AttImpl.class) {
-
-								AttImpl handle = (AttImpl) curObj;
-								Iterator pointIt = handle.getContent()
+								Iterator pointIt = ((AttImpl) curObj).getContent()
 										.iterator();
 								double x = 0;
 								double y = 0;
@@ -862,7 +847,7 @@ public class XGMMLReader implements GraphReader {
 								while (pointIt.hasNext()) {
 									final Object coordObj = pointIt.next();
 									if (coordObj.getClass() == AttImpl.class) {
-										AttImpl point = (AttImpl) coordObj;
+										final AttImpl point = (AttImpl) coordObj;
 										if (point.getName().equals("x")) {
 											x = Double.parseDouble(point
 													.getValue());
@@ -875,9 +860,7 @@ public class XGMMLReader implements GraphReader {
 									}
 								}
 								if (xFlag == true && yFlag == true) {
-									Point2D handlePoint = new Point2D.Double(x,
-											y);
-									handleList.add(handlePoint);
+									handleList.add(new Point2D.Double(x,y));
 								}
 							}
 						}
@@ -957,8 +940,7 @@ public class XGMMLReader implements GraphReader {
 		final Iterator it = attrList.iterator();
 
 		while (it.hasNext()) {
-			final Object curAtt = it.next();
-			readAttribute(attributes, targetName, (Att) curAtt);
+			readAttribute(attributes, targetName, (Att) it.next());
 		}
 	}
 
@@ -973,7 +955,7 @@ public class XGMMLReader implements GraphReader {
 	 *            the attribute read out of xgmml file
 	 */
 	private void readAttribute(final CyAttributes attributes,
-			final String targetName, Att curAtt) {
+			final String targetName, final Att curAtt) {
 
 		// check args
 		final String dataType = curAtt.getType();
@@ -1040,7 +1022,7 @@ public class XGMMLReader implements GraphReader {
 		// complex type
 		else if (dataType.equals(COMPLEX_TYPE)) {
 			final String attributeName = curAtt.getName();
-			int numKeys = Integer.valueOf((String) curAtt.getValue())
+			final int numKeys = Integer.valueOf((String) curAtt.getValue())
 					.intValue();
 			defineComplexAttribute(attributeName, attributes, curAtt, null, 0,
 					numKeys);
@@ -1133,10 +1115,10 @@ public class XGMMLReader implements GraphReader {
 		final Iterator complexIt = curAtt.getContent().iterator();
 		// interate over this attributes tree
 		while (complexIt.hasNext()) {
-			Object complexItemObj = complexIt.next();
+			final Object complexItemObj = complexIt.next();
 			if (complexItemObj != null
 					&& complexItemObj.getClass() == AttImpl.class) {
-				AttImpl complexItem = (AttImpl) complexItemObj;
+				final AttImpl complexItem = (AttImpl) complexItemObj;
 				// add this key to the keyspace
 				keySpace[keySpaceCount] = createObjectFromAttName(complexItem);
 				// recurse if we still have keys to go
@@ -1259,7 +1241,7 @@ public class XGMMLReader implements GraphReader {
 			String[] parts = className.split("\\.");
 			parts = parts[parts.length - 1].split("Impl");
 
-			String label = parts[0];
+			final String label = parts[0];
 			if (label.startsWith("Date")) {
 				map.put(label, ((Date) entry).getContent().get(0).toString());
 			} else if (label.startsWith("Title")) {
