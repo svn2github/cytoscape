@@ -576,8 +576,8 @@ public class XGMMLWriter {
 			// now lets walk the keys structure and add to its attributes
 			// content
 			thisKeyAttr.getContent().add(
-					walkComplexAttributeStructure(null, thisKeyMap, valTypeStr,
-							dimTypes, 1));
+					walkComplexAttributeStructure(thisKeyAttr, thisKeyMap, valTypeStr,
+												  dimTypes, 1));
 			// this keys attribute should get added to the attribute we wil
 			// return
 			attrToReturn.getContent().add(thisKeyAttr);
@@ -715,6 +715,7 @@ public class XGMMLWriter {
 			Object possibleAttributeValue = complexAttributeStructure.get(key);
 			if (possibleAttributeValue instanceof Map) {
 				// we need to create an instance of Att to return
+				if (attrToReturn != null) parentAttr.getContent().add(attrToReturn);
 				attrToReturn = objFactory.createAtt();
 				// we have a another map
 				attrToReturn.setType(getType(dimTypes[dimTypesIndex]));
