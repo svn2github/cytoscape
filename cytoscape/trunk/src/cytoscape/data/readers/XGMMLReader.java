@@ -1033,10 +1033,10 @@ public class XGMMLReader implements GraphReader {
 	/**
 	 * Determines if attribute name already exists in multihashmap def.
 	 *
-	 * @param CyAttributes -
-	 *            attributes
-	 * @param String  - 
-	 *            attributeName
+	 * @param attributes -
+	 *            CyAttributes ref
+	 * @param attributeName  - 
+	 *            attribute name
 	 *
 	 * @return boolean
 	 */
@@ -1054,7 +1054,6 @@ public class XGMMLReader implements GraphReader {
 		return false;
 	}
 
-
 	/**
 	 * Determines the complex attribute keyspace and defines a cyattribute for
 	 * the complex attribute based on its keyspace.
@@ -1065,7 +1064,7 @@ public class XGMMLReader implements GraphReader {
 	 *            CyAttributes to load
 	 * @param curAtt -
 	 *            the attribute read out of xgmml file
-	 * @param attributeDefintion -
+	 * @param attributeDefinition -
 	 *            byte[] which stores attribute key space definition
 	 * @param attributeDefinitionCount -
 	 *            the number of keys we've discovered so far
