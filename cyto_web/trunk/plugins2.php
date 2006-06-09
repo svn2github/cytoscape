@@ -139,9 +139,9 @@ The networks can be viewed and manipulated in Cytoscape.
 				<td width="20%" valign="top">
 					<b>cPath Plugin</b> <font size="-1">
 						<br>
-						Version: 2 Beta
+						Version: 3 Beta
 						<br>
-						Release Date: November 9, 2004</font>
+						Release Date: June 9, 2006</font>
 				</td>
 				<td width="40%" valign="top">
 					The cPath Plugin enables Cytoscape users to query, retrieve and visualize interactions retrieved from the <a href="http://cbio.mskcc.org/cpath">cPath database</a>.  For a complete list of new features / bug fixes in the Beta 2 release,
@@ -155,14 +155,14 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1, 2.2.
+				Verified to work in 2.0, 2.1, 2.2, 2.3.
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/README.txt">Release Notes</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/README.txt">Release Notes</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/cpath-beta2.tar.gz">Download .tar.gz</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/cpath-beta2.tar.gz">Download .tar.gz</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/cpath-beta2.zip">Download .zip</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/cpath-beta2.zip">Download .zip</a>]
 				</td>
 			</tr>
 			<tr>
@@ -807,9 +807,9 @@ Scardoni.
 				<td width="20%" valign="top">
 					<b>PSI-MI Import/Export Plugin</b><font size="-1">
 						<br>
-						Version: 2
+						Version: 3
 						<br>
-						Release Date: November 8, 2004</font>
+						Release Date: June 9, 2006</font>
 				</td>
 				<td width="40%" valign="top">
 					<p>
@@ -827,14 +827,14 @@ Scardoni.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1, 2.2.
+				Verified to work in 2.0, 2.1, 2.2, 2.3.
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/README.txt">Release Notes</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/README.txt">Release Notes</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/psi-2.tar.gz">Download .tar.gz</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/psi-2.tar.gz">Download .tar.gz</a>]
 <br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/psi-2.zip">Download .zip</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/psi-2.zip">Download .zip</a>]
 
 				</td>
 			</tr>
@@ -946,9 +946,9 @@ The plugin API makes possible to use its functionality from another plugin.
 				<td width="20%" valign="top">
 					<b>SOFT Import Plugin</b><font size="-1">
 						<br>
-						Version: 2
+						Version: 3
 						<br>
-						Release Date: November 8, 2004</font>
+						Release Date: June 9, 2006</font>
 				</td>
 				<td width="40%" valign="top">
 					<p>
@@ -964,14 +964,14 @@ The plugin API makes possible to use its functionality from another plugin.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1, 2.2.
+				Verified to work in 2.0, 2.1, 2.2, 2.3.
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/README.txt">Release Notes</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version3/README.txt">Release Notes</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/soft-2.tar.gz">Download .tar.gz</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version3/soft-2.tar.gz">Download .tar.gz</a>]
 <br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/soft-2.zip">Download .zip</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version3/soft-2.zip">Download .zip</a>]
 
 				</td>
 			</tr>
