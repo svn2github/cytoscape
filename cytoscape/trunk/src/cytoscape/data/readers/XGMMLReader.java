@@ -1021,8 +1021,19 @@ public class XGMMLReader implements GraphReader {
 			final String attributeName = curAtt.getName();
 			final int numKeys = Integer.valueOf((String) curAtt.getValue())
 					.intValue();
-			defineComplexAttribute(attributeName, attributes, curAtt, null, 0,
-					numKeys);
+			boolean definitionExists = false;
+			final MultiHashMapDefinition mhmd = attributes.getMultiHashMapDefinition();
+			for (Iterator defIt = mhmd.getDefinedAttributes(); defIt.hasNext();){
+				String thisDef = (String)defIt.next();
+				if (thisDef != null && thisDef.equals(attributeName)) {
+					definitionExists = true;
+					break;
+				}
+			}
+			if (!definitionExists) {
+				defineComplexAttribute(attributeName, attributes, curAtt, null, 0,
+									   numKeys);
+			}
 			createComplexAttribute(attributeName, attributes, targetName,
 					curAtt, null, 0, numKeys);
 		}
