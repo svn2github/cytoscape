@@ -376,8 +376,8 @@ public class XGMMLWriter {
 						targetNode.setName("base");
 					}
 				} else {
-					targetNode.getAtt().add(createAttribute(id, nodeAttributes,
-							nodeAttNames[i]));
+					Att att = createAttribute(id, nodeAttributes, nodeAttNames[i]);
+					if (att != null) targetNode.getAtt().add(att);
 				}
 			}
 		}
@@ -385,7 +385,8 @@ public class XGMMLWriter {
 		else if (type == EDGE) {
 			// process each attribute type
 			for (int i = 0; i < edgeAttNames.length; i++) {
-				((Edge) target).getAtt().add(createAttribute(id, edgeAttributes, edgeAttNames[i]));
+				Att att = createAttribute(id, edgeAttributes, edgeAttNames[i]);
+				if (att != null) ((Edge) target).getAtt().add(att);
 			}
 		}
 		// process type network
@@ -394,8 +395,8 @@ public class XGMMLWriter {
 			for (int i = 0; i < networkAttNames.length; i++) {
 				// ignore Metadata object.
 				if (!networkAttNames[i].equals(METADATA_ATTR_NAME)) {
-					graph.getAtt().add(createAttribute(id, networkAttributes,
-							networkAttNames[i]));
+					Att att = createAttribute(id, networkAttributes, networkAttNames[i]);
+					if (att != null) graph.getAtt().add(att);
 				}
 			}
 		}
@@ -408,11 +409,9 @@ public class XGMMLWriter {
 	 *            id of node, edge or network
 	 * @param attributes -
 	 *            CyAttributes to load
-	 * @param attNames -
-	 *            ref to attribute names array
-	 * @param attNamesIndex -
-	 *            index into attribute names array
-	 * @return att - Att to return (gets written into xgmml file)
+	 * @param attributeName -
+	 *            attribute name
+	 * @return att - Att to return (gets written into xgmml file - CAN BE NULL)
 	 * 
 	 * @throws JAXBException
 	 */
@@ -534,9 +533,6 @@ public class XGMMLWriter {
 	private Att createComplexAttribute(String id, CyAttributes attributes,
 			String attributeName) throws JAXBException {
 
-		// the attribute to return
-		Att attrToReturn = objFactory.createAtt();
-
 		// get the multihashmap definition
 		MultiHashMap mmap = attributes.getMultiHashMap();
 		MultiHashMapDefinition mmapDef = attributes.getMultiHashMapDefinition();
@@ -544,6 +540,12 @@ public class XGMMLWriter {
 		// get number & types of dimensions
 		byte[] dimTypes = mmapDef
 				.getAttributeKeyspaceDimensionTypes(attributeName);
+
+		// check to see if id has value assigned to attribute
+		if (!objectHasKey(id, attributes, attributeName)) return null;
+
+		// the attribute to return
+		Att attrToReturn = objFactory.createAtt();
 
 		// set top level attribute name, label
 		attrToReturn.setType(COMPLEX_TYPE);
@@ -585,6 +587,32 @@ public class XGMMLWriter {
 
 		// outta here
 		return attrToReturn;
+	}
+
+	/**
+	 * Determines if object has key in multihashmap
+	 *
+	 * @param id -
+	 *            node, edge, network id
+	 * @param attributes -
+	 *            CyAttributes ref
+	 * @param attributeName -
+	 *            attribute name
+	 *
+	 * @return boolean
+	 */
+	private boolean objectHasKey(String id, CyAttributes attributes, String attributeName) {
+
+		MultiHashMap mmap = attributes.getMultiHashMap();
+		for (Iterator keysIt = mmap.getObjectKeys(attributeName); keysIt.hasNext();){
+			String thisKey = (String)keysIt.next();
+			if (thisKey != null && thisKey.equals(id)) {
+				return true;
+			}
+		}
+
+		// outta here
+		return false;
 	}
 
 	/**
