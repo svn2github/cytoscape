@@ -1021,16 +1021,7 @@ public class XGMMLReader implements GraphReader {
 			final String attributeName = curAtt.getName();
 			final int numKeys = Integer.valueOf((String) curAtt.getValue())
 					.intValue();
-			boolean definitionExists = false;
-			final MultiHashMapDefinition mhmd = attributes.getMultiHashMapDefinition();
-			for (Iterator defIt = mhmd.getDefinedAttributes(); defIt.hasNext();){
-				String thisDef = (String)defIt.next();
-				if (thisDef != null && thisDef.equals(attributeName)) {
-					definitionExists = true;
-					break;
-				}
-			}
-			if (!definitionExists) {
+			if (!multihashmapdefExists(attributes, attributeName)) {
 				defineComplexAttribute(attributeName, attributes, curAtt, null, 0,
 									   numKeys);
 			}
@@ -1038,6 +1029,31 @@ public class XGMMLReader implements GraphReader {
 					curAtt, null, 0, numKeys);
 		}
 	}
+
+	/**
+	 * Determines if attribute name already exists in multihashmap def.
+	 *
+	 * @param CyAttributes -
+	 *            attributes
+	 * @param String  - 
+	 *            attributeName
+	 *
+	 * @return boolean
+	 */
+	private boolean multihashmapdefExists(CyAttributes attributes, String attributeName) {
+
+		MultiHashMapDefinition mhmd = attributes.getMultiHashMapDefinition();
+		for (Iterator defIt = mhmd.getDefinedAttributes(); defIt.hasNext();){
+			String thisDef = (String)defIt.next();
+			if (thisDef != null && thisDef.equals(attributeName)) {
+				return true;
+			}
+		}
+
+		// outta here
+		return false;
+	}
+
 
 	/**
 	 * Determines the complex attribute keyspace and defines a cyattribute for
