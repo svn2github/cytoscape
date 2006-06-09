@@ -84,7 +84,7 @@ import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.generated.SessionNote;
 import cytoscape.generated.SessionState;
-import cytoscape.util.ZipMultipleFiles;
+import cytoscape.util.ZipUtil;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -112,11 +112,7 @@ import cytoscape.visual.VisualStyle;
  */
 
 public class CytoscapeSessionWriter {
-	/*
-	 * Thereshold to switch (zip) compression methods.
-	 */
-	public final int COMPRESSION_SWITCH = 20000;
-
+	
 	// Enumerate types (node & edge)
 	public final int NODE = 1;
 	public final int EDGE = 2;
@@ -143,7 +139,7 @@ public class CytoscapeSessionWriter {
 	private final String packageName = "cytoscape.generated";
 
 	// Zip utility to compress/decompress multiple files
-	private ZipMultipleFiles zipUtil;
+	private ZipUtil zipUtil;
 
 	// Property files
 	private File vizProp;
@@ -258,17 +254,14 @@ public class CytoscapeSessionWriter {
 		preparePropFiles();
 
 		// Zip the session into a .cys file.
-		zipUtil = new ZipMultipleFiles(sessionFileName, targetFiles,
+		zipUtil = new ZipUtil(sessionFileName, targetFiles,
 				sessionDirName);
 
-		// Switch compression method based on the size of the network.
-		// This is for performance.
-		if ((Cytoscape.getCyNodesList().size() + Cytoscape.getCyEdgesList()
-				.size()) < COMPRESSION_SWITCH) {
-			zipUtil.compress();
-		} else {
-			zipUtil.compress2();
-		}
+		/*
+		 * Compress the files.
+		 * Change the compression level if necessary.
+		 */
+		zipUtil.compressFast(1, true);
 	}
 	
 	/**

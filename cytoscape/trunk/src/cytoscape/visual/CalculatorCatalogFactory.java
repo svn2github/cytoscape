@@ -56,7 +56,7 @@ import java.util.Set;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.util.FileUtil;
-import cytoscape.util.ZipMultipleFiles;
+import cytoscape.util.ZipUtil;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
@@ -169,7 +169,7 @@ public abstract class CalculatorCatalogFactory {
 						// if its a RESTORED event the vizmap file will be in a
 						// zip file.
 						if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) {
-							InputStream is = ZipMultipleFiles.readFile(
+							InputStream is = ZipUtil.readFile(
 									(String) vizmapSource, ".*vizmap.props");
 							if (is != null)
 								vizmapProps.load(is);
