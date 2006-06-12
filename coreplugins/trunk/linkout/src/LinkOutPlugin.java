@@ -1,5 +1,5 @@
 /*$Id$*/
-//package csplugins.mskcc.doron;
+
 
 package linkout;
 
@@ -60,9 +60,21 @@ public class LinkOutPlugin
     public LinkOutPlugin () {
 
         try{
-            //((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+
+            //Create a Network create event listener
             LinkOutNetworkListener m_listener=new LinkOutNetworkListener();
             Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(m_listener);
+
+            // Create a new ContextMenuListener and register with the CURRENT network.
+            // This deals with cases where networks are loaded before the plugins. For example, when running Cytoscape
+            // from the command line.
+            // Note -  plugins should be loaded before any network - See CytoscapeInit.
+            DGraphView currentNetwork=((DGraphView)Cytoscape.getCurrentNetworkView());
+            if(currentNetwork!=null){
+                LinkOutContextMenuListener menu_listener=new LinkOutContextMenuListener();
+
+                currentNetwork.addNodeContextMenuListener(menu_listener);
+            }
 
         }
         catch (ClassCastException e){
@@ -75,6 +87,9 @@ public class LinkOutPlugin
 
 /*
 $Log$
+Revision 1.4  2006/06/12 19:27:44  betel
+Fixes to bug reports 346-links to missing labels, 637-linkout fix for command line mode
+
 Revision 1.3  2006/05/19 21:51:29  betel
 New implementation of LinkOut with network-view listener
 

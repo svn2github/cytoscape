@@ -1,10 +1,13 @@
 /*$Id$*/
 
-//package csplugins.mskcc.doron;
+
 package linkout;
 
 import cytoscape.*;
 import cytoscape.util.*;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
+
 import java.util.*;
 import giny.view.*;
 import giny.view.NodeView;
@@ -79,7 +82,10 @@ public class LinkOut {
 
                 //node label
                 nodelabel=mynode.getLabel().getText();
-
+                if(nodelabel==null || 0==nodelabel.length()){
+                    CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+                    nodelabel=nodeAttributes.getStringAttribute(mynode.getNode().getIdentifier(),Semantics.CANONICAL_NAME);
+                }
                 //Replace %ID% mark with the node label
                 final String fUrl=url.replaceFirst("%ID%",nodelabel);
 
@@ -296,6 +302,9 @@ public class LinkOut {
 
 /*
 $Log$
+Revision 1.5  2006/06/12 19:27:44  betel
+Fixes to bug reports 346-links to missing labels, 637-linkout fix for command line mode
+
 Revision 1.4  2006/05/23 20:39:42  betel
 Changes for compatibility with latest ding library
 
