@@ -239,6 +239,23 @@ public final class Fung
             returnVal.push(node); } } } }
   }
 
+//   /**
+//    * @exception IllegalStateException if too many custom node shapes are
+//    *   already defined; a little over one hundered custom node shapes can be
+//    *   defined.
+//    */
+//   public final byte defineCustomNodeShape(final double[] coords)
+//   {
+//     if ((coords.length % 2) != 0) {
+//       throw new IllegalArgumentException
+//         ("coords array must be of even length"); }
+//     final float[] fCoords = new float[coords.length];
+//     for (int i = 0; i < coords.length; i++) {
+//       fCoords[i] = (float) coords[i]; }
+//     synchronized (m_lock) {
+      
+//   }
+
   private final class FungDynamicGraph implements DynamicGraph
   {
 
