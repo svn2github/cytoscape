@@ -148,7 +148,9 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu fileMenu, loadSubMenu, saveSubMenu, newSubMenu, newSubMenu2;
 	JMenu editMenu;
 	// JMenuItem undoMenuItem, redoMenuItem;
-	JMenuItem deleteSelectionMenuItem;
+	// AJK 06/07/06: BEGIN
+	//    more deletion functionality to the editor
+//	JMenuItem deleteSelectionMenuItem;
 	JMenu viewMenu, viewSubMenu;
 	JMenu selectMenu;
 	JMenu displayNWSubMenu;
@@ -305,31 +307,34 @@ public class CyMenus implements GraphViewChangeListener {
 
 	}
 
-	/**
-	 * Called when the window switches to edit mode, enabling the menu option
-	 * for deleting selected objects.
-	 * 
-	 * Again, the keeper of the edit modes should probably get a reference to
-	 * the menu item and manage its state.
-	 */
-	public void enableDeleteSelectionMenuItem() {
-		if (deleteSelectionMenuItem != null) {
-			deleteSelectionMenuItem.setEnabled(true);
-		}
-	}
-
-	/**
-	 * Called when the window switches to read-only mode, disabling the menu
-	 * option for deleting selected objects.
-	 * 
-	 * Again, the keeper of the edit modes should probably get a reference to
-	 * the menu item and manage its state.
-	 */
-	public void disableDeleteSelectionMenuItem() {
-		if (deleteSelectionMenuItem != null) {
-			deleteSelectionMenuItem.setEnabled(false);
-		}
-	}
+	// AJK: 06/07/06 BEGIN
+	//    move delete functionality to the editor
+//	/**
+//	 * Called when the window switches to edit mode, enabling the menu option
+//	 * for deleting selected objects.
+//	 * 
+//	 * Again, the keeper of the edit modes should probably get a reference to
+//	 * the menu item and manage its state.
+//	 */
+//	public void enableDeleteSelectionMenuItem() {
+//		if (deleteSelectionMenuItem != null) {
+//			deleteSelectionMenuItem.setEnabled(true);
+//		}
+//	}
+//
+//	/**
+//	 * Called when the window switches to read-only mode, disabling the menu
+//	 * option for deleting selected objects.
+//	 * 
+//	 * Again, the keeper of the edit modes should probably get a reference to
+//	 * the menu item and manage its state.
+//	 */
+//	public void disableDeleteSelectionMenuItem() {
+//		if (deleteSelectionMenuItem != null) {
+//			deleteSelectionMenuItem.setEnabled(false);
+//		}
+//	}
+	// AJK: 06/07/06 END
 
 	/**
 	 * Enables the menu items related to the visual mapper if the argument is
@@ -929,7 +934,8 @@ public class CyMenus implements GraphViewChangeListener {
 				.setToolTipText("Zoom out to display all of current Network");
 		zoomDisplayAllButton.setBorderPainted(false);
 
-		// toolBar.addSeparator();
+		 toolBar.addSeparator();
+		
 
 		showAllButton = toolBar.add(new ShowAllAction());
 		showAllButton.setIcon(new ImageIcon(getClass().getResource(
@@ -947,12 +953,12 @@ public class CyMenus implements GraphViewChangeListener {
 		toolBar.addSeparator();
 
 		toolBar.addSeparator();
-
-		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
-		vizButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/color_wheel36.gif")));
-		vizButton.setToolTipText("Set Visual Style");
-		vizButton.setBorderPainted(false);
+		
+				vizButton = toolBar.add(new SetVisualPropertiesAction(false));
+				vizButton.setIcon(new ImageIcon(getClass().getResource(
+						"images/new/color_wheel36.gif")));
+				vizButton.setToolTipText("Set Visual Style");
+				vizButton.setBorderPainted(false);
 
 	}// createToolBar
 
@@ -977,8 +983,12 @@ public class CyMenus implements GraphViewChangeListener {
 		hb.enableHelp(zoomOutButton, "toolbar-zoom", null);
 		hb.enableHelp(zoomSelectedButton, "toolbar-zoom", null);
 		hb.enableHelp(zoomDisplayAllButton, "toolbar-zoom", null);
-		hb.enableHelp(showAllButton, "toolbar-hide", null);
-		hb.enableHelp(hideSelectedButton, "toolbar-hide", null);
+		// AJK: 06/07/06 BEGIN
+		//    move HIDE functionality to editor
+//		hb.enableHelp(showAllButton, "toolbar-hide", null);
+//		hb.enableHelp(hideSelectedButton, "toolbar-hide", null);
+		// AJK: 06/07/06 END
+		
 		// hb.enableHelp(annotationButton, "toolbar-annotate", null);
 		hb.enableHelp(vizButton, "toolbar-setVisProps", null);
 		*/

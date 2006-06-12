@@ -73,6 +73,8 @@ public class UndoManager   {
     System.out.println( "UndoManager initialized" );
 
   }
+  
+  
 
   public  void addEdit ( UndoableEdit edit ) {
     undo.addEdit( edit );
@@ -80,6 +82,17 @@ public class UndoManager   {
     redoAction.update();
 	Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, 
 			Cytoscape.getCurrentNetwork());
+  }
+  
+  /**
+   * called when a network view switches
+   *
+   */
+  public void discardAllEdits ()
+  {
+	  undo.discardAllEdits();
+	  undoAction.update();
+	  redoAction.update();
   }
 
   protected class UndoAction extends AbstractAction {
