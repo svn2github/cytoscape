@@ -528,7 +528,7 @@ public final class GraphGraphics
   }
 
   // This member variable only to be used from within defineCustomNodeShape().
-  private byte m_nextCustomShapeType = s_last_shape + 1;
+  private byte m_lastCustomShapeType = s_last_shape;
 
   /**
    * The custom node shape that is defined is a polygon specified
@@ -650,11 +650,47 @@ public final class GraphGraphics
 
     // polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
     // that passes all of the criteria.
-    if (m_nextCustomShapeType < 0)
+    final byte nextCustomShapeType = (byte) (m_lastCustomShapeType + 1);
+    if (nextCustomShapeType < 0)
       throw new IllegalStateException
         ("too many custom node shapes are already defined");
-    m_customShapes.put(new Byte(m_nextCustomShapeType), polyCoords);
-    return m_nextCustomShapeType++;
+    m_lastCustomShapeType++;
+    m_customShapes.put(new Byte(nextCustomShapeType), polyCoords);
+    return nextCustomShapeType;
+  }
+
+  /**
+   * Determines whether the specified shape is either a built-in
+   * node shape or a custom defined node shape.
+   */
+  public final boolean nodeShapeExists(final byte shape)
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher"); }
+    return shape >= 0 && shape <= m_lastCustomShapeType;
+  }
+
+  /**
+   * Returns the vertices of a previously defined custom node shape.  The
+   * polygon will be normalized to fit within the [-0.5, 0.5] x [-0.5, 0.5]
+   * square.  Returns null if specified shape is not a previously defined
+   * custom shape.
+   */
+  public final float[] getCustomNodeShape(final byte customShape)
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher"); }
+    final Object o = m_customShapes.get(new Byte(customShape));
+    if (o == null) return null;
+    final double[] dCoords = (double[]) o;
+    final float[] returnThis = new float[dCoords.length];
+    for (int i = 0; i < returnThis.length; i++) {
+      returnThis[i] = (float) dCoords[i]; }
+    return returnThis;
   }
 
   /**
@@ -673,14 +709,14 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher"); }
     // I define this error check outside the scope of m_debug because
     // clobbering existing custom node shape definitions could be major.
-    if (m_nextCustomShapeType != s_last_shape + 1)
+    if (m_lastCustomShapeType != s_last_shape)
       throw new IllegalStateException
         ("a custom node shape is already defined in this GraphGraphics");
     final Iterator oldEntries = grafx.m_customShapes.entrySet().iterator();
     while (oldEntries.hasNext()) {
       final Map.Entry entry = (Map.Entry) oldEntries.next();
       m_customShapes.put(entry.getKey(), entry.getValue());
-      m_nextCustomShapeType++; }
+      m_lastCustomShapeType++; }
   }
 
   /*
