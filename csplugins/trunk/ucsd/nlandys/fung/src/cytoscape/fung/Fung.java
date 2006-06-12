@@ -19,7 +19,7 @@ import java.awt.geom.Rectangle2D;
 public final class Fung
 {
 
-  public static final int CUSTOM_SHAPE_MAX_VERTICES =
+  public static final int CUSTOM_NODE_SHAPE_MAX_VERTICES =
     GraphGraphics.CUSTOM_SHAPE_MAX_VERTICES;
 
   final Object m_lock = new Object();
@@ -276,7 +276,7 @@ public final class Fung
    * @return the node shape identifier to be used in future calls to
    *   NodeView.setShape().
    * @exception IllegalArgumentException if any of the constraints are not met,
-   *   or if the specified polygon has more than CUSTOM_SHAPE_MAX_VERTICES
+   *   or if the specified polygon has more than CUSTOM_NODE_SHAPE_MAX_VERTICES
    *   vertices.
    * @exception IllegalStateException if too many custom node shapes are
    *   already defined; a little over one hundered custom node shapes can be
