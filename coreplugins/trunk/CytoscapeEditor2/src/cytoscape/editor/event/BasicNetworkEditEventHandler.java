@@ -8,7 +8,6 @@ import ding.view.DGraphView;
 import ding.view.InnerCanvas;
 import edu.umd.cs.piccolo.nodes.PPath;
 import giny.model.Node;
-import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -407,7 +406,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		CyEdge myEdge = _caller.addEdge(source_node, target_node,
 				cytoscape.data.Semantics.INTERACTION,
 				// "default", true, this.DEFAULT_EDGE);
-				"default", true, (this.getEdgeAttributeValue() != null) ? this
+				(this.getEdgeAttributeValue() != null) ? this
+						.getEdgeAttributeValue() : this.DEFAULT_EDGE,
+				 true, (this.getEdgeAttributeValue() != null) ? this
 						.getEdgeAttributeValue() : this.DEFAULT_EDGE);
 
 		// Cytoscape.getCurrentNetwork().restoreEdge(myEdge);

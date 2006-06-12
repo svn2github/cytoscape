@@ -254,6 +254,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 		Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
 		// AJK: 05/15/06 END
 
+		
 		return cn;
 	}
 	
@@ -280,37 +281,40 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 		{
 
 			final NodeView nv = (NodeView) nodeView;
-			if (!menuItemExists(menu, "Rename (reset identifier)"))
-			{
-				menu.add(new AbstractAction("Rename (reset identifier)") {
-					public void actionPerformed(ActionEvent e) {
-						Node node = nv.getNode();
-						String oldId = node.getIdentifier();
-						String newId = JOptionPane.showInputDialog(
-								Cytoscape.getDesktop(), "Please enter a new identifier for this node",
-								oldId);
-						if ((newId != null) && !(newId.equals(oldId)))
-						{
-	     					node.setIdentifier(newId);
-	     					CytoscapeEditorManager.resetAttributes(
-	     							oldId, newId, CytoscapeEditorManager.nodeAttribs);
-	     					// reset cannonical name and common name to newId
-	     					//    later this needs to change to Label?
-	     					// AJK: 05/09/06 BEGIN
-	     					//    use label
+
+			// AJK: 06/08/06 BEGIN
+			//      don't allow reset of the ID field
+			//			if (!menuItemExists(menu, "Rename (reset identifier)"))
+//			{
+//				menu.add(new AbstractAction("Rename (reset identifier)") {
+//					public void actionPerformed(ActionEvent e) {
+//						Node node = nv.getNode();
+//						String oldId = node.getIdentifier();
+//						String newId = JOptionPane.showInputDialog(
+//								Cytoscape.getDesktop(), "Please enter a new identifier for this node",
+//								oldId);
+//						if ((newId != null) && !(newId.equals(oldId)))
+//						{
+//	     					node.setIdentifier(newId);
+//	     					CytoscapeEditorManager.resetAttributes(
+//	     							oldId, newId, CytoscapeEditorManager.nodeAttribs);
+//	     					// reset cannonical name and common name to newId
+//	     					//    later this needs to change to Label?
+//	     					// AJK: 05/09/06 BEGIN
+//	     					//    use label
+////	     					CytoscapeEditorManager.nodeAttribs.setAttribute(
+////	     							newId, "canonicalName", newId);
+////	    					CytoscapeEditorManager.nodeAttribs.setAttribute(
+////	     							newId, "commonName", newId);
 //	     					CytoscapeEditorManager.nodeAttribs.setAttribute(
-//	     							newId, "canonicalName", newId);
-//	    					CytoscapeEditorManager.nodeAttribs.setAttribute(
-//	     							newId, "commonName", newId);
-	     					CytoscapeEditorManager.nodeAttribs.setAttribute(
-	     							newId, Semantics.LABEL, newId);
-	     					Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, 
-	     							Cytoscape.getCurrentNetwork());
-						}
-					}
-				});
-				menu.addSeparator();				
-			}
+//	     							newId, Semantics.LABEL, newId);
+//	     					Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, 
+//	     							Cytoscape.getCurrentNetwork());
+//						}
+//					}
+//				});
+//				menu.addSeparator();				
+//			}
 			
 			if (!menuItemExists(menu, "Delete Selected Nodes and Edges"))
 			{

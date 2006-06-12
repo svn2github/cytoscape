@@ -7,12 +7,15 @@ package cytoscape.editor.actions;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
+import javax.swing.undo.AbstractUndoableEdit;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.actions.GinyUtils;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 import edu.umd.cs.piccolo.PNode;
 import giny.view.EdgeView;
@@ -26,8 +29,8 @@ import giny.view.NodeView;
  * @version 1.0
  *  
  */
-public class DeleteAction extends // CytoscapeAction {
-                                  AbstractAction {
+public class DeleteAction extends  CytoscapeAction {
+//                                 AbstractAction {
 	private static Image _my_icon;
 
 	//~ Instance fields
@@ -43,7 +46,7 @@ public class DeleteAction extends // CytoscapeAction {
 	 * action for deleting selected Cytoscape nodes and edges
 	 */
 	public DeleteAction() {
-		super("Delete Selected Nodes and Edges");
+		super("Remove Selected Nodes and Edges");
 	}
 
 	/**
@@ -54,7 +57,7 @@ public class DeleteAction extends // CytoscapeAction {
 	 *            the object to be deleted
 	 */
 	public DeleteAction(Object obj) {
-		super("Delete Selected Nodes and Edges");
+		super("Remove Selected Nodes and Edges");
 		_cyObj = obj;
 	}
 
@@ -168,64 +171,64 @@ public class DeleteAction extends // CytoscapeAction {
 //		CytoscapeEditorManager.getEdgeClipBoard().elements(edges);
 //		CytoscapeEditorManager.setNetworkClipBoard(cyNet.getIdentifier());
 
-//		CytoscapeEditorManager.addEdit(new AbstractUndoableEdit() {
-//
-//			final String network_id = cyNet.getIdentifier();
-//
-//			public String getPresentationName() {
-//				// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
-////				return "Delete";
-//				return  "Delete";
-//			}
-//
-//			public String getRedoPresentationName() {
-//				if (edges.length == 0)
-//					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
-//					return "Redo: Deleted Nodes";
-////					return " ";
-//				else
-//					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
-//					return "Redo: Deleted Nodes and Edges";
-////					return " ";
-//		}
-//
-//			public String getUndoPresentationName() {
-//
-//				if (edges.length == 0)
-//					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
-//					return "Undo: Deleted Nodes";
-////					return null;
-//				else
-//					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
-//					return "Undo: Deleted Nodes and Edges";
-////					return null;
-//			}
-//
-//			public void redo() {
-//				super.redo();
-//				// removes the removed nodes and edges from the network
-//				CyNetwork network = Cytoscape.getNetwork(network_id);
-//				if (network != null) {
-//					network.hideEdges(edges);
-//					network.hideNodes(nodes);
-//					CytoscapeEditorManager.getNodeClipBoard().elements(nodes);
-//					CytoscapeEditorManager.getEdgeClipBoard().elements(edges); // sets elements
-//
-//				}
-//
-//			}
-//
-//			public void undo() {
-//				super.undo();
-//				CyNetwork network = Cytoscape.getNetwork(network_id);
-//				if (network != null) {
-//					network.restoreNodes(nodes);
-//					network.restoreEdges(edges);
-//					
-//				}
-//			}
-//
-//		});
+		CytoscapeEditorManager.addEdit(new AbstractUndoableEdit() {
+
+			final String network_id = cyNet.getIdentifier();
+
+			public String getPresentationName() {
+				// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+//				return "Delete";
+				return  "Remove";
+			}
+
+			public String getRedoPresentationName() {
+				if (edges.length == 0)
+					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+					return "Redo: Removed Nodes";
+//					return " ";
+				else
+					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+					return "Redo: Removed Nodes and Edges";
+//					return " ";
+		}
+
+			public String getUndoPresentationName() {
+
+				if (edges.length == 0)
+					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+					return "Undo: Removed Nodes";
+//					return null;
+				else
+					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+					return "Undo: Removed Nodes and Edges";
+//					return null;
+			}
+
+			public void redo() {
+				super.redo();
+				// removes the removed nodes and edges from the network
+				CyNetwork network = Cytoscape.getNetwork(network_id);
+				if (network != null) {
+					network.hideEdges(edges);
+					network.hideNodes(nodes);
+					CytoscapeEditorManager.getNodeClipBoard().elements(nodes);
+					CytoscapeEditorManager.getEdgeClipBoard().elements(edges); // sets elements
+
+				}
+
+			}
+
+			public void undo() {
+				super.undo();
+				CyNetwork network = Cytoscape.getNetwork(network_id);
+				if (network != null) {
+					network.restoreNodes(nodes);
+					network.restoreEdges(edges);
+					GinyUtils.unHideAll( cytoscape.Cytoscape.getCurrentNetworkView());					
+				}
+			}
+
+		});
 
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNet);
 

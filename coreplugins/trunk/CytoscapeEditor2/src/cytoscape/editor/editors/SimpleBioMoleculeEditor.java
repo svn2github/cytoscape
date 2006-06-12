@@ -106,12 +106,20 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		else
 		{
 		
+		System.out.println("Calling defineVisualStyle for: " + vizStyle);
 			mpbv.defineVisualStyle(vizStyle, manager, catalog);
 		}
 
 		// AJK: 09/29/06 END
 
-		shapePalette = new ShapePalette();
+		// AJK: 06/10/06 BEGIN
+		//     no longer rebuilding shape palette, just its shape pane
+//		shapePalette = new ShapePalette();
+		shapePalette = 
+			CytoscapeEditorManager.getCurrentShapePalette();
+			shapePalette.clear();
+			// AJK: 06/10/06 END
+
 		String controllingNodeAttribute = CytoscapeEditorManager
 				.getControllingNodeAttribute(this);
 		String controllingEdgeAttribute = CytoscapeEditorManager

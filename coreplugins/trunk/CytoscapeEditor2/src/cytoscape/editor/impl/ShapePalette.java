@@ -33,6 +33,7 @@ import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.actions.DeleteAction;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 
 
 
@@ -70,7 +71,7 @@ public class ShapePalette extends JPanel
 	// AJK: 12/06/05 put the help text in a scroll pane, so that it doesn't truncate
 	protected JScrollPane helpScrollPane;
 	
-	private static final String ICONS_REL_LOC = "images/";
+	private static final String ICONS_REL_LOC = "../editors/images/";
 
     private JButton deleteButton, undoButton, redoButton;
     private ImageIcon deleteIcon, undoIcon, redoIcon;
@@ -131,12 +132,14 @@ public class ShapePalette extends JPanel
         // AJK: 12/05/05 BEGIN
         //     put the help text in a scrollPane so that it doesn't truncate        
 //        _controlPane.add (instructionsArea);
-        helpScrollPane = new JScrollPane (instructionsArea);
-        _controlPane.add(helpScrollPane);
+        // AJK: 06/06/06 BEGIN
+        //    forget the instructions area.  Use it for toolbar.
+        //    just put instructions as tooltips
+//        helpScrollPane = new JScrollPane (instructionsArea);
+//        _controlPane.add(helpScrollPane);
         
         
-        // AJK: 10/24/05 comment this out, moving undo controls into Cytoscape
-//        _controlPane.add(buildEditControlsPanel());
+      
         
         
         scrollPane.setBorder(BorderFactory.createEtchedBorder());
@@ -150,7 +153,11 @@ public class ShapePalette extends JPanel
 				    - instructionsArea.getPreferredSize().height - 5));
         
        _controlPane.add (scrollPane);
-	      
+	
+       // AJK: 10/24/05 comment this out, moving undo controls into Cytoscape
+//       _controlPane.add(buildEditControlsPanel());
+    
+       
         CytoscapeEditorManager.setCurrentShapePalette(this);
         CyNetworkView view = Cytoscape.getCurrentNetworkView();
         CytoscapeEditorManager.setShapePaletteForView(view, this);
@@ -160,7 +167,13 @@ public class ShapePalette extends JPanel
 		this.setBackground(Cytoscape.getDesktop().getBackground());
 		this.setVisible(true);	
 		
+		
 	
+	}
+	
+	public void clear ()
+	{
+		_shapePane.removeAll();
 	}
   
 	
@@ -172,19 +185,24 @@ public class ShapePalette extends JPanel
 
 	        Border       blackline = BorderFactory.createLineBorder (Color.black);
 	        TitledBorder title = BorderFactory.createTitledBorder (blackline,
-	                                                               "Delete/Undo/Redo");
+	                                                               "Controls");
 	        editControlsPanel.setBorder (title);
 
 			deleteButton = new JButton ();
 			deleteButton.setAction(new DeleteAction());
+			deleteButton.setLabel(null);
 			deleteIcon = new ImageIcon(getClass().getResource(
-					ICONS_REL_LOC + "deleteIcon.gif"));
+					ICONS_REL_LOC + "delete36.gif"));
 			deleteButton.setIcon(deleteIcon);
-			deleteButton.setToolTipText("Delete Selected Nodes and Edges");
+			deleteButton.setToolTipText("Remove Selected Nodes and Edges");
 			editControlsPanel.add(deleteButton);
 
 //			deleteButton.setDisabledIcon(new ImageIcon(getClass()
 //					.getResource(ICONS_REL_LOC + "DisabledUpLeftWhite.gif")));
+			
+			// AJK: 06/07/06 BEGIN
+			//    comment out buttons for undo/redo, 
+			/*
 
 			undoButton = new JButton();
 			// AJK: 10/21/05 BEGIN
@@ -211,6 +229,8 @@ public class ShapePalette extends JPanel
 					ICONS_REL_LOC + "redo.gif"));
 			redoButton.setIcon(redoIcon);
 			redoButton.setToolTipText("redo");
+			*/
+			
 	        return editControlsPanel;   
 	    }
 
@@ -233,7 +253,7 @@ public class ShapePalette extends JPanel
 		
 		_shapeMap.put(cytoShape.getTitle(), cytoShape);
 
-		
+		 
 		// AJK: 11/12/05 BEGIN
 		//    add mouseAdaptor so that we can initiate DnD without having to first select shape
 //		MouseListener ml = new MouseAdapter() {
@@ -267,15 +287,19 @@ public class ShapePalette extends JPanel
 		
 		// AJK: 05/25/06 BEGIN
 		//     store and restore current tab in WEST Cytopanel
-		int currentCytoPanelIdx = 
-			Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex();
+		// AJK: 06/05/06 comment this out to deal with threading problem
+//		int currentCytoPanelIdx = 
+//			Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex();
 		
 		// AJK: 05/25/06 END
 		
-		
-		// remove old existing editor palette from Cytopanel and replace with new one
+		/*
+		// remove old existing editor palette from and replace with new one
         int idx = Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent("Editor");
-        System.out.println ("index of current palette = " + idx);
+//        System.out.println ("index of current palette = " + idx);
+  
+//        boolean editorTabSelected = (idx == currentCytoPanelIdx);
+        
         if (idx >= 0)
         {
         	Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).remove(idx);
@@ -283,10 +307,26 @@ public class ShapePalette extends JPanel
         }
 		
 		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).add( "Editor", this);
-		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).setSelectedIndex(
-				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent(this));
-		System.out.println ("Set new selected component on Cytopanel: " +
-				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).getSelectedComponent());
+		*/
+		// AJK: 06/10/06 BEGIN
+		//     select editor tab if it was previously selected
+//		if (editorTabSelected)
+//		{
+//			Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).setSelectedIndex(
+//			Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent("Editor"));
+//			
+//		}
+		// AJK: 06/10/06 END
+        // AJK: 06/05/06 BEGIN 
+		//      comment this out; don't switch CytoPanels, just switch the palette
+		//		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).setSelectedIndex(
+//				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent(this));
+//		System.out.println ("Set new selected component on Cytopanel: " +
+//				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).getSelectedComponent());
+//				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).getSelectedIndex());
+	    // AJK: 06/05/06 END
+		
+		// 
 		
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		CytoscapeEditorManager.setShapePaletteForView(view, this);
@@ -317,8 +357,16 @@ public class ShapePalette extends JPanel
 		
 		// AJK: 05/25/06 BEGIN
 		//     store and restore current tab in WEST Cytopanel
-		 
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(currentCytoPanelIdx);
+		//     unless we are setting up a new editor
+		// AJK: 06/05/06 BEGIN
+		//      don't switch CytoPanels, just change palette
+//		if (!CytoscapeEditorManager.isSettingUpEditor())
+//		{
+//			Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(currentCytoPanelIdx);
+//
+//		}
+		
+		// AJK: 06/05/06 END
 		
 		// AJK: 05/25/06 END	
 

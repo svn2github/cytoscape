@@ -105,8 +105,27 @@ public class BasicCytoShapeEntity extends JComponent implements
 		}
 
 		_cytoShape = new JLabel(image);
-		_cytoShape.setToolTipText(title);
-		this.setToolTipText(title);
+//		_cytoShape.setToolTipText(title);
+		
+		// AJK: 06/06/06 BEGIN
+		//    set tooltip text to be an instruction for how to add node or edge
+//		this.setToolTipText(title);
+		if (this.attributeName != null)
+		{
+			if (this.attributeName.equals("NODE_TYPE"))
+			{
+				_cytoShape.setToolTipText("To add a node to a network," + "\n" +
+						"drag and drop a shape" + "\n" + "from the palette onto the canvas.");
+			}
+			else if (this.attributeName.equals("EDGE_TYPE"))
+			{
+				_cytoShape.setToolTipText("To connect two nodes with an edge, " + "\n" +  
+				"drag and drop the arrow onto a node" + "\n" + "on the canvas, " + 
+				"then move the cursor" + "\n" + " over a second node and click the mouse.");
+			}			
+		}
+		// AJK: 06/06/06 END
+
 
 		this.setLayout(new GridLayout(1, 1));
 		TitledBorder t2 = BorderFactory.createTitledBorder(title);

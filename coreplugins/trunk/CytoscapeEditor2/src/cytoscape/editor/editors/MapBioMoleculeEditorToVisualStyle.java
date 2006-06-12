@@ -68,9 +68,10 @@ public class MapBioMoleculeEditorToVisualStyle {
 
 	        VisualStyle existingStyle = catalog.getVisualStyle
 	                (BIOMOLECULE_VISUAL_STYLE);
+	        
 
 	        if (existingStyle != null) {
- 
+                System.out.println("Got existing visual style: " + existingStyle);
 //	            manager.setVisualStyle(existingStyle);
 	        } else {
 	            VisualStyle bpVisualStyle = new VisualStyle(BIOMOLECULE_VISUAL_STYLE);
@@ -149,7 +150,8 @@ public class MapBioMoleculeEditorToVisualStyle {
 //	        passThroughMapping.setControllingAttributeName
 //	                ("canonicalName", null, false);
 	        passThroughMapping.setControllingAttributeName
-            (Semantics.LABEL, null, false);
+//            (Semantics.LABEL, null, false);
+	        (Semantics.CANONICAL_NAME, null, false);
 	        // AJK: 05/09/06 END
 
 	        // AJK: 05/09/96 END
@@ -167,8 +169,8 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        
 	            discreteMapping.putMapValue("biochemicalReaction",
 	                    new Byte(ShapeNodeRealizer.ELLIPSE));
-//	            discreteMapping.putMapValue("catalyst",
-//	                    new Byte(ShapeNodeRealizer.ROUND_RECT));
+	            discreteMapping.putMapValue("catalyst",
+	                    new Byte(ShapeNodeRealizer.ROUND_RECT));
 	            discreteMapping.putMapValue("protein",
 	                    new Byte(ShapeNodeRealizer.RECT));
 	            discreteMapping.putMapValue("smallMolecule",
@@ -188,8 +190,8 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        
 	            discreteMapping.putMapValue("biochemicalReaction",
 	                    new Color (204, 0, 61));
-//	            discreteMapping.putMapValue("catalyst",
-//	                    new Color(0, 163, 0));
+	            discreteMapping.putMapValue("catalyst",
+	                    new Color(0, 163, 0));
 	            discreteMapping.putMapValue("protein",
 	                    new Color (0, 102, 255));
 	            discreteMapping.putMapValue("smallMolecule",

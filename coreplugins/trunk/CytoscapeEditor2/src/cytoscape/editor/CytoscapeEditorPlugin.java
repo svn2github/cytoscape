@@ -141,9 +141,11 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 					CytoscapeEditorManager.NODE_TYPE,
 					CytoscapeEditorManager.EDGE_TYPE,
 					MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
-			CytoscapeEditorManager.setVisualStyleNameForEditorType(
-					"SimpleBioMoleculeEditor",
-					MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
+//			CytoscapeEditorManager.setVisualStyleNameForEditorType(
+//					"SimpleBioMoleculeEditor",
+//					MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
+////			CytoscapeEditorManager.initializeEditor("SimpleBioMoleculeEditor", 
+//					"cytoscape.editor.event.PaletteNetworkEditEventHandler");
 
 			// AJK: 03/23/06 END
 

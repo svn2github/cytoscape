@@ -68,7 +68,7 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 			String msg = "Cannot create editor of type: " + editorType;
 			InvalidEditorException ex = new InvalidEditorException(msg,
 					new Throwable("type not found"));
-			ex.printStackTrace();
+//			ex.printStackTrace();
 			throw ex;
 		} catch (InstantiationException ex) {
 			ex.printStackTrace();

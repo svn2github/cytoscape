@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
@@ -22,18 +22,18 @@ import phoebe.PhoebeCanvas;
 import cern.colt.list.IntArrayList;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.CytoscapeModifiedNetworkManager;
 import cytoscape.data.CyAttributes;
+import cytoscape.editor.actions.DeleteAction;
 import cytoscape.editor.actions.NewNetworkAction;
 import cytoscape.editor.actions.RedoAction;
-import cytoscape.editor.actions.RestoreAction;
-import cytoscape.editor.actions.SetEditorAction;
 import cytoscape.editor.actions.UndoAction;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
@@ -284,13 +284,34 @@ public abstract class CytoscapeEditorManager {
 		Cytoscape.getDesktop().getCyMenus().addAction(newNetwork);
 
 		// initially disable New Network creation until an editor is set
+		
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New")
-				.setEnabled(false);
+//				.setEnabled(false);
+		// AJK: 06/05/06: for Cytoscape 2.3, enable this menu item
+		        .setEnabled(true);
 
+		// AJK: 06/07/06 BEGIN
+		//     move DeleteSelected to the editor from CyMenus
+		DeleteAction delete  = new DeleteAction();
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Edit");
+		Cytoscape.getDesktop().getCyMenus().addAction(delete);
+		
+		// AJK: 06/10/06 BEGIN
+		ShapePalette shapePalette = new ShapePalette();
+		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).add( "Editor", 
+				shapePalette);
+
+
+		// initially disable New Network creation until an editor is set
+		
+		// AJK: 06/07/06 END
+			
+		
 		// AJK: 11/15/05 BEGIN
 		// hide restoreAction while we are experimenting with Undo/Redo
-		RestoreAction restoreAction = new RestoreAction();
-		Cytoscape.getDesktop().getCyMenus().addAction(restoreAction);
+        // AJK: 06/05/06: for Cytoscape 2.3, take restore off the menu
+//		RestoreAction restoreAction = new RestoreAction();
+//		Cytoscape.getDesktop().getCyMenus().addAction(restoreAction);
 		// AJK: 11/15/05 END
 
 		// AJK: 09/06/05 BEGIN
@@ -323,6 +344,62 @@ public abstract class CytoscapeEditorManager {
 		// AJK: 09/06/05 END
 
 	}
+	
+	// AJK: 06/08/06 BEGIN
+	//    initialize the editor as a side-effect of registering it
+
+	public static void initializeEditor (String editorName, String networkEditAdapterName)
+	{
+		try {
+
+			CytoscapeEditorManager.setSettingUpEditor(true);
+			// setup a new editor
+			CytoscapeEditor cyEditor = CytoscapeEditorFactory.INSTANCE.getEditor(editorName);
+
+			// setup visual style for this editor
+
+			String visualStyleName = CytoscapeEditorManager
+					.getVisualStyleForEditorType(editorName);
+			System.out.println("getting visual style for: " + visualStyleName);
+			if ((visualStyleName != null)
+					&& (!(visualStyleName
+							.equals(CytoscapeEditorManager.ANY_VISUAL_STYLE)))) {
+				VisualMappingManager manager = Cytoscape.getDesktop()
+						.getVizMapManager();
+				CalculatorCatalog catalog = manager.getCalculatorCatalog();
+				VisualStyle existingStyle = catalog
+						.getVisualStyle(visualStyleName);
+				System.out.println("Got visual style: " + existingStyle);
+				System.out.println("getting visual style for editor: "
+						+ editorName);
+				if (existingStyle != null) {
+					manager.setVisualStyle(existingStyle);
+					// AJK: 10/15/05 set editor for visual style
+					CytoscapeEditorManager.setEditorForVisualStyle(
+							existingStyle, cyEditor);
+				}
+			}
+
+			// AJK: 09/19/05 END
+
+			CytoscapeEditorManager.setCurrentEditor(cyEditor);
+
+			cyEditor.initializeControls(null);
+
+			CytoscapeEditorManager.setSettingUpEditor(false);
+
+			// enable the "File.New" submenu
+			Cytoscape.getDesktop().getCyMenus().getMenuBar()
+					.getMenu("File.New").setEnabled(true);
+
+		} catch (InvalidEditorException ex) {
+			// TODO: put some error handling here
+			CytoscapeEditorManager.setSettingUpEditor(false);
+			ex.printStackTrace();
+		}		
+	}
+	
+	// AJK: 06/08/06 END
 
 	/**
 	 * sets up menus for invoking the editor
@@ -332,7 +409,10 @@ public abstract class CytoscapeEditorManager {
 	 * 
 	 */
 	public static void register(String editorName) {
-		register(editorName, "BasicNetworkEventHandler");
+		register(editorName, "BasicNetworkEventHandler", 
+				CytoscapeEditorManager.NODE_TYPE,
+				CytoscapeEditorManager.EDGE_TYPE, 
+				CytoscapeEditorManager.ANY_VISUAL_STYLE);
 	}
 
 	/**
@@ -349,59 +429,53 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static void register(String editorName, String networkEditAdapterName) {
 
-		// System.out.println("register editor: " + editorName);
-		// System.out.println("register editor: " + networkEditAdapterName);
-
-		// AJK: 08/11/05 BEGIN
-		// for version 2.2, only add ability to set editors if we are running
-		// the framework
-		// AJK: 09/26/05 we are now implementing the framework in 2.2
-		// if (isRunningEditorFramework()) {
-		SetEditorAction editNetwork = new SetEditorAction(editorName,
-				CytoscapeEditorFactory.INSTANCE);
-		// create With menu if not already there
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
-				"File.SetEditor");
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
-				"File.SetEditor").setEnabled(true);
-		Cytoscape.getDesktop().getCyMenus().addAction(editNetwork);
-
-		// }
-		// AJK: 08/11/05 END
-
-		CytoscapeEditorManager.setNetworkEditEventAdapterType(editorName,
-				networkEditAdapterName);
-	}
+		register(editorName, networkEditAdapterName, 
+				CytoscapeEditorManager.NODE_TYPE,
+				CytoscapeEditorManager.EDGE_TYPE, 
+				CytoscapeEditorManager.ANY_VISUAL_STYLE);	}
 
 	public static void register(String editorName,
 			String networkEditAdapterName, String visualStyleName) {
-		register(editorName, networkEditAdapterName);
-		System.out.println("Setting editor type: " + editorName
-				+ " for visual style: " + visualStyleName);
-		CytoscapeEditorManager.setEditorTypeForVisualStyleName(visualStyleName,
-				editorName);
+		register(editorName, networkEditAdapterName, 
+				CytoscapeEditorManager.NODE_TYPE,
+				CytoscapeEditorManager.EDGE_TYPE, 
+				visualStyleName);
+//		System.out.println("Setting editor type: " + editorName
+//				+ " for visual style: " + visualStyleName);
+//		CytoscapeEditorManager.setEditorTypeForVisualStyleName(visualStyleName,
+//				editorName);
+//		// AJK: 06/10/06 initialize editor
+//		CytoscapeEditorManager.initializeEditor(editorName, networkEditAdapterName);
 	}
 
 	public static void register(String editorName,
 			String networkEditAdapterName, String controllingNodeAttribute,
 			String controllingEdgeAttribute) {
-		register(editorName, networkEditAdapterName);
-		CytoscapeEditorManager.setControllingNodeAttribute(editorName,
-				controllingNodeAttribute);
-		CytoscapeEditorManager.setControllingEdgeAttribute(editorName,
-				controllingEdgeAttribute);
+		register(editorName, networkEditAdapterName, controllingNodeAttribute, 
+				controllingEdgeAttribute, CytoscapeEditorManager.ANY_VISUAL_STYLE);
+//		CytoscapeEditorManager.setControllingNodeAttribute(editorName,
+//				controllingNodeAttribute);
+//		CytoscapeEditorManager.setControllingEdgeAttribute(editorName,
+//				controllingEdgeAttribute);
+//		// AJK: 06/10/06 initialize editor
+//		CytoscapeEditorManager.initializeEditor(editorName, networkEditAdapterName);
 	}
 
 	public static void register(String editorName,
 			String networkEditAdapterName, String controllingNodeAttribute,
 			String controllingEdgeAttribute, String visualStyleName) {
-		register(editorName, networkEditAdapterName);
+		CytoscapeEditorManager.setNetworkEditEventAdapterType(editorName,
+				networkEditAdapterName);
 		CytoscapeEditorManager.setControllingNodeAttribute(editorName,
 				controllingNodeAttribute);
 		CytoscapeEditorManager.setControllingEdgeAttribute(editorName,
 				controllingEdgeAttribute);
 		CytoscapeEditorManager.setEditorTypeForVisualStyleName(visualStyleName,
 				editorName);
+		CytoscapeEditorManager.setVisualStyleNameForEditorType(editorName, 
+				visualStyleName);
+		// AJK: 06/10/06 initialize editor
+		CytoscapeEditorManager.initializeEditor(editorName, networkEditAdapterName);
 	}
 
 	/**
@@ -454,17 +528,17 @@ public abstract class CytoscapeEditorManager {
 
 		// AJK: 11/25/05 comment this out. Don't put delete items on
 		// AJK: 04/27/06 uncomment to test for new ding renderer
-		if (!hasContextMethods(newView)) {
-			newView.addContextMethod("class ding.view.DNodeView",
-					"cytoscape.editor.actions.NodeAction",
-					"getContextMenuItem", new Object[] { newView },
-					CytoscapeInit.getClassLoader());
-
-			// newView.addContextMethod("class ding.view.DEdgeView",
-			// "cytoscape.editor.actions.EdgeAction",
-			// "getContextMenuItem", new Object[] { newView },
-			// CytoscapeInit.getClassLoader());
-		}
+//		if (!hasContextMethods(newView)) {
+//			newView.addContextMethod("class ding.view.DNodeView",
+//					"cytoscape.editor.actions.NodeAction",
+//					"getContextMenuItem", new Object[] { newView },
+//					CytoscapeInit.getClassLoader());
+//
+//			// newView.addContextMethod("class ding.view.DEdgeView",
+//			// "cytoscape.editor.actions.EdgeAction",
+//			// "getContextMenuItem", new Object[] { newView },
+//			// CytoscapeInit.getClassLoader());
+//		}
 
 		// AJK: 09/09/05: BEGIN
 		// comment this out; just use newView's bounds to set bounds for canvas
@@ -1177,11 +1251,14 @@ public abstract class CytoscapeEditorManager {
 	 * @param edit
 	 *            the edit method to be added to the UndoManager.
 	 */
-	public static void addEdit(UndoableEdit edit) {
+	public static void addEdit (UndoableEdit edit) {
 		// AJK: 11/17/05 comment this out for 2.2 release. Deal with undo later
 		// cytoscape.util.UndoManager undo = Cytoscape.getDesktop().undo;
 		// undo.addEdit (edit, Cytoscape.getCurrentNetworkView());
-		// AJK: 02/22/06
+		// AJK: 02/22/06 
+	       System.out.println ("adding undoableEdit to undoManager: " + 
+	        		Cytoscape.getDesktop().undo);
+	 
 		Cytoscape.getDesktop().undo.addEdit(edit);
 	}
 
@@ -1393,11 +1470,11 @@ public abstract class CytoscapeEditorManager {
 		String netName = "Net:";
 		CyNetwork cn;
 		while (iteration_limit > 0) {
-			netName = "Net:";
+			netName = "Net";
 			java.util.Date d1 = new java.util.Date();
 			long t1 = d1.getTime();
 			String s1 = Long.toString(t1);
-			netName += "_" + s1.substring(s1.length() - 3); // append last 4
+			netName += s1.substring(s1.length() - 3); // append last 4
 			// digits of time
 			// stamp to
 			// name

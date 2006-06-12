@@ -95,8 +95,10 @@ public class SetEditorAction extends CytoscapeAction {
 
 				// CyNetwork newNet = Cytoscape.getCurrentNetwork();
 				// System.out.println ("Got current network: " + newNet);
-				CyNetwork newNet = Cytoscape.createNetwork("Net:"
-						+ CytoscapeEditorManager.getNetworkNameCounter());
+//				CyNetwork newNet = Cytoscape.createNetwork("Net:"
+//						+ CytoscapeEditorManager.getNetworkNameCounter());
+				CyNetwork newNet = Cytoscape.createNetwork(
+						CytoscapeEditorManager.createUniqueNetworkName());
 				CytoscapeEditorManager.incrementNetworkNameCounter();
 				view = Cytoscape.createNetworkView(newNet);
 

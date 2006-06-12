@@ -7,6 +7,7 @@ package cytoscape.editor.actions;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -67,14 +68,27 @@ public class NewNetworkAction extends CytoscapeAction {
 		}
 
 		else {
-			CyNetwork _newNet = Cytoscape.createNetwork("Net:"
-					+ CytoscapeEditorManager.getNetworkNameCounter());
+//			CyNetwork _newNet = Cytoscape.createNetwork("Net:"
+//					+ CytoscapeEditorManager.getNetworkNameCounter());
+			CyNetwork _newNet = Cytoscape.createNetwork(
+					CytoscapeEditorManager.createUniqueNetworkName());
 			CytoscapeEditorManager.incrementNetworkNameCounter();
 
 			CyNetworkView newView = Cytoscape.createNetworkView(_newNet);
 
 			CytoscapeEditorManager.setEditorForNetwork(_newNet, cyEditor);
 			CytoscapeEditorManager.setEditorForView(newView, cyEditor); 
+	        
+			// AJK: 06/05/06 BEGIN
+			//    switch to Editor cytopanel when loading a new network
+			int idx = Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent("Editor");
+//	        System.out.println ("index of current palette = " + idx);
+	        if (idx >= 0)
+	        {
+			Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).setSelectedIndex(
+					Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent("Editor"));
+	        }
+	        // AJK: 06/05/06 END
 		}
 	}
 

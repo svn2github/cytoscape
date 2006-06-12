@@ -71,7 +71,13 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 		String controllingNodeAttribute = CytoscapeEditorManager.getControllingNodeAttribute(this);
 		String controllingEdgeAttribute = CytoscapeEditorManager.getControllingEdgeAttribute(this);
 		
-		shapePalette = new ShapePalette();
+		// AJK: 06/10/06 BEGIN
+		//     no longer rebuilding shape palette, just its shape pane
+//		shapePalette = new ShapePalette();
+		shapePalette = 
+			CytoscapeEditorManager.getCurrentShapePalette();
+			shapePalette.clear();
+		// AJK: 06/10/06 END
 		
 		// TODO: need to ensure that we have BioPAX visual style loaded
         VisualMappingManager manager =

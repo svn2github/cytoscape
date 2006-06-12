@@ -101,7 +101,8 @@ public class BioPAXNetworkEditEventHandler extends
 
 		CyEdge myEdge = _caller.addEdge(source_node,
 				target_node, cytoscape.data.Semantics.INTERACTION,
-				"default", true, this.getEdgeAttributeValue());   // set to BIOPAX_EDGE_TYPE
+//				"default", true, this.getEdgeAttributeValue());   // set to BIOPAX_EDGE_TYPE
+				this.getEdgeAttributeValue(), true, this.getEdgeAttributeValue());   // set to BIOPAX_EDGE_TYPE
 
 		System.out.println("setting BIOPAX_EDGE_TYPE for " + myEdge.getIdentifier() + " to " + this.getEdgeAttributeValue());
 		edgeAttribs.setAttribute(myEdge.getIdentifier(), "BIOPAX_EDGE_TYPE",
