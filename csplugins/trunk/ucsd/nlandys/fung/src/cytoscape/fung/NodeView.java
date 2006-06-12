@@ -23,6 +23,8 @@ public final class NodeView
 
   Fung m_fung; // Not final so that we can destroy reference.
   private final int m_node;
+  private Color m_colorLowDetail;
+  private Color m_selectedColorLowDetail;
   private Paint m_fillPaint;
   private Paint m_selectedFillPaint;
 
@@ -30,6 +32,8 @@ public final class NodeView
   {
     m_fung = fung;
     m_node = node;
+    m_colorLowDetail = m_fung.m_nodeDefaults.m_colorLowDetail;
+    m_selectedColorLowDetail = m_fung.m_nodeDefaults.m_selectedColorLowDetail;
     m_fillPaint = m_fung.m_nodeDefaults.m_fillPaint;
     m_selectedFillPaint = m_fung.m_nodeDefaults.m_selectedFillPaint;
   }
@@ -134,14 +138,38 @@ public final class NodeView
 
   public final Color getColorLowDetail()
   {
-    synchronized (m_fung.m_lock) {
-      return m_fung.m_nodeDetails.colorLowDetail(m_node); }
+    return m_colorLowDetail;
   }
 
   public final void setColorLowDetail(final Color colorLowDetail)
   {
     synchronized (m_fung.m_lock) {
-      m_fung.m_nodeDetails.overrideColorLowDetail(m_node, colorLowDetail); }
+      if (colorLowDetail == null) {
+        m_colorLowDetail = m_fung.m_nodeDefaults.m_colorLowDetail; }
+      else {
+        m_colorLowDetail = colorLowDetail; }
+      if (!isSelected()) {
+        m_fung.m_nodeDetails.overrideColorLowDetail
+          (m_node, m_colorLowDetail); } }
+  }
+
+  public final Color getSelectedColorLowDetail()
+  {
+    return m_selectedColorLowDetail;
+  }
+
+  public final void setSelectedColorLowDetail(
+                                            final Color selectedColorLowDetail)
+  {
+    synchronized (m_fung.m_lock) {
+      if (selectedColorLowDetail == null) {
+        m_selectedColorLowDetail =
+          m_fung.m_nodeDefaults.m_selectedColorLowDetail; }
+      else {
+        m_selectedColorLowDetail = selectedColorLowDetail; }
+      if (isSelected()) {
+        m_fung.m_nodeDetails.overrideColorLowDetail
+          (m_node, m_selectedColorLowDetail); } }
   }
 
   public final byte getShape()

@@ -9,6 +9,7 @@ public final class NodeViewDefaults
   public final static double DEFAULT_WIDTH = 10.0d;
   public final static double DEFAULT_HEIGHT = 10.0d;
   public final static Color DEFAULT_COLOR_LOW_DETAIL = Color.red;
+  public final static Color DEFAULT_SELECTED_COLOR_LOW_DETAIL = Color.yellow;
   public final static byte DEFAULT_SHAPE = NodeView.SHAPE_ELLIPSE;
   public final static Paint DEFAULT_FILL_PAINT = Color.red;
   public final static Paint DEFAULT_SELECTED_FILL_PAINT = Color.yellow;
@@ -18,6 +19,7 @@ public final class NodeViewDefaults
   final float m_widthDiv2;
   final float m_heightDiv2;
   final Color m_colorLowDetail;
+  final Color m_selectedColorLowDetail;
   final byte m_shape;
   final Paint m_fillPaint;
   final Paint m_selectedFillPaint;
@@ -27,13 +29,15 @@ public final class NodeViewDefaults
   public NodeViewDefaults()
   {
     this(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_COLOR_LOW_DETAIL,
-         DEFAULT_SHAPE, DEFAULT_FILL_PAINT, DEFAULT_SELECTED_FILL_PAINT,
-         DEFAULT_BORDER_WIDTH, DEFAULT_BORDER_PAINT);
+         DEFAULT_SELECTED_COLOR_LOW_DETAIL, DEFAULT_SHAPE, DEFAULT_FILL_PAINT,
+         DEFAULT_SELECTED_FILL_PAINT, DEFAULT_BORDER_WIDTH,
+         DEFAULT_BORDER_PAINT);
   }
 
   public NodeViewDefaults(final double width,
                           final double height,
                           final Color colorLowDetail,
+                          final Color selectedColorLowDetail,
                           final byte shape,
                           final Paint fillPaint,
                           final Paint selectedFillPaint,
@@ -49,6 +53,9 @@ public final class NodeViewDefaults
     m_colorLowDetail = colorLowDetail;
     if (m_colorLowDetail == null) {
       throw new NullPointerException("colorLowDetail is null"); }
+    m_selectedColorLowDetail = selectedColorLowDetail;
+    if (m_selectedColorLowDetail == null) {
+      throw new NullPointerException("selectedColorLowDetail is null"); }
     m_shape = shape;
     switch (m_shape) {
     case NodeView.SHAPE_RECTANGLE:
@@ -97,6 +104,11 @@ public final class NodeViewDefaults
   public final Color getColorLowDetail()
   {
     return m_colorLowDetail;
+  }
+
+  public final Color getSelectedColorLowDetail()
+  {
+    return m_selectedColorLowDetail;
   }
 
   public final byte getShape()
