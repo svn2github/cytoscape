@@ -418,7 +418,18 @@ public class VisualMappingManager extends SubjectBase {
 				network);
 
 		network_view.setBackgroundPaint(myGlobalApp.getBackgroundColor());
-		// will ignore sloppy selection color for now
+		// will ignore sloppy & reverse selection color for now
+		
+		// Set selection colors
+		Iterator nodeIt = network.nodesIterator();
+		while(nodeIt.hasNext()) {
+			network_view.getNodeView((CyNode)nodeIt.next()).setSelectedPaint(myGlobalApp.getNodeSelectionColor());
+		}
+		
+		Iterator edgeIt = network.edgesIterator();
+		while(edgeIt.hasNext()) {
+			network_view.getEdgeView((CyEdge)edgeIt.next()).setSelectedPaint(myGlobalApp.getEdgeSelectionColor());
+		}
 	}
 
 	/**
