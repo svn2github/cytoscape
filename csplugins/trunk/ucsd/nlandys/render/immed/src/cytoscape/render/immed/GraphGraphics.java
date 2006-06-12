@@ -660,16 +660,27 @@ public final class GraphGraphics
   }
 
   /**
-   * Determines whether the specified shape is either a built-in
-   * node shape or a custom defined node shape.
+   * Determines whether the specified shape is a custom defined node shape.
    */
-  public final boolean nodeShapeExists(final byte shape)
+  public final boolean customNodeShapeExists(final byte shape)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher"); }
-    return shape >= 0 && shape <= m_lastCustomShapeType;
+    return shape > s_last_shape && shape <= m_lastCustomShapeType;
+  }
+
+  public final byte[] getCustomNodeShapes()
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher"); }
+    final byte[] returnThis = new byte[m_lastCustomShapeType - s_last_shape];
+    for (int i = 0; i < returnThis.length; i++) {
+      returnThis[i] = (byte) (s_last_shape + 1 + i); }
+    return returnThis;
   }
 
   /**
