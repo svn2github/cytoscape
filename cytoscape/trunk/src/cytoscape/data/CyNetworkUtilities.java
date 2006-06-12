@@ -50,15 +50,15 @@ import giny.view.NodeView;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
+import java.util.*;
 import javax.swing.JOptionPane;
 
 import ViolinStrings.Strings;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.data.Semantics;
 import cytoscape.view.CyNetworkView;
+import cytoscape.CyNode;
 
 //-------------------------------------------------------------------------
 /**
@@ -71,6 +71,7 @@ public class CyNetworkUtilities {
 	/**
 	 * Saves all selected nodes in the current view to a file with the given
 	 * name.
+	 * TODO: The CyNetworkView is not a needed parameter
 	 */
 	public static boolean saveSelectedNodeNames(CyNetworkView networkView,
 			CyNetwork network, String filename) {
@@ -78,25 +79,22 @@ public class CyNetworkUtilities {
 			return false;
 		}
 
-		GraphView graphView = networkView.getView();
-
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-
+		Set selectedNodes = network.getSelectedNodes();
+		if(selectedNodes == null || selectedNodes.size() == 0){
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+					"No selected nodes.","Message",JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
+		
 		String lineSep = System.getProperty("line.separator");
 		try {
 			File file = new File(filename);
 			FileWriter fout = new FileWriter(file);
-			for (Iterator i = graphView.getNodeViewsIterator(); i.hasNext();) {
-				NodeView nodeView = (NodeView) i.next();
-				if (nodeView.isSelected()) {
-					Node node = nodeView.getNode();
-					// String canonicalName =
-					// nodeAttributes.getCanonicalName(node);
-					String canonicalName = nodeAttributes.getStringAttribute(
-							node.getIdentifier(), "canonicalName");
-
-					fout.write(canonicalName + lineSep);
-				}
+			
+			for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
+				CyNode node = (CyNode)i.next();
+				String nodeUID = node.getIdentifier();
+				fout.write(nodeUID + lineSep);
 			} // for i
 			fout.close();
 			return true;
@@ -112,7 +110,7 @@ public class CyNetworkUtilities {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Saves all visible nodes in the current view to a file with the given
+	 * Saves all nodes in the given network to a file with the given
 	 * name.
 	 */
 	public static boolean saveVisibleNodeNames(CyNetwork network,
@@ -124,21 +122,20 @@ public class CyNetworkUtilities {
 		String callerID = "CyNetworkUtilities.saveVisibleNodeNames";
 		network.beginActivity(callerID);
 
-		GraphPerspective theGraph = network.getGraphPerspective();
-
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		//GraphPerspective theGraph = network.getGraphPerspective();
+		//CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		String lineSep = System.getProperty("line.separator");
 		try {
 			File file = new File(filename);
 			FileWriter fout = new FileWriter(file);
-			for (Iterator i = theGraph.nodesIterator(); i.hasNext();) {
-				Node node = (Node) i.next();
+			for (Iterator i = network.nodesIterator(); i.hasNext();) {
+				CyNode node = (CyNode) i.next();
 				// String canonicalName = nodeAttributes.getCanonicalName(node);
-				String canonicalName = nodeAttributes.getStringAttribute(node
-						.getIdentifier(), "canonicalName");
+				//String canonicalName = nodeAttributes.getStringAttribute(node
+				//		.getIdentifier(), "canonicalName");
 
-				fout.write(canonicalName + lineSep);
+				fout.write(node.getIdentifier() + lineSep);
 			} // for i
 			fout.close();
 			network.endActivity(callerID);
@@ -173,57 +170,47 @@ public class CyNetworkUtilities {
 		String callerID = "CyNetworkUtilities.selectNodesStartingWith";
 		network.beginActivity(callerID);
 
-		GraphPerspective theGraph = network.getGraphPerspective();
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		//GraphPerspective theGraph = network.getGraphPerspective();
+		//CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		int nodeFound = 0;
-
-		for (Iterator i = theGraph.nodesIterator(); i.hasNext();) {
-			Node node = (Node) i.next();
-			String nodeLabel = node.getIdentifier();
-			// String canonicalName = nodeAttributes.getCanonicalName(node);
-			String canonicalName = nodeAttributes.getStringAttribute(node
-					.getIdentifier(), "canonicalName");
-
+		Vector matchedNodes = new Vector();
+		for (Iterator i = network.nodesIterator(); i.hasNext();) {
+			CyNode node = (CyNode) i.next();
+			String nodeUID = node.getIdentifier();
+			
 			boolean matched = false;
-			if (nodeLabel != null && Strings.isLike(nodeLabel, key, 0, true)) {
+			if (nodeUID != null && Strings.isLike(nodeUID, key, 0, true)) {
 				matched = true;
 				found = true;
+				matchedNodes.add(node);
 			} else {
 				// this list always includes the canonical name itself
 				List synonyms = Semantics
-						.getAllSynonyms(canonicalName, network);
+						.getAllSynonyms(nodeUID, network);
 				for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
 					String synonym = (String) synI.next();
 					if (Strings.isLike(synonym, key, 0, true)) {
 						matched = true;
 						found = true;
+						matchedNodes.add(node);
 						break;
 					}
-				}
-			}
-
-			// Mod. by kono@ucsd.edu
-			// This code assumes existence of view, so I changed it to
-			// compatible with both with or without view.
-			if (matched && networkView.getView().getNodeView(node) != null) {
-
-				networkView.getView().getNodeView(node).setSelected(matched);
-				nodeFound++;
-			} else if (matched) {
-				Cytoscape.getCurrentNetwork().setFlagged(node, true);
-				nodeFound++;
-			}
-
-		}
+				}//inner for
+			}//else
+			if (matched) nodeFound++;
+		}//for
 
 		if (nodeFound == 0) {
 			JOptionPane.showMessageDialog(null, "No match for the string \""
 					+ key + "\"", "Error: Node Not Found", JOptionPane.ERROR_MESSAGE);
 		}
+		
+		if(nodeFound > 0){
+			network.setSelectedNodeState(matchedNodes, true);
+		}
 
 		//System.out.println("node found = " + nodeFound);
-
 		network.endActivity(callerID);
 		return found;
 	}
