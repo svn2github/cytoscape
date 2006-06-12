@@ -164,7 +164,8 @@ public final class NodeView
       case SHAPE_TRIANGLE:
         break;
       default:
-        throw new IllegalArgumentException("shape is not recognized"); }
+        if (!m_fung.customNodeShapeExists(shape))
+          throw new IllegalArgumentException("shape is not recognized"); }
       { // Reconcile node shape if rounded rectangle.
         if (shape == SHAPE_ROUNDED_RECTANGLE) {
           final double w = getWidth();

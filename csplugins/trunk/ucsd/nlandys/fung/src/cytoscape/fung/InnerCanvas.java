@@ -17,7 +17,7 @@ final class InnerCanvas extends Component
 
   private final Fung m_fung;
   private final IntHash m_hash = new IntHash();
-  private Image m_img;
+  private Image m_img = null;
   GraphGraphics m_grafx;
   Paint m_bgPaint;
   GraphLOD m_lod;
@@ -36,6 +36,7 @@ final class InnerCanvas extends Component
     m_xCenter = 0.0d;
     m_yCenter = 0.0d;
     m_scaleFactor = 1.0d;
+    m_grafx = new GraphGraphics(null, false);
   }
 
   public final void reshape(final int x, final int y,
@@ -48,13 +49,14 @@ final class InnerCanvas extends Component
       final GraphGraphics grafx = new GraphGraphics(img, false);
       synchronized (m_fung.m_lock) {
         m_img = img;
+        grafx.importCustomNodeShapes(m_grafx);
         m_grafx = grafx;
         m_viewportChanged = true; } }
   }
 
   public final void update(final Graphics g)
   {
-    if (m_grafx == null) { return; }
+    if (m_img == null) { return; }
     synchronized (m_fung.m_lock) {
       GraphRenderer.renderGraph(m_fung.m_graphModel.m_graph,
                                 m_fung.m_rtree,

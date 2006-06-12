@@ -4,6 +4,7 @@ import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
+import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
@@ -17,6 +18,9 @@ import java.awt.geom.Rectangle2D;
 
 public final class Fung
 {
+
+  public static final int CUSTOM_SHAPE_MAX_VERTICES =
+    GraphGraphics.CUSTOM_SHAPE_MAX_VERTICES;
 
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
@@ -239,22 +243,80 @@ public final class Fung
             returnVal.push(node); } } } }
   }
 
-//   /**
-//    * @exception IllegalStateException if too many custom node shapes are
-//    *   already defined; a little over one hundered custom node shapes can be
-//    *   defined.
-//    */
-//   public final byte defineCustomNodeShape(final double[] coords)
-//   {
-//     if ((coords.length % 2) != 0) {
-//       throw new IllegalArgumentException
-//         ("coords array must be of even length"); }
-//     final float[] fCoords = new float[coords.length];
-//     for (int i = 0; i < coords.length; i++) {
-//       fCoords[i] = (float) coords[i]; }
-//     synchronized (m_lock) {
-      
-//   }
+  /**
+   * The custom node shape that is defined is a polygon specified
+   * by the coordinates supplied.  The polygon must meet several constraints
+   * listed below.<p>
+   * If we define the value xCenter to be the average of the minimum and
+   * maximum X values of the vertices and if we define yCenter likewise, then
+   * the specified polygon must meet the following constraints:
+   * <ol>
+   *   <li>Each polygon line segment must have nonzero length.</li>
+   *   <li>No two consecutive polygon line segments can be parallel (this
+   *     essentially implies that the polygon must have at least three
+   *     vertices).</li>
+   *   <li>No two distinct non-consecutive polygon line segments may
+   *     intersect (not even at the endpoints); this makes possible the
+   *     notion of interior of the polygon.</li>
+   *   <li>The polygon must be star-shaped with respect to the point
+   *     (xCenter, yCenter); a polygon is said to be <i>star-shaped with
+   *     respect to a point (a,b)</i> if and only if for every point (x,y)
+   *     in the interior or on the boundary of the polygon, the interior of
+   *     the segment (a,b)->(x,y) lies in the interior of the polygon.</li>
+   *   <li>The path traversed by the polygon must be clockwise where
+   *     +X points right and +Y points down.</li>
+   * </ol><p>
+   * In addition to these constraints, when rendering custom nodes with
+   * nonzero border width, possible problems may arise if the border width
+   * is large with respect to the kinks in the polygon.
+   * @param coords defines the coords.length / 2 vertices of the polygon;
+   *   coords[0], coords[1], coords[2], coords[3] and so on
+   *   are interpreted as x0, y0, x1, y1, and so on; the initial vertex need
+   *   not be repeated as the last vertex specified.
+   * @return the node shape identifier to be used in future calls to
+   *   NodeView.setShape().
+   * @exception IllegalArgumentException if any of the constraints are not met,
+   *   or if the specified polygon has more than CUSTOM_SHAPE_MAX_VERTICES
+   *   vertices.
+   * @exception IllegalStateException if too many custom node shapes are
+   *   already defined; a little over one hundered custom node shapes can be
+   *   defined.
+   */
+  public final byte defineCustomNodeShape(final double[] coords)
+  {
+    if ((coords.length % 2) != 0) {
+      throw new IllegalArgumentException
+        ("coords array must be of even length"); }
+    final float[] fCoords = new float[coords.length];
+    for (int i = 0; i < coords.length; i++) {
+      fCoords[i] = (float) coords[i]; }
+    synchronized (m_lock) {
+      return m_canvas.m_grafx.defineCustomNodeShape
+        (fCoords, 0, fCoords.length / 2); }
+  }
+
+  public final boolean customNodeShapeExists(final byte shape)
+  {
+    synchronized (m_lock) {
+      return m_canvas.m_grafx.customNodeShapeExists(shape); }
+  }
+
+  public final byte[] getCustomNodeShapes()
+  {
+    synchronized (m_lock) {
+      return m_canvas.m_grafx.getCustomNodeShapes(); }
+  }
+
+  public final double[] getCustomNodeShape(final byte shape)
+  {
+    synchronized (m_lock) {
+      final float[] fCoords = m_canvas.m_grafx.getCustomNodeShape(shape);
+      if (fCoords == null) { return null; }
+      final double[] returnThis = new double[fCoords.length];
+      for (int i = 0; i < returnThis.length; i++) {
+        returnThis[i] = fCoords[i]; }
+      return returnThis; }
+  }
 
   private final class FungDynamicGraph implements DynamicGraph
   {
