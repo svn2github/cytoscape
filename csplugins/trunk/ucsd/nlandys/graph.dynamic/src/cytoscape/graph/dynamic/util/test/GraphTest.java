@@ -40,7 +40,8 @@ public class GraphTest
     while (edgesEnum.numRemaining() > 0) {
       final int edge = edgesEnum.nextInt();
       System.out.println
-        ((graph.edgeType(edge) == 1 ? "Directed" : "Undirected") +
+        ((graph.edgeType(edge) == DynamicGraph.DIRECTED_EDGE ?
+          "Directed" : "Undirected") +
          " edge " + edge + " with source " + graph.edgeSource(edge) +
          " and target " + graph.edgeTarget(edge) + "."); }
     System.out.println();

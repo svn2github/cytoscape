@@ -175,7 +175,7 @@ final class DynamicGraphRepresentation
     if (edge < 0 || edge == Integer.MAX_VALUE) return -1;
     final Edge e = m_edges.getEdgeAtIndex(edge);
     if (e == null) return -1;
-    if (e.directed) return 1; return 0;
+    if (e.directed) return DIRECTED_EDGE; return UNDIRECTED_EDGE;
   }
 
   public final int edgeSource(final int edge)
