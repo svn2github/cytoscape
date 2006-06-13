@@ -216,6 +216,7 @@ public class ExpressionData implements Serializable {
         this.initDataStructures();
         this.loadData(filename, keyAttributeName);
     }
+
     /**
      * Constructor. Loads the specified file into memory, and reports its
      * progress to the specified TaskMonitor Object. This option is useful for
@@ -223,6 +224,32 @@ public class ExpressionData implements Serializable {
      * parsed.
      *
      * @param filename    Name of Expression Data File.
+     * @param taskMonitor TaskMonitor for reporting/monitoring progress.
+     * @throws IOException Error opening/parsing the expression data file.
+     */
+    public ExpressionData(String filename, TaskMonitor taskMonitor)
+            throws IOException {
+        this.taskMonitor = taskMonitor;
+        this.filename = null;
+        numGenes = 0;
+        numConds = 0;
+        extraTokens = 0;
+        haveSigValues = false;
+        this.initDataStructures();
+        this.loadData(filename, DEFAULT_KEY_ATTRIBUTE, keyAttributeName);
+    }
+
+
+
+    /**
+     * Constructor. Loads the specified file into memory, and reports its
+     * progress to the specified TaskMonitor Object. This option is useful for
+     * displaying a progress bar to the end-user, while expression data is being
+     * parsed.
+     *
+     * @param filename    Name of Expression Data File.
+     * @param keyAttributeName  Identifies an attribute to use in mapping
+     *                          the data to the nodes.
      * @param taskMonitor TaskMonitor for reporting/monitoring progress.
      * @throws IOException Error opening/parsing the expression data file.
      */
