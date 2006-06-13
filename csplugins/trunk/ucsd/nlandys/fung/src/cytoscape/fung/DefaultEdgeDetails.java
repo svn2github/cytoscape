@@ -1,5 +1,6 @@
 package cytoscape.fung;
 
+import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.render.stateful.EdgeDetails;
 import java.awt.Color;
 import java.awt.Paint;
@@ -16,7 +17,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public Color colorLowDetail(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_colorLowDetail; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_colorLowDetail; }
@@ -24,7 +26,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public byte sourceArrow(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_sourceArrow; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_sourceArrow; }
@@ -32,7 +35,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public float sourceArrowSize(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_sourceArrowSize; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_sourceArrowSize; }
@@ -40,7 +44,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public Paint sourceArrowPaint(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_sourceArrowPaint; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_sourceArrowPaint; }
@@ -48,7 +53,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public byte targetArrow(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_targetArrow; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_targetArrow; }
@@ -56,7 +62,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public float targetArrowSize(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_targetArrowSize; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_targetArrowSize; }
@@ -64,7 +71,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public Paint targetArrowPaint(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_targetArrowPaint; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_targetArrowPaint; }
@@ -72,7 +80,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public float segmentThickness(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_segmentThickness; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_segmentThickness; }
@@ -80,7 +89,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public Paint segmentPaint(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_segmentPaint; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_segmentPaint; }
@@ -88,7 +98,8 @@ class DefaultEdgeDetails extends EdgeDetails
 
   public float segmentDashLength(int edge)
   {
-    if (m_fung.m_graphModel.m_graph.edgeType(edge) > 0) {
+    if (m_fung.m_graphModel.m_graph.edgeType(edge) ==
+        DynamicGraph.DIRECTED_EDGE) {
       return m_fung.m_directedEdgeDefaults.m_segmentDashLength; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_segmentDashLength; }
