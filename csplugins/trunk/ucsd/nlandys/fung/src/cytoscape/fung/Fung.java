@@ -39,6 +39,7 @@ public final class Fung
   final SpecificEdgeDetails m_edgeDetails;
   private final InnerCanvas m_canvas;
   final IntBTree m_selectedNodes;
+  final IntBTree m_selectedEdges;
 
   // Is there a way to do this without this hack?
   // I want the instance of Fung to be accessible from within the
@@ -67,6 +68,7 @@ public final class Fung
     m_edgeDetails = new SpecificEdgeDetails(this);
     m_canvas = new InnerCanvas(this);
     m_selectedNodes = new IntBTree();
+    m_selectedEdges = new IntBTree();
   }
 
   public final NodeViewDefaults getNodeViewDefaults()
@@ -201,6 +203,19 @@ public final class Fung
         returnVal.push(selectedNodes.nextInt()); } }
   }
 
+  /**
+   * Places all selected edges onto the stack specified.
+   */
+  public final void getSelectedEdges(final IntStack returnVal)
+  {
+    synchronized (m_lock) {
+      final IntEnumerator selectedEdges = m_selectedEdges.searchRange
+        (Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+      final int count = selectedEdges.numRemaining();
+      for (int i = 0; i < count; i++) {
+        returnVal.push(selectedEdges.nextInt()); } }
+  }
+
   public final void getNodesIntersectingRectangle(
                                       final Rectangle2D queryRect,
                                       final boolean treatNodeShapesAsRectangle,
@@ -318,7 +333,7 @@ public final class Fung
       return returnThis; }
   }
 
-  private final class FungDynamicGraph implements DynamicGraph
+  final class FungDynamicGraph implements DynamicGraph
   {
 
     final DynamicGraph m_graph;
