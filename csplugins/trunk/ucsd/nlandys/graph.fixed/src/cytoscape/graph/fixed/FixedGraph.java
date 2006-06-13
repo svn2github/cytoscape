@@ -12,6 +12,16 @@ public interface FixedGraph
 {
 
   /**
+   * A nonnegative quantity representing directedness of an edge.
+   */
+  public final static byte DIRECTED_EDGE = 1;
+
+  /**
+   * A nonnegative quantity representing undirectedness of an edge.
+   */
+  public final static byte UNDIRECTED_EDGE = 0;
+
+  /**
    * Returns an enumeration of all nodes in this graph.  Every node in this
    * graph is a unique non-negative integer.  A given node and a given edge
    * in one graph may be the same integer.
@@ -50,13 +60,13 @@ public interface FixedGraph
   /**
    * Determines the existence and directedness of an edge.
    * Returns -1 if specified edge does not exist in this graph,
-   * returns 1 if specified edge is directed, and returns 0 if specified edge
-   * is undirected.
+   * otherwise returns DIRECTED_EDGE or UNDIRECTED_EDGE.
    *
    * @param edge the edge in this graph whose existence and/or
    *   directedness we're seeking.
-   * @return 1 if specified edge is directed, 0 if specified edge is
-   *   undirected, and -1 if specified edge does not exist in this graph.
+   * @return DIRECTED_EDGE if specified edge is directed, UNDIRECTED_EDGE
+   *   if specified edge is undirected, and -1 if specified edge does not
+   *   exist in this graph.
    */
   public byte edgeType(int edge);
 
