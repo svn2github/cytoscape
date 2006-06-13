@@ -17,11 +17,27 @@ public final class EdgeView
 
   Fung m_fung; // Not final so that we can destroy reference.
   private final int m_edge;
+  private Color m_colorLowDetail;
+  private Color m_selectedColorLowDetail;
+  private Paint m_segmentPaint;
+  private Paint m_selectedSegmentPaint;
 
+  /*
+   * People calling this constructor shall be holding m_fung.m_lock.
+   */
   EdgeView(final Fung fung, final int edge)
   {
     m_fung = fung;
     m_edge = edge;
+    final EdgeViewDefaults edgeDefaults;
+    if (m_fung.m_graphModel.edgeType(m_edge) == 1) { // Directed.
+      edgeDefaults = m_fung.m_directedEdgeDefaults; }
+    else { // Undirected.
+      edgeDefaults = m_fung.m_undirectedEdgeDefaults; }
+    m_colorLowDetail = edgeDefaults.m_colorLowDetail;
+    m_selectedColorLowDetail = edgeDefaults.m_selectedColorLowDetail;
+    m_segmentPaint = edgeDefaults.m_segmentPaint;
+    m_selectedSegmentPaint = edgeDefaults.m_selectedSegmentPaint;
   }
 
   public final int getEdge()
@@ -31,14 +47,43 @@ public final class EdgeView
 
   public final Color getColorLowDetail()
   {
-    synchronized (m_fung.m_lock) {
-      return m_fung.m_edgeDetails.colorLowDetail(m_edge); }
+    return m_colorLowDetail;
   }
 
   public final void setColorLowDetail(final Color colorLowDetail)
   {
     synchronized (m_fung.m_lock) {
-      m_fung.m_edgeDetails.overrideColorLowDetail(m_edge, colorLowDetail); }
+      if (colorLowDetail == null) {
+        m_colorLowDetail =
+          ((m_fung.m_graphModel.edgeType(m_edge) == 1) ?
+           m_fung.m_directedEdgeDefaults.m_colorLowDetail :
+           m_fung.m_undirectedEdgeDefaults.m_colorLowDetail); }
+      else {
+        m_colorLowDetail = colorLowDetail; }
+      if (!isSelected()) {
+        m_fung.m_edgeDetails.overrideColorLowDetail
+          (m_edge, m_colorLowDetail); } }
+  }
+
+  public final Color getSelectedColorLowDetail()
+  {
+    return m_selectedColorLowDetail;
+  }
+
+  public final void setSelectedColorLowDetail(
+                                            final Color selectedColorLowDetail)
+  {
+    synchronized (m_fung.m_lock) {
+      if (selectedColorLowDetail == null) {
+        m_selectedColorLowDetail =
+          ((m_fung.m_graphModel.edgeType(m_edge) == 1) ?
+           m_fung.m_directedEdgeDefaults.m_selectedColorLowDetail :
+           m_fung.m_undirectedEdgeDefaults.m_selectedColorLowDetail); }
+      else {
+        m_selectedColorLowDetail = selectedColorLowDetail; }
+      if (isSelected()) {
+        m_fung.m_edgeDetails.overrideColorLowDetail
+          (m_edge, m_selectedColorLowDetail); } }
   }
 
   public final byte getSourceArrow()
@@ -204,14 +249,41 @@ public final class EdgeView
 
   public final Paint getSegmentPaint()
   {
-    synchronized (m_fung.m_lock) {
-      return m_fung.m_edgeDetails.segmentPaint(m_edge); }
+    return m_segmentPaint;
   }
 
-  public final void setSegmentPaint(final Paint paint)
+  public final void setSegmentPaint(final Paint segmentPaint)
   {
     synchronized (m_fung.m_lock) {
-      m_fung.m_edgeDetails.overrideSegmentPaint(m_edge, paint); }
+      if (segmentPaint == null) {
+        m_segmentPaint =
+          ((m_fung.m_graphModel.edgeType(m_edge) == 1) ?
+           m_fung.m_directedEdgeDefaults.m_segmentPaint :
+           m_fung.m_undirectedEdgeDefaults.m_segmentPaint); }
+      else {
+        m_segmentPaint = segmentPaint; }
+      if (!isSelected()) {
+        m_fung.m_edgeDetails.overrideSegmentPaint(m_edge, m_segmentPaint); } }
+  }
+
+  public final Paint getSelectedSegmentPaint()
+  {
+    return m_selectedSegmentPaint;
+  }
+
+  public final void setSelectedSegmentPaint(final Paint selectedSegmentPaint)
+  {
+    synchronized (m_fung.m_lock) {
+      if (selectedSegmentPaint == null) {
+        m_selectedSegmentPaint =
+          ((m_fung.m_graphModel.edgeType(m_edge) == 1) ?
+           m_fung.m_directedEdgeDefaults.m_selectedSegmentPaint :
+           m_fung.m_undirectedEdgeDefaults.m_selectedSegmentPaint); }
+      else {
+        m_selectedSegmentPaint = selectedSegmentPaint; }
+      if (isSelected()) {
+        m_fung.m_edgeDetails.overrideSegmentPaint
+          (m_edge, m_selectedSegmentPaint); } }
   }
 
   public final double getSegmentDashLength()
@@ -391,6 +463,12 @@ public final class EdgeView
     synchronized (m_fung.m_lock) {
       final int i = (straightLineSegments ? 1 : 0);
       m_fung.m_edgeDetails.m_anchorTypes.setIntAtIndex(i, m_edge); }
+  }
+
+  public boolean isSelected()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_selectedEdges.count(m_edge) > 0; }
   }
 
 }
