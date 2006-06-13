@@ -1,9 +1,12 @@
 
 package biomodules.algorithm;
 
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
 import cytoscape.util.*;
 import giny.model.GraphPerspective;
 import giny.model.Node;
+import giny.model.Edge;
 import java.util.*;
 
 /**
@@ -319,8 +322,33 @@ public class NodeDistances implements MonitoredTask {
           // calculation.
           continue;
         } // End if to_node has already had all of its distances calculated.
+        
+        // Get the neighbors of the to_node
+        int[] adjacentEdgeRindices = 
+        	perspective.getAdjacentEdgeIndicesArray(to_node.getRootGraphIndex(), true, true, true);
+        
+        Set neighborSet = new HashSet();
+        for (int edge_i = 0; edge_i < adjacentEdgeRindices.length; edge_i++) {
+        	
+            int childEdgeRindex = adjacentEdgeRindices[edge_i];
+            Edge childEdge = (Edge)perspective.getRootGraph().getEdge(childEdgeRindex);
 
-        neighbors = perspective.neighborsList(to_node).iterator();
+            // Identify the node on the other end of the edge
+            CyNode otherNode = null;
+            CyNode sourceNode = (CyNode) childEdge.getSource();
+            CyNode targetNode = (CyNode) childEdge.getTarget();
+            if (targetNode.getRootGraphIndex() == to_node.getRootGraphIndex()) {
+                otherNode = sourceNode;
+            } else if (sourceNode.getRootGraphIndex() == to_node.getRootGraphIndex()) {
+                otherNode = targetNode;
+            }
+            
+            neighborSet.add(otherNode);
+            
+        }//for edge_i
+        
+        
+        neighbors = neighborSet.iterator();
 
         while (neighbors.hasNext()) {
 

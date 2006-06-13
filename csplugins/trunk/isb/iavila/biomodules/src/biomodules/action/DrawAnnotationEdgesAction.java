@@ -38,6 +38,7 @@ import cytoscape.*;
 import cytoscape.data.Semantics;
 import annotations.ui.*;
 import annotations.*;
+import cytoscape.data.*;
 
 public class DrawAnnotationEdgesAction extends AbstractAction{
 
@@ -104,6 +105,7 @@ public class DrawAnnotationEdgesAction extends AbstractAction{
 	 */
 	//TODO: Somehow optimize this method.
 	public static void drawAnnotationEdges (CyNetwork network, Map node_to_annotations){
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		CyNode [] nodes = (CyNode[])node_to_annotations.keySet().toArray(new CyNode[node_to_annotations.size()]);
 		int newEdges = 0;
 		for(int i = 0; i < nodes.length; i++){
@@ -119,7 +121,8 @@ public class DrawAnnotationEdgesAction extends AbstractAction{
 								throw new IllegalStateException("Cytoscape.getCyEdge(" + nodes[i] + "," + nodes[j] + 
 										", Semantics.INTERACTION, \"commonAnnotation\",true) returned null!");
 							}
-							Cytoscape.setEdgeAttributeValue(edge,"annotation",nodeiAnnots[k]);
+							//Cytoscape.setEdgeAttributeValue(edge,"annotation",nodeiAnnots[k]);
+							edgeAttributes.setAttribute(edge.getIdentifier(),"annotation", nodeiAnnots[k]);
 							network.addEdge(edge);
 							newEdges++;
 						}// matching annotation

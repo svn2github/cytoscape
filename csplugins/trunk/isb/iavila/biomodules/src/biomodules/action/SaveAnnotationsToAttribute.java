@@ -29,11 +29,13 @@
  */
 package biomodules.action;
 import javax.swing.*;
+import java.util.*;
 import java.awt.event.*;
 import cytoscape.*;
 import annotations.ModuleAnnotation;
 import annotations.ModuleAnnotationsMap;
 import annotations.ui.ModuleAnnotationsTable;
+import cytoscape.data.*;
 
 public class SaveAnnotationsToAttribute extends AbstractAction{
 	
@@ -70,16 +72,18 @@ public class SaveAnnotationsToAttribute extends AbstractAction{
 	 * @param specific_annotations whether the annotations should be specific or not
 	 */
 	public static void saveAnnotationsToAttribute (ModuleAnnotationsMap annotations_map, String attribute_name, boolean specific_annotations){
+		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
 		Object [] keys = annotations_map.getModuleIDs();
 		for(int i = 0; i < keys.length; i++){
 			if(keys[i] instanceof CyNode){
 				ModuleAnnotation [] annotations = annotations_map.get(keys[i],specific_annotations);
 				if(annotations.length > 0){
-					String [] annots = new String[annotations.length];
+					Vector annots = new Vector();
 					for(int j = 0; j < annotations.length; j++){
-						annots[j] = annotations[j].getOntologyTerm().getName();
+						annots.add(annotations[j].getOntologyTerm().getName());
 					}//for j
-					Cytoscape.setNodeAttributeValue((CyNode)keys[i], attribute_name, annots);
+					//Cytoscape.setNodeAttributeValue((CyNode)keys[i], attribute_name, annots);
+					nodeAtts.setAttributeList( ((CyNode)keys[i]).getIdentifier(), attribute_name, annots);
 				}// if annotations.length > 0
 			}// if keys[i] instanceof CyNode
 		}//for i

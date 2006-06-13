@@ -34,18 +34,18 @@ package biomodules.view;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.visual.*;
-import metaNodeViewer.MetaNodeUtils;
-import metaNodeViewer.model.*;
-import metaNodeViewer.data.*;
-import metaNodeViewer.view.VisualStyleFactory;
 import java.util.*;
+import org.isb.metanodes.*;
+import org.isb.metanodes.model.*;
+import org.isb.metanodes.data.*;
+import metanodePlugin.view.*;
 
 public class ViewUtils {
 
 	public static final MetaNodeAttributesHandler attributesHandler = new AbstractMetaNodeAttsHandler();
 
-	public static final AbstractMetaNodeModeler abstractModeler = MetaNodeModelerFactory
-			.getCytoscapeAbstractMetaNodeModeler();
+	public static final AbstractMetaNodeModeler abstractModeler = 
+		MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler();
 
 	/**
 	 * @return an array of RootGraph indices for the newly created meta-nodes,
@@ -64,13 +64,13 @@ public class ViewUtils {
             for(int j = 0; j < biomodules[i].length; j++){nodes.add(biomodules[i][j]);}
             CyNetwork subnet = Cytoscape.getRootGraph().createNetwork(nodes,new ArrayList());
             CyNode mnode = MetaNodeUtils.createMetaNode(network,subnet,ViewUtils.attributesHandler);
-            MetaNodeUtils.collapseMetaNode(network,mnode,true);
+            MetaNodeUtils.collapseMetaNode(network,mnode,true,false);
             metaNodes.add(mnode);
         }
         
         // Apply vizmapper
 		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		VisualStyle abstractMetaNodeVS = vizmapper.getCalculatorCatalog()
 				.getVisualStyle(VisualStyleFactory.ABSTRACT_METANODE_VS);
 		if (abstractMetaNodeVS == null) {
@@ -101,7 +101,7 @@ public class ViewUtils {
 	 *            performance)
 	 */
 	public static void removeMetaNodes(CyNetwork network,
-			ArrayList nodes, boolean recursive) {
+			List nodes, boolean recursive) {
 		
         Iterator it = nodes.iterator();
         while(it.hasNext()){

@@ -54,20 +54,20 @@
     <target name="clean">
        <delete dir="${build}"/>
     </target>
-
-    <!-- jar target -->
-    <target name="jar" depends="compile" description="Creates a jar that contains only biomodules classes">
-    	<unjar overwrite="Yes" dest = "${build}">
-    		<fileset dir = "${local.lib}">
-    		  <include name="**/*.jar"/>
-    		</fileset>
-    	</unjar>
-    	<jar destfile = "${jar}/biomodules.jar">
-    		<fileset dir = "${build}"/>
-    </jar>
-    	<copy file="${jar}/biomodules.jar" todir="${cytoscape.plugins}"/>
-    	<echo message="biomodules.jar is complete, it is located in ${jar} and in ${cytoscape.plugins}"/> 
-    	</target>
+	
+	<target name="jar" depends="compile">
+			<unjar overwrite="Yes" dest = "${build}">
+				<fileset dir = "${local.lib}">
+					<include name="**/*.jar"/>
+				</fileset>
+			</unjar>
+			<mkdir dir= "${jar}"/>
+			<jar destfile = "${jar}/biomodules.jar">
+			    	<fileset dir = "${build}"/>
+			</jar>
+			<copy file="${jar}/biomodules.jar" todir="${cytoscape.plugins}"/>
+			<echo message="biomodules.jar is complete, it is located in ${jar} and in ${cytoscape.plugins}"/>
+		</target>
 	
 	<!-- dist target, DOES NOT WORK!!!!-->
 	<target name = "dist" depends="compile" description="Makes stand-alone jar of the plug-in for distribution, NOT WORKING">

@@ -48,6 +48,7 @@ import common.algorithms.hierarchicalClustering.*;
 import filter.cytoscape.CsFilter;
 import filter.model.*;
 import cern.colt.list.IntArrayList;
+import cytoscape.data.*;
 
 public class RGAlgorithm implements BiomodulesAlgorithm{
   /**
@@ -641,6 +642,7 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     // None of the children pass the condition.
     Iterator leafIterator = tree_node.leafIterator();
     int numProts = 0;
+    CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
     while(leafIterator.hasNext()){
       CyNode graph_node = (CyNode)(((ClusterNode)leafIterator.next()).getUserObject());
       //CyNode graph_node = (CyNode)Cytoscape.getCyNode(leaf);
@@ -648,9 +650,10 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
         throw new IllegalStateException("The CyNode object is null.");
       }
       
-      String moleculeType = 
-        (String)Cytoscape.getNodeAttributeValue(graph_node,
-                                                MoleculeTypeNodeAttribute.ATTRIBUTE_NAME);
+      String moleculeType =
+    	  nodeAtts.getStringAttribute(graph_node.getIdentifier(), MoleculeTypeNodeAttribute.ATTRIBUTE_NAME);
+        //(String)Cytoscape.getNodeAttributeValue(graph_node,
+          //                                      MoleculeTypeNodeAttribute.ATTRIBUTE_NAME);
       
       if(moleculeType != null && moleculeType.equals(MoleculeTypeNodeAttribute.PROTEIN)){
         numProts++;

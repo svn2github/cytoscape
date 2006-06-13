@@ -28,6 +28,7 @@ import java.lang.String;
 import java.util.*;
 import cytoscape.*;
 import cytoscape.data.Semantics;
+import cytoscape.data.CyAttributes;
 
 /**
  * This class offers a static method that adds to nodes an attribute called "moleculeType". 
@@ -73,6 +74,8 @@ public class MoleculeTypeNodeAttribute {
    */
   static public int addMoleculeTypeAttribute (CyNetwork cy_net){
     
+    CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
+    CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
     
     // Get an array of CyEdges in cy_net
     Iterator it = cy_net.edgesIterator();
@@ -88,8 +91,8 @@ public class MoleculeTypeNodeAttribute {
     HashSet nodesWithType = new HashSet();
     HashSet nodesWithKnownType = new HashSet();
     for(int i = 0; i < edges.length; i++){
-      String edgeType = 
-        (String)cy_net.getEdgeAttributeValue(edges[i], Semantics.INTERACTION);
+      String edgeType = edgeAtts.getStringAttribute(edges[i].getIdentifier(),Semantics.INTERACTION);
+        //(String)cy_net.getEdgeAttributeValue(edges[i], Semantics.INTERACTION);
       if(edgeType == null){
         System.err.println("Edge" + edges[i] + " does not have an interaction type.");
         continue;
@@ -97,8 +100,8 @@ public class MoleculeTypeNodeAttribute {
       CyNode source = (CyNode)edges[i].getSource();
       CyNode target = (CyNode)edges[i].getTarget();
       
-      String sourceType = (String)cy_net.getNodeAttributeValue(source,ATTRIBUTE_NAME);
-      String targetType = (String)cy_net.getNodeAttributeValue(target,ATTRIBUTE_NAME);
+      String sourceType = nodeAtts.getStringAttribute(source.getIdentifier(), ATTRIBUTE_NAME);//(String)cy_net.getNodeAttributeValue(source,ATTRIBUTE_NAME);
+      String targetType = nodeAtts.getStringAttribute(target.getIdentifier(), ATTRIBUTE_NAME); //(String)cy_net.getNodeAttributeValue(target,ATTRIBUTE_NAME);
       
       nodesWithType.add(source);
       nodesWithType.add(target);
@@ -106,13 +109,15 @@ public class MoleculeTypeNodeAttribute {
       if(sourceType == null || !sourceType.equals(PROTEIN)){
         // If a node has already been determined to be a protein, leave it alone
         sourceType = getSourceMoleculeType(edgeType);
-        cy_net.setNodeAttributeValue(source,ATTRIBUTE_NAME,sourceType);
+        nodeAtts.setAttribute(source.getIdentifier(), ATTRIBUTE_NAME, sourceType);
+        //cy_net.setNodeAttributeValue(source,ATTRIBUTE_NAME,sourceType);
       }
       
       if(targetType == null || !targetType.equals(PROTEIN)){
         // If a node has already been determined to be a protein, leave it alone
         targetType = getTargetMoleculeType(edgeType);
-        cy_net.setNodeAttributeValue(target,ATTRIBUTE_NAME,sourceType);
+        nodeAtts.setAttribute(target.getIdentifier(), ATTRIBUTE_NAME, sourceType);
+        //cy_net.setNodeAttributeValue(target,ATTRIBUTE_NAME,sourceType);
       }
       
       if(!sourceType.equals(UNKNOWN)){
@@ -131,68 +136,18 @@ public class MoleculeTypeNodeAttribute {
       it = cy_net.nodesIterator();
       while(it.hasNext()){
         CyNode node = (CyNode)it.next();
-        String nodeType = (String)cy_net.getNodeAttributeValue(node,ATTRIBUTE_NAME);
+        String nodeType = nodeAtts.getStringAttribute(node.getIdentifier(), ATTRIBUTE_NAME); //(String)cy_net.getNodeAttributeValue(node,ATTRIBUTE_NAME);
+        
         if(nodeType == null){
-          cy_net.setNodeAttributeValue(node,ATTRIBUTE_NAME,UNKNOWN);
+         nodeAtts.setAttribute(node.getIdentifier(), ATTRIBUTE_NAME, UNKNOWN); 
+        	//cy_net.setNodeAttributeValue(node,ATTRIBUTE_NAME,UNKNOWN);
         }
       }//while it
     }// if
 
 
     return nodesWithKnownType.size();
-    
-    //------------------------ Cytoscape 1.1 code --------------------------------//
-    // // Get all the canonical names of edges that have an "interaction" attribute
-    //     String [] canonicalEdgeNames = edgeAttributes.getObjectNames("interaction");
-    
-    //     // Iterate over the canonical edge names, and get their corresponding Edge object
-    //     Edge edge;
-    //     Node source, target;
-    //     String sourceCanonicalName;
-    //     String targetCanonicalName;
-    //     String interactionType;
-    //     for(int i = 0; i < canonicalEdgeNames.length; i++){
-    //       edge = (Edge)edgeAttributes.getGraphObject(canonicalEdgeNames[i]);
-    //       if(edge == null){continue;}
-    //       interactionType = (String)edgeAttributes.getValue("interaction",canonicalEdgeNames[i]);
-    //       if(interactionType == null){continue;}
-    //       // Assume the source of the edge correspond to the first letter in the interaction type,
-    //       // and the target to the second letter in the interaction type. The InteractionsReader class
-    //       // does this.
-    //       source = edge.source();
-    //       target = edge.target();
-    //       sourceCanonicalName = nodeAttributes.getCanonicalName(source);
-    //       targetCanonicalName = nodeAttributes.getCanonicalName(target);
-    //       if(interactionType.equals("pp")){
-    //         nodeAttributes.set(ATTRIBUTE_NAME,sourceCanonicalName,PROTEIN);
-    //         nodeAttributes.set(ATTRIBUTE_NAME,targetCanonicalName,PROTEIN);
-    //       }else if(interactionType.equals("pd")){
-    //         nodeAttributes.set(ATTRIBUTE_NAME,sourceCanonicalName,PROTEIN);
-    //         nodeAttributes.set(ATTRIBUTE_NAME,targetCanonicalName,DNA);
-    //       }else if(interactionType.equals("pm")){
-    //         nodeAttributes.set(ATTRIBUTE_NAME,sourceCanonicalName,PROTEIN);
-    //         nodeAttributes.set(ATTRIBUTE_NAME,targetCanonicalName,METABOLITE);
-    //       }else{
-    //         nodeAttributes.set(ATTRIBUTE_NAME,sourceCanonicalName,UNKNOWN);
-    //         nodeAttributes.set(ATTRIBUTE_NAME,targetCanonicalName,UNKNOWN);
-    //       }
-    
-    //     }//for i
-    
-    //     // Set moleculeType to unknown for those nodes with no moleculeType attribute,
-    //     // this can happen if there are nodes with no interactions in the graph
-    //     HashMap objectMap = nodeAttributes.getObjectMap();
-    //     Set nodeNames = objectMap.keySet();
-    //     Object moleculeTypeValue;
-    //     String name;
-    //     Iterator it = nodeNames.iterator();
-    //     while(it.hasNext()){
-    //       name = (String)it.next();
-    //       moleculeTypeValue = nodeAttributes.getValue(ATTRIBUTE_NAME,name);
-    //       if(moleculeTypeValue == null){
-    //         nodeAttributes.set(ATTRIBUTE_NAME, name, UNKNOWN);
-    //       }
-    //     }//for i
+
         
   }//addMoleculeTypeAttribute
 
@@ -235,28 +190,6 @@ public class MoleculeTypeNodeAttribute {
     return UNKNOWN;
     
   }//getSourceMoleculeType
-
-
-  /**
-   * It returns the number of nodes in the given graph that have the given molecule type.
-   */
-  //static public int getNumMTypeNodes (CyNetwork cy_net, String molType){
-  // if(!nodeAtt.hasAttribute(ATTRIBUTE_NAME)){
-  //       return 0;
-  //     }
-  //     Node [] nodes = graph.getNodeArray();
-  //     String currentMolType;
-  //     int total = 0;
-  //     for(int i = 0; i < nodes.length; i++){
-  //       currentMolType = (String)nodeAtt.getValue(ATTRIBUTE_NAME,
-  //                                                 nodeAtt.getCanonicalName(nodes[i]));
-  //       if(currentMolType != null && currentMolType.equals(molType)){
-  //         total++;
-  //       }
-  //     }// for i
-  //     return total;
-  //}//getNumMTypeNodes
-
   
 }//class MoleculeTypeNodeAttribute
 
