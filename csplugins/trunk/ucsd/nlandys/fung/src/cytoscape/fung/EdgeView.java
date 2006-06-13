@@ -30,7 +30,7 @@ public final class EdgeView
     m_fung = fung;
     m_edge = edge;
     final EdgeViewDefaults edgeDefaults;
-    if (m_fung.m_graphModel.edgeType(m_edge) == 1) { // Directed.
+    if (m_fung.m_graphModel.m_graph.edgeType(m_edge) == 1) { // Directed.
       edgeDefaults = m_fung.m_directedEdgeDefaults; }
     else { // Undirected.
       edgeDefaults = m_fung.m_undirectedEdgeDefaults; }
@@ -55,7 +55,7 @@ public final class EdgeView
     synchronized (m_fung.m_lock) {
       if (colorLowDetail == null) {
         m_colorLowDetail =
-          ((m_fung.m_graphModel.edgeType(m_edge) == 1) ?
+          ((m_fung.m_graphModel.m_graph.edgeType(m_edge) == 1) ?
            m_fung.m_directedEdgeDefaults.m_colorLowDetail :
            m_fung.m_undirectedEdgeDefaults.m_colorLowDetail); }
       else {
@@ -76,7 +76,7 @@ public final class EdgeView
     synchronized (m_fung.m_lock) {
       if (selectedColorLowDetail == null) {
         m_selectedColorLowDetail =
-          ((m_fung.m_graphModel.edgeType(m_edge) == 1) ?
+          ((m_fung.m_graphModel.m_graph.edgeType(m_edge) == 1) ?
            m_fung.m_directedEdgeDefaults.m_selectedColorLowDetail :
            m_fung.m_undirectedEdgeDefaults.m_selectedColorLowDetail); }
       else {
@@ -257,7 +257,7 @@ public final class EdgeView
     synchronized (m_fung.m_lock) {
       if (segmentPaint == null) {
         m_segmentPaint =
-          ((m_fung.m_graphModel.edgeType(m_edge) == 1) ?
+          ((m_fung.m_graphModel.m_graph.edgeType(m_edge) == 1) ?
            m_fung.m_directedEdgeDefaults.m_segmentPaint :
            m_fung.m_undirectedEdgeDefaults.m_segmentPaint); }
       else {
@@ -276,7 +276,7 @@ public final class EdgeView
     synchronized (m_fung.m_lock) {
       if (selectedSegmentPaint == null) {
         m_selectedSegmentPaint =
-          ((m_fung.m_graphModel.edgeType(m_edge) == 1) ?
+          ((m_fung.m_graphModel.m_graph.edgeType(m_edge) == 1) ?
            m_fung.m_directedEdgeDefaults.m_selectedSegmentPaint :
            m_fung.m_undirectedEdgeDefaults.m_selectedSegmentPaint); }
       else {
@@ -397,11 +397,11 @@ public final class EdgeView
         return 0; }
       final Point2D newPt = new Point2D.Double(x, y);
       final NodeView srcNode =
-        m_fung.getNodeView(m_fung.getGraphModel().edgeSource(m_edge));
+        m_fung.getNodeView(m_fung.m_graphModel.m_graph.edgeSource(m_edge));
       final Point2D srcLoc = new Point2D.Double
         (srcNode.getXPosition(), srcNode.getYPosition());
       final NodeView trgNode =
-        m_fung.getNodeView(m_fung.getGraphModel().edgeTarget(m_edge));
+        m_fung.getNodeView(m_fung.m_graphModel.m_graph.edgeTarget(m_edge));
       final Point2D trgLoc = new Point2D.Double
         (trgNode.getXPosition(), trgNode.getYPosition());
       final Vector anchors = (Vector)

@@ -333,7 +333,7 @@ public final class Fung
       return returnThis; }
   }
 
-  final class FungDynamicGraph implements DynamicGraph
+  private final class FungDynamicGraph implements DynamicGraph
   {
 
     final DynamicGraph m_graph;
