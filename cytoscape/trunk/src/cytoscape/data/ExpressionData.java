@@ -236,7 +236,7 @@ public class ExpressionData implements Serializable {
         extraTokens = 0;
         haveSigValues = false;
         this.initDataStructures();
-        this.loadData(filename, DEFAULT_KEY_ATTRIBUTE, keyAttributeName);
+        this.loadData(filename, DEFAULT_KEY_ATTRIBUTE);
     }
 
 
@@ -578,6 +578,8 @@ public class ExpressionData implements Serializable {
 
         if ((sig_vals && (numTokens < 2 * numConds + 2))
                 || ((!sig_vals) && numTokens < numConds + 2)) {
+	    System.out.println("sig_vals: " + sig_vals + " numTokens: "
+			       + numTokens + " numConds: " + numConds);
             throw new IOException("Warning: parse error on line " + lineCount
                     + "  tokens read: " + numTokens);
         }
