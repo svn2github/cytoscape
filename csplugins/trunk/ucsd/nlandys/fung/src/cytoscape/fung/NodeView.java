@@ -28,6 +28,9 @@ public final class NodeView
   private Paint m_fillPaint;
   private Paint m_selectedFillPaint;
 
+  /*
+   * People calling this constructor shall be holding m_fung.m_lock.
+   */
   NodeView(final Fung fung, final int node)
   {
     m_fung = fung;
