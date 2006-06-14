@@ -79,7 +79,6 @@ import cytoscape.actions.DeSelectAllNodesAction;
 import cytoscape.actions.DeselectAllAction;
 import cytoscape.actions.DestroyNetworkAction;
 import cytoscape.actions.DestroyNetworkViewAction;
-import cytoscape.actions.DestroySelectedAction;
 import cytoscape.actions.ExitAction;
 import cytoscape.actions.ExportAsGMLAction;
 import cytoscape.actions.ExportAsGraphicsAction;
@@ -731,7 +730,6 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new CreateNetworkViewAction());
 		addAction(new DestroyNetworkViewAction());
 		addAction(new DestroyNetworkAction());
-		addAction(new DestroySelectedAction());
 		// add Preferences...
 		editMenu.add(new JSeparator());
 		addAction(new PreferenceAction());
