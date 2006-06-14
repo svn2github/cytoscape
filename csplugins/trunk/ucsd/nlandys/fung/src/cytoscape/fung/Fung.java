@@ -378,13 +378,17 @@ public final class Fung
     public final boolean nodeRemove(final int node) {
       final IntStack removedEdges = new IntStack();
       synchronized (m_lock) {
-        final IntEnumerator edgesTouching =
+        IntEnumerator edgesTouching =
           m_graph.edgesAdjacent(node, true, true, true);
         if (edgesTouching == null) { return false; }
         while (edgesTouching.numRemaining() > 0) {
           removedEdges.push(edgesTouching.nextInt()); }
+        edgesTouching = removedEdges.elements();
+        while (edgesTouching.numRemaining() > 0) {
+          edgeRemoveInternal(edgesTouching.nextInt()); }
         m_graph.nodeRemove(node);
         m_rtree.delete(node);
+        m_selectedNodes.delete(node);
         ((NodeView) m_nodeViewStorage.getObjAtIndex(node)).m_fung = null;
         m_nodeViewStorage.setObjAtIndex(null, node); }
       final TopologyChangeListener topLis = m_topLis;
@@ -410,11 +414,16 @@ public final class Fung
 
     public final boolean edgeRemove(final int edge) {
       synchronized (m_lock) {
-        if (!m_graph.edgeRemove(edge)) { return false; }
-        ((EdgeView) m_edgeViewStorage.getObjAtIndex(edge)).m_fung = null;
-        m_edgeViewStorage.setObjAtIndex(null, edge); }
+        if (!edgeRemoveInternal(edge)) { return false; } }
       final TopologyChangeListener topLis = m_topLis;
       if (topLis != null) { topLis.edgeRemoved(edge); }
+      return true; }
+
+    private final boolean edgeRemoveInternal(final int edge) {
+      if (!m_graph.edgeRemove(edge)) { return false; }
+      m_selectedEdges.delete(edge);
+      ((EdgeView) m_edgeViewStorage.getObjAtIndex(edge)).m_fung = null;
+      m_edgeViewStorage.setObjAtIndex(null, edge);
       return true; }
 
     public final boolean nodeExists(final int node) {
