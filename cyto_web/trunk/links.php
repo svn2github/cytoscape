@@ -41,6 +41,8 @@ and provides a powerful framework for user interaction and data display.
 <a href="http://www.genmapp.org/">GenMAPP</a>
 <br>
 <a href="http://biodata.mshri.on.ca/osprey/servlet/Index">Osprey</a>
+<br>
+<a href="http://nemo-cyclone.sourceforge.net">Cyclone</a>
 <br><br>
 
 <big><b>Network Databases</b></big>
