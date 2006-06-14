@@ -936,13 +936,16 @@ public abstract class Cytoscape {
 	 */
 	public static void destroyNetwork(CyNetwork network, boolean destroy_unique) {
 
-		getNetworkMap().remove(network.getIdentifier());
+		String networkId = network.getIdentifier();
+
+		getNetworkMap().remove(networkId);
 		if ( getNetworkMap().size() <= 0 )
 			currentNetworkID = null;
 
-		if (viewExists(network.getIdentifier()))
+		if (viewExists(networkId))
 			destroyNetworkView(network);
-		firePropertyChange(NETWORK_DESTROYED, null, network.getIdentifier());
+
+		firePropertyChange(NETWORK_DESTROYED, null, networkId);
 
 		if (destroy_unique) {
 
