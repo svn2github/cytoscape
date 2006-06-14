@@ -440,14 +440,14 @@ public class ExpressionData implements Serializable {
         if (taskMonitor != null) {
             taskMonitor.setStatus("Reading in Data...");
         }
-        for (int i = lineCount; i < lines.length; i++) {
+        for (int ii = lineCount; ii < lines.length; ii++) {
 
             if (taskMonitor != null) {
-                double percentComplete = ((double) i / lines.length) * 100.0;
+                double percentComplete = ((double) ii / lines.length) * 100.0;
                 taskMonitor.setPercentCompleted((int) percentComplete);
             }
 
-            parseOneLine(lines[i], lineCount, expectPvals, mappingByKeyAttribute, attributeToId);
+            parseOneLine(lines[ii], ii, expectPvals, mappingByKeyAttribute, attributeToId);
         }
 
         /* save numGenes and build hash of gene names to indices */
@@ -578,8 +578,6 @@ public class ExpressionData implements Serializable {
 
         if ((sig_vals && (numTokens < 2 * numConds + 2))
                 || ((!sig_vals) && numTokens < numConds + 2)) {
-	    System.out.println("sig_vals: " + sig_vals + " numTokens: "
-			       + numTokens + " numConds: " + numConds);
             throw new IOException("Warning: parse error on line " + lineCount
                     + "  tokens read: " + numTokens);
         }
