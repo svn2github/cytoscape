@@ -108,7 +108,7 @@ public final class GraphGraphics
       public final void getAnchor(final int inx,
                                   final float[] arr, final int off) { } };
   private final double[] m_edgePtsBuff =
-    new double[(MAX_EDGE_ANCHORS + 1) * 3];
+    new double[(MAX_EDGE_ANCHORS + 1) * 6];
   private int m_polyNumPoints; // Used with m_polyCoords.
   private int m_edgePtsCount; // Number of points stored in m_edgePtsBuff.
   private Graphics2D m_g2d;
@@ -1313,7 +1313,8 @@ public final class GraphGraphics
       throw new IllegalArgumentException("arrow1Type is not recognized"); }
     if (anchors.numAnchors() > MAX_EDGE_ANCHORS)
       throw new IllegalArgumentException
-        ("at most MAX_EDGE_ANCHORS edge anchors can be specified");
+        ("at most MAX_EDGE_ANCHORS (" + MAX_EDGE_ANCHORS +
+         ") edge anchors can be specified");
   }
 
   private final void drawSimpleEdgeFull(final byte arrow0Type,
@@ -1587,7 +1588,8 @@ public final class GraphGraphics
         throw new IllegalArgumentException("arrow1Type is not recognized"); }
       if (anchors.numAnchors() > MAX_EDGE_ANCHORS)
         throw new IllegalArgumentException
-          ("at most MAX_EDGE_ANCHORS edge anchors can be specified"); }
+          ("at most MAX_EDGE_ANCHORS (" + MAX_EDGE_ANCHORS +
+           ") edge anchors can be specified"); }
 
     byte arrow0 = arrow0Type;
     byte arrow1 = arrow1Type;
