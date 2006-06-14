@@ -2,88 +2,65 @@ package cytoscape.fung;
 
 import cytoscape.util.intr.IntStack;
 
-final class SelectionListenerChain
+final class SelectionListenerChain implements SelectionListener
 {
 
-  private final Object a, b;
+  private final SelectionListener a, b;
 
-  private SelectionListenerChain(final Object a, final Object b)
+  private SelectionListenerChain(final SelectionListener a,
+                                 final SelectionListener b)
   {
     this.a = a;
     this.b = b;
   }
 
-  final void fireNodesSelected(final IntStack selectedNodes)
+  public final void nodeSelected(final int node)
   {
-    if (a instanceof SelectionListener) {
-      ((SelectionListener) a).nodesSelected(selectedNodes.elements()); }
-    else {
-      ((SelectionListenerChain) a).fireNodesSelected(selectedNodes); }
-    if (b instanceof SelectionListener) {
-      ((SelectionListener) b).nodesSelected(selectedNodes.elements()); }
-    else {
-      ((SelectionListenerChain) b).fireNodesSelected(selectedNodes); }
+    a.nodeSelected(node);
+    b.nodeSelected(node);
   }
 
-  final void fireNodesUnselected(final IntStack unselectedNodes)
+  public final void nodeUnselected(final int node)
   {
-    if (a instanceof SelectionListener) {
-      ((SelectionListener) a).nodesUnselected(unselectedNodes.elements()); }
-    else {
-      ((SelectionListenerChain) a).fireNodesUnselected(unselectedNodes); }
-    if (b instanceof SelectionListener) {
-      ((SelectionListener) b).nodesUnselected(unselectedNodes.elements()); }
-    else {
-      ((SelectionListenerChain) b).fireNodesUnselected(unselectedNodes); }
+    a.nodeUnselected(node);
+    b.nodeUnselected(node);
   }
 
-  final void fireEdgesSelected(final IntStack selectedEdges)
+  public final void edgeSelected(final int edge)
   {
-    if (a instanceof SelectionListener) {
-      ((SelectionListener) a).edgesSelected(selectedEdges.elements()); }
-    else {
-      ((SelectionListenerChain) a).fireEdgesSelected(selectedEdges); }
-    if (b instanceof SelectionListener) {
-      ((SelectionListener) b).edgesSelected(selectedEdges.elements()); }
-    else {
-      ((SelectionListenerChain) b).fireEdgesSelected(selectedEdges); }
+    a.edgeSelected(edge);
+    b.edgeSelected(edge);
   }
 
-  final void fireEdgesUnselected(final IntStack unselectedEdges)
+  public final void edgeUnselected(final int edge)
   {
-    if (a instanceof SelectionListener) {
-      ((SelectionListener) a).edgesUnselected(unselectedEdges.elements()); }
-    else {
-      ((SelectionListenerChain) a).fireEdgesUnselected(unselectedEdges); }
-    if (b instanceof SelectionListener) {
-      ((SelectionListener) b).edgesUnselected(unselectedEdges.elements()); }
-    else {
-      ((SelectionListenerChain) b).fireEdgesUnselected(unselectedEdges); }
+    a.edgeUnselected(edge);
+    b.edgeUnselected(edge);
   }
 
-  static final Object add(final Object a,
-                          final Object b)
+  static final SelectionListener add(final SelectionListener a,
+                                     final SelectionListener b)
   {
     if (a == null) { return b; }
     if (b == null) { return a; }
     return new SelectionListenerChain(a, b);
   }
 
-  static final Object remove(final Object o,
-                             final Object oldo)
+  static final SelectionListener remove(final SelectionListener l,
+                                        final SelectionListener oldl)
   {
-    if (o == oldo || o == null) { return null; }
-    else if (o instanceof SelectionListenerChain) {
-      return ((SelectionListenerChain) o).remove(oldo); }
-    else return o;
+    if (l == oldl || l == null) { return null; }
+    else if (l instanceof SelectionListenerChain) {
+      return ((SelectionListenerChain) l).remove(oldl); }
+    else return l;
   }
 
-  private final Object remove(final Object oldo)
+  private final SelectionListener remove(final SelectionListener oldl)
   {
-    if (oldo == a) { return b; }
-    if (oldo == b) { return a; }
-    final Object a2 = remove(a, oldo);
-    final Object b2 = remove(b, oldo);
+    if (oldl == a) { return b; }
+    if (oldl == b) { return a; }
+    final SelectionListener a2 = remove(a, oldl);
+    final SelectionListener b2 = remove(b, oldl);
     if (a2 == a && b2 == b) { return this; }
     return add(a2, b2);
   }
