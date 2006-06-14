@@ -115,6 +115,8 @@ public class RGAlgorithmGui extends JFrame {
 	protected JComboBox nodesFiltersBox;
 
 	protected JComboBox edgesFiltersBox;
+	
+	protected JComboBox nodeAttributesBox;
 
 	/**
 	 * Constructor, calls <code>create()</code>.
@@ -423,28 +425,76 @@ public class RGAlgorithmGui extends JFrame {
 	 */
 	protected JPanel createVisualizationPanel() {
 		JPanel visPanel = new JPanel();
-		visPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-
-		this.abstractRbutton = new JRadioButton("Abstract Biomodules");
+		//visPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		visPanel.setLayout(new BorderLayout());
+		
+		JPanel northPanel = new JPanel();
+		northPanel.setLayout(new BoxLayout(northPanel,BoxLayout.Y_AXIS));
+		
+		JPanel aPanel = new JPanel();
+		aPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		this.abstractRbutton = new JRadioButton("Collapse Biomodules");
 		String netID = this.algorithmData.getNetwork().getIdentifier();
 		CyNetworkView netView = Cytoscape.getNetworkView(netID);
 		if (netView != null) {
 			this.abstractRbutton.setSelected(true);
 		}
-		visPanel.add(this.abstractRbutton);
+		aPanel.add(this.abstractRbutton);
+		
+		northPanel.add(aPanel);
+		
+		JPanel nodeLabelPanel = new JPanel();
+		nodeLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		// To which node attribute to attach the "label" for biomodules
+		JLabel label = new JLabel("Node label attribute:");
+		
+		this.nodeAttributesBox = new JComboBox();
+		updateNodeAttributesBox();
+		nodeLabelPanel.add(label);
+		nodeLabelPanel.add(Box.createHorizontalStrut(3));
+		nodeLabelPanel.add(this.nodeAttributesBox);
+		
+		northPanel.add(nodeLabelPanel);
+		
+		visPanel.add(northPanel,BorderLayout.NORTH);
+		
 		return visPanel;
 	}// createVisualizationPanel
 
+	/**
+	 * Gets the String attributes from Cytoscape's node attributes
+	 * and assigns them to this.nodeAttributesBox
+	 */
+	protected void updateNodeAttributesBox (){
+		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+		String [] attributeNames = nodeAtts.getAttributeNames();
+		Vector stringAtts = new Vector();
+		
+		// get the attributes of type String
+		for(int i = 0; i < attributeNames.length; i++){
+			byte type = nodeAtts.getType(attributeNames[i]);
+			// ID should not be editable, this will be true for Cytoscape 2.4
+			if(type == CyAttributes.TYPE_STRING && !attributeNames[i].equals("ID")) stringAtts.add(attributeNames[i]);
+		}//for i
+		
+		ComboBoxModel model = new DefaultComboBoxModel(stringAtts);
+		this.nodeAttributesBox.setModel(model);
+	}
+	
+	
 	/**
 	 * Creates and returns a panel for showing the data that the
 	 * <code>RGAlgorithm</code> produces.
 	 * 
 	 * @return a <code>JPanel</code>
 	 */
-	protected JPanel createDataPanel() {
+	protected JPanel createDataPanel () {
 		JPanel dataPanel = new JPanel();
 		dataPanel.setLayout(new BorderLayout());
 
+		JPanel northPanel = new JPanel();
+		northPanel.setLayout(new BoxLayout(northPanel,BoxLayout.Y_AXIS));
+		
 		JPanel radioPanel = new JPanel();
 
 		this.viewDataRadioButton = new JRadioButton(
@@ -452,7 +502,7 @@ public class RGAlgorithmGui extends JFrame {
 				this.algorithmData.getSaveIntermediaryData());
 		radioPanel.add(this.viewDataRadioButton);
 
-		dataPanel.add(radioPanel, BorderLayout.NORTH);
+		northPanel.add(radioPanel);
 
 		JPanel buttonsPanel = new JPanel();
 		GridLayout gl = new GridLayout(4, 1);
@@ -529,7 +579,9 @@ public class RGAlgorithmGui extends JFrame {
 		buttonsPanel.add(biomodsButton);
 		buttonsPanel.add(annotsButton);
 
-		dataPanel.add(buttonsPanel, BorderLayout.CENTER);
+		northPanel.add(buttonsPanel);
+		
+		dataPanel.add(northPanel,BorderLayout.NORTH);
 
 		return dataPanel;
 	}// createDataPanel
