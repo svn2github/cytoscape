@@ -239,12 +239,19 @@ public abstract class Cytoscape {
 
 	
 	/**
-	 * Returns a nullNetworkView object.
+	 * @return a nullNetworkView object. This is NOT simply a null object.
 	 */
 	public static CyNetworkView getNullNetworkView() {
 		return nullNetworkView;
 	}
 	
+	/**
+	 * @return the nullNetwork CyNetwork. This is NOT simply a null object.
+	 */
+	public static CyNetwork getNullNetwork() {
+		return nullNetwork;
+	}
+
 	
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
@@ -806,8 +813,8 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @return the CyNetwork that has the given identifier or null if there is
-	 *         no such network
+	 * @return the CyNetwork that has the given identifier or the nullNetwork 
+	 * (see {@link #getNullNetwork()}) if there is no such network. 
 	 */
 	public static CyNetwork getNetwork(String id) {
 		if (id != null && getNetworkMap().containsKey(id))
