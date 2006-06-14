@@ -317,10 +317,19 @@ public final class NodeView
       return returnThis; }
   }
 
-  public boolean isSelected()
+  public final boolean isSelected()
   {
     synchronized (m_fung.m_lock) {
       return m_fung.m_selectedNodes.count(m_node) > 0; }
+  }
+
+  /**
+   * Returns true if this operation was successful, false if this node view
+   * was already selected.
+   */
+  public final boolean select()
+  {
+    return false;
   }
 
 }
