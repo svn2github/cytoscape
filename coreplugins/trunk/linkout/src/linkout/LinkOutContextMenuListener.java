@@ -35,6 +35,9 @@ public class LinkOutContextMenuListener implements NodeContextMenuListener {
 }
 
 /*$Log$
- *Revision 1.2  2006/05/23 20:39:42  betel
- *Changes for compatibility with latest ding library
- **/
+ *Revision 1.1  2006/06/14 18:12:46  mes
+ *updated project to actually compile and work with ant
+ *
+/*Revision 1.2  2006/05/23 20:39:42  betel
+/*Changes for compatibility with latest ding library
+/**/

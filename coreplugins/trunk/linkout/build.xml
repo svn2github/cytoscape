@@ -1,12 +1,11 @@
 <!-- Ant file for Linkout project-->
-<project name="linkout" default="linkout" basedir=".">
+<project name="linkout" default="all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init-linkout">
     <tstamp/>
-    <property name="linkout.Name" value="linkout"/>
     <property name="linkout.name" value="linkout"/>
     <property name="linkout.version" value="0.1"/>
     <property name="linkout.year" value="2006"/>
@@ -31,10 +30,10 @@
     <property name="linkout.root.dir" value="./"/>
     <property name="linkout.src.dir" value="${linkout.root.dir}/src"/>
     <property name="linkout.classes.dir" value="${linkout.root.dir}/classes"/>
-    <property name="linkout.javadoc.dir" value="${javadoc.dir}/linkout"/>
+    <property name="linkout.javadoc.dir" value="${linkout.root.dir}/api"/>
     <property name="linkout.resources.dir" value="${linkout.root.dir}/resources"/>
     <property name="linkout.manifest.dir" value="${linkout.root.dir}/manifest"/>
-    <property name="linkout.packages" value="linkout.*"/>
+    <property name="linkout.packages" value="*"/>
     <!-- Subdirectory for test reports -->
     <property name="linkout.tests.reports.dir" value="${linkout.root.dir}/test" />
     <property name="cytoscape.lib" value="../../cytoscape" />
@@ -65,6 +64,7 @@
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
       <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/ding.jar"/>
       <pathelement path="${project.class.path}/"/>
     </path>
 
@@ -98,7 +98,10 @@
     
 	<echo message="Running linkout"/>
 	
+  <!-- 
 	<jar destfile="linkout.jar" manifest="${linkout.manifest.dir}/linkout.manifest">
+  -->
+	<jar destfile="linkout.jar"> 
       <fileset
         dir="${linkout.classes.dir}"
         includes="**"/>
@@ -141,7 +144,7 @@
   <!-- =================================================================== -->
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
-  <target name="all" depends="linkout"/>
+  <target name="all" depends="linkout,runtests,docs"/>
 
    <!-- =================================================================== -->
   <!-- Run the Plugin                                                      -->
@@ -187,7 +190,8 @@
 
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
-  <!-- =================================================================== -->
+  <!-- =================================================================== 
+  -->
   <target name="docs" depends="init-linkout" >
     <mkdir dir="${linkout.javadoc.dir}"/>
     <javadoc packagenames="${linkout.packages}"
@@ -200,8 +204,8 @@
              use="true"
              splitindex="true"
              noindex="false"
-             windowtitle="${linkout.Name} API"
-             doctitle="${linkout.Name}"
+             windowtitle="${linkout.name} API"
+             doctitle="${linkout.name}"
     />
   </target>
  
@@ -210,6 +214,7 @@
   <!-- =================================================================== -->
   <target name="clean" depends="init-linkout">
     <delete dir="${linkout.classes.dir}"/>
+    <delete dir="${linkout.javadoc.dir}"/>
     <delete file="linkout.jar"/>
     <delete file="linkout-tests.jar"/>
   </target>

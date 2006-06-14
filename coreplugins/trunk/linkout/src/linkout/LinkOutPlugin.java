@@ -87,6 +87,9 @@ public class LinkOutPlugin
 
 /*
 $Log$
+Revision 1.1  2006/06/14 18:12:46  mes
+updated project to actually compile and work with ant
+
 Revision 1.4  2006/06/12 19:27:44  betel
 Fixes to bug reports 346-links to missing labels, 637-linkout fix for command line mode
 

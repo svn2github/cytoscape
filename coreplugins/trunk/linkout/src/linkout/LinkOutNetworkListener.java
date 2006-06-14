@@ -36,9 +36,12 @@ public class LinkOutNetworkListener implements PropertyChangeListener{
 }
 
 /*$Log$
- *Revision 1.2  2006/06/12 19:27:44  betel
- *Fixes to bug reports 346-links to missing labels, 637-linkout fix for command line mode
+ *Revision 1.1  2006/06/14 18:12:46  mes
+ *updated project to actually compile and work with ant
  *
+/*Revision 1.2  2006/06/12 19:27:44  betel
+/*Fixes to bug reports 346-links to missing labels, 637-linkout fix for command line mode
+/*
 /*Revision 1.1  2006/05/19 21:51:29  betel
 /*New implementation of LinkOut with network-view listener
 /**/
