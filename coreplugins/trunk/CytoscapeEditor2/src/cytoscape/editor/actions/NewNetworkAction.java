@@ -42,7 +42,7 @@ public class NewNetworkAction extends CytoscapeAction {
 		super(editorName);
 		this.editorName = editorName;
 		this.factory = factory;
-		setPreferredMenu("File.New");
+		setPreferredMenu("File.New.Network");
 	}
 
 	public NewNetworkAction(boolean label) {

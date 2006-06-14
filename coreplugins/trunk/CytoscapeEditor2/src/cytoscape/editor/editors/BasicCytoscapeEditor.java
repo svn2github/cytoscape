@@ -142,6 +142,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
     public static final String BIOPAX_NAME_ATTRIBUTE
             = "BIOPAX_NAME";
 
+	private static String _connectedTitle = "Connect Selected Nodes";
 
 
 	/**
@@ -885,17 +886,19 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 	 **/
 	class ConnectSelectedNodesAction extends CytoscapeAction {
 		public ConnectSelectedNodesAction() {
-			super("Connect Selected Nodes");
+			super(_connectedTitle);
 			setPreferredMenu("Edit");
+			// Should place item as second to last, just before the separator.
+			setPreferredIndex(Cytoscape.getDesktop().getCyMenus().getEditMenu().getItemCount()-2);
 		}
 
 		public ConnectSelectedNodesAction(boolean label) {
-			super(); 
+			this(); 
 		}
 		
 		public String getName ()
 		{
-			return "Connect Selected Nodes";
+			return _connectedTitle; 
 		}
 
 		public void actionPerformed(ActionEvent e) {

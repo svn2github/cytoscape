@@ -39,6 +39,8 @@ public class DeleteAction extends  CytoscapeAction {
 
 	private String _label = null;
 
+	private static String _title ="Delete Selected Nodes and Edges";
+
 	//~ Constructors
 	// ///////////////////////////////////////////////////////////
 
@@ -46,7 +48,7 @@ public class DeleteAction extends  CytoscapeAction {
 	 * action for deleting selected Cytoscape nodes and edges
 	 */
 	public DeleteAction() {
-		super("Remove Selected Nodes and Edges");
+		this(null,null);
 	}
 
 	/**
@@ -57,8 +59,7 @@ public class DeleteAction extends  CytoscapeAction {
 	 *            the object to be deleted
 	 */
 	public DeleteAction(Object obj) {
-		super("Remove Selected Nodes and Edges");
-		_cyObj = obj;
+		this(obj,null);
 	}
 
 	/**
@@ -71,13 +72,19 @@ public class DeleteAction extends  CytoscapeAction {
 	 *            the name of the object to be deleted
 	 */
 	public DeleteAction(Object obj, String label) {
-		super("Delete Selected Nodes and Edges");
-		_cyObj = obj;
-		_label = label;
+		super(_title);
+		setPreferredMenu("Edit");
+		// Should place the menu item as the second to last item, just before the separator.
+		setPreferredIndex(Cytoscape.getDesktop().getCyMenus().getEditMenu().getItemCount()-2);
+
+		if ( obj != null )
+			_cyObj = obj;
+		if ( label != null )
+			_label = label;
 	}
 
 	public static String getTitle(Object[] args, PNode node) {
-		return "Delete Selected Nodes and Edges";
+		return _title;
 	}
 	
 	//~ Methods
