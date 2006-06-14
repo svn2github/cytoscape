@@ -945,14 +945,14 @@ public abstract class Cytoscape {
 
 		String networkId = network.getIdentifier();
 
+		firePropertyChange(NETWORK_DESTROYED, null, networkId);
+
 		getNetworkMap().remove(networkId);
 		if ( getNetworkMap().size() <= 0 )
 			currentNetworkID = null;
 
 		if (viewExists(networkId))
 			destroyNetworkView(network);
-
-		firePropertyChange(NETWORK_DESTROYED, null, networkId);
 
 		if (destroy_unique) {
 
