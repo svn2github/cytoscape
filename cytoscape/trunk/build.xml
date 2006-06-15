@@ -38,7 +38,7 @@
     <property name="build.compiler" value="modern"/>
 
     <!-- Release number -->
-    <property name="version" value="2.3_beta2"/>
+    <property name="version" value="2.3_beta3"/>
 
     <property name="dirname.release.dir"
               value="cytoscape-v${version}"/>
