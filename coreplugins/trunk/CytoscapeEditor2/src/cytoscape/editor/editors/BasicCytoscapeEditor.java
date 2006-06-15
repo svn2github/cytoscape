@@ -9,7 +9,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -142,7 +141,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
     public static final String BIOPAX_NAME_ATTRIBUTE
             = "BIOPAX_NAME";
 
-	private static String _connectedTitle = "Connect Selected Nodes";
 
 
 	/**
@@ -251,6 +249,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 		// AJK: 05/15/06 BEGIN
 		//     set tooltip on the node's view
 		NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
+		
 		nv.setToolTip(cn.getIdentifier());
 		Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
 		// AJK: 05/15/06 END
@@ -886,19 +885,17 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 	 **/
 	class ConnectSelectedNodesAction extends CytoscapeAction {
 		public ConnectSelectedNodesAction() {
-			super(_connectedTitle);
+			super("Connect Selected Nodes");
 			setPreferredMenu("Edit");
-			// Should place item as second to last, just before the separator.
-			setPreferredIndex(Cytoscape.getDesktop().getCyMenus().getEditMenu().getItemCount()-2);
 		}
 
 		public ConnectSelectedNodesAction(boolean label) {
-			this(); 
+			super(); 
 		}
 		
 		public String getName ()
 		{
-			return _connectedTitle; 
+			return "Connect Selected Nodes";
 		}
 
 		public void actionPerformed(ActionEvent e) {

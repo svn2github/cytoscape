@@ -278,7 +278,7 @@ public abstract class CytoscapeEditorManager {
 
 		CytoscapeModifiedNetworkManager modifiedManager = new CytoscapeModifiedNetworkManager();
 
-		NewNetworkAction newNetwork = new NewNetworkAction("Network",
+		NewNetworkAction newNetwork = new NewNetworkAction("Edit New Network",
 				CytoscapeEditorFactory.INSTANCE);
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New");
 		Cytoscape.getDesktop().getCyMenus().addAction(newNetwork);

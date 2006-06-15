@@ -37,7 +37,7 @@ import cytoscape.visual.mappings.PassThroughMapping;
  */
 public class MapBioMoleculeEditorToVisualStyle {
 
-	public static final String BIOMOLECULE_VISUAL_STYLE = "BioMoleculeEditor";
+	public static final String BIOMOLECULE_VISUAL_STYLE = "SimpleBioMoleculeEditor";
 
 	/**
      * Cytoscape Attribute:  Node Type.
@@ -60,7 +60,7 @@ public class MapBioMoleculeEditorToVisualStyle {
 	     * If an existing BioMolecule Viz Mapper already exists, we use it.
 	     * Otherwise, we create a new one.
 	     */
-	    public void createVizMapper() {
+	    public VisualStyle createVizMapper() {
 
 	        VisualMappingManager manager =
 	                Cytoscape.getDesktop().getVizMapManager();
@@ -73,18 +73,28 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        if (existingStyle != null) {
                 System.out.println("Got existing visual style: " + existingStyle);
 //	            manager.setVisualStyle(existingStyle);
+                return null;
 	        } else {
 	            VisualStyle bpVisualStyle = new VisualStyle(BIOMOLECULE_VISUAL_STYLE);
 	            // AJK: 03/29/06 define fields of visual style 
+	            System.out.println("defining visual style: " + bpVisualStyle);
 	            defineVisualStyle (bpVisualStyle, manager, catalog);
 	            manager.setVisualStyle(bpVisualStyle);
 
 	            //  The visual style must be added to the Global Catalog
 	            //  in order for it to be written out to vizmap.props upon user exit
-	            catalog.addVisualStyle(bpVisualStyle);	 
+	            System.out.println("Adding visual style " + bpVisualStyle 
+	            		+ " to catalog " + catalog);
+	            catalog.addVisualStyle(bpVisualStyle);
 	            
+	            // for debugging
+	    		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
+	    		System.out.println ("Got visual Style from catalog: " + catalog 
+	    				+ " = " + vizStyle);
+	    		
 	            // try setting the visual style to BioMolecule
 	            Cytoscape.getDesktop().setVisualStyle(bpVisualStyle);
+	            return bpVisualStyle;
 	        }
 	    }
 	    
@@ -118,7 +128,7 @@ public class MapBioMoleculeEditorToVisualStyle {
 
 	
 
-	    	discreteMapping.putMapValue(ACTIVATION, Arrow.COLOR_DELTA);
+	    	discreteMapping.putMapValue(ACTIVATION, Arrow.BLACK_DELTA);
 	    	discreteMapping.putMapValue(CATALYSIS, Arrow.BLACK_CIRCLE);
 	        discreteMapping.putMapValue(INHIBITION, Arrow.BLACK_T);
 

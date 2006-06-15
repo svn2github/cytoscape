@@ -33,7 +33,6 @@ import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.actions.DeleteAction;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
 
 
 

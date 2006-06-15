@@ -68,9 +68,10 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
 		// AJK: 10/15/05 register interestin visual style change event
 		Cytoscape.getDesktop().getVizMapManager().addChangeListener(this);
-		
+
 		// AJK: 06/10/06 listen for change of tab selection on CytoPanel.WEST
-		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).addCytoPanelListener(this);
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
+				.addCytoPanelListener(this);
 
 		// AJK: 11/25/05 register interest in mouse motion events
 		// so that we can trap out dragging of nodes when an edge
@@ -127,7 +128,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 	// // AJK: 10/21/05 END
 	// if (editorType == null) {
 	// editorType = CytoscapeEditorManager.DEFAULT_EDITOR_TYPE;
-	// }  
+	// }
 	//
 	// try {
 	// editorForStyle = CytoscapeEditorFactory.INSTANCE
@@ -184,65 +185,66 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 	// }
 
 	public void stateChanged(ChangeEvent e) {
-		System.out.println("Got state change event from source: " + e.getSource());
+		System.out.println("Got state change event from source: "
+				+ e.getSource());
 
 		if (!CytoscapeEditorManager.isEditingEnabled()) {
 			return;
 		}
-		
+
 		// AJK: 06/10/06 BEGIN
-		//    don't do any work building editor palette if editor tab is not selected in CytoPanel
-		int idx = 
-			Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent("Editor");
-		if (idx != Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex())
-		{
+		// don't do any work building editor palette if editor tab is not
+		// selected in CytoPanel
+		int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
+				.indexOfComponent("Editor");
+		if (idx != Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
+				.getSelectedIndex()) {
 			return;
 		}
 
 		VisualMappingManager VMM = (VisualMappingManager) e.getSource();
-		if (VMM != null) 
-		{
+		if (VMM != null) {
 			updateEditorPalette(VMM.getVisualStyle());
 		}
 	}
-	
-	public void onComponentSelected(int componentIndex)
-	{
-		if (componentIndex == 
-			Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).getSelectedIndex())
-		{
-			updateEditorPalette(Cytoscape.getVisualMappingManager().getVisualStyle());
+
+	public void onComponentSelected(int componentIndex) {
+		if (componentIndex == Cytoscape.getDesktop().getCytoPanel(
+				SwingConstants.WEST).getSelectedIndex()) {
+			updateEditorPalette(Cytoscape.getVisualMappingManager()
+					.getVisualStyle());
 		}
 	}
-	
-    /**
-     * Notifies the listener on a change in the CytoPanel state.
-     *
-     * @param newState The new CytoPanel state - see CytoPanelState class.
-     */
-    public void onStateChange(CytoPanelState newState){};
 
+	/**
+	 * Notifies the listener on a change in the CytoPanel state.
+	 * 
+	 * @param newState
+	 *            The new CytoPanel state - see CytoPanelState class.
+	 */
+	public void onStateChange(CytoPanelState newState) {
+	};
 
-    /**
-     * Notifies the listener when a component is added to the CytoPanel.
-     *
-	 * @param count The number of components on the CytoPanel after the add.
-     */
-    public void onComponentAdded(int count){};
+	/**
+	 * Notifies the listener when a component is added to the CytoPanel.
+	 * 
+	 * @param count
+	 *            The number of components on the CytoPanel after the add.
+	 */
+	public void onComponentAdded(int count) {
+	};
 
-    /**
-     * Notifies the listener when a component is removed from the CytoPanel.
-     *
-	 * @param count The number of components on the CytoPanel after the remove.
-     */
-    public void onComponentRemoved(int count){};
+	/**
+	 * Notifies the listener when a component is removed from the CytoPanel.
+	 * 
+	 * @param count
+	 *            The number of components on the CytoPanel after the remove.
+	 */
+	public void onComponentRemoved(int count) {
+	};
 
-	
-	public void updateEditorPalette(VisualStyle style)
-	{
+	public void updateEditorPalette(VisualStyle style) {
 
-
-		
 		String editorType = style.getName();
 		CytoscapeEditor editorForStyle = null;
 
@@ -251,7 +253,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 					.getEditor(editorType);
 			CytoscapeEditorManager.setEditorForVisualStyle(style,
 					editorForStyle);
-			System.out.println("Editor for Style: " + style + " = " + editorForStyle);
+			System.out.println("Editor for Style: " + style + " = "
+					+ editorForStyle);
 		} catch (InvalidEditorException ex) {
 			editorType = CytoscapeEditorManager.DEFAULT_EDITOR_TYPE;
 			try {
@@ -260,34 +263,33 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 				CytoscapeEditorManager.setEditorForVisualStyle(style,
 						editorForStyle);
 			} catch (InvalidEditorException exe) {
-				System.out
-						.println("Error building editor for editor type = "
-								+ editorType + ", error = " + ex);
+				System.out.println("Error building editor for editor type = "
+						+ editorType + ", error = " + ex);
 				exe.printStackTrace();
 			}
-
-			if (editorForStyle != null) {
-				CyNetworkView view = Cytoscape.getCurrentNetworkView();
-				CytoscapeEditor editorForView = CytoscapeEditorManager
-						.getEditorForView(Cytoscape.getCurrentNetworkView());
-				System.out.println("Got editor for view: " + editorForView);
-
-				if ((editorForView != null)
-						&& (!CytoscapeEditorManager.isSettingUpEditor())) {
-
-					System.out.println("Disabling controls for editor: "
-							+ editorForView);
-					editorForView.disableControls(null);
-				}
-				System.out.println("Initializing controls for " + editorForStyle);
-				editorForStyle.initializeControls(null);
-				CytoscapeEditorManager.setEditorForView(view,
-						editorForStyle);
-				CytoscapeEditorManager.setupNewNetworkView(view); 
-				CytoscapeEditorManager.setCurrentEditor(editorForStyle);
-				CytoscapeEditorManager.setEventHandlerForView(view);
-			}
 		}
+
+		if (editorForStyle != null) {
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			CytoscapeEditor editorForView = CytoscapeEditorManager
+					.getEditorForView(Cytoscape.getCurrentNetworkView());
+			System.out.println("Got editor for view: " + editorForView);
+
+			if ((editorForView != null)
+					&& (!CytoscapeEditorManager.isSettingUpEditor())) {
+
+				System.out.println("Disabling controls for editor: "
+						+ editorForView);
+				editorForView.disableControls(null);
+			}
+			System.out.println("Initializing controls for " + editorForStyle);
+			editorForStyle.initializeControls(null);
+			CytoscapeEditorManager.setEditorForView(view, editorForStyle);
+			CytoscapeEditorManager.setupNewNetworkView(view);
+			CytoscapeEditorManager.setCurrentEditor(editorForStyle);
+			CytoscapeEditorManager.setEventHandlerForView(view);
+		}
+
 	}
 
 	// AJK: 05/29/06 END
@@ -385,9 +387,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 			// for this view
 			cytoscape.util.UndoManager undo = CytoscapeDesktop.undo;
 			// AJK: 06/07/06 clear UndoManager when the view changes
-			
+
 			undo.discardAllEdits();
-			
 
 			// set the buttons on the shapePalette to undo, redo actions
 			ShapePalette palette = CytoscapeEditorManager

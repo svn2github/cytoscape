@@ -66,7 +66,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 	public static final String CATALYSIS = "Catalysis";
 
-	public static final String BIOMOLECULE_VISUAL_STYLE = "BioMoleculeEditor";
+	public static final String BIOMOLECULE_VISUAL_STYLE = "SimpleBioMoleculeEditor";
 
 	public static MapBioMoleculeEditorToVisualStyle mpbv = null;
 
@@ -92,33 +92,35 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		// accommodated the current
 		// visual style potentially being clobbered by other plugins
 
-		VisualMappingManager manager = Cytoscape.getDesktop()
-				.getVizMapManager();
+		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
 
 		CalculatorCatalog catalog = manager.getCalculatorCatalog();
 
 		// VisualStyle vizStyle = manager.getVisualStyle();
 		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
-		if (mpbv == null) {
-			mpbv = new MapBioMoleculeEditorToVisualStyle();
-			mpbv.createVizMapper();
+		System.out.println ("Got visual Style from catalog: " + catalog 
+				+ " = " + vizStyle);
+		if (vizStyle == null) {
+			if (mpbv == null) {
+				mpbv = new MapBioMoleculeEditorToVisualStyle();
+			}
+			vizStyle = mpbv.createVizMapper();
 		}
-		else
-		{
-		
-		System.out.println("Calling defineVisualStyle for: " + vizStyle);
+
+		else {
+
+			System.out.println("Calling defineVisualStyle for: " + vizStyle);
 			mpbv.defineVisualStyle(vizStyle, manager, catalog);
 		}
 
 		// AJK: 09/29/06 END
 
 		// AJK: 06/10/06 BEGIN
-		//     no longer rebuilding shape palette, just its shape pane
-//		shapePalette = new ShapePalette();
-		shapePalette = 
-			CytoscapeEditorManager.getCurrentShapePalette();
-			shapePalette.clear();
-			// AJK: 06/10/06 END
+		// no longer rebuilding shape palette, just its shape pane
+		// shapePalette = new ShapePalette();
+		shapePalette = CytoscapeEditorManager.getCurrentShapePalette();
+		shapePalette.clear();
+		// AJK: 06/10/06 END
 
 		String controllingNodeAttribute = CytoscapeEditorManager
 				.getControllingNodeAttribute(this);
