@@ -40,22 +40,19 @@
 package cytoscape.actions;
 
 //-------------------------------------------------------------------------
-import giny.model.Edge;
-import giny.model.GraphPerspective;
 import giny.model.Node;
-import giny.view.GraphView;
+import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
 
 import javax.swing.undo.AbstractUndoableEdit;
 
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
@@ -78,41 +75,73 @@ public class DestroySelectedAction extends CytoscapeAction {
 	        String callerID = "DeleteSelectedAction.actionPerformed";
 	        final CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
 	        networkView.getNetwork().beginActivity(callerID);
-	        
-	        // AJK: 06/10/06 BEGIN
-	        //   make this action undo-able
-	        final List nodes = networkView.getSelectedNodes();
-	        final List edges = networkView.getSelectedEdges();        
-	        
-	        // AJK: 06/10/06 END
-	        
-	        GraphView view = networkView.getView();
-	        GraphPerspective perspective = view.getGraphPerspective();
-	        // get the Selected node and edge indices
-	        final int[] node_indicies = view.getSelectedNodeIndices();
-	        final int[] edge_indicies = view.getSelectedEdgeIndices();
-	        //and the node/edge vew objects
-	        final List selected_nodeViews = view.getSelectedNodes();
-	        final List selected_edgeViews = view.getSelectedEdges();
-	        // AJK: 06/11/06 BEGIN
-	        //   grab offsets for un-doing
-//	        List offsets = new ArrayList();
-//	        for (Iterator i = selected_nodeViews.iterator(); i.hasNext();)
-//	        {
-//	        	offsets.add(((NodeView) i.next()).getOffset());
-//	        }
-//	        final List offsetsList = offsets;
-//	        
-//	        // AJK: 06/11/06 END
-	        
-	        // Hide the viewable things and the perspective refs
-	        view.hideGraphObjects( selected_nodeViews );
-	        view.hideGraphObjects( selected_edgeViews );
-	        perspective.hideEdges( edge_indicies );
-	        perspective.hideNodes( node_indicies );
-	        
 
-	        
+			java.util.List edgeViews = networkView.getSelectedEdges();
+			java.util.List nodeViews = networkView.getSelectedNodes();
+			final CyNetwork cyNet = networkView.getNetwork();
+
+			final int[] nodes = new int[nodeViews.size() + 1];
+			int[] allEdges = new int[0];
+			
+			// cache the coordinate positions so that they can be restored upon a redo
+			final HashMap coords = new HashMap();
+			final Node[] cyNodes = new Node[nodeViews.size()];
+
+			// first collect the selected nodes and their adjacent edges
+			for (int i = 0; i < nodeViews.size(); i++) {
+				NodeView nview = (NodeView) nodeViews.get(i);
+				CyNode cyNode = (CyNode) nview.getNode();
+				
+				coords.put(cyNode.getIdentifier(), nview.getOffset());
+				cyNodes[i] = cyNode;
+				
+				int nodeIdx = cyNode.getRootGraphIndex();
+				nodes[i] = nodeIdx;
+				int[] edgesList = cyNet.getAdjacentEdgeIndicesArray(nodeIdx, true,
+						true, true);
+				int[] bigEdges = new int[allEdges.length + edgesList.length];
+				for (int m = 0; m < allEdges.length; m++) {
+					bigEdges[m] = allEdges[m];
+				}
+				for (int p = 0; p < edgesList.length; p++) {
+					bigEdges[allEdges.length + p] = edgesList[p];
+				}
+				allEdges = bigEdges;
+			}
+
+			// then collect and add the selected edges
+			for (int j = 0; j < edgeViews.size(); j++) {
+				EdgeView eview = (EdgeView) edgeViews.get(j); // n.b.
+				CyEdge cyEdge = (CyEdge) eview.getEdge();
+				int edgeIdx = cyEdge.getRootGraphIndex();
+				int[] bigEdges = new int[allEdges.length + 1];
+				for (int m = 0; m < allEdges.length; m++) {
+					bigEdges[m] = allEdges[m];
+				}
+				bigEdges[allEdges.length] = edgeIdx;
+				allEdges = bigEdges;
+			}
+
+
+			// now do the deletions
+			final int[] edges = allEdges;
+
+//			cyNet.hideNodes(nodes);
+//			cyNet.hideEdges(edges);
+			
+			// now do the deletions
+			
+			for (int i = 0; i < edges.length; i++)
+			{
+				cyNet.removeEdge(edges[i], false);
+			}
+			
+			for (int j = 0; j < nodes.length; j++)
+			{
+				cyNet.removeNode(nodes[j], false);
+			}
+			
+
 	        networkView.redrawGraph(false, false);
 	        networkView.getNetwork().endActivity(callerID);
 	        
@@ -124,7 +153,7 @@ public class DestroySelectedAction extends CytoscapeAction {
 	 
 			Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
 
-				final String network_id = networkView.getNetwork().getIdentifier();
+				final String network_id = cyNet.getIdentifier();
 
 				public String getPresentationName() {
 					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
@@ -133,7 +162,7 @@ public class DestroySelectedAction extends CytoscapeAction {
 				}
 
 				public String getRedoPresentationName() {
-					if (edges.size() == 0)
+					if (edges.length == 0)
 						// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
 						return "Redo: Removed Nodes";
 //						return " ";
@@ -145,7 +174,7 @@ public class DestroySelectedAction extends CytoscapeAction {
 
 				public String getUndoPresentationName() {
 
-					if (edges.size() == 0)
+					if (edges.length == 0)
 						// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
 						return "Undo: Removed Nodes";
 //						return null;
@@ -158,43 +187,42 @@ public class DestroySelectedAction extends CytoscapeAction {
 				public void redo() {
 					super.redo();
 					// removes the removed nodes and edges from the network
-//					CyNetwork network = Cytoscape.getNetwork(network_id);
-	//
-//						network.hideEdges(edges);
-//						network.hideNodes(nodes);
-				    GraphView view = networkView.getView();
-					GraphPerspective perspective = view.getGraphPerspective();
-					view.hideGraphObjects(selected_nodeViews);
-					view.hideGraphObjects(selected_edgeViews);
-					perspective.hideEdges(edge_indicies);
-					perspective.hideNodes(node_indicies);
+					CyNetwork network = Cytoscape.getNetwork(network_id);
+					for (int i = 0; i < edges.length; i++)
+					{
+						network.removeEdge(edges[i], false);
+					}
+					
+					for (int j = 0; j < nodes.length; j++)
+					{
+						network.removeNode(nodes[j], false);
+					}
+
 				}
 
 				public void undo() {
 					super.undo();
-//					CyNetwork network = Cytoscape.getNetwork(network_id);
-//					if (network != null) {
-//						network.restoreNodes(nodes);
-//						network.restoreEdges(edges);
-				    GraphView view = networkView.getView();
-					GraphPerspective perspective = view.getGraphPerspective();
-					view.showGraphObjects(selected_nodeViews);
-					view.showGraphObjects(selected_edgeViews);
-					perspective.restoreEdges(edge_indicies);
-					perspective.restoreNodes(node_indicies);
-					
-					GinyUtils.unHideAll( cytoscape.Cytoscape.getCurrentNetworkView());
-//					for (int i = 0; i < selected_nodeViews.size(); i++)
-//					{
-//						((NodeView) selected_nodeViews.get(i)).setOffset(
-//								((Point2D) offsetsList.get(i)).getX(),
-//								((Point2D) offsetsList.get(i)).getY());
-//					}					
+					CyNetwork network = Cytoscape.getNetwork(network_id);
+					if (network != null) {
+						network.restoreNodes(nodes);
+						network.restoreEdges(edges);
+						GinyUtils.unHideAll( cytoscape.Cytoscape.getCurrentNetworkView());
+
+						// restore positions of nodes
+						for (int i = 0; i < cyNodes.length; i++)
+						{
+							Node n = cyNodes[i];
+							Point2D pt = (Point2D) coords.get(n.getIdentifier());
+					        NodeView nv = 
+					        	networkView.getNodeView(n);
+					        nv.setOffset(pt.getX(), pt.getY());
+						}
+					}
 				}
 
-			});        
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null,
-					networkView.getNetwork());
+			});
+
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNet);
 	       
 	        // AJK: 06/10/06
 	    } // actionPerformed
