@@ -75,7 +75,12 @@ public class OntologyMapperDialog extends JDialog {
 		initComponents();
 	}
 
-	/** Creates new form OntologyMapperDialog */
+	/**
+	 * Creates new form OntologyMapperDialog.<br>
+	 * 
+	 * @param parent
+	 * @param modal
+	 */
 	public OntologyMapperDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initDataStructures();
