@@ -130,6 +130,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 		speciesCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(
 				0, 0, 0, 0));
 		speciesCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		speciesCheckBox.setSelected(true);
 		speciesCheckBox.setEnabled(false);
 		speciesCheckBox.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -387,6 +388,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 		}
 		flipCheckBox.setEnabled(true);
+		syncSpecies(true);
 		speciesCheckBox.setEnabled(true);
 	}
 
