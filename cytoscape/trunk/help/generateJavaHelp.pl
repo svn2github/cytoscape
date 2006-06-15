@@ -115,3 +115,50 @@ system "xsltproc --stringparam use.id.as.filename 1 --stringparam base.dir $dir/
 
 # This doesn't contain anything that isn't in the good file.
 unlink $xml_form;
+
+#
+# Now comment out the Index view from the helpset.  The index is blank because
+# index terms are only set if the <indexitem> tag is used in the xml.  In
+# our case it is not, so there is no point in displaying a blank index. By
+# commenting this view block out of the helpset, we can prevent this.
+#
+
+$newHelp = "$dir/jhelpset.hs";
+$origHelp = "$dir/jhelpset.hs.orig";
+copy $newHelp, $origHelp;
+
+open FILE, "$origHelp" or die;
+open OUT, ">$newHelp" or die;
+
+$chunk = "";
+$inView = 0;
+$gotIndex = 0;
+while (<FILE>) {
+	if ( $_ =~ /\<view\>/ ) {
+		$chunk .= $_;
+		$inView = 1;
+	} elsif ( $inView == 1 && $_ !~ /\<\/view\>/) {
+		$chunk .= $_;
+		if ( $_ =~ /\<name\>(\w+)\<\/name\>/ ) {
+			if ( "$1" eq "Index" ) { 
+				$gotIndex = 1; 
+			}
+		}
+	} elsif ( $_ =~ /\<\/view\>/ ) {
+		$chunk .= $_;
+		if ( $gotIndex == 1 ) {
+			print OUT "<!--\n$chunk-->\n"; 
+		} else {
+			print OUT $chunk;
+		}
+		$inView = 0;
+		$gotIndex = 0;
+		$chunk = "";
+	} else {
+		print OUT $_;
+	}
+}
+close FILE;
+close OUT;
+
+

@@ -12,12 +12,14 @@
     <type>javax.help.TOCView</type>
     <data>jhelptoc.xml</data>
   </view>
+<!--
   <view>
     <name>Index</name>
     <label>Index</label>
     <type>javax.help.IndexView</type>
     <data>jhelpidx.xml</data>
   </view>
+-->
   <view>
     <name>Search</name>
     <label>Search</label>
