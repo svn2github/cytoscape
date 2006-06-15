@@ -7,13 +7,18 @@ import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.Label;
 import giny.view.NodeView;
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.TexturePaint;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +38,7 @@ public class DNodeView implements NodeView, Label
   boolean m_selected;
   Paint m_unselectedPaint;
   Paint m_selectedPaint;
+  Paint m_borderPaint;
   float m_hiddenXMin;
   float m_hiddenYMin;
   float m_hiddenXMax;
@@ -53,6 +59,7 @@ public class DNodeView implements NodeView, Label
     m_selected = false;
     m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
     m_selectedPaint = Color.yellow;
+    m_borderPaint = m_view.m_nodeDetails.borderPaint(m_inx);
     m_graphicShapes = null;
     m_graphicPaints = null;
   }
@@ -148,14 +155,14 @@ public class DNodeView implements NodeView, Label
   public void setBorderPaint(Paint paint)
   {
     synchronized (m_view.m_lock) {
-      m_view.m_nodeDetails.overrideBorderPaint(m_inx, paint);
+      m_borderPaint = paint;
+      fixBorder();
       m_view.m_contentChanged = true; }
   }
 
   public Paint getBorderPaint()
   {
-    synchronized (m_view.m_lock) {
-      return m_view.m_nodeDetails.borderPaint(m_inx); }
+    return m_borderPaint;
   }
 
   public void setBorderWidth(float width)
@@ -174,12 +181,63 @@ public class DNodeView implements NodeView, Label
   public void setBorder(Stroke stroke)
   {
     if (stroke instanceof BasicStroke) {
-      setBorderWidth(((BasicStroke) stroke).getLineWidth()); }
+      synchronized (m_view.m_lock) {
+        setBorderWidth(((BasicStroke) stroke).getLineWidth());
+        final float[] dashArray = ((BasicStroke) stroke).getDashArray();
+        if (dashArray != null && dashArray.length > 1) {
+          m_borderDash = dashArray[0];
+          m_borderDash2 = dashArray[1]; }
+        else {
+          m_borderDash = 0.0f;
+          m_borderDash2 = 0.0f; }
+        fixBorder(); } }
+  }
+
+  private float m_borderDash = 0.0f;
+  private float m_borderDash2 = 0.0f;
+
+  private final static Color s_transparent = new Color(0, 0, 0, 0);
+
+  // Callers of this method must be holding m_view.m_lock.
+  private void fixBorder()
+  {
+    if (m_borderDash == 0.0f && m_borderDash2 == 0.0f) {
+      m_view.m_nodeDetails.overrideBorderPaint(m_inx, m_borderPaint); }
+    else {
+      final int size = (int) Math.max
+        (1.0f, (int) (m_borderDash + m_borderDash2)); // Average times two.
+      if (size == m_view.m_lastSize && m_borderPaint == m_view.m_lastPaint) {
+        /* Use the cached texture paint. */ }
+      else {
+        final BufferedImage img =
+          new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g2 = (Graphics2D) img.getGraphics();
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+        g2.setPaint(s_transparent);
+        g2.fillRect(0, 0, size, size);
+        g2.setPaint(m_borderPaint);
+        g2.fillRect(0, 0, size / 2, size / 2);
+        g2.fillRect(size / 2, size / 2, size / 2, size / 2);
+        m_view.m_lastTexturePaint =
+          new TexturePaint(img, new Rectangle2D.Double(0, 0, size, size));
+        m_view.m_lastSize = size;
+        m_view.m_lastPaint = m_borderPaint; }
+      m_view.m_nodeDetails.overrideBorderPaint
+        (m_inx, m_view.m_lastTexturePaint); }
   }
 
   public Stroke getBorder()
   {
-    return new BasicStroke(getBorderWidth());
+    synchronized (m_view.m_lock) {
+      if (m_borderDash == 0.0f && m_borderDash2 == 0.0f) {
+        return new BasicStroke(getBorderWidth()); }
+      else {
+        return new BasicStroke(getBorderWidth(),
+                               BasicStroke.CAP_SQUARE,
+                               BasicStroke.JOIN_MITER,
+                               10.0f,
+                               new float[] { m_borderDash, m_borderDash2 },
+                               0.0f); } }
   }
 
   public void setTransparency(float trans)

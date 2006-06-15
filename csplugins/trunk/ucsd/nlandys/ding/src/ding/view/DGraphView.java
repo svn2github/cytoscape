@@ -1201,4 +1201,10 @@ public class DGraphView implements GraphView, Printable
     return DEFAULT_ANCHOR_UNSELECTED_PAINT;
   }
 
+  // Some things for caching texture paint.  The texture paint is computed
+  // from m_lastDash and m_lastPaint.
+  int m_lastSize = 0;
+  Paint m_lastPaint = null;
+  Paint m_lastTexturePaint = null;
+
 }
