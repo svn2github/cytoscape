@@ -76,6 +76,37 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		super();
 
 	}
+	
+	/**
+	 * 
+	 */
+	public void buildVisualStyle()
+	{
+		// do visual style creation at time that editor is created, to
+		// accommodated the current
+		// visual style potentially being clobbered by other plugins
+
+		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+
+		CalculatorCatalog catalog = manager.getCalculatorCatalog();
+
+		// VisualStyle vizStyle = manager.getVisualStyle();
+		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
+		System.out.println ("Got visual Style from catalog: " + catalog 
+				+ " = " + vizStyle);
+		if (vizStyle == null) {
+			if (mpbv == null) {
+				mpbv = new MapBioMoleculeEditorToVisualStyle();
+			}
+			vizStyle = mpbv.createVizMapper();
+		}
+
+		else {
+
+			System.out.println("Calling defineVisualStyle for: " + vizStyle);
+			mpbv.defineVisualStyle(vizStyle, manager, catalog);
+		}		
+	}
 
 	/**
 	 * specialized initialization code for editor, called by
@@ -333,8 +364,12 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 						new CytoShapeIcon(nodeShape, nodeColor),
 						"Biochemical Reaction");
 
-		shapePalette.showPalette();
-
+		// AJK: 06/16/06 only show palette if Cytoscape has already been initialized
+		if (CytoscapeEditorManager.isEditingEnabled())
+		{
+			shapePalette.showPalette();
+		}
+		
 		super.initializeControls(null);
 
 	}

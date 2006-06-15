@@ -34,6 +34,13 @@ public interface CytoscapeEditor extends FlagEventListener {
 
 	
 	/**
+	 * build the visual style for this editor
+	 * should be overidden by specialized editors
+	 *
+	 */
+	public void buildVisualStyle() ;
+	
+	/**
 	 * specialized initialization code for editor, called by CyNetworkEditorFactory, should be overridden
 	 * @param args an arbitrary list of arguments to be used in initializing the editor
 	 */

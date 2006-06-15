@@ -384,7 +384,10 @@ public abstract class CytoscapeEditorManager {
 
 			CytoscapeEditorManager.setCurrentEditor(cyEditor);
 
-			cyEditor.initializeControls(null);
+			// AJK: 06/15/06 don't initialize controls until after CYTOSCAPE
+			//         is initialized, just build the visual style for the editor
+//			cyEditor.initializeControls(null);
+			cyEditor.buildVisualStyle();
 
 			CytoscapeEditorManager.setSettingUpEditor(false);
 

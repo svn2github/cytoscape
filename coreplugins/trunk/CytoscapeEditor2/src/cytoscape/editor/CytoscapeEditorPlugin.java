@@ -46,7 +46,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 		MainPluginAction mpa = new MainPluginAction();
 		CytoscapeEditorManager.setRunningEditorFramework(true);
 		System.out.println("Setting up CytoscapeEditor");
-		mpa.enableCytoscapeEditor();
+		mpa.initializeCytoscapeEditor();
 	}
 
 	public class MainPluginAction extends AbstractAction {
@@ -67,14 +67,18 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 		 * This method is called when the user selects the menu item.
 		 */
 		public void actionPerformed(ActionEvent ae) {
-			enableCytoscapeEditor();
+			initializeCytoscapeEditor();
 		}
 
-		public void enableCytoscapeEditor() {
+		public void initializeCytoscapeEditor() {
 			
 			// AJK: 05/22/06 experiment with enabling editor by default, so as to 
 			//            pick up editors when a session is restored
-			CytoscapeEditorManager.setEditingEnabled(true);
+			
+			// AJK: 06/16/06 disable editing until receive a CYTOSCAPE_INITIALIZED message
+//			CytoscapeEditorManager.setEditingEnabled(true);
+
+			CytoscapeEditorManager.setEditingEnabled(false);
 			String[] cytoscapeArgs = CytoscapeInit.getArgs();
 
 			// hook for enabling the Cytoscape editor framework

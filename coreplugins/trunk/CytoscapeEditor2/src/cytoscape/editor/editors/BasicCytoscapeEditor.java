@@ -591,6 +591,15 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 		//    also, how does this affect undo/redo?
 	}
 
+	/**
+	 * build the visualStyle for this editor
+	 * this code should be overidden by more specialized editors that 
+	 * programmatically create a visual style
+	 *
+	 */
+	public void buildVisualStyle()
+	{
+	};
 
 
 	/**

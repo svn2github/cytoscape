@@ -244,6 +244,12 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 	};
 
 	public void updateEditorPalette(VisualStyle style) {
+		
+		// AJK: 06/16/06 only update palette after CYTOSCAPE_INITIALIZED
+		if (!CytoscapeEditorManager.isEditingEnabled())
+		{
+			return;
+		}
 
 		String editorType = style.getName();
 		CytoscapeEditor editorForStyle = null;
@@ -348,6 +354,12 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 		// redraw graph if the network is modified, e.g. by an undoable edit
 		else if (e.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
 			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+		}
+		
+		// AJK: 06/15/06: enable editing once Cytoscape has been initialized
+		else if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED))
+		{
+			CytoscapeEditorManager.setEditingEnabled(true);
 		}
 
 		else if (e.getPropertyName().equals(
