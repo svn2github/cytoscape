@@ -95,12 +95,11 @@ public class Semantics {
 	public static final String ALIASES = "aliases";
 
 	/*
-	 * KONO:04/19/2006 From v2.3, the following two terms will be used only by Gene
-	 * Ontology Server.
-	 * 
-	 *  - The basic meaning is same as above, but canonical name will be replaced
-	 *    by the node id.
-	 *  - Aliases are no longer String object.  It's a list now.
+	 * KONO:04/19/2006 From v2.3, the following two terms will be used only by
+	 * Gene Ontology Server.
+	 *  - The basic meaning is same as above, but canonical name will be
+	 * replaced by the node id. - Aliases are no longer String object. It's a
+	 * list now.
 	 */
 	public static final String GO_COMMON_NAME = "GO Common Name";
 	public static final String GO_ALIASES = "GO Aliases";
@@ -137,7 +136,7 @@ public class Semantics {
 	 * names should be created node identifiers.
 	 * 
 	 */
-	public static void applyNamingServices(CyNetwork network) {
+	public static void applyNamingServices(final CyNetwork network) {
 		assignSpecies(network);
 		assignCommonNames(network, Cytoscape.getBioDataServer());
 	}
@@ -154,23 +153,24 @@ public class Semantics {
 	 * 
 	 * This method does nothing at all if either argument is null.
 	 */
-	public static void assignSpecies(CyNetwork network) {
+	public static void assignSpecies(final CyNetwork network) {
 		if (network == null) {
 			return;
 		}
 
-		String defaultSpecies = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+		final String defaultSpecies = CytoscapeInit.getProperties()
+				.getProperty("defaultSpeciesName");
 		if (defaultSpecies == null) {
 			return;
 		} // we have no value to set
 
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
-		Iterator nodeIt = network.nodesIterator();
+		final Iterator nodeIt = network.nodesIterator();
 		while (nodeIt.hasNext()) {
-			CyNode node = (CyNode) nodeIt.next();
-			String nodeLabel = node.getIdentifier();
-			String species = nodeAttributes.getStringAttribute(nodeLabel,
+
+			final String nodeLabel = ((CyNode) nodeIt.next()).getIdentifier();
+			final String species = nodeAttributes.getStringAttribute(nodeLabel,
 					SPECIES);
 			if (species == null) { // only do something if no value exists
 				nodeAttributes.setAttribute(nodeLabel, SPECIES, defaultSpecies);
@@ -183,16 +183,17 @@ public class Semantics {
 	 * the species attribute in the node attributes of the supplied network and
 	 * returns a Set containing every unique value found.
 	 */
-	public static Set getSpeciesInNetwork(cytoscape.CyNetwork network) {
-		Set returnSet = new HashSet();
+	public static Set getSpeciesInNetwork(final CyNetwork network) {
+		final Set returnSet = new HashSet();
 		if (network == null) {
 			return returnSet;
 		}
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+
+		final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		// in the following map, keys are objects names and values are the
 		// species
-		CountedIterator keys = nodeAttributes.getMultiHashMap().getObjectKeys(
-				SPECIES);
+		final CountedIterator keys = nodeAttributes.getMultiHashMap()
+				.getObjectKeys(SPECIES);
 		while (keys.hasNext()) {
 			returnSet.add(nodeAttributes.getStringAttribute((String) keys
 					.next(), SPECIES));
@@ -202,9 +203,9 @@ public class Semantics {
 
 	/**
 	 * Use the given BioDataServer to set all of the aliases for a node, given
-	 * its species.
+	 * its species.<p>
 	 * 
-	 * Note: This needs optiomization
+	 * Note: This is only for GO data!
 	 * 
 	 * 
 	 * @param node
@@ -218,85 +219,99 @@ public class Semantics {
 	 *            the given BioDataServer ( NOTE: if null, then the general
 	 *            Cytoscape BioDataServer will be used ( settable with -b ) ).
 	 */
-	public static void assignNodeAliases(CyNode node, String species,
+	public static void assignNodeAliases(final CyNode node, String species,
 			BioDataServer bds) {
 
-		String id = node.getIdentifier();
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		final String nodeID = node.getIdentifier();
+		final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		// can't have a null node
-		if (node == null)
+		if (node == null) {
 			return;
+		}
 
 		// If species are null, use default species name
 		if (species == null) {
-			species = nodeAttributes.getStringAttribute(id, SPECIES);
+			species = nodeAttributes.getStringAttribute(nodeID, SPECIES);
 			if (species == null) {
-				species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+				species = CytoscapeInit.getProperties().getProperty(
+						"defaultSpeciesName");
 			}
 		}
 		// Check for the case when we don't have a default species
 		if (species != null) {
-			nodeAttributes.setAttribute(id, SPECIES, species);
+			nodeAttributes.setAttribute(nodeID, SPECIES, species);
 		}
 
 		// Get Gene Ontology Server
-		if (bds == null)
+		if (bds == null) {
 			bds = Cytoscape.getBioDataServer();
+		}
 
 		// return if no deafult BioDataServer
-		if (bds == null)
+		if (bds == null) {
 			return;
+		}
 
 		// now do the name assignment
-		String nodeLabel = id;
+		// String nodeLabel = id;
 
-		if (nodeLabel != null) {
-			// First, try to get aliases using the label.
-			String[] synonyms = bds.getAllCommonNames(species, nodeLabel);
-			
-			// Next,check the aliases, since nodeLabel can be a part of aliases.
-			String targetLabel = bds.getCanonicalName(species, nodeLabel);
-			String[] reverseSynonyms = bds.getAllCommonNames(species, targetLabel);
-			
-			Set synoSet = new TreeSet();
-			
-			//StringBuffer concat = new StringBuffer();
-			String commonName = null;
+		// First, try to get aliases using the label.
+		final String[] synonyms = bds.getAllCommonNames(species, nodeID);
+		
+		// Next,check the aliases, since nodeLabel can be a part of aliases.
+		final String canonicalFromAliases = bds.getCanonicalName(species, nodeID);
+		final String[] reverseSynonyms = bds.getAllCommonNames(species, canonicalFromAliases);
 
-			for (int j = 0; j < synonyms.length; ++j) {
-				if (synonyms[j].equals(id)) {
+		final Set synoSet = new TreeSet();
 
-				} else {
-					synoSet.add(synonyms[j]);
-					if (commonName == null)
-						commonName = synonyms[j];
-				}
+		// StringBuffer concat = new StringBuffer();
+		String commonName = null;
+
+		/*
+		 * Check the normal synonyms.
+		 */
+		for (int j = 0; j < synonyms.length; ++j) {
+			if (! synonyms[j].equals(nodeID)) {
+				synoSet.add(synonyms[j]);
 			}
-			
-			for (int i = 0; i < reverseSynonyms.length; ++i) {
-				if (reverseSynonyms[i].equals(id)) {
-
-				} else {
-					synoSet.add(reverseSynonyms[i]);
-					if (commonName == null)
-						commonName = reverseSynonyms[i];
-				}
-			}
-			
-			if (commonName == null) {
-				commonName = nodeLabel;
-				synoSet.add(commonName);
-			}
-
-			// Convert Set to List
-			List synoList = new ArrayList();
-			synoList.addAll(synoSet);
-			// Fill both aliases and common names
-
-			nodeAttributes.setAttributeList(id, GO_ALIASES, synoList);
-			nodeAttributes.setAttribute(id, GO_COMMON_NAME, commonName);
 		}
+
+		/*
+		 * Check the reverse synonyms
+		 */
+		for (int i = 0; i < reverseSynonyms.length; ++i) {
+			if (! reverseSynonyms[i].equals(nodeID) ) {
+				synoSet.add(reverseSynonyms[i]);
+			}
+		}
+
+		/*
+		 * Add canonical name obtained from alias.
+		 * This should be in the GO Aliases.
+		 */
+		if (!synoSet.contains(canonicalFromAliases)) {
+			synoSet.add(canonicalFromAliases);
+		}
+
+		/*
+		 * Set common name.
+		 * This choice is arbitrary.
+		 */
+		if (canonicalFromAliases != null && !canonicalFromAliases.equals(nodeID)) {
+			commonName = canonicalFromAliases;
+		} else if(synonyms.length != 0) {
+			commonName = synonyms[0];
+		} else	if(synoSet.size() == 0) {
+			commonName = nodeID;
+			synoSet.add(commonName);
+		} else {
+			commonName = nodeID;
+		}
+
+		nodeAttributes.setAttributeList(nodeID, GO_ALIASES, new ArrayList(synoSet));
+		nodeAttributes.setAttribute(nodeID, GO_COMMON_NAME, commonName);
+
 	}
 
 	/**
@@ -313,15 +328,14 @@ public class Semantics {
 	 * canonical name, this method does nothing if no synonyms for that name can
 	 * be provided by the bioDataServer.
 	 */
-	public static void assignCommonNames(CyNetwork network,
-			BioDataServer bioDataServer) {
+	public static void assignCommonNames(final CyNetwork network,
+			final BioDataServer bioDataServer) {
 		if (network == null || bioDataServer == null) {
 			return;
 		}
 
 		for (Iterator it = network.nodesIterator(); it.hasNext();) {
-			CyNode node = (CyNode) it.next();
-			assignNodeAliases(node, null, bioDataServer);
+			assignNodeAliases((CyNode) it.next(), null, bioDataServer);
 		}
 	}
 
@@ -332,7 +346,7 @@ public class Semantics {
 	 * 
 	 * If the argument is null, returns an array of length 0.
 	 */
-	public static String[] getInteractionTypes(CyNetwork network) {
+	public static String[] getInteractionTypes(final CyNetwork network) {
 		if (network == null) {
 			return new String[0];
 		}
@@ -343,7 +357,6 @@ public class Semantics {
 
 		while (objs.hasNext()) {
 			final String obj = (String) objs.next();
-			;
 			final Object val = mmap.getAttributeValue(obj,
 					Semantics.INTERACTION, null);
 			dupsFilter.put(val, val);
@@ -364,12 +377,11 @@ public class Semantics {
 	 * 
 	 * If either argument is null, returns null.
 	 */
-	public static String getInteractionType(CyNetwork network, Edge e) {
-		if (network == null || e == null) {
+	public static String getInteractionType(final CyNetwork network, final Edge edge) {
+		if (network == null || edge == null) {
 			return null;
 		}
-		String edgeLabel = e.getIdentifier();
-		return Cytoscape.getEdgeAttributes().getStringAttribute(edgeLabel,
+		return Cytoscape.getEdgeAttributes().getStringAttribute(edge.getIdentifier(),
 				Semantics.INTERACTION);
 	}
 
@@ -390,22 +402,20 @@ public class Semantics {
 	 * The network and cytoscapeObj arguments may be null, which simply limits
 	 * the tests that can be done to find synonyms.
 	 */
-	public static boolean areSynonyms(String firstName, String secondName,
-			CyNetwork network) {
+	public static boolean areSynonyms(final String firstName, final String secondName,
+			final CyNetwork network) {
 		if (firstName == null || secondName == null) {
 			return (firstName == null && secondName == null);
 		}
 		if (firstName.equalsIgnoreCase(secondName)) {
 			return true;
 		}
-		List firstSynonyms = getAllSynonyms(firstName, network);
-		List secondSynonyms = getAllSynonyms(secondName, network);
+		final List firstSynonyms = getAllSynonyms(firstName, network);
+		final List secondSynonyms = getAllSynonyms(secondName, network);
 		for (Iterator firstI = firstSynonyms.iterator(); firstI.hasNext();) {
-			String firstSyn = (String) firstI.next();
 			for (Iterator secondI = secondSynonyms.iterator(); secondI
 					.hasNext();) {
-				String secondSyn = (String) secondI.next();
-				if (firstSyn.equalsIgnoreCase(secondSyn)) {
+				if (((String) firstI.next()).equalsIgnoreCase((String) secondI.next())) {
 					return true;
 				}
 			}
@@ -430,15 +440,15 @@ public class Semantics {
 	 * be determined, then use the BioDataServer to add all the synonyms that
 	 * are registered for the name argument.
 	 */
-	public static List getAllSynonyms(String name, CyNetwork network) {
-		List returnList = new ArrayList();
+	public static List getAllSynonyms(final String name, final CyNetwork network) {
+		final List returnList = new ArrayList();
 		if (name == null) {
 			return returnList;
 		}
 		returnList.add(name);
 		String species = null;
 		if (network != null) {
-			String commonName = Cytoscape.getNodeAttributes()
+			final String commonName = Cytoscape.getNodeAttributes()
 					.getStringAttribute(name, GO_COMMON_NAME);
 			if (commonName != null) {
 				returnList.add(commonName);
@@ -446,11 +456,11 @@ public class Semantics {
 			species = Cytoscape.getNodeAttributes().getStringAttribute(name,
 					SPECIES);
 		}
-		BioDataServer bioDataServer = Cytoscape.getBioDataServer();
-		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+
+		species = CytoscapeInit.getProperties().getProperty(
+				"defaultSpeciesName");
 		if (species != null) {
-			String[] synonyms = bioDataServer.getAllCommonNames(species, name);
-			returnList.addAll(Arrays.asList(synonyms));
+			returnList.addAll(Arrays.asList(Cytoscape.getBioDataServer().getAllCommonNames(species, name)));
 			// we assume that this list of synonyms from the bioDataServer
 			// includes
 			// any canonical and common names registered with the node
