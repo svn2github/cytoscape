@@ -238,7 +238,7 @@
 	    description="Builds Help system files (full text search db, etc).">
 	<!-- Check to see if the help files need to be indexed... -->
 	<uptodate property="helpIsUpToDate"
-		targetfile="${build.classes}/cytoscape/help/CytoscapeSearch/SCHEMA">
+		targetfile="${build.classes}/cytoscape/help/JavaHelpSearch/SCHEMA">
 	  <srcfiles dir= "${basedir}/help" includes="**/*"/>
 	</uptodate>
 	<antcall target="buildHelp"/>
@@ -258,8 +258,8 @@
 	      dir="${build.classes}/cytoscape/help"
 	      fork="true">
             <arg value="-db"/>
-            <arg value="CytoscapeSearch"/>
-            <arg value="html"/>
+            <arg value="JavaHelpSearch"/>
+            <arg value="${build.classes}/cytoscape/help"/>
         </java>
     </target>
 
