@@ -25,7 +25,6 @@ package dynamicXpr;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
-import javax.swing.JMenuItem;
 /**
  * A plugin that allows the user to see the changes in gene expression
  * by coloring nodes according to their expression values in different 

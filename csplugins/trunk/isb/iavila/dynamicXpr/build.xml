@@ -13,10 +13,9 @@
 	<property name = "cytoscape21" value="../../../../C2.1/source"/>
     <property name = "cytoscapeCVS" value ="../../../../cytoscape"/>
     <property name = "cytoscape21.plugins" value ="../../../../C2.1/source/plugins"/> 
-	<property name = "cytoscapeCVS.plugins" value ="../../../../cytoscape/plugins"/>
-	<property name = "cytoscape" value = "${cytoscape22}"/>
-	<property name = "cytoscape.plugins" value = "${cytoscape22.plugins}"/>
-	
+	<property name = "cytoscapeCVS.plugins" value ="../../../../cytoscape/plugins/core"/>
+	<property name = "cytoscape" value = "${cytoscapeCVS}"/>
+	<property name = "cytoscape.plugins" value = "${cytoscapeCVS.plugins}"/>
 	
    <path id = "classpath">
        <fileset dir = "${cytoscape}">
