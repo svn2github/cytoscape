@@ -35,6 +35,12 @@ while(<FILE>) {
 	chomp;
 
 	#
+	# This substitution is to replace an &amp; as & so that the
+	# html entity will be correct in the final output.
+	#
+	s/\&amp\;\#8594/\&\#8594/g;
+
+	#
 	# This block is used to fetch the image data. It fetches
 	# the image files referenced in imagedata elements and
 	# copies them to a local "images" directory.
