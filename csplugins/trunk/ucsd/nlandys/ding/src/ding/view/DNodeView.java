@@ -649,7 +649,8 @@ public class DNodeView implements NodeView, Label
       m_graphicPaints.remove(index);
       if (m_graphicShapes.size() == 0) {
         m_graphicShapes = null;
-        m_graphicPaints = null; } }
+        m_graphicPaints = null; }
+      m_view.m_contentChanged = true; }
   }
 
   /**
@@ -672,7 +673,8 @@ public class DNodeView implements NodeView, Label
         m_graphicShapes = new ArrayList();
         m_graphicPaints = new ArrayList(); }
       m_graphicShapes.add(index, s);
-      m_graphicPaints.add(index, p); }
+      m_graphicPaints.add(index, p);
+      m_view.m_contentChanged = true; }
   }
 
 }
