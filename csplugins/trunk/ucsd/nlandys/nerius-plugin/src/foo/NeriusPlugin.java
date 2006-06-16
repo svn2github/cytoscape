@@ -29,7 +29,7 @@ public class NeriusPlugin extends CytoscapePlugin
           final CyNetworkView gView = Cytoscape.getCurrentNetworkView();
           final Iterator nViews = gView.getNodeViewsIterator();
           final Rectangle2D rect = new Rectangle2D.Double
-            (-11.0, -15.0, 22.0, 30.0);
+            (-10.0, -13.636.0, 20.0, 27.273);
           Paint paint = null;
           try {
             paint = new TexturePaint
@@ -41,6 +41,7 @@ public class NeriusPlugin extends CytoscapePlugin
           while (nViews.hasNext()) {
             final DNodeView nView = (DNodeView) nViews.next();
             nView.addCustomGraphic(rect, paint, 0); }
+          gView.updateView();
         }
       });
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Layout").add
