@@ -38,7 +38,7 @@ import giny.view.*;
 /**
  * Specialized version of SimpleMetaNodeAttributesHandler.<br>
  * 
- * 1. Common name = member with highest intra-connections in the meta-node<br>
+ * 1. nodeLabel = member with highest intra-connections in the meta-node<br>
  * 2. Meta-node Area = proportional to number of children<br>
  * 3. Edges = same as member edges<br>
  *
@@ -71,8 +71,7 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
     String uniqueName = createMetaNodeUI(metaNodeRindex);
     String alias = createMetaNodeAlias(cy_net,metaNodeRindex);
     node.setIdentifier(uniqueName);
-    // Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME,uniqueName);
-    // Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), Semantics.COMMON_NAME,alias);
+    Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), getNodeLabelAttribute(), alias);
     
     if(DEBUG){
       System.err.println("meta-node " + metaNodeRindex + " canonical name = " + uniqueName 

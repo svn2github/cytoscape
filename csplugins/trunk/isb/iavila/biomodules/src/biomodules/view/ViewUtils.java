@@ -69,17 +69,15 @@ public class ViewUtils {
         }
         
         // Apply vizmapper
-		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-		VisualStyle abstractMetaNodeVS = vizmapper.getCalculatorCatalog()
-				.getVisualStyle(VisualStyleFactory.ABSTRACT_METANODE_VS);
-		if (abstractMetaNodeVS == null) {
-			abstractMetaNodeVS = VisualStyleFactory
-					.createAbstractMetaNodeVisualStyle(network);
+		VisualStyle abstractMetaNodeVS = vizmapper.getCalculatorCatalog().getVisualStyle(VisualStyleFactory.ABSTRACT_METANODE_VS);
+		if (abstractMetaNodeVS == null) {	
+			abstractMetaNodeVS = VisualStyleFactory.createAbstractMetaNodeVisualStyle(network);
 		}
 		String netID = network.getIdentifier();
 		CyNetworkView netView = Cytoscape.getNetworkView(netID);
 		if (netView != null) {
+			vizmapper.setVisualStyle(abstractMetaNodeVS);
 			netView.applyVizmapper(abstractMetaNodeVS);
 		}
 		return metaNodes;

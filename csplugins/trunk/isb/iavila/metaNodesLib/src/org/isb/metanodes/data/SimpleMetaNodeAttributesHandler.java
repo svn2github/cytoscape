@@ -53,6 +53,36 @@ public class SimpleMetaNodeAttributesHandler implements
     protected HashSet usedEdgeNames;
 
     /**
+     * The name of the node attribute to which meta-node names should be assigned to
+     */
+    protected String nodeLabelAttribute = DEFAULT_NODE_LABEL_ATTRIBUTE;
+    
+    /**
+	 * Sets the name of the node attribute to which meta-node names should be assigned to,
+	 * if not set, it is DEFAULT_NODE_LABEL_ATTRIBUTE
+	 * 
+	 * @param attribute_name the name of a node attribute of type String, if it is not of type
+	 * String, it is not set
+	 */
+	public void setNodeLabelAttribute (String attribute_name){
+		if(Cytoscape.getNodeAttributes().getType(attribute_name) != CyAttributes.TYPE_STRING){
+			return;
+		}
+		this.nodeLabelAttribute = attribute_name;
+	}
+	
+	/**
+	 * Gets the name of the node attribute to which meta-node names should be assigned to,
+	 * if not set, it is DEFAULT_NODE_LABEL_ATTRIBUTE
+	 * 
+	 * @return a String representing the name of the node attribute
+	 */
+	public String getNodeLabelAttribute (){
+		return this.nodeLabelAttribute;
+	}
+    
+    
+    /**
      * Transfers all children names to meta node name
      */
     public String assignName(CyNetwork cy_net, CyNode node) {
@@ -61,13 +91,10 @@ public class SimpleMetaNodeAttributesHandler implements
             return null;
         }
         String unique_name = getCanonicalMetaName(node);
-        String common_name = getCommonMetaName(node, cy_net);
+        String label_name = getCommonMetaName(node, cy_net);
         CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
         node.setIdentifier(unique_name);
-        // OLD:
-        // Cytoscape.getNodeNetworkData().addNameMapping(unique_name, node);
-        // cy_net.setNodeAttributeValue(node, Semantics.COMMON_NAME,
-        // common_name);
+        Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), getNodeLabelAttribute(), label_name);
         return unique_name;
     } // end assignName
 
@@ -99,8 +126,7 @@ public class SimpleMetaNodeAttributesHandler implements
         String[] childrenAtts = nodeAtts.getAttributeNames();
         for (int i = 0; i < childrenAtts.length; i++) {
             String attrName = childrenAtts[i];
-            if (attrName.equals(Semantics.IDENTIFIER) || 
-            		attrName.equals(Semantics.CANONICAL_NAME) || attrName.equals(Semantics.COMMON_NAME) || attrName.equals(Semantics.LABEL) )
+            if (attrName.equals("identifier") || attrName.equals(getNodeLabelAttribute()))
                 continue; // reserved
             // iterate over children, constructing set of values for this attr
             HashSet uniqueValues = new HashSet();
@@ -255,9 +281,9 @@ public class SimpleMetaNodeAttributesHandler implements
             String[] allAttrNames = edgeAtts.getAttributeNames();
             for (int i = 0; i < allAttrNames.length; i++) {
                 String attrName = allAttrNames[i];
-                if (attrName.equals(Semantics.INTERACTION) || attrName.equals(Semantics.IDENTIFIER) || 
-                		attrName.equals(Semantics.CANONICAL_NAME) || attrName.equals(Semantics.COMMON_NAME) || attrName.equals(Semantics.LABEL) )
-                    continue; // reserved
+                if (attrName.equals(Semantics.INTERACTION) || attrName.equals("identifier") || 
+                		attrName.equals(getNodeLabelAttribute()))
+                	continue; // reserved
 
                 HashSet uniqueValues = new HashSet();
                 Map simpleMap = null;

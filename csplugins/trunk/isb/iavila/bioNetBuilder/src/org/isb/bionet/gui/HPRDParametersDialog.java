@@ -76,10 +76,12 @@ public class HPRDParametersDialog extends JDialog implements InteractionsSourceG
 		mainPanel.add(dmethodsPanel);
 		
 		JPanel otherOptionsPanel = new JPanel();
-		otherOptionsPanel.setLayout(new BoxLayout(otherOptionsPanel,BoxLayout.Y_AXIS));
+		otherOptionsPanel.setLayout(new GridLayout(2,1));
 		
 		this.vidalCheckBox = new JCheckBox("Include Vidal et al. interactions");
-		this.baitCheckBox = new JCheckBox("<html>Include interactions that contain<br>non-human proteins<br>Example: human-mouse interaction</html>");
+		this.baitCheckBox =  new JCheckBox("<html>Include interactions that contain<br>"+
+							              "non-human proteins.</html>");
+							              //"Example: human-mouse interaction</html>");
 		
 		otherOptionsPanel.add(this.vidalCheckBox);
 		otherOptionsPanel.add(this.baitCheckBox);

@@ -151,6 +151,16 @@ public class RGAlgorithmGui extends JFrame {
 	}// getSelectedEdgesFilter
 
 	/**
+	 * Gets the name of the node attribute that should be used to attach
+	 * Biomodule labels to
+	 * 
+	 * @return the attribute the user selected to set Biomodules labels
+	 */
+	public String getSelectedNodeLabelAttribute (){
+		return (String)this.nodeAttributesBox.getSelectedItem();
+	}
+	
+	/**
 	 * Creates the dialog.
 	 */
 	protected void create() {
@@ -627,9 +637,11 @@ public class RGAlgorithmGui extends JFrame {
 	 */
 	protected void calculateBiomodules() {
 		// try{
-
+		
 		// Calculate the biomodules
-
+		String nodeLabelAttribute = getSelectedNodeLabelAttribute();
+		ViewUtils.attributesHandler.setNodeLabelAttribute(nodeLabelAttribute);
+		
 		HierarchicalClustering hClustering = this.algorithmData
 				.getHierarchicalClustering();
 		CyNode[][] biomodules = null;
@@ -683,21 +695,16 @@ public class RGAlgorithmGui extends JFrame {
 			ArrayList metaCyNodes =
 				ViewUtils.abstractBiomodules(this.algorithmData.getNetwork(), biomodules);
 			
-			// Get the common names of the meta nodes
+			// Get the names of the meta nodes
 			int numUnknowns = 0;
 			for (int i = 0; i < metaCyNodes.size(); i++) {
 				CyNode node = (CyNode) metaCyNodes.get(i);
-				String canonical = 
-					nodeAtts.getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
-				if (canonical == null) {
-					canonical = node.getIdentifier();
+				String name = 
+					nodeAtts.getStringAttribute(node.getIdentifier(),nodeLabelAttribute);
+				if (name == null) {
+					name = node.getIdentifier();
 				}
-				if (canonical == null) {
-					// GETTING HERE 8.10.2005
-					System.out.println("Canonical name for node [" + node + "] is null");
-					canonical = "unknown" + Integer.toString(numUnknowns);
-				}
-				bioIdentifiersToMembers.put(canonical, biomodules[i]);
+				bioIdentifiersToMembers.put(name, biomodules[i]);
 			}// for i
 			System.out.println("Done creating meta-nodes.");
 		} else {
@@ -714,12 +721,10 @@ public class RGAlgorithmGui extends JFrame {
 						memberRindices);
 				CyNode highestNode = (CyNode) ss.first();
 				String alias = nodeAtts.getStringAttribute(highestNode
-						.getIdentifier(), Semantics.COMMON_NAME); //(String)network.getNodeAttributeValue(highestNode,Semantics.COMMON_NAME);
+						.getIdentifier(), nodeLabelAttribute); //(String)network.getNodeAttributeValue(highestNode,Semantics.COMMON_NAME);
 				if (alias == null) {
-					alias = nodeAtts.getStringAttribute(highestNode
-							.getIdentifier(), Semantics.CANONICAL_NAME); //(String)network.getNodeAttributeValue(highestNode,Semantics.CANONICAL_NAME);
+					alias = highestNode.getIdentifier();
 				}
-				if(alias == null) alias = highestNode.getIdentifier();
 				
 				bioIdentifiersToMembers.put(alias, biomodules[i]);
 			}// for i

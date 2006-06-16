@@ -43,6 +43,29 @@ import cern.colt.map.AbstractIntIntMap;
 
 public interface MetaNodeAttributesHandler {
 
+	/**
+	 * The default attribute that is used to label nodes, this is not the same as the unique ID of nodes
+	 * which are internal keys to nodes
+	 */
+	public static final String DEFAULT_NODE_LABEL_ATTRIBUTE = "nodeLabel";
+	
+  
+	/**
+	 * Sets the name of the node attribute to which meta-node names should be assigned to,
+	 * if not set, it is DEFAULT_NODE_LABEL_ATTRIBUTE
+	 * 
+	 * @param attribute_name the name of a node attribute of type String
+	 */
+	public void setNodeLabelAttribute (String attribute_name);
+	
+	/**
+	 * Gets the name of the node attribute to which meta-node names should be assigned to,
+	 * if not set, it is DEFAULT_NODE_LABEL_ATTRIBUTE
+	 * 
+	 * @return a String representing the name of the node attribute
+	 */
+	public String getNodeLabelAttribute ();
+	
   /**
    * Creates a unique name for the CyNode and registers this name and node into Cytoscape
    *

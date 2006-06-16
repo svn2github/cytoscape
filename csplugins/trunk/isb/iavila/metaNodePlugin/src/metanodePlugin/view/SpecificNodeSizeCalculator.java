@@ -65,7 +65,7 @@ public class SpecificNodeSizeCalculator extends GenericNodeSizeCalculator {
     //Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
       CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
       boolean hasAtt = nodeAtts.hasAttribute(node.getIdentifier(),specialAttrName);
-      System.out.println("nodeAtts.hasAttribute("+node.getIdentifier()+","+specialAttrName+") = " + hasAtt);
+      //System.out.println("nodeAtts.hasAttribute("+node.getIdentifier()+","+specialAttrName+") = " + hasAtt);
       if(specialAttrName == null || !hasAtt){
           return super.calculateNodeSize(node,network);
       }

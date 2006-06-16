@@ -23,11 +23,11 @@
  **/
 package metanodePlugin.view;
 import cytoscape.*;
-import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.*;
-import cytoscape.data.Semantics;
+import org.isb.metanodes.model.*;
+
 /**
  * A class with class methods that create and return custom visual styles for networks
  * that contain meta-nodes.
@@ -42,7 +42,7 @@ public class VisualStyleFactory {
    * The name of the visual style for visualizing meta-nodes as modeled
    * by <code>metaNodeViewer.model.AbstractMetaNodeModeler</code>.
    */
-  public static final String ABSTRACT_METANODE_VS = "Abstract Meta-Node";
+  public static final String ABSTRACT_METANODE_VS = "MetaNodeStyle";
   /**
    * The name of the attribute that describes node type.
    * TODO: Maybe add to Semantics?
@@ -61,18 +61,12 @@ public class VisualStyleFactory {
     NodeAppearanceCalculator nodeAppCalc = new NodeAppearanceCalculator();
     EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator();
     CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
-    VisualStyle vs = calculatorCatalog.getVisualStyle(ABSTRACT_METANODE_VS);
-    if(vs != null) {
-        System.out.println("Visual style " + ABSTRACT_METANODE_VS + " already exists.");
-        return vs; // it already exists
-    }
     // ------------------------------ Set the label ------------------------------//
-    // Display the value for Semantics.COMMON_NAME as a label
-    String cName = "Common name";
+    String cName = MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler().getNetworkAttributesHandler(network).getNodeLabelAttribute();
     NodeLabelCalculator nlc = calculatorCatalog.getNodeLabelCalculator(cName);
     if (nlc == null) {
       PassThroughMapping m =
-        new PassThroughMapping(new String(), Semantics.COMMON_NAME);
+        new PassThroughMapping(new String(), cName);
       nlc = new GenericNodeLabelCalculator(cName, m);
     }
     nodeAppCalc.setNodeLabelCalculator(nlc);
@@ -143,14 +137,18 @@ public class VisualStyleFactory {
     //------------------------- Create a visual style -------------------------------//
     GlobalAppearanceCalculator gac = 
       vmManager.getVisualStyle().getGlobalAppearanceCalculator();
-    
-    VisualStyle visualStyle = new VisualStyle(ABSTRACT_METANODE_VS,
+    VisualStyle vs = calculatorCatalog.getVisualStyle(ABSTRACT_METANODE_VS);
+    if(vs == null){
+    		vs = new VisualStyle(ABSTRACT_METANODE_VS,
                                               nodeAppCalc,
                                               edgeAppCalc,gac);
-    // TODO: Not sure if I want to do this:
-    //catalog.addVisualStyle(visualStyle);
-    
-    return visualStyle;
+    		calculatorCatalog.addVisualStyle(vs);
+    }else{
+    		vs.setNodeAppearanceCalculator(nodeAppCalc);
+    		vs.setEdgeAppearanceCalculator(edgeAppCalc);
+    		vs.setGlobalAppearanceCalculator(gac);
+    }
+    return vs;
   }//createAbstractMetaNodeVisualStyle
 
 }//VisualStyleFactory

@@ -52,7 +52,7 @@ public class GPMetaNodeFactory {
 	 * Specifies whether or not this class should assign a name to newly created
 	 * meta-nodes
 	 */
-	protected boolean assignDefaultName;
+	protected boolean assignDefaultName = true;
 
 	/**
 	 * The MetaNodeAttributesHandler that names newly created meta-nodes

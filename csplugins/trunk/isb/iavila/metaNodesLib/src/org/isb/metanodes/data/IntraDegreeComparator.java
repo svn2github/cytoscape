@@ -30,7 +30,6 @@ import java.util.Comparator;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.*;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
 import java.util.*;
 /**
  * A Comparator for CyNodes that compares the given nodes depending on their intra-degrees.
