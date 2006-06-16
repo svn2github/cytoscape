@@ -134,6 +134,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 			_addLabelButton;
 
 	private static final String ICONS_REL_LOC = "images/";
+
+	private static final String _connectedTitle = "Connect Selected Nodes";
 	
     /**
      * Cytoscape Attribute:  BioPAX Name.
@@ -625,7 +627,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 				String name = jIt.getText();
 //				System.out
 //						.println("Checking for get selected against: " + name);
-				if (name.equals("Connect Selected Nodes")) {
+				if (name.equals(_connectedTitle)) {
 					foundConnectSelected = true;
 					break;
 				}
@@ -894,17 +896,18 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 	 **/
 	class ConnectSelectedNodesAction extends CytoscapeAction {
 		public ConnectSelectedNodesAction() {
-			super("Connect Selected Nodes");
+			super(_connectedTitle);
 			setPreferredMenu("Edit");
+			setPreferredIndex(Cytoscape.getDesktop().getCyMenus().getEditMenu().getItemCount()-2);
 		}
 
 		public ConnectSelectedNodesAction(boolean label) {
-			super(); 
+			this(); 
 		}
 		
 		public String getName ()
 		{
-			return "Connect Selected Nodes";
+			return _connectedTitle; 
 		}
 
 		public void actionPerformed(ActionEvent e) {
