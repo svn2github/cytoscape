@@ -6,6 +6,7 @@
   <path id="nerius.plugin.classpath">
     <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
     <pathelement location="${cytoscape.lib.dir}/ding.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
   </path>
 
   <target name="nerius-plugin.jar">

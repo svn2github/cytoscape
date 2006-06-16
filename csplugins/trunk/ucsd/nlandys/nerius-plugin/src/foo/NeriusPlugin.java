@@ -6,11 +6,11 @@ import cytoscape.view.CyNetworkView;
 
 import ding.view.DNodeView;
 
-import java.awt.ActionEvent;
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.TexturePaint;
 import java.awt.geom.Rectangle2D;
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
@@ -45,4 +45,6 @@ public class NeriusPlugin extends CytoscapePlugin
       });
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Layout").add
       (nerius);
+  }
+
 }
