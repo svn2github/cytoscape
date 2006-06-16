@@ -43,6 +43,7 @@
       <tocitem target="GeneOntologyServerWizard" text="Gene Ontology Server Wizard"/>
     </tocitem>
     <tocitem target="Filters" text="Filters"/>
+    <tocitem target="LinkOut" text="LinkOut"/>
     <tocitem target="Acknowledgements" text="Acknowledgements"/>
     <tocitem target="AppendixAOldAnnotationServerFormat" text="Appendix A: Old Annotation Server Format">
       <tocitem target="GeneOntologyServerWizard" text="Gene Ontology Server Wizard"/>

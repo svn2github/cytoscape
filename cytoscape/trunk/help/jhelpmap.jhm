@@ -36,6 +36,7 @@
   <mapID target="Annotation" url="Annotation.html"/>
   <mapID target="GeneOntologyServerWizard" url="Annotation.html#GeneOntologyServerWizard"/>
   <mapID target="Filters" url="Filters.html"/>
+  <mapID target="LinkOut" url="LinkOut.html"/>
   <mapID target="Acknowledgements" url="Acknowledgements.html"/>
   <mapID target="AppendixAOldAnnotationServerFormat" url="AppendixAOldAnnotationServerFormat.html"/>
   <mapID target="GeneOntologyServerWizard" url="AppendixAOldAnnotationServerFormat.html#GeneOntologyServerWizard"/>
