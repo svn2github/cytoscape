@@ -65,20 +65,20 @@ import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.readers.GMLReader;
-import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
+import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.giny.CytoscapeRootGraph;
+import cytoscape.init.CyInitParams;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
-import cytoscape.init.CyInitParams;
 
 /**
  * This class, Cytoscape is <i>the</i> primary class in the API.
@@ -540,6 +540,81 @@ public abstract class Cytoscape {
 		return null;
 	}
 
+
+	/**
+	 * Gets the first CyEdge found between the two nodes 
+	 * that has the given value for the given attribute.  If direction flag is set, then
+	 * direction is taken into account, A->B is NOT equivalent to B->A
+	 * 
+	 * @param source
+	 *            one end of the edge
+	 * @param target
+	 *            the other end of the edge
+	 * @param attribute
+	 *            the attribute of the edge to be searched, a common one is
+	 *            {@link Semantics#INTERACTION }
+	 * @param attribute_value
+	 *            a value for the attribute, like "pp"
+	 * @param create
+	 *            will create an edge if one does not exist and if attribute is
+	 *            {@link Semantics#INTERACTION}
+	 * @param directed
+	 *            take direction into account, source->target is NOT target->source
+	 * @return returns an existing CyEdge if present, or creates one if
+	 *         <code>create</code> is true and attribute is
+	 *         Semantics.INTERACTION, otherwise returns null.
+	 */
+	public static CyEdge getCyEdge(Node source, Node target, String attribute,
+			Object attribute_value, boolean create, boolean directed) {
+		
+		if (!directed)
+		{
+			return getCyEdge(source, target, attribute, attribute_value, create);
+		}
+
+		if (Cytoscape.getRootGraph().getEdgeCount() != 0) {
+			int[] n1Edges = Cytoscape.getRootGraph()
+					.getAdjacentEdgeIndicesArray(source.getRootGraphIndex(),
+							true, true, true);
+
+			for (int i = 0; i < n1Edges.length; i++) {
+				CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
+						n1Edges[i]);
+				Object attValue = private_getEdgeAttributeValue(edge, attribute);
+
+				if (attValue != null && attValue.equals(attribute_value)) {
+					CyNode otherNode = (CyNode) edge.getTarget();
+					if (otherNode.getRootGraphIndex() == target
+							.getRootGraphIndex()) {
+						return edge;
+					}
+				}
+			}// for i
+		}
+
+		if (create && attribute instanceof String
+				&& attribute.equals(Semantics.INTERACTION)) {
+			// create the edge
+			CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
+					Cytoscape.getRootGraph().createEdge(source, target));
+
+			// create the edge id
+			String edge_name = source.getIdentifier() + " (" + attribute_value
+					+ ") " + target.getIdentifier();
+			edge.setIdentifier(edge_name);
+
+			// Store Edge Name Mapping within GOB.
+			Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
+
+			// store edge id as INTERACTION / CANONICAL_NAME Attributes
+			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
+					(String) attribute_value);
+			return edge;
+		}
+		return null;
+	}
+	
+	
 	/**
 	 * @param source_alias
 	 *            an alias of a node
