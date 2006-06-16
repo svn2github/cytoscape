@@ -280,7 +280,10 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		if (onNode && !edgeStarted && (e.isControlDown())) {
 			// begin edge creation
 			beginEdge(nextPoint, nv);
-		} else if (onNode && edgeStarted && (nv != node)) {
+		// AJK: 06/16/06 comment out restriction on nv being different node
+			// so that we can have self-connecting edge
+//		} else if (onNode && edgeStarted && (nv != node)) {
+		} else if (onNode && edgeStarted) {
 			System.out.println ("calling finishEdge for NodeView " + nv);
 			// Finish Edge Creation
 			finishEdge(nextPoint, nv);

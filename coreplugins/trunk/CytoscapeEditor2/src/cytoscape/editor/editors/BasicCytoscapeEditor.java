@@ -451,7 +451,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 	public CyEdge addEdge(Node node_1, Node node_2, String attribute,
 			Object attribute_value, boolean create, String edgeType) {
 		CyEdge edge = Cytoscape.getCyEdge(node_1, node_2, attribute,
-				attribute_value, create);
+				attribute_value, create, true); // edge is directed
 		if (edge != null) {
 			CyNetwork net = Cytoscape.getCurrentNetwork();
 			net.restoreEdge(edge);
