@@ -7,6 +7,7 @@ import giny.view.NodeView;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.geom.Point2D;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -34,6 +35,7 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
 import ding.view.EdgeContextMenuListener;
 import ding.view.NodeContextMenuListener;
 
@@ -183,10 +185,15 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 	 *            conjunction with the Visual Mapper to assign visual
 	 *            characteristics to different types of nodes, for example to
 	 *            assign a violet diamond shape to a 'smallMolecule' node type.
+	 * @param location 
+	 *            the position at which to add the node
 	 * @return the CyNode that has been either reused or created.
+	 * 
 	 */
 	public CyNode addNode(String nodeName, String attribute,
-			String value) {
+			String value, Point2D location) {
+		System.out.println("Adding node " + nodeName + " at position "
+				+ location);
 		CyNode cn = Cytoscape.getCyNode(nodeName, false); // first see if there is an existing node
 		int iteration_limit = 100;
 		while ((cn != null) && (iteration_limit > 0))
@@ -244,19 +251,30 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 		// AJK: 01/24/06 select the added node
 		net.unFlagAllNodes();
 		net.setFlagged(cn, true);
+
+		NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
+		nv.setToolTip(cn.getIdentifier());
+		if (location != null)
+		{
+			double [] nextLocn = new double[2]; 
+			nextLocn[0] = location.getX();
+			nextLocn[1] = location.getY();
+			((DGraphView) Cytoscape.getCurrentNetworkView()).xformComponentToNodeCoords(nextLocn);
+			nv.setOffset (nextLocn[0], nextLocn[1]);
+			System.out.println ("Offset for node " + cn + "set to " 
+					+ nv.getOffset());
+		}
+
 		
 		CytoscapeEditorManager.manager.setupUndoableAdditionEdit(net, cn, null);
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
 		
 		// AJK: 05/15/06 BEGIN
 		//     set tooltip on the node's view
-		NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
 		
-		nv.setToolTip(cn.getIdentifier());
-		Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
-		// AJK: 05/15/06 END
 
-		
+		Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
+		// AJK: 05/15/06 END
 		return cn;
 	}
 	
@@ -364,7 +382,41 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 	}	
 	
 	// AJK: 04/27/08 END
-	
+
+	/**
+	 * wrapper for adding a node in Cytoscape. This is intended to be called by
+	 * the CytoscapeEditor in lieu of making direct modifications to the
+	 * Cytoscape model. Thus, it provides an insulating level of abstraction
+	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
+	 * for portability and extensibility of the editor.
+	 * 
+	 * this method will ensure that the node added is unique.  If it finds that 
+	 * there is an existing node for <em>nodeName</em>, it will attempt to 
+	 * generate a new, unique, <em>nodeName</em> by extending the <em>nodeName</em> 
+	 * argument with a randomly generated extension.
+	 * 
+	 * @param nodeName
+	 *            the name of the node to be created. This will be used as a
+	 *            unique identifier for the node.
+	 * @param attribute
+	 *            a defining property for the node, that can be used in
+	 *            conjunction with the Visual Mapper to assign visual
+	 *            characteristics to different types of nodes. Also can be used,
+	 *            by the canvas when handling a dropped item, to distinguish
+	 *            between nodes and edges, so should be set to something like
+	 *            "NodeType".
+	 * @param value
+	 *            the value of the attribute for this node. This can be used in
+	 *            conjunction with the Visual Mapper to assign visual
+	 *            characteristics to different types of nodes, for example to
+	 *            assign a violet diamond shape to a 'smallMolecule' node type.
+	 * @return the CyNode that has been either reused or created.
+	 * 
+	 */
+	public CyNode addNode(String nodeName, String attribute,
+			String value) {
+		return addNode (nodeName, attribute, value, null);
+	}
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
@@ -388,24 +440,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 		return addNode (nodeName, CytoscapeEditorManager.NODE_TYPE, nodeType);
 	}
 
-	/**
-	 * wrapper for adding a node in Cytoscape. This is intended to be called by
-	 * the CytoscapeEditor in lieu of making direct modifications to the
-	 * Cytoscape model. Thus, it provides an insulating level of abstraction
-	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
-	 * for portability and extensibility of the editor.
-	 * 
-	 * @param nodeName
-	 *            the name of the node to be created. This will be used as a
-	 *            unique identifier for the node.
-	 * @param create
-	 *            if true, then create a node if one does not already exist.
-	 *            Otherwise, only return a node if it already exists.
-	 * @return the CyNode that has been either reused or created.
-	 */
-	public  CyNode addNode(String nodeName, boolean create) {
-		return addNode(nodeName, null);
-	}
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
@@ -452,21 +486,40 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, FlagEventListener
 	 */
 	public CyEdge addEdge(Node node_1, Node node_2, String attribute,
 			Object attribute_value, boolean create, String edgeType) {
-		CyEdge edge = Cytoscape.getCyEdge(node_1, node_2, attribute,
-				attribute_value, create, true); // edge is directed
+		// first see if edge already exists.  If it does, then 
+		// there is no need to set up undoable edit or fire event
+		CyEdge edge;
+		boolean uniqueEdge = true;
+		edge = Cytoscape.getCyEdge(node_1, node_2, attribute,
+				attribute_value, false, true); // edge is directed
+		if (edge != null)
+		{
+			uniqueEdge = false;
+		}
+		else
+		{
+			edge = Cytoscape.getCyEdge(node_1, node_2, attribute,
+					attribute_value, create, true); // edge is directed
+		}
+
 		if (edge != null) {
 			CyNetwork net = Cytoscape.getCurrentNetwork();
 			net.restoreEdge(edge);
-			if (edgeType != null) {
-				CytoscapeEditorManager.edgeAttribs.setAttribute(edge.getIdentifier(), CytoscapeEditorManager.EDGE_TYPE,
-						edgeType);
+			if (uniqueEdge)
+			{
+				if (edgeType != null) {
+					CytoscapeEditorManager.edgeAttribs.setAttribute(edge.getIdentifier(), CytoscapeEditorManager.EDGE_TYPE,
+							edgeType);
+				}
+
+				CytoscapeEditorManager.manager.setupUndoableAdditionEdit(net, null, edge);
+				Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
+				
+				// AJK: 05/16/06 
+//				((DGraphView) Cytoscape.getCurrentNetworkView()).addEdgeContextMenuListener(this);
+				Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(this);
+				
 			}
-			CytoscapeEditorManager.manager.setupUndoableAdditionEdit(net, null, edge);
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
-			
-			// AJK: 05/16/06 
-//			((DGraphView) Cytoscape.getCurrentNetworkView()).addEdgeContextMenuListener(this);
-			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(this);
 		}
 		return edge;
 	}
