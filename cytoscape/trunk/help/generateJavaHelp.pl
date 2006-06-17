@@ -28,6 +28,7 @@ mkdir "$dir";
 mkdir "$dir/images";
 
 $prevWasSection = 0;
+%fetchCommands = ();
 
 open OUT, ">$xml_good";
 open FILE, "$xml_form" or die;
@@ -41,9 +42,9 @@ while(<FILE>) {
 	s/\&amp\;\#8594/\&\#8594/g;
 
 	#
-	# This block is used to fetch the image data. It fetches
-	# the image files referenced in imagedata elements and
-	# copies them to a local "images" directory.
+	# This block is used to determine which images to fetch. 
+	# This is done by looking at the the image files referenced 
+	# in imagedata elements. 
 	#
 	if ( $_ =~ /\<imagedata\s+fileref=\"(.+\=(.+))\"\s*\/\>/ ) {
 		$url = $1;
@@ -54,9 +55,8 @@ while(<FILE>) {
 			$url = "http://cytoscape.org" . $url;
 		}
 
-		$com =  "curl -G $url > $dir/images/$file";
-
-		system $com;
+		$com =  "curl -sf $url > $dir/images/$file";
+		$fetchCommands{$file} = $com;	
 
 		print OUT "<imagedata fileref=\"images/$file\"/>\n";
 
@@ -112,6 +112,24 @@ while(<FILE>) {
 }
 close FILE;
 close OUT;
+
+#
+# Now fetch the actual images. The sleep exists to prevent triggering the 
+# surge protection feature on the wiki. Currently the wiki borks at 
+# >30 requests in under 60 seconds.
+#
+print "Begin fetching images files.  This will take a while. \n";
+print "The reason it takes so long is that we need to prevent\n";
+print "triggering the wiki's surge protection feature.\n\n";
+for (keys %fetchCommands) { 
+	sleep 3; 
+	print ".";
+	system $fetchCommands{$_}; 
+	if ( $? != 0 ) {
+		print "\nFAILURE: $? $!\n";
+		print "$fetchCommands{$_}\n";
+	}
+}
 
 #
 # Transform the corrected (good) xml document into javahelp.
