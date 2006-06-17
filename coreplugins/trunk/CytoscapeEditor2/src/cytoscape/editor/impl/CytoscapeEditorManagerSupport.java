@@ -6,9 +6,13 @@ package cytoscape.editor.impl;
 
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.GraphPerspectiveChangeListener;
+import giny.model.Node;
+import giny.view.NodeView;
 
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
@@ -514,9 +518,21 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 		final int[] edges = new int[1];
 		final CyNetwork cyNet = net;
 
+		// cache the coordinate positions so that they can be restored upon a redo
+		final CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
+		final HashMap coords = new HashMap();
+		final Node[] cyNodes = new Node[1];
+
 		if (node != null) {
 			int nodeIdx = node.getRootGraphIndex();
 			nodes[0] = nodeIdx;
+			
+			NodeView nview = networkView.getNodeView(node);
+			coords.put(node.getIdentifier(), nview.getOffset());
+			System.out.println(
+					"added node: " + node + " at coordinates " +
+					nview.getOffset());
+			cyNodes[0] = node;
 		}
 
 		if (edge != null) {
@@ -593,7 +609,18 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 					network.restoreNodes(nodes);
 					network.restoreEdges(edges);
 					// signal end to Undo Manager; this enables redo
-
+					// restore positions of nodes
+					for (int i = 0; i < cyNodes.length; i++)
+					{
+						Node n = cyNodes[i];
+						Point2D pt = (Point2D) coords.get(n.getIdentifier());
+						System.out.println(
+								"restoring Node:" + n 
+								+ "to position: " + pt);
+				        NodeView nv = 
+				        	networkView.getNodeView(n);
+				        nv.setOffset(pt.getX(), pt.getY());
+					}
 				}
 			}
 

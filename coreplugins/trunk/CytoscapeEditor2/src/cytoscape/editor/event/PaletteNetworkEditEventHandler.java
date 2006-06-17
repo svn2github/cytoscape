@@ -189,34 +189,34 @@ public class PaletteNetworkEditEventHandler extends
 				this.setNodeAttributeName(attributeName);
 				this.setNodeAttributeValue(attributeValue);
 				CyNode cn = _caller.addNode("node" + counter, 
-						attributeName, attributeValue);
+						attributeName, attributeValue, location);
 			    counter++;				
-				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
-	
-				Cytoscape.getCurrentNetwork().restoreNode(cn);		
-				NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
-				// AJK: 04/02/06
-//				nv.setOffset(locn.getX(), locn.getY());
-				nv.setOffset(location.x, location.y);
-			    DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-//			    double zoomFactor = dview.getZoom();
-//			    Point2D dCenter = dview.getCenter();
-//			    Rectangle2D dBounds = (Rectangle2D) dview.getCanvas().getBounds();
-//			    System.out.println("item dropped at local coordinate: " + location.x + "," + location.y);
-//			    System.out.println("bounds are at: " + dBounds.getMinX() + "," + 
-//			    		dBounds.getMinY() + " " + dBounds.getMaxX() + "," + dBounds.getMaxY());
-//                System.out.println("zoom factor is: " + zoomFactor);			    
-			    
-			    double [] locn = new double[2];
-                locn [0] = location.getX();
-                locn [1] = location.getY();
-                dview.xformComponentToNodeCoords(locn);
-                nv.setOffset(locn[0], locn[1]);
-			    
-//			    nv.setOffset(xlocn, ylocn);
-			    System.out.println("Offset set to: " + locn[0] + "," + locn[1]);
-				
-				// AJK: 04/02/06 END
+//				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
+//	
+//				Cytoscape.getCurrentNetwork().restoreNode(cn);		
+//				NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
+//				// AJK: 04/02/06
+////				nv.setOffset(locn.getX(), locn.getY());
+//				nv.setOffset(location.x, location.y);
+//			    DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+////			    double zoomFactor = dview.getZoom();
+////			    Point2D dCenter = dview.getCenter();
+////			    Rectangle2D dBounds = (Rectangle2D) dview.getCanvas().getBounds();
+////			    System.out.println("item dropped at local coordinate: " + location.x + "," + location.y);
+////			    System.out.println("bounds are at: " + dBounds.getMinX() + "," + 
+////			    		dBounds.getMinY() + " " + dBounds.getMaxX() + "," + dBounds.getMaxY());
+////                System.out.println("zoom factor is: " + zoomFactor);			    
+//			    
+//			    double [] locn = new double[2];
+//                locn [0] = location.getX();
+//                locn [1] = location.getY();
+//                dview.xformComponentToNodeCoords(locn);
+//                nv.setOffset(locn[0], locn[1]);
+//			    
+////			    nv.setOffset(xlocn, ylocn);
+//			    System.out.println("Offset set to: " + locn[0] + "," + locn[1]);
+//				
+//				// AJK: 04/02/06 END
 				
 			}
 			else if (attributeName.equals(this.EDGE_TYPE))

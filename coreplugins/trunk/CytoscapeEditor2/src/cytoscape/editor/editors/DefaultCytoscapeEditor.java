@@ -433,7 +433,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements
 
 		shapePalette.showPalette();
 
-		// super.initializeControls(null);
+		 super.initializeControls(null);
 
 	}
 

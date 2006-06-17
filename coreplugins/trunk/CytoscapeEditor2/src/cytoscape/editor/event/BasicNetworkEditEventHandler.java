@@ -447,49 +447,15 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		CyNode cn = null;
 		// if ((getMode() == ADD_MODE) || (e.isControlDown())) {
 		// add a node
+	
 		cn = _caller.addNode("node" + counter, this.getNodeAttributeName(),
-				this.getNodeAttributeValue());
-
-		// } else if (getMode() == LABEL_MODE) {
-
-		// add a freestanding label
-		// functionality not available in Cytoscape 2.2
-		// cn = CytoscapeEditorManager.addNode("node" + counter, "Label");
-		// }
-
+				this.getNodeAttributeValue(), location);
 		counter++;
-		double zoom = Cytoscape.getCurrentNetworkView().getZoom();
-		// Cytoscape.getCurrentNetwork().restoreNode(cn);
-		NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
-//		nv.setOffset(location.getX(), location.getY());
-		double [] nextLocn = new double[2]; 
-		nextLocn[0] = nextPoint.getX();
-		nextLocn[1] = nextPoint.getY();
-		view.xformComponentToNodeCoords(nextLocn);
-		nv.setOffset (nextLocn[0], nextLocn[1]);
-		nv.setToolTip(cn.getIdentifier());
-		// do node labeling
-		// _nodeBeingLabeled = cn;
-		// _nodeViewBeingLabeled = nv;
-		// nv.setOffset(nextPoint.getX(), nextPoint.getY());
-
-		// canvas.add(_nodeLabelerPanel);
-		// _nodeLabelerPanel.setVisible(true);
-		// _nodeLabeler.setText(cn.getIdentifier());
-
-		// AJK: 09/16/05 disable node labeler, rely on attribute editor/browser
-		// initializeNodeLabeler(cn, nv);
-		
-		// AJK: 04/26/06 BEGIN
-		//     set tooltipText  (a test)
-//		((DNodeView) nv).setToolTip(cn.getIdentifier());
-		nv.setToolTip(cn.getIdentifier());
-//		System.out.println("Setting tooltip text on nodeView: " + nv);
-//		System.out.println("   to: " + ((DNodeView) nv).getToolTip());
-		// AJK: 04/26/06 END
-		
 		return cn;
 	}
+		
+
+
 
 	/**
 	 * updates rendering of edge if an edge is under construction

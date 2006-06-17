@@ -6,6 +6,7 @@ package cytoscape.editor;
 
 import giny.model.Node;
 
+import java.awt.geom.Point2D;
 import java.util.List;
 
 import cytoscape.CyEdge;
@@ -106,6 +107,41 @@ public interface CytoscapeEditor extends FlagEventListener {
 	 */
 	public CyNode addNode(String nodeName, String attribute,
 			String value); 
+
+	/**
+	 * wrapper for adding a node in Cytoscape. This is intended to be called by
+	 * the CytoscapeEditor in lieu of making direct modifications to the
+	 * Cytoscape model. Thus, it provides an insulating level of abstraction
+	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
+	 * for portability and extensibility of the editor.
+	 * 
+	 * this method will ensure that the node added is unique.  If it finds that 
+	 * there is an existing node for <em>nodeName</em>, it will attempt to 
+	 * generate a new, unique, <em>nodeName</em> by extending the <em>nodeName</em> 
+	 * argument with a randomly generated extension.
+	 * 
+	 * @param nodeName
+	 *            the name of the node to be created. This will be used as a
+	 *            unique identifier for the node.
+	 * @param attribute
+	 *            a defining property for the node, that can be used in
+	 *            conjunction with the Visual Mapper to assign visual
+	 *            characteristics to different types of nodes. Also can be used,
+	 *            by the canvas when handling a dropped item, to distinguish
+	 *            between nodes and edges, so should be set to something like
+	 *            "NodeType".
+	 * @param value
+	 *            the value of the attribute for this node. This can be used in
+	 *            conjunction with the Visual Mapper to assign visual
+	 *            characteristics to different types of nodes, for example to
+	 *            assign a violet diamond shape to a 'smallMolecule' node type.
+	 * @param location
+	 *            position at which to add the node
+	 * @return the CyNode that has been either reused or created.
+	 */
+	public CyNode addNode(String nodeName, String attribute,
+			String value, Point2D location); 	
+	
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
 	 * the CytoscapeEditor in lieu of making direct modifications to the
@@ -126,22 +162,6 @@ public interface CytoscapeEditor extends FlagEventListener {
 	 */
 	public CyNode addNode(String nodeName, String nodeType);
 
-	/**
-	 * wrapper for adding a node in Cytoscape. This is intended to be called by
-	 * the CytoscapeEditor in lieu of making direct modifications to the
-	 * Cytoscape model. Thus, it provides an insulating level of abstraction
-	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
-	 * for portability and extensibility of the editor.
-	 * 
-	 * @param nodeName
-	 *            the name of the node to be created. This will be used as a
-	 *            unique identifier for the node.
-	 * @param create
-	 *            if true, then create a node if one does not already exist.
-	 *            Otherwise, only return a node if it already exists.
-	 * @return the CyNode that has been either reused or created.
-	 */
-	public  CyNode addNode(String nodeName, boolean create);
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
