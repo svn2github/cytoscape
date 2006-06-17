@@ -200,13 +200,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected JPanel main_panel;
 
 	// This is used to keep track of the visual style combo box in EXTERNAL_VIEW
-	// mode only.  Basically, we need to remove the styleBox and create a new one
-	// each time a session is loaded.  To do this, we need to know which component
+	// mode only. Basically, we need to remove the styleBox and create a new one
+	// each time a session is loaded. To do this, we need to know which
+	// component
 	// to remove.
 	protected JComboBox currentStyleBox = null;
 
-	// This is used to keep track of the visual style combo box in every other mode
-	// This is the index of the box in the toolbar.  We use this so that we can 
+	// This is used to keep track of the visual style combo box in every other
+	// mode
+	// This is the index of the box in the toolbar. We use this so that we can
 	// add and remove the stylebox from the same place.
 	protected int styleBoxIndex = -1;
 
@@ -250,21 +252,22 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		main_panel.setLayout(new BorderLayout());
 		// enable context-sensitive help generally
-		//getHelpBroker().enableHelpKey(getRootPane(), "intro", null);
+		// getHelpBroker().enableHelpKey(getRootPane(), "intro", null);
 
 		// enable context-sensitive help for main panel
-		//getHelpBroker().enableHelp(main_panel, "intro", null);
+		// getHelpBroker().enableHelp(main_panel, "intro", null);
 
 		// ------------------------------//
 		// Set up the Panels, Menus, and Event Firing
 
 		networkPanel = new NetworkPanel(this);
 		// enable context-sensitive help for networkPanel
-		//getHelpBroker().enableHelp(networkPanel, "network-view-manager", null);
+		// getHelpBroker().enableHelp(networkPanel, "network-view-manager",
+		// null);
 
 		cyMenus = new CyMenus();
 		// enable context-sensitive help for menus/menubar
-		//getHelpBroker().enableHelp(cyMenus.getMenuBar(), "menus", null);
+		// getHelpBroker().enableHelp(cyMenus.getMenuBar(), "menus", null);
 
 		networkViewManager = new NetworkViewManager(this);
 
@@ -343,10 +346,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		final CytoscapeDesktop thisWindow = this;
 
-		// don't automatically close window. Let Cytoscape.exit(returnVal) handle this,
+		// don't automatically close window. Let Cytoscape.exit(returnVal)
+		// handle this,
 		// based upon user confirmation.
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
 				Cytoscape.exit(returnVal);
@@ -364,26 +368,30 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			setSize(800, 700);
 		setVisible(true);
 
-		// Enable the bird's eye view.
-		final CyMenus fCyMenus = cyMenus;
-		Runnable birdViewEnabler = new Runnable() {
-			public void run() {
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					return;
-				}
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						cyMenus.networkOverviewAction
-								.actionPerformed(new ActionEvent(
-										cyMenus.networkOverviewItem, 1001,
-										"Show Network Overview"));
-					}
-				});
-			}
-		};
-		(new Thread(birdViewEnabler)).start();
+		/*
+		 * Enable the bird's eye view.
+		 * 
+		 * kono: no longer necessary.  called after CYTOSCAPE_INITIALIZED signal.
+		 */
+//		final CyMenus fCyMenus = cyMenus;
+//		Runnable birdViewEnabler = new Runnable() {
+//			public void run() {
+//				try {
+//					Thread.sleep(5000);
+//				} catch (InterruptedException e) {
+//					return;
+//				}
+//				SwingUtilities.invokeLater(new Runnable() {
+//					public void run() {
+//						cyMenus.networkOverviewAction
+//								.actionPerformed(new ActionEvent(
+//										cyMenus.networkOverviewItem, 1001,
+//										"Show Network Overview"));
+//					}
+//				});
+//			}
+//		};
+//		(new Thread(birdViewEnabler)).start();
 	}
 
 	private void initStatusBar(JPanel panel) {
@@ -391,8 +399,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		statusBar.setBorder(new EmptyBorder(0, 7, 5, 7));
 		statusBar.setForeground(new Color(75, 75, 75));
 		panel.add(statusBar, BorderLayout.SOUTH);
-		setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version +
-		"              Right-click + drag  to  ZOOM             Middle-click + drag  to  PAN");
+		setStatusBarMsg("Welcome to Cytoscape "
+				+ CytoscapeVersion.version
+				+ "              Right-click + drag  to  ZOOM             Middle-click + drag  to  PAN");
 	}
 
 	/**
@@ -491,22 +500,22 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		styleBox.setPreferredSize(newSize);
 
 		if (VIEW_TYPE == EXTERNAL_VIEW) {
-			if ( currentStyleBox != null )
-				main_panel.remove( currentStyleBox );
+			if (currentStyleBox != null)
+				main_panel.remove(currentStyleBox);
 
 			main_panel.add(styleBox, BorderLayout.SOUTH);
 			currentStyleBox = styleBox;
-			
+
 		} else {
 			JToolBar toolBar = cyMenus.getToolBar();
 
 			// first time
-			if ( styleBoxIndex == -1 ) {
+			if (styleBoxIndex == -1) {
 				toolBar.add(styleBox);
 				styleBoxIndex = toolBar.getComponentCount() - 1;
 				toolBar.addSeparator();
 
-			// subsequent times
+				// subsequent times
 			} else {
 				toolBar.remove(styleBoxIndex);
 				toolBar.add(styleBox, styleBoxIndex);
@@ -641,26 +650,32 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
 			// Check new session or not
-			
-			if(Cytoscape.getNetworkSet().size() == 0 &&
-					Cytoscape.getSessionstate() != Cytoscape.SESSION_OPENED) {
+
+			if (Cytoscape.getNetworkSet().size() == 0
+					&& Cytoscape.getSessionstate() != Cytoscape.SESSION_OPENED) {
 				String message = "Do you want to create a new session?.\n(All attributes will be lost!)";
 
-				int result = JOptionPane.showConfirmDialog(this,
-						message, "Create New Session?", JOptionPane.YES_NO_OPTION,
+				int result = JOptionPane.showConfirmDialog(this, message,
+						"Create New Session?", JOptionPane.YES_NO_OPTION,
 						JOptionPane.WARNING_MESSAGE, null);
 				if (result == JOptionPane.YES_OPTION) {
 					Cytoscape.createNewSession();
 				}
 			}
-		}
-
-		else if (e.getPropertyName() == NETWORK_VIEW_DESTROYED) {
+		} else if (e.getPropertyName() == NETWORK_VIEW_DESTROYED) {
 			// remove the view from the GraphViewController
 			getGraphViewController().removeGraphView(
 					(CyNetworkView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
+		} else if (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED) {
+			/*
+			 * Create bird's eye view
+			 */
+			cyMenus.networkOverviewAction
+					.actionPerformed(new ActionEvent(
+							cyMenus.networkOverviewItem, 1001,
+							"Show Network Overview"));
 		}
 
 	}
