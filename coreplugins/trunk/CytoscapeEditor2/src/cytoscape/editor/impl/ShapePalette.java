@@ -252,6 +252,13 @@ public class ShapePalette extends JPanel
 		
 		_shapeMap.put(cytoShape.getTitle(), cytoShape);
 
+		if (attributeName.equals(CytoscapeEditorManager.EDGE_TYPE))
+		{
+			CytoscapeEditorManager.addEdgeTypeForVisualStyle(
+					Cytoscape.getCurrentNetworkView().getVisualStyle(), 
+					attributeValue);		
+		}
+
 		 
 		// AJK: 11/12/05 BEGIN
 		//    add mouseAdaptor so that we can initiate DnD without having to first select shape

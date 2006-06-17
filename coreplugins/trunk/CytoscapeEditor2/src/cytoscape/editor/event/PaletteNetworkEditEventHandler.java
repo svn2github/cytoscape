@@ -4,6 +4,8 @@
  */
 package cytoscape.editor.event;
 
+import edu.umd.cs.piccolo.nodes.PPath;
+import edu.umd.cs.piccolox.util.PFixedWidthStroke;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -23,9 +25,6 @@ import cytoscape.editor.editors.SimpleBioMoleculeEditor;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
-import edu.umd.cs.piccolo.nodes.PPath;
-import edu.umd.cs.piccolox.util.PFixedWidthStroke;
 
 /**
  * 

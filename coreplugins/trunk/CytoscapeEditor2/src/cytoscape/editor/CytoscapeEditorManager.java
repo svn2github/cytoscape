@@ -240,6 +240,11 @@ public abstract class CytoscapeEditorManager {
 	// protected static HashMap networkVisualStyleMap = new HashMap();
 
 	/**
+	 * associates a visual style with its set of EDGE_TYPEs
+	 */
+	protected static HashMap visualStyleEdgeTypesMap = new HashMap();
+	
+	/**
 	 * CytoscapeAttribute: NODE_TYPE
 	 */
 	public static final String NODE_TYPE = "NODE_TYPE";
@@ -1080,6 +1085,36 @@ public abstract class CytoscapeEditorManager {
 		networkHiddenEdgesMap.put(net, hiddenEdgesList);
 		// System.out.println("HiddenEdges for Network: " + net + " = " +
 		// hiddenEdgesList);
+	}
+	
+
+	/**
+	 * 
+	 * @param vizStyle
+	 * @param edgeType
+	 */
+	public static void addEdgeTypeForVisualStyle(VisualStyle vizStyle, String edgeType)
+	{
+		List edgeTypes = (List) visualStyleEdgeTypesMap.get(vizStyle);
+		if (edgeTypes == null)
+		{
+			edgeTypes = new ArrayList();
+		}
+		if (!edgeTypes.contains(edgeType))
+		{
+			edgeTypes.add(edgeType);
+		}
+		visualStyleEdgeTypesMap.put(vizStyle, edgeTypes);
+	}
+	
+	/**
+	 * 
+	 * @param vizStyle
+	 * @return a list of the EDGE_TYPEs associated with the visual style
+	 */
+	public static List getEdgeTypesForVisualStyle (VisualStyle vizStyle)
+	{
+		return (List) visualStyleEdgeTypesMap.get(vizStyle);
 	}
 
 	/**

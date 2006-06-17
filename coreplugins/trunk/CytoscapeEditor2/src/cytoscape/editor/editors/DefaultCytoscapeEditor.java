@@ -155,8 +155,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements
 		// AJK: 06/10/06 END
 
 		// TODO: need to ensure that we have BioPAX visual style loaded
-		VisualMappingManager manager = Cytoscape.getDesktop()
-				.getVizMapManager();
+		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
 
 		CalculatorCatalog catalog = manager.getCalculatorCatalog();
 
@@ -165,7 +164,8 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements
 
 		// first do edges
 		EdgeAppearanceCalculator eac = vizStyle.getEdgeAppearanceCalculator();
-		System.out.println("Got edgeAppearanceCalculator: " + eac);
+		System.out.println("Got edgeAppearanceCalculator: " + eac);		
+		
 		if (eac == null) {
 			// shapePalette.addShape(EDGE_TYPE, "DirectedEdge", new
 			// CytoShapeIcon(
