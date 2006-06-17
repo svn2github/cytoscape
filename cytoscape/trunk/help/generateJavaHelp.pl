@@ -118,11 +118,16 @@ close OUT;
 # surge protection feature on the wiki. Currently the wiki borks at 
 # >30 requests in under 60 seconds.
 #
-print "Begin fetching images files.  This will take a while. \n";
-print "The reason it takes so long is that we need to prevent\n";
-print "triggering the wiki's surge protection feature.\n\n";
+$sleepDuration = 2;
+# the +1 estimates the download time
+$duration = (scalar keys %fetchCommands) * ($sleepDuration + 1);
+
+print "Begin fetching images files.  This will take approximately\n";
+print "$duration seconds.  The reason this takes so long is that we \n";
+print "need to prevent triggering the wiki's surge protection feature.\n\n";
+
 for (keys %fetchCommands) { 
-	sleep 3; 
+	sleep $sleepDuration; 
 	print ".";
 	system $fetchCommands{$_}; 
 	if ( $? != 0 ) {
