@@ -43,12 +43,10 @@ import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import javax.swing.SwingUtilities;
@@ -80,6 +78,10 @@ import ding.view.DGraphView;
 /**
  * Reaser to load CYtoscape Session file (.cys).<br>
  * This class unzip cys file and read all files in the archive.
+ * <p>
+ * This class accept input as URL only!
+ * If it is a file, use File.toURL() to get platform dependent file URL.
+ * </p>
  * 
  * @version 1.0
  * @since Cytoscape 2.3
@@ -89,16 +91,15 @@ import ding.view.DGraphView;
  */
 public class CytoscapeSessionReader {
 
-	private static final String PACKAGE_NAME = "cytoscape.generated";
+	public static final String PACKAGE_NAME = "cytoscape.generated";
 	public static final String CYSESSION = "cysession.xml";
+	public static final String VIZMAP_PROPS = "vizmap.props";
+	public static final String CY_PROPS = "cytoscape.props";
+	public static final String XGMML_EXT = ".xgmml";
 
-	private static final String XML_EXT = ".xml";
-	private static final String XGMML_EXT = ".xgmml";
+	private static final String NETWORK_ROOT = "Network Root";
 
-	private static final String FS = System.getProperty("file.separator");
-
-	private String fileName;
-	private Object sourceObject;
+	private URL sourceURL;
 
 	private HashMap networkURLs = null;
 
@@ -121,23 +122,6 @@ public class CytoscapeSessionReader {
 	HashMap vsMapByName;
 
 	/**
-	 * Constructor for local files.<br>
-	 * 
-	 * @param filename
-	 *            Name of .cys file.
-	 * 
-	 * This constructor is for loading local session file.
-	 */
-	public CytoscapeSessionReader(String filename) {
-		this.fileName = filename;
-		this.sourceObject = fileName;
-		this.networkList = new ArrayList();
-
-		vsMap = new HashMap();
-		vsMapByName = new HashMap();
-	}
-
-	/**
 	 * Constructor for remote file (specified by an URL)<br>
 	 * 
 	 * @param sourceName
@@ -145,14 +129,12 @@ public class CytoscapeSessionReader {
 	 * 
 	 * This is for remote session file (URL).
 	 */
-	public CytoscapeSessionReader(URL sourceName) throws IOException {
-		this.sourceObject = sourceName;
-		this.networkList = new ArrayList();
-
+	public CytoscapeSessionReader(final URL sourceName) throws IOException {
+		this.sourceURL = sourceName;
+		
+		networkList = new ArrayList();
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
-
-		extractEntry((URL) sourceObject);
 	}
 
 	/**
@@ -161,33 +143,39 @@ public class CytoscapeSessionReader {
 	 * @param sourceName
 	 * @throws IOException
 	 */
-	private void extractEntry(final URL sourceName) throws IOException {
-		ZipInputStream zis = null;
-		zis = new ZipInputStream(sourceName.openStream());
+	private void extractEntry() throws IOException {
+
+		ZipInputStream zis = new ZipInputStream(sourceURL.openStream());
+
 		networkURLs = new HashMap();
 
 		// Extract list of entries
 		ZipEntry zen = null;
 		String entryName = null;
 		while ((zen = zis.getNextEntry()) != null) {
-
 			entryName = zen.getName();
-			if (entryName.endsWith(XML_EXT)) {
-				cysessionFileURL = new URL("jar:" + sourceName.toString()
-						+ "!/" + entryName);
-			} else if (entryName.endsWith("vizmap.props")) {
-				vizmapFileURL = new URL("jar:" + sourceName.toString() + "!/"
+			if (entryName.endsWith(CYSESSION)) {
+				cysessionFileURL = new URL("jar:" + sourceURL.toString() + "!/"
 						+ entryName);
-			} else if (entryName.endsWith("cytoscape.props")) {
-				cytoscapePropsURL = new URL("jar:" + sourceName.toString()
+			} else if (entryName.endsWith(VIZMAP_PROPS)) {
+				vizmapFileURL = new URL("jar:" + sourceURL.toString() + "!/"
+						+ entryName);
+			} else if (entryName.endsWith(CY_PROPS)) {
+				cytoscapePropsURL = new URL("jar:" + sourceURL.toString()
 						+ "!/" + entryName);
 			} else if (entryName.endsWith(XGMML_EXT)) {
-				URL networkURL = new URL("jar:" + sourceName.toString() + "!/"
+				URL networkURL = new URL("jar:" + sourceURL.toString() + "!/"
 						+ entryName);
 				networkURLs.put(entryName, networkURL);
 			}
 		}
-		zis.close();
+		if (zis != null) {
+			try {
+				zis.close();
+			} finally {
+				zis = null;
+			}
+		}
 	}
 
 	/**
@@ -198,15 +186,12 @@ public class CytoscapeSessionReader {
 	 */
 	public void read() throws IOException, JAXBException {
 
-		if (sourceObject.getClass() == String.class) {
-			unzipSessionFromFile();
-		} else if (sourceObject.getClass() == URL.class) {
-			unzipSessionFromURL();
-		}
+		unzipSessionFromURL();
 
 		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null,
 				networkList);
+
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
@@ -218,7 +203,9 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	private boolean unzipSessionFromURL() throws IOException, JAXBException {
+	private void unzipSessionFromURL() throws IOException, JAXBException {
+
+		extractEntry();
 
 		// restore vizmap.props
 		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null,
@@ -228,72 +215,24 @@ public class CytoscapeSessionReader {
 		CytoscapeInit.getProperties().load(cytoscapePropsURL.openStream());
 
 		loadCySession(cysessionFileURL);
-
-		return true;
 	}
 
-	/**
-	 * Decompress session file
-	 * 
-	 * @throws IOException
-	 * @throws JAXBException
-	 */
-	private boolean unzipSessionFromFile() throws IOException, JAXBException {
-
-		// Create zipfile object to be extracted
-		final ZipFile cysFile = new ZipFile(fileName);
-
-		String cysessionFileName = null;
-
-		for (final Enumeration e = cysFile.entries(); e.hasMoreElements();) {
-			final ZipEntry zent = (ZipEntry) e.nextElement();
-			final String curEntry = zent.toString();
-			if (curEntry.endsWith("xml")) {
-				cysessionFileName = curEntry;
-
-			} else if (curEntry.endsWith("vizmap.props")) {
-				// We should restore VIZMAP first since it will be used by
-				// Graph Layout.
-				Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null,
-						fileName);
-			} else if (curEntry.endsWith("cytoscape.props")) {
-				CytoscapeInit.getProperties()
-						.load(cysFile.getInputStream(zent));
-			}
-		}
-
-		cysFile.close();
-		loadCySession(cysessionFileName);
-
-		return true;
-	}
-
-	private boolean loadCySession(final Object cysessionSource)
+	private void loadCySession(final URL cysessionSource)
 			throws JAXBException, IOException {
 
-		InputStream is = null;
-		ZipFile sessionFile = null;
-
-		// Prepare input stream based on the
-		if (cysessionSource.getClass() == URL.class) {
-			JarURLConnection jarConnection = null;
-			jarConnection = (JarURLConnection) ((URL) cysessionSource)
-					.openConnection();
-			is = (InputStream) jarConnection.getContent();
-
-		} else if (cysessionSource.getClass() == String.class) {
-			sessionFile = new ZipFile(fileName);
-			is = sessionFile.getInputStream(sessionFile
-					.getEntry((String) cysessionSource));
-		}
-
+		InputStream is = cysessionSource.openStream();
 		final JAXBContext jaxbContext = JAXBContext.newInstance(PACKAGE_NAME,
 				this.getClass().getClassLoader());
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 		session = (Cysession) unmarshaller.unmarshal(is);
+
 		if (is != null) {
-			is.close();
+			try {
+				is.close();
+			} finally {
+				is = null;
+			}
 		}
 
 		/*
@@ -302,127 +241,16 @@ public class CytoscapeSessionReader {
 		 */
 		sessionID = session.getId();
 
-		// Extract tree structure
-		final NetworkTree networks = (NetworkTree) session.getNetworkTree();
-
 		// Convert it to map
-		final Iterator it = networks.getNetwork().iterator();
+		final Iterator it = ((NetworkTree) session.getNetworkTree())
+				.getNetwork().iterator();
 		netMap = new HashMap();
 		while (it.hasNext()) {
 			final Network curNet = (Network) it.next();
 			netMap.put(curNet.getId(), curNet);
 		}
 
-		// Extract root network
-		// ("root network" is a network which belongs directly to
-		// the Network Root.)
-
-		final Network root = (Network) netMap.get("Network Root");
-		final Iterator rootIt = root.getChild().iterator();
-
-		while (rootIt.hasNext()) {
-			final Child curNet = (Child) rootIt.next();
-			final String curNetName = curNet.getId();
-			final Network targetRoot = (Network) netMap.get(curNetName);
-			vsMapByName.put(targetRoot.getId(), targetRoot.getVisualStyle());
-
-			// Create a root network here.
-			// String targetNetwork = sessionID + FS + targetRoot.getFilename();
-			String targetNetwork = sessionID + "/" + targetRoot.getFilename();
-
-			InputStream networkStream = null;
-
-			if (cysessionSource.getClass() == URL.class) {
-				// Problem: targetNetwork improperly uses the file separator
-				// FS for URLs and one Windows machine FS is '\'
-				// Fix: for URLs, replace '\' with '/'
-				targetNetwork = targetNetwork.replace('\\', '/');
-				final URL targetNetworkURL = (URL) networkURLs
-						.get(targetNetwork);
-				JarURLConnection jarConnection = (JarURLConnection) (targetNetworkURL)
-						.openConnection();
-				networkStream = (InputStream) jarConnection.getContent();
-			} else if (cysessionSource.getClass() == String.class) {
-				networkStream = sessionFile.getInputStream(sessionFile
-						.getEntry(targetNetwork));
-			}
-
-			/*
-			 * Finally, create CyNetwork.
-			 */
-			final CyNetwork rootNetwork = this.createNetwork(null,
-					networkStream, targetRoot.isViewAvailable());
-
-			/*
-			 * Extract network view id available
-			 */
-			final CyNetworkView curNetView = Cytoscape.getNetworkView(rootNetwork
-					.getIdentifier());
-
-			if (networkStream != null) {
-				networkStream.close();
-			}
-
-			/*
-			 * Restore association between view and VS.
-			 */
-			String vsName = targetRoot.getVisualStyle();
-			if (vsName == null) {
-				vsName = "default";
-			}
-			vsMap.put(rootNetwork.getIdentifier(), vsName);
-
-			networkList.add(rootNetwork.getIdentifier());
-
-			/*
-			 * Hide hidden nodes
-			 */
-			final HiddenNodes hNodes = (HiddenNodes) targetRoot
-					.getHiddenNodes();
-			if (curNetView != Cytoscape.getNullNetworkView() && hNodes != null) {
-				setHiddenNodes(curNetView, hNodes);
-			}
-
-			/*
-			 * Hide hidden edges
-			 */
-			final HiddenEdges hEdges = (HiddenEdges) targetRoot
-					.getHiddenEdges();
-			if (curNetView != Cytoscape.getNullNetworkView() && hEdges != null) {
-				setHiddenEdges(curNetView, hEdges);
-			}
-
-			/*
-			 * Restore selected nodes
-			 */
-			final SelectedNodes sNodes = (SelectedNodes) targetRoot
-					.getSelectedNodes();
-			if (sNodes != null) {
-				setSelectedNodes(rootNetwork, sNodes);
-			}
-
-			/*
-			 * Restore selected edges
-			 */
-			final SelectedEdges sEdges = (SelectedEdges) targetRoot
-					.getSelectedEdges();
-			if (sEdges != null) {
-				setSelectedEdges(rootNetwork, sEdges);
-			}
-
-			/*
-			 * Move to the next network in the tree.
-			 */
-			if (cysessionSource.getClass() == URL.class) {
-				walkTree(targetRoot, rootNetwork, cysessionSource);
-			} else if (cysessionSource.getClass() == String.class) {
-				walkTree(targetRoot, rootNetwork, sessionFile);
-			}
-		}
-
-		if (sessionFile != null) {
-			sessionFile.close();
-		}
+		walkTree((Network) netMap.get(NETWORK_ROOT), null, cysessionSource);
 
 		/*
 		 * Set VS for each network view
@@ -436,78 +264,9 @@ public class CytoscapeSessionReader {
 			if (targetView != Cytoscape.getNullNetworkView()) {
 				targetView.setVisualStyle((String) vsMap.get(currentNetworkID));
 				targetView.applyVizmapper(targetView.getVisualStyle());
+				((DingNetworkView)targetView).getCanvas().setVisible(true);
 			}
 		}
-		return false;
-	}
-
-	private void setSelectedNodes(final CyNetwork network,
-			final SelectedNodes selected) {
-
-		final List selectedNodeList = new ArrayList();
-		final Iterator it = selected.getNode().iterator();
-
-		while (it.hasNext()) {
-			final Node selectedNode = (Node) it.next();
-			selectedNodeList.add(Cytoscape.getCyNode(selectedNode.getId(),
-					false));
-		}
-		network.setSelectedNodeState(selectedNodeList, true);
-	}
-
-	private void setHiddenNodes(final CyNetworkView view,
-			final HiddenNodes hidden) {
-		final Iterator it = hidden.getNode().iterator();
-		while (it.hasNext()) {
-			final Node hiddenNodeObject = (Node) it.next();
-			final CyNode hiddenNode = Cytoscape.getCyNode(hiddenNodeObject
-					.getId(), false);
-			view.hideGraphObject(view.getNodeView(hiddenNode));
-		}
-	}
-
-	private void setHiddenEdges(final CyNetworkView view,
-			final HiddenEdges hidden) {
-		final Iterator it = hidden.getEdge().iterator();
-		while (it.hasNext()) {
-			final Edge hiddenEdgeObject = (Edge) it.next();
-			final CyEdge hiddenEdge = getEdgeFromID(hiddenEdgeObject.getId());
-			if (hiddenEdge != null) {
-				view.hideGraphObject(view.getEdgeView(hiddenEdge));
-			}
-		}
-	}
-
-	private void setSelectedEdges(final CyNetwork network,
-			final SelectedEdges selected) {
-
-		CyEdge targetEdge = null;
-		final List selectedEdgeList = new ArrayList();
-		final Iterator it = selected.getEdge().iterator();
-		while (it.hasNext()) {
-
-			final cytoscape.generated.Edge selectedEdge = (cytoscape.generated.Edge) it
-					.next();
-			targetEdge = getEdgeFromID(selectedEdge.getId());
-			if (targetEdge != null) {
-				selectedEdgeList.add(targetEdge);
-			}
-		}
-		network.setSelectedEdgeState(selectedEdgeList, true);
-	}
-
-	private CyEdge getEdgeFromID(final String edgeID) {
-		CyEdge targetEdge = null;
-		final String[] parts = edgeID.split(" ");
-		if (parts.length == 3) {
-			final CyNode source = Cytoscape.getCyNode(parts[0], false);
-			final CyNode target = Cytoscape.getCyNode(parts[2], false);
-			final String interaction = parts[1].substring(1,
-					parts[1].length() - 1);
-			targetEdge = Cytoscape.getCyEdge(source, target,
-					Semantics.INTERACTION, interaction, false);
-		}
-		return targetEdge;
 	}
 
 	/**
@@ -537,115 +296,174 @@ public class CytoscapeSessionReader {
 
 			vsMapByName.put(child.getId(), vsName);
 
-			final String childFile = sessionID + "/" + childNet.getFilename();
-
-			InputStream networkStream = null;
-			if (sessionSource.getClass() == ZipFile.class) {
-				final ZipFile zipSourceFile = (ZipFile) sessionSource;
-				networkStream = zipSourceFile.getInputStream(zipSourceFile
-						.getEntry(childFile));
-			} else if (sessionSource.getClass() == URL.class) {
-				final URL targetNetworkURL = (URL) networkURLs.get(childFile);
-				final JarURLConnection jarConnection = (JarURLConnection) (targetNetworkURL)
-						.openConnection();
-				networkStream = (InputStream) jarConnection.getContent();
-			}
+			final URL targetNetworkURL = (URL) networkURLs.get(sessionID + "/"
+					+ childNet.getFilename());
+			final JarURLConnection jarConnection = (JarURLConnection) (targetNetworkURL)
+					.openConnection();
+			InputStream networkStream = (InputStream) jarConnection
+					.getContent();
 
 			final CyNetwork new_network = this.createNetwork(parent,
 					networkStream, childNet.isViewAvailable());
 
 			/*
-			 * Extract network view id available
+			 * Extract network view
 			 */
 			final CyNetworkView curNetView = Cytoscape
 					.getNetworkView(new_network.getIdentifier());
 
 			if (networkStream != null) {
-				networkStream.close();
+				try {
+					networkStream.close();
+				} finally {
+					networkStream = null;
+				}
 			}
 			vsMap.put(new_network.getIdentifier(), vsName);
 			networkList.add(new_network.getIdentifier());
 
 			/*
-			 * Hide hidden nodes
+			 * Set selected & hidden nodes/edges
 			 */
-			final HiddenNodes hNodes = (HiddenNodes) childNet.getHiddenNodes();
-			if (curNetView != Cytoscape.getNullNetworkView() && hNodes != null) {
-				setHiddenNodes(curNetView, hNodes);
+			if (curNetView != Cytoscape.getNullNetworkView()) {
+				setHiddenNodes(curNetView, (HiddenNodes) childNet
+						.getHiddenNodes());
+				setHiddenEdges(curNetView, (HiddenEdges) childNet
+						.getHiddenEdges());
 			}
+			setSelectedNodes(new_network, (SelectedNodes) childNet
+					.getSelectedNodes());
+			setSelectedEdges(new_network, (SelectedEdges) childNet
+					.getSelectedEdges());
 
 			/*
-			 * Hide hidden edges
+			 * Load child networks
 			 */
-			final HiddenEdges hEdges = (HiddenEdges) childNet.getHiddenEdges();
-			if (curNetView != Cytoscape.getNullNetworkView() && hEdges != null) {
-				setHiddenEdges(curNetView, hEdges);
-			}
-
-			final SelectedNodes sNodes = (SelectedNodes) childNet
-					.getSelectedNodes();
-			if (sNodes != null) {
-				setSelectedNodes(new_network, sNodes);
-			}
-
-			final SelectedEdges sEdges = (SelectedEdges) childNet
-					.getSelectedEdges();
-			if (sEdges != null) {
-				setSelectedEdges(new_network, sEdges);
-			}
-
 			if (childNet.getChild().size() != 0) {
 				walkTree(childNet, new_network, sessionSource);
 			}
 		}
 	}
 
-	private CyNetwork createNetwork(final CyNetwork parent, final InputStream is,
-			final boolean viewAvailable) throws IOException, JAXBException {
+	private void setSelectedNodes(final CyNetwork network,
+			final SelectedNodes selected) {
+		if (selected == null) {
+			return;
+		}
 
-		// Create reader and read an XGMML file
-		XGMMLReader reader;
-		reader = new XGMMLReader(is);
+		final List selectedNodeList = new ArrayList();
+		final Iterator it = selected.getNode().iterator();
+
+		while (it.hasNext()) {
+			final Node selectedNode = (Node) it.next();
+			selectedNodeList.add(Cytoscape.getCyNode(selectedNode.getId(),
+					false));
+		}
+		network.setSelectedNodeState(selectedNodeList, true);
+	}
+
+	private void setHiddenNodes(final CyNetworkView view,
+			final HiddenNodes hidden) {
+		if (hidden == null) {
+			return;
+		}
+		final Iterator it = hidden.getNode().iterator();
+		while (it.hasNext()) {
+			final Node hiddenNodeObject = (Node) it.next();
+			final CyNode hiddenNode = Cytoscape.getCyNode(hiddenNodeObject
+					.getId(), false);
+			view.hideGraphObject(view.getNodeView(hiddenNode));
+		}
+	}
+
+	private void setHiddenEdges(final CyNetworkView view,
+			final HiddenEdges hidden) {
+		if (hidden == null) {
+			return;
+		}
+		final Iterator it = hidden.getEdge().iterator();
+		while (it.hasNext()) {
+			final Edge hiddenEdgeObject = (Edge) it.next();
+			final CyEdge hiddenEdge = getEdgeFromID(hiddenEdgeObject.getId());
+			if (hiddenEdge != null) {
+				view.hideGraphObject(view.getEdgeView(hiddenEdge));
+			}
+		}
+	}
+
+	private void setSelectedEdges(final CyNetwork network,
+			final SelectedEdges selected) {
+		if (selected == null) {
+			return;
+		}
+		CyEdge targetEdge = null;
+		final List selectedEdgeList = new ArrayList();
+		final Iterator it = selected.getEdge().iterator();
+		while (it.hasNext()) {
+
+			final cytoscape.generated.Edge selectedEdge = (cytoscape.generated.Edge) it
+					.next();
+			targetEdge = getEdgeFromID(selectedEdge.getId());
+			if (targetEdge != null) {
+				selectedEdgeList.add(targetEdge);
+			}
+		}
+		network.setSelectedEdgeState(selectedEdgeList, true);
+	}
+
+	private CyEdge getEdgeFromID(final String edgeID) {
+		CyEdge targetEdge = null;
+		final String[] parts = edgeID.split(" ");
+		if (parts.length == 3) {
+			final CyNode source = Cytoscape.getCyNode(parts[0], false);
+			final CyNode target = Cytoscape.getCyNode(parts[2], false);
+			final String interaction = parts[1].substring(1,
+					parts[1].length() - 1);
+			targetEdge = Cytoscape.getCyEdge(source, target,
+					Semantics.INTERACTION, interaction, false);
+		}
+		return targetEdge;
+	}
+
+	private CyNetwork createNetwork(final CyNetwork parent,
+			final InputStream is, final boolean viewAvailable)
+			throws IOException, JAXBException {
+
+		// Read an XGMML file
+		final XGMMLReader reader = new XGMMLReader(is);
 		reader.read();
 
-		// Get the RootGraph indices of the nodes and
-		// Edges that were just created
-		final int[] nodes = reader.getNodeIndicesArray();
-		final int[] edges = reader.getEdgeIndicesArray();
-
-		// Create the CyNetwork
-		// First, set the view threshold to 0. By doing so, we can disable
-		// the auto-creating of the CyNetworkView.
-
+		/*
+		 * Create the CyNetwork. First, set the view threshold to 0. By doing
+		 * so, we can disable the auto-creating of the CyNetworkView.
+		 */
 		final int realThreshold = Integer.valueOf(
-				CytoscapeInit.getProperties().getProperty("viewThreshold",
-						"5000")).intValue();
-
-		CytoscapeInit.setViewThreshold(0);
+				CytoscapeInit.getProperties().getProperty("viewThreshold"))
+				.intValue();
+		CytoscapeInit.getProperties().setProperty("viewThreshold",
+				Integer.toString(0));
 
 		CyNetwork network = null;
 		if (parent == null) {
-			network = Cytoscape.createNetwork(nodes, edges, reader
-					.getNetworkID());
+			network = Cytoscape.createNetwork(reader.getNodeIndicesArray(),
+					reader.getEdgeIndicesArray(), reader.getNetworkID());
 
 		} else {
-			network = Cytoscape.createNetwork(nodes, edges, reader
-					.getNetworkID(), parent);
+			network = Cytoscape
+					.createNetwork(reader.getNodeIndicesArray(), reader
+							.getEdgeIndicesArray(), reader.getNetworkID(),
+							parent);
 		}
 
 		// Set network Attributes here, not in the read() method in XGMMLReader!
 		// Otherwise, ID mismatch may happen.
 		reader.setNetworkAttributes(network);
 
-		// network.putClientData(
-		// "metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices",
-		// reader.getMetanodeList());
-
 		// Reset back to the real View Threshold
-		CytoscapeInit.setViewThreshold(realThreshold);
+		CytoscapeInit.getProperties().setProperty("viewThreshold",
+				Integer.toString(realThreshold));
 
 		// Conditionally, Create the CyNetworkView
-
 		if (viewAvailable) {
 			createCyNetworkView(network);
 
@@ -699,6 +517,9 @@ public class CytoscapeSessionReader {
 	private void createCyNetworkView(final CyNetwork cyNetwork) {
 		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork
 				.getTitle());
+
+		// For performance, hide canvas.
+		view.getCanvas().setVisible(false);
 
 		view.setIdentifier(cyNetwork.getIdentifier());
 		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);

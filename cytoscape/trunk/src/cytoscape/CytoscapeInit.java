@@ -864,6 +864,9 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		String sessionFile = initParams.getSessionFile();
 		CytoscapeSessionReader reader = null;
 
+		//	Turn off the network panel (for loading speed)
+		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
+				false);
 		try { 
 			String sessionName = "";
 			if ( sessionFile != null ) {
@@ -877,8 +880,9 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 					sessionName = u.getFile();
 				} else {
 					Cytoscape.setCurrentSessionFileName(sessionFile);
-					reader = new CytoscapeSessionReader(sessionFile);
-		                	File shortName = new File(sessionFile);
+					File shortName = new File(sessionFile);
+					URL sessionURL = shortName.toURL();
+					reader = new CytoscapeSessionReader(sessionURL);
 					sessionName = shortName.getName();
 				}
 			}
@@ -894,6 +898,9 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("couldn't create session from file: '" + sessionFile + "'");
+		} finally {
+			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
+					true);
 		}
 		return false;
 	}
