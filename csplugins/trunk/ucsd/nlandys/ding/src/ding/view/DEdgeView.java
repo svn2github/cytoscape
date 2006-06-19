@@ -652,7 +652,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       removeAllHandles();
       for (int i = 0; i < bendPoints.size(); i++) {
         final Point2D nextPt = (Point2D) bendPoints.get(i);
-        addHandle(nextPt); }
+        addHandle(i, nextPt); }
       m_view.m_contentChanged = true; }
   }
 
