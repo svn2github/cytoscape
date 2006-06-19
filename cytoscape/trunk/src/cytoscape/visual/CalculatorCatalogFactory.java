@@ -49,6 +49,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.JarURLConnection;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
@@ -162,23 +163,27 @@ public abstract class CalculatorCatalogFactory {
 
 				// get the new vizmap.props and apply it the existing properties
 				Object vizmapSource = e.getNewValue();
+				System.out.println("vizmapSource: '"+ vizmapSource.toString() + "'");
 				try {
+					InputStream is = null;
+
 					if (vizmapSource.getClass() == URL.class) {
-						vizmapProps.load(((URL) vizmapSource).openStream());
+						is = ((URL) vizmapSource).openStream();
 					} else if (vizmapSource.getClass() == String.class) {
-						// if its a RESTORED event the vizmap file will be in a
-						// zip file.
+						// if its a RESTORED event the vizmap 
+						// file will be in a zip file.
 						if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) {
-							InputStream is = ZipUtil.readFile(
-									(String) vizmapSource, ".*vizmap.props");
-							if (is != null)
-								vizmapProps.load(is);
-							// if its a LOADED event the vizmap file will be a
-							// normal file.
+							is = ZipUtil.readFile( (String) vizmapSource, ".*vizmap.props");
+						// if its a LOADED event the vizmap file 
+						// will be a normal file.
 						} else {
-							vizmapProps.load(FileUtil
-									.getInputStream((String) vizmapSource));
+							is = FileUtil.getInputStream((String) vizmapSource);
 						}
+					}
+
+					if ( is != null ) {
+						vizmapProps.load(is);
+						is.close();
 					}
 
 				} catch (FileNotFoundException e1) {
