@@ -40,6 +40,7 @@ package cytoscape.data.writers;
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
+import giny.model.RootGraph;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -105,6 +106,9 @@ public class XGMMLWriter {
 	private static final String METADATA_NAME = "networkMetadata";
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
 
+	// Attribute name for metaData support
+	private static final String METANODE_KEY = "__metaNodeRindices";
+
 	// GML-Compatible Pre-defined Shapes
 	protected static final String RECTANGLE = "rectangle";
 	protected static final String ELLIPSE = "ellipse";
@@ -143,7 +147,7 @@ public class XGMMLWriter {
 
 	private ArrayList nodeList;
 	private ArrayList metanodeList;
-	private ArrayList edgeList;
+	private HashMap edgeMap;
 
 	JAXBContext jc;
 	ObjectFactory objFactory;
@@ -187,7 +191,7 @@ public class XGMMLWriter {
 
 		nodeList = new ArrayList();
 		metanodeList = new ArrayList();
-		edgeList = new ArrayList();
+		edgeMap = new HashMap();
 
 		nodeAttNames = nodeAttributes.getAttributeNames();
 		edgeAttNames = edgeAttributes.getAttributeNames();
@@ -255,14 +259,14 @@ public class XGMMLWriter {
 	 */
 	public void write(final Writer writer) throws JAXBException, IOException {
 
+		// write out network attributes
+		writeNetworkAttributes();
+
 		writeBaseNodes();
 		writeMetanodes();
 
 		// Create edge objects
 		writeEdges();
-
-		// write out network attributes
-		writeNetworkAttributes();
 
 		// This creates the header of the XML document.
 		writer.write("<?xml version='1.0'?>\n");
@@ -296,33 +300,49 @@ public class XGMMLWriter {
 	 * @throws JAXBException
 	 */
 	private void writeEdges() throws JAXBException {
-		final Iterator it = network.edgesIterator();
+		Iterator it = network.edgesIterator();
 
 		CyEdge curEdge = null;
 		Edge jxbEdge = null;
 
 		while (it.hasNext()) {
 			curEdge = (CyEdge) it.next();
-			jxbEdge = objFactory.createEdge();
-
-			jxbEdge.setId(curEdge.getIdentifier());
-			jxbEdge.setLabel(curEdge.getIdentifier());
-
-			jxbEdge.setSource(Integer.toString(curEdge.getSource()
-					.getRootGraphIndex()));
-			jxbEdge.setTarget(Integer.toString(curEdge.getTarget()
-					.getRootGraphIndex()));
-
-			if (networkView != Cytoscape.getNullNetworkView()) {
-				final Graphics edgeGraphics = getGraphics(EDGE, networkView.getEdgeView(curEdge));
-				if (edgeGraphics != null) {
-					jxbEdge.setGraphics(edgeGraphics);
-				}
+			writeEdge(curEdge);
+			// Is this edge in the edge map already?
+			if (edgeMap.containsKey(curEdge.getIdentifier())) {
+				// Yes, remove it
+				edgeMap.remove(curEdge.getIdentifier());
 			}
-			attributeWriter(EDGE, curEdge.getIdentifier(), jxbEdge);
-			edgeList.add(curEdge);
-			graph.getNodeOrEdge().add(jxbEdge);
 		}
+
+		// The edges left should all be from collapsed metaNodes
+		it = edgeMap.keySet().iterator();
+		while (it.hasNext()) {
+			curEdge = (CyEdge)edgeMap.get(it.next());
+			writeEdge(curEdge);
+		}
+	}
+
+	private void writeEdge(CyEdge curEdge) throws JAXBException {
+		Edge jxbEdge = objFactory.createEdge();
+
+		jxbEdge.setId(curEdge.getIdentifier());
+		jxbEdge.setLabel(curEdge.getIdentifier());
+
+		jxbEdge.setSource(Integer.toString(curEdge.getSource()
+				.getRootGraphIndex()));
+		jxbEdge.setTarget(Integer.toString(curEdge.getTarget()
+				.getRootGraphIndex()));
+
+		if (networkView != Cytoscape.getNullNetworkView()) {
+			final Graphics edgeGraphics = getGraphics(EDGE, networkView.getEdgeView(curEdge));
+			if (edgeGraphics != null) {
+				jxbEdge.setGraphics(edgeGraphics);
+			}
+		}
+		attributeWriter(EDGE, curEdge.getIdentifier(), jxbEdge);
+
+		graph.getNodeOrEdge().add(jxbEdge);
 	}
 
 	/**
@@ -394,7 +414,8 @@ public class XGMMLWriter {
 			// process each attribute type
 			for (int i = 0; i < networkAttNames.length; i++) {
 				// ignore Metadata object.
-				if (!networkAttNames[i].equals(METADATA_ATTR_NAME)) {
+				if (!networkAttNames[i].equals(METADATA_ATTR_NAME) &&
+				    !networkAttNames[i].equals(METANODE_KEY)) {
 					Att att = createAttribute(id, networkAttributes, networkAttNames[i]);
 					if (att != null) graph.getAtt().add(att);
 				}
@@ -1113,7 +1134,6 @@ public class XGMMLWriter {
 			attributeWriter(NODE, curNode.getIdentifier(), jxbNode);
 			if (isMetanode(curNode)) {
 				nodeList.add(curNode);
-				metanodeList.add(curNode);
 				expandChildren(curNode);
 			} else {
 				nodeList.add(curNode);
@@ -1164,7 +1184,6 @@ public class XGMMLWriter {
 					childrenIndices[i]);
 
 			if (isMetanode(childNode)) {
-				metanodeList.add(childNode);
 				nodeList.add(childNode);
 				expandChildren(childNode);
 
@@ -1184,37 +1203,86 @@ public class XGMMLWriter {
 	 * 
 	 */
 	private void writeMetanodes() throws JAXBException {
-		final Iterator it = metanodeList.iterator();
+		Iterator it;
+		RootGraph rootGraph = network.getRootGraph();
 
+                // Two pass approach. First, walk through the list
+                // and see if any of the children of a metanode are
+                // themselves a metanode.  If so, remove them from
+                // the list & will pick them up on recursion
+		metanodeList = (ArrayList)networkAttributes
+				.getAttributeList(network.getIdentifier(),METANODE_KEY);
+		if (metanodeList == null || metanodeList.isEmpty())
+			return;
+
+		it = metanodeList.iterator();
+		HashMap embeddedMetaList = new HashMap();
 		while (it.hasNext()) {
-			final CyNode curNode = (CyNode) it.next();
-			Node jxbNode = null;
-			jxbNode = buildJAXBNode(curNode);
-			jxbNode.setName("metaNode");
-
-			final int[] childrenIndices = network.getRootGraph()
-					.getNodeMetaChildIndicesArray(curNode.getRootGraphIndex());
-			final Att children = objFactory.createAtt();
-			children.setName("metanodeChildren");
-			final Graph subGraph = objFactory.createGraph();
-
+			int curNodeID = ((Integer)it.next()).intValue();
+			int[] childrenIndices = rootGraph
+					.getNodeMetaChildIndicesArray(curNodeID);
 			for (int i = 0; i < childrenIndices.length; i++) {
-				Node childJxbNode = null;
-
-				childJxbNode = objFactory.createNode();
-				childJxbNode.setId(((CyNode) network.getRootGraph().getNode(
-						childrenIndices[i])).getIdentifier());
-
-				childJxbNode.setName("reference");
-				subGraph.getNodeOrEdge().add(childJxbNode);
-
+				CyNode childNode = (CyNode) network.getRootGraph().getNode(
+						childrenIndices[i]);
+				if (isMetanode(childNode)) {
+					embeddedMetaList.put(childNode.getIdentifier(), 
+							     childNode);
+				}
 			}
-			children.getContent().add(subGraph);
-			jxbNode.getAtt().add(children);
-			graph.getAtt().add(jxbNode);
 		}
 
+		// Reset the iterator
+		it = metanodeList.iterator();
+		while (it.hasNext()) {
+			CyNode curNode = (CyNode) rootGraph.getNode(
+							((Integer)it.next()).intValue());
+			// Is this an embedded metaNode?
+			if (embeddedMetaList.containsKey(curNode.getIdentifier()))
+				continue;  // Yes, skip it
+			
+			graph.getAtt().add(writeMetanode(curNode));
+		}
 	}
+
+	private Node writeMetanode(CyNode curNode) throws JAXBException {
+		Node jxbNode = null;
+		jxbNode = buildJAXBNode(curNode);
+
+		int[] childrenIndices = network.getRootGraph()
+				.getNodeMetaChildIndicesArray(curNode.getRootGraphIndex());
+		Att children = objFactory.createAtt();
+		Graph subGraph = objFactory.createGraph();
+
+		for (int i = 0; i < childrenIndices.length; i++) {
+			CyNode childNode = null;
+			Node childJxbNode = null;
+
+			childNode = (CyNode) network.getRootGraph().getNode(
+					childrenIndices[i]);
+			String targetnodeID = Integer.toString(childNode.getRootGraphIndex());
+			if (!isMetanode(childNode)) {
+				childJxbNode = objFactory.createNode();
+				childJxbNode.setHref("#"+targetnodeID);
+			} else {
+				// We have an embedded metanode -- recurse
+				childJxbNode = writeMetanode(childNode);
+			}
+
+			subGraph.getNodeOrEdge().add(childJxbNode);
+		}
+		children.getContent().add(subGraph);
+		jxbNode.getAtt().add(children);
+
+		// Finally add any edges from this sub-network
+		Iterator it = curNode.getGraphPerspective().getRootGraph().edgesIterator();
+		while (it.hasNext()) {
+			CyEdge curEdge = (CyEdge)it.next();
+			edgeMap.put(curEdge.getIdentifier(),curEdge);
+		}
+
+		return jxbNode;
+	}
+
 
 	/**
 	 * Returns true if the node is a metanode.
