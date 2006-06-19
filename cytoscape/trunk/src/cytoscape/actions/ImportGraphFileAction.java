@@ -73,7 +73,6 @@ import cytoscape.data.readers.GMLException;
  * 
  * New! 2/15/2006: Now supporting XGMML file (network + attributes)
  * 
- * @author kono
  * 
  */
 public class ImportGraphFileAction extends CytoscapeAction {
@@ -202,11 +201,8 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
 			jTaskConfig.displayCloseButton(true);
 			jTaskConfig.displayStatus(true);
-			if (file.getName().endsWith(".gml")) {
-				jTaskConfig.setAutoDispose(true);
-			} else {
-				jTaskConfig.setAutoDispose(false);
-			}
+			jTaskConfig.setAutoDispose(false);
+			
 
 			// Execute Task in New Thread; pops open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
@@ -427,12 +423,12 @@ class LoadNetworkTask implements Task {
 			createCyNetworkView(network);
 
 			// Layout Network
+			
 			if (Cytoscape.getNetworkView(network.getIdentifier()) != Cytoscape.getNullNetworkView()) {
 				reader
 						.layout(Cytoscape.getNetworkView(network
 								.getIdentifier()));
 			}
-
 			Cytoscape.getCurrentNetworkView().fitContent();
 		}
 		return network;
@@ -450,18 +446,12 @@ class LoadNetworkTask implements Task {
 		view.setGraphLOD(new CyGraphLOD());
 
 		// Start of Hack: Hide the View
-		// PCanvas pCanvas = view.getCanvas();
-		// pCanvas.setVisible(false);
+		//view.getCanvas().setVisible(false);
 		// End of Hack
 
 		view.setIdentifier(cyNetwork.getIdentifier());
 		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
 		view.setTitle(cyNetwork.getTitle());
-
-		// if Squiggle function enabled, enable squiggling on the created view
-		if (Cytoscape.isSquiggleEnabled()) {
-			// view.getSquiggleHandler().beginSquiggling();
-		}
 
 		// set the selection mode on the view
 		Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
@@ -481,6 +471,7 @@ class LoadNetworkTask implements Task {
 		// }
 		// view.getCanvas().getCamera().animateViewToCenterBounds
 		// (view.getCanvas().getLayer().getFullBounds(), true, 0);
+
 	}
 	// AJK: 09/10/09 END
 }
