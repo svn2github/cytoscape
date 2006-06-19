@@ -57,9 +57,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     m_unselectedPaint = m_view.m_edgeDetails.segmentPaint(m_inx);
     m_selectedPaint = Color.red;
     m_sourceUnselectedPaint = m_view.m_edgeDetails.sourceArrowPaint(m_inx);
-    m_sourceSelectedPaint = DEFAULT_ARROW_PAINT;
+    m_sourceSelectedPaint = Color.red;
     m_targetUnselectedPaint = m_view.m_edgeDetails.targetArrowPaint(m_inx);
-    m_targetSelectedPaint = DEFAULT_ARROW_PAINT;
+    m_targetSelectedPaint = Color.red;
     m_sourceEdgeEnd = EdgeView.NO_END;
     m_targetEdgeEnd = EdgeView.NO_END;
     m_anchors = null;
@@ -160,7 +160,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
         if (m_unselectedPaint instanceof Color) {
           m_view.m_edgeDetails.overrideColorLowDetail
             (m_inx, (Color) m_unselectedPaint); }
-        m_view.m_contentChanged = true; } }
+        m_view.m_contentChanged = true; }
+      setSourceEdgeEnd(m_sourceEdgeEnd);
+      setTargetEdgeEnd(m_targetEdgeEnd); }
   }
 
   public Paint getUnselectedPaint()
@@ -372,7 +374,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public void setSourceEdgeEnd(final int type)
   {
     synchronized (m_view.m_lock) {
-      if (type == m_sourceEdgeEnd) { return; }
+//       if (type == m_sourceEdgeEnd) { return; }
       switch (type) {
       case NO_END:
         m_view.m_edgeDetails.overrideSourceArrow
@@ -450,7 +452,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public void setTargetEdgeEnd(int type)
   {
     synchronized (m_view.m_lock) {
-      if (type == m_targetEdgeEnd) { return; }
+//       if (type == m_targetEdgeEnd) { return; }
       switch (type) {
       case NO_END:
         m_view.m_edgeDetails.overrideTargetArrow
