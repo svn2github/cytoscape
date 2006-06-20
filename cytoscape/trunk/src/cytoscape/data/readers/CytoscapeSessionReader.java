@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -144,8 +145,28 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 */
 	private void extractEntry() throws IOException {
-
-		ZipInputStream zis = new ZipInputStream(sourceURL.openStream());
+		/*
+		 * This is an inportant part!
+		 * 
+		 * We can create InputStream directly from URL, but it does
+		 * not work always due to the cashing mechanism in URLConnection.
+		 * 
+		 * By default, URLConnection creates a cash for session file name.
+		 * This will be used even after we saved the session.  Due to the 
+		 * conflict between cashed name and new saved session name (generated
+		 * from system time), session reader cannot find the entry in the zip
+		 * file.  To avoid this problem, we shoud turn off the cashing mechanism
+		 * by using:
+		 * 
+		 * URLConnection.setDefaultUseCaches(false)
+		 * 
+		 * This is a "sticky" parameter for all URLConnections and we have to 
+		 * set this only once.
+		 * 
+		 */
+		URLConnection juc = sourceURL.openConnection();
+		juc.setDefaultUseCaches(false);
+		ZipInputStream zis = new ZipInputStream(juc.getInputStream());
 
 		networkURLs = new HashMap();
 
