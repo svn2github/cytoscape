@@ -303,7 +303,6 @@ public class XGMMLWriter {
 		Iterator it = network.edgesIterator();
 
 		CyEdge curEdge = null;
-		Edge jxbEdge = null;
 
 		while (it.hasNext()) {
 			curEdge = (CyEdge) it.next();
@@ -326,6 +325,7 @@ public class XGMMLWriter {
 	private void writeEdge(CyEdge curEdge) throws JAXBException {
 		Edge jxbEdge = objFactory.createEdge();
 
+		// Set the same value for label & id
 		jxbEdge.setId(curEdge.getIdentifier());
 		jxbEdge.setLabel(curEdge.getIdentifier());
 
@@ -1517,6 +1517,11 @@ class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 		// Dublin core semantics.
 		if ("http://purl.org/dc/elements/1.1/".equals(namespaceUri))
 			return "dc";
+		
+		// Xlink
+		if("http://www.w3.org/1999/xlink".equals(namespaceUri)) {
+			return "xlink";
+		}
 
 		// otherwise I don't care. Just use the default suggestion, whatever it
 		// may be.
