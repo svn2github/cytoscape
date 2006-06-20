@@ -286,7 +286,6 @@ public class XGMMLReader implements GraphReader {
 	 * @throws IOException
 	 */
 	private void readXGMML() throws JAXBException, IOException {
-
 		try {
 			nodeAttributes = Cytoscape.getNodeAttributes();
 			edgeAttributes = Cytoscape.getEdgeAttributes();
@@ -494,40 +493,52 @@ public class XGMMLReader implements GraphReader {
 			final cytoscape.generated2.Edge curEdge = (cytoscape.generated2.Edge) edges
 					.get(idx);
 
+			// This is a little tricky.  If this XGMML file was written by Cytoscape,
+			// then everything is pretty straightforward.  In the general case, however,
+			// the user is not under any compunction to follow the Cytoscape format
+			// for edge naming.  In that circumstance, we use the following rules:
+			// o if the user provides an ID -- that is the edge name, and the label (if
+			//   present is used as the canonicalName
+			// o if no ID, then we build one using the label as an interaction, and
+			//   the user's label becomes the canonicalName (if not present)
+			// NOTE: we assume that a Cytoscape-written file will always have an ID
 			if (gml_id2order.containsKey(curEdge.getSource())
 					&& gml_id2order.containsKey(curEdge.getTarget())) {
 
-				String edgeName = curEdge.getLabel();
+				// Initialize the interaction value
+				String itrValue = "unknown";
 
+				// Get the user-provided edge names
+				final String edgeId = curEdge.getId();
+				String edgeLabel = curEdge.getLabel();
+				if (edgeLabel ==  null) {
+					edgeLabel = "unknown";
+				}
+				String edgeName = edgeId;
+
+				// Get the source & target of the edge
+				final String sourceID = curEdge.getSource();
+				final String targetID = curEdge.getTarget();
+				final String sourceName = (String) nodeMap.get(sourceID);
+				final String targetName = (String) nodeMap.get(targetID);
+
+				// OK, do we have an ID?
 				if (edgeName == null) {
-					edgeName = "N/A";
+					// No, create one
+					edgeName = sourceName + " (" + edgeLabel + ") " + targetName;
 				}
 
-				int duplicate_count = 1;
-				String tEdgeName = new String(edgeName);
-				while (!edgeNameSet.add(tEdgeName)) {
-					tEdgeName = edgeName + "_" + duplicate_count;
-					duplicate_count += 1;
-				}
-				edgeName = tEdgeName;
-
+				// Does this edge already exist?
 				Edge edge = Cytoscape.getRootGraph().getEdge(edgeName);
-
 				if (edge == null) {
-
-					final String sourceName = (String) nodeMap.get(curEdge
-							.getSource());
-					final String targetName = (String) nodeMap.get(curEdge
-							.getTarget());
-
 					final Node node_1 = Cytoscape.getRootGraph().getNode(
 							sourceName);
 					final Node node_2 = Cytoscape.getRootGraph().getNode(
 							targetName);
 
+					// Figure out the interaction
 					final Iterator it = curEdge.getAtt().iterator();
 					Att interaction = null;
-					String itrValue = "unknown";
 					while (it.hasNext()) {
 						interaction = (Att) it.next();
 						if (interaction.getName().equals("interaction")) {
@@ -539,17 +550,23 @@ public class XGMMLReader implements GraphReader {
 						}
 					}
 
+					// Create the edge
 					edge = Cytoscape.getCyEdge(node_1, node_2,
 							Semantics.INTERACTION, itrValue, true);
-
-					// Add interaction to CyAttributes
-					edgeAttributes.setAttribute(edge.getIdentifier(),
-							Semantics.INTERACTION, itrValue);
 				}
 
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
 				curEdge.setId(edgeName);
+
+				// Add interaction to CyAttributes
+				edgeAttributes.setAttribute(edgeName,
+						Semantics.INTERACTION, itrValue);
+
+				// Add canonicalName to CyAttributes
+				if (!edgeLabel.equals("unknown")) 
+					edgeAttributes.setAttribute(edgeName,
+							"canonicalName", edgeLabel);
 
 				readAttributes(edgeName, curEdge.getAtt(), EDGE, null);
 
@@ -560,8 +577,8 @@ public class XGMMLReader implements GraphReader {
 			} else {
 				throw new XGMMLException(
 						"Non-existant source/target node for edge with gml (source,target): "
-								+ nodeMap.get(curEdge.getSource()) + ","
-								+ nodeMap.get(curEdge.getTarget()));
+								+ nodeMap.get(curEdge.getSource()) + "[" + curEdge.getSource() + "],"
+								+ nodeMap.get(curEdge.getTarget()) + "[" + curEdge.getTarget() + "]");
 			}
 		}
 		edgeNameSet = null;

@@ -1221,6 +1221,7 @@ public class XGMMLWriter {
 			int curNodeID = ((Integer)it.next()).intValue();
 			int[] childrenIndices = rootGraph
 					.getNodeMetaChildIndicesArray(curNodeID);
+			if (childrenIndices == null) continue;
 			for (int i = 0; i < childrenIndices.length; i++) {
 				CyNode childNode = (CyNode) network.getRootGraph().getNode(
 						childrenIndices[i]);
@@ -1240,25 +1241,30 @@ public class XGMMLWriter {
 			if (embeddedMetaList.containsKey(curNode.getIdentifier()))
 				continue;  // Yes, skip it
 			
-			graph.getAtt().add(writeMetanode(curNode));
+			Node mNode = writeMetanode(curNode);
+			if (mNode != null) {
+				graph.getAtt().add(mNode);
+			}
 		}
 	}
 
 	private Node writeMetanode(CyNode curNode) throws JAXBException {
 		Node jxbNode = null;
 		jxbNode = buildJAXBNode(curNode);
+		HashMap childMap = new HashMap();
 
 		int[] childrenIndices = network.getRootGraph()
 				.getNodeMetaChildIndicesArray(curNode.getRootGraphIndex());
 		Att children = objFactory.createAtt();
 		Graph subGraph = objFactory.createGraph();
 
-		for (int i = 0; i < childrenIndices.length; i++) {
+		for (int i = 0; childrenIndices != null && i < childrenIndices.length; i++) {
 			CyNode childNode = null;
 			Node childJxbNode = null;
 
 			childNode = (CyNode) network.getRootGraph().getNode(
 					childrenIndices[i]);
+			childMap.put(childNode.getIdentifier(),childNode);
 			String targetnodeID = Integer.toString(childNode.getRootGraphIndex());
 			if (!isMetanode(childNode)) {
 				childJxbNode = objFactory.createNode();
@@ -1274,10 +1280,16 @@ public class XGMMLWriter {
 		jxbNode.getAtt().add(children);
 
 		// Finally add any edges from this sub-network
-		Iterator it = curNode.getGraphPerspective().getRootGraph().edgesIterator();
+		// Note this iterator is over the RootGraph, which
+		// is intentional, otherwise we lose the edges between
+		// the metanode children and the other nodes in the network
+		Iterator it = curNode.getRootGraph().edgesIterator();
 		while (it.hasNext()) {
 			CyEdge curEdge = (CyEdge)it.next();
-			edgeMap.put(curEdge.getIdentifier(),curEdge);
+			if (childMap.containsKey(curEdge.getTarget().getIdentifier()) 
+			    || childMap.containsKey(curEdge.getSource().getIdentifier())) {
+				edgeMap.put(curEdge.getIdentifier(),curEdge);
+			}
 		}
 
 		return jxbNode;
