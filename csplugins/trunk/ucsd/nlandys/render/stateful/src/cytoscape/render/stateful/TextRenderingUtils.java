@@ -59,10 +59,11 @@ final class TextRenderingUtils
                                                 final boolean textAsShape)
   {
     final float[] dims = new float[2];
-    computeTextDimensions(grafx, text, font, fontScaleFactor, textAsShape, dims);
+    computeTextDimensions
+      (grafx, text, font, fontScaleFactor, textAsShape, dims);
     final double overallWidth = dims[0];
     final double overallHeight = dims[1];
-    double currHeight = overallHeight / 2.0d;
+    double currHeight = overallHeight / -2.0d;
     final StringTokenizer tokenizer = new StringTokenizer(text, "\n");
     while (tokenizer.hasMoreTokens()) {
       final String token = tokenizer.nextToken();
@@ -86,7 +87,7 @@ final class TextRenderingUtils
         textWidth = fontScaleFactor * bounds.getWidth();
         textHeight = fontScaleFactor * bounds.getHeight(); }
       final double yCenter =
-        currHeight + textYCenter - (textHeight / 2.0d);
+        currHeight + textYCenter + (textHeight / 2.0d);
       final double xCenter;
       if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_CENTER) {
         xCenter = textXCenter; }
@@ -99,7 +100,7 @@ final class TextRenderingUtils
       grafx.drawTextFull(font, fontScaleFactor, token,
                          (float) xCenter, (float) yCenter, 0,
                          paint, textAsShape);
-      currHeight -= textHeight; }
+      currHeight += textHeight; }
   }
 
 }
