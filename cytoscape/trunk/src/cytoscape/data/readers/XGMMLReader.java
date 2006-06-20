@@ -479,7 +479,6 @@ public class XGMMLReader implements GraphReader {
 
 		// Extract edges
 		giny_edges = new IntArrayList(edges.size());
-		Set edgeNameSet = new HashSet(edges.size());
 
 		final CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
@@ -493,87 +492,47 @@ public class XGMMLReader implements GraphReader {
 			final cytoscape.generated2.Edge curEdge = (cytoscape.generated2.Edge) edges
 					.get(idx);
 
-			// This is a little tricky.  If this XGMML file was written by Cytoscape,
-			// then everything is pretty straightforward.  In the general case, however,
-			// the user is not under any compunction to follow the Cytoscape format
-			// for edge naming.  In that circumstance, we use the following rules:
-			// o if the user provides an ID -- that is the edge name, and the label (if
-			//   present is used as the canonicalName
-			// o if no ID, then we build one using the label as an interaction, and
-			//   the user's label becomes the canonicalName (if not present)
-			// NOTE: we assume that a Cytoscape-written file will always have an ID
 			if (gml_id2order.containsKey(curEdge.getSource())
 					&& gml_id2order.containsKey(curEdge.getTarget())) {
 
-				// Initialize the interaction value
-				String itrValue = "unknown";
-
-				// Get the user-provided edge names
-				final String edgeId = curEdge.getId();
+				String edgeName = curEdge.getId();
 				String edgeLabel = curEdge.getLabel();
-				if (edgeLabel ==  null) {
-					edgeLabel = "unknown";
-				}
-				String edgeName = edgeId;
-
-				// Get the source & target of the edge
-				final String sourceID = curEdge.getSource();
-				final String targetID = curEdge.getTarget();
-				final String sourceName = (String) nodeMap.get(sourceID);
-				final String targetName = (String) nodeMap.get(targetID);
-
-				// OK, do we have an ID?
+				final String sourceName = (String) nodeMap.get(curEdge
+						.getSource());
+				final String targetName = (String) nodeMap.get(curEdge
+						.getTarget());
+				final String interaction = getInteraction(curEdge);
+				
+				final Node node_1 = Cytoscape.getRootGraph().getNode(
+						sourceName);
+				final Node node_2 = Cytoscape.getRootGraph().getNode(
+						targetName);
+				
 				if (edgeName == null) {
-					// No, create one
-					edgeName = sourceName + " (" + edgeLabel + ") " + targetName;
+					edgeName = sourceName + " (" + interaction + ") " + targetName;
 				}
 
-				// Does this edge already exist?
 				Edge edge = Cytoscape.getRootGraph().getEdge(edgeName);
-				if (edge == null) {
-					final Node node_1 = Cytoscape.getRootGraph().getNode(
-							sourceName);
-					final Node node_2 = Cytoscape.getRootGraph().getNode(
-							targetName);
 
-					// Figure out the interaction
-					final Iterator it = curEdge.getAtt().iterator();
-					Att interaction = null;
-					while (it.hasNext()) {
-						interaction = (Att) it.next();
-						if (interaction.getName().equals("interaction")) {
-							itrValue = interaction.getValue();
-							if (itrValue == null) {
-								itrValue = "unknown";
-							}
-							break;
-						}
-					}
-
-					// Create the edge
+				if(edge == null) {
 					edge = Cytoscape.getCyEdge(node_1, node_2,
-							Semantics.INTERACTION, itrValue, true);
+						Semantics.INTERACTION, interaction, true);
 				}
-
+				// Add interaction & label to CyAttributes
+				edgeAttributes.setAttribute(edgeName,
+						Semantics.INTERACTION, interaction);
+				if(edgeLabel != null) {
+					edgeAttributes.setAttribute(edgeName,
+						"XGMML Edge Label", edgeLabel);
+				}
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
-				curEdge.setId(edgeName);
-
-				// Add interaction to CyAttributes
-				edgeAttributes.setAttribute(edgeName,
-						Semantics.INTERACTION, itrValue);
-
-				// Add canonicalName to CyAttributes
-				if (!edgeLabel.equals("unknown")) 
-					edgeAttributes.setAttribute(edgeName,
-							"canonicalName", edgeLabel);
+				//curEdge.setId(edgeName);
 
 				readAttributes(edgeName, curEdge.getAtt(), EDGE, null);
 
 				giny_edges.add(edge.getRootGraphIndex());
-				// ((KeyValue) edge_root_index_pairs.get(idx)).value = (new
-				// Integer(
-				// edge.getRootGraphIndex()));
+				
 			} else {
 				throw new XGMMLException(
 						"Non-existant source/target node for edge with gml (source,target): "
@@ -581,7 +540,25 @@ public class XGMMLReader implements GraphReader {
 								+ nodeMap.get(curEdge.getTarget()) + "[" + curEdge.getTarget() + "]");
 			}
 		}
-		edgeNameSet = null;
+	}
+	
+	private String getInteraction(cytoscape.generated2.Edge edge) {
+		
+		final Iterator it = edge.getAtt().iterator();
+		Att interaction = null;
+		String itrValue = "unknown";
+		while (it.hasNext()) {
+			interaction = (Att) it.next();
+			if (interaction.getName().equals("interaction")) {
+				itrValue = interaction.getValue();
+				if (itrValue == null) {
+					itrValue = "unknown";
+				}
+				break;
+			}
+		}
+		
+		return itrValue;
 	}
 
 	/**
@@ -615,8 +592,6 @@ public class XGMMLReader implements GraphReader {
 			if (targetNode == null || !targetNode.startsWith("#")) {
 				targetNode = childNode.getId();
 			} else {
-				String childLabel = (String) nodeMap
-					.get(targetNode.substring(1));
 				targetNode = targetNode.substring(1);
 			}
 
@@ -878,7 +853,11 @@ public class XGMMLReader implements GraphReader {
 
 			int rootindex = 0;
 			view = null;
-			CyEdge testEdge = Cytoscape.getRootGraph().getEdge(edgeID);
+			CyEdge testEdge = null;
+			if(edgeID != null) {
+				testEdge = Cytoscape.getRootGraph().getEdge(edgeID);
+			} 
+			
 			if (testEdge != null) {
 				rootindex = testEdge.getRootGraphIndex();
 				view = myView.getEdgeView(rootindex);
