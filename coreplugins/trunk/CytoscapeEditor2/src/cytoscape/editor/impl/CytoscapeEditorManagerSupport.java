@@ -189,8 +189,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 	// }
 
 	public void stateChanged(ChangeEvent e) {
-		System.out.println("Got state change event from source: "
-				+ e.getSource());
+//		System.out.println("Got state change event from source: "
+//				+ e.getSource());
 
 		if (!CytoscapeEditorManager.isEditingEnabled()) {
 			return;
@@ -304,7 +304,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 	// AJK: 05/29/06 END
 
 	public void onFlagEvent(FlagEvent e) {
-		System.out.println("Got flagged object: " + e.getTarget());
+		//System.out.println("Got flagged object: " + e.getTarget());
 	}
 
 	// // AJK: 11/25/05 BEGIN
@@ -334,7 +334,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
 	public void propertyChange(PropertyChangeEvent e) {
 
-		System.out.println("Got property change: " + e.getPropertyName());
+		//System.out.println("Got property change: " + e.getPropertyName());
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)) {
 			String netId = e.getNewValue().toString();
 			CyNetwork net = Cytoscape.getNetwork(netId);
