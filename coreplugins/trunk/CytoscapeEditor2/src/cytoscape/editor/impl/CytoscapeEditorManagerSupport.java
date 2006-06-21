@@ -248,10 +248,9 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 	};
 
 	public void updateEditorPalette(VisualStyle style) {
-		
+
 		// AJK: 06/16/06 only update palette after CYTOSCAPE_INITIALIZED
-		if (!CytoscapeEditorManager.isEditingEnabled())
-		{
+		if (!CytoscapeEditorManager.isEditingEnabled()) {
 			return;
 		}
 
@@ -357,12 +356,23 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 		}
 		// redraw graph if the network is modified, e.g. by an undoable edit
 		else if (e.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
-			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+			Object eobj = e.getSource();
+			if (e.getOldValue() != null) 
+			{
+				// AJK: 06/19/06 hack that uses OldValue field to indicate that this 
+				//    event was fired from CytoscapeEditor, thus avoids any 
+				//    unnecessary redraws due to multiple event firings from an 
+				//    -- any non-null value will do
+//				if ((e.getOldValue().equals(CytoscapeEditorManager.CYTOSCAPE_EDITOR)) ||
+//						(e.getOldValue().equals("cytoscape.util.UndoManager")))	
+//				{  
+					Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+				//				}
+			}
 		}
-		
+
 		// AJK: 06/15/06: enable editing once Cytoscape has been initialized
-		else if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED))
-		{
+		else if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			CytoscapeEditorManager.setEditingEnabled(true);
 		}
 
@@ -513,77 +523,46 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 	 */
 	public void setupUndoableAdditionEdit(CyNetwork net, CyNode node,
 			CyEdge edge) {
-		final boolean isNode = (node != null) ? true : false;
-		final int[] nodes = new int[1];
-		final int[] edges = new int[1];
-		final CyNetwork cyNet = net;
-
-		// cache the coordinate positions so that they can be restored upon a redo
-		final CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-		final HashMap coords = new HashMap();
-		final Node[] cyNodes = new Node[1];
 
 		if (node != null) {
-			int nodeIdx = node.getRootGraphIndex();
-			nodes[0] = nodeIdx;
-			
-			NodeView nview = networkView.getNodeView(node);
-			coords.put(node.getIdentifier(), nview.getOffset());
-			System.out.println(
-					"added node: " + node + " at coordinates " +
-					nview.getOffset());
-			cyNodes[0] = node;
+			setupUndoableNodeAdditionEdit(net, node);
+		} else if (edge != null) {
+			setupUndoableEdgeAdditionEdit(net, edge);
 		}
+	}
 
-		if (edge != null) {
-			int edgeIdx = edge.getRootGraphIndex();
-			edges[0] = edgeIdx;
-		}
+	private void setupUndoableNodeAdditionEdit(CyNetwork net, CyNode node) {
+		final int[] nodes = new int[1];
+		int nodeIdx = node.getRootGraphIndex();
+		nodes[0] = nodeIdx;
+		final CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
+		final CyNetwork cyNet = net;
+		final Node n = node;
+
+		NodeView nview = networkView.getNodeView(node);
+		final Point2D offset = nview.getOffset();
+		System.out.println("added node: " + node + " at coordinates "
+				+ nview.getOffset());
 
 		// setup the clipboard and undo manager to be able to undo the deletion
 		// operation
 		CytoscapeEditorManager.getNodeClipBoard().elements(nodes);
-		CytoscapeEditorManager.getEdgeClipBoard().elements(edges);
-		CytoscapeEditorManager.setNetworkClipBoard(cyNet.getIdentifier());
+		CytoscapeEditorManager.setNetworkClipBoard(net.getIdentifier());
 
-		System.out.println("Adding an ADD edit to " + cyNet);
 		CytoscapeEditorManager.addEdit(new AbstractUndoableEdit() {
 
 			final String network_id = cyNet.getIdentifier();
 
 			public String getPresentationName() {
-				// AJK: 10/21/05 return null as presentation name because we are
-				// using iconic buttons
 				return "Add";
-				// return null;
 			}
 
 			public String getRedoPresentationName() {
-				if (isNode)
-					// AJK: 10/21/05 return null as presentation name because we
-					// are using iconic buttons
-					return "Redo: Added Node";
-				// return null;
-				else
-					// AJK: 10/21/05 return null as presentation name because we
-					// are using iconic buttons
-					return "Redo: Added Edge";
-				// return null;
+				return "Redo: Added Node";
 			}
 
 			public String getUndoPresentationName() {
-
-				if (isNode)
-					// AJK: 10/21/05 return null as presentation name because we
-					// are using iconic buttons
-					return "Undo: Added Node";
-				// return null;
-				else
-					// AJK: 10/21/05 return null as presentation name because we
-					// are using iconic buttons
-					return "Undo: Added Edge";
-				// return null;
-
+				return "Undo: Added Node";
 			}
 
 			public void undo() {
@@ -593,10 +572,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 				super.undo();
 				CyNetwork network = Cytoscape.getNetwork(network_id);
 				if (network != null) {
-					network.hideEdges(edges);
 					network.hideNodes(nodes);
 					CytoscapeEditorManager.getNodeClipBoard().elements(nodes);
-					CytoscapeEditorManager.getEdgeClipBoard().elements(edges); // sets
 					// elements
 				}
 
@@ -607,25 +584,76 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 				CyNetwork network = Cytoscape.getNetwork(network_id);
 				if (network != null) {
 					network.restoreNodes(nodes);
+					// signal end to Undo Manager; this enables redo
+					// restore positions of nodes
+					NodeView nv = networkView.getNodeView(n);
+					nv.setOffset(offset.getX(), offset.getY());
+				}
+			}
+		});
+
+	}
+
+	private void setupUndoableEdgeAdditionEdit(CyNetwork net, CyEdge edge) {
+		final int[] edges = new int[1];
+		final CyNetwork cyNet = net;
+
+		// cache the coordinate positions so that they can be restored upon a
+		// redo
+		final CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
+
+		if (edge != null) {
+			int edgeIdx = edge.getRootGraphIndex();
+			edges[0] = edgeIdx;
+		}
+
+		// setup the clipboard and undo manager to be able to undo the deletion
+		// operation
+		CytoscapeEditorManager.getEdgeClipBoard().elements(edges);
+		CytoscapeEditorManager.setNetworkClipBoard(cyNet.getIdentifier());
+
+		System.out.println("Adding an ADD edit to " + cyNet);
+		CytoscapeEditorManager.addEdit(new AbstractUndoableEdit() {
+
+			final String network_id = cyNet.getIdentifier();
+
+			public String getPresentationName() {
+				return "Add";
+			}
+
+			public String getRedoPresentationName() {
+				return "Redo: Added Edge";
+			}
+
+			public String getUndoPresentationName() {
+				return "Undo: Added Edge";
+			}
+
+			public void undo() {
+				// removes the removed nodes and edges from the network
+				System.out.println("Trying to UNDO add on: "
+						+ Cytoscape.getNetwork(network_id));
+				super.undo();
+				CyNetwork network = Cytoscape.getNetwork(network_id);
+				if (network != null) {
+					network.hideEdges(edges);
+					CytoscapeEditorManager.getEdgeClipBoard().elements(edges); // sets
+					// elements
+				}
+
+			}
+
+			public void redo() {
+				super.redo();
+				CyNetwork network = Cytoscape.getNetwork(network_id);
+				if (network != null) {
 					network.restoreEdges(edges);
 					// signal end to Undo Manager; this enables redo
 					// restore positions of nodes
-					for (int i = 0; i < cyNodes.length; i++)
-					{
-						Node n = cyNodes[i];
-						Point2D pt = (Point2D) coords.get(n.getIdentifier());
-						System.out.println(
-								"restoring Node:" + n 
-								+ "to position: " + pt);
-				        NodeView nv = 
-				        	networkView.getNodeView(n);
-				        nv.setOffset(pt.getX(), pt.getY());
-					}
 				}
 			}
 
 		});
-
 	}
 
 	/**
@@ -663,7 +691,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 		}
 
 		if (nodeChanges || edgeChanges) {
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null,
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, 
+					CytoscapeEditorManager.CYTOSCAPE_EDITOR, // for distinguishing from batch firing of event
 					Cytoscape.getCurrentNetwork());
 		}
 

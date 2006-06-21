@@ -260,6 +260,9 @@ public abstract class CytoscapeEditorManager {
 	public static final String ANY_VISUAL_STYLE = "ANY_VISUAL_STYLE";
 
 	public static final String DEFAULT_EDITOR_TYPE = "DefaultCytoscapeEditor";
+	
+	// AJK: 06/19/06 CytoscapeEditor class descriptor -- for checking against NETWORK_MODIFIED events
+	public static final String CYTOSCAPE_EDITOR = "cytoscape.editor";
 
 	/**
 	 * main data structures for all node and edge attributes
@@ -305,7 +308,7 @@ public abstract class CytoscapeEditorManager {
 		ShapePalette shapePalette = new ShapePalette();
 		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).add( "Editor", 
 				shapePalette);
-
+		
 
 		// initially disable New Network creation until an editor is set
 		

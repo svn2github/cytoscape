@@ -135,6 +135,7 @@ public class DeleteAction extends  CytoscapeAction {
 			allEdges = bigEdges;
 		}
 
+
 		// if there is an input argument that is a node, then add it to the
 		// collection of nodes to be deleted,
 		//   also add its adjacent edges to the collection of edges to be deleted.
@@ -228,6 +229,7 @@ public class DeleteAction extends  CytoscapeAction {
 			public void undo() {
 				super.undo();
 				CyNetwork network = Cytoscape.getNetwork(network_id);
+				
 				if (network != null) {
 					network.restoreNodes(nodes);
 					network.restoreEdges(edges);
@@ -237,7 +239,8 @@ public class DeleteAction extends  CytoscapeAction {
 
 		});
 
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNet);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, 
+				CytoscapeEditorManager.CYTOSCAPE_EDITOR, cyNet);
 
 	}
 

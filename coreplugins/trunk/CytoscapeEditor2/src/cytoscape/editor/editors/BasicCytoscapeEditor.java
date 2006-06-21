@@ -276,7 +276,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 		// set tooltip on the node's view
 
 		Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, 
+				CytoscapeEditorManager.CYTOSCAPE_EDITOR, net);
 		// AJK: 05/15/06 END
 		return cn;
 	}
@@ -502,7 +503,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 
 				CytoscapeEditorManager.manager.setupUndoableAdditionEdit(net,
 						null, edge);
-				Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null,
+				Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
+						CytoscapeEditorManager.CYTOSCAPE_EDITOR,
 						net);
 
 				// AJK: 05/16/06

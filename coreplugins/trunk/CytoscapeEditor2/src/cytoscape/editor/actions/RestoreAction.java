@@ -39,7 +39,8 @@ public class RestoreAction  extends CytoscapeAction {
 		// AJK: 09/14/05 BEGIN
 		//      fire a NETWORK_MODIFIED event
 
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, gp);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, 
+				CytoscapeEditorManager.CYTOSCAPE_EDITOR, gp);
 
 
 		// AJK: 09/14/05 END

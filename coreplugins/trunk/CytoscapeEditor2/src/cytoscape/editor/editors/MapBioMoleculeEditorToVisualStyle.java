@@ -24,6 +24,7 @@ import cytoscape.visual.calculators.GenericNodeColorCalculator;
 import cytoscape.visual.calculators.GenericNodeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeShapeCalculator;
 import cytoscape.visual.calculators.NodeColorCalculator;
+import cytoscape.visual.calculators.NodeLabelColorCalculator;
 import cytoscape.visual.calculators.NodeShapeCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
@@ -69,6 +70,9 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        VisualStyle existingStyle = catalog.getVisualStyle
 	                (BIOMOLECULE_VISUAL_STYLE);
 	        
+	        System.out.println(
+	        		"Got visual style for " + BIOMOLECULE_VISUAL_STYLE + " = " + 
+	        		existingStyle);
 
 	        if (existingStyle != null) {
                 System.out.println("Got existing visual style: " + existingStyle);
@@ -133,7 +137,7 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        discreteMapping.putMapValue(INHIBITION, Arrow.BLACK_T);
 
 	        GenericEdgeArrowCalculator edgeTargetArrowCalculator =
-                new GenericEdgeArrowCalculator("BioMoleculeEditor target arrows",
+                new GenericEdgeArrowCalculator("SimpleBioMoleculeEditor target arrows",
                 discreteMapping);
         eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
         System.out.println ("Set edge target arrow calculator to " + edgeTargetArrowCalculator);
@@ -147,7 +151,7 @@ public class MapBioMoleculeEditorToVisualStyle {
 	                (EDGE_TYPE, null, false);
 
 	        GenericEdgeLabelCalculator edgeLabelCalculator =
-	                new GenericEdgeLabelCalculator("BioMoleculeEditor Edge Label Passthrough", passThroughMapping);
+	                new GenericEdgeLabelCalculator("SimpleBioMoleculeEditor Edge Label Passthrough", passThroughMapping);
 	        eac.setEdgeLabelCalculator(edgeLabelCalculator);
 	    }
 
@@ -165,8 +169,9 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        // AJK: 05/09/06 END
 
 	        // AJK: 05/09/96 END
+	
 	        GenericNodeLabelCalculator nodeLabelCalculator =
-	                new GenericNodeLabelCalculator("BioMoleculeEditor ID Label"
+	                new GenericNodeLabelCalculator("SimpleBioMoleculeEditor ID Label"
 	                , passThroughMapping);
 	        nac.setNodeLabelCalculator(nodeLabelCalculator);
 	    }
@@ -187,7 +192,7 @@ public class MapBioMoleculeEditorToVisualStyle {
 	                    new Byte(ShapeNodeRealizer.DIAMOND));
 
 	            NodeShapeCalculator nodeShapeCalculator =
-	                new GenericNodeShapeCalculator("BioMoleculeEditor Node Type Shape Calculator"
+	                new GenericNodeShapeCalculator("SimpleBioMoleculeEditor Node Type Shape Calculator"
 	                , discreteMapping);
 	        nac.setNodeShapeCalculator(nodeShapeCalculator);
 	    }
@@ -208,7 +213,7 @@ public class MapBioMoleculeEditorToVisualStyle {
 	                    new Color (193, 249, 36));
 
 	            NodeColorCalculator nodeColorCalculator =
-	                new GenericNodeColorCalculator("BioMoleculeEditor Node Color Calculator"
+	                new GenericNodeColorCalculator("SimpleBioMoleculeEditor Node Color Calculator"
 	                , discreteMapping);
 	        nac.setNodeFillColorCalculator(nodeColorCalculator);
 	    }

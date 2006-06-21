@@ -114,14 +114,14 @@ public class BasicCytoShapeEntity extends JComponent implements
 		{
 			if (this.attributeName.equals("NODE_TYPE"))
 			{
-				_cytoShape.setToolTipText("To add a node to a network," + "\n" +
-						"drag and drop a shape" + "\n" + "from the palette onto the canvas.");
+				_cytoShape.setToolTipText("<html>To add a node to a network,<br>" +
+						"drag and drop a shape<br>from the palette onto the canvas.</html>");
 			}
 			else if (this.attributeName.equals("EDGE_TYPE"))
 			{
-				_cytoShape.setToolTipText("To connect two nodes with an edge, " + "\n" +  
-				"drag and drop the arrow onto a node" + "\n" + "on the canvas, " + 
-				"then move the cursor" + "\n" + " over a second node and click the mouse.");
+				_cytoShape.setToolTipText("<html>To connect two nodes with an edge<br>" +  
+				"drag and drop the arrow onto a node<br>on the canvas, " + 
+				"then move the cursor<br>over a second node and click the mouse.</html>");
 			}			
 		}
 		// AJK: 06/06/06 END

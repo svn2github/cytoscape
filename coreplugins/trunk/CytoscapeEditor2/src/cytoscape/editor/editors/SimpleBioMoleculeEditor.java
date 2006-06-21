@@ -94,10 +94,10 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
 		System.out.println ("Got visual Style from catalog: " + catalog 
 				+ " = " + vizStyle);
+		if (mpbv == null) {
+			mpbv = new MapBioMoleculeEditorToVisualStyle();
+		}
 		if (vizStyle == null) {
-			if (mpbv == null) {
-				mpbv = new MapBioMoleculeEditorToVisualStyle();
-			}
 			vizStyle = mpbv.createVizMapper();
 		}
 
