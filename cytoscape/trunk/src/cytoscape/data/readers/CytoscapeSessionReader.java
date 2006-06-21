@@ -37,6 +37,7 @@
 
 package cytoscape.data.readers;
 
+import java.awt.Component;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,9 +48,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -69,6 +72,7 @@ import cytoscape.generated.Edge;
 import cytoscape.generated.HiddenEdges;
 import cytoscape.generated.HiddenNodes;
 import cytoscape.generated.Network;
+import cytoscape.generated.NetworkFrame;
 import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.SelectedEdges;
@@ -80,8 +84,8 @@ import ding.view.DGraphView;
  * Reaser to load CYtoscape Session file (.cys).<br>
  * This class unzip cys file and read all files in the archive.
  * <p>
- * This class accept input as URL only!
- * If it is a file, use File.toURL() to get platform dependent file URL.
+ * This class accept input as URL only! If it is a file, use File.toURL() to get
+ * platform dependent file URL.
  * </p>
  * 
  * @version 1.0
@@ -132,7 +136,7 @@ public class CytoscapeSessionReader {
 	 */
 	public CytoscapeSessionReader(final URL sourceName) throws IOException {
 		this.sourceURL = sourceName;
-		
+
 		networkList = new ArrayList();
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
@@ -148,19 +152,18 @@ public class CytoscapeSessionReader {
 		/*
 		 * This is an inportant part!
 		 * 
-		 * We can create InputStream directly from URL, but it does
-		 * not work always due to the cashing mechanism in URLConnection.
+		 * We can create InputStream directly from URL, but it does not work
+		 * always due to the cashing mechanism in URLConnection.
 		 * 
-		 * By default, URLConnection creates a cash for session file name.
-		 * This will be used even after we saved the session.  Due to the 
-		 * conflict between cashed name and new saved session name (generated
-		 * from system time), session reader cannot find the entry in the zip
-		 * file.  To avoid this problem, we shoud turn off the cashing mechanism
-		 * by using:
+		 * By default, URLConnection creates a cash for session file name. This
+		 * will be used even after we saved the session. Due to the conflict
+		 * between cashed name and new saved session name (generated from system
+		 * time), session reader cannot find the entry in the zip file. To avoid
+		 * this problem, we shoud turn off the cashing mechanism by using:
 		 * 
 		 * URLConnection.setDefaultUseCaches(false)
 		 * 
-		 * This is a "sticky" parameter for all URLConnections and we have to 
+		 * This is a "sticky" parameter for all URLConnections and we have to
 		 * set this only once.
 		 * 
 		 */
@@ -208,7 +211,9 @@ public class CytoscapeSessionReader {
 	public void read() throws IOException, JAXBException {
 
 		unzipSessionFromURL();
-
+		
+		restoreDesktopState();
+		
 		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null,
 				networkList);
@@ -238,8 +243,8 @@ public class CytoscapeSessionReader {
 		loadCySession(cysessionFileURL);
 	}
 
-	private void loadCySession(final URL cysessionSource)
-			throws JAXBException, IOException {
+	private void loadCySession(final URL cysessionSource) throws JAXBException,
+			IOException {
 
 		InputStream is = cysessionSource.openStream();
 		final JAXBContext jaxbContext = JAXBContext.newInstance(PACKAGE_NAME,
@@ -261,7 +266,11 @@ public class CytoscapeSessionReader {
 		 * session.
 		 */
 		sessionID = session.getId();
-
+		Cytoscape.getDesktop().setSize(
+				session.getSessionState().getDesktop().getDesktopSize()
+						.getWidth().intValue(),
+				session.getSessionState().getDesktop().getDesktopSize()
+						.getHeight().intValue());
 		// Convert it to map
 		final Iterator it = ((NetworkTree) session.getNetworkTree())
 				.getNetwork().iterator();
@@ -285,8 +294,27 @@ public class CytoscapeSessionReader {
 			if (targetView != Cytoscape.getNullNetworkView()) {
 				targetView.setVisualStyle((String) vsMap.get(currentNetworkID));
 				targetView.applyVizmapper(targetView.getVisualStyle());
-				((DingNetworkView)targetView).getCanvas().setVisible(true);
+				((DingNetworkView) targetView).getCanvas().setVisible(true);
 			}
+		}
+		
+	}
+	
+	private void restoreDesktopState() {
+		Iterator frameIt = session.getSessionState().getDesktop().getNetworkFrames().getNetworkFrame().iterator();
+		Map frameMap = new HashMap();
+		while(frameIt.hasNext()) {
+			NetworkFrame netFrame = (NetworkFrame) frameIt.next();
+			frameMap.put(netFrame.getFrameID(), netFrame);
+		}
+		Component[] frames = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().getComponents();
+		for(int i=0; i<frames.length; i++) {
+			JInternalFrame frame = (JInternalFrame) frames[i];
+			NetworkFrame nFrame = (NetworkFrame) frameMap.get(frame.getTitle());
+			if(nFrame != null) {
+				frame.setSize(nFrame.getWidth().intValue(), nFrame.getHeight().intValue());
+				frame.setLocation(nFrame.getX().intValue(), nFrame.getY().intValue());
+			}	
 		}
 	}
 
@@ -405,7 +433,7 @@ public class CytoscapeSessionReader {
 		final Iterator it = hidden.getEdge().iterator();
 		while (it.hasNext()) {
 			final Edge hiddenEdgeObject = (Edge) it.next();
-			final CyEdge hiddenEdge = getEdgeFromID(hiddenEdgeObject.getId());
+			final CyEdge hiddenEdge = getCyEdge(hiddenEdgeObject);
 			if (hiddenEdge != null) {
 				view.hideGraphObject(view.getEdgeView(hiddenEdge));
 			}
@@ -424,7 +452,7 @@ public class CytoscapeSessionReader {
 
 			final cytoscape.generated.Edge selectedEdge = (cytoscape.generated.Edge) it
 					.next();
-			targetEdge = getEdgeFromID(selectedEdge.getId());
+			targetEdge = getCyEdge(selectedEdge);
 			if (targetEdge != null) {
 				selectedEdgeList.add(targetEdge);
 			}
@@ -432,16 +460,24 @@ public class CytoscapeSessionReader {
 		network.setSelectedEdgeState(selectedEdgeList, true);
 	}
 
-	private CyEdge getEdgeFromID(final String edgeID) {
+	private CyEdge getCyEdge(final Edge edge) {
 		CyEdge targetEdge = null;
-		final String[] parts = edgeID.split(" ");
-		if (parts.length == 3) {
-			final CyNode source = Cytoscape.getCyNode(parts[0], false);
-			final CyNode target = Cytoscape.getCyNode(parts[2], false);
-			final String interaction = parts[1].substring(1,
-					parts[1].length() - 1);
-			targetEdge = Cytoscape.getCyEdge(source, target,
-					Semantics.INTERACTION, interaction, false);
+
+		System.out.println("Target Edge = " + edge);
+		targetEdge = Cytoscape.getCyEdge(Cytoscape.getCyNode(edge.getSource()),
+				Cytoscape.getCyNode(edge.getTarget()), Semantics.INTERACTION,
+				edge.getInteraction(), false);
+		if (targetEdge == null) {
+
+			final String[] parts = edge.getId().split(" ");
+			if (parts.length == 3) {
+				final CyNode source = Cytoscape.getCyNode(parts[0], false);
+				final CyNode target = Cytoscape.getCyNode(parts[2], false);
+				final String interaction = parts[1].substring(1, parts[1]
+						.length() - 1);
+				targetEdge = Cytoscape.getCyEdge(source, target,
+						Semantics.INTERACTION, interaction, false);
+			}
 		}
 		return targetEdge;
 	}
@@ -552,5 +588,14 @@ public class CytoscapeSessionReader {
 		Cytoscape.firePropertyChange(
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
+	}
+
+	/**
+	 * Extract Session Note test field in cysession.xml
+	 * 
+	 * @return Session Note
+	 */
+	public String getCysessionNote() {
+		return session.getSessionNote();
 	}
 }

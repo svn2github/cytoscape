@@ -15,6 +15,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" ref="plugins"/>
+	 <xs:element minOccurs="0" ref="desktop"/>
         <xs:element ref="cytopanels"/>
       </xs:sequence>
     </xs:complexType>
@@ -32,6 +33,39 @@
       <xs:attribute name="stateLocation" use="required" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="desktop">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="desktopSize"/>
+        <xs:element minOccurs="0" ref="networkFrames"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="desktopSize">
+    <xs:complexType>
+      <xs:attribute name="width" use="required" type="xs:integer"/>
+	<xs:attribute name="height" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="networkFrames">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="networkFrame"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="networkFrame">
+    <xs:complexType>
+	<xs:attribute name="frameID" use="required" type="xs:NCName"/>
+      <xs:attribute name="width" use="required" type="xs:integer"/>
+	<xs:attribute name="height" use="required" type="xs:integer"/>
+	<xs:attribute name="x" use="required" type="xs:integer"/>
+	<xs:attribute name="y" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+
   <xs:element name="cytopanels">
     <xs:complexType>
       <xs:sequence>
@@ -139,7 +173,10 @@
   </xs:element>
   <xs:element name="edge">
     <xs:complexType>
-      <xs:attribute name="id" use="required" type="xs:NCName"/>
+	<xs:attribute name="id" use="required" type="xs:NCName"/>
+	<xs:attribute name="source" use="optional" type="xs:NCName"/>
+	<xs:attribute name="target" use="optional" type="xs:NCName"/>
+	<xs:attribute name="interaction" use="optional" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
 </xs:schema>

@@ -40,10 +40,12 @@ package cytoscape.data.writers;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -55,6 +57,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.swing.JInternalFrame;
 import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.xml.bind.JAXBContext;
@@ -66,13 +69,18 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.data.Semantics;
 import cytoscape.generated.Child;
 import cytoscape.generated.Cysession;
 import cytoscape.generated.Cytopanel;
 import cytoscape.generated.Cytopanels;
+import cytoscape.generated.Desktop;
+import cytoscape.generated.DesktopSize;
 import cytoscape.generated.HiddenEdges;
 import cytoscape.generated.HiddenNodes;
 import cytoscape.generated.Network;
+import cytoscape.generated.NetworkFrame;
+import cytoscape.generated.NetworkFrames;
 import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.ObjectFactory;
@@ -112,7 +120,7 @@ import cytoscape.visual.VisualStyle;
  */
 
 public class CytoscapeSessionWriter {
-	
+
 	// Enumerate types (node & edge)
 	public final int NODE = 1;
 	public final int EDGE = 2;
@@ -158,6 +166,8 @@ public class CytoscapeSessionWriter {
 
 	HashMap networkMap;
 	int networkCount;
+	
+	private String sessionNote = "You can add note for this session here.";
 
 	//
 	// The following JAXB-generated objects are for CySession.xml file.
@@ -237,7 +247,7 @@ public class CytoscapeSessionWriter {
 			xgmmlFileName = getValidFileName(xgmmlFileName);
 			targetFiles[fileCounter] = xgmmlFileName;
 			fileCounter++;
-			
+
 			makeXGMML(xgmmlFileName, network, view);
 		}
 
@@ -254,25 +264,25 @@ public class CytoscapeSessionWriter {
 		preparePropFiles();
 
 		// Zip the session into a .cys file.
-		zipUtil = new ZipUtil(sessionFileName, targetFiles,
-				sessionDirName);
+		zipUtil = new ZipUtil(sessionFileName, targetFiles, sessionDirName);
 
 		/*
-		 * Compress the files.
-		 * Change the compression level if necessary.
+		 * Compress the files. Change the compression level if necessary.
 		 */
 		zipUtil.compressFast(1, true);
 	}
-	
+
 	/**
 	 * Utility to replace invalid chars in the XGMML file name.<br>
 	 * 
-	 * @param fileName Original file name directly taken from the title.
+	 * @param fileName
+	 *            Original file name directly taken from the title.
 	 * @return Modified file name without invalid chars.
 	 * 
 	 */
-	private String getValidFileName(String fileName) {	
-		//System.out.println("============Network = " + fileName.replaceAll("[\\/:*?\"<>|]", "_"));
+	private String getValidFileName(String fileName) {
+		// System.out.println("============Network = " +
+		// fileName.replaceAll("[\\/:*?\"<>|]", "_"));
 		return fileName.replaceAll("[\\/:*?\"<>|]", "_");
 	}
 
@@ -285,15 +295,41 @@ public class CytoscapeSessionWriter {
 		factory = new ObjectFactory();
 
 		session = factory.createCysession();
-		session.setSessionNote("You can add note for this session here.");
+		session.setSessionNote(sessionNote);
 
 		tree = factory.createNetworkTree();
 		sState = factory.createSessionState();
+		setDesktopStates();
 		session.setSessionState(sState);
 		cps = getCytoPanelStates();
 		netList = tree.getNetwork();
 		sState.setPlugins(plugins);
 		sState.setCytopanels(cps);
+		
+	}
+	
+	private void setDesktopStates() throws JAXBException {
+		DesktopSize dSize = factory.createDesktopSize();
+		NetworkFrames frames = factory.createNetworkFrames();
+		Component[] networkFrames = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().getComponents();
+		for(int i=0; i<networkFrames.length; i++) {
+			JInternalFrame networkFrame = (JInternalFrame) networkFrames[i];
+			NetworkFrame frame = factory.createNetworkFrame();
+			frame.setFrameID(networkFrame.getTitle());
+			frame.setWidth(BigInteger.valueOf(networkFrame.getWidth()));
+			frame.setHeight(BigInteger.valueOf(networkFrame.getHeight()));
+			frame.setX(BigInteger.valueOf(networkFrame.getX()));
+			frame.setY(BigInteger.valueOf(networkFrame.getY()));
+			frames.getNetworkFrame().add(frame);
+		}
+		
+		dSize.setHeight(BigInteger.valueOf(Cytoscape.getDesktop().getSize().height));
+		dSize.setWidth(BigInteger.valueOf(Cytoscape.getDesktop().getSize().width));
+		Desktop desktop = factory.createDesktop();
+		desktop.setDesktopSize(dSize);
+		desktop.setNetworkFrames(frames);
+		sState.setDesktop(desktop);
+		
 	}
 
 	/**
@@ -330,11 +366,13 @@ public class CytoscapeSessionWriter {
 
 	/**
 	 * Determine file location of the prop files
-	 * @throws URISyntaxException 
-	 * @throws JAXBException 
+	 * 
+	 * @throws URISyntaxException
+	 * @throws JAXBException
 	 */
 	private void makeXGMML(final String xgmmlFile, final CyNetwork network,
-			final CyNetworkView view) throws IOException, JAXBException, URISyntaxException {
+			final CyNetworkView view) throws IOException, JAXBException,
+			URISyntaxException {
 
 		XGMMLWriter wt = new XGMMLWriter(network, view);
 		FileWriter fileWriter2 = null;
@@ -350,7 +388,7 @@ public class CytoscapeSessionWriter {
 				} catch (IOException ioe) {
 				}
 			}
-			
+
 		}
 
 	}
@@ -363,7 +401,8 @@ public class CytoscapeSessionWriter {
 	 */
 	private void createCySession(String sessionName) throws Exception {
 
-		JAXBContext jc = JAXBContext.newInstance(packageName, this.getClass().getClassLoader());
+		JAXBContext jc = JAXBContext.newInstance(packageName, this.getClass()
+				.getClassLoader());
 
 		initObjectsForDataBinding();
 		session.setId(sessionName);
@@ -501,7 +540,8 @@ public class CytoscapeSessionWriter {
 				// Reached to the leaf of network tree.
 				// Need to create leaf node here.
 				Network leaf = factory.createNetwork();
-				String childFileName = child.getUserObject().toString() + XGMML_EXT;
+				String childFileName = child.getUserObject().toString()
+						+ XGMML_EXT;
 				leaf.setFilename(getValidFileName(childFileName));
 				leaf.setId(child.getUserObject().toString());
 				CyNetworkView leafView = Cytoscape
@@ -549,8 +589,7 @@ public class CytoscapeSessionWriter {
 				 */
 
 				/*
-				 * Add selected & hidden nodes/edges foe leaf
-				 * nodes.
+				 * Add selected & hidden nodes/edges foe leaf nodes.
 				 */
 				SelectedNodes sn = (SelectedNodes) getSelectedObjects(NODE,
 						targetNetwork);
@@ -696,6 +735,11 @@ public class CytoscapeSessionWriter {
 					curEdgeName = targetEdge.getIdentifier();
 					cytoscape.generated.Edge tempEdge = factory.createEdge();
 					tempEdge.setId(curEdgeName);
+					tempEdge.setSource(targetEdge.getSource().getIdentifier());
+					tempEdge.setTarget(targetEdge.getTarget().getIdentifier());
+					tempEdge.setInteraction(Cytoscape.getEdgeAttributes()
+							.getStringAttribute(targetEdge.getIdentifier(),
+									Semantics.INTERACTION));
 					hEdgeList.add(tempEdge);
 					// Keep them hidden...
 					view.hideGraphObject(eview);
@@ -763,7 +807,11 @@ public class CytoscapeSessionWriter {
 					String curEdgeName = targetEdge.getIdentifier();
 					cytoscape.generated.Edge tempEdge = factory.createEdge();
 					tempEdge.setId(curEdgeName);
-
+					tempEdge.setSource(targetEdge.getSource().getIdentifier());
+					tempEdge.setTarget(targetEdge.getTarget().getIdentifier());
+					tempEdge.setInteraction(Cytoscape.getEdgeAttributes()
+							.getStringAttribute(targetEdge.getIdentifier(),
+									Semantics.INTERACTION));
 					sEdgeList.add(tempEdge);
 				}
 
@@ -825,6 +873,19 @@ public class CytoscapeSessionWriter {
 		}
 
 		return cps;
+	}
+	
+	/**
+	 * Set session note.<br>
+	 * Session note can be anything, it is just like a memo pad for the session.
+	 * 
+	 * NOTE: session note should be set before calling writeSessionToDisk().
+	 * 
+	 * @param note Session note string.
+	 * 
+	 */
+	public void setSessionNote(String note) {
+		this.sessionNote = note;
 	}
 
 }
