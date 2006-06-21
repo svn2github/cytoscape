@@ -12,7 +12,6 @@ import giny.view.NodeView;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashMap;
 
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
@@ -23,6 +22,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import cytoscape.data.FlagEvent;
 import cytoscape.data.FlagEventListener;
 import cytoscape.editor.CytoscapeEditor;
@@ -543,7 +543,13 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 		final Point2D offset = nview.getOffset();
 		System.out.println("added node: " + node + " at coordinates "
 				+ nview.getOffset());
-
+		
+		// AJK: 06/21/06 gevalt, what a hack!  store coordinate position on node attributes so
+		//    that a subsequent redo will restore node to its coordinate position
+		CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+		nodeAttribs.setAttribute(node.getIdentifier(), "X_pos", new Double(offset.getX()));
+		nodeAttribs.setAttribute(node.getIdentifier(), "Y_pos", new Double(offset.getY()));
+		
 		// setup the clipboard and undo manager to be able to undo the deletion
 		// operation
 		CytoscapeEditorManager.getNodeClipBoard().elements(nodes);
@@ -587,7 +593,11 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 					// signal end to Undo Manager; this enables redo
 					// restore positions of nodes
 					NodeView nv = networkView.getNodeView(n);
-					nv.setOffset(offset.getX(), offset.getY());
+//					nv.setOffset(offset.getX(), offset.getY());
+					CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+					Double xPos = nodeAttribs.getDoubleAttribute(n.getIdentifier(), "X_pos");
+					Double yPos = nodeAttribs.getDoubleAttribute(n.getIdentifier(), "Y_pos");
+					nv.setOffset(xPos.doubleValue(), yPos.doubleValue());
 				}
 			}
 		});
