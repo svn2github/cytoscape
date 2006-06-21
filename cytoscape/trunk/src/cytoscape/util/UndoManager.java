@@ -61,7 +61,9 @@ public class UndoManager   {
     
     JMenuItem undoItem = new JMenuItem( undoAction );
     JMenuItem redoItem = new JMenuItem( redoAction );
-
+    undoItem.setEnabled(false);
+    redoItem.setEnabled(false);
+    
     undoItem.setAccelerator(  javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Z,
                                                                   ActionEvent.CTRL_MASK ) );
     redoItem.setAccelerator(  javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y,
@@ -70,8 +72,9 @@ public class UndoManager   {
     menus.getMenuBar().getMenu( "Edit" ).add( undoItem );
     menus.getMenuBar().getMenu( "Edit" ).add( redoItem );
     menus.getMenuBar().getMenu( "Edit" ).add(new JSeparator());
-    System.out.println( "UndoManager initialized" );
 
+//    System.out.println("Undo Menu item isEnabled = " + undoItem.isEnabled());
+    System.out.println( "UndoManager initialized" );
   }
   
   
@@ -110,7 +113,7 @@ public class UndoManager   {
 	    }
 	    update();
 	    redoAction.update();
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, 
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, "cytoscape.util.UndoManager", 
 				Cytoscape.getCurrentNetwork());
 		}
 
@@ -141,7 +144,7 @@ public class UndoManager   {
 	    }
 	    update();
 	    undoAction.update();
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, 
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, "cytoscape.util.UndoManager", 
 				Cytoscape.getCurrentNetwork());
     }
 
