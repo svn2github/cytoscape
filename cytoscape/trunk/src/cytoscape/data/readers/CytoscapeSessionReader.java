@@ -39,6 +39,7 @@ package cytoscape.data.readers;
 
 import java.awt.Component;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -143,6 +144,22 @@ public class CytoscapeSessionReader {
 	}
 
 	/**
+	 * Constructor.<br>
+	 * Create reader from file name.
+	 * 
+	 * @param fileName
+	 * @throws IOException
+	 */
+	public CytoscapeSessionReader(final String fileName) throws IOException {
+		final File sourceFile = new File(fileName);
+		this.sourceURL = sourceFile.toURL();
+
+		networkList = new ArrayList();
+		vsMap = new HashMap();
+		vsMapByName = new HashMap();
+	}
+
+	/**
 	 * Extract Zip entries in the remote file
 	 * 
 	 * @param sourceName
@@ -211,9 +228,9 @@ public class CytoscapeSessionReader {
 	public void read() throws IOException, JAXBException {
 
 		unzipSessionFromURL();
-		
-		restoreDesktopState();
-		
+		if (session.getSessionState().getDesktop() != null) {
+			restoreDesktopState();
+		}
 		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null,
 				networkList);
@@ -266,11 +283,6 @@ public class CytoscapeSessionReader {
 		 * session.
 		 */
 		sessionID = session.getId();
-		Cytoscape.getDesktop().setSize(
-				session.getSessionState().getDesktop().getDesktopSize()
-						.getWidth().intValue(),
-				session.getSessionState().getDesktop().getDesktopSize()
-						.getHeight().intValue());
 		// Convert it to map
 		final Iterator it = ((NetworkTree) session.getNetworkTree())
 				.getNetwork().iterator();
@@ -297,24 +309,35 @@ public class CytoscapeSessionReader {
 				((DingNetworkView) targetView).getCanvas().setVisible(true);
 			}
 		}
-		
+
 	}
-	
+
 	private void restoreDesktopState() {
-		Iterator frameIt = session.getSessionState().getDesktop().getNetworkFrames().getNetworkFrame().iterator();
+
+		Cytoscape.getDesktop().setSize(
+				session.getSessionState().getDesktop().getDesktopSize()
+						.getWidth().intValue(),
+				session.getSessionState().getDesktop().getDesktopSize()
+						.getHeight().intValue());
+
+		Iterator frameIt = session.getSessionState().getDesktop()
+				.getNetworkFrames().getNetworkFrame().iterator();
 		Map frameMap = new HashMap();
-		while(frameIt.hasNext()) {
+		while (frameIt.hasNext()) {
 			NetworkFrame netFrame = (NetworkFrame) frameIt.next();
 			frameMap.put(netFrame.getFrameID(), netFrame);
 		}
-		Component[] frames = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().getComponents();
-		for(int i=0; i<frames.length; i++) {
+		Component[] frames = Cytoscape.getDesktop().getNetworkViewManager()
+				.getDesktopPane().getComponents();
+		for (int i = 0; i < frames.length; i++) {
 			JInternalFrame frame = (JInternalFrame) frames[i];
 			NetworkFrame nFrame = (NetworkFrame) frameMap.get(frame.getTitle());
-			if(nFrame != null) {
-				frame.setSize(nFrame.getWidth().intValue(), nFrame.getHeight().intValue());
-				frame.setLocation(nFrame.getX().intValue(), nFrame.getY().intValue());
-			}	
+			if (nFrame != null) {
+				frame.setSize(nFrame.getWidth().intValue(), nFrame.getHeight()
+						.intValue());
+				frame.setLocation(nFrame.getX().intValue(), nFrame.getY()
+						.intValue());
+			}
 		}
 	}
 
@@ -463,20 +486,36 @@ public class CytoscapeSessionReader {
 	private CyEdge getCyEdge(final Edge edge) {
 		CyEdge targetEdge = null;
 
-		System.out.println("Target Edge = " + edge);
-		targetEdge = Cytoscape.getCyEdge(Cytoscape.getCyNode(edge.getSource()),
-				Cytoscape.getCyNode(edge.getTarget()), Semantics.INTERACTION,
-				edge.getInteraction(), false);
+		final String sourceString = edge.getSource();
+		final String targetString = edge.getTarget();
+		CyNode source = null;
+		CyNode target = null;
+		String interaction = edge.getInteraction();
+
+		// Try to get CyEdge by the source & target IDs
+		if (sourceString != null && targetString != null) {
+			source = Cytoscape.getCyNode(sourceString);
+			target = Cytoscape.getCyNode(targetString);
+		}
+
+		// If all 3 parameters are available, try to get CyEdge
+		if (source != null & target != null && interaction != null) {
+			targetEdge = Cytoscape.getCyEdge(source, target,
+					Semantics.INTERACTION, interaction, false);
+		}
+
+		// If CyEdge is still null, try to get one from ID
 		if (targetEdge == null) {
 
 			final String[] parts = edge.getId().split(" ");
 			if (parts.length == 3) {
-				final CyNode source = Cytoscape.getCyNode(parts[0], false);
-				final CyNode target = Cytoscape.getCyNode(parts[2], false);
-				final String interaction = parts[1].substring(1, parts[1]
-						.length() - 1);
+				source = Cytoscape.getCyNode(parts[0], false);
+				target = Cytoscape.getCyNode(parts[2], false);
+				interaction = parts[1].substring(1, parts[1].length() - 1);
+				if(source != null && target != null && interaction != null) {
 				targetEdge = Cytoscape.getCyEdge(source, target,
 						Semantics.INTERACTION, interaction, false);
+				}
 			}
 		}
 		return targetEdge;

@@ -204,9 +204,7 @@ class OpenSessionTask implements Task {
 				false);
 		
 		try {
-			File targetFile = new File(fileName);
-			URL fileLocationURL = targetFile.toURL();
-			sr = new CytoscapeSessionReader(fileLocationURL);
+			sr = new CytoscapeSessionReader(fileName);
 			sr.read();
 		} catch (IOException e) {
 			e.printStackTrace();
