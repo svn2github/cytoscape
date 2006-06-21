@@ -52,18 +52,18 @@
 						<div id="article">
 							<h2>
 								<a href="download.php?file=cyto2_2">
-									Download Cytoscape 2.2!
+									Download Cytoscape 2.3!
 								</a>
 							</h2>
 							<p>
-								New!&nbsp; Cytoscape 2.2 is now available.
+								New!&nbsp; Cytoscape 2.3 is now available.
 								<br>
 								<br>
-									<a href="cyto_2_2_features.php">
-									2.2 Release Notes &raquo;
+									<a href="cyto_2_3_features.php">
+									2.3 Release Notes &raquo;
 									</a>
 								<br>
-									<a href="download.php?file=cyto2_2">
+									<a href="download.php?file=cyto2_3">
 									Download &raquo;
 								</a>
 								<br>
@@ -89,7 +89,7 @@
 								<br>
 								<p>
 								<big><b>
-									<i>Coming Soon... </i>&nbsp;&nbsp;Cytoscape 2.3
+									<i>New!</i>&nbsp;&nbsp;Cytoscape 2.3
 								</b></big>
 								<table width="100%">
 									<tr valign="top">
@@ -99,20 +99,24 @@
 											<br>
 											New Features include:
 											<br>
-
 											<ul>
-												<li	>High-performance rendering engine.  Support for large networks (30,000+ nodes & edges)</li>
-												<li>Session-based data management</li>
+												<li	>High-performance rendering engine.  Support for large networks (100,000+ nodes & edges)</li>
+												<li>Ability to save a session</li>
+												<li>A node grouping plugin. This will allow one node to contain and display subnetworks.</li>
 												<li>Support for network attributes</li>
-												<li>Improved Undo manager</li>
+												<li>An improved command line interface.</li>
+												<li>The GraphMerge plugin included by default</li>
+												<li>Enhanced context or pop-up menus for nodes</li>
+												<li>A rewritten <i>bird's eye view</i> of the network that is enabled by default</li>
+												<li>Enhanced Undo/Redo support</li>
+												<li>Enhanced Ontology Server Wizard</li>
 												<li>More user-friendly UI for Attribute Browser</li>
-												<li>First steps towards drawing pathways / metabolic networks (Support for Metanodes)</li>
 												<li>Greater flexibility in expression data loading</li>
 												<li>Ability to rename networks</li>
 												<li>Re-organized menu system</li>
-												<li>Many bugs fixed </li>
+												<li>Many performance improvements and bug fixes</li>
 											</ul>
-											Cytoscape 2.3 Release Notes
+											<a HREF="cyto_2_3_features.php">Cytoscape 2.3 Release Notes</a>
 										</td>
 										<td valign="top">
 											<A HREF="screenshots/cytoscapeMainWindowv2_3.png">
@@ -127,7 +131,7 @@
 								<br>
 								<p>
 								<big><b>
-									<i>New! </i>&nbsp;&nbsp;Announcing Cytoscape 2.2
+									Announcing Cytoscape 2.2
 								</b></big>
 								<table width="100%">
 									<tr valign="top">
