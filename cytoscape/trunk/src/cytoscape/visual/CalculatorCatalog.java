@@ -519,6 +519,7 @@ public class CalculatorCatalog {
 		}
 		String name = vs.toString();
 		// check for duplicate names
+		System.out.println ("Keyset = " + visualStyles.keySet());
 		if (visualStyles.keySet().contains(name)) {
 			String s = "Duplicate visual style name " + name;
 			throw new DuplicateCalculatorNameException(s);
