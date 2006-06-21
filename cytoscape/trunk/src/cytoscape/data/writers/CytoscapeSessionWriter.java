@@ -121,9 +121,12 @@ import cytoscape.visual.VisualStyle;
 
 public class CytoscapeSessionWriter {
 
+	// cysession.xml document version
+	private static final String cysessionVersion = "0.9";
+	
 	// Enumerate types (node & edge)
-	public final int NODE = 1;
-	public final int EDGE = 2;
+	public static final int NODE = 1;
+	public static final int EDGE = 2;
 
 	private static final String DEFAULT_VS_NAME = "default";
 
@@ -406,6 +409,9 @@ public class CytoscapeSessionWriter {
 
 		initObjectsForDataBinding();
 		session.setId(sessionName);
+		// Document version.  Maybe used in the future.
+		session.setDocumentVersion(cysessionVersion);
+		
 		getNetworkTree();
 		session.setNetworkTree(tree);
 
