@@ -21,9 +21,9 @@ import java.awt.event.*;
 import java.lang.Math;
 import cytoscape.*;
 import cytoscape.view.*;
+import cytoscape.data.*;
 import cytoscape.data.annotation.*;
-import cytoscape.data.servers.*;
-import cytoscape.data.Semantics;
+import annotations.calculator.*;
 import annotations.HypDistanceCalculator;
 import giny.view.*;
 
@@ -113,10 +113,12 @@ public class StatementCalculator{
       System.out.print(".");
       
       CyNode theNode = nodes[i];
-      String nodeName = 
-        (String)Cytoscape.getNodeAttributeValue(theNode,Semantics.CANONICAL_NAME);
+      String nodeName = theNode.getIdentifier();
+      //  (String)Cytoscape.getNodeAttributeValue(theNode,Semantics.CANONICAL_NAME);
       
       String[] nodeAlleleForms = Utilities.getAlleleForms(nodeName, allEdges);
+      
+      CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
       
       for(int nAF = 0; nAF < nodeAlleleForms.length; nAF++){
         String theAlleleForm = nodeAlleleForms[nAF];
@@ -135,19 +137,20 @@ public class StatementCalculator{
         for(int j = 0; j < allEdges.length; j++){
           
           CyEdge theEdge = allEdges[j];
-          String edgeType = (String)Cytoscape.getEdgeAttributeValue(theEdge,attribute);
-          String nameA = 
-            (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                    GeneticInteraction.ATTRIBUTE_MUTANT_A);
-          String nameB = 
-            (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                    GeneticInteraction.ATTRIBUTE_MUTANT_B);
-          String alleleFormA = 
-            (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                    GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A);
-          String alleleFormB = 
-            (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                    GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B);
+          String edgeType = edgeAtts.getStringAttribute(theEdge.getIdentifier(), attribute);
+          //(String)Cytoscape.getEdgeAttributeValue(theEdge,attribute);
+          String nameA = edgeAtts.getStringAttribute(theEdge.getIdentifier(), GeneticInteraction.ATTRIBUTE_MUTANT_A); 
+          //(String)Cytoscape.getEdgeAttributeValue(theEdge,
+          //                                        GeneticInteraction.ATTRIBUTE_MUTANT_A);
+          String nameB = edgeAtts.getStringAttribute(theEdge.getIdentifier(),GeneticInteraction.ATTRIBUTE_MUTANT_B); 
+          // (String)Cytoscape.getEdgeAttributeValue(theEdge,
+          //                                        GeneticInteraction.ATTRIBUTE_MUTANT_B);
+          String alleleFormA = edgeAtts.getStringAttribute(theEdge.getIdentifier(), GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A); 
+          //  (String)Cytoscape.getEdgeAttributeValue(theEdge,
+          //                                          GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A);
+          String alleleFormB = edgeAtts.getStringAttribute(theEdge.getIdentifier(), GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B);
+          //  (String)Cytoscape.getEdgeAttributeValue(theEdge,
+          //                                          GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B);
           // If this allele is A
           if ( (nameA.compareTo(nodeName)==0) && 
                (alleleFormA.compareTo(theAlleleForm)==0) ) {
@@ -249,6 +252,7 @@ public class StatementCalculator{
             int pop_annType = ( (Integer)annotationNumbers.get(annotNum) ).intValue();
             
             // now see if there is any overlap
+            CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
             String keyName = intType + annotNum.toString();
             if(neighborsSet.containsKey(keyName)){
               ArrayList neighborsSubSet = (ArrayList)neighborsSet.get(keyName);
@@ -263,14 +267,14 @@ public class StatementCalculator{
               double negLogP = Math.abs( - Math.log( pValue )/Math.log( 10. ) );
               // if the -log(p) is big, write it to a statement and add that to statList
               if ( (pop_both >= minPopulation-1) &&  (negLogP >= minNegLogP) ) {
-                String theNodeName = 
-                  (String)Cytoscape.getNodeAttributeValue(theNode,Semantics.CANONICAL_NAME);
+                String theNodeName = theNode.getIdentifier(); 
+                //(String)Cytoscape.getNodeAttributeValue(theNode,Semantics.CANONICAL_NAME);
                 OntologyTerm ontTerm = ontology.getTerm(annotNum.intValue());
                 String[] nearestNeighbors = 
                   (String[])neighborsSubSet.toArray(new String[0]);
                 // find the common name of theNode
-                String theCommonName =
-                  (String)Cytoscape.getNodeAttributeValue(theNode, Semantics.COMMON_NAME);
+                String theCommonName = nodeAtts.getStringAttribute(theNode.getIdentifier(), Semantics.COMMON_NAME);
+                //(String)Cytoscape.getNodeAttributeValue(theNode, Semantics.COMMON_NAME);
                 Statement theStatement = new Statement(theCommonName, theAlleleForm, 
                                                        nearestNeighbors, intType, 
                                                        ontTerm, negLogP);

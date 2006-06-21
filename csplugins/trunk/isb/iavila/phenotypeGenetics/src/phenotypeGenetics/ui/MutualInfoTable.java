@@ -132,7 +132,9 @@ public class MutualInfoTable extends JFrame {
 
     String canonicalName = theInfo.getNodeName( index );
     CyNode node = Cytoscape.getCyNode(canonicalName,false);
-    String nodeName = (String)Cytoscape.getNodeAttributeValue(node, Semantics.COMMON_NAME);
+    String nodeName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.COMMON_NAME);
+    //(String)Cytoscape.getNodeAttributeValue(node, Semantics.COMMON_NAME);
+    if(nodeName == null) nodeName = node.getIdentifier();
     String alleleForm = theInfo.getAlleleForm( index );
 
     String label = new String();
@@ -183,10 +185,8 @@ public class MutualInfoTable extends JFrame {
             Cytoscape.getCyNode((String)(chosenInfo.getCommonNeighbors().get(i)));
           nodeList.add(nodesToSelect[i+2]);
         }
-        // iliana changed this, to see if bug goes away:
-        //Cytoscape.getCurrentNetworkView().setSelected(nodesToSelect);
-        Cytoscape.getCurrentNetwork().setFlaggedNodes(nodeList, true);
-      }
+        	Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList,true);
+        }
       };
     table.addMouseListener(listMouseListener);
   }//addMouseListenerToRows

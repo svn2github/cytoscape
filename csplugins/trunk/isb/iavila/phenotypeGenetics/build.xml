@@ -54,14 +54,14 @@
 
    <target name="compile" depends="prepare" description="Compile with Cytoscape 2.1 release">
    <!-- Compile the java code from ${src} into ${build} -->
-   <javac source = "1.4" srcdir = "${src}" destdir="${build}" deprecation="off">
+   <javac source = "1.4" srcdir = "${src}" destdir="${build}" deprecation="on">
       <classpath refid = "classpath_compile"/>
    </javac>
    </target>
 
    <target name="compile_cvs" depends = "prepare" description="Compile with Cytoscape in CVS">
    <!-- Compile the java code from ${src} into ${build} -->
-   <javac source = "1.4" srcdir = "${src}" destdir="${build}">
+   <javac source = "1.4" srcdir = "${src}" destdir="${build}" deprecation="on">
       <classpath refid = "classpath_compile_cvs"/>
    </javac>
    </target>

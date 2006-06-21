@@ -18,6 +18,7 @@ import javax.swing.*;
 import java.io.*;
 import junit.framework.*;
 import java.util.*;
+
 import cytoscape.*;
 import cytoscape.plugin.*;
 import cytoscape.data.servers.*;
@@ -90,8 +91,7 @@ public class PhenotypeGeneticsPlugIn extends CytoscapePlugin{
    */
   public static void setUpCyOptions (){
     VisualStyle vs = PGVisualStyle.createVisualStyle();
-    CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-    VisualMappingManager vmManager = cyDesktop.getVizMapManager();
+    VisualMappingManager vmManager = Cytoscape.getVisualMappingManager();
     vmManager.setVisualStyle(vs);
   }//setUpCyOptions
 
@@ -124,43 +124,68 @@ public class PhenotypeGeneticsPlugIn extends CytoscapePlugin{
   }//AboutListener
 
   /**
-   * @return an array of String with file paths for XML input files
+   * @return an array of String with file paths for XML input files<br>
+   * To input arguments to the plugIn, enter this line into cytoscape.props:<br>
+   * PGproject = file1.xml:file2.xml:file3.xml<br>
+   * In the command line:<br>
+   * PGproject file1.xml:file2.xml:file3.xml
+   * 
    */
   protected static String[] readProjectFileArgs () {
     // C2.0 and C2.x have different ways of getting command line arguments:
     // C2.0:
-    String [] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
+    //String [] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
     // C2.x:
     //String [] args = CytoscapeInit.getArgs();
-    ArrayList strs = new ArrayList();
-    for(int i = 0; i < args.length; i++){
-      if(args[i].equals ("--PGproject")){
-        if(i+1 <= args.length){
-          strs.add(args[i+1]);
-        }
-      }// if we find --PGproject
-    }// for i
-    return (String[])strs.toArray(new String[strs.size()]);
+    // C2.3:
+	Properties props = CytoscapeInit.getProperties();
+	if(props.containsKey("PGproject")){
+		String value = props.getProperty("PGproject");
+		String [] files = value.split(":");
+		return files;
+	}
+	return new String[0];
+	
+	//	  ArrayList strs = new ArrayList();
+	//    for(int i = 0; i < args.length; i++){
+	//      if(args[i].equals ("--PGproject")){
+	//        if(i+1 <= args.length){
+	//          strs.add(args[i+1]);
+	//        }
+	//      }// if we find --PGproject
+	//    }// for i
+	//    return (String[])strs.toArray(new String[strs.size()]);
   }//readProjectFileArgs
   
   /**
    * @return the name of the XML modes file loaded from the command line, or null
-   * if there wasn't any
+   * if there wasn't any<br>
+   * To input arguments to the plugIn, enter this line into cytoscape.props:<br>
+   * PGmodes = file.xml<br>
+   * or in the command line:<br>
+   * PGmodes file.xml
    */
   public String readModeXmlArg (){
-    //String [] args = cytoscapeWindow.getConfiguration().getArgs();
+    Properties props = CytoscapeInit.getProperties();
+    if(props.containsKey("PGmodes")){
+    		String file = props.getProperty("PGmodes");
+    		return file;
+    }
+	
+    //OLD:
+	//String [] args = cytoscapeWindow.getConfiguration().getArgs();
     // C2.0 and C2.x have different ways of getting command line arguments:
     // C2.0:
-    String [] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
+    //String [] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
     // C2.x:
     //String [] args = CytoscapeInit.getArgs();
-    for(int i = 0; i < args.length; i++){
-      if(args[i].equals("--PGmodes")){
-        if(i+1 <= args.length){
-          return args[i+1];
-        }
-      }
-    }//for i
+    //for(int i = 0; i < args.length; i++){
+    //  if(args[i].equals("--PGmodes")){
+    //    if(i+1 <= args.length){
+    //      return args[i+1];
+    //    }
+    //  }
+    //}//for i
     return null;
   }//readModeXmlArg
 

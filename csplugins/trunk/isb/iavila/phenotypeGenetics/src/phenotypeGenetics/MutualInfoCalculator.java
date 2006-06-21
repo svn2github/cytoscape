@@ -17,17 +17,10 @@ import phenotypeGenetics.ui.*;
 import phenotypeGenetics.action.*;
 import java.util.*;
 import java.util.List;
-import java.io.*;
 import cytoscape.*;
 import cytoscape.view.*;
-import annotations.HypDistanceCalculator;
-import javax.swing.table.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
 import java.lang.Math;
-import cytoscape.data.Semantics;
+import cytoscape.data.*;
 import phenotypeGenetics.Utilities;
 
 public class MutualInfoCalculator{
@@ -177,27 +170,33 @@ public class MutualInfoCalculator{
     }
     task_progress.currentProgress = 0;
     
+    CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
+    
     for (int i=0; i<edges.length; i++) {
 
       CyEdge theEdge = edges[i];
       
-      String edgeType = 
-        (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                GeneticInteraction.ATTRIBUTE_GENETIC_CLASS);
+      String edgeType = edgeAtts.getStringAttribute(theEdge.getIdentifier(), GeneticInteraction.ATTRIBUTE_GENETIC_CLASS);
+      //  (String)Cytoscape.getEdgeAttributeValue(theEdge,
+      //                                          GeneticInteraction.ATTRIBUTE_GENETIC_CLASS);
 
       // Build the strings for keying
-      String aKeyA = 
-        (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A) 
+      String aKeyA = edgeAtts.getStringAttribute(theEdge.getIdentifier(), GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A)
+      //  (String)Cytoscape.getEdgeAttributeValue(theEdge,
+      //                                         GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A) 
         + divider + 
-        (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                GeneticInteraction.ATTRIBUTE_MUTANT_A);
+        edgeAtts.getStringAttribute(theEdge.getIdentifier(), GeneticInteraction.ATTRIBUTE_MUTANT_A);
+        //(String)Cytoscape.getEdgeAttributeValue(theEdge,
+        //                                        GeneticInteraction.ATTRIBUTE_MUTANT_A);
+      
       String aKeyB = 
-        (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B) 
+      edgeAtts.getStringAttribute(theEdge.getIdentifier(),GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B) 
+    	  // (String)Cytoscape.getEdgeAttributeValue(theEdge,
+       //                                         GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B) 
         + divider + 
-        (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                GeneticInteraction.ATTRIBUTE_MUTANT_B);
+       edgeAtts.getStringAttribute(theEdge.getIdentifier(),GeneticInteraction.ATTRIBUTE_MUTANT_B);
+        //(String)Cytoscape.getEdgeAttributeValue(theEdge,
+        //                                        GeneticInteraction.ATTRIBUTE_MUTANT_B);
       
       // If necessary, find out which is the source and which is the target
       Mode mode = (Mode)Mode.modeNameToMode.get(edgeType);
@@ -211,9 +210,9 @@ public class MutualInfoCalculator{
       String flagB = new String();
       
       if(mode.isDirectional()){
-        String nodeA_id = 
-          (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                  GeneticInteraction.ATTRIBUTE_MUTANT_A);
+        String nodeA_id = edgeAtts.getStringAttribute(theEdge.getIdentifier(), GeneticInteraction.ATTRIBUTE_MUTANT_A); 
+          //(String)Cytoscape.getEdgeAttributeValue(theEdge,
+          //                                        GeneticInteraction.ATTRIBUTE_MUTANT_A);
         // the 2nd argument tells it to not create the node if it is not there
         // note that the returned node may belongs to the RootGraph, but not necessarily
         // to this CyNetwork
@@ -245,6 +244,7 @@ public class MutualInfoCalculator{
       }//isDirectional
 
       // Get the single-mutants relative to wild type
+      // TODO: This will need to be held in a separate data structure -iliana
       GeneticInteraction gi = 
        (GeneticInteraction)Cytoscape.getEdgeAttributeValue(theEdge,
                                                            GeneticInteraction.ATTRIBUTE_SELF);
@@ -302,8 +302,8 @@ public class MutualInfoCalculator{
       Allele allele1 = alleles[i];
       
       //  Find the allele's info to make a key
-      String aKey1 = allele1.getAlleleForm() + divider +
-        Cytoscape.getNodeAttributeValue(allele1.getNode(),Semantics.CANONICAL_NAME);
+      String aKey1 = allele1.getAlleleForm() + divider + allele1.getNode().getIdentifier();
+      //Cytoscape.getNodeAttributeValue(allele1.getNode(),Semantics.CANONICAL_NAME);
       
       //  For this allele, get the list of alleles and interactions to those 
       //  alleles
@@ -317,8 +317,8 @@ public class MutualInfoCalculator{
         Allele allele2 = alleles[j];
 
         //  Find the allele's info to make a key
-        String aKey2 = allele2.getAlleleForm() + divider +
-          Cytoscape.getNodeAttributeValue(allele2.getNode(), Semantics.CANONICAL_NAME);
+        String aKey2 = allele2.getAlleleForm() + divider + allele2.getNode().getIdentifier();
+        //Cytoscape.getNodeAttributeValue(allele2.getNode(), Semantics.CANONICAL_NAME);
         
         //  For this allele, get the list of alleles and interactions to those 
         //  alleles
@@ -404,14 +404,14 @@ public class MutualInfoCalculator{
           double meanRS = Utilities.mean( rScores );
           double sdRS = Utilities.standardDeviation( rScores );
           double pValue = calculatePValue( score, meanRS, sdRS );
-
+          
           if ( ( pValue >= minScore ) ) {
-            String nodeName1 = 
-              (String)Cytoscape.getNodeAttributeValue(allele1.getNode(),
-                                                      Semantics.CANONICAL_NAME);
-            String nodeName2 = 
-              (String)Cytoscape.getNodeAttributeValue(allele2.getNode(),
-                                                      Semantics.CANONICAL_NAME);
+            String nodeName1 = allele1.getNode().getIdentifier();
+              //(String)Cytoscape.getNodeAttributeValue(allele1.getNode(),
+              //                                        Semantics.CANONICAL_NAME);
+            String nodeName2 = allele2.getNode().getIdentifier();
+              //(String)Cytoscape.getNodeAttributeValue(allele2.getNode(),
+              //                                        Semantics.CANONICAL_NAME);
             //  Identify the allele forms
             String alleleForm1 = allele1.getAlleleForm();
             String alleleForm2 = allele2.getAlleleForm();
@@ -532,19 +532,23 @@ public class MutualInfoCalculator{
       }
     }
     
+    // TODO: this will need to be in separate data strcuture -iliana
     GeneticInteraction gi = 
       (GeneticInteraction)Cytoscape.getEdgeAttributeValue(theEdge, 
                                                           GeneticInteraction.ATTRIBUTE_SELF);
     DiscretePhenoValueInequality d = gi.getDiscretePhenoValueInequality();
     
     int pA = 0;
-    String allele1Name = (String)Cytoscape.getNodeAttributeValue(allele1.getNode(),
-                                                                 Semantics.CANONICAL_NAME
-                                                                 );
-    String mutant1Name = 
-      (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                              GeneticInteraction.ATTRIBUTE_MUTANT_A
-                                              );
+    String allele1Name = allele1.getNode().getIdentifier(); 
+    //OLD:	
+    //(String)Cytoscape.getNodeAttributeValue(allele1.getNode(),
+    //                                                             Semantics.CANONICAL_NAME
+    //                                                             );
+    String mutant1Name = Cytoscape.getEdgeAttributes().getStringAttribute(theEdge.getIdentifier(), GeneticInteraction.ATTRIBUTE_MUTANT_A); 
+    //OLD:
+    //  (String)Cytoscape.getEdgeAttributeValue(theEdge,
+    //                                          GeneticInteraction.ATTRIBUTE_MUTANT_A
+    //                                          );
     if(allele1Name.compareTo(mutant1Name ) == 0 ){
       pA = d.getA();
     }else{
@@ -682,14 +686,17 @@ public class MutualInfoCalculator{
      */
 
     HashMap bkg = new HashMap();
-    Iterator it = cy_net.edgesList().iterator();
+    Iterator it = cy_net.edgesIterator();
+    CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
     while(it.hasNext()) {
 
       CyEdge theEdge = (CyEdge)it.next();
 
-      String edgeType =
-        (String)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                GeneticInteraction.ATTRIBUTE_GENETIC_CLASS);
+      String edgeType = edgeAtts.getStringAttribute(theEdge.getIdentifier(), GeneticInteraction.ATTRIBUTE_GENETIC_CLASS);
+      //OLD:
+      //  (String)Cytoscape.getEdgeAttributeValue(theEdge,
+      //                                          GeneticInteraction.ATTRIBUTE_GENETIC_CLASS);
+      // TODO: This will need to be stored in a separate data structure -iliana
       GeneticInteraction gi = 
       (GeneticInteraction)Cytoscape.getEdgeAttributeValue(theEdge,
                                                           GeneticInteraction.ATTRIBUTE_SELF);
@@ -851,8 +858,9 @@ public class MutualInfoCalculator{
     ArrayList alleleList = new ArrayList();
     for(int i=0; i<nodes.length; i++) {
       CyNode node = nodes[i];
-      String nodeName = 
-        (String)Cytoscape.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
+      String nodeName = node.getIdentifier();
+      //OLD:  
+      // (String)Cytoscape.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
       String[] alleleForm = Utilities.getAlleleForms(nodeName,edges);
       for(int af = 0; af < alleleForm.length; af++ ) {
         Allele newAllele = new Allele( node, alleleForm[af] );

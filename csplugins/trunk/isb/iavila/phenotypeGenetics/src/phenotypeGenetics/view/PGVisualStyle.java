@@ -61,9 +61,8 @@ public class PGVisualStyle {
    * Creates and returns a visual style for the PhenotypeGenetics plug-in
    */
   public static VisualStyle createVisualStyle (){
-    
-    CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-    VisualMappingManager vmManager = cyDesktop.getVizMapManager();
+   
+    VisualMappingManager vmManager = Cytoscape.getVisualMappingManager();
     //NodeAppearanceCalculator nodeAppCalc = new NodeAppearanceCalculator();
     //EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator();
     CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
@@ -163,7 +162,7 @@ public class PGVisualStyle {
                                       String direction){
     
     //CyNetworkView netView = Cytoscape.getCurrentNetworkView();
-    VisualMappingManager vmManager = Cytoscape.getDesktop().getVizMapManager();
+    VisualMappingManager vmManager = Cytoscape.getVisualMappingManager();
     //EdgeAppearanceCalculator edgeAppCalc = 
     //vmManager.getVisualStyle().getEdgeAppearanceCalculator();
     
@@ -200,7 +199,7 @@ public class PGVisualStyle {
                                          String edge_type){
     
     //CyNetworkView netView = Cytoscape.getCurrentNetworkView();
-    VisualMappingManager vmManager = Cytoscape.getDesktop().getVizMapManager();
+    VisualMappingManager vmManager = Cytoscape.getVisualMappingManager();
     //EdgeAppearanceCalculator edgeAppCalc = 
     //vmManager.getVisualStyle().getEdgeAppearanceCalculator();
     
@@ -235,7 +234,7 @@ public class PGVisualStyle {
                                       Color color){
     
     //CyNetworkView netView = Cytoscape.getCurrentNetworkView();
-    VisualMappingManager vmManager = Cytoscape.getDesktop().getVizMapManager();
+    VisualMappingManager vmManager = Cytoscape.getVisualMappingManager();
     //VisualStyle vs = vmManager.getVisualStyle();
        
     //EdgeAppearanceCalculator edgeAppCalc = 

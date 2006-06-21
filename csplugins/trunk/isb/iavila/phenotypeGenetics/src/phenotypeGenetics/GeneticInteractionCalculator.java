@@ -14,6 +14,7 @@ import java.lang.*;
 import java.io.*;
 import java.text.*;
 import cytoscape.*;
+import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cern.colt.list.IntArrayList;
 
@@ -265,19 +266,47 @@ public class GeneticInteractionCalculator{
        
     HashMap edgeAttributes = interaction.getEdgeAttributes();
     Iterator it = edgeAttributes.entrySet().iterator();
+    CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
     while(it.hasNext()){
       Map.Entry entry = (Map.Entry)it.next();
       if(entry.getKey() instanceof String){
-        Cytoscape.setEdgeAttributeValue(newEdge, 
-                                        (String)entry.getKey(), 
-                                        entry.getValue());
+    	  	String attributeName = (String)entry.getKey();
+    	  	if(edgeAtts.getType(attributeName) == CyAttributes.TYPE_STRING)
+    	  		edgeAtts.setAttribute(newEdge.getIdentifier(),attributeName, (String)entry.getValue());
+    	  	else if(edgeAtts.getType(attributeName) == CyAttributes.TYPE_FLOATING)
+    	  		edgeAtts.setAttribute(newEdge.getIdentifier(),attributeName, (Double)entry.getValue());
+    	  	else if(edgeAtts.getType(attributeName) == CyAttributes.TYPE_INTEGER)
+    	  		edgeAtts.setAttribute(newEdge.getIdentifier(),attributeName,(Integer)entry.getValue());
+    	  	else if(edgeAtts.getType(attributeName) == CyAttributes.TYPE_UNDEFINED){
+    	  		// the attribute has not been set before
+    	  		Object value = entry.getValue();
+    	  		if(value instanceof String)
+    	  			edgeAtts.setAttribute(newEdge.getIdentifier(),attributeName, (String)value);
+    	  		else if(value instanceof Double)
+    	  			edgeAtts.setAttribute(newEdge.getIdentifier(),attributeName, (Double)value);
+    	  		else if(value instanceof Integer)
+    	  			edgeAtts.setAttribute(newEdge.getIdentifier(),attributeName, (Integer)value);
+    	  		else
+    	  			System.err.println("------------------The class of value is " + value.getClass());
+    	  	}else{
+    	  		System.err.println("----------------------- The type of " + attributeName + " is " + edgeAtts.getType(attributeName));
+    	  	}
+    	  	
+    	  	//OLD:
+        //Cytoscape.setEdgeAttributeValue(newEdge, 
+        //                                (String)entry.getKey(), 
+        //                                entry.getValue());
       }
     }//it.hasNext()
     
-    Cytoscape.setEdgeAttributeValue(newEdge,
-                                    DiscretePhenoValueInequality.EDGE_ATTRIBUTE, 
-                                    interaction.getDiscretePhenoValueInequality().toString()
-                                    );
+    edgeAtts.setAttribute(newEdge.getIdentifier(),DiscretePhenoValueInequality.EDGE_ATTRIBUTE,
+    		interaction.getDiscretePhenoValueInequality().toString());
+    
+    //OLD:
+    //Cytoscape.setEdgeAttributeValue(newEdge,
+    //                              DiscretePhenoValueInequality.EDGE_ATTRIBUTE, 
+    //                            interaction.getDiscretePhenoValueInequality().toString()
+    //                          );
   
     return newEdge;
   }//createEdgeForInteraction
@@ -370,8 +399,12 @@ public class GeneticInteractionCalculator{
     SingleMutant m = new SingleMutant();
     m.setName(geneA);
     CyNode nodeA = Cytoscape.getCyNode(geneA, false); // should exist already!
-    String geneAcommonName = 
-      (String)Cytoscape.getNodeAttributeValue(nodeA, Semantics.COMMON_NAME);
+    
+    CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+    String geneAcommonName = nodeAtts.getStringAttribute(nodeA.getIdentifier(), Semantics.COMMON_NAME);
+    //OLD:
+    //String geneAcommonName = 
+    //  (String)Cytoscape.getNodeAttributeValue(nodeA, Semantics.COMMON_NAME);
     m.setCommonName(geneAcommonName);
     m.setAllele(alleleA);
     m.setAlleleForm(alleleFormA);
@@ -382,8 +415,10 @@ public class GeneticInteractionCalculator{
     m = new SingleMutant();
     m.setName(geneB);
     CyNode nodeB = Cytoscape.getCyNode(geneB, false);
-    String geneBcommonName = 
-      (String)Cytoscape.getNodeAttributeValue(nodeB, Semantics.COMMON_NAME);
+    String geneBcommonName = nodeAtts.getStringAttribute(nodeB.getIdentifier(), Semantics.COMMON_NAME);
+    //OLD:
+    //String geneBcommonName = 
+    //  (String)Cytoscape.getNodeAttributeValue(nodeB, Semantics.COMMON_NAME);
     m.setCommonName(geneBcommonName);
     m.setAllele(alleleB);
     m.setAlleleForm(alleleFormB);
@@ -475,8 +510,8 @@ public class GeneticInteractionCalculator{
     SingleMutant m = new SingleMutant();
     m.setName(geneA);
     CyNode nodeA = Cytoscape.getCyNode(geneA, false); // should exist already
-    String geneAcommonName = 
-      (String)Cytoscape.getNodeAttributeValue(nodeA, Semantics.COMMON_NAME);
+    CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+    String geneAcommonName = nodeAtts.getStringAttribute(nodeA.getIdentifier(), Semantics.COMMON_NAME);
     m.setCommonName(geneAcommonName);
     m.setAllele(alleleA);
     m.setAlleleForm(alleleFormA);
@@ -487,8 +522,7 @@ public class GeneticInteractionCalculator{
     m = new SingleMutant();
     m.setName(geneB);
     CyNode nodeB = Cytoscape.getCyNode(geneB, false); // should exist already
-    String geneBcommonName = 
-      (String)Cytoscape.getNodeAttributeValue(nodeB, Semantics.COMMON_NAME);
+    String geneBcommonName = nodeAtts.getStringAttribute(nodeB.getIdentifier(), Semantics.COMMON_NAME);
     m.setCommonName(geneBcommonName);
     m.setAllele(alleleB);
     m.setAlleleForm(alleleFormB);

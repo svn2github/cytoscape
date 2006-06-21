@@ -7,6 +7,7 @@ package phenotypeGenetics;
 import java.util.*;
 import java.io.*;
 import cytoscape.*;
+import cytoscape.data.CyAttributes;
 
 public class Utilities {
   
@@ -79,24 +80,25 @@ public class Utilities {
   public static String[] getAlleleForms(String theNode, CyEdge[] theEdges){
     
     ArrayList theAlleleForms = new ArrayList();
+    CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
     for(int i = 0; i < theEdges.length; i++){
       //String edgeName = edgeAtts.getCanonicalName( theEdges[i] );
       //HashMap edgeHash = edgeAtts.getAttributes( edgeName );
-      String nodeA = 
-        (String)Cytoscape.getEdgeAttributeValue(theEdges[i],
-                                                GeneticInteraction.ATTRIBUTE_MUTANT_A);
-      String nodeB = 
-        (String)Cytoscape.getEdgeAttributeValue(theEdges[i],
-                                                GeneticInteraction.ATTRIBUTE_MUTANT_B);
+      String nodeA = edgeAtts.getStringAttribute(theEdges[i].getIdentifier(), GeneticInteraction.ATTRIBUTE_MUTANT_A);
+      //   (String)Cytoscape.getEdgeAttributeValue(theEdges[i],
+      //                                           GeneticInteraction.ATTRIBUTE_MUTANT_A);
+      String nodeB = edgeAtts.getStringAttribute(theEdges[i].getIdentifier(), GeneticInteraction.ATTRIBUTE_MUTANT_B);
+      //  (String)Cytoscape.getEdgeAttributeValue(theEdges[i],
+      //                                          GeneticInteraction.ATTRIBUTE_MUTANT_B);
       if(theNode.compareTo(nodeA) == 0){
-        String alleleForm = 
-          (String)Cytoscape.getEdgeAttributeValue(theEdges[i],
-                                                  GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A);
+        String alleleForm = edgeAtts.getStringAttribute(theEdges[i].getIdentifier(), GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A); 
+        //  (String)Cytoscape.getEdgeAttributeValue(theEdges[i],
+        //                                          GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A);
         if ( !theAlleleForms.contains( alleleForm ) ) { theAlleleForms.add( alleleForm ); }
       }else if(theNode.compareTo(nodeB) == 0){
-        String alleleForm = 
-          (String)Cytoscape.getEdgeAttributeValue(theEdges[i],
-                                                  GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B);
+        String alleleForm = edgeAtts.getStringAttribute(theEdges[i].getIdentifier(), GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B); 
+          //(String)Cytoscape.getEdgeAttributeValue(theEdges[i],
+          //                                        GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B);
         if ( !theAlleleForms.contains( alleleForm ) ) { theAlleleForms.add( alleleForm ); }
       }
     }

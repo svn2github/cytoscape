@@ -22,30 +22,38 @@ public class NodalDistributionAnalyzer {
    */
   public static HashMap calculateNodeDistribution (CyNetwork cy_network, 
                                                    boolean use_common_names){
-    //  The edges and the relevant attribute, thier interaction class
-    List edgeList = cy_network.edgesList();
-    CyEdge [] edges = (CyEdge[])edgeList.toArray(new CyEdge[edgeList.size()]);
+    
     String attribute = GeneticInteraction.ATTRIBUTE_GENETIC_CLASS;
     
-    //  The set of nodes
-    List nodeList = cy_network.nodesList();
-    CyNode [] nodes = (CyNode[])nodeList.toArray(new CyNode[nodeList.size()]);
+    //Get an array of edges
+    Iterator edgeIterator = cy_network.edgesIterator();
+    List edgeList = new ArrayList();
+    while(edgeIterator.hasNext()){
+    		edgeList.add(edgeIterator.next());
+    }
+    CyEdge [] edges = (CyEdge[])edgeList.toArray(new CyEdge[edgeList.size()]);
     
+    //  The set of nodes
+    Iterator nodesIterator = cy_network.nodesIterator();
+  
     // A HashMap of interaction types (nodeDistribution) keyed on the nodes:
     HashMap nodeDistribution = new HashMap();
     
     // Get all the possible Modes
     
     // Cycle through the nodes
-    for(int j = 0; j < nodes.length; j++) {
+    CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+    CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
+    while(nodesIterator.hasNext()) {
 
       //  Identify the node at hand
-      CyNode node = nodes[j];
-      String nodeName = 
-        (String)Cytoscape.getNodeAttributeValue(node, Semantics.COMMON_NAME);
-      String canonicalName = 
-        (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+      CyNode node = (CyNode)nodesIterator.next();
+      String nodeName = nodeAtts.getStringAttribute(node.getIdentifier(), Semantics.COMMON_NAME);
+      //   (String)Cytoscape.getNodeAttributeValue(node, Semantics.COMMON_NAME);
+      String canonicalName = node.getIdentifier(); 
+      //  (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
       //  Get the alleleForms for this node with a method
+      if(nodeName == null) nodeName = canonicalName;
       String[] alleleForms = Utilities.getAlleleForms(canonicalName,edges);
       //  Cycle through the alleleForms
       for(int af = 0; af < alleleForms.length; af++) {
@@ -64,19 +72,20 @@ public class NodalDistributionAnalyzer {
           
           //  Identify the edge and get it's class, edgeType
           CyEdge edge = edges[i];
-          String edgeType = (String)Cytoscape.getEdgeAttributeValue(edge,attribute);
-          String edgeA = 
-            (String)Cytoscape.getEdgeAttributeValue(edge,
-                                                    GeneticInteraction.ATTRIBUTE_MUTANT_A);
-          String edgeB = 
-            (String)Cytoscape.getEdgeAttributeValue(edge,
-                                                    GeneticInteraction.ATTRIBUTE_MUTANT_B);
-          String edgeAlleleA = 
-            (String)Cytoscape.getEdgeAttributeValue(edge,
-                                                GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A);
-          String edgeAlleleB = 
-            (String)Cytoscape.getEdgeAttributeValue(edge,
-                                                 GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B);
+          String edgeType = edgeAtts.getStringAttribute(edge.getIdentifier(),attribute);
+          //(String)Cytoscape.getEdgeAttributeValue(edge,attribute);
+          String edgeA = edgeAtts.getStringAttribute(edge.getIdentifier(), GeneticInteraction.ATTRIBUTE_MUTANT_A); 
+           // (String)Cytoscape.getEdgeAttributeValue(edge,
+           //                                         GeneticInteraction.ATTRIBUTE_MUTANT_A);
+          String edgeB = edgeAtts.getStringAttribute(edge.getIdentifier(),GeneticInteraction.ATTRIBUTE_MUTANT_B); 
+          //  (String)Cytoscape.getEdgeAttributeValue(edge,
+          //                                          GeneticInteraction.ATTRIBUTE_MUTANT_B);
+          String edgeAlleleA = edgeAtts.getStringAttribute(edge.getIdentifier(), GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A);
+          //  (String)Cytoscape.getEdgeAttributeValue(edge,
+          //                                      GeneticInteraction.ATTRIBUTE_ALLELE_FORM_A);
+          String edgeAlleleB = edgeAtts.getStringAttribute(edge.getIdentifier(), GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B); 
+          //  (String)Cytoscape.getEdgeAttributeValue(edge,
+          //                                       GeneticInteraction.ATTRIBUTE_ALLELE_FORM_B);
           if (((canonicalName.compareTo(edgeA)==0) && 
                (alleleForm.compareTo(edgeAlleleA)==0) ) |
               ((canonicalName.compareTo(edgeB)==0) && 

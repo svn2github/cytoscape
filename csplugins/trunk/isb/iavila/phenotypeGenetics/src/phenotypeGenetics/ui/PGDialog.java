@@ -403,7 +403,7 @@ public class PGDialog extends JDialog{
     this.statementsButton.addActionListener(
         new AbstractAction (){
           public void actionPerformed (ActionEvent event){
-            BioDataServer bioDataServer = Cytoscape.getCytoscapeObj().getBioDataServer();
+            BioDataServer bioDataServer = Cytoscape.getBioDataServer(); 
             if(bioDataServer == null){
               System.out.println("The bioDataServer is null.");
               JOptionPane.showMessageDialog(PGDialog.this,

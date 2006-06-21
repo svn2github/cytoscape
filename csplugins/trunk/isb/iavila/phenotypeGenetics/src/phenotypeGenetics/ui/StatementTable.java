@@ -218,7 +218,8 @@ public class StatementTable extends JFrame {
             nodesToSelect[i+1] = n;
             nodeArray.add(n);
           }
-          cyNetwork.setFlaggedNodes(nodeArray,true);
+          //cyNetwork.setFlaggedNodes(nodeArray,true);
+          cyNetwork.setSelectedNodeState(nodeArray,true);
           //CyNetworkView netView = 
           //Cytoscape.getNetworkView(cyNetwork.getIdentifier());
           //if(netView != null)
