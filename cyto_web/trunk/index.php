@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <? include "config.php"; ?>
-<! Updated by kono for 2.2 release on 12_13_2005 >
+<! Updated by kono for 2.3 release on 06_21_2006 >
 <html>
 	<head>
 		<title>
@@ -79,12 +79,50 @@
 		</table>
 <? include "nav.php"; ?>
 <? include "detailed_nav.php"; ?>
-	<table width="100%" border="0" cellpadding="5" cellspacing="5">
+<table width="100%" border="0" cellpadding="5" cellspacing="5">
 		<tr valign="top">
 			<td width="65%">
 				<div id="contents">
 					<div id="content">
 						<div id="indent">
+							<div class="item">
+								<br>
+								<p>
+								<big><b>
+									<i>Coming Soon... </i>&nbsp;&nbsp;Cytoscape 2.3
+								</b></big>
+								<table width="100%">
+									<tr valign="top">
+										<td width="47%" valign="top">
+											<br>
+											(Updated 06/21/2006)
+											<br>
+											New Features include:
+											<br>
+
+											<ul>
+												<li	>High-performance rendering engine.  Support for large networks (30,000+ nodes & edges)</li>
+												<li>Session-based data management</li>
+												<li>Support for network attributes</li>
+												<li>Improved Undo manager</li>
+												<li>More user-friendly UI for Attribute Browser</li>
+												<li>First steps towards drawing pathways / metabolic networks (Support for Metanodes)</li>
+												<li>Greater flexibility in expression data loading</li>
+												<li>Ability to rename networks</li>
+												<li>Re-organized menu system</li>
+												<li>Many bugs fixed </li>
+											</ul>
+											Cytoscape 2.3 Release Notes
+										</td>
+										<td valign="top">
+											<A HREF="screenshots/cytoscapeMainWindowv2_3.png">
+												<img src="screenshots/cyto_2_3_thumb.png" border="0" align="left" alt="Cytoscape 2.3 Screenshot" />
+											</A>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<p>
 							<div class="item">
 								<br>
 								<p>
