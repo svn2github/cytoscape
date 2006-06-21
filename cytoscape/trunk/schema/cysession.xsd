@@ -8,6 +8,7 @@
         <xs:element ref="networkTree"/>
       </xs:sequence>
       <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="documentVersion" use="optional" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="sessionNote" type="xs:string"/>
