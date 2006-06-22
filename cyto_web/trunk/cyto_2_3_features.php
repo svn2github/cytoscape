@@ -30,7 +30,6 @@
 	<ul>
 		<li	>High-performance rendering engine.  Support for large networks (100,000+ nodes & edges)</li>
 		<li>Ability to save a session</li>
-		<li>A node grouping plugin. This will allow one node to contain and display subnetworks.</li>
 		<li>Support for network attributes</li>
 		<li>An improved command line interface</li>
 		<li>The GraphMerge plugin included by default</li>
@@ -82,20 +81,7 @@
 </tr>
 </table>
 <P>
-<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%">
-<tr>
-	<td>
-		<big><b>Node grouping plugin (<i>Metanode</i>)</b></big>
-		<p>
-			Node grouping plugin (called <i>Metanode</i> plugin) allows one node to contain and display subnetworks.  By this
-			plugin, users can draw networks with substructures such as protein complexes.  This hierarchical structure can be
-			saved in an XGMML file. 
-		</p>
-	</td>
-</tr>
-</table>
 
-<P>
 <table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%">
 <tr>
 	<td>

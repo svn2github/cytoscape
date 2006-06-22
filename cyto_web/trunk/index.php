@@ -102,7 +102,6 @@
 											<ul>
 												<li	>High-performance rendering engine.  Support for large networks (100,000+ nodes & edges)</li>
 												<li>Ability to save a session</li>
-												<li>A node grouping plugin. This will allow one node to contain and display subnetworks.</li>
 												<li>Support for network attributes</li>
 												<li>An improved command line interface.</li>
 												<li>The GraphMerge plugin included by default</li>
