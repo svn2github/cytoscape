@@ -28,10 +28,10 @@ Corporate funding is provided through a contract from
 		Pasteur
 	</a>
 	|
-	<a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">
-		Report a bug
+	<a href="http://www.agilent.com/">
+		Agilent
 	</a>
-	| &copy; 2001-2004 Cytoscape.
+	| &copy; 2001-2006 Cytoscape
 </center>
 </div>
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">

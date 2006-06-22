@@ -2,13 +2,13 @@
 		<tr>
 			<td width="120" id="first">
 				<h1>
-					<a href="download.php?file=cyto2_2">
+					<a href="download.php?file=cyto2_3">
 						Download Cytoscape
 					</a>
 				</h1>
 				<p>
-					<a href="download.php?file=cyto2_2">
-						Download Version 2.2
+					<a href="download.php?file=cyto2_3">
+						Download Version 2.3
 					</a>
 				</p>
 				<p>
@@ -23,7 +23,7 @@
 					<a href="tut/tutorial.php">
 						Online Tutorials
 					</a>
-                                        <IMG src="wiki/modern/img/moin-new.png">
+					<IMG src="wiki/modern/img/moin-new.png">
 				</h1>
 				<p>
 					Get Started with the expanded Cytoscape <a href="tut/tutorial.php">online tutorials</a>.  Eight tutorials describe Cytoscape from basic operation to detailed plugin operation.
@@ -31,12 +31,12 @@
 			</td>
 			<td width="120">
 				<h1>
-					<a href="manual/Cytoscape2_2Manual.pdf">
+					<a href="manual/Cytoscape2_3Manual.pdf">
 						Manual
 					</a>
 				</h1>
 				<p>
-					<a href="manual/Cytoscape2_2Manual.pdf">
+					<a href="manual/Cytoscape2_3Manual.pdf">
 						PDF format</a>, explains all basic features of Cytoscape.
 					<a href="http://www.adobe.com/products/acrobat/readstep2.html">
 						Get Acrobat reader
@@ -50,10 +50,10 @@
 					</a>
 				</h1>
 				<p>
-					<a href="roadmap.php">
+					<a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Future_Cytoscape_Features">
 						Roadmap
 					</a> |
-    				<a href="http://chianti.ucsd.edu/Cyto-2_2/javadoc/">
+    				<a href="http://chianti.ucsd.edu/Cyto-2_3/javadoc/">
 						Javadoc API
 					</a> |
     			    <a href="cgi-bin/moin.cgi/">

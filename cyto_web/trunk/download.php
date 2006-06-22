@@ -31,7 +31,9 @@
 	
 	#  Determine the Download File and Page Title
 	$file = $_REQUEST["file"];
-	if ($file == "cyto2_2") {
+	if ($file == "cyto2_3") {
+		$title = "Download Cytoscape 2.3";
+	} else if ($file == "cyto2_2") {
 		$title = "Download Cytoscape 2.2";
 	} else if ($file == "cyto2_1") {
 		$title = "Download Cytoscape 2.1";
@@ -96,6 +98,8 @@
 			</li>
 			<li>
 				If so, fill in the application form.
+				<strong><u>This information is used to understand the Cytoscape user base and 
+				will not be used for other purposes.</u></strong>
 			</li>
 			<li>
 				Click the Proceed button to be transferred to the download page.

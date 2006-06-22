@@ -24,6 +24,7 @@
 	platform for visualizing molecular interaction networks and integrating these
 	interactions with gene expression profiles and other state data.
 </p>
+<p>Note: This is the last release for Java 1.4.x series.  From 2.4, Cytoscape requirs <a href="http://java.sun.com/j2se/1.5.0/" target="_blank">Java 1.5</a> or <a href="http://java.sun.com/javase/6/" target="_blank">later</a>.</p>
 <P>
 	The 2.3 release of Cytoscape includes:<br>
 	<ul>
