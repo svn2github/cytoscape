@@ -16,6 +16,12 @@ import java.util.*;
 
 public class GeneticInteraction implements Serializable {
   
+	/**
+	 * A Map form the String representation of an edge to the GeneticInteraction object that it represents
+	 * Since in Cytoscape 2.3 CyAttributes cannot hold any Object as a value, we need this separate datastructure
+	 */
+	public static Map EDGE_NAME_GENETIC_INTERACTION_MAP = new HashMap();
+	
   // Edge attribute names are encoded as public static variables
   public static final String ATTRIBUTE_INEQUALITY = "phenoRelation";
   public static final String ATTRIBUTE_GENETIC_CLASS = "geneticInteractionClass";

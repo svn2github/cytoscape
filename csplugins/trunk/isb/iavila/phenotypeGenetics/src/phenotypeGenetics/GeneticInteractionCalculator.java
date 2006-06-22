@@ -286,8 +286,11 @@ public class GeneticInteractionCalculator{
     	  			edgeAtts.setAttribute(newEdge.getIdentifier(),attributeName, (Double)value);
     	  		else if(value instanceof Integer)
     	  			edgeAtts.setAttribute(newEdge.getIdentifier(),attributeName, (Integer)value);
-    	  		else
-    	  			System.err.println("------------------The class of value is " + value.getClass());
+    	  		else if(value instanceof GeneticInteraction){
+    	  			// Cytoscape 2.3 no longer supports Object values in node/edge attributes
+    	  			// so, GeneticInteraction objects are stored in a class variable
+    	  			GeneticInteraction.EDGE_NAME_GENETIC_INTERACTION_MAP.put(newEdge.getIdentifier(), value);
+    	  		}
     	  	}else{
     	  		System.err.println("----------------------- The type of " + attributeName + " is " + edgeAtts.getType(attributeName));
     	  	}

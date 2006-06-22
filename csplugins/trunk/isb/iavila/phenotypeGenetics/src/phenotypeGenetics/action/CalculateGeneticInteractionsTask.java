@@ -133,6 +133,9 @@ public class CalculateGeneticInteractionsTask implements MonitoredTask{
     pbar.pack();
     pbar.setVisible(true);
     cyNet.restoreEdges(newEdges);
+    Cytoscape.getVisualMappingManager().applyAppearances();
+    CyNetworkView view = Cytoscape.getNetworkView(cyNet.getIdentifier());
+    if(view != null) view.redrawGraph(false,false);
     pbar.dispose();
   }//calculateInteractionsAndDisplayGraph
     

@@ -244,10 +244,9 @@ public class MutualInfoCalculator{
       }//isDirectional
 
       // Get the single-mutants relative to wild type
-      // TODO: This will need to be held in a separate data structure -iliana
-      GeneticInteraction gi = 
-       (GeneticInteraction)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                           GeneticInteraction.ATTRIBUTE_SELF);
+      GeneticInteraction gi = (GeneticInteraction)GeneticInteraction.EDGE_NAME_GENETIC_INTERACTION_MAP.get(theEdge.getIdentifier()); 
+      // (GeneticInteraction)Cytoscape.getEdgeAttributeValue(theEdge,
+      //                                                     GeneticInteraction.ATTRIBUTE_SELF);
       
       DiscretePhenoValueInequality d = gi.getDiscretePhenoValueInequality();
 
@@ -533,9 +532,9 @@ public class MutualInfoCalculator{
     }
     
     // TODO: this will need to be in separate data strcuture -iliana
-    GeneticInteraction gi = 
-      (GeneticInteraction)Cytoscape.getEdgeAttributeValue(theEdge, 
-                                                          GeneticInteraction.ATTRIBUTE_SELF);
+    GeneticInteraction gi = (GeneticInteraction)GeneticInteraction.EDGE_NAME_GENETIC_INTERACTION_MAP.get(theEdge.getIdentifier());
+    //  (GeneticInteraction)Cytoscape.getEdgeAttributeValue(theEdge, 
+    //                                                      GeneticInteraction.ATTRIBUTE_SELF);
     DiscretePhenoValueInequality d = gi.getDiscretePhenoValueInequality();
     
     int pA = 0;
@@ -697,9 +696,9 @@ public class MutualInfoCalculator{
       //  (String)Cytoscape.getEdgeAttributeValue(theEdge,
       //                                          GeneticInteraction.ATTRIBUTE_GENETIC_CLASS);
       // TODO: This will need to be stored in a separate data structure -iliana
-      GeneticInteraction gi = 
-      (GeneticInteraction)Cytoscape.getEdgeAttributeValue(theEdge,
-                                                          GeneticInteraction.ATTRIBUTE_SELF);
+      GeneticInteraction gi = (GeneticInteraction)GeneticInteraction.EDGE_NAME_GENETIC_INTERACTION_MAP.get(theEdge.getIdentifier());
+      //(GeneticInteraction)Cytoscape.getEdgeAttributeValue(theEdge,
+      //                                                    GeneticInteraction.ATTRIBUTE_SELF);
       DiscretePhenoValueInequality d = gi.getDiscretePhenoValueInequality();
       
       int pWT = d.getWT();
