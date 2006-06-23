@@ -97,6 +97,12 @@ public abstract class Cytoscape {
 	// Signals
 	//
 	public static String NETWORK_CREATED = "NETWORK_CREATED";
+	/**
+	 * Please consult CyAttributes documentation for event listening
+	 * 
+	 * @deprecated this event should not be used, it is not fired
+	 * @see CyAttributes
+	 */
 	public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
 	public static String DATASERVER_CHANGED = "DATASERVER_CHANGED";
 	public static String EXPRESSION_DATA_LOADED = "EXPRESSION_DATA_LOADED";
@@ -360,7 +366,6 @@ public abstract class Cytoscape {
 	 * <ol>
 	 * <li>NETWORK_CREATED
 	 * <li>NETWORK_DESTROYED
-	 * <li>ATTRIBUTES_ADDED
 	 * <li>CYTOSCAPE_EXIT
 	 * </ol>
 	 */
@@ -1133,8 +1138,7 @@ public abstract class Cytoscape {
 		}
 
 		firePropertyChange(NETWORK_CREATED, p_id, network.getIdentifier());
-		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit
-				.getProperties().getProperty("viewThreshold"))
+		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold"))
 				&& create_view) {
 			createNetworkView(network);
 		}
