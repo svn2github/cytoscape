@@ -38,7 +38,7 @@
     <property name="build.compiler" value="modern"/>
 
     <!-- Release number -->
-    <property name="version" value="2.3_beta3"/>
+    <property name="version" value="2.3"/>
 
     <property name="dirname.release.dir"
               value="cytoscape-v${version}"/>
@@ -575,7 +575,7 @@
 
         <copy file="user_docs/INSTALL.txt" todir="${release.dir}"/>
         <copy file="user_docs/LICENSE.txt" todir="${release.dir}"/>
-        <copy file="user_docs/Cytoscape2_2Manual.pdf" todir="${release.dir}"/>
+        <copy file="user_docs/Cytoscape_2.3_User_Manual.pdf" todir="${release.dir}"/>
 
         <!-- Copy over Sample Data Files -->
         <echo>
