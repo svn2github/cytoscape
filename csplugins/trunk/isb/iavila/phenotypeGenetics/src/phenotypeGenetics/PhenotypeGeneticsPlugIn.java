@@ -12,23 +12,15 @@
 package phenotypeGenetics;
 import phenotypeGenetics.view.*;
 import phenotypeGenetics.ui.*;
-import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.io.*;
-import junit.framework.*;
 import java.util.*;
+import java.io.*;
 
 import cytoscape.*;
 import cytoscape.plugin.*;
-import cytoscape.data.servers.*;
-import cytoscape.util.*;
-import cytoscape.data.Semantics;
-import cytoscape.view.*;
 import cytoscape.visual.*;
-import cytoscape.visual.calculators.*;
-import cytoscape.visual.mappings.*;
-import cytoscape.visual.ui.*;
+
 
 public class PhenotypeGeneticsPlugIn extends CytoscapePlugin{
   
@@ -171,6 +163,23 @@ public class PhenotypeGeneticsPlugIn extends CytoscapePlugin{
     		String file = props.getProperty("PGmodes");
     		return file;
     }
+	// See if it is in the current directory (same directory as this class)
+    String fileName = "phenGenModes.xml";
+    boolean found = false;
+    try {
+		File file = new File(System.getProperty("user.dir"), fileName);
+         System.err.println("PhenotypeGeneticsPlugIn: Working directory: " + System.getProperty("user.dir"));
+		if(file.exists()){
+			System.err.println("PhenotypeGeneticsPlugIn " + fileName + " found at: " + file);
+			found = true;
+		}
+	} catch (Exception e) {
+		// not found in the current directory
+		found = false;
+	}
+    
+	if(found) return fileName;
+    return null;
 	
     //OLD:
 	//String [] args = cytoscapeWindow.getConfiguration().getArgs();
@@ -186,7 +195,6 @@ public class PhenotypeGeneticsPlugIn extends CytoscapePlugin{
     //    }
     //  }
     //}//for i
-    return null;
   }//readModeXmlArg
 
   /**

@@ -1,19 +1,22 @@
 <?xml version = "1.0"?>
-<project name = "phenotypeGenetics" default = "run" basedir = ".">
+<project name = "phenotypeGenetics" default = "compile_dev" basedir = ".">
    
    <property name = "src" location = "src"/>
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
-   <property name = "cytoscape.lib" location = "../../../../cytoscape-v2.2/"/>
 	
-   <property name = "cytoscape.lib.dev" location = "../../../../cytoscape"/>
+   <property name = "cytoscape.release" location = "../../../../cytoscape-v2.2/"/>
+   <property name = "cytoscape.dev" location = "../../../../cytoscape"/>
+	
    <property name = "local.lib" location = "lib"/>
    <property name = "dist" location = "dist"/>
 
-   <property name="cytoscape.plugin.dir" value="../../../../cytoscape-v2.2/plugins/extras"/>
-
-   <path id = "classpath_compile">
-       <fileset dir = "${cytoscape.lib}">
+   <property name="cytoscape.plugin.release" value="../../../../cytoscape-v2.2/plugins/extras"/>
+   <property name="cytoscape.plugin.dev" value="../../../../cytoscape/plugins"/>
+	
+	
+   <path id = "classpath_release">
+       <fileset dir = "${cytoscape.release}">
           <include name = "**/*.jar"/>
        </fileset>
    	   <fileset dir = "${local.lib}">
@@ -21,106 +24,67 @@
    	   </fileset>
    </path>
    
-   <path id = "classpath_compile_cvs">
-       <fileset dir = "${cytoscape.lib.dev}">
+   <path id = "classpath_dev">
+       <fileset dir = "${cytoscape.dev}">
           <include name = "**/*.jar"/>
        </fileset>
    	   <fileset dir = "${local.lib}">
    	      <include name = "**/*.jar"/>
    	   </fileset>
-   </path>
-
-   <path id = "classpath_run">
-       <fileset dir = "${cytoscape.lib}">
-          <include name = "**/*.jar"/>
-       </fileset>
-       <fileset dir = "${local.lib}">
-          <include name = "**/*.jar"/>
-       </fileset>
-   </path>
-
-   <path id = "classpath_run_cvs">
-       <fileset dir = "${cytoscape.lib.dev}">
-          <include name = "**/*.jar"/>
-       </fileset>
-       <fileset dir = "${local.lib}">
-          <include name = "**/*.jar"/>
-       </fileset> 
    </path>
 
    <target name="prepare" depends="clean">
       <mkdir dir="${build}"/>
    </target>
 
-   <target name="compile" depends="prepare" description="Compile with Cytoscape 2.1 release">
+   <target name="compile_release" depends="prepare" description="Compile with Cytoscape release">
    <!-- Compile the java code from ${src} into ${build} -->
    <javac source = "1.4" srcdir = "${src}" destdir="${build}" deprecation="on">
-      <classpath refid = "classpath_compile"/>
+      <classpath refid = "classpath_release"/>
    </javac>
    </target>
 
-   <target name="compile_cvs" depends = "prepare" description="Compile with Cytoscape in CVS">
+   <target name="compile_dev" depends = "prepare" description="Compile with Cytoscape under development">
    <!-- Compile the java code from ${src} into ${build} -->
    <javac source = "1.4" srcdir = "${src}" destdir="${build}" deprecation="on">
-      <classpath refid = "classpath_compile_cvs"/>
+      <classpath refid = "classpath_dev"/>
    </javac>
    </target>
    
    <target name="clean" description="clean up" >
-      <!-- Delete the ${build} ${jar} directory trees -->
       <delete dir="${build}"/>
       <delete dir="${dist}"/>
    </target>
 
-   <target name ="jar" depends="compile" description="Makes jar of phenotypeGenetics classes only, compiles using Cytoscape official release">
+   <target name ="jar_dev" depends="compile_dev" description="Makes jar of phenotypeGenetics, compiles using Cytoscape under development">
 	 <mkdir dir = "${dist}"/>
-	 <!-- unjar all of the jars that are in the local library -->
-	 <!-- <unjar dest="${local.lib}/temp"> <fileset dir="${local.lib}">
-	      <include name="**/*.jar"/>
-		   < /fileset>
-       </unjar> -->
-   <jar jarfile="${dist}/phenGen.jar">
-		   <!-- <fileset dir="${local.lib}/temp"/> -->
-		   <fileset dir="${build}"/>
+	 <unjar overwrite="Yes" dest = "${build}">
+   	 	<fileset dir = "${local.lib}">
+        		<include name="**/*.jar"/>
+   		</fileset>
+   	 </unjar>
+   	<copy file="sampleData/phenGenModes.xml" todir="${build}/phenotypeGenetics"/>
+   	 <jar jarfile="${dist}/phenGen.jar">
+        <fileset dir="${build}"/>
 	 </jar>
-	 <!-- <delete dir = "${local.lib}/temp"/> -->
-	</target>
+   	<copy file="${dist}/phenGen.jar" todir="${cytoscape.plugin.dev}"/>
+   	<echo message="phenGen.jar is complete, it is located in ${dist} and in ${cytoscape.plugin.dev}"/>
+   </target>
 
-   <target name = "jar_cvs" depends="compile_cvs" description="Makes jar of phenotypeGenetics classes only, compiles using Cytoscape in CVS">
+   <target name = "jar_release" depends="compile_release" description="Makes jar of phenotypeGenetics, compiles using Cytoscape release">
 	 <mkdir dir = "${dist}"/>
-	 <!-- unjar all of the jars that are in the local library -->
-	 <!-- <unjar dest="${local.lib}/temp"> <fileset dir="${local.lib}"><include name="**/*.jar"/>
-		   </fileset>
-   </unjar> -->
-   <jar jarfile="${dist}/phenGen.jar">
-		   <!-- <fileset dir="${local.lib}/temp"/> -->
-		   <fileset dir="${build}"/>
-	 </jar>
-	 <!-- <delete dir = "${local.lib}/temp"/> -->
-	</target>
-
-   <target name = "run" depends="jar" description = "Runs with official Cytoscape 2.1">
-      <java classname = "cytoscape.CyMain" classpathref = "classpath_run"
-          fork = "true" maxmemory = "1g">
-          <arg line = "-b"/>
-          <arg line = "http://db.systemsbiology.net/cytoscape/annotation/yeast/manifest"/>
-          <arg line = "-s"/>
-          <arg value = "Saccharomyces cerevisiae"/>
-          <arg line = "--JLD"/>
-          <arg file = "${dist}/phenGen.jar"/>
-          <!-- <arg line = "-JLD"/> -->
-          <!-- <arg file = "${cytoscape.plugin.dir}"/> -->
-      </java>
-    </target>
-
-   <target name = "runcvs" depends="jar_cvs" description="Runs with Cytoscape version in CVS">
-      <java classname = "cytoscape.CyMain" classpathref = "classpath_run_cvs"
-          fork = "true" maxmemory = "1g">
-          <!-- <arg line = "-JLD"/> -->
-          <!-- <arg file = "${dist}/phenGen.jar"/> -->
-          <!-- <arg line = "-PGproject"/> -->
-          <!-- <arg file = "sampleData/2n_SLAD_inv.xml"/> -->
-      </java>
-    </target>
-
+    	 <unjar overwrite="Yes" dest = "${build}">
+   	 	<fileset dir = "${local.lib}">
+   	    		<include name="**/*.jar"/>
+   	    </fileset>
+     </unjar>
+   	 
+   	 <copy file="sampleData/phenGenModes.xml" todir="${build}/phenotypeGenetics"/>
+   	 <jar jarfile="${dist}/phenGen.jar">
+   	 	<fileset dir="${build}"/>
+     </jar>
+   	<copy file="${dist}/phenGen.jar" todir="${cytoscape.plugin.release}"/>
+	<echo message="phenGen.jar is complete, it is located in ${dist} and in ${cytoscape.plugin.release}"/>
+   </target>
+	
 </project>

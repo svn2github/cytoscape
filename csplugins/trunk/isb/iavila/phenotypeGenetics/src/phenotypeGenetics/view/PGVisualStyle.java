@@ -68,13 +68,20 @@ public class PGVisualStyle {
     CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
     
     // ------------------------------ Set the label ------------------------------//
-    // Display the value for Semantics.COMMON_NAME as a label
-    String cName = Semantics.COMMON_NAME;
-    NodeLabelCalculator nlc = calculatorCatalog.getNodeLabelCalculator(cName);
+    // Display the value for Semantics.COMMON_NAME as a label (if there is a COMMON_NAME attribute)
+    String [] attributes = Cytoscape.getNodeAttributes().getAttributeNames();
+    String labelAttributeName = "ID";
+    for(int i = 0; i < attributes.length; i++){
+    		if(attributes[i].equals(Semantics.COMMON_NAME)){
+    			labelAttributeName = Semantics.COMMON_NAME;
+    		}
+    }
+    
+    NodeLabelCalculator nlc = calculatorCatalog.getNodeLabelCalculator(labelAttributeName);
     if(nlc == null){
       PassThroughMapping m =
-        new PassThroughMapping(new String(), Semantics.COMMON_NAME);
-      nlc = new GenericNodeLabelCalculator(cName, m);
+        new PassThroughMapping(new String(), labelAttributeName);
+      nlc = new GenericNodeLabelCalculator(labelAttributeName, m);
     }
     NODE_APP_CALCULATOR.setNodeLabelCalculator(nlc);
     
