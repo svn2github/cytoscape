@@ -42,6 +42,7 @@ import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.util.MultiHashMapFactory;
+import cytoscape.Cytoscape;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,7 +96,9 @@ public class CyAttributesImpl implements CyAttributes
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
                               MultiHashMapDefinition.TYPE_BOOLEAN,
-                              null); }
+                              null); 
+      Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);
+    }
     else {
       if (type != MultiHashMapDefinition.TYPE_BOOLEAN) {
         throw new IllegalArgumentException
@@ -119,7 +122,9 @@ public class CyAttributesImpl implements CyAttributes
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
                               MultiHashMapDefinition.TYPE_INTEGER,
-                              null); }
+                              null); 
+      Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);  
+    }
     else {
       if (type != MultiHashMapDefinition.TYPE_INTEGER) {
         throw new IllegalArgumentException
@@ -143,7 +148,9 @@ public class CyAttributesImpl implements CyAttributes
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
                               MultiHashMapDefinition.TYPE_FLOATING_POINT,
-                              null); }
+                              null); 
+      Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);  
+    }
     else {
       if (type != MultiHashMapDefinition.TYPE_FLOATING_POINT) {
         throw new IllegalArgumentException
@@ -167,7 +174,9 @@ public class CyAttributesImpl implements CyAttributes
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
                               MultiHashMapDefinition.TYPE_STRING,
-                              null); }
+                              null);
+      Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);  
+    }
     else {
       if (type != MultiHashMapDefinition.TYPE_STRING) {
         throw new IllegalArgumentException
@@ -277,12 +286,16 @@ public class CyAttributesImpl implements CyAttributes
 
   public boolean deleteAttribute(String id, String attributeName)
   {
-    return mmap.removeAllAttributeValues(id, attributeName);
+    boolean b = mmap.removeAllAttributeValues(id, attributeName);
+    Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);
+    return b;
   }
 
   public boolean deleteAttribute(String attributeName)
   {
-    return mmapDef.undefineAttribute(attributeName);
+    boolean b = mmapDef.undefineAttribute(attributeName);
+    Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);
+    return b;
   }
 
   public void setAttributeList(String id, String attributeName, List list)
@@ -314,7 +327,9 @@ public class CyAttributesImpl implements CyAttributes
       mmapDef.defineAttribute
         (attributeName,
          type,
-         new byte[] { MultiHashMapDefinition.TYPE_INTEGER } ); }
+         new byte[] { MultiHashMapDefinition.TYPE_INTEGER } ); 
+      Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);  
+    }
     else {
       if (valType != type) {
         throw new IllegalArgumentException
@@ -390,7 +405,9 @@ public class CyAttributesImpl implements CyAttributes
     if (valType < 0) {
       mmapDef.defineAttribute
         (attributeName, type,
-         new byte[] { MultiHashMapDefinition.TYPE_STRING } ); }
+         new byte[] { MultiHashMapDefinition.TYPE_STRING } ); 
+      Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);
+    }
     else {
       if (valType != type) {
         throw new IllegalArgumentException
