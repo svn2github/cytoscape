@@ -21,18 +21,18 @@ node1 pd node2
   </pre><p>Edges connecting a node to itself (self-edges) are also allowed: </p><p></p><pre class="screen">
 node1 pp node1
 
-  </pre><p>Every node and edge in Cytoscape has an identifying name, most commonly used with the node and edge data attribute structures. Node names must be unique as identically named nodes will be treated as identical nodes. The name of each node will be the name in this file by default (unless another string is mapped to display on the node using the visual mapper. This is discussed in the section on visual styles. The name of each edge will be formed from the name of the source and target nodes plus the interaction type: for example, sourceName edgeType targetName. </p><p>The tag &lt;interaction type&gt; should be one of: </p><pre class="screen">
+  </pre><p>Every node and edge in Cytoscape has an identifying name, most commonly used with the node and edge data attribute structures. Node names must be unique as identically named nodes will be treated as identical nodes. The name of each node will be the name in this file by default (unless another string is mapped to display on the node using the visual mapper. This is discussed in the section on visual styles. The name of each edge will be formed from the name of the source and target nodes plus the interaction type: for example, sourceName edgeType targetName. </p><p>The tag &lt;interaction type&gt; should be one of: </p><p></p><pre class="screen">
   pp .................. protein &#8211; protein interaction
   pd .................. protein -&gt; DNA
   (e.g. transcription factor binding upstream of a regulating gene.)
 
-  </pre><p>Any text string will work, but the above are the conventions that have been followed thus far. </p><p>Additional interaction types are also possible, but not widely used, e.g.: </p><pre class="screen">
+  </pre><p>Any text string will work, but the above are the conventions that have been followed thus far. </p><p>Additional interaction types are also possible, but not widely used, e.g.: </p><p></p><pre class="screen">
   pr .................. protein -&gt; reaction
-  rc .................. reaction -&gt; compound   
+  rc .................. reaction -&gt; compound
   cr .................. compound -&gt; reaction
   gl .................. genetic lethal relationship
-  pm .................. protein-metabolite interaction 
-  mp .................. metabolite-protein interaction 
+  pm .................. protein-metabolite interaction
+  mp .................. metabolite-protein interaction
 
   </pre><p>Even whole words or concatenated words may be used to define other types of relationships e.g. geneFusion, cogInference, pullsDown, activates, degrades, inactivates, inhibits, phosphorylates, upRegulates </p><p>
    <span class="strong">Delimiters</span>. Whitespace (space or tab) is used to delimit the names in the simple interaction file format. However, in some cases spaces are desired in a node name or edge type. The standard is that, if the file contains any tab characters, then tabs are used to delimit the fields and spaces are considered part of the name. If the file contains no tabs, then any spaces are delimiters that separate names (and names cannot contain spaces). </p><p>If your network unexpectedly contains no edges and node names that look like edge names, it probably means your file contains a stray tab that's fooling the parser. On the other hand, if your network has nodes whose names are half of a full name, then you probably meant to use tabs to separate node names with spaces. </p><p>Networks in simple interactions format are often stored in files with a ".sif" extension, and Cytoscape recognizes this extension when browsing a directory for files of this type. </p><p>

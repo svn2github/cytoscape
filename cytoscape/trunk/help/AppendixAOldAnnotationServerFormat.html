@@ -1,14 +1,12 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Appendix A: Old Annotation Server Format</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Cytoscape 2.3 User Manual"><link rel="up" href="index.html" title="Cytoscape 2.3 User Manual"><link rel="previous" href="Acknowledgements.html" title="Acknowledgements"><link rel="next" href="AppendixBGNULesserGeneralPublicLicense.html" title="Appendix B: GNU Lesser General Public License"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="AppendixAOldAnnotationServerFormat"></a>Appendix A: Old Annotation Server Format</h2></div></div><div></div></div><p>The following section is still valid, however we <span class="emphasis"><em>
     <span class="strong">strongly</span>
-   </em></span> recommend using the new formats described in the previous section, since they are easier to download directly from the Gene Ontology project and use directly. </p><p></p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="GeneOntologyServerWizard"></a>Gene Ontology Server Wizard</h3></div></div><div></div></div><p>The Gene Ontology Server Wizard is a new graphical user interface used to select ontology and annotation files.  </p><p>
-    <span class="underline">Step 1.</span> Select Data Format </p><div class="itemizedlist"><ul type="disc"><li><p>
-      <span class="inlinemediaobject"><img src="images/image137.png" alt="attachment:image137.png"></span>
-     </p></li></ul></div><p>If you want to use the old manifest file to load annotations, select <span class="emphasis"><em>Cytoscape <a href="/cgi-bin/moin.cgi/BioDataServer" target="_top">BioDataServer</a>
-    </em></span>.  </p><p>
-    <span class="underline">Step 2.</span> Specify Manifest File </p><div class="itemizedlist"><ul type="disc"><li><p>
-      <span class="inlinemediaobject"><img src="images/image139.png" alt="attachment:image139.png"></span>
-     </p></li></ul></div><p>If you selected <span class="emphasis"><em>Cytoscape <a href="/cgi-bin/moin.cgi/BioDataServer" target="_top">BioDataServer</a>
-    </em></span>in the first step, you need to specify manifest file (which lists ontology and annotation files to load). Then click on finish. All data files will be loaded into Cytoscape. For more information about manifest file and how to create it, please read the section below. </p><p></p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="Buildingyourownannotationfiles"></a>Building your own annotation files</h3></div></div><div></div></div><p>The annotation server requires that the gene annotations, and associated ontology on controlled vocabulary terms, follow a simple format. This simple format was chosen because it is efficient to parse and easy to use. </p><p>The flat file formats are explained below: </p><p></p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="TheOntologyFormat"></a>The Ontology Format</h4></div></div><div></div></div><p>By example (the Gene Ontology - GO):  </p><p></p><pre class="screen">
+   </em></span> recommend using the new formats described in the previous section, since they are easier to download directly from the Gene Ontology project and use directly. </p><p></p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="GeneOntologyServerWizard"></a>Gene Ontology Server Wizard</h3></div></div><div></div></div><p>The Gene Ontology Server Wizard is a new graphical user interface used to select ontology and annotation files. </p><p>
+    <span class="underline">Step 1.</span> Select Data Format </p><p>
+    <span class="inlinemediaobject"><img src="images/image137.png" alt="attachment:image137.png"></span> If you want to use the old manifest file to load annotations, select <span class="emphasis"><em>Cytoscape <a href="/cgi-bin/moin.cgi/BioDataServer" target="_top">BioDataServer</a>
+    </em></span>. </p><p>
+    <span class="underline">Step 2.</span> Specify Manifest File </p><p>
+    <span class="inlinemediaobject"><img src="images/image139.png" alt="attachment:image139.png"></span> If you selected <span class="emphasis"><em>Cytoscape <a href="/cgi-bin/moin.cgi/BioDataServer" target="_top">BioDataServer</a>
+    </em></span>in the first step, you need to specify manifest file (which lists ontology and annotation files to load). Then click on finish. All data files will be loaded into Cytoscape. For more information about manifest file and how to create it, please read the section below. </p><p></p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="Buildingyourownannotationfiles"></a>Building your own annotation files</h3></div></div><div></div></div><p>The annotation server requires that the gene annotations, and associated ontology on controlled vocabulary terms, follow a simple format. This simple format was chosen because it is efficient to parse and easy to use. </p><p>The flat file formats are explained below: </p><p></p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="TheOntologyFormat"></a>The Ontology Format</h4></div></div><div></div></div><p>By example (the Gene Ontology - GO): </p><p></p><pre class="screen">
 (curator=GO) (type=all)
 0003673 = Gene_Ontology
 0003674 = molecular_function [partof: 0003673 ]
@@ -39,7 +37,7 @@
     </pre><p>tells you that all three ontologies are included in that file. </p><div class="orderedlist"><ol type="1"><li>Following the mandatory title line, there are one or more category lines, each with the form: </li></ol></div><p></p><pre class="screen">
 number0 = name [isa:|partof: number1 number2 ...]
 
-    </pre><p>'isa' and 'partof' are terms used in GO; they describe the relation between parent and child terms in the ontology hierarchy. </p><div class="orderedlist"><ol type="1"><li><p>The trailing blank before each left square bracket is <span class="emphasis"><em>not</em></span> required; it is an artifact of the python script that creates these files. </p></li></ol></div><p></p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="TheAnnotationFormat"></a>The Annotation Format</h4></div></div><div></div></div><p>By example (from the GO biological process annotation file):  </p><p></p><pre class="screen">
+    </pre><p>'isa' and 'partof' are terms used in GO; they describe the relation between parent and child terms in the ontology hierarchy. </p><div class="orderedlist"><ol type="1"><li><p>The trailing blank before each left square bracket is <span class="emphasis"><em>not</em></span> required; it is an artifact of the python script that creates these files. </p></li></ol></div><p></p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="TheAnnotationFormat"></a>The Annotation Format</h4></div></div><div></div></div><p>By example (from the GO biological process annotation file): </p><p></p><pre class="screen">
 (species=Saccharomyces cerevisiae) (type=Biological Process) (curator=GO)
 YMR056C = 0006854
 YBR085W = 0006854
@@ -59,7 +57,7 @@ RV1862 = 10
     </pre><p>The format has these required features: </p><div class="orderedlist"><ol type="1"><li><p>The first line contains three parenthesized assignments, for <span class="emphasis"><em>species</em></span>, <span class="emphasis"><em>type</em></span> and <span class="emphasis"><em>curator</em></span>. In the example just above, the annotation file (which we create for budding yeast from the flat text file maintained by SGD for the Gene Ontology project, and available both at their web site and at GO's) shows three yeast ORFs annotated for biological process, with respect to GO, described (further above). </p></li><li>Following the mandatory title line, there are one or more annotation lines, each with the form: </li></ol></div><p></p><pre class="screen">
 canonicalName = ontologyTermID
 
-    </pre><div class="orderedlist"><ol type="1"><li><p>Once loaded, this annotation (along with the accompanying ontology) can be assigned to nodes in a Cytoscape network. <span class="strong">For this to work, the species type of the node must exactly match the species named on the first line of the annotation file. The canonicalName of your node must exactly match the canonicalName present in the annotation file.</span> If you don&#8217;t see the expected results when using this feature of Cytoscape, check this again, as getting either of these wrong is a common mistake. </p></li></ol></div><p></p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="LoadDataintoCytoscape"></a>Load Data into Cytoscape</h3></div></div><div></div></div><p>The easiest way to make annotations available to Cytoscape is by loading annotations into the Cytoscape annotation server. This is the default behavior for the official release of Cytoscape. </p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="TheAnnotationManifest"></a>The Annotation Manifest</h4></div></div><div></div></div><p>You must first create a text file to specify the files you want Cytoscape to load. Here is an example, from a file which (for convenience) we usually call <span class="strong">&#8220;manifest&#8221;</span>
+    </pre><div class="orderedlist"><ol type="1"><li><p>Once loaded, this annotation (along with the accompanying ontology) can be assigned to nodes in a Cytoscape network. <span class="strong">For this to work, the species type of the node must exactly match the species named on the first line of the annotation file. The canonicalName of your node must exactly match the canonicalName present in the annotation file.</span> If you don&#8217;t see the expected results when using this feature of Cytoscape, check this again, as getting either of these wrong is a common mistake. </p></li></ol></div><p></p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="LoadDataintoCytoscape"></a>Load Data into Cytoscape</h3></div></div><div></div></div><p>The easiest way to make annotations available to Cytoscape is by loading annotations into the Cytoscape annotation server. This is the default behavior for the official release of Cytoscape. </p><p></p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="TheAnnotationManifest"></a>The Annotation Manifest</h4></div></div><div></div></div><p>You must first create a text file to specify the files you want Cytoscape to load. Here is an example, from a file which (for convenience) we usually call <span class="strong">&#8220;manifest&#8221;</span>
     </p><p></p><pre class="screen">
 ontology=goOntology.txt
 annotation=yeastBiologicalProcess.txt
@@ -68,7 +66,7 @@ annotation=yeastCellularComponent.txt
 
     </pre><p>Use the Cytoscape <span class="emphasis"><em>
       <span class="strong">-b</span>
-     </em></span> command line argument to specify the annotation manifest file to read (e.g. -b manifest). Please note that the <span class="strong">-s</span> switch, which sets the default species for your data is required to exactly match the species named in any annotation file you wish to use. </p><p></p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="GettingandReformattingGOData"></a>Getting and Reformatting GO Data</h3></div></div><div></div></div><p>The Gene Ontology (GO) project is a valuable source of annotation for the genes of many organisms. In this section we will explain how to:  </p><div class="orderedlist"><ol type="1"><li>Obtain the GO ontology file  </li><li>Reformat it into the simpler flat file Cytoscape uses  </li><li>Obtain an annotation file (we illustrate with yeast and human annotation)  </li><li>Reformat the annotation files into the simple Cytoscape format </li></ol></div><p>
+     </em></span> command line argument to specify the annotation manifest file to read (e.g. -b manifest). Please note that the <span class="strong">-s</span> switch, which sets the default species for your data is required to exactly match the species named in any annotation file you wish to use. </p><p></p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="GettingandReformattingGOData"></a>Getting and Reformatting GO Data</h3></div></div><div></div></div><p>The Gene Ontology (GO) project is a valuable source of annotation for the genes of many organisms. In this section we will explain how to: </p><div class="orderedlist"><ol type="1"><li>Obtain the GO ontology file </li><li>Reformat it into the simpler flat file Cytoscape uses </li><li>Obtain an annotation file (we illustrate with yeast and human annotation) </li><li>Reformat the annotation files into the simple Cytoscape format </li></ol></div><p>
     <span class="strong">Obtain the GO ontology file</span> Go to the GO XML FTP (<a href="ftp://ftp.geneontology.org/pub/go/xml/" target="_top">ftp://ftp.geneontology.org/pub/go/xml/</a>) page. Download the latest <span class="strong">go-YYYYMM-termdb.xml.gz</span> file. </p><p>
     <span class="strong">Reformat GO XML ontology file into a flat file</span>
    </p><p></p><pre class="screen">
@@ -82,14 +80,14 @@ SPTR    O00115  DRN2_HUMAN              GO:0004519      GOA:spkw        IEA     
 SPTR    O00115  DRN2_HUMAN              GO:0004531      PUBMED:9714827  TAS             F       Deoxyribonuclease II precursor  IPI00010348     protein taxon:9606              SPTR
 ...
 
-   </pre><p>Note that line wrapping has occurred here, so each line of the actual file is wrapped to two lines. The goal is to create from these lines the following lines:  </p><pre class="screen">
+   </pre><p>Note that line wrapping has occurred here, so each line of the actual file is wrapped to two lines. The goal is to create from these lines the following lines: </p><p></p><pre class="screen">
 (species=Homo sapiens) (type=Molecular Function) (curator=GO)
 IPI00010348 = 0003677
 IPI00010348 = 0004519
 IPI00010348 = 0004531
 ...
 
-   </pre><p>or  </p><p></p><pre class="screen">
+   </pre><p>or </p><p></p><pre class="screen">
 (species=Homo sapiens) (type=Biological Process) (curator=GO)
 NP_001366 = 0006259
 NP_001366 = 0006915
@@ -97,516 +95,172 @@ NP_005289 = 0007186
 NP_647593 = 0006899
 ...
 
-   </pre><p>The first sample contains molecular function annotation for proteins, and each protein is identified by its IPI number. IPI is the International Protein Index, which maintains cross references to the main databases for human, mouse and rat proteomes.  The second sample contains biological process annotation, and each protein is identified by its NP (<a href="/cgi-bin/moin.cgi/RefSeq" target="_top">RefSeq</a>) number.  These two naming systems, IPI and <a href="/cgi-bin/moin.cgi/RefSeq" target="_top">RefSeq</a>, are two of many that you can use for canonical names when you run Cytoscape. For budding yeast, it is much easier: the yeast community always uses standard ORF names, and so Cytoscape uses these as canonical names. For human proteins and genes, there is no such single simple standard. See section <span class="emphasis"><em>5. Building and Storing Interaction Networks</em></span> for more information. </p><p>The solution (for those working with human genes or proteins) is, once you have downloaded the annotations file, to:  </p><div class="orderedlist"><ol type="1"><li>Decide which naming system you want to use.  </li><li><p>Download <a href="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/xrefs.goa" target="_top">ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/xrefs.goa</a>. This cross-reference file, when used strategically, allows you to create Cytoscape-compatible annotation files in which the canonical name is the one most meaningful to you. </p></li><li><p>Examine <span class="emphasis"><em>
+   </pre><p>The first sample contains molecular function annotation for proteins, and each protein is identified by its IPI number. IPI is the International Protein Index, which maintains cross references to the main databases for human, mouse and rat proteomes.  The second sample contains biological process annotation, and each protein is identified by its NP (<a href="/cgi-bin/moin.cgi/RefSeq" target="_top">RefSeq</a>) number.  These two naming systems, IPI and <a href="/cgi-bin/moin.cgi/RefSeq" target="_top">RefSeq</a>, are two of many that you can use for canonical names when you run Cytoscape. For budding yeast, it is much easier: the yeast community always uses standard ORF names, and so Cytoscape uses these as canonical names. For human proteins and genes, there is no such single simple standard. See section <span class="emphasis"><em>5. Building and Storing Interaction Networks</em></span> for more information. </p><p>The solution (for those working with human genes or proteins) is, once you have downloaded the annotations file, to: </p><div class="orderedlist"><ol type="1"><li>Decide which naming system you want to use. </li><li><p>Download <a href="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/xrefs.goa" target="_top">ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/xrefs.goa</a>. This cross-reference file, when used strategically, allows you to create Cytoscape-compatible annotation files in which the canonical name is the one most meaningful to you. </p></li><li><p>Examine <span class="emphasis"><em>
        <span class="strong">xrefs.goa</span>
-      </em></span> to figure out which column contains the names you wish to use.  </p></li><li>Make a very slight modification to the python script described below, and then  </li><li>Run that script, supplying both xrefs.goa and that annotation file as arguments. </li></ol></div><p>Here are a few sample lines from <span class="emphasis"><em>
+      </em></span> to figure out which column contains the names you wish to use. </p></li><li>Make a very slight modification to the python script described below, and then </li><li>Run that script, supplying both xrefs.goa and that annotation file as arguments. </li></ol></div><p>Here are a few sample lines from <span class="emphasis"><em>
      <span class="strong">xrefs.goa</span>
-    </em></span>:  </p><pre class="screen">
+    </em></span>: </p><p></p><pre class="screen">
 SP      O00115  IPI00010348             ENSP00000222219;        NP_001366;              BAA28623;AAC77366;AAC35751;AAC39852;BAB55598;AAB51172;AAH10419; 2960,DNASE2     1777,DNASE2
 SP      O00116  IPI00010349             ENSP00000324567;ENSP00000264167;        NP_003650;              CAA70591;       327,AGPS        8540,AGPS
 SP      O00124  IPI00010353             ENSP00000265616;ENSP00000322580;        NP_005662;              BAA18958;BAA18959;AAH20694;             7993,D8S2298E
 ...
 
    </pre><p>Note that line wrapping has occurred here &#8211; each line in this example starts with the letters SP. See the README file for more information (<a href="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/README" target="_top">ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/README</a>) </p><p>Finally, run the script to create your three annotation files for human proteins: </p><div class="itemizedlist"><ul type="disc"><li><p>
-      <span class="strong">bioproc.anno</span> (GO biological process annotation)  </p></li><li><p>
-      <span class="strong">molfunc.anno</span> (GO molecular function annotation)  </p></li><li><p>
-      <span class="strong">cellcomp.anno</span> (GO cellular component annotation)  </p></li></ul></div><p>using the supplied python script. It may be necessary to modify this script slightly if <a href="/cgi-bin/moin.cgi/RefSeq" target="_top">RefSeq</a> identifiers are not used as canonical names or if you are using a more recent version of Python. </p><p></p><pre class="screen">
-python parseAssignmentsToFlatFileFromGoaProject.py gene_association.goa_human xrefs.goa 
+      <span class="strong">bioproc.anno</span> (GO biological process annotation) </p></li><li><p>
+      <span class="strong">molfunc.anno</span> (GO molecular function annotation) </p></li><li><p>
+      <span class="strong">cellcomp.anno</span> (GO cellular component annotation) </p></li></ul></div><p>using the supplied python script. It may be necessary to modify this script slightly if <a href="/cgi-bin/moin.cgi/RefSeq" target="_top">RefSeq</a> identifiers are not used as canonical names or if you are using a more recent version of Python. </p><p></p><pre class="screen">
+python parseAssignmentsToFlatFileFromGoaProject.py gene_association.goa_human xrefs.goa
 
    </pre><p>(See below for Python script listing) </p><p>
-    <span class="strong">Python script examples:</span> These scripts, described above require Python version 2.2 or later. </p><p>Script 1 - parseGoTermsToFlatFile.py </p><a name="e3e17b31d289c5d992f52a0897063818bc45ab39"></a><pre class="screen">
-    <i class="lineannotation"><span class="lineannotation"># parseGoTermToFlatFile.py:  translate a GO XML ontology file into a simpler</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <i class="lineannotation"><span class="lineannotation">#  Cytoscape flat file</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <i class="lineannotation"><span class="lineannotation">#-----------------------------------------------------------------------------------</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <i class="lineannotation"><span class="lineannotation"># RCS: $Revision$   $Date$</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <i class="lineannotation"><span class="lineannotation">#-----------------------------------------------------------------------------------</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <span class="token">import</span>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">pre</tt>
-    <tt class="methodname">sys</tt>
-    <i class="lineannotation"><span class="lineannotation">#-----------------------------------------------------------------------------------</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <span class="token">def</span>
-    <tt class="methodname">flatFilePrint</tt>
-    <tt class="methodname">id</tt>
-    <tt class="methodname">name</tt>
-    <tt class="methodname">isaIDs</tt>
-    <tt class="methodname">partofIDs</tt>
-    <tt class="methodname">isa</tt>
-    <span>''</span>
-    <span class="token">if</span>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">isaIDs</tt>
-    <tt class="methodname">isa</tt>
-    <span>'[isa: '</span>
-    <span class="token">for</span>
-    <tt class="methodname">isaID</tt>
-    <span class="token">in</span>
-    <tt class="methodname">isaIDs</tt>
-    <tt class="methodname">isa</tt>
-    <tt class="methodname">isaID</tt>
-    <tt class="methodname">isa</tt>
-    <span>' '</span>
-    <tt class="methodname">isa</tt>
-    <span>']'</span>
-    <tt class="methodname">partof</tt>
-    <span>''</span>
-    <span class="token">if</span>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">partofIDs</tt>
-    <tt class="methodname">partof</tt>
-    <span>'[partof: '</span>
-    <span class="token">for</span>
-    <tt class="methodname">partofID</tt>
-    <span class="token">in</span>
-    <tt class="methodname">partofIDs</tt>
-    <tt class="methodname">partof</tt>
-    <tt class="methodname">partofID</tt>
-    <tt class="methodname">partof</tt>
-    <span>' '</span>
-    <tt class="methodname">partof</tt>
-    <span>']'</span>
-    <tt class="methodname">result</tt>
-    <span>'~np~%~/np~s = ~np~%~/np~s ~np~%~/np~s ~np~%~/np~s'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">id</tt>
-    <tt class="methodname">name</tt>
-    <tt class="methodname">isa</tt>
-    <tt class="methodname">partof</tt>
-    <tt class="methodname">result</tt>
-    <tt class="methodname">result</tt>
-    <tt class="methodname">strip</tt>
-    <span class="token">if</span>
-    <tt class="methodname">result</tt>
-    <span>'isa = isa'</span>
-    <span class="token">or</span>
-    <tt class="methodname">result</tt>
-    <span>'partof = partof'</span>
-    <span class="token">print</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">stderr</tt>
-    <span>'meaningless term: ~np~%~/np~s'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">result</tt>
-    <span class="token">else</span>
-    <span class="token">print</span>
-    <tt class="methodname">result</tt>
-    <i class="lineannotation"><span class="lineannotation">#-----------------------------------------------------------------------------------</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <span class="token">if</span>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">argv</tt>
-    <span class="token">print</span>
-    <span>'usage:  ~np~%~/np~s &lt;someFile.xml&gt;'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">argv</tt>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">exit</tt>
-    <tt class="methodname">inputFilename</tt>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">argv</tt>
-    <span class="token">print</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">stderr</tt>
-    <span>'reading ~np~%~/np~s...'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">inputFilename</tt>
-    <tt class="methodname">text</tt>
-    <tt class="methodname">open</tt>
-    <tt class="methodname">inputFilename</tt>
-    <tt class="methodname">read</tt>
-    <span class="token">print</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">stderr</tt>
-    <span>'read ~np~%~/np~d characters'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">text</tt>
-    <tt class="methodname">regex</tt>
-    <span>'&lt;go:term .*?&gt;(.*?)&lt;/go:term&gt;'</span>
-    <tt class="methodname">cregex</tt>
-    <tt class="methodname">pre</tt>
-    <tt class="methodname">compile</tt>
-    <tt class="methodname">regex</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">DOTALL</tt>
-    <i class="lineannotation"><span class="lineannotation"># . matches newlines</span></i>
-    <tt class="methodname">m</tt>
-    <tt class="methodname">pre</tt>
-    <tt class="methodname">findall</tt>
-    <tt class="methodname">cregex</tt>
-    <tt class="methodname">text</tt>
-    <span class="token">print</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">stderr</tt>
-    <span>'number of go terms: ~np~%~/np~d'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">m</tt>
-    <tt class="methodname">regex2</tt>
-    <span>'&lt;go:accession&gt;GO:(.*?)&lt;/go:accession&gt;.*?&lt;go:name&gt;(.*?)&lt;/go:name&gt;'</span>
-    <tt class="methodname">cregex2</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">compile</tt>
-    <tt class="methodname">regex2</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">DOTALL</tt>
-    <tt class="methodname">regex3</tt>
-    <span>'&lt;go:isa\s*rdf:resource="http://www.geneontology.org/go#GO:(.*?)"\s*/&gt;'</span>
-    <tt class="methodname">cregex3</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">compile</tt>
-    <tt class="methodname">regex3</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">DOTALL</tt>
-    <tt class="methodname">regex4</tt>
-    <span>'&lt;go:part-of\s*rdf:resource="http://www.geneontology.org/go#GO:(.*?)"\s*/&gt;'</span>
-    <tt class="methodname">cregex4</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">compile</tt>
-    <tt class="methodname">regex4</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">DOTALL</tt>
-    <tt class="methodname">goodElements</tt>
-    <tt class="methodname">badElements</tt>
-    <span class="token">print</span>
-    <span>'(curator=GO) (type=all)'</span>
-    <span class="token">for</span>
-    <tt class="methodname">term</tt>
-    <span class="token">in</span>
-    <tt class="methodname">m</tt>
-    <tt class="methodname">m2</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">search</tt>
-    <tt class="methodname">cregex2</tt>
-    <tt class="methodname">term</tt>
-    <span class="token">if</span>
-    <tt class="methodname">m2</tt>
-    <tt class="methodname">goodElements</tt>
-    <tt class="methodname">id</tt>
-    <tt class="methodname">m2</tt>
-    <tt class="methodname">group</tt>
-    <tt class="methodname">name</tt>
-    <tt class="methodname">m2</tt>
-    <tt class="methodname">group</tt>
-    <tt class="methodname">isaIDs</tt>
-    <tt class="methodname">m3</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">findall</tt>
-    <tt class="methodname">cregex3</tt>
-    <tt class="methodname">term</tt>
-    <span class="token">for</span>
-    <tt class="methodname">ref</tt>
-    <span class="token">in</span>
-    <tt class="methodname">m3</tt>
-    <tt class="methodname">isaIDs</tt>
-    <tt class="methodname">append</tt>
-    <tt class="methodname">ref</tt>
-    <tt class="methodname">m4</tt>
-    <tt class="methodname">re</tt>
-    <tt class="methodname">findall</tt>
-    <tt class="methodname">cregex4</tt>
-    <tt class="methodname">term</tt>
-    <tt class="methodname">partofIDs</tt>
-    <span class="token">for</span>
-    <tt class="methodname">ref</tt>
-    <span class="token">in</span>
-    <tt class="methodname">m4</tt>
-    <tt class="methodname">partofIDs</tt>
-    <tt class="methodname">append</tt>
-    <tt class="methodname">ref</tt>
-    <tt class="methodname">flatFilePrint</tt>
-    <tt class="methodname">id</tt>
-    <tt class="methodname">name</tt>
-    <tt class="methodname">isaIDs</tt>
-    <tt class="methodname">partofIDs</tt>
-    <span class="token">else</span>
-    <tt class="methodname">badElements</tt>
-    <span class="token">print</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">stderr</tt>
-    <span>'no match to m2...'</span>
-    <span class="token">print</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">stderr</tt>
-    <span>"---------------\n~np~%~/np~s\n------------------"</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">term</tt>
-    <span class="token">print</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">stderr</tt>
-    <span>'goodElements ~np~%~/np~d'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">goodElements</tt>
-    <span class="token">print</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">stderr</tt>
-    <span>'badElements ~np~%~/np~d'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">badElements</tt>
-    <i class="lineannotation"><span class="lineannotation">#--------------------------------------</span></i>
-   </pre><p>Script 1 - parseAssignmentsToFlatFileFromGoaProject.py </p><a name="5df2903078c697bb5d140c36dd251b0942a767c9"></a><pre class="screen">
-    <i class="lineannotation"><span class="lineannotation">#!/tools/bin/python</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <span class="token">import</span>
-    <tt class="methodname">sys</tt>
-    <i class="lineannotation"><span class="lineannotation">#-----------------------------------------------------------------------------------</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <span class="token">def</span>
-    <tt class="methodname">fixCanonicalName</tt>
-    <tt class="methodname">rawName</tt>
-    <i class="lineannotation"><span class="lineannotation"># for instance, trim 'YBR085W|ANC3' to 'YBR085W'</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <tt class="methodname">bar</tt>
-    <tt class="methodname">rawName</tt>
-    <tt class="methodname">find</tt>
-    <span>'|'</span>
-    <span class="token">if</span>
-    <tt class="methodname">bar</tt>
-    <span class="token">return</span>
-    <tt class="methodname">rawName</tt>
-    <span class="token">return</span>
-    <tt class="methodname">rawName</tt>
-    <tt class="methodname">bar</tt>
-    <i class="lineannotation"><span class="lineannotation">#-----------------------------------------------------------------------------------</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <span class="token">def</span>
-    <tt class="methodname">fixGoID</tt>
-    <tt class="methodname">rawID</tt>
-    <tt class="methodname">bar</tt>
-    <tt class="methodname">rawID</tt>
-    <tt class="methodname">find</tt>
-    <span>':'</span>
-    <span class="token">return</span>
-    <tt class="methodname">rawID</tt>
-    <tt class="methodname">bar</tt>
-    <i class="lineannotation"><span class="lineannotation">#-----------------------------------------------------------------------------------</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <span class="token">def</span>
-    <tt class="methodname">readGoaXrefFile</tt>
-    <tt class="methodname">filename</tt>
-    <tt class="methodname">lines</tt>
-    <tt class="methodname">open</tt>
-    <tt class="methodname">filename</tt>
-    <tt class="methodname">read</tt>
-    <tt class="methodname">split</tt>
-    <span>'\n'</span>
-    <tt class="methodname">result</tt>
-    <span class="token">for</span>
-    <tt class="methodname">line</tt>
-    <span class="token">in</span>
-    <tt class="methodname">lines</tt>
-    <span class="token">if</span>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">line</tt>
-    <span class="token">continue</span>
-    <tt class="methodname">tokens</tt>
-    <tt class="methodname">line</tt>
-    <tt class="methodname">split</tt>
-    <span>'\t'</span>
-    <tt class="methodname">ipi</tt>
-    <tt class="methodname">tokens</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">tokens</tt>
-    <tt class="methodname">semicolon</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">find</tt>
-    <span>';'</span>
-    <span class="token">if</span>
-    <tt class="methodname">semicolon</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">semicolon</tt>
-    <span class="token">if</span>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">ipi</tt>
-    <span class="token">and</span>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">result</tt>
-    <tt class="methodname">ipi</tt>
-    <tt class="methodname">np</tt>
-    <span class="token">return</span>
-    <tt class="methodname">result</tt>
-    <i class="lineannotation"><span class="lineannotation">#-----------------------------------------------------------------------------------</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <span class="token">if</span>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">argv</tt>
-    <span class="token">print</span>
-    <span>'error!  parse   &lt;gene_associations file from GO&gt; &lt;goa xrefs file&gt; '</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">exit</tt>
-    <tt class="methodname">associationFilename</tt>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">argv</tt>
-    <tt class="methodname">xrefsFilename</tt>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">argv</tt>
-    <tt class="methodname">species</tt>
-    <span>'Homo sapiens'</span>
-    <tt class="methodname">ipiToNPHash</tt>
-    <tt class="methodname">readGoaXrefFile</tt>
-    <tt class="methodname">xrefsFilename</tt>
-    <tt class="methodname">tester</tt>
-    <span>'IPI00099416'</span>
-    <span class="token">print</span>
-    <span>'hash size: ~np~%~/np~d'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">ipiToNPHash</tt>
-    <span class="token">print</span>
-    <span>'test map: ~np~%~/np~s -&gt; NP_054861: ~np~%~/np~s '</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">tester</tt>
-    <tt class="methodname">ipiToNPHash</tt>
-    <tt class="methodname">tester</tt>
-    <tt class="methodname">bioproc</tt>
-    <tt class="methodname">open</tt>
-    <span>'bioproc.txt'</span>
-    <span>'w'</span>
-    <tt class="methodname">molfunc</tt>
-    <tt class="methodname">open</tt>
-    <span>'molfunc.txt'</span>
-    <span>'w'</span>
-    <tt class="methodname">cellcomp</tt>
-    <tt class="methodname">open</tt>
-    <span>'cellcomp.txt'</span>
-    <span>'w'</span>
-    <tt class="methodname">bioproc</tt>
-    <tt class="methodname">write</tt>
-    <span>'(species=~np~%~/np~s) (type=Biological Process) (curator=GO)\n'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">species</tt>
-    <tt class="methodname">molfunc</tt>
-    <tt class="methodname">write</tt>
-    <span>'(species=~np~%~/np~s) (type=Molecular Function) (curator=GO)\n'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">species</tt>
-    <tt class="methodname">cellcomp</tt>
-    <tt class="methodname">write</tt>
-    <span>'(species=~np~%~/np~s) (type=Cellular Component) (curator=GO)\n'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">species</tt>
-    <tt class="methodname">lines</tt>
-    <tt class="methodname">open</tt>
-    <tt class="methodname">associationFilename</tt>
-    <tt class="methodname">read</tt>
-    <tt class="methodname">split</tt>
-    <span>'\n'</span>
-    <tt class="methodname">sys</tt>
-    <tt class="methodname">stderr</tt>
-    <tt class="methodname">write</tt>
-    <span>'found ~np~%~/np~d lines\n'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">lines</tt>
-    <span class="token">for</span>
-    <tt class="methodname">line</tt>
-    <span class="token">in</span>
-    <tt class="methodname">lines</tt>
-    <span class="token">if</span>
-    <tt class="methodname">line</tt>
-    <tt class="methodname">find</tt>
-    <span>'!'</span>
-    <span class="token">or</span>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">line</tt>
-    <span class="token">continue</span>
-    <tt class="methodname">tokens</tt>
-    <tt class="methodname">line</tt>
-    <tt class="methodname">split</tt>
-    <span>'\t'</span>
-    <tt class="methodname">goOntology</tt>
-    <tt class="methodname">tokens</tt>
-    <tt class="methodname">goIDraw</tt>
-    <tt class="methodname">tokens</tt>
-    <tt class="methodname">goID</tt>
-    <tt class="methodname">goIDraw</tt>
-    <tt class="methodname">split</tt>
-    <span>':'</span>
-    <tt class="methodname">ipiName</tt>
-    <tt class="methodname">fixCanonicalName</tt>
-    <tt class="methodname">tokens</tt>
-    <span class="token">if</span>
-    <tt class="methodname">len</tt>
-    <tt class="methodname">ipiName</tt>
-    <span class="token">continue</span>
-    <span class="token">if</span>
-    <span class="token">not</span>
-    <tt class="methodname">ipiToNPHash</tt>
-    <tt class="methodname">has_key</tt>
-    <tt class="methodname">ipiName</tt>
-    <span class="token">continue</span>
-    <tt class="methodname">refseqName</tt>
-    <tt class="methodname">ipiToNPHash</tt>
-    <tt class="methodname">ipiName</tt>
-    <tt class="methodname">printName</tt>
-    <tt class="methodname">refseqName</tt>
-    <i class="lineannotation"><span class="lineannotation">#printName = ipiName</span></i>
-    <i class="lineannotation"><span class="lineannotation"></span></i>
-    <span class="token">if</span>
-    <tt class="methodname">ipiName</tt>
-    <tt class="methodname">tester</tt>
-    <span class="token">print</span>
-    <span>'~np~%~/np~s (~np~%~/np~s) has go term ~np~%~/np~s'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">tester</tt>
-    <tt class="methodname">printName</tt>
-    <tt class="methodname">goID</tt>
-    <span class="token">if</span>
-    <tt class="methodname">goOntology</tt>
-    <span>'C'</span>
-    <tt class="methodname">cellcomp</tt>
-    <tt class="methodname">write</tt>
-    <span>'~np~%~/np~s = ~np~%~/np~s\n'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">printName</tt>
-    <tt class="methodname">goID</tt>
-    <span class="token">elif</span>
-    <tt class="methodname">goOntology</tt>
-    <span>'P'</span>
-    <tt class="methodname">bioproc</tt>
-    <tt class="methodname">write</tt>
-    <span>'~np~%~/np~s = ~np~%~/np~s\n'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">printName</tt>
-    <tt class="methodname">goID</tt>
-    <span class="token">elif</span>
-    <tt class="methodname">goOntology</tt>
-    <span>'F'</span>
-    <tt class="methodname">molfunc</tt>
-    <tt class="methodname">write</tt>
-    <span>'~np~%~/np~s = ~np~%~/np~s\n'</span>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">np</tt>
-    <tt class="methodname">printName</tt>
-    <tt class="methodname">goID</tt>
-    <i class="lineannotation"><span class="lineannotation">#-----------------------------------------------------------------------------------</span></i>
+    <span class="strong">Python script examples:</span> These scripts, described above require Python version 2.2 or later. </p><p>Script 1 - parseGoTermsToFlatFile.py </p><p></p><pre class="screen">
+
+# parseGoTermToFlatFile.py:  translate a GO XML ontology file into a simpler
+#  Cytoscape flat file
+#-----------------------------------------------------------------------------------
+# RCS: $Revision$   $Date$
+#-----------------------------------------------------------------------------------
+import re, pre, sys
+#-----------------------------------------------------------------------------------
+def flatFilePrint (id, name, isaIDs, partofIDs):
+  isa = ''
+  if (len (isaIDs) &gt; 0):
+    isa = '[isa: '
+    for isaID in isaIDs:
+      isa += isaID
+      isa += ' '
+    isa += ']'
+  partof = ''
+  if (len (partofIDs) &gt; 0):
+    partof = '[partof: '
+    for partofID in partofIDs:
+      partof += partofID
+      partof += ' '
+    partof += ']'
+  result = '~np~%~/np~s = ~np~%~/np~s ~np~%~/np~s ~np~%~/np~s' ~np~%~/np~ (id, name, isa, partof)
+  result = result.strip ()
+  if (result == 'isa = isa' or result == 'partof = partof'):
+    print &gt;&gt; sys.stderr, 'meaningless term: ~np~%~/np~s' ~np~%~/np~ result
+  else:
+    print result
+#-----------------------------------------------------------------------------------
+if (len (sys.argv) != 2):
+  print 'usage:  ~np~%~/np~s &lt;someFile.xml&gt;' ~np~%~/np~ sys.argv [0]
+  sys.exit ();
+inputFilename = sys.argv [1];
+print &gt;&gt; sys.stderr,  'reading ~np~%~/np~s...' ~np~%~/np~ inputFilename
+text = open (inputFilename).read ()
+print &gt;&gt; sys.stderr,  'read ~np~%~/np~d characters' ~np~%~/np~ len (text)
+regex = '&lt;go:term .*?&gt;(.*?)&lt;/go:term&gt;';
+cregex = pre.compile (regex, re.DOTALL)   # . matches newlines
+m = pre.findall (cregex, text)
+print &gt;&gt; sys.stderr, 'number of go terms: ~np~%~/np~d' ~np~%~/np~ len (m)
+regex2 = '&lt;go:accession&gt;GO:(.*?)&lt;/go:accession&gt;.*?&lt;go:name&gt;(.*?)&lt;/go:name&gt;'
+cregex2 = re.compile (regex2, re.DOTALL)
+regex3 = '&lt;go:isa\s*rdf:resource="http://www.geneontology.org/go#GO:(.*?)"\s*/&gt;'
+cregex3 = re.compile (regex3, re.DOTALL)
+regex4 = '&lt;go:part-of\s*rdf:resource="http://www.geneontology.org/go#GO:(.*?)"\s*/&gt;'
+cregex4 = re.compile (regex4, re.DOTALL)
+goodElements = 0
+badElements = 0
+print '(curator=GO) (type=all)'
+for term in m:
+  m2 = re.search (cregex2, term)
+  if (m2):
+    goodElements += 1;
+    id = m2.group (1)
+    name = m2.group (2)
+    isaIDs = []
+    m3 = re.findall (cregex3, term);
+    for ref in m3:
+      isaIDs.append (ref)
+    m4 = re.findall (cregex4, term);
+    partofIDs = []
+    for ref in m4:
+      partofIDs.append (ref)
+    flatFilePrint (id, name, isaIDs, partofIDs)
+  else:
+    badElements += 1;
+    print &gt;&gt; sys.stderr, 'no match to m2...'
+    print &gt;&gt; sys.stderr, "---------------\n~np~%~/np~s\n------------------" ~np~%~/np~ term
+print &gt;&gt; sys.stderr,  'goodElements ~np~%~/np~d' ~np~%~/np~ goodElements
+print &gt;&gt; sys.stderr, 'badElements ~np~%~/np~d' ~np~%~/np~ badElements
+#--------------------------------------
+
+   </pre><p>Script 1 - parseAssignmentsToFlatFileFromGoaProject.py </p><p></p><pre class="screen">
+
+import sys
+#-----------------------------------------------------------------------------------
+def fixCanonicalName (rawName):
+# for instance, trim 'YBR085W|ANC3' to 'YBR085W'
+  bar = rawName.find ('|')
+  if (bar &lt; 0):
+    return rawName
+  return rawName [:bar]
+#-----------------------------------------------------------------------------------
+def fixGoID (rawID):
+  bar = rawID.find (':') + 1
+  return rawID [bar:]
+#-----------------------------------------------------------------------------------
+def readGoaXrefFile (filename):
+  lines = open (filename).read().split ('\n')
+  result = {}
+  for line in lines:
+    if (len (line) &lt; 10):
+      continue
+    tokens = line.split ('\t')
+    ipi = tokens [2]
+    np = tokens [5]
+    semicolon = np.find (';')
+    if (semicolon &gt;= 0):
+      np = np [:semicolon]
+    if (len (ipi) &gt; 0 and len (np) &gt; 0):
+      result [ipi] = np
+  return result
+#-----------------------------------------------------------------------------------
+if (len (sys.argv) != 3):
+  print 'error!  parse   &lt;gene_associations file from GO&gt; &lt;goa xrefs file&gt; '
+  sys.exit ()
+associationFilename = sys.argv [1];
+xrefsFilename = sys.argv [2]
+species = 'Homo sapiens'
+ipiToNPHash = readGoaXrefFile (xrefsFilename)
+tester = 'IPI00099416'
+print 'hash size: ~np~%~/np~d' ~np~%~/np~ len (ipiToNPHash)
+print 'test map: ~np~%~/np~s -&gt; NP_054861: ~np~%~/np~s ' ~np~%~/np~ (tester, ipiToNPHash [tester])
+bioproc = open ('bioproc.txt', 'w')
+molfunc = open ('molfunc.txt', 'w')
+cellcomp = open ('cellcomp.txt', 'w')
+bioproc.write ('(species=~np~%~/np~s) (type=Biological Process) (curator=GO)\n' ~np~%~/np~ species)
+molfunc.write ('(species=~np~%~/np~s) (type=Molecular Function) (curator=GO)\n' ~np~%~/np~ species);
+cellcomp.write ('(species=~np~%~/np~s) (type=Cellular Component) (curator=GO)\n' ~np~%~/np~ species);
+lines=open(associationFilename).read().split('\n')
+sys.stderr.write ('found ~np~%~/np~d lines\n' ~np~%~/np~ len (lines))
+
+for line in lines:
+  if (line.find ('!') == 0 or len (line) &lt; 2):
+    continue
+  tokens = line.split ('\t')
+  goOntology = tokens [8]
+  goIDraw = tokens [4]
+  goID = goIDraw.split (':')[1]
+  ipiName = fixCanonicalName (tokens [10])
+  if (len (ipiName) &lt; 1):
+    continue
+
+
+  if (not ipiToNPHash.has_key (ipiName)):
+    continue
+  refseqName = ipiToNPHash [ipiName]
+  printName = refseqName
+  #printName = ipiName
+  if (ipiName == tester):
+    print '~np~%~/np~s (~np~%~/np~s) has go term ~np~%~/np~s' ~np~%~/np~ (tester, printName, goID)
+  if (goOntology == 'C'):
+    cellcomp.write ('~np~%~/np~s = ~np~%~/np~s\n' ~np~%~/np~ (printName, goID))
+  elif (goOntology == 'P'):
+    bioproc.write ('~np~%~/np~s = ~np~%~/np~s\n' ~np~%~/np~ (printName, goID))
+  elif (goOntology == 'F'):
+    molfunc.write ('~np~%~/np~s = ~np~%~/np~s\n' ~np~%~/np~ (printName, goID))
+#-----------------------------------------------------------------------------------
+
    </pre><p></p></div></div></body></html>
