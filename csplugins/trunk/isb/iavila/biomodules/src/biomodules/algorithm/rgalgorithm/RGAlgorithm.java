@@ -493,34 +493,6 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
       
       };
     
-    // OLD CODE
-    
-    //int numProts = 
-    //MoleculeTypeNodeAttribute.getNumMTypeNodes(this.biomodulesManager.getGraph(),
-    //                                         getNodeAttributes(),
-    //                                         "protein");
-    
-    //if(numProts > 0){
-    // if there is at least one node that has a moleculeType attribute equal to protein, 
-    // then count proteins for clusters
-    //  this.minProtsCCondition = 
-    //  new EisenClustering.ClusterCondition(){
-    //    public boolean isCluster(EisenClustering.EisenClusterNode ecNode){
-    //      return isBiomodule(ecNode,getMinNumProts(),getNodeAttributes());
-    //    }//isCluster
-    //  };
-    //}else{
-    
-    // FOR NOW, RETURN THIS:
-    //final RGAlgorithmData data = getClientData(network);
-    //return new EisenClustering.ClusterCondition(){
-    
-    //  public boolean isCluster(EisenClustering.EisenClusterNode ecNode){
-    //    return meetsBiomoduleCondition(data,ecNode);
-    //  }// isCluster
-    //};
-    //}
-    
   }//createClusterCondition
   
   /**

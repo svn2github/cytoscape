@@ -130,6 +130,7 @@ public class MetaNodeUtils {
 	        childrenArray.add(node);
 	    }//for j
 	    MetaNodeAttributesHandler attsHandler = MetaNodeUtils.abstractModeler.getNetworkAttributesHandler(network);
+	    //System.err.println("-------- MetaNodeUtils.createMetaNode, attsHandler.getNodeLabelAttribute = " + attsHandler.getNodeLabelAttribute());
 	    CyNode metaNode = MetaNodeFactory.createMetaNode(network,childrenArray,attsHandler);
         
 	    return metaNode;

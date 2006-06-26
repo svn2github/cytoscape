@@ -46,7 +46,7 @@ import java.util.*;
 
 public class GPMetaNodeFactory {
 
-	protected static final boolean DEBUG = true;
+	protected static final boolean DEBUG = false;
 
 	/**
 	 * Specifies whether or not this class should assign a name to newly created
@@ -196,11 +196,14 @@ public class GPMetaNodeFactory {
 		rootNodes.add(new Integer(metaNode.getRootGraphIndex()));
 	    netAttributes.setAttributeList(cy_net.getIdentifier(),MetaNodeFactory.METANODES_IN_NETWORK,rootNodes);
         if (DEBUG) {
-            System.err.println("GPMetaNodeFactory: Added metanode ID "+metaNode.getRootGraphIndex()+" to "+cy_net.getIdentifier());
+            System.err.println("GPMetaNodeFactory: Added metanode ID "+ metaNode.getRootGraphIndex()+" to "+cy_net.getIdentifier());
         }
-
+        
+        //System.err.println("----------- MetaNodeFactory.createMetanode getAssignDefaultNames() == " + getAssignDefaultNames());
+        
 		// Assign a default name if necessary
 		if (getAssignDefaultNames()) {
+			//System.err.println("Assigning name to metaNode " + metaNode.getIdentifier() + "...");
 			if (attributes_handler.assignName(cy_net,metaNode) == null) {
 				// Failed to assign a default name, but the node has been
 				// created, so just

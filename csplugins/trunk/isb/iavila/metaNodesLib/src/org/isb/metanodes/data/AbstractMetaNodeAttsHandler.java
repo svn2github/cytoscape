@@ -63,20 +63,25 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    * @return the name, or null if something went wrong
    */
   public String assignName (CyNetwork cy_net, CyNode node){
-    // Check arguments
+    
+	 // System.err.println("------- AbstractMetaNodeAttsHandler.assignName, node.getIdentifier() =  " + node.getIdentifier());
+	  // Check arguments
     if(cy_net == null || node == null){
       return null;
     }
     int metaNodeRindex = node.getRootGraphIndex();
     String uniqueName = createMetaNodeUI(metaNodeRindex);
     String alias = createMetaNodeAlias(cy_net,metaNodeRindex);
+    // System.err.println(" !!!!!!!!!!!!! Setting identifier of metanode to " + uniqueName);
+    // I don't think we should set the identifier after creation...
     node.setIdentifier(uniqueName);
+    
     Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), getNodeLabelAttribute(), alias);
     
-    if(DEBUG){
-      System.err.println("meta-node " + metaNodeRindex + " canonical name = " + uniqueName 
-                        + " common name = " + alias);
-    }
+    //if(DEBUG){
+      //System.err.println("----------------------------- meta-node " + metaNodeRindex + " unique name = " + uniqueName 
+      //                  + " label name = " + alias);
+    //}
     return uniqueName;
   }//assignName
 
@@ -88,7 +93,7 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   }//createMetaNodeUI
 
   /**
-   * @return the alias (common-name) for the given meta-node
+   * @return the alias for the given meta-node
    */
   protected String createMetaNodeAlias (CyNetwork cy_net, int metanode_root_index){
   	int [] children = cy_net.getRootGraph().getNodeMetaChildIndicesArray(metanode_root_index);
@@ -97,7 +102,14 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   	}
     SortedSet sortedNodes = IntraDegreeComparator.sortNodes(cy_net, children);
     CyNode highestNode = (CyNode)sortedNodes.first();
-    return highestNode.getIdentifier();
+    String alias = Cytoscape.getNodeAttributes().getStringAttribute(highestNode.getIdentifier(), getNodeLabelAttribute());
+    if(alias == null){
+    		//System.out.println("------------------------------------------ createMteaNodeAlias returning " + highestNode.getIdentifier());	
+    		return highestNode.getIdentifier();
+    }else{
+    		//System.out.println("------------------------------------ createMetaNodeAlias returning " + alias);
+    		return alias;
+    }
   }//createMetaNodeAlias
   
   /**

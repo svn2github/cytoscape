@@ -812,10 +812,10 @@ public class AbstractMetaNodeModeler {
 	                }
 	                
 	                // Identify the node on the other end of the edge
+	                boolean metaNodeIsSource = false;
 	                CyNode otherNode = null;
 	                CyNode sourceNode = (CyNode) childEdge.getSource();
 	                CyNode targetNode = (CyNode) childEdge.getTarget();
-	                boolean metaNodeIsSource = false;
 	                if (targetNode.getRootGraphIndex() == childNodeRindex) {
 	                    otherNode = sourceNode;
 	                } else if (sourceNode.getRootGraphIndex() == childNodeRindex) {
@@ -888,7 +888,7 @@ public class AbstractMetaNodeModeler {
                 // TEST CODE
                 if(otherNode == node){
                 	// Ignore this edge
-                	System.err.println("This is a childOf edge, continue.");
+                	//System.err.println("This is a childOf edge, continue.");
                 	// Remember that this edge has been processed
                 	processedEdges.add(childEdge);
                 	this.metaNodeToProcessedEdges.put(node, processedEdges);  
@@ -1415,7 +1415,7 @@ public class AbstractMetaNodeModeler {
         String edge_name = node_1.getIdentifier() + " ("
                 + interactionType + ") " + node_2.getIdentifier();
         edge.setIdentifier(edge_name);
-        System.err.println(" ----------- Created edge : " + edge_name);
+        //System.err.println(" ----------- Created edge : " + edge_name);
         	
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
         edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,

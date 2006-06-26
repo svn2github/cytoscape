@@ -117,7 +117,8 @@ public class RGAlgorithmGui extends JFrame {
 	protected JComboBox edgesFiltersBox;
 	
 	protected JComboBox nodeAttributesBox;
-
+	
+	
 	/**
 	 * Constructor, calls <code>create()</code>.
 	 * 
@@ -159,7 +160,7 @@ public class RGAlgorithmGui extends JFrame {
 	public String getSelectedNodeLabelAttribute (){
 		return (String)this.nodeAttributesBox.getSelectedItem();
 	}
-	
+		
 	/**
 	 * Creates the dialog.
 	 */
@@ -268,33 +269,7 @@ public class RGAlgorithmGui extends JFrame {
 
 		filtersPanel.add(labelsPanel);
 		filtersPanel.add(boxesPanel);
-
-		// ------------------------------- OLD CODE
-		// -------------------------------//
-		// filtersButton.addActionListener(
-		// new AbstractAction() {
-		// public void actionPerformed(ActionEvent e) {
-		// if(fqiltersDialog == null){
-		// filtersDialog = new CsFilter(Cytoscape.getDesktop());
-		// }
-		// filtersDialog.show();
-		// }
-		// TEST: Print All Threads !
-		// int numThreads = Thread.activeCount();
-		// System.out.println("num threads = " + numThreads);
-		// Thread[] threads = new Thread[numThreads];
-		// int returnedThreads = Thread.enumerate(threads);
-		// for (int i = 0; i < threads.length; i++) {
-		// if(threads[i] != null){
-		// System.out.println(threads[i] + " is alive = " + threads[i].isAlive());
-		// }
-		// }//for i
-		// }//actionPerformed
-		// }//AbstractAction
-		// );
-		// filtersPanel.add(filtersButton);
-		// ---------------------------- END OF OLD CODE
-		// ----------------------------//
+		
 		paramsPanel.add(filtersPanel);
 		// --------- Plots ---------- //
 		JPanel optionsPanel = new JPanel();
@@ -435,7 +410,6 @@ public class RGAlgorithmGui extends JFrame {
 	 */
 	protected JPanel createVisualizationPanel() {
 		JPanel visPanel = new JPanel();
-		//visPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		visPanel.setLayout(new BorderLayout());
 		
 		JPanel northPanel = new JPanel();
@@ -460,6 +434,13 @@ public class RGAlgorithmGui extends JFrame {
 		
 		this.nodeAttributesBox = new JComboBox();
 		updateNodeAttributesBox();
+		this.nodeAttributesBox.addActionListener(
+				new AbstractAction (){
+					public void actionPerformed (ActionEvent e){
+						updateNodeAttributesBox(); // there may be new attributes loaded
+					}
+				}
+		);
 		nodeLabelPanel.add(label);
 		nodeLabelPanel.add(Box.createHorizontalStrut(3));
 		nodeLabelPanel.add(this.nodeAttributesBox);
@@ -489,6 +470,7 @@ public class RGAlgorithmGui extends JFrame {
 		
 		ComboBoxModel model = new DefaultComboBoxModel(stringAtts);
 		this.nodeAttributesBox.setModel(model);
+		this.nodeAttributesBox.updateUI(); // not sure if this works
 	}
 	
 	
@@ -539,6 +521,8 @@ public class RGAlgorithmGui extends JFrame {
 		this.moduleAnnotsDialog = new ModuleAnnotationsDialog();
 		this.moduleAnnotsDialog.setActionsForTable(annotsEdgesAction, null,
 				null);
+		final String nodeLabelAttribute = getSelectedNodeLabelAttribute();
+		this.moduleAnnotsDialog.setNodeLabelAttribute(nodeLabelAttribute);
 		annotsButton.addActionListener(new AbstractAction() {
 
 			public void actionPerformed(ActionEvent event) {
@@ -563,19 +547,17 @@ public class RGAlgorithmGui extends JFrame {
 					moduleMembers[i] = new String[moduleNodes.length];
 					metaNodes[i] = Cytoscape.getCyNode((String) keyIDs[i]);
 					moduleNames[i] = nodeAtts.getStringAttribute(metaNodes[i]
-							.getIdentifier(), Semantics.COMMON_NAME);
-					//(String)Cytoscape.getNodeAttributeValue(metaNodes[i],Semantics.COMMON_NAME);
+							.getIdentifier(), nodeLabelAttribute);
 					for (int j = 0; j < moduleNodes.length; j++) {
-						// TODO: CANONICAL_NAME is now equal to getIdentifier() so we may not need to do this.
 						moduleMembers[i][j] = nodeAtts.getStringAttribute(
 								moduleNodes[j].getIdentifier(),
-								Semantics.CANONICAL_NAME);
-						//(String)Cytoscape.getNodeAttributeValue(moduleNodes[j],Semantics.CANONICAL_NAME);
+								nodeLabelAttribute);
 					}// for j
 				}// for i
 
 				RGAlgorithmGui.this.moduleAnnotsDialog.setCalculatorParameters(
 						metaNodes, moduleMembers, false);
+				RGAlgorithmGui.this.moduleAnnotsDialog.setModuleDisplayNames(moduleNames);
 				RGAlgorithmGui.this.moduleAnnotsDialog.pack();
 				RGAlgorithmGui.this.moduleAnnotsDialog
 						.setLocationRelativeTo(RGAlgorithmGui.this);
@@ -640,7 +622,9 @@ public class RGAlgorithmGui extends JFrame {
 		
 		// Calculate the biomodules
 		String nodeLabelAttribute = getSelectedNodeLabelAttribute();
+		//System.err.println("Setting node label attribute in ViewUtils.attributesHandler to " + nodeLabelAttribute);
 		ViewUtils.attributesHandler.setNodeLabelAttribute(nodeLabelAttribute);
+		//System.err.println("attributesHandler.getNodeLabelAttribute() = "+ViewUtils.attributesHandler.getNodeLabelAttribute());
 		
 		HierarchicalClustering hClustering = this.algorithmData
 				.getHierarchicalClustering();
@@ -680,7 +664,7 @@ public class RGAlgorithmGui extends JFrame {
 		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
 
 		if (this.abstractRbutton.isSelected() && netView != null) {
-			System.out.println("this.abstractRbutton.isSelected () = true and netView exists so create meta-nodes");
+			//System.out.println("this.abstractRbutton.isSelected () = true and netView exists so create meta-nodes");
 			// Remove existent meta-nodes:
 			java.util.List bioNodes = MetaNodeUtils.getAllMetaNodes(this.algorithmData.getNetwork());
 			if(bioNodes == null){
@@ -708,7 +692,7 @@ public class RGAlgorithmGui extends JFrame {
 			}// for i
 			System.out.println("Done creating meta-nodes.");
 		} else {
-			System.out.println("there is no view or the user does not want to abstract meta-nodes. creating names for biomodules...");
+			//System.out.println("there is no view or the user does not want to abstract meta-nodes. creating names for biomodules...");
 			// The Biomodules need to have an identifier, so lets make it the member
 			// with the highest intra-degree
 			CyNetwork network = this.algorithmData.getNetwork();
@@ -720,8 +704,7 @@ public class RGAlgorithmGui extends JFrame {
 				SortedSet ss = IntraDegreeComparator.sortNodes(network,
 						memberRindices);
 				CyNode highestNode = (CyNode) ss.first();
-				String alias = nodeAtts.getStringAttribute(highestNode
-						.getIdentifier(), nodeLabelAttribute); //(String)network.getNodeAttributeValue(highestNode,Semantics.COMMON_NAME);
+				String alias = nodeAtts.getStringAttribute(highestNode.getIdentifier(), nodeLabelAttribute);
 				if (alias == null) {
 					alias = highestNode.getIdentifier();
 				}
@@ -1068,8 +1051,7 @@ public void actionPerformed (ActionEvent event){
   		  String [] nodeNames = new String[orderedNodes.size()];
           for(int i = 0; i < nodeNames.length; i++){
         	  	CyNode node = (CyNode)orderedNodes.get(i);
-        	  	nodeNames[i] = 
-        	  		nodeAtts.getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
+        	  	nodeNames[i] = node.getIdentifier();
         	  }
           int [][] apsp = RGAlgorithmGui.this.algorithmData.getAPSP();
           if(apsp == null || apsp.length == 0){
@@ -1102,7 +1084,7 @@ public void actionPerformed (ActionEvent event){
           String [] nodeNames = new String[orderedNodes.size()];
           for(int i = 0; i < nodeNames.length; i++){
         	  	CyNode node = (CyNode)orderedNodes.get(i);
-        	  	nodeNames[i] = nodeAtts.getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME); //(String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+        	  	nodeNames[i] = node.getIdentifier();
           }
           double [][] distances = RGAlgorithmGui.this.algorithmData.getManhattanDistances();
           if(distances == null || distances.length == 0){
@@ -1167,10 +1149,8 @@ public void actionPerformed (ActionEvent event){
 					String canonicals = "";
 					String commons = "";
 					for (int j = 0; j < biomoduleMembers.length; j++) {
-						String can = nodeAtts.getStringAttribute(biomoduleMembers[j].getIdentifier(), Semantics.CANONICAL_NAME); //(String) net.getNodeAttributeValue(
-								//biomoduleMembers[j], Semantics.CANONICAL_NAME);
-						String com = nodeAtts.getStringAttribute(biomoduleMembers[j].getIdentifier(), Semantics.COMMON_NAME); //(String) net.getNodeAttributeValue(
-								//biomoduleMembers[j], Semantics.COMMON_NAME);
+						String can = biomoduleMembers[j].getIdentifier();
+						String com = nodeAtts.getStringAttribute(biomoduleMembers[j].getIdentifier(), Semantics.COMMON_NAME);
 						if (j == 0) {
 							canonicals = can;
 							commons = com;
