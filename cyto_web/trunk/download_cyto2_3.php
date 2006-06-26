@@ -8,25 +8,10 @@
 		options:
 		</p>
 		<p>
-		<h4>Option 1:  All Platforms:  Download a .tar.gz or .zip distribution file
-		</H4>
-		</p>
-		<p>
-		</p>
+		<h4>Option 1:  One Click Install </h4>
 		<ul>
-			<li>
-				<a href='<?= $cyto2_3_gz_east ?>' >
-					Unix / Linux / Mac OS X
-				</a>
-				-
-				<a href='<?= $cyto2_3_zip_east ?>'>
-					Windows
-				</a>
-			</li>
+			<li><a href='<?= $cyto2_3_install_anywhere ?>' >Windows / Linux / Unix</A></li>
 		</ul>
-		</p>
-
-		<p>
 		</p>
 		<h4>
 		Option 2:  Mac OS X Release
@@ -36,10 +21,30 @@
 			<li><a href='<?= $cyto2_3_mac_east ?>' >Mac OS X Release</A></li>
 		</ul>
 		</p>
+		<h4>Option 3:  All Platforms:  Download a .tar.gz or .zip distribution file
+		</H4>
+		</p>
+		<p>
+		</p>
+		<ul>
+			<li>
+				<a href='<?= $cyto2_3_zip_east ?>'>
+					Windows / Mac OS X 
+				</a>
+				-
+				<a href='<?= $cyto2_3_gz_east ?>' >
+					Linux / Unix 
+				</a>
+			</li>
+		</ul>
+		</p>
+
+		<p>
+		</p>
 
 		<p>
 		<p>
-		<h4>Option 3:  All Platforms:  Download the Complete Source Code for Cytoscape
+		<h4>Option 4:  All Platforms:  Download the Complete Source Code for Cytoscape
 		</h4>
     		<UL>
 		    <li><a href='<?= $cyto2_3_source_east ?>'>Cytoscape source</a></li>

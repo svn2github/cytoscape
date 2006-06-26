@@ -24,7 +24,6 @@
 	platform for visualizing molecular interaction networks and integrating these
 	interactions with gene expression profiles and other state data.
 </p>
-<p>Note: This is the last release for Java 1.4.x series.  From 2.4, Cytoscape requirs <a href="http://java.sun.com/j2se/1.5.0/" target="_blank">Java 1.5</a> or <a href="http://java.sun.com/javase/6/" target="_blank">later</a>.</p>
 <P>
 	The 2.3 release of Cytoscape includes:<br>
 	<ul>
@@ -49,9 +48,8 @@
 	<td>
 		<big><b>High-performance rendering engine</b></big>
 		<p>
-			New rendering engine enables users to draw huge networks in real time.  This enables users to draw and manipulate 
-			large networks like interactome for a species.  In modern workstations, Cytoscape can draw netwroks with 100,000+
-			 nodes and edges in real time.
+			New rendering engine enables users to draw, navigate, and manipulate huge networks in real time.   
+			On modern workstations Cytoscape can render networks with 100,000+ nodes and edges.
 		</p>
 	</td>
 </tr>
@@ -74,8 +72,8 @@
 				<li>Network files in XGMML format - Networks and attributes</li>
 			</ul>
 
-			By this new function, users can save everything in the workspace, including networks, attributes, visual styles, 
-			properties, relationships between networks (shown in the Network Panel), into a single cys file.
+			With session files users can save everything in the workspace, including networks, attributes, visual styles, 
+			properties, and relationships between networks (shown in the Network Panel) into a single .cys file.
 		</p>
 	</td>
 </tr>
@@ -101,7 +99,7 @@
 	<td>
 		<big><b>An improved command line interface</b></big>
 		<p>
-			New command line options are supported.
+			The new command line simplifies the option specification.  	
 		</p>
 	</td>
 </tr>
@@ -113,7 +111,7 @@
 	<td>
 		<big><b>The GraphMerge plugin included by default</b></big>
 		<p>
-			<a href="plugins2.php">GraphMerge plugin</a> is now in the core plugin.
+			<a href="plugins2.php">GraphMerge plugin</a> is now a core plugin.
 		</p>
 	</td>
 </tr>
@@ -202,7 +200,7 @@
 	<td>
 		<big><b>Ability to rename networks</b></big>
 		<p>
-			Finally, network names can be modified from the Network Panel.
+			Network names can be modified from the Network Panel.
 		</p>
 	</td>
 </tr>
@@ -215,7 +213,7 @@
 	<td>
 		<big><b>Re-organized menu system</b></big>
 		<p>
-			Menu items are re-organized based on their functionality.
+			Menu items have been re-organized to better match common applications like Firefox and Word. 
 		</p>
 	</td>
 </tr>
@@ -226,17 +224,17 @@
 <table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%">
 	<tr>
 		<td>
-			<big><b>Core Plug-Ins:</b></big>
+			<big><b>Core Plugins:</b></big>
 			<p>
-				Seven "core" plug-ins are bundled and distributed with Cytoscape 2.3. These
-				plug-ins offer fundamental operations of value to many users,
+				Seven "core" plugins are bundled and distributed with Cytoscape 2.3. These
+				plugins offer fundamental operations of value to many users,
 				and are included in the basic distribution.
 			</p>
 			<center>
 			<table style="margin-left: 30;margin-right:30;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%">
     		<tr>
     			<td>
-    				<p><b>Plug-In Name</b></p>
+    				<p><b>Plugin Name</b></p>
     			</td>
     			<td width="172">
     				<p><b>JAR file</b></p>
@@ -329,7 +327,7 @@
       </td>
       <td width="281">
       <p>
-					Provides hyperlink menuitems for the right-click.
+					Provides a right-click menu of hyper links for nodes and edges.
 				</p>
       </td>
     </tr>
@@ -342,7 +340,7 @@
       </td>
       <td width="281">
       <p>
-					Provides ability to merge two networks into one.
+					Provides ability to merge networks and perform other set operations on networks.
 				</p>
       </td>
     </tr>
@@ -367,7 +365,7 @@
       <td width="281">
       <p>
 					Provides layout algorithms shown under menu items <i>JGraph Layouts</i> and <i>Cytoscape Layouts</i>.  
-					Codes for these algorithms are all open source.
+					The code for these algorithms is all open source.
 				</p>
       </td>
     </tr>

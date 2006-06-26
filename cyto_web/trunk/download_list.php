@@ -40,6 +40,9 @@
 		    -->
 		    
 		    <LI>
+					<A HREF="download.php?file=cyto2_3">Download Cytoscape 2.3</A>
+					[Binaries and/or Source Files]
+		    <LI>
 					<A HREF="download.php?file=cyto2_2">Download Cytoscape 2.2</A>
 					[Binaries and/or Source Files]
 			</LI>
