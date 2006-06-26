@@ -41,7 +41,10 @@
 		$title = "Download Cytoscape 2.0";
 	} else if ($file == "cyto1") {
 		$title = "Download Cytoscape 1.1";
-	}
+	} else  {
+		$file = "cyto2_3"; 
+		$title = "Download Cytoscape 2.3";
+	} 
 	if (isset($submit) && $error_flag == false) {
 		$title = "Thank you!";
 	}
