@@ -6,6 +6,7 @@ import cytoscape.CyNetwork;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
+import javax.swing.JPanel;
 
 import java.awt.event.ActionEvent;
 
@@ -16,24 +17,30 @@ import java.awt.event.ActionEvent;
 
 public class NetworkBLASTAction extends AbstractAction
 {
-  private NetworkBLASTDialog m_dialog;
-  private int m_tabIndex;
+  private NetworkBLASTDialog dialog;
+  private int tabIndex;
   
   public NetworkBLASTAction(String _name, int _tabIndex,
                             NetworkBLASTDialog _dialog)
   {
     super(_name);
-    m_dialog = _dialog;
-    m_tabIndex = _tabIndex;
+
+    // Initialize members
+    this.dialog = _dialog;
+    this.tabIndex = _tabIndex;
   }
 
   public void actionPerformed(ActionEvent _e)
   {
+    // Check to make sure we have at least one network loaded.
+    // If we don't, exit.
     if (!this.checkForNetworks()) return;
     
-    this.updateComboBoxes();
-    m_dialog.switchToTab(m_tabIndex);
-    m_dialog.show();
+    // Setup components that depend on the state of Cytoscape
+    dialog.setup();
+    
+    dialog.switchToTab(this.tabIndex);    
+    dialog.setVisible(true);
   }
 
   /**
@@ -55,71 +62,5 @@ public class NetworkBLASTAction extends AbstractAction
     }
 
     return true;
-  }
-
-  /**
-   * This method updates the combo boxes in the dialog so that
-   * each combo box has a list of all the loaded networks in Cytoscape.
-   * It uses the NetworkItem private class defined below for each
-   * item in the combo boxes.
-   */
-
-  private void updateComboBoxes()
-  {
-    JComboBox jComboBoxes[] =
-    {
-      m_dialog.getComp_graphComboBox(),
-      m_dialog.getCompt_graph1ComboBox(),
-      m_dialog.getCompt_graph2ComboBox(),
-      m_dialog.getCompt_homgraphComboBox(),
-      m_dialog.getPath_graphComboBox()
-    };
-
-    for (int j = 0; j < jComboBoxes.length; j++)
-    {
-      jComboBoxes[j].removeAllItems();
-    }
-
-    Object networks[] = Cytoscape.getNetworkSet().toArray();
-    for (int i = 0; i < networks.length; i++)
-    {
-      CyNetwork network = (CyNetwork) networks[i];
-      NetworkItem item = new NetworkItem(network.getTitle(), network);
-      
-      for (int j = 0; j < jComboBoxes.length; j++)
-      {
-        jComboBoxes[j].addItem(item);
-      }
-    }
-  }
-
-  /**
-   * Used for items in the combo boxes in the NetworkBLASTDialog.
-   */
-  private class NetworkItem
-  {
-    private String m_name;
-    private CyNetwork m_network;
-
-    public NetworkItem(String _name, CyNetwork _network)
-    {
-      m_name = _name;
-      m_network = _network;
-    }
-
-    public String getName()
-    {
-      return m_name;
-    }
-
-    public CyNetwork getNetwork()
-    {
-      return m_network;
-    }
-	    
-    public String toString()
-    {
-      return getName();
-    }
   }
 }

@@ -30,17 +30,17 @@ import java.awt.event.ActionEvent;
 
 public class NetworkBLASTPlugin extends CytoscapePlugin
 {
-  private NetworkBLASTDialog m_dialog = null;
+  private NetworkBLASTDialog dialog = null;
   
   public NetworkBLASTPlugin()
   {
-    m_dialog = new NetworkBLASTDialog(Cytoscape.getDesktop(), true);
+    this.dialog = new NetworkBLASTDialog(Cytoscape.getDesktop());
     initializeMenuItem();
   }
 
   /**
    * Creates the "NetworkBLAST" menu item in the Plugins menu
-   * with NetworkBLASTAction as the menu item's action;
+   * with NetworkBLASTAction as the menu item's action.
    */
    
   private void initializeMenuItem()
@@ -51,19 +51,23 @@ public class NetworkBLASTPlugin extends CytoscapePlugin
     JMenu nbMenu = new JMenu("NetworkBLAST");
     
     JMenuItem aboutMenuItem = new JMenuItem(new NetworkBLASTAction(
-                                          "About", 0, m_dialog));
+                                          "About", 0, this.dialog));
+					  
     JMenuItem comptMenuItem = new JMenuItem(new NetworkBLASTAction(
                                           "Generate Compatiblity Graph",
-					  1, m_dialog));
+					  1, this.dialog));
+					  
     JMenuItem pathMenuItem = new JMenuItem(new NetworkBLASTAction(
                                           "Path Search",
-					  2, m_dialog));
+					  2, this.dialog));
+					  
     JMenuItem compMenuItem = new JMenuItem(new NetworkBLASTAction(
                                           "Complex Search",
-					  3, m_dialog));
+					  3, this.dialog));
+					  
     JMenuItem scoreMenuItem = new JMenuItem(new NetworkBLASTAction(
                                           "Score Model Settings",
-					  4, m_dialog));
+					  4, this.dialog));
     nbMenu.add(aboutMenuItem);
     nbMenu.addSeparator();
     nbMenu.add(comptMenuItem);
@@ -73,5 +77,12 @@ public class NetworkBLASTPlugin extends CytoscapePlugin
     nbMenu.add(scoreMenuItem);
     
     pluginMenu.add(nbMenu);
+
+    NetworkBLASTPlugin.log("NetworkBLAST: Starting log");
+  }
+
+  public static void log(String _text)
+  {
+    System.err.println("* " + _text); 
   }
 }
