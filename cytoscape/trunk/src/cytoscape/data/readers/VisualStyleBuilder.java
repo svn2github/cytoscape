@@ -7,7 +7,7 @@
  - Institute of Systems Biology
  - University of California San Diego
  - Memorial Sloan-Kettering Cancer Center
- - Pasteur Institute
+ - Institut Pasteur
  - Agilent Technologies
  
  This library is free software; you can redistribute it and/or modify it
