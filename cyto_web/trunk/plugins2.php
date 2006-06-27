@@ -161,6 +161,11 @@ The networks can be viewed and manipulated in Cytoscape.
 				</td>
 			</tr>
 			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+			<tr>
 				<td width="20%" valign="top">
 					<b>cPath Plugin</b> <font size="-1">
 						<br>
