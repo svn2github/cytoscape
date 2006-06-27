@@ -666,6 +666,7 @@ public final class GraphRenderer
      final float[] rtnValSrc,
      final float[] rtnValTrg)
   {
+    final boolean alwaysCompute = false;
     if (anchors != null && anchors.numAnchors() == 0) { anchors = null; }
     final float srcX = (float)
       ((((double) srcNodeExtents[0]) + srcNodeExtents[2]) / 2.0d);
@@ -699,7 +700,8 @@ public final class GraphRenderer
       if (srcNodeExtents[0] == srcNodeExtents[2] ||
           srcNodeExtents[1] == srcNodeExtents[3]) {
         if (!_computeEdgeIntersection
-            (srcX, srcY, srcOffset, srcXOut, srcYOut, s_floatBuff)) {
+            (srcX, srcY, srcOffset, srcXOut, srcYOut, alwaysCompute,
+             s_floatBuff)) {
           return false; } }
       else {
         if (!grafx.computeEdgeIntersection
@@ -721,7 +723,8 @@ public final class GraphRenderer
       if (trgNodeExtents[0] == trgNodeExtents[2] ||
           trgNodeExtents[1] == trgNodeExtents[3]) {
         if (!_computeEdgeIntersection
-            (trgX, trgY, trgOffset, trgXOut, trgYOut, s_floatBuff)) {
+            (trgX, trgY, trgOffset, trgXOut, trgYOut, alwaysCompute,
+             s_floatBuff)) {
           return false; } }
       else {
         if (!grafx.computeEdgeIntersection
@@ -817,22 +820,28 @@ public final class GraphRenderer
       rtnVal.closePath(); }
   }
 
-  public static final boolean _computeEdgeIntersection(final float nodeX,
-                                                       final float nodeY,
-                                                       final float offset,
-                                                       final float ptX,
-                                                       final float ptY,
-                                                       final float[] returnVal)
+  static final boolean _computeEdgeIntersection(final float nodeX,
+                                                final float nodeY,
+                                                final float offset,
+                                                final float ptX,
+                                                final float ptY,
+                                                final boolean alwaysCompute,
+                                                final float[] returnVal)
   {
     if (offset == 0.0f) {
       returnVal[0] = nodeX;
       returnVal[1] = nodeY;
       return true; }
-    else {
+    else {    
       final double dX = ptX - nodeX;
       final double dY = ptY - nodeY;
       final double len = Math.sqrt(dX * dX + dY * dY);
-      if (len < offset) { return false; }
+      if (len < offset) {
+        if (!alwaysCompute) { return false; }
+        if (len == 0.0d) {
+          returnVal[0] = offset + nodeX;
+          returnVal[1] = nodeY;
+          return true; } }
       returnVal[0] = (float) ((dX / len) * offset + nodeX);
       returnVal[1] = (float) ((dY / len) * offset + nodeY);
       return true; }
