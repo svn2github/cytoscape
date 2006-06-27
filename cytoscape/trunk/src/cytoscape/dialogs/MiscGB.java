@@ -143,6 +143,9 @@ public class MiscGB {
 		return label;
 	}
 
+	/**
+	 * @deprecated No one uses this so don't start.  Will be removed 12/2006.
+	 */
 	public static JButton buttonAndColor(JDialog parent, MutableColor mc,
 			JLabel l, String bTitle) {
 		JButton jb = new JButton(bTitle);

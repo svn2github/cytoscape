@@ -48,6 +48,7 @@ package cytoscape.actions;
 import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.CyColorChooser;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
@@ -80,8 +81,7 @@ public class BackgroundColorAction extends CytoscapeAction {
         // Do this in the GUI Event Dispatch thread...
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                JColorChooser color = new JColorChooser();
-                Color newPaint = color.showDialog( 
+                Color newPaint = CyColorChooser.showDialog( 
                                                   Cytoscape.getCurrentNetworkView().getComponent(),
                                                   "Choose a Background Color",
                                                   (java.awt.Color)Cytoscape.getCurrentNetworkView().

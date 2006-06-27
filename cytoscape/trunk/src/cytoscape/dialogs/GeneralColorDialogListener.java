@@ -67,7 +67,8 @@ import cytoscape.util.MutableColor;
  *  MutableColor.  The parent Component is also passed to the
  *  constructor so that it may be passed on to the JColorChooser's
  *  constructor.
- *
+ * @deprecated No one uses this, so don't start.  Will be removed 12/2006.
+ * If you need a JColorChooser, use CyColorChooser instead.
  */
 
 public class GeneralColorDialogListener implements ActionListener {

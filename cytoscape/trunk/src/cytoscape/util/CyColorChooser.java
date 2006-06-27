@@ -1,6 +1,6 @@
 
 /*
-  File: MutableColor.java 
+  File: CyColorChooser.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -36,33 +36,35 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// MutableColor.java:  mutable color for listeners
-
-
-//--------------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
-
 package cytoscape.util;
+
+import javax.swing.JColorChooser;
+import javax.swing.JDialog;
+import javax.swing.JDialog;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
- * @deprecated No one uses this, so don't start. Just use Color directly. 
- * This will be removed 12/2006.
+ * This is an annoying re-implementation of JColorChooser.showDialog() that remembers
+ * recently used colors between invocations of the chooser dialog.
  */
-public class MutableColor {
-    private Color color;
-    public MutableColor(Color color) {
-	this.color = color;
-    }
-    public Color getColor() {
-	return this.color;
-    }
-    public void setColor(Color c) {
-	this.color = c;
-    }
+public class CyColorChooser {
+
+	protected static JColorChooser chooser = new JColorChooser();
+	protected static ColorListener listener = new ColorListener();
+	protected static Color color;
+
+	public static Color showDialog(Component component, String title, Color initialColor) { 
+		JDialog dialog = JColorChooser.createDialog(component, title, true, chooser, listener, null);
+		dialog.setVisible(true); 
+		return color;
+	}
+
+	static class ColorListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			color = chooser.getColor();
+	        }
+	}
 }
-
-

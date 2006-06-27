@@ -56,7 +56,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -66,6 +65,7 @@ import javax.swing.plaf.metal.MetalButtonUI;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
 import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.util.CyColorChooser;
 
 /**
  * Given an Object, figures out the class of the object and creates a JButton
@@ -293,7 +293,7 @@ public class ValueDisplayer extends JButton {
 
 		public void actionPerformed(ActionEvent e) {
 			if (enabled) {
-				Color tempColor = JColorChooser.showDialog(parent.parent,
+				Color tempColor = CyColorChooser.showDialog(parent.parent,
 						parent.title, (Color) parent.inputObj);
 				if (tempColor != null) {
 					parent.inputObj = tempColor;
