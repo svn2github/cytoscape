@@ -51,6 +51,7 @@ import org.isb.metanodes.model.*;
 import org.isb.metanodes.data.*;
 import cern.colt.list.IntArrayList;
 import annotations.ui.*;
+import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.data.servers.*;
 import filter.cytoscape.CsFilter;
 import filter.model.*;
@@ -433,14 +434,17 @@ public class RGAlgorithmGui extends JFrame {
 		JLabel label = new JLabel("Node label attribute:");
 		
 		this.nodeAttributesBox = new JComboBox();
-		updateNodeAttributesBox();
-		this.nodeAttributesBox.addActionListener(
-				new AbstractAction (){
-					public void actionPerformed (ActionEvent e){
-						updateNodeAttributesBox(); // there may be new attributes loaded
-					}
+		initializeNodeAttributesBox();
+		MultiHashMapDefinitionListener mhpl = new MultiHashMapDefinitionListener(){
+				public void attributeDefined (String attName){
+					updateNodeAttributesBox(attName, false);
 				}
-		);
+				
+				public void attributeUndefined (String attName){
+					updateNodeAttributesBox(attName, true);
+				}
+		};
+		Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener(mhpl);
 		nodeLabelPanel.add(label);
 		nodeLabelPanel.add(Box.createHorizontalStrut(3));
 		nodeLabelPanel.add(this.nodeAttributesBox);
@@ -453,24 +457,72 @@ public class RGAlgorithmGui extends JFrame {
 	}// createVisualizationPanel
 
 	/**
-	 * Gets the String attributes from Cytoscape's node attributes
-	 * and assigns them to this.nodeAttributesBox
+	 * Initializes the attributes box to attributes that are Strings and not equal to "ID"
+	 * It sets the default selected attribute to "commonName" or "canonicalName"
+	 *
 	 */
-	protected void updateNodeAttributesBox (){
+	protected void initializeNodeAttributesBox (){
+		
 		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
 		String [] attributeNames = nodeAtts.getAttributeNames();
 		Vector stringAtts = new Vector();
 		
 		// get the attributes of type String
+		String defaultAtt = "";
+		String defaultAtt2 = "";
 		for(int i = 0; i < attributeNames.length; i++){
 			byte type = nodeAtts.getType(attributeNames[i]);
+			
 			// ID should not be editable, this will be true for Cytoscape 2.4
-			if(type == CyAttributes.TYPE_STRING && !attributeNames[i].equals("ID")) stringAtts.add(attributeNames[i]);
+			if(type != CyAttributes.TYPE_STRING) continue;
+			if(attributeNames[i].equals("ID")) continue;
+			
+			stringAtts.add(attributeNames[i]);
+				
+			if(attributeNames[i].equals("commonName")){
+				defaultAtt = "commonName";
+			}
+			
+			if(attributeNames[i].equals("canonicalName")){
+				defaultAtt2 = "canonicalName";
+			}
+			
 		}//for i
 		
 		ComboBoxModel model = new DefaultComboBoxModel(stringAtts);
 		this.nodeAttributesBox.setModel(model);
-		this.nodeAttributesBox.updateUI(); // not sure if this works
+		if(defaultAtt != ""){
+			this.nodeAttributesBox.setSelectedItem(defaultAtt);
+		}else if(defaultAtt2 != ""){
+			this.nodeAttributesBox.setSelectedItem(defaultAtt2);
+		}else if(this.nodeAttributesBox.getModel().getSize() > 0){
+			this.nodeAttributesBox.setSelectedIndex(0);
+		}
+	}
+	
+	/**
+	 * Gets the String attributes from Cytoscape's node attributes
+	 * and assigns them to this.nodeAttributesBox
+	 */
+	protected void updateNodeAttributesBox (String attributeName, boolean wasRemoved){
+		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+		if(nodeAtts.getType(attributeName) != CyAttributes.TYPE_STRING) return;
+		
+		DefaultComboBoxModel model = (DefaultComboBoxModel)this.nodeAttributesBox.getModel();
+		
+		if(wasRemoved){
+			String currAtt = getSelectedNodeLabelAttribute();
+			model.removeElement(attributeName);
+			if(currAtt.equals(attributeName)){
+				// Select another attribute
+				if(model.getSize() > 0)
+					this.nodeAttributesBox.setSelectedIndex(0);
+			}
+			return;
+		}
+		
+		// The attribute was added
+		model.addElement(attributeName);
 	}
 	
 	
@@ -521,12 +573,12 @@ public class RGAlgorithmGui extends JFrame {
 		this.moduleAnnotsDialog = new ModuleAnnotationsDialog();
 		this.moduleAnnotsDialog.setActionsForTable(annotsEdgesAction, null,
 				null);
-		final String nodeLabelAttribute = getSelectedNodeLabelAttribute();
+		String nodeLabelAttribute = getSelectedNodeLabelAttribute();
 		this.moduleAnnotsDialog.setNodeLabelAttribute(nodeLabelAttribute);
+		
 		annotsButton.addActionListener(new AbstractAction() {
 
 			public void actionPerformed(ActionEvent event) {
-
 				Map map = RGAlgorithmGui.this.algorithmData.getBiomodules();
 				if (map == null || map.size() == 0) {
 					showErrorMessageDialog("There are no biomodules, please calculate them first.");
@@ -537,21 +589,23 @@ public class RGAlgorithmGui extends JFrame {
 					showErrorMessageDialog("There is no annotations server available.");
 					return;
 				}
+				
 				Object[] keyIDs = map.keySet().toArray();
 				String[][] moduleMembers = new String[keyIDs.length][];
 				String[] moduleNames = new String[keyIDs.length];
 				CyNode[] metaNodes = new CyNode[keyIDs.length];
 				CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+				
 				for (int i = 0; i < keyIDs.length; i++) {
 					CyNode[] moduleNodes = (CyNode[]) map.get(keyIDs[i]);
 					moduleMembers[i] = new String[moduleNodes.length];
 					metaNodes[i] = Cytoscape.getCyNode((String) keyIDs[i]);
-					moduleNames[i] = nodeAtts.getStringAttribute(metaNodes[i]
-							.getIdentifier(), nodeLabelAttribute);
+					moduleNames[i] = 
+						nodeAtts.getStringAttribute(metaNodes[i].getIdentifier(), getSelectedNodeLabelAttribute());
 					for (int j = 0; j < moduleNodes.length; j++) {
 						moduleMembers[i][j] = nodeAtts.getStringAttribute(
 								moduleNodes[j].getIdentifier(),
-								nodeLabelAttribute);
+								getSelectedNodeLabelAttribute());
 					}// for j
 				}// for i
 
@@ -622,12 +676,9 @@ public class RGAlgorithmGui extends JFrame {
 		
 		// Calculate the biomodules
 		String nodeLabelAttribute = getSelectedNodeLabelAttribute();
-		//System.err.println("Setting node label attribute in ViewUtils.attributesHandler to " + nodeLabelAttribute);
 		ViewUtils.attributesHandler.setNodeLabelAttribute(nodeLabelAttribute);
-		//System.err.println("attributesHandler.getNodeLabelAttribute() = "+ViewUtils.attributesHandler.getNodeLabelAttribute());
 		
-		HierarchicalClustering hClustering = this.algorithmData
-				.getHierarchicalClustering();
+		HierarchicalClustering hClustering = this.algorithmData.getHierarchicalClustering();
 		CyNode[][] biomodules = null;
 
 		// From the GUI, see if apsp and manhattan-distances need to be kept in
@@ -664,7 +715,6 @@ public class RGAlgorithmGui extends JFrame {
 		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
 
 		if (this.abstractRbutton.isSelected() && netView != null) {
-			//System.out.println("this.abstractRbutton.isSelected () = true and netView exists so create meta-nodes");
 			// Remove existent meta-nodes:
 			java.util.List bioNodes = MetaNodeUtils.getAllMetaNodes(this.algorithmData.getNetwork());
 			if(bioNodes == null){
@@ -683,16 +733,10 @@ public class RGAlgorithmGui extends JFrame {
 			int numUnknowns = 0;
 			for (int i = 0; i < metaCyNodes.size(); i++) {
 				CyNode node = (CyNode) metaCyNodes.get(i);
-				String name = 
-					nodeAtts.getStringAttribute(node.getIdentifier(),nodeLabelAttribute);
-				if (name == null) {
-					name = node.getIdentifier();
-				}
-				bioIdentifiersToMembers.put(name, biomodules[i]);
+				bioIdentifiersToMembers.put(node.getIdentifier(), biomodules[i]);
 			}// for i
 			System.out.println("Done creating meta-nodes.");
 		} else {
-			//System.out.println("there is no view or the user does not want to abstract meta-nodes. creating names for biomodules...");
 			// The Biomodules need to have an identifier, so lets make it the member
 			// with the highest intra-degree
 			CyNetwork network = this.algorithmData.getNetwork();
@@ -704,12 +748,7 @@ public class RGAlgorithmGui extends JFrame {
 				SortedSet ss = IntraDegreeComparator.sortNodes(network,
 						memberRindices);
 				CyNode highestNode = (CyNode) ss.first();
-				String alias = nodeAtts.getStringAttribute(highestNode.getIdentifier(), nodeLabelAttribute);
-				if (alias == null) {
-					alias = highestNode.getIdentifier();
-				}
-				
-				bioIdentifiersToMembers.put(alias, biomodules[i]);
+				bioIdentifiersToMembers.put(highestNode.getIdentifier(), biomodules[i]);
 			}// for i
 			// System.out.println("Done creating names for biomodules.");
 		}

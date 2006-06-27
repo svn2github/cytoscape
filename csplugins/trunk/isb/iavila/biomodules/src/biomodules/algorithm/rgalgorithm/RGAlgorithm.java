@@ -168,7 +168,7 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
       return new int[0];
     }
     
-    System.out.println("Applying nodes filter named [" + filter + "]...");
+    //System.out.println("-------------------------------- Applying nodes filter named [" + filter + "]...");
     
     // Iterate over nodes, and see if they pass the filter
     Iterator it = network.nodesIterator();
@@ -176,7 +176,7 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     while(it.hasNext()){
       CyNode node = (CyNode)it.next();
       if(filter.passesFilter(node)){
-        System.out.println("Node " + node + " passes filter");
+        //System.out.println("---------------- Node " + node + " passes filter");
         passingIndices.add(node.getRootGraphIndex());
       }
     }//it.hasNext()
@@ -209,7 +209,7 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
       return new int[0];
     }
     
-    System.out.println("Applying edges filter named [" + filter + "]...");
+    //System.out.println("--------------------Applying edges filter named [" + filter + "]...");
     
     // Iterate over edges, and see if they pass the filter
     Iterator it = network.edgesIterator();
@@ -217,7 +217,7 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     while(it.hasNext()){
       CyEdge edge = (CyEdge)it.next();
       if(filter.passesFilter(edge)){
-        System.out.println("Edge " + edge + " passes filter");
+        //System.out.println("------------------Edge " + edge + " passes filter");
         passingIndices.add(edge.getRootGraphIndex());
       }
     }//it.hasNext()
