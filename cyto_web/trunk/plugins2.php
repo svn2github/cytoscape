@@ -51,9 +51,9 @@ Cytoscape LGPL.
 				<td width="20%" valign="top">
 					<b>Agilent Literature Search</b><font size="-1">
 						<br>
-						Version: 2.0
+						Version: 2.3
 						<br>
-						Release Date: December 22, 2005</font>
+						Release Date: June 27, 2006</font>
 				</td>
 				<td width="40%" valign="top">
 
@@ -68,10 +68,11 @@ Cytoscape LGPL.
 Associations extracted from these documents are then converted into interactions, which are further grouped into a network.
 The sentences and source hyperlinks for each association are further stored as attributes of the corresponding nodes and links in the network.
 The networks can be viewed and manipulated in Cytoscape.
-<p>Enhancements in version 2.0 include
+<p>Enhancements in version 2.3 include
 <ul>
-<li> literature-based evidence gathering for Cytoscape Edges and
-<li> the ability to save, reload, and analyze search results.
+<li> Improved file-based lexicon management, supporting arbitrary file names
+<li> Cytoscape session load/save compatible
+<li> Paged results view.
 </ul>
 
 
@@ -85,7 +86,10 @@ The networks can be viewed and manipulated in Cytoscape.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.1, 2.2.
+				Verified to work in 2.3 (Agilent Literature Search 2.3).
+				<br>
+				Verified to work in 2.1, 2.2 (Agilent Literature Search 2.0).
+				
 				</td>
 				<td width="20%" valign="top">
 <!-- 				[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/litsearch.html">Agilent Literature Search Web Site</a>]
@@ -95,9 +99,11 @@ The networks can be viewed and manipulated in Cytoscape.
 					[<a href="http://www.agilent.com/labs/research/mtl/projects/sysbio/sysinformatics/downloadv1.html">Download Agilent Literature Search version 1.0</a>]
 -->					<br>
 					<br>
-				[<a href="http://www.cytoscape.org/download_agilent_literature_search_v2.php?file=litsearch_v2">Download Agilent Literature Search version 2.0</a>]
+				[<a href="http://www.cytoscape.org/download_agilent_literature_search_v2.3.php?file=litsearch_v2.3">Download Agilent Literature Search version 2.3 for Cytoscape v2.3 </a>]
 				<br>					<br>
-					<br><br>
+				[<a href="http://www.cytoscape.org/download_agilent_literature_search_v2.php?file=litsearch_v2">Download Agilent Literature Search version 2 for Cytoscape v2.1, v2.2 </a>]
+				<br>					<br>
+									<br><br>
 					<br>
 					<br>
 					<br>
