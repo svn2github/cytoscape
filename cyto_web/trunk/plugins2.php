@@ -137,6 +137,31 @@ The networks can be viewed and manipulated in Cytoscape.
 			</tr>
 			<tr>
 				<td width="20%" valign="top">
+					<b>BioPAX Import Plugin</b> <font size="-1">
+						<br>
+						Version: 0.3 Beta
+						<br>
+						Release Date: June 16, 2006</font>
+				</td>
+				<td width="40%" valign="top">
+					The BioPAX Plugin enables Cytoscape users to import and visualize BioPAX formatted documents.  BioPAX is a collaborative effort to create a data exchange format for biological pathway data.   Information is available at: <a href="http://biopax.org">http://biopax.org</a>
+					<p>
+						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
+					</p>
+				</td>
+				<td width="20%" valign="top">
+					Verified to work in 2.3.
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/biopax">Release Notes</a>]
+					<br>
+					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/biopax/zip_release/biopax_0_3.tar.gz">Download .tar.gz</a>]
+					<br>
+					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/biopax/zip_release/biopax_0_3.zip">Download .zip</a>]
+				</td>
+			</tr>
+			<tr>
+				<td width="20%" valign="top">
 					<b>cPath Plugin</b> <font size="-1">
 						<br>
 						Version: 3 Beta
