@@ -3,6 +3,9 @@ package browser;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import cytoscape.Cytoscape;
+
 import java.awt.datatransfer.*;
 import java.util.*;
 
@@ -72,7 +75,7 @@ public class CopyToExcel implements ActionListener {
 			if (!((numrows - 1 == rowsselected[rowsselected.length - 1]
 					- rowsselected[0] && numrows == rowsselected.length) && (numcols - 1 == colsselected[colsselected.length - 1]
 					- colsselected[0] && numcols == colsselected.length))) {
-				JOptionPane.showMessageDialog(null, "Invalid Copy Selection",
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Invalid Copy Selection",
 						"Invalid Copy Selection", JOptionPane.ERROR_MESSAGE);
 				return;
 			}

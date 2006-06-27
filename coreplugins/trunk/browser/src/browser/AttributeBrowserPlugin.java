@@ -10,10 +10,12 @@ import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 
 /**
+ * Attribute browser's main class.<br>
+ * 
+ * @version 0.8
+ * @since 2.2
  * @author kono
  * 
- * This Plugin is an attribute browser with smaller GUI. All functions are based
- * on Rowan's code.
  */
 public class AttributeBrowserPlugin extends CytoscapePlugin {
 
@@ -21,7 +23,7 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 	public static Color DEFAULT_EDGE_COLOR = Color.RED;
 
 	/**
-	 * 
+	 * Constructor for this plugin.
 	 *
 	 */
 	public AttributeBrowserPlugin() {
@@ -54,11 +56,12 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 
 	}
 	
-	// Call 3 tables, nodes, edges and network.
-	// The DataTable class actually creates all CytoPanels.
-	// For this version of browser, it creates Cytopanel3 only.
-	// Filter functions are implemented as an Advanced Window.
-	protected void initialize() {
+	/**
+	 * Call 3 tables, nodes, edges and network.<br>
+	 *  The DataTable class actually creates all CytoPanels.<br>
+	 *  Filter functions are implemented in Advanced Window.
+	 */
+	private void initialize() {
 
 		DataTable table_nodes = new DataTable(Cytoscape.getNodeAttributes(),
 				DataTable.NODES);
@@ -67,5 +70,4 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 		DataTable table_network = new DataTable(Cytoscape
 				.getNetworkAttributes(), DataTable.NETWORK);
 	}
-
 }

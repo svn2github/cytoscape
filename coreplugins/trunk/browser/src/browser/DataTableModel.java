@@ -21,21 +21,22 @@ import javax.swing.table.DefaultTableModel;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMapListener;
+import cytoscape.visual.GlobalAppearanceCalculator;
 
 /**
- * @author kono Actual data manipulation is implemented here.
+ * 
+ * Actual data manipulation is implemented here.<br>
+ * 
+ * @author kono
+ * @author xmas
  */
 public class DataTableModel extends DefaultTableModel implements
 		SortTableModel, MultiHashMapListener {
 
-	public static Color DEFAULT_NODE_COLOR = Color.YELLOW;
-	public static Color DEFAULT_EDGE_COLOR = Color.RED;
-
-	//	 Property for this browser.  One for each panel.
+	// Property for this browser. One for each panel.
 	private Properties props;
-	
+
 	private CyAttributes data;
 	private List graphObjects;
 	private List attributeNames;
@@ -45,64 +46,106 @@ public class DataTableModel extends DefaultTableModel implements
 	private static final Boolean DEFAULT_FLAG = new Boolean(false);
 
 	private int objectType = DataTable.NODES;
-	private int tableMode;
+
+	/*
+	 * Selected nodes & edges color
+	 */
+	private Color selectedNodeColor;
+	private Color selectedEdgeColor;
 
 	// will be used by internal selection.
 	private HashMap internalSelection = null;
 
-	public DataTableModel(int mode) {
-		initialize(mode);
+	public DataTableModel() {
+		initialize();
 	}
 
-	public DataTableModel(int rows, int cols, int mode) {
+	public DataTableModel(int rows, int cols) {
 		super(rows, cols);
-		initialize(mode);
+		initialize();
 	}
 
-	public DataTableModel(Object[][] data, Object[] names, int mode) {
+	public DataTableModel(Object[][] data, Object[] names) {
 		super(data, names);
-		initialize(mode);
+		initialize();
 	}
 
-	public DataTableModel(Object[] names, int rows, int mode) {
+	public DataTableModel(Object[] names, int rows) {
 		super(names, rows);
-		initialize(mode);
+		initialize();
 	}
 
-	public DataTableModel(Vector names, int rows, int mode) {
+	public DataTableModel(Vector names, int rows) {
 		super(names, rows);
-		initialize(mode);
+		initialize();
 	}
 
-	public DataTableModel(Vector data, Vector names, int mode) {
+	public DataTableModel(Vector data, Vector names) {
 		super(data, names);
-		initialize(mode);
+		initialize();
 	}
-	
+
 	/*
 	 * Initialize properties for Browser Plugin.
 	 */
-	private void initialize(int mode) {
+	private void initialize() {
 		props = new Properties();
 		props.setProperty("colorSwitch", "off");
-		props.setProperty("defaultNodeColor", this.DEFAULT_NODE_COLOR.toString());
-		props.setProperty("defaultEdgeColor", this.DEFAULT_EDGE_COLOR.toString());
-		
-		tableMode = mode;
+		setSelectedColor(JSortTable.SELECTED_NODE);
+		setSelectedColor(JSortTable.SELECTED_EDGE);
 	}
-	
-	protected void setColorSwitch(boolean flag) {
-		if(flag) {
+
+	protected void setSelectedColor(final int type) {
+
+		final GlobalAppearanceCalculator gac = Cytoscape
+				.getVisualMappingManager().getVisualStyle()
+				.getGlobalAppearanceCalculator();
+
+		switch (type) {
+		case JSortTable.SELECTED_NODE:
+			selectedNodeColor = gac.getDefaultNodeSelectionColor();
+			break;
+		case JSortTable.SELECTED_EDGE:
+			selectedEdgeColor = gac.getDefaultEdgeSelectionColor();
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	protected Color getSelectedColor(final int type) {
+		Color newColor;
+		final GlobalAppearanceCalculator gac = Cytoscape
+				.getVisualMappingManager().getVisualStyle()
+				.getGlobalAppearanceCalculator();
+
+		switch (type) {
+		case JSortTable.SELECTED_NODE:
+			newColor = gac.getDefaultNodeSelectionColor();
+			break;
+		case JSortTable.SELECTED_EDGE:
+			newColor = gac.getDefaultEdgeSelectionColor();
+			break;
+		default:
+			newColor = null;
+			break;
+		}
+		return newColor;
+	}
+
+	protected void setColorSwitch(final boolean flag) {
+		if (flag) {
 			props.setProperty("colorSwitch", "on");
 		} else {
 			props.setProperty("colorSwitch", "off");
 		}
 	}
-	
+
 	protected boolean getColorSwitch() {
-		if(props.getProperty("colorSwitch").equals("on")) {
+		if (props.getProperty("colorSwitch").equals("on")) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
@@ -127,19 +170,18 @@ public class DataTableModel extends DefaultTableModel implements
 		return internalSelection;
 	}
 
-	public void setSelectionArray(String key, boolean flag) {
+	public void setSelectionArray(final String key, final boolean flag) {
 		internalSelection.put(key, new Boolean(flag));
 	}
 
 	public void resetSelectionFlags() {
 
 		if (this.objectType != DataTable.NETWORK) {
-			Iterator it = graphObjects.iterator();
+			final Iterator it = graphObjects.iterator();
 			while (it.hasNext()) {
-				GraphObject obj = (GraphObject) it.next();
-				String id = obj.getIdentifier();
-
-				internalSelection.put(id, DEFAULT_FLAG);
+				internalSelection
+						.put(((GraphObject) it.next()).getIdentifier(),
+								DEFAULT_FLAG);
 			}
 		}
 	}
@@ -160,7 +202,7 @@ public class DataTableModel extends DefaultTableModel implements
 
 	}
 
-	public void setTableDataAttributes(List attributes) {
+	public void setTableDataAttributes(final List attributes) {
 		this.attributeNames = attributes;
 		if (this.objectType != DataTable.NETWORK) {
 			setTable();
@@ -169,7 +211,7 @@ public class DataTableModel extends DefaultTableModel implements
 		}
 	}
 
-	public void setTableDataObjects(List graph_objects) {
+	public void setTableDataObjects(final List graph_objects) {
 		this.graphObjects = graph_objects;
 		if (this.objectType != DataTable.NETWORK) {
 			setTable();
@@ -178,20 +220,18 @@ public class DataTableModel extends DefaultTableModel implements
 		}
 	}
 
-	public void setObjectType(int ot) {
+	public void setObjectType(final int ot) {
 		objectType = ot;
 	}
 
 	protected void setNetworkTable() {
-		
-		if(Cytoscape.getCurrentNetwork() == null) {
+
+		if (Cytoscape.getCurrentNetwork() == null) {
 			return;
 		}
-		
-		String networkName = Cytoscape.getCurrentNetwork().getIdentifier();
-		
-		int att_length = attributeNames.size();
-		
+
+		final int att_length = attributeNames.size();
+
 		// Attribute names will be the row id, and num. of column is always
 		Object[][] data_vector = new Object[att_length][2];
 		Object[] column_names = new Object[2];
@@ -200,17 +240,15 @@ public class DataTableModel extends DefaultTableModel implements
 		column_names[1] = "Value";
 
 		for (int i = 0; i < att_length; i++) {
-			String attributeName = (String) attributeNames.get(i);
-			byte type = data.getType(attributeName);
-
+			final String attributeName = (String) attributeNames.get(i);
 			data_vector[i][0] = attributeName;
-			Object value = getAttributeValue(type, networkName, attributeName);
-			data_vector[i][1] = value;
+			data_vector[i][1] = getAttributeValue(data.getType(attributeName),
+					Cytoscape.getCurrentNetwork().getIdentifier(),
+					attributeName);
 		}
-		
 		setDataVector(data_vector, column_names);
 	}
-	
+
 	protected void setAllNetworkTable() {
 
 		int att_length = attributeNames.size() + 1;
@@ -219,7 +257,7 @@ public class DataTableModel extends DefaultTableModel implements
 		Object[][] data_vector = new Object[networkCount][att_length];
 		Object[] column_names = new Object[att_length];
 		column_names[0] = DataTable.ID;
-		
+
 		internalSelection = new HashMap();
 		Iterator it = Cytoscape.getNetworkSet().iterator();
 		int k = 0;
@@ -241,10 +279,10 @@ public class DataTableModel extends DefaultTableModel implements
 			byte type = data.getType(attributeName);
 			it = Cytoscape.getNetworkSet().iterator();
 			int j = 0;
-			while(it.hasNext()) {
+			while (it.hasNext()) {
 				CyNetwork network = (CyNetwork) it.next();
 				Object value = getAttributeValue(type, network.getIdentifier(),
-						attributeName);		
+						attributeName);
 
 				data_vector[j][i] = value;
 				j++;
@@ -254,7 +292,6 @@ public class DataTableModel extends DefaultTableModel implements
 		setDataVector(data_vector, column_names);
 	}
 
-
 	// Fill the cells in the table
 	// *** need to add an argument to copy edge attribute name correctly.
 	//
@@ -263,38 +300,34 @@ public class DataTableModel extends DefaultTableModel implements
 		internalSelection = new HashMap();
 		Iterator it = graphObjects.iterator();
 		while (it.hasNext()) {
-			GraphObject obj = (GraphObject) it.next();
-			String id = obj.getIdentifier();
-
-			internalSelection.put(id, DEFAULT_FLAG);
-
+			final GraphObject obj = (GraphObject) it.next();
+			internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
+			
 			if (objectType == DataTable.NODES) {
-				Node targetNode = Cytoscape.getCyNode(id);
-				if(Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(targetNode);
-					if(nv != null) {
-						nv.setSelectedPaint(DEFAULT_NODE_COLOR);
+				// Node targetNode = Cytoscape.getCyNode(id);
+				final Node targetNode = obj.getRootGraph().getNode(
+						obj.getRootGraphIndex());
+				if (Cytoscape.getCurrentNetworkView() != Cytoscape
+						.getNullNetworkView()) {
+					NodeView nv = Cytoscape.getCurrentNetworkView()
+							.getNodeView(targetNode);
+					if (nv != null) {
+						nv.setSelectedPaint(selectedNodeColor);
 					}
-							
+
 				}
-			} else if(objectType == DataTable.EDGES) {
-				String[] edgeNameParts = id.split(" ");
-				String interaction = edgeNameParts[1].substring(1,
-						edgeNameParts[1].length() - 1);
-				Node source = Cytoscape.getCyNode(edgeNameParts[0]);
-				Node target = Cytoscape.getCyNode(edgeNameParts[2]);
-				Edge targetEdge = Cytoscape.getCyEdge(source, target,
-						Semantics.INTERACTION, interaction, false);
-				if (targetEdge != null && Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					EdgeView edgeView = Cytoscape.getCurrentNetworkView()
+			} else if (objectType == DataTable.EDGES) {
+				final Edge targetEdge = obj.getRootGraph().getEdge(
+						obj.getRootGraphIndex());
+				if (Cytoscape.getCurrentNetworkView() != Cytoscape
+						.getNullNetworkView()) {
+					final EdgeView edgeView = Cytoscape.getCurrentNetworkView()
 							.getEdgeView(targetEdge);
 					if (edgeView != null) {
-						edgeView.setSelectedPaint(DEFAULT_EDGE_COLOR);
+						edgeView.setSelectedPaint(selectedEdgeColor);
 					}
 				}
-
 			}
-
 		}
 
 		int att_length = attributeNames.size() + 1;
@@ -319,23 +352,14 @@ public class DataTableModel extends DefaultTableModel implements
 			String attributeName = (String) attributeNames.get(i1);
 
 			byte type = data.getType(attributeName);
-			// System.out.println("Debug: col name = " + column_names[i] + "
-			// TYPE is " + type );
 
 			for (int j = 0; j < go_length; ++j) {
 				GraphObject obj = (GraphObject) graphObjects.get(j);
 
 				Object value = getAttributeValue(type, obj.getIdentifier(),
 						attributeName);
-				//				
-				// ArrayList testlist = (ArrayList) value;
-				// value = testlist.get(0);
-				//				
-
+				
 				data_vector[j][i] = value;
-
-				// System.out.println("Debug: value = " + value.toString() + ",
-				// class is " + value.getClass().toString() );
 			}
 		}
 
@@ -344,7 +368,7 @@ public class DataTableModel extends DefaultTableModel implements
 	}
 
 	public Object getAttributeValue(byte type, String id, String att) {
-		
+
 		if (type == CyAttributes.TYPE_INTEGER)
 			return data.getIntegerAttribute(id, att);
 		else if (type == CyAttributes.TYPE_FLOATING)
@@ -415,7 +439,6 @@ public class DataTableModel extends DefaultTableModel implements
 	}
 
 	public boolean isCellEditable(int rowIndex, int colIndex) {
-		
 
 		Class objectType = null;
 		Object selectedObj = this.getValueAt(rowIndex, colIndex);
@@ -431,7 +454,7 @@ public class DataTableModel extends DefaultTableModel implements
 				return false;
 			} else if (objectType == ArrayList.class) {
 				return false;
-			} else if(objectType == HashMap.class) {
+			} else if (objectType == HashMap.class) {
 				return false;
 			} else {
 				return true;
@@ -448,23 +471,17 @@ public class DataTableModel extends DefaultTableModel implements
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 
 		DataEditAction edit = null;
-		
-		if(this.objectType != DataTable.NETWORK) {
-			edit = new DataEditAction(this, (String) getValueAt(
-					rowIndex, 0), (String) attributeNames.get(columnIndex - 1),
-					null, getValueAt(rowIndex, columnIndex), aValue, objectType);
+
+		if (this.objectType != DataTable.NETWORK) {
+			edit = new DataEditAction(this, (String) getValueAt(rowIndex, 0),
+					(String) attributeNames.get(columnIndex - 1), null,
+					getValueAt(rowIndex, columnIndex), aValue, objectType);
 		} else {
-			edit = new DataEditAction(
-											this,
-											Cytoscape.getCurrentNetwork().getIdentifier(),
-											(String)this.getValueAt(rowIndex, 0),
-											null,
-											getValueAt(rowIndex, columnIndex), 
-											aValue,
-											objectType
-										);
+			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork()
+					.getIdentifier(), (String) this.getValueAt(rowIndex, 0),
+					null, getValueAt(rowIndex, columnIndex), aValue, objectType);
 		}
-		
+
 		cytoscape.Cytoscape.getDesktop().addEdit(edit);
 
 	}

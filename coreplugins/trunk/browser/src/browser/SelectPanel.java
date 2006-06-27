@@ -27,22 +27,42 @@ import cytoscape.view.CytoscapeDesktop;
 import filter.model.Filter;
 import filter.model.FilterManager;
 
+/**
+ * Advanced Panel.<br>
+ * This section catches all selection events and property changes
+ * for Attribute browser.<br>
+ * 
+ * @author xmas
+ * @author kono
+ *
+ */
 public class SelectPanel extends JPanel implements PropertyChangeListener,
 		ActionListener, SelectEventListener {
-	public static int NODES = 0;
-	public static int EDGES = 1;
+	public static final int NODES = 0;
+	public static final int EDGES = 1;
 	int graphObjectType;
+	
 	JComboBox networkBox;
 	JComboBox filterBox;
 	DataTableModel tableModel;
+	DataTable table;
 	Map titleIdMap;
 	JCheckBox mirrorSelection;
 
 	CyNetwork currentNetwork;
 
-	public SelectPanel(DataTableModel tableModel, int graphObjectType) {
+	/**
+	 * Constructor.<br>
+	 * Initialize GUI components.
+	 * 
+	 * @param tableModel table model used in the Attribute Browser.
+	 * @param graphObjectType Graph object types - Node or Edge.
+	 * 
+	 */
+	public SelectPanel(final DataTable table, final int graphObjectType) {
 
-		this.tableModel = tableModel;
+		this.table = table;
+		this.tableModel = table.getDataTableModel();
 		this.graphObjectType = graphObjectType;
 
 		titleIdMap = new HashMap();
@@ -53,7 +73,6 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 		// Filter is disabled for now...
 		filterBox = new JComboBox(FilterManager.defaultManager()
 				.getComboBoxModel());
-		// filterBox = new JComboBox();
 
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
@@ -73,22 +92,31 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 
 		filterBox.addActionListener(this);
 		networkBox.addActionListener(this);
-
 	}
 
+	/**
+	 * Catch the selection event.<br>
+	 * This is only for nodes and edges.<br>
+	 * 
+	 */
 	public void onSelectEvent(SelectEvent event) {
-
+		
 		if (mirrorSelection.isSelected()) {
 			if (graphObjectType == NODES
 					&& (event.getTargetType() == SelectEvent.SINGLE_NODE || event
 							.getTargetType() == SelectEvent.NODE_SET)) {
 				// node selection
+				tableModel.setSelectedColor(JSortTable.SELECTED_NODE);
+				tableModel.setSelectedColor(JSortTable.REV_SELECTED_NODE);
+				
 				tableModel.setTableDataObjects(new ArrayList(Cytoscape
 						.getCurrentNetwork().getSelectedNodes()));
 			} else if (graphObjectType == EDGES
 					&& (event.getTargetType() == SelectEvent.SINGLE_EDGE || event
 							.getTargetType() == SelectEvent.EDGE_SET)) {
 				// edge selection
+				tableModel.setSelectedColor(JSortTable.SELECTED_EDGE);
+				tableModel.setSelectedColor(JSortTable.REV_SELECTED_EDGE);
 				tableModel.setTableDataObjects(new ArrayList(Cytoscape
 						.getCurrentNetwork().getSelectedEdges()));
 			}
@@ -157,16 +185,19 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
+		
+		
 
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
-				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)
-				|| e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
 			updateNetworkBox();
 			tableModel.setTableDataObjects(new ArrayList());
 
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS
 				|| e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
-				|| e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
+				|| e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
+				|| e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+			
 
 			if (currentNetwork != null) {
 				currentNetwork.removeSelectEventListener(this);
@@ -176,7 +207,6 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 			currentNetwork = Cytoscape.getCurrentNetwork();
 			if (currentNetwork != null) {
 				currentNetwork.addSelectEventListener(this);
-
 				if (graphObjectType == NODES) {
 					tableModel.setTableDataObjects(new ArrayList(Cytoscape
 							.getCurrentNetwork().getSelectedNodes()));

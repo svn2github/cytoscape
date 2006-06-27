@@ -47,6 +47,14 @@ import cytoscape.actions.MapOntologyAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 
+/**
+ * Define toolbar for Attribute Browser.
+ * 
+ * @version 0.8
+ * @since Cytoscape 2.3
+ * @author kono
+ * 
+ */
 public class AttributeBrowserPanel extends JPanel implements
 		PropertyChangeListener, ListSelectionListener, ListDataListener,
 		ActionListener {
@@ -69,7 +77,7 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(
 			this);
-	
+
 	private JPopupMenu attributeSelectionPopupMenu = null;
 
 	private JScrollPane jScrollPane = null;
@@ -91,7 +99,6 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton goButton = null;
 	private JButton matrixButton = null;
 	private JButton importButton = null;
-	private JButton metadataButton = null;
 
 	private int objectType;
 	private AttributeModel model;
@@ -117,12 +124,12 @@ public class AttributeBrowserPanel extends JPanel implements
 	}
 
 	/**
-	 * This method initializes this
+	 * This method initializes
 	 * 
 	 * @return void
 	 */
 	private void initialize(AttributeModel a_model) {
-		
+
 		BorderLayout layout = new BorderLayout();
 		this.setLayout(layout);
 
@@ -137,7 +144,7 @@ public class AttributeBrowserPanel extends JPanel implements
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 	}
-	
+
 	public String getSelectedAttribute() {
 		return attributeList.getSelectedValue().toString();
 	}
@@ -177,14 +184,15 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	public void propertyChange(PropertyChangeEvent e) {
 		// updateLists();
-		
-		if ((e.getPropertyName().equals(Cytoscape.NETWORK_LOADED) ||
-				e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED) ||
-				e.getPropertyName().equals(Cytoscape.DATASERVER_CHANGED) ) && objectType == DataTable.NODES){
-			if(Cytoscape.getBioDataServer() == null) {
+
+		if ((e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)
+				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED) || e
+				.getPropertyName().equals(Cytoscape.DATASERVER_CHANGED))
+				&& objectType == DataTable.NODES) {
+			if (Cytoscape.getBioDataServer() == null) {
 				goButton.setEnabled(false);
-			} else if (Cytoscape.getBioDataServer().getAnnotationCount() == 0 || 
-					Cytoscape.getNetworkSet().size() == 0) {
+			} else if (Cytoscape.getBioDataServer().getAnnotationCount() == 0
+					|| Cytoscape.getNetworkSet().size() == 0) {
 				goButton.setEnabled(false);
 			} else {
 				goButton.setEnabled(true);
@@ -358,8 +366,8 @@ public class AttributeBrowserPanel extends JPanel implements
 												LayoutStyle.RELATED).add(
 												getDeleteButton())
 										.addPreferredGap(LayoutStyle.RELATED,
-												350, Short.MAX_VALUE)
-										.add(getImportButton(),
+												350, Short.MAX_VALUE).add(
+												getImportButton(),
 												GroupLayout.PREFERRED_SIZE, 40,
 												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)
@@ -409,7 +417,7 @@ public class AttributeBrowserPanel extends JPanel implements
 														36,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
-			} else if(objectType == DataTable.NETWORK){
+			} else if (objectType == DataTable.NETWORK) {
 				buttonBarLayout.setHorizontalGroup(buttonBarLayout
 						.createParallelGroup(GroupLayout.LEADING).add(
 								buttonBarLayout.createSequentialGroup().add(
@@ -429,7 +437,6 @@ public class AttributeBrowserPanel extends JPanel implements
 												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)));
 
-			
 				buttonBarLayout
 						.setVerticalGroup(buttonBarLayout
 								.createParallelGroup(
@@ -474,13 +481,12 @@ public class AttributeBrowserPanel extends JPanel implements
 												LayoutStyle.RELATED).add(
 												getDeleteButton())
 										.addPreferredGap(LayoutStyle.RELATED,
-												350, Short.MAX_VALUE)
-										.add(getImportButton(),
+												350, Short.MAX_VALUE).add(
+												getImportButton(),
 												GroupLayout.PREFERRED_SIZE, 40,
 												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)));
 
-			
 				buttonBarLayout
 						.setVerticalGroup(buttonBarLayout
 								.createParallelGroup(
@@ -525,9 +531,9 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getSelectButton() {
 		if (selectButton == null) {
 			selectButton = new JButton();
-			
+
 			selectButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-			
+
 			selectButton.setIcon(new javax.swing.ImageIcon(getClass()
 					.getResource("images/select32.png")));
 			selectButton.setToolTipText("Select Attributes");
@@ -566,27 +572,19 @@ public class AttributeBrowserPanel extends JPanel implements
 		if (networkAttrView == null) {
 			networkAttrView = new JCheckBox();
 			networkAttrView.setText("All Networks");
-			networkAttrView.setToolTipText("Switch the table format: single network or all");
+			networkAttrView
+					.setToolTipText("Switch the table format: single network or all");
 			networkAttrView.setEnabled(false);
 			networkAttrView.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					//changeNetworkAttrView();
+					// changeNetworkAttrView();
 				}
 			});
 		}
 		return networkAttrView;
 
 	}
-
-	private void changeNetworkAttrView() {
-		if(networkAttrView.isSelected() == true) {
-			System.out.println("Tablemomode changed");
-			tableModel = new DataTableModel(DataTable.ALL_VIEW);
-			
-		}
-		
-	}
-
+	
 	private JButton getGOButton() {
 		if (goButton == null) {
 			goButton = new JButton();
@@ -600,10 +598,10 @@ public class AttributeBrowserPanel extends JPanel implements
 			goButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					// TODO Auto-generated Event stub mouseClicked()
-					if(goButton.isEnabled() == true) {
+					if (goButton.isEnabled() == true) {
 						mapOntology();
 					}
-					
+
 					// jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 				}
 			});
@@ -628,34 +626,6 @@ public class AttributeBrowserPanel extends JPanel implements
 			});
 		}
 		return matrixButton;
-
-	}
-
-	private JButton getMetadataButton() {
-		if (metadataButton == null) {
-			metadataButton = new JButton();
-			metadataButton.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("images/metadata32.png")));
-			metadataButton.setToolTipText("Edit Network Meta Data");
-			metadataButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-
-			metadataButton.addMouseListener(new java.awt.event.MouseAdapter() {
-				public void mouseClicked(java.awt.event.MouseEvent e) {
-					// TODO Auto-generated Event stub mouseClicked()
-					if (Cytoscape.getNetworkSet().size() == 0) {
-						// no network available. Show error
-						JOptionPane.showMessageDialog(null,
-								"No network available.", "Error!",
-								JOptionPane.ERROR_MESSAGE);
-					} else {
-						editMetadata();
-					}
-
-					// jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-				}
-			});
-		}
-		return metadataButton;
 
 	}
 
@@ -744,38 +714,34 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JList getJList1(AttributeModel a_model) {
 		if (attributeList == null) {
 			attributeList = new JList(model);
+			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			attributeList.addMouseListener(new MouseAdapter() {
 
 				ArrayList indices = new ArrayList();
-
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					
+
 					if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
 						// Right click
 						attributeSelectionPopupMenu.setVisible(false);
 					} else {
-						
+
 						// Left click
 						model.sortAtttributes();
 
-						int index = attributeList.locationToIndex(e.getPoint());
-
-						Integer indexObj = new Integer(index);
+						// Get current selected node
+						Integer indexObj = new Integer(attributeList.locationToIndex(e.getPoint()));
 
 						// is this selected? if so remove it.
 						if (indices.contains(indexObj)) {
 							indices.remove(indexObj);
-						}
-
-						// otherwise add it to our list
-						else
+						} else {
 							indices.add(indexObj);
-
+						}
+						
 						// copy to an int array
 						int[] arr = new int[indices.size()];
-						for (int i = 0; i < arr.length; i++) {
-							int item = ((Integer) indices.get(i)).intValue();
-							arr[i] = item;
+						for (int i = 0; i < indices.size(); i++) {
+							arr[i] = ((Integer) indices.get(i)).intValue();
 						}
 						// set selected indices
 						attributeList.setSelectedIndices(arr);
@@ -856,7 +822,7 @@ public class AttributeBrowserPanel extends JPanel implements
 					if (existingAttrs[i].equals(name) == false) {
 						dupFlag = false;
 					} else if (existingAttrs[i].equals(name)) {
-						JOptionPane.showMessageDialog(null, "Attribute " + name
+						JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Attribute " + name
 								+ " already exists.", "Error!",
 								JOptionPane.ERROR_MESSAGE);
 						dupFlag = true;
@@ -884,55 +850,58 @@ public class AttributeBrowserPanel extends JPanel implements
 			}
 
 			if (objectType == DataTable.NETWORK) {
-				while (i.hasNext()) {
-					CyNetwork network = (CyNetwork) i.next();
-					if (type.equals("String")) {
-						// data.setAttribute(go.getIdentifier(), name, new
-						// String(""));
-						data.setAttribute(network.getIdentifier(), name,
-								new String());
-					} else if (type.equals("Floating Point")) {
-						data.setAttribute(network.getIdentifier(), name,
-								new Double(0));
-					} else if (type.equals("Integer")) {
-						data.setAttribute(network.getIdentifier(), name,
-								new Integer(0));
-					} else if (type.equals("Boolean")) {
-						data.setAttribute(network.getIdentifier(), name,
-								new Boolean(false));
-					} else {
-						data.setAttribute(network.getIdentifier(), name,
-								new String(""));
-					}
-
+				CyNetwork network = (CyNetwork) i.next();
+				if (type.equals("String")) {
+					data.setAttribute(network.getIdentifier(), name,
+							new String());
+				} else if (type.equals("Floating Point")) {
+					data.setAttribute(network.getIdentifier(), name,
+							new Double(0));
+				} else if (type.equals("Integer")) {
+					data.setAttribute(network.getIdentifier(), name,
+							new Integer(0));
+				} else if (type.equals("Boolean")) {
+					data.setAttribute(network.getIdentifier(), name,
+							new Boolean(false));
+				} else {
+					data.setAttribute(network.getIdentifier(), name,
+							new String());
 				}
+				data.deleteAttribute(network.getIdentifier(), name);
 			} else {
-				while (i.hasNext()) {
-					GraphObject go = (GraphObject) i.next();
-					if (type.equals("String")) {
-						// data.setAttribute(go.getIdentifier(), name, new
-						// String(""));
-						data.setAttribute(go.getIdentifier(), name,
-								new String());
-					} else if (type.equals("Floating Point")) {
-						data.setAttribute(go.getIdentifier(), name, new Double(
-								0));
-					} else if (type.equals("Integer")) {
-						data.setAttribute(go.getIdentifier(), name,
-								new Integer(0));
-					} else if (type.equals("Boolean")) {
-						data.setAttribute(go.getIdentifier(), name,
-								new Boolean(false));
-					} else {
-						data.setAttribute(go.getIdentifier(), name, new String(
-								""));
-					}
-
+				GraphObject go = (GraphObject) i.next();
+				if (type.equals("String")) {
+					data.setAttribute(go.getIdentifier(), name, new String());
+				} else if (type.equals("Floating Point")) {
+					data.setAttribute(go.getIdentifier(), name, new Double(0));
+				} else if (type.equals("Integer")) {
+					data.setAttribute(go.getIdentifier(), name, new Integer(0));
+				} else if (type.equals("Boolean")) {
+					data.setAttribute(go.getIdentifier(), name, new Boolean(
+							false));
+				} else {
+					data.setAttribute(go.getIdentifier(), name, new String());
 				}
+				// This is a hack --- Remove the attribute right after its
+				// creation.
+				data.deleteAttribute(go.getIdentifier(), name);
 			}
-
+			updateSelectedListItems(name);
+			
 		}
-
+	}
+	
+	private void updateSelectedListItems(Object newEntry) {
+		int[] selected = attributeList.getSelectedIndices();
+		
+		//debug
+		
+		model.setSelectedItem(newEntry);
+		int[] newSelected = new int[selected.length+1];
+		System.arraycopy(selected, 0, newSelected, 0, selected.length);
+		newSelected[selected.length] = attributeList.getSelectedIndex();
+		attributeList.setSelectedIndices(newSelected);
+		
 	}
 
-} // @jve:decl-index=0:visual-constraint="10,10"
+}

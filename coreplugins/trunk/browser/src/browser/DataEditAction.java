@@ -28,7 +28,6 @@ public class DataEditAction extends AbstractUndoableEdit {
 		this.objectType = graphObjectType;
 
 		redo();
-
 	}
 
 	public String getPresentationName() {
@@ -53,10 +52,10 @@ public class DataEditAction extends AbstractUndoableEdit {
 			Object object) {
 
 		String errMessage = null;
-		
+
 		// Change object to String
 		String strObject = object.toString();
-		
+
 		byte targetType = data.getType(att);
 
 		if (targetType == CyAttributes.TYPE_INTEGER) {
@@ -64,51 +63,54 @@ public class DataEditAction extends AbstractUndoableEdit {
 			try {
 				newIntVal = Integer.valueOf(strObject);
 				data.setAttribute(id, att, newIntVal);
-			} catch( Exception nfe ) {
-				errMessage = "Attribute " + att + " should be an integer (or the number is too big/small).";
-				showErrorWindow( errMessage );
+			} catch (Exception nfe) {
+				errMessage = "Attribute "
+						+ att
+						+ " should be an integer (or the number is too big/small).";
+				showErrorWindow(errMessage);
 			}
-			
+
 		} else if (targetType == CyAttributes.TYPE_FLOATING) {
 			Double newDblVal = new Double(0);
 			try {
 				newDblVal = Double.valueOf(strObject);
 				data.setAttribute(id, att, newDblVal);
-			} catch( Exception e ) {
-				errMessage = "Attribute " + att + " should be a floating point number (or the number is too big/small).";
-				showErrorWindow( errMessage );
+			} catch (Exception e) {
+				errMessage = "Attribute "
+						+ att
+						+ " should be a floating point number (or the number is too big/small).";
+				showErrorWindow(errMessage);
 			}
 		} else if (targetType == CyAttributes.TYPE_BOOLEAN) {
 			Boolean newBoolVal = new Boolean(false);
 			try {
 				newBoolVal = Boolean.valueOf(strObject);
 				data.setAttribute(id, att, newBoolVal);
-			} catch( Exception e ) {
-				errMessage = "Attribute " + att + " should be a boolean value (true/false).";
-				showErrorWindow( errMessage );
+			} catch (Exception e) {
+				errMessage = "Attribute " + att
+						+ " should be a boolean value (true/false).";
+				showErrorWindow(errMessage);
 			}
 		} else if (targetType == CyAttributes.TYPE_STRING) {
 			data.setAttribute(id, att, strObject);
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_LIST) {
 			errMessage = "List editing is not supported in this version.";
-			showErrorWindow( errMessage );
-			//data.setAttributeList(id, att, (List) object);
+			showErrorWindow(errMessage);
+			// data.setAttributeList(id, att, (List) object);
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_MAP) {
 			errMessage = "Map editing is not supported in this version.";
-			showErrorWindow( errMessage );
-			//data.setAttributeMap(id, att, (Map) object);
+			showErrorWindow(errMessage);
+			// data.setAttributeMap(id, att, (Map) object);
 		}
 
 	}
-	
+
 	// Pop-up window for error message
-	private void showErrorWindow( String errMessage ) {
-		JOptionPane.showMessageDialog(null,
-				errMessage, "Error!",
-				JOptionPane.ERROR_MESSAGE);
+	private void showErrorWindow(String errMessage) {
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), errMessage,
+				"Error!", JOptionPane.ERROR_MESSAGE);
 		return;
 	}
-	
 
 	// this sets the new value
 	public void redo() {
@@ -118,17 +120,17 @@ public class DataEditAction extends AbstractUndoableEdit {
 		if (objectType == DataTable.NODES) {
 			// node
 			data = Cytoscape.getNodeAttributes();
-		} else if(objectType == DataTable.EDGES){
+		} else if (objectType == DataTable.EDGES) {
 			// edge
 			data = Cytoscape.getEdgeAttributes();
- 		} else {
- 			// This is a network attr.
- 			data = Cytoscape.getNetworkAttributes();
- 		}
+		} else {
+			// This is a network attr.
+			data = Cytoscape.getNetworkAttributes();
+		}
 
 		setAttributeValue(data, object, attribute, new_value);
-		
-		if(objectType != DataTable.NETWORK) {
+
+		if (objectType != DataTable.NETWORK) {
 			table.setTable();
 		} else {
 			table.setNetworkTable();
@@ -152,8 +154,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 		}
 
 		setAttributeValue(data, object, attribute, old_value);
-		
-		if(objectType != DataTable.NETWORK) {
+
+		if (objectType != DataTable.NETWORK) {
 			table.setTable();
 		} else {
 			table.setNetworkTable();

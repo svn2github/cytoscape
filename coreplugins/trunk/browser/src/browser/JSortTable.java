@@ -41,9 +41,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,16 +75,28 @@ import javax.swing.table.TableColumnModel;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
 import cytoscape.data.Semantics;
-import cytoscape.data.readers.MetadataParser;
 import cytoscape.dialogs.NetworkMetaDataDialog;
-import cytoscape.generated2.RdfRDF;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.GlobalAppearanceCalculator;
 
-public class JSortTable extends JTable implements MouseListener, ActionListener {
+public class JSortTable extends JTable implements MouseListener, ActionListener, PropertyChangeListener, SelectEventListener {
 	protected int sortedColumnIndex = -1;
 	protected boolean sortedColumnAscending = true;
+	
+	private Color selectedNodeColor;
+	private Color selectedEdgeColor;
+	private Color reverseSelectedNodeColor;
+	private Color reverseSelectedEdgeColor;
+	
+	protected static final int SELECTED_NODE = 1;
+	protected static final int REV_SELECTED_NODE = 2;
+	protected static final int SELECTED_EDGE = 3;
+	protected static final int REV_SELECTED_EDGE = 4;
 
 	// For right-click menu
 	private JPopupMenu rightClickPopupMenu;
@@ -97,7 +113,6 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 
 	private JCheckBoxMenuItem coloringMenuItem = null;
 
-	CopyToExcel excelHandler;
 	private Clipboard systemClipboard;
 
 	StringSelection stsel;
@@ -106,8 +121,6 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 
 	SortTableModel tableModel;
 	private int objectType;
-
-	private boolean colorSwitch = false;
 
 	public static final String LS = System.getProperty("line.separator");
 
@@ -174,16 +187,20 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 		this.getPopupMenu();
 
 		setKeyStroke();
-
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
+				this);
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(this);
+		
+		setSelectedColor(SELECTED_NODE);
+		setSelectedColor(REV_SELECTED_NODE);
+		setSelectedColor(SELECTED_EDGE);
+		setSelectedColor(REV_SELECTED_EDGE);
+		
 		this.setDefaultRenderer(Object.class, new BrowserTableCellRenderer(
 				false, objectType));
-		/**
-		 * @param args
-		 *            the command line arguments
-		 */
-
-		// excelHandler = new CopyToExcel(this);
 	}
+	
 
 	private void setKeyStroke() {
 		KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,
@@ -198,6 +215,58 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
 	}
+	
+	protected void setSelectedColor(final int type) {
+
+		GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager()
+		.getVisualStyle().getGlobalAppearanceCalculator();
+		
+		switch (type) {
+		case SELECTED_NODE:
+			selectedNodeColor = gac.getDefaultNodeSelectionColor();
+			break;
+		case REV_SELECTED_NODE:
+			reverseSelectedNodeColor = gac.getDefaultNodeReverseSelectionColor();
+			break;
+		case SELECTED_EDGE:
+			selectedEdgeColor = gac.getDefaultEdgeSelectionColor();
+			break;
+		case REV_SELECTED_EDGE:
+			reverseSelectedEdgeColor = gac.getDefaultEdgeReverseSelectionColor();
+			break;
+		default:
+			break;
+		}
+		
+	}
+
+	protected Color getSelectedColor(final int type) {
+		Color newColor;
+		GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager()
+		.getVisualStyle().getGlobalAppearanceCalculator();
+		
+		switch (type) {
+		case SELECTED_NODE:
+			newColor = gac.getDefaultNodeSelectionColor();
+			break;
+		case REV_SELECTED_NODE:
+			newColor = gac.getDefaultNodeReverseSelectionColor();
+			break;
+		case SELECTED_EDGE:
+			newColor = gac.getDefaultEdgeSelectionColor();
+			break;
+		case REV_SELECTED_EDGE:
+			newColor = gac.getDefaultEdgeReverseSelectionColor();
+			break;
+		default:
+			newColor = null;
+			break;
+		}
+		return newColor;
+	}
+
+	
+	
 
 	// Create pop-up menu for right-click
 
@@ -207,7 +276,8 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 	 * @return javax.swing.JPopupMenu
 	 */
 	private JPopupMenu getPopupMenu() {
-		if (rightClickPopupMenu == null) {
+		if (rightClickPopupMenu == null) {	
+
 			rightClickPopupMenu = new JPopupMenu();
 
 			copyMenuItem = new JMenuItem("Copy");
@@ -444,19 +514,17 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 	public String exportTable(String element_delim, String eol_delim,
 			boolean all) {
 
-		String attributeNames = "";
-
 		if (all == true) {
 			this.selectAll();
 		}
 
 		int[] selectedCols = this.getSelectedColumns();
+		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < selectedCols.length; i++) {
-			attributeNames = attributeNames
-					+ this.getColumnName(selectedCols[i]) + "\t";
+			buf.append(this.getColumnName(selectedCols[i]) + "\t");
 		}
-		attributeNames = attributeNames + (LS);
-		return attributeNames + copyToClipBoard();
+		buf.append(LS);
+		return buf.toString() + copyToClipBoard();
 
 	}
 
@@ -493,23 +561,17 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 						return;
 
 					Object cellValue = getValueAt(row, column);
-					try {
-						if (cellValue != null
-								&& cellValue.getClass() == Class
-										.forName("java.lang.String")) {
-							// see if the String representation is a URL
-							// if it is not, a MalformedURLException gets
-							// thrown,
-							// and we
-							// ignore it
-							java.net.URL url = new java.net.URL(
-									(String) cellValue);
+					if (cellValue != null && cellValue.getClass() == String.class) {
+						URL url = null;
+						try {
+							url = new URL((String) cellValue);
+						} catch (MalformedURLException e1) {
+						}
+						if(url != null) {
 							cytoscape.util.OpenBrowser.openURL(url.toString());
 						}
-
-					} catch (Exception urle) {
-						// System.out.println("##### " + urle.getMessage());
 					}
+						
 				}
 
 			} // mouseClicked
@@ -549,6 +611,12 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 
 				// Initialize internal selection table
 				((DataTableModel) dataModel).resetSelectionFlags();
+				
+				setSelectedColor(SELECTED_NODE);
+				setSelectedColor(REV_SELECTED_NODE);
+				setSelectedColor(SELECTED_EDGE);
+				setSelectedColor(REV_SELECTED_EDGE);
+				
 				resetObjectColor(idLocation);
 
 				String selectedName = null;
@@ -568,7 +636,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 							NodeView nv = Cytoscape.getCurrentNetworkView()
 									.getNodeView(selectedNode);
 							if (nv != null) {
-								nv.setSelectedPaint(Color.GREEN);
+								nv.setSelectedPaint(reverseSelectedNodeColor);
 							}
 
 						}
@@ -587,7 +655,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 							EdgeView ev = Cytoscape.getCurrentNetworkView()
 									.getEdgeView(selectedEdge);
 							if (ev != null) {
-								ev.setSelectedPaint(Color.GREEN);
+								ev.setSelectedPaint(reverseSelectedEdgeColor);
 							}
 						}
 					} else {
@@ -615,7 +683,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 					NodeView nv = Cytoscape.getCurrentNetworkView()
 							.getNodeView(selectedNode);
 					if (nv != null) {
-						nv.setSelectedPaint(Color.YELLOW);
+						nv.setSelectedPaint(selectedNodeColor);
 					}
 				}
 			} else if (objectType == DataTable.EDGES) {
@@ -633,7 +701,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 					EdgeView ev = Cytoscape.getCurrentNetworkView()
 							.getEdgeView(selectedEdge);
 					if (ev != null) {
-						ev.setSelectedPaint(Color.RED);
+						ev.setSelectedPaint(selectedEdgeColor);
 					}
 				}
 			} else {
@@ -725,9 +793,8 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 					CyAttributes.TYPE_SIMPLE_LIST, idField, this
 							.getColumnName(column));
 			cellMenu = new JPopupMenu();
-			List arrayList = new ArrayList();
-			arrayList = contents;
-			Object[] listItems = arrayList.toArray();
+			
+			Object[] listItems = contents.toArray();
 			if (listItems.length != 0) {
 
 				cellContentListPane = new JScrollPane();
@@ -770,9 +837,9 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 				cellMenu.add(cellContentListPane);
 				cellMenu.show(e.getComponent(), e.getX(), e.getY());
 			}
-		} else if (value.getClass() == HashMap.class
+		} else if (value != null && value.getClass() == HashMap.class
 				&& model.getValueAt(row, 0).equals(DataTable.NETWORK_METADATA)) {
-			
+
 			NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape
 					.getDesktop(), false, Cytoscape.getCurrentNetwork());
 			mdd.setLocationRelativeTo(Cytoscape.getDesktop());
@@ -799,8 +866,9 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 		if (!((numrows - 1 == rowsselected[rowsselected.length - 1]
 				- rowsselected[0] && numrows == rowsselected.length) && (numcols - 1 == colsselected[colsselected.length - 1]
 				- colsselected[0] && numcols == colsselected.length))) {
-			JOptionPane.showMessageDialog(null, "Invalid Copy Selection",
-					"Invalid Copy Selection", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+					"Invalid Copy Selection", "Invalid Copy Selection",
+					JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		for (int i = 0; i < numrows; i++) {
@@ -818,20 +886,57 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 		return sbf.toString();
 	}
 
+	public void propertyChange(PropertyChangeEvent e) {
+		
+		
+		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS
+				|| e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
+				|| e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
+				|| e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+			
+			setSelectedColor(SELECTED_NODE);
+			setSelectedColor(REV_SELECTED_NODE);
+			setSelectedColor(SELECTED_EDGE);
+			setSelectedColor(REV_SELECTED_EDGE);
+			
+			if(Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			}
+			
+		}
+		
+	}
+
+	public void onSelectEvent(SelectEvent arg0) {
+		
+		setSelectedColor(SELECTED_NODE);
+		setSelectedColor(REV_SELECTED_NODE);
+		setSelectedColor(SELECTED_EDGE);
+		setSelectedColor(REV_SELECTED_EDGE);
+		
+		if(Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		}
+	}
 }
 
-/*
- * Cell renderer for preview table.
+/**
  * 
- * Coloring function is added. This will sync node color and cell colors.
+ * Cell renderer for preview table.<br>
+ * Coloring function is added. This will sync node color and cell colors.<br>
+ * 
+ * @version 0.5
+ * @since Cytoscape 2.3
+ * 
+ * @author kono
  * 
  */
 class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
+
+	// Define fonts & colors for the cells
 	private Font labelFont = new Font("Sans-serif", Font.BOLD, 14);
 	private Font normalFont = new Font("Sans-serif", Font.PLAIN, 12);
 	private final Color metadataBackground = new Color(255, 210, 255);
-
-	private static final String METADATA_ATTR_NAME = "Network Metadata";
 
 	private int type = DataTable.NODES;
 	private boolean coloring;
@@ -842,7 +947,6 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		this.coloring = coloring;
 		setOpaque(true);
 		setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value,
@@ -869,7 +973,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 				setBackground(DataTable.NON_EDITIBLE_COLOR);
 
 			} else if (type == DataTable.NETWORK && value != null) {
-				if(value.equals("Network Metadata")) {
+				if (value.equals("Network Metadata")) {
 					setBackground(metadataBackground);
 					setFont(labelFont);
 				}
