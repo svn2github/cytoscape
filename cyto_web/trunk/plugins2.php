@@ -146,6 +146,9 @@ The networks can be viewed and manipulated in Cytoscape.
 				<td width="40%" valign="top">
 					The BioPAX Plugin enables Cytoscape users to import and visualize BioPAX formatted documents.  BioPAX is a collaborative effort to create a data exchange format for biological pathway data.   Information is available at: <a href="http://biopax.org">http://biopax.org</a>
 					<p>
+						This product includes software developed by the Apache Software Foundation (<a href="http://www.apache.org/">http://www.apache.org</a>).
+					</p>
+					<p>
 						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
 					</p>
 				</td>
