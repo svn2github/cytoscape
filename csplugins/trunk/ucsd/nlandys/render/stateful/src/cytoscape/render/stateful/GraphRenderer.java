@@ -666,7 +666,7 @@ public final class GraphRenderer
      final float[] rtnValSrc,
      final float[] rtnValTrg)
   {
-    final boolean alwaysCompute = false;
+    final boolean alwaysCompute = true;
     if (anchors != null && anchors.numAnchors() == 0) { anchors = null; }
     final float srcX = (float)
       ((((double) srcNodeExtents[0]) + srcNodeExtents[2]) / 2.0d);
