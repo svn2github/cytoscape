@@ -51,7 +51,7 @@
 					<td width="440" valign="bottom" align="right">
 						<div id="article">
 							<h2>
-								<a href="download.php?file=cyto2_2">
+								<a href="download.php?file=cyto2_3">
 									Download Cytoscape 2.3!
 								</a>
 							</h2>
