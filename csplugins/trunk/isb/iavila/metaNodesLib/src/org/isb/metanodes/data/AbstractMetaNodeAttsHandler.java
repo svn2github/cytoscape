@@ -39,7 +39,7 @@ import giny.view.*;
  * Specialized version of SimpleMetaNodeAttributesHandler.<br>
  * 
  * 1. nodeLabel = member with highest intra-connections in the meta-node<br>
- * 2. Meta-node Area = proportional to number of children<br>
+ * 2. Meta-node Area = proportional to number of children (optional)<br>
  * 3. Edges = same as member edges<br>
  *
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
@@ -49,9 +49,33 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   public static final boolean DEBUG = false;
   
   /**
+   * Whether or not to set the size of a metanode proportional to its number of children<br>
+   * True by default
+   */
+  protected boolean sizeProportionialToNumChildren = true;
+  
+  /**
    * Constructor.
    */
   public AbstractMetaNodeAttsHandler (){}//AbstractMetaNodeAttsHandler
+  
+  /**
+   * Whether or not to set the size of a metanode proportional to its number of children
+   * 
+   * @param set_proportional if true, area of a metanode is proportional to its number of children
+   */
+  public void setSizeProportionalToNumChildren (boolean set_proportional){
+	  this.sizeProportionialToNumChildren = set_proportional;
+  }
+  
+  /**
+   * Gets whether or not to set the size of a metanode proportional to its number of children
+   *
+   * @return true if currently setting size proportional to children, false otherwise
+   */
+  public boolean getSizeProportionalToNumChildren (){
+	  return this.sizeProportionialToNumChildren;
+  }
   
   /**
    * Assigns a canonical name and a common name to the given node. The common name
@@ -148,6 +172,12 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
     CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
     // Set the 'nodeType' attribute to 'metaNode'
     nodeAtts.setAttribute(node.getIdentifier(),"nodeType", "metaNode");
+    
+    if(!getSizeProportionalToNumChildren()){
+    		Cytoscape.getNodeAttributes().deleteAttribute(node.getIdentifier(),NodeAppearanceCalculator.nodeWidthBypass);
+    		Cytoscape.getNodeAttributes().deleteAttribute(node.getIdentifier(),NodeAppearanceCalculator.nodeHeightBypass);
+    		return true;
+    	}
     
     // Set the node-height and node-width attributes so that the area
     // of the meta-node is proportional to the number of members within it

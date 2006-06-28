@@ -25,6 +25,10 @@ package org.isb.metanodes;
 
 import java.util.*;
 import giny.model.RootGraph;
+
+import metanodePlugin.view.VisualStyleFactory;
+
+import org.isb.metanodes.data.AbstractMetaNodeAttsHandler;
 import org.isb.metanodes.data.MetaNodeAttributesHandler;
 import org.isb.metanodes.model.AbstractMetaNodeModeler;
 import org.isb.metanodes.model.MetaNodeFactory;
@@ -92,6 +96,9 @@ public class MetaNodeUtils {
 	                                           CyNetwork child_network,
 	                                           MetaNodeAttributesHandler attributes_handler){
 	  	MetaNodeUtils.abstractModeler.setNetworkAttributesHandler(network, attributes_handler);
+	  	
+	  	
+	  	
 	  	return createMetaNode(network,child_network);
 	  }
 	  
