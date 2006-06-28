@@ -747,11 +747,20 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 	}
 
 	/**
+	 * @deprecated This method is only deprecated because it is misspelled.  Just
+	 * use the correctly spelled method: getConfigDirectory().  This method will
+	 * be removed 12/2006.
+	 */
+	public static File getConfigDirectoy() {
+		return getConfigDirectory();
+	}
+
+	/**
 	 * If .cytoscape directory does not exist, it creates it and returns it
 	 * 
 	 * @return the directory ".cytoscape" in the users home directory.
 	 */
-	public static File getConfigDirectoy() {
+	public static File getConfigDirectory() {
 		File dir = null;
 		try {
 			String dirName = properties.getProperty("alternative.config.dir", System.getProperty("user.home"));
@@ -768,7 +777,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 
 	public static File getConfigFile(String file_name) {
 		try {
-			File parent_dir = getConfigDirectoy();
+			File parent_dir = getConfigDirectory();
 			File file = new File(parent_dir, file_name);
 			if (file.createNewFile())
 				System.err.println("Config file: " + file + " created.");
