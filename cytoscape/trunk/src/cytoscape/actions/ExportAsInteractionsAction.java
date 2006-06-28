@@ -48,6 +48,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.task.util.TaskManager;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.writers.InteractionWriter;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
@@ -146,7 +147,18 @@ class SaveAsSifTask implements Task {
 	    if (Cytoscape.getCurrentNetwork().getNodeCount() == 0) {
                 throw new IllegalArgumentException ("Network is empty.");
             }
-            saveInteractions();
+
+	    FileWriter f = new FileWriter(fileName);
+	    CyNetwork netToSave = Cytoscape.getCurrentNetwork();
+	    InteractionWriter.writeInteractions(netToSave,f, taskMonitor);
+	    f.close();
+
+	    Object[] ret_val = new Object[3];
+    	    ret_val[0] = netToSave;
+	    ret_val[1] = new File (fileName).toURI();
+	    ret_val[2] = new Integer (Cytoscape.FILE_SIF);
+            Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
+
             taskMonitor.setPercentCompleted (100);
             taskMonitor.setStatus("Network successfully saved to:  "
                     + fileName);
@@ -181,80 +193,5 @@ class SaveAsSifTask implements Task {
      */
     public String getTitle() {
         return new String ("Saving Network");
-    }
-
-    /**
-     * Saves Interactions to File.
-     * @throws IOException Error Writing to File.
-     */
-    private void saveInteractions() throws IOException {
-        FileWriter fileWriter = new FileWriter(fileName);
-        String lineSep = System.getProperty("line.separator");
-        CyNetwork network = Cytoscape.getCurrentNetwork();
-        List nodeList = network.nodesList();
-
-        if (nodeList.size() == 0) {
-            throw new IOException ("Network is empty.");
-        }
-
-        CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
-        CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
-        giny.model.Node[] nodes = 
-        	(giny.model.Node[]) nodeList.toArray(new giny.model.Node[0]);
-        
-        for (int i = 0; i < nodes.length; i++) {
-
-            //  Report on Progress
-            double percent = ((double) i / nodes.length) * 100.0;
-            taskMonitor.setPercentCompleted((int) percent);
-
-            StringBuffer sb = new StringBuffer();
-            giny.model.Node node = nodes[i];
-            String canonicalName = node.getIdentifier();
-            List edges = network.getAdjacentEdgesList(node, true, true, true);
-
-            if (edges.size() == 0) {
-                sb.append(canonicalName + lineSep);
-            } else {
-                Iterator it = edges.iterator();
-                while (it.hasNext()) {
-                    giny.model.Edge edge = (giny.model.Edge) it.next();
-                    if (node == edge.getSource()) { //do only for outgoing edges
-                        giny.model.Node target = edge.getTarget();
-                        
-                        String canonicalTargetName = target.getIdentifier();
-                        
-                        String edgeName = edge.getIdentifier();
-                        
-                        String interactionName =
-                                edgeAtts.getStringAttribute(edge.getIdentifier(),Semantics.INTERACTION);
-                        
-                        if (interactionName == null) {
-                            interactionName = "xx";
-                        }
-                        sb.append(canonicalName);
-                        sb.append("\t");
-                        sb.append(interactionName);
-                        sb.append("\t");
-                        sb.append(canonicalTargetName);
-                        sb.append(lineSep);
-                    }
-                } // while
-            } // else: this node has edges, write out one line for every
-            // out edge (if any)
-            fileWriter.write(sb.toString());
-            //System.out.println(" WRITE: "+ sb.toString() );
-        }  // for i
-        fileWriter.close();
-	// MLC: 09/19/05 BEGIN:
-	//        // AJK: 09/14/05 BEGIN
-	//        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
-	//		// AJK: 09/14/05 END
-	Object[] ret_val = new Object[3];
-	ret_val[0] = network;
-	ret_val[1] = new File (fileName).toURI();
-	ret_val[2] = new Integer (Cytoscape.FILE_SIF);
-        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
-	// MLC: 09/19/05 END.
     }
 }
