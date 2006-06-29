@@ -51,11 +51,17 @@ public class MNcollapserDialog extends JFrame {
 	
 	protected JCheckBox metaRelationshipEdgesCheckBox;
 
+	protected JCheckBox useDefaultMetanodeSizerCheckBox;
+
 	protected CollapseSelectedNodesAction createMetaNodeAction;
 
 	protected CollapseSelectedNodesAction collapseAction;
 
+	protected CollapseSelectedNodesAction collapseAllAction;
+
 	protected UncollapseSelectedNodesAction expandAction;
+
+	protected UncollapseSelectedNodesAction expandToNewAction;
 
 	protected UncollapseSelectedNodesAction destroyMetaNodeAction;
 
@@ -65,7 +71,13 @@ public class MNcollapserDialog extends JFrame {
 
 	protected static final String COLLAPSE_MN_TITLE = "Collapse to Meta-Node(s)";
 
+	protected static final String COLLAPSE_ALL_MN_TITLE = "Collapse all to Meta-Node(s)";
+
 	protected static final String EXPAND_MN_TITLE = "Expand Children";
+
+	protected static final String EXPAND_NEW_MN_TITLE = "Expand Children into New Network";
+
+	protected boolean useDefaultMetanodeSizer = true;
 
 
 	/**
@@ -77,6 +89,7 @@ public class MNcollapserDialog extends JFrame {
 		setRecursiveOperations(false);
 		setMultipleEdges(true);
 		setCreateMetaRelationshipEdges(true);
+		setUseDefaultMetanodeSizer(true);
 		AbstractMetaNodeMenu.setCollapserDialog(this);
 	}// MNcollapserDialog
 
@@ -117,6 +130,19 @@ public class MNcollapserDialog extends JFrame {
 	}
 
 	/**
+	 * Whether or not metanodes are sized based on the sum of the area of their children
+	 * 
+	 * @param useDefault
+	 */
+	public void setUseDefaultMetanodeSizer (boolean useDefault){
+		if(this.useDefaultMetanodeSizerCheckBox == null){
+			this.useDefaultMetanodeSizerCheckBox = new JCheckBox("Use default metanode sizer");
+			this.useDefaultMetanodeSizerCheckBox.setToolTipText("Set metanode size proportional to the area of all children");
+		}
+		this.useDefaultMetanodeSizerCheckBox.setSelected(useDefault);
+	}
+	
+	/**
 	 * @return whether or not the operations are to be performed recursively
 	 */
 	public boolean areOperationsRecursive() {
@@ -130,6 +156,15 @@ public class MNcollapserDialog extends JFrame {
 	public boolean getMultipleEdges() {
 		return this.multipleEdgesCheckBox.isSelected();
 	}// getMultipleEdges
+	
+	/**
+	 * Whether or not metanodes are sized based on the sum of the area of their children
+	 * 
+	 * @return whether metanodes are using the default sizer
+	 */
+	public boolean getUseDefaultMetanodeSizer (){
+		return this.useDefaultMetanodeSizerCheckBox.isSelected();
+	}
 	
 	/**
 	 * Whether or not edges between metanodes that have a shared member, and edges between parent metanodes and their
@@ -156,9 +191,17 @@ public class MNcollapserDialog extends JFrame {
 		collapseButton
 				.setToolTipText("Finds existing parent meta-nodes of selected nodes and collapses them.");
 
+		JButton collapseAllButton = new JButton(COLLAPSE_ALL_MN_TITLE);
+		collapseAllButton
+				.setToolTipText("Finds all existing meta-nodes collapses them.");
+
 		JButton expandButton = new JButton(EXPAND_MN_TITLE);
 		expandButton
 				.setToolTipText("Displays the children of selected meta-nodes.");
+
+		JButton expandToNewButton = new JButton(EXPAND_NEW_MN_TITLE);
+		expandToNewButton
+				.setToolTipText("Displays the children of selected meta-nodes in new networks.");
 
 		if (this.recursiveCheckBox == null) {
 			this.recursiveCheckBox = new JCheckBox(
@@ -180,6 +223,12 @@ public class MNcollapserDialog extends JFrame {
 		this.metaRelationshipEdgesCheckBox.setSelected(true);
 		this.metaRelationshipEdgesCheckBox.setToolTipText("<HTML>childOf: an edge between a child-node and its parent meta-node<br>"+
 				"sharedMember:an edge between two meta-nodes that share a child node</HTML>");
+
+		if(this.useDefaultMetanodeSizerCheckBox == null){
+			this.useDefaultMetanodeSizerCheckBox = new JCheckBox("Use default metanode sizer");
+		}
+		this.useDefaultMetanodeSizerCheckBox.setSelected(true);
+		this.useDefaultMetanodeSizerCheckBox.setToolTipText("Set metanode size proportional to the area of all children");
 		
 		// Set the desired MetaNodeAttributesHandler in ActionFactory.
 		ActionFactory
@@ -187,24 +236,34 @@ public class MNcollapserDialog extends JFrame {
 
 		// Attach action listeners to the buttons
 		this.createMetaNodeAction = (CollapseSelectedNodesAction) ActionFactory
-				.createCollapseSelectedNodesAction(false,
+				.createCollapseSelectedNodesAction(false, false,
 						areOperationsRecursive(),getCreateMetaRelationshipEdges(), CREATE_MN_TITLE);
 		createMetaNodeButton.addActionListener(this.createMetaNodeAction);
 
 		this.destroyMetaNodeAction = (UncollapseSelectedNodesAction) ActionFactory
 				.createUncollapseSelectedNodesAction(areOperationsRecursive(),
-						false, DESTROY_MN_TITLE);
+						false, false, DESTROY_MN_TITLE);
 		destroyMetaNodeButton.addActionListener(this.destroyMetaNodeAction);
 
 		this.collapseAction = (CollapseSelectedNodesAction) ActionFactory
-				.createCollapseSelectedNodesAction(true,
+				.createCollapseSelectedNodesAction(true, false,
 						areOperationsRecursive(), getCreateMetaRelationshipEdges(), COLLAPSE_MN_TITLE);
 		collapseButton.addActionListener(this.collapseAction);
 
+		this.collapseAllAction = (CollapseSelectedNodesAction) ActionFactory
+				.createCollapseSelectedNodesAction(true, true,
+						areOperationsRecursive(), getCreateMetaRelationshipEdges(), COLLAPSE_ALL_MN_TITLE);
+		collapseAllButton.addActionListener(this.collapseAllAction);
+
 		this.expandAction = (UncollapseSelectedNodesAction) ActionFactory
 				.createUncollapseSelectedNodesAction(areOperationsRecursive(),
-						true, EXPAND_MN_TITLE);
+						true, false, EXPAND_MN_TITLE);
 		expandButton.addActionListener(this.expandAction);
+
+		this.expandToNewAction = (UncollapseSelectedNodesAction) ActionFactory
+				.createUncollapseSelectedNodesAction(areOperationsRecursive(),
+						true, true, EXPAND_NEW_MN_TITLE);
+		expandToNewButton.addActionListener(this.expandToNewAction);
 
 		this.recursiveCheckBox.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent event) {
@@ -240,14 +299,24 @@ public class MNcollapserDialog extends JFrame {
 				MNcollapserDialog.this.collapseAction.setCreateMetaRelationshipEdges(createMetaRelEdges);
 			}
 		});
+		
+		this.useDefaultMetanodeSizerCheckBox.addActionListener(new AbstractAction (){
+			public void actionPerformed (ActionEvent event){
+				boolean useDefaultSizer = MNcollapserDialog.this.getUseDefaultMetanodeSizer();
+				MNcollapserDialog.this.collapseAction.setUseDefaultMetanodeSizer(useDefaultSizer);
+				MNcollapserDialog.this.createMetaNodeAction.setUseDefaultMetanodeSizer(useDefaultSizer);
+			}
+		});
 
 		// Layout the buttons
 		JPanel gridPanel = new JPanel();
 		gridPanel.setLayout(new GridLayout(2, 2)); // rows, cols
 		gridPanel.add(createMetaNodeButton);
 		gridPanel.add(collapseButton);
+		gridPanel.add(collapseAllButton);
 		gridPanel.add(destroyMetaNodeButton);
 		gridPanel.add(expandButton);
+		gridPanel.add(expandToNewButton);
 
 		JPanel optionsPanel = new JPanel();
 		optionsPanel.setLayout(new BoxLayout(optionsPanel,BoxLayout.Y_AXIS));
@@ -260,6 +329,7 @@ public class MNcollapserDialog extends JFrame {
 		
 		JPanel row2 = new JPanel();
 		row2.add(this.metaRelationshipEdgesCheckBox);
+		row2.add(this.useDefaultMetanodeSizerCheckBox);
 		
 		optionsPanel.add(row2);
 		
@@ -300,9 +370,17 @@ public class MNcollapserDialog extends JFrame {
 		return this.collapseAction;
 	}// getCollapseMetaNodesAction
 
+	public AbstractAction getCollapseAllMetaNodesAction() {
+		return this.collapseAllAction;
+	}// getCollapseAllMetaNodesAction
+
 	public AbstractAction getExpandChildrenAction() {
 		return this.expandAction;
 	}// getExpandChildrenAction
+
+	public AbstractAction getExpandToNewAction() {
+		return this.expandToNewAction;
+	}// getExpandToNewAction
 
 	/**
 	 * @return a JMenu with operations to create new meta-nodes, destroy
@@ -314,7 +392,7 @@ public class MNcollapserDialog extends JFrame {
 		menu.add(this.destroyMetaNodeAction);
 		menu.add(this.collapseAction);
 		menu.add(this.expandAction);
-		System.out.println("MNcollapserDialog getMenu called");
+		menu.add(this.expandToNewAction);
 		return menu;
 	}// getMenu
 }// class MNcollapserDialog
