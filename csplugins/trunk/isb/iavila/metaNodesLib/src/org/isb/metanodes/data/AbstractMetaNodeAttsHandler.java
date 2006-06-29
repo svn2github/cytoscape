@@ -34,6 +34,7 @@ import cytoscape.view.*;
 import cytoscape.visual.*;
 import cern.colt.map.*;
 import giny.view.*;
+import org.isb.metanodes.model.MetaNodeFactory;
 
 /**
  * Specialized version of SimpleMetaNodeAttributesHandler.<br>
@@ -47,6 +48,7 @@ import giny.view.*;
  */
 public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler {
   public static final boolean DEBUG = false;
+  public static boolean useDefaultMetanodeSizer = true;
   
   /**
    * Whether or not to set the size of a metanode proportional to its number of children<br>
@@ -135,6 +137,10 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
     		return alias;
     }
   }//createMetaNodeAlias
+
+	public void setSizeProportionalToNumChildren(boolean use_default_sizer) {
+		useDefaultMetanodeSizer = use_default_sizer;
+	}
   
   /**
    * Sets the node and edge attributes of the given meta-node and assigns a unique name to it
@@ -169,9 +175,12 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
     if(children == null || cy_network == null){
       return false;
     }
+
     CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+/*
     // Set the 'nodeType' attribute to 'metaNode'
     nodeAtts.setAttribute(node.getIdentifier(),"nodeType", "metaNode");
+*/
     
     if(!getSizeProportionalToNumChildren()){
     		Cytoscape.getNodeAttributes().deleteAttribute(node.getIdentifier(),NodeAppearanceCalculator.nodeWidthBypass);
@@ -202,22 +211,31 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
       double width = nodeView.getWidth();
       area = area + height * width;
     }//for i
-    if(area == 0){
-      // none of the nodes have a view?
-      if(DEBUG){
-        System.err.println("The area is 0.");
-      }
-      return false;
-    }
-    // NOTE: This assumes a circular shape for meta-nodes.
-    double diameter = 2 * Math.sqrt(area/Math.PI);
-    String diameterAsString = new Double(diameter).toString();
-    nodeAtts.setAttribute(node.getIdentifier(),
-            NodeAppearanceCalculator.nodeWidthBypass,
-            diameterAsString);
-    nodeAtts.setAttribute(node.getIdentifier(),
-            NodeAppearanceCalculator.nodeHeightBypass,
-            diameterAsString);
+
+	// Check properties to see if we're supposed to leave the metanode properties alone
+	if (useDefaultMetanodeSizer) {
+		if(area == 0){
+   	   		// none of the nodes have a view?
+   	   		if(DEBUG){
+   	     		System.err.println("The area is 0.");
+   	   		}
+   	   		return false;
+   	 	}
+   	 	// NOTE: This assumes a circular shape for meta-nodes.
+   	 	double diameter = 2 * Math.sqrt(area/Math.PI);
+   	 	String diameterAsString = new Double(diameter).toString();
+	
+   		nodeAtts.setAttribute(node.getIdentifier(),
+   	   	     NodeAppearanceCalculator.nodeWidthBypass,
+   	   	     diameterAsString);
+   		nodeAtts.setAttribute(node.getIdentifier(),
+      	     NodeAppearanceCalculator.nodeHeightBypass,
+      	     diameterAsString);
+	}
+
+	nodeAtts.setAttribute(node.getIdentifier(),
+				MetaNodeFactory.METANODES_CHILDREN, new Integer(children.size()));
+
     return true;
   }//setNodeAttributes
 

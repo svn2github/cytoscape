@@ -43,6 +43,8 @@ public class MetaNodeFactory {
 	 * we need to know which meta-nodes belong to which CyNetworks.
 	 */
 	public static final String METANODES_IN_NETWORK = "__metaNodeRindices";
+	public static final String METANODES_HINTS = "__metaNodeHints";
+	public static final String METANODES_CHILDREN = "nDescendants";
 	private static final GPMetaNodeFactory gpMetaNodeFactory = new GPMetaNodeFactory();
 	
   /**

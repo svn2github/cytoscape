@@ -31,6 +31,7 @@ import java.util.*;
 import org.isb.metanodes.model.AbstractMetaNodeModeler;
 import org.isb.metanodes.model.MetaNodeFactory;
 import org.isb.metanodes.MetaNodeUtils;
+import org.isb.metanodes.data.AbstractMetaNodeAttsHandler;
 import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
@@ -41,12 +42,16 @@ import cytoscape.visual.VisualMappingManager;
  * Use metaNodeViewer.actions.ActionFactory to get an instance of this class.
  */
 public class CollapseSelectedNodesAction extends AbstractAction {
+
+    protected static final boolean REPORT_TIME = false;
 	
 	protected AbstractMetaNodeModeler abstractingModeler;
 	protected boolean collapseExistentParents;
+	protected boolean collapseAll;
 	protected boolean collapseRecursively;
 	protected boolean multipleEdges;
 	protected boolean createMetaRelationshipEdges;
+	protected static boolean useDefaultMetanodeSizer = true;
 	/**
 	 * Use metaNodeViewer.actions.ActionFactory instead
 	 *
@@ -63,12 +68,14 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	 */
 	protected CollapseSelectedNodesAction (AbstractMetaNodeModeler abstracting_modeler,
 			boolean collapse_existent_parents,
+			boolean collapse_all,
 			boolean collapse_recursively,
 			boolean create_meta_relationship_edges,
 			String title){
 		super(title);
 		this.abstractingModeler = abstracting_modeler;
 		this.collapseExistentParents = collapse_existent_parents;
+		this.collapseAll = collapse_all;
 		this.collapseRecursively = collapse_recursively;
 		this.multipleEdges = abstracting_modeler.getMultipleEdges();
 		this.createMetaRelationshipEdges = create_meta_relationship_edges;
@@ -89,6 +96,20 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	public boolean getCollapseExistentParents (){
 		return this.collapseExistentParents;
 	}//getCollapseExistentParents
+	
+	/**
+	 * Sets whether or not the to collapse all meta-nodes 
+	 */
+	public void setCollapseAll (boolean collapse_all){
+		this.collapseAll = collapse_all;
+	}//setCollapseAll
+	
+	/**
+	 * @return whether or not the to collapse all meta-nodes 
+	 */
+	public boolean getCollapseAll (){
+		return this.collapseAll;
+	}//setCollapseAll
 	
 	/**
 	 * Sets whether or not the top-level meta-node parents of the selected nodes should be found and collapsed.
@@ -147,11 +168,19 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	}//setAssignDefaultNames
 	
 	/**
+	 * Sets whether or not to use the default sizer
+	 */
+	public void setUseDefaultMetanodeSizer (boolean use_default_metanode_sizer){
+		useDefaultMetanodeSizer = use_default_metanode_sizer;
+	}//setCollapseAll
+	
+	/**
 	 * Implements AbstractAction.actionPerformed by calling <code>CollapseSelectedNodesAction.collapseSelectedNodes</code>
 	 */
 	public void actionPerformed (ActionEvent e){
 		collapseSelectedNodes(this.abstractingModeler, 
                           this.collapseExistentParents,
+						  this.collapseAll,
                           this.collapseRecursively,
                           this.multipleEdges,
                           this.createMetaRelationshipEdges);
@@ -166,49 +195,70 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	 * of creating new meta-nodes for them
 	 * @param collapse_recursively whether or not the top-level meta-node parents of the selected nodes should be found and collapsed, ignored if
 	 * collapse_existent_parents is false
-   * @param multiple_edges whether multiple edges between meta-nodes and other nodes should be created
+	 * @param multiple_edges whether multiple edges between meta-nodes and other nodes should be created
 	 */
 	public static void collapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
                                             boolean collapse_existent_parents,
+                                            boolean collapse_all,
                                             boolean collapse_recursively,
                                             boolean multiple_edges,
                                             boolean create_meta_relationship_edges){
 		
-		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-        Iterator it = cyNetwork.getSelectedNodes().iterator();
+		long collapseTime = profile_init(null);
 
-		if (!it.hasNext()) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-			"Please select one or more nodes.");
-			return;
-		}
-		
-      
-        if(collapse_existent_parents){
-            Map parentMetanodes = new HashMap();
-            // it = selectedNodes.iterator();
-			while (it.hasNext()) {
-				List parentList = null;
-            	if(collapse_recursively){
-                	parentList = MetaNodeUtils.getRootParents(cyNetwork,(CyNode)it.next());
-            	}else{
-                	parentList = MetaNodeUtils.getParents(cyNetwork,(CyNode)it.next());
+		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		Map parentMetanodes = new HashMap();
+		Iterator it = cyNetwork.getSelectedNodes().iterator();
+
+		if (MetaNodeUtils.abstractModeler.getNetworkAttributesHandler(cyNetwork) instanceof AbstractMetaNodeAttsHandler) {
+			AbstractMetaNodeAttsHandler attsHandler = (AbstractMetaNodeAttsHandler)MetaNodeUtils.abstractModeler.getNetworkAttributesHandler(cyNetwork);
+            attsHandler.setSizeProportionalToNumChildren(useDefaultMetanodeSizer);
+            // VisualStyleFactory.sizeProportionalToNumChildren = useDefaultMetanodeSizer;
+		} 
+
+		if (!collapse_all) {
+			if (!it.hasNext()) {
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+				"Please select one or more nodes.");
+				return;
+			}
+
+		} 
+		if(collapse_existent_parents) {
+			if (!collapse_all) {
+				while (it.hasNext()) {
+					List parentList = null;
+					CyNode node = (CyNode)it.next();
+					if (collapse_recursively) {
+						parentList = MetaNodeUtils.getRootParents(cyNetwork,node);
+					} else {
+						parentList = MetaNodeUtils.getParents(cyNetwork,node);
+					}
+					// Add the nodes to the map
+					Iterator it2 = parentList.iterator();
+					while (it2.hasNext()) {
+						CyNode parentNode = (CyNode)it2.next();
+						parentMetanodes.put(parentNode, parentNode);
+					}
 				}
-				// Add the nodes to the map
+			} else {
+				List parentList = MetaNodeUtils.getAllMetaNodes(cyNetwork);
 				Iterator it2 = parentList.iterator();
-				while (it2.hasNext()) {
+				while (it2.hasNext()) { 	
 					CyNode parentNode = (CyNode)it2.next();
-					parentMetanodes.put(parentNode, parentNode);
+					parentMetanodes.put (parentNode, parentNode); 
 				}
-            }
-            if(parentMetanodes.size() == 0){ 
-                JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"The selected nodes do not have parent meta-nodes.");
-                return;
-            }
-            if(parentMetanodes.size() > 0){
-                it = parentMetanodes.values().iterator();
-                while(it.hasNext()) MetaNodeUtils.collapseMetaNode(cyNetwork,(CyNode)it.next(),multiple_edges, create_meta_relationship_edges);
-            }
+			}
+		
+        	if(parentMetanodes.size() == 0){ 
+        		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"The selected nodes do not have parent meta-nodes.");
+        		return;
+			}
+        	if(parentMetanodes.size() > 0){
+        		it = parentMetanodes.values().iterator();
+           		while(it.hasNext()) MetaNodeUtils.collapseMetaNode(cyNetwork,
+												(CyNode)it.next(),multiple_edges, create_meta_relationship_edges);
+        	}
         }else{
             CyNetwork subnet = Cytoscape.getRootGraph().createNetwork(cyNetwork.getSelectedNodes(), new ArrayList());
             CyNode metanode = MetaNodeUtils.createMetaNode(cyNetwork,subnet);
@@ -217,9 +267,28 @@ public class CollapseSelectedNodesAction extends AbstractAction {
         // This may make the operation slower. It would be nice to have applyAppearances(Collection nodes, Collection edges);
        VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
        vizmapper.applyAppearances();
+
+        profile_mark(collapseTime, "time to collapse metanode(s) = ");
         
 	}//collapseSelectedNodes
 	
-	
+	private static long profile_init(String message) {
+		if (REPORT_TIME) {
+			if (message != null)
+				System.err.println(message);
+			return System.currentTimeMillis();
+		}
+		return 0;
+	}
+
+	private static long profile_mark(long startTime, String message) {
+		if (REPORT_TIME) {
+			long now = System.currentTimeMillis();
+			System.err.println(message+(now-startTime)+"ms");
+			return now;
+		}
+		return 0;
+	}
+
 }//class CollapseSelectedNodesAction
 

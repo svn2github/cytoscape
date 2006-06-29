@@ -79,7 +79,7 @@ public class ActionFactory {
    * @return an AbstractAction that collapses selected nodes and edges contained in the given CyWindow
    */
   public static AbstractAction createCollapseSelectedNodesAction (boolean collapse_existent_parents, 
-  		boolean collapse_recursively, boolean create_meta_relationship_edges,
+  		boolean collapse_all, boolean collapse_recursively, boolean create_meta_relationship_edges,
   		String title){
     // Get the RootGraph and create or update abstractingModeler
     RootGraph rootGraph = Cytoscape.getRootGraph();
@@ -94,6 +94,7 @@ public class ActionFactory {
     // Create the action and return it
     return new CollapseSelectedNodesAction(ActionFactory.abstractingModeler,
                                            collapse_existent_parents,
+                                           collapse_all,
 										   collapse_recursively,
 										   create_meta_relationship_edges,
                                            title);
@@ -109,7 +110,8 @@ public class ActionFactory {
    * @param title the title of the action (displayed on buttons, menus, etc).
    * @return an AbstractAction that uncollapses selected nodes
    */
-  public static AbstractAction createUncollapseSelectedNodesAction (boolean recursive, boolean temporary, String title){
+  public static AbstractAction createUncollapseSelectedNodesAction (boolean recursive, boolean temporary, 
+		boolean newNetwork, String title){
     // Get the RootGraph and create or update abstractingModeler
     RootGraph rootGraph = Cytoscape.getRootGraph();
     if(ActionFactory.abstractingModeler == null){
@@ -123,6 +125,7 @@ public class ActionFactory {
     return new UncollapseSelectedNodesAction(ActionFactory.abstractingModeler,
                                              recursive,
                                              temporary,
+                                             newNetwork,
                                              title);
     
   }//getUncollapseSelectedNodesAction

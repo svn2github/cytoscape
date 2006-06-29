@@ -211,6 +211,7 @@ public class MetaNodeUtils {
 	      
           boolean temporary = false; // == don't remember the metanode
 	    
+/*
           CyNetworkView netView = Cytoscape.getNetworkView(network.getIdentifier());
           List childrenNodes = new ArrayList();
           double xPos = 0;
@@ -230,6 +231,7 @@ public class MetaNodeUtils {
             	  hasNodeView = false;
               }
           }
+*/
            
           boolean ok = MetaNodeUtils.abstractModeler.undoModel(network,meta_node,recursive,temporary);
           // Also, remove the metanode from the RootGraph
@@ -237,7 +239,7 @@ public class MetaNodeUtils {
           CyNode removedNode = (CyNode)rootGraph.removeNode(meta_node);
           removed = ok && (removedNode != null);
           // Cytoscape no longer remembers the locations of nodes after they are removed. So, we need to lay them out in some way...
-          if(hasNodeView && childrenNodes.size() > 0) LayoutUtils.layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
+          // if(hasNodeView && childrenNodes.size() > 0) LayoutUtils.layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
           
           return removed;
 	  }//removeMetaNodes
@@ -257,6 +259,7 @@ public class MetaNodeUtils {
 	      boolean expanded = false;
 	      if(network == null || meta_node == null || !isMetaNode(meta_node)) return expanded;
           
+/*
 	      CyNetworkView netView = Cytoscape.getNetworkView(network.getIdentifier());
 	      List childrenNodes = new ArrayList();
 	      double xPos = 0;
@@ -269,16 +272,17 @@ public class MetaNodeUtils {
                   childrenNodes = getChildren(meta_node);
 	          NodeView metaNodeView = netView.getNodeView(meta_node);
 	          if(metaNodeView != null){
-	          xPos = metaNodeView.getXPosition();
-	          yPos = metaNodeView.getYPosition();
+	          	xPos = metaNodeView.getXPosition();
+	          	yPos = metaNodeView.getYPosition();
 	          }else{
-	        	  	hasNodeView = false;
+	        	hasNodeView = false;
 	          }
 	      }
+*/
 	      // This only uncollapses the metanodes, but they are kept in the RootGraph
 	      expanded = MetaNodeUtils.abstractModeler.undoModel(network,meta_node,recursive,true);
 	      // Cytoscape no longer remembers the locations of nodes after they are removed. So, we need to lay them out in some way...
-	      if(hasNodeView && childrenNodes.size() > 0) LayoutUtils.layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
+	      // if(hasNodeView && childrenNodes.size() > 0) LayoutUtils.layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
 	      
           return expanded;
 	  }//uncollapseSelectedNodes
@@ -459,5 +463,5 @@ public class MetaNodeUtils {
           }
           return metaNodeIDsForNetwork;
       }
-      
+
 }//MetaNodeUtils

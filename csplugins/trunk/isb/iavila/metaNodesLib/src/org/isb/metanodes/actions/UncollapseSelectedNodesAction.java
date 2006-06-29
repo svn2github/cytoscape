@@ -45,6 +45,7 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
 	protected AbstractMetaNodeModeler abstractingModeler;
 	protected boolean recursive;
 	protected boolean temporaryUncollapse;
+	protected boolean newNetwork;
 	
 	/**
 	 * Use metaNodeViewer.actions.ActionFactory instead.
@@ -58,11 +59,13 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
 	protected UncollapseSelectedNodesAction (AbstractMetaNodeModeler abstracting_modeler,
 			boolean recursive_uncollapse,
 			boolean temporary_uncollapse,
+			boolean newNetwork,
 			String title){
 		super(title);
 		this.abstractingModeler = abstracting_modeler;
 		this.recursive = recursive_uncollapse;
 		this.temporaryUncollapse = temporary_uncollapse;
+		this.newNetwork = newNetwork;
 	}//UncollapseSelectedNodesAction
 	
 	/**
@@ -82,12 +85,21 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
 	}//setTemporaryUncollapse
 	
 	/**
+	 * Sets whether or not this uncollapse will open a new network
+	 */
+	public void setNewNetwork (boolean newNetwork){
+		this.newNetwork = newNetwork;
+	}//setTemporaryUncollapse
+	
+	
+	/**
 	 * Implements AbstractAction.actionPerformed by calling <code>uncollapseSelectedNodes</code>
 	 */
 	public void actionPerformed (ActionEvent e){
 		uncollapseSelectedNodes(this.abstractingModeler, 
 				this.recursive, 
-				this.temporaryUncollapse);
+				this.temporaryUncollapse,
+				this.newNetwork);
 	}//actionPerformed
 	
 	/**
@@ -100,7 +112,8 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
 	 */
 	public static void uncollapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
 			boolean recursive,
-			boolean temporary){
+			boolean temporary,
+			boolean newNetwork){
         
         CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
         Iterator it = cyNetwork.getSelectedNodes().iterator();
@@ -115,7 +128,7 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
             "Please select one or more nodes.");
             return;
         }
-        
+
 		// Finally, uncollapse each node (if it is not a metanode, nothing happens)
 		//int numUncollapsed = 
 		  //  MetaNodeUtils.uncollapseNodes(cyNetwork,selectedNodes,recursive,temporary);
@@ -125,7 +138,14 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
             while(it.hasNext()){
             		CyNode metaNode = (CyNode)it.next();
             		if(!MetaNodeUtils.isMetaNode(metaNode)) continue;
-            		if(MetaNodeUtils.expandMetaNode(cyNetwork,metaNode,recursive)) numExpanded++;
+					if (newNetwork) {
+						int [] nodes = new int[1];
+						nodes[0] = metaNode.getRootGraphIndex();
+						CyNetwork targetNetwork = Cytoscape.createNetwork(nodes, null, metaNode.getIdentifier());
+						if(MetaNodeUtils.expandMetaNode(targetNetwork,metaNode,recursive)) numExpanded++;
+					} else {
+						if(MetaNodeUtils.expandMetaNode(cyNetwork,metaNode,recursive)) numExpanded++;
+					}
             }
         }else{
             while(it.hasNext()){

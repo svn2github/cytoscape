@@ -23,17 +23,25 @@
  **/
 
 package org.isb.metanodes.model;
+import org.isb.metanodes.MetaNodeUtils;
 
 import java.util.*;
+import java.lang.*;
 
 import giny.model.*;
+import giny.view.*;
 import cytoscape.*;
+import cytoscape.view.*;
+import cytoscape.layout.LayoutUtils;
 import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
 import org.isb.metanodes.data.MetaNodeAttributesHandler;
 import cern.colt.list.IntArrayList;
+import cern.colt.list.ObjectArrayList;
 import cern.colt.map.AbstractIntIntMap;
 import cern.colt.map.OpenIntIntHashMap;
+import cern.colt.map.OpenIntObjectHashMap;
+import cern.colt.map.OpenIntObjectHashMap;
 
 /**
  * This class models meta-nodes by abstracting the graphs that compose
@@ -105,6 +113,16 @@ public class AbstractMetaNodeModeler {
     // If true, "childOf" and "sharedChild" edges are created
     private boolean createMetaEdges = true;
 
+	// Cache some values to avoid having to re-determine them every time
+	private Map metaNodeToChildren; // The call to getNodeMetaChildIndicesArray is expensive
+
+	// Keep a maps of parents of children and children of parents
+	private Map networkNodesToChildren;
+	private Map networkNodesToParents;
+	// These will be reinitialized to the "current" network version
+	private	OpenIntObjectHashMap nodesToChildren;
+	private OpenIntObjectHashMap nodesToParents;
+
     /**
      * Since there should only be one AbstractMetaNodeModeler per/Cytoscape, the
      * constructor is protected; use
@@ -118,6 +136,11 @@ public class AbstractMetaNodeModeler {
     protected AbstractMetaNodeModeler(RootGraph root_graph) {
         this.rootGraph = root_graph;
         this.metaNodeToProcessedEdges = new HashMap();
+		this.metaNodeToChildren = new HashMap();
+		this.networkNodesToChildren = new HashMap();
+		this.networkNodesToParents = new HashMap();
+		this.nodesToChildren = null;
+		this.nodesToParents = null;
         this.metaEdges = new ArrayList();
         this.networkToNodes = new HashMap();
         this.networkToAttsHandler = new HashMap();
@@ -229,6 +252,9 @@ public class AbstractMetaNodeModeler {
     public void setRootGraph(RootGraph new_root_graph) {
         this.rootGraph = new_root_graph;
         this.metaNodeToProcessedEdges.clear();
+		this.metaNodeToChildren.clear();
+		this.networkNodesToChildren.clear();
+		this.networkNodesToParents.clear();
         this.metaEdges.clear();
         this.networkToNodes.clear();
         this.networkToAttsHandler.clear();
@@ -286,9 +312,7 @@ public class AbstractMetaNodeModeler {
      *         abstracted)
      */
     public boolean applyModel(CyNetwork cy_network, CyNode node) {
-        ArrayList descendants = new ArrayList();
-        getDescendants(node, descendants);
-        return applyModel(cy_network, node, descendants);
+        return applyModel(cy_network, node, null);
     }// applyModel
 
     /**
@@ -314,21 +338,64 @@ public class AbstractMetaNodeModeler {
     public boolean applyModel(CyNetwork cy_network, CyNode node,
             List descendants) {
 
-        long startTime;
-        if (REPORT_TIME)
-            startTime = System.currentTimeMillis();
-        if (DEBUG)
-            System.err.println("----- applyModel (cy_network,"
+		long applyModelTime = profile_init("AbstractMetaNodeModeler: applyModel");
+		this.nodesToChildren = null;
+		this.nodesToParents = null;
+
+		CyNetworkView networkView = Cytoscape.getNetworkView(cy_network.getIdentifier());
+
+		// Have we seen this network before?
+		String networkIdent = cy_network.getIdentifier();
+		if (!networkNodesToChildren.containsKey(networkIdent)) {
+			// Don't want to use this.nodes* because it will mess up getDescendants
+			OpenIntObjectHashMap NodesToChildren = new OpenIntObjectHashMap(50);
+			OpenIntObjectHashMap NodesToParents = new OpenIntObjectHashMap(500);
+
+			// Get the list of parents
+			CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+			Iterator parentIt = MetaNodeUtils.getAllMetaNodes(cyNetwork).iterator();
+			int parentCount = 0;
+			int nodeCount = 0;
+			// For each parent
+			while (parentIt.hasNext()) {
+				CyNode parentNode = (CyNode)parentIt.next();
+				int parentId = parentNode.getRootGraphIndex();
+				Iterator childIt = getDescendants(parentNode).iterator();
+				if (!NodesToChildren.containsKey(parentId)) {
+					NodesToChildren.put(parentId, new OpenIntObjectHashMap());
+				}
+				// For each child
+				while (childIt.hasNext()) {
+					CyNode childNode = (CyNode) childIt.next();
+					int childId = childNode.getRootGraphIndex();
+					if (!NodesToParents.containsKey(childId)) {
+						NodesToParents.put(childId, new OpenIntObjectHashMap());
+					}
+					((OpenIntObjectHashMap)NodesToParents.get(childId)).put(parentId,parentNode);
+					((OpenIntObjectHashMap)NodesToChildren.get(parentId)).put(childId,childNode);
+					nodeCount++;
+				}
+				parentCount++;
+			}
+			this.networkNodesToChildren.put(networkIdent, NodesToChildren);
+			this.networkNodesToParents.put(networkIdent, NodesToParents);
+			this.nodesToChildren = NodesToChildren;
+			this.nodesToParents = NodesToParents;
+		} else {
+			this.nodesToChildren = (OpenIntObjectHashMap)networkNodesToChildren.get(networkIdent);
+			this.nodesToParents = (OpenIntObjectHashMap)networkNodesToParents.get(networkIdent);
+		}
+
+		if (descendants == null) descendants = getDescendants(node);
+
+        debug("----- applyModel (cy_network,"
                     + node.getIdentifier() + ") -----");
 
         if (cy_network.getRootGraph() != this.rootGraph) {
             // This should not happen
-            if (DEBUG) {
-                System.err
-                        .println("----- applyModel (CyNetwork,"
+            debug("----- applyModel (CyNetwork,"
                                 + node.getIdentifier()
                                 + ") leaving, cy_networks's RootGraph != this.rootGraph -----");
-            }
             return false;
         }
 
@@ -340,28 +407,21 @@ public class AbstractMetaNodeModeler {
             this.networkToNodes.put(cy_network, cnNodes);
         }
 
-        long prepareTime;
-        if (REPORT_TIME) {
-            prepareTime = System.currentTimeMillis();
-        }
+        long prepareTime = profile_init(null);
+
         if (!prepareNodeForModel(cy_network, node)) {
-            if (DEBUG) {
-                System.err
-                        .println("----- applyModel (CyNetwork,"
+			debug("----- applyModel (CyNetwork,"
                                 + node.getIdentifier()
                                 + ") returning, "
                                 + "prepareNodeForModel returned false, returning false -----");
-            }
             return false;
         }
 
-        if (REPORT_TIME) {
-            long timeToPrepare = (System.currentTimeMillis() - prepareTime) / 1000;
-            System.out.println("time in prepareNodeForModel ( " + node + ") = "
-                    + timeToPrepare);
-        }
-        // Restore the meta-node, in case that it is not showing
+        profile_mark(prepareTime, "time in prepareNodeForModel ( " + node.getIdentifier() + ") = ");
 
+		long restoreTime = profile_init(null);
+
+        // Restore the meta-node, in case that it is not showing
         CyNode restoredNode = (CyNode) cy_network.restoreNode(node);
         if (restoredNode == null) {
             // For now, do this...
@@ -372,19 +432,60 @@ public class AbstractMetaNodeModeler {
             // "] successfully.");
         }
 
+        profile_mark(restoreTime, "time to restore metanode = ");
+
         // The restored meta-node is now contained in the network, so remember
         // this:
         cnNodes.add(restoredNode);
 
-        if (DEBUG) {
-            System.err.println("Restored node [" + node.getIdentifier()
+        debug("Restored node [" + node.getIdentifier()
                     + "] and got back node [" + restoredNode.getIdentifier()
                     + "]");
-        }
 
         // Hide the meta-node's descendants and connected edges
-        Iterator it = descendants.iterator();
-        int numHiddenNodes = 0;
+		int [] descendantsIndices = getDescendantIndices(node);
+		double [] Xlocations = new double[descendantsIndices.length];
+		double [] Ylocations = new double[descendantsIndices.length];
+		double minX = -1.0;
+		double minY = -1.0;
+		for (int i = 0; i < descendantsIndices.length; i++ ) {
+			NodeView nodeView = networkView.getNodeView(descendantsIndices[i]);
+			if (nodeView != null) {
+				// Get the X,Y coordinates before we hide it
+				Xlocations[i] = nodeView.getXPosition();
+				if (Xlocations[i] < minX || minX == -1.0) {
+					minX = Xlocations[i];
+				}
+				Ylocations[i] = nodeView.getYPosition();
+				if (Ylocations[i] < minY || minY == -1.0) {
+					minY = Ylocations[i];
+				}
+			} else {
+				Xlocations[i] = -1.0;
+				Ylocations[i] = -1.0;
+			}
+		}
+
+		CyAttributes cyNodeAttributes = Cytoscape.getNodeAttributes();
+		if (minX > 0.0 && minY > 0.0 ) {
+			// Update the __metanodeHints attribute
+			for (int i = 0; i < descendantsIndices.length; i++) {
+				// Adjust & make a list
+				ArrayList hints = new ArrayList(2);
+				if (Xlocations[i] > -1.0) {
+					hints.add(new Double(Xlocations[i]-minX));
+					hints.add(new Double(Ylocations[i]-minY));
+				} else {
+					hints.add(new Double(0));
+					hints.add(new Double(0));
+				}
+				cyNodeAttributes.setAttributeList((this.rootGraph.
+						getNode(descendantsIndices[i])).getIdentifier(),
+						MetaNodeFactory.METANODES_HINTS, hints);
+			}
+		}
+		cy_network.hideNodes(descendantsIndices);
+/*
         while (it.hasNext()) {
             CyNode n = (CyNode) it.next();
             CyNode hiddenNode = (CyNode) cy_network.hideNode(n);
@@ -392,21 +493,34 @@ public class AbstractMetaNodeModeler {
                 numHiddenNodes++;
             }
         }
-        if (DEBUG) {
-            System.err.println("Hid " + numHiddenNodes
+*/
+        debug("Hid " + descendantsIndices.length
                     + " descendant nodes of node " + node.getIdentifier()
                     + ", from a total of " + descendants.size()
                     + " descendants");
-        }
+
+        profile_mark(restoreTime, "time to restore metanode and hide "+descendantsIndices.length+" descendants = ");
 
         // Restore the edges connecting the meta-node and nodes that are in
         // cyNetwork
         // NOTE: These edges are created in prepareNodeForModel
-        long restoreEdgesStart = System.currentTimeMillis();
         int numRestoredEdges = 0;
 
+		restoreTime = profile_init(null);
+
+		int [] nodeIndices = new int[cy_network.getNodeCount()];
+        Iterator it = cy_network.nodesIterator();
+		int index = 0;
+        while (it.hasNext()) {
+			nodeIndices[index++] = ((CyNode)it.next()).getRootGraphIndex();
+		}
+/*
+		int [] edgesToRestore = this.rootGraph.getConnectingEdgeIndicesArray(nodeIndices);
+		cy_network.restoreEdges(edgesToRestore);
+*/
         // create a list of all edges that should be restored
-        ArrayList restoredEdges = new ArrayList();
+		IntArrayList edgesToRestore = new IntArrayList();
+
         it = cy_network.nodesIterator();
         while (it.hasNext()) {
 
@@ -419,44 +533,37 @@ public class AbstractMetaNodeModeler {
 
             if (connectingEdgesRindices == null
                     || connectingEdgesRindices.length == 0) {
-                if (DEBUG) {
-                    System.err
-                            .println("There are no connecting edges between nodes "
-                                    + node.getIdentifier()
-                                    + " and "
-                                    + otherNode.getIdentifier());
-                }
+                debug("There are no connecting edges between nodes "
+							+ node.getIdentifier()
+							+ " and "
+							+ otherNode.getIdentifier());
                 continue;
             }
-            if (DEBUG) {
-                System.err.println("There are "
+			debug("There are "
                         + connectingEdgesRindices.length
                         + " edges between nodes " + node.getIdentifier()
                         + " and " + otherNode.getIdentifier());
-            }
 
             for (int ci = 0; ci < connectingEdgesRindices.length; ++ci) {
-                CyEdge cEdge = (CyEdge) this.rootGraph
-                        .getEdge(connectingEdgesRindices[ci]);
-                CyEdge rEdge = (CyEdge) cy_network.restoreEdge(cEdge);
-                if (rEdge != null)
-                    restoredEdges.add(rEdge);
+				edgesToRestore.add(connectingEdgesRindices[ci]);
             }
 
         }// for node_i
+		cy_network.restoreEdges(edgesToRestore.elements());
 
-        if (restoredNode != null || numHiddenNodes > 0
-                || restoredEdges.size() > 0) {
-            if (DEBUG) {
-                System.err.println("----- applyModel (CyNetwork,"
+        profile_mark(restoreTime, "time to restore "+edgesToRestore.size() +" edges = ");
+
+        profile_mark(applyModelTime, "time in applyModel = ");
+
+        if (restoredNode != null || descendantsIndices.length > 0
+                || edgesToRestore.size() > 0) {
+            debug("----- applyModel (CyNetwork,"
                         + node.getIdentifier() + ") returning true -----");
-            }
             return true;
         }
-        if (DEBUG) {
-            System.err.println("----- applyModel (CyNetwork,"
+        
+        debug("----- applyModel (CyNetwork,"
                     + node.getIdentifier() + ") returning false -----");
-        }
         return false;
 
     }// applyModel
@@ -483,12 +590,12 @@ public class AbstractMetaNodeModeler {
     public boolean undoModel(CyNetwork cy_network, CyNode node,
             boolean recursive_undo, boolean temporary_undo) {
 
-        long startOfUndo = System.currentTimeMillis();
+		CyNetworkView networkView = Cytoscape.getNetworkView(cy_network.getIdentifier());
 
-        if (DEBUG) {
-            System.err.println("----- undoModel (CyNetwork," + node + ","
+        long startOfUndo = profile_init(null);
+
+        debug("----- undoModel (CyNetwork," + node + ","
                     + recursive_undo + "," + temporary_undo + ") -----");
-        }
 
         if (!cy_network.containsNode(node)) {
             System.err.println("cy_network does not contain the node" + node
@@ -519,12 +626,10 @@ public class AbstractMetaNodeModeler {
 
                 if (neighborNode == null) {
 
-                    if (DEBUG) {
-                        System.err.println("Edge " + edge
+                    debug("Edge " + edge
                                 + " is an adjacent edge of meta-node " + node
                                 + " but we could not identify the neighbor of "
                                 + " the meta-node!!!");
-                    }
 
                 } else {
                     metaNeighbors.add(neighborNode.getRootGraphIndex());
@@ -555,14 +660,14 @@ public class AbstractMetaNodeModeler {
 
             if (DEBUG) {
                 if (childrenRindices != null) {
-                    System.err.println("childless-descendants of node " + node
+                    debug("childless-descendants of node " + node
                             + " are: ");
                     for (int cd = 0; cd < childrenRindices.length; cd++) {
-                        System.err.println(this.rootGraph
-                                .getNode(childrenRindices[cd]));
+                        debug(this.rootGraph
+                                .getNode(childrenRindices[cd]).getIdentifier());
                     }// for cd
                 } else {
-                    System.err.println("node " + node
+                    debug("node " + node
                             + " has no childless descendants");
                 }
             }// if DEBUG
@@ -581,12 +686,11 @@ public class AbstractMetaNodeModeler {
         }
 
         if (childrenRindices == null || childrenRindices.length == 0) {
-            if (DEBUG) {
-                System.err.println("----- undoModel (CyNetwork," + node + ","
+            
+            debug("----- undoModel (CyNetwork," + node + ","
                         + recursive_undo
                         + ") returning false since the given node is not a "
                         + " meta-node -----");
-            }
             return false;
         }
 
@@ -597,10 +701,49 @@ public class AbstractMetaNodeModeler {
                 .getConnectingEdgeIndicesArray(childrenRindices);
         cy_network.restoreEdges(edgesToRestore);
 
+		// OK, for each node, move it to the proper position
+		NodeView nodeView = networkView.getNodeView(node.getRootGraphIndex());
+		CyAttributes cyNodeAttributes = Cytoscape.getNodeAttributes();
+		double metaX = nodeView.getXPosition();
+		double metaY = nodeView.getYPosition();
+		double lastX = 0;
+		double lastY = 0;
+		boolean foundPos = true;
+		boolean diffPos = false;
+
         IntArrayList childrenAndNeighbors = new IntArrayList();
         metaNeighbors.trimToSize();
+		ArrayList childNodes = new ArrayList(childrenRindices.length);
         childrenAndNeighbors.addAllOf(metaNeighbors);
         for (int i = 0; i < childrenRindices.length; i++) {
+			// Get the node
+			Node childNode = this.rootGraph.getNode(childrenRindices[i]);
+			childNodes.add(childNode);
+			NodeView childNodeView = networkView.getNodeView(childrenRindices[i]);
+			List hintsList = cyNodeAttributes.getAttributeList(childNode.getIdentifier(),
+											MetaNodeFactory.METANODES_HINTS);
+			if (hintsList != null && hintsList.size() == 2) {
+				double X = ((Double)hintsList.get(0)).doubleValue();
+				double Y = ((Double)hintsList.get(1)).doubleValue();
+				if (i == 0) {
+					lastX = X;
+					lastY = Y;
+				} else {
+					if (X != lastX && Y != lastY) { diffPos = true; }
+				}
+				childNodeView.setXPosition(X+metaX);
+				childNodeView.setYPosition(Y+metaY);
+			} else {
+				// No hint for this node.  If this is the first node,
+				// assume we don't have any hints, otherwise set it
+				// to x,y of the meta node
+				if (i == 0) {
+					foundPos = false;
+					break;
+				}
+				childNodeView.setXPosition(metaX);
+				childNodeView.setYPosition(metaY);
+			}
             childrenAndNeighbors.add(childrenRindices[i]);
         }// for i
         childrenAndNeighbors.trimToSize();
@@ -621,15 +764,13 @@ public class AbstractMetaNodeModeler {
             }// for i
 
             if (notRestored > 0) {
-                System.err.println(notRestored + " edges were not restored!!!");
+                debug(notRestored + " edges were not restored!!!");
             }
 
         }// DEBUG
 
-        if (DEBUG) {
-            System.err.println("Restored " + restoredNodeRindices.length
+        debug("Restored " + restoredNodeRindices.length
                     + " children nodes of meta-node" + node + " in cy_network");
-        }
         // Hide the meta-node and adjacent edges
         CyNode hiddenNode = (CyNode) cy_network.hideNode(node);
         // The meta-node is no longer in the network, so remember this:
@@ -638,29 +779,25 @@ public class AbstractMetaNodeModeler {
             cnNodes.remove(node);
         } 
 
-        if (REPORT_TIME) {
-            long timeToUndo = (System.currentTimeMillis() - startOfUndo) / 1000;
-            System.out.println("undoModel time = " + timeToUndo);
-        }
+		if (!foundPos || !diffPos) {
+			// Don't have any position hints -- use the stack approach
+	    	if(childrenRindices.length > 0) LayoutUtils.layoutNodesInAStack(networkView,childNodes,metaX,metaY);
+		}
 
-        if (DEBUG) {
-            System.err.println("Hid node " + node
+		profile_mark(startOfUndo,"undoModel time = ");
+
+        debug("Hid node " + node
                     + " in graphPerspective and got back node index "
                     + hiddenNode);
-        }
 
         if (restoredNodeRindices.length > 0 || hiddenNode != null) {
-            if (DEBUG) {
-                System.err.println("----- undoModel (CyNetwork," + node + ","
+            debug("----- undoModel (CyNetwork," + node + ","
                         + recursive_undo + ") returning true -----");
-            }
             return true;
         }
 
-        if (DEBUG) {
-            System.err.println("----- undoModel (CyNetwork," + node + ","
+        debug("----- undoModel (CyNetwork," + node + ","
                     + recursive_undo + ") returning false -----");
-        }
         return false;
     }// undoModel
 
@@ -680,10 +817,10 @@ public class AbstractMetaNodeModeler {
      *         graph_perspective
      */
     protected boolean prepareNodeForModel(CyNetwork cy_network, CyNode node) {
-        if (DEBUG) {
-            System.err.println("----- prepareNodeForModel (CyNetwork,"
+		long prepareTime = profile_init(null);
+
+       	debug("----- prepareNodeForModel (CyNetwork,"
                     + node.getIdentifier() + ") -----");
-        }
 
         ArrayList cnNodes = (ArrayList) this.networkToNodes.get(cy_network);
         if (cnNodes == null) {
@@ -699,28 +836,28 @@ public class AbstractMetaNodeModeler {
             } else {
                 returnBool = false;
             }
-            if (DEBUG) {
-                System.err
-                        .println("----- prepareNodeForModel (CyNetwork,"
+            debug("----- prepareNodeForModel (CyNetwork,"
                                 + node.getIdentifier()
                                 + ") leaving, node is not a meta-node, returning is in graphPerspective = "
                                 + returnBool + "-----");
-            }
             return returnBool;
-        }// !isMetaNode
+        } else if (cy_network.containsNode(node)) {
+			// already collapsed -- treat it as a node
+			return true;
+		}// !isMetaNode
 
         int[] childrenRindices = this.rootGraph
                 .getNodeMetaChildIndicesArray(node.getRootGraphIndex());
+
         if (DEBUG) {
             if (childrenRindices != null) {
-                System.err
-                        .println("Meta-node "
+                debug("Meta-node "
                                 + node.getIdentifier()
                                 + " has "
                                 + childrenRindices.length
                                 + " children, recursively calling prepareNodeForModel for each one of them");
             } else {
-                System.err.println("Meta-node " + node.getIdentifier()
+                debug("Meta-node " + node.getIdentifier()
                         + " has no children.");
             }
         }
@@ -738,15 +875,13 @@ public class AbstractMetaNodeModeler {
         // If the meta-node does not have a single descendant in
         // CyNetwork then skip it
         if (!hasDescendantInCN) {
-            if (DEBUG) {
-                System.err
-                        .println("----- prepareNodeForModel (CyNetwork,"
+            debug("----- prepareNodeForModel (CyNetwork,"
                                 + node.getIdentifier()
                                 + ") leaving, meta-node does not have a descendant contained "
                                 + "in graphPerspective, returning false -----");
-            }
             return false;
         }
+		long phaseOneTime = profile_mark(prepareTime, "Tested all children in ");
 
         // Add edges to the meta-node in this.rootGraph, respect directionality
         // Also, see if multiple edges are to be created
@@ -764,23 +899,16 @@ public class AbstractMetaNodeModeler {
         for (int child_i = 0; child_i < childrenRindices.length; child_i++) {
 
             int childNodeRindex = childrenRindices[child_i];
-            childNode = (CyNode) Cytoscape.getRootGraph().getNode(
-                    childNodeRindex);
+			childNode = (CyNode) Cytoscape.getRootGraph().getNode(
+					childNodeRindex);
 
-            if (DEBUG) {
-                System.err.println("Child index of "
+            debug("Child index of "
                         + childNode.getIdentifier() + " is " + childNodeRindex);
-            }
           
             int[] adjacentEdgeRindices = this.rootGraph
                     .getAdjacentEdgeIndicesArray(childNodeRindex, true, true,
                             true);
 
-            if (DEBUG) {
-                System.err.println("Child node " + childNode.getIdentifier()
-                        + " has " + adjacentEdgeRindices.length
-                        + " total adjacent edges in this.rootGraph");
-            }
             // Process each edge by creating edges in RootGraph that reflect
             // connections of meta-node children
             ArrayList processedEdges = (ArrayList) this.metaNodeToProcessedEdges
@@ -795,40 +923,9 @@ public class AbstractMetaNodeModeler {
                 processedEdges = new ArrayList();
             }
             
-            
-            // TEST CODE //
-            // whether there is an edge between this metanode and a the current childNode
-           CyEdge metaNodeToChildEdge = null;
-           if(getCreateMetaRelationshipEdges()){
-	           for (int edge_i = 0; edge_i < adjacentEdgeRindices.length; edge_i++) {
-	
-	                int childEdgeRindex = adjacentEdgeRindices[edge_i];
-	                CyEdge childEdge = (CyEdge) this.rootGraph
-	                        .getEdge(childEdgeRindex);
-	
-	                if (DEBUG && childEdge == null) {
-	                    throw new IllegalStateException("CyEdge for index ["
-	                            + childEdgeRindex + "] is null!");
-	                }
-	                
-	                // Identify the node on the other end of the edge
-	                boolean metaNodeIsSource = false;
-	                CyNode otherNode = null;
-	                CyNode sourceNode = (CyNode) childEdge.getSource();
-	                CyNode targetNode = (CyNode) childEdge.getTarget();
-	                if (targetNode.getRootGraphIndex() == childNodeRindex) {
-	                    otherNode = sourceNode;
-	                } else if (sourceNode.getRootGraphIndex() == childNodeRindex) {
-	                    metaNodeIsSource = true;
-	                    otherNode = targetNode;
-	                }
-	                
-	                if(otherNode == node){metaNodeToChildEdge = childEdge;}
-	            }
-           }
-           // TEST CODE END //
-            
-           for (int edge_i = 0; edge_i < adjacentEdgeRindices.length; edge_i++) {
+			long edgeTime = profile_init(null);
+           	CyEdge metaNodeToChildEdge = null;
+           	for (int edge_i = 0; edge_i < adjacentEdgeRindices.length; edge_i++) {
 
                 int childEdgeRindex = adjacentEdgeRindices[edge_i];
                 CyEdge childEdge = (CyEdge) this.rootGraph
@@ -843,30 +940,24 @@ public class AbstractMetaNodeModeler {
                 // ArrayList processedEdges = (ArrayList)
                 // this.metaNodeToProcessedEdges.get(node);
                 // if (processedEdges != null &&
-                // processedEdges.contains(childEdge) ) {
+                // processedEdges.contains(childEdge) ) {}
                 if (processedEdges.contains(childEdge)) {
-                    if (DEBUG) {
-                        System.out.println("Edge " + childEdge.getIdentifier()
+                    debug("Edge " + childEdge.getIdentifier()
                                 + " has already been processed before for "
                                 + " meta-node " + node.getIdentifier()
                                 + ", skipping it.");
-                    }
                     continue;
                 }
-                // if (processedEdges == null){
+                // if (processedEdges == null){}
 
                 // If the edge connects two descendants of the meta-node, then
                 // ignore it, and remember this processed edge
                 if (edgeConnectsDescendants(node.getRootGraphIndex(),
                         childEdgeRindex)) {
-                    if (DEBUG) {
-                        System.out
-                                .println("Edge "
-                                        + childEdge.getIdentifier()
+                	debug("Edge " + childEdge.getIdentifier()
                                         + " connects descendants of node "
                                         + node.getIdentifier()
                                         + ", skipping it, and adding it to processedEdges.");
-                    }
                     processedEdges.add(childEdge);
                     this.metaNodeToProcessedEdges.put(node, processedEdges);
                     continue;
@@ -887,21 +978,25 @@ public class AbstractMetaNodeModeler {
                 
                 // TEST CODE
                 if(otherNode == node){
+	                metaNodeToChildEdge = childEdge;
                 	// Ignore this edge
-                	//System.err.println("This is a childOf edge, continue.");
+                	debug("This is a childOf edge, continue.");
                 	// Remember that this edge has been processed
                 	processedEdges.add(childEdge);
                 	this.metaNodeToProcessedEdges.put(node, processedEdges);  
                 	continue; // go to the next child-edge
                 }
                 
-                String interactionType = Cytoscape.getEdgeAttributes().getStringAttribute(childEdge.getIdentifier(),Semantics.INTERACTION);
+                String interactionType = Cytoscape.getEdgeAttributes().
+												getStringAttribute(childEdge.getIdentifier(),
+												Semantics.INTERACTION);
+				if (interactionType == null) interactionType = "unknown";
                 
-                if(getCreateMetaRelationshipEdges() && interactionType.equals(CHILD_OF_EDGE_INTERACTION) && isMetaNode(otherNode)){
+                if(getCreateMetaRelationshipEdges() 
+						&& interactionType.equals(CHILD_OF_EDGE_INTERACTION) && isMetaNode(otherNode)){
                 		// This is a childNode that two metanodes are sharing
                 		// If the other metaNode has a sharedMember edge to this metanode, continue
-                	  ArrayList otherProcessedEdges = (ArrayList) this.metaNodeToProcessedEdges
-                      .get(otherNode);
+                	  ArrayList otherProcessedEdges = (ArrayList) this.metaNodeToProcessedEdges.get(otherNode);
                 	  if (otherProcessedEdges != null
                 		  & metaNodeToChildEdge != null && otherProcessedEdges.contains(metaNodeToChildEdge) ) {
                 		  // Remember that this edge has been processed
@@ -923,7 +1018,7 @@ public class AbstractMetaNodeModeler {
                         metaedgeToNumChildEdges.put(metaedge, new Integer(num));
                     }
                 
-                }else if (getMultipleEdges()
+                } else if (getMultipleEdges()
                         || (!getMultipleEdges() && !neighborNodeToMetaEdge.containsKey(otherNode))) {
 
                     // Create an edge in rootGraph respecting directionality
@@ -948,10 +1043,11 @@ public class AbstractMetaNodeModeler {
                     // created
                     this.metaEdges.add(newEdge);
                     
-                    // If the edge is of type shared child, set a sharedChild edge attribute with the id of the shared child as a value
+                    // If the edge is of type shared child, set a sharedChild 
+					// edge attribute with the id of the shared child as a value
                     if(interactionType.equals(SHARED_CHILD_INTERACTION)){
-                 	   Cytoscape.getEdgeAttributes().setAttribute(newEdge.getIdentifier(),SHARED_CHILD_INTERACTION,childNode.getIdentifier());
-                 	   
+                 	   Cytoscape.getEdgeAttributes().setAttribute(newEdge.getIdentifier(),
+										SHARED_CHILD_INTERACTION,childNode.getIdentifier());
                     }
 
                     // If otherNodeRindex has parents, and the parents have been
@@ -973,31 +1069,24 @@ public class AbstractMetaNodeModeler {
                             if (otherProcessedEdges != null) {
                                 // We know that this parent has been processed
                                 // before
-                                if (DEBUG)
-                                    System.out
-                                            .println("Edge "
-                                                    + newEdge.getIdentifier()
-                                                    + " added to processed edges for other parent node "
-                                                    + otherParent
-                                                            .getIdentifier());
+                                debug("Edge " + newEdge.getIdentifier()
+											+ " added to processed edges for other parent node "
+											+ otherParent.getIdentifier());
                                 otherProcessedEdges.add(newEdge);
                             }
                         }// for each otherNodeRindex parent
                     }// if otherNodeRindex has parents
 
-                    if (DEBUG) {
-                        System.err.println("New edge "
+                    debug("New edge "
                                 + newEdge.getIdentifier()
                                 + " created in this.rootGraph:");
                         // System.err.println("Source is "
                         // + newEdge.getSource().getIdentifier()+ " Target is "
                         // + newEdge.getTarget().getIdentifier());
-                    }
                 }// if an edge should be created
 
                 // Remember that we processed this edge
-                if (DEBUG)
-                    System.out.println("Adding edge "
+                debug("Adding edge "
                             + childEdge.getIdentifier()
                             + " to processedEdges for node "
                             + node.getIdentifier());
@@ -1005,13 +1094,13 @@ public class AbstractMetaNodeModeler {
                 processedEdges.add(childEdge);
                 this.metaNodeToProcessedEdges.put(node, processedEdges);
             
-           }// for each adjacent edge to child node
-           
-           
+			}// for each adjacent edge to child node
+
+			profile_mark(edgeTime, "Processed " + adjacentEdgeRindices.length + " edges in ");
            
             if(getCreateMetaRelationshipEdges() && metaNodeToChildEdge == null){
             		// Create a child edge
-            		CyEdge childOfEdge = createMetaEdge(childNode,node, CHILD_OF_EDGE_INTERACTION);
+            		CyEdge childOfEdge = createMetaEdge(childNode, node, CHILD_OF_EDGE_INTERACTION);
             		if(childOfEdge == null){
             			throw new IllegalStateException("Child edge between meta-node [" + node + "] and child [" + childNode + "] could not be created.");
             		}//if childOfEdge == null
@@ -1019,6 +1108,7 @@ public class AbstractMetaNodeModeler {
             }// if getCreateMetaRelationshipEdges
 
         }// for each child of node_rindex
+		long phaseTwoTime = profile_mark(phaseOneTime, "Processed " + childrenRindices.length + " children in ");
 
         // Transfer node and edge attributes to the meta-node as needed
         metaEdgeToChildEdge.trimToSize();
@@ -1043,17 +1133,13 @@ public class AbstractMetaNodeModeler {
             }
         }
         if (!attributesSet) {
-            if (DEBUG) {
-                System.out
-                        .println("----- prepareNodeForModel (CyNetwork,"
+            debug("----- prepareNodeForModel (CyNetwork,"
                                 + node.getIdentifier()
                                 + "): error,  attributesHandler.setAttributes returned false!!! -----");
-            }
         }
-        if (DEBUG) {
-            System.out.println("----- prepareNodeForModel (CyNetwork,"
+        debug("----- prepareNodeForModel (CyNetwork,"
                     + node.getIdentifier() + ") returning true -----");
-        }
+		profile_mark(prepareTime, "Prepare model took ");
         return true;
 
     }// prepareNodeForModel
@@ -1075,17 +1161,13 @@ public class AbstractMetaNodeModeler {
     protected void removeMetaNode(CyNetwork cy_net, CyNode meta_node,
             boolean recursive) {
 
-        if (DEBUG) {
-            System.err.println("----- removeMetaNode (" + meta_node + ","
+        debug("----- removeMetaNode (" + meta_node + ","
                     + recursive + ")-----");
-        }
 
         // If not a meta-node, then return
         if (!isMetaNode(meta_node)) {
-            if (DEBUG) {
-                System.err.println("----- removeMetaEdges returning, node "
+            debug("----- removeMetaEdges returning, node "
                         + meta_node + " is not a meta node -----");
-            }
             return;
         }
 
@@ -1115,8 +1197,7 @@ public class AbstractMetaNodeModeler {
             // int [] descendants =
             // this.rootGraph.getNodeMetaChildIndicesArray(meta_node_index,true);
 
-            ArrayList descendants = new ArrayList();
-            getDescendants(meta_node, descendants);
+            ArrayList descendants = getDescendants(meta_node);
             for (int i = 0; i < descendants.size(); i++) {
                 removeMetaNode(cy_net, (CyNode) descendants.get(i), false);
             }// for i
@@ -1130,20 +1211,15 @@ public class AbstractMetaNodeModeler {
         // Remember that this meta-node has no processed edges anymore so that
         // if applyModel
         // is called, new edges are created once more
-        if (DEBUG) {
-            System.err.println("metaNodeToProcessedEdges.containsKey("
+        debug("metaNodeToProcessedEdges.containsKey("
                     + meta_node + ") = "
                     + this.metaNodeToProcessedEdges.containsKey(meta_node));
-        }
         this.metaNodeToProcessedEdges.remove(meta_node);
-        if (DEBUG) {
-            System.err
-                    .println("after removal, metaNodeToProcessedEdges.containsKey("
+        debug("after removal, metaNodeToProcessedEdges.containsKey("
                             + meta_node
                             + ") = "
                             + this.metaNodeToProcessedEdges
                                     .containsKey(meta_node));
-        }
 
         // Make sure we are not going to remove edges that were there originally
         IntArrayList metaEdgesRindices = new IntArrayList();
@@ -1154,19 +1230,15 @@ public class AbstractMetaNodeModeler {
         adjacentEdgeRindices.trimToSize();
 
         if (adjacentEdgeRindices.size() == 0) {
-            if (DEBUG) {
-                System.err.println("----- removeMetaEdges returning, node "
+            debug("----- removeMetaEdges returning, node "
                         + meta_node + " has no adjacent edges -----");
-            }
             return;
         }
 
         // Remove the edges that are connected to this meta-node and that *we*
         // created
-        if (DEBUG) {
-            System.err.println("before removing edges, num e = "
+        debug("before removing edges, num e = "
                     + this.rootGraph.getEdgeCount());
-        }
 
         // ------------------ DISASTER AREA !!!
         // -------------------------------// (before refactoring on 12.11.05)
@@ -1218,24 +1290,20 @@ public class AbstractMetaNodeModeler {
 
         if (DEBUG) {
             if (notRemoved > 0) {
-                System.err.println(notRemoved + " edges where not removed!");
+                debug(notRemoved + " edges where not removed!");
             }
-            System.err.println("after removing edges, num e = "
+            debug("after removing edges, num e = "
                     + this.rootGraph.getEdgeCount());
         }
         // ----------------------END DISASTER AREA
         // ----------------------------------//
 
         // Update metaEdgesRindices
-        if (DEBUG) {
-            System.err.println("metaEdgesRindices.size = "
+        debug("metaEdgesRindices.size = "
                     + this.metaEdges.size());
-        }
         // this.metaEdges.removeAll(adjacentEdgeRindices);
-        if (DEBUG) {
-            System.err.println("after removing, metaEdgesRindices.size = "
+        debug("after removing, metaEdgesRindices.size = "
                     + this.metaEdges.size());
-        }
         ArrayList adjacentEdges = new ArrayList();
         for (int i = 0; i < adjacentEdgeRindices.size(); i++)
             adjacentEdges.add(i, this.rootGraph.getEdge(adjacentEdgeRindices
@@ -1245,9 +1313,7 @@ public class AbstractMetaNodeModeler {
         while (it.hasNext()) {
             ArrayList processedEdges = (ArrayList) it.next();
             if (processedEdges == null) {
-                if (DEBUG) {
-                    System.err.println("processedEdges is null");
-                }
+                debug("processedEdges is null");
                 continue;
             }// processedEdges == null
             processedEdges.removeAll(adjacentEdges);
@@ -1259,11 +1325,8 @@ public class AbstractMetaNodeModeler {
         boolean r = attributesHandler.removeMetaEdgesFromAttributes(cy_net,
                 meta_node, adjacentEdges);
         if (!r) {
-            if (DEBUG) {
-                System.err
-                        .println("----- AbstractMetaNodeModeler.removeMetaEdges: error, could not remove"
+            debug("----- AbstractMetaNodeModeler.removeMetaEdges: error, could not remove"
                                 + " attributes for meta-edges");
-            }
         }
     }// removeMetaEdges
 
@@ -1271,12 +1334,7 @@ public class AbstractMetaNodeModeler {
      * @return true iff the node has at least one child
      */
     protected boolean isMetaNode(CyNode node) {
-        int[] childrenIndices = this.rootGraph
-                .getNodeMetaChildIndicesArray(node.getRootGraphIndex());
-        if (childrenIndices == null || childrenIndices.length == 0) {
-            return false;
-        }
-        return true;
+        return node.getGraphPerspective().getNodeCount() > 0;
     }// isMetaNode
 
     /**
@@ -1284,11 +1342,9 @@ public class AbstractMetaNodeModeler {
      *         node node_rindex
      */
     protected boolean edgeConnectsDescendants(int node_rindex, int edge_rindex) {
+/*
         int[] childrenRindices = this.rootGraph
                 .getNodeMetaChildIndicesArray(node_rindex);
-        if (childrenRindices == null || childrenRindices.length == 0) {
-            return false;
-        }
         int sourceRindex = this.rootGraph.getEdgeSourceIndex(edge_rindex);
         int targetRindex = this.rootGraph.getEdgeTargetIndex(edge_rindex);
         // If the source is the descendant of one of the children and so is the
@@ -1298,6 +1354,17 @@ public class AbstractMetaNodeModeler {
                         true)) {
             return true;
         }
+*/
+		ArrayList descendants = getDescendants((CyNode)this.rootGraph.getNode(node_rindex));
+        if (descendants == null || descendants.size() == 0) {
+            return false;
+        }
+        Node sourceNode = this.rootGraph.getNode(this.rootGraph.getEdgeSourceIndex(edge_rindex));
+        Node targetNode = this.rootGraph.getNode(this.rootGraph.getEdgeTargetIndex(edge_rindex));
+
+		if (descendants.contains(sourceNode) && descendants.contains(targetNode)) {
+			return true;
+		}
         return false;
     }// edgeConnectsDescendants
 
@@ -1308,9 +1375,7 @@ public class AbstractMetaNodeModeler {
      */
     // NOTE: This method is slow, avoid calling it as much as possible
     protected ArrayList getNodesInCyNet(CyNetwork cy_net) {
-        if (DEBUG) {
-            System.err.println("--------- getNodesInCynet (cy_net) ---------");
-        }
+        debug("--------- getNodesInCynet (cy_net) ---------");
         // DEPRECATED:
         // int[] nodeRindices = graph_perspective.getNodeIndicesArray();
         Iterator it = cy_net.nodesIterator();
@@ -1324,23 +1389,20 @@ public class AbstractMetaNodeModeler {
             // this.rootGraph.getNodeMetaChildIndicesArray(nodeRindices[i],true);
             CyNode node = (CyNode) it.next();
             cyNetNodes.add(node);
-            ArrayList descendants = new ArrayList();
+			getDescendants(node, cyNetNodes);
+            /* ArrayList descendants = new ArrayList();
             getDescendants(node, descendants);
             descendants.trimToSize();
             Iterator it2 = descendants.iterator();
             // TODO: Optimize
             while (it2.hasNext()) {
                 CyNode child = (CyNode) it2.next();
-                if (DEBUG) {
-                    System.err.println(" child = " + child);
-                }
+                debug(" child = " + child);
                 cyNetNodes.add(child);
             }// for j
+			*/
         }
-        if (DEBUG) {
-            System.err
-                    .println("--------- leaving getNodeRindicesInGP (GraphPerspective) ---------");
-        }
+        debug("--------- leaving getNodeRindicesInGP (GraphPerspective) ---------");
         return cyNetNodes;
     }// getNodeRindicesInGP
 
@@ -1351,16 +1413,24 @@ public class AbstractMetaNodeModeler {
      * 
      * @param node
      *            the node for which descendants are being returned
-     * @param descendatns
+     * @param descendants
      *            an ArrayList to which the descendants will be added
      * 
      * This is faster than RootGraph.getNodeMetaChildIndicesArray(index,true).
      * TODO: Replace implementation in giny?
      */
     public void getDescendants(CyNode node, ArrayList descendants) {
-        if (descendants == null) {
-            descendants = new ArrayList();
-        }
+		if (this.nodesToChildren != null && this.nodesToChildren.containsKey(node.getRootGraphIndex())) {
+			ObjectArrayList dlist = new ObjectArrayList();
+			((OpenIntObjectHashMap)this.nodesToChildren.get(node.getRootGraphIndex())).values(dlist);
+			Iterator it = dlist.toList().iterator();
+			while (it.hasNext()) { descendants.add(it.next()); }
+		}
+
+		if (descendants == null) {
+			descendants = new ArrayList();
+		}
+
         Iterator it = node.getGraphPerspective().nodesIterator();
         while (it.hasNext()) {
             CyNode childNode = (CyNode) it.next();
@@ -1370,23 +1440,39 @@ public class AbstractMetaNodeModeler {
             descendants.add(childNode);
         }// while
 
-        // if (descendants == null) {
-        // descendants = new ArrayList();
-        // }
-        // // Get all the immediate children
-        // //DEPRECATED:
-        // //int[] allNodes = this.rootGraph.getNodeIndicesArray();
-        // Iterator it = this.rootGraph.nodesIterator();
-        // while (it.hasNext()) {
-        // CyNode rgNode = (CyNode)it.next();
-        // if (this.rootGraph.isNodeMetaParent(rgNode.getRootGraphIndex(),
-        // node.getRootGraphIndex())) {
-        // descendants.add(rgNode);
-        // getDescendants(rgNode, descendants);
-        // }
-        // }
-
+		debug("getDescendants: adding "+descendants.size()+" entries for "+node.getIdentifier());
     }// getDescendants
+
+	public ArrayList getDescendants(CyNode node) {
+		if (this.nodesToChildren != null && this.nodesToChildren.containsKey(node.getRootGraphIndex())) {
+			ObjectArrayList dlist = new ObjectArrayList();
+			((OpenIntObjectHashMap)this.nodesToChildren.get(node.getRootGraphIndex())).values(dlist);
+			dlist.trimToSize();
+			return dlist.toList();
+		}
+		ArrayList descendants = new ArrayList();
+		getDescendants(node, descendants);
+		return descendants;
+	}
+
+	public int [] getDescendantIndices(CyNode node) {
+		if (this.nodesToChildren.containsKey(node.getRootGraphIndex())) {
+			IntArrayList descendants = new IntArrayList();
+			((OpenIntObjectHashMap)this.nodesToChildren.get(node.getRootGraphIndex())).keys(descendants);
+			descendants.trimToSize();
+			return descendants.elements();
+		}
+
+		ArrayList descendants = getDescendants(node);
+		if (descendants == null || descendants.size() == 0) {
+			return null;
+		}
+		int [] childIndices = new int[descendants.size()];
+		for (int i = 0; i < descendants.size(); i++) {
+			childIndices[i] = ((CyNode)descendants.get(i)).getRootGraphIndex();
+		}
+		return childIndices;
+	}
 
     /**
      * Creates a new CyEdge between the given nodes, the interaction type is
@@ -1415,13 +1501,36 @@ public class AbstractMetaNodeModeler {
         String edge_name = node_1.getIdentifier() + " ("
                 + interactionType + ") " + node_2.getIdentifier();
         edge.setIdentifier(edge_name);
-        //System.err.println(" ----------- Created edge : " + edge_name);
+	
+		debug(" ----------- Created edge : " + edge_name);
         	
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
         edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
                 (String) interactionType);
         return edge;
     }
-    
+
+	private long profile_init(String message) {
+		if (REPORT_TIME) {
+			if (message != null)
+				System.err.println(message);
+			return System.currentTimeMillis();
+		}
+		return 0;
+	}
+
+	private long profile_mark(long startTime, String message) {
+		if (REPORT_TIME) {
+			long now = System.currentTimeMillis();
+			System.err.println(message+(now-startTime)+"ms");
+			return now;
+		}
+		return 0;
+	}
+
+    private static void debug(String message) {
+		if (DEBUG)
+			System.err.println(message);
+	}
 
 }// class AbstractMetaNodeModeler
