@@ -375,6 +375,7 @@ public final class Fung
         topLis.nodeCreated(rtnVal); }
       return rtnVal; }
 
+    // TODO: SpecificNodeDetails.unregisterNode().
     public final boolean nodeRemove(final int node) {
       final IntStack removedEdges = new IntStack();
       synchronized (m_lock) {
@@ -419,6 +420,7 @@ public final class Fung
       if (topLis != null) { topLis.edgeRemoved(edge); }
       return true; }
 
+    // TODO: SpecificEdgeDetails.unregisterEdge().
     private final boolean edgeRemoveInternal(final int edge) {
       if (!m_graph.edgeRemove(edge)) { return false; }
       m_selectedEdges.delete(edge);
