@@ -11,11 +11,11 @@ url.Entrez.OMIM=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=o
 url.Entrez.Structure=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=structure&term\=%ID%&doptcmdl\=Brief
 url.Entrez.Gene=http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene&cmd=Search&term=%ID%
 url.mouse.MGI=http://www.informatics.jax.org/javawi2/servlet/WIFetch?page=searchTool&query=%ID%&selectedQuery=Genes+and+Markers
-url.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=0
-url.Google=http://www.google.com/search?hl=en&q=%ID%&btnG=Google+Search
+url.Biological\ resources.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=0
+url.Web\ resources.Google=http://www.google.com/search?hl=en&q=%ID%&btnG=Google+Search
 url.UniProt.PIR=http://www.uniprot.org/entry/%ID%
 url.UniProt.EBI=http://www.ebi.uniprot.org/uniprot-srv/uniProtView.do?proteinId=%ID%&pager.offset=0
 url.fly.FlyBase=http://flybase.bio.indiana.edu/.bin/fbidq.html?%ID%
 url.worm.WormBase=http://flybase.bio.indiana.edu/.bin/fbidq.html?%ID%
-url.GeneCards=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%ID%&alias=yes
-url.Ask=http://www.ask.com/web?q=%ID%&qsrc=0&o=0
+url.Biological\ resources.GeneCards=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%ID%&alias=yes
+url.Web\ resources.Ask=http://www.ask.com/web?q=%ID%&qsrc=0&o=0
