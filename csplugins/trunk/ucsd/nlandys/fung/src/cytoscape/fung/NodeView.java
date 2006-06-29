@@ -329,7 +329,11 @@ public final class NodeView
    */
   public final boolean select()
   {
-    return false;
+    synchronized (m_fung.m_lock) {
+      if (m_fung.m_selectedNodes.count(m_node) > 0) { return false; }
+    }
+    // TODO: Implement.
+    return true;
   }
 
 }
