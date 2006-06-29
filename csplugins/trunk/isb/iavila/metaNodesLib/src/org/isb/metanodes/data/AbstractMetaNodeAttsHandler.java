@@ -48,13 +48,12 @@ import org.isb.metanodes.model.MetaNodeFactory;
  */
 public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler {
   public static final boolean DEBUG = false;
-  public static boolean useDefaultMetanodeSizer = true;
   
   /**
    * Whether or not to set the size of a metanode proportional to its number of children<br>
    * True by default
    */
-  protected boolean sizeProportionialToNumChildren = true;
+  protected boolean sizeProportionalToNumChildren = true;
   
   /**
    * Constructor.
@@ -67,7 +66,7 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    * @param set_proportional if true, area of a metanode is proportional to its number of children
    */
   public void setSizeProportionalToNumChildren (boolean set_proportional){
-	  this.sizeProportionialToNumChildren = set_proportional;
+	  this.sizeProportionalToNumChildren = set_proportional;
   }
   
   /**
@@ -76,7 +75,7 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    * @return true if currently setting size proportional to children, false otherwise
    */
   public boolean getSizeProportionalToNumChildren (){
-	  return this.sizeProportionialToNumChildren;
+	  return this.sizeProportionalToNumChildren;
   }
   
   /**
@@ -138,10 +137,6 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
     }
   }//createMetaNodeAlias
 
-	public void setSizeProportionalToNumChildren(boolean use_default_sizer) {
-		useDefaultMetanodeSizer = use_default_sizer;
-	}
-  
   /**
    * Sets the node and edge attributes of the given meta-node and assigns a unique name to it
    *
@@ -213,7 +208,7 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
     }//for i
 
 	// Check properties to see if we're supposed to leave the metanode properties alone
-	if (useDefaultMetanodeSizer) {
+	if (this.sizeProportionalToNumChildren) {
 		if(area == 0){
    	   		// none of the nodes have a view?
    	   		if(DEBUG){
