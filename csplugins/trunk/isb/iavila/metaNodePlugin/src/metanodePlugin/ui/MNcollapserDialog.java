@@ -28,7 +28,6 @@ import org.isb.metanodes.actions.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import edu.umd.cs.piccolo.PNode;
 import org.isb.metanodes.data.*;
 
 /**
@@ -308,39 +307,34 @@ public class MNcollapserDialog extends JFrame {
 			}
 		});
 
-		// Layout the buttons
-		JPanel gridPanel = new JPanel();
-		gridPanel.setLayout(new GridLayout(2, 2)); // rows, cols
-		gridPanel.add(createMetaNodeButton);
-		gridPanel.add(collapseButton);
-		gridPanel.add(collapseAllButton);
-		gridPanel.add(destroyMetaNodeButton);
-		gridPanel.add(expandButton);
-		gridPanel.add(expandToNewButton);
-
-		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new BoxLayout(optionsPanel,BoxLayout.Y_AXIS));
+		// Layout of dialog
 		
-		JPanel row1 = new JPanel();
-		row1.add(this.recursiveCheckBox);
-		row1.add(this.multipleEdgesCheckBox);
+		JPanel cdPanel = new JPanel();
+		cdPanel.setBorder(BorderFactory.createTitledBorder("Create/Destroy Operations"));
+		cdPanel.setLayout(new GridLayout(2,1));
+		cdPanel.add(createMetaNodeButton);
+		cdPanel.add(destroyMetaNodeButton);
 		
-		optionsPanel.add(row1);
+		JPanel collPanel = new JPanel();
+		collPanel.setBorder(BorderFactory.createTitledBorder("Collapse Operations"));
+		collPanel.setLayout(new GridLayout(2,1));
+		collPanel.add(collapseButton);
+		collPanel.add(collapseAllButton);
 		
-		JPanel row2 = new JPanel();
-		row2.add(this.metaRelationshipEdgesCheckBox);
-		row2.add(this.useDefaultMetanodeSizerCheckBox);
+		JPanel expandPanel = new JPanel();
+		expandPanel.setBorder(BorderFactory.createTitledBorder("Expand Operations"));
+		expandPanel.setLayout(new GridLayout(2,1));
+		expandPanel.add(expandButton);
+		expandPanel.add(expandToNewButton);
 		
-		optionsPanel.add(row2);
+		JPanel opsPanel = new JPanel();
+		opsPanel.setBorder(BorderFactory.createTitledBorder("Options"));
+		opsPanel.setLayout(new GridLayout(4,1));
+		opsPanel.add(this.recursiveCheckBox);
+		opsPanel.add(this.multipleEdgesCheckBox);
+		opsPanel.add(this.metaRelationshipEdgesCheckBox);
+		opsPanel.add(this.useDefaultMetanodeSizerCheckBox);
 		
-		JPanel operationsPanel = new JPanel();
-		operationsPanel.setLayout(new BoxLayout(operationsPanel,
-				BoxLayout.Y_AXIS));
-		operationsPanel.setBorder(BorderFactory
-				.createTitledBorder("Meta-Node Operations"));
-		operationsPanel.add(gridPanel);
-		operationsPanel.add(optionsPanel);
-
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JButton closeWinButton = new JButton("Close");
@@ -351,11 +345,25 @@ public class MNcollapserDialog extends JFrame {
 		});
 		buttonsPanel.add(closeWinButton);
 
+		JPanel allPanels = new JPanel();
+		allPanels.setLayout(new GridLayout(3,1));
+		allPanels.add(cdPanel);
+		allPanels.add(collPanel);
+		allPanels.add(expandPanel);
+		
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		mainPanel.add(operationsPanel);
-		mainPanel.add(buttonsPanel);
+		mainPanel.setLayout(new BorderLayout());
+		mainPanel.add(allPanels,BorderLayout.NORTH);
+		
+		JPanel southPanel = new JPanel();
+		southPanel.setLayout(new BoxLayout(southPanel,BoxLayout.Y_AXIS));
+		southPanel.add(opsPanel);
+		southPanel.add(buttonsPanel);
+		mainPanel.add(southPanel,BorderLayout.SOUTH);
+		
 		setContentPane(mainPanel);
+		
+
 	}// initialize
 
 	public AbstractAction getCreateMetaNodeAction() {

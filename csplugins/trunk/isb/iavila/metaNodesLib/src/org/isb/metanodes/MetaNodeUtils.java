@@ -25,19 +25,12 @@ package org.isb.metanodes;
 
 import java.util.*;
 import giny.model.RootGraph;
-
-import metanodePlugin.view.VisualStyleFactory;
-
-import org.isb.metanodes.data.AbstractMetaNodeAttsHandler;
 import org.isb.metanodes.data.MetaNodeAttributesHandler;
 import org.isb.metanodes.model.AbstractMetaNodeModeler;
 import org.isb.metanodes.model.MetaNodeFactory;
 import org.isb.metanodes.model.MetaNodeModelerFactory;
 import cytoscape.*;
-import cytoscape.view.*;
 import cytoscape.data.*;
-import cytoscape.layout.*;
-import giny.view.*;
 
 /**
  * Class with easy to use static methods for metanode operations.<p>
