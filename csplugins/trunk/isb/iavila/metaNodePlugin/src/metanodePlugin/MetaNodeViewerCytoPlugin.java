@@ -36,6 +36,8 @@ implements NodeContextMenuListener, PropertyChangeListener {
 			// Add ourselves to the network view created change list
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
+			// Add ourselves to the current network context menu
+			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
 		} catch (ClassCastException e) {
 			System.out.println(e.getMessage());
 		}
@@ -74,7 +76,6 @@ implements NodeContextMenuListener, PropertyChangeListener {
 		if (menu == null) {
 			menu = new JPopupMenu();
 		}
-		System.err.println("MetaNodeViewerPlugin.addNodeContextMenuItems called");
 		menu.add(this.dialog.getMenu(nodeView));
 	}
 
