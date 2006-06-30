@@ -436,6 +436,9 @@ public final class EdgeView
       return bestInx; }
   }
 
+  /**
+   * @exception IndexOutOfBoundsException
+   */
   public final void removeAnchor(final int inx)
   {
     synchronized (m_fung.m_lock) {
