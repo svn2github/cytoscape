@@ -323,6 +323,28 @@ public final class NodeView
       return m_fung.m_selectedNodes.count(m_node) > 0; }
   }
 
+  /**
+   * @return true if this operation was successful; false if nothing
+   *   has been changed.
+   */
+  public final boolean setSelected(final boolean selected)
+  {
+    if (selected) {
+      SelectionListener lis;
+      synchronized (m_fung.m_lock) {
+        if (!select()) { return false; }
+        lis = m_fung.m_selLis; }
+      if (lis != null) { lis.nodeSelected(m_node); }
+      return true; }
+    else {
+      SelectionListener lis;
+      synchronized (m_fung.m_lock) {
+        if (!unselect()) { return false; }
+        lis = m_fung.m_selLis; }
+      if (lis != null) { lis.nodeUnselected(m_node); }
+      return true; }
+  }
+
   /*
    * Returns true if this operation was successful, false if this node view
    * was already selected.  Callers should synchronize around m_fung.m_lock.

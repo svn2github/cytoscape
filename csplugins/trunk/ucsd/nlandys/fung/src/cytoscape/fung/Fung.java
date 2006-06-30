@@ -31,7 +31,7 @@ public final class Fung
   final ObjArray m_edgeViewStorage = new ObjArray();
 
   private TopologyChangeListener m_topLis = null;
-  private SelectionListener m_selLis = null;
+  SelectionListener m_selLis = null;
   private ViewportChangeListener m_viewLis = null;
   final NodeViewDefaults m_nodeDefaults;
   final EdgeViewDefaults m_directedEdgeDefaults;
