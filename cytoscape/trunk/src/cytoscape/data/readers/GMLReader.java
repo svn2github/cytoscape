@@ -215,12 +215,7 @@ public class GMLReader implements GraphReader {
 	 *            File name.
 	 */
 	public GMLReader(String filename) {
-		this.filename = filename;
-
-		// Set new style name
-		styleName = createVSName();
-		initializeHash();
-		initStyle();
+		this(filename, null);
 	}
 
 	/**
@@ -238,9 +233,10 @@ public class GMLReader implements GraphReader {
 		styleName = createVSName();
 		initializeHash();
 		initStyle();
-
-		this.taskMonitor = taskMonitor;
-		percentUtil = new PercentUtil(5);
+		if (taskMonitor != null){
+			this.taskMonitor = taskMonitor;
+			percentUtil = new PercentUtil(5);
+		}
 	}
 
 	private String createVSName() {
@@ -295,6 +291,7 @@ public class GMLReader implements GraphReader {
 		String cName = "GML Labels" + mapSuffix;
 		NodeLabelCalculator nlc = catalog.getNodeLabelCalculator(cName);
 		if (nlc == null) {
+			//System.out.println("creating passthrough mapping");
 			PassThroughMapping m = new PassThroughMapping("",
 					AbstractCalculator.ID);
 			nlc = new GenericNodeLabelCalculator(cName, m);
