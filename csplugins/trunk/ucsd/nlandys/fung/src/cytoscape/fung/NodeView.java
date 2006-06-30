@@ -323,16 +323,32 @@ public final class NodeView
       return m_fung.m_selectedNodes.count(m_node) > 0; }
   }
 
-  /**
+  /*
    * Returns true if this operation was successful, false if this node view
-   * was already selected.
+   * was already selected.  Callers should synchronize around m_fung.m_lock.
+   * Also, appropriate events should be fired by callers.
    */
-  public final boolean select()
+  final boolean select()
   {
-    synchronized (m_fung.m_lock) {
-      if (m_fung.m_selectedNodes.count(m_node) > 0) { return false; }
-    }
-    // TODO: Implement.
+    if (m_fung.m_selectedNodes.count(m_node) > 0) { return false; }
+    m_fung.m_selectedNodes.insert(m_node);
+    m_fung.m_nodeDetails.overrideColorLowDetail
+      (m_node, m_selectedColorLowDetail);
+    m_fung.m_nodeDetails.overrideFillPaint(m_node, m_selectedFillPaint);
+    return true;
+  }
+
+  /*
+   * Returns true if this operation was successful, false if this node view
+   * was already unselected.  Callers should synchronize around m_fung.m_lock.
+   * Also, appropriate events should be fired by callers.
+   */
+  final boolean unselect()
+  {
+    if (m_fung.m_selectedNodes.count(m_node) == 0) { return false; }
+    m_fung.m_selectedNodes.delete(m_node);
+    m_fung.m_nodeDetails.overrideColorLowDetail(m_node, m_colorLowDetail);
+    m_fung.m_nodeDetails.overrideFillPaint(m_node, m_fillPaint);
     return true;
   }
 
