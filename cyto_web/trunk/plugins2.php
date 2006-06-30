@@ -830,7 +830,7 @@ Scardoni.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.1.<A HREF="#more_info"><BR>Not tested in Cytoscape 2.2*</A>
+				Verified to work in 2.1.<A HREF="#more_info"><BR>Not tested in Cytoscape 2.PSI2*</A>
 				</td>
 				<td width="20%" valign="top">
                                                                                         [<a href="http://labs.systemsbiology.net/galitski/projs/system_genetics/protected/tutorial/index_pg.html">Phenotype Genetics Web-Site and Download (includes a tutorial)</a>]
@@ -880,9 +880,9 @@ Scardoni.
 				<td width="20%" valign="top">
 					<b>PSI-MI, Level 1 Import/Export Plugin</b><font size="-1">
 						<br>
-						Version: 3
+						Version: 3.01
 						<br>
-						Release Date: June 9, 2006</font>
+						Release Date: June 22, 2006</font>
 				</td>
 				<td width="40%" valign="top">
 					<p>
