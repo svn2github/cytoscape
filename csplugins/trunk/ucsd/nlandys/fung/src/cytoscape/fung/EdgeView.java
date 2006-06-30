@@ -477,4 +477,55 @@ public final class EdgeView
       return m_fung.m_selectedEdges.count(m_edge) > 0; }
   }
 
+  /**
+   * @return true if this operation was successful; false if nothing
+   *   has been changed.
+   */
+  public final boolean setSelected(final boolean selected)
+  {
+    if (selected) {
+      SelectionListener lis;
+      synchronized (m_fung.m_lock) {
+        if (!select()) { return false; }
+        lis = m_fung.m_selLis; }
+      if (lis != null) { lis.edgeSelected(m_edge); }
+      return true; }
+    else {
+      SelectionListener lis;
+      synchronized (m_fung.m_lock) {
+        if (!unselect()) { return false; }
+        lis = m_fung.m_selLis; }
+      if (lis != null) { lis.edgeUnselected(m_edge); }
+      return true; }
+  }
+
+  /*
+   * Returns true if this operation was successful, false if this edge view
+   * was already selected.  Callers should synchronize around m_fung.m_lock.
+   * Also, appropriate events should be fired by callers.
+   */
+  final boolean select()
+  {
+    if (m_fung.m_selectedEdges.count(m_edge) > 0) { return false; }
+    m_fung.m_selectedEdges.insert(m_edge);
+    m_fung.m_edgeDetails.overrideColorLowDetail
+      (m_edge, m_selectedColorLowDetail);
+    m_fung.m_edgeDetails.overrideSegmentPaint(m_edge, m_selectedSegmentPaint);
+    return true;
+  }
+
+  /*
+   * Returns true if this operation was successful, false if this edge view
+   * was already unselected.  Callers should synchronize around m_fung.m_lock.
+   * Also, appropriate events should be fired by callers.
+   */
+  final boolean unselect()
+  {
+    if (m_fung.m_selectedEdges.count(m_edge) == 0) { return false; }
+    m_fung.m_selectedEdges.delete(m_edge);
+    m_fung.m_edgeDetails.overrideColorLowDetail(m_edge, m_colorLowDetail);
+    m_fung.m_edgeDetails.overrideSegmentPaint(m_edge, m_segmentPaint);
+    return true;
+  }
+
 }
