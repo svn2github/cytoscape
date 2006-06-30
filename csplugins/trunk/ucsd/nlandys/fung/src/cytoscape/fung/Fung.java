@@ -362,6 +362,7 @@ public final class Fung
 
     public final int nodeCreate() {
       final int rtnVal;
+      TopologyChangeListener topLis;
       synchronized (m_lock) {
         rtnVal = m_graph.nodeCreate();
         m_rtree.insert
@@ -369,15 +370,14 @@ public final class Fung
            -m_nodeDefaults.m_widthDiv2, -m_nodeDefaults.m_heightDiv2,
            m_nodeDefaults.m_widthDiv2, m_nodeDefaults.m_heightDiv2);
         m_nodeViewStorage.setObjAtIndex
-          (new NodeView(m_this, rtnVal), rtnVal); }
-      final TopologyChangeListener topLis = m_topLis;
-      if (topLis != null) {
-        topLis.nodeCreated(rtnVal); }
+          (new NodeView(m_this, rtnVal), rtnVal);
+        topLis = m_topLis; }
+      if (topLis != null) { topLis.nodeCreated(rtnVal); }
       return rtnVal; }
 
-    // TODO: SpecificNodeDetails.unregisterNode().
     public final boolean nodeRemove(final int node) {
       final IntStack removedEdges = new IntStack();
+      TopologyChangeListener topLis;
       synchronized (m_lock) {
         IntEnumerator edgesTouching =
           m_graph.edgesAdjacent(node, true, true, true);
@@ -391,8 +391,9 @@ public final class Fung
         m_rtree.delete(node);
         m_selectedNodes.delete(node);
         ((NodeView) m_nodeViewStorage.getObjAtIndex(node)).m_fung = null;
-        m_nodeViewStorage.setObjAtIndex(null, node); }
-      final TopologyChangeListener topLis = m_topLis;
+        m_nodeViewStorage.setObjAtIndex(null, node);
+        m_nodeDetails.unregisterNode(node);
+        topLis = m_topLis; }
       if (topLis != null) {
         final IntEnumerator removedEdgeEnum = removedEdges.elements();
         while (removedEdgeEnum.numRemaining() > 0) {
@@ -404,28 +405,31 @@ public final class Fung
                                 final int targetNode,
                                 final boolean directed) {
       final int rtnVal;
+      TopologyChangeListener topLis;
       synchronized (m_lock) {
         rtnVal = m_graph.edgeCreate(sourceNode, targetNode, directed);
         if (rtnVal < 0) { return -1; }
         m_edgeViewStorage.setObjAtIndex
-          (new EdgeView(m_this, rtnVal), rtnVal); }
-      final TopologyChangeListener topLis = m_topLis;
+          (new EdgeView(m_this, rtnVal), rtnVal);
+        topLis = m_topLis; }
       if (topLis != null) { topLis.edgeCreated(rtnVal); }
       return rtnVal; }
 
     public final boolean edgeRemove(final int edge) {
+      TopologyChangeListener topLis;
       synchronized (m_lock) {
-        if (!edgeRemoveInternal(edge)) { return false; } }
-      final TopologyChangeListener topLis = m_topLis;
+        if (!edgeRemoveInternal(edge)) { return false; }
+        topLis = m_topLis; }
       if (topLis != null) { topLis.edgeRemoved(edge); }
       return true; }
 
-    // TODO: SpecificEdgeDetails.unregisterEdge().
+    /* Callers should synchronize around m_lock. */
     private final boolean edgeRemoveInternal(final int edge) {
       if (!m_graph.edgeRemove(edge)) { return false; }
       m_selectedEdges.delete(edge);
       ((EdgeView) m_edgeViewStorage.getObjAtIndex(edge)).m_fung = null;
       m_edgeViewStorage.setObjAtIndex(null, edge);
+      m_edgeDetails.unregisterEdge(edge);
       return true; }
 
     public final boolean nodeExists(final int node) {
