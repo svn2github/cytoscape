@@ -467,8 +467,8 @@ public final class EdgeView
   public final void setAnchorType(final boolean straightLineSegments)
   {
     synchronized (m_fung.m_lock) {
-      final int i = (straightLineSegments ? 1 : 0);
-      m_fung.m_edgeDetails.m_anchorTypes.setIntAtIndex(i, m_edge); }
+      final int type = (straightLineSegments ? 1 : 0);
+      m_fung.m_edgeDetails.m_anchorTypes.setIntAtIndex(type, m_edge); }
   }
 
   public boolean isSelected()
