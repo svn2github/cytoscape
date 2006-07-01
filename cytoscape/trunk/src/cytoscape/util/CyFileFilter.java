@@ -36,12 +36,9 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// CyFileFilter.java
-
-
 
 package cytoscape.util;
-//---------------------------------------------------------------------------
+
 import java.lang.Runtime;
 import java.io.File;
 import java.util.Hashtable;
@@ -50,6 +47,7 @@ import java.util.Set;
 import java.io.FilenameFilter;
 import javax.swing.*;
 import javax.swing.filechooser.*;
+import cytoscape.data.readers.GraphReader;
 
 
 /**
@@ -59,8 +57,8 @@ import javax.swing.filechooser.*;
  * Extensions are of the type ".foo", which is typically found on
  * Windows and Unix boxes, but not on Macinthosh. Case is ignored.
  *
- * @version 1.0 05/02/03
  * @author Larissa Kamenkovich
+ * @author Brad Kohlenberg 
  */
 public class CyFileFilter 
   extends 
@@ -76,6 +74,9 @@ public class CyFileFilter
     private String fullDescription = null;
     private boolean useExtensionsInDescription = true;
 
+    protected GraphReader reader = null;
+    protected String fileNature = "UNKNOWN";
+
     /**
      * Creates a file filter. If no filters are added, then all
      * files are accepted.
@@ -83,7 +84,7 @@ public class CyFileFilter
      * @see #addExtension
      */
     public CyFileFilter() {
-	this.filters = new Hashtable();
+    	this.filters = new Hashtable();
     }
 
     /**
@@ -93,7 +94,7 @@ public class CyFileFilter
      * @see #addExtension
      */
     public CyFileFilter(String extension) {
-	this(extension,null);
+    	this(extension,null, null);
     }
 
     /**
@@ -106,9 +107,7 @@ public class CyFileFilter
      * @see #addExtension
      */
     public CyFileFilter(String extension, String description) {
-	this();
-	if(extension!=null) addExtension(extension);
- 	if(description!=null) setDescription(description);
+    	this(extension, description, null);
     }
 
     /**
@@ -121,7 +120,7 @@ public class CyFileFilter
      * @see #addExtension
      */
     public CyFileFilter(String[] filters) {
-	this(filters, null);
+    	this(filters, null, null);
     }
 
     /**
@@ -133,14 +132,45 @@ public class CyFileFilter
      * @see #addExtension
      */
     public CyFileFilter(String[] filters, String description) {
-	this();
+    	this(filters, description, null);
+    }
+
+    /**
+     * Creates a file filter that accepts the given file type.
+     * Example: new ExampleFileFilter("jpg", "JPEG Image Images");
+     *
+     * Note that the "." before the extension is not needed. If
+     * provided, it will be ignored.
+     *
+     * @see #addExtension
+     */
+    public CyFileFilter(String extension, String description, String nature) {
+    	this.filters = new Hashtable();
+    	if(extension!=null) addExtension(extension);
+    	if(description!=null) setDescription(description);
+    	if(nature != null) setFileNature(nature);
+    }
+
+    /**
+     * Creates a file filter from the given string array and description.
+     * Example: new ExampleFileFilter(String {"gif", "jpg"}, "Gif and JPG Images");
+     *
+     * Note that the "." before the extension is not needed and will be ignored.
+     *
+     * @see #addExtension
+     */
+    public CyFileFilter(String[] filters, String description, String nature) {
+    	this.filters = new Hashtable();
 	for (int i = 0; i < filters.length; i++) {
 	    // add filters one by one
 	    addExtension(filters[i]);
 	}
  	if(description!=null) setDescription(description);
+ 	if(nature != null) setFileNature(nature);
     }
 
+    
+    
     /**
      * Return true if this file should be shown in the directory pane,
      * false if it shouldn't.
@@ -161,7 +191,7 @@ public class CyFileFilter
     		return true;
 	    }
 	    String extension = getExtension(f);
-	    if(extension != null && filters.get(getExtension(f)) != null) {
+	    if(extension != null && filters.get(extension) != null) {
 		return true;
 	    };
 	}
@@ -175,26 +205,35 @@ public class CyFileFilter
    *
    */
   public boolean accept ( File dir, String name ) {
-
     return accept( new File( name ) );
+  }
+  
+  public boolean accept ( String name ) {
+	return accept( new File( name ) );
   }
 
 
     /**
-     * Return the extension portion of the file's name .
+     * Return the extension portion of the file's name.
      *
      * @see #getExtension
      * @see FileFilter#accept
      */
      public String getExtension(File f) {
-	if(f != null) {
-	    String filename = f.getName();
-	    int i = filename.lastIndexOf('.');
-	    if(i>0 && i<filename.length()-1) {
-		return filename.substring(i+1).toLowerCase();
-	    };
-	}
-	return null;
+	if(f != null) 
+	    return getExtension(f.getName());
+	else
+	    return null;
+    }
+     
+     public String getExtension(String filename) {
+    		if(filename != null) {
+    		    int i = filename.lastIndexOf('.');
+    		    if(i>0 && i<filename.length()-1) {
+    			return filename.substring(i+1).toLowerCase();
+    		    };
+    		}
+    		return null;
     }
 
     /**
@@ -297,5 +336,46 @@ public class CyFileFilter
      */
     public Set getExtensionSet() {
       return filters.keySet();
+    }
+   
+
+    //
+    // The following code is an extension of the CyFileFilter duties.
+    // It provides extra functionality that allows a reader to be
+    // associated with a file type, which allows us to disassociate
+    // the checking of file type and file loading.  Simply ask the
+    // file filter for the reader and you'll automatically get the
+    // correct one.
+    // 
+   
+    /**
+     * Returns the reader.  This should be overridden by file type subclasses.
+     */
+    public GraphReader getReader(String fileName) {
+    	return null;
+    }
+   
+    /**
+     * Returns the nature of the file.  "Nature" refers to a grouping
+     * of file types.  For instance, GML, XGMML, and SIF are all file formats
+     * that contain graphs, therefore they belong to the GRAPH_NATURE.  This
+     * allows the ImportHandler to return all file types with the same nature.
+     */
+    public String getFileNature() {
+    	if (fileNature == null)
+    		return null;
+    	return fileNature;
+    }
+    
+    /**
+     * Sets the nature of the files for this filter.
+     * The files can be of the nature: Node, Edge, Graph, or Vizmap;
+     *
+     * @see setDescription
+     * @see setExtensionListInDescription
+     * @see isExtensionListInDescription
+     */
+    public void setFileNature(String nature) {
+    	fileNature = nature;
     }
 }

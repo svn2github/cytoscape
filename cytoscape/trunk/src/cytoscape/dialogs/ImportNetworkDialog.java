@@ -10,6 +10,8 @@ import java.io.File;
 
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
+import cytoscape.data.ImportHandler;
+import cytoscape.Cytoscape;
 
 /**
  * 
@@ -212,32 +214,12 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 
 	private void selectNetworkFileButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
-		
-//		 Create FileFilters
-		CyFileFilter intFilter = new CyFileFilter();
-		CyFileFilter gmlFilter = new CyFileFilter();
-		CyFileFilter xgmmlFilter = new CyFileFilter();
-		CyFileFilter graphFilter = new CyFileFilter();
+				
+		CyFileFilter[] tempCFF = (CyFileFilter[]) Cytoscape.getImportHandler()
+			.getAllFilters(ImportHandler.GRAPH_NATURE).toArray(new CyFileFilter[0]);
+		File file = FileUtil.getFile("Import Network File", FileUtil.LOAD, tempCFF);
 
-		// Add accepted File Extensions
-		gmlFilter.addExtension("gml");
-		gmlFilter.setDescription("GML files");
-		xgmmlFilter.addExtension("xgmml");
-		xgmmlFilter.addExtension("xml");
-		xgmmlFilter.setDescription("XGMML files");
-		intFilter.addExtension("sif");
-		intFilter.setDescription("Interaction files");
-		graphFilter.addExtension("sif");
-		graphFilter.addExtension("gml");
-		graphFilter.addExtension("xml");
-		graphFilter.addExtension("xgmml");
-		graphFilter.setDescription("All network files");
 
-		// Get the file name
-		File file = FileUtil.getFile("Import Network File", FileUtil.LOAD,
-				new CyFileFilter[] { xgmmlFilter, gmlFilter, intFilter,
-						graphFilter });
 		if(file != null) {
 			networkFileNameTextField.setText(file.getAbsolutePath());
 			networkFileNameTextField.setToolTipText(file.getAbsolutePath());

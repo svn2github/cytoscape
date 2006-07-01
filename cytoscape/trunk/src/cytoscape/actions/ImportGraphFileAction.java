@@ -43,8 +43,11 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+
+import javax.swing.JOptionPane;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -54,6 +57,7 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.servers.BioDataServer;
+import cytoscape.data.ImportHandler;
 import cytoscape.dialogs.ImportNetworkDialog;
 import cytoscape.dialogs.VisualStyleBuilderDialog;
 import cytoscape.ding.CyGraphLOD;
@@ -68,12 +72,8 @@ import cytoscape.view.CyMenus;
 import cytoscape.data.readers.GMLException;
 
 /**
- * User has requested loading of an Expression Matrix File. Could be SIF File or
- * GML File.
- * 
- * New! 2/15/2006: Now supporting XGMML file (network + attributes)
- * 
- * 
+ * Imports a graph of arbitrary type.  The types of graphs allowed are defined
+ * by the ImportHandler.
  */
 public class ImportGraphFileAction extends CytoscapeAction {
 	protected CyMenus windowMenu;
@@ -118,34 +118,9 @@ public class ImportGraphFileAction extends CytoscapeAction {
 
 		System.out.println("Loading: " + name);
 
-		int fileType = Cytoscape.FILE_SIF;
-
-		// long enough to have a "gml", "xml", or "xgmml" extension
-		if (name.length() > 5) {
-			if (name.endsWith("gml")) {
-				fileType = Cytoscape.FILE_GML;
-			} else if (name.endsWith("xgmml") || name.endsWith("xml")) {
-				fileType = Cytoscape.FILE_XGMML;
-			}
-		}
-
-		// Create LoadNetwork Task
-		LoadNetworkTask task = new LoadNetworkTask(new File(name), fileType,
-				false);
-
-		// Configure JTask Dialog Pop-Up Box
-		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
-		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayStatus(true);
-		jTaskConfig.setAutoDispose(false);
-
-		// Execute Task in New Thread; pops open JTask Dialog Box.
-		TaskManager.executeTask(task, jTaskConfig);
-
+		loadFile(new File(name),false);
 	}
 
-	// MLC 09/19/05 BEGIN:
 	/**
 	 * User-initiated action to load a CyNetwork into Cytoscape. If successfully
 	 * loaded, fires a PropertyChange event with
@@ -162,12 +137,10 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	 * @param e
 	 *            ActionEvent Object.
 	 */
-	// MLC 09/19/05 END.
 	public void actionPerformed(ActionEvent e) {
 
 		// open new dialog
-		ImportNetworkDialog fd = new ImportNetworkDialog(
-				Cytoscape.getDesktop(), true);
+		ImportNetworkDialog fd = new ImportNetworkDialog(Cytoscape.getDesktop(), true);
 		fd.pack();
 		fd.setLocationRelativeTo(Cytoscape.getDesktop());
 		fd.setVisible(true);
@@ -179,36 +152,24 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		File file = fd.getFile();
 		boolean vsSwitch = fd.getVSFlag();
 
-		// if the name is not null, then load
-		if (file != null) {
-			int fileType = Cytoscape.FILE_SIF;
+		if (file != null) 
+			loadFile(file,vsSwitch);
+	}
 
-			// long enough to have a "gml", "xml", or "xgmml" extension
-			if (file.getName().length() > 5) {
-				if (file.getName().endsWith("gml")) {
-					fileType = Cytoscape.FILE_GML;
-				} else if (file.getName().endsWith("xgmml")
-						|| file.getName().endsWith("xml")) {
-					fileType = Cytoscape.FILE_XGMML;
-				}
-			}
+	private void loadFile(File file, boolean createVisualStyle) {
+		// Create LoadNetwork Task
+		LoadNetworkTask task = new LoadNetworkTask(file, createVisualStyle);
 
-			// Create LoadNetwork Task
-			LoadNetworkTask task = new LoadNetworkTask(file, fileType, vsSwitch);
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(true);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(false);
+		
 
-			// Configure JTask Dialog Pop-Up Box
-			JTaskConfig jTaskConfig = new JTaskConfig();
-			jTaskConfig.setOwner(Cytoscape.getDesktop());
-			jTaskConfig.displayCloseButton(true);
-			jTaskConfig.displayStatus(true);
-			jTaskConfig.setAutoDispose(false);
-			
-
-			// Execute Task in New Thread; pops open JTask Dialog Box.
-			TaskManager.executeTask(task, jTaskConfig);
-		} else {
-			return;
-		}
+		// Execute Task in New Thread; pops open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
 	}
 }
 
@@ -217,7 +178,6 @@ public class ImportGraphFileAction extends CytoscapeAction {
  */
 class LoadNetworkTask implements Task {
 	private File file;
-	private int fileType;
 	private boolean vsSwitch;
 
 	private CyNetwork cyNetwork;
@@ -233,9 +193,9 @@ class LoadNetworkTask implements Task {
 	 * @param fileType
 	 *            FileType, e.g. Cytoscape.FILE_SIF or Cytoscape.FILE_GML.
 	 */
-	public LoadNetworkTask(File file, int fileType, boolean vsSwitch) {
+
+	public LoadNetworkTask(File file, boolean vsSwitch) {
 		this.file = file;
-		this.fileType = fileType;
 		this.vsSwitch = vsSwitch;
 	}
 
@@ -246,24 +206,34 @@ class LoadNetworkTask implements Task {
 		taskMonitor.setStatus("Reading in Network Data...");
 
 		try {
-			cyNetwork = this.createNetwork(file.getAbsolutePath(), fileType,
-					Cytoscape.getBioDataServer(), CytoscapeInit.getProperties()
-							.getProperty("defaultSpeciesName"));
+			String location = file.getAbsolutePath();
+			taskMonitor.setPercentCompleted(-1);
+			
+			reader = ((GraphReader) Cytoscape.getImportHandler().getReader(location));
+				
+			taskMonitor.setStatus("Creating Cytoscape Network...");
+			
+			cyNetwork = Cytoscape.createNetworkFromFile(location);	
+					
+			Object[] ret_val = new Object[2];
+			ret_val[0] = cyNetwork;
+			ret_val[1] = file.toURI();
+			//ret_val[2] = new Integer(file_type);
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
+			
 
 			if (cyNetwork != null) {
 				informUserOfGraphStats(cyNetwork);
 			} else {
 				StringBuffer sb = new StringBuffer();
-				sb
-						.append("Could not read network from file: "
-								+ file.getName());
-				sb.append("\nThis file may not be a valid GML or SIF file.");
-				taskMonitor.setException(new IOException(sb.toString()), sb
-						.toString());
+				sb.append("Could not read network from file: " + file.getName());
+				sb.append("\nThis file may not be a valid file format.");
+				taskMonitor.setException(new IOException(sb.toString()), sb.toString());
 			}
 			taskMonitor.setPercentCompleted(100);
-
+			
 			if (file.getName().endsWith(".gml") && vsSwitch == true) {
+				reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
 				VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(
 						cyNetwork.getTitle(), reader, Cytoscape.getDesktop(),
 						true);
@@ -271,8 +241,6 @@ class LoadNetworkTask implements Task {
 
 			}
 
-		} catch (IOException e) {
-			taskMonitor.setException(e, "Unable to load network file.");
 		} catch (GMLException e) {
 			taskMonitor.setException(e, "Unable to load network file.");
 		}
@@ -336,142 +304,4 @@ class LoadNetworkTask implements Task {
 		return new String("Loading Network");
 	}
 
-	/**
-	 * Creates a cytoscape.data.CyNetwork from a file. The passed variable
-	 * determines the type of file, i.e. GML, SIF, etc.
-	 * <p>
-	 * This operation may take a long time to complete.
-	 * 
-	 * @param location
-	 *            the location of the file
-	 * @param file_type
-	 *            the type of file GML, SIF, SBML, etc.
-	 * @param biodataserver
-	 *            provides the name conversion service
-	 * @param species
-	 *            the species used by the BioDataServer
-	 */
-	private CyNetwork createNetwork(String location, int file_type,
-			BioDataServer biodataserver, String species) throws IOException {
-
-		reader = null;
-
-		taskMonitor.setPercentCompleted(-1);
-		// Set the reader according to what file type was passed.
-		if (file_type == Cytoscape.FILE_SIF) {
-			reader = new InteractionsReader(biodataserver, species, location,
-					taskMonitor);
-		} else if (file_type == Cytoscape.FILE_GML) {
-			reader = new GMLReader(location, taskMonitor);
-		} else if (file_type == Cytoscape.FILE_XGMML) {
-			reader = new XGMMLReader(location, taskMonitor);
-		} else {
-			throw new IOException("File Type not Supported.");
-		}
-
-		// Have the GraphReader read the given file
-		reader.read();
-
-		// Get the RootGraph indices of the nodes and
-		// Edges that were just created
-		final int[] nodes = reader.getNodeIndicesArray();
-		final int[] edges = reader.getEdgeIndicesArray();
-
-		File file = new File(location);
-		final String title = file.getName();
-
-		// Create a new cytoscape.data.CyNetwork from these nodes and edges
-		taskMonitor.setStatus("Creating Cytoscape Network...");
-
-		// Create the CyNetwork
-		// First, set the view threshold to 0. By doing so, we can disable
-		// the auto-creating of the CyNetworkView.
-		int realThreshold = Integer.parseInt(CytoscapeInit.getProperties().getProperty( "viewThreshold" ));
-		CytoscapeInit.setViewThreshold(0);
-
-		CyNetwork network = null;
-		if (file_type == Cytoscape.FILE_XGMML) {
-			network = Cytoscape.createNetwork(nodes, edges,
-					((XGMMLReader) reader).getNetworkName());
-			((XGMMLReader) reader).setNetworkAttributes(network);
-		} else {
-			network = Cytoscape.createNetwork(nodes, edges, CyNetworkNaming
-					.getSuggestedNetworkTitle(title));
-		}
-
-		// Reset back to the real View Threshold
-		CytoscapeInit.setViewThreshold(realThreshold);
-
-		// Store GML Data as a Network Attribute
-		if (file_type == Cytoscape.FILE_GML) {
-			network.putClientData("GML", reader);
-
-			// Ask user to create VS or not
-
-		}
-
-		// MLC 09/19/05 BEGIN:
-		Object[] ret_val = new Object[3];
-		ret_val[0] = network;
-		ret_val[1] = file.toURI();
-		ret_val[2] = new Integer(file_type);
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
-		// MLC 09/19/05 END.
-
-		// Conditionally, Create the CyNetworkView
-		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold" ))) {
-			createCyNetworkView(network);
-
-			// Layout Network
-			
-			if (Cytoscape.getNetworkView(network.getIdentifier()) != Cytoscape.getNullNetworkView()) {
-				reader
-						.layout(Cytoscape.getNetworkView(network
-								.getIdentifier()));
-			}
-			Cytoscape.getCurrentNetworkView().fitContent();
-		}
-		return network;
-	}
-
-	/**
-	 * Creates the CyNetworkView. Most of this code is copied directly from
-	 * Cytoscape.createCyNetworkView. However, it requires a bit of a hack to
-	 * actually hide the network view from the user, and I didn't want to use
-	 * this hack in the core Cytoscape.java class.
-	 */
-	private void createCyNetworkView(CyNetwork cyNetwork) {
-		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork
-				.getTitle());
-		view.setGraphLOD(new CyGraphLOD());
-
-		// Start of Hack: Hide the View
-		//view.getCanvas().setVisible(false);
-		// End of Hack
-
-		view.setIdentifier(cyNetwork.getIdentifier());
-		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
-		view.setTitle(cyNetwork.getTitle());
-
-		// set the selection mode on the view
-		Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
-
-		Cytoscape.firePropertyChange(
-				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
-				view);
-
-		// Instead of calling fitContent(), access PGrap*View directly.
-		// AJK: 09/10/05 BEGIN:
-		// try fix to check for empty PBounds before animatingToCenter
-		// PLayer layer = view.getCanvas().getLayer();
-		// PBounds pb = layer.getFullBounds();
-		// if (!pb.isEmpty()) {
-		// view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
-		// 500);
-		// }
-		// view.getCanvas().getCamera().animateViewToCenterBounds
-		// (view.getCanvas().getLayer().getFullBounds(), true, 0);
-
-	}
-	// AJK: 09/10/09 END
 }
