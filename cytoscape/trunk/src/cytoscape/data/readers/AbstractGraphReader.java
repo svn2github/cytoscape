@@ -1,6 +1,6 @@
 
 /*
-  File: GraphReader.java 
+  File: AbstractGraphReader.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -38,40 +38,55 @@
 
 package cytoscape.data.readers;
 
+import cytoscape.data.CyAttributes;
+import cytoscape.Cytoscape;
+
 import giny.model.RootGraph;
 import giny.view.GraphView;
 
 import java.io.IOException;
 
-import cytoscape.data.CyAttributes;
 
-public interface GraphReader {
+public abstract class AbstractGraphReader implements GraphReader{
 
-	public void read() throws IOException;
+	public abstract void read() throws IOException;
 
-        /**
-         * @deprecated Use read() instead.  Will be removed Dec 2006.
-         */
-	public void read(boolean canonicalizeNodeNames) throws IOException;
+	/**
+	 * @deprecated Use read() instead.  Will be removed Dec 2006.
+	 */
+	public void read(boolean canonicalizeNodeNames) throws IOException {
+		read();
+	}
 
-        /**
-         * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
-         */
-	public RootGraph getRootGraph();
+	/**
+	 * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
+	 */
+	public RootGraph getRootGraph() {
+		return Cytoscape.getRootGraph();
+	}
 
-        /**
-         * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
-         */
-	public CyAttributes getNodeAttributes();
+	/**
+	 * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
+	 */
+	public CyAttributes getNodeAttributes() {
+		return Cytoscape.getNodeAttributes();
+	}
 
-        /**
-         * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
-         */
-	public CyAttributes getEdgeAttributes();
+	/**
+	 * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
+	 */
+	public CyAttributes getEdgeAttributes() {
+		return Cytoscape.getEdgeAttributes();
+	}
 
-	public void layout(GraphView myView);
+	public void layout(GraphView myView) {
+	}
 
-	public int[] getNodeIndicesArray();
+	public int[] getNodeIndicesArray() {
+		return null;
+	}
 
-	public int[] getEdgeIndicesArray();
+	public int[] getEdgeIndicesArray() {
+		return null;
+	}
 }

@@ -105,7 +105,7 @@ import cytoscape.view.CyNetworkView;
  * @author kono
  * 
  */
-public class XGMMLReader implements GraphReader {
+public class XGMMLReader extends AbstractGraphReader {
 
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
 	// Name of metanode attribute
@@ -265,21 +265,6 @@ public class XGMMLReader implements GraphReader {
 				taskMonitor.setException(e, e.getMessage());
 			}
 		}
-	}
-
-	/**
-	 * Read XGMML file.<br>
-	 * Same as read() since canonical name is not used in 2.3 and later.<br>
-	 * 
-	 * @deprecated canonicalName will not be used in the future versions.
-	 */
-	public void read(boolean canonicalizeNodeNames) throws IOException {
-		try {
-			this.readXGMML();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	/**
@@ -1042,18 +1027,6 @@ public class XGMMLReader implements GraphReader {
 
 	public Color getBackgroundColor() {
 		return getColor(backgroundColor);
-	}
-
-	public RootGraph getRootGraph() {
-		return Cytoscape.getRootGraph();
-	}
-
-	public CyAttributes getNodeAttributes() {
-		return Cytoscape.getNodeAttributes();
-	}
-
-	public CyAttributes getEdgeAttributes() {
-		return Cytoscape.getEdgeAttributes();
 	}
 
 	private void readAttributes(final String targetName, final List attrList,

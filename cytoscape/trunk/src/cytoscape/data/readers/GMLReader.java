@@ -1,5 +1,5 @@
 /*
- File: GMLReader2.java 
+ File: GMLReader.java 
  
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
  
@@ -93,7 +93,7 @@ import cytoscape.visual.mappings.PassThroughMapping;
  * generated when you call this class. The new style saves all visual features
  * (like node shape) and will not be lost even after other style selected.
  */
-public class GMLReader implements GraphReader {
+public class GMLReader extends AbstractGraphReader {
 	/**
 	 * The following are all taken to be reserved keywords for gml (note that
 	 * not all of them are actually keywords according to the spec)
@@ -577,10 +577,6 @@ public class GMLReader implements GraphReader {
 		vizmapper.setVisualStyle(gmlstyle);
 
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-	}
-
-	public void read(boolean canonicalize) {
-		read();
 	}
 
 	//
@@ -1374,28 +1370,6 @@ public class GMLReader implements GraphReader {
 	public int[] getEdgeIndicesArray() {
 		giny_edges.trimToSize();
 		return giny_edges.elements();
-	}
-
-	/**
-	 * @return null, there is no GML reader available outside of Y-Files right
-	 *         now
-	 */
-	public RootGraph getRootGraph() {
-		return Cytoscape.getRootGraph();
-	}
-
-	/**
-	 * @return the node attributes that were read in from the GML file.
-	 */
-	public CyAttributes getNodeAttributes() {
-		return Cytoscape.getNodeAttributes();
-	}
-
-	/**
-	 * @return the edge attributes that were read in from the GML file.
-	 */
-	public CyAttributes getEdgeAttributes() {
-		return Cytoscape.getEdgeAttributes();
 	}
 
 	/**

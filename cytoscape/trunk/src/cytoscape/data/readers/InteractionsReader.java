@@ -70,7 +70,7 @@ import cytoscape.util.PercentUtil;
  * Reader for graphs in the interactions file format. Given the filename,
  * provides the graph and attributes objects constructed from the file.
  */
-public class InteractionsReader implements GraphReader {
+public class InteractionsReader extends AbstractGraphReader {
 	private TaskMonitor taskMonitor;
 	private PercentUtil percentUtil;
 
@@ -338,21 +338,6 @@ public class InteractionsReader implements GraphReader {
 		} // for i
 
 	} // createRootGraphFromInteractionData
-
-	public RootGraph getRootGraph() {
-		return Cytoscape.getRootGraph();
-
-	} // createGraph
-
-	public CyAttributes getNodeAttributes() {
-		return Cytoscape.getNodeAttributes();
-
-	} // getNodeAttributes
-
-	public CyAttributes getEdgeAttributes() {
-		return Cytoscape.getEdgeAttributes();
-
-	} // getEdgeAttributes
 
 	public int[] getNodeIndicesArray() {
 		node_indices.trimToSize();
