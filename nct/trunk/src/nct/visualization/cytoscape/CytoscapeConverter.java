@@ -126,7 +126,8 @@ public class CytoscapeConverter {
 				nodeIds[i] = nodeIdMap.get(node).intValue();
 			} else {
 				int nodeId = rootGraph.createNode();
-				nodeAttrs.setAttribute(Integer.toString(nodeId),"name",node);
+				//nodeAttrs.setAttribute(Integer.toString(nodeId),"name",node);
+				rootGraph.getNode(nodeId).setIdentifier(node);
 				nodeIdMap.put(node,nodeId);
 				nodeIds[i] = nodeId;
 			}
@@ -142,8 +143,8 @@ public class CytoscapeConverter {
 				m = edgeIdMap.get(edge.getSourceNode());
 				I = m.get(edge.getTargetNode());
 			} else if ( edgeIdMap.containsKey(edge.getTargetNode()) ) {
-				m = edgeIdMap.get(edge.getSourceNode());
-				I = m.get(edge.getTargetNode());
+				m = edgeIdMap.get(edge.getTargetNode());
+				I = m.get(edge.getSourceNode());
 			}
 
 
@@ -159,7 +160,8 @@ public class CytoscapeConverter {
 				int targetId = nodeIdMap.get(target).intValue();
 				int edgeId = rootGraph.createEdge(sourceId,targetId,false);
 				// TODO make sure edge contains the actual description.
-				edgeAttrs.setAttribute(Integer.toString(edgeId),"name",graph.getEdgeDescription(source,target));
+				//edgeAttrs.setAttribute(Integer.toString(edgeId),"name",graph.getEdgeDescription(source,target));
+				rootGraph.getEdge(edgeId).setIdentifier(graph.getEdgeDescription(source, target));
 				if ( !edgeIdMap.containsKey(source))
 					edgeIdMap.put(source,new HashMap<String,Integer>());
 				edgeIdMap.get(source).put(target,edgeId);
