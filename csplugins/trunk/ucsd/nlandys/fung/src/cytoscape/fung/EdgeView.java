@@ -62,6 +62,9 @@ public final class EdgeView
            m_fung.m_directedEdgeDefaults.m_colorLowDetail :
            m_fung.m_undirectedEdgeDefaults.m_colorLowDetail); }
       else {
+        if (colorLowDetail.getAlpha() != 255) {
+          throw new IllegalArgumentException
+            ("ColorLowDetail must be opaque"); }
         m_colorLowDetail = colorLowDetail; }
       if (!isSelected()) {
         m_fung.m_edgeDetails.overrideColorLowDetail
@@ -84,6 +87,9 @@ public final class EdgeView
            m_fung.m_directedEdgeDefaults.m_selectedColorLowDetail :
            m_fung.m_undirectedEdgeDefaults.m_selectedColorLowDetail); }
       else {
+        if (selectedColorLowDetail.getAlpha() != 255) {
+          throw new IllegalArgumentException
+            ("selectedColorLowDetail must be opaque"); }
         m_selectedColorLowDetail = selectedColorLowDetail; }
       if (isSelected()) {
         m_fung.m_edgeDetails.overrideColorLowDetail
