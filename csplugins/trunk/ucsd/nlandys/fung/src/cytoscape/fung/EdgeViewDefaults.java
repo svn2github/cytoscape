@@ -56,11 +56,12 @@ public final class EdgeViewDefaults
                           final double segmentDashLength)
   {
     m_colorLowDetail = colorLowDetail;
-    if (m_colorLowDetail == null) {
-      throw new NullPointerException("colorLowDetail is null"); }
+    if (m_colorLowDetail.getAlpha() != 255) {
+      throw new IllegalArgumentException("colorLowDetail must be opaque"); }
     m_selectedColorLowDetail = selectedColorLowDetail;
-    if (m_selectedColorLowDetail == null) {
-      throw new NullPointerException("selectedColorLowDetail is null"); }
+    if (m_selectedColorLowDetail.getAlpha() != 255) {
+      throw new IllegalArgumentException
+        ("selectedColorLowDetail must be opaque"); }
     m_sourceArrow = sourceArrow;
     switch (m_sourceArrow) {
     case EdgeView.ARROW_NONE:
