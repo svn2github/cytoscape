@@ -80,6 +80,7 @@ public class CytoscapeTestSwing extends TestCase {
 
 		// write assertion code here.
 		Set s = Cytoscape.getNetworkSet();
-		assertTrue("exected 1, got: " + s.size(), s.size() == 1 );
+		//assertEquals("expected 1, got: " + s.size(), s.size() == 1 );
+		assertEquals(s.size(), 1 );
 	}
 }
