@@ -1,0 +1,36 @@
+<project name="molenaar-plugin" default="molenaar-plugin.jar" basedir=".">
+
+  <property name="cytoscape.lib.dir"
+            value="${basedir}/../../../../cytoscape/lib"/>
+
+  <path id="molenaar.plugin.classpath">
+    <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/ding.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+  </path>
+
+  <target name="molenaar-plugin.jar">
+    <echo>
+For this build to work, you must have 'csplugins' and
+'cytoscape' CVS projects in the same top-level directory;
+you also must execute the 'jar' target in the 'cytoscape'
+CVS project.
+    </echo>
+    <mkdir dir="${basedir}/build/classes"/>
+    <javac srcdir="${basedir}/src"
+           includes="foo/MolenaarPlugin.java"
+           classpathref="molenaar.plugin.classpath"
+           destdir="${basedir}/build/classes"
+           debug="on"
+           includeAntRuntime="no"/>
+    <jar filesonly="true"
+         destfile="${basedir}/build/molenaar-plugin.jar">
+      <fileset dir="${basedir}/build/classes"/>
+    </jar>
+  </target>
+
+  <target name="clean">
+    <delete dir="${basedir}/build"/>
+  </target>
+
+</project>
