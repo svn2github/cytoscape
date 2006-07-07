@@ -29,14 +29,14 @@ public class NetworkBLASTDialog extends JDialog {
 
   private void initialize()
   {
-    contentPane		= new JPanel();
-    tabbedPane		= new JTabbedPane();
+    javax.swing.JPanel contentPane	= new JPanel();
+    AboutPanel aboutPanel		= new AboutPanel();
+    ScoreModelPanel scoreModelPanel	= new ScoreModelPanel(this);
     
-    aboutPanel		= new AboutPanel();
-    compatGraphPanel	= new CompatGraphPanel(this);
-    pathSearchPanel	= new PathSearchPanel();
-    complexSearchPanel	= new ComplexSearchPanel();
-    scoreModelPanel	= new ScoreModelPanel();
+    tabbedPane				= new JTabbedPane();
+    compatGraphPanel			= new CompatGraphPanel(this);
+    pathSearchPanel			= new PathSearchPanel(this);
+    complexSearchPanel			= new ComplexSearchPanel(this);
 
     tabbedPane.addTab("About", null, aboutPanel, null);
     tabbedPane.addTab("Compatibility Graph", null, compatGraphPanel, null);
@@ -44,7 +44,7 @@ public class NetworkBLASTDialog extends JDialog {
     tabbedPane.addTab("Complex Search", null, complexSearchPanel, null);
     tabbedPane.addTab("Score Model", null, scoreModelPanel, null);
     
-    this.setBounds(new Rectangle(0,0,584,283));
+    this.setBounds(new Rectangle(0,0,462,254));
     this.setContentPane(contentPane);
     this.setTitle("NetworkBLAST");
     this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -72,15 +72,20 @@ public class NetworkBLASTDialog extends JDialog {
 
   public CompatGraphPanel getCompatGraphPanel()
   {
-    return this.compatGraphPanel;
+    return compatGraphPanel;
   }
-
-  private javax.swing.JPanel		contentPane;
-  private javax.swing.JTabbedPane	tabbedPane;
   
-  private AboutPanel			aboutPanel;
+  public PathSearchPanel getPathSearchPanel()
+  {
+    return pathSearchPanel;
+  }
+  
+  public ComplexSearchPanel getComplexSearchPanel()
+  {
+    return complexSearchPanel;
+  }
+  private javax.swing.JTabbedPane	tabbedPane;
   private CompatGraphPanel		compatGraphPanel;
   private PathSearchPanel		pathSearchPanel;
   private ComplexSearchPanel		complexSearchPanel;
-  private ScoreModelPanel		scoreModelPanel;
 }

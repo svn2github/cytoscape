@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.ui.JTask;
 import cytoscape.task.Task;
@@ -33,10 +34,7 @@ import nct.graph.basic.BasicDistanceGraph;
 import NetworkBLAST.NetworkBLASTPlugin;
 import NetworkBLAST.NetworkBLASTDialog;
 
-/*
- * The action that generates compatibility graphs.
- * This action is invoked by the Generate button of CompatGraphPanel.
- */
+import java.io.PrintWriter;
 
 public class GenerateCompatGraph extends AbstractAction
 {
@@ -48,9 +46,6 @@ public class GenerateCompatGraph extends AbstractAction
 
   public void actionPerformed(ActionEvent _e)
   {
-    // Create the JTaskConfig. This specifies how the progress dialog will
-    // be displayed.
-    
     JTaskConfig jTaskConfig = new JTaskConfig();
     jTaskConfig.displayCancelButton(true);
     jTaskConfig.displayCloseButton(false);
@@ -61,8 +56,6 @@ public class GenerateCompatGraph extends AbstractAction
     jTaskConfig.setModal(true);
     jTaskConfig.setOwner(Cytoscape.getDesktop());
 
-    // Create the Task. This is where the compatibility graph will be generated.
-
     Task task = new Task()
     {
       public void run()
@@ -70,12 +63,10 @@ public class GenerateCompatGraph extends AbstractAction
         double expectation = 1e-10;
         boolean useZero = false;
 
-	/*******************************
-	 *
-	 * Create the input species
-	 * inputSpecies will contain graph 1 and graph 2
-	 *
-	 *******************************/
+	//
+	// Step 1: Convert graph 1 and graph 2 to NCT graphs. Add them to
+	// the input species.
+	//
 	
         List<SequenceGraph<String,Double>> inputSpecies =
 		new ArrayList<SequenceGraph<String,Double>>();
@@ -101,13 +92,9 @@ public class GenerateCompatGraph extends AbstractAction
         inputSpecies.add(graph1);
         inputSpecies.add(graph2);
 
-	/*******************************
-	 *
-	 * Create the homology graph.
-	 * First the homology reader will be created,
-	 * then the homology graph.
-	 *
-	 *******************************/
+	//
+	// Step 2: Create the homology reader and graph.
+	//
 	
 	if (monitor != null)
 	{
@@ -120,73 +107,57 @@ public class GenerateCompatGraph extends AbstractAction
 
         HomologyGraph homologyGraph = new HomologyGraph(
 	  	homreader, expectation, inputSpecies);
-		
+	
+	//
+	// Step 3: Create the score model and compatibility calculator;
+	// these classes will support creating the compatibility graph.
+	//
+	
 	if (monitor != null)
 	{
 	  monitor.setPercentCompleted(60);
 	  monitor.setStatus("Creating Compatibility Graph...");
 	}
 
-	/*******************************
-	 *
-	 * Create the ScoreModel and CompatibilityCalculator
-	 * classes for the CompatibilityGraph.
-	 *
-	 *******************************/
-
         ScoreModel<String,Double> logScore = parentDialog.
 	  	getCompatGraphPanel().getScoreModelComboBox().
 			getSelectedScoreModel();
+
+	// Check if getSelectedScoreModel() was successful. If this method
+	// has failed, it will display an error and return null.
+	if (logScore == null) return;
     
         CompatibilityCalculator compatCalc =
 	  	new AdditiveCompatibilityCalculator(0.01, logScore, useZero);
 
-	/*******************************
-	 *
-	 * Create the CompatibilityGraph.
-	 *
-	 *******************************/
-
+	//
+	// Step 4: Create the compatibility graph
+	//
 
         CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph,
     		inputSpecies, compatCalc);
+
+	//
+	// Step 5: Convert the compatibility graph to a Cytoscape network
+	//
 	
-	/*******************************
-	 *
-	 * Create the Cytoscape network.
-	 *
-	 *******************************/
-		
 	if (monitor != null)
 	{
 	  monitor.setPercentCompleted(80);
 	  monitor.setStatus("Converting Compatibility Graph...");
 	}
 	
-	// networkName holds the name of the new Cytoscape network.
-	// If it is the first compatibility graph, networkName will be
-	// "Untitled Compatibility Graph." Subsequent created graphs
-	// are called "Untitled Compatibility Graph 2,"
-	// "Untitled Compatibility Graph 3," etc.
-	
-        String networkName = "Untitled Compatibility Graph";
-	
-        compatGraphCount++;
-        if (compatGraphCount > 1)
-          networkName += " " + compatGraphCount;
-      
-        CyNetwork newNetwork = Cytoscape.createNetwork(networkName, true);
-        newNetwork.appendNetwork(CytoscapeConverter.convert(compatGraph));
-
-	// Close the NetworkBLAST dialog
-
-        parentDialog.setVisible(false);
+        String networkName = "Compatibility Graph " + (++compatGraphCount)
+		+ " Result";
+        CytoscapeConverter.convert(compatGraph, networkName);
       }
       
       public String getTitle()
       	{ return "NetworkBLAST: Generating Compatibility Graph..."; }
     
-      public void halt() { }
+      public void halt()
+      	{ }
+
       public void setTaskMonitor(TaskMonitor _monitor)
       	{ monitor = _monitor; }
 
@@ -194,6 +165,7 @@ public class GenerateCompatGraph extends AbstractAction
     };
 
     TaskManager.executeTask(task, jTaskConfig);
+    parentDialog.setVisible(false);
   }
 
   private CyNetwork getGraph1()
@@ -252,21 +224,21 @@ public class GenerateCompatGraph extends AbstractAction
       Set<String> nodes = this.graph.getNodes();
       for (String node : nodes)
       {
-        Set<String> connectedNodes = this.graph.getNeighbors(node);
-	for (String connectedNode : connectedNodes)
+        Set<String> neighbors = this.graph.getNeighbors(node);
+	for (String neighbor : neighbors)
 	{
-	  if ( (!sg1.isNode(node)          && !sg2.isNode(node)) ||
-	       (!sg1.isNode(connectedNode) && !sg2.isNode(connectedNode)) ) 
+	  if ( (!sg1.isNode(node)     && !sg2.isNode(node)) ||
+	       (!sg1.isNode(neighbor) && !sg2.isNode(neighbor)) ) 
             continue; 
 	  
           if (!homologyMap.containsKey(node))
 	    homologyMap.put(node, new HashMap<String,Double>());
 	  
-          if (!homologyMap.containsKey(connectedNode))
-	    homologyMap.put(connectedNode, new HashMap<String,Double>());
+          if (!homologyMap.containsKey(neighbor))
+	    homologyMap.put(neighbor, new HashMap<String,Double>());
 	  
-	  homologyMap.get(node).put(connectedNode,
-	  			this.graph.getEdgeWeight(node, connectedNode));
+	  homologyMap.get(node).put(neighbor,
+	  			this.graph.getEdgeWeight(node, neighbor));
 	}
       }
 

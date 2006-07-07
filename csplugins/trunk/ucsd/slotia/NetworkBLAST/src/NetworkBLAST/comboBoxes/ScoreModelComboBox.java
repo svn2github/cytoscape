@@ -11,31 +11,34 @@ import java.awt.event.ItemListener;
 
 import nct.networkblast.score.ScoreModel;
 import nct.networkblast.score.LogLikelihoodScoreModel;
-import nct.networkblast.score.SimpleScoreModel;
 import nct.networkblast.score.SimpleEdgeScoreModel;
-import nct.networkblast.score.SimpleNodeScoreModel;
 
 import cytoscape.Cytoscape;
 
+import NetworkBLAST.NetworkBLASTDialog;
 import NetworkBLAST.panels.scoreModelPanels.LogLikelihoodPanel;
+import NetworkBLAST.panels.scoreModelPanels.SimpleEdgePanel;
 
 public class ScoreModelComboBox extends JComboBox
 {
-  public ScoreModelComboBox()
+  public ScoreModelComboBox(NetworkBLASTDialog _parentDialog)
   {
     super();
-    
     initializeItems();
+    
+    parentDialog = _parentDialog;
     
     for (ScoreModelComboBoxItem item : this.items)
       this.addItem(item);
   }
 
-  public ScoreModelComboBox(CardLayout _layout, JPanel _layoutParent)
+  public ScoreModelComboBox(NetworkBLASTDialog _parentDialog,
+  		CardLayout _layout, JPanel _layoutParent)
   {
     super();
-    
     initializeItems();
+    
+    parentDialog = _parentDialog;
 
     final CardLayout cardLayout = _layout;
     final JPanel layoutParent = _layoutParent;
@@ -46,8 +49,7 @@ public class ScoreModelComboBox extends JComboBox
         this.addItem(item);
 	layoutParent.add(item.getSettingsPanel(), item.toString());
       }
-
-    this.addItemListener(new ItemListener()
+    ItemListener itemListener = new ItemListener()
     {
       public void itemStateChanged(java.awt.event.ItemEvent _e)
       {
@@ -60,18 +62,17 @@ public class ScoreModelComboBox extends JComboBox
       }
 
       private int cardState = 0;
-    });
+    };
+
+    this.addItemListener(itemListener);
   }
 
   public ScoreModel<String,Double> getSelectedScoreModel()
   {
     if (this.getSelectedItem() == null)
-    {
-      System.err.println("ScoreModelComboBox: no item selected!");
       return null;
-    }
-
-    return ((ScoreModelComboBoxItem) this.getSelectedItem()).getScoreModel();
+    else
+      return ((ScoreModelComboBoxItem) this.getSelectedItem()).getScoreModel();
   }
   
   private abstract class ScoreModelComboBoxItem
@@ -99,57 +100,62 @@ public class ScoreModelComboBox extends JComboBox
   
   private void initializeItems()
   {
-    if (items != null)
-      return;
+    if (items != null) return;
     
-    items = new ArrayList<ScoreModelComboBoxItem>();
-    items.add(
-      new ScoreModelComboBoxItem("Log Likelihood", new LogLikelihoodPanel())
+    ScoreModelComboBoxItem logLikelihoodItem =
+    	new ScoreModelComboBoxItem("Log Likelihood", logLikelihoodPanel)
+    {
+      public ScoreModel<String,Double> getScoreModel()
       {
-	public ScoreModel<String,Double> getScoreModel()
+        LogLikelihoodPanel panel = (LogLikelihoodPanel) settingsPanel;
+	double truthFactor, truthModel, bkgndProb;
+	
+	try
 	{
-	  LogLikelihoodPanel panel = (LogLikelihoodPanel) settingsPanel;
-
-	  double truthFactor, truthModel, bkgndProb;
-
-	  try
-	  {
-	    truthFactor = Double.parseDouble(panel.
+	  truthFactor = Double.parseDouble(panel.
 	    		getTruthFactorTextField().getText());
-	    truthModel = Double.parseDouble(panel.
+			
+	  truthModel = Double.parseDouble(panel.
 	    		getTruthModelTextField().getText());
 			
-	    if ( !( 0.0 <= truthModel && truthModel <= 1.0 ) )
-	      throw new NumberFormatException();
+	  if ( !( 0.0 <= truthModel && truthModel <= 1.0 ) )
+	    throw new NumberFormatException();
 	      
-	    bkgndProb = Double.parseDouble(panel.
-	    		getBkgndProbTextField().getText());
-	  }
-	  catch (NumberFormatException e)
-	  {
-	    JOptionPane.showMessageDialog(null,
-	    	"The parameters for the Log Likelihood score model are " +
-		"not specified correctly.\nGo back to the Score Model " +
-		"Settings dialog\nand make sure each text field has been " +
-		"entered correctly.", "Log Likelihood Score Model",
-		JOptionPane.ERROR_MESSAGE);
-	    return null;
-	  }
-	  System.out.println("Parsed parameters. " + truthFactor + ", " + truthModel + ", " + bkgndProb);
-
-	  return new LogLikelihoodScoreModel<String>(truthFactor, truthModel,
-	  	bkgndProb);
+	  bkgndProb = Double.parseDouble(panel.
+	   		getBkgndProbTextField().getText());
 	}
-      });
+	catch (NumberFormatException e)
+	{
+	  JOptionPane.showMessageDialog(null,
+	    	"The parameters for the Log Likelihood\nscore model are " +
+		"not specified correctly.\nPlease go back to the Score Model " +
+		"Settings\ndialog and make sure each text field\nhas been " +
+		"entered correctly.",
+		"NetworkBLAST: Log Likelihood Score Model",
+		JOptionPane.ERROR_MESSAGE);
+	  return null;
+	}
+
+	return new LogLikelihoodScoreModel<String>(truthFactor, truthModel,
+	  	bkgndProb);
+      }
+    };
       
-    items.add(new ScoreModelComboBoxItem("Simple Edge", null)
+    ScoreModelComboBoxItem simpleEdgeItem =
+    	new ScoreModelComboBoxItem("Simple Edge", null)
     {
       public ScoreModel<String,Double> getScoreModel()
         { return new SimpleEdgeScoreModel<String>(); }
-    });
+    };
+
+    items = new ArrayList<ScoreModelComboBoxItem>();
+    items.add(logLikelihoodItem);
+    items.add(simpleEdgeItem);
   }
 
   private List<ScoreModelComboBoxItem> items = null;
+  private NetworkBLASTDialog parentDialog;
 
-  protected int type;
+  private static LogLikelihoodPanel logLikelihoodPanel =
+  		new LogLikelihoodPanel();
 }

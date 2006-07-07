@@ -6,7 +6,9 @@
 
 package NetworkBLAST.panels;
 
+import NetworkBLAST.NetworkBLASTDialog;
 import NetworkBLAST.comboBoxes.NetworkComboBox;
+import NetworkBLAST.actions.ComplexSearch;
 
 /**
  *
@@ -15,7 +17,8 @@ import NetworkBLAST.comboBoxes.NetworkComboBox;
 public class ComplexSearchPanel extends javax.swing.JPanel {
     
     /** Creates new form ComplexSearchPanel */
-    public ComplexSearchPanel() {
+    public ComplexSearchPanel(NetworkBLASTDialog _parentDialog) {
+        parentDialog = _parentDialog;
         initComponents();
     }
     
@@ -32,7 +35,12 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
         graphComboBox = new NetworkComboBox();
         maxSizeTextField = new javax.swing.JTextField();
         seedSizeTextField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        searchButton = new javax.swing.JButton();
+        restoreDefaultsButton = new javax.swing.JButton();
+        maxSizeWarningLabel = new javax.swing.JLabel();
+        maxSizeWarningLabel.setVisible(false);
+        seedSizeWarningLabel = new javax.swing.JLabel();
+        seedSizeWarningLabel.setVisible(false);
 
         jLabel1.setText("Graph to Search:");
 
@@ -41,10 +49,46 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
         jLabel3.setText("Seed Size:");
 
         maxSizeTextField.setText("10");
+        maxSizeTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maxSizeActionPerformed(evt);
+            }
+        });
+        maxSizeTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                maxSizeFocusLost(evt);
+            }
+        });
 
         seedSizeTextField.setText("10");
+        seedSizeTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                seedSizeActionPerformed(evt);
+            }
+        });
+        seedSizeTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                seedSizeFocusLost(evt);
+            }
+        });
 
-        jButton1.setText("Search");
+        searchButton.setText("Search");
+        searchButton.addActionListener(new ComplexSearch(parentDialog));
+
+        restoreDefaultsButton.setText("Restore Defaults");
+        restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restoreDefaults(evt);
+            }
+        });
+
+        maxSizeWarningLabel.setFont(new java.awt.Font("Dialog", 0, 10));
+        maxSizeWarningLabel.setForeground(new java.awt.Color(204, 51, 0));
+        maxSizeWarningLabel.setText("Warning: Maximum Complex Size must be an integer.");
+
+        seedSizeWarningLabel.setFont(new java.awt.Font("Dialog", 0, 10));
+        seedSizeWarningLabel.setForeground(new java.awt.Color(204, 51, 0));
+        seedSizeWarningLabel.setText("Warning: Seed Size must be an integer.");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -58,12 +102,19 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
                             .add(jLabel1)
                             .add(jLabel3)
                             .add(jLabel2))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 63, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(maxSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(graphComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 374, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(seedSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton1))
+                            .add(layout.createSequentialGroup()
+                                .add(seedSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(seedSizeWarningLabel))
+                            .add(layout.createSequentialGroup()
+                                .add(maxSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(maxSizeWarningLabel))
+                            .add(graphComboBox, 0, 425, Short.MAX_VALUE)))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, searchButton)
+                    .add(restoreDefaultsButton))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -75,31 +126,100 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
                     .add(graphComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel2)
                     .add(maxSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel2))
+                    .add(maxSizeWarningLabel))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel3)
                     .add(seedSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel3))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 147, Short.MAX_VALUE)
-                .add(jButton1)
+                    .add(seedSizeWarningLabel))
+                .add(42, 42, 42)
+                .add(restoreDefaultsButton)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 80, Short.MAX_VALUE)
+                .add(searchButton)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void restoreDefaults(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restoreDefaults
+        maxSizeTextField.setText("10");
+        seedSizeTextField.setText("10");
+        maxSizeWarningLabel.setVisible(false);
+        seedSizeWarningLabel.setVisible(false);
+    }//GEN-LAST:event_restoreDefaults
+
+    private void seedSizeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_seedSizeFocusLost
+        checkSeedSize();
+    }//GEN-LAST:event_seedSizeFocusLost
+
+    private void seedSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seedSizeActionPerformed
+        checkSeedSize();
+    }//GEN-LAST:event_seedSizeActionPerformed
+
+    private void maxSizeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_maxSizeFocusLost
+        checkMaxSize();
+    }//GEN-LAST:event_maxSizeFocusLost
+
+    private void maxSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maxSizeActionPerformed
+        checkMaxSize();
+    }//GEN-LAST:event_maxSizeActionPerformed
     
     public NetworkComboBox getGraphComboBox()
     {
         return graphComboBox;
     }
     
+    public javax.swing.JTextField getMaxSizeTextField()
+    {
+        return maxSizeTextField;
+    }
+    
+    public javax.swing.JTextField getSeedSizeTextField()
+    {
+        return seedSizeTextField;
+    }
+    
+    private void checkMaxSize()
+    {
+        try
+        {
+            Integer.parseInt(maxSizeTextField.getText());
+        }
+        catch (NumberFormatException _e)
+        {
+            maxSizeWarningLabel.setVisible(true);
+            return;
+        }
+        maxSizeWarningLabel.setVisible(false);
+    }
+    
+    private void checkSeedSize()
+    {
+        try
+        {
+            Integer.parseInt(seedSizeTextField.getText());
+        }
+        catch (NumberFormatException _e)
+        {
+            seedSizeWarningLabel.setVisible(true);
+            return;
+        }
+        seedSizeWarningLabel.setVisible(false);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private NetworkComboBox graphComboBox;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField maxSizeTextField;
+    private javax.swing.JLabel maxSizeWarningLabel;
+    private javax.swing.JButton restoreDefaultsButton;
+    private javax.swing.JButton searchButton;
     private javax.swing.JTextField seedSizeTextField;
+    private javax.swing.JLabel seedSizeWarningLabel;
     // End of variables declaration//GEN-END:variables
     
+    private NetworkBLASTDialog parentDialog;
 }

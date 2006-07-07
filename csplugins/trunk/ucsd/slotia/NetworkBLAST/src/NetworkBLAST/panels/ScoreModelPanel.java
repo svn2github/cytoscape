@@ -9,6 +9,7 @@
 
 package NetworkBLAST.panels;
 
+import NetworkBLAST.NetworkBLASTDialog;
 import NetworkBLAST.comboBoxes.ScoreModelComboBox;
 
 /**
@@ -18,7 +19,8 @@ import NetworkBLAST.comboBoxes.ScoreModelComboBox;
 public class ScoreModelPanel extends javax.swing.JPanel {
     
     /** Creates new form ScoreModelPanel */
-    public ScoreModelPanel() {
+    public ScoreModelPanel(NetworkBLASTDialog _parentDialog) {
+    	parentDialog = _parentDialog;
         initComponents();
     }
     
@@ -35,7 +37,7 @@ public class ScoreModelPanel extends javax.swing.JPanel {
         jLabel1.setText("Score Model:");
 
         settingsPanel.setLayout(new java.awt.CardLayout(5, 5));
-        scoreModelComboBox = new ScoreModelComboBox((java.awt.CardLayout) settingsPanel.getLayout(), settingsPanel);
+        scoreModelComboBox = new ScoreModelComboBox(parentDialog, (java.awt.CardLayout) settingsPanel.getLayout(), settingsPanel);
 
         settingsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -71,4 +73,6 @@ public class ScoreModelPanel extends javax.swing.JPanel {
     private ScoreModelComboBox scoreModelComboBox;
     private javax.swing.JPanel settingsPanel;
     // End of variables declaration//GEN-END:variables
+
+    private NetworkBLASTDialog parentDialog;
 }

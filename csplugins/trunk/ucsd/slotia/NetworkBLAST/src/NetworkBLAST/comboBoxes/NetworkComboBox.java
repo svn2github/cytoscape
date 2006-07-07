@@ -1,6 +1,8 @@
 package NetworkBLAST.comboBoxes;
 
 import javax.swing.JComboBox;
+import java.util.Arrays;
+import java.util.Set;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -11,13 +13,21 @@ public class NetworkComboBox extends JComboBox
   {
     this.removeAllItems();
 
-    Object [] networks = Cytoscape.getNetworkSet().toArray();
-
-    for (Object network : networks)
+    Set networks = Cytoscape.getNetworkSet();
+    
+    NetworkComboBoxItem[] items = new NetworkComboBoxItem[networks.size()];
+    int i = 0;
+    
+    for (Object networkObj : networks)
     {
-      CyNetwork cyNetwork = (CyNetwork) network;
-      this.addItem(new NetworkComboBoxItem(cyNetwork.getTitle(), cyNetwork));
-    }  
+      CyNetwork network = (CyNetwork) networkObj;
+      items[i++] = new NetworkComboBoxItem(network.getTitle(), network);
+    }
+
+    Arrays.sort(items);
+
+    for (i = 0; i < items.length; i++)
+      this.addItem(items[i]);
   }
 
   public CyNetwork getSelectedNetwork()
@@ -27,7 +37,7 @@ public class NetworkComboBox extends JComboBox
     return ((NetworkComboBoxItem) this.getSelectedItem()).getNetwork();
   }
 
-  private class NetworkComboBoxItem
+  private class NetworkComboBoxItem implements Comparable<NetworkComboBoxItem>
   {
     public NetworkComboBoxItem(String _networkName, CyNetwork _network)
     {
@@ -36,14 +46,13 @@ public class NetworkComboBox extends JComboBox
     }
 
     public String toString()
-    {
-      return networkName;
-    }
+      { return networkName; }
 
     public CyNetwork getNetwork()
-    {
-      return network;
-    }
+      { return network; }
+
+    public int compareTo(NetworkComboBoxItem _other)
+      { return this.toString().compareTo(_other.toString()); }
 
     private String networkName;
     private CyNetwork network;

@@ -17,29 +17,23 @@ import java.awt.event.ActionEvent;
 
 public class NetworkBLASTAction extends AbstractAction
 {
-  private NetworkBLASTDialog dialog;
-  private int tabIndex;
-  
   public NetworkBLASTAction(String _name, int _tabIndex,
                             NetworkBLASTDialog _dialog)
   {
     super(_name);
 
-    // Initialize members
-    this.dialog = _dialog;
-    this.tabIndex = _tabIndex;
+    dialog = _dialog;
+    tabIndex = _tabIndex;
   }
 
   public void actionPerformed(ActionEvent _e)
   {
     // Check to make sure we have at least one network loaded.
     // If we don't, exit.
-    if (!this.checkForNetworks()) return;
+    if (!availableNetworks()) return;
     
-    // Setup components that depend on the state of Cytoscape
     dialog.setup();
-    
-    dialog.switchToTab(this.tabIndex);    
+    dialog.switchToTab(tabIndex);    
     dialog.setVisible(true);
   }
 
@@ -49,7 +43,7 @@ public class NetworkBLASTAction extends AbstractAction
    * display an error message and return false. Otherwise it returns true.
    */
 
-  private boolean checkForNetworks()
+  private boolean availableNetworks()
   {
     if (Cytoscape.getNetworkSet().size() == 0)
     {
@@ -60,7 +54,12 @@ public class NetworkBLASTAction extends AbstractAction
         "NetworkBLAST: No Networks Loaded", JOptionPane.ERROR_MESSAGE);
       return false;
     }
-
-    return true;
+    else
+    {
+      return true;
+    }
   }
+  
+  private NetworkBLASTDialog dialog;
+  private int tabIndex;
 }

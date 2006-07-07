@@ -37,7 +37,7 @@ public class CompatGraphPanel extends javax.swing.JPanel {
         graph1ComboBox = new NetworkComboBox();
         graph2ComboBox = new NetworkComboBox();
         homgraphComboBox = new NetworkComboBox();
-        scoreModelComboBox = new ScoreModelComboBox();
+        scoreModelComboBox = new ScoreModelComboBox(parentDialog);
         generateButton = new javax.swing.JButton();
 
         jLabel1.setText("Graph 1:");

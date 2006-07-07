@@ -25,11 +25,12 @@ public class AboutPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        jEditorPane1 = new javax.swing.JEditorPane();
 
-        jTextPane1.setText("NetworkBLAST\n-----------------\n\nYadda yadda yadda");
-        jTextPane1.setRequestFocusEnabled(false);
-        jScrollPane1.setViewportView(jTextPane1);
+        jEditorPane1.setContentType("text/html");
+        jEditorPane1.setEditable(false);
+        jEditorPane1.setText("<html><p><b>NetworkBLAST</b></p><p>yadda yadda yadda</p></html>");
+        jScrollPane1.setViewportView(jEditorPane1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -51,8 +52,8 @@ public class AboutPanel extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
     
 }
