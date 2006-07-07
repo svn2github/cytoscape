@@ -26,31 +26,19 @@
 package nct.visualization.cytoscape;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.giny.CytoscapeRootGraph;
-import cytoscape.giny.PhoebeNetworkView;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
 
-import phoebe.PGraphView;
 import giny.view.NodeView;
 
 import java.util.Iterator;
-import java.io.File;
-import java.awt.image.BufferedImage;
-import java.awt.Graphics2D;
-import java.awt.Color;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.GraphicsEnvironment;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.Map;
-import javax.imageio.ImageIO;
 
 import nct.graph.Graph;
 import nct.graph.basic.BasicGraph;
@@ -64,18 +52,15 @@ public class CytoscapeConverter {
 	private static CytoscapeRootGraph rootGraph; 
 	private static CyAttributes nodeAttrs; 
 	private static CyAttributes edgeAttrs; 
-	private static Map<String,Integer> nodeIdMap; 
-	private static Map<String,Map<String,Integer>> edgeIdMap; 
 
 	static {
 		rootGraph = Cytoscape.getRootGraph();
-		nodeIdMap = new HashMap<String,Integer>(); 
-		edgeIdMap = new HashMap<String,Map<String,Integer>>(); 
 		nodeAttrs = Cytoscape.getNodeAttributes();
 		edgeAttrs = Cytoscape.getEdgeAttributes();
 	}
 
 	public static Graph<String,Double> convert(CyNetwork network) {
+
 		Graph<String,Double> graph = new BasicGraph<String,Double>();
 
 		if ( network == null )
@@ -102,7 +87,6 @@ public class CytoscapeConverter {
 			graph.addEdge( edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), weight);
 
 		}
-
 		return graph;
 	}
 
@@ -111,65 +95,48 @@ public class CytoscapeConverter {
 	 * @param graph The NCT graph to be converted.
 	 * @return A new CyNetwork based on the input graph. 
 	 */
-	public static CyNetwork convert(Graph<String,Double> graph) {
+	public static CyNetwork convert(Graph<String,Double> nctGraph, String title)
+	{
+	  if (nctGraph == null) return Cytoscape.createNetwork(title);
 
-		if ( graph == null )
-			return rootGraph.createNetwork(new int[] {}, new int[] {});
+	  int i;
 
-		Set<String> nodes = graph.getNodes();
-		Set<Edge<String,Double>> edges = graph.getEdges();
-		
-		int[] nodeIds = new int[nodes.size()];
-		int i = 0;
-		for (String node : nodes) {
-			if ( nodeIdMap.containsKey(node) ) {
-				nodeIds[i] = nodeIdMap.get(node).intValue();
-			} else {
-				int nodeId = rootGraph.createNode();
-				//nodeAttrs.setAttribute(Integer.toString(nodeId),"name",node);
-				rootGraph.getNode(nodeId).setIdentifier(node);
-				nodeIdMap.put(node,nodeId);
-				nodeIds[i] = nodeId;
-			}
-			i++;
-		}
+	  Set<String> nctNodes = nctGraph.getNodes();
+	  int[] ginyNodes = new int[nctNodes.size()];
+	  Map<String,Integer> nctToGinyNodeMap = new HashMap<String,Integer>(nctNodes.size());
 
-		int[] edgeIds = new int[edges.size()];
-		i = 0;
-		for (Edge<String,Double> edge: edges) {
-			Map<String,Integer> m = null;
-			Integer I = null;
-			if ( edgeIdMap.containsKey(edge.getSourceNode()) ) {
-				m = edgeIdMap.get(edge.getSourceNode());
-				I = m.get(edge.getTargetNode());
-			} else if ( edgeIdMap.containsKey(edge.getTargetNode()) ) {
-				m = edgeIdMap.get(edge.getTargetNode());
-				I = m.get(edge.getSourceNode());
-			}
+	  i = 0;
+	  for (String nctNode : nctNodes)
+	  {
+	    if (!nctToGinyNodeMap.containsKey(nctNode))
+	    {
+	      int ginyNode = rootGraph.createNode();
+	      rootGraph.getNode(ginyNode).setIdentifier(nctNode);
+	      nctToGinyNodeMap.put(nctNode, new Integer(ginyNode));
 
+	      ginyNodes[i++] = ginyNode;
+	    }
+	  }
 
-			// edge already exists
-			if ( I != null ) {
-				edgeIds[i] = I.intValue();
+	  Set<Edge<String,Double>> nctEdges = nctGraph.getEdges();
+	  int[] ginyEdges = new int[nctEdges.size()];
 
-			// create an edge
-			} else {
-				String source = edge.getSourceNode();
-				String target = edge.getTargetNode();
-				int sourceId = nodeIdMap.get(source).intValue();
-				int targetId = nodeIdMap.get(target).intValue();
-				int edgeId = rootGraph.createEdge(sourceId,targetId,false);
-				// TODO make sure edge contains the actual description.
-				//edgeAttrs.setAttribute(Integer.toString(edgeId),"name",graph.getEdgeDescription(source,target));
-				rootGraph.getEdge(edgeId).setIdentifier(graph.getEdgeDescription(source, target));
-				if ( !edgeIdMap.containsKey(source))
-					edgeIdMap.put(source,new HashMap<String,Integer>());
-				edgeIdMap.get(source).put(target,edgeId);
-				edgeIds[i] = edgeId;
-			}
-			i++;
-		}
+	  i = 0;
+	  for (Edge<String,Double> nctEdge : nctEdges)
+	  {
+	    String nctSourceNode = nctEdge.getSourceNode();
+	    String nctTargetNode = nctEdge.getTargetNode();
+	    
+	    int ginySourceNode = nctToGinyNodeMap.get(nctSourceNode).intValue();
+	    int ginyTargetNode = nctToGinyNodeMap.get(nctTargetNode).intValue();
 
-		return rootGraph.createNetwork(nodeIds,edgeIds);
+            int ginyEdge = rootGraph.createEdge(ginySourceNode, ginyTargetNode, false);
+	    edgeAttrs.setAttribute(Integer.toString(ginyEdge), "interaction", nctEdge.getWeight().toString());
+	    edgeAttrs.setAttribute(Integer.toString(ginyEdge), "description", nctEdge.getDescription());
+
+	    ginyEdges[i++] = ginyEdge;
+	  }
+
+	  return Cytoscape.createNetwork(ginyNodes, ginyEdges, title);
 	}
 }

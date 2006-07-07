@@ -46,7 +46,11 @@ public class SimpleEdgeScoreModel<NodeType extends Comparable<? super NodeType>>
      * @return the score of the pathway between the nodes or 0 if the same node
      */
     public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,Double> graph) {
-	return graph.getEdgeWeight(srcNode, destNode).doubleValue();
+    	Double edgeWeight = graph.getEdgeWeight(srcNode, destNode);
+	if (edgeWeight == null)
+		return 0.0;
+	else
+		return edgeWeight.doubleValue();
     }
 
     public double scoreNode(NodeType node, Graph<NodeType,Double> graph){
