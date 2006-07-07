@@ -187,9 +187,6 @@
         <delete dir="${build.dir}"/>
         <delete file="${basedir}/cytoscape.jar"/>
         <delete file="${basedir}/cytoscape.props"/>
-    	    <!-- iliana commented this out, this is very wrong!!! -->
-        <!-- <delete file="${basedir}/vizmap.props"/> -->
-        <delete file="${basedir}/linkout.props"/>
     </target>
 
     <!-- ======================================================= -->
@@ -369,14 +366,12 @@
             todir="${build.dir}/temp/META-INF/services"/>
         <copy file="${basedir}/props/vizmap.props" todir="${build.classes}"/>
         <copy file="${basedir}/props/cytoscape.props" todir="${build.classes}"/>
-        <copy file="${basedir}/props/linkout.props" todir="${build.classes}"/>
         <jar destfile="${basedir}/cytoscape.jar"
              manifest="${build.dir}/cytoscape.manifest">
             <fileset dir="${build.classes}"/>
             <fileset dir="${build.dir}/temp"/>
         </jar>
         <copy file="${basedir}/props/cytoscape.props" todir="${basedir}"/>
-        <copy file="${basedir}/props/linkout.props" todir="${basedir}"/>
         <copy file="${basedir}/props/tax_report.txt" todir="${basedir}"/>
     </target>
 
@@ -563,8 +558,6 @@
             Copying over all property files.
             ---------------------------------------
         </echo>
-        <copy file="${basedir}/props/linkout.props"
-              tofile="${release.dir}/linkout.props"/>
     	
         <!-- Copy over Txt/PDF files -->
         <echo>
@@ -885,8 +878,6 @@
               tofile="${webstart.dir}/cytoscape.props"/>
         <copy file="${basedir}/vizmap.props"
               tofile="${webstart.dir}/vizmap.props"/>
-        <copy file="${basedir}/linkout.props"
-              tofile="${webstart.dir}/linkout.props"/>
         <copy file="${basedir}/tax_report.txt"
               tofile="${webstart.dir}/tax_report.txt"/>
 
