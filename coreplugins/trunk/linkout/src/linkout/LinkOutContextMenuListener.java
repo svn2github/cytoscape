@@ -17,7 +17,6 @@ public class LinkOutContextMenuListener implements NodeContextMenuListener {
     }
 
     /**
-     *
      * @param nodeView The clicked NodeView
      * @param menu popup menu to add the LinkOut menu
      */
@@ -29,15 +28,7 @@ public class LinkOutContextMenuListener implements NodeContextMenuListener {
         if(menu==null){
             menu=new JPopupMenu();
         }
-        menu.add(lo.AddLinks(nodeView));
+        menu.add(lo.addLinks(nodeView));
     }
 
 }
-
-/*$Log$
- *Revision 1.1  2006/06/14 18:12:46  mes
- *updated project to actually compile and work with ant
- *
-/*Revision 1.2  2006/05/23 20:39:42  betel
-/*Changes for compatibility with latest ding library
-/**/

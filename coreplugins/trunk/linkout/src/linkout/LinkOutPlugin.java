@@ -87,6 +87,9 @@ public class LinkOutPlugin
 
 /*
 $Log$
+Revision 1.2  2006/07/07 21:00:57  mes
+fixed bug 1075 - so that linkout will work from webstart
+
 Revision 1.1  2006/06/14 18:12:46  mes
 updated project to actually compile and work with ant
 

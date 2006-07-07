@@ -96,18 +96,11 @@
   <!-- =================================================================== -->
   <target name="linkout" depends="compile-linkout"  >
     
-	<echo message="Running linkout"/>
-	
-  <!-- 
-	<jar destfile="linkout.jar" manifest="${linkout.manifest.dir}/linkout.manifest">
-  -->
-	<jar destfile="linkout.jar"> 
-      <fileset
-        dir="${linkout.classes.dir}"
-        includes="**"/>
-      <fileset
-        dir="${linkout.root.dir}/lib"
-        includes="resources/**"/>
+    <echo message="Running linkout"/>
+    <copy file="${linkout.root.dir}/linkout.props" 
+          todir="${linkout.classes.dir}"/>
+    <jar destfile="linkout.jar"> 
+      <fileset dir="${linkout.classes.dir}" includes="**"/>
     </jar>
   </target>
 
@@ -154,8 +147,7 @@
      <java classname="cytoscape.CyMain" 
            classpathref="linkout.project.class.path"
            fork="true"/>
-           <arg line = "-y giny"/>
-           <arg line = "--JLD"/>
+           <arg line = "-p"/>
            <arg line = "${linkout.lib.dir}/linkout.jar"/>
            
 

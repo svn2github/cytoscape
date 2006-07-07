@@ -1,21 +1,21 @@
 #Linkout  Property File
 #Sat Apr 08 17:45:50 EDT 2006
-url.Entrez.Pubmed=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=PubMed&term\=%ID%&doptcmdl\=Abstract
-url.yeast.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=4932
-url.yeast.iHOP=http\://www.ihop-net.org/UniPub/iHOP/?search\=%ID%&field\=all&ncbi_tax_id\=4932
-url.human.iHOP=http\://www.ihop-net.org/UniPub/iHOP/?search\=%ID%&field\=all&ncbi_tax_id\=9606
-url.yeast.SGD=http\://db.yeastgenome.org/cgi-bin/locus.pl?locus\=%ID%
-url.Entrez.Protein=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=Protein&term\=%ID%&doptcmdl\=GenPept
-url.Entrez.Nucleotide=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=nucleotide&term\=%ID%&doptcmdl\=GenBank
-url.Entrez.OMIM=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=omim&term\=%ID%&doptcmdl\=Synopsis
-url.Entrez.Structure=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=structure&term\=%ID%&doptcmdl\=Brief
-url.Entrez.Gene=http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene&cmd=Search&term=%ID%
-url.mouse.MGI=http://www.informatics.jax.org/javawi2/servlet/WIFetch?page=searchTool&query=%ID%&selectedQuery=Genes+and+Markers
-url.Biological\ resources.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=0
-url.Web\ resources.Google=http://www.google.com/search?hl=en&q=%ID%&btnG=Google+Search
-url.UniProt.PIR=http://www.uniprot.org/entry/%ID%
-url.UniProt.EBI=http://www.ebi.uniprot.org/uniprot-srv/uniProtView.do?proteinId=%ID%&pager.offset=0
-url.fly.FlyBase=http://flybase.bio.indiana.edu/.bin/fbidq.html?%ID%
-url.worm.WormBase=http://flybase.bio.indiana.edu/.bin/fbidq.html?%ID%
-url.Biological\ resources.GeneCards=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%ID%&alias=yes
-url.Web\ resources.Ask=http://www.ask.com/web?q=%ID%&qsrc=0&o=0
+linkouturl/Entrez.Pubmed=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=PubMed&term\=%ID%&doptcmdl\=Abstract
+linkouturl/yeast.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=4932
+linkouturl/yeast.iHOP=http\://www.ihop-net.org/UniPub/iHOP/?search\=%ID%&field\=all&ncbi_tax_id\=4932
+linkouturl/human.iHOP=http\://www.ihop-net.org/UniPub/iHOP/?search\=%ID%&field\=all&ncbi_tax_id\=9606
+linkouturl/yeast.SGD=http\://db.yeastgenome.org/cgi-bin/locus.pl?locus\=%ID%
+linkouturl/Entrez.Protein=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=Protein&term\=%ID%&doptcmdl\=GenPept
+linkouturl/Entrez.Nucleotide=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=nucleotide&term\=%ID%&doptcmdl\=GenBank
+linkouturl/Entrez.OMIM=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=omim&term\=%ID%&doptcmdl\=Synopsis
+linkouturl/Entrez.Structure=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=structure&term\=%ID%&doptcmdl\=Brief
+linkouturl/Entrez.Gene=http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene&cmd=Search&term=%ID%
+linkouturl/mouse.MGI=http://www.informatics.jax.org/javawi2/servlet/WIFetch?page=searchTool&query=%ID%&selectedQuery=Genes+and+Markers
+linkouturl/Biological\ resources.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=0
+linkouturl/Web\ resources.Google=http://www.google.com/search?hl=en&q=%ID%&btnG=Google+Search
+linkouturl/UniProt.PIR=http://www.uniprot.org/entry/%ID%
+linkouturl/UniProt.EBI=http://www.ebi.uniprot.org/uniprot-srv/uniProtView.do?proteinId=%ID%&pager.offset=0
+linkouturl/fly.FlyBase=http://flybase.bio.indiana.edu/.bin/fbidq.html?%ID%
+linkouturl/worm.WormBase=http://flybase.bio.indiana.edu/.bin/fbidq.html?%ID%
+linkouturl/Biological\ resources.GeneCards=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%ID%&alias=yes
+linkouturl/Web\ resources.Ask=http://www.ask.com/web?q=%ID%&qsrc=0&o=0

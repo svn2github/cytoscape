@@ -8,6 +8,7 @@ import cytoscape.util.*;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
+import java.net.URL;
 import java.util.*;
 import giny.view.*;
 import giny.view.NodeView;
@@ -33,11 +34,9 @@ import java.io.*;
 public class LinkOut {
 
     //keyword that marks properties that should be added to LinkOut
-    static private final String marker="url.";
+    private final String marker="linkouturl.";
 
-    static private Properties props;
-
-    static private String propertiesLocation;
+    private Properties props;
 
     //null constractor
     public LinkOut(){
@@ -46,16 +45,15 @@ public class LinkOut {
 
     /**
     * Fills the URL hash map with the <key> = <values> from cytoscape.props file
-    * @param NodeView node
+    * @param node the NodeView.
     * @return none
     */
-//    public static JMenuItem AddLinks(Object[] args, PNode node){
-    public static JMenuItem AddLinks(NodeView node){
+    public JMenuItem addLinks(NodeView node){
 
 
-        System.out.println("linkout.AddLinks called with node "+((NodeView)node).getLabel().getText());
-        //System.out.println("linkout.AddLinks called with node "+node.getClass().getName());
-        ReadProperties(propertiesLocation);
+        System.out.println("linkout.addLinks called with node "+((NodeView)node).getLabel().getText());
+        //System.out.println("linkout.addLinks called with node "+node.getClass().getName());
+        readProperties();
 
         JMenu top_menu=new JMenu("LinkOut");
 
@@ -77,14 +75,13 @@ public class LinkOut {
                 //add Node label to the URL
                 String nodelabel;
 
-                //final PNode mynode=node;
                 final NodeView mynode=(NodeView)node;
 
                 //node label
                 nodelabel=mynode.getLabel().getText();
                 if(nodelabel==null || 0==nodelabel.length()){
                     CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-                    nodelabel=nodeAttributes.getStringAttribute(mynode.getNode().getIdentifier(),Semantics.CANONICAL_NAME);
+                    nodelabel=mynode.getNode().getIdentifier();
                 }
                 //Replace %ID% mark with the node label
                 final String fUrl=url.replaceFirst("%ID%",nodelabel);
@@ -95,7 +92,7 @@ public class LinkOut {
                 ArrayList keys=new ArrayList (Arrays.asList(temp));
 
                 //Generate the menu path
-                GenerateLinks(keys, top_menu, fUrl);
+                generateLinks(keys, top_menu, fUrl);
             }
 
             //if no links specified insert a default message
@@ -106,7 +103,7 @@ public class LinkOut {
             }
 
             /* For debugging */
-            // PrintMenu(top_menu);
+            // printMenu(top_menu);
         }
 
         catch (NullPointerException e) {
@@ -128,10 +125,10 @@ public class LinkOut {
      * @param j JMenu the curren JMenu object
      * @param url String the url to link the node
      **/
-    public static void GenerateLinks(ArrayList keys, JMenu j, final String url) {
+    private void generateLinks(ArrayList keys, JMenu j, final String url) {
 
         //Get the sub-menu
-        JMenuItem jmi=GetMenuItem((String)keys.get(0), j);
+        JMenuItem jmi=getMenuItem((String)keys.get(0), j);
 
         //if its null and this is the last key generate a new JMenuItem
         if(jmi==null && keys.size()==1){
@@ -140,7 +137,7 @@ public class LinkOut {
                 public void actionPerformed (ActionEvent e){
                     SwingUtilities.invokeLater( new Runnable ()  {
                         public void run() {
-                            StartWebLink(url);
+                            OpenBrowser.openURL(url);
                         }
                     });
                 }
@@ -157,21 +154,21 @@ public class LinkOut {
             return;
 
         //if not null create a new JMenu  with current key
-        // remove key from the keys ArrayList and call GenerateLinks
+        // remove key from the keys ArrayList and call generateLinks
         }else if(jmi==null) {
             JMenu new_jm=new JMenu ((String)keys.get(0));
 
             keys.remove(0);
-            GenerateLinks(keys,new_jm, url);
+            generateLinks(keys,new_jm, url);
             j.add(new_jm);
 
             return;
 
-        //Remove key from top of the list and call GenerateLinks with new JMenu
+        //Remove key from top of the list and call generateLinks with new JMenu
         } else {
             keys.remove(0);
 
-            GenerateLinks(keys, (JMenu)jmi, url);
+            generateLinks(keys, (JMenu)jmi, url);
         }
         return;
    }
@@ -183,7 +180,7 @@ public class LinkOut {
      * @param menu JMenu the parent JMenu to search in
      * @return JMenuItem if found, null otherwise
      * */
-    private static JMenuItem GetMenuItem(String name, JMenu menu) {
+    private JMenuItem getMenuItem(String name, JMenu menu) {
         int count=menu.getMenuComponentCount();
         if(count==0){
             return null;
@@ -202,18 +199,13 @@ public class LinkOut {
             }
         }
         return null;
-}
+   }
 
-    /**
-    * Launch a web page
-    * @param s	Webpage URL
-    **/
-    public static void StartWebLink(String s){
-        OpenBrowser.openURL(s);
-    }
 
-/*Print menu items - for debugging*/
-    public static void PrintMenu(JMenu jm){
+    /** 
+     * Print menu items - for debugging
+     */
+    private void printMenu(JMenu jm){
         int count=jm.getMenuComponentCount();
 
         for(int i=0; i<count; i++){
@@ -224,7 +216,7 @@ public class LinkOut {
 
             else{
             System.out.println(jm.getItem(i).getText()+ "--");
-            PrintMenu((JMenu)jm.getItem(i));
+            printMenu((JMenu)jm.getItem(i));
             }
         }
 
@@ -232,92 +224,47 @@ public class LinkOut {
     }
 
     /**
-     * Read properties values from linkout.props file
-     * Search for linkout.props file in four locations in the following order:
-     * 1. specified by fileLoc
-     * 2. current working directory
-     * 3. $CYTOSCAPE_HOME
-     * 4. ~/.cytoscape
-     *
-     * @param fileLoc file name - can also be an absolute path
-     *
-     * **/
-    public static void ReadProperties(String fileLoc){
-        boolean propsFound = false;
-        props = new Properties();
-        File file=null;
+     * Read properties values from linkout.props file included in the 
+     * linkout.jar file and apply those properties to the base Cytoscape
+     * properties.  Only apply the properties from the jar file if 
+     * NO linkout properties already exist. 
+     * This allows linkout properties to be specified  on the command line,
+     * editted in the preferences dialog, and to be saved with other 
+     * properties.
+     */
+    private void readProperties() {
 
-        //1. Try the specified location for a props file
-        if ( fileLoc != null ) {
-            file = new File( fileLoc );
-            propertiesLocation = fileLoc;
-        }
-        //2. Try the current working directory
-        if ( !propsFound ) {
+    	// Set the properties to be Cytoscape's properties. 
+	// This allows the linkout properties to be edited in
+	// the preferences editor.
+        props = CytoscapeInit.getProperties(); 
 
-            file = new File( System.getProperty ("user.dir"), "linkout.props" );
-            propertiesLocation = file.toString();
-            propsFound=true;
-        }
+	// Loop over the default props and see if any
+	// linkout urls have been specified.  We don't want to
+	// override or even supplement what was set from the 
+	// command line. Only use the defaults if nothing
+	// else can be found.
+	boolean linkoutFound = false;
+	Enumeration names = props.propertyNames();
+	while ( names.hasMoreElements() ) {
+		String name = (String)names.nextElement();
+                int p=name.lastIndexOf(marker);
+                if (p != -1) { 
+			linkoutFound = true;
+			break;
+		}
+	}
 
-        //3. Try CYTOSCAPE_HOME
-        if ( !propsFound ) {
-            file = new File( System.getProperty ("CYTOSCAPE_HOME"), "linkout.props" );
-            propertiesLocation = file.toString();
-            propsFound=true;
-        }
-
-        //4. Try ~/.cytoscape
-        //TODO- this section ain't working properly
-        if ( !propsFound ) {
-            file = CytoscapeInit.getConfigFile( "linkout.props" );
-            propertiesLocation = file.toString();
-            propsFound=true;
-        }
-
-        try {
-            if(file != null){
-                props.load( new FileInputStream( file ) );
-
-            } else {
-                propsFound=false;
-            }
-
-        } catch ( Exception e ) {
-
-            // error
-            propsFound = false;
-        }
-
-        if (!propsFound){
-            System.out.println("Couldn't find linkout.props file in "+System.getProperty ("user.dir") +
-                    ", "+  System.getProperty ("CYTOSCAPE_HOME") +
-                    " or in ~/.cytoscape");
-        }
-
+	// If we don't have any linkout properties, load the defaults.
+	if ( !linkoutFound ) {
+		try {
+			System.out.println("loading defaults");
+			ClassLoader cl = LinkOut.class.getClassLoader(); 
+			props.load(cl.getResource("linkout.props").openStream());
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Couldn't load default linkout props");
+		}
+	}
     }
-
-
 };
-
-/*
-$Log$
-Revision 1.1  2006/06/14 18:12:46  mes
-updated project to actually compile and work with ant
-
-Revision 1.5  2006/06/12 19:27:44  betel
-Fixes to bug reports 346-links to missing labels, 637-linkout fix for command line mode
-
-Revision 1.4  2006/05/23 20:39:42  betel
-Changes for compatibility with latest ding library
-
-Revision 1.1  2006/05/11 22:42:28  betel
-Initial deposit of linkout to pre-coreplugins
-
-Revision 1.2  2006/05/09 22:32:47  betel
-New implementation of LinkOutPlugin with new context menu interface and addition of linkout.props
-
-Revision 1.1  2006/05/08 17:15:22  betel
-Initial deposit of linkout source code
-
-*/
