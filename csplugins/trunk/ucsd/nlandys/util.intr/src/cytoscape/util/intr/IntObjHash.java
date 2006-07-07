@@ -98,7 +98,7 @@ public final class IntObjHash implements java.io.Serializable
    * Insertions into the hashtable are performed in [amortized] time
    * complexity O(1).
    * @exception IllegalArgumentException if key is negative.
-   * @exception NullPointerException of value is null.
+   * @exception NullPointerException if value is null.
    */
   public final Object put(final int key, final Object value)
   {
