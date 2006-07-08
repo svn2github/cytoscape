@@ -180,6 +180,11 @@ public class PathSearchPanel extends javax.swing.JPanel {
         return numPathsTextField;
     }
     
+    public javax.swing.JButton getSearchButton()
+    {
+        return searchButton;
+    }
+    
     private void checkPathSizeInput()
     {
         try

@@ -180,6 +180,11 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
         return seedSizeTextField;
     }
     
+    public javax.swing.JButton getSearchButton()
+    {
+        return searchButton;
+    }
+    
     private void checkMaxSize()
     {
         try

@@ -117,6 +117,11 @@ public class CompatGraphPanel extends javax.swing.JPanel {
     {
       return scoreModelComboBox;
     }
+
+    public javax.swing.JButton getGenerateButton()
+    {
+      return generateButton;
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton generateButton;

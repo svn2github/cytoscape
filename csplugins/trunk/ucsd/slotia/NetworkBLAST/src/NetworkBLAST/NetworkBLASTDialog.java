@@ -9,9 +9,10 @@ import javax.swing.WindowConstants;
 import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.GridLayout;
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowEvent;
 
 import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
 
 import NetworkBLAST.panels.AboutPanel;
 import NetworkBLAST.panels.CompatGraphPanel;
@@ -23,7 +24,7 @@ public class NetworkBLASTDialog extends JDialog {
 
   public NetworkBLASTDialog(Frame _parent)
   {
-    super(_parent, true);
+    super(_parent, false);
     initialize();
   }
 
@@ -54,6 +55,17 @@ public class NetworkBLASTDialog extends JDialog {
     contentPane.add(tabbedPane);
 
     this.pack();
+
+    WindowFocusListener focusListener = new WindowFocusListener()
+    {
+      public void windowGainedFocus(WindowEvent e)
+        { setup(); }
+
+      public void windowLostFocus(WindowEvent e)
+        { }
+    };
+
+    this.addWindowFocusListener(focusListener);
   }
 
   public void switchToTab(int _index)
@@ -68,6 +80,30 @@ public class NetworkBLASTDialog extends JDialog {
     compatGraphPanel.getHomgraphComboBox().setup();
     pathSearchPanel.getGraphComboBox().setup();
     complexSearchPanel.getGraphComboBox().setup();
+
+    if (Cytoscape.getNetworkSet().size() == 0)
+    {
+      compatGraphPanel.getGenerateButton().setEnabled(false);
+      pathSearchPanel.getSearchButton().setEnabled(false);
+      complexSearchPanel.getSearchButton().setEnabled(false);
+
+      compatGraphPanel.getGenerateButton().setToolTipText("There are no "
+      	+ "networks loaded to generate a compatibility graph.");
+      pathSearchPanel.getSearchButton().setToolTipText("There are no "
+      	+ "networks loaded to do a path search.");
+      complexSearchPanel.getSearchButton().setToolTipText("There are no "
+      	+ "networks loaded to do a complex search.");
+    }
+    else
+    {
+      compatGraphPanel.getGenerateButton().setEnabled(true);
+      pathSearchPanel.getSearchButton().setEnabled(true);
+      complexSearchPanel.getSearchButton().setEnabled(true);
+
+      compatGraphPanel.getGenerateButton().setToolTipText("");
+      pathSearchPanel.getSearchButton().setToolTipText("");
+      complexSearchPanel.getSearchButton().setToolTipText("");
+    }
   }
 
   public CompatGraphPanel getCompatGraphPanel()
@@ -84,6 +120,7 @@ public class NetworkBLASTDialog extends JDialog {
   {
     return complexSearchPanel;
   }
+  
   private javax.swing.JTabbedPane	tabbedPane;
   private CompatGraphPanel		compatGraphPanel;
   private PathSearchPanel		pathSearchPanel;
