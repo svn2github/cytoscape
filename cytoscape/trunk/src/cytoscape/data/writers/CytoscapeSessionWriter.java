@@ -273,6 +273,11 @@ public class CytoscapeSessionWriter {
 		 * Compress the files. Change the compression level if necessary.
 		 */
 		zipUtil.compressFast(1, true);
+		
+		/*
+		 * Fire signal
+		 */
+		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
 	}
 
 	/**
