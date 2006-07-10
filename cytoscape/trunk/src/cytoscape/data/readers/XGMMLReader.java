@@ -502,12 +502,9 @@ public class XGMMLReader extends AbstractGraphReader {
 							+ targetName;
 				}
 
-				Edge edge = Cytoscape.getRootGraph().getEdge(edgeName);
-
-				if (edge == null) {
-					edge = Cytoscape.getCyEdge(node_1, node_2,
+				Edge edge = Cytoscape.getCyEdge(node_1, node_2,
 							Semantics.INTERACTION, interaction, true);
-				}
+				
 				// Add interaction & label to CyAttributes
 				edgeAttributes.setAttribute(edgeName, Semantics.INTERACTION,
 						interaction);
