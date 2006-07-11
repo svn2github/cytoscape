@@ -1957,6 +1957,7 @@ public final class GraphGraphics
     final double centerY = (((double) yMin) + yMax) / 2.0d;
 
     if (nodeShape == SHAPE_ELLIPSE) {
+      if (centerX == ptX && centerY == ptY) { return false; }
       // First, compute the actual intersection of the edge with the
       // ellipse, if it exists.  We will use this intersection point
       // regardless of whether or not offset is zero.
