@@ -29,7 +29,28 @@ public class AboutPanel extends javax.swing.JPanel {
 
         jEditorPane1.setContentType("text/html");
         jEditorPane1.setEditable(false);
-        jEditorPane1.setText("<html><p><b>NetworkBLAST</b></p><p>yadda yadda yadda</p></html>");
+
+        java.net.URL contentsURL = getClass().getResource("/AboutPanelContents.html");
+        String contents = "<html><h4>NetworkBLAST</h4></html>";
+        if (contentsURL != null)
+        {
+            try
+            {
+                java.io.BufferedInputStream contentsStream = new java.io.BufferedInputStream(contentsURL.openStream());
+                contents = "";
+                while (true)
+                {
+                    int c = contentsStream.read();
+                    if (c < 0) break;
+                    contents += ((char) c);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        jEditorPane1.setText(contents);
         jScrollPane1.setViewportView(jEditorPane1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);

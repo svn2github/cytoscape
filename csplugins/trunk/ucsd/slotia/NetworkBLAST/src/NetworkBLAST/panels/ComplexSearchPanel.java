@@ -7,8 +7,8 @@
 package NetworkBLAST.panels;
 
 import NetworkBLAST.NetworkBLASTDialog;
-import NetworkBLAST.comboBoxes.NetworkComboBox;
 import NetworkBLAST.actions.ComplexSearch;
+import NetworkBLAST.comboBoxes.NetworkComboBox;
 
 /**
  *
@@ -41,6 +41,10 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
         maxSizeWarningLabel.setVisible(false);
         seedSizeWarningLabel = new javax.swing.JLabel();
         seedSizeWarningLabel.setVisible(false);
+        limitCheckBox = new javax.swing.JCheckBox();
+        limitTextField = new javax.swing.JTextField();
+        limitWarningLabel = new javax.swing.JLabel();
+        limitWarningLabel.setVisible(false);
 
         jLabel1.setText("Graph to Search:");
 
@@ -84,11 +88,37 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
 
         maxSizeWarningLabel.setFont(new java.awt.Font("Dialog", 0, 10));
         maxSizeWarningLabel.setForeground(new java.awt.Color(204, 51, 0));
-        maxSizeWarningLabel.setText("Warning: Maximum Complex Size must be an integer.");
+        maxSizeWarningLabel.setText("Warning: Complex Size must be an integer.");
 
         seedSizeWarningLabel.setFont(new java.awt.Font("Dialog", 0, 10));
         seedSizeWarningLabel.setForeground(new java.awt.Color(204, 51, 0));
         seedSizeWarningLabel.setText("Warning: Seed Size must be an integer.");
+
+        limitCheckBox.setText("Limit Maximum Number of Results:");
+        limitCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        limitCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        limitCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limitCheckBoxActionPerformed(evt);
+            }
+        });
+
+        limitTextField.setText("10");
+        limitTextField.setEnabled(false);
+        limitTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limitActionPerformed(evt);
+            }
+        });
+        limitTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                limitFocusLost(evt);
+            }
+        });
+
+        limitWarningLabel.setFont(new java.awt.Font("Dialog", 0, 10));
+        limitWarningLabel.setForeground(new java.awt.Color(204, 51, 0));
+        limitWarningLabel.setText("Warning: Limit must be an integer.");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -97,24 +127,33 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, searchButton)
+                    .add(limitCheckBox)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel1)
                             .add(jLabel3)
-                            .add(jLabel2))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(jLabel2)
+                            .add(restoreDefaultsButton))
+                        .add(91, 91, 91)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(graphComboBox, 0, 261, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
-                                .add(seedSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(seedSizeWarningLabel))
-                            .add(layout.createSequentialGroup()
-                                .add(maxSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(maxSizeWarningLabel))
-                            .add(graphComboBox, 0, 425, Short.MAX_VALUE)))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, searchButton)
-                    .add(restoreDefaultsButton))
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, limitTextField)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, seedSizeTextField)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, maxSizeTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(layout.createSequentialGroup()
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(maxSizeWarningLabel)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(limitWarningLabel)
+                                            .add(seedSizeWarningLabel))
+                                        .add(20, 20, 20)))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -132,21 +171,42 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel3)
-                    .add(seedSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(seedSizeWarningLabel))
-                .add(42, 42, 42)
+                    .add(seedSizeWarningLabel)
+                    .add(seedSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(limitCheckBox)
+                    .add(limitTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(limitWarningLabel))
+                .add(35, 35, 35)
                 .add(restoreDefaultsButton)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 80, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(searchButton)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void limitFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_limitFocusLost
+        checkLimitInput();
+    }//GEN-LAST:event_limitFocusLost
+
+    private void limitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limitActionPerformed
+        checkLimitInput();
+    }//GEN-LAST:event_limitActionPerformed
+
+    private void limitCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limitCheckBoxActionPerformed
+        limitTextField.setEnabled(limitCheckBox.isSelected());
+    }//GEN-LAST:event_limitCheckBoxActionPerformed
 
     private void restoreDefaults(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restoreDefaults
         maxSizeTextField.setText("10");
         seedSizeTextField.setText("10");
         maxSizeWarningLabel.setVisible(false);
         seedSizeWarningLabel.setVisible(false);
+        limitWarningLabel.setVisible(false);
+        limitTextField.setText("10");
+        limitTextField.setEnabled(false);
+        limitCheckBox.setSelected(false);
     }//GEN-LAST:event_restoreDefaults
 
     private void seedSizeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_seedSizeFocusLost
@@ -169,6 +229,11 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
     {
         return graphComboBox;
     }
+
+    public javax.swing.JButton getSearchButton()
+    {
+    	return searchButton;
+    }
     
     public javax.swing.JTextField getMaxSizeTextField()
     {
@@ -180,9 +245,14 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
         return seedSizeTextField;
     }
     
-    public javax.swing.JButton getSearchButton()
+    public javax.swing.JTextField getLimitTextField()
     {
-        return searchButton;
+        return limitTextField;
+    }
+    
+    public javax.swing.JCheckBox getLimitCheckBox()
+    {
+        return limitCheckBox;
     }
     
     private void checkMaxSize()
@@ -210,14 +280,32 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
             seedSizeWarningLabel.setVisible(true);
             return;
         }
-        seedSizeWarningLabel.setVisible(false);
+        seedSizeWarningLabel.setVisible(true);
     }
+    
+    private void checkLimitInput()
+    {
+        try
+        {
+            Integer.parseInt(limitTextField.getText());
+        }
+        catch (NumberFormatException e)
+        {
+            limitWarningLabel.setVisible(true);
+            return;
+        }
+        limitWarningLabel.setVisible(false);
+    }
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private NetworkComboBox graphComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JCheckBox limitCheckBox;
+    private javax.swing.JTextField limitTextField;
+    private javax.swing.JLabel limitWarningLabel;
     private javax.swing.JTextField maxSizeTextField;
     private javax.swing.JLabel maxSizeWarningLabel;
     private javax.swing.JButton restoreDefaultsButton;

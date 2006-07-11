@@ -39,8 +39,10 @@ public class ComplexSearch extends AbstractAction
 
   public void actionPerformed(ActionEvent _e)
   {
-    final int maxSize, seedSize;
+    final int maxSize, seedSize, maxResults, pathSize = 4;
     final double dupeThreshold = 1.0;
+    final boolean limitResults = parentDialog.getComplexSearchPanel()
+    		.getLimitCheckBox().isSelected();
     
     try
     {
@@ -50,8 +52,12 @@ public class ComplexSearch extends AbstractAction
       JTextField seedSizeTextField = parentDialog.getComplexSearchPanel()
       			.getSeedSizeTextField();
 			
+      JTextField limitTextField = parentDialog.getComplexSearchPanel()
+      			.getLimitTextField();
+			
       maxSize = Integer.parseInt(maxSizeTextField.getText());
       seedSize = Integer.parseInt(seedSizeTextField.getText());
+      maxResults = Integer.parseInt(limitTextField.getText());
     }
     catch (NumberFormatException _exp)
     {
@@ -101,20 +107,22 @@ public class ComplexSearch extends AbstractAction
 	  monitor.setStatus("Creating seeds...");
 	}
 
-    	ScoreModel<String,Double> scoreModel =
-		new SimpleEdgeScoreModel<String>();
-	
 	NewComplexSearch<String> greedyComplexes =
 		new NewComplexSearch<String>(seedSize, maxSize);
 				
-	SearchGraph<String,Double> colorCoding =
-		new ColorCodingPathSearch<String>(4);	
-
+        SearchGraph<String,Double> colorCoding = null;
+	if (limitResults)
+          colorCoding = new ColorCodingPathSearch<String>(pathSize, maxResults);
+	else
+          colorCoding = new ColorCodingPathSearch<String>(pathSize);
+	  
+    	ScoreModel<String,Double> scoreModel =
+		new SimpleEdgeScoreModel<String>();
+	
 	List<Graph<String,Double>> resultPaths =
 		colorCoding.searchGraph(graph, scoreModel);
 	
-	greedyComplexes.setSeeds(resultPaths);	
-	
+	greedyComplexes.setSeeds(resultPaths);
 	
 	//
 	// Step 3: Perform complex search

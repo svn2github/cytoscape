@@ -134,8 +134,22 @@ public class GenerateCompatGraph extends AbstractAction
 	// Step 4: Create the compatibility graph
 	//
 
+	TaskMonitor compatMonitor = new TaskMonitor()
+	{
+          public void setEstimatedTimeRemaining(long t) { }
+	  public void setException(Throwable t, String s) { }
+	  public void setPercentCompleted(int percent)
+	  {
+	    if (monitor != null)
+	    {
+	      monitor.setPercentCompleted(60 + percent * 20 / 100);
+	    }
+	  }
+	  public void setStatus(String s) { }
+	};
+
         CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph,
-    		inputSpecies, compatCalc);
+    		inputSpecies, compatCalc, compatMonitor);
 
 	//
 	// Step 5: Convert the compatibility graph to a Cytoscape network

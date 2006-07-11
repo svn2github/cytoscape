@@ -5,6 +5,7 @@ import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -28,8 +29,6 @@ import nct.networkblast.score.SimpleEdgeScoreModel;
 
 import NetworkBLAST.NetworkBLASTDialog;
 
-import java.io.PrintWriter;
-import nct.graph.Edge;
 public class PathSearch extends AbstractAction
 {
   public PathSearch(NetworkBLASTDialog _parentDialog)
@@ -40,16 +39,25 @@ public class PathSearch extends AbstractAction
 
   public void actionPerformed(ActionEvent _e)
   {
-    final int pathSize, numPaths;
+    final int pathSize, numPaths, maxResults;
     final double dupeThreshold = 1.0;
+    final boolean limitResults = parentDialog.getPathSearchPanel()
+    		.getLimitCheckBox().isSelected();
     
     try
     {
-      pathSize = Integer.parseInt(this.parentDialog.getPathSearchPanel()
-      			.getPathSizeTextField().getText());
-			
-      numPaths = Integer.parseInt(this.parentDialog.getPathSearchPanel()
-      			.getNumPathsTextField().getText());
+      JTextField pathSizeTextField = parentDialog.getPathSearchPanel()
+      				.getPathSizeTextField();
+				
+      JTextField numPathsTextField = parentDialog.getPathSearchPanel()
+      				.getNumPathsTextField();
+
+      JTextField limitTextField = parentDialog.getPathSearchPanel()
+      				.getLimitTextField();
+				
+      pathSize = Integer.parseInt(pathSizeTextField.getText());
+      numPaths = Integer.parseInt(numPathsTextField.getText());
+      maxResults = Integer.parseInt(limitTextField.getText());
     }
     catch (NumberFormatException _exp)
     {
@@ -99,8 +107,11 @@ public class PathSearch extends AbstractAction
 	  monitor.setStatus("Performing path search...");
 	}
 	
-        SearchGraph<String,Double> colorCoding =
-		new ColorCodingPathSearch<String>(pathSize);
+        SearchGraph<String,Double> colorCoding = null;
+	if (limitResults)
+          colorCoding = new ColorCodingPathSearch<String>(pathSize, maxResults);
+	else
+          colorCoding = new ColorCodingPathSearch<String>(pathSize);
 
     	ScoreModel<String,Double> scoreModel =
 		new SimpleEdgeScoreModel<String>();

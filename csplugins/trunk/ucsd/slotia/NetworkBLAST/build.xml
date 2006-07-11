@@ -31,6 +31,7 @@
     <property name="NetworkBLAST.src.dir" value="${NetworkBLAST.root.dir}/src"/>
     <property name="NetworkBLAST.classes.dir" value="${NetworkBLAST.root.dir}/classes"/>
     <property name="NetworkBLAST.manifest.dir" value="${NetworkBLAST.root.dir}/manifest"/>
+    <property name="NetworkBLAST.resources.dir" value="${NetworkBLAST.root.dir}/resources"/>
     <property name="NetworkBLAST.packages" value="NetworkBLAST.*"/>
 
     <!-- Define excludes for NetworkBLAST compile and javadoc -->
@@ -39,9 +40,9 @@
 
     <path id="NetworkBLAST.project.class.path">
       <pathelement location="${NetworkBLAST.classes.dir}"/>
+      <pathelement location="/cellar/users/slotia/nct/nct.jar"/>
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
-      
     </path>
 
    
@@ -75,6 +76,7 @@
       <fileset
         dir="${NetworkBLAST.classes.dir}"
         includes="**"/>
+      <fileset dir="${NetworkBLAST.resources.dir}"/>
     </jar>
   </target>
 

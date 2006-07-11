@@ -41,6 +41,10 @@ public class PathSearchPanel extends javax.swing.JPanel {
         pathSizeWarningLabel.setVisible(false);
         numPathsWarningLabel = new javax.swing.JLabel();
         numPathsWarningLabel.setVisible(false);
+        limitCheckBox = new javax.swing.JCheckBox();
+        limitTextField = new javax.swing.JTextField();
+        limitWarningLabel = new javax.swing.JLabel();
+        limitWarningLabel.setVisible(false);
 
         jLabel1.setText("Graph to Search:");
 
@@ -90,6 +94,32 @@ public class PathSearchPanel extends javax.swing.JPanel {
         numPathsWarningLabel.setForeground(new java.awt.Color(204, 51, 0));
         numPathsWarningLabel.setText("Warning: Number of Paths must be an integer.");
 
+        limitCheckBox.setText("Limit Maximum Number of Results:");
+        limitCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        limitCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        limitCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limitCheckBoxActionPerformed(evt);
+            }
+        });
+
+        limitTextField.setText("10");
+        limitTextField.setEnabled(false);
+        limitTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limitActionPerformed(evt);
+            }
+        });
+        limitTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                limitFocusLost(evt);
+            }
+        });
+
+        limitWarningLabel.setFont(new java.awt.Font("Dialog", 0, 10));
+        limitWarningLabel.setForeground(new java.awt.Color(204, 51, 0));
+        limitWarningLabel.setText("Warning: Limit must be an integer.");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -97,23 +127,27 @@ public class PathSearchPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, searchButton)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel2)
                             .add(jLabel3)
-                            .add(jLabel1))
-                        .add(39, 39, 39)
+                            .add(jLabel1)
+                            .add(limitCheckBox))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(graphComboBox, 0, 287, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
-                                .add(pathSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, limitTextField)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, numPathsTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, pathSizeTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(pathSizeWarningLabel))
-                            .add(graphComboBox, 0, 384, Short.MAX_VALUE)
-                            .add(layout.createSequentialGroup()
-                                .add(numPathsTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(numPathsWarningLabel))))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, searchButton)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(limitWarningLabel)
+                                    .add(numPathsWarningLabel)
+                                    .add(pathSizeWarningLabel))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 10, Short.MAX_VALUE))))
                     .add(jButton1))
                 .addContainerGap())
         );
@@ -122,31 +156,52 @@ public class PathSearchPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(graphComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1))
+                    .add(jLabel1)
+                    .add(graphComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(pathSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel2)
+                    .add(pathSizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(pathSizeWarningLabel))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(numPathsTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel3)
+                    .add(numPathsTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(numPathsWarningLabel))
-                .add(45, 45, 45)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(limitTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(limitCheckBox)
+                    .add(limitWarningLabel))
+                .add(28, 28, 28)
                 .add(jButton1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 59, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 51, Short.MAX_VALUE)
                 .add(searchButton)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void limitCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limitCheckBoxActionPerformed
+        limitTextField.setEnabled(limitCheckBox.isSelected());
+    }//GEN-LAST:event_limitCheckBoxActionPerformed
+
+    private void limitFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_limitFocusLost
+        checkLimitInput();
+    }//GEN-LAST:event_limitFocusLost
+
+    private void limitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limitActionPerformed
+        checkLimitInput();
+    }//GEN-LAST:event_limitActionPerformed
+
     private void restoreDefaults(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restoreDefaults
         pathSizeTextField.setText("4");
         numPathsTextField.setText("10");
+        limitTextField.setText("10");
+        limitTextField.setEnabled(false);
+        limitCheckBox.setSelected(false);
         pathSizeWarningLabel.setVisible(false);
         numPathsWarningLabel.setVisible(false);
+        limitWarningLabel.setVisible(false);
     }//GEN-LAST:event_restoreDefaults
 
     private void numPathsFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_numPathsFocusLost
@@ -185,6 +240,16 @@ public class PathSearchPanel extends javax.swing.JPanel {
         return searchButton;
     }
     
+    public javax.swing.JCheckBox getLimitCheckBox()
+    {
+        return limitCheckBox;
+    }
+    
+    public javax.swing.JTextField getLimitTextField()
+    {
+        return limitTextField;
+    }
+    
     private void checkPathSizeInput()
     {
         try
@@ -213,12 +278,29 @@ public class PathSearchPanel extends javax.swing.JPanel {
         numPathsWarningLabel.setVisible(false);
     }
     
+    private void checkLimitInput()
+    {
+        try
+        {
+            Integer.parseInt(limitTextField.getText());
+        }
+        catch (NumberFormatException e)
+        {
+            limitWarningLabel.setVisible(true);
+            return;
+        }
+        limitWarningLabel.setVisible(false);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private NetworkComboBox graphComboBox;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JCheckBox limitCheckBox;
+    private javax.swing.JTextField limitTextField;
+    private javax.swing.JLabel limitWarningLabel;
     private javax.swing.JTextField numPathsTextField;
     private javax.swing.JLabel numPathsWarningLabel;
     private javax.swing.JTextField pathSizeTextField;
