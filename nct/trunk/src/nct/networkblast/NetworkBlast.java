@@ -182,7 +182,7 @@ public class NetworkBlast {
 
 
 				print("begin creating compatibility graph");
-				CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, inputSpecies, compatCalc );
+				CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, inputSpecies, compatCalc, null );
 				print("num nodes compatibility graph: " + compatGraph.numberOfNodes() );
 				print("num edges compatibility graph: " + compatGraph.numberOfEdges() );
 

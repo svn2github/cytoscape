@@ -316,7 +316,7 @@ public class ColorCodingPathSearchTest extends TestCase {
 		SIFHomologyReader sr = new SIFHomologyReader("examples/junit.compat.sif");
 		homologyGraph = new HomologyGraph(sr,1e-5,inputSpecies);
 		CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore,true);
-		g = new CompatibilityGraph(homologyGraph, inputSpecies, compatCalc );
+		g = new CompatibilityGraph(homologyGraph, inputSpecies, compatCalc, null );
 
 
 		assertNull(sg.searchGraph(null, edgeScore)); // test for null

@@ -69,7 +69,7 @@ public class DualLayout {
 	 */
 	public static void create(Graph<String,Double> graph, String style, String outFile, String outThumbFile, String vizmapFileLoc ) {
 
-		CyNetwork cyNetwork  = CytoscapeConverter.convert(graph);
+		CyNetwork cyNetwork  = CytoscapeConverter.convert(graph, "graph");
 		CyNetwork splitGraph = Cytoscape.createNetwork("splitGraph"); 
 		DualLayoutTask task = new DualLayoutTask(cyNetwork);
 		task.splitNetwork(splitGraph);

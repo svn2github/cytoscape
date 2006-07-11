@@ -53,7 +53,7 @@ public class CompatibilityGraphTest extends TestCase {
 	    homologyGraph = new HomologyGraph(sr, 1e-5, inputSpecies);
 	    LogLikelihoodScoreModel<String> lls = new LogLikelihoodScoreModel<String>(2.5,0.8,1e-10);
 	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,lls,true);
-	    g = new CompatibilityGraph(homologyGraph, inputSpecies, compatCalc );
+	    g = new CompatibilityGraph(homologyGraph, inputSpecies, compatCalc, null );
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}
