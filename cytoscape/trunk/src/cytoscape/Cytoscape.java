@@ -319,7 +319,7 @@ public abstract class Cytoscape {
 	 * Prompt the user about saving modified files before quitting.
 	 */
 	private static boolean confirmQuit() {
-		final String msg = "Do you want to exit without saving session?";
+		final String msg = "Do you want to save your session?";
 		int networkCount = Cytoscape.getNetworkSet().size();
 
 		/*
@@ -333,18 +333,15 @@ public abstract class Cytoscape {
 		// Confirm user to save current session or not.
 		//
 		
-		Object[] options = { "Yes, quit anyway.", "No, save current session.", "Cancel"};
+		Object[] options = { "Yes, save and quit", "No, just quit", "Cancel"};
 		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), msg,
 				"Save Networks Before Quitting?", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-		if (n == JOptionPane.YES_OPTION) {
+				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		if (n == JOptionPane.NO_OPTION) {
 			return true;
-		} else if (n == JOptionPane.NO_OPTION) {
-			System.out.println("Save current session...");
-
+		} else if (n == JOptionPane.YES_OPTION) {
 			SaveSessionAction saveAction = new SaveSessionAction();
 			saveAction.actionPerformed(null);
-			System.out.println("Cur session = " + Cytoscape.getCurrentSessionFileName());
 			if(Cytoscape.getCurrentSessionFileName() == null) {
 				return confirmQuit();
 			} else {
