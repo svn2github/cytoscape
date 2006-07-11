@@ -308,7 +308,6 @@ public abstract class Cytoscape {
 			} else {
 				return;
 			}
-			// if we get here, we're not quitting!
 
 		} else {
 			System.out.println("Cytoscape Exiting....");
@@ -320,47 +319,37 @@ public abstract class Cytoscape {
 	 * Prompt the user about saving modified files before quitting.
 	 */
 	private static boolean confirmQuit() {
-		String msg = "You have made modifications to the following networks:\n";
-		Set netSet = Cytoscape.getNetworkSet();
-		Iterator it = netSet.iterator();
-		int networkCount = netSet.size();
+		final String msg = "Do you want to exit without saving session?";
+		int networkCount = Cytoscape.getNetworkSet().size();
 
-		// // TODO: filter networks for only those modified
-		// while (it.hasNext()) {
-		// CyNetwork net = (CyNetwork) it.next();
-		// boolean modified = CytoscapeModifiedNetworkManager.isModified(net);
-		// if (modified) {
-		// String name = net.getTitle();
-		// msg += " " + name + "\n";
-		// networkCount++;
-		// }
-		// }
-
+		/*
+		 * If there is no network, just quit.
+		 */
 		if (networkCount == 0) {
-			System.out.println("ConfirmQuit = " + true);
-			return true; // no networks have been modified
+			return true;
 		}
-		// msg += "Are you sure you want to exit without saving?";
 
 		//
 		// Confirm user to save current session or not.
 		//
-		msg = "Do you want to exit without saving session?";
+		
 		Object[] options = { "Yes, quit anyway.", "No, save current session.", "Cancel"};
 		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), msg,
 				"Save Networks Before Quitting?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 		if (n == JOptionPane.YES_OPTION) {
-			System.out.println("ConfirmQuit = " + true);
 			return true;
 		} else if (n == JOptionPane.NO_OPTION) {
-			System.out.println("ConfirmQuit = " + false);
 			System.out.println("Save current session...");
 
 			SaveSessionAction saveAction = new SaveSessionAction();
 			saveAction.actionPerformed(null);
-
-			return true;
+			System.out.println("Cur session = " + Cytoscape.getCurrentSessionFileName());
+			if(Cytoscape.getCurrentSessionFileName() == null) {
+				return confirmQuit();
+			} else {
+				return true;
+			}
 		} else {
 			return false; // default if dialog box is closed
 		}
