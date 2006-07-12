@@ -1,17 +1,10 @@
-package cytoscape.data.unitTests;
+package cytoscape.util.unitTests;
+
+import java.io.File;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.io.File;
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Set;
-import java.io.FilenameFilter;
-import javax.swing.*;
-import javax.swing.filechooser.*;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.util.CyFileFilter;
 import cytoscape.data.readers.GMLReader;
+import cytoscape.data.readers.GraphReader;
 import cytoscape.util.GMLFileFilter;
 
 /**
