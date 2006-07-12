@@ -211,7 +211,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * 
 	 */
 	public XGMMLReader(String fileName) {
-		this(FileUtil.getInputStream(fileName));
+		this(fileName,null);
 	}
 
 	/**
@@ -223,11 +223,13 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * 
 	 */
 	public XGMMLReader(InputStream is) {
+		super("InputStream");
 		this.networkStream = is;
 		initialize();
 	}
 
 	public XGMMLReader(String fileName, TaskMonitor monitor) {
+		super(fileName);
 		this.taskMonitor = monitor;
 		percentUtil = new PercentUtil(3);
 		networkStream = FileUtil.getInputStream(fileName,monitor);

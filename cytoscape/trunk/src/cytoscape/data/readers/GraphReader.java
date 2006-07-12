@@ -74,4 +74,6 @@ public interface GraphReader {
 	public int[] getNodeIndicesArray();
 
 	public int[] getEdgeIndicesArray();
+
+	public String getNetworkName();
 }

@@ -192,14 +192,14 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			String net = (String) i.next();
 			System.out.println("Load: " + net);
 
-			CyNetwork network = Cytoscape.createNetwork(net,
-					Cytoscape.FILE_BY_SUFFIX, canonicalize, bds,
-					properties.getProperty("defaultSpeciesName"));
+			CyNetwork network = null;
 
 			// be careful not to assume that a view has been created
 			if ( initParams.getMode() == CyInitParams.GUI || 
 			     initParams.getMode() == CyInitParams.EMBEDDED_WINDOW ) 
-				Cytoscape.getCurrentNetworkView().fitContent();
+				network = Cytoscape.createNetworkFromFile(net,true);
+			else
+				network = Cytoscape.createNetworkFromFile(net,false);
 		
 			// This is for browser and other plugins.
 	                Object[] ret_val = new Object[3];

@@ -77,7 +77,6 @@ import cytoscape.ding.DingNetworkView;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.init.CyInitParams;
-import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -169,7 +168,7 @@ public abstract class Cytoscape {
 
 	private static String species;
 	
-	private static final String READER_CLIENT_KEY = "reader_client_key";
+	public static final String READER_CLIENT_KEY = "reader_client_key";
 
 	// global flag to indicate if Squiggle is turned on
 	private static boolean squiggleEnabled = false;
@@ -1306,19 +1305,7 @@ public abstract class Cytoscape {
 	 * Graph Nature.
 	 */
 	public static CyNetwork createNetworkFromFile(String location, boolean create_view) {
-		
-		//if the location is an actual network file
-		GraphReader reader = (GraphReader) getImportHandler().getReader(location);
-
-		String[] title = location.split("/");
-		if (System.getProperty("os.name").startsWith("Win")) {
-			title = location.split("//");
-		}
-
-		// Create a new cytoscape.data.CyNetwork from this reader and title
-		CyNetwork network = createNetwork(reader, CyNetworkNaming.getSuggestedNetworkTitle(title[title.length - 1]), create_view);
-
-		return network;
+		return createNetwork( getImportHandler().getReader(location),create_view,null);
 	}
 
 	/**
@@ -1363,17 +1350,10 @@ public abstract class Cytoscape {
 	 * 
 	 * @param reader
 	 *            the graphreader that will read in the network
-	 * @param viewable
-	 *            true if this graph is viewable.
 	 * @param create_view 
 	 *            whether or not a view will be created 
 	 */
-	public static CyNetwork createNetwork(GraphReader reader, String networkTitle, 
-					      boolean create_view) {
-		
-		String title = networkTitle;
-		if (reader.getClass() == XGMMLReader.class)
-			title = ((XGMMLReader)reader).getNetworkName();
+	public static CyNetwork createNetwork(GraphReader reader, boolean create_view, CyNetwork parent) {
 		
 		if (reader == null) {
 			System.err.println("File Type not Supported, sorry");
@@ -1381,8 +1361,10 @@ public abstract class Cytoscape {
 		}
 
 		// have the GraphReader read the given file
+		String title = "";
 		try {
 			reader.read();
+			title = reader.getNetworkName();
 		} catch (Exception e) {
 
 			System.err.println("Cytoscape: Error Reading Network File: "
@@ -1390,6 +1372,7 @@ public abstract class Cytoscape {
 			e.printStackTrace();
 			return null;
 		}
+
 
 		// get the RootGraph indices of the nodes and
 		// edges that were just created
@@ -1406,7 +1389,7 @@ public abstract class Cytoscape {
 		
 		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
 		network.putClientData(READER_CLIENT_KEY,reader);
-		addNetwork(network, title, null, create_view);
+		addNetwork(network, title, parent, create_view);
 
 		if (reader.getClass() == XGMMLReader.class)
 			((XGMMLReader) reader).setNetworkAttributes(network);

@@ -527,48 +527,15 @@ public class CytoscapeSessionReader {
 
 		// Read an XGMML file
 		final XGMMLReader reader = new XGMMLReader(is);
-		reader.read();
-
-		/*
-		 * Create the CyNetwork. First, set the view threshold to 0. By doing
-		 * so, we can disable the auto-creating of the CyNetworkView.
-		 */
-		final int realThreshold = Integer.valueOf(
-				CytoscapeInit.getProperties().getProperty("viewThreshold"))
-				.intValue();
-		CytoscapeInit.getProperties().setProperty("viewThreshold",
-				Integer.toString(0));
-
-		CyNetwork network = null;
-		if (parent == null) {
-			network = Cytoscape.createNetwork(reader.getNodeIndicesArray(),
-					reader.getEdgeIndicesArray(), reader.getNetworkID());
-
-		} else {
-			network = Cytoscape
-					.createNetwork(reader.getNodeIndicesArray(), reader
-							.getEdgeIndicesArray(), reader.getNetworkID(),
-							parent);
-		}
+		
+		CyNetwork network = Cytoscape.createNetwork(reader,viewAvailable,parent); 
 
 		// Set network Attributes here, not in the read() method in XGMMLReader!
 		// Otherwise, ID mismatch may happen.
 		reader.setNetworkAttributes(network);
 
-		// Reset back to the real View Threshold
-		CytoscapeInit.getProperties().setProperty("viewThreshold",
-				Integer.toString(realThreshold));
-
 		// Conditionally, Create the CyNetworkView
 		if (viewAvailable) {
-			createCyNetworkView(network);
-
-			if (Cytoscape.getNetworkView(network.getIdentifier()) != Cytoscape
-					.getNullNetworkView()) {
-				reader
-						.layout(Cytoscape.getNetworkView(network
-								.getIdentifier()));
-			}
 
 			// Lastly, make the GraphView Canvas Visible.
 			SwingUtilities.invokeLater(new Runnable() {

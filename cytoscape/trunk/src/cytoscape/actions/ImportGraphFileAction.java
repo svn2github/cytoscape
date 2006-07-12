@@ -233,9 +233,11 @@ class LoadNetworkTask implements Task {
 			taskMonitor.setPercentCompleted(100);
 			
 			if (file.getName().endsWith(".gml") && vsSwitch == true) {
-				reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
+				
 				VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(
-						cyNetwork.getTitle(), reader, Cytoscape.getDesktop(),
+						cyNetwork.getTitle(), 
+						(GraphReader)cyNetwork.getClientData(Cytoscape.READER_CLIENT_KEY), 
+						Cytoscape.getDesktop(),
 						true);
 				vsd.show();
 

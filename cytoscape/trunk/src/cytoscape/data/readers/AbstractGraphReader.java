@@ -40,6 +40,7 @@ package cytoscape.data.readers;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.Cytoscape;
+import cytoscape.util.CyNetworkNaming;
 
 import giny.model.RootGraph;
 import giny.view.GraphView;
@@ -47,7 +48,13 @@ import giny.view.GraphView;
 import java.io.IOException;
 
 
-public abstract class AbstractGraphReader implements GraphReader{
+public abstract class AbstractGraphReader implements GraphReader {
+
+	protected String fileName;
+
+	public AbstractGraphReader(String fileName) {
+		this.fileName = fileName;
+	}
 
 	public abstract void read() throws IOException;
 
@@ -88,5 +95,17 @@ public abstract class AbstractGraphReader implements GraphReader{
 
 	public int[] getEdgeIndicesArray() {
 		return null;
+	}
+
+	public String getNetworkName() {
+		String t = "";
+		if ( fileName != null ) {
+			String[] title = fileName.split("/");
+			if (System.getProperty("os.name").startsWith("Win")) {
+				title = fileName.split("//");
+												}
+			t = title[title.length-1];
+		}
+		return CyNetworkNaming.getSuggestedNetworkTitle(t);
 	}
 }

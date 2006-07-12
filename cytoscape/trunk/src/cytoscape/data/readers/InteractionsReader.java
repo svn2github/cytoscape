@@ -75,11 +75,6 @@ public class InteractionsReader extends AbstractGraphReader {
 	private PercentUtil percentUtil;
 
 	/**
-	 * The File to be loaded
-	 */
-	protected String filename;
-
-	/**
 	 * A Vector that holds all of the Interactions
 	 */
 	protected Vector allInteractions = new Vector();
@@ -91,60 +86,61 @@ public class InteractionsReader extends AbstractGraphReader {
 	IntArrayList node_indices;
 	OpenIntIntHashMap edges;
 
-	// ------------------------------
 	/**
-	 * Interactions Reader Constructor Creates a new Interactions Reader This
-	 * constructor assumes a Y-Files graph is wanted. If not then use the other
-	 * constructor to say so.
-	 * 
-	 * @param dataServer
-	 *            a BioDataServer
-	 * @param species
-	 *            the species of the network being loaded
-	 * @param filename
-	 *            the file to load the network from
+	 * @deprecated Will be removed 12/2006. BioDataServer and species are no longer needed or used.
 	 */
-	public InteractionsReader(BioDataServer dataServer, String species,
-			String filename) {
-		this.filename = filename;
-		this.dataServer = dataServer;
-		this.species = species;
+	public InteractionsReader(BioDataServer dataServer, String species, String filename) {
+		this(filename,null);
 	}
 
 	/**
-	 * Interactions Reader Constructor Creates a new Interactions Reader This
-	 * constructor assumes a Y-Files graph is wanted. If not then use the other
-	 * constructor to say so.
-	 * 
-	 * @param dataServer
-	 *            a BioDataServer
-	 * @param species
-	 *            the species of the network being loaded
-	 * @param filename
-	 *            the file to load the network from
+	 * @deprecated Will be removed 12/2006. BioDataServer and species are no longer needed or used.
 	 */
-	public InteractionsReader(BioDataServer dataServer, String species,
-			String filename, TaskMonitor taskMonitor) {
-		this.filename = filename;
-		this.dataServer = dataServer;
-		this.species = species;
-		this.taskMonitor = taskMonitor;
+	public InteractionsReader(BioDataServer dataServer, String species, String filename, TaskMonitor taskMonitor) {
+		this(filename,taskMonitor);
 	}
 
-	public InteractionsReader(BioDataServer dataServer, String species,
-			String zip_entry, boolean is_zip) {
+	/**
+	 * @deprecated Will be removed 12/2006. BioDataServer and species are no longer needed or used.
+	 */
+	public InteractionsReader(BioDataServer dataServer, String species, String zip_entry, boolean is_zip) {
+		this(zip_entry,null,is_zip);
+	}
+
+		
+	/**
+	 * Creates an interaction reader based on a string consisting of data that has
+	 * been read from a zip file.
+	 * @param zip_entry The zip entry data.
+	 * @param monitor An optional task monitor.  May be null.
+	 * @param is_zip Indicates that the data is from a zip file - Should almost 
+	 * always be true.
+	 */
+	public InteractionsReader(String zip_entry, TaskMonitor monitor, boolean is_zip) {
+		super("zip_data");
 		this.zip_entry = zip_entry;
-		this.dataServer = dataServer;
-		this.species = species;
 		this.is_zip = is_zip;
+		this.taskMonitor = monitor;
 	}
 
-	/*
-	 * KONO: 5/4/2006 Since we removed the term "canonicalName," dataserver and
-	 * species name is no longer necessary.
+	/**
+	 * Creates an interaction reader based on the string file name. 
+	 * @param filename The filename that contains the interaction data 
+	 * to be read.
 	 */
 	public InteractionsReader(String filename) {
-		this.filename = filename;
+		this(filename,null);
+	}
+
+	/**
+	 * Creates an interaction reader based on the string file name. 
+	 * @param filename The filename that contains the interaction data 
+	 * to be read.
+	 * @param monitor An optional task monitor.  May be null.
+	 */
+	public InteractionsReader(String filename, TaskMonitor monitor) {
+		super(filename);
+		this.taskMonitor = monitor;
 	}
 
 	public void layout(GraphView view) {
@@ -172,7 +168,7 @@ public class InteractionsReader extends AbstractGraphReader {
 	public void read(boolean canonicalize) throws IOException {
 		String rawText;
 		if (!is_zip) {
-			rawText = FileUtil.getInputString(filename);
+			rawText = FileUtil.getInputString(fileName);
 		} else {
 			rawText = zip_entry;
 		}

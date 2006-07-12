@@ -164,9 +164,6 @@ public class GMLReader extends AbstractGraphReader {
 
 	private Color DEF_COLOR = new Color(153, 153, 255);
 
-	// GML file name
-	String filename;
-
 	// Entries in the file
 	List keyVals;
 
@@ -211,8 +208,7 @@ public class GMLReader extends AbstractGraphReader {
 	/**
 	 * Constructor.
 	 * 
-	 * @param filename
-	 *            File name.
+	 * @param filename File name.
 	 */
 	public GMLReader(String filename) {
 		this(filename, null);
@@ -221,13 +217,11 @@ public class GMLReader extends AbstractGraphReader {
 	/**
 	 * Constructor.
 	 * 
-	 * @param filename
-	 *            File name.
-	 * @param taskMonitor
-	 *            TaskMonitor Object.
+	 * @param filename File name.
+	 * @param taskMonitor TaskMonitor Object.
 	 */
 	public GMLReader(String filename, TaskMonitor taskMonitor) {
-		this.filename = filename;
+		super(filename);	
 
 		// Set new style name
 		styleName = createVSName();
@@ -244,11 +238,11 @@ public class GMLReader extends AbstractGraphReader {
 
 		String target = null;
 
-		File fileTest = new File(filename);
+		File fileTest = new File(fileName);
 		target = fileTest.getName();
 		System.out.println("Target GML file is " + target);
 
-		mapSuffix = " for " + filename;
+		mapSuffix = " for " + fileName;
 
 		return target.concat("_GML_style");
 	}
@@ -585,7 +579,7 @@ public class GMLReader extends AbstractGraphReader {
 	//
 	public void read() {
 		try {
-			keyVals = (new GMLParser(filename)).parseList();
+			keyVals = (new GMLParser(fileName)).parseList();
 		} catch (Exception io) {
 			io.printStackTrace();
 			if (taskMonitor != null)
