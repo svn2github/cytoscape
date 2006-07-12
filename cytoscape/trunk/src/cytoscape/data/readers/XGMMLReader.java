@@ -90,6 +90,7 @@ import cytoscape.generated2.Type;
 import cytoscape.generated2.impl.AttImpl;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
+import cytoscape.util.FileUtil;
 import cytoscape.visual.LineType;
 
 /* Used for metanode support */
@@ -210,12 +211,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * 
 	 */
 	public XGMMLReader(String fileName) {
-		try {
-			networkStream = new FileInputStream(fileName);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		initialize();
+		this(FileUtil.getInputStream(fileName));
 	}
 
 	/**
@@ -234,14 +230,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	public XGMMLReader(String fileName, TaskMonitor monitor) {
 		this.taskMonitor = monitor;
 		percentUtil = new PercentUtil(3);
-		try {
-			networkStream = new FileInputStream(fileName);
-		} catch (FileNotFoundException e) {
-			if (taskMonitor != null) {
-				taskMonitor.setException(e, e.getMessage());
-			}
-			throw new RuntimeException(e.getMessage());
-		}
+		networkStream = FileUtil.getInputStream(fileName,monitor);
 		initialize();
 	}
 

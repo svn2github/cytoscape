@@ -52,6 +52,7 @@ import javax.swing.JFileChooser;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.task.TaskMonitor;
 
 /**
  * Provides a platform-dependent way to open files. Mainly
@@ -310,6 +311,10 @@ public abstract class FileUtil {
   }
 
   public static InputStream getInputStream(String name) {
+  	return getInputStream(name,null);
+  }
+
+  public static InputStream getInputStream(String name, TaskMonitor monitor) {
   	InputStream in = null;
 	try {
 		if ( name.matches( urlPattern ) ) { 
@@ -319,6 +324,8 @@ public abstract class FileUtil {
 			in = new FileInputStream(name);
 	} catch (IOException ioe) {
 		ioe.printStackTrace();
+		if ( monitor != null )
+			monitor.setException(ioe, ioe.getMessage());
 	}
 	return in;
   }
