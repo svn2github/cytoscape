@@ -29,6 +29,7 @@ import nct.networkblast.score.ScoreModel;
 import nct.networkblast.graph.compatibility.CompatibilityCalculator;
 import nct.networkblast.graph.compatibility.AdditiveCompatibilityCalculator;
 import nct.visualization.cytoscape.CytoscapeConverter;
+import nct.visualization.cytoscape.Monitor;
 import nct.graph.basic.BasicDistanceGraph;
 
 import NetworkBLAST.NetworkBLASTPlugin;
@@ -58,12 +59,33 @@ public class GenerateCompatGraph extends AbstractAction
 
     Task task = new Task()
     {
+      private TaskMonitor monitor = null;
+      private boolean needToHalt = false;
+      private Monitor nctMonitor = null;
+
+      public String getTitle()
+      	{ return "NetworkBLAST: Generating Compatibility Graph..."; }
+    
+      public void halt()
+      {
+        needToHalt = true;
+	if (nctMonitor != null) nctMonitor.halt();
+      }
+
+      public void setTaskMonitor(TaskMonitor monitor)
+        { this.monitor = monitor; }
+
       public void run()
       {
         double expectation = 1e-10;
         boolean useZero = false;
 
-	//
+	nctMonitor = new Monitor()
+	{
+	  public void setPercentCompleted(int percent)
+	    { }
+	};
+
 	// Step 1: Convert graph 1 and graph 2 to NCT graphs. Add them to
 	// the input species.
 	//
@@ -71,6 +93,7 @@ public class GenerateCompatGraph extends AbstractAction
         List<SequenceGraph<String,Double>> inputSpecies =
 		new ArrayList<SequenceGraph<String,Double>>();
 	
+	if (needToHalt) return;
 	if (monitor != null)
 	{
 	  monitor.setPercentCompleted(0);
@@ -78,50 +101,39 @@ public class GenerateCompatGraph extends AbstractAction
 	}
 
         SequenceGraph<String,Double> graph1 = new WrapperGraph<String,Double>
-		(CytoscapeConverter.convert(getGraph1()));
+		(CytoscapeConverter.convert(getGraph1(), nctMonitor));
 		
+	if (needToHalt) return;
 	if (monitor != null)
 	{
-	  monitor.setPercentCompleted(20);
+	  monitor.setPercentCompleted(25);
 	  monitor.setStatus("Converting Graph 2...");
 	}
 		
         SequenceGraph<String,Double> graph2 = new WrapperGraph<String,Double>
-		(CytoscapeConverter.convert(getGraph2()));
+		(CytoscapeConverter.convert(getGraph2(), nctMonitor));
     
         inputSpecies.add(graph1);
         inputSpecies.add(graph2);
 
-	//
 	// Step 2: Create the homology reader and graph.
 	//
 	
-	if (monitor != null)
-	{
-	  monitor.setPercentCompleted(40);
-	  monitor.setStatus("Creating Homology Graph...");
-	}
-
         HomologyModel homreader = new WrapperHomologyReader(getHomgraph());
-	
 
-        HomologyGraph homologyGraph = new HomologyGraph(
-	  	homreader, expectation, inputSpecies);
+        HomologyGraph homologyGraph = new HomologyGraph(homreader, expectation,
+		inputSpecies);
 	
-	//
 	// Step 3: Create the score model and compatibility calculator;
 	// these classes will support creating the compatibility graph.
 	//
 	
 	if (monitor != null)
-	{
-	  monitor.setPercentCompleted(60);
 	  monitor.setStatus("Creating Compatibility Graph...");
-	}
 
-        ScoreModel<String,Double> logScore = parentDialog.
-	  	getCompatGraphPanel().getScoreModelComboBox().
-			getSelectedScoreModel();
+        ScoreModel<String,Double> logScore = parentDialog
+	  	.getCompatGraphPanel().getScoreModelComboBox()
+		.getSelectedScoreModel();
 
 	// Check if getSelectedScoreModel() was successful. If this method
 	// has failed, it will display an error and return null.
@@ -130,56 +142,37 @@ public class GenerateCompatGraph extends AbstractAction
         CompatibilityCalculator compatCalc =
 	  	new AdditiveCompatibilityCalculator(0.01, logScore, useZero);
 
-	//
 	// Step 4: Create the compatibility graph
 	//
 
-	TaskMonitor compatMonitor = new TaskMonitor()
+	nctMonitor = new Monitor()
 	{
-          public void setEstimatedTimeRemaining(long t) { }
-	  public void setException(Throwable t, String s) { }
 	  public void setPercentCompleted(int percent)
 	  {
 	    if (monitor != null)
-	    {
-	      monitor.setPercentCompleted(60 + percent * 20 / 100);
-	    }
+	      monitor.setPercentCompleted(50 + percent * 25 / 100);
 	  }
-	  public void setStatus(String s) { }
 	};
 
         CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph,
-    		inputSpecies, compatCalc, compatMonitor);
+    		inputSpecies, compatCalc, nctMonitor);
 
-	//
 	// Step 5: Convert the compatibility graph to a Cytoscape network
 	//
 	
 	if (monitor != null)
 	{
-	  monitor.setPercentCompleted(80);
 	  monitor.setStatus("Converting Compatibility Graph...");
+	  monitor.setPercentCompleted(75);
 	}
 	
         String networkName = "Compatibility Graph " + (++compatGraphCount)
 		+ " Result";
-        CytoscapeConverter.convert(compatGraph, networkName);
+        CytoscapeConverter.convert(compatGraph, networkName, nctMonitor);
       }
-      
-      public String getTitle()
-      	{ return "NetworkBLAST: Generating Compatibility Graph..."; }
-    
-      public void halt()
-      	{ }
-
-      public void setTaskMonitor(TaskMonitor _monitor)
-      	{ monitor = _monitor; }
-
-      private TaskMonitor monitor = null;
     };
 
     TaskManager.executeTask(task, jTaskConfig);
-    parentDialog.setVisible(false);
   }
 
   private CyNetwork getGraph1()
@@ -226,7 +219,7 @@ public class GenerateCompatGraph extends AbstractAction
   private class WrapperHomologyReader implements HomologyModel
   {
     public WrapperHomologyReader(CyNetwork _network)
-    	{ this.graph = CytoscapeConverter.convert(_network); }
+    	{ this.graph = CytoscapeConverter.convert(_network, null); }
 	
     public Map<String,Map<String,Double>> expectationValues(
     			SequenceGraph<String,Double> sg1,

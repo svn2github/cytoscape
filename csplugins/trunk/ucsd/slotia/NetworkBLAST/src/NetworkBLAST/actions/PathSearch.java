@@ -17,6 +17,7 @@ import cytoscape.task.util.TaskManager;
 
 import nct.graph.Graph;
 import nct.visualization.cytoscape.CytoscapeConverter;
+import nct.visualization.cytoscape.Monitor;
 import nct.filter.Filter;
 import nct.filter.SortFilter;
 import nct.filter.DuplicateThresholdFilter;
@@ -31,13 +32,13 @@ import NetworkBLAST.NetworkBLASTDialog;
 
 public class PathSearch extends AbstractAction
 {
-  public PathSearch(NetworkBLASTDialog _parentDialog)
+  public PathSearch(NetworkBLASTDialog parentDialog)
   {
     super();
-    parentDialog = _parentDialog;
+    this.parentDialog = parentDialog;
   }
 
-  public void actionPerformed(ActionEvent _e)
+  public void actionPerformed(ActionEvent e)
   {
     final int pathSize, numPaths, maxResults;
     final double dupeThreshold = 1.0;
@@ -59,7 +60,7 @@ public class PathSearch extends AbstractAction
       numPaths = Integer.parseInt(numPathsTextField.getText());
       maxResults = Integer.parseInt(limitTextField.getText());
     }
-    catch (NumberFormatException _exp)
+    catch (NumberFormatException exp)
     {
       JOptionPane.showMessageDialog(null,
       	"The parameters for Path Search are not specified\ncorrectly. " +
@@ -81,9 +82,30 @@ public class PathSearch extends AbstractAction
 
     Task task = new Task()
     {
+      private TaskMonitor monitor = null;
+      private boolean needToHalt = false;
+      private Monitor nctMonitor = null;
+
+      public String getTitle()
+        { return "NetworkBLAST: Performing Path Search..."; }
+
+      public void halt()
+      {
+        needToHalt = true;
+	if (nctMonitor != null) nctMonitor.halt();
+      }
+	
+      public void setTaskMonitor(TaskMonitor monitor)
+        { this.monitor = monitor; }
+      
       public void run()
       {
-        //
+	nctMonitor = new Monitor()
+	{
+	  public void setPercentCompleted(int percent)
+	    { }
+	};
+	
 	// Step 1: Convert the compatibility graph
 	//
 
@@ -94,35 +116,42 @@ public class PathSearch extends AbstractAction
 	  monitor.setStatus("Converting graph...");
 	}
 	
-        Graph<String,Double> graph = CytoscapeConverter.convert(getGraph());
+        Graph<String,Double> graph = CytoscapeConverter.convert(getGraph(),
+		nctMonitor);
 
-	//
 	// Step 2: Perform path search
 	//
 
 	if (needToHalt) return;
         if (monitor != null)
-	{
-	  monitor.setPercentCompleted(33);
 	  monitor.setStatus("Performing path search...");
-	}
 	
-        SearchGraph<String,Double> colorCoding = null;
+        ColorCodingPathSearch<String> colorCoding = null;
 	if (limitResults)
           colorCoding = new ColorCodingPathSearch<String>(pathSize, maxResults);
 	else
           colorCoding = new ColorCodingPathSearch<String>(pathSize);
 
+	nctMonitor = new Monitor()
+	{
+	  public void setPercentCompleted(int percent)
+	  {
+	    if (monitor != null)
+	      monitor.setPercentCompleted(33 + percent * 33 / 100);
+	  }
+	};
+	colorCoding.setMonitor(nctMonitor);
+	
     	ScoreModel<String,Double> scoreModel =
 		new SimpleEdgeScoreModel<String>();
 
         List<Graph<String,Double>> resultPaths = colorCoding.searchGraph(
     		graph, scoreModel);
 
-        //
 	// Step 3: Filter results
 	//
 	
+	if (needToHalt) return;
         Filter<String,Double> dupeFilter = new DuplicateThresholdFilter
 		<String,Double>(dupeThreshold);
         Filter<String,Double> dupeNodeFilter = new UniqueCompatNodeFilter();
@@ -132,7 +161,6 @@ public class PathSearch extends AbstractAction
         resultPaths = dupeNodeFilter.filter(resultPaths);
         resultPaths = sortFilter.filter(resultPaths);
 
-	//
 	// Step 4: Convert results to Cytoscape network
 	//
 
@@ -147,27 +175,15 @@ public class PathSearch extends AbstractAction
 	    monitor.setStatus("Converting results... " + (i + 1) +
 	    	" of " + resultPaths.size());
 	  }
+
           CytoscapeConverter.convert( resultPaths.get(i),
-	  	"Path Search " + pathSearchCount + " Result " + (i + 1));
+	  	"Path Search " + pathSearchCount + ": Result " + (i + 1)
+		+ " of " + resultPaths.size(), nctMonitor );
         }
       }
-
-      public String getTitle()
-        { return "NetworkBLAST: Performing Path Search..."; }
-
-      public void halt()
-        { needToHalt = true; }
-	
-      public void setTaskMonitor(TaskMonitor _monitor)
-        { monitor = _monitor; }
-      
-      private TaskMonitor monitor = null;
-      private boolean needToHalt = false;
     };
 
     TaskManager.executeTask(task, jTaskConfig);
-
-    parentDialog.setVisible(false);
   }
   
   private CyNetwork getGraph()

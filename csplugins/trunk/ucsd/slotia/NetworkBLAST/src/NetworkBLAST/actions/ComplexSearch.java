@@ -17,6 +17,7 @@ import cytoscape.task.util.TaskManager;
 
 import nct.graph.Graph;
 import nct.visualization.cytoscape.CytoscapeConverter;
+import nct.visualization.cytoscape.Monitor;
 import nct.filter.Filter;
 import nct.filter.SortFilter;
 import nct.filter.DuplicateThresholdFilter;
@@ -31,13 +32,13 @@ import NetworkBLAST.NetworkBLASTDialog;
 
 public class ComplexSearch extends AbstractAction
 {
-  public ComplexSearch(NetworkBLASTDialog _parentDialog)
+  public ComplexSearch(NetworkBLASTDialog parentDialog)
   {
     super();
-    parentDialog = _parentDialog;
+    this.parentDialog = parentDialog;
   }
 
-  public void actionPerformed(ActionEvent _e)
+  public void actionPerformed(ActionEvent e)
   {
     final int maxSize, seedSize, maxResults, pathSize = 4;
     final double dupeThreshold = 1.0;
@@ -59,7 +60,7 @@ public class ComplexSearch extends AbstractAction
       seedSize = Integer.parseInt(seedSizeTextField.getText());
       maxResults = Integer.parseInt(limitTextField.getText());
     }
-    catch (NumberFormatException _exp)
+    catch (NumberFormatException exp)
     {
       JOptionPane.showMessageDialog(null,
       	"The parameters for Path Search are not specified\ncorrectly. " +
@@ -81,9 +82,30 @@ public class ComplexSearch extends AbstractAction
 
     Task task = new Task()
     {
+      private TaskMonitor monitor = null;
+      private boolean needToHalt = false;
+      private Monitor nctMonitor = null;
+
+      public String getTitle()
+        { return "NetworkBLAST: Performing Complex Search..."; }
+	
+      public void halt()
+      {
+        needToHalt = true;
+	if (nctMonitor != null) nctMonitor.halt();
+      }
+      
+      public void setTaskMonitor(TaskMonitor monitor)
+        { this.monitor = monitor; }
+      
       public void run()
       {
-        //
+	nctMonitor = new Monitor()
+	{
+	  public void setPercentCompleted(int percent)
+	    { }
+	};
+	
 	// Step 1: Convert the compatibility graph
 	//
 	
@@ -94,41 +116,48 @@ public class ComplexSearch extends AbstractAction
 	  monitor.setStatus("Converting graph...");
 	}
 	
-        Graph<String,Double> graph = CytoscapeConverter.convert(getGraph());
+        Graph<String,Double> graph = CytoscapeConverter.convert(getGraph(),
+		nctMonitor);
 
-        //
 	// Step 2: Create seeds
 	//
 	
         if (needToHalt) return;
 	if (monitor != null)
-	{
-	  monitor.setPercentCompleted(25);
 	  monitor.setStatus("Creating seeds...");
-	}
 
 	NewComplexSearch<String> greedyComplexes =
 		new NewComplexSearch<String>(seedSize, maxSize);
 				
-        SearchGraph<String,Double> colorCoding = null;
+        ColorCodingPathSearch<String> colorCoding = null;
 	if (limitResults)
           colorCoding = new ColorCodingPathSearch<String>(pathSize, maxResults);
 	else
           colorCoding = new ColorCodingPathSearch<String>(pathSize);
 	  
+	nctMonitor = new Monitor()
+	{
+	  public void setPercentCompleted(int percent)
+	  {
+	    if (monitor != null)
+	      monitor.setPercentCompleted(25 + percent * 25 / 100);
+	  }
+	};
+	colorCoding.setMonitor(nctMonitor);
+	
     	ScoreModel<String,Double> scoreModel =
 		new SimpleEdgeScoreModel<String>();
 	
-	List<Graph<String,Double>> resultPaths =
-		colorCoding.searchGraph(graph, scoreModel);
+	List<Graph<String,Double>> resultPaths = colorCoding.searchGraph(
+		graph, scoreModel);
+	
+        if (needToHalt) return;
 	
 	greedyComplexes.setSeeds(resultPaths);
 	
-	//
 	// Step 3: Perform complex search
 	//
 
-        if (needToHalt) return;
 	if (monitor != null)
 	{
 	  monitor.setPercentCompleted(50);
@@ -138,7 +167,6 @@ public class ComplexSearch extends AbstractAction
 	List<Graph<String,Double>> resultComplexes =
 		greedyComplexes.searchGraph(graph, scoreModel);
 
-        //
 	// Step 4: Filter results
 	//
 	
@@ -152,7 +180,6 @@ public class ComplexSearch extends AbstractAction
         resultComplexes = dupeNodeFilter.filter(resultComplexes);
         resultComplexes = sortFilter.filter(resultComplexes);
 
-	//
 	// Step 5: Convert results to Cytoscape network
 	//
 
@@ -163,32 +190,20 @@ public class ComplexSearch extends AbstractAction
 	  if (needToHalt) return;
 	  if (monitor != null)
 	  {
-	    monitor.setPercentCompleted(75 + (i + 1) * 25 / resultPaths.size());
+	    monitor.setPercentCompleted(75 + (i + 1) * 25
+	    	/ resultComplexes.size());
 	    monitor.setStatus("Converting results... " + (i + 1)
-	    	+ " of " + resultPaths.size());
+	    	+ " of " + resultComplexes.size());
 	  }
 	  
-	  CytoscapeConverter.convert(resultPaths.get(i),
-	  	"Complex Search " + complexSearchCount + " Result " + (i + 1));
+	  CytoscapeConverter.convert( resultComplexes.get(i),
+	  	"Complex Search " + complexSearchCount + ": Result " + (i + 1)
+		+ " of " + resultComplexes.size(), nctMonitor );
         }
       }
-
-      public String getTitle()
-        { return "NetworkBLAST: Performing Complex Search..."; }
-	
-      public void halt()
-        { needToHalt = true; }
-
-      public void setTaskMonitor(TaskMonitor _monitor)
-        { monitor = _monitor; }
-      
-      private TaskMonitor monitor = null;
-      private boolean needToHalt = false;
     };
 
     TaskManager.executeTask(task, jTaskConfig);
-
-    parentDialog.setVisible(false);
   }
   
   private CyNetwork getGraph()
