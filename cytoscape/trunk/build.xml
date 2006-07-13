@@ -585,6 +585,8 @@
               todir="${release.dir}/sampleData"/>
         <copy file="testData/galFiltered.gml"
               todir="${release.dir}/sampleData"/>
+        <copy file="testData/galFiltered.xgmml"
+              todir="${release.dir}/sampleData"/>
         <copy file="testData/galFiltered.sif"
               todir="${release.dir}/sampleData"/>
         <copy file="testData/galFiltered.cys"
