@@ -496,6 +496,47 @@ Toronto, Canada
 					<hr>
 				</td>
 			</tr>
+
+			<tr>
+				<td width="20%" valign="top">
+					<b>GSnet</b><font size="-1">
+						<br>
+						Version: 1
+						<br>
+						Release Date: June 22, 2006</font>
+				</td>
+				<td width="40%" valign="top">
+					This plugin visualizes a network graph of a given enriched geneset with
+					their protein-protein interaction and Gene Ontology(GO) term
+					enrichment. The protein-protein interaction between genes is estimated
+					by Agilent literature search engine using PubMed, and the Biomoleuclar
+					Interaction Network Database (BIND). GO term enrichment within given
+					genes is assessed by statistical model using hypergeometric method and
+					false discovery rate calculation.
+					<br/>
+					<br/>
+
+					It provides the view control function using set operation. Users can
+					select specific or common genes on network by using set operation.
+					<br/>
+					<br/>
+
+					If you have any problems or suggestions about this program we would
+					love to hear about them. 
+				</td>
+				<td width="20%" valign="top">
+				 Verified to work in 2.2
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://www.kobic.re.kr/gsnet">Download GSnet Plugin</a>]
+					<br>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>HTTP Data and
@@ -533,6 +574,8 @@ Toronto, Canada
 					Released by: David J. Reiss, Galitski and Schwikowski Groups, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
                     Used by <a href="http://labs.systemsbiology.net/galitski/hepc/">the Hepatitis C Virus infection project.</a>
 				</td>
+
+
 				<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.
 				</td>
