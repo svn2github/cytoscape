@@ -40,7 +40,7 @@
        <!-- Create a time stamp -->
        <tstamp/>
        <!-- Create the build directory used by compile -->
-    	<mkdir dir = "${jar}"/>
+      <mkdir dir = "${jar}"/>
        <mkdir dir = "${build}"/>
     </target>
     
@@ -59,31 +59,44 @@
        </javac>
     </target>
 
-    <!-- clean target -->
+    <!-- clean target for server supported by Tomcat -->
     <target name="clean">
        <delete dir="${build}"/>
     </target>
 
     <!-- jar target -->
-    <target name="jar" description="Creates a jar that contains only xmlRpc classes">
+    <target name="jarserver" description="Creates a jar that contains only xmlRpc classes">
      
     	<mkdir dir="${jar}"/>
     	
-    	<unjar overwrite="Yes" dest = "${build}">
-    	 <fileset dir = "${local.lib}">
-    		<include name="**/*.jar"/>
-    	 </fileset>
-    	</unjar>
-    	
-    	<jar jarfile="${jar}/xmlrpc.jar">
+    	<jar jarfile="${jar}/xmlrpcServer.jar">
        <fileset dir="${build}"/>
      </jar>
     </target>
 	
+	<!-- jar target for client -->
+	    <target name="jarclient" description="Creates a jar that contains xmlRpc classes and required libaries">
+	     
+	    	<mkdir dir="${jar}"/>
+	    	
+		
+	    	<unjar overwrite="Yes" dest = "${build}">
+	    	 <fileset dir = "${local.lib}">
+	    		<include name="**/*.jar"/>
+	    	 </fileset>
+	    	</unjar>
+	
+	    	<jar jarfile="${jar}/xmlrpcClient.jar">
+	       <fileset dir="${build}"/>
+	     </jar>
+	    </target>
+	
+	
+	
 	
 	<!-- Run a class MYCLASS (from the ${build} directory) with the command line 'MY ARGS' via:
 	             ant run -Dclass=${class} -Dargs='MY ARGS' -->
-	<target name="runserver" depends="jar">
+	<target name="runserver" depends="jarserver">
 	    <echo message="${server.class} ${server.args}"/>
 	    <java classname="${server.class}" fork="no" failonerror="no">
 	         <classpath refid="classpath"/>

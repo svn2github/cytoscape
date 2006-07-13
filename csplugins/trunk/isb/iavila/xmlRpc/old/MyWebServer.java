@@ -47,7 +47,7 @@ public class MyWebServer {
 	 */
 	public static final String DEFAULT_PROPS_FILE = "xmlrpc.props";
     public static Properties PROPERTIES;
-	//protected WebServer webserver;
+	protected WebServer webserver;
  
 	protected Hashtable services, users, levels;
 
@@ -66,13 +66,17 @@ public class MyWebServer {
 			System.exit(-1);
 		}
 
+		try {
 			if (args.length == 1) {
 				// Port number
-				//new MyWebServer(Integer.parseInt(args[0]));
+				new MyWebServer(Integer.parseInt(args[0]));
 			} else if (args.length == 2) {
 				// Port number and xmlrpc file
-				//new MyWebServer(Integer.parseInt(args[0]), args[1]);
+				new MyWebServer(Integer.parseInt(args[0]), args[1]);
 			}
+		} catch (IOException e) {
+			System.err.println("Could not start server: " + e.getMessage());
+		}
 	}
     
 	/**
@@ -89,35 +93,33 @@ public class MyWebServer {
 	 * @throws IOException
 	 *             if the web-server can't start on the specified port
 	 */
-	public MyWebServer(XmlRpcServer xmlrpc, String xmlrpc_props) throws IOException 
-	{
-		// Default number of threads is 100, but I am not sure if this method is setting the
-		// number of threads for running handler's methods
-		//System.out.println("Num of threads = " + XmlRpc.getMaxThreads());
-		//XmlRpc.setMaxThreads(20);
-		//System.out.println("Num of threads after setting to 20 = " + XmlRpc.getMaxThreads());
+	public MyWebServer(int port, String xmlrpc_props) throws IOException {
+        // Default number of threads is 100, but I am not sure if this method is setting the
+        // number of threads for running handler's methods
+        //System.out.println("Num of threads = " + XmlRpc.getMaxThreads());
+        //XmlRpc.setMaxThreads(20);
+        //System.out.println("Num of threads after setting to 20 = " + XmlRpc.getMaxThreads());
         
-		/*kdrew: no longer using ports
 		System.out.print("Attempting to start XML-RPC server on port " + port
 				+ "...");
-		*/
         
 		
-		//Try to set number of threads...
-		//XmlRpcServer xmlRpcServer = new XmlRpcServer();
-		//System.out.println("default num threads = " + xmlRpcServer.getMaxThreads());
-
+        //Try to set number of threads...
+        //XmlRpcServer xmlRpcServer = new XmlRpcServer();
+        //System.out.println("default num threads = " + xmlRpcServer.getMaxThreads());
 		//xmlRpcServer.setMaxThreads(100);
 		//System.out.println("new num threads = " + xmlRpcServer.getMaxThreads());
         //System.out.println("getLocalHost() = " + InetAddress.getLocalHost());
         //webserver = new WebServer(port,InetAddress.getLocalHost(),xmlRpcServer);// when done like this, host can't be http://localhost:8084
         
+        webserver = new WebServer(port); 
+		
         System.out.println("...success!");
 
 		System.out.print("Registering the server as a handler (service \""
 				+ SERVICE_NAME + "\")...");
 
-        xmlrpc.addHandler(SERVICE_NAME, this);
+        webserver.addHandler(SERVICE_NAME, this);
 		
         System.out.println("...success!");
 
@@ -128,8 +130,10 @@ public class MyWebServer {
 			xmlrpc_props = XmlRpcUtils.FindPropsFile(DEFAULT_PROPS_FILE);
 		}
 		if (xmlrpc_props != null && xmlrpc_props.length() > 0) {
-			addHandlersFromProps(xmlrpc_props, xmlrpc);
+			addHandlersFromProps(xmlrpc_props);
 		}
+        
+		webserver.start();
         
 	}
 
@@ -137,8 +141,8 @@ public class MyWebServer {
 	 * @param port
 	 *            the port to which this server will be listening
 	 */
-	public MyWebServer(XmlRpcServer xmlrpc) throws IOException {
-		//this(xmlrpc, null);
+	public MyWebServer(int port) throws IOException {
+		this(port, null);
 	}
 
 	/**
@@ -156,7 +160,7 @@ public class MyWebServer {
 	 * entries in a Hashtable and then addService(serviceName,className,
 	 * hashtable) will be called
 	 */
-	protected void addHandlersFromProps(String xmlrpc_props, XmlRpcServer xmlrpc) throws IOException {
+	protected void addHandlersFromProps(String xmlrpc_props) throws IOException {
 
 		System.out.println("Adding service handlers from file " + xmlrpc_props + "...");
 
@@ -204,9 +208,9 @@ public class MyWebServer {
 			Hashtable args = (Hashtable) serviceToArgs.get(serviceName);
 			try {
 				if (args == null) {
-				   addService(serviceName, className, xmlrpc);
+				   addService(serviceName, className);
 				} else {
-                    addService(serviceName, className, args, xmlrpc);
+                    addService(serviceName, className, args);
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -216,29 +220,33 @@ public class MyWebServer {
 	}
 
 	/**
-	 * kdrew: not using web server in this implementation
-	 *
+	 * @return the <code>org.apache.xmlrpc.WebServer</code> wrapped by this
+	 *         <code>MyWebServer</code>
+	 */
+	public WebServer getServer() {
+		return webserver;
+	}
+
+	/**
 	 * Adds the given ip as an accepted client, getServer().setParanoid(true) is
 	 * called so no other ips will be accepted after this call
+	 */
 	public boolean addAllowedClientIP(String ip) {
 		getServer().setParanoid(true);
 		getServer().acceptClient(ip);
 		return true;
 	}
-	 */
 
 	/**
-	 * kdrew: not using web server in this implementation
-	 *
 	 * Adds the given ip as a denied client, getServer().setParanoid(true) is
 	 * called so no ips will be accepted after this call (see
 	 * addAllowedClientIP)
+	 */
 	public boolean addDeniededClientIP(String ip) {
 		getServer().setParanoid(true);
 		getServer().denyClient(ip);
 		return true;
 	}
-	 */
 
 	/**
 	 * For the given service, it returns a Vector of Strings of the available
@@ -366,11 +374,11 @@ public class MyWebServer {
 	 * @param className
 	 *            the fully specified class name of the handler for the service
 	 */
-	public boolean addService(String service, String className, XmlRpcServer xmlrpc)
+	public boolean addService(String service, String className)
 			throws Exception {
 		Object obj = services.get(service);
 		if (obj == null)
-			return addService(service, Class.forName(className).newInstance(), xmlrpc);
+			return addService(service, Class.forName(className).newInstance());
 		return false;
 	}
 
@@ -385,7 +393,7 @@ public class MyWebServer {
 	 * @param args
 	 *            a table of Strings to Strings,Integers,Boolean, or Doubles
 	 */
-	public boolean addService(String service, String className, Hashtable args, XmlRpcServer xmlrpc)
+	public boolean addService(String service, String className, Hashtable args)
 			throws Exception {
 
 		Object obj = services.get(service);
@@ -404,7 +412,7 @@ public class MyWebServer {
 				if (constr != null) {
 					Object[] params = { args };
 					Object handler = constr.newInstance(params);
-					return addService(service, handler, xmlrpc);
+					return addService(service, handler);
 				} else {
 					System.err
 							.println("ERROR: REQUESTED CONSTRUCTOR NOT FOUND IN CLASS "
@@ -422,12 +430,12 @@ public class MyWebServer {
 	 * Make multiple XML-RPC calls in one request and receive multiple
 	 * responses.
 	 */
-	public boolean addMultiCallService(XmlRpcServer xmlrpc) throws Exception {
+	public boolean addMultiCallService() throws Exception {
 		Object obj = services.get(SERVICE_NAME);
 		if (obj == null) {
 			SystemHandler system = new SystemHandler();
 			system.addDefaultSystemHandlers();
-			addService(SERVICE_NAME, system, xmlrpc);
+			addService(SERVICE_NAME, system);
 			return true;
 		}
 		return false;
@@ -443,7 +451,7 @@ public class MyWebServer {
 	 *            Vector of Strings
 	 */
 public boolean addService(String service, String className,
-			Vector handlerArgs, XmlRpcServer xmlrpc) throws Exception {
+			Vector handlerArgs) throws Exception {
 	try{
 		
 		Class theClass = Class.forName(className);
@@ -459,7 +467,7 @@ public boolean addService(String service, String className,
 			return false;
 		}
 		Object handler = cons.newInstance(handlerArgs.toArray());
-		return addService(service, handler, xmlrpc);
+		return addService(service, handler);
 		
 	}catch (Exception e){
 		e.printStackTrace();
@@ -476,14 +484,14 @@ public boolean addService(String service, String className,
 	 * @param handler
 	 *            the handler for service
 	 */
-	public boolean addService(String service, Object handler, XmlRpcServer xmlrpc) throws Exception {
+	public boolean addService(String service, Object handler) throws Exception {
 		Object obj = services.get(service);
 		if (obj == null) {
 			String className = handler.getClass().getName();
 			System.out.print("Registering a " + className
 					+ " as a handler (service \"" + service + "\")...");
 			if (users == null) {
-				xmlrpc.addHandler(service, handler);
+				webserver.addHandler(service, handler);
 				services.put(service, handler);
 			} else {
 				AuthenticatedInvoker ai = new AuthenticatedInvoker(handler);
@@ -494,7 +502,7 @@ public boolean addService(String service, String className,
 					ai.addUserNamePassword(user, (String) users.get(user),
 							level);
 				}
-				xmlrpc.addHandler(service, ai);
+				webserver.addHandler(service, ai);
 				services.put(service, ai);
 			}
 
@@ -508,15 +516,24 @@ public boolean addService(String service, String className,
 	 * @param service
 	 *            the service to remove
 	 */
-	public boolean removeService(String service, XmlRpcServer xmlrpc) {
+	public boolean removeService(String service) {
 		Object obj = services.get(service);
 		if (obj != null) {
 			System.out.println("Removing service \"" + service + "\".");
 			services.remove(service);
-			xmlrpc.removeHandler(service);
+			webserver.removeHandler(service);
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Shutdown this server
+	 */
+	public boolean shutdown() {
+		System.out.println("Shutting down XML-RPC server.");
+		webserver.shutdown();
+		return true;
 	}
 
 	public boolean setDebug(String deb) {
@@ -539,4 +556,11 @@ public boolean addService(String service, String className,
 		return true;
 	}
 
+	/**
+	 * Shutdown and return true
+	 */
+	public boolean exit() {
+		webserver.shutdown();
+		return true;
+	}
 }

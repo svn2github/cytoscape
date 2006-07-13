@@ -282,13 +282,10 @@ public class XmlRpcUtils {
 	}
 
 	/**
-	 * kdrew: not using MyWebServer in this implementation
-	 *
 	 * If the local wMyXmlRpcServer is not running locally, it starts it on the
 	 * given port
 	 */
 	public static boolean startWebServerIfNeeded(int port) {
-		/*
 		if (isLocalWebServerRunning(port))
 			return true;
 		boolean out = false;
@@ -300,8 +297,6 @@ public class XmlRpcUtils {
 			out = false;
 		}
 		return out;
-		*/
-		return false;
 	}
 
 	public static boolean isLocalWebServerRunning(int port) {
