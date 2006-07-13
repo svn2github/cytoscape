@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.xml.bind.JAXBException;
 
@@ -197,15 +198,24 @@ public class MetadataParser {
 		Object value = null;
 		String key = null;
 
+		Vector nullValuedKeys = new Vector();
+		
 		Iterator it = labels.iterator();
 		while (it.hasNext()) {
 			key = (String) it.next();
 			value = mapRDF.get(key);
-			dc.getDcmes().add(set(key.trim(), value));
+			if (value == null)
+				nullValuedKeys.add(key);
+			dc.getDcmes().add(set(key.trim(), ((value == null) ? "" : value)));
 		}
 
 		metadata.getDescription().add(dc);
-
+		
+		it = nullValuedKeys.iterator();
+		while (it.hasNext()) {
+			mapRDF.put(it.next().toString(), "");
+		}
+		
 		// Put the data in CyAttributes
 		networkAttributes.setAttributeMap(network.getIdentifier(),
 				metadataLabel, mapRDF);
