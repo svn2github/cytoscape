@@ -43,6 +43,7 @@ import java.util.Map;
 import nct.graph.Graph;
 import nct.graph.basic.BasicGraph;
 import nct.graph.Edge;
+import nct.visualization.cytoscape.Monitor;
 
 /**
  * A utility class for converting an NCT graph into a CyNetwork.
@@ -59,7 +60,7 @@ public class CytoscapeConverter {
 		edgeAttrs = Cytoscape.getEdgeAttributes();
 	}
 
-	public static Graph<String,Double> convert(CyNetwork network) {
+	public static Graph<String,Double> convert(CyNetwork network, Monitor monitor) {
 
 		Graph<String,Double> graph = new BasicGraph<String,Double>();
 
@@ -67,11 +68,15 @@ public class CytoscapeConverter {
 			return graph; 
 
 		for ( Iterator it = network.nodesIterator(); it.hasNext(); ) {
+	    		if (monitor != null && monitor.needToHalt()) return null;
+			
 			CyNode node = (CyNode) it.next();
 			graph.addNode(node.getIdentifier());
 		}
 
 		for ( Iterator it = network.edgesIterator(); it.hasNext(); ) {
+	    		if (monitor != null && monitor.needToHalt()) return null;
+
 			CyEdge edge = (CyEdge) it.next();
 
 			Double weight;
@@ -93,11 +98,16 @@ public class CytoscapeConverter {
 	/**
 	 * Converts an NCT graph into a CyNetwork.
 	 * @param graph The NCT graph to be converted.
+	 * @param title The title of the new Cytoscape graph
+	 * @param monitor Monitor that will tell if convert() needs to
+	 * terminate prematurely. Monitor will not be informed of any progress.
+	 * Pass null if no monitoring is needed.
 	 * @return A new CyNetwork based on the input graph. 
 	 */
-	public static CyNetwork convert(Graph<String,Double> nctGraph, String title)
+	public static CyNetwork convert(Graph<String,Double> nctGraph, String title, Monitor monitor)
 	{
-	  if (nctGraph == null) return Cytoscape.createNetwork(title);
+	  if (nctGraph == null || nctGraph.getNodes().size() == 0)
+	    return Cytoscape.createNetwork(title);
 
 	  int i;
 
@@ -108,6 +118,8 @@ public class CytoscapeConverter {
 	  i = 0;
 	  for (String nctNode : nctNodes)
 	  {
+	    if (monitor != null && monitor.needToHalt()) return null;
+	    
 	    if (!nctToGinyNodeMap.containsKey(nctNode))
 	    {
 	      int ginyNode = rootGraph.createNode();
@@ -124,6 +136,8 @@ public class CytoscapeConverter {
 	  i = 0;
 	  for (Edge<String,Double> nctEdge : nctEdges)
 	  {
+	    if (monitor != null && monitor.needToHalt()) return null;
+	    
 	    String nctSourceNode = nctEdge.getSourceNode();
 	    String nctTargetNode = nctEdge.getTargetNode();
 	    

@@ -35,8 +35,7 @@ import nct.graph.DistanceGraph;
 import nct.graph.KPartiteGraph;
 import nct.graph.Edge;
 import nct.graph.basic.BasicGraph;
-
-import cytoscape.task.TaskMonitor;
+import nct.visualization.cytoscape.Monitor;
 
 /**
  * This class creates a compatibility graph based on the homology
@@ -50,7 +49,7 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 	protected List<? extends DistanceGraph<String,Double>> interactionGraphs;
 	protected KPartiteGraph<String,Double,? extends DistanceGraph<String,Double>> homologyGraph;
 	protected CompatibilityCalculator compatCalc;
-	private TaskMonitor taskMonitor = null;
+	private Monitor monitor = null;
 
 	private static Logger log = Logger.getLogger("networkblast");
 
@@ -61,10 +60,12 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 	 * @param interactionGraphs 
 	 * @param compatCalc The CompatibilityCalculator used to determine whether two possible compatibility 
 	 * nodes should be added to the compatibility graph and if so, adds the nodes and edge.
+	 * @param monitor The Monitor that will be updated as the compatibility graph is created. Pass NULL if
+	 * monitoring is not needed.
 	 */
 	public CompatibilityGraph(KPartiteGraph<String,Double,? extends DistanceGraph<String,Double>> homologyGraph, 
 				  List<? extends DistanceGraph<String,Double>> interactionGraphs, 
-				  CompatibilityCalculator compatCalc, TaskMonitor taskMonitor) {
+				  CompatibilityCalculator compatCalc, Monitor monitor) {
 		super();
 
 		try {
@@ -75,7 +76,7 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 		this.homologyGraph = homologyGraph;
 		this.interactionGraphs = interactionGraphs;
 		this.compatCalc = compatCalc;
-		this.taskMonitor = taskMonitor;
+		this.monitor = monitor;
 
 		edgeDescMap = new HashMap<String,Map<String,String>>(); 
 
@@ -102,9 +103,12 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 		int numGraphs = graphs.size(); 
 
 		for ( int x = 0; x < listOfCompatibilityNodes.size(); x++ ) {
-			if (taskMonitor != null)
-				taskMonitor.setPercentCompleted((int) (x * 100 / listOfCompatibilityNodes.size()));
-				
+			if (monitor != null)
+			{
+				if (monitor.needToHalt()) return;
+				monitor.setPercentCompleted(x * 100 / listOfCompatibilityNodes.size());
+			}
+			
 			String[] nodeBase = listOfCompatibilityNodes.get(x);
 			for ( int y = x+1; y < listOfCompatibilityNodes.size(); y++ ) {
 				String[] nodeBranch = listOfCompatibilityNodes.get(y);

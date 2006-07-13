@@ -33,13 +33,16 @@ import nct.networkblast.graph.*;
 import nct.graph.*;
 import nct.graph.basic.*;
 
+import nct.visualization.cytoscape.Monitorable;
+import nct.visualization.cytoscape.Monitor;
+
 /**
  * This class implements a color coding algorithm to search for pathways 
  * of size n in a given graph using a scoring object. See: Scott, et al., 
  * 2005, Efficient Algorithms for Detecting Signaling Pathways in Protein 
  * Interaction Networks, Lecture Notes in Computer Science, vol. 3500.
  */
-public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>> implements SearchGraph<NodeType,Double> {
+public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>> implements SearchGraph<NodeType,Double>, Monitorable {
 
 	/**
 	 * The default epsilon value.
@@ -158,6 +161,11 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	 *
 	 */
 	Set<NodeType> endSet;
+
+	/**
+	 * Used for tracking the progress of searchGraph()
+	 */
+	protected Monitor monitor = null;
 
 	/**
 	 * @param size the integer size of paths to search for
@@ -320,6 +328,12 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 		Set<NodeType> nodeSet = graph.getNodes();
 
 		for ( int x = 0; x < numTrials; x++ ) {
+			if (monitor != null)
+			{
+				if (monitor.needToHalt()) return null;
+				monitor.setPercentCompleted(x * 100 / numTrials);
+			}
+			
 			log.config("trial " + x);
 			//System.out.println("trial " + x);
 
@@ -436,6 +450,11 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 		return  graphList;
 	}
 
+	public void setMonitor(Monitor monitor)
+	  { this.monitor = monitor; } 
+
+	public Monitor getMonitor()
+	  { return monitor; }
 
 	/**
 	 * Calculates 2 to the Nth power. 
