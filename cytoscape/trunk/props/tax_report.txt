@@ -23,7 +23,6 @@ code	|	name	|	preferred name	|	taxid
 1	|	Vibrio cholerae	|	 	|	666
 1	|	Arabidopsis	|	 	|	3701
 2	|	Human	|	Homo sapiens	|	9606
-2	|	Mouse	|	Mus musculus	|	10090
 2+	|	Rat	|	Rattus	|	10114
 2+	|	Rat	|	Rattus norvegicus	|	10116
 2	|	Zebrafish	|	Danio rerio	|	7955
