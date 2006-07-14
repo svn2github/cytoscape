@@ -57,7 +57,6 @@
  <jar href="lib/exesto.jar"/>
  <jar href="lib/dom.jar"/>
  <jar href="lib/ding.jar"/>
- <jar href="lib/data-aux.jar"/>
  <jar href="lib/cytoscape-util-intr.jar"/>
  <jar href="lib/cytoscape-task.jar"/>
  <jar href="lib/cytoscape-render-stateful.jar"/>

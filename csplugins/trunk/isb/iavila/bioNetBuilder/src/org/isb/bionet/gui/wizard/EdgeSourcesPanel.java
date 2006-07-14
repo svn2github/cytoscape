@@ -480,7 +480,7 @@ public class EdgeSourcesPanel extends JPanel {
             final JButton button = new JButton(buttonName + "...");
             
             //TODO: An automated way of finding which class is the GUI for a source and creating it
-            
+            // INSERT CODE FOR YOUR OWN DATABASE HERE -iliana
             if(buttonName.equals(HPRDInteractionsSource.NAME)){
                 final HPRDParametersDialog hDialog = new HPRDParametersDialog();
                 this.sourceToDialog.put(sourceClass,hDialog);
