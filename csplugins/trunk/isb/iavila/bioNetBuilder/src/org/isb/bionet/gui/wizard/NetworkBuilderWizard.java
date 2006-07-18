@@ -749,6 +749,10 @@ public class NetworkBuilderWizard {
         
         
         // Attach to each node a "dataSource" attribute that tells the user where that node came from
+        // Also set for each node the "species" attribute
+        Vector spNames = this.taxonomyPanel.getSelectedSpeciesNames();
+        String species = "";
+        if(spNames != null && spNames.size() >= 1) species = (String)spNames.get(0);
         sourceToNodes.putAll(sourceToStartNodes);
         it = sourceToNodes.keySet().iterator();
         while(it.hasNext()){
@@ -759,13 +763,16 @@ public class NetworkBuilderWizard {
             while(it2.hasNext()){
                 obj = it2.next();
                 String id = (String)obj;
+                if(id == null) continue;
                 //System.err.println("Getting dataSource attribute value for " + id);
-                if(id != null && nodeAtts.getStringAttribute(id,"dataSource") != null) {
+                nodeAtts.setAttribute(id,"species",species);
+                if(nodeAtts.getStringAttribute(id,"dataSource") != null) {
                     //System.out.println("dataSource attribute is already assigned for " + id);
                     continue;
                 }
-                if(id != null)
+                if(id != null){
                     nodeAtts.setAttribute(id,"dataSource",sourceName);
+                }
             }//it2
         }//it
         

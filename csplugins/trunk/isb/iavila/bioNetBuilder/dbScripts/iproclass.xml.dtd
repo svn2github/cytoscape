@@ -1,0 +1,149 @@
+<!-- *****************************************************************************
+	iProClass Database
+	Version: 	version 1.1
+	Date:		8-Apr-2004
+
+	Copyright (c) 2004 Georgetown University Medical Center
+	All rights reserved.
+*******************************************************************************-->
+
+<!-- iProClassDatabase: the root element. -->
+<!ELEMENT iProClassDatabase (iProClassEntry+)>
+<!ATTLIST iProClassDatabase dbname          CDATA #REQUIRED
+                            release_date    CDATA #IMPLIED
+                            version         CDATA #IMPLIED>
+
+<!-- Entry: the root element. -->
+<!ELEMENT iProClassEntry    (general-info,xrefs?,family-class?,sequence?)> 
+<!ATTLIST iProClassEntry    ipc-id	    ID #REQUIRED> <!-- Currently the same as pir-nref-id -->
+
+<!-- General Block -->
+<!ELEMENT general-info (pir-nref-id,csq-id,protein-info, taxonomy?, gene-name?, keywords?, function?, complex?)>
+
+	<!ELEMENT pir-nref-id (#PCDATA)> <!-- PIR-NREF ID, the unique identifier -->
+	<!ELEMENT csq-id      (#PCDATA)> <!-- PIR-PSD ID + SwissProt/TrEMBL ID -->
+
+	<!-- Protein Info Block -->
+	<!ELEMENT protein-info (pir*,sprot*,trembl*,refseq*,genpept-ac*)>
+
+		<!ELEMENT pir (pir-id,pir-name,pir-ac)>
+			<!ELEMENT pir-id        (#PCDATA)> <!-- PIR-PSD ID, e.g. "HAHU" -->
+			<!ELEMENT pir-name      (#PCDATA)> <!-- PIR-PSD Protein Name -->
+			<!ELEMENT pir-ac        (#PCDATA)> <!-- PIR-PSD Accession Number -->
+
+		<!ELEMENT sprot (sprot-id,sprot-name,sprot-ac)>
+			<!ELEMENT sprot-id        (#PCDATA)> <!-- SwissProt ID -->
+			<!ELEMENT sprot-name      (#PCDATA)> <!-- SwissProt Protein Name -->
+			<!ELEMENT sprot-ac        (#PCDATA)> <!-- SwissProt Accession Number -->
+
+		<!ELEMENT trembl (trembl-id,trembl-name,trembl-ac)>
+		<!ELEMENT trembl-id        (#PCDATA)> <!-- TrEMBL ID -->
+		<!ELEMENT trembl-name      (#PCDATA)> <!-- TrEMBL Protein Name -->
+		<!ELEMENT trembl-ac        (#PCDATA)> <!-- TrEMBL Acccession Number -->
+
+
+		<!ELEMENT refseq (refseq-name,refseq-ac)> 
+			<!ELEMENT refseq-name      (#PCDATA)> <!-- REFSEQ Protein Name -->
+			<!ELEMENT refseq-ac        (#PCDATA)> <!-- REFSEQ Accession Number -->
+
+		<!ELEMENT genpept-ac   (#PCDATA)> <!-- NCBI GenPept Accession Number -->
+
+	<!-- End of Protein Info Block -->
+
+
+		<!-- Taxonomy Block -->
+	<!ELEMENT taxonomy (source-org?,taxon-group?,taxon-id?,lineage?)>			
+		<!ELEMENT source-org       (#PCDATA)> <!-- Species/Organism Name-->
+		<!ELEMENT taxon-group      (#PCDATA)> <!-- Taxon Group -->
+		<!ELEMENT taxon-id         (#PCDATA)> <!-- NCBI Taxonomy ID -->
+		<!ELEMENT lineage          (#PCDATA)> <!-- Lineage -->
+		<!-- End of Taxonomy Block -->
+
+	<!ELEMENT gene-name (#PCDATA)> <!-- Gene Name -->
+
+	<!ELEMENT keywords (#PCDATA)> <!-- Keywords -->
+
+	<!ELEMENT function (#PCDATA)> <!-- Function (Description or Pathway or both) -->
+
+	<!ELEMENT complex (#PCDATA)> <!-- Complex -->
+
+<!-- End of General Block -->
+
+
+
+<!-- Cross-References Block -->
+<!ELEMENT xrefs (biblio?,dna-seq?,genome-gene?,ontology*,structure?,enzyme*,interaction*,feature*,pathway*,ppsd*,proteome*)>
+
+	<!ELEMENT biblio (pmid*)>
+		<!ELEMENT pmid (#PCDATA)> <!-- PMID (PubMed IDs) -->
+
+	<!ELEMENT dna-seq (genbank-ac*)>
+		<!ELEMENT genbank-ac (#PCDATA)> <!-- NCBI GenBank Accession -->
+
+	<!ELEMENT genome-gene (tigr-id*,uwgp-id*,sgd-id*,fly-id*,mgi-id*,gdb-id*,omim-id*,locus?)>
+		<!ELEMENT tigr-id   (#PCDATA)> <!-- TIGR Database ID -->
+		<!ELEMENT uwgp-id   (#PCDATA)> <!-- UWGP Database ID -->
+		<!ELEMENT sgd-id    (#PCDATA)> <!-- SGD Database ID -->
+		<!ELEMENT fly-id    (#PCDATA)> <!-- FlyBase Database ID -->
+		<!ELEMENT mgi-id    (#PCDATA)> <!-- MGI Database ID -->
+		<!ELEMENT gdb-id    (#PCDATA)> <!-- GDB Database ID -->
+		<!ELEMENT omim-id  (#PCDATA)> <!-- OMIM Database ID -->
+		<!ELEMENT locus (locus-id,locus-name)> <!-- LocusLink Database Information -->
+			<!ELEMENT locus-id    (#PCDATA)> <!-- Locus ID -->
+			<!ELEMENT locus-name  (#PCDATA)> <!-- Locus Name -->
+
+
+	<!ELEMENT ontology (#PCDATA)> <!-- Gene Ontology ID and Name from AmiGO Database -->
+
+	<!ELEMENT structure (pdb-id*,scop-id*)>
+		<!ELEMENT pdb-id  (#PCDATA)> <!-- PDB ID Contains match range and percent identity -->
+		<!ELEMENT scop-id (#PCDATA)> <!-- SCOP ID -->
+
+	<!ELEMENT enzyme (ec-num*,nomenclature*,reaction*)+>
+		<!ELEMENT ec-num         (#PCDATA)> <!-- Enzyme Number -->
+		<!ELEMENT nomenclature   (#PCDATA)> <!-- Enzyme Nomenclature -->
+		<!ELEMENT reaction	 (#PCDATA)> <!-- Reaction -->
+
+	<!ELEMENT interaction (dip-id*,bind-id*)>
+		<!ELEMENT dip-id  (#PCDATA)> <!-- DIP Database ID -->
+		<!ELEMENT bind-id (#PCDATA)> <!-- BIND Database ID -->	
+
+	<!ELEMENT feature  (#PCDATA)> <!-- Feature type, description, residue number(s) and status -->
+	<!ELEMENT pathway  (#PCDATA)> <!-- Pathway information from KEGG -->
+	<!ELEMENT ppsd     (#PCDATA)> <!-- PIR accession used by Protein Phosphorylation site Database -->
+	<!ELEMENT proteome (#PCDATA)> <!-- Proteome -->
+	
+<!-- End of Cross-References Block -->
+
+
+<!-- Family Block -->
+<!ELEMENT family-class (UniRef?,pir-asdb*,pirfam*,pirsupfam*,pirmotif*,hdomain*,interpro*,other-family-class*)>
+		<!ELEMENT UniRef	(UniRef100*,UniRef90*,UniRef50*)> <!-- UniProt NREF IDs -->
+			<!ELEMENT UniRef100 (#PCDATA)>
+			<!ELEMENT UniRef90 (#PCDATA)>
+			<!ELEMENT UniRef50 (#PCDATA)>
+		<!ELEMENT pir-asdb       (#PCDATA)>    <!-- PIR Name -->
+		<!ELEMENT pirfam	 (mips*,aln*)> <!-- PIR Family Names and IDs --> 
+			<!ELEMENT mips     (#PCDATA)>  <!-- PIR MIPS Family Number -->
+			<!ELEMENT aln      (#PCDATA)>  <!-- PIR ALN ID and Name -->
+		<!ELEMENT pirsupfam      (#PCDATA)>    <!-- PIR Superfamily -->
+		<!ELEMENT pirmotif	 (#PCDATA)>    <!-- PIR Motif ID, description and range -->
+
+
+		<!ELEMENT hdomain (#PCDATA)> <!-- PIR Homology Domain ID -->
+
+                <!ELEMENT interpro (sprot-trembl-id-accs+,interpro-block*)+> <!-- SwissProt/TrEMBL ID, accession match InterPr$ -->                       
+			<!ELEMENT sprot-trembl-id-accs (#PCDATA)>
+                        <!ELEMENT interpro-block (interpro-id*,interpro-name*)>
+                                <!ELEMENT interpro-id (#PCDATA)> <!-- Interpro accession match -->
+                                <!ELEMENT interpro-name (#PCDATA)> <!-- Interpro -->
+                                                                                                                             
+		<!ELEMENT other-family-class (blocks*,prints*,pfam*,metafam*,cog*,prosite*)>
+			<!ELEMENT blocks       (#PCDATA)> <!-- BLOCKS ID -->
+			<!ELEMENT prints       (#PCDATA)> <!-- PRINTS ID -->
+			<!ELEMENT pfam         (#PCDATA)> <!-- Pfam ID -->
+			<!ELEMENT metafam      (#PCDATA)> <!-- Same as PIR-PSD ID -->
+			<!ELEMENT cog	       (#PCDATA)> <!-- COGroup Information (ID and Name) -->
+			<!ELEMENT prosite      (#PCDATA)> <!-- PROSITE Information --> 
+
+<!ELEMENT sequence (#PCDATA)> <!-- Protein Sequence -->

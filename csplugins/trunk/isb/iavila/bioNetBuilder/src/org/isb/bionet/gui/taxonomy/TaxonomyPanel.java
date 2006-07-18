@@ -61,6 +61,24 @@ public class TaxonomyPanel extends JPanel{
         }//for i
         return taxids;
     }
+    
+    /**
+     * Gets a vector of Strings of selected species names
+     * 
+     * @return Vector of Strings that represent NCBI species names
+     */
+    public Vector getSelectedSpeciesNames (){
+    	Object[] species = this.speciesList.getSelectedValues();
+        if(species == null || species.length == 0) return new Vector();
+       
+        Vector names = new Vector();
+        for(int i = 0; i < species.length; i++){
+            Hashtable sp = (Hashtable)species[i];
+            String name = (String)sp.get(SynonymsSource.SPECIES_NAME);
+            names.add(name);
+        }//for i
+        return names;
+    }
    
     /**
      * Creates the panel

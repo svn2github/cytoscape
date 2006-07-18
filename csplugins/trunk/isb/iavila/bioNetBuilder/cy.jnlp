@@ -77,7 +77,6 @@
  
  
 <jar href="plugins/browser.jar"/>
-<jar href="plugins/cpath.jar"/>
 <jar href="plugins/filter.jar"/>
 <jar href="plugins/yLayouts.jar"/>
 <jar href="plugins/bionetbuilder.jar"/>
@@ -86,9 +85,7 @@
   <application-desc main-class="cytoscape.CyMain">
 	<argument>-p</argument>
 	<argument>browser.AttributeBrowserPlugin</argument>
-    <argument>-p</argument>
-	<argument>csplugins.dataviewer.plugin.CPathPlugIn</argument>
-	<argument>-p</argument>
+   	<argument>-p</argument>
 	<argument>filter.cytoscape.CsFilter</argument>
 	<argument>-p</argument>
 	<argument>yfiles.YFilesLayoutPlugin</argument>
