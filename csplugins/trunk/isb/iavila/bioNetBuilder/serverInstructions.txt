@@ -1,0 +1,144 @@
+
+=== How to set up a server for BioNetBuilder Cytoscape Plugin ===
+by Iliana Avila-Campillo, May 5th 2006
+updated by Kevin Drew, July 17th 2006
+
+SUMMARY
+
+The backend of BioNetBuilder consists of a mySQL server with several databases and an Apache Tomcat servlet that is deployed through the bionet_server.war .  In this document we describe the necessary steps to run the servlet within Apache Tomcat5.5 on a UNIX machine.
+
+REQUIREMENTS
+
+* Java 5.0
+* Apache Tomcat 5.5
+* mySQL server (not necessarily running on the same machine as where Tomcat is installed)
+* The bionet_server.war, the xmlrpc.props properties file (contained within the war file), and the mySQL database dumps downloadable from:
+  http://db.systemsbiology.net/cytoscape/bioNetBuilder/
+
+
+STEP 1. Installing the server in Tomcat
+
+1.1 Copy the bionet_server.war file into Tomcat's "webapps" directory.  For example, my webapps directory is "/usr/local/apache-tomcat-5.5.17/webapps/".
+
+1.2 Tomcat should automatically expand the war file so that you have a new directory inside your webapps directory named bionet_server/.  If you don't see the new bionet_server directory immediately you can wait a little longer until Tomcat recognizes the file or restart Tomcat.  If after a restart Tomcat still does not recognize the war file, you can expand it manually by running 'jar xvf bionet_server.war' .
+
+
+STEP 2. Setting up the mySQL server
+
+Your mySQL server does not necessarily need to be hosted in the same machine as your Tomcat server. You can specify the location of the database in the xmlrpc.props file as you will see if you keep reading.
+
+2.1 For security, create a mySQL account in the server for accessing the databases you are about to create. Consult this page to learn how to create new user accounts:
+
+http://dev.mysql.com/doc/refman/5.0/en/adding-users.html
+
+My user account has read permissions, but no write permissions.
+
+2.2 Download the mySQL dumps I have made available at:
+
+http://db.systemsbiology.net/cytoscape/bioNetBuilder/
+
+Uncompress them. Then, dump them into your database:
+
+mysql db_name < backup-file.sql
+
+For example:
+
+mysql synonyms0 < synonyms0.sql
+
+When you are done, your mySQL server should contain these databases:
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| bind0              |
+| bionetbuilder_info |
+| dip0               |
+| go0                |
+| kegg0              |
+| prolinks0          |
+| synonyms0          |
++--------------------+
+
+HPRD has certain licensing requirements (non-profit, academic use, etc) so I cannot make their database available. Please send me an email if you would like to obtain the HPRD database dump (iavila@systemsbiology.org).
+
+2.3 Specify in the xmlrpc.props file, that is contained in your "bionet_server/WEB-INF/classes" directory, the JDBC URL of your mySQL database. To do this, add this entry to it:
+
+jdbcURL=jdbc:mysql://db.systemsbiology.net/bionetbuilder_info?user=username&password=userpassword
+
+Instead of "db.systemsbiology.net" use the address of the machine that is hosting your mySQL server.
+Instead of "username" and "userpassword" use the name and password of the new user account you created in step 2.1.
+
+
+STEP 3. Restart Tomcat to update recent changes.
+
+Almost done.
+
+3.1 Restart tomcat. (For this step, you may need to have the correct permissions.)
+
+For example, I do this:
+
+sudo /usr/local/apache-tomcat-5.5.17/bin/shutdown.sh
+sudo /usr/local/apache-tomcat-5.5.17/bin/startup.sh
+
+You may have to ask your own systems administrator to restart Tomcat for you.
+
+3.2 Open a web-browser, and test the Tomcat servlet. To do this, type the URL that identifies your Tomcat server plus your own servlet path and name. For example, I type:
+
+http://db.systemsbiology.net:8080/bionet_server
+
+If everything is in order, you should get a message like this:
+
+"HTTP Status 405 - HTTP method GET is not supported by this URL".
+
+NOTE: If you receive a timeout error on your browser, you may need to open up the firewall for your server to allow incoming connections to the server on port 8080.  If this is not acceptable to your systems administrator for security reasons, you can redirect incoming connections through the Apache2 webserver to your Tomcat server using Apache2's proxy module.  For more information on how to use the proxy module see: http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
+
+
+Also, you should see output similar to the log below in Tomcat's catalina.out log (located in the logs directory):
+
+-snip-
+Attempting to start XML-RPC server on port 8085......success!
+Registering the server as a handler (service "server")......success!
+Adding service handlers from file xmlrpc.props...
+SQLSynonymsHandler.makeConnection(null)...
+Could not make connection to null
+SQLSynonymsHandler.makeConnection(jdbc:mysql://pandora.systemsbiology.net/bionetbuilder_info?user=***&password=***)...
+Try 1: Connecting to mySQL db with url = jdbc:mysql://pandora.systemsbiology.net/bionetbuilder_info?user=***&password=***...
+Successfully connected to mySQL database jdbc:mysql://pandora.systemsbiology.net/bionetbuilder_info?user=***&password=***
+SELECT dbname FROM db_name WHERE db="synonyms"
+Current synonyms database is: [synonyms0]
+USE synonyms0
+Registering a org.isb.bionet.datasource.interactions.InteractionsHandler as a handler (service "interactions")...success!
+Could not make connection to null
+Try 1: Connecting to mySQL db with url = jdbc:mysql://pandora.systemsbiology.net/bionetbuilder_info?user=***&password=***...
+Successfully connected to mySQL database jdbc:mysql://pandora.systemsbiology.net/bionetbuilder_info?user=***&password=***
+SELECT dbname FROM db_name WHERE db="go"
+Current GO database is: [go0]
+USE go0
+SELECT id FROM term WHERE term_type = "universal"
+Registering a org.isb.iavila.ontology.xmlrpc.GOHandler as a handler (service "geneOntology")...success!
+SQLSynonymsHandler.makeConnection(null)...
+Could not make connection to null
+SQLSynonymsHandler.makeConnection(jdbc:mysql://pandora.systemsbiology.net/bionetbuilder_info?user=***&password=****)...
+Try 1: Connecting to mySQL db with url = jdbc:mysql://pandora.systemsbiology.net/bionetbuilder_info?user=***&password=***...
+Successfully connected to mySQL database jdbc:mysql://pandora.systemsbiology.net/bionetbuilder_info?user=***&password=***
+SELECT dbname FROM db_name WHERE db="synonyms"
+Current synonyms database is: [synonyms0]
+USE synonyms0
+Registering a org.isb.bionet.datasource.synonyms.SQLSynonymsHandler as a handler (service "synonyms")...success!
+-snip-
+
+
+STEP 4. When running a BioNetBuilder client, how do I redirect it to use my server?
+
+Easy. On the plugIns menu in Cytoscape, click on "Set BioNetBuilder Connection..." and type the URL of your servlet. For example, I type:
+
+http://db.systemsbiology.net:8080/bionet_server
+
+Or, you can add this entry to the xmlrpc.props file for your client:
+
+host=http://db.systemsbiology.net:8080/bionet_server
+
+DONE!
+

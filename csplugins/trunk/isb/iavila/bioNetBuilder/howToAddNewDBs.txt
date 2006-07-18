@@ -1,5 +1,6 @@
 == Instructions for adding a new mySQL interaction database to BioNetBuilder ==
 Iliana Avila-Campillo July 14th, 2006
+Updated: Kevin Drew July 18th, 2006
 
 = Overview =
 
@@ -34,16 +35,16 @@ You most likely want to have the default BioNetBuilder interaction databases ava
 - Set up your own BioNetBuilder server so that you can manage it and add your own new databases. We provide instructions on how to do this on a different document. Go to the BioNetBuilder website:
 www.db.systemsbiology.net/cytoscape/bioNetBuilder
 
-Most publicly available interaction databases, like BIND or DIP, provide easy to parse flat files of their databases. You will need to download these files, and most likely write scripts to parse them and obtain the interaction information you wish to store in your database. I used Perl and the "DBI" Perl module (which you can obtain here: http://search.cpan.org/~timb/DBI/DBI.pm) to call mySQL methods to create tables and populate them.
+Most publicly available interaction databases, like BIND or DIP, provide easy to parse flat files of their databases. You will need to download these files, and most likely write scripts to parse them and obtain the interaction information you wish to store in your database. I used Perl and the "DBI" Perl module (which you can obtain here: http://search.cpan.org/~timb/DBI/DBI.pm) to call mySQL methods to create tables and populate them. The scripts are available in the BioNetBuilder release under the "dbScripts" directory.
 
-A few publicly available databases provide mySQL dumps. These usually contain ALL of the infomation in their database, of which you may only use a small fraction. I recommend only storing in your database the information that you need for interactions. This will save you space, result in faster SQL queries, and easier to write SQL code.
+A few publicly available databases provide mySQL dumps. These usually contain ALL of the data in their database, of which you may only use a small fraction. I recommend only storing in your database the information that you need for interactions. This will save you space, result in faster SQL queries, and easier to write SQL code.
 
 Interactions usually have the following fields:
 
 - interactor 1
 - interactor 2
 - type of interaction
-- species of interactor 1, species of interactor 2 (most of the time the same, for not necessarily)
+- species of interactor 1, species of interactor 2 (most of the time the same, but not necessarily)
 - additional information about this interaction like the method used to infer it, publication IDs, etc.
 
 So a simple interactions table in mySQL may look like this:
@@ -83,7 +84,7 @@ In which case, you can still use the Java class I wrote to query the earlier sim
 
 If the design of the tables above do not meet your needs, you can create a table that looks nothing like them, or use more than one table if you wish. In this case, you will need to implement class org.isb.bionet.datasource.interactions.InteractionsDataSource.
 
-One last step you MUST not forget is to add an entry to the table named "db_name" in the database "bionetbuilder_info" (which exists in the default BioNetBuilder server, whether you are using ours, or your own). This table contains a unique name for a database, like "bind" and a name of the mySQL database that currently holds the interactions in that database, like "bind0". This is in place so that if you are updating the bind interactions by running a sript that takes too long, you can do so in a new database called "bind1". When "bind1" is completely updated, you can set "bind" in "db_name" to point to "bind1" so that the server uses this newly updated database and you can still hold on to the older "bind0" if you wish to do so.
+One last step you MUST not forget is to add an entry to the table named "db_name" in the database "bionetbuilder_info" (which exists in the default BioNetBuilder server, whether you are using ours, or your own). This table contains a unique name for a database, like "bind" and a name of the mySQL database that currently holds the interactions in that database, like "bind0". This is in place so that if you are updating the bind interactions by running a script that takes too long, you can do so in a new database called "bind1". When "bind1" is completely updated, you can set "bind" in "db_name" to point to "bind1" so that the server uses this newly updated database and you can still hold on to the older "bind0" if you wish to do so.
 
 A quick word on IDs for interactors. If you can, try to use one of these IDs to store your interactors:
 
@@ -110,9 +111,9 @@ InteractionsDataSource contains methods like (pseudocode):
 
 You will notice when you explore this interface this general pattern:
 
-- method(args)
-- getNumMethod(args)
-- method(args, Hashtable args)
+- method(species, otherArgs)
+- getNumMethod(species, otherArgs)
+- method(species, otherArgs, Hashtable args)
 
 This last version of "method" takes an additional Hashtable than the first version. This Hashtable's purpose is to contain specific arguments that a particular interactions source understands. These are obtained from a user interface where users specify parameter values for a particular database. For example, an entry in this table may look like this:
 
@@ -139,7 +140,7 @@ If you wish to allow users to specify "filters" to retrieve interactions, you ca
 
 public Hashtable getArgsTable();
 
-This method is called by BioNetBuilder's client to send to the server a Hashtable of arguments for the particular interactions database that is being queried. You do not have to worry about how this Hashtable makes it to the right place at the right time to the server. All you have to do is make a pretty dialog, implement getArgsTable(), and make sure that the class you wrote in the previous step uses the arguments in this table to query interactions. This Hashtable is the same Hashtable I mentioned in the previous step in "method(args, Hashtable args)".
+This method is called by BioNetBuilder's client to send to the server a Hashtable of arguments for the particular interactions database that is being queried. You do not have to worry about how this Hashtable makes it to the right place at the right time to the server. All you have to do is make a pretty dialog, implement getArgsTable(), and make sure that the class you wrote in the previous step 2 uses the arguments in this table to query interactions. This Hashtable is the same Hashtable I mentioned in the previous step in "method(args, otherArgs, Hashtable args)".
 
 Once more, if you are like most programmers, you will understand this better by looking at code:
 
@@ -153,7 +154,7 @@ This is the only step that makes me feel uncomfortable since it could be avoided
 For now, just read this, and do what I say.
 
 Open in an editor class org.isb.bionet.gui.wizard.EdgeSourcesPanel. Search for this string (or a substring of it): "INSERT CODE FOR YOUR OWN DATABASE HERE".
-You will see an if-else statement that basically creates a GUI (which you implemented in the previous step) for each database source, stores it in a map, and attaches an action listener to a button that pops-up the GUI. Just look at a couple of code blocks within one of the if statements, and you will know exactly what to do for your own database.
+You will see an if-else statement that basically creates a GUI (which you implemented in the previous step 3) for each database source, stores it in a map, and attaches an action listener to a button that pops-up the GUI. Just look at a couple of code blocks within one of the if statements, and you will know exactly what to do for your own database.
 
 
 5. Compile and re-start server
@@ -166,8 +167,8 @@ ant compile
 Then make a new jar of the plugIn:
 ant jar
 
-The new "bionetbuilder.jar" file should be used to re-start the server. If the BioNetBuilder server administrators agreed to add your new database and code to the server, they do all these steps for you (compile, jar, re-start). If you set up your own server by following the instructions posted in www.db.systemsbiology.net/cytoscape/bioNetBuilder, you know how to re-start the server already.
+The new "bionetbuilder.jar" file should be copied to the lib/ directory of the Tomcat servlet 'bionet_server' (ie. webapps/bionet_server/WEB-INF/lib/). Restart the Tomcat server.  If the BioNetBuilder server administrators agreed to add your new database and code to the server, they do all these steps for you (compile, jar, re-start). If you set up your own server by following the instructions posted in www.db.systemsbiology.net/cytoscape/bioNetBuilder, you know how to re-start the server already.
 
 CONTACTS
 
-The server is housed at New York Universtiy. The principal database administrator is Kevin Drew, his email is kdrew@nyu.edu
+The default server is housed at New York Universtiy. The principal database administrator is Kevin Drew, his email is kdrew@nyu.edu
