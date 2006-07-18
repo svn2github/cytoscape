@@ -41,7 +41,7 @@ import java.util.*;
 import java.io.*;
 import cytoscape.data.annotation.*;
 import cytoscape.*;
-import cytoscape.data.Semantics;
+import cytoscape.data.*;
 
 public class ModuleAnnotationsTable extends JFrame {
 
@@ -88,6 +88,13 @@ public class ModuleAnnotationsTable extends JFrame {
    * The cytoscape.data.annotations.Annotation that contains the ontology.
    */
   protected Annotation annotation;
+  
+  /**
+   * The name of the node attribute to use to get the names of nodes to display in the table
+   * By default, this is "commonName" for historical reasons
+   */
+  protected String nodeNameAttribute = "commonName";
+  
   /**
    * Constructor.&nbsp; Creates a table that displays the annotations
    * in <code>annotations_map</code>.&nbsp;The column headers of the 
@@ -205,8 +212,39 @@ public class ModuleAnnotationsTable extends JFrame {
   }//ModuleAnnotationsTable
   
   /**
-   * @return the ModuleAnnotationsMap that contains the module annotations that this table displays
+   * Same as previous constructor, except it takes an additional parameter to set the name of the node
+   * attribute to use to display the names of modules and module members
+   * @param annotation
+   * @param annotations_map
+   * @param make_specific
+   * @param max_num_annotaions
+   * @param title
+   * @param buttonActions
+   * @param freq_table_actions
+   * @param annots_tree_view_actions
+   * @param node_label_attribute a String node attribute
    */
+  public ModuleAnnotationsTable(Annotation annotation,
+			ModuleAnnotationsMap annotations_map, boolean make_specific,
+			int max_num_annotaions, String title,
+			AbstractAction[] buttonActions,
+			AbstractAction[] freq_table_actions,
+			AbstractAction[] annots_tree_view_actions,
+			String node_label_attribute) {
+		super(title);
+		this.mostSpecific = make_specific;
+		this.annotationsMap = annotations_map;
+		this.annotation = annotation;
+		setMaxNumAnnotations(max_num_annotaions);
+		setNodeLabelAttribute(node_label_attribute);
+		create(annotations_map, buttonActions, annotation, freq_table_actions,
+				annots_tree_view_actions);
+	}// ModuleAnnotationsTable
+  
+  /**
+	 * @return the ModuleAnnotationsMap that contains the module annotations
+	 *         that this table displays
+	 */
   public ModuleAnnotationsMap getModuleAnnotationsMap (){
   	return this.annotationsMap;
   }//getModuleAnnotationsMap
@@ -263,6 +301,23 @@ public class ModuleAnnotationsTable extends JFrame {
   public void setMaxNumAnnotations (int max_num_annotations){
     this.maxNumAnnotations = max_num_annotations;
   }//setMaxNumAnnotations
+  
+  /**
+   * Set the name of the node attribute to use to display the names of modules and module members
+   * 
+   * @param attribute_name a String node attribute
+   */
+  public void setNodeLabelAttribute (String attribute_name){
+	  this.nodeNameAttribute = attribute_name;
+  }
+  /**
+   *  Get the name of the node attribute to use to display the names of modules and module members
+   *  
+   *  @return the name of the node String attribute
+   */
+  public String getNodeLabelAttribute (){
+	  return this.nodeNameAttribute;
+  }
 
   /**
    * Returns the data contained in the table.
@@ -298,13 +353,14 @@ public class ModuleAnnotationsTable extends JFrame {
   	
     ArrayList dataArrayList = new ArrayList(); // ArrayList of String []
     Object [] moduleIds = annotations_map.getModuleIDs();
+    CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
     for(int i = 0; i < moduleIds.length; i++){
       ModuleAnnotation [] annotationsArray = annotations_map.get(moduleIds[i],this.mostSpecific);
       String moduleName = null;
       	if(moduleIds[i] instanceof CyNode){
-      		moduleName = (String)Cytoscape.getNodeAttributeValue((CyNode)moduleIds[i],Semantics.COMMON_NAME);
+      		moduleName = nodeAtts.getStringAttribute( ( (CyNode)moduleIds[i]).getIdentifier(), getNodeLabelAttribute());
       		if(moduleName == null){
-      			moduleName = (String)Cytoscape.getNodeAttributeValue((CyNode)moduleIds[i],Semantics.CANONICAL_NAME);
+      			moduleName = ((CyNode)moduleIds[i]).getIdentifier();
       		}
       	}
       	if(moduleName == null){

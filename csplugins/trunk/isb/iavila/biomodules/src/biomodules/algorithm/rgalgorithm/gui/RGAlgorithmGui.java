@@ -47,6 +47,8 @@ import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 import utils.*;
 import giny.model.*;
+import metanodePlugin.view.VisualStyleFactory;
+
 import org.isb.metanodes.model.*;
 import org.isb.metanodes.data.*;
 import cern.colt.list.IntArrayList;
@@ -677,6 +679,7 @@ public class RGAlgorithmGui extends JFrame {
 		// Calculate the biomodules
 		String nodeLabelAttribute = getSelectedNodeLabelAttribute();
 		ViewUtils.attributesHandler.setNodeLabelAttribute(nodeLabelAttribute);
+		MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler().getNetworkAttributesHandler(this.algorithmData.getNetwork()).setNodeLabelAttribute(nodeLabelAttribute);
 		
 		HierarchicalClustering hClustering = this.algorithmData.getHierarchicalClustering();
 		CyNode[][] biomodules = null;
@@ -1172,8 +1175,7 @@ public void actionPerformed (ActionEvent event){
 		public void actionPerformed(ActionEvent event) {
 			if (RGAlgorithmGui.this.biomodulesTable == null || this.update) {
 				CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
-				Map biomodules = RGAlgorithmGui.this.algorithmData
-						.getBiomodules();
+				Map biomodules = RGAlgorithmGui.this.algorithmData.getBiomodules();
 				String[][] data = new String[biomodules.size()][4];
 				Set entries = biomodules.entrySet();
 				Iterator it = entries.iterator();
@@ -1181,7 +1183,9 @@ public void actionPerformed (ActionEvent event){
 				CyNetwork net = RGAlgorithmGui.this.algorithmData.getNetwork();
 				while (it.hasNext()) {
 					Map.Entry entry = (Map.Entry) it.next();
-					String biomoduleName = (String) entry.getKey();
+					String uid = (String) entry.getKey();
+					String biomoduleName = nodeAtts.getStringAttribute(uid, getSelectedNodeLabelAttribute());
+					if(biomoduleName == null) biomoduleName = uid;
 					CyNode[] biomoduleMembers = (CyNode[]) entry.getValue();
 					data[i][0] = biomoduleName;
 					data[i][1] = Integer.toString(biomoduleMembers.length);
@@ -1190,6 +1194,9 @@ public void actionPerformed (ActionEvent event){
 					for (int j = 0; j < biomoduleMembers.length; j++) {
 						String can = biomoduleMembers[j].getIdentifier();
 						String com = nodeAtts.getStringAttribute(biomoduleMembers[j].getIdentifier(), Semantics.COMMON_NAME);
+						if(com == null || com.length() == 0){
+							com = "NA";
+						}
 						if (j == 0) {
 							canonicals = can;
 							commons = com;

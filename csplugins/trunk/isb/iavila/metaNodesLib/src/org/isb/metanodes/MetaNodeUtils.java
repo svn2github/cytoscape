@@ -45,8 +45,8 @@ import cytoscape.data.*;
  * <PRE>
  * // create the metanode
  * CyNode metaNode = MetaNodeUtils.createMetaNode(network,childNetwork);
- * // collapse the metanode, creating multiple edges
- * MetaNodeUtils.collapseMetaNode(network,metaNode,true);
+ * // collapse the metanode, creating multiple edges and no edges representing meta-relationships (read below)
+ * MetaNodeUtils.collapseMetaNode(network,metaNode,true,false);
  * // expand the metanode, not recursive
  * MetaNodeUtils.expandMetaNode(network, metaNode, false);
  * // when I am sure that I will no longer use the metaNode, remove it
@@ -239,8 +239,6 @@ public class MetaNodeUtils {
 	  
 	  /**
 	   * Expands the metanode in the given network
-	   * <p>
-       * If the given network has a network view, then the children nodes are layed out in a stack after the metanode is expanded
        * 
 	   * @param network the CyNetwork in which the metanode is contained and in which it will be expanded
 	   * @param meta_node the CyNode to expand

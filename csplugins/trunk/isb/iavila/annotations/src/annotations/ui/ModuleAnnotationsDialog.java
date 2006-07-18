@@ -117,6 +117,8 @@ public class ModuleAnnotationsDialog extends JDialog{
    */
   protected double maxPval;
   
+  protected String nodeNameAttribute = "commonName";
+  
   protected static final String newLine = System.getProperty("line.separator");
   protected static final String HELP_MESSAGE = 
     "1. Choose a source of annotations." + newLine +
@@ -197,6 +199,23 @@ public class ModuleAnnotationsDialog extends JDialog{
    public void setModuleDisplayNames (String [] module_display_names){
   	this.moduleNamesForDisplay = module_display_names;
   }//setModuleDisplayNames
+   
+   /**
+	   * Set the name of the node attribute to use to display the names of modules and module members
+	   * 
+	   * @param attribute_name a String node attribute
+	   */
+	  public void setNodeLabelAttribute (String attribute_name){
+		  this.nodeNameAttribute = attribute_name;
+	  }
+	  /**
+	   *  Get the name of the node attribute to use to display the names of modules and module members
+	   *  
+	   *  @return the name of the node String attribute
+	   */
+	  public String getNodeLabelAttribute (){
+		  return this.nodeNameAttribute;
+	  }
 
   /**
    * Sets the arrays of <code>AbstractAction</code> objects that
@@ -513,7 +532,7 @@ public class ModuleAnnotationsDialog extends JDialog{
             
       ModuleAnnotationsDialog.this.lastAnnotationsMap = ModuleAnnotationsCalculator.calculateAnnotations(
       		annotation,
-    		ModuleAnnotationsDialog.this.moduleIds,
+      		ModuleAnnotationsDialog.this.moduleIds,
 			ModuleAnnotationsDialog.this.geneGroups,
 			ModuleAnnotationsDialog.this.maxPval, 
 			randomize);
@@ -530,7 +549,9 @@ public class ModuleAnnotationsDialog extends JDialog{
                                    title,
                                    ModuleAnnotationsDialog.this.tableActions,
                                    ModuleAnnotationsDialog.this.freqTableActions,
-                                   ModuleAnnotationsDialog.this.annotsTreeViewActions);
+                                   ModuleAnnotationsDialog.this.annotsTreeViewActions,
+                                   getNodeLabelAttribute());
+      
       table.pack();
       table.setLocationRelativeTo(ModuleAnnotationsDialog.this);
       table.setVisible(true);
