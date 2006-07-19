@@ -31,9 +31,9 @@ Your mySQL server does not necessarily need to be hosted in the same machine as 
 
 http://dev.mysql.com/doc/refman/5.0/en/adding-users.html
 
-My user account has read permissions, but no write permissions.
+For security, our user account has read permissions, but no write permissions.
 
-2.2 Download the mySQL dumps I have made available at:
+2.2 Download the mySQL dumps we have made available at:
 
 http://db.systemsbiology.net/cytoscape/bioNetBuilder/
 
@@ -61,7 +61,7 @@ mysql> show databases;
 | synonyms0          |
 +--------------------+
 
-HPRD has certain licensing requirements (non-profit, academic use, etc) so I cannot make their database available. Please send me an email if you would like to obtain the HPRD database dump (iavila@systemsbiology.org).
+HPRD has certain licensing requirements (non-profit, academic use, etc) so we cannot make their database available. Please send us an email if you would like to obtain the HPRD database dump (contact Kevin Drew at kdrew@nyu.edu).
 
 2.3 Specify in the xmlrpc.props file, that is contained in your "bionet_server/WEB-INF/classes" directory, the JDBC URL of your mySQL database. To do this, add this entry to it:
 
@@ -77,14 +77,14 @@ Almost done.
 
 3.1 Restart tomcat. (For this step, you may need to have the correct permissions.)
 
-For example, I do this:
+For example, we do this:
 
 sudo /usr/local/apache-tomcat-5.5.17/bin/shutdown.sh
 sudo /usr/local/apache-tomcat-5.5.17/bin/startup.sh
 
 You may have to ask your own systems administrator to restart Tomcat for you.
 
-3.2 Open a web-browser, and test the Tomcat servlet. To do this, type the URL that identifies your Tomcat server plus your own servlet path and name. For example, I type:
+3.2 Open a web-browser, and test the Tomcat servlet. To do this, type the URL that identifies your Tomcat server plus your own servlet path and name. For example, we type:
 
 http://db.systemsbiology.net:8080/bionet_server
 
@@ -132,7 +132,7 @@ Registering a org.isb.bionet.datasource.synonyms.SQLSynonymsHandler as a handler
 
 STEP 4. When running a BioNetBuilder client, how do I redirect it to use my server?
 
-Easy. On the plugIns menu in Cytoscape, click on "Set BioNetBuilder Connection..." and type the URL of your servlet. For example, I type:
+Easy. On the plugIns menu in Cytoscape, click on "Set BioNetBuilder Connection..." and type the URL of your servlet. For example, we type:
 
 http://db.systemsbiology.net:8080/bionet_server
 

@@ -164,10 +164,14 @@ The BioNetBuilder plugin has a build.xml file with ant tasks to compile, create 
 To compile simply type:
 ant compile
 
-Then make a new jar of the plugIn:
-ant jar
+Then make a new jar to use for the server:
+ant jarserver
 
-The new "bionetbuilder.jar" file should be copied to the lib/ directory of the Tomcat servlet 'bionet_server' (ie. webapps/bionet_server/WEB-INF/lib/). Restart the Tomcat server.  If the BioNetBuilder server administrators agreed to add your new database and code to the server, they do all these steps for you (compile, jar, re-start). If you set up your own server by following the instructions posted in www.db.systemsbiology.net/cytoscape/bioNetBuilder, you know how to re-start the server already.
+And a new jar to use for clients:
+ant jarclient
+
+The new "bionetbuilderServer.jar" file should be copied to the lib/ directory of the Tomcat servlet 'bionet_server' (ie. webapps/bionet_server/WEB-INF/lib/). Restart the Tomcat server.  If the BioNetBuilder server administrators agreed to add your new database and code to the server, they do all these steps for you (compile, jar, re-start). If you set up your own server by following the instructions posted in www.db.systemsbiology.net/cytoscape/bioNetBuilder, you know how to re-start the server already.
+The new "bionetbuilderClient.jar" file is the client side plugIn that gets loaded into Cytoscape.
 
 CONTACTS
 

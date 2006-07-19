@@ -6,9 +6,9 @@ use DBI();
 use Cwd;
 
 # Iliana Avila-Campillo
-# Also see extract_vidal_interactions.pl!!! Which must be run after calling this script
 # Must download HPRD PSIMI file to "hprd" directory located in the same directory as this script.
 # The file (psimi_single_final.xml) can be downloaded for free for academic users from HPRD's site: hprd.org
+# This script also loads into the interactions table 2754 non-redundant interactions from the Vidal data set (PubMed 16189514)
 ############### Read arguments ############################################################
 
 print "--------------------- update_hprd.pl ------------------\n";
@@ -313,6 +313,12 @@ print "Loading interactions...\n";
 # the extra fields in the txt file are ignored
 $dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' IGNORE INTO TABLE interactions") or die "Error: $dbh->errstr";
 print "done.\n";
+
+############# Load Vidal interactions ################################################
+# These interactions where obtained from the supplementary data file nature04209-s17.xls
+# from publication with PubMed ID 16189514 and running script extract_vidal_interactions.pl
+$fullFilePath = getcwd."/newVidalInteractions.txt";
+$dbh->do("LOAD DATA LOCAL INFILE '${fullFilePath}' INTO TABLE interactions (id,i1,interactionType,i2,taxid1,taxid2,primaryPubMed,detectionMethod)") or die "Error: $dbh->errstr";
 
 ############# Subroutines ############################################################
 

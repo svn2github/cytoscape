@@ -27,17 +27,12 @@ Get the "FULL" data set.
 HPRD: Must download HPRD PSIMI file to "hprd" directory located in the same directory as this document.
 The file (psimi_single_final.xml) can be downloaded for free for academic users from HPRD's site: hprd.org
 
-Vidal human interactions, read by script "extract_vidal_interactions.pl": This script reads interactions from the Vidal dataset (PMID:16189514, interactions are in supplemental excell file)
-
 3. Run:
 perl initiate.pl
 This creates and populates DIP, BIND, GO, KEGG, Prolinks, and synonyms, so it will take a while!
 
 4. Run (for HPRD):
 perl update_hprd.pl <db user> <db password> <hprd db name>
-
-5. Run (to add Vidal interactions to HPRD db):
-perl vidal_interactions.pl <synonyms db name> <synonyms db user> <synonyms db password> <tab delimited Vidal interactions>
 
 
 If you want to update one of the databases, there are scripts that update each:
