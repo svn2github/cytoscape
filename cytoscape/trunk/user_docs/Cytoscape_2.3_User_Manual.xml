@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <article>
  <articleinfo>
-  <title>Cytoscape 2.3 User Manual</title>
+  <title>Cytoscape 2.3.1 User Manual</title>
  </articleinfo>
  <para>
   <inlinemediaobject>
    <imageobject>
-    <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=cyto-logo-smaller.gif"/>
+    <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/cyto-logo-smaller.gif"/>
    </imageobject>
    <textobject>
     <phrase>attachment:cyto-logo-smaller.gif</phrase>
@@ -15,7 +15,7 @@
  </para>
  <para/>
  <section>
-  <title>Cytoscape 2.3 User Manual</title>
+  <title>Cytoscape 2.3.1 User Manual</title>
   <para>This document is licensed under the <ulink url="http://creativecommons.org/licenses/by/2.5/">Creative Commons license</ulink>, 2006 </para>
   <para>Authors: The Cytoscape Collaboration </para>
   <para></para>
@@ -34,7 +34,7 @@
        <para>
         <inlinemediaobject>
          <imageobject>
-          <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=ucsd-logo.gif"/>
+          <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/ucsd-logo.gif"/>
          </imageobject>
          <textobject>
           <phrase>attachment:ucsd-logo.gif</phrase>
@@ -51,7 +51,7 @@
        <para>
         <inlinemediaobject>
          <imageobject>
-          <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=isb-logo.gif"/>
+          <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/isb-logo.gif"/>
          </imageobject>
          <textobject>
           <phrase>attachment:isb-logo.gif</phrase>
@@ -68,7 +68,7 @@
        <para>
         <inlinemediaobject>
          <imageobject>
-          <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=msk-logo.gif"/>
+          <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/msk-logo.gif"/>
          </imageobject>
          <textobject>
           <phrase>attachment:msk-logo.gif</phrase>
@@ -85,7 +85,7 @@
        <para>
         <inlinemediaobject>
          <imageobject>
-          <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=pasteur-logo.gif"/>
+          <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/pasteur-logo.gif"/>
          </imageobject>
          <textobject>
           <phrase>attachment:pasteur-logo.gif</phrase>
@@ -102,7 +102,7 @@
        <para>
         <inlinemediaobject>
          <imageobject>
-          <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=agilent-logo.gif"/>
+          <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/agilent-logo.gif"/>
          </imageobject>
          <textobject>
           <phrase>attachment:agilent-logo.gif</phrase>
@@ -260,7 +260,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=cytoscape_startup.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/cytoscape_startup.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:cytoscape_startup.png</phrase>
@@ -275,7 +275,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=cytoscape_startup_network.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/cytoscape_startup_network.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:cytoscape_startup_network.png</phrase>
@@ -294,7 +294,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image015.gif"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image015.gif"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image015.gif</phrase>
@@ -303,7 +303,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attribute_browser_nodes.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attribute_browser_nodes.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:attribute_browser_nodes.png</phrase>
@@ -313,7 +313,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image018.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image018.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image018.png</phrase>
@@ -329,7 +329,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=menu_file.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/menu_file.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:menu_file.png</phrase>
@@ -346,7 +346,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=menu_edit.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/menu_edit.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:menu_edit.png</phrase>
@@ -358,7 +358,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=menu_view.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/menu_view.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:menu_view.png</phrase>
@@ -370,7 +370,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=menu_select.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/menu_select.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:menu_select.png</phrase>
@@ -382,7 +382,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=menu_layout.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/menu_layout.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:menu_layout.png</phrase>
@@ -394,7 +394,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=menu_plugins.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/menu_plugins.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:menu_plugins.png</phrase>
@@ -420,7 +420,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=menu_help.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/menu_help.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:menu_help.png</phrase>
@@ -436,7 +436,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=cytoscape_network_heirarchy.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/cytoscape_network_heirarchy.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:cytoscape_network_heirarchy.png</phrase>
@@ -455,7 +455,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=network_overview.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/network_overview.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:network_overview.png</phrase>
@@ -475,7 +475,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <title>Command Line Arguments</title>
    <table cols="1">
     <caption/>
-    <tgroup>
+    <tgroup cols="1">
      <colspec colname="xxx1"/>
      <tbody>
       <row>
@@ -636,7 +636,7 @@ plugins/        Directory containing cytoscape PlugIns, in .jar format.
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=preferences_editor.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/preferences_editor.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:preferences_editor.png</phrase>
@@ -1029,42 +1029,42 @@ secondObjectName = (onlyOneValue)
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attribute_browser_nodes.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attribute_browser_nodes.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:attribute_browser_nodes.png</phrase>
     </textobject>
    </inlinemediaobject> To swap between displaying node, edge, and network attributes use the tabs on the bottom of the panel: “Node Attribute Browser”, “Edge Attribute Browser”, and "Network Attribute Browser". The attribute browser displays attributes belonging to selected nodes and/or edges and the currently selected network. To populate the browser with rows (as pictured above), simply select nodes and/or edges in a loaded network. By default, only the “ID” of nodes and edges is shown. To display more than just the ID, click the “Select Attributes” <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attributes_select_icon.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attributes_select_icon.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:attributes_select_icon.png</phrase>
     </textobject>
    </inlinemediaobject> button and choose the attributes that are to be displayed. Each attribute chosen will result in one column in the attribute browser (in the screenshot above there are 5 columns total including the ID). Most attribute values can be edited by double-clicking an attribute cell; list values cannot be edited, and neither can the ID. Attribute rows in the browser can be sorted alphabetically by specific attribute by clicking on a column heading. A new attribute can be created using the “Create New Attribute” <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attributes_new_icon.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attributes_new_icon.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:attributes_new_icon.png</phrase>
     </textobject>
    </inlinemediaobject> button. Attributes created using the attribute browser must be one of four types – integer, string, real number (floating point), or boolean. Attributes can be deleted using the "Delete Attributes..." <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attributes_delete_icon.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attributes_delete_icon.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:attributes_delete_icon.png</phrase>
     </textobject>
    </inlinemediaobject> button. NOTE: Deleting attributes removes them from Cytoscape, not just the attribute browser! To remove attributes only from the browser simply unselect the attribute using the "Select Attributes" <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attributes_select_icon.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attributes_select_icon.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:attributes_select_icon.png</phrase>
     </textobject>
    </inlinemediaobject> button. The right-click menu on the Attribute Browser has several functions. This menu is useful for exporting attribute information to spreadsheet applications. For example, choose “Select All” and then “Copy” from the right-click and then paste into a spreadsheet application.  Each attribute browser panel has a button for importing new attributes: <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attributes_import_icon.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attributes_import_icon.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:attributes_import_icon.png</phrase>
@@ -1072,14 +1072,14 @@ secondObjectName = (onlyOneValue)
    </inlinemediaobject> . </para>
   <para>The Node Attribute Browser panel has additional buttons for loading Gene Expression attribute matrices ( <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attributes_gene_expr_icon.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attributes_gene_expr_icon.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:attributes_gene_expr_icon.png</phrase>
     </textobject>
    </inlinemediaobject> ) and for selecting Gene Ontology (GO) terms ( <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attributes_go_icon.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attributes_go_icon.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:attributes_go_icon.png</phrase>
@@ -1099,7 +1099,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image049.jpg"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image049.jpg"/>
      </imageobject>
      <textobject>
       <phrase>attachment:image049.jpg</phrase>
@@ -1133,7 +1133,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image051.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image051.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:image051.png</phrase>
@@ -1145,7 +1145,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image053.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image053.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:image053.png</phrase>
@@ -1157,7 +1157,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image055.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image055.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:image055.png</phrase>
@@ -1169,7 +1169,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image057.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image057.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:image057.png</phrase>
@@ -1188,7 +1188,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=edge_handles.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/edge_handles.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:edge_handles.png</phrase>
@@ -1199,7 +1199,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=menu_select_edges.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/menu_select_edges.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:menu_select_edges.png</phrase>
@@ -1212,7 +1212,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=rotate_dialog.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/rotate_dialog.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:rotate_dialog.png</phrase>
@@ -1223,7 +1223,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=rotate_network.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/rotate_network.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:rotate_network.png</phrase>
@@ -1236,7 +1236,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=scale_dialog.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/scale_dialog.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:scale_dialog.png</phrase>
@@ -1247,7 +1247,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=scale_network.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/scale_network.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:scale_network.png</phrase>
@@ -1260,7 +1260,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=align_distribute_dialog.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/align_distribute_dialog.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:align_distribute_dialog.png</phrase>
@@ -1272,7 +1272,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=align_begin.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/align_begin.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:align_begin.png</phrase>
@@ -1308,7 +1308,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=V_ALIGN_TOP.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/V_ALIGN_TOP.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:V_ALIGN_TOP.gif</phrase>
@@ -1323,7 +1323,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=align_vertical_top.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/align_vertical_top.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:align_vertical_top.png</phrase>
@@ -1337,7 +1337,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=V_ALIGN_CENTER.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/V_ALIGN_CENTER.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:V_ALIGN_CENTER.gif</phrase>
@@ -1352,7 +1352,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=align_vertical_center.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/align_vertical_center.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:align_vertical_center.png</phrase>
@@ -1366,7 +1366,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=V_ALIGN_BOTTOM.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/V_ALIGN_BOTTOM.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:V_ALIGN_BOTTOM.gif</phrase>
@@ -1381,7 +1381,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=align_vertical_bottom.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/align_vertical_bottom.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:align_vertical_bottom.png</phrase>
@@ -1395,7 +1395,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=H_ALIGN_LEFT.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/H_ALIGN_LEFT.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:H_ALIGN_LEFT.gif</phrase>
@@ -1410,7 +1410,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=align_horizontal_left.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/align_horizontal_left.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:align_horizontal_left.png</phrase>
@@ -1424,7 +1424,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=H_ALIGN_CENTER.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/H_ALIGN_CENTER.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:H_ALIGN_CENTER.gif</phrase>
@@ -1439,7 +1439,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=align_horizontal_center.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/align_horizontal_center.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:align_horizontal_center.png</phrase>
@@ -1453,7 +1453,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=H_ALIGN_RIGHT.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/H_ALIGN_RIGHT.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:H_ALIGN_RIGHT.gif</phrase>
@@ -1468,7 +1468,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=align_horizontal_right.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/align_horizontal_right.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:align_horizontal_right.png</phrase>
@@ -1484,7 +1484,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=distribute_begin_vertical.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/distribute_begin_vertical.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:distribute_begin_vertical.png</phrase>
@@ -1520,7 +1520,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=V_DIST_TOP.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/V_DIST_TOP.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:V_DIST_TOP.gif</phrase>
@@ -1535,7 +1535,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=distribute_vertical_top.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/distribute_vertical_top.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:distribute_vertical_top.png</phrase>
@@ -1549,7 +1549,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=V_DIST_CENTER.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/V_DIST_CENTER.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:V_DIST_CENTER.gif</phrase>
@@ -1564,7 +1564,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=distribute_vertical_center.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/distribute_vertical_center.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:distribute_vertical_center.png</phrase>
@@ -1578,7 +1578,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=V_DIST_BOTTOM.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/V_DIST_BOTTOM.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:V_DIST_BOTTOM.gif</phrase>
@@ -1593,7 +1593,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=distribute_vertical_bottom.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/distribute_vertical_bottom.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:distribute_vertical_bottom.png</phrase>
@@ -1609,7 +1609,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=distribute_begin_horizontal.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/distribute_begin_horizontal.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:distribute_begin_horizontal.png</phrase>
@@ -1645,7 +1645,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=H_DIST_LEFT.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/H_DIST_LEFT.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:H_DIST_LEFT.gif</phrase>
@@ -1660,7 +1660,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=distribute_horizontal_left.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/distribute_horizontal_left.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:distribute_horizontal_left.png</phrase>
@@ -1674,7 +1674,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=H_DIST_CENTER.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/H_DIST_CENTER.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:H_DIST_CENTER.gif</phrase>
@@ -1689,7 +1689,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=distribute_horizontal_center.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/distribute_horizontal_center.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:distribute_horizontal_center.png</phrase>
@@ -1703,7 +1703,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=H_DIST_RIGHT.gif"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/H_DIST_RIGHT.gif"/>
           </imageobject>
           <textobject>
            <phrase>attachment:H_DIST_RIGHT.gif</phrase>
@@ -1718,7 +1718,7 @@ secondObjectName = (onlyOneValue)
         <para>
          <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=distribute_horizontal_right.png"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/distribute_horizontal_right.png"/>
           </imageobject>
           <textobject>
            <phrase>attachment:distribute_horizontal_right.png</phrase>
@@ -1743,7 +1743,7 @@ secondObjectName = (onlyOneValue)
   </itemizedlist>
   <para>All these features are available by selecting the <emphasis role="underline">View → Open Viz Mapper</emphasis> menu item or clicking on the color wheel <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=vizmap_color_wheel.gif"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/vizmap_color_wheel.gif"/>
     </imageobject>
     <textobject>
      <phrase>attachment:vizmap_color_wheel.gif</phrase>
@@ -1768,7 +1768,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=default_viz_mapper.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/default_viz_mapper.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:default_viz_mapper.png</phrase>
@@ -1781,7 +1781,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=sample1_vizmap.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/sample1_vizmap.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:sample1_vizmap.png</phrase>
@@ -1793,7 +1793,7 @@ secondObjectName = (onlyOneValue)
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=sample2_vizmap.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/sample2_vizmap.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:sample2_vizmap.png</phrase>
@@ -1844,7 +1844,7 @@ secondObjectName = (onlyOneValue)
        <entry>
         <para>Node Border Type. The following options are available: <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image070.jpg"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image070.jpg"/>
           </imageobject>
           <textobject>
            <phrase>attachment:image070.jpg</phrase>
@@ -1857,7 +1857,7 @@ secondObjectName = (onlyOneValue)
        <entry>
         <para>Node Shape. The following options are available: <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image072.jpg"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image072.jpg"/>
           </imageobject>
           <textobject>
            <phrase>attachment:image072.jpg</phrase>
@@ -1897,7 +1897,7 @@ secondObjectName = (onlyOneValue)
        <entry>
         <para>Edge Line Type. The following options are available: <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image070.jpg"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image070.jpg"/>
           </imageobject>
           <textobject>
            <phrase>attachment:image070.jpg</phrase>
@@ -1910,7 +1910,7 @@ secondObjectName = (onlyOneValue)
        <entry>
         <para>Edge Source Arrow. The following options are available: <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image075.jpg"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image075.jpg"/>
           </imageobject>
           <textobject>
            <phrase>attachment:image075.jpg</phrase>
@@ -1923,7 +1923,7 @@ secondObjectName = (onlyOneValue)
        <entry>
         <para>Edge Target Arrow. The following options are available: <inlinemediaobject>
           <imageobject>
-           <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image075.jpg"/>
+           <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image075.jpg"/>
           </imageobject>
           <textobject>
            <phrase>attachment:image075.jpg</phrase>
@@ -2307,7 +2307,7 @@ secondObjectName = (onlyOneValue)
     <para>
      <inlinemediaobject>
       <imageobject>
-       <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image078.jpg"/>
+       <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image078.jpg"/>
       </imageobject>
       <textobject>
        <phrase>attachment:image078.jpg</phrase>
@@ -2320,7 +2320,7 @@ secondObjectName = (onlyOneValue)
     <para>
      <inlinemediaobject>
       <imageobject>
-       <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image080.jpg"/>
+       <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image080.jpg"/>
       </imageobject>
       <textobject>
        <phrase>attachment:image080.jpg</phrase>
@@ -2338,7 +2338,7 @@ secondObjectName = (onlyOneValue)
      <listitem>
       <para>Click the color wheel <inlinemediaobject>
         <imageobject>
-         <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=vizmap_color_wheel.gif"/>
+         <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/vizmap_color_wheel.gif"/>
         </imageobject>
         <textobject>
          <phrase>attachment:vizmap_color_wheel.gif</phrase>
@@ -2367,7 +2367,7 @@ secondObjectName = (onlyOneValue)
     <para>
      <inlinemediaobject>
       <imageobject>
-       <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image090.png"/>
+       <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image090.png"/>
       </imageobject>
       <textobject>
        <phrase>attachment:image090.png</phrase>
@@ -2388,7 +2388,7 @@ secondObjectName = (onlyOneValue)
      <listitem>
       <para>Click the color wheel <inlinemediaobject>
         <imageobject>
-         <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=vizmap_color_wheel.gif"/>
+         <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/vizmap_color_wheel.gif"/>
         </imageobject>
         <textobject>
          <phrase>attachment:vizmap_color_wheel.gif</phrase>
@@ -2412,7 +2412,7 @@ secondObjectName = (onlyOneValue)
     <para>
      <inlinemediaobject>
       <imageobject>
-       <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image094.png"/>
+       <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image094.png"/>
       </imageobject>
       <textobject>
        <phrase>attachment:image094.png</phrase>
@@ -2448,7 +2448,7 @@ secondObjectName = (onlyOneValue)
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image096.gif"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image096.gif"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image096.gif</phrase>
@@ -2458,7 +2458,7 @@ secondObjectName = (onlyOneValue)
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image097.gif"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image097.gif"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image097.gif</phrase>
@@ -2484,7 +2484,7 @@ secondObjectName = (onlyOneValue)
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image099.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image099.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image099.png</phrase>
@@ -2493,7 +2493,7 @@ secondObjectName = (onlyOneValue)
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image101.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image101.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image101.png</phrase>
@@ -2507,7 +2507,7 @@ secondObjectName = (onlyOneValue)
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image103.gif"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image103.gif"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image103.gif</phrase>
@@ -2516,7 +2516,7 @@ secondObjectName = (onlyOneValue)
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image104.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image104.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image104.png</phrase>
@@ -2663,7 +2663,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
      <para>
       <inlinemediaobject>
        <imageobject>
-        <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=ontology_wizard_begin.png"/>
+        <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/ontology_wizard_begin.png"/>
        </imageobject>
        <textobject>
         <phrase>attachment:ontology_wizard_begin.png</phrase>
@@ -2679,7 +2679,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=ontology_wizard_obo.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/ontology_wizard_obo.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:ontology_wizard_obo.png</phrase>
@@ -2690,7 +2690,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=ontology_wizard_goa.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/ontology_wizard_goa.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:ontology_wizard_goa.png</phrase>
@@ -2706,7 +2706,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=ontology_mapper.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/ontology_mapper.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:ontology_mapper.png</phrase>
@@ -2721,7 +2721,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
      <emphasis role="strong">GO Data as Attributes</emphasis>
     </emphasis> window, you can search the GO Term in AmiGO (this function requires internet connection and a web browser).  The GO terms will now be visibile in the Node Attribute Browser by clicking on the Select button ( <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attributes_select_icon.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attributes_select_icon.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:attributes_select_icon.png</phrase>
@@ -2729,7 +2729,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
     </inlinemediaobject> ). </para>
    <para>If you would like to choose deifferent GO terms from the same gene association file, you do not need to re-import the files. Instead, you can click the GO button ( <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=attributes_go_icon.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/attributes_go_icon.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:attributes_go_icon.png</phrase>
@@ -2773,7 +2773,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image110.gif"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image110.gif"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image110.gif</phrase>
@@ -2782,7 +2782,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image111.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image111.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image111.png</phrase>
@@ -2791,7 +2791,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image124.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image124.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image124.png</phrase>
@@ -2807,7 +2807,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image127.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image127.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image127.png</phrase>
@@ -2819,7 +2819,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image129.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image129.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image129.png</phrase>
@@ -2831,7 +2831,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image131.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image131.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image131.png</phrase>
@@ -2843,7 +2843,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image133.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image133.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image133.png</phrase>
@@ -2855,7 +2855,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   <para>
    <inlinemediaobject>
     <imageobject>
-     <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image135.png"/>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image135.png"/>
     </imageobject>
     <textobject>
      <phrase>attachment:image135.png</phrase>
@@ -2870,11 +2870,20 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   <title>LinkOut</title>
   <para>The <ulink url="/cgi-bin/moin.cgi/LinkOut">LinkOut</ulink> plugin provides a mechanism to link nodes to external web resources within Cytoscape. Right-clicking on a node item in Cytoscape view opens a popup menu with a list of web links. </para>
   <para>The external links are specified in the <code>linkout.props</code> file, which includes a number of default links such as Entrez, SGD, iHOP, Google, as well as a number of species-specific links. In addition to the default links, users can customize the <ulink url="/cgi-bin/moin.cgi/LinkOut">LinkOut</ulink> menu by adding (or removing) links without the need to restart Cytoscape or reload the network. </para>
-  <para>External links are listed as <emphasis>‘key’-‘value’</emphasis> pairs in the <code>linkout.props</code> file where <emphasis>key</emphasis> specifies the name of the link and <emphasis>value</emphasis> is the search URL. The LinkOut menus are organized in a hierarchical structure that is specified in the key. All key terms start with the keyword <code>url</code>. </para>
-  <para>For example, the following entry: <code>url.yeast.SGD=http://db.yeastgenome.org/cgi-bin/locus.pl?locus\=%ID%</code>
+  <para>External links are listed as <emphasis>‘key’-‘value’</emphasis> pairs in the <code>linkout.props</code> file where <emphasis>key</emphasis> specifies the name of the link and <emphasis>value</emphasis> is the search URL. The LinkOut menus are organized in a hierarchical structure that is specified in the key. All key terms start with the keyword <code>linkouturl</code>. </para>
+  <para>For example, the following entry: <code>linkouturl.yeast.SGD=http://db.yeastgenome.org/cgi-bin/locus.pl?locus\=%ID%</code>
   </para>
   <para>places the SGD link under the yeast submenu. This link will appear in Cytoscape as: </para>
-  <para>[attachment:Figure1_linkout.png] </para>
+  <para>
+   <inlinemediaobject>
+    <imageobject>
+     <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/Figure1_linkout.png"/>
+    </imageobject>
+    <textobject>
+     <phrase>attachment:Figure1_linkout.png</phrase>
+    </textobject>
+   </inlinemediaobject>
+  </para>
   <para>In a similar fashion one can added new submenus. </para>
   <para>The <emphasis role="strong">
     <code>%ID%</code>
@@ -2882,8 +2891,8 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
   </para>
   <para>Currently there is no mechanism to check whether the constructed URL query is correct and if the node label is meaningful. Similarly there is no ID mapping between various identifiers. For example, a link to NCBI Entrez from a network that uses ensembl gene identifiers as node label will produce a link to Entrez using ensembl ID, which results in an incorrect link. It is the users responsibility to ensure that the node label that is used as the search term in the URL link will result in a meaningful link. </para>
   <para>
-   <emphasis role="strong">Adding or Removing links</emphasis> To add new links open the <code>linkout.props</code> file in a text editor and add the new <emphasis>key=url</emphasis> links. The external links do not need to be listed in the order they appear in the LinkOut menu. The key string has to follow the format specified above including the <code>url</code> prefix. To specify the URL launch an example query to a website and then copy the URL address of the result page. </para>
-  <para>To remove a link from the menu simply comment-out the link in the <code>linkout.props</code> by adding <code>#</code> to the beginning of the line. </para>
+   <emphasis role="strong">Adding or Removing links</emphasis> The default links are defined in a <code>linkout.props</code> file contained in the linkout.jar.  These links are normal java properties and can be editited while running in the <emphasis role="underline">Edit &amp;#8594; Preferences</emphasis> menu.  New links can be defined this way as well.  New links can be defined at startup in a separate file and loaded from the command line, either by specifying a file containing the links <code>cytoscape.sh -P new_linout.props</code> or as individual properties <code>cytoscape.sh -P linkouturl.yeast.SGD=http://db.yeastgenome.org/cgi-bin/locus.pl?locus\=%ID%</code>. Any links defined on the command line will supersede the default links. </para>
+  <para>To remove a link from the menu simply delete the property from the <emphasis role="underline">Edit &amp;#8594; Preferences</emphasis>  menu. </para>
   <para>
    <anchor id="acknowledgements"/>
   </para>
@@ -2945,7 +2954,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image137.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image137.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:image137.png</phrase>
@@ -2957,7 +2966,7 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
    <para>
     <inlinemediaobject>
      <imageobject>
-      <imagedata fileref="/cgi-bin/moin.cgi/Cytoscape_2.3_User_Manual?action=AttachFile&amp;do=get&amp;target=image139.png"/>
+      <imagedata fileref="/cellar/users/mes/cytoscape/help/scaled_images/image139.png"/>
      </imageobject>
      <textobject>
       <phrase>attachment:image139.png</phrase>
