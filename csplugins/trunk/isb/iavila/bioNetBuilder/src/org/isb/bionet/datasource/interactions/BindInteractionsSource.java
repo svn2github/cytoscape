@@ -70,7 +70,20 @@ public class BindInteractionsSource extends SimpleInteractionsSource implements 
             throw new IllegalStateException("Oh no! We don't know the name of the current BIND database!!!!!");
             
         }
-        ok = execute("USE " + currentBindDb);
+
+	/*kdrew: shutdown connection to bionetbuilder_info database*/
+	super.shutdown();
+
+	String newURL = url.replaceFirst("bionetbuilder_info", currentBindDb);
+	/*kdrew: reconnect to go database, this solves the problem of reconnecting after timeout*/
+	ok = super.makeConnection(newURL);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
+
+	/*kdrew: bind db is already selected*/
+        //ok = execute("USE " + currentBindDb);
         return ok;
    }
 

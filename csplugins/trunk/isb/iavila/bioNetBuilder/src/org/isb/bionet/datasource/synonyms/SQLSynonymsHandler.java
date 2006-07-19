@@ -63,7 +63,20 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         if(currentSynDb == null || currentSynDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current synonyms database!!!!!");
         }
-        ok = execute("USE " + currentSynDb);  
+
+	/*kdrew: shutdown connection to bionetbuilder_info database*/
+	super.shutdown();
+
+	String newURL = url.replaceFirst("bionetbuilder_info", currentSynDb);
+	/*kdrew: reconnect to go database, this solves the problem of reconnecting after timeout*/
+	ok = super.makeConnection(newURL);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
+
+	/*kdrew: synonyms db is already selected*/
+        //ok = execute("USE " + currentSynDb);  
         return ok;
     }
 

@@ -58,7 +58,20 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         if(currentKeggDb == null || currentKeggDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current KEGG database!!!!!");
         }
-        ok = execute("USE " + currentKeggDb);
+
+	/*kdrew: shutdown connection to bionetbuilder_info database*/
+	super.shutdown();
+
+	String newURL = url.replaceFirst("bionetbuilder_info", currentKeggDb);
+	/*kdrew: reconnect to go database, this solves the problem of reconnecting after timeout*/
+	ok = super.makeConnection(newURL);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
+
+	/*kdrew: Kegg db is already selected*/
+        //ok = execute("USE " + currentKeggDb);
         return ok;
     }
 

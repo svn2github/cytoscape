@@ -75,7 +75,7 @@
     </target>
 	
     <!-- jar target -->
-    <target name="jar" depends="compile" description="Creates a jar that contains only Ontology classes">
+    <target name="jar" depends="compile" description="Creates a jar that contains Ontology classes and lib classes">
      <mkdir dir="${jar}"/>
      <unjar overwrite="Yes" dest = "${build}">
     				<fileset dir = "${local.lib}">
@@ -86,6 +86,14 @@
        <fileset dir="${build}"/>
      </jar>
     </target>
+	
+	<!-- jar target -->
+	    <target name="jarnolib" depends="compile" description="Creates a jar that contains only Ontology classes">
+	     <mkdir dir="${jar}"/>
+	    	<jar jarfile="${jar}/ontologyLibOnly.jar">
+	       <fileset dir="${build}"/>
+	     </jar>
+	    </target>
 	
 	<!-- Run a class MYCLASS (from the ${build} directory) with the command line 'MY ARGS' via:
 	             ant run -Dclass=${class} -Dargs='MY ARGS' -->

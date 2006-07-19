@@ -41,7 +41,20 @@ public class DipInteractionsSource extends SimpleInteractionsSource implements I
             ok = false;
             throw new IllegalStateException("Oh no! We don't know the name of the current DIP database!!!!!");
         }
-        ok = execute("USE " + currentDipDb);
+
+	/*kdrew: shutdown connection to bionetbuilder_info database*/
+	super.shutdown();
+
+	String newURL = url.replaceFirst("bionetbuilder_info", currentDipDb);
+	/*kdrew: reconnect to go database, this solves the problem of reconnecting after timeout*/
+	ok = super.makeConnection(newURL);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
+
+	/*kdrew: dip db is already selected*/
+        //ok = execute("USE " + currentDipDb);
         return ok;
     }
 

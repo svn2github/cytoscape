@@ -106,7 +106,20 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         if(currentProlinksDb == null || currentProlinksDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current Prolinks database!!!!!");
         }
-        ok = execute("USE " + currentProlinksDb);
+
+	/*kdrew: shutdown connection to bionetbuilder_info database*/
+	super.shutdown();
+
+	String newURL = url.replaceFirst("bionetbuilder_info", currentProlinksDb);
+	/*kdrew: reconnect to go database, this solves the problem of reconnecting after timeout*/
+	ok = super.makeConnection(newURL);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
+
+	/*kdrew: prolinks db is already selected*/
+        //ok = execute("USE " + currentProlinksDb);
         return ok;
     }
 

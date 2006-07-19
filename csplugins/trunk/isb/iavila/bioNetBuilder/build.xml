@@ -72,18 +72,37 @@
     </target>
 	
 	<!-- this works with Cytoscape in CVS -->
-	<target name="jar" depends="compile">
+	<!-- ontologyLib.jar contains in it xmlrpcClient.jar -->
+	<target name="jarclient" depends="compile" description="Creates a jar of BioNetBuilder to load into Cytoscape as a plugin">
 		<unjar overwrite="Yes" dest = "${build}">
 			<fileset dir = "${local.lib}">
-				<include name="**/*.jar"/>
+				<include name="ontologyLib.jar"/>
+				<include name="utils.jar"/>
 			</fileset>
 		</unjar>
-		<jar destfile = "${jar}/bionetbuilder.jar">
+		<jar destfile = "${jar}/bionetbuilderClient.jar">
 	    		<fileset dir = "${build}"/>
 	    	</jar>
-		<copy file="${jar}/bionetbuilder.jar" todir="${cytoscape.plugins}"/>
-		<echo message="bionetbuilder.jar is complete, it is located in ${jar} and in ${cytoscape.plugins}"/>
+		<copy file="${jar}/bionetbuilderClient.jar" todir="${cytoscape.plugins}"/>
+		<echo message="bionetbuilderClient.jar is complete, it is located in ${jar} and in ${cytoscape.plugins}"/>
 	</target>
+	
+	<!-- this works with Cytoscape in CVS -->
+	<!-- ontologyLibOnly.jar does not contain any xmlRpc classes -->
+		<target name="jarserver" depends="compile" description="Creates a jar of BioNetBuilder that should be used for the server">
+			<unjar overwrite="Yes" dest = "${build}">
+				<fileset dir = "${local.lib}">
+					<include name="xmlrpcServer.jar"/>
+					<include name="utils.jar"/>
+					<include name="ontologyLibOnly.jar"/>
+				</fileset>
+			</unjar>
+			<jar destfile = "${jar}/bionetbuilderServer.jar">
+		    		<fileset dir = "${build}"/>
+		    	</jar>
+			<echo message="bionetbuilderServer.jar is complete, it is located in ${jar}"/>
+		</target>
+	
 
 	<!-- Run a class MYCLASS (from the ${build} directory) with the command line 'MY ARGS' via:
 	             ant run -Dclass=${class} -Dargs='MY ARGS' -->

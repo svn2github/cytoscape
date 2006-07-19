@@ -65,7 +65,19 @@ public class GOHandler extends SQLDBHandler {
         if(currentGoDb == null || currentGoDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current GO database!!!!!");
         }
-        ok = execute("USE " + currentGoDb);
+	
+	/*kdrew: shutdown connection to bionetbuilder_info database*/
+	super.shutdown();
+
+	String newURL = url.replaceFirst("bionetbuilder_info", currentGoDb);
+	/*kdrew: reconnect to go database, this solves the problem of reconnecting after timeout*/
+	ok = super.makeConnection(newURL);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
+
+        //ok = execute("USE " + currentGoDb);
         return ok;
     }
 

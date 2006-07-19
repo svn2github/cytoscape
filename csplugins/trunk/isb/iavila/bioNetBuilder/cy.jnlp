@@ -79,7 +79,7 @@
 <jar href="plugins/browser.jar"/>
 <jar href="plugins/filter.jar"/>
 <jar href="plugins/yLayouts.jar"/>
-<jar href="plugins/bionetbuilder.jar"/>
+<jar href="plugins/bionetbuilderClient.jar"/>
 
   </resources>
   <application-desc main-class="cytoscape.CyMain">

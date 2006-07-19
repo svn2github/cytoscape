@@ -2,6 +2,7 @@ package org.isb.xmlrpc.handler.db;
 
 import java.sql.*;
 import java.util.*;
+import com.mysql.jdbc.CommunicationsException;
 
 
 /**
@@ -208,6 +209,18 @@ public class SQLDBHandler implements DBHandler {
             rs = st.executeQuery(sql_statement);
             
             return rs;
+        } catch (CommunicationsException ce) { /*kdrew: added to retry queries on reconnect*/
+		System.out.println("Caught Communications Exception... retrying query");
+		try
+		{
+			Statement st = this.connection.createStatement();
+			return st.executeQuery(sql_statement);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return rs;
+		}
         } catch (Exception e) {
             e.printStackTrace();
             return rs;
@@ -233,6 +246,18 @@ public class SQLDBHandler implements DBHandler {
         try {
             Statement st = this.connection.createStatement();
             return st.execute(sql_statement);
+        } catch (CommunicationsException ce) { /*kdrew: added to retry executes on reconnect*/
+		System.out.println("Caught Communications Exception... retrying execute");
+		try
+		{
+			Statement st = this.connection.createStatement();
+			return st.execute(sql_statement);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -254,6 +279,16 @@ public class SQLDBHandler implements DBHandler {
         ResultSet rs = query(sql_statement);
         try {
             dump(rs);
+        } catch (CommunicationsException ce) { /*kdrew: added to retry dump on reconnect*/
+		System.out.println("Caught Communications Exception... retrying dump");
+		try
+		{
+			dump(rs);
+		}
+		catch(Exception e)
+		{
+			;
+		}
         } catch (Exception e) {
             ;
         }
