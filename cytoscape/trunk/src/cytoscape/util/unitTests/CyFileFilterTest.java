@@ -3,6 +3,8 @@ package cytoscape.util.unitTests;
 
 import java.util.Set;
 
+import src.cytoscape.data.readers.unitTests.FileImporterTest;
+
 import junit.framework.TestCase;
 import cytoscape.util.CyFileFilter;
 
@@ -252,6 +254,10 @@ public class CyFileFilterTest extends TestCase {
 		nature = cff1.getFileNature();
 		assertEquals(DUMMY_NATURE, nature);
 		
+	}
+	
+	public static void main(String[] args) {
+		junit.textui.TestRunner.run(CyFileFilterTest.class);
 	}
 
 }
