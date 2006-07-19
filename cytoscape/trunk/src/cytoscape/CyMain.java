@@ -277,7 +277,7 @@ public class CyMain implements CyInitParams {
 		Properties props = new Properties();
 		Properties argProps = new Properties();
 
-		Matcher propPattern = Pattern.compile("^(\\S+)\\=(.+)$").matcher(""); 
+		Matcher propPattern = Pattern.compile("^((\\w+\\.*)+)\\=(.+)$").matcher(""); 
 
 		for ( int i = 0; i < potentialProps.length; i++ ) {
 
@@ -285,7 +285,7 @@ public class CyMain implements CyInitParams {
 
 			// check to see if the string is a key value pair
 			if ( propPattern.matches() ) {
-				argProps.setProperty(propPattern.group(1),propPattern.group(2));
+				argProps.setProperty(propPattern.group(1),propPattern.group(3));
 
 			// otherwise assume it's a file/url
 			} else {
