@@ -88,18 +88,17 @@ public class PaletteNetworkEditEventHandler extends
 		String shapeName = null;
 		
 		// AJK: 07/17/06 BEGIN Debugging code
-		DGraphView view = (DGraphView) Cytoscape.getCurrentNetworkView();
-		JLabel button = new JLabel ("test 1");
-//		view.getCanvas().add(button);
-		view.getBackgroundCanvas().add(button);
-		System.out.println("added component to background canvas: " + view.getBackgroundCanvas());
-		
-		button.setLocation(e.getLocation());
-		button.setPreferredSize(new Dimension (70, 20));
-		button.setOpaque(true);
-		button.setBackground(Color.BLUE);
-		button.setVisible(true);
-		view.getCanvas().repaint();
+//		DGraphView view = (DGraphView) Cytoscape.getCurrentNetworkView();
+//		JLabel button = new JLabel ("test 1");
+//		view.getBackgroundCanvas().add(button);
+//		System.out.println("added component to background canvas: " + view.getBackgroundCanvas());
+//		
+//		button.setLocation(e.getLocation());
+//		button.setPreferredSize(new Dimension (70, 20));
+//		button.setOpaque(true);
+//		button.setBackground(Color.BLUE);
+//		button.setVisible(true);
+//		view.getCanvas().repaint();
 		// AJK: 07/17/06 END
 	
 		Point location = e.getLocation();
