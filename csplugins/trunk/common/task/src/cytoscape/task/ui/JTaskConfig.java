@@ -49,6 +49,11 @@ public class JTaskConfig {
     private Container owner;
 
     /**
+     * Milliseconds until popup.
+     */
+    private int millisToPopup = 100;
+
+    /**
      * Enables/Disables Display of the Status Field.
      * <P>By default, this value is set to false.
      *
@@ -144,6 +149,26 @@ public class JTaskConfig {
      */
     public void setModal(boolean modal) {
         this.modal = modal;
+    }
+
+    /**
+     * Sets Milliseconds until JTask Dialog Box is Displayed.
+     * <P>Default is set to 100 ms.
+     *
+     * @param millisToPopup long value.
+     */
+    public void setMillisToPopup (int millisToPopup) {
+        this.millisToPopup = millisToPopup;
+    }
+
+    /**
+     * Gets Millieconds until JTask Dialog Box is Displayed.
+     * <P>Default is set to 100 ms.
+     *
+     * @return millisToPopup long value.
+     */
+    public int getMillisToPopup () {
+        return this.millisToPopup;
     }
 
     /**

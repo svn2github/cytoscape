@@ -4,6 +4,8 @@ import cytoscape.task.Task;
 import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
 
+import java.util.TimerTask;
+
 /**
  * Utility class used to execute tasks and visually monitor their progress.
  */
@@ -49,12 +51,24 @@ public class TaskManager {
         //  Start the Task
         taskThread.start();
 
-        //  Show the JTask Object.
-        //  Because JTask is Modal, this method will block until
-        //  JTask is disposed or hidden.
-        jTask.show();
+        //  Show the JTask Dialog Box.
+        Object popUpLock = new Object();
+        startPopupTimer(config, popUpLock);
 
-        //  We don't get here until Modal Dialog Box is Disposed/Hidden.
+        //  Wait for notification of pop-up
+        try {
+            synchronized(popUpLock) {
+                //  This locks the current thread until notification of pop-up.
+                popUpLock.wait();
+                if (taskThread.isAlive()) {
+                    //  Thread will now block until modal dialog is
+                    //  disposed automatically or by user.
+                    jTask.show();
+                }
+            }
+        } catch (InterruptedException e) {
+        }
+
         //  If all went well, return true.  Otherwise, return false.
         if (jTask.errorOccurred() == false
                 && jTask.haltRequested() == false) {
@@ -62,6 +76,24 @@ public class TaskManager {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Shows JTask Dialog Box after XX milliseconds of delay.
+     * @param config    JTaskConfig Object.
+     */
+    private static void startPopupTimer(final JTaskConfig config,
+            final Object popUpLock) {
+        //  Create Timer in new thread.
+        java.util.Timer timer = new java.util.Timer();
+        TimerTask task = new TimerTask (){
+            public void run() {
+                synchronized(popUpLock) {
+                    popUpLock.notify();
+                }
+            }
+        };
+        timer.schedule(task, config.getMillisToPopup());
     }
 }
 

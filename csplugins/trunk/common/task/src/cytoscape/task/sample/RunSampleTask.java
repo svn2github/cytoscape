@@ -42,6 +42,9 @@ public class RunSampleTask {
 
         //  Configure the JTask UI Component
         JTaskConfig config = new JTaskConfig();
+        if (option == 1) {
+            config.setMillisToPopup(2000);
+        }
         config.setOwner(frame);
         configureJTask(option, config);
 
@@ -102,6 +105,7 @@ public class RunSampleTask {
                 System.out.println("-- Description Field is displayed.");
                 System.out.println("-- Status Field is displayed.");
                 System.out.println("-- Task can be cancelled");
+                System.out.println("-- Dialog box popups up after delay");
                 break;
 
                 //  Case 2 displays user buttons
