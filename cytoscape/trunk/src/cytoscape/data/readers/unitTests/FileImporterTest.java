@@ -1,4 +1,4 @@
-package src.cytoscape.data.readers.unitTests;
+package cytoscape.data.readers.unitTests;
 
 //--------------------------------------------------------------------------------------
 import cytoscape.view.NetworkViewManager;
@@ -30,14 +30,14 @@ public class FileImporterTest extends TestCase {
 
 	// ------------------------------------------------------------------------------
 	public void testGMLImport() throws Exception {
-		location = "/cellar/users/bradkohl/cytoscape_2.3/cytoscape/testData/gal.gml";
+		location = "testData/gal.gml";
 		network = Cytoscape.createNetworkFromFile(location);
 		
 		title = network.getTitle();
 		assertEquals("gal.gml", title);
 		
 		nodeCount = network.getNodeCount();
-		assertEquals(14, nodeCount);
+		assertEquals(11, nodeCount);
 		
 		edgeCount = network.getEdgeCount();
 		assertEquals(10, edgeCount);
@@ -54,7 +54,7 @@ public class FileImporterTest extends TestCase {
 	}
 	
 	public void testXGMMLImport() throws Exception {
-		location = "/cellar/users/bradkohl/cytoscape_2.3/cytoscape/testData/galFiltered2.xgmml";
+		location = "testData/galFiltered2.xgmml";
 		network = Cytoscape.createNetworkFromFile(location, false);
 		
 		title = network.getTitle();
@@ -75,7 +75,7 @@ public class FileImporterTest extends TestCase {
 	}
 	
 	public void testSIFImport() throws Exception {
-		location = "/cellar/users/bradkohl/cytoscape_2.3/cytoscape/testData/galFiltered.sif";
+		location = "testData/galFiltered.sif";
 		network = Cytoscape.createNetworkFromFile(location, false);
 		
 		title = network.getTitle();

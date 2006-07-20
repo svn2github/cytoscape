@@ -3,7 +3,7 @@ package cytoscape.util.unitTests;
 
 import java.util.Set;
 
-import src.cytoscape.data.readers.unitTests.FileImporterTest;
+import cytoscape.data.readers.unitTests.FileImporterTest;
 
 import junit.framework.TestCase;
 import cytoscape.util.CyFileFilter;

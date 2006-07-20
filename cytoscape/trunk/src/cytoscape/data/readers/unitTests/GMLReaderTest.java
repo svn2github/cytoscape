@@ -77,12 +77,11 @@ public class GMLReaderTest extends TestCase {
 		AllTests.standardOut("testSmallGraphRead");
 		GMLReader reader = new GMLReader("testData/gal.gml");
 		reader.read();
-		RootGraph network = reader.getRootGraph();
+		int[] nodeArray = reader.getNodeIndicesArray();	
+		int[] edgeArray = reader.getEdgeIndicesArray();	
 
-		assertTrue("node count, expect 11, got " + network.getNodeCount(),
-				network.getNodeCount() == 11);
-		assertTrue("edge count, expect 10, got " + network.getEdgeCount(),
-				network.getEdgeCount() == 10);
+		assertEquals("node count",11, nodeArray.length); 
+		assertEquals("edge count",10, edgeArray.length); 
 
 	} // testSmallGraphRead
 
@@ -91,12 +90,11 @@ public class GMLReaderTest extends TestCase {
 		AllTests.standardOut("testMediumGraphRead");
 		GMLReader reader = new GMLReader("testData/noLabels.gml");
 		reader.read();
-		RootGraph network = reader.getRootGraph();
+		int[] nodeArray = reader.getNodeIndicesArray();	
+		int[] edgeArray = reader.getEdgeIndicesArray();	
 
-		assertTrue("node count, expect 336, got " + network.getNodeCount(),
-				network.getNodeCount() == 336);
-		assertTrue("edge count, expect 365, got " + network.getEdgeCount(),
-				network.getEdgeCount() == 365);
+		assertEquals("node count",332, nodeArray.length); 
+		assertEquals("edge count",362, edgeArray.length); 
 
 	} // testMediumGraphRead
 	// -------------------------------------------------------------------------
