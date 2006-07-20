@@ -39,7 +39,7 @@ import cytoscape.visual.mappings.DiscreteMapping;
  * The dropping of shapes onto the canvas results in the addition of nodes and edges to the current Cytoscape 
  * network, as defined by the behavior of the event handler that responds to the drop events.  In the 
  * simple "BioPAX-like" editor, there are node types for proteins, catalysis, small molecules, and biochemical 
- * reactions, as well as a directed edge type.
+ * reactions, as well as several directed edge types.
  * <p>
  * 
  *
@@ -54,7 +54,6 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 	 */
 	public SimpleBioPAX_Editor() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	private ShapePalette shapePalette;
@@ -68,8 +67,8 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 	 */
 	public void initializeControls(List args)
 	{
-		String controllingNodeAttribute = CytoscapeEditorManager.getControllingNodeAttribute(this);
-		String controllingEdgeAttribute = CytoscapeEditorManager.getControllingEdgeAttribute(this);
+		String controllingNodeAttribute = this.getControllingNodeAttribute();
+		String controllingEdgeAttribute = this.getControllingEdgeAttribute();
 		
 		// AJK: 06/10/06 BEGIN
 		//     no longer rebuilding shape palette, just its shape pane
@@ -81,10 +80,8 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 		
 		// TODO: need to ensure that we have BioPAX visual style loaded
         VisualMappingManager manager =
-            Cytoscape.getDesktop().getVizMapManager();
+            Cytoscape.getVisualMappingManager();
     
-        CalculatorCatalog catalog = manager.getCalculatorCatalog();
-        
         VisualStyle vizStyle = manager.getVisualStyle();
         System.out.println ("Got visual style: " + vizStyle);
         
@@ -193,15 +190,7 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
         }
         
         GenericNodeColorCalculator nfill = (GenericNodeColorCalculator) nac.getNodeFillColorCalculator();
-        System.out.println("Got node fill color calculator: " + nfill);
-//        if (nfill == null)
-//        {
-//    		String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to a NODE_TYPE attribute.";
-//			String title = "Cannot build palette for SimpleBioPAXEditor";
-//			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript,
-//					title, JOptionPane.PLAIN_MESSAGE);
-//        	return;
-//        }        
+      
         if (nfill == null)
         {
         	nodeColor = nac.getDefaultNodeFillColor();
@@ -269,15 +258,6 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
             	nodeColor = nac.getDefaultNodeFillColor();
             }
  
-//		ImageIcon img = new ImageIcon(getClass().getResource(
-//		ICONS_REL_LOC + "edgeIcon1.gif"));
-//		shapePalette.addShape("EdgeType", "DirectedEdge", img, "Directed Edge");		
-//		shapePalette.addShape("EdgeType", "DirectedEdge", 
-//             new CytoShapeIcon(img.getImage()), "Directed Edge");			
-		
-//		img = new ImageIcon(getClass().getResource(
-//				ICONS_REL_LOC + "BioPAX_protein.gif"));
-//		shapePalette.addShape("BIOPAX_NODE_TYPE", "protein", img, "Protein");
 		nodeShape = ((Byte) dshape.getMapValue("protein")).byteValue();
 //		System.out.println ("Got mapping for nodeShape: " + nodeObj.getClass());
 		
@@ -291,9 +271,6 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 	            new CytoShapeIcon(nodeShape, nodeColor), 
 			   "Protein");
 
-//		img = new ImageIcon(getClass().getResource(
-//				ICONS_REL_LOC + "BioPAX_catalysis.gif"));
-//		shapePalette.addShape("BIOPAX_NODE_TYPE", "catalysis", img, "Catalysis");
 		nodeShape = ((Byte) dshape.getMapValue("catalysis")).byteValue();
 		if (dfill != null)
 		{
@@ -312,17 +289,12 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 //               new CytoShapeIcon (CytoShapeIcon.DIAMOND, Color.MAGENTA), "Small Molecule");
 	              new CytoShapeIcon (nodeShape, nodeColor), "Small Molecule");
 
-//		img = new ImageIcon(getClass().getResource
-//				(ICONS_REL_LOC + "BioPAX_biochemicalReaction.gif"));
-//		shapePalette.addShape("BIOPAX_NODE_TYPE", "biochemicalReaction",
-//				img, "Biochemical Reaction");
 		nodeShape = ((Byte) dshape.getMapValue("biochemicalReaction")).byteValue();
 		if (dfill != null)
 		{
 			nodeColor = (Color) dfill.getMapValue("biochemicalReaction");
 		}
 		shapePalette.addShape("NODE_TYPE", "biochemicalReaction",
-//				new CytoShapeIcon(CytoShapeIcon.ELLIPSE, Color.RED), "Biochemical Reaction");
 				new CytoShapeIcon(nodeShape, nodeColor), "Biochemical Reaction");
 
 		nodeShape = ((Byte) dshape.getMapValue("complex")).byteValue();
@@ -349,12 +321,7 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 		shapePalette.addShape("NODE_TYPE", "physicalEntity",
 				new CytoShapeIcon(nodeShape, nodeColor), "Physical Entity");
 				
-		shapePalette.showPalette();
-		
-		
-		
-//		super.initializeControls(null);
-
+		shapePalette.showPalette();						
 	}
 
 	/**

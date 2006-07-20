@@ -39,9 +39,10 @@ import cytoscape.visual.mappings.DiscreteMapping;
  * <p>
  * The dropping of shapes onto the canvas results in the addition of nodes and
  * edges to the current Cytoscape network, as defined by the behavior of the
- * event handler that responds to the drop events. In the simple "BioPAX-like"
+ * event handler that responds to the drop events. In the simple "BioMolecule"
  * editor, there are node types for proteins, catalysis, small molecules, and
- * biochemical reactions, as well as a directed edge type.
+ * biochemical reactions, as well as a directed edge types for activation, 
+ * inhibition, and catalysis.
  * <p>
  * 
  * 
@@ -53,8 +54,6 @@ import cytoscape.visual.mappings.DiscreteMapping;
 public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 	private ShapePalette shapePalette;
-
-	private static final String ICONS_REL_LOC = "images/";
 
 	public static final String NODE_TYPE = "NODE_TYPE";
 
@@ -68,8 +67,14 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 	public static final String BIOMOLECULE_VISUAL_STYLE = "SimpleBioMoleculeEditor";
 
+	/**
+	 * class used to construct visual style used by the SimpleBioMoleculeEditor
+	 */
 	public static MapBioMoleculeEditorToVisualStyle mpbv = null;
 
+	/**
+	 * flag used to determine when to construct a visual style vs. use an existing one
+	 */
 	private static boolean regeneratedVizStyle = false;
 
 	public SimpleBioMoleculeEditor() {
@@ -83,17 +88,15 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 	public void buildVisualStyle()
 	{
 		// do visual style creation at time that editor is created, to
-		// accommodated the current
-		// visual style potentially being clobbered by other plugins
+		// accommodate the current visual style potentially being clobbered by other plugins
 
 		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
 
 		CalculatorCatalog catalog = manager.getCalculatorCatalog();
 
-		// VisualStyle vizStyle = manager.getVisualStyle();
 		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
-		System.out.println ("Got visual Style from catalog: " + catalog 
-				+ " = " + vizStyle);
+//		System.out.println ("Got visual Style from catalog: " + catalog 
+//				+ " = " + vizStyle);
 		if (mpbv == null) {
 			mpbv = new MapBioMoleculeEditorToVisualStyle();
 		}
@@ -103,7 +106,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 		else {
 
-			System.out.println("Calling defineVisualStyle for: " + vizStyle);
+//			System.out.println("Calling defineVisualStyle for: " + vizStyle);
 			mpbv.defineVisualStyle(vizStyle, manager, catalog);
 		}		
 	}
@@ -111,6 +114,8 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 	/**
 	 * specialized initialization code for editor, called by
 	 * CytoscapeEditorManager when a new editor is built.
+	 * gets the mappings from the visual style and uses them to construct
+	 * shapes for the palette
 	 * 
 	 * @param args
 	 *            an arbitrary list of arguments passed to initialization
@@ -129,8 +134,8 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 		// VisualStyle vizStyle = manager.getVisualStyle();
 		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
-		System.out.println ("Got visual Style from catalog: " + catalog 
-				+ " = " + vizStyle);
+//		System.out.println ("Got visual Style from catalog: " + catalog 
+//				+ " = " + vizStyle);
 		if (vizStyle == null) {
 			if (mpbv == null) {
 				mpbv = new MapBioMoleculeEditorToVisualStyle();
@@ -153,10 +158,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		shapePalette.clear();
 		// AJK: 06/10/06 END
 
-		String controllingNodeAttribute = CytoscapeEditorManager
-				.getControllingNodeAttribute(this);
-		String controllingEdgeAttribute = CytoscapeEditorManager
-				.getControllingEdgeAttribute(this);
+		String controllingEdgeAttribute = this.getControllingEdgeAttribute();
 
 		if (vizStyle == null) {
 			String expDescript = "Cannot find SimpleBioMoleculeEditor Visual Style.";
@@ -173,8 +175,8 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 		NodeAppearanceCalculator nac = vizStyle.getNodeAppearanceCalculator();
 
-		System.out.println("NodeAppearanceCalculator for visual style: "
-				+ vizStyle + " is " + nac);
+//		System.out.println("NodeAppearanceCalculator for visual style: "
+//				+ vizStyle + " is " + nac);
 		if (nac == null) {
 			String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to NODE_TYPE attribute.";
 			String title = "Cannot build palette for SimpleBioMoleculeEditor";
@@ -243,13 +245,6 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		Color nodeColor;
 		byte nodeShape;
 
-		// AJK: 09/16/05 BEGIN
-		// oy vey, what a hack. To get at the node color for the style, it looks
-		// as if I
-		// have to calculateNodeColor for a node
-
-		// ***** HERE 03/22/06 replace icon with drawn shapes **** //
-
 		EdgeAppearanceCalculator eac = vizStyle.getEdgeAppearanceCalculator();
 		System.out.println("Got edgeAppearanceCalculator: " + eac);
 		if (eac == null) {
@@ -276,9 +271,9 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 			DiscreteMapping dArrowCandidate = (DiscreteMapping) edgeMappings
 					.get(i);
 			String attr = dArrowCandidate.getControllingAttributeName();
-			System.out.println("checking attribute: " + attr
-					+ " against controlling attribute: "
-					+ controllingEdgeAttribute);
+//			System.out.println("checking attribute: " + attr
+//					+ " against controlling attribute: "
+//					+ controllingEdgeAttribute);
 			if (attr.equals(controllingEdgeAttribute)) {
 				dArrow = dArrowCandidate;
 				System.out.println("Got edge mapping: " + dArrow);
@@ -292,79 +287,43 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 					title, JOptionPane.PLAIN_MESSAGE);
 			return;
 		}
-		System.out.println("adding edge arrows to palette");
+//		System.out.println("adding edge arrows to palette");
 		Arrow edgeTargetArrow;
 		String[] EdgeTypes = new String[] { ACTIVATION, INHIBITION, CATALYSIS };
 		for (int i = 0; i < EdgeTypes.length; i++) {
-			System.out.println("getting map value for edge type: "
-					+ EdgeTypes[i]);
+//			System.out.println("getting map value for edge type: "
+//					+ EdgeTypes[i]);
 			if (dArrow.getMapValue(EdgeTypes[i]) != null) {
 				edgeTargetArrow = (Arrow) dArrow.getMapValue(EdgeTypes[i]);
 			} else {
 				edgeTargetArrow = eac.getDefaultEdgeTargetArrow();
 			}
-			System.out.println("Addng shape for EdgeType " + EdgeTypes[i]
-					+ " = " + edgeTargetArrow);
+//			System.out.println("Addng shape for EdgeType " + EdgeTypes[i]
+//					+ " = " + edgeTargetArrow);
 
 			shapePalette.addShape(EDGE_TYPE, EdgeTypes[i], new CytoShapeIcon(
 					edgeTargetArrow), EdgeTypes[i]);
 		}
 
-		/*
-		 * ImageIcon img = new ImageIcon(getClass().getResource( ICONS_REL_LOC +
-		 * "edgeIcon1.gif")); // shapePalette.addShape("EdgeType",
-		 * "DirectedEdge", img, "Directed Edge");
-		 * shapePalette.addShape(EDGE_TYPE, "DirectedEdge", // new
-		 * CytoShapeIcon(img.getImage()), "Directed Edge"); new
-		 * CytoShapeIcon(Arrow.BLACK_DELTA), "Directed Edge");
-		 */
-
-		// img = new ImageIcon(getClass().getResource(
-		// ICONS_REL_LOC + "BioPAX_protein.gif"));
-		// shapePalette.addShape("BIOPAX_NODE_TYPE", "protein", img, "Protein");
 		nodeShape = ((Byte) dshape.getMapValue("protein")).byteValue();
-		// System.out.println ("Got mapping for nodeShape: " +
-		// nodeObj.getClass());
 
 		nodeColor = (Color) dfill.getMapValue("protein");
 		shapePalette.addShape("NODE_TYPE", "protein",
-		// new CytoShapeIcon(CytoShapeIcon.RECTANGLE, Color.BLUE), // hard code
-				// for first pass
 				new CytoShapeIcon(nodeShape, nodeColor), "Protein");
-
-		// img = new ImageIcon(getClass().getResource(
-		// ICONS_REL_LOC + "BioPAX_catalysis.gif"));
-		// shapePalette.addShape("BIOPAX_NODE_TYPE", "catalysis", img,
-		// "catalyst");
-		// nodeShape = ((Byte) dshape.getMapValue("catalyst")).byteValue();
-		// nodeColor = (Color) dfill.getMapValue("catalyst");
-		// shapePalette.addShape("NODE_TYPE", "catalyst",
-		// new CytoShapeIcon(CytoShapeIcon.ROUNDED_RECTANGLE, Color.YELLOW),
-		// "catalyst");
-		// new CytoShapeIcon(nodeShape, nodeColor), "catalyst");
 
 		nodeShape = ((Byte) dshape.getMapValue("smallMolecule")).byteValue();
 		nodeColor = (Color) dfill.getMapValue("smallMolecule");
 		shapePalette.addShape("NODE_TYPE", "smallMolecule",
-		// new CytoShapeIcon (CytoShapeIcon.DIAMOND, Color.MAGENTA), "Small
-				// Molecule");
 				new CytoShapeIcon(nodeShape, nodeColor), "Small Molecule");
 
-		// img = new ImageIcon(getClass().getResource
-		// (ICONS_REL_LOC + "BioPAX_biochemicalReaction.gif"));
-		// shapePalette.addShape("BIOPAX_NODE_TYPE", "biochemicalReaction",
-		// img, "Biochemical Reaction");
 		nodeShape = ((Byte) dshape.getMapValue("biochemicalReaction"))
 				.byteValue();
 		nodeColor = (Color) dfill.getMapValue("biochemicalReaction");
 		shapePalette
 				.addShape("NODE_TYPE", "biochemicalReaction",
-				// new CytoShapeIcon(CytoShapeIcon.ELLIPSE, Color.RED),
-						// "Biochemical Reaction");
 						new CytoShapeIcon(nodeShape, nodeColor),
 						"Biochemical Reaction");
 
-		// AJK: 06/16/06 only show palette if Cytoscape has already been initialized
 		if (CytoscapeEditorManager.isEditingEnabled())
 		{
 			shapePalette.showPalette();

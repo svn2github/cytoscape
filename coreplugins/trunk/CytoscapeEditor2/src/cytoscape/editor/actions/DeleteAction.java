@@ -30,14 +30,7 @@ import giny.view.NodeView;
  *  
  */
 public class DeleteAction extends  CytoscapeAction {
-//                                 AbstractAction {
-	private static Image _my_icon;
-
-	//~ Instance fields
-
-	private Object _cyObj = null;
-
-	private String _label = null;
+private Object _cyObj = null;
 
 	private static String _title ="Delete Selected Nodes and Edges";
 
@@ -79,8 +72,9 @@ public class DeleteAction extends  CytoscapeAction {
 
 		if ( obj != null )
 			_cyObj = obj;
-		if ( label != null )
-			_label = label;
+		if ( label != null ) {
+			_title = label;
+		}
 	}
 
 	public static String getTitle(Object[] args, PNode node) {

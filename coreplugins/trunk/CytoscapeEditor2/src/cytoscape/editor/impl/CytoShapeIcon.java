@@ -73,7 +73,10 @@ public class CytoShapeIcon implements Icon {
 	 /**
 
 
-	/* (non-Javadoc)
+	/**
+	 * Implements specialized coordinate line drawing for palette shcapes
+	 * 
+	 * (non-Javadoc)
 	 * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
 	 */
 	public void paintIcon(Component c, Graphics g, int x, int y) {

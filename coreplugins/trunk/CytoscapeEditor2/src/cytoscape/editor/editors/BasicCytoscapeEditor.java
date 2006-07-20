@@ -4,13 +4,15 @@ import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -30,7 +32,7 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.actions.DeleteAction;
 import cytoscape.editor.event.BasicNetworkEditEventHandler;
-import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CyMenus;
@@ -41,24 +43,12 @@ import ding.view.NodeContextMenuListener;
 
 /**
  * The <b>BasicCytoscapeEditor</b> provides base level graph editing
- * functionality for Cytoscape version 2.2 provides a “node” button on the
- * Cytoscape toolbar. Click on the “node” button and cursor takes on a
- * rectangular shape, the system goes into "ADD_MODE", and subsequent clicking
- * of mouse on canvas creates nodes with default labels. The default label
- * appears in an editable text field and can be edited.
- * <p>
- * Provides a "connect" button for the toolbar that puts the user in
- * “CONNECT_MODE” mode, wherein the cursor changes to some form of “connector”
- * icon. The user clicks when over the desired source node, moves the mouse to
- * the desired target node, and clicks the mouse when over the desired target
- * node.
+ * functionality for Cytoscape, in particular the base level methods for
+ * adding nodes, edges, and context menu items.
  * <p>
  * Provides an "Edit => Connect Selected Nodes" menu item that, when chosen,
  * creates a clique amongst the selected nodes.
- * <p>
- * Going back out of “ADD_MODE" or "CONNECT_MODE is accomplished by pressing the
- * “select” button on the toolbar
- * <p>
+* <p>
  * Provides accelerators for modeless addition of nodes and edges.
  * Control-clicking at a position on the canvas creates a node with default
  * label in that position. The default label appears in an editable text field,
@@ -105,27 +95,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 	boolean DEBUG = false;
 
 	/**
-	 * customized cursor associated with "CONNECT MODE"
-	 */
-	Cursor _edgeCursor;
-
-	/**
-	 * customized cursor associated with "ADD MODE"
-	 */
-	Cursor _nodeCursor;
-
-	/**
-	 * customized cursor associated with mode for adding freestanding labels
-	 * <b>not</b> used in Cytoscape 2.2
-	 */
-	Cursor _labelCursor;
-
-	/**
-	 * 32x32 image for node cursor
-	 */
-	Image _nodeCursorImage;
-
-	/**
 	 * 32x32 image for edge cursor
 	 */
 	Image _connectionCursorImage;
@@ -135,11 +104,28 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 	 */
 	Cursor _originalCursor;
 
-	JButton _addNodeButton, _addEdgeButton, _resetCursorButton,
-			_addLabelButton;
+	/**
+	 * 
+	 * the name of the attribute used to determine Node shapes on palette
+	 *         this is the same as the controllingNodeAttribute for mapping of visual style to Node shape and color
+	 */
+	private String _controllingNodeAttribute;
 
-	private static final String ICONS_REL_LOC = "images/";
+	/**
+	 * the name of the attribute used to determine edge shapes on palette
+	 *         this is the same as the controllingEdgeAttribute for mapping of visual style to edge line type, target arrow
+	 */
+	private String _controllingEdgeAttribute;
 
+	/**
+	 * 
+	 * the network event handler that is associated with this editor
+	 */
+	NetworkEditEventAdapter _networkEditEventAdapter;
+	
+	/**
+	 * title of menu item for connecting selected Nodes
+	 */
 	private static final String _connectedTitle = "Connect Selected Nodes";
 
 	/**
@@ -205,6 +191,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 			// time stamp to node name
 			cn = Cytoscape.getCyNode(nodeName, false);
 			iteration_limit--;
+		
 		}
 
 		// check for unlikely error condition where we couldn't generate a
@@ -282,6 +269,10 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 		return cn;
 	}
 
+
+	/**
+	 * respond to flagging of a Node.  Does nothing right now.
+	 */
 	public void onFlagEvent(FlagEvent e) {
 		Object obj = e.getTarget();
 
@@ -296,50 +287,13 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 		}
 	}
 
-	// AJK: 04/27/08 BEGIN
-	// for context menus
+
 	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
 		if (nodeView instanceof NodeView) {
 
-			final NodeView nv = (NodeView) nodeView;
-
-			// AJK: 06/08/06 BEGIN
-			// don't allow reset of the ID field
-			// if (!menuItemExists(menu, "Rename (reset identifier)"))
-			// {
-			// menu.add(new AbstractAction("Rename (reset identifier)") {
-			// public void actionPerformed(ActionEvent e) {
-			// Node node = nv.getNode();
-			// String oldId = node.getIdentifier();
-			// String newId = JOptionPane.showInputDialog(
-			// Cytoscape.getDesktop(), "Please enter a new identifier for this
-			// node",
-			// oldId);
-			// if ((newId != null) && !(newId.equals(oldId)))
-			// {
-			// node.setIdentifier(newId);
-			// CytoscapeEditorManager.resetAttributes(
-			// oldId, newId, CytoscapeEditorManager.nodeAttribs);
-			// // reset cannonical name and common name to newId
-			// // later this needs to change to Label?
-			// // AJK: 05/09/06 BEGIN
-			// // use label
-			// // CytoscapeEditorManager.nodeAttribs.setAttribute(
-			// // newId, "canonicalName", newId);
-			// // CytoscapeEditorManager.nodeAttribs.setAttribute(
-			// // newId, "commonName", newId);
-			// CytoscapeEditorManager.nodeAttribs.setAttribute(
-			// newId, Semantics.LABEL, newId);
-			// Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null,
-			// Cytoscape.getCurrentNetwork());
-			// }
-			// }
-			// });
-			// menu.addSeparator();
-			// }
-
 			if (!menuItemExists(menu, "Delete Selected Nodes and Edges")) {
-				menu.add(new DeleteAction(null, "Delete"));
+				menu.add(new DeleteAction(null, "Delete " + 
+						nodeView.getNode().getIdentifier()));
 			}
 
 		}
@@ -613,12 +567,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 		net.hideNode(node);
 		CytoscapeModifiedNetworkManager.setModified(net,
 				CytoscapeModifiedNetworkManager.MODIFIED);
-		// TODO: if number of networks containing nodes falls to zero, then
-		// delete it
-		// delete it from the root graph
-		// how to find out how many networks contain node, is there an easy way
-		// to do this or do I have to iterate?
-		// also, how does this affect undo/redo?
 	}
 
 	/**
@@ -632,12 +580,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 		net.hideEdge(edge);
 		CytoscapeModifiedNetworkManager.setModified(net,
 				CytoscapeModifiedNetworkManager.MODIFIED);
-
-		// TODO: if number of networks containing edges falls to zero,
-		// delete it from the root graph
-		// how to find out how many networks contain edge, is there an easy way
-		// to do this or do I have to iterate?
-		// also, how does this affect undo/redo?
 	}
 
 	/**
@@ -687,59 +629,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 
 		_cyMenus = Cytoscape.getDesktop().getCyMenus();
 
-		// AJK: 10/03/05 BEGIN
-		// comment out toolbar icons; disable the 'stamp editor'
-		// remove this code later
-		/*
-		 * _toolBar = _cyMenus.getToolBar();
-		 * 
-		 * _toolBar.addSeparator();
-		 * 
-		 * _resetCursorButton = _toolBar.add(new ResetCursorAction());
-		 * _resetCursorButton.setIcon(new ImageIcon(getClass().getResource(
-		 * ICONS_REL_LOC + "UpLeftWhite.gif")));
-		 * _resetCursorButton.setToolTipText("Reset Cursor");
-		 * _resetCursorButton.setDisabledIcon(new ImageIcon(getClass()
-		 * .getResource(ICONS_REL_LOC + "DisabledUpLeftWhite.gif")));
-		 * 
-		 * _addNodeButton = _toolBar.add(new AddNodeAction());
-		 * _addNodeButton.setIcon(new ImageIcon(getClass().getResource( //
-		 * ICONS_REL_LOC + "rect.gif"))); // ICONS_REL_LOC +
-		 * "ovalNodeCursor.gif"))); ICONS_REL_LOC + "node16_centered.gif")));
-		 * _addNodeButton.setToolTipText("Add a new Node");
-		 * _addNodeButton.setDisabledIcon(new ImageIcon(getClass().getResource(
-		 * ICONS_REL_LOC + "Disabledrect.gif"))); // _addLabelButton =
-		 * _toolBar.add(new AddLabelAction()); // _addLabelButton.setIcon(new
-		 * ImageIcon(getClass().getResource( // ICONS_REL_LOC + "label.gif"))); //
-		 * _addLabelButton.setToolTipText("Add a new Label");
-		 * 
-		 * _addEdgeButton = _toolBar.add(new AddEdgeAction());
-		 * _addEdgeButton.setIcon(new ImageIcon(getClass().getResource( //
-		 * ICONS_REL_LOC + "UpRightWhite.gif"))); ICONS_REL_LOC +
-		 * "UpRightBlue.gif"))); _addEdgeButton.setToolTipText("Add a new
-		 * Edge"); _addEdgeButton.setDisabledIcon(new
-		 * ImageIcon(getClass().getResource( ICONS_REL_LOC +
-		 * "DisabledUpRightWhite.gif")));
-		 * 
-		 * Toolkit tk = Toolkit.getDefaultToolkit(); ImageIcon img; // ImageIcon
-		 * img = new ImageIcon(getClass().getResource( // ICONS_REL_LOC +
-		 * "label.gif")); // Image labelPointer = img.getImage(); //
-		 * _labelCursor = tk.createCustomCursor(labelPointer, new Point(1, 1), //
-		 * "LabelPointer");
-		 * 
-		 * img = new ImageIcon(getClass().getResource( // ICONS_REL_LOC +
-		 * "rect.gif")); ICONS_REL_LOC + "node32.gif")); Image nodePointer =
-		 * img.getImage(); _nodeCursor = tk.createCustomCursor(nodePointer, new
-		 * Point(1, 1), "NodePointer");
-		 * 
-		 * img = new ImageIcon(getClass().getResource( ICONS_REL_LOC +
-		 * "fit36_blue_cursor.gif")); Image edgePointer = img.getImage();
-		 * _edgeCursor = tk.createCustomCursor(edgePointer, new Point(30, 1),
-		 * "EdgePointer");
-		 */
-		// AJK: 10/03/05 END
-		_originalCursor = Cytoscape.getDesktop().getCursor();
 
+		_originalCursor = Cytoscape.getDesktop().getCursor();
 	}
 
 	/**
@@ -749,16 +640,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 	 *            args an arbitrary list of arguments (not used in this editor)
 	 */
 	public void disableControls(List args) {
-		if (_addNodeButton != null) { // make sure we have buttons before
-			// disabling them
-			_addNodeButton.setVisible(false);
-		}
-		if (_addEdgeButton != null) {
-			_addEdgeButton.setVisible(false);
-		}
-		if (_resetCursorButton != null) {
-			_resetCursorButton.setVisible(false);
-		}
+
 	}
 
 	/**
@@ -768,10 +650,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 	 *            args an arbitrary list of arguments (not used in this editor) *
 	 */
 	public void enableControls(List args) {
-		System.out.println("enabling controls for " + this);
-		_addNodeButton.setVisible(true);
-		_addEdgeButton.setVisible(true);
-		_resetCursorButton.setVisible(true);
+
 	}
 
 	/**
@@ -794,139 +673,65 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 	}
 
 	/**
-	 * action that is invoked when the "add node" button is pressed sets the
-	 * mode of the edit event handler to "ADD_MODE"
 	 * 
-	 * @author Allan Kuchinsky, Agilent Technologies
-	 * @version 1.0
-	 * 
+	 * @return the name of the attribute used to determine edge shapes on palette
+	 *         this is the same as the controllingEdgeAttribute for mapping of visual style to edge line type, target arrow
 	 */
-	class AddNodeAction extends CytoscapeAction {
-		public AddNodeAction() {
-			// super("Add a new Node");
-			super("");
-		}
-
-		public void actionPerformed(ActionEvent ae) {
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
-			((PhoebeNetworkView) Cytoscape.getCurrentNetworkView()).getCanvas()
-					.setCursor(_nodeCursor);
-			BasicNetworkEditEventHandler event = (BasicNetworkEditEventHandler) CytoscapeEditorManager
-					.getViewNetworkEditEventAdapter(view);
-
-			if (event == null) {
-				System.out
-						.println("Error: cannot find event handler for view: "
-								+ view);
-			} else {
-				// event.setMode(event.ADD_MODE);
-			}
-		}
+	public String getControllingEdgeAttribute ()
+	{
+		return _controllingEdgeAttribute;
+	}
+	
+	/**
+	 * 
+	 * @param controllingEdgeAttribute
+	 * 	       the name of the attribute used to determine edge shapes on palette
+	 *         this is the same as the controllingEdgeAttribute for mapping of visual style to edge line type, target arrow
+     *
+	 */
+	public void setControllingEdgeAttribute (String controllingEdgeAttribute)
+	{
+		_controllingEdgeAttribute = controllingEdgeAttribute;
 	}
 
 	/**
-	 * action that is invoked when the "add label" button is pressed sets the
-	 * mode of the edit event handler to "LABEL_MODE"
-	 * <p>
-	 * not implemented in Cytoscape 2.2
 	 * 
-	 * @author Allan Kuchinsky, Agilent Technologies
-	 * @version 1.0
-	 * 
+	 * @return the name of the attribute used to determine Node shapes on palette
+	 *         this is the same as the controllingNodeAttribute for mapping of visual style to Node shape and color
 	 */
-	class AddLabelAction extends CytoscapeAction {
-		public AddLabelAction() {
-			// super("Add a new Node");
-			super("");
-		}
-
-		public void actionPerformed(ActionEvent ae) {
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
-			((PhoebeNetworkView) Cytoscape.getCurrentNetworkView()).getCanvas()
-					.setCursor(_nodeCursor);
-			BasicNetworkEditEventHandler event = (BasicNetworkEditEventHandler) CytoscapeEditorManager
-					.getViewNetworkEditEventAdapter(view);
-
-			if (event == null) {
-				System.out
-						.println("Error: cannot find event handler for view: "
-								+ view);
-			} else {
-				// event.setMode(event.LABEL_MODE);
-
-			}
-		}
+	public String getControllingNodeAttribute ()
+	{
+		return _controllingNodeAttribute;
+	}
+	
+	/**
+	 * 
+	 * @param controllingNodeAttribute
+	 * 	       the name of the attribute used to determine Node shapes on palette
+	 *         this is the same as the controllingNodeAttribute for mapping of visual style to Node shape and color
+     *
+	 */
+	public void setControllingNodeAttribute (String controllingNodeAttribute)
+	{
+		_controllingNodeAttribute = controllingNodeAttribute;
 	}
 
 	/**
-	 * action that is invoked when the "connect" button is pressed sets the mode
-	 * of the edit event handler to "CONNECT_MODE"
 	 * 
-	 * @author Allan Kuchinsky, Agilent Technologies
-	 * @version 1.0
-	 * 
+	 * @return the network event handler that is associated with this editor
 	 */
-	class AddEdgeAction extends CytoscapeAction {
-		public AddEdgeAction() {
-			// super("Add a new Edge");
-			super("");
-		}
-
-		public void actionPerformed(ActionEvent ae) {
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
-			((PhoebeNetworkView) Cytoscape.getCurrentNetworkView()).getCanvas()
-					.setCursor(_edgeCursor);
-			BasicNetworkEditEventHandler event = (BasicNetworkEditEventHandler) CytoscapeEditorManager
-					.getViewNetworkEditEventAdapter(view);
-
-			if (event == null) {
-				System.out
-						.println("Error: cannot find event handler for view: "
-								+ view);
-			} else {
-				// event.setMode(event.CONNECT_MODE);
-			}
-		}
+	public NetworkEditEventAdapter getNetworkEditEventAdapter()
+	{
+		return _networkEditEventAdapter;
 	}
-
+	
 	/**
-	 * action that is invoked when the "reset cursor" button is pressed sets the
-	 * mode of the edit event handler to "SELECT_MODE"
-	 * <p>
-	 * not implemented in Cytoscape 2.2
 	 * 
-	 * @author Allan Kuchinsky, Agilent Technologies
-	 * @version 1.0
-	 * 
+	 * @param adapter the network event handler that is associated with this editor
 	 */
-	class ResetCursorAction extends CytoscapeAction {
-		public ResetCursorAction() {
-			// super("Add a new Edge");
-			super("");
-		}
-
-		public void actionPerformed(ActionEvent ae) {
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
-			((PhoebeNetworkView) Cytoscape.getCurrentNetworkView()).getCanvas()
-					.setCursor(_originalCursor);
-			BasicNetworkEditEventHandler event = (BasicNetworkEditEventHandler) CytoscapeEditorManager
-					.getViewNetworkEditEventAdapter(view);
-
-			if (event == null) {
-				System.out
-						.println("Error: cannot find event handler for view: "
-								+ view);
-			} else {
-				// event.setMode(event.SELECT_MODE);
-			}
-
-			// clear any partial edges
-			// if (event.isEdgeStarted())
-			// {
-			// event.setEdgeStarted(false);
-			// event.getCanvas().getLayer().removeChild(event.getEdge());
-			// }
-		}
+	public void setNetworkEditEventAdapter (NetworkEditEventAdapter adapter)
+	{
+		_networkEditEventAdapter = adapter;
 	}
 
 	/**
@@ -996,10 +801,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
 				for (int j = i + 1; j < nodes.size(); j++) {
 					NodeView nv2 = (NodeView) nodes.get(j);
 					CyNode secondCyNode = (CyNode) nv2.getNode();
-					// AJK: 06/16/06 BEGIN
-					// set EDGE_TYPE
-//					addEdge(firstCyNode, secondCyNode, Semantics.INTERACTION,
-//							"default", true, "DefaultEdge");
 					addEdge(firstCyNode, secondCyNode, Semantics.INTERACTION,
 							edgeTypeValue, true, edgeTypeName);
 				}

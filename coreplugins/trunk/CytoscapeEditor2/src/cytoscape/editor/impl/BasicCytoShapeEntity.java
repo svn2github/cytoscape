@@ -38,7 +38,6 @@ import cytoscape.editor.event.BasicCytoShapeTransferHandler;
  * 
  */
 public class BasicCytoShapeEntity extends JComponent implements
-// AJK: 11/15/05 add drag/drop support
         DragGestureListener,
 		GraphicalEntity  {
 
@@ -105,11 +104,6 @@ public class BasicCytoShapeEntity extends JComponent implements
 		}
 
 		_cytoShape = new JLabel(image);
-//		_cytoShape.setToolTipText(title);
-		
-		// AJK: 06/06/06 BEGIN
-		//    set tooltip text to be an instruction for how to add node or edge
-//		this.setToolTipText(title);
 		if (this.attributeName != null)
 		{
 			if (this.attributeName.equals("NODE_TYPE"))
@@ -124,18 +118,12 @@ public class BasicCytoShapeEntity extends JComponent implements
 				"then move the cursor<br>over a second node and click the mouse.</html>");
 			}			
 		}
-		// AJK: 06/06/06 END
-
 
 		this.setLayout(new GridLayout(1, 1));
 		TitledBorder t2 = BorderFactory.createTitledBorder(title);
 		this.add(_cytoShape);
 		this.setBorder(t2);
 		
-
-
-		// AJK: 11/15/05 BEGIN
-		//   add drag/drop support
 		myDragSource = new DragSource();
 		myDragGestureRecognizer =
 					myDragSource.createDefaultDragGestureRecognizer( 
@@ -157,9 +145,7 @@ public class BasicCytoShapeEntity extends JComponent implements
 		this.setPreferredSize(new Dimension(
         		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().width - 5, 
         		2 * CytoShapeIcon.HEIGHT));		
-	
-		// AJK: 11/15/05 END
-	}
+		}
 
 	
 
@@ -247,14 +233,10 @@ public class BasicCytoShapeEntity extends JComponent implements
 		this.attributeValue = attributeValue;
 	}
 
-	// AJK: 11/15/05 BEGIN
-	//    implement the drag gesture recognized
 	public void dragGestureRecognized (DragGestureEvent e)
 	{
 		e.startDrag(DragSource.DefaultCopyDrop, 
 				handler.createTransferable(this));
 	}
-	// AJK: 11/15/05 END
-	
 
 }

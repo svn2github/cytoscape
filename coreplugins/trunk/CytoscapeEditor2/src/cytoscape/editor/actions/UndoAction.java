@@ -46,25 +46,13 @@ public class UndoAction extends AbstractAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		try {
-			// AJK: 09/05/05 BEGIN
-			// accommodate one UndoManager per NetworkView
-//			undo.undo();
-//			UndoManager undoMgr = CytoscapeEditorManager.getCurrentUndoManager();
-			UndoManager undoMgr =
-				CytoscapeEditorManager.getUndoManagerForView(Cytoscape.getCurrentNetworkView());
-			undoMgr.undo();
-//			undoMgr.end();
-			// AJK: 09/05/05 END
+			undo.undo();
 		} catch (CannotUndoException ex) {
 			System.out.println("Unable to undo: " + ex);
-//			ex.printStackTrace();
 		}
 		
 		update();
-		System.out.println ("updating redoAction for" + this + " = "+ redoAction);
-//		 AJK: 10/21/05 try setting true of false on update 
 		redoAction.update();
-//		redoAction.update(true);
 	}
 
 	/**
@@ -72,39 +60,19 @@ public class UndoAction extends AbstractAction {
 	 *
 	 */
 	public void update() {
-		// AJK: 09/05/05
-		// accommodate one UndoManager per NetworkView
-//		if (undo.canUndo()) {
-		UndoManager undoMgr = CytoscapeEditorManager.getUndoManagerForView(
-				Cytoscape.getCurrentNetworkView());
-		ShapePalette palette = CytoscapeEditorManager.getShapePaletteForView(
-				Cytoscape.getCurrentNetworkView());
-		if (undoMgr.canUndo()) {
-		// AJK: 09/05/05 END		
+		if (undo.canUndo()) {
 			setEnabled(true);
-			// AJK: 10/21/05 No name, just use button
-//			putValue(Action.NAME, undo.getUndoPresentationName());
-			if (palette != null)
-			{
-				palette.getUndoButton().setEnabled(true);
-			}
 		} else {
 			setEnabled(false);
-			// AJK: 10/21/05 No name, just use button
-//			putValue(Action.NAME, null);
-			if (palette != null)
-			{
-				palette.getUndoButton().setEnabled(false);
-			}
 		}
 	}
+
 	/**
 	 * defines a redo action that corresponds with this UndoAction and is (or should be) the inverse of the 
 	 * functionality of the undo operation.
 	 * @param redoAction The redoAction to set.
 	 */
 	public void setRedoAction(RedoAction redoAction) {
-		System.out.println ("Setting redo action for undo action: " + this + " = " + redoAction);
 		this.redoAction = redoAction;
 	}
 }

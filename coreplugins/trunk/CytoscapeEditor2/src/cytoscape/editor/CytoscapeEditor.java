@@ -12,6 +12,7 @@ import java.util.List;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.data.FlagEventListener;
+import cytoscape.editor.event.NetworkEditEventAdapter;
 
 /**
  * 
@@ -159,7 +160,7 @@ public interface CytoscapeEditor extends FlagEventListener {
 	 *            by the canvas when handling, a dropped item, to distinguish
 	 *            between nodes and edges.
 	 * @return the CyNode that has been either reused or created.
-	 */
+	 */ 
 	public CyNode addNode(String nodeName, String nodeType);
 
 
@@ -301,5 +302,50 @@ public interface CytoscapeEditor extends FlagEventListener {
 	 */
 	public void deleteEdge(CyEdge edge);
 
+	
+	/**
+	 * 
+	 * @return the name of the attribute used to determine edge shapes on palette
+	 *         this is the same as the controllingEdgeAttribute for mapping of visual style to edge line type, target arrow
+	 */
+	public String getControllingEdgeAttribute ();
+	
+	/**
+	 * 
+	 * @param controllingEdgeAttribute
+	 * 	       the name of the attribute used to determine edge shapes on palette
+	 *         this is the same as the controllingEdgeAttribute for mapping of visual style to edge line type, target arrow
+     *
+	 */
+	public void setControllingEdgeAttribute (String controllingEdgeAttribute);
+
+	/**
+	 * 
+	 * @return the name of the attribute used to determine Node shapes on palette
+	 *         this is the same as the controllingNodeAttribute for mapping of visual style to Node line type, target arrow
+	 */
+	public String getControllingNodeAttribute ();
+	
+	/**
+	 * 
+	 * @param controllingNodeAttribute
+	 * 	       the name of the attribute used to determine Node shapes on palette
+	 *         this is the same as the controllingNodeAttribute for mapping of visual style to Node line type, target arrow
+     *
+	 */
+	public void setControllingNodeAttribute (String controllingNodeAttribute);
+
+	/**
+	 * 
+	 * @return the network event handler that is associated with this editor
+	 */
+	public NetworkEditEventAdapter getNetworkEditEventAdapter();
+	
+	/**
+	 * 
+	 * @param adapter the network event handler that is associated with this editor
+	 */
+	public void setNetworkEditEventAdapter (NetworkEditEventAdapter adapter);
+	
 	
 }

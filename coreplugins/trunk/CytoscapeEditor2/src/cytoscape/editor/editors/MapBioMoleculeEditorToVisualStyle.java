@@ -19,22 +19,20 @@ import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.GenericEdgeArrowCalculator;
-import cytoscape.visual.calculators.GenericEdgeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeColorCalculator;
 import cytoscape.visual.calculators.GenericNodeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeShapeCalculator;
 import cytoscape.visual.calculators.NodeColorCalculator;
-import cytoscape.visual.calculators.NodeLabelColorCalculator;
 import cytoscape.visual.calculators.NodeShapeCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 
 /**
+ * 
+ * creates visual style that is to be used by the SimpleBioMoleculeEditor
  * @author ajk
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class MapBioMoleculeEditorToVisualStyle {
 
@@ -64,7 +62,7 @@ public class MapBioMoleculeEditorToVisualStyle {
 	    public VisualStyle createVizMapper() {
 
 	        VisualMappingManager manager =
-	                Cytoscape.getDesktop().getVizMapManager();
+	                Cytoscape.getVisualMappingManager();
 	        CalculatorCatalog catalog = manager.getCalculatorCatalog();
 
 	        VisualStyle existingStyle = catalog.getVisualStyle
@@ -75,8 +73,7 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        		existingStyle);
 
 	        if (existingStyle != null) {
-                System.out.println("Got existing visual style: " + existingStyle);
-//	            manager.setVisualStyle(existingStyle);
+//                System.out.println("Got existing visual style: " + existingStyle);
                 return null;
 	        } else {
 	            VisualStyle bpVisualStyle = new VisualStyle(BIOMOLECULE_VISUAL_STYLE);
@@ -92,9 +89,9 @@ public class MapBioMoleculeEditorToVisualStyle {
 	            catalog.addVisualStyle(bpVisualStyle);
 	            
 	            // for debugging
-	    		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
-	    		System.out.println ("Got visual Style from catalog: " + catalog 
-	    				+ " = " + vizStyle);
+//	    		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
+//	    		System.out.println ("Got visual Style from catalog: " + catalog 
+//	    				+ " = " + vizStyle);
 	    		
 	            // try setting the visual style to BioMolecule
 	            Cytoscape.getDesktop().setVisualStyle(bpVisualStyle);
@@ -102,6 +99,13 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        }
 	    }
 	    
+	    /**
+	     * Create the mappings for Node shape, color, and Edge target arrow, line type
+	     * for this visual style
+	     * @param bpVisualStyle
+	     * @param manager
+	     * @param catalog
+	     */
 	    public void defineVisualStyle (VisualStyle bpVisualStyle, VisualMappingManager manager,
 	    	CalculatorCatalog catalog)
 	    {
@@ -122,15 +126,16 @@ public class MapBioMoleculeEditorToVisualStyle {
      	
 	    }
 
+	    /**
+	     * create mappings for TargetArrows for edges
+	     * @param eac
+	     */
 	    private void createTargetArrows(EdgeAppearanceCalculator eac) {
 	    	
-//	    	eac.setDefaultEdgeTargetArrow(Arrow.COLOR_DELTA);
 	        DiscreteMapping discreteMapping = new DiscreteMapping
             (Arrow.NONE,
                     EDGE_TYPE,
                     ObjectMapping.EDGE_MAPPING);
-
-	
 
 	    	discreteMapping.putMapValue(ACTIVATION, Arrow.BLACK_DELTA);
 	    	discreteMapping.putMapValue(CATALYSIS, Arrow.BLACK_CIRCLE);
@@ -144,31 +149,21 @@ public class MapBioMoleculeEditorToVisualStyle {
 
 	    }
 
-	    private void createEdgeLabel(EdgeAppearanceCalculator eac) {
-	        PassThroughMapping passThroughMapping = new PassThroughMapping("",
-	                ObjectMapping.EDGE_MAPPING);
-	        passThroughMapping.setControllingAttributeName
-	                (EDGE_TYPE, null, false);
-
-	        GenericEdgeLabelCalculator edgeLabelCalculator =
-	                new GenericEdgeLabelCalculator("SimpleBioMoleculeEditor Edge Label Passthrough", passThroughMapping);
-	        eac.setEdgeLabelCalculator(edgeLabelCalculator);
-	    }
-
+	    /**
+	     * creates a passthrough mapping for Node Label
+	     * TODO: what attribute should this be based upon: canonical name, label?
+	     * @param nac
+	     */
 	    private void createNodeLabel(NodeAppearanceCalculator nac) {
 	        PassThroughMapping passThroughMapping = new PassThroughMapping("",
 	                ObjectMapping.NODE_MAPPING);
 	        
-	        // AJK: 05/09/06 BEGIN
 	        //      change canonicalName to Label
 //	        passThroughMapping.setControllingAttributeName
 //	                ("canonicalName", null, false);
 	        passThroughMapping.setControllingAttributeName
 //            (Semantics.LABEL, null, false);
 	        (Semantics.CANONICAL_NAME, null, false);
-	        // AJK: 05/09/06 END
-
-	        // AJK: 05/09/96 END
 	
 	        GenericNodeLabelCalculator nodeLabelCalculator =
 	                new GenericNodeLabelCalculator("SimpleBioMoleculeEditor ID Label"
@@ -176,6 +171,11 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        nac.setNodeLabelCalculator(nodeLabelCalculator);
 	    }
 
+	    
+	    /**
+	     * create mappings for Node shape
+	     * @param nac
+	     */
 	    private void createNodeShape(NodeAppearanceCalculator nac) {
 	        DiscreteMapping discreteMapping = new DiscreteMapping
 	                (new Byte(ShapeNodeRealizer.RECT),
@@ -197,6 +197,10 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        nac.setNodeShapeCalculator(nodeShapeCalculator);
 	    }
 
+	    /**
+	     * create mappings for Node color
+	     * @param nac
+	     */
 	    private void createNodeColor(NodeAppearanceCalculator nac) {
 	        DiscreteMapping discreteMapping = new DiscreteMapping
 	                (Color.WHITE,

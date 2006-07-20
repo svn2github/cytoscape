@@ -20,8 +20,6 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
  * builds new instances of editors and network edit event adapters.
  * Before an editor and its network edit event adapter can be built, the editor first needs to be 
  * registered with the CytoscapeEditorManager.
- * <p>
- * This functionality is not available in Cytoscape 2.2
  * 
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
@@ -105,33 +103,19 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 	}
 
 	/**
-	 * creates the network edit event adapter associated with the editor
-	 * @param editor the CytoscapeEditor
+	 * gets an instance of the NetworkEditEventAdaptor associated with the input editor
+	 * The NetworkEditEventAdapter handles events that are associated with user input to the 
+	 * editor, such as mouse actions, drag/drop, keystrokes.  Each NetworkEditEventAdapter is specialized
+	 * for the editor that is is associated with.  This is written by the developer and is at the heart of 
+	 * the specialized behaviour of the editor.
+	 * @param editor
+	 * @return the NetworkEditEventAdapter that is assigned to the editor
+	 * 
 	 */
 	public NetworkEditEventAdapter getNetworkEditEventAdapter(
-			CytoscapeEditor editor) {
-		NetworkEditEventAdapter event = null;
-		String editorType = editor.getEditorName();
-		String adapterName = CytoscapeEditorManager
-				.getNetworkEditEventAdapterType(editorType);
-		try {
-//			Class eventAdapterClass = Class.forName("cytoscape.editor.event."
-//					+ adapterName);
-			Class eventAdapterClass = Class.forName(adapterName);
-			event = (NetworkEditEventAdapter) eventAdapterClass
-				.newInstance();
-			// AJK: 12/05/05 set caller for event class
-            event.set_caller(editor);
-		} catch (ClassNotFoundException ex) {
-			String msg = "Cannot create NetworkEditEvent handler of type: "
-					+ adapterName;
-			ex.printStackTrace();
-		} catch (InstantiationException ex) {
-			ex.printStackTrace();
-		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
-		}
-		return event;
+			CytoscapeEditor editor) 
+	{
+		return editor.getNetworkEditEventAdapter();
 	}
 
 }

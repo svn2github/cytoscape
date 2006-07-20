@@ -4,11 +4,10 @@
  */
 package cytoscape.editor.event;
 
-import edu.umd.cs.piccolo.nodes.PPath;
-import edu.umd.cs.piccolox.util.PFixedWidthStroke;
 import giny.view.NodeView;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -16,6 +15,9 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Iterator;
+
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 
 import phoebe.PhoebeCanvasDropEvent;
 import cytoscape.CyNode;
@@ -25,6 +27,7 @@ import cytoscape.editor.editors.SimpleBioMoleculeEditor;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
 
 /**
  * 
@@ -32,8 +35,6 @@ import cytoscape.view.CyNetworkView;
  * capability to drag and drop shapes from a palette onto the canvas, resulting in the addition of 
  * nodes and edges to the current Cytoscape network.  
  * 
- * <p>
- * This functionality is not available in Cytoscape 2.2.
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
  * @see SimpleBioMoleculeEditor
@@ -83,37 +84,26 @@ public class PaletteNetworkEditEventHandler extends
 	 */
 	public void itemDropped (PhoebeCanvasDropEvent e) {
 		
-		// AJK: 11/20/05 return if we're not dropping into the currently active view
-		// AJK: 04/02/06 go from PGraphView to DGraphView
-		
-//		PGraphView thisView = this.getView();
-//		if (thisView != ((PGraphView) Cytoscape.getCurrentNetworkView()))
-//		{
-//			return;
-//		}
-		
-		
-
-		
-//		System.out.println ("Item dropped at: " + e.getLocation());
-//		System.out.println ("Bounds of current view are: " +
-//				Cytoscape.getCurrentNetworkView().getComponent().getBounds());
-//		
-		
-			
-		
-				
 		Object shape = null;
 		String shapeName = null;
 		
+		// AJK: 07/17/06 BEGIN Debugging code
+		DGraphView view = (DGraphView) Cytoscape.getCurrentNetworkView();
+		JLabel button = new JLabel ("test 1");
+//		view.getCanvas().add(button);
+		view.getBackgroundCanvas().add(button);
+		System.out.println("added component to background canvas: " + view.getBackgroundCanvas());
+		
+		button.setLocation(e.getLocation());
+		button.setPreferredSize(new Dimension (70, 20));
+		button.setOpaque(true);
+		button.setBackground(Color.BLUE);
+		button.setVisible(true);
+		view.getCanvas().repaint();
+		// AJK: 07/17/06 END
 	
 		Point location = e.getLocation();
-		
-		// AJK: 04/02/06 BEGIN
-/*		Point2D locn = (Point2D) location.clone();
-		locn = canvas.getCamera().localToView(locn);
-*/		// AJK: 04/02/06 END
-		
+	
 		Transferable t = e.getTransferable();
 		 
 		BasicCytoShapeEntity myShape = null;
@@ -127,10 +117,11 @@ public class PaletteNetworkEditEventHandler extends
 		    		 {
 		    		 	handleDroppedURL(t, d, location);
 		    		 }
-		    		 else if (t.isDataFlavorSupported(dfl[i]))
+		    		 else if (t.isDataFlavorSupported(dfl[i])) // should be d
 		    		 {
 		    			 try
 		    			 {
+		    				 // should be d
 		    				 shape =  t.getTransferData(dfl[i]);
 		    			 }
 		    			 
@@ -147,78 +138,28 @@ public class PaletteNetworkEditEventHandler extends
 		    		 }
 		 }
 
-//		try
-//		{
-//		    shape = t.getTransferData(DataFlavor.stringFlavor);
-
 		    if (shape != null)
 		    {
 		    	shapeName = shape.toString();
 		    	myShape = ShapePalette.getBasicCytoShapeEntity(shapeName);		    }
-//		}
-//		catch (UnsupportedFlavorException exc)
-//				{
-//					exc.printStackTrace();
-//					return;
-//				}
-//		catch (IOException exc)
-//				{
-//					exc.printStackTrace();
-//					return;					
-//				}
-				
 
-
-        Object [] args = null;
-		if (myShape != null)
+        if (myShape != null)
 		{
 			// need to handle nodes and edges differently 
 			String attributeName = myShape.getAttributeName();
 			String attributeValue = myShape.getAttributeValue();
 			
-			System.out.println("Item dropped of type: " + attributeName);
+//			System.out.println("Item dropped of type: " + attributeName);
 
-			args = new Object []{ "LOCATION", location};
-			if (attributeName.equals(this.NODE_TYPE)
-//					||
-//					(attributeName.equals("BIOPAX_NODE_TYPE")))  // TODO: incorporate the processing
-				// of BIOPAX_NODE_TYPE into the SimpleBioMoleculeEditor class
-					)
+			if (attributeName.equals(PaletteNetworkEditEventHandler.NODE_TYPE))
 			{
 				this.setNodeAttributeName(attributeName);
 				this.setNodeAttributeValue(attributeValue);
-				CyNode cn = _caller.addNode("node" + counter, 
+				_caller.addNode("node" + counter, 
 						attributeName, attributeValue, location);
 			    counter++;				
-//				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
-//	
-//				Cytoscape.getCurrentNetwork().restoreNode(cn);		
-//				NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
-//				// AJK: 04/02/06
-////				nv.setOffset(locn.getX(), locn.getY());
-//				nv.setOffset(location.x, location.y);
-//			    DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-////			    double zoomFactor = dview.getZoom();
-////			    Point2D dCenter = dview.getCenter();
-////			    Rectangle2D dBounds = (Rectangle2D) dview.getCanvas().getBounds();
-////			    System.out.println("item dropped at local coordinate: " + location.x + "," + location.y);
-////			    System.out.println("bounds are at: " + dBounds.getMinX() + "," + 
-////			    		dBounds.getMinY() + " " + dBounds.getMaxX() + "," + dBounds.getMaxY());
-////                System.out.println("zoom factor is: " + zoomFactor);			    
-//			    
-//			    double [] locn = new double[2];
-//                locn [0] = location.getX();
-//                locn [1] = location.getY();
-//                dview.xformComponentToNodeCoords(locn);
-//                nv.setOffset(locn[0], locn[1]);
-//			    
-////			    nv.setOffset(xlocn, ylocn);
-//			    System.out.println("Offset set to: " + locn[0] + "," + locn[1]);
-//				
-//				// AJK: 04/02/06 END
-				
 			}
-			else if (attributeName.equals(this.EDGE_TYPE))
+			else if (attributeName.equals(PaletteNetworkEditEventHandler.EDGE_TYPE))
 			{
 				this.setEdgeAttributeName(attributeName);
 				this.setEdgeAttributeValue(attributeValue);
@@ -243,14 +184,14 @@ public class PaletteNetworkEditEventHandler extends
 //		locn = canvas.getCamera().localToView(locn);
 		
 		editEvent = this;
-//		if (getMode() != SELECT_MODE) {
 		if (edgeStarted)
 		{
 			// if there is another edit in progress, then don't process a drag/drop
 			return;
 		}
+		// NB: targetNode is *drop* target
 		NodeView targetNode = findEdgeDropTarget (locn);
-		System.out.println ("drop target = " + targetNode);
+//		System.out.println ("drop target = " + targetNode);
 		if (targetNode == null)
 		{
 			return;
@@ -259,24 +200,18 @@ public class PaletteNetworkEditEventHandler extends
 		// if we reach this point, then the edge shape has been dropped onto a nod3e
 		nextPoint = e.getLocation();
 		boolean onNode = true;
-//		locator.setNode((PNode) targetNode);
-//		nextPoint = locator.locatePoint(nextPoint);
-//		nextPoint = ((PNode) targetNode).localToGlobal(nextPoint);
 		if (onNode && !(edgeStarted)) {
 			// Begin Edge creation			
 			setHandlingEdgeDrop(true);
-//			setMode(CONNECT_MODE);
 			edgeStarted = true;
 			setEdgeStarted(true);
 			setNode(targetNode);
-			edge = new PPath();			
-//			getCanvas().getLayer().addChild(edge);
-
-			edge.setStroke(new PFixedWidthStroke(3));
-			edge.setPaint(Color.black);
+//			edge = new PPath();			
+//
+//			edge.setStroke(new PFixedWidthStroke(3));
+//			edge.setPaint(Color.black);
 			startPoint = nextPoint;
 			updateEdge();
-			setEdge(edge);
 			setStartPoint(startPoint);
 		}
 	}
@@ -287,18 +222,16 @@ public class PaletteNetworkEditEventHandler extends
 	 * TODO: findEdgeDropTarget currently iterates through all of the Nodes in the current network and 
 	 * checks whether the drop event position is contained within the bounds of the node.    Is 
 	 * there a more efficient way to do this?
+	 * TODO: 06/22/06: update this to use new renderer routines for finding nodes intersecting point
 	 * @param location the location of the drop event
 	 * @return the NodeView that is located at the drop location.
 	 */
 	public NodeView findEdgeDropTarget (Point2D location)
 	{
-//		double locnX = location.getX();
-//		double locnY = location.getY();
 		
 		double[] locn = new double[2];
 		locn[0] = location.getX();
 		locn[1] = location.getY();
-		int chosenNode = 0;
 		this.getView().xformComponentToNodeCoords(locn);
 		double locnX = locn[0];
     	double locnY = locn[1];
@@ -339,16 +272,14 @@ public class PaletteNetworkEditEventHandler extends
 		{
 			
 		    URL = t.getTransferData(d);
-		    if (URL != null)
+			if (URL != null)
 		    {
-		    	String URLString = URL.toString();
-			    System.out.println ("Handling dropped URL = " + URLString);
+		    	//			    System.out.println ("Handling dropped URL = " + URLString);
 		    	CyNode cn = _caller.addNode("node" + counter, 
 						"URL");
 			    counter++;				
-				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
-				Cytoscape.getCurrentNetwork().restoreNode(cn);						
-				NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
+				Cytoscape.getCurrentNetwork().restoreNode(cn);
+
 		    }
 		}
 		catch (UnsupportedFlavorException exc)

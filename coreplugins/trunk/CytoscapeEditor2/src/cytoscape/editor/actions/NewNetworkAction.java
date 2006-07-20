@@ -26,22 +26,8 @@ import cytoscape.view.CyNetworkView;
 public class NewNetworkAction extends CytoscapeAction {
 
 
-	/**
-	 * the name (and type) of the editor to be created
-	 */
-	private String editorName;
-
-	/**
-	 * TODO: not used, delete this.
-	 */
-	private CytoscapeEditorFactory factory;
-
-	private static int counter = 0;
-
 	public NewNetworkAction(String editorName, CytoscapeEditorFactory factory) {
 		super(editorName);
-		this.editorName = editorName;
-		this.factory = factory;
 		setPreferredMenu("File.New.Network");
 	}
 
@@ -53,7 +39,7 @@ public class NewNetworkAction extends CytoscapeAction {
 	/**
 	 * create the new network and assign a CytosapeEdtor
 	 * note that an editor must be first initialized before a new network can be added and the editor assigned to it.
-	 * in Cytoscape version 2.2, this editor initializatoin is performed upon startup.
+	 * in Cytoscape version 2.3, this editor initializatoin is performed upon startup.
 	 */
 	public void actionPerformed(ActionEvent e) {
 
@@ -68,15 +54,11 @@ public class NewNetworkAction extends CytoscapeAction {
 		}
 
 		else {
-//			CyNetwork _newNet = Cytoscape.createNetwork("Net:"
-//					+ CytoscapeEditorManager.getNetworkNameCounter());
 			CyNetwork _newNet = Cytoscape.createNetwork(
 					CytoscapeEditorManager.createUniqueNetworkName());
-			CytoscapeEditorManager.incrementNetworkNameCounter();
 
 			CyNetworkView newView = Cytoscape.createNetworkView(_newNet);
 
-			CytoscapeEditorManager.setEditorForNetwork(_newNet, cyEditor);
 			CytoscapeEditorManager.setEditorForView(newView, cyEditor); 
 	        
 			// AJK: 06/05/06 BEGIN

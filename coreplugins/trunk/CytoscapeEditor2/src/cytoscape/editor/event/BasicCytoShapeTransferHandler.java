@@ -18,8 +18,7 @@ import cytoscape.editor.impl.BasicCytoShapeEntity;
  * transfer handler for shapes that are dragged from the palette onto the canvas.
  * Creates appropriate data flavor and transferrable.
  * part of drag/drop editor framework.
- * <p>
- * not available in Cytoscape 2.2.
+ * 
  * @author Allan Kuchinsky
  * @version 1.0
  * @see GraphicalEntity, BasicCytoShapeEntity
@@ -142,9 +141,6 @@ public class BasicCytoShapeTransferHandler extends TransferHandler {
     class BasicCytoShapeTransferable implements Transferable {
     	
         private BasicCytoShapeEntity _cytoShape;
-        private String _attributeName;
-        private String _attributeValue;
-
         BasicCytoShapeTransferable(JComponent obj) {
         	if (obj instanceof BasicCytoShapeEntity)
         	{
