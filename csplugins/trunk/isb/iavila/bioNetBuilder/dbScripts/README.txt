@@ -13,40 +13,30 @@ This directory contains the Perl scripts we wrote to create and populate all of 
 You can run any of these scripts to create or update your own mySQL databases (if  you are managing your own BioNetBuilder server).
 You can also use these scripts as a guide to write your own Perl scripts to create and populate new databases you are adding to BioNetBuilder.
 
-If you want to create and populate ALL databases (DIP, BIND, GO, KEGG, Prolinks, and synonyms) then do this:
+Use the update.pl script to update a set of databases. The script takes these arguments:
 
-1. Update initiate.props to include the user name and password for your mySQL server.
-Make sure that this user has permissions to insert, update, create, delete, and drop tables and databases.
+update.pl -u=db user -p=db password  [synonyms=synonyms db name] [prolinks=prolinks db name] [kegg=kegg db name] [bind=bind db name] [dip=dip db name] [hprd=hprd db name][go=go db name] 
 
-2. For the following databases, you have to manually download their flat-files:
+For each database that you wish to update, you need its name (one of synonyms, prolinks, kegg, bind, dip, hprd, and go) and the actual name of the mySQL database that will hold its information.
+You also need a mySQL user and password with permissions to create, drop, and update databases and tables, insert into tables, etc.
+For example, if you want to update bind, do the following:
+perl update.pl -u=myuser -p=mypassword bind=bind1
+
+For the following databases, you have to manually download their flat-files (since you will need to register):
 
 DIP: Download must be obtained before hand and copied to "dip" directory at the same level as this document.
 The download can be obtained from DIP's website (http://dip.doe-mbi.ucla.edu/, free registration for academic users), and must be in MIF format.
 Get the "FULL" data set.
 
 HPRD: Must download HPRD PSIMI file to "hprd" directory located in the same directory as this document.
-The file (psimi_single_final.xml) can be downloaded for free for academic users from HPRD's site: hprd.org
+The file (psimi_single_final.xml) can be downloaded for free for academic registered users from HPRD's site: hprd.org
 
-3. Run:
-perl initiate.pl
-This creates and populates DIP, BIND, GO, KEGG, Prolinks, and synonyms, so it will take a while!
-
-4. Run (for HPRD):
-perl update_hprd.pl <db user> <db password> <hprd db name>
-
-
-If you want to update one of the databases, there are scripts that update each:
-
-update_synonyms.pl
-update_dip.pl
+This directory also contains Perl scripts for each individual database:
+update_prolinks.pl
 update_bind.pl
-etc.
+update_hprd.pl
 
-Make sure you update synonyms LAST (after you created/updated everything else).
+Which you can also run. If for some reason, you are using these scripts instead of update.pl, and, you are updating synonyms and another database, make sure you ALWAYS first update synonyms.
 
-Each takes as arguments the user name, password of the mySQL server where the databases will be created and populated, and, the name of the database you wish to create (in that order).
-For example, to create and populate BIND call this script (using your own mySQL db user and password:
-perl update_bind.pl root rootpass bind1
-
-Most of the scripts (except DIP and HPRD) automatically download the database flat-files from a public FTP site provided by the corresponding institution. Ths location of this FTP site may change.
+Most of the scripts (except the ones for DIP and HPRD) automatically download the database flat-files from a public FTP site provided by the corresponding institution. The location of this FTP site may change.
 If you get errors related to not being able to find an FTP URL or file at an FTP site, go to the database's website to see what the new FTP URL is, and then edit the scripts to use the new FTP site.

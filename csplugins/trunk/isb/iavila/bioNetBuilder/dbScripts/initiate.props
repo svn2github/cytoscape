@@ -1,8 +1,0 @@
-# Do not change the positions of the first 3 lines!!!
-#Format (except for first 3 lines): 
-#dbname:propertyName=comma separated property values
-#Edit dbuser and dppwd as necessary
-dbuser=cytouser
-dbpwd=bioNetBuilder
-# If HPRD is available, add it here
-dbnames=prolinks,kegg,bind,dip,go,synonyms

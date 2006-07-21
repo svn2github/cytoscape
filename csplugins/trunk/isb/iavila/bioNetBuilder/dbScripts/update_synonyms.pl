@@ -36,16 +36,6 @@ system("perl update_synonyms_iproclass.pl $dbuser $dbpwd $dbname");
 print "done.\n";
 
 ############ 4 #####################################################
-print "Calling update_synonyms_prolinks.pl...\n";
-system("perl update_synonyms_prolinks.pl $dbuser $dbpwd $dbname"); 
-print "done.\n";
-
-############ 5 #####################################################
-print "Calling update_synonyms_kegg.pl...\n";
-system("perl update_synonyms_kegg.pl $dbuser $dbpwd $dbname"); 
-print "done.\n";
-
-############ 6 #####################################################
 print "Calling update_synonyms_uniprot.pl...\n";
 system("perl update_synonyms_uniprot.pl $dbuser $dbpwd $dbname"); 
 print "done.\n";

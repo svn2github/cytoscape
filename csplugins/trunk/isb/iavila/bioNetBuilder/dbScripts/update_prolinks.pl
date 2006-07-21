@@ -5,7 +5,7 @@
 # Last date modified: December 7, 2005, by Iliana
 # Files are downloaded and uncompressed into new directory ./prolinks, ready to load into mysql db
 # Removes redundant interactions from Prolinks
-# Requires wget software http://www.gnu.org/software/wget/wget.html
+# Requires wget software http://www.gnu.org/software/wget/wget.html and existing synonyms db
 ######################################################################################################
 
 use DBI;
@@ -54,6 +54,7 @@ $dbh->do("USE $dbname") or die "Error: $dbh->errstr";
 
 &create_tables($dbh);
 &import_data($dbh, \@methods, \%thre, \%methodNames, $pwd);
+&update_synonyms_species($dbuser, $dbpwd, $dbname);
 
 $dbh->disconnect();
 print "------------------ Leaving update_prolinks.pl ---------------------\n";
@@ -137,7 +138,7 @@ sub create_tables {
 	print "Creating SPECIES, and method_threshold tables...";
 	my $dbh;
 	$dbh = shift;
-	$dbh->do("CREATE TABLE species (species VARCHAR(100), tablename VARCHAR(100), INDEX (species))") or die "Error: $dbh->errstr";
+	$dbh->do("CREATE TABLE species (taxid INT, tablename VARCHAR(100), INDEX (taxid))") or die "Error: $dbh->errstr";
 	$dbh->do("CREATE TABLE interaction_types (method CHAR(2) KEY, pval FLOAT, description VARCHAR(25), INDEX(method) ) ") or die "Error: $dbh->errstr";
 	print "done\n";
 }
@@ -267,3 +268,23 @@ sub divide_table {
 	}
 }
 
+############################################################################################################
+# NAME update_synonyms_species
+# ROLE updated synonym tables for prolinks in current synonyms db and creates species table in prolinks db
+# CALLS update_synonyms_prolinks.pl script
+# CALLED main program
+
+sub update_synonyms_species {
+	my $dbUser, $dbPass, $prolinks;
+	($dbUser, $dbPass, $prolinks) = shift @_;
+	$bioneth = DBI->connect("dbi:mysql:host=bionetbuilder_info", $dbUser, $dbPass) or die "Can't make database connect: $DBI::errstr\n";
+    # get the current synonyms db
+ 	my $sth = $bioneth->prepare_cached("SELECT dbname FROM db_name WHERE db=?") or die "Error: $dbh->errstr";
+	$sth->execute("synonyms") or die "Error: $dbh->errstr";
+	
+	while ($row = $sth->fetchrow_hashref()) {
+		$synonyms = $row->{'dbname'};
+	}
+	
+	system("./update_synonyms_prolinks.pl ${dbUser} ${dbPass} ${synonyms} ${prolinks}");
+}

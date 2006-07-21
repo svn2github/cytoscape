@@ -517,11 +517,8 @@ while($line = <IN>){
 
 $dbh->do("DROP TABLE IF EXISTS ncbi_taxid_species");
 
-# has_interactions is 0 (does not have interactions) or 1 (has interactions)
-# although it is not used here, it can be used to store whether there are interactions for a given species or not
-# See separate script: set_has_interactions_for_species.pl 
+$dbh->do("CREATE TABLE IF NOT EXISTS ncbi_taxid_species (taxid INT, name VARCHAR(100), INDEX(taxid), KEY(taxid))");
 
-$dbh->do("CREATE TABLE IF NOT EXISTS ncbi_taxid_species (taxid INT, name VARCHAR(100), has_interactions TINYINT, INDEX(taxid), KEY(taxid))");
 $fullFilePath = getcwd()."/taxonomy/taxid_speciesname.txt";
 print "Loading data into ncbi_taxid_species...";
 $dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' IGNORE INTO TABLE ncbi_taxid_species");

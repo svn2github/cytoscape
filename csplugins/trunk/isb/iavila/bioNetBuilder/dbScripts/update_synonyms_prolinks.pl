@@ -84,7 +84,7 @@ while( @row = $sth->fetchrow_array ){
 	
 	$numTables++;
 	
-	$sth4=$plh->prepare( "SELECT gene_id_a FROM $table" );	
+	$sth4=$plh->prepare( "SELECT gene_id_a FROM $table" );
 	$sth4->execute();
 	
 	$foundTaxid = 0;
@@ -116,7 +116,7 @@ while( @row = $sth->fetchrow_array ){
 
 print "Found $numTaxids taxids for $numTables tables.\n";
 
-$plh->do("DROP TABLE species");
+$plh->do("DROP TABLE IF EXISTS species");
 $plh->do("CREATE TABLE species (taxid INT, tablename VARCHAR(100), KEY(taxid,tablename))");
 $fullFilePath = $pwd."/prolinks/syn/taxid.txt";
 $plh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE species");

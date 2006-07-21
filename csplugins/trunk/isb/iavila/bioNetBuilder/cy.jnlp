@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
    codebase= "http://db.systemsbiology.net/cytoscape/bioNetBuilder/webstart"
-   href="cy1.jnlp">
+   href="cy.jnlp">
   <information>
     <title>BioNetBuilder WebStart</title>
     <vendor>Institute For Systems Biology</vendor>

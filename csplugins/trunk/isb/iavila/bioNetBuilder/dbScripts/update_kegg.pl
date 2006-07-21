@@ -335,5 +335,17 @@ close(CP_OUT);
 close(COMPOUND);
 $dbh->disconnect();
 
+### Lastly, update synonyms related tables
+$bioneth = DBI->connect("dbi:mysql:host=bionetbuilder_info", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
+# get the current synonyms db
+my $sth = $bioneth->prepare_cached("SELECT dbname FROM db_name WHERE db=?") or die "Error: $dbh->errstr";
+$sth->execute("synonyms") or die "Error: $dbh->errstr";
+	
+while ($row = $sth->fetchrow_hashref()) {
+	$synonyms = $row->{'dbname'};
+}
+
+system("./update_synonyms_kegg.pl $dbuser $dbpwd ${synonyms} $dbname");
+
 print "\n--------------------- Leaving update_kegg.pl ----------------------\n";
 

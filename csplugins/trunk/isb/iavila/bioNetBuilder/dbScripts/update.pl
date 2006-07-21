@@ -12,22 +12,68 @@ my $testing = 0; # set to 0 when NOT testing!
 print "---------------------- update.pl -------------------------\n";
 
 if(scalar(@ARGV) < 3){
-	print "USAGE update.pl <db user> <db password>  <:prolinks:kegg:bind:dip:go:synonyms:all>\n";
+	print "USAGE update.pl -u=db user -p=db password  [synonyms=synonyms db name] [prolinks=prolinks db name] [kegg=kegg db name] [bind=bind db name] [dip=dip db name] [hprd=hprd db name] [go=go db name]\n".
+	      "Examples:\n".
+	      "Update all dbs: perl update.pl rootuser rootpassword synonyms=synonyms0 prolinks=prolinks0 kegg=kegg0 bind=bind0 dip=dip0 hprd=hprd0 go=go0)\n".
+	      "Update only synonyms and prolinks: perl update.pl rootuser rootpassword synonyms=synonyms0 prolinks=prolinks0\n";
 	die;
 }
 
-$dbuser = $ARGV[0];
-$dbpwd = $ARGV[1];
-
-$fulllist = ":prolinks:kegg:bind:dip:go:synonyms:";
-if ($ARGV[2] =~ /all/) {
-	$updatee = $fulllist;
-}else{
-	$updatee = $ARGV[2];
+$dbuser="";
+$dbpass="";
+$synonyms="";
+$prolinks="";
+$kegg="";
+$bind="";
+$dip="";
+$go="";
+$hprd="";
+foreach $entry (@ARGV){
+	@values=split(/=/, $entry);
+	if($entry =~ /^-u/){
+		$dbuser=$values[1];
+		print "DB user = $dbuser\n";
+	
+	}elsif($entry =~ /^-p/){
+		$dbpass=$values[1];
+		print "DB password = $dbpass\n";
+	
+	}elsif($entry =~ /^synonyms/){
+		$synonyms=$values[1];
+		print "synonyms = $synonyms\n";
+	
+	}elsif($entry =~ /^prolinks/){
+		$prolinks=$values[1];
+		print "prolinks = $prolinks\n";
+	
+	}elsif($entry =~ /^kegg/){
+		$kegg=$values[1];
+		print "kegg = $kegg\n";
+	
+	}elsif($entry =~ /^bind/){
+		$bind=$values[1];
+		print "bind = $bind";
+	
+	}elsif($entry =~ /^dip/){
+		$dip=$values[1];
+		print "dip = $dip";
+	
+	}elsif($entry =~ /^go/){
+		$go=$values[1];
+		print "go = $go";
+	
+	}elsif($entry =~ /^hprd/){
+		$hprd = $values[1];
+		print "hprd = $hprd\n";
+	
+	}
 }
 
+if($dbuser eq "" or $dbpass eq ""){
+	print "No database user or database password given as arguments.\n";
+	die;
+}
 
-print "Database(s) to update: $updatee\n";
 
 $dbh = DBI->connect("dbi:mysql:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
 
@@ -39,30 +85,54 @@ $dbh->do("CREATE TABLE IF NOT EXISTS when_updated (db VARCHAR(30) KEY, timestamp
 $dbh->do("CREATE TABLE IF NOT EXISTS db_name (db VARCHAR(30) KEY, dbname VARCHAR(30))") or die "Could not create db_name: $dbh->errstr\n";
 print "done\n";
 
-my @dbkinds = ('prolinks', 'kegg', 'go','bind','synonyms');
-
-@updatees = split(/:/, $updatee);
-
-print "Calling udpate script for each db...\n";
-foreach $curupdatee (@updatees) { 
-	foreach $dbkind (@dbkinds) {
-		if ($curupdatee eq $dbkind) {
-			my ($dbname, $sth);
-			$dbname = get_db_name($dbh, $dbkind);
-			$newdbname = get_new_db_name($dbname, $dbkind);
-			
-			print "dbname = $dbname, newdbname = $newdbname, script= update_$dbkind.pl\n";			
-
-			# if a db is being updated, we create a new name for it
-	        # so that if the other one is currently being used, we don't crash or mix up data
-			print "Calling command: ./update_${dbkind}.pl ${dbuser} ${dbpwd} ${newdbname}\n";
-			system("./update_${dbkind}.pl ${dbuser} ${dbpwd} ${newdbname}");
-			
-			# done updating, update metainfo
-			update_dbinfo($dbh, $dbkind, $dbname, $newdbname);
-		}
-	}
+if($synonyms ne ""){
+	$cmd = "./update_synonyms.pl ${dbuser} ${dbpass} ${synonyms}";
+	print "$cmd\n";
+	system($cmd);
+	update_dbinfo($dbh, "synonyms", $synonyms);
 }
+
+if($prolinks ne ""){
+	$cmd ="./update_prolinks.pl ${dbuser} ${dbpass} ${prolinks}"
+	system($cmd);
+	update_dbinfo($dbh, "prolinks", ${prolinks});
+}
+
+if($kegg ne ""){
+	$cmd = "./update_kegg.pl ${dbuser} ${dbpass} ${kegg}";
+	print "$cmd\n";
+	system($cmd);
+	update_dbinfo($dbh, "kegg", ${kegg});
+}
+
+if($bind ne ""){
+	$cmd = "./update_bind.pl ${dbuser} ${dbpass} ${bind}";
+	print "$cmd\n";
+	system($cmd);
+	update_dbinfo($dbh, "bind", ${bind});
+}
+
+if($dip ne ""){
+	$cmd = "./update_dip.pl ${dbuser} ${dbpass} ${dip}";
+	print "$cmd\n";
+	system($cmd);
+	update_dbinfo($dbh, "dip", ${dip});
+}
+
+if($hprd ne ""){
+	$cmd = "./update_hprd.pl ${dbuser} ${dbpass} ${hprd}";
+	print "$cmd\n";
+	system($cmd);
+	update_dbinfo($dbh, "hprd", ${hprd});
+}
+
+if($go ne ""){
+	$cmd = "./update_go.pl ${dbuser} ${dbpass} ${go}";
+	print "$cmd\n";
+	system($cmd);
+	update_dbinfo($dbh,"go",${go});
+}
+
 $dbh->disconnect();
 print "\n---------------------- Leaving update.pl -------------------------\n";
 
@@ -84,58 +154,15 @@ sub get_db_name {
 	return $dbname;
 }
 
-############################################################# 
-# Get new name for database: for example, 
-# for prolinks, it returns prolinks0 or prolinks1
-# So if the current prolinks db is contained in prolinks0, then a new
-# prolinks will be created in prolinks1, and prolinks0 will be droped
-# once prolinks1 is fully populated. metainfo.db_name table specifies
-# the current fully popoulated prolinks db that should be used.
-# If testing, returns normal db name with a "_test" ending
-#############################################################
-sub get_new_db_name {
-	my ($dbname, $newdbname);
-
-	$dbname = shift;
-	$dbkind = shift;
-	
-	if($dbname =~ /$0/){
-		#switch to 1
-		if($testing == 0){
-			return $dbname."1";
-		}else{
-			return $dbname."1_test";
-		}
-	}
-	
-	if($dbname =~ /$1/){
-		# switch to 0
-		if($testing == 0){
-			return $dbname."0";
-		}else{
-			return $dbname."0_test";
-		}
-	}
-	
-	# this is the first version of the db to be created:
-	if($testing == 0){
-		return $dbname."0";
-    }else{
-    		return $dbname."0_test";
-    }
-}
-
 #################################################
 # Updates bionetbuilder_info
 #################################################
 sub update_dbinfo {
-	print "Updating db information for $dbname in bionetbuilder_info tables...";
-	my ($dbh, $dbkind, $dbname, $newdbname);
+	my ($dbh, $dbkind, $newdbname);
 	$dbh = shift;
 	$dbkind = shift;
-	$dbname = shift; #old name
 	$newdbname = shift;
-	
+	print "Updating db information for $dbkind in bionetbuilder_info tables...";
 	$dbh->do("INSERT INTO when_updated VALUES (?, CURRENT_TIMESTAMP())", undef, $dbkind) or die "Error: $dbh->errstr";
 	$dbh->do("DELETE FROM db_name WHERE db=?", undef, $dbkind) or die "Error: $dbh->errstr";
 	$dbh->do("INSERT INTO db_name VALUES (?, ?)", undef, $dbkind, $newdbname) or die "Error: $dbh->errstr";

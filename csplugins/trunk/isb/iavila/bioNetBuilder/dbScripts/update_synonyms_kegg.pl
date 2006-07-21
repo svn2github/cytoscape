@@ -11,22 +11,18 @@ use Cwd;
 
 print "--------------------- update_synonym_kegg.pl ------------------\n";
 
-if(scalar(@ARGV) < 3){
-	print "USAGE: perl update_synonym_kegg.pl <db user> <db password> <synonyms db name>\n";
+if(scalar(@ARGV) < 4){
+	print "USAGE: perl update_synonym_kegg.pl <db user> <db password> <synonyms db name> <kegg db name>\n";
  	die;
 }
 
 $dbuser = $ARGV[0];
 $dbpwd = $ARGV[1];
 $synname = $ARGV[2];
+$keggname = $ARGV[3];
 
 $starttime = time;
 
-$metah = DBI->connect("dbi:mysql:database=bionetbuilder_info:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
-$sth = $metah->prepare_cached("SELECT dbname FROM db_name WHERE db=?") or die "Error: $dbh->errstr";
-$sth->execute("kegg") or die "Error: $dbh->errstr";
-@row = $sth->fetchrow_array;
-$keggname = $row[0];
 $keggh = DBI->connect("dbi:mysql:database=$keggname:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
 $syndb = DBI->connect("dbi:mysql:database=$synname:host=localhost", $dbuser, $dbpwd) or die "Error: $dbh->errstr\n";
 
