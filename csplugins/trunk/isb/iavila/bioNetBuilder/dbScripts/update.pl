@@ -52,15 +52,15 @@ foreach $entry (@ARGV){
 	
 	}elsif($entry =~ /^bind/){
 		$bind=$values[1];
-		print "bind = $bind";
+		print "bind = $bind\n";
 	
 	}elsif($entry =~ /^dip/){
 		$dip=$values[1];
-		print "dip = $dip";
+		print "dip = $dip\n";
 	
 	}elsif($entry =~ /^go/){
 		$go=$values[1];
-		print "go = $go";
+		print "go = $go\n";
 	
 	}elsif($entry =~ /^hprd/){
 		$hprd = $values[1];
@@ -75,7 +75,7 @@ if($dbuser eq "" or $dbpass eq ""){
 }
 
 
-$dbh = DBI->connect("dbi:mysql:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
+$dbh = DBI->connect("dbi:mysql:host=localhost", $dbuser, $dbpass) or die "Can't make database connect: $DBI::errstr\n";
 
 print "Create bionetbuilder_info db if not there...";
 $dbh->do("CREATE DATABASE IF NOT EXISTS bionetbuilder_info") or die "Could not create db: $dbh->errstr\n";
@@ -93,7 +93,7 @@ if($synonyms ne ""){
 }
 
 if($prolinks ne ""){
-	$cmd ="./update_prolinks.pl ${dbuser} ${dbpass} ${prolinks}"
+	$cmd ="./update_prolinks.pl ${dbuser} ${dbpass} ${prolinks}";
 	system($cmd);
 	update_dbinfo($dbh, "prolinks", ${prolinks});
 }
