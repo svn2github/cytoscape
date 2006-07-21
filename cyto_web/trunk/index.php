@@ -51,19 +51,19 @@
 					<td width="440" valign="bottom" align="right">
 						<div id="article">
 							<h2>
-								<a href="download.php?file=cyto2_3">
-									Download Cytoscape 2.3!
+								<a href="download.php?file=cyto2_3_1">
+									Download Cytoscape 2.3.1!
 								</a>
 							</h2>
 							<p>
-								New!&nbsp; Cytoscape 2.3 is now available.
+								New!&nbsp; Cytoscape 2.3.1 is now available.
 								<br>
 								<br>
 									<a href="cyto_2_3_features.php">
-									2.3 Release Notes &raquo;
+									2.3.1 Release Notes &raquo;
 									</a>
 								<br>
-									<a href="download.php?file=cyto2_3">
+									<a href="download.php?file=cyto2_3_1">
 									Download &raquo;
 								</a>
 								<br>
@@ -85,6 +85,25 @@
 				<div id="contents">
 					<div id="content">
 						<div id="indent">
+							<div class="item">
+								<br>
+								<p>
+								<big><b>
+									<i>New!</i>&nbsp;&nbsp;Cytoscape 2.3.1
+								</b></big>
+								<table width="100%">
+									<tr valign="top">
+										<td width="47%" valign="top">
+											<br>
+											(Updated 7/21/2006)
+											<br>
+											No major new features, just bug fixes and some behind-the-scenses refactoring.	
+											<br>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<p>
 							<div class="item">
 								<br>
 								<p>
@@ -115,11 +134,11 @@
 												<li>Re-organized menu system</li>
 												<li>Many performance improvements and bug fixes</li>
 											</ul>
-											<a HREF="cyto_2_3_features.php">Cytoscape 2.3 Release Notes</a>
+											<a HREF="cyto_2_3_features.php">Cytoscape 2.3.1 Release Notes</a>.1
 										</td>
 										<td valign="top">
 											<A HREF="screenshots/cytoscapeMainWindowv2_3.png">
-												<img src="screenshots/cyto_2_3_thumb.png" border="0" align="left" alt="Cytoscape 2.3 Screenshot" />
+												<img src="screenshots/cyto_2_3_thumb.png" border="0" align="left" alt="Cytoscape 2.3.1 Screenshot" />
 											</A>
 										</td>
 									</tr>

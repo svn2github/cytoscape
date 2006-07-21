@@ -69,6 +69,14 @@ $cyto2_3_zip_east = $chianti_base."Cyto-2_3/cytoscape-v2.3.zip";
 $cyto2_3_source_east = $chianti_base."Cyto-2_3/cytoscapeSource-v2.3.tar.gz";
 $cyto2_3_mac_east = $chianti_base."Cyto-2_3/Cytoscape-v2.3.dmg.zip";
 
+#################################################
+# Cytoscape 2.3.1 Release File Names
+#################################################
+$cyto2_3_1_gz_east = $chianti_base."Cyto-2_3_1/cytoscape-v2.3.1.tar.gz";
+$cyto2_3_1_zip_east = $chianti_base."Cyto-2_3_1/cytoscape-v2.3.1.zip";
+$cyto2_3_1_source_east = $chianti_base."Cyto-2_3_1/cytoscapeSource-v2.3.1.tar.gz";
+$cyto2_3_1_mac_east = $chianti_base."Cyto-2_3_1/Cytoscape-v2.3.1.dmg.zip";
+
 
 #################################################
 # URL for Cytoscape Install Anywhere
@@ -79,6 +87,7 @@ $cyto2_1_install_anywhere = "http://chianti.ucsd.edu/Cyto2.1/install.htm";
 
 $cyto2_2_install_anywhere = "http://chianti.ucsd.edu/Cyto-2_2/install.htm";
 $cyto2_3_install_anywhere = "http://chianti.ucsd.edu/Cyto-2_3/install.htm";
+$cyto2_3_1_install_anywhere = "http://chianti.ucsd.edu/Cyto-2_3_1/install.htm";
 
 ##################################################
 # Log file for Agilent Literature Search
