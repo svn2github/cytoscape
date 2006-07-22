@@ -32,6 +32,9 @@ import nct.graph.basic.BasicGraph;
 import nct.graph.Graph;
 import nct.graph.Edge;
 
+import nct.visualization.cytoscape.Monitor;
+import nct.visualization.cytoscape.Monitorable;
+
 /**
  * This class implements the SearchGraph interface.  It implements the
  * greedy search algorithm described in the supplemental material of
@@ -40,7 +43,7 @@ import nct.graph.Edge;
  * Complexes are defined as  branched or unbranched pathways invovling 
  * minSeedSize or more nodes.
  */
-public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> implements SearchGraph<NodeType,Double> {
+public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> implements SearchGraph<NodeType,Double>, Monitorable {
 
 	/**
 	 * This List keeps track of the graphs (usually paths) used as seeds.
@@ -88,6 +91,8 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	private Graph<NodeType,Double> graph;
 
 	private boolean createSeeds;
+
+	private Monitor monitor = null;
 
 	/**
 	 * Sets the max and min sizes for complexes. 
@@ -166,8 +171,15 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 //		System.out.println("queue size: " + queue.size());
 
+		int solnCount = 0;
 		// Begin growing each seed into a complex.
 		for(Graph<NodeType,Double> soln: queue) {
+			solnCount++;
+			if (monitor != null)
+			{
+				if (monitor.needToHalt()) break;
+				monitor.setPercentCompleted(solnCount * 100 / queue.size());
+			}
 			//log.fine("Beginning Soln: " + soln);
 //			System.out.println("Beginning Soln: " + soln);
 //			for ( NodeType nn : soln.getNodes() )
@@ -286,6 +298,16 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 		}
 
 		return returnList;
+	}
+
+	public void setMonitor(Monitor monitor)
+	{
+	  this.monitor = monitor;
+	}
+
+	public Monitor getMonitor()
+	{
+	  return monitor;
 	}
 
 	public void setSeeds(List<Graph<NodeType,Double>> seeds) {
