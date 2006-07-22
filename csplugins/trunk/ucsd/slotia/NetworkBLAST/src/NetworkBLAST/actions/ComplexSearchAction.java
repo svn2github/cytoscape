@@ -159,19 +159,25 @@ public class ComplexSearchAction extends AbstractAction
 	//
 
 	if (monitor != null)
-	{
-	  monitor.setPercentCompleted(50);
 	  monitor.setStatus("Performing complex search...");
-	}
+	nctMonitor = new Monitor()
+	{
+	  public void setPercentCompleted(int percent)
+	  {
+	    if (monitor != null)
+	      monitor.setPercentCompleted(50 + percent * 25 / 100);
+	  }
+	};
+	greedyComplexes.setMonitor(nctMonitor);
 	
 	List<Graph<String,Double>> resultComplexes =
 		greedyComplexes.searchGraph(graph, scoreModel);
 
+        if (needToHalt) return;
 	// Step 4: Filter results
 	//
 	
 	/*
-        if (needToHalt) return;
         Filter<String,Double> dupeFilter = new DuplicateThresholdFilter
 		<String,Double>(dupeThreshold);
         Filter<String,Double> dupeNodeFilter = new UniqueCompatNodeFilter();

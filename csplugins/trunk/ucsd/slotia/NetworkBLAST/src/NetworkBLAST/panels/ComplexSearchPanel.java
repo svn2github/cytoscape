@@ -7,7 +7,7 @@
 package NetworkBLAST.panels;
 
 import NetworkBLAST.NetworkBLASTDialog;
-import NetworkBLAST.actions.ComplexSearch;
+import NetworkBLAST.actions.ComplexSearchAction;
 import NetworkBLAST.comboBoxes.NetworkComboBox;
 
 /**
@@ -77,7 +77,7 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
         });
 
         searchButton.setText("Search");
-        searchButton.addActionListener(new ComplexSearch(parentDialog));
+        searchButton.addActionListener(new ComplexSearchAction(parentDialog));
 
         restoreDefaultsButton.setText("Restore Defaults");
         restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener() {
@@ -280,7 +280,7 @@ public class ComplexSearchPanel extends javax.swing.JPanel {
             seedSizeWarningLabel.setVisible(true);
             return;
         }
-        seedSizeWarningLabel.setVisible(true);
+        seedSizeWarningLabel.setVisible(false);
     }
     
     private void checkLimitInput()

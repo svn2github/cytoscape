@@ -7,7 +7,7 @@
 package NetworkBLAST.panels;
 
 import NetworkBLAST.NetworkBLASTDialog;
-import NetworkBLAST.actions.PathSearch;
+import NetworkBLAST.actions.PathSearchAction;
 import NetworkBLAST.comboBoxes.NetworkComboBox;
 
 /**
@@ -77,7 +77,7 @@ public class PathSearchPanel extends javax.swing.JPanel {
         });
 
         searchButton.setText("Search");
-        searchButton.addActionListener(new PathSearch(parentDialog));
+        searchButton.addActionListener(new PathSearchAction(parentDialog));
 
         jButton1.setText("Restore Defaults");
         jButton1.addActionListener(new java.awt.event.ActionListener() {

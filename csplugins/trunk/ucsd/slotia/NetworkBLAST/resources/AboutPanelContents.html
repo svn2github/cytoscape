@@ -1,4 +1,19 @@
 <html>
-<p><h2>NetworkBLAST</h2></p>
-<p>yadda yadda yada</p>
+<p><h1>NetworkBLAST</h1></p>
+<p><h2>What does NetworkBLAST Do?</h2></p>
+<p>The NetworkBLAST Plug-in provides facilities for comparative analysis of two protein networks within Cytoscape. The plug-in uses the Network Comparison Toolkit (NCT) Library for performing the comparative algorithms. The NCT library employs algorithms based on PathBLAST research (1).</p>
+<p>NetworkBLAST aligns two protein interaction graphs represented by Cytoscape networks to highlight strongly homologous pathways. The results are Cytoscape networks whose nodes represent homologous proteins and whose edges represent the probability of the homology.</p>
+<p><h2>Using NetworkBLAST</h2></p>
+<p><h3>Before Using NetworkBLAST: Having the Right Input Graphs</h3></p>
+<p><b>Input Graphs</b></p>
+<p>The edges of each input graph must have the <i>interaction</i> attribute that  defines the probability of the protein interaction. It must have the probability stored as a string.</p>
+<p>SIF Files: Each line in a SIF file defines an edge. Each line has the format:
+<br><i>name_of_source_node interaction_type name_of_target_node</i>
+<br>Storing the probability of the interaction is done by replacing <i>interaction_type</i> with the numerical value of the probability. For example:
+<br><pre>node1 0.07261985 node2</pre>
+The above line defines the edge between node1 and node2 with the interaction probability of 0.07261985. When the SIF file is imported into Cytoscape, it will properly parse the probability and store it in the <i>interaction</i> attribute.</p>
+<p><h2>References</h2></p>
+<ol>
+<li>Kelley, B. P., Yuan, B., Lewitter, F., Sharan, R., Stockwell, B. R., and Ideker T. PathBLAST: a tool for alignment of protein interaction networks. Nucleic Acids Res.32(Web Server issue):W83-8. 2004
+</ol>
 </html>

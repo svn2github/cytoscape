@@ -6,7 +6,7 @@
 
 package NetworkBLAST.panels;
 
-import NetworkBLAST.actions.GenerateCompatGraph;
+import NetworkBLAST.actions.GenerateCompatGraphAction;
 import NetworkBLAST.NetworkBLASTDialog;
 import NetworkBLAST.comboBoxes.ScoreModelComboBox;
 import NetworkBLAST.comboBoxes.NetworkComboBox;
@@ -49,7 +49,7 @@ public class CompatGraphPanel extends javax.swing.JPanel {
         jLabel4.setText("Score Model:");
 
         generateButton.setText("Generate");
-        generateButton.addActionListener(new GenerateCompatGraph(this.parentDialog));
+        generateButton.addActionListener(new GenerateCompatGraphAction(this.parentDialog));
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
