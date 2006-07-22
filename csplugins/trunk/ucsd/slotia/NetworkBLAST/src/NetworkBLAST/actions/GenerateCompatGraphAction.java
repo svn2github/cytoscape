@@ -37,9 +37,9 @@ import NetworkBLAST.NetworkBLASTDialog;
 
 import java.io.PrintWriter;
 
-public class GenerateCompatGraph extends AbstractAction
+public class GenerateCompatGraphAction extends AbstractAction
 {
-  public GenerateCompatGraph(NetworkBLASTDialog _parentDialog)
+  public GenerateCompatGraphAction(NetworkBLASTDialog _parentDialog)
   {
     super();
     this.parentDialog = _parentDialog;

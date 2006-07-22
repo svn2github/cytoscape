@@ -30,9 +30,9 @@ import nct.networkblast.score.SimpleEdgeScoreModel;
 
 import NetworkBLAST.NetworkBLASTDialog;
 
-public class PathSearch extends AbstractAction
+public class PathSearchAction extends AbstractAction
 {
-  public PathSearch(NetworkBLASTDialog parentDialog)
+  public PathSearchAction(NetworkBLASTDialog parentDialog)
   {
     super();
     this.parentDialog = parentDialog;
@@ -45,6 +45,7 @@ public class PathSearch extends AbstractAction
     final boolean limitResults = parentDialog.getPathSearchPanel()
     		.getLimitCheckBox().isSelected();
     
+    // Parse the parameters for the path search
     try
     {
       JTextField pathSizeTextField = parentDialog.getPathSearchPanel()
@@ -70,19 +71,10 @@ public class PathSearch extends AbstractAction
       return;
     }
 
-    JTaskConfig jTaskConfig = new JTaskConfig();
-    jTaskConfig.displayCancelButton(true);
-    jTaskConfig.displayCloseButton(false);
-    jTaskConfig.displayStatus(true);
-    jTaskConfig.displayTimeElapsed(true);
-    jTaskConfig.displayTimeRemaining(false);
-    jTaskConfig.setAutoDispose(true);
-    jTaskConfig.setModal(true);
-    jTaskConfig.setOwner(Cytoscape.getDesktop());
-
+    // Begin performing the path search
     Task task = new Task()
     {
-      private TaskMonitor monitor = null;
+      private TaskMonitor cytoMonitor = null;
       private boolean needToHalt = false;
       private Monitor nctMonitor = null;
 
@@ -96,7 +88,7 @@ public class PathSearch extends AbstractAction
       }
 	
       public void setTaskMonitor(TaskMonitor monitor)
-        { this.monitor = monitor; }
+        { this.cytoMonitor = monitor; }
       
       public void run()
       {
@@ -108,12 +100,12 @@ public class PathSearch extends AbstractAction
 	
 	// Step 1: Convert the compatibility graph
 	//
-
+	
 	if (needToHalt) return;
-	if (monitor != null)
+	if (cytoMonitor != null)
 	{
-	  monitor.setPercentCompleted(0);
-	  monitor.setStatus("Converting graph...");
+	  cytoMonitor.setPercentCompleted(0);
+	  cytoMonitor.setStatus("Converting graph...");
 	}
 	
         Graph<String,Double> graph = CytoscapeConverter.convert(getGraph(),
@@ -123,8 +115,8 @@ public class PathSearch extends AbstractAction
 	//
 
 	if (needToHalt) return;
-        if (monitor != null)
-	  monitor.setStatus("Performing path search...");
+        if (cytoMonitor != null)
+	  cytoMonitor.setStatus("Performing path search...");
 	
         ColorCodingPathSearch<String> colorCoding = null;
 	if (limitResults)
@@ -136,8 +128,8 @@ public class PathSearch extends AbstractAction
 	{
 	  public void setPercentCompleted(int percent)
 	  {
-	    if (monitor != null)
-	      monitor.setPercentCompleted(33 + percent * 33 / 100);
+	    if (cytoMonitor != null)
+	      cytoMonitor.setPercentCompleted(33 + percent * 33 / 100);
 	  }
 	};
 	colorCoding.setMonitor(nctMonitor);
@@ -150,8 +142,10 @@ public class PathSearch extends AbstractAction
 
 	// Step 3: Filter results
 	//
-	
+
+	System.out.println("NetworkBLAST: Unfiltered results: " + resultPaths.size());
 	if (needToHalt) return;
+
         Filter<String,Double> dupeFilter = new DuplicateThresholdFilter
 		<String,Double>(dupeThreshold);
         Filter<String,Double> dupeNodeFilter = new UniqueCompatNodeFilter();
@@ -161,6 +155,18 @@ public class PathSearch extends AbstractAction
         resultPaths = dupeNodeFilter.filter(resultPaths);
         resultPaths = sortFilter.filter(resultPaths);
 
+	System.out.println("NetworkBLAST: Filtered results: " + resultPaths.size());
+	
+	if (resultPaths.size() == 0)
+	{
+	  JOptionPane.showMessageDialog(null,
+	    "Path Search has been unable to find any results.\n\nCheck to "
+	  + "see if the selected network is the\ndesired compatibility graph "
+	  + "and the search\nparameters have been specified correctly.",
+	  "NetworkBLAST: Path Search", JOptionPane.WARNING_MESSAGE);
+
+	  return;
+	}
 	// Step 4: Convert results to Cytoscape network
 	//
 
@@ -169,21 +175,53 @@ public class PathSearch extends AbstractAction
         for (int i = 0; i < resultPaths.size(); i++)
         {
 	  if (needToHalt) return;
-	  if (monitor != null)
+	  if (cytoMonitor != null)
 	  {
-	    monitor.setPercentCompleted(66 + (i + 1) * 33 / resultPaths.size());
-	    monitor.setStatus("Converting results... " + (i + 1) +
+	    cytoMonitor.setPercentCompleted(66 + (i + 1) * 33 /
+	    	resultPaths.size());
+	    cytoMonitor.setStatus("Converting results... " + (i + 1) +
 	    	" of " + resultPaths.size());
 	  }
 
+	  CyNetwork n =
           CytoscapeConverter.convert( resultPaths.get(i),
 	  	"Path Search " + pathSearchCount + ": Result " + (i + 1)
 		+ " of " + resultPaths.size(), nctMonitor );
+	  writeGraph(n, i);
         }
       }
     };
 
+    JTaskConfig jTaskConfig = new JTaskConfig();
+    jTaskConfig.displayCancelButton(true);
+    jTaskConfig.displayCloseButton(false);
+    jTaskConfig.displayStatus(true);
+    jTaskConfig.displayTimeElapsed(true);
+    jTaskConfig.displayTimeRemaining(false);
+    jTaskConfig.setAutoDispose(true);
+    jTaskConfig.setModal(true);
+    jTaskConfig.setOwner(Cytoscape.getDesktop());
+
     TaskManager.executeTask(task, jTaskConfig);
+  }
+
+  private static void writeGraph(CyNetwork g, int r)
+  {
+    cytoscape.data.CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+  try
+  {
+    java.io.PrintWriter out = new java.io.PrintWriter("/cellar/users/slotia/outputs/cytoscape/path_" + r + ".sif");
+    java.util.Iterator edges = g.edgesIterator();
+    while (edges.hasNext())
+    {
+      giny.model.Edge e = (giny.model.Edge) edges.next();
+      String interaction = edgeAttrs.getStringAttribute(e.getIdentifier(), "description");
+      out.println(e.getSource().getIdentifier() + "\t\t" + interaction + "\t\t" + e.getTarget().getIdentifier());
+    }
+    out.close();
+  } catch (Exception e)
+  {
+  }
   }
   
   private CyNetwork getGraph()

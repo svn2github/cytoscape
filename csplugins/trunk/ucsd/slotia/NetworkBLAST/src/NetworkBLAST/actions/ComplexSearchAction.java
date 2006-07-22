@@ -30,9 +30,9 @@ import nct.networkblast.score.SimpleEdgeScoreModel;
 
 import NetworkBLAST.NetworkBLASTDialog;
 
-public class ComplexSearch extends AbstractAction
+public class ComplexSearchAction extends AbstractAction
 {
-  public ComplexSearch(NetworkBLASTDialog parentDialog)
+  public ComplexSearchAction(NetworkBLASTDialog parentDialog)
   {
     super();
     this.parentDialog = parentDialog;
@@ -170,6 +170,7 @@ public class ComplexSearch extends AbstractAction
 	// Step 4: Filter results
 	//
 	
+	/*
         if (needToHalt) return;
         Filter<String,Double> dupeFilter = new DuplicateThresholdFilter
 		<String,Double>(dupeThreshold);
@@ -179,6 +180,17 @@ public class ComplexSearch extends AbstractAction
         resultComplexes = dupeFilter.filter(resultComplexes);
         resultComplexes = dupeNodeFilter.filter(resultComplexes);
         resultComplexes = sortFilter.filter(resultComplexes);
+*/
+	if (resultPaths.size() == 0)
+	{
+	  JOptionPane.showMessageDialog(null,
+	    "Complex Search has been unable to find any results.\n\nCheck to "
+	  + "see if the selected network is the\ndesired compatibility graph "
+	  + "and the search\nparameters have been specified correctly.",
+	  "NetworkBLAST: Complex Search", JOptionPane.WARNING_MESSAGE);
+
+	  return;
+	}
 
 	// Step 5: Convert results to Cytoscape network
 	//
