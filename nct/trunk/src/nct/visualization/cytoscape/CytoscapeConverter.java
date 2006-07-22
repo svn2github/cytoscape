@@ -78,6 +78,8 @@ public class CytoscapeConverter {
 	    		if (monitor != null && monitor.needToHalt()) return null;
 
 			CyEdge edge = (CyEdge) it.next();
+			
+			String description = edgeAttrs.getStringAttribute( edge.getIdentifier(), "description" );
 
 			Double weight;
 			try {
@@ -89,7 +91,7 @@ public class CytoscapeConverter {
 				weight = new Double(1.0);
 			}
 
-			graph.addEdge( edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), weight);
+			graph.addEdge( edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), weight, description);
 
 		}
 		return graph;
