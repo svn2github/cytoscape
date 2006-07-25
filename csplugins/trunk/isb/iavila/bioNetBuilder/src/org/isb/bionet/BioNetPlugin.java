@@ -114,6 +114,7 @@ public class BioNetPlugin extends CytoscapePlugin {
               this.interactionsClient.addSource(BindInteractionsSource.class.getName());
               this.interactionsClient.addSource(DipInteractionsSource.class.getName());
               this.interactionsClient.addSource(HPRDInteractionsSource.class.getName());
+              this.interactionsClient.addSource(BioGridInteractionsSource.class.getName());
               
           } catch (IOException ioex) {
               ioex.printStackTrace();

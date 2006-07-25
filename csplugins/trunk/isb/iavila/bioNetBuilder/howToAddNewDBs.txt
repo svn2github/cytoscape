@@ -6,7 +6,7 @@ Updated: Kevin Drew July 18th, 2006
 
 To add a new interactions database to BioNetBuilder you need to:
 
-1. Create and populate a mySQL database that stores the database's interactions
+1. Create and populate a mySQL database that stores the database's interactions, make sure you add to the bionetbuilder_info.dbname table a new entry for your new database
 
 2. Write a Java class that implements org.isb.bionet.datasource.interactions.InteractionsDataSource or that extends org.isb.bionet.datasource.interactions.SimpleInteractionsSource
 
@@ -14,7 +14,9 @@ To add a new interactions database to BioNetBuilder you need to:
 
 4. Add a few lines of Java code to class org.isb.bionet.gui.wizard.EdgeSourcesPanel (we explain more in this document)
 
-5. Compile, jar,  and re-start the BioNetBuilder server
+5. Add one like of Java code to class org.isb.bionet.BioNetPlugin 
+
+6. Compile, jar,  and re-start the BioNetBuilder server
 
 As you can see, this is an involved process that requires experience with Java programming, basic mySQL operations (creating a database and populating it), and experience with the SQL language.
 
@@ -84,7 +86,7 @@ In which case, you can still use the Java class I wrote to query the earlier sim
 
 If the design of the tables above do not meet your needs, you can create a table that looks nothing like them, or use more than one table if you wish. In this case, you will need to implement class org.isb.bionet.datasource.interactions.InteractionsDataSource.
 
-One last step you MUST not forget is to add an entry to the table named "db_name" in the database "bionetbuilder_info" (which exists in the default BioNetBuilder server, whether you are using ours, or your own). This table contains a unique name for a database, like "bind" and a name of the mySQL database that currently holds the interactions in that database, like "bind0". This is in place so that if you are updating the bind interactions by running a script that takes too long, you can do so in a new database called "bind1". When "bind1" is completely updated, you can set "bind" in "db_name" to point to "bind1" so that the server uses this newly updated database and you can still hold on to the older "bind0" if you wish to do so.
+IMPORTANT: One last step you MUST not forget is to add an entry to the table named "db_name" in the database "bionetbuilder_info" (which exists in the default BioNetBuilder server, whether you are using ours, or your own). This table contains a unique name for a database, like "bind" and a name of the mySQL database that currently holds the interactions in that database, like "bind0". This is in place so that if you are updating the bind interactions by running a script that takes too long, you can do so in a new database called "bind1". When "bind1" is completely updated, you can set "bind" in "db_name" to point to "bind1" so that the server uses this newly updated database and you can still hold on to the older "bind0" if you wish to do so.
 
 A quick word on IDs for interactors. If you can, try to use one of these IDs to store your interactors:
 
@@ -156,8 +158,13 @@ For now, just read this, and do what I say.
 Open in an editor class org.isb.bionet.gui.wizard.EdgeSourcesPanel. Search for this string (or a substring of it): "INSERT CODE FOR YOUR OWN DATABASE HERE".
 You will see an if-else statement that basically creates a GUI (which you implemented in the previous step 3) for each database source, stores it in a map, and attaches an action listener to a button that pops-up the GUI. Just look at a couple of code blocks within one of the if statements, and you will know exactly what to do for your own database.
 
+5. Add a line to org.bionet.BioNetPlugin
 
-5. Compile and re-start server
+In method prepareAndPopUpWizard, search for "this.interactionsClient.addSource". You will see that for each interactions database there is a line that adds it to the "interactionsClient".
+Cut and paste one of these lines, and replace the parameter to the "addSource" method with your own database. For example:
+this.interactionsClient.addSource(MyNewInteractionsDB.class.getName());
+
+6. Compile and re-start server
 
 The BioNetBuilder plugin has a build.xml file with ant tasks to compile, create jars, create Java Docs, etc.
 

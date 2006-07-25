@@ -481,7 +481,21 @@ public class EdgeSourcesPanel extends JPanel {
             
             //TODO: An automated way of finding which class is the GUI for a source and creating it
             // INSERT CODE FOR YOUR OWN DATABASE HERE -iliana
-            if(buttonName.equals(HPRDInteractionsSource.NAME)){
+            if(buttonName.equals(BioGridInteractionsSource.NAME)){
+                final BioGridGui dDialog = new BioGridGui();
+                this.sourceToDialog.put(sourceClass,dDialog);
+                button.addActionListener(
+                        new AbstractAction() {
+                           public void actionPerformed(ActionEvent event) {
+                               BioGridGui dDialog = (BioGridGui) sourceToDialog
+                                       .get(sourceClass);
+                               dDialog.pack();
+                               dDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
+                               dDialog.setVisible(true);
+                           }// actionPerformed
+                       });// AbstractAction
+                
+            }else if(buttonName.equals(HPRDInteractionsSource.NAME)){
                 final HPRDParametersDialog hDialog = new HPRDParametersDialog();
                 this.sourceToDialog.put(sourceClass,hDialog);
                 button.addActionListener(

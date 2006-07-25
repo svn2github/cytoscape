@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+   codebase= "http://db.systemsbiology.net/cytoscape/bioNetBuilder/webstart"
+   href="cy1.jnlp">
+  <information>
+    <title>BioNetBuilder WebStart</title>
+    <vendor>Institute For Systems Biology</vendor>
+    <homepage href="index.html"/>
+    <offline-allowed/>
+  </information>
+  <security>
+      <all-permissions/>
+  </security>
+  <resources>
+  <j2se version="1.4+" max-heap-size="1024M"/>
+ <jar href="cytoscape.jar"/> 
+ <jar href="lib/xsdlib.jar"/>
+ <jar href="lib/xmlParserAPIs.jar"/>
+ <jar href="lib/xml-apis.jar"/>
+ <jar href="lib/xercesImpl-new.jar"/>
+ <jar href="lib/xercesImpl-jwsdp.jar"/>
+ <jar href="lib/xercesImpl.jar"/>
+ <jar href="lib/xalan.jar"/>
+ <jar href="lib/wizard.jar"/>
+ <jar href="lib/violinstrings-1.0.2.jar"/>
+ <jar href="lib/tclib.jar"/>
+ <jar href="lib/swing-layout-1.0.jar"/>
+ <jar href="lib/swingunit.jar"/>
+ <jar href="lib/sax.jar"/>
+ <jar href="lib/relaxngDatatype.jar"/>
+ <jar href="lib/piccolox.jar"/>
+ <jar href="lib/piccolo.jar"/>
+ <jar href="lib/phoebe.jar"/>
+ <jar href="lib/namespace.jar"/>
+ <jar href="lib/looks-1.1.3.jar"/>
+ <jar href="lib/junit.jar"/>
+ <jar href="lib/jnlp.jar"/>
+ <jar href="lib/jhall.jar"/>
+ <jar href="lib/jdom.jar"/>
+ <jar href="lib/jax-qname.jar"/>
+ <jar href="lib/jaxb-xjc.jar"/>
+ <jar href="lib/jaxb-libs.jar"/>
+ <jar href="lib/jaxb-impl.jar"/>
+ <jar href="lib/jaxb-api.jar"/>
+ <jar href="lib/glf.jar"/>
+ <jar href="lib/giny.jar"/>
+ <jar href="lib/getopt.jar"/>
+ <jar href="lib/freehep-graphicsio-swf.jar"/>
+ <jar href="lib/freehep-graphicsio-svg.jar"/>
+ <jar href="lib/freehep-graphicsio-ps.jar"/>
+ <jar href="lib/freehep-graphicsio-pdf.jar"/>
+ <jar href="lib/freehep-graphicsio-gif.jar"/>
+ <jar href="lib/freehep-graphicsio.jar"/>
+ <jar href="lib/freehep-graphics2d.jar"/>
+ <jar href="lib/freehep-base.jar"/>
+ <jar href="lib/fing.jar"/>
+ <jar href="lib/exesto.jar"/>
+ <jar href="lib/dom.jar"/>
+ <jar href="lib/ding.jar"/>
+ <jar href="lib/cytoscape-util-intr.jar"/>
+ <jar href="lib/cytoscape-task.jar"/>
+ <jar href="lib/cytoscape-render-stateful.jar"/>
+ <jar href="lib/cytoscape-render-immed.jar"/>
+ <jar href="lib/cytoscape-render-export.jar"/>
+ <jar href="lib/cytoscape-graph-legacy.jar"/>
+ <jar href="lib/cytoscape-graph-layout.jar"/>
+ <jar href="lib/cytoscape-graph-fixed.jar"/>
+ <jar href="lib/cytoscape-graph-dynamic.jar"/>
+ <jar href="lib/cytoscape-geom-spacial.jar"/>
+ <jar href="lib/cytoscape-geom-rtree.jar"/>
+ <jar href="lib/cytoscape-cruft-obo.jar"/>
+ <jar href="lib/concurrent.jar"/>
+ <jar href="lib/commons-cli-1.x-cytoscape-custom.jar"/>
+ <jar href="lib/com-nerius-math-xform.jar"/>
+ <jar href="lib/coltginy.jar"/>
+ <jar href="lib/colt.jar"/>
+ 
+ 
+<jar href="plugins/browser.jar"/>
+<jar href="plugins/filter.jar"/>
+<jar href="plugins/yLayouts.jar"/>
+<jar href="plugins/bionetbuilderClient.jar"/>
+
+  </resources>
+  <application-desc main-class="cytoscape.CyMain">
+	<argument>-p</argument>
+	<argument>browser.AttributeBrowserPlugin</argument>
+   	<argument>-p</argument>
+	<argument>filter.cytoscape.CsFilter</argument>
+	<argument>-p</argument>
+	<argument>yfiles.YFilesLayoutPlugin</argument>
+	<argument>-p</argument>
+	<argument>org.isb.bionet.BioNetPlugin</argument>
+    <argument>-P</argument>
+    <argument>xml-rpc-props=http://db.systemsbiology.net/cytoscape/bioNetBuilder/xmlrpc.props</argument>
+  </application-desc>
+</jnlp>
+

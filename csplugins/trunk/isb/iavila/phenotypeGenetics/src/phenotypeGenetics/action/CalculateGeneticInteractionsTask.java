@@ -153,6 +153,7 @@ public class CalculateGeneticInteractionsTask implements MonitoredTask{
     // Create new nodes for genesInProject in the RootGraph
     // species is not yet handled correctly
     // First need (public) method to get "current" species 
+    
     // that cytoscapeWindow should know about from -s command line flag
     String [] genes = (String [])genesInProject.toArray(new String[0]);
     

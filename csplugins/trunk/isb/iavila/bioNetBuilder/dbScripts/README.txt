@@ -31,6 +31,8 @@ Get the "FULL" data set.
 HPRD: Must download HPRD PSIMI file to "hprd" directory located in the same directory as this document.
 The file (psimi_single_final.xml) can be downloaded for free for academic registered users from HPRD's site: hprd.org
 
+BioGRID: The download can be obtained from BioGRIDs website (http://www.thebiogrid.org/, free registration for academic users), and must be in PSI format. Get the "ALL" dataset.
+
 This directory also contains Perl scripts for each individual database:
 update_prolinks.pl
 update_bind.pl
@@ -38,5 +40,5 @@ update_hprd.pl
 
 Which you can also run. If for some reason, you are using these scripts instead of update.pl, and, you are updating synonyms and another database, make sure you ALWAYS first update synonyms.
 
-Most of the scripts (except the ones for DIP and HPRD) automatically download the database flat-files from a public FTP site provided by the corresponding institution. The location of this FTP site may change.
+Most of the scripts (except the ones for DIP, HPRD, and bioGRID) automatically download the database flat-files from a public FTP site provided by the corresponding institution. The location of this FTP site may change.
 If you get errors related to not being able to find an FTP URL or file at an FTP site, go to the database's website to see what the new FTP URL is, and then edit the scripts to use the new FTP site.

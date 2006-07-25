@@ -19,7 +19,7 @@ public interface SynonymsSource extends DataSource {
     /**
      * This is the protein GI, not the nucleotide GI
      */
-    public static final String GI_ID = "GI";
+    public static final String GI_ID = "GI";// RefSeq protein GI
     public static final String ID_NOT_FOUND = "ID not found";
     public static final String GENE_NAME = "GeneName";
     public static final String GENE_ID = "GeneID"; // Entrez Gene Database, replaces NCBI Locus Link

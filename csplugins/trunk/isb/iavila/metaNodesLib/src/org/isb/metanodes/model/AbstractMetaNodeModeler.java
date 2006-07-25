@@ -335,8 +335,7 @@ public class AbstractMetaNodeModeler {
      * NOTE: Descendant nodes are all the nodes that are contained in the tree
      * rooted at node with index node_index (not only the leaves).
      */
-    public boolean applyModel(CyNetwork cy_network, CyNode node,
-            List descendants) {
+    public boolean applyModel(CyNetwork cy_network, CyNode node, List descendants) {
 
 		long applyModelTime = profile_init("AbstractMetaNodeModeler: applyModel");
 		this.nodesToChildren = null;
@@ -549,6 +548,7 @@ public class AbstractMetaNodeModeler {
             }
 
         }// for node_i
+        
 		cy_network.restoreEdges(edgesToRestore.elements());
 
         profile_mark(restoreTime, "time to restore "+edgesToRestore.size() +" edges = ");

@@ -12,9 +12,9 @@ my $testing = 0; # set to 0 when NOT testing!
 print "---------------------- update.pl -------------------------\n";
 
 if(scalar(@ARGV) < 3){
-	print "USAGE update.pl -u=db user -p=db password  [synonyms=synonyms db name] [prolinks=prolinks db name] [kegg=kegg db name] [bind=bind db name] [dip=dip db name] [hprd=hprd db name] [go=go db name]\n".
+	print "USAGE update.pl -u=db user -p=db password  [synonyms=synonyms db name] [prolinks=prolinks db name] [kegg=kegg db name] [bind=bind db name] [dip=dip db name] [hprd=hprd db name] [biogrid=biogrid db name][go=go db name]\n".
 	      "Examples:\n".
-	      "Update all dbs: perl update.pl rootuser rootpassword synonyms=synonyms0 prolinks=prolinks0 kegg=kegg0 bind=bind0 dip=dip0 hprd=hprd0 go=go0)\n".
+	      "Update all dbs: perl update.pl rootuser rootpassword synonyms=synonyms0 prolinks=prolinks0 kegg=kegg0 bind=bind0 dip=dip0 hprd=hprd0 go=go0 biogrid=biogrid0)\n".
 	      "Update only synonyms and prolinks: perl update.pl rootuser rootpassword synonyms=synonyms0 prolinks=prolinks0\n";
 	die;
 }
@@ -28,6 +28,7 @@ $bind="";
 $dip="";
 $go="";
 $hprd="";
+$biogrid="";
 foreach $entry (@ARGV){
 	@values=split(/=/, $entry);
 	if($entry =~ /^-u/){
@@ -65,6 +66,10 @@ foreach $entry (@ARGV){
 	}elsif($entry =~ /^hprd/){
 		$hprd = $values[1];
 		print "hprd = $hprd\n";
+	
+	}elsif($entry =~ /^biogrid/){
+		$biogrid = $values[1];
+		print "biogrid = $biogrid\n";
 	
 	}
 }
@@ -117,6 +122,13 @@ if($dip ne ""){
 	print "$cmd\n";
 	system($cmd);
 	update_dbinfo($dbh, "dip", ${dip});
+}
+
+if($biogrid ne ""){
+	$cmd = "./update_biogrid.pl ${dbuser} ${dbpass} ${dip}";
+	print "$cmd\n";
+	system($cmd);
+	update_dbinfo($dbh, "biogrid", ${biogrid});
 }
 
 if($hprd ne ""){
