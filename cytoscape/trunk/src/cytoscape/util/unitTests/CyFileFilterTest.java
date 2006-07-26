@@ -3,9 +3,9 @@ package cytoscape.util.unitTests;
 
 import java.util.Set;
 
-import cytoscape.data.readers.unitTests.FileImporterTest;
 
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import cytoscape.util.CyFileFilter;
 
 /**
@@ -256,8 +256,5 @@ public class CyFileFilterTest extends TestCase {
 		
 	}
 	
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(CyFileFilterTest.class);
-	}
 
 }
