@@ -135,11 +135,11 @@ public abstract class WindowUtilities
       ( ( screen_size.height / 2 ) -
         ( frame_size.height / 2 ) ) + screen_insets.top
     );
-  } // static centerWindowLocation( Window )
+  } 
 
   public static void showSplash ( ImageIcon image, int milliseconds ) {
     showSplash( image, milliseconds, true );
-  } // static showSplash( ImageIcon, int );
+  } 
 
   public static void showSplash (
     ImageIcon image,
@@ -147,11 +147,11 @@ public abstract class WindowUtilities
     boolean start_timer
   ) {
     showSplash( new JLabel( image ), milliseconds, start_timer );
-  } // static showSplash( ImageIcon, int );
+  } 
 
   public static void showSplash ( JComponent content, int milliseconds ) {
     showSplash( content, milliseconds, true );
-  } // static showSplash( JComponent, int );
+  } 
 
   public static void showSplash (
     JComponent content,
@@ -167,6 +167,7 @@ public abstract class WindowUtilities
     splashWindow.pack();
     centerWindowLocation( splashWindow );
     splashWindow.setVisible( true );
+    splashWindow.setAlwaysOnTop(true);
 
 
     splashContent.addMouseListener( 
@@ -186,42 +187,10 @@ public abstract class WindowUtilities
                                    );
 
 
-//     if( splashTimer == null ) {
-//       splashTimer = new javax.swing.Timer (
-//         milliseconds,
-//         new ActionListener () {
-//             public void actionPerformed ( ActionEvent event ) {
-//               WindowUtilities.hideSplash();
-//             }
-//           }
-//       );
-//       splashTimer.setRepeats( false );
-//     } else {
-//       splashTimer.setDelay( milliseconds );
-//     }
+  } 
 
-    // if( start_timer ) {
-//       splashTimer.start();
-//     }
-
-
-  } // static showSplash( JComponent, int, boolean );
-
-//   public static Timer getSplashTimer () {
-//     return splashTimer;
-//   } // static getSplashTimer()
-
-  // public static void startSplashTimer () {
-//     if( splashTimer == null ) {
-//       throw new IllegalStateException( "The splashTimer is null.  Call showSplash(..) first." );
-//     }
-//     splashTimer.start();
-//   } // static startSplashTimer()
 
   public static void hideSplash () {
-   //  if( ( splashTimer != null ) && splashTimer.isRunning() ) {
-//       splashTimer.stop();
-//     }
     if( ( splashWindow != null ) && splashWindow.isVisible() ) {
       splashWindow.setVisible( false );
       if( splashContent != null ) {
@@ -229,6 +198,6 @@ public abstract class WindowUtilities
         splashContent = null;
       }
     }
-  } // static hideSplash()
+  } 
 
-} // class WindowUtilities
+} 
