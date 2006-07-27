@@ -367,6 +367,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		if (VIEW_TYPE != EXTERNAL_VIEW)
 			setSize(800, 700);
 		setVisible(true);
+		toFront();
 
 		/*
 		 * Enable the bird's eye view.
