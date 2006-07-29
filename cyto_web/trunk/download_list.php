@@ -55,15 +55,17 @@
 			</UL>
 
 			<P>
-			<big><A NAME="cvs"><b>For Developers:  Download Latest Source Code from our CVS Server</A></b></big>
+			<big><A NAME="cvs"><b>For Developers:  Download Latest Source Code from our Subversion Server</A></b></big>
 			<P>Instructions for downloading the latest Cytoscape source code
-			from our CVS server are provided below.
-			When prompted for a password for anonymous, simply press the
-			Enter key.
-			<P>cvs -d :pserver:anonymous@cabernet.ucsd.edu:/cvsdir5 login
-			<BR>cvs -d :pserver:anonymous@cabernet.ucsd.edu:/cvsdir5 co cytoscape
-			<BR>cvs -d :pserver:anonymous@cabernet.ucsd.edu:/cvsdir5 logout
+			from our <a href="http://subversion.tigris.org">Subversion</a> server are provided below.
+
+			<P>
+			<ul><li> svn checkout http://chianti.ucsd.edu/svn/cytoscape cytoscape</li></ul>
 			</P>
+			Read a 
+			<a href="http://svnbook.redbean.com">book</a>
+			about 
+			<a href="http://subversion.tigris.org">Subversion</a>.
 </div>
 <? include "footer.php"; ?>
 	</body>
