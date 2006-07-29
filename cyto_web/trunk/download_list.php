@@ -63,7 +63,7 @@
 			<ul><li> svn checkout http://chianti.ucsd.edu/svn/cytoscape cytoscape</li></ul>
 			</P>
 			Read a 
-			<a href="http://svnbook.redbean.com">book</a>
+			<a href="http://svnbook.red-bean.com">book</a>
 			about 
 			<a href="http://subversion.tigris.org">Subversion</a>.
 </div>
