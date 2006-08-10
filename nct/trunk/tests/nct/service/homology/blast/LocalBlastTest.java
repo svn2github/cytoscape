@@ -115,7 +115,7 @@ public class LocalBlastTest extends TestCase {
 			for ( String key2 : map.get(key).keySet() ) {
 				System.out.println(key + " " + key2 + " " + map.get(key).get(key2));
 				if ( key.equals(key2) ) {
-					assertEquals(0.0, map.get(key).get(key2));
+					assertEquals(0.0, map.get(key).get(key2),0.00000001);
 					numChecks++;
 				}
 				else if ( key.equals("BMRB_CHICK") && key2.equals("PIR:S33568") ||
