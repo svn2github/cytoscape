@@ -83,8 +83,8 @@ public class CsFilter
     
 
     // create icons
-    ImageIcon icon = new ImageIcon( getClass().getResource( "/filter36.gif" ) );
-    ImageIcon icon2 = new ImageIcon( getClass().getResource( "/filter16.gif" ) );
+    ImageIcon icon = new ImageIcon( getClass().getResource( "/stock_filter-data-by-criteria.png"));
+    ImageIcon icon2 = new ImageIcon( getClass().getResource( "/stock_filter-data-by-criteria-16.png"));
     // 
     FilterPlugin action = new FilterPlugin( icon, this );
     FilterMenuItem menu_action = new FilterMenuItem( icon2, this );
