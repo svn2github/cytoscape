@@ -824,7 +824,7 @@ public class CyMenus implements GraphViewChangeListener {
 		// fill View Menu
 
 		ImageIcon vizmapperIcon = new ImageIcon(getClass().getResource(
-				"images/vizmapper16.gif"));
+				"images/ximian/stock_file-with-objects-16.png"));
 		vizMenuItem = new JMenuItem(
 				new SetVisualPropertiesAction(vizmapperIcon));
 		vizMapperItem = new JMenuItem(new ToggleVisualMapperAction());
@@ -868,7 +868,7 @@ public class CyMenus implements GraphViewChangeListener {
 		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
 		openSessionButton.setToolTipText("Open Session File...");
 		openSessionButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/load36.gif")));
+				"images/ximian/stock_open.png")));
 		openSessionButton.setBorderPainted(false);
 		openSessionButton.setRolloverEnabled(true);
 
@@ -876,7 +876,7 @@ public class CyMenus implements GraphViewChangeListener {
 		saveButton = toolBar.add(new SaveSessionAction());
 		saveButton.setToolTipText("Save Current Session As...");
 		saveButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/save36.gif")));
+				"images/ximian/stock_save.png")));
 
 		saveButton.setBorderPainted(false);
 		saveButton.setRolloverEnabled(true);
@@ -887,7 +887,7 @@ public class CyMenus implements GraphViewChangeListener {
 		final ZoomAction zoom_in = new ZoomAction(1.1);
 		zoomInButton = new JButton();
 		zoomInButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/zoom_in36.gif")));
+				"images/ximian/stock_zoom-in.png")));
 		zoomInButton.setToolTipText("Zoom In");
 		zoomInButton.setBorderPainted(false);
 		zoomInButton.setRolloverEnabled(true);
@@ -914,7 +914,7 @@ public class CyMenus implements GraphViewChangeListener {
 		final ZoomAction zoom_out = new ZoomAction(0.9);
 		zoomOutButton = new JButton();
 		zoomOutButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/zoom_out36.gif")));
+				"images/ximian/stock_zoom-out.png")));
 		zoomOutButton.setToolTipText("Zoom Out");
 		zoomOutButton.setBorderPainted(false);
 		zoomOutButton.setRolloverEnabled(true);
@@ -962,39 +962,40 @@ public class CyMenus implements GraphViewChangeListener {
 
 		zoomSelectedButton = toolBar.add(new ZoomSelectedAction());
 		zoomSelectedButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/crop36.gif")));
+				"images/ximian/stock_zoom-object.png")));
 		zoomSelectedButton.setToolTipText("Zoom Selected Region");
 		zoomSelectedButton.setBorderPainted(false);
 
 		zoomDisplayAllButton = toolBar.add(new FitContentAction());
 		zoomDisplayAllButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/fit36.gif")));
+				"images/ximian/stock_zoom-1.png")));
 		zoomDisplayAllButton
 				.setToolTipText("Zoom out to display all of current Network");
 		zoomDisplayAllButton.setBorderPainted(false);
 
 		toolBar.addSeparator();
 
-		showAllButton = toolBar.add(new ShowAllAction());
-		showAllButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/add36.gif")));
-		showAllButton
-				.setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
-		showAllButton.setBorderPainted(false);
+        //  Removing showAllButton via comments, just in case we decide to revert back
+		//  showAllButton = toolBar.add(new ShowAllAction());
+		//  showAllButton.setIcon(new ImageIcon(getClass().getResource(
+		//		"images/new/add36.gif")));
+		//  showAllButton
+		//		.setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
+		//  showAllButton.setBorderPainted(false);
 
-		hideSelectedButton = toolBar.add(new HideSelectedAction(false));
-		hideSelectedButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/delete36.gif")));
-		hideSelectedButton.setToolTipText("Hide Selected Region");
-		hideSelectedButton.setBorderPainted(false);
-
-		toolBar.addSeparator();
+        //  Removing hideSelectedButton via comments, just in case we decide to revert back
+        //  hideSelectedButton = toolBar.add(new HideSelectedAction(false));
+        //	hideSelectedButton.setIcon(new ImageIcon(getClass().getResource(
+        //	    "images/new/delete36.gif")));
+        //	hideSelectedButton.setToolTipText("Hide Selected Region");
+        //	hideSelectedButton.setBorderPainted(false);
+ 		//  toolBar.addSeparator();
 
 		toolBar.addSeparator();
 
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
 		vizButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/color_wheel36.gif")));
+				"images/ximian/stock_file-with-objects.png")));
 		vizButton.setToolTipText("Set Visual Style");
 		vizButton.setBorderPainted(false);
 
