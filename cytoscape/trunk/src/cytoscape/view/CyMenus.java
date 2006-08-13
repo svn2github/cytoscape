@@ -1008,7 +1008,21 @@ public class CyMenus implements GraphViewChangeListener {
 		hb.enableHelp(helpContentsMenuItem, "index", null);
 		helpContentsMenuItem
 				.addActionListener(new CSH.DisplayHelpFromSource(hb));
-		/*
+
+        //  Add Help Button to main tool bar
+        JButton helpButton = new JButton();
+        helpButton.addActionListener(new CSH.DisplayHelpFromSource(hb));
+		helpButton.setIcon(new ImageIcon(getClass().getResource(
+				"images/ximian/stock_help.png")));
+		helpButton.setToolTipText("Help");
+		helpButton.setBorderPainted(false);
+
+
+        //  Add Help Button before VizMapper button
+        int numComponents = toolBar.getComponentCount();
+        toolBar.add(helpButton, numComponents-1);
+
+        /*
 		 * helpContextSensitiveMenuItem .addActionListener(new
 		 * CSH.DisplayHelpAfterTracking(hb)); // add Help support for toolbar
 		 * hb.enableHelp(toolBar, "toolbar", null); // add Help support for
