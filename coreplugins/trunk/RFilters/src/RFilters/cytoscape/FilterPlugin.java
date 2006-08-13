@@ -14,6 +14,8 @@ public class FilterPlugin extends CytoscapeAction {
 
   public FilterPlugin ( ImageIcon icon, CsFilter csfilter  ) {
     super( "", icon );
+    //  Set SHORT_DESCRIPTION;  used to create tool-tip
+    this.putValue(Action.SHORT_DESCRIPTION, "Use Filters");
     this.csfilter = csfilter;
     setPreferredMenu( "Select" );
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
