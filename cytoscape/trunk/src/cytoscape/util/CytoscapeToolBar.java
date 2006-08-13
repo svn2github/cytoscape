@@ -40,10 +40,13 @@ package cytoscape.util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.*;
 
 import javax.swing.Action;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import java.util.*;
 
@@ -106,10 +109,16 @@ public class CytoscapeToolBar
     button = createJButton( action );
     button.setBorderPainted(false);
     button.setRolloverEnabled(true);
+
+    //  If SHORT_DESCRIPTION exists, use this as tool-tip
+    String shortDescription = (String) action.getValue(Action.SHORT_DESCRIPTION);
+    if (shortDescription != null) {
+        button.setToolTipText(shortDescription);  
+    }
+
     // TODO: Do something with the preferred button group.
-    //add( button );
-    
-    add( action );
+    add( button );
+    //add( action );
     
     if( actionButtonMap == null ) {
       actionButtonMap = createActionButtonMap();
