@@ -1091,13 +1091,48 @@ The plugin API makes possible to use its functionality from another plugin.
 
 				</td>
 			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td width="20%" valign="top">
+					<b>tYNA Plugin</b><font size="-1">
+						<br>
+						Version: 1.0
+						<br>
+						Release Date: August 8, 2006</font>
+				</td>
+				<td width="40%" valign="top">
+					<p>
+					<b>tYNA</b> is a Web-based network analyzer. It provides five main functions:
+					<ol>
+					<li>Network management: storing, retrieving and categorizing networks, as well as performing format conversion. A comprehensive set of widely used network datasets is preloaded, put into standard form, and categorized with a set of tags.</li>
+					<li>Network visualization: displaying networks in a graphical interface, with interactive controls for zooming, panning, coloring and exporting networks.</li>
+					<li>Network comparison and manipulation: filtering based on network statistics and node names, and multiple network operations such as taking the union and intersection of networks.</li>
+					<li>Network analysis: computing various statistics for the whole network and subsets, and finding motifs and defective cliques.</li>
+					<li>Network Mining: predicting one network based on the information in another.</li>
+					</ol>
+					The plugin allows one to upload networks to and download networks from the tYNA database. The combination of the network sharing capability and other unique features provided by tYNA and the advanced visualization and analysis facilities of Cytoscape can prove particularly powerful.
+					<p>
+					Released by: <a href="http://www.gersteinlab.org/">The Gerstein Lab</a>, Department of Molecular Biophysics and Biochemistry, Yale University
+					</p>
+				</td>
+				<td width="20%" valign="top">
+				Verified to work in 2.2, 2.3.
+				</td>
+				<td width="20%" valign="top">
+				        [<a href="http://networks.gersteinlab.org/tyna/cytoscape/">Download</a>]
+				</td>
+			</tr>
 
 		</tbody>
 	</table>
 	<div id="indent">
 	<P>
 			<A NAME="more_info">
-			* If you have verified that the specified plugin works in 2.2, please send an email to <A HREF="http://groups-beta.google.com/group/cytoscape-discuss">cytoscape-discuss</A>, and we will update the web page.
+			* If you have verified that the specified plugin works in 2.3, please send an email to <A HREF="http://groups-beta.google.com/group/cytoscape-discuss">cytoscape-discuss</A>, and we will update the web page.
 	</div>
 </tbody>
 </table>
