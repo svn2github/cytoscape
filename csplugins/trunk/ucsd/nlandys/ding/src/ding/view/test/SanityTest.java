@@ -50,8 +50,7 @@ public class SanityTest {
         final int edge3 = root.createEdge(node3, node1);
         final int edge4 = root.createEdge(node4, node1);
         final int edge5 = root.createEdge(node4, node2);
-        final GraphPerspective persp = root.createGraphPerspective((int[]) null,
-                (int[]) null);
+        final GraphPerspective persp = root.createGraphPerspective((int[]) null, (int[]) null);
         final DGraphView view = new DGraphView(persp);
 
         for (int i = 0; i < 5; i++) {
@@ -69,8 +68,7 @@ public class SanityTest {
                                 final int[] selectedNodes = evt.getSelectedNodeIndices();
                                 System.out.print("selected nodes: ");
 
-                                for (int i = 0; i < selectedNodes.length;
-                                        i++)
+                                for (int i = 0; i < selectedNodes.length; i++)
                                     System.out.print(selectedNodes[i] + "  ");
 
                                 System.out.println();
