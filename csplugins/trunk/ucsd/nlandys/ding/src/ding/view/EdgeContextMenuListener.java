@@ -1,24 +1,23 @@
 package ding.view;
 
-import java.awt.event.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.datatransfer.Transferable;
 import giny.view.EdgeView;
+
+import java.awt.*;
+import java.awt.Point;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.*;
+
+import java.util.*;
 
 import javax.swing.JPopupMenu;
 
-import java.awt.Point;
 
 /**
- * an interface for responding to PhoebeCanvasDropEvents.  
+ * an interface for responding to PhoebeCanvasDropEvents.
  */
 public interface EdgeContextMenuListener extends EventListener {
-
-
-	/**
-	 * method for responding to a drop
-	 */
-	void addEdgeContextMenuItems (EdgeView edgeView, JPopupMenu menu);
-
+    /**
+     * method for responding to a drop
+     */
+    void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu);
 }
