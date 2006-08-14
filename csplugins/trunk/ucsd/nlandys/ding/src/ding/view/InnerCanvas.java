@@ -42,6 +42,8 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -68,7 +70,7 @@ import javax.swing.JToolTip;
 // AJK: 04/26/06 END
 public class InnerCanvas extends JComponent
     implements MouseListener, MouseMotionListener,
-        java.awt.dnd.DropTargetListener, PhoebeCanvasDroppable {
+        java.awt.dnd.DropTargetListener, PhoebeCanvasDroppable, KeyListener {
     final double[] m_ptBuff = new double[2];
     final float[] m_extentsBuff2 = new float[4];
     final float[] m_floatBuff1 = new float[2];
@@ -127,6 +129,8 @@ public class InnerCanvas extends JComponent
         m_printingTextAsShape[0] = true;
         addMouseListener(this);
         addMouseMotionListener(this);
+        addKeyListener(this);
+        setFocusable(true);
 
         // AJK: 04/02/06 BEGIN
         dropTarget = new DropTarget(this, // component
@@ -585,6 +589,8 @@ public class InnerCanvas extends JComponent
             processNodeContextMenuEvent(e);
             processEdgeContextMenuEvent(e);
         }
+
+        requestFocusInWindow();
     }
 
     /**
@@ -865,6 +871,58 @@ public class InnerCanvas extends JComponent
         if (!toolTipSet)
             setToolTipText(null);
     }
+
+    /**
+     * Handles key press events. Currently used with the up/down, left/right arrow
+     * keys. Pressing any of the listed keys will move the selected nodes one pixel
+     * in that direction.
+     *
+     * @param k The key event that we're listening for.
+     */
+    public void keyPressed(KeyEvent k) {
+	int code = k.getKeyCode();
+	if ( code == KeyEvent.VK_UP ||
+	     code == KeyEvent.VK_DOWN ||
+	     code == KeyEvent.VK_LEFT ||
+	     code == KeyEvent.VK_RIGHT ) {
+		if (m_view.m_nodeSelection) {
+			int[] selectedNodes = m_view.getSelectedNodeIndices();
+			for (int i = 0; i < selectedNodes.length; i++) {
+				DNodeView nv = ((DNodeView) m_view.getNodeView(selectedNodes[i]));
+				double xPos = nv.getXPosition();
+				double yPos = nv.getYPosition();
+
+				if ( code == KeyEvent.VK_UP ) {
+					yPos -= 1.0;
+				} else if ( code == KeyEvent.VK_DOWN ) {
+					yPos += 1.0;
+				} else if ( code == KeyEvent.VK_LEFT ) {
+					xPos -= 1.0;
+				} else if ( code == KeyEvent.VK_RIGHT ) {
+					xPos += 1.0;
+				}
+
+				nv.setOffset(xPos,yPos);
+			}
+
+			repaint();
+		}
+	} 
+    }
+
+    /**
+     * Currently not used. 
+     *
+     * @param k The key event that we're listening for.
+     */
+    public void keyReleased(KeyEvent k) { }
+
+    /**
+     * Currently not used. 
+     *
+     * @param k The key event that we're listening for.
+     */
+    public void keyTyped(KeyEvent k) { }
 
     // AJK: 05/02/06 END
     // Puts [last drawn] edges intersecting onto stack; as RootGraph indices.
