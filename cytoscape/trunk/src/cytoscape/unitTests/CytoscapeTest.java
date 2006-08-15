@@ -1,4 +1,4 @@
-package src.cytoscape.unitTests;
+package cytoscape.unitTests;
 
 
 import junit.framework.TestCase;
