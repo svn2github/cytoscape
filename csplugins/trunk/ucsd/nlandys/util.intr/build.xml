@@ -194,6 +194,7 @@
     <delete dir="${build.dir}"/>
     <delete dir="${javadoc.dir}"/>
     <delete file="${project.jar}"/>
+    <delete file="${test.jar}"/>
     <echo message="Successfully ran clean task!"/>
   </target>
 
