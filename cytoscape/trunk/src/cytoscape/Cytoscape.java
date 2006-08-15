@@ -81,7 +81,7 @@ import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
- 
+
 /**
  * This class, Cytoscape is <i>the</i> primary class in the API.
  * 
@@ -167,7 +167,7 @@ public abstract class Cytoscape {
 	private static BioDataServer bioDataServer;
 
 	private static String species;
-	
+
 	public static final String READER_CLIENT_KEY = "reader_client_key";
 
 	// global flag to indicate if Squiggle is turned on
@@ -201,12 +201,14 @@ public abstract class Cytoscape {
 
 	protected static Object pcsO = new Object();
 
-	protected static SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport( pcsO);
+	protected static SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(
+			pcsO);
 
 	// Test
 	protected static Object pcs2 = new Object();
 
-	protected static PropertyChangeSupport newPcs = new PropertyChangeSupport( pcs2);
+	protected static PropertyChangeSupport newPcs = new PropertyChangeSupport(
+			pcs2);
 
 	protected static Map networkViewMap;
 
@@ -233,11 +235,11 @@ public abstract class Cytoscape {
 			new int[] {}, new int[] {});
 
 	private static ImportHandler importHandler = new ImportHandler();
-	
+
 	public static ImportHandler getImportHandler() {
 		return importHandler;
 	}
-		
+
 	/**
 	 * A null CyNetworkView to give when there is no Current NetworkView
 	 */
@@ -251,14 +253,13 @@ public abstract class Cytoscape {
 	protected static VisualMappingManager VMM = new VisualMappingManager(
 			nullNetworkView);
 
-	
 	/**
 	 * @return a nullNetworkView object. This is NOT simply a null object.
 	 */
 	public static CyNetworkView getNullNetworkView() {
 		return nullNetworkView;
 	}
-	
+
 	/**
 	 * @return the nullNetwork CyNetwork. This is NOT simply a null object.
 	 */
@@ -266,11 +267,11 @@ public abstract class Cytoscape {
 		return nullNetwork;
 	}
 
-	
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
-	 * @deprecated Use exit(returnVal) instead.  This will be removed
-	 * in Sept 2006.
+	 * 
+	 * @deprecated Use exit(returnVal) instead. This will be removed in Sept
+	 *             2006.
 	 */
 	public static void exit() {
 		exit(0);
@@ -278,15 +279,15 @@ public abstract class Cytoscape {
 
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
-	 * @param returnVal The return value. Zero indicates success,
-	 * non-zero otherwise.
+	 * 
+	 * @param returnVal
+	 *            The return value. Zero indicates success, non-zero otherwise.
 	 */
 	public static void exit(int returnVal) {
 
 		int mode = CytoscapeInit.getCyInitParams().getMode();
 
-		if (mode == CyInitParams.EMBEDDED_WINDOW ||
-		    mode == CyInitParams.GUI ) {
+		if (mode == CyInitParams.EMBEDDED_WINDOW || mode == CyInitParams.GUI) {
 			// prompt the user about saving modified files before quitting
 			if (confirmQuit()) {
 				try {
@@ -296,8 +297,8 @@ public abstract class Cytoscape {
 				}
 
 				System.out.println("Cytoscape Exiting....");
-				if (mode == CyInitParams.EMBEDDED_WINDOW) {                                                                                    
-					// don't system exit since we are running as part 
+				if (mode == CyInitParams.EMBEDDED_WINDOW) {
+					// don't system exit since we are running as part
 					// of a bigger application. Instead, dispose of the
 					// desktop.
 					getDesktop().dispose();
@@ -331,8 +332,8 @@ public abstract class Cytoscape {
 		//
 		// Confirm user to save current session or not.
 		//
-		
-		Object[] options = { "Yes, save and quit", "No, just quit", "Cancel"};
+
+		Object[] options = { "Yes, save and quit", "No, just quit", "Cancel" };
 		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), msg,
 				"Save Networks Before Quitting?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -341,7 +342,7 @@ public abstract class Cytoscape {
 		} else if (n == JOptionPane.YES_OPTION) {
 			SaveSessionAction saveAction = new SaveSessionAction();
 			saveAction.actionPerformed(null);
-			if(Cytoscape.getCurrentSessionFileName() == null) {
+			if (Cytoscape.getCurrentSessionFileName() == null) {
 				return confirmQuit();
 			} else {
 				return true;
@@ -455,17 +456,19 @@ public abstract class Cytoscape {
 		node.setIdentifier(nodeID);
 		
 		/*
-		 * We do not need canonicalName anymore.  If necessary, user should
+		 * We do not need canonicalName anymore. If necessary, user should
 		 * create one from Attribute Browser.
-		 *
+		 * 
 		 * NOTE:
-		 *
+		 * 
 		 * The following statement referencing CANONICAL_NAME should not be
-		 * deleted until its removed from the core (Semantics.java)
-		 * on April, 2007 _DO NOT DELETE UNTIL THEN_
+		 * deleted until its removed from the core (Semantics.java) on April,
+		 * 2007 _DO NOT DELETE UNTIL THEN_
 		 */
-		getNodeAttributes().setAttribute(nodeID,Semantics.CANONICAL_NAME,nodeID);
-
+		
+		if(getNodeAttributes().getStringAttribute(nodeID, Semantics.CANONICAL_NAME) == null) {
+			getNodeAttributes().setAttribute(nodeID,Semantics.CANONICAL_NAME,nodeID);
+		}
 		return node;
 	}
 
@@ -539,11 +542,10 @@ public abstract class Cytoscape {
 		return null;
 	}
 
-
 	/**
-	 * Gets the first CyEdge found between the two nodes 
-	 * that has the given value for the given attribute.  If direction flag is set, then
-	 * direction is taken into account, A->B is NOT equivalent to B->A
+	 * Gets the first CyEdge found between the two nodes that has the given
+	 * value for the given attribute. If direction flag is set, then direction
+	 * is taken into account, A->B is NOT equivalent to B->A
 	 * 
 	 * @param source
 	 *            one end of the edge
@@ -558,16 +560,16 @@ public abstract class Cytoscape {
 	 *            will create an edge if one does not exist and if attribute is
 	 *            {@link Semantics#INTERACTION}
 	 * @param directed
-	 *            take direction into account, source->target is NOT target->source
+	 *            take direction into account, source->target is NOT
+	 *            target->source
 	 * @return returns an existing CyEdge if present, or creates one if
 	 *         <code>create</code> is true and attribute is
 	 *         Semantics.INTERACTION, otherwise returns null.
 	 */
 	public static CyEdge getCyEdge(Node source, Node target, String attribute,
 			Object attribute_value, boolean create, boolean directed) {
-		
-		if (!directed)
-		{
+
+		if (!directed) {
 			return getCyEdge(source, target, attribute, attribute_value, create);
 		}
 
@@ -612,8 +614,7 @@ public abstract class Cytoscape {
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * @param source_alias
 	 *            an alias of a node
@@ -859,7 +860,8 @@ public abstract class Cytoscape {
 	 * @deprecated argh!...
 	 */
 	public static void setSpecies() {
-		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+		species = CytoscapeInit.getProperties().getProperty(
+				"defaultSpeciesName");
 	}
 
 	// --------------------//
@@ -871,8 +873,8 @@ public abstract class Cytoscape {
 	 * getCurrentNetworkView
 	 */
 	public static CyNetwork getCurrentNetwork() {
-		if (currentNetworkID == null || 
-		    !(getNetworkMap().containsKey(currentNetworkID)))
+		if (currentNetworkID == null
+				|| !(getNetworkMap().containsKey(currentNetworkID)))
 			return nullNetwork;
 
 		CyNetwork network = (CyNetwork) getNetworkMap().get(currentNetworkID);
@@ -887,8 +889,8 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @return the CyNetwork that has the given identifier or the nullNetwork 
-	 * (see {@link #getNullNetwork()}) if there is no such network. 
+	 * @return the CyNetwork that has the given identifier or the nullNetwork
+	 *         (see {@link #getNullNetwork()}) if there is no such network.
 	 */
 	public static CyNetwork getNetwork(String id) {
 		if (id != null && getNetworkMap().containsKey(id))
@@ -901,8 +903,8 @@ public abstract class Cytoscape {
 	 *         returns null
 	 */
 	public static CyNetworkView getNetworkView(String network_id) {
-		if (network_id == null || 
-		    !(getNetworkViewMap().containsKey(network_id)))
+		if (network_id == null
+				|| !(getNetworkViewMap().containsKey(network_id)))
 			return nullNetworkView;
 
 		CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(
@@ -922,8 +924,8 @@ public abstract class Cytoscape {
 	 * from getCurrentNetwork
 	 */
 	public static CyNetworkView getCurrentNetworkView() {
-		if (currentNetworkViewID == null || 
-		    !(getNetworkViewMap().containsKey(currentNetworkViewID)))
+		if (currentNetworkViewID == null
+				|| !(getNetworkViewMap().containsKey(currentNetworkViewID)))
 			return nullNetworkView;
 
 		// System.out.println( "Cytoscape returning current network view:
@@ -941,7 +943,8 @@ public abstract class Cytoscape {
 		if (defaultDesktop == null) {
 			// System.out.println( " Defaultdesktop created: "+defaultDesktop );
 			defaultDesktop = new CytoscapeDesktop(CytoscapeDesktop
-					.parseViewType(CytoscapeInit.getProperties().getProperty("viewType")));
+					.parseViewType(CytoscapeInit.getProperties().getProperty(
+							"viewType")));
 		}
 		return defaultDesktop;
 	}
@@ -1022,7 +1025,7 @@ public abstract class Cytoscape {
 		firePropertyChange(NETWORK_DESTROYED, null, networkId);
 
 		getNetworkMap().remove(networkId);
-		if ( getNetworkMap().size() <= 0 )
+		if (getNetworkMap().size() <= 0)
 			currentNetworkID = null;
 
 		if (viewExists(networkId))
@@ -1088,7 +1091,7 @@ public abstract class Cytoscape {
 
 		getNetworkViewMap().remove(view.getIdentifier());
 
-		if ( getNetworkViewMap().size() <= 0 )
+		if (getNetworkViewMap().size() <= 0)
 			currentNetworkViewID = null;
 
 		// System.out.println( "gone from hash: "+view.getIdentifier()+" :
@@ -1132,38 +1135,39 @@ public abstract class Cytoscape {
 		}
 
 		firePropertyChange(NETWORK_CREATED, p_id, network.getIdentifier());
-		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold"))
+		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit
+				.getProperties().getProperty("viewThreshold"))
 				&& create_view) {
 			createNetworkView(network);
 		}
 	}
 
-        /**
-         * Creates a new, empty Network.
-         *
-         * @param title
-         *            the title of the new network.
-         */
-        public static CyNetwork createNetwork(String title) {
+	/**
+	 * Creates a new, empty Network.
+	 * 
+	 * @param title
+	 *            the title of the new network.
+	 */
+	public static CyNetwork createNetwork(String title) {
 		return createNetwork(new int[] {}, new int[] {}, title, null, true);
-        }
-
-        /**
-         * Creates a new, empty Network.
-         *
-         * @param title
-         *            the title of the new network.
-         * @param create_view
-         *            if the size of the network is under the node limit, create a
-         *            view
-         */
-        public static CyNetwork createNetwork(String title, boolean create_view) {
-		return createNetwork(new int[] {}, new int[] {}, title, null, create_view);
-        }
+	}
 
 	/**
-	 * Creates a new Network.
-	 * A view will be created automatically.
+	 * Creates a new, empty Network.
+	 * 
+	 * @param title
+	 *            the title of the new network.
+	 * @param create_view
+	 *            if the size of the network is under the node limit, create a
+	 *            view
+	 */
+	public static CyNetwork createNetwork(String title, boolean create_view) {
+		return createNetwork(new int[] {}, new int[] {}, title, null,
+				create_view);
+	}
+
+	/**
+	 * Creates a new Network. A view will be created automatically.
 	 * 
 	 * @param nodes
 	 *            the indeces of nodes
@@ -1175,11 +1179,9 @@ public abstract class Cytoscape {
 	public static CyNetwork createNetwork(int[] nodes, int[] edges, String title) {
 		return createNetwork(nodes, edges, title, null, true);
 	}
-	
 
 	/**
-	 * Creates a new Network.
-	 * A view will be created automatically.
+	 * Creates a new Network. A view will be created automatically.
 	 * 
 	 * @param nodes
 	 *            a collection of nodes
@@ -1194,8 +1196,8 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Creates a new Network, that inherits from the given ParentNetwork.
-	 * A view will be created automatically.
+	 * Creates a new Network, that inherits from the given ParentNetwork. A view
+	 * will be created automatically.
 	 * 
 	 * @param nodes
 	 *            the indeces of nodes
@@ -1210,7 +1212,7 @@ public abstract class Cytoscape {
 			String child_title, CyNetwork parent) {
 		return createNetwork(nodes, edges, child_title, null, true);
 	}
-	
+
 	/**
 	 * Creates a new Network, that inherits from the given ParentNetwork
 	 * 
@@ -1222,8 +1224,8 @@ public abstract class Cytoscape {
 	 *            the title of the new network.
 	 * @param parent
 	 *            the parent of the this Network
-	 * @param create_view 
-	 *            whether or not a view will be created 
+	 * @param create_view
+	 *            whether or not a view will be created
 	 */
 	public static CyNetwork createNetwork(int[] nodes, int[] edges,
 			String child_title, CyNetwork parent, boolean create_view) {
@@ -1233,8 +1235,8 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Creates a new Network, that inherits from the given ParentNetwork.
-	 * A view will be created automatically.
+	 * Creates a new Network, that inherits from the given ParentNetwork. A view
+	 * will be created automatically.
 	 * 
 	 * @param nodes
 	 *            the indeces of nodes
@@ -1247,7 +1249,7 @@ public abstract class Cytoscape {
 			String child_title, CyNetwork parent) {
 		return createNetwork(nodes, edges, child_title, parent, true);
 	}
-	
+
 	/**
 	 * Creates a new Network, that inherits from the given ParentNetwork.
 	 * 
@@ -1257,8 +1259,8 @@ public abstract class Cytoscape {
 	 *            the indeces of edges
 	 * @param parent
 	 *            the parent of the this Network
-	 * @param create_view 
-	 *            whether or not a view will be created 
+	 * @param create_view
+	 *            whether or not a view will be created
 	 */
 	public static CyNetwork createNetwork(Collection nodes, Collection edges,
 			String child_title, CyNetwork parent, boolean create_view) {
@@ -1268,44 +1270,43 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Creates a CyNetwork from a file. The file type is determined by 
-         * the suffix of the file.* Uses the new ImportHandler and thus the 
-	 * passed in location should be a file of a recognized "Graph Nature".
-	 * The "Nature" of a file is a new way to tell what a file is
-	 * beyond it's filetype e.g. galFiltered.sif is, in addition to 
-	 * being a .sif file, the file is also of Graph "Nature". Other
-	 * files of Graph Nature include GML and XGMML.
-	 * Beyond Graph Nature there are Node, Edge, and Properties Nature.
-	 *
+	 * Creates a CyNetwork from a file. The file type is determined by the
+	 * suffix of the file.* Uses the new ImportHandler and thus the passed in
+	 * location should be a file of a recognized "Graph Nature". The "Nature" of
+	 * a file is a new way to tell what a file is beyond it's filetype e.g.
+	 * galFiltered.sif is, in addition to being a .sif file, the file is also of
+	 * Graph "Nature". Other files of Graph Nature include GML and XGMML. Beyond
+	 * Graph Nature there are Node, Edge, and Properties Nature.
+	 * 
 	 * A view will be created automatically.
-	 *
+	 * 
 	 * @param location
 	 *            the location of the file
 	 */
 	public static CyNetwork createNetworkFromFile(String location) {
-		return createNetworkFromFile(location,true);
+		return createNetworkFromFile(location, true);
 	}
 
 	/**
-	 * Creates a CyNetwork from a file. The file type is determined by 
-         * the suffix of the file.* Uses the new ImportHandler and thus the 
-	 * passed in location should be a file of a recognized "Graph Nature".
-	 * The "Nature" of a file is a new way to tell what a file is
-	 * beyond it's filetype e.g. galFiltered.sif is, in addition to 
-	 * being a .sif file, the file is also of Graph "Nature". Other
-	 * files of Graph Nature include GML and XGMML.
-	 * Beyond Graph Nature there are Node, Edge, and Properties Nature.
-	 *
+	 * Creates a CyNetwork from a file. The file type is determined by the
+	 * suffix of the file.* Uses the new ImportHandler and thus the passed in
+	 * location should be a file of a recognized "Graph Nature". The "Nature" of
+	 * a file is a new way to tell what a file is beyond it's filetype e.g.
+	 * galFiltered.sif is, in addition to being a .sif file, the file is also of
+	 * Graph "Nature". Other files of Graph Nature include GML and XGMML. Beyond
+	 * Graph Nature there are Node, Edge, and Properties Nature.
+	 * 
 	 * @param location
-	 *         location of importable file 
-	 * @param create_view 
-	 *            whether or not a view will be created 
-	 * @return a network based on the specified file
-	 * or null if the file type is supported but the file is not of 
-	 * Graph Nature.
+	 *            location of importable file
+	 * @param create_view
+	 *            whether or not a view will be created
+	 * @return a network based on the specified file or null if the file type is
+	 *         supported but the file is not of Graph Nature.
 	 */
-	public static CyNetwork createNetworkFromFile(String location, boolean create_view) {
-		return createNetwork( getImportHandler().getReader(location),create_view,null);
+	public static CyNetwork createNetworkFromFile(String location,
+			boolean create_view) {
+		return createNetwork(getImportHandler().getReader(location),
+				create_view, null);
 	}
 
 	/**
@@ -1329,32 +1330,34 @@ public abstract class Cytoscape {
 	 * @param species
 	 *            the species used by the BioDataServer
 	 * 
-	 * @deprecated It will be removed in April 2007
-	 * Use CyNetwork createNetworkFromFile(String location, boolean create_view)
-	 * instead.  File type is no longer needed as ImportHandler now
-	 * manages all file types. 
+	 * @deprecated It will be removed in April 2007 Use CyNetwork
+	 *             createNetworkFromFile(String location, boolean create_view)
+	 *             instead. File type is no longer needed as ImportHandler now
+	 *             manages all file types.
 	 */
 	public static CyNetwork createNetwork(String location, int file_type,
 			boolean canonicalize, BioDataServer biodataserver, String species) {
-		return createNetworkFromFile(location,true);
+		return createNetworkFromFile(location, true);
 	}
-		
-	
+
 	/**
-	 * Creates a cytoscape.data.CyNetwork from a reader.  Neccesary with cesssions.
+	 * Creates a cytoscape.data.CyNetwork from a reader. Neccesary with
+	 * cesssions.
 	 * <p>
 	 * This operation may take a long time to complete. It is a good idea NOT to
-	 * call this method from the AWT event handling thread.  This operation assumes
-	 * the reader is of type .xgmml since this should only be called by the cessions
-	 * reader which opens .xgmml files from the zipped cytoscape session.
+	 * call this method from the AWT event handling thread. This operation
+	 * assumes the reader is of type .xgmml since this should only be called by
+	 * the cessions reader which opens .xgmml files from the zipped cytoscape
+	 * session.
 	 * 
 	 * @param reader
 	 *            the graphreader that will read in the network
-	 * @param create_view 
-	 *            whether or not a view will be created 
+	 * @param create_view
+	 *            whether or not a view will be created
 	 */
-	public static CyNetwork createNetwork(GraphReader reader, boolean create_view, CyNetwork parent) {
-		
+	public static CyNetwork createNetwork(GraphReader reader,
+			boolean create_view, CyNetwork parent) {
+
 		if (reader == null) {
 			System.err.println("File Type not Supported, sorry");
 			return createNetwork(null);
@@ -1373,7 +1376,6 @@ public abstract class Cytoscape {
 			return null;
 		}
 
-
 		// get the RootGraph indices of the nodes and
 		// edges that were just created
 		int[] nodes = reader.getNodeIndicesArray();
@@ -1386,9 +1388,9 @@ public abstract class Cytoscape {
 		if (edges == null) {
 			System.err.println("reader returned null edges");
 		}
-		
+
 		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
-		network.putClientData(READER_CLIENT_KEY,reader);
+		network.putClientData(READER_CLIENT_KEY, reader);
 		addNetwork(network, title, parent, create_view);
 
 		if (reader.getClass() == XGMMLReader.class)
@@ -1399,7 +1401,6 @@ public abstract class Cytoscape {
 		return network;
 
 	}
-	
 
 	// --------------------//
 	// Network Data Methods
@@ -1675,22 +1676,22 @@ public abstract class Cytoscape {
 		if (viewExists(network.getIdentifier())) {
 			return getNetworkView(network.getIdentifier());
 		}
-		final DingNetworkView view = new DingNetworkView(network, title);	
+		final DingNetworkView view = new DingNetworkView(network, title);
 		view.setGraphLOD(new CyGraphLOD());
-		
+
 		view.setIdentifier(network.getIdentifier());
 		getNetworkViewMap().put(network.getIdentifier(), view);
 		view.setTitle(network.getTitle());
-		
+
 		setSelectionMode(currentSelectionMode, view);
 
 		firePropertyChange(
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
-			
+
 		if (network.getClientData(READER_CLIENT_KEY) != null) {
 			((GraphReader) network.getClientData(READER_CLIENT_KEY))
-				.layout(Cytoscape.getNetworkView(network.getIdentifier()));
+					.layout(Cytoscape.getNetworkView(network.getIdentifier()));
 		}
 
 		else {
@@ -1713,7 +1714,7 @@ public abstract class Cytoscape {
 				}
 			}
 		}
-		
+
 		getCurrentNetworkView().fitContent();
 
 		return view;
@@ -1732,8 +1733,10 @@ public abstract class Cytoscape {
 
 	/**
 	 * Utility method to enable Squiggle function.
-	 * @deprecated Squiggle is gone and we don't expect the functionality to return. 
-	 * if this causes major problems, let us know.  This method will be removed Sept 2006.
+	 * 
+	 * @deprecated Squiggle is gone and we don't expect the functionality to
+	 *             return. if this causes major problems, let us know. This
+	 *             method will be removed Sept 2006.
 	 */
 	public static void enableSquiggle() {
 
@@ -1744,8 +1747,10 @@ public abstract class Cytoscape {
 
 	/**
 	 * Utility method to disable Squiggle function.
-	 * @deprecated Squiggle is gone and we don't expect the functionality to return. 
-	 * if this causes major problems, let us know.  This method will be removed Sept 2006.
+	 * 
+	 * @deprecated Squiggle is gone and we don't expect the functionality to
+	 *             return. if this causes major problems, let us know. This
+	 *             method will be removed Sept 2006.
 	 */
 	public static void disableSquiggle() {
 
@@ -1756,8 +1761,10 @@ public abstract class Cytoscape {
 	/**
 	 * Returns the value of the global flag to indicate whether the Squiggle
 	 * function is enabled.
-	 * @deprecated Squiggle is gone and we don't expect the functionality to return. 
-	 * if this causes major problems, let us know.  This method will be removed Sept 2006.
+	 * 
+	 * @deprecated Squiggle is gone and we don't expect the functionality to
+	 *             return. if this causes major problems, let us know. This
+	 *             method will be removed Sept 2006.
 	 */
 	public static boolean isSquiggleEnabled() {
 		return squiggleEnabled;
@@ -1856,8 +1863,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Clear all networks and attributes and start a 
-	 * new session.
+	 * Clear all networks and attributes and start a new session.
 	 */
 	public static void createNewSession() {
 		Set netSet = getNetworkSet();
@@ -1881,14 +1887,14 @@ public abstract class Cytoscape {
 		for (int i = 0; i < edgeAttrNames.length; i++) {
 			edgeAttributes.deleteAttribute(edgeAttrNames[i]);
 		}
-		
+
 		// Clear network attributes
 		CyAttributes networkAttributes = getNetworkAttributes();
 		String[] networkAttrNames = networkAttributes.getAttributeNames();
 		for (int i = 0; i < networkAttrNames.length; i++) {
 			networkAttributes.deleteAttribute(networkAttrNames[i]);
 		}
-		
+
 		setCurrentSessionFileName(null);
 	}
 }
