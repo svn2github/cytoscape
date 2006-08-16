@@ -210,6 +210,7 @@
     <delete dir="${filter.classes.dir}"/>
     <delete file="filter.jar"/>
     <delete file="filter-tests.jar"/>
+    <delete dir="${filter.lib.dir}"/>
   </target>
 
 </project>
