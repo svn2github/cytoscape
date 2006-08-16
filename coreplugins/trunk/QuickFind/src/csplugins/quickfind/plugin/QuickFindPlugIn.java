@@ -38,7 +38,6 @@ import java.util.ArrayList;
 public class QuickFindPlugIn extends CytoscapePlugin
         implements PropertyChangeListener, QuickFindListener {
     private TextIndexComboBox comboBox;
-    private JButton findButton;
     private JButton configButton;
 
     /**
@@ -88,15 +87,6 @@ public class QuickFindPlugIn extends CytoscapePlugin
             comboBox.setToolTipText("Please select or load a network to "
                     + "activate find functionality.");
 
-            URL findIconUrl = QuickFindPlugIn.class.getResource
-                    ("resources/stock_view-fields.png");
-            ImageIcon findIcon = new ImageIcon(findIconUrl, "Find");
-            findButton = new JButton(findIcon);
-            findButton.setToolTipText("Find");
-            findButton.setEnabled(false);
-            findButton.addActionListener(listener);
-            findButton.setBorderPainted(false);
-
             URL configIconUrl = QuickFindPlugIn.class.getResource
                     ("resources/config.png");
             ImageIcon configIcon = new ImageIcon(configIconUrl,
@@ -112,7 +102,6 @@ public class QuickFindPlugIn extends CytoscapePlugin
             configButton.setBorderPainted(false);
 
             panel.add(comboBox);
-            panel.add(findButton);
             panel.add(configButton);
             toolBar.add(panel);
         } catch (Exception e) {
@@ -207,7 +196,6 @@ public class QuickFindPlugIn extends CytoscapePlugin
     public void disableAllQuickFindButtons() {
         comboBox.removeAllText();
         comboBox.setEnabled(false);
-        findButton.setEnabled(false);
         configButton.setEnabled(false);
     }
 
@@ -216,7 +204,6 @@ public class QuickFindPlugIn extends CytoscapePlugin
      */
     public void enableAllQuickFindButtons() {
         comboBox.setEnabled(true);
-        findButton.setEnabled(true);
         configButton.setEnabled(true);
     }
 
