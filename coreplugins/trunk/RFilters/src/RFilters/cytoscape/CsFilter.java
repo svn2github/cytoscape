@@ -88,8 +88,16 @@ public class CsFilter
     // 
     FilterPlugin action = new FilterPlugin( icon, this );
     FilterMenuItem menu_action = new FilterMenuItem( icon2, this );
-    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( ( CytoscapeAction )action );
+    //Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( ( CytoscapeAction )action );
     Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( ( CytoscapeAction )menu_action );
+    CytoscapeDesktop desktop = Cytoscape.getDesktop();
+    CyMenus cyMenus = desktop.getCyMenus();
+    CytoscapeToolBar toolBar = cyMenus.getToolBar();
+    JButton button = new JButton (icon);
+    button.addActionListener(action);
+    button.setToolTipText("Use Filters");
+    button.setBorderPainted(false);
+    toolBar.add(button, 7);
 
     FilterEditorManager.defaultManager().addEditor( new NumericAttributeFilterEditor() );
     FilterEditorManager.defaultManager().addEditor( new StringPatternFilterEditor ()); 
