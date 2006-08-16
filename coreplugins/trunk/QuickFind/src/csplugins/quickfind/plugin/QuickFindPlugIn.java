@@ -21,6 +21,7 @@ import cytoscape.view.CytoscapeDesktop;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -75,7 +76,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
         TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
         try {
             JPanel panel = new JPanel();
-            panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
             panel.setBorder(new EmptyBorder(0, 0, 0, 0));
             comboBox = ComboBoxFactory.createTextIndexComboBox
                     (textIndex, 1.5);
@@ -84,10 +85,11 @@ public class QuickFindPlugIn extends CytoscapePlugin
             comboBox.addFinalSelectionListener(listener);
             //  Set Size of ComboBox Display, based on # of specific chars
             comboBox.setPrototypeDisplayValue("01234567890");
-            comboBox.setToolTipText("Please select or load a network");
+            comboBox.setToolTipText("Please select or load a network to "
+                    + "activate find functionality.");
 
             URL findIconUrl = QuickFindPlugIn.class.getResource
-                    ("resources/stock_hyperlink-target.png");
+                    ("resources/stock_view-fields.png");
             ImageIcon findIcon = new ImageIcon(findIconUrl, "Find");
             findButton = new JButton(findIcon);
             findButton.setToolTipText("Find");
