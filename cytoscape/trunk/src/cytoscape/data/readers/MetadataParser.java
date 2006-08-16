@@ -37,18 +37,6 @@
 
 package cytoscape.data.readers;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
-import javax.xml.bind.JAXBException;
-
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -63,6 +51,16 @@ import cytoscape.generated2.RdfRDF;
 import cytoscape.generated2.Source;
 import cytoscape.generated2.Title;
 import cytoscape.generated2.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 
 /**
  * Manipulates network meta data for loading and saving.
@@ -74,11 +72,30 @@ public class MetadataParser {
 
 	public static final String DEFAULT_NETWORK_METADATA_LABEL = "Network Metadata";
 
+	/**
+	 * @uml.property  name="metadataLabel"
+	 */
 	private String metadataLabel;
+	/**
+	 * @uml.property  name="network"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private CyNetwork network;
+	/**
+	 * @uml.property  name="metadata"
+	 * @uml.associationEnd  
+	 */
 	private RdfRDF metadata;
 
+	/**
+	 * @uml.property  name="networkAttributes"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private CyAttributes networkAttributes;
+	/**
+	 * @uml.property  name="mapRDF"
+	 * @uml.associationEnd  multiplicity="(0 -1)" ordering="true" elementType="java.lang.Object" qualifier="key:java.lang.String java.lang.Object"
+	 */
 	Map mapRDF;
 
 	// Metadata used in cytoscape. This is a subset of dublin core.
@@ -175,10 +192,10 @@ public class MetadataParser {
 
 	/**
 	 * Get metadata as an RDF object
-	 * 
-	 * @return Network metadata in RdfRDF object
+	 * @return  Network metadata in RdfRDF object
 	 * @throws JAXBException
 	 * @throws URISyntaxException
+	 * @uml.property  name="metadata"
 	 */
 	public RdfRDF getMetadata() throws JAXBException, URISyntaxException {
 		ObjectFactory objFactory = new ObjectFactory();
@@ -198,24 +215,15 @@ public class MetadataParser {
 		Object value = null;
 		String key = null;
 
-		Vector nullValuedKeys = new Vector();
-		
 		Iterator it = labels.iterator();
 		while (it.hasNext()) {
 			key = (String) it.next();
 			value = mapRDF.get(key);
-			if (value == null)
-				nullValuedKeys.add(key);
-			dc.getDcmes().add(set(key.trim(), ((value == null) ? "" : value)));
+			dc.getDcmes().add(set(key.trim(), value));
 		}
 
 		metadata.getDescription().add(dc);
-		
-		it = nullValuedKeys.iterator();
-		while (it.hasNext()) {
-			mapRDF.put(it.next().toString(), "");
-		}
-		
+
 		// Put the data in CyAttributes
 		networkAttributes.setAttributeMap(network.getIdentifier(),
 				metadataLabel, mapRDF);
@@ -246,38 +254,48 @@ public class MetadataParser {
 	 * @return
 	 * @throws JAXBException
 	 */
-	private Object set(String label, Object value) throws JAXBException {
+	private JAXBElement set(String label, Object value) throws JAXBException {
 		ObjectFactory objF = new ObjectFactory();
-		Object newObj = null;
 
 		if (label == "Date") {
 			Date dt = objF.createDate();
-			dt.getContent().add(value);
-			return dt;
+			dt.setContent(value.toString());
+			//dt.getContent().add(value);
+			JAXBElement<Date> dtElement = objF.createDate(dt);
+			return dtElement;
 		} else if (label == "Title") {
 			Title tl = objF.createTitle();
-			tl.getContent().add(value);
-			return tl;
+			tl.setContent(value.toString());
+			JAXBElement<Title> tlElement = objF.createTitle(tl);
+			return tlElement;
 		} else if (label == "Identifier") {
-			newObj = objF.createIdentifier();
-			((Identifier) newObj).getContent().add(value);
+			Identifier id = objF.createIdentifier();
+			id.setContent(value.toString());
+			JAXBElement<Identifier> idElement = objF.createIdentifier(id);
+			return idElement;
 		} else if (label == "Description") {
 			Description dsc = objF.createDescription();
-			dsc.getContent().add(value);
-			return dsc;
+			dsc.setContent(value.toString());
+			JAXBElement<Description> dscElement = objF.createDescription(dsc);
+			return dscElement;
 		} else if (label == "Source") {
-			newObj = objF.createSource();
-			((Source) newObj).getContent().add(value);
+			Source src = objF.createSource();
+			src.setContent(value.toString());
+			JAXBElement<Source> srcElement = objF.createSource(src);
+			return srcElement;
 		} else if (label == "Type") {
-			newObj = objF.createType();
-			((Type) newObj).getContent().add(value);
+			Type type = objF.createType();
+			type.setContent(value.toString());
+			JAXBElement<Type> typeElement = objF.createType(type);
+			return typeElement;
 		} else if (label == "Format") {
-			newObj = objF.createFormat();
-			((Format) newObj).getContent().add(value);
+			Format fmt = objF.createFormat();
+			fmt.setContent(value.toString());
+			JAXBElement<Format> fmtElement = objF.createFormat(fmt);
+			return fmtElement;
 		} else {
 			return null;
 		}
-		return newObj;
 	}
 
 	/**

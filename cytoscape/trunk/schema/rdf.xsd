@@ -5,7 +5,7 @@
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
-  jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+  jaxb:version="2.0" jaxb:extensionBindingPrefixes="xjc">
   
   <xs:import namespace="http://purl.org/dc/elements/1.1/" schemaLocation="dcmes-xml-dtd.xsd"/>
   <xs:element name="RDF">
@@ -18,11 +18,6 @@
   <xs:element name="Description">
     
     <xs:complexType>
-      <xs:annotation>
-        <xs:appinfo>
-          <jaxb:property name="TEST"/>
-        </xs:appinfo>
-      </xs:annotation>
       <xs:sequence>
         <xs:element minOccurs="0" maxOccurs="unbounded" ref="dc:dcmes"/>
       </xs:sequence>

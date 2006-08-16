@@ -37,20 +37,9 @@
 
 package cytoscape.data.readers;
 
-import giny.view.EdgeView;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import cytoscape.Cytoscape;
 import cytoscape.generated2.Att;
 import cytoscape.generated2.Graphics;
-import cytoscape.generated2.impl.AttImpl;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
@@ -77,6 +66,14 @@ import cytoscape.visual.calculators.NodeLabelCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
+import giny.view.EdgeView;
+import java.awt.Color;
+import java.awt.Font;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Based on the graph/node/edge view information, build new Visual Style.
@@ -95,22 +92,58 @@ public class VisualStyleBuilder {
 	protected static final Color DEFAULT_BORDER_COLOR = Color.BLACK;
 	protected static final int DEFAULT_LINE_WIDTH = 1;
 	// Name for the new visual style
+	/**
+	 * @uml.property  name="styleName"
+	 */
 	private String styleName;
 
 	// New Visual Style comverted from GML file.
+	/**
+	 * @uml.property  name="xgmmlStyle"
+	 * @uml.associationEnd  
+	 */
 	private VisualStyle xgmmlStyle;
 
 	// Node appearence
+	/**
+	 * @uml.property  name="nac"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private NodeAppearanceCalculator nac;
 
 	// Edge appearence
+	/**
+	 * @uml.property  name="eac"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private EdgeAppearanceCalculator eac;
 
 	// Global appearence
+	/**
+	 * @uml.property  name="gac"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private GlobalAppearanceCalculator gac;
+	/**
+	 * @uml.property  name="catalog"
+	 * @uml.associationEnd  
+	 */
 	private CalculatorCatalog catalog;
 
-	private HashMap nodeGraphics, edgeGraphics, globalGraphics;
+	/**
+	 * @uml.property  name="nodeGraphics"
+	 * @uml.associationEnd  multiplicity="(0 -1)" ordering="true" elementType="cytoscape.generated2.Att" qualifier="key:java.lang.String cytoscape.generated2.Graphics"
+	 */
+	private HashMap nodeGraphics;
+	/**
+	 * @uml.property  name="edgeGraphics"
+	 * @uml.associationEnd  multiplicity="(0 -1)" ordering="true" elementType="cytoscape.generated2.Att" qualifier="key:java.lang.String cytoscape.generated2.Graphics"
+	 */
+	private HashMap edgeGraphics;
+	/**
+	 * @uml.property  name="globalGraphics"
+	 */
+	private HashMap globalGraphics;
 
 	public VisualStyleBuilder() {
 
@@ -260,7 +293,7 @@ public class VisualStyleBuilder {
 			// Get node shape
 			if (curGraphics != null && curGraphics.getType() != null) {
 				shapeValue = ShapeNodeRealizer
-						.parseNodeShapeTextIntoByte(curGraphics.getType());
+						.parseNodeShapeTextIntoByte(curGraphics.getType().value());
 				nodeColor = getColor(curGraphics.getFill());
 				nodeBorderColor = getColor(curGraphics.getOutline());
 				w = new Double(curGraphics.getW());
@@ -276,7 +309,7 @@ public class VisualStyleBuilder {
 					Att nodeAttr = null;
 					Object curObj = localIt.next();
 
-					if (curObj.getClass().equals(AttImpl.class)) {
+					if (curObj.getClass().equals(Att.class)) {
 						nodeAttr = (Att) curObj;
 
 						if (nodeAttr.getName().equals("nodeLabelFont")) {
@@ -421,7 +454,7 @@ public class VisualStyleBuilder {
 						Att edgeAttr = null;
 						Object curObj = localIt.next();
 
-						if (curObj.getClass().equals(AttImpl.class)) {
+						if (curObj.getClass().equals(Att.class)) {
 							edgeAttr = (Att) curObj;
 
 							String edgeLabelFont = null;

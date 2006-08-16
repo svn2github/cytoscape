@@ -1,5 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
-
+<!--
+	Schema File for XGMML.
+	
+		This file is modifed by Keiichiro Ono to support:
+			1. Additional Attribute Types (boolean, map, and complex)
+			2. Support for RDF Metadata
+-->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 	targetNamespace="http://www.cs.rpi.edu/XGMML" 
 	xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -7,7 +13,7 @@
    xmlns:dc="http://purl.org/dc/elements/1.0/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-   jxb:version="1.0"
+   jxb:version="2.0"
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified"
 	version="xgmml 1.0">
@@ -91,6 +97,11 @@
 	  <xsd:enumeration value="pentagon"/>
 	  <xsd:enumeration value="hexagon"/>
 	  <xsd:enumeration value="octagon"/>
+
+<!-- Type of Graphics (Cytoscape Local) -->
+			<xsd:enumeration value="ellipse"/>
+	  	<xsd:enumeration value="diamond"/>
+	  	<xsd:enumeration value="paralellogram"/>
    </xsd:restriction>
 </xsd:simpleType>
 
@@ -160,14 +171,18 @@
    </xsd:restriction>
 </xsd:simpleType>
 
-<!-- Object type -->
-<xsd:simpleType name="object.type"> 
-   <xsd:restriction base="xsd:NMTOKEN">
-	  <xsd:enumeration value="list"/>
-	  <xsd:enumeration value="string"/>
-	  <xsd:enumeration value="real"/>
-	  <xsd:enumeration value="integer"/>
-   </xsd:restriction>
+<!-- Object type: Mod. by kono@ucsd.edu -->
+<xsd:simpleType name="object.type">
+	<xsd:restriction base="xsd:NMTOKEN">
+		<xsd:enumeration value="list"/>
+		<xsd:enumeration value="string"/>
+		<xsd:enumeration value="real"/>
+		<xsd:enumeration value="integer"/>
+
+		<xsd:enumeration value="boolean"/>
+		<xsd:enumeration value="map"/>
+		<xsd:enumeration value="complex"/>
+	</xsd:restriction>
 </xsd:simpleType>
 
 <!-- Global Attributes -->
@@ -427,16 +442,16 @@
 
 <!-- Att Element -->
 <xsd:element name="att">
-     <xsd:complexType mixed="true">
-       <xsd:sequence>
-	 <xsd:element ref="att" minOccurs="0" maxOccurs="unbounded"/>
-	 <xsd:element ref="graph" minOccurs="0" maxOccurs="unbounded"/>
-	 <xsd:element ref="rdf:RDF" minOccurs="0" maxOccurs="unbounded"/>
-       </xsd:sequence>
-	 <xsd:attributeGroup ref="global-atts"/>
-	 <xsd:attributeGroup ref="attribute-value"/>
-	 <xsd:attributeGroup ref="attribute-type"/>
-     </xsd:complexType>
+	<xsd:complexType mixed="true">
+		<xsd:sequence>
+			<xsd:element ref="att" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="graph" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="rdf:RDF" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attributeGroup ref="global-atts"/>
+		<xsd:attributeGroup ref="attribute-value"/>
+		<xsd:attributeGroup ref="attribute-type"/>
+	</xsd:complexType>
 </xsd:element>
 
 </xsd:schema>

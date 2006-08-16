@@ -37,11 +37,31 @@
 
 package cytoscape.data.writers;
 
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.readers.MetadataParser;
+import cytoscape.generated2.Att;
+import cytoscape.generated2.GraphicEdge;
+import cytoscape.generated2.GraphicGraph;
+import cytoscape.generated2.GraphicNode;
+import cytoscape.generated2.Graphics;
+import cytoscape.generated2.ObjectFactory;
+import cytoscape.generated2.ObjectType;
+import cytoscape.generated2.RdfRDF;
+import cytoscape.generated2.TypeGraphicsType;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.LineType;
+import ding.view.DGraphView;
+import giny.model.RootGraph;
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
-import giny.model.RootGraph;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -56,32 +76,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
-
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.readers.MetadataParser;
-import cytoscape.generated2.Att;
-import cytoscape.generated2.Edge;
-import cytoscape.generated2.Graph;
-import cytoscape.generated2.Graphics;
-import cytoscape.generated2.Node;
-import cytoscape.generated2.ObjectFactory;
-import cytoscape.generated2.RdfRDF;
-import cytoscape.view.CyNetworkView;
-import cytoscape.visual.LineType;
-import ding.view.DGraphView;
 
 /**
  * 
@@ -109,17 +108,6 @@ public class XGMMLWriter {
 	// Attribute name for metaData support
 	private static final String METANODE_KEY = "__metaNodeRindices";
 
-	// GML-Compatible Pre-defined Shapes
-	protected static final String RECTANGLE = "rectangle";
-	protected static final String ELLIPSE = "ellipse";
-	protected static final String LINE = "Line";
-	protected static final String POINT = "point";
-	protected static final String DIAMOND = "diamond";
-	protected static final String HEXAGON = "hexagon";
-	protected static final String OCTAGON = "octagon";
-	protected static final String PARALELLOGRAM = "parallelogram";
-	protected static final String TRIANGLE = "triangle";
-
 	// Node types
 	protected static final String NORMAL = "normal";
 	protected static final String METANODE = "metanode";
@@ -135,25 +123,82 @@ public class XGMMLWriter {
 	public static final String GRAPH_VIEW_CENTER_X = "GRAPH_VIEW_CENTER_X";
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
+	/**
+	 * @uml.property  name="nodeAttributes"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private CyAttributes nodeAttributes;
+	/**
+	 * @uml.property  name="edgeAttributes"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private CyAttributes edgeAttributes;
+	/**
+	 * @uml.property  name="networkAttributes"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private CyAttributes networkAttributes;
+	/**
+	 * @uml.property  name="nodeAttNames" multiplicity="(0 -1)" dimension="1"
+	 */
 	private String[] nodeAttNames = null;
+	/**
+	 * @uml.property  name="edgeAttNames" multiplicity="(0 -1)" dimension="1"
+	 */
 	private String[] edgeAttNames = null;
+	/**
+	 * @uml.property  name="networkAttNames" multiplicity="(0 -1)" dimension="1"
+	 */
 	private String[] networkAttNames = null;
 
+	/**
+	 * @uml.property  name="network"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private CyNetwork network;
+	/**
+	 * @uml.property  name="networkView"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private CyNetworkView networkView;
 
+	/**
+	 * @uml.property  name="nodeList"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="cytoscape.CyNode"
+	 */
 	private ArrayList nodeList;
+	/**
+	 * @uml.property  name="metanodeList"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.Integer"
+	 */
 	private ArrayList metanodeList;
+	/**
+	 * @uml.property  name="edgeMap"
+	 * @uml.associationEnd  qualifier="getIdentifier:java.lang.String cytoscape.CyEdge"
+	 */
 	private HashMap edgeMap;
 
+	/**
+	 * @uml.property  name="jc"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	JAXBContext jc;
+	/**
+	 * @uml.property  name="objFactory"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	ObjectFactory objFactory;
 
+	/**
+	 * @uml.property  name="mdp"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	MetadataParser mdp;
-	Graph graph = null;
+	/**
+	 * @uml.property  name="graph"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
+	GraphicGraph graph = null;
 
 	// Default CSS file name. Maybe used in the future.
 	private static final String CSS_FILE = "base.css";
@@ -214,7 +259,7 @@ public class XGMMLWriter {
 		Att globalGraphics = null;
 
 		jc = JAXBContext.newInstance(PACKAGE_NAME, this.getClass().getClassLoader());
-		graph = objFactory.createGraph();
+		graph = objFactory.createGraphicGraph();
 		
 		graphAtt = objFactory.createAtt();
 		
@@ -269,7 +314,7 @@ public class XGMMLWriter {
 		writeEdges();
 
 		// This creates the header of the XML document.
-		writer.write("<?xml version='1.0'?>\n");
+		//writer.write("<?xml version='1.0'?>\n");
 
 		// Will be restored when CSS is ready.
 		// writer.write("<?xml-stylesheet type='text/css' href='" + CSS_FILE
@@ -291,7 +336,9 @@ public class XGMMLWriter {
 		}
 
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		m.marshal(graph, writer);
+		m.setProperty("com.sun.xml.bind.xmlDeclaration", true);
+		JAXBElement<GraphicGraph> graphicGraphElement = objFactory.createGraph(graph);
+		m.marshal(graphicGraphElement, writer);
 	}
 
 	/**
@@ -323,7 +370,7 @@ public class XGMMLWriter {
 	}
 
 	private void writeEdge(CyEdge curEdge) throws JAXBException {
-		Edge jxbEdge = objFactory.createEdge();
+		GraphicEdge jxbEdge = objFactory.createGraphicEdge();
 
 		// Set the same value for label & id
 		jxbEdge.setId(curEdge.getIdentifier());
@@ -341,7 +388,7 @@ public class XGMMLWriter {
 			}
 		}
 		attributeWriter(EDGE, curEdge.getIdentifier(), jxbEdge);
-
+		//JAXBElement<GraphicEdge> gEdgeElement = objFactory.createEdge(jxbEdge);
 		graph.getNodeOrEdge().add(jxbEdge);
 	}
 
@@ -381,7 +428,7 @@ public class XGMMLWriter {
 
 		// process type node
 		if (type == NODE) {
-			final Node targetNode = (Node) target;
+			final GraphicNode targetNode = (GraphicNode) target;
 			// process each attribute type
 			for (int i = 0; i < nodeAttNames.length; i++) {
 				if (nodeAttNames[i] == "node.width"
@@ -406,7 +453,7 @@ public class XGMMLWriter {
 			// process each attribute type
 			for (int i = 0; i < edgeAttNames.length; i++) {
 				Att att = createAttribute(id, edgeAttributes, edgeAttNames[i]);
-				if (att != null) ((Edge) target).getAtt().add(att);
+				if (att != null) ((GraphicEdge) target).getAtt().add(att);
 			}
 		}
 		// process type network
@@ -448,7 +495,7 @@ public class XGMMLWriter {
 			Double dAttr = attributes.getDoubleAttribute(id, attributeName);
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
-			attr.setType(FLOAT_TYPE);
+			attr.setType(ObjectType.fromValue(FLOAT_TYPE));
 			if (dAttr != null)
 				attr.setValue(dAttr.toString());
 		}
@@ -457,7 +504,7 @@ public class XGMMLWriter {
 			Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
-			attr.setType(INT_TYPE);
+			attr.setType(ObjectType.fromValue(INT_TYPE));
 			if (iAttr != null)
 				attr.setValue(iAttr.toString());
 		}
@@ -466,7 +513,7 @@ public class XGMMLWriter {
 			String sAttr = attributes.getStringAttribute(id, attributeName);
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
-			attr.setType(STRING_TYPE);
+			attr.setType(ObjectType.fromValue(STRING_TYPE));
 			if (sAttr != null) {
 				attr.setValue(sAttr);
 			} else if (attributeName == "nodeType") {
@@ -478,7 +525,7 @@ public class XGMMLWriter {
 			Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
-			attr.setType(BOOLEAN_TYPE);
+			attr.setType(ObjectType.fromValue(BOOLEAN_TYPE));
 			if (bAttr != null)
 				attr.setValue(bAttr.toString());
 		}
@@ -489,7 +536,7 @@ public class XGMMLWriter {
 			// set attribute name and label
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
-			attr.setType(LIST_TYPE);
+			attr.setType(ObjectType.fromValue(LIST_TYPE));
 			// interate through the list
 			final Iterator listIt = listAttr.iterator();
 			while (listIt.hasNext()) {
@@ -499,7 +546,7 @@ public class XGMMLWriter {
 				Att memberAttr = objFactory.createAtt();
 				// set child attribute value & label
 				memberAttr.setValue(obj.toString());
-				memberAttr.setType(checkType(obj));
+				memberAttr.setType(ObjectType.fromValue(checkType(obj)));
 				// add child attribute to parent
 				attr.getContent().add(memberAttr);
 			}
@@ -511,7 +558,7 @@ public class XGMMLWriter {
 			// set our attribute name and label
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
-			attr.setType(MAP_TYPE);
+			attr.setType(ObjectType.fromValue(MAP_TYPE));
 			// interate through the map
 			final Iterator mapIt = mapAttr.keySet().iterator();
 			while (mapIt.hasNext()) {
@@ -522,7 +569,7 @@ public class XGMMLWriter {
 				Att memberAttr = objFactory.createAtt();
 				// set child attribute name, label, and value
 				memberAttr.setName(key);
-				memberAttr.setType(checkType(mapAttr.get(key)));
+				memberAttr.setType(ObjectType.fromValue(checkType(mapAttr.get(key))));
 				memberAttr.setValue(mapAttr.get(key).toString());
 				// add child attribute to parent
 				attr.getContent().add(memberAttr);
@@ -569,7 +616,7 @@ public class XGMMLWriter {
 		Att attrToReturn = objFactory.createAtt();
 
 		// set top level attribute name, label
-		attrToReturn.setType(COMPLEX_TYPE);
+		attrToReturn.setType(ObjectType.fromValue(COMPLEX_TYPE));
 		attrToReturn.setLabel(attributeName);
 		attrToReturn.setName(attributeName);
 		attrToReturn.setValue(String.valueOf(dimTypes.length));
@@ -592,7 +639,7 @@ public class XGMMLWriter {
 			// create an Att instance for this key
 			// and set its name, label, & value
 			Att thisKeyAttr = objFactory.createAtt();
-			thisKeyAttr.setType(getType(dimTypes[0]));
+			thisKeyAttr.setType(ObjectType.fromValue(getType(dimTypes[0])));
 			thisKeyAttr.setLabel(key.toString());
 			thisKeyAttr.setName(key.toString());
 			thisKeyAttr.setValue(String.valueOf(thisKeyMap.size()));
@@ -767,7 +814,7 @@ public class XGMMLWriter {
 				if (attrToReturn != null) parentAttr.getContent().add(attrToReturn);
 				attrToReturn = objFactory.createAtt();
 				// we have a another map
-				attrToReturn.setType(getType(dimTypes[dimTypesIndex]));
+				attrToReturn.setType(ObjectType.fromValue(getType(dimTypes[dimTypesIndex])));
 				attrToReturn.setLabel(key.toString());
 				attrToReturn.setName(key.toString());
 				attrToReturn.setValue(String
@@ -793,13 +840,13 @@ public class XGMMLWriter {
 				attrToReturn = parentAttr;
 				// create our key attribute
 				Att keyAttr = objFactory.createAtt();
-				keyAttr.setType(getType(dimTypes[dimTypesIndex]));
+				keyAttr.setType(ObjectType.fromValue(getType(dimTypes[dimTypesIndex])));
 				keyAttr.setLabel(key.toString());
 				keyAttr.setName(key.toString());
 				keyAttr.setValue(String.valueOf(1));
 				// create our value attribute
 				Att valueAttr = objFactory.createAtt();
-				valueAttr.setType(attributeType);
+				valueAttr.setType(ObjectType.fromValue(attributeType));
 				valueAttr.setValue(possibleAttributeValue.toString());
 				keyAttr.getContent().add(valueAttr);
 				attrToReturn.getContent().add(keyAttr);
@@ -849,6 +896,7 @@ public class XGMMLWriter {
 			 */
 			// Node shape
 			graphics.setType(number2shape(curNodeView.getShape()));
+			
 
 			// Node size and position
 			graphics.setH(curNodeView.getHeight());
@@ -1025,13 +1073,13 @@ public class XGMMLWriter {
 	 * @param childrenIndices
 	 * @throws JAXBException
 	 */
-	private void expand(CyNode node, Node metanode, int[] childrenIndices)
+	private void expand(CyNode node, GraphicNode metanode, int[] childrenIndices)
 			throws JAXBException {
 		CyNode childNode = null;
 		Att children = objFactory.createAtt();
 		children.setName("metanodeChildren");
-		Graph subGraph = objFactory.createGraph();
-		Node jxbChildNode = null;
+		GraphicGraph subGraph = objFactory.createGraphicGraph();
+		GraphicNode jxbChildNode = null;
 
 		// test
 
@@ -1039,7 +1087,7 @@ public class XGMMLWriter {
 			childNode = (CyNode) Cytoscape.getRootGraph().getNode(
 					childrenIndices[i]);
 
-			jxbChildNode = objFactory.createNode();
+			jxbChildNode = objFactory.createGraphicNode();
 			jxbChildNode.setId(childNode.getIdentifier());
 			jxbChildNode.setLabel(childNode.getIdentifier());
 			subGraph.getNodeOrEdge().add(jxbChildNode);
@@ -1068,23 +1116,24 @@ public class XGMMLWriter {
 	 *            Enumerated node shape.
 	 * @return Shape in string.
 	 */
-	private String number2shape(final int type) {
-		if (type == NodeView.ELLIPSE) {
-			return ELLIPSE;
-		} else if (type == NodeView.RECTANGLE) {
-			return RECTANGLE;
-		} else if (type == NodeView.DIAMOND) {
-			return DIAMOND;
-		} else if (type == NodeView.HEXAGON) {
-			return HEXAGON;
-		} else if (type == NodeView.OCTAGON) {
-			return OCTAGON;
-		} else if (type == NodeView.PARALELLOGRAM) {
-			return PARALELLOGRAM;
-		} else if (type == NodeView.TRIANGLE) {
-			return TRIANGLE;
-		} else {
-			return null;
+	private TypeGraphicsType number2shape(final int type) {
+		switch(type) {
+			case NodeView.ELLIPSE:
+				return TypeGraphicsType.ELLIPSE;
+			case NodeView.RECTANGLE:
+				return TypeGraphicsType.RECTANGLE;
+			case NodeView.DIAMOND:
+				return TypeGraphicsType.DIAMOND;
+			case NodeView.HEXAGON:
+				return TypeGraphicsType.HEXAGON;
+			case NodeView.OCTAGON:
+				return TypeGraphicsType.OCTAGON;
+			case NodeView.PARALELLOGRAM:
+				return TypeGraphicsType.PARALELLOGRAM;
+			case NodeView.TRIANGLE:
+				return TypeGraphicsType.TRIANGLE;
+			default:
+				return null;
 		}
 	}
 
@@ -1111,14 +1160,14 @@ public class XGMMLWriter {
 	 */
 	private void writeBaseNodes() throws JAXBException {
 
-		Node jxbNode = null;
+		GraphicNode jxbNode = null;
 		CyNode curNode = null;
 
 		final Iterator it = network.nodesIterator();
 
 		while (it.hasNext()) {
 			curNode = (CyNode) it.next();
-			jxbNode = objFactory.createNode();
+			jxbNode = objFactory.createGraphicNode();
 			jxbNode.setId(Integer.toString(curNode.getRootGraphIndex()));
 			jxbNode.setLabel(curNode.getIdentifier());
 			jxbNode.setName("base");
@@ -1137,6 +1186,7 @@ public class XGMMLWriter {
 				expandChildren(curNode);
 			} else {
 				nodeList.add(curNode);
+				//JAXBElement<GraphicNode> gNode = objFactory.createNode(jxbNode);
 				graph.getNodeOrEdge().add(jxbNode);
 			}
 
@@ -1151,10 +1201,10 @@ public class XGMMLWriter {
 	 * @return JAXB Node object.
 	 * @throws JAXBException
 	 */
-	private Node buildJAXBNode(final CyNode node) throws JAXBException {
-		Node jxbNode = null;
+	private GraphicNode buildJAXBNode(final CyNode node) throws JAXBException {
+		GraphicNode jxbNode = null;
 
-		jxbNode = objFactory.createNode();
+		jxbNode = objFactory.createGraphicNode();
 		jxbNode.setId(Integer.toString(node.getRootGraphIndex()));
 		jxbNode.setLabel(node.getIdentifier());
 
@@ -1174,7 +1224,7 @@ public class XGMMLWriter {
 	private void expandChildren(final CyNode node) throws JAXBException {
 
 		CyNode childNode = null;
-		Node jxbNode = null;
+		GraphicNode jxbNode = null;
 
 		final int[] childrenIndices = network.getRootGraph()
 				.getNodeMetaChildIndicesArray(node.getRootGraphIndex());
@@ -1241,33 +1291,35 @@ public class XGMMLWriter {
 			if (embeddedMetaList.containsKey(curNode.getIdentifier()))
 				continue;  // Yes, skip it
 			
-			Node mNode = writeMetanode(curNode);
+			GraphicNode mNode = writeMetanode(curNode);
 			if (mNode != null) {
-				graph.getAtt().add(mNode);
+				Att metanodeAtt = objFactory.createAtt();
+				metanodeAtt.getContent().add(metanodeAtt);
+				graph.getAtt().add(metanodeAtt);
 			}
 		}
 	}
 
-	private Node writeMetanode(CyNode curNode) throws JAXBException {
-		Node jxbNode = null;
+	private GraphicNode writeMetanode(CyNode curNode) throws JAXBException {
+		GraphicNode jxbNode = null;
 		jxbNode = buildJAXBNode(curNode);
 		HashMap childMap = new HashMap();
 
 		int[] childrenIndices = network.getRootGraph()
 				.getNodeMetaChildIndicesArray(curNode.getRootGraphIndex());
 		Att children = objFactory.createAtt();
-		Graph subGraph = objFactory.createGraph();
+		GraphicGraph subGraph = objFactory.createGraphicGraph();
 
 		for (int i = 0; childrenIndices != null && i < childrenIndices.length; i++) {
 			CyNode childNode = null;
-			Node childJxbNode = null;
+			GraphicNode childJxbNode = null;
 
 			childNode = (CyNode) network.getRootGraph().getNode(
 					childrenIndices[i]);
 			childMap.put(childNode.getIdentifier(),childNode);
 			String targetnodeID = Integer.toString(childNode.getRootGraphIndex());
 			if (!isMetanode(childNode)) {
-				childJxbNode = objFactory.createNode();
+				childJxbNode = objFactory.createGraphicNode();
 				childJxbNode.setHref("#"+targetnodeID);
 			} else {
 				// We have an embedded metanode -- recurse
@@ -1436,7 +1488,7 @@ public class XGMMLWriter {
 		// set the attribute name, label, and value
 		attr.setName(GRAPH_VIEW_ZOOM);
 		attr.setLabel(GRAPH_VIEW_ZOOM);
-		attr.setType(FLOAT_TYPE);
+		attr.setType(ObjectType.REAL);
 		if (dAttr != null) {
 			attr.setValue(dAttr.toString());
 		}
@@ -1463,7 +1515,7 @@ public class XGMMLWriter {
 			Double coord = new Double(doubleCoord);
 			attr.setName(coordinates[lc]);
 			attr.setLabel(coordinates[lc]);
-			attr.setType(FLOAT_TYPE);
+			attr.setType(ObjectType.REAL);
 			if (coord != null)
 				attr.setValue(coord.toString());
 			graph.getAtt().add(attr);
@@ -1523,6 +1575,9 @@ class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 			return "xlink";
 		}
 
+		if("http://www.cs.rpi.edu/XGMML".equals(namespaceUri)) {
+			return "";
+		}
 		// otherwise I don't care. Just use the default suggestion, whatever it
 		// may be.
 		return suggestion;
@@ -1530,8 +1585,10 @@ class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 
 	public String[] getPreDeclaredNamespaceUris() {
 		return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
-				"http://www.w3.org/1999/xlink",
-				"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-				"http://purl.org/dc/elements/1.1/" };
+					"http://www.w3.org/1999/xlink",
+					"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+					"http://purl.org/dc/elements/1.1/",
+					"http://www.cs.rpi.edu/XGMML"
+				};
 	}
 }

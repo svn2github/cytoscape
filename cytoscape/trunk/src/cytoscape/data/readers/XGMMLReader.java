@@ -39,14 +39,12 @@ package cytoscape.data.readers;
 
 import giny.model.Edge;
 import giny.model.Node;
-import giny.model.RootGraph;
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +58,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
@@ -79,7 +78,9 @@ import cytoscape.generated2.Att;
 import cytoscape.generated2.Date;
 import cytoscape.generated2.Description;
 import cytoscape.generated2.Format;
-import cytoscape.generated2.Graph;
+import cytoscape.generated2.GraphicEdge;
+import cytoscape.generated2.GraphicGraph;
+import cytoscape.generated2.GraphicNode;
 import cytoscape.generated2.Graphics;
 import cytoscape.generated2.Identifier;
 import cytoscape.generated2.RdfDescription;
@@ -87,14 +88,12 @@ import cytoscape.generated2.RdfRDF;
 import cytoscape.generated2.Source;
 import cytoscape.generated2.Title;
 import cytoscape.generated2.Type;
-import cytoscape.generated2.impl.AttImpl;
+import cytoscape.generated2.TypeGraphicsType;
 import cytoscape.task.TaskMonitor;
-import cytoscape.util.PercentUtil;
 import cytoscape.util.FileUtil;
-import cytoscape.visual.LineType;
-
-/* Used for metanode support */
+import cytoscape.util.PercentUtil;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.LineType;
 
 /**
  * XGMML file reader.<br>
@@ -158,46 +157,148 @@ public class XGMMLReader extends AbstractGraphReader {
 	private static final String XGMML_PACKAGE = "cytoscape.generated2";
 
 	// XGMML file name to be loaded.
+	/**
+	 * @uml.property  name="networkName"
+	 */
 	private String networkName;
 
+	/**
+	 * @uml.property  name="nodes"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="cytoscape.generated2.GraphicNode"
+	 */
 	private List nodes;
+	/**
+	 * @uml.property  name="edges"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="cytoscape.generated2.Att"
+	 */
 	private List edges;
 
+	/**
+	 * @uml.property  name="metadata"
+	 * @uml.associationEnd  
+	 */
 	private RdfRDF metadata;
+	/**
+	 * @uml.property  name="backgroundColor"
+	 */
 	private String backgroundColor;
+	/**
+	 * @uml.property  name="graphViewZoom"
+	 */
 	private Double graphViewZoom;
+	/**
+	 * @uml.property  name="graphViewCenterX"
+	 */
 	private Double graphViewCenterX;
+	/**
+	 * @uml.property  name="graphViewCenterY"
+	 */
 	private Double graphViewCenterY;
 
+	/**
+	 * @uml.property  name="networkStream"
+	 */
 	private InputStream networkStream;
 
+	/**
+	 * @uml.property  name="nodeIDMap"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="cytoscape.generated2.GraphicGraph"
+	 */
 	OpenIntIntHashMap nodeIDMap;
-	IntArrayList giny_nodes, giny_edges;
+	/**
+	 * @uml.property  name="giny_nodes"
+	 * @uml.associationEnd  
+	 */
+	IntArrayList giny_nodes;
+	/**
+	 * @uml.property  name="giny_edges"
+	 * @uml.associationEnd  
+	 */
+	IntArrayList giny_edges;
 
-	ArrayList nodeIndex, edgeIndex;
+	/**
+	 * @uml.property  name="nodeIndex"
+	 */
+	ArrayList nodeIndex;
+	/**
+	 * @uml.property  name="edgeIndex"
+	 */
+	ArrayList edgeIndex;
 
-	Graph network;
+	/**
+	 * @uml.property  name="network"
+	 * @uml.associationEnd  
+	 */
+	GraphicGraph network;
 
+	/**
+	 * @uml.property  name="rootNodes"
+	 */
 	ArrayList rootNodes;
 
+	/**
+	 * @uml.property  name="metaTree"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.String"
+	 */
 	ArrayList metaTree;
 
+	/**
+	 * @uml.property  name="nodeAttributes"
+	 * @uml.associationEnd  
+	 */
 	CyAttributes nodeAttributes;
+	/**
+	 * @uml.property  name="edgeAttributes"
+	 * @uml.associationEnd  
+	 */
 	CyAttributes edgeAttributes;
+	/**
+	 * @uml.property  name="networkCyAttributes"
+	 * @uml.associationEnd  
+	 */
 	CyAttributes networkCyAttributes;
 
+	/**
+	 * @uml.property  name="nodeGraphicsMap"
+	 * @uml.associationEnd  qualifier="label:java.lang.String cytoscape.generated2.Graphics"
+	 */
 	HashMap nodeGraphicsMap;
+	/**
+	 * @uml.property  name="edgeGraphicsMap"
+	 * @uml.associationEnd  qualifier="edgeID:java.lang.String cytoscape.generated2.Graphics"
+	 */
 	HashMap edgeGraphicsMap;
 
+	/**
+	 * @uml.property  name="nodeMap"
+	 * @uml.associationEnd  multiplicity="(0 -1)" ordering="true" elementType="cytoscape.generated2.GraphicGraph" qualifier="getSource:java.lang.String java.lang.String"
+	 */
 	private HashMap nodeMap;
 
+	/**
+	 * @uml.property  name="prop"
+	 */
 	private Properties prop = CytoscapeInit.getProperties();
+	/**
+	 * @uml.property  name="vsbSwitch"
+	 */
 	private String vsbSwitch = prop.getProperty("visualStyleBuilder");
 
 	// For exception handling
+	/**
+	 * @uml.property  name="taskMonitor"
+	 * @uml.associationEnd  
+	 */
 	private TaskMonitor taskMonitor;
+	/**
+	 * @uml.property  name="percentUtil"
+	 * @uml.associationEnd  
+	 */
 	private PercentUtil percentUtil;
 
+	/**
+	 * @uml.property  name="nextID"
+	 */
 	private int nextID = 0; // Used to assign ID's to nodes that didn't have
 							// them
 
@@ -285,7 +386,14 @@ public class XGMMLReader extends AbstractGraphReader {
 				taskMonitor.setStatus("Reading XGMML data...");
 			}
 
-			network = (Graph) unmarshaller.unmarshal(networkStream);
+			/*
+			 * New in JAXB 2.0:
+			 * 		Unmashaller returns JAXBElement, instead of actual 
+			 * 		Graph object.
+			 */
+			JAXBElement<GraphicGraph> graphicGraphElement = (JAXBElement<GraphicGraph>) unmarshaller.unmarshal(networkStream);
+			network = graphicGraphElement.getValue();
+			
 			// Report Status Value
 			if (taskMonitor != null) {
 				// taskMonitor.setPercentCompleted(50);
@@ -338,8 +446,8 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param network
 	 * @param metanodes
 	 */
-	protected void getNodesAndEdges(Graph network,
-			cytoscape.generated2.Node parent) {
+	protected void getNodesAndEdges(GraphicGraph network,
+			GraphicNode parent) {
 		// Get all nodes and edges as one List object.
 		List nodesAndEdges = network.getNodeOrEdge();
 
@@ -348,15 +456,15 @@ public class XGMMLReader extends AbstractGraphReader {
 		Iterator it = nodesAndEdges.iterator();
 		while (it.hasNext()) {
 			Object curObj = it.next();
-			if (curObj.getClass() == cytoscape.generated2.impl.NodeImpl.class) {
+			if (curObj.getClass() == GraphicNode.class) {
 				// Add the node to the list. Note that this could be
 				// recursive if this node contains a <graph>
-				addNode((cytoscape.generated2.Node) curObj);
+				addNode((GraphicNode) curObj);
 
 				// Add the object to the metaNode tree. Links will be resolved
 				// later
 				metaChildren.add(curObj);
-			} else {
+			} else if( curObj.getClass() == GraphicEdge.class) {
 				edges.add(curObj);
 			}
 		}
@@ -366,7 +474,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
-	protected void addNode(cytoscape.generated2.Node curNode) {
+	protected void addNode(GraphicNode curNode) {
 		String label = (String) curNode.getLabel();
 		String nodeId = (String) curNode.getId();
 
@@ -429,7 +537,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			}
 
 			// Get a node object (NOT a giny node. XGMML node!)
-			final cytoscape.generated2.Node curNode = (cytoscape.generated2.Node) nodes
+			final GraphicNode curNode = (GraphicNode) nodes
 					.get(idx);
 
 			final String label = (String) curNode.getLabel();
@@ -469,7 +577,8 @@ public class XGMMLReader extends AbstractGraphReader {
 				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(2,
 						idx, edges.size()));
 			}
-			final cytoscape.generated2.Edge curEdge = (cytoscape.generated2.Edge) edges
+
+			final GraphicEdge curEdge = (GraphicEdge) edges
 					.get(idx);
 
 			if (gml_id2order.containsKey(curEdge.getSource())
@@ -528,7 +637,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param edge
 	 * @return
 	 */
-	private String getInteraction(cytoscape.generated2.Edge edge) {
+	private String getInteraction(GraphicEdge edge) {
 
 		final Iterator it = edge.getAtt().iterator();
 		Att interaction = null;
@@ -572,7 +681,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		while (it.hasNext()) {
 
-			cytoscape.generated2.Node childNode = (cytoscape.generated2.Node) it
+			GraphicNode childNode = (GraphicNode) it
 					.next();
 
 			String targetNode = childNode.getHref();
@@ -710,7 +819,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		for (final Iterator it = nodes.iterator(); it.hasNext();) {
 			// Extract a node from JAXB-generated object
-			final cytoscape.generated2.Node curNode = (cytoscape.generated2.Node) it
+			final GraphicNode curNode = (GraphicNode) it
 					.next();
 
 			label = curNode.getLabel();
@@ -777,8 +886,12 @@ public class XGMMLReader extends AbstractGraphReader {
 			nodeView.setBorderWidth(graphics.getWidth().floatValue());
 		}
 
-		final String type = graphics.getType();
-
+		final TypeGraphicsType gType = graphics.getType();
+		String type = null;
+		if(gType != null) {
+			type = gType.value();
+		}
+		
 		if (type != null) {
 
 			if (type.equals(ELLIPSE) || type.equals(VELLIPSIS)
@@ -809,8 +922,8 @@ public class XGMMLReader extends AbstractGraphReader {
 			while (it.hasNext()) {
 				final Object obj = it.next();
 
-				if (obj.getClass() == AttImpl.class) {
-					final AttImpl nodeGraphics = (AttImpl) obj;
+				if (obj.getClass() == Att.class) {
+					final Att nodeGraphics = (Att) obj;
 					final String attName = nodeGraphics.getName();
 					final String value = nodeGraphics.getValue();
 
@@ -836,7 +949,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		// Extract an edge from JAXB-generated object
 		for (final Iterator it = edges.iterator(); it.hasNext();) {
-			cytoscape.generated2.Edge curEdge = (cytoscape.generated2.Edge) it
+			GraphicEdge curEdge = (GraphicEdge) it
 					.next();
 
 			Graphics graphics = (Graphics) curEdge.getGraphics();
@@ -911,8 +1024,8 @@ public class XGMMLReader extends AbstractGraphReader {
 			while (it.hasNext()) {
 				final Object obj = it.next();
 
-				if (obj.getClass() == AttImpl.class) {
-					final AttImpl edgeGraphics = (AttImpl) obj;
+				if (obj.getClass() == Att.class) {
+					final Att edgeGraphics = (Att) obj;
 					final String attName = edgeGraphics.getName();
 					final String value = edgeGraphics.getValue();
 
@@ -940,16 +1053,16 @@ public class XGMMLReader extends AbstractGraphReader {
 						final List handleList = new ArrayList();
 						while (handleIt.hasNext()) {
 							final Object curObj = handleIt.next();
-							if (curObj.getClass() == AttImpl.class) {
-								Iterator pointIt = ((AttImpl) curObj)
+							if (curObj.getClass() == Att.class) {
+								Iterator pointIt = ((Att) curObj)
 										.getContent().iterator();
 								double x = 0;
 								double y = 0;
 								boolean xFlag = false, yFlag = false;
 								while (pointIt.hasNext()) {
 									final Object coordObj = pointIt.next();
-									if (coordObj.getClass() == AttImpl.class) {
-										final AttImpl point = (AttImpl) coordObj;
+									if (coordObj.getClass() == Att.class) {
+										final Att point = (Att) coordObj;
 										if (point.getName().equals("x")) {
 											x = Double.parseDouble(point
 													.getValue());
@@ -995,6 +1108,10 @@ public class XGMMLReader extends AbstractGraphReader {
 		return networkName;
 	}
 
+	/**
+	 * @return  Returns the networkName.
+	 * @uml.property  name="networkName"
+	 */
 	public String getNetworkName() {
 		return networkName;
 	}
@@ -1018,7 +1135,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	}
 
 	private void readAttributes(final String targetName, final List attrList,
-			final String type, final cytoscape.generated2.Node parent) {
+			final String type, final GraphicNode parent) {
 
 		CyAttributes attributes = null;
 
@@ -1050,10 +1167,13 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	private void readAttribute(final CyAttributes attributes,
 			final String targetName, final Att curAtt, final String type,
-			final cytoscape.generated2.Node parent) {
-
+			final GraphicNode parent) {
+		
 		// check args
-		final String dataType = curAtt.getType();
+		if(curAtt.getType() == null) {
+			return;
+		}
+		final String dataType = curAtt.getType().value();
 
 		// null value only ok when type is list or map
 		if ((dataType == null || (!dataType.equals(LIST_TYPE) && !dataType
@@ -1104,8 +1224,8 @@ public class XGMMLReader extends AbstractGraphReader {
 			final Iterator listIt = curAtt.getContent().iterator();
 			while (listIt.hasNext()) {
 				final Object listItem = listIt.next();
-				if (listItem != null && listItem.getClass() == AttImpl.class) {
-					final Object itemClassObject = createObjectFromAttValue((AttImpl) listItem);
+				if (listItem != null && listItem.getClass() == Att.class) {
+					final Object itemClassObject = createObjectFromAttValue((Att) listItem);
 					if (itemClassObject != null)
 						listAttr.add(itemClassObject);
 				}
@@ -1118,10 +1238,10 @@ public class XGMMLReader extends AbstractGraphReader {
 			final Iterator mapIt = curAtt.getContent().iterator();
 			while (mapIt.hasNext()) {
 				final Object mapItem = mapIt.next();
-				if (mapItem != null && mapItem.getClass() == AttImpl.class) {
-					final Object mapClassObject = createObjectFromAttValue((AttImpl) mapItem);
+				if (mapItem != null && mapItem.getClass() == Att.class) {
+					final Object mapClassObject = createObjectFromAttValue((Att) mapItem);
 					if (mapClassObject != null) {
-						mapAttr.put(((AttImpl) mapItem).getName(),
+						mapAttr.put(((Att) mapItem).getName(),
 								mapClassObject);
 					}
 				}
@@ -1257,8 +1377,8 @@ public class XGMMLReader extends AbstractGraphReader {
 		while (complexIt.hasNext()) {
 			final Object complexItemObj = complexIt.next();
 			if (complexItemObj != null
-					&& complexItemObj.getClass() == AttImpl.class) {
-				final AttImpl complexItem = (AttImpl) complexItemObj;
+					&& complexItemObj.getClass() == Att.class) {
+				final Att complexItem = (Att) complexItemObj;
 				// add this key to the keyspace
 				keySpace[keySpaceCount] = createObjectFromAttName(complexItem);
 				// recurse if we still have keys to go
@@ -1276,15 +1396,15 @@ public class XGMMLReader extends AbstractGraphReader {
 					while (nextComplexIt.hasNext()) {
 						Object nextComplexItemObj = nextComplexIt.next();
 						if (nextComplexItemObj != null
-								&& nextComplexItemObj.getClass() == AttImpl.class) {
+								&& nextComplexItemObj.getClass() == Att.class) {
 							// get last level key and set in keyspace
-							AttImpl nextComplexItem = (AttImpl) nextComplexItemObj;
+							Att nextComplexItem = (Att) nextComplexItemObj;
 							keySpace[keySpaceCount + 1] = createObjectFromAttName(nextComplexItem);
 							// now grab the value - there can only be one
 							Iterator complexValueIterator = nextComplexItem
 									.getContent().iterator();
 							Object complexValue = complexValueIterator.next();
-							Object valueToStore = createObjectFromAttValue((AttImpl) complexValue);
+							Object valueToStore = createObjectFromAttValue((Att) complexValue);
 							mhm.setAttributeValue(targetName, attributeName,
 									valueToStore, keySpace);
 						}
@@ -1302,7 +1422,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *            AttImpl
 	 * @return - Object
 	 */
-	private Object createObjectFromAttName(final AttImpl item) {
+	private Object createObjectFromAttName(final Att item) {
 
 		if (item.getType().equals(STRING_TYPE)) {
 			return item.getName();
@@ -1325,7 +1445,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *            AttImpl
 	 * @return - Object
 	 */
-	private Object createObjectFromAttValue(final AttImpl item) {
+	private Object createObjectFromAttValue(final Att item) {
 
 		if (item.getType().equals(STRING_TYPE)) {
 			return item.getValue();
@@ -1383,22 +1503,28 @@ public class XGMMLReader extends AbstractGraphReader {
 
 			final String label = parts[0];
 			if (label.startsWith("Date")) {
-				map.put(label, ((Date) entry).getContent().get(0).toString());
+				//map.put(label, ((Date) entry).getContent().get(0).toString());
+				map.put(label, ((Date) entry).getContent());
 			} else if (label.startsWith("Title")) {
-				Title title = (Title) entry;
-				map.put(label, title.getContent().get(0).toString());
+//				Title title = (Title) entry;
+				map.put(label, ((Title) entry).getContent());
 			} else if (label.startsWith("Identifier")) {
-				map.put(label, ((Identifier) entry).getContent().get(0)
-						.toString());
+//				map.put(label, ((Identifier) entry).getContent().get(0)
+//						.toString());
+				map.put(label, ((Identifier) entry).getContent());
 			} else if (label.startsWith("Description")) {
-				map.put(label, ((Description) entry).getContent().get(0)
-						.toString());
+//				map.put(label, ((Description) entry).getContent().get(0)
+//						.toString());
+				map.put(label, ((Description) entry).getContent());
 			} else if (label.startsWith("Source")) {
-				map.put(label, ((Source) entry).getContent().get(0).toString());
+				//map.put(label, ((Source) entry).getContent().get(0).toString());
+				map.put(label, ((Source) entry).getContent());
 			} else if (label.startsWith("Type")) {
-				map.put(label, ((Type) entry).getContent().get(0).toString());
+				//map.put(label, ((Type) entry).getContent().get(0).toString());
+				map.put(label, ((Type) entry).getContent());
 			} else if (label.startsWith("Format")) {
-				map.put(label, ((Format) entry).getContent().get(0).toString());
+				//map.put(label, ((Format) entry).getContent().get(0).toString());
+				map.put(label, ((Format) entry).getContent());
 			} else {
 				//
 			}
@@ -1455,7 +1581,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *            the parent of this graph (for metaNode support)
 	 */
 	private void readEmbeddedAtt(String targetName, Att curAtt, String type,
-			cytoscape.generated2.Node parent) {
+			GraphicNode parent) {
 		if (curAtt.getContent() == null) {
 			return;
 		}
@@ -1464,11 +1590,11 @@ public class XGMMLReader extends AbstractGraphReader {
 		Iterator childIt = curAtt.getContent().iterator();
 		while (childIt.hasNext()) {
 			Object curObj = childIt.next();
-			if (curObj.getClass() == cytoscape.generated2.impl.AttImpl.class) {
+			if (curObj.getClass() == Att.class) {
 				attrs.add(curObj);
-			} else if (curObj.getClass() == cytoscape.generated2.impl.GraphImpl.class) {
+			} else if (curObj.getClass() == GraphicGraph.class) {
 				// Recurse
-				getNodesAndEdges((cytoscape.generated2.Graph) curObj, parent);
+				getNodesAndEdges((GraphicGraph) curObj, parent);
 			}
 		}
 		if (attrs.size() > 0) {

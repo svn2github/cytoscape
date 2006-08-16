@@ -6,19 +6,6 @@
 
 package cytoscape.dialogs;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.xml.bind.JAXBException;
-
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -32,6 +19,18 @@ import cytoscape.generated2.RdfRDF;
 import cytoscape.generated2.Source;
 import cytoscape.generated2.Title;
 import cytoscape.generated2.Type;
+import java.awt.Color;
+import java.awt.Font;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 
 /**
  * Dialog for editing network metadata in RDF.<br>
@@ -46,13 +45,30 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 		TableModelListener {
 
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
+	/**
+	 * @uml.property  name="dEFAULT_ABOUT"
+	 */
 	private final String DEFAULT_ABOUT = "http://www.cytoscape.org/";
 
+	/**
+	 * @uml.property  name="metaTM"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	NetworkMetaDataTableModel metaTM;
 
+	/**
+	 * @uml.property  name="selection" multiplicity="(0 -1)" dimension="1"
+	 */
 	int[] selection = null;
 
+	/**
+	 * @uml.property  name="network"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private CyNetwork network;
+	/**
+	 * @uml.property  name="description"
+	 */
 	String description;
 
 	/**
@@ -253,41 +269,85 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 				METADATA_ATTR_NAME, rdfMap);
 	}
 
-	private Object set(String label, Object value) throws JAXBException {
+	private JAXBElement set(String label, Object value) throws JAXBException {
 		ObjectFactory objF = new ObjectFactory();
-		Object newObj = null;
 
 		if (label == "Date") {
 			Date dt = objF.createDate();
-			dt.getContent().add(value);
-			return dt;
+			dt.setContent(value.toString());
+			//dt.getContent().add(value);
+			JAXBElement<Date> dtElement = objF.createDate(dt);
+			return dtElement;
 		} else if (label == "Title") {
 			Title tl = objF.createTitle();
-			tl.getContent().add(value);
-			return tl;
+			tl.setContent(value.toString());
+			JAXBElement<Title> tlElement = objF.createTitle(tl);
+			return tlElement;
 		} else if (label == "Identifier") {
-			newObj = objF.createIdentifier();
-			((Identifier) newObj).getContent().add(value);
+			Identifier id = objF.createIdentifier();
+			id.setContent(value.toString());
+			JAXBElement<Identifier> idElement = objF.createIdentifier(id);
+			return idElement;
 		} else if (label == "Description") {
-
 			Description dsc = objF.createDescription();
-			dsc.getContent().add(value);
-			return dsc;
+			dsc.setContent(value.toString());
+			JAXBElement<Description> dscElement = objF.createDescription(dsc);
+			return dscElement;
 		} else if (label == "Source") {
-			newObj = objF.createSource();
-			((Source) newObj).getContent().add(value);
+			Source src = objF.createSource();
+			src.setContent(value.toString());
+			JAXBElement<Source> srcElement = objF.createSource(src);
+			return srcElement;
 		} else if (label == "Type") {
-			newObj = objF.createType();
-			((Type) newObj).getContent().add(value);
+			Type type = objF.createType();
+			type.setContent(value.toString());
+			JAXBElement<Type> typeElement = objF.createType(type);
+			return typeElement;
 		} else if (label == "Format") {
-			newObj = objF.createFormat();
-			((Format) newObj).getContent().add(value);
+			Format fmt = objF.createFormat();
+			fmt.setContent(value.toString());
+			JAXBElement<Format> fmtElement = objF.createFormat(fmt);
+			return fmtElement;
 		} else {
 			return null;
 		}
-		return newObj;
+		
+		
+//		if (label == "Date") {
+//			Date dt = objF.createDate();
+//			dt.getContent().add(value);
+//			return dt;
+//		} else if (label == "Title") {
+//			Title tl = objF.createTitle();
+//			tl.getContent().add(value);
+//			return tl;
+//		} else if (label == "Identifier") {
+//			newObj = objF.createIdentifier();
+//			((Identifier) newObj).getContent().add(value);
+//		} else if (label == "Description") {
+//
+//			Description dsc = objF.createDescription();
+//			dsc.getContent().add(value);
+//			return dsc;
+//		} else if (label == "Source") {
+//			newObj = objF.createSource();
+//			((Source) newObj).getContent().add(value);
+//		} else if (label == "Type") {
+//			newObj = objF.createType();
+//			((Type) newObj).getContent().add(value);
+//		} else if (label == "Format") {
+//			newObj = objF.createFormat();
+//			((Format) newObj).getContent().add(value);
+//		} else {
+//			return null;
+//		}
+//		return newObj;
 	}
 
+	/**
+	 * @return  Returns the metadataTable.
+	 * @uml.property  name="metadataTable"
+	 */
 	private JTable getMetadataTable() {
 		if (metadataTable == null) {
 			metaTM.addTableModelListener(new metadataTableListener());
@@ -318,14 +378,50 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 	}
 
 	// Variables declaration - do not modify
+	/**
+	 * @uml.property  name="okButton"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private javax.swing.JButton okButton;
+	/**
+	 * @uml.property  name="cancelButton"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private javax.swing.JButton cancelButton;
+	/**
+	 * @uml.property  name="descriptionTextArea"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private javax.swing.JTextArea descriptionTextArea;
+	/**
+	 * @uml.property  name="titleLabel"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private javax.swing.JLabel titleLabel;
+	/**
+	 * @uml.property  name="jPanel1"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private javax.swing.JPanel jPanel1;
+	/**
+	 * @uml.property  name="metadataTableScrollPane"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private javax.swing.JScrollPane metadataTableScrollPane;
+	/**
+	 * @uml.property  name="descriptionScrollPane"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private javax.swing.JScrollPane descriptionScrollPane;
+	/**
+	 * @uml.property  name="mainSplitPane"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private javax.swing.JSplitPane mainSplitPane;
+	/**
+	 * @uml.property  name="metadataTable"
+	 * @uml.associationEnd  
+	 */
 	private JTable metadataTable;
 	// End of variables declaration
 

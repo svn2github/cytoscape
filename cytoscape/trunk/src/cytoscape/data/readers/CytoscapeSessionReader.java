@@ -37,28 +37,6 @@
 
 package cytoscape.data.readers;
 
-import java.awt.Component;
-import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import javax.swing.JInternalFrame;
-import javax.swing.SwingUtilities;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -80,6 +58,26 @@ import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
+import java.awt.Component;
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * Reaser to load CYtoscape Session file (.cys).<br>
@@ -105,26 +103,65 @@ public class CytoscapeSessionReader {
 
 	private static final String NETWORK_ROOT = "Network Root";
 
+	/**
+	 * @uml.property  name="sourceURL"
+	 */
 	private URL sourceURL;
 
+	/**
+	 * @uml.property  name="networkURLs"
+	 * @uml.associationEnd  qualifier="entryName:java.lang.String java.net.URL"
+	 */
 	private HashMap networkURLs = null;
 
+	/**
+	 * @uml.property  name="cysessionFileURL"
+	 */
 	private URL cysessionFileURL = null;
+	/**
+	 * @uml.property  name="vizmapFileURL"
+	 */
 	private URL vizmapFileURL = null;
+	/**
+	 * @uml.property  name="cytoscapePropsURL"
+	 */
 	private URL cytoscapePropsURL = null;
 
+	/**
+	 * @uml.property  name="netMap"
+	 * @uml.associationEnd  qualifier="constant:java.lang.String cytoscape.generated.Network"
+	 */
 	private HashMap netMap;
+	/**
+	 * @uml.property  name="sessionID"
+	 */
 	private String sessionID;
 
+	/**
+	 * @uml.property  name="session"
+	 * @uml.associationEnd  
+	 */
 	private Cysession session;
 
+	/**
+	 * @uml.property  name="networkList"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.String"
+	 */
 	private List networkList;
 
 	/*
 	 * Stores networkName as the key and value is visualStyleName associated
 	 * with it.
 	 */
+	/**
+	 * @uml.property  name="vsMap"
+	 * @uml.associationEnd  qualifier="currentNetworkID:java.lang.String java.lang.String"
+	 */
 	HashMap vsMap;
+	/**
+	 * @uml.property  name="vsMapByName"
+	 * @uml.associationEnd  qualifier="getTitle:java.lang.String java.lang.String"
+	 */
 	HashMap vsMapByName;
 
 	/**
@@ -527,15 +564,48 @@ public class CytoscapeSessionReader {
 
 		// Read an XGMML file
 		final XGMMLReader reader = new XGMMLReader(is);
-		
-		CyNetwork network = Cytoscape.createNetwork(reader,viewAvailable,parent); 
+		reader.read();
+
+		/*
+		 * Create the CyNetwork. First, set the view threshold to 0. By doing
+		 * so, we can disable the auto-creating of the CyNetworkView.
+		 */
+		final int realThreshold = Integer.valueOf(
+				CytoscapeInit.getProperties().getProperty("viewThreshold"))
+				.intValue();
+		CytoscapeInit.getProperties().setProperty("viewThreshold",
+				Integer.toString(0));
+
+		CyNetwork network = null;
+		if (parent == null) {
+			network = Cytoscape.createNetwork(reader.getNodeIndicesArray(),
+					reader.getEdgeIndicesArray(), reader.getNetworkID());
+
+		} else {
+			network = Cytoscape
+					.createNetwork(reader.getNodeIndicesArray(), reader
+							.getEdgeIndicesArray(), reader.getNetworkID(),
+							parent);
+		}
 
 		// Set network Attributes here, not in the read() method in XGMMLReader!
 		// Otherwise, ID mismatch may happen.
 		reader.setNetworkAttributes(network);
 
+		// Reset back to the real View Threshold
+		CytoscapeInit.getProperties().setProperty("viewThreshold",
+				Integer.toString(realThreshold));
+
 		// Conditionally, Create the CyNetworkView
 		if (viewAvailable) {
+			createCyNetworkView(network);
+
+			if (Cytoscape.getNetworkView(network.getIdentifier()) != Cytoscape
+					.getNullNetworkView()) {
+				reader
+						.layout(Cytoscape.getNetworkView(network
+								.getIdentifier()));
+			}
 
 			// Lastly, make the GraphView Canvas Visible.
 			SwingUtilities.invokeLater(new Runnable() {
