@@ -1,0 +1,234 @@
+html {
+	margin: 0px;
+	padding: 0px;
+	background: #CCCCCC; /*light gray*/
+}
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;   
+        text-decoration:none;
+	font-size: 11pt;
+	color: black;
+	background: #CCCCCC;
+}
+
+p {
+	margin: 0;
+	padding: 0;	
+}
+
+div.links {
+	width: 11em;
+	font-size: 0.8em;
+	/*border: red thin solid;*/
+}
+
+div.test-row{
+	background-color: red;
+}
+
+td.advanced-search-cover { vertical-align: top; }
+td.advanced-search-citation { vertical-align:top; 
+	                      border-right:  solid; 
+	                      border-width:  1px; 
+ 			      font-size: 1em;}
+td.advanced-search-citation-right { vertical-align:top; 
+				    font-size: 1em; }
+
+td.search-result{ 
+	padding: 1em;
+	border-bottom: 3px #8DA4AE solid; 
+}
+
+td.search-result-image{ 
+	padding: 1em;
+	border-bottom: 3px #8DA4AE solid;
+}
+
+td.search-result-right{ padding: 1em; border-bottom: 3px #8DA4AE solid; }
+td.search-result-last{
+	//border-right: 3px #678593 solid;
+}
+
+
+td.bold {
+	font-weight: bold;	
+	text-align: left;
+	vertical-align: top;
+}
+
+
+/***************************************************
+ gives the results table header (score, model, matches, Gene Ontology) 
+ a bgcolor of medium blue
+****************************************************/
+tr.group-toggle-link{
+	background-color: #8DA4AE;/*medium blue*/
+}
+
+.result-header{
+	text-align: center;
+}
+a.result-header:hover{ background-color:white; }
+
+/****************************************************/
+/**                    LINKS                       **/
+/****************************************************/
+a.white-bg-link {
+	color: blue;
+	font-size: 0.8em;
+}
+a.white-bg-link:hover {
+	color: blue;
+	font-size: 0.8em;
+	text-decoration: underline;
+}
+
+a.color-bg-link {
+	color: blue;
+	font-size: 0.8em;
+	//text-decoration: none;
+}
+a.color-bg-link:hover {
+	color: blue; 
+	font-size: 0.8em;
+	background-color: white;
+}
+
+a.color-bg-link-header {
+	color: blue;
+	font-size: 1.2em;
+	//text-decoration: none;
+}
+a.color-bg-link-header:hover {
+	color: blue; 
+	font-size: 1.2em;
+	background-color: white;
+}
+
+a.highlighted-link { 
+	color: blue;
+	font-size: 0.8em;
+	font-weight: bold;
+	background-color: #ffff66;
+	//text-decoration: none;
+}
+a.highlighted-link:hover { 
+	color: blue;
+	font-size: 0.8em;
+	font-weight: bold;
+	background-color:white;
+}
+
+/* background-color:#B4C3CA; */
+a.group-toggle-link{
+	color: blue;
+	text-align: center;
+	background-color: #CCC;
+}
+a.group-toggle-link:hover{
+	color: blue;
+	background-color: white;
+	/*background-color:#69AF93;*/ /*green*/
+	text-align: center;
+}
+
+a.color-bg-pval-link {
+	color: blue;
+	font-size: 0.8em;
+	//text-decoration: none;
+}
+a.color-bg-pval-link:hover {
+	//font-size: 0.8em;
+	background-color: white;
+}
+a { color: #000; text-decoration: none; }
+/****************************************************/
+/**                END:LINKS                       **/
+/****************************************************/
+
+
+
+.pub-citation {
+	font-size: 0.8em;
+}
+
+.highlighted { 
+	font-size: 1em;
+	font-weight: bold;
+	background-color: #ffff66;
+}
+
+.go-cat-results-header { 
+//	color: #fff;
+	color: blue;
+}
+a.go-cat-results-header:hover { 
+	background-color: white; color:blue; 
+}
+
+.even-row { background-color: #8DA4AE; }
+.odd-row { background-color: #B4C3CA; } /*light blue*/
+
+
+p.credits {
+	font-size:  0.75em;
+	font-style: italic;	
+	text-align: center;
+}
+
+a.header-links:hover { background-color:white; }
+.citation { font-size: 0.8em; }
+
+font.example {
+  	font-weight: bold;
+	text-decoration: underline;
+}
+
+
+/**********test.html******/
+
+
+div.spacer { clear: both; }
+
+div.row {
+  clear: both;
+  padding-top: 10px;
+}
+
+
+.menu_options {
+  text-align: left;
+}
+
+.menu_header {
+  text-align: center;
+  background-color: #69AF93; /* green */
+  border-bottom: #8FC3AE thick solid; /* light green */
+  color: white;
+}
+.menu_header-last {
+  text-align: center;
+  background-color: #69AF93; /* green */
+  color: white;
+}
+
+.menu_block {
+  background-color: #8FC3AE; /* light green */
+  color: black;
+  overflow:hidden;
+}
+
+.close_block {
+  position: relative;
+  width: 100%;
+  //bottom: 0px;
+  //height: 15px;
+  vertical-align:middle;
+  text-align: center;
+  display: block;
+}
+
+
+/* #69AF93 green */
+/* #8FC3AE light green */
