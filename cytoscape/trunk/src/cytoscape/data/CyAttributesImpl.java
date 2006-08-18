@@ -57,14 +57,27 @@ public class CyAttributesImpl implements CyAttributes
   private final MultiHashMap mmap;
   private final MultiHashMapDefinition mmapDef;
 
+  //  used to store human readable descriptions of attributes.
+  private HashMap descriptionMap;
+
   public CyAttributesImpl()
   {
     Object model = MultiHashMapFactory.instantiateDataModel();
     mmap = (MultiHashMap) model;
     mmapDef = (MultiHashMapDefinition) model;
+    descriptionMap = new HashMap();
   }
 
-  public String[] getAttributeNames()
+  public void setAttributeDescription(String attributeName, String description)
+  {
+      descriptionMap.put(attributeName, description);
+  }
+
+  public String getAttributeDescription(String attributeName) {
+      return (String) descriptionMap.get(attributeName);
+  }
+
+    public String[] getAttributeNames()
   {
     final CountedIterator citer = mmapDef.getDefinedAttributes();
     final String[] names = new String[citer.numRemaining()];
