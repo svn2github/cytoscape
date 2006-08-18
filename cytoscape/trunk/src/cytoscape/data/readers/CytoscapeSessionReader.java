@@ -538,7 +538,7 @@ public class CytoscapeSessionReader {
 		// If all 3 parameters are available, try to get CyEdge
 		if (source != null & target != null && interaction != null) {
 			targetEdge = Cytoscape.getCyEdge(source, target,
-					Semantics.INTERACTION, interaction, false);
+					Semantics.INTERACTION, interaction, false, true);
 		}
 
 		// If CyEdge is still null, try to get one from ID
@@ -551,7 +551,7 @@ public class CytoscapeSessionReader {
 				interaction = parts[1].substring(1, parts[1].length() - 1);
 				if(source != null && target != null && interaction != null) {
 				targetEdge = Cytoscape.getCyEdge(source, target,
-						Semantics.INTERACTION, interaction, false);
+						Semantics.INTERACTION, interaction, false, true);
 				}
 			}
 		}

@@ -616,6 +616,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
+	 * Returns and edge if it exists, otherwise creates a directed edge.
 	 * @param source_alias
 	 *            an alias of a node
 	 * @param edge_name
@@ -640,7 +641,7 @@ public abstract class Cytoscape {
 		CyNode target = getCyNode(target_alias);
 
 		return getCyEdge(source, target, Semantics.INTERACTION,
-				interaction_type, true);
+				interaction_type, true, true);
 
 		// edge = ( CyEdge )Cytoscape.getRootGraph().getEdge(
 		// Cytoscape.getRootGraph().createEdge (source, target));

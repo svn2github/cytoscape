@@ -716,7 +716,7 @@ public class GMLReader extends AbstractGraphReader {
 					// edge = (Edge) rootGraph.getEdge
 					// (rootGraph.createEdge(node_1, node_2));
 					edge = Cytoscape.getCyEdge(node_1, node_2,
-							Semantics.INTERACTION, label, true);
+							Semantics.INTERACTION, label, true, true);
 				}
 
 				// Set correct ID, canonical name and interaction name
