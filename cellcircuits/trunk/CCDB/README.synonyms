@@ -1,0 +1,115 @@
+Connect to a GO database...
+Running these sql statements creates a .symbols and a .synonyms
+file foreach of the following organisms:
+yeast, worm, fly, human, plasmodium
+The files can be found in /cellar/users/mdaly/mysqlOUT
+
+## Yeast
+SELECT 
+ species.id,genus,species,gene_product.id,symbol
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/yeast.symbols'
+FROM
+ gene_product,species
+WHERE
+ gene_product.species_id = species.id AND
+ species.genus='saccharomyces' AND species.species='cerevisiae';
+
+SELECT
+ species.id,genus,species,
+ gene_product.id,symbol,
+ gene_product_synonym.product_synonym
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/yeast.synonyms'
+FROM
+ gene_product,gene_product_synonym,species
+WHERE
+ gene_product.id         = gene_product_synonym.gene_product_id AND
+ gene_product.species_id = species.id AND
+ species.genus='saccharomyces' AND species.species='cerevisiae';
+
+## Worm
+SELECT 
+ species.id,genus,species,gene_product.id,symbol
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/worm.symbols'
+FROM
+ gene_product,species
+WHERE
+ gene_product.species_id = species.id AND
+ species.genus='caenorhabditis' AND species.species='elegans';
+
+SELECT
+ species.id,genus,species,
+ gene_product.id,symbol,
+ gene_product_synonym.product_synonym
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/worm.synonyms'
+FROM
+ gene_product,gene_product_synonym,species
+WHERE
+ gene_product.id         = gene_product_synonym.gene_product_id AND
+ gene_product.species_id = species.id AND
+ species.genus='caenorhabditis' AND species.species='elegans';
+
+## Fly
+SELECT 
+ species.id,genus,species,gene_product.id,symbol
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/fly.symbols'
+FROM
+ gene_product,species
+WHERE
+ gene_product.species_id = species.id AND
+ species.genus='drosophila' AND species.species='melanogaster';
+
+SELECT
+ species.id,genus,species,
+ gene_product.id,symbol,
+ gene_product_synonym.product_synonym
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/fly.synonyms'
+FROM
+ gene_product,gene_product_synonym,species
+WHERE
+ gene_product.id         = gene_product_synonym.gene_product_id AND
+ gene_product.species_id = species.id AND
+ species.genus='drosophila' AND species.species='melanogaster';
+
+## Human
+SELECT 
+ species.id,genus,species,gene_product.id,symbol
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/human.symbols'
+FROM
+ gene_product,species
+WHERE
+ gene_product.species_id = species.id AND
+ species.genus='homo' AND species.species='sapiens';
+
+SELECT
+ species.id,genus,species,
+ gene_product.id,symbol,
+ gene_product_synonym.product_synonym
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/human.synonyms'
+FROM
+ gene_product,gene_product_synonym,species
+WHERE
+ gene_product.id         = gene_product_synonym.gene_product_id AND
+ gene_product.species_id = species.id AND
+ species.genus='homo' AND species.species='sapiens';
+
+## Plas
+SELECT 
+ species.id,genus,species,gene_product.id,symbol
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/plas.symbols'
+FROM
+ gene_product,species
+WHERE
+ gene_product.species_id = species.id AND
+ species.genus='plasmodium' AND species.species='falciparum';
+
+SELECT
+ species.id,genus,species,
+ gene_product.id,symbol,
+ gene_product_synonym.product_synonym
+INTO OUTFILE '/cellar/users/mdaly/mysqlOUT/plas.synonyms'
+FROM
+ gene_product,gene_product_synonym,species
+WHERE
+ gene_product.id         = gene_product_synonym.gene_product_id AND
+ gene_product.species_id = species.id AND
+ species.genus='plasmodium' AND species.species='falciparum';
