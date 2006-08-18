@@ -39,7 +39,6 @@ package cytoscape.data.unitTests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,8 +49,7 @@ import cytoscape.data.CyAttributesImpl;
 
 /**
  * Tests Implementation of CyAttributes.
- * 
- * TODO: Add to DataSuite
+ *
  */
 public class CyAttributesTest extends TestCase {
 	private CyAttributes cyAttributes;
@@ -362,7 +360,23 @@ public class CyAttributesTest extends TestCase {
 		cyAttributes.setAttributeMap(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, map);
 	}
 
-	/**
+    /**
+     * Tests attribute descriptions.
+     */
+    public void testAttributeDescriptions() {
+        //  Try setting an attribute description, and verify that you can
+        //  get it back.
+        cyAttributes.setAttributeDescription("attribute1",
+                "sample description");
+        String description = cyAttributes.getAttributeDescription("attribute1");
+        assertEquals ("sample description", description);
+
+        //  Try getting an attribute description for an unknown attribute
+        //  verify that return value is null
+        assertEquals (null, cyAttributes.getAttributeDescription("attribute2"));
+    }
+
+    /**
 	 * Runs just this one unit test.
 	 */
 	public static void main(String[] args) {
