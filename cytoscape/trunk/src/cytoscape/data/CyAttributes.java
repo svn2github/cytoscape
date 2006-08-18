@@ -292,6 +292,23 @@ public interface CyAttributes {
     public String[] getAttributeNames();
 
     /**
+     * Sets a human readable description of a specific attribute.
+     * @param attributeName attribute name.
+     * @param description   human readable description of attribute.
+     *                      used for display to end-user.
+     */
+    public void setAttributeDescription (String attributeName,
+        String description);
+
+    /**
+     * Gets the human readable description of a specific attribute.
+     * @param attributeName attribute name.
+     * @return human readable description of attribute or null (if no
+     * description has been specified). 
+     */
+    public String getAttributeDescription (String attributeName);
+
+    /**
      * Determines if the specified id/attributeName pair exists.
      *
      * @param id            unique identifier.
@@ -413,18 +430,6 @@ public interface CyAttributes {
      *         TYPE_UNDEFINED.
      */
     public byte getType(String attributeName);
-
-//     /**
-//      * Sets the data type of a new attribute.
-//      *
-//      * @param attributeName Attribute Name.
-//      * @param type one of: TYPE_BOOLEAN, TYPE_INTEGER, TYPE_FLOATING,
-//      *         TYPE_STRING, TYPE_SIMPLE_LIST, TYPE_SIMPLE_MAP, TYPE_COMPLEX,
-//      *         TYPE_UNDEFINED.
-//      * @exception IllegalStateException if attributeName is already defined
-//      *   and is not of the specified type.
-//      */
-//     public void setType(String attributeName, byte type);
 
     /**
      * Deletes the id/attributeName pair.
