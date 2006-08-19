@@ -66,7 +66,7 @@ public class TextBoxRenderer implements ListCellRenderer {
         JLabel numResultsLabel = new JLabel(numResults, JLabel.RIGHT);
         numResultsLabel.setFont(new Font(numResultsLabel.getFont().getName(),
                 Font.PLAIN,
-                numResultsLabel.getFont().getSize() - 3));
+                numResultsLabel.getFont().getSize() - 1));
         numResultsLabel.setForeground(new Color(51, 102, 51));
 
         //  Resize Labels
