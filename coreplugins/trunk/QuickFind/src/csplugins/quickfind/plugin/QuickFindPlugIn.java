@@ -12,12 +12,14 @@ import csplugins.quickfind.util.QuickFindListener;
 import csplugins.quickfind.view.QuickFindConfigDialog;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CyNode;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CyNodeView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -29,6 +31,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.ArrayList;
+
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
+import giny.view.NodeView;
 
 /**
  * Quick Find PlugIn.
@@ -85,14 +91,14 @@ public class QuickFindPlugIn extends CytoscapePlugin
             //  Set Size of ComboBox Display, based on # of specific chars
             comboBox.setPrototypeDisplayValue("01234567890");
             comboBox.setToolTipText("Please select or load a network to "
-                    + "activate find functionality.");
+                    + "activate search functionality.");
 
             URL configIconUrl = QuickFindPlugIn.class.getResource
                     ("resources/config.png");
             ImageIcon configIcon = new ImageIcon(configIconUrl,
-                    "Configure Find Options");
+                    "Configure search options");
             configButton = new JButton(configIcon);
-            configButton.setToolTipText("Configure Find Options");
+            configButton.setToolTipText("Configure search options");
             configButton.setEnabled(false);
             configButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -101,6 +107,9 @@ public class QuickFindPlugIn extends CytoscapePlugin
             });
             configButton.setBorderPainted(false);
 
+            JLabel label = new JLabel("Search:  ");
+            label.setForeground(Color.GRAY);
+            panel.add(label);
             panel.add(comboBox);
             panel.add(configButton);
             toolBar.add(panel);
@@ -216,7 +225,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
         TextIndex textIndex = quickFind.getTextIndex(cyNetwork);
         comboBox.setTextIndex(textIndex);
         enableAllQuickFindButtons();
-        comboBox.setToolTipText("Enter search criteria");
+        comboBox.setToolTipText("Enter search string");
     }
 }
 
@@ -227,6 +236,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
  */
 class UserSelectionListener implements ActionListener {
     private TextIndexComboBox comboBox;
+    private final static int NODE_SIZE_MULTIPLER = 10;
 
     /**
      * Constructor.
@@ -254,7 +264,7 @@ class UserSelectionListener implements ActionListener {
             Hit hit = (Hit) comboBox.getSelectedItem();
             currentNetwork.unselectAllNodes();
             currentNetwork.unselectAllEdges();
-            Object graphObjects[] = hit.getAssociatedObjects();
+            final Object graphObjects[] = hit.getAssociatedObjects();
 
             final ArrayList list = new ArrayList();
             for (int i = 0; i < graphObjects.length; i++) {
@@ -266,10 +276,30 @@ class UserSelectionListener implements ActionListener {
                     currentNetwork.setFlaggedNodes(list, true);
                     ((DingNetworkView)
                             Cytoscape.getCurrentNetworkView()).fitSelected();
-                    if (list.size() == 1) {
-                        Cytoscape.getCurrentNetworkView().setZoom
-                                (Cytoscape.getCurrentNetworkView().getZoom()
-                                        * .2);
+                    //  If only one node is selected, auto-adjust zoom factor
+                    //  so that node does not take up whole screen.
+                    if (graphObjects.length == 1) {
+                        if (graphObjects[0] instanceof CyNode) {
+                            CyNode node = (CyNode) graphObjects[0];
+
+                            //  Obtain dimensions of current InnerCanvas
+                            DGraphView graphView = (DGraphView)
+                                    Cytoscape.getCurrentNetworkView();
+                            InnerCanvas innerCanvas = graphView.getCanvas();
+
+                            NodeView nodeView = Cytoscape.
+                                    getCurrentNetworkView().getNodeView(node);
+
+                            double width = nodeView.getWidth() *
+                                    NODE_SIZE_MULTIPLER;
+                            double height = nodeView.getHeight() *
+                                    NODE_SIZE_MULTIPLER;
+                            double scaleFactor = Math.min
+                                    (innerCanvas.getWidth() / width,
+                                    (innerCanvas.getHeight() / height));
+                            Cytoscape.getCurrentNetworkView().setZoom
+                                    (scaleFactor);
+                        }
                     }
                     Cytoscape.getCurrentNetworkView().updateView();
                 }
