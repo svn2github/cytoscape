@@ -598,8 +598,7 @@ public class XGMMLReader extends AbstractGraphReader {
 						.getNode(targetName);
 
 				if (edgeName == null) {
-					edgeName = sourceName + " (" + interaction + ") "
-							+ targetName;
+					edgeName = CyEdge.createIdentifier(sourceName,interaction,targetName);
 				}
 
 				Edge edge = Cytoscape.getCyEdge(node_1, node_2,
@@ -983,8 +982,7 @@ public class XGMMLReader extends AbstractGraphReader {
 						break;
 					}
 				}
-				edgeID = sourceNodeName + " (" + itrValue + ") "
-						+ targetNodeName;
+				edgeID = CyEdge.createIdentifier(sourceNodeName,itrValue,targetNodeName);
 
 				testEdge = Cytoscape.getRootGraph().getEdge(edgeID);
 				if (testEdge != null) {

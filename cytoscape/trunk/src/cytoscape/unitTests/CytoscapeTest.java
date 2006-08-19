@@ -4,7 +4,12 @@ package cytoscape.unitTests;
 import junit.framework.TestCase;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
 import cytoscape.data.ImportHandler;
+import cytoscape.data.Semantics;
+import giny.model.Edge;
+import giny.model.Node;
+import java.util.*; 
 
 public class CytoscapeTest extends TestCase {
 	CyNetwork cytoNetwork;
@@ -41,6 +46,7 @@ public class CytoscapeTest extends TestCase {
 	
 	//try creating a network
 	public void testCreateNetwork() throws Exception {
+		try {
 		cytoNetwork = Cytoscape.createNetworkFromFile("testNetwork");
 		
 		/*
@@ -54,7 +60,103 @@ public class CytoscapeTest extends TestCase {
 		
 		edgeCount = cytoNetwork.getEdgeCount();
 		assertEquals(0, edgeCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
 	}
 	
-	
+	public void testBug839() {
+
+		Set<String> nodes = new HashSet<String>();
+		nodes.add("n1");
+		nodes.add("n2");
+		nodes.add("n3");
+		nodes.add("n4");
+		nodes.add("n5");
+
+		cytoNetwork = Cytoscape.createNetworkFromFile("testData/bug_839.sif");
+
+		// check that all nodes exist
+		Iterator it = cytoNetwork.nodesIterator();
+		while ( it.hasNext() ) {
+			Node n = (Node)it.next();
+			assertTrue("checking node " + n.getIdentifier(), 
+			           nodes.contains(n.getIdentifier()));
+		}
+
+		Set<String> edges = new HashSet<String>();
+		edges.add(CyEdge.createIdentifier("n1","activates","n2"));
+		edges.add(CyEdge.createIdentifier("n1","activates","n4"));
+		edges.add(CyEdge.createIdentifier("n1","activates","n5"));
+		edges.add(CyEdge.createIdentifier("n2","activates","n1"));
+		edges.add(CyEdge.createIdentifier("n2","activates","n5"));
+		edges.add(CyEdge.createIdentifier("n3","inhibits","n3"));
+		edges.add(CyEdge.createIdentifier("n3","inhibits","n4"));
+		edges.add(CyEdge.createIdentifier("n3","inhibits","n5"));
+		edges.add(CyEdge.createIdentifier("n4","activates","n1"));
+		edges.add(CyEdge.createIdentifier("n4","activates","n2"));
+		edges.add(CyEdge.createIdentifier("n4","activates","n4"));
+		edges.add(CyEdge.createIdentifier("n5","activates","n1"));
+		edges.add(CyEdge.createIdentifier("n5","activates","n4"));
+		edges.add(CyEdge.createIdentifier("n5","activates","n5"));
+
+		it = cytoNetwork.edgesIterator();
+		while ( it.hasNext() ) {
+			Edge e = (Edge)it.next();
+			assertTrue("checking edge " + e.getIdentifier(), edges.contains(e.getIdentifier()));
+		}
+	}
+
+	public void testgetCyEdgeWithStrings() {
+		
+		cytoNetwork = Cytoscape.createNetworkFromFile("testData/directedGraph.sif");
+
+		assertEquals(2,cytoNetwork.getNodeCount());
+		assertEquals(4,cytoNetwork.getEdgeCount());
+
+		String en1 = CyEdge.createIdentifier("a","pp","b");
+		System.out.println("created identifier: " + en1);
+
+		// edge should exist in network already
+		CyEdge ce1 = Cytoscape.getCyEdge("a",en1,"b","pp");
+		assertNotNull(ce1);
+
+		// edge should be created
+		String en2 = CyEdge.createIdentifier("a","xx","b");
+		CyEdge ce2 = Cytoscape.getCyEdge("a",en2,"b","pp");
+		assertNotNull(ce2);
+	}
+
+	public void testgetCyEdgeWithNodes() {
+		cytoNetwork = Cytoscape.createNetworkFromFile("testData/directedGraph.sif");
+		Node a = Cytoscape.getCyNode("a");
+		Node b = Cytoscape.getCyNode("b");
+		Node c = Cytoscape.getCyNode("c",true); 
+		String attr = Semantics.INTERACTION;
+
+		// test directed edges
+		assertNotNull(Cytoscape.getCyEdge(a,b,attr,"pp",false,true));
+		assertNotNull(Cytoscape.getCyEdge(b,a,attr,"pp",false,true));
+		assertNotNull(Cytoscape.getCyEdge(a,a,attr,"pp",false,true));
+		assertNotNull(Cytoscape.getCyEdge(a,a,attr,"pp",false,true));
+		assertNotNull(Cytoscape.getCyEdge(a,b,attr,"pd",false,true));
+		assertNull(Cytoscape.getCyEdge(b,a,attr,"pd",false,true));
+
+		// test undirectedness
+		assertNotNull(Cytoscape.getCyEdge(b,a,attr,"pd",false,false));
+
+		// test non-existent edge
+		assertNull(Cytoscape.getCyEdge(a,c,attr,"pp",false,true));
+
+		// test bad attr_value
+		assertNull(Cytoscape.getCyEdge(a,b,attr,"xx",false,true));
+
+		// test create node
+		assertNotNull(Cytoscape.getCyEdge(a,c,attr,"pd",true,true));
+
+		// make sure we got the node we created
+		assertNotNull(Cytoscape.getCyEdge(a,c,attr,"pd",false,true));
+	}
+
 }

@@ -53,6 +53,7 @@ import giny.view.*;
 import giny.util.SpringEmbeddedLayouter;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.Semantics;
@@ -268,7 +269,7 @@ public class AttributeLayout {
                     this.createdEdges[edgeIndex] = edgeInt;
                     edgeIndex++;
                     //create a name for this edge
-                    String edgeName = firstName + " (" + categoryName + ") " + secondName;
+                    String edgeName = CyEdge.createIdentifier(firstName,categoryName,secondName);
                     //and add it to the edge attributes
                     Edge edge = rootGraph.getEdge(edgeInt);
                     gp.restoreEdge(edge);

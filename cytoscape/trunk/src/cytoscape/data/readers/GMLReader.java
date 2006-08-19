@@ -59,6 +59,7 @@ import java.util.Vector;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.task.TaskMonitor;
@@ -695,11 +696,11 @@ public class GMLReader extends AbstractGraphReader {
 						.get(sources.get(idx)));
 				String targetName = (String) node_labels.get(gml_id2order
 						.get(targets.get(idx)));
-				String edgeName = sourceName + " (" + label + ") " + targetName;
+				String edgeName = CyEdge.createIdentifier(sourceName,label,targetName);
 
 				int duplicate_count = 1;
 				while (!edgeNameSet.add(edgeName)) {
-					edgeName = sourceName + " (" + label + ") " + targetName
+					edgeName = CyEdge.createIdentifier(sourceName,label,targetName)
 							+ "_" + duplicate_count;
 
 					duplicate_count += 1;

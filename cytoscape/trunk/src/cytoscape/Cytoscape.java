@@ -474,7 +474,11 @@ public abstract class Cytoscape {
 
 	/**
 	 * Gets the first CyEdge found between the two nodes (direction does not
-	 * matter) that has the given value for the given attribute.
+	 * matter) that has the given value for the given attribute. If the edge
+	 * doesn't exist, then it creates an undirected edge. 
+	 *
+	 * This method MIGHT be deprecated, or even removed, because Cytoscape
+	 * shouldn't really be using undirected edges.
 	 * 
 	 * @param node_1
 	 *            one end of the edge
@@ -494,52 +498,7 @@ public abstract class Cytoscape {
 	 */
 	public static CyEdge getCyEdge(Node node_1, Node node_2, String attribute,
 			Object attribute_value, boolean create) {
-
-		if (Cytoscape.getRootGraph().getEdgeCount() != 0) {
-			int[] n1Edges = Cytoscape.getRootGraph()
-					.getAdjacentEdgeIndicesArray(node_1.getRootGraphIndex(),
-							true, true, true);
-
-			for (int i = 0; i < n1Edges.length; i++) {
-				CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
-						n1Edges[i]);
-				Object attValue = private_getEdgeAttributeValue(edge, attribute);
-
-				if (attValue != null && attValue.equals(attribute_value)) {
-					CyNode otherNode = (CyNode) edge.getTarget();
-					if (otherNode.getRootGraphIndex() == node_1
-							.getRootGraphIndex()) {
-						otherNode = (CyNode) edge.getSource();
-					}
-
-					if (otherNode.getRootGraphIndex() == node_2
-							.getRootGraphIndex()) {
-						return edge;
-					}
-				}
-			}// for i
-		}
-
-		if (create && attribute instanceof String
-				&& attribute.equals(Semantics.INTERACTION)) {
-			// create the edge
-			CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
-					Cytoscape.getRootGraph().createEdge(node_1, node_2));
-
-			// create the edge id
-			String edge_name = node_1.getIdentifier() + " (" + attribute_value
-					+ ") " + node_2.getIdentifier();
-			edge.setIdentifier(edge_name);
-
-			// Store Edge Name Mapping within GOB.
-			Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
-
-			// store edge id as INTERACTION / CANONICAL_NAME Attributes
-			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
-					(String) attribute_value);
-			return edge;
-		}
-		return null;
+		return getCyEdge(node_1,node_2,attribute,attribute_value,create,false);
 	}
 
 	/**
@@ -569,25 +528,36 @@ public abstract class Cytoscape {
 	public static CyEdge getCyEdge(Node source, Node target, String attribute,
 			Object attribute_value, boolean create, boolean directed) {
 
-		if (!directed) {
-			return getCyEdge(source, target, attribute, attribute_value, create);
-		}
-
 		if (Cytoscape.getRootGraph().getEdgeCount() != 0) {
 			int[] n1Edges = Cytoscape.getRootGraph()
 					.getAdjacentEdgeIndicesArray(source.getRootGraphIndex(),
 							true, true, true);
 
 			for (int i = 0; i < n1Edges.length; i++) {
-				CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
-						n1Edges[i]);
+				CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(n1Edges[i]);
 				Object attValue = private_getEdgeAttributeValue(edge, attribute);
 
 				if (attValue != null && attValue.equals(attribute_value)) {
-					CyNode otherNode = (CyNode) edge.getTarget();
-					if (otherNode.getRootGraphIndex() == target
-							.getRootGraphIndex()) {
+					// Despite the fact that we know the source node 
+					// matches, the case of self edges dictates that 
+					// we must check the source as well.
+					CyNode edgeTarget = (CyNode) edge.getTarget();
+					CyNode edgeSource = (CyNode) edge.getSource();
+					if ( ( edgeTarget.getRootGraphIndex() == 
+					       target.getRootGraphIndex() ) &&
+					     ( edgeSource.getRootGraphIndex() == 
+					       source.getRootGraphIndex() ) ) {
 						return edge;
+					}
+
+					if ( !directed ) {
+						// note that source and target are switched
+						if ( ( edgeTarget.getRootGraphIndex() == 
+						       source.getRootGraphIndex() ) &&
+						     ( edgeSource.getRootGraphIndex() == 
+						       target.getRootGraphIndex() ) ) {
+							return edge;
+						}
 					}
 				}
 			}// for i
@@ -600,8 +570,9 @@ public abstract class Cytoscape {
 					Cytoscape.getRootGraph().createEdge(source, target));
 
 			// create the edge id
-			String edge_name = source.getIdentifier() + " (" + attribute_value
-					+ ") " + target.getIdentifier();
+			String edge_name = CyEdge.createIdentifier(source.getIdentifier(),
+			                                           (String)attribute_value,
+								   target.getIdentifier() );
 			edge.setIdentifier(edge_name);
 
 			// Store Edge Name Mapping within GOB.
@@ -631,25 +602,14 @@ public abstract class Cytoscape {
 		edge_name = canonicalizeName(edge_name);
 		CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 		if (edge != null) {
-			// System.out.print( "`" );
 			return edge;
 		}
 
 		// edge does not exist, create one
-		// System.out.print( "*" );
 		CyNode source = getCyNode(source_alias);
 		CyNode target = getCyNode(target_alias);
 
-		return getCyEdge(source, target, Semantics.INTERACTION,
-				interaction_type, true, true);
-
-		// edge = ( CyEdge )Cytoscape.getRootGraph().getEdge(
-		// Cytoscape.getRootGraph().createEdge (source, target));
-
-		// Cytoscape.getEdgeNetworkData().add ("interaction", edge_name,
-		// interaction_type);
-		// Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
-		// return edge;
+		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, true);
 	}
 
 	/**

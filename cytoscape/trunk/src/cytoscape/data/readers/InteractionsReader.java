@@ -59,6 +59,7 @@ import java.util.Vector;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Interaction;
 import cytoscape.data.servers.BioDataServer;
@@ -324,8 +325,8 @@ public class InteractionsReader extends AbstractGraphReader {
 				else
 					targetNodeName = targets[t];
 
-				String edgeName = nodeName + " (" + interactionType + ") "
-						+ targetNodeName;
+				String edgeName = CyEdge.createIdentifier(nodeName,interactionType,
+				                                          targetNodeName);
 				Edge edge = (Edge) Cytoscape.getCyEdge(nodeName, edgeName,
 						targetNodeName, interactionType);
 				edges.put(edge.getRootGraphIndex(), 0);
