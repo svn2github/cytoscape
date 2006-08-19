@@ -19,11 +19,9 @@ import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.CyNodeView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -236,7 +234,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
  */
 class UserSelectionListener implements ActionListener {
     private TextIndexComboBox comboBox;
-    private final static int NODE_SIZE_MULTIPLER = 10;
+    private static final int NODE_SIZE_MULTIPLER = 10;
 
     /**
      * Constructor.
@@ -290,10 +288,10 @@ class UserSelectionListener implements ActionListener {
                             NodeView nodeView = Cytoscape.
                                     getCurrentNetworkView().getNodeView(node);
 
-                            double width = nodeView.getWidth() *
-                                    NODE_SIZE_MULTIPLER;
-                            double height = nodeView.getHeight() *
-                                    NODE_SIZE_MULTIPLER;
+                            double width = nodeView.getWidth()
+                                    * NODE_SIZE_MULTIPLER;
+                            double height = nodeView.getHeight()
+                                    * NODE_SIZE_MULTIPLER;
                             double scaleFactor = Math.min
                                     (innerCanvas.getWidth() / width,
                                     (innerCanvas.getHeight() / height));
