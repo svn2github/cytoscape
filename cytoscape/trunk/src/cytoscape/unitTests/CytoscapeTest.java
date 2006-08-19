@@ -116,16 +116,24 @@ public class CytoscapeTest extends TestCase {
 		assertEquals(4,cytoNetwork.getEdgeCount());
 
 		String en1 = CyEdge.createIdentifier("a","pp","b");
-		System.out.println("created identifier: " + en1);
 
 		// edge should exist in network already
 		CyEdge ce1 = Cytoscape.getCyEdge("a",en1,"b","pp");
 		assertNotNull(ce1);
 
+		CyEdge ce1_again = Cytoscape.getCyEdge("a",en1,"b","pp");
+		assertTrue(ce1 == ce1_again);
+
 		// edge should be created
 		String en2 = CyEdge.createIdentifier("a","xx","b");
 		CyEdge ce2 = Cytoscape.getCyEdge("a",en2,"b","pp");
 		assertNotNull(ce2);
+
+		// should create a different edge because of directedness
+		String en3 = CyEdge.createIdentifier("b","pp","a");
+		CyEdge ce3 = Cytoscape.getCyEdge("b",en3,"a","pp");
+		assertTrue(ce1 != ce3);
+
 	}
 
 	public void testgetCyEdgeWithNodes() {
