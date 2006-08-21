@@ -341,17 +341,10 @@ public class CyAttributesTest extends TestCase {
 		assertEquals(2, storedMap.keySet().size());
 
 		Set keySet = storedMap.keySet();
-		
-		/*
-		 * This is wrong!  Set object does NOT guarantee 
-		 * the order of items.
-		 */
-		//assertEquals("first", key);
-		
+
 		assertTrue(keySet.contains("first"));
 		assertEquals(1, storedMap.get("first"));
 		assertTrue(keySet.contains("second"));
-		//assertEquals("second", key);
 		assertEquals(2, storedMap.get("second"));
 
 		// Try storing an Empty Map; previously, this resulted in
@@ -374,6 +367,40 @@ public class CyAttributesTest extends TestCase {
         //  Try getting an attribute description for an unknown attribute
         //  verify that return value is null
         assertEquals (null, cyAttributes.getAttributeDescription("attribute2"));
+    }
+
+    /**
+     * Tests user interaction flags.
+     */
+    public void testUserInteractionFlags() {
+        String sampleAttribute = "attribute1";
+
+        //  Test that defaults are working.  By default, attributes should
+        //  be visible and editable by the end user.
+        boolean visibleFlag = cyAttributes.getUserVisible(sampleAttribute);
+        assertEquals (true, visibleFlag);
+        boolean editableFlag  = cyAttributes.getUserVisible(sampleAttribute);
+        assertEquals (true, editableFlag);
+
+        //  Try making attribute user invisible
+        cyAttributes.setUserVisible(sampleAttribute, false);
+        visibleFlag = cyAttributes.getUserVisible(sampleAttribute);
+        assertEquals (false, visibleFlag);
+
+        //  Switch back to user visible
+        cyAttributes.setUserVisible(sampleAttribute, true);
+        visibleFlag = cyAttributes.getUserVisible(sampleAttribute);
+        assertEquals (true, visibleFlag);
+
+        //  Try making attribute user non-editable
+        cyAttributes.setUserEditable(sampleAttribute, false);
+        editableFlag = cyAttributes.getUserEditable(sampleAttribute);
+        assertEquals (false, editableFlag);
+
+        //  Switch back to user editable
+        cyAttributes.setUserEditable(sampleAttribute, true);
+        editableFlag = cyAttributes.getUserEditable(sampleAttribute);
+        assertEquals (true, editableFlag);
     }
 
     /**
