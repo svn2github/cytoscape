@@ -44,12 +44,7 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.util.MultiHashMapFactory;
 import cytoscape.Cytoscape;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CyAttributesImpl implements CyAttributes
 {
@@ -58,7 +53,15 @@ public class CyAttributesImpl implements CyAttributes
   private final MultiHashMapDefinition mmapDef;
 
   //  used to store human readable descriptions of attributes.
-  private HashMap descriptionMap;
+  private Map descriptionMap;
+
+  //  used to store only those attributes, which should be hidden from
+  //  the end user.
+  private Set userInvisibleSet;
+
+  //  used to store only those attributes, which should not be editable
+  //  by the end user.
+  private Set userNonEditableSet;
 
   public CyAttributesImpl()
   {
@@ -66,6 +69,8 @@ public class CyAttributesImpl implements CyAttributes
     mmap = (MultiHashMap) model;
     mmapDef = (MultiHashMapDefinition) model;
     descriptionMap = new HashMap();
+    userInvisibleSet = new HashSet();
+    userNonEditableSet = new HashSet();
   }
 
   public void setAttributeDescription(String attributeName, String description)
@@ -77,7 +82,53 @@ public class CyAttributesImpl implements CyAttributes
       return (String) descriptionMap.get(attributeName);
   }
 
-    public String[] getAttributeNames()
+  public void setUserVisible(String attributeName, boolean value)
+  {
+      if (value) {
+          if (userInvisibleSet.contains(attributeName)) {
+            userInvisibleSet.remove(attributeName);
+          }
+      } else {
+          if (!userInvisibleSet.contains(attributeName)) {
+            userInvisibleSet.add(attributeName);
+          }
+      }
+  }
+
+  public boolean getUserVisible(String attributeName)
+  {
+      //  by default, all attributes are visible, return value = true
+      if (userInvisibleSet.contains(attributeName)) {
+          return false;
+      } else {
+          return true;
+      }
+  }
+
+  public void setUserEditable(String attributeName, boolean value)
+  {
+      if (value) {
+          if (userNonEditableSet.contains(attributeName)) {
+            userNonEditableSet.remove(attributeName);
+          }
+      } else {
+          if (!userNonEditableSet.contains(attributeName)) {
+            userNonEditableSet.add(attributeName);
+          }
+      }
+  }
+
+  public boolean getUserEditable(String attributeName)
+  {
+      //  by default, all attributes are editable, return value = true
+      if (userNonEditableSet.contains(attributeName)) {
+          return false;
+      } else {
+          return true;
+      }
+  }
+
+  public String[] getAttributeNames()
   {
     final CountedIterator citer = mmapDef.getDefinedAttributes();
     final String[] names = new String[citer.numRemaining()];
@@ -109,7 +160,7 @@ public class CyAttributesImpl implements CyAttributes
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
                               MultiHashMapDefinition.TYPE_BOOLEAN,
-                              null); 
+                              null);
     }
     else {
       if (type != MultiHashMapDefinition.TYPE_BOOLEAN) {
@@ -134,7 +185,7 @@ public class CyAttributesImpl implements CyAttributes
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
                               MultiHashMapDefinition.TYPE_INTEGER,
-                              null); 
+                              null);
     }
     else {
       if (type != MultiHashMapDefinition.TYPE_INTEGER) {
@@ -159,7 +210,7 @@ public class CyAttributesImpl implements CyAttributes
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
                               MultiHashMapDefinition.TYPE_FLOATING_POINT,
-                              null); 
+                              null);
     }
     else {
       if (type != MultiHashMapDefinition.TYPE_FLOATING_POINT) {
@@ -259,40 +310,6 @@ public class CyAttributesImpl implements CyAttributes
     return TYPE_COMPLEX;
   }
 
-//   public void setType(String attributeName, byte type)
-//   {
-//     final byte oldType = getType(attributeName);
-//     final String id = "31347a3d99acb3dc1b7c0849081f1ddb";
-//     if (oldType == TYPE_UNDEFINED) {
-//       switch (type) {
-//       case TYPE_BOOLEAN:
-//         setAttribute(id, attributeName, new Boolean(false));
-//         deleteAttribute(id, attributeName);
-//         break;
-//       case TYPE_FLOATING:
-//         setAttribute(id, attributeName, new Double(0));
-//         deleteAttribute(id, attributeName);
-//         break;
-//       case TYPE_INTEGER:
-//         setAttribute(id, attributeName, new Integer(0));
-//         deleteAttribute(id, attributeName);
-//         break;
-//       case TYPE_STRING:
-//         setAttribute(id, attributeName, "");
-//         deleteAttribute(id, attributeName);
-//         break;
-//       case TYPE_SIMPLE_LIST:
-//         break;
-//       case TYPE_SIMPLE_MAP:
-//         break;
-//       case TYPE_COMPLEX:
-//         break;
-//       case TYPE_UNDEFINED:
-//         break;
-//       default:
-//         throw new IllegalStateException("type not recognized"); } }
-//   }
-
   public boolean deleteAttribute(String id, String attributeName)
   {
     boolean b = mmap.removeAllAttributeValues(id, attributeName);
@@ -334,7 +351,7 @@ public class CyAttributesImpl implements CyAttributes
       mmapDef.defineAttribute
         (attributeName,
          type,
-         new byte[] { MultiHashMapDefinition.TYPE_INTEGER } );  
+         new byte[] { MultiHashMapDefinition.TYPE_INTEGER } );
     }
     else {
       if (valType != type) {
@@ -411,7 +428,7 @@ public class CyAttributesImpl implements CyAttributes
     if (valType < 0) {
       mmapDef.defineAttribute
         (attributeName, type,
-         new byte[] { MultiHashMapDefinition.TYPE_STRING } ); 
+         new byte[] { MultiHashMapDefinition.TYPE_STRING } );
     }
     else {
       if (valType != type) {
