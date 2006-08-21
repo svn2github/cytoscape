@@ -1,51 +1,17 @@
 package CCDB::Error;
 
-BEGIN { $Exporter::Verbose=1 }
-
-#use strict;
+use strict;
 use warnings;
 
 use CCDB::Constants qw($colors $pubName);
 
 my $VERSION = '1.0';
 
-#my $colors = $CCDB::HtmlRoutines::colors;
-#my $pubName = $CCDB::HtmlRoutines::pubName;
-
-#my $colors = {
-#    page_background => '#cccccc',
-#    error_message => '#B22222',
-#    pvalue => '#B22222',
-#    error_background => '#B4C3CA',
-#    GO_table_dark  => '#446689',
-#    GO_table_medium => '#738DA7',
-#    GO_table_light => '#A2B3C5'
-#};
-
-
-
-sub check_colors
-{
-    if(defined $colors)
-    {
-	for my $c (keys %{$colors})
-	{
-	    print STDERR "$c = " . $colors->{$c} . "\n";
-	}
-    }
-    else
-    {
-	print STDERR "### colors hash not defined\n";
-    }
-}
-
 sub formatErrorMessages
 {
     my ($error_msg, $pval_thresh, $publications) = @_;
 
     my $msg = "";
-
-    check_colors();
 
     if(exists $error_msg->{'no-query-notice'}) 
     { 

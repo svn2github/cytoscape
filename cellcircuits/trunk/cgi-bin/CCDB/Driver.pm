@@ -78,7 +78,7 @@ sub process_query
     }
 
     ## uncomment to debug parsing 
-    if(1) {
+    if(0) {
 	outputf( "gq: '%s'\n", join "\t", keys %{ $gq } );
 	outputf( "taq: '%s'\n", join "\t", keys %{ $taq } );
 	outputf( "tnq: '%s'\n", join "\t", keys %{ $tnq } );
@@ -135,7 +135,7 @@ sub search
 					$pval_thresh   #num
 					);
      #printf STDERR "After fetching models: %s\n", localtime(time);
-    inspect_results($hash, 0);
+    #inspect_results($hash, 0);
      #exit;
     
     if($n_matched_models <= 0) {

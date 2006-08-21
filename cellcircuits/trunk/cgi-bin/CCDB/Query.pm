@@ -7,7 +7,8 @@ package CCDB::Query;
 
 use strict;
 use warnings;
-use DBI;
+#use DBI;
+use DBI qw(:sql_types);
 
 use CCDB::Driver;
 use CCDB::DB;
@@ -122,7 +123,7 @@ sub getMatchingModels
     #CCDB::Driver::inspect_results($hash,'');
     #exit;
 
-    $dbh->disconnect();
+    #$dbh->disconnect();
     
     return ($hash, scalar(keys %{ $hash }), $expanded_query, $error_msg, $gid_by_gene_symbol );
 }
@@ -148,7 +149,7 @@ sub get_gene_ids
 	$gene_query =~ s/\*/.*/g;
     }
 
-    $sth->bind_param(1,$gene_query,{TYPE=>12});
+    $sth->bind_param(1,$gene_query);
     $sth->execute();
 
     while(my $Ref = $sth->fetchrow_hashref())
@@ -245,16 +246,29 @@ sub gene_query
     
     foreach my $gid (keys %{ $gene_ids })
     {
+	#print STDERR "$gid: querying\n";
+	#print STDERR "$gid: pval=$pval_thresh\n";
 
 	$expanded_query->{$gene_symbols->{$gid}}++;
 
-	$sth->bind_param(1,$pval_thresh,{TYPE=>7});
-	$sth->bind_param(2,$gid,{TYPE=>4});
+	$sth->bind_param(1,$pval_thresh); # TYPE = SQL_VARCHAR
+	$sth->bind_param(2,$gid); # TYPE=SQL_INTEGER
 	$sth->execute();
 
+	#print STDERR "$gid: execute done\n";
+	#if(defined($sth->errstr))
+	#{
+	#    print STDERR "ERROR: " . $sth->errstr;
+	#}
+	    
+
+	#printf STDERR "$gid: %d rows\n", $sth->rows;
+	#printf STDERR "$gid: SQL\n"; 
+	#printf STDERR "   " . $dbh->{Statement} . "\n";
 	my $matched = 0;
 	while(my $Ref = $sth->fetchrow_hashref())
 	{
+	    #print STDERR "$gid: found row $matched\n";
 
 	    ### filter by contraints (pval, species, publications) ###
 	    next if($Ref->{e_pval} > $pval_thresh);
@@ -262,6 +276,7 @@ sub gene_query
 	    next unless(exists $species->{$genus_species_str});
 	    next unless(exists $publications->{$Ref->{mpub}});
 	    
+
 	    $matched++;
 
 	    my $mid = $Ref->{mid};
@@ -343,9 +358,8 @@ sub name_acc_query
     {
 
 	$expanded_query->{$q}++;
-
-	$sth->bind_param(1,$pval_thresh,{TYPE=>7});
-	$sth->bind_param(2,$q,{TYPE=>12});
+	$sth->bind_param(1,$pval_thresh);
+	$sth->bind_param(2,$q);
 	$sth->execute();
 
 	my $found = {};
@@ -403,8 +417,9 @@ sub get_enrichment_object_by_eid
     my ($eid) = @_;
     
     my $sth = $get_from_eid_sth;
-    $sth->bind_param(1,1,{TYPE=>7});
-    $sth->bind_param(2,$eid,{TYPE=>12});
+
+    $sth->bind_param(1, 1);
+    $sth->bind_param(2, $eid);
     $sth->execute();	
 
     my $Ref = $sth->fetchrow_hashref();

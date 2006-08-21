@@ -67,6 +67,7 @@ if(param("search_query"))
 					    $sort_method,
 					    $pval_thresh,
 					    $error_msg);
+	exit;
     }
     ($gq, $tnq, $taq) = @retval;
 
