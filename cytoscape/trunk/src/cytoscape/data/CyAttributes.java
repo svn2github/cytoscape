@@ -218,8 +218,38 @@ import java.util.Map;
  * result in many calls to the MultiHashMap object.  For example, if you have
  * five elements in a List, the implementation code makes five calls to
  * the MultiHashMap, and you will therefore be notified of five separate
- * events, rathern than one global list event.
+ * events, rather than one global list event.
  * <P>
+ * <h3>Setting attribute descriptions and user interaction flags:</h3>
+ * Starting in Cytoscape 2.4, you can add human readable text descriptions
+ * to attributes.  These descriptions are automatically presented to the
+ * end user via various user interface elements, including the default
+ * node/edge attribute browser and via the QuickFind configuration panel.
+ * To set an attribute description, use the
+ * {@link CyAttributes#setAttributeDescription(String, String)} method.
+ * To retrieve an attribute description, use the
+ * {@link CyAttributes#getAttributeDescription(String)} method.
+ * <P>
+ * Starting in Cytoscape 2.4, you can also flag attributes as visible /
+ * hidden or editable / non-editable by the end user.  User interface elements
+ * use these attribute flags to determine user interactivity.  For example, the
+ * default attribute browser will hide all attributes marked as hidden, and
+ * will restrict users to edit only those attributes marked as editable.
+ * By default, all attributes are visible and editable.  Therefore, you only
+ * need to interact with this portion of the API if you want to specifically
+ * hide certain attributes or mark certain attributes as non-editable.
+ * <P>
+ * To set an attribute as invisible, use the
+ * {@link CyAttributes#setUserVisible(String, boolean)} method and set
+ * to false.
+ * <P>
+ * To set an attribute as non-editable, use the
+ * {@link CyAttributes#setUserEditable(String, boolean)} method
+ * and set to false.
+ * <P>
+ * <B>Note:</B>  CyAttributes does not enforce these user interfaction flags.
+ * Rather, relevant user interface (UI) element(s) must query CyAttributes,
+ * and enforce the interaction flags themselves.
  *
  * @author Cytoscape Development Team
  */
@@ -307,6 +337,76 @@ public interface CyAttributes {
      * description has been specified). 
      */
     public String getAttributeDescription (String attributeName);
+
+    /**
+     * Sets the specified boolean to indicate whether or not the specified
+     * attribute should be made visible to the end user.
+     * <P>
+     * By default, all attributes are visible.
+     * <P>
+     * <B>Note:</B>  CyAttributes does not actually enforce user visibility.
+     * Rather, relevant user interface (UI) element(s) must query CyAttributes,
+     * and enforce the visibility flag themselves.
+     *
+     * @param attributeName Attribute name.
+     * @param value the boolean to be set. true indicates that the attribute
+     * should be made visible to the end user.  false indicates that the
+     * attribute should not be made visible to the end user.
+     */
+    public void setUserVisible (String attributeName, boolean value);
+
+    /**
+     * Returns the boolean indicating whether the specified attribute should
+     * be made visible to the end user or not.
+     * <P>
+     * By default, all attributes are visible.
+     * <P>
+     * <B>Note:</B>  CyAttributes does not actually enforce user visibility.
+     * Rather, relevant user interface (UI) element(s) must query CyAttributes,
+     * and enforce the visibility flag themselves.
+     *
+     * @param attributeName Attribute name.
+     * @return true indicates that the attribute should be made visible to the
+     * end user.  false indicates that the attribute should not be made visible
+     * to the end user.
+     */
+    public boolean getUserVisible (String attributeName);
+
+    /**
+     * Sets the specified boolean to indicate whether or not the specified
+     * attribute should be editable by the end user.
+     * <P>
+     * By default, all attributes are editable.
+     * <P>
+     * <B>Note:</B>  CyAttributes does not actually enforce restrictions
+     * on user editing of attributes. Rather, relevant user interface (UI)
+     * element(s) must query CyAttributes, and enforce the editing requirements
+     * themselves.
+     *
+     * @param attributeName Attribute name.
+     * @param value the boolean to be set. true indicates that the attribute
+     * should be editable by the end user.  false indicates that the attribute
+     * should not be editable by the end user.
+     */
+    public void setUserEditable (String attributeName, boolean value);
+
+    /**
+     * Returns the boolean indicating whether this attribute should be editable
+     * by the end user or not.
+     * <P>
+     * By default, all attributes are editable.
+     * <P>
+     * <B>Note:</B>  CyAttributes does not actually enforce restrictions
+     * on user editing of attributes. Rather, relevant user interface (UI)
+     * element(s) must query CyAttributes, and enforce the editing requirements
+     * themselves.
+     *
+     * @param attributeName Attribute name.
+     * @return true indicates that the attribute should be editable by the
+     * end user.  false indicates that the attribute should not be editable
+     * by the end user.
+     */
+    public boolean getUserEditable (String attributeName);
 
     /**
      * Determines if the specified id/attributeName pair exists.
