@@ -1,9 +1,6 @@
 package csplugins.widgets.autocomplete.index;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Basic implementation of the Text Index Interface.
@@ -16,6 +13,7 @@ class TextIndexImpl implements TextIndex {
     private ArrayList observerList;
     private static final boolean OUTPUT_PERFORMANCE_STATS = false;
     private HashMap cache = new HashMap();
+    private static final String WILD_CARD = "*";
 
     /**
      * Constructor.
@@ -77,9 +75,11 @@ class TextIndexImpl implements TextIndex {
         Date start = new Date();
         Hit hits[] = null;
 
-        //  Obtain special case of "" from cache.
+        //  Deal with wild card cases.
         if (prefix.equals("")) {
             hits = (Hit[]) cache.get(prefix);
+        } else if (prefix.endsWith(WILD_CARD)) {
+            hits = getWildCardHits(prefix);
         }
 
         if (hits == null) {
@@ -157,6 +157,40 @@ class TextIndexImpl implements TextIndex {
      */
     public String toString() {
         return "Text Index:  [Total number of keys:  " + map.size() + "]";
+    }
+
+    /**
+     * Executes basic wild card search.  Prefix must end with *.
+     * For example:  "YDR*".
+     * @param prefix prefix ending in *.
+     * @return An array containing 1 hit object or null.
+     */
+    private Hit[] getWildCardHits (String prefix) {
+        Hit[] hits = null;
+
+        //  Remove wildcard.
+        String regex = prefix.toLowerCase().substring (0, prefix.length() - 1);
+
+        //  Find all matching words
+        String keys[] = trie.getWords(regex);
+
+        //  Find all associated graph objects;  avoid redundant objects.
+        Set graphObjectSet = new HashSet();
+        for (int i=0; i<keys.length; i++) {
+            Object graphObjects[] = getObjectsByKey(keys[i]);
+            for (int j=0; j<graphObjects.length; j++) {
+                graphObjectSet.add(graphObjects[j]);
+            }
+        }
+
+        //  Return result set
+        if (graphObjectSet.size() > 0) {
+            hits = new Hit[1];
+            Object graphObjects[] = graphObjectSet.toArray
+                    (new Object[graphObjectSet.size()]);
+            hits[0] = new Hit (prefix, graphObjects);
+        }
+        return hits;
     }
 
     /**
