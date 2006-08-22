@@ -73,4 +73,21 @@ public class TestTextIndex extends TestCase {
         assertEquals("Text Index:  [Total number of keys:  0]",
                 textIndex.toString());
     }
+
+    /**
+     * Tests wild card searches.
+     */
+    public void testWildCardSearches() {
+        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        textIndex.addToIndex("rain", new Integer(1));
+        textIndex.addToIndex("rain", new Integer(2));
+        textIndex.addToIndex("rainbow", new Integer(3));
+        textIndex.addToIndex("rainbow trout", new Integer(4));
+        textIndex.addToIndex("RABBIT", new Integer(5));
+
+        Hit hits[] = textIndex.getHits("ra*", Integer.MAX_VALUE);
+        assertEquals (1, hits.length);
+        assertEquals ("ra*", hits[0].getKeyword());
+        assertEquals (5, hits[0].getAssociatedObjects().length);
+    }
 }
