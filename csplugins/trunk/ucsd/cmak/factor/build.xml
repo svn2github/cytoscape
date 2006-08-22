@@ -9,6 +9,8 @@
 
   <property name="src" location="src"/>
   <property name="build" location="build"/>
+  <property name="log" location="log"/>
+  <property name="result" location="result"/>
   <property name="dist"  location="dist"/>
   <property name="lib"  location="lib"/>
   <property name="doc"  location="doc"/>
@@ -48,7 +50,9 @@
     <tstamp/>
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}"/>
-
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${log}"/>
+    <mkdir dir="${result}"/>
   </target>
 
   <target name="doc">
@@ -147,7 +151,6 @@
   <target name="plugin" depends="compile" 
           description="generate the plugin jar">
  
-       <mkdir dir="${dist}"/>
        <delete file="${dist}/${plugin.name}.jar"/>
 
        <unjar dest="${build}">
@@ -161,16 +164,19 @@
             includes="fgraph/**,antlr/**,netan/**,chi2cdf1table_rev.txt"
             excludes="fgraph/test/**,**/*Test.class"/>
 
+       <!-- Uncomment this to automatically copy the plugin to home dir
+
        <copy file="${dist}/${plugin.name}.jar" 
              toDir="${user.home}/cytoscape-plugins"/>
+
+       -->
   </target>
 
   <target name="dist" depends="compile"
         description="generate the distribution" >
-    <!-- Create the distribution directory -->
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/mdi-${DSTAMP}.jar" 
+    <jar jarfile="${dist}/mdi-${DSTAMP}.jar" 
          basedir="${build}"
          excludes="fgraph/test/**,**/*Test.class"/>
   </target>
