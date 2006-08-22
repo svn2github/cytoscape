@@ -21,7 +21,8 @@ RUNNING
 1. As Cytoscape plugin
 
    See online docs at http://www.cellcircuits.org/Yeang2005
-
+   (test data files form the website are under source control
+    in the test-data directory)
 
 2. As command-line tool
 
