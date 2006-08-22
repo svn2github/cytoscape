@@ -225,7 +225,7 @@ public class RunDialog extends JDialog implements ActionListener
         p.add(pathLenField);
         p.add(createLabel("Max path length"));
 
-        minKOField = createIntField(10, 3);
+        minKOField = createIntField(10, 1);
         p.add(minKOField);
         p.add(createLabel("Min knockout's per model"));
 

@@ -1,0 +1,38 @@
+BUILD
+
+1. To compile the source code:
+   (Class files are stored in the build directory)
+
+   ant
+
+
+2. To compile the Cytoscape plugin
+   (Plugin JAR file is stored in the dist directory)
+
+   ant plugin
+
+3. To make the JavaDocs
+   (Documentation is stored in the doc directory)
+
+   ant doc
+
+RUNNING 
+
+1. As Cytoscape plugin
+
+   See online docs at http://www.cellcircuits.org/Yeang2005
+
+
+2. As command-line tool
+
+   a. Make sure the build dir is in your CLASSPATH
+
+   b. Generate properties file that contains input parameters
+      and run program.
+
+      bin/genprops.sh
+
+   c. OR run program using an existing input parameters file.
+
+      bin/runmp.sh <prop file>
+

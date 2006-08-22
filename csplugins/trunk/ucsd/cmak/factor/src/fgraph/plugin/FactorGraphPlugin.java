@@ -29,7 +29,8 @@ public class FactorGraphPlugin extends CytoscapePlugin
         item.addActionListener(new RunAction());
         submenu.add(item);
 
-        item.doClick();
+        // Uncomment this to automatically show the plugin dialog on startup
+        //item.doClick();
         
         //About box
         item = new JMenuItem("About");
