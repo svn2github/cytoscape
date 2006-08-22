@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
@@ -16,17 +18,17 @@ public class MaxProduct
 {
     
     private static Logger logger = Logger.getLogger(MaxProduct.class.getName());
-    private String _interaction;
+    protected String _interaction;
     private String _candidateGenes;
     private String _expressionDataFile;
     private String _edgeData;
     private double _thresh;
 
-    private InteractionGraph _ig;
+    protected InteractionGraph _ig;
 
     private ExpressionDataIF _expressionData;
     
-    private int MAX_PATH_LEN = 3;
+    protected int MAX_PATH_LEN = 3;
     private int KO_EXPLAIN_CUTOFF = 3;
 
     private boolean decomposeModel;
@@ -94,7 +96,7 @@ public class MaxProduct
     
     public void setKOExplainCutoff(int i)
     {
-        if( i > 0)
+        if( i >= 0)
         {
             KO_EXPLAIN_CUTOFF = i;
 
@@ -102,7 +104,7 @@ public class MaxProduct
         }
         else
         {
-            logger.warning("Warning: KO_EXPLAIN_CUTOFF [" + i + "] <= 0.");
+            logger.warning("Warning: KO_EXPLAIN_CUTOFF [" + i + "] < 0.");
         }
     }
 
@@ -246,6 +248,11 @@ public class MaxProduct
         log("Updating interaction graph");
         fg.updateInteractionGraph();
 
+        String pathFileName =  outputDir + File.separator + outputFile + ".active_paths";
+        log("Printing active paths: " + pathFileName);
+
+        printPaths(fg.getActivePaths(), pathFileName);
+        
         SubmodelOutputFiles output = null;
         if(outputDir != null && outputFile != null)
         {
@@ -262,6 +269,20 @@ public class MaxProduct
         return output;
     }
 
+    protected void printPaths(int[] paths, String fname)
+        throws FileNotFoundException
+    {
+        PrintStream out = new PrintStream(new FileOutputStream(fname));
+
+        for(int x=0; x < paths.length; x++)
+        {
+            out.println(paths[x]);
+        }
+        out.close();
+
+        log("printPaths: printed " + paths.length + " paths");
+    }
+    
     protected PathResult findPaths()
     {
         String[] conds = _expressionData.getConditionNames();

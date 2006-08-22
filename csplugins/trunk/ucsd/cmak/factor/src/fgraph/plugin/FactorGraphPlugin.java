@@ -31,12 +31,6 @@ public class FactorGraphPlugin extends CytoscapePlugin
 
         item.doClick();
         
-        /*
-        item = new JMenuItem("Set parameters");
-        item.addActionListener(new MCODEParameterChangeAction());
-        submenu.add(item);
-        */
-
         //About box
         item = new JMenuItem("About");
         item.addActionListener(new AboutAction());

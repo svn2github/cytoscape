@@ -385,8 +385,8 @@ public class DFSPath
     private void printPath(int pathCount, int[] curPath, int depth)
     {
         StringBuffer b = new StringBuffer();
-        //b.append(pathCount);
-        //b.append(": ");
+        b.append(pathCount);
+        b.append(": ");
         
         for(int x=0; x <= depth; x++)
         {
