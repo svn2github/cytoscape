@@ -76,21 +76,31 @@
     <mkdir dir="${src.netan}"/>
 
    <antlr target="${grammar}/message.g"
-           outputdirectory="${gsrc}"/>
+           outputdirectory="${gsrc}">
+          <classpath refid="project.class.path"/>
+   </antlr>
 
 
    <antlr target="${grammar}/submodel.g"
-           outputdirectory="${gsrc}"/>
+           outputdirectory="${gsrc}">
+         <classpath refid="project.class.path"/>
+   </antlr>
 
    <antlr target="${grammar}/ko.g"
-           outputdirectory="${gsrc}"/>
+           outputdirectory="${gsrc}">
+         <classpath refid="project.class.path"/>
+   </antlr>
 
 
    <antlr target="${grammar}/nodeAttr.g"
-           outputdirectory="${src.netan}"/>
+           outputdirectory="${src.netan}">
+         <classpath refid="project.class.path"/>
+   </antlr>
 
    <antlr target="${grammar}/sif.g"
-           outputdirectory="${src.netan}"/>
+           outputdirectory="${src.netan}">
+         <classpath refid="project.class.path"/>
+   </antlr>
 
 
     <!-- Compile the java code from ${src} into ${build}
