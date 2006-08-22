@@ -1,3 +1,4 @@
+##########################################################
 BUILD
 
 1. To compile the source code:
@@ -5,17 +6,20 @@ BUILD
 
    ant
 
-
+-----------------------------------------------------------
 2. To compile the Cytoscape plugin
    (Plugin JAR file is stored in the dist directory)
 
    ant plugin
+   cp dist/yeang2005-plugin.jar <your cytoscape plugin dir>
 
+-----------------------------------------------------------
 3. To make the JavaDocs
    (Documentation is stored in the doc directory)
 
    ant doc
 
+##########################################################
 RUNNING 
 
 1. As Cytoscape plugin
@@ -37,3 +41,29 @@ RUNNING
 
       bin/runmp.sh <prop file>
 
+   d. To run the program on the test data
+      (may take a couple minutes to run)
+
+      bin/genprops-test.sh
+
+3. Cytoscape visualization
+
+   The visual properties used in Yeang, Mak, et al. Genome Biology. (2005)
+   
+   Node Color -> Discreet mapping of "NodeType" node attribute
+                   KO => red
+
+   Node Shape -> Discreet mapping of "NodeType" node attribute
+                   KO => circle
+
+   Edge Color -> Discreet mapping of "EdgeSign" node attribute
+                   + => orange
+                   - => blue
+
+   Edge Line Type -> Discreet mapping of "interaction" node attribute
+                   pd => solid line
+                   pp => dotted line
+
+   Edge Target Arrow -> Discreet mapping of "EdgeSign" node attribute
+                   + => blue arrow
+                   - => blue bar

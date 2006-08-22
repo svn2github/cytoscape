@@ -23,12 +23,15 @@
 
 set TS=`date +%F-%H.%M`
 set DATA=/cellar/users/cmak/data
+set RESULT_DIR=result
 
 set MAX_PATH_LEN=2
 set EXP_THRESH=0.005
 set EDGE_THRESH=0.001
 set DECOMPOSE=false
 set YEANG_DATA_FORMAT=false
+set MIN_KO_PER_MODEL=3
+
 
 set BUF_FILE=BUF_KOs.ORFheader.lrpv
 #set BUF_FILE=BUF_KOs+follow_ups.ORFheader.lrpv
@@ -66,9 +69,9 @@ echo "expression.file=${EXP_FILE}" >> ${OUT}
 echo "expression.threshold=${EXP_THRESH}" >> ${OUT}
 echo "edge.attributes=${EDGE_ATTR}" >> ${OUT}
 echo "protein-DNA.threshold=${EDGE_THRESH}" >> ${OUT}
-echo "output.dir=result" >> ${OUT}
+echo "output.dir=${RESULT_DIR}" >> ${OUT}
 echo "output.filename=${RUN_LABEL}" >> ${OUT}
-echo "min.ko.per.model=0" >> ${OUT}
+echo "min.ko.per.model=${MIN_KO_PER_MODEL}" >> ${OUT}
 echo "decomposeModel=${DECOMPOSE}" >> ${OUT}
 echo "yeang.data.format=${YEANG_DATA_FORMAT}" >> ${OUT}
 
