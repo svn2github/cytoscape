@@ -67,7 +67,7 @@ class TextIndexImpl implements TextIndex {
     /**
      * Gets all hits which begin with the specified prefix.
      *
-     * @param prefix String prefix.
+     * @param prefix  String prefix.
      * @param maxHits Maximum number of hits
      * @return Array of Strings, which begin with the specified prefix.
      */
@@ -162,23 +162,24 @@ class TextIndexImpl implements TextIndex {
     /**
      * Executes basic wild card search.  Prefix must end with *.
      * For example:  "YDR*".
+     *
      * @param prefix prefix ending in *.
      * @return An array containing 1 hit object or null.
      */
-    private Hit[] getWildCardHits (String prefix) {
+    private Hit[] getWildCardHits(String prefix) {
         Hit[] hits = null;
 
         //  Remove wildcard.
-        String regex = prefix.toLowerCase().substring (0, prefix.length() - 1);
+        String regex = prefix.toLowerCase().substring(0, prefix.length() - 1);
 
         //  Find all matching words
         String keys[] = trie.getWords(regex);
 
         //  Find all associated graph objects;  avoid redundant objects.
         Set graphObjectSet = new HashSet();
-        for (int i=0; i<keys.length; i++) {
+        for (int i = 0; i < keys.length; i++) {
             Object graphObjects[] = getObjectsByKey(keys[i]);
-            for (int j=0; j<graphObjects.length; j++) {
+            for (int j = 0; j < graphObjects.length; j++) {
                 graphObjectSet.add(graphObjects[j]);
             }
         }
@@ -188,7 +189,7 @@ class TextIndexImpl implements TextIndex {
             hits = new Hit[1];
             Object graphObjects[] = graphObjectSet.toArray
                     (new Object[graphObjectSet.size()]);
-            hits[0] = new Hit (prefix, graphObjects);
+            hits[0] = new Hit(prefix, graphObjects);
         }
         return hits;
     }
