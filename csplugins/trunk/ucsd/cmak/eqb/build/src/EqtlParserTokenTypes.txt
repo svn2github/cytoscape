@@ -1,0 +1,11 @@
+// $ANTLR 2.7.4: eqtl.g -> EqtlParserTokenTypes.txt$
+EqtlParser    // output token vocab name
+NODE=4
+LPAREN=5
+COMMA=6
+RPAREN=7
+LBRACK=8
+RBRACK=9
+LCURLY=10
+RCURLY=11
+WS=12
