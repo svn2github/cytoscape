@@ -33,9 +33,7 @@ else
     @files = "${run}-${model}.sif";
 }
 
-my $cmd = "/cellar/users/ktan/cytoscape/cytoscape.sh ";
-
-my $datadir = "/cellar/users/cmak/data";
+my $cmd = "cytoscape.sh ";
 
 my $base = "$dir/$run";
 

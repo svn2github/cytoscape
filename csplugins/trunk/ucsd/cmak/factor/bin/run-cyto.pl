@@ -2,7 +2,7 @@
 
 if(scalar(@ARGV) < 1)
 {
-    die "usage: $0 <output file> [model #]\n";
+   die "usage: $0 <output run label (see genprops.sh file)> [model numbers (optiona)]\n";
 }
 
 my $in = shift @ARGV;

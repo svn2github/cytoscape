@@ -46,8 +46,16 @@ RUNNING
 
       bin/genprops-test.sh
 
-3. Cytoscape visualization
 
+3. Cytoscape visualization
+  
+   To view output in Cytoscape
+   bin/run-cyto.pl result/<run label from genprops.sh>
+
+   To view output from running on test data
+   bin/run-cyto-test.pl result/yeang2005_yeang2005_true_3_0.02_0
+  
+   -----------------------------------------------------------------------
    The visual properties used in Yeang, Mak, et al. Genome Biology. (2005)
    
    Node Color -> Discreet mapping of "NodeType" node attribute
