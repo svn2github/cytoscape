@@ -48,6 +48,7 @@ public class QuickFindConfigDialog extends JDialog {
         Container container = getContentPane();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         this.setTitle("Configure Find Options");
+        this.setAlwaysOnTop(true);
 
         //  Create Master Panel
         JPanel masterPanel = new JPanel();
