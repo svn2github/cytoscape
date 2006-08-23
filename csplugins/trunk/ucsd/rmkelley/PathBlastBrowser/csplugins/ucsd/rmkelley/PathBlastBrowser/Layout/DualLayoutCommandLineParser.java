@@ -1,8 +1,8 @@
 //ActivePathsCommandLineParser
 //------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$xx
+// $Revision: 1.1 $
+// $Date: 2004/03/18 08:16:56 $
+// $Author: rmkelley $xx
 //------------------------------------------------------------------------------
 package csplugins.ucsd.rmkelley.PathBlastBrowser.Layout;
 //------------------------------------------------------------------------------
@@ -39,6 +39,10 @@ public class DualLayoutCommandLineParser {
 	public boolean addEdges(){
 		return edges;
 	}
+	
+	public void setEdges(boolean flag){
+		edges = flag;
+	}
 
 	public String getGMLname(){
 		return filename;
@@ -73,8 +77,7 @@ public class DualLayoutCommandLineParser {
 
         Getopt g = new Getopt ("DualLayout", args, "", longOpts);
         g.setOpterr (false); // We'll do our own error handling
-        String tmp;
-	int c;
+        int c;
         while ((c = g.getopt ()) != -1) {
             switch (c) {
 	    case 0:
