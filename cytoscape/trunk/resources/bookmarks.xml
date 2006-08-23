@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	Cytoscape bookmark file.
+	
+	 - General purpose bookmark file to specify data source locations.
+	
+	Keiichiro Ono (kono@ucsd.edu)
+-->
+<bookmarks xmlns:xlink="http://www.w3.org/1999/xlink" version="0.5">
+	<description>Bookmark file for Cytoscape 2.4 and later.</description>
+	<category name="ontology">
+		<dataSource name="Gene Ontology Full"
+			xlink:href="http://www.geneontology.org/ontology/gene_ontology.obo" format="obo">
+			<attribute name="description">The Gene Ontology (GO) project provides a controlled vocabulary to describe gene and gene product attributes in any organism.  This data source contains full size GO dag, which contains all GO terms.</attribute>
+		</dataSource>
+		<dataSource name="Generic GO slim"
+			xlink:href="http://www.geneontology.org/GO_slims/goslim_generic.obo" format="obo">
+			<attribute name="description">Subset of general GO Terms.</attribute>
+		</dataSource>
+		<dataSource name="Yeast GO slim"
+			xlink:href="http://www.geneontology.org/GO_slims/goslim_yeast.obo" format="obo">
+			<attribute name="description">Subset of GO Terms for annotating Yeast data sets.  Maintained by SGD.</attribute>
+		</dataSource>
+		<dataSource name="Protein-protein interaction"
+			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/protein/psi-mi.obo"
+			format="obo">
+			<attribute name="description">A structured controlled vocabulary for the annotation of experiments concerned with protein-protein interactions.</attribute>
+		</dataSource>
+		<dataSource name="Pathway Ontology"
+			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/pathway.obo"
+			format="obo">
+			<attribute name="description">The Pathway Ontology is a controlled vocabulary for pathways that provides standard terms for the annotation of geneproducts.</attribute>
+		</dataSource>
+		<category name="annotation">
+			<dataSource name="Gene Association file for Saccharomyces cerevisiae"
+				xlink:href="http://www.geneontology.org/cgi-bin/downloadGOGA.pl/gene_association.sgd.gz"
+				format="Gene Association">
+				<attribute name="curator">SGD</attribute>
+				<attribute name="species">Saccharomyces cerevisiae</attribute>
+			</dataSource>
+			<dataSource name="Gene Association file for Saccharomyces cerevisiae"
+				xlink:href="http://www.geneontology.org/cgi-bin/downloadGOGA.pl/gene_association.fb.gz"
+				format="Gene Association">
+				<attribute name="curator">FlyBase</attribute>
+				<attribute name="species">Drosophila melanogaster</attribute>
+			</dataSource>
+			<dataSource name="Gene Association file for Saccharomyces cerevisiae"
+				xlink:href="http://www.geneontology.org/cgi-bin/downloadGOGA.pl/gene_association.mgi.gz"
+				format="Gene Association">
+				<attribute name="curator">MGI</attribute>
+				<attribute name="species">Mus musculus</attribute>
+			</dataSource>
+			<dataSource name="Gene Association file for human"
+				xlink:href="http://www.geneontology.org/cgi-bin/downloadGOGA.pl/gene_association.goa_human.gz"
+				format="Gene Association">
+				<attribute name="curator">EBI</attribute>
+				<attribute name="species">Homo sapiens</attribute>
+			</dataSource>
+			<dataSource name="Gene Association file for human"
+				xlink:href="http://www.geneontology.org/cgi-bin/downloadGOGA.pl/gene_association.wb.gz"
+				format="Gene Association">
+				<attribute name="curator">WormBase</attribute>
+				<attribute name="species">Caenorhabditis elegans</attribute>
+			</dataSource>
+		</category>
+	</category>
+	<category name="network">
+		<dataSource name="Reactome sample SBML network file"
+			xlink:href="http://reactome.org/cgi-bin/sbml_export?DB=gk_current" format="SBML"/>
+	</category>
+</bookmarks>
