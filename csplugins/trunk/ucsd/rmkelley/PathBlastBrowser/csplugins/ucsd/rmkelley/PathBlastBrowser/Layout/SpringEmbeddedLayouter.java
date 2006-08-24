@@ -69,14 +69,19 @@ public class SpringEmbeddedLayouter{
   protected HashMap node2Species;
   protected NodePairSet homologyPairSet;
   protected HashMap node2Index;
+  protected Random rnd;
   /**
    * @param node2Species a hashmap which maps from a node to a species number
    */
-  public SpringEmbeddedLayouter ( CyNetworkView graph_view, HashMap node2Species, NodePairSet homologyPairSet ) {
+  public SpringEmbeddedLayouter ( CyNetworkView graph_view, HashMap node2Species, NodePairSet homologyPairSet, boolean isRandom ) {
     setGraphView( graph_view );
     this.node2Species = node2Species;
     //initializeSpringEmbeddedLayouter();
     this.homologyPairSet = homologyPairSet;
+    if ( isRandom )
+    	this.rnd = new Random();
+    else
+    	this.rnd = new Random(5);
   }
 
   public void setGraphView ( CyNetworkView new_graph_view ) {
@@ -99,7 +104,6 @@ public class SpringEmbeddedLayouter{
     
   private void initializePositions(){
     Iterator viewIt = graphView.getNodeViewsIterator();
-    Random rnd = new Random();
     while(viewIt.hasNext()){
       NodeView v = (NodeView)viewIt.next();
       v.setXPosition(500*rnd.nextDouble());

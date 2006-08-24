@@ -14,8 +14,10 @@ import javax.swing.JPanel;
 public class DualLayoutOptionsDialog extends JDialog {
 
 	JCheckBox edges;
+	JCheckBox ypos;
+	JCheckBox rand;
 	DualLayoutCommandLineParser parser;
-	protected static int HEIGHT = 100;
+	protected static int HEIGHT = 200;
 	protected static int WIDTH = 300;
 	public DualLayoutOptionsDialog(DualLayoutCommandLineParser parser){
 		setModal(true);
@@ -28,7 +30,24 @@ public class DualLayoutOptionsDialog extends JDialog {
 		});
 		JPanel centerPanel = new JPanel();
 		centerPanel.add(edges);
-		
+
+		ypos = new JCheckBox("Normalize Y position of homologous nodes?",parser.normalizeY());
+		ypos.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				DualLayoutOptionsDialog.this.parser.setYPos(ypos.isSelected());
+			}
+		});
+		centerPanel.add(ypos);
+
+		rand = new JCheckBox("Use random seed?",parser.isRandom());
+		rand.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				DualLayoutOptionsDialog.this.parser.setIsRandom(rand.isSelected());
+			}
+		});
+		centerPanel.add(rand);
+
+
 		JPanel southPanel = new JPanel();
 		JButton dismiss = new JButton("Dismiss");
 		dismiss.addActionListener(new ActionListener(){

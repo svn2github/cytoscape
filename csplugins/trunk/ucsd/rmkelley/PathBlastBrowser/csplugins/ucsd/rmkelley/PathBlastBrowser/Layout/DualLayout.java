@@ -106,7 +106,7 @@ public class DualLayout extends CytoscapePlugin{
 
     public void run(){
       CyNetwork splitGraph = Cytoscape.createNetwork(title);
-      DualLayoutTask task = new DualLayoutTask(cyNetwork);
+      DualLayoutTask task = new DualLayoutTask(cyNetwork,parser);
       CyNetworkView view = null;
       
       if(!Cytoscape.viewExists(splitGraph.getIdentifier())){

@@ -11,7 +11,9 @@
   	<property name="src.dir" value="."/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="lib.dir" value="/cellar/users/rmkelley/Projects/Cytoscape/Cvs/cvsdir5/cytoscape/lib"/>
+	<property name="cy.dir" value="../../../../cytoscape"/>
+	<property name="lib.dir" value="${cy.dir}/lib"/>
+	<property name="local.lib.dir" value="lib"/>
 	
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
@@ -25,8 +27,14 @@
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>	
 		<pathelement path="../../../../cytoscape/build/classes"/>
-		<fileset dir="${lib.dir}/..">
+		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="${local.lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${cy.dir}">
+			<include name="*.jar"/>
 		</fileset>
 	</path>
 
@@ -45,6 +53,9 @@
 
 	<path id="classpath_run">
 		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="${local.lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
 		<pathelement location="${lib.dir}/../build/cytoscape.jar"/>
@@ -83,10 +94,11 @@
   	
 	<!--  Create PlugIn Jar File (Unobfuscated) -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+           <unzip src="${local.lib.dir}/getopt.jar" dest="${build.classes}"/>
+
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
 		</jar>
-        <copy file="${build.dir}/${plugin.name}.jar" todir="../../../../cytoscape/plugins"/>
 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 	</target>
 
