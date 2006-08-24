@@ -93,6 +93,14 @@ public class TestTextIndexComboBox extends TestCase {
         assertEquals("bust", comboBox.getItemAt(2).toString());
         assertEquals("butter", comboBox.getItemAt(3).toString());
         assertEquals("button", comboBox.getItemAt(4).toString());
+
+        //  Start over;  Assuming user enters "y", what do I see in the menu?
+        doc.remove(0, doc.getLength());
+        doc.insertString(0, "y", new SimpleAttributeSet());
+        assertEquals (1, comboBox.getItemCount());
+        Hit hit = (Hit) comboBox.getItemAt(0);
+        assertEquals (0, hit.getAssociatedObjects().length);
+        assertEquals ("y", hit.getKeyword());
     }
 
     /**
@@ -216,8 +224,6 @@ public class TestTextIndexComboBox extends TestCase {
         textIndex.addToIndex("Underground", new String());
         textIndex.addToIndex("Vector", new String());
         textIndex.addToIndex("World", new String());
-        textIndex.addToIndex("Xerox", new String());
-        textIndex.addToIndex("Yoyo", new String());
         textIndex.addToIndex("Zoo", new String());
         textIndex.addToIndex("Zoo_REALLY_REALLY_REALLY_REALLY_REALY_"
                 + "LONG NAME", new String());
