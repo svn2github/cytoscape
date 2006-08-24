@@ -73,6 +73,7 @@
 	<!-- XML Schema files used by JAXB -->
 	<property name="xgmml.schema" value="xgmml.xsd" />
 	<property name="cysession.schema" value="cysession.xsd" />
+	<property name="bookmark.schema" value="bookmarks.xsd" />
 
 	<!-- Auto generated package name -->
 	<property name="package" value="cytoscape.generated" />
@@ -108,6 +109,7 @@
 		<!-- Clean up generated packages -->
 		<delete dir="${src.dir}/cytoscape/generated" />
 		<delete dir="${src.dir}/cytoscape/generated2" />
+		<delete dir="${src.dir}/cytoscape/bookmarks" />
 	</target>
 
 	<!-- ======================================================= -->
@@ -122,6 +124,12 @@
 			<arg value="-nv" />
 			<produces dir="${src.dir}/cytoscape/generated2" includes="* impl/*" />
 		</xjc>
+		
+		<xjc schema="${schema.dir}/${bookmark.schema}" target="${src.dir}" package="cytoscape.bookmarks">
+			<arg value="-nv" />
+			<produces dir="${src.dir}/cytoscape/bookmarks" includes="* impl/*" />
+		</xjc>
+		
 		<!-- copy prop file into build dir -->
 		<echo>Copying jaxb.properties from ${src.dir}/cytoscape/generated to build dir...</echo>
 		<copy todir="${build.classes}/cytoscape/generated">
@@ -129,6 +137,9 @@
 		</copy>
 		<copy todir="${build.classes}/cytoscape/generated2">
 			<fileset dir="${src.dir}/cytoscape/generated2" includes="*.properties" />
+		</copy>
+		<copy todir="${build.classes}/cytoscape/bookmarks">
+			<fileset dir="${src.dir}/cytoscape/bookmarks" includes="*.properties" />
 		</copy>
 
 	</target>
@@ -334,6 +345,7 @@
 		<copy file="${basedir}/tools/jars/org.freehep.util.export.ExportFileType" todir="${build.dir}/temp/META-INF/services" />
 		<copy file="${basedir}/props/vizmap.props" todir="${build.classes}" />
 		<copy file="${basedir}/props/cytoscape.props" todir="${build.classes}" />
+		<copy file="${basedir}/props/bookmarks.xml" todir="${build.classes}" />
 		<jar destfile="${basedir}/cytoscape.jar" manifest="${build.dir}/cytoscape.manifest">
 			<fileset dir="${build.classes}" />
 			<fileset dir="${build.dir}/temp" />
