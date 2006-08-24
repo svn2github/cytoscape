@@ -23,8 +23,6 @@ import cytoscape.data.ontology.readers.DBCrossReferenceReader;
  */
 public class DBCrossReferences {
 
-	DBCrossReferenceReader xrefReader;
-
 	/*
 	 * Map to store the cross reference.
 	 */
@@ -35,6 +33,7 @@ public class DBCrossReferences {
 	}
 
 	public void load() throws IOException {
+		DBCrossReferenceReader xrefReader = new DBCrossReferenceReader();
 		xrefReader.readResourceFile();
 	}
 	/**
