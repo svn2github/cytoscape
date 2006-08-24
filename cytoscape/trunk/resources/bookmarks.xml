@@ -65,7 +65,7 @@
 		</category>
 	</category>
 	<category name="network">
-		<dataSource name="Reactome sample SBML network file"
-			xlink:href="http://reactome.org/cgi-bin/sbml_export?DB=gk_current" format="SBML"/>
+		<dataSource name="Sample yeast network"
+			xlink:href="http://chianti.ucsd.edu/kono/data/galFiltered.sif" format="sif"/>
 	</category>
 </bookmarks>
