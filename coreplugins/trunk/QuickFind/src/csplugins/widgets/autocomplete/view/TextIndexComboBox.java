@@ -292,13 +292,6 @@ class UserKeyListener extends KeyAdapter {
             case KeyEvent.VK_DOWN:
                 doc.setCursorKeyPressed(true);
         }
-
-        //  If menu is not currently diplayed, display it.
-        if (comboBox.isDisplayable()) {
-            if (!comboBox.getUI().isPopupVisible(comboBox)) {
-                comboBox.setPopupVisible(true);
-            }
-        }
     }
 
     /**
