@@ -147,10 +147,6 @@ public class AutoCompleteDocument extends PlainDocument {
                 if (hitBackspaceOnSelection) {
                     offs--;
                 }
-            } else {
-                // User hit backspace with the cursor positioned on
-                // the start => beep
-                comboBox.getToolkit().beep();
             }
         }
 
@@ -214,14 +210,14 @@ public class AutoCompleteDocument extends PlainDocument {
         //  result is multiple calls to setSelectedItem(), which results
         //  in an infinite loop.
         setSelecting(true);
+        DefaultComboBoxModel model = (DefaultComboBoxModel)
+                comboBox.getModel();
+        debug("Start:  Remove all elements");
+        model.removeAllElements();
+        debug("End:  Remove all elements");
         if (hits.length > 0) {
             int stopHits = Math.min(hits.length,
                     TextIndexComboBox.DEFAULT_MAX_HITS_SHOWN);
-            DefaultComboBoxModel model = (DefaultComboBoxModel)
-                    comboBox.getModel();
-            debug("Start:  Remove all elements");
-            model.removeAllElements();
-            debug("End:  Remove all elements");
             for (int i = 0; i < stopHits; i++) {
                 //  When we call addElement and there is only one item in
                 //  the list, the DefaultComboBox will automatically call
@@ -229,20 +225,22 @@ public class AutoCompleteDocument extends PlainDocument {
                 //  To prevent this, we set the set selecting flag to true.
                 model.addElement(hits[i]);
             }
-
-            //  Set Max Row Count;  this automatically resizes the pop-up
-            //  menu window.
-            if (model.getSize() < TextIndexComboBox.DEFAULT_MAX_ROWS_VISIBLE) {
-                comboBox.setMaximumRowCount(model.getSize());
-            } else {
-                comboBox.setMaximumRowCount
-                        (TextIndexComboBox.DEFAULT_MAX_ROWS_VISIBLE);
-            }
-
-            //  Must set selected item to null;  otherwise, zeroeth
-            //  item in model is selected, and we don't want it to be.
-            setSelectedItem(null);
+        } else {
+            model.addElement(new Hit (pattern, new Object[0]));
         }
+
+        //  Set Max Row Count;  this automatically resizes the pop-up
+        //  menu window.
+        if (model.getSize() < TextIndexComboBox.DEFAULT_MAX_ROWS_VISIBLE) {
+            comboBox.setMaximumRowCount(model.getSize());
+        } else {
+            comboBox.setMaximumRowCount
+                    (TextIndexComboBox.DEFAULT_MAX_ROWS_VISIBLE);
+        }
+
+        //  Must set selected item to null;  otherwise, zeroeth
+        //  item in model is selected, and we don't want it to be.
+        setSelectedItem(null);
         setSelecting(false);
         debug("End:  populatePullDownMenu(), pattern=" + pattern);
     }
