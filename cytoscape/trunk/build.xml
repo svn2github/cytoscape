@@ -345,7 +345,6 @@
 		<copy file="${basedir}/tools/jars/org.freehep.util.export.ExportFileType" todir="${build.dir}/temp/META-INF/services" />
 		<copy file="${basedir}/props/vizmap.props" todir="${build.classes}" />
 		<copy file="${basedir}/props/cytoscape.props" todir="${build.classes}" />
-		<copy file="${basedir}/props/bookmarks.xml" todir="${build.classes}" />
 		<jar destfile="${basedir}/cytoscape.jar" manifest="${build.dir}/cytoscape.manifest">
 			<fileset dir="${build.classes}" />
 			<fileset dir="${build.dir}/temp" />
