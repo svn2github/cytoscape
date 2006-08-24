@@ -1,9 +1,6 @@
 package csplugins.quickfind.view;
 
-import csplugins.quickfind.util.CyAttributesUtil;
-import csplugins.quickfind.util.IndexType;
-import csplugins.quickfind.util.QuickFind;
-import csplugins.quickfind.util.QuickFindFactory;
+import csplugins.quickfind.util.*;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -42,6 +39,11 @@ public class QuickFindConfigDialog extends JDialog {
     private JTable sampleAttributeValuesTable;
 
     /**
+     * Attribute description text area.
+     */
+    private JTextArea attributeDescriptionBox;
+
+    /**
      * Constructor.
      */
     public QuickFindConfigDialog() {
@@ -59,6 +61,10 @@ public class QuickFindConfigDialog extends JDialog {
         JPanel attributePanel = createAttributeSelectionPanel();
         masterPanel.add(attributePanel);
 
+        //  Add Attribute Description Panel
+        JPanel attributeDescriptionPanel = createAttributeDescriptionPanel();
+        masterPanel.add(attributeDescriptionPanel);
+
         //  Add Sample Attribute Values Panel
         JPanel attributeValuePanel = createAttributeValuePanel();
         masterPanel.add(attributeValuePanel);
@@ -73,7 +79,7 @@ public class QuickFindConfigDialog extends JDialog {
         pack();
         setModal(true);
         setLocationRelativeTo(Cytoscape.getDesktop());
-        show();
+        setVisible(true);
     }
 
     /**
@@ -89,7 +95,7 @@ public class QuickFindConfigDialog extends JDialog {
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                QuickFindConfigDialog.this.hide();
+                QuickFindConfigDialog.this.setVisible(false);
                 QuickFindConfigDialog.this.dispose();
             }
         });
@@ -98,7 +104,7 @@ public class QuickFindConfigDialog extends JDialog {
         JButton applyButton = new JButton("Apply");
         applyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                QuickFindConfigDialog.this.hide();
+                QuickFindConfigDialog.this.setVisible(false);
                 QuickFindConfigDialog.this.dispose();
 
                 String newAttribute = (String)
@@ -120,7 +126,7 @@ public class QuickFindConfigDialog extends JDialog {
                     //  This automatically pops-open a JTask Dialog Box.
                     //  This method will block until the JTask Dialog Box
                     //  is disposed.
-                    boolean success = TaskManager.executeTask(task, config);
+                    TaskManager.executeTask(task, config);
                 }
             }
         });
@@ -128,6 +134,28 @@ public class QuickFindConfigDialog extends JDialog {
         buttonPanel.add(cancelButton);
         buttonPanel.add(applyButton);
         return buttonPanel;
+    }
+
+    /**
+     * Creates a Panel to show the currently selected attribute description.
+     *
+     * @return JPanel Object.
+     */
+    private JPanel createAttributeDescriptionPanel() {
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder("Attribute Description:"));
+        panel.setLayout(new BorderLayout());
+        attributeDescriptionBox = new JTextArea (5, 40);
+        Font font = new Font (attributeDescriptionBox.getFont().getFontName(),
+                Font.ITALIC, attributeDescriptionBox.getFont().getSize() - 1);
+        attributeDescriptionBox.setFont(font);
+        attributeDescriptionBox.setEditable(false);
+        attributeDescriptionBox.setLineWrap(true);
+        attributeDescriptionBox.setWrapStyleWord(true);
+        JScrollPane scrollPane = new JScrollPane(attributeDescriptionBox);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        setAttributeDescription();
+        return panel;
     }
 
     /**
@@ -153,8 +181,34 @@ public class QuickFindConfigDialog extends JDialog {
     }
 
     /**
+     * Sets Text for Attribute Description Box.
+     */
+    private void setAttributeDescription () {
+        QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+        Object selectedAttribute = attributeComboBox.getSelectedItem();
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        String attributeKey;
+        if (selectedAttribute != null) {
+            attributeKey = selectedAttribute.toString();
+        } else {
+            attributeKey = quickFind.getCurrentAttributeKey();
+        }
+        String description;
+        if (attributeKey.equals(QuickFind.UNIQUE_IDENTIFIER)) {
+            description = "Each node and edge in Cytoscape is assigned a "
+                    + "unique identifier.  This is an alphanumeric value.";
+        } else {
+            description = nodeAttributes.getAttributeDescription (attributeKey);
+        }
+        if (description == null) {
+            description = "No description available.";
+        }
+        attributeDescriptionBox.setText(description);
+        attributeDescriptionBox.setCaretPosition(0);
+    }
+
+    /**
      * Creates TableModel consisting of Distinct Attribute Values.
-     *
      */
     private void addTableModel(JTable table) {
         QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
@@ -189,7 +243,7 @@ public class QuickFindConfigDialog extends JDialog {
         //  This method will block until the JTask Dialog Box
         //  is disposed.
         table.setModel(model);
-        boolean success = TaskManager.executeTask(task, config);
+        TaskManager.executeTask(task, config);
     }
 
 
@@ -208,7 +262,7 @@ public class QuickFindConfigDialog extends JDialog {
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         String attributeNames[] = nodeAttributes.getAttributeNames();
 
-        if (attributeNames != null && attributeNames.length > 0) {
+        if (attributeNames != null) {
             JLabel label = new JLabel("Search on Attribute:  ");
             label.setBorder(new EmptyBorder(5, 5, 5, 5));
             attributePanel.add(label);
@@ -219,11 +273,15 @@ public class QuickFindConfigDialog extends JDialog {
             attributeList.add(QuickFind.UNIQUE_IDENTIFIER);
             for (int i = 0; i < attributeNames.length; i++) {
                 int type = nodeAttributes.getType(attributeNames[i]);
-                if (type != CyAttributes.TYPE_COMPLEX) {
-                    //  Explicitly filter out CANONICAL_NAME, as it is
-                    //  now deprecated.
-                    if (!attributeNames[i].equals(Semantics.CANONICAL_NAME)) {
-                        attributeList.add(attributeNames[i]);
+                //  only show user visible attributes
+                if (nodeAttributes.getUserVisible(attributeNames[i])) {
+                    if (type != CyAttributes.TYPE_COMPLEX) {
+                        //  Explicitly filter out CANONICAL_NAME, as it is
+                        //  now deprecated.
+                        if (!attributeNames[i].equals
+                                (Semantics.CANONICAL_NAME)) {
+                            attributeList.add(attributeNames[i]);
+                        }
                     }
                 }
             }
@@ -244,6 +302,7 @@ public class QuickFindConfigDialog extends JDialog {
             attributeComboBox.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     addTableModel(sampleAttributeValuesTable);
+                    setAttributeDescription();
                 }
             });
         }
@@ -268,6 +327,13 @@ public class QuickFindConfigDialog extends JDialog {
         ));
     }
 
+    /**
+     * Main method:  used for local debugging purposes only.
+     * @param args No command line arguments expected.
+     */
+    public static void main(String[] args) {
+        new QuickFindConfigDialog();
+    }
 }
 
 /**
@@ -353,7 +419,7 @@ class DetermineDistinctValuesTask implements Task {
                 tableModel.setValueAt(values[i], i, 0);
             }
         } else {
-            tableModel.setValueAt("No values found", 0, 0);
+            tableModel.setValueAt("No values found.", 0, 0);
         }
     }
 
