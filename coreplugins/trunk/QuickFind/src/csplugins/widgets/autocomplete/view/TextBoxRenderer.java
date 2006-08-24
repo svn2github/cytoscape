@@ -67,7 +67,19 @@ public class TextBoxRenderer implements ListCellRenderer {
         numResultsLabel.setFont(new Font(numResultsLabel.getFont().getName(),
                 Font.PLAIN,
                 numResultsLabel.getFont().getSize() - 1));
-        numResultsLabel.setForeground(new Color(51, 102, 51));
+
+        //  Set color to green (matches exist) or red (no matches exist);
+        Color color = new Color(51, 102, 51);
+        if (value instanceof Hit) {
+            Hit hit = (Hit) value;
+            if (hit.getAssociatedObjects() != null) {
+                int numHits = hit.getAssociatedObjects().length;
+                if (numHits == 0) {
+                    color = new Color (150, 0,0);
+                }
+            }
+        }
+        numResultsLabel.setForeground(color);
 
         //  Resize Labels
         resizeLabels(numResultsLabel, textMatchLabel);
