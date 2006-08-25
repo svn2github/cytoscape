@@ -75,7 +75,7 @@ public class TextBoxRenderer implements ListCellRenderer {
             if (hit.getAssociatedObjects() != null) {
                 int numHits = hit.getAssociatedObjects().length;
                 if (numHits == 0) {
-                    color = new Color (150, 0,0);
+                    color = new Color (150, 0, 0);
                 }
             }
         }
