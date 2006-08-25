@@ -49,27 +49,13 @@ import cytoscape.task.TaskMonitor;
  * <UL>
  * <LI>By default, this class will automatically index node objects based on the
  * their unique node identifier, e.g. node.getIdentifier().</LI>
- * <LI>You can index by a different attribute or choose to index edge
- * objects instead by calling the
- * {@link QuickFind#reindexAllNetworks(IndexType, String,
+ * <LI>You can index by a different attribute by calling the
+ * {@link QuickFind#reindexNetwork(CyNetwork, String,
  * cytoscape.task.TaskMonitor)}.
- * <LI>You can specify any attribute key you like.  However, only those
- * attributes of type:  {@link cytoscape.data.CyAttributes#TYPE_STRING},
- * {@link cytoscape.data.CyAttributes#TYPE_INTEGER},
- * {@link cytoscape.data.CyAttributes#TYPE_FLOATING}, and type
- * {@link cytoscape.data.CyAttributes#TYPE_BOOLEAN} will be indexed.
- * All other types, e.g. {@link cytoscape.data.CyAttributes#TYPE_SIMPLE_LIST}
- * and {@link cytoscape.data.CyAttributes#TYPE_SIMPLE_MAP} will trigger an
- * IllegalArgumentException.
- * <LI>All registered networks must be indexed by the same attribute and
- * must be of type node or edge.  For example, it is not possible to index one
- * network by the "NAME"  attribute, and index another network by the "TYPE"
- * attribute.  This is automatically enforced by
- * {@link QuickFind#reindexAllNetworks(IndexType, String,
- * cytoscape.task.TaskMonitor)}.</LI>
+ * <LI>You can specify any attribute name you like.  However, QuickFind
+ * is not yet capable of indexing attributes of type CyAttributes.TYPE_COMPLEX.
  * <LI>QuickFind uses a {@link csplugins.widgets.autocomplete.index.Trie}
  * data structure for very fast look-ups.</LI>
- * <LI>QuickFind does *not* support regular expression queries.
  * </UL>
  * <p/>
  *
@@ -111,44 +97,23 @@ public interface QuickFind {
     TextIndex getTextIndex(CyNetwork network);
 
     /**
-     * Gets current attribute key, used to create the global index.
-     * The default is set to {@link QuickFind.UNIQUE_IDENTIFIER}.
-     *
-     * @return Current Attribute Hit.
-     */
-    String getCurrentAttributeKey();
-
-    /**
-     * Indicates whether we are currently indexing nodes or edges.
-     * The default is set to {@link IndexType#NODE_INDEX}.
-     *
-     * @return IndexType Object:
-     *         {@link IndexType#NODE_INDEX} or
-     *         {@link IndexType#EDGE_INDEX}.
-     */
-    IndexType getCurrentIndexType();
-
-    /**
-     * Reindexes all nodes or edges within all registered networks.
+     * Reindexes a network with the specified controlling attribute.
      * <p/>
-     * This method will iterate through all nodes or edges within all
-     * registered networks, and add each node or edge to the global index.
-     * For each node or edge, the attribute specified by attributeKey will be
-     * used to create the text index.
-     * <p/>For example, if you want to quickly search all nodes by their
+     * This method will iterate through all noddes within the
+     * registered network, and add each node to the text index.
+     * For each node, the attribute specified will be used to create the
+     * text index.
+     * <p/>For example, if you want to index all nodes by their
      * "BIOPAX_NAME" attribute, you would use this code:
      * <br/>
-     * <pre>reindexAllNetworks (IndexType.NODE_INDEX, "BIOPAX_NAME", tm);</pre>
+     * <pre>reindexNetwork (cyNetwork, "BIOPAX_NAME", tm);</pre>
      *
-     * @param type         IndexType:
-     *                     {@link IndexType#NODE_INDEX} or
-     *                     {@link IndexType#EDGE_INDEX}.  One can index
-     *                     all nodes or all edges, but not both.
-     * @param attributeKey Attribute key used to index all node / edges.
+     * @param cyNetwork     Cytoscape network.
+     * @param controllingAttribute Attribute used to index all nodes.
      * @param taskMonitor  Task Monitor, used to monitor long-term progress
      *                     of task.
      */
-    void reindexAllNetworks(IndexType type, String attributeKey,
+    void reindexNetwork(CyNetwork cyNetwork, String controllingAttribute,
             TaskMonitor taskMonitor);
 
     /**
