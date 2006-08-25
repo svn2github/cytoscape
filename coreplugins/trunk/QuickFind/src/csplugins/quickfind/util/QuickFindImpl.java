@@ -21,17 +21,13 @@ import java.util.Date;
 class QuickFindImpl implements QuickFind {
     private ArrayList listenerList = new ArrayList();
     private HashMap networkMap = new HashMap();
-    private String attributeKey = QuickFind.UNIQUE_IDENTIFIER;
-    private IndexType indexType = IndexType.NODE_INDEX;
-    private CyAttributes nodeAttributes, edgeAttributes;
+    private CyAttributes nodeAttributes;
     private int maxProgress;
     private int currentProgress;
     private static final boolean OUTPUT_PERFORMANCE_STATS = false;
 
-    public QuickFindImpl(CyAttributes nodeAttributes,
-            CyAttributes edgeAttributes) {
+    public QuickFindImpl(CyAttributes nodeAttributes) {
         this.nodeAttributes = nodeAttributes;
-        this.edgeAttributes = edgeAttributes;
     }
 
     public void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
@@ -58,7 +54,8 @@ class QuickFindImpl implements QuickFind {
         }
 
         //  Index network
-        indexNetwork(network, taskMonitor);
+        indexNetwork(network, textIndex.getControllingAttribute(),
+                taskMonitor);
 
         // Notify all listeners of index end event
         for (int i = 0; i < listenerList.size(); i++) {
@@ -84,15 +81,7 @@ class QuickFindImpl implements QuickFind {
         return (TextIndex) networkMap.get(network);
     }
 
-    public String getCurrentAttributeKey() {
-        return attributeKey;
-    }
-
-    public IndexType getCurrentIndexType() {
-        return indexType;
-    }
-
-    public void reindexAllNetworks(IndexType type, String attributeKey,
+    public void reindexNetwork(CyNetwork cyNetwork, String controllingAttribute,
             TaskMonitor taskMonitor) {
 
         // Notify all listeners of index start event
@@ -102,25 +91,13 @@ class QuickFindImpl implements QuickFind {
             listener.indexingStarted();
         }
 
-        this.indexType = type;
-        this.attributeKey = attributeKey;
-        Iterator iterator = networkMap.keySet().iterator();
-
         //  Determine maxProgress
         currentProgress = 0;
-        maxProgress = 0;
-        while (iterator.hasNext()) {
-            CyNetwork cyNetwork = (CyNetwork) iterator.next();
-            maxProgress += getGraphObjectCount(cyNetwork);
-        }
+        maxProgress = getGraphObjectCount(cyNetwork);
 
-        iterator = networkMap.keySet().iterator();
-        while (iterator.hasNext()) {
-            CyNetwork cyNetwork = (CyNetwork) iterator.next();
-            TextIndex textIndex = (TextIndex) networkMap.get(cyNetwork);
-            textIndex.resetIndex();
-            indexNetwork(cyNetwork, taskMonitor);
-        }
+        TextIndex textIndex = (TextIndex) networkMap.get(cyNetwork);
+        textIndex.resetIndex();
+        indexNetwork(cyNetwork, controllingAttribute, taskMonitor);
 
         // Notify all listeners of index start event
         for (int i = 0; i < listenerList.size(); i++) {
@@ -144,29 +121,18 @@ class QuickFindImpl implements QuickFind {
     }
 
     private int getGraphObjectCount(CyNetwork network) {
-        if (indexType == IndexType.NODE_INDEX) {
-            return network.getNodeCount();
-        } else {
-            return network.getEdgeCount();
-        }
+        return network.getNodeCount();
     }
 
-    private void indexNetwork(CyNetwork network, TaskMonitor taskMonitor) {
+    private void indexNetwork(CyNetwork network, String controllingAttribute,
+            TaskMonitor taskMonitor) {
         TextIndex textIndex = (TextIndex) networkMap.get(network);
-        Iterator iterator = null;
-        CyAttributes attributes = null;
+        textIndex.setControllingAttribute(controllingAttribute);
         Date start = new Date();
 
-        //  Determine node / edge type
-        if (indexType == IndexType.NODE_INDEX) {
-            iterator = network.nodesIterator();
-            attributes = this.nodeAttributes;
-            taskMonitor.setStatus("Indexing node attributes");
-        } else {
-            iterator = network.edgesIterator();
-            attributes = this.edgeAttributes;
-            taskMonitor.setStatus("Indexing edge attributes");
-        }
+        Iterator iterator = network.nodesIterator();
+        CyAttributes attributes = this.nodeAttributes;
+        taskMonitor.setStatus("Indexing node attributes");
 
         //  Iterate through all nodes or edges
         while (iterator.hasNext()) {
@@ -175,7 +141,7 @@ class QuickFindImpl implements QuickFind {
 
             //  Get all attribute values, and index
             String values[] = CyAttributesUtil.getAttributeValues(attributes,
-                    graphObject.getIdentifier(), attributeKey);
+                    graphObject.getIdentifier(), controllingAttribute);
             if (values != null) {
                 addToIndex(values, graphObject, textIndex);
             }
