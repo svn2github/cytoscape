@@ -38,9 +38,9 @@ public class TestTextIndexComboBox extends TestCase {
         assertEquals(TextIndexComboBox.DEFAULT_MAX_HITS_SHOWN,
                 comboBox.getItemCount());
         assertEquals("apple", comboBox.getItemAt(0).toString());
-        assertEquals("bag", comboBox.getItemAt(1).toString());
-        assertEquals("bat", comboBox.getItemAt(2).toString());
-        assertEquals("burn", comboBox.getItemAt(9).toString());
+        assertEquals("bag", comboBox.getItemAt(2).toString());
+        assertEquals("bat", comboBox.getItemAt(3).toString());
+        assertEquals("burn", comboBox.getItemAt(10).toString());
 
         //  Assuming user enters "B", what do I see in the pull-down menu?
         Document doc = editor.getDocument();
@@ -172,6 +172,8 @@ public class TestTextIndexComboBox extends TestCase {
     public static TextIndex createSampleTextIndex() {
         TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
         textIndex.addToIndex("Apple", new String());
+        textIndex.addToIndex("Apple Long Long Long Long Long Label",
+                new String());
         textIndex.addToIndex("Bat", new String());
         textIndex.addToIndex("Bat", new String());
         textIndex.addToIndex("Bat", new String());
