@@ -2,7 +2,6 @@ package csplugins.test.quickfind.test;
 
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
-import csplugins.quickfind.util.IndexType;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import cytoscape.CyNetwork;
@@ -50,13 +49,11 @@ public class TestQuickFind extends TestCase {
         quickFind.addNetwork(cyNetwork, monitor);
 
         //  Verify default values
-        String attributeKey = quickFind.getCurrentAttributeKey();
+        TextIndex textIndex = quickFind.getTextIndex(cyNetwork);
+        String attributeKey = textIndex.getControllingAttribute();
         assertEquals(QuickFind.UNIQUE_IDENTIFIER, attributeKey);
-        IndexType indexType = quickFind.getCurrentIndexType();
-        assertEquals(IndexType.NODE_INDEX, indexType);
 
         //  Verify that nodes have been indexed
-        TextIndex textIndex = quickFind.getTextIndex(cyNetwork);
         Hit hits[] = textIndex.getHits("ra", Integer.MAX_VALUE);
         assertEquals(3, hits.length);
         assertEquals("rabbit", hits[0].getKeyword());
@@ -73,7 +70,7 @@ public class TestQuickFind extends TestCase {
         assertEquals(100, monitor.getPercentComplete());
 
         //  Now, try reindexing by LOCATION
-        quickFind.reindexAllNetworks(IndexType.NODE_INDEX, LOCATION, monitor);
+        quickFind.reindexNetwork(cyNetwork, LOCATION, monitor);
 
         //  Verify that nodes have been indexed
         textIndex = quickFind.getTextIndex(cyNetwork);
@@ -89,7 +86,7 @@ public class TestQuickFind extends TestCase {
 
         //  Try indexing on a non-existent attribute key.  This should
         //  do nothing silently, and should not throw any exceptions.
-        quickFind.reindexAllNetworks(IndexType.NODE_INDEX, "TYPE", monitor);
+        quickFind.reindexNetwork(cyNetwork, "TYPE", monitor);
     }
 }
 
