@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Used to Test Use of ToDelete, independently from all other code.
+ * Used to Test TextIndexComboBox from the command line.
  *
  * @author Ethan Cerami
  */
