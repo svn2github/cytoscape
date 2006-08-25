@@ -1,6 +1,7 @@
 package csplugins.quickfind.view;
 
 import csplugins.quickfind.util.*;
+import csplugins.widgets.autocomplete.index.TextIndex;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -44,12 +45,29 @@ public class QuickFindConfigDialog extends JDialog {
     private JTextArea attributeDescriptionBox;
 
     /**
+     * Current Network
+     */
+    private CyNetwork currentNetwork;
+
+    /**
+     * Current Text Index
+     */
+    private TextIndex currentTextIndex;
+
+    /**
      * Constructor.
      */
     public QuickFindConfigDialog() {
+
+        //  Initialize, based on currently selected network
+        currentNetwork = Cytoscape.getCurrentNetwork();
+        QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+        currentTextIndex = quickFind.getTextIndex(currentNetwork);
+
         Container container = getContentPane();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-        this.setTitle("Configure Find Options");
+        this.setTitle("Configure Search Options for:  "
+            + currentNetwork.getTitle());
         this.setAlwaysOnTop(true);
 
         //  Create Master Panel
@@ -109,11 +127,11 @@ public class QuickFindConfigDialog extends JDialog {
 
                 String newAttribute = (String)
                         attributeComboBox.getSelectedItem();
-                QuickFind quickFind =
-                        QuickFindFactory.getGlobalQuickFindInstance();
-                String currentAttribute = quickFind.getCurrentAttributeKey();
+                String currentAttribute =
+                        currentTextIndex.getControllingAttribute();
                 if (!newAttribute.equals(currentAttribute)) {
-                    ReindexQuickFind task = new ReindexQuickFind(newAttribute);
+                    ReindexQuickFind task = new ReindexQuickFind
+                            (currentNetwork, newAttribute);
                     JTaskConfig config = new JTaskConfig();
                     config.setAutoDispose(true);
                     config.displayStatus(true);
@@ -184,14 +202,13 @@ public class QuickFindConfigDialog extends JDialog {
      * Sets Text for Attribute Description Box.
      */
     private void setAttributeDescription () {
-        QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         Object selectedAttribute = attributeComboBox.getSelectedItem();
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         String attributeKey;
         if (selectedAttribute != null) {
             attributeKey = selectedAttribute.toString();
         } else {
-            attributeKey = quickFind.getCurrentAttributeKey();
+            attributeKey = currentTextIndex.getControllingAttribute();
         }
         String description;
         if (attributeKey.equals(QuickFind.UNIQUE_IDENTIFIER)) {
@@ -219,7 +236,7 @@ public class QuickFindConfigDialog extends JDialog {
         if (selectedAttribute != null) {
             attributeKey = selectedAttribute.toString();
         } else {
-            attributeKey = quickFind.getCurrentAttributeKey();
+            attributeKey = currentTextIndex.getControllingAttribute();
         }
 
         //  Create column names
@@ -291,7 +308,8 @@ public class QuickFindConfigDialog extends JDialog {
 
             //  Create ComboBox
             attributeComboBox = new JComboBox(attributeList);
-            String currentAttribute = quickFind.getCurrentAttributeKey();
+            String currentAttribute =
+                    currentTextIndex.getControllingAttribute();
             if (currentAttribute != null) {
                 attributeComboBox.setSelectedItem(currentAttribute);
             }
@@ -343,6 +361,7 @@ public class QuickFindConfigDialog extends JDialog {
  */
 class ReindexQuickFind implements Task {
     private String newAttributeKey;
+    private CyNetwork cyNetwork;
     private TaskMonitor taskMonitor;
 
     /**
@@ -350,18 +369,18 @@ class ReindexQuickFind implements Task {
      *
      * @param newAttributeKey New Attribute Key for Indexing.
      */
-    ReindexQuickFind(String newAttributeKey) {
+    ReindexQuickFind(CyNetwork cyNetwork, String newAttributeKey) {
+        this.cyNetwork = cyNetwork;
         this.newAttributeKey = newAttributeKey;
     }
 
     /**
-     * Executes Task:  Reindex Quick Find.
+     * Executes Task:  Reindex.
      */
     public void run() {
         QuickFind quickFind =
                 QuickFindFactory.getGlobalQuickFindInstance();
-        quickFind.reindexAllNetworks(IndexType.NODE_INDEX,
-                newAttributeKey, taskMonitor);
+        quickFind.reindexNetwork(cyNetwork, newAttributeKey, taskMonitor);
     }
 
     public void halt() {
