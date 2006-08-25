@@ -7,6 +7,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
+import java.awt.*;
 
 /**
  * PlainDocument used by the TextIndexComboBox.
@@ -225,8 +226,15 @@ public class AutoCompleteDocument extends PlainDocument {
                 //  To prevent this, we set the set selecting flag to true.
                 model.addElement(hits[i]);
             }
+            editor.setBackground (Color.WHITE);
+            editor.setForeground (Color.BLACK);
         } else {
-            model.addElement(new Hit (pattern, new Object[0]));
+            if (comboBox.getTextIndex() != null
+                    && comboBox.getTextIndex().getNumKeys() > 0) {
+                model.addElement(new Hit (pattern, new Object[0]));
+                editor.setBackground (new Color (212, 153, 159));
+                editor.setForeground (Color.WHITE);
+            }
         }
 
         //  Set Max Row Count;  this automatically resizes the pop-up
