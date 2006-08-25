@@ -16,6 +16,27 @@ public interface TextIndex {
     void resetIndex();
 
     /**
+     * Sets the controlling attribute.
+     *
+     * <P>For example, if the controlling attribute is:  biopax.short_name,
+     * that means that the index contains all values for this attribute.
+     *
+     * @param attributeName Controlling attribute name.
+     *
+     */
+    void setControllingAttribute (String attributeName);
+
+    /**
+     * Gets the controlling attribute.
+     *
+     * <P>For example, if the controlling attribute is:  biopax.short_name,
+     * that means that the index contains all values for this attribute.
+     *
+     * @return attribute name.
+     */
+    String getControllingAttribute ();
+
+    /**
      * Adds new object to index.
      *
      * @param key String Key.

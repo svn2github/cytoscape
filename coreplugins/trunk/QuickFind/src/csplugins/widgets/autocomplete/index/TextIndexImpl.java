@@ -1,5 +1,7 @@
 package csplugins.widgets.autocomplete.index;
 
+import csplugins.quickfind.util.QuickFind;
+
 import java.util.*;
 
 /**
@@ -14,6 +16,7 @@ class TextIndexImpl implements TextIndex {
     private static final boolean OUTPUT_PERFORMANCE_STATS = false;
     private HashMap cache = new HashMap();
     private static final String WILD_CARD = "*";
+    private String attributeName = QuickFind.UNIQUE_IDENTIFIER;
 
     /**
      * Constructor.
@@ -21,6 +24,21 @@ class TextIndexImpl implements TextIndex {
     public TextIndexImpl() {
         observerList = new ArrayList();
         init();
+    }
+
+    /**
+     * Sets the controlling attribute.
+     */
+    public void setControllingAttribute (String attributeName) {
+        this.attributeName = attributeName;
+    }
+
+    /**
+     * Gets the controlling attribute.
+     * @return attribute name.
+     */
+    public String getControllingAttribute () {
+        return this.attributeName;
     }
 
     /**
