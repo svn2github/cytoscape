@@ -42,7 +42,7 @@
 	<property name="build.compiler" value="modern" />
 
 	<!-- Release number -->
-	<property name="version" value="2.4" />
+	<property name="version" value="2.4.0" />
 
 	<property name="dirname.release.dir" value="cytoscape-v${version}" />
 
@@ -100,6 +100,16 @@
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
 		<classpath refid="classpath" />
 	</taskdef>
+
+	<!-- ======================================================= -->
+	<!-- For converting SVG files to PNGs.  Specifically for     -->
+	<!-- creating the splash screen.      -->
+	<!-- ======================================================= -->
+	<taskdef name="rasterize" 
+	         classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask">
+		<classpath refid="classpath" />
+	</taskdef>
+
 
 	<!-- ======================================================= -->
 	<!-- Clean generated packages -->
@@ -186,6 +196,28 @@
 
 
 		<available property="manifest_generated" file="${build.dir}/cytoscape.manifest" />
+
+		<antcall target="splash" />
+		
+	</target>
+
+	<!-- ======================================================= -->
+	<!-- Create the PNG splash screen from the SVG file with the -->
+	<!-- proper version number substituted in. -->
+	<!-- ======================================================= -->
+	<target name="splash">
+	        <filter token="version" value="${version}"/>
+		<copy file="images/CytoscapeSplashScreen.svg" 
+	              tofile="${build.classes}/cytoscape/images/CytoscapeSplashScreen.svg" 
+		      filtering="true"
+		      overwrite="true"/>
+		<available property="splashUpToDate" 
+		           file="${build.classes}/cytoscape/images/CytoscapeSplashScreen.png"/>
+		<antcall target="createSplash" />
+	</target>
+	<target name="createSplash" unless="splashUpToDate" >
+	        <rasterize src="${build.classes}/cytoscape/images/CytoscapeSplashScreen.svg"
+			   dest="${build.classes}/cytoscape/images/CytoscapeSplashScreen.png" />
 	</target>
 
 	<!-- ======================================================= -->
