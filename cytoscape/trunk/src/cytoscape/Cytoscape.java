@@ -1095,6 +1095,8 @@ public abstract class Cytoscape {
 			p_id = parent.getIdentifier();
 		}
 
+		System.out.println("Cytoscape source parent, child = " + p_id + ", " + network.getIdentifier());
+		
 		firePropertyChange(NETWORK_CREATED, p_id, network.getIdentifier());
 		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit
 				.getProperties().getProperty("viewThreshold"))
@@ -1171,7 +1173,7 @@ public abstract class Cytoscape {
 	 */
 	public static CyNetwork createNetwork(int[] nodes, int[] edges,
 			String child_title, CyNetwork parent) {
-		return createNetwork(nodes, edges, child_title, null, true);
+		return createNetwork(nodes, edges, child_title, parent, true);
 	}
 
 	/**
