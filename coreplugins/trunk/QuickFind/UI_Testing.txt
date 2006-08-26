@@ -1,0 +1,32 @@
+The following document describes UI testing that can only be done manually.
+
+Run:  RunTextIndexComboBox.java
+
+1.  At startup, press the down arrow key.  Verify that all hits fit
+within the pop-up window.
+2.  Test up/down arrow keys
+    a.  enter b
+    b.  press down arrow key:  "bat" should be selected in the textbox.
+    c.  press the up arrow key:  "bag" should be selected in the textbox.
+3.  Test page up / page down keys
+    a.  enter b
+    b.  press page down key:  "boom" should be selected in the textbox.
+    c.  press page up key:  "bag" should be selected in the textbox.
+4.  Verify hit selection via Enter key
+    a.  enter b
+    b.  press down array key:  "bat" should be selected in the textbox.
+    c.  press enter.  Pop-up box should display with final selection:  "bat".
+5.  Verify hit selection via Mouse
+    a.  enter b.
+    b.  using mouse, select "bat"
+    c.  Pop-up box should display with final selection:  "bat".
+6.  Verify paste works
+    a.  upon startup, page "bat" into text box.
+    b.  should see "bat", 3 hits
+7.  Verify copy works
+    a.  enter a
+    b.  select "apple"
+    c.  paste into new document.  verify apple was copied over.
+8.  Verify no-matches
+    a.  enter something silly like: "ffafafdsa"
+    b.  verify box is turns red and 0 hits found.
