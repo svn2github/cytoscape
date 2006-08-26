@@ -73,12 +73,21 @@ public class AutoCompleteDocument extends PlainDocument {
     }
 
     /**
-     * Indicates that the user has pressed the cursor key.
+     * Sets that the user has pressed a cursor key.
      *
      * @param flag cursor key pressed.
      */
     public void setCursorKeyPressed(boolean flag) {
         this.cursorKeyPressed = flag;
+    }
+
+    /**
+     * Indicates that user has pressed a cursor key.
+     *
+     * @return flag cursor key pressed.
+     */
+    public boolean getCursorKeyPressed () {
+        return cursorKeyPressed;
     }
 
     /**
@@ -139,6 +148,12 @@ public class AutoCompleteDocument extends PlainDocument {
             return;
         }
         debug("remove(), offs=" + offs + ", len=" + len + " --> Process");
+
+        //  If we are already at the very beginning of the text box,
+        //  there's nothing to do;  simply return.
+        if (hitBackspace && editor.getSelectionStart() == 0) {
+            return;
+        }
 
         //  Handle Backspace Key
         if (hitBackspace) {
