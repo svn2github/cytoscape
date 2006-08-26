@@ -117,7 +117,9 @@ public class TextIndexComboBox extends JComboBox {
      */
     public void setSelectedItem(Object object) {
         super.setSelectedItem(object);
-        if (!doc.getSelecting()) {
+
+        //  Only fire final selection event if this is a mouse selection
+        if (!doc.getSelecting() && !doc.getCursorKeyPressed()) {
             this.fireFinalSelectionEvent();
         }
     }
@@ -205,18 +207,6 @@ public class TextIndexComboBox extends JComboBox {
      * Initializes the Component.
      */
     private void init() {
-
-        //  The following client properties will cause the ComboBox to fire
-        //  "few" action events.   For complete details, refer to Sun:
-        //  http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4199622
-
-        //  Works in JDK 1.3
-        putClientProperty("JComboBox.lightweightKeyboardNavigation",
-                "Lightweight");
-
-        //  Works in JDK 1.4
-        putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
-
         //  Enable Editing on ComboBox
         setEditable(true);
 
@@ -290,7 +280,13 @@ class UserKeyListener extends KeyAdapter {
                 break;
             case KeyEvent.VK_UP:
             case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_PAGE_DOWN:
+            case KeyEvent.VK_PAGE_UP:
                 doc.setCursorKeyPressed(true);
+                break;
+            case KeyEvent.VK_ENTER:
+                comboBox.fireFinalSelectionEvent();
+                break;
         }
     }
 
@@ -301,7 +297,9 @@ class UserKeyListener extends KeyAdapter {
      */
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP
-                || e.getKeyCode() == KeyEvent.VK_DOWN) {
+                || e.getKeyCode() == KeyEvent.VK_DOWN
+                || e.getKeyCode() == KeyEvent.VK_PAGE_UP
+                || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
             doc.setCursorKeyPressed(false);
         }
     }
