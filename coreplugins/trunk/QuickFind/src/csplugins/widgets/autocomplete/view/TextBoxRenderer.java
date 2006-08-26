@@ -15,7 +15,6 @@ public class TextBoxRenderer implements ListCellRenderer {
     private JComboBox box;
     private double popupSizeMultiple;
     private static final int HGAP = 10;
-    private static final int RIGHT_MARGIN = 15;
     private static final boolean DEBUG = false;
 
     /**
@@ -59,12 +58,15 @@ public class TextBoxRenderer implements ListCellRenderer {
         //  Use Box Layout, X-AXIS
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.setBorder(new EmptyBorder(2, 2, 2, 2));
-        JLabel textMatchLabel = new JLabel(value.toString(), JLabel.LEFT);
+
+        //  Create text match label, but do not (yet) set final text,
+        //  as we may need to truncate it.
+        JLabel textMatchLabel = new JLabel("TEMP", JLabel.LEFT);
         panel.setToolTipText(value.toString());
 
         String numResults = getNumResults(value);
         JLabel numResultsLabel = new JLabel(numResults, JLabel.RIGHT);
-        numResultsLabel.setFont(new Font(numResultsLabel.getFont().getName(),
+        numResultsLabel.setFont(new Font("Monospaced",
                 Font.PLAIN,
                 numResultsLabel.getFont().getSize() - 1));
 
@@ -82,7 +84,7 @@ public class TextBoxRenderer implements ListCellRenderer {
         numResultsLabel.setForeground(color);
 
         //  Resize Labels
-        resizeLabels(numResultsLabel, textMatchLabel);
+        resizeLabels(numResultsLabel, textMatchLabel, value.toString());
 
         //  Add Label 1, then glue, then Label 2
         //  The glue forces Label 1 to be left aligned, and Label 2 to be
@@ -99,15 +101,18 @@ public class TextBoxRenderer implements ListCellRenderer {
      * @param numResultsLabel Number of Results Label.
      * @param textMatchLabel  Text Match Label.
      */
-    private void resizeLabels(JLabel numResultsLabel, JLabel textMatchLabel) {
+    private void resizeLabels(JLabel numResultsLabel, JLabel textMatchLabel,
+        String textString) {
         if (box.isPopupVisible()) {
             //  How wide is the popup window?
             int widthOfPopUpWindow = (int) (box.getSize().width
                     * this.popupSizeMultiple);
 
             //  How wide is numResultsLabel?
+            FontMetrics fontMetrics = numResultsLabel.getFontMetrics(
+                    numResultsLabel.getFont());
             int widthOfNumResultsText =
-                    numResultsLabel.getPreferredSize().width;
+                    fontMetrics.stringWidth(numResultsLabel.getText());
 
             //  How wide is the vertical scrollbar?
             int widthOfVerticalScrollBar = 0;
@@ -126,23 +131,22 @@ public class TextBoxRenderer implements ListCellRenderer {
 
             //  Truncate label text, as needed
             int maxWidthOfTextValue = widthOfPopUpWindow
-                    - (widthOfNumResultsText + HGAP + widthOfVerticalScrollBar
-                    + RIGHT_MARGIN);
-            int currentWidth = textMatchLabel.getPreferredSize().width;
-
-            String str = textMatchLabel.getText();
-            if (currentWidth > maxWidthOfTextValue) {
+                    - (HGAP + widthOfNumResultsText + widthOfVerticalScrollBar);
+            fontMetrics = textMatchLabel.getFontMetrics
+                    (textMatchLabel.getFont());
+            int currentWidth = fontMetrics.stringWidth(textString);
+            if (currentWidth + HGAP > maxWidthOfTextValue) {
                 textMatchLabel.setText(textMatchLabel.getText() + "...");
 
                 //  while loop:  truncate string one letter at a time
-                //  until we have right size string.
-                while (currentWidth > maxWidthOfTextValue) {
-                    str = textMatchLabel.getText();
-                    str = str.substring(0, str.length() - 4) + "...";
-                    textMatchLabel.setText(str);
-                    currentWidth = textMatchLabel.getPreferredSize().width;
+                //  until we have the right size string.
+                while (currentWidth + HGAP > maxWidthOfTextValue) {
+                    textString = textString.substring(0,
+                            textString.length() - 4) + "...";
+                    currentWidth = fontMetrics.stringWidth(textString);
                 }
             }
+            textMatchLabel.setText(textString);
 
             if (DEBUG) {
                 System.out.println("Width of window:  " + widthOfPopUpWindow);
@@ -167,9 +171,9 @@ public class TextBoxRenderer implements ListCellRenderer {
             Object objects[] = hit.getAssociatedObjects();
             if (objects != null) {
                 if (objects.length == 1) {
-                    numResults = "1 result ";
+                    numResults = "1 hit ";
                 } else {
-                    numResults = objects.length + " results";
+                    numResults = objects.length + " hits ";
                 }
             }
         }
