@@ -13,8 +13,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JFileChooser;
+import javax.swing.SwingConstants;
+import javax.swing.table.TableModel;
 
 import giny.model.Node;
+import giny.model.Edge;
 import giny.view.NodeView;
 
 import cytoscape.plugin.CytoscapePlugin;
@@ -26,7 +29,11 @@ import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.data.Semantics;
+import cytoscape.visual.VisualStyle;
+
+//import yfiles.YFilesLayout;
 
 /**
  * eQTL browser plugin
@@ -36,19 +43,37 @@ public class EqbPlugin extends CytoscapePlugin
 {
 
     private static String _defaultFile = "default.eqt";
-    private Map _eMap;
+    private static String _currentFile = "";
+    
+    private EqtlTableModel _eMap;
 
+    private String _nodeIdentifier = Semantics.CANONICAL_NAME;
     private String _eShape = "eQTLShape";
     private String _eNodeAttr = "eQTLValue";
     private Double _zero = new Double(0.0);
     private Double _targetValue = new Double(-1.0);
     private JFileChooser _fileChooser;
 
+    private EqtlPanel _cytoPanel;
+    private CyNetwork _resultNetwork;
+    private CyNetwork _parentNetwork;
+
+    public String getCurrentFile()
+    {
+        return _currentFile;
+    }
+
+    public EqtlTableModel getTableModel()
+    {
+        return _eMap;
+    }
+    
     /**
      * This constructor creates an action and adds it to the Plugins menu.
      */
-    public EqbPlugin() {
-        
+    public EqbPlugin()
+    {
+        // Register the plugin to be notified when a new view is created
         Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this );
 
         CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
@@ -58,26 +83,39 @@ public class EqbPlugin extends CytoscapePlugin
             currentView.addNodeContextMenuListener(this);
         }
         
-        //create a new action to respond to menu activation
-        MainMenuAction action = new MainMenuAction();
+        // Create menu items
+        addPluginMenuItem(new MainMenuAction());
+        addPluginMenuItem(new ClearAction());
+        addPluginMenuItem(new ShowPanelAction());
+
+        // Initialize file chooser and look for default data file.
+        _eMap = new EqtlTableModel();
+        _fileChooser = new JFileChooser(new File("."));
+        setDataFile(_defaultFile);
+
+        // Panel
+
+        _cytoPanel = new EqtlPanel(this);
+
+        CytoscapeDesktop desktop = Cytoscape.getDesktop();
+        CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.WEST);
+
+        cytoPanel.add("eQTL", _cytoPanel);
+    }
+
+    private void addPluginMenuItem(CytoscapeAction action)
+    {
         //set the preferred menu
         action.setPreferredMenu("Plugins");
         //and add it to the menus
         Cytoscape.getDesktop().getCyMenus().addAction(action);
-
-        
-        //create a new action to respond to menu activation
-        ClearAction clear = new ClearAction();
-        //set the preferred menu
-        clear.setPreferredMenu("Plugins");
-        //and add it to the menus
-        Cytoscape.getDesktop().getCyMenus().addAction(clear);
-
-        
-        _fileChooser = new JFileChooser();
-        setDataFile(_defaultFile);
     }
 
+    /**
+     * 1. Parse data file
+     * 2. Reset the parent network
+     * 2. Update table model
+     */
     private void setDataFile(String file)
     {
         try
@@ -94,10 +132,14 @@ public class EqbPlugin extends CytoscapePlugin
             EqtlLexer lexer =
                 new EqtlLexer(new DataInputStream(new FileInputStream(f)));
             EqtlParser parser = new EqtlParser(lexer);
-            _eMap = parser.parseEqtl();
+            Map m = parser.parseEqtl();
 
-            System.out.println("eQTL Browser: read " + _eMap.size() + " eQTLs");
-            printEqtls(_eMap);
+            System.out.println("eQTL Browser: read " + m.size() + " eQTLs");
+            //printEqtls(m);
+
+            setParentNetwork();
+            _eMap.updateTableData(m, _parentNetwork, _nodeIdentifier);
+            _currentFile = file;
         }
         catch(Exception e)
         {
@@ -106,21 +148,26 @@ public class EqbPlugin extends CytoscapePlugin
         }
 
     }
-        
+
+    /** When a new network view is created, register the plugin
+     * as a NodeContextMenuListener
+     */
     public void propertyChange (PropertyChangeEvent evnt)
     {
         if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED)
         {
-            System.out.println("[EqbNetworkListener]: propertyChange called");
-            
+            //System.out.println("[EqbNetworkListener]: propertyChange called");
             Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
         }
     }
 
+    /*
+     * When a node is right-clicked, add an eQTL menu option to the popup
+     * menu
+     */
     public void addNodeContextMenuItems (NodeView nodeView, JPopupMenu menu)
     {
-        System.out.println("[EqbContextMenuListener]: addNodeContextMenuItem called");
-        
+        //System.out.println("[EqbContextMenuListener]: addNodeContextMenuItem called");
         if(menu==null){
             menu=new JPopupMenu();
         }
@@ -130,7 +177,8 @@ public class EqbPlugin extends CytoscapePlugin
         menu.add(j);
     }
         
-    
+
+    /** For DEBUG */
     private static void printEqtls(Map m)
     {
         for(Iterator it = m.keySet().iterator(); it.hasNext();)
@@ -151,6 +199,9 @@ public class EqbPlugin extends CytoscapePlugin
     }
 
 
+    /**
+     * Reset all nodes to zero
+     */
     private void resetNodeValues()
     {
         CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -168,7 +219,227 @@ public class EqbPlugin extends CytoscapePlugin
         if(view != null)
         {
             view.redrawGraph(false, true);
+            view.updateView();
         }
+    }
+
+    private void setParentNetwork()
+    {
+        _parentNetwork = Cytoscape.getCurrentNetwork();
+    }
+    
+    public void showEqtl(CyNode node)
+    {
+        //System.out.println("eQTL popup start");
+        
+        //get the network object; this contains the graph
+        if(_parentNetwork == null)
+        {
+            setParentNetwork();
+        }
+
+        //can't continue if no network selected
+        if (_parentNetwork == null) {return;}
+        
+        String name = getNodeName(_parentNetwork, node);
+
+        if(_eMap == null || !_eMap.containsNode(node))
+        {
+            noMatch(name);
+            return;
+        }
+        
+        CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+        
+        //System.out.println("  resetting node vals");
+        resetNodeValues();
+        
+        Eqtl eqtl = (Eqtl) _eMap.getEqtlData(node);
+        
+        nodeAttr.setAttribute(node.getIdentifier(),
+                              _eNodeAttr,
+                              _targetValue);
+        
+        List loci = new ArrayList();
+        loci.add(node);
+        loci.addAll(_parentNetwork.neighborsList(node));
+        //System.out.println("   checking loci");
+        for (Iterator ni = _parentNetwork.nodesIterator(); ni.hasNext(); ) {
+            CyNode n2 = (CyNode)ni.next();
+            
+            String name2 = getNodeName(_parentNetwork, n2);
+            if (name2 == null) {continue;}
+            
+            if(eqtl.isLocus(name2))
+            {
+                //NodeView view2 = view.getNodeView(n2);
+                //view2.setSelected(true);
+                
+                loci.add(n2);
+                loci.addAll(_parentNetwork.neighborsList(n2));
+                
+                nodeAttr.setAttribute(n2.getIdentifier(),
+                                      _eNodeAttr,
+                                      eqtl.get(name2));
+            }
+        }
+        //System.out.println("   getting edges");
+        List edges = _parentNetwork.getConnectingEdges(loci);
+        
+        //System.out.println("   creating network");
+        createNetwork(loci, edges, name + " eQTLs");
+        
+        //tell the view to redraw since we've changed node attributes
+        String parentId = _parentNetwork.getIdentifier();
+        if(Cytoscape.viewExists(parentId))
+        {
+            CyNetworkView view = Cytoscape.getNetworkView(parentId);
+            view.redrawGraph(false, true);
+            view.updateView();
+        }
+    }
+    
+
+    private void noMatch(String name)
+    {
+        JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                                      "No eQTL data for " + name);
+    }
+
+    private void initResultNetwork()
+    {
+        _resultNetwork = Cytoscape.createNetwork(new HashSet(), new HashSet(),
+                                                 "eQTL",
+                                                 _parentNetwork,
+                                                 false);
+    }
+
+    private void clearResultNetwork()
+    {
+        int[] nodes = new int[_resultNetwork.getNodeCount()];
+        int[] edges = new int[_resultNetwork.getEdgeCount()];
+
+        int x = 0;
+        for(Iterator i = _resultNetwork.nodesIterator(); i.hasNext();)
+        {
+            Node n = (Node) i.next();
+            nodes[x] = n.getRootGraphIndex();
+            x++;
+        }
+        for(int i=0; i < nodes.length; i++)
+        {
+            _resultNetwork.removeNode(nodes[i], false);
+        }
+        
+        x = 0;
+        for(Iterator i = _resultNetwork.edgesIterator(); i.hasNext();)
+        {
+            Edge e = (Edge) i.next();
+            edges[x] = e.getRootGraphIndex();
+            x++;
+        }
+        for(int i=0; i < edges.length; i++)
+        {
+            _resultNetwork.removeEdge(edges[i], false);
+        }
+
+    }
+    
+    private void createNetwork(Collection nodes,
+                               Collection edges,
+                               String name)
+    {
+        // clear the result network, creating it if necessary
+        if(_resultNetwork == null)
+        {
+            initResultNetwork();
+        }
+        else
+        {
+            clearResultNetwork();
+        }
+
+        // add nodes and edges to the result network
+        for(Iterator i = nodes.iterator(); i.hasNext();)
+        {
+            _resultNetwork.addNode((Node) i.next());
+        }
+        for(Iterator i = edges.iterator(); i.hasNext();)
+        {
+            _resultNetwork.addEdge((Edge) i.next());
+        }
+        //_resultNetwork.setTitle(name);
+        
+        CyNetworkView new_view;
+        if(!Cytoscape.viewExists(_resultNetwork.getIdentifier()))
+        {
+            new_view = Cytoscape.createNetworkView(_resultNetwork,
+                                                   "eQTL result");
+        }
+        else
+        {
+            new_view = Cytoscape.getNetworkView(_resultNetwork.getIdentifier());
+            //new_view.setTitle(name);
+        }
+
+        if (new_view == Cytoscape.getNullNetworkView()) {
+            return;
+        }
+
+        CyNetworkView parent_view = Cytoscape.getNetworkView(_parentNetwork.getIdentifier());
+        
+        if (parent_view != Cytoscape.getNullNetworkView())
+        {
+            Iterator i = _resultNetwork.nodesIterator();
+            while (i.hasNext())
+            {
+                Node node = (Node) i.next();
+                new_view.getNodeView( node ).setOffset( parent_view.getNodeView(node).getXPosition(),
+                                                        parent_view.getNodeView(node).getYPosition()); 
+            } 
+            new_view.fitContent(); 
+            
+            // Set visual style
+            VisualStyle newVS = parent_view.getVisualStyle();
+            if(newVS != null) {
+                new_view.setVisualStyle(newVS.getName());
+            } else {
+                new_view.setVisualStyle("default");
+            }
+            
+        } else {
+            new_view.setVisualStyle("default");
+        }
+
+        //System.out.println("Doing yfiles organic layout");
+        //YFilesLayout layout = new YFilesLayout(new_view);
+        //layout.doLayout(3, 0);
+        
+        System.out.println("Redrawing new view");
+        
+        new_view.redrawGraph(true, true);
+
+        new_view.updateView();
+
+        //new_view.getComponent().repaint();
+    }
+    
+    /**
+     * Gets the canonical name of the given node from the network object
+     *
+     * Returns null if a valid name cannot be obtained.
+     */
+    private String getNodeName(CyNetwork network, CyNode node) {
+        String canonicalName =
+            (String)network.getNodeAttributeValue(node,
+                                                  Semantics.CANONICAL_NAME);
+        //return nothing if we can't get a valid name
+        if (canonicalName == null || canonicalName.length() == 0)
+        {
+            return null;
+        }
+        
+        return canonicalName;
     }
     
     /**
@@ -176,20 +447,14 @@ public class EqbPlugin extends CytoscapePlugin
      */
     public class PopupAction extends CytoscapeAction {
 
-        private NodeView _n;
+        private NodeView _nv;
         /**
          * The constructor sets the text that should appear on the menu item.
          */
         public PopupAction(NodeView nodeView)
         {
             super("eQTL");
-            _n = nodeView;
-        }
-        
-        private void noMatch(CyNetworkView view, String name)
-        {
-            JOptionPane.showMessageDialog(view.getComponent(),
-                                          "No eQTL data for " + name);
+            _nv = nodeView;
         }
         
         /**
@@ -197,93 +462,17 @@ public class EqbPlugin extends CytoscapePlugin
          */
         public void actionPerformed(ActionEvent ae)
         {
-
-            //get the network object; this contains the graph
-            CyNetwork network = Cytoscape.getCurrentNetwork();
-            //get the network view object
-            CyNetworkView view = Cytoscape.getCurrentNetworkView();
-            //can't continue if either of these is null
-            if (network == null || view == null) {return;}
-            /*put up a dialog if there are no selected nodes
-               if (view.getSelectedNodes().size() == 0) {
-                JOptionPane.showMessageDialog(view.getComponent(),
-                        "Please select one or more nodes.");
-            }
-            */
-            
-            CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-
-            resetNodeValues();
-            
-            //iterate over every node view
-            //for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext(); ) {
-            //NodeView nView = (NodeView)i.next();
-
-                //first get the corresponding node in the network
-                CyNode node = (CyNode) _n.getNode();
-
-                String name = getNodeName(network, node);
-                if (name == null) {return;}
-
-                if(!_eMap.containsKey(name))
-                {
-                    noMatch(view, name);
-                    return;
-                }
-                
-                Eqtl eqtl = (Eqtl) _eMap.get(name);
-               
-                nodeAttr.setAttribute(node.getIdentifier(),
-                                      _eNodeAttr,
-                                      _targetValue);
-                
-                for (Iterator ni = network.nodesIterator(); ni.hasNext(); ) {
-                    CyNode n2 = (CyNode)ni.next();
-
-                    String name2 = getNodeName(network, n2);
-                    if (name2 == null) {continue;}
-
-                    if(eqtl.isLocus(name2))
-                    {
-                        NodeView view2 = view.getNodeView(n2);
-                        //view2.setSelected(true);
-
-                        System.out.println(name2 + " setting " + _eNodeAttr +
-                                           " to " + eqtl.get(name2));
-                        
-                        nodeAttr.setAttribute(n2.getIdentifier(),
-                                              _eNodeAttr,
-                                              eqtl.get(name2));
-                    }
-                }
-                //}
-            
-            //tell the view to redraw since we've changed the selection
-            view.redrawGraph(false, true);
+            //first get the corresponding node in the network
+            CyNode node = (CyNode) _nv.getNode();
+        
+            showEqtl(node);
         }
         
-        /**
-         * Gets the canonical name of the given node from the network object
-         *
-         * Returns null if a valid name cannot be obtained.
-         */
-        private String getNodeName(CyNetwork network, CyNode node) {
-            String canonicalName =
-                (String)network.getNodeAttributeValue(node,
-                                                      Semantics.CANONICAL_NAME);
-            //return nothing if we can't get a valid name
-            if (canonicalName == null || canonicalName.length() == 0)
-            {
-                return null;
-            }
-            
-            return canonicalName;
-        }
     }
-
+    
     
     /**
-     * This class gets attached to the popup menu.
+     * Class for selecting a new eQTL data file
      */
     public class MainMenuAction extends CytoscapeAction
     {
@@ -293,7 +482,7 @@ public class EqbPlugin extends CytoscapePlugin
          */
         public MainMenuAction()
         {
-            super("Set eQTL data file...");
+            super("eQTL: Load data file...");
         }
         
         /**
@@ -305,8 +494,6 @@ public class EqbPlugin extends CytoscapePlugin
             if(returnVal == JFileChooser.APPROVE_OPTION)
             {
                 String f = _fileChooser.getSelectedFile().getName();
-                System.out.println("You chose to open this file: " + f);
-
                 setDataFile(f);
             }
         }
@@ -314,17 +501,16 @@ public class EqbPlugin extends CytoscapePlugin
 
     
     /**
-     * This class gets attached to the popup menu.
+     * Class for clearing eQTL data from the network
      */
     public class ClearAction extends CytoscapeAction
     {
-
         /**
          * The constructor sets the text that should appear on the menu item.
          */
         public ClearAction()
         {
-            super("Clear eQTL data from network");
+            super("eQTL: Clear data from network");
         }
         
         /**
@@ -333,6 +519,32 @@ public class EqbPlugin extends CytoscapePlugin
         public void actionPerformed(ActionEvent ae)
         {
             resetNodeValues();
+        }
+    }
+
+        
+    /**
+     * Class for clearing eQTL data from the network
+     */
+    public class ShowPanelAction extends CytoscapeAction
+    {
+        /**
+         * The constructor sets the text that should appear on the menu item.
+         */
+        public ShowPanelAction()
+        {
+            super("eQTL: show panel");
+        }
+        
+        /**
+         * This method is called when the user selects the menu item.
+         */
+        public void actionPerformed(ActionEvent ae)
+        {
+            CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel (SwingConstants.WEST);
+
+            int index = cytoPanel.indexOfComponent(_cytoPanel);
+            cytoPanel.setSelectedIndex(index);
         }
     }
 }

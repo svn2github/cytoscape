@@ -24,6 +24,11 @@ public class Eqtl
         return _gene;
     }
 
+    public int numLoci()
+    {
+        return _loci.size();
+    }
+    
     public boolean isLocus(String s)
     {
         return _loci.containsKey(s);
