@@ -87,6 +87,23 @@ public class TestQuickFind extends TestCase {
         //  Try indexing on a non-existent attribute key.  This should
         //  do nothing silently, and should not throw any exceptions.
         quickFind.reindexNetwork(cyNetwork, "TYPE", monitor);
+
+        //  Try indexing all attributes
+        quickFind.reindexNetwork(cyNetwork, QuickFind.INDEX_ALL_ATTRIBUTES,
+                monitor);
+
+        //  First, try unique identifiers
+        hits = textIndex.getHits("ra", Integer.MAX_VALUE);
+        assertEquals(3, hits.length);
+        assertEquals("rabbit", hits[0].getKeyword());
+        assertEquals("rain", hits[1].getKeyword());
+        assertEquals("rainbow", hits[2].getKeyword());
+
+        //  Then, try cellular location.
+        hits = textIndex.getHits("nu", Integer.MAX_VALUE);
+        assertEquals(1, hits.length);
+        assertEquals(NUCLEUS, hits[0].getKeyword());
+
     }
 }
 
