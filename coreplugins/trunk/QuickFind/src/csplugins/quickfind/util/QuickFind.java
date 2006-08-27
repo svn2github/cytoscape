@@ -65,7 +65,13 @@ public interface QuickFind {
     /**
      * Node / Edge Unique Identifier.
      */
-    String UNIQUE_IDENTIFIER = "Unique Identifier";
+    public static final String UNIQUE_IDENTIFIER = "Unique Identifier";
+
+    /**
+     * Index all attributes.
+     */
+    public static final String INDEX_ALL_ATTRIBUTES =
+            "[ Index all attributes ]";
 
     /**
      * Adds a new network to the global index, and indexes all nodes or edges
