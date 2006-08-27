@@ -90,4 +90,21 @@ public class TestTextIndex extends TestCase {
         assertEquals ("ra*", hits[0].getKeyword());
         assertEquals (5, hits[0].getAssociatedObjects().length);
     }
+
+    /**
+     * Test max key length.
+     */
+    public void testMaxKeyLength () {
+        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        assertEquals (TextIndex.DEFAULT_MAX_KEY_LENGTH,
+                textIndex.getMaxKeyLength());
+        textIndex.addToIndex("The Associated Press and the New York Times "
+            + "are now reporting that Atlantis will not launch Sunday.",
+            new Integer(1));
+        Hit hits[] = textIndex.getHits("the", Integer.MAX_VALUE);
+        assertEquals (1, hits.length);
+        assertEquals ("the associated press and ",
+                hits[0].getKeyword());
+        assertEquals (1, hits[0].getAssociatedObjects().length);
+    }
 }
