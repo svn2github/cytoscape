@@ -93,11 +93,32 @@ class QuickFindImpl implements QuickFind {
 
         //  Determine maxProgress
         currentProgress = 0;
-        maxProgress = getGraphObjectCount(cyNetwork);
+        maxProgress = 0;
+        if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
+            String attributeNames[] = nodeAttributes.getAttributeNames();
+            for (int i=0; i<attributeNames.length; i++) {
+                if (nodeAttributes.getUserVisible(attributeNames[i])) {
+                    maxProgress += getGraphObjectCount(cyNetwork);
+                }
+            }
+        } else {
+            maxProgress = getGraphObjectCount(cyNetwork);
+        }
 
         TextIndex textIndex = (TextIndex) networkMap.get(cyNetwork);
+        textIndex.setControllingAttribute(controllingAttribute);
+
         textIndex.resetIndex();
-        indexNetwork(cyNetwork, controllingAttribute, taskMonitor);
+        if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
+            String attributeNames[] = nodeAttributes.getAttributeNames();
+            for (int i=0; i<attributeNames.length; i++) {
+                if (nodeAttributes.getUserVisible(attributeNames[i])) {
+                    indexNetwork(cyNetwork, attributeNames[i], taskMonitor);
+                }
+            }
+        } else {
+            indexNetwork(cyNetwork, controllingAttribute, taskMonitor);
+        }
 
         // Notify all listeners of index start event
         for (int i = 0; i < listenerList.size(); i++) {
@@ -127,7 +148,6 @@ class QuickFindImpl implements QuickFind {
     private void indexNetwork(CyNetwork network, String controllingAttribute,
             TaskMonitor taskMonitor) {
         TextIndex textIndex = (TextIndex) networkMap.get(network);
-        textIndex.setControllingAttribute(controllingAttribute);
         Date start = new Date();
 
         Iterator iterator = network.nodesIterator();
