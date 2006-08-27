@@ -12,7 +12,7 @@ public interface TextIndex {
     /**
      * Default Max Key Length
      */
-    public static final int DEFAULT_MAX_KEY_LENGTH = 25;
+    int DEFAULT_MAX_KEY_LENGTH = 25;
 
     /**
      * Resets the index, wipes everything clean.

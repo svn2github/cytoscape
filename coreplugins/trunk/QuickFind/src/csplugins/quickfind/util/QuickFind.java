@@ -65,12 +65,12 @@ public interface QuickFind {
     /**
      * Node / Edge Unique Identifier.
      */
-    public static final String UNIQUE_IDENTIFIER = "Unique Identifier";
+    String UNIQUE_IDENTIFIER = "Unique Identifier";
 
     /**
      * Index all attributes.
      */
-    public static final String INDEX_ALL_ATTRIBUTES =
+    String INDEX_ALL_ATTRIBUTES =
             "[ Index all attributes ]";
 
     /**
@@ -114,13 +114,13 @@ public interface QuickFind {
      * <br/>
      * <pre>reindexNetwork (cyNetwork, "BIOPAX_NAME", tm);</pre>
      *
-     * @param cyNetwork     Cytoscape network.
+     * @param cyNetwork            Cytoscape network.
      * @param controllingAttribute Attribute used to index all nodes.
-     * @param taskMonitor  Task Monitor, used to monitor long-term progress
-     *                     of task.
+     * @param taskMonitor          Task Monitor, used to monitor long-term
+     *                             progress of task.
      */
     void reindexNetwork(CyNetwork cyNetwork, String controllingAttribute,
-            TaskMonitor taskMonitor);
+                        TaskMonitor taskMonitor);
 
     /**
      * Adds a new QuickFind Listener.

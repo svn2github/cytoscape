@@ -96,7 +96,7 @@ class QuickFindImpl implements QuickFind {
         maxProgress = 0;
         if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
             String attributeNames[] = nodeAttributes.getAttributeNames();
-            for (int i=0; i<attributeNames.length; i++) {
+            for (int i = 0; i < attributeNames.length; i++) {
                 if (nodeAttributes.getUserVisible(attributeNames[i])) {
                     maxProgress += getGraphObjectCount(cyNetwork);
                 }
@@ -111,7 +111,7 @@ class QuickFindImpl implements QuickFind {
         textIndex.resetIndex();
         if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
             String attributeNames[] = nodeAttributes.getAttributeNames();
-            for (int i=0; i<attributeNames.length; i++) {
+            for (int i = 0; i < attributeNames.length; i++) {
                 if (nodeAttributes.getUserVisible(attributeNames[i])) {
                     indexNetwork(cyNetwork, attributeNames[i], taskMonitor);
                 }
