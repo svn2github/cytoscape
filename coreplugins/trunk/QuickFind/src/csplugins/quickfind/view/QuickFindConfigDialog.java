@@ -214,6 +214,11 @@ public class QuickFindConfigDialog extends JDialog {
         if (attributeKey.equals(QuickFind.UNIQUE_IDENTIFIER)) {
             description = "Each node and edge in Cytoscape is assigned a "
                     + "unique identifier.  This is an alphanumeric value.";
+        } else if (attributeKey.equals (QuickFind.INDEX_ALL_ATTRIBUTES)) {
+            description = "Index all attributes.  Use this option for the "
+                    + "widest search scope possible.  Note that indexing "
+                    + "all attributes on very large networks may take a few "
+                    + "seconds.";
         } else {
             description = nodeAttributes.getAttributeDescription (attributeKey);
         }
@@ -228,7 +233,6 @@ public class QuickFindConfigDialog extends JDialog {
      * Creates TableModel consisting of Distinct Attribute Values.
      */
     private void addTableModel(JTable table) {
-        QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         Object selectedAttribute = attributeComboBox.getSelectedItem();
 
         //  Determine current attribute key
@@ -270,7 +274,6 @@ public class QuickFindConfigDialog extends JDialog {
      * @return JPanel Object.
      */
     private JPanel createAttributeSelectionPanel() {
-        QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         JPanel attributePanel = new JPanel();
         attributePanel.setLayout(new BoxLayout(attributePanel,
                 BoxLayout.X_AXIS));
@@ -286,8 +289,6 @@ public class QuickFindConfigDialog extends JDialog {
             Vector attributeList = new Vector();
 
             //  Show all attributes, except those of TYPE_COMPLEX
-            //  Add default:  Unique Identifier
-            attributeList.add(QuickFind.UNIQUE_IDENTIFIER);
             for (int i = 0; i < attributeNames.length; i++) {
                 int type = nodeAttributes.getType(attributeNames[i]);
                 //  only show user visible attributes
@@ -305,6 +306,15 @@ public class QuickFindConfigDialog extends JDialog {
 
             //  Alphabetical sort
             Collections.sort(attributeList);
+
+            //  Add default:  Unique Identifier
+            attributeList.insertElementAt(QuickFind.UNIQUE_IDENTIFIER, 0);
+
+            //  Add option to index by all attributes
+            //  Not yet sure if I want to add this yet.  Keep code below.
+            //  if (attributeList.size() > 1) {
+            //    attributeList.add(QuickFind.INDEX_ALL_ATTRIBUTES);
+            //  }
 
             //  Create ComboBox
             attributeComboBox = new JComboBox(attributeList);
@@ -421,6 +431,9 @@ class DetermineDistinctValuesTask implements Task {
     public DetermineDistinctValuesTask (TableModel tableModel,
             String attributeKey) {
         this.tableModel = tableModel;
+        if (attributeKey.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
+            attributeKey = QuickFind.UNIQUE_IDENTIFIER;
+        }
         this.attributeKey = attributeKey;
     }
 
