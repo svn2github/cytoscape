@@ -9,6 +9,10 @@ package csplugins.widgets.autocomplete.index;
  * @author Ethan Cerami.
  */
 public interface TextIndex {
+    /**
+     * Default Max Key Length
+     */
+    public static final int DEFAULT_MAX_KEY_LENGTH = 25;
 
     /**
      * Resets the index, wipes everything clean.
@@ -43,6 +47,24 @@ public interface TextIndex {
      * @param o   Any Java Object.
      */
     void addToIndex(String key, Object o);
+
+    /**
+     * Set max key length;  all keys greater than this length will
+     * be automatically truncated.
+     *
+     * <P>Default is set to {@link TextIndex#DEFAULT_MAX_KEY_LENGTH}
+     * @param len max key length.
+     */
+    void setMaxKeyLength (int len);
+
+    /**
+     * Gets max key length;  all keys greater than this length will
+     * be automatically truncated.
+     * <P>Default is set to {@link TextIndex#DEFAULT_MAX_KEY_LENGTH}
+     *
+     * @return max key length.
+     */
+    int getMaxKeyLength();
 
     /**
      * Gets all hits which begin with the specified prefix.

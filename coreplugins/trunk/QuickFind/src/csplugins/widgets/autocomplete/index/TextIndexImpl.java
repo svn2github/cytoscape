@@ -17,11 +17,13 @@ class TextIndexImpl implements TextIndex {
     private HashMap cache = new HashMap();
     private static final String WILD_CARD = "*";
     private String attributeName = QuickFind.UNIQUE_IDENTIFIER;
+    private int maxKeyLength;
 
     /**
      * Constructor.
      */
     public TextIndexImpl() {
+        maxKeyLength = TextIndex.DEFAULT_MAX_KEY_LENGTH;
         observerList = new ArrayList();
         init();
     }
@@ -55,6 +57,14 @@ class TextIndexImpl implements TextIndex {
         }
     }
 
+    public void setMaxKeyLength(int len) {
+        maxKeyLength = len;
+    }
+
+    public int getMaxKeyLength() {
+        return maxKeyLength;
+    }
+
     /**
      * Adds new object to index.
      *
@@ -65,7 +75,12 @@ class TextIndexImpl implements TextIndex {
         // convert all keys to lowercase
         key = key.toLowerCase();
 
-        //  Add to Try and HashMap
+        // truncate key, if necessary
+        if (key.length() > maxKeyLength) {
+            key = key.substring(0, maxKeyLength);
+        }
+
+        //  Add to Trie and HashMap
         trie.add(key);
         ArrayList objectList = (ArrayList) map.get(key);
         if (objectList == null) {
