@@ -8,12 +8,20 @@ import java.util.*;
 import java.io.File;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+
 import java.awt.event.ActionEvent;
+import java.awt.Component;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
+import javax.swing.MenuElement;
 import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
+
+import javax.swing.JMenu;
+
+
 import javax.swing.table.TableModel;
 
 import giny.model.Node;
@@ -57,7 +65,27 @@ public class EqbPlugin extends CytoscapePlugin
     private EqtlPanel _cytoPanel;
     private CyNetwork _resultNetwork;
     private CyNetwork _parentNetwork;
+    private boolean _doLayout = true;
 
+    public final static String[] ORGANIC_LAYOUT = {"yFiles", "organic"};
+    public final static String[] HEIRARCHIC_LAYOUT = {"cytoscape layouts", "hierarchical"};
+    public final static String[] YFILES_HEIRARCHIC_LAYOUT = {"yFiles", "hierarchic"};
+
+    private String[] _autoLayoutName = ORGANIC_LAYOUT;
+    private JMenuItem _autoLayout;
+
+    public void setAutoLayout(String[] name)
+    {
+        _autoLayoutName = name;
+        _autoLayout = findLayoutMenuItem(name);
+    }
+
+    public void setNoLayout()
+    {
+        _doLayout = false;
+    }
+
+    
     public String getCurrentFile()
     {
         return _currentFile;
@@ -84,7 +112,7 @@ public class EqbPlugin extends CytoscapePlugin
         }
         
         // Create menu items
-        addPluginMenuItem(new MainMenuAction());
+        //addPluginMenuItem(new MainMenuAction());
         addPluginMenuItem(new ClearAction());
         addPluginMenuItem(new ShowPanelAction());
 
@@ -94,13 +122,14 @@ public class EqbPlugin extends CytoscapePlugin
         setDataFile(_defaultFile);
 
         // Panel
-
         _cytoPanel = new EqtlPanel(this);
-
+        _cytoPanel.setCurrentDataFile(_defaultFile);
+        
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.WEST);
 
         cytoPanel.add("eQTL", _cytoPanel);
+
     }
 
     private void addPluginMenuItem(CytoscapeAction action)
@@ -140,6 +169,11 @@ public class EqbPlugin extends CytoscapePlugin
             setParentNetwork();
             _eMap.updateTableData(m, _parentNetwork, _nodeIdentifier);
             _currentFile = file;
+
+            if(_cytoPanel != null)
+            {
+                _cytoPanel.setCurrentDataFile(file);
+            }
         }
         catch(Exception e)
         {
@@ -397,8 +431,7 @@ public class EqbPlugin extends CytoscapePlugin
                 new_view.getNodeView( node ).setOffset( parent_view.getNodeView(node).getXPosition(),
                                                         parent_view.getNodeView(node).getYPosition()); 
             } 
-            new_view.fitContent(); 
-            
+
             // Set visual style
             VisualStyle newVS = parent_view.getVisualStyle();
             if(newVS != null) {
@@ -411,17 +444,101 @@ public class EqbPlugin extends CytoscapePlugin
             new_view.setVisualStyle("default");
         }
 
-        //System.out.println("Doing yfiles organic layout");
-        //YFilesLayout layout = new YFilesLayout(new_view);
-        //layout.doLayout(3, 0);
-        
+        if(_doLayout)
+        {
+            doLayout();
+        }
+
         System.out.println("Redrawing new view");
         
         new_view.redrawGraph(true, true);
-
         new_view.updateView();
+        new_view.fitContent(); 
+    }
 
-        //new_view.getComponent().repaint();
+    /**
+     * Find the menu item that corresponds to a layout algorithm
+     *
+     * Example layoutNames:
+     * yfiles->organic: layoutName = {"yfiles", "organic"}
+     * Cytoscape layouts->heirarchical: layoutName = {"cytoscape layouts",
+     *                                                "hierarchical"}
+     */
+    private JMenuItem findLayoutMenuItem(String[] layoutName)
+    {
+        JMenu menu = Cytoscape.getDesktop().getCyMenus().getLayoutMenu();
+
+        int k = layoutName.length - 1;
+        // First, find submenus corresponding to the first k-1 strings
+        // in the layoutNames array
+        for(int depth=0; depth < k; depth++)
+        {
+            Component[] items = menu.getMenuComponents();
+            findMenu: {
+                for(int x=0; x < items.length; x++)
+                {
+                    if(items[x] instanceof JMenu)
+                    {
+                        JMenu mX = (JMenu) items[x];
+                        System.out.println(" submenu: " + mX.getText());
+                        if(mX.getText().equalsIgnoreCase(layoutName[depth]))
+                        {
+                        menu = mX;
+                        break findMenu;
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+        // if we get here, then we've successfully traversed the
+        // submenus.  Now, look for a specific menu item.
+        String name = layoutName[layoutName.length - 1];
+        Component[] layouts = menu.getMenuComponents();
+        for(int y=0; y < layouts.length; y++)
+        {
+            if(layouts[y] instanceof JMenuItem)
+            {
+                JMenuItem mY = (JMenuItem) layouts[y];
+                System.out.println("  menu item: " + mY.getText());
+                if(mY.getText().equalsIgnoreCase(name))
+                {
+                    System.out.println("  found: " + name);
+                    _doLayout = true;
+                    return mY;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    private void doLayout()
+    {
+        if(_autoLayout == null)
+        {
+            _autoLayout = findLayoutMenuItem(_autoLayoutName);
+        }
+
+        if(_autoLayout != null)
+        {
+            _autoLayout.doClick();
+        }
+        else
+        {
+            StringBuffer b = new StringBuffer();
+            for(int x=0, N=_autoLayoutName.length, M=(N-1); x < N ; x++)
+            {
+                b.append(_autoLayoutName[x]);
+                if(x < M)
+                {
+                    b.append("::");
+                }
+            }
+            System.out.println("eQTL: skipping layout" + b.toString());
+        }
+        
     }
     
     /**
@@ -490,15 +607,20 @@ public class EqbPlugin extends CytoscapePlugin
          */
         public void actionPerformed(ActionEvent ae)
         {
-            int returnVal = _fileChooser.showOpenDialog(Cytoscape.getDesktop());
-            if(returnVal == JFileChooser.APPROVE_OPTION)
-            {
-                String f = _fileChooser.getSelectedFile().getName();
-                setDataFile(f);
-            }
+            changeDataFile();
         }
     }
 
+
+    public void changeDataFile()
+    {
+        int returnVal = _fileChooser.showOpenDialog(Cytoscape.getDesktop());
+        if(returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            String f = _fileChooser.getSelectedFile().getName();
+            setDataFile(f);
+        }
+    }
     
     /**
      * Class for clearing eQTL data from the network

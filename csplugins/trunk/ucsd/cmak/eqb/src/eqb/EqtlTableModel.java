@@ -11,22 +11,28 @@ import javax.swing.table.AbstractTableModel;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
+
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 
 public class EqtlTableModel extends AbstractTableModel
 {
-    private Map _data; // map
+    private Map _data; // map Node object to Eqtl object
     private Map _nodeLookupTable; // map name to Node object
     
     private String[] _columnNames = {"Gene", "# loci"};
 
-    private List _nodeNames;
+    private List _row2DisplayName; // index names by row
+    private List _row2Node; // index Node objects by row
+
+    private String _displayAttr = "GeneName";
     
     public EqtlTableModel()
     {
         _data = new HashMap();
-        _nodeNames = new ArrayList();
+        _row2Node = new ArrayList();
+        _row2DisplayName = new ArrayList();
         _nodeLookupTable = new HashMap();
     }
 
@@ -34,6 +40,10 @@ public class EqtlTableModel extends AbstractTableModel
     {
         _nodeLookupTable.clear();
         _data.clear();
+        _row2Node.clear();
+        _row2DisplayName.clear();
+
+        System.out.println("updateTableData called");
         
         CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 
@@ -49,22 +59,62 @@ public class EqtlTableModel extends AbstractTableModel
 
         for(Iterator i = newData.keySet().iterator(); i.hasNext();)
         {
-            Object nodeName = i.next();
+            Object nodeId = i.next();
             // If the node is in the network, add eQTL data for it
-            if(_nodeLookupTable.containsKey(nodeName))
+            if(_nodeLookupTable.containsKey(nodeId))
             {
-                _nodeNames.add(nodeName);
-                _data.put(_nodeLookupTable.get(nodeName),
-                          newData.get(nodeName));
+                CyNode n = (CyNode) _nodeLookupTable.get(nodeId);
+                String displayName = nodeAttr.getStringAttribute(n.getIdentifier(),
+                                                                 _displayAttr);
+                if(displayName == null)
+                {
+                    displayName = nodeId.toString();
+                }
+                _row2Node.add(n);
+                _row2DisplayName.add(displayName);
+                
+                _data.put(n, newData.get(nodeId));
             }
         }
 
         fireTableDataChanged();
     }
 
-    public CyNode getNode(String nodeName)
+    public String getDisplayAttribute()
     {
-        return (CyNode) _nodeLookupTable.get(nodeName);
+        return _displayAttr;
+    }
+    
+    public void updateDisplayAttribute(String attribute)
+    {
+        CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+        _row2DisplayName.clear();
+
+        _displayAttr = attribute;
+        
+        for(int x=0, N=getRowCount(); x < N; x++)
+        {
+            String val = nodeAttr.getStringAttribute(getNode(x).getIdentifier(),
+                                                     attribute);
+            if(val == null)
+            {
+                val = nodeAttr.getStringAttribute(getNode(x).getIdentifier(),
+                                                  Semantics.CANONICAL_NAME);
+            }
+            _row2DisplayName.add(val);
+        }
+        fireTableDataChanged();
+    }
+    
+    public CyNode getNode(String nodeId)
+    {
+        return (CyNode) _nodeLookupTable.get(nodeId);
+    }
+
+    
+    public CyNode getNode(int row)
+    {
+        return (CyNode) _row2Node.get(row);
     }
 
     
@@ -79,29 +129,34 @@ public class EqtlTableModel extends AbstractTableModel
     }
 
 
-    public boolean containsNode(Object key)
+    public boolean containsNode(CyNode key)
     {
         return _data.containsKey(key);
     }
 
-    public Object getEqtlData(Object key)
+    public Eqtl getEqtlData(CyNode key)
     {
-        return _data.get(key);
+        return (Eqtl) _data.get(key);
     }
     
     public int getRowCount() { return _data.size(); }
     public int getColumnCount() { return _columnNames.length; }
-
+    
     public Object getValueAt(int row, int col)
     {
+        if(row > getRowCount() || row < 0 || col < 0 || col > 1)
+        {
+            return null;
+        }
+        
         if(col == 0)
         {
-            return _nodeNames.get(row);
+            return _row2DisplayName.get(row);
         }
         else
         {
-            CyNode node = getNode((String) _nodeNames.get(row));
-            return new Integer(((Eqtl) _data.get(node)).numLoci());
+            CyNode node = getNode(row);
+            return new Integer(getEqtlData(node).numLoci());
         }
 
     }
