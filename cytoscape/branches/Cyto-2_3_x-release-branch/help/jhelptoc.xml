@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
 <toc version="1.0">
-  <tocitem target="index" text="Cytoscape 2.3 User Manual">
-    <tocitem target="Cytoscape231UserManual" text="Cytoscape 2.3.1 User Manual"/>
+  <tocitem target="index" text="Cytoscape 2.3.2 User Manual">
+    <tocitem target="Cytoscape232UserManual" text="Cytoscape 2.3.2 User Manual"/>
     <tocitem target="Introduction" text="Introduction"/>
     <tocitem target="LaunchingCytoscape" text="Launching Cytoscape"/>
     <tocitem target="QuickTourofCytoscape" text="Quick Tour of Cytoscape">
