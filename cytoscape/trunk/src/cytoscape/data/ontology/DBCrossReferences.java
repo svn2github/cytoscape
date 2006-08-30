@@ -35,6 +35,7 @@ public class DBCrossReferences {
 	public void load() throws IOException {
 		DBCrossReferenceReader xrefReader = new DBCrossReferenceReader();
 		xrefReader.readResourceFile();
+		this.crossRefMap = xrefReader.getXrefMap();
 	}
 	/**
 	 * Add a database reference object
