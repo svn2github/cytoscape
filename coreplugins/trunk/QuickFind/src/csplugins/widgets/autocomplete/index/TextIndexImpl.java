@@ -3,6 +3,8 @@ package csplugins.widgets.autocomplete.index;
 import csplugins.quickfind.util.QuickFind;
 
 import java.util.*;
+import java.text.RuleBasedCollator;
+import java.text.ParseException;
 
 /**
  * Basic implementation of the Text Index Interface.
@@ -120,8 +122,19 @@ class TextIndexImpl implements TextIndex {
             int size = Math.min(keys.length, maxHits);
             hits = new Hit[size];
 
-            //  Sort the keys
-            Arrays.sort(keys);
+            //  By default, strings are ordered lexicographically -- meaning that the unicode
+            //  value for each character is used for comparison.  Therefore, in the world of 
+            //  QuickFind, strings beginning with non-alphanumeric and digits appear before those
+            //  strings that begin with letters.  This is not really want we want.  Rather, we
+            //  would like those strings beginning with letters to appear first.
+            //  The collator rules below do the trick.  This rule essentially says that
+            //  a-z should appear before all other characters.
+            String collatorRules = "<a<b<c<d<e<f<g<h<i<j<k<l<m<n<o<p<q<r<s<t<u<v<w<x<y<z";
+            try {
+                RuleBasedCollator collator = new RuleBasedCollator(collatorRules);
+                Arrays.sort(keys, collator);
+            } catch (ParseException e) {
+            }
 
             //  Create the Hits
             for (int i = 0; i < size; i++) {
