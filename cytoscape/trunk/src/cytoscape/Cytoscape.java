@@ -72,6 +72,7 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.servers.BioDataServer;
+import cytoscape.data.servers.OntologyServer;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.giny.CytoscapeFingRootGraph;
@@ -124,6 +125,9 @@ public abstract class Cytoscape {
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
 	public static final String NETWORK_SAVED = "NETWORK_SAVED";
 	public static final String NETWORK_LOADED = "NETWORK_LOADED";
+	
+	// Root ontology network in the network panel
+	public static final String ONTOLOGY_ROOT = "ONTOLOGY_ROOT";
 
 	// Events for Preference Dialog (properties).
 	// Signals that the preference has change interally to the
@@ -165,6 +169,11 @@ public abstract class Cytoscape {
 	private static int sessionState = SESSION_NEW;
 
 	private static BioDataServer bioDataServer;
+	
+	/**
+	 * New ontology server.  This will replace BioDataServer.
+	 */
+	private static OntologyServer ontologyServer;
 
 	private static String species;
 
@@ -197,6 +206,15 @@ public abstract class Cytoscape {
 	 */
 	private static CyAttributes networkAttributes = new CyAttributesImpl();
 
+	/**
+	 * Ontology Attributes
+	 * 
+	 * Will be used to store annotations for ontology
+	 * 
+	 */
+	private static CyAttributes ontologyAttributes = new CyAttributesImpl();
+	
+	
 	protected static ExpressionData expressionData;
 
 	protected static Object pcsO = new Object();
@@ -219,6 +237,8 @@ public abstract class Cytoscape {
 	protected static String currentNetworkID;
 
 	protected static String currentNetworkViewID;
+	
+	protected static String ontologyRootID;
 
 	/**
 	 * Used by session writer. If this is null, session writer opens the file
@@ -1086,7 +1106,7 @@ public abstract class Cytoscape {
 	protected static void addNetwork(CyNetwork network, String title,
 			CyNetwork parent, boolean create_view) {
 
-		// System.out.println( "CyNetwork Added: "+network.getIdentifier() );
+		System.out.println( "CyNetwork Added: "+network.getIdentifier() );
 
 		getNetworkMap().put(network.getIdentifier(), network);
 		network.setTitle(title);
@@ -1094,8 +1114,6 @@ public abstract class Cytoscape {
 		if (parent != null) {
 			p_id = parent.getIdentifier();
 		}
-
-		System.out.println("Cytoscape source parent, child = " + p_id + ", " + network.getIdentifier());
 		
 		firePropertyChange(NETWORK_CREATED, p_id, network.getIdentifier());
 		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit
@@ -1126,6 +1144,20 @@ public abstract class Cytoscape {
 	 */
 	public static CyNetwork createNetwork(String title, boolean create_view) {
 		return createNetwork(new int[] {}, new int[] {}, title, null,
+				create_view);
+	}
+	
+	/**
+	 * Creates a new, empty Network.
+	 * 
+	 * @param title
+	 *            the title of the new network.
+	 * @param create_view
+	 *            if the size of the network is under the node limit, create a
+	 *            view
+	 */
+	public static CyNetwork createNetwork(String title, CyNetwork parent, boolean create_view) {
+		return createNetwork(new int[] {}, new int[] {}, title, parent,
 				create_view);
 	}
 
@@ -1424,6 +1456,15 @@ public abstract class Cytoscape {
 	public static CyAttributes getNetworkAttributes() {
 		return networkAttributes;
 	}
+	
+	/**
+	 * Gets Global Network Attributes.
+	 * 
+	 * @return CyAttributes Object.
+	 */
+	public static CyAttributes getOntologyAttributes() {
+		return ontologyAttributes;
+	}
 
 	public static ExpressionData getExpressionData() {
 		return expressionData;
@@ -1606,6 +1647,26 @@ public abstract class Cytoscape {
 		return bioDataServer;
 	}
 
+	
+	/**
+	 * This will replace the bioDataServer.
+	 */
+	public static OntologyServer buildOntologyServer() {
+		try {
+			ontologyServer = new OntologyServer();
+		} catch (Exception e) {
+			System.err
+					.println("Could not build OntologyServer.");
+			e.printStackTrace();
+			return null;
+		}
+		return ontologyServer;
+	}
+	public static OntologyServer getOntologyServer() {
+		return ontologyServer;
+	}
+	
+	
 	// ------------------------------//
 	// CyNetworkView Creation Methods
 	// ------------------------------//
@@ -1859,5 +1920,13 @@ public abstract class Cytoscape {
 		}
 
 		setCurrentSessionFileName(null);
+	}
+	
+	public static String getOntologyRootID() {
+		return ontologyRootID;
+	}
+	
+	public static void setOntologyRootID(String id) {
+		ontologyRootID = id;
 	}
 }
