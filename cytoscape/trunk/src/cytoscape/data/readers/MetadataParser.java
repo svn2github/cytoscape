@@ -294,6 +294,7 @@ public class MetadataParser {
 		metadata.put(entryName.toString(), value);
 		networkAttributes.setAttributeMap(network.getIdentifier(),
 				metadataLabel, metadata);
+		rdfAsMap = metadata;
 	}
 
 	/**
