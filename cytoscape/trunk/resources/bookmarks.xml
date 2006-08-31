@@ -12,14 +12,17 @@
 		<dataSource name="Gene Ontology Full"
 			xlink:href="http://www.geneontology.org/ontology/gene_ontology.obo" format="obo">
 			<attribute name="description">The Gene Ontology (GO) project provides a controlled vocabulary to describe gene and gene product attributes in any organism.  This data source contains full size GO dag, which contains all GO terms.</attribute>
+			<attribute name="ontologyType">GO</attribute>
 		</dataSource>
 		<dataSource name="Generic GO slim"
 			xlink:href="http://www.geneontology.org/GO_slims/goslim_generic.obo" format="obo">
 			<attribute name="description">Subset of general GO Terms.</attribute>
+			<attribute name="ontologyType">GO</attribute>
 		</dataSource>
 		<dataSource name="Yeast GO slim"
 			xlink:href="http://www.geneontology.org/GO_slims/goslim_yeast.obo" format="obo">
 			<attribute name="description">Subset of GO Terms for annotating Yeast data sets.  Maintained by SGD.</attribute>
+			<attribute name="ontologyType">GO</attribute>
 		</dataSource>
 		<dataSource name="Protein-protein interaction"
 			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/protein/psi-mi.obo"
