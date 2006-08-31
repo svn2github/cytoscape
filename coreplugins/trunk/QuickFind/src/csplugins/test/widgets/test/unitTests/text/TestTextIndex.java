@@ -5,6 +5,12 @@ import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.index.TextIndexFactory;
 import junit.framework.TestCase;
 
+import java.text.Collator;
+import java.text.RuleBasedCollator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Locale;
+
 /**
  * Unit Tests for TextIndexImpl.
  *
@@ -106,5 +112,25 @@ public class TestTextIndex extends TestCase {
         assertEquals ("the associated press and ",
                 hits[0].getKeyword());
         assertEquals (1, hits[0].getAssociatedObjects().length);
+    }
+
+    /**
+     * Test modified sort order.
+     */
+    public void testSortOrder() throws Exception {
+        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        textIndex.addToIndex("?", new Integer(1));
+        textIndex.addToIndex("1rain", new Integer(2));
+        textIndex.addToIndex("rainbow", new Integer(3));
+        textIndex.addToIndex("rainbow trout", new Integer(4));
+        textIndex.addToIndex("RABBIT", new Integer(5));
+
+        //  Verify that strings starting beginning with letters appear at beginning of list.
+        Hit hits[] = textIndex.getHits("", Integer.MAX_VALUE);
+        assertEquals ("rabbit", hits[0].getKeyword());
+        assertEquals ("rainbow", hits[1].getKeyword());
+        assertEquals ("rainbow trout", hits[2].getKeyword());
+        assertEquals ("1rain", hits[3].getKeyword());
+        assertEquals ("?", hits[4].getKeyword());
     }
 }
