@@ -7,10 +7,10 @@ use warnings;
 # hardcoding this path.
 #
 # In Apache httpd.conf:
-# SetEnvIf Request_URI "search" PERL5LIB /var/www/cgi-bin/search/v1.1
+# SetEnvIf Request_URI "search" PERL5LIB /var/www/cgi-bin/search/v1.0
 # NOT USING SetEnvIf (encountered some apache config problems)
 
-use lib '/var/www/cgi-bin/search/v1.1';
+use lib '/var/www/cgi-bin/search/v1.0';
 
 use CCDB::Driver;
 use CCDB::Query;

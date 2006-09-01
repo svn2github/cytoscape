@@ -1,21 +1,13 @@
 <?xml version="1.0"?>
 
-<project name="CellCircuits" default="deploy" basedir=".">
+<project name="CellCircuits" default="deploy">
 
- 	<property name="deploy.version" 
-                  value="v1.0"/>
-
- 	<property name="dev.version" 
-                  value="v1.1"/>
-
- 	<property name="deploy.docroot" 
-                  value="/var/www/html"/>
-
- 	<property name="deploy.html" 
-                  value="${deploy.docroot}/search/${deploy.version}"/>
-
- 	<property name="deploy.cgi" 
-                  value="/var/www/cgi-bin/search/${deploy.version}"/>
+ 	<property name="deploy.version" value="v1.0"/>
+ 	<property name="dev.version" value="v1.1"/>
+ 	<property name="deploy.docroot" value="/var/www/html"/>
+ 	<property name="deploy.html" value="${deploy.docroot}/search/${deploy.version}"/>
+ 	<property name="deploy.cgi" value="/var/www/cgi-bin/search/${deploy.version}"/>
+	<property name="deploy.data" value="${deploy.docroot}/search/data"/>
 	
    	<target name="deploy" description="Deploy html and cgi-bin files">
 
@@ -56,5 +48,30 @@
           </exec>
 
 	</target>
+
+	
+   	<target name="deploy-data" description="Deploy data files">
+
+          <echo message="Copying data files"/>
+          <copy todir="${deploy.data}">
+             <fileset dir="data" followsymlinks="no" defaultexcludes="yes"
+                      includes="**/legend_FAQ.html"/>
+          </copy>
+        </target>  
+
+   	<target name="deploy-clean" description="Clean deployment dirs">
+
+          <echo message="Removing deployed html and cgi-binfiles"/>
+           <exec executable="rm">
+              <arg line="-rf ${deploy.html} ${deploy.cgi}"/>
+          </exec>
+        </target>
+
+       <target name="deploy-link" description="Create symlinks so that the deployment dirs are linked to the development dirs.">
+
+          <symlink link="${deploy.cgi}" resource="${basedir}/cgi-bin" overwrite="yes"/>
+          <symlink link="${deploy.html}" resource="${basedir}/html" overwrite="yes"/>
+      </target>
+
 
 </project>
