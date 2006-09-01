@@ -83,7 +83,15 @@ public class QuickFindConfigDialog extends JDialog {
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         this.setTitle("Configure Search Options for:  "
             + currentNetwork.getTitle());
-        this.setAlwaysOnTop(true);
+
+        //  If we are working on Linux, set always on top to true.
+        //  This is a hack to deal with numerous z-ordering bugs on Linux.
+        String os = System.getProperty("os.name");
+        if (os != null) {
+            if (os.toLowerCase().startsWith("linux")) {
+                this.setAlwaysOnTop(true);
+            }
+        }
 
         //  Create Master Panel
         JPanel masterPanel = new JPanel();
