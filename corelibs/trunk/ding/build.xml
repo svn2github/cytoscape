@@ -29,9 +29,20 @@
 
     <!-- Define the relevant files -->
     <property name="project.jar" value="${name}.jar"/>
+    <property name="test.jar" value="${name}-tests.jar"/>
 
     <!-- Define the class path - Defaults to everything in the lib.dir -->
     <path id="project.class.path">
+      <fileset dir="${lib.dir}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+   
+    <!-- Define the junit class path - It needs to find what we just built --> 
+    <path id="junit.class.path" >
+      <fileset dir="${root.dir}">
+        <include name="*.jar"/>
+      </fileset>
       <fileset dir="${lib.dir}">
         <include name="*.jar"/>
       </fileset>
@@ -102,15 +113,29 @@
   </target>
 
   <!-- =================================================================== -->
+  <!-- Creates the project-tests.jar file                                  -->
+  <!-- =================================================================== -->
+  <target name="jar-tests"
+          depends="compile-tests"
+          if="tests.ok">
+    <jar jarfile="${test.jar}"
+         basedir="${build.dir}" >
+    </jar>
+    <echo message="Successfully ran jar-tests task!"/>
+  </target>
+
+
+
+  <!-- =================================================================== -->
   <!-- Runs the unit tests.                                                --> 
   <!-- =================================================================== -->
   <target name="test"
-          depends="compile-tests"
+          depends="jar-tests"
           if="tests.ok">
     <junit printsummary="yes"
            haltonfailure="no"
            maxmemory="256m" >
-      <classpath refid="project.class.path"/>
+      <classpath refid="junit.class.path"/>
       <formatter type="plain" 
                  usefile="true" />
       <formatter type="xml" 
@@ -169,6 +194,7 @@
     <delete dir="${build.dir}"/>
     <delete dir="${javadoc.dir}"/>
     <delete file="${project.jar}"/>
+    <delete file="${test.jar}"/>
     <echo message="Successfully ran clean task!"/>
   </target>
 
