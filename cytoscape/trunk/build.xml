@@ -638,10 +638,10 @@
             ---------------------------------------
         	</echo>
 
-		<copy file="user_docs/INSTALL.txt" todir="${release.dir}" />
-		<copy file="user_docs/LICENSE.txt" todir="${release.dir}" />
-		<copy file="user_docs/LICENSE.html" todir="${release.dir}" />
-		<copy file="user_docs/manual.pdf" todir="${release.dir}" />
+		<copy file="docs/INSTALL.txt" todir="${release.dir}" />
+		<copy file="docs/LICENSE.txt" todir="${release.dir}" />
+		<copy file="docs/LICENSE.html" todir="${release.dir}" />
+		<copy file="docs/manual.pdf" todir="${release.dir}" />
 
 		<!-- Copy over Sample Data Files -->
 		<echo>
