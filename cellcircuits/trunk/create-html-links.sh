@@ -1,12 +1,13 @@
-DEST=/var/www/html/search/v1.0/
+DOCROOT=$1
+DEST=$2
 
-ln -s /var/www/html/search/data $DEST
-ln -s /var/www/html/idekerlab $DEST
+ln -s $DOCROOT/search/data $DEST
+ln -s $DOCROOT/idekerlab $DEST
 
-ln -s /var/www/html/Kelley2005 $DEST
-ln -s /var/www/html/Yeang2004 $DEST
-ln -s /var/www/html/Yeang2005 $DEST
-ln -s /var/www/html/Suthram2006 $DEST
-ln -s /var/www/html/Sharan2004 $DEST
-ln -s /var/www/html/Workman_Mak2006 $DEST
-ln -s /var/www/html/Bandyopadhyay2006 $DEST
+ln -s $DOCROOT/Kelley2005 $DEST
+ln -s $DOCROOT/Yeang2004 $DEST
+ln -s $DOCROOT/Yeang2005 $DEST
+ln -s $DOCROOT/Suthram2006 $DEST
+ln -s $DOCROOT/Sharan2004 $DEST
+ln -s $DOCROOT/Workman_Mak2006 $DEST
+ln -s $DOCROOT/Bandyopadhyay2006 $DEST

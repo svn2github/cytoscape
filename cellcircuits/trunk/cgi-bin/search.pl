@@ -6,12 +6,11 @@ use warnings;
 # Set PERL5LIB environment variable instead of 
 # hardcoding this path.
 #
-# use lib '/var/www/cgi-bin/search/v1.1';
-#
 # In Apache httpd.conf:
 # SetEnvIf Request_URI "search" PERL5LIB /var/www/cgi-bin/search/v1.1
-#
-#use lib '/var/www/cgi-bin/search/v1.0';
+# NOT USING SetEnvIf (encountered some apache config problems)
+
+use lib '/var/www/cgi-bin/search/v1.1';
 
 use CCDB::Driver;
 use CCDB::Query;

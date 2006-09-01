@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<project name="CellCircuits" default="deploy" basedir=".">
+
+ 	<property name="deploy.version" 
+                  value="v1.0"/>
+
+ 	<property name="dev.version" 
+                  value="v1.1"/>
+
+ 	<property name="deploy.docroot" 
+                  value="/var/www/html"/>
+
+ 	<property name="deploy.html" 
+                  value="${deploy.docroot}/search/${deploy.version}"/>
+
+ 	<property name="deploy.cgi" 
+                  value="/var/www/cgi-bin/search/${deploy.version}"/>
+	
+   	<target name="deploy" description="Deploy html and cgi-bin files">
+
+          <echo message="Copying html files"/>
+          <copy todir="${deploy.html}">
+             <fileset dir="html" followsymlinks="no" defaultexcludes="yes"
+                      excludes="test,bin"/>
+          </copy>
+          
+          <echo message="Copying cgi-bin files"/>
+          <copy todir="${deploy.cgi}">
+             <fileset dir="cgi-bin" followsymlinks="no" defaultexcludes="yes"/>
+          </copy>
+
+          <echo message="Updating permissions"/>
+          <chmod dir="${deploy.html}" perm="444" 
+                 includes="**/*"/>
+          <chmod dir="${deploy.cgi}" perm="444" 
+                 includes="**/*"/>
+          <chmod dir="${deploy.cgi}" 
+                 includes="search.pl,get_genes_by_eid.pl" 
+                 perm="ugo+x"/>
+
+          <echo message="Updating version strings"/>
+          <exec executable="update-version.sh" inputstring="y">
+              <arg line="${deploy.html} ${deploy.cgi} ${dev.version} ${deploy.version}"/>
+          </exec>
+
+          <echo message="Removing backup files"/>
+          <delete>
+             <fileset dir="${deploy.cgi}" includes="**/*.backup"/>
+             <fileset dir="${deploy.html}" includes="**/*.backup"/>
+          </delete>
+
+          <echo message="Creating sym links in ${deploy.html}"/>
+          <exec executable="create-html-links.sh">
+              <arg line="${deploy.docroot} ${deploy.html}"/>
+          </exec>
+
+	</target>
+
+</project>

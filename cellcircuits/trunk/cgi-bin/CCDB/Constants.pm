@@ -20,7 +20,7 @@ our @EXPORT_OK = qw($cgi_version
 		    );
 our $VERSION = 1.0;
 
-our $cgi_version  = "v1.1";
+our $cgi_version  = "v1.0";
 our $cgi_url      = "/cgi-bin/search/$cgi_version";
 
 our $search_url   = "";
