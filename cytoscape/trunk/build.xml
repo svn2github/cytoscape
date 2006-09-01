@@ -16,6 +16,7 @@
 
 	<!-- The directory containing library jar files -->
 	<property name="lib.dir" value="${basedir}/lib" />
+	<property environment="env"/>
 
 	<!-- The directory containing library jar files only for testing and building
 				These files should not be in the release lib directory. 
@@ -211,6 +212,11 @@
 	              tofile="${build.classes}/cytoscape/images/CytoscapeSplashScreen.svg" 
 		      filtering="true"
 		      overwrite="true"/>
+	        <filter token="version" value="${version}"/>
+		<copy file="images/CytoscapeCredits.svg" 
+	              tofile="${build.classes}/cytoscape/images/CytoscapeCredits.svg" 
+		      filtering="true"
+		      overwrite="true"/>
 		<available property="splashUpToDate" 
 		           file="${build.classes}/cytoscape/images/CytoscapeSplashScreen.png"/>
 		<antcall target="createSplash" />
@@ -218,6 +224,8 @@
 	<target name="createSplash" unless="splashUpToDate" >
 	        <rasterize src="${build.classes}/cytoscape/images/CytoscapeSplashScreen.svg"
 			   dest="${build.classes}/cytoscape/images/CytoscapeSplashScreen.png" />
+	        <rasterize src="${build.classes}/cytoscape/images/CytoscapeCredits.svg"
+			   dest="${build.classes}/cytoscape/images/CytoscapeCredits.png" />
 	</target>
 
 	<!-- ======================================================= -->
@@ -549,6 +557,7 @@
 
 		<copy file="user_docs/INSTALL.txt" todir="${release.dir}" />
 		<copy file="user_docs/LICENSE.txt" todir="${release.dir}" />
+		<copy file="user_docs/LICENSE.html" todir="${release.dir}" />
 		<copy file="user_docs/Cytoscape_2.3_User_Manual.pdf" todir="${release.dir}" />
 
 		<!-- Copy over Sample Data Files -->
@@ -859,5 +868,26 @@
 		</copy>
 	</target>
 
+	<!-- ======================================================= -->
+	<!-- Creates the distribution files that users will use to   -->
+	<!-- actually install cytoscape.                             -->
+	<!-- NOTE - you MUST have install4j installed on your system -->
+	<!-- with the environment variable INSTALL4J_HOME set and    -->
+	<!-- pointing to said installation.                          -->
+	<!-- The cytoscape team has a floating license, contact us   -->
+	<!-- for access.                                             -->
+	<!-- ======================================================= -->
+	<taskdef name="install4j"
+	         classname="com.install4j.Install4JTask"
+       	         classpath="${env.INSTALL4J_HOME}/bin/ant.jar"/>
+					                   
+	<target name="media">
+		<filter token="version" value="${version}"/>
+		<copy file="tools/Cytoscape.install4j"
+		      tofile="build/Cytoscape.install4j" 
+		      filtering="true"
+		      overwrite="true"/>
+		<install4j projectfile="build/Cytoscape.install4j"/>
+	</target>
 
 </project>
