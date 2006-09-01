@@ -5,12 +5,6 @@ import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.index.TextIndexFactory;
 import junit.framework.TestCase;
 
-import java.text.Collator;
-import java.text.RuleBasedCollator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
-
 /**
  * Unit Tests for TextIndexImpl.
  *
@@ -116,6 +110,7 @@ public class TestTextIndex extends TestCase {
 
     /**
      * Test modified sort order.
+     * @throws Exception All Errors.
      */
     public void testSortOrder() throws Exception {
         TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
@@ -125,7 +120,8 @@ public class TestTextIndex extends TestCase {
         textIndex.addToIndex("rainbow trout", new Integer(4));
         textIndex.addToIndex("RABBIT", new Integer(5));
 
-        //  Verify that strings starting beginning with letters appear at beginning of list.
+        //  Verify that strings starting beginning with letters appear
+        //  at beginning of list.
         Hit hits[] = textIndex.getHits("", Integer.MAX_VALUE);
         assertEquals ("rabbit", hits[0].getKeyword());
         assertEquals ("rainbow", hits[1].getKeyword());
