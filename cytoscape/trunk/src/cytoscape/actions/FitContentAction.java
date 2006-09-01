@@ -43,8 +43,6 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 //-------------------------------------------------------------------------
-import edu.umd.cs.piccolo.activities.PTransformActivity;
-import edu.umd.cs.piccolo.util.PBounds;
 import giny.view.*;
 // import cytoscape.giny.Phoeb*NetworkView;
 
