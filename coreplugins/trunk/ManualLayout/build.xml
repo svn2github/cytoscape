@@ -20,6 +20,7 @@
     <property name="nowarn" value="false"/>
     <property name="fork" value="false"/>
     <property name="ManualLayout.root.dir" value="."/>
+    <property name="ManualLayout.lib.dir" value="${ManualLayout.root.dir}/lib"/>
 
     <!-- Cytoscape directory -->
     <property name="cytoscape.root.dir" value="../../cytoscape"/>
@@ -54,7 +55,7 @@
       <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>
+      <pathelement location="${ManualLayout.lib.dir}/cytoscape-graph-layout.jar"/>
       <pathelement path="${project.class.path}/"/>
     </path>
 
