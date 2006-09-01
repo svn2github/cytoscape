@@ -116,6 +116,16 @@ public class QuickFindConfigDialog extends JDialog {
     }
 
     /**
+     * Enable / Disable Apply Button.
+     * @param enable Enable flag;
+     */
+    void enableApplyButton (boolean enable) {
+        if (applyButton != null) {
+            applyButton.setEnabled(enable);
+        }
+    }
+
+    /**
      * Creates Button Panel.
      *
      * @return JPanel Object.
@@ -260,7 +270,7 @@ public class QuickFindConfigDialog extends JDialog {
         TableModel model = new DefaultTableModel(columnNames, 5);
 
         DetermineDistinctValuesTask task = new DetermineDistinctValuesTask
-                (model, attributeKey);
+                (model, attributeKey, this);
 
         JTaskConfig config = new JTaskConfig();
         config.setAutoDispose(true);
@@ -449,15 +459,20 @@ class ReindexQuickFind implements Task {
 class DetermineDistinctValuesTask implements Task {
     private TableModel tableModel;
     private String attributeKey;
+    private QuickFindConfigDialog parentDialog;
     private TaskMonitor taskMonitor;
 
     public DetermineDistinctValuesTask (TableModel tableModel,
-            String attributeKey) {
+            String attributeKey, QuickFindConfigDialog parentDialog) {
         this.tableModel = tableModel;
         if (attributeKey.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
             attributeKey = QuickFind.UNIQUE_IDENTIFIER;
         }
         this.attributeKey = attributeKey;
+
+        //  Disable apply button, while task is in progress.
+        parentDialog.enableApplyButton(false);
+        this.parentDialog = parentDialog;
     }
 
     public void run() {
@@ -473,8 +488,11 @@ class DetermineDistinctValuesTask implements Task {
             for (int i = 0; i < values.length; i++) {
                 tableModel.setValueAt(values[i], i, 0);
             }
+            parentDialog.enableApplyButton(true);
         } else {
-            tableModel.setValueAt("No values found.", 0, 0);
+            tableModel.setValueAt("No values found in network:  "
+                    + network.getTitle() + ".  Cannot create index.",
+                    0, 0);
         }
     }
 
