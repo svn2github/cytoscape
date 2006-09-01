@@ -31,6 +31,9 @@
     <ant dir="graph.fixed"/>
     <copy todir="${build.dir}" file="graph.fixed/cytoscape-graph-fixed.jar"/>
 
+    <ant dir="nerius.math.xform"/>
+    <copy todir="${build.dir}" file="nerius.math.xform/com-nerius-math-xform.jar"/>
+
     <ant dir="obo"/>
     <copy todir="${build.dir}" file="obo/cytoscape-cruft-obo.jar"/>
 
@@ -60,6 +63,7 @@
     <ant dir="geom.spacial" target="clean"/>
     <ant dir="graph.dynamic" target="clean"/>
     <ant dir="graph.fixed" target="clean"/>
+    <ant dir="nerius.math.xform" target="clean"/>
     <ant dir="obo" target="clean"/>
     <ant dir="render.export" target="clean"/>
     <ant dir="render.immed" target="clean"/>
