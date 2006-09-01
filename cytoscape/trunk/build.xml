@@ -256,7 +256,7 @@
 		       source="1.5" 
 		       optimize="on" 
 		       includeAntRuntime="false" 
-		       deprecation="yes">
+		       deprecation="no">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
 		</javac>
@@ -887,7 +887,7 @@
             ---------------------------------------
 		</echo>
 
-		<copy file="${basedir}/cy1.jnlp" tofile="${webstart.dir}/cy1.jnlp" />
+		<copy file="${basedir}/resources/cy1.jnlp" tofile="${webstart.dir}/cy1.jnlp" />
 
 
 		<copy file="${basedir}/cytoscape.jar" tofile="${webstart.dir}/cytoscape.jar" />
@@ -911,7 +911,7 @@
 	        </echo>
 		<copy file="${basedir}/cytoscape.props" tofile="${webstart.dir}/cytoscape.props" />
 		<copy file="${basedir}/vizmap.props" tofile="${webstart.dir}/vizmap.props" />
-		<copy file="${basedir}/tax_report.txt" tofile="${webstart.dir}/tax_report.txt" />
+		<copy file="${basedir}/props/tax_report.txt" tofile="${webstart.dir}/tax_report.txt" />
 
 		<!-- Copy over Webstart PlugIns -->
 		<echo>
