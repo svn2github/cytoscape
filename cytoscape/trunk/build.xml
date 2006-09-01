@@ -239,7 +239,6 @@
 	<target name="clean" depends="clean-generated" description="Removes all generated files.">
 		<delete dir="${build.dir}" />
 		<delete file="${basedir}/cytoscape.jar" />
-		<delete file="${basedir}/cytoscape.props" />
 	</target>
 
 	<!-- ======================================================= -->
@@ -270,7 +269,7 @@
 		<echo>Copying resources/ directory to build</echo>
 		<copy todir="${build.classes}/cytoscape/resources">
 			<fileset dir="${basedir}/resources" />
-			<fileset file="${basedir}/props/tax_report.txt" />
+			<fileset file="${basedir}/resources/props/tax_report.txt" />
 		</copy>
 
 
@@ -441,9 +440,9 @@
 		      todir="${build.dir}/temp/META-INF/services" />
 		<copy file="${basedir}/tools/jars/org.freehep.util.export.ExportFileType" 
 		      todir="${build.dir}/temp/META-INF/services" />
-		<copy file="${basedir}/props/vizmap.props" 
+		<copy file="${basedir}/resources/props/vizmap.props" 
 		      todir="${build.classes}" />
-		<copy file="${basedir}/props/cytoscape.props" 
+		<copy file="${basedir}/resources/props/cytoscape.props" 
 		      todir="${build.classes}" />
 
 		<jar destfile="${basedir}/cytoscape.jar" 
@@ -624,14 +623,6 @@
 		<chmod perm="+x" file="${release.dir}/cytoscape.bat" />
 		<chmod perm="+x" file="${release.dir}/cytoscape.sh" />
 
-		<!-- Copy over props files -->
-		<echo>
-            ---------------------------------------
-            Copying over all property files.
-            ---------------------------------------
-		</echo>
-
-		<!-- Copy over Txt/PDF files -->
 		<echo>
             ---------------------------------------
             Copying over user documentation and Cytoscape License.
@@ -684,7 +675,7 @@
 				<include name="gene_association.goa_human" />
 			</fileset>
 		</copy>
-		<copy file="${basedir}/props/tax_report.txt" tofile="${release.dir}/annotation/tax_report.txt" />
+		<copy file="${basedir}/resources/props/tax_report.txt" tofile="${release.dir}/annotation/tax_report.txt" />
 
 		<!-- Copy over Third Party Licenses -->
 		<echo>
@@ -868,20 +859,6 @@
 		<mkdir dir="${webstart.dir}/plugins" />
 
 		<echo>
-             ------------------------------------
-             All Files in the data directory are
-             being included in data.jar
-             ------------------------------------
-		</echo>
-
-		<jar destfile="${webstart.dir}/data.jar" 
-		     basedir="data" 
-		     includes="**" />
-		<signjar jar="${webstart.dir}/data.jar" 
-		         alias="cytoscape" 
-			 storepass="secret" />
-
-		<echo>
             ---------------------------------------
             Copying over all necessary JAR files.
             ---------------------------------------
@@ -909,9 +886,9 @@
             Copying over all property files.
             ---------------------------------------
 	        </echo>
-		<copy file="${basedir}/cytoscape.props" tofile="${webstart.dir}/cytoscape.props" />
-		<copy file="${basedir}/vizmap.props" tofile="${webstart.dir}/vizmap.props" />
-		<copy file="${basedir}/props/tax_report.txt" tofile="${webstart.dir}/tax_report.txt" />
+		<copy file="${basedir}/resources/props/cytoscape.props" tofile="${webstart.dir}/cytoscape.props" />
+		<copy file="${basedir}/resources/props/vizmap.props" tofile="${webstart.dir}/vizmap.props" />
+		<copy file="${basedir}/resources/props/tax_report.txt" tofile="${webstart.dir}/tax_report.txt" />
 
 		<!-- Copy over Webstart PlugIns -->
 		<echo>
