@@ -1,6 +1,5 @@
-package cytoscape.test.task.ui;
+package cytoscape.task.ui;
 
-import cytoscape.task.ui.StringUtils;
 import junit.framework.TestCase;
 
 /**
