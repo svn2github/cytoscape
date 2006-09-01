@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="3.2.4">
   <directoryPresets config="./cytoscape-v%VERSION%" />
-  <application name="Cytoscape" distributionSourceDir="" applicationId="5211-3645-3154-2580" mediaDir="." mediaFilePattern="%SHORT_NAME%_%VERSION%_%PLATFORM%" compression="6" lzmaCompression="false" keepModificationTimes="false" shortName="Cytoscape" publisher="Cytoscape Consortium" publisherWeb="http://cytoscape.org" version="@version@" allPathsRelative="true" backupOnSave="false" autoSave="false" macSignature="????" javaMinVersion="1.4.2" javaMaxVersion="" allowBetaVM="true">
+  <application name="Cytoscape" distributionSourceDir="" applicationId="5211-3645-3154-2580" mediaDir="dist" mediaFilePattern="%SHORT_NAME%_%VERSION%_%PLATFORM%" compression="6" lzmaCompression="false" keepModificationTimes="false" shortName="Cytoscape" publisher="Cytoscape Consortium" publisherWeb="http://cytoscape.org" version="@version@" allPathsRelative="true" backupOnSave="false" autoSave="false" macSignature="????" javaMinVersion="1.4.2" javaMaxVersion="" allowBetaVM="true">
     <searchSequence>
       <registry />
       <envVar name="JAVA_HOME" />
@@ -74,7 +74,7 @@
     <customScreens />
   </installerGui>
   <mediaSets>
-    <macosFolder name="Mac OS X Folder" id="9" mediaFileName="" installDir="Cytoscape_%VERSION%" allLaunchers="false" customInstallBaseDir="" allowUserStartAfterFinish="false" launchExecutableId="" createUninstallIcon="true" overrideLicenseFile="false" licenseFile="" overridePreInformationFile="false" preInformationFile="" overridePostInformationFile="false" postInformationFile="" adminRequired="false" languageID="en" modeDesktopIcon="1" desktopLauncherId="" customScriptMode="1" customScriptFile="">
+    <macosFolder name="Mac OS X Folder" id="9" mediaFileName="" installDir="Cytoscape_v%VERSION%" allLaunchers="false" customInstallBaseDir="" allowUserStartAfterFinish="false" launchExecutableId="" createUninstallIcon="true" overrideLicenseFile="false" licenseFile="" overridePreInformationFile="false" preInformationFile="" overridePostInformationFile="false" postInformationFile="" adminRequired="false" languageID="en" modeDesktopIcon="1" desktopLauncherId="" customScriptMode="1" customScriptFile="">
       <selectedLaunchers>
         <launcher id="3" />
       </selectedLaunchers>
@@ -84,7 +84,7 @@
       <excludedScreenIds />
       <customScriptLines />
     </macosFolder>
-    <win32 name="Windows" id="11" mediaFileName="" installDir="Cytoscape_%VERSION%" allLaunchers="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" customInstallBaseDir="" allowUserStartAfterFinish="false" launchExecutableId="" createUninstallIcon="true" overrideLicenseFile="false" licenseFile="" overridePreInformationFile="false" preInformationFile="" overridePostInformationFile="false" postInformationFile="" adminRequired="false" languageID="en" modeDesktopIcon="1" desktopLauncherId="" programGroup="Cytoscape" allowUserDisableStartMenuCreation="false" reboot="false" rebootUninstaller="false" modeQuickLaunchIon="1">
+    <win32 name="Windows" id="11" mediaFileName="" installDir="Cytoscape_v%VERSION%" allLaunchers="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" customInstallBaseDir="" allowUserStartAfterFinish="false" launchExecutableId="" createUninstallIcon="true" overrideLicenseFile="false" licenseFile="" overridePreInformationFile="false" preInformationFile="" overridePostInformationFile="false" postInformationFile="" adminRequired="false" languageID="en" modeDesktopIcon="1" desktopLauncherId="" programGroup="Cytoscape" allowUserDisableStartMenuCreation="false" reboot="false" rebootUninstaller="false" modeQuickLaunchIon="1">
       <selectedLaunchers>
         <launcher id="3" />
       </selectedLaunchers>
@@ -94,7 +94,7 @@
       <excludedScreenIds />
       <additionalStartMenuEntries />
     </win32>
-    <unixInstaller name="Unix Installer" id="12" mediaFileName="" installDir="Cytoscape_%VERSION%" allLaunchers="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" customInstallBaseDir="" allowUserStartAfterFinish="false" launchExecutableId="" createUninstallIcon="true" overrideLicenseFile="false" licenseFile="" overridePreInformationFile="false" preInformationFile="" overridePostInformationFile="false" postInformationFile="" adminRequired="false" languageID="en" modeDesktopIcon="1" desktopLauncherId="" customScriptMode="1" customScriptFile="">
+    <unixInstaller name="Unix Installer" id="12" mediaFileName="" installDir="Cytoscape_v%VERSION%" allLaunchers="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" customInstallBaseDir="" allowUserStartAfterFinish="false" launchExecutableId="" createUninstallIcon="true" overrideLicenseFile="false" licenseFile="" overridePreInformationFile="false" preInformationFile="" overridePostInformationFile="false" postInformationFile="" adminRequired="false" languageID="en" modeDesktopIcon="1" desktopLauncherId="" customScriptMode="1" customScriptFile="">
       <selectedLaunchers>
         <launcher id="3" />
       </selectedLaunchers>
