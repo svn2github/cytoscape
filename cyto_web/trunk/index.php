@@ -51,19 +51,19 @@
 					<td width="440" valign="bottom" align="right">
 						<div id="article">
 							<h2>
-								<a href="download.php?file=cyto2_3_1">
-									Download Cytoscape 2.3.1!
+								<a href="download.php?file=cyto2_3_2">
+									Download Cytoscape 2.3.2!
 								</a>
 							</h2>
 							<p>
-								New!&nbsp; Cytoscape 2.3.1 is now available.
+								New!&nbsp; Cytoscape 2.3.2 is now available.
 								<br>
 								<br>
 									<a href="cyto_2_3_features.php">
-									2.3.1 Release Notes &raquo;
+									2.3.2 Release Notes &raquo;
 									</a>
 								<br>
-									<a href="download.php?file=cyto2_3_1">
+									<a href="download.php?file=cyto2_3_2">
 									Download &raquo;
 								</a>
 								<br>
@@ -89,7 +89,26 @@
 								<br>
 								<p>
 								<big><b>
-									<i>New!</i>&nbsp;&nbsp;Cytoscape 2.3.1
+									<i>New!</i>&nbsp;&nbsp;Cytoscape 2.3.2
+								</b></big>
+								<table width="100%">
+									<tr valign="top">
+										<td width="47%" valign="top">
+											<br>
+											(Updated 9/1/2006)
+											<br>
+										This release fixes a bug that made it impossible to save session files on Windows systems.  No new features.	
+											<br>
+										</td>
+									</tr>
+								</table>
+							</div>
+								<p>
+							<div class="item">
+								<br>
+								<p>
+								<big><b>
+									&nbsp;&nbsp;Cytoscape 2.3.1
 								</b></big>
 								<table width="100%">
 									<tr valign="top">
@@ -108,7 +127,7 @@
 								<br>
 								<p>
 								<big><b>
-									<i>New!</i>&nbsp;&nbsp;Cytoscape 2.3
+									&nbsp;&nbsp;Cytoscape 2.3
 								</b></big>
 								<table width="100%">
 									<tr valign="top">
@@ -134,11 +153,11 @@
 												<li>Re-organized menu system</li>
 												<li>Many performance improvements and bug fixes</li>
 											</ul>
-											<a HREF="cyto_2_3_features.php">Cytoscape 2.3.1 Release Notes</a>.1
+											<a HREF="cyto_2_3_features.php">Cytoscape 2.3.2 Release Notes</a>.1
 										</td>
 										<td valign="top">
 											<A HREF="screenshots/cytoscapeMainWindowv2_3.png">
-												<img src="screenshots/cyto_2_3_thumb.png" border="0" align="left" alt="Cytoscape 2.3.1 Screenshot" />
+												<img src="screenshots/cyto_2_3_thumb.png" border="0" align="left" alt="Cytoscape 2.3.2 Screenshot" />
 											</A>
 										</td>
 									</tr>

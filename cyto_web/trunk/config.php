@@ -77,6 +77,16 @@ $cyto2_3_1_zip_east = $chianti_base."Cyto-2_3_1/cytoscape-v2.3.1.zip";
 $cyto2_3_1_source_east = $chianti_base."Cyto-2_3_1/cytoscapeSource-v2.3.1.tar.gz";
 $cyto2_3_1_mac_east = $chianti_base."Cyto-2_3_1/Cytoscape-v2.3.1.dmg.zip";
 
+#################################################
+# Cytoscape 2.3.2 Release File Names
+#################################################
+$cyto2_3_2_gz_east = $chianti_base."Cyto-2_3_2/cytoscape-v2.3.2.tar.gz";
+$cyto2_3_2_zip_east = $chianti_base."Cyto-2_3_2/cytoscape-v2.3.2.zip";
+$cyto2_3_2_source_east = $chianti_base."Cyto-2_3_2/cytoscapeSource-v2.3.2.tar.gz";
+
+$cyto2_3_2_mac = $chianti_base."Cyto-2_3_2/Cytoscape_2_3_2_macos.dmg";
+$cyto2_3_2_windows = $chianti_base."Cyto-2_3_2/Cytoscape_2_3_2_windows.exe";
+$cyto2_3_2_linux = $chianti_base."Cyto-2_3_2/Cytoscape_2_3_2_unix.sh";
 
 #################################################
 # URL for Cytoscape Install Anywhere
