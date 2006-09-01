@@ -460,10 +460,10 @@ class FRootGraph implements RootGraph, DynamicGraph
                              getEdgeSourceIndex(adjacentEdgeIndices[i]) ^
                              getEdgeTargetIndex(adjacentEdgeIndices[i]));
         neighbors.put(~neighborIndex); }
-      IntEnumerator enum = neighbors.elements();
-      java.util.ArrayList list = new java.util.ArrayList(enum.numRemaining());
-      while (enum.numRemaining() > 0)
-        list.add(getNode(~(enum.nextInt())));
+      IntEnumerator enumx = neighbors.elements();
+      java.util.ArrayList list = new java.util.ArrayList(enumx.numRemaining());
+      while (enumx.numRemaining() > 0)
+        list.add(getNode(~(enumx.nextInt())));
       return list; }
     else { return null; } }
 

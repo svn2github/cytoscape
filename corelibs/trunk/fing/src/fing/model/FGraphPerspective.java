@@ -552,10 +552,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
                            getEdgeSourceIndex(adjacentEdgeIndices[i]) ^
                            getEdgeTargetIndex(adjacentEdgeIndices[i]));
       neighbors.put(~neighborIndex); }
-    IntEnumerator enum = neighbors.elements();
-    final int[] returnThis = new int[enum.numRemaining()];
+    IntEnumerator enumx = neighbors.elements();
+    final int[] returnThis = new int[enumx.numRemaining()];
     int index = -1;
-    while (enum.numRemaining() > 0) returnThis[++index] = ~(enum.nextInt());
+    while (enumx.numRemaining() > 0) returnThis[++index] = ~(enumx.nextInt());
     return returnThis; }
 
   public boolean isNeighbor(Node a, Node b) {
@@ -1240,10 +1240,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
         final GraphPerspectiveChangeListener listener = m_lis[0];
         if (listener != null) {
           final Node[] successArr = new Node[successes.size()];
-          final IntEnumerator enum = successes.elements();
+          final IntEnumerator enumx = successes.elements();
           int index = -1;
-          while (enum.numRemaining() > 0)
-            successArr[++index] = m_root.getNode(rootNodeInx[enum.nextInt()]);
+          while (enumx.numRemaining() > 0)
+            successArr[++index] = m_root.getNode(rootNodeInx[enumx.nextInt()]);
           listener.graphPerspectiveChanged
             (new GraphPerspectiveNodesHiddenEvent(source, successArr)); } }
       return returnThis;
@@ -1266,10 +1266,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
         final GraphPerspectiveChangeListener listener = m_lis[0];
         if (listener != null) {
           final Node[] successArr = new Node[successes.size()];
-          final IntEnumerator enum = successes.elements();
+          final IntEnumerator enumx = successes.elements();
           int index = -1;
-          while (enum.numRemaining() > 0)
-            successArr[++index] = nodes[enum.nextInt()];
+          while (enumx.numRemaining() > 0)
+            successArr[++index] = nodes[enumx.nextInt()];
           listener.graphPerspectiveChanged
             (new GraphPerspectiveNodesHiddenEvent(source, successArr)); } }
     }
@@ -1319,10 +1319,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
         final GraphPerspectiveChangeListener listener = m_lis[0];
         if (listener != null) {
           final Edge[] successArr = new Edge[successes.size()];
-          final IntEnumerator enum = successes.elements();
+          final IntEnumerator enumx = successes.elements();
           int index = -1;
-          while (enum.numRemaining() > 0)
-            successArr[++index] = m_root.getEdge(rootEdgeInx[enum.nextInt()]);
+          while (enumx.numRemaining() > 0)
+            successArr[++index] = m_root.getEdge(rootEdgeInx[enumx.nextInt()]);
           listener.graphPerspectiveChanged
             (new GraphPerspectiveEdgesHiddenEvent(source, successArr)); } }
       return returnThis;
@@ -1341,10 +1341,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
         final GraphPerspectiveChangeListener listener = m_lis[0];
         if (listener != null) {
           final Edge[] successArr = new Edge[successes.size()];
-          final IntEnumerator enum = successes.elements();
+          final IntEnumerator enumx = successes.elements();
           int index = -1;
-          while (enum.numRemaining() > 0)
-            successArr[++index] = edges[enum.nextInt()];
+          while (enumx.numRemaining() > 0)
+            successArr[++index] = edges[enumx.nextInt()];
           listener.graphPerspectiveChanged
             (new GraphPerspectiveEdgesHiddenEvent(source, successArr)); } }
     }
