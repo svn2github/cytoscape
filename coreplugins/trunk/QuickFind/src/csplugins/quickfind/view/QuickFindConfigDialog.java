@@ -55,6 +55,21 @@ public class QuickFindConfigDialog extends JDialog {
     private TextIndex currentTextIndex;
 
     /**
+     * Apply Text.
+     */
+    private static final String BUTTON_INDEX_TEXT = "Index Network";
+
+    /**
+     * Reindex Text.
+     */
+    private static final String BUTTON_REINDEX_TEXT = "Reindex Network";
+
+    /**
+     * Apply Button.
+     */
+    private JButton applyButton;
+
+    /**
      * Constructor.
      */
     public QuickFindConfigDialog() {
@@ -119,7 +134,7 @@ public class QuickFindConfigDialog extends JDialog {
         });
 
         //  Apply Button
-        JButton applyButton = new JButton("Apply");
+        applyButton = new JButton(BUTTON_REINDEX_TEXT);
         applyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 QuickFindConfigDialog.this.setVisible(false);
@@ -127,25 +142,21 @@ public class QuickFindConfigDialog extends JDialog {
 
                 String newAttribute = (String)
                         attributeComboBox.getSelectedItem();
-                String currentAttribute =
-                        currentTextIndex.getControllingAttribute();
-                if (!newAttribute.equals(currentAttribute)) {
-                    ReindexQuickFind task = new ReindexQuickFind
-                            (currentNetwork, newAttribute);
-                    JTaskConfig config = new JTaskConfig();
-                    config.setAutoDispose(true);
-                    config.displayStatus(true);
-                    config.displayTimeElapsed(false);
-                    config.displayCloseButton(true);
-                    config.setOwner(Cytoscape.getDesktop());
-                    config.setModal(true);
+                ReindexQuickFind task = new ReindexQuickFind
+                        (currentNetwork, newAttribute);
+                JTaskConfig config = new JTaskConfig();
+                config.setAutoDispose(true);
+                config.displayStatus(true);
+                config.displayTimeElapsed(false);
+                config.displayCloseButton(true);
+                config.setOwner(Cytoscape.getDesktop());
+                config.setModal(true);
 
-                    //  Execute Task via TaskManager
-                    //  This automatically pops-open a JTask Dialog Box.
-                    //  This method will block until the JTask Dialog Box
-                    //  is disposed.
-                    TaskManager.executeTask(task, config);
-                }
+                //  Execute Task via TaskManager
+                //  This automatically pops-open a JTask Dialog Box.
+                //  This method will block until the JTask Dialog Box
+                //  is disposed.
+                TaskManager.executeTask(task, config);
             }
         });
         buttonPanel.add(Box.createHorizontalGlue());
@@ -329,6 +340,18 @@ public class QuickFindConfigDialog extends JDialog {
             //  Add Action Listener
             attributeComboBox.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+
+                    //  First, set text of apply button
+                    String currentAttribute =
+                        currentTextIndex.getControllingAttribute();
+                    String newAttribute = (String)
+                        attributeComboBox.getSelectedItem();
+                    if (currentAttribute.equalsIgnoreCase(newAttribute)) {
+                        applyButton.setText(BUTTON_REINDEX_TEXT);
+                    } else {
+                        applyButton.setText(BUTTON_INDEX_TEXT);
+                    }
+
                     addTableModel(sampleAttributeValuesTable);
                     setAttributeDescription();
                 }
