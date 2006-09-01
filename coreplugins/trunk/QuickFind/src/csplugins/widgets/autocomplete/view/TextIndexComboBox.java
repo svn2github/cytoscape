@@ -273,11 +273,6 @@ class UserKeyListener extends KeyAdapter {
                         (editor.getSelectionStart()
                                 != editor.getSelectionEnd());
                 break;
-                // ignore delete key
-            case KeyEvent.VK_DELETE :
-                e.consume();
-                comboBox.getToolkit().beep();
-                break;
             case KeyEvent.VK_UP:
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_PAGE_DOWN:
