@@ -1,0 +1,48 @@
+Participants: Iliana, Ethan, Gary, Rob, Chris, Iliana, Rowan, Andrew, Ryan
+
+Bugs:
+1. Vizmapper bug and giny height/width bug - This may be a bug combination -
+Ethan and Rowan will coordinate to fix this.
+2. Node selection bug is really a menu bug - current work around is to
+reselect 'select nodes' in selection menu.
+3. Make sure Rob is testing 3 ways of loading plugins - props loading is
+used in webstart, command line and menu loading.  Plugins loaded from the
+command line do not always appear in new windows.
+4. Variable zooming - left-right mouse movement zooms in and out.
+5. Hiding question from an earlier call - Rowan and Ryan will coordinate to
+deal with this.
+6. Greying out of save menu doesn't work when a plugin creates nodes.  This
+is related to a deeper issue regarding stability of core graph data objects
+such as the rootgraph and graph perspective when new graphs are loaded.
+	Two features are currently affected by this.
+1.	Graying out menus is implemented using listeners, but these can be
+lost.
+2.	plugins can lose a reference to the current graph (root or
+perspective). This can cause loss of data integrity in the plugins and
+memory leaks.
+
+Resolution: Andrew will look into this to see how to fix this and report
+back to the group.  It might be a major fix.  In the meantime, we should
+move features that depend on it to a post 2.0 release e.g. menu graying out
+and node selections on empty graphs, etc.
+
+Getting to the next release candidate: Andrew will go through the remaining
+bugs sometime this week to see which ones absolutely need to be fixed and
+suggest the next release date for testing and closing many of the resolved
+bugs.
+
+Vizmap proposal from Ethan - We should have a new visual mapper props file
+that matches a simple tutorial in the manual.  This is a good idea.  Iliana
+suggested that the default visual mapper values should be the easiest things
+to render so that the graph loads faster up front.
+
+Report on the Osprey visit:
+The Osprey team are going to start writing some Cytoscape plugins to get the
+hang of things.  They will hopefully start writing their layouts as
+Cytoscape plugins.
+They will write a file format converter for graph and layout information.
+They will look into connecting GRID and Cobra (annotations database) to
+Cytoscape.
+
+
+

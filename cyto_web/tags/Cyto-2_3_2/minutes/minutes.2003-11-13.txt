@@ -1,0 +1,115 @@
+11/13/03
+Meeting Minutes
+
+Present: Rowan, Benno, Larissa, Andrew, Gary, Ethan, Rob
+
+Agenda
+-Release without yfiles
+-Release cvsdir5 release issues
+-Move csplugins to cvsdir5
+-Status of cvsdir5 (todo list)
+-Status of cPath
+
+-Release without yfiles
+----------------------------
+We want to provide external plugin writers an unrestricted version as
+quickly as possible.  Currently, we're missing filters, GML writer/reader,
+layouts compared to 1.1.
+
+We should do an internal release soon, with the current code in cvsdir5.
+This will give people access to the new structure, new API and
+documentation. 
+
+We discussed dropping yfiles.
+Pro: Would be geared towards plugin writers that might not have y-files and
+to serve as a milestone.
+Con: We need the yfiles layouts.  Larissa mentioned that one way to get
+around this is to provide the yfiles layouts in a plugin.  This is a good
+idea.
+We need to remain compatible with existing plugins.  We need to talk to
+Trey, Iliana and Vesteinn about compatibility issues.  Although they can
+still use cvsdir4 v1.1 and when we update the plugins, they will be
+available for version 2.
+
+Andrew noted that we can still provide the obfuscated executable that people
+can use GINY with.  Still a pain, but not a barrier.
+
+-Release cvsdir5 release issues
+-------------------------------------
+We want to release current version now so that people can start writing new
+plugins.  Andrew has done a lot of work to enable the plugin writers to know
+what they can do (API), etc.
+
+We will need two versions of the plugins page to support existing users, one
+for each Cytoscape version.
+
+Need to have an internal beta test period to find showstopping bugs.  Need a
+release that people can compile without y-files.  We have a couple of users
+that will use the GINY only version of Cytoscape.
+
+We should have a release document that explains to people what is ready to
+test and what's not.  Andrew can put this together.
+
+Andrew has been removing menu options for things that aren't supported.
+
+We have to change the scripts to use GINY as the default - Ethan can update
+the scripts and put together the release and give it to Andrew to put on a
+private web page with documentation.
+
+Technical point: Manifest files:  There are 2 of them: root and tools.
+We'll use the root one.
+
+-Todo list for new features for version 2
+-----------------------------------------------
+Andrew has compiled a list.  How should we prioritize?
+We generally agreed that we should prioritize finishing features that exist
+in v1.1 and then add new feature later in v2.1
+
+A non exhaustive list:
+Layout algorithms - Filters, remove y-file, undo manager, GML, Cytoscape is
+window centric - how to do command line only.  GraphObj attributes need
+refactoring, CyWindow needs cleanup, Cleanup of menu code, vizmapper needs
+cleanup (make UI more intuitive, fix bugs by refactoring e.g. Andrew found
+that graph is redrawn 20 times when vizmapper is pulled up, save a visual
+style to one file and other user comments), UI reworking.
+
+New functions - layout manager - save layouts, deal with layout better,
+annotation handling (ability to start up with annotations e.g. GO and KEGG),
+Issue how Cytoscape deals with startup and command line arguments.
+
+We decided the most important would be refactoring/cleaning up GraphObj
+Attributes (databases), Window management (headless mode, share data between
+windows), clean up visual mapper.  This will also help the MSK group to add
+features to the core when we start getting more time in the near future.
+
+-Move csplugins to cvsdir5
+--------------------------------
+We should restructure csplugins in cvsdir5.  Create user directories for
+user code and common stuff can have their own directories.  We should start
+moving old csplugins into cvsdir5 (make compatible with Giny).  All common
+plugins should use ant.
+
+Larissa will send an e-mail with this proposal to get more feedback.
+
+
+--
+
+Phil via Benno - Bug#75 - attribute files with both integers and double
+values.  Cytoscape guesses based on the first value.  Could be dealt with in
+a number of ways.  One user friendly way is to assume double if there is a
+guess or more complicated things like search the file to figure things out.
+Best solution would be to search the file and see what's in there.  Other
+things could be done, but we would want to keep things simple.
+
+cPath update from Gary
+-MSK group has built a PSI compliant database (called cPath) and Cytoscape
+plugins to link to it (e.g. retrieve interactions directly into Cytoscape
+from the DB).  In the next month or so, we'll have a functioning demo that
+we'll release to cytostaff to try out and get new feature requests.
+
+-Version 2 of cPath will add BioPAX compliance, which will mean ability for
+storing full pathways and genetic interactions.  We'll probably only be able
+to start this in Feb-March.
+
+
+

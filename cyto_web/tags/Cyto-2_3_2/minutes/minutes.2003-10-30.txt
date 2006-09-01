@@ -1,0 +1,43 @@
+10/30/03
+Meeting Minutes
+
+Present: Benno, Andrew, Rowan, Larissa, Ethan, Trey.
+
+1.  Next release and jar files.
+
+Ethan checked in the release changes to the cvs dir4 and cvs dir5. Right 
+now  in cvs dir5  lib directory we have a list of jar files that you 
+need to run cytoscape. Do we create a one big cytoscape.jar file and 
+bundle all the libraries there or do we keep the separate jars in the 
+lib? There are advantages and disadvantages in both cases. We desided 
+that 1)Rowan will check in all giny jar files to the cvs,
+2)Ethan will change build.xml to create one  huge cytoscape.jar when you 
+are doing release/ distribution.
+
+2. Rowan asked the question how we are loading plugins with the 
+Cytoscape running from WebStart? Good question, Andrew will look in to 
+that, there must be the way to specify plugins directory in WebStart...
+Eventually we would like to have a smart plugin loader that perhaps 
+looks on the web-site and gives you a list of available plugins, etc.
+
+Ethan checked out cvsdir5 and will play(test) it farther. So far he 
+likes it...
+
+It would be nice to convert DataServices plugins to use giny.
+
+Trey joins the meeting.
+- Cytoscape paper is out next week on the Genome Research.
+- With in next two weeks we will hear the score of the Cytoscape grant. 
+We are hoping to get a good score!
+
+-Chris is working on GML writer-reader.
+
+3) Giny-refactoring update.
+We discussed the progress after the meeing at ISB and Benno will send 
+everybody a summary of the Giny/Refactoring  development updates with 
+the time estimates. ( Sneak preview: We will try to have beta release of 
+giny version for the group review and testing next Thursday :-) )
+
+
+
+

@@ -1,0 +1,30 @@
+Cytoscape Meeting Minutes
+Date:  July 29, 2004
+
+Present:  Trey, Rowan, Rob, Chris, Ethan
+
+I.  New Programmer
+
+Trey has a new Cytoscape programmer starting today.  His name is Nerius,
+and he will be attending the Cytoscape retreat.
+
+Nerius will probably start with a few new pages on the cytoscape.org web
+site.  He will then start working on a general  "Pathway Editor"  This
+would enable users to add Node / Edge attributes directly without having
+to load up specific files.  Trey suggested that we might simply start out
+by cloning or reproducing the functionality of the YFiles YEd interface.
+
+At some point, Trey would also like to resurrect the Undo manager.
+
+Chris wondered if we are currently happy with the current data structure
+we use for storing attributes.
+
+Rowan:  we are not really that happy.  We should probably refactor
+graphObject attributes.
+
+II. Large Networks
+
+A user wrote to Ethan, who subsequently wrote to the Google group re:
+very large networks.  Rowan says the large BIND files works fine on Linux,
+but Ethan can't get any of the them to render in Mac OS X.
+Rowan will look into the issue further.

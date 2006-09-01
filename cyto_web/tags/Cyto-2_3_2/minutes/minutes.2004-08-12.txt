@@ -1,0 +1,42 @@
+Minutes for Cytoscape conference call Thursday, August 12, 2004
+
+Attendance:
+Trey, Chris W., Gary, Ethan, Rowan
+
+Rowan, Iliana and others used Cytoscape 2.0 at a recent ISB course
+(proteomics and systems biology).  User feedback: using GO annotation was
+hard, filters were confusing to explain, but usable by some people, node
+browser was a little confusing initially.  Proposed solutions for GO
+annotation are to look at how other software does it e.g. GOMiner, and have
+a window available to show node attributes (like Osprey).  We should talk
+more about this at the retreat.
+
+Retreat update: 33 participants total now.  We have 2 conference rooms
+booked here that should be able to hold everyone.  We should prepare some
+ideas for feature prioritization and send any more agenda items to Gary.
+Gary will update this week and send out a more detailed schedule.  We have a
+room booked at Cornell medical center for a public Cytoscape tutorial: We
+should have someone give a scientific intro and then have a hands on
+tutorial (Rowan and Iliana have tutorial material prepared).  This is still
+open for discussion, since people won't have laptops, it may make more sense
+to just have a regular scientific talk with a short tutorial as a follow-on.
+
+Core group dinner on Tuesday night - let Gary know your flight schedules so
+we can plan the dinner.  Main dinner will be held on Wednesday night.
+
+A Hackathon e-mail will be sent out to hackathon participants - Rowan and
+Chris will organize.
+
+ISMB report.  Lots of Cytoscape interest. Jens Rick from Cellzome wants to
+donate some 3D network browser code.  Oracle and some other companies want
+to write Cytoscape plugsins. Cytoscape presentation went well, we should
+have a slide repository on the web somewhere where we can share slides.
+
+Recent hiring - Trey's two new people will start in 1.5 weeks.  Mark
+Anderson worked in Java at Sun.  Nerius Landys has a CS degree from Berkeley
+and Java experience from a dot-com.
+
+Unilever is paying for one programmer in Trey's group.  They're UK based and
+need to look at computer tools to avoid animal testing of cosmetic products.
+
+

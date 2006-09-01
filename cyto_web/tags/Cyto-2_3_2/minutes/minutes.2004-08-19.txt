@@ -1,0 +1,42 @@
+Hi guys,
+	I guess we forgot to assign a minute taker yesterday.  Here are some
+short notes I took:
+
+
+Thursday, August 19, 2004 notes
+
+Website:
+To edit the website, you don't have to have PHP, but it helps.  PHP is on by
+default on the Mac, so it is pretty easy to edit if you have a Mac.  Next
+easiest to use is Linux, since it is usually pre-installed, but might not be
+on.  Then Windows, where it is not installed, but available.
+
+When we use open source libraries, they might require a license file to be
+distributed.  We should have a section of our future developer site devoted
+to useful open source libraries that have been tested to work with
+Cytoscpae.
+
+GraphObjAttributes refactoring - Rowan is building some new classes as a
+proposal.
+
+Conference agenda items
+-Tutorial and documentation
+
+Data structures - annotations vs. attributes division. Data services and
+data models.
+
+-Build process - build.xml, targets, etc. should we split up build.xml to
+make it easier to deal with.
+
+-Anonymous CVS access. + build process.
+
+-Plugins expose - talk about all the different plugins - maybe some of them
+would end up as core.
+
+Focus areas of the developer team - what focus groups should be defined.
+
+Gary will soon update the retreat webpage with a detailed agenda and let
+everyone know.
+
+
+

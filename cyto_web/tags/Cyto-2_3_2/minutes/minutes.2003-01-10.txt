@@ -1,0 +1,110 @@
+Hi,
+        Here are the notes from Friday's meeting.  Please let me know about changes
+or additions.
+-Gary
+
+Minutes for Cytoscape conference call Jan.10.2003:
+
+Participants:
+Andrew Markiel
+Benno Schwikowski
+Chris Sander
+Gary Bader
+Trey Ideker
+
+1. Discuss Cytoscape?s use as an annotation tool. I.e. people can use the
+tool to annotate and exchange their own data sets using Java Webstart.  This
+is similar to ideas from GenMAPP.  This topic was postponed until more work
+has been done thinking about this.
+
+2. Grants
+
+Available grants so far:
+Benno mentioned a grant for software development (referred from ISB people
+including Nat Goodman) from the National Center for Research Resources
+http://grants1.nih.gov/grants/guide/pa-files/PA-02-141.html
+
+This grant is a continuing program until 2005.  Deadlines are Feb.1, Jun.1,
+fall
+R01 scheme ? max 500k/year
+Next task is to contact program officer for the grant.
+
+Chris voiced concern that this grant seems narrow, might be useful, but
+might want to have a grant to develop a broader community around the tool
+and collaborative research for pathways.
+
+Trey mentioned that the grant should support a database backend.
+
+Benno mentioned the possibility of grants for a biological problem which
+Cytoscape could be coupled with.
+
+Summary of grant types:
+3 types of grants:
+1.      Software grant ? purely for software development
+2.      Couple with a biological problem grant
+3.      Cytoscape as part of a community with associated database grant
+
+Action items:
+?       Benno ? talk to Nat Goodman and program officer and ask people who have
+submitted applications under the above grant
+?       Trey ? talk to Whitehead grants office
+?       Gary ? talk to MSKCC grants office
+?       Chris ? Call Jim Cassat at NIH and John Houghton at DOE
+?       E-mail each other with first round of grant research by Fri.Jan.17th
+
+Ballpark estimates of required funds:
+Just software: 600-700k
+Other grants: 500k to 1.5 million depending on scope
+A large NIGMS glue grant would be very ambitious but could bundle whole
+pathway community in with this and tie into AfCS.  E.g. AfCS is a large glue
+grant with 100s of participants funded at a level of 10 million/year (5
+million/year from NIGMS) over 10 years.
+
+Initial grant proposal could have the following:
+Executive summary:
+
+Keywords:
+
+Aims:
+
+Abstract:
+
+Details:
+
+Vocabulary associated with Cytoscape grant proposals:
+?       Project is open-source
+?       Multi-institute collaboration
+?       People are using the software
+?       3-4 publications that have used this software
+?       There is a manuscript describing the software
+?       Software is not sufficiently funded
+?       Software creates a collaborative framework i.e. people can add and share
+plugins as software modules
+?       Software could become a standard for communication for collaborative
+interaction
+?       Software could unify community around a core tool that us an extensible
+framework that can be added to by the community (open-source).
+?       Software is a tool for integrating heterogeneous data sets
+?       Software needs a database backend to support analysis of increased amount
+and types of data as well as for communicating data within collaborative
+groups
+?       The data sets currently being integrated include genomics and proteomics
+(molecular interactions, transcriptional profiling, genetic interactions),
+thus are being generated at a very high rate.  These new high data rate
+fields are lacking in analysis tools and Cytoscape fills this need.
+Cytoscape could be the next generation of bioinformatics software for this
+data.
+?       Human genome aspect: Finished genomes add completeness (an additional
+quality of a data set).  Thus a tool that deals with a complete data set
+allows analysis across entire set and make stronger conclusions.
+
+To ensure that we have something within 2-3 months, the focus of the above
+is that Cytoscape is a collaborative, community based, open source effort to
+develop software for integrated analysis of important new data sets.
+
+We may be able to solicit letters of support from e.g.:
+-AfCS
+-SBML
+-BioPathways
+-BioPAX
+-PSI

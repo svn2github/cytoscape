@@ -1,0 +1,82 @@
+I was a little rushed as we have our retreat tomorrow, hope there are no blatant errors here.
+
+Minutes for Cytoscape conference call Thursday, Sep 11, 2003
+
+Attendance:
+Benno, Paul, Larissa, Andrew, David, Phil, Rowan, Gary, Ethan, Trey
+
+Agenda
+Bug list
+Refactoring status update
+Unit testing
+RMI over HTTP
+GML read/writer (if Trey is on the phone)
+GINY update
+
+Bug list
+Phil and Benno announcement: They volunteer to be the keepers of the Mantis bug list.  Phil is going to use this as an opportunity to figure out how cytoscape works.  Benno will motivate to make sure the list is cleared.  Everyone agrees that is great!
+
+We proceeded to go through the bug list to assign some bugs.
+
+Bug 50: after a couple of minutes, cytoscape graph canvas freezes
+	We weren’t able to assign this bug.  Assigned this bug to Ethan as a Mac bug
+
+Bug 42: Cytoscape runs slowly on Mac OS
+	Ethan accepted this bug last week and has done 2 things:
+		Tried yFiles pathway browser – tried some small graphs, seemed sluggish, but need to test on larger graphs, he will follow-up on this.
+		Tried the new Mac Java – didn’t solve the problem
+	Paul e-mailed Roland, but he didn’t help out.
+	Paul suggested we should use a profiler or the logging feature of yFiles to output some times around screen redrawing.  Benno suggests using a profiler.  Paul likes Borland OptimizeIt.  Ethan and Gary will look into purchasing a profiler.
+
+Bug 49: node selection and hiding causes erratic behavior and crash
+	Suggest to trey that we try to replicate this bug while the undomanager is turned off.
+	The person who wrote this code is not part of the group anymore.  We assigned the bug to Trey in his absence J
+	Maybe the Mac problem is really an undomanager problem.  Ethan will work with Andrew to see if this is the case.
+
+Bug 53: Starting Cytoscape from Start Menu does not load PlugIns
+	Reported by Ethan.  Bug is assigned to Larissa as an installation configuration issue.
+
+Bug 39 and 40: ActiveModules
+	These bugs are closed now – yay!  The new Java version of ActiveModules is now being used.
+
+Bug 58: vizmapper, new style, set default node shape: broken
+Jonathan is now taking classes at MIT, so Andrew will take a look at this bug and will e-mail Jonathan if there are any problems.
+
+RMI over HTTP – David, Paul, Benno
+Short story, want to export some of Cytoscape’s functionality across a firewall, but RMI was having some trouble, (David and Paul).  So tried to use HTTP (BLAST server was RMI – tspaces data handlers) – replaced with XML-RPC over HTTP to do the work.  Involves small changes to how these are integrated into Cytoscape.  Want to replace Paul’s data fetcher with csplugins/httpdata.  It would be nice to put this into the DSL framework, but we have to chat with David and Paul to see how to move this forward.  Ethan and Gary will follow up with Paul and David about this.
+
+Refactoring status update - Andrew
+Andrew’s report: created a document collection describing the core objects of Cytoscape and what Andrew’s been doing.  People read this and found it useful.  Andrew is moving along nicely.  Timeline is about 3 more weeks for Cytoscape window refactoring.
+
+Next we had some discussion about how plugins should communicate with Cytoscape, initiated by a question from Rowan.  After some discussion, we realized there are 3 issues:
+1.	How should the plugin be constructed?
+	Rowan: Have a null constructor and get static objects from Cytoscape
+2.	What should be the API for the plugin?
+3.	What types of things should the plugin assume (plugin design philosophy)
+	e.g. exactly one window and one network or something else?
+
+Andrew asked everyone to send their ideas about these and he will collate them and send them to the list.
+ 
+Larissa asked if we looked at the common name problem?  Andrew will talk to Iliana after the mtg. about it.
+
+Andrew: has been finding code that is left around.  What should we do with these tidbits.  We agreed to toss them, since they are archived in CVS.
+
+Unit testing - Ethan
+After the retreat, Paul reminded Ethan about a global testing quite in the Ant file.  Paul and Ethan came up with a way that all existing local tests still work, but you can also invoke them in a central way – using suites, into master suites and then run them all with one click.
+Ant test – pop-up GUI junit that will pop-up.  
+There are 3 that are not included, but we’ll work on getting these completed.
+Will update in cvsdir5 tomorrow or Monday.
+
+Andrew: a lot of unit tests require test file loading – these are in the same directory as the unit test.  Some of these recently complained.  How should we organize these?  Ethan has created a property to switch from local or global.
+Ideally: all future tests should reference files from the root directory, but existing tests have not been changed.
+Right now it supports both methods.
+
+GML reader/writer - Gary
+Probably have this as a util class in the graph library and if we want to implement it in the data services layer (DSL), we could wrap it.  Not sure who will do the DSL work yet.  Trey will get Chris into the loop and together they will make some decisions about what he’s going to work on.  Rowan reminded us that other groups should work on separable aspects E.g. graph library aspect - utils.
+
+Update on graph library
+ISB retreat negatively regulated GINY work, but there is a plan to integrate GINY starting next week.  85% of yFiles calls have been implemented.  Planning to work within cvsdir5.
+
+Trey: quick question for Rowan – any progress making a GINY picture?  Make a picture with expression wheels.  Benno will work on this with Rowan.  Trey will send Genome Research an image around tomorrow at noon, and he will use the best image of all the ones he has at that time.
+
+

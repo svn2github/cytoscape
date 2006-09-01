@@ -1,0 +1,49 @@
+Present:
+
+ISB: Rowan, Greg Carter, Andrew, Larissa
+MSKCC: Ethan, Gary, Rob
+UCSD: ( Ryan tried to call in, couldn't, maybe he should give us his 
+phone #)
+
+1. Alpha3 - Documentation
+
+In addition to the release, there is the new API ( which will only show 
+the supported classes ) as well as some documentation aimed at 
+plugin-writers that I wrote ( feedback welecomed ).  Also the pages at 
+http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/index.html have 
+been updated, and are geared more at plugin-writers moving to 2.0 from 1.1
+
+2.0 stuff
+
+Creating Nodes:
+
+after talking with Greg we decided that it probably makes sense to leave 
+all node creation at the Cytoscape.getCyNode level, but we might add a 
+convience method to CyNetwork that delegates to the same method.
+
+When nodes are created, i will look into automatically vizmapping their 
+views so that they are not invisible.
+
+Loading Networks:
+
+when you load a network over 500 nodes a View is *not* created by 
+default.  You have to go Edit->Create View ( which the dialog box tells 
+you... )
+
+Birds-Eye-View:
+
+maybe I will have time next week...
+
+Layout:
+
+DReiss pointed me to some code that I am working on porting.
+
+
+3. Retreat
+
+in NY, we might also want an entry into the graphdrawing.org symposium 
+two days later.
+
+
+
+

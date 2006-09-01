@@ -1,0 +1,49 @@
+Present at the meeting: Benno, Rowan, Larissa, Andrew, Gary, Ethan, 
+Trey, Ryan
+
+Agenda:
+- Testing 2.0 release.
+-Selection based on the attributes.
+
+- We are oficially in a 2.0 testing phase now! Gary is testing vigorosly 
+with multiple data sets etc the release that Andrew made early this 
+week. Trey also is doing some testing while writing a new plugin. Trey 
+submitting his bugs to the bug tracker.
+While we are in the testing phase we should be careful about not adding 
+new features to the code since last run of the release to avoid some 
+areas being untested...
+Resolve bug versus close bug... Developer should resolve a bug and the 
+tester will verify that the bug is fixed and then close it.
+
+Gary so far found 100+ bugs!  He will put them in to the bug tracker 
+within few days and let us know. We will need to do a good 
+prioritarization of those bugs and reveal showstoppers for the 2.0 
+release.  We need to have a "Bug Master" - a person who will keep  track 
+of what bugs are new, unassigned etc.  Andrew was doing it at some 
+degree already...
+
+When reporting a bug one should try to keep clear separation between 
+Giny and Cytoscape bugs, also some bugs are related to each other, so we 
+need to make sure they are assigned to one person to avoid an effort 
+duplication.
+
+Assigning a bug, when and who is doing it? When one enters a bug may be 
+he can assign it as well?
+People who will be working on fixing bugs: Rowan, Andrew, Larissa, may 
+be Iliana, Ryan, Chris(gml reader/writer), Jonathan.(vizmapper).
+
+Gary asks if the new code had been profiled? Rowan have done some 
+profiling of the vismapper on JProfiling. If you see a slowliness report 
+it as a bug and it can be profiled for the optimization.  Most of the 
+testing Gary done is in Windows and some is on Mac. Let's make sure we 
+test it on LINUX as well...
+
+-  Selection based on the attributes. Ryan wrote 2 additional filters 
+for the filters pluguin that would do this functionality.
+
+- Y Files plugin is done and ready for people to use. We will need to 
+oubfiscate it and it can be distributed to be used with new
+Cytoscape for Y-Files Layouts that are missing right now. Ethan will 
+take a look in the oubfiscation process, since it is different from 
+regular plugin oubfiscation, when y-files is a part of core a cytoscape.jar.
+

@@ -1,0 +1,30 @@
+Minutes for Cytoscape conference call Thursday, June 17, 2004
+
+Attendance:
+Ethan, Gary, Rob, Andrew, Rowan, Chris, Ryan
+
+Web page:
+Weston Whittaker, one of MSKCC's summer students is making a minor update to
+the web page on a low priority basis - specifically the news, links,
+screenshots and dev page have been updated.  This will be uploaded tomorrow
+or early next week.
+
+Testing: Gary is finally ready to do another testing round on Cytoscape. 
+He will create a new release before testing.
+
+cPath is ready for installing and testing.  cPath is a lightweight
+protein-protein interaction DB from MSKCC.  You can download a nightly CVS
+snapshot from here:
+http://www.cbio.mskcc.org/dev_site/cpath/
+
+Trey requested a dialog to save attributes to a file. Ryan wrote a plugin to
+do this - he will send it out to the list for testing and possible inclusion
+in the core.
+
+Ryan - other issues:
+Unique aliases for nodes - vizmapper relies on canonical name, but it
+shouldn't be using this.  We have agreed to move to a Node and Edge object
+lookup scheme for all API calls.  Rowan will update this after the release
+so avoid introducing bugs before the release.
+
+

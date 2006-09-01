@@ -1,0 +1,99 @@
+Minutes for Cytoscape conference call Thursday, May 06, 2004
+
+Attendance:
+Iliana, Ethan, Gary, Rob, Chris, Rowan, Andrew (did I miss someone?)
+
+Agenda:
+New interfaces (Rowan)
+2.0 release schedule
+2.1 CVS branching
+
+New Interfaces:
+CyNetwork (model) is done and checked in to cvsdir5. CyNetwork extends
+GraphPerspective and all Nodes are CyNodes and CyEdges, thus you don't need
+to import Giny stuff into your code.  Rowan feels this is good code now.
+
+We are moving towards better separation of model and view. This will support
+headless mode - two options - 1. show window, but don't show View (just
+having the option) 2. just have command line.  Not sure which one to go with
+yet - will evaluate.
+
+"Begin activity" related methods are deprecated - Andrew is not sure if
+these are useful or not.  Nothing bad happened if you don't call them.
+
+Set intersection/union functionality feature request for CyNetworks from
+Gary.
+Chris mentioned that this is similar to loading graphs on the RootGraph
+level - default is a union.  Replacing old data should be an option to avoid
+keeping old data lying around.  Union is the default, replace should be an
+option for the user.
+
+Iliana said we will eventually allow users an advanced mode to load a
+library of nodes and then create subsets of that. We should make sure not to
+lose the simplicitly of the current interface by forcing the users to learn
+extra concepts, even if they are simple.
+
+View API status - as Rowan was working on this, realized you need a manager
+for the views and networks (2 separate managers).  Some code was written
+around this.  Methods are present that allow you to get networks or views
+from the managers.  E.g. getCurrentNetwork or getCurrentNetworkView to
+operate on those.  Network managers are a treeview sidebar - parent and
+children networks.
+
+How to visualize this - panes or everything in it's own JFrame - network
+manager handles this, based on type of view that you select.
+There are 3 view modes: Tabbed view, internal frame, external frames.
+
+Rob - with external view - what's the indication that an external view links
+back to the original network.  Rowan feels that right now we should only
+support one view per network and we can revisit it later.  This is good to
+reduce complications.
+Answer: If you select a view - it highlights the network in the treeview.
+Chris - you want to know which networks have views or not in the treeview -
+need icons or other colors.
+Status: Rowan is testing event firings, needs some work.  Also, must create
+a toolbar for it.  Also, save the state data on the network view (e.g. what
+current visual style is), so as you change focus, the vizmapper is updated
+based on what view the user clicks on.
+Each View has a style attached to it.
+
+The UI and the manager are tied together conceptually - this needs to be
+worked on.
+
+How to check this in to CVS?  Easiest will be to check it in directly.  How
+can we do this without affecting bugs on the main 2.0 release.  Decision:
+branch to 2.1 - 2.0 will only have CyNetwork API and after this will not get
+new features, just bugfixes.  This will be merged later by Rowan, with help
+from others.
+
+Demo plugin - Andrew will update his.  Ethan hasn't updated his old one to
+2.0.  We should have one for 2.0 and again for 2.1 with the new APIs.  This
+is a TODO item for final release.
+
+Gary needs to do testing - before he does this, will ask Ethan to release as
+a new baseline.
+
+yFiles plugin - is it available - should be in the release. It's all
+obfuscated.
+
+Chris' concerns - GML - polyline support for GML was added
+
+Summary of release schedule (also talked about by Benno, Hamid, Trey and
+Gary)
+Cytoscape 2.0 will have current features (including CyNetwork API - the high
+level graph API), but not CyNetworkView (the graph display API), which will
+go into 2.1.  This should not affect plugins that already use GINY that
+much, but if any changes are made that will break existing 2.0 plugins, then
+Rowan will let everyone know how to update them - these are expected to be
+minor changes.
+
+In the meantime, we branch the CVS repository to 2.1 to allow Rowan to
+implement the new features for 2.1 without disturbing the 2.0 release
+schedule.
+
+2.0 is currently in alpha 1 release. We will go through one more testing
+round to close old bugs and input new ones to allow one more round of bug
+fixing and release alpha 2.  Then we will go through an optimization phase
+(maybe 1 week) to increase performance.
+
+

@@ -1,0 +1,71 @@
+New website looks great - we are assuming the way it is on /new is the
+version to push to the sebsite. The old site is not checked in,
+but it will be moved to a separate backup directory.
+
+Will there be mirror sites for releases? Not for now, but planning ahead
+in case we choose to mirror.
+
+PNAS publication, Paul Shannon publication ... can be added to "why you
+want to use cytoscape topic" References to be sent to Ethan. Top
+ones shown on webpage with "more.." link to rest.
+
+Add to website: List of sponsors, list of collaborators. (Community).
+
+Website pages checked into CVS in new root directory. Ant script 
+modified
+to deploy website (ant deploy)
+
+Website idea: a "mail-to" link that people could click on to inform us
+of publications and work related to cytoscape.
+
+Do we store license agreement info? Yes. Not sure what we are doing with
+it yet.
+
+Google groups: Evaluated new google groups for mailing lists. Easy to
+make public, search, archive. cytoscape-announce cytocape-discuss
+cytoscape-dev. We plan to move to these mailing lists gradually.
+Also, everything sent to cytoscape-announce will appear in blue
+"cytoscape news" box on first page. Also all discuss items will
+be publicly visible.
+
+Cytoscape code - all code checked in except one Visual Style fix to be
+checked in later by Rowan. (And email to Ethan for Tag/Build)
+
+Today:
+- tag release
+- push release content onto /new website (including mac release, install
+         anywhere)
+- test for a day or two
+- redirect /new to be the actual website
+- archve old website
+
+Gary: online tutorials will be updated slightly (website)
+         User manual has been updated and is available -- any corrections
+         could be made now before release; take a look.
+Will replace "Online Tutorial blue nav box on website with DevTeam"
+
+Nice to get automated frequenct point releases. (user access to
+development code). We will have a separate website to allow users to
+download the latest development code (with warnings) But also, we
+would like to have a schedule of "official" point releases where we
+can schedule feature releases into. Ideas need to be hashed out later
+(maybe at retreat)
+
+Hack-a-thon during retreat - Rowan, Ethan, Rob, Illiana (if before), ..
+schedule 2 days before. Trey will be able to fund 3 people from each
+institution (tranport), and some set up for hotels, meals, etc.. Trey
+sending 4 people: Ryan, Chris, new guy, Nariad(?). Gary will find out
+more about hotel rooms, and occupancy policies and relay info.
+
+Retreat is Wed/Thur. Hackathon on Mon/Tues. For hacking we will plan
+on booking conference room downstairs and using wireless laptops. Pre
+planning would make the time more efficient. If anyone needs a laptop,
+talk to Ethan.
+
+Mac platform has some nice integration support for running cytoscape
+(drag and drop/doubleclick .sif / .gml files) Similar behavior on
+windows might require some kind of .dll windows programming to do all
+the features -- but double click launch is probably good enough.
+How about the linux platform? Launching? Every distro different -
+probably not worth effort to sort it out.
+

@@ -1,0 +1,111 @@
+Present:
+
+Whitehead: Owen
+ISB: Benno, Paul, Andrew, Iliana
+MSKCC: Gary, Ethan
+
+Minutes: Owen
+
+
+1. database direction (paul)
+
+Gary and Ethan begin, at Paul's request.
+First contribution: building database support into cytoscape.
+getting people's input, to assemble a spec document (which
+Gary will maintain).  A layer that understands database sources,
+remote or local, etc.
+
+Databases of "parts" - proteins, dna's, small molecules
+Databases of rel'shps of parts - interaction data
+Attributes of parts fall into the parts database.
+sequence, structure, GO terms, etc.  optional loads.
+
+This would all start as a plug-in, of course.
+
+Paul sees data *sources* as more general than databases.
+(flat files, for example.  real-time calculations, too.)
+
+Gary to send kick-off email.
+
+
+2. lots of tabs / matrix attributes (owen)
+
+Ruedi's protein data may come out.
+p-vals, mrna levels, protein concen, etc.
+
+perhaps an n-dimensional matrix is in order?
+perhaps just 2 or 3d.  either way, let's start
+it as a plugin.
+
+
+3. various visual mapping stuff (andrew)
+
+i)  visual styles - wrapping everything into one obj
+    that you can carry around, made changes necessary,
+    lobby for owen or jonathan to add to UI ability
+    to pick a different visual style.
+
+andrew says it should now read background color from
+vizmap.props, too.
+
+ii) tutorial - first draft is ready!
+    owen will send andrew the cytoscape.jar that has
+    a recent version of the visual mapper.
+
+iii)somebody needs to put the GPL headers in everywhere.
+
+
+4. schedule on out of yFiles and refactoring (paul)
+running late, there's a course being taught by Ruedi
+about the proteomics pipeline.  Cytoscape is going to
+be the last day of that.  DIP network of human proteins.
+Paul was going to start refactoring April 1 and go for
+two months, but it looks like start May 1 and going for
+maybe 6 weeks.
+
+Rowan: designing abstraction layer with Paul.
+It will all be plug-replacable soon.  Rowan has done a
+lot of good stuff in that vein already.
+
+nail down API by May 1?  Paul will own the document.
+
+Tomorrow: Larissa Kamenkovich joins the team!
+Part time on Cytoscape.
+
+Ethan asks what the refactoring consists of?
+Paul replies, yFiles replacement and (basically)
+CytoscapeWindow restructuring.
+no document needed as yet.
+
+
+5. util directory (iliana)
+General use classes.  SwingWorker, for example.
+should this directory move to the core?
+
+csplugins is good, because plugin writers can
+add to it, rather than core writer.
+
+of course, a commonly used utility will often
+have biological semantics, and if we decide to
+put common utilities in the core.
+
+andrew brings up jEdit plugin model;
+dependencies are checked and resolved.
+Benno suggests looking into the possibilities.
+
+if we have a common utils dir, it needs structure,
+says Gary.  everyone agrees.
+
+
+6. owen points out june 1 thing.
+The Whitehead side of the Cytoscape project will probably
+shut down around June 1, so at the very least, we'll need
+to host CVS from somewhere else right around then.
+
+is sourceforge tenable?
+maybe a server at the ISB or at MSKCC?
+either way.
+
+probably beginning of May is a good timeframe.
+Paul will look into it.
+

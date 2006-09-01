@@ -1,0 +1,68 @@
+Present: Andrew, Rowan, Larissa, Iliana, Phil, Gary, Ethan, Chris.
+
+Agenda
+1) Refactoring update/beta release.
+
+2) Filters ( old and new);(Rowan)
+
+3) Packaging and csplugins;(Iliana)
+
+4) Presentation of the nodes and edges with the same name.(Chris)
+
+
+1) Giny Beta release. When should we do it?
+
+Andrew fixed startup delay bug, and few other things.
+Rowan is going to hack the bug of self-edge problem and we are ready to 
+make a release. Probably tomorrow....
+This is going to be an internal release and  we are going to send it to 
+few external  people, who are waiting on giny/cytoscape version.
+In order to do extensive testing only on one release we agreed to remove 
+y-files and then make a Beta release (without y-files) test it, and make 
+it available to the public.
+Some of the old vizmapper bugs should be solved, since Andrew is 
+refactoring the vizmapper for giny. If you see vizmapper bugs report it 
+to Andrew.
+
+We also will need to update the plugin page to make clear distinction 
+which plugin works with which version of Cytoscape.
+
+So Ethan will make a release within next couple of days and tag the source.
+
+2) Filters. Rowan wrote new filters in a plugin.
+Old fiters were geared to selection only and had a lot of dependency on 
+y-files. Rowan rewrote the filter interface to make it more generic. Old 
+GUI for filters is bulky. New Filters will have less tabs, filters will 
+be in a list.
+Approximately 1/2 of the old filters are ported to new arquitecture and 
+Rowan wants us to take a look at his plugin and let him know what we 
+think of it. There is Node Type Filter and Node Attribute Filter. What 
+is the difference? NodeTypeFIlter is an absolete thing, we should have 
+only NodeAttributeFilter.
+You can implement new filter in your plugin and let filter manager know 
+about it.
+The main new idea is that you can use filters anywhere (before they were 
+available only for selection).
+Iliana point out that we should make filters to be notified of updates ( 
+for example if the new node attribute file was loaded we should update 
+the gui list of the attributes).
+
+
+3) Is there a standard for where you put a class for plugin? With the 
+new csplugin structure it is not very clear where you package your plugin.
+There is no specific standard but may be we should work up one to 
+eliminate confusion with multiple plugins in multiple places.
+
+Also we should decide which plugins we want to deliver with the core and 
+which should be downloaded separately. Not everything in "common" is 
+nessecarily needs to be delivered. As we develop more and more plugins 
+we might have a bundles of plugins addressed to a specific user for 
+download with the core.
+
+4) Unique ID for the nodes and edges (canonical name)  is not really 
+unique... That causes a lot of questions, problems.
+We need to rewrite GraphObjAttributes to have a numerical unique Id for 
+the nodes and edges. That will allow us to develop a lot of good  stuff 
+( merging 2 graphs, splitting graphs, representing same canonical name 
+more than once in a graph etc.)
+

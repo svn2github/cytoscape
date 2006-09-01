@@ -1,0 +1,30 @@
+DIV.navabout {
+	MARGIN: 1em 25px 0px 0px
+}
+DIV.navabout {
+	MARGIN-TOP: 1em
+}
+DIV#hdgcontactus {
+	MARGIN-TOP: 1em
+}
+DIV.navabout H3 {
+	FONT-SIZE: 12px; MARGIN: 0px
+}
+DIV.navabout H3 {
+	MARGIN: 0px
+}
+DIV.navabout H3 A {
+	TEXT-DECORATION: none
+}
+DIV.navabout H3 A:hover {
+	TEXT-DECORATION: underline
+}
+DIV.navabout UL {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0.25em; COLOR: #999999; LIST-STYLE-TYPE: disc
+}
+DIV.navabout UL LI {
+	MARGIN: 0.5em 0px 0px -2em
+}
+DIV.aboutrelated UL LI {
+	MARGIN: 0.5em 0px 0px -2em
+}

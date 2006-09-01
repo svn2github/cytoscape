@@ -1,0 +1,42 @@
+Cytoscape Notes Jan 29 2004
+present: GB, EC, RS, CW, AM, PE
+
+agenda:
+-release
+--Cytoscape manual
+-status
+--hierarchical layout status
+--GML
+
+Release:
+-Cytoscape manual
+1. references to the 'read-only/edit/delete' submenus will be removed
+from the manual
+2. a decision regarding layout and algorithm picking will be deferred
+for input from LK and RC 
+3. the active modules section will be done away with, a reference to
+plugin documentation will take its place.
+The manual will focus on the core, and will be in PDF and Word formats.
+Ethan is working on it and will send it around for additions/editing in
+the coming days.
+
+Status:
+-GML
+The problem: layout info and graph info were in the same object in
+yFiles, but with GINY, layout info is not in graph.  It was agreed that
+a solution is needed even if it's not permanent. A possibility is to
+reuse class GraphObjAttributes as something like 'GraphObjLayout'. Data
+structure and implementation details are to be worked out further, esp.
+with input from Rowan and Larissa.
+-Hierarchical Layout
+The Sugiyama algorithm has 4 stages.  Rob is finishing and testing the
+first (cycle elimination).  He'll then proceed with further steps, with
+an eye on the 2.0 release.  Core algorithm will need to be integrated
+with GINY further. The completion date will be better known next week.
+
+Gary asked the question, "How finished is the current Cytoscape vis a
+vis testing/bugs/etc?"  Andrew had left the room, but later said that
+the outstanding items of GML, filters, and layout should be discussed
+next week in preparation for deep testing.
+
+

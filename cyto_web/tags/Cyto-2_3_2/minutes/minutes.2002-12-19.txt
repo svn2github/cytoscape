@@ -1,0 +1,81 @@
+*********************************************************************
+Cytoscape Group Meeting Notes
+December 19, 2002
+Scribe: Trey Ideker
+*********************************************************************
+
+I. Schedule next meeting
+
+Regular Cytoscape meeting will occur in two weeks on Jan 2nd between
+Seattle and Boston; Gary will join on Jan 9th
+
+*********************************************************************
+
+II. Trey will keep meeting notes this time-this will rotate from
+meeting to meeting
+
+*********************************************************************
+
+III. Gary joins the group from Sloan Kettering!
+
+He will look at code over holidays, will plan to start writing plugins
+in January.
+
+Trey has added Gary to the cytostaff mailing list.
+
+Source Forge is discussed as a means of sharing code between
+all three groups and additional groups in future. Our target date will
+be January 15th to put on Source Forge
+
+Gary has three immediate action items:
+
+A. Biolayout-written by Anton Enright-Gary will implement as plug-in
+
+B. Database backend-automatically pull in data from BIND and PAX
+(Pathway eXchange) in XML format (coming from HUPO and EBI).
+
+C. Osprey - Gary will do a side-by-side comparison. Mike Tyers may be
+willing to join the Cytoscape effort if it can fulfill his needs.
+
+D. Anton Enright may also be interested in writing plugins, certainly
+starting with Biolayout
+
+*********************************************************************
+
+IV. Improving Cytoscapes look and feel, usablility, and efficiency
+(Immediate and long-range action items)
+
+a. Attribute-to-visual mapping GUI (Owen)
+
+b. Turn off visual display (Owen)
+
+c. Progress bar built into CytoscapeWindow API (Paul)
+
+d. Efficiency of graph loading as impacted by yFiles 2.0 (Iliana)
+
+e. Java WebStart (Paul)
+
+f. Put simple plugin examples on the web (Jonathan)
+
+g. More flexible loading of data sets-SBML, PAX, GO.  Can we serve
+these on www.cytoscape.org and directly access these from Cytoscape
+via an RMI or XML/RPC or HTTP server?
+
+h. Multiple toolbars- shouldn't be difficult to implement when we need
+to use them-will consider again at the future time.
+
+*********************************************************************
+
+V. Would people be willing to move the SBML reader/writer directly
+into the core under the File->Load and File->Save menus?
+
+*********************************************************************
+
+VI. Benno will put a subset of the four case studies on the web, so
+that the biologist can really see the usefulness and features of
+Cytoscape
+
+--
+Trey Ideker
+Whitehead Institute for Biomedical Research
+EMAIL: trey@wi.mit.edu OFFICE: 617.258.5787

@@ -1,0 +1,76 @@
+Cytoscape Meeting Minutes
+December 4th 2003
+Scribe: Trey Ideker
+In attendance: Benno, Gary, Trey, Chris W., Ryan, Andrew, Ethan, Iliana
+=================================================================
+
+1) GINY and Cytoscape refactoring Giny API has a root graph which can
+have multiple graph perspectives.  Graph perspectives can have a
+GraphView.  Iliana is currently writing code to synchronize the graph
+perspective with the graph view. Relevant classes are
+GraphViewController, GraphViewHandler, etc.  In editing these classes,
+she has identified several GINY bugs which she and Rowan have fixed.
+In general, many GINY bugs are getting fixed and people should update
+their CVS dirs.  
+
+Rowan is profiling GINY code on linux using jProfiler, which the ISB
+now owns.  People mention that it also important to profile on Mac.
+
+Ethan mentions that he now has a java class that converts a yFiles
+graph to a GINY graph perspective.  It currently just respects network
+nodes and edges.  He will check it into the CVS common plugins
+directory.
+
+Rowan found some layout algorithms that he will copy, and will also
+get to work on porting Anton Enright's BioLayout code.  
+
+Ryan had a question about plugin development with GINY.  Should
+plugins interface to CytoscapeWindow or to CyWindow?  The answer is
+CyWindow, at least for the "new" Cytoscape 2.0 version we are working
+on.  Also, please reference the API that has been sent to the cytostaff
+list.
+
+Gary asks whether yFiles support will be dropped altogether in
+Cytoscape 2.0.  The answer is yes.
+
+GML reader is checked in (Chris).  The remaining problem: how to encode
+graph layout and other node and edge attributes in the GML?
+
+The major items to complete are:
+   Layout algorithms (Rowan)
+   GML reader/writer (Chris W.)
+   Migrate filters package (Rowan)
+   Undo manager will come later (Iliana)
+
+=================================================================
+2) Update on Cytoscape grant
+
+We received a priority score of 191 on a scale from 100 (best) to 500 
+(worst).
+=================================================================
+3) Future meeting times
+
+We agree that 2pm (PST) Thursdays will be the new meeting time.
+=================================================================
+4) Current list of bugs
+
+a. Feature request--> Cannot control text color
+b. Cannot find/load jar file on Windows
+
+=================================================================
+5) BETA release of 2.0
+
+Internal release (development prerelease) will be December, end of
+next week (Friday December 12th).  It will be available at
+http://www.cytoscape.org/beta.html
+
+=================================================================
+6) Copyright statement
+
+Whitehead needs to be changed to UCSD.  Sloan-Kettering needs to be
+added.  These changes will be made to the new 2.0 BETA source code
+files.  Gary says that we should keep a copy of this up-to-date
+license in the Cytoscape directory structure so that everyone can get
+access to it.  Andrew agrees to do this.  
+
+

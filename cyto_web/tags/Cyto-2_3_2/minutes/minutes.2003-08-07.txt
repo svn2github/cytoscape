@@ -1,0 +1,71 @@
+Meeting Minutes for 8/7/2003:
+-----------------------------
+In attendance:  Trey, Gary, Paul, Andrew, Larissa, Chris, Ethan, Phil.
+
+I.  Welcome Phil Evans
+
+Phil is our newest Cytoscaper.  Welcome, Phil!
+
+II.  Data Cube Discussion
+
+Paul gave an overview of the Data Cube idea.  In broad terms, the data
+cube is a generalization of the current expression data object;  the data
+expression object is the last class with biological semantics left in the
+core.  Paul has proposed that we create a data cube with multiple
+dimensions, meta-data, and an easy API for accessing individual points of
+data, or various slices of data.
+
+Trey wondered why we needed a data cube, if we already placed everything
+in node/edge attributes.  Paul stated that they are fundamentally
+"different beasts."  The data cube is for the whole graph, and node/edge
+attributes represent node/edge attributes represent nodes/edges at
+specific points of interest.
+
+Trey also wondered if the real issue was not back-end data structures, but
+how we currently mape expression data to attributes.  As it is now,
+everyone agrees that the node browser is very bad at displaying expression
+data.  You get too many tabs, and everyone agrees it looks like a mess.  We
+also had some preliminary discussion about performance trade-offs.  No
+real decisions made on this front.
+
+In the end, we decided to try and separate the large problem into three
+smaller, separable problems:  1)  define a back-end data cube class and
+API;  2)  re-evaluate the current method by which we map data expression
+data to edge/node attributes;  3)  re-evalute the current node browser.
+
+III.  One-Click Install
+
+Several people have reported MacOS X specific problems.  Paul will track
+down the problems and report back to us.  Larissa will be working on a
+redesigned download page -- she will show it to everyone soon and get
+feedback.  Paul nomiated Phil to start the Cytoscape FAQ.
+
+IV.  Graph Library Update
+
+Larissa gave us a quick update on the new graph library.  The library now
+uses GINY, and talks to the Picollo Graph Library.  No Y-Files involved.
+Larissa is planning on giving us all a demo at the Cytoscape retreat.
+Rowen has written some custom layout algorithins that go with the new
+graph library package.
+
+Paul recently noticed that the organic layout algorithm seems to result in
+two nodes that are on top of each other.  No one else has seen this, but
+Paul will look into it further and log the bug.
+
+V.  Code Reviews
+
+Paul suggested that we start "non-threatening" code reviews.  Ethan and
+Gary will be code-reviewing Paul's pre-Bind plugin.  Other code reviews
+are welcome.
+
+VI.  Author List
+
+We had a general discussion about who exactly goes on the list of
+Cytoscape collaborators.  Is it everyone who ever contributed?  Who has
+this list?  If we can only list four collaborators, who goes on this list?
+Gary recommended that we create a general acknowledgement list, and check
+it into cvs.  For the  exact list, everyone agreed that we should defer to
+Trey and Benno.
+
+
+

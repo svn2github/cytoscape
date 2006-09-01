@@ -1,0 +1,108 @@
+Minutes for Cytoscape conference call Thursday, March 06, 2003
+Minutes: Gary
+
+Attendance:
+Paul, Andrew, Benno, Owen, Gary, Trey briefly
+
+Agenda
+1.      Cytoscape.org website status
+2.      Reference networks as service from Cytoscape
+3.      Rewriting
+4.      Code things
+5.      CVS services - mailing list
+6.      Sourceforge status
+7.      New software developer position in Benno's lab
+8.      Cytoscape icon
+9.      Plugin as JAR status
+
+1. Website status (Owen)
+        Owen has the new website operational. Cytoscape.org is now DNS
+updated (hosted at Cedant), but the DNS change will take a while to
+propagate.  The new build of cytoscape is now hosted at 2 sites (Boston and
+New York) (Seattle needs to update its mirror). Additions: Link to Paul's
+tutorial website, link to web start Cytoscape, Owen's PDF manual (which is a
+great start, BTW) and link to Javadoc.
+
+Paul asks "Why are extra download sites needed?"  Owen replies MIT server is
+unstable.
+
+If you want to check out the new Cytoscape website before DNS propagation
+happens, it is at http://66.175.24.126
+
+2. Reference networks as part of the Cytoscape tutorial (Paul)
+With the tutorials, Paul is trying to give people something that they could
+use with minimal effort.  E.g. tutorial 2.  One more idea to round out the
+tutorials is to make available a service that the ISB has, which allows
+exploration of the yeast orthologues of a human pathway.  There is quite a
+bit of machinery behind the scenes including running blast and examining the
+alignments and allowing the user to save the ones that are most meaningful
+to the user. This is already built, but needs to be made available on the
+outside of the firewall (easy).  Paul posits that this would be useful to
+other people as well.  The service would be a pretty fancy tutorial #3.
+Moving forward on this: Paul will put it up for internal tryout to evaluate
+for full public release.  Goal is to get it out by end of March.  Everyone
+thinks this is great.
+
+3. Rewriting the Cytoscape core to abstract yFiles (Benno)
+Benno asked about the status of core rewriting.  Paul estimates that this
+will take 2 months starting on April 1.
+There is growing dissent about yFiles from Trey, Jonathan and others about
+e.g. license issues, etc. that prevent separating plugins from the core.
+Trey thinks that the abstraction proposal sounds reasonable because you can
+use the graph algorithms in the plugins if you want - just not in the core.
+Owen says that only the plugins use the advanced features of yFiles and the
+core only uses yFiles layout.
+
+If someone is rewriting anything related to yFiles, they should contact
+Jonathan who might be interested in helping out.
+
+Paul mentioned using jGraph as a option for graph layout
+(http://jgraph.sourceforge.net/)
+
+4. Code things (Andrew)
+Undoable graph hider is now checked in - send bugs reports to Andrew
+
+Reading and writing of props file is almost ready and will likely be checked
+in tonight.
+Features: Reading from an old props file will prompt the user to help
+convert the file using a new UI/window.
+Saving props file is supported, still needs to put in calls for where the
+file should be saved.
+Reading from disk order is 1. Cytoscape home 2. current directory, 3. users
+home directory
+Problems:  A property of the hash table is that it writes out in random
+order, so Andrew writes to buffer and sorts first, then outputs to disk.
+A plugin can change the visual mappings, so if you save on exit, you save
+the plugin affected stuff.  Owen, Andrew, Paul discussion on this issue.
+Result: try using it and see if it becomes annoying.
+
+5. CVS commit messages mailing (Gary)
+Owen will set this up.
+
+6. Sourceforge (Benno)
+Paul hasn't had time, new hire should be able to chip in on this project.
+
+7. New position in Benno's lab
+Together with Hamid Bolouri, Benno will hire a Cytoscape polisher for a
+year, code, document, API, make the UI glitzy, tutorials, etc.  Maybe work
+on the yFiles replacement.  Less on the guts of development, but rather
+other things to help usability.
+
+At least for the first 3 months, the person will work on Cytoscape.
+Probably a really good software engineer type person.  Interviews will start
+next week.
+
+8.  Cytoscape icon
+        Owen asks how people like the Cytoscape icon in the manual?
+Discussion progressed to talk about a flash screen for Cytoscape when it
+starts with an animated Cytoscape icon that shows what Cytoscape can do.
+Tells user that things are being loaded - just like Adobe Photoshop does.
+If anyone has images that show off Cytoscape, pass them to Owen.
+
+9. Plugin as a JAR status (Benno)
+Owen, Benno and Paul added ideas to this issue.  Result: we would like to
+have an abstract base class that all plugins must extend that contains at
+least describe and constructor method prototypes.  The constructor would
+have the cytoscape window object as its only argument.  Cytoscape could look
+for plugins in a specified directory by searching JARs that implement the
+constructor method.

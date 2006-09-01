@@ -1,0 +1,89 @@
+meeting minutes, 24 april 2003
+
+Transcribed by Larissa Kamenkovich
+
+Present:
+Benno, Andrew, Larissa, Paul, Ethan, Gary, and Owen.
+~_~_~_~_~_~_~_~_~_~_~_~_~_~_~
+Agenda:
+1. Cross reference tool
+2. Jar loader being integrated to the core
+3. KEGG pathway and HTTP loader
+4. Graph packages
+5. Beta nodes
+6. Rick Yang
+7. Loading native libraries from the jars
+8. Paper coming out
+9. Core rewriting
+10. Data services
+11. Signing the jars.
+12. Next build.
+~_~_~_~_~_~_~_~_~_~_~_~_~_~_~
+
+1. Paul have been working on the Cross Reference tool usingJava Expert
+System Shell (JESS)
+that has a handy approach to transfer UNIGEN to Locus Link and UNIGEN
+toKEGG. This is not a general tool but suits well to
+avoid writing long custom scripts. Paul will write a paragraph or two on
+this matter and send it to us.
+The project seems not to interfere with the the work Gary and Eathan are
+doing on data services.
+
+2. The new jar loader mechanism available to the core now and classes
+are resigning in jarloader directory.
+You can now pass a jar file to load a plugin. (Very nice!). There is no
+default directory for the plugin manager to look now.
+The  CYTOSCAPE_HOME/jars  directory and current directory were proposed
+for this default.
+This jar loader mechanism relies now on the obfuscation table of the
+Retroguard for the y.files, so that makes it useless for people who
+don't have y.files and the obfuscation table.
+But usefull for us and for other developers, to whom we can send this
+y.files table. (Like David Goode). When we replace y.files it will have
+more general use.
+
+3. Paul is working on KEGG Pathway and HTTP loader. KEGG SBML files  the
+Cytoscape project file get generated that is stored on the Cytoscape site.
+The plugin reads those files from the site, stores them to temp files
+and then loads those to Cytoscape. Paul will put a new Demo for the KEGG
+plugin within next week.
+
+4. Rowen and Iliana doing a search for a nice open source praph package.
+Right now  the best choice seems to be Graph from Piccolo API.
+They are also looking in to the JGraph and others.
+
+5. Iliana works on a plugin that creates a different graph in "collapse
+view". We would like to ask Iliana to provide a brief summary on this
+approach and may be have a
+e-mail discussion on that.  That brought the need for the web based
+content management system again.  We are still looking in to the Maven
+and Wiki.
+
+6. Rick Yang was here at Seattle for the ISB Symposium. Cytoscape was
+mentioned several times there in a good way...
+
+7. Loading native libraries from the jars is a doable task. You need to
+call System.loadLibrary(jar) for that.
+
+8. The paper is coming out in the  Nature Biotech. This is not
+particular Cytoscape paper. Owen will sent a link for that paper.
+9.  Paul is envolved in the research and passing the core rewriting to
+Andrew and will assist him 50% of the time.
+
+10. Ethan and Gary are planning to add database functionality to their
+Data Services on example of ASPRE? that already has it database
+functionality with the GRIDD database, cashing generic contents localy.
+Two weeks iteration...
+The project arquitecture doc will be posted on the TechDoc site for
+comments and reviews.
+
+11. To get rid of the scary warning message when Cytoscape gets
+downloaded  or run by WebStart we can sign our code with the VerySign
+that provides the authentication of the Java code distribution. That
+will envolve few extra steps for the person who is doing distribution
+build, but can be automated.
+
+12. Next build may be done next week.
+We will let conditional plugin loading go for now...
+
+

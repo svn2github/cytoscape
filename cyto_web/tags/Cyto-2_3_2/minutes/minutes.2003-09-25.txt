@@ -1,0 +1,58 @@
+Meeting Minutes:  9/25/03
+
+Attending:  Paul, Andrew, Larisa, Iliana, Rowan, Phil, Ethan, Chris
+
+Bugs:
+1.  We Discussed bugs #62 and #63.  These are now fixed.
+2.  Chris found a new bug in the VizMapper.  He'll log it to Mantis today.
+
+GINY:
+We spent the bulk of the meeting discussing Larissa's emailed proposal
+regarding GINY implementation.  There was no clear consensus or decision.
+
+A summary of Larisa's proposal, from her email:
+
+"I am proposing, instead of replacement of the graph library, to add a new
+graph library support to Cytoscape without taking away y-files (for a
+period of time). There is no reason why Cytoscape cannot support both
+y-files and giny for a while. I suggest leaving all the y-files
+implementation in the Cytoscape untouched and add giny implementation to
+the Cytoscape parallel to the y-files. We will have both giny and y-files
+jar files on the classpath and will be able to choose if we want to run
+Cytoscape using giny or y-files through the simple command line option. If
+we want to run y-files then we call in CytoscapeWindow constructor that
+accepts y.base.Graph, and all works exactly as it used to be with
+y-files."
+
+Paul expressed that he did not like the idea.  He stated that it would
+likely require a lot more additional code, and that it's not a very
+effective way of getting where we want to go.  Mixing Y-Files and GINY may
+be impractical.  He also suggested that we have a collective leadership
+problem with Cytoscape, e.g. no clear leader(s) to make this decision, and
+that we had no clear mechanism to make a decision on this.
+
+Rowan expressed that he thinks the Y-Files wrapper is almost done.  And,
+while he thought Larissa's proposal would work, he also thought the
+original plan would probably work as well.
+
+Chris expressed that any loss of functionality is not good.  In porting to
+GINY, we should not lose any user functionality.
+
+In the end, Rowan and Larissa decided to think about things some more, and
+report back on their decision.
+
+CVS Directories
+---------------
+Can we separate csplugins from core?  Where do we check in plugins?
+
+**** A DECISION ****
+All csplugins should go in cvsdir4.  Don't put 'em any where else!
+
+Refactoring Work
+-----------------
+1.  Andrew has found about 70 classes that have references to
+CytocapeWindow;  He is refactoring these, and the list of classes is now
+down to 35.
+2.  more documentation needs to be done.  Andrew's working on this.
+
+

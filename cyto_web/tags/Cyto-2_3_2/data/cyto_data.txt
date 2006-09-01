@@ -1,0 +1,4 @@
+# Cytoscape User Log
+July 15, 2004, 12:24 pm	127.0.0.1	cyto1	a	a	a
+July 15, 2004, 12:59 pm	127.0.0.1	cyto1	a	a	a
+July 15, 2004, 1:44 pm	192.168.73.53	cyto2	a	a	a

@@ -1,0 +1,34 @@
+attendees: Trey, Chris, Ethan, Rob, Larissa, Iliana, Rowan, Andrew
+(sorry if I missed anyone)
+
+items:
+1. Cytoscape GINY+yfile hybrid
+2. Refactored core
+
+Cytoscape GINY+yfile hybrid:
+- is done
+- everyone needs to start using cvsdir5 version
+  -- feedback on this version by next week
+- example plugin would be helpful
+- data services ported to GINY version
+- activeModules, bioModules ported to GINY version
+- GMLreader/writer, parser done, Rowan will help Chris w/ converters
+- GO annotations, available soon
+- layouts: spring embedder, radial tree
+
+Refactored core:
+
+- API for the factored core is on line, Andrew to send Trey the URL again
+- Andrew needs feedback on this, where are the rough spots in current API?
+- Plugin writes API versus Developers API
+  -- Plugin writers API for CyNetwork and CyWindow classes are first
+     priority
+
+Start new paper:
+- Trey would like others to spearhead the next manuscript
+- outline as first step
+
+___________________________________________________________________________
+ Christopher Workman, Ph.D         Department of Bioengineering
+ phone: 858 822-4706               University of California San Diego
+

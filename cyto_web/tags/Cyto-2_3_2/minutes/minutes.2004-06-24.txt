@@ -1,0 +1,57 @@
+Cytoscape weekly meeting notes June 24, 2004
+Scribe: Trey Ideker
+
+1) Gary talks about Windows-related issues.
+
+There are several Win-specific bugs that Gary has registered in the
+bug tracker:
+
+   * Export options work under "Default look and feel" but not under others
+   * Problem with VizMapper showing colors
+   * Suggests removing the %CLASSPATH entry from the distributed .bat file
+
+2) Biodataserver naming issues, discussion led by Rowan
+
+Discussion about how to load multiple species per biodataserver.  Andrew
+explains how to do this.
+
+We agree that there will need to be a major overhaul of the BDS.  Trey
+volunteers his group to do this starting this summer.  This will aim
+to resolve a number of issues including canonical naming.
+
+The other problem is having to load too many files (sif, node attrs, 
+edge attrs)
+to start a cytoscape working session.  A possible solution to this
+is the "project" file idea. Cytoscape currently supports this via something
+Paul has implemented. Rowan will look into this over the next week,
+update it to support multiple sifs/gmls, and provide a project file
+plug-in.
+
+3) September Cytoscape conference update by Gary
+Shankar will tentatively be there.
+States not replied.
+Blanchard will be there.
+Conklin will send a postdoc.
+Shamir can't make it.
+Tyers may send someone from his group.
+Hogue may send someone from his group.
+Califano from Columbia will be there.
+Eric Steffan from PNNL not replied.
+SDSC not replied.
+
+UCSD: Trey will come plus two.
+ISB: Hamid and Rowan plus one other.
+Pasteur: Benno will likely come plus one other.
+MSK: Will have 4-5 there.
+
+4) Bug tracking update by Gary
+Gary has organized all of the bug reports and ranked them by his
+assessment of their priority.  In particular, he has marked those
+bugs that he views as critical to resolve before the upcoming
+release. 
+
+5) Release timeline
+Will touch base next week to solidfy the timeline, but would
+definitely want to release by ISMB.  Rowan mentions we should
+coordinate with the release of the new website.
+

@@ -1,0 +1,71 @@
+Editor's note: no meeting notes available for 01-02-2003; not sure
+that a meeting actually occured.
+-----------------------------------------------------------------------
+
+
+Hi guys,
+
+Here are the notes of today's meeting. Please let me know if you have changes or
+additions.
+
+--Benno
+
+
+Meeting notes of the Cytoscape Core group phone meeting
+Jan 09, 2003, 4.30pm-5.30pm EST
+
+Participants: Trey, Owen, Gary, Paul, Andrew, Benno
+
+Topics
+------
+1.) Visual Mapping
+2.) User support for Cytoscape
+3.) Undo functionality
+4.) yFiles replacement
+5.) Miscellaneous
+
+Meeting Minutes
+---------------
+1.) Visual Mapping
+- Owen and Andrew work on the VizMapper that unifies and extends all previous
+functionality
+- Andrew will check in his changes today so that Owen can work on them from
+tomorrow
+- Owen's ETA for his changes is 5 work days for a "decent draft" version, and 10
+work days for a good version of the code
+- It is agreed that the new VizMapper should not be checked into the Core before
+its existence as a plugin and thorough inspection of the design by at least one
+other Core developer.
+- For now, this should be a general requirement to migrate code into the Core
+- Large datasets create high memory requirements - it was discussed what
+alternatives exist to representing expression data multiple times in memory.
+- Owen suggested a solution that sounded wonderful to everyone (including the
+minute-taker, who didn't quite understand the details)
+
+2.) User support for Cytoscape
+- Paul will massage Owen's example files on the Website into a WebStart-able
+form
+- Trey will make sure that the bug reporting address "bugs@cytoscape.org" gets a
+prominent place on the cytoscape.org Web site.
+- We will work towards the sourceforge-supported bug tracking system. Paul will
+set up the bug tracking system on sourceforge for a trial run.
+
+3.) Undo functionality
+- After Iliana has found a speed problem with the Undo functionality, since
+yFiles is generating loads of graph events, that functionality was and should
+remain disabled for layout operations for the time being. "When there is time"
+it should be fixed.
+
+4.) yFiles replacement
+- Rowan Christmas has an API-compatible replacement for yFiles that is based on
+a public-domain graph drawing package. Paul will look into the possibility of
+replacing yFiles after the cleanup action on the Core.
+
+5.) Miscellaneous
+- A problem occurred with Cytoscape URLs that were missing the terminal slash.
+Trey is working with the our Web space provider and other concerned parties to
+resolve the issue.
+- Paul emphasized the desirability of a "data wrangler" and everyone agrees.
+Trey mentioned the imminent activities on grant writing to significantly extend
+Cytoscape's funding and staffing.
+

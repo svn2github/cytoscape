@@ -1,0 +1,67 @@
+*No meeting next week due to holiday, have a good Thanksgiving.
+*Proposed new time for weekly meeting: Thursday 2 PM PST/5 PM EST
+
+present: GB, EC, CW, BS, AM, RC, PE
+
+Refactor Status:
+-AM wanted to release new version for review last week, but a yFiles
+problem (disappearing edges) prevented it.
+-is load time slower with GINY than yFiles?  Opined: slower on Windows,
+faster on Mac.
+-RC to recheck GINY jars for compile problems
+-profiling and performace testing: Some has been done, RC believes there
+may not be any more optimization to get out of the lib
+-20K edges didn't load for CW
+-request made for large graph data (thanks CW)
+-GINY vs YFiles--memory: more or less similar, GINY maybe slightly less
+-checking for Java memory leaks? Profiler needed (jProfiler ~$200,
+OptimizeIt ~$1K). mskcc and/or ucsd may purchase.
+
+yFiles:
+-when to remove it and be open source?  Options: 1. not dump until GINY
+has been well-tested, or 2. get rid of YFiles to test GINY.  Possibly
+move to plugin?
+-rewrite of plugins ongoing.
+-Cy1.1 to stay around for a while, dev work on Cy2.0
+-RC currently fixing node related bugs.
+
+Osprey:
+-people too busy for new releases, might like to combine efforts.  GB
+and possibly John Aitchison (ISB) to talk with them about future.
+
+Beta Release:
+-new build files done
+-release on beta page, will copy over to public when given the green
+light
+
+Plugins Dir:
+-CVS dir 5: organization needed (currently copy of dir4, so rm *,
+including plugins)
+-organize by group (mskcc, isb, ucsd, common), people's names w/i these
+dirs (CW to create)
+-only GINY plugins in CVS dir 5
+-all plugins should have a person's name attached (readme or author
+file)
+-need for a plugins 'yellow pages'
+1. what does it do?
+2. who wrote it?
+-a plan for unmaintained plugins: check to see if they run.  AM to
+resend list, Iliana may also have some info.  Paul may have some to
+claim.  Those copied to CVS dir 5 may implicitly be keepers.
+
+Headless Mode:
+-problems: error msgs and other
+-option: module-ize Cytoscape, control with other software (eg scripting
+lang)
+-question: should it be engineered now, or would it be better to wait
+for later release?   Agreed decision: wait for later, but begin
+planning/designing now.
+
+Cytoscape Hosting:
+-mskcc has capacity and personnel to host cytoscape.org if needed
+
+Bugs: 
+70/33 -> Larissa to check installer issues with Mozilla/Linux combo
+78/71 -> PE to update FAQ for Mac users about a fix for starting from Cy
+icon.
+

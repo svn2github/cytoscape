@@ -1,0 +1,52 @@
+meeting minutes, 03 april 2003
+
+Transcribed by Ethan Cerami
+
+Hi Everybody:
+
+Here are the meeting minutes from yesterday:
+
+1.  Data Layer
+Gary gave a quick update on the data layer.  Gary and Ethan will send
+out an architecture document tomorrow.  Feedback is most welcome.  A
+use case document will follow next week.
+
+2.  Bugs / Feature Requests.
+We discussed the following bugs/feature requests:
+a.  Adding Version # to the Cytoscape window. (now done)
+b.  Ability to load node/edge attributes after startup (e.g. not just
+via command line)
+c.  Ability to specify a shape for one particular node.
+
+3.  Modifying Cytoscape.props via UI
+We discussed the option of being able to modify Cytoscape.props from
+the Cytoscape UI.  It would be nice to access all these properties from
+a simple UI instead of editing text files.  However, some people
+pointed out that the list of properties is definitely shrinking, as the
+auto-plugin loader no longer needs to have plugins specifies in the
+props file.  Still under consideration.
+
+4.  Error Catching / Handling
+General discussion about creating a generic mechanism for capturing
+exceptions, and handling them in a consistent manner.  Everyone agreed
+that we should do this, but it was decided that it makes more sense to
+postpone it until the refactoring phase.
+
+5.  Remote Access to Data
+General discussion about loading new data from within Cytoscape.  This
+overlaps with item 1 above.
+
+6.  Installer
+Do we want to use InstallAnywhere to automate the installation
+procedure?  InstallAnywhere is not open source, but can be used to
+distribute open source software.  It was decided that we would try it
+out, and then get back everybody's feedback on how it works.
+
+7.  Determining Priorities
+A number of participants suggested that we create some type of
+priorities or to do list, so that we all know which things need greater
+/ lesser focus.  Gary suggested that people try the open source Maven
+tool.  Trey suggested a program called YAPP.  Ethan will also be
+working with Owen to create a simple document on "how to build
+plug-ins" using Owen's  new auto-loader.
+

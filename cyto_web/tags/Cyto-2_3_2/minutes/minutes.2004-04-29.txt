@@ -1,0 +1,73 @@
+Cytoscape Meeting Minutes
+==========================
+
+Date:  		April 29, 2004
+Present:  	Rowan, Andrew, Larissa, Iliana, Gary, Rob, Ethan, Try,
+Ryan.
+
+Feedback RE:  Cytoscape 2.0
+----------------------------
+
+People have started to download the new Cytoscape 2.0.  We are starting to
+get some feedback.
+
+1.  AbstractPlugIn Error in JActive Modules.  Now fixed.  New Jar file is
+checked in. Jar file needs to be included in next alpha release (to be
+done on Monday)
+
+2.  Printing has also been fixed (at least for Linux). However, printing
+from Windows is still broken.
+
+3.  Trey and Ryan are working on speeding up the GML Reader.  Trying to
+create new nodes/edges in batch mode.
+
+Cytoscape API
+----------------------------
+
+1.  Rowan:  made interfaces for CyNetwork, CyWindow, etc.  Should he check
+them in, or wait? Do we have any plugins that instantiate a new network,
+e.g. cyNetwork = new CyNetwork()? This now needs to be done via a factory
+method.  Rowan will check Plugins directory to see if anyone does this,
+before checking in.
+
+2.  Unique Identifiers
+
+Decided to deal with nodes and edges at the model layer.  Unique
+identifiers will be hidden inside of nodes and edges.  How does the input
+file map to the nodes/edges?  GML assigns its own unique identifier.  GML
+has an ID and a Label field.  We are currently using the label field as
+the canonical name.  GML predifined tags:  id (must be unique), name (not
+forced to be unique), label (visual text label for display).
+
+Dataservices should be eventually included in the core.  Data services
+will include additional controlled vocabulary terms (to be defined.)
+
+PlugIn Issue(s) / Bugs
+----------------------
+
+Can we display two graphs via a split window, and create a PlugIn that can
+work on both windows?
+Andrew:  we already have a 1.1.1 plugin that can work with two windows.
+Rowan:  probably not too hard to port over to Cytoscape 2.0.
+
+Gary:  should we plan what to do with the remaining bugs?
+Andrew:  most of the remaining bugs are rather minor.
+Ryan:  still some issues with layout (Rowan thinks he has fixed the
+specific errors that Ryan found)
+
+Bird's Eye View is not working anymore. Rowan may take the Bird's Eye view
+out for a while.  Needs to work on this some more.
+
+Ethan to do new release on Monday.  Gary to use this as the base for
+testing and closing all
+resolved bugs.
+
+
+---------------------------------------
+Computational Biology Center
+Memorial Sloan-Kettering Cancer Center
+http://cbio.mskcc.org
+Email:  cerami@cbio.mskcc.org
+Direct phone:  (646) 735-8082
+----------------------------------------
+

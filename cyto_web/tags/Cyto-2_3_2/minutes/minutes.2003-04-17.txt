@@ -1,0 +1,77 @@
+meeting minutes, 17 april 2003
+
+Transcribed by Andrew Markiel
+
+Cytoscape meeting minutes for Thursday, April 17, 2003
+
+Present: Andrew, Paul, Owen, Gary
+
+
+1. Owen thanks Andrew for answering bugs effectively.
+
+
+2. ActiveModules
+
+Recurring bug noted with ActiveModules compiled with Java 1.4.0 and
+not working with Java 1.4.1, triggering the recurring thought of
+ActiveModules rewritten in Java. The key issues are who would
+rewrite it, and would it be fast enough. In the meantime, we
+agree to rebuild ActiveModules with 1.4.1 in the next release,
+which should go out as soon as the current set of known bugs
+is squashed.
+
+It was mentioned that the splash screen needs some fixing before
+the next release, per recent emails. No additional details.
+
+Discussion of running ActiveModules via Java Web Start. The key
+problem is getting Web Start to find the ActiveModules library.
+Paul will look into this.
+
+
+3. new data from Paul
+
+We now have available ~90 reference networks of KEGG pathways
+in SBML format. Paul has taken these and created Cytoscape networks
+from them, and now wonders how to distribute these. Issues include
+distribution of the files themselves, as well as a naming problem.
+An extended discussion ensued that I didn't really follow (perhaps
+Paul can send out an update once he's made more progress).
+
+It was noted that RefSeq ID numbers are some of the best unique
+naming schemes around. Someone also presented a tool called
+MatcMiner in a recent Genome Research article, Gary will send
+more information on this. Gary notes that everyone knows there
+is a big naming problem in biology and no one has done a really
+good job of solving it, although many are interested.
+
+On a related note, a network of interaction from Bind will likely
+be available this summer.
+
+
+4. Expression data in Cytoscape is now visualized by copying the
+data into node attributes and using the new vizmapper, so the old
+ExpressionDataUI plugin is no longer needed.
+
+
+5. Progress on changing Cytoscape's Graph usage: Andrew sent out
+a request for desired features from a graph package and received
+responses, which will be summarized in a later email. Reviews of
+JGraph have been generally negative, leaving yFiles and PGraph
+(Rowan's wrapper around the Piccolo framework) as the leading
+candidates. Iliana and Rowan are working on getting timing
+information for doing operations on a large graph in each of the
+two packages. The current vision seems to be converging on a
+graph interface with yFiles and pGraph implementations, leaving
+open the possibility of grafting in a new package while giving
+us a better idea of what that interface layer should look like.
+
+
+6. Various meetings with people from SBW have occured/will occur
+in the near future. There is interest in linking Cytoscape to the
+SBW framework so that Cytoscape can talk to other SBW modules.
+Other issues may come up as this effort moves forward.
+
+
+7. Gary has set up a demo version of a project management web site,
+and sent out the link for people to review.
+

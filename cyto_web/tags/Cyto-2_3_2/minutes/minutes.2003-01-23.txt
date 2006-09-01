@@ -1,0 +1,135 @@
+Minutes 01-23-03
+
+Present:
+WhiteHead: Trey, Owen, Jonathan
+ISB: Andrew, Paul
+
+Minutes: Andrew
+
+Agenda Items:
+
+1) Progress on visual mapping
+2) Issues with Undo
+3) switching from Java 1.4.0 -> 1.4.1
+4) paper
+5) grants
+6) an ISB project - reference networks - Paul
+
+
+1) Progress on visual mapping
+
+Rapid progress is being made on the visual mapping code and its
+user interface. Owen and Jonathan got ~half of a UI to the old
+vizmap code working, but then switched gears to work on an
+interface to the new vizmapper (this UI will share the look and
+feel and much of the code of the previous UI). Owen prepared
+a test suite for the new vizmap classes and they test out.
+Jonathan got a UI to these test suites working. These can be
+seen in the csplugins.setVisualProperties plugin.
+
+The core vizmapping classes are mostly done, Andrew is now working
+on code to read/save mappings from properties files. This is
+moving along and should be done sometime next week; the UI
+should also be very far along by next week.
+
+Owen offers the following information on looking at the current
+state, in addition to previously emailed information:
+
+if you check out the plugin setVisualProperties
+
+make
+
+and use the cytoscape.props file in the setVisualProperties directory,
+you'll see a number of options appear. Many will only work if you have
+the BioDataServer apply GO Molecular (level 4) to the nodes. The plugin
+called "Set Visual Properties" is the moderately functional
+intermediate
+interface. All the ones called "Test: ..." are for the new mappings.
+
+Owen
+
+
+2) Issues with Undo
+
+We agree that it would be nice to have an Undo feature that
+works well. It was decided that we're not clear on what needs
+to be done to meet this goal. Trey agreed to take a closer look
+at the Undo package and talk with Iliana to get more information
+on this before making any decisions. The suggestion was that
+simply wrapping actions with pre- and post- events could solve
+the problems.
+
+Andrew pointed out that this is related to the proposed redesign
+and rewrite of CytoscapeWindow. This is estimated to take at least
+a few months of FTE work, and is not likely to happen without
+additional personnel. Issue tabled for future discussion.
+
+It was agreed to install the proposed changes to allow disabling
+the UndoManager when desired.
+
+
+3) switching from Java 1.4.0 -> 1.4.1
+
+It was agreed that we should formally upgrade to using Java version
+1.4.1. The lingering issue with this version spewing errors about
+inability to save preferences was mentioned; IT is looking into it.
+
+
+4) paper
+
+The Cytoscape paper has been provisionally accepted. Trey has taken
+the lead in responding to the review including discussions with
+Paul, Benno, and Owen. Trey thinks we can address the reviewers
+concerns and will send something out by Monday.
+
+
+5) grants
+
+The search for grant targets continues. Gary did a significant
+amount of work here. One identified option is an NIH grant
+entitled "Continued Development and Support of Bioinformatics
+Software". The general limit would be 500K/yr, 3-5 yrs. This
+goes in the normal NIH cycle, the Feb. 1 date is not reasonable,
+so the likely submission date would be June 1.
+
+
+6) an ISB project - reference networks - Paul
+
+Paul made a brief update on a recent project; I don't think I
+got all the details. Cytoscape is part of a broader political
+landsacpe at ISB of what to do with CompBio. A vision is to
+promote the Institute via an impressive software suite including
+Cytoscape. Paul described a demo, driven by Java webstart, in
+which proteins in a human pathway are shown in one window and
+the yeast homologs are shown in a second window, with access to
+GO information to help study the pathway. A thought is that the
+ISB could provide something like this as a service to the
+community. In the coming weeks more will be known regarding the
+Institute's plans in this area.
+
+Here is Paul's information to look at the demo:
+
+  http://db.systemsbiology.net:8080/cytoscape
+
+    0) choose NIDA demo (with fix)
+    1) human protein network comes up in one window
+    2) Plugins -> Reference Network Tools -> Display Reference Network
+    3) a window with a part of the yeast interactome pops up
+    4) select (for example) PPP2CA and KIAA1541
+    5) Plugins -> Reference Network Tools ->
+                  Highlight Homologous Reference Nodes
+    6) add annotation in the yeast window, see what
+       functional and process annotation there is for the
+       yeast homologs of the 2 selected human proteins.
+
+    7) Plugins -> Reference Network Tools ->
+                  Add edges inferred via homology to ...
+
+       (this adds edges to the human network; different
+        colors indicate the length of the yeast pathway)
+
+    8) Select -> Edges -> Select or hide by attributes
+       - open up (in the Control Edges dialog you now have)
+         the 'interaction' folder.
+       - select any one or more 'yeastInference length x' items
+       - hit the 'hide' or 'hide others' button

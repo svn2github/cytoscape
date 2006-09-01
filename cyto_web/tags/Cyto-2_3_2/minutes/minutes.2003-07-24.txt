@@ -1,0 +1,62 @@
+present: Benno, Rowan, Larissa, Gary, Ethan, Trey, Jonathon, Chris, Andrew.
+
+1. Paper. The paper on Cytoscape has been accepted by Genome Research.
+The revisions need to be made. Andrew and Benno will look through the 
+editor's reviews and help Trey with the changes.
+Aiming for the Systems Biology issue in October.
+
+For the future updates and publications we should come up with the 
+strategy where and how often to report our updates on the software 
+development.
+
+Options : NRA Database issue, Bioinformatics. They'll target different 
+audience.
+
+
+2. CVS server. Is it working now? Should work at the new address.
+
+Gary suggests tagging  the release number to all files in CVS when we 
+decide to make a release or every 4 month or so.
+That will help to track the bugs if we need to look in to the old source 
+etc.
+
+Trey asks if Rowan going to Grad school, when and where. - Next fall 
+(not coming fall), but Rowan has not decided where yet.
+
+
+3. Graph update.  The new Graph model part is done and Rowan is running 
+tests against it.
+The view part still in development, Rowan is reworking the code to be 
+able to layout and make visual changes to a non viewable graph.
+The new  graph model is using indices instead of the Nodes and Edges 
+objects to make things faster.
+Larissa is going to try a new graph library (replace y-files) with the 
+crippled version of Cytoscape.
+That would facilitate our conversion of the refactored code with the new 
+graph library and will help in testing and refining the graph library 
+itself...
+
+Rowan will send us links and instructions where to look for his work.
+
+4. Data Services are moving to the core. Should we keep the data 
+services as a plugin, as part of the core or as a separate third thing?
+
+The problem with keeping it as a plugin is that plugins can not talk to 
+each other in Cytoscape right now.
+But also we are not sure we agree on making it part of the core...
+So we decided  for now to add to csplugins directory DataServices 
+directory. The Data Services directory will have it's own lib directory 
+where all the needed
+jar files will be. Return to this question later? Ethan will send the 
+document on how data services work, how to create data services plugin ( 
+new data service) etc...
+
+5. Andrew  made a lot of changes and wants to check them in to the CVS. 
+Due to to the big changes the code may be unstable (things might get 
+broken).
+Should we do CVS tagging or branching? Voted for tagging. Anrew will do 
+CVS  tag and check his refactoring version in today-tomorrow. He also 
+will write javadoc before doing that.
+
+
+

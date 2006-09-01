@@ -1,0 +1,59 @@
+2003-02-20
+In attendance: Benno, Paul, Andrew, Owen
+Nearby: Jonathan
+Last seen in California: Trey, Gary
+
+Minutes: Owen
+
+*** Loading Jars.
+
+Owen and Jonathan have a way to load jars.
+Coming soon to a plugin near you.  This doesn't
+resolve the obfuscation problem, however.
+
+We speak at some length about obfuscation.
+
+
+*** Rewrite core.
+
+Benno and Paul talked about whether this is something
+that is wanted.  They agreed that it is wanted.
+
+half-time req for documenting the core is opening
+at ISB on March 1.
+
+Paul suggests some plugins should be sanctioned and reviewed,
+as a way of deciding which Cytoscape fctns need to be stable.
+
+Benno suggests levels of stability; Paul mentions the use of
+the "deprecated" keyword.
+
+
+*** next release.
+
+"v0.99"
+Ideally released in February, as the month draws to a close.
+
+plugins to include
+ activemodules
+ expressiondata
+
+we'll talk more next week.
+
+
+*** vizmapper.
+
+ - we should remove the ToolTip tabs for now.
+ - we should make sure it's relatively free of bugs
+ - reading from old-style works
+ - 2 things remain:
+     writing back to file (next week)
+     cleaning up dregs
+
+benno says saving should be automatic;
+analogous to preferences, rather than a file.
+
+*** UndoableGraphHider.
+ - terrible bug foung by andrew; being resolved.
+
+

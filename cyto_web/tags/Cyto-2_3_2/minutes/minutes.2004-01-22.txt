@@ -1,0 +1,40 @@
+Present: Ethan, Trey, Chris, Andrew, Rowan, Larissa.
+
+
+1) Release 2.0
+
+Things still to do :
+- GML Writer,
+- Filters,
+ -Hierarchical Layout.
+- Documentation, User Manuals
+- May be Expression plugin.
+
+Our time estimate is 3 weeks. 2 weeks to finish the code and one week 
+for testing.
+Ethan  and Gary are doing the testing already on alpha release.
+
+What format should we use for User Manual.
+The easiest thing would be to update the old manual word document. Ethan 
+volunteered to do that.
+We should also have some HTML doc pages and update FAQ page.
+
+Filters will be delivered in a plugin. Rowan will move them to /common.
+
+Regarding directed/undirected edges discussion, Rowan will send Rob his 
+thoughts on that in e-mail.
+
+2) Non-visual mode for Cytoscape.
+
+Non visual mode for Cytoscape is at the top of the list of the new features.
+ Should we include it in 2.0?
+The user would like to perform alogrithms on a big network without 
+vizualizing the whole network and then bring visualization on for 
+selected region of the graph.
+We should be able to turn visualization of the graff on and off through 
+the eye ball icon on a tool bar. Clicking on that icon would
+cause stop listening to the graph and resume listening... Also should be 
+passed as a comand line argument.
+With Iliana's new GraphController it seems to be quite easy to implement.
+
+
