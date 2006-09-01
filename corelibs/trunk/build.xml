@@ -10,6 +10,9 @@
   <target name="all" depends="init">
     <mkdir dir="${build.dir}"/>
 
+    <ant dir="commons-cli-1.x-cytocape-custom"/>
+    <copy todir="${build.dir}" file="commons-cli-1.x-cytocape-custom/target/commons-cli-1.x-cytoscape-custom.jar"/>
+
     <ant dir="ding"/>
     <copy todir="${build.dir}" file="ding/ding.jar"/>
 
@@ -50,6 +53,7 @@
 
   <!-- clean all corelib projects  -->
   <target name="clean" depends="init">
+    <ant dir="commons-cli-1.x-cytocape-custom" target="clean"/>
     <ant dir="ding" target="clean"/>
     <ant dir="fing" target="clean"/>
     <ant dir="geom.rtree" target="clean"/>
