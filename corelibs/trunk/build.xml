@@ -1,0 +1,26 @@
+<!-- A simple project to recursively build all corelib projects. -->
+<project name="corelibs" default="all" basedir=".">
+
+  <!-- Basic initialization.  -->
+  <target name="init">
+    <property name="build.dir" value="build"/>
+  </target>
+
+  <!-- Build all corelib projects  -->
+  <target name="all" depends="init">
+    <mkdir dir="${build.dir}"/>
+    <!--  example
+    <ant dir="browser"/>
+    <copy todir="${build.dir}" file="browser/browser.jar"/>
+    -->
+  </target>
+
+  <!-- clean all corelib projects  -->
+  <target name="clean" depends="init">
+    <!--  example
+    <ant dir="browser" target="clean"/>
+    -->
+    <delete dir="${build.dir}"/>
+  </target>
+
+</project> 
