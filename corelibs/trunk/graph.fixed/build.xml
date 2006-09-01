@@ -1,12 +1,12 @@
 
-<project name="graph.fixed" default="all" basedir=".">
+<project name="cytoscape-graph-fixed" default="all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
     <tstamp/>
-    <property name="name" value="graph.fixed"/>
+    <property name="name" value="cytoscape-graph-fixed"/>
     <property name="version" value="1.0.1"/>
 
     <echo message="Building ${name} version ${version} ..."/>

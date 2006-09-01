@@ -1,12 +1,12 @@
 
-<project name="graph.dynamic" default="all" basedir=".">
+<project name="cytoscape-graph-dynamic" default="all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
     <tstamp/>
-    <property name="name" value="graph.dynamic"/>
+    <property name="name" value="cytoscape-graph-dynamic"/>
     <property name="version" value="1.0.1"/>
 
     <echo message="Building ${name} version ${version} ..."/>

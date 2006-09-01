@@ -1,12 +1,12 @@
 
-<project name="geom.spacial" default="all" basedir=".">
+<project name="cytoscape-geom-spacial" default="all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
     <tstamp/>
-    <property name="name" value="geom.spacial"/>
+    <property name="name" value="cytoscape-geom-spacial"/>
     <property name="version" value="1.0.1"/>
 
     <echo message="Building ${name} version ${version} ..."/>

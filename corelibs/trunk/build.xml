@@ -16,23 +16,29 @@
     <ant dir="fing"/>
     <copy todir="${build.dir}" file="fing/fing.jar"/>
 
+    <ant dir="geom.rtree"/>
+    <copy todir="${build.dir}" file="geom.rtree/cytoscape-geom-rtree.jar"/>
+
     <ant dir="geom.spacial"/>
-    <copy todir="${build.dir}" file="geom.spacial/geom.spacial.jar"/>
+    <copy todir="${build.dir}" file="geom.spacial/cytoscape-geom-spacial.jar"/>
 
     <ant dir="graph.dynamic"/>
-    <copy todir="${build.dir}" file="graph.dynamic/graph.dynamic.jar"/>
+    <copy todir="${build.dir}" file="graph.dynamic/cytoscape-graph-dynamic.jar"/>
 
     <ant dir="graph.fixed"/>
-    <copy todir="${build.dir}" file="graph.fixed/graph.fixed.jar"/>
+    <copy todir="${build.dir}" file="graph.fixed/cytoscape-graph-fixed.jar"/>
 
-    <ant dir="render"/>
-    <copy todir="${build.dir}" file="render/render.jar"/>
+    <ant dir="render.export"/>
+    <copy todir="${build.dir}" file="render.export/cytoscape-render-export.jar"/>
 
-    <ant dir="rtree"/>
-    <copy todir="${build.dir}" file="rtree/rtree.jar"/>
+    <ant dir="render.immed"/>
+    <copy todir="${build.dir}" file="render.immed/cytoscape-render-immed.jar"/>
+
+    <ant dir="render.stateful"/>
+    <copy todir="${build.dir}" file="render.stateful/cytoscape-render-stateful.jar"/>
 
     <ant dir="util.intr"/>
-    <copy todir="${build.dir}" file="util.intr/util.intr.jar"/>
+    <copy todir="${build.dir}" file="util.intr/cytoscape-util-intr.jar"/>
 
   </target>
 
@@ -40,11 +46,13 @@
   <target name="clean" depends="init">
     <ant dir="ding" target="clean"/>
     <ant dir="fing" target="clean"/>
+    <ant dir="geom.rtree" target="clean"/>
     <ant dir="geom.spacial" target="clean"/>
     <ant dir="graph.dynamic" target="clean"/>
     <ant dir="graph.fixed" target="clean"/>
-    <ant dir="render" target="clean"/>
-    <ant dir="rtree" target="clean"/>
+    <ant dir="render.export" target="clean"/>
+    <ant dir="render.immed" target="clean"/>
+    <ant dir="render.stateful" target="clean"/>
     <ant dir="util.intr" target="clean"/>
     <delete dir="${build.dir}"/>
   </target>
