@@ -66,6 +66,7 @@ public class LayoutPlugin extends CytoscapePlugin
     menu.add(springEmbMenu);
     menu.add(new AttributeCircleLayoutMenu());
     menu.add(degSortCircle);
+    menu.add(new GroupAttributesLayoutMenu());
 
     JMenu layoutMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
                                 .getMenu("Layout");
