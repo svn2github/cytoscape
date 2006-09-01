@@ -50,8 +50,8 @@
     <property name="cytoscape.lib" value="${cytoscape.dir}/lib" />
 
     <!-- Define the condition for compilation -->
-    <property name="cytoscape.jar" value="${browser.lib.dir}/cytoscape.jar"/>
-    <property name="colt.jar" value="${browser.lib.dir}/colt.jar"/>
+    <property name="cytoscape.jar" value="${cytoscape.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${cytoscape.lib.dir}/colt.jar"/>
     
     <condition property="cytoscape.present">
       <and> 
@@ -227,6 +227,7 @@
   <target name="clean" depends="init-browser">
     <delete dir="${browser.classes.dir}"/>
     <delete file="browser.jar"/>
+    <delete file="${browser.lib.dir}/browser.jar"/>
     <delete file="browser-tests.jar"/>
   </target>
 
