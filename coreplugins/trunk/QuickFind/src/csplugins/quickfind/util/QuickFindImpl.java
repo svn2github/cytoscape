@@ -3,6 +3,7 @@ package csplugins.quickfind.util;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.index.TextIndexFactory;
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.TaskMonitor;
 import giny.model.GraphObject;
@@ -33,6 +34,17 @@ class QuickFindImpl implements QuickFind {
     public void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
         //  Create new text index
         TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+
+        //  Use default index specified by network, if available
+        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+        if (networkAttributes != null) {
+            String defaultIndex = networkAttributes.getStringAttribute
+                    (network.getIdentifier(), QuickFind.DEFAULT_INDEX);
+            if (defaultIndex != null) {
+                textIndex.setControllingAttribute(defaultIndex);
+            }
+        }
+
         networkMap.put(network, textIndex);
 
         //  Determine maxProgress

@@ -74,10 +74,29 @@ public interface QuickFind {
             "[ Index all attributes ]";
 
     /**
-     * Adds a new network to the global index, and indexes all nodes or edges
+     * Network attribute, used to set default index.
+     */
+    String DEFAULT_INDEX = "quickfind.default_index";
+
+    /**
+     * Adds a new network to the global index, and indexes all nodes
      * described by this network.
-     * <P>By default, this class will automatically index node objects based
-     * on their unique identifier, e.g. node.getIdentifier()</LI>
+     * <P>By default, this class will first determine if the network includes
+     * a default index setting.  It does so by determining if the network
+     * has a network attribute named:  quickfind.default_index.  For
+     * example, if you would like your network to be indexed by
+     * "biopax.short_name" by default, you would use the following code:
+     *
+     * <P>
+     * <CODE>
+     * CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+     * <BR>networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+     *     "quickfind.default_index", "biopax.short_name");
+     * </CODE>
+     *
+     * <P>If no default index is found, this class will automatically
+     * index node objects based on their unique identifier,
+     * e.g. node.getIdentifier().
      *
      * @param network     Cytoscape Network.
      * @param taskMonitor TaskMonitor Object.
