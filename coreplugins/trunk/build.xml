@@ -22,6 +22,8 @@
     <copy todir="${build.dir}" file="yfiles/yLayouts.jar"/>
     <copy todir="${build.dir}" file="CytoscapeEditor2/CytoscapeEditor.jar"/>
     <copy todir="${build.dir}" file="AutomaticLayout/AutomaticLayout.jar"/>
+    <copy todir="${build.dir}" file="AutomaticLayout/lib/cape-graph-layout.jar"/>
+    <copy todir="${build.dir}" file="AutomaticLayout/lib/cape-graph-legacy.jar"/>
     <copy todir="${build.dir}" file="GraphMerge/GraphMerge.jar"/>
   </target>
 

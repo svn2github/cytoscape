@@ -29,6 +29,7 @@
     <!-- Define the directories -->
     <property name="layout.root.dir" value="./"/>
     <property name="layout.src.dir" value="${layout.root.dir}/src"/>
+    <property name="layout.lib.dir" value="${layout.root.dir}/lib"/>
     <property name="layout.classes.dir" value="${layout.root.dir}/classes"/>
     <property name="layout.javadoc.dir" value="${javadoc.dir}/layout"/>
     <property name="layout.resources.dir" value="${layout.root.dir}/resources"/>
@@ -46,6 +47,9 @@
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement location="/cellar/users/slotia/pre-coreplugins/LayoutCommon/LayoutCommon.jar"/>
       <fileset dir="${cytoscape.lib.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
+      <fileset dir="${layout.lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${cytoscape.plugin.dir}">

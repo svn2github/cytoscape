@@ -1,4 +1,4 @@
-package cytoscape.layout;
+package csplugins.layout.algorithms;
 import giny.view.NodeView;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ import cytoscape.view.CyNetworkView;
  * @author Iliana Avila-Campillo
  * @since 2.3
  */
-public class LayoutUtils {
+public class StackedNodeLayout {
 	
 	/**
 	 * Layouts a collection of nodes in a "stack" (one node on top of the other, vertically)
