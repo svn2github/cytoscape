@@ -193,9 +193,6 @@ public class QuickFindConfigDialog extends JDialog {
         panel.setBorder(new TitledBorder("Attribute Description:"));
         panel.setLayout(new BorderLayout());
         attributeDescriptionBox = new JTextArea (5, 40);
-        Font font = new Font (attributeDescriptionBox.getFont().getFontName(),
-                Font.ITALIC, attributeDescriptionBox.getFont().getSize() - 1);
-        attributeDescriptionBox.setFont(font);
         attributeDescriptionBox.setEditable(false);
         attributeDescriptionBox.setLineWrap(true);
         attributeDescriptionBox.setWrapStyleWord(true);
