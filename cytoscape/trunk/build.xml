@@ -619,8 +619,8 @@
             Copying over all OS-specific scripts.
             ---------------------------------------
 		</echo>
-		<copy file="bin/cytoscape.bat" todir="${release.dir}" />
-		<copy file="bin/cytoscape.sh" todir="${release.dir}" />
+		<copy file="resources/bin/cytoscape.bat" todir="${release.dir}" />
+		<copy file="resources/bin/cytoscape.sh" todir="${release.dir}" />
 		<chmod perm="+x" file="${release.dir}/cytoscape.bat" />
 		<chmod perm="+x" file="${release.dir}/cytoscape.sh" />
 
