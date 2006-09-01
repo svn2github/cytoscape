@@ -149,12 +149,6 @@ public class AutoCompleteDocument extends PlainDocument {
         }
         debug("remove(), offs=" + offs + ", len=" + len + " --> Process");
 
-        //  If we are already at the very beginning of the text box,
-        //  there's nothing to do;  simply return.
-        if (hitBackspace && editor.getSelectionStart() == 0) {
-            return;
-        }
-
         //  Handle Backspace Key
         if (hitBackspace) {
             // user hit backspace => move the selection backwards
@@ -164,6 +158,7 @@ public class AutoCompleteDocument extends PlainDocument {
                     offs--;
                 }
             }
+
         }
 
         //  Assume we have the following text:  "butter".
