@@ -9,17 +9,43 @@
   <!-- Build all corelib projects  -->
   <target name="all" depends="init">
     <mkdir dir="${build.dir}"/>
-    <!--  example
-    <ant dir="browser"/>
-    <copy todir="${build.dir}" file="browser/browser.jar"/>
-    -->
+
+    <ant dir="ding"/>
+    <copy todir="${build.dir}" file="ding/ding.jar"/>
+
+    <ant dir="fing"/>
+    <copy todir="${build.dir}" file="fing/fing.jar"/>
+
+    <ant dir="geom.spacial"/>
+    <copy todir="${build.dir}" file="geom.spacial/geom.spacial.jar"/>
+
+    <ant dir="graph.dynamic"/>
+    <copy todir="${build.dir}" file="graph.dynamic/graph.dynamic.jar"/>
+
+    <ant dir="graph.fixed"/>
+    <copy todir="${build.dir}" file="graph.fixed/graph.fixed.jar"/>
+
+    <ant dir="render"/>
+    <copy todir="${build.dir}" file="render/render.jar"/>
+
+    <ant dir="rtree"/>
+    <copy todir="${build.dir}" file="rtree/rtree.jar"/>
+
+    <ant dir="util.intr"/>
+    <copy todir="${build.dir}" file="util.intr/util.intr.jar"/>
+
   </target>
 
   <!-- clean all corelib projects  -->
   <target name="clean" depends="init">
-    <!--  example
-    <ant dir="browser" target="clean"/>
-    -->
+    <ant dir="ding" target="clean"/>
+    <ant dir="fing" target="clean"/>
+    <ant dir="geom.spacial" target="clean"/>
+    <ant dir="graph.dynamic" target="clean"/>
+    <ant dir="graph.fixed" target="clean"/>
+    <ant dir="render" target="clean"/>
+    <ant dir="rtree" target="clean"/>
+    <ant dir="util.intr" target="clean"/>
     <delete dir="${build.dir}"/>
   </target>
 
