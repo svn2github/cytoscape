@@ -169,9 +169,9 @@ sub start_body{
         <input type="text" size="55" name="search_query" value=$unescaped_query title='For information on valid queries, click "About CellCircuits" link to the right'/>
       </td>
       <td align='left' valign='center' rowspan=2>
-         &nbsp;<a class='color-bg-link' href='$search_url/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
-	 &nbsp;<a class='color-bg-link' href='$search_url/advanced_search.html'>Advanced&nbsp;Search</a><br />
-	 &nbsp;<a class='color-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>
+         &nbsp;<a class='white-bg-link' href='$search_url/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
+	 &nbsp;<a class='white-bg-link' href='$search_url/advanced_search.html'>Advanced&nbsp;Search</a><br />
+	 &nbsp;<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>
       </td>
     </tr>
     <tr>
@@ -180,33 +180,7 @@ sub start_body{
       </td>
     </tr>
   </table>
-<!--
-    <tr>
-      <td align='right'>
-	<a href='$search_url/index.html'><img src='$search_url/CC-logo-small.jpg' border='0' alt="Cell Circuits" title="Click to go to the Cell Circuits Home Page"/></a>
-      </td>
-      <td align="center" valign="center">
-         <table width="100%" border="0" cellspacing=0 cellpadding=0>
-	   <tr>
-             <td align=center>
-	       <input type="text" size="55" name="search_query" value=$unescaped_query title='Enter a search query. Example: gcn* gal4 GO:0003677 "DNA binding"'/>
-	       <br>
-	       <input type="submit" name="search_query_button" value="Search" title='Click to find models matching your query'/><input type="submit" value="Load Example Query" title="requires javaScript" onClick="LoadExampleQuery('gcn* gal4 GO:0003677','DNA binding');return false;" />
--->
-<!--
-	       <a class="color-bg-link" href="#" title="requires javaScript" onClick="LoadExampleQuery('gcn* gal4 GO:0003677','DNA binding');return false;">Load Example Query</a>
-	     </td>
-	   </tr>
-	 </table>
-      </td>
-      <td align='left' valign='center'>
-         <a class='color-bg-link' href='$search_url/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
-	 <a class='color-bg-link' href='$search_url/advanced_search.html'>Advanced&nbsp;Search</a><br />
-	 <a class='color-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>
-      </td>
-    </tr>
--->
-  </table>
+
 $pub_html
 $species_html
 $sort_method_html
@@ -255,7 +229,7 @@ sub formatPageNavigation_tr
     ## Add 'Previous' link if necessary
     if($page > 1){
 	my $prev_page = $page - 1;
-	$page_html .= tag("a", { class=>"color-bg-link",
+	$page_html .= tag("a", { class=>"white-bg-link",
 				 onclick=>"document.search.page.value=$prev_page; document.search.submit();", 
 				 href=>"#"},
 			  "Previous");
@@ -278,7 +252,7 @@ sub formatPageNavigation_tr
     ## Add 'Next' link if necessary
     if($page < $total_pages){
 	my $next_page = $page + 1;
-	$page_html .= tag("a", { class=>"color-bg-link", 
+	$page_html .= tag("a", { class=>"white-bg-link", 
 				 onclick=>"document.search.page.value=$next_page; document.search.submit();", 
 				 href=>"#"},
 			  "Next");
@@ -500,20 +474,21 @@ sub print_body
     $body .= formatPageNavigation_tr($N_PAGE_JUMP++, $page, $total_pages, $lower_lim, $upper_lim, $n_matched_models);
     $body.=<<TBL_HDR;
    <tr class="group-toggle-link">
-      <th class="result-header-left" title="# Distinct Matches" width=5%>Score</th>
+      <th class="result-header" title="# Distinct Matches" width=5%>Score</th>
       <th class="result-header">Model</th>
       <th class="result-header">Matches</th>
       <th class="result-header" colspan="1" valign='bottom'>
-         <a class="color-bg-link-header" href="http://www.geneontology.org/" title="GO Home Page">Gene Ontology</a>&nbsp;&nbsp;
+         Gene Ontology enrichment [<a class="color-bg-link" href="http://www.geneontology.org/" title="GO Home Page">read more</a>]&nbsp;&nbsp;
          <a class="color-bg-pval-link" href="$search_url/advanced_search.html" title="Click to go to the advanced search page to change this p-value threshold">
 	    (P-value < $pval_thresh)
 	 </a>
 	 <br />
 	 <table border=0 align='center' valign='bottom' cellpaddin=0 cellspacing=0>
 	    <tr>
-	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Toggle visibility of all Biological Process results on this page' onClick="CategoryVisibility_GroupToggle('bp','',$bp_count); return false;">&nbsp;+/-&nbsp;Biological&nbsp;Process&nbsp;</a></td>
-	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Toggle visibility of all Cellular Component results on this page' onClick="CategoryVisibility_GroupToggle('cc','',$cc_count); return false;">&nbsp;+/-&nbsp;Cellular&nbsp;Component&nbsp;</a></td>
-	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Toggle visibility of all Molecular Function results on this page' onClick="CategoryVisibility_GroupToggle('mf','',$mf_count); return false;">&nbsp;+/-&nbsp;Molecular&nbsp;Function&nbsp;</a></td>
+	       <td>Expand/collapse all: </td>
+	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Toggle visibility of all Biological Process results on this page' onClick="CategoryVisibility_GroupToggle('bp','',$bp_count); return false;">Bio.&nbsp;Process</a>, </td>
+	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Toggle visibility of all Cellular Component results on this page' onClick="CategoryVisibility_GroupToggle('cc','',$cc_count); return false;">Cell&nbsp;Component</a>, </td>
+	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Toggle visibility of all Molecular Function results on this page' onClick="CategoryVisibility_GroupToggle('mf','',$mf_count); return false;">Mol.&nbsp;Function</a></td>
 	    </tr>
 	 </table>
       </th>
@@ -1075,7 +1050,7 @@ sub format_query_matched_td
     }
 
     return tag("td", 
-	       { class=>"search-result", align=>"center", valign=>"top", bgcolor=>"#cccccc" },
+	       { class=>"search-result", align=>"center", valign=>"top", bgcolor=>"$colors->{page_background}" },
 	       $h);
 }
 
@@ -1141,11 +1116,11 @@ sub sortModelsBy
 sub print_trailer
 {
     print "<br /><br /><center>";
-    print "<a class='color-bg-link' href='$search_url/index.html' title='Click to go to the CellCircuits Home Page'>CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
-    print "<a class='color-bg-link' href='$search_url/advanced_search.html'>Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
-    print "<a class='color-bg-link' href='$search_url/about_cell_circuits.html'>About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
-    print "<a class='color-bg-link' href='http://chianti.ucsd.edu/idekerlab/index.html'>Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
-    print "<a class='color-bg-link' href='http://ucsd.edu'>UCSD</a><br />";
+    print "<a class='white-bg-link' href='$search_url/index.html' title='Click to go to the CellCircuits Home Page'>CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
+    print "<a class='white-bg-link' href='$search_url/advanced_search.html'>Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
+    print "<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
+    print "<a class='white-bg-link' href='http://chianti.ucsd.edu/idekerlab/index.html'>Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
+    print "<a class='white-bg-link' href='http://ucsd.edu'>UCSD</a><br />";
     print "<p style='font-size: 0.8em; font-style:italic'>Funding provided by the National Science Foundation (NSF 0425926).</p>";
     #print "<hr>";
     #print "<p class=\"credits\">Questions? Comments? Suggestions? Please see the ";

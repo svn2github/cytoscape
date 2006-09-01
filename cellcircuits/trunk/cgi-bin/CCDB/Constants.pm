@@ -72,7 +72,7 @@ our $db_link_by_species = {
 };
 
 our $colors = {
-    page_background => '#cccccc',
+    page_background => '#ffffff',
     error_message => '#B22222',
     pvalue => '#B22222',
     error_background => '#B4C3CA',

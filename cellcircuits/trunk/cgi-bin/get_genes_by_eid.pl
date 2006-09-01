@@ -64,10 +64,10 @@ HEADER
 
 my $FOOT .= <<FOOT;
   <center>
-    <a class="color-bg-link" href="$search_url/advanced_search.html">Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a class="color-bg-link" href="$search_url/about_cell_circuits.html">About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a class="color-bg-link" href="http://chianti.ucsd.edu/idekerlab/index.html">Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a class="color-bg-link" href="http://www-bioeng.ucsd.edu/">UCSD</a>
+    <a class="white-bg-link" href="$search_url/advanced_search.html">Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class="white-bg-link" href="$search_url/about_cell_circuits.html">About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class="white-bg-link" href="http://chianti.ucsd.edu/idekerlab/index.html">Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class="white-bg-link" href="http://www-bioeng.ucsd.edu/">UCSD</a>
     <p style="font-style:italic;font-size: 0.8em">Funding provided by the National Science Foundation (NSF 0425926).</p>
   </center>
 FOOT
@@ -147,7 +147,7 @@ if(param("eid"))
 	    }
 	    else
 	    {
-		$class = 'color-bg-link';
+		$class = 'white-bg-link';
 	    }
 
 	    $href = $db_link_by_species->{$org} . $gene;
@@ -182,11 +182,11 @@ if(param("eid"))
       <h2>Model information</h2>
       <table>
       
-         <tr><td class="bold">Publication:</td><td>$pubName->{$mpub}<br><a class='color-bg-link' href="$pubCitation->{$mpub}">[PubMed]</a></td></tr>
+         <tr><td class="bold">Publication:</td><td>$pubName->{$mpub}<br><a class='white-bg-link' href="$pubCitation->{$mpub}">[PubMed]</a></td></tr>
 	 <tr><td class="bold">Model Name:</td><td>$mname</td></tr>
 	 <tr><td class="bold">Organism:</td><td><i>$genus&nbsp;$species</i></td></tr>
 	 <tr><td class="bold">Enriched GO Annotation:</td><td>$tname<br>
-	 <a class="color-bg-link" href="$go_url">($tacc)</a><br>$ttype</td>
+	 <a class="white-bg-link" href="$go_url">($tacc)</a><br>$ttype</td>
 	 </tr>
 	 
        </table>

@@ -18,18 +18,18 @@
 </head>
 <body id="body-element">
   <form method="POST" name="search" action="/cgi-bin/search/v1.1/search.pl">
-  <!--<center><img src="/CC-logo-large.jpg" alt="Cell Circuits" /></center><br /><br />-->
+
   <table align='center' border='0' cellspacing=0 cellpadding=0 summary='search interface'>
     <tr>
       <td align='right' rowspan=2>
-	<a href='$search_url/index.html'><img src='/CC-logo-small.jpg' border='0' alt="Cell Circuits" title="Click to go to the Cell Circuits Home Page"/></a>
+	<a href='/index.html'><img src='/CC-logo-small.jpg' border='0' alt="Cell Circuits" title="Click to go to the Cell Circuits Home Page"/></a>
       </td>
       <td align="center" valign="bottom">
         <input type="text" size="55" name="search_query" value='' title='For information on valid queries, click "About CellCircuits" link to the right'/>
       </td>
       <td align='left' valign='center' rowspan=2>
-         &nbsp;<a class='color-bg-link' href='/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
-	 &nbsp;<a class='color-bg-link' href='/advanced_search.html'>Advanced&nbsp;Search</a><br />
+         &nbsp;<a class='white-bg-link' href='/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
+	 &nbsp;<a class='white-bg-link' href='/advanced_search.html'>Advanced&nbsp;Search</a><br />
       </td>
     </tr>
     <tr>
@@ -39,37 +39,52 @@
     </tr>
   </table>
 
-  <br />
-
   <table align="center" width="60%">
     <tr>
-      <td align="left" colspan="2"><br>
+      <td align="left" colspan="2">
         <div class="explanation" align="left">
-	  <p>&nbsp;&nbsp;&nbsp;&nbsp;Molecular interaction models provide us with a framework for integrating the large-scale data that we are now able to collect at multiple levels of biological information - genes, RNAs, proteins, and small molecules. Cell Circuits is a web-based interface for searching our library of network models.</p><br />
-          <p>
+	  <p>
+<h2>What is CellCircuits?</h2>
+	  <p>CellCircuits is an open-access database of molecular network models,
+designed to bridge the gap between databases of individual pair-wise
+molecular interactions and databases of validated pathways.  CellCircuits
+captures the output from an increasing number of approaches that screen
+molecular interaction networks to identify functional subnetworks, based
+on their correspondence with expression or phenotypic data, their internal
+structure, or their conservation across species.  
+</p>
+<br>
+<p>Models are available
+either as images or in machine-readable formats and can be queried by the
+names of proteins they contain or by their enriched biological functions. 
+CellCircuits is designed as a clearinghouse in which theorists may
+distribute or revise models in need of validation and experimentalists may
+search for models or specific hypotheses relevant to their interests.
+	  </p><br />
 	</div>
       </td>
     </tr>
     <tr>
       <td>
-        <center><img src="Mak-Daly-CellCircuits-Fig1.jpg" alt="Cell Circuits' Place In the Bigger Picture" border=0/></center>
+        <center><img src="/CC-overview.jpg" alt="CellCircuits fills a gap between databases of interactions and databases of validated pathways" border=0/></center>
       </td>
     </tr>
       <td>
         <div class="explanation" align="left">
 	  <p>
+	    <hr>
 	    <h2>Features</h2>
 	    <b>Search the network models in Cell Circuits ...</b>
 	    <br>(try entering words in <font class="example">underline bold</font> into the search box)
             <ul>
 	      <li><b>By gene</b>
 	      <ul>
-              <li>Using gene names or aliases (registered by the <a class="color-bg-link" href="http://geneontology.org">GO</a> database) (e.g. <font class="example">GCN4</font>) </li>
+              <li>Using gene names or aliases (registered by the <a class="white-bg-link" href="http://geneontology.org">GO</a> database) (e.g. <font class="example">GCN4</font>) </li>
 	      <li>Models in CellCircuits contain genes from yeast (<i>S. cerevisiae</i>), fly (<i>D. melanogaster</i>), worm (<i>C. elegans</i>), human (<em>H. sapiens</em>), and the malaria parasite (<em>P. falciparum</em>) </li>
 	      <li>An asterisk (*) is a wild card (e.g. <font class="example">RAD*</font>)</li>
 	      <li>Enter more than one gene, each separated by a space. (e.g. <font class="example">YAP1 SOD1</font>)</li>
 	      </ul
-	      <li><b>By <a class="color-bg-link" href="http://geneontology.org">Gene Ontology</a> annotation</b>
+	      <li><b>By <a class="white-bg-link" href="http://geneontology.org">Gene Ontology</a> annotation</b>
 	      <ul>
 	      <li>Use GO ID numbers (e.g. <font class="example">GO:0003677</font>)</li>
 	      <li>Use partial or complete GO term names (enclosed in double quotes) (e.g. <font class="example">"DNA binding"</font>)</li>
@@ -92,10 +107,10 @@
 
     <tr>
       <td align="center" colspan="2"><br><br>
-        <a class="color-bg-link" href="index.html" title="Click to go to the CellCircuits Home Page">CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a class="color-bg-link" href="advanced_search.html">Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-	<a class="color-bg-link" href="http://chianti.ucsd.edu/idekerlab/index.html">Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a class="color-bg-link" href="http://ucsd.edu">UCSD</a>
+        <a class="white-bg-link" href="index.html" title="Click to go to the CellCircuits Home Page">CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a class="white-bg-link" href="advanced_search.html">Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+	<a class="white-bg-link" href="http://chianti.ucsd.edu/idekerlab/index.html">Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a class="white-bg-link" href="http://ucsd.edu">UCSD</a>
 	<p style="font-style:italic;font-size: 0.8em">Funding provided by the National Science Foundation (NSF 0425926).</p>
 	<hr />
 	<p class="credits">Questions? Comments? Suggestions? Please see the 

@@ -1,7 +1,7 @@
 html {
 	margin: 0px;
 	padding: 0px;
-	background: #CCCCCC; /*light gray*/
+	background: white; /*light gray*/
 }
 
 body {
@@ -9,7 +9,7 @@ body {
         text-decoration:none;
 	font-size: 11pt;
 	color: black;
-	background: #CCCCCC;
+	background: white;
 }
 
 p {
@@ -71,6 +71,13 @@ tr.group-toggle-link{
 }
 a.result-header:hover{ background-color:white; }
 
+
+.result-header-left{
+	text-align: left;
+}
+a.result-header:hover{ background-color:white; }
+
+
 /****************************************************/
 /**                    LINKS                       **/
 /****************************************************/
@@ -124,7 +131,7 @@ a.highlighted-link:hover {
 a.group-toggle-link{
 	color: blue;
 	text-align: center;
-	background-color: #CCC;
+	background-color: #8DA4AE;
 }
 a.group-toggle-link:hover{
 	color: blue;
@@ -164,7 +171,9 @@ a { color: #000; text-decoration: none; }
 	color: blue;
 }
 a.go-cat-results-header:hover { 
-	background-color: white; color:blue; 
+//	background-color: white; 
+	color:blue; 
+	text-decoration: underline;
 }
 
 .even-row { background-color: #8DA4AE; }
@@ -202,19 +211,19 @@ div.row {
 }
 
 .menu_header {
-  text-align: center;
-  background-color: #69AF93; /* green */
-  border-bottom: #8FC3AE thick solid; /* light green */
-  color: white;
+  text-align: left;
+//  background-color: #69AF93; /* green */
+//  border-bottom: #8FC3AE thick solid; /* light green */
+  color: black;
 }
 .menu_header-last {
-  text-align: center;
-  background-color: #69AF93; /* green */
-  color: white;
+  text-align: left;
+//  background-color: #69AF93; /* green */
+  color: black;
 }
 
 .menu_block {
-  background-color: #8FC3AE; /* light green */
+//  background-color: #8FC3AE; /* light green */
   color: black;
   overflow:hidden;
 }
