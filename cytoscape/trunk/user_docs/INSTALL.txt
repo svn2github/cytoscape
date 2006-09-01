@@ -1,6 +1,6 @@
 ################################################
 # CYTOSCAPE INSTALLATION INSTRUCTIONS          #
-# Cytoscape v. 2.3, June., 2006                 #
+# Cytoscape version @version@, June., 2006         #
 # http://www.cytoscape.org                     #
 #                                              # 
 # (c) The Cytoscape Collaboration              #
@@ -42,8 +42,9 @@ species such as the yeast S. cerevisiae.
 a compressed archive containing the following files and directories:
 
 INSTALL.txt ............ Quick-start installation instructions (this file)
-Cytoscape2_3Manual.pdf.. Overview and details of Cytoscape functionality
+manual.pdf.............. Overview and details of Cytoscape functionality
 LICENSE.txt ............ The license agreement
+LICENSE.html............ The license agreement in a different format
 
 cytoscape.jar .......... Main Cytoscape application (Java archive)
 
@@ -100,6 +101,5 @@ location of the annotation data directory, see MANUAL.txt for details).
 !!!!IMPORTANT NOTE!!!!  For the application to work properly, ALL
 FILES MUST BE LEFT IN THE DIRECTORY IN WHICH THEY ARE UNPACKED.  [The
 core Cytoscape application assumes this directory structure when
-looking for certain files, such as cytoscape.props, and the annotation/
-databases].
+looking for plugins. 
 
