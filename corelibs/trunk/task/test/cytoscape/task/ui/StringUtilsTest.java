@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 /**
  * JUnit Test for StringUtils.
  */
-public class TestStringUtils extends TestCase {
+public class StringUtilsTest extends TestCase {
 
     /**
      * Tests the GetTimeString() static method.
