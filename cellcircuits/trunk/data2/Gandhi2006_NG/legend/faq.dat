@@ -1,0 +1,32 @@
+==LEGEND
+
+
+==CITATION
+Gandhi et al. (2006)
+
+==TITLE
+Analysis of the human protein interactome and comparison with yeast, worm and fly interaction datasets
+
+==FULLTEXT
+http://www.nature.com/ng/journal/v38/n3/full/ng1747.html
+
+==SUPPL
+
+
+==ABSTRACT
+We present the first analysis of the human proteome with regard to interactions between proteins. We also compare the human interactome with the available interaction datasets from yeast (Saccharomyces cerevisiae), worm (Caenorhabditis elegans) and fly (Drosophila melanogaster). Of >70,000 binary interactions, only 42 were common to human, worm and fly, and only 16 were common to all four datasets. An additional 36 interactions were common to fly and worm but were not observed in humans, although a coimmunoprecipitation assay showed that 9 of the interactions do occur in humans. A re-examination of the connectivity of essential genes in yeast and humans indicated that the available data do not support the presumption that the number of interaction partners can accurately predict whether a gene is essential. Finally, we found that proteins encoded by genes mutated in inherited genetic disorders are likely to interact with proteins known to cause similar disorders, suggesting the existence of disease subnetworks. The human interaction map constructed from our analysis should facilitate an integrative systems biology approach to elucidating the cellular networks that contribute to health and disease states.
+
+==ORGANISM
+Human <i>(Homo sapiens)</i>
+Fly <i>(Drosophila melanogaster)</i>
+Worm <i>(Caenorhabditis elegans)</i>
+Yeast <i>(Saccharomyces cerevisiae)</i>
+
+==FIGURE:./Human_Fly_lrg.jpg:./Human_Fly_small.jpg
+Human-Fly
+
+==FIGURE:./Human_Worm_lrg.jpg:./Human_Worm_small.jpg
+Human-Worm
+
+==FIGURE:./Human_Yeast_lrg.jpg:./Human_Yeast_small.jpg
+Human-Worm
