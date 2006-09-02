@@ -57,6 +57,9 @@
              <fileset dir="data" followsymlinks="no" defaultexcludes="yes"
                       includes="**/legend_FAQ.html"/>
           </copy>
+
+         <chmod dir="${deploy.data}" perm="444" includes="**/legend_FAQ.html"/>
+
         </target>  
 
    	<target name="deploy-clean" description="Clean deployment dirs">
