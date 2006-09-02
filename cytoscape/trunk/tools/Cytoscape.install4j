@@ -21,7 +21,7 @@
     <components />
   </files>
   <launchers>
-    <launcher name="Cytoscape" id="3" external="false" excludeFromMenu="false" menuName="" icnsFile="../tools/mac_template/Contents/Resources/cytoscape.icns" pngIcon16File="../images/icon16x16.png" pngIcon32File="../images/icon32x32.png" macServiceDependencies="" allowUserChangeServiceStartType="true">
+    <launcher name="Cytoscape" id="3" external="false" excludeFromMenu="false" menuName="" icnsFile="../images/cytoscape.icns" pngIcon16File="../images/icon16x16.png" pngIcon32File="../images/icon32x32.png" macServiceDependencies="" allowUserChangeServiceStartType="true">
       <executable name="Cytoscape" type="1" iconSet="true" iconFile="" executableDir="." redirectStderr="true" stderrFile="output.log" redirectStdout="true" stdoutFile="output.log" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="">
         <versionInfo include="true" fileVersion="" companyName="" fileDescription="Cytoscape" legalCopyright="Cytoscape Consortium" productVersion="" internalName="%SHORT_NAME%" />
       </executable>
