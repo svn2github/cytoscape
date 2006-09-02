@@ -1,7 +1,0 @@
-build
-*.log
-cytoscape.jar
-cytoscape.props
-vizmap.props
-.classpath
-.project
