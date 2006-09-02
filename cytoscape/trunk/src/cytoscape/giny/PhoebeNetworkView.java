@@ -67,7 +67,10 @@ import ding.view.NodeContextMenuListener;
 import ding.view.EdgeContextMenuListener;
 //AJK: 05/19/06 END
 
-
+/**
+ * @deprecated You should be using DingNetworkView instead.  This 
+ * will be removed in whatever major release follows 2.4.
+ */
 public class PhoebeNetworkView 
   extends 
     PGraphView
