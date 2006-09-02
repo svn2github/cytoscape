@@ -76,6 +76,10 @@
 	<!-- Auto generated package name -->
 	<property name="package" value="cytoscape.generated" />
 
+	<!-- Check to see if install4j is available -->
+	<available property="install4j.available" 
+	           file="${env.INSTALL4J_HOME}/bin/install4j.jar"/>
+
 	<!-- ======================================================= -->
 	<!-- Cytoscape ClassPath definition                          -->
 	<!-- ======================================================= -->
@@ -211,6 +215,11 @@
 	<!-- ======================================================= -->
 	<target name="splash">
 	        <filter token="version" value="${version}"/>
+		<echo>
+            ---------------------------------------
+           	Creating splash and about screens 
+            ---------------------------------------
+        	</echo>
 		<copy file="images/CytoscapeSplashScreen.svg" 
 	              tofile="${build.classes}/cytoscape/images/CytoscapeSplashScreen.svg" 
 		      filtering="true"
@@ -702,7 +711,6 @@
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy file="plugins/core/pluginsContents.txt" todir="${release.dir}/plugins" />
 	</target>
 
 	<target name="all" depends="release" />
@@ -816,10 +824,17 @@
 	<!-- ======================================================= -->
 	<taskdef name="install4j"
 	         classname="com.install4j.Install4JTask"
-       	         classpath="${env.INSTALL4J_HOME}/bin/ant.jar"/>
+       	     classpath="${env.INSTALL4J_HOME}/bin/ant.jar"
+			 onerror="ignore"/>
 					                   
 	<target name="install-bundles"
-	        depends="release">
+	        depends="release"
+			if="install4j.available" >
+		<echo>
+            ---------------------------------------
+            Creating install4j bundles 
+            ---------------------------------------
+        	</echo>
 		<filter token="version" value="${version}"/>
 		<copy file="tools/Cytoscape.install4j"
 		      tofile="build/Cytoscape.install4j" 
@@ -906,8 +921,6 @@
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-
-		<copy file="plugins/core/pluginsContents.txt" todir="${webstart.dir}/plugins" />
 
 		<signjar alias="cytoscape" storepass="secret">
 			<fileset dir="${webstart.dir}/plugins" includes="*.jar" />
