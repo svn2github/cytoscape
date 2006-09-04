@@ -2,7 +2,7 @@ package csplugins.quickfind.plugin;
 
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
-import csplugins.widgets.autocomplete.index.TextIndexFactory;
+import csplugins.widgets.autocomplete.index.IndexFactory;
 import csplugins.widgets.autocomplete.view.ComboBoxFactory;
 import csplugins.widgets.autocomplete.view.TextIndexComboBox;
 import csplugins.test.quickfind.test.TaskMonitorBase;
@@ -76,7 +76,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
         CyMenus cyMenus = desktop.getCyMenus();
         CytoscapeToolBar toolBar = cyMenus.getToolBar();
 
-        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        TextIndex textIndex = IndexFactory.createDefaultTextIndex();
         try {
             JPanel panel = new JPanel();
             panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
