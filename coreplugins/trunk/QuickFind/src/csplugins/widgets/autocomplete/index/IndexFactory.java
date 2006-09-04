@@ -15,4 +15,12 @@ public class IndexFactory {
     public static TextIndex createDefaultTextIndex() {
         return new TextIndexImpl();
     }
+
+    /**
+     * Gets the default implementation of the NumberIndex interface.
+     * @return NumberIndex Object.
+     */
+    public static NumberIndex createDefaultNumberIndex() {
+        return new NumberIndexImpl();
+    }
 }
