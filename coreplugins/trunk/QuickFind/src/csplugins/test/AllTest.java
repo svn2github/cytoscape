@@ -1,6 +1,7 @@
 package csplugins.test;
 
 import csplugins.test.widgets.test.unitTests.text.TestTextIndex;
+import csplugins.test.widgets.test.unitTests.text.TestNumberIndex;
 import csplugins.test.widgets.test.unitTests.view.TestTextIndexComboBox;
 import csplugins.test.quickfind.test.TestCyAttributesUtil;
 import csplugins.test.quickfind.test.TestQuickFind;
@@ -23,6 +24,7 @@ public class AllTest extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         suite.addTestSuite(TestTextIndex.class);
+        suite.addTestSuite(TestNumberIndex.class);
         suite.addTestSuite(TestTextIndexComboBox.class);
         suite.addTestSuite(TestQuickFind.class);
         suite.addTestSuite(TestCyAttributesUtil.class);
