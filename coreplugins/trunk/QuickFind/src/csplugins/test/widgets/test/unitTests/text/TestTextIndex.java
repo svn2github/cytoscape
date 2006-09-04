@@ -2,7 +2,7 @@ package csplugins.test.widgets.test.unitTests.text;
 
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
-import csplugins.widgets.autocomplete.index.TextIndexFactory;
+import csplugins.widgets.autocomplete.index.IndexFactory;
 import junit.framework.TestCase;
 
 /**
@@ -16,7 +16,7 @@ public class TestTextIndex extends TestCase {
      * First Round of Test Cases.
      */
     public void testTextIndex0() {
-        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        TextIndex textIndex = IndexFactory.createDefaultTextIndex();
         textIndex.addToIndex("rain", new Integer(1));
         textIndex.addToIndex("rain", new Integer(2));
         textIndex.addToIndex("rainbow", new Integer(3));
@@ -78,7 +78,7 @@ public class TestTextIndex extends TestCase {
      * Tests wild card searches.
      */
     public void testWildCardSearches() {
-        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        TextIndex textIndex = IndexFactory.createDefaultTextIndex();
         textIndex.addToIndex("rain", new Integer(1));
         textIndex.addToIndex("rain", new Integer(2));
         textIndex.addToIndex("rainbow", new Integer(3));
@@ -95,7 +95,7 @@ public class TestTextIndex extends TestCase {
      * Test max key length.
      */
     public void testMaxKeyLength () {
-        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        TextIndex textIndex = IndexFactory.createDefaultTextIndex();
         assertEquals (TextIndex.DEFAULT_MAX_KEY_LENGTH,
                 textIndex.getMaxKeyLength());
         textIndex.addToIndex("The Associated Press and the New York Times "
@@ -113,7 +113,7 @@ public class TestTextIndex extends TestCase {
      * @throws Exception All Errors.
      */
     public void testSortOrder() throws Exception {
-        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        TextIndex textIndex = IndexFactory.createDefaultTextIndex();
         textIndex.addToIndex("?", new Integer(1));
         textIndex.addToIndex("1rain", new Integer(2));
         textIndex.addToIndex("rainbow", new Integer(3));

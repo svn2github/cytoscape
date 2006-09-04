@@ -2,7 +2,7 @@ package csplugins.test.widgets.test.unitTests.view;
 
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
-import csplugins.widgets.autocomplete.index.TextIndexFactory;
+import csplugins.widgets.autocomplete.index.IndexFactory;
 import csplugins.widgets.autocomplete.view.AutoCompleteDocument;
 import csplugins.widgets.autocomplete.view.ComboBoxFactory;
 import csplugins.widgets.autocomplete.view.TextIndexComboBox;
@@ -170,7 +170,7 @@ public class TestTextIndexComboBox extends TestCase {
      * @return TextIndex Object.
      */
     public static TextIndex createSampleTextIndex() {
-        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        TextIndex textIndex = IndexFactory.createDefaultTextIndex();
         textIndex.addToIndex("Apple", new String());
         textIndex.addToIndex("Apple Long Long Long Long Long Label",
                 new String());
