@@ -1,7 +1,7 @@
 package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.TextIndex;
-import csplugins.widgets.autocomplete.index.TextIndexFactory;
+import csplugins.widgets.autocomplete.index.IndexFactory;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -33,7 +33,7 @@ class QuickFindImpl implements QuickFind {
 
     public void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
         //  Create new text index
-        TextIndex textIndex = TextIndexFactory.createDefaultTextIndex();
+        TextIndex textIndex = IndexFactory.createDefaultTextIndex();
 
         //  Use default index specified by network, if available
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
