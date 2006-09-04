@@ -58,7 +58,7 @@
         description="Compiles all Java source files">
         <mkdir dir="${build.dir}/classes"/>
         <javac srcdir="${src.dir}"
-		    source="1.4"
+		    source="1.5"
             destdir="${build.dir}/classes"
             debug="${compile.debug}"
             deprecation="${compile.deprecation}"
