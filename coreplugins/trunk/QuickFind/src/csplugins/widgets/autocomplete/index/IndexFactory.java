@@ -1,11 +1,11 @@
 package csplugins.widgets.autocomplete.index;
 
 /**
- * Factory for creating TextIndex objects.
+ * Factory for creating Index objects.
  *
  * @author Ethan Cerami.
  */
-public class TextIndexFactory {
+public class IndexFactory {
 
     /**
      * Gets the default implementation of the TextIndex interface.

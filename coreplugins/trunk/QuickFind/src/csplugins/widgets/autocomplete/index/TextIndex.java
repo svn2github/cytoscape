@@ -8,45 +8,11 @@ package csplugins.widgets.autocomplete.index;
  *
  * @author Ethan Cerami.
  */
-public interface TextIndex {
+public interface TextIndex extends GenericIndex {
     /**
      * Default Max Key Length
      */
     int DEFAULT_MAX_KEY_LENGTH = 25;
-
-    /**
-     * Resets the index, wipes everything clean.
-     */
-    void resetIndex();
-
-    /**
-     * Sets the controlling attribute.
-     *
-     * <P>For example, if the controlling attribute is:  biopax.short_name,
-     * that means that the index contains all values for this attribute.
-     *
-     * @param attributeName Controlling attribute name.
-     *
-     */
-    void setControllingAttribute (String attributeName);
-
-    /**
-     * Gets the controlling attribute.
-     *
-     * <P>For example, if the controlling attribute is:  biopax.short_name,
-     * that means that the index contains all values for this attribute.
-     *
-     * @return attribute name.
-     */
-    String getControllingAttribute ();
-
-    /**
-     * Adds new object to index.
-     *
-     * @param key String Key.
-     * @param o   Any Java Object.
-     */
-    void addToIndex(String key, Object o);
 
     /**
      * Set max key length;  all keys greater than this length will
@@ -81,31 +47,6 @@ public interface TextIndex {
      * @return number of keys in index.
      */
     int getNumKeys();
-
-    /**
-     * Adds a new TextIndexListener object.
-     * <P>The TextIndexListener object will be notified each time the text
-     * index is modified.
-     *
-     * @param listener TextIndexListener Object.
-     */
-    void addTextIndexListener(TextIndexListener listener);
-
-    /**
-     * Deletes the specified TextIndexListener Object.
-     * <P>After being deleted, this listener will no longer receive any
-     * notification events.
-     *
-     * @param listener TextIndexListener Object.
-     */
-    void deleteTextIndexListener(TextIndexListener listener);
-
-    /**
-     * Gets number of registered listeners who are receving notification events.
-     *
-     * @return number of registered listeners.
-     */
-    int getNumListeners();
 
     /**
      * Gets a text description of the text index, primarily used for debugging

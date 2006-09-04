@@ -1,7 +1,5 @@
 package csplugins.widgets.autocomplete.index;
 
-import csplugins.quickfind.util.QuickFind;
-
 import java.util.*;
 import java.text.RuleBasedCollator;
 import java.text.ParseException;
@@ -11,14 +9,12 @@ import java.text.ParseException;
  *
  * @author Ethan Cerami.
  */
-class TextIndexImpl implements TextIndex {
+class TextIndexImpl extends GenericIndexImpl implements TextIndex {
     private Trie trie;
     private HashMap map;
-    private ArrayList observerList;
     private static final boolean OUTPUT_PERFORMANCE_STATS = false;
     private HashMap cache = new HashMap();
     private static final String WILD_CARD = "*";
-    private String attributeName = QuickFind.UNIQUE_IDENTIFIER;
     private int maxKeyLength;
 
     /**
@@ -26,23 +22,7 @@ class TextIndexImpl implements TextIndex {
      */
     public TextIndexImpl() {
         maxKeyLength = TextIndex.DEFAULT_MAX_KEY_LENGTH;
-        observerList = new ArrayList();
         init();
-    }
-
-    /**
-     * Sets the controlling attribute.
-     */
-    public void setControllingAttribute (String attributeName) {
-        this.attributeName = attributeName;
-    }
-
-    /**
-     * Gets the controlling attribute.
-     * @return attribute name.
-     */
-    public String getControllingAttribute () {
-        return this.attributeName;
     }
 
     /**
@@ -50,13 +30,7 @@ class TextIndexImpl implements TextIndex {
      */
     public void resetIndex() {
         init();
-
-        //  Explicitly notify all observers
-        for (int i = 0; i < observerList.size(); i++) {
-            TextIndexListener observer =
-                    (TextIndexListener) observerList.get(i);
-            observer.indexReset();
-        }
+        super.resetIndex();
     }
 
     public void setMaxKeyLength(int len) {
@@ -73,30 +47,25 @@ class TextIndexImpl implements TextIndex {
      * @param key String Hit.
      * @param o   Any Java Object.
      */
-    public void addToIndex(String key, Object o) {
+    public void addToIndex(Object key, Object o) {
         // convert all keys to lowercase
-        key = key.toLowerCase();
+        String keyString = (String) key;
+        keyString = keyString.toLowerCase();
 
         // truncate key, if necessary
-        if (key.length() > maxKeyLength) {
-            key = key.substring(0, maxKeyLength);
+        if (keyString.length() > maxKeyLength) {
+            keyString = keyString.substring(0, maxKeyLength);
         }
 
         //  Add to Trie and HashMap
-        trie.add(key);
-        ArrayList objectList = (ArrayList) map.get(key);
+        trie.add(keyString);
+        ArrayList objectList = (ArrayList) map.get(keyString);
         if (objectList == null) {
             objectList = new ArrayList();
-            map.put(key, objectList);
+            map.put(keyString, objectList);
         }
         objectList.add(o);
-
-        //  Explicitly notify all observers
-        for (int i = 0; i < observerList.size(); i++) {
-            TextIndexListener observer =
-                    (TextIndexListener) observerList.get(i);
-            observer.itemAddedToIndex(key, o);
-        }
+        super.addToIndex(key, o);
     }
 
     /**
@@ -165,38 +134,6 @@ class TextIndexImpl implements TextIndex {
      */
     public int getNumKeys() {
         return map.size();
-    }
-
-    /**
-     * Adds a new TextIndexListener Object.
-     * <P>Each TextIndexListener object will be notified each time the text
-     * index is modified.
-     *
-     * @param listener TextIndexListener Object.
-     */
-    public void addTextIndexListener(TextIndexListener listener) {
-        observerList.add(listener);
-    }
-
-    /**
-     * Deletes the specified TextIndexListener Object.
-     * <P>After being deleted, this listener will no longer receive any
-     * notification events.
-     *
-     * @param listener TextIndexListener Object.
-     */
-    public void deleteTextIndexListener(TextIndexListener listener) {
-        observerList.remove(listener);
-    }
-
-    /**
-     * Gets number of registered listeners who are receving notification
-     * events.
-     *
-     * @return number of registered listeners.
-     */
-    public int getNumListeners() {
-        return observerList.size();
     }
 
     /**

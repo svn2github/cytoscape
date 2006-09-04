@@ -1,11 +1,11 @@
 package csplugins.widgets.autocomplete.index;
 
 /**
- * Interface for listening to TextIndex events.
+ * Interface for listening to Index events.
  *
  * @author Ethan Cerami.
  */
-public interface TextIndexListener {
+public interface IndexListener {
 
     /**
      * Index has been reset.
@@ -15,8 +15,8 @@ public interface TextIndexListener {
     /**
      * Item has been added to the index.
      *
-     * @param key String key.
+     * @param key Object key.
      * @param o   Object o.
      */
-    void itemAddedToIndex(String key, Object o);
+    void itemAddedToIndex(Object key, Object o);
 }
