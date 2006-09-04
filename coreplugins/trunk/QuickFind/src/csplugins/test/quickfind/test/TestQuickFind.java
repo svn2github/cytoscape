@@ -49,7 +49,7 @@ public class TestQuickFind extends TestCase {
         quickFind.addNetwork(cyNetwork, monitor);
 
         //  Verify default values
-        TextIndex textIndex = quickFind.getTextIndex(cyNetwork);
+        TextIndex textIndex = (TextIndex) quickFind.getIndex(cyNetwork);
         String attributeKey = textIndex.getControllingAttribute();
         assertEquals(QuickFind.UNIQUE_IDENTIFIER, attributeKey);
 
@@ -73,7 +73,7 @@ public class TestQuickFind extends TestCase {
         quickFind.reindexNetwork(cyNetwork, LOCATION, monitor);
 
         //  Verify that nodes have been indexed
-        textIndex = quickFind.getTextIndex(cyNetwork);
+        textIndex = (TextIndex) quickFind.getIndex(cyNetwork);
         hits = textIndex.getHits("nu", Integer.MAX_VALUE);
         assertEquals(1, hits.length);
         assertEquals(NUCLEUS, hits[0].getKeyword());

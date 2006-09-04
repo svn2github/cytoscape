@@ -89,7 +89,7 @@ class QuickFindImpl implements QuickFind {
         }
     }
 
-    public TextIndex getTextIndex(CyNetwork network) {
+    public TextIndex getIndex(CyNetwork network) {
         return (TextIndex) networkMap.get(network);
     }
 

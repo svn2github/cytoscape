@@ -158,7 +158,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
         if (networkView != null) {
             if (networkView.getNetwork() != null) {
                 cyNetwork = networkView.getNetwork();
-                TextIndex textIndex = quickFind.getTextIndex(cyNetwork);
+                TextIndex textIndex = (TextIndex) quickFind.getIndex(cyNetwork);
                 if (textIndex != null) {
                     comboBox.setTextIndex(textIndex);
                     networkHasFocus = true;
@@ -220,7 +220,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
     public void indexingEnded() {
         QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-        TextIndex textIndex = quickFind.getTextIndex(cyNetwork);
+        TextIndex textIndex = (TextIndex) quickFind.getIndex(cyNetwork);
         comboBox.setTextIndex(textIndex);
         enableAllQuickFindButtons();
         comboBox.setToolTipText("Enter search string");

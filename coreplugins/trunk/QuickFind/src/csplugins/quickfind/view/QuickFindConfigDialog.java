@@ -77,7 +77,7 @@ public class QuickFindConfigDialog extends JDialog {
         //  Initialize, based on currently selected network
         currentNetwork = Cytoscape.getCurrentNetwork();
         QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-        currentTextIndex = quickFind.getTextIndex(currentNetwork);
+        currentTextIndex = (TextIndex) quickFind.getIndex(currentNetwork);
 
         Container container = getContentPane();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));

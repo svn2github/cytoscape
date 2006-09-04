@@ -1,6 +1,7 @@
 package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.TextIndex;
+import csplugins.widgets.autocomplete.index.GenericIndex;
 import cytoscape.CyNetwork;
 import cytoscape.task.TaskMonitor;
 
@@ -33,11 +34,11 @@ import cytoscape.task.TaskMonitor;
  * <p/>
  * To do so, we must first obtain the text index associated with this network
  * via the
- * {@link QuickFind#getTextIndex(cytoscape.CyNetwork)} method.  For example:
+ * {@link QuickFind#getIndex(cytoscape.CyNetwork)} method.  For example:
  * <BR/>
  * <PRE>
  * CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
- * TextIndex textIndex = QuickFind.getTextIndex (currentNetwork);
+ * TextIndex textIndex = QuickFind.getIndex (currentNetwork);
  * </PRE>
  * We can then retrieve all hits that begin with the prefix:  "YLR" via the
  * {@link TextIndex#getHits(String, int)} method.
@@ -114,12 +115,12 @@ public interface QuickFind {
     void removeNetwork(CyNetwork network);
 
     /**
-     * Gets the text index associated with the specified network.
+     * Gets the index associated with the specified network.
      *
      * @param network Cytoscape Network.
-     * @return TextIndex Object.
+     * @return Index Object.
      */
-    TextIndex getTextIndex(CyNetwork network);
+    GenericIndex getIndex(CyNetwork network);
 
     /**
      * Reindexes a network with the specified controlling attribute.
