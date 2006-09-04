@@ -60,9 +60,10 @@ public class TestNumberIndex extends TestCase {
         //  Test Min / Max values
         Number min = numberIndex.getMinimumValue();
         assertEquals(0.1, min);
+        assertEquals (0.1, min.doubleValue(), 0.001);
 
         Number max = numberIndex.getMaximumValue();
-        assertEquals(.99, max);
+        assertEquals(.99, max.doubleValue(), 0.001);
 
         List list = numberIndex.getRange(0.1, 0.3);
         assertEquals(2, list.size());
