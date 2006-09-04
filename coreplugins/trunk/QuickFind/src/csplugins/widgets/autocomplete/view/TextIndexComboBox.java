@@ -19,15 +19,6 @@ import java.awt.event.*;
  * http://www.orbital-computer.de/JComboBox/</A>, which is in the public
  * domain.
  * <p/>
- * Issues:
- * <UL>
- * <LI>Buggy on Mac OS X Platform (Resolved)
- * <LI>Backspace button not working (Resolved)
- * <LI>Screen Flicker (Resolved)
- * <LI?Selecting an item from the pull-down erases all other menu
- * items (Resolved)
- * </UL>
- * <p/>
  *
  * @author Ethan Cerami.
  */
