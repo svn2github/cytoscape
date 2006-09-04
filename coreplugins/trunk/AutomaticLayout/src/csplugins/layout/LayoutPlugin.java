@@ -11,10 +11,13 @@ import java.util.*;
 import phoebe.util.GraphPartition;
 
 import csplugins.layout.algorithms.*;
-import csplugins.layout.algorithms.springEmbedded.SpringEmbeddedLayoutAction;
+// import csplugins.layout.algorithms.springEmbedded.SpringEmbeddedLayoutAction;
 import csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutListener;
 import csplugins.layout.algorithms.graphPartition.AttributeCircleLayoutMenu;
 import csplugins.layout.algorithms.graphPartition.DegreeSortedCircleLayout;
+
+import csplugins.layout.algorithms.bioLayout.bioLayoutActionListener;
+import csplugins.layout.algorithms.bioLayout.EdgeWeightedLayoutMenu;
 
 import giny.view.NodeView;
 
@@ -33,8 +36,18 @@ public class LayoutPlugin extends CytoscapePlugin
       hierarchical.addActionListener(hierarchicalListener);
     }
     
-    JMenuItem springEmbAll = new JMenuItem(new SpringEmbeddedLayoutAction(true));
-    JMenuItem springEmbSome = new JMenuItem(new SpringEmbeddedLayoutAction(false));
+		JMenuItem springEmbAll = new JMenuItem("All Nodes");
+		{
+			bioLayoutActionListener listener = new bioLayoutActionListener(false);
+			springEmbAll.addActionListener(listener);
+		}
+
+		JMenuItem springEmbSome = new JMenuItem("Selected Nodes Only");
+		{
+			bioLayoutActionListener listener = new bioLayoutActionListener(true);
+			springEmbSome.addActionListener(listener);
+		}
+
     JMenu springEmbMenu = new JMenu("Spring Embedded");
     springEmbMenu.add(springEmbAll);
     springEmbMenu.add(springEmbSome);
@@ -66,7 +79,10 @@ public class LayoutPlugin extends CytoscapePlugin
     menu.add(springEmbMenu);
     menu.add(new AttributeCircleLayoutMenu());
     menu.add(degSortCircle);
+
     menu.add(new GroupAttributesLayoutMenu());
+
+		menu.add(new EdgeWeightedLayoutMenu());
 
     JMenu layoutMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
                                 .getMenu("Layout");
