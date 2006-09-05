@@ -1,30 +1,44 @@
 package cytoscape.util;
 
+import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
-import java.util.*;
-import java.io.*;
-import cytoscape.util.CyFileFilter;
-import cytoscape.*;
-import cytoscape.data.ImportHandler;
 
+/**
+ * FileFilter for Reading in Cytoscape SIF Files.
+ *
+ * @author Cytoscape Development Team.
+ */
+public class SIFFileFilter extends CyFileFilter {
+    /**
+     * SIF Files are Graphs.
+     */
+    private static String fileNature = ImportHandler.GRAPH_NATURE;
 
-public class SIFFileFilter
-  extends 
-  	CyFileFilter {
+    /**
+     * File Extension.
+     */
+    private static String fileExtension = "sif";
 
-	private static String fileNature = ImportHandler.GRAPH_NATURE;
-	private static String inter = "sif";
-	private static String description = "SIF files";
+    /**
+     * Filter Description.
+     */
+    private static String description = "SIF files";
 
-	public SIFFileFilter() {
-		super(inter, description, fileNature);
-	}
-	
-	
-	public GraphReader getReader(String fileName) {
-		reader = new InteractionsReader(null, null, fileName);
-		return reader;
-	}
+    /**
+     * Constructor.
+     */
+    public SIFFileFilter() {
+        super(fileExtension, description, fileNature);
+    }
 
+    /**
+     * Gets Graph Reader.
+     * @param fileName File name.
+     * @return GraphReader Object.
+     */
+    public GraphReader getReader(String fileName) {
+        reader = new InteractionsReader(null, null, fileName);
+        return reader;
+    }
 }
