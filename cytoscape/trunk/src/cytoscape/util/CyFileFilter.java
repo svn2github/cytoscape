@@ -1,4 +1,3 @@
-
 /*
   File: CyFileFilter.java 
   
@@ -39,32 +38,31 @@
 
 package cytoscape.util;
 
-import java.lang.Runtime;
-import java.io.File;
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Set;
-import java.io.FilenameFilter;
-import javax.swing.*;
-import javax.swing.filechooser.*;
 import cytoscape.data.readers.GraphReader;
+
+import javax.swing.filechooser.FileFilter;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Set;
 
 
 /**
  * A convenience implementation of FileFilter that filters out
  * all files except for those type extensions that it knows about.
- *
+ * <p/>
  * Extensions are of the type ".foo", which is typically found on
  * Windows and Unix boxes, but not on Macinthosh. Case is ignored.
  *
  * @author Larissa Kamenkovich
- * @author Brad Kohlenberg 
+ * @author Brad Kohlenberg
  */
-public class CyFileFilter 
-  extends 
-    FileFilter
-  implements 
-    FilenameFilter {
+public class CyFileFilter
+        extends
+        FileFilter
+        implements
+        FilenameFilter {
 
     private static String TYPE_UNKNOWN = "Type Unknown";
     private static String HIDDEN_FILE = "Hidden File";
@@ -84,7 +82,7 @@ public class CyFileFilter
      * @see #addExtension
      */
     public CyFileFilter() {
-    	this.filters = new Hashtable();
+        this.filters = new Hashtable();
     }
 
     /**
@@ -94,87 +92,96 @@ public class CyFileFilter
      * @see #addExtension
      */
     public CyFileFilter(String extension) {
-    	this(extension,null, null);
+        this(extension, null, null);
     }
 
     /**
      * Creates a file filter that accepts the given file type.
      * Example: new ExampleFileFilter("jpg", "JPEG Image Images");
-     *
+     * <p/>
      * Note that the "." before the extension is not needed. If
      * provided, it will be ignored.
      *
      * @see #addExtension
      */
     public CyFileFilter(String extension, String description) {
-    	this(extension, description, null);
+        this(extension, description, null);
     }
 
     /**
      * Creates a file filter from the given string array.
      * Example: new ExampleFileFilter(String {"gif", "jpg"});
-     *
+     * <p/>
      * Note that the "." before the extension is not needed adn
      * will be ignored.
      *
      * @see #addExtension
      */
     public CyFileFilter(String[] filters) {
-    	this(filters, null, null);
+        this(filters, null, null);
     }
 
     /**
      * Creates a file filter from the given string array and description.
      * Example: new ExampleFileFilter(String {"gif", "jpg"}, "Gif and JPG Images");
-     *
+     * <p/>
      * Note that the "." before the extension is not needed and will be ignored.
      *
      * @see #addExtension
      */
     public CyFileFilter(String[] filters, String description) {
-    	this(filters, description, null);
+        this(filters, description, null);
     }
 
     /**
      * Creates a file filter that accepts the given file type.
      * Example: new ExampleFileFilter("jpg", "JPEG Image Images");
-     *
+     * <p/>
      * Note that the "." before the extension is not needed. If
      * provided, it will be ignored.
      *
      * @see #addExtension
      */
     public CyFileFilter(String extension, String description, String nature) {
-    	this.filters = new Hashtable();
-    	if(extension!=null) addExtension(extension);
-    	if(description!=null) setDescription(description);
-    	if(nature != null) setFileNature(nature);
+        this.filters = new Hashtable();
+        if (extension != null) {
+            addExtension(extension);
+        }
+        if (description != null) {
+            setDescription(description);
+        }
+        if (nature != null) {
+            setFileNature(nature);
+        }
     }
 
     /**
      * Creates a file filter from the given string array and description.
      * Example: new ExampleFileFilter(String {"gif", "jpg"}, "Gif and JPG Images");
-     *
+     * <p/>
      * Note that the "." before the extension is not needed and will be ignored.
      *
      * @see #addExtension
      */
     public CyFileFilter(String[] filters, String description, String nature) {
-    	this.filters = new Hashtable();
-	for (int i = 0; i < filters.length; i++) {
-	    // add filters one by one
-	    addExtension(filters[i]);
-	}
- 	if(description!=null) setDescription(description);
- 	if(nature != null) setFileNature(nature);
+        this.filters = new Hashtable();
+        for (int i = 0; i < filters.length; i++) {
+            // add filters one by one
+            addExtension(filters[i]);
+        }
+        if (description != null) {
+            setDescription(description);
+        }
+        if (nature != null) {
+            setFileNature(nature);
+        }
     }
 
-    
-    
+
     /**
      * Return true if this file should be shown in the directory pane,
      * false if it shouldn't.
-     *
+     * <p/>
      * Files that begin with "." are ignored.
      *
      * @see #getExtension
@@ -182,35 +189,35 @@ public class CyFileFilter
      */
     public boolean accept(File f) {
 
-	if(f != null) {
-        //  If there are no filters, always accept
-        if (filters.size()==0) {
-            return true;
+        if (f != null) {
+            //  If there are no filters, always accept
+            if (filters.size() == 0) {
+                return true;
+            }
+            if (f.isDirectory()) {
+                return true;
+            }
+            String extension = getExtension(f);
+            if (extension != null && filters.get(extension) != null) {
+                return true;
+            }
+            ;
         }
-	    if(f.isDirectory()) {
-    		return true;
-	    }
-	    String extension = getExtension(f);
-	    if(extension != null && filters.get(extension) != null) {
-		return true;
-	    };
-	}
-	return false;
+        return false;
     }
 
-  /**
-   * In order to implement the AWT version of this class 
-   * "FileNameFilter", the following method must also be 
-   * implemented.
-   *
-   */
-  public boolean accept ( File dir, String name ) {
-    return accept( new File( name ) );
-  }
-  
-  public boolean accept ( String name ) {
-	return accept( new File( name ) );
-  }
+    /**
+     * In order to implement the AWT version of this class
+     * "FileNameFilter", the following method must also be
+     * implemented.
+     */
+    public boolean accept(File dir, String name) {
+        return accept(new File(name));
+    }
+
+    public boolean accept(String name) {
+        return accept(new File(name));
+    }
 
 
     /**
@@ -219,41 +226,43 @@ public class CyFileFilter
      * @see #getExtension
      * @see FileFilter#accept
      */
-     public String getExtension(File f) {
-	if(f != null) 
-	    return getExtension(f.getName());
-	else
-	    return null;
+    public String getExtension(File f) {
+        if (f != null) {
+            return getExtension(f.getName());
+        } else {
+            return null;
+        }
     }
-     
-     public String getExtension(String filename) {
-    		if(filename != null) {
-    		    int i = filename.lastIndexOf('.');
-    		    if(i>0 && i<filename.length()-1) {
-    			return filename.substring(i+1).toLowerCase();
-    		    };
-    		}
-    		return null;
+
+    public String getExtension(String filename) {
+        if (filename != null) {
+            int i = filename.lastIndexOf('.');
+            if (i > 0 && i < filename.length() - 1) {
+                return filename.substring(i + 1).toLowerCase();
+            }
+            ;
+        }
+        return null;
     }
 
     /**
      * Adds a filetype "dot" extension to filter against.
-     *
+     * <p/>
      * For example: the following code will create a filter that filters
      * out all files except those that end in ".jpg" and ".tif":
-     *
-     *   ExampleFileFilter filter = new ExampleFileFilter();
-     *   filter.addExtension("jpg");
-     *   filter.addExtension("tif");
-     *
+     * <p/>
+     * ExampleFileFilter filter = new ExampleFileFilter();
+     * filter.addExtension("jpg");
+     * filter.addExtension("tif");
+     * <p/>
      * Note that the "." before the extension is not needed and will be ignored.
      */
     public void addExtension(String extension) {
-	if(filters == null) {
-	    filters = new Hashtable(5);
-	}
-	filters.put(extension.toLowerCase(), this);
-	fullDescription = null;
+        if (filters == null) {
+            filters = new Hashtable(5);
+        }
+        filters.put(extension.toLowerCase(), this);
+        fullDescription = null;
     }
 
 
@@ -267,23 +276,23 @@ public class CyFileFilter
      * @see FileFilter#getDescription
      */
     public String getDescription() {
-	if(fullDescription == null) {
-	    if(description == null || isExtensionListInDescription()) {
- 		fullDescription = description==null ? "(" : description + " (";
-		// build the description from the extension list
-		Enumeration extensions = filters.keys();
-		if(extensions != null) {
-                  fullDescription += "*." + (String) (extensions.hasMoreElements() ? extensions.nextElement() : "*");
-		    while (extensions.hasMoreElements()) {
-			fullDescription += ", *." + (String) extensions.nextElement();
-		    }
-		}
-		fullDescription += ")";
-	    } else {
-		fullDescription = description;
-	    }
-	}
-	return fullDescription;
+        if (fullDescription == null) {
+            if (description == null || isExtensionListInDescription()) {
+                fullDescription = description == null ? "(" : description + " (";
+                // build the description from the extension list
+                Enumeration extensions = filters.keys();
+                if (extensions != null) {
+                    fullDescription += "*." + (String) (extensions.hasMoreElements() ? extensions.nextElement() : "*");
+                    while (extensions.hasMoreElements()) {
+                        fullDescription += ", *." + (String) extensions.nextElement();
+                    }
+                }
+                fullDescription += ")";
+            } else {
+                fullDescription = description;
+            }
+        }
+        return fullDescription;
     }
 
     /**
@@ -295,14 +304,14 @@ public class CyFileFilter
      * @see isExtensionListInDescription
      */
     public void setDescription(String description) {
-	this.description = description;
-	fullDescription = null;
+        this.description = description;
+        fullDescription = null;
     }
 
     /**
      * Determines whether the extension list (.jpg, .gif, etc) should
      * show up in the human readable description.
-     *
+     * <p/>
      * Only relevent if a description was provided in the constructor
      * or using setDescription();
      *
@@ -311,14 +320,14 @@ public class CyFileFilter
      * @see isExtensionListInDescription
      */
     public void setExtensionListInDescription(boolean b) {
-	useExtensionsInDescription = b;
-	fullDescription = null;
+        useExtensionsInDescription = b;
+        fullDescription = null;
     }
 
     /**
      * Returns whether the extension list (.jpg, .gif, etc) should
      * show up in the human readable description.
-     *
+     * <p/>
      * Only relevent if a description was provided in the constructor
      * or using setDescription();
      *
@@ -327,17 +336,15 @@ public class CyFileFilter
      * @see setExtensionListInDescription
      */
     public boolean isExtensionListInDescription() {
-	return useExtensionsInDescription;
+        return useExtensionsInDescription;
     }
 
     /**
      * Returns the Set of file extension names.
-     *
      */
     public Set getExtensionSet() {
-      return filters.keySet();
+        return filters.keySet();
     }
-   
 
     //
     // The following code is an extension of the CyFileFilter duties.
@@ -347,14 +354,14 @@ public class CyFileFilter
     // file filter for the reader and you'll automatically get the
     // correct one.
     // 
-   
+
     /**
      * Returns the reader.  This should be overridden by file type subclasses.
      */
     public GraphReader getReader(String fileName) {
-    	return null;
+        return null;
     }
-   
+
     /**
      * Returns the nature of the file.  "Nature" refers to a grouping
      * of file types.  For instance, GML, XGMML, and SIF are all file formats
@@ -362,11 +369,12 @@ public class CyFileFilter
      * allows the ImportHandler to return all file types with the same nature.
      */
     public String getFileNature() {
-    	if (fileNature == null)
-    		return null;
-    	return fileNature;
+        if (fileNature == null) {
+            return null;
+        }
+        return fileNature;
     }
-    
+
     /**
      * Sets the nature of the files for this filter.
      * The files can be of the nature: Node, Edge, Graph, or Vizmap;
@@ -376,6 +384,6 @@ public class CyFileFilter
      * @see isExtensionListInDescription
      */
     public void setFileNature(String nature) {
-    	fileNature = nature;
+        fileNature = nature;
     }
 }
