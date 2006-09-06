@@ -152,7 +152,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 	 *                    are going to lay out.
 	 */
 	public bioLayoutKKAlgorithm (CyNetworkView networkView) {
-		super (networkView);
+		super (networkView, propPrefix);
 
 		// Set defaults
 		m_numLayoutPasses = DEFAULT_NUM_LAYOUT_PASSES;

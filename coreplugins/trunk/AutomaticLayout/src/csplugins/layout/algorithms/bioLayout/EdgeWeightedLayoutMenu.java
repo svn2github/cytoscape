@@ -95,7 +95,7 @@ public class EdgeWeightedLayoutMenu extends JMenu
 				addWeightsMenus(allNodes, false);
 				m.add(allNodes);
 				JMenu selNodes = new JMenu("Selected Nodes Only");
-				addWeightsMenus(selNodes, false);
+				addWeightsMenus(selNodes, true);
 				m.add(selNodes);
 			} else {
 				addWeightsMenus(m, false);

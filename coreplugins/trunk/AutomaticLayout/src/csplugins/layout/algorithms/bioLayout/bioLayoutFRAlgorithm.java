@@ -167,7 +167,7 @@ public class bioLayoutFRAlgorithm extends bioLayoutAlgorithm {
 	 *                    are going to lay out.
 	 */
 	public bioLayoutFRAlgorithm (CyNetworkView networkView) {
-		super (networkView);
+		super (networkView, propPrefix);
 
 		displacementArray = new ArrayList(100);
 		initialize_properties();
@@ -271,7 +271,7 @@ public class bioLayoutFRAlgorithm extends bioLayoutAlgorithm {
 	 * Reads all of our properties from the cytoscape properties map and sets
 	 * the values as appropriates.
 	 */
-	public void initialize_properties() {
+	private void initialize_properties() {
 		// Initialize our tunables from the properties
 		Properties properties = CytoscapeInit.getProperties();
 		String pValue = null;
@@ -341,8 +341,9 @@ public class bioLayoutFRAlgorithm extends bioLayoutAlgorithm {
 					iter = nodeList.iterator();
 					while (iter.hasNext()) {
 						Vertex v = (Vertex) iter.next();
-						if (!v.isLocked())
-							v.moveToLocation();
+						// if this is locked, the move just resets X and Y
+						v.moveToLocation();
+						// System.out.println("Node "+v.getIdentifier()+" moved to "+v.getX()+","+v.getY());
 					}
 					networkView.updateView();
 				}
@@ -362,8 +363,9 @@ public class bioLayoutFRAlgorithm extends bioLayoutAlgorithm {
 		iter = nodeList.iterator();
 		while (iter.hasNext()) {
 			Vertex v = (Vertex) iter.next();
-			if (!v.isLocked())
-				v.moveToLocation();
+			// if this is locked, the move just resets X and Y
+			v.moveToLocation();
+			// System.out.println("Node "+v.getIdentifier()+" moved to "+v.getX()+","+v.getY());
 		}
 		System.out.println("Layout complete after "+iteration+" iterations");
 	}
@@ -382,8 +384,9 @@ public class bioLayoutFRAlgorithm extends bioLayoutAlgorithm {
 		// Calculate repulsive forces
 		while (iter.hasNext()) {
 			Vertex v = (Vertex)iter.next();
-			// if (v.isLocked()) continue;
-			calculate_repulsion(v);
+			if (!v.isLocked()) {
+				calculate_repulsion(v);
+			}
 		}
 
 		// Dump the current displacements
@@ -409,17 +412,21 @@ public class bioLayoutFRAlgorithm extends bioLayoutAlgorithm {
 			Vertex v = (Vertex)iter.next();
 			if (v.isLocked()) continue;
 			calculate_position(v, temp);
+				
 			xAverage += v.getX()/nodeList.size();
 			yAverage += v.getY()/nodeList.size();
 			xDispTotal += Math.abs(v.getXDisp());
 			yDispTotal += Math.abs(v.getYDisp());
 		}
 
-		// Translate back to the middle
-		iter = nodeList.iterator();
-		while (iter.hasNext()) {
-			Vertex v = (Vertex)iter.next();
-			v.decrement(xAverage-width/2,yAverage-height/2);
+		// Translate back to the middle (or to the starting point,
+		// if we're dealing with a selected group
+		if (!selectedOnly) {
+			iter = nodeList.iterator();
+			while (iter.hasNext()) {
+				Vertex v = (Vertex)iter.next();
+				v.decrement(xAverage-width/2,yAverage-height/2);
+			}
 		}
 
 		// Test our total x and y displacement to see if we've
@@ -471,7 +478,7 @@ public class bioLayoutFRAlgorithm extends bioLayoutAlgorithm {
 		Iterator iter = nodeList.iterator();
 		while (iter.hasNext()) {
 			Vertex v2 = (Vertex)iter.next();
-			if (v1 == v2 || v2.isLocked()) continue;
+			if (v1 == v2) continue;
 
 			double xDelta = v1.getX() - v2.getX();
 			// If they are on top of each other, offset
@@ -520,10 +527,24 @@ public class bioLayoutFRAlgorithm extends bioLayoutAlgorithm {
 		debugln("   constant = "+attraction_constant);
 		debugln("   weight = "+e.getWeight());
 
-		v1.decrementDisp( (xDelta/deltaDistance) * force,
-								  		(yDelta/deltaDistance) * force);
-		v2.incrementDisp( (xDelta/deltaDistance) * force,
-								  		(yDelta/deltaDistance) * force);
+		// Adjust the displacement.  In the case of doing selectedOnly,
+		// we increase the force to enhance the discrimination power.
+		// Also note that we only update the displacement of the movable
+		// node since the other node won't move anyways.
+		if (v2.isLocked() && v1.isLocked()) {
+			return; // shouldn't happen
+		} else if (v2.isLocked()) {
+			v1.decrementDisp( (xDelta/deltaDistance) * force * 5,
+									  		(yDelta/deltaDistance) * force * 5);
+		} else if (v1.isLocked()) {
+			v2.incrementDisp( (xDelta/deltaDistance) * force * 5,
+									  		(yDelta/deltaDistance) * force * 5);
+		} else {
+			v1.decrementDisp( (xDelta/deltaDistance) * force,
+									  		(yDelta/deltaDistance) * force);
+			v2.incrementDisp( (xDelta/deltaDistance) * force,
+									  		(yDelta/deltaDistance) * force);
+		}
 	}
 
 	/**
@@ -604,13 +625,15 @@ public class bioLayoutFRAlgorithm extends bioLayoutAlgorithm {
 	private void calculate_size() {
 		// double spreadFactor = Math.max(spread_factor, edgeList.length/nodeList.length);
 		Vertex v0 = (Vertex)nodeList.get(0); // Get the first vertex to get to the class variables
+		int nodeCount = nodeList.size();
+		int unLockedNodes = nodeCount-v0.lockedNodeCount();
 		double spreadFactor = spread_factor;
 		double averageWidth = v0.getTotalWidth()/nodeList.size();
 		double averageHeight = v0.getTotalHeight()/nodeList.size();
 		double current_area = (v0.getMaxX()-v0.getMinX()) * (v0.getMaxY()-v0.getMinY());
-		if (current_area > averageWidth*averageHeight*nodeList.size()) {
-			this.width = v0.getMaxX() - v0.getMinX();
-			this.height = v0.getMaxY() - v0.getMinY();
+		if (selectedOnly || (current_area > averageWidth*averageHeight*nodeList.size())) {
+			this.width = (v0.getMaxX() - v0.getMinX())*spreadFactor;
+			this.height = (v0.getMaxY() - v0.getMinY())*spreadFactor;
 		} else {
 			double area = v0.getTotalWidth()*v0.getTotalHeight();
 			this.width = Math.sqrt(area)*spreadFactor;

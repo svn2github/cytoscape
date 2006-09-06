@@ -61,12 +61,6 @@ import csplugins.layout.AbstractLayout;
 
 public abstract class bioLayoutAlgorithm extends AbstractLayout {
 	/**
-	 * Property key for getting various tuning values.  This must be overloaded
-	 * by the implementing class so that we get the right property key.
-	 */
-	private static String propPrefix;
-
-	/**
 	 * Properties
 	 */
 	private static final String debugProp = "debug";
@@ -142,13 +136,13 @@ public abstract class bioLayoutAlgorithm extends AbstractLayout {
 	 * @param networkView the CyNetworkView of the network 
 	 *                    are going to lay out.
 	 */
-	public bioLayoutAlgorithm (CyNetworkView networkView) {
+	public bioLayoutAlgorithm (CyNetworkView networkView, String prefix) {
 		super (networkView);
 		Edge e = new Edge();
 		e.reset(); // This allows us to reset the static variables
 		Vertex v = new Vertex();
 		v.reset(); // This allows us to reset the static variables
-		initialize_properties();
+		initialize_properties(prefix);
 	}
 
 	/**
@@ -242,7 +236,7 @@ public abstract class bioLayoutAlgorithm extends AbstractLayout {
 	 * Reads all of our properties from the cytoscape properties map and sets
 	 * the values as appropriates.
 	 */
-	public void initialize_properties() {
+	private void initialize_properties(String propPrefix) {
 		// Initialize our tunables from the properties
 		Properties properties = CytoscapeInit.getProperties();
 		String pValue = null;
@@ -309,6 +303,9 @@ public abstract class bioLayoutAlgorithm extends AbstractLayout {
 			if (source == target) {continue;}
 			Vertex v1 = (Vertex)nodeToVertex.get(source);
 			Vertex v2 = (Vertex)nodeToVertex.get(target);
+			// Do we care about this edge?
+			if (v1.isLocked() && v2.isLocked())
+				continue; // no, ignore it
 			Edge newEdge = new Edge(edge, v1, v2);
 			newEdge.setWeight(eValueAttribute);
 			edgeList.add(newEdge);
@@ -329,9 +326,12 @@ public abstract class bioLayoutAlgorithm extends AbstractLayout {
 		while (iter.hasNext()) {
 			NodeView nv = (NodeView)iter.next();
 			CyNode node = (CyNode)nv.getNode();
-			Vertex v = new Vertex(nv, nodeIndex);
+			Vertex v;
 			if (selectedNodes != null && !selectedNodes.contains(node)) {
+				v = new Vertex(nv, nodeIndex, false);
 				v.lock();
+			} else {
+				v = new Vertex(nv, nodeIndex, true);
 			}
 			nodeList.add(v);
 			nodeToVertex.put(node,v);
@@ -395,41 +395,41 @@ public abstract class bioLayoutAlgorithm extends AbstractLayout {
 		private int index;
 		private static double totalWidth = 0;
 		private static double totalHeight = 0;
-		private static double minX = 0;
- 		private static double minY = 0;
- 		private static double maxX = 0;
- 		private static double maxY = 0;
+		private static double minX = 100000;
+ 		private static double minY = 100000;
+ 		private static double maxX = -100000;
+ 		private static double maxY = -100000;
+		private static int lockedNodes = 0;
 		private boolean isLocked = false;
 		static final double EPSILON = 0.0000001D;
 		private ArrayList neighbors = null;
 
 		public Vertex() { }
 
-		public Vertex(NodeView nodeView, int index) { 
+		public Vertex(NodeView nodeView, int index, boolean accumulate) { 
 			this.nodeView = nodeView;
 			this.node = (CyNode)nodeView.getNode();
 			this.index = index;
 			this.x = nodeView.getXPosition();
 			this.y = nodeView.getYPosition();
 			this.neighbors = new ArrayList();
-			if (index == 0) {
-				minX = x;
-				minY = y;
-				maxX = x;
-				maxY = y;
-			} else {
+			if (accumulate) {
 				minX = Math.min(minX,x);
 				minY = Math.min(minY,y);
-				maxX = Math.min(maxX,x);
-				maxY = Math.min(maxY,y);
+				maxX = Math.max(maxX,x);
+				maxY = Math.max(maxY,y);
+				this.totalWidth += nodeView.getWidth();
+				this.totalHeight += nodeView.getHeight();
 			}
-			this.totalWidth += nodeView.getWidth();
-			this.totalHeight += nodeView.getHeight();
 		}
 
 		public void reset() {
 			this.totalWidth = 0;
 			this.totalHeight = 0;
+			this.minX = 100000;
+			this.minY = 100000;
+			this.maxX = -100000;
+			this.maxY = -100000;
 		}
 
 		public void setLocation(double x, double y) {
@@ -464,15 +464,21 @@ public abstract class bioLayoutAlgorithm extends AbstractLayout {
 
     public void lock() {
       this.isLocked = true;
+			this.lockedNodes += 1;
     }
 
     public void unLock() {
       this.isLocked = false;
+			this.lockedNodes -= 1;
     }
 
     public boolean isLocked() {
       return isLocked;
     }
+
+		public int lockedNodeCount() {
+			return lockedNodes;
+		}
 
 		public void incrementDisp(double x, double y) {
 			this.dispX += x;
@@ -540,8 +546,13 @@ public abstract class bioLayoutAlgorithm extends AbstractLayout {
 		}
 
 		public void moveToLocation() {
-			nodeView.setXPosition(this.x);
-			nodeView.setYPosition(this.y);
+			if (isLocked) {
+				this.x = nodeView.getXPosition();
+				this.y = nodeView.getYPosition();
+			} else {
+				nodeView.setXPosition(this.x);
+				nodeView.setYPosition(this.y);
+			}
 		}
 
 		public String getIdentifier() {
