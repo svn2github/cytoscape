@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="/usr/src/contrib/Cytoscape/cytoscape/build/cytoscape-v2.3/cytoscape.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5.0_05"/>
+	<classpathentry kind="lib" path="/usr/src/contrib/Cytoscape/cytoscape/build/cytoscape-v2.3/lib/giny.jar"/>
+	<classpathentry kind="lib" path="/usr/src/contrib/Cytoscape/cytoscape/build/cytoscape-v2.3/lib/piccolo.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>
