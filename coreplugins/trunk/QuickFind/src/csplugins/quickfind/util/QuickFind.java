@@ -1,6 +1,5 @@
 package csplugins.quickfind.util;
 
-import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import cytoscape.CyNetwork;
 import cytoscape.task.TaskMonitor;
@@ -41,7 +40,8 @@ import cytoscape.task.TaskMonitor;
  * TextIndex textIndex = QuickFind.getIndex (currentNetwork);
  * </PRE>
  * We can then retrieve all hits that begin with the prefix:  "YLR" via the
- * {@link TextIndex#getHits(String, int)} method.
+ * {@link csplugins.widgets.autocomplete.index.TextIndex#getHits(String, int)}
+ * method.
  * <BR/>
  * <PRE>
  * Hit hits[] = textIndex.getHits ("YLR");
