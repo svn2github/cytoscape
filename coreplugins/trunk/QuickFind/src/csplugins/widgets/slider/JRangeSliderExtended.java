@@ -1,22 +1,23 @@
 package csplugins.widgets.slider;
 
-import prefuse.util.ui.JRangeSlider;
 import prefuse.data.query.NumberRangeModel;
+import prefuse.util.ui.JRangeSlider;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 
 /**
  * Extension of the Prefuse JRangeSlider.
  *
- * @see prefuse.util.ui.JRangeSlider
  * @author Ethan Cerami.
+ * @see prefuse.util.ui.JRangeSlider
  */
 public class JRangeSliderExtended extends JRangeSlider
         implements ChangeListener {
@@ -29,14 +30,14 @@ public class JRangeSliderExtended extends JRangeSlider
     /**
      * Create a new range slider.
      *
-     * @param model - a BoundedRangeModel specifying the slider's range
+     * @param model       - a BoundedRangeModel specifying the slider's range
      * @param orientation - construct a horizontal or vertical slider?
-     * @param direction - Is the slider left-to-right/top-to-bottom or
-     * right-to-left/bottom-to-top
+     * @param direction   - Is the slider left-to-right/top-to-bottom or
+     *                    right-to-left/bottom-to-top
      */
-    public JRangeSliderExtended (BoundedRangeModel model, int orientation,
+    public JRangeSliderExtended(BoundedRangeModel model, int orientation,
             int direction) {
-        super (model, orientation, direction);
+        super(model, orientation, direction);
         addChangeListener(this);
     }
 
@@ -44,6 +45,7 @@ public class JRangeSliderExtended extends JRangeSlider
      * Overrides default preferred size of JRangeSlider.
      * <P>JRangeSlider is hard-coded to always be 300 px wide, and that is
      * a bit constrained.
+     *
      * @return Preferred Dimension.
      */
     public Dimension getPreferredSize() {
@@ -56,6 +58,7 @@ public class JRangeSliderExtended extends JRangeSlider
 
     /**
      * Sets the preferred size of the component.
+     *
      * @param preferredSize Preferred Size.
      */
     public void setPreferredSize(Dimension preferredSize) {
@@ -64,6 +67,7 @@ public class JRangeSliderExtended extends JRangeSlider
 
     /**
      * Placeholder.
+     *
      * @param mouseEvent Mouse Event Object.
      */
     public void mouseReleased(MouseEvent mouseEvent) {
@@ -82,30 +86,35 @@ public class JRangeSliderExtended extends JRangeSlider
 
     /**
      * Upon state change, pop-up a tiny window with low-high.
-     * @param e  ChangeEvent Object.
+     *
+     * @param e ChangeEvent Object.
      */
     public void stateChanged(ChangeEvent e) {
         NumberRangeModel model = (NumberRangeModel) getModel();
         Number low = (Number) model.getLowValue();
         Number high = (Number) model.getHighValue();
+        Number min = (Number) model.getMinValue();
+        Number max = (Number) model.getMaxValue();
 
         DecimalFormat format;
-        if (high.doubleValue() - low.doubleValue() < .001) {
-            format = new DecimalFormat ("0.###E0");
-        } else if (high.doubleValue() - low.doubleValue() > 100000) {
-            format = new DecimalFormat ("0.###E0");
+        if (max.doubleValue() - min.doubleValue() < .001) {
+            format = new DecimalFormat("0.###E0");
+        } else if (max.doubleValue() - min.doubleValue() > 100000) {
+            format = new DecimalFormat("0.###E0");
         } else {
-            format = new DecimalFormat ("###,###.000");
+            format = new DecimalFormat("###,###.000");
         }
         String lowStr = format.format(low);
         String highStr = format.format(high);
-        if (popup == null) {
+        if (popup == null && isVisible()) {
             PopupFactory popupFactory = PopupFactory.getSharedInstance();
             JPanel panel = new JPanel();
             panel.setPreferredSize(getPreferredSize());
-            panel.setLayout(new BoxLayout (panel, BoxLayout.X_AXIS));
+            panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
             popupLow = new JLabel(lowStr);
-            popupHigh = new JLabel (highStr);
+            popupLow.setBorder(new EmptyBorder(2, 2, 2, 2));
+            popupHigh = new JLabel(highStr);
+            popupHigh.setBorder(new EmptyBorder(2, 2, 2, 2));
             panel.add(popupLow);
             panel.add(Box.createHorizontalGlue());
             panel.add(popupHigh);
@@ -113,7 +122,7 @@ public class JRangeSliderExtended extends JRangeSlider
                     getLocationOnScreen().x,
                     getLocationOnScreen().y
                             + getPreferredSize().height + 2);
-            popupDaemon = new PopupDaemon(this, 1500);
+            popupDaemon = new PopupDaemon(this, 1000);
             popup.show();
         } else {
             popupLow.setText(lowStr);
@@ -153,6 +162,7 @@ class PopupDaemon implements ActionListener {
 
     /**
      * Timer Event:  Hide popup now.
+     *
      * @param e ActionEvent Object.
      */
     public void actionPerformed(ActionEvent e) {
