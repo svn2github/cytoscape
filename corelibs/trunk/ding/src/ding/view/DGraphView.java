@@ -57,6 +57,7 @@ public class DGraphView
     static final float DEFAULT_ANCHOR_SIZE = 9.0f;
     static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
     static final Paint DEFAULT_ANCHOR_UNSELECTED_PAINT = Color.black;
+	public enum Canvas { BACKGROUND_CANVAS, NETWORK_CANVAS, FOREGROUND_CANVAS };
     final Object m_lock = new Object();
     final float[] m_extentsBuff = new float[4];
     final GeneralPath m_path = new GeneralPath();
@@ -80,7 +81,8 @@ public class DGraphView
     final float m_defaultNodeYMin;
     final float m_defaultNodeXMax;
     final float m_defaultNodeYMax;
-    InnerCanvas m_canvas;
+    InnerCanvas m_networkCanvas;
+	ArbitraryGraphicsCanvas m_backgroundCanvas, m_foregroundCanvas;
     boolean m_nodeSelection = true;
     boolean m_edgeSelection = true;
     final IntBTree m_selectedNodes; // Positive.
@@ -115,7 +117,9 @@ public class DGraphView
         m_defaultNodeYMin = 0.0f;
         m_defaultNodeXMax = m_defaultNodeXMin + DNodeView.DEFAULT_WIDTH;
         m_defaultNodeYMax = m_defaultNodeYMin + DNodeView.DEFAULT_HEIGHT;
-        m_canvas = new InnerCanvas(m_lock, this);
+        m_networkCanvas = new InnerCanvas(m_lock, this);
+		m_backgroundCanvas = new ArbitraryGraphicsCanvas(new Color(255, 255, 255, 0));
+		m_foregroundCanvas = new ArbitraryGraphicsCanvas(new Color(0, 0, 0, 0));
         m_selectedNodes = new IntBTree();
         m_selectedEdges = new IntBTree();
         m_selectedAnchors = new IntBTree();
@@ -331,7 +335,7 @@ public class DGraphView
      */
     public void setBackgroundPaint(Paint paint) {
         synchronized (m_lock) {
-            m_canvas.m_bgPaint = paint;
+            m_networkCanvas.setBackgroundPaint(paint);
             m_contentChanged = true;
         }
     }
@@ -342,7 +346,7 @@ public class DGraphView
      * @return DOCUMENT ME!
      */
     public Paint getBackgroundPaint() {
-        return m_canvas.m_bgPaint;
+		 return m_networkCanvas.getBackgroundPaint();
     }
 
     /**
@@ -351,7 +355,7 @@ public class DGraphView
      * @return DOCUMENT ME!
      */
     public Component getComponent() {
-        return m_canvas;
+        return m_networkCanvas;
     }
 
     /**
@@ -705,7 +709,7 @@ public class DGraphView
      * @return DOCUMENT ME!
      */
     public double getZoom() {
-        return m_canvas.m_scaleFactor;
+        return m_networkCanvas.m_scaleFactor;
     }
 
     /**
@@ -715,7 +719,7 @@ public class DGraphView
      */
     public void setZoom(double zoom) {
         synchronized (m_lock) {
-            m_canvas.m_scaleFactor = zoom;
+            m_networkCanvas.m_scaleFactor = zoom;
             m_viewportChanged = true;
         }
 
@@ -733,13 +737,13 @@ public class DGraphView
                              .numRemaining() == 0)
                 return;
 
-            m_canvas.m_xCenter = (((double) m_extentsBuff[0]) +
+            m_networkCanvas.m_xCenter = (((double) m_extentsBuff[0]) +
                 ((double) m_extentsBuff[2])) / 2.0d;
-            m_canvas.m_yCenter = (((double) m_extentsBuff[1]) +
+            m_networkCanvas.m_yCenter = (((double) m_extentsBuff[1]) +
                 ((double) m_extentsBuff[3])) / 2.0d;
-            m_canvas.m_scaleFactor = Math.min(((double) m_canvas.getWidth()) / (((double) m_extentsBuff[2]) -
+            m_networkCanvas.m_scaleFactor = Math.min(((double) m_networkCanvas.getWidth()) / (((double) m_extentsBuff[2]) -
                     ((double) m_extentsBuff[0])),
-                    ((double) m_canvas.getHeight()) / (((double) m_extentsBuff[3]) -
+                    ((double) m_networkCanvas.getHeight()) / (((double) m_extentsBuff[3]) -
                     ((double) m_extentsBuff[1])));
             m_viewportChanged = true;
         }
@@ -751,7 +755,7 @@ public class DGraphView
      * DOCUMENT ME!
      */
     public void updateView() {
-        m_canvas.repaint();
+        m_networkCanvas.repaint();
     }
 
     /**
@@ -1475,8 +1479,8 @@ public class DGraphView
     // Auxillary methods specific to this GraphView implementation:
     public void setCenter(double x, double y) {
         synchronized (m_lock) {
-            m_canvas.m_xCenter = x;
-            m_canvas.m_yCenter = y;
+            m_networkCanvas.m_xCenter = x;
+            m_networkCanvas.m_yCenter = y;
             m_viewportChanged = true;
         }
 
@@ -1490,7 +1494,7 @@ public class DGraphView
      */
     public Point2D getCenter() {
         synchronized (m_lock) {
-            return new Point2D.Double(m_canvas.m_xCenter, m_canvas.m_yCenter);
+            return new Point2D.Double(m_networkCanvas.m_xCenter, m_networkCanvas.m_yCenter);
         }
     }
 
@@ -1519,11 +1523,11 @@ public class DGraphView
                 yMax = Math.max(yMax, m_extentsBuff[3]);
             }
 
-            m_canvas.m_xCenter = (((double) xMin) + ((double) xMax)) / 2.0d;
-            m_canvas.m_yCenter = (((double) yMin) + ((double) yMax)) / 2.0d;
-            m_canvas.m_scaleFactor = Math.min(((double) m_canvas.getWidth()) / (((double) xMax) -
+            m_networkCanvas.m_xCenter = (((double) xMin) + ((double) xMax)) / 2.0d;
+            m_networkCanvas.m_yCenter = (((double) yMin) + ((double) yMax)) / 2.0d;
+            m_networkCanvas.m_scaleFactor = Math.min(((double) m_networkCanvas.getWidth()) / (((double) xMax) -
                     ((double) xMin)),
-                    ((double) m_canvas.getHeight()) / (((double) yMax) -
+                    ((double) m_networkCanvas.getHeight()) / (((double) yMax) -
                     ((double) yMin)));
             m_viewportChanged = true;
         }
@@ -1536,7 +1540,7 @@ public class DGraphView
      */
     public void setGraphLOD(GraphLOD lod) {
         synchronized (m_lock) {
-            m_canvas.m_lod[0] = lod;
+            m_networkCanvas.m_lod[0] = lod;
             m_contentChanged = true;
         }
 
@@ -1549,7 +1553,7 @@ public class DGraphView
      * @return DOCUMENT ME!
      */
     public GraphLOD getGraphLOD() {
-        return m_canvas.m_lod[0];
+        return m_networkCanvas.m_lod[0];
     }
 
     /**
@@ -1559,7 +1563,7 @@ public class DGraphView
      */
     public void setPrintingTextAsShape(boolean textAsShape) {
         synchronized (m_lock) {
-            m_canvas.m_printingTextAsShape[0] = textAsShape;
+            m_networkCanvas.m_printingTextAsShape[0] = textAsShape;
         }
     }
 
@@ -1569,7 +1573,7 @@ public class DGraphView
      * @return DOCUMENT ME!
      */
     public boolean getPrintingTextAsShape() {
-        return m_canvas.m_printingTextAsShape[0];
+        return m_networkCanvas.m_printingTextAsShape[0];
     }
 
     /**
@@ -1632,7 +1636,7 @@ public class DGraphView
                             (m_extentsBuff[3] > yMax)) ||
                             ((m_extentsBuff[2] > xMax) &&
                             (m_extentsBuff[1] < yMin))) {
-                        m_canvas.m_grafx.getNodeShape(
+                        m_networkCanvas.m_grafx.getNodeShape(
                             m_nodeDetails.shape(node),
                             m_extentsBuff[0],
                             m_extentsBuff[1],
@@ -1666,7 +1670,7 @@ public class DGraphView
     public void queryDrawnEdges(int xMin, int yMin, int xMax, int yMax,
         IntStack returnVal) {
         synchronized (m_lock) {
-            m_canvas.computeEdgesIntersecting(xMin, yMin, xMax, yMax, returnVal);
+            m_networkCanvas.computeEdgesIntersecting(xMin, yMin, xMax, yMax, returnVal);
         }
     }
 
@@ -1697,7 +1701,7 @@ public class DGraphView
      */
     public void xformComponentToNodeCoords(double[] coords) {
         synchronized (m_lock) {
-            m_canvas.m_grafx.xformImageToNodeCoords(coords);
+            m_networkCanvas.m_grafx.xformImageToNodeCoords(coords);
         }
     }
 
@@ -1795,8 +1799,21 @@ public class DGraphView
     }
 
     // AJK: 04/02/06 BEGIN
-    public InnerCanvas getCanvas() {
-        return m_canvas;
+	public InnerCanvas getCanvas() {
+		return m_networkCanvas;
+	}
+    public DingCanvas getCanvas(Canvas canvasId) {
+		if (canvasId == Canvas.BACKGROUND_CANVAS) {
+			return m_backgroundCanvas;
+		}
+		else if (canvasId == Canvas.NETWORK_CANVAS) {
+			return m_networkCanvas;
+		}
+		else if (canvasId == Canvas.FOREGROUND_CANVAS) {
+			return m_foregroundCanvas;
+		}
+		// made it here
+		return null;
     }
 
     /**
@@ -1815,7 +1832,7 @@ public class DGraphView
         final IntStack nodeStack = new IntStack();
         getNodesIntersectingRectangle((float) locn[0], (float) locn[1],
             (float) locn[0], (float) locn[1],
-            (m_canvas.getLastRenderDetail() & GraphRenderer.LOD_HIGH_DETAIL) == 0,
+            (m_networkCanvas.getLastRenderDetail() & GraphRenderer.LOD_HIGH_DETAIL) == 0,
             nodeStack);
 
         chosenNode = (nodeStack.size() > 0) ? nodeStack.peek() : 0;
