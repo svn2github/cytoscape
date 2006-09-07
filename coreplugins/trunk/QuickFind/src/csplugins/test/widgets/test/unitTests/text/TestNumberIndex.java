@@ -73,4 +73,17 @@ public class TestNumberIndex extends TestCase {
         list = numberIndex.getRange(0.0, 1.0);
         assertEquals(7, list.size());
     }
+
+    /**
+     * Creates a Sample Number Index.
+     *
+     * @return NumberIndex Object.
+     */
+    public static NumberIndex createSampleNumberIndex() {
+        NumberIndex numberIndex = IndexFactory.createDefaultNumberIndex();
+        for (double d = 0; d < 100; d += .2) {
+            numberIndex.addToIndex(d, d);
+        }
+        return numberIndex;
+    }
 }
