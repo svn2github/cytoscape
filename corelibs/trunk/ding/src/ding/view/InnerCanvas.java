@@ -68,7 +68,7 @@ import javax.swing.JToolTip;
 
 
 // AJK: 04/26/06 END
-public class InnerCanvas extends JComponent
+public class InnerCanvas extends DingCanvas
     implements MouseListener, MouseMotionListener,
         java.awt.dnd.DropTargetListener, PhoebeCanvasDroppable, KeyListener {
     final double[] m_ptBuff = new double[2];
@@ -84,9 +84,7 @@ public class InnerCanvas extends JComponent
     DGraphView m_view;
     final GraphLOD[] m_lod = new GraphLOD[1];
     final IntHash m_hash;
-    Image m_img;
     GraphGraphics m_grafx;
-    Paint m_bgPaint;
     double m_xCenter;
     double m_yCenter;
     double m_scaleFactor;
