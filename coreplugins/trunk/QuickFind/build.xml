@@ -115,7 +115,7 @@
     -->
     <target name="check" description="Runs CheckStyle on all source code">
         <checkstyle config="${config.dir}/sun_checks.xml">
-            <fileset dir="${src.dir}">
+            <fileset dir="${src.dir}/csplugins">
                 <include name="**/*.java"/>
             </fileset>
         </checkstyle>
