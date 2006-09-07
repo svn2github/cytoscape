@@ -1,10 +1,16 @@
 package csplugins.widgets.slider;
 
 import prefuse.util.ui.JRangeSlider;
+import prefuse.data.query.NumberRangeModel;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.text.DecimalFormat;
 
 /**
  * Extension of the Prefuse JRangeSlider.
@@ -12,8 +18,13 @@ import java.awt.event.MouseEvent;
  * @see prefuse.util.ui.JRangeSlider
  * @author Ethan Cerami.
  */
-public class JRangeSliderExtended extends JRangeSlider {
+public class JRangeSliderExtended extends JRangeSlider
+        implements ChangeListener {
     private Dimension preferredSize;
+    private Popup popup;
+    private JLabel popupLow;
+    private JLabel popupHigh;
+    private PopupDaemon popupDaemon;
 
     /**
      * Create a new range slider.
@@ -26,6 +37,7 @@ public class JRangeSliderExtended extends JRangeSlider {
     public JRangeSliderExtended (BoundedRangeModel model, int orientation,
             int direction) {
         super (model, orientation, direction);
+        addChangeListener(this);
     }
 
     /**
@@ -51,10 +63,99 @@ public class JRangeSliderExtended extends JRangeSlider {
     }
 
     /**
-     * Place-holder.
+     * Placeholder.
      * @param mouseEvent Mouse Event Object.
      */
     public void mouseReleased(MouseEvent mouseEvent) {
         super.mouseReleased(mouseEvent);
+    }
+
+    /**
+     * Resets / hides Popup window.
+     */
+    void resetPopup() {
+        if (popup != null) {
+            popup.hide();
+        }
+        this.popup = null;
+    }
+
+    /**
+     * Upon state change, pop-up a tiny window with low-high.
+     * @param e  ChangeEvent Object.
+     */
+    public void stateChanged(ChangeEvent e) {
+        NumberRangeModel model = (NumberRangeModel) getModel();
+        Number low = (Number) model.getLowValue();
+        Number high = (Number) model.getHighValue();
+
+        DecimalFormat format;
+        if (high.doubleValue() - low.doubleValue() < .001) {
+            format = new DecimalFormat ("0.###E0");
+        } else if (high.doubleValue() - low.doubleValue() > 100000) {
+            format = new DecimalFormat ("0.###E0");
+        } else {
+            format = new DecimalFormat ("###,###.000");
+        }
+        String lowStr = format.format(low);
+        String highStr = format.format(high);
+        if (popup == null) {
+            PopupFactory popupFactory = PopupFactory.getSharedInstance();
+            JPanel panel = new JPanel();
+            panel.setPreferredSize(getPreferredSize());
+            panel.setLayout(new BoxLayout (panel, BoxLayout.X_AXIS));
+            popupLow = new JLabel(lowStr);
+            popupHigh = new JLabel (highStr);
+            panel.add(popupLow);
+            panel.add(Box.createHorizontalGlue());
+            panel.add(popupHigh);
+            popup = popupFactory.getPopup(this, panel,
+                    getLocationOnScreen().x,
+                    getLocationOnScreen().y
+                            + getPreferredSize().height + 2);
+            popupDaemon = new PopupDaemon(this, 1500);
+            popup.show();
+        } else {
+            popupLow.setText(lowStr);
+            popupHigh.setText(highStr);
+            popupDaemon.restart();
+        }
+    }
+}
+
+/**
+ * Daemon Thread to automatically hide Pop-up Window after xxx milliseconds.
+ *
+ * @author Ethan Cerami
+ */
+class PopupDaemon implements ActionListener {
+    private Timer timer;
+    private JRangeSliderExtended slider;
+
+    /**
+     * Constructor.
+     *
+     * @param slider JRangeSliderExtended Object.
+     * @param delay  Delay until pop-up window is hidden.
+     */
+    public PopupDaemon(JRangeSliderExtended slider, int delay) {
+        timer = new Timer(delay, this);
+        timer.setRepeats(false);
+        this.slider = slider;
+    }
+
+    /**
+     * Restart timer.
+     */
+    public void restart() {
+        timer.restart();
+    }
+
+    /**
+     * Timer Event:  Hide popup now.
+     * @param e ActionEvent Object.
+     */
+    public void actionPerformed(ActionEvent e) {
+        slider.resetPopup();
     }
 }
