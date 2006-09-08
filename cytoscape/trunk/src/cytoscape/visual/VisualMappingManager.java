@@ -424,7 +424,7 @@ public class VisualMappingManager extends SubjectBase {
 		if (network_view instanceof DGraphView) {
 			DingCanvas backgroundCanvas =
 				((DGraphView)network_view).getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-			backgroundCanvas.setBackgroundPaint(myGlobalApp.getBackgroundColor());
+			backgroundCanvas.setBackground(myGlobalApp.getBackgroundColor());
 		}
 		else {
 			System.out.println("VisualMappingManager.applyGlobalAppearances() - DGraphView not found!");
