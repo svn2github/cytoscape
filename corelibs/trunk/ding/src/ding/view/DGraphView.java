@@ -335,8 +335,13 @@ public class DGraphView
      */
     public void setBackgroundPaint(Paint paint) {
         synchronized (m_lock) {
-            m_networkCanvas.setBackgroundPaint(paint);
-            m_contentChanged = true;
+			if (paint instanceof Color) {
+				m_networkCanvas.setBackground((Color)paint);
+				m_contentChanged = true;
+			}
+			else {
+				System.out.println("DGraphView.setBackgroundPaint(), Color not found!");
+			}
         }
     }
 
@@ -346,7 +351,7 @@ public class DGraphView
      * @return DOCUMENT ME!
      */
     public Paint getBackgroundPaint() {
-		 return m_networkCanvas.getBackgroundPaint();
+		return m_networkCanvas.getBackground();
     }
 
     /**
