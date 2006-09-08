@@ -40,7 +40,7 @@ package ding.view;
 
 // imports
 import java.awt.Image;
-import java.awt.Paint;
+import java.awt.Color;
 import javax.swing.JComponent;
 
 /**
@@ -59,9 +59,9 @@ public abstract class DingCanvas extends JComponent {
 	protected Image m_img;
 
 	/**
-	 * ref to our background paint
+	 * ref to our background color
 	 */
-	protected Paint m_bgPaint;
+	protected Color m_backgroundColor;
 
 	/**
 	 * Returns the image we maintain.
@@ -73,20 +73,20 @@ public abstract class DingCanvas extends JComponent {
 	}
 
 	/**
-	 * Returns the current set background paint.
+	 * Returns the background color of this component.
 	 *
-	 * @return Paint
+	 * @return Color
 	 */
-	public Paint getBackgroundPaint() {
-		return m_bgPaint;
+	public Color getBackground() {
+		return m_backgroundColor;
 	}
 
 	/**
-	 * Sets our background paint.
+	 * Set the component background color.
 	 *
-	 * backgroundPaint Paint
+	 * backgroundColor Color
 	 */
-	public void setBackgroundPaint(Paint backgroundPaint) {
-		m_bgPaint = backgroundPaint;
+	public void setBackground(Color backgroundColor) {
+		m_backgroundColor = backgroundColor;
 	}
 }
