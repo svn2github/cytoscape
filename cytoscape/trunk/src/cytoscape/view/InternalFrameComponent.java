@@ -42,7 +42,6 @@ import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
 import java.awt.Color;
-import java.awt.Paint;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
@@ -204,20 +203,16 @@ public class InternalFrameComponent extends JComponent {
 	private void setBackgroundAlpha(DingCanvas dingCanvas, AlphaSetting alphaSetting) {
 
 		// get the current background color
-		Paint backgroundPaint = dingCanvas.getBackgroundPaint();
+		Color backgroundColor = dingCanvas.getBackground();
 
-		if (backgroundPaint instanceof Color) {
-			Color currentBackgroundColor = (Color)backgroundPaint;
+		// modify its alpha as desired
+		int alpha = (alphaSetting == AlphaSetting.OPAQUE) ? 255 : 0;
+		Color newBackgroundColor = new Color(backgroundColor.getRed(),
+											 backgroundColor.getGreen(),
+											 backgroundColor.getBlue(),
+											 alpha);
 
-			// modify its alpha as desired
-			int alpha = (alphaSetting == AlphaSetting.OPAQUE) ? 255 : 0;
-			Color newBackgroundColor = new Color(currentBackgroundColor.getRed(),
-												 currentBackgroundColor.getGreen(),
-												 currentBackgroundColor.getBlue(),
-												 alpha);
-
-			// set the modified current background color
-			dingCanvas.setBackgroundPaint(newBackgroundColor);
-		}
+		// set the modified current background color
+		dingCanvas.setBackground(newBackgroundColor);
 	}
 }
