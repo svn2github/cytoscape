@@ -170,14 +170,15 @@ public class InternalFrameComponent extends JComponent {
 	}
 
 	/**
-	 * We implementation reshape to propagate the event down to the inner canvases.
+     * Our implementation of JComponent setBounds().
+	 * We implementation setBounds to propagate the event down to the DingCanvases.
 	 */
-	public void reshape(int x, int y, int width, int height) {
+	public void setBounds(int x, int y, int width, int height) {
 
 		// call reshape on each innercanvas
-		backgroundCanvas.reshape(x, y, width, height);
-		networkCanvas.reshape(x, y, width, height);
-		foregroundCanvas.reshape(x, y, width, height);
+		backgroundCanvas.setBounds(x, y, width, height);
+		networkCanvas.setBounds(x, y, width, height);
+		foregroundCanvas.setBounds(x, y, width, height);
 	}
 
 	/**
