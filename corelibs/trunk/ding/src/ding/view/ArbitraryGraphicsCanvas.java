@@ -61,11 +61,10 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 	}
 
 	/**
-	 * Our implementation of JComponent reshape.
-	 * This method is deprecated - will be replaced.
+	 * Our implementation of JComponent setBounds.
 	 */
-	public void reshape(int x, int y, int width, int height) {
-		super.reshape(x, y, width, height);
+	public void setBounds(int x, int y, int width, int height) {
+		super.setBounds(x, y, width, height);
 		if ((width > 0) && (height > 0)) {
 			// create the buffered image
 			m_img = new BufferedImage(width,
