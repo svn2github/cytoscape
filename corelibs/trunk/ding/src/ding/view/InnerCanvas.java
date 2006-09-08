@@ -120,7 +120,7 @@ public class InnerCanvas extends DingCanvas
         m_view = view;
         m_lod[0] = new GraphLOD(); // Default LOD.
         m_hash = new IntHash();
-        m_bgPaint = Color.white;
+        m_backgroundColor = Color.white;
         m_xCenter = 0.0d;
         m_yCenter = 0.0d;
         m_scaleFactor = 1.0d;
@@ -183,7 +183,7 @@ public class InnerCanvas extends DingCanvas
             if (m_view.m_contentChanged || m_view.m_viewportChanged) {
                 m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
                         m_view.m_spacial, m_lod[0], m_view.m_nodeDetails,
-                        m_view.m_edgeDetails, m_hash, m_grafx, m_bgPaint,
+                        m_view.m_edgeDetails, m_hash, m_grafx, m_backgroundColor,
                         m_xCenter, m_yCenter, m_scaleFactor);
                 contentChanged = m_view.m_contentChanged;
                 m_view.m_contentChanged = false;
@@ -302,7 +302,7 @@ public class InnerCanvas extends DingCanvas
                 m_view.m_edgeDetails,
                 m_hash,
                 new GraphGraphics(img, false),
-                m_bgPaint,
+                m_backgroundColor,
                 m_xCenter,
                 m_yCenter,
                 m_scaleFactor);
