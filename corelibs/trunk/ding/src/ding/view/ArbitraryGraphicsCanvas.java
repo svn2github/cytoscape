@@ -40,7 +40,7 @@
 package ding.view;
 
 // import
-import java.awt.Paint;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Composite;
@@ -54,10 +54,10 @@ import java.awt.image.BufferedImage;
  */
 public class ArbitraryGraphicsCanvas extends DingCanvas {
 
-	public ArbitraryGraphicsCanvas(Paint backgroundPaint) {
+	public ArbitraryGraphicsCanvas(Color backgroundColor) {
 
 		// init members
-		this.m_bgPaint = backgroundPaint;
+		m_backgroundColor = backgroundColor;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 
 		final Composite origComposite = image2D.getComposite();
 		image2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-		image2D.setPaint(m_bgPaint);
+		image2D.setPaint(m_backgroundColor);
 		image2D.fillRect(0, 0, m_img.getWidth(null), m_img.getHeight(null));
 		image2D.setComposite(origComposite);
 	}
