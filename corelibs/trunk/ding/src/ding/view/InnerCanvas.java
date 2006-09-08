@@ -146,8 +146,8 @@ public class InnerCanvas extends DingCanvas
      * @param width DOCUMENT ME!
      * @param height DOCUMENT ME!
      */
-    public void reshape(int x, int y, int width, int height) {
-        super.reshape(x, y, width, height);
+    public void setBounds(int x, int y, int width, int height) {
+        super.setBounds(x, y, width, height);
 
         if ((width > 0) && (height > 0)) {
             final Image img = new BufferedImage(width, height,
