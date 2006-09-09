@@ -1,38 +1,39 @@
 package csplugins.quickfind.plugin;
 
-import csplugins.widgets.autocomplete.index.Hit;
-import csplugins.widgets.autocomplete.index.TextIndex;
-import csplugins.widgets.autocomplete.index.IndexFactory;
-import csplugins.widgets.autocomplete.view.ComboBoxFactory;
-import csplugins.widgets.autocomplete.view.TextIndexComboBox;
-import csplugins.test.quickfind.test.TaskMonitorBase;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.quickfind.util.QuickFindListener;
-import csplugins.quickfind.view.QuickFindConfigDialog;
+import csplugins.quickfind.view.QuickFindPanel;
+import csplugins.test.quickfind.test.TaskMonitorBase;
+import csplugins.widgets.autocomplete.index.GenericIndex;
+import csplugins.widgets.autocomplete.index.Hit;
+import csplugins.widgets.autocomplete.index.NumberIndex;
+import csplugins.widgets.autocomplete.index.TextIndex;
+import csplugins.widgets.autocomplete.view.TextIndexComboBox;
+import csplugins.widgets.slider.JRangeSliderExtended;
 import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
 import cytoscape.CyNode;
+import cytoscape.Cytoscape;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
+import giny.view.NodeView;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.URL;
 import java.util.ArrayList;
 
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
-import giny.view.NodeView;
+import prefuse.data.query.NumberRangeModel;
 
 /**
  * Quick Find PlugIn.
@@ -41,8 +42,7 @@ import giny.view.NodeView;
  */
 public class QuickFindPlugIn extends CytoscapePlugin
         implements PropertyChangeListener, QuickFindListener {
-    private TextIndexComboBox comboBox;
-    private JButton configButton;
+    private QuickFindPanel quickFindToolBar;
 
     /**
      * Constructor.
@@ -50,6 +50,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
     public QuickFindPlugIn() {
         initListeners();
         initToolBar();
+        initIndex();
     }
 
     /**
@@ -75,43 +76,36 @@ public class QuickFindPlugIn extends CytoscapePlugin
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         CyMenus cyMenus = desktop.getCyMenus();
         CytoscapeToolBar toolBar = cyMenus.getToolBar();
+        quickFindToolBar = new QuickFindPanel();
+        TextIndexComboBox comboBox = quickFindToolBar.getTextIndexComboBox();
+        ActionListener listener = new UserSelectionListener(comboBox);
+        comboBox.addFinalSelectionListener(listener);
 
-        TextIndex textIndex = IndexFactory.createDefaultTextIndex();
-        try {
-            JPanel panel = new JPanel();
-            panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            panel.setBorder(new EmptyBorder(0, 0, 0, 0));
-            comboBox = ComboBoxFactory.createTextIndexComboBox
-                    (textIndex, 1.5);
-            comboBox.setEnabled(false);
-            ActionListener listener = new UserSelectionListener(comboBox);
-            comboBox.addFinalSelectionListener(listener);
-            //  Set Size of ComboBox Display, based on # of specific chars
-            comboBox.setPrototypeDisplayValue("01234567890");
-            comboBox.setToolTipText("Please select or load a network to "
-                    + "activate search functionality.");
+        JRangeSliderExtended slider = quickFindToolBar.getSlider();
+        RangeSelectionListener rangeSelectionListener =
+                new RangeSelectionListener(slider);
+        slider.addChangeListener(rangeSelectionListener);
+        toolBar.add(quickFindToolBar);
+    }
 
-            URL configIconUrl = QuickFindPlugIn.class.getResource
-                    ("resources/config.png");
-            ImageIcon configIcon = new ImageIcon(configIconUrl,
-                    "Configure search options");
-            configButton = new JButton(configIcon);
-            configButton.setToolTipText("Configure search options");
-            configButton.setEnabled(false);
-            configButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    QuickFindConfigDialog dialog = new QuickFindConfigDialog();
+    /**
+     * Initializes index, if network already exists.
+     * This condition may occur if a user loads up a network from the command
+     * line, and the network is already loaded prior to any plugins being loaded
+     */
+    private void initIndex() {
+        final QuickFind quickFind =
+                QuickFindFactory.getGlobalQuickFindInstance();
+        //  If a network already exists within Cytoscape, index it
+        final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+        if (cyNetwork != null) {
+            //  Run Indexer in separate background daemon thread.
+            Thread thread = new Thread() {
+                public void run() {
+                    quickFind.addNetwork(cyNetwork, new TaskMonitorBase());
                 }
-            });
-            configButton.setBorderPainted(false);
-
-            JLabel label = new JLabel("Search:  ");
-            label.setForeground(Color.GRAY);
-            panel.add(label);
-            panel.add(comboBox);
-            panel.add(configButton);
-            toolBar.add(panel);
-        } catch (Exception e) {
+            };
+            thread.start();
         }
     }
 
@@ -160,14 +154,14 @@ public class QuickFindPlugIn extends CytoscapePlugin
                 cyNetwork = networkView.getNetwork();
                 TextIndex textIndex = (TextIndex) quickFind.getIndex(cyNetwork);
                 if (textIndex != null) {
-                    comboBox.setTextIndex(textIndex);
+                    quickFindToolBar.setIndex(textIndex);
                     networkHasFocus = true;
                 }
             }
         }
         if (!networkHasFocus) {
-            disableAllQuickFindButtons();
-            comboBox.setToolTipText("Please select or load a network");
+            quickFindToolBar.disableAllQuickFindButtons();
+            quickFindToolBar.setToolTipText("Please select or load a network");
         }
     }
 
@@ -193,25 +187,8 @@ public class QuickFindPlugIn extends CytoscapePlugin
      * Indexing started.
      */
     public void indexingStarted() {
-        disableAllQuickFindButtons();
-        comboBox.setToolTipText("Indexing network.  Please wait...");
-    }
-
-    /**
-     * Disables all Quick Find Buttons.
-     */
-    public void disableAllQuickFindButtons() {
-        comboBox.removeAllText();
-        comboBox.setEnabled(false);
-        configButton.setEnabled(false);
-    }
-
-    /**
-     * Enables all Quick Find Buttons.
-     */
-    public void enableAllQuickFindButtons() {
-        comboBox.setEnabled(true);
-        configButton.setEnabled(true);
+        quickFindToolBar.disableAllQuickFindButtons();
+        quickFindToolBar.setToolTipText("Indexing network.  Please wait...");
     }
 
     /**
@@ -220,10 +197,9 @@ public class QuickFindPlugIn extends CytoscapePlugin
     public void indexingEnded() {
         QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-        TextIndex textIndex = (TextIndex) quickFind.getIndex(cyNetwork);
-        comboBox.setTextIndex(textIndex);
-        enableAllQuickFindButtons();
-        comboBox.setToolTipText("Enter search string");
+        GenericIndex index = quickFind.getIndex(cyNetwork);
+        quickFindToolBar.setIndex(index);
+        quickFindToolBar.enableAllQuickFindButtons();
     }
 }
 
@@ -294,7 +270,7 @@ class UserSelectionListener implements ActionListener {
                                     * NODE_SIZE_MULTIPLER;
                             double scaleFactor = Math.min
                                     (innerCanvas.getWidth() / width,
-                                    (innerCanvas.getHeight() / height));
+                                            (innerCanvas.getHeight() / height));
                             Cytoscape.getCurrentNetworkView().setZoom
                                     (scaleFactor);
                         }
@@ -303,6 +279,52 @@ class UserSelectionListener implements ActionListener {
                 }
             }
             );
+        }
+    }
+}
+
+/**
+ * Action to select a range of nodes.
+ *
+ * @author Ethan Cerami.
+ */
+class RangeSelectionListener implements ChangeListener {
+    private JRangeSliderExtended slider;
+
+    /**
+     * Constructor.
+     * @param slider JRangeSliderExtended Object.
+     */
+    public RangeSelectionListener(JRangeSliderExtended slider) {
+        this.slider = slider;
+    }
+
+    /**
+     * State Change Event.
+     * @param e ChangeEvent Object.
+     */
+    public void stateChanged(ChangeEvent e) {
+        QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+        final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+        GenericIndex index = quickFind.getIndex(cyNetwork);
+        NumberRangeModel model = (NumberRangeModel) slider.getModel();
+        if (slider.isVisible()) {
+            if (index instanceof NumberIndex) {
+                NumberIndex numberIndex = (NumberIndex) index;
+                final java.util.List nodeList = numberIndex.getRange
+                        ((Number) model.getLowValue(),
+                        (Number) model.getHighValue());
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        cyNetwork.unselectAllNodes();
+                        cyNetwork.unselectAllEdges();
+                        cyNetwork.setFlaggedNodes(nodeList, true);
+                        Cytoscape.getCurrentNetworkView().updateView();
+                    }
+                }
+                );
+
+            }
         }
     }
 }
