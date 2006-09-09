@@ -5,6 +5,7 @@ import prefuse.util.ui.JRangeSlider;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -110,12 +111,13 @@ public class JRangeSliderExtended extends JRangeSlider
             if (popup == null) {
                 PopupFactory popupFactory = PopupFactory.getSharedInstance();
                 JPanel panel = new JPanel();
+                panel.setBorder(new LineBorder (Color.LIGHT_GRAY, 1));
                 panel.setPreferredSize(getPreferredSize());
                 panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
                 popupLow = new JLabel(lowStr);
-                popupLow.setBorder(new EmptyBorder(2, 2, 2, 2));
+                popupLow.setBorder(new EmptyBorder(6, 2, 6, 2));
                 popupHigh = new JLabel(highStr);
-                popupHigh.setBorder(new EmptyBorder(2, 2, 2, 2));
+                popupHigh.setBorder(new EmptyBorder(6, 2, 6, 2));
                 panel.add(popupLow);
                 panel.add(Box.createHorizontalGlue());
                 panel.add(popupHigh);
