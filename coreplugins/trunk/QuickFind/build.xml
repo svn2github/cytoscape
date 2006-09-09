@@ -79,7 +79,7 @@
         name="run">
         <java classname="cytoscape.CyMain" classpathref="compile.classpath"
             fork="true" maxmemory="1000M">
-            <arg line="-p plugins"/>
+            <arg line="-N ../../cytoscape/testData/galFiltered.sif -m ../../cytoscape/testData/galExpData.pvals -p plugins"/>
         </java>
     </target>
 
