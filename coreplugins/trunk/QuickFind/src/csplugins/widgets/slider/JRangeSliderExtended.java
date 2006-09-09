@@ -106,28 +106,30 @@ public class JRangeSliderExtended extends JRangeSlider
         }
         String lowStr = format.format(low);
         String highStr = format.format(high);
-        if (popup == null && isVisible()) {
-            PopupFactory popupFactory = PopupFactory.getSharedInstance();
-            JPanel panel = new JPanel();
-            panel.setPreferredSize(getPreferredSize());
-            panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-            popupLow = new JLabel(lowStr);
-            popupLow.setBorder(new EmptyBorder(2, 2, 2, 2));
-            popupHigh = new JLabel(highStr);
-            popupHigh.setBorder(new EmptyBorder(2, 2, 2, 2));
-            panel.add(popupLow);
-            panel.add(Box.createHorizontalGlue());
-            panel.add(popupHigh);
-            popup = popupFactory.getPopup(this, panel,
-                    getLocationOnScreen().x,
-                    getLocationOnScreen().y
-                            + getPreferredSize().height + 2);
-            popupDaemon = new PopupDaemon(this, 1000);
-            popup.show();
-        } else {
-            popupLow.setText(lowStr);
-            popupHigh.setText(highStr);
-            popupDaemon.restart();
+        if (isVisible()) {
+            if (popup == null) {
+                PopupFactory popupFactory = PopupFactory.getSharedInstance();
+                JPanel panel = new JPanel();
+                panel.setPreferredSize(getPreferredSize());
+                panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+                popupLow = new JLabel(lowStr);
+                popupLow.setBorder(new EmptyBorder(2, 2, 2, 2));
+                popupHigh = new JLabel(highStr);
+                popupHigh.setBorder(new EmptyBorder(2, 2, 2, 2));
+                panel.add(popupLow);
+                panel.add(Box.createHorizontalGlue());
+                panel.add(popupHigh);
+                popup = popupFactory.getPopup(this, panel,
+                        getLocationOnScreen().x,
+                        getLocationOnScreen().y
+                                + getPreferredSize().height + 2);
+                popupDaemon = new PopupDaemon(this, 1000);
+                popup.show();
+            } else {
+                popupLow.setText(lowStr);
+                popupHigh.setText(highStr);
+                popupDaemon.restart();
+            }
         }
     }
 }
