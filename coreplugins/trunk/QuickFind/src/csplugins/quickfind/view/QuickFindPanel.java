@@ -90,6 +90,7 @@ public class QuickFindPanel extends JPanel {
      * Enables all Quick Find Buttons.
      */
     public void enableAllQuickFindButtons() {
+        comboBox.setToolTipText("Enter search string");
         comboBox.setEnabled(true);
         rangeSlider.setEnabled(true);
         configButton.setEnabled(true);

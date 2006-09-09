@@ -1,7 +1,7 @@
 package csplugins.quickfind.view;
 
 import csplugins.quickfind.util.*;
-import csplugins.widgets.autocomplete.index.TextIndex;
+import csplugins.widgets.autocomplete.index.GenericIndex;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -50,9 +50,9 @@ public class QuickFindConfigDialog extends JDialog {
     private CyNetwork currentNetwork;
 
     /**
-     * Current Text Index
+     * Current Index
      */
-    private TextIndex currentTextIndex;
+    private GenericIndex currentIndex;
 
     /**
      * Apply Text.
@@ -77,7 +77,7 @@ public class QuickFindConfigDialog extends JDialog {
         //  Initialize, based on currently selected network
         currentNetwork = Cytoscape.getCurrentNetwork();
         QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-        currentTextIndex = (TextIndex) quickFind.getIndex(currentNetwork);
+        currentIndex = quickFind.getIndex(currentNetwork);
 
         Container container = getContentPane();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -234,7 +234,7 @@ public class QuickFindConfigDialog extends JDialog {
         if (selectedAttribute != null) {
             attributeKey = selectedAttribute.toString();
         } else {
-            attributeKey = currentTextIndex.getControllingAttribute();
+            attributeKey = currentIndex.getControllingAttribute();
         }
         String description;
         if (attributeKey.equals(QuickFind.UNIQUE_IDENTIFIER)) {
@@ -266,7 +266,7 @@ public class QuickFindConfigDialog extends JDialog {
         if (selectedAttribute != null) {
             attributeKey = selectedAttribute.toString();
         } else {
-            attributeKey = currentTextIndex.getControllingAttribute();
+            attributeKey = currentIndex.getControllingAttribute();
         }
 
         //  Create column names
@@ -345,7 +345,7 @@ public class QuickFindConfigDialog extends JDialog {
             //  Create ComboBox
             attributeComboBox = new JComboBox(attributeList);
             String currentAttribute =
-                    currentTextIndex.getControllingAttribute();
+                    currentIndex.getControllingAttribute();
             if (currentAttribute != null) {
                 attributeComboBox.setSelectedItem(currentAttribute);
             }
@@ -358,7 +358,7 @@ public class QuickFindConfigDialog extends JDialog {
 
                     //  First, set text of apply button
                     String currentAttribute =
-                        currentTextIndex.getControllingAttribute();
+                        currentIndex.getControllingAttribute();
                     String newAttribute = (String)
                         attributeComboBox.getSelectedItem();
                     if (currentAttribute.equalsIgnoreCase(newAttribute)) {
