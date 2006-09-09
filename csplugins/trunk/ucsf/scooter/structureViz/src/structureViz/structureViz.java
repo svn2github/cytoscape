@@ -61,6 +61,7 @@ import cytoscape.util.CytoscapeAction;
 
 // structureViz imports
 import structureViz.Chimera;
+import structureViz.ui.modelNavigatorDialog;
 
 
 public class structureViz extends CytoscapePlugin 
@@ -216,6 +217,7 @@ public class structureViz extends CytoscapePlugin
 		private static ArrayList openStructs = null;
 		private int command;
 		private Object userData = null;
+		private modelNavigatorDialog mnDialog = null;
 
 		structureVizCommandListener(int command, Object userData) {
 			this.command = command;
@@ -312,6 +314,12 @@ public class structureViz extends CytoscapePlugin
         	return;
 				}
 			}
+
+			// Finally, open up our navigator dialog
+			mnDialog = new modelNavigatorDialog(Cytoscape.getDesktop(), chimera);
+			mnDialog.pack();
+			mnDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+			mnDialog.setVisible(true);
     }
   }
 

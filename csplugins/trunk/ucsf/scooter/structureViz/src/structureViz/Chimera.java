@@ -33,9 +33,15 @@
 package structureViz;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.io.*;
+
+import structureViz.model.ChimeraModel;
+import structureViz.model.ChimeraChain;
+import structureViz.model.ChimeraResidue;
 
 /**
  * This class provides the main interface to UCSF Chimera
@@ -51,13 +57,20 @@ public class Chimera {
   // Chimera process
   static Process chimera;
 	static private ArrayList replyLog;
+	static private ArrayList models;
+	static private HashMap modelHash;
+	static private replyLogListener listener;
     
   public Chimera() {
   	/**
   	 * Null constructor, for now
   	 */
 		replyLog = new ArrayList();
+		models = new ArrayList();
+		modelHash = new HashMap();
   }
+
+	public ArrayList getChimeraModels () { return models; }
     
   /**
    * Launch (start) an instance of Chimera
@@ -82,7 +95,7 @@ public class Chimera {
   			chimera = pb.start();
   		} 
 			// Start up a listener
-			replyLogListener listener = new replyLogListener(chimera);
+			listener = new replyLogListener(chimera);
 			listener.start();
 
       return true;
@@ -95,12 +108,26 @@ public class Chimera {
    * @throws IOException
    */
   public void open(String pdb, int model) throws IOException {
-  	String cmd = "open "+model+" "+pdb+"\n";
+  	String cmd = "open "+model+" "+pdb;
   	this.command(cmd);
 
 		// Get our properties (default color scheme, etc.)
 		// Make the molecule look decent
-		this.command("repr stick #"+model+"\n");
+		this.command("repr stick #"+model);
+		this.command("focus");
+
+		// Create our internal object
+		ChimeraModel newModel = new ChimeraModel(pdb, model);
+
+		// Create the information we need for the navigator
+		getResidueInfo(newModel);
+
+		// Add it to our list of models
+		models.add(newModel);
+
+		// Add it to the hash table
+		modelHash.put(new Integer(model),newModel);
+
   	return;
   }
 
@@ -110,8 +137,14 @@ public class Chimera {
    * @throws IOException
 	 */
 	public void close(int model) throws IOException {
-		String cmd = "close #"+model+"\n";
+		String cmd = "close #"+model;
 		this.command(cmd);
+		
+		ChimeraModel chimeraModel = (ChimeraModel)modelHash.get(new Integer(model));
+		if (chimeraModel != null) {
+			models.remove(chimeraModel);
+			modelHash.remove(new Integer(model));
+		}
 		return;
 	}
 
@@ -124,9 +157,18 @@ public class Chimera {
   public void command(String text) throws IOException {
   	if (chimera == null)
   		return;
-  	// send the command
-  	chimera.getOutputStream().write(text.getBytes());
-  	chimera.getOutputStream().flush();
+
+		text = text.concat("\n");
+
+		synchronized (replyLog) {
+  		// send the command
+  		chimera.getOutputStream().write(text.getBytes());
+  		chimera.getOutputStream().flush();
+			try {
+				System.out.print("Waiting on replyLog for: "+text);
+				replyLog.wait();
+			} catch (InterruptedException e) {}
+		}
 		return;
   }
   
@@ -137,7 +179,7 @@ public class Chimera {
   public void exit() throws IOException {
   	if (chimera == null)
   		return;
-  	this.command("stop really\n");
+  	this.command("stop really");
   	chimera.destroy();
   	chimera = null;
   }
@@ -154,16 +196,19 @@ public class Chimera {
 			this.chimera = chimera;
  		 	// Get a line-oriented reader
 	  	readChan = chimera.getInputStream();
-			lineReader = new BufferedReader(new InputStreamReader(readChan));
+			lineReader = new BufferedReader(new InputStreamReader(readChan), 1024*100);
 		}
 
 		public void run() {
 			System.out.println("replyLogListener running");
 			while (true) {
 				try {
-					String str = getReply();
-					if (str != null && str.length() > 0) {
-						replyLog.add(str);
+					ArrayList reply = getReply();
+					synchronized (replyLog) {
+						if (reply.size() > 0) {
+							replyLog.addAll(reply);
+						}
+						replyLog.notifyAll();
 					}
 				} catch (IOException e) {
 					return;
@@ -183,7 +228,7 @@ public class Chimera {
 	  /**
  	  * Read input from Chimera
  	  */
- 	 private String getReply() throws IOException {
+ 	 private ArrayList getReply() throws IOException {
  		 	if (chimera == null)
  		 		return null;
 
@@ -192,19 +237,34 @@ public class Chimera {
 			//   ........
 			//	END
 			// We return the text in between
-			String reply = new String();
+			ArrayList reply = new ArrayList();
 			String line = null;
 			while ((line = lineReader.readLine()) != null) {
-				System.out.println("From Chimera: "+line);
+				// System.out.println("From Chimera: "+line);
 				if (line.startsWith("END")) {
 					break;
 				}
 				if (!line.startsWith("CMD")) {
-					reply = reply.concat(line);
+					reply.add(line);
 				}
 			}
-			System.out.println(reply);
 			return reply;
 		}
+	}
+
+	private void getResidueInfo(ChimeraModel model) throws IOException {
+		int modelNumber = model.getModelNumber();
+		replyLog.clear();
+
+		// Get the list -- it will be in the reply log
+		this.command ("listr");
+		Iterator resIter = replyLog.iterator();
+		while (resIter.hasNext()) {
+			ChimeraResidue r = new ChimeraResidue((String)resIter.next());
+			if (r.getModelNumber() == modelNumber) {
+				model.addResidue(r);
+			}
+		}
+		replyLog.clear();
 	}
 }
