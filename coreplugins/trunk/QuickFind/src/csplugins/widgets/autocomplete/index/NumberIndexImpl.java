@@ -38,6 +38,19 @@ class NumberIndexImpl extends GenericIndexImpl implements NumberIndex {
 
     public List getRange(Number lower, Number upper) {
         ArrayList list = new ArrayList();
+
+        //  Calculate successor of upper via IEEE 754 method.
+        //  Used to create a closed range between lower (inclusive) and
+        //  upper (inclusive).
+        //  For background, see:
+        //  http://www.cygnus-software.com/papers/comparingfloats/
+        //  comparingfloats.htm
+        if (upper instanceof Double) {
+            long bits = Double.doubleToLongBits (upper.doubleValue());
+            upper = new Double (Double.longBitsToDouble(bits + 1));
+        } else if (upper instanceof Integer) {
+            upper = new Integer(upper.intValue() + 1);
+        }
         SortedMap map = treeMap.subMap(lower, upper);
         Iterator iterator = map.values().iterator();
         while (iterator.hasNext()) {
