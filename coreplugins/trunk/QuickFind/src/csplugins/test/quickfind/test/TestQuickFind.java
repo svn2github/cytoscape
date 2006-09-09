@@ -2,6 +2,7 @@ package csplugins.test.quickfind.test;
 
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
+import csplugins.widgets.autocomplete.index.NumberIndex;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import cytoscape.CyNetwork;
@@ -9,6 +10,8 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import junit.framework.TestCase;
+
+import java.util.List;
 
 /**
  * Unit Test for Quick Find.
@@ -19,6 +22,8 @@ public class TestQuickFind extends TestCase {
     private static final String LOCATION = "location";
     private static final String NUCLEUS = "nucleus";
     private static final String CYTOPLASM = "cytoplasm";
+    private static final String RANK = "rank";
+    private static final String SCORE = "score";
 
     /**
      * Runs basic tests to verify node indexing.
@@ -36,14 +41,9 @@ public class TestQuickFind extends TestCase {
         cyNetwork.addNode(node2);
         cyNetwork.addNode(node3);
 
-        //  Create Sample Attributes
-        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-        nodeAttributes.setAttribute(node0.getIdentifier(), LOCATION, CYTOPLASM);
-        nodeAttributes.setAttribute(node1.getIdentifier(), LOCATION, CYTOPLASM);
-        nodeAttributes.setAttribute(node2.getIdentifier(), LOCATION, NUCLEUS);
-        nodeAttributes.setAttribute(node3.getIdentifier(), LOCATION, NUCLEUS);
+        addAttributes(node0, node1, node2, node3);
 
-        //  Index this network
+        //  Index this network by UNIQUE_IDENTIFIER
         TaskMonitorBase monitor = new TaskMonitorBase();
         QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         quickFind.addNetwork(cyNetwork, monitor);
@@ -70,10 +70,10 @@ public class TestQuickFind extends TestCase {
         assertEquals(100, monitor.getPercentComplete());
 
         //  Now, try reindexing by LOCATION
-        quickFind.reindexNetwork(cyNetwork, LOCATION, monitor);
+        textIndex = (TextIndex) quickFind.reindexNetwork
+                (cyNetwork, LOCATION, monitor);
 
         //  Verify that nodes have been indexed
-        textIndex = (TextIndex) quickFind.getIndex(cyNetwork);
         hits = textIndex.getHits("nu", Integer.MAX_VALUE);
         assertEquals(1, hits.length);
         assertEquals(NUCLEUS, hits[0].getKeyword());
@@ -84,13 +84,48 @@ public class TestQuickFind extends TestCase {
         assertEquals(node3, hits[0].getAssociatedObjects()[0]);
         assertEquals(node2, hits[0].getAssociatedObjects()[1]);
 
+        validateIndexAllAttributes(quickFind, cyNetwork, monitor);
+        validateIntegerIndex (quickFind, cyNetwork, monitor);
+        validateDoubleIndex  (quickFind, cyNetwork, monitor);
+    }
+
+    private void addAttributes(CyNode node0, CyNode node1, CyNode node2,
+            CyNode node3) {
+        //  Create Sample String Attributes
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        nodeAttributes.setAttribute(node0.getIdentifier(), LOCATION, CYTOPLASM);
+        nodeAttributes.setAttribute(node1.getIdentifier(), LOCATION, CYTOPLASM);
+        nodeAttributes.setAttribute(node2.getIdentifier(), LOCATION, NUCLEUS);
+        nodeAttributes.setAttribute(node3.getIdentifier(), LOCATION, NUCLEUS);
+
+        //  Create Sample Integer Attributes
+        nodeAttributes.setAttribute(node0.getIdentifier(), RANK, 4);
+        nodeAttributes.setAttribute(node1.getIdentifier(), RANK, 3);
+        nodeAttributes.setAttribute(node2.getIdentifier(), RANK, 1);
+        nodeAttributes.setAttribute(node3.getIdentifier(), RANK, 2);
+
+        //  Create Sample Double Attributes
+        nodeAttributes.setAttribute(node0.getIdentifier(), SCORE, 45.2);
+        nodeAttributes.setAttribute(node1.getIdentifier(), SCORE, 3.211);
+        nodeAttributes.setAttribute(node2.getIdentifier(), SCORE, 22.2);
+        nodeAttributes.setAttribute(node3.getIdentifier(), SCORE, 2.1);
+    }
+
+    /**
+     * Validate that we can index all attributes.
+     */
+    private void validateIndexAllAttributes(QuickFind quickFind,
+            CyNetwork cyNetwork, TaskMonitorBase monitor) {
+        TextIndex textIndex;
+        Hit[] hits;
         //  Try indexing on a non-existent attribute key.  This should
         //  do nothing silently, and should not throw any exceptions.
-        quickFind.reindexNetwork(cyNetwork, "TYPE", monitor);
+        textIndex = (TextIndex) quickFind.reindexNetwork
+                (cyNetwork, "TYPE", monitor);
 
         //  Try indexing all attributes
-        quickFind.reindexNetwork(cyNetwork, QuickFind.INDEX_ALL_ATTRIBUTES,
-                monitor);
+        textIndex = (TextIndex) quickFind.reindexNetwork
+                (cyNetwork, QuickFind.INDEX_ALL_ATTRIBUTES, monitor);
 
         //  First, try unique identifiers
         hits = textIndex.getHits("ra", Integer.MAX_VALUE);
@@ -103,7 +138,37 @@ public class TestQuickFind extends TestCase {
         hits = textIndex.getHits("nu", Integer.MAX_VALUE);
         assertEquals(1, hits.length);
         assertEquals(NUCLEUS, hits[0].getKeyword());
+    }
 
+    private void validateIntegerIndex (QuickFind quickFind,
+            CyNetwork cyNetwork, TaskMonitorBase monitor) {
+        NumberIndex numberIndex = (NumberIndex) quickFind.reindexNetwork
+                (cyNetwork, RANK, monitor);
+        assertEquals (1, numberIndex.getMinimumValue());
+        assertEquals (4, numberIndex.getMaximumValue());
+        List list = numberIndex.getRange(1, 2);
+        assertEquals (2, list.size());
+        CyNode node0 = (CyNode) list.get(0);
+        assertEquals ("rabbit", node0.getIdentifier());
+        CyNode node1 = (CyNode) list.get(1);
+        assertEquals ("yellow", node1.getIdentifier());
+    }
+
+    private void validateDoubleIndex (QuickFind quickFind,
+            CyNetwork cyNetwork, TaskMonitorBase monitor) {
+        NumberIndex numberIndex = (NumberIndex) quickFind.reindexNetwork
+                (cyNetwork, SCORE, monitor);
+        assertEquals (2.1, numberIndex.getMinimumValue());
+        assertEquals (45.2, numberIndex.getMaximumValue());
+        List list = numberIndex.getRange(0.0, 5.0);
+        assertEquals (2, list.size());
+        CyNode node0 = (CyNode) list.get(0);
+        assertEquals ("yellow", node0.getIdentifier());
+        CyNode node1 = (CyNode) list.get(1);
+        assertEquals ("rainbow", node1.getIdentifier());
+
+        //  Validate that upper bound is inclusive
+        list = numberIndex.getRange(0.0, 45.2);
+        assertEquals (4, list.size());
     }
 }
-
