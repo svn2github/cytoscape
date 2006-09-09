@@ -13,10 +13,10 @@ import java.util.List;
 public interface NumberIndex extends GenericIndex {
 
     /**
-     * Gets a range of indexed values between lower and upper.
+     * Gets a closed range of indexed values between lower and upper.
      *
      * Returns a view of the portion of this set whose elements range from
-     * lower, inclusive, to upper, exclusive.
+     * lower, inclusive, to upper, inclusive.
      *
      * @param lower lower bound.
      * @param upper upper bound.
