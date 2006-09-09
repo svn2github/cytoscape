@@ -138,9 +138,10 @@ public interface QuickFind {
      * @param controllingAttribute Attribute used to index all nodes.
      * @param taskMonitor          Task Monitor, used to monitor long-term
      *                             progress of task.
+     * @return GenericIndex Object.
      */
-    void reindexNetwork(CyNetwork cyNetwork, String controllingAttribute,
-                        TaskMonitor taskMonitor);
+    GenericIndex reindexNetwork(CyNetwork cyNetwork,
+            String controllingAttribute, TaskMonitor taskMonitor);
 
     /**
      * Adds a new QuickFind Listener.
