@@ -39,9 +39,12 @@ import java.util.List;
 import java.util.Set;
 import java.io.*;
 
+import cytoscape.view.*;
+
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraResidue;
+import structureViz.model.Structure;
 
 /**
  * This class provides the main interface to UCSF Chimera
@@ -60,14 +63,16 @@ public class Chimera {
 	static private ArrayList models;
 	static private HashMap modelHash;
 	static private replyLogListener listener;
+	static private CyNetworkView networkView;
     
-  public Chimera() {
+  public Chimera(CyNetworkView networkView) {
   	/**
   	 * Null constructor, for now
   	 */
 		replyLog = new ArrayList();
 		models = new ArrayList();
 		modelHash = new HashMap();
+		this.networkView = networkView;
   }
 
 	public ArrayList getChimeraModels () { return models; }
@@ -78,8 +83,7 @@ public class Chimera {
    * @return
    * @throws IOException
  */
-  public boolean launch()
-      throws IOException {
+  public boolean launch() throws IOException {
   		// See if we already have a chimera instance running
   		if (chimera == null) {
   			// No, get one started
@@ -107,17 +111,18 @@ public class Chimera {
    * @param model
    * @throws IOException
    */
-  public void open(String pdb, int model) throws IOException {
-  	String cmd = "open "+model+" "+pdb;
+  public void open(Structure structure) throws IOException {
+  	String cmd = "open "+structure.name();
   	this.command(cmd);
+
+		// Now, figure out exactly what model # we got
+		ChimeraModel newModel = getModelInfo(structure);
+		if (newModel == null) return;
 
 		// Get our properties (default color scheme, etc.)
 		// Make the molecule look decent
-		this.command("repr stick #"+model);
+		this.command("repr stick #"+newModel.getModelNumber());
 		this.command("focus");
-
-		// Create our internal object
-		ChimeraModel newModel = new ChimeraModel(pdb, model);
 
 		// Create the information we need for the navigator
 		getResidueInfo(newModel);
@@ -126,7 +131,7 @@ public class Chimera {
 		models.add(newModel);
 
 		// Add it to the hash table
-		modelHash.put(new Integer(model),newModel);
+		modelHash.put(new Integer(newModel.getModelNumber()),newModel);
 
   	return;
   }
@@ -136,7 +141,8 @@ public class Chimera {
    * @param model
    * @throws IOException
 	 */
-	public void close(int model) throws IOException {
+	public void close(Structure structure) throws IOException {
+		int model = structure.modelNumber();
 		String cmd = "close #"+model;
 		this.command(cmd);
 		
@@ -250,6 +256,27 @@ public class Chimera {
 			}
 			return reply;
 		}
+	}
+
+	private ChimeraModel getModelInfo(Structure structure) throws IOException {
+		String name = structure.name();
+
+		replyLog.clear();
+		this.command ("listm");
+		Iterator modelIter = replyLog.iterator();
+		while (modelIter.hasNext()) {
+			String modelLine = (String)modelIter.next();
+			if (modelLine.contains(name)) {
+				// got the right model, now get the model number
+				int hash = modelLine.indexOf('#');
+				int space = modelLine.indexOf(' ',hash);
+				// model number is between hash+1 and space
+				Integer modelInteger = new Integer(modelLine.substring(hash+1,space));
+				structure.setModelNumber(modelInteger.intValue());
+				return new ChimeraModel(name, structure);
+			}
+		}
+		return null;
 	}
 
 	private void getResidueInfo(ChimeraModel model) throws IOException {

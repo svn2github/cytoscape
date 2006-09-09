@@ -49,7 +49,7 @@ import structureViz.model.ChimeraChain;
 
 import structureViz.Chimera;
 
-public class modelNavigatorDialog extends JDialog implements TreeSelectionListener {
+public class ModelNavigatorDialog extends JDialog implements TreeSelectionListener {
 	private Chimera ChimeraObject;
 	private boolean status;
 
@@ -59,11 +59,16 @@ public class modelNavigatorDialog extends JDialog implements TreeSelectionListen
 	private DefaultTreeModel treeModel;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 
-	public modelNavigatorDialog (Frame parent, Chimera object) {
+	public ModelNavigatorDialog (Frame parent, Chimera object) {
 		super(parent, false);
 		ChimeraObject = object;
 		initComponents();
 		status = false;
+	}
+
+	public void modelChanged() {
+		// Something significant changed in the model (new open/closed structure?)
+		rebuildTree();
 	}
 
 	public void valueChanged(TreeSelectionEvent e) {
@@ -87,6 +92,7 @@ public class modelNavigatorDialog extends JDialog implements TreeSelectionListen
 				selSpec = selSpec.concat(((ChimeraResidue)nodeInfo).toSpec());
 			}
 			if (i < paths.length-1) selSpec.concat("|");
+			// Add the model to be selected (if it's not already)
 		}
 		try {
 			ChimeraObject.command(selSpec);
@@ -226,15 +232,15 @@ public class modelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 		public void mousePressed(MouseEvent ev) {
 			if (ev.isPopupTrigger())
-				CreatePopupMenu(ev);
+				createPopupMenu(ev);
 		}
 
 		public void mouseReleased(MouseEvent ev) {
 			if (ev.isPopupTrigger())
-				CreatePopupMenu(ev);
+				createPopupMenu(ev);
 		}
 
-		private void CreatePopupMenu(MouseEvent ev) {
+		private void createPopupMenu(MouseEvent ev) {
 			// Create our popup menu -- depends on what's selected.  If we
 			// have things selected at multiple levels of the hierarchy, see
 			// if the menu was over a specific type
@@ -321,7 +327,7 @@ public class modelNavigatorDialog extends JDialog implements TreeSelectionListen
 				System.out.println("Generic context");
 			}
 
-			JPopupMenu menu = new actionPopupMenu(ChimeraObject,navigationTree,models,chains,residues);
+			JPopupMenu menu = new ActionPopupMenu(ChimeraObject,navigationTree,models,chains,residues);
 			menu.setVisible(true);
 			menu.show(navigationTree, ev.getX(), ev.getY());
 

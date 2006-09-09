@@ -61,10 +61,11 @@ import cytoscape.util.CytoscapeAction;
 
 // structureViz imports
 import structureViz.Chimera;
-import structureViz.ui.modelNavigatorDialog;
+import structureViz.ui.ModelNavigatorDialog;
+import structureViz.model.Structure;
 
 
-public class structureViz extends CytoscapePlugin 
+public class StructureViz extends CytoscapePlugin 
   implements NodeContextMenuListener, PropertyChangeListener {
 
 	public static final int NONE = 0;
@@ -76,7 +77,7 @@ public class structureViz extends CytoscapePlugin
   /**
    * Create our action and add it to the plugins menu
    */
-  public structureViz() {
+  public StructureViz() {
 		try {
 			// Set ourselves up to listen for new networks
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
@@ -89,7 +90,7 @@ public class structureViz extends CytoscapePlugin
 		}
 	    
 		JMenu menu = new JMenu("Structure Visualization");
-		menu.addMenuListener(new structureVizMenuListener());
+		menu.addMenuListener(new StructureVizMenuListener());
 
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
@@ -97,11 +98,11 @@ public class structureViz extends CytoscapePlugin
 
   }
 
-	public class structureVizMenuListener implements MenuListener {
-		private structureVizCommandListener staticHandle;
+	public class StructureVizMenuListener implements MenuListener {
+		private StructureVizCommandListener staticHandle;
 
-		structureVizMenuListener() {
-			this.staticHandle = new structureVizCommandListener(NONE,null);
+		StructureVizMenuListener() {
+			this.staticHandle = new StructureVizCommandListener(NONE,null);
 		}
 
 	  public void menuCanceled (MenuEvent e) {};
@@ -116,17 +117,18 @@ public class structureViz extends CytoscapePlugin
 			// Add our menu items
 			{
 			  JMenu item = new JMenu("Open structure(s)");
-				List structures =  GetSelectedStructures();
-				AddSubMenu(item, "all", OPEN, structures);
+				List structures =  getSelectedStructures();
+				addSubMenu(item, "all", OPEN, structures);
 				Iterator iter = structures.iterator();
 				while (iter.hasNext()) {
-					AddSubMenu(item, (String)iter.next(), OPEN, null);
+					Structure structure = (Structure)iter.next();
+					addSubMenu(item, structure.name(), OPEN, structure);
 				}
 				m.add(item);
 			}
 			{
 				JMenuItem item = new JMenuItem("Align structures");
-				structureVizCommandListener l = new structureVizCommandListener(ALIGN, null);
+				StructureVizCommandListener l = new StructureVizCommandListener(ALIGN, null);
 				item.addActionListener(l);
 				if (l.getChimera() == null) item.setEnabled(false);
 				m.add(item);
@@ -139,34 +141,35 @@ public class structureViz extends CytoscapePlugin
 			  	m.add(item);
 				} else {
 			  	JMenu item = new JMenu("Close structure(s)");
-					List openStructures = staticHandle.getOpenStructs();
-					AddSubMenu(item, "all", CLOSE, openStructures);
+					List<Structure>openStructures = staticHandle.getOpenStructs();
+					addSubMenu(item, "all", CLOSE, openStructures);
 					Iterator iter = openStructures.iterator();
 					while (iter.hasNext()) {
-						AddSubMenu(item, (String)iter.next(), CLOSE, null);
+						Structure structure = (Structure)iter.next();
+						addSubMenu(item, structure.name(), CLOSE, structure);
 					}
 					m.add(item);
 				}
 			}
 			{
 				JMenuItem item = new JMenuItem("Exit Chimera");
-				structureVizCommandListener l = new structureVizCommandListener(EXIT, null);
+				StructureVizCommandListener l = new StructureVizCommandListener(EXIT, null);
 				item.addActionListener(l);
 				if (l.getChimera() == null) item.setEnabled(false);
 				m.add(item);
 			}
 		}
 
-		private void AddSubMenu(JMenu menu, String label, int command, Object userData) {
+		private void addSubMenu(JMenu menu, String label, int command, Object userData) {
 			System.out.println("Adding item "+label);
 			JMenuItem item = new JMenuItem(label);
-			structureVizCommandListener l = new structureVizCommandListener(command, userData);
+			StructureVizCommandListener l = new StructureVizCommandListener(command, userData);
 			item.addActionListener(l);
 		  menu.add(item);
 		}
 
-		private List GetSelectedStructures() {
-			List<String>structureList = new ArrayList<String>();
+		private List getSelectedStructures() {
+			List<Structure>structureList = new ArrayList<Structure>();
       //get the network object; this contains the graph
       CyNetwork network = Cytoscape.getCurrentNetwork();
       //get the network view object
@@ -191,17 +194,17 @@ public class structureViz extends CytoscapePlugin
         if (cyAttributes.hasAttribute(nodeID, "Structure")) {
           // Yes, add it to our list
           String structure = cyAttributes.getStringAttribute(nodeID, "Structure");
-          structureList.add(structure);
+          structureList.add(new Structure(structure,node));
         }
         else if (cyAttributes.hasAttribute(nodeID, "pdb")) {
           // Yes, add it to our list
           String structure = cyAttributes.getStringAttribute(nodeID, "pdb");
-          structureList.add(structure);
+          structureList.add(new Structure(structure,node));
         }
         else if (cyAttributes.hasAttribute(nodeID, "pdbFileName")) {
           // Yes, add it to our list
           String structure = cyAttributes.getStringAttribute(nodeID, "pdbFileName");
-          structureList.add(structure);
+          structureList.add(new Structure(structure,node));
         }
       }
 			return structureList;
@@ -211,15 +214,15 @@ public class structureViz extends CytoscapePlugin
   /**
    * This class gets attached to the menu item.
    */
-  static class structureVizCommandListener implements ActionListener {
+  static class StructureVizCommandListener implements ActionListener {
   	private static final long serialVersionUID = 1;
 		private static Chimera chimera = null;
-		private static ArrayList openStructs = null;
+		private static ArrayList<Structure>openStructs = null;
 		private int command;
-		private Object userData = null;
-		private modelNavigatorDialog mnDialog = null;
+		private Object userData = null; // Either a Structure or an ArrayList
+		private ModelNavigatorDialog mnDialog = null;
 
-		structureVizCommandListener(int command, Object userData) {
+		StructureVizCommandListener(int command, Object userData) {
 			this.command = command;
 			this.userData = userData;
 		}
@@ -244,7 +247,7 @@ public class structureViz extends CytoscapePlugin
 			return chimera;
 		}
 
-		public List getOpenStructs() {
+		public List<Structure>getOpenStructs() {
 			return openStructs;
 		}
 
@@ -259,30 +262,50 @@ public class structureViz extends CytoscapePlugin
 				} catch (IOException e) {}
 				chimera = null;
 			}
-		}
-
-		private void closeAction(String pdbStruct) {
-			if (chimera != null) {
-				try {
-					chimera.close(openStructs.indexOf(pdbStruct));
-      	} catch (java.io.IOException e) {
-        	// Put up error panel
-        	JOptionPane.showMessageDialog(Cytoscape.getCurrentNetworkView().getComponent(),
-        			"Unable to close structure "+pdbStruct, "Unable to close structure "+pdbStruct,
-          			JOptionPane.ERROR_MESSAGE);
-        	return;
-				}
+			if (mnDialog != null) {
+				// get rid of the dialog
+				mnDialog.setVisible(false);
+				mnDialog.dispose();
+				mnDialog = null;
 			}
 		}
 
-		private void openAction(String pdbStruct) {
+		private void closeAction(String commandLabel) {
+			List<Structure>structList;
+			if (chimera != null) {
+				if (commandLabel.compareTo("all") != 0) {
+					structList = new ArrayList<Structure>();
+					structList.add((Structure)userData);
+				} else {
+					structList = (ArrayList)userData;
+				}
+				ListIterator iter = structList.listIterator();
+				while (iter.hasNext()) {
+					Structure structure = (Structure)iter.next();
+					try {
+						chimera.close(structure);
+      		} catch (java.io.IOException e) {
+        		// Put up error panel
+        		JOptionPane.showMessageDialog(Cytoscape.getCurrentNetworkView().getComponent(),
+        				"Unable to close structure "+structure.name(), "Unable to close structure "+structure.name(),
+         	 			JOptionPane.ERROR_MESSAGE);
+        		return;
+					}
+					// Not open any more -- remove it
+					iter.remove();
+				}
+			}
+			if (mnDialog != null) mnDialog.modelChanged();
+		}
+
+		private void openAction(String commandLabel) {
 			if (openStructs == null) {
 				openStructs = new ArrayList();
 			}
       // Launch Chimera
       try {
         // Get a chimera instance
-        chimera = new Chimera();
+        chimera = new Chimera(Cytoscape.getCurrentNetworkView());
         chimera.launch();
       } catch (java.io.IOException e) {
         // Put up error panel
@@ -291,36 +314,40 @@ public class structureViz extends CytoscapePlugin
           			JOptionPane.ERROR_MESSAGE);
         return;
       }
-			ArrayList structList = null;
-			if (pdbStruct.compareTo("all") == 0) {
+			ArrayList<Structure>structList = null;
+			if (commandLabel.compareTo("all") == 0) {
 				structList = (ArrayList)userData;
 			} else {
-				structList = new ArrayList();
-				structList.add(pdbStruct);
+				structList = new ArrayList<Structure>();
+				structList.add((Structure)userData);
 			}
 
       // Send initial commands
 			Iterator iter = structList.iterator();
 			while (iter.hasNext()) {
-				String structFile = (String) iter.next();
-				openStructs.add(structFile);
+				Structure structure = (Structure) iter.next();
+				openStructs.add(structure);
 				try {
-					chimera.open(structFile, openStructs.indexOf(structFile));
+					chimera.open(structure);
       	} catch (java.io.IOException e) {
         	// Put up error panel
         	JOptionPane.showMessageDialog(Cytoscape.getCurrentNetworkView().getComponent(),
-        			"Unable to open structure "+structFile, "Unable to open structure "+structFile,
+        			"Unable to open structure "+structure.name(), "Unable to open structure "+structure.name(),
           			JOptionPane.ERROR_MESSAGE);
         	return;
 				}
 			}
 
-			// Finally, open up our navigator dialog
-			mnDialog = new modelNavigatorDialog(Cytoscape.getDesktop(), chimera);
-			mnDialog.pack();
-			mnDialog.setLocationRelativeTo(Cytoscape.getDesktop());
-			mnDialog.setVisible(true);
-    }
+			if (mnDialog == null) {
+				// Finally, open up our navigator dialog
+				mnDialog = new ModelNavigatorDialog(Cytoscape.getDesktop(), chimera);
+				mnDialog.pack();
+				mnDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+				mnDialog.setVisible(true);
+    	} else {
+				mnDialog.modelChanged();
+			}
+		}
   }
 
   public void propertyChange(PropertyChangeEvent evt) {
@@ -341,7 +368,7 @@ public class structureViz extends CytoscapePlugin
 			pmenu = new JPopupMenu();
 		}
 		JMenu menu = new JMenu("Structure Visualization");
-		menu.addMenuListener(new structureVizMenuListener());
+		menu.addMenuListener(new StructureVizMenuListener());
 		pmenu.add(menu);
 	}
 }

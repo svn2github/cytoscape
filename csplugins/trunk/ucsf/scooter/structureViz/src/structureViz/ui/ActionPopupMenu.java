@@ -49,14 +49,14 @@ import structureViz.model.ChimeraChain;
 
 import structureViz.Chimera;
 
-public class actionPopupMenu extends JPopupMenu {
+public class ActionPopupMenu extends JPopupMenu {
 	private Chimera chimeraObject;
 	private ArrayList modelList;
 	private ArrayList chainList;
 	private ArrayList residueList;
 	private JTree navTree;
 
-	public actionPopupMenu (Chimera co, JTree tree, ArrayList models,
+	public ActionPopupMenu (Chimera co, JTree tree, ArrayList models,
 													ArrayList chains, ArrayList residues) 
 	{
 		super("Chimera Actions");
@@ -66,20 +66,20 @@ public class actionPopupMenu extends JPopupMenu {
 		this.residueList = residues;
 		this.navTree = tree;
 
-		CreateGenericMenu();
+		createGenericMenu();
 		if (modelList.size() > 0) {
-			CreateModelMenu();
+			createModelMenu();
 		}
 		if (chainList.size() > 0) {
-			CreateChainMenu();
+			createChainMenu();
 		}
 		if (residueList.size() > 0) {
-			CreateResidueMenu();
+			createResidueMenu();
 		}
 	}
 
-	private void CreateGenericMenu() {
-		AddHeader("Generic Actions");
+	private void createGenericMenu() {
+		addHeader("Generic Actions");
 		JMenu submenu = null;
 		JMenu sub2 = null;
 		JMenuItem item = null;
@@ -87,65 +87,65 @@ public class actionPopupMenu extends JPopupMenu {
 		// Show
 		submenu = new JMenu("Show");
 		{
-			AddItem(submenu, "All", "show sel",0);
-			AddItem(submenu, "Backbone only", "show sel",0);
+			addItem(submenu, "All", "show sel",0);
+			addItem(submenu, "Backbone only", "show sel",0);
 		}
 		add(submenu);
 		// Hide
-		AddItem(null, "Hide", "~show sel",0);
+		addItem(null, "Hide", "~show sel",0);
 		// Color
 		submenu = new JMenu("Color");
 		{
-			AddItem(submenu, "By element", "color byelement sel",0);
-			AddColorMenu(submenu, "Residues", "color ", ",a sel");
-			AddColorMenu(submenu, "Ribbons", "color ", ",r sel");
-			AddColorMenu(submenu, "Surfaces", "color ", ",s sel");
-			AddColorMenu(submenu, "Labels", "color ", ",l sel");
+			addItem(submenu, "By element", "color byelement sel",0);
+			addColorMenu(submenu, "Residues", "color ", ",a sel");
+			addColorMenu(submenu, "Ribbons", "color ", ",r sel");
+			addColorMenu(submenu, "Surfaces", "color ", ",s sel");
+			addColorMenu(submenu, "Labels", "color ", ",l sel");
 		}
 		add(submenu);
 		// Depict
 		// Label
 		// Clear Selection
-		AddItem(null, "Clear selection", "~select", popupActionListener.CLEAR_SELECTION);
+		addItem(null, "Clear selection", "~select", PopupActionListener.CLEAR_SELECTION);
 	}
 
-	private void CreateModelMenu() { return; }
+	private void createModelMenu() { return; }
 
-	private void CreateChainMenu() { return; }
+	private void createChainMenu() { return; }
 
-	private void CreateResidueMenu() { return; }
+	private void createResidueMenu() { return; }
 
-	private void AddHeader(String header) {
+	private void addHeader(String header) {
 		add(new JMenuItem(header));
 		add(new JPopupMenu.Separator());
 	}
 
-	private void AddItem(JMenu menu, String text, String command, int postCommand) {
+	private void addItem(JMenu menu, String text, String command, int postCommand) {
 		JMenuItem item = new JMenuItem(text);
-		item.addActionListener(new popupActionListener(command,postCommand));
+		item.addActionListener(new PopupActionListener(command,postCommand));
 		if (menu == null)
 			this.add(item);
 		else
 			menu.add(item);
 	}
 
-	private void AddColorMenu(JMenu menu, String text, String prefix, String suffix) {
+	private void addColorMenu(JMenu menu, String text, String prefix, String suffix) {
 		String[] colorList = {"red", "orange red", "orange", "yellow"};
 		JMenu colorMenu = new JMenu(text);
 		for (int color=0; color < colorList.length; color++) {
-			AddItem(colorMenu, colorList[color], prefix+colorList[color]+suffix,0);
+			addItem(colorMenu, colorList[color], prefix+colorList[color]+suffix,0);
 		}
 		menu.add(colorMenu);
 	}
 
-	private class popupActionListener implements ActionListener {
+	private class PopupActionListener implements ActionListener {
 		String[] commandList;
 		public static final int NO_POST = 0;
 		public static final int CLEAR_SELECTION = 1;
 		public static final int CLOSE = 2;
 		int postCommand = NO_POST;
 
-		popupActionListener (String command) {
+		PopupActionListener (String command) {
 			commandList = command.split("\n");
 			if (commandList.length == 0) {
 				commandList = new String[1];
@@ -154,7 +154,7 @@ public class actionPopupMenu extends JPopupMenu {
 			this.postCommand = 0;
 		}
 
-		popupActionListener (String command, int postCommand) {
+		PopupActionListener (String command, int postCommand) {
 			commandList = command.split("\n");
 			if (commandList.length == 0) {
 				commandList = new String[1];

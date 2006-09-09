@@ -40,6 +40,7 @@ import java.util.Set;
 
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraResidue;
+import structureViz.model.Structure;
 
 /**
  * This class provides the implementation for the ChimeraModel, 
@@ -55,13 +56,15 @@ public class ChimeraModel {
 	private HashMap chains;
 	private ArrayList residues;
 	private HashMap residueMap;
+	private Structure structure;
 
-	public ChimeraModel (String name, int identifier) {
+	public ChimeraModel (String name, Structure structure) {
 		this.name = name;
-		this.identifier = identifier;
+		this.identifier = structure.modelNumber();
 		this.chains = new HashMap();
 		this.residues = new ArrayList();
 		this.residueMap = new HashMap();
+		this.structure = structure;
 	}
 
 	public void addResidue (ChimeraResidue residue) {
@@ -96,7 +99,9 @@ public class ChimeraModel {
 		return (ChimeraResidue)residueMap.get(index);
 	}
 
-	public int getModelNumber () { return identifier; }
+	public int getModelNumber () { return this.identifier; }
+
+	public Structure getStructure() { return this.structure; }
 
 	public String toString() { 
 		if (getChainCount() > 0) {
@@ -111,5 +116,4 @@ public class ChimeraModel {
 	public int getChainCount () { return chains.keySet().size(); }
 
 	public int getResidueCount () { return residues.size(); }
-
 }
