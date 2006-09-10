@@ -5,6 +5,7 @@
 package cytoscape.editor.event;
 
 import ding.view.DGraphView;
+import ding.view.DingCanvas;
 import ding.view.InnerCanvas;
 import edu.umd.cs.piccolo.nodes.PPath;
 import giny.model.Node;
@@ -12,19 +13,18 @@ import giny.view.NodeView;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,8 +32,11 @@ import javax.swing.JPanel;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
+import cytoscape.editor.impl.CyTextAnnotationField;
+import cytoscape.editor.impl.TextFieldListener;
 import cytoscape.editor.layout.LayoutRegion;
 import cytoscape.editor.layout.LayoutRegionManager;
 import cytoscape.view.CyNetworkView;
@@ -194,6 +197,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	Font font = new Font("Serif", Font.BOLD, 14);
 
 	Color transparentColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+	
+	// AJK: 09/10/06 BEGIN
+	//    for text annotations
+	CyTextAnnotationField _textAnnotationField;
+	JPanel _textAnnotationPanel;
+	// AJK: 09/10/06 END
+
 
 	/**
 	 * flag that indicates whether we are currently in the process of handling a
@@ -227,6 +237,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		this();
 		_caller = caller;
 		this.setView((DGraphView) view);
+		
 	}
 
 	/**
@@ -321,7 +332,46 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		else if (!onNode && !edgeStarted && (e.isControlDown())) {
 			System.out.println("AP: Mouse Pressed + ctrl!");
 			createNode(nextPoint);
-		} else {
+		} 
+		// AJK: 09/10/06 BEGIN
+		//     text annotation
+		else if (e.isAltDown())
+		{
+			// AJK: 09/10/06 BEGIN
+			//    for text annotation
+			// AJK: 05/22/05 BEGIN
+			_textAnnotationField = new CyTextAnnotationField (20); 
+			_textAnnotationField.setText("                         ");
+			_textAnnotationField.setCaretPosition(0);
+			_textAnnotationField.setEditable(true);
+			_textAnnotationField.addActionListener(this);
+			LabelFieldListener lbl = new LabelFieldListener();
+			lbl.setTextField(_textAnnotationField);
+			_textAnnotationField.getDocument().addDocumentListener(lbl);
+
+			_textAnnotationPanel = new JPanel();
+			_textAnnotationPanel.add(_textAnnotationField);
+			
+			// AJK: 09/10/06 END			
+			canvas.add(_textAnnotationPanel);
+			_textAnnotationPanel.setVisible(true);
+			_textAnnotationField.setVisible(true);
+			_textAnnotationField.setEditable(true);
+
+//			_textAnnotationField.setCaretPosition(cyNode.getIdentifier().length());
+
+			_textAnnotationField.requestFocus();
+			_textAnnotationField.selectAll();
+			canvas.repaint();
+			
+		}
+		
+		// AJK: 09/10/06 END
+		
+		else {
+			// AJK: 09/10/06 BEGIN
+			//    clicking anywhere on screen will clear textAnnotationField
+			clearTextAnnotationField();
 			// super.mousePressed(e);
 		}
 	}
@@ -428,6 +478,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	 */
 	public CyNode createNode(Point2D location) {
 		CyNode cn = null;
+		System.out.println("Adding node to caller: " + _caller + " at location " + location);
 		cn = _caller.addNode("node" + counter, this.getNodeAttributeName(),
 				this.getNodeAttributeValue(), location);
 		counter++;
@@ -546,6 +597,57 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		saveY1 = y1;
 		saveY2 = y2;
 	}
+	
+	
+	// AJK: 09/10/06 BEGIN
+	//     CyTextAnnotationFieldMethods
+	public void clearTextAnnotationField() {
+
+		_textAnnotationField.setVisible(false);
+		_textAnnotationPanel.setVisible(false);
+		if(canvas != null)
+		{
+			canvas.remove(_textAnnotationPanel);			
+		}
+
+	}
+
+
+	public void actionPerformed(ActionEvent evt) {
+		String text = _textAnnotationField.getText();
+		if (text != null) {
+			text = text.trim();
+			if (text != null) {
+				
+				JLabel label = new JLabel();
+				label.setText(text);
+				canvas.add(label);
+				clearTextAnnotationField();
+				canvas.repaint();
+			}
+		}
+	}
+
+	private class EnterKeyListener extends KeyAdapter {
+		// Although using keyTyped is the preferred way of doing things,
+		// the DELETE key is not supported.
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				clearTextAnnotationField();
+			}
+		}
+	}
+
+	protected class LabelFieldListener extends TextFieldListener {
+		protected void setDataObjValue(String field_val) {
+
+		}
+	}
+
+	
+	
+	
+	// AJK: 09/10/06 END
 
 	/**
 	 * 
@@ -697,7 +799,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addKeyListener(this);
-		handlerStarted = true;
+		handlerStarted = true;		
+		
 		// AP 8/21
 		// JComponent component = Cytoscape.getDesktop().getNetworkViewManager()
 		// .getComponentForView(Cytoscape.getCurrentNetworkView());
@@ -778,6 +881,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 	// APico 8.12.06 Adapted from RubberBand.java
 	void drawFigure() {
+		// AJK: 09/08/06 BEGIN
+		//   comment out drawFigure().  it is not used any more
+		/*
 		JLabel oldLabel = null;
 		BufferedImage image = new BufferedImage(WIDTH, HEIGHT,
 				BufferedImage.TYPE_INT_ARGB);
@@ -874,6 +980,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			layeredPane.repaint();
 
 		}
+		*/
+		// AJK: 09/08/06 END
 	}
 
 	// end drawFigure()
@@ -926,10 +1034,10 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			label.setBounds(0, 0, image.getWidth(), image.getHeight());
 			// add label to layered pane - at level 3
 
-			Cytoscape.getCurrentNetworkView().getComponent();
-			JComponent component = Cytoscape.getDesktop()
-					.getNetworkViewManager().getComponentForView(
-							Cytoscape.getCurrentNetworkView());
+//			Cytoscape.getCurrentNetworkView().getComponent();
+//			JComponent component = Cytoscape.getDesktop()
+//					.getNetworkViewManager().getComponentForView(
+//							Cytoscape.getCurrentNetworkView());
 			// AJK: 09/04/06 BEGIN
 			// add annotation Panel as a new layer?
 			// AJK: 09/04/06 BEGIN
@@ -958,11 +1066,27 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			// cyAnnPanel.add(label, new Integer(301));
 			// AJK: 09/03/06 END
 
-			label.setOpaque(false);
-			Container layeredPane = ((JInternalFrame) component)
-					.getLayeredPane();
-			Integer cyAnnotationLayer = cytoscape.view.InternalFrameLayeredComponent.ANNOTATION_LAYER;
-			layeredPane.add(label, cyAnnotationLayer);
+//			label.setOpaque(true);
+//			Container layeredPane = Cytoscape.getDesktop().getNetworkViewManager().
+//			    getInternalFrameComponent(Cytoscape.getCurrentNetworkView());
+////			Integer cyAnnotationLayer = cytoscape.view.InternalFrameLayeredComponent.ANNOTATION_LAYER;
+//			Integer cyAnnotationLayer = 401;  // TODO: need to get this on FOREGROUND LAYER and Drawing on FOREGROUND layer 
+//			layeredPane.add(label, cyAnnotationLayer);
+//			
+			DGraphView dnv = (DGraphView) Cytoscape.getCurrentNetworkView();
+			DingCanvas canvas = dnv.getCanvas(DGraphView.Canvas.NETWORK_CANVAS);
+			canvas.setBackground(new Color (200, 200, 250));
+			
+			DingCanvas foreground = dnv.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
+			foreground.setBackground(new Color (200, 200, 250));
+			
+			DingCanvas background = dnv.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+			background.setBackground(new Color (200, 200, 250));
+			
+			canvas.add(label);
+			canvas.repaint();
+			foreground.repaint();
+			background.repaint();
 
 			// AP 8.31
 			LayoutRegion region = new LayoutRegion(getRegionAttributeValue(),

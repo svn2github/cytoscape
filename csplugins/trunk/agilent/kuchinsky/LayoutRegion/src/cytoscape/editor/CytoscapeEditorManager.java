@@ -295,6 +295,7 @@ public abstract class CytoscapeEditorManager {
 			event = (NetworkEditEventAdapter) eventAdapterClass
 				.newInstance();
 			// AJK: 12/05/05 set caller for event class
+			System.out.println("Setting caller for event " + event + " to " + editor);
             event.set_caller(editor);
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();

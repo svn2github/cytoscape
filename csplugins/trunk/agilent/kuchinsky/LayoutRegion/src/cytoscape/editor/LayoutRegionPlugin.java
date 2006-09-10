@@ -57,20 +57,23 @@ public class LayoutRegionPlugin extends CytoscapePlugin implements
 //		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {   //added 8/17
 		
 		CyNetworkView newView = Cytoscape.getCurrentNetworkView();  //added 8/17
-			JComponent component = Cytoscape.getDesktop().getNetworkViewManager().getComponentForView(newView);
-//			canvas = ((DGraphView) newView).getCanvas();  //added 8/17
-			cyAnnPanel = new JPanel();
-//			canvas.add(cyAnnPanel);  //added 8/17
-			if (component instanceof JInternalFrame) {
-			JInternalFrame j = (JInternalFrame) component;
-			j.setGlassPane(cyAnnPanel); //mod 8/17
-//			canvas.setVisible(false); //added 8/17
-			cyAnnPanel.setOpaque(false);
-			cyAnnPanel.setBounds(component.getX(), component.getY(), component.getWidth(), component.getHeight());
-			j.getGlassPane().setBackground(Color.RED);
-			j.getGlassPane().setVisible(true);
-			System.out.println("AP: Glass pane set to: " + j.getGlassPane());
-			
+		BasicNetworkEditEventHandler handler = new BasicNetworkEditEventHandler();
+		handler.start((DGraphView) Cytoscape.getCurrentNetworkView());
+		
+		//			JComponent component = Cytoscape.getDesktop().getNetworkViewManager().getComponentForView(newView);
+////			canvas = ((DGraphView) newView).getCanvas();  //added 8/17
+//			cyAnnPanel = new JPanel();
+////			canvas.add(cyAnnPanel);  //added 8/17
+//			if (component instanceof JInternalFrame) {
+//			JInternalFrame j = (JInternalFrame) component;
+//			j.setGlassPane(cyAnnPanel); //mod 8/17
+////			canvas.setVisible(false); //added 8/17
+//			cyAnnPanel.setOpaque(false);
+//			cyAnnPanel.setBounds(component.getX(), component.getY(), component.getWidth(), component.getHeight());
+//			j.getGlassPane().setBackground(Color.RED);
+//			j.getGlassPane().setVisible(true);
+//			System.out.println("AP: Glass pane set to: " + j.getGlassPane());
+//			
 //			//test draw
 //			Graphics g = canvas.getGraphics();
 //		      g.setColor(Color.green);
@@ -82,15 +85,15 @@ public class LayoutRegionPlugin extends CytoscapePlugin implements
 		      	
 //			try {
 //			CytoscapeEditor cyAnnEd = CytoscapeEditorFactory.INSTANCE.getEditor("CyAnnotationEditor");
-			BasicNetworkEditEventHandler handler = new BasicNetworkEditEventHandler();
-			handler.start((DGraphView) Cytoscape.getCurrentNetworkView());
+
 //			}
 //			catch(InvalidEditorException ie){
 //			}
 //		}  //added 8/17
 			}
 			
-	}
+
+	// }
 	
 //	public InnerCanvas getCanvas() {
 //		return canvas;
@@ -118,13 +121,13 @@ public class LayoutRegionPlugin extends CytoscapePlugin implements
 
 			CytoscapeEditorManager.register(
 					"CyAnnotationEditor", 
-					"cytoscape.editor.event.BasicNetworkEditEventHandler", 
+					"cytoscape.editor.event.PaletteNetworkEditEventHandler", 
 					"CyAnnotationVisualStyle");
 				//Note: CyAnnotationVisualStyle is a duplication of default VisualStyle class in cytoscape.visual package.
 
 			CytoscapeEditorManager.initializeEditor(
 					"CyAnnotationEditor", 
-					"BasicNetworkEditEventHandler");
+					"PaletteNetworkEditEventHandler");
 		}	
 
 	}
