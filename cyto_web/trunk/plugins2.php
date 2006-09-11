@@ -488,7 +488,10 @@ Toronto, Canada
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://be-web.ucsd.edu/faculty/area/ideker_lab/plugins/GraphMerge/release/README.txt">Release Notes</a>]
+<br>
 					[<a href="http://be-web.ucsd.edu/faculty/area/ideker_lab/plugins/GraphMerge/release/GraphMerge.jar">Download</a>]
+<br>
+GraphMerge is included as a core plugin in Cytoscape 2.3 and later.
 				</td>
 			</tr>
 			<tr>
@@ -668,6 +671,44 @@ Toronto, Canada
 			<br>
 		</td>
 	</tr>
+
+                        <tr>
+                                <td colspan="4">
+                                        <hr>
+                                </td>
+                        </tr>
+
+        <tr>
+                <td width="20%" valign="top">
+                        <b>MONET Plugin</b>
+                        <br>
+                        <font size="-1">Version: 1.0
+                                <br>
+                                Release Date: September 6, 2006</font>
+                </td>
+                <td width="40%" valign="top">
+                MONET is a genetic interaction network inference algorithm based on Bayesian networks, which 
+enables reliable network inference with large-scale data(ex. microarray) and genome-scale network 
+inference from expression data. Network inference can be finished in reasonable time with parallel 
+processing technique with supercomputing center resources.
+                        <p>
+
+                        <a href="http://delsol.kaist.ac.kr/~monet/home/"> MONET homepage</a>
+
+                </td>
+                <td width="20%" valign="top">
+                                 Verified to work in 2.1, 2.2, 2.3.
+                                </td>
+                <td width="20%" valign="top">
+                        [<a href="http://delsol.kaist.ac.kr/~monet/home/downloads.html">Download Plugin</a>]
+                        <br>
+                </td>
+        </tr>
+
+
+
+
+
 	<tr>
     	<td colspan="4">
 			<hr>
