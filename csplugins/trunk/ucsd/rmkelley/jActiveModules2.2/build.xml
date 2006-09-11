@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build.xml - Build file for Sample Cytoscape Plugin -->
-<project name="Cytoscape" default="jar" basedir=".">
+<project name="Cytoscape" default="all" basedir=".">
 	
 	<!-- Name of Plug In -->
 	<!-- Change this to the name of your Plug In -->
@@ -12,7 +12,8 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="lib.dir" value="../../../../cytoscape/lib"/>
+	<property name="cyto.lib.dir" value="../../../../cytoscape/lib"/>
+	<property name="lib.dir" value="lib"/>
 	
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
@@ -27,6 +28,9 @@
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>	
 		<pathelement path="../../../../cytoscape/build/classes"/>
+		<fileset dir="${cyto.lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
@@ -44,6 +48,7 @@
   	<target name="clean" description="Removes all generated files.">
     		<delete dir="${build.dir}"/>
 		<delete dir="${dist.dir}"/>
+                <delete dir="${doc.dir}"/>
   	</target>
 	
 	<!-- Target to create Cytoscape Jar File  -->
@@ -53,7 +58,6 @@
 
         <!-- Target to create the javadoc information -->
         <target name="doc" depends="prepare">
-          <echo>${src.dir}</echo>
           <javadoc destdir="${doc.dir}" Private="yes">
             <fileset dir="${src.dir}" defaultexcludes="no"/>
           </javadoc>
@@ -78,5 +82,7 @@
 		</jar>
 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 	</target>
+
+   	<target name="all" depends="jar,doc" description="Creates plugin jar and API documentation"/> 
 
 </project>
