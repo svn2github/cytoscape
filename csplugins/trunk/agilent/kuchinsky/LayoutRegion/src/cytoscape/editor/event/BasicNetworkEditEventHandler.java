@@ -32,11 +32,9 @@ import javax.swing.JPanel;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.ding.DingNetworkView;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
 import cytoscape.editor.impl.CyTextAnnotationField;
-import cytoscape.editor.impl.TextFieldListener;
 import cytoscape.editor.layout.LayoutRegion;
 import cytoscape.editor.layout.LayoutRegionManager;
 import cytoscape.view.CyNetworkView;
@@ -340,29 +338,35 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			// AJK: 09/10/06 BEGIN
 			//    for text annotation
 			// AJK: 05/22/05 BEGIN
-			_textAnnotationField = new CyTextAnnotationField (20); 
-			_textAnnotationField.setText("                         ");
-			_textAnnotationField.setCaretPosition(0);
-			_textAnnotationField.setEditable(true);
-			_textAnnotationField.addActionListener(this);
-			LabelFieldListener lbl = new LabelFieldListener();
-			lbl.setTextField(_textAnnotationField);
-			_textAnnotationField.getDocument().addDocumentListener(lbl);
-
-			_textAnnotationPanel = new JPanel();
-			_textAnnotationPanel.add(_textAnnotationField);
+			String textAnnotation = getTextAnnotation();
+			canvas.getGraphics().drawString(textAnnotation, e.getX(), e.getY());
+			JLabel textLabel = new JLabel();
+			textLabel.setText(textAnnotation);
+			canvas.add(textLabel);
 			
-			// AJK: 09/10/06 END			
-			canvas.add(_textAnnotationPanel);
-			_textAnnotationPanel.setVisible(true);
-			_textAnnotationField.setVisible(true);
-			_textAnnotationField.setEditable(true);
-
-//			_textAnnotationField.setCaretPosition(cyNode.getIdentifier().length());
-
-			_textAnnotationField.requestFocus();
-			_textAnnotationField.selectAll();
-			canvas.repaint();
+//			_textAnnotationField = new CyTextAnnotationField (20); 
+//			_textAnnotationField.setText("                         ");
+//			_textAnnotationField.setCaretPosition(0);
+//			_textAnnotationField.setEditable(true);
+//			_textAnnotationField.addActionListener(this);
+//			LabelFieldListener lbl = new LabelFieldListener();
+//			lbl.setTextField(_textAnnotationField);
+//			_textAnnotationField.getDocument().addDocumentListener(lbl);
+//
+//			_textAnnotationPanel = new JPanel();
+//			_textAnnotationPanel.add(_textAnnotationField);
+//			
+//			// AJK: 09/10/06 END			
+//			canvas.add(_textAnnotationPanel);
+//			_textAnnotationPanel.setVisible(true);
+//			_textAnnotationField.setVisible(true);
+//			_textAnnotationField.setEditable(true);
+//
+////			_textAnnotationField.setCaretPosition(cyNode.getIdentifier().length());
+//
+//			_textAnnotationField.requestFocus();
+//			_textAnnotationField.selectAll();
+//			canvas.repaint();
 			
 		}
 		
@@ -371,7 +375,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		else {
 			// AJK: 09/10/06 BEGIN
 			//    clicking anywhere on screen will clear textAnnotationField
-			clearTextAnnotationField();
+//			clearTextAnnotationField();
 			// super.mousePressed(e);
 		}
 	}
@@ -638,11 +642,11 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		}
 	}
 
-	protected class LabelFieldListener extends TextFieldListener {
-		protected void setDataObjValue(String field_val) {
-
-		}
-	}
+//	protected class LabelFieldListener extends TextFieldListener {
+//		protected void setDataObjValue(String field_val) {
+//
+//		}
+//	}
 
 	
 	
@@ -1148,6 +1152,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 				JOptionPane.PLAIN_MESSAGE, null, possibilities, "Cytosol");
 		return s;
 	}
+	
+	// AJK: 09/10/06 BEGIN
+	//    prompt for text annotation
+	public String getTextAnnotation() {
+		return(JOptionPane.showInputDialog("Please enter a value for text annotation")); 
+	}
+	
+	// AJK: 09/11/06
 
 	// More Variables
 	protected static int count = 0;
