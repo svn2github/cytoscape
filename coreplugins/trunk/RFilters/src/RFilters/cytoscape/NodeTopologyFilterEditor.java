@@ -47,7 +47,7 @@ public class NodeTopologyFilterEditor
   protected String DEFAULT_FILTER_NAME = "NodeTopology: ";
   protected Integer DEFAULT_DISTANCE = new Integer(1);
   protected Integer DEFAULT_COUNT = new Integer(1);
-  protected int DEFAULT_FILTER = -1; 
+  protected int DEFAULT_FILTER = 0; // this is the SelectAllFilter
   
   protected Class NODE_CLASS;
   protected Class EDGE_CLASS;
