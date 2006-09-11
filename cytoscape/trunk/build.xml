@@ -422,7 +422,7 @@
 		<pathconvert property="manifest.classpath.string"
 			     pathsep=" ">
 			<path refid="manifest.classpath"/>
-			<mapper type="regexp" from="${lib.dir}/(.*)" to="lib/\1"/>
+			<regexpmapper from="${lib.dir}/(.*)" to="lib/\1" handledirsep="yes"/>
 		</pathconvert>
 		<manifest file="${manifest.file}">
 			<attribute name="Main-Class" value="cytoscape.CyMain"/>
@@ -638,7 +638,9 @@
             ---------------------------------------
         	</echo>
 
-		<copy file="docs/INSTALL.txt" todir="${release.dir}" />
+	        <filter token="version" value="${version}"/>
+		<copy file="docs/INSTALL.txt" todir="${release.dir}" filtering="true"/>
+
 		<copy file="docs/LICENSE.txt" todir="${release.dir}" />
 		<copy file="docs/LICENSE.html" todir="${release.dir}" />
 		<copy file="docs/manual.pdf" todir="${release.dir}" />
