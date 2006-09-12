@@ -18,7 +18,6 @@
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
-	<property name="dist.dir" value="dist"/>
         <property name="doc.dir" value="doc"/>
 	
 	<!-- Global "magic" property for <javac> -->
@@ -40,14 +39,12 @@
   	<target name="prepare">
     		<mkdir dir="${build.dir}"/>
     		<mkdir dir="${build.classes}"/>
-		<mkdir dir="${dist.dir}"/>
                 <mkdir dir="${doc.dir}"/>
   	</target>
 
 	<!--  Target to clean out all directories -->
   	<target name="clean" description="Removes all generated files.">
     		<delete dir="${build.dir}"/>
-		<delete dir="${dist.dir}"/>
                 <delete dir="${doc.dir}"/>
   	</target>
 	
