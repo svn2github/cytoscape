@@ -694,6 +694,9 @@ processing technique with supercomputing center resources.
                         <p>
 
                         <a href="http://delsol.kaist.ac.kr/~monet/home/"> MONET homepage</a>
+                        <p>
+			This product includes software developed by the 
+			<a href="http://www.apache.org">Apache Software Foundation</a>.
 
                 </td>
                 <td width="20%" valign="top">
