@@ -34,13 +34,14 @@ public class Tutorial1TestSwing extends TestCase {
 		Runnable r = new Runnable() {
 			public void run() {
 				try {
-				String[] args = {};
-				application = new CyMain(args);
+					String[] args = {"-p", "plugins/core/AutomaticLayout.jar"};
+					//String[] args = {};
+					application = new CyMain(args);
+					//LayoutPlugin layoutPlugin = new LayoutPlugin();
 				} catch (Exception e) { e.printStackTrace(); }
 			}
 		};
 		SwingUtilities.invokeAndWait(r);
-
 
 		robot = new Robot();
 		TestUtility.waitForCalm();
@@ -77,6 +78,15 @@ public class Tutorial1TestSwing extends TestCase {
 		scenario.setTestSetting("OPEN_NETWORK_FILE","FILE_TO_OPEN","RUAL.subset.sif");
 		EventPlayer player = new EventPlayer(scenario);
 		player.run(robot, "OPEN_NETWORK_FILE");
+		//scenario.setTestSetting("APPLY_SPRING_LAYOUT");
+		//scenario.setTestSetting("APPLY_SPRING_LAYOUT","FILE_TO_OPEN","RUAL.subset.sif");
+		//player = new EventPlayer(scenario);
+		//player.run(robot, "APPLY_SPRING_LAYOUT");
+		//player.run(robot, "SELECT_EDGES");
+		scenario.setTestSetting("SELECT_NODE_BY_NAME","NODE_NAME","7157");
+		player = new EventPlayer(scenario);
+		player.run(robot, "SELECT_NODE_BY_NAME");
+		player.run(robot, "SELECT_FIRST_NEIGHBORS");
 
 		// write assertion code here.
 	//	Set s = Cytoscape.getNetworkSet();
