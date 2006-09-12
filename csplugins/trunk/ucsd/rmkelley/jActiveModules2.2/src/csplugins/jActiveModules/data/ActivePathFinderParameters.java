@@ -5,6 +5,11 @@
 // $Author$
 //-----------------------------------------------------------------------------------
 package csplugins.jActiveModules.data;
+
+import java.util.Collection;
+import java.util.Set;
+import java.util.HashSet;
+
 //---------------------------------------------------------------------------------------
 public class ActivePathFinderParameters {
 
@@ -34,6 +39,9 @@ public class ActivePathFinderParameters {
 	boolean greedySearch = true;
 	boolean enableFiltering = true;
 	boolean run = false;
+
+	Set expressionAttrs = new HashSet();
+
 	//boolean enableSpokePenalty = false;
 	
 	// ---------------------------------------------------------------------------------------
@@ -91,6 +99,7 @@ public class ActivePathFinderParameters {
 		this.enableFiltering = oldAPFP.getEnableFiltering();
 		this.enableMaxDepth = oldAPFP.getEnableMaxDepth();
 		this.run = oldAPFP.getRun();
+		setExpressionAttributes(oldAPFP.getExpressionAttributes());
 		
 	} // copy ctor
 
@@ -271,6 +280,24 @@ public class ActivePathFinderParameters {
 
 	public void setMaxThreads(int maxThreads) {
 		this.maxThreads = maxThreads;
+	}
+
+	public Collection getExpressionAttributes() {
+		return expressionAttrs;
+	}
+
+	public void setExpressionAttributes(Collection names) {
+		expressionAttrs.clear();
+		expressionAttrs.addAll(names);
+	}
+
+	public void addExpressionAttribute(String name) {
+		if ( !expressionAttrs.contains(name) )
+			expressionAttrs.add(name);
+	}
+
+	public void removeExpressionAttribute(String name) {
+		expressionAttrs.remove(name); 
 	}
 
 	public String toString() {

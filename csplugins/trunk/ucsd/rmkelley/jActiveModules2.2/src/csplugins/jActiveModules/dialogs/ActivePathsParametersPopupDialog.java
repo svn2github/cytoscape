@@ -33,186 +33,18 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.BoxLayout;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import java.util.Arrays;
+
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-//-----------------------------------------------------------------------------
-//public class ActivePathsParametersPopupDialog extends JDialog {
-//	public ActivePathsParametersPopupDialog(
-//	                          Frame parentFrame, String title, 
-//				  ActivePathFinderParameters incomingApfParams)
-//	{
-//	  super (parentFrame, true);
-//	  
-//	  /*
-//	   * Create and add a tabbed pane to this dialog box
-//	   */
-//	  JTabbedPane tabbedPane = new JTabbedPane();
-//	  this.getContentPane().add(tabbedPane,BorderLayout.CENTER);
-//	  
-//	  /*
-//	   * Set up the tabs in the tabbed pane
-//	   */
-//	  tabbedPane.add(SearchOptionsPanel.LABEL,new SearchOptionsPanel(incomingApfParams));
-//	  tabbedPane.add(ScoringOptionsPanel.LABEL,new ScoringOptionsPanel(incomingApfParams));
-//	  tabbedPane.add(CutoffOptionsPanel.LABEL,new CutoffOptionsPanel(incomingApfParams));
-//	  
-//	  JButton ok = new JButton("OK");
-//	  ok.addActionListener(new ActionListener(){
-//		 public void actionPerformed(ActionEvent ae){
-//			 ActivePathsParametersPopupDialog.this.dispose();
-//		 }
-//	  });
-//	  this.getContentPane().add(ok,BorderLayout.SOUTH);
-//	}
-//
-//}
-//
-//class SearchOptionsPanel extends JPanel{
-//	public static final String LABEL = "Search Options";
-//	JTextField searchDepth,maxDepth;
-//	JCheckBox searchFromNodesBox;
-//	ActivePathFinderParameters incomingApfParams;
-//	public SearchOptionsPanel(ActivePathFinderParameters incomingApfParams){
-//		System.err.println("In the search options constructor");
-//		this.incomingApfParams = incomingApfParams;
-//	    this.setLayout (new GridLayout (3,2));
-//	    /*
-//	     * Initialize and provide logic for text field which determines the depth
-//	     * of the search.
-//	     */
-//	    searchDepth = new JTextField (Integer.toString(incomingApfParams.getSearchDepth()));
-//	    searchDepth.addKeyListener(new KeyAdapter(){
-//			public void keyReleased(KeyEvent ke) {
-//				try{
-//					String text = searchDepth.getText();
-//					if(text.length() == 0){
-//						return;
-//					}
-//	    			SearchOptionsPanel.this.incomingApfParams.setSearchDepth(Integer.parseInt(text));
-//	    		}catch(Exception e){
-//	    			searchDepth.setText(Integer.toString(SearchOptionsPanel.this.incomingApfParams.getSearchDepth()));
-//	    		}			
-//			}});
-//	    
-//
-//	    /*
-//	     * Initalize and provide logic for field which determine if we seed from
-//	     * selected nodes
-//	     */
-//	    searchFromNodesBox = new JCheckBox ("Search from selected nodes?",incomingApfParams.getSearchFromNodes());
-//	    searchFromNodesBox.addChangeListener(new ChangeListener(){
-//			public void stateChanged(ChangeEvent e) {
-//				System.err.println("Setting search from nodes stuff");
-//				SearchOptionsPanel.this.incomingApfParams.setSearchFromNodes(searchFromNodesBox.isSelected());
-//			}  	
-//	    });
-//	  
-//	    /*
-//	     * Initialize and provide logic for text field which determine the maximum
-//	     * depth of the search
-//	     */
-//	    maxDepth = new JTextField (Integer.toString(incomingApfParams.getMaxDepth()));
-//	    maxDepth.addKeyListener(new KeyAdapter(){
-//			public void keyReleased(KeyEvent ke) {
-//				try{
-//					String text = maxDepth.getText();
-//					if(text.length() == 0){
-//						return;
-//					}
-//	    			SearchOptionsPanel.this.incomingApfParams.setMaxDepth(Integer.parseInt(text));
-//	    		}catch(Exception e){
-//	    			searchDepth.setText(Integer.toString(SearchOptionsPanel.this.incomingApfParams.getSearchDepth()));
-//	    		}
-//				
-//			}});
-//	    
-//	    this.add(new JLabel("Search depth: "));
-//	    this.add(searchDepth);
-//	    this.add(new JLabel("Max Depth: "));
-//	    this.add(maxDepth);
-//	    this.add(searchFromNodesBox);
-//	
-//	}
-//}
-//
-//class ScoringOptionsPanel extends JPanel{
-//	public static final String LABEL = "Scoring Options";
-//	JCheckBox normalizeBox,regionalBox;
-//	ActivePathFinderParameters incomingApfParams;
-//	
-//	public ScoringOptionsPanel(ActivePathFinderParameters incomingApfParams){
-//		this.incomingApfParams = incomingApfParams;
-//		normalizeBox = new JCheckBox ("Normalize network scores", incomingApfParams.getMCboolean());
-//	    normalizeBox.addChangeListener(new ChangeListener(){
-//			public void stateChanged(ChangeEvent e) {
-//				ScoringOptionsPanel.this.incomingApfParams.setMCboolean(normalizeBox.isSelected());
-//			}
-//	    });
-//	    
-//	    regionalBox = new JCheckBox("Regional Scoring",incomingApfParams.getRegionalBoolean());
-//		regionalBox.addChangeListener(new ChangeListener(){
-//			public void stateChanged(ChangeEvent e){
-//				ScoringOptionsPanel.this.incomingApfParams.setRegionalBoolean(regionalBox.isSelected());
-//			}
-//		});
-//		
-//		this.setLayout (new GridLayout (3,2));
-//		this.add(regionalBox);
-//		this.add(normalizeBox);
-//	}
-//}
-//
-//class CutoffOptionsPanel extends JPanel{
-//	public static final String LABEL = "Result Filtering";
-//	JTextField numberPathsField,overlapThresholdField;
-//	ActivePathFinderParameters incomingApfParams;
-//	public CutoffOptionsPanel(ActivePathFinderParameters incomingApfParams){
-//		this.incomingApfParams = incomingApfParams;
-//		numberPathsField = new JTextField(Integer.toString(incomingApfParams.getNumberOfPaths()));
-//		numberPathsField.addKeyListener(new KeyAdapter(){
-//				public void keyReleased(KeyEvent ke) {
-//					try{
-//						String text = numberPathsField.getText();
-//						if(text.length() == 0){
-//							return;
-//						}
-//		    			CutoffOptionsPanel.this.incomingApfParams.setNumberOfPaths(Integer.parseInt(text));
-//		    		}catch(Exception e){
-//		    			numberPathsField.setText(Integer.toString(CutoffOptionsPanel.this.incomingApfParams.getSearchDepth()));
-//		    		}					
-//				}});
-//		overlapThresholdField = new JTextField(Double.toString(incomingApfParams.getOverlapThreshold()));
-//		overlapThresholdField.addKeyListener(new KeyAdapter(){
-//			public void keyReleased(KeyEvent ke){
-//				try{
-//					String text = overlapThresholdField.getText();
-//					if(text.length() == 0){
-//						return;
-//					}
-//					CutoffOptionsPanel.this.incomingApfParams.setOverlapThreshold(Double.parseDouble(text));
-//				}catch(Exception e){
-//					overlapThresholdField.setText(Double.toString(CutoffOptionsPanel.this.incomingApfParams.getOverlapThreshold()));
-//				}
-//			}
-//		});
-//		this.setLayout(new GridLayout(4,2));
-//		this.add(new JLabel("Number of Results"));
-//		this.add(numberPathsField);
-//		this.add(new JLabel("Overlap Threshold"));
-//		this.add(overlapThresholdField);
-//	}
-//}
-//
-//class FilteringOptionsPanel extends JPanel{
-//	public static final String LABEL = "Result Filtering";
-//	public FilteringOptionsPanel(ActivePathFinderParameters incomingApfParams){
-//		System.err.println("In the filtering options constructor");
-//	}
-//}
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 
 public class ActivePathsParametersPopupDialog extends JDialog {
 	JTextField readout;
@@ -275,6 +107,8 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 	JPanel searchContentPanel;
 	JPanel currentContentPanel;
 
+	JPanel attrSelectPanel;
+
 	// -----------------------------------------------------------------------------
 	public ActivePathsParametersPopupDialog(// ActivePathsParametersPopupDialogListener
 			// listener,
@@ -295,37 +129,46 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 		readout.addFocusListener(readoutListener);
 
 		JPanel mainPanel = new JPanel();
-		GridBagLayout gridbag = new GridBagLayout();
-		GridBagConstraints c = new GridBagConstraints();
-		mainPanel.setLayout(gridbag);
+		//GridBagLayout gridbag = new GridBagLayout();
+		//GridBagConstraints c = new GridBagConstraints();
+		mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
 
 		createExtsController();
 		createAnnealContentPanel();
 		createSearchContentPanel();
 
-		c.fill = GridBagConstraints.NONE;
-		c.weightx = 1.0;
-		c.ipadx = 10;
-		c.ipady = 10;
+		//c.fill = GridBagConstraints.NONE;
+		//c.weightx = 1.0;
+		//c.ipadx = 10;
+		//c.ipady = 10;
 
-		c.gridx = 0;
-		c.gridy = 6;
-		c.anchor = GridBagConstraints.NORTH;
-		gridbag.setConstraints(generalExtPanel, c);
+		//c.gridx = 0;
+		//c.gridy = 6;
+		//c.anchor = GridBagConstraints.NORTH;
+		//gridbag.setConstraints(generalExtPanel, c);
 		mainPanel.add(generalExtPanel);
 
+		createAttrSelectionPanel();
+		if ( attrSelectPanel != null ) {
+		//	c.gridx = 0;
+		//	c.gridy = 20;
+		//	c.anchor = GridBagConstraints.CENTER;
+		//	gridbag.setConstraints(attrSelectPanel, c);
+			mainPanel.add(attrSelectPanel);
+		}
+
 		createAnnealSearchController();
-		c.gridx = 1;
-		c.gridy = 6;
-		c.gridwidth = GridBagConstraints.REMAINDER; // end row
-		c.anchor = GridBagConstraints.CENTER;
-		gridbag.setConstraints(annealSearchControlPanel, c);
+		//c.gridx = 1;
+		//c.gridy = 6;
+		//c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		//c.anchor = GridBagConstraints.CENTER;
+		//gridbag.setConstraints(annealSearchControlPanel, c);
 		mainPanel.add(annealSearchControlPanel);
-		c.gridx = 0;
-		c.gridy = 10;
-		c.gridwidth = GridBagConstraints.REMAINDER; // end row
-		c.anchor = GridBagConstraints.CENTER;
-		gridbag.setConstraints(annealSearchContentPanel, c);
+		//c.gridx = 0;
+		//c.gridy = 10;
+		//c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		//c.anchor = GridBagConstraints.CENTER;
+		//gridbag.setConstraints(annealSearchContentPanel, c);
 		mainPanel.add(annealSearchContentPanel);
 
 		// /////////////////////////////////////////
@@ -342,17 +185,48 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 		// buttonPanel.add (saveButton, BorderLayout.CENTER);
 		buttonPanel.add(dismissButton, BorderLayout.EAST);
 
-		c.gridx = 0;
-		c.gridy = 11;
-		c.gridwidth = GridBagConstraints.REMAINDER; // end row
-		c.anchor = GridBagConstraints.CENTER;
-		gridbag.setConstraints(buttonPanel, c);
+		//c.gridx = 0;
+		//c.gridy = 11;
+		//c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		//c.anchor = GridBagConstraints.CENTER;
+		//gridbag.setConstraints(buttonPanel, c);
 		mainPanel.add(buttonPanel);
 
 		// /////////////////////////////////////////
 
 		setContentPane(mainPanel);
 	} // PopupDialog ctor
+
+	private void createAttrSelectionPanel() {
+		AttrSelectListener attrListen = new AttrSelectListener();
+		attrSelectPanel = new JPanel();
+		attrSelectPanel.setLayout( new BoxLayout(attrSelectPanel, BoxLayout.Y_AXIS));
+
+		Border border = BorderFactory.createLineBorder(Color.black);
+		Border titledBorder = BorderFactory.createTitledBorder(border,
+				"Attribute Selection", TitledBorder.CENTER,
+				TitledBorder.DEFAULT_POSITION);
+		attrSelectPanel.setBorder(titledBorder);
+	
+		JLabel desc = new JLabel("Select the expression attributes for analysis");
+		attrSelectPanel.add(desc);
+
+		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+		String[] names = nodeAttrs.getAttributeNames();
+		Arrays.sort(names);
+		int count = 0;
+		for ( int i = 0; i < names.length; i++ ) {
+			if ( nodeAttrs.getType( names[i] ) == CyAttributes.TYPE_FLOATING ) {
+				JCheckBox j = new JCheckBox(names[i],false);
+				attrSelectPanel.add( j ); 
+				j.addItemListener(attrListen);
+				count++;
+			}
+		}
+
+		if ( count <= 0 )
+			attrSelectPanel = null;
+	}
 
 	private void createAnnealContentPanel() {
 		annealContentPanel = new JPanel();
@@ -905,14 +779,17 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 			apfParams.setToQuench(jcb.isSelected());
 		}
 	}
-	// class EdgesCheckListener implements ItemListener {
-	// public void itemStateChanged(ItemEvent e) {
-	// JCheckBox jcb = (JCheckBox) e.getItem();
-	// apfParams.setEdgesNotNodes(jcb.isSelected());
-	// }
-	// }
 
-	// -----------------------------------------------------------------------------
+	class AttrSelectListener implements ItemListener {
+		public void itemStateChanged(ItemEvent e) {
+			JCheckBox jcb = (JCheckBox) e.getItem();
+			if ( jcb.isSelected() )
+				apfParams.addExpressionAttribute(jcb.getText());
+			else
+				apfParams.removeExpressionAttribute(jcb.getText());
+		}
+	}
+
 	class HFListener implements ItemListener, FocusListener {
 		public void focusGained(FocusEvent e) {
 			// System.out.println("gained");
@@ -1291,35 +1168,6 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 		}
 
 	} // IntervalListener
-
-	// -----------------------------------------------------------------------------
-	// public class ApplyAction extends AbstractAction {
-	// ApplyAction () {
-	// super ("");
-	// }
-
-	// public void actionPerformed (ActionEvent e) {
-	// listener.setActivePathsParameters (apfParams);
-	// ActivePathsParametersPopupDialog.this.dispose ();
-	// }
-
-	// } // QuitAction
-	// -----------------------------------------------------------------------------
-	// public class SaveAction extends AbstractAction {
-	// SaveAction () {
-	// super ("");
-	// }
-
-	// public void actionPerformed (ActionEvent e) {
-	// listener.setActivePathsParameters (apfParams);
-	// Object[] options = { "OK"};
-	// JOptionPane.showOptionDialog(null,
-	// "Parameters Successfully Saved.",
-	// "Data Saved.",
-	// JOptionPane.DEFAULT_OPTION,
-	// JOptionPane.PLAIN_MESSAGE,
-	// null, options, options[0]);
-	// }
 
 	// } // QuitAction
 	// -----------------------------------------------------------------------------
