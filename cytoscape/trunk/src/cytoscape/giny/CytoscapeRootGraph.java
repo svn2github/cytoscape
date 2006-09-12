@@ -38,10 +38,11 @@
 
 package cytoscape.giny;
 
-import giny.model.*;
-import cytoscape.*;
-import coltginy.*;
-import cern.colt.map.*;
+import giny.model.Node;
+import giny.model.Edge;
+import giny.model.RootGraph;
+import cytoscape.CyNode; 
+import cytoscape.CyNetwork; 
 import java.util.Collection;
 
 public interface CytoscapeRootGraph extends RootGraph {
