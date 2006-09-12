@@ -46,7 +46,6 @@ import giny.model.Node;
 import giny.model.Edge;
 
 import fing.model.*;
-import cern.colt.map.*;
 
 import cytoscape.*;
 import cytoscape.giny.*;
