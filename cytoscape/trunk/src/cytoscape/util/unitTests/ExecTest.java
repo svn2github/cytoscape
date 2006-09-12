@@ -51,6 +51,8 @@ import cytoscape.util.Exec;
 import cytoscape.unitTests.AllTests;
 
 import java.util.Enumeration;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 //---------------------------------------------------------------------------
 public class ExecTest extends TestCase {
 
@@ -63,6 +65,11 @@ public ExecTest (String name)
 //---------------------------------------------------------------------------
 public void noTestBasic () 
 {
+  if ( !canRun() ) {
+  	System.out.println("Skipping test because of OS related issues.");
+  	return;
+  }
+
   AllTests.standardOut ("testBasic");
 
   String [] cmd = new String [2];
@@ -101,6 +108,11 @@ public void noTestBasic ()
 //---------------------------------------------------------------------------
 public void testBasicWithThreadedExec () throws Exception
 {
+  if ( !canRun() ) {
+  	System.out.println("Skipping test because of OS related issues.");
+  	return;
+  }
+
   AllTests.standardOut ("testBasicWithThreadedExec");
 
   String [] cmd = new String [2];
@@ -120,6 +132,11 @@ public void testBasicWithThreadedExec () throws Exception
 //---------------------------------------------------------------------------
 public void testBasicWithThreadedExec2 () throws Exception
 {
+  if ( !canRun() ) {
+  	System.out.println("Skipping test because of OS related issues.");
+  	return;
+  }
+
   AllTests.standardOut ("testBasicWithThreadedExec2");
 
   String [] cmd = new String [2];
@@ -139,6 +156,11 @@ public void testBasicWithThreadedExec2 () throws Exception
 //---------------------------------------------------------------------------
 public void notestBasicInBackground () 
 {
+  if ( !canRun() ) {
+  	System.out.println("Skipping test because of OS related issues.");
+  	return;
+  }
+
   AllTests.standardOut ("testBasicInBackground");
 
   String [] cmd = new String [1];
@@ -177,6 +199,11 @@ public void notestBasicInBackground ()
 //---------------------------------------------------------------------------
 public void notestUsingStandardInput () 
 {
+  if ( !canRun() ) {
+  	System.out.println("Skipping test because of OS related issues.");
+  	return;
+  }
+
   AllTests.standardOut ("testUsingStandardInput");
 
   String [] cmd = {"cat"};
@@ -214,6 +241,11 @@ public void notestUsingStandardInput ()
 //---------------------------------------------------------------------------
 public void disabled_testRunNetscape ()
 {
+  if ( !canRun() ) {
+  	System.out.println("Skipping test because of OS related issues.");
+  	return;
+  }
+
   String [] cmd = new String [2];
   cmd [0] = "/users/pshannon/data/human/jdrf/web";
   cmd [1] = "http://sewardpark.net";
@@ -248,6 +280,15 @@ public void disabled_testRunNetscape ()
   AllTests.standardOut (fullResult);
 
 }
+
+private boolean canRun() {
+	String os = System.getProperty("os.name");
+	if ( Pattern.compile("\\.*windows\\.*",Pattern.CASE_INSENSITIVE).matcher(os).matches() )
+		return false;
+	else
+		return true;
+}
+
 //---------------------------------------------------------------------------
 public static void main (String[] args) 
 {
