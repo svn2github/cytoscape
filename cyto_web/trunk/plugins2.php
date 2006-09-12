@@ -697,6 +697,9 @@ processing technique with supercomputing center resources.
                         <p>
 			This product includes software developed by the 
 			<a href="http://www.apache.org">Apache Software Foundation</a>.
+                        <p>
+			Released by: <a href="http://biosoft.kaist.ac.kr/">BISL Lab</a>, Department of
+			BioSystems, Korea Advanced Institute of Science and Technology.
 
                 </td>
                 <td width="20%" valign="top">
