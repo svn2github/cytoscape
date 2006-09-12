@@ -55,10 +55,8 @@ import cytoscape.data.*;
 import cytoscape.util.intr.*;
 
 /**
- * ColtCyNetwork extends the GraphPerspective implementation found 
- * in the coltginy pacakge of the GINY distribution.
  *
- * ColtCyNetwork provides an implementation of the CyNetwork interface,
+ * FinhCyNetwork provides an implementation of the CyNetwork interface,
  * as well as the GraphPerspective inteface, and also provides the 
  * functionality formally provided by GraphObjAttributes.
  *
