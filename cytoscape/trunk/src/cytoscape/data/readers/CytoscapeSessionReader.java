@@ -54,8 +54,11 @@ import cytoscape.generated.Network;
 import cytoscape.generated.NetworkFrame;
 import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
+import cytoscape.generated.Ontology;
+import cytoscape.generated.OntologyServer;
 import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
+import cytoscape.generated.Server;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import java.awt.Component;
@@ -64,6 +67,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -267,6 +271,10 @@ public class CytoscapeSessionReader {
 		unzipSessionFromURL();
 		if (session.getSessionState().getDesktop() != null) {
 			restoreDesktopState();
+		}
+		
+		if(session.getSessionState().getServer() != null) {
+			restoreOntologyServerStatus();
 		}
 		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null,
@@ -673,5 +681,22 @@ public class CytoscapeSessionReader {
 	 */
 	public String getCysessionNote() {
 		return session.getSessionNote();
+	}
+	
+	/**
+	 * Restore list of ontology servers
+	 * @throws MalformedURLException 
+	 *
+	 */
+	private void restoreOntologyServerStatus() throws MalformedURLException {
+		Map<String, URL> newMap = new HashMap<String, URL>();
+		
+		List<Ontology> servers = session.getSessionState().getServer().getOntologyServer().getOntology();
+		for(Ontology server: servers) {
+			System.out.println("============== " + server.getName());
+			newMap.put(server.getName(), new URL(server.getHref()));
+		}
+		Cytoscape.getOntologyServer().setOntologySources(newMap);
+		
 	}
 }
