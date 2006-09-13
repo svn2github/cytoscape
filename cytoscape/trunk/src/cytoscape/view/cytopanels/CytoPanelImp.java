@@ -403,6 +403,17 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	}
 
 	/**
+	 * Returns the component at index.
+	 *
+	 * @return component at the given index.
+	 */
+	public Component getComponentAt(int index){
+
+		return tabbedPane.getComponentAt(index);
+	}
+	
+	
+	/**
 	 * Returns the currently selected index.
 	 *
 	 * @return index Currently selected index.
