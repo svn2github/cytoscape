@@ -61,6 +61,7 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 	private boolean status;
 	private static final int EXIT = 1;
 	private static final int REFRESH = 2;
+	private static ArrayList selectedList = null;
 
 	// Dialog components
 	private JLabel titleLabel;
@@ -73,6 +74,7 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		chimeraObject = object;
 		initComponents();
 		status = false;
+		selectedList = new ArrayList();
 	}
 
 	public void modelChanged() {
@@ -119,8 +121,6 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		CyNetworkView networkView = chimeraObject.getNetworkView();
 		CyNetwork network = networkView.getNetwork();
 
-		ArrayList selectNodes = new ArrayList();
-		ArrayList unSelectNodes = new ArrayList();
 		Iterator modelIter = chimeraObject.getChimeraModels().iterator();
 		while (modelIter.hasNext()) {
 			ChimeraModel model = (ChimeraModel)modelIter.next();
@@ -129,16 +129,28 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 			if (modelsToSelect.containsKey(model)) {
 				System.out.println("Selecting node "+node.getIdentifier());
-				selectNodes.add(node);
+				// Get the current selection state
+				if (!nodeView.isSelected()) {
+					// Not selected, mark the fact that we're selecting it.
+					selectedList.add(nodeView);
+					nodeView.setSelected(true);
+				} 
 				nodeView.setSelectedPaint(java.awt.Color.GREEN);
 			} else {
 				System.out.println("Deselecting node "+node.getIdentifier());
-				unSelectNodes.add(node);
-				nodeView.setSelectedPaint(java.awt.Color.YELLOW);
+				// Did we select it?
+				if (nodeView.isSelected() && selectedList.contains(nodeView)) {
+					// Yes, deselect it
+					nodeView.setSelected(false);
+					selectedList.remove(nodeView);
+				} else {
+					// No, just change the color
+					nodeView.setSelectedPaint(java.awt.Color.YELLOW);
+				}
 			}
 		}
 
-		// network.setSelectedNodeState(unSelectNodes, false);
+		networkView.updateView();
 
 	}
 
@@ -292,6 +304,10 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 		public void actionPerformed(ActionEvent ev) {
 			chimeraObject.command(command);
+			// Special case for clearing the selection
+			if (command.equals("~select")) {
+				navigationTree.clearSelection();
+			}
 		}
 	}
 
