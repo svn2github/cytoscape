@@ -52,8 +52,25 @@ import giny.model.Node;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.DoubleParser;
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeSizeCalculator extends NodeCalculator implements NodeSizeCalculator {
+public class GenericNodeSizeCalculator extends NodeCalculator {
+
+
+    public byte getType() {
+        return VizMapUI.NODE_SIZE;
+    }
+
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "nodeSizeCalculator";
+    }
+
     
     public GenericNodeSizeCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -80,16 +97,18 @@ public class GenericNodeSizeCalculator extends NodeCalculator implements NodeSiz
      *  should expect to handle.  The usual caller is
      *  NodeAppearanceCalculator.
      */
-    public double calculateNodeSize(Node node, CyNetwork network) {
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
 		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
+		double ret = -1.0;
 		if(rangeValue!=null)
-			return ((Number)rangeValue).doubleValue();
-		else
-			return -1;
+			ret =  ((Number)rangeValue).doubleValue();
+		// TODOOOO
+		appr.setWidth(ret);
+		appr.setHeight(ret);
     }
 }
 

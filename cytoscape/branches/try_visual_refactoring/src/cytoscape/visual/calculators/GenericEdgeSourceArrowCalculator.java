@@ -1,5 +1,6 @@
+
 /*
- File: GenericEdgeArrowCalculator.java 
+ File: GenericEdgeSourceArrowCalculator.java 
  
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
  
@@ -36,9 +37,9 @@
  */
 
 //----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
+// $Revision: 7760 $
+// $Date: 2006-06-26 09:28:49 -0700 (Mon, 26 Jun 2006) $
+// $Author: mes $
 //----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
@@ -57,44 +58,28 @@ import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 
 //----------------------------------------------------------------------------
-abstract class GenericEdgeArrowCalculator extends EdgeCalculator {
+public class GenericEdgeSourceArrowCalculator extends GenericEdgeArrowCalculator {
+	public byte getType() {
+		return VizMapUI.EDGE_SRCARROW;
+	}
 
-	public abstract byte getType(); 
-	public abstract String getPropertyObjectString();
-	public abstract String getPropertyLabel();
-	
-	public GenericEdgeArrowCalculator(String name, ObjectMapping m) {
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "edgeSourceArrowCalculator";
+    }
+
+
+	public GenericEdgeSourceArrowCalculator(String name, ObjectMapping m) {
 		super(name, m);
-
-		Class c = null;
-		// c = Arrow.class; // this line won't obfuscate; the one below does.
-		c = Arrow.NONE.getClass();
-		if (!c.isAssignableFrom(m.getRangeClass())) {
-			String s = "Invalid Calculator: Expected class " + c.toString()
-					+ ", got " + m.getRangeClass().toString();
-			throw new ClassCastException(s);
-		}
 	}
 
-	/**
-	 * Constructor for dynamic creation via properties.
-	 */
-	public GenericEdgeArrowCalculator(String name, Properties props, String baseKey) {
-		super(name, props, baseKey, new ArrowParser(), Arrow.NONE);
+	public GenericEdgeSourceArrowCalculator(String name, Properties props, String baseKey) {
+		super(name, props, baseKey);
 	}
-
-	abstract public void apply(EdgeAppearance appr, Edge edge, CyNetwork network);
-
-	protected void apply(EdgeAppearance appr, Edge edge, CyNetwork network, boolean source) {
-		String canonicalName = edge.getIdentifier();
-		Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-		// TODOOOO
-		if ( source )
-			appr.setSourceArrow( (Arrow) super.getMapping(0).calculateRangeValue(attrBundle) );
-		else
-			appr.setTargetArrow( (Arrow) super.getMapping(0).calculateRangeValue(attrBundle) );
+	public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
+		apply(appr,edge,network,true);
 	}
-
 }

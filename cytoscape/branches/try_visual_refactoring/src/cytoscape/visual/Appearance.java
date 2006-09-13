@@ -1,6 +1,6 @@
 
 /*
-  File: NodeToolTipCalculator.java 
+  File: Appearance.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -37,21 +37,30 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
+// $Revision: 7760 $
+// $Date: 2006-06-26 09:28:49 -0700 (Mon, 26 Jun 2006) $
+// $Author: mes $
 //----------------------------------------------------------------------------
-package cytoscape.visual.calculators;
+package cytoscape.visual;
 //----------------------------------------------------------------------------
-import java.util.Map;
-import javax.swing.JPanel;
-
-import giny.model.Node;
-
-import cytoscape.CyNetwork;
+import java.awt.Color;
+import java.awt.Font;
+import cytoscape.visual.LineType;
+import java.util.Properties;
 //----------------------------------------------------------------------------
-public interface NodeToolTipCalculator extends Calculator {
+/**
+ * Objects of this class hold data describing the appearance of a Node.
+ */
+public interface Appearance {
     
-    String calculateNodeToolTip(Node node, CyNetwork network);
+	public void applyDefaultProperties(Properties props, String base); 
+    
+	public Properties getDefaultProperties(String baseKey); 
+
+	public String getDescription(String prefix);
+
+	public Object get(byte type);
+
+	public void set(byte type, Object o);
 }
 

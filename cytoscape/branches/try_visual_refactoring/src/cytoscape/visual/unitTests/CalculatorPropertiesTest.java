@@ -1,6 +1,6 @@
 
 /*
-  File: PropertiesTester.java 
+  File: CalculatorPropertiesTest.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -41,11 +41,12 @@
 // $Date$
 // $Author$
 //----------------------------------------------------------------------------
-package cytoscape.visual;
+package cytoscape.visual.unitTests;
 //----------------------------------------------------------------------------
 
 import java.util.*;
 import java.io.*;
+import junit.framework.*;
 
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.*;
@@ -55,13 +56,20 @@ import cytoscape.visual.mappings.*;
  * properties file. Works by writing a text description of the read calculators
  * to stdout.
  */
-public class PropertiesTester {
-    
+public class CalculatorPropertiesTest extends TestCase {
+	
+
+	public void testFailure() {
+		// TODOOOO get this working!
+		fail();
+	}
+   
+   /*
     public static void main(String[] args) {
-        new PropertiesTester();
+        new CalculatorPropertiesTest();
     }
     
-    public PropertiesTester() {
+    public CalculatorPropertiesTest() {
         CalculatorCatalog catalog = new CalculatorCatalog();
         Properties props = new Properties();
         try {
@@ -174,23 +182,6 @@ public class PropertiesTester {
 	    System.out.println(style.getName());
 	    System.out.println();
 	}
-	/*
-	Broken by new VisualStyle system
-        
-	NodeAppearanceCalculator nac1 = catalog.getNodeAppearanceCalculator("testDiscrete");
-        System.out.println(nac1.getDescription());
-        System.out.println();
-        NodeAppearanceCalculator nac2 = catalog.getNodeAppearanceCalculator("testContinuous");
-        System.out.println(nac2.getDescription());
-        System.out.println();
-	
-        EdgeAppearanceCalculator eac1 = catalog.getEdgeAppearanceCalculator("testDiscrete");
-        System.out.println(eac1.getDescription());
-        System.out.println();
-        EdgeAppearanceCalculator eac2 = catalog.getEdgeAppearanceCalculator("testContinuous");
-        System.out.println(eac2.getDescription());
-        System.out.println();
-	*/
     }
     
     public void checkCalculator(Calculator c) {
@@ -203,5 +194,6 @@ public class PropertiesTester {
         System.out.println("controller = " + m.getControllingAttributeName());
         System.out.println("Map = " + m);
     }
+    */
 }
 

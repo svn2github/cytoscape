@@ -81,61 +81,15 @@ public class VisualStyle implements Cloneable {
     public Vector checkConflictingCalculator(Calculator c) {
 	Vector conflicts = new Vector();
 	conflicts.add(name);
-	if (c instanceof NodeColorCalculator) {
-	    if (nodeAC.getNodeFillColorCalculator() == c)
-		conflicts.add("Node Fill Color");
-	    if (nodeAC.getNodeBorderColorCalculator() == c)
-		conflicts.add("Node Border Color");
-        } else if (c instanceof NodeLineTypeCalculator) {
-            if (nodeAC.getNodeLineTypeCalculator() == c)
-		conflicts.add("Node Line Type");
-        } else if (c instanceof NodeShapeCalculator) {
-	    if (nodeAC.getNodeShapeCalculator() == c)
-		conflicts.add("Node Shape");
-        } else if (c instanceof NodeSizeCalculator) {
-	    if (nodeAC.getNodeWidthCalculator() == c)
-		conflicts.add("Node Width");
-	    if (nodeAC.getNodeHeightCalculator() == c) {
-		if (nodeAC.getNodeSizeLocked())
-		    conflicts.add("Node Size");
-		else
-		    conflicts.add("Node Height");
-	    }
-        } else if (c instanceof NodeLabelCalculator) {
-	    if (nodeAC.getNodeLabelCalculator() == c)
-		conflicts.add("Node Label");
-        } else if (c instanceof NodeToolTipCalculator) {
-	    if (nodeAC.getNodeToolTipCalculator() == c)
-		conflicts.add("Node Tooltip");
-        } else if (c instanceof NodeFontFaceCalculator) {
-	    if (nodeAC.getNodeFontFaceCalculator() == c)
-		conflicts.add("Node Font Face");
-        } else if (c instanceof NodeFontSizeCalculator) {
-	    if (nodeAC.getNodeFontSizeCalculator() == c)
-		conflicts.add("Node Font Size");
-        } else if (c instanceof EdgeColorCalculator) {
-	    if (edgeAC.getEdgeColorCalculator() == c)
-		conflicts.add("Edge Color");
-        } else if (c instanceof EdgeLineTypeCalculator) {
-	    if (edgeAC.getEdgeLineTypeCalculator() == c)
-		conflicts.add("Edge Line Type");
-        } else if (c instanceof EdgeArrowCalculator) {
-	    if (edgeAC.getEdgeSourceArrowCalculator() == c)
-		conflicts.add("Edge Source Arrow");
-	    if (edgeAC.getEdgeTargetArrowCalculator() == c)
-		conflicts.add("Edge Target Arrow");
-        } else if (c instanceof EdgeLabelCalculator) {
-	    if (edgeAC.getEdgeLabelCalculator() == c)
-		conflicts.add("Edge Label");
-        } else if (c instanceof EdgeToolTipCalculator) {
-	    if (edgeAC.getEdgeToolTipCalculator() == c)
-		conflicts.add("Edge Tooltip");
-        } else if (c instanceof EdgeFontFaceCalculator) {
-	    if (edgeAC.getEdgeFontFaceCalculator() == c)
-		conflicts.add("Edge Font Face");
-        } else if (c instanceof EdgeFontSizeCalculator) {
-	    if (edgeAC.getEdgeFontSizeCalculator() == c)
-		conflicts.add("Edge Font Size");
+
+	for ( Calculator nodeCalcs : nodeAC.getCalculators() ) {
+		if ( nodeCalcs == c )
+			conflicts.add(nodeCalcs.getPropertyLabel());
+	}
+
+	for ( Calculator edgeCalcs : edgeAC.getCalculators() ) {
+		if ( edgeCalcs == c )
+			conflicts.add(edgeCalcs.getPropertyLabel());
 	}
 
 	return conflicts;
@@ -304,5 +258,6 @@ public class VisualStyle implements Cloneable {
         globalAC = (gac == null) ? new GlobalAppearanceCalculator() : gac;
         return tmp;
     }
+
 }
 

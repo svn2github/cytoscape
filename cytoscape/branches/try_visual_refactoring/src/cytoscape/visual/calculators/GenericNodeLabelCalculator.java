@@ -52,8 +52,24 @@ import giny.model.Node;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.StringParser;
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeLabelCalculator extends NodeCalculator implements NodeLabelCalculator {
+public class GenericNodeLabelCalculator extends NodeCalculator {
+
+
+    public byte getType() {
+        return VizMapUI.NODE_LABEL;
+    }
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "nodeLabelCalculator";
+    }
+
     
     public GenericNodeLabelCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -73,12 +89,12 @@ public class GenericNodeLabelCalculator extends NodeCalculator implements NodeLa
         super(name, props, baseKey, new StringParser(), new String());
     }
     
-    public String calculateNodeLabel(Node node, CyNetwork network) {
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        return (String)super.getMapping(0).calculateRangeValue(attrBundle);
+        appr.setLabel( (String)super.getMapping(0).calculateRangeValue(attrBundle) );
     }
 }
 

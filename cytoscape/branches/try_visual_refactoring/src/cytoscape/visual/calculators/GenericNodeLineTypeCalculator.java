@@ -53,8 +53,24 @@ import cytoscape.visual.LineType;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.LineTypeParser;
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeLineTypeCalculator extends NodeCalculator implements NodeLineTypeCalculator {
+public class GenericNodeLineTypeCalculator extends NodeCalculator {
+
+
+    public byte getType() {
+        return VizMapUI.NODE_LINETYPE;
+    }
+
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "nodeLineTypeCalculator";
+    }
     
     public GenericNodeLineTypeCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -75,12 +91,12 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator implements Nod
         super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1);
     }
     
-    public LineType calculateNodeLineType(Node node, CyNetwork network) {
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        return (LineType)super.getMapping(0).calculateRangeValue(attrBundle);
+        appr.setBorderLineType( (LineType)super.getMapping(0).calculateRangeValue(attrBundle) );
     }
 }
 

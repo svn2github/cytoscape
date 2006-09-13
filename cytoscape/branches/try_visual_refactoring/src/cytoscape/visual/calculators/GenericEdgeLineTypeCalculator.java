@@ -53,8 +53,25 @@ import cytoscape.visual.LineType;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.LineTypeParser;
+
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericEdgeLineTypeCalculator extends EdgeCalculator implements EdgeLineTypeCalculator {
+public class GenericEdgeLineTypeCalculator extends EdgeCalculator {
+
+
+    public byte getType() {
+        return VizMapUI.EDGE_LINETYPE;
+    }
+
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "edgeLineTypeCalculator";
+    }
+
     
     public GenericEdgeLineTypeCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -75,12 +92,12 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator implements Edg
         super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1);
     }
     
-    public LineType calculateEdgeLineType(Edge edge, CyNetwork network) {
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
         String canonicalName = edge.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-        return (LineType)super.getMapping(0).calculateRangeValue(attrBundle);
+        appr.setLineType( (LineType)super.getMapping(0).calculateRangeValue(attrBundle) );
     }
 }
 

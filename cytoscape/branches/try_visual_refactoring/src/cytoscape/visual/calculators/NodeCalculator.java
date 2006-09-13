@@ -54,6 +54,11 @@ import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.NodeAppearance;
+import giny.model.Edge;
+import giny.model.Node;
+
 //------------------------------------------------------------------------------
 /**
  * NodeCalculator implements some UI features for calculators lower in the
@@ -86,19 +91,6 @@ public abstract class NodeCalculator extends AbstractCalculator {
     public JPanel getUI(JDialog parent, CyNetwork n) {
 	// everything comes straight from the superclass
 	return super.getUI(Cytoscape.getNodeAttributes(), parent, n);
-	/*
-	// attribute select combo box - delivered complete from the superclass
-	JPanel selectAttributePanel = super.getUI(Cytoscape.getNodeAttributes());
-	
-	// underlying mapper's UI
-	JPanel mapperUI = super.getMapping(0).getUI(parent, n);
-
-	// stick them together
-	GridBagGroup g = new GridBagGroup();
-	MiscGB.insert(g, selectAttributePanel, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-	MiscGB.insert(g, mapperUI, 0, 1, GridBagConstraints.REMAINDER, GridBagConstraints.REMAINDER, 5, 5, GridBagConstraints.BOTH);
-	return g.panel;
-	*/
     }
 
     /**
@@ -108,4 +100,10 @@ public abstract class NodeCalculator extends AbstractCalculator {
     protected Map getAttrBundle(String name) {
     	return super.getAttrBundle(name,Cytoscape.getNodeAttributes());
     }
+
+    abstract public void apply(NodeAppearance appr, Node node, CyNetwork network);
+    abstract public String getPropertyLabel();
+    abstract public String getPropertyObjectString();
+    abstract public byte getType();
+
 }

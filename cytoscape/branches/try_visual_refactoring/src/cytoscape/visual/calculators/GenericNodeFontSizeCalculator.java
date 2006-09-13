@@ -52,9 +52,24 @@ import giny.model.Node;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.DoubleParser;
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
 public class GenericNodeFontSizeCalculator extends NodeCalculator
-    implements NodeFontSizeCalculator{
+    {
+
+
+    public byte getType() {
+        return VizMapUI.NODE_FONT_SIZE;
+    }
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "nodeFontSizeCalculator";
+    }
     
     public GenericNodeFontSizeCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -79,15 +94,16 @@ public class GenericNodeFontSizeCalculator extends NodeCalculator
      *  should expect to handle.  The usual caller is
      *  NodeAppearanceCalculator.
      */
-    public float calculateNodeFontSize(Node node, CyNetwork network) {
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
 		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
+		float ret = -1.0f;
 		if (rangeValue != null)
-			return ((Number) rangeValue).floatValue();
-		else
-			return -1;
+			ret = ((Number) rangeValue).floatValue();
+		// TODOOOOO get Font, then set font???
+		appr.setFontSize(ret);
     }
 }

@@ -50,8 +50,10 @@ import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.AbstractCalculator;
-import cytoscape.visual.calculators.EdgeLabelCalculator;
-import cytoscape.visual.calculators.GenericEdgeArrowCalculator;
+import cytoscape.visual.calculators.Calculator;
+//import cytoscape.visual.calculators.EdgeLabelCalculator;
+import cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator;
+import cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeColorCalculator;
 import cytoscape.visual.calculators.GenericEdgeFontFaceCalculator;
 import cytoscape.visual.calculators.GenericEdgeLabelCalculator;
@@ -62,10 +64,11 @@ import cytoscape.visual.calculators.GenericNodeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeLineTypeCalculator;
 import cytoscape.visual.calculators.GenericNodeShapeCalculator;
 import cytoscape.visual.calculators.GenericNodeSizeCalculator;
-import cytoscape.visual.calculators.NodeLabelCalculator;
+//import cytoscape.visual.calculators.NodeLabelCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
+import cytoscape.visual.ui.VizMapUI;
 import giny.view.EdgeView;
 import java.awt.Color;
 import java.awt.Font;
@@ -203,12 +206,12 @@ public class VisualStyleBuilder {
 		// Set label for the nodes. (Uses "label" tag in the GML file)
 		//
 		String cName = "XGMML Labels";
-		NodeLabelCalculator nlc = catalog.getNodeLabelCalculator(cName);
+		Calculator nlc = catalog.getCalculator(VizMapUI.NODE_LABEL,cName);
 		if (nlc == null) {
 			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
 			nlc = new GenericNodeLabelCalculator(cName, m);
 		}
-		nac.setNodeLabelCalculator(nlc);
+		nac.setCalculator(nlc);
 
 		//
 		// Set node shapes (Uses "type" tag in the GML file)
@@ -232,13 +235,13 @@ public class VisualStyleBuilder {
 		nodeBorderColorMapping.setControllingAttributeName(
 				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
-		Double defaultWidth = new Double(nac.getDefaultNodeWidth());
+		Double defaultWidth = new Double(nac.getDefaultAppearance().getWidth());
 		DiscreteMapping nodeWMapping = new DiscreteMapping(defaultWidth,
 				ObjectMapping.NODE_MAPPING);
 		nodeWMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
 
-		Double defaultHeight = new Double(nac.getDefaultNodeHeight());
+		Double defaultHeight = new Double(nac.getDefaultAppearance().getHeight());
 		DiscreteMapping nodeHMapping = new DiscreteMapping(defaultHeight,
 				ObjectMapping.NODE_MAPPING);
 		nodeHMapping.setControllingAttributeName(AbstractCalculator.ID,
@@ -250,7 +253,7 @@ public class VisualStyleBuilder {
 				AbstractCalculator.ID, vizmapper.getNetwork(), false);
 
 		// Non-GML graphics attributes
-		Font defaultNodeFont = nac.getDefaultNodeFont();
+		Font defaultNodeFont = nac.getDefaultAppearance().getFont();
 		DiscreteMapping nodeLabelFontMapping = new DiscreteMapping(
 				defaultNodeFont, ObjectMapping.NODE_MAPPING);
 		nodeLabelFontMapping.setControllingAttributeName(AbstractCalculator.ID,
@@ -344,30 +347,30 @@ public class VisualStyleBuilder {
 		}
 		GenericNodeShapeCalculator shapeCalculator = new GenericNodeShapeCalculator(
 				"XGMML Node Shape", nodeShapeMapping);
-		nac.setNodeShapeCalculator(shapeCalculator);
+		nac.setCalculator(shapeCalculator);
 
 		GenericNodeColorCalculator nodeColorCalculator = new GenericNodeColorCalculator(
 				"XGMML Node Color", nodeColorMapping);
-		nac.setNodeFillColorCalculator(nodeColorCalculator);
+		nac.setCalculator(nodeColorCalculator);
 
 		GenericNodeColorCalculator nodeBorderColorCalculator = new GenericNodeColorCalculator(
 				"XGMML Node Border Color", nodeBorderColorMapping);
-		nac.setNodeBorderColorCalculator(nodeBorderColorCalculator);
+		nac.setCalculator(nodeBorderColorCalculator);
 
 		GenericNodeSizeCalculator nodeSizeCalculatorW = new GenericNodeSizeCalculator(
 				"XGMML Node Width", nodeWMapping);
-		nac.setNodeWidthCalculator(nodeSizeCalculatorW);
+		nac.setCalculator(nodeSizeCalculatorW);
 
 		GenericNodeSizeCalculator nodeSizeCalculatorH = new GenericNodeSizeCalculator(
 				"XGMML Node Height", nodeHMapping);
-		nac.setNodeHeightCalculator(nodeSizeCalculatorH);
+		nac.setCalculator(nodeSizeCalculatorH);
 		GenericNodeLineTypeCalculator nodeBoderTypeCalculator = new GenericNodeLineTypeCalculator(
 				"XGMML Node Border", nodeBorderTypeMapping);
-		nac.setNodeLineTypeCalculator(nodeBoderTypeCalculator);
+		nac.setCalculator(nodeBoderTypeCalculator);
 
 		GenericNodeFontFaceCalculator nodeFontCalculator = new GenericNodeFontFaceCalculator(
 				"XGMML Node Label Font", nodeLabelFontMapping);
-		nac.setNodeFontFaceCalculator(nodeFontCalculator);
+		nac.setCalculator(nodeFontCalculator);
 	}
 
 	protected void setEdgeMaps(VisualMappingManager vizmapper) {
@@ -376,12 +379,12 @@ public class VisualStyleBuilder {
 		// Set label for the nodes. (Uses "label" tag in the GML file)
 		//
 		String cName = "XGMML Labels";
-		EdgeLabelCalculator elc = catalog.getEdgeLabelCalculator(cName);
+		Calculator elc = catalog.getCalculator(VizMapUI.NODE_LABEL,cName);
 		if (elc == null) {
 			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
 			elc = new GenericEdgeLabelCalculator(cName, m);
 		}
-		eac.setEdgeLabelCalculator(elc);
+		eac.setCalculator(elc);
 
 		//
 		// Set the color of the node
@@ -397,7 +400,7 @@ public class VisualStyleBuilder {
 				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
 		// Non-GML graphics attributes
-		Font defaultEdgeFont = eac.getDefaultEdgeFont();
+		Font defaultEdgeFont = eac.getDefaultAppearance().getFont();
 		DiscreteMapping edgeLabelFontMapping = new DiscreteMapping(
 				defaultEdgeFont, ObjectMapping.EDGE_MAPPING);
 		edgeLabelFontMapping.setControllingAttributeName(
@@ -405,12 +408,12 @@ public class VisualStyleBuilder {
 
 		// For source & target arrows
 		DiscreteMapping edgeSourceArrowMapping = new DiscreteMapping(eac
-				.getDefaultEdgeSourceArrow(), ObjectMapping.EDGE_MAPPING);
+				.getDefaultAppearance().getSourceArrow(), ObjectMapping.EDGE_MAPPING);
 		edgeSourceArrowMapping.setControllingAttributeName(
 				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
 		DiscreteMapping edgeTargetArrowMapping = new DiscreteMapping(eac
-				.getDefaultEdgeTargetArrow(), ObjectMapping.EDGE_MAPPING);
+				.getDefaultAppearance().getTargetArrow(), ObjectMapping.EDGE_MAPPING);
 		edgeTargetArrowMapping.setControllingAttributeName(
 				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
@@ -512,23 +515,23 @@ public class VisualStyleBuilder {
 
 		GenericEdgeColorCalculator edgeColorCalculator = new GenericEdgeColorCalculator(
 				"XGMML Edge Color", edgeColorMapping);
-		eac.setEdgeColorCalculator(edgeColorCalculator);
+		eac.setCalculator(edgeColorCalculator);
 
 		GenericEdgeLineTypeCalculator edgeLineTypeCalculator = new GenericEdgeLineTypeCalculator(
 				"XGMML Edge Line Type", edgeLineTypeMapping);
-		eac.setEdgeLineTypeCalculator(edgeLineTypeCalculator);
+		eac.setCalculator(edgeLineTypeCalculator);
 
 		GenericEdgeFontFaceCalculator edgeFontCalculator = new GenericEdgeFontFaceCalculator(
 				"XGMML Edge Label Font", edgeLabelFontMapping);
-		eac.setEdgeFontFaceCalculator(edgeFontCalculator);
+		eac.setCalculator(edgeFontCalculator);
 
-		GenericEdgeArrowCalculator edgeSourceArrowCalculator = new GenericEdgeArrowCalculator(
+		GenericEdgeSourceArrowCalculator edgeSourceArrowCalculator = new GenericEdgeSourceArrowCalculator(
 				"XGMML Source Edge Arrow", edgeSourceArrowMapping);
-		eac.setEdgeSourceArrowCalculator(edgeSourceArrowCalculator);
+		eac.setCalculator(edgeSourceArrowCalculator);
 
-		GenericEdgeArrowCalculator edgeTargetArrowCalculator = new GenericEdgeArrowCalculator(
+		GenericEdgeTargetArrowCalculator edgeTargetArrowCalculator = new GenericEdgeTargetArrowCalculator(
 				"XGMML Target Edge Arrow", edgeTargetArrowMapping);
-		eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
+		eac.setCalculator(edgeTargetArrowCalculator);
 	}
 
 	/**

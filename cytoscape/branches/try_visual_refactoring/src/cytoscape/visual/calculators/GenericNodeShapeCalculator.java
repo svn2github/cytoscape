@@ -53,8 +53,25 @@ import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.NodeShapeParser;
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeShapeCalculator extends NodeCalculator implements NodeShapeCalculator {
+public class GenericNodeShapeCalculator extends NodeCalculator {
+
+
+    public byte getType() {
+        return VizMapUI.NODE_SHAPE;
+    }
+
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "nodeShapeCalculator";
+    }
+
     
     public GenericNodeShapeCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -79,16 +96,16 @@ public class GenericNodeShapeCalculator extends NodeCalculator implements NodeSh
     /**  It is hoped that the -1 value of a byte will not conflict
      *   with any of the values used by ShapeNodeRealizer.
      */
-    public byte calculateNodeShape(Node node, CyNetwork network) {
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
 		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
+		byte ret = (byte)(-1);
 		if(rangeValue!=null)
-			return ((Byte)super.getMapping(0).calculateRangeValue(attrBundle)).byteValue();
-		else
-			return (byte)(-1);
+			ret = ((Byte)super.getMapping(0).calculateRangeValue(attrBundle)).byteValue();
+		appr.setShape( ret );
     }
 }
 

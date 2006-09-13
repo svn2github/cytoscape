@@ -57,6 +57,10 @@ import cytoscape.dialogs.MiscGB;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.CyNetwork;
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.NodeAppearance;
+import giny.model.Edge;
+import giny.model.Node;
 //------------------------------------------------------------------------------
 /**
  * AbstractCalculator is the top of the tree for the Calculator classes. <b>DO NOT</b>
@@ -462,4 +466,10 @@ public abstract class AbstractCalculator implements Calculator {
     protected Map getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
     	return CyAttributesUtils.getAttributes(canonicalName, cyAttrs);
     }
+
+    public void apply(EdgeAppearance appr, Edge e, CyNetwork net) {
+    }
+    public void apply(NodeAppearance appr, Node n, CyNetwork net) {
+    }
+
 }

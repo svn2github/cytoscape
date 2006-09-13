@@ -570,8 +570,11 @@ public class VizMapAttrTab extends VizMapTab {
 	    else if (type == VizMapUI.EDGE_LINETYPE) {
         calc = new GenericEdgeLineTypeCalculator(calcName, mapper);
 	    }
-	    else if (type == VizMapUI.EDGE_SRCARROW || type == VizMapUI.EDGE_TGTARROW) {
-        calc = new GenericEdgeArrowCalculator(calcName, mapper);
+	    else if (type == VizMapUI.EDGE_SRCARROW) {
+        calc = new GenericEdgeSourceArrowCalculator(calcName, mapper);
+	    }
+	    else if (type == VizMapUI.EDGE_TGTARROW) {
+        calc = new GenericEdgeTargetArrowCalculator(calcName, mapper);
 	    }
 	    else if (type == VizMapUI.EDGE_LABEL) {
         calc = new GenericEdgeLabelCalculator(calcName, mapper);
@@ -770,6 +773,8 @@ public class VizMapAttrTab extends VizMapTab {
 
 
   private Collection getCalculators(byte type) {
+  	return catalog.getCalculators(type);
+	/*
     switch(type) {
     case VizMapUI.NODE_COLOR:
 	    return catalog.getNodeColorCalculators();
@@ -813,6 +818,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    System.err.println("WARNING: Couldn't find match for type " + type);
 	    return null;
     }
+    */
   }
 
   protected static String getTypeName(byte type) {

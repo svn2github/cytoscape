@@ -65,11 +65,22 @@ public class VizUIUtilities {
      * specified by the second argument in the visual style specified by the
      * first argument. Returns null if the first argument is null.
      */
+     // TODOOOO this is stupid and should exist somewhere else
     static Object getDefault(VisualStyle style, byte type) {
         if (style == null) {return null;}
         Object defaultObj = null;
         NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
         EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
+
+	NodeAppearance na = nodeCalc.getDefaultAppearance();
+	EdgeAppearance ea = edgeCalc.getDefaultAppearance();
+
+	defaultObj = na.get(type);
+	if ( defaultObj == null ) 
+		defaultObj = ea.get(type);
+
+	/*
+
         switch (type) {
 	case VizMapUI.NODE_COLOR:
 	    defaultObj = nodeCalc.getDefaultNodeFillColor();
@@ -132,6 +143,7 @@ public class VizUIUtilities {
 	    defaultObj = new Double(edgeCalc.getDefaultEdgeFont().getSize2D());
 	    break;
 	}
+	*/
         return defaultObj;
     }
     
@@ -145,6 +157,17 @@ public class VizUIUtilities {
         if (style == null || c == null) {return;}
         NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
         EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
+
+
+	NodeAppearance na = nodeCalc.getDefaultAppearance();
+	EdgeAppearance ea = edgeCalc.getDefaultAppearance();
+
+	// types aren't redundant, so this is ok.
+	na.set(type,c);
+	ea.set(type,c);
+
+	/*
+
         switch(type) {
 	case VizMapUI.NODE_COLOR:
 	    nodeCalc.setDefaultNodeFillColor((Color) c);
@@ -208,6 +231,7 @@ public class VizUIUtilities {
 	    nodeCalc.setDefaultNodeFontSize(((Double) c).floatValue());
 	    break;
 	}
+	*/
     }
     
     /**
@@ -221,6 +245,12 @@ public class VizUIUtilities {
         Calculator currentCalculator = null;
         NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
         EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
+
+	currentCalculator = nodeCalc.getCalculator(type);
+	if ( currentCalculator == null ) 
+		currentCalculator = edgeCalc.getCalculator(type);
+
+	/*
         switch (type) {
 	case VizMapUI.NODE_COLOR:
 	    currentCalculator = nodeCalc.getNodeFillColorCalculator();
@@ -283,6 +313,7 @@ public class VizUIUtilities {
 	    currentCalculator = edgeCalc.getEdgeFontSizeCalculator();
 	    break;
 	}
+	*/
         return currentCalculator;
     }
     
@@ -296,6 +327,12 @@ public class VizUIUtilities {
         if (style == null) {return;}
         NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
         EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
+
+	// TODOOOO  AppearanceCalculator needs to be aware of types  - AAAAAAAHHHH
+	nodeCalc.setCalculator(c);
+	edgeCalc.setCalculator(c);
+	
+	/*
         switch(type) {
 	case VizMapUI.NODE_COLOR:
 	    nodeCalc.setNodeFillColorCalculator((NodeColorCalculator) c);
@@ -359,6 +396,7 @@ public class VizUIUtilities {
 	    nodeCalc.setNodeFontSizeCalculator((NodeFontSizeCalculator) c);
 	    break;
 	}
+	*/
     }
 }
 

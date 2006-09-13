@@ -53,9 +53,26 @@ import giny.model.Edge;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.FontParser;
+
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
 public class GenericEdgeFontFaceCalculator extends EdgeCalculator
-    implements EdgeFontFaceCalculator{
+    {
+
+
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "edgeFontFaceCalculator";
+    }
+
+
+    public byte getType() {
+        return VizMapUI.EDGE_FONT_FACE;
+    }
     
     public GenericEdgeFontFaceCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -71,11 +88,11 @@ public class GenericEdgeFontFaceCalculator extends EdgeCalculator
         super(name, props, baseKey, new FontParser(), new Font(null, Font.PLAIN, 12));
     }
 
-    public Font calculateEdgeFontFace(Edge edge, CyNetwork network) {
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
         String canonicalName = edge.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-		return (Font) super.getMapping(0).calculateRangeValue(attrBundle);
+		appr.setFont( (Font) super.getMapping(0).calculateRangeValue(attrBundle) );
     }
 }

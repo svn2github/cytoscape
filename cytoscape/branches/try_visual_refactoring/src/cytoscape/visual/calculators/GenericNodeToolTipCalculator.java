@@ -52,8 +52,26 @@ import giny.model.Node;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.StringParser;
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeToolTipCalculator extends NodeCalculator implements NodeToolTipCalculator {
+public class GenericNodeToolTipCalculator extends NodeCalculator {
+
+
+
+    public byte getType() {
+        return VizMapUI.NODE_TOOLTIP;
+    }
+
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "nodeToolTipCalculator";
+    }
+
     
     public GenericNodeToolTipCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -73,12 +91,12 @@ public class GenericNodeToolTipCalculator extends NodeCalculator implements Node
         super(name, props, baseKey, new StringParser(), new String());
     }
     
-    public String calculateNodeToolTip(Node node, CyNetwork network) {
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        return (String)super.getMapping(0).calculateRangeValue(attrBundle);
+        appr.setToolTip( (String)super.getMapping(0).calculateRangeValue(attrBundle) );
     }
 }
 

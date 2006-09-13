@@ -52,10 +52,26 @@ import java.util.Properties;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.FontParser;
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
 public class GenericNodeFontFaceCalculator extends NodeCalculator
-    implements NodeFontFaceCalculator{
-    
+    {
+  
+
+    public byte getType() {
+        return VizMapUI.NODE_FONT_FACE;
+    }
+
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "nodeFontFaceCalculator";
+    }
+  
     public GenericNodeFontFaceCalculator(String name, ObjectMapping m) {
 	super(name, m);
 	if (!(Font.class.isAssignableFrom(m.getRangeClass()))) {
@@ -70,11 +86,11 @@ public class GenericNodeFontFaceCalculator extends NodeCalculator
         super(name, props, baseKey, new FontParser(), new Font(null, Font.PLAIN, 12));
     }
     
-    public Font calculateNodeFontFace(Node node, CyNetwork network) {
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		return (Font) super.getMapping(0).calculateRangeValue(attrBundle);
+		appr.setFont( (Font) super.getMapping(0).calculateRangeValue(attrBundle) );
     }
 }

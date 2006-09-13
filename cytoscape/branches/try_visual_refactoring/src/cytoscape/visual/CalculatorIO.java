@@ -171,6 +171,10 @@ public class CalculatorIO {
         Properties newProps = new Properties();
         
         //gather properties for node calculators
+	List<Calculator> calcs = catalog.possibleCalculators();
+	for ( Calculator c: calcs) 
+		addProperties(newProps,catalog.getCalculators(c.getType()),c.getPropertyLabel()); 
+	/*
         addProperties(newProps, catalog.getNodeColorCalculators(), nodeColorBaseKey);
         addProperties(newProps, catalog.getNodeLineTypeCalculators(), nodeLineTypeBaseKey);
         addProperties(newProps, catalog.getNodeShapeCalculators(), nodeShapeBaseKey);
@@ -187,6 +191,7 @@ public class CalculatorIO {
         addProperties(newProps, catalog.getEdgeToolTipCalculators(), edgeToolTipBaseKey);
         addProperties(newProps, catalog.getEdgeFontFaceCalculators(), edgeFontFaceBaseKey);
         addProperties(newProps, catalog.getEdgeFontSizeCalculators(), edgeFontSizeBaseKey);
+	*/
         
         //visual styles
         Set visualStyleNames = catalog.getVisualStyleNames();
@@ -506,7 +511,9 @@ public class CalculatorIO {
      * existing calculator of the same type and name.
      */
     public static void removeDuplicate(Calculator c, CalculatorCatalog catalog) {
-        String name = c.toString();
+	catalog.removeCalculator(c);
+
+/*
         if (c instanceof NodeColorCalculator) {
             catalog.removeNodeColorCalculator(name);
         } else if (c instanceof NodeLineTypeCalculator) {
@@ -538,6 +545,7 @@ public class CalculatorIO {
         } else if (c instanceof EdgeFontSizeCalculator) {
             catalog.removeEdgeFontSizeCalculator(name);
         }
+	*/
     }
     /**
      * Given a Calculator of a given type and a CalculatorCatalog, checks
@@ -547,7 +555,9 @@ public class CalculatorIO {
      */
     public static void renameAsNeeded(Calculator c, CalculatorCatalog catalog) {
         String name = c.toString();
-        String newName;
+        String newName = catalog.checkCalculatorName(c.getType(),name);
+
+/*
         if (c instanceof NodeColorCalculator) {
             newName = catalog.checkNodeColorCalculatorName(name);
             if (!newName.equals(name)) {c.setName(newName);}
@@ -594,6 +604,7 @@ public class CalculatorIO {
             newName = catalog.checkEdgeFontSizeCalculatorName(name);
             if (!newName.equals(name)) {c.setName(newName);}
         }
+	*/
     }
 }
 

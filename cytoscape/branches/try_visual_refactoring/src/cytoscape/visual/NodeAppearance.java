@@ -45,24 +45,38 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Stroke;
 import cytoscape.visual.LineType;
+import giny.view.NodeView;
+import giny.view.Label;
+import java.util.Properties;
+import cytoscape.visual.parsers.ObjectToString;
+import cytoscape.visual.parsers.ArrowParser;
+import cytoscape.visual.parsers.FontParser;
+import cytoscape.visual.parsers.LineTypeParser;
+import cytoscape.visual.parsers.ColorParser;
+import cytoscape.visual.parsers.DoubleParser;
+import cytoscape.visual.parsers.NodeShapeParser;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 /**
  * Objects of this class hold data describing the appearance of a Node.
  */
- public class NodeAppearance {
+public class NodeAppearance implements Appearance, Cloneable {
     
-    Color fillColor;
-    Color borderColor;
-    LineType borderLineType;
-    byte shape;
-    double width;
-    double height;
-    String label;
-    String toolTip;
-    Font font;
-    Color fontColor;
-    
+    // defaults 
+    Color fillColor = Color.WHITE;
+    Color borderColor = Color.BLACK;
+    LineType borderLineType = LineType.LINE_1;
+    byte shape = ShapeNodeRealizer.RECT;
+    double width = 70.0;
+    double height = 30.0;
+    String label = "";
+    String toolTip = "";
+    Font font = new Font(null, Font.PLAIN, 12);
+    Color fontColor = Color.black;
+
     public NodeAppearance() {}
     
     public Color getFillColor() {return fillColor;}
@@ -92,6 +106,322 @@ import cytoscape.visual.LineType;
     public Font getFont() {return font;}
     public void setFont(Font f) {font = f;}
 
+    public float getFontSize() {return (float)font.getSize2D();}
+    public void setFontSize(float f) { font = font.deriveFont(f); }
+
     public Color getLabelColor() {return fontColor;}
     public void setLabelColor(Color c) {fontColor = c;}
+
+    public void applyAppearance(NodeView nodeView, boolean optimizer) {
+
+	if (optimizer == false) {
+		nodeView.setUnselectedPaint(fillColor);
+		nodeView.setBorderPaint(borderColor);
+		nodeView.setBorder(borderLineType.getStroke());
+		nodeView.setHeight(height);
+		nodeView.setWidth(width);
+		nodeView.setShape(ShapeNodeRealizer.getGinyShape(shape));
+		nodeView.getLabel().setText(label);
+
+		Label nodeLabel = nodeView.getLabel();
+		nodeLabel.setFont(font);
+		nodeLabel.setTextPaint(fontColor);
+	} else {
+		boolean change_made = false;
+
+		Paint existingUnselectedColor = nodeView.getUnselectedPaint();
+		if (!fillColor.equals(existingUnselectedColor)) {
+			change_made = true;
+			nodeView.setUnselectedPaint(fillColor);
+		}
+
+		Paint existingBorderPaint = nodeView.getBorderPaint();
+		if (!borderColor.equals(existingBorderPaint)) {
+			change_made = true;
+			nodeView.setBorderPaint(borderColor);
+		}
+
+		Stroke existingBorderType = nodeView.getBorder();
+		Stroke newBorderType = borderLineType.getStroke();
+		if (!newBorderType.equals(existingBorderType)) {
+			change_made = true;
+			nodeView.setBorder(newBorderType);
+		}
+
+		double existingHeight = nodeView.getHeight();
+		double difference = height - existingHeight;
+		if (Math.abs(difference) > .1) {
+			change_made = true;
+			nodeView.setHeight(height);
+		}
+
+		double existingWidth = nodeView.getWidth();
+		difference = width - existingWidth;
+		if (Math.abs(difference) > .1) {
+			change_made = true;
+			nodeView.setWidth(width);
+		}
+
+		int existingShape = nodeView.getShape();
+		int newShape = ShapeNodeRealizer.getGinyShape(shape);
+		if (existingShape != newShape) {
+			change_made = true;
+			nodeView.setShape(newShape);
+		}
+
+		Label nodelabel = nodeView.getLabel();
+		String existingLabel = nodelabel.getText();
+		String newLabel = label; 
+		if (!newLabel.equals(existingLabel)) {
+			change_made = true;
+			nodelabel.setText(newLabel);
+		}
+
+		Font existingFont = nodelabel.getFont();
+		Font newFont = getFont();
+		if (!newFont.equals(existingFont)) {
+			change_made = true;
+			nodelabel.setFont(newFont);
+		}
+
+		Paint existingTextColor = nodelabel.getTextPaint();
+		Paint newTextColor = fontColor; 
+		if (!newTextColor.equals(existingTextColor)) {
+			change_made = true;
+			nodelabel.setTextPaint(newTextColor);
+		}
+
+		if (change_made) {
+			nodeView.setNodePosition(false);
+		}
+
+	}
+    }
+
+    public void applyDefaultProperties(Properties nacProps, String baseKey) {
+    String value = null;
+        
+    //look for default values
+    value = nacProps.getProperty(baseKey + ".defaultNodeFillColor");
+    if (value != null) {
+      Color c = (new ColorParser()).parseColor(value);
+      if (c != null) {setFillColor(c);}
+    }
+    value = nacProps.getProperty(baseKey + ".defaultNodeBorderColor");
+    if (value != null) {
+      Color c = (new ColorParser()).parseColor(value);
+      if (c != null) {setBorderColor(c);}
+    }
+    value = nacProps.getProperty(baseKey + ".defaultNodeLineType");
+    if (value != null) {
+      LineType lt = (new LineTypeParser()).parseLineType(value);
+      if (lt != null) {setBorderLineType(lt);}
+    }
+    value = nacProps.getProperty(baseKey + ".defaultNodeShape");
+    if (value != null) {
+      Byte bObj = (new NodeShapeParser()).parseNodeShape(value);
+      if (bObj != null) {
+        byte b = bObj.byteValue();
+        if (NodeShapeParser.isValidShape(b)) {setShape(b);}
+      }
+    }
+    value = nacProps.getProperty(baseKey + ".defaultNodeWidth");
+    if (value != null) {
+      Double dObj = (new DoubleParser()).parseDouble(value);
+      if (dObj != null) {
+        double d = dObj.doubleValue();
+        if (d > 0) {setWidth(d);}
+      }
+    }
+    value = nacProps.getProperty(baseKey + ".defaultNodeHeight");
+    if (value != null) {
+      Double dObj = (new DoubleParser()).parseDouble(value);
+      if (dObj != null) {
+        double d = dObj.doubleValue();
+        if (d > 0) {setHeight(d);}
+      }
+    }
+    value = nacProps.getProperty(baseKey + ".defaultNodeLabel");
+    if (value != null) {
+      setLabel(value);
+    }
+    value = nacProps.getProperty(baseKey + ".defaultNodeToolTip");
+    if (value != null) {
+      setToolTip(value);
+    }
+    value = nacProps.getProperty(baseKey + ".defaultNodeFont");
+    if (value != null) {
+	    Font f = (new FontParser()).parseFont(value);
+      if (f != null) {
+        setFont(f);
+	    }
+    }
+        
+  }
+    
+  public Properties getDefaultProperties(String baseKey) {
+    String key = null;
+    String value = null;
+    Properties newProps = new Properties();
+        
+    //save default values
+    key = baseKey + ".defaultNodeFillColor";
+    value = ObjectToString.getStringValue( getFillColor() );
+    newProps.setProperty(key, value);
+    key = baseKey + ".defaultNodeBorderColor";
+    value = ObjectToString.getStringValue( getBorderColor() );
+    newProps.setProperty(key, value);
+    key = baseKey + ".defaultNodeLineType";
+    value = ObjectToString.getStringValue( getBorderLineType() );
+    newProps.setProperty(key, value);
+    key = baseKey + ".defaultNodeShape";
+    Byte nodeShapeByte = new Byte( getShape() );
+    value = ObjectToString.getStringValue(nodeShapeByte);
+    newProps.setProperty(key, value);
+    key = baseKey + ".defaultNodeWidth";
+    Double nodeWidthDouble = new Double( getWidth() );
+    value = ObjectToString.getStringValue(nodeWidthDouble);
+    newProps.setProperty(key, value);
+    key = baseKey + ".defaultNodeHeight";
+    Double nodeHeightDouble = new Double( getHeight() );
+    value = ObjectToString.getStringValue(nodeHeightDouble);
+    newProps.setProperty(key, value);
+    key = baseKey + ".defaultNodeLabel";
+    value = ObjectToString.getStringValue( getLabel() );
+    newProps.setProperty(key, value);
+    key = baseKey + ".defaultNodeToolTip";
+    value = ObjectToString.getStringValue( getToolTip() );
+    newProps.setProperty(key, value);
+    key = baseKey + ".defaultNodeFont";
+    value = ObjectToString.getStringValue( getFont() );
+    newProps.setProperty(key, value);
+        
+    return newProps;
+  }
+
+  public String getDescription(String prefix) {
+
+        if ( prefix == null )
+		prefix = "";
+
+	String lineSep = System.getProperty("line.separator");
+	StringBuffer sb = new StringBuffer();
+
+	sb.append(prefix + "NodeFillColor = ").append(fillColor).append(lineSep);
+	sb.append(prefix + "NodeBorderColor = ").append(borderColor).append(lineSep);
+	String nodeLineTypeText = ObjectToString.getStringValue(borderLineType);
+	sb.append(prefix + "NodeLineType = ").append(nodeLineTypeText).append(lineSep);
+	Byte nodeShapeByte = new Byte(shape);
+	String nodeShapeText = ObjectToString.getStringValue(nodeShapeByte);
+	sb.append(prefix + "NodeShape = ").append(nodeShapeText).append(lineSep);
+	sb.append(prefix + "NodeWidth = ").append(width).append(lineSep);
+	sb.append(prefix + "NodeHeight = ").append(height).append(lineSep);
+	sb.append(prefix + "NodeLabel = ").append(label).append(lineSep);
+	sb.append(prefix + "NodeToolTip = ").append(toolTip).append(lineSep);
+	sb.append(prefix + "NodeFont = ").append(font).append(lineSep);
+	sb.append(prefix + "NodeFontColor = ").append(fontColor.toString()).append(lineSep);
+
+	return sb.toString();
+  }
+
+
+    public Object get( byte type) {
+
+	Object defaultObj = null;
+        switch (type) {
+	case VizMapUI.NODE_COLOR:
+	    defaultObj = getFillColor();
+	    break;
+	case VizMapUI.NODE_BORDER_COLOR:
+	    defaultObj = getBorderColor();
+	    break;
+	case VizMapUI.NODE_LINETYPE:
+	    defaultObj = getBorderLineType();
+	    break;
+	case VizMapUI.NODE_SHAPE:
+	    defaultObj = new Byte(getShape());
+	    break;
+	case VizMapUI.NODE_HEIGHT:
+	    defaultObj = new Double(getHeight());
+	    break;
+	case VizMapUI.NODE_WIDTH:
+	    defaultObj = new Double(getWidth());
+	    break;
+	case VizMapUI.NODE_SIZE:
+	    defaultObj = new Double(getHeight());
+	    break;
+	case VizMapUI.NODE_LABEL:
+	    defaultObj = getLabel();
+	    break;
+        case VizMapUI.NODE_LABEL_COLOR:
+            defaultObj = getLabelColor();
+            break;
+	case VizMapUI.NODE_TOOLTIP:
+	    defaultObj = getToolTip();
+	    break;
+    	}
+
+        return defaultObj;
+    }
+    
+    public void set(byte type, Object c) {
+        switch(type) {
+	case VizMapUI.NODE_COLOR:
+	    setFillColor((Color) c);
+	    break;
+	case VizMapUI.NODE_BORDER_COLOR:
+	    setBorderColor((Color) c);
+	    break;
+	case VizMapUI.NODE_LINETYPE:
+	    setBorderLineType((LineType) c);
+	    break;
+	case VizMapUI.NODE_SHAPE:
+	    setShape(((Byte) c).byteValue());
+	    break;
+	case VizMapUI.NODE_HEIGHT:
+	    setHeight(((Double) c).doubleValue());
+	    break;
+	case VizMapUI.NODE_WIDTH:
+	    setWidth(((Double) c).doubleValue());
+	    break;
+	case VizMapUI.NODE_SIZE:
+	    setHeight(((Double) c).doubleValue());
+	    setWidth(((Double) c).doubleValue());
+	    break;
+	case VizMapUI.NODE_LABEL:
+	    setLabel((String) c);
+	    break;
+        case VizMapUI.NODE_LABEL_COLOR:
+            setLabelColor((Color) c);
+            break;
+	case VizMapUI.NODE_TOOLTIP:
+	    setToolTip((String) c);
+	    break;
+	case VizMapUI.NODE_FONT_FACE:
+	    setFont((Font) c);
+	    break;
+	case VizMapUI.NODE_FONT_SIZE:
+		// TODOOO
+	    setFontSize(((Double) c).floatValue());
+	    break;
+	}
+    }
+
+    public Object clone() {
+    	NodeAppearance na = new NodeAppearance();
+
+	na.setFillColor(fillColor);
+	na.setBorderColor(borderColor);
+	na.setBorderLineType(borderLineType); 
+	na.setShape(shape);
+	na.setWidth(width);
+	na.setHeight(height);
+	na.setLabel(label);
+	na.setToolTip(toolTip);
+	na.setFont(font);
+	na.setLabelColor( fontColor );
+
+	return na;
+    }
 }
+

@@ -73,8 +73,11 @@ import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.ui.VizMapUI;
+import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.AbstractCalculator;
-import cytoscape.visual.calculators.GenericEdgeArrowCalculator;
+import cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator;
+import cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeColorCalculator;
 import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
 import cytoscape.visual.calculators.GenericNodeColorCalculator;
@@ -82,7 +85,6 @@ import cytoscape.visual.calculators.GenericNodeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeLineTypeCalculator;
 import cytoscape.visual.calculators.GenericNodeShapeCalculator;
 import cytoscape.visual.calculators.GenericNodeSizeCalculator;
-import cytoscape.visual.calculators.NodeLabelCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
@@ -284,14 +286,14 @@ public class GMLReader extends AbstractGraphReader {
 		// Set label for the nodes. (Uses "label" tag in the GML file)
 		//
 		String cName = "GML Labels" + mapSuffix;
-		NodeLabelCalculator nlc = catalog.getNodeLabelCalculator(cName);
+		Calculator nlc = catalog.getCalculator(VizMapUI.NODE_LABEL,cName);
 		if (nlc == null) {
 			//System.out.println("creating passthrough mapping");
 			PassThroughMapping m = new PassThroughMapping("",
 					AbstractCalculator.ID);
 			nlc = new GenericNodeLabelCalculator(cName, m);
 		}
-		nac.setNodeLabelCalculator(nlc);
+		nac.setCalculator(nlc);
 
 		//
 		// Set node shapes (Uses "type" tag in the GML file)
@@ -314,7 +316,7 @@ public class GMLReader extends AbstractGraphReader {
 		}
 		GenericNodeShapeCalculator shapeCalculator = new GenericNodeShapeCalculator(
 				"GML_Node_Shape" + mapSuffix, nodeShapeMapping);
-		nac.setNodeShapeCalculator(shapeCalculator);
+		nac.setCalculator(shapeCalculator);
 
 		//
 		// Set the color of the node
@@ -340,7 +342,7 @@ public class GMLReader extends AbstractGraphReader {
 		}
 		GenericNodeColorCalculator nodeColorCalculator = new GenericNodeColorCalculator(
 				"GML Node Color" + mapSuffix, nodeColorMapping);
-		nac.setNodeFillColorCalculator(nodeColorCalculator);
+		nac.setCalculator(nodeColorCalculator);
 
 		//
 		// Set the color of the node border
@@ -364,12 +366,12 @@ public class GMLReader extends AbstractGraphReader {
 		}
 		GenericNodeColorCalculator nodeBorderColorCalculator = new GenericNodeColorCalculator(
 				"GML Node Border Color" + mapSuffix, nodeBorderColorMapping);
-		nac.setNodeBorderColorCalculator(nodeBorderColorCalculator);
+		nac.setCalculator(nodeBorderColorCalculator);
 
 		//
 		// Set the size of the nodes
 		//
-		Double defaultWidth = new Double(nac.getDefaultNodeWidth());
+		Double defaultWidth = new Double(nac.getDefaultAppearance().getWidth());
 
 		// First, set the width of the node
 		DiscreteMapping nodeWMapping = new DiscreteMapping(defaultWidth,
@@ -390,10 +392,10 @@ public class GMLReader extends AbstractGraphReader {
 		}
 		GenericNodeSizeCalculator nodeSizeCalculatorW = new GenericNodeSizeCalculator(
 				"GML Node Width" + mapSuffix, nodeWMapping);
-		nac.setNodeWidthCalculator(nodeSizeCalculatorW);
+		nac.setCalculator(nodeSizeCalculatorW);
 
 		// Then set the height
-		Double defaultHeight = new Double(nac.getDefaultNodeHeight());
+		Double defaultHeight = new Double(nac.getDefaultAppearance().getHeight());
 
 		DiscreteMapping nodeHMapping = new DiscreteMapping(defaultHeight,
 				ObjectMapping.NODE_MAPPING);
@@ -413,7 +415,7 @@ public class GMLReader extends AbstractGraphReader {
 
 		GenericNodeSizeCalculator nodeSizeCalculatorH = new GenericNodeSizeCalculator(
 				"GML Node Height" + mapSuffix, nodeHMapping);
-		nac.setNodeHeightCalculator(nodeSizeCalculatorH);
+		nac.setCalculator(nodeSizeCalculatorH);
 
 		//
 		// Set node border line type
@@ -437,7 +439,7 @@ public class GMLReader extends AbstractGraphReader {
 		}
 		GenericNodeLineTypeCalculator nodeBoderTypeCalculator = new GenericNodeLineTypeCalculator(
 				"GML Node Border" + mapSuffix, nodeBorderTypeMapping);
-		nac.setNodeLineTypeCalculator(nodeBoderTypeCalculator);
+		nac.setCalculator(nodeBoderTypeCalculator);
 	}
 
 	//
@@ -447,7 +449,7 @@ public class GMLReader extends AbstractGraphReader {
 		//
 		// Set the color of the edges
 		//
-		Color defcol = eac.getDefaultEdgeColor();
+		Color defcol = eac.getDefaultAppearance().getColor();
 
 		DiscreteMapping edgeColorMapping = new DiscreteMapping(defcol,
 				ObjectMapping.EDGE_MAPPING);
@@ -467,7 +469,7 @@ public class GMLReader extends AbstractGraphReader {
 		}
 		GenericEdgeColorCalculator edgeColorCalculator = new GenericEdgeColorCalculator(
 				"GML Edge Color" + mapSuffix, edgeColorMapping);
-		eac.setEdgeColorCalculator(edgeColorCalculator);
+		eac.setCalculator(edgeColorCalculator);
 
 		// 
 		// Set line type based on the given width
@@ -489,7 +491,7 @@ public class GMLReader extends AbstractGraphReader {
 		}
 		GenericEdgeLineTypeCalculator edgeLineTypeCalculator = new GenericEdgeLineTypeCalculator(
 				"GML Line Type" + mapSuffix, edgeLineTypeMapping);
-		eac.setEdgeLineTypeCalculator(edgeLineTypeCalculator);
+		eac.setCalculator(edgeLineTypeCalculator);
 
 		// 
 		// Set arrow type.
@@ -533,12 +535,12 @@ public class GMLReader extends AbstractGraphReader {
 
 			// Alternative syntax: source and target with 0 || 1
 
-			GenericEdgeArrowCalculator edgeSourceArrowCalculator = new GenericEdgeArrowCalculator(
+			GenericEdgeSourceArrowCalculator edgeSourceArrowCalculator = new GenericEdgeSourceArrowCalculator(
 					"GML Source Arrow Type" + mapSuffix, edgeSourceArrowMapping);
-			GenericEdgeArrowCalculator edgeTargetArrowCalculator = new GenericEdgeArrowCalculator(
+			GenericEdgeTargetArrowCalculator edgeTargetArrowCalculator = new GenericEdgeTargetArrowCalculator(
 					"GML Target Arrow Type" + mapSuffix, edgeTargetArrowMapping);
-			eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
-			eac.setEdgeSourceArrowCalculator(edgeSourceArrowCalculator);
+			eac.setCalculator(edgeTargetArrowCalculator);
+			eac.setCalculator(edgeSourceArrowCalculator);
 		}
 	}
 

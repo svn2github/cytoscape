@@ -52,8 +52,25 @@ import giny.model.Edge;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.StringParser;
+
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericEdgeToolTipCalculator extends EdgeCalculator implements EdgeToolTipCalculator {
+public class GenericEdgeToolTipCalculator extends EdgeCalculator {
+
+
+    public byte getType() {
+        return VizMapUI.EDGE_TOOLTIP;
+    }
+
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "edgeToolTipCalculator";
+    }
+
     
     public GenericEdgeToolTipCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -73,12 +90,12 @@ public class GenericEdgeToolTipCalculator extends EdgeCalculator implements Edge
         super(name, props, baseKey, new StringParser(), new String());
     }
     
-    public String calculateEdgeToolTip(Edge edge, CyNetwork network) {
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
         String canonicalName = edge.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-        return (String) super.getMapping(0).calculateRangeValue(attrBundle);
+        appr.setToolTip( (String) super.getMapping(0).calculateRangeValue(attrBundle) );
     }
 }
 

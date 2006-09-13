@@ -52,9 +52,26 @@ import giny.model.Edge;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.DoubleParser;
+
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
 public class GenericEdgeFontSizeCalculator extends EdgeCalculator
-    implements EdgeFontSizeCalculator{
+    {
+
+
+    public byte getType() {
+        return VizMapUI.EDGE_FONT_SIZE;
+    }
+
+    public String getPropertyObjectString() {
+        return "";
+    }
+
+    public String getPropertyLabel() {
+        return "edgeFontSizeCalculator";
+    }
+
     
     public GenericEdgeFontSizeCalculator(String name, ObjectMapping m) {
 	super(name, m);
@@ -79,15 +96,17 @@ public class GenericEdgeFontSizeCalculator extends EdgeCalculator
      *  should expect to handle.  The usual caller is
      *  NodeAppearanceCalculator.
      */
-    public float calculateEdgeFontSize(Edge edge, CyNetwork network) {
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
         String canonicalName = edge.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
 		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
+		float ret = -1.0f;
 		if (rangeValue != null)
-			return ((Number) rangeValue).floatValue();
-		else
-			return -1;
+			ret =  ((Number) rangeValue).floatValue();
+
+		// TODOOOOO
+		appr.setFontSize(ret);
     }
 }

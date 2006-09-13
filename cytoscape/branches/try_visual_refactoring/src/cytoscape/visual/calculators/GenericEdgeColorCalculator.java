@@ -53,9 +53,24 @@ import giny.model.Edge;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.ColorParser;
+
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericEdgeColorCalculator extends EdgeCalculator implements EdgeColorCalculator {
-    
+public class GenericEdgeColorCalculator extends EdgeCalculator {
+
+    public byte getType() {
+	return VizMapUI.EDGE_COLOR;
+    }
+
+    public String getPropertyObjectString() {
+	return "";
+    }
+
+    public String getPropertyLabel() {
+	return "edgeColorCalculator";
+    }
+
     public GenericEdgeColorCalculator(String name, ObjectMapping m) {
 	super(name, m);
 
@@ -74,12 +89,12 @@ public class GenericEdgeColorCalculator extends EdgeCalculator implements EdgeCo
         super(name, props, baseKey, new ColorParser(), Color.WHITE);
     }
     
-    public Color calculateEdgeColor(Edge edge, CyNetwork network) {
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
 		String canonicalName = edge.getIdentifier();
 		Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-        return (Color) super.getMapping(0).calculateRangeValue(attrBundle);
+        appr.setColor( (Color) super.getMapping(0).calculateRangeValue(attrBundle) );
     }
 }
 

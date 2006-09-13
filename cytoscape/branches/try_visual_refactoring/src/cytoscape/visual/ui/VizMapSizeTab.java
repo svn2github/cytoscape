@@ -169,11 +169,11 @@ public class VizMapSizeTab extends VizMapTab {
      */
     private class LockCalcListener implements ItemListener {
 	// initialize to initial state as defined in cytoscape.props
-	private NodeSizeCalculator widthCalc = nodeCalc.getNodeWidthCalculator();
-	private NodeSizeCalculator heightCalc = nodeCalc.getNodeHeightCalculator();
+	private Calculator widthCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
+	private Calculator heightCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
 
 	// maintain separate memoization for the locked calculator
-	private NodeSizeCalculator lockCalc = nodeCalc.getNodeHeightCalculator();
+	private Calculator lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
 
 	public void itemStateChanged(ItemEvent e) {
 	    if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -188,10 +188,10 @@ public class VizMapSizeTab extends VizMapTab {
 		// have to clear the current calculators to prevent
 		// conflicts in panels - calculators can only be selected in one
 		// VizMapAttrTab
-		this.widthCalc = nodeCalc.getNodeWidthCalculator();
+		this.widthCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
 		width.setComboBox(null);
 
-		this.heightCalc = nodeCalc.getNodeHeightCalculator();
+		this.heightCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
 		height.setComboBox(null);
 
 		// set the locked calculator as memoized
@@ -206,7 +206,7 @@ public class VizMapSizeTab extends VizMapTab {
 		nodeCalc.setNodeSizeLocked(false);
 
 		// memoize currently selected calculator
-		this.lockCalc = nodeCalc.getNodeHeightCalculator();
+		this.lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
 		size.setComboBox(null);
 
 		// reset back to old calculators
