@@ -34,6 +34,7 @@
 			format="obo">
 			<attribute name="description">The Pathway Ontology is a controlled vocabulary for pathways that provides standard terms for the annotation of geneproducts.</attribute>
 		</dataSource>
+		<!-- List of Gene Association files-->
 		<category name="annotation">
 			<dataSource name="Gene Association file for Saccharomyces cerevisiae"
 				xlink:href="http://www.geneontology.org/cgi-bin/downloadGOGA.pl/gene_association.sgd.gz"
@@ -41,13 +42,13 @@
 				<attribute name="curator">SGD</attribute>
 				<attribute name="species">Saccharomyces cerevisiae</attribute>
 			</dataSource>
-			<dataSource name="Gene Association file for Saccharomyces cerevisiae"
+			<dataSource name="Gene Association file for Drosophila melanogaster"
 				xlink:href="http://www.geneontology.org/cgi-bin/downloadGOGA.pl/gene_association.fb.gz"
 				format="Gene Association">
 				<attribute name="curator">FlyBase</attribute>
 				<attribute name="species">Drosophila melanogaster</attribute>
 			</dataSource>
-			<dataSource name="Gene Association file for Saccharomyces cerevisiae"
+			<dataSource name="Gene Association file for Mus musculus"
 				xlink:href="http://www.geneontology.org/cgi-bin/downloadGOGA.pl/gene_association.mgi.gz"
 				format="Gene Association">
 				<attribute name="curator">MGI</attribute>
@@ -59,7 +60,7 @@
 				<attribute name="curator">EBI</attribute>
 				<attribute name="species">Homo sapiens</attribute>
 			</dataSource>
-			<dataSource name="Gene Association file for human"
+			<dataSource name="Gene Association file for Caenorhabditis elegans"
 				xlink:href="http://www.geneontology.org/cgi-bin/downloadGOGA.pl/gene_association.wb.gz"
 				format="Gene Association">
 				<attribute name="curator">WormBase</attribute>
