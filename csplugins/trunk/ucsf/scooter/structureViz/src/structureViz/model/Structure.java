@@ -53,4 +53,9 @@ public class Structure {
 	public void setModelNumber (int number) {
 		this.modelNumber = number;
 	}
+
+	public String getIdentifier() {
+		return cytoscapeNode.getIdentifier();
+	}
+
 }

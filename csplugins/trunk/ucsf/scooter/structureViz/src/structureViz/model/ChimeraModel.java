@@ -34,6 +34,8 @@ package structureViz.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -53,26 +55,33 @@ import structureViz.model.Structure;
 public class ChimeraModel {
 	private String name;
 	private int identifier;
-	private HashMap chains;
-	private ArrayList residues;
+	private TreeMap chains;
+	private TreeMap residues;
 	private HashMap residueMap;
 	private Structure structure;
 
 	public ChimeraModel (String name, Structure structure) {
 		this.name = name;
-		this.identifier = structure.modelNumber();
-		this.chains = new HashMap();
-		this.residues = new ArrayList();
+		if (structure != null)
+			this.identifier = structure.modelNumber();
+		this.chains = new TreeMap();
+		this.residues = new TreeMap();
 		this.residueMap = new HashMap();
 		this.structure = structure;
 	}
 
 	public void addResidue (ChimeraResidue residue) {
-		residues.add(residue);
+		residue.setChimeraModel(this);
 		residueMap.put(residue.getIndex(),residue);
 		String chainId = residue.getChainId();
 		if (chainId != null) {
 			addChain(chainId, residue);
+			residues.put(residue.getIndex(),residue);
+		} else {
+			// Get the value of the index (should be an int!)
+			Integer index = new Integer(residue.getIndex());
+			// Put it in our map so that we can return it in order
+			residues.put(index.intValue(), residue);
 		}
 	}
 
@@ -80,6 +89,7 @@ public class ChimeraModel {
 		ChimeraChain chain = null;
 		if (!chains.containsKey(chainId)) {
 			chain = new ChimeraChain(this.identifier, chainId);
+			chain.setChimeraModel(this);
 			chains.put(chainId, chain);
 		} else {
 			chain = (ChimeraChain)chains.get(chainId);
@@ -89,11 +99,13 @@ public class ChimeraModel {
 
 	public Set getChainNames () { return chains.keySet(); }
 
+	public Collection getChains () { return chains.values(); }
+
 	public ChimeraChain getChain(String chain) {
 		return (ChimeraChain)chains.get(chain);
 	}
 
-	public ArrayList getResidues () { return residues; }
+	public Collection getResidues () { return residues.values(); }
 
 	public ChimeraResidue getResidue (String index) {
 		return (ChimeraResidue)residueMap.get(index);
@@ -101,13 +113,20 @@ public class ChimeraModel {
 
 	public int getModelNumber () { return this.identifier; }
 
+	public void setModelNumber (int modelNumber) { this.identifier = modelNumber; }
+
 	public Structure getStructure() { return this.structure; }
 
+	public void setStructure(Structure structure) { this.structure = structure; }
+
 	public String toString() { 
+		String nodeName = "{none}";
+		if (structure != null)
+			nodeName = structure.getIdentifier();
 		if (getChainCount() > 0) {
-			return ("Model #"+identifier+" "+name+" ("+getChainCount()+"chains, "+getResidueCount()+" residues)"); 
+			return ("Node "+nodeName+" [Model #"+identifier+" "+name+" ("+getChainCount()+" chains, "+getResidueCount()+" residues)]"); 
 		} else {
-			return ("Model #"+identifier+" "+name+" ("+getResidueCount()+" residues)"); 
+			return ("Node "+nodeName+" [Model #"+identifier+" "+name+" ("+getResidueCount()+" residues)]"); 
 		}
 	}
 

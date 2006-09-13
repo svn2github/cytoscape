@@ -38,7 +38,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.io.*;
+import javax.swing.JOptionPane;
 
+import cytoscape.Cytoscape;
 import cytoscape.view.*;
 
 import structureViz.model.ChimeraModel;
@@ -76,6 +78,14 @@ public class Chimera {
   }
 
 	public ArrayList getChimeraModels () { return models; }
+
+	public CyNetworkView getNetworkView () { return networkView; }
+
+	public boolean isLaunched () {
+		if (chimera != null) 
+			return true;
+		return false;
+	}
     
   /**
    * Launch (start) an instance of Chimera
@@ -111,7 +121,7 @@ public class Chimera {
    * @param model
    * @throws IOException
    */
-  public void open(Structure structure) throws IOException {
+  public void open(Structure structure) {
   	String cmd = "open "+structure.name();
   	this.command(cmd);
 
@@ -141,7 +151,7 @@ public class Chimera {
    * @param model
    * @throws IOException
 	 */
-	public void close(Structure structure) throws IOException {
+	public void close(Structure structure) {
 		int model = structure.modelNumber();
 		String cmd = "close #"+model;
 		this.command(cmd);
@@ -160,16 +170,24 @@ public class Chimera {
    * @param text
    * @throws IOException
    */
-  public void command(String text) throws IOException {
+  public void command(String text) {
   	if (chimera == null)
   		return;
 
 		text = text.concat("\n");
 
 		synchronized (replyLog) {
-  		// send the command
-  		chimera.getOutputStream().write(text.getBytes());
-  		chimera.getOutputStream().flush();
+			try {
+  			// send the command
+  			chimera.getOutputStream().write(text.getBytes());
+  			chimera.getOutputStream().flush();
+			} catch (IOException e) {
+				// popup error dialog
+        JOptionPane.showMessageDialog(Cytoscape.getCurrentNetworkView().getComponent(),
+        		"Unable to execute command "+text, "Unable to execute command "+text,
+         		JOptionPane.ERROR_MESSAGE);
+			}
+
 			try {
 				System.out.print("Waiting on replyLog for: "+text);
 				replyLog.wait();
@@ -182,13 +200,56 @@ public class Chimera {
    * Terminate the running Chimera process
    * 
    */
-  public void exit() throws IOException {
+  public void exit() {
   	if (chimera == null)
   		return;
   	this.command("stop really");
   	chimera.destroy();
   	chimera = null;
+		models = null;
+		modelHash = null;
   }
+
+	/**
+	 * Dump and refresh all of our model/chain/residue info
+	 */
+	public void refresh() {
+		// Get a new model list
+		HashMap newHash = new HashMap();
+
+		// Get all of the open models
+		List newModelList = getModelList();
+
+		// Match them up -- assume that the model #'s haven't changed
+		Iterator modelIter = newModelList.iterator();
+		while (modelIter.hasNext()) {
+			ChimeraModel model = (ChimeraModel)modelIter.next();
+			Integer modelNumber = new Integer(model.getModelNumber());
+
+			// If we already know about this model number, get the Structure,
+			// which tells us about the associated CyNode
+			if (modelHash.containsKey(modelNumber)) {
+				ChimeraModel oldModel = (ChimeraModel)modelHash.get(modelNumber);
+				model.setStructure(oldModel.getStructure());
+			} else {
+				// At some point, we should walk through all of the nodes in the
+				// current network and see if we can match them up with this.  Until
+				// then, set it to null
+				model.setStructure((Structure)null);
+			}
+
+			newHash.put(modelNumber,model);
+
+			// Get the residue information
+			getResidueInfo(model);
+		}
+
+		// Replace the old model list
+		models = (ArrayList)newModelList;
+		modelHash = newHash;
+
+		// Done
+	}
 
 	/**
 	 * Reply listener thread
@@ -202,7 +263,7 @@ public class Chimera {
 			this.chimera = chimera;
  		 	// Get a line-oriented reader
 	  	readChan = chimera.getInputStream();
-			lineReader = new BufferedReader(new InputStreamReader(readChan), 1024*100);
+			lineReader = new BufferedReader(new InputStreamReader(readChan));
 		}
 
 		public void run() {
@@ -222,19 +283,10 @@ public class Chimera {
 			}
 		}
 
-		private String readLine(InputStream readChan) throws IOException {
- 		 	int nbytes = readChan.available();
- 		 	if (nbytes == 0)
- 		 		return null;
- 		 	byte buffer[] = {};
- 		 	readChan.read(buffer, 0, nbytes);
- 		 	return new String(buffer);
- 	 }
-
 	  /**
  	  * Read input from Chimera
  	  */
- 	 private ArrayList getReply() throws IOException {
+ 	  private ArrayList getReply() throws IOException {
  		 	if (chimera == null)
  		 		return null;
 
@@ -258,7 +310,23 @@ public class Chimera {
 		}
 	}
 
-	private ChimeraModel getModelInfo(Structure structure) throws IOException {
+	private List getModelList() {
+		ArrayList<ChimeraModel>modelList = new ArrayList<ChimeraModel>();
+		replyLog.clear();
+		this.command ("listm");
+		Iterator modelIter = replyLog.iterator();
+		while (modelIter.hasNext()) {
+			String modelLine = (String)modelIter.next();
+			String name = getModelName(modelLine);
+			int model = getModelNumber(modelLine);
+			ChimeraModel chimeraModel = new ChimeraModel(name, null);
+			chimeraModel.setModelNumber(model);
+			modelList.add(chimeraModel);
+		}
+		return modelList;
+	}
+
+	private ChimeraModel getModelInfo(Structure structure) {
 		String name = structure.name();
 
 		replyLog.clear();
@@ -268,26 +336,37 @@ public class Chimera {
 			String modelLine = (String)modelIter.next();
 			if (modelLine.contains(name)) {
 				// got the right model, now get the model number
-				int hash = modelLine.indexOf('#');
-				int space = modelLine.indexOf(' ',hash);
-				// model number is between hash+1 and space
-				Integer modelInteger = new Integer(modelLine.substring(hash+1,space));
-				structure.setModelNumber(modelInteger.intValue());
+				int modelNumber = getModelNumber(modelLine);
+				structure.setModelNumber(modelNumber);
 				return new ChimeraModel(name, structure);
 			}
 		}
 		return null;
 	}
 
-	private void getResidueInfo(ChimeraModel model) throws IOException {
+	private int getModelNumber(String inputLine) {
+		int hash = inputLine.indexOf('#');
+		int space = inputLine.indexOf(' ',hash);
+		// model number is between hash+1 and space
+		Integer modelInteger = new Integer(inputLine.substring(hash+1,space));
+		return modelInteger.intValue();
+	}
+
+	private String getModelName(String inputLine) {
+		int start = inputLine.indexOf("name ");
+		return inputLine.substring(start+5);
+	}
+
+	private void getResidueInfo(ChimeraModel model) {
 		int modelNumber = model.getModelNumber();
 		replyLog.clear();
 
 		// Get the list -- it will be in the reply log
-		this.command ("listr");
+		this.command ("listr spec #"+modelNumber);
 		Iterator resIter = replyLog.iterator();
 		while (resIter.hasNext()) {
-			ChimeraResidue r = new ChimeraResidue((String)resIter.next());
+			String inputLine = (String)resIter.next();
+			ChimeraResidue r = new ChimeraResidue(inputLine);
 			if (r.getModelNumber() == modelNumber) {
 				model.addResidue(r);
 			}

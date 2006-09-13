@@ -38,6 +38,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import structureViz.model.ChimeraModel;
+
 /**
  * This class provides the implementation for the ChimeraResidue, 
  * object
@@ -56,6 +58,7 @@ public class ChimeraResidue {
 	private String index;
 	private String chainId;
 	private int modelNumber;
+	private ChimeraModel chimeraModel;
 	private HashMap aaNames = null;
 	private static int displayType = THREE_LETTER;
 
@@ -148,6 +151,10 @@ public class ChimeraResidue {
 	public String getType () { return this.type; }
 
 	public int getModelNumber () { return this.modelNumber; }
+	public ChimeraModel getChimeraModel () { return this.chimeraModel; }
+	public void setChimeraModel (ChimeraModel chimeraModel) { 
+		this.chimeraModel = chimeraModel; 
+	}
 
 	public static void setDisplayType (int type) {
 		displayType = type;

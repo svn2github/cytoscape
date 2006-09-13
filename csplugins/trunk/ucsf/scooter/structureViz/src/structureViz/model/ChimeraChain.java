@@ -33,10 +33,14 @@
 package structureViz.model;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import structureViz.model.ChimeraModel;
 
 /**
  * This class provides the implementation for the ChimeraChain 
@@ -48,20 +52,24 @@ import java.util.Set;
 
 public class ChimeraChain {
 	private int model;
+	private ChimeraModel chimeraModel;
 	private String chainId;
-	private ArrayList residueList;
+	private TreeMap residueList;
 
 	public ChimeraChain(int model, String chainId) {
 		this.model = model;
 		this.chainId = chainId;
-		residueList = new ArrayList();
+		residueList = new TreeMap();
 	}
 
 	public void addResidue(ChimeraResidue residue) {
-		residueList.add(residue);
+		// Get the value of the index (should be an int!)
+		Integer index = new Integer(residue.getIndex());
+		// Put it in our map so that we can return it in order
+		residueList.put(index.intValue(), residue);
 	}
 
-	public ArrayList getResidueList() { return residueList; }
+	public Collection getResidueList() { return residueList.values(); }
 
 	public String getChainId() { return chainId; }
 
@@ -72,4 +80,9 @@ public class ChimeraChain {
 	public String toSpec() { return("#"+model+":."+chainId); }
 
 	public int getResidueCount() { return residueList.size(); }
+
+	public void setChimeraModel(ChimeraModel model) { this.chimeraModel = model; }
+
+	public ChimeraModel getChimeraModel() { return chimeraModel; }
+
 }
