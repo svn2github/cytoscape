@@ -92,8 +92,10 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements
 	 *            routine. Not used in this editor
 	 */
 	public void initializeControls(List args) {
-		String controllingNodeAttribute = this.getControllingNodeAttribute();
-		String controllingEdgeAttribute = this.getControllingEdgeAttribute();
+	    // MLC 07/27/06:
+	    // String controllingNodeAttribute = this.getControllingNodeAttribute();
+	    // MLC 07/27/06:
+	    // String controllingEdgeAttribute = this.getControllingEdgeAttribute();
 
 		shapePalette = 
 		CytoscapeEditorManager.getCurrentShapePalette();
@@ -124,7 +126,8 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements
 				if (edgeMappings.get(i) instanceof DiscreteMapping) {
 					DiscreteMapping dArrowCandidate = (DiscreteMapping) edgeMappings
 							.get(i);
-					String attr = dArrowCandidate.getControllingAttributeName();
+// MLC 07/27/06:
+//					String attr = dArrowCandidate.getControllingAttributeName();
 //					System.out.println("checking attribute: " + attr
 //							+ " against controlling attribute: "
 //							+ controllingEdgeAttribute)
@@ -188,7 +191,8 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements
 				if (mappings.get(i) instanceof DiscreteMapping) {
 					DiscreteMapping dfillCandidate = (DiscreteMapping) mappings
 							.get(i);
-					String attr = dfillCandidate.getControllingAttributeName();
+// MLC 07/27/06:
+//					String attr = dfillCandidate.getControllingAttributeName();
 //					System.out.println("checking attribute: " + attr
 //							+ " against controlling attribute: "
 //							+ controllingNodeAttribute);
@@ -226,7 +230,8 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements
 				if (mappings.get(i) instanceof DiscreteMapping) {
 					DiscreteMapping dshapeCandidate = (DiscreteMapping) mappings
 							.get(i);
-					String attr = dshapeCandidate.getControllingAttributeName();
+// MLC 07/27/06:
+//					String attr = dshapeCandidate.getControllingAttributeName();
 //					if (attr.equals(controllingNodeAttribute)) {
 						dshape = dshapeCandidate;
 						break;

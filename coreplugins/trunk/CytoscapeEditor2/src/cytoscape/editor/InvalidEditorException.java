@@ -15,6 +15,9 @@ package cytoscape.editor;
  */
 public class InvalidEditorException extends Exception {
 	
+	// MLC 08/06/06:
+	private static final long serialVersionUID = 1850310863690996166L;
+
 	/**
 	 * Create a new exception when there is no registered editor corresponding
 	 * to the editor type suppied to the CytoscapeEditorFactory.getEditor() method.

@@ -26,6 +26,9 @@ import cytoscape.editor.impl.BasicCytoShapeEntity;
  */
 public class BasicCytoShapeTransferHandler extends TransferHandler {
 
+	// MLC 09/14/06:
+	private static final long serialVersionUID = 778042405547689517L;
+
 	DataFlavor basicCytoShapeFlavor; 
     	
     DragGestureListener _cytoShape;

@@ -11,11 +11,8 @@ import giny.model.Node;
 import giny.view.NodeView;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 

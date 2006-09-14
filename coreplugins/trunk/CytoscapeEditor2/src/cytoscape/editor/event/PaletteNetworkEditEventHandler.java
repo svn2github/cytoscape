@@ -6,8 +6,6 @@ package cytoscape.editor.event;
 
 import giny.view.NodeView;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -15,9 +13,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Iterator;
-
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 
 import phoebe.PhoebeCanvasDropEvent;
 import cytoscape.CyNode;
@@ -27,7 +22,6 @@ import cytoscape.editor.editors.SimpleBioMoleculeEditor;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
 
 /**
  * 
