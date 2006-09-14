@@ -50,11 +50,12 @@ import structureViz.model.ChimeraModel;
  *
  */
 
-public class ChimeraChain {
+public class ChimeraChain implements ChimeraStructuralObject {
 	private int model;
 	private ChimeraModel chimeraModel;
 	private String chainId;
 	private TreeMap residueList;
+	private Object userData;
 
 	public ChimeraChain(int model, String chainId) {
 		this.model = model;
@@ -71,18 +72,41 @@ public class ChimeraChain {
 
 	public Collection getResidueList() { return residueList.values(); }
 
+	public ChimeraResidue getResidue(String residueIndex) {
+		Integer index = new Integer(residueIndex);
+		return (ChimeraResidue)residueList.get(index.intValue());
+	}
+
 	public String getChainId() { return chainId; }
 
 	public int getModelNumber() { return model; }
 		
-	public String toString() { return("Chain "+chainId+" ("+getResidueCount()+" residues)"); }
+	public String toString() { 
+		if (chainId.equals("_")) {
+			return("Chain (no ID) ("+getResidueCount()+" residues)");
+		} else {
+			return("Chain "+chainId+" ("+getResidueCount()+" residues)");
+		}
+	}
 
-	public String toSpec() { return("#"+model+":."+chainId); }
+	public String toSpec() { 
+		if (chainId.equals("_")) {
+			return("#"+model+":."); 
+		} else {
+			return("#"+model+":."+chainId); 
+		}		
+	}
 
 	public int getResidueCount() { return residueList.size(); }
 
 	public void setChimeraModel(ChimeraModel model) { this.chimeraModel = model; }
 
 	public ChimeraModel getChimeraModel() { return chimeraModel; }
+
+	public Object getUserData () {return userData;}
+
+	public void setUserData (Object data) {
+		this.userData = data;
+	}
 
 }

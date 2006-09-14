@@ -128,7 +128,7 @@ public class ActionPopupMenu extends JPopupMenu {
 				addItem(sub2, "Solid", "surface sel;surfrepr solid",0);
 				addItem(sub2, "Mesh", "surface sel;surfrepr mesh",0);
 				addItem(sub2, "Dot", "surface sel;surfrepr dot",0);
-				JMenu sub3 = new JMenu("Tansparency");
+				JMenu sub3 = new JMenu("Transparency");
 				{
 					addItem(sub3, "0%", "surftransparency 0% sel",0);
 					addItem(sub3, "10%", "surftransparency 10% sel",0);

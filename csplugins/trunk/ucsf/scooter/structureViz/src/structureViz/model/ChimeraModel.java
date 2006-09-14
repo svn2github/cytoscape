@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.awt.Color;
 
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraResidue;
@@ -52,15 +53,17 @@ import structureViz.model.Structure;
  *
  */
 
-public class ChimeraModel {
+public class ChimeraModel implements ChimeraStructuralObject {
 	private String name;
 	private int identifier;
 	private TreeMap chains;
 	private TreeMap residues;
 	private HashMap residueMap;
 	private Structure structure;
+	private Color modelColor;
+	private Object userData;
 
-	public ChimeraModel (String name, Structure structure) {
+	public ChimeraModel (String name, Structure structure, Color color) {
 		this.name = name;
 		if (structure != null)
 			this.identifier = structure.modelNumber();
@@ -68,6 +71,49 @@ public class ChimeraModel {
 		this.residues = new TreeMap();
 		this.residueMap = new HashMap();
 		this.structure = structure;
+		this.modelColor = color;
+	}
+
+	public Set getChainNames () { return chains.keySet(); }
+
+	public Collection getChains () { return chains.values(); }
+
+	public Color getModelColor () { return this.modelColor; }
+
+	public void setModelColor (Color color) { 
+		this.modelColor = color;
+	}
+
+	public ChimeraChain getChain(String chain) {
+		return (ChimeraChain)chains.get(chain);
+	}
+
+	public Collection getResidues () { return residues.values(); }
+
+	public ChimeraResidue getResidue (String index) {
+		return (ChimeraResidue)residueMap.get(index);
+	}
+
+	public String getModelName () { return this.name; }
+
+	public int getModelNumber () { return this.identifier; }
+
+	public void setModelNumber (int modelNumber) { this.identifier = modelNumber; }
+
+	public ChimeraModel getChimeraModel () { return this; }
+
+	public Structure getStructure() { return this.structure; }
+
+	public void setStructure(Structure structure) { this.structure = structure; }
+
+	public int getChainCount () { return chains.keySet().size(); }
+
+	public int getResidueCount () { return residues.size(); }
+
+	public Object getUserData () {return userData;}
+
+	public void setUserData (Object data) {
+		this.userData = data;
 	}
 
 	public void addResidue (ChimeraResidue residue) {
@@ -97,28 +143,6 @@ public class ChimeraModel {
 		chain.addResidue(residue);
 	}
 
-	public Set getChainNames () { return chains.keySet(); }
-
-	public Collection getChains () { return chains.values(); }
-
-	public ChimeraChain getChain(String chain) {
-		return (ChimeraChain)chains.get(chain);
-	}
-
-	public Collection getResidues () { return residues.values(); }
-
-	public ChimeraResidue getResidue (String index) {
-		return (ChimeraResidue)residueMap.get(index);
-	}
-
-	public int getModelNumber () { return this.identifier; }
-
-	public void setModelNumber (int modelNumber) { this.identifier = modelNumber; }
-
-	public Structure getStructure() { return this.structure; }
-
-	public void setStructure(Structure structure) { this.structure = structure; }
-
 	public String toString() { 
 		String nodeName = "{none}";
 		if (structure != null)
@@ -132,7 +156,4 @@ public class ChimeraModel {
 
 	public String toSpec() { return ("#"+identifier); }
 
-	public int getChainCount () { return chains.keySet().size(); }
-
-	public int getResidueCount () { return residues.size(); }
 }

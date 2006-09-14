@@ -33,14 +33,21 @@
 package structureViz.ui;
 
 // System imports
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
+import javax.swing.text.Position;
 import javax.swing.WindowConstants.*;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.*;
 
 // Cytoscape imports
@@ -50,6 +57,7 @@ import cytoscape.view.CyNetworkView;
 import giny.view.NodeView;
 
 // StructureViz imports
+import structureViz.model.ChimeraStructuralObject;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraResidue;
 import structureViz.model.ChimeraChain;
@@ -62,6 +70,7 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 	private static final int EXIT = 1;
 	private static final int REFRESH = 2;
 	private static ArrayList selectedList = null;
+	private boolean ignoreSelection = false;
 
 	// Dialog components
 	private JLabel titleLabel;
@@ -84,37 +93,38 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 	public void valueChanged(TreeSelectionEvent e) {
 		TreePath[] paths = navigationTree.getSelectionPaths();
+		if (paths == null) return;
+
 		DefaultMutableTreeNode node = null;
 		String selSpec = "sel ";
 		HashMap modelsToSelect = new HashMap();
 
-		if (paths == null) return;
-
 		for (int i = 0; i < paths.length; i++) {
 			node = (DefaultMutableTreeNode) paths[i].getLastPathComponent();
-			Object nodeInfo = node.getUserObject();
-			ChimeraModel model = null;
-			if (nodeInfo.getClass() == ChimeraModel.class) {
-				// Select the model
-				selSpec = selSpec.concat(((ChimeraModel)nodeInfo).toSpec());
-				modelsToSelect.put(nodeInfo,nodeInfo);
-			} else if (nodeInfo.getClass() == ChimeraChain.class) {
-				// Select the chain
-				selSpec = selSpec.concat(((ChimeraChain)nodeInfo).toSpec());
-				model = ((ChimeraChain)nodeInfo).getChimeraModel();
-				modelsToSelect.put(model,model);
-			} else if (nodeInfo.getClass() == ChimeraResidue.class) {
-				// Select the residue
-				selSpec = selSpec.concat(((ChimeraResidue)nodeInfo).toSpec());
-				model = ((ChimeraResidue)nodeInfo).getChimeraModel();
-				modelsToSelect.put(model,model);
-			}
+			ChimeraStructuralObject nodeInfo = (ChimeraStructuralObject)node.getUserObject();
+			ChimeraModel model = nodeInfo.getChimeraModel();
+			selSpec = selSpec.concat(nodeInfo.toSpec());
+			modelsToSelect.put(model,model);
 			if (i < paths.length-1) selSpec.concat("|");
 			// Add the model to be selected (if it's not already)
 		}
-		chimeraObject.command(selSpec);
+		if (!ignoreSelection)
+			chimeraObject.select(selSpec);
 
 		selectCytoscapeNodes(modelsToSelect);
+	}
+
+	public void updateSelection(List selectionList) {
+		navigationTree.clearSelection();
+		Iterator selectionIter = selectionList.iterator();
+		this.ignoreSelection = true;
+		while (selectionIter.hasNext()) {
+			ChimeraStructuralObject selectedObject = (ChimeraStructuralObject)selectionIter.next();
+			TreePath path = (TreePath)selectedObject.getUserData();
+			navigationTree.expandPath(path);
+			navigationTree.addSelectionPath(path);
+		}
+		this.ignoreSelection = false;
 	}
 
 	private void selectCytoscapeNodes(HashMap modelsToSelect) {
@@ -184,16 +194,16 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 		// Select menu
 		JMenu selectMenu = new JMenu("Select");
-		addMenuCommand(selectMenu, "Ligand", "select ligand");
-		addMenuCommand(selectMenu, "Ions", "select ions");
-		addMenuCommand(selectMenu, "Solvent", "select solvent");
+		addMenuSelectCommand(selectMenu, "Ligand", "select ligand");
+		addMenuSelectCommand(selectMenu, "Ions", "select ions");
+		addMenuSelectCommand(selectMenu, "Solvent", "select solvent");
 		JMenu secondaryMenu = new JMenu("Secondary Structure");
-		addMenuCommand(secondaryMenu, "Helix", "select helix");
-		addMenuCommand(secondaryMenu, "Strand", "select strand");
-		addMenuCommand(secondaryMenu, "Turn", "select turn");
+		addMenuSelectCommand(secondaryMenu, "Helix", "select helix");
+		addMenuSelectCommand(secondaryMenu, "Strand", "select strand");
+		addMenuSelectCommand(secondaryMenu, "Turn", "select turn");
 		selectMenu.add(secondaryMenu);
-		addMenuCommand(selectMenu, "Invert selection", "select invert");
-		addMenuCommand(selectMenu, "Clear selection", "~select");
+		addMenuSelectCommand(selectMenu, "Invert selection", "select invert");
+		addMenuSelectCommand(selectMenu, "Clear selection", "~select");
 		menuBar.add(selectMenu);
 
 		setJMenuBar(menuBar);
@@ -228,10 +238,10 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		return menuItem;
 	}
 
-	private JMenuItem addMenuCommand (JMenu menu, String label, String command) {
+	private JMenuItem addMenuSelectCommand (JMenu menu, String label, String command) {
 		JMenuItem menuItem = new JMenuItem(label);
 		{
-			MenuActionCommandListener va = new MenuActionCommandListener(command);
+			MenuActionSelectListener va = new MenuActionSelectListener(command);
 			menuItem.addActionListener(va);
 		}
 		menu.add(menuItem);
@@ -241,7 +251,9 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 	private DefaultMutableTreeNode buildTree() {
 		int modelCount = chimeraObject.getChimeraModels().size();
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(modelCount+" Open Chimera Models");
+		TreePath rootPath = new TreePath(rootNode);
 
+		TreePath path = null;
 		DefaultMutableTreeNode model = null;
 
 		// Add all of the Chimera models
@@ -249,7 +261,9 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		while (modelIter.hasNext()) {
 			ChimeraModel chimeraModel = (ChimeraModel)modelIter.next();
 			model = new DefaultMutableTreeNode(chimeraModel);
-			addChainNodes(chimeraModel, model);
+			path = rootPath.pathByAddingChild(model);
+			chimeraModel.setUserData(path);
+			addChainNodes(chimeraModel, model, path);
 			rootNode.add(model);
 		}
 		return rootNode;
@@ -262,15 +276,18 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		model.reload();
 	}
 
-	private void addChainNodes(ChimeraModel chimeraModel, DefaultMutableTreeNode treeModel) {
+	private void addChainNodes(ChimeraModel chimeraModel, 
+														 DefaultMutableTreeNode treeModel,
+														 TreePath treePath) {
 		DefaultMutableTreeNode chain = null;
+		TreePath chainPath = null;
 		ChimeraChain chimeraChain = null; 
 
 		Collection chainList = chimeraModel.getChains();
 
 		if (chainList.size() == 0) {
 			// No chains!  Just add the residues
-			addResidues(chimeraModel.getResidues(), treeModel);	
+			addResidues(chimeraModel.getResidues(), treeModel, treePath);	
 			return;
 		}
 
@@ -278,32 +295,39 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		while (chainIter.hasNext()) {
 			chimeraChain = (ChimeraChain)chainIter.next();
 			chain = new DefaultMutableTreeNode(chimeraChain);
-			addResidues(chimeraChain.getResidueList(), chain);
+			chainPath = treePath.pathByAddingChild(chain);
+			chimeraChain.setUserData(chainPath);
+			addResidues(chimeraChain.getResidueList(), chain, chainPath);
 			treeModel.add(chain);	
 		}
 	}
 
-	private void addResidues(Collection residues, DefaultMutableTreeNode treeModel) {
+	private void addResidues(Collection residues, 
+													 DefaultMutableTreeNode treeModel,
+													 TreePath treePath) {
 		DefaultMutableTreeNode residue = null;
+		TreePath residuePath = null;
 		Iterator resIter = residues.iterator();
 
 		while (resIter.hasNext()) {
 			ChimeraResidue res = (ChimeraResidue)resIter.next();
 			res.setDisplayType(this.residueDisplay);
 			residue = new DefaultMutableTreeNode(res);
+			residuePath = treePath.pathByAddingChild(residue);
+			res.setUserData(residuePath);
 			treeModel.add(residue);
 		}
 	}	
 
-	class MenuActionCommandListener extends AbstractAction {
+	class MenuActionSelectListener extends AbstractAction {
 		String command;
 
-		public MenuActionCommandListener (String command) {
+		public MenuActionSelectListener (String command) {
 			this.command = command;
 		}
 
 		public void actionPerformed(ActionEvent ev) {
-			chimeraObject.command(command);
+			chimeraObject.select(command);
 			// Special case for clearing the selection
 			if (command.equals("~select")) {
 				navigationTree.clearSelection();

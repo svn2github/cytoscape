@@ -74,6 +74,7 @@ public class StructureViz extends CytoscapePlugin
 	public static final int CLOSE = 2;
 	public static final int ALIGN = 3;
 	public static final int EXIT = 4;
+	public static final String[] attributeKeys = {"Structure","pdb","pdbFileName"};
 
   /**
    * Create our action and add it to the plugins menu
@@ -191,22 +192,14 @@ public class StructureViz extends CytoscapePlugin
         //first get the corresponding node in the network
         CyNode node = (CyNode)nView.getNode();
         String nodeID = node.getIdentifier();
-        // See if there is a 'structure' attribute
-        if (cyAttributes.hasAttribute(nodeID, "Structure")) {
-          // Yes, add it to our list
-          String structure = cyAttributes.getStringAttribute(nodeID, "Structure");
-          structureList.add(new Structure(structure,node));
-        }
-        else if (cyAttributes.hasAttribute(nodeID, "pdb")) {
-          // Yes, add it to our list
-          String structure = cyAttributes.getStringAttribute(nodeID, "pdb");
-          structureList.add(new Structure(structure,node));
-        }
-        else if (cyAttributes.hasAttribute(nodeID, "pdbFileName")) {
-          // Yes, add it to our list
-          String structure = cyAttributes.getStringAttribute(nodeID, "pdbFileName");
-          structureList.add(new Structure(structure,node));
-        }
+				for (int key = 0; key < attributeKeys.length; key++) {
+        	if (cyAttributes.hasAttribute(nodeID, attributeKeys[key])) {
+          	// Add it to our list
+          	String structure = cyAttributes.getStringAttribute(nodeID, attributeKeys[key]);
+          	structureList.add(new Structure(structure,node));
+						break;
+        	}
+				}
       }
 			return structureList;
 		}
@@ -338,6 +331,7 @@ public class StructureViz extends CytoscapePlugin
 				mnDialog.pack();
 				mnDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 				mnDialog.setVisible(true);
+				chimera.setDialog(mnDialog);
     	} else {
 				mnDialog.modelChanged();
 			}

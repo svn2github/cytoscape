@@ -48,7 +48,7 @@ import structureViz.model.ChimeraModel;
  *
  */
 
-public class ChimeraResidue {
+public class ChimeraResidue implements ChimeraStructuralObject {
 
 	public static final int SINGLE_LETTER = 0;
 	public static final int THREE_LETTER = 1;
@@ -59,6 +59,7 @@ public class ChimeraResidue {
 	private String chainId;
 	private int modelNumber;
 	private ChimeraModel chimeraModel;
+	private Object userData;
 	private HashMap aaNames = null;
 	private static int displayType = THREE_LETTER;
 
@@ -91,7 +92,7 @@ public class ChimeraResidue {
 			if (iTokens.length > 1)
 				this.chainId = iTokens[1];
 			else
-				this.chainId = null;
+				this.chainId = "_";
 		} else
 			this.index = rTokens[0];
 	}
@@ -138,10 +139,10 @@ public class ChimeraResidue {
 	}
 
 	public String toSpec () {
-		if (chainId != null)
+		if (!chainId.equals("_"))
 			return("#"+modelNumber+":"+index+"."+chainId);
 		else
-			return("#"+modelNumber+":"+index);
+			return("#"+modelNumber+":"+index+".");
 	}
 
 	public String getIndex () { return this.index; }
@@ -158,6 +159,12 @@ public class ChimeraResidue {
 
 	public static void setDisplayType (int type) {
 		displayType = type;
+	}
+
+	public Object getUserData () {return userData;}
+
+	public void setUserData (Object data) {
+		this.userData = data;
 	}
 
 	private String toFullName(String aaType) {
