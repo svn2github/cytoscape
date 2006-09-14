@@ -10,10 +10,6 @@ import javax.swing.AbstractAction;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
-import cytoscape.Cytoscape;
-import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.editor.impl.ShapePalette;
-
 /**
  * action called when user invokes "undo" operation
  * 
@@ -23,6 +19,8 @@ import cytoscape.editor.impl.ShapePalette;
  */
 public class UndoAction extends AbstractAction {
 	
+	// MLC 09/14/06:
+	private static final long serialVersionUID = -5223342344074921377L;
 	UndoManager undo;
 	RedoAction redoAction;
 	

@@ -16,7 +16,6 @@ import cytoscape.editor.event.PaletteNetworkEditEventHandler;
 import cytoscape.editor.impl.CytoShapeIcon;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.visual.Arrow;
-import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
