@@ -75,6 +75,9 @@ public class VizUIUtilities {
 	NodeAppearance na = nodeCalc.getDefaultAppearance();
 	EdgeAppearance ea = edgeCalc.getDefaultAppearance();
 
+	System.out.println("na " + na.getDescription("asdf"));
+	System.out.println("ea " + ea.getDescription("asdf"));
+	System.out.println("type " + type);
 	defaultObj = na.get(type);
 	if ( defaultObj == null ) 
 		defaultObj = ea.get(type);

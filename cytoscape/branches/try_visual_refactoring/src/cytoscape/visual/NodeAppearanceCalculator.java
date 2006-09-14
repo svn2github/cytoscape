@@ -94,7 +94,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
    * CyNetwork. A new NodeApperance object will be created.
    */
   public NodeAppearance calculateNodeAppearance(Node node, CyNetwork network) {
-    NodeAppearance appr = new NodeAppearance();
+    NodeAppearance appr = (NodeAppearance)defaultAppearance.clone();
     calculateNodeAppearance(appr, node, network);
     return appr;
   }

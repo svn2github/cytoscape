@@ -80,13 +80,13 @@ public class NodeAppearance implements Appearance, Cloneable {
     public NodeAppearance() {}
     
     public Color getFillColor() {return fillColor;}
-    public void setFillColor(Color c) {fillColor = c;}
+    public void setFillColor(Color c) { if ( c != null ) fillColor = c;}
     
     public Color getBorderColor() {return borderColor;}
-    public void setBorderColor(Color c) {borderColor = c;}
+    public void setBorderColor(Color c) { if ( c != null ) borderColor = c;}
     
     public LineType getBorderLineType() {return borderLineType;}
-    public void setBorderLineType(LineType lt) {borderLineType = lt;}
+    public void setBorderLineType(LineType lt) { if ( lt != null ) borderLineType = lt;}
     
     public byte getShape() {return shape;}
     public void setShape(byte s) {shape = s;}
@@ -98,19 +98,19 @@ public class NodeAppearance implements Appearance, Cloneable {
     public void setHeight(double d) {height = d;}
     
     public String getLabel() {return label;}
-    public void setLabel(String s) {label = s;}
+    public void setLabel(String s) { if ( s != null ) label = s;}
     
     public String getToolTip() {return toolTip;}
-    public void setToolTip(String s) {toolTip = s;}
+    public void setToolTip(String s) {if ( s != null ) toolTip = s;}
 
     public Font getFont() {return font;}
-    public void setFont(Font f) {font = f;}
+    public void setFont(Font f) {if ( f != null ) font = f;}
 
     public float getFontSize() {return (float)font.getSize2D();}
     public void setFontSize(float f) { font = font.deriveFont(f); }
 
     public Color getLabelColor() {return fontColor;}
-    public void setLabelColor(Color c) {fontColor = c;}
+    public void setLabelColor(Color c) {if ( c != null ) fontColor = c;}
 
     public void applyAppearance(NodeView nodeView, boolean optimizer) {
 
@@ -358,6 +358,12 @@ public class NodeAppearance implements Appearance, Cloneable {
             break;
 	case VizMapUI.NODE_TOOLTIP:
 	    defaultObj = getToolTip();
+	    break;
+	case VizMapUI.NODE_FONT_FACE:
+	    defaultObj = getFont();
+	    break;
+	case VizMapUI.NODE_FONT_SIZE:
+	    defaultObj = new Double( getFont().getSize() );
 	    break;
     	}
 

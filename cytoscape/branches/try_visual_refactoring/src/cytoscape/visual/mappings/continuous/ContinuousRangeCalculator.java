@@ -77,13 +77,16 @@ public class ContinuousRangeCalculator {
      */
     public Object calculateRangeValue(String attrName) {
         if (attrBundle == null || attrName == null) {
+	System.out.println("attr bundle or name is null");
             return null;
         }
         if (points.size() == 0) {
+	System.out.println("points is 0");
             return null;
         }
         Object attrValue = attrBundle.get(attrName);
         if (!(attrValue instanceof Number)) {
+	System.out.println("attr val is not a number " + attrName);
             return null;
         }
         Object object = getRangeValue((Number) attrValue);
@@ -121,6 +124,7 @@ public class ContinuousRangeCalculator {
         //  pass to our interpolator function. First check for a null
         //  interpolator function
         if (this.interpolator == null) {
+		System.out.println("interp is null");
             return null;
         }
 

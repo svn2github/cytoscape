@@ -66,7 +66,8 @@ public class CalculatorFactory {
         String errString = "CalculatorFactory: error processing baseKey " + baseKey;
         //get the class object representing the top-level interface Calculator
         Class calcClass = Calculator.class;
-        
+       
+       /*
         //get the class object representing the desired interface, and make sure
         //it is a subclass of Calculator
         Class intClass = null;
@@ -86,6 +87,7 @@ public class CalculatorFactory {
             System.err.println(s);
             return null;
         }
+	*/
         
         //get the class object for the real implementation object specified by
         //these properties
@@ -106,6 +108,7 @@ public class CalculatorFactory {
             System.err.println(s);
             return null;
         }
+	/*
         //assert(realClass != null);  //should be impossible
         if (!intClass.isAssignableFrom(realClass)) {
             System.err.println(errString);
@@ -114,6 +117,7 @@ public class CalculatorFactory {
             System.err.println(s);
             return null;
         }
+	*/
         
         //look for a constructor in this class that takes the right arguments
         Constructor constructor = null;

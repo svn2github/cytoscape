@@ -158,12 +158,13 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         assertTrue( secondApp.getLabel().equals(label) );
         assertTrue( secondApp.getToolTip().equals(toolTip) );
         assertTrue( secondApp.getFont().equals(font) );
-        
+
         nac.setNodeSizeLocked(true);
         nac.calculateNodeAppearance(firstApp, first, network1);
         assertTrue( firstApp.getWidth() == height );
         nac.calculateNodeAppearance(secondApp, second, network2);
         assertTrue( secondApp.getWidth() == height );
+
     }
 //---------------------------------------------------------------------------
     public static void main (String [] args) {

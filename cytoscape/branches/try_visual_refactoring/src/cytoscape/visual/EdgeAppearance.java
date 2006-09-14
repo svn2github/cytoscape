@@ -76,25 +76,25 @@ public class EdgeAppearance implements Appearance, Cloneable {
     public EdgeAppearance() {}
     
     public Color getColor() {return color;}
-    public void setColor(Color c) {color = c;}
+    public void setColor(Color c) {if (c != null ) color = c;}
     
     public LineType getLineType() {return lineType;}
-    public void setLineType(LineType lt) {lineType = lt;}
+    public void setLineType(LineType lt) {if (lt != null ) lineType = lt;}
     
     public Arrow getSourceArrow() {return sourceArrow;}
-    public void setSourceArrow(Arrow a) {sourceArrow = a;}
+    public void setSourceArrow(Arrow a) {if (a != null ) sourceArrow = a;}
     
     public Arrow getTargetArrow() {return targetArrow;}
-    public void setTargetArrow(Arrow a) {targetArrow = a;}
+    public void setTargetArrow(Arrow a) {if (a != null ) targetArrow = a;}
     
     public String getLabel() {return label;}
-    public void setLabel(String s) {label = s;}
+    public void setLabel(String s) {if (s != null ) label = s;}
     
     public String getToolTip() {return toolTip;}
-    public void setToolTip(String s) {toolTip = s;}
+    public void setToolTip(String s) {if (s != null ) toolTip = s;}
 
     public Font getFont() {return font;}
-    public void setFont(Font f) {font = f;}
+    public void setFont(Font f) {if (f != null ) font = f;}
 
     public float getFontSize() {return (float)font.getSize2D();}
     public void setFontSize(float f) { font = font.deriveFont(f); }

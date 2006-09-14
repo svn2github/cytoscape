@@ -95,8 +95,9 @@ public class GenericNodeColorCalculator extends NodeCalculator {
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-	// TODOOOO ???
-        appr.setFillColor( (Color)super.getMapping(0).calculateRangeValue(attrBundle) );
+	
+        Color c =  (Color)super.getMapping(0).calculateRangeValue(attrBundle);
+        appr.setFillColor( c ); 
     }
 }
 

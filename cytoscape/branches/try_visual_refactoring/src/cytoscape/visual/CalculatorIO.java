@@ -47,6 +47,7 @@ import java.util.*;
 import java.io.*;
 
 import cytoscape.visual.calculators.*;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 /**
  * This class defines static methods for reading calculator definitions from
@@ -171,27 +172,23 @@ public class CalculatorIO {
         Properties newProps = new Properties();
         
         //gather properties for node calculators
-	List<Calculator> calcs = catalog.possibleCalculators();
-	for ( Calculator c: calcs) 
-		addProperties(newProps,catalog.getCalculators(c.getType()),c.getPropertyLabel()); 
-	/*
-        addProperties(newProps, catalog.getNodeColorCalculators(), nodeColorBaseKey);
-        addProperties(newProps, catalog.getNodeLineTypeCalculators(), nodeLineTypeBaseKey);
-        addProperties(newProps, catalog.getNodeShapeCalculators(), nodeShapeBaseKey);
-        addProperties(newProps, catalog.getNodeSizeCalculators(), nodeSizeBaseKey);
-        addProperties(newProps, catalog.getNodeLabelCalculators(), nodeLabelBaseKey);
-        addProperties(newProps, catalog.getNodeToolTipCalculators(), nodeToolTipBaseKey);
-        addProperties(newProps, catalog.getNodeFontFaceCalculators(), nodeFontFaceBaseKey);
-        addProperties(newProps, catalog.getNodeFontSizeCalculators(), nodeFontSizeBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_COLOR), nodeColorBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_LINETYPE), nodeLineTypeBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_SHAPE), nodeShapeBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_SIZE), nodeSizeBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_LABEL), nodeLabelBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_TOOLTIP), nodeToolTipBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_FONT_FACE), nodeFontFaceBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_FONT_SIZE), nodeFontSizeBaseKey);
         //gather properties for edge calculators
-        addProperties(newProps, catalog.getEdgeColorCalculators(), edgeColorBaseKey);
-        addProperties(newProps, catalog.getEdgeLineTypeCalculators(), edgeLineTypeBaseKey);
-        addProperties(newProps, catalog.getEdgeArrowCalculators(), edgeArrowBaseKey);
-        addProperties(newProps, catalog.getEdgeLabelCalculators(), edgeLabelBaseKey);
-        addProperties(newProps, catalog.getEdgeToolTipCalculators(), edgeToolTipBaseKey);
-        addProperties(newProps, catalog.getEdgeFontFaceCalculators(), edgeFontFaceBaseKey);
-        addProperties(newProps, catalog.getEdgeFontSizeCalculators(), edgeFontSizeBaseKey);
-	*/
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_COLOR), edgeColorBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_LINETYPE), edgeLineTypeBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_SRCARROW), edgeArrowBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_TGTARROW), edgeArrowBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_LABEL), edgeLabelBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_TOOLTIP), edgeToolTipBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_FONT_FACE), edgeFontFaceBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_FONT_SIZE), edgeFontSizeBaseKey);
         
         //visual styles
         Set visualStyleNames = catalog.getVisualStyleNames();
@@ -511,9 +508,9 @@ public class CalculatorIO {
      * existing calculator of the same type and name.
      */
     public static void removeDuplicate(Calculator c, CalculatorCatalog catalog) {
-	catalog.removeCalculator(c);
-
-/*
+ 	catalog.removeCalculator(c);	
+	/*
+        String name = c.toString();
         if (c instanceof NodeColorCalculator) {
             catalog.removeNodeColorCalculator(name);
         } else if (c instanceof NodeLineTypeCalculator) {
@@ -555,9 +552,10 @@ public class CalculatorIO {
      */
     public static void renameAsNeeded(Calculator c, CalculatorCatalog catalog) {
         String name = c.toString();
-        String newName = catalog.checkCalculatorName(c.getType(),name);
-
-/*
+	String newName = catalog.checkCalculatorName(c.getType(),name);
+        if (!newName.equals(name)) {c.setName(newName);}
+	/*
+        String newName;
         if (c instanceof NodeColorCalculator) {
             newName = catalog.checkNodeColorCalculatorName(name);
             if (!newName.equals(name)) {c.setName(newName);}

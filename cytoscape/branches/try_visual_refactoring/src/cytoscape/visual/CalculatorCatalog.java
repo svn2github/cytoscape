@@ -105,11 +105,17 @@ public class CalculatorCatalog {
 	 *             if unknown type passed in
 	 */
 	protected List getListenerList(byte type) throws IllegalArgumentException {
-		List l = listeners.get( new Byte(type) );
-		if ( l == null )
+		Byte b = new Byte(type);
+		List l = listeners.get( b );
+		if ( l == null ) {
+			l = new ArrayList();
+			listeners.put( b, l ); 
+		}
+			/* TODOOOO
 			throw new IllegalArgumentException("Unknown type " + type);
 		else
-			return l;
+			*/
+		return l;
 
 	}
 
@@ -188,11 +194,21 @@ public class CalculatorCatalog {
 	 * @return Map the matching Map structure
 	 */
 	protected Map<String,Calculator> getCalculatorMap(byte type) {
-		Map<String,Calculator> m = calculators.get( new Byte(type) );
+		Byte b = new Byte(type); 
+		Map<String,Calculator> m = calculators.get( b );
+		if ( m == null ) { 
+			m = new HashMap<String,Calculator>();
+			calculators.put(b,m);
+		}
+		return m;
+
+		// TODOOOO  should we throw here?
+		/*
 		if ( m == null )
 			throw new IllegalArgumentException("Unknown type " + type);
 		else
 			return m;
+		*/
 	}
 
 	/**
@@ -212,6 +228,7 @@ public class CalculatorCatalog {
 		byte calcType = getType(dupe);
 		Map<String,Calculator> theMap = getCalculatorMap(calcType);
 		addCalculator(dupe, theMap);
+			
 		// throw event listeners
 		fireStateChanged(calcType);
 	}
@@ -340,6 +357,7 @@ public class CalculatorCatalog {
 			return;
 		}
 		String name = vs.toString();
+		System.out.println("visual style name " + name);
 		// check for duplicate names
 		//System.out.println ("Keyset = " + visualStyles.keySet());
 		if (visualStyles.keySet().contains(name)) {
@@ -397,6 +415,7 @@ public class CalculatorCatalog {
 			throw new DuplicateCalculatorNameException(s);
 		}
 		m.put(name, c);
+
 	}
 
 	protected String checkName(String name, Map m) {
@@ -412,26 +431,15 @@ public class CalculatorCatalog {
 		return newName;
 	}
 
-	public Collection getCalculators(byte b) {	
+	public Collection<Calculator> getCalculators(byte b) {	
 		Map<String,Calculator> m = getCalculatorMap(b); 
-		if ( m != null )
-			return m.values();
-		else
-			return null;
+		return m.values();
 	}
 
 	public Calculator getCalculator(byte b, String name) {	
 		Map<String,Calculator> m = getCalculatorMap(b); 
-		if ( m != null )
-			return (Calculator)m.get(name);
-		else
-			return null;
+		return (Calculator)m.get(name);
 	}
-/*
-	public void addCalculator(Calculator c) {
-		addCalculator(c,calculators.get(new Byte( c.getType() )));
-	}
-	*/
 
 	public String checkCalculatorName(byte b, String name) {
 		return checkName(name,getCalculatorMap(b));
@@ -442,8 +450,8 @@ public class CalculatorCatalog {
 		return m.remove(name);
 	}
 
-	public Collection getCalculatorTypes() {
-		return calculators.values();
+	public Collection<Byte> getCalculatorTypes() {
+		return calculators.keySet();
 	}
 
 
@@ -463,8 +471,4 @@ public class CalculatorCatalog {
 		addVisualStyle(defaultVS);
 	}
 
-	public List<Calculator> possibleCalculators() {
-		// TODOOO
-		return null;
-	}
 }

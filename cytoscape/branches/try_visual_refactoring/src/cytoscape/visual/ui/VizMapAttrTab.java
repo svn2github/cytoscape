@@ -346,7 +346,10 @@ public class VizMapAttrTab extends VizMapTab {
        JComboBox.
     */
     Collection calculators = getCalculators(this.type);
-    Vector comboCalcs = new Vector(calculators);
+    Vector comboCalcs = new Vector();
+    if ( calculators != null )
+    	comboCalcs.addAll(calculators);
+
 
     //it's possible the current calculator isn't in the catalog; if so,
     //add it to the combo box

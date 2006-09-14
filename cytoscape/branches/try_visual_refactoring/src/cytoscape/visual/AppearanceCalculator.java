@@ -48,6 +48,7 @@ import java.util.Properties;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.List;
+import java.util.ArrayList;
 
 import giny.model.Node;
 import cytoscape.data.CyAttributes;
@@ -65,7 +66,7 @@ import cytoscape.visual.parsers.*;
  */
 public abstract class AppearanceCalculator implements Cloneable {
 
-  List<Calculator> calcs;
+  List<Calculator> calcs = new ArrayList<Calculator>();
 
   protected Appearance tmpDefaultAppearance;
 
@@ -117,6 +118,7 @@ public abstract class AppearanceCalculator implements Cloneable {
   }
 
   public void setCalculator(Calculator c) {
+  	System.out.println("adding calc " + c.toString());
   	Calculator toReplace = null;
   	for (Calculator nc : calcs) 
 		if ( nc.getType() == c.getType() ) {
@@ -147,9 +149,11 @@ public abstract class AppearanceCalculator implements Cloneable {
 
     appr.applyDefaultProperties(nacProps,baseKey);
 
-    for ( Calculator c : catalog.possibleCalculators() ) {
-        value = nacProps.getProperty(baseKey + "." + c.getPropertyLabel() );
-        Calculator newCalc = catalog.getCalculator( c.getType(), value );
+    for ( Byte b : catalog.getCalculatorTypes() ) {
+    	for ( Calculator c : catalog.getCalculators(b.byteValue()) ) {
+		// TODOOOO
+        	value = nacProps.getProperty(baseKey + "." + c.getPropertyLabel() );
+        	Calculator newCalc = catalog.getCalculator( c.getType(), value ); 
 
         if ( newCalc != null ) {
                 Calculator remove = null;
@@ -165,6 +169,7 @@ public abstract class AppearanceCalculator implements Cloneable {
 
                 calcs.add( newCalc );
         }
+       }
     }
   }
     
@@ -176,7 +181,7 @@ public abstract class AppearanceCalculator implements Cloneable {
     for ( Calculator c : calcs ) {
     	// do actual
     	key = baseKey + c.getPropertyLabel();
-	value = c.getPropertyObjectString();
+	value = c.toString();
 	newProps.setProperty(key,value);
     }
 

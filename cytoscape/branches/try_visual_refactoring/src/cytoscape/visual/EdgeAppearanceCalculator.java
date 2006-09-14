@@ -91,7 +91,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      * CyNetwork. A new EdgeApperance object will be created.
      */
     public EdgeAppearance calculateEdgeAppearance(Edge edge, CyNetwork network) {
-        EdgeAppearance appr = new EdgeAppearance();
+        EdgeAppearance appr = (EdgeAppearance)defaultAppearance.clone(); 
         calculateEdgeAppearance(appr, edge, network);
         return appr;
     }
