@@ -65,8 +65,7 @@ public class DiscreteMappingWriter {
      * @param attrName Controlling Attribute Name.
      * @param map Discrete Map.
      */
-    public DiscreteMappingWriter(String attrName, String baseKey,
-            TreeMap map) {
+    public DiscreteMappingWriter(String attrName, String baseKey, TreeMap map) {
         this.attrName = attrName;
         this.baseKey = baseKey;
         this.map = map;
@@ -84,10 +83,10 @@ public class DiscreteMappingWriter {
         String mapKey = baseKey + ".map.";
         Iterator iterator = map.keySet().iterator();
         while (iterator.hasNext()) {
-            String key = (String) iterator.next();
+            Object key = iterator.next();
             Object value = map.get(key);
             String stringValue = ObjectToString.getStringValue(value);
-            newProps.setProperty(mapKey + key, stringValue);
+            newProps.setProperty(mapKey + key.toString(), stringValue);
         }
         return newProps;
     }
