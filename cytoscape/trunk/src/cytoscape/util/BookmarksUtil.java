@@ -3,6 +3,7 @@ package cytoscape.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import cytoscape.bookmarks.Attribute;
 import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
 
@@ -57,6 +58,16 @@ public abstract class BookmarksUtil {
 			}
 		}
 		return result;
+	}
+	
+	public static String getAttribute(DataSource source, String attrName) {
+		List<Attribute> attrs = source.getAttribute();
+		for(Attribute attr: attrs) {
+			if(attrName.equals(attr.getName())) {
+				return attr.getContent();
+			}
+		}
+		return null;
 	}
 
 	private static List<DataSource> extractDataSources(Category cat) {
