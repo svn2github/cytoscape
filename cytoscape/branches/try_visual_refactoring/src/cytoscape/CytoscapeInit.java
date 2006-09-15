@@ -144,9 +144,6 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 		visualProperties.putAll(initParams.getVizProps());
 		setVariablesFromProperties();
 
-		// Build the OntologyServer.
-		OntologyServer os = Cytoscape.buildOntologyServer();
-
 		// see if we are in headless mode
 		// show splash screen, if appropriate
 		System.out.println("init mode: " + initParams.getMode());
@@ -157,7 +154,6 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 					"/cytoscape/images/CytoscapeSplashScreen.png"));
 			WindowUtilities.showSplash(image, 8000);
 			Cytoscape.getDesktop();
-<<<<<<< .working
 			// This cannot be done in CytoscapeDesktop construction (like the
 			// other menus)
 			// because we need CytoscapeDesktop created first. This is because
@@ -170,18 +166,6 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 
 			// Add a listener that will apply vizmaps every time attributes
 			// change
-=======
-			/*
-			 * This cannot be done in CytoscapeDesktop construction (like the
-			 * other menus) because we need CytoscapeDesktop created first. This
-			 * is because CytoPanel menu item listeners need to register for
-			 * CytoPanel events via a CytoPanel reference, and the only way to
-			 * get a CytoPanel reference is via CytoscapeDeskop:
-			 * Cytoscape.getDesktop().getCytoPanel(...)
-			 * Cytoscape.getDesktop().getCyMenus().initCytoPanelMenus(); Add a
-			 * listener that will apply vizmaps every time attributes change
-			 */
->>>>>>> .merge-right.r8215
 			PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
 
 				public void propertyChange(PropertyChangeEvent e) {
@@ -208,7 +192,6 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 		BioDataServer bds = Cytoscape.loadBioDataServer(properties
 				.getProperty("bioDataServer"));
 
-<<<<<<< .working
 		// Build the OntologyServer.
 		OntologyServer os = Cytoscape.buildOntologyServer();
 		String ontologyRoot = null;
@@ -224,21 +207,6 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 					"Ontology Root", false).getIdentifier());
 		}
 
-=======
-		String ontologyRoot = null;
-		Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
-		for (CyNetwork net : networkSet) {
-			if (net.getTitle().equals("Ontology Root")) {
-				Cytoscape.setOntologyRootID(net.getIdentifier());
-				ontologyRoot = net.getIdentifier();
-			}
-		}
-		if (ontologyRoot == null) {
-			Cytoscape.setOntologyRootID(Cytoscape.createNetwork(
-					"Ontology Root", false).getIdentifier());
-		}
-
->>>>>>> .merge-right.r8215
 		// Load all requested networks
 		boolean canonicalize = properties.getProperty("canonicalizeNames")
 				.equals("true");
