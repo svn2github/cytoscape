@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package structureViz;
+package structureViz.actions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +50,7 @@ import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraResidue;
 import structureViz.model.Structure;
+import structureViz.actions.CyChimera;
 import structureViz.ui.ModelNavigatorDialog;
 
 /**
@@ -265,7 +266,7 @@ public class Chimera {
 				ChimeraModel oldModel = (ChimeraModel)modelHash.get(modelNumber);
 				model.setStructure(oldModel.getStructure());
 			} else {
-				model.setStructure(findStructureForModel(model.getModelName()));
+				model.setStructure(CyChimera.findStructureForModel(networkView, model.getModelName()));
 			}
 
 			newHash.put(modelNumber,model);
@@ -279,22 +280,6 @@ public class Chimera {
 		modelHash = newHash;
 
 		// Done
-	}
-
-	private Structure findStructureForModel(String name) {
-		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-		Iterator nodeIter = networkView.getNetwork().nodesIterator();
-		while(nodeIter.hasNext()) {
-			CyNode node = (CyNode)nodeIter.next();
-			for (int key = 0; key < attributeKeys.length; key++) {
-				if (nodeAttrs.hasAttribute(node.getIdentifier(),attributeKeys[key]) &&
-              nodeAttrs.getStringAttribute(node.getIdentifier(), attributeKeys[key])
-							.equals(name)) {
-					return new Structure(name, node);
-				}
-			}
-		}
-		return null;
 	}
 
 	private List getModelList() {
@@ -392,9 +377,11 @@ public class Chimera {
 		private InputStream readChan = null;
 		private BufferedReader lineReader = null;
 		private Process chimera = null;
+		private List log = null;
 
-		ReplyLogListener(Process chimera) {
+		ReplyLogListener(Process chimera, List log) {
 			this.chimera = chimera;
+			this.log = log;
  		 	// Get a line-oriented reader
 	  	readChan = chimera.getInputStream();
 			lineReader = new BufferedReader(new InputStreamReader(readChan));
@@ -459,6 +446,8 @@ public class Chimera {
 			public void run() {
 				refresh();
 				mnDialog.modelChanged();
+				// Now update our selection from Chimera
+				(new SelectionUpdater()).start();
 			}
 	}
 

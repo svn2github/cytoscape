@@ -33,7 +33,7 @@
 package structureViz.ui;
 
 // System imports
-import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -50,22 +50,34 @@ import structureViz.model.Structure;
 
 import structureViz.Chimera;
 
+/**
+ * This class implements all of the actions for the popup menu as well
+ * as providing the MouseListener itself.
+ */
+
 public class ActionPopupMenu extends JPopupMenu {
 	private Chimera chimeraObject;
-	private ArrayList modelList;
-	private ArrayList chainList;
-	private ArrayList residueList;
+	private List modelList;
+	private List chainList;
+	private List residueList;
 	private JTree navTree;
+	private int context = GENERIC_CONTEXT;
 
-	public ActionPopupMenu (Chimera co, JTree tree, ArrayList models,
-													ArrayList chains, ArrayList residues) 
+	public static final int GENERIC_CONTEXT = 1;
+	public static final int MODEL_CONTEXT = 2;
+	public static final int CHAIN_CONTEXT = 3;
+	public static final int RESIDUE_CONTEXT = 4;
+
+	public ActionPopupMenu (Chimera co, JTree tree, List models,
+													List chains, List residues, int context) 
 	{
 		super("Chimera Actions");
 		this.chimeraObject = co;
+		this.navTree = tree;
 		this.modelList = models;
 		this.chainList = chains;
 		this.residueList = residues;
-		this.navTree = tree;
+		this.context = context;
 
 		createGenericMenu();
 		if (modelList.size() > 0) {
@@ -99,6 +111,12 @@ public class ActionPopupMenu extends JPopupMenu {
 		// Color
 		submenu = new JMenu("Color");
 		{
+			if (modelList.size() > 0) {
+				addItem(submenu, "Rainbow by chain", "rainbow chain sel",0);
+			}
+			if (modelList.size() > 0 || chainList.size() > 0) {
+				addItem(submenu, "Rainbow by residue", "rainbow residue sel",0);
+			}
 			addItem(submenu, "By element", "color byelement sel",0);
 			addColorMenu(submenu, "Residues", "color ", ",a sel");
 			addColorMenu(submenu, "Ribbons", "color ", ",r sel");

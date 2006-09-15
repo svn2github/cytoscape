@@ -64,6 +64,7 @@ import structureViz.Chimera;
 import structureViz.ui.ModelNavigatorDialog;
 import structureViz.model.Structure;
 import structureViz.model.ChimeraModel;
+import structureViz.actions.CyChimera;
 
 
 public class StructureViz extends CytoscapePlugin 
@@ -92,7 +93,7 @@ public class StructureViz extends CytoscapePlugin
 		}
 	    
 		JMenu menu = new JMenu("Structure Visualization");
-		menu.addMenuListener(new StructureVizMenuListener());
+		menu.addMenuListener(new StructureVizMenuListener(null));
 
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
@@ -102,9 +103,11 @@ public class StructureViz extends CytoscapePlugin
 
 	public class StructureVizMenuListener implements MenuListener {
 		private StructureVizCommandListener staticHandle;
+		private NodeView overNode = null;
 
-		StructureVizMenuListener() {
+		StructureVizMenuListener(NodeView nv) {
 			this.staticHandle = new StructureVizCommandListener(NONE,null);
+			this.overNode = nv;
 		}
 
 	  public void menuCanceled (MenuEvent e) {};
@@ -119,12 +122,17 @@ public class StructureViz extends CytoscapePlugin
 			// Add our menu items
 			{
 			  JMenu item = new JMenu("Open structure(s)");
-				List structures =  getSelectedStructures();
-				addSubMenu(item, "all", OPEN, structures);
-				Iterator iter = structures.iterator();
-				while (iter.hasNext()) {
-					Structure structure = (Structure)iter.next();
-					addSubMenu(item, structure.name(), OPEN, structure);
+				List structures =  CyChimera.getSelectedStructures(overNode);
+				if (structures.size() == 0) {
+					item.setEnabled(false);
+				} else {
+					if (structures.size() > 1)
+						addSubMenu(item, "all", OPEN, structures);
+					Iterator iter = structures.iterator();
+					while (iter.hasNext()) {
+						Structure structure = (Structure)iter.next();
+						addSubMenu(item, structure.name(), OPEN, structure);
+					}
 				}
 				m.add(item);
 			}
@@ -170,39 +178,6 @@ public class StructureViz extends CytoscapePlugin
 		  menu.add(item);
 		}
 
-		private List getSelectedStructures() {
-			List<Structure>structureList = new ArrayList<Structure>();
-      //get the network object; this contains the graph
-      CyNetwork network = Cytoscape.getCurrentNetwork();
-      //get the network view object
-      CyNetworkView view = Cytoscape.getCurrentNetworkView();
-      //get the list of node attributes
-      CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
-      //can't continue if any of these is null
-      if (network == null || view == null || cyAttributes == null) {return structureList;}
-      //put up a dialog if there are no selected nodes
-      if (view.getSelectedNodes().size() == 0) {
-        JOptionPane.showMessageDialog(view.getComponent(),
-                    "Please select one or more nodes.");
-				return structureList;
-      }
-      //iterate over every node view
-      for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext(); ) {
-        NodeView nView = (NodeView)i.next();
-        //first get the corresponding node in the network
-        CyNode node = (CyNode)nView.getNode();
-        String nodeID = node.getIdentifier();
-				for (int key = 0; key < attributeKeys.length; key++) {
-        	if (cyAttributes.hasAttribute(nodeID, attributeKeys[key])) {
-          	// Add it to our list
-          	String structure = cyAttributes.getStringAttribute(nodeID, attributeKeys[key]);
-          	structureList.add(new Structure(structure,node));
-						break;
-        	}
-				}
-      }
-			return structureList;
-		}
 	}
 	
   /**
@@ -242,7 +217,7 @@ public class StructureViz extends CytoscapePlugin
 
 		public List<Structure>getOpenStructs() {
 	
-			ArrayList<Structure>st = new ArrayList<Structure>();
+			List<Structure>st = new ArrayList<Structure>();
 			if (chimera == null) return st;
 
 			List modelList = chimera.getChimeraModels();
@@ -356,7 +331,7 @@ public class StructureViz extends CytoscapePlugin
 			pmenu = new JPopupMenu();
 		}
 		JMenu menu = new JMenu("Structure Visualization");
-		menu.addMenuListener(new StructureVizMenuListener());
+		menu.addMenuListener(new StructureVizMenuListener(nodeView));
 		pmenu.add(menu);
 	}
 }
