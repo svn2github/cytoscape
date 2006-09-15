@@ -12,9 +12,11 @@ import cytoscape.plugin.CytoscapePlugin;
 /**
  * Attribute browser's main class.<br>
  * 
- * @version 0.8
+ * @version 0.9
  * @since 2.2
  * @author kono
+ * 	Change history
+ * 		Combine CytoPanel_2 and CytoPanle_3      Peng-Liang Wang	9/12/2006
  * 
  */
 public class AttributeBrowserPlugin extends CytoscapePlugin {
@@ -36,8 +38,8 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 		JCheckBoxMenuItem switchNetworkTreeView = new JCheckBoxMenuItem(
 				new DisplayAttributeBrowserAction());
 
-		JCheckBoxMenuItem switchAdvancedView = new JCheckBoxMenuItem(
-				new DisplayAdvancedWindowAction());
+		//JCheckBoxMenuItem switchAdvancedView = new JCheckBoxMenuItem(
+		//		new DisplayAdvancedWindowAction());
 		
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
 				switchNetworkTreeView, 0);
@@ -45,8 +47,8 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
 				switchBrowserView, 0);
 		
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
-				switchAdvancedView, 0);
+		//Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
+		//		switchAdvancedView, 0);
 		
 		switchBrowserView.setSelected(true);
 		switchNetworkTreeView.setSelected(true);
@@ -67,7 +69,6 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 				DataTable.NODES);
 		DataTable table_edges = new DataTable(Cytoscape.getEdgeAttributes(),
 				DataTable.EDGES);
-		DataTable table_network = new DataTable(Cytoscape
-				.getNetworkAttributes(), DataTable.NETWORK);
+		DataTable table_network = new DataTable(Cytoscape.getNodeAttributes(), DataTable.NETWORK);
 	}
 }
