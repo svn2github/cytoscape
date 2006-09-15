@@ -44,6 +44,7 @@
 package cytoscape.visual.mappings.discrete;
 
 import cytoscape.visual.parsers.ObjectToString;
+import cytoscape.visual.mappings.MappingUtil;
 
 import java.util.Iterator;
 import java.util.Properties;
@@ -65,8 +66,7 @@ public class DiscreteMappingWriter {
      * @param attrName Controlling Attribute Name.
      * @param map Discrete Map.
      */
-    public DiscreteMappingWriter(String attrName, String baseKey,
-            TreeMap map) {
+    public DiscreteMappingWriter(String attrName, String baseKey, TreeMap map) {
         this.attrName = attrName;
         this.baseKey = baseKey;
         this.map = map;
@@ -78,16 +78,21 @@ public class DiscreteMappingWriter {
      */
     public Properties getProperties() {
         Properties newProps = new Properties();
+
         String contKey = baseKey + ".controller";
         newProps.setProperty(contKey, attrName);
+
+        String contTypeKey = baseKey + ".controllerType";
+        newProps.setProperty(contTypeKey, 
+		MappingUtil.getAttributeTypeString(baseKey,attrName)); 
 
         String mapKey = baseKey + ".map.";
         Iterator iterator = map.keySet().iterator();
         while (iterator.hasNext()) {
-            String key = (String) iterator.next();
+            Object key = iterator.next();
             Object value = map.get(key);
             String stringValue = ObjectToString.getStringValue(value);
-            newProps.setProperty(mapKey + key, stringValue);
+            newProps.setProperty(mapKey + key.toString(), stringValue);
         }
         return newProps;
     }

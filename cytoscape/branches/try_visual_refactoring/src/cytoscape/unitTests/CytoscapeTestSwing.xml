@@ -7,11 +7,18 @@
 	<Click componentClass="JMenuItem" label="Open"/>
 
 	<retriever retryTime="2000">
-		<!-- $(OPEN_FILE) is substituted by the JUnit program. -->
+			<Click label="Yes" componentClass="JButton" 
+			       windowFinder="CLASS_IS_ACCESSIBLE" 
+			       windowClass="JDialog"/>
+	</retriever>
+
+
+	<retriever retryTime="2000">
+		<!-- $(FILE_TO_OPEN) is substituted by the JUnit program. -->
 		<FileChooser dialogTitle="Open a Session File" 
 		             directory="testData" fileName="$(FILE_TO_OPEN)"/>
 	</retriever>
-	<Delay ms="10000"/>
+	<Delay ms="5000"/>
 	<retriever retryTime="10000" intervalTime="1000">
 		<if verifier="Verify" property="enabled" expected="true" 
 		    componentClass="JButton" label="    Close    " 
@@ -22,5 +29,6 @@
 		</if>
 	</retriever>
 </scenario>
+
 
 </document>

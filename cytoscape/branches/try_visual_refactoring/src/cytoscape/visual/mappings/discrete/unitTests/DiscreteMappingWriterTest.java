@@ -1,6 +1,6 @@
 
 /*
-  File: TestDiscreteMappingWriter.java 
+  File: DiscreteMappingWriterTest.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -47,6 +47,8 @@ import cytoscape.visual.mappings.discrete.DiscreteMappingReader;
 import cytoscape.visual.mappings.discrete.DiscreteMappingWriter;
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import junit.framework.TestCase;
 
 import java.io.InputStream;
@@ -56,7 +58,7 @@ import java.util.TreeMap;
 /**
  * Tests the DiscreteMappingWriter Class.
  */
-public class TestDiscreteMappingWriter extends TestCase {
+public class DiscreteMappingWriterTest extends TestCase {
 
     /**
      * Tests the DiscreteMappingWriter Class.
@@ -67,7 +69,7 @@ public class TestDiscreteMappingWriter extends TestCase {
         //  Read in a Properties File
         String baseKey = "nodeColorCalculator.JUnitDiscreteColor.mapping";
         ValueParser parser = new ColorParser();
-        InputStream in = TestDiscreteMappingReader.getDataFile();
+        InputStream in = DiscreteMappingReaderTest.getDataFile();
         Properties properties = new Properties();
         properties.load(in);
 
@@ -94,5 +96,86 @@ public class TestDiscreteMappingWriter extends TestCase {
         //  Test Controlling Attribute
         String type = newProps.getProperty(baseKey + ".controller");
         assertEquals("canonicalName", type);
+    }
+
+    public void testControllerTypeWriting() throws Exception {
+
+        //  Read in a Properties File
+        String baseKey = "nodeColorCalculator.JUnitDiscreteColor.mapping";
+        ValueParser parser = new ColorParser();
+        InputStream in = DiscreteMappingReaderTest.getControllerTypeDataFile();
+        Properties properties = new Properties();
+        properties.load(in);
+
+        DiscreteMappingReader reader = new DiscreteMappingReader
+                (properties, baseKey, parser);
+        TreeMap map = reader.getMap();
+
+        //  Now write out a set of Propeties.
+        DiscreteMappingWriter writer = new DiscreteMappingWriter
+                (reader.getControllingAttributeName(), baseKey,
+                        reader.getMap());
+
+
+        //  Test a sampling of properties.
+        Properties newProps = writer.getProperties();
+
+        //  Test a few elements...
+        String mapA = newProps.getProperty(baseKey + ".map.1");
+        assertEquals("204,255,255", mapA);
+
+        String mapY = newProps.getProperty(baseKey + ".map.6");
+        assertEquals("255,51,51", mapY);
+
+        //  Test Controlling Attribute
+        String type = newProps.getProperty(baseKey + ".controller");
+        assertEquals("controller","homer", type);
+
+	// while you would think that this should be 3, the "homer"
+	// attribute has not been set, therefore the attr won't be
+	// found so the type is unknown
+        String ctype = newProps.getProperty(baseKey + ".controllerType");
+        assertEquals("controllerType","-1", ctype);
+    }
+
+    public void testControllerTypeWritingWithAttr() throws Exception {
+
+        //  Read in a Properties File
+        String baseKey = "nodeColorCalculator.JUnitDiscreteColor.mapping";
+        ValueParser parser = new ColorParser();
+        InputStream in = DiscreteMappingReaderTest.getControllerTypeDataFile();
+        Properties properties = new Properties();
+        properties.load(in);
+
+	// Set the attribute so that it's type will be found
+	// 15 == random int value
+	Cytoscape.getNodeAttributes().setAttribute("id","homer",15); 
+
+        DiscreteMappingReader reader = new DiscreteMappingReader
+                (properties, baseKey, parser);
+        TreeMap map = reader.getMap();
+
+        //  Now write out a set of Propeties.
+        DiscreteMappingWriter writer = new DiscreteMappingWriter
+                (reader.getControllingAttributeName(), baseKey,
+                        reader.getMap());
+
+
+        //  Test a sampling of properties.
+        Properties newProps = writer.getProperties();
+
+        //  Test a few elements...
+        String mapA = newProps.getProperty(baseKey + ".map.1");
+        assertEquals("204,255,255", mapA);
+
+        String mapY = newProps.getProperty(baseKey + ".map.6");
+        assertEquals("255,51,51", mapY);
+
+        //  Test Controlling Attribute
+        String type = newProps.getProperty(baseKey + ".controller");
+        assertEquals("controller","homer", type);
+
+        String ctype = newProps.getProperty(baseKey + ".controllerType");
+        assertEquals("controllerType","3", ctype);
     }
 }

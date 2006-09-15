@@ -264,7 +264,7 @@
 		       source="1.5" 
 		       optimize="on" 
 		       includeAntRuntime="false" 
-		       deprecation="no">
+		       deprecation="yes">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
 		</javac>
@@ -422,7 +422,10 @@
 		<pathconvert property="manifest.classpath.string"
 			     pathsep=" ">
 			<path refid="manifest.classpath"/>
-			<mapper type="regexp" from="${lib.dir}/(.*)" to="lib/\1"/>
+			<chainedmapper>
+				<flattenmapper/>
+				<globmapper from="*" to="lib/*" handledirsep="yes"/>
+			</chainedmapper>
 		</pathconvert>
 		<manifest file="${manifest.file}">
 			<attribute name="Main-Class" value="cytoscape.CyMain"/>
@@ -638,7 +641,9 @@
             ---------------------------------------
         	</echo>
 
-		<copy file="docs/INSTALL.txt" todir="${release.dir}" />
+	        <filter token="version" value="${version}"/>
+		<copy file="docs/INSTALL.txt" todir="${release.dir}" filtering="true"/>
+
 		<copy file="docs/LICENSE.txt" todir="${release.dir}" />
 		<copy file="docs/LICENSE.html" todir="${release.dir}" />
 		<copy file="docs/manual.pdf" todir="${release.dir}" />

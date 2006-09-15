@@ -51,6 +51,8 @@ import cytoscape.util.Exec;
 import cytoscape.unitTests.AllTests;
 
 import java.util.Enumeration;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 //---------------------------------------------------------------------------
 public class ExecTest extends TestCase {
 
@@ -61,13 +63,11 @@ public ExecTest (String name)
 }
 
 //---------------------------------------------------------------------------
-public void noTestBasic () 
+public void notestBasic () 
 {
   AllTests.standardOut ("testBasic");
 
-  String [] cmd = new String [2];
-  cmd [0] = "ls";
-  cmd [1] = "-l";
+  String [] cmd = {"echo","hello","world"}; 
 
   Exec child = new Exec (cmd);
   int result = child.run ();
@@ -93,19 +93,16 @@ public void noTestBasic ()
     }
 
   String fullResult = sb.toString ();
-  assertTrue (fullResult.indexOf ("ExecTest.java") >= 0);
-  assertTrue (fullResult.indexOf ("ExecTest.class") >= 0);
-  // System.out.println (fullResult);
+  assertTrue (fullResult.indexOf ("world") >= 0);
 
 } // testBasic
 //---------------------------------------------------------------------------
 public void testBasicWithThreadedExec () throws Exception
 {
+
   AllTests.standardOut ("testBasicWithThreadedExec");
 
-  String [] cmd = new String [2];
-  cmd [0] = "ls";
-  cmd [1] = "-l";
+  String [] cmd = {"echo","hello","world"}; 
 
   Exec child = new Exec (cmd);
   int result = child.runThreaded ();
@@ -120,11 +117,10 @@ public void testBasicWithThreadedExec () throws Exception
 //---------------------------------------------------------------------------
 public void testBasicWithThreadedExec2 () throws Exception
 {
+
   AllTests.standardOut ("testBasicWithThreadedExec2");
 
-  String [] cmd = new String [2];
-  cmd [0] = "ls";
-  cmd [1] = "-l";
+  String [] cmd = {"echo","hello","world"}; 
 
   Exec child = new Exec (cmd);
   int result = child.runThreaded ();
@@ -141,8 +137,7 @@ public void notestBasicInBackground ()
 {
   AllTests.standardOut ("testBasicInBackground");
 
-  String [] cmd = new String [1];
-  cmd [0] = "date";
+  String [] cmd = {"echo","hello","world"}; 
 
   Exec child = new Exec (cmd);
   child.setRunInBackground (true);
@@ -170,7 +165,7 @@ public void notestBasicInBackground ()
     }
 
   String fullResult = sb.toString ();
-  //assertTrue (fullResult.indexOf ("ExecTest.class") >= 0);
+  assertTrue (fullResult.indexOf ("world") >= 0);
   AllTests.standardOut ("--> " + fullResult + " <--");
 
 } // testBasicInBackground
@@ -214,10 +209,8 @@ public void notestUsingStandardInput ()
 //---------------------------------------------------------------------------
 public void disabled_testRunNetscape ()
 {
-  String [] cmd = new String [2];
-  cmd [0] = "/users/pshannon/data/human/jdrf/web";
-  cmd [1] = "http://sewardpark.net";
-
+  String [] cmd = { "/users/pshannon/data/human/jdrf/web",
+                    "http://sewardpark.net"};
 
   Exec child = new Exec (cmd);
   int result = child.run ();
@@ -248,6 +241,7 @@ public void disabled_testRunNetscape ()
   AllTests.standardOut (fullResult);
 
 }
+
 //---------------------------------------------------------------------------
 public static void main (String[] args) 
 {

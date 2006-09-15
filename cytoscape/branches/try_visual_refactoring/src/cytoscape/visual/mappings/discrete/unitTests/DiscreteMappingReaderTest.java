@@ -1,6 +1,6 @@
 
 /*
-  File: TestDiscreteMappingReader.java 
+  File: DiscreteMappingReaderTest.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -57,7 +57,7 @@ import java.util.TreeMap;
 /**
  * Tests the DiscreteMappingReader Class.
  */
-public class TestDiscreteMappingReader extends TestCase {
+public class DiscreteMappingReaderTest extends TestCase {
 
     /**
      * Tests the DiscreteMappingReader Class.
@@ -104,5 +104,54 @@ public class TestDiscreteMappingReader extends TestCase {
                 + "type=DiscreteMapping\n");
         ByteArrayInputStream in = new ByteArrayInputStream(file.getBytes());
         return in;
+    }
+
+    static InputStream getControllerTypeDataFile() {
+        String file = new String
+                ("nodeColorCalculator.JUnitDiscreteColor.class=cytoscape."
+                + "visual.calculators.GenericNodeColorCalculator\n"
+                + "nodeColorCalculator.JUnitDiscreteColor.mapping."
+                + "controller=homer\n"
+                + "nodeColorCalculator.JUnitDiscreteColor.mapping."
+                + "controllerType=3\n" // Integer
+                + "nodeColorCalculator.JUnitDiscreteColor.mapping."
+                + "map.1=204,255,255\n"
+                + "nodeColorCalculator.JUnitDiscreteColor.mapping."
+                + "map.2=51,255,51\n"
+                + "nodeColorCalculator.JUnitDiscreteColor.mapping."
+                + "map.3=204,204,255\n"
+                + "nodeColorCalculator.JUnitDiscreteColor.mapping.map."
+                + "4=255,255,255\n"
+                + "nodeColorCalculator.JUnitDiscreteColor.mapping.map."
+                + "5=102,51,0\n"
+                + "nodeColorCalculator.JUnitDiscreteColor.mapping.map."
+                + "6=255,51,51\n"
+                + "nodeColorCalculator.JUnitDiscreteColor.mapping."
+                + "type=DiscreteMapping\n");
+        ByteArrayInputStream in = new ByteArrayInputStream(file.getBytes());
+        return in;
+    }
+
+    public void testControllerType() throws Exception {
+        InputStream in = getControllerTypeDataFile();
+        Properties properties = new Properties();
+        properties.load(in);
+
+        ValueParser parser = new ColorParser();
+        DiscreteMappingReader reader = new DiscreteMappingReader(properties,
+                "nodeColorCalculator.JUnitDiscreteColor.mapping", parser);
+        String attribute = reader.getControllingAttributeName();
+        assertEquals("controlling attr name", "homer", attribute);
+        TreeMap map = reader.getMap();
+
+
+        Color color = (Color) map.get(new Integer(1));
+        assertEquals(new Color(204, 255, 255), color);
+
+        color = (Color) map.get(new Integer(3));
+        assertEquals(new Color(204, 204, 255), color);
+
+        color = (Color) map.get(new Integer(6));
+        assertEquals(new Color(255, 51, 51), color);
     }
 }

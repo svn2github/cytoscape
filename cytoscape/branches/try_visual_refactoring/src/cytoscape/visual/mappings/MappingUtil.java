@@ -1,6 +1,6 @@
 
 /*
-  File: DiscreteMappingTestSuite.java 
+  File: MappingUtil.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -36,29 +36,58 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
-package cytoscape.visual.mappings.discrete.unitTests;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+package cytoscape.visual.mappings;
 
-public class DiscreteMappingTestSuite extends TestCase {
+import java.lang.*;
 
-    /**
-     * The suite method runs all the tests.
-     * @return Suite of JUnit tests.
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(TestDiscreteMappingReader.class);
-        suite.addTestSuite(TestDiscreteMappingWriter.class);
-//        suite.addTestSuite(TestContinuousColorRangeCalculator.class);
-        suite.setName("VizMapper::Discrete Mapper Tests");
-        return suite;
-    }
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+
+/**
+ * Provides simple utility methods for the Mapping classes.
+ */
+public class MappingUtil {
+
+	/**
+	 * This method determines the type of the attr used and
+	 * returns a string representation of it.
+	 */
+	public static String getAttributeTypeString(String base, String attr) {
+	 	Byte B = new Byte(getAttributeType(base,attr));	
+
+		return B.toString();
+	}
+
+	/** 
+	 * This method determines the type of the attribute used
+	 * for the mapping. The purpose is to support discrete attrs
+	 * aside from strings.
+	 */ 
+	public static byte getAttributeType(String base, String attr) {
+
+		byte b = CyAttributes.TYPE_UNDEFINED;
+		if ( base.startsWith("node") )
+			b = Cytoscape.getNodeAttributes().getType(attr);
+		else if ( base.startsWith("edge") )
+			b = Cytoscape.getEdgeAttributes().getType(attr);
+
+		return b;
+	}
+
+	/**
+	 * This method returns an object of the specified type
+	 * based on the string read from the props file.
+	 */
+	public static Object parseObjectType(String key,byte attrType) {
+		if ( attrType == CyAttributes.TYPE_INTEGER )
+			return new Integer(key);
+	       	else if ( attrType == CyAttributes.TYPE_FLOATING )
+       			return new Double(key);
+       		else if ( attrType == CyAttributes.TYPE_BOOLEAN )
+       			return new Boolean(key);
+       		// assume string
+       		else
+       			return key;
+	}
 }

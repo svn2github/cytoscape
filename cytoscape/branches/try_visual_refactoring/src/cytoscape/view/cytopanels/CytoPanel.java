@@ -126,6 +126,15 @@ public interface CytoPanel {
 	 * @return index Currently selected index.
 	 */
 	public int getSelectedIndex();
+	
+	
+	/**
+	 * Returns the component at index.
+	 *
+	 * @return component at the given index.
+	 */
+	public Component getComponentAt(int index);
+
 
     /**
      * Gets the state of the CytoPanel.

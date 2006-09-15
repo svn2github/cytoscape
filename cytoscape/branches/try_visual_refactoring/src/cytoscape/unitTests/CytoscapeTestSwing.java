@@ -5,6 +5,7 @@ import java.util.*;
 import javax.swing.*;
 
 import swingunit.extensions.ExtendedRobotEventFactory;
+import swingunit.framework.Finder;
 import swingunit.framework.EventPlayer;
 import swingunit.framework.ExecuteException;
 import swingunit.framework.FinderMethodSet;
@@ -72,7 +73,7 @@ public class CytoscapeTestSwing extends TestCase {
 		robot = null;
 	}
 
-	public void testOpenCysFile() throws ExecuteException {
+	public void notestOpenCysFile() throws ExecuteException {
 		// Use keyword substitution.
 		scenario.setTestSetting("OPEN_CYS_FILE","FILE_TO_OPEN","galFiltered.cys");
 		EventPlayer player = new EventPlayer(scenario);
@@ -82,4 +83,5 @@ public class CytoscapeTestSwing extends TestCase {
 		Set s = Cytoscape.getNetworkSet();
 		assertTrue("exected 1, got: " + s.size(), s.size() == 1 );
 	}
+
 }

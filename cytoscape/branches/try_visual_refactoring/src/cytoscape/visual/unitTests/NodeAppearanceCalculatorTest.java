@@ -51,27 +51,59 @@ import java.io.*;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Properties;
+import java.util.Map;
 
 import giny.model.Node;
+import giny.model.Edge;
 import giny.model.RootGraph;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.CyNetwork;
-import cytoscape.visual.NodeAppearance;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.LineType;
-import cytoscape.visual.ShapeNodeRealizer;
-//----------------------------------------------------------------------------
+
+import cytoscape.data.readers.CyAttributesReader;
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
+import cytoscape.data.Semantics;
+import cytoscape.util.FileUtil;
+
+import cytoscape.visual.*;
+import cytoscape.visual.mappings.*;
+import cytoscape.visual.ui.*;
+import cytoscape.visual.calculators.*;
+
+
 public class NodeAppearanceCalculatorTest extends TestCase {
 
-//----------------------------------------------------------------------------
+	CyNetwork cyNet;
+
+	CyNode a;
+	CyNode b;
+
+	CyEdge ab;
+
+	CalculatorCatalog catalog;
+	Properties props;
+
     public NodeAppearanceCalculatorTest (String name) {super (name);}
-//----------------------------------------------------------------------------
-    public void setUp () throws Exception {}
-//----------------------------------------------------------------------------
-    public void tearDown () throws Exception {}
-//----------------------------------------------------------------------------
+
+    public void setUp() {
+	cyNet = Cytoscape.createNetworkFromFile("testData/small.sif");
+	a = Cytoscape.getCyNode("a");
+	b = Cytoscape.getCyNode("b");
+	ab = Cytoscape.getCyEdge(a,b,Semantics.INTERACTION,"pp",false);
+	props = new Properties();
+	try {
+	CyAttributesReader.loadAttributes(Cytoscape.getNodeAttributes(),
+                  new FileReader( "testData/small.nodeAttr"));
+	props.load(FileUtil.getInputStream("testData/small.vizmap.props"));
+	} catch(Exception e) { e.printStackTrace(); }
+	catalog = new CalculatorCatalog();
+	CalculatorIO.loadCalculators(props,catalog,true);
+    }
+
+
     public void testBypass () throws Exception {
 /*
 	// The first tests here are really redundant because we no longer
@@ -166,11 +198,114 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         assertTrue( secondApp.getWidth() == height );
 */
     }
-//---------------------------------------------------------------------------
+
+    public void testDefaultAppearance() {
+
+    	System.out.println("begin NodeAppearanceCalculatorTest.testDefaultAppearance()");
+
+	NodeAppearanceCalculator nac = new NodeAppearanceCalculator(); 
+
+	NodeAppearance na = nac.calculateNodeAppearance(a,cyNet);
+
+	// this tests that the default node appearance is correct
+	assertTrue( "color  " + na.getFillColor(), na.getFillColor().equals(Color.WHITE) );
+	assertTrue( "border color  " + na.getBorderColor(), na.getBorderColor().equals(Color.BLACK) );
+	assertTrue( "lineType  " + na.getBorderLineType(), na.getBorderLineType() == LineType.LINE_1 );
+	assertTrue( "shape  " + na.getShape(), na.getShape() == ShapeNodeRealizer.RECT );
+	assertTrue( "width  " + na.getWidth(), na.getWidth() == 30.0 );
+	assertTrue( "height  " + na.getHeight(), na.getHeight() == 30.0 );
+	assertTrue( "label  " + na.getLabel(), na.getLabel().equals("") );
+	assertTrue( "tooltip  " + na.getToolTip(), na.getToolTip().equals("") );
+	assertTrue( "font size  " + na.getFont().getSize(), na.getFont().getSize() == 12 ); 
+	assertTrue( "font style  " + na.getFont().getStyle(), na.getFont().getStyle() == Font.PLAIN );
+	assertTrue( "label color  " + na.getBorderColor(), na.getBorderColor().equals(Color.BLACK) );
+
+	// should still be default for node b
+	NodeAppearance nb = nac.calculateNodeAppearance(a,cyNet);
+
+	assertTrue( "color  " + nb.getFillColor(), nb.getFillColor().equals(Color.WHITE) );
+	assertTrue( "border color  " + nb.getBorderColor(), nb.getBorderColor().equals(Color.BLACK) );
+	assertTrue( "lineType  " + nb.getBorderLineType(), nb.getBorderLineType() == LineType.LINE_1 );
+	assertTrue( "shape  " + nb.getShape(), nb.getShape() == ShapeNodeRealizer.RECT );
+	assertTrue( "width  " + nb.getWidth(), nb.getWidth() == 30.0 );
+	assertTrue( "height  " + nb.getHeight(), nb.getHeight() == 30.0 );
+	assertTrue( "label  " + nb.getLabel(), nb.getLabel().equals("") );
+	assertTrue( "tooltip  " + nb.getToolTip(), nb.getToolTip().equals("") );
+	assertTrue( "font size  " + nb.getFont().getSize(), nb.getFont().getSize() == 12 ); 
+	assertTrue( "font style  " + nb.getFont().getStyle(), nb.getFont().getStyle() == Font.PLAIN );
+	assertTrue( "label color  " + nb.getBorderColor(), nb.getBorderColor().equals(Color.BLACK) );
+
+    	System.out.println("end NodeAppearanceCalculatorTest.testDefaultAppearance()");
+    }
+
+    public void testApplyProperties() {
+
+    	System.out.println("begin NodeAppearanceCalculatorTest.testApplyProperties()");
+
+	NodeAppearanceCalculator nac = new NodeAppearanceCalculator(); 
+	nac.applyProperties("homer",props,"nodeAppearanceCalculator.homer",catalog);
+	System.out.println(nac.getDescription());
+
+	// node a
+	NodeAppearance na = nac.calculateNodeAppearance(a,cyNet);
+
+	System.out.println( "a color  " + na.getFillColor() );
+	System.out.println( "a border color  " + na.getBorderColor() );
+	System.out.println( "a lineType  " + na.getBorderLineType() );
+	System.out.println( "a shape  " + na.getShape() );
+	System.out.println( "a width  " + na.getWidth() );
+	System.out.println( "a height  " + na.getHeight() );
+	System.out.println( "a label  " + na.getLabel() );
+	System.out.println( "a tooltip  " + na.getToolTip() );
+	System.out.println( "a font size  " + na.getFont().getSize() );
+	System.out.println( "a font style  " + na.getFont().getStyle() );
+	System.out.println( "a label color  " + na.getBorderColor() );
+
+	assertTrue( "a color  " + na.getFillColor(), na.getFillColor().equals(new Color(246,242,103)) );
+	assertTrue( "a border color  " + na.getBorderColor(), na.getBorderColor().equals(Color.BLACK) );
+	assertTrue( "a lineType  " + na.getBorderLineType(), na.getBorderLineType() == LineType.LINE_1 );
+	assertTrue( "a shape  " + na.getShape(), na.getShape() == ShapeNodeRealizer.RECT );
+	assertTrue( "a width  " + na.getWidth(), na.getWidth() == 10.0 );
+	assertTrue( "a height  " + na.getHeight(), na.getHeight() == 10.0 );
+	assertTrue( "a label  " + na.getLabel(), na.getLabel().equals("a") );
+	assertTrue( "a tooltip  " + na.getToolTip(), na.getToolTip().equals("") );
+	assertTrue( "a font size  " + na.getFont().getSize(), na.getFont().getSize() == 12 ); 
+	assertTrue( "a font style  " + na.getFont().getStyle(), na.getFont().getStyle() == Font.PLAIN );
+	assertTrue( "a label color  " + na.getLabelColor(), na.getLabelColor().equals(Color.BLACK) );
+
+	// node b
+	NodeAppearance nb = nac.calculateNodeAppearance(b,cyNet);
+
+	System.out.println( "b color  " + nb.getFillColor() );
+	System.out.println( "b border color  " + nb.getBorderColor() );
+	System.out.println( "b lineType  " + nb.getBorderLineType() );
+	System.out.println( "b shape  " + nb.getShape() );
+	System.out.println( "b width  " + nb.getWidth() );
+	System.out.println( "b height  " + nb.getHeight() );
+	System.out.println( "b label  " + nb.getLabel() );
+	System.out.println( "b tooltip  " + nb.getToolTip() );
+	System.out.println( "b font size  " + nb.getFont().getSize() );
+	System.out.println( "b font style  " + nb.getFont().getStyle() );
+	System.out.println( "b label color  " + nb.getBorderColor() );
+
+	assertTrue( "b color  " + nb.getFillColor(), nb.getFillColor().equals(new Color(87,25,230)) );
+	assertTrue( "b border color  " + nb.getBorderColor(), nb.getBorderColor().equals(Color.BLACK) );
+	assertTrue( "b lineType  " + nb.getBorderLineType(), nb.getBorderLineType() == LineType.LINE_5 );
+	assertTrue( "b shape  " + nb.getShape(), nb.getShape() == ShapeNodeRealizer.RECT );
+	assertTrue( "b width  " + nb.getWidth(), nb.getWidth() == 30.0 );
+	assertTrue( "b height  " + nb.getHeight(), nb.getHeight() == 30.0 );
+	assertTrue( "b label  " + nb.getLabel(), nb.getLabel().equals("b") );
+	assertTrue( "b tooltip  " + nb.getToolTip(), nb.getToolTip().equals("") );
+	assertTrue( "b font size  " + nb.getFont().getSize(), nb.getFont().getSize() == 12 ); 
+	assertTrue( "b font style  " + nb.getFont().getStyle(), nb.getFont().getStyle() == Font.PLAIN );
+	assertTrue( "b label color  " + nb.getLabelColor(), nb.getLabelColor().equals(Color.BLACK) );
+
+    	System.out.println("end NodeAppearanceCalculatorTest.testApplyProperties()");
+    }
+
     public static void main (String [] args) {
 	junit.textui.TestRunner.run (new TestSuite (NodeAppearanceCalculatorTest.class));
     }
-//----------------------------------------------------------------------------
 }
 
 

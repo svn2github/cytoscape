@@ -41,7 +41,6 @@ package cytoscape.giny;
 import giny.model.*;
 import cytoscape.*;
 import fing.model.*;
-import cern.colt.map.*;
 
 import cytoscape.util.intr.*;
 import java.util.Collection;
