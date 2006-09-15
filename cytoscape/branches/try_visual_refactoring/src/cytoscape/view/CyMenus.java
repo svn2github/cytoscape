@@ -89,7 +89,6 @@ import cytoscape.actions.ExportNodeAttributesAction;
 import cytoscape.actions.ExportVizmapAction;
 import cytoscape.actions.FitContentAction;
 import cytoscape.actions.HelpAboutAction;
-import cytoscape.actions.HideSelectedAction;
 import cytoscape.actions.HideSelectedEdgesAction;
 import cytoscape.actions.HideSelectedNodesAction;
 import cytoscape.actions.ImportBioDataServerAction;
@@ -105,6 +104,7 @@ import cytoscape.actions.MapOntologyAction;
 import cytoscape.actions.NewSessionAction;
 import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
 import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
+import cytoscape.actions.OntologyServerStatusAction;
 import cytoscape.actions.OpenSessionAction;
 import cytoscape.actions.PreferenceAction;
 import cytoscape.actions.PrintAction;
@@ -116,14 +116,12 @@ import cytoscape.actions.SelectAllNodesAction;
 import cytoscape.actions.SelectFirstNeighborsAction;
 import cytoscape.actions.SelectionModeAction;
 import cytoscape.actions.SetVisualPropertiesAction;
-import cytoscape.actions.ShowAllAction;
 import cytoscape.actions.StraightenSelectedEdgesAction;
 import cytoscape.actions.ToggleVisualMapperAction;
 import cytoscape.actions.UnHideSelectedEdgesAction;
 import cytoscape.actions.UnHideSelectedNodesAction;
 import cytoscape.actions.ZoomAction;
 import cytoscape.actions.ZoomSelectedAction;
-import cytoscape.data.annotation.AnnotationGui;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
@@ -732,7 +730,9 @@ public class CyMenus implements GraphViewChangeListener {
 				"images/new/GOsmall.gif"));
 
 		addAction(new MapOntologyAction(true, goSmallIcon));
-		// addAction(new MapOntologyAction());
+
+		// New for 2.4: Ontology Server.
+		addAction(new OntologyServerStatusAction());
 
 		// fill the Save submenu
 		addAction(new ExportAsXGMMLAction());
@@ -975,21 +975,23 @@ public class CyMenus implements GraphViewChangeListener {
 
 		toolBar.addSeparator();
 
-        //  Removing showAllButton via comments, just in case we decide to revert back
-		//  showAllButton = toolBar.add(new ShowAllAction());
-		//  showAllButton.setIcon(new ImageIcon(getClass().getResource(
-		//		"images/new/add36.gif")));
-		//  showAllButton
-		//		.setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
-		//  showAllButton.setBorderPainted(false);
+		// Removing showAllButton via comments, just in case we decide to revert
+		// back
+		// showAllButton = toolBar.add(new ShowAllAction());
+		// showAllButton.setIcon(new ImageIcon(getClass().getResource(
+		// "images/new/add36.gif")));
+		// showAllButton
+		// .setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
+		// showAllButton.setBorderPainted(false);
 
-        //  Removing hideSelectedButton via comments, just in case we decide to revert back
-        //  hideSelectedButton = toolBar.add(new HideSelectedAction(false));
-        //	hideSelectedButton.setIcon(new ImageIcon(getClass().getResource(
-        //	    "images/new/delete36.gif")));
-        //	hideSelectedButton.setToolTipText("Hide Selected Region");
-        //	hideSelectedButton.setBorderPainted(false);
- 		//  toolBar.addSeparator();
+		// Removing hideSelectedButton via comments, just in case we decide to
+		// revert back
+		// hideSelectedButton = toolBar.add(new HideSelectedAction(false));
+		// hideSelectedButton.setIcon(new ImageIcon(getClass().getResource(
+		// "images/new/delete36.gif")));
+		// hideSelectedButton.setToolTipText("Hide Selected Region");
+		// hideSelectedButton.setBorderPainted(false);
+		// toolBar.addSeparator();
 
 		toolBar.addSeparator();
 
@@ -1009,20 +1011,19 @@ public class CyMenus implements GraphViewChangeListener {
 		helpContentsMenuItem
 				.addActionListener(new CSH.DisplayHelpFromSource(hb));
 
-        //  Add Help Button to main tool bar
-        JButton helpButton = new JButton();
-        helpButton.addActionListener(new CSH.DisplayHelpFromSource(hb));
+		// Add Help Button to main tool bar
+		JButton helpButton = new JButton();
+		helpButton.addActionListener(new CSH.DisplayHelpFromSource(hb));
 		helpButton.setIcon(new ImageIcon(getClass().getResource(
 				"images/ximian/stock_help.png")));
 		helpButton.setToolTipText("Help");
 		helpButton.setBorderPainted(false);
 
+		// Add Help Button before VizMapper button
+		int numComponents = toolBar.getComponentCount();
+		toolBar.add(helpButton, numComponents - 1);
 
-        //  Add Help Button before VizMapper button
-        int numComponents = toolBar.getComponentCount();
-        toolBar.add(helpButton, numComponents-1);
-
-        /*
+		/*
 		 * helpContextSensitiveMenuItem .addActionListener(new
 		 * CSH.DisplayHelpAfterTracking(hb)); // add Help support for toolbar
 		 * hb.enableHelp(toolBar, "toolbar", null); // add Help support for

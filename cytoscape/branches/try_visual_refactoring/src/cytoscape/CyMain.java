@@ -191,7 +191,8 @@ public class CyMain implements CyInitParams {
 		}
 
 		if ( line.hasOption("v") ) {
-			System.out.println("Cytoscape version: 2.3");
+            CytoscapeVersion version = new CytoscapeVersion();
+            System.out.println(version.getVersion());
 			System.exit(0); 
 		}
 

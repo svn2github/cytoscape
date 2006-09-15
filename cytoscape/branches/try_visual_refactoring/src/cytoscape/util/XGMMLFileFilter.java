@@ -1,29 +1,45 @@
 package cytoscape.util;
 
+import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.XGMMLReader;
-import java.util.*;
-import java.io.*;
-import cytoscape.util.CyFileFilter;
-import cytoscape.*;
-import cytoscape.data.ImportHandler;
 
+/**
+ * FileFilter for Reading in XGMML Files.
+ *
+ * @author Cytoscape Development Team.
+ */
+public class XGMMLFileFilter extends CyFileFilter {
 
-public class XGMMLFileFilter 
-  extends 
-  	CyFileFilter {
+    /**
+     * XGMML Files are Graphs.
+     */
+    private static String fileNature = ImportHandler.GRAPH_NATURE;
 
-	private static String fileNature = ImportHandler.GRAPH_NATURE;
-	private static String[] xgmml = {"xgmml", "xml"};
-	private static String description = "XGMML files";
+    /**
+     * File Extensions.
+     */
+    private static String[] fileExtensions = {"xgmml", "xml"};
 
-	public XGMMLFileFilter() {
-		super(xgmml, description, fileNature);
-	}
-	
-	
-	public GraphReader getReader(String fileName) {
-		reader = new XGMMLReader(fileName);
-		return reader;
-	}
+    /**
+     * Filter Description.
+     */
+    private static String description = "XGMML files";
+
+    /**
+     * Constructor.
+     */
+    public XGMMLFileFilter() {
+        super(fileExtensions, description, fileNature);
+    }
+
+    /**
+     * Gets Graph Reader.
+     * @param fileName File name.
+     * @return GraphReader Object.
+     */
+    public GraphReader getReader(String fileName) {
+        reader = new XGMMLReader(fileName);
+        return reader;
+    }
 }

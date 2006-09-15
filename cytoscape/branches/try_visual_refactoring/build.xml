@@ -8,7 +8,7 @@
 <!-- ======================================================= -->
 <!-- ======================================================= -->
 
-<project name="Cytoscape" default="compile" basedir=".">
+<project name="Cytoscape" default="jar" basedir=".">
 
 	<!-- =========================================================== -->
 	<!-- Define Directories and other environment variables  -->
@@ -17,9 +17,12 @@
 	<!-- The directory containing library jar files -->
 	<property name="lib.dir" value="${basedir}/lib" />
 
-	<!-- The directory containing library jar files only for testing and building
-				These files should not be in the release lib directory. 
-	-->
+	<!-- Read in the system environment variables --> 
+	<property environment="env"/>
+
+	<!-- The directory containing library jar files only for -->
+	<!-- testing and building. These files should not be in the -->
+	<!-- release lib directory.  -->
 	<property name="buildlib.dir" value="${lib.dir}/build-libs" />
 
 	<!-- The directory containing source code -->
@@ -42,7 +45,7 @@
 	<property name="build.compiler" value="modern" />
 
 	<!-- Release number -->
-	<property name="version" value="2.4" />
+	<property name="version" value="2.4.0" />
 
 	<property name="dirname.release.dir" value="cytoscape-v${version}" />
 
@@ -52,30 +55,30 @@
 	<!-- Temporary Release Directory -->
 	<property name="release.dir" value="${build.dir}/${dirname.release.dir}" />
 
-	<!-- Temporary Zip/Gzipped Release Directory -->
-	<property name="zip_release.dir" value="${build.dir}/zip_release" />
+	<!-- Temporary directory for all distribution files -->
+	<property name="dist.dir" value="${build.dir}/dist" />
 
-	<!-- Mac OS X Application Directory -->
-	<property name="mac_app.dir" value="${release.dir}/Cytoscape.app" />
+	<!-- Manifest file name -->
+	<property name="manifest.file" value="${build.dir}/Cytoscape.manifest" />
 
 	<!-- Javadoc directories -->
 	<property name="javadoc.private.dir" value="${build.dir}/API-private" />
 	<property name="javadoc.public.dir" value="${build.dir}/API-public" />
 
-	<!-- ==========================================================
-		The following section was created by Keiichiro Ono,
-		kono@ucsd.edu for JAXB Databinding
-	============================================================ -->
-
 	<!-- The XML Schema Directory used by JAXB -->
-	<property name="schema.dir" value="${basedir}/schema" />
+	<property name="schema.dir" value="${basedir}/resources/schema" />
 
 	<!-- XML Schema files used by JAXB -->
 	<property name="xgmml.schema" value="xgmml.xsd" />
 	<property name="cysession.schema" value="cysession.xsd" />
+	<property name="bookmark.schema" value="bookmarks.xsd" />
 
 	<!-- Auto generated package name -->
 	<property name="package" value="cytoscape.generated" />
+
+	<!-- Check to see if install4j is available -->
+	<available property="install4j.available" 
+	           file="${env.INSTALL4J_HOME}/bin/install4j.jar"/>
 
 	<!-- ======================================================= -->
 	<!-- Cytoscape ClassPath definition                          -->
@@ -101,6 +104,16 @@
 	</taskdef>
 
 	<!-- ======================================================= -->
+	<!-- For converting SVG files to PNGs.  Specifically for     -->
+	<!-- creating the splash screen.      -->
+	<!-- ======================================================= -->
+	<taskdef name="rasterize" 
+	         classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask">
+		<classpath refid="classpath" />
+	</taskdef>
+
+
+	<!-- ======================================================= -->
 	<!-- Clean generated packages -->
 	<!-- ======================================================= -->
 	<target name="clean-generated" description="Delete XJC generated packages.">
@@ -108,6 +121,7 @@
 		<!-- Clean up generated packages -->
 		<delete dir="${src.dir}/cytoscape/generated" />
 		<delete dir="${src.dir}/cytoscape/generated2" />
+		<delete dir="${src.dir}/cytoscape/bookmarks" />
 	</target>
 
 	<!-- ======================================================= -->
@@ -115,13 +129,28 @@
 	<!-- ======================================================= -->
 	<target name="bind" description="Run XJC to generate new packages.">
 
-		<xjc schema="${schema.dir}/${cysession.schema}" target="${src.dir}" package="${package}">
-			<produces dir="${src.dir}/cytoscape/generated" includes="* impl/*" />
+		<xjc schema="${schema.dir}/${cysession.schema}" 
+		     target="${src.dir}" 
+		     package="${package}">
+			<produces dir="${src.dir}/cytoscape/generated" 
+			          includes="* impl/*" />
 		</xjc>
-		<xjc schema="${schema.dir}/${xgmml.schema}" target="${src.dir}" package="${package}2" extension="true" binding="${schema.dir}/binding.xjb">
+		<xjc schema="${schema.dir}/${xgmml.schema}" 
+		     target="${src.dir}" 
+		     package="${package}2" 
+		     extension="true" 
+		     binding="${schema.dir}/binding.xjb">
 			<arg value="-nv" />
 			<produces dir="${src.dir}/cytoscape/generated2" includes="* impl/*" />
 		</xjc>
+		
+		<xjc schema="${schema.dir}/${bookmark.schema}" 
+		     target="${src.dir}" 
+		     package="cytoscape.bookmarks">
+			<arg value="-nv" />
+			<produces dir="${src.dir}/cytoscape/bookmarks" includes="* impl/*" />
+		</xjc>
+		
 		<!-- copy prop file into build dir -->
 		<echo>Copying jaxb.properties from ${src.dir}/cytoscape/generated to build dir...</echo>
 		<copy todir="${build.classes}/cytoscape/generated">
@@ -129,6 +158,9 @@
 		</copy>
 		<copy todir="${build.classes}/cytoscape/generated2">
 			<fileset dir="${src.dir}/cytoscape/generated2" includes="*.properties" />
+		</copy>
+		<copy todir="${build.classes}/cytoscape/bookmarks">
+			<fileset dir="${src.dir}/cytoscape/bookmarks" includes="*.properties" />
 		</copy>
 
 	</target>
@@ -173,8 +205,39 @@
 			<fileset dir="${src.dir}" includes="**/*.xml" />
 		</copy>
 
+		<antcall target="splash" />
+		
+	</target>
 
-		<available property="manifest_generated" file="${build.dir}/cytoscape.manifest" />
+	<!-- ======================================================= -->
+	<!-- Create the PNG splash screen from the SVG file with the -->
+	<!-- proper version number substituted in. -->
+	<!-- ======================================================= -->
+	<target name="splash">
+	        <filter token="version" value="${version}"/>
+		<echo>
+            ---------------------------------------
+           	Creating splash and about screens 
+            ---------------------------------------
+        	</echo>
+		<copy file="images/CytoscapeSplashScreen.svg" 
+	              tofile="${build.classes}/cytoscape/images/CytoscapeSplashScreen.svg" 
+		      filtering="true"
+		      overwrite="true"/>
+	        <filter token="version" value="${version}"/>
+		<copy file="images/CytoscapeCredits.svg" 
+	              tofile="${build.classes}/cytoscape/images/CytoscapeCredits.svg" 
+		      filtering="true"
+		      overwrite="true"/>
+		<available property="splashUpToDate" 
+		           file="${build.classes}/cytoscape/images/CytoscapeSplashScreen.png"/>
+		<antcall target="createSplash" />
+	</target>
+	<target name="createSplash" unless="splashUpToDate" >
+	        <rasterize src="${build.classes}/cytoscape/images/CytoscapeSplashScreen.svg"
+			   dest="${build.classes}/cytoscape/images/CytoscapeSplashScreen.png" />
+	        <rasterize src="${build.classes}/cytoscape/images/CytoscapeCredits.svg"
+			   dest="${build.classes}/cytoscape/images/CytoscapeCredits.png" />
 	</target>
 
 	<!-- ======================================================= -->
@@ -185,29 +248,37 @@
 	<target name="clean" depends="clean-generated" description="Removes all generated files.">
 		<delete dir="${build.dir}" />
 		<delete file="${basedir}/cytoscape.jar" />
-		<delete file="${basedir}/cytoscape.props" />
 	</target>
 
 	<!-- ======================================================= -->
 	<!-- Compile Cytoscape                                       -->
 	<!-- ======================================================= -->
 	<!--  Target to compile all code -->
-	<target name="compile" depends="prepare, bind" description="Compiles all source code.">
-		<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="off" debug="true" source="1.5" optimize="on" includeAntRuntime="false" deprecation="yes">
-			<!--
-	       -->
+	<target name="compile" 
+	        depends="prepare, bind" 
+		description="Compiles all source code.">
+		<javac srcdir="${src.dir}" 
+		       destdir="${build.classes}" 
+		       nowarn="off" 
+		       debug="true" 
+		       source="1.5" 
+		       optimize="on" 
+		       includeAntRuntime="false" 
+		       deprecation="no">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
 		</javac>
 
 		<!-- Run RMIC for BioDataServer -->
-		<rmic classname="cytoscape.data.servers.BioDataServerRmi" base="${build.classes}" classpathref="classpath" />
+		<rmic classname="cytoscape.data.servers.BioDataServerRmi" 
+		      base="${build.classes}" 
+		      classpathref="classpath" />
 
 		<!-- copy resources/ directory to build area -->
 		<echo>Copying resources/ directory to build</echo>
 		<copy todir="${build.classes}/cytoscape/resources">
 			<fileset dir="${basedir}/resources" />
-			<fileset file="${basedir}/props/tax_report.txt" />
+			<fileset file="${basedir}/resources/props/tax_report.txt" />
 		</copy>
 
 
@@ -222,7 +293,8 @@
 	<!-- ======================================================= -->
 	<target name="help" description="Builds Help system files (full text search db, etc).">
 		<!-- Check to see if the help files need to be indexed... -->
-		<uptodate property="helpIsUpToDate" targetfile="${build.classes}/cytoscape/help/JavaHelpSearch/SCHEMA">
+		<uptodate property="helpIsUpToDate" 
+		          targetfile="${build.classes}/cytoscape/help/JavaHelpSearch/SCHEMA">
 			<srcfiles dir="${basedir}/help" includes="**/*" />
 		</uptodate>
 		<antcall target="buildHelp" />
@@ -237,7 +309,10 @@
 
 		<!-- then index the help files in the build area -->
 		<echo>Indexing help files and creating search db</echo>
-		<java classname="com.sun.java.help.search.Indexer" classpathref="classpath" dir="${build.classes}/cytoscape/help" fork="true">
+		<java classname="com.sun.java.help.search.Indexer" 
+		      classpathref="classpath" 
+		      dir="${build.classes}/cytoscape/help" 
+		      fork="true">
 			<arg value="-db" />
 			<arg value="JavaHelpSearch" />
 			<arg value="${build.classes}/cytoscape/help" />
@@ -263,7 +338,11 @@
 
 	<!-- Target to Run JavaDoc -->
 	<target name="doc-private" description="Runs JavaDoc.">
-		<javadoc destdir="${javadoc.private.dir}" source="1.5" breakiterator="true" classpathref="classpath" link="http://java.sun.com/j2se/1.5/docs/api/">
+		<javadoc destdir="${javadoc.private.dir}" 
+		         source="1.5" 
+			 breakiterator="true" 
+			 classpathref="classpath" 
+			 link="http://java.sun.com/j2se/1.5/docs/api/">
 
 			<packageset dir="${src.dir}">
 				<include name="cytoscape/**" />
@@ -282,7 +361,14 @@
 
 	<!-- Target to Run JavaDoc -->
 	<target name="doc" description="Runs JavaDoc.">
-		<javadoc destdir="${javadoc.public.dir}" source="1.5" breakiterator="true" Windowtitle="Cytoscape ${version} API" header="Cytoscape ${version} (c) 2006 ISB, MSKCC, UCSD" footer="www.cytoscape.org" classpathref="classpath" access="public">
+		<javadoc destdir="${javadoc.public.dir}" 
+		         source="1.5" 
+			 breakiterator="true" 
+			 Windowtitle="Cytoscape ${version} API" 
+			 header="Cytoscape ${version} (c) 2006 ISB, MSKCC, UCSD" 
+			 footer="www.cytoscape.org" 
+			 classpathref="classpath" 
+			 access="public">
 
 			<fileset dir="${src.dir}">
 				<include name="cytoscape/*.java" />
@@ -318,28 +404,61 @@
 	</target>
 
 	<!-- ======================================================= -->
+	<!-- Manfiest Target                                         -->
+	<!-- Automatically creates Cytoscape Manifest File, based on -->
+	<!-- JAR Files located in cytoscape.lib                      -->
+	<!-- ======================================================= -->
+	<target name="generate_manifest" depends="prepare">
+		<echo>
+            ***********************************************
+            Creating Cytoscape Manifest File
+            ***********************************************
+        	</echo>
+		<path id="manifest.classpath">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<pathconvert property="manifest.classpath.string"
+			     pathsep=" ">
+			<path refid="manifest.classpath"/>
+			<mapper type="regexp" from="${lib.dir}/(.*)" to="lib/\1"/>
+		</pathconvert>
+		<manifest file="${manifest.file}">
+			<attribute name="Main-Class" value="cytoscape.CyMain"/>
+			<attribute name="Class-Path" value="${manifest.classpath.string}"/>
+		</manifest>
+	</target>
+
+	<!-- ======================================================= -->
 	<!-- Create the Cytoscape Jar file                           -->
 	<!-- ======================================================= -->
 
 	<!--  Target to Create Cytoscape Jar File  -->
-	<target name="jar" depends="compile, generate_manifest" description="Creates Cytoscape Jar File.">
+	<target name="jar" 
+	        depends="compile, generate_manifest" 
+		description="Creates Cytoscape Jar File.">
 
 		<echo>
             ***********************************************
             Creating Cytoscape JAR File
             ***********************************************
-        </echo>
+	       	</echo>
 
-		<copy file="${basedir}/tools/jars/javax.imageio.spi.ImageWriterSpi" todir="${build.dir}/temp/META-INF/services" />
-		<copy file="${basedir}/tools/jars/org.freehep.util.export.ExportFileType" todir="${build.dir}/temp/META-INF/services" />
-		<copy file="${basedir}/props/vizmap.props" todir="${build.classes}" />
-		<copy file="${basedir}/props/cytoscape.props" todir="${build.classes}" />
-		<jar destfile="${basedir}/cytoscape.jar" manifest="${build.dir}/cytoscape.manifest">
+		<copy file="${basedir}/resources/javax.imageio.spi.ImageWriterSpi" 
+		      todir="${build.dir}/temp/META-INF/services" />
+		<copy file="${basedir}/resources/org.freehep.util.export.ExportFileType" 
+		      todir="${build.dir}/temp/META-INF/services" />
+		<copy file="${basedir}/resources/props/vizmap.props" 
+		      todir="${build.classes}" />
+		<copy file="${basedir}/resources/props/cytoscape.props" 
+		      todir="${build.classes}" />
+
+		<jar destfile="${basedir}/cytoscape.jar" 
+		     manifest="${manifest.file}">
 			<fileset dir="${build.classes}" />
 			<fileset dir="${build.dir}/temp" />
 		</jar>
-		<copy file="${basedir}/props/cytoscape.props" todir="${basedir}" />
-		<copy file="${basedir}/props/tax_report.txt" todir="${basedir}" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -351,8 +470,10 @@
             ***********************************************
             Running all unit tests (quickly). 
             ***********************************************
-      </echo>
-		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
+	      </echo>
+		<junit printsummary="yes" 
+		       haltonfailure="no" 
+		       maxmemory="512m">
 			<!-- We need a new classpath so that AllTests is read from
 	     the cytoscape.jar file instead of the build dir which
 	     allows it reflect on the jar file and find other tests. -->
@@ -380,14 +501,20 @@
             ***********************************************
             Running all unit tests individually. 
             ***********************************************
-      </echo>
+	      </echo>
 		<mkdir dir="${junit.report.dir}" />
-		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
+		<junit printsummary="yes" 
+		       haltonfailure="no" 
+		       maxmemory="512m">
 			<classpath refid="classpath" />
 			<formatter type="plain" usefile="true" />
 			<formatter type="xml" usefile="true" />
-			<batchtest fork="yes" todir="${junit.report.dir}" failureProperty="junit.test.failure">
-				<fileset dir="${src.dir}" includes="**/*Test.java" excludes="**/AllTests.java" />
+			<batchtest fork="yes" 
+			           todir="${junit.report.dir}" 
+				   failureProperty="junit.test.failure">
+				<fileset dir="${src.dir}" 
+				         includes="**/*Test.java" 
+					 excludes="**/AllTests.java" />
 			</batchtest>
 		</junit>
 
@@ -398,17 +525,20 @@
 			<report format="frames" todir="${junit.report.dir}" />
 		</junitreport>
 
-		<fail message="JUnit Tests failed! Check ${junit.report.dir}/index.html for details." if="junit.test.failure" />
+		<fail message="JUnit Tests failed! Check ${junit.report.dir}/index.html for details." 
+		      if="junit.test.failure" />
 
 	</target>
 
 	<!-- ======================================================= -->
 	<!-- Run All of the Cytoscape Unit Tests                     -->
 	<!-- ======================================================= -->
-	<target name="test-gui" depends="jar" description="Runs all Cytoscape Unit Tests.">
+	<target name="test-gui" 
+	        depends="jar" 
+		description="Runs all Cytoscape Unit Tests.">
 
 		<!-- Create a new classpath so that we're running from a jar file 
-	     which is needed by AllTests. -->
+	             which is needed by AllTests. -->
 		<path id="junit.classpath">
 			<fileset dir="${lib.dir}">
 				<include name="**/*.jar" />
@@ -418,7 +548,10 @@
 			</fileset>
 		</path>
 
-		<java classname="cytoscape.unitTests.AllTests" classpathref="junit.classpath" fork="true" maxmemory="512m">
+		<java classname="cytoscape.unitTests.AllTests" 
+		      classpathref="junit.classpath" 
+		      fork="true" 
+		      maxmemory="512m">
 			<arg line="-ui" />
 		</java>
 	</target>
@@ -428,12 +561,17 @@
 	<!-- ======================================================= -->
 	<target name="test-swing" depends="jar">
 		<mkdir dir="${junit.report.dir}" />
-		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
+		<junit printsummary="yes" 
+		       haltonfailure="no" 
+		       maxmemory="512m">
 			<classpath refid="classpath" />
 			<formatter type="plain" usefile="true" />
 			<formatter type="xml" usefile="true" />
-			<batchtest fork="yes" todir="${junit.report.dir}" failureProperty="junit.test.failure">
-				<fileset dir="${src.dir}" includes="**/*TestSwing.java" />
+			<batchtest fork="yes" 
+			           todir="${junit.report.dir}" 
+				   failureProperty="junit.test.failure">
+				<fileset dir="${src.dir}" 
+				         includes="**/*TestSwing.java" />
 			</batchtest>
 		</junit>
 
@@ -444,22 +582,26 @@
 			<report format="frames" todir="${junit.report.dir}" />
 		</junitreport>
 
-		<fail message="JUnit Tests failed! Check ${junit.report.dir}/index.html for details." if="junit.test.failure" />
+		<fail message="JUnit Tests failed! Check ${junit.report.dir}/index.html for details." 
+		      if="junit.test.failure" />
 
 	</target>
 
 	<!-- ======================================================= -->
-	<!-- Create Cytoscape Distribution                           -->
-	<!-- Use the 'zip_release' target to build zipped releases   -->
-	<!-- Questions?  email:  cerami@cbio.mskcc.org	         -->
+	<!-- Creates the release files used for the distribution     --> 
+	<!--                                                         -->
+	<!-- Use the  "dist"  target to create a Cytoscape release.  --> 
+	<!--                                                         -->
 	<!-- ======================================================= -->
-	<target name="release" depends="jar, test" description="Creates Cytoscape Release">
+	<target name="release" 
+	        depends="jar, test" 
+		description="Creates Cytoscape Release">
 
 		<echo>
             ***********************************************
             Creating Cytoscape Release
             ***********************************************
-        </echo>
+	        </echo>
 
 		<!-- Create Release Directory -->
 		<mkdir dir="${release.dir}" />
@@ -485,28 +627,21 @@
             Copying over all OS-specific scripts.
             ---------------------------------------
 		</echo>
-		<copy file="bin/cytoscape.bat" todir="${release.dir}" />
-		<copy file="bin/cytoscape.sh" todir="${release.dir}" />
+		<copy file="resources/bin/cytoscape.bat" todir="${release.dir}" />
+		<copy file="resources/bin/cytoscape.sh" todir="${release.dir}" />
 		<chmod perm="+x" file="${release.dir}/cytoscape.bat" />
 		<chmod perm="+x" file="${release.dir}/cytoscape.sh" />
 
-		<!-- Copy over props files -->
-		<echo>
-            ---------------------------------------
-            Copying over all property files.
-            ---------------------------------------
-		</echo>
-
-		<!-- Copy over Txt/PDF files -->
 		<echo>
             ---------------------------------------
             Copying over user documentation and Cytoscape License.
             ---------------------------------------
-        </echo>
+        	</echo>
 
-		<copy file="user_docs/INSTALL.txt" todir="${release.dir}" />
-		<copy file="user_docs/LICENSE.txt" todir="${release.dir}" />
-		<copy file="user_docs/Cytoscape_2.3_User_Manual.pdf" todir="${release.dir}" />
+		<copy file="docs/INSTALL.txt" todir="${release.dir}" />
+		<copy file="docs/LICENSE.txt" todir="${release.dir}" />
+		<copy file="docs/LICENSE.html" todir="${release.dir}" />
+		<copy file="docs/manual.pdf" todir="${release.dir}" />
 
 		<!-- Copy over Sample Data Files -->
 		<echo>
@@ -549,14 +684,14 @@
 				<include name="gene_association.goa_human" />
 			</fileset>
 		</copy>
-		<copy file="${basedir}/props/tax_report.txt" tofile="${release.dir}/annotation/tax_report.txt" />
+		<copy file="${basedir}/resources/props/tax_report.txt" tofile="${release.dir}/annotation/tax_report.txt" />
 
 		<!-- Copy over Third Party Licenses -->
 		<echo>
             ---------------------------------------
             Copying over third party licenses.
             ---------------------------------------
-        </echo>
+        	</echo>
 		<mkdir dir="${release.dir}/licenses" />
 		<copy todir="${release.dir}/licenses">
 			<fileset dir="licenses">
@@ -570,23 +705,24 @@
             ---------------------------------------
             Copying over PlugIns.
             ---------------------------------------
-        </echo>
+        	</echo>
 		<copy todir="${release.dir}/plugins">
 			<fileset dir="plugins/core">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy file="plugins/core/pluginsContents.txt" todir="${release.dir}/plugins" />
 	</target>
 
 	<target name="all" depends="release" />
 
-	<target name="release-extras" depends="release" description="add extra plugins into release">
+	<target name="release-extras" 
+	        depends="release" 
+		description="add extra plugins into release">
 		<echo>
             ---------------------------------------
             Copying over extra PlugIns.
             ---------------------------------------
-        </echo>
+        	</echo>
 		<copy todir="${release.dir}/plugins">
 			<fileset dir="plugins/extras">
 				<include name="*.jar" />
@@ -600,33 +736,43 @@
 	<!-- ======================================================= -->
 	<target name="nightly-release" depends="release">
 		<tstamp>
-			<format property="todays.date" pattern="yyyy-MM-dd_hh:mmaa" />
+			<format property="todays.date" 
+			        pattern="yyyy-MM-dd_hh:mmaa" />
 		</tstamp>
-		<mkdir dir="${zip_release.dir}" />
-		<zip destfile="${zip_release.dir}/cytoscape-${todays.date}.zip" basedir="${build.dir}" includes="${dirname.release.dir}/**" />
+		<mkdir dir="${dist.dir}" />
+		<zip destfile="${dist.dir}/cytoscape-${todays.date}.zip" 
+		     basedir="${build.dir}" 
+		     includes="${dirname.release.dir}/**" />
 	</target>
 
 	<!-- ======================================================= -->
-	<!-- Create Cytoscape Distribution                           -->
+	<!-- Create Zip files for distribution                       --> 
 	<!-- Final releases are made available in zip_release/ dir   -->
-	<!-- Questions?  email:  cerami@cbio.mskcc.org	         -->
+	<!-- Questions?  email:  cerami@cbio.mskcc.org	             -->
+	<!--                                                         -->
+	<!-- Use the  "dist"  target to create a Cytoscape release.  --> 
+	<!--                                                         -->
 	<!-- ======================================================= -->
-	<target name="zip_release" depends="release" description="Creates Zipped Cytoscape Release Bundles">
+	<target name="zip_release" 
+	        depends="release" 
+		description="Creates Zipped Cytoscape Release Bundles">
 
 		<echo>
             ---------------------------------------
             Creating zip/tar.gz release bundles.
             ---------------------------------------
 		</echo>
-		<mkdir dir="${zip_release.dir}" />
+		<mkdir dir="${dist.dir}" />
 
 		<!-- Create Windows Zip Distribution -->
-		<zip destfile="${zip_release.dir}/cytoscape-v${version}.zip" basedir="${build.dir}" includes="${dirname.release.dir}/**" />
+		<zip destfile="${dist.dir}/cytoscape-v${version}.zip" 
+		     basedir="${build.dir}" 
+		     includes="${dirname.release.dir}/**" />
 		<!-- Stupid Ant does not preserve execute permissions. -->
 
 		<!-- Create Unix/Linux/MaxOS X tar.gz Distribution -->
 		<!-- Include Executable Permissions -->
-		<tar tarfile="${zip_release.dir}/cytoscape-v${version}.tar">
+		<tar tarfile="${dist.dir}/cytoscape-v${version}.tar">
 			<tarfileset dir="${build.dir}" mode="755">
 				<!-- Stupid Ant. -->
 				<include name="${dirname.release.dir}/*.sh" />
@@ -640,80 +786,70 @@
 				<exclude name="${dirname.release.dir}/*.bat" />
 			</tarfileset>
 		</tar>
-		<gzip src="${zip_release.dir}/cytoscape-v${version}.tar" zipfile="${zip_release.dir}/cytoscape-v${version}.tar.gz" />
-		<delete file="${zip_release.dir}/cytoscape-v${version}.tar" />
+		<gzip src="${dist.dir}/cytoscape-v${version}.tar" 
+		      zipfile="${dist.dir}/cytoscape-v${version}.tar.gz" />
+		<delete file="${dist.dir}/cytoscape-v${version}.tar" />
 
 	</target>
 
 	<!--  Create tar.gz release of source code -->
 	<!--  Note that the source tar because does not preserve -->
 	<!--  individual permissions of files.  This is a bug in Ant/Java.  -->
-	<target name="source" description="Generates a release .tar.gz of all source code">
-		<tar tarfile="${zip_release.dir}/cytoscapeSource-v${version}.tar">
+	<target name="source" 
+	        description="Generates a release .tar.gz of all source code">
+		<tar tarfile="${dist.dir}/cytoscapeSource-v${version}.tar">
 			<tarfileset dir="${basedir}">
 				<exclude name="build/**" />
 				<exclude name="CVS/**" />
+				<exclude name=".svn/**" />
 				<exclude name="*.log" />
 			</tarfileset>
 		</tar>
-		<gzip src="${zip_release.dir}/cytoscapeSource-v${version}.tar" zipfile="${zip_release.dir}/cytoscapeSource-v${version}.tar.gz" />
-		<delete file="${zip_release.dir}/cytoscapeSource-v${version}.tar" />
-	</target>
-
-
-
-	<!-- ======================================================= -->
-	<!-- Create Mac OS X Application Bundle                      -->
-	<!-- Questions?  email:  cerami@cbio.mskcc.org               -->
-	<!-- ======================================================= -->
-	<target name="mac" depends="release" description="Creates a Mac-specific application in an Application Bundle directory.">
-		<delete dir="${mac_app.dir}" />
-		<mkdir dir="${mac_app.dir}" />
-		<copy todir="${mac_app.dir}">
-			<fileset dir="tools/mac_template" />
-		</copy>
-
-		<!-- Create a symbolic link to the plugin directory -->
-		<exec executable="ln" dir="${mac_app.dir}">
-			<arg line="-s ../plugins plugins" />
-		</exec>
-
-		<!-- Create a symbolic link to the Cytoscape JAR in the parent dir -->
-		<!-- This way there is only one cytoscape.jar to update  -->
-		<mkdir dir="${mac_app.dir}/Contents/Resources/Java" />
-		<exec executable="ln" dir="${mac_app.dir}/Contents/Resources/Java">
-			<arg line="-s ../../../../cytoscape.jar cytoscape.jar" />
-		</exec>
-
-		<move file="${mac_app.dir}/mac.jar" todir="${release.dir}/plugins" />
-
-		<!-- Set Files to executable -->
-		<chmod file="${mac_app.dir}/Contents/MacOS/JavaApplicationStub" perm="+x" />
-		<chmod file="${mac_app.dir}/Contents/Info.plist" perm="+x" />
-		<chmod file="${mac_app.dir}/Contents/PkgInfo" perm="+x" />
-
-		<echo message="Mac OS X App is now ready. See ${mac_app.dir}." />
-		<echo message="To complete the Mac release, refer to README.txt" />
+		<gzip src="${dist.dir}/cytoscapeSource-v${version}.tar" 
+		      zipfile="${dist.dir}/cytoscapeSource-v${version}.tar.gz" />
+		<delete file="${dist.dir}/cytoscapeSource-v${version}.tar" />
 	</target>
 
 	<!-- ======================================================= -->
-	<!-- Manfiest Target                                         -->
-	<!-- Automatically creates Cytoscape Manifest File, based on -->
-	<!-- JAR Files located in cytoscape.lib                      -->
+	<!-- Creates the install bundles that users will use to      -->
+	<!-- actually install cytoscape.                             -->
+	<!-- NOTE - you MUST have install4j installed on your system -->
+	<!-- with the environment variable INSTALL4J_HOME set and    -->
+	<!-- pointing to said installation.                          -->
+	<!-- The cytoscape team has a floating license, contact us   -->
+	<!-- for access.                                             -->
+	<!--                                                         -->
+	<!-- Use the  "dist"  target to create a Cytoscape release.  --> 
+	<!--                                                         -->
 	<!-- ======================================================= -->
-	<target name="generate_manifest" depends="prepare" unless="manifest_generated">
+	<taskdef name="install4j"
+	         classname="com.install4j.Install4JTask"
+       	     classpath="${env.INSTALL4J_HOME}/bin/ant.jar"
+			 onerror="ignore"/>
+					                   
+	<target name="install-bundles"
+	        depends="release"
+			if="install4j.available" >
 		<echo>
-            ***********************************************
-            Creating Cytoscape Manifest File
-            ***********************************************
-        </echo>
-		<mkdir dir="${build.dir}/.build" />
-		<javac destdir="${build.dir}/.build" srcdir="${basedir}/.build" includeAntRuntime="no" />
-		<delete file="${build.dir}/cytoscape.manifest" />
-		<java fork="true" classname="ManifestCreator" output="${build.dir}/cytoscape.manifest">
-			<classpath path="${build.dir}/.build" />
-			<arg value="${lib.dir}" />
-		</java>
+            ---------------------------------------
+            Creating install4j bundles 
+            ---------------------------------------
+        	</echo>
+		<filter token="version" value="${version}"/>
+		<copy file="tools/Cytoscape.install4j"
+		      tofile="build/Cytoscape.install4j" 
+		      filtering="true"
+		      overwrite="true"/>
+		<install4j projectfile="build/Cytoscape.install4j"/>
+	</target>
+
+	<!-- ======================================================= -->
+	<!-- Creates all of the necessary installation files         --> 
+	<!-- Use this target when you're ready to create a cytoscape --> 
+	<!-- release.                                                --> 
+	<!-- ======================================================= -->
+	<target name="dist"
+	        depends="zip_release,install-bundles,source">
 	</target>
 
 
@@ -731,29 +867,19 @@
             * keytool -genkey -alias cytoscape -keypass secret
             * enter "secret" for the password. 
             ***********************************************
-        </echo>
+		</echo>
 
 		<!-- Create Webstart Directory -->
 		<mkdir dir="${webstart.dir}" />
 		<mkdir dir="${webstart.dir}/plugins" />
 
 		<echo>
-             ------------------------------------
-             All Files in the data directory are
-             being included in data.jar
-             ------------------------------------
-        </echo>
-
-		<jar destfile="${webstart.dir}/data.jar" basedir="data" includes="**" />
-		<signjar jar="${webstart.dir}/data.jar" alias="cytoscape" storepass="secret" />
-
-		<echo>
             ---------------------------------------
             Copying over all necessary JAR files.
             ---------------------------------------
-        </echo>
+		</echo>
 
-		<copy file="${basedir}/cy1.jnlp" tofile="${webstart.dir}/cy1.jnlp" />
+		<copy file="${basedir}/resources/cy1.jnlp" tofile="${webstart.dir}/cy1.jnlp" />
 
 
 		<copy file="${basedir}/cytoscape.jar" tofile="${webstart.dir}/cytoscape.jar" />
@@ -774,17 +900,17 @@
             ---------------------------------------
             Copying over all property files.
             ---------------------------------------
-        </echo>
-		<copy file="${basedir}/cytoscape.props" tofile="${webstart.dir}/cytoscape.props" />
-		<copy file="${basedir}/vizmap.props" tofile="${webstart.dir}/vizmap.props" />
-		<copy file="${basedir}/tax_report.txt" tofile="${webstart.dir}/tax_report.txt" />
+	        </echo>
+		<copy file="${basedir}/resources/props/cytoscape.props" tofile="${webstart.dir}/cytoscape.props" />
+		<copy file="${basedir}/resources/props/vizmap.props" tofile="${webstart.dir}/vizmap.props" />
+		<copy file="${basedir}/resources/props/tax_report.txt" tofile="${webstart.dir}/tax_report.txt" />
 
 		<!-- Copy over Webstart PlugIns -->
 		<echo>
             ---------------------------------------
             Copying over PlugIns.
             ---------------------------------------
-        </echo>
+        	</echo>
 		<copy todir="${webstart.dir}/plugins">
 			<fileset dir="plugins/core">
 				<include name="*.jar" />
@@ -796,25 +922,24 @@
 			</fileset>
 		</copy>
 
-		<copy file="plugins/core/pluginsContents.txt" todir="${webstart.dir}/plugins" />
-
 		<signjar alias="cytoscape" storepass="secret">
 			<fileset dir="${webstart.dir}/plugins" includes="*.jar" />
 		</signjar>
 	</target>
 
-	<target name="webstart-extras" depends="webstart" description="add extra plugins into webstart">
+	<target name="webstart-extras" 
+	        depends="webstart" 
+		description="add extra plugins into webstart">
 		<echo>
             ---------------------------------------
             Copying over extra PlugIns.
             ---------------------------------------
-        </echo>
+        	</echo>
 		<copy todir="${webstart.dir}/plugins">
 			<fileset dir="plugins/extras">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
 	</target>
-
 
 </project>

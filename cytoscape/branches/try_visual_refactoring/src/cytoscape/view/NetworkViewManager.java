@@ -50,6 +50,8 @@ import cytoscape.view.CyEdgeView;
 
 import cytoscape.giny.*;
 
+import ding.view.DGraphView;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -69,6 +71,7 @@ public class NetworkViewManager
   private java.awt.Container container;
   private Map networkViewMap;
   private Map componentMap;
+  private Map internalFrameComponentMap;
   private int viewCount = 0;
 
   protected CytoscapeDesktop cytoscapeDesktop;
@@ -114,6 +117,7 @@ public class NetworkViewManager
 
     networkViewMap = new HashMap();
     componentMap = new HashMap();
+	internalFrameComponentMap = new HashMap();
   }
 
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
@@ -132,6 +136,25 @@ public class NetworkViewManager
       return ( JDesktopPane )container;
     }
     return null;
+  }
+
+  /**
+   * Given a CyNetwork, returns the InternalFrameComponent that wraps it.
+   * 
+   * @param view CyNetworkView
+   * @return InternalFrameComponent
+   * @throws IllegalArgumentException
+   */
+  public InternalFrameComponent getInternalFrameComponent(CyNetworkView view)
+	  throws IllegalArgumentException {
+
+	  // check args
+	  if (view == null) {
+		  throw new IllegalArgumentException("NetworkViewManager.getInternalFrameComponent(), argument is null");
+	  }
+
+	  // outta here
+	  return (InternalFrameComponent)internalFrameComponentMap.get(view.getIdentifier());
   }
   
   public void updateNetworkTitle( CyNetwork network ) {
@@ -371,7 +394,17 @@ public class NetworkViewManager
           public void internalFrameClosing(InternalFrameEvent e) {
             Cytoscape.destroyNetworkView(view); } } );
       ( ( JDesktopPane )container ).add( iframe );
-      iframe.getContentPane().add( view.getComponent() );
+	  // code added to support layered canvas for each CyNetworkView
+	  if (view instanceof DGraphView) {
+		  InternalFrameComponent internalFrameComp =
+			  new InternalFrameComponent(iframe.getLayeredPane(), (DGraphView)view);
+		  iframe.setContentPane(internalFrameComp);
+		  internalFrameComponentMap.put(view.getNetwork().getIdentifier(), internalFrameComp);
+	  }
+	  else {
+		  System.out.println("NetworkViewManager.createContainer() - DGraphView not found!");
+		  iframe.getContentPane().add( view.getComponent() );
+	  }
       iframe.pack();
       iframe.setSize( 400, 400 );
       iframe.setVisible( true );

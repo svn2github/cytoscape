@@ -45,6 +45,7 @@ import cytoscape.util.CyNetworkNaming;
 import giny.model.RootGraph;
 import giny.view.GraphView;
 
+import java.io.File;
 import java.io.IOException;
 
 
@@ -100,11 +101,8 @@ public abstract class AbstractGraphReader implements GraphReader {
 	public String getNetworkName() {
 		String t = "";
 		if ( fileName != null ) {
-			String[] title = fileName.split("/");
-			if (System.getProperty("os.name").startsWith("Win")) {
-				title = fileName.split("//");
-												}
-			t = title[title.length-1];
+			File tempFile = new File(fileName);
+			t = tempFile.getName();
 		}
 		return CyNetworkNaming.getSuggestedNetworkTitle(t);
 	}

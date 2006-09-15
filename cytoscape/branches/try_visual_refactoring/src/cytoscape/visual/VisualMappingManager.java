@@ -43,6 +43,9 @@ import giny.view.EdgeView;
 import giny.view.Label;
 import giny.view.NodeView;
 
+import ding.view.DGraphView;
+import ding.view.DingCanvas;
+
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
@@ -285,7 +288,16 @@ public class VisualMappingManager extends SubjectBase {
 		globalAppearanceCalculator.calculateGlobalAppearance(myGlobalApp,
 				network);
 
-		network_view.setBackgroundPaint(myGlobalApp.getBackgroundColor());
+		// setup proper background colors
+		if (network_view instanceof DGraphView) {
+			DingCanvas backgroundCanvas =
+				((DGraphView)network_view).getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+			backgroundCanvas.setBackgroundPaint(myGlobalApp.getBackgroundColor());
+		}
+		else {
+			System.out.println("VisualMappingManager.applyGlobalAppearances() - DGraphView not found!");
+			network_view.setBackgroundPaint(myGlobalApp.getBackgroundColor());
+		}
 		// will ignore sloppy & reverse selection color for now
 		
 		// Set selection colors

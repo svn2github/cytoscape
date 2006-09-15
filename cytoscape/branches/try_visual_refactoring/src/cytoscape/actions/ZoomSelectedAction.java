@@ -48,8 +48,6 @@ import javax.swing.AbstractAction;
 import java.awt.geom.Rectangle2D;
 
 
-import edu.umd.cs.piccolo.util.PBounds;
-import edu.umd.cs.piccolo.activities.PTransformActivity;
 import java.util.List;
 import java.util.Iterator;
 
