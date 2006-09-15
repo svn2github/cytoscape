@@ -26,6 +26,8 @@ import cytoscape.view.cytopanels.CytoPanelState;
  * 
  * @author kono
  * 
+ * 		Combine CytoPanel_2 and CytoPanel_3		Peng-Liang wang		9/12/2006
+ * 
  */
 public class DataTable implements PropertyChangeListener {
 
@@ -150,15 +152,16 @@ public class DataTable implements PropertyChangeListener {
 		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add(
 		// type + "Attributes", attributePanel);
 
-		// Add advanced panel to the CytoPanel 3 (EAST)
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).add(
-				type + "Attr Mod/ Object Select", advancedPanel);	
 
 		// Add main browser panel to CytoPanel 2 (SOUTH)
-
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
 				type + " Attribute Browser", mainPanel);
 
+		// Add advanced panel to the CytoPanel 2 (SOUTH)
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
+				type + "Attr Mod/Object Select", advancedPanel);	
+
+		
 		// Get indexes for the panels.
 		modPanelIndex = Cytoscape.getDesktop()
 				.getCytoPanel(SwingConstants.EAST).indexOfComponent(
@@ -172,10 +175,10 @@ public class DataTable implements PropertyChangeListener {
 						new Listener(attributePanelIndex, -1, modPanelIndex,
 								tableIndex));
 
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
-				.addCytoPanelListener(
-						new Listener(attributePanelIndex, tableIndex, -1,
-								modPanelIndex));
+		//Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
+		//		.addCytoPanelListener(
+		//				new Listener(attributePanelIndex, tableIndex, -1,
+		//						modPanelIndex));
 
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(
 				CytoPanelState.DOCK);
@@ -225,7 +228,6 @@ public class DataTable implements PropertyChangeListener {
 				if (EAST != -1) {
 					Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
 							.setSelectedIndex(EAST);
-
 				}
 			}
 
@@ -264,11 +266,9 @@ public class DataTable implements PropertyChangeListener {
 		if (tableObjectType == NODES) {
 			// return new ArrayList(Cytoscape.getCurrentNetwork()
 			// .getFlaggedNodes());
-			return new ArrayList(Cytoscape.getCurrentNetwork()
-					.getSelectedNodes());
+			return new ArrayList(Cytoscape.getCurrentNetwork().getSelectedNodes());
 		} else {
-			return new ArrayList(Cytoscape.getCurrentNetwork()
-					.getSelectedEdges());
+			return new ArrayList(Cytoscape.getCurrentNetwork().getSelectedEdges());
 		}
 	}
 
