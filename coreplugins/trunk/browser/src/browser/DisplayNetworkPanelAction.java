@@ -40,12 +40,12 @@ public class DisplayNetworkPanelAction extends CytoscapeAction {
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
 					.setSelectedIndex(targetIndex);
 			
-			DisplayAdvancedWindowAction.syncCheckbox(true, 1);
+			//DisplayAdvancedWindowAction.syncCheckbox(true, 1);
 
 		} else {
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setState(
 					CytoPanelState.HIDE);
-			DisplayAdvancedWindowAction.syncCheckbox(false, 1);
+			//DisplayAdvancedWindowAction.syncCheckbox(false, 1);
 		}
 
 	}// action performed
