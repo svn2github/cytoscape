@@ -156,6 +156,10 @@ public class OntologyServer {
 	public Map<String, URL> getOntologySources() {
 		return ontologySources;
 	}
+	
+	public void setOntologySources(Map<String, URL> newMap) {
+		ontologySources = newMap;
+	}
 
 	public Aliases getNodeAliases() {
 		return nodeAliases;
