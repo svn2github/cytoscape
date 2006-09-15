@@ -44,6 +44,7 @@
 package cytoscape.visual.mappings.discrete;
 
 import cytoscape.visual.parsers.ObjectToString;
+import cytoscape.visual.mappings.MappingUtil;
 
 import java.util.Iterator;
 import java.util.Properties;
@@ -77,8 +78,13 @@ public class DiscreteMappingWriter {
      */
     public Properties getProperties() {
         Properties newProps = new Properties();
+
         String contKey = baseKey + ".controller";
         newProps.setProperty(contKey, attrName);
+
+        String contTypeKey = baseKey + ".controllerType";
+        newProps.setProperty(contTypeKey, 
+		MappingUtil.getAttributeTypeString(baseKey,attrName)); 
 
         String mapKey = baseKey + ".map.";
         Iterator iterator = map.keySet().iterator();

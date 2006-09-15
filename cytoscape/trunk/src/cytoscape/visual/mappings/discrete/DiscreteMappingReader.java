@@ -44,6 +44,7 @@
 package cytoscape.visual.mappings.discrete;
 
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.mappings.MappingUtil;
 
 import java.util.Enumeration;
 import java.util.Properties;
@@ -93,13 +94,20 @@ public class DiscreteMappingReader {
             ValueParser parser) {
         String contKey = baseKey + ".controller";
         controllingAttribute = props.getProperty(contKey);
+
+        String contTypeKey = baseKey + ".controllerType";
+        String attrTypeString = props.getProperty(contTypeKey);
+	byte attrType = -1; // UNDEFINED defaults to string
+	if ( attrTypeString != null )
+		attrType = new Byte(attrTypeString).byteValue();
+
         String mapKey = baseKey + ".map.";
         Enumeration eProps = props.propertyNames();
         while (eProps.hasMoreElements()) {
             String key = (String) eProps.nextElement();
             if (key.startsWith(mapKey)) {
                 String value = props.getProperty(key);
-                String domainVal = key.substring(mapKey.length());
+                Object domainVal = MappingUtil.parseObjectType(key.substring(mapKey.length()),attrType); 
                 Object parsedVal = parser.parseStringValue(value);
                 map.put(domainVal, parsedVal);
             }
