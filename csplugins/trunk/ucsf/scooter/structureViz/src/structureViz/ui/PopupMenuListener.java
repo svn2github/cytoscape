@@ -50,8 +50,7 @@ import structureViz.model.ChimeraResidue;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraTreeModel;
 import structureViz.ui.ActionPopupMenu;
-
-import structureViz.Chimera;
+import structureViz.actions.Chimera;
 
 class PopupMenuListener implements MouseListener {
 	JTree navigationTree;

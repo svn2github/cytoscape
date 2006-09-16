@@ -74,6 +74,23 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		this.modelColor = color;
 	}
 
+	public ChimeraModel (String inputLine) {
+		this.name = parseModelName(inputLine);
+		this.identifier = parseModelNumber(inputLine);
+		this.chains = new TreeMap();
+		this.residues = new TreeMap();
+		this.residueMap = new HashMap();
+	}
+
+	public ChimeraModel (Structure structure, String inputLine) {
+		this.name = structure.name();
+		this.structure = structure;
+		this.identifier = parseModelNumber(inputLine);
+		this.chains = new TreeMap();
+		this.residues = new TreeMap();
+		this.residueMap = new HashMap();
+	}
+
 	public Set getChainNames () { return chains.keySet(); }
 
 	public Collection getChains () { return chains.values(); }
@@ -95,6 +112,8 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	}
 
 	public String getModelName () { return this.name; }
+
+	public void setModelName (String name) { this.name = name; }
 
 	public int getModelNumber () { return this.identifier; }
 
@@ -155,5 +174,19 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	}
 
 	public String toSpec() { return ("#"+identifier); }
+
+	private int parseModelNumber(String inputLine) {
+		int hash = inputLine.indexOf('#');
+		int space = inputLine.indexOf(' ',hash);
+		// model number is between hash+1 and space
+		Integer modelInteger = new Integer(inputLine.substring(hash+1,space));
+		return modelInteger.intValue();
+	}
+
+	private String parseModelName(String inputLine) {
+		int start = inputLine.indexOf("name ");
+		if (start < 0) return null;
+		return inputLine.substring(start+5);
+	}
 
 }

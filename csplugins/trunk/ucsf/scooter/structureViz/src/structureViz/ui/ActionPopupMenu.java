@@ -48,7 +48,7 @@ import structureViz.model.ChimeraResidue;
 import structureViz.model.ChimeraChain;
 import structureViz.model.Structure;
 
-import structureViz.Chimera;
+import structureViz.actions.Chimera;
 
 /**
  * This class implements all of the actions for the popup menu as well

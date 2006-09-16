@@ -37,30 +37,36 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Properties;
 
 // giny imports
 import giny.view.NodeView;
 
 // Cytoscape imports
 import cytoscape.*;
+import cytoscape.CytoscapeInit;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
 
 // structureViz imports
-import structureViz.Chimera;
+import structureViz.actions.Chimera;
 import structureViz.model.Structure;
 import structureViz.model.ChimeraModel;
 
 
 public class CyChimera {
-	public static final String[] attributeKeys = {"Structure","pdb","pdbFileName"};
+	public static final String[] attributeKeys = {"Structure","pdb","pdbFileName",null};
 	static List selectedList = null;
 
   public CyChimera() { }
 
 	public static List getSelectedStructures(NodeView nodeView) {
+		String structureAttribute = getProperty("structureAttribute");
+		if (structureAttribute != null) {
+			attributeKeys[3] = structureAttribute;
+		}
 		List<Structure>structureList = new ArrayList<Structure>();
     //get the network object; this contains the graph
     CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -87,6 +93,7 @@ public class CyChimera {
       CyNode node = (CyNode)nView.getNode();
       String nodeID = node.getIdentifier();
 			for (int key = 0; key < attributeKeys.length; key++) {
+				if (attributeKeys[key] == null) continue;
       	if (cyAttributes.hasAttribute(nodeID, attributeKeys[key])) {
         	// Add it to our list
          	String structure = cyAttributes.getStringAttribute(nodeID, attributeKeys[key]);
@@ -104,6 +111,7 @@ public class CyChimera {
 		while(nodeIter.hasNext()) {
 			CyNode node = (CyNode)nodeIter.next();
 			for (int key = 0; key < attributeKeys.length; key++) {
+				if (attributeKeys[key] == null) continue;
 				if (nodeAttrs.hasAttribute(node.getIdentifier(),attributeKeys[key]) &&
               nodeAttrs.getStringAttribute(node.getIdentifier(), attributeKeys[key])
 							.equals(name)) {
@@ -146,5 +154,11 @@ public class CyChimera {
 				}
 			}
 		}
+
+		networkView.updateView();
+	}
+
+	public static String getProperty(String name) {
+		return CytoscapeInit.getProperties().getProperty("structureViz."+name);
 	}
 }

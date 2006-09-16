@@ -63,9 +63,8 @@ import structureViz.model.ChimeraResidue;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraTreeModel;
 import structureViz.actions.CyChimera;
+import structureViz.actions.Chimera;
 import structureViz.ui.PopupMenuListener;
-
-import structureViz.Chimera;
 
 public class ModelNavigatorDialog extends JDialog implements TreeSelectionListener {
 	private Chimera chimeraObject;
@@ -137,10 +136,6 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-		titleLabel = new JLabel();
-		titleLabel.setFont(new Font("Dialog", 1, 14));
-		titleLabel.setText("Cytoscape Molecular Structure Navigator");
-
 		// Initialize the menus
 		JMenuBar menuBar = new JMenuBar();
 
@@ -191,8 +186,6 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 		JScrollPane treeView = new JScrollPane(navigationTree);
 
-		//add(titleLabel);
-		//add(treeView);
 		setContentPane(treeView);
 	}
 

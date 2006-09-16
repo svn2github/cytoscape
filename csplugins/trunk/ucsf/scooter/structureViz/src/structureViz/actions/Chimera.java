@@ -69,10 +69,9 @@ public class Chimera {
 	static private ArrayList replyLog;
 	static private ArrayList models;
 	static private HashMap modelHash;
-	static private ReplyLogListener listener;
+	static private ListenerThreads listener;
 	static private CyNetworkView networkView;
 	static private ModelNavigatorDialog mnDialog = null;
-	public static final String[] attributeKeys = {"Structure","pdb","pdbFileName"};
     
   public Chimera(CyNetworkView networkView) {
   	/**
@@ -84,16 +83,38 @@ public class Chimera {
 		this.networkView = networkView;
   }
 
-	public ArrayList getChimeraModels () { return models; }
+	public List getChimeraModels () { return models; }
 
 	public CyNetworkView getNetworkView () { return networkView; }
 
 	// We need this to be able to update selections
-	public void setDialog(ModelNavigatorDialog dialog) {
-		mnDialog = dialog;
-	}
+	public void setDialog(ModelNavigatorDialog dialog) { mnDialog = dialog; }
 
 	public ModelNavigatorDialog getDialog() { return mnDialog; }
+
+	public boolean containsModel(Integer modelNumber) {
+		return modelHash.containsKey(modelNumber);
+	}
+
+	public boolean containsModel(int modelNumber) {
+		Integer mn = new Integer(modelNumber);
+		return modelHash.containsKey(mn);
+	}
+
+	public ChimeraModel getModel(int modelNumber) {
+		Integer mn = new Integer(modelNumber);
+		return (ChimeraModel)modelHash.get(mn);
+	}
+
+	public ChimeraModel getModel(String modelName) {
+		Iterator modelIter = models.iterator();
+		while (modelIter.hasNext()) {
+			ChimeraModel model = (ChimeraModel)modelIter.next();
+			if (model.getModelName().equals(modelName))
+				return model;
+		}
+		return null;
+	}
 
 	public boolean isLaunched () {
 		if (chimera != null) 
@@ -113,9 +134,17 @@ public class Chimera {
   			// No, get one started
   			List <String> args = new ArrayList<String>();
 
+				// Get the path
+				String path = CyChimera.getProperty("chimeraPath");
+				if (path != null) {
+					path = path+"chimera";
+				} else {
+					path = "chimera";
+				}
+
 				// Oops -- very platform specific, here!!
 				// XXX FIXME XXX
-  			args.add("chimera");
+  			args.add(path);
   			args.add("--start");
   			args.add("ReadStdin");
 
@@ -123,7 +152,7 @@ public class Chimera {
   			chimera = pb.start();
   		} 
 			// Start up a listener
-			listener = new ReplyLogListener(chimera);
+			listener = new ListenerThreads(chimera, replyLog, this);
 			listener.start();
 
 			// Ask Chimera to give us updates
@@ -168,6 +197,9 @@ public class Chimera {
 		this.command("listen start models");
 		this.command("listen start selection");
 
+		// Update the structure model #
+		structure.setModelNumber(newModel.getModelNumber());
+
   	return;
   }
 
@@ -198,11 +230,16 @@ public class Chimera {
 		this.command(command);
 		this.command("listen start select");
 	}
-  
+
+	public Iterator commandReply(String text) {
+		replyLog.clear();
+		this.command(text);
+		return replyLog.iterator();
+	}
+
   /**
    * Send a string to the Chimera instance
    * @param text
-   * @throws IOException
    */
   public void command(String text) {
   	if (chimera == null)
@@ -282,17 +319,20 @@ public class Chimera {
 		// Done
 	}
 
+	public void modelChanged() {
+		mnDialog.modelChanged();
+	}
+
+	public void updateSelection(List selectionList) {
+		mnDialog.updateSelection(selectionList);
+	}
+
 	private List getModelList() {
 		ArrayList<ChimeraModel>modelList = new ArrayList<ChimeraModel>();
-		replyLog.clear();
-		this.command ("listm");
-		Iterator modelIter = replyLog.iterator();
+		Iterator modelIter = this.commandReply ("listm");
 		while (modelIter.hasNext()) {
 			String modelLine = (String)modelIter.next();
-			String name = getModelName(modelLine);
-			int model = getModelNumber(modelLine);
-			ChimeraModel chimeraModel = new ChimeraModel(name, null, null);
-			chimeraModel.setModelNumber(model);
+			ChimeraModel chimeraModel = new ChimeraModel(modelLine);
 			modelList.add(chimeraModel);
 		}
 		return modelList;
@@ -301,27 +341,17 @@ public class Chimera {
 	private ChimeraModel getModelInfo(Structure structure) {
 		String name = structure.name();
 
-		replyLog.clear();
-		this.command ("listm");
-		Iterator modelIter = replyLog.iterator();
+		Iterator modelIter = this.commandReply ("listm");
 		while (modelIter.hasNext()) {
 			String modelLine = (String)modelIter.next();
 			if (modelLine.contains(name)) {
 				// got the right model, now get the model number
-				int modelNumber = getModelNumber(modelLine);
-				structure.setModelNumber(modelNumber);
-				return new ChimeraModel(name, structure, null);
+				ChimeraModel chimeraModel = new ChimeraModel(structure, modelLine);
+				structure.setModelNumber(chimeraModel.getModelNumber());
+				return chimeraModel;
 			}
 		}
 		return null;
-	}
-
-	private int getModelNumber(String inputLine) {
-		int hash = inputLine.indexOf('#');
-		int space = inputLine.indexOf(' ',hash);
-		// model number is between hash+1 and space
-		Integer modelInteger = new Integer(inputLine.substring(hash+1,space));
-		return modelInteger.intValue();
 	}
 
 	private Color getModelColor(ChimeraModel model) {
@@ -343,190 +373,17 @@ public class Chimera {
 		}
 	}
 
-	private String getModelName(String inputLine) {
-		int start = inputLine.indexOf("name ");
-		return inputLine.substring(start+5);
-	}
-
 	private void getResidueInfo(ChimeraModel model) {
 		int modelNumber = model.getModelNumber();
-		replyLog.clear();
 
 		// Get the list -- it will be in the reply log
-		this.command ("listr spec #"+modelNumber);
-		Iterator resIter = replyLog.iterator();
+		Iterator resIter = this.commandReply ("listr spec #"+modelNumber);
 		while (resIter.hasNext()) {
 			String inputLine = (String)resIter.next();
 			ChimeraResidue r = new ChimeraResidue(inputLine);
 			if (r.getModelNumber() == modelNumber) {
 				model.addResidue(r);
 			}
-		}
-		replyLog.clear();
-	}
-
-	/***************************************************
-	 *                 Thread Classes                  *
-   **************************************************/
-
-	/**
-	 * Reply listener thread
-	 */
-	class ReplyLogListener extends Thread 
-	{
-		private InputStream readChan = null;
-		private BufferedReader lineReader = null;
-		private Process chimera = null;
-		private List log = null;
-
-		ReplyLogListener(Process chimera, List log) {
-			this.chimera = chimera;
-			this.log = log;
- 		 	// Get a line-oriented reader
-	  	readChan = chimera.getInputStream();
-			lineReader = new BufferedReader(new InputStreamReader(readChan));
-		}
-
-		public void run() {
-			System.out.println("ReplyLogListener running");
-			while (true) {
-				try {
-					ArrayList reply = getReply();
-					synchronized (replyLog) {
-						if (reply.size() > 0) {
-							replyLog.addAll(reply);
-						}
-						replyLog.notifyAll();
-					}
-				} catch (IOException e) {
-					return;
-				}
-			}
-		}
-
-	  /**
- 	  * Read input from Chimera
- 	  */
- 	  private ArrayList getReply() throws IOException {
- 		 	if (chimera == null)
- 		 		return null;
-
-			// Generally -- looking for:
-			// 	CMD command
-			//   ........
-			//	END
-			// We return the text in between
-			ArrayList reply = new ArrayList();
-			String line = null;
-			while ((line = lineReader.readLine()) != null) {
-				System.out.println("From Chimera: "+line);
-				if (line.startsWith("END")) {
-					break;
-				}
-				if (line.startsWith("ModelChanged: ")) {
-					(new ModelUpdater()).start();
-				} else if (line.startsWith("SelectionChanged: ")) {
-					// Start up the updater on a separate thread
-					(new SelectionUpdater()).start();
-				} else if (!line.startsWith("CMD")) {
-					reply.add(line);
-				}
-			}
-			return reply;
-		}
-	}
-
-	/**
-	 * Model updater thread
-	 */
-	class ModelUpdater extends Thread {
-
-			public ModelUpdater() {}
-
-			public void run() {
-				refresh();
-				mnDialog.modelChanged();
-				// Now update our selection from Chimera
-				(new SelectionUpdater()).start();
-			}
-	}
-
-	/**
-	 * Selection updater thread
-	 */
-	class SelectionUpdater extends Thread {
-		Chimera chimeraObject;
-
-		public SelectionUpdater() { }
-
-		public void run() {
-			HashMap modelSelHash = new HashMap();
-			ArrayList selectionList = new ArrayList();
-			Iterator lineIter;
-			// Clear the reply log
-			replyLog.clear();
-			// Execute the command to get the list of models with selections
-			command("lists level molecule");
-			lineIter = replyLog.iterator();
-			while (lineIter.hasNext()) {
-				String modelLine = (String)lineIter.next();
-				String name = getModelName(modelLine);
-				int modelNumber = getModelNumber(modelLine);
-				ChimeraModel chimeraModel = new ChimeraModel(name, null, null);
-				chimeraModel.setModelNumber(modelNumber);
-				modelSelHash.put(new Integer(modelNumber), chimeraModel);
-			}
-			replyLog.clear();
-
-			// Now get the residue-level data
-			command("lists level residue");
-			lineIter = replyLog.iterator();
-			while (lineIter.hasNext()) {
-				String inputLine = (String)lineIter.next();
-				ChimeraResidue r = new ChimeraResidue(inputLine);
-				Integer modelNumber = new Integer(r.getModelNumber());
-				if (modelSelHash.containsKey(modelNumber)) {
-					ChimeraModel model = (ChimeraModel)modelSelHash.get(modelNumber);
-					model.addResidue(r);
-				}
-			}
-			replyLog.clear();
-
-			// Get the selected objects
-			Iterator modelIter = modelSelHash.values().iterator();
-			while (modelIter.hasNext()) {
-				// Get the model
-				ChimeraModel selectedModel = (ChimeraModel)modelIter.next();
-				Integer modelNumber = new Integer(selectedModel.getModelNumber());
-				// Get the corresponding "real" model
-				if (modelHash.containsKey(modelNumber)) {
-					ChimeraModel dataModel = (ChimeraModel)modelHash.get(modelNumber);
-					if (dataModel.getResidueCount() == selectedModel.getResidueCount()) {
-						// Select the entire model
-						selectionList.add(dataModel);
-					} else {
-						Iterator chainIter = selectedModel.getChains().iterator();
-						while (chainIter.hasNext()) {
-							ChimeraChain selectedChain = (ChimeraChain)chainIter.next();
-							ChimeraChain dataChain = dataModel.getChain(selectedChain.getChainId());
-							if (selectedChain.getResidueCount() == dataChain.getResidueCount()) {
-								selectionList.add(dataChain);
-							} else {
-								// Need to select individual residues
-								Iterator resIter = selectedChain.getResidueList().iterator();
-								while (resIter.hasNext()) {
-									String residueIndex = ((ChimeraResidue)resIter.next()).getIndex();
-									ChimeraResidue residue = dataChain.getResidue(residueIndex);
-									selectionList.add(residue);
-								} // resIter.hasNext
-							}
-						} // chainIter.hasNext()
-					}
-				}
-			} // modelIter.hasNext()
-
-			// Finally, update the navigator panel
-			mnDialog.updateSelection(selectionList);
 		}
 	}
 }
