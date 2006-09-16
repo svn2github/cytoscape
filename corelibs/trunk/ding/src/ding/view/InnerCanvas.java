@@ -121,6 +121,8 @@ public class InnerCanvas extends DingCanvas
         m_lod[0] = new GraphLOD(); // Default LOD.
         m_hash = new IntHash();
         m_backgroundColor = Color.white;
+		m_isVisible = true;
+		m_isOpaque = false;
         m_xCenter = 0.0d;
         m_yCenter = 0.0d;
         m_scaleFactor = 1.0d;
@@ -179,11 +181,27 @@ public class InnerCanvas extends DingCanvas
         double yCenter = 0.0d;
         double scaleFactor = 1.0d;
 
+		// set color alpha based on opacity setting
+		int alpha = (m_isOpaque) ? 255 : 0;
+		Color backgroundColor = new Color(m_backgroundColor.getRed(),
+										  m_backgroundColor.getGreen(),
+										  m_backgroundColor.getBlue(),
+										  alpha);
+
+		// short circuit if we are not visible
+		if (!m_isVisible) {
+			// clear the background
+			m_grafx.clear(backgroundColor, m_xCenter,
+						  m_yCenter, m_scaleFactor);
+			// update the context canvas
+			g.drawImage(m_img, 0, 0, null);
+		}
+
         synchronized (m_lock) {
             if (m_view.m_contentChanged || m_view.m_viewportChanged) {
                 m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
                         m_view.m_spacial, m_lod[0], m_view.m_nodeDetails,
-                        m_view.m_edgeDetails, m_hash, m_grafx, m_backgroundColor,
+                        m_view.m_edgeDetails, m_hash, m_grafx, backgroundColor,
                         m_xCenter, m_yCenter, m_scaleFactor);
                 contentChanged = m_view.m_contentChanged;
                 m_view.m_contentChanged = false;
