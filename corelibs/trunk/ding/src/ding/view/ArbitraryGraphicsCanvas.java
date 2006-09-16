@@ -54,10 +54,19 @@ import java.awt.image.BufferedImage;
  */
 public class ArbitraryGraphicsCanvas extends DingCanvas {
 
-	public ArbitraryGraphicsCanvas(Color backgroundColor) {
+	/**
+	 * Constructor.
+	 *
+	 * @param backgroundColor Color
+	 * @param isVisible boolean
+	 * @param isOpaque boolean
+	 */
+	public ArbitraryGraphicsCanvas(Color backgroundColor, boolean isVisible, boolean isOpaque) {
 
 		// init members
 		m_backgroundColor = backgroundColor;
+		m_isVisible = isVisible;
+		m_isOpaque = isOpaque;
 	}
 
 	/**
@@ -65,11 +74,14 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 	 */
 	public void setBounds(int x, int y, int width, int height) {
 		super.setBounds(x, y, width, height);
+
+		// our bounds have changed, create a new image with new size
 		if ((width > 0) && (height > 0)) {
 			// create the buffered image
 			m_img = new BufferedImage(width,
 									  height,
 									  BufferedImage.TYPE_INT_ARGB);
+			// probably need to do some scaling of the children here
 		}
 	}
 
@@ -90,32 +102,32 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 			// first clear the image
 			clearImage(image2D);
 
+			// now paint children
+			if (m_isVisible) paintChildren(image2D);
+
 			// render image
 			((Graphics2D)g).drawImage(((BufferedImage)m_img), null, 0, 0);
 		}
     }
 
 	/**
-	 * Our implementation of update.
-	 *
-	 * @param g Graphics
-	 */
-    public void update(Graphics g) {
-        paint(g);
-	}
-
-	/**
 	 * Utility function to clean the background of the image,
-	 * using m_bgPaint.
+	 * using m_backgroundColor
 	 *
 	 * image2D Graphics2D
 	 */
 	private void clearImage(Graphics2D image2D) {
 
-		final Composite origComposite = image2D.getComposite();
+		// set color alpha based on opacity setting
+		int alpha = (m_isOpaque) ? 255 : 0;
+		Color backgroundColor = new Color(m_backgroundColor.getRed(),
+										  m_backgroundColor.getGreen(),
+										  m_backgroundColor.getBlue(),
+										  alpha);
+
+		// set the alpha composite on the image, and clear its area
 		image2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-		image2D.setPaint(m_backgroundColor);
+		image2D.setPaint(backgroundColor);
 		image2D.fillRect(0, 0, m_img.getWidth(null), m_img.getHeight(null));
-		image2D.setComposite(origComposite);
 	}
 }
