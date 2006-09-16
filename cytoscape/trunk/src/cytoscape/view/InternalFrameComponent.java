@@ -41,7 +41,6 @@ package cytoscape.view;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
-import java.awt.Color;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
@@ -52,11 +51,6 @@ import javax.swing.JLayeredPane;
  * by the DGraphView class.
  */
 public class InternalFrameComponent extends JComponent {
-
-	/**
-	 * alpha setting enumeration
-	 */
-	private static enum AlphaSetting { OPAQUE, TRANSLUCENT }
 
 	/**
 	 * z-order enumeration
@@ -77,11 +71,6 @@ public class InternalFrameComponent extends JComponent {
 	private JLayeredPane layeredPane;
 
 	/**
-	 * ref to DGraphView that contains the set of inner canvas's we manage
-	 */
-	private DGraphView dGraphView;
-
-	/**
 	 * ref to background canvas
 	 */
 	private DingCanvas backgroundCanvas;
@@ -97,11 +86,6 @@ public class InternalFrameComponent extends JComponent {
 	private DingCanvas foregroundCanvas;
 
 	/**
-	 * ref to active canvas
-	 */
-	private DingCanvas activeCanvas;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param layeredPane JLayedPane
@@ -111,66 +95,22 @@ public class InternalFrameComponent extends JComponent {
 
 		// init members
 		this.layeredPane = layeredPane;
-		this.dGraphView = dGraphView;
 		this.backgroundCanvas = dGraphView.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
 		this.networkCanvas = dGraphView.getCanvas(DGraphView.Canvas.NETWORK_CANVAS);
 		this.foregroundCanvas = dGraphView.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
 
         // set default ordering
-		defaultOrder();
+		initLayeredPane();
     }
 
 	/**
-	 * Sets the default zorder of the canvases.
-	 * top - bottom: foreground, network, background
-	 */
-	public void defaultOrder() {
-
-		// remove all canvases from layered pane
-		layeredPane.removeAll();
-
-		// foreground followed by network followed by background
-		placeOnPane(foregroundCanvas, ZOrder.FOREGROUND_PANE.layer(), AlphaSetting.TRANSLUCENT);
-		placeOnPane(networkCanvas, ZOrder.NETWORK_PANE.layer(), AlphaSetting.TRANSLUCENT);
-		placeOnPane(backgroundCanvas, ZOrder.BACKGROUND_PANE.layer(), AlphaSetting.OPAQUE);
-		activeCanvas = foregroundCanvas;
-	}
-
-	/**
-	 * Brings the desired canvas to the top of the layer.
-	 * Uses canned rules:
+     * Our implementation of Component setBounds().  If we don't do this, the
+	 * individual canvas do not get rendered.
 	 *
-	 * if canvas is foreground, show default ordering
-	 * if canvas is network, show network and background (network background is translucent)
-	 * if canvas is background, only background is displayed
-	 *
-	 */
-	public void bringToTop(DGraphView.Canvas canvas) {
-
-		// remove all canvases from layered pane
-		layeredPane.removeAll();
-
-		// determine top canvas
-		if (canvas == DGraphView.Canvas.BACKGROUND_CANVAS) {
-			// only display background
-			placeOnPane(backgroundCanvas, ZOrder.BACKGROUND_PANE.layer(), AlphaSetting.OPAQUE);
-			activeCanvas = backgroundCanvas;
-		}
-		else if (canvas == DGraphView.Canvas.NETWORK_CANVAS) {
-			// network followed by background
-			placeOnPane(networkCanvas, ZOrder.NETWORK_PANE.layer(), AlphaSetting.TRANSLUCENT);
-			placeOnPane(backgroundCanvas, ZOrder.BACKGROUND_PANE.layer(), AlphaSetting.OPAQUE);
-			activeCanvas = networkCanvas;
-		}
-		else if (canvas == DGraphView.Canvas.FOREGROUND_CANVAS) {
-			// foreground followed by network followed by background
-			defaultOrder();
-		}
-	}
-
-	/**
-     * Our implementation of JComponent setBounds().
-	 * We implementation setBounds to propagate the event down to the DingCanvases.
+	 * @param x int
+	 * @param y int
+	 * @param width int
+	 * @param height int
 	 */
 	public void setBounds(int x, int y, int width, int height) {
 
@@ -181,38 +121,17 @@ public class InternalFrameComponent extends JComponent {
 	}
 
 	/**
-	 * Places the given canvas on the given given pane with the desired alpha setting.
-	 *
-	 * @param dingCanvas DingCanvas
-	 * @param pane int
-	 * @param alphaSetting AlphaSetting
+	 * Places the canvas on the layeredPane in the following manner:
+	 * top - bottom: foreground, network, background
 	 */
-	private void placeOnPane(DingCanvas dingCanvas, int pane, AlphaSetting alphaSetting) {
+	private void initLayeredPane() {
 
-		// set alpha and place on given pane
-		setBackgroundAlpha(dingCanvas, alphaSetting);
-		layeredPane.add(dingCanvas, new Integer(pane));
-	}
+		// remove all canvases from layered pane
+		layeredPane.removeAll();
 
-	/**
-	 * Sets the alpha channel on the desired canvas.
-	 *
-	 * @param dingCanvas DingCanvas
-	 * @param alphaSetting AlphaSetting
-	 */
-	private void setBackgroundAlpha(DingCanvas dingCanvas, AlphaSetting alphaSetting) {
-
-		// get the current background color
-		Color backgroundColor = dingCanvas.getBackground();
-
-		// modify its alpha as desired
-		int alpha = (alphaSetting == AlphaSetting.OPAQUE) ? 255 : 0;
-		Color newBackgroundColor = new Color(backgroundColor.getRed(),
-											 backgroundColor.getGreen(),
-											 backgroundColor.getBlue(),
-											 alpha);
-
-		// set the modified current background color
-		dingCanvas.setBackground(newBackgroundColor);
+		// foreground followed by network followed by background
+		layeredPane.add(backgroundCanvas, new Integer(ZOrder.BACKGROUND_PANE.layer()));
+		layeredPane.add(networkCanvas, new Integer(ZOrder.NETWORK_PANE.layer()));
+		layeredPane.add(foregroundCanvas, new Integer(ZOrder.FOREGROUND_PANE.layer()));
 	}
 }
