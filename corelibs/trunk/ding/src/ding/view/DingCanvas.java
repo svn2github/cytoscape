@@ -48,7 +48,7 @@ import javax.swing.JComponent;
  * is meant to exist within the InternalFrameComponent class.
  * It provides the services required to draw onto it.
  *
- * Currently (9/7/06), two classes will extend CytoscapeCanves, ding.view.InnerCanvas
+ * Currently (9/7/06), two classes will extend DingCanves, ding.view.InnerCanvas
  * and ding.view.ArbitraryGraphicsCanvas.
  */
 public abstract class DingCanvas extends JComponent {
@@ -62,14 +62,33 @@ public abstract class DingCanvas extends JComponent {
 	 * ref to our background color
 	 */
 	protected Color m_backgroundColor;
+	
+	/**
+	 * ref to visibility boolean
+	 */
+	protected boolean m_isVisible;
 
 	/**
-	 * Returns the image we maintain.
-	 *
-	 * @return Image
+	 * ref to opaque boolean
 	 */
-	public Image getImage() {
-		return m_img;
+	protected boolean m_isOpaque;
+
+	/**
+	 * Show or hides this component depending on value of parameter.
+	 *
+	 * @param isVisible boolean
+	 */
+	public void setVisible(boolean isVisible) {
+		m_isVisible = isVisible;
+	}
+
+	/**
+	 * Sets opacity of component
+	 *
+	 * @param isOpaque boolean
+	 */
+	public void setOpaque(boolean isOpaque) {
+		m_isOpaque = isOpaque;
 	}
 
 	/**
