@@ -184,7 +184,7 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
        if ( nodes.length == 0 ) {
          continue;
        }
-      network = parent.createGraphPerspective( nodes, parent.getConnectingEdgeIndicesArray( nodes ) );
+      network = parent.getRootGraph().createGraphPerspective( nodes, parent.getConnectingEdgeIndicesArray( nodes ) );
       
       if ( nodes.length != 1 ) {
         initialize();
@@ -366,16 +366,16 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
 
   private int[] getRoots () {
     
-    int[] nodes = network.getNodeIndicesArray();
+    Iterator nodeIter = network.nodesIterator();
 
     //System.out.println( "roots: "+nodes.length );
 
     IntArrayList roots = new IntArrayList();
 
-    for (int i = 0; i < nodes.length; i++) {
-      
-      if ( network.getInDegree( nodes[i], false ) == 0 && network.getOutDegree( nodes[i], true ) != 0 )
-        roots.add( nodes[i] );
+    while (nodeIter.hasNext()) {
+      int nodeIndex = ((CyNode)nodeIter.next()).getRootGraphIndex();
+      if ( network.getInDegree( nodeIndex, false ) == 0 && network.getOutDegree( nodeIndex, true ) != 0 )
+        roots.add( nodeIndex );
     }
 
     roots.trimToSize();
@@ -391,7 +391,7 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
   private TreeNode getSpanningTree ( int[] roots ) {
 
     // get the network, get the nodes
-    int[] nodes = network.getNodeIndicesArray();
+    int[] nodes = getNodeIndicesArray(network);
     //System.out.println( "spanning : "+nodes.length );
     TreeNode node;
 
@@ -409,7 +409,7 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
     } else {
       node = new TreeNode( roots[0] );
       radialTreeVisited.put( roots[0], 1 );
-      buildSpanningTree( node, network.neighborsArray( roots[0] ) );
+      buildSpanningTree( node, neighborsArray( network, roots[0] ) );
     }
 
     return node;
@@ -433,7 +433,7 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
     Iterator itr = node.getChildren().iterator();
     while (itr.hasNext()) {
       TreeNode childNode = (TreeNode) itr.next();
-      buildSpanningTree( childNode, network.neighborsArray( childNode.getNode() ) );
+      buildSpanningTree( childNode, neighborsArray( network, childNode.getNode() ) );
     }
   }
 
@@ -497,6 +497,37 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
       */
       return angle;
     }
+  }
+
+  /**
+   * Quick-and-dirty implementation of the deprecated getNodeIndicesArray()
+   */
+  private int[] getNodeIndicesArray(giny.model.GraphPerspective network) {
+    int nodeCount = network.getNodeCount();
+    int[] nodeArray = new int[nodeCount];
+    int nodeOffset = 0;
+    Iterator nodeIter = network.nodesIterator();
+    while (nodeIter.hasNext()) {
+      nodeArray[nodeOffset++] = ((CyNode)nodeIter.next()).getRootGraphIndex();
+    }
+    return nodeArray;
+  }
+
+  // This is here to replace the deprecated neighborsArray function
+  public int[] neighborsArray ( giny.model.GraphPerspective network, int nodeIndex ) {
+    // Get a list of edges
+    int[] edges = network.getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
+    int[] neighbors = new int[edges.length];
+    int offset = 0;
+    for (int edge = 0; edge < edges.length; edge++) {
+      int source = network.getEdgeSourceIndex(edge);
+      int target = network.getEdgeTargetIndex(edge);
+      if (source != nodeIndex)
+        neighbors[offset++] = source;
+      else
+        neighbors[offset++] = target;
+    }
+    return neighbors;
   }
 
 }

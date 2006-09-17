@@ -101,7 +101,7 @@ public class ISOMLayoutAlgorithm extends csplugins.layout.AbstractLayout {
       if ( nodes.length == 0 ) {
         continue;
       }
-      network = parent.createGraphPerspective( nodes, parent.getConnectingEdgeIndicesArray( nodes ) );
+      network = parent.getRootGraph().createGraphPerspective( nodes, parent.getConnectingEdgeIndicesArray( nodes ) );
       
       if ( nodes.length != 1 ) {
         prepare();
@@ -339,7 +339,7 @@ public class ISOMLayoutAlgorithm extends csplugins.layout.AbstractLayout {
       networkView.setNodeDoubleProperty( current_index, GraphView.NODE_Y_POSITION, current_y + factor * dy );
 
 			if (currData.distance < radius) {
-				int[] neighbors = network.neighborsArray( current_index );
+				int[] neighbors = neighborsArray( network, current_index );
        //  for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index )
 //                 System.out.print( " "+neighbors[ neighbor_index ] );
               
@@ -359,6 +359,23 @@ public class ISOMLayoutAlgorithm extends csplugins.layout.AbstractLayout {
 				}
 			}
 		}
+	}
+
+	// This is here to replace the deprecated neighborsArray function
+	public int[] neighborsArray ( GraphPerspective network, int nodeIndex ) {
+		// Get a list of edges
+		int[] edges = network.getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
+		int[] neighbors = new int[edges.length];
+		int offset = 0;
+		for (int edge = 0; edge < edges.length; edge++) {
+			int source = network.getEdgeSourceIndex(edge);
+			int target = network.getEdgeTargetIndex(edge);
+			if (source != nodeIndex)
+				neighbors[offset++] = source;
+			else
+				neighbors[offset++] = target;
+		}
+		return neighbors;
 	}
 
 	public ISOMVertexData getISOMVertexData (  NodeView v ) {

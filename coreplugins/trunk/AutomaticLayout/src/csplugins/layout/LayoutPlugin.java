@@ -11,12 +11,11 @@ import java.util.*;
 import phoebe.util.GraphPartition;
 
 import csplugins.layout.algorithms.*;
-// import csplugins.layout.algorithms.springEmbedded.SpringEmbeddedLayoutAction;
 import csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutListener;
 import csplugins.layout.algorithms.graphPartition.AttributeCircleLayoutMenu;
 import csplugins.layout.algorithms.graphPartition.DegreeSortedCircleLayout;
 
-import csplugins.layout.algorithms.bioLayout.bioLayoutActionListener;
+import csplugins.layout.algorithms.bioLayout.BioLayoutActionListener;
 import csplugins.layout.algorithms.bioLayout.EdgeWeightedLayoutMenu;
 
 import giny.view.NodeView;
@@ -38,13 +37,13 @@ public class LayoutPlugin extends CytoscapePlugin
     
 		JMenuItem springEmbAll = new JMenuItem("All Nodes");
 		{
-			bioLayoutActionListener listener = new bioLayoutActionListener(false);
+			BioLayoutActionListener listener = new BioLayoutActionListener(false);
 			springEmbAll.addActionListener(listener);
 		}
 
 		JMenuItem springEmbSome = new JMenuItem("Selected Nodes Only");
 		{
-			bioLayoutActionListener listener = new bioLayoutActionListener(true);
+			BioLayoutActionListener listener = new BioLayoutActionListener(true);
 			springEmbSome.addActionListener(listener);
 		}
 

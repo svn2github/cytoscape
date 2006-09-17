@@ -50,14 +50,15 @@ import java.util.*;
 
 import giny.model.*;
 import giny.view.*;
-import giny.util.SpringEmbeddedLayouter;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.Semantics;
 import cytoscape.view.CyNetworkView;
 import cytoscape.ding.DingNetworkView;
+import csplugins.layout.algorithms.bioLayout.BioLayoutKKAlgorithm;
 //----------------------------------------------------------------------------------------
 /**
  * This class provides methods for performing operations on a graph related to the
@@ -137,13 +138,13 @@ public class AttributeLayout {
         if (valueMap.size() == 0) {return;}
         
         //we do the layout on a clone of the existing graph perspective
-        GraphPerspective realGP = cyNetView.getNetwork().getGraphPerspective();
+        GraphPerspective realGP = cyNetView.getGraphPerspective();
         GraphPerspective layoutGP = (GraphPerspective)realGP.clone();
         RootGraph rootGraph = realGP.getRootGraph();
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         
-        int[] currentEdges = layoutGP.getEdgeIndicesArray();
-        layoutGP.hideEdges(currentEdges);//hide all the current edges
+	Iterator edgeIter = layoutGP.edgesIterator();
+	while (edgeIter.hasNext()) { layoutGP.hideEdge((CyEdge)edgeIter.next()); }
         
         //figure out how many nodes and edges to create
         int newNodeCount = valueMap.size();
@@ -194,10 +195,12 @@ public class AttributeLayout {
         //and computing the layout on that view. We'll change this to only
         //computing on the layout perspective when that's supported.
         GraphView layoutView = new ding.view.DGraphView(layoutGP);
-        SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(layoutView);
+        BioLayoutKKAlgorithm layouter = new BioLayoutKKAlgorithm((CyNetworkView)layoutGP);
+	layouter.setEvalueAttribute(null); // Ignore edge weights
         layouter.doLayout();
         
-        rootGraph.removeEdges(newEdges); //get rid of the newly created edges
+        //get rid of the newly created edges
+	for (int i = 0; i < newEdges.length; i++ ) { rootGraph.removeEdge(newEdges[i]); }
         
         //now to copy the layout to the real graph perspective. First we need to
         //unhide the newly created category nodes, then move every node to it's
@@ -232,7 +235,7 @@ public class AttributeLayout {
         Map valueMap = buildValueMap(attributeName);
         if (valueMap.size() == 0) {return;}
         
-        GraphPerspective gp = cyNetView.getNetwork().getGraphPerspective();
+        GraphPerspective gp = cyNetView.getGraphPerspective();
         RootGraph rootGraph = gp.getRootGraph();
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
@@ -296,7 +299,7 @@ public class AttributeLayout {
         Map returnMap = new HashMap();
         if (attributeName == null) {return returnMap;}
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-        GraphPerspective gp = cyNetView.getNetwork().getGraphPerspective();
+        GraphPerspective gp = cyNetView.getGraphPerspective();
         
         //get the attribute, which is a map of object names to data values
         //return an empty map if there is no such attribute

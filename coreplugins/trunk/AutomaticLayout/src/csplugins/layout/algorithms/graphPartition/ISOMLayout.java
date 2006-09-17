@@ -13,6 +13,8 @@ import cern.colt.map.PrimeFinder;
 import cytoscape.CyNetwork;
 import giny.model.*;
 
+import java.util.Iterator;
+
 
 public class ISOMLayout extends AbstractLayout {
 
@@ -41,7 +43,6 @@ public class ISOMLayout extends AbstractLayout {
   OpenIntObjectHashMap nodeIndexToDataMap;
   double globalX, globalY;
   GraphPerspective net;
-  int[] nodes;
   double squared_size;
   
   public ISOMLayout ( CyNetwork network ) {
@@ -56,9 +57,9 @@ public class ISOMLayout extends AbstractLayout {
     
     this.net = net;
 
-    nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( net.getNodeCount() ) );
-    nodes = net.getNodeIndicesArray();
-    squared_size = nodes.length*50;
+		int nodeCount = net.getNodeCount();
+    nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( nodeCount ) );
+    squared_size = nodeCount*50;
    
 		epoch = 1;
     maxEpoch = 5000;
@@ -87,14 +88,16 @@ public class ISOMLayout extends AbstractLayout {
   public int getClosestPosition ( double x, double y ) {
     double minDistance = Double.MAX_VALUE;
     int closest = 0;
-    for ( int i = 0; i < nodes.length; i++ ) {
+		Iterator nodeIter = net.nodesIterator();
+		while (nodeIter.hasNext()) {
+			int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
 
-      double dx = layout.getX(  nodes[i] );
-      double dy = layout.getY(  nodes[i] );
+      double dx = layout.getX(  nodeIndex );
+      double dy = layout.getY(  nodeIndex );
       double dist = dx * dx + dy * dy;
       if ( dist < minDistance ) {
         minDistance = dist;
-        closest = nodes[i];
+        closest = nodeIndex;
       }
     }
     return closest;
@@ -114,8 +117,10 @@ public class ISOMLayout extends AbstractLayout {
     //Get closest vertex to random position
     int winner = getClosestPosition( globalX, globalY );
     
-    for ( int i = 0; i < nodes.length; i++ ) {
-      ISOMVertexData ivd = getISOMVertexData(nodes[i]);
+		Iterator nodeIter = net.nodesIterator();
+		while (nodeIter.hasNext()) {
+			int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
+      ISOMVertexData ivd = getISOMVertexData(nodeIndex);
 			ivd.distance = 0;
 			ivd.visited = false;
 		}
@@ -160,7 +165,7 @@ public class ISOMLayout extends AbstractLayout {
 
       
 			if (currData.distance < radius) {
-				int[] neighbors = net.neighborsArray( current );
+				int[] neighbors = neighborsArray( net, current );
 
         for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index ) {
           
@@ -224,5 +229,22 @@ public class ISOMLayout extends AbstractLayout {
 			disp.set(0, disp.get(0) - x);
 			disp.set(1, disp.get(1) - y);
 		}
+	}
+
+	// This is here to replace the deprecated neighborsArray function
+	public int[] neighborsArray ( GraphPerspective network, int nodeIndex ) {
+		// Get a list of edges
+		int[] edges = network.getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
+		int[] neighbors = new int[edges.length];
+		int offset = 0;
+		for (int edge = 0; edge < edges.length; edge++) {
+			int source = network.getEdgeSourceIndex(edge);
+			int target = network.getEdgeTargetIndex(edge);
+			if (source != nodeIndex)
+				neighbors[offset++] = source;
+			else
+				neighbors[offset++] = target;
+		}
+		return neighbors;
 	}
 }

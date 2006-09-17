@@ -21,14 +21,16 @@ public class DegreeSortedCircleLayout extends AbstractLayout
 
   public void layoutPartion(GraphPerspective _graph)
   {
-    // get the array of node indices
-    int nodeIndicesArray[] = _graph.getNodeIndicesArray();
+    // get an iterator over all of the nodes
+    Iterator nodeIter = _graph.nodesIterator();
 
     // create a new array that is the Nodes corresponding to the node indices
-    Node sortedNodes[] = new Node[nodeIndicesArray.length];
-    for (int i = 0; i < nodeIndicesArray.length; i++)
+    Node sortedNodes[] = new Node[_graph.getNodeCount()];
+    int i = 0;
+    while (nodeIter.hasNext())
     {
-      sortedNodes[i] = _graph.getNode(nodeIndicesArray[i]);
+      int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
+      sortedNodes[i++] = _graph.getNode(nodeIndex);
     }
 
     // sort the Nodes based on the degree
@@ -55,7 +57,7 @@ public class DegreeSortedCircleLayout extends AbstractLayout
     // place each Node in a circle
     int r = 100 * (int) Math.sqrt(sortedNodes.length);
     double phi = 2 * Math.PI / sortedNodes.length;
-    for (int i = 0; i < sortedNodes.length; i++)
+    for (i = 0; i < sortedNodes.length; i++)
     {
       Node node = sortedNodes[i];
       layout.setX(node, r + r * Math.sin(i * phi));

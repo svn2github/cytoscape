@@ -30,14 +30,12 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package bioLayout.algorithms;
+package csplugins.layout.algorithms.bioLayout;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.ListIterator;
 import java.util.Random;
 import java.util.Date;
 import java.util.Iterator;
@@ -52,6 +50,10 @@ import cytoscape.task.TaskMonitor;
 import giny.view.*;
 
 import csplugins.layout.AbstractLayout;
+
+import csplugins.layout.algorithms.bioLayout.LayoutNode;
+import csplugins.layout.algorithms.bioLayout.LayoutEdge;
+import csplugins.layout.algorithms.bioLayout.Profile;
 
 /**
  * Lays out the nodes in a graph using a modification of the Kamada-Kawai
@@ -69,7 +71,7 @@ import csplugins.layout.AbstractLayout;
  * @version 0.9
  */
 
-public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
+public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Property key for getting various tuning values
 	 */
@@ -142,16 +144,16 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 
 	/**
 	 * This hashmap provides a quick way to get an index into
-	 * the Vertex array given a graph index.
+	 * the LayoutNode array given a graph index.
 	 */
-	private HashMap nodeToVertex;
+	private HashMap nodeToLayoutNode;
 
 	/**
 	 * This is the constructor for the bioLayout algorithm.
 	 * @param networkView the CyNetworkView of the network 
 	 *                    are going to lay out.
 	 */
-	public bioLayoutKKAlgorithm (CyNetworkView networkView) {
+	public BioLayoutKKAlgorithm (CyNetworkView networkView) {
 		super (networkView, propPrefix);
 
 		// Set defaults
@@ -169,7 +171,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
     m_anticollisionSpringStrength = DEFAULT_ANTICOLLISION_SPRING_STRENGTH;
 
 		// (Possibly) override defaults
-		initialize_properties();
+		initializeProperties();
 
 	}
 
@@ -178,11 +180,11 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 	 *
 	 * @param value the number of iterations
 	 */
-	public void SetNumberOfIterationsPerNode(int value) {
+	public void setNumberOfIterationsPerNode(int value) {
   	m_averageIterationsPerNode = value;
 	}
 
-	public void SetNumberOfIterationsPerNode(String value) {
+	public void setNumberOfIterationsPerNode(String value) {
 		Integer val = new Integer(value);
   	m_averageIterationsPerNode = val.intValue();
 	}
@@ -192,11 +194,11 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 	 *
 	 * @param value the number of layout passes
 	 */
-	public void SetNumberOfLayoutPasses(int value) {
+	public void setNumberOfLayoutPasses(int value) {
   	m_numLayoutPasses = value;
 	}
 
-	public void SetNumberOfLayoutPasses(String value) {
+	public void setNumberOfLayoutPasses(String value) {
 		Integer val = new Integer(value);
   	m_numLayoutPasses = val.intValue();
 	}
@@ -206,11 +208,11 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 	 *
 	 * @param value the distance spring strength contant
 	 */
-	public void SetDistanceSpringStrength(double value) {
+	public void setDistanceSpringStrength(double value) {
   	m_nodeDistanceStrengthConstant = value;
 	}
 
-	public void SetDistanceSpringStrength(String value) {
+	public void setDistanceSpringStrength(String value) {
 		Double val = new Double(value);
   	m_nodeDistanceStrengthConstant = val.doubleValue();
 	}
@@ -220,11 +222,11 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 	 *
 	 * @param value the rest length constant
 	 */
-	public void SetDistanceRestLength(double value) {
+	public void setDistanceRestLength(double value) {
   	m_nodeDistanceRestLengthConstant = value;
 	}
 
-	public void SetDistanceRestLength(String value) {
+	public void setDistanceRestLength(String value) {
 		Double val = new Double(value);
   	m_nodeDistanceRestLengthConstant = val.doubleValue();
 	}
@@ -234,11 +236,11 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 	 *
 	 * @param value the disconnected node distance spring strength
 	 */
-	public void SetDisconnectedSpringStrength(double value) {
+	public void setDisconnectedSpringStrength(double value) {
   	m_disconnectedNodeDistanceSpringStrength = value;
 	}
 
-	public void SetDisconnectedSpringStrength(String value) {
+	public void setDisconnectedSpringStrength(String value) {
 		Double val = new Double(value);
   	m_disconnectedNodeDistanceSpringStrength = val.doubleValue();
 	}
@@ -248,11 +250,11 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 	 *
 	 * @param value the disconnected node sprint rest length
 	 */
-	public void SetDisconnectedRestLength(double value) {
+	public void setDisconnectedRestLength(double value) {
   	m_disconnectedNodeDistanceSpringRestLength = value;
 	}
 
-	public void SetDisconnectedRestLength(String value) {
+	public void setDisconnectedRestLength(String value) {
 		Double val = new Double(value);
   	m_disconnectedNodeDistanceSpringRestLength = val.doubleValue();
 	}
@@ -262,11 +264,11 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 	 *
 	 * @param value the anticollision spring strength
 	 */
-	public void SetAnticollisionSpringStrength(double value) {
+	public void setAnticollisionSpringStrength(double value) {
   	m_anticollisionSpringStrength = value;
 	}
 
-	public void SetAnticollisionSpringStrength(String value) {
+	public void setAnticollisionSpringStrength(String value) {
 		Double val = new Double(value);
   	m_anticollisionSpringStrength = val.doubleValue();
 	}
@@ -275,31 +277,31 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 	 * Reads all of our properties from the cytoscape properties map and sets
 	 * the values as appropriates.
 	 */
-	public void initialize_properties() {
+	public void initializeProperties() {
 		// Initialize our tunables from the properties
 		Properties properties = CytoscapeInit.getProperties();
 		String pValue = null;
 
 		if ( (pValue = properties.getProperty(propPrefix+iterationsProp)) != null ) {
-			SetNumberOfIterationsPerNode(pValue);
+			setNumberOfIterationsPerNode(pValue);
 		}
 		if ( (pValue = properties.getProperty(propPrefix+passcountProp)) != null ) {
-			SetNumberOfLayoutPasses(pValue);
+			setNumberOfLayoutPasses(pValue);
 		}
 		if ( (pValue = properties.getProperty(propPrefix+distanceStrengthProp)) != null ) {
-			SetDistanceSpringStrength(pValue);
+			setDistanceSpringStrength(pValue);
 		}
 		if ( (pValue = properties.getProperty(propPrefix+restLengthProp)) != null ) {
-			SetDistanceRestLength(pValue);
+			setDistanceRestLength(pValue);
 		}
 		if ( (pValue = properties.getProperty(propPrefix+disconnectedStrengthProp)) != null ) {
-			SetDisconnectedSpringStrength(pValue);
+			setDisconnectedSpringStrength(pValue);
 		}
 		if ( (pValue = properties.getProperty(propPrefix+disconnectedRestProp)) != null ) {
-			SetDisconnectedRestLength(pValue);
+			setDisconnectedRestLength(pValue);
 		}
 		if ( (pValue = properties.getProperty(propPrefix+anticollissionProp)) != null ) {
-			SetAnticollisionSpringStrength(pValue);
+			setAnticollisionSpringStrength(pValue);
 		}
 	}
 
@@ -329,10 +331,10 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 
 		// Randomize our points, if any points lie
 		// outside of our bounds
-		if (randomize) randomize_locations();
+		if (randomize) randomizeLocations();
 
 		// Calculate our edge weights
-		calculate_edge_weights();
+		calculateEdgeWeights();
 
 		// Compute our distances
     if (this.cancel) return;
@@ -402,7 +404,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 			Iterator nodeIter = nodeList.iterator();
 			while (nodeIter.hasNext()) 
 			{
-				Vertex v = (Vertex)nodeIter.next();
+				LayoutNode v = (LayoutNode)nodeIter.next();
 				// if (v.isLocked()) continue;
 
         if (this.cancel) return;
@@ -450,7 +452,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 		// Actually move the pieces around
 		iter = nodeList.iterator();
 		while (iter.hasNext()) {
-			Vertex v = (Vertex)iter.next();
+			LayoutNode v = (LayoutNode)iter.next();
 			if (!v.isLocked())
 				v.moveToLocation();
 		}
@@ -468,7 +470,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
     int neighborDistance;
 		Iterator nodeIter = nodeList.iterator();
 		while (nodeIter.hasNext()) {
-			Vertex v = (Vertex) nodeIter.next();
+			LayoutNode v = (LayoutNode) nodeIter.next();
 			fromNode = v.getIndex();
 
       if (distances[fromNode] == null)
@@ -511,7 +513,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 				Iterator neighbors = neighborList.iterator();
         while (neighbors.hasNext())
         {
-					Vertex neighbor_v = (Vertex)neighbors.next();
+					LayoutNode neighbor_v = (LayoutNode)neighbors.next();
           neighbor = neighbor_v.getIndex();
           // We've already done everything we can here.
           if (completedNodes[neighbor]) continue;
@@ -540,10 +542,9 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 		}
 
     // Calculate rest lengths and strengths based on node distance data.
-		// XXX TODO Handle edge weights XXX
 		Iterator edgeIter = edgeList.iterator();
 		while(edgeIter.hasNext()) {
-			Edge edge = (Edge)edgeIter.next();
+			LayoutEdge edge = (LayoutEdge)edgeIter.next();
 			int node_i = edge.getSource().getIndex();
 			int node_j = edge.getTarget().getIndex();
 			double weight = edge.getWeight();
@@ -660,7 +661,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
      																						boolean reversed)
   {
     partials.reset();
-    Vertex node = partials.node;
+    LayoutNode node = partials.node;
 
 		// How does this ever get to be > 0?
 		// Get the node size from the nodeView?
@@ -668,7 +669,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
     double nodeX = node.getX();
     double nodeY = node.getY();
     PartialDerivatives otherPartials = null;
-    Vertex otherNode;
+    LayoutNode otherNode;
     double otherNodeRadius;
     PartialDerivatives furthestPartials = null;
     Iterator iterator;
@@ -686,7 +687,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 
     while (iterator.hasNext()) {
       if (partialsList == null) {
-        otherNode = (Vertex) iterator.next(); 
+        otherNode = (LayoutNode) iterator.next(); 
 			} else {
         otherPartials = (PartialDerivatives) iterator.next();
         otherNode = otherPartials.node; 
@@ -791,7 +792,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
   private static class PartialDerivatives
   {
 
-    final Vertex node;
+    final LayoutNode node;
     double x;
     double y;
     double xx;
@@ -799,7 +800,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
     double xy;
     double euclideanDistance;
 
-    PartialDerivatives(Vertex node)
+    PartialDerivatives(LayoutNode node)
     {
       this.node = node;
     }
@@ -851,7 +852,7 @@ public class bioLayoutKKAlgorithm extends bioLayoutAlgorithm {
 
   private static void simpleMoveNode(PartialDerivatives partials)
   {
-    Vertex node = partials.node;
+    LayoutNode node = partials.node;
 		if (node.isLocked()) {
 			return;
 		} 

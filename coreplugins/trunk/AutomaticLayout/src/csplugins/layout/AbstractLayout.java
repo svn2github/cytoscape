@@ -317,20 +317,22 @@ abstract public class AbstractLayout
 
   public void move ( double x, double y ) {
 
-    int[] nodes = network.getNodeIndicesArray();
-    for ( int i = 0; i < nodes.length; ++i ) {
-      networkView.setNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION, x +  networkView.getNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION ) );
-      networkView.setNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION, y +  networkView.getNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION ) );
+    Iterator nodeIter = network.nodesIterator();
+    while ( nodeIter.hasNext() ) {
+      int nodeIndex = ((CyNode)nodeIter.next()).getRootGraphIndex();
+      networkView.setNodeDoubleProperty( nodeIndex, GraphView.NODE_X_POSITION, x +  networkView.getNodeDoubleProperty( nodeIndex, GraphView.NODE_X_POSITION ) );
+      networkView.setNodeDoubleProperty( nodeIndex, GraphView.NODE_Y_POSITION, y +  networkView.getNodeDoubleProperty( nodeIndex, GraphView.NODE_Y_POSITION ) );
                                                                             
     }
 
   }
 
   public void setSingle ( double x, double y ) {
-    int[] nodes = network.getNodeIndicesArray();
-    for ( int i = 0; i < nodes.length; ++i ) {
-      networkView.setNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION, x );
-      networkView.setNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION, y );
+    Iterator nodeIter = network.nodesIterator();
+    while ( nodeIter.hasNext() ) {
+      int nodeIndex = ((CyNode)nodeIter.next()).getRootGraphIndex();
+      networkView.setNodeDoubleProperty( nodeIndex, GraphView.NODE_X_POSITION, x );
+      networkView.setNodeDoubleProperty( nodeIndex, GraphView.NODE_Y_POSITION, y );
     }
   }
 

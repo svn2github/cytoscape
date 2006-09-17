@@ -35,26 +35,28 @@ public abstract class SGraphPartition
     // partitions stores the list of partitions
     ArrayList partitions = new ArrayList();
 
-    // nodesArray stores all of the nodes' indicies in the GraphPerspective
-    int nodesArray[] = _perspective.getNodeIndicesArray();
+    // define an iterator over all nodes in the graph
+    Iterator nodeIter = _perspective.nodesIterator();
 
     // nodesSeenMap is a hash map where each key in the map is a node index.
     // Each value specifies whether the node has been seen or not.
-    OpenIntIntHashMap nodesSeenMap = new OpenIntIntHashMap(nodesArray.length);
+    OpenIntIntHashMap nodesSeenMap = new OpenIntIntHashMap(_perspective.getNodeCount());
 
     // Initialize the nodesSeenMap so each node has not been seen.
-    for (int i = 0; i < nodesArray.length; i++)
+    while (nodeIter.hasNext())
     {
-      nodesSeenMap.put(nodesArray[i], m_NODE_HAS_NOT_BEEN_SEEN);
+      int node = ((Node)nodeIter.next()).getRootGraphIndex();
+      nodesSeenMap.put(node, m_NODE_HAS_NOT_BEEN_SEEN);
     }
 
-    // Start looking for partitions
-    for (int i = 0; i < nodesArray.length; i++)
+    nodeIter = _perspective.nodesIterator();
+    while (nodeIter.hasNext())
     {
-      // This node's index is specified by nodesArray[i]
+      // Get this nodes index from the root graph
+      int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
 
       // If we've seen this node, skip it
-      if (nodesSeenMap.get(nodesArray[i]) == m_NODE_HAS_BEEN_SEEN) continue;
+      if (nodesSeenMap.get(nodeIndex) == m_NODE_HAS_BEEN_SEEN) continue;
 
       // We haven't seen this node yet, so start a new partition...
 
@@ -62,10 +64,10 @@ public abstract class SGraphPartition
       IntArrayList partitionList = new IntArrayList();
 
       // Mark this node as having been seen
-      nodesSeenMap.put(nodesArray[i], m_NODE_HAS_BEEN_SEEN);
+      nodesSeenMap.put(nodeIndex, m_NODE_HAS_BEEN_SEEN);
 
       // Begin traversing through each connected node to this node
-      traverse(_perspective, nodesSeenMap, nodesArray[i], partitionList);
+      traverse(_perspective, nodesSeenMap, nodeIndex, partitionList);
 
       // Trim off any excess elements in the IntArrayList
       partitionList.trimToSize();

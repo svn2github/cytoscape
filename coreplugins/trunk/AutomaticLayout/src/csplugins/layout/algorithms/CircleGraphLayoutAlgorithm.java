@@ -60,16 +60,17 @@ public class CircleGraphLayoutAlgorithm extends AbstractLayout {
 	public Object construct () {
 
     initialize();
-    int[] nodes = networkView.getNetwork().getNodeIndicesArray();
+		java.util.Iterator nodeIter = networkView.getNetwork().nodesIterator();
+		int nodeCount = networkView.getNetwork().getNodeCount();
 
 		int r = (int)currentSize.getHeight();
 		// Compute angle step
-		double phi = 2 * Math.PI / nodes.length;
+		double phi = 2 * Math.PI / nodeCount;
 		// Arrange vertices in a circle
-		for (int i = 0; i < nodes.length; i++) {
-					
-      networkView.setNodeDoubleProperty( nodes[i], CyNetworkView.NODE_X_POSITION, 	r + r * Math.sin(i * phi) );
-      networkView.setNodeDoubleProperty( nodes[i], CyNetworkView.NODE_Y_POSITION, 	r + r * Math.cos(i * phi) );
+		for (int i = 0; i < nodeCount; i++) {
+			int node = ((CyNode)nodeIter.next()).getRootGraphIndex();
+      networkView.setNodeDoubleProperty( node, CyNetworkView.NODE_X_POSITION, 	r + r * Math.sin(i * phi) );
+      networkView.setNodeDoubleProperty( node, CyNetworkView.NODE_Y_POSITION, 	r + r * Math.cos(i * phi) );
     }
      
     java.util.Iterator nod = networkView.getNodeViewsIterator();

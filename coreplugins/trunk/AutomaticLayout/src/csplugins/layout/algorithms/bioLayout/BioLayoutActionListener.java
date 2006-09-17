@@ -54,17 +54,17 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.util.*;
 
-import bioLayout.algorithms.bioLayoutAlgorithm;
-import bioLayout.algorithms.bioLayoutKKAlgorithm;
-import bioLayout.algorithms.bioLayoutFRAlgorithm;
+import csplugins.layout.algorithms.bioLayout.BioLayoutAlgorithm;
+import csplugins.layout.algorithms.bioLayout.BioLayoutKKAlgorithm;
+import csplugins.layout.algorithms.bioLayout.BioLayoutFRAlgorithm;
 
 
-public class bioLayoutActionListener extends AbstractAction implements Task 
+public class BioLayoutActionListener extends AbstractAction implements Task 
 {
 	private ActionEvent event;
 	private String attribute;
 	private TaskMonitor taskMonitor;
-	private bioLayoutAlgorithm AlgObj;
+	private BioLayoutAlgorithm algObj;
 	private int algorithm;
 	private boolean selectedOnly = false;
 
@@ -75,13 +75,13 @@ public class bioLayoutActionListener extends AbstractAction implements Task
 	public static final int FR_ALGORITHM = 1;
 	public static final int SE_ALGORITHM = 2;
 
-	public bioLayoutActionListener(boolean selectedOnly)
+	public BioLayoutActionListener(boolean selectedOnly)
 	{
 		this.algorithm = SE_ALGORITHM;
 		this.selectedOnly = selectedOnly;
 	}
 
-	public bioLayoutActionListener(int algorithm, boolean selectedOnly)
+	public BioLayoutActionListener(int algorithm, boolean selectedOnly)
 	{
 		this.algorithm = algorithm;
 		this.selectedOnly = selectedOnly;
@@ -101,23 +101,23 @@ public class bioLayoutActionListener extends AbstractAction implements Task
 	public void run()
 	{
 		if (algorithm == KK_ALGORITHM) {
-			AlgObj = new bioLayoutKKAlgorithm(Cytoscape.getCurrentNetworkView());
+			algObj = new BioLayoutKKAlgorithm(Cytoscape.getCurrentNetworkView());
 		} else if (algorithm == SE_ALGORITHM) {
-			AlgObj = new bioLayoutKKAlgorithm(Cytoscape.getCurrentNetworkView());
+			algObj = new BioLayoutKKAlgorithm(Cytoscape.getCurrentNetworkView());
 			// This makes it consistent with the older layout
-			((bioLayoutKKAlgorithm)AlgObj).SetNumberOfIterationsPerNode(20);
+			((BioLayoutKKAlgorithm)algObj).setNumberOfIterationsPerNode(20);
 		} else {
-			AlgObj = new bioLayoutFRAlgorithm(Cytoscape.getCurrentNetworkView());
+			algObj = new BioLayoutFRAlgorithm(Cytoscape.getCurrentNetworkView());
 		}
-		AlgObj.SetEvalueAttribute(attribute);
-		AlgObj.SetTaskMonitor(taskMonitor);
+		algObj.setEvalueAttribute(attribute);
+		algObj.setTaskMonitor(taskMonitor);
 		// If we're doing selected only, we really don't want
 		// to spread these nodes around everywhere
 		if (selectedOnly) {
-			AlgObj.SetRandomize(false);
+			algObj.setRandomize(false);
 		}
-		AlgObj.SetSelectedOnly(selectedOnly);
-		AlgObj.construct();
+		algObj.setSelectedOnly(selectedOnly);
+		algObj.construct();
 	}
 
 	public String getTitle() 
@@ -127,11 +127,11 @@ public class bioLayoutActionListener extends AbstractAction implements Task
 		else if (algorithm == KK_ALGORITHM)
 			return "Performing Spring Embedded layout using "+attribute+" for edge weight"; 
 		else
-			return "Performing bioLayout using "+attribute+" for edge weight"; 
+			return "Performing BioLayout using "+attribute+" for edge weight"; 
 	}
 
 	public void halt() { 
-		AlgObj.SetCancel();
+		algObj.setCancel();
 	}
 
 	public void setTaskMonitor(TaskMonitor _monitor) { taskMonitor = _monitor; }

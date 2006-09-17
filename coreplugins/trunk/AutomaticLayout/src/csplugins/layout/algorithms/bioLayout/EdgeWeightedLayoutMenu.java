@@ -61,11 +61,11 @@ public class EdgeWeightedLayoutMenu extends JMenu
 		super("Edge-weighted");
 
 		JMenu kkMenu = new JMenu("Spring Embedded");
-		kkMenu.addMenuListener(new WeightsMenuListener(bioLayoutActionListener.KK_ALGORITHM));
+		kkMenu.addMenuListener(new WeightsMenuListener(BioLayoutActionListener.KK_ALGORITHM));
 		this.add(kkMenu);
 
 		JMenu frMenu = new JMenu("bioLayout");
-		frMenu.addMenuListener(new WeightsMenuListener(bioLayoutActionListener.FR_ALGORITHM));
+		frMenu.addMenuListener(new WeightsMenuListener(BioLayoutActionListener.FR_ALGORITHM));
 		this.add(frMenu);
 	}
 
@@ -104,9 +104,9 @@ public class EdgeWeightedLayoutMenu extends JMenu
 
 		private void addWeightsMenus(JMenu m, boolean selectedOnly) {
 			// Add a sort-of default (No weight)
-			JMenuItem unWeightedItem = new JMenuItem(bioLayoutActionListener.UNWEIGHTEDATTRIBUTE);
+			JMenuItem unWeightedItem = new JMenuItem(BioLayoutActionListener.UNWEIGHTEDATTRIBUTE);
 			{
-				bioLayoutActionListener bl = new bioLayoutActionListener(algorithm,selectedOnly);
+				BioLayoutActionListener bl = new BioLayoutActionListener(algorithm,selectedOnly);
 				unWeightedItem.addActionListener(bl);
 			}
 			m.add(unWeightedItem);
@@ -121,7 +121,7 @@ public class EdgeWeightedLayoutMenu extends JMenu
 				    type == CyAttributes.TYPE_INTEGER) {
 					JMenuItem newItem = new JMenuItem(attList[i]);
 					{
-						bioLayoutActionListener bl = new bioLayoutActionListener(algorithm,selectedOnly);
+						BioLayoutActionListener bl = new BioLayoutActionListener(algorithm,selectedOnly);
 						newItem.addActionListener(bl);
 					}
 					m.add(newItem);

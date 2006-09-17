@@ -78,7 +78,7 @@ public abstract class AbstractLayout implements Task {
       if ( nodes.length == 0 ) {
         continue;
       }
-      current_gp = gp.createGraphPerspective( nodes, gp.getConnectingEdgeIndicesArray( nodes ) );
+      current_gp = gp.getRootGraph().createGraphPerspective( nodes, gp.getConnectingEdgeIndicesArray( nodes ) );
       // Partitions Requiring Layout
       if ( nodes.length != 1 ) {
         try
