@@ -45,6 +45,7 @@ public class OBOFlatFileReaderTest extends TestCase {
 
 	public void testReadOBO() {
 
+		long start = System.currentTimeMillis();
 		OBOFlatFileReader obor = new OBOFlatFileReader(is, null);
 		try {
 			obor.readOntology();
@@ -58,9 +59,12 @@ public class OBOFlatFileReaderTest extends TestCase {
 			assertTrue(keys.contains("format-version"));
 			assertTrue(keys.contains("date"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		System.out.println("## OBO Loading time = " + (System.currentTimeMillis() - start) + " msec.");
+		
+		start = System.currentTimeMillis();
 		
 		CyAttributes goTermAttr = obor.getTermsAttributes();
 		String[] names = goTermAttr.getAttributeNames();
@@ -86,7 +90,8 @@ public class OBOFlatFileReaderTest extends TestCase {
 		
 		CyNetwork dag = obor.getDag();
 		assertNotNull(dag);
-		//assertEquals(DAG_SIZE, dag.getNodeCount());
+		
+		System.out.println("## OBO Test time = " + (System.currentTimeMillis() - start) + " msec.");
 		
 	}
 

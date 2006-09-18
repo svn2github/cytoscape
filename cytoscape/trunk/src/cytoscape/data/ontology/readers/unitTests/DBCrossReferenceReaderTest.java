@@ -63,27 +63,30 @@ public class DBCrossReferenceReaderTest extends TestCase {
 		}
 		assertEquals("Identifier for SGD Loci", ref.getObject());
 
-		try {
-			String result = connectToURL(ref.getQueryURL("S000006169"));
-			assertNotNull(result);
-
-			/*
-			 * Check this is a correct web page or not.
-			 */
-			assertTrue(result.contains("YPL248C"));
-			assertTrue(result.contains("GAL4"));
-			assertTrue(result.contains("DNA-binding transcription"));
-
-		} catch (SocketTimeoutException e) {
-			System.out
-					.print("======= Connection to SGD timeout.  Check connection or try again later ======");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-
-		}
+		/*
+		 * The following lines of codes requirs network connection.
+		 */
+//		try {
+//			String result = connectToURL(ref.getQueryURL("S000006169"));
+//			assertNotNull(result);
+//
+//			/*
+//			 * Check this is a correct web page or not.
+//			 */
+//			assertTrue(result.contains("YPL248C"));
+//			assertTrue(result.contains("GAL4"));
+//			assertTrue(result.contains("DNA-binding transcription"));
+//
+//		} catch (SocketTimeoutException e) {
+//			System.out
+//					.print("======= Connection to SGD timeout.  Check connection or try again later ======");
+//		} catch (MalformedURLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//
+//		}
 	}
 
 	private String connectToURL(URL url) throws IOException {
