@@ -44,13 +44,19 @@ import ding.view.DingCanvas;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.Printable;
+import java.awt.print.PageFormat;
+import java.awt.print.PrinterException;
+
 /**
  * This class manages the JLayeredPane that resides in
  * each internal frame of cytoscape.  Its intended to be the
  * class which encapsulates the multiple canvases that are created 
  * by the DGraphView class.
  */
-public class InternalFrameComponent extends JComponent {
+public class InternalFrameComponent extends JComponent implements Printable {
 
 	/**
 	 * z-order enumeration
@@ -119,6 +125,28 @@ public class InternalFrameComponent extends JComponent {
 		networkCanvas.setBounds(x, y, width, height);
 		foregroundCanvas.setBounds(x, y, width, height);
 	}
+
+    /**
+     * Our implementation of the Printable interface.
+     *
+     * @param graphics Graphics (context into which the page is drawn)
+     * @param pageFormat PageFormat (size and orientation of the page being drawn)
+     * @param pageIndex int (the zero based index of the page being drawn)
+     *
+     * @return PAGE_EXISTS if teh page is rendered or NO_SUCH_PAGE if pageIndex specifies non-existent page
+	 * @throws PrinterException
+     */
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+        if (pageIndex == 0) {
+            ((Graphics2D) graphics).translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+            graphics.clipRect(0, 0, networkCanvas.getWidth(), networkCanvas.getHeight());
+			backgroundCanvas.print(graphics);
+			networkCanvas.print(graphics);
+			foregroundCanvas.print(graphics);
+            return PAGE_EXISTS;
+        } else
+            return NO_SUCH_PAGE;
+    }
 
 	/**
 	 * Places the canvas on the layeredPane in the following manner:
