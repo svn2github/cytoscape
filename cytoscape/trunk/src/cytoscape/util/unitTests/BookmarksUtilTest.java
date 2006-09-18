@@ -56,7 +56,7 @@ public class BookmarksUtilTest extends TestCase {
 		
 		List<DataSource> sources2 = BookmarksUtil.getDataSourceList("annotation", bk.getCategory());
 		assertNotNull(sources2);
-		assertEquals(5, sources2.size());
+		assertEquals(33, sources2.size());
 		
 		List<DataSource> sources3 = BookmarksUtil.getDataSourceList("network", bk.getCategory());
 		assertNotNull(sources3);
