@@ -89,9 +89,9 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 	 * Our implementation of paint.
 	 * Invoked by Swing to draw components.
 	 *
-	 * @param g Graphics
+	 * @param graphics Graphics
 	 */
-    public void paint(Graphics g) {
+    public void paint(Graphics graphics) {
 
 		// only paint if we have an image to paint on
 		if (m_img != null) {
@@ -106,9 +106,22 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 			if (m_isVisible) paintChildren(image2D);
 
 			// render image
-			((Graphics2D)g).drawImage(((BufferedImage)m_img), null, 0, 0);
+			((Graphics2D)graphics).drawImage(((BufferedImage)m_img), null, 0, 0);
 		}
     }
+
+    /**
+     * Invoke this method to print the component.
+     *
+     * @param graphics Graphics
+     */
+    public void print(Graphics graphics) {
+
+		//if we have an image to print, lets print it.
+		if (m_img != null) {
+			((Graphics2D)graphics).drawImage(((BufferedImage)m_img), null, 0, 0);
+		}
+	}
 
 	/**
 	 * Utility function to clean the background of the image,
@@ -126,8 +139,10 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 										  alpha);
 
 		// set the alpha composite on the image, and clear its area
+		Composite origComposite = image2D.getComposite();
 		image2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		image2D.setPaint(backgroundColor);
 		image2D.fillRect(0, 0, m_img.getWidth(null), m_img.getHeight(null));
+		image2D.setComposite(origComposite);
 	}
 }
