@@ -244,6 +244,9 @@ public class EdgeAppearance implements Appearance, Cloneable {
 
 	return sb.toString();
     }
+    public String getDescription() {
+    	return getDescription(null);
+    }
 
 
     public Object get(byte type) {
@@ -304,6 +307,16 @@ public class EdgeAppearance implements Appearance, Cloneable {
 	    setFontSize(((Double) c).floatValue());
 	    break;
 	}
+    }
+
+    public void copy(EdgeAppearance ea) {
+    	setColor( ea.getColor() );
+    	setLineType( ea.getLineType() );
+    	setSourceArrow( ea.getSourceArrow() );
+    	setTargetArrow( ea.getTargetArrow() );
+    	setLabel( ea.getLabel() );
+    	setToolTip( ea.getToolTip() );
+    	setFont( ea.getFont() );
     }
 
     public Object clone() {

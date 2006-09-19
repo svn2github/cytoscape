@@ -51,20 +51,20 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.AbstractCalculator;
 import cytoscape.visual.calculators.Calculator;
-//import cytoscape.visual.calculators.EdgeLabelCalculator;
 import cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeColorCalculator;
 import cytoscape.visual.calculators.GenericEdgeFontFaceCalculator;
 import cytoscape.visual.calculators.GenericEdgeLabelCalculator;
 import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
-import cytoscape.visual.calculators.GenericNodeColorCalculator;
+import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
+import cytoscape.visual.calculators.GenericNodeBorderColorCalculator;
 import cytoscape.visual.calculators.GenericNodeFontFaceCalculator;
 import cytoscape.visual.calculators.GenericNodeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeLineTypeCalculator;
 import cytoscape.visual.calculators.GenericNodeShapeCalculator;
-import cytoscape.visual.calculators.GenericNodeSizeCalculator;
-//import cytoscape.visual.calculators.NodeLabelCalculator;
+import cytoscape.visual.calculators.GenericNodeWidthCalculator;
+import cytoscape.visual.calculators.GenericNodeHeightCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
@@ -349,19 +349,19 @@ public class VisualStyleBuilder {
 				"XGMML Node Shape", nodeShapeMapping);
 		nac.setCalculator(shapeCalculator);
 
-		GenericNodeColorCalculator nodeColorCalculator = new GenericNodeColorCalculator(
+		GenericNodeFillColorCalculator nodeColorCalculator = new GenericNodeFillColorCalculator(
 				"XGMML Node Color", nodeColorMapping);
 		nac.setCalculator(nodeColorCalculator);
 
-		GenericNodeColorCalculator nodeBorderColorCalculator = new GenericNodeColorCalculator(
+		GenericNodeBorderColorCalculator nodeBorderColorCalculator = new GenericNodeBorderColorCalculator(
 				"XGMML Node Border Color", nodeBorderColorMapping);
 		nac.setCalculator(nodeBorderColorCalculator);
 
-		GenericNodeSizeCalculator nodeSizeCalculatorW = new GenericNodeSizeCalculator(
+		GenericNodeWidthCalculator nodeSizeCalculatorW = new GenericNodeWidthCalculator(
 				"XGMML Node Width", nodeWMapping);
 		nac.setCalculator(nodeSizeCalculatorW);
 
-		GenericNodeSizeCalculator nodeSizeCalculatorH = new GenericNodeSizeCalculator(
+		GenericNodeHeightCalculator nodeSizeCalculatorH = new GenericNodeHeightCalculator(
 				"XGMML Node Height", nodeHMapping);
 		nac.setCalculator(nodeSizeCalculatorH);
 		GenericNodeLineTypeCalculator nodeBoderTypeCalculator = new GenericNodeLineTypeCalculator(

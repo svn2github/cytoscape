@@ -86,7 +86,6 @@ public class ContinuousRangeCalculator {
         }
         Object attrValue = attrBundle.get(attrName);
         if (!(attrValue instanceof Number)) {
-	System.out.println("attr val is not a number " + attrName);
             return null;
         }
         Object object = getRangeValue((Number) attrValue);

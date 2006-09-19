@@ -118,7 +118,12 @@ public abstract class AppearanceCalculator implements Cloneable {
   }
 
   public void setCalculator(Calculator c) {
-  	System.out.println("adding calc " + c.toString());
+  	if ( c == null )
+		return;
+	
+	if ( ! isValidCalculator(c) )
+		return;
+
   	Calculator toReplace = null;
   	for (Calculator nc : calcs) 
 		if ( nc.getType() == c.getType() ) {
@@ -151,25 +156,10 @@ public abstract class AppearanceCalculator implements Cloneable {
 
     for ( Byte b : catalog.getCalculatorTypes() ) {
     	for ( Calculator c : catalog.getCalculators(b.byteValue()) ) {
-		// TODOOOO
         	value = nacProps.getProperty(baseKey + "." + c.getPropertyLabel() );
         	Calculator newCalc = catalog.getCalculator( c.getType(), value ); 
-
-        if ( newCalc != null ) {
-                Calculator remove = null;
-                for ( Calculator existingCalc : calcs ) {
-                        if ( newCalc.getType() == existingCalc.getType() ) {
-                                remove = existingCalc;
-                                break;
-                        }
-                }
-
-                if ( remove != null )
-                        calcs.remove(remove);
-
-                calcs.add( newCalc );
+		setCalculator( newCalc );
         }
-       }
     }
   }
     
@@ -189,6 +179,7 @@ public abstract class AppearanceCalculator implements Cloneable {
   }
 
   protected abstract void copyDefaultAppearance(AppearanceCalculator toCopy);
+  protected abstract boolean isValidCalculator(Calculator c);
 
 
 }

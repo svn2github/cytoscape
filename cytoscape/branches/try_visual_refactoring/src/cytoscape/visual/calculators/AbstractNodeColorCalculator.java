@@ -1,6 +1,6 @@
 
 /*
-  File: GenericNodeSizeCalculator.java 
+  File: AbstractNodeColorCalculator.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -45,38 +45,36 @@ package cytoscape.visual.calculators;
 //----------------------------------------------------------------------------
 import java.util.Map;
 import java.util.Properties;
+import java.awt.Color;
 import javax.swing.JPanel;
 
 import giny.model.Node;
 
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.parsers.DoubleParser;
+import cytoscape.visual.parsers.ColorParser;
 
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeSizeCalculator extends NodeCalculator {
+public abstract class AbstractNodeColorCalculator extends NodeCalculator {
 
+    protected byte FILL = 1;
+    protected byte BORDER = 2;
 
-    public byte getType() {
-        return VizMapUI.NODE_SIZE;
-    }
+    public abstract byte getType();
 
     public String getPropertyObjectString() {
         return "";
     }
 
-    public String getPropertyLabel() {
-        return "nodeSizeCalculator";
-    }
-
+    public abstract String getPropertyLabel(); 
     
-    public GenericNodeSizeCalculator(String name, ObjectMapping m) {
+    public AbstractNodeColorCalculator(String name, ObjectMapping m) {
 	super(name, m);
 
-        Double d = new Double(0.0);
-        Class c = d.getClass();
+        Color color = new Color(0,0,0);
+        Class c = color.getClass();
         if (!c.isAssignableFrom(m.getRangeClass()) ) {
             String s = "Invalid Calculator: Expected class " + c.toString()
                     + ", got " + m.getRangeClass().toString();
@@ -86,29 +84,24 @@ public class GenericNodeSizeCalculator extends NodeCalculator {
     /**
      * Constructor for dynamic creation via properties.
      */
-    public GenericNodeSizeCalculator(String name, Properties props, String baseKey) {
-        super(name, props, baseKey, new DoubleParser(), new Double(0));
+    public AbstractNodeColorCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, new ColorParser(), Color.WHITE);
     }
     
-    /** 
-     *  calculateNodeSize returns -1 if there is no mapping;
-     *  since a negative number has no meaning as a node size,
-     *  this is a case that the caller of calculateNodeSize
-     *  should expect to handle.  The usual caller is
-     *  NodeAppearanceCalculator.
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+    public abstract void apply(NodeAppearance appr, Node node, CyNetwork network);
+
+    protected void apply(NodeAppearance appr, Node node, CyNetwork network,byte type) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
-		double ret = -1.0;
-		if(rangeValue!=null)
-			ret =  ((Number)rangeValue).doubleValue();
-		// TODOOOO
-		appr.setWidth(ret);
-		appr.setHeight(ret);
+	
+        Color c =  (Color)super.getMapping(0).calculateRangeValue(attrBundle);
+
+	if ( type == FILL )
+        	appr.setFillColor( c ); 
+	if ( type == BORDER )
+        	appr.setBorderColor( c ); 
     }
 }
 

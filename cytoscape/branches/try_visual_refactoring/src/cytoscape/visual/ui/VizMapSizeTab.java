@@ -138,7 +138,7 @@ public class VizMapSizeTab extends VizMapTab {
 
 	// Lock at the nodeAppearanceCalculator level, since can't have duplicate
 	// calculators. We have to be careful to keep size and height in sync.
-	size = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_HEIGHT);
+	size = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_SIZE);
 
 	width.setBorder(BorderFactory.createTitledBorder(width.getName()));
 	height.setBorder(BorderFactory.createTitledBorder(height.getName()));
@@ -173,10 +173,11 @@ public class VizMapSizeTab extends VizMapTab {
 	private Calculator heightCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
 
 	// maintain separate memoization for the locked calculator
-	private Calculator lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
+	private Calculator lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_SIZE);
 
 	public void itemStateChanged(ItemEvent e) {
 	    if (e.getStateChange() == ItemEvent.SELECTED) {
+	    	System.out.println("node size selected");
 		mainPanel.removeAll();
 		mainPanel.add(lockPanel);
 		locked = true;
@@ -198,6 +199,7 @@ public class VizMapSizeTab extends VizMapTab {
 		size.setComboBox(this.lockCalc);
 	    }
 	    else {
+	    	System.out.println("node size UNselected");
 		mainPanel.removeAll();
 		mainPanel.add(hwPanel);
 		locked = false;
@@ -206,7 +208,7 @@ public class VizMapSizeTab extends VizMapTab {
 		nodeCalc.setNodeSizeLocked(false);
 
 		// memoize currently selected calculator
-		this.lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
+		this.lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_SIZE);
 		size.setComboBox(null);
 
 		// reset back to old calculators

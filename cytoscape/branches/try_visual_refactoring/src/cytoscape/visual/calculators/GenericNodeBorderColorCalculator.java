@@ -1,6 +1,6 @@
 
 /*
-  File: GenericNodeFontSizeCalculator.java 
+  File: GenericNodeBorderColorCalculator.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -36,73 +36,52 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//--------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+// $Revision: 8192 $
+// $Date: 2006-09-13 17:50:21 -0700 (Wed, 13 Sep 2006) $
+// $Author: mes $
+//----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 import java.util.Map;
 import java.util.Properties;
-import javax.swing.*;
+import java.awt.Color;
+import javax.swing.JPanel;
 
 import giny.model.Node;
 
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.parsers.DoubleParser;
+import cytoscape.visual.parsers.ColorParser;
 
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
-//--------------------------------------------------------------------------
-public class GenericNodeFontSizeCalculator extends NodeCalculator
-    {
+//----------------------------------------------------------------------------
+public class GenericNodeBorderColorCalculator extends AbstractNodeColorCalculator {
 
 
     public byte getType() {
-        return VizMapUI.NODE_FONT_SIZE;
+    	return VizMapUI.NODE_BORDER_COLOR;
     }
+
     public String getPropertyObjectString() {
         return "";
     }
 
     public String getPropertyLabel() {
-        return "nodeFontSizeCalculator";
+    	return "nodeBorderColorCalculator";
     }
     
-    public GenericNodeFontSizeCalculator(String name, ObjectMapping m) {
+    public GenericNodeBorderColorCalculator(String name, ObjectMapping m) {
 	super(name, m);
-	//All we need is some kind of Number
-	if (!(Number.class.isAssignableFrom(m.getRangeClass()))) {
-	    throw new ClassCastException("Invalid Calculator: Expected class Number, got " + 
-					 m.getRangeClass().toString());
-	}
     }
     
-    /**
-     * Constructor for dynamic creation via properties.
-     */
-    public GenericNodeFontSizeCalculator(String name, Properties props, String baseKey) {
-	super(name, props, baseKey, new DoubleParser(), new Double(12));
+    public GenericNodeBorderColorCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey);
     }
-
-    /** 
-     *  calculateNodeFontSize returns -1 if there is no mapping;
-     *  since a negative number has no meaning as a font size,
-     *  this is a case that the caller of calculateNodeFontSize
-     *  should expect to handle.  The usual caller is
-     *  NodeAppearanceCalculator.
-     */
+    
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
-		float ret = -1.0f;
-		if (rangeValue != null)
-			ret = ((Number) rangeValue).floatValue();
-		appr.setFontSize(ret);
+    	apply(appr,node,network,BORDER);
     }
 }
+

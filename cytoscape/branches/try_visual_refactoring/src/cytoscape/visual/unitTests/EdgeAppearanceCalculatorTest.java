@@ -133,7 +133,7 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 	System.out.println( "font size " + ea.getFont().getSize() ); 
 	System.out.println( "font style " +  ea.getFont().getStyle() );
 
-	assertTrue( "color " + ea.getColor(), ea.getColor().equals(Color.BLACK) );
+	assertTrue( "color " + ea.getColor(), ea.getColor().equals(new Color(132,116,144)) );
 	assertTrue( "linetype " + ea.getLineType(), ea.getLineType() == LineType.LINE_1 );
 	assertTrue( "src arrow " + ea.getSourceArrow(), ea.getSourceArrow() == Arrow.BLACK_DIAMOND );
 	assertTrue( "trg arrow " + ea.getTargetArrow(), ea.getTargetArrow() == Arrow.NONE );

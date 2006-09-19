@@ -545,8 +545,11 @@ public class VizMapAttrTab extends VizMapTab {
 	    }
 	    // create and add a generic calculator based on this tab's type
 	    Calculator calc = null;
-	    if (type == VizMapUI.NODE_COLOR || type == VizMapUI.NODE_BORDER_COLOR) {
-        calc = new GenericNodeColorCalculator(calcName, mapper);
+	    if (type == VizMapUI.NODE_COLOR) {
+        calc = new GenericNodeFillColorCalculator(calcName, mapper);
+	    }
+	    else if (type == VizMapUI.NODE_BORDER_COLOR) {
+        calc = new GenericNodeBorderColorCalculator(calcName, mapper);
 	    }
 	    else if (type == VizMapUI.NODE_LINETYPE) {
         calc = new GenericNodeLineTypeCalculator(calcName, mapper);
@@ -554,16 +557,21 @@ public class VizMapAttrTab extends VizMapTab {
 	    else if (type == VizMapUI.NODE_SHAPE) {
         calc = new GenericNodeShapeCalculator(calcName, mapper);
 	    }
-	    else if (type == VizMapUI.NODE_HEIGHT || type == VizMapUI.NODE_WIDTH
-               || type == VizMapUI.NODE_SIZE) {
-        calc = new GenericNodeSizeCalculator(calcName, mapper);
+	    else if (type == VizMapUI.NODE_HEIGHT) {
+        calc = new GenericNodeHeightCalculator(calcName, mapper);
+	    }
+	    else if (type == VizMapUI.NODE_WIDTH) {
+        calc = new GenericNodeWidthCalculator(calcName, mapper);
+	    }
+	    else if (type == VizMapUI.NODE_SIZE) {
+        calc = new GenericNodeUniformSizeCalculator(calcName, mapper);
 	    }
 	    else if (type == VizMapUI.NODE_LABEL) {
         calc = new GenericNodeLabelCalculator(calcName, mapper);
 	    }
-            else if (type == VizMapUI.NODE_LABEL_COLOR) {
+      else if (type == VizMapUI.NODE_LABEL_COLOR) {
         calc = new GenericNodeLabelColorCalculator(calcName, mapper);
-            }
+      }
 	    else if (type == VizMapUI.NODE_TOOLTIP) {
         calc = new GenericNodeToolTipCalculator(calcName, mapper);
 	    }
@@ -777,51 +785,6 @@ public class VizMapAttrTab extends VizMapTab {
 
   private Collection getCalculators(byte type) {
   	return catalog.getCalculators(type);
-	/*
-    switch(type) {
-    case VizMapUI.NODE_COLOR:
-	    return catalog.getNodeColorCalculators();
-    case VizMapUI.NODE_BORDER_COLOR:
-	    return catalog.getNodeColorCalculators();
-    case VizMapUI.NODE_LINETYPE:
-	    return catalog.getNodeLineTypeCalculators();
-    case VizMapUI.NODE_SHAPE:
-	    return catalog.getNodeShapeCalculators();
-    case VizMapUI.NODE_SIZE:
-    case VizMapUI.NODE_HEIGHT:
-    case VizMapUI.NODE_WIDTH:
-	    return catalog.getNodeSizeCalculators();
-    case VizMapUI.NODE_LABEL:
-	    return catalog.getNodeLabelCalculators();
-    case VizMapUI.NODE_LABEL_COLOR:
-            return catalog.getNodeLabelColorCalculators();
-    case VizMapUI.NODE_TOOLTIP:
-	    return catalog.getNodeToolTipCalculators();
-    case VizMapUI.EDGE_COLOR:
-	    return catalog.getEdgeColorCalculators();
-    case VizMapUI.EDGE_LINETYPE:
-	    return catalog.getEdgeLineTypeCalculators();
-    case VizMapUI.EDGE_SRCARROW:
-	    return catalog.getEdgeArrowCalculators();
-    case VizMapUI.EDGE_TGTARROW:
-	    return catalog.getEdgeArrowCalculators();
-    case VizMapUI.EDGE_LABEL:
-	    return catalog.getEdgeLabelCalculators();
-    case VizMapUI.EDGE_TOOLTIP:
-	    return catalog.getEdgeToolTipCalculators();
-    case VizMapUI.EDGE_FONT_FACE:
-	    return catalog.getEdgeFontFaceCalculators();
-    case VizMapUI.EDGE_FONT_SIZE:
-	    return catalog.getEdgeFontSizeCalculators();
-    case VizMapUI.NODE_FONT_FACE:
-	    return catalog.getNodeFontFaceCalculators();
-    case VizMapUI.NODE_FONT_SIZE:
-	    return catalog.getNodeFontSizeCalculators();
-    default:
-	    System.err.println("WARNING: Couldn't find match for type " + type);
-	    return null;
-    }
-    */
   }
 
   protected static String getTypeName(byte type) {

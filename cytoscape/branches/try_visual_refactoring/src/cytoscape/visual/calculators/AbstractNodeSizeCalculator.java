@@ -1,6 +1,6 @@
 
 /*
-  File: GenericNodeFontSizeCalculator.java 
+  File: AbstractNodeSizeCalculator.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -36,16 +36,16 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 // $Revision$
 // $Date$
 // $Author$
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 import java.util.Map;
 import java.util.Properties;
-import javax.swing.*;
+import javax.swing.JPanel;
 
 import giny.model.Node;
 
@@ -55,54 +55,66 @@ import cytoscape.visual.parsers.DoubleParser;
 
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
-//--------------------------------------------------------------------------
-public class GenericNodeFontSizeCalculator extends NodeCalculator
-    {
+//----------------------------------------------------------------------------
+public abstract class AbstractNodeSizeCalculator extends NodeCalculator {
 
+    protected int WIDTH = 1;
+    protected int HEIGHT = 2;
+    protected int SIZE = 4;
 
-    public byte getType() {
-        return VizMapUI.NODE_FONT_SIZE;
-    }
+    public abstract byte getType(); 
+
     public String getPropertyObjectString() {
         return "";
     }
 
-    public String getPropertyLabel() {
-        return "nodeFontSizeCalculator";
-    }
-    
-    public GenericNodeFontSizeCalculator(String name, ObjectMapping m) {
+    public abstract String getPropertyLabel();
+
+    public AbstractNodeSizeCalculator(String name, ObjectMapping m) {
 	super(name, m);
-	//All we need is some kind of Number
-	if (!(Number.class.isAssignableFrom(m.getRangeClass()))) {
-	    throw new ClassCastException("Invalid Calculator: Expected class Number, got " + 
-					 m.getRangeClass().toString());
-	}
+
+        Double d = new Double(0.0);
+        Class c = d.getClass();
+        if (!c.isAssignableFrom(m.getRangeClass()) ) {
+            String s = "Invalid Calculator: Expected class " + c.toString()
+                    + ", got " + m.getRangeClass().toString();
+            throw new ClassCastException(s);
+        }
     }
-    
     /**
      * Constructor for dynamic creation via properties.
      */
-    public GenericNodeFontSizeCalculator(String name, Properties props, String baseKey) {
-	super(name, props, baseKey, new DoubleParser(), new Double(12));
+    public AbstractNodeSizeCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, new DoubleParser(), new Double(0));
     }
+    
+    public abstract void apply(NodeAppearance appr, Node node, CyNetwork network); 
 
     /** 
-     *  calculateNodeFontSize returns -1 if there is no mapping;
-     *  since a negative number has no meaning as a font size,
-     *  this is a case that the caller of calculateNodeFontSize
+     *  calculateNodeSize returns -1 if there is no mapping;
+     *  since a negative number has no meaning as a node size,
+     *  this is a case that the caller of calculateNodeSize
      *  should expect to handle.  The usual caller is
      *  NodeAppearanceCalculator.
      */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+    protected void apply(NodeAppearance appr, Node node, CyNetwork network, int type) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
 		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
-		float ret = -1.0f;
-		if (rangeValue != null)
-			ret = ((Number) rangeValue).floatValue();
-		appr.setFontSize(ret);
+		double ret = -1.0;
+		if(rangeValue!=null)
+			ret =  ((Number)rangeValue).doubleValue();
+
+		if ( type == WIDTH )
+			appr.setWidth(ret);
+
+		if ( type == HEIGHT )
+			appr.setHeight(ret);
+
+		if ( type == SIZE )
+			appr.setSize(ret);
     }
 }
+

@@ -53,6 +53,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.visual.LineType;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.visual.ui.VizMapUI;
 
 import cytoscape.*;
 import cytoscape.visual.calculators.*;
@@ -65,7 +66,6 @@ import cytoscape.visual.parsers.*;
 public class NodeAppearanceCalculator extends AppearanceCalculator {
 
   NodeAppearance defaultAppearance = new NodeAppearance();
-  boolean nodeSizeLocked;
 
   public NodeAppearanceCalculator() {
     super();
@@ -94,7 +94,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
    * CyNetwork. A new NodeApperance object will be created.
    */
   public NodeAppearance calculateNodeAppearance(Node node, CyNetwork network) {
-    NodeAppearance appr = (NodeAppearance)defaultAppearance.clone();
+    NodeAppearance appr = new NodeAppearance(); 
     calculateNodeAppearance(appr, node, network);
     return appr;
   }
@@ -106,6 +106,8 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
    * the new values.
    */
   public void calculateNodeAppearance(NodeAppearance appr, Node node, CyNetwork network) {
+
+	appr.copy(defaultAppearance); // set defaults and node lock state
   	for (Calculator nc : calcs) 
 		nc.apply( appr, node, network );
   }
@@ -142,12 +144,22 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
   	defaultAppearance = (NodeAppearance)(((NodeAppearanceCalculator)toCopy).getDefaultAppearance().clone());
   }
 
+	// probably shouldn't be here now
 	public boolean getNodeSizeLocked() {
-		return nodeSizeLocked;
-	}
-	public void setNodeSizeLocked(boolean b) {
-		nodeSizeLocked = b;
+		return defaultAppearance.getNodeSizeLocked();
 	}
 
+	// probably shouldn't be here now
+	public void setNodeSizeLocked(boolean b) {
+		defaultAppearance.setNodeSizeLocked(b);
+	}
+
+  protected boolean isValidCalculator(Calculator c) {
+  	if ( c instanceof NodeCalculator ) 
+		return true;
+	else
+		return false;
+  }
 }
+
 

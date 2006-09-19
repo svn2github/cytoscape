@@ -1,5 +1,5 @@
 /*
- File: GenericEdgeArrowCalculator.java 
+ File: AbstractEdgeArrowCalculator.java 
  
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
  
@@ -57,13 +57,13 @@ import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 
 //----------------------------------------------------------------------------
-abstract class GenericEdgeArrowCalculator extends EdgeCalculator {
+abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
 
 	public abstract byte getType(); 
 	public abstract String getPropertyObjectString();
 	public abstract String getPropertyLabel();
 	
-	public GenericEdgeArrowCalculator(String name, ObjectMapping m) {
+	public AbstractEdgeArrowCalculator(String name, ObjectMapping m) {
 		super(name, m);
 
 		Class c = null;
@@ -79,7 +79,7 @@ abstract class GenericEdgeArrowCalculator extends EdgeCalculator {
 	/**
 	 * Constructor for dynamic creation via properties.
 	 */
-	public GenericEdgeArrowCalculator(String name, Properties props, String baseKey) {
+	public AbstractEdgeArrowCalculator(String name, Properties props, String baseKey) {
 		super(name, props, baseKey, new ArrowParser(), Arrow.NONE);
 	}
 
@@ -90,11 +90,9 @@ abstract class GenericEdgeArrowCalculator extends EdgeCalculator {
 		Map attrBundle = getAttrBundle(canonicalName);
 		// add generic "ID" attribute
 		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-		// TODOOOO
 		if ( source )
 			appr.setSourceArrow( (Arrow) super.getMapping(0).calculateRangeValue(attrBundle) );
 		else
 			appr.setTargetArrow( (Arrow) super.getMapping(0).calculateRangeValue(attrBundle) );
 	}
-
 }

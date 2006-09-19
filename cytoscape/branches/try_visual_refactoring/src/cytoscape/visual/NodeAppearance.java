@@ -72,10 +72,12 @@ public class NodeAppearance implements Appearance, Cloneable {
     byte shape = ShapeNodeRealizer.RECT;
     double width = 70.0;
     double height = 30.0;
+    double size = 35.0;
     String label = "";
     String toolTip = "";
     Font font = new Font(null, Font.PLAIN, 12);
     Color fontColor = Color.black;
+    boolean nodeSizeLocked = true;
 
     public NodeAppearance() {}
     
@@ -91,11 +93,14 @@ public class NodeAppearance implements Appearance, Cloneable {
     public byte getShape() {return shape;}
     public void setShape(byte s) {shape = s;}
     
-    public double getWidth() {return width;}
+    public double getWidth() { return width;}
     public void setWidth(double d) {width = d;}
     
     public double getHeight() {return height;}
     public void setHeight(double d) {height = d;}
+    
+    public double getSize() {return size;}
+    public void setSize(double s) {size = s;}
     
     public String getLabel() {return label;}
     public void setLabel(String s) { if ( s != null ) label = s;}
@@ -118,8 +123,13 @@ public class NodeAppearance implements Appearance, Cloneable {
 		nodeView.setUnselectedPaint(fillColor);
 		nodeView.setBorderPaint(borderColor);
 		nodeView.setBorder(borderLineType.getStroke());
-		nodeView.setHeight(height);
-		nodeView.setWidth(width);
+		if ( nodeSizeLocked ) {
+			nodeView.setHeight(size);
+			nodeView.setWidth(size);
+		} else {
+			nodeView.setHeight(height);
+			nodeView.setWidth(width);
+		}
 		nodeView.setShape(ShapeNodeRealizer.getGinyShape(shape));
 		nodeView.getLabel().setText(label);
 
@@ -148,18 +158,34 @@ public class NodeAppearance implements Appearance, Cloneable {
 			nodeView.setBorder(newBorderType);
 		}
 
-		double existingHeight = nodeView.getHeight();
-		double difference = height - existingHeight;
-		if (Math.abs(difference) > .1) {
-			change_made = true;
-			nodeView.setHeight(height);
-		}
+		if ( nodeSizeLocked ) {
+			double existingHeight = nodeView.getHeight();
+			double difference = size - existingHeight;
+			if (Math.abs(difference) > .1) {
+				change_made = true;
+				nodeView.setHeight(size);
+			}
+			double existingWidth = nodeView.getWidth(); 
+			difference = size - existingWidth;
+			if (Math.abs(difference) > .1) {
+				change_made = true;
+				nodeView.setWidth(size);
+			}
+		} else {
+			double existingHeight = nodeView.getHeight();
+			double difference = height - existingHeight;
+			if (Math.abs(difference) > .1) {
+				change_made = true;
+				System.out.println("setting height");
+				nodeView.setHeight(height);
+			}
 
-		double existingWidth = nodeView.getWidth();
-		difference = width - existingWidth;
-		if (Math.abs(difference) > .1) {
-			change_made = true;
-			nodeView.setWidth(width);
+			double existingWidth = nodeView.getWidth();
+			difference = width - existingWidth;
+			if (Math.abs(difference) > .1) {
+				change_made = true;
+				nodeView.setWidth(width);
+			}
 		}
 
 		int existingShape = nodeView.getShape();
@@ -241,6 +267,14 @@ public class NodeAppearance implements Appearance, Cloneable {
         if (d > 0) {setHeight(d);}
       }
     }
+    value = nacProps.getProperty(baseKey + ".defaultNodeSize");
+    if (value != null) {
+      Double dObj = (new DoubleParser()).parseDouble(value);
+      if (dObj != null) {
+        double d = dObj.doubleValue();
+        if (d > 0) {setSize(d);}
+      }
+    }
     value = nacProps.getProperty(baseKey + ".defaultNodeLabel");
     if (value != null) {
       setLabel(value);
@@ -282,10 +316,17 @@ public class NodeAppearance implements Appearance, Cloneable {
     Double nodeWidthDouble = new Double( getWidth() );
     value = ObjectToString.getStringValue(nodeWidthDouble);
     newProps.setProperty(key, value);
+
     key = baseKey + ".defaultNodeHeight";
     Double nodeHeightDouble = new Double( getHeight() );
     value = ObjectToString.getStringValue(nodeHeightDouble);
     newProps.setProperty(key, value);
+
+    key = baseKey + ".defaultNodeSize";
+    Double nodeSizeDouble = new Double( getSize() );
+    value = ObjectToString.getStringValue(nodeSizeDouble);
+    newProps.setProperty(key, value);
+
     key = baseKey + ".defaultNodeLabel";
     value = ObjectToString.getStringValue( getLabel() );
     newProps.setProperty(key, value);
@@ -316,12 +357,17 @@ public class NodeAppearance implements Appearance, Cloneable {
 	sb.append(prefix + "NodeShape = ").append(nodeShapeText).append(lineSep);
 	sb.append(prefix + "NodeWidth = ").append(width).append(lineSep);
 	sb.append(prefix + "NodeHeight = ").append(height).append(lineSep);
+	sb.append(prefix + "NodeSize = ").append(size).append(lineSep);
 	sb.append(prefix + "NodeLabel = ").append(label).append(lineSep);
 	sb.append(prefix + "NodeToolTip = ").append(toolTip).append(lineSep);
 	sb.append(prefix + "NodeFont = ").append(font).append(lineSep);
 	sb.append(prefix + "NodeFontColor = ").append(fontColor.toString()).append(lineSep);
+	sb.append(prefix + "nodeSizeLocked = ").append(nodeSizeLocked).append(lineSep);
 
 	return sb.toString();
+  }
+  public String getDescription() {
+  	return getDescription(null);
   }
 
 
@@ -348,7 +394,7 @@ public class NodeAppearance implements Appearance, Cloneable {
 	    defaultObj = new Double(getWidth());
 	    break;
 	case VizMapUI.NODE_SIZE:
-	    defaultObj = new Double(getHeight());
+	    defaultObj = new Double(getSize());
 	    break;
 	case VizMapUI.NODE_LABEL:
 	    defaultObj = getLabel();
@@ -371,6 +417,7 @@ public class NodeAppearance implements Appearance, Cloneable {
     }
     
     public void set(byte type, Object c) {
+	//System.out.println("NodeAppearance before: " + getDescription(null));
         switch(type) {
 	case VizMapUI.NODE_COLOR:
 	    setFillColor((Color) c);
@@ -391,8 +438,7 @@ public class NodeAppearance implements Appearance, Cloneable {
 	    setWidth(((Double) c).doubleValue());
 	    break;
 	case VizMapUI.NODE_SIZE:
-	    setHeight(((Double) c).doubleValue());
-	    setWidth(((Double) c).doubleValue());
+	    setSize(((Double) c).doubleValue());
 	    break;
 	case VizMapUI.NODE_LABEL:
 	    setLabel((String) c);
@@ -407,27 +453,38 @@ public class NodeAppearance implements Appearance, Cloneable {
 	    setFont((Font) c);
 	    break;
 	case VizMapUI.NODE_FONT_SIZE:
-		// TODOOO
 	    setFontSize(((Double) c).floatValue());
 	    break;
 	}
+	//System.out.println("NodeAppearance after: " + getDescription(null));
+    }
+
+    public void copy(NodeAppearance na) {
+	setFillColor( na.getFillColor());
+	setBorderColor( na.getBorderColor());
+	setBorderLineType( na.getBorderLineType()); 
+	setShape( na.getShape());
+	setWidth( na.getWidth());
+	setHeight( na.getHeight());
+	setSize( na.getSize());
+	setLabel( na.getLabel());
+	setToolTip( na.getToolTip());
+	setFont( na.getFont());
+	setLabelColor( na.getLabelColor());
+	setNodeSizeLocked( na.getNodeSizeLocked() );
     }
 
     public Object clone() {
     	NodeAppearance na = new NodeAppearance();
-
-	na.setFillColor(fillColor);
-	na.setBorderColor(borderColor);
-	na.setBorderLineType(borderLineType); 
-	na.setShape(shape);
-	na.setWidth(width);
-	na.setHeight(height);
-	na.setLabel(label);
-	na.setToolTip(toolTip);
-	na.setFont(font);
-	na.setLabelColor( fontColor );
-
+	na.copy(this);
 	return na;
     }
+
+  public boolean getNodeSizeLocked() {
+    return nodeSizeLocked;
+  }
+  public void setNodeSizeLocked(boolean b) {
+    nodeSizeLocked = b;
+  }
 }
 

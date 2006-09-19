@@ -58,14 +58,25 @@ import cytoscape.visual.ui.VizMapUI;
 public class CalculatorIO {
     
     public static final String dirHeader = "cytoscape.visual.calculators.";
+
     public static final String nodeColorBaseKey = "nodeColorCalculator";
     public static final String nodeColorClassName = "NodeColorCalculator";
+    public static final String nodeFillColorBaseKey = "nodeFillColorCalculator";
+    public static final String nodeFillColorClassName = "NodeFillColorCalculator";
+    public static final String nodeBorderColorBaseKey = "nodeBorderColorCalculator";
+    public static final String nodeBorderColorClassName = "NodeBorderColorCalculator";
     public static final String nodeLineTypeBaseKey = "nodeLineTypeCalculator";
     public static final String nodeLineTypeClassName = "NodeLineTypeCalculator";
     public static final String nodeShapeBaseKey = "nodeShapeCalculator";
     public static final String nodeShapeClassName = "NodeShapeCalculator";
     public static final String nodeSizeBaseKey = "nodeSizeCalculator";
     public static final String nodeSizeClassName = "NodeSizeCalculator";
+    public static final String nodeWidthBaseKey = "nodeWidthCalculator";
+    public static final String nodeWidthClassName = "NodeWidthCalculator";
+    public static final String nodeHeightBaseKey = "nodeHeightCalculator";
+    public static final String nodeHeightClassName = "NodeHeightCalculator";
+    public static final String nodeUniformSizeBaseKey = "nodeUniformSizeCalculator";
+    public static final String nodeUniformSizeClassName = "NodeUniformSizeCalculator";
     public static final String nodeLabelBaseKey = "nodeLabelCalculator";
     public static final String nodeLabelClassName = "NodeLabelCalculator";
     public static final String nodeToolTipBaseKey = "nodeToolTipCalculator";
@@ -80,6 +91,10 @@ public class CalculatorIO {
     public static final String edgeLineTypeClassName = "EdgeLineTypeCalculator";
     public static final String edgeArrowBaseKey = "edgeArrowCalculator";
     public static final String edgeArrowClassName = "EdgeArrowCalculator";
+    public static final String edgeSourceArrowBaseKey = "edgeSourceArrowCalculator";
+    public static final String edgeSourceArrowClassName = "EdgeSourceArrowCalculator";
+    public static final String edgeTargetArrowBaseKey = "edgeTargetArrowCalculator";
+    public static final String edgeTargetArrowClassName = "EdgeTargetArrowCalculator";
     public static final String edgeLabelBaseKey = "edgeLabelCalculator";
     public static final String edgeLabelClassName = "EdgeLabelCalculator";
     public static final String edgeToolTipBaseKey = "edgeToolTipCalculator";
@@ -172,10 +187,15 @@ public class CalculatorIO {
         Properties newProps = new Properties();
         
         //gather properties for node calculators
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_COLOR), nodeColorBaseKey);
+        //addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_COLOR), nodeColorBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_COLOR), nodeFillColorBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_BORDER_COLOR), nodeBorderColorBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_LINETYPE), nodeLineTypeBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_SHAPE), nodeShapeBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_SIZE), nodeSizeBaseKey);
+        //addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_SIZE), nodeSizeBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_SIZE), nodeUniformSizeBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_HEIGHT), nodeHeightBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_WIDTH), nodeWidthBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_LABEL), nodeLabelBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_TOOLTIP), nodeToolTipBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_FONT_FACE), nodeFontFaceBaseKey);
@@ -183,8 +203,8 @@ public class CalculatorIO {
         //gather properties for edge calculators
         addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_COLOR), edgeColorBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_LINETYPE), edgeLineTypeBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_SRCARROW), edgeArrowBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_TGTARROW), edgeArrowBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_SRCARROW), edgeSourceArrowBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_TGTARROW), edgeTargetArrowBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_LABEL), edgeLabelBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_TOOLTIP), edgeToolTipBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_FONT_FACE), edgeFontFaceBaseKey);
@@ -286,17 +306,22 @@ public class CalculatorIO {
          * Note that we need separate constructs for each type of calculator,
          * because calculators of different types are allowed to share the same name.
          */
-        Map nodeColorNames = new HashMap();
+
+        Map nodeFillColorNames = new HashMap();
+        Map nodeBorderColorNames = new HashMap();
         Map nodeLineTypeNames = new HashMap();
         Map nodeShapeNames = new HashMap();
-        Map nodeSizeNames = new HashMap();
+        Map nodeUniformSizeNames = new HashMap();
+        Map nodeWidthNames = new HashMap();
+        Map nodeHeightNames = new HashMap();
         Map nodeLabelNames = new HashMap();
         Map nodeToolTipNames = new HashMap();
         Map nodeFontFaceNames = new HashMap();
         Map nodeFontSizeNames = new HashMap();
         Map edgeColorNames = new HashMap();
         Map edgeLineTypeNames = new HashMap();
-        Map edgeArrowNames = new HashMap();
+        Map edgeSourceArrowNames = new HashMap();
+        Map edgeTargetArrowNames = new HashMap();
         Map edgeLabelNames = new HashMap();
         Map edgeToolTipNames = new HashMap();
         Map edgeFontFaceNames = new HashMap();
@@ -304,19 +329,44 @@ public class CalculatorIO {
         Map nacNames = new HashMap();
         Map eacNames = new HashMap();
         Map gacNames = new HashMap();
+
         //use the propertyNames() method instead of the generic Map iterator,
         //because the former method recognizes layered properties objects.
         //see the Properties javadoc for details
         for (Enumeration eI = props.propertyNames(); eI.hasMoreElements(); ) {
             String key = (String)eI.nextElement();
+
             if (key.startsWith(nodeColorBaseKey + ".")) {
-                storeKey(key, props, nodeColorNames);
+	    	key = updateLegacyKey(key,props,nodeColorBaseKey,nodeFillColorBaseKey,
+			"cytoscape.visual.calculators.GenericNodeFillColorCalculator");
+      		storeKey(key, props, nodeFillColorNames);
+	    	key = updateLegacyKey(key,props,nodeFillColorBaseKey,nodeBorderColorBaseKey,
+			"cytoscape.visual.calculators.GenericNodeBorderColorCalculator");
+		storeKey(key, props, nodeBorderColorNames);
+            } else if (key.startsWith(nodeFillColorBaseKey + ".")) {
+                storeKey(key, props, nodeFillColorNames);
+            } else if (key.startsWith(nodeBorderColorBaseKey + ".")) {
+                storeKey(key, props, nodeBorderColorNames);
             } else if (key.startsWith(nodeLineTypeBaseKey + ".")) {
                 storeKey(key, props, nodeLineTypeNames);
             } else if (key.startsWith(nodeShapeBaseKey + ".")) {
                 storeKey(key, props, nodeShapeNames);
             } else if (key.startsWith(nodeSizeBaseKey + ".")) {
-                storeKey(key, props, nodeSizeNames);
+	    	key = updateLegacyKey(key,props,nodeSizeBaseKey,nodeUniformSizeBaseKey,
+			"cytoscape.visual.calculators.GenericNodeUniformSizeCalculator");
+                storeKey(key, props, nodeUniformSizeNames);
+	    	key = updateLegacyKey(key,props,nodeUniformSizeBaseKey,nodeWidthBaseKey,
+			"cytoscape.visual.calculators.GenericNodeWidthCalculator");
+		storeKey(key, props, nodeWidthNames);
+	    	key = updateLegacyKey(key,props,nodeWidthBaseKey,nodeHeightBaseKey,
+			"cytoscape.visual.calculators.GenericNodeHeightCalculator");
+		storeKey(key, props, nodeHeightNames);
+            } else if (key.startsWith(nodeUniformSizeBaseKey + ".")) {
+                storeKey(key, props, nodeUniformSizeNames);
+            } else if (key.startsWith(nodeHeightBaseKey + ".")) {
+                storeKey(key, props, nodeHeightNames);
+            } else if (key.startsWith(nodeWidthBaseKey + ".")) {
+                storeKey(key, props, nodeWidthNames);
             } else if (key.startsWith(nodeLabelBaseKey + ".")) {
                 storeKey(key, props, nodeLabelNames);
             } else if (key.startsWith(nodeToolTipBaseKey + ".")) {
@@ -330,7 +380,16 @@ public class CalculatorIO {
             } else if (key.startsWith(edgeLineTypeBaseKey + ".")) {
                 storeKey(key, props, edgeLineTypeNames);
             } else if (key.startsWith(edgeArrowBaseKey + ".")) {
-                storeKey(key, props, edgeArrowNames);
+	    	key = updateLegacyKey(key,props,edgeArrowBaseKey,edgeSourceArrowBaseKey,
+			"cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator");
+		storeKey(key, props, edgeSourceArrowNames);
+	    	key = updateLegacyKey(key,props,edgeSourceArrowBaseKey,edgeTargetArrowBaseKey,
+			"cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator");
+		storeKey(key, props, edgeTargetArrowNames);
+            } else if (key.startsWith(edgeSourceArrowBaseKey + ".")) {
+                storeKey(key, props, edgeSourceArrowNames);
+            } else if (key.startsWith(edgeTargetArrowBaseKey + ".")) {
+                storeKey(key, props, edgeTargetArrowNames);
             } else if (key.startsWith(edgeLabelBaseKey + ".")) {
                 storeKey(key, props, edgeLabelNames);
             } else if (key.startsWith(edgeToolTipBaseKey + ".")) {
@@ -355,14 +414,20 @@ public class CalculatorIO {
          * with the same name, or get a unique name from the calculator, depending
          * on the value of the overWrite argument.
          */
-        handleCalculators(nodeColorNames, catalog, overWrite, nodeColorBaseKey,
-                          nodeColorClassName);
+        handleCalculators(nodeFillColorNames, catalog, overWrite, nodeFillColorBaseKey,
+                          nodeFillColorClassName);
+        handleCalculators(nodeBorderColorNames, catalog, overWrite, nodeBorderColorBaseKey,
+                          nodeBorderColorClassName);
         handleCalculators(nodeLineTypeNames, catalog, overWrite, nodeLineTypeBaseKey,
                           nodeLineTypeClassName);
         handleCalculators(nodeShapeNames, catalog, overWrite, nodeShapeBaseKey,
                           nodeShapeClassName);
-        handleCalculators(nodeSizeNames, catalog, overWrite, nodeSizeBaseKey,
-                          nodeSizeClassName);
+        handleCalculators(nodeUniformSizeNames, catalog, overWrite, nodeUniformSizeBaseKey,
+                          nodeUniformSizeClassName);
+        handleCalculators(nodeWidthNames, catalog, overWrite, nodeWidthBaseKey,
+                          nodeWidthClassName);
+        handleCalculators(nodeHeightNames, catalog, overWrite, nodeHeightBaseKey,
+                          nodeHeightClassName);
         handleCalculators(nodeLabelNames, catalog, overWrite, nodeLabelBaseKey,
                           nodeLabelClassName);
         handleCalculators(nodeToolTipNames, catalog, overWrite, nodeToolTipBaseKey,
@@ -375,8 +440,10 @@ public class CalculatorIO {
                           edgeColorClassName);
         handleCalculators(edgeLineTypeNames, catalog, overWrite, edgeLineTypeBaseKey,
                           edgeLineTypeClassName);
-        handleCalculators(edgeArrowNames, catalog, overWrite, edgeArrowBaseKey,
-                          edgeArrowClassName);
+        handleCalculators(edgeSourceArrowNames, catalog, overWrite, edgeSourceArrowBaseKey,
+                          edgeSourceArrowClassName);
+        handleCalculators(edgeTargetArrowNames, catalog, overWrite, edgeTargetArrowBaseKey,
+                          edgeTargetArrowClassName);
         handleCalculators(edgeLabelNames, catalog, overWrite, edgeLabelBaseKey,
                           edgeLabelClassName);
         handleCalculators(edgeToolTipNames, catalog, overWrite, edgeToolTipBaseKey,
@@ -452,6 +519,9 @@ public class CalculatorIO {
         String name = extractName(key);
         if (name != null) {
             //get the entry for this name in the Map
+
+	    // calcProps contains all of the properties for this calculator,
+	    // e.g. the mappings, the controller, etc.
             Properties calcProps = (Properties)m.get(name);
             if (calcProps == null) {//create a new entry for this name
                 calcProps = new Properties();
@@ -460,6 +530,7 @@ public class CalculatorIO {
             calcProps.setProperty( key, props.getProperty(key) );
         }//should report parse errors if we can't get a name
     }
+
     
     /**
      * Given the key of a property entry, extract the second field (i.e., between the
@@ -485,11 +556,15 @@ public class CalculatorIO {
      */
     private static void handleCalculators(Map nameMap, CalculatorCatalog catalog,
                     boolean overWrite, String baseKey, String className) {
+	// for each calculator name
         for (Iterator si = nameMap.keySet().iterator(); si.hasNext(); ) {
             String name = (String)si.next();
+	    // get the properties object that contains all info for
+	    // that particular calculator
             Properties calcProps = (Properties)nameMap.get(name);
             String keyString = baseKey + "." + name;
             String intClassName = dirHeader + className;
+	    // create a calculator based on the calculator name and type
             Calculator c = CalculatorFactory.newCalculator(name, calcProps, keyString,
                                                            intClassName);
             if (c!= null) {
@@ -509,41 +584,8 @@ public class CalculatorIO {
      */
     public static void removeDuplicate(Calculator c, CalculatorCatalog catalog) {
  	catalog.removeCalculator(c);	
-	/*
-        String name = c.toString();
-        if (c instanceof NodeColorCalculator) {
-            catalog.removeNodeColorCalculator(name);
-        } else if (c instanceof NodeLineTypeCalculator) {
-            catalog.removeNodeLineTypeCalculator(name);
-        } else if (c instanceof NodeShapeCalculator) {
-            catalog.removeNodeShapeCalculator(name);
-        } else if (c instanceof NodeSizeCalculator) {
-            catalog.removeNodeSizeCalculator(name);
-        } else if (c instanceof NodeLabelCalculator) {
-            catalog.removeNodeLabelCalculator(name);
-        } else if (c instanceof NodeToolTipCalculator) {
-            catalog.removeNodeToolTipCalculator(name);
-        } else if (c instanceof NodeFontFaceCalculator) {
-            catalog.removeNodeFontFaceCalculator(name);
-        } else if (c instanceof NodeFontSizeCalculator) {
-            catalog.removeNodeFontSizeCalculator(name);
-        } else if (c instanceof EdgeColorCalculator) {
-            catalog.removeEdgeColorCalculator(name);
-        } else if (c instanceof EdgeLineTypeCalculator) {
-            catalog.removeEdgeLineTypeCalculator(name);
-        } else if (c instanceof EdgeArrowCalculator) {
-            catalog.removeEdgeArrowCalculator(name);
-        } else if (c instanceof EdgeLabelCalculator) {
-            catalog.removeEdgeLabelCalculator(name);
-        } else if (c instanceof EdgeToolTipCalculator) {
-            catalog.removeEdgeToolTipCalculator(name);
-        } else if (c instanceof EdgeFontFaceCalculator) {
-            catalog.removeEdgeFontFaceCalculator(name);
-        } else if (c instanceof EdgeFontSizeCalculator) {
-            catalog.removeEdgeFontSizeCalculator(name);
-        }
-	*/
     }
+
     /**
      * Given a Calculator of a given type and a CalculatorCatalog, checks
      * for an existing catalog with the same name and type. If one exists,
@@ -554,55 +596,21 @@ public class CalculatorIO {
         String name = c.toString();
 	String newName = catalog.checkCalculatorName(c.getType(),name);
         if (!newName.equals(name)) {c.setName(newName);}
-	/*
-        String newName;
-        if (c instanceof NodeColorCalculator) {
-            newName = catalog.checkNodeColorCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof NodeLineTypeCalculator) {
-            newName = catalog.checkNodeLineTypeCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof NodeShapeCalculator) {
-            newName = catalog.checkNodeShapeCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof NodeSizeCalculator) {
-            newName = catalog.checkNodeSizeCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof NodeLabelCalculator) {
-            newName = catalog.checkNodeLabelCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof NodeToolTipCalculator) {
-            newName = catalog.checkNodeToolTipCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof NodeFontFaceCalculator) {
-            newName = catalog.checkNodeFontFaceCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof NodeFontSizeCalculator) {
-            newName = catalog.checkNodeFontSizeCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof EdgeColorCalculator) {
-            newName = catalog.checkEdgeColorCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof EdgeLineTypeCalculator) {
-            newName = catalog.checkEdgeLineTypeCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof EdgeArrowCalculator) {
-            newName = catalog.checkEdgeArrowCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof EdgeLabelCalculator) {
-            newName = catalog.checkEdgeLabelCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof EdgeToolTipCalculator) {
-            newName = catalog.checkEdgeToolTipCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof EdgeFontFaceCalculator) {
-            newName = catalog.checkEdgeFontFaceCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        } else if (c instanceof EdgeFontSizeCalculator) {
-            newName = catalog.checkEdgeFontSizeCalculatorName(name);
-            if (!newName.equals(name)) {c.setName(newName);}
-        }
-	*/
+    }
+
+    /**
+     * Used for updating calculator names from old style to new style. 
+     * Only used in a few cases where the old and new don't align.
+     */
+    private static String updateLegacyKey(String key, Properties props, String oldKey, String newKey, String newClass ) {
+    	String value = props.getProperty(key);
+	key = key.replace(oldKey,newKey);
+	if ( key.endsWith(".class") )
+		props.setProperty(key,newClass);
+	else
+		props.setProperty(key,value);
+
+	return key;
     }
 }
 

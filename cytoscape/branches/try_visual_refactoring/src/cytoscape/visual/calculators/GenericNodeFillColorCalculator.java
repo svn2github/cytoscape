@@ -1,6 +1,6 @@
 
 /*
-  File: GenericNodeColorCalculator.java 
+  File: GenericNodeFillColorCalculator.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -37,9 +37,9 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
+// $Revision: 8192 $
+// $Date: 2006-09-13 17:50:21 -0700 (Wed, 13 Sep 2006) $
+// $Author: mes $
 //----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 //----------------------------------------------------------------------------
@@ -57,11 +57,11 @@ import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeColorCalculator extends NodeCalculator {
+public class GenericNodeFillColorCalculator extends AbstractNodeColorCalculator {
 
 
     public byte getType() {
-        return VizMapUI.NODE_COLOR;
+    	return VizMapUI.NODE_COLOR;
     }
 
     public String getPropertyObjectString() {
@@ -69,35 +69,19 @@ public class GenericNodeColorCalculator extends NodeCalculator {
     }
 
     public String getPropertyLabel() {
-        return "nodeFillColorCalculator";
+    	return "nodeFillColorCalculator";
     }
     
-    public GenericNodeColorCalculator(String name, ObjectMapping m) {
+    public GenericNodeFillColorCalculator(String name, ObjectMapping m) {
 	super(name, m);
-
-        Color color = new Color(0,0,0);
-        Class c = color.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
-    public GenericNodeColorCalculator(String name, Properties props, String baseKey) {
-        super(name, props, baseKey, new ColorParser(), Color.WHITE);
+    
+    public GenericNodeFillColorCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey);
     }
     
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-	
-        Color c =  (Color)super.getMapping(0).calculateRangeValue(attrBundle);
-        appr.setFillColor( c ); 
+    	apply(appr,node,network,FILL);
     }
 }
 

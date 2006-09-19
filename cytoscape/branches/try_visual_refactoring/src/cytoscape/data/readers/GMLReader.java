@@ -80,11 +80,13 @@ import cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeColorCalculator;
 import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
-import cytoscape.visual.calculators.GenericNodeColorCalculator;
+import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
+import cytoscape.visual.calculators.GenericNodeBorderColorCalculator;
 import cytoscape.visual.calculators.GenericNodeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeLineTypeCalculator;
 import cytoscape.visual.calculators.GenericNodeShapeCalculator;
-import cytoscape.visual.calculators.GenericNodeSizeCalculator;
+import cytoscape.visual.calculators.GenericNodeHeightCalculator;
+import cytoscape.visual.calculators.GenericNodeWidthCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
@@ -340,7 +342,7 @@ public class GMLReader extends AbstractGraphReader {
 				c = defcol;
 			nodeColorMapping.putMapValue(key, c);
 		}
-		GenericNodeColorCalculator nodeColorCalculator = new GenericNodeColorCalculator(
+		GenericNodeFillColorCalculator nodeColorCalculator = new GenericNodeFillColorCalculator(
 				"GML Node Color" + mapSuffix, nodeColorMapping);
 		nac.setCalculator(nodeColorCalculator);
 
@@ -364,7 +366,7 @@ public class GMLReader extends AbstractGraphReader {
 				c = defbcol;
 			nodeBorderColorMapping.putMapValue(key, c);
 		}
-		GenericNodeColorCalculator nodeBorderColorCalculator = new GenericNodeColorCalculator(
+		GenericNodeBorderColorCalculator nodeBorderColorCalculator = new GenericNodeBorderColorCalculator(
 				"GML Node Border Color" + mapSuffix, nodeBorderColorMapping);
 		nac.setCalculator(nodeBorderColorCalculator);
 
@@ -390,7 +392,7 @@ public class GMLReader extends AbstractGraphReader {
 				w = defaultWidth;
 			nodeWMapping.putMapValue(key, w);
 		}
-		GenericNodeSizeCalculator nodeSizeCalculatorW = new GenericNodeSizeCalculator(
+		GenericNodeWidthCalculator nodeSizeCalculatorW = new GenericNodeWidthCalculator(
 				"GML Node Width" + mapSuffix, nodeWMapping);
 		nac.setCalculator(nodeSizeCalculatorW);
 
@@ -413,7 +415,7 @@ public class GMLReader extends AbstractGraphReader {
 			nodeHMapping.putMapValue(key, h);
 		}
 
-		GenericNodeSizeCalculator nodeSizeCalculatorH = new GenericNodeSizeCalculator(
+		GenericNodeHeightCalculator nodeSizeCalculatorH = new GenericNodeHeightCalculator(
 				"GML Node Height" + mapSuffix, nodeHMapping);
 		nac.setCalculator(nodeSizeCalculatorH);
 

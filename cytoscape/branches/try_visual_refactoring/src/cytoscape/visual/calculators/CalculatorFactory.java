@@ -64,31 +64,7 @@ public class CalculatorFactory {
                                            String baseKey, String intClassName) {
         //String to use in case of errors
         String errString = "CalculatorFactory: error processing baseKey " + baseKey;
-        //get the class object representing the top-level interface Calculator
-        Class calcClass = Calculator.class;
-       
-       /*
-        //get the class object representing the desired interface, and make sure
-        //it is a subclass of Calculator
-        Class intClass = null;
-        try {
-            intClass = Class.forName(intClassName);
-        } catch (Exception e) {
-            System.err.println(errString);
-            String s = "    could not get Class object for class name: " + intClassName;
-            System.err.println(s);
-            return null;
-        }
-        //assert(intClass != null);  //should be impossible
-        if (!calcClass.isAssignableFrom(intClass)) {
-            System.err.println(errString);
-            String s = "    requested interface " + intClassName
-                       + " is not a subinterface of Calculator";
-            System.err.println(s);
-            return null;
-        }
-	*/
-        
+
         //get the class object for the real implementation object specified by
         //these properties
         String className = calcProps.getProperty(baseKey + ".class");
@@ -98,7 +74,8 @@ public class CalculatorFactory {
                        + baseKey + ".class' identifying class to construct";
             System.err.println(s);
             return null;
-        }
+	}
+
         Class realClass = null;
         try {
             realClass = Class.forName(className);
@@ -108,17 +85,17 @@ public class CalculatorFactory {
             System.err.println(s);
             return null;
         }
-	/*
-        //assert(realClass != null);  //should be impossible
-        if (!intClass.isAssignableFrom(realClass)) {
+	
+        //get the class object representing the top-level interface Calculator
+        Class calcClass = Calculator.class;
+        if (!calcClass.isAssignableFrom(realClass)) {
             System.err.println(errString);
             String s = "    requested class " + className
-                       + " does not implement interface " + intClassName;
+                       + " does not implement the Calculator interface";
             System.err.println(s);
             return null;
         }
-	*/
-        
+	
         //look for a constructor in this class that takes the right arguments
         Constructor constructor = null;
         try {
@@ -153,7 +130,7 @@ public class CalculatorFactory {
             e.printStackTrace();
             return null;
         }
-            
+           
         return calculator;
     }
 

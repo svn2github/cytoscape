@@ -103,6 +103,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      * the new values.
      */
     public void calculateEdgeAppearance(EdgeAppearance appr, Edge edge, CyNetwork network) {
+    	appr.copy(defaultAppearance); // set default values
     	for (Calculator c : calcs)
 		c.apply(appr,edge,network);
     }
@@ -132,6 +133,11 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
     protected void copyDefaultAppearance(AppearanceCalculator toCopy) {
         defaultAppearance = (EdgeAppearance)(((EdgeAppearanceCalculator)toCopy).getDefaultAppearance().clone());
     }
-
+  protected boolean isValidCalculator(Calculator c) {
+          if ( c instanceof EdgeCalculator )
+                  return true;
+          else
+                  return false;
+  }
 }
 
