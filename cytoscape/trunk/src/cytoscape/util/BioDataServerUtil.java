@@ -47,7 +47,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 // Provides some utility methods for the BDS classes.
@@ -55,12 +54,8 @@ import cytoscape.CytoscapeInit;
 public class BioDataServerUtil {
 
 	private static final String NCBI_TAXON_SERVER = "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=";
-
+	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
 	private static final String TAXON_FILE = "tax_report.txt";
-
-	// Constructor
-	public BioDataServerUtil() {
-	}
 
 	/*
 	 * Takes readers (for tax_report and gene_association) and returns species
@@ -81,7 +76,8 @@ public class BioDataServerUtil {
 				StringTokenizer st = new StringTokenizer(curLine, "\t");
 				while (st.hasMoreTokens()) {
 					String curToken = st.nextToken();
-					if (curToken.startsWith("taxon") || curToken.startsWith("Taxon")) {
+					if (curToken.startsWith("taxon")
+							|| curToken.startsWith("Taxon")) {
 						st = new StringTokenizer(curToken, ":");
 						st.nextToken();
 						curToken = st.nextToken();
@@ -118,7 +114,7 @@ public class BioDataServerUtil {
 
 		while (null != (curLine = taxRd.readLine())) {
 			curLine.trim();
-			
+
 			StringTokenizer st = new StringTokenizer(curLine, "|");
 			String[] oneEntry = new String[st.countTokens()];
 			int counter = 0;
@@ -144,12 +140,14 @@ public class BioDataServerUtil {
 
 		txName = getSpecies(taxonFileReader, gaReader);
 		if (txName == null) {
-			txName = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+			txName = CytoscapeInit.getProperties().getProperty(
+					"defaultSpeciesName");
 			System.out
-					.println("Warning: Cannot recognize speices.  Speices field is set to defaultSpeciesName (" + txName + ")");
+					.println("Warning: Cannot recognize speices.  Speices field is set to defaultSpeciesName ("
+							+ txName + ")");
 			System.out
 					.println("Warning: Please check your tax_report.txt file.");
-			
+
 		}
 
 		return txName;
@@ -170,7 +168,7 @@ public class BioDataServerUtil {
 
 			while (null != (curLine = taxonFileRd.readLine())) {
 				curLine.trim();
-				
+
 				StringTokenizer st = new StringTokenizer(curLine, "|");
 				String[] oneEntry = new String[st.countTokens()];
 				int counter = 0;
@@ -193,7 +191,6 @@ public class BioDataServerUtil {
 			throws IOException {
 		HashMap taxonMap = new HashMap();
 
-		String name = null;
 		String curLine = null;
 
 		taxonFileReader.readLine();
@@ -203,8 +200,8 @@ public class BioDataServerUtil {
 			// ===============");
 			String[] parts = curLine.split("\\|");
 
-//			System.out.println("####ID = " + parts[3].trim() + ", Name = "
-//					+ parts[1].trim());
+			// System.out.println("####ID = " + parts[3].trim() + ", Name = "
+			// + parts[1].trim());
 			taxonMap.put(parts[3].trim(), parts[1].trim());
 		}
 		return taxonMap;
