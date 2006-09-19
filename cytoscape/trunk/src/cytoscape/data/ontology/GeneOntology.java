@@ -47,5 +47,4 @@ public class GeneOntology extends Ontology {
 				Cytoscape.getNodeAttributes().getStringAttribute(goID,
 						OBOTags.DEF.toString()));
 	}
-
 }
