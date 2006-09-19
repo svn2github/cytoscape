@@ -11,7 +11,7 @@
       <td><a href="litsearch.php"><h1>5: Literature Searching</h1></a></td>
       <td><a href="GO.php"><h1>6: Gene Ontology</h1></a></td>
       <td><a href="modules.complexes.php"><h1>7: Modules and Complexes</h1></a></td>
-      <td><a href="to.appear.php"><h1>8: Domain Networks (coming soon)</h1></a></td>
+      <td><a href="domain.networks.php"><h1>8: Domain Networks</h1></a></td>
     </tr>
 <table>
 
