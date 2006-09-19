@@ -15,10 +15,7 @@
 			xlink:href="http://www.geneontology.org/ontology/gene_ontology.obo"
 			format="obo">
 			<attribute name="description">
-				The Gene Ontology (GO) project provides a controlled
-				vocabulary to describe gene and gene product attributes
-				in any organism. This data source contains full size GO
-				dag, which contains all GO terms.
+				The Gene Ontology (GO) project provides a controlled vocabulary to describe gene and gene product attributes in any organism. This data source contains full size GO dag, which contains all GO terms.
 			</attribute>
 			<attribute name="ontologyType">GO</attribute>
 		</dataSource>
@@ -34,8 +31,7 @@
 			xlink:href="http://www.geneontology.org/GO_slims/goslim_yeast.obo"
 			format="obo">
 			<attribute name="description">
-				Subset of GO Terms for annotating Yeast data sets.
-				Maintained by SGD.
+				Subset of GO Terms for annotating Yeast data sets.  Maintained by SGD.
 			</attribute>
 			<attribute name="ontologyType">GO</attribute>
 		</dataSource>
@@ -43,17 +39,14 @@
 			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/protein/psi-mi.obo"
 			format="obo">
 			<attribute name="description">
-				A structured controlled vocabulary for the annotation of
-				experiments concerned with protein-protein interactions.
+				A structured controlled vocabulary for the annotation of experiments concerned with protein-protein interactions.
 			</attribute>
 		</dataSource>
 		<dataSource name="Pathway Ontology"
 			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/pathway.obo"
 			format="obo">
 			<attribute name="description">
-				The Pathway Ontology is a controlled vocabulary for
-				pathways that provides standard terms for the annotation
-				of geneproducts.
+				The Pathway Ontology is a controlled vocabulary for pathways that provides standard terms for the annotation of geneproducts.
 			</attribute>
 		</dataSource>
 		<!-- List of Gene Association files-->
