@@ -91,6 +91,7 @@ import cytoscape.actions.FitContentAction;
 import cytoscape.actions.HelpAboutAction;
 import cytoscape.actions.HideSelectedEdgesAction;
 import cytoscape.actions.HideSelectedNodesAction;
+import cytoscape.actions.ImportAnnotationAction;
 import cytoscape.actions.ImportBioDataServerAction;
 import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
@@ -733,6 +734,9 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// New for 2.4: Ontology Server.
 		addAction(new OntologyServerStatusAction());
+		
+		// New for 2.4: New annotation import GUI
+		addAction(new ImportAnnotationAction());
 
 		// fill the Save submenu
 		addAction(new ExportAsXGMMLAction());
