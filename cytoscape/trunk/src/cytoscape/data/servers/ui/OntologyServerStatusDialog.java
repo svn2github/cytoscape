@@ -62,13 +62,16 @@ public class OntologyServerStatusDialog extends JDialog {
 
 		List<DataSource> dataSources = BookmarksUtil.getDataSourceList(
 				ONTOLOGY_CATEGORY, bookmarks.getCategory());
+		
+		String description = null;
 		for (DataSource source : dataSources) {
 			dataSourceMap.put(source.getName(), source.getHref());
 			List<Attribute> attributes = source.getAttribute();
 			if (attributes != null) {
 				for (Attribute attr : attributes) {
 					if (attr.getName().equals("description")) {
-						descriptionMap.put(source.getName(), attr.getContent());
+						description = attr.getContent().trim();
+						descriptionMap.put(source.getName(), description);
 					} else if (attr.getName().equals("ontologyType")) {
 						typeMap.put(source.getName(), attr.getContent());
 					}
