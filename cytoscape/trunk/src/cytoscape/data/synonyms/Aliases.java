@@ -110,6 +110,10 @@ public class Aliases {
 		if (curAliasList != null) {
 			curAliasList.addAll(aliasList);
 		}
+		
+		/*
+		 * Remove duplicates 
+		 */
 		Set<String> aliasSet = new TreeSet<String>(aliasList);
 		attributes
 				.setAttributeList(key, ALIAS, new ArrayList<String>(aliasSet));
