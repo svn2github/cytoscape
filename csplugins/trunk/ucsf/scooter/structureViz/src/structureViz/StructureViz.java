@@ -190,6 +190,7 @@ public class StructureViz extends CytoscapePlugin
   	private static final long serialVersionUID = 1;
 		private static Chimera chimera = null;
 		private static ModelNavigatorDialog mnDialog = null;
+		private static AlignStructuresDialog alDialog = null;
 		private int command;
 		private Object userData = null; // Either a Structure or an ArrayList
 
@@ -252,11 +253,12 @@ public class StructureViz extends CytoscapePlugin
 			List structures = (List)userData;
 
 			// Bring up the dialog
-			AlignStructuresDialog alDialog = 
+			alDialog = 
 								new AlignStructuresDialog(Cytoscape.getDesktop(), chimera, structures);
 			alDialog.pack();
 			alDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			alDialog.setVisible(true);
+			chimera.setAlignDialog(alDialog);
 		}
 
 		private void exitAction() {
@@ -269,6 +271,13 @@ public class StructureViz extends CytoscapePlugin
 				mnDialog.setVisible(false);
 				mnDialog.dispose();
 				mnDialog = null;
+				chimera.setDialog(mnDialog);
+			}
+			if (alDialog != null) {
+				alDialog.setVisible(false);
+				alDialog.dispose();
+				alDialog = null;
+				chimera.setAlignDialog(alDialog);
 			}
 		}
 

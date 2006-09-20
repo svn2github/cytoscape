@@ -52,6 +52,7 @@ import structureViz.model.ChimeraResidue;
 import structureViz.model.Structure;
 import structureViz.actions.CyChimera;
 import structureViz.ui.ModelNavigatorDialog;
+import structureViz.ui.AlignStructuresDialog;
 
 /**
  * This class provides the main interface to UCSF Chimera
@@ -72,6 +73,7 @@ public class Chimera {
 	static private ListenerThreads listener;
 	static private CyNetworkView networkView;
 	static private ModelNavigatorDialog mnDialog = null;
+	static private AlignStructuresDialog alDialog = null;
     
   public Chimera(CyNetworkView networkView) {
   	/**
@@ -91,6 +93,10 @@ public class Chimera {
 	public void setDialog(ModelNavigatorDialog dialog) { mnDialog = dialog; }
 
 	public ModelNavigatorDialog getDialog() { return mnDialog; }
+
+	public void setAlignDialog(AlignStructuresDialog dialog) { this.alDialog = dialog; }
+
+	public AlignStructuresDialog getAlignDialog() { return this.alDialog; }
 
 	public boolean containsModel(Integer modelNumber) {
 		return modelHash.containsKey(modelNumber);

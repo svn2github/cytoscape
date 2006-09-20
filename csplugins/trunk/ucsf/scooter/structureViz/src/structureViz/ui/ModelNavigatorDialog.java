@@ -54,6 +54,7 @@ import java.awt.Frame;
 import java.awt.event.*;
 
 // Cytoscape imports
+import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.view.CyNetworkView;
@@ -72,10 +73,12 @@ import structureViz.ui.PopupMenuListener;
 public class ModelNavigatorDialog extends JDialog implements TreeSelectionListener {
 	private Chimera chimeraObject;
 	private boolean status;
-	private static final int COMMAND = 0;
-	private static final int EXIT = 1;
-	private static final int REFRESH = 2;
-	private static final int CLEAR = 3;
+	// These must be > ChimeraResidue.FULL_NAME
+	private static final int COMMAND = 10;
+	private static final int EXIT = 11;
+	private static final int REFRESH = 12;
+	private static final int CLEAR = 13;
+	private static final int ALIGN = 14;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 	private List selectedObjects = null;
@@ -83,7 +86,8 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 	// Dialog components
 	private JLabel titleLabel;
 	private JTree navigationTree;
-	private DefaultTreeModel treeModel;
+	private ChimeraTreeModel treeModel;
+	private JMenuItem alignMenu;
 
 	public ModelNavigatorDialog (Frame parent, Chimera object) {
 		super(parent, false);
@@ -96,6 +100,11 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 	public void modelChanged() {
 		// Something significant changed in the model (new open/closed structure?)
 		treeModel.reload();
+		int modelCount = chimeraObject.getChimeraModels().size();
+		if (modelCount > 1)
+			alignMenu.setEnabled(true);
+		else
+			alignMenu.setEnabled(false);
 	}
 
 	public void valueChanged(TreeSelectionEvent e) {
@@ -134,15 +143,17 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		while (selectionIter.hasNext()) {
 			ChimeraStructuralObject selectedObject = (ChimeraStructuralObject)selectionIter.next();
 			path = (TreePath)selectedObject.getUserData();
-			navigationTree.expandPath(path);
-			navigationTree.makeVisible(path);
 			navigationTree.addSelectionPath(path);
+			navigationTree.makeVisible(path);
 		}
+		int row = navigationTree.getMaxSelectionRow();
+		navigationTree.scrollRowToVisible(row);
 		this.ignoreSelection = false;
 	}
 
 	// Private methods
 	private void initComponents() {
+		int modelCount = chimeraObject.getChimeraModels().size();
 		this.setTitle("Cytoscape Molecular Structure Navigator");
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -152,6 +163,11 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 		// Chimera menu
 		JMenu chimeraMenu = new JMenu("Chimera");
+		alignMenu = addMenuItem(chimeraMenu, "Align", ALIGN, null);
+		if (modelCount > 1)
+			alignMenu.setEnabled(true);
+		else
+			alignMenu.setEnabled(false);
 		addMenuItem(chimeraMenu, "Exit", EXIT, null);
 		menuBar.add(chimeraMenu);
 
@@ -183,7 +199,6 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		setJMenuBar(menuBar);
 
 		// Initialize the tree
-		int modelCount = chimeraObject.getChimeraModels().size();
 		navigationTree = new JTree();
 		treeModel = new ChimeraTreeModel(chimeraObject, navigationTree);
 
@@ -239,13 +254,39 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 			} else if (type == EXIT) {
 				chimeraObject.exit();
 				setVisible(false);
+				if (chimeraObject.getAlignDialog() != null)
+					chimeraObject.getAlignDialog().setVisible(false);
 				return;
 			} else if (type == REFRESH) {
 				chimeraObject.refresh();
+			} else if (type == ALIGN) {
+				launchAlignDialog();
 			} else {
 				residueDisplay = type;
+				treeModel.setResidueDisplay(type);
 			}
 			modelChanged();
+		}
+
+		private void launchAlignDialog()
+		{
+			AlignStructuresDialog alDialog;
+			if (chimeraObject.getAlignDialog() != null) {
+				alDialog = chimeraObject.getAlignDialog();
+				alDialog.setVisible(false);
+				alDialog.dispose();
+			}
+			List structureList = new ArrayList();
+			Iterator iter = chimeraObject.getChimeraModels().iterator();
+			while (iter.hasNext()) {
+				ChimeraModel model = (ChimeraModel)iter.next();
+				structureList.add(model.getStructure());
+			}	
+			// Bring up the dialog
+			alDialog = new AlignStructuresDialog(Cytoscape.getDesktop(), chimeraObject, structureList);
+			alDialog.pack();
+			alDialog.setVisible(true);
+			chimeraObject.setAlignDialog(alDialog);
 		}
 	}
 
