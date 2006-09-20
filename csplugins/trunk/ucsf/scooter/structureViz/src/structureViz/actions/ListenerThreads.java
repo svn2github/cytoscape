@@ -68,7 +68,7 @@ class ListenerThreads extends Thread
 	}
 
 	public void run() {
-		System.out.println("ReplyLogListener running");
+		// System.out.println("ReplyLogListener running");
 		while (true) {
 			try {
 				ArrayList reply = getReply();
@@ -99,7 +99,7 @@ class ListenerThreads extends Thread
 		ArrayList reply = new ArrayList();
 		String line = null;
 		while ((line = lineReader.readLine()) != null) {
-			System.out.println("From Chimera: "+line);
+			// System.out.println("From Chimera: "+line);
 			if (line.startsWith("END")) {
 				break;
 			}

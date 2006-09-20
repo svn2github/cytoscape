@@ -58,4 +58,8 @@ public class Structure {
 		return cytoscapeNode.getIdentifier();
 	}
 
+	public String toString() {
+		return "Node "+getIdentifier()+"; model "+structureName;
+	}
+
 }

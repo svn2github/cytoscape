@@ -34,6 +34,7 @@ package structureViz.ui;
 
 // System imports
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -43,6 +44,7 @@ import javax.swing.WindowConstants.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import structureViz.model.ChimeraStructuralObject;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraResidue;
 import structureViz.model.ChimeraChain;
@@ -60,6 +62,7 @@ public class ActionPopupMenu extends JPopupMenu {
 	private List modelList;
 	private List chainList;
 	private List residueList;
+	private List objectList;
 	private JTree navTree;
 	private int context = GENERIC_CONTEXT;
 
@@ -77,6 +80,12 @@ public class ActionPopupMenu extends JPopupMenu {
 		this.modelList = models;
 		this.chainList = chains;
 		this.residueList = residues;
+
+		// Create a global list
+		this.objectList = new ArrayList();
+		objectList.addAll(modelList);
+		objectList.addAll(chainList);
+		objectList.addAll(residueList);
 		this.context = context;
 
 		createGenericMenu();
@@ -100,64 +109,67 @@ public class ActionPopupMenu extends JPopupMenu {
 		// Show
 		submenu = new JMenu("Show");
 		{
-			addItem(submenu, "All", "disp sel",0);
-			addItem(submenu, "Backbone only", "~disp sel; disp sel & @n,ca,c",0);
+			addItem(submenu, "All", "disp %sel",0);
+			addItem(submenu, "Backbone only", "~disp %sel; disp %sel & @n,ca,c",0);
+			if (modelList.size() > 0 || chainList.size() > 0) {
+				addItem(submenu, "Sequence", "sequence %sel",0);
+			}
 		}
 		add(submenu);
 		// Hide
-		addItem(null, "Hide", "~disp sel",0);
+		addItem(null, "Hide", "~disp %sel",0);
 		// Focus
-		addItem(null, "Focus", "focus sel",0);
+		addItem(null, "Focus", "focus %sel",0);
 		// Color
 		submenu = new JMenu("Color");
 		{
 			if (modelList.size() > 0) {
-				addItem(submenu, "Rainbow by chain", "rainbow chain sel",0);
+				addItem(submenu, "Rainbow by chain", "rainbow chain %sel",0);
 			}
 			if (modelList.size() > 0 || chainList.size() > 0) {
-				addItem(submenu, "Rainbow by residue", "rainbow residue sel",0);
+				addItem(submenu, "Rainbow by residue", "rainbow residue %sel",0);
 			}
-			addItem(submenu, "By element", "color byelement sel",0);
-			addColorMenu(submenu, "Residues", "color ", ",a sel");
-			addColorMenu(submenu, "Ribbons", "color ", ",r sel");
-			addColorMenu(submenu, "Surfaces", "color ", ",s sel");
-			addColorMenu(submenu, "Labels", "color ", ",l sel");
+			addItem(submenu, "By element", "color byelement %sel",0);
+			addColorMenu(submenu, "Residues", "color ", ",a %sel");
+			addColorMenu(submenu, "Ribbons", "color ", ",r %sel");
+			addColorMenu(submenu, "Surfaces", "color ", ",s %sel");
+			addColorMenu(submenu, "Labels", "color ", ",l %sel");
 		}
 		add(submenu);
 		// Depict
 		submenu = new JMenu("Depict");
 		{
-			addItem(submenu, "Wire", "repr wire sel",0);
-			addItem(submenu, "Stick", "repr stick sel",0);
-			addItem(submenu, "Ball & Stick", "repr bs sel",0);
-			addItem(submenu, "Sphere", "repr cpk sel",0);
-			addItem(submenu, "CPK", "repr cpk sel",0);
+			addItem(submenu, "Wire", "repr wire %sel",0);
+			addItem(submenu, "Stick", "repr stick %sel",0);
+			addItem(submenu, "Ball & Stick", "repr bs %sel",0);
+			addItem(submenu, "Sphere", "repr cpk %sel",0);
+			addItem(submenu, "CPK", "repr cpk %sel",0);
 			sub2 = new JMenu("Ribbon");
 			{
-				addItem(sub2, "Hide", "~ribbon sel",0);
-				addItem(sub2, "Flat", "ribrepr flat sel;ribbon sel",0);
-				addItem(sub2, "Edged", "ribrepr edged sel;ribbon sel",0);
-				addItem(sub2, "Round", "ribrepr round sel;ribbon sel",0);
+				addItem(sub2, "Hide", "~ribbon %sel",0);
+				addItem(sub2, "Flat", "ribrepr flat %sel;ribbon %sel",0);
+				addItem(sub2, "Edged", "ribrepr edged %sel;ribbon %sel",0);
+				addItem(sub2, "Round", "ribrepr round %sel;ribbon %sel",0);
 			}
 			submenu.add(sub2);
 			sub2 = new JMenu("Surface");
 			{
-				addItem(sub2, "Hide", "~surface sel",0);
-				addItem(sub2, "Solid", "surface sel;surfrepr solid",0);
-				addItem(sub2, "Mesh", "surface sel;surfrepr mesh",0);
-				addItem(sub2, "Dot", "surface sel;surfrepr dot",0);
+				addItem(sub2, "Hide", "~surface %sel",0);
+				addItem(sub2, "Solid", "surface %sel;surfrepr solid",0);
+				addItem(sub2, "Mesh", "surface %sel;surfrepr mesh",0);
+				addItem(sub2, "Dot", "surface %sel;surfrepr dot",0);
 				JMenu sub3 = new JMenu("Transparency");
 				{
-					addItem(sub3, "0%", "surftransparency 0% sel",0);
-					addItem(sub3, "10%", "surftransparency 10% sel",0);
-					addItem(sub3, "20%", "surftransparency 20% sel",0);
-					addItem(sub3, "30%", "surftransparency 30% sel",0);
-					addItem(sub3, "40%", "surftransparency 40% sel",0);
-					addItem(sub3, "50%", "surftransparency 50% sel",0);
-					addItem(sub3, "60%", "surftransparency 60% sel",0);
-					addItem(sub3, "70%", "surftransparency 70% sel",0);
-					addItem(sub3, "80%", "surftransparency 80% sel",0);
-					addItem(sub3, "90%", "surftransparency 90% sel",0);
+					addItem(sub3, "0%", "surftransparency 0% %sel",0);
+					addItem(sub3, "10%", "surftransparency 10% %sel",0);
+					addItem(sub3, "20%", "surftransparency 20% %sel",0);
+					addItem(sub3, "30%", "surftransparency 30% %sel",0);
+					addItem(sub3, "40%", "surftransparency 40% %sel",0);
+					addItem(sub3, "50%", "surftransparency 50% %sel",0);
+					addItem(sub3, "60%", "surftransparency 60% %sel",0);
+					addItem(sub3, "70%", "surftransparency 70% %sel",0);
+					addItem(sub3, "80%", "surftransparency 80% %sel",0);
+					addItem(sub3, "90%", "surftransparency 90% %sel",0);
 				}
 				sub2.add(sub3);
 			}
@@ -167,11 +179,11 @@ public class ActionPopupMenu extends JPopupMenu {
 		// Label
 		submenu = new JMenu("Label");
 		{
-			addItem(submenu, "Hide", "~label sel;~rlabel sel",0);
-			addItem(submenu, "Atom name", "labelopt info name; label sel",0);
-			addItem(submenu, "Element", "labelopt info element; label sel",0);
-			addItem(submenu, "IDATM type", "labelopt info idatmType; label sel",0);
-			addItem(submenu, "Residue", "rlabel sel",0);
+			addItem(submenu, "Hide", "~label %sel;~rlabel %sel",0);
+			addItem(submenu, "Atom name", "labelopt info name; label %sel",0);
+			addItem(submenu, "Element", "labelopt info element; label %sel",0);
+			addItem(submenu, "IDATM type", "labelopt info idatmType; label %sel",0);
+			addItem(submenu, "Residue", "rlabel %sel",0);
 		}
 		add(submenu);
 		// Clear Selection
@@ -253,6 +265,15 @@ public class ActionPopupMenu extends JPopupMenu {
 		}
 
 		PopupActionListener (String command, int postCommand) {
+			// We need to be a little careful.  If the context is not generic,
+			// then the object might not be selected.  To make things easy,
+			// we selected it, execute our command, and then deselected
+			if (context != GENERIC_CONTEXT && objectList.size() == 1) {
+				String spec = ((ChimeraStructuralObject)objectList.get(0)).toSpec();
+				command = command.replaceAll("%sel",spec);
+			} else {
+				command = command.replaceAll("%sel","sel");
+			}
 			commandList = command.split("\n");
 			if (commandList.length == 0) {
 				commandList = new String[1];
@@ -263,6 +284,7 @@ public class ActionPopupMenu extends JPopupMenu {
 
 		public void actionPerformed(ActionEvent ev) {
 			for (int i=0; i<commandList.length; i++) {
+					// System.out.println("To Chimera: "+commandList[i]);
 					chimeraObject.command(commandList[i]);
 			}
 			if (postCommand == CLEAR_SELECTION) {

@@ -56,12 +56,19 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	private String chainId;
 	private TreeMap residueList;
 	private Object userData;
+	private boolean selected = false;
 
 	public ChimeraChain(int model, String chainId) {
 		this.model = model;
 		this.chainId = chainId;
 		residueList = new TreeMap();
 	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
+	public boolean isSelected() { return selected; }
 
 	public void addResidue(ChimeraResidue residue) {
 		// Get the value of the index (should be an int!)

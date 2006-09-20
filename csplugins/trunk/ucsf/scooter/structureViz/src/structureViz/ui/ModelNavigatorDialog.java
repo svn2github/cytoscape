@@ -44,8 +44,11 @@ import javax.swing.tree.*;
 import javax.swing.event.*;
 import javax.swing.text.Position;
 import javax.swing.WindowConstants.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.*;
@@ -74,18 +77,20 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 	private static final int REFRESH = 2;
 	private static final int CLEAR = 3;
 	private boolean ignoreSelection = false;
+	private int residueDisplay = ChimeraResidue.THREE_LETTER;
+	private List selectedObjects = null;
 
 	// Dialog components
 	private JLabel titleLabel;
 	private JTree navigationTree;
 	private DefaultTreeModel treeModel;
-	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 
 	public ModelNavigatorDialog (Frame parent, Chimera object) {
 		super(parent, false);
 		chimeraObject = object;
 		initComponents();
 		status = false;
+		selectedObjects = new ArrayList();
 	}
 
 	public void modelChanged() {
@@ -94,6 +99,9 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 	}
 
 	public void valueChanged(TreeSelectionEvent e) {
+		// Reset the state of any selected Objects
+		clearSelectedObjects();
+
 		TreePath[] paths = navigationTree.getSelectionPaths();
 		if (paths == null) return;
 
@@ -104,6 +112,7 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		for (int i = 0; i < paths.length; i++) {
 			node = (DefaultMutableTreeNode) paths[i].getLastPathComponent();
 			ChimeraStructuralObject nodeInfo = (ChimeraStructuralObject)node.getUserObject();
+			nodeInfo.setSelected(true);
 			ChimeraModel model = nodeInfo.getChimeraModel();
 			selSpec = selSpec.concat(nodeInfo.toSpec());
 			modelsToSelect.put(model,model);
@@ -118,13 +127,15 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 	}
 
 	public void updateSelection(List selectionList) {
+		TreePath path = null;
 		navigationTree.clearSelection();
 		Iterator selectionIter = selectionList.iterator();
 		this.ignoreSelection = true;
 		while (selectionIter.hasNext()) {
 			ChimeraStructuralObject selectedObject = (ChimeraStructuralObject)selectionIter.next();
-			TreePath path = (TreePath)selectedObject.getUserData();
+			path = (TreePath)selectedObject.getUserData();
 			navigationTree.expandPath(path);
+			navigationTree.makeVisible(path);
 			navigationTree.addSelectionPath(path);
 		}
 		this.ignoreSelection = false;
@@ -180,7 +191,9 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		navigationTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 
 		navigationTree.addTreeSelectionListener(this);
-		navigationTree.setShowsRootHandles(true);
+		navigationTree.setShowsRootHandles(false);
+
+		navigationTree.setCellRenderer(new ObjectRenderer());
 
 		navigationTree.addMouseListener(new PopupMenuListener(chimeraObject, navigationTree));
 
@@ -199,8 +212,16 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		return menuItem;
 	}
 
+	private void clearSelectedObjects () {
+		Iterator iter = selectedObjects.iterator();
+		while (iter.hasNext()) {
+			((ChimeraStructuralObject)iter.next()).setSelected(false);
+		}
+		selectedObjects.clear();
+	}
+
 	// Embedded classes
-	class MenuActionListener extends AbstractAction {
+	private class MenuActionListener extends AbstractAction {
 		int type;
 		String command = null;
 
@@ -225,6 +246,35 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 				residueDisplay = type;
 			}
 			modelChanged();
+		}
+	}
+
+	private class ObjectRenderer extends DefaultTreeCellRenderer {
+
+		public ObjectRenderer() {
+		}
+
+		public Component getTreeCellRendererComponent( JTree tree, Object value,
+																									boolean sel, boolean expanded,
+																									boolean leaf, int row, boolean hasFocus) 
+		{
+			// Call the DefaultTreeCellRender's method to do most of the work
+			super.getTreeCellRendererComponent(tree, value, sel,
+                            						 expanded, leaf, row,
+                            						 hasFocus);
+
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+			Object object = node.getUserObject();
+			// If we're a model, use the model color as a border
+			if (object.getClass() == ChimeraModel.class) {
+				Color color = ((ChimeraModel)object).getModelColor();
+				Border border = new LineBorder(color);
+				setBorder(border);
+			} else {
+				setBorder(null);
+			}
+
+			return this;
 		}
 	}
 }

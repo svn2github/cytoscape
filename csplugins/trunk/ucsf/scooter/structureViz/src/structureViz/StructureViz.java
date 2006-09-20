@@ -61,6 +61,7 @@ import cytoscape.util.CytoscapeAction;
 
 // structureViz imports
 import structureViz.ui.ModelNavigatorDialog;
+import structureViz.ui.AlignStructuresDialog;
 import structureViz.model.Structure;
 import structureViz.model.ChimeraModel;
 import structureViz.actions.CyChimera;
@@ -138,16 +139,12 @@ public class StructureViz extends CytoscapePlugin
 				m.add(item);
 			}
 			{
-				JMenu item = new JMenu("Align structures");
-				List structures =  CyChimera.getSelectedStructures(overNode);
-				if (structures.size() < 2) { 
+				JMenuItem item = new JMenuItem("Align structures");
+				List structures = CyChimera.getSelectedStructures(overNode);
+				StructureVizCommandListener l = new StructureVizCommandListener(ALIGN, structures);
+				item.addActionListener(l);
+				if (structures.size() < 2) {
 					item.setEnabled(false);
-				} else {
-					Iterator iter = structures.iterator();
-					while (iter.hasNext()) {
-						Structure structure = (Structure)iter.next();
-						addAlignMenu(item, structure.name()+" to ", structure, structures);
-					}
 				}
 				m.add(item);
 			}
@@ -183,28 +180,6 @@ public class StructureViz extends CytoscapePlugin
 			JMenuItem item = new JMenuItem(label);
 			item.addActionListener(l);
 		  menu.add(item);
-		}
-
-		private void addAlignMenu(JMenu menu, String label, Structure reference, List structures) {
-			JMenu subMenu = new JMenu(label);
-			if (structures.size() > 2) {
-				ArrayList allList = new ArrayList(structures);
-				allList.remove(reference);
-				Object [] pair = new Object[2];
-				pair[0] = reference;
-				pair[1] = allList;
-				addSubMenu(subMenu, "all", ALIGN, pair);
-			}
-			Iterator iter = structures.iterator();
-			while (iter.hasNext()) {
-				Structure match = (Structure)iter.next();
-				if (match == reference) continue;
-				Object [] pair = new Object[2];
-				pair[0] = reference;
-				pair[1] = match;
-				addSubMenu(subMenu, match.name(), ALIGN, pair);
-			}
-			menu.add(subMenu);
 		}
 	}
 	
@@ -261,57 +236,27 @@ public class StructureViz extends CytoscapePlugin
 		}
 
 		private void alignAction(String label) {
-			// This is a quick-and-dirty example
-			Object[] pair = (Object[])userData;
-			Structure reference = (Structure)pair[0];
-			List matchList = null;
-			if (label.contains("all")) {
-				matchList = (List)pair[1];
-			} else {
-				matchList = new ArrayList(1);
-				matchList.add((Structure)pair[1]);
-			}
 
-			// Get the structures loaded
+			// Launch Chimera (if necessary)
 			boolean isLaunched = (chimera != null && chimera.isLaunched());
 			if (!isLaunched) {
 				chimera = launchChimera();
-			}
-			Align alignment = new Align(chimera);
-			alignment.setCreateEdges(true);
+			} 
 
-			if (chimera.getModel(reference.name()) == null) {
-				chimera.open(reference);
-			}
-
-			Iterator modelIter = matchList.iterator();
-			while (modelIter.hasNext()) {
-				Structure structure = (Structure)modelIter.next();
-				if (chimera.getModel(structure.name()) == null) {
-					chimera.open(structure);
-				}
-			}
-			if (mnDialog == null || !isLaunched) {
-				// Finally, open up our navigator dialog
+			if (mnDialog == null) {
 				mnDialog = initDialog(chimera);
-    	} else {
-				mnDialog.modelChanged();
+			} else {
+				mnDialog.setVisible(true);
 			}
 
-			// Align them
-			alignment.align(reference, matchList);
+			List structures = (List)userData;
 
-			// Display the results
-			modelIter = matchList.iterator();
-			while (modelIter.hasNext()) {
-				Structure structure = (Structure)modelIter.next();
-				float[] results = alignment.getResults(structure.name());
-				System.out.println("Alignment for "+reference.name()+" and "+structure.name()+":");
-				System.out.println("       RMSD: "+results[Align.RMSD]);
-				System.out.println("       Score: "+results[Align.SCORE]);
-				System.out.println("       Pairs: "+results[Align.PAIRS]);
-			}
-			
+			// Bring up the dialog
+			AlignStructuresDialog alDialog = 
+								new AlignStructuresDialog(Cytoscape.getDesktop(), chimera, structures);
+			alDialog.pack();
+			alDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+			alDialog.setVisible(true);
 		}
 
 		private void exitAction() {
@@ -372,6 +317,7 @@ public class StructureViz extends CytoscapePlugin
 				// Finally, open up our navigator dialog
 				mnDialog = initDialog(chimera);
     	} else {
+				mnDialog.setVisible(true);
 				mnDialog.modelChanged();
 			}
 		}

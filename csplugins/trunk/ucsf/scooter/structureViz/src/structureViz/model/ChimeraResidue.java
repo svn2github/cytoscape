@@ -62,6 +62,7 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	private Object userData;
 	private HashMap aaNames = null;
 	private static int displayType = THREE_LETTER;
+	private boolean selected = false;
 
 	public ChimeraResidue (String type, String index, int modelNumber) {
 		this.type = type;
@@ -96,6 +97,12 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 		} else
 			this.index = rTokens[0];
 	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
+	public boolean isSelected() { return selected; }
 
 	private void initNames() {
 		// Create our residue name table

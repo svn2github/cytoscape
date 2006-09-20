@@ -62,6 +62,7 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	private Structure structure;
 	private Color modelColor;
 	private Object userData;
+	private boolean selected = false;
 
 	public ChimeraModel (String name, Structure structure, Color color) {
 		this.name = name;
@@ -90,6 +91,12 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		this.residues = new TreeMap();
 		this.residueMap = new HashMap();
 	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
+	public boolean isSelected() { return selected; }
 
 	public Set getChainNames () { return chains.keySet(); }
 

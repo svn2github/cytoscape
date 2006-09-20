@@ -79,4 +79,18 @@ public interface ChimeraStructuralObject {
 	 * @return the ChimeraModel this object is part of
 	 */
 	public ChimeraModel getChimeraModel();
+
+	/**
+	 * Set the "selected" state of this object
+	 *
+	 * @param selected boolean value as to whether this object is selected
+	 */
+	public void setSelected(boolean selected);
+
+	/**
+	 * Get the "selected" state of this object
+	 *
+	 * @return the selected state of this object
+	 */
+	public boolean isSelected();
 }

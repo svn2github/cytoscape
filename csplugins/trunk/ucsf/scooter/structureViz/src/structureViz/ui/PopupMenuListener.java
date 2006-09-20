@@ -84,7 +84,8 @@ class PopupMenuListener implements MouseListener {
 		Object userObject = null;
 
 		if (paths == null && overPath == null) {
-			System.out.println("No context");
+			// System.out.println("No context");
+			return;
 		} else if (paths == null) {
 			paths = new TreePath[1];
 			paths[0] = overPath;
@@ -131,15 +132,10 @@ class PopupMenuListener implements MouseListener {
 			}
 		}
 
-		if (userObject != null) {
-			// Get the component
-			System.out.println("Clicked over "+userObject.toString());
-		}
-
 		JPopupMenu menu = new ActionPopupMenu(chimeraObject,navigationTree,
 																					modelList,chainList,residueList,context);
-		menu.setVisible(true);
 		menu.show(navigationTree, ev.getX(), ev.getY());
+		menu.setVisible(true);
 
 	}
 }

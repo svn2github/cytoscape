@@ -190,7 +190,7 @@ public class Chimera {
 
 		// Add it to our list of models
 		models.add(newModel);
-		System.out.println("Added "+newModel.toString()+" to list");
+		//System.out.println("Added "+newModel.toString()+" to list");
 
 		// Add it to the hash table
 		modelHash.put(new Integer(newModel.getModelNumber()),newModel);
@@ -260,7 +260,7 @@ public class Chimera {
 			}
 
 			try {
-				System.out.print("Waiting on replyLog for: "+text);
+				//System.out.print("Waiting on replyLog for: "+text);
 				replyLog.wait();
 			} catch (InterruptedException e) {}
 		}
