@@ -22,8 +22,13 @@ import cytoscape.data.CyAttributes;
 
 public class LayoutRegion extends Component {
 
-	private double x1;
+	/**
+	 * Translucency level of region
+	 */
+	private static final int TRANSLUCENCY_LEVEL = (int)(255 * .10);
 
+	private double x1;
+	
 	private double y1;
 
 	private double w1;
@@ -241,7 +246,7 @@ public class LayoutRegion extends Component {
 			Color regionColor = new Color(currentColor.getRed(),
 										  currentColor.getGreen(),
 										  currentColor.getBlue(),
-										  26);
+										  TRANSLUCENCY_LEVEL);
 
 			// draw into the image
 			Composite origComposite = image2D.getComposite();
