@@ -901,6 +901,9 @@ public class InnerCanvas extends DingCanvas
 	     code == KeyEvent.VK_DOWN ||
 	     code == KeyEvent.VK_LEFT ||
 	     code == KeyEvent.VK_RIGHT ) {
+	     	double move = 1.0;
+		if ( k.isShiftDown() )
+			move = 10.0;
 		if (m_view.m_nodeSelection) {
 			int[] selectedNodes = m_view.getSelectedNodeIndices();
 			for (int i = 0; i < selectedNodes.length; i++) {
@@ -909,13 +912,13 @@ public class InnerCanvas extends DingCanvas
 				double yPos = nv.getYPosition();
 
 				if ( code == KeyEvent.VK_UP ) {
-					yPos -= 1.0;
+					yPos -= move;
 				} else if ( code == KeyEvent.VK_DOWN ) {
-					yPos += 1.0;
+					yPos += move;
 				} else if ( code == KeyEvent.VK_LEFT ) {
-					xPos -= 1.0;
+					xPos -= move;
 				} else if ( code == KeyEvent.VK_RIGHT ) {
-					xPos += 1.0;
+					xPos += move;
 				}
 
 				nv.setOffset(xPos,yPos);
