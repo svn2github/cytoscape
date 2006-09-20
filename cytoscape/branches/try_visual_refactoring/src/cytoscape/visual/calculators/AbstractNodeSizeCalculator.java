@@ -56,7 +56,7 @@ import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public abstract class AbstractNodeSizeCalculator extends NodeCalculator {
+abstract class AbstractNodeSizeCalculator extends NodeCalculator {
 
     protected int WIDTH = 1;
     protected int HEIGHT = 2;

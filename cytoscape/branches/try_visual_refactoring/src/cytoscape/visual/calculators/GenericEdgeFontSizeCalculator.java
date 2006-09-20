@@ -106,7 +106,6 @@ public class GenericEdgeFontSizeCalculator extends EdgeCalculator
 		if (rangeValue != null)
 			ret =  ((Number) rangeValue).floatValue();
 
-		// TODOOOOO
 		appr.setFontSize(ret);
     }
 }

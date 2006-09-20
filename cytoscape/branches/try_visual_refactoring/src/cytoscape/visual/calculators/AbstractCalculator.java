@@ -67,6 +67,7 @@ import giny.model.Node;
  * extend this class directly! All calculators should extend one of {@link NodeCalculator}
  * or {@link EdgeCalculator} <b>AND</b> implement one of the 11 attribute calculator
  * interfaces.
+ * TODOOOO this shouldn't be public
  */
 public abstract class AbstractCalculator implements Calculator {
 

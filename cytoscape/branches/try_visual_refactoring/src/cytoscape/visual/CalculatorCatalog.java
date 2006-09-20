@@ -111,10 +111,6 @@ public class CalculatorCatalog {
 			l = new ArrayList();
 			listeners.put( b, l ); 
 		}
-			/* TODOOOO
-			throw new IllegalArgumentException("Unknown type " + type);
-		else
-			*/
 		return l;
 
 	}
@@ -201,14 +197,6 @@ public class CalculatorCatalog {
 			calculators.put(b,m);
 		}
 		return m;
-
-		// TODOOOO  should we throw here?
-		/*
-		if ( m == null )
-			throw new IllegalArgumentException("Unknown type " + type);
-		else
-			return m;
-		*/
 	}
 
 	/**

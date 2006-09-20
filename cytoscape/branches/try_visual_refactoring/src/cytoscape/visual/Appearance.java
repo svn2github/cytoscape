@@ -51,7 +51,7 @@ import java.util.Properties;
 /**
  * Objects of this class hold data describing the appearance of a Node.
  */
-public interface Appearance {
+interface Appearance {
     
 	public void applyDefaultProperties(Properties props, String base); 
     

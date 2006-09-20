@@ -64,7 +64,7 @@ import cytoscape.visual.parsers.*;
  * This class calculates the appearance of a Node. It holds a default value
  * and a (possibly null) calculator for each visual attribute.
  */
-public abstract class AppearanceCalculator implements Cloneable {
+abstract class AppearanceCalculator implements Cloneable {
 
   List<Calculator> calcs = new ArrayList<Calculator>();
 
