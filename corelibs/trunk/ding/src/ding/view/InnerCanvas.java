@@ -793,8 +793,25 @@ public class InnerCanvas extends DingCanvas
 
                     final double newX = m_ptBuff[0];
                     final double newY = m_ptBuff[1];
-                    final double deltaX = newX - oldX;
-                    final double deltaY = newY - oldY;
+                    double deltaX = newX - oldX;
+                    double deltaY = newY - oldY;
+
+		    // If the shift key is down, then only move horizontally,
+		    // vertically, or diagonally, depending on the slope.
+		    if ( e.isShiftDown() ) { 
+		    	final double slope = deltaY/deltaX;
+			// slope of 2.41 ~ 67.5 degrees (halfway between 45 and 90)
+			// slope of 0.41 ~ 22.5 degrees (halfway between 0 and 45)
+			if ( slope > 2.41 || slope < -2.41 ) {
+				deltaX = 0.0; // just move vertical
+			} else if ( slope < 0.41  && slope > -0.41 ) {
+				deltaY = 0.0; // just move horizontal
+			} else { 
+				final double avg = (Math.abs(deltaX) + Math.abs(deltaY))/2.0;
+				deltaX = deltaX<0?-avg:avg;
+				deltaY = deltaY<0?-avg:avg;
+			}
+		    }
 
                     // TODO: Optimize to not instantiate new array on every call.
                     final int[] selectedNodes = m_view.getSelectedNodeIndices();
