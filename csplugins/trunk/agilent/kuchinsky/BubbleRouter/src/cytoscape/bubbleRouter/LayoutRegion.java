@@ -18,18 +18,23 @@ import cytoscape.data.CyAttributes;
 public class LayoutRegion extends Component {
 
 	private double x1;
+
 	private double y1;
-	private double w1;  
+
+	private double w1;
+
 	private double h1;
-	 
+
 	private Paint paint;
+
 	private List nodeViews;
+
 	private Object attValue;
-	
 
 	private static int count = 0;
-	private Color[] colors = new Color[]{Color.red, Color.green, Color.blue};
-	
+
+	private Color[] colors = new Color[] { Color.red, Color.green, Color.blue, Color.yellow, Color.orange, Color.darkGray };
+
 	/**
 	 * @param value
 	 * @param x1
@@ -45,38 +50,32 @@ public class LayoutRegion extends Component {
 		this.y1 = y1;
 		this.h1 = h1;
 		this.w1 = w1;
-		
-	nodeViews = new ArrayList();
-	
-	paint = colors[count];
-	count = (count == 2)? 0 : count + 1;
-	
+
+		nodeViews = new ArrayList();
+
 	}
-	
+
 	/**
 	 * Empty Constructor
-	 *
+	 * 
 	 */
 	public LayoutRegion() {
 		super();
 
 		nodeViews = new ArrayList();
-		
-		paint = colors[count];
-		count = (count == 2)? 0 : count + 1;
 
 	}
-	
-	
-	
+
 	/**
 	 * @return Returns the attValue.
 	 */
 	public Object getAttValue() {
 		return attValue;
 	}
+
 	/**
-	 * @param attValue The attValue to set.
+	 * @param attValue
+	 *            The attValue to set.
 	 */
 	public void setAttValue(Object attValue) {
 		this.attValue = attValue;
@@ -90,7 +89,8 @@ public class LayoutRegion extends Component {
 	}
 
 	/**
-	 * @param h1 The h1 to set.
+	 * @param h1
+	 *            The h1 to set.
 	 */
 	public void setH1(double h1) {
 		this.h1 = h1;
@@ -104,7 +104,8 @@ public class LayoutRegion extends Component {
 	}
 
 	/**
-	 * @param w1 The w1 to set.
+	 * @param w1
+	 *            The w1 to set.
 	 */
 	public void setW1(double w1) {
 		this.w1 = w1;
@@ -118,7 +119,8 @@ public class LayoutRegion extends Component {
 	}
 
 	/**
-	 * @param x1 The x1 to set.
+	 * @param x1
+	 *            The x1 to set.
 	 */
 	public void setX1(double x1) {
 		this.x1 = x1;
@@ -132,7 +134,8 @@ public class LayoutRegion extends Component {
 	}
 
 	/**
-	 * @param y1 The y1 to set.
+	 * @param y1
+	 *            The y1 to set.
 	 */
 	public void setY1(double y1) {
 		this.y1 = y1;
@@ -144,69 +147,77 @@ public class LayoutRegion extends Component {
 	public Paint getPaint() {
 		return paint;
 	}
+
 	/**
-	 * @param paint The paint to set.
+	 * @param paint
+	 *            The paint to set.
 	 */
 	public void setPaint(Paint paint) {
 		this.paint = paint;
 	}
+
 	/**
 	 * @return Returns the nodeViews.
 	 */
 	public List getNodeViews() {
 		return nodeViews;
 	}
-	
+
 	// AJK: 09/02/06 BEGIN
-	//    select all nodeViews with specified attribute value for attribute
-	public void populateNodeViews (String attributeName)
-	{
+	// select all nodeViews with specified attribute value for attribute
+	public void populateNodeViews(String attributeName) {
 		CyAttributes attribs = Cytoscape.getNodeAttributes();
 		Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
 		Collection selectedNodes = new ArrayList();
-		while (it.hasNext())
-		{
+		while (it.hasNext()) {
 			Cytoscape.getCurrentNetwork().unselectAllNodes();
 			Node node = (Node) it.next();
-			String val = attribs.getStringAttribute(
-					node.getIdentifier(), attributeName);
-			if (val != null)
-			{
-				if (val.equalsIgnoreCase(this.attValue.toString()))
-				{
+			String val = attribs.getStringAttribute(node.getIdentifier(),
+					attributeName);
+			if (val != null) {
+				if (val.equalsIgnoreCase(this.attValue.toString())) {
 					selectedNodes.add(node);
-				}				
-			}
-			else if (attValue.equals("unassigned"))
-			{
+				}
+			} else if (attValue.equals("unassigned")) {
 				selectedNodes.add(node);
 			}
-
-		}		
+		}
 		Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedNodes, true);
-		System.out.println ("selected " + selectedNodes.size() + " nodes for layout.");
-		
-	    HierarchicalLayoutListener hierarchicalListener = new HierarchicalLayoutListener();
-	    System.out.println ("running hierarchical layout algorithm.");
-	    hierarchicalListener.actionPerformed(null);
+		System.out.println("selected " + selectedNodes.size()
+				+ " nodes for layout.");
 
-	    NodeViewsTransformer.transform(Cytoscape.getCurrentNetworkView().getSelectedNodes(), 
-	    		new Rectangle2D.Double(x1, y1, w1, h1));
-	    
-	    Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
-	      
+		// APico 9.16.06
+		// Run hierarchical layout on selected nodes, unless no nodes are
+		// selected
+		if (selectedNodes.size() > 0) {
+			HierarchicalLayoutListener hierarchicalListener = new HierarchicalLayoutListener();
+			System.out.println("running hierarchical layout algorithm.");
+			hierarchicalListener.actionPerformed(null);
+
+			NodeViewsTransformer
+					.transform(Cytoscape.getCurrentNetworkView()
+							.getSelectedNodes(), new Rectangle2D.Double(x1, y1,
+							w1, h1));
+
+			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+		}
 	}
-	
-	public void paint (Graphics g)
-	{
-		System.out.println ("Paintin region: " + this);
+
+	public void paint(Graphics g) {
+
+		paint = colors[count];
+		count = (count == 5) ? 0 : count + 1;
+		
+		System.out.println("Region Color is: " + paint.toString());
+
 		g.setColor((Color) this.paint);
-        g.fillRect((int) x1, (int) y1, (int) w1, (int) h1);
-        g.setColor(Color.black);
-        g.drawRect((int) x1, (int) y1, (int) w1, (int) h1);
+		g.fillRect((int) x1, (int) y1, (int) w1, (int) h1);
+		g.setColor(Color.black);
+		g.drawRect((int) x1, (int) y1, (int) w1, (int) h1);
+
+		super.paint(g);
 	}
-	
+
 	// AJK: 09/02/06 END
-	
-	
+
 }
