@@ -66,7 +66,7 @@ public class InternalFrameComponent extends JComponent implements Printable {
 		int layer() {
 			if (this==BACKGROUND_PANE) return -30000;
 			if (this==NETWORK_PANE) return 0;
-			if (this==FOREGROUND_PANE) return 301;
+			if (this==FOREGROUND_PANE) return -10;  //APico 9.18.06
 			return 0;
 		}
 	}
