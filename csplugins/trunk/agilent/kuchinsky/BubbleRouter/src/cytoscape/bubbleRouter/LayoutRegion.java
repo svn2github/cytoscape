@@ -37,6 +37,11 @@ public class LayoutRegion extends Component {
 	private Object attValue;
 
 	/**
+	 * ref to our buffered region
+	 */
+	private BufferedImage image;
+
+	/**
 	 * @param value
 	 * @param x1
 	 * @param y1
@@ -208,36 +213,46 @@ public class LayoutRegion extends Component {
 		y1 = y;
 		w1 = width;
 		h1 = height;
+
+		// our bounds have changed, create a new image with new size
+		if ((width > 0) && (height > 0)) {
+			image = new BufferedImage(width,
+									  height,
+									  BufferedImage.TYPE_INT_ARGB);
+		}
 	}
 
 	public void paint(Graphics g) {
 
-		// before anything, lets make sure we have a color
-		Color currentColor = (paint instanceof Color) ? (Color)paint : null;
-		if (currentColor == null) {
-			System.out.println("LayoutRegion.paint(), currentColor is null");
-			return;
+		// only paint if we have an image to paint onto
+		if (image != null) {
+
+			// before anything, lets make sure we have a color
+			Color currentColor = (paint instanceof Color) ? (Color)paint : null;
+			if (currentColor == null) {
+				System.out.println("LayoutRegion.paint(), currentColor is null");
+				return;
+			}
+
+			// image to draw
+			Graphics2D image2D = image.createGraphics();
+
+			// set proper translucency
+			Color regionColor = new Color(currentColor.getRed(),
+										  currentColor.getGreen(),
+										  currentColor.getBlue(),
+										  26);
+
+			// draw into the image
+			Composite origComposite = image2D.getComposite();
+			image2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+			image2D.setPaint(regionColor);
+			image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
+			image2D.setColor(Color.black);
+			image2D.drawRect(0,0, image.getWidth(null)-1, image.getHeight(null)-1);
+			image2D.setComposite(origComposite);
+			((Graphics2D)g).drawImage(image, null, 0,0);
 		}
-
-		// image to draw
-		BufferedImage image = new BufferedImage((int)w1,(int)h1,BufferedImage.TYPE_INT_ARGB);
-		Graphics2D image2D = image.createGraphics();
-
-		// set proper translucency
-		Color regionColor = new Color(currentColor.getRed(),
-									  currentColor.getGreen(),
-									  currentColor.getBlue(),
-									  26);
-
-		// draw into the image
-		Composite origComposite = image2D.getComposite();
-		image2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-		image2D.setPaint(regionColor);
-		image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
-		image2D.setColor(Color.black);
-		image2D.drawRect(0,0, image.getWidth(null)-1, image.getHeight(null)-1);
-		image2D.setComposite(origComposite);
-		((Graphics2D)g).drawImage(image, null, 0,0);
 	}
 	// AJK: 09/02/06 END
 }
