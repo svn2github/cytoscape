@@ -105,6 +105,8 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 			alignMenu.setEnabled(true);
 		else
 			alignMenu.setEnabled(false);
+		// Re-select the paths
+		chimeraObject.updateSelection();
 	}
 
 	public void valueChanged(TreeSelectionEvent e) {

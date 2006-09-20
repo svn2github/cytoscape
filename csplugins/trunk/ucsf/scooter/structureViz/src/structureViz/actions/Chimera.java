@@ -333,6 +333,68 @@ public class Chimera {
 		mnDialog.updateSelection(selectionList);
 	}
 
+	public void updateSelection() {
+		HashMap modelSelHash = new HashMap();
+		ArrayList selectionList = new ArrayList();
+		Iterator lineIter;
+		// Clear the reply log
+		// Execute the command to get the list of models with selections
+		lineIter = commandReply("lists level molecule");
+		while (lineIter.hasNext()) {
+			String modelLine = (String)lineIter.next();
+			ChimeraModel chimeraModel = new ChimeraModel(modelLine);
+			modelSelHash.put(new Integer(chimeraModel.getModelNumber()), chimeraModel);
+		}
+
+		// Now get the residue-level data
+		lineIter = commandReply("lists level residue");
+		while (lineIter.hasNext()) {
+			String inputLine = (String)lineIter.next();
+			ChimeraResidue r = new ChimeraResidue(inputLine);
+			Integer modelNumber = new Integer(r.getModelNumber());
+			if (modelSelHash.containsKey(modelNumber)) {
+				ChimeraModel model = (ChimeraModel)modelSelHash.get(modelNumber);
+				model.addResidue(r);
+			}
+		}
+
+		// Get the selected objects
+		Iterator modelIter = modelSelHash.values().iterator();
+		while (modelIter.hasNext()) {
+			// Get the model
+			ChimeraModel selectedModel = (ChimeraModel)modelIter.next();
+			int modelNumber = selectedModel.getModelNumber();
+			// Get the corresponding "real" model
+			if (containsModel(modelNumber)) {
+				ChimeraModel dataModel = getModel(modelNumber);
+				if (dataModel.getResidueCount() == selectedModel.getResidueCount()) {
+					// Select the entire model
+					selectionList.add(dataModel);
+				} else {
+					Iterator chainIter = selectedModel.getChains().iterator();
+					while (chainIter.hasNext()) {
+						ChimeraChain selectedChain = (ChimeraChain)chainIter.next();
+						ChimeraChain dataChain = dataModel.getChain(selectedChain.getChainId());
+						if (selectedChain.getResidueCount() == dataChain.getResidueCount()) {
+							selectionList.add(dataChain);
+						} else {
+							// Need to select individual residues
+							Iterator resIter = selectedChain.getResidueList().iterator();
+							while (resIter.hasNext()) {
+								String residueIndex = ((ChimeraResidue)resIter.next()).getIndex();
+								ChimeraResidue residue = dataChain.getResidue(residueIndex);
+								selectionList.add(residue);
+							} // resIter.hasNext
+						}
+					} // chainIter.hasNext()
+				}
+			}
+		} // modelIter.hasNext()
+
+		// Finally, update the navigator panel
+		updateSelection(selectionList);
+	}
+
 	private List getModelList() {
 		ArrayList<ChimeraModel>modelList = new ArrayList<ChimeraModel>();
 		Iterator modelIter = this.commandReply ("listm");
