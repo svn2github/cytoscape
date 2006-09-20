@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Arrays;
+import java.awt.Dimension;
 
 import cytoscape.*;
 import cytoscape.view.*;
@@ -310,6 +311,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public void layout() {
 		Iterator iter = null;
+		Dimension initialLocation = null;
 		// Initialize all of our values.  This will create
 		// our internal objects and initialize them
 		// local_initialize();
@@ -347,39 +349,16 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     taskMonitor.setPercentCompleted(4);
     taskMonitor.setStatus("Calculating spring constants");
 
-/*
-    for (int node_i = 0; node_i < nodeList.size(); node_i++)
-    {
-      System.out.print("Node distances for node "+node_i+": ");
-      for (int node_j = (node_i + 1); node_j < nodeList.size(); node_j++)
-      {  System.out.print(nodeDistances[node_i][node_j]+" "); }
-			System.out.println();
-    }
-*/
-
 		calculateSpringData(nodeDistances);
-
-/*
-		for (int node_i = 0; node_i < nodeList.size(); node_i++)
-    {
-			System.out.print("SpringLengths for node "+node_i+": ");
-      for (int node_j = (node_i + 1); node_j < nodeList.size(); node_j++)
-      {  System.out.print(m_nodeDistanceSpringRestLengths[node_i][node_j]+" "); }
-			System.out.println();
-		}
-		for (int node_i = 0; node_i < nodeList.size(); node_i++)
-    {
-			System.out.print("SpringStrengths for node "+node_i+": ");
-      for (int node_j = (node_i + 1); node_j < nodeList.size(); node_j++)
-      {  System.out.print(m_nodeDistanceSpringStrengths[node_i][node_j]+" "); }
-			System.out.println();
-		}
-*/
 
     final double percentCompletedBeforePasses = 5.0d;
     final double percentCompletedAfterPass1 = 80.0d;
     final double percentCompletedAfterPass2 = 90.0d;
     double currentProgress = percentCompletedBeforePasses;
+
+		// Figure out our starting point
+		if (selectedOnly)
+			initialLocation = calculateAverageLocation();
 
 		// Compute our optimal lengths
     for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
@@ -445,6 +424,16 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
         currentProgress += percentProgressPerIter;
       }
     }
+
+		// Translate back to the starting midpoint
+		if (selectedOnly) {
+			iter = nodeList.iterator();
+			while (iter.hasNext()) {
+				LayoutNode v = (LayoutNode)iter.next();
+				if (!v.isLocked())
+					v.decrement(initialLocation.getWidth(),initialLocation.getHeight());
+			}
+		}
 
     taskMonitor.setPercentCompleted((int) percentCompletedAfterPass2);
 		taskMonitor.setStatus("Updating display");

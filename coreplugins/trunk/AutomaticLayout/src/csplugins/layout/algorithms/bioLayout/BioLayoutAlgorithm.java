@@ -41,6 +41,7 @@ import java.util.Random;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
+import java.awt.Dimension;
 
 import cytoscape.*;
 import cytoscape.view.*;
@@ -387,6 +388,30 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 					iter.remove();
 			}
 		}
+	}
+
+	/**
+	 * Calculate and set the average location of this group of nodes.  This
+	 * is used when we are only laying out selected nodes to move the group
+	 * back to a starting location.
+	 */
+	protected Dimension calculateAverageLocation() {
+		Dimension result = new Dimension();
+
+		double xAverage = 0;
+		double yAverage = 0;
+		// Calculate the totals
+		int nodeCount = 0;
+		Iterator iter = nodeList.iterator();
+		while (iter.hasNext()) {
+			LayoutNode v = (LayoutNode)iter.next();
+			if (v.isLocked()) continue;
+			xAverage += v.getX();
+			yAverage += v.getY();
+			nodeCount++;
+		}
+		result.setSize(xAverage/nodeCount, yAverage/nodeCount);
+		return result;
 	}
 
 	protected void print_disp() {

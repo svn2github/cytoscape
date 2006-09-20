@@ -37,6 +37,7 @@ import java.util.ListIterator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
+import java.awt.Dimension;
 
 import cytoscape.*;
 import cytoscape.view.*;
@@ -300,6 +301,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public void layout() {
 		Iterator iter = null;
+		Dimension initialLocation = null;
 		// Initialize all of our values.  This will create
 		// our internal objects and initialize them
 		// local_initialize();
@@ -326,6 +328,10 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 		// Calculate our edge weights
 		calculateEdgeWeights();
+
+		// Figure out our starting point
+		if (selectedOnly)
+			initialLocation = calculateAverageLocation();
 
 		taskMonitor.setStatus("Calculating new node positions");
 		taskMonitor.setPercentCompleted(1);
@@ -358,6 +364,16 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 		taskMonitor.setStatus("Updating display");
 
+		// Translate back to the starting midpoint
+		if (selectedOnly) {
+			iter = nodeList.iterator();
+			while (iter.hasNext()) {
+				LayoutNode v = (LayoutNode)iter.next();
+				if (!v.isLocked())
+					v.decrement(initialLocation.getWidth(),initialLocation.getHeight());
+			}
+		}
+
 		// Actually move the pieces around
 		iter = nodeList.iterator();
 		while (iter.hasNext()) {
@@ -366,7 +382,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			v.moveToLocation();
 			// System.out.println("Node "+v.getIdentifier()+" moved to "+v.getX()+","+v.getY());
 		}
-		System.out.println("Layout complete after "+iteration+" iterations");
+		// System.out.println("Layout complete after "+iteration+" iterations");
 	}
 
 	/**
