@@ -1,19 +1,15 @@
 package cytoscape.bubbleRouter;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -43,7 +39,15 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	int mousex, mousey; // The location of the mouse during dragging.
 
-	protected static int count = 0;
+	/**
+	 * index into color array
+	 */
+	private static int colorIndex = -1;
+
+	/**
+	 * possible colors for layout regions
+	 */
+	private Color[] colors = new Color[] { Color.red, Color.green, Color.blue, Color.cyan, Color.magenta, Color.darkGray };
 
 	/**
 	 * the mouse press location for the drop point
@@ -159,46 +163,27 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				h = starty - mousey;
 			}
 
+
+
 			// Create LayoutRegion object
 			LayoutRegion region = new LayoutRegion(getRegionAttributeValue(),
-					x, y, w, h);
+												   x, y, w, h);
 
-			// if value is selected by user, i.e., not canceled
+			// if value is selected by user, i.e., not cancelled
 			if (region.getAttValue() != null) {
 
 				// Add region to list of regions for this view
 				LayoutRegionManager.addRegionForView(Cytoscape
 						.getCurrentNetworkView(), region);
 
-				// Handle graphics and create label object
-				BufferedImage image = new BufferedImage(Cytoscape
-						.getCurrentNetworkView().getComponent().getWidth(),
-						Cytoscape.getCurrentNetworkView().getComponent()
-								.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				// before we add the layout region to the canvas, set its color
+				colorIndex = (++colorIndex % 6 == 0) ? 0 : colorIndex;
+				region.setPaint(colors[colorIndex]);
 
-				Graphics2D g = (Graphics2D) image.createGraphics();
-
-				float transluc = 0.1F;
-				g.setComposite(AlphaComposite.getInstance(
-						AlphaComposite.SRC_OVER, transluc));
-
-				JLabel label = new JLabel(new ImageIcon(image));
-				label.setBounds(0, 0, image.getWidth(), image.getHeight());
-
-				// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add label
-				DGraphView view = (DGraphView) Cytoscape
-						.getCurrentNetworkView();
-				DingCanvas foregroundLayer = view
-						.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-				foregroundLayer.add(label);
-				foregroundLayer.setVisible(true);
-				foregroundLayer.setOpaque(false);
-				label.setVisible(true);
-				label.setOpaque(false);
-
-				// Direct call to LayoutRegion paint method seems improper, but
-				// it works...
-				region.paint(g);
+				// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the layout region
+				DGraphView view = (DGraphView) Cytoscape.getCurrentNetworkView();
+				DingCanvas backgroundLayer = view.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+				backgroundLayer.add(region);
 
 				// Call router to send nodes to region
 				region.populateNodeViews(ATTRIBUTE_NAME);
