@@ -12,6 +12,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import java.awt.Composite;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
@@ -31,10 +36,6 @@ public class LayoutRegion extends Component {
 
 	private Object attValue;
 
-	private static int count = 0;
-
-	private Color[] colors = new Color[] { Color.red, Color.green, Color.blue, Color.yellow, Color.orange, Color.darkGray };
-
 	/**
 	 * @param value
 	 * @param x1
@@ -46,10 +47,8 @@ public class LayoutRegion extends Component {
 		super();
 		// TODO Auto-generated constructor stub
 		attValue = value;
-		this.x1 = x1;
-		this.y1 = y1;
-		this.h1 = h1;
-		this.w1 = w1;
+		this.paint = Color.red;
+		setBounds((int)x1,(int)y1,(int)w1,(int)h1);
 
 		nodeViews = new ArrayList();
 
@@ -203,21 +202,42 @@ public class LayoutRegion extends Component {
 		}
 	}
 
-	public void paint(Graphics g) {
-
-		paint = colors[count];
-		count = (count == 5) ? 0 : count + 1;
-		
-		System.out.println("Region Color is: " + paint.toString());
-
-		g.setColor((Color) this.paint);
-		g.fillRect((int) x1, (int) y1, (int) w1, (int) h1);
-		g.setColor(Color.black);
-		g.drawRect((int) x1, (int) y1, (int) w1, (int) h1);
-
-		super.paint(g);
+	public void setBounds(int x, int y, int width, int height) {
+		super.setBounds(x, y, width, height);
+		x1 = x;
+		y1 = y;
+		w1 = width;
+		h1 = height;
 	}
 
-	// AJK: 09/02/06 END
+	public void paint(Graphics g) {
 
+		// before anything, lets make sure we have a color
+		Color currentColor = (paint instanceof Color) ? (Color)paint : null;
+		if (currentColor == null) {
+			System.out.println("LayoutRegion.paint(), currentColor is null");
+			return;
+		}
+
+		// image to draw
+		BufferedImage image = new BufferedImage((int)w1,(int)h1,BufferedImage.TYPE_INT_ARGB);
+		Graphics2D image2D = image.createGraphics();
+
+		// set proper translucency
+		Color regionColor = new Color(currentColor.getRed(),
+									  currentColor.getGreen(),
+									  currentColor.getBlue(),
+									  26);
+
+		// draw into the image
+		Composite origComposite = image2D.getComposite();
+		image2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+		image2D.setPaint(regionColor);
+		image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
+		image2D.setColor(Color.black);
+		image2D.drawRect(0,0, image.getWidth(null)-1, image.getHeight(null)-1);
+		image2D.setComposite(origComposite);
+		((Graphics2D)g).drawImage(image, null, 0,0);
+	}
+	// AJK: 09/02/06 END
 }
