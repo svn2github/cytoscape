@@ -177,7 +177,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 						.getCurrentNetworkView(), region);
 
 				// before we add the layout region to the canvas, set its color
-				colorIndex = (++colorIndex % 6 == 0) ? 0 : colorIndex;
+				colorIndex = (++colorIndex % colors.length == 0) ? 0 : colorIndex;
 				region.setPaint(colors[colorIndex]);
 
 				// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the layout region
