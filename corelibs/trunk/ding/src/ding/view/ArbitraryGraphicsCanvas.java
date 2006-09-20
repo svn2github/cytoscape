@@ -108,6 +108,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 			// render image
 			((Graphics2D)graphics).drawImage(((BufferedImage)m_img), null, 0, 0);
 		}
+		super.paint(g);
     }
 
     /**
