@@ -27,7 +27,6 @@ sub startPath
 }
 
 
-
 sub pushPath
 {
     my ($self, $node, @extra) = @_;
@@ -37,7 +36,6 @@ sub pushPath
 }
 
 
-
 sub popPath
 {
     my ($self, $node, @extra) = @_;
@@ -45,8 +43,6 @@ sub popPath
     print "  Pop: $node\n" 
 	if $PathStateMachine::DEBUG & $PathStateMachine::POP;
 }
-
-
 
 sub terminatesPath
 {
