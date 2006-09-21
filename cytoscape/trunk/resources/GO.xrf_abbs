@@ -366,7 +366,7 @@ database: Gene Ontology Database
 object: Identifier
 example_id: GO:0046703
 generic_url: http://godatabase.org/cgi-bin/go.cgi?query=
-url_syntax: http://godatabase.org/cgi-bin/go.cgi?query=GO:0046703
+url_syntax: http://godatabase.org/cgi-bin/go.cgi?query=
 
 ! note: generic_url and url_example for GO_REF to be filled in when available
 
@@ -1258,3 +1258,13 @@ example_id: ZFIN:ZDB-GENE-990415-103
 generic_url: http://zfin.org/
 url_syntax: http://zfin.org/cgi-bin/ZFIN_jump?record=
 url_example: http://zfin.org/cgi-bin/ZFIN_jump?record=ZDB-GENE-990415-103
+
+abbreviation: Google
+database: Google keyword search
+generic_url: http://www.google.com/
+url_syntax: http://www.google.com/search?hl=en&q=
+
+abbreviation: Ask
+database: Ask.com
+generic_url: http://www.ask.com/
+url_syntax: http://www.ask.com/web?q=
