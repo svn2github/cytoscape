@@ -43,8 +43,8 @@ public class LayoutRegion extends Component {
 	/**
 	 * possible colors for layout regions
 	 */
-	private Color[] colors = new Color[] { Color.red, Color.green, Color.blue,
-			Color.orange, Color.cyan, Color.magenta, Color.darkGray };
+	private final Color[] colors = new Color[] { Color.red, Color.green, Color.blue,
+												 Color.orange, Color.cyan, Color.magenta, Color.darkGray };
 
 	private Paint paint;
 
@@ -76,22 +76,19 @@ public class LayoutRegion extends Component {
 	private List nodeViews;
 
 	/**
-	 * @param x1
-	 * @param y1
-	 * @param w1
-	 * @param h1
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
 	 */
 	public LayoutRegion(double x, double y, double width, double height) {
 		super();
 
-		this.x1 = x;
-		this.y1 = y;
-		this.w1 = width;
-		this.h1 = height;
-
+		// init member vars
 		regionAttributeValue = selectRegionAttributeValue();
+		// setbounds must come before populate nodeviews
+		setBounds((int) x, (int) y, (int) width, (int) height); 
 		nodeViews = populateNodeViews();
-		setBounds((int) x1, (int) y1, (int) w1, (int) h1);
 
 		// determine color of layout region
 		colorIndex = (++colorIndex % colors.length == 0) ? 0 : colorIndex;
@@ -304,6 +301,10 @@ public class LayoutRegion extends Component {
 
 	public void setBounds(int x, int y, int width, int height) {
 		super.setBounds(x, y, width, height);
+
+		// set member vars
+		this.x1 = x; this.y1 = y;
+		this.w1 = width; this.h1 = height;
 
 		// our bounds have changed, create a new image with new size
 		if ((width > 0) && (height > 0)) {
