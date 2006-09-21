@@ -2,30 +2,41 @@
 
 use DirectedGraph;
 use PPAwareGraph;
+
 use SearchAlgorithm;
 use DFS;
 use DFSPathSearch;
+
 use PathStateMachine;
+use DepthLimitedPath;
+
 use PathFinder;
 
 my $g = DirectedGraph->new("test.sif");
 $g->print();
 
-my $pf = PathFinder->new($g, SearchAlgorithm->new($g));
-$pf->runSearch();
+#my $pf = PathFinder->new($g, SearchAlgorithm->new($g));
+#$pf->runSearch();
 
-$pf = PathFinder->new($g, DFS->new($g));
-$pf->runSearch();
+#$pf = PathFinder->new($g, DFS->new($g));
+#$pf->runSearch();
 
-print "\n### Start PP aware\n\n";
+#print "\n### Start PP aware\n\n";
 
-my $ppg = PPAwareGraph->new("test.sif");
-$ppg->print();
+#my $ppg = PPAwareGraph->new("test.sif");
+#$ppg->print();
 
-$pf = PathFinder->new($g, DFSPathSearch->new($g, PathStateMachine->new()));
+my $psm = DepthLimitedPath->new(2);
+PathStateMachine->DEBUG($PathStateMachine::TPAT | 
+			$PathStateMachine::TSEA);
+
+$psm->allowReuse(1);
+
+$pf = PathFinder->new($g, DFSPathSearch->new($g, $psm));
+
 #$pf->runSearch();
 
 
-print "### Searching only a and b\n";
-$pf->runSearch(qw(a b));
+#print "### Searching only a and b\n";
+$pf->runSearch();
 

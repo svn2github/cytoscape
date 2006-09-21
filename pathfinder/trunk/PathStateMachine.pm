@@ -1,8 +1,12 @@
 package PathStateMachine;
 
+use Object;
+
+@ISA = qw(Object);
+
 ## Create DEBUG variables
 my $c=0;
-foreach $event (qw(DISC FINI STAR ENDP INSP EXTE TERM))
+foreach $event (qw(DISC FINI STAR ENDP INSP PUSH POP TPAT TSEA))
 {
     my $str = "\$$event = 1 << $c";
     eval($str);
@@ -10,7 +14,14 @@ foreach $event (qw(DISC FINI STAR ENDP INSP EXTE TERM))
     $c++;
 }
 
-my $DEBUG = $DISC | $FINI | $STAR | $ENDP | $INSP | $EXTE | $TERM;
+$DEBUG = $DISC | $FINI | $STAR | $ENDP | $INSP | $PUSH | $POP | $TPAT | $TSEA;
+
+sub DEBUG
+{
+    my $self = shift;
+    $DEBUG = shift if @_;
+    return $DEBUG;
+}
 
 ## 
 ## Constructor
@@ -19,23 +30,14 @@ my $DEBUG = $DISC | $FINI | $STAR | $ENDP | $INSP | $EXTE | $TERM;
 sub new
 {
     my ($caller) = @_;
-    my $class = ref($caller) || $caller;
-    my $self = bless({}, $class);
-
+    my $self = $caller->SUPER::new();
+    
+    $self->allowReuse(0);
     return $self;
 }
 
-# generate accessor methods
-for my $field (qw())
-{
-    my $slot = __PACKAGE__ . "::$field";
-    no strict "refs";
-    *$field = sub {
-	my $self = shift;
-	$self->{$slot} = shift if @_;
-	return $self->{$slot};
-    }
-}
+
+Object::_generateAccessors(qw(allowReuse));
 
 
 ## 
@@ -44,28 +46,28 @@ for my $field (qw())
 
 sub discoverNode
 {
-    my ($self, $node, @extra) = @_;
-    printf "DISC: $node %s\n", join(".", @extra) if $DEBUG & $DISC;
+    my ($self, $node, $depth, $time) = @_;
+    printf "  Disc: $node d=%d t=%d\n", $depth, $time if $DEBUG & $DISC;
 }
 
 sub finishNode
 {
-    my ($self, $node, @extra) = @_;
-    printf "FINI: $node %s\n", join(".", @extra) if $DEBUG & $FINI;
+    my ($self, $node, $depth, $time) = @_;
+    printf "  Fini: $node d=%d t=%d\n", $depth, $time if $DEBUG & $FINI;
 }
 
 
 sub startPath
 {
     my ($self, $node, @extra) = @_;
-    print "STAR: at $node\n" if $DEBUG & $STAR;
+    print "  Star: at $node\n" if $DEBUG & $STAR;
 }
 
 
 sub endPath
 {
     my ($self, $node, @extra) = @_;
-    print "ENDP: at $node\n" if $DEBUG & $ENDP;
+    print "  Endp: at $node\n" if $DEBUG & $ENDP;
 }
 
 
@@ -73,24 +75,49 @@ sub inspectNeighbor
 {
     my ($self, $node, @extra) = @_;
     my $ok = 1;
-    print "INSP: $node $ok\n" if $DEBUG & $INSP;
+    print "  Insp: $node ok=$ok\n" if $DEBUG & $INSP;
 
     return $ok;
 }
 
-sub extendPath
+sub pushPath
 {
     my ($self, $node, @extra) = @_;
-    print "EXTE: $node\n" if $DEBUG & $EXTE;
+    print "  Push: $node\n" if $DEBUG & $PUSH;
 }
+
+
+sub popPath
+{
+    my ($self, $node, @extra) = @_;
+    print "  Pop: $node\n" if $DEBUG & $POP;
+}
+
 
 sub terminatesPath
 {
-    my ($self, $node, @extra) = @_;
+    my ($self, $node, $depth) = @_;
     my $terminates = 0;
-    print "TERM: $node $terminates\n" if $DEBUG & $TERM;
+    if($terminates)
+    {
+	print "  TPath: $node terminate=$terminates\n" if $DEBUG & $TPAT;
+    }
 
     return $terminates;
 }
+
+
+sub terminatesSearch
+{
+    my ($self, $node, $depth) = @_;
+    my $terminates = 0;
+    if($terminates)
+    {
+	print "  TSearch: $node terminate=$terminates\n" if $DEBUG & $TSEA;
+    }
+
+    return $terminates;
+}
+
 
 1;

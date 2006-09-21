@@ -46,7 +46,8 @@ sub search
 	my $time = 0;
 	if($self->psm()->inspectNeighbor($startNode))
 	{
-	    $self->psm()->extendPath($startNode);
+	    $self->psm()->startPath($startNode);
+	    $self->psm()->pushPath($startNode);
 	    $self->dfsVisit($startNode, 0, \$time, \%color, \%dt, \%ft);
 	}
 
@@ -66,28 +67,44 @@ sub dfsVisit
 {
     my ($self, $node, $depth, $time, $color, $dt, $ft) = @_;
 
-    $self->psm()->discoverNode($node, $depth, $$time);
+    my $psm = $self->psm();
 
-    $color->{$node} = $GREY;
+    $psm->discoverNode($node, $depth, $$time);
+
+    $color->{$node} = $GREY; # GREY means node is on current path
     $dt->{$node} = $$time; # store the discovery time
     $$time += 1;
 
-    if($self->psm()->terminatesPath($node))
+    if($psm->terminatesPath($node, $depth))
     {
-	$self->psm()->endPath($node);
+	$psm->endPath($node);
     }
 
-    my @neighbors = $self->graph()->getNeighbors($node);
-    foreach $n (@neighbors)
+    if(! $psm->terminatesSearch($node, $depth))
     {
-        if($color->{$n} != $GREY && $self->psm()->inspectNeighbor($n))
-        {
-	    $self->psm()->extendPath($n);
-            $self->dfsVisit($n, $depth + 1, $time, $color, $dt, $ft, $visitor);
-        }
+	my @neighbors = $self->graph()->getNeighbors($node);
+	foreach $n (@neighbors)
+	{
+	    if($color->{$n} == $WHITE && $psm->inspectNeighbor($n))
+	    {
+		$psm->pushPath($n);
+		$self->dfsVisit($n, $depth + 1, $time, $color, $dt, $ft);
+		$psm->popPath($n);
+	    }
+	}
     }
-
-    $self->psm()->finishNode($node, $depth, $$time);
+    
+    if($psm->allowReuse())
+    {
+	# change color to WHITE so this node can be an 
+	# intermediate vertex in other paths
+	$color->{$node} = $WHITE;  
+    }
+    else
+    {
+	$color->{$node} = $BLACK;  
+    }
+    $psm->finishNode($node, $depth, $$time);
     
     $ft->{$node} = $$time; # store the finish time
 }
