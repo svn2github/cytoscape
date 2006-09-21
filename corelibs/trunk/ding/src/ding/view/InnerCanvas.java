@@ -922,6 +922,7 @@ public class InnerCanvas extends DingCanvas
 		if ( k.isShiftDown() )
 			move = 10.0;
 		if (m_view.m_nodeSelection) {
+			// move nodes
 			int[] selectedNodes = m_view.getSelectedNodeIndices();
 			for (int i = 0; i < selectedNodes.length; i++) {
 				DNodeView nv = ((DNodeView) m_view.getNodeView(selectedNodes[i]));
@@ -940,6 +941,31 @@ public class InnerCanvas extends DingCanvas
 
 				nv.setOffset(xPos,yPos);
 			}
+
+                        // move edge anchors
+                        IntEnumerator anchorsToMove = m_view.m_selectedAnchors.searchRange(
+                                                Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+                        while (anchorsToMove.numRemaining() > 0) {
+                                final int edgeAndAnchor = anchorsToMove.nextInt();
+                                final int edge = edgeAndAnchor >>> 6;
+                                final int anchorInx = edgeAndAnchor & 0x0000003f;
+                                final DEdgeView ev = (DEdgeView) m_view.getEdgeView(~edge);
+                                ev.getHandleInternal(anchorInx, m_floatBuff1);
+
+				if ( code == KeyEvent.VK_UP ) {
+                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0], 
+					                      m_floatBuff1[1] - move);
+				} else if ( code == KeyEvent.VK_DOWN ) {
+                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0], 
+					                      m_floatBuff1[1] + move);
+				} else if ( code == KeyEvent.VK_LEFT ) {
+                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0] - move, 
+					                      m_floatBuff1[1]);
+				} else if ( code == KeyEvent.VK_RIGHT ) {
+                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0] + move, 
+					                      m_floatBuff1[1]);
+				}
+                        }
 
 			repaint();
 		}
