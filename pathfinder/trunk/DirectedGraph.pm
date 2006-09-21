@@ -2,6 +2,10 @@ package DirectedGraph;
 
 my $DEBUG = 1;
 
+## 
+## Constructor
+##
+
 sub new
 {
     my ($caller, $sif) = @_;
@@ -27,6 +31,10 @@ for my $field (qw(alist _nodeHash))
 	return $self->{$slot};
     }
 }
+
+## 
+## Instance methods
+##
 
 sub nodes
 {

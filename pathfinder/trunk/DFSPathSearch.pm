@@ -1,4 +1,4 @@
-package DFS;
+package DFSPathSearch;
 
 use SearchAlgorithm;
 
@@ -8,22 +8,19 @@ my $WHITE = 0;
 my $GREY = 1;
 my $BLACK = 2;
 
-## 
-## Constructor
-##
-
 sub new
 {
-    my ($caller, $graph) = @_;
-    return $caller->SUPER::new($graph);
+    my ($caller, $graph, $pathStateMachine) = @_;
+    
+    my $self = $caller->SUPER::new($graph);
+    $self->psm($pathStateMachine);
+    return $self;
 }
 
-## 
-## Instance methods
-##
+SearchAlgorithm::_generateAccessors(qw(psm));
 
 #
-# Main subroutine for Depth First Search
+# Main subroutine for Depth First Search for paths
 #
 sub search
 {
@@ -47,7 +44,11 @@ sub search
 	}
 	
 	my $time = 0;
-	$self->dfsVisit($startNode, 0, \$time, \%color, \%dt, \%ft, $visitor);
+	if($self->psm()->inspectNeighbor($startNode))
+	{
+	    $self->psm()->extendPath($startNode);
+	    $self->dfsVisit($startNode, 0, \$time, \%color, \%dt, \%ft);
+	}
 
 	print "DFS: done\n";
     }
@@ -63,23 +64,31 @@ sub search
 #
 sub dfsVisit
 {
-    my ($self, $node, $depth, $time, $color, $dt, $ft, $visitor) = @_;
+    my ($self, $node, $depth, $time, $color, $dt, $ft) = @_;
 
-    $visitor->("discovery", $node, $depth, $$time);
+    $self->psm()->discoverNode($node, $depth, $$time);
 
     $color->{$node} = $GREY;
     $dt->{$node} = $$time; # store the discovery time
     $$time += 1;
 
+    if($self->psm()->terminatesPath($node))
+    {
+	$self->psm()->endPath($node);
+    }
+
     my @neighbors = $self->graph()->getNeighbors($node);
     foreach $n (@neighbors)
     {
-        if($color->{$n} != $GREY)
+        if($color->{$n} != $GREY && $self->psm()->inspectNeighbor($n))
         {
+	    $self->psm()->extendPath($n);
             $self->dfsVisit($n, $depth + 1, $time, $color, $dt, $ft, $visitor);
         }
     }
-    $visitor->("finish", $node, $depth, $$time);
+
+    $self->psm()->finishNode($node, $depth, $$time);
+    
     $ft->{$node} = $$time; # store the finish time
 }
 

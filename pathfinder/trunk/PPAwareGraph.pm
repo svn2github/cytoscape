@@ -2,6 +2,10 @@ package PPAwareGraph;
 
 @ISA = qw(DirectedGraph);
 
+## 
+## Instance methods
+##
+
 sub populateFromSIF
 {
     my ($self, $file) = @_;

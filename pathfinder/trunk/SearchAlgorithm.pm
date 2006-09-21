@@ -1,5 +1,9 @@
 package SearchAlgorithm;
 
+## 
+## Constructor
+##
+
 sub new
 {
     my ($caller, $graph) = @_;
@@ -10,19 +14,27 @@ sub new
     return $self;
 }
 
-
-# generate accessor methods
-for my $field (qw(graph))
+sub _generateAccessors
 {
-    my $slot = __PACKAGE__ . "::$field";
-    no strict "refs";
-    *$field = sub {
-	my $self = shift;
-	$self->{$slot} = shift if @_;
-	return $self->{$slot};
+    my @fields = @_;
+# generate accessor methods
+    for my $field (@fields)
+    {
+	my $slot = __PACKAGE__ . "::$field";
+	no strict "refs";
+	*$field = sub {
+	    my $self = shift;
+	    $self->{$slot} = shift if @_;
+	    return $self->{$slot};
+	}
     }
 }
 
+_generateAccessors(qw(graph));
+
+## 
+## Instance methods
+##
 
 sub search
 {

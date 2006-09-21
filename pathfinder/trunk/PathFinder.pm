@@ -3,6 +3,10 @@ package PathFinder;
 use DirectedGraph;
 use SearchAlgorithm;
 
+## 
+## Constructor
+##
+
 sub new
 {
     my ($caller, $graph, $searchAlgorithm) = @_;
@@ -25,6 +29,10 @@ for my $field (qw(graph searchAlgorithm))
 	return $self->{$slot};
     }
 }
+
+## 
+## Instance methods
+##
 
 sub runSearch
 {

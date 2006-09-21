@@ -4,6 +4,8 @@ use DirectedGraph;
 use PPAwareGraph;
 use SearchAlgorithm;
 use DFS;
+use DFSPathSearch;
+use PathStateMachine;
 use PathFinder;
 
 my $g = DirectedGraph->new("test.sif");
@@ -20,8 +22,8 @@ print "\n### Start PP aware\n\n";
 my $ppg = PPAwareGraph->new("test.sif");
 $ppg->print();
 
-$pf = PathFinder->new($ppg, DFS->new($ppg));
-$pf->runSearch();
+$pf = PathFinder->new($g, DFSPathSearch->new($g, PathStateMachine->new()));
+#$pf->runSearch();
 
 
 print "### Searching only a and b\n";
