@@ -1,29 +1,62 @@
 package DirectedGraph;
 
+my $DEBUG = 1;
+
 sub new
 {
     my ($caller, $sif) = @_;
     my $class = ref($caller) || $caller;
-    my $self = { 
-	adjlist => {}   # adjacent list
-    };
-    bless($self, $class);
+    my $self = bless({}, $class);
+
+    $self->_nodeHash({});
+    $self->alist({});
 
     if($sif) {$self->populateFromSIF($sif)};
     
     return $self;
 }
 
-sub adjlist
+# generate accessor methods (get only, do not allow set) 
+for my $field (qw(alist _nodeHash))
 {
-    my ($self) = @_;
-    return $self->{adjlist};
+    my $slot = __PACKAGE__ . "::$field";
+    no strict "refs";
+    *$field = sub {
+	my $self = shift;
+	$self->{$slot} = shift if @_;
+	return $self->{$slot};
+    }
 }
 
 sub nodes
 {
-    my ($self) = @_;
-    return keys %{$self->adjlist};
+    my $self = shift;
+    return keys %{$self->_nodeHash()};
+	
+}
+
+sub containsNode
+{
+    my ($self, $node) = @_;
+    return exists($self->_nodeHash()->{$node});
+}
+
+# return: an array of edge types between n1 and n2
+sub getEdgeTypesBetween
+{
+    my ($self, $n1, $n2) = @_;
+    
+    return ( $self->alist()->{$n1}{$n2} );
+}
+
+#
+# WARNING: Ignore edge types for now
+#
+sub getNeighbors
+{
+    my ($self, $node) = @_;
+    
+    return(keys %{$self->alist()->{$node}} );
 }
 
 sub populateFromSIF
@@ -32,7 +65,10 @@ sub populateFromSIF
 
     open (IN, $file) || die "populateFromSIF: can't open $file\n";
 
+    my $alist = $self->alist();
+
     my ($n1, $n2, $edge);
+    my $Ne = 0;
     while(<IN>)
     {
         if(/^(\S+)\s+(\S+)\s+(\S+)/)
@@ -41,16 +77,21 @@ sub populateFromSIF
             $edge = $2;
             $n2 = $3;
 
-            push @{$self->adjlist->{$n1}{$n2}}, $edge;
+	    $self->_nodeHash()->{$n1}++;
+	    $self->_nodeHash()->{$n2}++;
+
+            push @{$self->alist()->{$n1}{$n2}}, $edge;
+	    $Ne++;
         }
         elsif(/^(\S+)/)
         {
-            if( !exists($self->adjlist->{$1}) )
-            {
-		$self->adjlist->{$1} = [];
-            }
-        }
+	    $self->_nodeHash()->{$1}++;
+	}
     }
+
+    printf STDERR ("Created graph from '$file'. [N]=%d, [E]=%d\n", 
+		   scalar($self->nodes()), 
+		   $Ne) if $DEBUG;
 }
 
 
@@ -58,13 +99,13 @@ sub print
 {
     my $self = shift;
 
-    my %adjlist = %{$self->adjlist};
+    my %alist = %{$self->alist()};
 
-    foreach $n1 (keys %adjlist)
+    foreach $n1 (keys %alist)
     {
-	foreach $n2 (keys %{$adjlist{$n1}})
+	foreach $n2 (keys %{$alist{$n1}})
 	{
-	    foreach $edgeType (@{$adjlist{$n1}{$n2}})
+	    foreach $edgeType (@{$alist{$n1}{$n2}})
 	    {
 		printf ("%s %s %s\n", $n1, $edgeType, $n2);
 	    }
