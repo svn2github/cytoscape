@@ -3,6 +3,7 @@ package cytoscape.data.ontology;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import cytoscape.data.ontology.readers.DBCrossReferenceReader;
 
@@ -46,6 +47,10 @@ public class DBCrossReferences {
 		crossRefMap.put(db.getAbbreviation(), db);
 	}
 
+	public Set getDBNames() {
+		return crossRefMap.keySet();
+	}
+	
 	public DBReference getDBReference(String abbreviation) {
 		return crossRefMap.get(abbreviation);
 	}
