@@ -51,6 +51,10 @@ public class QuickFindPanel extends JPanel {
         add(comboBox);
         add(rangeSlider);
         add(configButton);
+
+        //  Add Right Buffer, to prevent config button from occassionally
+        //  being partially obscured.
+        add(Box.createHorizontalStrut(5));
     }
 
     /**
@@ -167,7 +171,7 @@ public class QuickFindPanel extends JPanel {
         try {
             TextIndex textIndex = IndexFactory.createDefaultTextIndex();
             box = ComboBoxFactory.createTextIndexComboBox
-                    (textIndex, 1.5);
+                    (textIndex, 2.0);
             box.setEnabled(false);
 
             //  Set Size of ComboBox Display, based on # of specific chars
