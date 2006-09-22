@@ -182,7 +182,7 @@ public class Align {
 		// Now add the attributes
 		CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 		for (int i = 0; i < 3; i++) {
-			Double d = new Double(1/results[i]);
+			Double d = new Double(results[i]);
 			edgeAttr.setAttribute(edge.getIdentifier(), attributeKeys[i], d);
 		}
 	}
