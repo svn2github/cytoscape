@@ -6,5 +6,5 @@
 
 #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./plugins
 
-java -Xmx512M -jar cytoscape.jar cytoscape.CyMain -p plugins "$@"
+java -Dswing.aatext=true -Xmx512M -jar cytoscape.jar cytoscape.CyMain -p plugins "$@"
 
