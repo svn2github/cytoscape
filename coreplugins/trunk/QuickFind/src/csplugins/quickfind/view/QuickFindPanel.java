@@ -119,6 +119,8 @@ public class QuickFindPanel extends JPanel {
         comboBox.removeAllText();
         comboBox.setEnabled(false);
         rangeSlider.setEnabled(false);
+        comboBox.setVisible(true);
+        rangeSlider.setVisible(false);
         configButton.setEnabled(false);
     }
 
