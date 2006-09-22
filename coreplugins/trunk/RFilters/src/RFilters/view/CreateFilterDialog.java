@@ -41,9 +41,7 @@ public class CreateFilterDialog extends JDialog{
 	westPanel.add(new JScrollPane(filterEditorList),BorderLayout.CENTER);
 	westPanel.setBorder(new TitledBorder("Filter types"));
 	getContentPane().add(westPanel,BorderLayout.WEST);
-	westPanel.setPreferredSize(new Dimension(100,150));
-	
-
+	//westPanel.setPreferredSize(new Dimension(100,150));
 
         DescriptionPanel descriptionPanel = new DescriptionPanel(filterEditorList);
 	filterEditorList.addListSelectionListener(descriptionPanel);
