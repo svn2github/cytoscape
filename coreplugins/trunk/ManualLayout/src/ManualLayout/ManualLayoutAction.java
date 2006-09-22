@@ -32,6 +32,7 @@ import ManualLayout.scale.ScalePanel;
  * Change history:
  *  version 0.1    9/14/2006  Peng-Liang Wang   Original creation 
  *  version 0.2    9/17/2006  Peng-Liang Wang   Change the anonymous classes (listeners) to named classes  
+ *  version 0.21   9/21/2006  Peng-Liang Wang   Fix a null pointer exception  
  * 
  */
 public class ManualLayoutAction extends CytoscapeAction {
@@ -50,14 +51,11 @@ public class ManualLayoutAction extends CytoscapeAction {
 	private ScalePanel scalePanel = (ScalePanel) Cytoscape.getDesktop()
 			.getCytoPanel(SwingConstants.EAST).getComponentAt(1);
 
-	private MutablePolyEdgeGraphLayout[] nativeGraph = new MutablePolyEdgeGraphLayout[] { GraphConverter2
-			.getGraphReference(16.0d, true, false) };
+	private MutablePolyEdgeGraphLayout[] nativeGraph = null;
 
-	private RotationLayouter[] rotation = new RotationLayouter[] { new RotationLayouter(
-			nativeGraph[0]) };
+	private RotationLayouter[] rotation = null;
 
-	private ScaleLayouter[] scale = new ScaleLayouter[] { new ScaleLayouter(
-			nativeGraph[0]) };
+	private ScaleLayouter[] scale = null;
 
 	private int menuItemIndex = -1;
 
@@ -91,6 +89,13 @@ public class ManualLayoutAction extends CytoscapeAction {
 					CytoPanelState.FLOAT);
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
 					.setSelectedIndex(menuItemIndex);
+
+			if (nativeGraph == null) {
+				nativeGraph = new MutablePolyEdgeGraphLayout[] { GraphConverter2.getGraphReference(16.0d, true, false) };
+				rotation = new RotationLayouter[] { new RotationLayouter(nativeGraph[0]) };
+				scale = new ScaleLayouter[] { new ScaleLayouter(nativeGraph[0]) };				
+			}
+
 			addEventListeners();
 
 			// Case 2: Panel is in the DOCK/FLOAT
