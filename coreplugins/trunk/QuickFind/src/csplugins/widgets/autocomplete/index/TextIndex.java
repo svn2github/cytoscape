@@ -12,7 +12,7 @@ public interface TextIndex extends GenericIndex {
     /**
      * Default Max Key Length
      */
-    int DEFAULT_MAX_KEY_LENGTH = 25;
+    int DEFAULT_MAX_KEY_LENGTH = 100;
 
     /**
      * Set max key length;  all keys greater than this length will
