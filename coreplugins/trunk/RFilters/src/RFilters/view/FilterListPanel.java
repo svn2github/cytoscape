@@ -40,7 +40,7 @@ public class FilterListPanel
   protected void initialize () {
     FilterManager.defaultManager().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
 
-    JPanel listPanel = new JPanel();
+    JPanel listPanel = new JPanel(new BorderLayout());
     listPanel.setBorder( new TitledBorder( "Available Filters" ) );
 
     //FilterManager.defaultManager().addListDataListener(this);
@@ -53,7 +53,7 @@ public class FilterListPanel
     listPanel.add( scroll, BorderLayout.CENTER);
     setLayout( new BorderLayout() );
     add( listPanel, BorderLayout.CENTER );
-    scroll.setPreferredSize(new Dimension(250,100));
+    //scroll.setPreferredSize(new Dimension(250,100));
   }
 
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport () {
