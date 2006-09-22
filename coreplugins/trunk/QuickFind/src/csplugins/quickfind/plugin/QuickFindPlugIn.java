@@ -160,8 +160,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
             }
         }
         if (!networkHasFocus) {
-            quickFindToolBar.disableAllQuickFindButtons();
-            quickFindToolBar.setToolTipText("Please select or load a network");
+            quickFindToolBar.noNetworkLoaded();
         }
     }
 
@@ -187,8 +186,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
      * Indexing started.
      */
     public void indexingStarted() {
-        quickFindToolBar.disableAllQuickFindButtons();
-        quickFindToolBar.setToolTipText("Indexing network.  Please wait...");
+        quickFindToolBar.indexingInProgress();
     }
 
     /**

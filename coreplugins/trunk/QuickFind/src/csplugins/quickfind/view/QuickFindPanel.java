@@ -77,23 +77,21 @@ public class QuickFindPanel extends JPanel {
     }
 
     /**
-     * Disables all Quick Find Buttons.
+     * No Network Current Available.
      */
-    public void disableAllQuickFindButtons() {
-        comboBox.removeAllText();
-        comboBox.setEnabled(false);
-        rangeSlider.setEnabled(false);
-        configButton.setEnabled(false);
+    public void noNetworkLoaded() {
+        disableAllQuickFindButtons();
+        comboBox.setToolTipText ("Please select or load a network");
+        rangeSlider.setToolTipText("Please select or load a network");
     }
 
     /**
-     * Enables all Quick Find Buttons.
+     * Indexing Operating in Progress.
      */
-    public void enableAllQuickFindButtons() {
-        comboBox.setToolTipText("Enter search string");
-        comboBox.setEnabled(true);
-        rangeSlider.setEnabled(true);
-        configButton.setEnabled(true);
+    public void indexingInProgress() {
+        disableAllQuickFindButtons();
+        comboBox.setToolTipText ("Indexing network.  Please wait...");
+        rangeSlider.setToolTipText ("Indexing network.  Please wait...");
     }
 
     /**
@@ -112,6 +110,27 @@ public class QuickFindPanel extends JPanel {
      */
     public JRangeSliderExtended getSlider() {
         return this.rangeSlider;
+    }
+
+    /**
+     * Disables all Quick Find Buttons.
+     */
+    private void disableAllQuickFindButtons() {
+        comboBox.removeAllText();
+        comboBox.setEnabled(false);
+        rangeSlider.setEnabled(false);
+        configButton.setEnabled(false);
+    }
+
+    /**
+     * Enables all Quick Find Buttons.
+     */
+    public void enableAllQuickFindButtons() {
+        comboBox.setToolTipText("Enter search string");
+        rangeSlider.setToolTipText("Select range");
+        comboBox.setEnabled(true);
+        rangeSlider.setEnabled(true);
+        configButton.setEnabled(true);
     }
 
     /**
