@@ -150,7 +150,7 @@ public class QuickFindPanel extends JPanel {
             box.setEnabled(false);
 
             //  Set Size of ComboBox Display, based on # of specific chars
-            box.setPrototypeDisplayValue("01234567890");
+            box.setPrototypeDisplayValue("01234567");
             box.setToolTipText("Please select or load a network to "
                     + "activate search functionality.");
 
