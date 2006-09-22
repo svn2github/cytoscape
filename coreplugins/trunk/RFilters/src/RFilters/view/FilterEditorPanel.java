@@ -35,6 +35,8 @@ public class FilterEditorPanel
     defaultPanel = new DefaultPanel(); 
     currentEditor = defaultPanel;
     nullEdit = new NullFilterEditor();
+    //Change the layout manager,to let the panel stretch to fill the available space
+    setLayout(new BorderLayout()); 
     add(currentEditor);
   }
   
