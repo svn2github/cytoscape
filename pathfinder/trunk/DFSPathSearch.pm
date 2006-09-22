@@ -17,7 +17,7 @@ sub new
     return $self;
 }
 
-SearchAlgorithm::_generateAccessors(qw(psm));
+DFSPathSearch->_generateAccessors(qw(psm));
 
 #
 # Main subroutine for Depth First Search for paths

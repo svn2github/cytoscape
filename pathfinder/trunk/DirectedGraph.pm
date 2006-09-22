@@ -1,16 +1,20 @@
 package DirectedGraph;
 
+use Object;
+
+@ISA = qw(Object);
+
+DirectedGraph->_generateAccessors(qw(alist _nodeHash));
+
 my $DEBUG = 1;
 
 ## 
 ## Constructor
 ##
-
 sub new
 {
     my ($caller, $sif) = @_;
-    my $class = ref($caller) || $caller;
-    my $self = bless({}, $class);
+    my $self = $caller->SUPER::new();
 
     $self->_nodeHash({});
     $self->alist({});
@@ -20,25 +24,13 @@ sub new
     return $self;
 }
 
-# generate accessor methods (get only, do not allow set) 
-for my $field (qw(alist _nodeHash))
-{
-    my $slot = __PACKAGE__ . "::$field";
-    no strict "refs";
-    *$field = sub {
-	my $self = shift;
-	$self->{$slot} = shift if @_;
-	return $self->{$slot};
-    }
-}
-
 ## 
 ## Instance methods
 ##
 
 sub nodes
 {
-    my $self = shift;
+    my ($self) = @_;
     return keys %{$self->_nodeHash()};
 	
 }
@@ -105,7 +97,7 @@ sub populateFromSIF
 
 sub print
 {
-    my $self = shift;
+    my ($self) = @_;
 
     my %alist = %{$self->alist()};
 

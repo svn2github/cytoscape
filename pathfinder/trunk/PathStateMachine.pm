@@ -37,7 +37,7 @@ sub new
 }
 
 
-Object::_generateAccessors(qw(allowReuse));
+PathStateMachine->_generateAccessors(qw(allowReuse));
 
 
 ## 

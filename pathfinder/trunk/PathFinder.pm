@@ -1,7 +1,12 @@
 package PathFinder;
 
+use Object;
 use DirectedGraph;
 use SearchAlgorithm;
+
+@ISA = qw(Object);
+
+PathFinder->_generateAccessors(qw(graph searchAlgorithm));
 
 ## 
 ## Constructor
@@ -10,24 +15,11 @@ use SearchAlgorithm;
 sub new
 {
     my ($caller, $graph, $searchAlgorithm) = @_;
-    my $class = ref($caller) || $caller;
-    my $self = bless({}, $class);
-
+    my $self = $caller->SUPER::new($graph);
+    
     $self->graph($graph);
     $self->searchAlgorithm($searchAlgorithm);
     return $self;
-}
-
-# generate accessor methods
-for my $field (qw(graph searchAlgorithm))
-{
-    my $slot = __PACKAGE__ . "::$field";
-    no strict "refs";
-    *$field = sub {
-	my $self = shift;
-	$self->{$slot} = shift if @_;
-	return $self->{$slot};
-    }
 }
 
 ## 

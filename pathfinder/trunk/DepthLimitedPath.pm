@@ -5,7 +5,7 @@ use Object;
 
 @ISA = qw(PathStateMachine);
 
-Object::_generateAccessors(qw(path maxDepth));
+DepthLimitedPath->_generateAccessors(qw(path maxDepth));
 
 sub new
 {

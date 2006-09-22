@@ -12,11 +12,14 @@ sub new
 
 sub _generateAccessors
 {
-    my @fields = @_;
+    my ($caller, @fields) = @_;
+    my $class = ref($caller) || $caller;
+
     # generate accessor methods
     for my $field (@fields)
     {
-	my $slot = __PACKAGE__ . "::$field";
+	my $slot = $field;
+	my $field = $class . "::" . $field;
 	no strict "refs";
 	*$field = sub {
 	    my $self = shift;
@@ -29,11 +32,14 @@ sub _generateAccessors
 
 sub _generateReadOnlyAccessors
 {
-    my @fields = @_;
+    my ($caller, @fields) = @_;
+    my $class = ref($caller) || $caller;
+
     # generate accessor methods
     for my $field (@fields)
     {
-	my $slot = __PACKAGE__ . "::$field";
+	my $slot = $field;
+	my $field = $class . "::" . $field;
 	no strict "refs";
 	*$field = sub {
 	    my $self = shift;
