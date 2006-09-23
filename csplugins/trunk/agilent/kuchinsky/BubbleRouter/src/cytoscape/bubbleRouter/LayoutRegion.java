@@ -43,8 +43,8 @@ public class LayoutRegion extends Component {
 	/**
 	 * possible colors for layout regions
 	 */
-	private final Color[] colors = new Color[] { Color.red, Color.green, Color.blue,
-												 Color.orange, Color.cyan, Color.magenta, Color.darkGray };
+	private final Color[] colors = new Color[] { Color.red, Color.green,
+			Color.blue, Color.orange, Color.cyan, Color.magenta, Color.darkGray };
 
 	private Paint paint;
 
@@ -87,7 +87,7 @@ public class LayoutRegion extends Component {
 		// init member vars
 		regionAttributeValue = selectRegionAttributeValue();
 		// setbounds must come before populate nodeviews
-		setBounds((int) x, (int) y, (int) width, (int) height); 
+		setBounds((int) x, (int) y, (int) width, (int) height);
 		nodeViews = populateNodeViews();
 
 		// determine color of layout region
@@ -303,8 +303,10 @@ public class LayoutRegion extends Component {
 		super.setBounds(x, y, width, height);
 
 		// set member vars
-		this.x1 = x; this.y1 = y;
-		this.w1 = width; this.h1 = height;
+		this.x1 = x;
+		this.y1 = y;
+		this.w1 = width;
+		this.h1 = height;
 
 		// our bounds have changed, create a new image with new size
 		if ((width > 0) && (height > 0)) {
@@ -349,6 +351,10 @@ public class LayoutRegion extends Component {
 			image2D.setPaint(fillColor);
 			image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
 			image2D.setColor(drawColor);
+			// adds thickness to border
+			image2D.drawRect(1, 1, image
+					.getWidth(null) - 3, image.getHeight(null) - 3);
+			//give border dimensionality
 			image2D.draw3DRect(0, 0, image.getWidth(null) - 1, image
 					.getHeight(null) - 1, true);
 			image2D.setComposite(origComposite);
