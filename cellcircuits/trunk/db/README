@@ -1,0 +1,32 @@
+download the latest monthly release to /cellar/data/cellcircuits
+
+	http://www.godatabase.org/dev/database/
+
+	tar zxvf go_200609-assocdb-tables.tar.gz
+
+
+logon to chianti ( ssh -X chianti ) since this is where mysql currently lives
+
+cd into the db directory of your svn checkout of cellcircuits
+
+	for example, i checked out cellcircuits to my home directory,
+	so for me, this translates to 
+	
+	cd ~/cellcircuits/trunk/db
+
+load the GO tables
+
+	./step1_load_GO_tables.pl go_200609-assocdb-tables GO_tables_list.txt
+
+	go_200609-assocdb-tables is the directory that resulted
+	from the tar zxvf command in /cellar/data/cellcircuits
+
+	GO_tables_list.txt is a file with a line foreach of the
+	names of the GO tables we wish to load into mysql
+
+	NOTE(S):
+		(1) this script populates the db called cellcircuits_dev
+			and in doing so, will most likely overwrite any
+			data that previously existed in it
+
+
