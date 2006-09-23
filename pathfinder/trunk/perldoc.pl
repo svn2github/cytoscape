@@ -18,7 +18,7 @@ my @outputFiles;
 
 foreach $file (@perlFiles)
 {
-    print "${file}...\n";
+    print "documenting ${file}\n";
 
     my $pf = PerlFile->new($file);
     

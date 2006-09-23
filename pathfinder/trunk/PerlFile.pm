@@ -3,6 +3,8 @@ package PerlFile;
 use File::Spec;
 use Object;
 
+my $DEBUG = 0;
+
 @ISA = qw(Object);
 
 PerlFile->_generateAccessors(qw(packageName methods scalars arrays hashes file));
@@ -20,11 +22,11 @@ sub new
     $self->hashes([]);
 
     die "Can't read $file\n" if(! -r $file);
-    
-    open(IN, $file) || die "Can't open $file\n";
 
+    # Read a file and save its contents;
     my @contents;
 
+    open(IN, $file) || die "Can't open $file\n";
     while(<IN>)
     {
 	if(/^package\s+(\w+)/)
@@ -33,11 +35,6 @@ sub new
 
 	}
 	push @contents, $_;
-
-	#if(/^sub\s+(\w+)/)
-	#{
-	#    push @{$self->methods()}, $1;
-	#}
     }
     close IN;
 
@@ -45,6 +42,7 @@ sub new
     {
 	$self->introspectPackage($self->packageName(), \@contents);
     }
+
     return $self;
 }
 
@@ -63,23 +61,23 @@ sub introspectPackage
 	{
 	    my @params = parseParams($varName, $fileContents);
 	    $self->methods()->{$varName} = \@params;
-	    #printf "  method: %s\n", join(",", @params); 
+	    printf "  method $varName: %s\n", join(",", @params) if $DEBUG; 
 	}
 	if(defined($alias))
 	{
-	    #print "  found scalar\n";
+	    print "  scalar $varName\n" if $DEBUG;
 	    push @{$self->scalars()}, $varName;
 	}
 	if(defined(@alias))
 	{
-	    #print "  found array\n";
+	    print "  array $varName\n" if $DEBUG;
 	    my @value;
 	    if($varName eq "ISA") {@value = @alias};
 	    $self->arrays()->{$varName} = \@value;
 	}
 	if(defined(%alias))
 	{
-	    #print "  found hash\n";
+	    print "  hash $varName\n" if $DEBUG;
 	    push @{$self->hashes()}, $varName;
 	}
     }
@@ -120,10 +118,10 @@ sub writeHTML
 		  <h1>$pkg</h1>
 		  );
 
-    $text .= generateTable("Methods", $self->methods()) . "<br>";
-    $text .= generateTable("Scalars", $self->scalars()) . "<br>";
-    $text .= generateTable("Arrays", $self->arrays()) . "<br>";
-    $text .= generateTable("Hashes", $self->hashes()) . "<br>";
+    $text .= generateTable("Methods", $self->methods());
+    $text .= generateTable("Scalars", $self->scalars());
+    $text .= generateTable("Arrays", $self->arrays());
+    $text .= generateTable("Hashes", $self->hashes());
 
     $text .= qq(</body>
 		</html>
@@ -142,38 +140,42 @@ sub generateTable
 {
     my ($title, $data) = @_;
 
-    my $text .= "<b>$title</b>\n";
-    $text .= "<table><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>\n";
-    $text .= "<table cellpadding=5 cellspacing=5>\n";
-    
-    if(ref($data) eq "ARRAY")
+    my $text = "";
+    if((ref($data) eq "ARRAY") && scalar(@{$data}) > 0 ||
+       (ref($data) eq "HASH") && scalar(keys %{$data}) > 0)
     {
-	for my $m (sort @{$data})
+	$text .= "<i><b>$title</b></i>\n";
+	$text .= "<table><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>\n";
+	$text .= "<table cellpadding=3 cellspacing=5>\n";
+	
+	if(ref($data) eq "ARRAY")
 	{
-	    $text .= "<tr><td>$m</td></tr>\n";
+	    for my $m (sort @{$data})
+	    {
+		$text .= "<tr><td>$m</td></tr>\n";
+	    }
 	}
-    }
-    if(ref($data) eq "HASH")
-    {
-	#$text .= "<tr><th>Name</th><th>Params</th></tr>\n";
-	for my $m (keys %{$data})
+	if(ref($data) eq "HASH")
 	{
-	    my $params = join(", ", @{$data->{$m}});
-	    $text .= "<tr><td><b>$m</b></td><td>$params</td></tr>\n";
+	    #$text .= "<tr><th>Name</th><th>Params</th></tr>\n";
+	    for my $m (keys %{$data})
+	    {
+		my $params = join(", ", @{$data->{$m}});
+		$text .= "<tr><td><b>$m</b></td><td>$params</td></tr>\n";
+	    }
 	}
+	
+	$text .= "</table>\n";
+	$text .= "</td></tr></table>\n";
     }
-    
-    $text .= "</table>\n";
-    $text .= "</td></tr></table>\n";
-
     return $text;
 }
 
 sub basename
 {
-    my ($s) = @_;
+    my ($absoluteFileName) = @_;
     
-    my ($volume,$directories,$file) = File::Spec->splitpath( $s );
+    my ($volume,$directories,$file) = File::Spec->splitpath( $absoluteFileName );
     my @name = split(/\./, $file);
     pop @name;
     my $basename = join(".", @name);
