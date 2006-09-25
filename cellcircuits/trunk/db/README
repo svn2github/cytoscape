@@ -29,4 +29,7 @@ load the GO tables
 			and in doing so, will most likely overwrite any
 			data that previously existed in it
 
+load the model table
+
+	./step2_load_model_table.pl cellcircuits_dev
 
