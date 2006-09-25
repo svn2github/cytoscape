@@ -27,7 +27,7 @@
 		Cytoscape includes a flexible Plugin architecture that enables developers to add extra functionality beyond that provided in the core. Plugins also provide a convenient place for testing out new Cytoscape features. As more Plugins become available, they will be listed on this page, and posted to our <A HREF="http://groups-beta.google.com/group/cytoscape-announce">cytoscape-announce</A> mailing list.
 
     </p>
-<p>The plugins on this page are categorized into three sections:
+<p>The plugins on this page are categorized into five sections:
 <ul>
 <li><b><a href="#ANALYSIS_PLUGINS">Analysis Plugins</a></b> - Used for analyzing existing networks.</li>
 <li><b><a href="#IO_PLUGINS">Network and Attribute I/O Plugins</a></b> - Used for importing networks and attributes in different file formats.</li>
