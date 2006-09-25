@@ -71,6 +71,14 @@ sub endPath
 }
 
 
+sub inspectStartNode
+{
+    my ($self, $node) = @_;
+
+    print "  Insp: $node start\n" if $DEBUG & $INSP;
+    return 1;
+}
+
 sub inspectNeighbor
 {
     my ($self, $node, @extra) = @_;

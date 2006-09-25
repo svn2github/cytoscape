@@ -4,7 +4,7 @@ use Object;
 
 @ISA = qw(Object);
 
-PVLR->_generateAccessors(qw(columnNames ids descriptions ratios pvalues));
+PVLR->_generateAccessors(qw(columnNames idTable descriptions ratios pvalues));
 
 sub new
 {
@@ -12,7 +12,7 @@ sub new
     my $self = $caller->SUPER::new();
 
     $self->columnNames([]);
-    $self->ids({});
+    $self->idTable({});
     $self->descriptions([]);
     $self->ratios({});
     $self->pvalues({});
@@ -24,9 +24,37 @@ sub new
 sub idsInOrder
 {
     my ($self) = @_;
-    my $ids = $self->ids();
-    return( sort {$ids->{$a} <=> $ids->{$b}} keys(%{$ids}) );
+    
+    my $x = $self->idTable();
+    return( sort {$x->{$a} <=> $x->{$b}} keys( %{$x} ) );
 }
+
+
+sub ids
+{
+    my ($self) = @_;
+    my @x = keys(%{$self->idTable()});
+    return( \@x );
+}
+
+
+sub getGeneData
+{
+    my ($self, $id) = @_;
+
+    my @names = @{$self->columnNames()};
+
+    die "$gene does not exist" if (! exists($self->idTable()->{$id}));
+    my $row = $self->idTable()->{$id};
+    my @ratios;
+    map {push @ratios, $self->ratios()->{$_}->[$row]} @names;
+
+    my @pv;
+    map {push @pv, $self->pvalues()->{$_}->[$row]} @names;
+
+    return (\@ratios, \@pv);
+}
+
 
 #############################################
 ##
@@ -37,7 +65,7 @@ sub idsInOrder
 ##
 ## Populates instance variables: 
 ##         $names - a reference to a list of column names
-##         $ids - a reference to a hash of row ids mapped to their row 
+##         $idTable - a reference to a hash of row ids mapped to their row 
 ##         $descriptions - a reference to a list of row descriptions 
 ##         $pvals - a reference to a hash of pvalues.
 ##                      Keys = column names 
@@ -54,7 +82,7 @@ sub readLogratiosPvalues
     my($n_ids) = scalar(keys %{ $idHash });
 
     my $names = $self->columnNames();
-    my $ids = $self->ids();
+    my $idTable = $self->idTable();
     my $descriptions = $self->descriptions();
     my $pvals = $self->pvalues();
     my $ratios = $self->ratios();
@@ -81,7 +109,7 @@ sub readLogratiosPvalues
 	    if( ($n_ids == 0) || (exists $idHash->{$id})) {
 
 		#print "$id\n";
-		$ids->{$id} = $count++;
+		$idTable->{$id} = $count++;
 		push @{ $descriptions }, $desc;
 		for $i (0..($mid_n-1)) {
 		    $r = $l[$i];

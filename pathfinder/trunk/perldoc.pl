@@ -56,12 +56,21 @@ sub makeIndex
 	$fileHTML .= makeLink(PerlFile::basename($f), $f) . "<br>\n";
     }
     
+    my $now = localtime(time());
+
     my $overviewText = 
 	qq(<html>
 	   <head><title>All packages</title></head>
 	   <body>
 	   <b>All packages</b>
 	   $fileHTML
+	   <br>
+	   <font size="-1">
+	   <i>
+	   Last updated:<br>
+	   $now
+	   </i>
+	   </font>
 	   </body>
 	   </html>
 	   );

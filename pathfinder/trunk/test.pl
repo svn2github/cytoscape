@@ -28,6 +28,7 @@ $g->print();
 
 my $psm = DepthLimitedPath->new(2);
 PathStateMachine->DEBUG($PathStateMachine::TPAT | 
+			$PathStateMachine::INSP | 
 			$PathStateMachine::TSEA);
 
 $psm->allowReuse(1);

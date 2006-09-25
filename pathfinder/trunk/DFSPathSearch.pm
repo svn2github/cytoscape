@@ -33,7 +33,7 @@ sub search
 
     if($self->graph()->containsNode($startNode))
     {
-	print "DFS: start at: $startNode\n";
+	#print "DFS: start at: $startNode\n";
 
 	my (%color, %ft, %dt);
 	foreach $n ($self->graph()->nodes())
@@ -44,14 +44,14 @@ sub search
 	}
 	
 	my $time = 0;
-	if($self->psm()->inspectNeighbor($startNode))
+	if($self->psm()->inspectStartNode($startNode))
 	{
 	    $self->psm()->startPath($startNode);
 	    $self->psm()->pushPath($startNode);
 	    $self->dfsVisit($startNode, 0, \$time, \%color, \%dt, \%ft);
 	}
 
-	print "DFS: done\n";
+	#print "DFS: done\n";
     }
     else
     {

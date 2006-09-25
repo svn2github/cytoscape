@@ -158,7 +158,7 @@ sub generateTable
 	if(ref($data) eq "HASH")
 	{
 	    #$text .= "<tr><th>Name</th><th>Params</th></tr>\n";
-	    for my $m (keys %{$data})
+	    for my $m (sort keys %{$data})
 	    {
 		my $params = join(", ", @{$data->{$m}});
 		$text .= "<tr><td><b>$m</b></td><td>$params</td></tr>\n";
