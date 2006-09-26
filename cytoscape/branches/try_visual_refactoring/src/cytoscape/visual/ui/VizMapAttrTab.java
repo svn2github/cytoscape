@@ -36,12 +36,6 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// VizMapAttrTab.java
-//--------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------
 package cytoscape.visual.ui;
 
 import javax.swing.*;
@@ -605,6 +599,9 @@ public class VizMapAttrTab extends VizMapTab {
 	    else if (type == VizMapUI.NODE_FONT_SIZE) {
         calc = new GenericNodeFontSizeCalculator(calcName, mapper);
 	    }
+	    else if (type == VizMapUI.NODE_LABEL_POSITION) {
+        calc = new GenericNodeLabelPositionCalculator(calcName, mapper);
+	    }
 	    // set current calculator to the new calculator
 	    switchCalculator(calc);  //handles listeners
 	    // notify the catalog - this triggers events that refresh the UI
@@ -829,6 +826,8 @@ public class VizMapAttrTab extends VizMapTab {
 	    return "Node Font Size";
     case VizMapUI.NODE_LABEL_COLOR:
             return "Node Label Color";
+    case VizMapUI.NODE_LABEL_POSITION:
+            return "Node Label Position";
     default:
 	    return null;
     }

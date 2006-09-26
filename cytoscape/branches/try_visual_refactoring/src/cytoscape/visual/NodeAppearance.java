@@ -58,6 +58,7 @@ import cytoscape.visual.parsers.LineTypeParser;
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.parsers.NodeShapeParser;
+import cytoscape.visual.parsers.LabelPositionParser;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 /**
@@ -78,6 +79,7 @@ public class NodeAppearance implements Appearance, Cloneable {
     Font font = new Font(null, Font.PLAIN, 12);
     Color fontColor = Color.black;
     boolean nodeSizeLocked = true;
+    LabelPosition labelPosition = new LabelPosition();
 
     public NodeAppearance() {}
     
@@ -116,6 +118,9 @@ public class NodeAppearance implements Appearance, Cloneable {
 
     public Color getLabelColor() {return fontColor;}
     public void setLabelColor(Color c) {if ( c != null ) fontColor = c;}
+
+    public LabelPosition getLabelPosition() {return labelPosition;}
+    public void setLabelPosition(LabelPosition c) {if ( c != null ) labelPosition = c;}
 
     public void applyAppearance(NodeView nodeView, boolean optimizer) {
 
@@ -290,6 +295,13 @@ public class NodeAppearance implements Appearance, Cloneable {
         setFont(f);
 	    }
     }
+    value = nacProps.getProperty(baseKey + ".defaultNodeLabelPosition");
+    if (value != null) {
+	    LabelPosition f = (new LabelPositionParser()).parseLabelPosition(value);
+      if (f != null) {
+        setLabelPosition(f);
+	    }
+    }
         
   }
     
@@ -336,6 +348,9 @@ public class NodeAppearance implements Appearance, Cloneable {
     key = baseKey + ".defaultNodeFont";
     value = ObjectToString.getStringValue( getFont() );
     newProps.setProperty(key, value);
+    key = baseKey + ".defaultNodeLabelPosition";
+    value = ObjectToString.getStringValue( getLabelPosition() );
+    newProps.setProperty(key, value);
         
     return newProps;
   }
@@ -362,6 +377,7 @@ public class NodeAppearance implements Appearance, Cloneable {
 	sb.append(prefix + "NodeToolTip = ").append(toolTip).append(lineSep);
 	sb.append(prefix + "NodeFont = ").append(font).append(lineSep);
 	sb.append(prefix + "NodeFontColor = ").append(fontColor.toString()).append(lineSep);
+	sb.append(prefix + "NodeLabelPosition = ").append(labelPosition.toString()).append(lineSep);
 	sb.append(prefix + "nodeSizeLocked = ").append(nodeSizeLocked).append(lineSep);
 
 	return sb.toString();
@@ -411,6 +427,9 @@ public class NodeAppearance implements Appearance, Cloneable {
 	case VizMapUI.NODE_FONT_SIZE:
 	    defaultObj = new Double( getFont().getSize() );
 	    break;
+	case VizMapUI.NODE_LABEL_POSITION:
+	    defaultObj = new LabelPosition();
+	    break;
     	}
 
         return defaultObj;
@@ -455,6 +474,9 @@ public class NodeAppearance implements Appearance, Cloneable {
 	case VizMapUI.NODE_FONT_SIZE:
 	    setFontSize(((Double) c).floatValue());
 	    break;
+	case VizMapUI.NODE_LABEL_POSITION:
+	    setLabelPosition((LabelPosition) c);
+	    break;
 	}
 	//System.out.println("NodeAppearance after: " + getDescription(null));
     }
@@ -472,6 +494,7 @@ public class NodeAppearance implements Appearance, Cloneable {
 	setFont( na.getFont());
 	setLabelColor( na.getLabelColor());
 	setNodeSizeLocked( na.getNodeSizeLocked() );
+	setLabelPosition( na.getLabelPosition() );
     }
 
     public Object clone() {

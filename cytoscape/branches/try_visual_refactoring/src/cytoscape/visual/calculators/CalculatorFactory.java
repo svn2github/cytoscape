@@ -60,8 +60,7 @@ public class CalculatorFactory {
      * Attempt to construct an instance of Calculator as defined by
      * the supplied arguments.
      */
-    public static Calculator newCalculator(String name, Properties calcProps,
-                                           String baseKey, String intClassName) {
+    public static Calculator newCalculator(String name, Properties calcProps, String baseKey) {
         //String to use in case of errors
         String errString = "CalculatorFactory: error processing baseKey " + baseKey;
 

@@ -36,13 +36,8 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision: 7760 $
-// $Date: 2006-06-26 09:28:49 -0700 (Mon, 26 Jun 2006) $
-// $Author: mes $
-//----------------------------------------------------------------------------
 package cytoscape.visual;
-//----------------------------------------------------------------------------
+
 import java.util.Map;
 import java.util.Properties;
 import java.awt.Color;
@@ -59,7 +54,7 @@ import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
-//----------------------------------------------------------------------------
+
 /**
  * This class calculates the appearance of a Node. It holds a default value
  * and a (possibly null) calculator for each visual attribute.

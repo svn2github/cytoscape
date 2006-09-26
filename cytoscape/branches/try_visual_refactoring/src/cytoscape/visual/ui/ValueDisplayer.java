@@ -35,11 +35,6 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.ui;
 
 import java.awt.BorderLayout;
@@ -65,6 +60,7 @@ import javax.swing.plaf.metal.MetalButtonUI;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
 import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.visual.LabelPosition;
 import cytoscape.util.CyColorChooser;
 
 /**
@@ -121,6 +117,11 @@ public class ValueDisplayer extends JButton {
 	 * Display and get input for a font
 	 */
 	public static final byte FONT = 7;
+
+	/**
+	 * Display and get input for label position 
+	 */
+	public static final byte LABEL_POSITION = 8;
 
 	/**
 	 * Holds the type of UI this ValueDisplayer will pop up.
@@ -220,6 +221,19 @@ public class ValueDisplayer extends JButton {
 		this(parent, null, title, dispType);
 	}
 
+	public static ValueDisplayer getDisplayForLabelPosition(JDialog parent,
+			String title, LabelPosition c) {
+		ValueDisplayer v = new ValueDisplayer(parent, c.shortString(), title, LABEL_POSITION);
+		v.setInputLabelPositionListener();
+		v.inputObj = c;
+		return v;
+	}
+
+	private void setInputLabelPositionListener() {
+		this.inputListener = new LabelPositionListener(this);
+		addActionListener(this.inputListener);
+	}
+
 	public static ValueDisplayer getDisplayForColor(JDialog parent,
 			String title, Color c) {
 		String dispString = "   "; // just display the color
@@ -270,6 +284,8 @@ public class ValueDisplayer extends JButton {
 		inputObj = o;
 		if (o instanceof Icon) {
 			setIcon((Icon) o);
+		} else if (o instanceof LabelPosition) {
+			setText(((LabelPosition)o).shortString());
 		} else if (o instanceof Color) {
 			setBackground((Color) o);
 		} else if (o instanceof Font) {
@@ -303,6 +319,24 @@ public class ValueDisplayer extends JButton {
 			}
 		}
 	}
+
+	private class LabelPositionListener extends AbstractAction {
+		ValueDisplayer parent;
+		LabelPositionListener(ValueDisplayer parent) {
+			super("ValueDisplayer LabelPositionListener");
+			this.parent = parent;
+		}
+		public void actionPerformed(ActionEvent e) {
+			if (enabled) {
+				LabelPosition pos = LabelPlacer.showDialog(parent.parent, (LabelPosition)parent.inputObj);
+				if ( pos != null ) {
+					parent.inputObj = pos;
+					parent.fireItemSelected();
+				}
+			}
+		}
+	}
+
 
 	private static ValueDisplayer getDisplayForFont(JDialog parent,
 			String title, Font startFont) {
@@ -604,8 +638,9 @@ public class ValueDisplayer extends JButton {
 		case INT:
 			return getDisplayForInt(parent, title, 0);
 		case FONT:
-			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN,
-					1));
+			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN, 1));
+		case LABEL_POSITION:
+			return getDisplayForLabelPosition(parent, title, new LabelPosition());
 		default:
 			throw new ClassCastException(
 					"ValueDisplayer didn't understand type flag " + type);
@@ -646,8 +681,9 @@ public class ValueDisplayer extends JButton {
 				return getDisplayForInt(parent, title, 0);
 			}
 		} else if (sampleObj instanceof Font) {
-			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN,
-					1));
+			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN, 1));
+		} else if (sampleObj instanceof LabelPosition) {
+			return getDisplayForLabelPosition(parent, title, new LabelPosition());
 		} else {// don't know what to do this this
 			throw new ClassCastException(
 					"ValueDisplayer doesn't know how to display type "
@@ -692,6 +728,8 @@ public class ValueDisplayer extends JButton {
 			}
 		} else if (o instanceof Font) {
 			return getDisplayForFont(parent, title, (Font) o);
+		} else if (o instanceof LabelPosition) {
+			return getDisplayForLabelPosition(parent, title, (LabelPosition) o);
 		} else {// don't know what to do this this
 			throw new ClassCastException(
 					"ValueDisplayer doesn't know how to display type "

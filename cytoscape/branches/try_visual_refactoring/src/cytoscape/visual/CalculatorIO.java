@@ -60,49 +60,27 @@ public class CalculatorIO {
     public static final String dirHeader = "cytoscape.visual.calculators.";
 
     public static final String nodeColorBaseKey = "nodeColorCalculator";
-    public static final String nodeColorClassName = "NodeColorCalculator";
     public static final String nodeFillColorBaseKey = "nodeFillColorCalculator";
-    public static final String nodeFillColorClassName = "NodeFillColorCalculator";
     public static final String nodeBorderColorBaseKey = "nodeBorderColorCalculator";
-    public static final String nodeBorderColorClassName = "NodeBorderColorCalculator";
     public static final String nodeLineTypeBaseKey = "nodeLineTypeCalculator";
-    public static final String nodeLineTypeClassName = "NodeLineTypeCalculator";
     public static final String nodeShapeBaseKey = "nodeShapeCalculator";
-    public static final String nodeShapeClassName = "NodeShapeCalculator";
     public static final String nodeSizeBaseKey = "nodeSizeCalculator";
-    public static final String nodeSizeClassName = "NodeSizeCalculator";
     public static final String nodeWidthBaseKey = "nodeWidthCalculator";
-    public static final String nodeWidthClassName = "NodeWidthCalculator";
     public static final String nodeHeightBaseKey = "nodeHeightCalculator";
-    public static final String nodeHeightClassName = "NodeHeightCalculator";
     public static final String nodeUniformSizeBaseKey = "nodeUniformSizeCalculator";
-    public static final String nodeUniformSizeClassName = "NodeUniformSizeCalculator";
     public static final String nodeLabelBaseKey = "nodeLabelCalculator";
-    public static final String nodeLabelClassName = "NodeLabelCalculator";
     public static final String nodeToolTipBaseKey = "nodeToolTipCalculator";
-    public static final String nodeToolTipClassName = "NodeToolTipCalculator";
     public static final String nodeFontFaceBaseKey = "nodeFontFaceCalculator";
-    public static final String nodeFontFaceClassName = "NodeFontFaceCalculator";
     public static final String nodeFontSizeBaseKey = "nodeFontSizeCalculator";
-    public static final String nodeFontSizeClassName = "NodeFontSizeCalculator";
     public static final String edgeColorBaseKey = "edgeColorCalculator";
-    public static final String edgeColorClassName = "EdgeColorCalculator";
     public static final String edgeLineTypeBaseKey = "edgeLineTypeCalculator";
-    public static final String edgeLineTypeClassName = "EdgeLineTypeCalculator";
     public static final String edgeArrowBaseKey = "edgeArrowCalculator";
-    public static final String edgeArrowClassName = "EdgeArrowCalculator";
     public static final String edgeSourceArrowBaseKey = "edgeSourceArrowCalculator";
-    public static final String edgeSourceArrowClassName = "EdgeSourceArrowCalculator";
     public static final String edgeTargetArrowBaseKey = "edgeTargetArrowCalculator";
-    public static final String edgeTargetArrowClassName = "EdgeTargetArrowCalculator";
     public static final String edgeLabelBaseKey = "edgeLabelCalculator";
-    public static final String edgeLabelClassName = "EdgeLabelCalculator";
     public static final String edgeToolTipBaseKey = "edgeToolTipCalculator";
-    public static final String edgeToolTipClassName = "EdgeToolTipCalculator";
     public static final String edgeFontFaceBaseKey = "edgeFontFaceCalculator";
-    public static final String edgeFontFaceClassName = "EdgeFontFaceCalculator";
     public static final String edgeFontSizeBaseKey = "edgeFontSizeCalculator";
-    public static final String edgeFontSizeClassName = "EdgeFontSizeCalculator";
     
     public static final String nodeAppearanceBaseKey = "nodeAppearanceCalculator";
     public static final String edgeAppearanceBaseKey = "edgeAppearanceCalculator";
@@ -414,44 +392,25 @@ public class CalculatorIO {
          * with the same name, or get a unique name from the calculator, depending
          * on the value of the overWrite argument.
          */
-        handleCalculators(nodeFillColorNames, catalog, overWrite, nodeFillColorBaseKey,
-                          nodeFillColorClassName);
-        handleCalculators(nodeBorderColorNames, catalog, overWrite, nodeBorderColorBaseKey,
-                          nodeBorderColorClassName);
-        handleCalculators(nodeLineTypeNames, catalog, overWrite, nodeLineTypeBaseKey,
-                          nodeLineTypeClassName);
-        handleCalculators(nodeShapeNames, catalog, overWrite, nodeShapeBaseKey,
-                          nodeShapeClassName);
-        handleCalculators(nodeUniformSizeNames, catalog, overWrite, nodeUniformSizeBaseKey,
-                          nodeUniformSizeClassName);
-        handleCalculators(nodeWidthNames, catalog, overWrite, nodeWidthBaseKey,
-                          nodeWidthClassName);
-        handleCalculators(nodeHeightNames, catalog, overWrite, nodeHeightBaseKey,
-                          nodeHeightClassName);
-        handleCalculators(nodeLabelNames, catalog, overWrite, nodeLabelBaseKey,
-                          nodeLabelClassName);
-        handleCalculators(nodeToolTipNames, catalog, overWrite, nodeToolTipBaseKey,
-                          nodeToolTipClassName);
-        handleCalculators(nodeFontFaceNames, catalog, overWrite, nodeFontFaceBaseKey,
-                          nodeFontFaceClassName);
-        handleCalculators(nodeFontSizeNames, catalog, overWrite, nodeFontSizeBaseKey,
-                          nodeFontSizeClassName);
-        handleCalculators(edgeColorNames, catalog, overWrite, edgeColorBaseKey,
-                          edgeColorClassName);
-        handleCalculators(edgeLineTypeNames, catalog, overWrite, edgeLineTypeBaseKey,
-                          edgeLineTypeClassName);
-        handleCalculators(edgeSourceArrowNames, catalog, overWrite, edgeSourceArrowBaseKey,
-                          edgeSourceArrowClassName);
-        handleCalculators(edgeTargetArrowNames, catalog, overWrite, edgeTargetArrowBaseKey,
-                          edgeTargetArrowClassName);
-        handleCalculators(edgeLabelNames, catalog, overWrite, edgeLabelBaseKey,
-                          edgeLabelClassName);
-        handleCalculators(edgeToolTipNames, catalog, overWrite, edgeToolTipBaseKey,
-                          edgeToolTipClassName);
-        handleCalculators(edgeFontFaceNames, catalog, overWrite, edgeFontFaceBaseKey,
-                          edgeFontFaceClassName);
-        handleCalculators(edgeFontSizeNames, catalog, overWrite, edgeFontSizeBaseKey,
-                          edgeFontSizeClassName);
+        handleCalculators(nodeFillColorNames, catalog, overWrite, nodeFillColorBaseKey);
+        handleCalculators(nodeBorderColorNames, catalog, overWrite, nodeBorderColorBaseKey);
+        handleCalculators(nodeLineTypeNames, catalog, overWrite, nodeLineTypeBaseKey);
+        handleCalculators(nodeShapeNames, catalog, overWrite, nodeShapeBaseKey);
+        handleCalculators(nodeUniformSizeNames, catalog, overWrite, nodeUniformSizeBaseKey);
+        handleCalculators(nodeWidthNames, catalog, overWrite, nodeWidthBaseKey);
+        handleCalculators(nodeHeightNames, catalog, overWrite, nodeHeightBaseKey);
+        handleCalculators(nodeLabelNames, catalog, overWrite, nodeLabelBaseKey);
+        handleCalculators(nodeToolTipNames, catalog, overWrite, nodeToolTipBaseKey);
+        handleCalculators(nodeFontFaceNames, catalog, overWrite, nodeFontFaceBaseKey);
+        handleCalculators(nodeFontSizeNames, catalog, overWrite, nodeFontSizeBaseKey);
+        handleCalculators(edgeColorNames, catalog, overWrite, edgeColorBaseKey);
+        handleCalculators(edgeLineTypeNames, catalog, overWrite, edgeLineTypeBaseKey);
+        handleCalculators(edgeSourceArrowNames, catalog, overWrite, edgeSourceArrowBaseKey);
+        handleCalculators(edgeTargetArrowNames, catalog, overWrite, edgeTargetArrowBaseKey);
+        handleCalculators(edgeLabelNames, catalog, overWrite, edgeLabelBaseKey);
+        handleCalculators(edgeToolTipNames, catalog, overWrite, edgeToolTipBaseKey);
+        handleCalculators(edgeFontFaceNames, catalog, overWrite, edgeFontFaceBaseKey);
+        handleCalculators(edgeFontSizeNames, catalog, overWrite, edgeFontSizeBaseKey);
 
         //Map structure to hold visual styles that we build here
         Map visualStyles = new HashMap();
@@ -555,7 +514,7 @@ public class CalculatorIO {
      * new calculator as needed.
      */
     private static void handleCalculators(Map nameMap, CalculatorCatalog catalog,
-                    boolean overWrite, String baseKey, String className) {
+                    boolean overWrite, String baseKey) {
 	// for each calculator name
         for (Iterator si = nameMap.keySet().iterator(); si.hasNext(); ) {
             String name = (String)si.next();
@@ -563,10 +522,8 @@ public class CalculatorIO {
 	    // that particular calculator
             Properties calcProps = (Properties)nameMap.get(name);
             String keyString = baseKey + "." + name;
-            String intClassName = dirHeader + className;
 	    // create a calculator based on the calculator name and type
-            Calculator c = CalculatorFactory.newCalculator(name, calcProps, keyString,
-                                                           intClassName);
+            Calculator c = CalculatorFactory.newCalculator(name, calcProps, keyString);
             if (c!= null) {
                 if (overWrite) {//remove any existing calculator of same name and type
                     removeDuplicate(c, catalog);

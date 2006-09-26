@@ -1,6 +1,6 @@
 
 /*
-  File: Appearance.java 
+  File: LabelPositionParser.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -36,26 +36,22 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape.visual;
+package cytoscape.visual.parsers;
 
-import java.awt.Color;
-import java.awt.Font;
-import cytoscape.visual.LineType;
-import java.util.Properties;
+
+import cytoscape.visual.LabelPosition;
+
 
 /**
- * Objects of this class hold data describing the appearance of a Node.
+ * Parses a String into a LabelPosition object.
  */
-interface Appearance {
-    
-	public void applyDefaultProperties(Properties props, String base); 
-    
-	public Properties getDefaultProperties(String baseKey); 
+public class LabelPositionParser implements ValueParser {
 
-	public String getDescription(String prefix);
-
-	public Object get(byte type);
-
-	public void set(byte type, Object o);
+    public Object parseStringValue(String value) {
+        return parseLabelPosition(value);
+    }
+    public LabelPosition parseLabelPosition(String value) {
+        return LabelPosition.parse(value);
+    }
 }
 

@@ -36,13 +36,8 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual;
-//----------------------------------------------------------------------------
+
 import java.util.Map;
 import java.util.Properties;
 import java.awt.Color;
@@ -58,7 +53,7 @@ import cytoscape.visual.ui.VizMapUI;
 import cytoscape.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
-//----------------------------------------------------------------------------
+
 /**
  * This class calculates the appearance of a Node. It holds a default value
  * and a (possibly null) calculator for each visual attribute.
@@ -130,14 +125,11 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
 
   public void applyProperties(String name, Properties nacProps, String baseKey,
                               CalculatorCatalog catalog) {
-
     applyProperties(defaultAppearance,name,nacProps,baseKey,catalog);
-
   }
     
   public Properties getProperties(String baseKey) {
     return getProperties(defaultAppearance,baseKey);
-    
   }
 
   protected void copyDefaultAppearance(AppearanceCalculator toCopy) {
