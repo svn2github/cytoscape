@@ -64,55 +64,106 @@ public class NodeTopologyFilterEditor
     }
     identifier = "Topology Filter";
     setBorder( new TitledBorder( "Node Topology Filter") );
-    setLayout(new BorderLayout());
-    JPanel namePanel = new JPanel();
+    
+    setLayout(new GridBagLayout());
+    
+    java.awt.GridBagConstraints gridBagConstraints;
+
+    JLabel lbFilterName = new JLabel( "Filter Name" );
+    lbFilterName.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbFilterName, gridBagConstraints);
+
     nameField = new JTextField(15);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(nameField, gridBagConstraints);
+
     nameField.setText(identifier);
     nameField.addActionListener(this);
     nameField.addFocusListener(this);
    
-    namePanel.add( new JLabel( "Filter Name" ) );
-    namePanel.add( nameField );
-    add( namePanel,BorderLayout.NORTH );
-
-    JPanel all_panel = new JPanel();
-    all_panel.setLayout(new GridLayout(3,1));
+    JLabel lbSelectWith = new JLabel("Select nodes with ");
+    lbSelectWith.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbSelectWith, gridBagConstraints);
 	
-    JPanel topPanel = new JPanel();
-    topPanel.add(new JLabel("Select nodes with "));
-		
     countField = new JTextField(10);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 0.5;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(countField, gridBagConstraints);
+    
     countField.setEditable(true);
     countField.addActionListener(this);
     countField.addFocusListener(this);
-    topPanel.add(countField);
+    
+    JLabel lbNeighbors = new JLabel("neighbors ");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 2;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 20);
+    add(lbNeighbors, gridBagConstraints);
 
-    topPanel.add(new JLabel(" neighbors"));
-		
-    JPanel middlePanel = new JPanel();
-    middlePanel.add(new JLabel("within distance "));
-
+    JLabel lbWithinDistance = new JLabel("within distance ");
+    lbWithinDistance.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbWithinDistance, gridBagConstraints);
+    
     distanceField = new JTextField(10);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(distanceField, gridBagConstraints);
+
     distanceField.setEditable(true);
     distanceField.addActionListener(this);
     distanceField.addFocusListener(this);
-    middlePanel.add(distanceField);
 
+    JLabel lbPassFilter = new JLabel("that pass the filter ");
+    lbPassFilter.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbPassFilter, gridBagConstraints);
 
-    JPanel bottomPanel = new JPanel();
-    bottomPanel.add(new JLabel("that pass the filter "));
     filterBox = new JComboBox();
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(filterBox, gridBagConstraints);
+
     filterBox.addItemListener(this);
     filterBox.setModel(FilterManager.defaultManager().getComboBoxModel());
     filterBox.setEditable(false);
-    bottomPanel.add(filterBox);
-
-    all_panel.add(topPanel);
-    all_panel.add(middlePanel);
-    all_panel.add(bottomPanel);
-
-    add(all_panel,BorderLayout.CENTER);
-
 
   }
 

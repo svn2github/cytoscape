@@ -2,6 +2,7 @@ package filter.cytoscape;
 
 import java.awt.event.*;
 import java.awt.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.*;
@@ -56,40 +57,73 @@ public class NodeInteractionFilterEditor
     }
     identifier = "Node Interactions";
     setBorder( new TitledBorder( "Node Interaction Filter"));
-    setLayout( new BorderLayout() );
+    setLayout( new GridBagLayout() );
     setPreferredSize(new Dimension(450,125));	
-    JPanel namePanel = new JPanel();
+    
+    GridBagConstraints gridBagConstraints;
+
+    JLabel lbFilterName = new JLabel( "Filter Name" );
+    lbFilterName.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.anchor = GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbFilterName, gridBagConstraints);
+    
     nameField = new JTextField(15);
+    gridBagConstraints = new GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(nameField, gridBagConstraints);
+    
     nameField.addActionListener(this);
     nameField.addFocusListener(this);
     
-    namePanel.add( new JLabel( "Filter Name" ) );
-    namePanel.add( nameField );
-    add( namePanel, BorderLayout.NORTH  );
-								
-    JPanel all_panel = new JPanel();
-    all_panel.setLayout(new GridLayout(2,1));
-								
-    JPanel topPanel = new JPanel();
-    topPanel.add(new JLabel("Select nodes which are the "));
+    JLabel lbSelectNodes = new JLabel("Select nodes which are the ");
+    lbSelectNodes.setFocusable(false);
+    gridBagConstraints = new GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbSelectNodes, gridBagConstraints);
+
+    
     targetBox = new JComboBox();
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(targetBox, gridBagConstraints);
+    
     targetBox.addItem(NodeInteractionFilter.SOURCE);
     targetBox.addItem(NodeInteractionFilter.TARGET);
     targetBox.addItem(NodeInteractionFilter.EITHER);
     targetBox.addItemListener(this);
-    topPanel.add( targetBox );
-								
-    JPanel bottomPanel = new JPanel();
-    bottomPanel.add(new JLabel("of at least one edge which passes the filter "));	
-								
+
+    JLabel lbEdgePassesTheFilter = new JLabel("of at least one edge which passes the filter ");	
+    lbEdgePassesTheFilter.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbEdgePassesTheFilter, gridBagConstraints);
+    
     filterBox = new JComboBox(FilterManager.defaultManager().getComboBoxModel());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(filterBox, gridBagConstraints);
+    
     filterBox.addItemListener(this);
-    bottomPanel.add(filterBox);
-								
-    all_panel.add(topPanel);
-    all_panel.add(bottomPanel);
-								
-    add( all_panel, BorderLayout.CENTER );
   }
 
   //----------------------------------------//

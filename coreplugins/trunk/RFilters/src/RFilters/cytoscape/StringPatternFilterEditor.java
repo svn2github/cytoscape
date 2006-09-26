@@ -64,54 +64,101 @@ public class StringPatternFilterEditor
     }catch(Exception e){
       e.printStackTrace();
     }
-				
-				
-    setLayout(new BorderLayout());
+						
+    setLayout(new GridBagLayout());
     identifier = "String Filter";
     setBorder( new TitledBorder( getFilterID() ) );
 
-    JPanel namePanel = new JPanel();
+    java.awt.GridBagConstraints gridBagConstraints;
+
+    JLabel lbFilterName = new JLabel( "Filter Name" );
+    lbFilterName.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbFilterName, gridBagConstraints);
+    
     nameField = new JTextField(15);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 0;
+    //gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(nameField, gridBagConstraints);
+    
     nameField.addActionListener(this);
     nameField.addFocusListener(this);
-    namePanel.add( new JLabel( "Filter Name" ) );
-    namePanel.add( nameField );
-   
-    add( namePanel,BorderLayout.NORTH );
 
-    JPanel all_panel = new JPanel();
-    all_panel.setLayout(new GridLayout(3,1));	
-    JPanel topPanel = new JPanel();
-    topPanel.add(new JLabel("Select graph objects of type "));
+    JLabel lbSelectType = new JLabel("Select graph objects of type ");
+    lbSelectType.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbSelectType, gridBagConstraints);
+   
     classBox = new JComboBox();
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    //gridBagConstraints.weightx = 0.5;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(classBox, gridBagConstraints);
+
     classBox.addItem(StringPatternFilter.NODE);
     classBox.addItem(StringPatternFilter.EDGE);
     classBox.setEditable( false );
     classBox.addItemListener(this);
-    topPanel.add(classBox);
-				
-    JPanel middlePanel = new JPanel();
-    middlePanel.add(new JLabel(" with a value for text attribute "));
-    
+
+    JLabel lbTextAttr = new JLabel(" with a value for text attribute ");
+    lbTextAttr.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbTextAttr, gridBagConstraints);
+
     attributeBox = new JComboBox();
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 2;
+    //gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(attributeBox, gridBagConstraints);
+
     attributeBox.setEditable(false);
     attributeBox.addItemListener(this);
-    middlePanel.add(attributeBox);
 
-    JPanel bottomPanel = new JPanel();
-    bottomPanel.add(new JLabel(" that matches the pattern "));
-				
+    JLabel lbMatchesPattern = new JLabel(" that matches the pattern ");
+    lbMatchesPattern.setFocusable(false);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbMatchesPattern, gridBagConstraints);
+	
     searchField = new JTextField(10);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 3;
+    //gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(searchField, gridBagConstraints);
+
     searchField.setEditable( true );
     searchField.addActionListener( this );
     searchField.addFocusListener(this);
-    bottomPanel.add(searchField);
-
-    all_panel.add(topPanel);
-    all_panel.add(middlePanel);
-    all_panel.add(bottomPanel);
-    add(all_panel,BorderLayout.CENTER);
-
+ 
   }
 
 

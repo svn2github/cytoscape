@@ -68,62 +68,113 @@ public class NumericAttributeFilterEditor
     }
 
     //this.objectAttributes = network.getNodeAttributes();
-    setLayout(new BorderLayout());
+    setLayout(new GridBagLayout());
     identifier = "Numeric Filter";
     setBorder( new TitledBorder( getFilterID() ) );
+    
+    GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+    
+    JLabel lbFilterName = new JLabel( "Filter Name" ); 
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+    add(lbFilterName, gridBagConstraints);
 
-    JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
-    namePanel.add( new JLabel( "Filter Name" ) );
-    namePanel.add( nameField );
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+    add(nameField, gridBagConstraints);
+
     nameField.addActionListener(this);
     nameField.addFocusListener(this);
-    add( namePanel,BorderLayout.NORTH );
+    
+    JLabel lbSelectType =new JLabel("Select graph objects of type "); 
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+    add(lbSelectType, gridBagConstraints);
 
-    JPanel all_panel = new JPanel();
-    all_panel.setLayout(new GridLayout(3,1));	
-				
-    JPanel topPanel = new JPanel();
-    topPanel.add(new JLabel("Select graph objects of type "));
-			
     classBox = new JComboBox();
+    //classBox.setPreferredSize(new Dimension(50,22));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
+    add(classBox, gridBagConstraints);
+
     classBox.addItem(NumericAttributeFilter.NODE);
     classBox.addItem(NumericAttributeFilter.EDGE);
     classBox.setEditable( false );
     classBox.addItemListener(this);
-    topPanel.add(classBox);
     
-    JPanel middlePanel = new JPanel();
-    middlePanel.add(new JLabel(" with a value for numeric attribute "));
-				
+    JLabel lbNumberAttr = new JLabel(" with a value for numeric attribute ");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+    add(lbNumberAttr, gridBagConstraints);
+
     attributeBox = new JComboBox();
+    attributeBox.setMinimumSize(new java.awt.Dimension(100, 18));
+    attributeBox.setPreferredSize(new java.awt.Dimension(100, 22));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 0.5;
+    gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
+    add(attributeBox, gridBagConstraints);
+
     attributeBox.setEditable(false);
     attributeBox.addItemListener(this);
-    middlePanel.add(attributeBox);
-
-    JPanel bottomPanel = new JPanel();	
-    bottomPanel.add(new JLabel(" that is "));
-				
+ 
+    JLabel lbThatIs = new JLabel(" that is ");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+    add(lbThatIs, gridBagConstraints);
+	    
     comparisonBox = new JComboBox();
+    comparisonBox.setPreferredSize(new Dimension(50,22));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    add(comparisonBox, gridBagConstraints);
+
     comparisonBox.addItem(NumericAttributeFilter.LESS);
     comparisonBox.addItem(NumericAttributeFilter.EQUAL);
     comparisonBox.addItem(NumericAttributeFilter.GREATER);
     comparisonBox.setSelectedIndex(0);
     comparisonBox.setEditable(false);
     comparisonBox.addItemListener(this);
-    bottomPanel.add(comparisonBox);
     
     searchField = new JTextField(10);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 2;
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+    add(searchField, gridBagConstraints);
+
     searchField.setEditable( true );
     searchField.addActionListener( this );
     searchField.addFocusListener(this);
-    bottomPanel.add(searchField);
-				
-    all_panel.add(topPanel);
-    all_panel.add(middlePanel);
-    all_panel.add(bottomPanel);
-    //updateAttributeBox(NODE_CLASS);
-    add(all_panel,BorderLayout.CENTER);
+ 
   }
 
 

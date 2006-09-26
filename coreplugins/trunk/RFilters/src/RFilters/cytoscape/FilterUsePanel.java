@@ -42,7 +42,7 @@ public class FilterUsePanel extends JPanel
     super();
     this.frame = frame;
 
-
+    setLayout(new BorderLayout());
     //--------------------//
     // FilterEditorPanel
     filterEditorPanel = new FilterEditorPanel();

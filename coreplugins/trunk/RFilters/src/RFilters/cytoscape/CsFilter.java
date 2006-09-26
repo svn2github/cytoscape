@@ -122,7 +122,7 @@ public class CsFilter
   public void show () {
     if ( frame == null ) {
       frame = new JFrame( "Use Filters" );
-      frame.getContentPane().add( getFilterUsePanel() );
+      frame.getContentPane().add( getFilterUsePanel());
       frame.pack();
       //Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).add(getFilterUsePanel()); 
     }
