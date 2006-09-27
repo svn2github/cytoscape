@@ -1,1 +1,1 @@
-./perldoc.pl . doc
+./perldoc.pl src doc

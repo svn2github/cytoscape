@@ -104,6 +104,7 @@ sub recursePackageTree
     my ($HTML, $tree, $outputFiles, $root, $depth) = @_;
 
     my $prefix = "&nbsp;&nbsp;&nbsp;&nbsp;" x $depth;
+    print "Linking $depth $root\n";
     $$HTML .= $prefix . makeLink($root, $outputFiles->{$root});
     
     foreach my $child (@{$tree->{$root}})
