@@ -801,13 +801,13 @@ public final class GraphRenderer {
 
             break;
 
-        case NodeDetails.ANCHOR_NORTH:
+        case NodeDetails.ANCHOR_SOUTH:
             rtrn2x[0] = (input4x[0] + input4x[2]) / 2.0d;
             rtrn2x[1] = input4x[3];
 
             break;
 
-        case NodeDetails.ANCHOR_NORTHEAST:
+        case NodeDetails.ANCHOR_SOUTHEAST:
             rtrn2x[0] = input4x[2];
             rtrn2x[1] = input4x[3];
 
@@ -819,19 +819,19 @@ public final class GraphRenderer {
 
             break;
 
-        case NodeDetails.ANCHOR_SOUTHEAST:
+        case NodeDetails.ANCHOR_NORTHEAST:
             rtrn2x[0] = input4x[2];
             rtrn2x[1] = input4x[1];
 
             break;
 
-        case NodeDetails.ANCHOR_SOUTH:
+        case NodeDetails.ANCHOR_NORTH:
             rtrn2x[0] = (input4x[0] + input4x[2]) / 2.0d;
             rtrn2x[1] = input4x[1];
 
             break;
 
-        case NodeDetails.ANCHOR_SOUTHWEST:
+        case NodeDetails.ANCHOR_NORTHWEST:
             rtrn2x[0] = input4x[0];
             rtrn2x[1] = input4x[1];
 
@@ -843,7 +843,7 @@ public final class GraphRenderer {
 
             break;
 
-        case NodeDetails.ANCHOR_NORTHWEST:
+        case NodeDetails.ANCHOR_SOUTHWEST:
             rtrn2x[0] = input4x[0];
             rtrn2x[1] = input4x[3];
 
