@@ -38,6 +38,7 @@ sub new
     }
     close IN;
 
+    # inspect the package
     if($self->packageName() ne "")
     {
 	$self->introspectPackage($self->packageName(), \@contents);
@@ -52,7 +53,7 @@ sub introspectPackage
 
     eval("use $packageName");
     local (*alias);
-    *stash = *{"${packageName}::"};
+    *stash = *{"${packageName}::"}; # the package's symbol table hash
     while (my ($varName, $globValue) = each %stash)
     {
 	#print "introspect: $varName\n";

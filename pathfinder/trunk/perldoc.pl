@@ -83,7 +83,7 @@ sub getRootPackages
 	}
     }
 
-    ## Root nodes are not children 
+    ## Root nodes are not children of any other node
     foreach my $key (keys %{$tree})
     {
 	if(! exists($childNodes{$key}))
@@ -103,11 +103,9 @@ sub recursePackageTree
 {
     my ($HTML, $tree, $outputFiles, $root, $depth) = @_;
 
-    my $prefix = "";
-    
-    $prefix = "&nbsp;&nbsp;&nbsp;&nbsp;" x $depth;
-
+    my $prefix = "&nbsp;&nbsp;&nbsp;&nbsp;" x $depth;
     $$HTML .= $prefix . makeLink($root, $outputFiles->{$root});
+    
     foreach my $child (@{$tree->{$root}})
     {
 	recursePackageTree($HTML, $tree, $outputFiles, $child, $depth + 1);

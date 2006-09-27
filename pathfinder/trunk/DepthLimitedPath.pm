@@ -5,7 +5,7 @@ use Object;
 
 @ISA = qw(PathStateMachine);
 
-DepthLimitedPath->_generateAccessors(qw(path maxDepth));
+DepthLimitedPath->_generateAccessors(qw(maxDepth));
 
 sub new
 {
@@ -13,35 +13,7 @@ sub new
     
     my $self = $caller->SUPER::new();
     $self->maxDepth($maxDepth);
-    $self->path([]);
     return $self;
-}
-
-
-sub startPath
-{
-    my ($self, $node, @extra) = @_;
-    $self->path([]);
-    print "  Star: at $node\n" 
-	if $PathStateMachine::DEBUG & $PathStateMachine::STAR;
-}
-
-
-sub pushPath
-{
-    my ($self, $node, @extra) = @_;
-    push @{$self->path()}, $node;
-    print "  Push: $node\n" 
-	if $PathStateMachine::DEBUG & $PathStateMachine::PUSH;
-}
-
-
-sub popPath
-{
-    my ($self, $node, @extra) = @_;
-    pop @{$self->path()};
-    print "  Pop: $node\n" 
-	if $PathStateMachine::DEBUG & $PathStateMachine::POP;
 }
 
 sub terminatesPath
@@ -51,7 +23,7 @@ sub terminatesPath
     my $t = ($depth >= 1);
     if($t)
     {
-	printf "  TPath: %s terminate=$depth\n", join(".", @{$self->path()})
+	printf "  TPath: %s terminate=$depth\n", $self->printPath()
 	    if $PathStateMachine::DEBUG & $PathStateMachine::TPAT;
     }    
     return($t);

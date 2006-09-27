@@ -50,7 +50,7 @@ sub getEdgeTypesBetween
 }
 
 #
-# WARNING: Ignore edge types for now
+# 
 #
 sub getNeighbors
 {

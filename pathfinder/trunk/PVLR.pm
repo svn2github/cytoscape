@@ -37,6 +37,14 @@ sub ids
     return( \@x );
 }
 
+sub getRatio
+{
+    my ($self, $id, $columnName) = @_;
+
+    my $row = $self->idTable()->{$id};
+    return $self->ratios()->{$columnName}->[$row];
+}
+
 
 sub getGeneData
 {

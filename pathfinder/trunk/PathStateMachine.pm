@@ -32,35 +32,76 @@ sub new
     my ($caller) = @_;
     my $self = $caller->SUPER::new();
     
+    $self->{time} = 0;
+    $self->ft({});    
+    $self->dt({});
+    $self->path([]);
+    $self->edgeTypes([]);
     $self->allowReuse(0);
     return $self;
 }
 
 
-PathStateMachine->_generateAccessors(qw(allowReuse));
+PathStateMachine->_generateAccessors(qw(allowReuse path edgeTypes dt ft));
 
 
 ## 
 ## Instance methods
 ##
 
+sub resetTime
+{
+    my ($self) = @_;
+    $self->{time} = 0;
+    $self->dt({});
+    $self->ft({});
+}
+
 sub discoverNode
 {
-    my ($self, $node, $depth, $time) = @_;
-    printf "  Disc: $node d=%d t=%d\n", $depth, $time if $DEBUG & $DISC;
+    my ($self, $node, $depth) = @_;
+    printf("  Disc: $node d=%d t=%d\n", $depth, $self->{time})
+	if $DEBUG & $DISC;
+
+    $self->dt()->{$node} = $self->{time}; # store the discovery time
+    $self->{time} += 1;
+
 }
 
 sub finishNode
 {
-    my ($self, $node, $depth, $time) = @_;
-    printf "  Fini: $node d=%d t=%d\n", $depth, $time if $DEBUG & $FINI;
+    my ($self, $node, $depth) = @_;
+    printf("  Fini: $node d=%d t=%d\n", $depth, $self->{time})
+	if $DEBUG & $FINI;
+
+    $self->ft()->{$node} = $self->{time}; # store the finish time
 }
 
 
 sub startPath
 {
     my ($self, $node, @extra) = @_;
-    print "  Star: at $node\n" if $DEBUG & $STAR;
+    $self->path([$node]);
+    
+    printf "  Star: at $node path=%s\n", $self->printPath() 
+	if $DEBUG & $STAR;
+}
+
+sub pushPath
+{
+    my ($self, $node, $edge, @extra) = @_;
+    push @{$self->path()}, $node;
+    push @{$self->edgeTypes()}, $edge;
+    print "  Push: $node $edge\n" if $DEBUG & $PUSH;
+}
+
+
+sub popPath
+{
+    my ($self, $node, @extra) = @_;
+    pop @{$self->path()};
+    pop @{$self->edgeTypes()};
+    print "  Pop\n" if $DEBUG & $POP;
 }
 
 
@@ -81,24 +122,11 @@ sub inspectStartNode
 
 sub inspectNeighbor
 {
-    my ($self, $node, @extra) = @_;
+    my ($self, $node, $edge, @extra) = @_;
     my $ok = 1;
-    print "  Insp: $node ok=$ok\n" if $DEBUG & $INSP;
+    print "  Insp: $node $edge ok=$ok\n" if $DEBUG & $INSP;
 
     return $ok;
-}
-
-sub pushPath
-{
-    my ($self, $node, @extra) = @_;
-    print "  Push: $node\n" if $DEBUG & $PUSH;
-}
-
-
-sub popPath
-{
-    my ($self, $node, @extra) = @_;
-    print "  Pop: $node\n" if $DEBUG & $POP;
 }
 
 
@@ -127,5 +155,20 @@ sub terminatesSearch
     return $terminates;
 }
 
+sub printPath
+{
+    my ($self) = @_;
+
+    my @path = @{$self->path()};
+    my @edges = @{$self->edgeTypes()};
+
+    my $str = $path[0];
+    foreach my $x (1..$#path)
+    {
+	
+	$str .= ".[" . $path[$x] . "," . $edges[$x-1] . "]";
+    }
+    return $str;
+}
 
 1;

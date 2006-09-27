@@ -35,20 +35,17 @@ sub search
     {
 	#print "DFS: start at: $startNode\n";
 
-	my (%color, %ft, %dt);
+	my (%color);
 	foreach $n ($self->graph()->nodes())
 	{
 	    $color{$n} = $WHITE;
-	    $ft{$n} = 0;
-	    $dt{$n} = 0;
 	}
 	
-	my $time = 0;
+	$self->psm()->resetTime();
 	if($self->psm()->inspectStartNode($startNode))
 	{
 	    $self->psm()->startPath($startNode);
-	    $self->psm()->pushPath($startNode);
-	    $self->dfsVisit($startNode, 0, \$time, \%color, \%dt, \%ft);
+	    $self->dfsVisit($startNode, 0, \%color);
 	}
 
 	#print "DFS: done\n";
@@ -65,15 +62,13 @@ sub search
 #
 sub dfsVisit
 {
-    my ($self, $node, $depth, $time, $color, $dt, $ft) = @_;
+    my ($self, $node, $depth, $color) = @_;
 
     my $psm = $self->psm();
 
-    $psm->discoverNode($node, $depth, $$time);
+    $psm->discoverNode($node, $depth);
 
     $color->{$node} = $GREY; # GREY means node is on current path
-    $dt->{$node} = $$time; # store the discovery time
-    $$time += 1;
 
     if($psm->terminatesPath($node, $depth))
     {
@@ -85,11 +80,15 @@ sub dfsVisit
 	my @neighbors = $self->graph()->getNeighbors($node);
 	foreach $n (@neighbors)
 	{
-	    if($color->{$n} == $WHITE && $psm->inspectNeighbor($n))
+	    my $edges = $self->graph()->getEdgeTypesBetween($node, $n);
+	    foreach my $e (@{$edges})
 	    {
-		$psm->pushPath($n);
-		$self->dfsVisit($n, $depth + 1, $time, $color, $dt, $ft);
-		$psm->popPath($n);
+		if($color->{$n} == $WHITE && $psm->inspectNeighbor($n, $e))
+		{
+		    $psm->pushPath($n, $e);
+		    $self->dfsVisit($n, $depth + 1, $color);
+		    $psm->popPath();
+		}
 	    }
 	}
     }
@@ -104,9 +103,7 @@ sub dfsVisit
     {
 	$color->{$node} = $BLACK;  
     }
-    $psm->finishNode($node, $depth, $$time);
-    
-    $ft->{$node} = $$time; # store the finish time
+    $psm->finishNode($node, $depth);
 }
 
 1;

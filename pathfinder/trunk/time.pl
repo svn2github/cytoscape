@@ -15,11 +15,11 @@ use TimeData;
 
 use PathFinder;
 
-die "?0: <sif> <timeseries lrpv>\n" if(scalar(@ARGV != 2));
+die "?0: <sif> <timeseries lrpv> <output name>\n" if(scalar(@ARGV != 3));
 
 my $DEBUG = 0;
     
-my ($network, $lrpv) = @ARGV;
+my ($network, $lrpv, $outName) = @ARGV;
 
 my $graph = DirectedGraph->new($network);
 $graph->print() if $DEBUG;
@@ -32,7 +32,9 @@ printf("Read %d cols for %d genes\n",
        scalar(@{$exprData->ids()}) );
 
 
-my $tme = $exprData->getAllTME(0.05);
+my $tme = $exprData->getAllTME(0.05, 
+			       $outName . "-tme.na",
+			       $outName . "-ratio.na");
 
 if($DEBUG)
 {
@@ -43,8 +45,7 @@ if($DEBUG)
 }
 
 my $psm = TemporalPath->new(1, $tme);
-PathStateMachine->DEBUG($PathStateMachine::TPAT | 
-			$PathStateMachine::INSP 
+PathStateMachine->DEBUG($PathStateMachine::TPAT
 			);
 
 $psm->allowReuse(1);
@@ -53,3 +54,8 @@ $pf = PathFinder->new($graph, DFSPathSearch->new($graph, $psm));
 
 $pf->runSearch();
 
+my @edges = @{$psm->savedEdges()};
+
+open(OUT, ">${outName}.sif") || die "Can't open $outName.sif\n";
+map {print OUT $_ . "\n"} @edges;
+close OUT;

@@ -4,45 +4,17 @@ use PathStateMachine;
 
 @ISA = qw(PathStateMachine);
 
-TemporalPath->_generateAccessors(qw(path maxDepth tmeData));
+TemporalPath->_generateAccessors(qw(maxDepth tmeData savedEdges));
 
 sub new
 {
-    my ($caller, $maxDepth, $tmeData) = @_;
+    my ($caller, $maxDepth, $tmeData, $outputFile) = @_;
     
     my $self = $caller->SUPER::new();
     $self->maxDepth($maxDepth);
-    $self->path([]);
     $self->tmeData($tmeData);
+    $self->savedEdges([]);
     return $self;
-}
-
-
-sub startPath
-{
-    my ($self, $node, @extra) = @_;
-    $self->path([]);
-    
-    printf "  Star: at $node path=%s\n", $self->printPath() 
-	if $PathStateMachine::DEBUG & $PathStateMachine::STAR;
-}
-
-
-sub pushPath
-{
-    my ($self, $node, @extra) = @_;
-    push @{$self->path()}, $node;
-    print "  Push: $node\n" 
-	if $PathStateMachine::DEBUG & $PathStateMachine::PUSH;
-}
-
-
-sub popPath
-{
-    my ($self, $node, @extra) = @_;
-    pop @{$self->path()};
-    print "  Pop: $node\n" 
-	if $PathStateMachine::DEBUG & $PathStateMachine::POP;
 }
 
 sub inspectNeighbor
@@ -87,11 +59,13 @@ sub terminatesPath
     my $t = ($depth >= 1);
     if($t)
     {
-	printf "  TPath: %s terminate=$depth\n", join(".", @{$self->path()})
+	$self->savePath();
+	printf "  TPath: %s terminate=$depth\n", $self->printPath()
 	    if $PathStateMachine::DEBUG & $PathStateMachine::TPAT;
     }    
     return($t);
 }
+
 
 sub terminatesSearch
 {
@@ -106,16 +80,24 @@ sub terminatesSearch
     return($t);
 }
 
-sub printPath
+sub savePath
 {
     my ($self) = @_;
+    
+    my @path = @{$self->path()};
+    my @edges = @{$self->edgeTypes()};
 
-    my $str = "";
-    foreach my $p (@{$self->path()})
+    my $savedEdges = $self->savedEdges();
+
+    my $source = $path[0];
+    foreach my $x (1..$#path)
     {
-	
-	$str .= $p . ".";
+	push(@{$savedEdges}, 
+	     sprintf("%s %s %s", 
+		     $source, 
+		     $edges[$x-1],
+		     $path[$x]));
     }
-    return $str;
 }
+
 1;
