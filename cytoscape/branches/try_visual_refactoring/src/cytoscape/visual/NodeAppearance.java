@@ -428,7 +428,7 @@ public class NodeAppearance implements Appearance, Cloneable {
 	    defaultObj = new Double( getFont().getSize() );
 	    break;
 	case VizMapUI.NODE_LABEL_POSITION:
-	    defaultObj = new LabelPosition();
+	    defaultObj = getLabelPosition(); 
 	    break;
     	}
 

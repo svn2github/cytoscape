@@ -180,8 +180,7 @@ public class VizMapAttrTab extends VizMapTab {
   public void visualStyleChanged() {
     // get current defaults
     Object defaultObj = VizUIUtilities.getDefault(VMM.getVisualStyle(), this.type);
-    setCurrentCalculator(
-                         VizUIUtilities.getCurrentCalculator(VMM.getVisualStyle(), this.type) );
+    setCurrentCalculator( VizUIUtilities.getCurrentCalculator(VMM.getVisualStyle(), this.type) );
 
     if (defaultValueDisplayer == null) { // haven't initialized yet
 	    drawDefault(defaultObj);
@@ -318,11 +317,8 @@ public class VizMapAttrTab extends VizMapTab {
 	    // prevent bugs, could be removed later
 	    if (e.getItemSelectable() == defaultValueDisplayer &&
           e.getStateChange() == ItemEvent.SELECTED) {
-        //_setDefault(defaultValueDisplayer.getValue());
         Object newDefault = defaultValueDisplayer.getValue();
         VizUIUtilities.setDefault(VMM.getVisualStyle(), type, newDefault);
-        // Commented out to prevent auto-updates
-        // VMM.getNetworkView().redrawGraph(false, true);
 	    }
     }
   }
@@ -469,10 +465,6 @@ public class VizMapAttrTab extends VizMapTab {
 	    // convert to array for JOptionPane
 	    Object[] mapperArray = mapperNames.toArray();
 
-//	    for(int i = 0; i<mapperArray.length; i++) {
-//	    	System.out.println("Map: " + i + " " +  mapperArray[i].toString());
-//	    }
-	    
 	    // show JOptionPane with the available mappers
 	    String selectedMapper = (String) JOptionPane.showInputDialog(mainUIDialog,
                                                                    "Choose a mapper",

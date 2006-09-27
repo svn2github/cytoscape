@@ -165,7 +165,7 @@ abstract class AppearanceCalculator implements Cloneable {
 
     for ( Calculator c : calcs ) {
     	// do actual
-    	key = baseKey + c.getPropertyLabel();
+    	key = baseKey + "." + c.getPropertyLabel();
 	value = c.toString();
 	newProps.setProperty(key,value);
     }

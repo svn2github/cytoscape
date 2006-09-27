@@ -101,7 +101,6 @@ public class VizUIUtilities {
 	EdgeAppearance ea = edgeCalc.getDefaultAppearance();
 
 	// types aren't redundant, so this is ok.
-	System.out.println("setting default: " + type + "  " + c.toString());
 	na.set(type,c);
 	ea.set(type,c);
 

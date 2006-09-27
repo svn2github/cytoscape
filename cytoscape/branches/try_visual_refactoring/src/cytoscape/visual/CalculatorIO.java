@@ -72,6 +72,7 @@ public class CalculatorIO {
     public static final String nodeToolTipBaseKey = "nodeToolTipCalculator";
     public static final String nodeFontFaceBaseKey = "nodeFontFaceCalculator";
     public static final String nodeFontSizeBaseKey = "nodeFontSizeCalculator";
+    public static final String nodeLabelPositionBaseKey = "nodeLabelPositionCalculator";
     public static final String edgeColorBaseKey = "edgeColorCalculator";
     public static final String edgeLineTypeBaseKey = "edgeLineTypeCalculator";
     public static final String edgeArrowBaseKey = "edgeArrowCalculator";
@@ -175,6 +176,7 @@ public class CalculatorIO {
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_HEIGHT), nodeHeightBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_WIDTH), nodeWidthBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_LABEL), nodeLabelBaseKey);
+        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_LABEL_POSITION), nodeLabelPositionBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_TOOLTIP), nodeToolTipBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_FONT_FACE), nodeFontFaceBaseKey);
         addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_FONT_SIZE), nodeFontSizeBaseKey);
@@ -296,6 +298,7 @@ public class CalculatorIO {
         Map nodeToolTipNames = new HashMap();
         Map nodeFontFaceNames = new HashMap();
         Map nodeFontSizeNames = new HashMap();
+        Map nodeLabelPositionNames = new HashMap();
         Map edgeColorNames = new HashMap();
         Map edgeLineTypeNames = new HashMap();
         Map edgeSourceArrowNames = new HashMap();
@@ -347,6 +350,8 @@ public class CalculatorIO {
                 storeKey(key, props, nodeWidthNames);
             } else if (key.startsWith(nodeLabelBaseKey + ".")) {
                 storeKey(key, props, nodeLabelNames);
+            } else if (key.startsWith(nodeLabelPositionBaseKey + ".")) {
+                storeKey(key, props, nodeLabelPositionNames);
             } else if (key.startsWith(nodeToolTipBaseKey + ".")) {
                 storeKey(key, props, nodeToolTipNames);
             } else if (key.startsWith(nodeFontFaceBaseKey + ".")) {
@@ -400,6 +405,7 @@ public class CalculatorIO {
         handleCalculators(nodeWidthNames, catalog, overWrite, nodeWidthBaseKey);
         handleCalculators(nodeHeightNames, catalog, overWrite, nodeHeightBaseKey);
         handleCalculators(nodeLabelNames, catalog, overWrite, nodeLabelBaseKey);
+        handleCalculators(nodeLabelPositionNames, catalog, overWrite, nodeLabelPositionBaseKey);
         handleCalculators(nodeToolTipNames, catalog, overWrite, nodeToolTipBaseKey);
         handleCalculators(nodeFontFaceNames, catalog, overWrite, nodeFontFaceBaseKey);
         handleCalculators(nodeFontSizeNames, catalog, overWrite, nodeFontSizeBaseKey);

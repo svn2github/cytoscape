@@ -187,29 +187,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,4,VMM,EDGE_LABEL));
 		addTab(tabs,edgePane,new VizMapFontTab(this,edgePane,5,VMM,EDGE_LABEL_FONT));
 
-/*
-		for (byte i = NODE_COLOR; i <= NODE_LABEL_COLOR; i++) {
-			VizMapTab tab;
-			if (i == NODE_SIZE)
-				tab = new VizMapSizeTab(this, nodePane, i, VMM, i);
-			else if (i == NODE_LABEL_FONT)
-				tab = new VizMapFontTab(this, nodePane, i, VMM, i);
-			else
-				tab = new VizMapAttrTab(this, nodePane, i, VMM, i);
-			nodePane.add(tab, i);
-			tabs[i] = tab;
-		}
-		for (byte i = EDGE_COLOR; i <= EDGE_LABEL_FONT; i++) {
-			VizMapTab tab;
-			if (i == EDGE_LABEL_FONT)
-				tab = new VizMapFontTab(this, edgePane, i - EDGE_COLOR, VMM, i);
-			else
-				tab = new VizMapAttrTab(this, edgePane, i - EDGE_COLOR, VMM, i);
-			edgePane.add(tab, i - EDGE_COLOR);
-			tabs[i] = tab;
-		}
-		*/
-
 		// global default pane
 		JPanel defaultPane = new DefaultPanel(this, VMM);
 
@@ -733,7 +710,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	 */
 	public void visualStyleChanged() {
 		for (int i = 0; i < tabs.size(); i++) {
-			System.out.println("i " + i);
 			tabs.get(i).visualStyleChanged();
 		}
 		validate();

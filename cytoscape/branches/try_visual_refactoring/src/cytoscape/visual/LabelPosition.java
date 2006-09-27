@@ -92,9 +92,9 @@ public class LabelPosition {
 	public static final String justifyLeftName = "Left Justified";
 	public static final String justifyRightName = "Right Justified";
 
-	protected static final String justifyCName = "C";
-	protected static final String justifyLName = "L";
-	protected static final String justifyRName = "R";
+	protected static final String justifyCName = "c";
+	protected static final String justifyLName = "l";
+	protected static final String justifyRName = "r";
 
 	protected int labelAnchor;
 	protected int targetAnchor;
@@ -187,29 +187,29 @@ public class LabelPosition {
 	}
 
 	public static int convert(String s) {
-		if ( northName.equals(s) )
+		if ( northName.equals(s) || nName.equals(s) )
 			return NORTH;
-		else if ( southName.equals(s) )
+		else if ( southName.equals(s) || sName.equals(s) )
 			return SOUTH;
-		else if ( eastName.equals(s) )
+		else if ( eastName.equals(s) || eName.equals(s) )
 			return EAST;
-		else if ( westName.equals(s) )
+		else if ( westName.equals(s) || wName.equals(s) )
 			return WEST;
-		else if ( northWestName.equals(s) )
+		else if ( northWestName.equals(s) || nwName.equals(s) )
 			return NORTHWEST;
-		else if ( northEastName.equals(s) )
+		else if ( northEastName.equals(s) || neName.equals(s) )
 			return NORTHEAST;
-		else if ( southWestName.equals(s) )
+		else if ( southWestName.equals(s) || swName.equals(s) )
 			return SOUTHWEST;
-		else if ( southEastName.equals(s) )
+		else if ( southEastName.equals(s) || seName.equals(s) )
 			return SOUTHEAST;
-		else if ( centerName.equals(s) )
+		else if ( centerName.equals(s) || cName.equals(s) )
 			return CENTER;
-		if ( justifyCenterName.equals(s) )
+		else if ( justifyCenterName.equals(s) || justifyCName.equals(s) )
 			return JUSTIFY_CENTER;
-		else if ( justifyLeftName.equals(s) )
+		else if ( justifyLeftName.equals(s) || justifyLName.equals(s) )
 			return JUSTIFY_LEFT;
-		else if ( justifyRightName.equals(s) )
+		else if ( justifyRightName.equals(s) || justifyRName.equals(s) )
 			return JUSTIFY_RIGHT;
 		else
 			return -1;
@@ -242,9 +242,9 @@ public class LabelPosition {
 		DecimalFormat df = new DecimalFormat();
 		df.setMaximumFractionDigits(2);
 		StringBuffer sb = new StringBuffer();
-		sb.append(getShortName(labelAnchor));
-		sb.append(",");
 		sb.append(getShortName(targetAnchor));
+		sb.append(",");
+		sb.append(getShortName(labelAnchor));
 		sb.append(",");
 		sb.append(getShortName(justify));
 		sb.append(",");
@@ -256,14 +256,17 @@ public class LabelPosition {
 	}
 
 	public static LabelPosition parse(String value) {
-		Pattern p = Pattern.compile("^([NSEWC]{1,2}+),([NSEWC]{1,2}+),([CLR]{1}+),(-?\\d+.\\d+),(-?\\d+.\\d+)$");
+		Pattern p = Pattern.compile("^([NSEWC]{1,2}+),([NSEWC]{1,2}+),([clr]{1}+),(-?\\d+(.\\d+)?),(-?\\d+(.\\d+)?)$");
 		Matcher m = p.matcher(value);
 		LabelPosition lp = new LabelPosition();
-		lp.setLabelAnchor( convert(m.group(0)) );
-		lp.setTargetAnchor( convert(m.group(1)) );
-		lp.setJustify( convert(m.group(2)) );
-		lp.setOffsetX( Double.parseDouble(m.group(3)) );
-		lp.setOffsetY( Double.parseDouble(m.group(4)) );
+
+		if ( m.matches() ) {
+			lp.setLabelAnchor( convert(m.group(1)) );
+			lp.setTargetAnchor( convert(m.group(2)) );
+			lp.setJustify( convert(m.group(3)) );
+			lp.setOffsetX( Double.parseDouble(m.group(4)) );
+			lp.setOffsetY( Double.parseDouble(m.group(6)) );
+		}
 
 		return lp;
 	}
@@ -295,6 +298,7 @@ public class LabelPosition {
 			case(JUSTIFY_RIGHT):
 				return justifyRName;
 			default:
+				System.out.println("don't recognize type: " + x);
 				return "x";
 		}
 	}

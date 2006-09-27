@@ -331,6 +331,7 @@ public class ValueDisplayer extends JButton {
 				LabelPosition pos = LabelPlacer.showDialog(parent.parent, (LabelPosition)parent.inputObj);
 				if ( pos != null ) {
 					parent.inputObj = pos;
+					setText(pos.shortString());
 					parent.fireItemSelected();
 				}
 			}
