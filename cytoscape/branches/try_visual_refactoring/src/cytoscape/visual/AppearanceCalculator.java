@@ -112,6 +112,18 @@ abstract class AppearanceCalculator implements Cloneable {
   	return calcs;
   }
 
+  public void removeCalculator(byte type) {
+  	Calculator toRemove = null;
+  	for (Calculator c : calcs) {
+		if ( c.getType() == type ) {
+			toRemove = c;
+			break;
+		}
+	}
+
+	calcs.remove(toRemove);
+  }
+
   public void setCalculator(Calculator c) {
   	if ( c == null )
 		return;

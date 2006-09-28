@@ -13,6 +13,8 @@ public class TestLabel implements Label {
 	double greekThreshold = 0.0;
 	String text = "";
 	Font font = new Font("plain", Font.PLAIN, 10);
+	int textAnchor = 0;
+	int justify = 0;
 
 	public TestLabel() {}
 
@@ -33,4 +35,13 @@ public class TestLabel implements Label {
 	public Font getFont() { return font; } 
 	
 	public void setFont(Font f) { font = f ;}
+
+	public void setTextAnchor ( int p ) { textAnchor = p;}
+
+	public void setJustify ( int j ) {justify = j;}
+
+	public int getTextAnchor ( ){ return textAnchor;}
+
+        public int getJustify ( ){return justify;}
+
 }

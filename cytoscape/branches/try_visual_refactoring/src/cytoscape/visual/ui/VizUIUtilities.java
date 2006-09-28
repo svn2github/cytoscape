@@ -138,9 +138,13 @@ public class VizUIUtilities {
         NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
         EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
 
-	nodeCalc.setCalculator(c);
-	edgeCalc.setCalculator(c);
-	
+	if ( c == null ) {
+		nodeCalc.removeCalculator(type);
+		edgeCalc.removeCalculator(type);
+	} else {
+		nodeCalc.setCalculator(c);
+		edgeCalc.setCalculator(c);
+	}
     }
 }
 

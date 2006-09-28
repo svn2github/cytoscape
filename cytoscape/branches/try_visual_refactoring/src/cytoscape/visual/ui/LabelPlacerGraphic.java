@@ -87,6 +87,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
     // mouse drag state
     private boolean beenDragged = false;
     private boolean canDrag = false;
+    private boolean canOffsetDrag = false;
 
     // click offset
     private int xClickOffset = 0;
@@ -213,11 +214,18 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
         public void mousePressed(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
+		// click+drag within normal box
 		if ( x >= xPos && x <= xPos + lx && 
 		     y >= yPos && y <= yPos + ly ) {
 		     canDrag = true;
 		     xClickOffset = x - xPos;
 		     yClickOffset = y - yPos;
+		// click+drag within offset box
+		} else if ( x >= xPos+xOffset && x <= xPos+xOffset + lx && 
+		            y >= yPos+yOffset && y <= yPos+yOffset + ly ) {
+		     canOffsetDrag = true;
+		     xClickOffset = x - xPos+xOffset;
+		     yClickOffset = y - yPos+yOffset;
 		}
 	}
 
@@ -228,10 +236,17 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 		if ( beenDragged ) {
 			xPos = e.getX();
 			yPos = e.getY();
+			// adjust if drag happened in offset box
+			if ( canOffsetDrag ) {
+				xPos += xOffset;
+				yPos += yOffset;
+			}
+
 			findClosestPoint();
 			repaint();
 			beenDragged = false;
 			canDrag = false;
+			canOffsetDrag = false;
 		}
         }
     }
@@ -242,9 +257,16 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	 * Handles redrawing for dragging.
 	 */
         public void mouseDragged(MouseEvent e) {
+		// dragging within normal box
 		if ( canDrag ) {
 		     	xPos = e.getX() - xClickOffset;
 		     	yPos = e.getY() - yClickOffset;
+			beenDragged = true;
+    			repaint();
+		// dragging within offset box
+		} else if ( canOffsetDrag ) {
+		     	xPos = e.getX() - xClickOffset + xOffset;
+		     	yPos = e.getY() - yClickOffset + yOffset;
 			beenDragged = true;
     			repaint();
 		}
@@ -307,13 +329,13 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	int nodeAnchor = lp.getTargetAnchor(); 
 	if ( nodeAnchor != LabelPosition.NONE ) {
 		bestNodeX = nodeAnchor % 3;		
-		bestNodeY = (int)nodeAnchor/3;		
+		bestNodeY = (int)nodeAnchor / 3;		
 	}
 
 	int labelAnchor = lp.getLabelAnchor(); 
 	if ( labelAnchor != LabelPosition.NONE ) {
 		bestLabelX = labelAnchor % 3;		
-		bestLabelY = (int)labelAnchor/3;		
+		bestLabelY = (int)labelAnchor / 3;		
 	}
 
 	if ( nodeAnchor != LabelPosition.NONE || 

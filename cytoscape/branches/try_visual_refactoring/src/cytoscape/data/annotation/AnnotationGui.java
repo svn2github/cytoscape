@@ -89,7 +89,6 @@ import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.servers.BioDataServer;
-import cytoscape.layout.AttributeLayout;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 
@@ -108,7 +107,6 @@ public class AnnotationGui extends CytoscapeAction {
 	int actionListBoxCurrentSelection;
 	TreePath annotationPath;
 	String currentAnnotationCategory;
-	AttributeLayout attributeLayouter;
 
 	JDialog mainDialog;
 	JButton annotateNodesButton;
@@ -164,9 +162,6 @@ public class AnnotationGui extends CytoscapeAction {
 			annotationDescriptions = dataServer.getAnnotationDescriptions();
 		}
 
-		if (this.attributeLayouter == null) {
-			this.attributeLayouter = new AttributeLayout(networkView);
-		}
 		
 		Semantics.applyNamingServices(network);
 		
@@ -500,8 +495,8 @@ public class AnnotationGui extends CytoscapeAction {
 				 * JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
 				 * message, title, JOptionPane.ERROR_MESSAGE);
 				 */
-				attributeLayouter.doCallback(currentAnnotationCategory,
-						AttributeLayout.DO_LAYOUT);
+				//attributeLayouter.doCallback(currentAnnotationCategory,
+				//		AttributeLayout.DO_LAYOUT);
 				deleteCreatedObjectsButton.setEnabled(true);
 			}
 
@@ -519,8 +514,8 @@ public class AnnotationGui extends CytoscapeAction {
 				 * JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
 				 * message, title, JOptionPane.ERROR_MESSAGE);
 				 */
-				attributeLayouter.doCallback(currentAnnotationCategory,
-						AttributeLayout.CREATE_EDGES);
+//				attributeLayouter.doCallback(currentAnnotationCategory,
+//						AttributeLayout.CREATE_EDGES);
 				deleteCreatedObjectsButton.setEnabled(true);
 			}
 
@@ -532,8 +527,8 @@ public class AnnotationGui extends CytoscapeAction {
 			}
 
 			public void actionPerformed(ActionEvent e) {
-				attributeLayouter.doCallback(currentAnnotationCategory,
-						AttributeLayout.CLEAR_OBJECTS);
+//				attributeLayouter.doCallback(currentAnnotationCategory,
+//						AttributeLayout.CLEAR_OBJECTS);
 				deleteCreatedObjectsButton.setEnabled(false);
 			}
 		}

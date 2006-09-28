@@ -164,13 +164,13 @@ public class LabelPosition {
 			case(WEST):
 				return westName;
 			case(NORTHWEST):
-				return northEastName;
-			case(NORTHEAST):
 				return northWestName;
+			case(NORTHEAST):
+				return northEastName;
 			case(SOUTHWEST):
-				return southEastName;
-			case(SOUTHEAST):
 				return southWestName;
+			case(SOUTHEAST):
+				return southEastName;
 			case(CENTER):
 				return centerName;
 			case(NONE):
@@ -261,8 +261,8 @@ public class LabelPosition {
 		LabelPosition lp = new LabelPosition();
 
 		if ( m.matches() ) {
-			lp.setLabelAnchor( convert(m.group(1)) );
-			lp.setTargetAnchor( convert(m.group(2)) );
+			lp.setTargetAnchor( convert(m.group(1)) );
+			lp.setLabelAnchor( convert(m.group(2)) );
 			lp.setJustify( convert(m.group(3)) );
 			lp.setOffsetX( Double.parseDouble(m.group(4)) );
 			lp.setOffsetY( Double.parseDouble(m.group(6)) );
@@ -282,13 +282,13 @@ public class LabelPosition {
 			case(WEST):
 				return wName;
 			case(NORTHWEST):
-				return neName;
-			case(NORTHEAST):
 				return nwName;
+			case(NORTHEAST):
+				return neName;
 			case(SOUTHWEST):
-				return seName;
-			case(SOUTHEAST):
 				return swName;
+			case(SOUTHEAST):
+				return seName;
 			case(CENTER):
 				return cName;
 			case(JUSTIFY_CENTER):

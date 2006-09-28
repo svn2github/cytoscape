@@ -94,9 +94,8 @@ public class GenericNodeLabelPositionCalculator extends NodeCalculator {
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        //appr.setBorderLineType( (LineType)super.getMapping(0).calculateRangeValue(attrBundle) );
+	attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
+        appr.setLabelPosition( (LabelPosition)super.getMapping(0).calculateRangeValue(attrBundle) );
     }
 }
 

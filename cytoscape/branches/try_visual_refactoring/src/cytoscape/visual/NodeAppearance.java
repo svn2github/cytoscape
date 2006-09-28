@@ -141,6 +141,14 @@ public class NodeAppearance implements Appearance, Cloneable {
 		Label nodeLabel = nodeView.getLabel();
 		nodeLabel.setFont(font);
 		nodeLabel.setTextPaint(fontColor);
+
+
+		nodeLabel.setTextAnchor( labelPosition.getLabelAnchor());
+		nodeLabel.setJustify( labelPosition.getJustify());
+
+		nodeView.setLabelOffsetX( labelPosition.getOffsetX() );
+		nodeView.setLabelOffsetY( labelPosition.getOffsetY() );
+		nodeView.setNodeLabelAnchor( labelPosition.getTargetAnchor() );
 	} else {
 		boolean change_made = false;
 
@@ -220,6 +228,42 @@ public class NodeAppearance implements Appearance, Cloneable {
 		if (!newTextColor.equals(existingTextColor)) {
 			change_made = true;
 			nodelabel.setTextPaint(newTextColor);
+		}
+
+
+		int existingTextAnchor = nodelabel.getTextAnchor();
+		int newTextAnchor = labelPosition.getLabelAnchor();
+		if ( existingTextAnchor != newTextAnchor ) {
+			change_made = true;
+			nodelabel.setTextAnchor( newTextAnchor );
+		}
+
+		int existingJustify = nodelabel.getJustify();
+		int newJustify =  labelPosition.getJustify();
+		if ( existingJustify != newJustify ) {
+			change_made = true;
+			nodelabel.setJustify( newJustify );
+		}
+
+		int existingNodeAnchor = nodeView.getNodeLabelAnchor();
+		int newNodeAnchor = labelPosition.getTargetAnchor();
+		if ( existingNodeAnchor != newNodeAnchor ) {
+			change_made = true;
+			nodeView.setNodeLabelAnchor( newNodeAnchor );
+		}
+
+		double existingOffsetX = nodeView.getLabelOffsetX();
+		double newOffsetX = labelPosition.getOffsetX();
+		if ( existingOffsetX != newOffsetX ) {
+			change_made = true;
+			nodeView.setLabelOffsetX( newOffsetX );
+		}
+
+		double existingOffsetY = nodeView.getLabelOffsetY();
+		double newOffsetY = labelPosition.getOffsetY();
+		if ( existingOffsetY != newOffsetY ) {
+			change_made = true;
+			nodeView.setLabelOffsetY( newOffsetY );
 		}
 
 		if (change_made) {

@@ -51,7 +51,6 @@ import java.util.*;
 
 import giny.model.*;
 import giny.view.*;
-import giny.util.*;
 
 import cytoscape.ding.DingNetworkView;
 

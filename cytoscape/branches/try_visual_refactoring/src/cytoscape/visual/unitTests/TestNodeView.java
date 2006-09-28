@@ -35,6 +35,10 @@ public class TestNodeView implements NodeView  {
   Point2D offset = new Point2D.Double();
   int degree = 0;
   Label label = new TestLabel();
+  double label_offset_x = 0.0;
+  double label_offset_y = 0.0;
+  int node_label_anchor = 0;
+
  
   public TestNodeView() {}
   
@@ -119,5 +123,18 @@ public class TestNodeView implements NodeView  {
   public void setToolTip ( String tip ) { toolTip = tip;} 
 
   public String getToolTip ( ) { return toolTip;}  // not in the interface
+
+  public void setLabelOffsetX(double x){ label_offset_x = x ;}
+
+  public double getLabelOffsetX() {return label_offset_x;}
+
+  public void setLabelOffsetY(double y){ label_offset_y = y;}
+
+  public double getLabelOffsetY() {return label_offset_y;}
+
+  public void setNodeLabelAnchor(int position) {node_label_anchor = position;}
+
+  public int getNodeLabelAnchor(){return node_label_anchor;}
+
 
 }
