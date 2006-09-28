@@ -9,7 +9,7 @@ use File::Spec;
 
 if(scalar(@ARGV) != 2)
 {
-    die "?0: <directory of .p[ml] files> <output directory>\n";
+    die "$0: <directory of .p[ml] files> <output directory>\n";
 }
 
 my ($inDir, $outDir) = @ARGV;

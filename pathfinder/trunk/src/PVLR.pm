@@ -63,6 +63,83 @@ sub getGeneData
     return (\@ratios, \@pv);
 }
 
+sub makeORFlistByRowByPvalue
+{
+    my $self = shift;
+    return $self->_makeORFlist(1, 1, @_);
+}
+
+
+sub makeORFlistByRowByRatio
+{
+    my $self = shift;
+    return $self->_makeORFlist(0, 1, @_);
+}
+
+
+
+sub makeORFlistByColumnByPvalue
+{
+    my $self = shift;
+    return $self->_makeORFlist(1, 0, @_);
+}
+
+
+sub makeORFlistByColumnByRatio
+{
+    my $self = shift;
+    return $self->_makeORFlist(0, 0, @_);
+}
+
+
+sub _makeORFlist
+{
+    my ($self, $byPvalue, $byRow, $function, $validColumns) = @_;
+
+    my $data;
+    if($byPvalue)
+    {
+	$data = $self->pvalues();
+    }
+    else
+    {
+	$data = $self->ratios();
+    }
+
+    my %results;
+    my $ids = $self->ids();
+    my $idTable = $self->idTable();
+    my $row;
+    my @names = @{$self->columnNames()};
+
+    if(defined($validColumns))
+    {
+	@names = @names[@{$validColumns}];
+    }
+
+
+    foreach my $i (@{$ids})
+    {
+	$row = $idTable->{$i};
+	
+	foreach (@names)
+	{
+	    if($function->($data->{$_}->[$row]))
+	    {
+		if($byRow)
+		{
+		    push @{$results{$i}}, $_;
+		}
+		else
+		{
+		    push @{$results{$_}}, $i;
+		}
+	    }
+	}
+    }
+    
+    return \%results;
+}
 
 #############################################
 ##
