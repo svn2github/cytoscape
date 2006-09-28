@@ -123,4 +123,6 @@ public interface Calculator extends Cloneable {
 
     public void apply(EdgeAppearance appr, Edge e, CyNetwork net);
     public void apply(NodeAppearance appr, Node n, CyNetwork net);
+
+    public Vector getMappings();
 }

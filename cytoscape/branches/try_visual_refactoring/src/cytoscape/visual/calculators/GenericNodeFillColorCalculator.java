@@ -83,5 +83,6 @@ public class GenericNodeFillColorCalculator extends AbstractNodeColorCalculator 
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
     	apply(appr,node,network,FILL);
     }
+
 }
 

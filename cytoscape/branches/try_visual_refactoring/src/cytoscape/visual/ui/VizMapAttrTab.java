@@ -530,70 +530,8 @@ public class VizMapAttrTab extends VizMapTab {
                                       JOptionPane.ERROR_MESSAGE);
 	    }
 	    // create and add a generic calculator based on this tab's type
-	    Calculator calc = null;
-	    if (type == VizMapUI.NODE_COLOR) {
-        calc = new GenericNodeFillColorCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_BORDER_COLOR) {
-        calc = new GenericNodeBorderColorCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_LINETYPE) {
-        calc = new GenericNodeLineTypeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_SHAPE) {
-        calc = new GenericNodeShapeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_HEIGHT) {
-        calc = new GenericNodeHeightCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_WIDTH) {
-        calc = new GenericNodeWidthCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_SIZE) {
-        calc = new GenericNodeUniformSizeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_LABEL) {
-        calc = new GenericNodeLabelCalculator(calcName, mapper);
-	    }
-      else if (type == VizMapUI.NODE_LABEL_COLOR) {
-        calc = new GenericNodeLabelColorCalculator(calcName, mapper);
-      }
-	    else if (type == VizMapUI.NODE_TOOLTIP) {
-        calc = new GenericNodeToolTipCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_COLOR) {
-        calc = new GenericEdgeColorCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_LINETYPE) {
-        calc = new GenericEdgeLineTypeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_SRCARROW) {
-        calc = new GenericEdgeSourceArrowCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_TGTARROW) {
-        calc = new GenericEdgeTargetArrowCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_LABEL) {
-        calc = new GenericEdgeLabelCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_TOOLTIP) {
-        calc = new GenericEdgeToolTipCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_FONT_FACE) {
-        calc = new GenericEdgeFontFaceCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_FONT_SIZE) {
-        calc = new GenericEdgeFontSizeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_FONT_FACE) {
-        calc = new GenericNodeFontFaceCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_FONT_SIZE) {
-        calc = new GenericNodeFontSizeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_LABEL_POSITION) {
-        calc = new GenericNodeLabelPositionCalculator(calcName, mapper);
-	    }
+	    Calculator calc = CalculatorFactory.newDefaultCalculator(type,calcName,mapper);
+	    
 	    // set current calculator to the new calculator
 	    switchCalculator(calc);  //handles listeners
 	    // notify the catalog - this triggers events that refresh the UI

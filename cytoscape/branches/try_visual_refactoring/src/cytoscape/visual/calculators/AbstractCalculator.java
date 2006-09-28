@@ -472,5 +472,4 @@ public abstract class AbstractCalculator implements Calculator {
     }
     public void apply(NodeAppearance appr, Node n, CyNetwork net) {
     }
-
 }
