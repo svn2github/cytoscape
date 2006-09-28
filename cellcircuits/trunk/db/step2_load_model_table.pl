@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#! /usr/bin/perl -w
 
 use strict;
 use DBI;
@@ -55,7 +55,7 @@ foreach my $pub (@pubs){
 	chomp; s/^[.]\/sif\///;
 	
 	my @line = split(/\t/);
-	my $name     = $line[0]; $name =~ s/[.]sif$//;
+	my $name = $line[0]; $name =~ s/[.]sif$//;
 
 	print INSERT $model_sql, "('$pub','$name');\n";
 
@@ -64,6 +64,7 @@ foreach my $pub (@pubs){
     close LIST_FILE;
 
 }
+
 close INSERT;
 
 my $create_sql_FILE = "create_model.sql";

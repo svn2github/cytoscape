@@ -16,7 +16,9 @@ cd into the db directory of your svn checkout of cellcircuits
 
 load the GO tables
 
-	./step1_load_GO_tables.pl go_200609-assocdb-tables GO_tables_list.txt
+	./step1_load_GO_tables.pl cellcircuits_dev go_200609-assocdb-tables GO_tables_list.txt
+
+	cellcircuits_dev is the existing MySQL database we are loading the GO tables into
 
 	go_200609-assocdb-tables is the directory that resulted
 	from the tar zxvf command in /cellar/data/cellcircuits
@@ -26,10 +28,16 @@ load the GO tables
 
 	NOTE(S):
 		(1) this script populates the db called cellcircuits_dev
-			and in doing so, will most likely overwrite any
-			data that previously existed in it
+			and in doing so, will (most likely) overwrite any
+			data that previously existed in the tables named
+			in the file GO_tables_list.txt
 
 load the model table
 
 	./step2_load_model_table.pl cellcircuits_dev
 
+load the gene_model table
+
+	./step3_load_gene_model_table.pl cellcircuits_dev
+
+load the enrichment table
