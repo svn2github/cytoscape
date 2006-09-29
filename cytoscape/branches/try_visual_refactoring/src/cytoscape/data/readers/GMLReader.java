@@ -76,17 +76,7 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.visual.ui.VizMapUI;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.AbstractCalculator;
-import cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator;
-import cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator;
-import cytoscape.visual.calculators.GenericEdgeColorCalculator;
-import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
-import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
-import cytoscape.visual.calculators.GenericNodeBorderColorCalculator;
-import cytoscape.visual.calculators.GenericNodeLabelCalculator;
-import cytoscape.visual.calculators.GenericNodeLineTypeCalculator;
-import cytoscape.visual.calculators.GenericNodeShapeCalculator;
-import cytoscape.visual.calculators.GenericNodeHeightCalculator;
-import cytoscape.visual.calculators.GenericNodeWidthCalculator;
+import cytoscape.visual.calculators.CalculatorFactory;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
@@ -293,7 +283,7 @@ public class GMLReader extends AbstractGraphReader {
 			//System.out.println("creating passthrough mapping");
 			PassThroughMapping m = new PassThroughMapping("",
 					AbstractCalculator.ID);
-			nlc = new GenericNodeLabelCalculator(cName, m);
+			nlc = CalculatorFactory.newDefaultCalculator(VizMapUI.NODE_LABEL,cName, m);
 		}
 		nac.setCalculator(nlc);
 
@@ -316,7 +306,7 @@ public class GMLReader extends AbstractGraphReader {
 
 			nodeShapeMapping.putMapValue(key, value);
 		}
-		GenericNodeShapeCalculator shapeCalculator = new GenericNodeShapeCalculator(
+		Calculator shapeCalculator = CalculatorFactory.newDefaultCalculator(VizMapUI.NODE_SHAPE,
 				"GML_Node_Shape" + mapSuffix, nodeShapeMapping);
 		nac.setCalculator(shapeCalculator);
 
@@ -342,7 +332,7 @@ public class GMLReader extends AbstractGraphReader {
 				c = defcol;
 			nodeColorMapping.putMapValue(key, c);
 		}
-		GenericNodeFillColorCalculator nodeColorCalculator = new GenericNodeFillColorCalculator(
+		Calculator nodeColorCalculator = CalculatorFactory.newDefaultCalculator(VizMapUI.NODE_COLOR,
 				"GML Node Color" + mapSuffix, nodeColorMapping);
 		nac.setCalculator(nodeColorCalculator);
 
@@ -366,7 +356,7 @@ public class GMLReader extends AbstractGraphReader {
 				c = defbcol;
 			nodeBorderColorMapping.putMapValue(key, c);
 		}
-		GenericNodeBorderColorCalculator nodeBorderColorCalculator = new GenericNodeBorderColorCalculator(
+		Calculator nodeBorderColorCalculator = CalculatorFactory.newDefaultCalculator(VizMapUI.NODE_BORDER_COLOR,
 				"GML Node Border Color" + mapSuffix, nodeBorderColorMapping);
 		nac.setCalculator(nodeBorderColorCalculator);
 
@@ -392,7 +382,7 @@ public class GMLReader extends AbstractGraphReader {
 				w = defaultWidth;
 			nodeWMapping.putMapValue(key, w);
 		}
-		GenericNodeWidthCalculator nodeSizeCalculatorW = new GenericNodeWidthCalculator(
+		Calculator nodeSizeCalculatorW = CalculatorFactory.newDefaultCalculator(VizMapUI.NODE_WIDTH,
 				"GML Node Width" + mapSuffix, nodeWMapping);
 		nac.setCalculator(nodeSizeCalculatorW);
 
@@ -415,7 +405,7 @@ public class GMLReader extends AbstractGraphReader {
 			nodeHMapping.putMapValue(key, h);
 		}
 
-		GenericNodeHeightCalculator nodeSizeCalculatorH = new GenericNodeHeightCalculator(
+		Calculator nodeSizeCalculatorH = CalculatorFactory.newDefaultCalculator(VizMapUI.NODE_HEIGHT,
 				"GML Node Height" + mapSuffix, nodeHMapping);
 		nac.setCalculator(nodeSizeCalculatorH);
 
@@ -439,7 +429,7 @@ public class GMLReader extends AbstractGraphReader {
 			LineType lt = getLineType(ivalue);
 			nodeBorderTypeMapping.putMapValue(key, lt);
 		}
-		GenericNodeLineTypeCalculator nodeBoderTypeCalculator = new GenericNodeLineTypeCalculator(
+		Calculator nodeBoderTypeCalculator = CalculatorFactory.newDefaultCalculator(VizMapUI.NODE_LINETYPE,
 				"GML Node Border" + mapSuffix, nodeBorderTypeMapping);
 		nac.setCalculator(nodeBoderTypeCalculator);
 	}
@@ -469,7 +459,7 @@ public class GMLReader extends AbstractGraphReader {
 				c = defcol;
 			edgeColorMapping.putMapValue(key, c);
 		}
-		GenericEdgeColorCalculator edgeColorCalculator = new GenericEdgeColorCalculator(
+		Calculator edgeColorCalculator = CalculatorFactory.newDefaultCalculator(VizMapUI.EDGE_COLOR,
 				"GML Edge Color" + mapSuffix, edgeColorMapping);
 		eac.setCalculator(edgeColorCalculator);
 
@@ -491,7 +481,7 @@ public class GMLReader extends AbstractGraphReader {
 			LineType lt = getLineType(ivalue);
 			edgeLineTypeMapping.putMapValue(key, lt);
 		}
-		GenericEdgeLineTypeCalculator edgeLineTypeCalculator = new GenericEdgeLineTypeCalculator(
+		Calculator edgeLineTypeCalculator = CalculatorFactory.newDefaultCalculator(VizMapUI.EDGE_LINETYPE,
 				"GML Line Type" + mapSuffix, edgeLineTypeMapping);
 		eac.setCalculator(edgeLineTypeCalculator);
 
@@ -537,9 +527,9 @@ public class GMLReader extends AbstractGraphReader {
 
 			// Alternative syntax: source and target with 0 || 1
 
-			GenericEdgeSourceArrowCalculator edgeSourceArrowCalculator = new GenericEdgeSourceArrowCalculator(
+			Calculator edgeSourceArrowCalculator = CalculatorFactory.newDefaultCalculator(VizMapUI.EDGE_SRCARROW,
 					"GML Source Arrow Type" + mapSuffix, edgeSourceArrowMapping);
-			GenericEdgeTargetArrowCalculator edgeTargetArrowCalculator = new GenericEdgeTargetArrowCalculator(
+			Calculator edgeTargetArrowCalculator = CalculatorFactory.newDefaultCalculator(VizMapUI.EDGE_TGTARROW,
 					"GML Target Arrow Type" + mapSuffix, edgeTargetArrowMapping);
 			eac.setCalculator(edgeTargetArrowCalculator);
 			eac.setCalculator(edgeSourceArrowCalculator);
