@@ -26,7 +26,8 @@ import cytoscape.view.cytopanels.CytoPanelState;
  * 
  * @author kono
  * 
- * 		Combine CytoPanel_2 and CytoPanel_3		Peng-Liang wang		9/12/2006
+ * 		Combine CytoPanel_2 and CytoPanel_3		    Peng-Liang wang		9/12/2006
+ * 		Move advanced panel to AttrMod Dialog       Peng-Liang wang		9/28/2006
  * 
  */
 public class DataTable implements PropertyChangeListener {
@@ -36,9 +37,12 @@ public class DataTable implements PropertyChangeListener {
 	
 	public static final String NETWORK_METADATA = "Network Metadata";
 	
-	// Panels to be added on the CytoPanels
-	ModPanel modPanel;
-	protected SelectPanel selectionPanel;
+	// Panel to be added to JDialog for attribute modification
+	AttrSelectModPanel modPanel;
+	//protected SelectPanel selectionPanel; selectPanel is now part of modPanel
+	
+	// Panels to be added on the CytoPanels 	
+
 	private DataTableModel tableModel;
 	private JSortTable attributeTable;
 	
@@ -140,14 +144,17 @@ public class DataTable implements PropertyChangeListener {
 		//
 		// Advanced Window: CytoPanel 3
 		//
-		JTabbedPane advancedPanel = new JTabbedPane();
-		advancedPanel.setPreferredSize(new Dimension(200, 100));
+		//JTabbedPane advancedPanel = new JTabbedPane();
+		//advancedPanel.setPreferredSize(new Dimension(200, 100));
 
-		modPanel = new ModPanel(data, tableModel, tableObjectType);
-		selectionPanel = new SelectPanel(this, tableObjectType);
-		selectionPanel.setPreferredSize(new Dimension(500, 100));
-		advancedPanel.add("Selection", selectionPanel);
-		advancedPanel.add("Modification", modPanel);
+		// modPanel will be added to JDialog for attribute modification
+		modPanel = new AttrSelectModPanel(this, data, tableModel, tableObjectType);
+		attributeBrowserPanel.setAttrModPane(modPanel, type);
+		
+		//selectionPanel = new SelectPanel(this, tableObjectType);
+		//selectionPanel.setPreferredSize(new Dimension(500, 100));
+		//advancedPanel.add("Selection", selectionPanel);
+		//advancedPanel.add("Modification", modPanel);
 
 		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add(
 		// type + "Attributes", attributePanel);
@@ -158,22 +165,22 @@ public class DataTable implements PropertyChangeListener {
 				type + " Attribute Browser", mainPanel);
 
 		// Add advanced panel to the CytoPanel 2 (SOUTH)
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
-				type + "Attr Mod/Object Select", advancedPanel);	
+		//Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
+		//		type + "Attr Mod/Object Select", advancedPanel);	
 
 		
 		// Get indexes for the panels.
-		modPanelIndex = Cytoscape.getDesktop()
-				.getCytoPanel(SwingConstants.EAST).indexOfComponent(
-						advancedPanel);
+		//modPanelIndex = Cytoscape.getDesktop()
+		//		.getCytoPanel(SwingConstants.EAST).indexOfComponent(
+		//				advancedPanel);
 
-		tableIndex = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
-				.indexOfComponent(mainPanel);
+		//tableIndex = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
+		//		.indexOfComponent(mainPanel);
 
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
-				.addCytoPanelListener(
-						new Listener(attributePanelIndex, -1, modPanelIndex,
-								tableIndex));
+		//Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
+		//		.addCytoPanelListener(
+		//				new Listener(attributePanelIndex, -1, -1,
+		//						tableIndex));
 
 		//Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
 		//		.addCytoPanelListener(
