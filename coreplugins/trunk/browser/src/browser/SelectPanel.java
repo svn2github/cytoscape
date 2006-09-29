@@ -82,13 +82,31 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 		mirrorSelection = new JCheckBox();
 		mirrorSelection.setSelected(true);
 
-		setBorder(new TitledBorder("Object Selection"));
-		add(new JLabel("Filter: "));
-		add(filterBox);
-		add(new JLabel("Network: "));
-		add(networkBox);
-		add(new JLabel("Mirror Network Selection"));
-		add(mirrorSelection);
+		//setBorder(new TitledBorder("Object Selection"));
+        setLayout(new java.awt.GridBagLayout());
+	    
+        java.awt.GridBagConstraints gridBagConstraints;
+		
+	    gridBagConstraints = new java.awt.GridBagConstraints();
+	    gridBagConstraints.gridx = 0;
+	    gridBagConstraints.gridy = 0;
+	    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+	    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+
+		add(new JLabel("Select Object     Filter: "), gridBagConstraints);
+
+		gridBagConstraints = new java.awt.GridBagConstraints();
+	    gridBagConstraints.gridx = 1;
+	    gridBagConstraints.gridy = 0;
+	    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	    gridBagConstraints.weightx = 1.0;
+	    gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
+		
+		add(filterBox,gridBagConstraints);
+		//add(new JLabel("Network: "));
+		//add(networkBox);
+		//add(new JLabel("Mirror Network Selection"));
+		//add(mirrorSelection);
 
 		filterBox.addActionListener(this);
 		networkBox.addActionListener(this);

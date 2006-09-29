@@ -10,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import java.awt.GridBagLayout;
+
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -49,11 +51,20 @@ public class ModPanel extends JPanel implements ActionListener {
 		this.tableModel = tableModel;
 		this.graphObjectType = graphObjectType;
 
+		setLayout(new GridBagLayout());
+        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+		
 		JTabbedPane tabs = new JTabbedPane();
-		add(tabs);
+		add(tabs,gridBagConstraints);
 
 		// create Operation panel
 		JPanel operation = new JPanel();
+        operation.setLayout(new java.awt.GridBagLayout());
+
 		tabs.add("Operation", operation);
 		attributeModifyBox = createAttributeBox();
 		attributeModifyBox.setEditable(true);
@@ -63,14 +74,49 @@ public class ModPanel extends JPanel implements ActionListener {
 		;
 		applyModify.addActionListener(this);
 
-		operation.add(actionBox);
-		operation.add(attributeModifyBox);
-		operation.add(new JLabel("by/to"));
-		operation.add(inputField);
-		operation.add(applyModify);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+ 		
+		operation.add(actionBox, gridBagConstraints);
+
+	    gridBagConstraints = new java.awt.GridBagConstraints();
+	    gridBagConstraints.gridx = 1;
+	    gridBagConstraints.gridy = 0;
+	    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	    gridBagConstraints.weightx = 0.2;
+	    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+		
+		operation.add(attributeModifyBox, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
+
+		operation.add(new JLabel("by/to"), gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+		
+		operation.add(inputField, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+
+		operation.add(applyModify, gridBagConstraints);
 
 		// create Copy Panel
-		JPanel copy = new JPanel();
+		JPanel copy = new JPanel(new java.awt.GridBagLayout());
 		tabs.add("Copy", copy);
 		attributeCopyFromBox = createAttributeBox();
 		attributeCopytoBox = createAttributeBox();
@@ -79,23 +125,75 @@ public class ModPanel extends JPanel implements ActionListener {
 		;
 		copyGo.addActionListener(this);
 
-		copy.add(new JLabel("Copy From:"));
-		copy.add(attributeCopyFromBox);
-		copy.add(new JLabel("To:"));
-		copy.add(attributeCopytoBox);
-		copy.add(copyGo);
+		
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+		
+		copy.add(new JLabel("Copy From:"), gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        
+		copy.add(attributeCopyFromBox, gridBagConstraints);
+		
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+
+		copy.add(new JLabel("To:"), gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+
+		copy.add(attributeCopytoBox, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+
+		copy.add(copyGo, gridBagConstraints);
 
 		// create Delete Panel
-		JPanel clear = new JPanel();
+		JPanel clear = new JPanel(new java.awt.GridBagLayout());
 		tabs.add("Clear", clear);
 		attributeClearBox = createAttributeBox();
 		clearGo = new JButton("GO");
 
 		clearGo.addActionListener(this);
 
-		clear.add(new JLabel("Clear"));
-		clear.add(attributeClearBox);
-		clear.add(clearGo);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+ 
+		clear.add(new JLabel("Clear"), gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+
+		clear.add(attributeClearBox, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+ 
+		clear.add(clearGo, gridBagConstraints);
 
 	}
 
