@@ -24,6 +24,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JDialog;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
@@ -367,6 +369,10 @@ public class AttributeBrowserPanel extends JPanel implements
 												getDeleteButton())
 										.addPreferredGap(LayoutStyle.RELATED,
 												350, Short.MAX_VALUE).add(
+														getAttrModButton(),
+														GroupLayout.PREFERRED_SIZE, 40,
+														GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(LayoutStyle.RELATED).add(
 												getImportButton(),
 												GroupLayout.PREFERRED_SIZE, 40,
 												GroupLayout.PREFERRED_SIZE)
@@ -412,6 +418,11 @@ public class AttributeBrowserPanel extends JPanel implements
 														36,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 												.add(
+														attrModButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												.add(
 														goButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 														36,
@@ -431,6 +442,10 @@ public class AttributeBrowserPanel extends JPanel implements
 												getDeleteButton())
 										.addPreferredGap(LayoutStyle.RELATED,
 												320, Short.MAX_VALUE)
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getAttrModButton(),
+												GroupLayout.PREFERRED_SIZE, 40,
+												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)
 										.add(getImportButton(),
 												GroupLayout.PREFERRED_SIZE, 40,
@@ -463,6 +478,11 @@ public class AttributeBrowserPanel extends JPanel implements
 												.createParallelGroup(
 														org.jdesktop.layout.GroupLayout.BASELINE)
 												.add(
+														attrModButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												.add(
 														importButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 														36,
@@ -482,11 +502,15 @@ public class AttributeBrowserPanel extends JPanel implements
 												getDeleteButton())
 										.addPreferredGap(LayoutStyle.RELATED,
 												350, Short.MAX_VALUE).add(
+												getAttrModButton(),
+												GroupLayout.PREFERRED_SIZE, 40,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(
 												getImportButton(),
 												GroupLayout.PREFERRED_SIZE, 40,
 												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)));
-
 				buttonBarLayout
 						.setVerticalGroup(buttonBarLayout
 								.createParallelGroup(
@@ -512,6 +536,11 @@ public class AttributeBrowserPanel extends JPanel implements
 										buttonBarLayout
 												.createParallelGroup(
 														org.jdesktop.layout.GroupLayout.BASELINE)
+												.add(
+														attrModButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 												.add(
 														importButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
@@ -629,6 +658,45 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	}
 
+	private JButton attrModButton= null;
+	private AttrSelectModPanel attrModPanel = null;
+	private String tableObjectType = "";
+	
+	public void setAttrModPane(AttrSelectModPanel pPanel, String pTableObjetType) {
+		attrModPanel = pPanel;
+		tableObjectType = pTableObjetType;
+	}
+
+	private JButton getAttrModButton() {
+		if (attrModButton == null) {
+			attrModButton = new JButton();
+			attrModButton.setIcon(new javax.swing.ImageIcon(getClass()
+					.getResource("images/stock_insert-columns.png")));
+			attrModButton.setToolTipText("Attribute Modification");
+			attrModButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
+
+			attrModButton.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					showAttrModDialog();
+				}
+			});
+		}
+		return attrModButton;
+	}
+	
+	private void showAttrModDialog() {
+
+		final JDialog attModDialog = new JDialog();
+
+		attModDialog.setTitle(tableObjectType + " Attritube Modification");
+		attModDialog.setModal(true);
+				
+		attModDialog.getContentPane().add(attrModPanel);				
+		attModDialog.pack();
+		attModDialog.setVisible(true);
+	} // showAttrModDialog()
+	
+	
 	protected void editMetadata() {
 		NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape
 				.getDesktop(), false, Cytoscape.getCurrentNetwork());
@@ -647,9 +715,12 @@ public class AttributeBrowserPanel extends JPanel implements
 		if (attributeType.equalsIgnoreCase("node")) {
 			ImportNodeAttributesAction nodeAction = new ImportNodeAttributesAction();
 			nodeAction.actionPerformed(null);
-		} else {
+		} else if (attributeType.equalsIgnoreCase("Edge")){
 			ImportEdgeAttributesAction edgeAction = new ImportEdgeAttributesAction();
 			edgeAction.actionPerformed(null);
+		}
+		else { // case for Network
+			System.out.println("Network Attribute import not implemented yet");
 		}
 
 	}
