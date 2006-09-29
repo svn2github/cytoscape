@@ -67,8 +67,12 @@ import giny.model.Node;
  */
 public abstract class EdgeCalculator extends AbstractCalculator {
 
-    public EdgeCalculator(String name, ObjectMapping m) {
-	super(name, m);
+    EdgeCalculator() {
+    	super();
+    }
+
+    public EdgeCalculator(String name, ObjectMapping m, Class c) {
+	super(name, m, c);
     }
     /**
      * Constructor that calls {@link MappingFactory} to construct a new
@@ -77,7 +81,7 @@ public abstract class EdgeCalculator extends AbstractCalculator {
     public EdgeCalculator(String name, Properties props, String baseKey,
                           ValueParser parser, Object defObj) {
         super(name, MappingFactory.newMapping(props, baseKey + ".mapping", parser,
-                                              defObj, ObjectMapping.EDGE_MAPPING) );
+                                              defObj, ObjectMapping.EDGE_MAPPING), defObj.getClass() );
     }
 
     /**
@@ -104,7 +108,7 @@ public abstract class EdgeCalculator extends AbstractCalculator {
 
     abstract public void apply(EdgeAppearance appr, Edge edge, CyNetwork network); 
     abstract public String getPropertyLabel();
-    abstract public String getPropertyObjectString();
     abstract public byte getType();
+    abstract public String getTypeName();
 
 }

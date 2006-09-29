@@ -60,39 +60,37 @@ import cytoscape.visual.ui.VizMapUI;
 public class GenericEdgeFontFaceCalculator extends EdgeCalculator
     {
 
-
-    public String getPropertyObjectString() {
-        return "";
-    }
-
     public String getPropertyLabel() {
         return "edgeFontFaceCalculator";
     }
 
-
     public byte getType() {
         return VizMapUI.EDGE_FONT_FACE;
     }
-    
-    public GenericEdgeFontFaceCalculator(String name, ObjectMapping m) {
-	super(name, m);
-	if (!(Font.class.isAssignableFrom(m.getRangeClass()))) {
-	    throw new ClassCastException("Invalid Calculator: Expected class Font, got " + 
-					 m.getRangeClass().toString());
-	}
+
+    public String getTypeName() {
+        return "Edge Font Face";
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+    
+    GenericEdgeFontFaceCalculator() {
+	super();	
+    }
+
+    public GenericEdgeFontFaceCalculator(String name, ObjectMapping m) {
+	super(name, m, Font.class);
+    }
+
     public GenericEdgeFontFaceCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new FontParser(), new Font(null, Font.PLAIN, 12));
     }
 
     public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        String canonicalName = edge.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-		appr.setFont( (Font) super.getMapping(0).calculateRangeValue(attrBundle) );
+	Font f = (Font) getRangeValue(edge); 
+	
+	// default has already been set - no need to do anything
+	if ( f == null )
+		return;
+
+	appr.setFont( f ); 
     }
 }

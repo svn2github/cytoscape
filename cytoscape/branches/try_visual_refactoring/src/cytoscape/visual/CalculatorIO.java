@@ -57,35 +57,31 @@ import cytoscape.visual.ui.VizMapUI;
  */
 public class CalculatorIO {
     
-    public static final String dirHeader = "cytoscape.visual.calculators.";
+    // old labels no longer used, but that we need to account for
+    private static final String nodeColorBaseKey = "nodeColorCalculator";
+    private static final String nodeSizeBaseKey = "nodeSizeCalculator";
+    private static final String edgeArrowBaseKey = "edgeArrowCalculator";
 
-    public static final String nodeColorBaseKey = "nodeColorCalculator";
-    public static final String nodeFillColorBaseKey = "nodeFillColorCalculator";
-    public static final String nodeBorderColorBaseKey = "nodeBorderColorCalculator";
-    public static final String nodeLineTypeBaseKey = "nodeLineTypeCalculator";
-    public static final String nodeShapeBaseKey = "nodeShapeCalculator";
-    public static final String nodeSizeBaseKey = "nodeSizeCalculator";
-    public static final String nodeWidthBaseKey = "nodeWidthCalculator";
-    public static final String nodeHeightBaseKey = "nodeHeightCalculator";
-    public static final String nodeUniformSizeBaseKey = "nodeUniformSizeCalculator";
-    public static final String nodeLabelBaseKey = "nodeLabelCalculator";
-    public static final String nodeToolTipBaseKey = "nodeToolTipCalculator";
-    public static final String nodeFontFaceBaseKey = "nodeFontFaceCalculator";
-    public static final String nodeFontSizeBaseKey = "nodeFontSizeCalculator";
-    public static final String nodeLabelPositionBaseKey = "nodeLabelPositionCalculator";
-    public static final String edgeColorBaseKey = "edgeColorCalculator";
-    public static final String edgeLineTypeBaseKey = "edgeLineTypeCalculator";
-    public static final String edgeArrowBaseKey = "edgeArrowCalculator";
-    public static final String edgeSourceArrowBaseKey = "edgeSourceArrowCalculator";
-    public static final String edgeTargetArrowBaseKey = "edgeTargetArrowCalculator";
-    public static final String edgeLabelBaseKey = "edgeLabelCalculator";
-    public static final String edgeToolTipBaseKey = "edgeToolTipCalculator";
-    public static final String edgeFontFaceBaseKey = "edgeFontFaceCalculator";
-    public static final String edgeFontSizeBaseKey = "edgeFontSizeCalculator";
-    
-    public static final String nodeAppearanceBaseKey = "nodeAppearanceCalculator";
-    public static final String edgeAppearanceBaseKey = "edgeAppearanceCalculator";
-    public static final String globalAppearanceBaseKey = "globalAppearanceCalculator";
+    // new labels to replace old labels 
+    private static final String nodeFillColorBaseKey = 
+    	CalculatorFactory.getPropertyLabel(VizMapUI.NODE_COLOR); 
+    private static final String nodeBorderColorBaseKey =  
+    	CalculatorFactory.getPropertyLabel(VizMapUI.NODE_BORDER_COLOR);
+    private static final String nodeWidthBaseKey =  
+    	CalculatorFactory.getPropertyLabel(VizMapUI.NODE_WIDTH);
+    private static final String nodeHeightBaseKey =  
+    	CalculatorFactory.getPropertyLabel(VizMapUI.NODE_HEIGHT);
+    private static final String nodeUniformSizeBaseKey =  
+    	CalculatorFactory.getPropertyLabel(VizMapUI.NODE_SIZE);
+    private static final String edgeSourceArrowBaseKey =  
+    	CalculatorFactory.getPropertyLabel(VizMapUI.EDGE_SRCARROW);
+    private static final String edgeTargetArrowBaseKey =  
+    	CalculatorFactory.getPropertyLabel(VizMapUI.EDGE_TGTARROW);
+   
+    // appearance labels
+    private static final String nodeAppearanceBaseKey = "nodeAppearanceCalculator";
+    private static final String edgeAppearanceBaseKey = "edgeAppearanceCalculator";
+    private static final String globalAppearanceBaseKey = "globalAppearanceCalculator";
     
     
     /**
@@ -164,32 +160,10 @@ public class CalculatorIO {
      */
     public static Properties getProperties(CalculatorCatalog catalog) {
         Properties newProps = new Properties();
-        
-        //gather properties for node calculators
-        //addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_COLOR), nodeColorBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_COLOR), nodeFillColorBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_BORDER_COLOR), nodeBorderColorBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_LINETYPE), nodeLineTypeBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_SHAPE), nodeShapeBaseKey);
-        //addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_SIZE), nodeSizeBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_SIZE), nodeUniformSizeBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_HEIGHT), nodeHeightBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_WIDTH), nodeWidthBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_LABEL), nodeLabelBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_LABEL_POSITION), nodeLabelPositionBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_TOOLTIP), nodeToolTipBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_FONT_FACE), nodeFontFaceBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.NODE_FONT_SIZE), nodeFontSizeBaseKey);
-        //gather properties for edge calculators
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_COLOR), edgeColorBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_LINETYPE), edgeLineTypeBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_SRCARROW), edgeSourceArrowBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_TGTARROW), edgeTargetArrowBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_LABEL), edgeLabelBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_TOOLTIP), edgeToolTipBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_FONT_FACE), edgeFontFaceBaseKey);
-        addProperties(newProps, catalog.getCalculators(VizMapUI.EDGE_FONT_SIZE), edgeFontSizeBaseKey);
-        
+       
+       	for ( Calculator c : catalog.getCalculators() ) 
+		newProps.putAll( c.getProperties() );
+		
         //visual styles
         Set visualStyleNames = catalog.getVisualStyleNames();
         for (Iterator i = visualStyleNames.iterator(); i.hasNext(); ) {
@@ -197,18 +171,22 @@ public class CalculatorIO {
             VisualStyle vs = catalog.getVisualStyle(name);
             try {
                 Properties styleProps = new Properties();
+
                 NodeAppearanceCalculator nac = vs.getNodeAppearanceCalculator();
                 String nacBaseKey = nodeAppearanceBaseKey + "." + name;
                 Properties nacProps = nac.getProperties(nacBaseKey);
                 styleProps.putAll(nacProps);
+
                 EdgeAppearanceCalculator eac = vs.getEdgeAppearanceCalculator();
                 String eacBaseKey = edgeAppearanceBaseKey + "." + name;
                 Properties eacProps = eac.getProperties(eacBaseKey);
                 styleProps.putAll(eacProps);
+
                 GlobalAppearanceCalculator gac = vs.getGlobalAppearanceCalculator();
                 String gacBaseKey = globalAppearanceBaseKey + "." + name;
                 Properties gacProps = gac.getProperties(gacBaseKey);
                 styleProps.putAll(gacProps);
+
                 //now that we've constructed all the properties for this visual
                 //style without Exceptions, store in the global properties object
                 newProps.putAll(styleProps);
@@ -221,29 +199,6 @@ public class CalculatorIO {
         
         return newProps;
     }
-    
-    /**
-     * Given a collection of calculators and a base key, gets the properties description from
-     * each calculator and adds all the properties to the supplied Properties argument.
-     */
-    private static void addProperties(Properties newProps, Collection calcs, String baseKey) {
-        for (Iterator i = calcs.iterator(); i.hasNext(); ) {
-            Calculator c = (Calculator)i.next();
-            if (c == null) {continue;}
-            String calcBaseKey = baseKey + "." + c.toString();
-            //wrap each calculator addition in a try/catch block, so that
-            //failure to convert one calculator doesn't affect all the others
-            try {
-                Properties props = CalculatorFactory.getProperties(c, calcBaseKey);
-                newProps.putAll(props);
-            } catch (Exception e) {
-                System.err.println("Exception while saving " + calcBaseKey);
-                System.err.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
-    
     
     /**
      * Equivalent to loadCalculators(props, catalog, true);
@@ -269,47 +224,22 @@ public class CalculatorIO {
      */
     public static void loadCalculators(Properties props, CalculatorCatalog catalog,
                                        boolean overWrite) {
-        /* The supplied Properties object may contain any kinds of properties.
-         * We look for keys that start with a name we recognize, identifying a
-         * particular type of calculator. The second field of the key should
-         * then be an identifying name. For example,
-         *     nodeColorCalculator.mySpecialCalculator.{anything else}
-         *
-         * The first thing we want to do is group every key with the same name
-         * and type together for further processing. To do this, we construct
-         * a Map object for each type of calculator where the the map keys are
-         * the names, and the map value is a new Properties object that only 
-         * contains the properties with that specific type and name. Copying
-         * the Properties to a new object ensures that calculators can't trample
-         * the original while customizing themselves.
-         *
-         * Note that we need separate constructs for each type of calculator,
-         * because calculators of different types are allowed to share the same name.
-         */
-
-        Map nodeFillColorNames = new HashMap();
-        Map nodeBorderColorNames = new HashMap();
-        Map nodeLineTypeNames = new HashMap();
-        Map nodeShapeNames = new HashMap();
-        Map nodeUniformSizeNames = new HashMap();
-        Map nodeWidthNames = new HashMap();
-        Map nodeHeightNames = new HashMap();
-        Map nodeLabelNames = new HashMap();
-        Map nodeToolTipNames = new HashMap();
-        Map nodeFontFaceNames = new HashMap();
-        Map nodeFontSizeNames = new HashMap();
-        Map nodeLabelPositionNames = new HashMap();
-        Map edgeColorNames = new HashMap();
-        Map edgeLineTypeNames = new HashMap();
-        Map edgeSourceArrowNames = new HashMap();
-        Map edgeTargetArrowNames = new HashMap();
-        Map edgeLabelNames = new HashMap();
-        Map edgeToolTipNames = new HashMap();
-        Map edgeFontFaceNames = new HashMap();
-        Map edgeFontSizeNames = new HashMap();
-        Map nacNames = new HashMap();
-        Map eacNames = new HashMap();
-        Map gacNames = new HashMap();
+        // The supplied Properties object may contain any kinds of properties.
+        // We look for keys that start with a name we recognize, identifying a
+        // particular type of calculator. The second field of the key should
+        // then be an identifying name. For example,
+        //     nodeFillColorCalculator.mySpecialCalculator.{anything else}
+        //
+	// We begin by creating a map of calculator types (nodeFillColorCalculator)
+	// to a map of names (mySpecialCalculator) to properties.  Note that this
+	// will create maps for _any_ "calculator" that appears, even if it isn't
+	// a Calculator.  This is OK, because the CalculatorFactory won't create
+	// anything that isn't actually a Calculator.
+        //
+        // Note that we need separate constructs for each type of calculator,
+        // because calculators of different types are allowed to share the same name.
+        //
+	Map<String,Map<String,Properties>> calcNames = new HashMap<String,Map<String,Properties>>();
 
         //use the propertyNames() method instead of the generic Map iterator,
         //because the former method recognizes layered properties objects.
@@ -317,117 +247,66 @@ public class CalculatorIO {
         for (Enumeration eI = props.propertyNames(); eI.hasMoreElements(); ) {
             String key = (String)eI.nextElement();
 
+            // handle legacy names
+	    // In these cases the old calculator base key was applicable to more
+	    // than one calculator. In the new system it's one key to one calculator, 
+	    // so we simply apply the old calculator to all of the new types of
+	    // calculators that the old calculator mapped to.
             if (key.startsWith(nodeColorBaseKey + ".")) {
 	    	key = updateLegacyKey(key,props,nodeColorBaseKey,nodeFillColorBaseKey,
 			"cytoscape.visual.calculators.GenericNodeFillColorCalculator");
-      		storeKey(key, props, nodeFillColorNames);
+      		storeKey(key, props, calcNames);
 	    	key = updateLegacyKey(key,props,nodeFillColorBaseKey,nodeBorderColorBaseKey,
 			"cytoscape.visual.calculators.GenericNodeBorderColorCalculator");
-		storeKey(key, props, nodeBorderColorNames);
-            } else if (key.startsWith(nodeFillColorBaseKey + ".")) {
-                storeKey(key, props, nodeFillColorNames);
-            } else if (key.startsWith(nodeBorderColorBaseKey + ".")) {
-                storeKey(key, props, nodeBorderColorNames);
-            } else if (key.startsWith(nodeLineTypeBaseKey + ".")) {
-                storeKey(key, props, nodeLineTypeNames);
-            } else if (key.startsWith(nodeShapeBaseKey + ".")) {
-                storeKey(key, props, nodeShapeNames);
+		storeKey(key, props, calcNames);
+
             } else if (key.startsWith(nodeSizeBaseKey + ".")) {
 	    	key = updateLegacyKey(key,props,nodeSizeBaseKey,nodeUniformSizeBaseKey,
 			"cytoscape.visual.calculators.GenericNodeUniformSizeCalculator");
-                storeKey(key, props, nodeUniformSizeNames);
+                storeKey(key, props, calcNames);
 	    	key = updateLegacyKey(key,props,nodeUniformSizeBaseKey,nodeWidthBaseKey,
 			"cytoscape.visual.calculators.GenericNodeWidthCalculator");
-		storeKey(key, props, nodeWidthNames);
+		storeKey(key, props, calcNames);
 	    	key = updateLegacyKey(key,props,nodeWidthBaseKey,nodeHeightBaseKey,
 			"cytoscape.visual.calculators.GenericNodeHeightCalculator");
-		storeKey(key, props, nodeHeightNames);
-            } else if (key.startsWith(nodeUniformSizeBaseKey + ".")) {
-                storeKey(key, props, nodeUniformSizeNames);
-            } else if (key.startsWith(nodeHeightBaseKey + ".")) {
-                storeKey(key, props, nodeHeightNames);
-            } else if (key.startsWith(nodeWidthBaseKey + ".")) {
-                storeKey(key, props, nodeWidthNames);
-            } else if (key.startsWith(nodeLabelBaseKey + ".")) {
-                storeKey(key, props, nodeLabelNames);
-            } else if (key.startsWith(nodeLabelPositionBaseKey + ".")) {
-                storeKey(key, props, nodeLabelPositionNames);
-            } else if (key.startsWith(nodeToolTipBaseKey + ".")) {
-                storeKey(key, props, nodeToolTipNames);
-            } else if (key.startsWith(nodeFontFaceBaseKey + ".")) {
-                storeKey(key, props, nodeFontFaceNames);
-            } else if (key.startsWith(nodeFontSizeBaseKey + ".")) {
-                storeKey(key, props, nodeFontSizeNames);
-            } else if (key.startsWith(edgeColorBaseKey + ".")) {
-                storeKey(key, props, edgeColorNames);
-            } else if (key.startsWith(edgeLineTypeBaseKey + ".")) {
-                storeKey(key, props, edgeLineTypeNames);
+		storeKey(key, props, calcNames);
+
             } else if (key.startsWith(edgeArrowBaseKey + ".")) {
 	    	key = updateLegacyKey(key,props,edgeArrowBaseKey,edgeSourceArrowBaseKey,
 			"cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator");
-		storeKey(key, props, edgeSourceArrowNames);
+		storeKey(key, props, calcNames);
 	    	key = updateLegacyKey(key,props,edgeSourceArrowBaseKey,edgeTargetArrowBaseKey,
 			"cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator");
-		storeKey(key, props, edgeTargetArrowNames);
-            } else if (key.startsWith(edgeSourceArrowBaseKey + ".")) {
-                storeKey(key, props, edgeSourceArrowNames);
-            } else if (key.startsWith(edgeTargetArrowBaseKey + ".")) {
-                storeKey(key, props, edgeTargetArrowNames);
-            } else if (key.startsWith(edgeLabelBaseKey + ".")) {
-                storeKey(key, props, edgeLabelNames);
-            } else if (key.startsWith(edgeToolTipBaseKey + ".")) {
-                storeKey(key, props, edgeToolTipNames);
-            } else if (key.startsWith(edgeFontFaceBaseKey + ".")) {
-                storeKey(key, props, edgeFontFaceNames);
-            } else if (key.startsWith(edgeFontSizeBaseKey + ".")) {
-                storeKey(key, props, edgeFontSizeNames);
-            } else if (key.startsWith(nodeAppearanceBaseKey + ".")) {
-                storeKey(key, props, nacNames);
-            } else if (key.startsWith(edgeAppearanceBaseKey + ".")) {
-                storeKey(key, props, eacNames);
-            } else if (key.startsWith(globalAppearanceBaseKey + ".")) {
-                storeKey(key, props, gacNames);
+		storeKey(key, props, calcNames);
+
+	    // handle normal names
+	    // This is how all "modern" properties files should work.
+            } else {
+                storeKey(key, props, calcNames);
             }
         }
         
-        /* Now that we have all the properties in groups, we pass each Map of
-         * names and Properties objects to a helper function that creates a
-         * calculator for each entry and stores the calculators in the catalog.
-         * Before storing the calculator, we either remove any existing calculator
-         * with the same name, or get a unique name from the calculator, depending
-         * on the value of the overWrite argument.
-         */
-        handleCalculators(nodeFillColorNames, catalog, overWrite, nodeFillColorBaseKey);
-        handleCalculators(nodeBorderColorNames, catalog, overWrite, nodeBorderColorBaseKey);
-        handleCalculators(nodeLineTypeNames, catalog, overWrite, nodeLineTypeBaseKey);
-        handleCalculators(nodeShapeNames, catalog, overWrite, nodeShapeBaseKey);
-        handleCalculators(nodeUniformSizeNames, catalog, overWrite, nodeUniformSizeBaseKey);
-        handleCalculators(nodeWidthNames, catalog, overWrite, nodeWidthBaseKey);
-        handleCalculators(nodeHeightNames, catalog, overWrite, nodeHeightBaseKey);
-        handleCalculators(nodeLabelNames, catalog, overWrite, nodeLabelBaseKey);
-        handleCalculators(nodeLabelPositionNames, catalog, overWrite, nodeLabelPositionBaseKey);
-        handleCalculators(nodeToolTipNames, catalog, overWrite, nodeToolTipBaseKey);
-        handleCalculators(nodeFontFaceNames, catalog, overWrite, nodeFontFaceBaseKey);
-        handleCalculators(nodeFontSizeNames, catalog, overWrite, nodeFontSizeBaseKey);
-        handleCalculators(edgeColorNames, catalog, overWrite, edgeColorBaseKey);
-        handleCalculators(edgeLineTypeNames, catalog, overWrite, edgeLineTypeBaseKey);
-        handleCalculators(edgeSourceArrowNames, catalog, overWrite, edgeSourceArrowBaseKey);
-        handleCalculators(edgeTargetArrowNames, catalog, overWrite, edgeTargetArrowBaseKey);
-        handleCalculators(edgeLabelNames, catalog, overWrite, edgeLabelBaseKey);
-        handleCalculators(edgeToolTipNames, catalog, overWrite, edgeToolTipBaseKey);
-        handleCalculators(edgeFontFaceNames, catalog, overWrite, edgeFontFaceBaseKey);
-        handleCalculators(edgeFontSizeNames, catalog, overWrite, edgeFontSizeBaseKey);
+        // Now that we have all the properties in groups, we pass each Map of
+        // names and Properties objects to a helper function that creates a
+        // calculator for each entry and stores the calculators in the catalog.
+        // Before storing the calculator, we either remove any existing calculator
+        // with the same name, or get a unique name from the calculator, depending
+        // on the value of the overWrite argument.
+	for ( String calcTypeKey : calcNames.keySet() )
+		handleCalculators(calcNames.get(calcTypeKey),catalog,overWrite,calcTypeKey);
 
         //Map structure to hold visual styles that we build here
         Map visualStyles = new HashMap();
+
         //now that all the individual calculators are loaded, load the
         //Node/Edge/Global appearance calculators
-        for (Iterator si = nacNames.keySet().iterator(); si.hasNext(); ) {
-            String name = (String)si.next();
-            Properties nacProps = (Properties)nacNames.get(name);
-            String baseKey = nodeAppearanceBaseKey + "." + name;
+
+	Map<String,Properties> nacNames = calcNames.get(nodeAppearanceBaseKey);
+	for ( String name : nacNames.keySet() ) {
+            Properties nacProps = nacNames.get(name);
+            String apprType = nodeAppearanceBaseKey + "." + name;
             NodeAppearanceCalculator nac =
-                new NodeAppearanceCalculator(name, nacProps, baseKey, catalog);
+                new NodeAppearanceCalculator(name, nacProps, apprType, catalog);
             //store in the matching visual style, creating as needed
             VisualStyle vs = (VisualStyle)visualStyles.get(name);
             if (vs == null) {
@@ -436,12 +315,13 @@ public class CalculatorIO {
             }
             vs.setNodeAppearanceCalculator(nac);
         }
-        for (Iterator si = eacNames.keySet().iterator(); si.hasNext(); ) {
-            String name = (String)si.next();
-            Properties eacProps = (Properties)eacNames.get(name);
-            String baseKey = edgeAppearanceBaseKey + "." + name;
+
+	Map<String,Properties> eacNames = calcNames.get(edgeAppearanceBaseKey);
+	for ( String name : eacNames.keySet() ) {
+            Properties eacProps = eacNames.get(name);
+            String apprType = edgeAppearanceBaseKey + "." + name;
             EdgeAppearanceCalculator eac =
-                new EdgeAppearanceCalculator(name, eacProps, baseKey, catalog);
+                new EdgeAppearanceCalculator(name, eacProps, apprType, catalog);
             //store in the matching visual style, creating as needed
             VisualStyle vs = (VisualStyle)visualStyles.get(name);
             if (vs == null) {
@@ -450,12 +330,13 @@ public class CalculatorIO {
             }
             vs.setEdgeAppearanceCalculator(eac);
         }
-        for (Iterator si = gacNames.keySet().iterator(); si.hasNext(); ) {
-            String name = (String)si.next();
-            Properties gacProps = (Properties)gacNames.get(name);
-            String baseKey = globalAppearanceBaseKey + "." + name;
+
+	Map<String,Properties> gacNames = calcNames.get(globalAppearanceBaseKey);
+	for ( String name : gacNames.keySet() ) {
+            Properties gacProps = gacNames.get(name);
+            String apprType = globalAppearanceBaseKey + "." + name;
             GlobalAppearanceCalculator gac =
-                new GlobalAppearanceCalculator(name, gacProps, baseKey, catalog);
+                new GlobalAppearanceCalculator(name, gacProps, apprType, catalog);
             //store in the matching visual style, creating as needed
             VisualStyle vs = (VisualStyle)visualStyles.get(name);
             if (vs == null) {
@@ -474,23 +355,40 @@ public class CalculatorIO {
 
     
     /**
-     * The supplied Map m maps names to Properties objects that hold all the
-     * properties entries associated with that name. Given a new key, this
-     * method extracts the name field from the key, gets the matching
-     * Properties object from the Map (creating a new map entry if needed)
-     * and stores the (key, value) property pair in that Properties object).
+     * The supplied Map m maps calculator types to a map of names to Properties 
+     * objects that hold all the properties entries associated with that name. 
+     * Given a new key, this method first extract the calculator type, and then
+     * finds the name to prop map for that calc type.  It then extracts the name 
+     * field from the key, gets the matching Properties object from the name to
+     * props map (creating a new map entry if needed) and stores the (key, value) 
+     * property pair in that Properties object).
      */
-    private static void storeKey(String key, Properties props, Map m) {
+    private static void storeKey(String key, Properties props, Map<String,Map<String,Properties>> calcNames) {
+
+    	// get the name->props map for the given calculator type, as 
+	// defined by the key.
+        String calcTypeKey = extractCalcType(key);
+	if ( calcTypeKey == null ) {
+		System.err.println("couldn't parse calcTypeKey from '" + key +"'");
+		return;
+	}
+	Map<String,Properties> name2props = calcNames.get(calcTypeKey);
+	// if the props don't yet exist, create them
+	if ( name2props == null ) {
+		name2props = new HashMap<String,Properties>();
+		calcNames.put(calcTypeKey,name2props);
+	}
+
+	// now the get the props from the name->props map 
         String name = extractName(key);
         if (name != null) {
-            //get the entry for this name in the Map
-
 	    // calcProps contains all of the properties for this calculator,
 	    // e.g. the mappings, the controller, etc.
-            Properties calcProps = (Properties)m.get(name);
-            if (calcProps == null) {//create a new entry for this name
+            Properties calcProps = name2props.get(name);
+	    //create a new entry for this name if it doesn't already exist
+            if (calcProps == null) {
                 calcProps = new Properties();
-                m.put(name, calcProps);
+                name2props.put(name, calcProps);
             }
             calcProps.setProperty( key, props.getProperty(key) );
         }//should report parse errors if we can't get a name
@@ -513,49 +411,59 @@ public class CalculatorIO {
         //return substring between the periods
         return key.substring(dot1+1, dot2);
     }
+
+    /**
+     * Extracts the base key from the string. 
+     */
+    private static String extractCalcType(String key) {
+        if (key == null) {return null;}
+        //find index of first period character
+        int dot1 = key.indexOf(".");
+        //return null if not found, or found at end of string
+        if (dot1 == -1 || dot1 >= key.length()-1) {return null;}
+        //return substring between the periods
+        return key.substring(0, dot1);
+    }
     
     /**
      * Construct and store Calculators. Ensures that there will be no name
      * collision by either removing an existing duplicate or renaming the
      * new calculator as needed.
      */
-    private static void handleCalculators(Map nameMap, CalculatorCatalog catalog,
-                    boolean overWrite, String baseKey) {
+    private static void handleCalculators(Map<String,Properties> nameMap, CalculatorCatalog catalog,
+                    boolean overWrite, String calcTypeKey) {
+	
 	// for each calculator name
-        for (Iterator si = nameMap.keySet().iterator(); si.hasNext(); ) {
-            String name = (String)si.next();
+	for ( String name : nameMap.keySet() ) {
 	    // get the properties object that contains all info for
 	    // that particular calculator
-            Properties calcProps = (Properties)nameMap.get(name);
-            String keyString = baseKey + "." + name;
+            Properties calcProps = nameMap.get(name);
+            String keyString = calcTypeKey + "." + name;
 	    // create a calculator based on the calculator name and type
             Calculator c = CalculatorFactory.newCalculator(name, calcProps, keyString);
             if (c!= null) {
-                if (overWrite) {//remove any existing calculator of same name and type
-                    removeDuplicate(c, catalog);
-                } else {//ensure a unique name
+
+		// remove any existing calculator of same name and type
+                if (overWrite) {
+ 		   catalog.removeCalculator(c);	
+
+		// otherwise ensure a unique name
+                } else {
                     renameAsNeeded(c, catalog);
                 }
+
                 catalog.addCalculator(c);
-            }
+	    }
         }
     }
     
-    /**
-     * Given a Calculator of a given type and a CalculatorCatalog, removes any
-     * existing calculator of the same type and name.
-     */
-    public static void removeDuplicate(Calculator c, CalculatorCatalog catalog) {
- 	catalog.removeCalculator(c);	
-    }
-
     /**
      * Given a Calculator of a given type and a CalculatorCatalog, checks
      * for an existing catalog with the same name and type. If one exists,
      * gets a new unique name from the catalog and applied it to the
      * calculator argument.
      */
-    public static void renameAsNeeded(Calculator c, CalculatorCatalog catalog) {
+    private static void renameAsNeeded(Calculator c, CalculatorCatalog catalog) {
         String name = c.toString();
 	String newName = catalog.checkCalculatorName(c.getType(),name);
         if (!newName.equals(name)) {c.setName(newName);}
@@ -565,7 +473,8 @@ public class CalculatorIO {
      * Used for updating calculator names from old style to new style. 
      * Only used in a few cases where the old and new don't align.
      */
-    private static String updateLegacyKey(String key, Properties props, String oldKey, String newKey, String newClass ) {
+    private static String updateLegacyKey(String key, Properties props, String oldKey, 
+                                          String newKey, String newClass ) {
     	String value = props.getProperty(key);
 	key = key.replace(oldKey,newKey);
 	if ( key.endsWith(".class") )

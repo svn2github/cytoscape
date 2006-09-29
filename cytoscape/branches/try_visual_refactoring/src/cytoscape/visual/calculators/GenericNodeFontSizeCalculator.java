@@ -56,53 +56,39 @@ import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
-public class GenericNodeFontSizeCalculator extends NodeCalculator
-    {
-
+public class GenericNodeFontSizeCalculator extends NodeCalculator {
 
     public byte getType() {
         return VizMapUI.NODE_FONT_SIZE;
-    }
-    public String getPropertyObjectString() {
-        return "";
     }
 
     public String getPropertyLabel() {
         return "nodeFontSizeCalculator";
     }
-    
-    public GenericNodeFontSizeCalculator(String name, ObjectMapping m) {
-	super(name, m);
-	//All we need is some kind of Number
-	if (!(Number.class.isAssignableFrom(m.getRangeClass()))) {
-	    throw new ClassCastException("Invalid Calculator: Expected class Number, got " + 
-					 m.getRangeClass().toString());
-	}
+
+    public String getTypeName() {
+        return "Node Font Size";
     }
     
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+    GenericNodeFontSizeCalculator() {
+	super();
+    }
+    
+    public GenericNodeFontSizeCalculator(String name, ObjectMapping m) {
+	super(name, m, Number.class);
+    }
+    
     public GenericNodeFontSizeCalculator(String name, Properties props, String baseKey) {
 	super(name, props, baseKey, new DoubleParser(), new Double(12));
     }
 
-    /** 
-     *  calculateNodeFontSize returns -1 if there is no mapping;
-     *  since a negative number has no meaning as a font size,
-     *  this is a case that the caller of calculateNodeFontSize
-     *  should expect to handle.  The usual caller is
-     *  NodeAppearanceCalculator.
-     */
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
-		float ret = -1.0f;
-		if (rangeValue != null)
-			ret = ((Number) rangeValue).floatValue();
-		appr.setFontSize(ret);
+	Object rangeValue = getRangeValue(node); 
+
+	// default has already been set - no need to do anything
+	if (rangeValue == null)
+		return;
+
+	appr.setFontSize(((Number) rangeValue).floatValue());
     }
 }

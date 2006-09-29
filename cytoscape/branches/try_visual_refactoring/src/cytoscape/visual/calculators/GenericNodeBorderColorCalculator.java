@@ -59,17 +59,20 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 public class GenericNodeBorderColorCalculator extends AbstractNodeColorCalculator {
 
-
     public byte getType() {
     	return VizMapUI.NODE_BORDER_COLOR;
     }
 
-    public String getPropertyObjectString() {
-        return "";
-    }
-
     public String getPropertyLabel() {
     	return "nodeBorderColorCalculator";
+    }
+   
+    public String getTypeName() {
+        return "Node Border Color";
+    }
+ 
+    GenericNodeBorderColorCalculator() {
+	super();
     }
     
     public GenericNodeBorderColorCalculator(String name, ObjectMapping m) {

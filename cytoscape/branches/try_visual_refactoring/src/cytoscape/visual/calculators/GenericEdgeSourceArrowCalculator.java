@@ -59,18 +59,22 @@ import cytoscape.visual.ui.VizMapUI;
 
 //----------------------------------------------------------------------------
 public class GenericEdgeSourceArrowCalculator extends AbstractEdgeArrowCalculator {
+
 	public byte getType() {
 		return VizMapUI.EDGE_SRCARROW;
 	}
 
-    public String getPropertyObjectString() {
-        return "";
-    }
+	public String getPropertyLabel() {
+		return "edgeSourceArrowCalculator";
+	}
 
-    public String getPropertyLabel() {
-        return "edgeSourceArrowCalculator";
-    }
+	public String getTypeName() {
+		return "Edge Source Arrow";
+	}
 
+	GenericEdgeSourceArrowCalculator() {
+		super();
+	}
 
 	public GenericEdgeSourceArrowCalculator(String name, ObjectMapping m) {
 		super(name, m);

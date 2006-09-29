@@ -36,167 +36,191 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
+
 package cytoscape.visual.calculators;
-//----------------------------------------------------------------------------
+
 import java.util.Properties;
 import java.lang.reflect.Constructor;
 import cytoscape.visual.ui.VizMapUI;
 import cytoscape.visual.mappings.ObjectMapping;
-//----------------------------------------------------------------------------
+import java.io.File;
+import java.net.URL;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.lang.reflect.Modifier;
+import java.util.jar.JarEntry;
+import java.net.JarURLConnection;
+import java.util.jar.JarFile;
+
 /**
- * This class provides a static factory method for constructing an instance
- * of Calculator as specified by a Properties object and other arguments.
- * It searches for a key-value pair identifying the name of the class to
- * create, verifies that that class exists, implements the desired interface,
- * and has an appropriate constructor, and calls that constructor with the
- * appropriate arguments.
+ * This class provides static factory methods for constructing instances
+ * of Calculators as specified by arguments and static methods for getting
+ * names and labels based on calculator type.
  */
 public class CalculatorFactory {
-    
+   
+    // the list of dummy calculators that this application knows about
+    private static List<Calculator> calcs = new ArrayList<Calculator>();
+
+    // create the list of dummy calcs
+    static {
+	calcs.add( new GenericEdgeColorCalculator() );
+	calcs.add( new GenericEdgeFontFaceCalculator() );
+	calcs.add( new GenericEdgeFontSizeCalculator() );
+	calcs.add( new GenericEdgeLabelCalculator() );
+	calcs.add( new GenericEdgeLineTypeCalculator() );
+	calcs.add( new GenericEdgeSourceArrowCalculator() );
+	calcs.add( new GenericEdgeTargetArrowCalculator() );
+	calcs.add( new GenericEdgeToolTipCalculator() );
+	calcs.add( new GenericNodeBorderColorCalculator() );
+	calcs.add( new GenericNodeFillColorCalculator() );
+	calcs.add( new GenericNodeFontFaceCalculator() );
+	calcs.add( new GenericNodeFontSizeCalculator() );
+	calcs.add( new GenericNodeHeightCalculator() );
+	calcs.add( new GenericNodeLabelCalculator() );
+	calcs.add( new GenericNodeLabelColorCalculator() );
+	calcs.add( new GenericNodeLabelPositionCalculator() );
+	calcs.add( new GenericNodeLineTypeCalculator() );
+	calcs.add( new GenericNodeShapeCalculator() );
+	calcs.add( new GenericNodeToolTipCalculator() );
+	calcs.add( new GenericNodeUniformSizeCalculator() );
+	calcs.add( new GenericNodeWidthCalculator() );
+    }
+
     /**
      * Attempt to construct an instance of Calculator as defined by
      * the supplied arguments.
+     * It searches for a key-value pair identifying the name of the class to
+     * create, verifies that that class exists, implements the desired interface,
+     * and has an appropriate constructor, and calls that constructor with the
+     * appropriate arguments.
      */
     public static Calculator newCalculator(String name, Properties calcProps, String baseKey) {
-        //String to use in case of errors
-        String errString = "CalculatorFactory: error processing baseKey " + baseKey;
-
+       
         //get the class object for the real implementation object specified by
         //these properties
         String className = calcProps.getProperty(baseKey + ".class");
         if (className == null) {
-            System.err.println(errString);
-            String s = "    expected property key '"
-                       + baseKey + ".class' identifying class to construct";
-            System.err.println(s);
-            return null;
+            return null; // this is normal, so don't shout about it
 	}
+
+        String errString = "CalculatorFactory: error processing baseKey " + baseKey;
 
         Class realClass = null;
         try {
             realClass = Class.forName(className);
         } catch (Exception e) {
-            System.err.println(errString);
-            String s = "    class not found: " + className;
-            System.err.println(s);
+            System.err.println(errString + " class not found: " + className);
             return null;
         }
 	
         //get the class object representing the top-level interface Calculator
         Class calcClass = Calculator.class;
         if (!calcClass.isAssignableFrom(realClass)) {
-            System.err.println(errString);
-            String s = "    requested class " + className
-                       + " does not implement the Calculator interface";
-            System.err.println(s);
+            System.err.println(errString + " requested class " + className
+                       + " does not implement the Calculator interface");
             return null;
         }
+
+	// create the constructor for the specified class
+        Class[] parameterTypes = {String.class, Properties.class, String.class};
+	Constructor constructor = getConstructor(realClass,parameterTypes,className);
+	if (constructor == null) {
+            System.err.println(errString + " requested constructor for " + className
+                      + " could not be created");
+            return null;
+	}
 	
-        //look for a constructor in this class that takes the right arguments
-        Constructor constructor = null;
-        try {
-            Class[] parameterTypes = {String.class, Properties.class, String.class};
-            constructor = realClass.getDeclaredConstructor(parameterTypes);
-        } catch (NoSuchMethodException nsme) {
-            System.err.println(errString);
-            String s = "    no suitable constructor found in class "
-                       + className;
-            System.err.println(s);
-            return null;
-        } catch (SecurityException se) {//highly unlikely
-            System.err.println(errString);
-            String s = "    could not access constructors for class "
-                       + className;
-            System.err.println(s);
-            return null;
-        }
-        //assert(constructor != null);  //should be impossible
-        
         //try constructing a calculator by calling the found constructor
-        Calculator calculator = null;
-        try {
-            Object[] params = {name, calcProps, baseKey};
-            calculator = (Calculator) (constructor.newInstance(params));
-        } catch (Exception e) {
-            System.err.println(errString);
-            String s = "    unable to construct an instance"
-                       + " of class " + className;
-            System.err.println(s);
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+        Object[] params = {name, calcProps, baseKey};
+        Calculator calculator = getCalculator(constructor,params,className);
+	if (calculator == null)
+            System.err.println(errString + " requested calculator for " + className
+                      + " could not be created");
            
         return calculator;
     }
 
+
+    /**
+     * Creates a new default Calculator based on type.
+     */
     public static Calculator newDefaultCalculator(byte type, String calcName, ObjectMapping mapper) {
 
 	Calculator calc = null;
-	if (type == VizMapUI.NODE_COLOR) {
-		calc = new GenericNodeFillColorCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_BORDER_COLOR) {
-       		calc = new GenericNodeBorderColorCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_LINETYPE) {
-       		calc = new GenericNodeLineTypeCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_SHAPE) {
-       		calc = new GenericNodeShapeCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_HEIGHT) {
-       		calc = new GenericNodeHeightCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_WIDTH) {
-       		calc = new GenericNodeWidthCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_SIZE) {
-       		calc = new GenericNodeUniformSizeCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_LABEL) {
-       		calc = new GenericNodeLabelCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_LABEL_COLOR) {
-       		calc = new GenericNodeLabelColorCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_TOOLTIP) {
-       		calc = new GenericNodeToolTipCalculator(calcName, mapper);
-	} else if (type == VizMapUI.EDGE_COLOR) {
-       		calc = new GenericEdgeColorCalculator(calcName, mapper);
-	} else if (type == VizMapUI.EDGE_LINETYPE) {
-       		calc = new GenericEdgeLineTypeCalculator(calcName, mapper);
-	} else if (type == VizMapUI.EDGE_SRCARROW) {
-       		calc = new GenericEdgeSourceArrowCalculator(calcName, mapper);
-	} else if (type == VizMapUI.EDGE_TGTARROW) {
-       		calc = new GenericEdgeTargetArrowCalculator(calcName, mapper);
-	} else if (type == VizMapUI.EDGE_LABEL) {
-       		calc = new GenericEdgeLabelCalculator(calcName, mapper);
-	} else if (type == VizMapUI.EDGE_TOOLTIP) {
-       		calc = new GenericEdgeToolTipCalculator(calcName, mapper);
-	} else if (type == VizMapUI.EDGE_FONT_FACE) {
-       		calc = new GenericEdgeFontFaceCalculator(calcName, mapper);
-	} else if (type == VizMapUI.EDGE_FONT_SIZE) {
-       		calc = new GenericEdgeFontSizeCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_FONT_FACE) {
-       		calc = new GenericNodeFontFaceCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_FONT_SIZE) {
-       		calc = new GenericNodeFontSizeCalculator(calcName, mapper);
-	} else if (type == VizMapUI.NODE_LABEL_POSITION) {
-       		calc = new GenericNodeLabelPositionCalculator(calcName, mapper);
+
+	for ( Calculator c : calcs ) {
+		if ( c.getType() == type ) {
+			Class realClass = c.getClass();	
+			Class[] paramTypes = {String.class,ObjectMapping.class};
+			Constructor constructor = getConstructor(realClass,paramTypes,c.getPropertyLabel());
+			if ( constructor == null )
+				return null;
+			Object[] params = {calcName,mapper};
+        		calc = getCalculator(constructor,params,c.getPropertyLabel());
+
+			return calc;
+		}
 	}
 	return calc;
     }
 
     /**
-     * Get a properties description of the caclulator argument. This
-     * method calls the getProperties method of the calculator and
-     * then adds a property giving the calculator class name as recognized
-     * by the newCalculator method.
+     * Returns the type name for calculators of a given type.
      */
-    public static Properties getProperties(Calculator c, String baseKey) {
-        if (c == null || baseKey == null) {return null;}
-        Properties newProps = c.getProperties(baseKey);
-        String classKey = baseKey + ".class";
-        String className = c.getClass().getName();
-        newProps.setProperty(classKey, className);
-        return newProps;
+    public static String getTypeName(byte type) {
+	for ( Calculator c : calcs ) 
+		if ( c.getType() == type )
+			return c.getTypeName();
+	
+	return null;
+    }
+
+    /**
+     * Returns the property label for calculators of a given type.
+     */
+    public static String getPropertyLabel(byte type) {
+	for ( Calculator c : calcs ) 
+		if ( c.getType() == type )
+			return c.getPropertyLabel();
+	
+	return null;
+    }
+
+    // utility method to create a constructor based on the params
+    private static Constructor getConstructor(Class realClass, Class[] parameterTypes, String className) {
+
+	//look for a constructor in this class that takes the right arguments
+	Constructor constructor = null;
+	try {
+	    constructor = realClass.getDeclaredConstructor(parameterTypes);
+	} catch (NoSuchMethodException nsme) {
+	    String s = "no suitable constructor found in class " + className;
+	    System.err.println(s);
+	    nsme.printStackTrace();
+	    return null;
+	} catch (SecurityException se) {//highly unlikely
+	    String s = "could not access constructors for class " + className;
+	    System.err.println(s);
+	    se.printStackTrace();
+	    return null;
+	}
+	return constructor;
+    }
+
+    // utility method to create a calculator based on the params
+    private static Calculator getCalculator(Constructor constructor, Object[] params, String className) {
+	Calculator calculator = null;
+	try {
+	    calculator = (Calculator) (constructor.newInstance(params));
+	} catch (Exception e) {
+	    String s = "unable to construct an instance of class " + className;
+	    System.err.println(s);
+	    e.printStackTrace();
+	    return null;
+	}
+	return calculator;
     }
 }
 

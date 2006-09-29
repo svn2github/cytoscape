@@ -92,7 +92,7 @@ public interface Calculator extends Cloneable {
     /**
      * Get a description of this calculator as a Properties object.
      */
-    public Properties getProperties(String baseKey);
+    public Properties getProperties();
 
     /**
      * Add a ChangeListener to the calcaultor. When the state underlying the
@@ -117,12 +117,14 @@ public interface Calculator extends Cloneable {
     public void removeChangeListener(ChangeListener l);
 
     public String getPropertyLabel();
-    public String getPropertyObjectString();
 
     public byte getType();
 
     public void apply(EdgeAppearance appr, Edge e, CyNetwork net);
+
     public void apply(NodeAppearance appr, Node n, CyNetwork net);
 
     public Vector getMappings();
+
+    public String getTypeName();
 }

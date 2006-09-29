@@ -63,27 +63,17 @@ abstract class AbstractNodeColorCalculator extends NodeCalculator {
     protected byte BORDER = 2;
 
     public abstract byte getType();
-
-    public String getPropertyObjectString() {
-        return "";
-    }
-
     public abstract String getPropertyLabel(); 
+    public abstract String getTypeName(); 
     
-    public AbstractNodeColorCalculator(String name, ObjectMapping m) {
-	super(name, m);
-
-        Color color = new Color(0,0,0);
-        Class c = color.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+    AbstractNodeColorCalculator() {
+    	super();
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public AbstractNodeColorCalculator(String name, ObjectMapping m) {
+	super(name, m, Color.class);
+    }
+
     public AbstractNodeColorCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new ColorParser(), Color.WHITE);
     }
@@ -91,12 +81,11 @@ abstract class AbstractNodeColorCalculator extends NodeCalculator {
     public abstract void apply(NodeAppearance appr, Node node, CyNetwork network);
 
     protected void apply(NodeAppearance appr, Node node, CyNetwork network,byte type) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-	
-        Color c =  (Color)super.getMapping(0).calculateRangeValue(attrBundle);
+        Color c =  (Color)getRangeValue(node);
+
+	// default has already been set - no need to do anything
+	if ( c == null )
+		return;
 
 	if ( type == FILL )
         	appr.setFillColor( c ); 

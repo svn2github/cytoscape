@@ -65,7 +65,15 @@ public class GenericNodeHeightCalculator extends AbstractNodeSizeCalculator {
     public String getPropertyLabel() {
         return "nodeHeightCalculator";
     }
+
+    public String getTypeName() {
+        return "Node Height";
+    }
     
+    GenericNodeHeightCalculator() {
+	super();
+    }
+   
     public GenericNodeHeightCalculator(String name, ObjectMapping m) {
 	super(name, m);
     }

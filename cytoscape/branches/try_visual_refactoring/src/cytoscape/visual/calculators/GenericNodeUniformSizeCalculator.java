@@ -65,7 +65,15 @@ public class GenericNodeUniformSizeCalculator extends AbstractNodeSizeCalculator
     public String getPropertyLabel() {
         return "nodeUniformSizeCalculator";
     }
+
+    public String getTypeName() {
+        return "Node Size";
+    }
     
+    GenericNodeUniformSizeCalculator() {
+	super();
+    }
+   
     public GenericNodeUniformSizeCalculator(String name, ObjectMapping m) {
 	super(name, m);
     }

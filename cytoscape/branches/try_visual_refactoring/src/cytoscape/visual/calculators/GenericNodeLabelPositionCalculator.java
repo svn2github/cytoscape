@@ -59,43 +59,38 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 public class GenericNodeLabelPositionCalculator extends NodeCalculator {
 
-
     public byte getType() {
         return VizMapUI.NODE_LABEL_POSITION;
-    }
-
-    public String getPropertyObjectString() {
-        return "";
     }
 
     public String getPropertyLabel() {
         return "nodeLabelPositionCalculator";
     }
-    
-    public GenericNodeLabelPositionCalculator(String name, ObjectMapping m) {
-	super(name, m);
 
-        Class c = null;
-	//c = LineType.class;  // this line won't obfuscate; the one below does.
-	c = LabelPosition.class;
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+    public String getTypeName() {
+        return "Node Label Position";
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    GenericNodeLabelPositionCalculator() {
+	super();
+    }
+
+    public GenericNodeLabelPositionCalculator(String name, ObjectMapping m) {
+	super(name, m, LabelPosition.class);
+    }
+
     public GenericNodeLabelPositionCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new LabelPositionParser() , LabelPosition.DEFAULT );
     }
     
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-	attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        appr.setLabelPosition( (LabelPosition)super.getMapping(0).calculateRangeValue(attrBundle) );
+	LabelPosition lp = (LabelPosition)getRangeValue(node);
+
+	// default has already been set - no need to do anything
+	if ( lp == null )
+		return;
+	
+        appr.setLabelPosition( lp ); 
     }
 }
 

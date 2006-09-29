@@ -59,45 +59,38 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 public class GenericEdgeLineTypeCalculator extends EdgeCalculator {
 
-
     public byte getType() {
         return VizMapUI.EDGE_LINETYPE;
-    }
-
-    public String getPropertyObjectString() {
-        return "";
     }
 
     public String getPropertyLabel() {
         return "edgeLineTypeCalculator";
     }
 
-    
-    public GenericEdgeLineTypeCalculator(String name, ObjectMapping m) {
-	super(name, m);
-
-        Class c = null;
-	//c = LineType.class;  // this line won't obfuscate; the one below does.
-	c = LineType.LINE_1.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-		+ ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+    public String getTypeName() {
+        return "Edge Line Type";
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    GenericEdgeLineTypeCalculator() {
+	super();
+    }
+
+    public GenericEdgeLineTypeCalculator(String name, ObjectMapping m) {
+	super(name, m, LineType.class);
+    }
+
     public GenericEdgeLineTypeCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1);
     }
     
     public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        String canonicalName = edge.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-        appr.setLineType( (LineType)super.getMapping(0).calculateRangeValue(attrBundle) );
+	LineType lt = (LineType)getRangeValue(edge);
+
+	// default has already been set - no need to do anything
+	if ( lt == null )
+		return;
+
+	appr.setLineType( lt ); 
     }
 }
 

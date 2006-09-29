@@ -58,45 +58,38 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 public class GenericNodeToolTipCalculator extends NodeCalculator {
 
-
-
     public byte getType() {
         return VizMapUI.NODE_TOOLTIP;
-    }
-
-    public String getPropertyObjectString() {
-        return "";
     }
 
     public String getPropertyLabel() {
         return "nodeToolTipCalculator";
     }
 
-    
-    public GenericNodeToolTipCalculator(String name, ObjectMapping m) {
-	super(name, m);
-
-        String sc = new String();
-        Class c = sc.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+    public String getTypeName() {
+        return "Node Tooltip";
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+    
+    GenericNodeToolTipCalculator() {
+	super();
+    }
+
+    public GenericNodeToolTipCalculator(String name, ObjectMapping m) {
+	super(name, m,String.class);
+    }
+
     public GenericNodeToolTipCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new StringParser(), new String());
     }
     
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        appr.setToolTip( (String)super.getMapping(0).calculateRangeValue(attrBundle) );
+	String tt = (String)getRangeValue(node);
+	
+	// default has already been set - no need to do anything
+	if ( tt == null )
+		return;
+
+        appr.setToolTip( tt ); 
     }
 }
 

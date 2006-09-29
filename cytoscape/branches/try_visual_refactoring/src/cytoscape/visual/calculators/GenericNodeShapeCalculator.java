@@ -59,53 +59,38 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 public class GenericNodeShapeCalculator extends NodeCalculator {
 
-
     public byte getType() {
         return VizMapUI.NODE_SHAPE;
-    }
-
-    public String getPropertyObjectString() {
-        return "";
     }
 
     public String getPropertyLabel() {
         return "nodeShapeCalculator";
     }
 
-    
-    public GenericNodeShapeCalculator(String name, ObjectMapping m) {
-	super(name, m);
+    public String getTypeName() {
+        return "Node Shape";
+    }
 
-        byte b = 0;
-        Byte bObject = new Byte(b);
-        Class c = bObject.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+    GenericNodeShapeCalculator() {
+	super();
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public GenericNodeShapeCalculator(String name, ObjectMapping m) {
+	super(name, m, Byte.class);
+    }
+
     public GenericNodeShapeCalculator(String name, Properties props, String baseKey) {
-        super(name, props, baseKey, new NodeShapeParser(),
-              new Byte(ShapeNodeRealizer.RECT));
+        super(name, props, baseKey, new NodeShapeParser(), new Byte(ShapeNodeRealizer.RECT));
     }
     
-    /**  It is hoped that the -1 value of a byte will not conflict
-     *   with any of the values used by ShapeNodeRealizer.
-     */
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
-		byte ret = (byte)(-1);
-		if(rangeValue!=null)
-			ret = ((Byte)super.getMapping(0).calculateRangeValue(attrBundle)).byteValue();
-		appr.setShape( ret );
+	Object rangeValue = getRangeValue(node); 
+
+	// default has already been set - no need to do anything
+	if(rangeValue==null)
+		return;
+
+	appr.setShape( ((Byte)rangeValue).byteValue()) ;
     }
 }
 

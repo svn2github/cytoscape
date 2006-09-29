@@ -419,6 +419,14 @@ public class CalculatorCatalog {
 		return newName;
 	}
 
+	public Collection<Calculator> getCalculators() {
+		List<Calculator> l = new ArrayList<Calculator>();
+		for (Byte b : calculators.keySet() ) 
+			for (String s : calculators.get(b).keySet() )
+				l.add( calculators.get(b).get(s) );
+		return l;
+	}
+
 	public Collection<Calculator> getCalculators(byte b) {	
 		Map<String,Calculator> m = getCalculatorMap(b); 
 		return m.values();
@@ -444,7 +452,6 @@ public class CalculatorCatalog {
 
 
 	public void createDefaultVisualStyle() {
-		// System.out.println("Creating default visual style");
 		VisualStyle defaultVS = new VisualStyle("default");
 
 		// Use Semantics.LABEL instead for node labels
@@ -452,7 +459,7 @@ public class CalculatorCatalog {
 		Calculator nlc = getCalculator(VizMapUI.NODE_LABEL, label);
 		if (nlc == null) {
 			PassThroughMapping m = new PassThroughMapping("",AbstractCalculator.ID);
-			nlc = new GenericNodeLabelCalculator(label, m);
+			nlc = CalculatorFactory.newDefaultCalculator(VizMapUI.NODE_LABEL, label, m);
 		}
 
 		defaultVS.getNodeAppearanceCalculator().setCalculator(nlc);

@@ -58,44 +58,38 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 public class GenericEdgeToolTipCalculator extends EdgeCalculator {
 
-
     public byte getType() {
         return VizMapUI.EDGE_TOOLTIP;
-    }
-
-    public String getPropertyObjectString() {
-        return "";
     }
 
     public String getPropertyLabel() {
         return "edgeToolTipCalculator";
     }
 
-    
-    public GenericEdgeToolTipCalculator(String name, ObjectMapping m) {
-	super(name, m);
-
-        String sc = new String();
-        Class c = sc.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-		+ ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+    public String getTypeName() {
+        return "Edge Tooltip";
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    GenericEdgeToolTipCalculator() {
+	super();
+    }
+
+    public GenericEdgeToolTipCalculator(String name, ObjectMapping m) {
+	super(name, m,String.class);
+    }
+
     public GenericEdgeToolTipCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new StringParser(), new String());
     }
     
     public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        String canonicalName = edge.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-        appr.setToolTip( (String) super.getMapping(0).calculateRangeValue(attrBundle) );
+	String tt = (String) getRangeValue(edge); 
+
+	// default has already been set - no need to do anything
+	if ( tt == null )
+		return;
+
+        appr.setToolTip( tt ); 
     }
 }
 

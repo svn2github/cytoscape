@@ -125,7 +125,7 @@ public class VizMapAttrTab extends VizMapTab {
     super(new BorderLayout(), false);
 
     // set the name of this component appropriately
-    setName(getTypeName(type));
+    setName(CalculatorFactory.getTypeName(type));
 
     this.VMM = VMM;
     this.mainUIDialog = mainUI;
@@ -335,7 +335,7 @@ public class VizMapAttrTab extends VizMapTab {
        method that returns the name, so calculators can be passed to the
        JComboBox.
     */
-    Collection calculators = getCalculators(this.type);
+    Collection calculators = catalog.getCalculators(this.type);
     Vector comboCalcs = new Vector();
     if ( calculators != null )
     	comboCalcs.addAll(calculators);
@@ -705,61 +705,6 @@ public class VizMapAttrTab extends VizMapTab {
     }
     else {
 	    this.calcComboBox.setSelectedItem(c);
-    }
-  }
-
-
-
-  private Collection getCalculators(byte type) {
-  	return catalog.getCalculators(type);
-  }
-
-  protected static String getTypeName(byte type) {
-    switch (type) {
-    case VizMapUI.NODE_COLOR:
-	    return "Node Color";
-    case VizMapUI.NODE_BORDER_COLOR:
-	    return "Node Border Color";
-    case VizMapUI.NODE_LINETYPE:
-	    return "Node Border Type";
-    case VizMapUI.NODE_SHAPE:
-	    return "Node Shape";
-    case VizMapUI.NODE_WIDTH:
-	    return "Node Width";
-    case VizMapUI.NODE_HEIGHT:
-	    return "Node Height";
-    case VizMapUI.NODE_SIZE:
-	    return "Node Size";
-    case VizMapUI.NODE_LABEL:
-	    return "Node Label";
-    case VizMapUI.NODE_TOOLTIP:
-	    return "Node Tooltip";
-    case VizMapUI.EDGE_COLOR:
-	    return "Edge Color";
-    case VizMapUI.EDGE_LINETYPE:
-	    return "Edge Line Type";
-    case VizMapUI.EDGE_SRCARROW:
-	    return "Edge Source Arrow";
-    case VizMapUI.EDGE_TGTARROW:
-	    return "Edge Target Arrow";
-    case VizMapUI.EDGE_LABEL:
-	    return "Edge Label";
-    case VizMapUI.EDGE_TOOLTIP:
-	    return "Edge Tooltip";
-    case VizMapUI.EDGE_FONT_FACE:
-	    return "Edge Font Face";
-    case VizMapUI.EDGE_FONT_SIZE:
-	    return "Edge Font Size";
-    case VizMapUI.NODE_FONT_FACE:
-	    return "Node Font Face";
-    case VizMapUI.NODE_LABEL_FONT:
-	    return "Node Font Size";
-    case VizMapUI.NODE_LABEL_COLOR:
-            return "Node Label Color";
-    case VizMapUI.NODE_LABEL_POSITION:
-            return "Node Label Position";
-    default:
-	    return null;
     }
   }
 }

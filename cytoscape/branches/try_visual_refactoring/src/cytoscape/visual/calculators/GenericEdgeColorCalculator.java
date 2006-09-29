@@ -63,38 +63,34 @@ public class GenericEdgeColorCalculator extends EdgeCalculator {
 	return VizMapUI.EDGE_COLOR;
     }
 
-    public String getPropertyObjectString() {
-	return "";
-    }
-
     public String getPropertyLabel() {
 	return "edgeColorCalculator";
     }
 
-    public GenericEdgeColorCalculator(String name, ObjectMapping m) {
-	super(name, m);
-
-        Color color = new Color(0,0,0);
-        Class c = color.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-		+ ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+    public String getTypeName() {
+    	return "Edge Color";
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    GenericEdgeColorCalculator() {
+    	super();
+    }
+
+    public GenericEdgeColorCalculator(String name, ObjectMapping m) {
+	super(name, m, Color.class);
+    }
+
     public GenericEdgeColorCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new ColorParser(), Color.WHITE);
     }
     
     public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-		String canonicalName = edge.getIdentifier();
-		Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-        appr.setColor( (Color) super.getMapping(0).calculateRangeValue(attrBundle) );
+		Color c = (Color) getRangeValue(edge); 
+
+		// default has already been set - no need to do anything
+		if ( c == null )
+			return;
+
+        	appr.setColor( c );
     }
 }
 

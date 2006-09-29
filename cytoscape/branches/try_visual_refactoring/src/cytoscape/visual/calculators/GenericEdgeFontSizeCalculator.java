@@ -56,56 +56,39 @@ import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
-public class GenericEdgeFontSizeCalculator extends EdgeCalculator
-    {
-
+public class GenericEdgeFontSizeCalculator extends EdgeCalculator {
 
     public byte getType() {
         return VizMapUI.EDGE_FONT_SIZE;
-    }
-
-    public String getPropertyObjectString() {
-        return "";
     }
 
     public String getPropertyLabel() {
         return "edgeFontSizeCalculator";
     }
 
-    
-    public GenericEdgeFontSizeCalculator(String name, ObjectMapping m) {
-	super(name, m);
-	//All we need is some kind of Number
-	if (!(Number.class.isAssignableFrom(m.getRangeClass()))) {
-	    throw new ClassCastException("Invalid Calculator: Expected class Font, got " + 
-					 m.getRangeClass().toString());
-	}
+    public String getTypeName() {
+        return "Edge Font Size";
     }
     
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+    GenericEdgeFontSizeCalculator() {
+	super();
+    }
+    
+    public GenericEdgeFontSizeCalculator(String name, ObjectMapping m) {
+	super(name, m, Number.class);
+    }
+    
     public GenericEdgeFontSizeCalculator(String name, Properties props, String baseKey) {
 	super(name, props, baseKey, new DoubleParser(), new Double(12));
     }
 
-    /** 
-     *  calculateEdgeFontSize returns -1 if there is no mapping;
-     *  since a negative number has no meaning as a font size,
-     *  this is a case that the caller of calculateEdgeFontSize
-     *  should expect to handle.  The usual caller is
-     *  NodeAppearanceCalculator.
-     */
     public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        String canonicalName = edge.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
-		float ret = -1.0f;
+		Object rangeValue = getRangeValue(edge); 
+		
+		// default has already been set - no need to do anything
 		if (rangeValue != null)
-			ret =  ((Number) rangeValue).floatValue();
-
-		appr.setFontSize(ret);
+			return;
+		
+		appr.setFontSize( ((Number) rangeValue).floatValue() );
     }
 }

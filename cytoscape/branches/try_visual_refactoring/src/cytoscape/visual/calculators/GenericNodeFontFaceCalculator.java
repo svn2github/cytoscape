@@ -56,41 +56,39 @@ import cytoscape.visual.parsers.FontParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
-public class GenericNodeFontFaceCalculator extends NodeCalculator
-    {
+public class GenericNodeFontFaceCalculator extends NodeCalculator {
   
-
     public byte getType() {
         return VizMapUI.NODE_FONT_FACE;
-    }
-
-    public String getPropertyObjectString() {
-        return "";
     }
 
     public String getPropertyLabel() {
         return "nodeFontFaceCalculator";
     }
-  
-    public GenericNodeFontFaceCalculator(String name, ObjectMapping m) {
-	super(name, m);
-	if (!(Font.class.isAssignableFrom(m.getRangeClass()))) {
-	    throw new ClassCastException("Invalid Calculator: Expected class Font, got " + 
-					 m.getRangeClass().toString());
-	}
+
+    public String getTypeName() {
+        return "Node Font Face";
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+  
+    GenericNodeFontFaceCalculator() {
+	super();
+    }
+
+    public GenericNodeFontFaceCalculator(String name, ObjectMapping m) {
+	super(name, m,Font.class);
+    }
+
     public GenericNodeFontFaceCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new FontParser(), new Font(null, Font.PLAIN, 12));
     }
     
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		appr.setFont( (Font) super.getMapping(0).calculateRangeValue(attrBundle) );
+	Font f = (Font) getRangeValue(node); 
+
+	// default has already been set - no need to do anything
+	if ( f == null )
+		return;
+
+	appr.setFont( f ); 
     }
 }

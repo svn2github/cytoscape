@@ -49,51 +49,39 @@ import java.util.Properties;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 
-public class GenericNodeLabelColorCalculator
-  extends NodeCalculator
-  
-{
+public class GenericNodeLabelColorCalculator extends NodeCalculator {
 
-    public byte getType() {
-        return VizMapUI.NODE_LABEL_COLOR;
-    }
-    public String getPropertyObjectString() {
-        return "";
-    }
+	public byte getType() {
+		return VizMapUI.NODE_LABEL_COLOR;
+	}
 
-    public String getPropertyLabel() {
-        return "nodeLabelColorCalculator";
-    }
+	public String getPropertyLabel() {
+		return "nodeLabelColorCalculator";
+	}
 
-  public GenericNodeLabelColorCalculator(String name, ObjectMapping m)
-  {
-    super(name, m);
-    Class c = Color.class;
-    if (!c.isAssignableFrom(m.getRangeClass()))
-    {
-      String s = "Invalid Calculator: Expected class " +
-        c.toString() + ", got " + m.getRangeClass().toString();
-      throw new ClassCastException(s);
-    }
-  }
+	public String getTypeName() {
+		return "Node Label Color";
+	}
 
-  /**
-   * Constructor for dynamic creation via properties.
-   */
-  public GenericNodeLabelColorCalculator(String name,
-                                         Properties props,
-                                         String baseKey)
-  {
-    super(name, props, baseKey, new ColorParser(), Color.black);
-  }
+	GenericNodeLabelColorCalculator() {
+		super();
+	}
+
+	public GenericNodeLabelColorCalculator(String name, ObjectMapping m) {
+		super(name, m,Color.class);
+	}
+
+	public GenericNodeLabelColorCalculator(String name, Properties props, String baseKey) {
+		super(name, props, baseKey, new ColorParser(), Color.black);
+	}
  
-  public void apply(NodeAppearance appr, Node node, CyNetwork network)
-  {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		appr.setLabelColor( (Color) super.getMapping(0).calculateRangeValue(attrBundle) );
-  }
+	public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+		Color c = (Color) getRangeValue(node); 
+	
+		// default has already been set - no need to do anything
+		if ( c == null )
+			return;
 
+		appr.setLabelColor( c ); 
+	}
 }

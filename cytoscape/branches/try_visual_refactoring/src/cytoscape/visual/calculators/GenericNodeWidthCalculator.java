@@ -58,7 +58,6 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 public class GenericNodeWidthCalculator extends AbstractNodeSizeCalculator {
 
-
     public byte getType() {
 	return VizMapUI.NODE_WIDTH;
     } 
@@ -66,7 +65,15 @@ public class GenericNodeWidthCalculator extends AbstractNodeSizeCalculator {
     public String getPropertyLabel() {
         return "nodeWidthCalculator";
     }
+
+    public String getTypeName() {
+        return "Node Width";
+    }
     
+    GenericNodeWidthCalculator() {
+	super();
+    }
+   
     public GenericNodeWidthCalculator(String name, ObjectMapping m) {
 	super(name, m);
     }

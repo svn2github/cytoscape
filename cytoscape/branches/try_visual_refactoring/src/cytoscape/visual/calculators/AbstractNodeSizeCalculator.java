@@ -63,49 +63,32 @@ abstract class AbstractNodeSizeCalculator extends NodeCalculator {
     protected int SIZE = 4;
 
     public abstract byte getType(); 
-
-    public String getPropertyObjectString() {
-        return "";
-    }
-
     public abstract String getPropertyLabel();
+    public abstract String getTypeName();
+
+    AbstractNodeSizeCalculator() {
+    	super();
+    }
 
     public AbstractNodeSizeCalculator(String name, ObjectMapping m) {
-	super(name, m);
-
-        Double d = new Double(0.0);
-        Class c = d.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+	super(name, m,Number.class);
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
     public AbstractNodeSizeCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new DoubleParser(), new Double(0));
     }
     
     public abstract void apply(NodeAppearance appr, Node node, CyNetwork network); 
 
-    /** 
-     *  calculateNodeSize returns -1 if there is no mapping;
-     *  since a negative number has no meaning as a node size,
-     *  this is a case that the caller of calculateNodeSize
-     *  should expect to handle.  The usual caller is
-     *  NodeAppearanceCalculator.
-     */
     protected void apply(NodeAppearance appr, Node node, CyNetwork network, int type) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
-		double ret = -1.0;
-		if(rangeValue!=null)
-			ret =  ((Number)rangeValue).doubleValue();
+		Object rangeValue = getRangeValue(node); 
+
+		// If null don't set anything - the existing value in appr is already
+		// the default.
+		if(rangeValue==null)
+			return; 
+
+		double ret =  ((Number)rangeValue).doubleValue();
 
 		if ( type == WIDTH )
 			appr.setWidth(ret);

@@ -59,17 +59,20 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 public class GenericNodeFillColorCalculator extends AbstractNodeColorCalculator {
 
-
     public byte getType() {
     	return VizMapUI.NODE_COLOR;
     }
 
-    public String getPropertyObjectString() {
-        return "";
-    }
-
     public String getPropertyLabel() {
     	return "nodeFillColorCalculator";
+    }
+
+    public String getTypeName() {
+        return "Node Color";
+    }
+    
+    GenericNodeFillColorCalculator() {
+	super();
     }
     
     public GenericNodeFillColorCalculator(String name, ObjectMapping m) {

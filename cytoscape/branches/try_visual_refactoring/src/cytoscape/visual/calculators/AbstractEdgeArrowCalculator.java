@@ -60,25 +60,17 @@ import cytoscape.visual.ui.VizMapUI;
 abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
 
 	public abstract byte getType(); 
-	public abstract String getPropertyObjectString();
 	public abstract String getPropertyLabel();
+	public abstract String getTypeName();
 	
-	public AbstractEdgeArrowCalculator(String name, ObjectMapping m) {
-		super(name, m);
-
-		Class c = null;
-		// c = Arrow.class; // this line won't obfuscate; the one below does.
-		c = Arrow.NONE.getClass();
-		if (!c.isAssignableFrom(m.getRangeClass())) {
-			String s = "Invalid Calculator: Expected class " + c.toString()
-					+ ", got " + m.getRangeClass().toString();
-			throw new ClassCastException(s);
-		}
+	AbstractEdgeArrowCalculator() {
+		super();
 	}
 
-	/**
-	 * Constructor for dynamic creation via properties.
-	 */
+	public AbstractEdgeArrowCalculator(String name, ObjectMapping m) {
+		super(name, m,Arrow.class);
+	}
+
 	public AbstractEdgeArrowCalculator(String name, Properties props, String baseKey) {
 		super(name, props, baseKey, new ArrowParser(), Arrow.NONE);
 	}
@@ -86,13 +78,16 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
 	abstract public void apply(EdgeAppearance appr, Edge edge, CyNetwork network);
 
 	protected void apply(EdgeAppearance appr, Edge edge, CyNetwork network, boolean source) {
-		String canonicalName = edge.getIdentifier();
-		Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
+
+		Arrow a = (Arrow) getRangeValue(edge); 
+
+		// default has already been set - no need to do anything
+		if ( a == null )
+			return;
+
 		if ( source )
-			appr.setSourceArrow( (Arrow) super.getMapping(0).calculateRangeValue(attrBundle) );
+			appr.setSourceArrow( a );
 		else
-			appr.setTargetArrow( (Arrow) super.getMapping(0).calculateRangeValue(attrBundle) );
+			appr.setTargetArrow( a ); 
 	}
 }

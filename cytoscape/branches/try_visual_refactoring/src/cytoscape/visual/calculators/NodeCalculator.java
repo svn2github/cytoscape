@@ -65,8 +65,13 @@ import giny.model.Node;
  * object tree.
  */
 public abstract class NodeCalculator extends AbstractCalculator {
-    public NodeCalculator(String name, ObjectMapping m) {
-	super(name, m);
+
+    NodeCalculator() {
+    	super();
+    }
+
+    public NodeCalculator(String name, ObjectMapping m, Class c) {
+	super(name, m, c);
     }
     /**
      * Constructor that calls {@link MappingFactory} to construct a new
@@ -75,7 +80,7 @@ public abstract class NodeCalculator extends AbstractCalculator {
     public NodeCalculator(String name, Properties props, String baseKey,
                           ValueParser parser, Object defObj) {
         super(name, MappingFactory.newMapping(props, baseKey + ".mapping", parser,
-                                              defObj, ObjectMapping.NODE_MAPPING) );
+                                              defObj, ObjectMapping.NODE_MAPPING), defObj.getClass() );
     }
 
     /**
@@ -103,7 +108,7 @@ public abstract class NodeCalculator extends AbstractCalculator {
 
     abstract public void apply(NodeAppearance appr, Node node, CyNetwork network);
     abstract public String getPropertyLabel();
-    abstract public String getPropertyObjectString();
     abstract public byte getType();
+    abstract public String getTypeName();
 
 }
