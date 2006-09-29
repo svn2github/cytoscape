@@ -44,6 +44,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.beans.*;
 import cytoscape.visual.LabelPosition;
+import giny.view.Label;
 
 public class LabelPlacer extends JDialog implements PropertyChangeListener { 
 
@@ -59,7 +60,7 @@ public class LabelPlacer extends JDialog implements PropertyChangeListener {
     	super(f,modal);
 
 	if ( pos == null )
-		lp = new LabelPosition(LabelPosition.NONE,LabelPosition.NONE,LabelPosition.JUSTIFY_CENTER,0.0,0.0); 
+		lp = new LabelPosition(Label.NONE,Label.NONE,Label.JUSTIFY_CENTER,0.0,0.0); 
 	else
 		lp = pos;
 

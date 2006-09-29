@@ -41,26 +41,9 @@ import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import giny.view.Label;
 
 public class LabelPosition {
-
-	public static final int NONE = 9;
-
-	public static final int NORTHWEST = 0;
-	public static final int NORTH = 1;
-	public static final int NORTHEAST = 2;
-
-	public static final int WEST = 3;
-	public static final int CENTER = 4;
-	public static final int EAST = 5;
-
-	public static final int SOUTHWEST = 6;
-	public static final int SOUTH = 7;
-	public static final int SOUTHEAST = 8;
-
-	public static final int JUSTIFY_CENTER = 64;
-	public static final int JUSTIFY_LEFT = 65;
-	public static final int JUSTIFY_RIGHT = 66;
 
 	public static final String northWestName = "Northwest";
 	public static final String northName = "North";
@@ -103,7 +86,7 @@ public class LabelPosition {
 	protected double yOffset;
 
 	public LabelPosition() {
-		this(CENTER,CENTER,JUSTIFY_CENTER,0.0,0.0);
+		this(Label.CENTER,Label.CENTER,Label.JUSTIFY_CENTER,0.0,0.0);
 	}
 
 	public LabelPosition(LabelPosition lp) {
@@ -155,31 +138,31 @@ public class LabelPosition {
 
 	public static String convert(int b) {
 		switch(b) {
-			case(NORTH):
+			case(Label.NORTH):
 				return northName;
-			case(SOUTH):
+			case(Label.SOUTH):
 				return southName;
-			case(EAST):
+			case(Label.EAST):
 				return eastName;
-			case(WEST):
+			case(Label.WEST):
 				return westName;
-			case(NORTHWEST):
+			case(Label.NORTHWEST):
 				return northWestName;
-			case(NORTHEAST):
+			case(Label.NORTHEAST):
 				return northEastName;
-			case(SOUTHWEST):
+			case(Label.SOUTHWEST):
 				return southWestName;
-			case(SOUTHEAST):
+			case(Label.SOUTHEAST):
 				return southEastName;
-			case(CENTER):
+			case(Label.CENTER):
 				return centerName;
-			case(NONE):
+			case(Label.NONE):
 				return noName;
-			case(JUSTIFY_CENTER):
+			case(Label.JUSTIFY_CENTER):
 				return justifyCenterName;
-			case(JUSTIFY_LEFT):
+			case(Label.JUSTIFY_LEFT):
 				return justifyLeftName;
-			case(JUSTIFY_RIGHT):
+			case(Label.JUSTIFY_RIGHT):
 				return justifyRightName;
 			default:
 				return null;
@@ -188,29 +171,29 @@ public class LabelPosition {
 
 	public static int convert(String s) {
 		if ( northName.equals(s) || nName.equals(s) )
-			return NORTH;
+			return Label.NORTH;
 		else if ( southName.equals(s) || sName.equals(s) )
-			return SOUTH;
+			return Label.SOUTH;
 		else if ( eastName.equals(s) || eName.equals(s) )
-			return EAST;
+			return Label.EAST;
 		else if ( westName.equals(s) || wName.equals(s) )
-			return WEST;
+			return Label.WEST;
 		else if ( northWestName.equals(s) || nwName.equals(s) )
-			return NORTHWEST;
+			return Label.NORTHWEST;
 		else if ( northEastName.equals(s) || neName.equals(s) )
-			return NORTHEAST;
+			return Label.NORTHEAST;
 		else if ( southWestName.equals(s) || swName.equals(s) )
-			return SOUTHWEST;
+			return Label.SOUTHWEST;
 		else if ( southEastName.equals(s) || seName.equals(s) )
-			return SOUTHEAST;
+			return Label.SOUTHEAST;
 		else if ( centerName.equals(s) || cName.equals(s) )
-			return CENTER;
+			return Label.CENTER;
 		else if ( justifyCenterName.equals(s) || justifyCName.equals(s) )
-			return JUSTIFY_CENTER;
+			return Label.JUSTIFY_CENTER;
 		else if ( justifyLeftName.equals(s) || justifyLName.equals(s) )
-			return JUSTIFY_LEFT;
+			return Label.JUSTIFY_LEFT;
 		else if ( justifyRightName.equals(s) || justifyRName.equals(s) )
-			return JUSTIFY_RIGHT;
+			return Label.JUSTIFY_RIGHT;
 		else
 			return -1;
 	}
@@ -273,29 +256,29 @@ public class LabelPosition {
 
 	protected static String getShortName(int x) {
 		switch(x) {
-			case(NORTH):
+			case(Label.NORTH):
 				return nName;
-			case(SOUTH):
+			case(Label.SOUTH):
 				return sName;
-			case(EAST):
+			case(Label.EAST):
 				return eName;
-			case(WEST):
+			case(Label.WEST):
 				return wName;
-			case(NORTHWEST):
+			case(Label.NORTHWEST):
 				return nwName;
-			case(NORTHEAST):
+			case(Label.NORTHEAST):
 				return neName;
-			case(SOUTHWEST):
+			case(Label.SOUTHWEST):
 				return swName;
-			case(SOUTHEAST):
+			case(Label.SOUTHEAST):
 				return seName;
-			case(CENTER):
+			case(Label.CENTER):
 				return cName;
-			case(JUSTIFY_CENTER):
+			case(Label.JUSTIFY_CENTER):
 				return justifyCName;
-			case(JUSTIFY_LEFT):
+			case(Label.JUSTIFY_LEFT):
 				return justifyLName;
-			case(JUSTIFY_RIGHT):
+			case(Label.JUSTIFY_RIGHT):
 				return justifyRName;
 			default:
 				System.out.println("don't recognize type: " + x);

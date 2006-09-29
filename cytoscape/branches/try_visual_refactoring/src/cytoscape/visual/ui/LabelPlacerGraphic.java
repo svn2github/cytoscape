@@ -44,6 +44,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.beans.*;
 import cytoscape.visual.LabelPosition;
+import giny.view.Label;
 
 /**
  * A drag and drop graphic that allows users to set the placement
@@ -111,7 +112,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
         super();
 
 	if (pos == null)
-		lp = new LabelPosition(LabelPosition.NONE,LabelPosition.NONE,LabelPosition.JUSTIFY_CENTER,0.0,0.0);
+		lp = new LabelPosition(Label.NONE,Label.NONE,Label.JUSTIFY_CENTER,0.0,0.0);
 	else
 		lp = pos;
 
@@ -178,10 +179,10 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	g.drawLine(xOffset+xPos+lx,yOffset+yPos+ly,xOffset+xPos,yOffset+yPos+ly);
 	g.drawLine(xOffset+xPos,yOffset+yPos+ly,xOffset+xPos,yOffset+yPos);
 
-	if ( justify == LabelPosition.JUSTIFY_LEFT ) {
+	if ( justify == Label.JUSTIFY_LEFT ) {
 		g.drawString("LABEL",xOffset+xPos+3,yOffset+yPos+ly/3);
 		g.drawString("CLICK 'N DRAG",xOffset+xPos+3,yOffset+yPos+5*ly/6);
-	} else if ( justify == LabelPosition.JUSTIFY_RIGHT ) {
+	} else if ( justify == Label.JUSTIFY_RIGHT ) {
 		g.drawString("LABEL",xOffset+xPos+4*lx/5-10,yOffset+yPos+ly/3);
 		g.drawString("CLICK 'N DRAG",xOffset+xPos+lx/3-10,yOffset+yPos+5*ly/6);
 	} else { // center
@@ -327,19 +328,19 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	justify = lp.getJustify();
 
 	int nodeAnchor = lp.getTargetAnchor(); 
-	if ( nodeAnchor != LabelPosition.NONE ) {
+	if ( nodeAnchor != Label.NONE ) {
 		bestNodeX = nodeAnchor % 3;		
 		bestNodeY = (int)nodeAnchor / 3;		
 	}
 
 	int labelAnchor = lp.getLabelAnchor(); 
-	if ( labelAnchor != LabelPosition.NONE ) {
+	if ( labelAnchor != Label.NONE ) {
 		bestLabelX = labelAnchor % 3;		
 		bestLabelY = (int)labelAnchor / 3;		
 	}
 
-	if ( nodeAnchor != LabelPosition.NONE || 
-	     labelAnchor != LabelPosition.NONE ) { 
+	if ( nodeAnchor != Label.NONE || 
+	     labelAnchor != Label.NONE ) { 
 		xPos = npoints[bestNodeX] - lxpoints[bestLabelX];
 		yPos = npoints[bestNodeY] - lypoints[bestLabelY];
 	}

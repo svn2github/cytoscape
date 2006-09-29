@@ -45,6 +45,7 @@ import javax.swing.border.*;
 import java.beans.*;
 import java.util.*;
 import cytoscape.visual.LabelPosition; 
+import giny.view.Label;
 
 /**
  * A group of widgets that specifies the placement of
@@ -65,7 +66,7 @@ public class LabelPlacerControl extends JPanel implements ActionListener, Proper
         super(); 
 
 	if ( pos == null )
-		lp = new LabelPosition(LabelPosition.NONE,LabelPosition.NONE,LabelPosition.JUSTIFY_CENTER,0.0,0.0);
+		lp = new LabelPosition(Label.NONE,Label.NONE,Label.JUSTIFY_CENTER,0.0,0.0);
 	else
 		lp = pos;
 
@@ -129,12 +130,12 @@ public class LabelPlacerControl extends JPanel implements ActionListener, Proper
 	int nodeAnchor = lp.getTargetAnchor();
 	int labelAnchor = lp.getLabelAnchor();
 
-	if ( nodeAnchor == LabelPosition.NONE )
+	if ( nodeAnchor == Label.NONE )
 		nodeAnchors.setSelectedIndex(-1);
 	else 
 		nodeAnchors.setSelectedItem(LabelPosition.convert(nodeAnchor));
 
-	if ( labelAnchor == LabelPosition.NONE ) 
+	if ( labelAnchor == Label.NONE ) 
 		labelAnchors.setSelectedIndex(-1);
 	else 
 		labelAnchors.setSelectedItem(LabelPosition.convert(labelAnchor));
