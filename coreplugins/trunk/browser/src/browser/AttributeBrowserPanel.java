@@ -564,7 +564,7 @@ public class AttributeBrowserPanel extends JPanel implements
 			selectButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 
 			selectButton.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("images/select32.png")));
+					.getResource("images/stock_select-row.png")));
 			selectButton.setToolTipText("Select Attributes");
 			selectButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -582,7 +582,7 @@ public class AttributeBrowserPanel extends JPanel implements
 		if (importButton == null) {
 			importButton = new JButton();
 			importButton.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("images/folder32.png")));
+					.getResource("images/stock_open.png")));
 			importButton.setToolTipText("Import attributes from file...");
 			importButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 			importButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -618,7 +618,7 @@ public class AttributeBrowserPanel extends JPanel implements
 		if (goButton == null) {
 			goButton = new JButton();
 			goButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-					"images/go_new32.png")));
+					"images/stock_data-linked-table.png")));
 			goButton.setToolTipText("Map Ontology...");
 			goButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 			goButton.setMaximumSize(new java.awt.Dimension(40, 40));
@@ -642,7 +642,7 @@ public class AttributeBrowserPanel extends JPanel implements
 		if (matrixButton == null) {
 			matrixButton = new JButton();
 			matrixButton.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("images/microarraySmall.png")));
+					.getResource("images/microarray_24.png")));
 			matrixButton.setToolTipText("Import Expression Matrix Data...");
 			matrixButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 
@@ -744,7 +744,7 @@ public class AttributeBrowserPanel extends JPanel implements
 		if (deleteButton == null) {
 			deleteButton = new JButton();
 			deleteButton.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("images/delete32.png")));
+					.getResource("images/stock_delete.png")));
 			deleteButton.setToolTipText("Delete Attributes...");
 			// Create pop-up window for deletion
 			deleteButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -858,7 +858,7 @@ public class AttributeBrowserPanel extends JPanel implements
 			createNewButton.setToolTipText("Create New Attribute");
 			// createNewButton.setSize(new java.awt.Dimension(100, 27));
 			createNewButton.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("images/new32.png")));
+					.getResource("images/stock_new.png")));
 			createNewButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					// TODO Auto-generated Event stub mouseClicked()
