@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
@@ -127,6 +128,7 @@ public class DataTable implements PropertyChangeListener {
 				javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 		}
 		attributeTable = new JSortTable(tableModel, tableObjectType);
+		attributeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		// If this is a network attribute browser, do not allow to swap
 		// column.

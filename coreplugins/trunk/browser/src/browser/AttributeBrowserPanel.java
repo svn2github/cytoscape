@@ -387,18 +387,18 @@ public class AttributeBrowserPanel extends JPanel implements
 								.createParallelGroup(
 										org.jdesktop.layout.GroupLayout.LEADING)
 								.add(
-										org.jdesktop.layout.GroupLayout.BASELINE,
+										org.jdesktop.layout.GroupLayout.CENTER,
 										selectButton,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 										37,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 								.add(
-										org.jdesktop.layout.GroupLayout.BASELINE,
+										org.jdesktop.layout.GroupLayout.CENTER,
 										createNewButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 										37, Short.MAX_VALUE)
 								.add(
-										org.jdesktop.layout.GroupLayout.BASELINE,
+										org.jdesktop.layout.GroupLayout.CENTER,
 										deleteButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 										37, Short.MAX_VALUE)
@@ -406,7 +406,7 @@ public class AttributeBrowserPanel extends JPanel implements
 								.add(
 										buttonBarLayout
 												.createParallelGroup(
-														org.jdesktop.layout.GroupLayout.BASELINE)
+														org.jdesktop.layout.GroupLayout.CENTER)
 												.add(
 														matrixButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
@@ -457,18 +457,18 @@ public class AttributeBrowserPanel extends JPanel implements
 								.createParallelGroup(
 										org.jdesktop.layout.GroupLayout.LEADING)
 								.add(
-										org.jdesktop.layout.GroupLayout.BASELINE,
+										org.jdesktop.layout.GroupLayout.CENTER,
 										selectButton,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 										37,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 								.add(
-										org.jdesktop.layout.GroupLayout.BASELINE,
+										org.jdesktop.layout.GroupLayout.CENTER,
 										createNewButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 										37, Short.MAX_VALUE)
 								.add(
-										org.jdesktop.layout.GroupLayout.BASELINE,
+										org.jdesktop.layout.GroupLayout.CENTER,
 										deleteButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 										37, Short.MAX_VALUE)
@@ -476,7 +476,7 @@ public class AttributeBrowserPanel extends JPanel implements
 								.add(
 										buttonBarLayout
 												.createParallelGroup(
-														org.jdesktop.layout.GroupLayout.BASELINE)
+														org.jdesktop.layout.GroupLayout.CENTER)
 												.add(
 														attrModButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
@@ -516,18 +516,18 @@ public class AttributeBrowserPanel extends JPanel implements
 								.createParallelGroup(
 										org.jdesktop.layout.GroupLayout.LEADING)
 								.add(
-										org.jdesktop.layout.GroupLayout.BASELINE,
+										org.jdesktop.layout.GroupLayout.CENTER,
 										selectButton,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 										37,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 								.add(
-										org.jdesktop.layout.GroupLayout.BASELINE,
+										org.jdesktop.layout.GroupLayout.CENTER,
 										createNewButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 										37, Short.MAX_VALUE)
 								.add(
-										org.jdesktop.layout.GroupLayout.BASELINE,
+										org.jdesktop.layout.GroupLayout.CENTER,
 										deleteButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 										37, Short.MAX_VALUE)
@@ -535,7 +535,7 @@ public class AttributeBrowserPanel extends JPanel implements
 								.add(
 										buttonBarLayout
 												.createParallelGroup(
-														org.jdesktop.layout.GroupLayout.BASELINE)
+														org.jdesktop.layout.GroupLayout.CENTER)
 												.add(
 														attrModButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
