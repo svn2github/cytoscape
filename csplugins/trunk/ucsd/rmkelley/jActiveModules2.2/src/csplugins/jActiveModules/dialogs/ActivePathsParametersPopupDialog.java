@@ -12,6 +12,8 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -129,78 +131,50 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 		readout.addFocusListener(readoutListener);
 
 		JPanel mainPanel = new JPanel();
-		//GridBagLayout gridbag = new GridBagLayout();
-		//GridBagConstraints c = new GridBagConstraints();
 		mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
-
-		createExtsController();
-		createAnnealContentPanel();
-		createSearchContentPanel();
-
-		//c.fill = GridBagConstraints.NONE;
-		//c.weightx = 1.0;
-		//c.ipadx = 10;
-		//c.ipady = 10;
-
-		//c.gridx = 0;
-		//c.gridy = 6;
-		//c.anchor = GridBagConstraints.NORTH;
-		//gridbag.setConstraints(generalExtPanel, c);
-		mainPanel.add(generalExtPanel);
 
 		createAttrSelectionPanel();
 		if ( attrSelectPanel != null ) {
-		//	c.gridx = 0;
-		//	c.gridy = 20;
-		//	c.anchor = GridBagConstraints.CENTER;
-		//	gridbag.setConstraints(attrSelectPanel, c);
 			mainPanel.add(attrSelectPanel);
+			createExtsController();
+			createAnnealContentPanel();
+			createSearchContentPanel();
+			createAnnealSearchController();
+
+			mainPanel.add(generalExtPanel);
+
+			mainPanel.add(annealSearchControlPanel);
+
+			mainPanel.add(annealSearchContentPanel);
+
+		} else {
+			JLabel lab = new JLabel("ERROR - no attributes loaded!");
+			mainPanel.add(lab);
 		}
 
-		createAnnealSearchController();
-		//c.gridx = 1;
-		//c.gridy = 6;
-		//c.gridwidth = GridBagConstraints.REMAINDER; // end row
-		//c.anchor = GridBagConstraints.CENTER;
-		//gridbag.setConstraints(annealSearchControlPanel, c);
-		mainPanel.add(annealSearchControlPanel);
-		//c.gridx = 0;
-		//c.gridy = 10;
-		//c.gridwidth = GridBagConstraints.REMAINDER; // end row
-		//c.anchor = GridBagConstraints.CENTER;
-		//gridbag.setConstraints(annealSearchContentPanel, c);
-		mainPanel.add(annealSearchContentPanel);
 
 		// /////////////////////////////////////////
 		JPanel buttonPanel = new JPanel();
-		// JButton applyButton = new JButton ("Apply");
-		// JButton saveButton = new JButton ("Save Params");
+
 		JButton dismissButton = new JButton("Dismiss");
 
-		// applyButton.addActionListener (new ApplyAction ());
-		// saveButton.addActionListener (new SaveAction ());
 		dismissButton.addActionListener(new DismissAction());
 
-		// buttonPanel.add (applyButton, BorderLayout.WEST);
-		// buttonPanel.add (saveButton, BorderLayout.CENTER);
 		buttonPanel.add(dismissButton, BorderLayout.EAST);
 
-		//c.gridx = 0;
-		//c.gridy = 11;
-		//c.gridwidth = GridBagConstraints.REMAINDER; // end row
-		//c.anchor = GridBagConstraints.CENTER;
-		//gridbag.setConstraints(buttonPanel, c);
 		mainPanel.add(buttonPanel);
 
 		// /////////////////////////////////////////
 
 		setContentPane(mainPanel);
+
 	} // PopupDialog ctor
 
 	private void createAttrSelectionPanel() {
 		AttrSelectListener attrListen = new AttrSelectListener();
 		attrSelectPanel = new JPanel();
 		attrSelectPanel.setLayout( new BoxLayout(attrSelectPanel, BoxLayout.Y_AXIS));
+		attrSelectPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		Border border = BorderFactory.createLineBorder(Color.black);
 		Border titledBorder = BorderFactory.createTitledBorder(border,
