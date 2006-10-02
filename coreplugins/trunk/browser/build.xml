@@ -88,7 +88,7 @@
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
       <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
-    	<pathelement location="${cytoscape.lib.dir}/swing-layout-1.0.jar"/> 
+    	<pathelement location="${cytoscape.lib.dir}/swing-layout-1.0.1.jar"/> 
       <pathelement path="${project.class.path}/"/>
     </path>
 
