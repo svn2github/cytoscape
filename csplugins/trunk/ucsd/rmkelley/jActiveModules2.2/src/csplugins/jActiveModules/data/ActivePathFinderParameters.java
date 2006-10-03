@@ -7,8 +7,15 @@
 package csplugins.jActiveModules.data;
 
 import java.util.Collection;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
+
+import cytoscape.Cytoscape;
+import cytoscape.CyNode;
+import cytoscape.data.CyAttributes;
 
 //---------------------------------------------------------------------------------------
 public class ActivePathFinderParameters {
@@ -39,13 +46,36 @@ public class ActivePathFinderParameters {
 	boolean greedySearch = true;
 	boolean enableFiltering = true;
 	boolean run = false;
-
-	Set expressionAttrs = new HashSet();
+	List expressionAttrs = new ArrayList();
 
 	//boolean enableSpokePenalty = false;
 	
 	// ---------------------------------------------------------------------------------------
 	public ActivePathFinderParameters() {
+
+		// find all of the double type parameters
+                CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+                String[] names = nodeAttrs.getAttributeNames();
+                for ( String name : names ) {
+                        if ( nodeAttrs.getType(name) == CyAttributes.TYPE_FLOATING ) {
+				boolean add = true;
+				for ( Iterator it = Cytoscape.getCyNodesList().iterator(); it.hasNext(); ) {
+					CyNode node = (CyNode)it.next();
+					// Constrain the reported attributes to those
+					// with values between 0 and 1, i.e. significance values.
+					Double d = nodeAttrs.getDoubleAttribute(node.getIdentifier(),name);
+					if ( d == null ) 
+						continue;
+					if ( d.doubleValue() < 0 || d.doubleValue() > 1 ) {
+						add = false;
+						break;
+					}
+				}
+
+				if ( add )
+					expressionAttrs.add(name);
+			}
+		}
 
 	} // default ctor
 	// ---------------------------------------------------------------------------------------
@@ -298,6 +328,10 @@ public class ActivePathFinderParameters {
 
 	public void removeExpressionAttribute(String name) {
 		expressionAttrs.remove(name); 
+	}
+
+	public void shuffleExpressionAttributes(Random r) {
+		Collections.shuffle(expressionAttrs,r);
 	}
 
 	public String toString() {

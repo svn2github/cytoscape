@@ -125,6 +125,8 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 		// apfParams = new ActivePathFinderParameters(incomingApfParams);
 		apfParams = incomingApfParams;
 
+		if ( apfParams == null )
+			System.out.println("WTF");
 		readout = new JTextField(new String("seed: "
 				+ apfParams.getRandomSeed()));
 		RandomSeedTextListener readoutListener = new RandomSeedTextListener();
@@ -185,17 +187,16 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 		JLabel desc = new JLabel("Select the expression attributes for analysis");
 		attrSelectPanel.add(desc);
 
+		
 		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-		String[] names = nodeAttrs.getAttributeNames();
+		String[] names = (String[])apfParams.getExpressionAttributes().toArray(new String[0]); 
 		Arrays.sort(names);
 		int count = 0;
-		for ( int i = 0; i < names.length; i++ ) {
-			if ( nodeAttrs.getType( names[i] ) == CyAttributes.TYPE_FLOATING ) {
-				JCheckBox j = new JCheckBox(names[i],false);
-				attrSelectPanel.add( j ); 
-				j.addItemListener(attrListen);
-				count++;
-			}
+		for ( String name : names ) { 
+			JCheckBox j = new JCheckBox(name,false);
+			attrSelectPanel.add( j ); 
+			j.addItemListener(attrListen);
+			count++;
 		}
 
 		if ( count <= 0 )
@@ -1166,6 +1167,11 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 		}
 		
 	}
+
+	private boolean isSignificanceValue(String name) {
+		return true;		
+	}
+
 	// -----------------------------------------------------------------------------
 } // class ActivePathsParametersPopupDialog
 

@@ -39,7 +39,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 	protected boolean showTable = true;
 	protected boolean hideOthers = true;
-	protected ExpressionData expressionData = null;
+	//protected ExpressionData expressionData = null;
 	protected JMenuBar menubar;
 	protected JMenu expressionConditionsMenu;
 	protected ConditionsVsPathwaysTable tableDialog;
@@ -61,19 +61,17 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		if (cyNetwork == null || cyNetwork.getNodeCount() == 0) {
 			throw new IllegalArgumentException("Please select a network");
 		}
-		expressionData = Cytoscape.getExpressionData();
-		if (expressionData == null) {
-			throw new RuntimeException("No expression data loaded");
-		}
+		//expressionData = Cytoscape.getExpressionData();
+		//if (expressionData == null) {
+		//	throw new RuntimeException("No expression data loaded");
+		//}
 
-		attrNames = expressionData.getConditionNames();
+		//attrNames = expressionData.getConditionNames();
+		attrNames = (String[])apfParams.getExpressionAttributes().toArray(new String[0]);
 		Arrays.sort(attrNames);
 		menubar = Cytoscape.getDesktop().getCyMenus().getMenuBar();
 		mainFrame = Cytoscape.getDesktop();
 		this.cyNetwork = cyNetwork;
-		// if(expressionData.getSignificanceType() == ExpressionData.LAMBDA){
-		// expressionData.convertLambdasToPvals();
-		// }
 	} // ctor
 
 	// --------------------------------------------------------------
@@ -132,8 +130,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		System.err.println("Processing Expression Data into Hash");
 		HashMap tempHash = new HashMap();
 		System.err.println("Do some testing of the ExpressionData object");
-		System.err.println(expressionData.getConditionNames());
-		System.err.println(expressionData.getNumberOfGenes());
+		//System.err.println(expressionData.getConditionNames());
+		//System.err.println(expressionData.getNumberOfGenes());
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		// GraphObjAttributes nodeAttributes = cyNetwork.getNodeAttributes();
 		for (Iterator nodeIt = cyNetwork.nodesIterator(); nodeIt.hasNext();) {
@@ -141,12 +139,14 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			Node current = (Node) nodeIt.next();
 			for (int j = 0; j < attrNames.length; j++) {
 				String canonicalName = current.getIdentifier();
-				mRNAMeasurement tempmRNA = expressionData.getMeasurement(
-						canonicalName, attrNames[j]);
-				if (tempmRNA == null) {
+				Double d = nodeAttributes.getDoubleAttribute(canonicalName,attrNames[j]);
+
+				//mRNAMeasurement tempmRNA = expressionData.getMeasurement(
+				//		canonicalName, attrNames[j]);
+				if (d == null) {
 					tempArray[j] = ZStatistics.oneMinusNormalCDFInverse(.5);
 				} else {
-					double sigValue = tempmRNA.getSignificance();
+					double sigValue = d.doubleValue();
 					if (sigValue < MIN_SIG) {
 						sigValue = MIN_SIG;
 						System.err.println("Warning: value for "

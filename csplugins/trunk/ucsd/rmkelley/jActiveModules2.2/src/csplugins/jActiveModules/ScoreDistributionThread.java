@@ -52,7 +52,7 @@ public class ScoreDistributionThread extends Thread{
 
     activePaths.showTable = false;
     activePaths.hideOthers = false;
-    randomizeGeneNames();
+    apfParams.shuffleExpressionAttributes(randomGenerator);
     Thread t = new Thread(activePaths);
     t.start();
     try{
@@ -68,7 +68,7 @@ public class ScoreDistributionThread extends Thread{
       apfParams.setMcFileName("last.mc");
     }
     for (i=1; i<numberOfRuns; i++) {
-      randomizeGeneNames();
+      apfParams.shuffleExpressionAttributes(randomGenerator);
       t = new Thread(activePaths);
       t.start();
       try{
@@ -89,7 +89,7 @@ public class ScoreDistributionThread extends Thread{
     }
 
   }
-
+/*
   private void randomizeGeneNames() {
     Vector newNames = new Vector();
     Vector newDescripts = new Vector();
@@ -112,6 +112,7 @@ public class ScoreDistributionThread extends Thread{
     expressionData.setGeneNames(newNames);
     expressionData.setGeneDescriptors(newDescripts);
   }
+  */
   
 
 }
