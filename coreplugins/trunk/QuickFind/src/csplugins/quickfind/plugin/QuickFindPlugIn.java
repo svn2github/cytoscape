@@ -86,6 +86,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
                 new RangeSelectionListener(slider);
         slider.addChangeListener(rangeSelectionListener);
         toolBar.add(quickFindToolBar);
+        toolBar.validate();
     }
 
     /**
