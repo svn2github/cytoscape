@@ -43,11 +43,11 @@ public class ManualLayoutPlugin extends CytoscapePlugin {
 		ScalePanel scalePanel = new ScalePanel();
 		ControlPanel controlPanel = new ControlPanel();
 
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).add("Rotate",
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).add("Rotate",
 				rotatePanel);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).add("Scale",
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).add("Scale",
 				scalePanel);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).add(
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).add(
 				"Align and Distribute", controlPanel);
 	}
 }
