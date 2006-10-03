@@ -270,6 +270,15 @@ public final class GraphGraphics
       throw new RuntimeException("noninvertible matrix - cannot happen"); }
   }
 
+	/**
+	 * Called to get the current AffineTransform Matrix.
+	 *
+	 * @return AffineTransform
+	 */
+	public final AffineTransform getTransform() {
+		return m_currXform;
+	}
+
   /**
    * This is the method that will render a node very quickly.
    * The node shape used by this method is SHAPE_RECTANGLE.  Translucent
