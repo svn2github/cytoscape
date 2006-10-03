@@ -33,6 +33,7 @@ import ManualLayout.scale.ScalePanel;
  *  version 0.1    9/14/2006  Peng-Liang Wang   Original creation 
  *  version 0.2    9/17/2006  Peng-Liang Wang   Change the anonymous classes (listeners) to named classes  
  *  version 0.21   9/21/2006  Peng-Liang Wang   Fix a null pointer exception  
+ *  version 0.3   10/03/2006  Peng-Liang Wang   Move the manualLayout to cytoPanel_SOUTH_WEST  
  * 
  */
 public class ManualLayoutAction extends CytoscapeAction {
@@ -46,10 +47,10 @@ public class ManualLayoutAction extends CytoscapeAction {
 	private CytoPanel3Listener cytoPanel3Listener;
 
 	private RotatePanel rotatePanel = (RotatePanel) Cytoscape.getDesktop()
-			.getCytoPanel(SwingConstants.EAST).getComponentAt(0);
+			.getCytoPanel(SwingConstants.SOUTH_WEST).getComponentAt(0);
 
 	private ScalePanel scalePanel = (ScalePanel) Cytoscape.getDesktop()
-			.getCytoPanel(SwingConstants.EAST).getComponentAt(1);
+			.getCytoPanel(SwingConstants.SOUTH_WEST).getComponentAt(1);
 
 	private MutablePolyEdgeGraphLayout[] nativeGraph = null;
 
@@ -81,13 +82,13 @@ public class ManualLayoutAction extends CytoscapeAction {
 
 		// Check the state of the manual layout Panel
 		CytoPanelState curState = Cytoscape.getDesktop().getCytoPanel(
-				SwingConstants.EAST).getState();
+				SwingConstants.SOUTH_WEST).getState();
 
 		// Case 1: Panel is disabled
 		if (curState == CytoPanelState.HIDE) {
-			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).setState(
-					CytoPanelState.FLOAT);
-			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
+			Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).setState(
+					CytoPanelState.DOCK);
+			Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST)
 					.setSelectedIndex(menuItemIndex);
 
 			if (nativeGraph == null) {
@@ -100,10 +101,10 @@ public class ManualLayoutAction extends CytoscapeAction {
 
 			// Case 2: Panel is in the DOCK/FLOAT
 		} else if (isAnyCheckBoxSelected()) {
-			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
+			Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST)
 					.setSelectedIndex(menuItemIndex);
 		} else { // Case 3: The only checkBox is deSelected
-			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).setState(
+			Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).setState(
 					CytoPanelState.HIDE);
 			removeEventListeners();
 		}
@@ -140,7 +141,7 @@ public class ManualLayoutAction extends CytoscapeAction {
 
 		Cytoscape.getCurrentNetwork()
 				.addSelectEventListener(treeSelectListener);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST)
 				.addCytoPanelListener(cytoPanel3Listener);
 	} // addEventListeners()
 
@@ -151,7 +152,7 @@ public class ManualLayoutAction extends CytoscapeAction {
 		scalePanel.jSlider.removeChangeListener(scalePanelSliderListener);
 		Cytoscape.getCurrentNetwork().removeSelectEventListener(
 				treeSelectListener);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST)
 				.removeCytoPanelListener(cytoPanel3Listener);
 	}
 
