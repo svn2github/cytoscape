@@ -22,7 +22,6 @@ public class ControlPanel extends JPanel {
 
 	public ControlPanel() {
 
-		setLayout( new BorderLayout() );
 		setBorder(javax.swing.BorderFactory.createEmptyBorder(5,5,5,5));
 
 		AlignPanel ap = new AlignPanel();
@@ -34,7 +33,10 @@ public class ControlPanel extends JPanel {
 
 	    gbc.gridy =0;
 	    gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(0, 15, 0, 15);
+        gbc.insets = new Insets(0, 5, 0, 5);
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+
 	    add(ap,gbc);
 
 	    gbc.gridy =1;
