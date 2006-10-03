@@ -68,6 +68,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.SwingConstants;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -78,6 +79,9 @@ import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanel;
 
 public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		TreeSelectionListener, SelectEventListener {
@@ -95,6 +99,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 	JMenuItem destroyNetworkItem;
 	JMenuItem editNetworkTitle;
 	JSplitPane split;
+	BiModalJSplitPane split_top;
 	NetworkTreeTableModel treeTableModel;
 
 	private CytoscapeDesktop cytoscapeDesktop;
@@ -129,10 +134,23 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		navigatorPanel.setMaximumSize(new Dimension(180, 180));
 		navigatorPanel.setPreferredSize(new Dimension(180, 180));
 
+		CytoPanelImp manualLayoutPanel = (CytoPanelImp)cytoscapeDesktop.getCytoPanel(SwingConstants.SOUTH_WEST);
+		manualLayoutPanel.setMinimumSize(new Dimension(180, 180));
+		manualLayoutPanel.setMaximumSize(new Dimension(180, 180));
+		manualLayoutPanel.setPreferredSize(new Dimension(180, 180));
+		
 		JScrollPane scroll = new JScrollPane(treeTable);
-		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scroll,
-				navigatorPanel);
+
+		split_top = new BiModalJSplitPane(cytoscapeDesktop, 
+				JSplitPane.VERTICAL_SPLIT, BiModalJSplitPane.MODE_HIDE_SPLIT, scroll, 
+				manualLayoutPanel);
+		split_top.setResizeWeight(1);
+		manualLayoutPanel.setCytoPanelContainer(split_top);
+
+		
+		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, split_top,navigatorPanel);
 		split.setResizeWeight(1);
+		
 		add(split);
 
 		// this mouse listener listens for the right-click event and will show
