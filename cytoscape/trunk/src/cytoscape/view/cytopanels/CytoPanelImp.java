@@ -222,6 +222,12 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 */
     private static final String CYTOPANEL_TITLE_NORTH = "CytoPanel 4";
 
+	/**
+	 * CytoPanelSouthWest title.
+	 */
+    private static final String CYTOPANEL_TITLE_SOUTH_WEST = "CytoPanel 5";
+
+    
     /**
      * Constructor.
 	 *
@@ -239,6 +245,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 		if (compassDirection == SwingConstants.NORTH ||
 			compassDirection == SwingConstants.EAST  ||
 			compassDirection == SwingConstants.WEST  ||
+			compassDirection == SwingConstants.SOUTH_WEST  ||
 			compassDirection == SwingConstants.SOUTH){
 			this.compassDirection = compassDirection;
 		}
@@ -287,6 +294,8 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
             return CYTOPANEL_TITLE_EAST;
 		case SwingConstants.WEST:
             return CYTOPANEL_TITLE_WEST;
+		case SwingConstants.SOUTH_WEST:            
+            return CYTOPANEL_TITLE_SOUTH_WEST;
 		}
 		return null;
 	}
