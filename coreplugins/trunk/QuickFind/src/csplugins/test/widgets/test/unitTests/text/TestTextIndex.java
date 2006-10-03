@@ -103,7 +103,8 @@ public class TestTextIndex extends TestCase {
             new Integer(1));
         Hit hits[] = textIndex.getHits("the", Integer.MAX_VALUE);
         assertEquals (1, hits.length);
-        assertEquals ("the associated press and ",
+        assertEquals ("the associated press and the new york times are now "
+                + "reporting that atlantis will not launch sunday.",
                 hits[0].getKeyword());
         assertEquals (1, hits[0].getAssociatedObjects().length);
     }
