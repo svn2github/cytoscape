@@ -1,0 +1,149 @@
+#USING FLC2 instead of its synonym YAL053W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+8.681790e-02	1	6	98	6526	97048	Saccharomyces	cerevisiae	GO:0048622	biological_process	"reproductive sporulation"	GSC2
+8.681790e-02	1	6	98	6526	97048	Saccharomyces	cerevisiae	GO:0030437	biological_process	"sporulation (sensu Fungi)"	GSC2
+2.803310e-02	6	6	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+1.070880e-04	2	6	18	6526	97048	Saccharomyces	cerevisiae	GO:0051278	biological_process	"cell wall polysaccharide biosynthesis (sensu Fungi)"	FKS1	GSC2
+1.911000e-04	2	6	24	6526	97048	Saccharomyces	cerevisiae	GO:0008194	molecular_function	"UDP-glycosyltransferase activity"	FKS1	GSC2
+3.673370e-03	1	6	4	6526	97048	Saccharomyces	cerevisiae	GO:0015883	biological_process	"FAD transport"	YAL053W
+1.860340e-01	1	6	220	6526	97048	Saccharomyces	cerevisiae	GO:0044255	biological_process	"cellular lipid metabolism"	FEN1
+3.657670e-01	4	6	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	FEN1	FKS1	GSC2	YAL053W
+1.177020e-03	2	6	59	6526	97048	Saccharomyces	cerevisiae	GO:0044264	biological_process	"cellular polysaccharide metabolism"	FKS1	GSC2
+2.138250e-01	2	6	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	FKS1	GSC2
+1.112690e-01	1	6	127	6526	97048	Saccharomyces	cerevisiae	GO:0008610	biological_process	"lipid biosynthesis"	FEN1
+3.919150e-01	4	6	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	FEN1	FKS1	GSC2	YAL053W
+1.734850e-02	1	6	19	6526	97048	Saccharomyces	cerevisiae	GO:0030148	biological_process	"sphingolipid biosynthesis"	FEN1
+2.065390e-01	6	6	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+1.393410e-02	2	6	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	FKS1	GSC2
+7.125760e-02	4	6	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	FEN1	FKS1	GSC2	PDR5
+5.217450e-02	1	6	58	6526	97048	Saccharomyces	cerevisiae	GO:0043492	molecular_function	"ATPase activity, coupled to movement of substances"	PDR5
+6.935200e-01	1	6	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	TCB3
+7.844050e-01	1	6	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YAL053W
+4.123890e-01	3	6	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	FKS1	GSC2	YAL053W
+4.589960e-03	1	6	5	6526	97048	Saccharomyces	cerevisiae	GO:0008559	molecular_function	"xenobiotic-transporting ATPase activity"	PDR5
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+7.335490e-03	1	6	8	6526	97048	Saccharomyces	cerevisiae	GO:0004312	molecular_function	"fatty-acid synthase activity"	FEN1
+1.182730e-02	2	6	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	FKS1	GSC2
+1.998590e-03	2	6	77	6526	97048	Saccharomyces	cerevisiae	GO:0016758	molecular_function	"transferase activity, transferring hexosyl groups"	FKS1	GSC2
+1.462610e-02	1	6	16	6526	97048	Saccharomyces	cerevisiae	GO:0042763	cellular_component	"immature spore"	GSC2
+1.991160e-01	1	6	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	PDR5
+1.661150e-02	2	6	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	FKS1	GSC2
+2.449270e-01	2	6	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	PDR5	TCB3
+8.168970e-02	1	6	92	6526	97048	Saccharomyces	cerevisiae	GO:0016747	molecular_function	"transferase activity, transferring groups other than amino-acyl groups"	FEN1
+1.019410e-03	3	6	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	FKS1	GSC2	PDR5
+1.462610e-02	1	6	16	6526	97048	Saccharomyces	cerevisiae	GO:0042764	cellular_component	"prospore"	GSC2
+4.778880e-03	4	6	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	FEN1	FKS1	PDR5	YAL053W
+1.253530e-06	3	6	27	6526	97048	Saccharomyces	cerevisiae	GO:0042546	biological_process	"cell wall biosynthesis"	FKS1	GSC2	YAL053W
+1.172300e-01	3	6	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	FKS1	GSC2	YAL053W
+4.106310e-01	2	6	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	FKS1	GSC2
+1.704150e-01	1	6	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	GSC2
+1.462610e-02	1	6	16	6526	97048	Saccharomyces	cerevisiae	GO:0005628	cellular_component	"prospore membrane"	GSC2
+2.210290e-01	1	6	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	GSC2
+2.633590e-01	1	6	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	PDR5
+7.506380e-01	1	6	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YAL053W
+3.623170e-02	1	6	40	6526	97048	Saccharomyces	cerevisiae	GO:0030479	cellular_component	"actin cortical patch"	FKS1
+9.862640e-04	2	6	54	6526	97048	Saccharomyces	cerevisiae	GO:0030864	cellular_component	"cortical actin cytoskeleton"	FKS1	GSC2
+1.975640e-01	6	6	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+4.223660e-06	2	6	4	6526	97048	Saccharomyces	cerevisiae	GO:0006075	biological_process	"1,3-beta-glucan biosynthesis"	FKS1	GSC2
+1.355090e-02	2	6	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	FKS1	GSC2
+5.087980e-01	5	6	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	FEN1	FKS1	GSC2	PDR5	YAL053W
+3.533950e-02	1	6	39	6526	97048	Saccharomyces	cerevisiae	GO:0042493	biological_process	"response to drug"	PDR5
+1.098640e-02	1	6	12	6526	97048	Saccharomyces	cerevisiae	GO:0015239	molecular_function	"multidrug transporter activity"	PDR5
+2.127770e-01	1	6	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	PDR5
+3.071480e-01	1	6	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	GSC2
+2.135300e-01	1	6	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	PDR5
+1.827680e-02	3	6	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	FEN1	FKS1	GSC2
+5.145710e-02	2	6	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	PDR5	YAL053W
+4.223660e-06	2	6	4	6526	97048	Saccharomyces	cerevisiae	GO:0006074	biological_process	"1,3-beta-glucan metabolism"	FKS1	GSC2
+4.846510e-01	5	6	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	FEN1	FKS1	GSC2	PDR5	YAL053W
+2.138250e-01	2	6	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	FKS1	GSC2
+4.369720e-01	2	6	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	FKS1	GSC2
+3.356050e-01	3	6	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	FEN1	FKS1	GSC2
+2.690010e-02	2	6	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	FEN1	FKS1
+3.082000e-01	4	6	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	FEN1	FKS1	GSC2	YAL053W
+2.112690e-06	2	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0000148	cellular_component	"1,3-beta-glucan synthase complex"	FKS1	GSC2
+4.718770e-02	6	6	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+9.784720e-02	1	6	111	6526	97048	Saccharomyces	cerevisiae	GO:0030435	biological_process	"sporulation"	GSC2
+1.967820e-05	2	6	8	6526	97048	Saccharomyces	cerevisiae	GO:0051274	biological_process	"beta-glucan biosynthesis"	FKS1	GSC2
+1.045790e-01	1	6	119	6526	97048	Saccharomyces	cerevisiae	GO:0042623	molecular_function	"ATPase activity, coupled"	PDR5
+1.189740e-02	1	6	13	6526	97048	Saccharomyces	cerevisiae	GO:0015893	biological_process	"drug transport"	PDR5
+6.251190e-03	4	6	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	FEN1	FKS1	PDR5	YAL053W
+2.588130e-04	3	6	157	6526	97048	Saccharomyces	cerevisiae	GO:0045229	biological_process	"external encapsulating structure organization and biogenesis"	FKS1	GSC2	YAL053W
+3.699520e-03	6	6	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+7.935940e-03	4	6	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	FEN1	FKS1	GSC2	PDR5
+4.445770e-01	1	6	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	FEN1
+1.553430e-02	1	6	17	6526	97048	Saccharomyces	cerevisiae	GO:0016053	biological_process	"organic acid biosynthesis"	FEN1
+9.869100e-02	1	6	112	6526	97048	Saccharomyces	cerevisiae	GO:0006643	biological_process	"membrane lipid metabolism"	FEN1
+1.338580e-02	4	6	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	FEN1	FKS1	GSC2	YAL053W
+3.346210e-01	6	6	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+3.356050e-01	3	6	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	FEN1	FKS1	GSC2
+5.156520e-03	4	6	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	FEN1	FKS1	PDR5	YAL053W
+2.756080e-03	1	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0009922	molecular_function	"fatty acid elongase activity"	FEN1
+6.616090e-02	1	6	74	6526	97048	Saccharomyces	cerevisiae	GO:0006457	biological_process	"protein folding"	YAL053W
+9.446550e-02	1	6	107	6526	97048	Saccharomyces	cerevisiae	GO:0016746	molecular_function	"transferase activity, transferring acyl groups"	FEN1
+3.673370e-03	1	6	4	6526	97048	Saccharomyces	cerevisiae	GO:0030497	biological_process	"fatty acid elongation"	FEN1
+2.727860e-02	1	6	30	6526	97048	Saccharomyces	cerevisiae	GO:0006665	biological_process	"sphingolipid metabolism"	FEN1
+4.451080e-01	4	6	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	FEN1	PDR5	TCB3	YAL053W
+2.112690e-06	2	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0003843	molecular_function	"1,3-beta-glucan synthase activity"	FKS1	GSC2
+3.673370e-03	1	6	4	6526	97048	Saccharomyces	cerevisiae	GO:0015230	molecular_function	"FAD transporter activity"	YAL053W
+1.070930e-01	1	6	122	6526	97048	Saccharomyces	cerevisiae	GO:0005789	cellular_component	"endoplasmic reticulum membrane"	FEN1
+1.960540e-01	1	6	233	6526	97048	Saccharomyces	cerevisiae	GO:0006629	biological_process	"lipid metabolism"	FEN1
+1.204000e-01	1	6	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	TCB3
+5.676590e-04	2	6	41	6526	97048	Saccharomyces	cerevisiae	GO:0006073	biological_process	"glucan metabolism"	FKS1	GSC2
+3.533950e-02	1	6	39	6526	97048	Saccharomyces	cerevisiae	GO:0042244	biological_process	"spore wall assembly"	GSC2
+8.249270e-03	1	6	9	6526	97048	Saccharomyces	cerevisiae	GO:0051181	biological_process	"cofactor transport"	YAL053W
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+7.358240e-05	2	6	15	6526	97048	Saccharomyces	cerevisiae	GO:0046527	molecular_function	"glucosyltransferase activity"	FKS1	GSC2
+1.704150e-01	1	6	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	GSC2
+1.098640e-02	1	6	12	6526	97048	Saccharomyces	cerevisiae	GO:0006633	biological_process	"fatty acid biosynthesis"	FEN1
+1.253530e-06	3	6	27	6526	97048	Saccharomyces	cerevisiae	GO:0009272	biological_process	"cell wall biosynthesis (sensu Fungi)"	FKS1	GSC2	YAL053W
+4.451080e-01	4	6	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	FEN1	PDR5	TCB3	YAL053W
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+1.553430e-02	1	6	17	6526	97048	Saccharomyces	cerevisiae	GO:0046394	biological_process	"carboxylic acid biosynthesis"	FEN1
+2.029310e-01	1	6	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	PDR5
+2.252810e-06	3	6	37	6526	97048	Saccharomyces	cerevisiae	GO:0031505	biological_process	"cell wall organization and biogenesis (sensu Fungi)"	FKS1	GSC2	YAL053W
+3.218990e-03	2	6	98	6526	97048	Saccharomyces	cerevisiae	GO:0016757	molecular_function	"transferase activity, transferring glycosyl groups"	FKS1	GSC2
+2.497090e-01	1	6	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	FEN1
+3.473150e-02	2	6	337	6526	97048	Saccharomyces	cerevisiae	GO:0005783	cellular_component	"endoplasmic reticulum"	FEN1	YAL053W
+1.162590e-01	1	6	133	6526	97048	Saccharomyces	cerevisiae	GO:0042175	cellular_component	"nuclear envelope-endoplasmic reticulum network"	FEN1
+1.913680e-01	3	6	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	FKS1	GSC2	YAL053W
+3.482840e-03	2	6	102	6526	97048	Saccharomyces	cerevisiae	GO:0005938	cellular_component	"cell cortex"	FKS1	GSC2
+1.561570e-03	2	6	68	6526	97048	Saccharomyces	cerevisiae	GO:0016051	biological_process	"carbohydrate biosynthesis"	FKS1	GSC2
+3.661600e-04	2	6	33	6526	97048	Saccharomyces	cerevisiae	GO:0000271	biological_process	"polysaccharide biosynthesis"	FKS1	GSC2
+8.176390e-01	1	6	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	TCB3
+4.589960e-03	1	6	5	6526	97048	Saccharomyces	cerevisiae	GO:0042910	molecular_function	"xenobiotic transporter activity"	PDR5
+9.862640e-04	2	6	54	6526	97048	Saccharomyces	cerevisiae	GO:0030863	cellular_component	"cortical cytoskeleton"	FKS1	GSC2
+2.135300e-01	1	6	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	PDR5
+5.303190e-01	1	6	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	PDR5
+4.411870e-01	1	6	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	PDR5
+1.189740e-02	1	6	13	6526	97048	Saccharomyces	cerevisiae	GO:0051184	molecular_function	"cofactor transporter activity"	YAL053W
+1.537470e-01	1	6	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	PDR5
+9.953410e-02	1	6	113	6526	97048	Saccharomyces	cerevisiae	GO:0030154	biological_process	"cell differentiation"	GSC2
+3.342520e-01	6	6	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+1.222510e-02	3	6	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	FEN1	FKS1	GSC2
+2.529020e-05	2	6	9	6526	97048	Saccharomyces	cerevisiae	GO:0051273	biological_process	"beta-glucan metabolism"	FKS1	GSC2
+5.470590e-05	2	6	13	6526	97048	Saccharomyces	cerevisiae	GO:0035251	molecular_function	"UDP-glucosyltransferase activity"	FKS1	GSC2
+2.588130e-04	3	6	157	6526	97048	Saccharomyces	cerevisiae	GO:0007047	biological_process	"cell wall organization and biogenesis"	FKS1	GSC2	YAL053W
+1.177020e-03	2	6	59	6526	97048	Saccharomyces	cerevisiae	GO:0005976	biological_process	"polysaccharide metabolism"	FKS1	GSC2
+2.097040e-02	1	6	23	6526	97048	Saccharomyces	cerevisiae	GO:0008289	molecular_function	"lipid binding"	TCB3
+5.217450e-02	1	6	58	6526	97048	Saccharomyces	cerevisiae	GO:0016820	molecular_function	"hydrolase activity, acting on acid anhydrides, catalyzing transmembrane movement of substances"	PDR5
+7.358240e-05	2	6	15	6526	97048	Saccharomyces	cerevisiae	GO:0030478	cellular_component	"actin cap"	FKS1	GSC2
+1.839500e-01	2	6	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	FKS1	GSC2
+4.966720e-01	5	6	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	FEN1	FKS1	GSC2	PDR5	YAL053W
+6.355170e-02	1	6	71	6526	97048	Saccharomyces	cerevisiae	GO:0046467	biological_process	"membrane lipid biosynthesis"	FEN1
+4.718770e-02	6	6	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	FEN1	FKS1	GSC2	PDR5	TCB3	YAL053W
+1.371720e-02	1	6	15	6526	97048	Saccharomyces	cerevisiae	GO:0015238	molecular_function	"drug transporter activity"	PDR5
+2.351140e-01	1	6	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	FEN1
+4.157060e-02	1	6	46	6526	97048	Saccharomyces	cerevisiae	GO:0006631	biological_process	"fatty acid metabolism"	FEN1
+2.050360e-03	2	6	78	6526	97048	Saccharomyces	cerevisiae	GO:0015629	cellular_component	"actin cytoskeleton"	FKS1	GSC2
+6.789710e-02	1	6	76	6526	97048	Saccharomyces	cerevisiae	GO:0006897	biological_process	"endocytosis"	FKS1
+1.037910e-02	4	6	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	FEN1	FKS1	GSC2	YAL053W
+1.702730e-04	2	6	20	6526	97048	Saccharomyces	cerevisiae	GO:0009250	biological_process	"glucan biosynthesis"	FKS1	GSC2
+3.533950e-02	1	6	39	6526	97048	Saccharomyces	cerevisiae	GO:0030476	biological_process	"spore wall assembly (sensu Fungi)"	GSC2
+1.177020e-03	2	6	59	6526	97048	Saccharomyces	cerevisiae	GO:0044459	cellular_component	"plasma membrane part"	FKS1	GSC2
+1.170890e-01	1	6	134	6526	97048	Saccharomyces	cerevisiae	GO:0044432	cellular_component	"endoplasmic reticulum part"	FEN1
+5.217450e-02	1	6	58	6526	97048	Saccharomyces	cerevisiae	GO:0042626	molecular_function	"ATPase activity, coupled to transmembrane movement of substances"	PDR5
+2.841920e-03	2	6	92	6526	97048	Saccharomyces	cerevisiae	GO:0044448	cellular_component	"cell cortex part"	FKS1	GSC2
+2.497090e-01	1	6	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	FEN1
+8.083270e-02	1	6	91	6526	97048	Saccharomyces	cerevisiae	GO:0008415	molecular_function	"acyltransferase activity"	FEN1
+3.661600e-04	2	6	33	6526	97048	Saccharomyces	cerevisiae	GO:0043284	biological_process	"biopolymer biosynthesis"	FKS1	GSC2

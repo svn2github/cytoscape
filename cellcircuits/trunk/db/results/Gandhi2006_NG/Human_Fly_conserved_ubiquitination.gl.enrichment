@@ -1,0 +1,139 @@
+#USING skpA instead of its synonym CG16983 in Drosophila melanogaster
+#USING ago instead of its synonym CG15010 in Drosophila melanogaster
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+4.706800e-03	1	3	16	10183	157890	Drosophila	melanogaster	GO:0007098	biological_process	"centrosome cycle"	CG16983
+2.082330e-06	2	3	9	10183	157890	Drosophila	melanogaster	GO:0042023	biological_process	"DNA endoreduplication"	CG15010	CG16983
+1.915470e-03	2	3	260	10183	157890	Drosophila	melanogaster	GO:0007067	biological_process	"mitosis"	CG15010	CG16983
+2.263100e-09	3	3	11	7583	157890	Drosophila	melanogaster	GO:0019005	cellular_component	"SCF ubiquitin ligase complex"	CG15010	CG16983	CG9772
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0005623	cellular_component	"cell"	CG15010	CG16983	CG9772
+1.301520e-01	3	3	5161	10183	157890	Drosophila	melanogaster	GO:0044237	biological_process	"cellular metabolism"	CG15010	CG16983	CG9772
+1.468000e-03	1	3	5	10214	157890	Drosophila	melanogaster	GO:0030332	molecular_function	"cyclin binding"	CG15010
+5.560510e-02	2	3	1458	10183	157890	Drosophila	melanogaster	GO:0050791	biological_process	"regulation of physiological process"	CG15010	CG16983
+1.669910e-01	3	3	5608	10183	157890	Drosophila	melanogaster	GO:0008152	biological_process	"metabolism"	CG15010	CG16983	CG9772
+1.303160e-01	3	3	3845	7583	157890	Drosophila	melanogaster	GO:0005622	cellular_component	"intracellular"	CG15010	CG16983	CG9772
+7.826010e-01	1	3	4072	10214	157890	Drosophila	melanogaster	GO:0003824	molecular_function	"catalytic activity"	CG15010
+3.851840e-01	2	3	4319	10214	157890	Drosophila	melanogaster	GO:0005488	molecular_function	"binding"	CG15010	CG16983
+4.353890e-02	3	3	3583	10183	157890	Drosophila	melanogaster	GO:0043170	biological_process	"macromolecule metabolism"	CG15010	CG16983	CG9772
+1.503410e-02	3	3	2514	10183	157890	Drosophila	melanogaster	GO:0019538	biological_process	"protein metabolism"	CG15010	CG16983	CG9772
+4.348870e-06	3	3	126	7583	157890	Drosophila	melanogaster	GO:0000151	cellular_component	"ubiquitin ligase complex"	CG15010	CG16983	CG9772
+1.472460e-03	1	3	5	10183	157890	Drosophila	melanogaster	GO:0007096	biological_process	"regulation of exit from mitosis"	CG15010
+1.234240e-04	2	3	66	10183	157890	Drosophila	melanogaster	GO:0006261	biological_process	"DNA-dependent DNA replication"	CG15010	CG16983
+1.182320e-03	2	3	204	10183	157890	Drosophila	melanogaster	GO:0051726	biological_process	"regulation of cell cycle"	CG15010	CG16983
+1.000000e+00	3	3	10183	10183	157890	Drosophila	melanogaster	GO:0008150	biological_process	"biological_process"	CG15010	CG16983	CG9772
+5.868960e-03	1	3	20	10183	157890	Drosophila	melanogaster	GO:0045926	biological_process	"negative regulation of growth"	CG15010
+5.111220e-04	2	3	134	10183	157890	Drosophila	melanogaster	GO:0043285	biological_process	"biopolymer catabolism"	CG15010	CG9772
+2.750520e-03	2	3	312	10183	157890	Drosophila	melanogaster	GO:0000278	biological_process	"mitotic cell cycle"	CG15010	CG16983
+2.363700e-01	1	3	878	10214	157890	Drosophila	melanogaster	GO:0003677	molecular_function	"DNA binding"	CG16983
+4.925680e-02	1	3	170	10183	157890	Drosophila	melanogaster	GO:0007059	biological_process	"chromosome segregation"	CG16983
+8.836520e-04	1	3	3	10183	157890	Drosophila	melanogaster	GO:0051298	biological_process	"centrosome duplication"	CG16983
+4.027720e-02	1	3	139	10214	157890	Drosophila	melanogaster	GO:0019787	molecular_function	"small conjugating protein ligase activity"	CG15010
+1.056980e-02	1	3	36	10183	157890	Drosophila	melanogaster	GO:0007088	biological_process	"regulation of mitosis"	CG15010
+2.263100e-09	3	3	11	7583	157890	Drosophila	melanogaster	GO:0031461	cellular_component	"cullin-RING ubiquitin ligase complex"	CG15010	CG16983	CG9772
+1.000000e+00	2	3	10214	10214	157890	Drosophila	melanogaster	GO:0003674	molecular_function	"molecular_function"	CG15010	CG16983
+5.607760e-02	1	3	194	10183	157890	Drosophila	melanogaster	GO:0048522	biological_process	"positive regulation of cellular process"	CG16983
+1.639670e-04	2	3	76	10183	157890	Drosophila	melanogaster	GO:0006511	biological_process	"ubiquitin-dependent protein catabolism"	CG15010	CG9772
+4.569720e-02	1	3	158	10214	157890	Drosophila	melanogaster	GO:0016881	molecular_function	"acid-amino acid ligase activity"	CG15010
+9.662620e-03	1	3	33	10214	157890	Drosophila	melanogaster	GO:0043565	molecular_function	"sequence-specific DNA binding"	CG16983
+5.308090e-02	1	3	184	10214	157890	Drosophila	melanogaster	GO:0016879	molecular_function	"ligase activity, forming carbon-nitrogen bonds"	CG15010
+1.000000e+00	3	3	7583	7583	157890	Drosophila	melanogaster	GO:0005575	cellular_component	"cellular_component"	CG15010	CG16983	CG9772
+1.182320e-03	2	3	204	10183	157890	Drosophila	melanogaster	GO:0000074	biological_process	"regulation of progression through cell cycle"	CG15010	CG16983
+7.087150e-02	2	3	1658	10183	157890	Drosophila	melanogaster	GO:0050789	biological_process	"regulation of biological process"	CG15010	CG16983
+2.946090e-04	1	3	1	10183	157890	Drosophila	melanogaster	GO:0045931	biological_process	"positive regulation of progression through mitotic cell cycle"	CG16983
+2.354590e-04	2	3	91	10183	157890	Drosophila	melanogaster	GO:0030163	biological_process	"protein catabolism"	CG15010	CG9772
+1.606800e-03	2	3	238	10183	157890	Drosophila	melanogaster	GO:0006512	biological_process	"ubiquitin cycle"	CG15010	CG9772
+4.027720e-02	1	3	139	10214	157890	Drosophila	melanogaster	GO:0004842	molecular_function	"ubiquitin-protein ligase activity"	CG15010
+4.499460e-01	1	3	1845	10214	157890	Drosophila	melanogaster	GO:0003676	molecular_function	"nucleic acid binding"	CG16983
+1.432760e-02	3	3	2474	10183	157890	Drosophila	melanogaster	GO:0044260	biological_process	"cellular macromolecule metabolism"	CG15010	CG16983	CG9772
+2.968920e-01	1	3	1128	10183	157890	Drosophila	melanogaster	GO:0019222	biological_process	"regulation of metabolism"	CG15010
+2.304120e-02	2	3	921	10183	157890	Drosophila	melanogaster	GO:0006464	biological_process	"protein modification"	CG15010	CG9772
+1.240170e-02	3	3	1756	7583	157890	Drosophila	melanogaster	GO:0043234	cellular_component	"protein complex"	CG15010	CG16983	CG9772
+5.875100e-02	2	3	1501	10183	157890	Drosophila	melanogaster	GO:0050794	biological_process	"regulation of cellular process"	CG15010	CG16983
+3.968150e-01	1	3	1579	10183	157890	Drosophila	melanogaster	GO:0016043	biological_process	"cell organization and biogenesis"	CG16983
+1.957370e-04	2	3	83	10183	157890	Drosophila	melanogaster	GO:0051603	biological_process	"proteolysis during cellular protein catabolism"	CG15010	CG9772
+7.348380e-03	1	3	25	10183	157890	Drosophila	melanogaster	GO:0007346	biological_process	"regulation of progression through mitotic cell cycle"	CG16983
+1.844780e-02	1	3	63	10183	157890	Drosophila	melanogaster	GO:0040008	biological_process	"regulation of growth"	CG15010
+1.957370e-04	2	3	83	10183	157890	Drosophila	melanogaster	GO:0044257	biological_process	"cellular protein catabolism"	CG15010	CG9772
+4.663830e-04	2	3	128	10183	157890	Drosophila	melanogaster	GO:0006260	biological_process	"DNA replication"	CG15010	CG16983
+6.027930e-03	2	3	464	10183	157890	Drosophila	melanogaster	GO:0006259	biological_process	"DNA metabolism"	CG15010	CG16983
+4.982650e-02	1	3	172	10183	157890	Drosophila	melanogaster	GO:0043119	biological_process	"positive regulation of physiological process"	CG16983
+9.328670e-02	1	3	328	10214	157890	Drosophila	melanogaster	GO:0016874	molecular_function	"ligase activity"	CG15010
+4.706800e-03	1	3	16	10183	157890	Drosophila	melanogaster	GO:0051297	biological_process	"centrosome organization and biogenesis"	CG16983
+1.303050e-02	3	3	2397	10183	157890	Drosophila	melanogaster	GO:0044267	biological_process	"cellular protein metabolism"	CG15010	CG16983	CG9772
+1.199260e-01	3	3	3740	7583	157890	Drosophila	melanogaster	GO:0044424	cellular_component	"intracellular part"	CG15010	CG16983	CG9772
+3.306120e-01	1	3	1279	10214	157890	Drosophila	melanogaster	GO:0005515	molecular_function	"protein binding"	CG15010
+1.127420e-01	1	3	398	10183	157890	Drosophila	melanogaster	GO:0048519	biological_process	"negative regulation of biological process"	CG15010
+4.925680e-02	1	3	170	10183	157890	Drosophila	melanogaster	GO:0051242	biological_process	"positive regulation of cellular physiological process"	CG16983
+4.594850e-01	3	3	7858	10183	157890	Drosophila	melanogaster	GO:0007582	biological_process	"physiological process"	CG15010	CG16983	CG9772
+8.227640e-03	1	3	28	10183	157890	Drosophila	melanogaster	GO:0030261	biological_process	"chromosome condensation"	CG16983
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0044464	cellular_component	"cell part"	CG15010	CG16983	CG9772
+9.603030e-02	2	3	1951	10183	157890	Drosophila	melanogaster	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG15010	CG16983
+2.820860e-03	2	3	316	10183	157890	Drosophila	melanogaster	GO:0044248	biological_process	"cellular catabolism"	CG15010	CG9772
+4.341570e-04	3	3	772	10183	157890	Drosophila	melanogaster	GO:0006508	biological_process	"proteolysis"	CG15010	CG16983	CG9772
+8.836520e-04	1	3	3	10183	157890	Drosophila	melanogaster	GO:0008054	biological_process	"cyclin catabolism"	CG15010
+4.445610e-01	3	3	7772	10183	157890	Drosophila	melanogaster	GO:0009987	biological_process	"cellular process"	CG15010	CG16983	CG9772
+5.891590e-04	1	3	2	10183	157890	Drosophila	melanogaster	GO:0045787	biological_process	"positive regulation of progression through cell cycle"	CG16983
+1.727600e-04	2	3	78	10183	157890	Drosophila	melanogaster	GO:0043632	biological_process	"modification-dependent macromolecule catabolism"	CG15010	CG9772
+9.010320e-04	2	3	178	10183	157890	Drosophila	melanogaster	GO:0044265	biological_process	"cellular macromolecule catabolism"	CG15010	CG9772
+1.944850e-03	2	3	262	10183	157890	Drosophila	melanogaster	GO:0000087	biological_process	"M phase of mitotic cell cycle"	CG15010	CG16983
+3.446770e-01	3	3	7140	10183	157890	Drosophila	melanogaster	GO:0050875	biological_process	"cellular physiological process"	CG15010	CG16983	CG9772
+6.194770e-03	3	3	1871	10183	157890	Drosophila	melanogaster	GO:0043283	biological_process	"biopolymer metabolism"	CG15010	CG16983	CG9772
+1.727600e-04	2	3	78	10183	157890	Drosophila	melanogaster	GO:0019941	biological_process	"modification-dependent protein catabolism"	CG15010	CG9772
+5.850000e-03	2	3	457	10183	157890	Drosophila	melanogaster	GO:0000279	biological_process	"M phase"	CG15010	CG16983
+9.399200e-03	1	3	32	10183	157890	Drosophila	melanogaster	GO:0030162	biological_process	"regulation of proteolysis"	CG15010
+5.232420e-02	2	3	1412	10183	157890	Drosophila	melanogaster	GO:0051244	biological_process	"regulation of cellular physiological process"	CG15010	CG16983
+1.241910e-01	3	3	5081	10183	157890	Drosophila	melanogaster	GO:0044238	biological_process	"primary metabolism"	CG15010	CG16983	CG9772
+6.483940e-02	1	3	225	10183	157890	Drosophila	melanogaster	GO:0048518	biological_process	"positive regulation of biological process"	CG16983
+3.520780e-03	1	3	12	10214	157890	Drosophila	melanogaster	GO:0019237	molecular_function	"centromeric DNA binding"	CG16983
+7.438650e-02	1	3	259	10183	157890	Drosophila	melanogaster	GO:0051276	biological_process	"chromosome organization and biogenesis"	CG16983
+4.383380e-02	1	3	151	10183	157890	Drosophila	melanogaster	GO:0051246	biological_process	"regulation of protein metabolism"	CG15010
+5.000480e-03	1	3	17	10183	157890	Drosophila	melanogaster	GO:0031023	biological_process	"microtubule organizing center organization and biogenesis"	CG16983
+2.318480e-01	1	3	857	10183	157890	Drosophila	melanogaster	GO:0006996	biological_process	"organelle organization and biogenesis"	CG16983
+1.114070e-03	2	3	198	10183	157890	Drosophila	melanogaster	GO:0009057	biological_process	"macromolecule catabolism"	CG15010	CG9772
+1.178090e-03	1	3	4	10183	157890	Drosophila	melanogaster	GO:0043161	biological_process	"proteasomal ubiquitin-dependent protein catabolism"	CG15010
+2.511810e-02	2	3	963	10183	157890	Drosophila	melanogaster	GO:0043412	biological_process	"biopolymer modification"	CG15010	CG9772
+2.975310e-02	1	3	102	10183	157890	Drosophila	melanogaster	GO:0040007	biological_process	"growth"	CG15010
+3.204380e-03	2	3	337	10183	157890	Drosophila	melanogaster	GO:0009056	biological_process	"catabolism"	CG15010	CG9772
+1.193560e-02	2	3	657	10183	157890	Drosophila	melanogaster	GO:0007049	biological_process	"cell cycle"	CG15010	CG16983
+#NOT FOUND: SKP1A_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.941930e-01	1	2	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	SKP2
+4.912550e-02	2	2	5164	23297	92001	Homo	sapiens	GO:0044267	biological_process	"cellular protein metabolism"	FBXW7	SKP2
+7.624400e-01	1	2	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	FBXW7
+5.330060e-02	2	2	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	FBXW7	SKP2
+9.924990e-01	1	2	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	FBXW7
+2.779210e-01	2	2	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	FBXW7	SKP2
+3.724860e-01	1	2	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	SKP2
+7.057760e-01	2	2	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	FBXW7	SKP2
+3.322070e-01	2	2	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	FBXW7	SKP2
+8.356180e-01	1	2	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	FBXW7
+9.924910e-01	1	2	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	FBXW7
+4.154370e-01	2	2	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	FBXW7	SKP2
+5.486900e-03	1	2	64	23297	92001	Homo	sapiens	GO:0051325	biological_process	"interphase"	SKP2
+5.668350e-02	2	2	5547	23297	92001	Homo	sapiens	GO:0019538	biological_process	"protein metabolism"	FBXW7	SKP2
+1.030220e-01	2	2	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	FBXW7	SKP2
+5.880490e-01	1	2	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	FBXW7
+1.802210e-03	1	2	21	23297	92001	Homo	sapiens	GO:0000082	biological_process	"G1/S transition of mitotic cell cycle"	SKP2
+4.548610e-02	1	2	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	SKP2
+7.714250e-01	2	2	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	FBXW7	SKP2
+1.000000e+00	2	2	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	FBXW7	SKP2
+6.943410e-01	1	2	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	FBXW7
+1.998800e-02	1	2	234	23297	92001	Homo	sapiens	GO:0000278	biological_process	"mitotic cell cycle"	SKP2
+5.269660e-01	2	2	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	FBXW7	SKP2
+3.534010e-02	2	2	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	FBXW7	SKP2
+5.486900e-03	1	2	64	23297	92001	Homo	sapiens	GO:0016567	biological_process	"protein ubiquitination"	FBXW7
+1.000000e+00	2	2	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	FBXW7	SKP2
+4.800070e-02	1	2	566	23297	92001	Homo	sapiens	GO:0008283	biological_process	"cell proliferation"	SKP2
+3.640940e-01	1	2	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	SKP2
+2.592380e-01	2	2	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	FBXW7	SKP2
+5.230040e-03	1	2	61	23297	92001	Homo	sapiens	GO:0051329	biological_process	"interphase of mitotic cell cycle"	SKP2
+5.879270e-01	1	2	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	FBXW7
+1.000000e+00	1	2	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	FBXW7
+6.943940e-01	1	2	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	FBXW7
+4.564070e-01	1	2	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	FBXW7
+4.506670e-02	1	2	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	SKP2
+4.174860e-01	1	2	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	SKP2
+8.160410e-04	2	2	666	23297	92001	Homo	sapiens	GO:0006512	biological_process	"ubiquitin cycle"	FBXW7	SKP2
+5.050510e-02	2	2	5236	23297	92001	Homo	sapiens	GO:0044260	biological_process	"cellular macromolecule metabolism"	FBXW7	SKP2
+1.228850e-02	2	2	2583	23297	92001	Homo	sapiens	GO:0006464	biological_process	"protein modification"	FBXW7	SKP2
+1.296370e-02	2	2	2653	23297	92001	Homo	sapiens	GO:0043412	biological_process	"biopolymer modification"	FBXW7	SKP2
+7.346000e-02	1	2	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	SKP2

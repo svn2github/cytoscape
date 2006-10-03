@@ -1,0 +1,88 @@
+#USING SYF2 instead of its synonym YGR129W in Saccharomyces cerevisiae
+#USING SYF1 instead of its synonym YDR416W in Saccharomyces cerevisiae
+#USING CLF1 instead of its synonym YLR117C in Saccharomyces cerevisiae
+#USING CDC40 instead of its synonym YDR364C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+5.086660e-01	1	4	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YDR364C
+3.242640e-01	1	4	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YDR364C
+4.287690e-04	2	4	56	6526	97048	Saccharomyces	cerevisiae	GO:0031202	molecular_function	"RNA splicing factor activity, transesterification mechanism"	YDR364C	YGR129W
+4.820460e-01	4	4	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YDR364C	YDR416W	YGR129W	YLR117C
+6.846930e-02	4	4	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YDR364C	YDR416W	YGR129W	YLR117C
+1.356130e-02	4	4	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YDR364C	YDR416W	YGR129W	YLR117C
+4.678780e-01	1	4	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YLR117C
+3.449040e-02	1	4	57	6526	97048	Saccharomyces	cerevisiae	GO:0031965	cellular_component	"nuclear membrane"	YDR364C
+7.598130e-02	4	4	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YDR364C	YDR416W	YGR129W	YLR117C
+3.494740e-01	4	4	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YDR364C	YDR416W	YGR129W	YLR117C
+1.977040e-02	3	4	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YDR364C	YGR129W	YLR117C
+4.895580e-03	1	4	8	6526	97048	Saccharomyces	cerevisiae	GO:0000084	biological_process	"S phase of mitotic cell cycle"	YDR364C
+1.232180e-01	1	4	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	YDR364C
+6.403860e-01	1	4	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YLR117C
+2.062320e-02	4	4	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YDR364C	YDR416W	YGR129W	YLR117C
+3.938700e-01	3	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YDR364C	YDR416W	YGR129W
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YDR364C	YDR416W	YGR129W	YLR117C
+7.789060e-06	4	4	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	YDR364C	YDR416W	YGR129W	YLR117C
+1.364740e-01	1	4	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YDR364C
+3.090260e-02	1	4	51	6526	97048	Saccharomyces	cerevisiae	GO:0005643	cellular_component	"nuclear pore"	YDR364C
+1.225580e-03	1	4	2	6526	97048	Saccharomyces	cerevisiae	GO:0000354	biological_process	"cis assembly of pre-catalytic spliceosome"	YLR117C
+2.128820e-01	1	4	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	YDR364C
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YDR364C	YDR416W	YGR129W	YLR117C
+6.985650e-06	3	4	81	6526	97048	Saccharomyces	cerevisiae	GO:0005681	cellular_component	"spliceosome complex"	YDR364C	YDR416W	YGR129W
+3.938700e-01	3	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YDR364C	YDR416W	YGR129W
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YDR364C	YDR416W	YGR129W	YLR117C
+1.752600e-07	4	4	135	6526	97048	Saccharomyces	cerevisiae	GO:0006397	biological_process	"mRNA processing"	YDR364C	YDR416W	YGR129W	YLR117C
+4.810380e-05	4	4	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	YDR364C	YDR416W	YGR129W	YLR117C
+4.815150e-02	1	4	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	YDR364C
+2.429900e-02	1	4	40	6526	97048	Saccharomyces	cerevisiae	GO:0000785	cellular_component	"chromatin"	YLR117C
+2.128820e-01	1	4	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	YDR364C
+3.449040e-02	1	4	57	6526	97048	Saccharomyces	cerevisiae	GO:0044453	cellular_component	"nuclear membrane part"	YDR364C
+5.230740e-02	2	4	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YDR364C	YGR129W
+1.798370e-03	3	4	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	YDR364C	YDR416W	YGR129W
+3.874490e-02	3	4	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YDR364C	YDR416W	YGR129W
+5.308220e-07	4	4	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	YDR364C	YDR416W	YGR129W	YLR117C
+7.059620e-01	1	4	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YDR364C
+4.895580e-03	1	4	8	6526	97048	Saccharomyces	cerevisiae	GO:0051320	biological_process	"S phase"	YDR364C
+1.593010e-03	2	4	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	YDR364C	YLR117C
+2.828260e-02	2	4	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YDR364C	YLR117C
+1.517490e-01	1	4	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	YDR364C
+2.850520e-02	1	4	47	6526	97048	Saccharomyces	cerevisiae	GO:0007051	biological_process	"spindle organization and biogenesis"	YDR364C
+3.392770e-01	4	4	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YDR364C	YDR416W	YGR129W	YLR117C
+2.778800e-01	1	4	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YLR117C
+3.215190e-01	1	4	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	YDR364C
+1.081230e-01	1	4	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	YLR117C
+1.463390e-02	1	4	24	6526	97048	Saccharomyces	cerevisiae	GO:0030472	biological_process	"mitotic spindle organization and biogenesis in nucleus"	YDR364C
+2.987170e-01	4	4	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YDR364C	YDR416W	YGR129W	YLR117C
+5.193490e-08	4	4	100	6526	97048	Saccharomyces	cerevisiae	GO:0000398	biological_process	"nuclear mRNA splicing, via spliceosome"	YDR364C	YDR416W	YGR129W	YLR117C
+5.407650e-08	4	4	101	6526	97048	Saccharomyces	cerevisiae	GO:0000377	biological_process	"RNA splicing, via transesterification reactions with bulged adenosine as nucleophile"	YDR364C	YDR416W	YGR129W	YLR117C
+4.816920e-01	4	4	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YDR364C	YDR416W	YGR129W	YLR117C
+3.178450e-01	1	4	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YDR364C
+2.382680e-03	4	4	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDR364C	YDR416W	YGR129W	YLR117C
+1.248830e-01	1	4	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	YLR117C
+7.097850e-08	4	4	108	6526	97048	Saccharomyces	cerevisiae	GO:0000375	biological_process	"RNA splicing, via transesterification reactions"	YDR364C	YDR416W	YGR129W	YLR117C
+5.345750e-02	1	4	89	6526	97048	Saccharomyces	cerevisiae	GO:0051325	biological_process	"interphase"	YDR364C
+2.730480e-02	1	4	45	6526	97048	Saccharomyces	cerevisiae	GO:0007052	biological_process	"mitotic spindle organization and biogenesis"	YDR364C
+1.259920e-01	1	4	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	YDR364C
+1.458120e-07	4	4	129	6526	97048	Saccharomyces	cerevisiae	GO:0008380	biological_process	"RNA splicing"	YDR364C	YDR416W	YGR129W	YLR117C
+2.903830e-01	4	4	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YDR364C	YDR416W	YGR129W	YLR117C
+8.940990e-02	1	4	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	YLR117C
+1.306360e-01	4	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YDR364C	YDR416W	YGR129W	YLR117C
+2.050270e-02	2	4	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	YDR364C	YGR129W
+2.822250e-01	4	4	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YDR364C	YDR416W	YGR129W	YLR117C
+4.678780e-01	1	4	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YLR117C
+6.049770e-02	1	4	101	6526	97048	Saccharomyces	cerevisiae	GO:0005635	cellular_component	"nuclear envelope"	YDR364C
+2.421790e-01	1	4	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	YDR364C
+3.189300e-03	4	4	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YDR364C	YDR416W	YGR129W	YLR117C
+3.090260e-02	1	4	51	6526	97048	Saccharomyces	cerevisiae	GO:0046930	cellular_component	"pore complex"	YDR364C
+1.356130e-02	4	4	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YDR364C	YDR416W	YGR129W	YLR117C
+1.636070e-01	1	4	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	YDR364C
+5.333820e-02	4	4	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YDR364C	YDR416W	YGR129W	YLR117C
+1.484930e-01	1	4	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	YDR364C
+5.698250e-02	1	4	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	YDR364C
+1.198800e-01	1	4	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	YDR364C
+5.345750e-02	1	4	89	6526	97048	Saccharomyces	cerevisiae	GO:0051329	biological_process	"interphase of mitotic cell cycle"	YDR364C
+1.306360e-01	4	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YDR364C	YDR416W	YGR129W	YLR117C
+8.658450e-02	3	4	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YDR364C	YDR416W	YGR129W
+5.264100e-01	1	4	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YDR364C
+8.263970e-01	1	4	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YDR416W
+1.038160e-02	1	4	17	6526	97048	Saccharomyces	cerevisiae	GO:0000245	biological_process	"spliceosome assembly"	YLR117C
+1.560720e-05	4	4	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YDR364C	YDR416W	YGR129W	YLR117C
+1.568050e-02	3	4	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YDR364C	YDR416W	YGR129W

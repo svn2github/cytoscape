@@ -1,0 +1,89 @@
+#USING mat-1 instead of its synonym Y110A7A.17 in Caenorhabditis elegans
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.296040e-01	1	3	1253	27713	88307	Caenorhabditis	elegans	GO:0050794	biological_process	"regulation of cellular process"	W10C6.1
+9.251080e-01	1	3	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	Y110A7A.17
+1.494260e-01	2	3	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	W10C6.1	Y110A7A.17
+9.750650e-01	1	3	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	Y110A7A.17
+1.000000e+00	1	3	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	F10B5.6
+2.596100e-03	1	3	24	27713	88307	Caenorhabditis	elegans	GO:0040016	biological_process	"embryonic cleavage"	Y110A7A.17
+1.217850e-01	1	3	1174	27713	88307	Caenorhabditis	elegans	GO:0051244	biological_process	"regulation of cellular physiological process"	W10C6.1
+9.261990e-01	1	3	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	Y110A7A.17
+9.246650e-01	1	3	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	Y110A7A.17
+1.330540e-01	1	3	1288	27713	88307	Caenorhabditis	elegans	GO:0050791	biological_process	"regulation of physiological process"	W10C6.1
+9.250570e-01	2	3	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	W10C6.1	Y110A7A.17
+9.226780e-01	1	3	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	Y110A7A.17
+7.020240e-03	1	3	65	27713	88307	Caenorhabditis	elegans	GO:0000074	biological_process	"regulation of progression through cell cycle"	W10C6.1
+6.825530e-01	2	3	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	W10C6.1	Y110A7A.17
+8.784590e-01	1	3	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	F10B5.6
+9.226780e-01	1	3	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	Y110A7A.17
+1.722120e-02	1	3	160	27713	88307	Caenorhabditis	elegans	GO:0051301	biological_process	"cell division"	Y110A7A.17
+9.765770e-01	1	3	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	Y110A7A.17
+9.752950e-01	1	3	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	Y110A7A.17
+9.304200e-01	1	3	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	Y110A7A.17
+1.937080e-01	2	3	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	W10C6.1	Y110A7A.17
+8.097330e-03	1	3	75	27713	88307	Caenorhabditis	elegans	GO:0051726	biological_process	"regulation of cell cycle"	W10C6.1
+2.298840e-02	1	3	214	27713	88307	Caenorhabditis	elegans	GO:0007049	biological_process	"cell cycle"	W10C6.1
+1.000000e+00	2	3	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	W10C6.1	Y110A7A.17
+#NOT FOUND: ANAPC1_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.941930e-01	1	2	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	CDC16
+2.149420e-04	2	2	308	20974	92001	Homo	sapiens	GO:0005874	cellular_component	"microtubule"	CDC16	CDC27
+4.905950e-02	2	2	4646	20974	92001	Homo	sapiens	GO:0005737	cellular_component	"cytoplasm"	CDC16	CDC27
+5.544400e-05	2	2	174	23297	92001	Homo	sapiens	GO:0007067	biological_process	"mitosis"	CDC16	CDC27
+3.941930e-01	1	2	5164	23297	92001	Homo	sapiens	GO:0044267	biological_process	"cellular protein metabolism"	CDC16
+2.627340e-01	2	2	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	CDC16	CDC27
+8.342390e-01	2	2	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	CDC16	CDC27
+7.764640e-01	1	2	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	CDC16
+1.776550e-02	2	2	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	CDC16	CDC27
+1.561080e-02	2	2	2621	20974	92001	Homo	sapiens	GO:0043228	cellular_component	"non-membrane-bound organelle"	CDC16	CDC27
+7.057760e-01	2	2	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	CDC16	CDC27
+3.724860e-01	1	2	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	CDC16
+4.084990e-03	2	2	1341	20974	92001	Homo	sapiens	GO:0005856	cellular_component	"cytoskeleton"	CDC16	CDC27
+1.189370e-05	2	2	73	20974	92001	Homo	sapiens	GO:0005815	cellular_component	"microtubule organizing center"	CDC16	CDC27
+8.205590e-01	1	2	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	CDC16
+4.716580e-04	2	2	456	20974	92001	Homo	sapiens	GO:0015630	cellular_component	"microtubule cytoskeleton"	CDC16	CDC27
+3.534730e-01	2	2	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	CDC16	CDC27
+8.341520e-01	2	2	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	CDC16	CDC27
+4.154370e-01	2	2	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	CDC16	CDC27
+1.029930e-03	1	2	12	23297	92001	Homo	sapiens	GO:0007091	biological_process	"mitotic metaphase/anaphase transition"	CDC27
+1.429860e-03	1	2	15	20974	92001	Homo	sapiens	GO:0005680	cellular_component	"anaphase-promoting complex"	CDC27
+6.568970e-03	1	2	69	20974	92001	Homo	sapiens	GO:0000151	cellular_component	"ubiquitin ligase complex"	CDC27
+5.880490e-01	1	2	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	CDC27
+4.195150e-01	1	2	5547	23297	92001	Homo	sapiens	GO:0019538	biological_process	"protein metabolism"	CDC16
+5.389490e-01	1	2	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	CDC16
+7.714250e-01	2	2	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	CDC16	CDC27
+4.548610e-02	1	2	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	CDC16
+1.000000e+00	2	2	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	CDC16	CDC27
+1.999090e-01	2	2	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	CDC16	CDC27
+1.004440e-04	2	2	234	23297	92001	Homo	sapiens	GO:0000278	biological_process	"mitotic cell cycle"	CDC16	CDC27
+5.868750e-05	2	2	179	23297	92001	Homo	sapiens	GO:0000087	biological_process	"M phase of mitotic cell cycle"	CDC16	CDC27
+1.561080e-02	2	2	2621	20974	92001	Homo	sapiens	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CDC16	CDC27
+5.269660e-01	2	2	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	CDC16	CDC27
+1.691120e-03	2	2	863	20974	92001	Homo	sapiens	GO:0044430	cellular_component	"cytoskeletal part"	CDC16	CDC27
+3.406740e-01	1	2	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	CDC16
+1.776550e-02	2	2	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	CDC16	CDC27
+4.373620e-03	1	2	51	23297	92001	Homo	sapiens	GO:0007088	biological_process	"regulation of mitosis"	CDC16
+1.000000e+00	2	2	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	CDC16	CDC27
+9.703170e-05	2	2	230	23297	92001	Homo	sapiens	GO:0000279	biological_process	"M phase"	CDC16	CDC27
+5.892220e-04	2	2	566	23297	92001	Homo	sapiens	GO:0008283	biological_process	"cell proliferation"	CDC16	CDC27
+3.640940e-01	1	2	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	CDC16
+7.590910e-01	1	2	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	CDC16
+5.717870e-06	2	2	51	20974	92001	Homo	sapiens	GO:0005819	cellular_component	"spindle"	CDC16	CDC27
+4.137770e-07	2	2	14	20974	92001	Homo	sapiens	GO:0005876	cellular_component	"spindle microtubule"	CDC16	CDC27
+1.810990e-03	1	2	19	20974	92001	Homo	sapiens	GO:0000152	cellular_component	"nuclear ubiquitin ligase complex"	CDC27
+5.879270e-01	1	2	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CDC27
+1.000000e+00	2	2	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	CDC16	CDC27
+1.999520e-01	2	2	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	CDC16	CDC27
+4.564070e-01	1	2	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	CDC27
+4.506670e-02	1	2	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	CDC16
+4.174860e-01	1	2	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	CDC16
+7.446260e-06	2	2	58	20974	92001	Homo	sapiens	GO:0005813	cellular_component	"centrosome"	CDC16	CDC27
+5.635870e-02	1	2	666	23297	92001	Homo	sapiens	GO:0006512	biological_process	"ubiquitin cycle"	CDC16
+3.989950e-01	1	2	5236	23297	92001	Homo	sapiens	GO:0044260	biological_process	"cellular macromolecule metabolism"	CDC16
+2.094570e-01	1	2	2583	23297	92001	Homo	sapiens	GO:0006464	biological_process	"protein modification"	CDC16
+2.851780e-01	1	2	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	CDC27
+1.743670e-02	1	2	204	23297	92001	Homo	sapiens	GO:0051301	biological_process	"cell division"	CDC16
+2.147910e-01	1	2	2653	23297	92001	Homo	sapiens	GO:0043412	biological_process	"biopolymer modification"	CDC16
+1.399430e-03	2	2	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	CDC16	CDC27
+2.584070e-02	2	2	3372	20974	92001	Homo	sapiens	GO:0044444	cellular_component	"cytoplasmic part"	CDC16	CDC27
+6.840020e-02	1	2	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	CDC27

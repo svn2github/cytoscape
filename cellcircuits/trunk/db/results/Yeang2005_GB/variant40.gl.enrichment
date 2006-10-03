@@ -1,0 +1,126 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.291220e-04	2	7	20	6526	97048	Saccharomyces	cerevisiae	GO:0046148	biological_process	"pigment biosynthesis"	ADE3	BAS1
+4.524290e-02	1	7	43	6526	97048	Saccharomyces	cerevisiae	GO:0006752	biological_process	"group transfer coenzyme metabolism"	ADE3
+5.107120e-07	3	7	17	6526	97048	Saccharomyces	cerevisiae	GO:0009167	biological_process	"purine ribonucleoside monophosphate metabolism"	ADE13	ADE17	ADE4
+6.111650e-01	4	7	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	ADE17	ADE3	ADE4	RTG1
+9.667770e-05	3	7	94	6526	97048	Saccharomyces	cerevisiae	GO:0009117	biological_process	"nucleotide metabolism"	ADE13	ADE17	ADE4
+2.533510e-04	6	7	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4
+6.696520e-01	6	7	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+3.420360e-07	3	7	15	6526	97048	Saccharomyces	cerevisiae	GO:0009156	biological_process	"ribonucleoside monophosphate biosynthesis"	ADE13	ADE17	ADE4
+1.072630e-03	1	7	1	6526	97048	Saccharomyces	cerevisiae	GO:0004399	molecular_function	"histidinol dehydrogenase activity"	HIS4
+2.737490e-07	3	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0046040	biological_process	"IMP metabolism"	ADE13	ADE17	ADE4
+9.150590e-03	7	7	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+1.773000e-02	2	7	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	BAS1	HIS4
+1.098000e-02	7	7	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+1.715160e-01	1	7	173	6526	97048	Saccharomyces	cerevisiae	GO:0007165	biological_process	"signal transduction"	RTG1
+1.512440e-02	2	7	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	BAS1	HIS4
+1.905060e-01	1	7	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	RTG1
+4.931590e-01	6	7	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+2.918710e-02	5	7	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	ADE13	ADE17	ADE3	ADE4	HIS4
+5.448650e-02	1	7	52	6526	97048	Saccharomyces	cerevisiae	GO:0016563	molecular_function	"transcriptional activator activity"	RTG1
+7.483760e-01	1	7	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	RTG1
+2.025270e-04	2	7	21	6526	97048	Saccharomyces	cerevisiae	GO:0046112	biological_process	"nucleobase biosynthesis"	ADE3	BAS1
+7.487740e-03	1	7	7	6526	97048	Saccharomyces	cerevisiae	GO:0004372	molecular_function	"glycine hydroxymethyltransferase activity"	ADE17
+8.495260e-01	3	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	ADE3	BAS1	RTG1
+2.831950e-01	1	7	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	RTG1
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+2.673220e-04	2	7	24	6526	97048	Saccharomyces	cerevisiae	GO:0019748	biological_process	"secondary metabolism"	ADE3	BAS1
+1.476470e-05	2	7	6	6526	97048	Saccharomyces	cerevisiae	GO:0009113	biological_process	"purine base biosynthesis"	ADE3	BAS1
+4.446760e-02	2	7	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	BAS1	RTG1
+7.168800e-01	1	7	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	ADE13
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+8.673450e-02	1	7	84	6526	97048	Saccharomyces	cerevisiae	GO:0016741	molecular_function	"transferase activity, transferring one-carbon groups"	ADE17
+1.228420e-01	1	7	121	6526	97048	Saccharomyces	cerevisiae	GO:0006732	biological_process	"coenzyme metabolism"	ADE3
+8.920700e-05	2	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0009075	biological_process	"histidine family amino acid metabolism"	BAS1	HIS4
+1.072630e-03	1	7	1	6526	97048	Saccharomyces	cerevisiae	GO:0004018	molecular_function	"adenylosuccinate lyase activity"	ADE13
+4.110980e-02	1	7	39	6526	97048	Saccharomyces	cerevisiae	GO:0003712	molecular_function	"transcription cofactor activity"	RTG1
+3.420360e-07	3	7	15	6526	97048	Saccharomyces	cerevisiae	GO:0009168	biological_process	"purine ribonucleoside monophosphate biosynthesis"	ADE13	ADE17	ADE4
+1.530760e-01	1	7	153	6526	97048	Saccharomyces	cerevisiae	GO:0051186	biological_process	"cofactor metabolism"	ADE3
+2.950200e-02	2	7	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	ADE3	HIS4
+2.144280e-03	1	7	2	6526	97048	Saccharomyces	cerevisiae	GO:0003937	molecular_function	"IMP cyclohydrolase activity"	ADE17
+7.073030e-02	1	7	68	6526	97048	Saccharomyces	cerevisiae	GO:0016879	molecular_function	"ligase activity, forming carbon-nitrogen bonds"	ADE3
+8.495260e-01	3	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	ADE3	BAS1	RTG1
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+8.920700e-05	2	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0009076	biological_process	"histidine family amino acid biosynthesis"	BAS1	HIS4
+5.107120e-07	3	7	17	6526	97048	Saccharomyces	cerevisiae	GO:0016814	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds, in cyclic amidines"	ADE17	ADE3	HIS4
+1.247580e-01	1	7	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	BAS1
+5.107120e-07	3	7	17	6526	97048	Saccharomyces	cerevisiae	GO:0009161	biological_process	"ribonucleoside monophosphate metabolism"	ADE13	ADE17	ADE4
+8.281220e-02	2	7	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	BAS1	RTG1
+1.877300e-08	4	7	33	6526	97048	Saccharomyces	cerevisiae	GO:0009112	biological_process	"nucleobase metabolism"	ADE13	ADE3	ADE4	BAS1
+1.005440e-01	1	7	98	6526	97048	Saccharomyces	cerevisiae	GO:0016757	molecular_function	"transferase activity, transferring glycosyl groups"	ADE4
+2.737490e-07	3	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0006188	biological_process	"IMP biosynthesis"	ADE13	ADE17	ADE4
+6.125710e-07	3	7	18	6526	97048	Saccharomyces	cerevisiae	GO:0009126	biological_process	"purine nucleoside monophosphate metabolism"	ADE13	ADE17	ADE4
+3.074290e-03	3	7	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	ADE3	BAS1	HIS4
+8.553490e-03	1	7	8	6526	97048	Saccharomyces	cerevisiae	GO:0006760	biological_process	"folic acid and derivative metabolism"	ADE3
+8.094660e-06	3	7	43	6526	97048	Saccharomyces	cerevisiae	GO:0006164	biological_process	"purine nucleotide biosynthesis"	ADE13	ADE17	ADE4
+2.847940e-05	3	7	63	6526	97048	Saccharomyces	cerevisiae	GO:0016810	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds"	ADE17	ADE3	HIS4
+4.421110e-02	1	7	42	6526	97048	Saccharomyces	cerevisiae	GO:0008134	molecular_function	"transcription factor binding"	RTG1
+1.492740e-02	1	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0016645	molecular_function	"oxidoreductase activity, acting on the CH-NH group of donors"	ADE3
+8.474700e-02	1	7	82	6526	97048	Saccharomyces	cerevisiae	GO:0008168	molecular_function	"methyltransferase activity"	ADE17
+2.195750e-05	3	7	58	6526	97048	Saccharomyces	cerevisiae	GO:0009165	biological_process	"nucleotide biosynthesis"	ADE13	ADE17	ADE4
+1.670370e-07	4	7	56	6526	97048	Saccharomyces	cerevisiae	GO:0006725	biological_process	"aromatic compound metabolism"	ADE13	ADE3	ADE4	BAS1
+7.433630e-06	3	7	42	6526	97048	Saccharomyces	cerevisiae	GO:0009259	biological_process	"ribonucleotide metabolism"	ADE13	ADE17	ADE4
+1.072630e-03	1	7	1	6526	97048	Saccharomyces	cerevisiae	GO:0004635	molecular_function	"phosphoribosyl-AMP cyclohydrolase activity"	HIS4
+1.228420e-01	1	7	121	6526	97048	Saccharomyces	cerevisiae	GO:0016874	molecular_function	"ligase activity"	ADE3
+5.958860e-02	1	7	57	6526	97048	Saccharomyces	cerevisiae	GO:0006352	biological_process	"transcription initiation"	RTG1
+2.144280e-03	1	7	2	6526	97048	Saccharomyces	cerevisiae	GO:0004488	molecular_function	"methylenetetrahydrofolate dehydrogenase (NADP+) activity"	ADE3
+2.444100e-01	1	7	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	HIS4
+7.835080e-01	5	7	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	ADE17	ADE3	ADE4	BAS1	RTG1
+4.344040e-01	1	7	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	RTG1
+4.002190e-02	3	7	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	ADE17	ADE3	HIS4
+8.920700e-05	2	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0000105	biological_process	"histidine biosynthesis"	BAS1	HIS4
+1.170710e-01	1	7	115	6526	97048	Saccharomyces	cerevisiae	GO:0007242	biological_process	"intracellular signaling cascade"	RTG1
+7.776150e-02	1	7	75	6526	97048	Saccharomyces	cerevisiae	GO:0016614	molecular_function	"oxidoreductase activity, acting on CH-OH group of donors"	HIS4
+1.206310e-01	7	7	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+6.972210e-02	1	7	67	6526	97048	Saccharomyces	cerevisiae	GO:0016616	molecular_function	"oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor"	HIS4
+2.435660e-01	1	7	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	HIS4
+1.280670e-02	1	7	12	6526	97048	Saccharomyces	cerevisiae	GO:0016646	molecular_function	"oxidoreductase activity, acting on the CH-NH group of donors, NAD or NADP as acceptor"	ADE3
+4.650890e-07	4	7	72	6526	97048	Saccharomyces	cerevisiae	GO:0046483	biological_process	"heterocycle metabolism"	ADE13	ADE3	ADE4	BAS1
+6.692210e-01	6	7	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+8.920700e-05	2	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0006547	biological_process	"histidine metabolism"	BAS1	HIS4
+6.581690e-04	6	7	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	ADE13	ADE17	ADE3	ADE4	BAS1	RTG1
+6.421020e-03	1	7	6	6526	97048	Saccharomyces	cerevisiae	GO:0031930	biological_process	"mitochondrial signaling pathway"	RTG1
+9.709690e-02	2	7	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	BAS1	RTG1
+2.444100e-01	1	7	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	HIS4
+5.353310e-03	1	7	5	6526	97048	Saccharomyces	cerevisiae	GO:0016742	molecular_function	"hydroxymethyl-, formyl- and related transferase activity"	ADE17
+1.148010e-01	7	7	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+1.632320e-01	2	7	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	ADE17	ADE4
+2.179340e-02	2	7	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	BAS1	HIS4
+4.833260e-02	1	7	46	6526	97048	Saccharomyces	cerevisiae	GO:0006367	biological_process	"transcription initiation from RNA polymerase II promoter"	RTG1
+9.051020e-01	3	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	ADE3	BAS1	RTG1
+4.919530e-03	2	7	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	BAS1	HIS4
+1.704420e-02	1	7	16	6526	97048	Saccharomyces	cerevisiae	GO:0016763	molecular_function	"transferase activity, transferring pentosyl groups"	ADE4
+5.107120e-07	3	7	17	6526	97048	Saccharomyces	cerevisiae	GO:0009124	biological_process	"nucleoside monophosphate biosynthesis"	ADE13	ADE17	ADE4
+1.092150e-01	7	7	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+1.072630e-03	1	7	1	6526	97048	Saccharomyces	cerevisiae	GO:0004044	molecular_function	"amidophosphoribosyltransferase activity"	ADE4
+2.025270e-04	2	7	21	6526	97048	Saccharomyces	cerevisiae	GO:0042440	biological_process	"pigment metabolism"	ADE3	BAS1
+4.207750e-07	3	7	16	6526	97048	Saccharomyces	cerevisiae	GO:0009127	biological_process	"purine nucleoside monophosphate biosynthesis"	ADE13	ADE17	ADE4
+2.522650e-02	2	7	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	BAS1	HIS4
+8.474700e-02	1	7	82	6526	97048	Saccharomyces	cerevisiae	GO:0016829	molecular_function	"lyase activity"	ADE13
+2.144280e-03	1	7	2	6526	97048	Saccharomyces	cerevisiae	GO:0016842	molecular_function	"amidine-lyase activity"	ADE13
+4.964560e-01	1	7	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	ADE17
+8.235780e-10	4	7	16	6526	97048	Saccharomyces	cerevisiae	GO:0006144	biological_process	"purine base metabolism"	ADE13	ADE3	ADE4	BAS1
+5.909620e-03	7	7	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4	RTG1
+2.640470e-08	3	7	7	6526	97048	Saccharomyces	cerevisiae	GO:0019238	molecular_function	"cyclohydrolase activity"	ADE17	ADE3	HIS4
+1.025700e-05	3	7	46	6526	97048	Saccharomyces	cerevisiae	GO:0006163	biological_process	"purine nucleotide metabolism"	ADE13	ADE17	ADE4
+1.691020e-04	6	7	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	ADE13	ADE17	ADE3	ADE4	BAS1	HIS4
+9.051020e-01	3	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	ADE3	BAS1	RTG1
+7.487740e-03	1	7	7	6526	97048	Saccharomyces	cerevisiae	GO:0016840	molecular_function	"carbon-nitrogen lyase activity"	ADE13
+3.616770e-01	3	7	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	ADE3	BAS1	RTG1
+2.144280e-03	1	7	2	6526	97048	Saccharomyces	cerevisiae	GO:0004477	molecular_function	"methenyltetrahydrofolate cyclohydrolase activity"	ADE3
+2.144280e-03	1	7	2	6526	97048	Saccharomyces	cerevisiae	GO:0004643	molecular_function	"phosphoribosylaminoimidazolecarboxamide formyltransferase activity"	ADE17
+5.794640e-03	2	7	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	BAS1	HIS4
+5.067090e-06	3	7	38	6526	97048	Saccharomyces	cerevisiae	GO:0009152	biological_process	"purine ribonucleotide biosynthesis"	ADE13	ADE17	ADE4
+2.737490e-07	3	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0006189	biological_process	"'de novo' IMP biosynthesis"	ADE13	ADE17	ADE4
+3.655340e-02	2	7	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	BAS1	RTG1
+2.144280e-03	1	7	2	6526	97048	Saccharomyces	cerevisiae	GO:0004636	molecular_function	"phosphoribosyl-ATP diphosphatase activity"	HIS4
+3.074290e-03	3	7	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	ADE3	BAS1	HIS4
+6.196460e-06	3	7	40	6526	97048	Saccharomyces	cerevisiae	GO:0009260	biological_process	"ribonucleotide biosynthesis"	ADE13	ADE17	ADE4
+3.214940e-03	1	7	3	6526	97048	Saccharomyces	cerevisiae	GO:0004486	molecular_function	"methylenetetrahydrofolate dehydrogenase activity"	ADE3
+5.794640e-03	2	7	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	BAS1	HIS4
+1.598630e-02	1	7	15	6526	97048	Saccharomyces	cerevisiae	GO:0003713	molecular_function	"transcription coactivator activity"	RTG1
+6.196460e-06	3	7	40	6526	97048	Saccharomyces	cerevisiae	GO:0009150	biological_process	"purine ribonucleotide metabolism"	ADE13	ADE17	ADE4
+6.864590e-01	1	7	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	RTG1
+2.144280e-03	1	7	2	6526	97048	Saccharomyces	cerevisiae	GO:0004329	molecular_function	"formate-tetrahydrofolate ligase activity"	ADE3
+9.698770e-01	1	7	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	ADE17
+7.270910e-07	3	7	19	6526	97048	Saccharomyces	cerevisiae	GO:0009123	biological_process	"nucleoside monophosphate metabolism"	ADE13	ADE17	ADE4

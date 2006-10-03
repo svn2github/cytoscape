@@ -1,0 +1,115 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+9.895170e-01	3	8	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	F32D1.9	Y67H2A.1	Y76B12C.7
+9.990040e-01	1	8	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	Y76B12C.7
+9.776700e-01	3	8	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	F32D1.9	Y67H2A.1	Y76B12C.7
+9.168110e-01	2	8	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	F28C6.6	Y76B12C.7
+5.417640e-01	1	8	1088	11710	88307	Caenorhabditis	elegans	GO:0005515	molecular_function	"protein binding"	F11A10.3
+9.780350e-01	3	8	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	F32D1.9	Y67H2A.1	Y76B12C.7
+1.000000e+00	2	8	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	F28C6.6	Y76B12C.7
+3.820080e-01	2	8	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	F28C6.6	Y32F6A.3
+9.989890e-01	1	8	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	Y76B12C.7
+9.989160e-01	1	8	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	Y76B12C.7
+9.995440e-01	3	8	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	F28C6.6	Y32F6A.3	Y76B12C.7
+9.784180e-01	3	8	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	F32D1.9	Y67H2A.1	Y76B12C.7
+4.667210e-01	2	8	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	F28C6.6	Y32F6A.3
+9.551420e-01	2	8	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	F28C6.6	Y76B12C.7
+1.000000e+00	2	8	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	F28C6.6	Y76B12C.7
+9.811800e-01	1	8	4582	11710	88307	Caenorhabditis	elegans	GO:0003824	molecular_function	"catalytic activity"	Y32F6A.3
+8.354730e-02	2	8	1715	27713	88307	Caenorhabditis	elegans	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	F28C6.6	Y32F6A.3
+3.733700e-01	5	8	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	F11A10.3	F28C6.6	F56A8.6	Y32F6A.3	Y76B12C.7
+7.179510e-01	1	8	1713	11710	88307	Caenorhabditis	elegans	GO:0043169	molecular_function	"cation binding"	F11A10.3
+9.989160e-01	1	8	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	Y76B12C.7
+5.582270e-01	1	8	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	F28C6.6
+7.080740e-01	2	8	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	F28C6.6	Y76B12C.7
+9.912340e-01	3	8	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	F32D1.9	Y67H2A.1	Y76B12C.7
+2.647450e-01	1	8	1045	27713	88307	Caenorhabditis	elegans	GO:0006350	biological_process	"transcription"	Y32F6A.3
+9.903610e-01	3	8	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	F32D1.9	Y67H2A.1	Y76B12C.7
+6.882150e-01	1	8	1587	11710	88307	Caenorhabditis	elegans	GO:0016740	molecular_function	"transferase activity"	Y32F6A.3
+7.074750e-01	2	8	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	F28C6.6	Y32F6A.3
+1.000000e+00	5	8	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	F28C6.6	F32D1.9	Y32F6A.3	Y67H2A.1	Y76B12C.7
+3.720110e-02	1	8	131	27713	88307	Caenorhabditis	elegans	GO:0006396	biological_process	"RNA processing"	F28C6.6
+8.240520e-01	2	8	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	F28C6.6	Y76B12C.7
+6.175500e-01	2	8	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	F28C6.6	Y32F6A.3
+3.831720e-01	1	8	1624	27713	88307	Caenorhabditis	elegans	GO:0043283	biological_process	"biopolymer metabolism"	F28C6.6
+7.275150e-01	1	8	1756	11710	88307	Caenorhabditis	elegans	GO:0043167	molecular_function	"ion binding"	F11A10.3
+9.902000e-01	3	8	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	F32D1.9	Y67H2A.1	Y76B12C.7
+9.985870e-01	1	8	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	Y76B12C.7
+1.000000e+00	5	8	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	F11A10.3	F28C6.6	F56A8.6	Y32F6A.3	Y76B12C.7
+7.161400e-01	1	8	1705	11710	88307	Caenorhabditis	elegans	GO:0000166	molecular_function	"nucleotide binding"	F56A8.6
+6.052170e-01	1	8	1284	11710	88307	Caenorhabditis	elegans	GO:0008270	molecular_function	"zinc ion binding"	F11A10.3
+3.540210e-01	2	8	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	F28C6.6	Y32F6A.3
+9.990430e-01	1	8	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	Y76B12C.7
+9.985650e-01	1	8	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	Y76B12C.7
+9.776700e-01	3	8	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	F32D1.9	Y67H2A.1	Y76B12C.7
+6.177890e-02	1	8	220	27713	88307	Caenorhabditis	elegans	GO:0016070	biological_process	"RNA metabolism"	F28C6.6
+1.434490e-02	1	8	50	27713	88307	Caenorhabditis	elegans	GO:0006397	biological_process	"mRNA processing"	F28C6.6
+8.240520e-01	2	8	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	F28C6.6	Y76B12C.7
+7.067410e-01	2	8	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	F28C6.6	Y76B12C.7
+1.000000e+00	2	8	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	F28C6.6	Y76B12C.7
+6.009110e-01	2	8	1542	6495	88307	Caenorhabditis	elegans	GO:0005634	cellular_component	"nucleus"	F28C6.6	Y76B12C.7
+2.048310e-03	1	8	3	11710	88307	Caenorhabditis	elegans	GO:0004652	molecular_function	"polynucleotide adenylyltransferase activity"	Y32F6A.3
+9.996030e-01	1	8	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	Y76B12C.7
+6.519890e-01	1	8	1447	11710	88307	Caenorhabditis	elegans	GO:0046914	molecular_function	"transition metal ion binding"	F11A10.3
+6.181540e-02	1	8	93	11710	88307	Caenorhabditis	elegans	GO:0016779	molecular_function	"nucleotidyltransferase activity"	Y32F6A.3
+1.377300e-01	3	8	1970	11710	88307	Caenorhabditis	elegans	GO:0003676	molecular_function	"nucleic acid binding"	F56A8.6	Y32F6A.3	Y76B12C.7
+7.275150e-01	1	8	1756	11710	88307	Caenorhabditis	elegans	GO:0046872	molecular_function	"metal ion binding"	F11A10.3
+9.776950e-01	3	8	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	F32D1.9	Y67H2A.1	Y76B12C.7
+1.776060e-02	1	8	62	27713	88307	Caenorhabditis	elegans	GO:0016071	biological_process	"mRNA metabolism"	F28C6.6
+9.898090e-01	2	8	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	Y67H2A.1	Y76B12C.7
+5.090230e-01	1	8	996	11710	88307	Caenorhabditis	elegans	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	Y32F6A.3
+#NOT FOUND: PAPOLA_HUMAN in Homo sapiens
+#NOT FOUND: FIP1L1_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.985100e-11	4	5	12	23297	92001	Homo	sapiens	GO:0031123	biological_process	"RNA 3'-end processing"	CPSF1	CPSF3	CSTF2	CSTF3
+2.383900e-04	1	5	1	20974	92001	Homo	sapiens	GO:0005847	cellular_component	"mRNA cleavage and polyadenylation specificity factor complex"	CPSF1
+1.985100e-11	4	5	12	23297	92001	Homo	sapiens	GO:0031124	biological_process	"mRNA 3'-end processing"	CPSF1	CPSF3	CSTF2	CSTF3
+2.851880e-14	4	5	8	23297	92001	Homo	sapiens	GO:0006378	biological_process	"mRNA polyadenylylation"	CPSF1	CPSF3	CSTF2	CSTF3
+3.537050e-02	5	5	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+7.309000e-01	1	5	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	CPSF1
+6.356400e-01	5	5	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.348790e-01	2	5	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	CPSF1	CPSF3
+4.070790e-02	5	5	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+6.351910e-03	2	5	543	20974	92001	Homo	sapiens	GO:0031974	cellular_component	"membrane-enclosed lumen"	CPSF1	CPSF3
+4.184470e-01	5	5	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+4.869710e-03	1	5	27	27672	92001	Homo	sapiens	GO:0003729	molecular_function	"mRNA binding"	CPSF1
+2.349120e-03	2	5	327	20974	92001	Homo	sapiens	GO:0005654	cellular_component	"nucleoplasm"	CPSF1	CPSF3
+6.359450e-02	5	5	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+7.426510e-02	5	5	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+6.354750e-01	5	5	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+6.812100e-04	5	5	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.112240e-01	5	5	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+6.909760e-01	1	5	5792	27672	92001	Homo	sapiens	GO:0043169	molecular_function	"cation binding"	CPSF4
+3.404340e-03	5	5	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+5.888440e-03	5	5	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+6.296170e-02	1	5	271	20974	92001	Homo	sapiens	GO:0044451	cellular_component	"nucleoplasm part"	CPSF1
+5.226540e-01	5	5	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+6.351910e-03	2	5	543	20974	92001	Homo	sapiens	GO:0043233	cellular_component	"organelle lumen"	CPSF1	CPSF3
+1.000000e+00	5	5	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.786030e-02	5	5	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+4.601160e-09	5	5	503	23297	92001	Homo	sapiens	GO:0006396	biological_process	"RNA processing"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+3.428920e-08	5	5	930	27672	92001	Homo	sapiens	GO:0003723	molecular_function	"RNA binding"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+2.015600e-01	5	5	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+2.851880e-14	4	5	8	23297	92001	Homo	sapiens	GO:0043631	biological_process	"RNA polyadenylation"	CPSF1	CPSF3	CSTF2	CSTF3
+2.344560e-04	5	5	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.444770e-03	1	5	8	27672	92001	Homo	sapiens	GO:0003730	molecular_function	"mRNA 3'-UTR binding"	CPSF1
+1.348790e-01	2	5	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	CPSF1	CPSF3
+7.164360e-01	1	5	6165	27672	92001	Homo	sapiens	GO:0043167	molecular_function	"ion binding"	CPSF4
+3.915580e-03	2	5	424	20974	92001	Homo	sapiens	GO:0031981	cellular_component	"nuclear lumen"	CPSF1	CPSF3
+1.000000e+00	5	5	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+5.275130e-01	1	5	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	CSTF2
+5.106130e-01	1	5	3685	27672	92001	Homo	sapiens	GO:0008270	molecular_function	"zinc ion binding"	CPSF4
+3.420660e-02	5	5	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+4.767350e-04	1	5	2	20974	92001	Homo	sapiens	GO:0005849	cellular_component	"mRNA cleavage factor complex"	CPSF1
+5.880600e-03	5	5	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.000000e+00	5	5	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.786980e-02	5	5	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.185050e-10	5	5	243	23297	92001	Homo	sapiens	GO:0006397	biological_process	"mRNA processing"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.825580e-08	5	5	662	23297	92001	Homo	sapiens	GO:0016070	biological_process	"RNA metabolism"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.249600e-03	5	5	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+5.734270e-01	1	5	4335	27672	92001	Homo	sapiens	GO:0046914	molecular_function	"transition metal ion binding"	CPSF4
+4.437670e-04	5	5	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+7.091090e-01	1	5	6055	27672	92001	Homo	sapiens	GO:0046872	molecular_function	"metal ion binding"	CPSF4
+5.680170e-01	1	5	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	CPSF1
+2.851880e-14	4	5	8	23297	92001	Homo	sapiens	GO:0006379	biological_process	"mRNA cleavage"	CPSF1	CPSF3	CSTF2	CSTF3
+2.989870e-10	5	5	292	23297	92001	Homo	sapiens	GO:0016071	biological_process	"mRNA metabolism"	CPSF1	CPSF3	CPSF4	CSTF2	CSTF3
+1.127960e-02	2	5	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	CPSF1	CPSF3

@@ -1,0 +1,106 @@
+#USING YRB2 instead of its synonym YIL063C in Saccharomyces cerevisiae
+#USING SRM1 instead of its synonym YGL097W in Saccharomyces cerevisiae
+#USING RNA1 instead of its synonym YMR235C in Saccharomyces cerevisiae
+#USING CRM1 instead of its synonym YGR218W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+5.440220e-06	3	4	75	6526	97048	Saccharomyces	cerevisiae	GO:0050658	biological_process	"RNA transport"	YGL097W	YGR218W	YMR235C
+5.086660e-01	1	4	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YIL063C
+9.014140e-05	2	4	26	6526	97048	Saccharomyces	cerevisiae	GO:0051029	biological_process	"rRNA transport"	YGL097W	YMR235C
+3.242640e-01	1	4	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YIL063C
+5.522130e-02	1	4	92	6526	97048	Saccharomyces	cerevisiae	GO:0017038	biological_process	"protein import"	YMR235C
+9.595230e-01	1	4	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YMR235C
+4.163610e-02	1	4	69	6526	97048	Saccharomyces	cerevisiae	GO:0030695	molecular_function	"GTPase regulator activity"	YMR235C
+4.895580e-03	1	4	8	6526	97048	Saccharomyces	cerevisiae	GO:0000055	biological_process	"ribosomal large subunit export from nucleus"	YGR218W
+7.646280e-08	4	4	110	6526	97048	Saccharomyces	cerevisiae	GO:0051169	biological_process	"nuclear transport"	YGL097W	YGR218W	YIL063C	YMR235C
+3.867080e-08	4	4	93	6526	97048	Saccharomyces	cerevisiae	GO:0051168	biological_process	"nuclear export"	YGL097W	YGR218W	YIL063C	YMR235C
+2.290100e-04	3	4	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	YGL097W	YGR218W	YMR235C
+4.820460e-01	4	4	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YGL097W	YGR218W	YIL063C	YMR235C
+9.431770e-01	1	4	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YMR235C
+3.925860e-02	1	4	65	6526	97048	Saccharomyces	cerevisiae	GO:0004871	molecular_function	"signal transducer activity"	YGL097W
+4.217560e-01	2	4	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YGL097W	YIL063C
+2.365180e-06	4	4	260	6526	97048	Saccharomyces	cerevisiae	GO:0015031	biological_process	"protein transport"	YGL097W	YGR218W	YIL063C	YMR235C
+4.678780e-01	1	4	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YGL097W
+4.391270e-04	4	4	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YGL097W	YGR218W	YIL063C	YMR235C
+1.531030e-06	4	4	235	6526	97048	Saccharomyces	cerevisiae	GO:0006605	biological_process	"protein targeting"	YGL097W	YGR218W	YIL063C	YMR235C
+3.449040e-02	1	4	57	6526	97048	Saccharomyces	cerevisiae	GO:0031965	cellular_component	"nuclear membrane"	YIL063C
+9.492010e-01	1	4	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YMR235C
+4.076620e-05	4	4	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YGL097W	YGR218W	YIL063C	YMR235C
+8.654910e-02	1	4	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	YGL097W
+3.494740e-01	4	4	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YGL097W	YGR218W	YIL063C	YMR235C
+5.440220e-06	3	4	75	6526	97048	Saccharomyces	cerevisiae	GO:0050657	biological_process	"nucleic acid transport"	YGL097W	YGR218W	YMR235C
+5.453680e-01	1	4	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YGR218W
+7.847440e-06	3	4	84	6526	97048	Saccharomyces	cerevisiae	GO:0015931	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid transport"	YGL097W	YGR218W	YMR235C
+2.309480e-02	1	4	38	6526	97048	Saccharomyces	cerevisiae	GO:0000790	cellular_component	"nuclear chromatin"	YGL097W
+8.514590e-01	1	4	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YMR235C
+9.263600e-02	4	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YGL097W	YGR218W	YIL063C	YMR235C
+4.992270e-02	1	4	83	6526	97048	Saccharomyces	cerevisiae	GO:0005386	molecular_function	"carrier activity"	YGR218W
+2.850520e-02	1	4	47	6526	97048	Saccharomyces	cerevisiae	GO:0006606	biological_process	"protein import into nucleus"	YMR235C
+4.475050e-06	4	4	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	YGL097W	YGR218W	YIL063C	YMR235C
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YGL097W	YGR218W	YIL063C	YMR235C
+1.435910e-01	1	4	248	6526	97048	Saccharomyces	cerevisiae	GO:0016072	biological_process	"rRNA metabolism"	YMR235C
+3.090260e-02	1	4	51	6526	97048	Saccharomyces	cerevisiae	GO:0005643	cellular_component	"nuclear pore"	YIL063C
+3.269770e-02	1	4	54	6526	97048	Saccharomyces	cerevisiae	GO:0008565	molecular_function	"protein transporter activity"	YGR218W
+2.128820e-01	1	4	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	YIL063C
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YGL097W	YGR218W	YIL063C	YMR235C
+2.290100e-04	3	4	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	YGL097W	YGR218W	YMR235C
+1.837950e-03	1	4	3	6526	97048	Saccharomyces	cerevisiae	GO:0006404	biological_process	"RNA import into nucleus"	YMR235C
+3.050560e-09	4	4	50	6526	97048	Saccharomyces	cerevisiae	GO:0006611	biological_process	"protein export from nucleus"	YGL097W	YGR218W	YIL063C	YMR235C
+2.945430e-01	1	4	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	YMR235C
+4.048420e-04	4	4	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YGL097W	YGR218W	YIL063C	YMR235C
+9.263600e-02	4	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YGL097W	YGR218W	YIL063C	YMR235C
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YGL097W	YGR218W	YIL063C	YMR235C
+9.014140e-05	2	4	26	6526	97048	Saccharomyces	cerevisiae	GO:0006407	biological_process	"rRNA export from nucleus"	YGL097W	YMR235C
+1.142080e-07	3	4	21	6526	97048	Saccharomyces	cerevisiae	GO:0000054	biological_process	"ribosome export from nucleus"	YGL097W	YGR218W	YMR235C
+2.429900e-02	1	4	40	6526	97048	Saccharomyces	cerevisiae	GO:0000785	cellular_component	"chromatin"	YGL097W
+1.064340e-01	1	4	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	YMR235C
+2.128820e-01	1	4	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	YIL063C
+6.129330e-04	1	4	1	6526	97048	Saccharomyces	cerevisiae	GO:0005098	molecular_function	"Ran GTPase activator activity"	YMR235C
+3.449040e-02	1	4	57	6526	97048	Saccharomyces	cerevisiae	GO:0044453	cellular_component	"nuclear membrane part"	YIL063C
+9.819030e-08	4	4	117	6526	97048	Saccharomyces	cerevisiae	GO:0006913	biological_process	"nucleocytoplasmic transport"	YGL097W	YGR218W	YIL063C	YMR235C
+6.429420e-01	1	4	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YIL063C
+1.887110e-02	1	4	31	6526	97048	Saccharomyces	cerevisiae	GO:0005096	molecular_function	"GTPase activator activity"	YMR235C
+4.812910e-03	4	4	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YGL097W	YGR218W	YIL063C	YMR235C
+3.772350e-05	4	4	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YGL097W	YGR218W	YIL063C	YMR235C
+1.414130e-04	3	4	217	6526	97048	Saccharomyces	cerevisiae	GO:0007046	biological_process	"ribosome biogenesis"	YGL097W	YGR218W	YMR235C
+3.866360e-02	1	4	64	6526	97048	Saccharomyces	cerevisiae	GO:0051028	biological_process	"mRNA transport"	YGR218W
+1.517490e-01	1	4	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	YIL063C
+5.506260e-03	1	4	9	6526	97048	Saccharomyces	cerevisiae	GO:0008320	molecular_function	"protein carrier activity"	YGR218W
+3.392770e-01	4	4	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YGL097W	YGR218W	YIL063C	YMR235C
+2.778800e-01	1	4	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YGR218W
+5.440220e-06	3	4	75	6526	97048	Saccharomyces	cerevisiae	GO:0051236	biological_process	"establishment of RNA localization"	YGL097W	YGR218W	YMR235C
+1.081230e-01	1	4	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	YGL097W
+2.987170e-01	4	4	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YGL097W	YGR218W	YIL063C	YMR235C
+4.816920e-01	4	4	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YGL097W	YGR218W	YIL063C	YMR235C
+3.178450e-01	1	4	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YIL063C
+6.320590e-01	1	4	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YMR235C
+1.248830e-01	1	4	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	YGL097W
+2.106190e-06	4	4	253	6526	97048	Saccharomyces	cerevisiae	GO:0006886	biological_process	"intracellular protein transport"	YGL097W	YGR218W	YIL063C	YMR235C
+2.903830e-01	4	4	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YGL097W	YGR218W	YIL063C	YMR235C
+3.806820e-02	1	4	63	6526	97048	Saccharomyces	cerevisiae	GO:0008047	molecular_function	"enzyme activator activity"	YMR235C
+2.321700e-01	1	4	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	YGR218W
+3.866360e-02	1	4	64	6526	97048	Saccharomyces	cerevisiae	GO:0006406	biological_process	"mRNA export from nucleus"	YGR218W
+1.306360e-01	4	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YGL097W	YGR218W	YIL063C	YMR235C
+2.822250e-01	4	4	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YGL097W	YGR218W	YIL063C	YMR235C
+6.049770e-02	1	4	101	6526	97048	Saccharomyces	cerevisiae	GO:0005635	cellular_component	"nuclear envelope"	YIL063C
+4.678780e-01	1	4	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YGL097W
+6.626270e-01	1	4	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YMR235C
+3.090260e-02	1	4	51	6526	97048	Saccharomyces	cerevisiae	GO:0046930	cellular_component	"pore complex"	YIL063C
+8.148500e-06	3	4	85	6526	97048	Saccharomyces	cerevisiae	GO:0006403	biological_process	"RNA localization"	YGL097W	YGR218W	YMR235C
+4.217560e-01	2	4	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YGL097W	YIL063C
+5.204720e-06	3	4	74	6526	97048	Saccharomyces	cerevisiae	GO:0006405	biological_process	"RNA export from nucleus"	YGL097W	YGR218W	YMR235C
+1.636070e-01	1	4	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	YIL063C
+3.242640e-01	1	4	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	YMR235C
+9.273350e-01	1	4	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YMR235C
+1.484930e-01	1	4	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	YIL063C
+4.990070e-05	4	4	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YGL097W	YGR218W	YIL063C	YMR235C
+1.306360e-01	4	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YGL097W	YGR218W	YIL063C	YMR235C
+2.859930e-06	4	4	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	YGL097W	YGR218W	YIL063C	YMR235C
+8.507200e-03	4	4	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YGL097W	YGR218W	YIL063C	YMR235C
+2.850520e-02	1	4	47	6526	97048	Saccharomyces	cerevisiae	GO:0051170	biological_process	"nuclear import"	YMR235C
+1.722740e-02	3	4	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YGL097W	YGR218W	YMR235C
+1.030480e-01	1	4	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	YGL097W
+2.850520e-02	1	4	47	6526	97048	Saccharomyces	cerevisiae	GO:0005083	molecular_function	"small GTPase regulator activity"	YMR235C
+8.263970e-01	1	4	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YIL063C
+5.397690e-04	4	4	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YGL097W	YGR218W	YIL063C	YMR235C
+8.647750e-01	1	4	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YMR235C
+1.294160e-01	2	4	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YGL097W	YIL063C

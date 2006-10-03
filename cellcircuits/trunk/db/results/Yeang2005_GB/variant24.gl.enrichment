@@ -1,0 +1,155 @@
+#USING RAD53 instead of its synonym SPK1 in Saccharomyces cerevisiae
+#USING AVT7 instead of its synonym YIL088C in Saccharomyces cerevisiae
+#USING SER33 instead of its synonym YIL074C in Saccharomyces cerevisiae
+#USING SET2 instead of its synonym EZL1 in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.371510e-02	1	9	10	6526	97048	Saccharomyces	cerevisiae	GO:0000097	biological_process	"sulfur amino acid biosynthesis"	CBF1
+2.137940e-01	1	9	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	SPK1
+3.643660e-01	6	9	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	ARO4	ARO9	CBF1	MET10	YIL074C	YIL088C
+1.643800e-02	1	9	12	6526	97048	Saccharomyces	cerevisiae	GO:0016279	molecular_function	"protein-lysine N-methyltransferase activity"	EZL1
+1.633840e-01	1	9	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	SPK1
+4.197580e-02	1	9	31	6526	97048	Saccharomyces	cerevisiae	GO:0006354	biological_process	"RNA elongation"	EZL1
+2.297200e-02	8	9	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C
+2.456660e-02	1	9	18	6526	97048	Saccharomyces	cerevisiae	GO:0044272	biological_process	"sulfur compound biosynthesis"	CBF1
+7.583040e-01	1	9	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	CBF1
+2.720610e-02	1	9	20	6526	97048	Saccharomyces	cerevisiae	GO:0008213	biological_process	"protein amino acid alkylation"	EZL1
+2.767050e-02	8	9	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C
+9.380620e-02	9	9	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+1.235120e-02	1	9	9	6526	97048	Saccharomyces	cerevisiae	GO:0042054	molecular_function	"histone methyltransferase activity"	EZL1
+2.567690e-02	6	9	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	ARO4	ARO9	EZL1	MET10	SPK1	YIL074C
+2.074410e-01	3	9	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	CBF1	SPK1	SWI4
+3.129730e-02	1	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0006555	biological_process	"methionine metabolism"	CBF1
+2.562000e-01	1	9	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	SPK1
+8.999550e-01	1	9	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	EZL1
+7.270210e-01	3	9	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	CBF1	EZL1	SPK1
+2.186370e-02	1	9	16	6526	97048	Saccharomyces	cerevisiae	GO:0008483	molecular_function	"transaminase activity"	ARO9
+7.209730e-02	1	9	54	6526	97048	Saccharomyces	cerevisiae	GO:0000776	cellular_component	"kinetochore"	CBF1
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+2.776490e-03	2	9	59	6526	97048	Saccharomyces	cerevisiae	GO:0006790	biological_process	"sulfur metabolism"	CBF1	MET10
+1.507740e-02	1	9	11	6526	97048	Saccharomyces	cerevisiae	GO:0003688	molecular_function	"DNA replication origin binding"	SPK1
+2.186370e-02	1	9	16	6526	97048	Saccharomyces	cerevisiae	GO:0016769	molecular_function	"transferase activity, transferring nitrogenous groups"	ARO9
+3.467860e-04	2	9	21	6526	97048	Saccharomyces	cerevisiae	GO:0009072	biological_process	"aromatic amino acid family metabolism"	ARO4	ARO9
+2.812730e-01	1	9	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	SWI4
+2.422740e-03	3	9	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	CBF1	SPK1	SWI4
+1.431500e-01	1	9	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	CBF1
+4.658870e-01	1	9	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	EZL1
+7.898890e-01	1	9	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	CBF1
+2.281620e-01	1	9	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	EZL1
+7.483640e-01	1	9	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YIL088C
+2.756510e-03	1	9	2	6526	97048	Saccharomyces	cerevisiae	GO:0003849	molecular_function	"3-deoxy-7-phosphoheptulonate synthase activity"	ARO4
+2.756510e-03	1	9	2	6526	97048	Saccharomyces	cerevisiae	GO:0004617	molecular_function	"phosphoglycerate dehydrogenase activity"	YIL074C
+8.861610e-01	1	9	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	EZL1
+5.575940e-01	1	9	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	EZL1
+9.015480e-01	1	9	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	MET10
+6.022420e-01	1	9	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	EZL1
+8.237540e-02	1	9	62	6526	97048	Saccharomyces	cerevisiae	GO:0008757	molecular_function	"S-adenosylmethionine-dependent methyltransferase activity"	EZL1
+1.395350e-01	1	9	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	SPK1
+2.259860e-02	3	9	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	CBF1	EZL1	SPK1
+8.365300e-02	1	9	63	6526	97048	Saccharomyces	cerevisiae	GO:0016570	biological_process	"histone modification"	EZL1
+6.041230e-02	1	9	45	6526	97048	Saccharomyces	cerevisiae	GO:0009066	biological_process	"aspartate family amino acid metabolism"	CBF1
+8.755460e-01	1	9	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	EZL1
+8.775690e-02	9	9	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+8.249270e-03	1	9	6	6526	97048	Saccharomyces	cerevisiae	GO:0009086	biological_process	"methionine biosynthesis"	CBF1
+9.886160e-02	1	9	75	6526	97048	Saccharomyces	cerevisiae	GO:0016614	molecular_function	"oxidoreductase activity, acting on CH-OH group of donors"	YIL074C
+6.588800e-02	9	9	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+3.252920e-02	2	9	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	CBF1	EZL1
+2.422960e-01	1	9	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	SPK1
+2.720610e-02	1	9	20	6526	97048	Saccharomyces	cerevisiae	GO:0006479	biological_process	"protein amino acid methylation"	EZL1
+2.186370e-02	1	9	16	6526	97048	Saccharomyces	cerevisiae	GO:0008276	molecular_function	"protein methyltransferase activity"	EZL1
+2.321600e-02	1	9	17	6526	97048	Saccharomyces	cerevisiae	GO:0019438	biological_process	"aromatic compound biosynthesis"	ARO4
+1.159480e-01	4	9	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CBF1	EZL1	SPK1	SWI4
+1.163210e-01	1	9	89	6526	97048	Saccharomyces	cerevisiae	GO:0051325	biological_process	"interphase"	SWI4
+8.365300e-02	1	9	63	6526	97048	Saccharomyces	cerevisiae	GO:0016569	biological_process	"covalent chromatin modification"	EZL1
+1.503600e-01	2	9	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	EZL1	SWI4
+9.998810e-03	4	9	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	ARO4	ARO9	EZL1	SPK1
+3.850550e-01	1	9	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	EZL1
+1.643800e-02	1	9	12	6526	97048	Saccharomyces	cerevisiae	GO:0009070	biological_process	"serine family amino acid biosynthesis"	YIL074C
+1.458410e-04	4	9	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	ARO4	ARO9	CBF1	YIL074C
+4.482480e-01	1	9	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	YIL088C
+2.591550e-02	1	9	19	6526	97048	Saccharomyces	cerevisiae	GO:0009067	biological_process	"aspartate family amino acid biosynthesis"	CBF1
+2.988160e-04	3	9	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	ARO4	CBF1	YIL074C
+7.583040e-01	1	9	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CBF1
+5.798060e-02	9	9	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+3.651900e-01	3	9	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	CBF1	EZL1	SPK1
+4.643050e-01	1	9	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	SPK1
+9.767550e-01	1	9	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	CBF1
+7.212860e-02	7	9	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	ARO4	ARO9	CBF1	EZL1	SPK1	SWI4	YIL074C
+2.498110e-01	1	9	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	SPK1
+1.163210e-01	1	9	89	6526	97048	Saccharomyces	cerevisiae	GO:0051329	biological_process	"interphase of mitotic cell cycle"	SWI4
+2.340430e-01	7	9	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	ARO4	ARO9	CBF1	EZL1	SPK1	SWI4	YIL088C
+8.249270e-03	1	9	6	6526	97048	Saccharomyces	cerevisiae	GO:0019237	molecular_function	"centromeric DNA binding"	CBF1
+1.298320e-01	2	9	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	CBF1	EZL1
+8.109620e-02	1	9	61	6526	97048	Saccharomyces	cerevisiae	GO:0000775	cellular_component	"chromosome, pericentric region"	CBF1
+4.698640e-01	2	9	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	CBF1	EZL1
+1.051320e-01	1	9	80	6526	97048	Saccharomyces	cerevisiae	GO:0043414	biological_process	"biopolymer methylation"	EZL1
+1.643800e-02	1	9	12	6526	97048	Saccharomyces	cerevisiae	GO:0016667	molecular_function	"oxidoreductase activity, acting on sulfur group of donors"	MET10
+6.433910e-01	1	9	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	EZL1
+7.749540e-01	1	9	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YIL088C
+9.242010e-01	2	9	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	CBF1	YIL088C
+1.371510e-02	1	9	10	6526	97048	Saccharomyces	cerevisiae	GO:0000103	biological_process	"sulfate assimilation"	MET10
+1.247150e-01	2	9	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	CBF1	EZL1
+2.293830e-01	3	9	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	ARO4	CBF1	YIL074C
+2.756510e-03	1	9	2	6526	97048	Saccharomyces	cerevisiae	GO:0008793	molecular_function	"aromatic-amino-acid transaminase activity"	ARO9
+1.934860e-01	9	9	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+9.767550e-01	1	9	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	CBF1
+4.330330e-02	1	9	32	6526	97048	Saccharomyces	cerevisiae	GO:0000096	biological_process	"sulfur amino acid metabolism"	CBF1
+7.559510e-01	1	9	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YIL088C
+9.530950e-05	4	9	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	ARO4	ARO9	CBF1	YIL074C
+1.235120e-02	1	9	9	6526	97048	Saccharomyces	cerevisiae	GO:0018024	molecular_function	"histone-lysine N-methyltransferase activity"	EZL1
+3.129730e-02	1	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0009055	molecular_function	"electron carrier activity"	MET10
+6.124610e-01	1	9	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	EZL1
+6.867820e-05	4	9	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	ARO4	ARO9	CBF1	YIL074C
+4.595330e-02	1	9	34	6526	97048	Saccharomyces	cerevisiae	GO:0016765	molecular_function	"transferase activity, transferring alkyl or aryl (other than methyl) groups"	ARO4
+1.518770e-01	7	9	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	ARO4	ARO9	CBF1	EZL1	SPK1	SWI4	YIL088C
+1.379100e-03	1	9	1	6526	97048	Saccharomyces	cerevisiae	GO:0046975	molecular_function	"histone lysine N-methyltransferase activity (H3-K36 specific)"	EZL1
+1.138450e-01	1	9	87	6526	97048	Saccharomyces	cerevisiae	GO:0006261	biological_process	"DNA-dependent DNA replication"	SPK1
+1.310460e-01	1	9	101	6526	97048	Saccharomyces	cerevisiae	GO:0006333	biological_process	"chromatin assembly or disassembly"	CBF1
+3.705740e-01	1	9	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	SWI4
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+1.101200e-01	1	9	84	6526	97048	Saccharomyces	cerevisiae	GO:0016741	molecular_function	"transferase activity, transferring one-carbon groups"	EZL1
+1.038120e-03	2	9	36	6526	97048	Saccharomyces	cerevisiae	GO:0043565	molecular_function	"sequence-specific DNA binding"	CBF1	SPK1
+4.797140e-02	2	9	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	MET10	YIL074C
+1.518770e-01	7	9	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	ARO4	ARO9	CBF1	EZL1	SPK1	SWI4	YIL088C
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+9.618250e-03	1	9	7	6526	97048	Saccharomyces	cerevisiae	GO:0004712	molecular_function	"protein threonine/tyrosine kinase activity"	SPK1
+6.201170e-01	1	9	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	EZL1
+3.263790e-02	1	9	24	6526	97048	Saccharomyces	cerevisiae	GO:0009069	biological_process	"serine family amino acid metabolism"	YIL074C
+4.837900e-01	1	9	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	EZL1
+5.293090e-02	3	9	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	CBF1	SPK1	SWI4
+2.358020e-01	1	9	192	6526	97048	Saccharomyces	cerevisiae	GO:0005773	cellular_component	"vacuole"	YIL088C
+4.860860e-01	1	9	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	EZL1
+3.252920e-02	2	9	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	CBF1	EZL1
+4.888710e-04	4	9	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	ARO4	ARO9	CBF1	YIL074C
+1.371510e-02	1	9	10	6526	97048	Saccharomyces	cerevisiae	GO:0006791	biological_process	"sulfur utilization"	MET10
+2.321600e-02	1	9	17	6526	97048	Saccharomyces	cerevisiae	GO:0016571	biological_process	"histone methylation"	EZL1
+7.312570e-01	2	9	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	CBF1	EZL1
+1.076290e-01	1	9	82	6526	97048	Saccharomyces	cerevisiae	GO:0008168	molecular_function	"methyltransferase activity"	EZL1
+2.504240e-03	2	9	56	6526	97048	Saccharomyces	cerevisiae	GO:0006725	biological_process	"aromatic compound metabolism"	ARO4	ARO9
+4.157030e-01	1	9	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	EZL1
+5.823550e-01	1	9	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	SPK1
+8.249270e-03	1	9	6	6526	97048	Saccharomyces	cerevisiae	GO:0016668	molecular_function	"oxidoreductase activity, acting on sulfur group of donors, NAD or NADP as acceptor"	MET10
+7.981540e-02	1	9	60	6526	97048	Saccharomyces	cerevisiae	GO:0003700	molecular_function	"transcription factor activity"	SWI4
+2.270650e-01	1	9	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	CBF1
+8.874770e-02	1	9	67	6526	97048	Saccharomyces	cerevisiae	GO:0016616	molecular_function	"oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor"	YIL074C
+3.531400e-02	1	9	26	6526	97048	Saccharomyces	cerevisiae	GO:0006270	biological_process	"DNA replication initiation"	SPK1
+1.931660e-01	9	9	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+2.593760e-01	1	9	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	CBF1
+6.171710e-02	1	9	46	6526	97048	Saccharomyces	cerevisiae	GO:0000082	biological_process	"G1/S transition of mitotic cell cycle"	SWI4
+6.182200e-02	9	9	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	ARO4	ARO9	CBF1	EZL1	MET10	SPK1	SWI4	YIL074C	YIL088C
+2.340430e-01	7	9	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	ARO4	ARO9	CBF1	EZL1	SPK1	SWI4	YIL088C
+3.659870e-01	1	9	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	EZL1
+2.756510e-03	1	9	2	6526	97048	Saccharomyces	cerevisiae	GO:0009337	cellular_component	"sulfite reductase complex (NADPH)"	MET10
+2.756510e-03	1	9	2	6526	97048	Saccharomyces	cerevisiae	GO:0004783	molecular_function	"sulfite reductase (NADPH) activity"	MET10
+1.643800e-02	1	9	12	6526	97048	Saccharomyces	cerevisiae	GO:0016278	molecular_function	"lysine N-methyltransferase activity"	EZL1
+1.972170e-04	4	9	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	ARO4	ARO9	CBF1	YIL074C
+2.186370e-02	1	9	16	6526	97048	Saccharomyces	cerevisiae	GO:0009073	biological_process	"aromatic amino acid family biosynthesis"	ARO4
+6.016330e-01	1	9	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	EZL1
+1.980420e-01	3	9	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	ARO4	CBF1	YIL074C
+2.686940e-02	6	9	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	ARO4	ARO9	CBF1	EZL1	SPK1	SWI4
+2.003210e-01	1	9	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	SPK1
+3.829040e-04	3	9	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	ARO4	CBF1	YIL074C
+4.888710e-04	4	9	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	ARO4	ARO9	CBF1	YIL074C
+3.829040e-04	3	9	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	ARO4	CBF1	YIL074C
+3.129730e-02	1	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0008170	molecular_function	"N-methyltransferase activity"	EZL1
+4.441680e-01	1	9	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	SWI4
+3.778520e-01	1	9	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	SPK1

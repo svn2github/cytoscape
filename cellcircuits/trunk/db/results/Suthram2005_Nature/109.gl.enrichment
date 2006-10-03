@@ -1,0 +1,87 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+8.169350e-01	1	15	221	2072	7015	Plasmodium	falciparum	GO:0044421	cellular_component	"extracellular region part"	PFA0110W
+1.148980e-02	1	15	2	2604	7015	Plasmodium	falciparum	GO:0046470	biological_process	"phosphatidylcholine metabolism"	MAL13P1.214
+9.997770e-01	1	15	886	2072	7015	Plasmodium	falciparum	GO:0005737	cellular_component	"cytoplasm"	PFL2505C
+1.042960e-01	1	15	19	2604	7015	Plasmodium	falciparum	GO:0006643	biological_process	"membrane lipid metabolism"	MAL13P1.214
+1.063490e-01	1	15	21	2819	7015	Plasmodium	falciparum	GO:0031202	molecular_function	"RNA splicing factor activity, transesterification mechanism"	PFD0450C
+8.322190e-02	1	15	15	2604	7015	Plasmodium	falciparum	GO:0008654	biological_process	"phospholipid biosynthesis"	MAL13P1.214
+2.831580e-01	1	15	57	2604	7015	Plasmodium	falciparum	GO:0044255	biological_process	"cellular lipid metabolism"	MAL13P1.214
+6.754360e-01	2	15	386	2604	7015	Plasmodium	falciparum	GO:0009058	biological_process	"biosynthesis"	MAL13P1.214	PFL2505C
+9.999980e-01	3	15	1512	2072	7015	Plasmodium	falciparum	GO:0005623	cellular_component	"cell"	PF08_0055	PFD0450C	PFL2505C
+5.246000e-01	1	15	136	2819	7015	Plasmodium	falciparum	GO:0003735	molecular_function	"structural constituent of ribosome"	PFL2505C
+9.021190e-01	5	15	1211	2604	7015	Plasmodium	falciparum	GO:0044237	biological_process	"cellular metabolism"	MAL13P1.214	PF08_0055	PFA0110W	PFD0450C	PFL2505C
+7.409080e-01	2	15	345	2072	7015	Plasmodium	falciparum	GO:0044422	cellular_component	"organelle part"	PF08_0055	PFD0450C
+2.077210e-01	1	15	40	2604	7015	Plasmodium	falciparum	GO:0008610	biological_process	"lipid biosynthesis"	MAL13P1.214
+5.493820e-01	2	15	247	2072	7015	Plasmodium	falciparum	GO:0043228	cellular_component	"non-membrane-bound organelle"	PF08_0055	PFL2505C
+3.479840e-01	1	15	73	2604	7015	Plasmodium	falciparum	GO:0006457	biological_process	"protein folding"	PFA0110W
+8.154400e-01	1	15	220	2072	7015	Plasmodium	falciparum	GO:0043657	cellular_component	"host cell"	PFA0110W
+9.242380e-01	5	15	1258	2604	7015	Plasmodium	falciparum	GO:0008152	biological_process	"metabolism"	MAL13P1.214	PF08_0055	PFA0110W	PFD0450C	PFL2505C
+9.997260e-01	3	15	1241	2072	7015	Plasmodium	falciparum	GO:0005622	cellular_component	"intracellular"	PF08_0055	PFD0450C	PFL2505C
+9.990680e-01	1	15	1046	2819	7015	Plasmodium	falciparum	GO:0003824	molecular_function	"catalytic activity"	MAL13P1.214
+9.093640e-01	4	15	1126	2819	7015	Plasmodium	falciparum	GO:0005488	molecular_function	"binding"	PF10_0115	PF14_0652	PFA0110W	PFD0450C
+5.622790e-02	1	15	10	2604	7015	Plasmodium	falciparum	GO:0006650	biological_process	"glycerophospholipid metabolism"	MAL13P1.214
+9.303410e-01	2	15	673	2604	7015	Plasmodium	falciparum	GO:0019538	biological_process	"protein metabolism"	PFA0110W	PFL2505C
+8.495170e-01	4	15	940	2604	7015	Plasmodium	falciparum	GO:0043170	biological_process	"macromolecule metabolism"	PF08_0055	PFA0110W	PFD0450C	PFL2505C
+9.851510e-01	3	15	895	2072	7015	Plasmodium	falciparum	GO:0043227	cellular_component	"membrane-bound organelle"	PF08_0055	PFD0450C	PFL2505C
+7.931840e-01	1	15	259	2604	7015	Plasmodium	falciparum	GO:0006412	biological_process	"protein biosynthesis"	PFL2505C
+1.148980e-02	1	15	2	2604	7015	Plasmodium	falciparum	GO:0006656	biological_process	"phosphatidylcholine biosynthesis"	MAL13P1.214
+4.429640e-01	1	15	79	2072	7015	Plasmodium	falciparum	GO:0043233	cellular_component	"organelle lumen"	PF08_0055
+1.000000e+00	14	15	2604	2604	7015	Plasmodium	falciparum	GO:0008150	biological_process	"biological_process"	MAL13P1.214	MAL13P1.308	PF08_0055	PF10_0115	PF11_0291	PF14_0257	PF14_0344	PFA0110W	PFA0410W	PFB0640C	PFD0090C	PFD0450C	PFI1475W	PFL2505C
+3.081420e-01	1	15	63	2604	7015	Plasmodium	falciparum	GO:0006629	biological_process	"lipid metabolism"	MAL13P1.214
+6.401030e-01	1	15	136	2072	7015	Plasmodium	falciparum	GO:0005840	cellular_component	"ribosome"	PFL2505C
+9.268910e-02	2	15	90	2604	7015	Plasmodium	falciparum	GO:0006396	biological_process	"RNA processing"	PF08_0055	PFD0450C
+9.898120e-01	1	15	544	2072	7015	Plasmodium	falciparum	GO:0020011	cellular_component	"apicoplast"	PFL2505C
+2.339270e-03	9	15	481	2072	7015	Plasmodium	falciparum	GO:0008372	cellular_component	"cellular component unknown"	MAL13P1.308	PF10_0115	PF11_0291	PF14_0257	PF14_0344	PFA0410W	PFB0640C	PFD0090C	PFI1475W
+3.477630e-01	1	15	58	2072	7015	Plasmodium	falciparum	GO:0031981	cellular_component	"nuclear lumen"	PF08_0055
+1.000000e+00	14	15	2819	2819	7015	Plasmodium	falciparum	GO:0003674	molecular_function	"molecular_function"	MAL13P1.214	MAL13P1.308	PF10_0115	PF11_0291	PF14_0257	PF14_0344	PF14_0652	PFA0110W	PFA0410W	PFB0640C	PFD0090C	PFD0450C	PFI1475W	PFL2505C
+2.359490e-01	1	15	50	2819	7015	Plasmodium	falciparum	GO:0016741	molecular_function	"transferase activity, transferring one-carbon groups"	MAL13P1.214
+1.421430e-01	1	15	21	2072	7015	Plasmodium	falciparum	GO:0044452	cellular_component	"nucleolar part"	PF08_0055
+1.421430e-01	1	15	21	2072	7015	Plasmodium	falciparum	GO:0005730	cellular_component	"nucleolus"	PF08_0055
+1.421430e-01	1	15	21	2072	7015	Plasmodium	falciparum	GO:0005681	cellular_component	"spliceosome complex"	PFD0450C
+8.184180e-01	1	15	222	2072	7015	Plasmodium	falciparum	GO:0005576	cellular_component	"extracellular region"	PFA0110W
+1.000000e+00	13	15	2072	2072	7015	Plasmodium	falciparum	GO:0005575	cellular_component	"cellular_component"	MAL13P1.308	PF08_0055	PF10_0115	PF11_0291	PF14_0257	PF14_0344	PFA0110W	PFA0410W	PFB0640C	PFD0090C	PFD0450C	PFI1475W	PFL2505C
+9.851510e-01	3	15	895	2072	7015	Plasmodium	falciparum	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	PF08_0055	PFD0450C	PFL2505C
+2.277130e-01	2	15	157	2604	7015	Plasmodium	falciparum	GO:0016070	biological_process	"RNA metabolism"	PF08_0055	PFD0450C
+5.622790e-02	1	15	10	2604	7015	Plasmodium	falciparum	GO:0046474	biological_process	"glycerophospholipid biosynthesis"	MAL13P1.214
+5.188350e-01	3	15	504	2819	7015	Plasmodium	falciparum	GO:0003676	molecular_function	"nucleic acid binding"	PF10_0115	PF14_0652	PFD0450C
+9.199400e-01	2	15	650	2604	7015	Plasmodium	falciparum	GO:0044260	biological_process	"cellular macromolecule metabolism"	PFA0110W	PFL2505C
+2.523790e-01	1	15	54	2819	7015	Plasmodium	falciparum	GO:0051082	molecular_function	"unfolded protein binding"	PFA0110W
+1.386170e-01	3	15	182	2072	7015	Plasmodium	falciparum	GO:0030529	cellular_component	"ribonucleoprotein complex"	PF08_0055	PFD0450C	PFL2505C
+7.146200e-01	3	15	482	2072	7015	Plasmodium	falciparum	GO:0043234	cellular_component	"protein complex"	PF08_0055	PFD0450C	PFL2505C
+5.846920e-01	1	15	160	2819	7015	Plasmodium	falciparum	GO:0005198	molecular_function	"structural molecule activity"	PFL2505C
+1.577550e-01	1	15	32	2819	7015	Plasmodium	falciparum	GO:0008757	molecular_function	"S-adenosylmethionine-dependent methyltransferase activity"	MAL13P1.214
+2.317890e-01	1	15	49	2819	7015	Plasmodium	falciparum	GO:0008168	molecular_function	"methyltransferase activity"	MAL13P1.214
+1.669410e-02	10	15	949	2604	7015	Plasmodium	falciparum	GO:0000004	biological_process	"biological process unknown"	MAL13P1.308	PF10_0115	PF11_0291	PF14_0257	PF14_0344	PFA0410W	PFB0640C	PFD0090C	PFI1475W	PFL2505C
+9.194590e-01	2	15	649	2604	7015	Plasmodium	falciparum	GO:0044267	biological_process	"cellular protein metabolism"	PFA0110W	PFL2505C
+9.995580e-01	3	15	1207	2072	7015	Plasmodium	falciparum	GO:0044424	cellular_component	"intracellular part"	PF08_0055	PFD0450C	PFL2505C
+6.142030e-01	1	15	173	2819	7015	Plasmodium	falciparum	GO:0005515	molecular_function	"protein binding"	PFA0110W
+8.154400e-01	1	15	220	2072	7015	Plasmodium	falciparum	GO:0018995	cellular_component	"host"	PFA0110W
+9.856080e-01	5	15	1507	2604	7015	Plasmodium	falciparum	GO:0007582	biological_process	"physiological process"	MAL13P1.214	PF08_0055	PFA0110W	PFD0450C	PFL2505C
+4.429640e-01	1	15	79	2072	7015	Plasmodium	falciparum	GO:0031974	cellular_component	"membrane-enclosed lumen"	PF08_0055
+7.649220e-01	1	15	190	2072	7015	Plasmodium	falciparum	GO:0020002	cellular_component	"host cell plasma membrane"	PFA0110W
+9.999980e-01	3	15	1512	2072	7015	Plasmodium	falciparum	GO:0044464	cellular_component	"cell part"	PF08_0055	PFD0450C	PFL2505C
+7.055750e-01	2	15	407	2604	7015	Plasmodium	falciparum	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	PF08_0055	PFD0450C
+8.154400e-01	1	15	220	2072	7015	Plasmodium	falciparum	GO:0043245	cellular_component	"extraorganismal space"	PFA0110W
+8.048090e-01	1	15	268	2604	7015	Plasmodium	falciparum	GO:0009059	biological_process	"macromolecule biosynthesis"	PFL2505C
+9.900110e-01	1	15	546	2072	7015	Plasmodium	falciparum	GO:0009536	cellular_component	"plastid"	PFL2505C
+9.907160e-01	5	15	1561	2604	7015	Plasmodium	falciparum	GO:0009987	biological_process	"cellular process"	MAL13P1.214	PF08_0055	PFA0110W	PFD0450C	PFL2505C
+1.793730e-01	1	15	34	2604	7015	Plasmodium	falciparum	GO:0008380	biological_process	"RNA splicing"	PFD0450C
+8.158970e-01	1	15	300	2819	7015	Plasmodium	falciparum	GO:0016740	molecular_function	"transferase activity"	MAL13P1.214
+8.853350e-02	1	15	16	2604	7015	Plasmodium	falciparum	GO:0046467	biological_process	"membrane lipid biosynthesis"	MAL13P1.214
+9.972500e-01	3	15	1060	2072	7015	Plasmodium	falciparum	GO:0043229	cellular_component	"intracellular organelle"	PF08_0055	PFD0450C	PFL2505C
+6.185660e-01	1	15	175	2819	7015	Plasmodium	falciparum	GO:0003723	molecular_function	"RNA binding"	PFD0450C
+9.798890e-01	5	15	1463	2604	7015	Plasmodium	falciparum	GO:0050875	biological_process	"cellular physiological process"	MAL13P1.214	PF08_0055	PFA0110W	PFD0450C	PFL2505C
+5.493820e-01	2	15	247	2072	7015	Plasmodium	falciparum	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	PF08_0055	PFL2505C
+8.625470e-01	2	15	556	2604	7015	Plasmodium	falciparum	GO:0043283	biological_process	"biopolymer metabolism"	PF08_0055	PFD0450C
+7.409080e-01	2	15	345	2072	7015	Plasmodium	falciparum	GO:0044446	cellular_component	"intracellular organelle part"	PF08_0055	PFD0450C
+5.321040e-03	1	15	1	2819	7015	Plasmodium	falciparum	GO:0000234	molecular_function	"phosphoethanolamine N-methyltransferase activity"	MAL13P1.214
+8.540730e-01	5	15	1131	2604	7015	Plasmodium	falciparum	GO:0044238	biological_process	"primary metabolism"	MAL13P1.214	PF08_0055	PFA0110W	PFD0450C	PFL2505C
+8.961880e-01	1	15	364	2604	7015	Plasmodium	falciparum	GO:0044249	biological_process	"cellular biosynthesis"	PFL2505C
+9.972500e-01	3	15	1060	2072	7015	Plasmodium	falciparum	GO:0043226	cellular_component	"organelle"	PF08_0055	PFD0450C	PFL2505C
+4.561170e-01	2	15	209	2072	7015	Plasmodium	falciparum	GO:0005634	cellular_component	"nucleus"	PF08_0055	PFD0450C
+1.294710e-01	1	15	19	2072	7015	Plasmodium	falciparum	GO:0005732	cellular_component	"small nucleolar ribonucleoprotein complex"	PF08_0055
+2.556030e-02	10	15	1087	2819	7015	Plasmodium	falciparum	GO:0005554	molecular_function	"molecular function unknown"	MAL13P1.308	PF10_0115	PF11_0291	PF14_0257	PF14_0344	PFA0410W	PFB0640C	PFD0090C	PFI1475W	PFL2505C
+9.907060e-02	1	15	18	2604	7015	Plasmodium	falciparum	GO:0006644	biological_process	"phospholipid metabolism"	MAL13P1.214
+3.153210e-02	1	15	6	2819	7015	Plasmodium	falciparum	GO:0008170	molecular_function	"N-methyltransferase activity"	MAL13P1.214
+9.996500e-01	1	15	850	2072	7015	Plasmodium	falciparum	GO:0044444	cellular_component	"cytoplasmic part"	PFL2505C
+1.535240e-01	2	15	97	2072	7015	Plasmodium	falciparum	GO:0044428	cellular_component	"nuclear part"	PF08_0055	PFD0450C

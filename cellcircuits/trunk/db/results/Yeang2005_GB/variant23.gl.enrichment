@@ -1,0 +1,249 @@
+#USING GGC1 instead of its synonym YHM1 in Saccharomyces cerevisiae
+#USING ORT1 instead of its synonym ARG11 in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+6.813640e-02	1	20	23	6526	97048	Saccharomyces	cerevisiae	GO:0016538	molecular_function	"cyclin-dependent protein kinase regulator activity"	PCL5
+4.787770e-02	1	20	16	6526	97048	Saccharomyces	cerevisiae	GO:0015179	molecular_function	"L-amino acid transporter activity"	ARG11
+4.134600e-01	1	20	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	ARO1
+2.421840e-02	1	20	8	6526	97048	Saccharomyces	cerevisiae	GO:0006808	biological_process	"regulation of nitrogen utilization"	GLN3
+5.824340e-02	15	20	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GLN3	IDH1	IDH2	IDP1	RTG3	YHM1	YHR162W
+8.785650e-04	2	20	14	6526	97048	Saccharomyces	cerevisiae	GO:0019740	biological_process	"nitrogen utilization"	GLN3	UGA3
+9.837670e-03	16	20	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	RTG3	UGA3
+1.607450e-04	9	20	27	6526	97048	Saccharomyces	cerevisiae	GO:0009084	biological_process	"glutamine family amino acid biosynthesis"	ACO1	ARG1	ARG11	ARG4	ARG5,6	CPA2	IDH1	IDH2	IDP1
+2.254850e-02	2	20	76	6526	97048	Saccharomyces	cerevisiae	GO:0045941	biological_process	"positive regulation of transcription"	GLN3	UGA3
+1.276390e-02	16	20	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	RTG3	UGA3
+8.402360e-04	6	20	165	6526	97048	Saccharomyces	cerevisiae	GO:0031980	cellular_component	"mitochondrial lumen"	ACO1	ARG5,6	CHA1	IDH1	IDH2	IDP1
+1.313080e-04	3	20	18	6526	97048	Saccharomyces	cerevisiae	GO:0051187	biological_process	"cofactor catabolism"	ACO1	IDH1	IDH2
+5.863540e-03	4	20	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	ACO1	IDH1	IDH2	IDP1
+3.833110e-02	19	20	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	PCL5	RTG3	UGA3	YHM1	YHR162W
+4.228820e-03	4	20	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	ACO1	IDH1	IDH2	IDP1
+1.949300e-02	11	20	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	ACO1	ARG1	ARG4	ARG5,6	ARO1	CHA1	CPA2	HIS4	IDH1	IDH2	IDP1
+7.201660e-01	3	20	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	GCN4	GLN3	UGA3
+1.105650e-02	2	20	52	6526	97048	Saccharomyces	cerevisiae	GO:0016563	molecular_function	"transcriptional activator activity"	GCN4	GLN3
+2.280760e-01	1	20	84	6526	97048	Saccharomyces	cerevisiae	GO:0015931	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid transport"	YHM1
+9.732790e-01	4	20	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	ACO1	IDH1	IDH2	IDP1
+3.985430e-01	1	20	164	6526	97048	Saccharomyces	cerevisiae	GO:0005743	cellular_component	"mitochondrial inner membrane"	YHM1
+9.148190e-03	1	20	3	6526	97048	Saccharomyces	cerevisiae	GO:0006567	biological_process	"threonine catabolism"	CHA1
+9.148190e-03	1	20	3	6526	97048	Saccharomyces	cerevisiae	GO:0004086	molecular_function	"carbamoyl-phosphate synthase activity"	CPA2
+1.000000e+00	20	20	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	PCL5	PTR2	RTG3	UGA3	YHM1	YHR162W
+3.004340e-02	6	20	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	ACO1	ARG5,6	CHA1	IDH1	IDH2	IDP1
+3.725050e-04	2	20	9	6526	97048	Saccharomyces	cerevisiae	GO:0019794	biological_process	"nonprotein amino acid metabolism"	ARG1	ARG5,6
+6.238880e-02	1	20	21	6526	97048	Saccharomyces	cerevisiae	GO:0009072	biological_process	"aromatic amino acid family metabolism"	ARO1
+2.621060e-02	3	20	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	GCN4	GLN3	UGA3
+1.366740e-04	4	20	23	6526	97048	Saccharomyces	cerevisiae	GO:0042645	cellular_component	"mitochondrial nucleoid"	ACO1	CHA1	IDH1	IDP1
+8.143420e-05	4	20	13	6526	97048	Saccharomyces	cerevisiae	GO:0006537	biological_process	"glutamate biosynthesis"	ACO1	IDH1	IDH2	IDP1
+1.183460e-01	1	20	41	6526	97048	Saccharomyces	cerevisiae	GO:0005275	molecular_function	"amine transporter activity"	ARG11
+1.371680e-01	1	20	48	6526	97048	Saccharomyces	cerevisiae	GO:0015837	biological_process	"amine transport"	ARG11
+1.986720e-02	2	20	71	6526	97048	Saccharomyces	cerevisiae	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	GLN3	UGA3
+1.217980e-02	1	20	4	6526	97048	Saccharomyces	cerevisiae	GO:0006862	biological_process	"nucleotide transport"	YHM1
+9.363920e-05	5	20	15	6526	97048	Saccharomyces	cerevisiae	GO:0006525	biological_process	"arginine metabolism"	ARG1	ARG11	ARG4	ARG5,6	CPA2
+3.191370e-05	3	20	5	6526	97048	Saccharomyces	cerevisiae	GO:0004448	molecular_function	"isocitrate dehydrogenase activity"	IDH1	IDH2	IDP1
+6.255160e-03	3	20	121	6526	97048	Saccharomyces	cerevisiae	GO:0006732	biological_process	"coenzyme metabolism"	ACO1	IDH1	IDH2
+2.743120e-04	3	20	20	6526	97048	Saccharomyces	cerevisiae	GO:0006084	biological_process	"acetyl-CoA metabolism"	ACO1	IDH1	IDH2
+1.451170e-01	1	20	51	6526	97048	Saccharomyces	cerevisiae	GO:0046942	biological_process	"carboxylic acid transport"	ARG11
+4.278350e-02	4	20	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	ARG5,6	GCN4	GLN3	UGA3
+2.720610e-02	1	20	9	6526	97048	Saccharomyces	cerevisiae	GO:0016884	molecular_function	"carbon-nitrogen ligase activity, with glutamine as amido-N-donor"	CPA2
+4.201460e-02	1	20	14	6526	97048	Saccharomyces	cerevisiae	GO:0009075	biological_process	"histidine family amino acid metabolism"	HIS4
+5.562110e-03	4	20	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	ACO1	IDH1	IDH2	IDP1
+4.004730e-03	9	20	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	ACO1	ARG11	ARG5,6	CHA1	IDH1	IDH2	IDP1	YHM1	YHR162W
+5.415600e-01	1	20	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	PTR2
+1.371680e-01	1	20	48	6526	97048	Saccharomyces	cerevisiae	GO:0046916	biological_process	"transition metal ion homeostasis"	YHM1
+5.554320e-01	3	20	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	ARG11	PTR2	YHM1
+5.079640e-02	1	20	17	6526	97048	Saccharomyces	cerevisiae	GO:0016814	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds, in cyclic amidines"	HIS4
+5.410840e-02	2	20	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	RTG3	UGA3
+8.234990e-02	1	20	28	6526	97048	Saccharomyces	cerevisiae	GO:0009063	biological_process	"amino acid catabolism"	CHA1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0003942	molecular_function	"N-acetyl-gamma-glutamyl-phosphate reductase activity"	ARG5,6
+9.583560e-01	2	20	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	CPA2	PCL5
+1.762210e-01	1	20	63	6526	97048	Saccharomyces	cerevisiae	GO:0016810	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds"	HIS4
+1.244220e-01	4	20	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	ARG5,6	GCN4	GLN3	UGA3
+8.043250e-01	1	20	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	ARG11
+7.384670e-02	1	20	25	6526	97048	Saccharomyces	cerevisiae	GO:0016903	molecular_function	"oxidoreductase activity, acting on the aldehyde or oxo group of donors"	ARG5,6
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0004635	molecular_function	"phosphoribosyl-AMP cyclohydrolase activity"	HIS4
+1.291490e-01	1	20	45	6526	97048	Saccharomyces	cerevisiae	GO:0009066	biological_process	"aspartate family amino acid metabolism"	CHA1
+9.148190e-03	1	20	3	6526	97048	Saccharomyces	cerevisiae	GO:0003941	molecular_function	"L-serine ammonia-lyase activity"	CHA1
+1.821670e-02	1	20	6	6526	97048	Saccharomyces	cerevisiae	GO:0015807	biological_process	"L-amino acid transport"	ARG11
+1.159640e-01	18	20	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	IDH1	IDH2	IDP1	PCL5	RTG3	UGA3	YHM1	YHR162W
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0004056	molecular_function	"argininosuccinate lyase activity"	ARG4
+4.201460e-02	1	20	14	6526	97048	Saccharomyces	cerevisiae	GO:0000105	biological_process	"histidine biosynthesis"	HIS4
+2.955510e-02	2	20	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	GLN3	UGA3
+2.989770e-01	1	20	115	6526	97048	Saccharomyces	cerevisiae	GO:0007242	biological_process	"intracellular signaling cascade"	RTG3
+4.302790e-04	5	20	75	6526	97048	Saccharomyces	cerevisiae	GO:0016614	molecular_function	"oxidoreductase activity, acting on CH-OH group of donors"	ARO1	HIS4	IDH1	IDH2	IDP1
+3.004340e-02	6	20	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	ACO1	ARG5,6	CHA1	IDH1	IDH2	IDP1
+2.105360e-02	19	20	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	PCL5	PTR2	RTG3	UGA3	YHM1
+9.077880e-02	1	20	31	6526	97048	Saccharomyces	cerevisiae	GO:0044270	biological_process	"nitrogen compound catabolism"	CHA1
+1.223200e-01	2	20	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	ARG5,6	ARO1
+5.487880e-01	1	20	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	HIS4
+5.079640e-02	1	20	17	6526	97048	Saccharomyces	cerevisiae	GO:0019438	biological_process	"aromatic compound biosynthesis"	ARO1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0003856	molecular_function	"3-dehydroquinate synthase activity"	ARO1
+4.631110e-01	5	20	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	ARG5,6	GCN4	GLN3	RTG3	UGA3
+4.201460e-02	1	20	14	6526	97048	Saccharomyces	cerevisiae	GO:0006547	biological_process	"histidine metabolism"	HIS4
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0015822	biological_process	"L-ornithine transport"	ARG11
+4.097640e-01	1	20	170	6526	97048	Saccharomyces	cerevisiae	GO:0019866	cellular_component	"organelle inner membrane"	YHM1
+1.074160e-01	1	20	37	6526	97048	Saccharomyces	cerevisiae	GO:0006865	biological_process	"amino acid transport"	ARG11
+2.421840e-02	1	20	8	6526	97048	Saccharomyces	cerevisiae	GO:0051171	biological_process	"regulation of nitrogen metabolism"	GLN3
+2.675370e-02	4	20	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	ACO1	CHA1	IDH1	IDH2
+2.161010e-05	2	20	2	6526	97048	Saccharomyces	cerevisiae	GO:0004449	molecular_function	"isocitrate dehydrogenase (NAD+) activity"	IDH1	IDH2
+1.763390e-02	5	20	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	ARG5,6	GCN4	GLN3	RTG3	UGA3
+5.502200e-01	1	20	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	HIS4
+6.379650e-01	2	20	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	ARG5,6	ARO1
+1.989680e-02	4	20	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	ARG5,6	GCN4	GLN3	UGA3
+1.042220e-03	13	20	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+1.329220e-01	3	20	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	ARG11	PTR2	YHM1
+1.477510e-01	1	20	52	6526	97048	Saccharomyces	cerevisiae	GO:0005342	molecular_function	"organic acid transporter activity"	ARG11
+1.821670e-02	1	20	6	6526	97048	Saccharomyces	cerevisiae	GO:0019795	biological_process	"nonprotein amino acid biosynthesis"	ARG5,6
+5.659920e-04	12	20	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+1.704280e-02	19	20	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	PCL5	PTR2	RTG3	UGA3	YHM1
+3.679200e-01	8	20	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	ACO1	ARG11	ARG5,6	CHA1	IDH1	IDH2	IDP1	YHM1
+1.045360e-04	3	20	15	6526	97048	Saccharomyces	cerevisiae	GO:0006099	biological_process	"tricarboxylic acid cycle"	ACO1	IDH1	IDH2
+3.018510e-02	1	20	10	6526	97048	Saccharomyces	cerevisiae	GO:0000307	cellular_component	"cyclin-dependent protein kinase holoenzyme complex"	PCL5
+5.594070e-04	4	20	82	6526	97048	Saccharomyces	cerevisiae	GO:0016829	molecular_function	"lyase activity"	ACO1	ARG4	ARO1	CHA1
+3.140640e-03	2	20	27	6526	97048	Saccharomyces	cerevisiae	GO:0016836	molecular_function	"hydro-lyase activity"	ACO1	ARO1
+1.109910e-01	4	20	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	ACO1	ARG1	ARG4	GLN3
+3.191370e-05	3	20	5	6526	97048	Saccharomyces	cerevisiae	GO:0006102	biological_process	"isocitrate metabolism"	IDH1	IDH2	IDP1
+5.614260e-03	16	20	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	RTG3	UGA3
+1.477510e-01	1	20	52	6526	97048	Saccharomyces	cerevisiae	GO:0015849	biological_process	"organic acid transport"	ARG11
+3.018510e-02	1	20	10	6526	97048	Saccharomyces	cerevisiae	GO:0015932	molecular_function	"nucleobase, nucleoside, nucleotide and nucleic acid transporter activity"	YHM1
+5.937810e-02	1	20	20	6526	97048	Saccharomyces	cerevisiae	GO:0016620	molecular_function	"oxidoreductase activity, acting on the aldehyde or oxo group of donors, NAD or NADP as acceptor"	ARG5,6
+4.206980e-01	13	20	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	ACO1	ARG11	ARG5,6	CHA1	GCN4	GLN3	IDH1	IDH2	IDP1	RTG3	UGA3	YHM1	YHR162W
+2.745600e-01	1	20	104	6526	97048	Saccharomyces	cerevisiae	GO:0006873	biological_process	"cell ion homeostasis"	YHM1
+8.769570e-01	2	20	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	ACO1	YHM1
+2.713240e-02	2	20	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	GLN3	UGA3
+4.783210e-04	4	20	73	6526	97048	Saccharomyces	cerevisiae	GO:0006092	biological_process	"main pathways of carbohydrate metabolism"	ACO1	IDH1	IDH2	IDP1
+9.977660e-01	1	20	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YHR162W
+6.075220e-01	3	20	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	ARG11	PTR2	YHM1
+1.999050e-02	13	20	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	ACO1	ARG1	ARG11	ARG4	ARG5,6	CHA1	CPA2	GLN3	IDH1	IDH2	IDP1	YHM1	YHR162W
+8.587810e-01	2	20	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	PTR2	YHM1
+8.576780e-01	1	20	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YHM1
+3.315550e-02	1	20	11	6526	97048	Saccharomyces	cerevisiae	GO:0006839	biological_process	"mitochondrial transport"	ARG11
+2.097020e-03	12	20	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+2.792530e-02	20	20	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	PCL5	PTR2	RTG3	UGA3	YHM1	YHR162W
+1.529960e-01	1	20	54	6526	97048	Saccharomyces	cerevisiae	GO:0030005	biological_process	"di-, tri-valent inorganic cation homeostasis"	YHM1
+3.679200e-01	8	20	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	ACO1	ARG11	ARG5,6	CHA1	IDH1	IDH2	IDP1	YHM1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0004399	molecular_function	"histidinol dehydrogenase activity"	HIS4
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0000066	biological_process	"mitochondrial ornithine transport"	ARG11
+5.701230e-01	3	20	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	ARG11	PTR2	YHM1
+9.637360e-04	13	20	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+1.217980e-02	1	20	4	6526	97048	Saccharomyces	cerevisiae	GO:0016774	molecular_function	"phosphotransferase activity, carboxyl group as acceptor"	ARG5,6
+1.335960e-01	4	20	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	ARG5,6	GCN4	GLN3	UGA3
+4.153000e-01	1	20	173	6526	97048	Saccharomyces	cerevisiae	GO:0007165	biological_process	"signal transduction"	RTG3
+8.106730e-01	1	20	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	ARG11
+9.058420e-04	13	20	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+4.526850e-01	1	20	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	RTG3
+1.520270e-02	1	20	5	6526	97048	Saccharomyces	cerevisiae	GO:0016841	molecular_function	"ammonia-lyase activity"	CHA1
+2.713240e-02	2	20	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	GLN3	UGA3
+4.146720e-02	2	20	106	6526	97048	Saccharomyces	cerevisiae	GO:0007005	biological_process	"mitochondrion organization and biogenesis"	ACO1	YHM1
+9.913400e-02	1	20	34	6526	97048	Saccharomyces	cerevisiae	GO:0016765	molecular_function	"transferase activity, transferring alkyl or aryl (other than methyl) groups"	ARO1
+9.148190e-03	1	20	3	6526	97048	Saccharomyces	cerevisiae	GO:0004450	molecular_function	"isocitrate dehydrogenase (NADP+) activity"	IDP1
+1.685480e-01	1	20	60	6526	97048	Saccharomyces	cerevisiae	GO:0045944	biological_process	"positive regulation of transcription from RNA polymerase II promoter"	GLN3
+2.578790e-01	13	20	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	ACO1	ARG11	ARG5,6	CHA1	GCN4	GLN3	IDH1	IDH2	IDP1	RTG3	UGA3	YHM1	YHR162W
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0004764	molecular_function	"shikimate 5-dehydrogenase activity"	ARO1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0003866	molecular_function	"3-phosphoshikimate 1-carboxyvinyltransferase activity"	ARO1
+8.402360e-04	6	20	165	6526	97048	Saccharomyces	cerevisiae	GO:0005759	cellular_component	"mitochondrial matrix"	ACO1	ARG5,6	CHA1	IDH1	IDH2	IDP1
+1.711830e-02	4	20	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	GCN4	GLN3	RTG3	UGA3
+2.835310e-01	1	20	108	6526	97048	Saccharomyces	cerevisiae	GO:0050801	biological_process	"ion homeostasis"	YHM1
+3.252660e-01	2	20	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	ARG11	YHM1
+1.000000e+00	20	20	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	PCL5	PTR2	RTG3	UGA3	YHM1	YHR162W
+6.107680e-03	1	20	2	6526	97048	Saccharomyces	cerevisiae	GO:0003994	molecular_function	"aconitate hydratase activity"	ACO1
+2.955510e-02	2	20	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	GLN3	UGA3
+2.989770e-01	1	20	115	6526	97048	Saccharomyces	cerevisiae	GO:0019725	biological_process	"cell homeostasis"	YHM1
+1.821670e-02	1	20	6	6526	97048	Saccharomyces	cerevisiae	GO:0006591	biological_process	"ornithine metabolism"	ARG5,6
+1.258300e-03	6	20	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	ARG5,6	ARO1	HIS4	IDH1	IDH2	IDP1
+1.148930e-02	3	20	153	6526	97048	Saccharomyces	cerevisiae	GO:0051186	biological_process	"cofactor metabolism"	ACO1	IDH1	IDH2
+2.578790e-01	13	20	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	ACO1	ARG11	ARG5,6	CHA1	GCN4	GLN3	IDH1	IDH2	IDP1	RTG3	UGA3	YHM1	YHR162W
+1.000000e+00	20	20	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	PCL5	PTR2	RTG3	UGA3	YHM1	YHR162W
+1.832860e-02	2	20	68	6526	97048	Saccharomyces	cerevisiae	GO:0016879	molecular_function	"ligase activity, forming carbon-nitrogen bonds"	ARG1	CPA2
+1.217980e-02	1	20	4	6526	97048	Saccharomyces	cerevisiae	GO:0006101	biological_process	"citrate metabolism"	ACO1
+4.201460e-02	1	20	14	6526	97048	Saccharomyces	cerevisiae	GO:0009076	biological_process	"histidine family amino acid biosynthesis"	HIS4
+3.018510e-02	1	20	10	6526	97048	Saccharomyces	cerevisiae	GO:0009068	biological_process	"aspartate family amino acid catabolism"	CHA1
+1.408120e-01	4	20	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	ARG5,6	GCN4	GLN3	UGA3
+1.520270e-02	1	20	5	6526	97048	Saccharomyces	cerevisiae	GO:0009071	biological_process	"serine family amino acid catabolism"	CHA1
+7.099580e-02	1	20	24	6526	97048	Saccharomyces	cerevisiae	GO:0009069	biological_process	"serine family amino acid metabolism"	CHA1
+4.298200e-01	1	20	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	PCL5
+4.993150e-02	4	20	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	GCN4	GLN3	RTG3	UGA3
+3.252660e-01	2	20	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	ARG11	YHM1
+2.421840e-02	1	20	8	6526	97048	Saccharomyces	cerevisiae	GO:0006566	biological_process	"threonine metabolism"	CHA1
+9.148190e-03	1	20	3	6526	97048	Saccharomyces	cerevisiae	GO:0004088	molecular_function	"carbamoyl-phosphate synthase (glutamine-hydrolyzing) activity"	CPA2
+9.077880e-02	1	20	31	6526	97048	Saccharomyces	cerevisiae	GO:0009310	biological_process	"amine catabolism"	CHA1
+3.238620e-01	3	20	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	GCN4	GLN3	UGA3
+3.455640e-03	4	20	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	ACO1	IDH1	IDH2	IDP1
+5.091240e-02	4	20	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	ARG5,6	GCN4	GLN3	UGA3
+1.520270e-02	1	20	5	6526	97048	Saccharomyces	cerevisiae	GO:0015197	molecular_function	"peptide transporter activity"	PTR2
+1.281400e-03	13	20	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+1.217980e-02	1	20	4	6526	97048	Saccharomyces	cerevisiae	GO:0015833	biological_process	"peptide transport"	PTR2
+1.366740e-04	4	20	23	6526	97048	Saccharomyces	cerevisiae	GO:0009295	cellular_component	"nucleoid"	ACO1	CHA1	IDH1	IDP1
+5.371710e-01	1	20	247	6526	97048	Saccharomyces	cerevisiae	GO:0031966	cellular_component	"mitochondrial membrane"	YHM1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0000052	biological_process	"citrulline metabolism"	ARG1
+9.357200e-02	1	20	32	6526	97048	Saccharomyces	cerevisiae	GO:0015171	molecular_function	"amino acid transporter activity"	ARG11
+8.797740e-02	1	20	30	6526	97048	Saccharomyces	cerevisiae	GO:0006879	biological_process	"iron ion homeostasis"	YHM1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0004765	molecular_function	"shikimate kinase activity"	ARO1
+9.269780e-01	3	20	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	ACO1	ARG11	YHM1
+6.107680e-03	1	20	2	6526	97048	Saccharomyces	cerevisiae	GO:0015216	molecular_function	"purine nucleotide transporter activity"	YHM1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0004055	molecular_function	"argininosuccinate synthase activity"	ARG1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0000053	biological_process	"argininosuccinate metabolism"	ARG1
+1.582110e-01	1	20	56	6526	97048	Saccharomyces	cerevisiae	GO:0006725	biological_process	"aromatic compound metabolism"	ARO1
+6.288040e-05	5	20	10	6526	97048	Saccharomyces	cerevisiae	GO:0006526	biological_process	"arginine biosynthesis"	ARG1	ARG11	ARG4	ARG5,6	CPA2
+9.945130e-01	1	20	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YHR162W
+1.608060e-01	1	20	57	6526	97048	Saccharomyces	cerevisiae	GO:0006352	biological_process	"transcription initiation"	RTG3
+2.955510e-02	2	20	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	GLN3	UGA3
+2.697560e-02	4	20	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	ARG5,6	GCN4	GLN3	UGA3
+5.255630e-02	2	20	121	6526	97048	Saccharomyces	cerevisiae	GO:0016874	molecular_function	"ligase activity"	ARG1	CPA2
+2.470010e-01	1	20	92	6526	97048	Saccharomyces	cerevisiae	GO:0030003	biological_process	"cation homeostasis"	YHM1
+5.502200e-01	1	20	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	HIS4
+9.177810e-01	1	20	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	HIS4
+1.318300e-01	1	20	46	6526	97048	Saccharomyces	cerevisiae	GO:0019207	molecular_function	"kinase regulator activity"	PCL5
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0003991	molecular_function	"acetylglutamate kinase activity"	ARG5,6
+1.449140e-02	2	20	60	6526	97048	Saccharomyces	cerevisiae	GO:0003700	molecular_function	"transcription factor activity"	GLN3	UGA3
+5.185790e-03	2	20	35	6526	97048	Saccharomyces	cerevisiae	GO:0016835	molecular_function	"carbon-oxygen lyase activity"	ACO1	ARO1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0003855	molecular_function	"3-dehydroquinate dehydratase activity"	ARO1
+2.146550e-01	2	20	283	6526	97048	Saccharomyces	cerevisiae	GO:0005740	cellular_component	"mitochondrial envelope"	ARG11	YHM1
+3.119630e-01	1	20	121	6526	97048	Saccharomyces	cerevisiae	GO:0042592	biological_process	"homeostasis"	YHM1
+3.875980e-04	5	20	67	6526	97048	Saccharomyces	cerevisiae	GO:0016616	molecular_function	"oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor"	ARO1	HIS4	IDH1	IDH2	IDP1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0001408	biological_process	"guanine nucleotide transport"	YHM1
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0000064	molecular_function	"L-ornithine transporter activity"	ARG11
+2.783030e-02	20	20	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	PCL5	PTR2	RTG3	UGA3	YHM1	YHR162W
+1.821670e-02	1	20	6	6526	97048	Saccharomyces	cerevisiae	GO:0031930	biological_process	"mitochondrial signaling pathway"	RTG3
+8.044010e-03	2	20	44	6526	97048	Saccharomyces	cerevisiae	GO:0003704	molecular_function	"specific RNA polymerase II transcription factor activity"	RTG3	UGA3
+9.985030e-05	4	20	16	6526	97048	Saccharomyces	cerevisiae	GO:0006536	biological_process	"glutamate metabolism"	ACO1	IDH1	IDH2	IDP1
+1.217980e-02	1	20	4	6526	97048	Saccharomyces	cerevisiae	GO:0006592	biological_process	"ornithine biosynthesis"	ARG5,6
+4.103460e-03	2	20	31	6526	97048	Saccharomyces	cerevisiae	GO:0000002	biological_process	"mitochondrial genome maintenance"	ACO1	YHM1
+1.893970e-02	19	20	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	PCL5	PTR2	RTG3	UGA3	YHM1
+1.318300e-01	1	20	46	6526	97048	Saccharomyces	cerevisiae	GO:0006367	biological_process	"transcription initiation from RNA polymerase II promoter"	RTG3
+1.520270e-02	1	20	5	6526	97048	Saccharomyces	cerevisiae	GO:0019541	biological_process	"propionate metabolism"	ACO1
+4.206980e-01	13	20	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	ACO1	ARG11	ARG5,6	CHA1	GCN4	GLN3	IDH1	IDH2	IDP1	RTG3	UGA3	YHM1	YHR162W
+2.547760e-04	9	20	43	6526	97048	Saccharomyces	cerevisiae	GO:0009064	biological_process	"glutamine family amino acid metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	CPA2	IDH1	IDH2	IDP1
+1.581000e-03	8	20	436	6526	97048	Saccharomyces	cerevisiae	GO:0044429	cellular_component	"mitochondrial part"	ACO1	ARG11	ARG5,6	CHA1	IDH1	IDH2	IDP1	YHM1
+7.387910e-02	3	20	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	GCN4	GLN3	UGA3
+1.045360e-04	3	20	15	6526	97048	Saccharomyces	cerevisiae	GO:0046356	biological_process	"acetyl-CoA catabolism"	ACO1	IDH1	IDH2
+6.107680e-03	1	20	2	6526	97048	Saccharomyces	cerevisiae	GO:0004794	molecular_function	"threonine ammonia-lyase activity"	CHA1
+9.148190e-03	1	20	3	6526	97048	Saccharomyces	cerevisiae	GO:0015865	biological_process	"purine nucleotide transport"	YHM1
+2.173170e-02	3	20	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	GCN4	GLN3	UGA3
+1.099940e-03	15	20	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	GLN3	HIS4	IDH1	IDH2	IDP1	UGA3
+3.058290e-03	1	20	1	6526	97048	Saccharomyces	cerevisiae	GO:0001409	molecular_function	"guanine nucleotide transporter activity"	YHM1
+6.107680e-03	1	20	2	6526	97048	Saccharomyces	cerevisiae	GO:0016842	molecular_function	"amidine-lyase activity"	ARG4
+1.237640e-01	1	20	43	6526	97048	Saccharomyces	cerevisiae	GO:0019887	molecular_function	"protein kinase regulator activity"	PCL5
+4.787770e-02	1	20	16	6526	97048	Saccharomyces	cerevisiae	GO:0009073	biological_process	"aromatic amino acid family biosynthesis"	ARO1
+1.238920e-01	4	20	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	ARG5,6	GCN4	GLN3	UGA3
+9.148190e-03	1	20	3	6526	97048	Saccharomyces	cerevisiae	GO:0016838	molecular_function	"carbon-oxygen lyase activity, acting on phosphates"	ARO1
+2.122190e-02	1	20	7	6526	97048	Saccharomyces	cerevisiae	GO:0019238	molecular_function	"cyclohydrolase activity"	HIS4
+3.465070e-02	2	20	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	GLN3	UGA3
+2.395200e-03	3	20	83	6526	97048	Saccharomyces	cerevisiae	GO:0045333	biological_process	"cellular respiration"	ACO1	IDH1	IDH2
+2.059170e-03	12	20	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+8.268410e-01	1	20	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	ARG11
+8.981510e-01	4	20	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	GCN4	GLN3	RTG3	UGA3
+2.291220e-04	2	20	7	6526	97048	Saccharomyces	cerevisiae	GO:0016840	molecular_function	"carbon-nitrogen lyase activity"	ARG4	CHA1
+1.181640e-04	4	20	19	6526	97048	Saccharomyces	cerevisiae	GO:0006100	biological_process	"tricarboxylic acid cycle intermediate metabolism"	ACO1	IDH1	IDH2	IDP1
+9.363920e-05	5	20	15	6526	97048	Saccharomyces	cerevisiae	GO:0000051	biological_process	"urea cycle intermediate metabolism"	ARG1	ARG11	ARG4	ARG5,6	CPA2
+9.148190e-03	1	20	3	6526	97048	Saccharomyces	cerevisiae	GO:0015215	molecular_function	"nucleotide transporter activity"	YHM1
+6.079570e-04	12	20	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+2.054170e-03	3	20	78	6526	97048	Saccharomyces	cerevisiae	GO:0009060	biological_process	"aerobic respiration"	ACO1	IDH1	IDH2
+1.224110e-02	4	20	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	GCN4	GLN3	RTG3	UGA3
+6.107680e-03	1	20	2	6526	97048	Saccharomyces	cerevisiae	GO:0004636	molecular_function	"phosphoribosyl-ATP diphosphatase activity"	HIS4
+1.281400e-03	13	20	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CHA1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+6.107680e-03	1	20	2	6526	97048	Saccharomyces	cerevisiae	GO:0005951	cellular_component	"carbamoyl-phosphate synthase complex"	CPA2
+1.220390e-04	3	20	17	6526	97048	Saccharomyces	cerevisiae	GO:0009109	biological_process	"coenzyme catabolism"	ACO1	IDH1	IDH2
+2.422580e-02	2	20	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	GLN3	UGA3
+1.762210e-01	1	20	63	6526	97048	Saccharomyces	cerevisiae	GO:0006875	biological_process	"metal ion homeostasis"	YHM1
+6.079570e-04	12	20	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	ACO1	ARG1	ARG11	ARG4	ARG5,6	ARO1	CPA2	GCN4	HIS4	IDH1	IDH2	IDP1
+2.973030e-02	4	20	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	ACO1	CHA1	IDH1	IDH2
+7.276440e-01	1	20	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	PCL5
+1.398260e-01	1	20	49	6526	97048	Saccharomyces	cerevisiae	GO:0046943	molecular_function	"carboxylic acid transporter activity"	ARG11
+2.744280e-01	2	20	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	ARG5,6	ARO1

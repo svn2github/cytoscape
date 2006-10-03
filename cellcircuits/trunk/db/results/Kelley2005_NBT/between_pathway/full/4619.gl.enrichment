@@ -1,0 +1,129 @@
+#USING RET2 instead of its synonym YFR051C in Saccharomyces cerevisiae
+#USING SEC26 instead of its synonym YDR238C in Saccharomyces cerevisiae
+#USING BET3 instead of its synonym YKR068C in Saccharomyces cerevisiae
+#USING SEC28 instead of its synonym YIL076W in Saccharomyces cerevisiae
+#USING SEC17 instead of its synonym YBL050W in Saccharomyces cerevisiae
+#USING SEC22 instead of its synonym YLR268W in Saccharomyces cerevisiae
+#USING COP1 instead of its synonym YDL145C in Saccharomyces cerevisiae
+#USING COG3 instead of its synonym YER157W in Saccharomyces cerevisiae
+#USING BOS1 instead of its synonym YLR078C in Saccharomyces cerevisiae
+#USING BET1 instead of its synonym YIL004C in Saccharomyces cerevisiae
+#USING SLY1 instead of its synonym YDR189W in Saccharomyces cerevisiae
+#USING RET3 instead of its synonym YPL010W in Saccharomyces cerevisiae
+#USING REB1 instead of its synonym YBR049C in Saccharomyces cerevisiae
+#USING SEC27 instead of its synonym YGL137W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+7.109370e-05	9	14	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YDL145C	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YLR078C	YLR268W	YPL010W
+6.422980e-03	1	14	3	6526	97048	Saccharomyces	cerevisiae	GO:0006901	biological_process	"vesicle coating"	YIL076W
+9.779720e-06	8	14	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YDL145C	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YLR078C	YPL010W
+6.050900e-02	1	14	29	6526	97048	Saccharomyces	cerevisiae	GO:0006360	biological_process	"transcription from RNA polymerase I promoter"	YBR049C
+6.919790e-12	8	14	101	6526	97048	Saccharomyces	cerevisiae	GO:0031988	cellular_component	"membrane-bound vesicle"	YDL145C	YDR189W	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YPL010W
+1.732880e-02	12	14	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+5.296830e-11	6	14	36	6526	97048	Saccharomyces	cerevisiae	GO:0044433	cellular_component	"cytoplasmic vesicle part"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+7.760250e-02	14	14	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YBL050W	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+9.999570e-01	1	14	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YBR049C
+8.603340e-04	11	14	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YPL010W
+1.411030e-10	13	14	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+7.712600e-01	1	14	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YBR049C
+2.145270e-03	1	14	1	6526	97048	Saccharomyces	cerevisiae	GO:0006363	biological_process	"transcription termination from RNA polymerase I promoter"	YBR049C
+3.589350e-02	1	14	17	6526	97048	Saccharomyces	cerevisiae	GO:0006353	biological_process	"transcription termination"	YBR049C
+9.999710e-01	1	14	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YBR049C
+6.358520e-14	13	14	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+2.145270e-03	1	14	1	6526	97048	Saccharomyces	cerevisiae	GO:0005483	molecular_function	"soluble NSF attachment protein activity"	YBL050W
+1.312400e-01	13	14	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+8.057140e-02	1	14	39	6526	97048	Saccharomyces	cerevisiae	GO:0005625	cellular_component	"soluble fraction"	YER157W
+5.032640e-02	1	14	24	6526	97048	Saccharomyces	cerevisiae	GO:0042144	biological_process	"vacuole fusion, non-autophagic"	YBL050W
+4.697890e-01	3	14	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YDR189W	YFR051C	YPL010W
+1.704290e-02	1	14	8	6526	97048	Saccharomyces	cerevisiae	GO:0017119	cellular_component	"Golgi transport complex"	YER157W
+8.453580e-02	1	14	41	6526	97048	Saccharomyces	cerevisiae	GO:0007033	biological_process	"vacuole organization and biogenesis"	YBL050W
+2.977200e-03	13	14	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+2.723760e-02	2	14	122	6526	97048	Saccharomyces	cerevisiae	GO:0005789	cellular_component	"endoplasmic reticulum membrane"	YIL004C	YLR078C
+1.000000e+00	14	14	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YBL050W	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+7.390800e-19	13	14	221	6526	97048	Saccharomyces	cerevisiae	GO:0046903	biological_process	"secretion"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+1.160800e-05	3	14	24	6526	97048	Saccharomyces	cerevisiae	GO:0005484	molecular_function	"SNAP receptor activity"	YIL004C	YLR078C	YLR268W
+1.099210e-01	1	14	54	6526	97048	Saccharomyces	cerevisiae	GO:0008565	molecular_function	"protein transporter activity"	YER157W
+5.134540e-01	1	14	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	YBR049C
+2.145270e-03	1	14	1	6526	97048	Saccharomyces	cerevisiae	GO:0003715	molecular_function	"transcription termination factor activity"	YBR049C
+4.418810e-11	6	14	35	6526	97048	Saccharomyces	cerevisiae	GO:0048475	cellular_component	"coated membrane"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+8.708540e-04	2	14	21	6526	97048	Saccharomyces	cerevisiae	GO:0006891	biological_process	"intra-Golgi vesicle-mediated transport"	YER157W	YLR268W
+8.555450e-03	1	14	4	6526	97048	Saccharomyces	cerevisiae	GO:0000301	biological_process	"retrograde transport, vesicle recycling within Golgi"	YER157W
+3.520460e-07	4	14	30	6526	97048	Saccharomyces	cerevisiae	GO:0005478	molecular_function	"intracellular transporter activity"	YBL050W	YIL004C	YLR078C	YLR268W
+2.822020e-06	3	14	14	6526	97048	Saccharomyces	cerevisiae	GO:0005485	molecular_function	"v-SNARE activity"	YIL004C	YLR078C	YLR268W
+1.000000e+00	14	14	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YBL050W	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+2.475070e-11	6	14	32	6526	97048	Saccharomyces	cerevisiae	GO:0012506	cellular_component	"vesicle membrane"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+6.231660e-01	1	14	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YBR049C
+7.349700e-13	8	14	77	6526	97048	Saccharomyces	cerevisiae	GO:0030135	cellular_component	"coated vesicle"	YDL145C	YDR189W	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YPL010W
+1.368550e-13	8	14	63	6526	97048	Saccharomyces	cerevisiae	GO:0005798	cellular_component	"Golgi-associated vesicle"	YDL145C	YDR189W	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YPL010W
+1.085430e-10	13	14	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+2.977200e-03	13	14	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+1.000000e+00	14	14	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YBL050W	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+7.782540e-01	1	14	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YBR049C
+6.426390e-01	1	14	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YBR049C
+2.340630e-01	1	14	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	YBR049C
+6.451090e-01	1	14	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YBR049C
+5.848060e-02	1	14	28	6526	97048	Saccharomyces	cerevisiae	GO:0006906	biological_process	"vesicle fusion"	YLR268W
+4.418810e-11	6	14	35	6526	97048	Saccharomyces	cerevisiae	GO:0030117	cellular_component	"membrane coat"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+3.180080e-03	2	14	40	6526	97048	Saccharomyces	cerevisiae	GO:0030133	cellular_component	"transport vesicle"	YDR189W	YIL004C
+8.611570e-01	2	14	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YER157W	YKR068C
+7.618050e-01	1	14	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YBR049C
+8.555450e-03	1	14	4	6526	97048	Saccharomyces	cerevisiae	GO:0000149	molecular_function	"SNARE binding"	YDR189W
+3.196110e-02	2	14	133	6526	97048	Saccharomyces	cerevisiae	GO:0042175	cellular_component	"nuclear envelope-endoplasmic reticulum network"	YIL004C	YLR078C
+4.626720e-03	4	14	337	6526	97048	Saccharomyces	cerevisiae	GO:0005783	cellular_component	"endoplasmic reticulum"	YDR189W	YIL004C	YLR078C	YLR268W
+2.463140e-07	13	14	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+4.940190e-14	13	14	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+1.525520e-04	2	14	9	6526	97048	Saccharomyces	cerevisiae	GO:0000300	cellular_component	"peripheral to membrane of membrane fraction"	YBL050W	YER157W
+6.919790e-12	8	14	101	6526	97048	Saccharomyces	cerevisiae	GO:0031410	cellular_component	"cytoplasmic vesicle"	YDL145C	YDR189W	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YPL010W
+7.508290e-13	6	14	19	6526	97048	Saccharomyces	cerevisiae	GO:0030137	cellular_component	"COPI-coated vesicle"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+6.919790e-12	8	14	101	6526	97048	Saccharomyces	cerevisiae	GO:0016023	cellular_component	"cytoplasmic membrane-bound vesicle"	YDL145C	YDR189W	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YPL010W
+6.919790e-12	8	14	101	6526	97048	Saccharomyces	cerevisiae	GO:0031982	cellular_component	"vesicle"	YDL145C	YDR189W	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YPL010W
+2.755730e-02	1	14	13	6526	97048	Saccharomyces	cerevisiae	GO:0005801	cellular_component	"Golgi cis-face"	YKR068C
+5.666470e-01	1	14	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YBR049C
+4.381250e-01	1	14	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	YLR268W
+1.213830e-01	13	14	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+3.093260e-21	13	14	147	6526	97048	Saccharomyces	cerevisiae	GO:0048193	biological_process	"Golgi vesicle transport"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+2.519510e-02	2	14	117	6526	97048	Saccharomyces	cerevisiae	GO:0000267	cellular_component	"cell fraction"	YBL050W	YER157W
+9.052180e-02	3	14	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YDR189W	YFR051C	YPL010W
+2.013200e-11	6	14	31	6526	97048	Saccharomyces	cerevisiae	GO:0030120	cellular_component	"vesicle coat"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+7.838770e-16	6	14	8	6526	97048	Saccharomyces	cerevisiae	GO:0030663	cellular_component	"COPI coated vesicle membrane"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+2.475070e-11	6	14	32	6526	97048	Saccharomyces	cerevisiae	GO:0030662	cellular_component	"coated vesicle membrane"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+1.451320e-02	14	14	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YBL050W	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+7.838770e-16	6	14	8	6526	97048	Saccharomyces	cerevisiae	GO:0030126	cellular_component	"COPI vesicle coat"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+3.890000e-07	9	14	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YDL145C	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YLR078C	YLR268W	YPL010W
+7.740280e-02	14	14	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YBL050W	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+9.698770e-01	1	14	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YBR049C
+6.500580e-15	10	14	130	6526	97048	Saccharomyces	cerevisiae	GO:0044431	cellular_component	"Golgi apparatus part"	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YPL010W
+6.773130e-01	1	14	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YBR049C
+2.145270e-03	1	14	1	6526	97048	Saccharomyces	cerevisiae	GO:0003716	molecular_function	"RNA polymerase I transcription termination factor activity"	YBR049C
+4.810650e-19	13	14	214	6526	97048	Saccharomyces	cerevisiae	GO:0045045	biological_process	"secretory pathway"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+1.314340e-02	14	14	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YBL050W	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+5.307610e-01	1	14	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YBR049C
+1.285130e-03	5	14	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	YBL050W	YER157W	YIL004C	YLR078C	YLR268W
+8.252000e-03	13	14	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+5.079250e-01	1	14	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YBR049C
+1.189450e-02	14	14	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YBL050W	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+1.669080e-02	2	14	94	6526	97048	Saccharomyces	cerevisiae	GO:0016044	biological_process	"membrane organization and biogenesis"	YBL050W	YLR268W
+6.159270e-03	2	14	56	6526	97048	Saccharomyces	cerevisiae	GO:0006944	biological_process	"membrane fusion"	YBL050W	YLR268W
+8.603340e-04	11	14	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YPL010W
+3.271780e-17	13	14	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+1.345570e-03	2	14	26	6526	97048	Saccharomyces	cerevisiae	GO:0030134	cellular_component	"ER to Golgi transport vesicle"	YDR189W	YIL004C
+2.868850e-08	8	14	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	YDL145C	YDR238C	YFR051C	YGL137W	YIL004C	YIL076W	YLR078C	YPL010W
+3.477640e-01	1	14	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	YBR049C
+7.612370e-01	1	14	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YBR049C
+9.998980e-01	1	14	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YBR049C
+4.305340e-01	1	14	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	YLR268W
+1.317010e-02	2	14	83	6526	97048	Saccharomyces	cerevisiae	GO:0005624	cellular_component	"membrane fraction"	YBL050W	YER157W
+2.475070e-11	6	14	32	6526	97048	Saccharomyces	cerevisiae	GO:0030659	cellular_component	"cytoplasmic vesicle membrane"	YDL145C	YDR238C	YFR051C	YGL137W	YIL076W	YPL010W
+1.227360e-13	13	14	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+8.252000e-03	13	14	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YBR049C	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+9.937610e-01	1	14	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YBR049C
+3.240580e-02	2	14	134	6526	97048	Saccharomyces	cerevisiae	GO:0044432	cellular_component	"endoplasmic reticulum part"	YIL004C	YLR078C
+3.692280e-12	6	14	24	6526	97048	Saccharomyces	cerevisiae	GO:0006890	biological_process	"retrograde vesicle-mediated transport, Golgi to ER"	YDL145C	YFR051C	YGL137W	YIL004C	YLR268W	YPL010W
+9.270630e-01	1	14	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YBL050W
+2.126130e-02	1	14	10	6526	97048	Saccharomyces	cerevisiae	GO:0030008	cellular_component	"TRAPP complex"	YKR068C
+4.758700e-01	1	14	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	YBR049C
+8.555450e-03	1	14	4	6526	97048	Saccharomyces	cerevisiae	GO:0006900	biological_process	"vesicle budding"	YIL076W
+1.053980e-15	11	14	172	6526	97048	Saccharomyces	cerevisiae	GO:0005794	cellular_component	"Golgi apparatus"	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR268W	YPL010W
+5.911220e-01	5	14	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YDL145C	YDR238C	YGL137W	YIL076W	YKR068C
+2.745060e-10	13	14	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W
+2.248310e-22	12	14	76	6526	97048	Saccharomyces	cerevisiae	GO:0006888	biological_process	"ER to Golgi vesicle-mediated transport"	YBL050W	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W
+5.032240e-04	12	14	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YDL145C	YDR189W	YDR238C	YER157W	YFR051C	YGL137W	YIL004C	YIL076W	YKR068C	YLR078C	YLR268W	YPL010W

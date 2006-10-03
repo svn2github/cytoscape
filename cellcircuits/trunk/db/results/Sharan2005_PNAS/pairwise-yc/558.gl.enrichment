@@ -1,0 +1,377 @@
+#USING mek-1 instead of its synonym K08A8.1 in Caenorhabditis elegans
+#USING unc-43 instead of its synonym K11E8.1 in Caenorhabditis elegans
+#USING rpn-10 instead of its synonym B0205.3 in Caenorhabditis elegans
+#USING csn-5 instead of its synonym B0547.1 in Caenorhabditis elegans
+#USING mpk-1 instead of its synonym F43C1.2 in Caenorhabditis elegans
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+4.657480e-01	1	13	551	11710	88307	Caenorhabditis	elegans	GO:0008233	molecular_function	"peptidase activity"	C36B1.4
+1.132190e-02	4	13	844	11710	88307	Caenorhabditis	elegans	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	B0218.3	F59A6.1	K08A8.1	Y54E10BL.6
+3.307660e-01	3	13	1013	6495	88307	Caenorhabditis	elegans	GO:0005737	cellular_component	"cytoplasm"	F23F12.6	F56H1.4	K08A8.1
+2.811520e-03	1	13	6	27713	88307	Caenorhabditis	elegans	GO:0006289	biological_process	"nucleotide-excision repair"	ZK20.3
+9.599330e-01	6	13	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	B0205.3	B0547.1	F43C1.2	K08A8.1	K11E8.1	ZK20.3
+7.488650e-03	4	13	750	11710	88307	Caenorhabditis	elegans	GO:0004672	molecular_function	"protein kinase activity"	B0218.3	F59A6.1	K08A8.1	Y54E10BL.6
+4.635410e-02	5	13	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	B0218.3	C36B1.4	F59A6.1	Y54E10BL.6	ZK20.3
+9.878160e-01	4	13	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	B0205.3	K08A8.1	K11E8.1	ZK20.3
+1.629850e-02	1	13	35	27713	88307	Caenorhabditis	elegans	GO:0009607	biological_process	"response to biotic stimulus"	K08A8.1
+9.869230e-01	4	13	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	B0205.3	K08A8.1	K11E8.1	ZK20.3
+1.583630e-02	1	13	34	27713	88307	Caenorhabditis	elegans	GO:0009605	biological_process	"response to external stimulus"	K08A8.1
+5.178630e-03	7	13	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	B0218.3	C36B1.4	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6	ZK20.3
+8.324130e-01	5	13	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	C36B1.4	F23F12.6	F56H1.4	K08A8.1	ZK20.3
+4.690940e-04	1	13	1	27713	88307	Caenorhabditis	elegans	GO:0051240	biological_process	"positive regulation of organismal physiological process"	K08A8.1
+2.091690e-01	7	13	4582	11710	88307	Caenorhabditis	elegans	GO:0003824	molecular_function	"catalytic activity"	B0218.3	C36B1.4	F23F12.6	F56H1.4	F59A6.1	K08A8.1	Y54E10BL.6
+8.738220e-01	5	13	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	B0218.3	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6
+3.144000e-02	1	13	68	27713	88307	Caenorhabditis	elegans	GO:0009719	biological_process	"response to endogenous stimulus"	ZK20.3
+9.869230e-01	4	13	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	B0205.3	K08A8.1	K11E8.1	ZK20.3
+8.148290e-05	7	13	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	B0218.3	C36B1.4	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6	ZK20.3
+1.440110e-05	7	13	2063	27713	88307	Caenorhabditis	elegans	GO:0019538	biological_process	"protein metabolism"	B0218.3	C36B1.4	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6	ZK20.3
+1.073880e-02	1	13	23	27713	88307	Caenorhabditis	elegans	GO:0051347	biological_process	"positive regulation of transferase activity"	K08A8.1
+9.848750e-01	6	13	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	B0205.3	B0547.1	F43C1.2	K08A8.1	K11E8.1	ZK20.3
+1.000000e+00	12	13	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	B0205.3	B0218.3	B0547.1	C36B1.4	F23F12.6	F43C1.2	F56H1.4	F59A6.1	K08A8.1	K11E8.1	Y54E10BL.6	ZK20.3
+2.645620e-05	3	13	128	27713	88307	Caenorhabditis	elegans	GO:0043285	biological_process	"biopolymer catabolism"	C36B1.4	F23F12.6	F56H1.4
+3.925340e-02	1	13	20	6495	88307	Caenorhabditis	elegans	GO:0000502	cellular_component	"proteasome complex (sensu Eukaryota)"	C36B1.4
+8.493620e-03	5	13	1250	11710	88307	Caenorhabditis	elegans	GO:0005524	molecular_function	"ATP binding"	B0218.3	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6
+9.829000e-01	4	13	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	B0205.3	K08A8.1	K11E8.1	ZK20.3
+6.988690e-02	2	13	397	11710	88307	Caenorhabditis	elegans	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	F23F12.6	F56H1.4
+4.690940e-04	1	13	1	27713	88307	Caenorhabditis	elegans	GO:0050776	biological_process	"regulation of immune response"	K08A8.1
+5.148870e-03	1	13	11	27713	88307	Caenorhabditis	elegans	GO:0000165	biological_process	"MAPKKK cascade"	K08A8.1
+2.619970e-01	1	13	640	27713	88307	Caenorhabditis	elegans	GO:0048513	biological_process	"organ development"	F43C1.2
+5.397230e-02	1	13	118	27713	88307	Caenorhabditis	elegans	GO:0006512	biological_process	"ubiquitin cycle"	C36B1.4
+5.297090e-06	3	13	76	27713	88307	Caenorhabditis	elegans	GO:0030163	biological_process	"protein catabolism"	C36B1.4	F23F12.6	F56H1.4
+2.090970e-02	1	13	45	27713	88307	Caenorhabditis	elegans	GO:0050790	biological_process	"regulation of catalytic activity"	K08A8.1
+1.687570e-03	5	13	2043	27713	88307	Caenorhabditis	elegans	GO:0044260	biological_process	"cellular macromolecule metabolism"	B0218.3	C36B1.4	F59A6.1	Y54E10BL.6	ZK20.3
+3.216770e-01	1	13	815	27713	88307	Caenorhabditis	elegans	GO:0050874	biological_process	"organismal physiological process"	K08A8.1
+8.976980e-05	5	13	1084	27713	88307	Caenorhabditis	elegans	GO:0006464	biological_process	"protein modification"	B0218.3	C36B1.4	F59A6.1	Y54E10BL.6	ZK20.3
+8.884890e-03	3	13	402	11710	88307	Caenorhabditis	elegans	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	B0218.3	F59A6.1	Y54E10BL.6
+7.965180e-01	1	13	748	6495	88307	Caenorhabditis	elegans	GO:0043234	cellular_component	"protein complex"	C36B1.4
+9.599830e-01	6	13	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	B0205.3	B0547.1	F43C1.2	K08A8.1	K11E8.1	ZK20.3
+9.833040e-01	6	13	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	B0205.3	B0547.1	F43C1.2	K08A8.1	K11E8.1	ZK20.3
+4.355790e-03	3	13	735	27713	88307	Caenorhabditis	elegans	GO:0016310	biological_process	"phosphorylation"	B0218.3	F59A6.1	Y54E10BL.6
+1.111540e-01	1	13	250	27713	88307	Caenorhabditis	elegans	GO:0006259	biological_process	"DNA metabolism"	ZK20.3
+5.575390e-02	1	13	122	27713	88307	Caenorhabditis	elegans	GO:0009628	biological_process	"response to abiotic stimulus"	K08A8.1
+1.469170e-03	5	13	1981	27713	88307	Caenorhabditis	elegans	GO:0044267	biological_process	"cellular protein metabolism"	B0218.3	C36B1.4	F59A6.1	Y54E10BL.6	ZK20.3
+7.111430e-01	5	13	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	C36B1.4	F23F12.6	F56H1.4	K08A8.1	ZK20.3
+9.606770e-01	6	13	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	B0205.3	B0547.1	F43C1.2	K08A8.1	K11E8.1	ZK20.3
+1.773600e-01	1	13	413	27713	88307	Caenorhabditis	elegans	GO:0007242	biological_process	"intracellular signaling cascade"	K08A8.1
+3.747070e-03	1	13	8	27713	88307	Caenorhabditis	elegans	GO:0051239	biological_process	"regulation of organismal physiological process"	K08A8.1
+6.240250e-01	11	13	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	B0205.3	B0218.3	C36B1.4	F23F12.6	F43C1.2	F56H1.4	F59A6.1	K08A8.1	K11E8.1	Y54E10BL.6	ZK20.3
+9.614580e-01	6	13	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	B0205.3	B0547.1	F43C1.2	K08A8.1	K11E8.1	ZK20.3
+7.520930e-02	2	13	414	11710	88307	Caenorhabditis	elegans	GO:0016462	molecular_function	"pyrophosphatase activity"	F23F12.6	F56H1.4
+1.328640e-02	4	13	884	11710	88307	Caenorhabditis	elegans	GO:0016301	molecular_function	"kinase activity"	B0218.3	F59A6.1	K08A8.1	Y54E10BL.6
+5.642350e-01	1	13	1715	27713	88307	Caenorhabditis	elegans	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	ZK20.3
+1.305880e-02	1	13	28	27713	88307	Caenorhabditis	elegans	GO:0051338	biological_process	"regulation of transferase activity"	K08A8.1
+2.422630e-01	1	13	585	27713	88307	Caenorhabditis	elegans	GO:0007548	biological_process	"sex differentiation"	F43C1.2
+1.039730e-01	1	13	233	27713	88307	Caenorhabditis	elegans	GO:0044248	biological_process	"cellular catabolism"	C36B1.4
+4.433830e-03	1	13	4	11710	88307	Caenorhabditis	elegans	GO:0004708	molecular_function	"MAP kinase kinase activity"	K08A8.1
+9.864800e-01	6	13	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	B0205.3	B0547.1	F43C1.2	K08A8.1	K11E8.1	ZK20.3
+2.290830e-01	1	13	549	27713	88307	Caenorhabditis	elegans	GO:0048806	biological_process	"genitalia development"	F43C1.2
+7.520930e-02	2	13	414	11710	88307	Caenorhabditis	elegans	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	F23F12.6	F56H1.4
+8.779130e-02	4	13	1587	11710	88307	Caenorhabditis	elegans	GO:0016740	molecular_function	"transferase activity"	B0218.3	F59A6.1	K08A8.1	Y54E10BL.6
+4.690940e-04	1	13	1	27713	88307	Caenorhabditis	elegans	GO:0050778	biological_process	"positive regulation of immune response"	K08A8.1
+1.804770e-02	5	13	1498	11710	88307	Caenorhabditis	elegans	GO:0017076	molecular_function	"purine nucleotide binding"	B0218.3	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6
+7.223470e-02	6	13	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	B0218.3	C36B1.4	F59A6.1	K08A8.1	Y54E10BL.6	ZK20.3
+2.927200e-06	7	13	1624	27713	88307	Caenorhabditis	elegans	GO:0043283	biological_process	"biopolymer metabolism"	B0218.3	C36B1.4	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6	ZK20.3
+2.041820e-03	2	13	145	27713	88307	Caenorhabditis	elegans	GO:0006950	biological_process	"response to stress"	K08A8.1	ZK20.3
+1.456730e-03	7	13	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	B0218.3	C36B1.4	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6	ZK20.3
+3.144000e-02	1	13	68	27713	88307	Caenorhabditis	elegans	GO:0006974	biological_process	"response to DNA damage stimulus"	ZK20.3
+8.803130e-01	3	13	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	F23F12.6	F56H1.4	ZK20.3
+1.875160e-03	1	13	4	27713	88307	Caenorhabditis	elegans	GO:0043406	biological_process	"positive regulation of MAPK activity"	K08A8.1
+8.104010e-03	3	13	919	27713	88307	Caenorhabditis	elegans	GO:0006793	biological_process	"phosphorus metabolism"	B0218.3	F59A6.1	Y54E10BL.6
+1.061340e-04	5	13	1123	27713	88307	Caenorhabditis	elegans	GO:0043412	biological_process	"biopolymer modification"	B0218.3	C36B1.4	F59A6.1	Y54E10BL.6	ZK20.3
+6.548860e-03	1	13	14	27713	88307	Caenorhabditis	elegans	GO:0006955	biological_process	"immune response"	K08A8.1
+9.901960e-01	4	13	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	B0205.3	K08A8.1	K11E8.1	ZK20.3
+1.000000e+00	5	13	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	C36B1.4	F23F12.6	F56H1.4	K08A8.1	ZK20.3
+3.925800e-02	1	13	36	11710	88307	Caenorhabditis	elegans	GO:0004702	molecular_function	"receptor signaling protein serine/threonine kinase activity"	B0218.3
+9.297940e-01	1	13	2163	11710	88307	Caenorhabditis	elegans	GO:0004871	molecular_function	"signal transducer activity"	B0218.3
+8.104010e-03	3	13	919	27713	88307	Caenorhabditis	elegans	GO:0006796	biological_process	"phosphate metabolism"	B0218.3	F59A6.1	Y54E10BL.6
+4.614210e-01	1	13	1288	27713	88307	Caenorhabditis	elegans	GO:0050791	biological_process	"regulation of physiological process"	K08A8.1
+4.329210e-01	1	13	1183	27713	88307	Caenorhabditis	elegans	GO:0007165	biological_process	"signal transduction"	K08A8.1
+4.576990e-01	1	13	1274	27713	88307	Caenorhabditis	elegans	GO:0007154	biological_process	"cell communication"	K08A8.1
+4.690940e-04	1	13	1	27713	88307	Caenorhabditis	elegans	GO:0045088	biological_process	"regulation of innate immune response"	K08A8.1
+1.406670e-03	1	13	3	27713	88307	Caenorhabditis	elegans	GO:0046686	biological_process	"response to cadmium ion"	K08A8.1
+1.875160e-03	1	13	4	27713	88307	Caenorhabditis	elegans	GO:0010035	biological_process	"response to inorganic substance"	K08A8.1
+9.546780e-03	5	13	1285	11710	88307	Caenorhabditis	elegans	GO:0030554	molecular_function	"adenyl nucleotide binding"	B0218.3	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6
+7.563440e-01	3	13	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	F23F12.6	F56H1.4	ZK20.3
+8.412680e-03	1	13	18	27713	88307	Caenorhabditis	elegans	GO:0009613	biological_process	"response to pest, pathogen or parasite"	K08A8.1
+1.000000e+00	7	13	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	B0218.3	C36B1.4	F23F12.6	F56H1.4	F59A6.1	K08A8.1	Y54E10BL.6
+2.687450e-02	1	13	58	27713	88307	Caenorhabditis	elegans	GO:0006511	biological_process	"ubiquitin-dependent protein catabolism"	C36B1.4
+3.032820e-02	5	13	1705	11710	88307	Caenorhabditis	elegans	GO:0000166	molecular_function	"nucleotide binding"	B0218.3	F23F12.6	F56H1.4	F59A6.1	Y54E10BL.6
+2.257550e-01	1	13	540	27713	88307	Caenorhabditis	elegans	GO:0040035	biological_process	"hermaphrodite genitalia development"	F43C1.2
+2.633400e-02	1	13	24	11710	88307	Caenorhabditis	elegans	GO:0004707	molecular_function	"MAP kinase activity"	B0218.3
+1.875160e-03	1	13	4	27713	88307	Caenorhabditis	elegans	GO:0010038	biological_process	"response to metal ion"	K08A8.1
+9.599330e-01	6	13	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	B0205.3	B0547.1	F43C1.2	K08A8.1	K11E8.1	ZK20.3
+1.000000e+00	5	13	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	C36B1.4	F23F12.6	F56H1.4	K08A8.1	ZK20.3
+7.548130e-01	3	13	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	F23F12.6	F56H1.4	ZK20.3
+3.307240e-01	1	13	356	11710	88307	Caenorhabditis	elegans	GO:0004175	molecular_function	"endopeptidase activity"	C36B1.4
+4.433830e-03	1	13	4	11710	88307	Caenorhabditis	elegans	GO:0004712	molecular_function	"protein threonine/tyrosine kinase activity"	K08A8.1
+9.953980e-01	4	13	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	B0205.3	K08A8.1	K11E8.1	ZK20.3
+3.960810e-02	1	13	86	27713	88307	Caenorhabditis	elegans	GO:0042221	biological_process	"response to chemical stimulus"	K08A8.1
+1.406670e-03	1	13	3	27713	88307	Caenorhabditis	elegans	GO:0046688	biological_process	"response to copper ion"	K08A8.1
+1.259520e-02	1	13	27	27713	88307	Caenorhabditis	elegans	GO:0006952	biological_process	"defense response"	K08A8.1
+1.305880e-02	1	13	28	27713	88307	Caenorhabditis	elegans	GO:0043549	biological_process	"regulation of kinase activity"	K08A8.1
+1.305880e-02	1	13	28	27713	88307	Caenorhabditis	elegans	GO:0045859	biological_process	"regulation of protein kinase activity"	K08A8.1
+2.778920e-02	1	13	60	27713	88307	Caenorhabditis	elegans	GO:0051603	biological_process	"proteolysis during cellular protein catabolism"	C36B1.4
+9.880110e-01	4	13	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	B0205.3	K08A8.1	K11E8.1	ZK20.3
+2.778920e-02	1	13	60	27713	88307	Caenorhabditis	elegans	GO:0044257	biological_process	"cellular protein catabolism"	C36B1.4
+3.747070e-03	1	13	8	27713	88307	Caenorhabditis	elegans	GO:0043405	biological_process	"regulation of MAPK activity"	K08A8.1
+6.549700e-02	1	13	144	27713	88307	Caenorhabditis	elegans	GO:0043119	biological_process	"positive regulation of physiological process"	K08A8.1
+7.648100e-02	2	13	418	11710	88307	Caenorhabditis	elegans	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	F23F12.6	F56H1.4
+3.078410e-01	3	13	1756	11710	88307	Caenorhabditis	elegans	GO:0016787	molecular_function	"hydrolase activity"	C36B1.4	F23F12.6	F56H1.4
+1.535070e-01	2	13	1497	27713	88307	Caenorhabditis	elegans	GO:0050896	biological_process	"response to stimulus"	K08A8.1	ZK20.3
+8.412680e-03	1	13	18	27713	88307	Caenorhabditis	elegans	GO:0051707	biological_process	"response to other organism"	K08A8.1
+1.875160e-03	1	13	4	27713	88307	Caenorhabditis	elegans	GO:0045087	biological_process	"innate immune response"	K08A8.1
+2.343440e-03	1	13	5	27713	88307	Caenorhabditis	elegans	GO:0009991	biological_process	"response to extracellular stimulus"	K08A8.1
+1.000000e+00	5	13	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	C36B1.4	F23F12.6	F56H1.4	K08A8.1	ZK20.3
+3.081580e-03	3	13	650	27713	88307	Caenorhabditis	elegans	GO:0006468	biological_process	"protein amino acid phosphorylation"	B0218.3	F59A6.1	Y54E10BL.6
+2.231580e-01	1	13	533	27713	88307	Caenorhabditis	elegans	GO:0006508	biological_process	"proteolysis"	C36B1.4
+1.305220e-01	6	13	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	B0218.3	C36B1.4	F59A6.1	K08A8.1	Y54E10BL.6	ZK20.3
+8.803130e-01	3	13	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	F23F12.6	F56H1.4	ZK20.3
+2.687450e-02	1	13	58	27713	88307	Caenorhabditis	elegans	GO:0043632	biological_process	"modification-dependent macromolecule catabolism"	C36B1.4
+7.427390e-02	1	13	164	27713	88307	Caenorhabditis	elegans	GO:0044265	biological_process	"cellular macromolecule catabolism"	C36B1.4
+4.690940e-04	1	13	1	27713	88307	Caenorhabditis	elegans	GO:0045089	biological_process	"positive regulation of innate immune response"	K08A8.1
+2.687450e-02	1	13	58	27713	88307	Caenorhabditis	elegans	GO:0019941	biological_process	"modification-dependent protein catabolism"	C36B1.4
+9.845780e-01	6	13	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	B0205.3	B0547.1	F43C1.2	K08A8.1	K11E8.1	ZK20.3
+7.481170e-03	1	13	16	27713	88307	Caenorhabditis	elegans	GO:0007243	biological_process	"protein kinase cascade"	K08A8.1
+1.073880e-02	1	13	23	27713	88307	Caenorhabditis	elegans	GO:0045860	biological_process	"positive regulation of protein kinase activity"	K08A8.1
+9.884810e-01	4	13	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	B0205.3	K08A8.1	K11E8.1	ZK20.3
+9.826400e-01	4	13	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	B0205.3	K08A8.1	K11E8.1	ZK20.3
+1.120320e-02	1	13	24	27713	88307	Caenorhabditis	elegans	GO:0043085	biological_process	"positive regulation of enzyme activity"	K08A8.1
+6.283480e-01	3	13	1542	6495	88307	Caenorhabditis	elegans	GO:0005634	cellular_component	"nucleus"	F23F12.6	F56H1.4	ZK20.3
+5.834770e-02	1	13	54	11710	88307	Caenorhabditis	elegans	GO:0005057	molecular_function	"receptor signaling protein activity"	B0218.3
+1.875160e-03	1	13	4	27713	88307	Caenorhabditis	elegans	GO:0000187	biological_process	"activation of MAPK activity"	K08A8.1
+2.824620e-02	1	13	61	27713	88307	Caenorhabditis	elegans	GO:0006281	biological_process	"DNA repair"	ZK20.3
+1.543910e-02	1	13	14	11710	88307	Caenorhabditis	elegans	GO:0004298	molecular_function	"threonine endopeptidase activity"	C36B1.4
+7.580640e-05	3	13	182	27713	88307	Caenorhabditis	elegans	GO:0009057	biological_process	"macromolecule catabolism"	C36B1.4	F23F12.6	F56H1.4
+2.768730e-02	1	13	14	6495	88307	Caenorhabditis	elegans	GO:0005839	cellular_component	"proteasome core complex (sensu Eukaryota)"	C36B1.4
+1.406670e-03	1	13	3	27713	88307	Caenorhabditis	elegans	GO:0042594	biological_process	"response to starvation"	K08A8.1
+1.406670e-03	1	13	3	27713	88307	Caenorhabditis	elegans	GO:0031667	biological_process	"response to nutrient levels"	K08A8.1
+2.811520e-03	1	13	6	27713	88307	Caenorhabditis	elegans	GO:0042828	biological_process	"response to pathogen"	K08A8.1
+2.678450e-04	3	13	279	27713	88307	Caenorhabditis	elegans	GO:0009056	biological_process	"catabolism"	C36B1.4	F23F12.6	F56H1.4
+1.994410e-02	4	13	996	11710	88307	Caenorhabditis	elegans	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	B0218.3	F59A6.1	K08A8.1	Y54E10BL.6
+#USING RAD23 instead of its synonym YEL037C in Saccharomyces cerevisiae
+#USING STE7 instead of its synonym YDL159W in Saccharomyces cerevisiae
+#USING FUS3 instead of its synonym YBL016W in Saccharomyces cerevisiae
+#USING RPN10 instead of its synonym YHR200W in Saccharomyces cerevisiae
+#USING STE11 instead of its synonym YLR362W in Saccharomyces cerevisiae
+#USING RPT3 instead of its synonym YDR394W in Saccharomyces cerevisiae
+#USING HOG1 instead of its synonym YLR113W in Saccharomyces cerevisiae
+#USING RPT2 instead of its synonym YDL007W in Saccharomyces cerevisiae
+#USING RPT1 instead of its synonym YKL145W in Saccharomyces cerevisiae
+#USING KSS1 instead of its synonym YGR040W in Saccharomyces cerevisiae
+#USING PRE1 instead of its synonym YER012W in Saccharomyces cerevisiae
+#USING PBS2 instead of its synonym YJL128C in Saccharomyces cerevisiae
+#USING RPT6 instead of its synonym YGL048C in Saccharomyces cerevisiae
+#USING RPN11 instead of its synonym YFR004W in Saccharomyces cerevisiae
+#USING RCK1 instead of its synonym YGL158W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+8.610720e-03	2	15	62	6526	97048	Saccharomyces	cerevisiae	GO:0007124	biological_process	"pseudohyphal growth"	YDL159W	YLR362W
+2.032450e-01	1	15	98	6526	97048	Saccharomyces	cerevisiae	GO:0048622	biological_process	"reproductive sporulation"	YER012W
+2.032450e-01	1	15	98	6526	97048	Saccharomyces	cerevisiae	GO:0030437	biological_process	"sporulation (sensu Fungi)"	YER012W
+2.549390e-08	7	15	160	6526	97048	Saccharomyces	cerevisiae	GO:0008233	molecular_function	"peptidase activity"	YDL007W	YDR394W	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+4.213780e-08	7	15	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	YBL016W	YDL159W	YGL158W	YGR040W	YJL128C	YLR113W	YLR362W
+1.922560e-06	4	15	42	6526	97048	Saccharomyces	cerevisiae	GO:0007166	biological_process	"cell surface receptor linked signal transduction"	YBL016W	YDL159W	YJL128C	YLR362W
+9.248200e-01	6	15	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YBL016W	YDL159W	YEL037C	YJL128C	YLR113W	YLR362W
+7.115700e-02	1	15	32	6526	97048	Saccharomyces	cerevisiae	GO:0006289	biological_process	"nucleotide-excision repair"	YEL037C
+1.142200e-06	4	15	37	6526	97048	Saccharomyces	cerevisiae	GO:0001403	biological_process	"invasive growth (sensu Saccharomyces)"	YBL016W	YDL159W	YGR040W	YLR362W
+5.352410e-09	7	15	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	YBL016W	YDL159W	YGL158W	YGR040W	YJL128C	YLR113W	YLR362W
+6.526960e-04	14	15	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+2.143400e-01	1	15	104	6526	97048	Saccharomyces	cerevisiae	GO:0030036	biological_process	"actin cytoskeleton organization and biogenesis"	YJL128C
+1.613000e-01	1	15	76	6526	97048	Saccharomyces	cerevisiae	GO:0045941	biological_process	"positive regulation of transcription"	YLR113W
+9.174850e-04	14	15	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+1.066890e-01	14	15	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+4.714940e-07	14	15	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YBL016W	YDL007W	YDL159W	YDR394W	YER012W	YFR004W	YGL048C	YGL158W	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0005076	molecular_function	"receptor signaling protein serine/threonine kinase signaling protein activity"	YJL128C
+7.781980e-01	2	15	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YEL037C	YLR362W
+2.050980e-02	1	15	9	6526	97048	Saccharomyces	cerevisiae	GO:0000161	biological_process	"MAPKKK cascade during osmolarity sensing"	YJL128C
+3.895360e-01	1	15	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	YEL037C
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0051347	biological_process	"positive regulation of transferase activity"	YJL128C
+1.197130e-05	14	15	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+9.978500e-09	14	15	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+4.215420e-03	2	15	43	6526	97048	Saccharomyces	cerevisiae	GO:0042995	cellular_component	"cell projection"	YBL016W	YDL159W
+1.925000e-08	8	15	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+3.895360e-01	1	15	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	YEL037C
+2.400280e-14	8	15	47	6526	97048	Saccharomyces	cerevisiae	GO:0000502	cellular_component	"proteasome complex (sensu Eukaryota)"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+1.257580e-05	3	15	23	6526	97048	Saccharomyces	cerevisiae	GO:0031137	biological_process	"regulation of conjugation with cellular fusion"	YBL016W	YDL159W	YLR362W
+3.825170e-05	4	15	89	6526	97048	Saccharomyces	cerevisiae	GO:0016049	biological_process	"cell growth"	YBL016W	YDL159W	YGR040W	YLR362W
+9.331870e-01	1	15	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	YGL158W
+1.514840e-01	1	15	71	6526	97048	Saccharomyces	cerevisiae	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	YLR113W
+2.949860e-02	1	15	13	6526	97048	Saccharomyces	cerevisiae	GO:0009894	biological_process	"regulation of catabolism"	YEL037C
+1.688390e-03	3	15	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	YBL016W	YDL159W	YLR362W
+4.314030e-02	2	15	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	YBL016W	YDL159W
+6.485700e-01	1	15	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YLR113W
+1.686760e-03	4	15	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	YDL007W	YDR394W	YGL048C	YKL145W
+7.148950e-01	2	15	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YBL016W	YEL037C
+2.460310e-03	3	15	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	YBL016W	YDL159W	YLR362W
+1.609020e-03	4	15	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	YBL016W	YDL159W	YGR040W	YLR362W
+3.841040e-02	1	15	17	6526	97048	Saccharomyces	cerevisiae	GO:0000165	biological_process	"MAPKKK cascade"	YJL128C
+9.164440e-03	1	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0004709	molecular_function	"MAP kinase kinase kinase activity"	YLR362W
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0000111	cellular_component	"nucleotide-excision repair factor 2 complex"	YEL037C
+1.257580e-05	3	15	23	6526	97048	Saccharomyces	cerevisiae	GO:0032005	biological_process	"signal transduction during conjugation with cellular fusion"	YBL016W	YDL159W	YLR362W
+6.469310e-02	1	15	29	6526	97048	Saccharomyces	cerevisiae	GO:0050790	biological_process	"regulation of catalytic activity"	YJL128C
+6.412790e-10	8	15	161	6526	97048	Saccharomyces	cerevisiae	GO:0030163	biological_process	"protein catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+1.636800e-09	8	15	181	6526	97048	Saccharomyces	cerevisiae	GO:0006512	biological_process	"ubiquitin cycle"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+4.944250e-09	14	15	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+3.618960e-02	1	15	16	6526	97048	Saccharomyces	cerevisiae	GO:0007231	biological_process	"osmosensory signaling pathway"	YJL128C
+3.395420e-07	5	15	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	YBL016W	YGL158W	YGR040W	YLR113W	YLR362W
+1.583190e-14	14	15	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+9.442970e-03	8	15	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+8.953890e-04	4	15	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	YBL016W	YDL159W	YER012W	YLR362W
+2.579560e-03	4	15	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	YBL016W	YDL159W	YER012W	YLR362W
+5.084050e-02	4	15	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YBL016W	YDL159W	YLR113W	YLR362W
+4.994610e-07	6	15	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	YBL016W	YDL159W	YGL158W	YJL128C	YLR113W	YLR362W
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0000169	biological_process	"activation of MAPK activity during osmolarity sensing"	YJL128C
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0005078	molecular_function	"MAP-kinase scaffold activity"	YJL128C
+5.264030e-03	4	15	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	YBL016W	YDL159W	YLR113W	YLR362W
+6.753160e-01	1	15	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YEL037C
+2.959230e-09	14	15	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+9.797870e-02	14	15	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+6.778880e-02	2	15	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	YBL016W	YEL037C
+3.522210e-01	1	15	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	YBL016W
+7.162980e-02	2	15	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	YBL016W	YEL037C
+1.844280e-01	1	15	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	YLR113W
+2.343070e-01	1	15	115	6526	97048	Saccharomyces	cerevisiae	GO:0007242	biological_process	"intracellular signaling cascade"	YJL128C
+1.072220e-02	15	15	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+1.609020e-03	4	15	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	YBL016W	YDL159W	YGR040W	YLR362W
+2.209550e-03	4	15	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	YDL007W	YDR394W	YGL048C	YKL145W
+1.115230e-07	7	15	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	YBL016W	YDL159W	YGL158W	YGR040W	YJL128C	YLR113W	YLR362W
+8.764270e-01	2	15	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YEL037C	YLR113W
+4.724840e-02	1	15	21	6526	97048	Saccharomyces	cerevisiae	GO:0051338	biological_process	"regulation of transferase activity"	YJL128C
+2.623900e-07	8	15	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+7.023860e-01	1	15	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YLR113W
+1.306830e-03	5	15	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	YBL016W	YDL159W	YER012W	YGR040W	YLR362W
+2.951130e-05	2	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0004708	molecular_function	"MAP kinase kinase activity"	YDL159W	YJL128C
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0042176	biological_process	"regulation of protein catabolism"	YEL037C
+3.967540e-01	1	15	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	YJL128C
+2.241540e-03	4	15	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	YDL007W	YDR394W	YGL048C	YKL145W
+4.225830e-04	7	15	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	YBL016W	YDL159W	YGL158W	YGR040W	YJL128C	YLR113W	YLR362W
+5.554770e-01	1	15	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YLR113W
+2.514450e-04	3	15	56	6526	97048	Saccharomyces	cerevisiae	GO:0000749	biological_process	"response to pheromone during conjugation with cellular fusion"	YBL016W	YDL159W	YLR362W
+8.663340e-03	15	15	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+2.069620e-08	14	15	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+7.434500e-02	3	15	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	YEL037C	YER012W	YLR113W
+9.981140e-01	1	15	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YEL037C
+2.725860e-02	1	15	12	6526	97048	Saccharomyces	cerevisiae	GO:0000160	biological_process	"two-component signal transduction system (phosphorelay)"	YJL128C
+3.133040e-03	2	15	37	6526	97048	Saccharomyces	cerevisiae	GO:0044463	cellular_component	"cell projection part"	YBL016W	YDL159W
+2.869870e-04	14	15	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+3.288210e-01	1	15	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	YEL037C
+3.807680e-01	1	15	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	YEL037C
+2.755700e-05	3	15	28	6526	97048	Saccharomyces	cerevisiae	GO:0007186	biological_process	"G-protein coupled receptor protein signaling pathway"	YBL016W	YDL159W	YLR362W
+7.901790e-01	8	15	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YBL016W	YDL007W	YEL037C	YER012W	YFR004W	YGL048C	YGR040W	YLR113W
+2.271020e-01	1	15	111	6526	97048	Saccharomyces	cerevisiae	GO:0030435	biological_process	"sporulation"	YER012W
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0043406	biological_process	"positive regulation of MAPK activity"	YJL128C
+2.393380e-06	6	15	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	YBL016W	YDL159W	YGL158W	YJL128C	YLR113W	YLR362W
+9.395180e-01	1	15	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YJL128C
+2.216560e-01	1	15	108	6526	97048	Saccharomyces	cerevisiae	GO:0030029	biological_process	"actin filament-based process"	YJL128C
+1.767860e-01	1	15	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	YLR113W
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0030159	molecular_function	"receptor signaling complex scaffold activity"	YJL128C
+1.254580e-01	1	15	58	6526	97048	Saccharomyces	cerevisiae	GO:0043161	biological_process	"proteasomal ubiquitin-dependent protein catabolism"	YEL037C
+9.164440e-03	1	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0000108	cellular_component	"repairosome"	YEL037C
+3.619580e-13	14	15	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+2.796350e-01	1	15	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	YGL158W
+1.723530e-04	4	15	130	6526	97048	Saccharomyces	cerevisiae	GO:0040007	biological_process	"growth"	YBL016W	YDL159W	YGR040W	YLR362W
+1.688390e-03	3	15	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	YBL016W	YDL159W	YLR362W
+9.941120e-01	2	15	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YBL016W	YEL037C
+9.331870e-01	1	15	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YEL037C
+1.688390e-03	3	15	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	YBL016W	YDL159W	YLR362W
+2.591200e-01	14	15	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+1.598630e-02	1	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0019774	cellular_component	"proteasome core complex, beta-subunit complex (sensu Eukaryota)"	YER012W
+8.823120e-09	4	15	12	6526	97048	Saccharomyces	cerevisiae	GO:0004702	molecular_function	"receptor signaling protein serine/threonine kinase activity"	YBL016W	YGR040W	YLR113W	YLR362W
+2.332240e-07	5	15	65	6526	97048	Saccharomyces	cerevisiae	GO:0004871	molecular_function	"signal transducer activity"	YBL016W	YGR040W	YJL128C	YLR113W	YLR362W
+9.981140e-01	1	15	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YEL037C
+2.393380e-06	6	15	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	YBL016W	YDL159W	YGL158W	YJL128C	YLR113W	YLR362W
+1.256830e-02	5	15	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YBL016W	YDL159W	YEL037C	YLR113W	YLR362W
+2.935460e-05	5	15	173	6526	97048	Saccharomyces	cerevisiae	GO:0007165	biological_process	"signal transduction"	YBL016W	YDL159W	YGR040W	YJL128C	YLR362W
+7.115700e-02	1	15	32	6526	97048	Saccharomyces	cerevisiae	GO:0030433	biological_process	"ER-associated protein catabolism"	YEL037C
+4.985930e-05	4	15	95	6526	97048	Saccharomyces	cerevisiae	GO:0030447	biological_process	"filamentous growth"	YBL016W	YDL159W	YGR040W	YLR362W
+5.144680e-05	5	15	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	YBL016W	YDL159W	YGR040W	YJL128C	YLR362W
+1.767860e-01	1	15	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	YLR113W
+1.295100e-01	1	15	60	6526	97048	Saccharomyces	cerevisiae	GO:0045944	biological_process	"positive regulation of transcription from RNA polymerase II promoter"	YLR113W
+6.589030e-01	8	15	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YBL016W	YDL007W	YEL037C	YER012W	YFR004W	YGL048C	YGR040W	YLR113W
+2.863820e-01	1	15	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	YBL016W
+7.544320e-02	1	15	34	6526	97048	Saccharomyces	cerevisiae	GO:0006515	biological_process	"misfolded or incompletely synthesized protein catabolism"	YEL037C
+1.315300e-01	1	15	61	6526	97048	Saccharomyces	cerevisiae	GO:0006970	biological_process	"response to osmotic stress"	YLR113W
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0032093	molecular_function	"SAM domain binding"	YLR362W
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+1.844280e-01	1	15	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	YLR113W
+1.748430e-10	8	15	137	6526	97048	Saccharomyces	cerevisiae	GO:0006511	biological_process	"ubiquitin-dependent protein catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+8.953890e-04	4	15	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	YBL016W	YDL159W	YER012W	YLR362W
+2.796350e-01	1	15	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	YGL158W
+9.798650e-08	3	15	5	6526	97048	Saccharomyces	cerevisiae	GO:0004707	molecular_function	"MAP kinase activity"	YBL016W	YGR040W	YLR113W
+3.362340e-11	7	15	63	6526	97048	Saccharomyces	cerevisiae	GO:0004175	molecular_function	"endopeptidase activity"	YDL007W	YDR394W	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+6.589030e-01	8	15	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YBL016W	YDL007W	YEL037C	YER012W	YFR004W	YGL048C	YGR040W	YLR113W
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+1.028790e-04	2	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0004712	molecular_function	"protein threonine/tyrosine kinase activity"	YDL159W	YJL128C
+7.358240e-05	2	15	6	6526	97048	Saccharomyces	cerevisiae	GO:0001402	biological_process	"signal transduction during filamentous growth"	YBL016W	YGR040W
+2.863820e-01	1	15	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	YBL016W
+1.598630e-02	1	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0000715	biological_process	"nucleotide-excision repair, DNA damage recognition"	YEL037C
+2.444900e-03	6	15	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YBL016W	YDL159W	YEL037C	YJL128C	YLR113W	YLR362W
+1.646460e-02	3	15	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	YBL016W	YDL159W	YLR362W
+6.679920e-01	1	15	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YLR113W
+7.946870e-01	1	15	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YEL037C
+2.903260e-01	2	15	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YEL037C	YLR113W
+4.724840e-02	1	15	21	6526	97048	Saccharomyces	cerevisiae	GO:0043549	biological_process	"regulation of kinase activity"	YJL128C
+4.724840e-02	1	15	21	6526	97048	Saccharomyces	cerevisiae	GO:0045859	biological_process	"regulation of protein kinase activity"	YJL128C
+3.589310e-01	5	15	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YBL016W	YDL159W	YGR040W	YJL128C	YLR362W
+2.501390e-02	1	15	11	6526	97048	Saccharomyces	cerevisiae	GO:0045786	biological_process	"negative regulation of progression through cell cycle"	YBL016W
+1.965540e-10	8	15	139	6526	97048	Saccharomyces	cerevisiae	GO:0051603	biological_process	"proteolysis during cellular protein catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+3.259650e-10	8	15	148	6526	97048	Saccharomyces	cerevisiae	GO:0044257	biological_process	"cellular protein catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0042177	biological_process	"negative regulation of protein catabolism"	YEL037C
+2.347850e-03	2	15	32	6526	97048	Saccharomyces	cerevisiae	GO:0043332	cellular_component	"mating projection tip"	YBL016W	YDL159W
+4.609190e-12	6	15	23	6526	97048	Saccharomyces	cerevisiae	GO:0005838	cellular_component	"proteasome regulatory particle (sensu Eukaryota)"	YDL007W	YDR394W	YFR004W	YGL048C	YHR200W	YKL145W
+1.371720e-02	1	15	6	6526	97048	Saccharomyces	cerevisiae	GO:0043405	biological_process	"regulation of MAPK activity"	YJL128C
+1.844280e-01	1	15	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	YLR113W
+5.918020e-01	1	15	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YLR113W
+1.315300e-01	1	15	61	6526	97048	Saccharomyces	cerevisiae	GO:0007015	biological_process	"actin filament organization"	YJL128C
+2.241540e-03	4	15	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	YDL007W	YDR394W	YGL048C	YKL145W
+8.606910e-04	7	15	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YDL007W	YDR394W	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+3.297790e-01	2	15	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YEL037C	YLR362W
+1.466710e-03	6	15	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	YBL016W	YDL159W	YEL037C	YER012W	YLR113W	YLR362W
+5.889330e-04	4	15	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	YDL007W	YDR394W	YGL048C	YKL145W
+4.215420e-03	2	15	43	6526	97048	Saccharomyces	cerevisiae	GO:0005937	cellular_component	"mating projection"	YBL016W	YDL159W
+2.307120e-01	1	15	113	6526	97048	Saccharomyces	cerevisiae	GO:0030154	biological_process	"cell differentiation"	YER012W
+9.612960e-05	4	15	112	6526	97048	Saccharomyces	cerevisiae	GO:0008361	biological_process	"regulation of cell size"	YBL016W	YDL159W	YGR040W	YLR362W
+2.586200e-01	14	15	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+3.010150e-08	6	15	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	YBL016W	YDL159W	YGL158W	YJL128C	YLR113W	YLR362W
+1.257580e-05	3	15	23	6526	97048	Saccharomyces	cerevisiae	GO:0046999	biological_process	"regulation of conjugation"	YBL016W	YDL159W	YLR362W
+1.088910e-09	8	15	172	6526	97048	Saccharomyces	cerevisiae	GO:0006508	biological_process	"proteolysis"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0009895	biological_process	"negative regulation of catabolism"	YEL037C
+1.825040e-02	1	15	8	6526	97048	Saccharomyces	cerevisiae	GO:0003684	molecular_function	"damaged DNA binding"	YEL037C
+9.641600e-03	15	15	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YBL016W	YDL007W	YDL159W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YGL158W	YGR040W	YHR200W	YJL128C	YKL145W	YLR113W	YLR362W
+1.748430e-10	8	15	137	6526	97048	Saccharomyces	cerevisiae	GO:0043632	biological_process	"modification-dependent macromolecule catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+7.901790e-01	8	15	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YBL016W	YDL007W	YEL037C	YER012W	YFR004W	YGL048C	YGR040W	YLR113W
+2.276420e-02	1	15	10	6526	97048	Saccharomyces	cerevisiae	GO:0008541	cellular_component	"proteasome regulatory particle, lid subcomplex (sensu Eukaryota)"	YFR004W
+6.080030e-08	8	15	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+5.322570e-01	1	15	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YLR113W
+3.396410e-02	1	15	15	6526	97048	Saccharomyces	cerevisiae	GO:0030674	molecular_function	"protein binding, bridging"	YEL037C
+1.748430e-10	8	15	137	6526	97048	Saccharomyces	cerevisiae	GO:0019941	biological_process	"modification-dependent protein catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+2.501390e-02	1	15	11	6526	97048	Saccharomyces	cerevisiae	GO:0007050	biological_process	"cell cycle arrest"	YBL016W
+4.495040e-02	1	15	20	6526	97048	Saccharomyces	cerevisiae	GO:0007243	biological_process	"protein kinase cascade"	YJL128C
+1.598630e-02	1	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0006972	biological_process	"hyperosmotic response"	YLR113W
+4.384170e-01	1	15	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	YGL158W
+3.673950e-01	1	15	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	YLR113W
+5.059120e-02	4	15	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YBL016W	YDL159W	YLR113W	YLR362W
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0045860	biological_process	"positive regulation of protein kinase activity"	YJL128C
+1.985240e-02	2	15	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	YJL128C	YLR113W
+1.825040e-02	1	15	8	6526	97048	Saccharomyces	cerevisiae	GO:0043085	biological_process	"positive regulation of enzyme activity"	YJL128C
+3.822220e-12	5	15	9	6526	97048	Saccharomyces	cerevisiae	GO:0008540	cellular_component	"proteasome regulatory particle, base subcomplex (sensu Eukaryota)"	YDL007W	YDR394W	YGL048C	YHR200W	YKL145W
+5.348050e-02	8	15	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YBL016W	YDL007W	YEL037C	YER012W	YFR004W	YGL048C	YGR040W	YLR113W
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0000187	biological_process	"activation of MAPK activity"	YJL128C
+3.522210e-01	1	15	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	YBL016W
+3.111620e-01	1	15	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	YEL037C
+9.214310e-11	5	15	16	6526	97048	Saccharomyces	cerevisiae	GO:0005057	molecular_function	"receptor signaling protein activity"	YBL016W	YGR040W	YJL128C	YLR113W	YLR362W
+4.724840e-02	1	15	21	6526	97048	Saccharomyces	cerevisiae	GO:0040020	biological_process	"regulation of meiosis"	YGL158W
+1.173020e-01	1	15	54	6526	97048	Saccharomyces	cerevisiae	GO:0051246	biological_process	"regulation of protein metabolism"	YEL037C
+3.618960e-02	1	15	16	6526	97048	Saccharomyces	cerevisiae	GO:0005839	cellular_component	"proteasome core complex (sensu Eukaryota)"	YER012W
+4.995330e-01	1	15	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	YLR113W
+1.111640e-07	8	15	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+6.232850e-04	3	15	76	6526	97048	Saccharomyces	cerevisiae	GO:0019236	biological_process	"response to pheromone"	YBL016W	YDL159W	YLR362W
+3.396410e-02	1	15	15	6526	97048	Saccharomyces	cerevisiae	GO:0051248	biological_process	"negative regulation of protein metabolism"	YEL037C
+2.796350e-01	1	15	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	YGL158W
+1.671390e-01	1	15	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YLR113W
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0019904	molecular_function	"protein domain specific binding"	YLR362W
+4.253240e-07	8	15	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	YDL007W	YDR394W	YEL037C	YER012W	YFR004W	YGL048C	YHR200W	YKL145W
+2.439120e-01	2	15	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YBL016W	YGL158W
+4.495040e-02	1	15	20	6526	97048	Saccharomyces	cerevisiae	GO:0000109	cellular_component	"nucleotide-excision repair complex"	YEL037C
+1.257580e-05	3	15	23	6526	97048	Saccharomyces	cerevisiae	GO:0000750	biological_process	"pheromone-dependent signal transduction during conjugation with cellular fusion"	YBL016W	YDL159W	YLR362W
+2.725860e-02	1	15	12	6526	97048	Saccharomyces	cerevisiae	GO:0007234	biological_process	"osmosensory signaling pathway via two-component system"	YJL128C
+3.685980e-06	7	15	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	YBL016W	YDL159W	YGL158W	YGR040W	YJL128C	YLR113W	YLR362W

@@ -1,0 +1,89 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.301640e-04	3	3	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	CAC2	MSI1	RLF2
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	CAC2	MSI1	RLF2
+4.414770e-04	2	3	80	6526	97048	Saccharomyces	cerevisiae	GO:0031507	biological_process	"heterochromatin formation"	CAC2	MSI1
+1.338810e-01	3	3	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	CAC2	MSI1	RLF2
+3.975750e-02	3	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	CAC2	MSI1	RLF2
+5.759190e-02	2	3	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	CAC2	RLF2
+2.791730e-02	2	3	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	CAC2	MSI1
+1.190010e-04	3	3	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	CAC2	MSI1	RLF2
+7.745010e-02	1	3	173	6526	97048	Saccharomyces	cerevisiae	GO:0007165	biological_process	"signal transduction"	MSI1
+1.447510e-01	3	3	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	CAC2	MSI1	RLF2
+8.656980e-02	1	3	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	MSI1
+2.099860e-10	3	3	5	6526	97048	Saccharomyces	cerevisiae	GO:0006334	biological_process	"nucleosome assembly"	CAC2	MSI1	RLF2
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	CAC2	MSI1	RLF2
+3.054980e-03	2	3	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	CAC2	MSI1
+5.444160e-02	3	3	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	CAC2	MSI1	RLF2
+1.145770e-02	3	3	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	CAC2	MSI1	RLF2
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	CAC2	MSI1	RLF2
+1.905150e-06	3	3	85	6526	97048	Saccharomyces	cerevisiae	GO:0031497	biological_process	"chromatin assembly"	CAC2	MSI1	RLF2
+9.712530e-05	3	3	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	CAC2	MSI1	RLF2
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	CAC2	MSI1	RLF2
+1.829200e-03	3	3	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	CAC2	MSI1	RLF2
+3.407720e-06	3	3	101	6526	97048	Saccharomyces	cerevisiae	GO:0006333	biological_process	"chromatin assembly or disassembly"	CAC2	MSI1	RLF2
+1.246530e-04	3	3	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	CAC2	MSI1	RLF2
+7.505900e-04	3	3	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	CAC2	MSI1	RLF2
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	CAC2	MSI1	RLF2
+2.507520e-02	1	3	55	6526	97048	Saccharomyces	cerevisiae	GO:0007264	biological_process	"small GTPase mediated signal transduction"	MSI1
+1.294170e-02	2	3	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	CAC2	MSI1
+2.353250e-03	2	3	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	CAC2	MSI1
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CAC2	MSI1	RLF2
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	CAC2	MSI1	RLF2
+2.900120e-02	2	3	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	CAC2	MSI1
+1.429970e-02	2	3	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	CAC2	MSI1
+1.448150e-02	2	3	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	CAC2	MSI1
+2.099860e-10	3	3	5	6526	97048	Saccharomyces	cerevisiae	GO:0005678	cellular_component	"chromatin assembly complex"	CAC2	MSI1	RLF2
+4.414770e-04	2	3	80	6526	97048	Saccharomyces	cerevisiae	GO:0045814	biological_process	"negative regulation of gene expression, epigenetic"	CAC2	MSI1
+3.372330e-05	3	3	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	CAC2	MSI1	RLF2
+1.166920e-02	3	3	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	CAC2	MSI1	RLF2
+7.795750e-03	1	3	17	6526	97048	Saccharomyces	cerevisiae	GO:0007265	biological_process	"Ras protein signal transduction"	MSI1
+2.652860e-02	2	3	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	CAC2	MSI1
+1.828460e-02	3	3	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	CAC2	MSI1	RLF2
+1.257030e-03	2	3	135	6526	97048	Saccharomyces	cerevisiae	GO:0006338	biological_process	"chromatin remodeling"	CAC2	MSI1
+3.736830e-04	3	3	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	CAC2	MSI1	RLF2
+9.654050e-03	2	3	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CAC2	MSI1
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	CAC2	MSI1	RLF2
+2.429650e-03	2	3	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	CAC2	MSI1
+2.378580e-03	2	3	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	CAC2	MSI1
+1.852040e-03	2	3	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	CAC2	MSI1
+2.586020e-03	2	3	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	CAC2	MSI1
+2.400390e-02	2	3	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	CAC2	MSI1
+5.194730e-02	1	3	115	6526	97048	Saccharomyces	cerevisiae	GO:0007242	biological_process	"intracellular signaling cascade"	MSI1
+2.328050e-03	2	3	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	CAC2	RLF2
+1.829200e-03	3	3	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	CAC2	MSI1	RLF2
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	CAC2	MSI1	RLF2
+1.148070e-03	2	3	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	CAC2	MSI1
+4.414770e-04	2	3	80	6526	97048	Saccharomyces	cerevisiae	GO:0006342	biological_process	"chromatin silencing"	CAC2	MSI1
+3.372330e-05	3	3	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	CAC2	MSI1	RLF2
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	CAC2	MSI1	RLF2
+3.141700e-03	2	3	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	CAC2	RLF2
+1.079330e-02	3	3	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CAC2	MSI1	RLF2
+1.238530e-03	2	3	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	CAC2	MSI1
+1.707540e-02	2	3	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	CAC2	MSI1
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	CAC2	MSI1	RLF2
+7.976420e-03	2	3	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	CAC2	MSI1
+1.202060e-05	3	3	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	CAC2	MSI1	RLF2
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	CAC2	MSI1	RLF2
+1.077210e-06	3	3	73	6526	97048	Saccharomyces	cerevisiae	GO:0016585	cellular_component	"chromatin remodeling complex"	CAC2	MSI1	RLF2
+7.043900e-03	2	3	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	CAC2	MSI1
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	CAC2	MSI1	RLF2
+5.759190e-02	2	3	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CAC2	RLF2
+1.282670e-02	2	3	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	CAC2	MSI1
+1.343050e-02	3	3	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	CAC2	MSI1	RLF2
+3.975750e-02	3	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	CAC2	MSI1	RLF2
+1.449420e-03	2	3	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CAC2	MSI1
+2.644790e-02	2	3	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	CAC2	MSI1
+1.110160e-01	3	3	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	CAC2	MSI1	RLF2
+3.673650e-03	1	3	8	6526	97048	Saccharomyces	cerevisiae	GO:0005677	cellular_component	"chromatin silencing complex"	MSI1
+2.012570e-03	2	3	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	CAC2	MSI1
+2.885100e-03	2	3	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	CAC2	MSI1
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	CAC2	MSI1	RLF2
+4.985450e-04	2	3	85	6526	97048	Saccharomyces	cerevisiae	GO:0040029	biological_process	"regulation of gene expression, epigenetic"	CAC2	MSI1
+2.802650e-02	3	3	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	CAC2	MSI1	RLF2
+4.414770e-04	2	3	80	6526	97048	Saccharomyces	cerevisiae	GO:0016458	biological_process	"gene silencing"	CAC2	MSI1
+1.763250e-03	2	3	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	CAC2	MSI1
+2.378580e-03	2	3	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	CAC2	MSI1
+3.549210e-04	3	3	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	CAC2	MSI1	RLF2
+2.559920e-04	2	3	61	6526	97048	Saccharomyces	cerevisiae	GO:0000775	cellular_component	"chromosome, pericentric region"	CAC2	RLF2
+4.936270e-03	3	3	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	CAC2	MSI1	RLF2
+4.471790e-03	3	3	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	CAC2	MSI1	RLF2

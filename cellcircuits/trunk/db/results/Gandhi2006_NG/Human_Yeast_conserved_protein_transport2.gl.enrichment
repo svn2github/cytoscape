@@ -1,0 +1,101 @@
+#NOT FOUND: VPS33A_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.629540e-01	2	2	8467	20974	92001	Homo	sapiens	GO:0016020	cellular_component	"membrane"	VPS11	VPS18
+1.803340e-01	1	2	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	VPS11
+5.269660e-01	2	2	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	VPS11	VPS18
+4.962840e-02	2	2	6165	27672	92001	Homo	sapiens	GO:0043167	molecular_function	"ion binding"	VPS11	VPS18
+1.000000e+00	2	2	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	VPS11	VPS18
+4.084660e-01	1	2	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	VPS11
+8.342390e-01	2	2	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	VPS11	VPS18
+2.590930e-01	1	2	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	VPS11
+1.772930e-02	2	2	3685	27672	92001	Homo	sapiens	GO:0008270	molecular_function	"zinc ion binding"	VPS11	VPS18
+1.007610e-03	2	2	740	23297	92001	Homo	sapiens	GO:0015031	biological_process	"protein transport"	VPS11	VPS18
+2.979850e-02	2	2	4022	23297	92001	Homo	sapiens	GO:0051234	biological_process	"establishment of localization"	VPS11	VPS18
+1.122440e-03	2	2	781	23297	92001	Homo	sapiens	GO:0045184	biological_process	"establishment of protein localization"	VPS11	VPS18
+7.057760e-01	2	2	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	VPS11	VPS18
+2.572460e-02	2	2	3737	23297	92001	Homo	sapiens	GO:0006810	biological_process	"transport"	VPS11	VPS18
+1.000000e+00	2	2	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	VPS11	VPS18
+2.453650e-02	2	2	4335	27672	92001	Homo	sapiens	GO:0046914	molecular_function	"transition metal ion binding"	VPS11	VPS18
+8.341520e-01	2	2	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	VPS11	VPS18
+4.154370e-01	2	2	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	VPS11	VPS18
+4.380430e-02	2	2	5792	27672	92001	Homo	sapiens	GO:0043169	molecular_function	"cation binding"	VPS11	VPS18
+4.787310e-02	2	2	6055	27672	92001	Homo	sapiens	GO:0046872	molecular_function	"metal ion binding"	VPS11	VPS18
+1.870600e-01	1	2	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	VPS11
+1.207400e-03	2	2	810	23297	92001	Homo	sapiens	GO:0008104	biological_process	"protein localization"	VPS11	VPS18
+3.025970e-02	2	2	4053	23297	92001	Homo	sapiens	GO:0051179	biological_process	"localization"	VPS11	VPS18
+7.714250e-01	2	2	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	VPS11	VPS18
+1.000000e+00	2	2	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	VPS11	VPS18
+2.296280e-01	1	2	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	VPS11
+#USING PEP3 instead of its synonym YLR148W in Saccharomyces cerevisiae
+#USING PEP5 instead of its synonym YMR231W in Saccharomyces cerevisiae
+#USING VPS33 instead of its synonym YLR396C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+4.299350e-03	3	3	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YLR148W	YLR396C	YMR231W
+1.964060e-02	1	3	43	6526	97048	Saccharomyces	cerevisiae	GO:0019898	cellular_component	"extrinsic to membrane"	YLR148W
+8.090050e-04	3	3	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YLR148W	YLR396C	YMR231W
+1.937530e-01	1	3	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YLR148W
+1.675250e-01	3	3	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YLR148W	YLR396C	YMR231W
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YLR148W	YLR396C	YMR231W
+1.153930e-05	3	3	149	6526	97048	Saccharomyces	cerevisiae	GO:0000322	cellular_component	"storage vacuole"	YLR148W	YLR396C	YMR231W
+3.975750e-02	3	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YLR148W	YLR396C	YMR231W
+3.037740e-03	3	3	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YLR148W	YLR396C	YMR231W
+7.964550e-07	3	3	68	6526	97048	Saccharomyces	cerevisiae	GO:0000329	cellular_component	"vacuolar membrane (sensu Fungi)"	YLR148W	YLR396C	YMR231W
+5.119620e-04	3	3	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YLR148W	YLR396C	YMR231W
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YLR148W	YLR396C	YMR231W
+4.373570e-08	3	3	24	6526	97048	Saccharomyces	cerevisiae	GO:0042144	biological_process	"vacuole fusion, non-autophagic"	YLR148W	YLR396C	YMR231W
+8.445310e-02	2	3	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YLR148W	YLR396C
+8.253050e-03	1	3	18	6526	97048	Saccharomyces	cerevisiae	GO:0030554	molecular_function	"adenyl nucleotide binding"	YLR396C
+2.302700e-07	3	3	41	6526	97048	Saccharomyces	cerevisiae	GO:0007033	biological_process	"vacuole organization and biogenesis"	YLR148W	YLR396C	YMR231W
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YLR148W	YLR396C	YMR231W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YLR148W	YLR396C	YMR231W
+3.824110e-05	3	3	221	6526	97048	Saccharomyces	cerevisiae	GO:0046903	biological_process	"secretion"	YLR148W	YLR396C	YMR231W
+1.153930e-05	3	3	149	6526	97048	Saccharomyces	cerevisiae	GO:0000323	cellular_component	"lytic vacuole"	YLR148W	YLR396C	YMR231W
+6.880710e-03	1	3	15	6526	97048	Saccharomyces	cerevisiae	GO:0005524	molecular_function	"ATP binding"	YLR396C
+4.743330e-09	3	3	12	6526	97048	Saccharomyces	cerevisiae	GO:0006895	biological_process	"Golgi to endosome transport"	YLR148W	YLR396C	YMR231W
+9.290160e-06	2	3	12	6526	97048	Saccharomyces	cerevisiae	GO:0006904	biological_process	"vesicle docking during exocytosis"	YLR148W	YMR231W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YLR148W	YLR396C	YMR231W
+1.600640e-02	1	3	35	6526	97048	Saccharomyces	cerevisiae	GO:0000166	molecular_function	"nucleotide binding"	YLR396C
+2.858170e-03	3	3	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YLR148W	YLR396C	YMR231W
+2.134220e-07	3	3	40	6526	97048	Saccharomyces	cerevisiae	GO:0016197	biological_process	"endosome transport"	YLR148W	YLR396C	YMR231W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YLR148W	YLR396C	YMR231W
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YLR148W	YLR396C	YMR231W
+4.750010e-06	3	3	112	6526	97048	Saccharomyces	cerevisiae	GO:0044437	cellular_component	"vacuolar part"	YLR148W	YLR396C	YMR231W
+2.498090e-05	3	3	192	6526	97048	Saccharomyces	cerevisiae	GO:0005773	cellular_component	"vacuole"	YLR148W	YLR396C	YMR231W
+4.251020e-10	3	3	6	6526	97048	Saccharomyces	cerevisiae	GO:0030897	cellular_component	"HOPS complex"	YLR148W	YLR396C	YMR231W
+1.169580e-01	1	3	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	YLR148W
+1.166920e-02	3	3	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YLR148W	YLR396C	YMR231W
+4.830960e-04	3	3	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YLR148W	YLR396C	YMR231W
+1.828460e-02	3	3	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YLR148W	YLR396C	YMR231W
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YLR148W	YLR396C	YMR231W
+1.107090e-05	3	3	147	6526	97048	Saccharomyces	cerevisiae	GO:0048193	biological_process	"Golgi vesicle transport"	YLR148W	YLR396C	YMR231W
+2.166330e-01	1	3	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YLR148W
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YLR148W	YLR396C	YMR231W
+7.543940e-04	3	3	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YLR148W	YLR396C	YMR231W
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YLR148W	YLR396C	YMR231W
+1.208520e-08	3	3	16	6526	97048	Saccharomyces	cerevisiae	GO:0045324	biological_process	"late endosome to vacuole transport"	YLR148W	YLR396C	YMR231W
+3.469480e-05	3	3	214	6526	97048	Saccharomyces	cerevisiae	GO:0045045	biological_process	"secretory pathway"	YLR148W	YLR396C	YMR231W
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YLR148W	YLR396C	YMR231W
+1.555150e-02	1	3	34	6526	97048	Saccharomyces	cerevisiae	GO:0017076	molecular_function	"purine nucleotide binding"	YLR396C
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YLR148W	YLR396C	YMR231W
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YLR148W	YLR396C	YMR231W
+2.689080e-06	3	3	94	6526	97048	Saccharomyces	cerevisiae	GO:0016044	biological_process	"membrane organization and biogenesis"	YLR148W	YLR396C	YMR231W
+3.975750e-02	3	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YLR148W	YLR396C	YMR231W
+5.987420e-07	3	3	56	6526	97048	Saccharomyces	cerevisiae	GO:0006944	biological_process	"membrane fusion"	YLR148W	YLR396C	YMR231W
+9.047800e-05	3	3	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	YLR148W	YLR396C	YMR231W
+2.546800e-01	1	3	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	YLR396C
+1.280650e-05	2	3	14	6526	97048	Saccharomyces	cerevisiae	GO:0048278	biological_process	"vesicle docking"	YLR148W	YMR231W
+5.955920e-04	3	3	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YLR148W	YLR396C	YMR231W
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YLR148W	YLR396C	YMR231W
+1.153930e-05	3	3	149	6526	97048	Saccharomyces	cerevisiae	GO:0000324	cellular_component	"vacuole (sensu Fungi)"	YLR148W	YLR396C	YMR231W
+9.192580e-04	1	3	2	6526	97048	Saccharomyces	cerevisiae	GO:0000306	cellular_component	"extrinsic to vacuolar membrane"	YLR148W
+1.981260e-01	1	3	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YLR148W
+4.936270e-03	3	3	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YLR148W	YLR396C	YMR231W
+7.964550e-07	3	3	68	6526	97048	Saccharomyces	cerevisiae	GO:0007034	biological_process	"vacuolar transport"	YLR148W	YLR396C	YMR231W
+4.590660e-03	1	3	10	6526	97048	Saccharomyces	cerevisiae	GO:0031312	cellular_component	"extrinsic to organelle membrane"	YLR148W
+3.864540e-06	3	3	105	6526	97048	Saccharomyces	cerevisiae	GO:0005774	cellular_component	"vacuolar membrane"	YLR148W	YLR396C	YMR231W
+7.310180e-01	1	3	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YMR231W
+3.545890e-03	3	3	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YLR148W	YLR396C	YMR231W
+5.666680e-07	3	3	55	6526	97048	Saccharomyces	cerevisiae	GO:0006892	biological_process	"post-Golgi vesicle-mediated transport"	YLR148W	YLR396C	YMR231W
+6.088860e-02	3	3	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YLR148W	YLR396C	YMR231W
+1.169580e-01	1	3	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	YLR148W
+9.298630e-05	2	3	37	6526	97048	Saccharomyces	cerevisiae	GO:0006887	biological_process	"exocytosis"	YLR148W	YMR231W

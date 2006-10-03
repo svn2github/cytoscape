@@ -1,0 +1,254 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.544430e-03	1	6	6	23297	92001	Homo	sapiens	GO:0006266	biological_process	"DNA ligation"	RAD51
+4.114070e-03	1	6	16	23297	92001	Homo	sapiens	GO:0006268	biological_process	"DNA unwinding during replication"	RAD51
+2.698160e-05	2	6	32	23297	92001	Homo	sapiens	GO:0006289	biological_process	"nucleotide-excision repair"	ERCC1	XPA
+1.346830e-05	2	6	23	23297	92001	Homo	sapiens	GO:0007131	biological_process	"meiotic recombination"	RAD51	RAD52
+5.805610e-01	6	6	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+5.720690e-04	1	6	2	20974	92001	Homo	sapiens	GO:0005736	cellular_component	"DNA-directed RNA polymerase I complex"	RPA1
+3.460630e-02	3	6	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	ERCC1	RAD51	RPA1
+2.145670e-02	6	6	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+1.664250e-01	2	6	2621	20974	92001	Homo	sapiens	GO:0043228	cellular_component	"non-membrane-bound organelle"	RAD51	RPA1
+7.529350e-01	1	6	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	RAD51
+9.404690e-03	1	6	33	20974	92001	Homo	sapiens	GO:0000793	cellular_component	"condensed chromosome"	RAD51
+3.664900e-02	6	6	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+4.572540e-02	1	6	215	27672	92001	Homo	sapiens	GO:0042802	molecular_function	"identical protein binding"	RAD51
+1.223980e-02	1	6	43	20974	92001	Homo	sapiens	GO:0044454	cellular_component	"nuclear chromosome part"	RAD51
+4.414680e-02	6	6	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+5.313170e-02	1	6	211	23297	92001	Homo	sapiens	GO:0009893	biological_process	"positive regulation of metabolism"	RAD51
+1.027030e-01	4	6	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	ERCC1	RAD51	RPA1	RPA2
+7.168230e-02	6	6	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+8.855250e-05	2	6	68	27672	92001	Homo	sapiens	GO:0003899	molecular_function	"DNA-directed RNA polymerase activity"	RPA1	RPA2
+1.819360e-06	4	6	441	23297	92001	Homo	sapiens	GO:0009719	biological_process	"response to endogenous stimulus"	ERCC1	RAD51	RAD52	XPA
+1.465530e-02	1	6	68	27672	92001	Homo	sapiens	GO:0043566	molecular_function	"structure-specific DNA binding"	RAD51
+8.836460e-02	4	6	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	ERCC1	RAD51	RAD52	XPA
+2.575440e-04	1	6	1	23297	92001	Homo	sapiens	GO:0051105	biological_process	"regulation of DNA ligation"	RAD51
+8.044300e-01	1	6	5547	23297	92001	Homo	sapiens	GO:0019538	biological_process	"protein metabolism"	RAD51
+4.627770e-01	1	6	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	RAD51
+2.108090e-03	6	6	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+3.677160e-02	1	6	145	23297	92001	Homo	sapiens	GO:0006261	biological_process	"DNA-dependent DNA replication"	RAD51
+2.021120e-02	1	6	94	27672	92001	Homo	sapiens	GO:0008094	molecular_function	"DNA-dependent ATPase activity"	RAD51
+1.456380e-01	1	6	543	20974	92001	Homo	sapiens	GO:0043233	cellular_component	"organelle lumen"	RPA1
+7.879660e-04	2	6	171	23297	92001	Homo	sapiens	GO:0006310	biological_process	"DNA recombination"	RAD51	RAD52
+1.000000e+00	6	6	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+2.525330e-06	6	6	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+4.493310e-01	1	6	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	RAD51
+3.664890e-01	1	6	2027	27672	92001	Homo	sapiens	GO:0030528	molecular_function	"transcription regulator activity"	RAD51
+1.801650e-03	1	6	7	23297	92001	Homo	sapiens	GO:0051054	biological_process	"positive regulation of DNA metabolism"	RAD51
+9.120810e-03	1	6	32	20974	92001	Homo	sapiens	GO:0030880	cellular_component	"RNA polymerase complex"	RPA1
+1.153390e-01	1	6	424	20974	92001	Homo	sapiens	GO:0031981	cellular_component	"nuclear lumen"	RPA1
+1.000000e+00	6	6	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+7.416130e-03	1	6	26	20974	92001	Homo	sapiens	GO:0044452	cellular_component	"nucleolar part"	RPA1
+1.534810e-01	1	6	638	23297	92001	Homo	sapiens	GO:0048522	biological_process	"positive regulation of cellular process"	RAD51
+2.827150e-02	1	6	100	20974	92001	Homo	sapiens	GO:0005730	cellular_component	"nucleolus"	RPA1
+9.378210e-05	2	6	59	23297	92001	Homo	sapiens	GO:0051321	biological_process	"meiotic cell cycle"	RAD51	RAD52
+5.933130e-01	1	6	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	RAD51
+6.407520e-01	1	6	3654	23297	92001	Homo	sapiens	GO:0031323	biological_process	"regulation of cellular metabolism"	RAD51
+1.979910e-01	1	6	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	RAD51
+1.161730e-02	2	6	801	27672	92001	Homo	sapiens	GO:0043565	molecular_function	"sequence-specific DNA binding"	ERCC1	RAD51
+2.575440e-04	1	6	1	23297	92001	Homo	sapiens	GO:0051106	biological_process	"positive regulation of DNA ligation"	RAD51
+1.000000e+00	6	6	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+2.104720e-03	6	6	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+8.023710e-01	1	6	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	RAD51
+9.748180e-03	1	6	38	23297	92001	Homo	sapiens	GO:0051052	biological_process	"regulation of DNA metabolism"	RAD51
+2.168260e-04	1	6	1	27672	92001	Homo	sapiens	GO:0043142	molecular_function	"single-stranded DNA-dependent ATPase activity"	RAD51
+5.196490e-02	1	6	245	27672	92001	Homo	sapiens	GO:0004518	molecular_function	"nuclease activity"	ERCC1
+9.471240e-05	6	6	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+6.509450e-01	1	6	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	RAD51
+2.341770e-01	2	6	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	ERCC1	RPA1
+8.287480e-07	2	6	6	23297	92001	Homo	sapiens	GO:0006312	biological_process	"mitotic recombination"	RAD51	RAD52
+2.572160e-03	1	6	9	20974	92001	Homo	sapiens	GO:0000795	cellular_component	"synaptonemal complex"	RAD51
+7.777010e-01	1	6	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	RAD51
+7.771910e-02	1	6	312	23297	92001	Homo	sapiens	GO:0006260	biological_process	"DNA replication"	RAD51
+4.114070e-03	1	6	16	23297	92001	Homo	sapiens	GO:0051260	biological_process	"protein homooligomerization"	RAD51
+7.554290e-05	4	6	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	ERCC1	RAD51	RAD52	XPA
+5.625110e-03	1	6	26	27672	92001	Homo	sapiens	GO:0003690	molecular_function	"double-stranded DNA binding"	RAD51
+1.367560e-01	1	6	564	23297	92001	Homo	sapiens	GO:0043119	biological_process	"positive regulation of physiological process"	RAD51
+6.230590e-01	1	6	3496	23297	92001	Homo	sapiens	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	RAD51
+1.749100e-05	2	6	26	23297	92001	Homo	sapiens	GO:0006302	biological_process	"double-strand break repair"	RAD51	RAD52
+1.812630e-02	6	6	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+2.082210e-01	1	6	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	RAD51
+1.079360e-02	1	6	50	27672	92001	Homo	sapiens	GO:0003697	molecular_function	"single-stranded DNA binding"	RAD51
+1.403620e-01	3	6	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	RAD51	RAD52	XPA
+1.921550e-01	2	6	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	ERCC1	RAD51
+4.485890e-03	4	6	3251	23297	92001	Homo	sapiens	GO:0050896	biological_process	"response to stimulus"	ERCC1	RAD51	RAD52	XPA
+1.315020e-01	1	6	541	23297	92001	Homo	sapiens	GO:0051242	biological_process	"positive regulation of cellular physiological process"	RAD51
+7.702680e-03	1	6	30	23297	92001	Homo	sapiens	GO:0051259	biological_process	"protein oligomerization"	RAD51
+1.344660e-01	1	6	658	27672	92001	Homo	sapiens	GO:0016887	molecular_function	"ATPase activity"	RAD51
+1.096400e-01	1	6	402	20974	92001	Homo	sapiens	GO:0044427	cellular_component	"chromosomal part"	RAD51
+1.456380e-01	1	6	543	20974	92001	Homo	sapiens	GO:0031974	cellular_component	"membrane-enclosed lumen"	RPA1
+3.515260e-01	6	6	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+2.199440e-05	2	6	29	23297	92001	Homo	sapiens	GO:0007127	biological_process	"meiosis I"	RAD51	RAD52
+2.048230e-01	1	6	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	RAD51
+5.803790e-01	6	6	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+1.583970e-04	6	6	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+1.266450e-01	1	6	468	20974	92001	Homo	sapiens	GO:0005694	cellular_component	"chromosome"	RAD51
+1.106270e-01	3	6	5792	27672	92001	Homo	sapiens	GO:0043169	molecular_function	"cation binding"	RPA1	RPA2	XPA
+1.650090e-07	3	6	57	27672	92001	Homo	sapiens	GO:0003684	molecular_function	"damaged DNA binding"	ERCC1	RAD51	XPA
+2.328610e-01	2	6	3587	23297	92001	Homo	sapiens	GO:0006350	biological_process	"transcription"	RPA1	RPA2
+2.058970e-01	1	6	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	RAD51
+1.287170e-03	1	6	5	23297	92001	Homo	sapiens	GO:0000724	biological_process	"double-strand break repair via homologous recombination"	RAD51
+1.320720e-01	2	6	3012	27672	92001	Homo	sapiens	GO:0016740	molecular_function	"transferase activity"	RPA1	RPA2
+4.590390e-01	6	6	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+2.637740e-02	1	6	123	27672	92001	Homo	sapiens	GO:0004519	molecular_function	"endonuclease activity"	ERCC1
+9.681450e-02	1	6	392	23297	92001	Homo	sapiens	GO:0006461	biological_process	"protein complex assembly"	RAD51
+5.428330e-01	1	6	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	RAD51
+7.983430e-03	6	6	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+1.463070e-01	6	6	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+1.664250e-01	2	6	2621	20974	92001	Homo	sapiens	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	RAD51	RPA1
+1.679030e-04	4	6	1382	23297	92001	Homo	sapiens	GO:0006950	biological_process	"response to stress"	ERCC1	RAD51	RAD52	XPA
+1.353330e-02	4	6	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	ERCC1	RAD51	RAD52	XPA
+3.460630e-02	3	6	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	ERCC1	RAD51	RPA1
+1.288120e-01	3	6	6165	27672	92001	Homo	sapiens	GO:0043167	molecular_function	"ion binding"	RPA1	RPA2	XPA
+1.418080e-03	2	6	230	23297	92001	Homo	sapiens	GO:0000279	biological_process	"M phase"	RAD51	RAD52
+7.428880e-01	1	6	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	RAD51
+1.741320e-02	6	6	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+3.451400e-02	3	6	3685	27672	92001	Homo	sapiens	GO:0008270	molecular_function	"zinc ion binding"	RPA1	RPA2	XPA
+1.837330e-01	1	6	775	23297	92001	Homo	sapiens	GO:0048518	biological_process	"positive regulation of biological process"	RAD51
+1.326010e-06	4	6	408	23297	92001	Homo	sapiens	GO:0006974	biological_process	"response to DNA damage stimulus"	ERCC1	RAD51	RAD52	XPA
+7.988540e-03	6	6	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+3.280550e-04	6	6	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	ERCC1	RAD51	RAD52	RPA1	RPA2	XPA
+1.287170e-03	1	6	5	23297	92001	Homo	sapiens	GO:0000725	biological_process	"recombinational repair"	RAD51
+8.966060e-07	4	6	371	23297	92001	Homo	sapiens	GO:0006281	biological_process	"DNA repair"	ERCC1	RAD51	RAD52	XPA
+5.301810e-02	3	6	4335	27672	92001	Homo	sapiens	GO:0046914	molecular_function	"transition metal ion binding"	RPA1	RPA2	XPA
+1.026760e-03	2	6	232	27672	92001	Homo	sapiens	GO:0016779	molecular_function	"nucleotidyltransferase activity"	RPA1	RPA2
+2.239760e-01	1	6	1145	27672	92001	Homo	sapiens	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	ERCC1
+4.943400e-02	1	6	196	23297	92001	Homo	sapiens	GO:0031325	biological_process	"positive regulation of cellular metabolism"	RAD51
+1.166260e-01	1	6	566	27672	92001	Homo	sapiens	GO:0042623	molecular_function	"ATPase activity, coupled"	RAD51
+2.070470e-02	1	6	73	20974	92001	Homo	sapiens	GO:0000228	cellular_component	"nuclear chromosome"	RAD51
+1.233110e-01	3	6	6055	27672	92001	Homo	sapiens	GO:0046872	molecular_function	"metal ion binding"	RPA1	RPA2	XPA
+9.060410e-05	2	6	58	23297	92001	Homo	sapiens	GO:0007126	biological_process	"meiosis"	RAD51	RAD52
+3.702120e-02	1	6	146	23297	92001	Homo	sapiens	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	RAD51
+6.562890e-03	1	6	23	20974	92001	Homo	sapiens	GO:0000794	cellular_component	"condensed nuclear chromosome"	RAD51
+9.060410e-05	2	6	58	23297	92001	Homo	sapiens	GO:0051327	biological_process	"M phase of meiotic cell cycle"	RAD51	RAD52
+1.143860e-03	1	6	4	20974	92001	Homo	sapiens	GO:0000109	cellular_component	"nucleotide-excision repair complex"	ERCC1
+1.898700e-02	2	6	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	RAD51	RAD52
+5.720920e-02	2	6	1873	27672	92001	Homo	sapiens	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	RPA1	RPA2
+7.761730e-04	3	6	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	ERCC1	RAD51	RPA1
+#USING RAD14 instead of its synonym YMR201C in Saccharomyces cerevisiae
+#USING RFA2 instead of its synonym YNL312W in Saccharomyces cerevisiae
+#USING RAD10 instead of its synonym YML095C in Saccharomyces cerevisiae
+#USING RFA1 instead of its synonym YAR007C in Saccharomyces cerevisiae
+#USING RAD52 instead of its synonym YML032C in Saccharomyces cerevisiae
+#USING RAD51 instead of its synonym YER095W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.596530e-04	2	6	22	6526	97048	Saccharomyces	cerevisiae	GO:0006311	biological_process	"meiotic gene conversion"	YML032C	YML095C
+2.433560e-04	2	6	27	6526	97048	Saccharomyces	cerevisiae	GO:0000781	cellular_component	"chromosome, telomeric region"	YAR007C	YNL312W
+4.630860e-05	2	6	12	6526	97048	Saccharomyces	cerevisiae	GO:0006268	biological_process	"DNA unwinding during replication"	YAR007C	YNL312W
+5.958650e-02	2	6	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YER095W	YML032C
+1.838090e-03	1	6	2	6526	97048	Saccharomyces	cerevisiae	GO:0006296	biological_process	"nucleotide-excision repair, DNA incision, 5'-to lesion"	YML095C
+9.918660e-01	1	6	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YAR007C
+7.097520e-09	4	6	32	6526	97048	Saccharomyces	cerevisiae	GO:0006289	biological_process	"nucleotide-excision repair"	YAR007C	YML095C	YMR201C	YNL312W
+9.193990e-04	1	6	1	6526	97048	Saccharomyces	cerevisiae	GO:0042148	biological_process	"strand invasion"	YER095W
+2.187370e-02	1	6	24	6526	97048	Saccharomyces	cerevisiae	GO:0045005	biological_process	"maintenance of fidelity during DNA-dependent DNA replication"	YML095C
+6.540890e-06	3	6	48	6526	97048	Saccharomyces	cerevisiae	GO:0007131	biological_process	"meiotic recombination"	YER095W	YML032C	YML095C
+3.346210e-01	6	6	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+4.589960e-03	1	6	5	6526	97048	Saccharomyces	cerevisiae	GO:0000707	biological_process	"meiotic DNA recombinase assembly"	YML032C
+1.790040e-02	6	6	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.576430e-03	6	6	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+5.280060e-03	4	6	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YAR007C	YER095W	YML032C	YNL312W
+7.481480e-02	1	6	84	6526	97048	Saccharomyces	cerevisiae	GO:0000793	cellular_component	"condensed chromosome"	YER095W
+2.092660e-02	6	6	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+7.028910e-03	2	6	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	YAR007C	YNL312W
+2.065390e-01	6	6	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+7.601350e-07	3	6	23	6526	97048	Saccharomyces	cerevisiae	GO:0007531	biological_process	"mating type determination"	YER095W	YML032C	YML095C
+7.601350e-07	3	6	23	6526	97048	Saccharomyces	cerevisiae	GO:0007530	biological_process	"sex determination"	YER095W	YML032C	YML095C
+2.576660e-01	3	6	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YER095W	YML032C	YML095C
+8.405970e-05	2	6	16	6526	97048	Saccharomyces	cerevisiae	GO:0030894	cellular_component	"replisome"	YAR007C	YNL312W
+9.276430e-04	5	6	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YAR007C	YML032C	YML095C	YMR201C	YNL312W
+3.673370e-03	1	6	4	6526	97048	Saccharomyces	cerevisiae	GO:0000735	biological_process	"removal of nonhomologous ends"	YML095C
+1.738000e-06	3	6	30	6526	97048	Saccharomyces	cerevisiae	GO:0043566	molecular_function	"structure-specific DNA binding"	YAR007C	YML032C	YML095C
+1.065790e-09	6	6	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+7.844050e-01	1	6	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YML032C
+2.957170e-03	6	6	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+2.817370e-02	6	6	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+2.922950e-07	3	6	17	6526	97048	Saccharomyces	cerevisiae	GO:0007533	biological_process	"mating type switching"	YER095W	YML032C	YML095C
+4.402770e-05	3	6	87	6526	97048	Saccharomyces	cerevisiae	GO:0006261	biological_process	"DNA-dependent DNA replication"	YAR007C	YML095C	YNL312W
+4.531060e-09	5	6	100	6526	97048	Saccharomyces	cerevisiae	GO:0006310	biological_process	"DNA recombination"	YAR007C	YER095W	YML032C	YML095C	YNL312W
+2.112690e-06	2	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0005662	cellular_component	"DNA replication factor A complex"	YAR007C	YNL312W
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.230990e-07	3	6	13	6526	97048	Saccharomyces	cerevisiae	GO:0007534	biological_process	"gene conversion at mating-type locus"	YER095W	YML032C	YML095C
+1.970980e-07	5	6	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	YAR007C	YML032C	YML095C	YMR201C	YNL312W
+1.476470e-05	2	6	7	6526	97048	Saccharomyces	cerevisiae	GO:0006269	biological_process	"DNA replication, synthesis of RNA primer"	YAR007C	YNL312W
+1.734850e-02	1	6	19	6526	97048	Saccharomyces	cerevisiae	GO:0004520	molecular_function	"endodeoxyribonuclease activity"	YML095C
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.880200e-04	3	6	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	YER095W	YML032C	YML095C
+4.589960e-03	1	6	5	6526	97048	Saccharomyces	cerevisiae	GO:0000730	biological_process	"DNA recombinase assembly"	YML032C
+6.379750e-05	2	6	14	6526	97048	Saccharomyces	cerevisiae	GO:0000722	biological_process	"telomere maintenance via recombination"	YER095W	YML032C
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+2.817370e-02	6	6	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+5.505840e-03	1	6	6	6526	97048	Saccharomyces	cerevisiae	GO:0000727	biological_process	"double-strand break repair via break-induced replication"	YML032C
+6.421020e-03	1	6	7	6526	97048	Saccharomyces	cerevisiae	GO:0000715	biological_process	"nucleotide-excision repair, DNA damage recognition"	YMR201C
+2.187370e-02	1	6	24	6526	97048	Saccharomyces	cerevisiae	GO:0006298	biological_process	"mismatch repair"	YML095C
+3.017140e-04	2	6	30	6526	97048	Saccharomyces	cerevisiae	GO:0006271	biological_process	"DNA strand elongation"	YAR007C	YNL312W
+1.261690e-01	1	6	145	6526	97048	Saccharomyces	cerevisiae	GO:0004518	molecular_function	"nuclease activity"	YML095C
+5.438350e-05	5	6	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YAR007C	YML032C	YML095C	YMR201C	YNL312W
+1.702730e-04	2	6	20	6526	97048	Saccharomyces	cerevisiae	GO:0006273	biological_process	"lagging strand elongation"	YAR007C	YNL312W
+1.838090e-03	1	6	2	6526	97048	Saccharomyces	cerevisiae	GO:0000709	biological_process	"meiotic joint molecule formation"	YER095W
+2.756080e-03	1	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0030491	biological_process	"heteroduplex formation"	YER095W
+2.211200e-02	2	6	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	YER095W	YML032C
+2.664530e-02	4	6	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YAR007C	YML095C	YMR201C	YNL312W
+1.253530e-06	3	6	27	6526	97048	Saccharomyces	cerevisiae	GO:0006312	biological_process	"mitotic recombination"	YER095W	YML032C	YML095C
+3.860630e-05	2	6	11	6526	97048	Saccharomyces	cerevisiae	GO:0045003	biological_process	"double-strand break repair via synthesis-dependent strand annealing"	YER095W	YML032C
+4.979910e-01	2	6	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YER095W	YML032C
+8.467660e-05	3	6	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	YAR007C	YML095C	YNL312W
+8.405970e-05	2	6	16	6526	97048	Saccharomyces	cerevisiae	GO:0043601	cellular_component	"replisome (sensu Eukaryota)"	YAR007C	YNL312W
+7.358240e-05	2	6	15	6526	97048	Saccharomyces	cerevisiae	GO:0003690	molecular_function	"double-stranded DNA binding"	YML032C	YML095C
+1.372010e-07	6	6	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.283570e-10	5	6	50	6526	97048	Saccharomyces	cerevisiae	GO:0006302	biological_process	"double-strand break repair"	YAR007C	YER095W	YML032C	YML095C	YNL312W
+6.421020e-03	1	6	7	6526	97048	Saccharomyces	cerevisiae	GO:0000710	biological_process	"meiotic mismatch repair"	YML095C
+2.407940e-07	3	6	16	6526	97048	Saccharomyces	cerevisiae	GO:0003697	molecular_function	"single-stranded DNA binding"	YAR007C	YML032C	YML095C
+1.975640e-01	6	6	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+5.303190e-01	1	6	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YML095C
+5.441040e-07	6	6	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.100590e-02	2	6	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	YAR007C	YNL312W
+1.957070e-07	3	6	15	6526	97048	Saccharomyces	cerevisiae	GO:0006301	biological_process	"postreplication repair"	YAR007C	YML032C	YNL312W
+1.632110e-01	6	6	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.875130e-05	3	6	66	6526	97048	Saccharomyces	cerevisiae	GO:0007127	biological_process	"meiosis I"	YER095W	YML032C	YML095C
+3.342520e-01	6	6	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.159010e-04	6	6	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.583980e-05	4	6	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	YAR007C	YER095W	YML032C	YNL312W
+2.112690e-06	2	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0000739	molecular_function	"DNA strand annealing activity"	YML032C	YML095C
+1.371720e-02	1	6	15	6526	97048	Saccharomyces	cerevisiae	GO:0043169	molecular_function	"cation binding"	YMR201C
+1.967820e-05	2	6	8	6526	97048	Saccharomyces	cerevisiae	GO:0003684	molecular_function	"damaged DNA binding"	YAR007C	YMR201C
+3.617280e-03	3	6	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	YER095W	YML032C	YML095C
+1.070880e-04	2	6	18	6526	97048	Saccharomyces	cerevisiae	GO:0000724	biological_process	"double-strand break repair via homologous recombination"	YER095W	YML032C
+1.564270e-01	6	6	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.310900e-01	1	6	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	YML032C
+5.129460e-02	1	6	57	6526	97048	Saccharomyces	cerevisiae	GO:0004519	molecular_function	"endonuclease activity"	YML095C
+5.132540e-04	2	6	39	6526	97048	Saccharomyces	cerevisiae	GO:0005657	cellular_component	"replication fork"	YAR007C	YNL312W
+7.106590e-08	3	6	11	6526	97048	Saccharomyces	cerevisiae	GO:0045002	biological_process	"double-strand break repair via single-strand annealing"	YER095W	YML032C	YML095C
+4.718770e-02	6	6	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+2.277620e-02	1	6	25	6526	97048	Saccharomyces	cerevisiae	GO:0004536	molecular_function	"deoxyribonuclease activity"	YML095C
+1.498800e-01	6	6	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+5.280060e-03	4	6	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YAR007C	YER095W	YML032C	YNL312W
+1.795560e-04	6	6	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+8.730430e-08	6	6	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+2.121720e-06	3	6	32	6526	97048	Saccharomyces	cerevisiae	GO:0000726	biological_process	"non-recombinational repair"	YER095W	YML032C	YML095C
+1.576430e-03	6	6	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.734850e-02	1	6	19	6526	97048	Saccharomyces	cerevisiae	GO:0043167	molecular_function	"ion binding"	YMR201C
+9.724300e-04	3	6	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	YER095W	YML032C	YML095C
+3.673370e-03	1	6	4	6526	97048	Saccharomyces	cerevisiae	GO:0008270	molecular_function	"zinc ion binding"	YMR201C
+1.230620e-02	6	6	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+8.944970e-10	6	6	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.596530e-04	2	6	22	6526	97048	Saccharomyces	cerevisiae	GO:0043596	cellular_component	"replication fork (sensu Eukaryota)"	YAR007C	YNL312W
+4.718770e-02	6	6	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+7.829830e-04	6	6	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+1.196380e-04	2	6	19	6526	97048	Saccharomyces	cerevisiae	GO:0000725	biological_process	"recombinational repair"	YER095W	YML032C
+1.979950e-10	6	6	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
+6.223680e-02	2	6	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YER095W	YML032C
+1.838090e-03	1	6	2	6526	97048	Saccharomyces	cerevisiae	GO:0000736	biological_process	"double-strand break repair via single-strand annealing, removal of nonhomologous ends"	YML095C
+1.007470e-02	1	6	11	6526	97048	Saccharomyces	cerevisiae	GO:0046914	molecular_function	"transition metal ion binding"	YMR201C
+4.589960e-03	1	6	5	6526	97048	Saccharomyces	cerevisiae	GO:0000014	molecular_function	"single-stranded DNA specific endodeoxyribonuclease activity"	YML095C
+2.722070e-01	2	6	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YER095W	YML032C
+2.336410e-01	1	6	283	6526	97048	Saccharomyces	cerevisiae	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	YML095C
+2.112690e-06	2	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0000110	cellular_component	"nucleotide-excision repair factor 1 complex"	YML095C	YMR201C
+6.968420e-06	4	6	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	YAR007C	YER095W	YML032C	YNL312W
+2.112690e-06	2	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0000150	molecular_function	"recombinase activity"	YER095W	YML032C
+1.734850e-02	1	6	19	6526	97048	Saccharomyces	cerevisiae	GO:0046872	molecular_function	"metal ion binding"	YMR201C
+1.880200e-04	3	6	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	YER095W	YML032C	YML095C
+6.789710e-02	1	6	76	6526	97048	Saccharomyces	cerevisiae	GO:0000794	cellular_component	"condensed nuclear chromosome"	YER095W
+1.880200e-04	3	6	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	YER095W	YML032C	YML095C
+4.327630e-03	3	6	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YER095W	YML032C	YML095C
+1.702730e-04	2	6	20	6526	97048	Saccharomyces	cerevisiae	GO:0000109	cellular_component	"nucleotide-excision repair complex"	YML095C	YMR201C
+2.211200e-02	2	6	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	YER095W	YML032C
+1.982070e-05	6	6	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YAR007C	YER095W	YML032C	YML095C	YMR201C	YNL312W
