@@ -118,8 +118,8 @@ public class DGraphView
         m_defaultNodeXMax = m_defaultNodeXMin + DNodeView.DEFAULT_WIDTH;
         m_defaultNodeYMax = m_defaultNodeYMin + DNodeView.DEFAULT_HEIGHT;
         m_networkCanvas = new InnerCanvas(m_lock, this);
-		m_backgroundCanvas = new ArbitraryGraphicsCanvas(Color.white, true, true);
-		m_foregroundCanvas = new ArbitraryGraphicsCanvas(Color.white, true, false);
+		m_backgroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this, m_networkCanvas, Color.white, true, true);
+		m_foregroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this, m_networkCanvas, Color.white, true, false);
         m_selectedNodes = new IntBTree();
         m_selectedEdges = new IntBTree();
         m_selectedAnchors = new IntBTree();
