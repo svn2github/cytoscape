@@ -190,6 +190,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected CytoPanelImp cytoPanelEast;
 	protected CytoPanelImp cytoPanelSouth;
 
+	// create cytopanel with tabs along the top for manual layout
+	protected CytoPanelImp cytoPanelSouthWest = new CytoPanelImp(SwingConstants.SOUTH_WEST,
+			JTabbedPane.TOP, CytoPanelState.HIDE);
+
 	// Status Bar
 	protected JLabel statusBar;
 
@@ -702,12 +706,14 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			return (CytoPanel) cytoPanelEast;
 		case SwingConstants.WEST:
 			return (CytoPanel) cytoPanelWest;
+		case SwingConstants.SOUTH_WEST:
+			return (CytoPanel) cytoPanelSouthWest;			
 		}
 
 		// houston we have a problem
 		throw new IllegalArgumentException("Illegal Argument:  "
 				+ compassDirection
-				+ ".  Must be one of:  SwingConstants.{SOUTH,EAST,WEST}.");
+				+ ".  Must be one of:  SwingConstants.{SOUTH,EAST,WEST,SOUTH_WEST}.");
 	}
 
 	/**
@@ -812,7 +818,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// create cytopanel with tabs along the top
 		cytoPanelWest = new CytoPanelImp(SwingConstants.WEST, JTabbedPane.TOP,
 				CytoPanelState.DOCK);
-
+		
 		// add the network panel to our tab
 		String tab1Name = new String("Network");
 		cytoPanelWest
