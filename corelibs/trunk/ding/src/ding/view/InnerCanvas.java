@@ -52,6 +52,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.awt.geom.AffineTransform;
 
 import java.util.*;
 
@@ -100,6 +101,15 @@ public class InnerCanvas extends DingCanvas
      * DOCUMENT ME!
      */
     public Vector listeners = new Vector();
+
+	/**
+	 * The collection of objects
+	 * listening for innercanvas events.
+	 * Events supported on this vector:
+	 *
+	 * event fired when network rendering is complete
+	 */
+	private Vector innerCanvasListeners = new Vector();
 
     //       AJK: 04/02/06 END
     // AJK: 04/27/06 for context menus
@@ -239,6 +249,9 @@ public class InnerCanvas extends DingCanvas
                     yCenter,
                     scaleFactor);
         }
+
+		// let our listeners know of the update
+		notifyNetworkUpdateComplete();
     }
 
     /**
@@ -417,7 +430,7 @@ public class InnerCanvas extends DingCanvas
                 if ((!e.isShiftDown()) && // If shift is down never unselect.
                         (((chosenNode == 0) && (chosenEdge == 0) &&
                         (chosenAnchor < 0)) || // Mouse missed all.
-                        
+
                     // Not [we hit something but it was already selected].
                     !(((chosenNode != 0) &&
                         m_view.getNodeView(chosenNode)
@@ -798,7 +811,7 @@ public class InnerCanvas extends DingCanvas
 
 		    // If the shift key is down, then only move horizontally,
 		    // vertically, or diagonally, depending on the slope.
-		    if ( e.isShiftDown() ) { 
+		    if ( e.isShiftDown() ) {
 		    	final double slope = deltaY/deltaX;
 			// slope of 2.41 ~ 67.5 degrees (halfway between 45 and 90)
 			// slope of 0.41 ~ 22.5 degrees (halfway between 0 and 45)
@@ -806,7 +819,7 @@ public class InnerCanvas extends DingCanvas
 				deltaX = 0.0; // just move vertical
 			} else if ( slope < 0.41  && slope > -0.41 ) {
 				deltaY = 0.0; // just move horizontal
-			} else { 
+			} else {
 				final double avg = (Math.abs(deltaX) + Math.abs(deltaY))/2.0;
 				deltaX = deltaX<0?-avg:avg;
 				deltaY = deltaY<0?-avg:avg;
@@ -953,34 +966,34 @@ public class InnerCanvas extends DingCanvas
                                 ev.getHandleInternal(anchorInx, m_floatBuff1);
 
 				if ( code == KeyEvent.VK_UP ) {
-                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0], 
+                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0],
 					                      m_floatBuff1[1] - move);
 				} else if ( code == KeyEvent.VK_DOWN ) {
-                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0], 
+                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0],
 					                      m_floatBuff1[1] + move);
 				} else if ( code == KeyEvent.VK_LEFT ) {
-                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0] - move, 
+                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0] - move,
 					                      m_floatBuff1[1]);
 				} else if ( code == KeyEvent.VK_RIGHT ) {
-                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0] + move, 
+                                	ev.moveHandleInternal(anchorInx, m_floatBuff1[0] + move,
 					                      m_floatBuff1[1]);
 				}
                         }
 
 			repaint();
 		}
-	} 
+	}
     }
 
     /**
-     * Currently not used. 
+     * Currently not used.
      *
      * @param k The key event that we're listening for.
      */
     public void keyReleased(KeyEvent k) { }
 
     /**
-     * Currently not used. 
+     * Currently not used.
      *
      * @param k The key event that we're listening for.
      */
@@ -1344,4 +1357,59 @@ public class InnerCanvas extends DingCanvas
     public int getLastRenderDetail() {
         return m_lastRenderDetail;
     }
+
+	/**
+	 * Called to add an inner canvas listener.
+	 */
+	public synchronized void addInnerCanvasListener(InnerCanvasListener l) {
+
+		// add a listener if it is not already registered
+		if (!innerCanvasListeners.contains(l)) {
+			innerCanvasListeners.addElement(l);
+		}
+	}
+
+	/**
+	 * Called to remove an inner canvas listener.
+	 */
+	public synchronized void removeInnerCanvasListener(InnerCanvasListener l) {
+
+		// remove it if it is registered
+		if (innerCanvasListeners.contains(l)) {
+			innerCanvasListeners.removeElement(l);
+		}
+	}
+
+	/**
+	 * Called to get the tranform matrix used by the inner canvas
+	 * to move the nodes.
+	 *
+	 * @return AffineTransform
+	 */
+	public AffineTransform getAffineTransform() {
+		return (m_grafx != null) ? m_grafx.getTransform() : null;
+	}
+
+	/**
+	 * Called to notify our listeners when network has been updated.
+	 */
+	private void notifyNetworkUpdateComplete() {
+
+		// create the event object
+		InnerCanvasEvent evt = new InnerCanvasEvent(this);
+
+		// make a copy of the listener object vector so that it cannot
+		// be changed while we are firing events
+		Vector v;
+		synchronized(this) {
+			v = (Vector) innerCanvasListeners.clone();
+		}
+
+		// fire the event to all listeners
+		int cnt = v.size();
+		for (int i = 0; i < cnt; i++) {
+			InnerCanvasListener client = (InnerCanvasListener)v.elementAt(i);
+			client.innerCanvasUpdate(evt);
+		}
+	}
 }
