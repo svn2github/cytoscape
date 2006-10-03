@@ -1,6 +1,6 @@
 
 /*
-  File: NetworkViewManager.java 
+  File: ArbitraryGraphicsCanvas.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -40,33 +40,116 @@
 package ding.view;
 
 // import
+import giny.model.Node;
+import giny.view.NodeView;
+import giny.model.GraphPerspective;
+
+import java.util.Map;
+import java.util.HashMap;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Composite;
+import java.awt.Component;
 import java.awt.AlphaComposite;
 import java.awt.image.BufferedImage;
+import java.awt.geom.AffineTransform;
 
 /**
  * This class extends cytoscape.view.CytoscapeCanvas.  Its meant
  * to live within a ding.view.DGraphView class.  It is the canvas
  * used for arbitrary graphics drawing (background & foreground panes).
  */
-public class ArbitraryGraphicsCanvas extends DingCanvas {
+public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasListener {
+
+	/**
+	 * Our reference to the GraphPerspective our view belongs to
+	 */
+	private GraphPerspective m_graphPerspective;
+
+	/**
+	 * Our reference to the DGraphView we live within
+	 */
+	private DGraphView m_dGraphView;
+
+	/**
+	 * Our reference to the inner canvas
+	 */
+	private InnerCanvas m_innerCanvas;
+
+	/*
+	 * Map of component(s) to hidden node(s)
+	 */
+	private Map<Component, Node> m_componentToNodeMap;
 
 	/**
 	 * Constructor.
 	 *
+	 * @param graphPerspective GraphPerspective
+	 * @param dGraphView DGraphView
+	 * @param innerCanvas InnerCanvas
 	 * @param backgroundColor Color
 	 * @param isVisible boolean
 	 * @param isOpaque boolean
 	 */
-	public ArbitraryGraphicsCanvas(Color backgroundColor, boolean isVisible, boolean isOpaque) {
+	public ArbitraryGraphicsCanvas(GraphPerspective graphPerspective, DGraphView dGraphView,
+								   InnerCanvas innerCanvas, Color backgroundColor,
+								   boolean isVisible, boolean isOpaque) {
 
 		// init members
+		m_graphPerspective = graphPerspective;
+		m_dGraphView = dGraphView;
+		m_innerCanvas = innerCanvas;
 		m_backgroundColor = backgroundColor;
 		m_isVisible = isVisible;
 		m_isOpaque = isOpaque;
+		m_componentToNodeMap = new HashMap<Component, Node>();
+
+		// we want to listen to the inner canvas
+		m_innerCanvas.addInnerCanvasListener(this);
+	}
+
+	/**
+	 * Our implementation of add
+	 */
+	public Component add(Component component) {
+
+		if (false){
+		// create an "anchor node"
+		int nodeIndex = m_graphPerspective.getRootGraph().createNode();
+		Node node = m_graphPerspective.getRootGraph().getNode(nodeIndex);
+		node.setIdentifier(component.toString());
+		m_graphPerspective.restoreNode(node);
+
+		// set its node view coordinates
+		NodeView nodeView = m_dGraphView.getNodeView(node);
+		double[] nodeCanvasCoordinates = new double[2];
+		nodeCanvasCoordinates[0] = component.getX();
+		nodeCanvasCoordinates[1] = component.getY();
+		m_dGraphView.xformComponentToNodeCoords(nodeCanvasCoordinates);
+		nodeView.setXPosition(nodeCanvasCoordinates[0]);
+		nodeView.setYPosition(nodeCanvasCoordinates[1]);
+
+		// add to map
+		m_componentToNodeMap.put(component, node);
+
+		// hide the node - make it very small -
+		// hiding it via hideGraphObject takes it out of the ding repositioning loop
+		//m_dGraphView.hideGraphObject(nodeView, true, true);
+		nodeView.setWidth(1.0);
+		nodeView.setHeight(1.0);
+		}
+		
+		// do our stuff
+		return super.add(component);
+	}
+
+	/**
+	 * Our implementation of InnerCanvasListener.
+	 */
+	public void innerCanvasUpdate(InnerCanvasEvent event) {
+
+		if (setBoundsChildren()) repaint();
 	}
 
 	/**
@@ -77,11 +160,14 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 
 		// our bounds have changed, create a new image with new size
 		if ((width > 0) && (height > 0)) {
+
 			// create the buffered image
 			m_img = new BufferedImage(width,
 									  height,
 									  BufferedImage.TYPE_INT_ARGB);
-			// probably need to do some scaling of the children here
+
+			// update childrens bounds
+			setBoundsChildren();
 		}
 	}
 
@@ -121,6 +207,46 @@ public class ArbitraryGraphicsCanvas extends DingCanvas {
 		if (m_img != null) {
 			((Graphics2D)graphics).drawImage(((BufferedImage)m_img), null, 0, 0);
 		}
+	}
+
+	/**
+	 * Called to update the bounds of our child components.
+	 *
+	 * @return boolean
+	 */
+	private boolean setBoundsChildren() {
+
+		// get list of child components
+		Component[] components = getComponents();
+
+		// no components, outta here
+		if (components.length == 0) return false;
+
+		// interate through the components
+		for (Component c : components) {
+
+			// get node
+			Node node = m_componentToNodeMap.get(c);
+
+			// get node view
+			NodeView nodeView = m_dGraphView.getNodeView(node);
+
+			// new image coordinates
+			double[] currentNodeCoordinates = new double[2];
+			currentNodeCoordinates[0] = nodeView.getXPosition();
+			currentNodeCoordinates[1] = nodeView.getYPosition();
+			AffineTransform transform = m_innerCanvas.getAffineTransform();
+			transform.transform(currentNodeCoordinates, 0, currentNodeCoordinates, 0, 1);
+
+			// set bounds
+			c.setBounds((int)currentNodeCoordinates[0],
+						(int)currentNodeCoordinates[1],
+						c.getWidth(),
+						c.getHeight());
+		}
+
+		// outta here
+		return true;
 	}
 
 	/**
