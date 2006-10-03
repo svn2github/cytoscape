@@ -99,7 +99,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
                 QuickFindFactory.getGlobalQuickFindInstance();
         //  If a network already exists within Cytoscape, index it
         final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-        if (cyNetwork != null) {
+        if (cyNetwork != null && cyNetwork.getNodeCount() > 0) {
             //  Run Indexer in separate background daemon thread.
             Thread thread = new Thread() {
                 public void run() {
