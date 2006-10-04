@@ -63,6 +63,11 @@ import java.awt.geom.AffineTransform;
 public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasListener {
 
 	/**
+	 * Testing boolean to quickly turn on/off anchor nodes.
+	 */
+	private static final boolean USE_ANCHOR_NODES = false;
+
+	/**
 	 * Our reference to the GraphPerspective our view belongs to
 	 */
 	private GraphPerspective m_graphPerspective;
@@ -114,7 +119,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasLi
 	 */
 	public Component add(Component component) {
 
-		if (false){
+		if (USE_ANCHOR_NODES) {
 		// create an "anchor node"
 		int nodeIndex = m_graphPerspective.getRootGraph().createNode();
 		Node node = m_graphPerspective.getRootGraph().getNode(nodeIndex);
