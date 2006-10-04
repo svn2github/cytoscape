@@ -65,7 +65,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasLi
 	/**
 	 * Testing boolean to quickly turn on/off anchor nodes.
 	 */
-	private static final boolean USE_ANCHOR_NODES = false;
+	private static final boolean USE_REPOSITION_CODE = false;
 
 	/**
 	 * Our reference to the GraphPerspective our view belongs to
@@ -119,7 +119,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasLi
 	 */
 	public Component add(Component component) {
 
-		if (USE_ANCHOR_NODES) {
+		if (USE_REPOSITION_CODE) {
 		// create an "anchor node"
 		int nodeIndex = m_graphPerspective.getRootGraph().createNode();
 		Node node = m_graphPerspective.getRootGraph().getNode(nodeIndex);
@@ -154,7 +154,9 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasLi
 	 */
 	public void innerCanvasUpdate(InnerCanvasEvent event) {
 
-		if (setBoundsChildren()) repaint();
+		if (USE_REPOSITION_CODE) {
+			if (setBoundsChildren()) repaint();
+		}
 	}
 
 	/**
@@ -172,7 +174,9 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasLi
 									  BufferedImage.TYPE_INT_ARGB);
 
 			// update childrens bounds
-			setBoundsChildren();
+			if (USE_REPOSITION_CODE) {
+				setBoundsChildren();
+			}
 		}
 	}
 
