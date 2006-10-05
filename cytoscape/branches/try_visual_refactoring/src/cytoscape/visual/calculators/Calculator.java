@@ -126,5 +126,7 @@ public interface Calculator extends Cloneable {
 
     public Vector getMappings();
 
+    public ObjectMapping getMapping(int i);
+
     public String getTypeName();
 }

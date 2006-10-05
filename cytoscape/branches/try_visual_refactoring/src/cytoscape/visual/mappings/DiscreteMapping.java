@@ -52,10 +52,17 @@ import cytoscape.visual.mappings.discrete.DiscreteRangeCalculator;
 import cytoscape.visual.mappings.discrete.DiscreteUI;
 import cytoscape.visual.mappings.discrete.DiscreteMappingReader;
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.ui.*;
+import cytoscape.visual.*;
 
 import javax.swing.*;
+import javax.swing.table.*;
 import javax.swing.event.ChangeListener;
 import java.util.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Component;
 
 /**
  * Implements a lookup table mapping data to values of a particular class.
@@ -266,4 +273,127 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
                 mapType, this);
         return ui;
     }
+
+    public JPanel getLegend(String s) {
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(Color.white);
+
+                JLabel title = new JLabel(s + " is mapped to attribute: " + attrName);
+                panel.add(title);
+
+                Object[][] data = new Object[treeMap.keySet().size()][2];
+                Object[] col = new Object[2];
+
+                col[0] = "Attribute Value";
+                col[1] = "Visual Representation";
+
+                Iterator it = treeMap.keySet().iterator();
+                for (int i = 0; i < treeMap.keySet().size(); i++) {
+                        Object key = it.next();
+                        data[i][0] = key;
+                        data[i][1] = treeMap.get(key);
+                }
+
+                javax.swing.JTable jTable1 = new javax.swing.JTable();
+                jTable1.setModel(new javax.swing.table.DefaultTableModel(data, col));
+                jTable1.setGridColor(new java.awt.Color(255, 255, 255));
+                jTable1.setIntercellSpacing(new java.awt.Dimension(1, 1));
+                jTable1.setFont(new java.awt.Font("SansSerif", 0, 14));
+                jTable1.setDefaultRenderer(Object.class, new LegendTableCellRenderer());
+
+                panel.add(jTable1);
+
+		return panel;
+    }
+
+}
+
+
+class LegendTableCellRenderer extends JLabel implements TableCellRenderer {
+	private Font normalFont = new Font("Sans-serif", Font.PLAIN, 12);
+	private final Color metadataBackground = new Color(255, 210, 255);
+
+	private static final String METADATA_ATTR_NAME = "Network Metadata";
+
+	private int defaultCellWidth;
+	private int defaultCellHeight;
+
+	public LegendTableCellRenderer() {
+		super();
+
+		setOpaque(true);
+	}
+
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+
+		// initialize everything
+		setHorizontalAlignment(CENTER);
+		setText("");
+		setIcon(null);
+		setBackground(Color.WHITE);
+		setForeground(table.getForeground());
+		setFont( normalFont );
+	
+		// now make column specific changes
+		if (column == 0) {
+			setText((value == null) ? "" : value.toString());
+		} else if (column == 1) {
+			if (value instanceof Byte) {
+				ImageIcon i = getIcon(value);
+				table.setRowHeight( row, i.getIconHeight() );	
+				setIcon( i );
+			} else if (value instanceof LineType) {
+				ImageIcon i = getIcon(value);
+				table.setRowHeight( row, i.getIconHeight() );	
+				setIcon( i );
+			} else if (value instanceof Arrow) {
+				ImageIcon i = getIcon(value);
+				table.setRowHeight( row, i.getIconHeight() );	
+				setIcon( i );
+			} else if (value instanceof Color) {
+				setBackground((Color) value);
+			} else if (value instanceof Font) {
+				Font f = (Font) value;
+				setFont(f);
+				setText(f.getFontName());
+			} else { 
+				setText(value.toString()); // presumably a string or size 
+			}
+		}
+		return this;
+	}
+
+	private ImageIcon getIcon(Object o) {
+		
+		if ( o == null )
+			return null;
+
+                ImageIcon[] icons = null;
+                Map iToS = null;
+
+                MiscDialog md = new MiscDialog();
+
+		if ( o instanceof Arrow ) {
+                        icons = md.getArrowIcons();
+                        iToS = MiscDialog.getArrowToStringHashMap(25);
+                } else if ( o instanceof Byte ) {
+                        icons = MiscDialog.getShapeIcons();
+                        iToS = MiscDialog.getShapeByteToStringHashMap();
+                } else if ( o instanceof LineType ) {
+                        icons = MiscDialog.getLineTypeIcons();
+                        iToS = MiscDialog.getLineTypeToStringHashMap();
+                } else {
+			return null;
+		}
+
+		String name = (String) iToS.get(o);
+		for (int i = 0; i < icons.length; i++) 
+			if (icons[i].getDescription().equals(name))
+				return icons[i];
+
+		return null;
+	}
+
 }

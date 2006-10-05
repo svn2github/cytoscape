@@ -306,8 +306,11 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		 */
 		protected boolean rebuilding = false;
 
+		protected JFrame mainFrame;
+
 		protected StyleSelector(VizMapUI styleDef, JFrame mainFrame) {
 			super(mainFrame, "VizMapper\u2122");
+			this.mainFrame = mainFrame;
 			this.currentStyle = VMM.getVisualStyle();
 			this.styleDefUI = styleDef;
 			this.catalog = VMM.getCalculatorCatalog();
@@ -362,6 +365,14 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			MiscGB.insert(styleGBG, defStyle, 4, 0, 1, 1, 1, 0,
 					GridBagConstraints.HORIZONTAL);
 			defStyle.setToolTipText("Change the current style's settings");
+
+                        // create legend button
+                        JButton createLegend = new JButton("Create Legend");
+                        createLegend.addActionListener(new LegendListener());
+                        MiscGB.insert(styleGBG, createLegend, 5, 0, 1, 1, 1, 0,
+                                        GridBagConstraints.HORIZONTAL);
+                        createLegend.setToolTipText("Create a figure legend for the selected visual style");
+
 
 			// close button
 			JButton closeBut = new JButton("Close");
@@ -420,6 +431,13 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 				styleDefUI.show();
 			}
 		}
+
+
+                protected class LegendListener extends AbstractAction {
+                        public void actionPerformed(ActionEvent e) {
+                                new LegendDialog(mainFrame, currentStyle);
+                        }
+                }
 
 		protected class NewStyleListener extends AbstractAction {
 			public void actionPerformed(ActionEvent e) {

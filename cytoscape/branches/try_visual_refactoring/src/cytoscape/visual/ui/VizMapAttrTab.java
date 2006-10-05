@@ -183,14 +183,12 @@ public class VizMapAttrTab extends VizMapTab {
     setCurrentCalculator( VizUIUtilities.getCurrentCalculator(VMM.getVisualStyle(), this.type) );
 
     if (defaultValueDisplayer == null) { // haven't initialized yet
-	    drawDefault(defaultObj);
-	    drawCalc();
-      refreshUI();
-    }
-    else {
+      drawDefault(defaultObj);
+      drawCalc();
+    } else {
       defaultValueDisplayer.setObject(defaultObj);
-	    refreshUI();
     }
+    refreshUI();
   }
 
   /**
