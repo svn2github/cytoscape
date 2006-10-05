@@ -131,7 +131,7 @@ public class VizMapSizeTab extends VizMapTab {
 
 	this.hwPanel = new JPanel(false);
 	this.hwPanel.setLayout(new BoxLayout(hwPanel, BoxLayout.Y_AXIS));
-	this.lockPanel = new JPanel(false);
+	this.lockPanel = new JPanel(new GridLayout(), false);
 	// generate panel for height and width
 	height = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_HEIGHT);
 	width = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_WIDTH);
@@ -148,7 +148,7 @@ public class VizMapSizeTab extends VizMapTab {
 
 	lockPanel.add(size);
 
-	mainPanel = new JPanel(false);
+	mainPanel = new JPanel(new GridLayout(),false);
 	if (this.locked) {
 	    // initially set to locked width/height display
 	    mainPanel.add(lockPanel);
