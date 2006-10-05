@@ -430,7 +430,7 @@ public class VizMapAttrTab extends VizMapTab {
     MiscGB.inset(mapPanelGBG.constraints, 3);
 
     // Initialize here
-    this.calcContainer = new JPanel(false);
+    this.calcContainer = new JPanel(new GridLayout(), false);
 
     rebuildCalcComboBox();
     
