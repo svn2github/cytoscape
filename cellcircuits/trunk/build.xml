@@ -8,8 +8,18 @@
  	<property name="deploy.html" value="${deploy.docroot}/search/${deploy.version}"/>
  	<property name="deploy.cgi" value="/var/www/cgi-bin/search/${deploy.version}"/>
 	<property name="deploy.data" value="${deploy.docroot}/search/data"/>
+
+
+        <target name="deploy-prepare" description="Make deployment dirs">
+           <mkdir dir="${deploy.html}"/>
+           <mkdir dir="${deploy.cgi}"/>
+           <mkdir dir="${deploy.data}"/>
+
+        </target>
+
 	
-   	<target name="deploy" description="Deploy html and cgi-bin files">
+   	<target name="deploy" description="Deploy html and cgi-bin files"
+                depends="deploy-prepare">
 
           <echo message="Copying html files"/>
           <copy todir="${deploy.html}">
@@ -48,9 +58,9 @@
           </exec>
 
 	</target>
-
 	
-   	<target name="deploy-data" description="Deploy data files">
+   	<target name="deploy-data" description="Deploy data files"
+                depends="deploy-prepare">
 
           <echo message="Copying data files"/>
           <copy todir="${deploy.data}">
@@ -70,7 +80,8 @@
           </exec>
         </target>
 
-       <target name="deploy-link" description="Create symlinks so that the deployment dirs are linked to the development dirs.">
+       <target name="deploy-link" description="Create symlinks so that the deployment dirs are linked to the development dirs."
+               depends="deploy-prepare">
 
           <symlink link="${deploy.cgi}" resource="${basedir}/cgi-bin" overwrite="yes"/>
           <symlink link="${deploy.html}" resource="${basedir}/html" overwrite="yes"/>
