@@ -54,6 +54,9 @@ public class Ontology extends AbstractChangeable implements
 	private static final String OBO_FORMAT = "OBO Flat File";
 	private static final String DATA_TYPE = "Ontology DAG";
 
+	// This network attribute indicates this is an ontology or not.
+	public static final String IS_ONTOLOGY = "isOntology";
+	
 	/**
 	 * Name of this ontorogy. This will be used as the ID of this ontology.
 	 */
@@ -88,6 +91,7 @@ public class Ontology extends AbstractChangeable implements
 	public Ontology(final String name) {
 		this(name, null, null, null);
 	}
+	
 
 	/**
 	 * Constructor.<br>
@@ -125,6 +129,10 @@ public class Ontology extends AbstractChangeable implements
 		} else {
 			this.ontologyGraph = dag;
 		}
+		
+		ontologyAttr.setAttribute(ontologyGraph.getIdentifier(), IS_ONTOLOGY, true);
+		ontologyAttr.setUserEditable(IS_ONTOLOGY, false);
+		ontologyAttr.setUserVisible(IS_ONTOLOGY, false);
 
 		/*
 		 * Setup metadata & graph (network) attributes

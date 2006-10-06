@@ -16,7 +16,10 @@ public class GOTerm extends OntologyTerm {
 	public GOTerm(String id, String termName, String ontologyName,
 			String description) {
 		super(id, ontologyName, description);
-		Cytoscape.getNodeAttributes().setAttribute(id, OBOTags.NAME.toString(), termName);
+		if (termName != null) {
+			Cytoscape.getNodeAttributes().setAttribute(id,
+					OBOTags.NAME.toString(), termName);
+		}
 	}
 
 	public String getNameSpace() {
@@ -27,19 +30,19 @@ public class GOTerm extends OntologyTerm {
 		return null;
 	}
 
-	public String getFullName(String goID) {
-		return Cytoscape.getNodeAttributes().getStringAttribute(goID,
-				OBOTags.NAME.toString());
+	public String getFullName() {
+		return Cytoscape.getNodeAttributes().getStringAttribute(
+				super.getName(), OBOTags.NAME.toString());
 	}
-	
-	public String getDescription(String goID) {
-		return Cytoscape.getNodeAttributes().getStringAttribute(goID,
-				OBOTags.DEF.toString());
+
+	public String getDescription() {
+		return Cytoscape.getNodeAttributes().getStringAttribute(
+				super.getName(), OBOTags.DEF.toString());
 	}
-	
-	public String getType(String goID) {
-		return Cytoscape.getNodeAttributes().getStringAttribute(goID,
-				OBOTags.NAMESPACE.toString());
+
+	public String getType() {
+		return Cytoscape.getNodeAttributes().getStringAttribute(
+				super.getName(), OBOTags.NAMESPACE.toString());
 	}
 
 }

@@ -163,6 +163,10 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
             this.setLeftComponent(cytoPanel);
 			success = true;
 			break;
+		case SwingConstants.SOUTH_WEST:
+            this.setBottomComponent(cytoPanel);
+			success = true;
+			break;
 		}
 
 		// houston we have a problem

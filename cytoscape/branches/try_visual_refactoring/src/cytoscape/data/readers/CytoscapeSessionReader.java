@@ -75,6 +75,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.JInternalFrame;
@@ -108,48 +109,49 @@ public class CytoscapeSessionReader {
 	private static final String NETWORK_ROOT = "Network Root";
 
 	/**
-	 * @uml.property  name="sourceURL"
+	 * @uml.property name="sourceURL"
 	 */
 	private URL sourceURL;
 
 	/**
-	 * @uml.property  name="networkURLs"
-	 * @uml.associationEnd  qualifier="entryName:java.lang.String java.net.URL"
+	 * @uml.property name="networkURLs"
+	 * @uml.associationEnd qualifier="entryName:java.lang.String java.net.URL"
 	 */
 	private HashMap networkURLs = null;
 
 	/**
-	 * @uml.property  name="cysessionFileURL"
+	 * @uml.property name="cysessionFileURL"
 	 */
 	private URL cysessionFileURL = null;
 	/**
-	 * @uml.property  name="vizmapFileURL"
+	 * @uml.property name="vizmapFileURL"
 	 */
 	private URL vizmapFileURL = null;
 	/**
-	 * @uml.property  name="cytoscapePropsURL"
+	 * @uml.property name="cytoscapePropsURL"
 	 */
 	private URL cytoscapePropsURL = null;
 
 	/**
-	 * @uml.property  name="netMap"
-	 * @uml.associationEnd  qualifier="constant:java.lang.String cytoscape.generated.Network"
+	 * @uml.property name="netMap"
+	 * @uml.associationEnd qualifier="constant:java.lang.String
+	 *                     cytoscape.generated.Network"
 	 */
 	private HashMap netMap;
 	/**
-	 * @uml.property  name="sessionID"
+	 * @uml.property name="sessionID"
 	 */
 	private String sessionID;
 
 	/**
-	 * @uml.property  name="session"
-	 * @uml.associationEnd  
+	 * @uml.property name="session"
+	 * @uml.associationEnd
 	 */
 	private Cysession session;
 
 	/**
-	 * @uml.property  name="networkList"
-	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.String"
+	 * @uml.property name="networkList"
+	 * @uml.associationEnd multiplicity="(0 -1)" elementType="java.lang.String"
 	 */
 	private List networkList;
 
@@ -158,13 +160,15 @@ public class CytoscapeSessionReader {
 	 * with it.
 	 */
 	/**
-	 * @uml.property  name="vsMap"
-	 * @uml.associationEnd  qualifier="currentNetworkID:java.lang.String java.lang.String"
+	 * @uml.property name="vsMap"
+	 * @uml.associationEnd qualifier="currentNetworkID:java.lang.String
+	 *                     java.lang.String"
 	 */
 	HashMap vsMap;
 	/**
-	 * @uml.property  name="vsMapByName"
-	 * @uml.associationEnd  qualifier="getTitle:java.lang.String java.lang.String"
+	 * @uml.property name="vsMapByName"
+	 * @uml.associationEnd qualifier="getTitle:java.lang.String
+	 *                     java.lang.String"
 	 */
 	HashMap vsMapByName;
 
@@ -272,8 +276,8 @@ public class CytoscapeSessionReader {
 		if (session.getSessionState().getDesktop() != null) {
 			restoreDesktopState();
 		}
-		
-		if(session.getSessionState().getServer() != null) {
+
+		if (session.getSessionState().getServer() != null) {
 			restoreOntologyServerStatus();
 		}
 		// Send message with list of loaded networks.
@@ -557,9 +561,9 @@ public class CytoscapeSessionReader {
 				source = Cytoscape.getCyNode(parts[0], false);
 				target = Cytoscape.getCyNode(parts[2], false);
 				interaction = parts[1].substring(1, parts[1].length() - 1);
-				if(source != null && target != null && interaction != null) {
-				targetEdge = Cytoscape.getCyEdge(source, target,
-						Semantics.INTERACTION, interaction, false, true);
+				if (source != null && target != null && interaction != null) {
+					targetEdge = Cytoscape.getCyEdge(source, target,
+							Semantics.INTERACTION, interaction, false, true);
 				}
 			}
 		}
@@ -682,21 +686,43 @@ public class CytoscapeSessionReader {
 	public String getCysessionNote() {
 		return session.getSessionNote();
 	}
-	
+
 	/**
 	 * Restore list of ontology servers
-	 * @throws MalformedURLException 
-	 *
+	 * 
+	 * @throws MalformedURLException
+	 * 
 	 */
 	private void restoreOntologyServerStatus() throws MalformedURLException {
 		Map<String, URL> newMap = new HashMap<String, URL>();
-		
-		List<Ontology> servers = session.getSessionState().getServer().getOntologyServer().getOntology();
-		for(Ontology server: servers) {
-			System.out.println("============== " + server.getName());
+
+		List<Ontology> servers = session.getSessionState().getServer()
+				.getOntologyServer().getOntology();
+		String targetCyNetworkID = null;
+		String curator = null;
+		String description = null;
+
+		for (Ontology server : servers) {
 			newMap.put(server.getName(), new URL(server.getHref()));
+			targetCyNetworkID = getNetworkIdFromTitle(server.getName());
+			cytoscape.data.ontology.Ontology onto = new cytoscape.data.ontology.Ontology(
+					server.getName(), curator, description, Cytoscape
+							.getNetwork(targetCyNetworkID));
+			Cytoscape.getOntologyServer().addOntology(onto);
 		}
 		Cytoscape.getOntologyServer().setOntologySources(newMap);
-		
+
+	}
+
+	private String getNetworkIdFromTitle(String title) {
+		Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+
+		for (CyNetwork net : networks) {
+			if (net.getTitle().equals(title)) {
+				return net.getIdentifier();
+			}
+		}
+		// Not found
+		return null;
 	}
 }

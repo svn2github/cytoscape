@@ -324,6 +324,8 @@ public abstract class AbstractCalculator implements Calculator {
 	
 	public CalculatorUI(CyAttributes attr, JDialog parent, CyNetwork network) {
 	    this.myGBG = new GridBagGroup(this);
+
+	    MiscGB.inset(this.myGBG.constraints, 5,5,5,5);
 	    String[] attrNames = attr.getAttributeNames();
             // 20030916 cworkman added Arrays.sort()
             Arrays.sort(attrNames);
@@ -376,7 +378,11 @@ public abstract class AbstractCalculator implements Calculator {
 		// underlying mapping's UI
 		JPanel mapperUI = m.getUI(parent, network);
 		attrBox.addItemListener(new AttributeSelectorListener(parent, network, i, ++yPos, mapperUI));
-		MiscGB.insert(this.myGBG, mapperUI, 0, yPos, 3, 1, 2, 2, GridBagConstraints.BOTH);
+		//MiscGB.insert(this.myGBG, mapperUI, 0, yPos, 3, 1, 2, 2, GridBagConstraints.BOTH);
+		MiscGB.insert(this.myGBG, mapperUI, 0, yPos, 3, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+
+		// Add a blank JLabel at the bottom to take up extra spacce in the panel
+		MiscGB.insert(this.myGBG, new JLabel(), 0, yPos+1, 3, 1, 1, 1, GridBagConstraints.BOTH);
 	    }
 	}
 

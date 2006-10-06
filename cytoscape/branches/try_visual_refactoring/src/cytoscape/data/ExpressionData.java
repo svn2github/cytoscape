@@ -498,7 +498,15 @@ public class ExpressionData implements Serializable {
 						      nodeName, 
 						      keyAttributeName).toString();
 		if (attributeValue != null) {
-		    attributeToIdList.put(attributeValue, nodeName);
+		    if (!attributeToIdList.contains(attributeValue)) {
+			ArrayList newGeneList = new ArrayList();
+			newGeneList.add(nodeName);
+			attributeToIdList.put(attributeValue, newGeneList);
+		    } else {
+			ArrayList genesThisAttribute
+			    = (ArrayList) attributeToIdList.get(attributeValue);
+			genesThisAttribute.add(nodeName);
+		    }
 		}
 	    }
 	}
@@ -564,6 +572,11 @@ public class ExpressionData implements Serializable {
     private void parseOneLine(String oneLine, int lineCount, boolean sig_vals, 
 			      boolean mappingByAttribute, Hashtable attributeToId)
             throws IOException {
+
+	// 
+	// Step 1: divide the line into input tokens, and parse through
+	// the input tokens.
+	//
         StringTokenizer strtok = new StringTokenizer(oneLine);
         int numTokens = strtok.countTokens();
 
@@ -575,24 +588,12 @@ public class ExpressionData implements Serializable {
         if (firstToken.startsWith("NumSigGenes")) {
             return;
         }
-
         if ((sig_vals && (numTokens < 2 * numConds + 2))
                 || ((!sig_vals) && numTokens < numConds + 2)) {
             throw new IOException("Warning: parse error on line " + lineCount
                     + "  tokens read: " + numTokens);
         }
-
-	String gName;
-	if (mappingByAttribute) {
-	    gName = (String) attributeToId.get(firstToken);
-	} else {
-	    gName = firstToken;
-	}
-
-        geneNames.add(gName);
-        /* store descriptor token */
-        geneDescripts.add(strtok.nextToken());
-
+	String geneDescript = strtok.nextToken();
         String[] expData = new String[numConds];
         for (int i = 0; i < numConds; i++) {
             expData[i] = strtok.nextToken();
@@ -608,39 +609,57 @@ public class ExpressionData implements Serializable {
             }
         }
 
-        Vector measurements = new Vector(numConds);
-        for (int i = 0; i < numConds; i++) {
 
-            mRNAMeasurement m = new mRNAMeasurement(expData[i], sigData[i]);
-            measurements.add(m);
-            double ratio = m.getRatio();
-            double signif = m.getSignificance();
-            if (ratio < minExp) {
-                minExp = ratio;
-            }
-            if (ratio > maxExp) {
-                maxExp = ratio;
-            }
-            if (signif < minSig) {
-                minSig = signif;
-            }
-            if (signif > maxSig) {
-                maxSig = signif;
-                if (this.significanceType != this.LAMBDA && sig_vals
+	ArrayList gNames = new ArrayList();
+	if (mappingByAttribute) {
+	    if (attributeToId.containsKey(firstToken)) {
+		gNames = (ArrayList) attributeToId.get(firstToken);
+	    }
+	} else {
+	    gNames = new ArrayList();
+	    gNames.add(firstToken);
+	}
+
+	for (int ii = 0; ii < gNames.size(); ii++) {
+	    geneNames.add(gNames.get(ii));
+	    /* store descriptor token */
+	    geneDescripts.add(geneDescript);
+	    Vector measurements = new Vector(numConds);
+	    for (int jj = 0; jj < numConds; jj++) {
+
+		mRNAMeasurement m = new mRNAMeasurement(expData[jj], 
+							sigData[jj]);
+		measurements.add(m);
+		double ratio = m.getRatio();
+		double signif = m.getSignificance();
+		if (ratio < minExp) {
+		    minExp = ratio;
+		}
+		if (ratio > maxExp) {
+		    maxExp = ratio;
+		}
+		if (signif < minSig) {
+		    minSig = signif;
+		}
+		if (signif > maxSig) {
+		    maxSig = signif;
+		    if (this.significanceType != this.LAMBDA && sig_vals
                         && maxSig > 1) {
-                    this.significanceType = this.LAMBDA;
-                }
-            }
-        }
+			this.significanceType = this.LAMBDA;
+		    }
+		}
+	    }
 
-        if (this.significanceType != this.LAMBDA && sig_vals && minSig > 0) {
-            // We are probably not looking at lambdas, since no significance
-            // value was > 1
-            // and the header is not a LAMBDA header
-            this.significanceType = this.PVAL;
-        }
+	    if (this.significanceType != this.LAMBDA 
+		&& sig_vals && minSig > 0) {
+		// We are probably not looking at lambdas, since no 
+		// significance value was > 1
+		// and the header is not a LAMBDA header
+		this.significanceType = this.PVAL;
+	    }
 
-        allMeasurements.add(measurements);
+	    allMeasurements.add(measurements);
+	}
     }// parseOneLine
 
     /**

@@ -28,6 +28,9 @@
 	<!-- The directory containing source code -->
 	<property name="src.dir" value="${basedir}/src" />
 
+	<!-- The directory containing unit test source code -->
+	<property name="tests.dir" value="${basedir}/tests" />
+
 	<!-- The directory containing resources -->
 	<property name="resources.dir" value="${basedir}/resources" />
 
@@ -257,7 +260,7 @@
 	<target name="compile" 
 	        depends="prepare, bind" 
 		description="Compiles all source code.">
-		<javac srcdir="${src.dir}" 
+		<javac 
 		       destdir="${build.classes}" 
 		       nowarn="off" 
 		       debug="true" 
@@ -267,6 +270,8 @@
 		       deprecation="no">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
+			<src path="${src.dir}" />
+			<src path="${tests.dir}" />
 		</javac>
 
 		<!-- Run RMIC for BioDataServer -->
@@ -488,7 +493,7 @@
 					<include name="**/*.jar" />
 				</fileset>
 			</classpath>
-			<test name="cytoscape.unitTests.AllTests" fork="yes" todir="${junit.report.dir}" failureProperty="junit.test.failure" errorProperty="junit.test.failure">
+			<test name="cytoscape.AllTests" fork="yes" todir="${junit.report.dir}" failureProperty="junit.test.failure" errorProperty="junit.test.failure">
 			</test>
 		</junit>
 	</target>
@@ -516,6 +521,9 @@
 			           todir="${junit.report.dir}" 
 				   failureProperty="junit.test.failure">
 				<fileset dir="${src.dir}" 
+				         includes="**/*Test.java" 
+					 excludes="**/AllTests.java" />
+				<fileset dir="${tests.dir}" 
 				         includes="**/*Test.java" 
 					 excludes="**/AllTests.java" />
 			</batchtest>
@@ -551,7 +559,7 @@
 			</fileset>
 		</path>
 
-		<java classname="cytoscape.unitTests.AllTests" 
+		<java classname="cytoscape.AllTests" 
 		      classpathref="junit.classpath" 
 		      fork="true" 
 		      maxmemory="512m">

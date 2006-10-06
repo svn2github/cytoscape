@@ -47,6 +47,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -125,7 +126,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	protected VisualMappingManager VMM;
 	/** The content pane for the dialog */
 	private JPanel mainPane;
-	private GridBagGroup mainGBG;
+	//private GridBagGroup mainGBG;
 	private JPanel actionButtonsPanel, attrSelectorPanel;
 	/** The content pane for the JTabbedPanes */
 	private JPanel tabPaneContainer;
@@ -158,13 +159,14 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		CyNetwork cyNetwork = VMM.getNetwork();
 		cyNetwork.addCyNetworkListener(this);
 
-		this.mainGBG = new GridBagGroup();
-		this.mainPane = mainGBG.panel;
+		//this.mainGBG = new GridBagGroup();
+		//this.mainPane = mainGBG.panel;
+		mainPane = new JPanel(new GridBagLayout());
 		// MiscGB.pad(mainGBG.constraints, 2, 2);
 		// MiscGB.inset(mainGBG.constraints, 3);
 		this.tabs = new ArrayList<VizMapTab>();
 		//this.tabs = new VizMapTab[EDGE_LABEL_FONT + 1];
-		this.tabPaneContainer = new JPanel(false);
+		this.tabPaneContainer = new JPanel(new java.awt.GridLayout(),false);
 
 		JTabbedPane nodePane = new JTabbedPane();
 		JTabbedPane edgePane = new JTabbedPane();
@@ -214,10 +216,10 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 		// MiscGB.insert(mainGBG, vizStylePanel, 0, 0, 1, 1, 1, 0,
 		// GridBagConstraints.HORIZONTAL);
-		MiscGB.insert(mainGBG, attrSelectorPanel, 0, 0, 1, 1, 1, 0,
-				GridBagConstraints.HORIZONTAL);
-		MiscGB.insert(mainGBG, tabPaneContainer, 0, 1, 1, 1, 1, 1,
-				GridBagConstraints.BOTH);
+		//MiscGB.insert(mainGBG, attrSelectorPanel, 0, 0, 1, 1, 1, 0,
+		//		GridBagConstraints.HORIZONTAL);
+		//MiscGB.insert(mainGBG, tabPaneContainer, 0, 1, 1, 1, 1, 1,
+		//		GridBagConstraints.BOTH);
 
 		// add apply & cancel button
 		this.actionButtonsPanel = new JPanel();
@@ -230,9 +232,29 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		actionButtonsPanel.add(applyButton);
 		actionButtonsPanel.add(closeButton);
 
-		MiscGB.insert(mainGBG, actionButtonsPanel, 0, 3, 1, 1, 1, 0,
-				GridBagConstraints.HORIZONTAL);
+		//MiscGB.insert(mainGBG, actionButtonsPanel, 0, 3, 1, 1, 1, 0,
+		//		GridBagConstraints.HORIZONTAL);
 
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.weightx = 1.0;
+        mainPane.add(attrSelectorPanel, gridBagConstraints);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        mainPane.add(tabPaneContainer, gridBagConstraints);
+		
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        mainPane.add(actionButtonsPanel, gridBagConstraints);
+		
 		setContentPane(mainPane);
 		pack();
 		nodeSelect.doClick();

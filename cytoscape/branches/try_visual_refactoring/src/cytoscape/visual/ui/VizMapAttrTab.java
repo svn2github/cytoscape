@@ -205,7 +205,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    this.calcContainer.add(this.calcPanel);
     } else {
 	    this.calcPanel = null;
-    }
+    }    
     validate();
     repaint();
   }
@@ -421,34 +421,42 @@ public class VizMapAttrTab extends VizMapTab {
     MiscGB.inset(mapPanelGBG.constraints, 3);
 
     // Initialize here
-    this.calcContainer = new JPanel(false);
+    this.calcContainer = new JPanel(new GridLayout(), false);
 
     rebuildCalcComboBox();
-
+    
     // new calculator button
     JButton newCalc = new JButton("New");
     newCalc.addActionListener(new NewCalcListener());
     newCalc.setToolTipText("Create a new calculator");
-    MiscGB.insert(mapPanelGBG, newCalc, 0, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+    //MiscGB.insert(mapPanelGBG, newCalc, 0, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
     // duplicate calculator button
     JButton dupeCalc = new JButton("Duplicate");
     dupeCalc.addActionListener(new DupeCalcListener());
     dupeCalc.setToolTipText("Create a copy of this calculator");
-    MiscGB.insert(mapPanelGBG, dupeCalc, 1, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+    //MiscGB.insert(mapPanelGBG, dupeCalc, 1, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
     // rename calculator button
     JButton renCalc = new JButton("Rename");
     renCalc.addActionListener(new RenCalcListener());
     renCalc.setToolTipText("Rename this calculator");
-    MiscGB.insert(mapPanelGBG, renCalc, 2, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+    //MiscGB.insert(mapPanelGBG, renCalc, 2, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
     // remove calculator button
     JButton rmCalc = new JButton("Delete");
     rmCalc.addActionListener(new RmCalcListener());
     rmCalc.setToolTipText("Permanently delete this calculator");
-    MiscGB.insert(mapPanelGBG, rmCalc, 3, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+    //MiscGB.insert(mapPanelGBG, rmCalc, 3, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
+    JPanel btnPanel = new JPanel();
+    btnPanel.add(newCalc);
+    btnPanel.add(dupeCalc);
+    btnPanel.add(renCalc);
+    btnPanel.add(rmCalc);
+   
+    MiscGB.insert(mapPanelGBG, btnPanel, 0, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+    
     // add to gridbag
     MiscGB.insert(mapPanelGBG, calcContainer, 0, 2, 4, 1, 5, 5, GridBagConstraints.BOTH);
     add(mapPanelGBG.panel, BorderLayout.CENTER);
