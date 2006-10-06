@@ -5,7 +5,7 @@ use Object;
 @ISA = qw(Object);
 
 MultiOrganismSIF->_generateAccessors(qw(org2genes org2interactions 
-					file organisms));
+					file organisms name pub));
 
 sub new
 {
@@ -16,6 +16,8 @@ sub new
     $self->file($file);
     $self->organisms($organisms);
     $self->org2interactions({});
+    $self->name("");
+    $self->pub("");
     
     $self->parse($geneNameMapper, $edgeMapper);
     return $self;

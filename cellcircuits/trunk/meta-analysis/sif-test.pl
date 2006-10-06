@@ -22,6 +22,14 @@ test("3 organism", "Sharan2005_PNAS/sif/three-way/728.sif",
 test("yeast genes", "Yeang2005_GB/sif/variant35.sif", 
      ["Saccharomyces cerevisiae"]);
 
+
+test("yeast genes", "Yeang2005_GB/sif/variant3.sif", 
+     ["Saccharomyces cerevisiae"]);
+
+
+test("yeast genes", "Yeang2005_GB/sif/variant25.sif", 
+     ["Saccharomyces cerevisiae"]);
+
 sub test
 {
     my ($msg, $file, $orgs) = @_;
@@ -31,6 +39,6 @@ sub test
 				    $eMap);
 
     print "\n### $msg\n";
-    print $sif->print(); 
+    print $sif->print(1); 
 }
 

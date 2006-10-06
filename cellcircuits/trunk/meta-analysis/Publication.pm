@@ -43,6 +43,8 @@ sub readSifList
 	$self->sifOrgMap()->{$file} = \@orgs;
      }
      close(SIF_LIST);
+
+    return 1;
 }
 
 sub parseSIFs
@@ -50,7 +52,7 @@ sub parseSIFs
     my ($self, $geneNameMapper, $edgeMapper) = @_;
     my $dir = $self->dataDir();
 
-    my ($file, $orgs);
+    my ($file, $orgs, $name);
     while(($file, $orgs) = each(%{$self->sifOrgMap()}))
     {
 	my $sif = MultiOrganismSIF->new(join("/", $dir, "sif", $file),
@@ -58,6 +60,16 @@ sub parseSIFs
 					$geneNameMapper,
 					$edgeMapper);
 
+	if($file =~ /(.*)\.sif$/)
+	{
+	    $sif->name($1);
+	}
+	else
+	{
+	    $sif->name($file);
+	}
+
+	$sif->pub($self->name());
 	$self->sifs()->{$file} = $sif;
     }
 }
