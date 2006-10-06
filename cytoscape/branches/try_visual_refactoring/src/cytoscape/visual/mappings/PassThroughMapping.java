@@ -192,10 +192,11 @@ public class PassThroughMapping implements ObjectMapping {
         return newProps;
     }
 
-    public JPanel getLegend(String s) {
+    public JPanel getLegend(String visualAttr) {
         JPanel p = new JPanel();
 	p.setBackground(Color.white);
-        JLabel l = new JLabel(s + " mapped to attribute: " + attrName);
+	p.setLayout(new BoxLayout(p,BoxLayout.Y_AXIS));
+        JLabel l = new JLabel(visualAttr + " is (PassThrough) mapped to " + attrName);
         p.add(l);
         return p;
     }

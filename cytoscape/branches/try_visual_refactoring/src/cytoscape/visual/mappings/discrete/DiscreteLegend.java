@@ -1,6 +1,7 @@
 
+
 /*
-  File: LinearNumberToColorInterpolator.java 
+  File: DiscreteLegend.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -36,46 +37,56 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//LinearNumberToColorInterpolator.java
+package cytoscape.visual.mappings.discrete;
 
 
-
-package cytoscape.visual.mappings;
-
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.ImageIcon;
+import javax.swing.BoxLayout;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.DefaultTableModel;
+import java.util.Map;
+import java.util.Iterator;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Component;
 
-/**
- * The class provides a linear interpolation between color values. The
- * (red,green,blue,alpha) values of the returned color are linearly
- * interpolated from the associated values of the lower and upper colors,
- * according the the fractional distance frac from the lower value.
- *
- * If either object argument is not a Color, null is returned.
- */
-public class LinearNumberToColorInterpolator extends LinearNumberInterpolator {
+import cytoscape.visual.Arrow;
+import cytoscape.visual.LineType;
+import cytoscape.visual.ui.MiscDialog;
+import cytoscape.visual.mappings.LegendTable;
 
-    public LinearNumberToColorInterpolator() {}
+public class DiscreteLegend extends JPanel {
 
-    public Object getRangeValue(double frac, Object lowerRange,
-				Object upperRange) {
-	if ( !(lowerRange instanceof Color) ) {return null;}
-	if ( !(upperRange instanceof Color) ) {return null;}
+    public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr) {
+    	super();
 
-	Color lowerColor = (Color)lowerRange;
-	Color upperColor = (Color)upperRange;
+	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+	setBackground(Color.white);
 
-	double red = lowerColor.getRed()
-	    + frac*( upperColor.getRed() - lowerColor.getRed() );
-	double green = lowerColor.getGreen()
-	    + frac*( upperColor.getGreen() - lowerColor.getGreen() );
-	double blue = lowerColor.getBlue()
-	    + frac*( upperColor.getBlue() - lowerColor.getBlue() );
-	double alpha = lowerColor.getAlpha()
-	    + frac*( upperColor.getAlpha() - lowerColor.getAlpha() );
+	JLabel title = new JLabel(visualAttr + " is mapped to " + dataAttr);
+	add(title);
+	
 
-	return new Color( (int)Math.round(red),(int)Math.round(green),
-			  (int)Math.round(blue),(int)Math.round(alpha) );
+	Object[][] data = new Object[legendMap.keySet().size()][2];
+	Object[] col = new Object[2];
+
+	col[0] = "Visual Representation";
+	col[1] = "Attribute Value";
+
+	Iterator it = legendMap.keySet().iterator();
+	for (int i = 0; i < legendMap.keySet().size(); i++) {
+		Object key = it.next();
+		data[i][0] = legendMap.get(key);
+		data[i][1] = key;
+	}
+
+	add( new LegendTable( data, col ) );
+
     }
 }
-
 

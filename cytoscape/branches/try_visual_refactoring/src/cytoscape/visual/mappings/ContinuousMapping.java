@@ -264,12 +264,8 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
         return ui;
     }
 
-    public JPanel getLegend(String s) {
-    	JPanel p = new JPanel();
-	p.setBackground(Color.white);
-	JLabel l = new JLabel(s + " is mapped to attribute: " + attrName);
-	p.add(l);
-	return p;
+    public JPanel getLegend(String visualAttr) {
+    	return new ContinuousLegend(visualAttr,attrName,points,defaultObj);
     }
 
     /**

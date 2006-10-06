@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
@@ -18,8 +20,11 @@ import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.WindowConstants;
 import javax.swing.table.TableCellRenderer;
 
 import org.freehep.util.export.ExportDialog;
@@ -31,13 +36,19 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
 
 import cytoscape.Cytoscape;
 
 public class LegendDialog extends JDialog {
 
-	Map legendMap;
-	VisualStyle visualStyle;
+	private Map legendMap;
+	private VisualStyle visualStyle;
+	private JPanel jPanel1;
+	private JButton jButton1;
+	private JButton jButton2;
+	private JScrollPane jScrollPane1;
 
 	public LegendDialog(JFrame parent, VisualStyle vs) {
 		super(parent,true);
@@ -45,77 +56,62 @@ public class LegendDialog extends JDialog {
 		initComponents();
 	}
 
-/*
-	private JPanel getDiscretePanel(String title, Map legendMap) {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-		JLabel title = new JLabel(title);
-		panel.add(title);
-
-		Object[][] data = new Object[legendMap.keySet().size()][2];
-		Object[] col = new Object[2];
-
-		col[0] = "Attribute Value";
-		col[1] = "Visual Representation";
-
-		Iterator it = legendMap.keySet().iterator();
-		for (int i = 0; i < legendMap.keySet().size(); i++) {
-			Object key = it.next();
-			data[i][0] = key;
-			data[i][1] = legendMap.get(key);
-		}
-
-		javax.swing.JTable jTable1 = new javax.swing.JTable();
-		jTable1.setModel(new javax.swing.table.DefaultTableModel(data, col));
-		jTable1.setGridColor(new java.awt.Color(255, 255, 255));
-		jTable1.setIntercellSpacing(new java.awt.Dimension(1, 1));
-		jTable1.setFont(new java.awt.Font("SansSerif", 0, 14));
-		jTable1.setDefaultRenderer(Object.class, new LegendTableCellRenderer());
-
-		panel.add(jTable1);
-	}
-	*/
-
 	private JPanel generateLegendPanel() {
 		JPanel legend = new JPanel();
 		legend.setLayout(new BoxLayout(legend, BoxLayout.Y_AXIS));
+		legend.setBackground(Color.white);
 
 		NodeAppearanceCalculator nac = visualStyle.getNodeAppearanceCalculator();
 		List<Calculator> calcs = nac.getCalculators();
 		for ( Calculator calc : calcs ) {
-			legend.add( calc.getMapping(0).getLegend(calc.getTypeName()) );
+			ObjectMapping om = calc.getMapping(0);
+			JPanel mleg = om.getLegend(calc.getTypeName()); 
+			// Add passthrough mappings to the top since they don't
+			// display anything besides the title.
+			if ( om instanceof PassThroughMapping )
+				legend.add( mleg, 0 ); 
+			else
+				legend.add( mleg ); 
 		}
 
 		EdgeAppearanceCalculator eac = visualStyle.getEdgeAppearanceCalculator();
 		calcs = eac.getCalculators();
+		int top = legend.getComponentCount(); 
 		for ( Calculator calc : calcs ) {
-			legend.add( calc.getMapping(0).getLegend(calc.getTypeName()) );
+			ObjectMapping om = calc.getMapping(0);
+			JPanel mleg = om.getLegend(calc.getTypeName()); 
+			// Add passthrough mappings to the top since they don't
+			// display anything besides the title.
+			if ( om instanceof PassThroughMapping )
+				legend.add( mleg, top ); 
+			else
+				legend.add( mleg ); 
 		}
+
 		return legend;
 	}
 
 	private void initComponents() {
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		jPanel1 = generateLegendPanel();
 
-		jScrollPane1 = new javax.swing.JScrollPane();
+		jScrollPane1 = new JScrollPane();
 		jScrollPane1.setViewportView(jPanel1);
 
-		jButton1 = new javax.swing.JButton();
+		jButton1 = new JButton();
 		jButton1.setText("Export");
-		jButton1.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		jButton1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				jButton1ActionPerformed(evt);
 			}
 		});
 
-		jButton2 = new javax.swing.JButton();
+		jButton2 = new JButton();
 		jButton2.setText("Cancel");
-		jButton2.addActionListener(new java.awt.event.ActionListener() {	
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		jButton2.addActionListener(new ActionListener() {	
+			public void actionPerformed(ActionEvent evt) {
 				dispose();	
 			}
 		});
@@ -136,103 +132,10 @@ public class LegendDialog extends JDialog {
 
 	}
 
-	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+	private void jButton1ActionPerformed(ActionEvent evt) {
 		ExportDialog export = new ExportDialog();
-		export.showExportDialog(Cytoscape.getDesktop(), "Export legend as ...",
+		export.showExportDialog(this, "Export legend as ...",
 				jPanel1, "export");
 	}
 
-	private javax.swing.JPanel jPanel1;
-	private javax.swing.JButton jButton1;
-	private javax.swing.JButton jButton2;
-	private javax.swing.JScrollPane jScrollPane1;
 }
-/*
-class LegendTableCellRenderer extends JLabel implements TableCellRenderer {
-	private Font normalFont = new Font("Sans-serif", Font.PLAIN, 12);
-	private final Color metadataBackground = new Color(255, 210, 255);
-
-	private static final String METADATA_ATTR_NAME = "Network Metadata";
-
-	private int defaultCellWidth;
-	private int defaultCellHeight;
-
-	public LegendTableCellRenderer() {
-		super();
-
-		setOpaque(true);
-	}
-
-	public Component getTableCellRendererComponent(JTable table, Object value,
-			boolean isSelected, boolean hasFocus, int row, int column) {
-
-		// initialize everything
-		setHorizontalAlignment(CENTER);
-		setText("");
-		setIcon(null);
-		setBackground(Color.WHITE);
-		setForeground(table.getForeground());
-		setFont( normalFont );
-	
-		// now make column specific changes
-		if (column == 0) {
-			setText((value == null) ? "" : value.toString());
-		} else if (column == 1) {
-			if (value instanceof Byte) {
-				ImageIcon i = getIcon(value);
-				table.setRowHeight( row, i.getIconHeight() );	
-				setIcon( i );
-			} else if (value instanceof LineType) {
-				ImageIcon i = getIcon(value);
-				table.setRowHeight( row, i.getIconHeight() );	
-				setIcon( i );
-			} else if (value instanceof Arrow) {
-				ImageIcon i = getIcon(value);
-				table.setRowHeight( row, i.getIconHeight() );	
-				setIcon( i );
-			} else if (value instanceof Color) {
-				setBackground((Color) value);
-			} else if (value instanceof Font) {
-				Font f = (Font) value;
-				setFont(f);
-				setText(f.getFontName());
-			} else { 
-				setText(value.toString()); // presumably a string or size 
-			}
-		}
-		return this;
-	}
-
-	private ImageIcon getIcon(Object o) {
-		
-		if ( o == null )
-			return null;
-
-                ImageIcon[] icons = null;
-                Map iToS = null;
-
-                MiscDialog md = new MiscDialog();
-
-		if ( o instanceof Arrow ) {
-                        icons = md.getArrowIcons();
-                        iToS = MiscDialog.getArrowToStringHashMap(25);
-                } else if ( o instanceof Byte ) {
-                        icons = MiscDialog.getShapeIcons();
-                        iToS = MiscDialog.getShapeByteToStringHashMap();
-                } else if ( o instanceof LineType ) {
-                        icons = MiscDialog.getLineTypeIcons();
-                        iToS = MiscDialog.getLineTypeToStringHashMap();
-                } else {
-			return null;
-		}
-
-		String name = (String) iToS.get(o);
-		for (int i = 0; i < icons.length; i++) 
-			if (icons[i].getDescription().equals(name))
-				return icons[i];
-
-		return null;
-	}
-
-}
-*/
