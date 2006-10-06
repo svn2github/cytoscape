@@ -1,5 +1,8 @@
 package Publication;
 
+use Object;
+use MultiOrganismSIF;
+
 @ISA = qw(Object);
 
 Publication->_generateAccessors(qw(sifOrgMap sifs name dataDir));
@@ -32,12 +35,12 @@ sub readSifList
         chomp;
         my ($sif, $org_str) = split(/\t/);
 
-	my @path = split("/", $sif);
-	$sif = pop @path;
+	$sif =~ /^\.\/sif\/(.*)/;
+	my $file = $1;
 
         my @orgs = split(/\|/, $org_str);
 
-	$self->sifOrgMap()->{$sif} = \@orgs;
+	$self->sifOrgMap()->{$file} = \@orgs;
      }
      close(SIF_LIST);
 }

@@ -9,7 +9,7 @@ MultiOrganismSIF->_generateAccessors(qw(org2genes org2interactions
 
 sub new
 {
-    my ($caller, $file, $organisms, $geneNameFunction, $edgeMapper) = @_;
+    my ($caller, $file, $organisms, $geneNameMapper, $edgeMapper) = @_;
     my $self = $caller->SUPER::new();
 
     $self->org2genes({});
@@ -17,7 +17,7 @@ sub new
     $self->organisms($organisms);
     $self->org2interactions({});
     
-    $self->parse($geneNameFunction, $edgeMapper);
+    $self->parse($geneNameMapper, $edgeMapper);
     return $self;
 }
 
@@ -93,7 +93,7 @@ sub print
 
 sub parse
 {
-    my ($self, $geneNameFunction, $edgeMapper) = @_;
+    my ($self, $geneNameMapper, $edgeMapper) = @_;
     
     my @orgs = @{ $self->organisms() }; 
     my $org2genes = $self->org2genes();
@@ -117,8 +117,8 @@ sub parse
 	    
 	    for my $i (0..$#orgs) 
 	    {
-		my @genes = ($geneNameFunction->($g1[$i], $orgs[$i]),
-			     $geneNameFunction->( $g2[$i], $orgs[$i]));
+		my @genes = ($geneNameMapper->mapName($g1[$i], $orgs[$i]),
+			     $geneNameMapper->mapName($g2[$i], $orgs[$i]));
 
 		map {$org2genes->{$orgs[$i]}{$_}++} @genes;
 

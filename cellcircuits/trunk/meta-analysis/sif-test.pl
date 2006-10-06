@@ -2,20 +2,35 @@
 
 use MultiOrganismSIF;
 use EdgeMapper;
+use GeneNameMapper;
 
-my $sif = MultiOrganismSIF->new("/opt/www/htdocs/search/data/Suthram2005_Nature/sif/94.sif", 
-				["Plasmodium falciparum"], 
-				sub{ return shift;},
-				EdgeMapper->new());
+my $gMap = GeneNameMapper->new();
+my $eMap = EdgeMapper->new();
 
-print "### Single organism SIF\n";
-print $sif->print(); 
+my $dataDir = "/opt/www/htdocs/search/data";
 
+test("Single organism", "Suthram2005_Nature/sif/94.sif", 
+     ["Plasmodium falciparum"]);
 
-my $sif2 = MultiOrganismSIF->new("/opt/www/htdocs/search/data/Suthram2005_Nature/sif/Endocytosis.sif", 
-				["Plasmodium falciparum", "Saccharomyces cerevisiae"], 
-				 sub{ return shift;},
-				 EdgeMapper->new());
+test("2 organism", "Suthram2005_Nature/sif/Endocytosis.sif", 
+     ["Plasmodium falciparum", "Saccharomyces cerevisiae"]);
 
-print "### Multi Organism SIF\n";
-print $sif2->print(); 
+test("3 organism", "Sharan2005_PNAS/sif/three-way/728.sif", 
+     ["Saccharomyces cerevisiae", "Caenorhabditis elegans",
+      "Drosophila melanogaster"]);
+
+test("yeast genes", "Yeang2005_GB/sif/variant35.sif", 
+     ["Saccharomyces cerevisiae"]);
+
+sub test
+{
+    my ($msg, $file, $orgs) = @_;
+    my $sif = MultiOrganismSIF->new(join("/", $dataDir, $file), 
+				    $orgs,
+				    $gMap,
+				    $eMap);
+
+    print "\n### $msg\n";
+    print $sif->print(); 
+}
+

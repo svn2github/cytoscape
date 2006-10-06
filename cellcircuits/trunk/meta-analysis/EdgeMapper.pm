@@ -30,7 +30,7 @@ sub mapType
     ## 1 is direct pp edge
     ## 2 is indirect pp edge (inferred b/c the homologs interact)
     ## 3 ignore
-    if($type =~ /^[0123]{2,}$/){
+    if($type =~ /^[0123]+$/){
 	my $edge_dist = substr($type,$organismIndex,1);
 	
 	if($edge_dist == 1) {return "pp";}
