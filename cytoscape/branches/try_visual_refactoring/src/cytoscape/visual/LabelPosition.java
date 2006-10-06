@@ -212,11 +212,11 @@ public class LabelPosition {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(" label ").append(Integer.toString(labelAnchor)).append("  ").append(convert(labelAnchor)).append("\n");
-		sb.append(" target ").append(Integer.toString(targetAnchor)).append("  ").append(convert(targetAnchor)).append("\n");
-		sb.append(" justify ").append(Integer.toString(justify)).append("  ").append(convert(justify)).append("\n");
-		sb.append(" xoffset ").append(Double.toString(xOffset)).append("\n");
-		sb.append(" yoffset ").append(Double.toString(yOffset)).append("\n");
+		sb.append("label: ").append(convert(labelAnchor));
+		sb.append("  target: ").append(convert(targetAnchor));
+		sb.append("  justify: ").append(convert(justify));
+		sb.append("  X offset: ").append(Double.toString(xOffset));
+		sb.append("  Y offset: ").append(Double.toString(yOffset));
 		return sb.toString();
 
 	}

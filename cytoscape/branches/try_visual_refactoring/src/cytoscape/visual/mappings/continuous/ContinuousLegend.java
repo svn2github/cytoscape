@@ -72,7 +72,7 @@ public class ContinuousLegend extends JPanel {
         	setBackground(Color.white);
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 
-	        add(new JLabel(visualAttr + " is mapped to " + dataAttr));
+	        add(new JLabel(visualAttr + " is continuously mapped to " + dataAttr));
 		if ( obj instanceof Color ) 
 	        	add( new ColorPanel() );
 		else 
@@ -134,11 +134,11 @@ public class ContinuousLegend extends JPanel {
 		public ObjectPanel() {
         		setBackground(Color.white);
 
-			Object[][] data = new Object[points.size()+1][2];
-			Object[] col = new Object[2];
+			Object[][] data = new Object[points.size()+2][2];
+			Object[] columnNames = new Object[2];
 
-			col[0] = "Visual Representation";
-			col[1] = "Attribute Value";
+			columnNames[0] = "Visual Representation";
+			columnNames[1] = "Attribute Value";
 
 			ContinuousMappingPoint curr = null;
 
@@ -148,19 +148,19 @@ public class ContinuousLegend extends JPanel {
 
 				if ( i == 0 ) {
 					data[i][0] = curr.getRange().lesserValue; 
-					data[i][1] = "less than";
+					data[i][1] = "< " + Double.toString(curr.getValue());
 				}
 
 				data[i+1][0] = curr.getRange().equalValue;
-				data[i+1][1] = curr.getValue();
+				data[i+1][1] = "= " + Double.toString(curr.getValue());
 
 				if ( i == points.size()-1 ) {
 					data[i+2][0] = curr.getRange().greaterValue; 
-					data[i+2][1] = "less than";
+					data[i+2][1] = "> "+ Double.toString(curr.getValue());
 				}
 			}
 
-			add( new LegendTable(data,col) );
+			add( new LegendTable(data,columnNames) );
 		}
 	}
 }

@@ -68,15 +68,15 @@ public class DiscreteLegend extends JPanel {
 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	setBackground(Color.white);
 
-	JLabel title = new JLabel(visualAttr + " is mapped to " + dataAttr);
+	JLabel title = new JLabel(visualAttr + " is discretely mapped to " + dataAttr);
 	add(title);
 	
 
 	Object[][] data = new Object[legendMap.keySet().size()][2];
-	Object[] col = new Object[2];
+	Object[] columnNames = new Object[2];
 
-	col[0] = "Visual Representation";
-	col[1] = "Attribute Value";
+	columnNames[0] = "Visual Representation";
+	columnNames[1] = "Attribute Value";
 
 	Iterator it = legendMap.keySet().iterator();
 	for (int i = 0; i < legendMap.keySet().size(); i++) {
@@ -85,7 +85,7 @@ public class DiscreteLegend extends JPanel {
 		data[i][1] = key;
 	}
 
-	add( new LegendTable( data, col ) );
+	add( new LegendTable( data, columnNames ) );
 
     }
 }

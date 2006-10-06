@@ -196,7 +196,7 @@ public class PassThroughMapping implements ObjectMapping {
         JPanel p = new JPanel();
 	p.setBackground(Color.white);
 	p.setLayout(new BoxLayout(p,BoxLayout.Y_AXIS));
-        JLabel l = new JLabel(visualAttr + " is (PassThrough) mapped to " + attrName);
+        JLabel l = new JLabel(visualAttr + " is displayed as " + attrName);
         p.add(l);
         return p;
     }
