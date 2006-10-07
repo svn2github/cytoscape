@@ -16,13 +16,13 @@ import cytoscape.view.CyNetworkView;
  * An interface for classes that handle the actual presentation of groups.
  */
 
-public interface GroupAbstractionViewer {
+public interface GroupViewer {
 	/**
 	 * Returns the name of this viewer.  This will be saved as part of the group.
 	 *
 	 * @return String containing the viewer name.
 	 */
-	public String getGroupAbstractionViewerName();
+	public String getGroupViewerName();
 
 	/**
 	 * Show this group in a grouped state.

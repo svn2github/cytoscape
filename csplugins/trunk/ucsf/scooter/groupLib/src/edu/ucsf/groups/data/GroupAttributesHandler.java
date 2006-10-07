@@ -30,7 +30,7 @@
 
 package edu.ucsf.groups.data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -51,6 +51,12 @@ public interface GroupAttributesHandler {
 	 */
 	public static final String DEFAULT_NODE_LABEL_ATTRIBUTE = "nodeLabel";
 	
+	/**
+	 * Returns the current default node label attribute.
+	 *
+	 * @return the String representing the default node label.
+	 */
+	public String getDefaultNodeLabelAttribute();
   
 	/**
 	 * Sets the name of the node attribute to which meta-node names should be assigned to,
@@ -90,17 +96,17 @@ public interface GroupAttributesHandler {
    * @return true if all went well, false if there was an error
    */
   public boolean setAttributes(CyNetwork cy_network, CyNode group_node, 
-															 ArrayList members, AbstractIntIntMap meta_edge_to_child_edge);
+															 List members, AbstractIntIntMap meta_edge_to_child_edge);
   
   /**
    * Sets the node attributes of the group node
    * 
    * @param cy_network the CyNetwork that contains the member nodes of "node"
    * @param group_node the group node for which node attributes will be set
-   * @param children an ArrayList of CyNodes that are members of the given node
+   * @param children an List of CyNodes that are members of the given node
    * @return true if all went well, false if there was an error
    */
-  public boolean setNodeAttributes(CyNetwork cy_network, CyNode group_node, ArrayList children);
+  public boolean setNodeAttributes(CyNetwork cy_network, CyNode group_node, List children);
 
   /**
    * Sets the edge attributes of the group node
@@ -128,7 +134,7 @@ public interface GroupAttributesHandler {
    */
   public boolean removeFromAttributes (CyNetwork cy_network,
                                        CyNode group_node,
-                                      ArrayList meta_edge_list);
+                                       List meta_edge_list);
 
   /**
    * Remove attributes for the given meta-edges in CyNetwork, but leave the 
@@ -141,5 +147,5 @@ public interface GroupAttributesHandler {
    */
   public boolean removeMetaEdgesFromAttributes (CyNetwork cy_network,
                                               CyNode group_node,
-                                              ArrayList meta_edge_list);
+                                              List meta_edge_list);
 }//GroupAttributesHandler
