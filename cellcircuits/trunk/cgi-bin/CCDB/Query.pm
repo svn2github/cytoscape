@@ -34,6 +34,7 @@ sub getMatchingModels
 	$gq,           #ref-to-hash
 	$tnq,          #ref-to-hash
 	$taq,          #ref-to-hash
+	$modelQuery,   #ref-to-hash
 	$publications, #ref-to-hash
 	$species,      #ref-to-hash
 	$pval_thresh   #num
@@ -107,6 +108,15 @@ sub getMatchingModels
 
     }
 
+    my $get_from_model_id_sth = "";
+    model_query($modelQuery, 
+		$get_from_model_id_sth,
+		$pval_thresh,
+		$e_objects,
+		$hash, 
+		$tmp_error_msg,
+		$error_msg);
+
     gene_query($gene_ids,
 	       $expanded_query,
 	       $gene_symbols,
@@ -126,6 +136,11 @@ sub getMatchingModels
     #$dbh->disconnect();
     
     return ($hash, scalar(keys %{ $hash }), $expanded_query, $error_msg, $gid_by_gene_symbol );
+}
+
+sub model_query
+{
+    
 }
 
 #

@@ -34,6 +34,7 @@ sub process_query
     my ($gq)  = {}; # gene queries
     my ($tnq) = {}; # term name queries
     my ($taq) = {}; # term accession queries
+    my $modelQuery = {}; # queries by model id
 
     $query  =~ s/^\s+//; #strip out leading white space
     $query  =~ s/\s+$//; #strip out trailing white space
@@ -74,6 +75,7 @@ sub process_query
     foreach my $q (@ql)
     {
 	if($q =~ /^GO:(\d{7})/) { $taq->{$q}++; }
+	elsif($q =~ /^mmm\d+/)  { $modelQuery->{$q}++; }
 	else                    { $gq->{$q}++;  }
     }
 
@@ -85,13 +87,13 @@ sub process_query
     }
     #exit;
 
-    return ($gq,$tnq,$taq);
+    return ($gq,$tnq,$taq, $modelQuery);
 }
 
 
 sub search
 {
-    my ($query, $gq, $tnq, $taq, 
+    my ($query, $gq, $tnq, $taq, $modelQuery,
 	#$request_URI, #page stuff -- $ENV{REQUEST_URI}
 	$publications,
 	$species,
@@ -130,6 +132,7 @@ sub search
 					$gq,           #ref-to-hash
 					$tnq,          #ref-to-hash
 					$taq,          #ref-to-hash
+					$modelQuery,   #ref-to-hash
 					$publications, #ref-to-hash
 					$species,      #ref-to-hash
 					$pval_thresh   #num

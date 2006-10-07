@@ -68,7 +68,7 @@ if(param("search_query"))
 					    $error_msg);
 	exit;
     }
-    ($gq, $tnq, $taq) = @retval;
+    ($gq, $tnq, $taq, $modelQuery) = @retval;
 
     if(param("search_query_button"))
     {
@@ -86,7 +86,7 @@ if(param("search_query"))
     if($pval_thresh > 1)     { $pval_thresh = 1; }
     elsif($pval_thresh <= 0) { $pval_thresh = 1; }
 
-    CCDB::Driver::search($query, $gq, $tnq, $taq,
+    CCDB::Driver::search($query, $gq, $tnq, $taq, $modelQuery,
 			 $publications,
 			 $species,
 			 $sort_method,

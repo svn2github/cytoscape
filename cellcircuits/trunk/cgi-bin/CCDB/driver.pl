@@ -27,6 +27,7 @@ my ($query, $test_case_file, $test_case_num, $DEBUG) = process_command_line();
 my $gq           = {};
 my $tnq          = {};
 my $taq          = {};
+my $modelQuery = {};
 my $publications = {};
 my $species      = {};
 my $sort_method  = 'optionA_by_number_of_query_terms_matching_model';
@@ -53,10 +54,10 @@ if(scalar(@retval) == 0) {
     					$error_msg);
     exit;
 }
-($gq, $tnq, $taq) = @retval;
+($gq, $tnq, $taq, $modelQuery) = @retval;
 
 print STDERR "### Calling Driver::search\n";
-CCDB::Driver::search($query, $gq, $tnq, $taq, 
+CCDB::Driver::search($query, $gq, $tnq, $taq, $modelQuery,
 		     $publications,
 		     $species,
 		     $sort_method,
