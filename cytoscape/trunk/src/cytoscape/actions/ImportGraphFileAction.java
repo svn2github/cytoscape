@@ -46,6 +46,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -72,8 +74,8 @@ import cytoscape.view.CyMenus;
 import cytoscape.data.readers.GMLException;
 
 /**
- * Imports a graph of arbitrary type.  The types of graphs allowed are defined
- * by the ImportHandler.
+ * Imports a graph of arbitrary type. The types of graphs allowed are defined by
+ * the ImportHandler.
  */
 public class ImportGraphFileAction extends CytoscapeAction {
 	protected CyMenus windowMenu;
@@ -118,7 +120,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 
 		System.out.println("Loading: " + name);
 
-		loadFile(new File(name),false);
+		loadFile(new File(name), false, true);
 	}
 
 	/**
@@ -140,7 +142,8 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 
 		// open new dialog
-		ImportNetworkDialog fd = new ImportNetworkDialog(Cytoscape.getDesktop(), true);
+		ImportNetworkDialog fd = new ImportNetworkDialog(
+				Cytoscape.getDesktop(), true);
 		fd.pack();
 		fd.setLocationRelativeTo(Cytoscape.getDesktop());
 		fd.setVisible(true);
@@ -149,14 +152,35 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			return;
 		}
 
-		File file = fd.getFile();
+		final File[] files = fd.getFiles();
 		boolean vsSwitch = fd.getVSFlag();
+		boolean skipMessage = false;
 
-		if (file != null) 
-			loadFile(file,vsSwitch);
+		if (files != null && files.length != 0) {
+			if (files.length != 1) {
+				vsSwitch = false;
+				skipMessage = true;
+			}
+			List<String> messages = new ArrayList<String>();
+			messages.add("Successfully loaded the following files:");
+			messages.add(" ");
+
+			for (int i = 0; i < files.length; i++) {
+				messages.add(files[i].getName());
+				loadFile(files[i], vsSwitch, skipMessage);
+			}
+			if(files.length != 1) {
+			JOptionPane messagePane = new JOptionPane();
+			messagePane.setLocation(Cytoscape.getDesktop().getLocationOnScreen());
+			messagePane.showMessageDialog(Cytoscape.getDesktop(), messages.toArray(),
+					"Multiple Network Files Loaded",
+					JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
 	}
 
-	private void loadFile(File file, boolean createVisualStyle) {
+	private void loadFile(File file, boolean createVisualStyle,
+			boolean skipMessage) {
 		// Create LoadNetwork Task
 		LoadNetworkTask task = new LoadNetworkTask(file, createVisualStyle);
 
@@ -165,8 +189,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
 		jTaskConfig.displayStatus(true);
-		jTaskConfig.setAutoDispose(false);
-		
+		jTaskConfig.setAutoDispose(skipMessage);
 
 		// Execute Task in New Thread; pops open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
@@ -208,37 +231,40 @@ class LoadNetworkTask implements Task {
 		try {
 			String location = file.getAbsolutePath();
 			taskMonitor.setPercentCompleted(-1);
-			
-			reader = ((GraphReader) Cytoscape.getImportHandler().getReader(location));
-				
+
+			reader = ((GraphReader) Cytoscape.getImportHandler().getReader(
+					location));
+
 			taskMonitor.setStatus("Creating Cytoscape Network...");
-			
-			cyNetwork = Cytoscape.createNetworkFromFile(location);	
-					
+
+			cyNetwork = Cytoscape.createNetworkFromFile(location);
+
 			Object[] ret_val = new Object[2];
 			ret_val[0] = cyNetwork;
 			ret_val[1] = file.toURI();
-			//ret_val[2] = new Integer(file_type);
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
-			
+			// ret_val[2] = new Integer(file_type);
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null,
+					ret_val);
 
 			if (cyNetwork != null) {
 				informUserOfGraphStats(cyNetwork);
 			} else {
 				StringBuffer sb = new StringBuffer();
-				sb.append("Could not read network from file: " + file.getName());
+				sb
+						.append("Could not read network from file: "
+								+ file.getName());
 				sb.append("\nThis file may not be a valid file format.");
-				taskMonitor.setException(new IOException(sb.toString()), sb.toString());
+				taskMonitor.setException(new IOException(sb.toString()), sb
+						.toString());
 			}
 			taskMonitor.setPercentCompleted(100);
-			
+
 			if (file.getName().endsWith(".gml") && vsSwitch == true) {
-				
+
 				VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(
-						cyNetwork.getTitle(), 
-						(GraphReader)cyNetwork.getClientData(Cytoscape.READER_CLIENT_KEY), 
-						Cytoscape.getDesktop(),
-						true);
+						cyNetwork.getTitle(), (GraphReader) cyNetwork
+								.getClientData(Cytoscape.READER_CLIENT_KEY),
+						Cytoscape.getDesktop(), true);
 				vsd.show();
 
 			}
@@ -267,11 +293,16 @@ class LoadNetworkTask implements Task {
 		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
 		sb.append(" edges.\n\n");
 
-		if (newNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties().getProperty( "viewThreshold" ))) {
-			sb.append("Network is under " + CytoscapeInit.getProperties().getProperty( "viewThreshold" )
+		if (newNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit
+				.getProperties().getProperty("viewThreshold"))) {
+			sb.append("Network is under "
+					+ CytoscapeInit.getProperties()
+							.getProperty("viewThreshold")
 					+ " nodes.  A view will be automatically created.");
 		} else {
-			sb.append("Network is over " + CytoscapeInit.getProperties().getProperty( "viewThreshold" )
+			sb.append("Network is over "
+					+ CytoscapeInit.getProperties()
+							.getProperty("viewThreshold")
 					+ " nodes.  A view has not been created."
 					+ "  If you wish to view this network, use "
 					+ "\"Create View\" from the \"Edit\" menu.");

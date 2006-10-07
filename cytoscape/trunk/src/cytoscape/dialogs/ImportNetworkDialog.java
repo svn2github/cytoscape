@@ -8,6 +8,9 @@ package cytoscape.dialogs;
 
 import java.io.File;
 
+import javax.swing.JDialog;
+import javax.swing.ToolTipManager;
+
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.data.ImportHandler;
@@ -17,31 +20,49 @@ import cytoscape.Cytoscape;
  * 
  * @author kono
  */
-public class ImportNetworkDialog extends javax.swing.JDialog {
+public class ImportNetworkDialog extends JDialog {
 
 	private boolean status;
-	
+	private File[] networkFiles;
+
 	/** Creates new form NetworkImportDialog */
 	public ImportNetworkDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
 		status = false;
+		networkFiles = null;
 	}
 
-	
+	/**
+	 * Get first file only.
+	 * 
+	 * @return
+	 */
 	public File getFile() {
-		File networkFile = null;
-		networkFile = new File(networkFileNameTextField.getText());
-		return networkFile;
+		if (networkFiles != null && networkFiles.length > 0) {
+			return networkFiles[0];
+		} else {
+			return null;
+		}
 	}
-	
+
+	/**
+	 * Get all files selected.
+	 * 
+	 * @return
+	 */
+	public File[] getFiles() {
+		return networkFiles;
+	}
+
 	public boolean getVSFlag() {
 		return vsBuilderCheckBox.isSelected();
 	}
-	
+
 	public boolean getStatus() {
 		return status;
 	}
+
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -49,9 +70,13 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 	 */
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
+
+		ToolTipManager tp = ToolTipManager.sharedInstance();
+		tp.setInitialDelay(50);
+		tp.setDismissDelay(50000);
 		
-		this.setTitle("Import a Network");
-		
+		this.setTitle("Import Networks");
+
 		titleLabel = new javax.swing.JLabel();
 		networkFileNameTextField = new javax.swing.JTextField();
 		selectNetworkFileButton = new javax.swing.JButton();
@@ -62,10 +87,10 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		titleLabel.setFont(new java.awt.Font("Dialog", 1, 14));
-		titleLabel.setText("Import Network File");
+		titleLabel.setText("Import Network Files");
 
-		networkFileNameTextField.setText("Please select a network file...");
-		
+		networkFileNameTextField.setText("Please select network files...");
+
 		selectNetworkFileButton.setText("Select");
 		selectNetworkFileButton
 				.addActionListener(new java.awt.event.ActionListener() {
@@ -205,7 +230,7 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 		status = false;
 		this.dispose();
 	}
-	
+
 	private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
 		status = true;
@@ -214,20 +239,35 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 
 	private void selectNetworkFileButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {
-				
+
 		CyFileFilter[] tempCFF = (CyFileFilter[]) Cytoscape.getImportHandler()
-			.getAllFilters(ImportHandler.GRAPH_NATURE).toArray(new CyFileFilter[0]);
-		File file = FileUtil.getFile("Import Network File", FileUtil.LOAD, tempCFF);
+				.getAllFilters(ImportHandler.GRAPH_NATURE).toArray(
+						new CyFileFilter[0]);
 
+		networkFiles = FileUtil.getFiles("Import Network Files", FileUtil.LOAD,
+				tempCFF);
 
-		if(file != null) {
-			networkFileNameTextField.setText(file.getAbsolutePath());
-			networkFileNameTextField.setToolTipText(file.getAbsolutePath());
-			importButton.setEnabled(true);
-			if(file.getName().endsWith(".gml")) {
-				vsBuilderCheckBox.setEnabled(true);
+		if (networkFiles != null) {
+			/*
+			 * Accept multiple files
+			 */
+			StringBuffer fileNameSB = new StringBuffer();
+			StringBuffer tooltip = new StringBuffer();
+			tooltip.append("<html><body><strong><font color=RED>The following files will be loaded:</font></strong><br>");
+			
+			for (int i = 0; i < networkFiles.length; i++) {
+				fileNameSB.append(networkFiles[i].getAbsolutePath() + ", ");
+				tooltip.append("<p>" + networkFiles[i].getAbsolutePath() + "</p>");
+				if (networkFiles[i].getName().endsWith(".gml")) {
+					vsBuilderCheckBox.setEnabled(true);
+				}
 			}
-		} 
+			tooltip.append("</body></html>");
+			networkFileNameTextField.setText(fileNameSB.toString());
+			networkFileNameTextField.setToolTipText(tooltip.toString());
+
+			importButton.setEnabled(true);
+		}
 	}
 
 	// Variables declaration - do not modify
