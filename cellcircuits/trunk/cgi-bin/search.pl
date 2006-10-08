@@ -23,6 +23,8 @@ my $query        = '';
 my $gq           = {};
 my $tnq          = {};
 my $taq          = {};
+my $modelIdQuery          = {};
+my $modelLikeQuery          = {};
 my $publications = {};
 my $species      = {};
 my $sort_method  = '';
@@ -68,7 +70,7 @@ if(param("search_query"))
 					    $error_msg);
 	exit;
     }
-    ($gq, $tnq, $taq, $modelQuery) = @retval;
+    ($gq, $tnq, $taq, $modelIdQuery, $modelLikeQuery) = @retval;
 
     if(param("search_query_button"))
     {
@@ -86,7 +88,7 @@ if(param("search_query"))
     if($pval_thresh > 1)     { $pval_thresh = 1; }
     elsif($pval_thresh <= 0) { $pval_thresh = 1; }
 
-    CCDB::Driver::search($query, $gq, $tnq, $taq, $modelQuery,
+    CCDB::Driver::search($query, $gq, $tnq, $taq, $modelIdQuery, $modelLikeQuery,
 			 $publications,
 			 $species,
 			 $sort_method,

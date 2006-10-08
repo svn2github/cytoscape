@@ -1061,10 +1061,10 @@ sub format_model_thm_td
 
     my $similar_html .= tag("a", 
 			    {class=>"white-bg-link",
-			     title=>"See models that contain genes from this model (currently only available for models with Yeast genes)",
-			     href=>"$cgi_url/search.pl?MODELS_LIKE%3A" . $mid
+			     title=>"See models that contain genes from this model (currently Yeast only)",
+			     href=>"$cgi_url/search.pl?search_query=MODELS_LIKE:" . $mid
 			     }, 
-			    "[similar]");
+			    "[similar models]");
     
     my $model_thm_html = <<MODEL_HTML;
       <td class='search-result' align='center' valign='top' >$score</td>
