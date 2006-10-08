@@ -533,7 +533,7 @@ sub print_model
     
     my @enrichment_objects = @{ $hash->{$mid}{'enrichment'} };
     my $html = "<tr>";
-    $html .= format_model_thm_td($score, $pub, $sif, $lrg_img, $thm_img, $legend);
+    $html .= format_model_thm_td($mid, $score, $pub, $sif, $lrg_img, $thm_img, $legend);
     $html .= format_query_matched_td($query_matched);
     $html .= format_all_eo_td($expanded_query, $mo, \@enrichment_objects, $eid_genes, $counts, $pval_thresh);
     $html .= "   </tr>\n";
@@ -1057,25 +1057,34 @@ sub format_query_matched_td
 
 sub format_model_thm_td
 {
-    my($score,$pub,$sif,$lrg_img,$thm_img,$legend) = @_;
-    my $model_thm_html = "";
-    $model_thm_html = <<MODEL_HTML;
+    my($mid, $score,$pub,$sif,$lrg_img,$thm_img,$legend) = @_;
+
+    my $similar_html .= tag("a", 
+			    {class=>"white-bg-link",
+			     title=>"See models that contain genes from this model (currently only available for models with Yeast genes)",
+			     href=>"$cgi_url/search.pl?MODELS_LIKE%3A" . $mid
+			     }, 
+			    "[similar]");
+    
+    my $model_thm_html = <<MODEL_HTML;
       <td class='search-result' align='center' valign='top' >$score</td>
       <td class='search-result' align='center' valign='top' bgcolor='white'>
          <a href='$data_url/${lrg_img}.$img_format{$pub}'>
             <img src='$data_url/${thm_img}.$img_format{$pub}' border='0'>
          </a><br />
-	 <b class='pub-citation'>$pubName->{$pub}</b><br><a class='white-bg-link' href='$pubCitation->{$pub}' title='PubMed abstract'>[PubMed]</a>
+	 <b class='pub-citation'>$pubName->{$pub}</b><br>
+	 <a class='white-bg-link' href='$pubCitation->{$pub}' title='PubMed abstract'>[PubMed]</a>
 MODEL_HTML
       
     if(exists($pubSupplementURL->{$pub})) { 
-        $model_thm_html .= "<a class='white-bg-link' href='$pubSupplementURL->{$pub}' title='Online publication supplement'>[supplement]</a>\n";
+        $model_thm_html .= "<a class='white-bg-link' href='$pubSupplementURL->{$pub}' title='Online publication supplement'>[web site]</a>\n";
     }
 
 #### WITHOUT POPUP ####
     $model_thm_html .= <<MODEL_HTML2;
          <a class="white-bg-link" href="$data_url/$legend" title='Legend and FAQ for [$pubName->{$pub}] and its models.'>[legend]</a>
          <a class="white-bg-link" href="$data_url/${sif}.sif" title='(s)imple (i)nteraction (f)ormat: a textual representation of this model.'>[sif]</a>
+	 $similar_html
        </td>
 MODEL_HTML2
 
@@ -1090,7 +1099,7 @@ MODEL_HTML2
 #         </a>
 #         <a class="white-bg-link" href="$data_url/${sif}.sif">[sif]</a>
 #       </td>
-#MODEL_HTML2
+#MODEL_HTML2    
 
     return $model_thm_html;
 }
