@@ -28,16 +28,23 @@ my $get_from_fulltext_term_name_sth         = $dbh->prepare($get_from_fulltext_t
 my $get_from_term_accession_sth             = $dbh->prepare($get_from_term_accession);
 my $get_from_gene_product_id_sth            = $dbh->prepare($get_from_gene_product_id);
 my $get_from_eid_sth                        = $dbh->prepare($get_from_eid);
+
+my $get_from_model_id_sth = $dbh->prepare($get_from_model_id);
+
+my $get_model_like_sth = $dbh->prepare($get_model_like);
+
 sub getMatchingModels
 {
     my ($query,        #str
 	$gq,           #ref-to-hash
 	$tnq,          #ref-to-hash
 	$taq,          #ref-to-hash
-	$modelQuery,   #ref-to-hash
+	$modelIdQuery,   #ref-to-hash
+	$modelLikeQuery, #ref-to-hash
 	$publications, #ref-to-hash
 	$species,      #ref-to-hash
-	$pval_thresh   #num
+	$pval_thresh,   #num
+	$enrichment_limit #num
 	) = @_;
 
     my $hash               = {};
@@ -108,14 +115,18 @@ sub getMatchingModels
 
     }
 
-    my $get_from_model_id_sth = "";
-    model_query($modelQuery, 
-		$get_from_model_id_sth,
-		$pval_thresh,
-		$e_objects,
-		$hash, 
-		$tmp_error_msg,
-		$error_msg);
+    model_id_query($modelIdQuery, 
+		   $enrichment_limit,
+		   $e_objects,
+		   $hash, 
+		   $error_msg);
+    
+
+    model_like_query($modelLikeQuery, 
+		     $enrichment_limit,
+		     $e_objects,
+		     $hash, 
+		     $error_msg);
 
     gene_query($gene_ids,
 	       $expanded_query,
@@ -138,9 +149,108 @@ sub getMatchingModels
     return ($hash, scalar(keys %{ $hash }), $expanded_query, $error_msg, $gid_by_gene_symbol );
 }
 
-sub model_query
+sub model_like_query
 {
+  my ($queryHash, 
+      $enrichment_limit,
+      $e_objects,
+      $hash, 
+      $error_msg) = @_;
+
+  my $sth = $get_model_like_sth;
+  foreach my $queryMid (keys %{ $queryHash })
+  {
+      print STDERR "$queryMid: models like\n";
+      #print STDERR "$get_model_like\n";
+
+      $sth->bind_param(1,$queryMid); # TYPE=SQL_INTEGER
+      $sth->bind_param(2,$queryMid); # TYPE=SQL_INTEGER
+      $sth->execute();
+      
+      #printf STDERR "$gid: %d rows\n", $sth->rows;
+      #printf STDERR "$gid: SQL\n"; 
+      #printf STDERR "   " . $dbh->{Statement} . "\n";
+      my %matched;
+      my ($id_a, $id_b);
+      while(my $Ref = $sth->fetchrow_hashref())
+	{
+	    $id_a = $Ref->{model_id_a};
+	    $id_b = $Ref->{model_id_b};
+	    
+	    #printf STDERR ("MODELS_LIKE: %s %s %d\n", $id_a, $id_b, $Ref->{gene_score});
+	    $matched{$id_a} = $Ref->{gene_score} if($id_a != $queryMid);
+	    $matched{$id_b} = $Ref->{gene_score} if($id_b != $queryMid);
+	}
+      
+      #### ERROR HANDLING ####
+      if(scalar(keys %matched) == 0)
+      {
+	  $error_msg->{"no-model-like-notice"}{$queryMid}++;
+      }
+      else
+      {
+	  $matched{$queryMid}++;
+	  model_id_query(\%matched,
+			 $enrichment_limit,
+			 $e_objects,
+			 $hash,
+			 $error_msg);
+      }
+  }
     
+  return;
+}
+
+sub model_id_query
+{
+  my ($queryHash, 
+      $enrichment_limit,
+      $e_objects,
+      $hash, 
+      $error_msg) = @_;
+
+  my $sth = $get_from_model_id_sth;
+  foreach my $mid (keys %{ $queryHash })
+  {
+      print STDERR "$mid: querying\n";
+      print STDERR "$mid: limit=$enrichment_limit\n";
+      
+      $sth->bind_param(1,$mid); # TYPE=SQL_INTEGER
+      $sth->bind_param(2,$enrichment_limit); # TYPE = SQL_INTEGER
+      $sth->execute();
+      
+      my $matched = 0;
+      while(my $Ref = $sth->fetchrow_hashref())
+	{
+	  $matched++;
+	  
+	  my $sid = $Ref->{sid}; # species id
+	  my $tid = $Ref->{tid}; # term id
+	  
+	  unless( exists $e_objects->{$mid}{"enrichment"}{$sid}{$tid} )
+	  {
+	      $e_objects->{ $mid }{'enrichment'}{ $sid }{ $tid }++;
+	      push @{ $hash->{ $mid }{'enrichment'} }, CCDB::Enrichment::populate_enrichment($Ref);
+	  }
+	  
+	  if(! exists($hash->{$mid}{'enrichment'}))
+	  {
+	      $hash->{$mid}{'enrichment'} = [];
+	  }
+	  unless(exists $hash->{ $mid }{'model'})
+	  {
+	      $hash->{ $mid }{'model'} = CCDB::Model::populate_model($Ref);
+	  }
+	}
+      
+	#### ERROR HANDLING ####
+	if($matched == 0)
+	{
+	    $error_msg->{"no-model-match-notice"}{$mid}++;
+	}
+    }
+    
+    return;
 }
 
 #
@@ -433,8 +543,7 @@ sub get_enrichment_object_by_eid
     
     my $sth = $get_from_eid_sth;
 
-    $sth->bind_param(1, 1);
-    $sth->bind_param(2, $eid);
+    $sth->bind_param(1, $eid);
     $sth->execute();	
 
     my $Ref = $sth->fetchrow_hashref();

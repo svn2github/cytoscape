@@ -11,6 +11,8 @@ our @EXPORT    = qw($get_gene_product_id_from_em_symbol
 		    $get_from_term_accession
 		    $get_from_gene_product_id
 		    $get_from_eid 
+		    $get_from_model_id
+		    $get_model_like
 		    ); #symbols to export by default
 our @EXPORT_OK = qw(); #symbols to export on request
 our $VERSION   = 1.00;
@@ -55,6 +57,20 @@ WHERE
 our $get_gene_product_id_from_em_synonym = $gid_from_syn . "= ?";
 our $get_gene_product_id_from_re_synonym = $gid_from_syn . "REGEXP ?";
 
+our $get_model_like = qq{
+SELECT
+ model_id_a,
+ model_id_b,
+ gene_score
+FROM
+ model_similarity
+WHERE
+ model_id_a = ? OR
+ model_id_b = ?
+ORDER BY gene_score DESC
+LIMIT 19
+};
+
 my $obj_data_stem = qq{
 SELECT DISTINCT
  enrichment.id                         as e_id,
@@ -82,13 +98,13 @@ WHERE
  model.id              = enrichment.model_id AND
  enrichment.term_id    = term.id AND
  enrichment.species_id = species.id AND
- enrichment.pval       < ? AND
 };
 
-our $get_from_fulltext_term_name  = $obj_data_stem . "MATCH(term.name) AGAINST( ? IN BOOLEAN MODE)";
-our $get_from_term_accession      = $obj_data_stem . "term.acc = ?";
-our $get_from_gene_product_id     = $obj_data_stem . "gene_product.id = ?";
+our $get_from_fulltext_term_name  = $obj_data_stem . " enrichment.pval < ? AND MATCH(term.name) AGAINST( ? IN BOOLEAN MODE)";
+our $get_from_term_accession      = $obj_data_stem . " enrichment.pval < ? AND term.acc = ?";
+our $get_from_gene_product_id     = $obj_data_stem . " enrichment.pval < ? AND gene_product.id = ?";
 our $get_from_eid                 = $obj_data_stem . "enrichment.id = ?";
+our $get_from_model_id            = $obj_data_stem . "model.id = ? ORDER BY enrichment.pval LIMIT ?";
 
 #######                               #######
 #######   BELOW ARE EXAMPLE QUERIES   #######

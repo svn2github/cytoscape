@@ -27,6 +27,8 @@ my $species_hash = {
     'Saccharomyces cerevisiae' => 1,
 };
 
+my $DEFAULT_ENRICHMENT_LIMIT = 3;
+
 sub process_query
 {
     my ($query) = @_;
@@ -34,7 +36,8 @@ sub process_query
     my ($gq)  = {}; # gene queries
     my ($tnq) = {}; # term name queries
     my ($taq) = {}; # term accession queries
-    my $modelQuery = {}; # queries by model id
+    my $modelIdQuery = {}; # queries by model id
+    my $modelLikeQuery = {}; # queries for models similari to an input model id
 
     $query  =~ s/^\s+//; #strip out leading white space
     $query  =~ s/\s+$//; #strip out trailing white space
@@ -69,13 +72,14 @@ sub process_query
     $query  =~ s/\s+$//; #strip out trailing white space
     my @ql = split(/\s+/, $query);
 
-    my $qh = {};
-    for my $q (@ql){ $qh->{$q}++; }
+    #my $qh = {};
+    #for my $q (@ql){ $qh->{$q}++; }
     
     foreach my $q (@ql)
     {
-	if($q =~ /^GO:(\d{7})/) { $taq->{$q}++; }
-	elsif($q =~ /^mmm\d+/)  { $modelQuery->{$q}++; }
+	if($q =~ /^GO:\d{7}/) { $taq->{$q}++; }
+	elsif($q =~ /^MODEL_ID:(\d+)/)  { $modelIdQuery->{$1}++; }
+	elsif($q =~ /^MODELS_LIKE:(\d+)/)  { $modelLikeQuery->{$1}++; }
 	else                    { $gq->{$q}++;  }
     }
 
@@ -87,13 +91,13 @@ sub process_query
     }
     #exit;
 
-    return ($gq,$tnq,$taq, $modelQuery);
+    return ($gq,$tnq,$taq, $modelIdQuery, $modelLikeQuery);
 }
 
 
 sub search
 {
-    my ($query, $gq, $tnq, $taq, $modelQuery,
+    my ($query, $gq, $tnq, $taq, $modelIdQuery, $modelLikeQuery,
 	#$request_URI, #page stuff -- $ENV{REQUEST_URI}
 	$publications,
 	$species,
@@ -132,14 +136,16 @@ sub search
 					$gq,           #ref-to-hash
 					$tnq,          #ref-to-hash
 					$taq,          #ref-to-hash
-					$modelQuery,   #ref-to-hash
+					$modelIdQuery,   #ref-to-hash
+					$modelLikeQuery,   #ref-to-hash
 					$publications, #ref-to-hash
 					$species,      #ref-to-hash
-					$pval_thresh   #num
+					$pval_thresh,   #num
+					$DEFAULT_ENRICHMENT_LIMIT
 					);
      #printf STDERR "After fetching models: %s\n", localtime(time);
-    #inspect_results($hash, 0);
-     #exit;
+    inspect_results($hash, 0);
+    #exit;
     
     if($n_matched_models <= 0) {
 	$error_msg->{'no-results'}++;
