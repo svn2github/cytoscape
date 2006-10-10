@@ -102,8 +102,8 @@ function CategoryVisibility_Toggle(name,block_id)
   var y = new getObj(link_id);
   if(blocks.length > 0)
   {
-    if(x.style.display != 'none') { new Effect.Fade(block_id,{duration:1.0});   rewrite(link_id,'hide'); }
-    else                          { new Effect.Appear(block_id,{duration:1.0}); rewrite(link_id,'show'); }
+    if(x.style.display != 'none') { new Effect.Fade(block_id,{duration:0.5});   rewrite(link_id,'hide'); }
+    else                          { new Effect.Appear(block_id,{duration:0.5}); rewrite(link_id,'show'); }
   }
   else{
     if(x.style.display != 'none') { x.style.display = 'none'; rewrite(link_id,'hide'); }

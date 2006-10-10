@@ -65,6 +65,9 @@ td.bold {
 tr.group-toggle-link{
 	background-color: #8DA4AE;/*medium blue*/
 }
+tr.extra-header{
+	background-color: #ddd;
+}
 
 .result-header{
 	text-align: center;
@@ -189,11 +192,11 @@ p.credits {
 a.header-links:hover { background-color:white; }
 .citation { font-size: 0.8em; }
 
-font.example {
+.example {
   	font-weight: bold;
 	text-decoration: underline;
+	color: blue;
 }
-
 
 /**********test.html******/
 
