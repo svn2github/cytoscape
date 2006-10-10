@@ -51,14 +51,19 @@ sub get_species_string
     {
 	return $SPECIES_CACHE->{$sid};
     }
+
+    printf STDERR "Cache miss for species: $sid\n";
     
-    $get_species_sth->bind_param($sid);
+    $get_species_sth->bind_param(1, $sid);
     $get_species_sth->execute();
 
     if(my $Ref = $get_species_sth->fetchrow_hashref())
     {
-	$SPECIES_CACHE->{$Ref->{id}} = join(" ", $Ref->{species}, $Ref->{genus});
-	return join(" ", $Ref->{genus}, $Ref->{species});
+	my ($sp, $genus) = ("", "");
+	$sp = $Ref->{species} if(defined($Ref->{species}));
+	$genus = $Ref->{genus} if(defined($Ref->{genus}));
+	$SPECIES_CACHE->{$Ref->{id}} = join(" ", $genus, $sp);
+	return join(" ", $genus, $sp);
     }
 
     return "Invalid Species ID: $sid";
@@ -110,12 +115,10 @@ sub getMatchingModels
     my $tmp_error_msg = {};
     for my $gene_query (keys %{ $gq })
     {
-
 	my $match = 0;
 
 	if($gene_query =~ /\*/)
 	{
-
 	    my $sym_sth = $get_gene_product_id_from_re_symbol_sth;
 	    my $syn_sth = $get_gene_product_id_from_re_synonym_sth;
 
@@ -134,7 +137,6 @@ sub getMatchingModels
 	}
 	else
 	{
-
 	    my $sym_sth = $get_gene_product_id_from_em_symbol_sth;
 	    my $syn_sth = $get_gene_product_id_from_em_synonym_sth;
 
@@ -159,6 +161,7 @@ sub getMatchingModels
 	}
 
     }
+#    return ($hash, scalar(keys %{ $hash }), $expanded_query, $error_msg, $gid_by_gene_symbol );
 
     model_id_query($modelIdQuery, 
 		   $enrichment_limit,

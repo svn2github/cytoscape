@@ -35,7 +35,7 @@ sub load_synonyms_hash_from_file
 	my @l = split(/\t/);
 	die "ERROR: line $. of $file has < 5 items.\n" if(scalar(@l) < 5);
 
-	my ($species_id, $genus, $species, $gene_id, $gene_symbol, @synonyms) = @l;
+	my ($species_id, $gene_id, $gene_symbol, @synonyms) = @l;
 
 	$gene_ids->{$species_id}{$gene_symbol} = $gene_id;
 	$symbols->{$gene_id} = $gene_symbol;

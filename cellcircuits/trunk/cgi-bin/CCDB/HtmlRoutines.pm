@@ -7,7 +7,7 @@ use warnings;
 
 use CCDB::Model;
 use CCDB::Enrichment;
-use CCDB::Synonyms;
+#use CCDB::Synonyms;
 use CCDB::Error;
 use CGI qw(:standard unescape escape);
 
@@ -58,14 +58,6 @@ my $species_abbrev = {
     'Homo sapiens'             => 'H. sap',
     'Plasmodium falciparum'    => 'P. fal',
     'Saccharomyces cerevisiae' => 'S. cer'
-    };
-
-my $species_by_id = {
-    88307  => 'Caenorhabditis elegans',
-    157890 => 'Drosophila melanogaster',
-    92001  => 'Homo sapiens',
-    7015   => 'Plasmodium falciparum',
-    97048  => 'Saccharomyces cerevisiae'
     };
 
 my $sortMethods = {
@@ -669,7 +661,7 @@ sub format_all_eo_td
     my $eo_hash = {};
     foreach my $eo (@{$eo_list})
     {
-	my $sp = $species_by_id->{$eo->sid()};
+	my $sp = get_species_string($eo->sid());
 	push @{ $eo_hash->{$sp}{$eo->ttype()} }, $eo;
     }
 

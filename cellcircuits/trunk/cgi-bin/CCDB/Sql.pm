@@ -25,13 +25,11 @@ my $gid_from_sym = qq{
 SELECT
  gene_product.id          as gid,
  gene_product.symbol      as symbol,
- model.id                 as mid,
  gene_product.species_id  as sid
 FROM
- gene_product, model, gene_model
+ gene_product, gene_model
 WHERE
- gene_product.id         = gene_model.gene_product_id AND
- gene_model.model_id     = model.id AND
+ gene_product.id = gene_model.gene_product_id AND
  gene_product.symbol
 };
 our $get_gene_product_id_from_em_symbol = $gid_from_sym . "= ?";
@@ -39,17 +37,14 @@ our $get_gene_product_id_from_re_symbol = $gid_from_sym . "regexp ?";
 
 my $gid_from_syn = qq{
 SELECT
- gene_product_synonym.gene_product_id as gid,
- gene_product_synonym.product_synonym as synonym,
- gene_product.symbol                  as symbol,
- model.id                             as mid,
- gene_product.species_id              as sid
+ gene_product_synonym.gene_product_id         as gid,
+ gene_product_synonym.product_synonym         as synonym,
+ gene_product_synonym.symbol                  as symbol,
+ gene_product_synonym.species_id              as sid
 FROM
- gene_product, gene_product_synonym, model, gene_model
+ gene_product_synonym, gene_model
 WHERE
- gene_product.id                      = gene_product_synonym.gene_product_id AND
- gene_product.id                      = gene_model.gene_product_id AND
- gene_model.model_id                  = model.id AND
+ gene_product_synonym.gene_product_id = gene_model.gene_product_id AND
  gene_product_synonym.product_synonym 
 };
 our $get_gene_product_id_from_em_synonym = $gid_from_syn . "= ?";
@@ -90,27 +85,29 @@ SELECT DISTINCT
 
 my $obj_data_from_where = $obj_data_fields . qq{
 FROM 
-  model, enrichment, term
+ enrichment, model, term
 WHERE
- model.id              = enrichment.model_id AND
- enrichment.term_id    = term.id AND
-};
-
-my $obj_data_from_where_byGene = $obj_data_fields . qq{
-FROM 
- model, gene_product, gene_model, enrichment, term
-WHERE
- gene_product.id       = gene_model.gene_product_id AND
- gene_model.model_id   = model.id AND
- model.id              = enrichment.model_id AND
+ enrichment.model_id   = model.id AND
  enrichment.term_id    = term.id AND
 };
 
 our $get_from_fulltext_term_name  = $obj_data_from_where . " enrichment.pval < ? AND MATCH(term.name) AGAINST( ? IN BOOLEAN MODE)";
 our $get_from_term_accession      = $obj_data_from_where  . " enrichment.pval < ? AND term.acc = ?";
-our $get_from_gene_product_id     = $obj_data_from_where_byGene . " enrichment.pval < ? AND gene_product.id = ?";
+
 our $get_from_eid                 = $obj_data_from_where . "enrichment.id = ?";
-our $get_from_model_id            = $obj_data_from_where . "model.id = ? ORDER BY enrichment.pval LIMIT ?";
+our $get_from_model_id            = $obj_data_from_where . "enrichment.model_id = ? ORDER BY enrichment.pval LIMIT ?";
+
+
+my $obj_data_from_where_byGene = $obj_data_fields . qq{
+FROM 
+ gene_model, enrichment, model, term
+WHERE
+ gene_model.model_id   = enrichment.model_id AND
+ enrichment.model_id   = model.id AND
+ enrichment.term_id    = term.id AND
+};
+
+our $get_from_gene_product_id     = $obj_data_from_where_byGene . " enrichment.pval < ? AND gene_model.gene_product_id = ?";
 
 our $get_species_cache = qq{
 SELECT id, genus, species 
@@ -127,7 +124,8 @@ WHERE
 our $get_species = qq{
 SELECT id, genus, species 
 FROM species
-WHERE id = ?
+WHERE 
+  species.id = ?
 };
 
 

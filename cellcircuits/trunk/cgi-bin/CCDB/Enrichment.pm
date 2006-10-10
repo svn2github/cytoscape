@@ -37,8 +37,6 @@ sub init
     $self->mpub(undef);
     $self->mname(undef);
     $self->sid(undef);
-    $self->genus(undef);
-    $self->species(undef);
     $self->tid(undef);
     $self->tacc(undef);
     $self->tname(undef);
@@ -57,8 +55,6 @@ my @fields = qw(
 		mpub
 		mname
 		sid
-		genus
-		species
 		tid
 		tacc
 		tname
@@ -112,8 +108,6 @@ sub populate_enrichment
     $eo->mname  ($Ref->{mname});
     
     $eo->sid    ($Ref->{sid});
-    $eo->genus  ($Ref->{genus});
-    $eo->species($Ref->{species});
 
     $eo->tid    ($Ref->{tid});
     $eo->tacc   ($Ref->{tacc});
