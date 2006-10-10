@@ -5,6 +5,8 @@ our $VERSION = '1.0';
 use strict;
 use warnings;
 
+use CCDB::QueryInput;
+
 my $publications_hash = {
     'Begley2002_MCR'             => 1,
     'Bernard2005_PSB'            => 1,
@@ -33,11 +35,16 @@ sub process_query
 {
     my ($query) = @_;
 
-    my ($gq)  = {}; # gene queries
-    my ($tnq) = {}; # term name queries
-    my ($taq) = {}; # term accession queries
-    my $modelIdQuery = {}; # queries by model id
-    my $modelLikeQuery = {}; # queries for models similari to an input model id
+    print STDERR "Creating QueryInput\n";
+    my $qi = CCDB::QueryInput->new();
+
+    $qi->queryString($query);
+
+#    my ($gq)  = {}; # gene queries
+#    my ($tnq) = {}; # term name queries
+#    my ($taq) = {}; # term accession queries
+#    my $modelIdQuery = {}; # queries by model id
+#    my $modelLikeQuery = {}; # queries for models similari to an input model id#
 
     $query  =~ s/^\s+//; #strip out leading white space
     $query  =~ s/\s+$//; #strip out trailing white space
@@ -64,7 +71,7 @@ sub process_query
     ## as expected
     while($query =~ /(\".+?\")/)
     {
-	$tnq->{$1}++;
+	$qi->termName()->{$1}++;
 	$query =~ s/$1//;
     }
     
@@ -77,28 +84,25 @@ sub process_query
     
     foreach my $q (@ql)
     {
-	if($q =~ /^GO:\d{7}/) { $taq->{$q}++; }
-	elsif($q =~ /^MODEL_ID:(\d+)/)  { $modelIdQuery->{$1}++; }
-	elsif($q =~ /^MODELS_LIKE:(\d+)/)  { $modelLikeQuery->{$1}++; }
-	else                    { $gq->{$q}++;  }
+	if($q =~ /^GO:\d{7}/) { $qi->termAccession()->{$q}++; }
+	elsif($q =~ /^MODEL_ID:(\d+)/)  { $qi->modelId()->{$1}++; }
+	elsif($q =~ /^MODELS_LIKE:(\d+)/)  { $qi->modelLike()->{$1}++; }
+	else                    { $qi->gene()->{$q}++;  }
     }
 
     ## uncomment to debug parsing 
     if(1) {
-	outputf( "gq: '%s'\n", join "\t", keys %{ $gq } );
-	outputf( "taq: '%s'\n", join "\t", keys %{ $taq } );
-	outputf( "tnq: '%s'\n", join "\t", keys %{ $tnq } );
+	print STDERR $qi->print();
     }
     #exit;
 
-    return ($gq,$tnq,$taq, $modelIdQuery, $modelLikeQuery);
+    return ($qi);
 }
 
 
 sub search
 {
-    my ($query, $gq, $tnq, $taq, $modelIdQuery, $modelLikeQuery,
-	#$request_URI, #page stuff -- $ENV{REQUEST_URI}
+    my ($queryInput,
 	$publications,
 	$species,
 	$sort_method,
@@ -108,7 +112,6 @@ sub search
 
     my $hash               = {};
     my $n_matched_models   = 0;
-    my $expanded_query     = '';
     my $gid_by_gene_symbol = {};
     my $error_msg          = {};
 
@@ -129,15 +132,9 @@ sub search
      #printf STDERR "Before fetching models: %s\n", localtime(time);
     ($hash, 
      $n_matched_models,
-     $expanded_query,    # gene regexes are expanded
      $error_msg,         # error_msg->{msg-type}{query} = "error/notice..."
      $gid_by_gene_symbol
-     ) = CCDB::Query::getMatchingModels($query,        #str
-					$gq,           #ref-to-hash
-					$tnq,          #ref-to-hash
-					$taq,          #ref-to-hash
-					$modelIdQuery,   #ref-to-hash
-					$modelLikeQuery,   #ref-to-hash
+     ) = CCDB::Query::getMatchingModels($queryInput,
 					$publications, #ref-to-hash
 					$species,      #ref-to-hash
 					$pval_thresh,   #num
@@ -150,7 +147,7 @@ sub search
     if($n_matched_models <= 0) {
 	$error_msg->{'no-results'}++;
 	#print STDERR "ERROR: no models matched\n";
-	CCDB::HtmlRoutines::outputErrorPage($query,        #str
+	CCDB::HtmlRoutines::outputErrorPage($queryInput,        #str
 					    $publications, #ref-to-hash
 					    $species,      #ref-to-hash
 					    $sort_method,  #str
@@ -160,7 +157,7 @@ sub search
     }
     else {
 
-	CCDB::HtmlRoutines::outputResultsPage($query,
+	CCDB::HtmlRoutines::outputResultsPage($queryInput,
 					      $publications,
 					      $species,
 					      $sort_method,
@@ -170,7 +167,6 @@ sub search
 					      $n_matched_models,
 					      $error_msg,
 					      #$request_URI,
-					      $expanded_query,
 					      $gid_by_gene_symbol
 					      );
       }

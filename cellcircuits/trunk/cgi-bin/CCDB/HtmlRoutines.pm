@@ -78,7 +78,7 @@ my $sortMethod_to_html = {
 
 
 sub outputResultsPage{
-    my ($query,
+    my ($queryInput,
 	$publications,
 	$species,
 	$sort_method,
@@ -87,15 +87,13 @@ sub outputResultsPage{
 	$hash,
 	$n_matched_models,
 	$error_msg,
-	$expanded_query,
 	$gid_by_gene_symbol
 	) = @_;
 
-    print_header($query);
-    print_body($query,
+    print_header($queryInput->queryString());
+    print_body($queryInput,
 	       $hash,	      
 	       $page,
-	       $expanded_query,
 	       $publications, 
 	       $species, 
 	       $sort_method,
@@ -193,7 +191,7 @@ START_BODY
 
 sub outputErrorPage
 {
-    my ($original_query, # string
+    my ($queryInput, # object
         $publications,   # ref-to-hash
 	$species,        # ref-to-hash
 	$sort_method,    # string
@@ -201,13 +199,13 @@ sub outputErrorPage
 	$error_msg
         ) = @_;
 
-    print_header($original_query);
-    print start_body($original_query,
-	       $publications, 
-	       $species, 
-	       $sort_method,
-	       $pval_thresh, 
-	       $error_msg,'','','');
+    print_header($queryInput->queryString());
+    print start_body($queryInput->queryString(),
+		     $publications, 
+		     $species, 
+		     $sort_method,
+		     $pval_thresh, 
+		     $error_msg,'','','');
     print "</body>";
     print_trailer();
 
@@ -382,10 +380,9 @@ sub get_pval_thresh_hidden_fields_html
 #
 sub print_body
 {
-    my ($original_query,
+    my ($queryInput,
 	$hash,	      
 	$page,
-	$expanded_query,
 	$publications, 
 	$species, 
 	$sort_method,
@@ -412,33 +409,18 @@ sub print_body
     ## Typically 2: one at the top of the table and one at the bottom.
     my $N_PAGE_JUMP = 1; 
 
-    my $score = {};
-    my $query_matched = {};
-    my $eid_genes = {};
-    my $termtypes = {};
-    ## we score and get html for ALL models -- should we just score them all, then
-    ## get the html only for the ones we're displaying?  that sounds better to me...
-    ## 20 july -- this is now what we do ;-)
     foreach my $mid (keys %{ $hash })
     {
 	my @enrichment_objects = @{ $hash->{$mid}{"enrichment"} };
-	($score->{$mid}, 
-	 $query_matched->{$mid}, 
-	 $eid_genes->{$mid},
-	 $termtypes->{$mid}) = score_model($expanded_query, \@enrichment_objects, $gid_by_gene_symbol);
+	my $model = $hash->{$mid}{'model'};
+	$model->score_model($queryInput, \@enrichment_objects);
     }
 
-    #foreach my $m (keys %{ $termtypes }){
-#	foreach my $t (keys %{ $termtypes->{$m} }){
-#	    print "termtypes->{$m}{$t}<br>";
-#	}
-#    }
-
     my $sorted_mids = ();
-    @{ $sorted_mids } = sort { $score->{$b} <=> $score->{$a} 
+    @{ $sorted_mids } = sort { $hash->{$a}{'model'}->score() <=> $hash->{$a}{'model'}->score() 
 			       || min_pval( $hash->{$a}{"enrichment"} ) <=> min_pval( $hash->{$b}{"enrichment"} )
 				   || $hash->{$a}{"model"}->pub() cmp $hash->{$b}{"model"}->pub()	
-			       } keys %{ $score };
+			       } keys %{ $hash };
     
     my $n_matched_models = scalar(@{ $sorted_mids });
     my ($total_pages, $upper_lim,$lower_lim) = pageCalc($n_matched_models, $page);
@@ -449,12 +431,12 @@ sub print_body
     my $mf_count = 0;
     for my $i (($lower_lim-1)..($upper_lim-1))
     {
-	my $mid = $sorted_mids->[$i];
-	if(exists $termtypes->{$mid}{'biological_process'}){ $bp_count += $termtypes->{$mid}{'biological_process'} };
-	if(exists $termtypes->{$mid}{'cellular_component'}){ $cc_count += $termtypes->{$mid}{'cellular_component'} };
-	if(exists $termtypes->{$mid}{'molecular_function'}){ $mf_count += $termtypes->{$mid}{'molecular_function'} };
+	my $term2org = $hash->{$sorted_mids->[$i]}{'model'}->term2org();
+	if(exists $term2org->{'biological_process'}){ $bp_count += scalar(keys %{$term2org->{'biological_process'} })};
+	if(exists $term2org->{'cellular_component'}){ $cc_count += scalar(keys %{$term2org->{'cellular_component'} })};
+	if(exists $term2org->{'molecular_function'}){ $mf_count += scalar(keys %{$term2org->{'molecular_function'} })};
     }
-    my $body = start_body($original_query, $publications, $species, 
+    my $body = start_body($queryInput->queryString(), $publications, $species, 
 			  $sort_method, $pval_thresh, $error_msg, $bp_count, $cc_count, $mf_count);
     
     $body .= qq(<table id="results_table" align="center" 
@@ -472,17 +454,16 @@ sub print_body
       <th class="result-header">Model</th>
       <th class="result-header">Matches</th>
       <th class="result-header" colspan="1" valign='bottom'>
-         Gene Ontology enrichment [<a class="color-bg-link" href="http://www.geneontology.org/" title="GO Home Page">read more</a>]&nbsp;&nbsp;
-         <a class="color-bg-pval-link" href="$search_url/advanced_search.html" title="Click to go to the advanced search page to change this p-value threshold">
-	    (P-value < $pval_thresh)
-	 </a>
+         Model annotation [<a class="color-bg-link" href="http://www.geneontology.org/" title="GO Home Page">read more</a>]&nbsp;&nbsp;
+         (<a class="color-bg-link" href="http://www.geneontology.org/" title="Gene Ontology">GO</a> enrichment 
+         <a class="color-bg-pval-link" href="$search_url/advanced_search.html" title="Click to change the p-value threshold on the Advanced Search page"> P-value < $pval_thresh)</a>
 	 <br />
 	 <table border=0 align='center' valign='bottom' cellpaddin=0 cellspacing=0>
 	    <tr>
-	       <td>Expand/collapse all: </td>
-	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Toggle visibility of all Biological Process results on this page' onClick="CategoryVisibility_GroupToggle('bp','',$bp_count); return false;">Bio.&nbsp;Process</a>, </td>
-	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Toggle visibility of all Cellular Component results on this page' onClick="CategoryVisibility_GroupToggle('cc','',$cc_count); return false;">Cell&nbsp;Component</a>, </td>
-	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Toggle visibility of all Molecular Function results on this page' onClick="CategoryVisibility_GroupToggle('mf','',$mf_count); return false;">Mol.&nbsp;Function</a></td>
+	       <td>Show/Hide: </td>
+	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Show/Hide all Biological Process results on this page' onClick="CategoryVisibility_GroupToggle('bp','',$bp_count); return false;">BP</a>, </td>
+	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Show/Hide all Cellular Component results on this page' onClick="CategoryVisibility_GroupToggle('cc','',$cc_count); return false;">CC</a>, </td>
+	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Show/Hide all Molecular Function results on this page' onClick="CategoryVisibility_GroupToggle('mf','',$mf_count); return false;">MF</a></td>
 	    </tr>
 	 </table>
       </th>
@@ -492,7 +473,7 @@ TBL_HDR
     for my $i (($lower_lim-1)..($upper_lim-1))
     {
 	my $mid = $sorted_mids->[$i];
-	print_model($hash, $mid, $score->{$mid}, $query_matched->{$mid}, $eid_genes->{$mid}, $expanded_query, $counts, $pval_thresh);
+	print_model($hash, $mid, $queryInput->expandedQuery(), $counts, $pval_thresh);
     }
     print formatPageNavigation_tr($N_PAGE_JUMP++, $page, $total_pages, $lower_lim, $upper_lim, $n_matched_models);
     print "</table>\n";
@@ -516,7 +497,7 @@ sub min_pval
 
 sub print_model
 {
-    my ( $hash, $mid, $score, $query_matched, $eid_genes, $expanded_query, $counts, $pval_thresh) = @_;
+    my ( $hash, $mid, $expanded_query, $counts, $pval_thresh) = @_;
 
     my $mo = $hash->{$mid}{'model'};
     my $pub     = $mo->pub();
@@ -526,102 +507,16 @@ sub print_model
     my $legend  = $mo->legend();
     
     my @enrichment_objects = @{ $hash->{$mid}{'enrichment'} };
+
     my $html = "<tr>";
-    $html .= format_model_thm_td($mid, $score, $pub, $sif, $lrg_img, $thm_img, $legend);
-    $html .= format_query_matched_td($query_matched);
-    $html .= format_all_eo_td($expanded_query, $mo, \@enrichment_objects, $eid_genes, $counts, $pval_thresh);
+    $html .= format_model_thm_td($mid, $mo->score(), $pub, $sif, $lrg_img, $thm_img, $legend);
+    $html .= format_query_matched_td($mo->wordsMatched());
+    $html .= format_all_eo_td($expanded_query, $mo, \@enrichment_objects, $counts, $pval_thresh);
     $html .= "   </tr>\n";
 
     print $html;
     return;
 }
-
-sub score_model
-{
-    my ($expanded_query, $sorted_objects, $gid_by_gene_symbol) = @_;
-
-    my @query_terms = keys %{$expanded_query};
-
-    my $score = 0;
-    my %words_matched;
-    my %eid_to_genes;
-    
-    my $org_termtype = {};
-    my $termtype     = {};
-
-    for my $eo (@{$sorted_objects})
-    {
-	my $eid                        = $eo->id();                         
-	#my $n_genes_in_model_with_term = $eo->n_genes_in_model_with_term(); 
-	#my $n_genes_in_model           = $eo->n_genes_in_model();           
-	#my $n_genes_with_term          = $eo->n_genes_with_term();          
-	#my $n_genes_in_GO              = $eo->n_genes_in_GO();              
-	#my $pval                       = $eo->pval();                       
-	my $gene_ids                   = $eo->gene_ids();                   
-	my $mid                        = $eo->mid();                        
-	#my $mpub                       = $eo->mpub();                       
-	#my $mname                      = $eo->mname();                      
-	my $sid                        = $eo->sid();                        
-	#my $genus                      = $eo->genus();                      
-	#my $species                    = $eo->species();                    
-	my $tid                        = $eo->tid();                        
-	my $tacc                       = $eo->tacc();                       
-	my $tname                      = $eo->tname();                      
-	my $ttype                      = $eo->ttype();                      
-	
-	my $org = get_species_string($sid);#join(" ", $genus, $species);
-	my $key = join " ", $org, $eo->ttype();
-	unless(exists $org_termtype->{$key}){ $termtype->{$ttype}++; }
-	$org_termtype->{$key}++;
-
-	my %gids;
-	map {$gids{$_}++} split(/\s+/, $gene_ids);
-
-
-	foreach my $query (@query_terms)
-	{
-	    # query is a GO term
-	    if(($query =~ /GO:\d{7}/i) && (uc($tacc) eq uc($query)))
-	    {
-		#print "score_model: found term query = $query\n";
-		$words_matched{$query}++;
-	    }
-	    # query is part of a GO term name
-	    elsif(($query =~ /^\"(.*)\"$/) && ($tname =~ /$1/i)) 
-	    {
-		#print "score_model: found query = $query, tname = $tname\n";
-		$words_matched{$query}++;
-	    }
-	    # query is a gene in the model and in this enrichment object 
-	    elsif(exists $gid_by_gene_symbol->{$mid}{$org}{$tid}{$query})
-	    {
-		my $gid = $gid_by_gene_symbol->{$mid}{$org}{$tid}{$query};
-
-		# need to do this because $gid_by_gene_symbol appears to be incorrect
-		if(exists($gids{$gid}))
-		{
-		    #print "score_model: found gene query = $query\n";
-		    push @{$eid_to_genes{$eid}}, $query;
-		    #$query =~ s/_HUMAN//;
-		    $words_matched{$query}++;
-		}
-	    }
-	}
-    }
-
-    # return 
-    # 1. the score
-    # 2. a ref-to-hash of all query terms matched [used for match column]
-    # 3. a ref-to-hash that maps enrichment object ids to the genes in the query that are
-    #    annotated with that enrichment
-    # 4. a ref-to-hash of the term types matched 
-    #      e.g. if model matches mf, bp in S cer and bp, cc in D mel and mf in H sap then
-    #           termtype->{'molecular_function'} = 2
-    #           termtype->{'biological_process'} = 2
-    #           termtype->{'cellular_component'} = 1
-    return (scalar(keys %words_matched), \%words_matched, \%eid_to_genes, $termtype);
-}
-
 
 ##
 ## Utility method used to wrap text in an arbitrary 
@@ -655,7 +550,7 @@ sub tag
 
 sub format_all_eo_td
 {
-    my ($expanded_query, $model, $eo_list, $eid_genes, $counts, $pval_thresh) = @_;
+    my ($expanded_query, $model, $eo_list, $counts, $pval_thresh) = @_;
     
     # index eo's by species and then by GO term type (eg MF, BP, or CC)
     my $eo_hash = {};
@@ -666,10 +561,19 @@ sub format_all_eo_td
     }
 
     # now format the eo's for each species
-    my $h = qq(    <td class="search-result-right" align="center" valign="top">\n);
+    my $h = qq(    <td class="search-result-right" align="left" valign="top">\n);
+
+    $h .= tag("a", 
+	      {class=>"white-bg-link",
+	       title=>"See models that contain genes from this model (currently Yeast only)",
+	       href=>"$cgi_url/search.pl?search_query=MODELS_LIKE:" . $model->id()
+	       }, 
+	      "View similar models");
+    $h .= "<br";
+
     foreach my $sp (sort keys %{$eo_hash})
     {
-	$h .= format_eo_for_species($expanded_query, $model, $sp, $eo_hash->{$sp}, $eid_genes, $counts, $pval_thresh);
+	$h .= format_eo_for_species($expanded_query, $model, $sp, $eo_hash->{$sp}, $counts, $pval_thresh);
     }
     $h .= "</td>\n";
  
@@ -714,7 +618,7 @@ my $EO_HTML_CONSTANTS =
 ##
 sub format_eo_for_species
 {
-    my ($expanded_query, $model, $species, $eo_by_ttype, $eid_genes, $counts, $pval_thresh) = @_;
+    my ($expanded_query, $model, $species, $eo_by_ttype, $counts, $pval_thresh) = @_;
 
     my $html = "";
     $html .= qq(<table cellspacing=0 width=500><tr><td>\n);
@@ -790,7 +694,7 @@ sub format_eo_for_species
 		$html .= qq( <tr class="even-row">\n); 
 	    }
 	    
-	    $html .= format_eo($expanded_query, $model, $eos[$i], $eid_genes) . "\n";
+	    $html .= format_eo($expanded_query, $model, $eos[$i]) . "\n";
 	    $html .= "</tr>\n";
 	}
 
@@ -810,7 +714,7 @@ sub format_eo_for_species
 # return a <td> element
 sub format_eo
 {
-    my ($expanded_query, $model, $eo, $eid_genes) = @_;
+    my ($expanded_query, $model, $eo) = @_;
 
     my $pub = $model->pub();
     my $thm_img = $model->thm_img();
@@ -830,7 +734,7 @@ sub format_eo
 		      $eid,
 		      "$data_url/${thm_img}.$img_format{$pub}");
     
-    foreach my $g (@{ $eid_genes->{ $eid } })
+    foreach my $g (@{ $model->eid2genes()->{ $eid } })
     {
 	if(exists($db_link_by_species->{$org}))
 	{
@@ -1079,6 +983,7 @@ MODEL_HTML
     $model_thm_html .= <<MODEL_HTML2;
          <a class="white-bg-link" href="$data_url/$legend" title='Legend and FAQ for [$pubName->{$pub}] and its models.'>[legend]</a>
          <a class="white-bg-link" href="$data_url/${sif}.sif" title='(s)imple (i)nteraction (f)ormat: a textual representation of this model.'>[sif]</a>
+	 <br>
 	 $similar_html
        </td>
 MODEL_HTML2

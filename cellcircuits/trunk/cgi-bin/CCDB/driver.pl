@@ -13,7 +13,7 @@ use warnings;
 # In Apache httpd.conf:
 # SetEnvIf Request_URI "search" PERL5LIB /var/www/cgi-bin/search/v1.1
 #
-
+use CCDB::QueryInput;
 use CCDB::Driver;
 use CCDB::Query;
 use CCDB::Model;
@@ -24,11 +24,11 @@ use CGI qw(:standard);
 print STDERR "### Calling process_command_line\n";
 my ($query, $test_case_file, $test_case_num, $DEBUG) = process_command_line();
 
-my $gq           = {};
-my $tnq          = {};
-my $taq          = {};
-my $modelIdQuery = {};
-my $modelLikeQuery = {};
+#my $gq           = {};
+#my $tnq          = {};
+#my $taq          = {};
+#my $modelIdQuery = {};
+#my $modelLikeQuery = {};
 my $publications = {};
 my $species      = {};
 my $sort_method  = 'optionA_by_number_of_query_terms_matching_model';
@@ -44,8 +44,8 @@ if($test_case_file) {
 
 print STDERR "### Calling Driver::process_query\n";
 
-my @retval = CCDB::Driver::process_query($query);
-if(scalar(@retval) == 0) {
+my $queryInput = CCDB::Driver::process_query($query);
+if(!defined($queryInput)) {
     $error_msg->{'uneven-number-of-double-quotes'}++;
     CCDB::HtmlRoutines::outputErrorPage($query, 
     					$publications,
@@ -55,10 +55,10 @@ if(scalar(@retval) == 0) {
     					$error_msg);
     exit;
 }
-($gq, $tnq, $taq, $modelIdQuery, $modelLikeQuery) = @retval;
+
 
 print STDERR "### Calling Driver::search\n";
-CCDB::Driver::search($query, $gq, $tnq, $taq, $modelIdQuery, $modelLikeQuery,
+CCDB::Driver::search($queryInput,
 		     $publications,
 		     $species,
 		     $sort_method,

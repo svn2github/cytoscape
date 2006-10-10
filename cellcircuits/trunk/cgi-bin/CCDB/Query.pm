@@ -14,6 +14,8 @@ use CCDB::Driver;
 use CCDB::DB;
 use CCDB::Enrichment;
 use CCDB::Sql;
+use CCDB::QueryInput;
+
 
 our $VERSION = '1.0';
 our @ISA     = qw( CCDB::DB Exporter);
@@ -85,35 +87,30 @@ sub populate_species_cache
 
 sub getMatchingModels
 {
-    my ($query,        #str
-	$gq,           #ref-to-hash
-	$tnq,          #ref-to-hash
-	$taq,          #ref-to-hash
-	$modelIdQuery,   #ref-to-hash
-	$modelLikeQuery, #ref-to-hash
+    my ($queryInput,        #object
 	$publications, #ref-to-hash
 	$species,      #ref-to-hash
 	$pval_thresh,   #num
 	$enrichment_limit #num
 	) = @_;
 
+    print STDERR "getMatchineModels:\n" . $queryInput->print() . "\n";;
+
     my $hash               = {};
     my $e_objects          = {};
     my $error_msg          = {};
-    my $expanded_query     = {}; # same as original query, except regex's are expanded
-    my $gene_ids           = {}; # gene_ids->{gene_product_id}++
-    my $gene_symbols       = {}; # gene_symbols->{gene_product_id} = symbol
+    #my $gene_symbols       = {}; # gene_symbols->{gene_product_id} = symbol
     my $gid_by_gene_symbol = {}; # gid_by_gene_symbol->{ $gene_query } = $Ref->{gid};
 
     #### TERM ACC QUERY ####
-    name_acc_query($taq, $get_from_term_accession_sth, $hash, $e_objects, $expanded_query,$pval_thresh, $species, $publications, $error_msg);
+    name_acc_query($queryInput, $queryInput->termAccession(), $get_from_term_accession_sth, $hash, $e_objects, $pval_thresh, $species, $publications, $error_msg);
 
     #### TERM NAME QUERY ####
-    name_acc_query($tnq, $get_from_fulltext_term_name_sth, $hash, $e_objects, $expanded_query, $pval_thresh, $species, $publications, $error_msg);
+    name_acc_query($queryInput, $queryInput->termName(), $get_from_fulltext_term_name_sth, $hash, $e_objects, $pval_thresh, $species, $publications, $error_msg);
 
     my $tmp_error = {};
     my $tmp_error_msg = {};
-    for my $gene_query (keys %{ $gq })
+    for my $gene_query (keys %{ $queryInput->gene() })
     {
 	my $match = 0;
 
@@ -123,13 +120,13 @@ sub getMatchingModels
 	    my $syn_sth = $get_gene_product_id_from_re_synonym_sth;
 
 	    $match += get_gene_ids($sym_sth, $gene_query,
-				   $species, $gene_ids, $gene_symbols, 
+				   $species, $queryInput, 
 				   $tmp_error, $tmp_error_msg, 
 				   'regex', 'symbol'
 				   );
 	    
 	    $match += get_gene_ids($syn_sth, $gene_query,
-				   $species, $gene_ids, $gene_symbols, 
+				   $species, $queryInput,
 				   $tmp_error, $tmp_error_msg, 
 				   'regex', 'synonym'
 				   );
@@ -141,13 +138,13 @@ sub getMatchingModels
 	    my $syn_sth = $get_gene_product_id_from_em_synonym_sth;
 
 	    $match += get_gene_ids($sym_sth, $gene_query,
-				   $species, $gene_ids, $gene_symbols,
+				   $species, $queryInput,
 				   $tmp_error, $tmp_error_msg, 
 				   'exactmatch', 'symbol'
 				   );
 	    
 	    $match += get_gene_ids($syn_sth, $gene_query,
-				   $species, $gene_ids, $gene_symbols,
+				   $species, $queryInput,
 				   $tmp_error, $tmp_error_msg, 
 				   'exactmatch', 'synonym'
 				   );
@@ -163,21 +160,19 @@ sub getMatchingModels
     }
 #    return ($hash, scalar(keys %{ $hash }), $expanded_query, $error_msg, $gid_by_gene_symbol );
 
-    model_id_query($modelIdQuery, 
+    model_id_query($queryInput, 
 		   $enrichment_limit,
 		   $e_objects,
 		   $hash, 
 		   $error_msg);
     
-    model_like_query($modelLikeQuery, 
+    model_like_query($queryInput, 
 		     $enrichment_limit,
 		     $e_objects,
 		     $hash, 
 		     $error_msg);
     
-    gene_query($gene_ids,
-	       $expanded_query,
-	       $gene_symbols,
+    gene_query($queryInput,
 	       $get_from_gene_product_id_sth,
 	       $pval_thresh,
 	       $publications,
@@ -192,19 +187,19 @@ sub getMatchingModels
 
     #$dbh->disconnect();
     
-    return ($hash, scalar(keys %{ $hash }), $expanded_query, $error_msg, $gid_by_gene_symbol );
+    return ($hash, scalar(keys %{ $hash }), $error_msg, $gid_by_gene_symbol );
 }
 
 sub model_like_query
 {
-  my ($queryHash, 
+  my ($queryInput, 
       $enrichment_limit,
       $e_objects,
       $hash, 
       $error_msg) = @_;
 
   my $sth = $get_model_like_sth;
-  foreach my $queryMid (keys %{ $queryHash })
+  foreach my $queryMid (keys %{ $queryInput->modelLike() })
   {
       print STDERR "$queryMid: models_like\n";
       #print STDERR "$get_model_like\n";
@@ -216,7 +211,8 @@ sub model_like_query
       #printf STDERR "$gid: %d rows\n", $sth->rows;
       #printf STDERR "$gid: SQL\n"; 
       #printf STDERR "   " . $dbh->{Statement} . "\n";
-      my %matched;
+
+      my $count = 0;
       my ($id_a, $id_b);
       while(my $Ref = $sth->fetchrow_hashref())
 	{
@@ -224,19 +220,20 @@ sub model_like_query
 	    $id_b = $Ref->{model_id_b};
 	    
 	    #printf STDERR ("MODELS_LIKE: %s %s %d\n", $id_a, $id_b, $Ref->{gene_score});
-	    $matched{$id_a} = $Ref->{gene_score} if($id_a != $queryMid);
-	    $matched{$id_b} = $Ref->{gene_score} if($id_b != $queryMid);
+	    $queryInput->modelId()->{$id_a} = $Ref->{gene_score} if($id_a != $queryMid);
+	    $queryInput->modelId()->{$id_b} = $Ref->{gene_score} if($id_b != $queryMid);
+	    $count++;
 	}
       
       #### ERROR HANDLING ####
-      if(scalar(keys %matched) == 0)
+      if($count == 0)
       {
 	  $error_msg->{"no-model-like-notice"}{$queryMid}++;
       }
       else
       {
-	  $matched{$queryMid}++;
-	  model_id_query(\%matched,
+	  $queryInput->modelId()->{$queryMid}++; ## Add the queryied model to the list of matches
+	  model_id_query($queryInput,
 			 $enrichment_limit,
 			 $e_objects,
 			 $hash,
@@ -249,14 +246,16 @@ sub model_like_query
 
 sub model_id_query
 {
-  my ($queryHash, 
+  my ($queryInput, 
       $enrichment_limit,
       $e_objects,
       $hash, 
       $error_msg) = @_;
 
+  print STDERR "model_id:\n" . $queryInput->print() . "\n";
+
   my $sth = $get_from_model_id_sth;
-  foreach my $mid (keys %{ $queryHash })
+  foreach my $mid (keys %{ $queryInput->modelId() })
   {
       print STDERR "$mid: model_id\n";
       print STDERR "$mid: limit=$enrichment_limit\n";
@@ -307,8 +306,7 @@ sub get_gene_ids
     my ($sth,
 	$gene_query,
 	$species, 
-	$gene_ids,
-	$gene_symbols,
+	$queryInput,
 	$tmp_error,
 	$tmp_error_msg,
 	$opt1, $opt2) = @_;
@@ -340,9 +338,9 @@ sub get_gene_ids
 	my $gid = $Ref->{gid};
 
 	$match++;
-	$gene_ids->{ $gid }++;
-	$gene_symbols->{ $gid } = $Ref->{symbol};
-
+	$queryInput->geneId2Symbol()->{$gid} = $Ref->{symbol};
+	$queryInput->geneSymbol2Id()->{$Ref->{symbol}} = $gid;
+	
 	if($opt2 eq 'synonym')
 	{
 	    unless( uc($Ref->{symbol}) eq uc($Ref->{synonym}) )
@@ -408,9 +406,7 @@ sub get_gene_ids
 
 sub gene_query
 {
-    my ($gene_ids,
-	$expanded_query,
-	$gene_symbols,
+    my ($queryInput,
 	$sth,
 	$pval_thresh,
 	$publications,
@@ -421,13 +417,17 @@ sub gene_query
 	$tmp_error_msg,
 	$error_msg
 	) = @_;
+
+    printf STDERR "gene_query:\n" . $queryInput->print() . "\n";
     
-    foreach my $gid (keys %{ $gene_ids })
+    foreach my $gid (keys %{ $queryInput->geneId2Symbol() })
     {
 	print STDERR "$gid: query by gene id\n";
 	print STDERR "$gid: pval=$pval_thresh\n";
 
-	$expanded_query->{$gene_symbols->{$gid}}++;
+	$queryInput->expandedQuery()->{$queryInput->geneId2Symbol()->{$gid}}++;
+
+	printf STDERR "gene_query2:\n" . $queryInput->print() . "\n";
 
 	$sth->bind_param(1,$pval_thresh); # TYPE = SQL_VARCHAR
 	$sth->bind_param(2,$gid); # TYPE=SQL_INTEGER
@@ -462,7 +462,7 @@ sub gene_query
 	    my $mid = $Ref->{mid};
 	    my $tid = $Ref->{tid};
 
-	    $gid_by_gene_symbol->{ $mid }{ $genus_species_str }{ $tid }{ $gene_symbols->{$gid} } = $gid;
+	    $gid_by_gene_symbol->{ $mid }{ $genus_species_str }{ $tid }{ $queryInput->geneId2Symbol()->{$gid} } = $gid;
 
 	    unless( exists $e_objects->{$mid}{"enrichment"}{$sid}{$tid} )
 	    {
@@ -491,7 +491,7 @@ sub gene_query
 	#### ERROR HANDLING ####
 	if($matched == 0)
 	{
-	    $error_msg->{"no-match-notice"}{$gene_symbols->{$gid}}++;
+	    $error_msg->{"no-match-notice"}{$queryInput->geneId2Symbol()->{$gid}}++;
 	}
 	else
 	{
@@ -522,20 +522,20 @@ sub gene_query
 
 sub name_acc_query
 {
-    my ($taq_or_tnq, 
+    my ($queryInput, 
+	$queryTermHash,
 	$sth, 
 	$hash, 
 	$e_objects, 
-	$expanded_query, 
 	$pval_thresh,
 	$species,
 	$publications,
 	$error_msg) = @_;
 
-    foreach my $q (keys %{ $taq_or_tnq })
+    foreach my $q (keys %{$queryTermHash})
     {
 
-	$expanded_query->{$q}++;
+	$queryInput->expandedQuery()->{$q}++;
 	$sth->bind_param(1,$pval_thresh);
 	$sth->bind_param(2,$q);
 	$sth->execute();
