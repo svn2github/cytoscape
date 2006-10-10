@@ -11,6 +11,8 @@ use CCDB::Synonyms;
 use CCDB::Error;
 use CGI qw(:standard unescape escape);
 
+use CCDB::Query qw(&get_species_string);
+
 use CCDB::Constants qw($cgi_version
 		       $search_url
 		       $cgi_url
@@ -567,15 +569,15 @@ sub score_model
 	my $mid                        = $eo->mid();                        
 	#my $mpub                       = $eo->mpub();                       
 	#my $mname                      = $eo->mname();                      
-	#my $sid                        = $eo->sid();                        
-	my $genus                      = $eo->genus();                      
-	my $species                    = $eo->species();                    
+	my $sid                        = $eo->sid();                        
+	#my $genus                      = $eo->genus();                      
+	#my $species                    = $eo->species();                    
 	my $tid                        = $eo->tid();                        
 	my $tacc                       = $eo->tacc();                       
 	my $tname                      = $eo->tname();                      
 	my $ttype                      = $eo->ttype();                      
 	
-	my $org = join(" ", $genus, $species);
+	my $org = get_species_string($sid);#join(" ", $genus, $species);
 	my $key = join " ", $org, $eo->ttype();
 	unless(exists $org_termtype->{$key}){ $termtype->{$ttype}++; }
 	$org_termtype->{$key}++;
@@ -826,7 +828,8 @@ sub format_eo
     my $tacc                       = $eo->tacc();                       
     my $tname                      = $eo->tname();                      
     my $n_genes_in_model_with_term = $eo->n_genes_in_model_with_term(); 
-    my $org = join(" ", $eo->genus(), $eo->species());
+
+    my $org = get_species_string($eo->sid()); #  join(" ", $eo->genus(), $eo->species());
 
     ## Genes in model and enrichment
     my $h = qq( <td align="center">\n);

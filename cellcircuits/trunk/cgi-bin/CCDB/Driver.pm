@@ -84,7 +84,7 @@ sub process_query
     }
 
     ## uncomment to debug parsing 
-    if(0) {
+    if(1) {
 	outputf( "gq: '%s'\n", join "\t", keys %{ $gq } );
 	outputf( "taq: '%s'\n", join "\t", keys %{ $taq } );
 	outputf( "tnq: '%s'\n", join "\t", keys %{ $tnq } );

@@ -16,7 +16,10 @@ use CCDB::Enrichment;
 use CCDB::Sql;
 
 our $VERSION = '1.0';
-our @ISA     = qw( CCDB::DB );
+our @ISA     = qw( CCDB::DB Exporter);
+
+our @EXPORT = qw();
+our @EXPORT_OK = qw(&get_species_string);
 
 my $dbh = CCDB::DB::getDB();
 
@@ -32,6 +35,48 @@ my $get_from_eid_sth                        = $dbh->prepare($get_from_eid);
 my $get_from_model_id_sth = $dbh->prepare($get_from_model_id);
 
 my $get_model_like_sth = $dbh->prepare($get_model_like);
+
+my $get_species_sth = $dbh->prepare($get_species);
+
+# SPECIES_CACHE is hash-ref mapping sid to the string 'genus species'
+my $SPECIES_CACHE = populate_species_cache(); 
+
+sub get_species_string
+{
+    my ($sid) = @_;
+
+    return "" if(!defined($sid));
+
+    if(exists($SPECIES_CACHE->{$sid}))
+    {
+	return $SPECIES_CACHE->{$sid};
+    }
+    
+    $get_species_sth->bind_param($sid);
+    $get_species_sth->execute();
+
+    if(my $Ref = $get_species_sth->fetchrow_hashref())
+    {
+	$SPECIES_CACHE->{$Ref->{id}} = join(" ", $Ref->{species}, $Ref->{genus});
+	return join(" ", $Ref->{genus}, $Ref->{species});
+    }
+
+    return "Invalid Species ID: $sid";
+}
+
+sub populate_species_cache
+{
+    my $species_cache_sth = $dbh->prepare($get_species_cache);
+    $species_cache_sth->execute();
+    my %cache;
+
+    while(my $Ref = $species_cache_sth->fetchrow_hashref())
+    {
+	$cache{$Ref->{id}} = join(" ", $Ref->{genus}, $Ref->{species});
+    }
+    
+    return \%cache;
+}
 
 sub getMatchingModels
 {
@@ -121,13 +166,12 @@ sub getMatchingModels
 		   $hash, 
 		   $error_msg);
     
-
     model_like_query($modelLikeQuery, 
 		     $enrichment_limit,
 		     $e_objects,
 		     $hash, 
 		     $error_msg);
-
+    
     gene_query($gene_ids,
 	       $expanded_query,
 	       $gene_symbols,
@@ -141,8 +185,7 @@ sub getMatchingModels
 	       $tmp_error_msg,
 	       $error_msg);
     
-    #CCDB::Driver::inspect_results($hash,'');
-    #exit;
+    CCDB::Driver::inspect_results($hash,'');
 
     #$dbh->disconnect();
     
@@ -160,7 +203,7 @@ sub model_like_query
   my $sth = $get_model_like_sth;
   foreach my $queryMid (keys %{ $queryHash })
   {
-      print STDERR "$queryMid: models like\n";
+      print STDERR "$queryMid: models_like\n";
       #print STDERR "$get_model_like\n";
 
       $sth->bind_param(1,$queryMid); # TYPE=SQL_INTEGER
@@ -212,7 +255,7 @@ sub model_id_query
   my $sth = $get_from_model_id_sth;
   foreach my $mid (keys %{ $queryHash })
   {
-      print STDERR "$mid: querying\n";
+      print STDERR "$mid: model_id\n";
       print STDERR "$mid: limit=$enrichment_limit\n";
       
       $sth->bind_param(1,$mid); # TYPE=SQL_INTEGER
@@ -279,9 +322,16 @@ sub get_gene_ids
 
     while(my $Ref = $sth->fetchrow_hashref())
     {
+	my $genus_species_str = get_species_string($Ref->{sid});
 
+	#printf STDERR ("### get_gene_ids: sid=%s gid=%s symbol=%s ss=%s\n", 
+	#	       $Ref->{sid},
+	#	       $Ref->{gid},
+	#	       $Ref->{symbol},
+	#	       $genus_species_str);
+	
 	### filter by species constraint
-	my $genus_species_str = join " ", $Ref->{genus}, $Ref->{species};
+
 	next unless(exists $species->{$genus_species_str});
 
 	my $gid = $Ref->{gid};
@@ -371,8 +421,8 @@ sub gene_query
     
     foreach my $gid (keys %{ $gene_ids })
     {
-	#print STDERR "$gid: querying\n";
-	#print STDERR "$gid: pval=$pval_thresh\n";
+	print STDERR "$gid: query by gene id\n";
+	print STDERR "$gid: pval=$pval_thresh\n";
 
 	$expanded_query->{$gene_symbols->{$gid}}++;
 
@@ -397,15 +447,16 @@ sub gene_query
 
 	    ### filter by contraints (pval, species, publications) ###
 	    next if($Ref->{e_pval} > $pval_thresh);
-	    my $genus_species_str = join " ", $Ref->{genus}, $Ref->{species};
+
+	    my $sid = $Ref->{sid};
+
+	    my $genus_species_str = get_species_string($sid);
 	    next unless(exists $species->{$genus_species_str});
 	    next unless(exists $publications->{$Ref->{mpub}});
 	    
-
 	    $matched++;
 
 	    my $mid = $Ref->{mid};
-	    my $sid = $Ref->{sid};
 	    my $tid = $Ref->{tid};
 
 	    $gid_by_gene_symbol->{ $mid }{ $genus_species_str }{ $tid }{ $gene_symbols->{$gid} } = $gid;
@@ -417,7 +468,7 @@ sub gene_query
 		### annotated to term ($tid) in species ($sid)
 		next if($Ref->{e_gids} !~ /$gid/);
 
-		$e_objects->{ $Ref->{mid} }{'enrichment'}{ $Ref->{sid} }{ $Ref->{tid} }++;
+		$e_objects->{ $mid }{'enrichment'}{ $sid }{ $tid }++;
 
 		push @{ $hash->{ $mid }{'enrichment'} }, CCDB::Enrichment::populate_enrichment($Ref);
 
@@ -425,12 +476,11 @@ sub gene_query
 
 	    ### if we didnt make an enrichment object for this gene, 
 	    ### we certainly wont make a model object for it
-	    next unless(exists $hash->{ $Ref->{mid} }{'enrichment'});
+	    next unless(exists $hash->{ $mid }{'enrichment'});
 
-	    unless(exists $hash->{ $Ref->{mid} }{'model'})
+	    unless(exists $hash->{ $mid }{'model'})
 	    {
-		
-		$hash->{ $Ref->{mid} }{'model'} = CCDB::Model::populate_model($Ref);
+		$hash->{ $mid }{'model'} = CCDB::Model::populate_model($Ref);
 
 	    }
 	}
@@ -494,19 +544,22 @@ sub name_acc_query
 
 	    ### filter by contraints (pval, species, publications) ###
 	    next if($Ref->{e_pval} > $pval_thresh);
-	    my $genus_species_str = join " ", $Ref->{genus}, $Ref->{species};
+
+	    my $sid = $Ref->{sid};
+
+	    my $genus_species_str = get_species_string($sid);
+
 	    next unless(exists $species->{$genus_species_str});
 	    next unless(exists $publications->{$Ref->{mpub}});
 
 	    $found->{$q}++;
 
 	    my $mid = $Ref->{mid};
-	    my $sid = $Ref->{sid};
 	    my $tid = $Ref->{tid};
 
 	    ### if we havent yet made this model ($mid) containing the matched term 
 	    ### name or accession, we make it
-	    unless( exists $hash->{ $Ref->{mid} }{'model'} )
+	    unless( exists $hash->{ $mid }{'model'} )
 	    {
 
 		$hash->{$mid}{'model'} = CCDB::Model::populate_model($Ref);
@@ -518,9 +571,9 @@ sub name_acc_query
 	    unless( exists $e_objects->{$mid}{'enrichment'}{$sid}{$tid} )
 	    {
 
-		$e_objects->{ $Ref->{mid} }{'enrichment'}{ $Ref->{sid} }{ $Ref->{tid} }++;
+		$e_objects->{ $mid }{'enrichment'}{ $sid }{ $tid }++;
 
-		push @{ $hash->{ $Ref->{mid} }{'enrichment'} }, CCDB::Enrichment::populate_enrichment($Ref);
+		push @{ $hash->{ $mid }{'enrichment'} }, CCDB::Enrichment::populate_enrichment($Ref);
 
 	    }
 
