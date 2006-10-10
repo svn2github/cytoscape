@@ -33,7 +33,7 @@ sub load_synonyms_hash_from_file
 	next if($.==1); #skip header
 	chomp;
 	my @l = split(/\t/);
-	die "ERROR: line $. of $file has < 5 items.\n" if(scalar(@l) < 5);
+	die "ERROR: line $. of $file has < 3 items.\n" if(scalar(@l) < 3);
 
 	my ($species_id, $gene_id, $gene_symbol, @synonyms) = @l;
 

@@ -42,7 +42,7 @@ sub formatErrorMessages
 	if(exists $error_msg->{'no-match-notice'})
 	{
 	    $msg .= no_match($error_msg->{'no-match-notice'});
-	    $msg .= print_params( $pval_thresh, $publications);
+	    #$msg .= print_params( $pval_thresh, $publications);
 	}
     }
 

@@ -24,9 +24,15 @@ sub new
     $self->thm_img(undef);
     $self->lrg_img(undef);
     $self->legend(undef);
-    $self->wordsMatched({});
-    $self->eid2genes({});
-    $self->term2org({});
+    $self->wordsMatched({}); # hash of (regex expanded) query words matched.
+    $self->eid2genes({});    # hash of enrichment ids in this model mapped 
+                             # to the genes in the query that are in that enrichment.
+                             
+    $self->term2org({});     # GO term ids mapped to a hash of species that the id
+                             # was found in.
+    $self->score(0);         # The model score.
+    $self->isQueryModel(0);  # Set to 1 if this model is the 
+                             # query in a MODELS_LIKE or MODEL_ID query.
 
     return $self;
 }
@@ -43,6 +49,8 @@ my @fields = qw(
 		wordsMatched
 		eid2genes
 		term2org
+		score
+		isQueryModel
 		);
 
 # p 338 of "Programming Perl" - Generating Accessors with Closures
@@ -160,14 +168,8 @@ sub score_model
 	    }
 	}
     }
-
-}
-
-sub score
-{
-    my ($self) = @_;
-
-    return scalar(keys %{$self->wordsMatched()});
+    
+    $self->score($self->score() + scalar(keys %{$words_matched}));
 }
 
 1;

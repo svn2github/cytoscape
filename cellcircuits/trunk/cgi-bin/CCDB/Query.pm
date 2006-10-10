@@ -7,21 +7,23 @@ package CCDB::Query;
 
 use strict;
 use warnings;
-#use DBI;
-use DBI qw(:sql_types);
+
+#use DBI qw(:sql_types);
 
 use CCDB::Driver;
 use CCDB::DB;
 use CCDB::Enrichment;
 use CCDB::Sql;
 use CCDB::QueryInput;
-
+use CCDB::Constants qw($DEBUG);
 
 our $VERSION = '1.0';
 our @ISA     = qw( CCDB::DB Exporter);
 
 our @EXPORT = qw();
 our @EXPORT_OK = qw(&get_species_string);
+
+my $MODELS_LIKE_MAGIC_SCORE = 999999;
 
 my $dbh = CCDB::DB::getDB();
 
@@ -53,8 +55,8 @@ sub get_species_string
     {
 	return $SPECIES_CACHE->{$sid};
     }
-
-    printf STDERR "Cache miss for species: $sid\n";
+    
+    printf STDERR "Cache miss for species: $sid\n" if($DEBUG);
     
     $get_species_sth->bind_param(1, $sid);
     $get_species_sth->execute();
@@ -94,7 +96,7 @@ sub getMatchingModels
 	$enrichment_limit #num
 	) = @_;
 
-    print STDERR "getMatchineModels:\n" . $queryInput->print() . "\n";;
+    print STDERR "getMatchineModels:\n" . $queryInput->print() . "\n" if($DEBUG);
 
     my $hash               = {};
     my $e_objects          = {};
@@ -183,13 +185,18 @@ sub getMatchingModels
 	       $tmp_error_msg,
 	       $error_msg);
     
-    CCDB::Driver::inspect_results($hash,'');
+    CCDB::Driver::inspect_results($hash,'') if($DEBUG);
 
     #$dbh->disconnect();
     
     return ($hash, scalar(keys %{ $hash }), $error_msg, $gid_by_gene_symbol );
 }
 
+##
+## NOTE: this will probably work to query for more than one $queryMid
+## but scores may clobber if the input queryMid's are similar to the
+## the same model.
+##
 sub model_like_query
 {
   my ($queryInput, 
@@ -201,8 +208,8 @@ sub model_like_query
   my $sth = $get_model_like_sth;
   foreach my $queryMid (keys %{ $queryInput->modelLike() })
   {
-      print STDERR "$queryMid: models_like\n";
-      #print STDERR "$get_model_like\n";
+      print STDERR "$queryMid: models_like\n" if($DEBUG);
+      print STDERR "$get_model_like\n" if($DEBUG);
 
       $sth->bind_param(1,$queryMid); # TYPE=SQL_INTEGER
       $sth->bind_param(2,$queryMid); # TYPE=SQL_INTEGER
@@ -232,7 +239,10 @@ sub model_like_query
       }
       else
       {
-	  $queryInput->modelId()->{$queryMid}++; ## Add the queryied model to the list of matches
+	  ## Add the queried model to the list of matches
+	  $queryInput->modelId()->{$queryMid} = $MODELS_LIKE_MAGIC_SCORE;
+
+	  ## Now, get all of the model objects
 	  model_id_query($queryInput,
 			 $enrichment_limit,
 			 $e_objects,
@@ -252,13 +262,13 @@ sub model_id_query
       $hash, 
       $error_msg) = @_;
 
-  print STDERR "model_id:\n" . $queryInput->print() . "\n";
+  #print STDERR "model_id:\n" . $queryInput->print() . "\n";
 
   my $sth = $get_from_model_id_sth;
   foreach my $mid (keys %{ $queryInput->modelId() })
   {
-      print STDERR "$mid: model_id\n";
-      print STDERR "$mid: limit=$enrichment_limit\n";
+      print STDERR "$mid: model_id\n" if($DEBUG);
+      print STDERR "$mid: limit=$enrichment_limit\n" if($DEBUG);
       
       $sth->bind_param(1,$mid); # TYPE=SQL_INTEGER
       $sth->bind_param(2,$enrichment_limit); # TYPE = SQL_INTEGER
@@ -284,7 +294,20 @@ sub model_id_query
 	  }
 	  unless(exists $hash->{ $mid }{'model'})
 	  {
-	      $hash->{ $mid }{'model'} = CCDB::Model::populate_model($Ref);
+	      my $model = CCDB::Model::populate_model($Ref);
+	      
+	      my $score = $queryInput->modelId()->{$mid};
+	      if(defined($score))
+	      {
+		  $model->score($score);
+	      }
+	      
+	      if(!defined($score) || ($score == $MODELS_LIKE_MAGIC_SCORE))
+	      {
+		  $model->isQueryModel(1);
+	      }
+
+	      $hash->{ $mid }{'model'} = $model;
 	  }
 	}
       
@@ -418,16 +441,14 @@ sub gene_query
 	$error_msg
 	) = @_;
 
-    printf STDERR "gene_query:\n" . $queryInput->print() . "\n";
+    printf STDERR "gene_query:\n" . $queryInput->print() . "\n"  if($DEBUG);
     
     foreach my $gid (keys %{ $queryInput->geneId2Symbol() })
     {
-	print STDERR "$gid: query by gene id\n";
-	print STDERR "$gid: pval=$pval_thresh\n";
+	print STDERR "$gid: query by gene id\n"  if($DEBUG);
+	print STDERR "$gid: pval=$pval_thresh\n"  if($DEBUG);
 
 	$queryInput->expandedQuery()->{$queryInput->geneId2Symbol()->{$gid}}++;
-
-	printf STDERR "gene_query2:\n" . $queryInput->print() . "\n";
 
 	$sth->bind_param(1,$pval_thresh); # TYPE = SQL_VARCHAR
 	$sth->bind_param(2,$gid); # TYPE=SQL_INTEGER

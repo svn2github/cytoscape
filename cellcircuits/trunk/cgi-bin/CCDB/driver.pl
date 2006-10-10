@@ -24,11 +24,6 @@ use CGI qw(:standard);
 print STDERR "### Calling process_command_line\n";
 my ($query, $test_case_file, $test_case_num, $DEBUG) = process_command_line();
 
-#my $gq           = {};
-#my $tnq          = {};
-#my $taq          = {};
-#my $modelIdQuery = {};
-#my $modelLikeQuery = {};
 my $publications = {};
 my $species      = {};
 my $sort_method  = 'optionA_by_number_of_query_terms_matching_model';

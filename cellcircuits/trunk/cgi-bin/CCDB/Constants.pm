@@ -17,19 +17,23 @@ our @EXPORT_OK = qw($cgi_version
 		    $db_link_by_species 
 		    $colors
 		    $SYNONYM_FILE
+		    $DEBUG
+		    $DEFAULT_ENRICHMENT_LIMIT
 		    );
 our $VERSION = 1.0;
+
+our $DEBUG = 0;
+
+## limit the number of enrichment retrieved 
+## (for model_id based queries only)
+our $DEFAULT_ENRICHMENT_LIMIT = 3;  
 
 our $cgi_version  = "v1.0";
 our $cgi_url      = "/cgi-bin/search/$cgi_version";
 
 our $search_url   = "";
-#my $html_version = "v1.0";
-#my $search_url   = "/";
-#my $search_url   = "/search/$html_version";
 
 our $data_url     = "/data";
-#my $data_url     = "/search/data";
 
 our $chianti_url = 'http://chianti.ucsd.edu';
 

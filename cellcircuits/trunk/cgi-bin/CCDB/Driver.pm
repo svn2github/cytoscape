@@ -6,6 +6,7 @@ use strict;
 use warnings;
 
 use CCDB::QueryInput;
+use CCDB::Constants qw($DEBUG $DEFAULT_ENRICHMENT_LIMIT);
 
 my $publications_hash = {
     'Begley2002_MCR'             => 1,
@@ -29,22 +30,15 @@ my $species_hash = {
     'Saccharomyces cerevisiae' => 1,
 };
 
-my $DEFAULT_ENRICHMENT_LIMIT = 3;
+
 
 sub process_query
 {
     my ($query) = @_;
 
-    print STDERR "Creating QueryInput\n";
     my $qi = CCDB::QueryInput->new();
 
     $qi->queryString($query);
-
-#    my ($gq)  = {}; # gene queries
-#    my ($tnq) = {}; # term name queries
-#    my ($taq) = {}; # term accession queries
-#    my $modelIdQuery = {}; # queries by model id
-#    my $modelLikeQuery = {}; # queries for models similari to an input model id#
 
     $query  =~ s/^\s+//; #strip out leading white space
     $query  =~ s/\s+$//; #strip out trailing white space
@@ -85,13 +79,13 @@ sub process_query
     foreach my $q (@ql)
     {
 	if($q =~ /^GO:\d{7}/) { $qi->termAccession()->{$q}++; }
-	elsif($q =~ /^MODEL_ID:(\d+)/)  { $qi->modelId()->{$1}++; }
+	elsif($q =~ /^MODEL_ID:(\d+)/)  { $qi->modelId()->{$1} = undef; }
 	elsif($q =~ /^MODELS_LIKE:(\d+)/)  { $qi->modelLike()->{$1}++; }
 	else                    { $qi->gene()->{$q}++;  }
     }
 
     ## uncomment to debug parsing 
-    if(1) {
+    if($DEBUG) {
 	print STDERR $qi->print();
     }
     #exit;
@@ -122,13 +116,6 @@ sub search
 	$species = $species_hash;
     }
     
-    #print "#" x 50, "\n";
-    #print "query = $query\n";
-    #printf "gq : %s\n", join "\t", keys %{ $gq };
-    #printf "taq: %s\n", join "\t", keys %{ $taq };
-    #printf "tnq: %s\n\n", join "\t", keys %{ $tnq };
-    #exit;
-
      #printf STDERR "Before fetching models: %s\n", localtime(time);
     ($hash, 
      $n_matched_models,
@@ -140,8 +127,10 @@ sub search
 					$pval_thresh,   #num
 					$DEFAULT_ENRICHMENT_LIMIT
 					);
-     #printf STDERR "After fetching models: %s\n", localtime(time);
-    inspect_results($hash, 0);
+    #printf STDERR "After fetching models: %s\n", localtime(time);
+
+    inspect_results($hash, 0) if($DEBUG);
+    
     #exit;
     
     if($n_matched_models <= 0) {

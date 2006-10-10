@@ -7,7 +7,6 @@ use warnings;
 
 use CCDB::Model;
 use CCDB::Enrichment;
-#use CCDB::Synonyms;
 use CCDB::Error;
 use CGI qw(:standard unescape escape);
 
@@ -158,12 +157,12 @@ sub start_body{
 	<a href='$search_url/index.html'><img src='$search_url/CC-logo-small.jpg' border='0' alt="Cell Circuits" title="Click to go to the Cell Circuits Home Page"/></a>
       </td>
       <td align="center" valign="bottom">
-        <input type="text" size="55" name="search_query" value=$unescaped_query title='For information on valid queries, click "About CellCircuits" link to the right'/>
+        <input type="text" size="55" name="search_query" value=$unescaped_query title='For information on valid queries, click "About CellCircuits" or "Help" to the right'/>
       </td>
       <td align='left' valign='center' rowspan=2>
          &nbsp;<a class='white-bg-link' href='$search_url/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
 	 &nbsp;<a class='white-bg-link' href='$search_url/advanced_search.html'>Advanced&nbsp;Search</a><br />
-	 &nbsp;<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>
+	 &nbsp;<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>&nbsp;|&nbsp;<a class='white-bg-link' href='$search_url/Tutorial-home.html'>Help</a>
       </td>
     </tr>
     <tr>
@@ -373,10 +372,6 @@ sub get_pval_thresh_hidden_fields_html
     return $pval_thresh_html;
 }
 
-## outputResultsTable()
-#    -> sort_model_and_get_html()
-#    -> printFunctionViewResultsTableHeader()
-#    -> sortModelsBy()
 #
 sub print_body
 {
@@ -417,9 +412,9 @@ sub print_body
     }
 
     my $sorted_mids = ();
-    @{ $sorted_mids } = sort { $hash->{$a}{'model'}->score() <=> $hash->{$a}{'model'}->score() 
+    @{ $sorted_mids } = sort { $hash->{$b}{'model'}->score() <=> $hash->{$a}{'model'}->score() 
 			       || min_pval( $hash->{$a}{"enrichment"} ) <=> min_pval( $hash->{$b}{"enrichment"} )
-				   || $hash->{$a}{"model"}->pub() cmp $hash->{$b}{"model"}->pub()	
+			       || $hash->{$a}{"model"}->pub() cmp $hash->{$b}{"model"}->pub()	
 			       } keys %{ $hash };
     
     my $n_matched_models = scalar(@{ $sorted_mids });
@@ -449,23 +444,28 @@ sub print_body
 
     $body .= formatPageNavigation_tr($N_PAGE_JUMP++, $page, $total_pages, $lower_lim, $upper_lim, $n_matched_models);
     $body.=<<TBL_HDR;
+<!--   <tr style="background-color:#678593;"> -->
+   <tr class="extra-header">
+   <td align='center' colspan=2>
+<a class="color-bg-link" href="http://www.geneontology.org/" title="Gene Ontology">GO</a> enrichment 
+<a class="color-bg-pval-link" href="$search_url/advanced_search.html" title="Click to change the p-value threshold on the Advanced Search page"> P-value < $pval_thresh</a>
+   </td>
+   <td align='right' colspan=2>Show/Hide:&nbsp;
+   <a class="group-toggle-link" href="#" title='Show/Hide all Biological Process results on this page' onClick="CategoryVisibility_GroupToggle('bp','',$bp_count); return false;">&nbsp;Biological Process&nbsp;</a>&nbsp;&nbsp; 
+   <a class="group-toggle-link" href="#" title='Show/Hide all Cellular Component results on this page' onClick="CategoryVisibility_GroupToggle('cc','',$cc_count); return false;">&nbsp;Cellular Component&nbsp;</a>&nbsp;&nbsp;
+   <a class="group-toggle-link" href="#" title='Show/Hide all Molecular Function results on this page' onClick="CategoryVisibility_GroupToggle('mf','',$mf_count); return false;">&nbsp;Molecular Function&nbsp;</a>
+   </td>
+   </tr>
+
    <tr class="group-toggle-link">
       <th class="result-header" title="# Distinct Matches" width=5%>Score</th>
       <th class="result-header">Model</th>
       <th class="result-header">Matches</th>
       <th class="result-header" colspan="1" valign='bottom'>
-         Model annotation [<a class="color-bg-link" href="http://www.geneontology.org/" title="GO Home Page">read more</a>]&nbsp;&nbsp;
-         (<a class="color-bg-link" href="http://www.geneontology.org/" title="Gene Ontology">GO</a> enrichment 
-         <a class="color-bg-pval-link" href="$search_url/advanced_search.html" title="Click to change the p-value threshold on the Advanced Search page"> P-value < $pval_thresh)</a>
+         Model annotation [<a class="color-bg-link" href="/Tutorial-results.html/" title="GO Home Page">read more</a>]&nbsp;&nbsp;
+         
 	 <br />
-	 <table border=0 align='center' valign='bottom' cellpaddin=0 cellspacing=0>
-	    <tr>
-	       <td>Show/Hide: </td>
-	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Show/Hide all Biological Process results on this page' onClick="CategoryVisibility_GroupToggle('bp','',$bp_count); return false;">BP</a>, </td>
-	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Show/Hide all Cellular Component results on this page' onClick="CategoryVisibility_GroupToggle('cc','',$cc_count); return false;">CC</a>, </td>
-	       <td align='center' nowrap><a class="group-toggle-link" href="#" title='Show/Hide all Molecular Function results on this page' onClick="CategoryVisibility_GroupToggle('mf','',$mf_count); return false;">MF</a></td>
-	    </tr>
-	 </table>
+	 
       </th>
    </tr>
 TBL_HDR
@@ -509,7 +509,7 @@ sub print_model
     my @enrichment_objects = @{ $hash->{$mid}{'enrichment'} };
 
     my $html = "<tr>";
-    $html .= format_model_thm_td($mid, $mo->score(), $pub, $sif, $lrg_img, $thm_img, $legend);
+    $html .= format_model_thm_td($mo, $pub, $sif, $lrg_img, $thm_img, $legend);
     $html .= format_query_matched_td($mo->wordsMatched());
     $html .= format_all_eo_td($expanded_query, $mo, \@enrichment_objects, $counts, $pval_thresh);
     $html .= "   </tr>\n";
@@ -569,7 +569,7 @@ sub format_all_eo_td
 	       href=>"$cgi_url/search.pl?search_query=MODELS_LIKE:" . $model->id()
 	       }, 
 	      "View similar models");
-    $h .= "<br";
+    $h .= "<br><hr>";
 
     foreach my $sp (sort keys %{$eo_hash})
     {
@@ -621,7 +621,7 @@ sub format_eo_for_species
     my ($expanded_query, $model, $species, $eo_by_ttype, $counts, $pval_thresh) = @_;
 
     my $html = "";
-    $html .= qq(<table cellspacing=0 width=500><tr><td>\n);
+    $html .= qq(<table cellspacing=0 width=400><tr><td>\n);
     $html .= qq(<div class="menu">\n);
     $html .= qq(<div class="menu_options"><em>$species</em></div>\n);
     
@@ -940,31 +940,40 @@ sub format_query_matched_td
     {
 	if(!exists($unique_words{$w}))
 	{
-	    $h .= highlight($w);
+	    $h .= $w . "<br/>";
 	    $unique_words{uc($w)}++;
 	}
 
-	if((++$i % 3)==0){ $h .= "<br>"; }
-	else { $h .= " "; }
+	#if((++$i % 3)==0){ $h .= "<br>"; }
+	#else { $h .= " "; }
     }
 
     return tag("td", 
-	       { class=>"search-result", align=>"center", valign=>"top", bgcolor=>"$colors->{page_background}" },
-	       $h);
+	       { class=>"search-result", align=>"center", 
+		 valign=>"top", bgcolor=>"$colors->{page_background}" },
+	       tag("p",
+		   {class=>"highlighted"}, $h)
+	       );
 }
 
 
 sub format_model_thm_td
 {
-    my($mid, $score,$pub,$sif,$lrg_img,$thm_img,$legend) = @_;
+    my($model, $pub,$sif,$lrg_img,$thm_img,$legend) = @_;
 
     my $similar_html .= tag("a", 
 			    {class=>"white-bg-link",
 			     title=>"See models that contain genes from this model (currently Yeast only)",
-			     href=>"$cgi_url/search.pl?search_query=MODELS_LIKE:" . $mid
+			     href=>"$cgi_url/search.pl?search_query=MODELS_LIKE:" . $model->id()
 			     }, 
 			    "[similar models]");
     
+    my $score = "Query";
+    if(!$model->isQueryModel())
+    {
+	$score = $model->score();
+    }
+
     my $model_thm_html = <<MODEL_HTML;
       <td class='search-result' align='center' valign='top' >$score</td>
       <td class='search-result' align='center' valign='top' bgcolor='white'>
@@ -984,7 +993,6 @@ MODEL_HTML
          <a class="white-bg-link" href="$data_url/$legend" title='Legend and FAQ for [$pubName->{$pub}] and its models.'>[legend]</a>
          <a class="white-bg-link" href="$data_url/${sif}.sif" title='(s)imple (i)nteraction (f)ormat: a textual representation of this model.'>[sif]</a>
 	 <br>
-	 $similar_html
        </td>
 MODEL_HTML2
 
@@ -1004,30 +1012,13 @@ MODEL_HTML2
     return $model_thm_html;
 }
 
-## called by outputResultsTable()
-sub sortModelsBy
-{
-    my ($hash, # hash->{modelid}{"model"}      = Model object 
-	       # hash->{modelid}{"enrichment"} = array of Enrichment objects
-	$sort_method) = @_;
-
-    my $ordered_modelids = ();
-#    @{ $ordered_modelids } = 
-#	sort {
-#	    scalar(keys %{ $hash->{$b}{"gene"} })
-#		<=>
-#		scalar(keys %{ $hash->{$a}{"gene"} }) 
-#	    } keys %{ $hash };
-
-    return $ordered_modelids;
-}
-
 sub print_trailer
 {
     print "<br /><br /><center>";
     print "<a class='white-bg-link' href='$search_url/index.html' title='Click to go to the CellCircuits Home Page'>CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     print "<a class='white-bg-link' href='$search_url/advanced_search.html'>Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     print "<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
+    print "<a class='white-bg-link' href='$search_url/Tutorial-home.html'>Help</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     print "<a class='white-bg-link' href='http://chianti.ucsd.edu/idekerlab/index.html'>Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     print "<a class='white-bg-link' href='http://ucsd.edu'>UCSD</a><br />";
     print "<p style='font-size: 0.8em; font-style:italic'>Funding provided by the National Science Foundation (NSF 0425926).</p>";
