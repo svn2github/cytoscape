@@ -13,7 +13,7 @@ use warnings;
 use lib '/var/www/cgi-bin/search/v1.0';
 
 
-use CCDB::Query;
+use CCDB::Query qw(&get_species_string);
 use CCDB::Enrichment;
 use CCDB::Synonyms;
 use CCDB::HtmlRoutines qw(highlight gen_go_url);
@@ -91,14 +91,12 @@ if(param("eid"))
     my $mpub                       = $eo->mpub();                       
     my $mname                      = $eo->mname();                      
     my $sid                        = $eo->sid();                       
-    my $genus                      = $eo->genus();                     
-    my $species                    = $eo->species();                   
     my $tid                        = $eo->tid();                        
     my $tacc                       = $eo->tacc();                       
     my $tname                      = $eo->tname();                      
     my $ttype                      = $eo->ttype();                      
 
-    my $org = join " ", $genus, $species;
+    my $org = get_species_string($sid);
 
     my %hilite_hash;
     map { $hilite_hash{$_}++ } @hilite_array;
@@ -168,6 +166,7 @@ if(param("eid"))
     $gene_html .= "</tr></table>";
 
     my $go_url = gen_go_url($tacc);
+    $pval = sprintf("%.2e", $pval);
     
     my $html = gen_header("Genes in Model (Annotated with $tname)");
 
@@ -183,7 +182,7 @@ if(param("eid"))
       
          <tr><td class="bold">Publication:</td><td>$pubName->{$mpub}<br><a class='white-bg-link' href="$pubCitation->{$mpub}">[PubMed]</a></td></tr>
 	 <tr><td class="bold">Model Name:</td><td>$mname</td></tr>
-	 <tr><td class="bold">Organism:</td><td><i>$genus&nbsp;$species</i></td></tr>
+	 <tr><td class="bold">Organism:</td><td><i>$org</i></td></tr>
 	 <tr><td class="bold">Enriched GO Annotation:</td><td>$tname<br>
 	 <a class="white-bg-link" href="$go_url">($tacc)</a><br>$ttype</td>
 	 </tr>

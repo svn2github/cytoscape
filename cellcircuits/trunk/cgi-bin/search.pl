@@ -12,6 +12,7 @@ use warnings;
 
 use lib '/var/www/cgi-bin/search/v1.0';
 
+use CCDB::QueryInput;
 use CCDB::Driver;
 use CCDB::Query;
 use CCDB::Model;
@@ -19,12 +20,6 @@ use CCDB::HtmlRoutines;
 use CGI::Carp qw(fatalsToBrowser); 
 use CGI qw(:standard);
 
-my $query        = '';
-my $gq           = {};
-my $tnq          = {};
-my $taq          = {};
-my $modelIdQuery          = {};
-my $modelLikeQuery          = {};
 my $publications = {};
 my $species      = {};
 my $sort_method  = '';
@@ -59,8 +54,8 @@ if(param("search_query"))
 	$publications->{$pub}++; #print "publications->{$pub}<br>";
     }
 
-    my @retval = CCDB::Driver::process_query($query);
-    if(scalar(@retval) == 0) {
+    my $queryInput = CCDB::Driver::process_query($query);
+    if(!defined($queryInput)) {
 	$error_msg->{'uneven-number-of-double-quotes'}++;
 	CCDB::HtmlRoutines::outputErrorPage($query, 
 					    $publications,
@@ -70,7 +65,6 @@ if(param("search_query"))
 					    $error_msg);
 	exit;
     }
-    ($gq, $tnq, $taq, $modelIdQuery, $modelLikeQuery) = @retval;
 
     if(param("search_query_button"))
     {
@@ -88,7 +82,7 @@ if(param("search_query"))
     if($pval_thresh > 1)     { $pval_thresh = 1; }
     elsif($pval_thresh <= 0) { $pval_thresh = 1; }
 
-    CCDB::Driver::search($query, $gq, $tnq, $taq, $modelIdQuery, $modelLikeQuery,
+    CCDB::Driver::search($queryInput,
 			 $publications,
 			 $species,
 			 $sort_method,
@@ -98,7 +92,7 @@ if(param("search_query"))
 }
 else {
     $error_msg->{'no-query-notice'}++;
-    CCDB::HtmlRoutines::outputErrorPage($query, 
+    CCDB::HtmlRoutines::outputErrorPage("", 
 					$publications,
 					$species,
 					$sort_method,
