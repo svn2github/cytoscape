@@ -162,7 +162,7 @@ sub start_body{
       <td align='left' valign='center' rowspan=2>
          &nbsp;<a class='white-bg-link' href='$search_url/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
 	 &nbsp;<a class='white-bg-link' href='$search_url/advanced_search.html'>Advanced&nbsp;Search</a><br />
-	 &nbsp;<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>&nbsp;|&nbsp;<a class='white-bg-link' href='$search_url/Tutorial-home.html'>Help</a>
+	 &nbsp;<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>&nbsp;|&nbsp;<a class='white-bg-link' href='$search_url/Tutorial-results.html'>Help</a>
       </td>
     </tr>
     <tr>
@@ -462,7 +462,7 @@ sub print_body
       <th class="result-header">Model</th>
       <th class="result-header">Matches</th>
       <th class="result-header" colspan="1" valign='bottom'>
-         Model annotation [<a class="color-bg-link" href="/Tutorial-results.html/" title="GO Home Page">read more</a>]&nbsp;&nbsp;
+         Model annotation [<a class="color-bg-link" href="/Tutorial-results.html" title="GO Home Page">read more</a>]&nbsp;&nbsp;
          
 	 <br />
 	 

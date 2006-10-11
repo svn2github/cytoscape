@@ -2,7 +2,7 @@
 
 <project name="CellCircuits" default="deploy">
 
- 	<property name="deploy.version" value="v1.1"/>
+ 	<property name="deploy.version" value="v1.0"/>
  	<property name="dev.version" value="v1.0"/>
  	<property name="deploy.docroot" value="/var/www/html"/>
  	<property name="deploy.html" value="${deploy.docroot}/search/${deploy.version}"/>
