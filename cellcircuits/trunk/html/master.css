@@ -65,6 +65,12 @@ td.bold {
 tr.group-toggle-link{
 	background-color: #8DA4AE;/*medium blue*/
 }
+
+font.group-toggle {
+	background-color: #8DA4AE;/*medium blue*/
+	color: blue;
+}
+
 tr.extra-header{
 	background-color: #ddd;
 }
@@ -84,6 +90,10 @@ a.result-header:hover{ background-color:white; }
 /****************************************************/
 /**                    LINKS                       **/
 /****************************************************/
+img.button {
+  	border: none;
+}
+
 a.white-bg-link {
 	color: blue;
 	font-size: 0.8em;

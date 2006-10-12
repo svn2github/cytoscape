@@ -40,19 +40,25 @@
 <area shape="circle" coords="217,101,13" href="#row6_explanation">
 </map>
 
-<table id="ref_table" border=0 cellpadding=5 width=500>
+<table id="ref_table" border=0 cellpadding=5 width="90%">
 
 <tr id="row1_reference">
-  <td align="right"><img src="1_blue.gif"></img></td><td><a class="white-bg-link" href="#row1_explanation">Search</a></td>
-  <td align="right"><img src="4_blue.gif"></img></td><td><a class="white-bg-link" href="#row4_explanation">P-value threshold</a></td>
+  <td align="right"><a href="#row1_explanation"><img class="button" src="1_blue.gif"></img></a></td>
+  <td><a class="white-bg-link" href="#row1_explanation">Search</a></td>
+  <td align="right"><a href="#row4_explanation"><img class="button" src="4_blue.gif"></img></a></td>
+  <td><a class="white-bg-link" href="#row4_explanation">P-value threshold</a></td>
 </tr>
 <tr id="row2_reference">
-  <td align="right"><img src="2_blue.gif"></img></td><td><a class="white-bg-link" href="#row2_explanation">Load an Example</a></td>
-  <td align="right"><img src="5_blue.gif"></img></td><td><a class="white-bg-link" href="#row5_explanation">Publications</a></td>
+  <td align="right"><a href="#row2_explanation"><img class="button" src="2_blue.gif"></img></a></td>
+  <td><a class="white-bg-link" href="#row2_explanation">Load an example</a></td>
+  <td align="right"><a href="#row5_explanation"><img class="button" src="5_blue.gif"></img></a></td>
+  <td><a class="white-bg-link" href="#row5_explanation">Limit search by publications</a></td>
 </tr>
 <tr id="row3_reference">
-  <td align="right"><img src="3_blue.gif"></img></td><td><a class="white-bg-link" href="#row3_explanation">Sorting</a></td>
-  <td align="right"><img src="6_blue.gif"></img></td><td><a class="white-bg-link" href="#row6_explanation">Species Selection</a></td>
+  <td align="right"><a href="#row3_explanation"><img class="button" src="3_blue.gif"></img></a></td>
+  <td><a class="white-bg-link" href="#row3_explanation">Sorting</a></td>
+  <td align="right"><a href="#row6_explanation"><img class="button" src="6_blue.gif"></img></a></td>
+  <td><a class="white-bg-link" href="#row6_explanation">Limit search by species</a></td>
 </tr>
 
 </table>
@@ -74,16 +80,16 @@
 
    Valid queries are space-delimited, and include :
    <ul>
-     <li>Gene names (e.g. gcn4, rad52, gal4, yap6)
-     <li>Regular expressions of gene names (e.g. gcn*, rad*, gal*, yap*)
+     <li>Exact gene names (e.g. gcn4, rad52, gal4, yap6)
+     <li>Fuzzy gene names including the '*' character (e.g. gcn*, rad*, gal*, yap*)
      <li>GO term accessions (e.g. GO:0006366, GO:0004402)
-     <li>Double quote-enclosed full or partial GO term names (e.g. "DNA binding", "cell cycle", "acetylation", "cytoplasm")
+     <li>Full or partial GO term names enclosed in double-quotes (e.g. "DNA binding", "cell cycle", "acetylation", "cytoplasm")
    </ul>
 
    Any combination of the above is valid, however longer and more complex queries will 
-   take significantly longer than simple ones.<br/><br/>
+   take longer than simple ones.<br/><br/>
 
-   Regular expressions may match many different gene names across multiple organisms, which is not always desirable.  Moreover, regular expressions will significantly slow the search time, so use them wisely (as in the cases given above like yap* and gcn*, where families of genes have been grouped by name).<br/><br/>
+   Searches using the '*' character may match many different gene names across multiple organisms.  Moreover, these searches take longer, so use them wisely (as in the examples above like yap* and gcn*, where families of genes have been grouped by name).<br/><br/>
 
    To find GO term accessions, term names, or simply to learn more about the GO project, please visit the <a class="white-bg-link" href="http://www.geneontology.org">GO homepage</a>.<br/><br/>
 
@@ -102,7 +108,7 @@
       <span style="font-size:24;"><strong><em>Load an Example</em></strong></span>
     </td>
     <td>
-      At a loss for how to start or what to do?  Click this button and a 
+      At a loss for how to start?  Click this button and a 
       valid example query will populate the search box.<br/><br/>
 
 	   <center><a class="white-bg-link" href="#tutorial-img">Back to top</a></center>
@@ -121,8 +127,8 @@
     <td>
 
     Models are sorted by the number of matching query terms, i.e. gene names or GO term accessions/names.
-
-   <a class="white-bg-link" href="FAQ">For a more in depth explanation, see FAQ.</a><br/><br/>
+    More sort options may be added in the future.
+<!--   <a class="white-bg-link" href="FAQ">For a more in depth explanation, see FAQ.</a><br/><br/> -->
 
 
 	   <center><a class="white-bg-link" href="#tutorial-img">Back to top</a></center>
@@ -140,13 +146,26 @@
       <span style="font-size:24;"><strong><em>P-value threshold</em></strong></span>
     </td>
     <td>
-      Here you can specify a P-value cutoff to filter your search results.  Scientific notation can
-      be used as an alternative to decimal, e.g. 0.0001 can equivalently be expressed as 1e-4. 
-      Numbers in the (0,1] range are valid.<br/><br/>
+      All search results are filtered using a P-value cutoff.  Valid P-values must be between 0 and 1 and may be entered in decimal or scientific notation (e.g. 0.001 or 1e-3). <br/><br/>
       
-      Entering 1 for this cutoff is the most lax filter: results will not be filtered by P-value since a P-value greater than 1 is not possible.  The smaller the value, the more stringent the P-value criterion becomes and the fewer search results you will obtain.<br/<br/>
+      <b>NOTE: To find all models containing a specific gene, use a P-value cutoff of 1.</b>
+      <br>
+      Smaller P-values limit the search, yielding fewer search results.<br/<br/>
 
-      <a class="white-bg-link" href="FAQ">What is meant by P-value and how is it calculated?</a><br/><br/>
+
+      <table cellpadding=5>
+      <tr>
+        <td>
+	<img align="top" src="hypergeometric-cartoon.jpg"></img>
+        </td>
+	<td>
+	  Models were scored for GO annotation enrichment using the <a class="white-bg-link" href="http://en.wikipedia.org/wiki/Hypergeometric">hypergeometric test</a>.
+	  The P-value of an enrichment indicates the significance of the overlap, <strong><em>K</em></strong>, between an annotation with <strong><em>A</em></strong> genes and a model with <strong><em>M</em></strong> genes.  This P-value has not been corrected for multiple hypothesis testing.
+	</td>
+      </tr>
+      </table>
+
+<!--      <a class="white-bg-link" href="FAQ">What is meant by P-value and how is it calculated?</a><br/><br/>-->
 
 
 	   <center><a class="white-bg-link" href="#tutorial-img">Back to top</a></center>
@@ -166,8 +185,7 @@
       <span style="font-size:24;"><strong><em>Publications</em></strong></span>
     </td>
     <td>
-      Models from the publications listed here are available for search.  By default, all 11 publications have checked boxes, indicating the inclusion of models from these papers in any search.<br/><br/>
-
+      Limit the search by publication.  At least one publication must be selected.  Hold down the 'Ctrl' key to select more than one publication.  By default, all eleven publications are selected.<br/><br/>
 
 	   <center><a class="white-bg-link" href="#tutorial-img">Back to top</a></center>
 	   <hr/>
@@ -186,9 +204,7 @@
       <span style="font-size:24;"><strong><em>Species Selection</em></strong></span>
     </td>
     <td>
-      The only requirement is that you select at least one species for your
-      search.  Holding the 'Ctrl' key down, use your mouse to scroll and 
-      select/deselect species one at a time to include in your search.<br/><br/>
+      Limit the search by species.  At least one species must be selected.  Hold down the 'Ctrl' key to select more than one species.  By default, all species are selected.<br/><br/>
 
 
 	   <center><a class="white-bg-link" href="#tutorial-img">Back to top</a></center>

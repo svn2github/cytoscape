@@ -35,10 +35,12 @@
 </map>
 
 <!--
-<table id="ref_table" border=0 cellpadding=5 width=500>
+<table id="ref_table" border=0 cellpadding=5 width="90%">
   <tr id="row1_reference">
-    <td align="right"><img src="1_blue.gif"></img></td><td><a href="#row1_explanation">Search</a></td>
-    <td align="right"><img src="2_blue.gif"></img></td><td><a href="#row2_explanation">Load an Example</a></td>
+    <td align="right"><a href="#row1_explanation"><img class="button" src="1_blue.gif"></img></a></td>
+    <td><a href="#row1_explanation">Search</a></td>
+    <td align="right"><a href="#row2_explanation"><img class="button" src="2_blue.gif"></img></a></td>
+    <td><a href="#row2_explanation">Load an Example</a></td>
   </tr>
 </table>
 -->
@@ -58,20 +60,21 @@
     </td>
     <td>
 
+
    Valid queries are space-delimited, and include :
    <ul>
-     <li>Gene names (e.g. gcn4, rad52, gal4, yap6)
-     <li>Regular expressions of gene names (e.g. gcn*, rad*, gal*, yap*)
+     <li>Exact gene names (e.g. gcn4, rad52, gal4, yap6)
+     <li>Fuzzy gene names including the '*' character (e.g. gcn*, rad*, gal*, yap*)
      <li>GO term accessions (e.g. GO:0006366, GO:0004402)
-     <li>Double quote-enclosed full or partial GO term names (e.g. "DNA binding", "cell cycle", "acetylation", "cytoplasm")
+     <li>Full or partial GO term names enclosed in double-quotes (e.g. "DNA binding", "cell cycle", "acetylation", "cytoplasm")
    </ul>
 
    Any combination of the above is valid, however longer and more complex queries will 
-   take significantly longer than simple ones.<br/><br/>
+   take longer than simple ones.<br/><br/>
 
-   Regular expressions may match many different gene names across multiple organisms, which is not always desirable.  Moreover, regular expressions will significantly slow the search time, so use them wisely (as in the cases given above like yap* and gcn*, where families of genes have been grouped by name).<br/><br/>
+   Searches using the '*' character may match many different gene names across multiple organisms.  Moreover, these searches take longer, so use them wisely (as in the examples above like yap* and gcn*, where families of genes have been grouped by name).<br/><br/>
 
-   To find GO term accessions, term names, or simply to learn more about the GO project, please visit the <a href="http://www.geneontology.org">GO homepage</a>.<br/><br/>
+   To find GO term accessions, term names, or simply to learn more about the GO project, please visit the <a class="white-bg-link" href="http://www.geneontology.org">GO homepage</a>.<br/><br/>
 
 	   <center><a class="white-bg-link" href="#tutorial-img">Back to top</a></center>
 	   <hr/>
@@ -87,7 +90,7 @@
       <span style="font-size:24;"><strong><em>Load an Example</em></strong></span>
     </td>
     <td>
-      At a loss for how to start or what to do?  Click this button and a 
+      At a loss for how to start?  Click this button and a 
       valid example query will populate the search box.<br/><br/>
 
 	   <center><a  class="white-bg-link" href="#tutorial-img">Back to top</a></center>
