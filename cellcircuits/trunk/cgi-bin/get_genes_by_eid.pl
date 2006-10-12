@@ -16,7 +16,7 @@ use lib '/var/www/cgi-bin/search/v1.0';
 use CCDB::Query qw(&get_species_string);
 use CCDB::Enrichment;
 use CCDB::Synonyms;
-use CCDB::HtmlRoutines qw(highlight gen_go_url);
+use CCDB::HtmlRoutines qw(highlight gen_go_url $TRAILER format_header);
 
 use CCDB::Constants qw($search_url
 		       $pubCitation 
@@ -32,44 +32,17 @@ print "Content-type: text/html\n\n";
 sub gen_header
 {
     my ($title) = @_;
-    
-    my $html = <<HEADER;    
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-  <meta name="author"      content="Mike Daly, Craig Mak" />
-  <meta name="keywords"    content="cell circuits, biological networks, network models, systems biology, pathway hypotheses" />
-  <meta name="description" content="Cell Circuits" />
-  <meta name="robots"      content="all" />
-  <title>$title</title>
-  <link type=text/css rel=stylesheet href="$search_url/master.css" />
-</head>
-<body>
-
-<a href="$search_url/index.html">
-<img src="$search_url/CC-logo-small.jpg" 
-     border="0" 
-     alt="Cell Circuits" 
-     title="Click to go to the Cell Circuits Home Page"/>
-</a>
-HEADER
-
-   return $html;
+    my $html = format_header($title);
+    $html .= qq(<a href="$search_url/index.html">
+		<img src="$search_url/CC-logo-small.jpg" 
+		border="0" 
+		alt="Cell Circuits" 
+		title="Click to go to the Cell Circuits Home Page"/>
+		</a>);
+    return $html;
 }
 
-
-my $FOOT .= <<FOOT;
-  <center>
-    <a class="white-bg-link" href="$search_url/advanced_search.html">Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a class="white-bg-link" href="$search_url/about_cell_circuits.html">About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a class="white-bg-link" href="http://chianti.ucsd.edu/idekerlab/index.html">Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a class="white-bg-link" href="http://www-bioeng.ucsd.edu/">UCSD</a>
-    <p style="font-style:italic;font-size: 0.8em">Funding provided by the National Science Foundation (NSF 0425926).</p>
-  </center>
-FOOT
+my $html = "";
 
 if(param("eid"))
 {
@@ -168,7 +141,7 @@ if(param("eid"))
     my $go_url = gen_go_url($tacc);
     $pval = sprintf("%.2e", $pval);
     
-    my $html = gen_header("Genes in Model (Annotated with $tname)");
+    $html = gen_header("Genes in Model (Annotated with $tname)");
 
     $html .= <<HTML;    
   <table cellpadding=2 cellspacing=2 border=0>
@@ -221,34 +194,33 @@ if(param("eid"))
   </tr>
 
   <tr> <td colspan=2> <hr> </td></tr>
-  <tr> <td colspan=2> $FOOT </td></tr>
+  <tr> <td colspan=2> $TRAILER </td></tr>
   </table>
 
   </body>
   </html>
 HTML
 
-print $html;
+
 }
 else
 {
     my $url = url(-query=>1);
 
-
-    my $html = gen_header("Error Finding Genes in Model");
+    $html = gen_header("Error Finding Genes in Model");
     $html .= <<HTML;    
   <hr>
-  
   Bad input parameters
   <br>
  URL: $url
    
   <hr>
-  $FOOT
-
+  $TRAILER
   </body>
   </html>
 HTML
 
-print $html;
 }
+
+print $html;
+

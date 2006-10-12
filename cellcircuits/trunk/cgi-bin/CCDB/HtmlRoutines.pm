@@ -25,7 +25,7 @@ use CCDB::Constants qw($cgi_version
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw();
-our @EXPORT_OK = qw(highlight gen_go_url);
+our @EXPORT_OK = qw(highlight gen_go_url $TRAILER format_header query_form);
 our $VERSION = 1.0;
 
 my $pubSupplementURL = {
@@ -74,6 +74,18 @@ my $sortMethod_to_html = {
     };
 
 
+our $TRAILER =  qq (
+    <br /><br /><center>
+    <a class='white-bg-link' href='$search_url/index.html' title='Click to go to the CellCircuits Home Page'>CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class='white-bg-link' href='$search_url/advanced_search.html'>Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class='white-bg-link' href='$search_url/Tutorial-home.html'>Help</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class='white-bg-link' href='http://chianti.ucsd.edu/idekerlab/index.html'>Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class='white-bg-link' href='http://ucsd.edu'>UCSD</a><br />
+    <p style='font-size: 0.8em; font-style:italic'>Funding provided by the National Science Foundation (NSF 0425926).</p>
+	
+    </center>
+);
 
 
 sub outputResultsPage{
@@ -89,25 +101,62 @@ sub outputResultsPage{
 	$gid_by_gene_symbol
 	) = @_;
 
-    print_header($queryInput->queryString());
-    print_body($queryInput,
-	       $hash,	      
-	       $page,
-	       $publications, 
-	       $species, 
-	       $sort_method,
-	       $pval_thresh, 
-	       $error_msg, 
-	       $gid_by_gene_symbol);
-    print_trailer();
+    print format_header(format_query_as_title($queryInput->queryString()));
+    print query_form($queryInput->queryString(), 
+		     $publications, 
+		     $species, 
+		     $sort_method, 
+		     $pval_thresh);
+    print error_html($publications, $pval_thresh, $error_msg);
+    
+    print_results($queryInput,
+		  $hash,	      
+		  $page,
+		  $publications, 
+		  $species, 
+		  $sort_method,
+		  $pval_thresh, 
+		  $error_msg, 
+		  $gid_by_gene_symbol);
 
+    print trailer();
     return;
 }
 
 
-sub print_header{
+
+sub outputErrorPage
+{
+    my ($queryInput, # object
+        $publications,   # ref-to-hash
+	$species,        # ref-to-hash
+	$sort_method,    # string
+	$pval_thresh,
+	$error_msg
+        ) = @_;
+
+    print format_header(format_query_as_title($queryInput->queryString()));
+    print query_form($queryInput->queryString(),
+		     $publications, 
+		     $species, 
+		     $sort_method,
+		     $pval_thresh);
+    print error_html($publications, $pval_thresh, $error_msg);
+    print trailer();
+    return;
+}
+
+
+sub format_query_as_title
+{
     my ($original_query) = @_;
-    my $unescaped_query = unescape($original_query);
+    return "Cell Circuits - Results: " . unescape($original_query);
+}
+
+sub format_header
+{
+    my ($title) = @_;
+    
     my $HEADER =<<HEADER;
 <!DOCTYPE html
 	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -125,29 +174,26 @@ sub print_header{
   <script src="$search_url/javascript/scriptaculous.js"   type="text/javascript"></script>
 
   <link type="text/css" rel="stylesheet" href="$search_url/master.css" />
-  <title>Cell Circuits - Results: $unescaped_query</title>
+  <title>$title</title>
 </head>
+<body id='body-element'>
 HEADER
-
-    print $HEADER;
-    return;
+    
+    return $HEADER;
 }
 
-sub start_body{
-    my ($original_query, $publications, $species, $sort_method, $pval_thresh, $error_msg, $bp_count, $cc_count, $mf_count) = @_;
+sub query_form
+{
+    my ($original_query, $publications, $species, $sort_method, $pval_thresh) = @_;
 
     my $pub_html         = get_publication_hidden_fields_html($publications);
     my $species_html     = get_species_hidden_fields_html($species);         
     my $sort_method_html = get_sort_method_hidden_fields_html($sort_method);
     my $pval_thresh_html = get_pval_thresh_hidden_fields_html($pval_thresh);
-    my $error_html       = CCDB::Error::formatErrorMessages($error_msg, $pval_thresh, $publications);
-
+    
     my $unescaped_query = '\'' . unescape($original_query) . '\'';
-    #$unescaped_query =~ s/\"/\\\"/g;
 
-    my $START_BODY =<<START_BODY;
-<!-- <body id='body-element' onLoad="onload_action($bp_count, $cc_count, $mf_count);return false;"> -->
-<body id='body-element'>
+    my $QUERY_FORM =<<QUERY_FORM;
 
 <form method='POST' name='search' action='$cgi_url/search.pl'>
  
@@ -176,39 +222,33 @@ $pub_html
 $species_html
 $sort_method_html
 $pval_thresh_html
+</form>
 
-<center>
-<table><tr><td align="left">
-$error_html
-</td></tr></table>
-</center>
+QUERY_FORM
 
-START_BODY
-
-   return $START_BODY;
+   return $QUERY_FORM;
 }
 
-sub outputErrorPage
+sub error_html
 {
-    my ($queryInput, # object
-        $publications,   # ref-to-hash
-	$species,        # ref-to-hash
-	$sort_method,    # string
-	$pval_thresh,
-	$error_msg
-        ) = @_;
+    my ($publications, $pval_thresh, $error_msg) = @_;
+    my $error_html = CCDB::Error::formatErrorMessages($error_msg, 
+						      $pval_thresh, 
+						      $publications);
+    return qq(
+	      <center>
+	      <table><tr><td align="left">
+	      $error_html
+	      </td></tr></table>
+	      </center>
+	      );
 
-    print_header($queryInput->queryString());
-    print start_body($queryInput->queryString(),
-		     $publications, 
-		     $species, 
-		     $sort_method,
-		     $pval_thresh, 
-		     $error_msg,'','','');
-    print "</body>";
-    print_trailer();
+}
 
-    return;
+sub trailer
+{
+    return $TRAILER . "</body></html>\n";
+    
 }
 
 sub formatPageNavigation_tr
@@ -373,7 +413,7 @@ sub get_pval_thresh_hidden_fields_html
 }
 
 #
-sub print_body
+sub print_results
 {
     my ($queryInput,
 	$hash,	      
@@ -398,8 +438,6 @@ sub print_body
     my $eo_type_counts_by_model = {};
     my $types = {};
     
-    my $html = '';
-
     ## $N_PAGE_JUMP keeps track of the number of page navigation boxes.
     ## Typically 2: one at the top of the table and one at the bottom.
     my $N_PAGE_JUMP = 1; 
@@ -427,27 +465,36 @@ sub print_body
     for my $i (($lower_lim-1)..($upper_lim-1))
     {
 	my $term2org = $hash->{$sorted_mids->[$i]}{'model'}->term2org();
-	if(exists $term2org->{'biological_process'}){ $bp_count += scalar(keys %{$term2org->{'biological_process'} })};
-	if(exists $term2org->{'cellular_component'}){ $cc_count += scalar(keys %{$term2org->{'cellular_component'} })};
-	if(exists $term2org->{'molecular_function'}){ $mf_count += scalar(keys %{$term2org->{'molecular_function'} })};
+	if(exists $term2org->{'biological_process'})
+	{ 
+	    $bp_count += scalar(keys %{$term2org->{'biological_process'} });
+	}
+	if(exists $term2org->{'cellular_component'})
+	{ 
+	    $cc_count += scalar(keys %{$term2org->{'cellular_component'} });
+	}
+	if(exists $term2org->{'molecular_function'})
+	{ 
+	    $mf_count += scalar(keys %{$term2org->{'molecular_function'}});
+	}
     }
-    my $body = start_body($queryInput->queryString(), $publications, $species, 
-			  $sort_method, $pval_thresh, $error_msg, $bp_count, $cc_count, $mf_count);
-    
-    $body .= qq(<table id="results_table" align="center" 
-		cellpadding="0" cellspacing="0" bgcolor="$colors->{page_background}" 
-		summary="results" width="100%">
-		);
+
+    my $body .= qq(<table id="results_table" align="center" 
+		   cellpadding="0" cellspacing="0" 
+		   bgcolor="$colors->{page_background}" 
+		   summary="results" width="100%">
+		   <input type="hidden" name="page" value="$page"/>
+		   );
 
     # The "page" hidden field keeps track of what page we are on
-    $body .= qq( <input type="hidden" name="page" value="$page"/>);
 
     $body .= formatPageNavigation_tr($N_PAGE_JUMP++, $page, $total_pages, $lower_lim, $upper_lim, $n_matched_models);
+
     $body.=<<TBL_HDR;
-<!--   <tr style="background-color:#678593;"> -->
+
    <tr class="extra-header">
    <td align='center' colspan=2>
-<a class="color-bg-link" href="http://www.geneontology.org/" title="Gene Ontology">GO</a> enrichment 
+<a class="color-bg-link" href="http://www.geneontology.org/" title="Gene Ontology">GO</a> annotation 
 <a class="color-bg-pval-link" href="$search_url/advanced_search.html" title="Click to change the p-value threshold on the Advanced Search page"> P-value < $pval_thresh</a>
    </td>
    <td align='right' colspan=2>Show/Hide:&nbsp;
@@ -458,17 +505,15 @@ sub print_body
    </tr>
 
    <tr class="group-toggle-link">
-      <th class="result-header" title="# Distinct Matches" width=5%>Score</th>
-      <th class="result-header">Model</th>
-      <th class="result-header">Matches</th>
-      <th class="result-header" colspan="1" valign='bottom'>
-         Model annotation [<a class="color-bg-link" href="/Tutorial-results.html" title="GO Home Page">read more</a>]&nbsp;&nbsp;
-         
-	 <br />
-	 
-      </th>
+     <th class="result-header" title="# Distinct Matches">Score</th>
+     <th class="result-header">Model</th>
+     <th class="result-header">Matches</th>
+     <th class="result-header" colspan="1" valign='bottom'>
+     Model annotation [<a class="color-bg-link" href="/Tutorial-results.html#row4_explanation" title="Go to tutorial">read more</a>]&nbsp;&nbsp;
+     </th>
    </tr>
 TBL_HDR
+
     print $body;
     for my $i (($lower_lim-1)..($upper_lim-1))
     {
@@ -960,13 +1005,6 @@ sub format_query_matched_td
 sub format_model_thm_td
 {
     my($model, $pub,$sif,$lrg_img,$thm_img,$legend) = @_;
-
-    my $similar_html .= tag("a", 
-			    {class=>"white-bg-link",
-			     title=>"See models that contain genes from this model (currently Yeast only)",
-			     href=>"$cgi_url/search.pl?search_query=MODELS_LIKE:" . $model->id()
-			     }, 
-			    "[similar models]");
     
     my $score = "Query";
     if(!$model->isQueryModel())
@@ -1010,27 +1048,6 @@ MODEL_HTML2
 #MODEL_HTML2    
 
     return $model_thm_html;
-}
-
-sub print_trailer
-{
-    print "<br /><br /><center>";
-    print "<a class='white-bg-link' href='$search_url/index.html' title='Click to go to the CellCircuits Home Page'>CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
-    print "<a class='white-bg-link' href='$search_url/advanced_search.html'>Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
-    print "<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
-    print "<a class='white-bg-link' href='$search_url/Tutorial-home.html'>Help</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
-    print "<a class='white-bg-link' href='http://chianti.ucsd.edu/idekerlab/index.html'>Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
-    print "<a class='white-bg-link' href='http://ucsd.edu'>UCSD</a><br />";
-    print "<p style='font-size: 0.8em; font-style:italic'>Funding provided by the National Science Foundation (NSF 0425926).</p>";
-    #print "<hr>";
-    #print "<p class=\"credits\">Questions? Comments? Suggestions? Please see the ";
-    #print "<a href=\"http://groups.google.com/group/CellCircuits\">archives</a>";
-    #print "or send email to <a href=\"mailto:CellCircuits@googlegroups.com?subject=[CellCircuits]\">";
-    #print "CellCircuits@googlegroups.com</a></p>";
-    print "</center>";
-    print "</div>";
-    print "</body></html>";
-    return;
 }
 
 1;

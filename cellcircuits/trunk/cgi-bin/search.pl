@@ -36,15 +36,7 @@ if(param("search_query"))
     my $sort_method  = param("sort_method");
     my $pval_thresh  = param("pval_thresh");
 
-    
-    #printf "%s<br><br>", join "<br>", @species;
-    #printf "%s<br>", join "<br>", @publications;
-    #exit;
-    
-    #foreach my $k (keys %ENV){
-#	print "ENV{$k} = $ENV{$k}<br>";
-#    }
-    my @qs = split(/;/,query_string()); #query_string is a CGI.pm method
+    my @qs = split(/;/, query_string()); #query_string is a CGI.pm method
     #printf "query_string: %s", join "<br>", @qs;
 
     for my $sp  (@orgs) {
