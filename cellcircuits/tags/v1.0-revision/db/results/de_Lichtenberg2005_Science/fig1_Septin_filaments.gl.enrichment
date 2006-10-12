@@ -1,0 +1,237 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.233250e-02	2	19	98	6526	97048	Saccharomyces	cerevisiae	GO:0048622	biological_process	"reproductive sporulation"	CDC10	SPR3
+7.625310e-05	4	19	82	6526	97048	Saccharomyces	cerevisiae	GO:0007114	biological_process	"cell budding"	CDC10	CDC11	CDC12	CDC3
+3.233250e-02	2	19	98	6526	97048	Saccharomyces	cerevisiae	GO:0030437	biological_process	"sporulation (sensu Fungi)"	CDC10	SPR3
+1.025370e-01	1	19	37	6526	97048	Saccharomyces	cerevisiae	GO:0019362	biological_process	"pyridine nucleotide metabolism"	BNA3
+3.208730e-01	12	19	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH3	RFA1	SHS1	SPR28	SPR3	YDL156W
+9.450910e-05	3	19	32	6526	97048	Saccharomyces	cerevisiae	GO:0006289	biological_process	"nucleotide-excision repair"	RFA1	RFA2	RFA3
+7.270910e-07	3	19	7	6526	97048	Saccharomyces	cerevisiae	GO:0000217	molecular_function	"DNA secondary structure binding"	MSH2	MSH3	MSH6
+2.405270e-05	2	19	3	6526	97048	Saccharomyces	cerevisiae	GO:0032134	molecular_function	"mispaired DNA binding"	MSH2	MSH6
+3.613490e-01	11	19	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	ACE2	BNA3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+1.833180e-11	6	19	22	6526	97048	Saccharomyces	cerevisiae	GO:0032155	cellular_component	"cell division site part"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+1.448650e-07	13	19	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	CDC10	CDC11	CDC12	CDC3	MSH2	PMS1	RAD51	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3
+8.354650e-08	3	19	4	6526	97048	Saccharomyces	cerevisiae	GO:0032135	molecular_function	"DNA insertion or deletion binding"	MSH2	MSH3	MSH6
+4.068580e-01	11	19	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	ACE2	BNA3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+8.171680e-03	3	19	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	RFA1	RFA2	RFA3
+6.735270e-03	19	19	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3	YDL156W
+3.382720e-01	7	19	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	BNA3	CDC10	CDC12	MSH2	MSH6	PMS1	RAD51
+4.373390e-07	4	19	23	6526	97048	Saccharomyces	cerevisiae	GO:0007531	biological_process	"mating type determination"	MSH2	MSH3	RAD51	RAD55
+1.144260e-05	3	19	16	6526	97048	Saccharomyces	cerevisiae	GO:0030894	cellular_component	"replisome"	RFA1	RFA2	RFA3
+1.467310e-05	12	19	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD55	RFA1	RFA2	RFA3
+1.411960e-01	1	19	52	6526	97048	Saccharomyces	cerevisiae	GO:0016563	molecular_function	"transcriptional activator activity"	ACE2
+1.050050e-02	2	19	54	6526	97048	Saccharomyces	cerevisiae	GO:0003924	molecular_function	"GTPase activity"	CDC10	CDC12
+2.405270e-05	2	19	3	6526	97048	Saccharomyces	cerevisiae	GO:0032137	molecular_function	"guanine/thymine mispair binding"	MSH2	MSH6
+1.341570e-06	4	19	30	6526	97048	Saccharomyces	cerevisiae	GO:0043566	molecular_function	"structure-specific DNA binding"	MSH2	MSH3	MSH6	RFA1
+2.274000e-09	9	19	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+1.586920e-01	1	19	59	6526	97048	Saccharomyces	cerevisiae	GO:0009108	biological_process	"coenzyme biosynthesis"	BNA3
+2.661020e-01	9	19	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+9.922830e-01	1	19	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	RAD55
+1.192320e-07	4	19	17	6526	97048	Saccharomyces	cerevisiae	GO:0007533	biological_process	"mating type switching"	MSH2	MSH3	RAD51	RAD55
+2.091700e-08	3	19	3	6526	97048	Saccharomyces	cerevisiae	GO:0005662	cellular_component	"DNA replication factor A complex"	RFA1	RFA2	RFA3
+1.000000e+00	19	19	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3	YDL156W
+3.605760e-08	4	19	13	6526	97048	Saccharomyces	cerevisiae	GO:0007534	biological_process	"gene conversion at mating-type locus"	MSH2	MSH3	RAD51	RAD55
+6.309010e-07	7	19	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	MSH2	MSH3	MSH6	PMS1	RFA1	RFA2	RFA3
+6.752240e-03	2	19	43	6526	97048	Saccharomyces	cerevisiae	GO:0042995	cellular_component	"cell projection"	CDC11	CDC3
+5.023160e-01	1	19	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	ACE2
+7.270910e-07	3	19	7	6526	97048	Saccharomyces	cerevisiae	GO:0006269	biological_process	"DNA replication, synthesis of RNA primer"	RFA1	RFA2	RFA3
+9.314220e-06	3	19	15	6526	97048	Saccharomyces	cerevisiae	GO:0005524	molecular_function	"ATP binding"	MSH2	MSH6	PMS1
+6.166070e-07	7	19	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+2.178970e-04	4	19	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	CDC10	CDC11	CDC12	SPR3
+1.144260e-05	3	19	16	6526	97048	Saccharomyces	cerevisiae	GO:0042763	cellular_component	"immature spore"	CDC11	CDC3	SPR3
+2.995890e-01	1	19	121	6526	97048	Saccharomyces	cerevisiae	GO:0006732	biological_process	"coenzyme metabolism"	BNA3
+9.798840e-06	5	19	108	6526	97048	Saccharomyces	cerevisiae	GO:0007163	biological_process	"establishment and/or maintenance of cell polarity"	CDC10	CDC11	CDC12	CDC3	SHS1
+1.575100e-06	6	19	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+4.631180e-04	5	19	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	CDC10	CDC12	MSH2	MSH6	PMS1
+7.342060e-01	1	19	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	ACE2
+9.629820e-01	1	19	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	BNA3
+3.615960e-04	4	19	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	CDC10	CDC11	CDC12	SPR3
+1.144260e-05	3	19	16	6526	97048	Saccharomyces	cerevisiae	GO:0042764	cellular_component	"prospore"	CDC11	CDC3	SPR3
+1.906340e-06	7	19	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+8.354650e-08	3	19	4	6526	97048	Saccharomyces	cerevisiae	GO:0030983	molecular_function	"mismatched DNA binding"	MSH2	MSH3	MSH6
+7.667810e-05	3	19	30	6526	97048	Saccharomyces	cerevisiae	GO:0006271	biological_process	"DNA strand elongation"	RFA1	RFA2	RFA3
+3.722810e-02	1	19	13	6526	97048	Saccharomyces	cerevisiae	GO:0019674	biological_process	"NAD metabolism"	BNA3
+5.814830e-03	1	19	2	6526	97048	Saccharomyces	cerevisiae	GO:0000709	biological_process	"meiotic joint molecule formation"	RAD51
+5.455850e-01	1	19	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	RAD51
+8.401660e-01	3	19	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	RFA1	RFA2	RFA3
+2.407650e-05	5	19	128	6526	97048	Saccharomyces	cerevisiae	GO:0051301	biological_process	"cell division"	CDC10	CDC11	CDC12	CDC3	SHS1
+8.639950e-07	4	19	27	6526	97048	Saccharomyces	cerevisiae	GO:0006312	biological_process	"mitotic recombination"	MSH2	MSH3	RAD51	RAD55
+1.685380e-01	1	19	63	6526	97048	Saccharomyces	cerevisiae	GO:0016810	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds"	BNA3
+4.348790e-04	2	19	11	6526	97048	Saccharomyces	cerevisiae	GO:0045003	biological_process	"double-strand break repair via synthesis-dependent strand annealing"	RAD51	RAD55
+2.309970e-03	4	19	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	CDC10	CDC11	CDC12	SPR3
+1.144260e-05	3	19	16	6526	97048	Saccharomyces	cerevisiae	GO:0005628	cellular_component	"prospore membrane"	CDC11	CDC3	SPR3
+8.574170e-01	1	19	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	ACE2
+7.863670e-04	5	19	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	CDC10	CDC11	CDC12	CDC3	SPR3
+7.042890e-02	1	19	25	6526	97048	Saccharomyces	cerevisiae	GO:0000080	biological_process	"G1 phase of mitotic cell cycle"	ACE2
+1.196440e-08	7	19	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	MSH2	MSH3	MSH6	PMS1	RFA1	RFA2	RFA3
+9.798840e-06	5	19	108	6526	97048	Saccharomyces	cerevisiae	GO:0030467	biological_process	"establishment and/or maintenance of cell polarity (sensu Fungi)"	CDC10	CDC11	CDC12	CDC3	SHS1
+1.144260e-05	3	19	16	6526	97048	Saccharomyces	cerevisiae	GO:0043601	cellular_component	"replisome (sensu Eukaryota)"	RFA1	RFA2	RFA3
+9.314220e-06	3	19	15	6526	97048	Saccharomyces	cerevisiae	GO:0003690	molecular_function	"double-stranded DNA binding"	MSH2	MSH3	MSH6
+2.107660e-06	9	19	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+2.427150e-01	2	19	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	CDC10	SPR3
+5.850270e-03	19	19	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3	YDL156W
+9.314220e-06	3	19	15	6526	97048	Saccharomyces	cerevisiae	GO:0006301	biological_process	"postreplication repair"	RFA1	RFA2	RFA3
+9.962660e-07	7	19	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+2.465680e-02	18	19	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3
+1.906340e-06	7	19	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+6.484290e-04	5	19	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	CDC10	CDC12	MSH2	MSH6	PMS1
+5.182050e-06	5	19	97	6526	97048	Saccharomyces	cerevisiae	GO:0000910	biological_process	"cytokinesis"	CDC10	CDC11	CDC12	CDC3	SHS1
+7.583560e-04	11	19	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	ACE2	BNA3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+2.479200e-06	3	19	10	6526	97048	Saccharomyces	cerevisiae	GO:0005619	cellular_component	"spore wall (sensu Fungi)"	CDC11	CDC3	SPR3
+2.299230e-01	1	19	89	6526	97048	Saccharomyces	cerevisiae	GO:0051325	biological_process	"interphase"	ACE2
+4.101400e-03	3	19	114	6526	97048	Saccharomyces	cerevisiae	GO:0009277	cellular_component	"cell wall (sensu Fungi)"	CDC11	CDC3	SPR3
+7.846820e-01	1	19	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	ACE2
+1.364040e-09	11	19	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	RAD51	RAD55	SHS1	SPR28	SPR3
+6.601500e-04	5	19	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	CDC10	CDC12	MSH2	MSH6	PMS1
+3.113060e-05	4	19	66	6526	97048	Saccharomyces	cerevisiae	GO:0000282	biological_process	"bud site selection"	CDC10	CDC11	CDC12	CDC3
+2.044960e-01	1	19	78	6526	97048	Saccharomyces	cerevisiae	GO:0006767	biological_process	"water-soluble vitamin metabolism"	BNA3
+3.594420e-01	1	19	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	RAD55
+6.420200e-01	1	19	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	ACE2
+1.126150e-02	2	19	56	6526	97048	Saccharomyces	cerevisiae	GO:0000749	biological_process	"response to pheromone during conjugation with cellular fusion"	CDC10	SPR3
+1.146280e-04	3	19	34	6526	97048	Saccharomyces	cerevisiae	GO:0017076	molecular_function	"purine nucleotide binding"	MSH2	MSH6	PMS1
+2.118270e-14	6	19	9	6526	97048	Saccharomyces	cerevisiae	GO:0000399	cellular_component	"bud neck septin structure"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+7.465040e-10	4	19	6	6526	97048	Saccharomyces	cerevisiae	GO:0005545	molecular_function	"phosphatidylinositol binding"	CDC10	CDC11	CDC12	CDC3
+1.448650e-07	13	19	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CDC10	CDC11	CDC12	CDC3	MSH2	PMS1	RAD51	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3
+1.971840e-02	18	19	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3
+9.800190e-07	9	19	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+2.083010e-02	9	19	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+1.833180e-11	6	19	22	6526	97048	Saccharomyces	cerevisiae	GO:0032153	cellular_component	"cell division site"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+2.367170e-03	13	19	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	CDC10	CDC11	CDC12	CDC3	MSH2	PMS1	RAD51	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3
+5.031020e-03	2	19	37	6526	97048	Saccharomyces	cerevisiae	GO:0044463	cellular_component	"cell projection part"	CDC11	CDC3
+8.449540e-01	1	19	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	ACE2
+2.648320e-01	11	19	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	ACE2	BNA3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+2.527920e-05	3	19	22	6526	97048	Saccharomyces	cerevisiae	GO:0043596	cellular_component	"replication fork (sensu Eukaryota)"	RFA1	RFA2	RFA3
+1.759940e-09	9	19	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+2.021210e-02	1	19	7	6526	97048	Saccharomyces	cerevisiae	GO:0009435	biological_process	"NAD biosynthesis"	BNA3
+2.299230e-01	1	19	89	6526	97048	Saccharomyces	cerevisiae	GO:0051329	biological_process	"interphase of mitotic cell cycle"	ACE2
+6.231320e-05	19	19	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3	YDL156W
+4.061220e-02	2	19	111	6526	97048	Saccharomyces	cerevisiae	GO:0030435	biological_process	"sporulation"	CDC10	SPR3
+1.333420e-03	2	19	19	6526	97048	Saccharomyces	cerevisiae	GO:0000725	biological_process	"recombinational repair"	RAD51	RAD55
+7.534540e-01	1	19	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	RAD51
+9.714100e-01	1	19	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	RAD51
+4.003670e-02	1	19	14	6526	97048	Saccharomyces	cerevisiae	GO:0000114	biological_process	"G1-specific transcription in mitotic cell cycle"	ACE2
+8.710220e-03	1	19	3	6526	97048	Saccharomyces	cerevisiae	GO:0000150	molecular_function	"recombinase activity"	RAD51
+9.997590e-01	1	19	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YDL156W
+1.099290e-06	6	19	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55
+2.178970e-04	4	19	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	CDC10	CDC11	CDC12	SPR3
+2.909680e-06	6	19	157	6526	97048	Saccharomyces	cerevisiae	GO:0045229	biological_process	"external encapsulating structure organization and biogenesis"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+3.111290e-01	9	19	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+5.455850e-01	1	19	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	RAD51
+7.867860e-02	6	19	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	MSH2	PMS1	RAD51	RFA1	RFA2	RFA3
+1.926770e-01	1	19	73	6526	97048	Saccharomyces	cerevisiae	GO:0051188	biological_process	"cofactor biosynthesis"	BNA3
+6.185590e-01	3	19	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	CDC11	CDC3	SPR3
+3.004410e-09	5	19	22	6526	97048	Saccharomyces	cerevisiae	GO:0006311	biological_process	"meiotic gene conversion"	MSH2	MSH3	MSH6	PMS1	RAD55
+5.391280e-05	3	19	27	6526	97048	Saccharomyces	cerevisiae	GO:0000781	cellular_component	"chromosome, telomeric region"	RFA1	RFA2	RFA3
+2.178970e-04	4	19	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	CDC10	CDC11	CDC12	SPR3
+1.181940e-01	1	19	43	6526	97048	Saccharomyces	cerevisiae	GO:0009110	biological_process	"vitamin biosynthesis"	BNA3
+4.101400e-03	3	19	114	6526	97048	Saccharomyces	cerevisiae	GO:0030312	cellular_component	"external encapsulating structure"	CDC11	CDC3	SPR3
+4.528510e-06	3	19	12	6526	97048	Saccharomyces	cerevisiae	GO:0006268	biological_process	"DNA unwinding during replication"	RFA1	RFA2	RFA3
+7.448020e-01	1	19	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	RAD51
+2.412250e-01	1	19	94	6526	97048	Saccharomyces	cerevisiae	GO:0009117	biological_process	"nucleotide metabolism"	BNA3
+2.911430e-03	1	19	1	6526	97048	Saccharomyces	cerevisiae	GO:0042148	biological_process	"strand invasion"	RAD51
+5.260860e-07	4	19	24	6526	97048	Saccharomyces	cerevisiae	GO:0045005	biological_process	"maintenance of fidelity during DNA-dependent DNA replication"	MSH2	MSH3	MSH6	PMS1
+9.807950e-01	1	19	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	BNA3
+2.895170e-09	6	19	48	6526	97048	Saccharomyces	cerevisiae	GO:0007131	biological_process	"meiotic recombination"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55
+2.875540e-02	1	19	10	6526	97048	Saccharomyces	cerevisiae	GO:0019363	biological_process	"pyridine nucleotide biosynthesis"	BNA3
+3.110050e-02	19	19	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3	YDL156W
+1.447700e-02	1	19	5	6526	97048	Saccharomyces	cerevisiae	GO:0000707	biological_process	"meiotic DNA recombinase assembly"	RAD55
+2.367170e-03	13	19	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	CDC10	CDC11	CDC12	CDC3	MSH2	PMS1	RAD51	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3
+2.184620e-01	1	19	84	6526	97048	Saccharomyces	cerevisiae	GO:0000793	cellular_component	"condensed chromosome"	RAD51
+8.650460e-01	1	19	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	ACE2
+4.373390e-07	4	19	23	6526	97048	Saccharomyces	cerevisiae	GO:0007530	biological_process	"sex determination"	MSH2	MSH3	RAD51	RAD55
+2.500090e-08	4	19	12	6526	97048	Saccharomyces	cerevisiae	GO:0035091	molecular_function	"phosphoinositide binding"	CDC10	CDC11	CDC12	CDC3
+4.802190e-05	2	19	4	6526	97048	Saccharomyces	cerevisiae	GO:0000735	biological_process	"removal of nonhomologous ends"	MSH2	MSH3
+1.181940e-01	1	19	43	6526	97048	Saccharomyces	cerevisiae	GO:0042364	biological_process	"water-soluble vitamin biosynthesis"	BNA3
+1.661220e-05	3	19	18	6526	97048	Saccharomyces	cerevisiae	GO:0030554	molecular_function	"adenyl nucleotide binding"	MSH2	MSH6	PMS1
+3.223310e-01	12	19	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	ACE2	BNA3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	YDL156W
+2.594620e-09	7	19	87	6526	97048	Saccharomyces	cerevisiae	GO:0006261	biological_process	"DNA-dependent DNA replication"	MSH2	MSH3	MSH6	PMS1	RFA1	RFA2	RFA3
+1.051640e-01	1	19	38	6526	97048	Saccharomyces	cerevisiae	GO:0016811	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds, in linear amides"	BNA3
+2.631950e-12	9	19	100	6526	97048	Saccharomyces	cerevisiae	GO:0006310	biological_process	"DNA recombination"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+8.031520e-06	2	19	2	6526	97048	Saccharomyces	cerevisiae	GO:0000400	molecular_function	"four-way junction DNA binding"	MSH2	MSH6
+1.735200e-06	6	19	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+1.310440e-01	1	19	48	6526	97048	Saccharomyces	cerevisiae	GO:0006733	biological_process	"oxidoreduction coenzyme metabolism"	BNA3
+8.354860e-06	5	19	105	6526	97048	Saccharomyces	cerevisiae	GO:0030468	biological_process	"establishment of cell polarity (sensu Fungi)"	CDC10	CDC11	CDC12	CDC3	SHS1
+6.239770e-01	1	19	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	ACE2
+5.578690e-03	2	19	39	6526	97048	Saccharomyces	cerevisiae	GO:0042244	biological_process	"spore wall assembly"	CDC10	SPR3
+1.000000e+00	19	19	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3	YDL156W
+2.309970e-03	4	19	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	CDC10	CDC11	CDC12	SPR3
+1.255890e-04	3	19	35	6526	97048	Saccharomyces	cerevisiae	GO:0000166	molecular_function	"nucleotide binding"	MSH2	MSH6	PMS1
+1.099290e-06	6	19	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55
+7.042890e-02	1	19	25	6526	97048	Saccharomyces	cerevisiae	GO:0051318	biological_process	"G1 phase"	ACE2
+1.447700e-02	1	19	5	6526	97048	Saccharomyces	cerevisiae	GO:0000730	biological_process	"DNA recombinase assembly"	RAD55
+3.632550e-01	1	19	153	6526	97048	Saccharomyces	cerevisiae	GO:0051186	biological_process	"cofactor metabolism"	BNA3
+4.003670e-02	1	19	14	6526	97048	Saccharomyces	cerevisiae	GO:0000722	biological_process	"telomere maintenance via recombination"	RAD51
+3.778220e-03	2	19	32	6526	97048	Saccharomyces	cerevisiae	GO:0007121	biological_process	"bipolar bud site selection"	CDC10	CDC12
+1.000000e+00	19	19	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3	YDL156W
+3.223310e-01	12	19	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	ACE2	BNA3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	YDL156W
+5.260860e-07	4	19	24	6526	97048	Saccharomyces	cerevisiae	GO:0006298	biological_process	"mismatch repair"	MSH2	MSH3	MSH6	PMS1
+1.552010e-01	2	19	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	CDC10	SPR3
+8.706180e-01	1	19	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	ACE2
+7.625310e-05	4	19	82	6526	97048	Saccharomyces	cerevisiae	GO:0019954	biological_process	"asexual reproduction"	CDC10	CDC11	CDC12	CDC3
+7.526790e-01	1	19	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	ACE2
+1.670370e-03	7	19	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	MSH2	MSH3	MSH6	PMS1	RFA1	RFA2	RFA3
+1.192320e-07	4	19	17	6526	97048	Saccharomyces	cerevisiae	GO:0005543	molecular_function	"phospholipid binding"	CDC10	CDC11	CDC12	CDC3
+1.409510e-04	3	19	20	6526	97048	Saccharomyces	cerevisiae	GO:0006273	biological_process	"lagging strand elongation"	RFA1	RFA2	RFA3
+7.549970e-01	1	19	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	ACE2
+4.101400e-03	3	19	114	6526	97048	Saccharomyces	cerevisiae	GO:0005618	cellular_component	"cell wall"	CDC11	CDC3	SPR3
+8.710220e-03	1	19	3	6526	97048	Saccharomyces	cerevisiae	GO:0030491	biological_process	"heteroduplex formation"	RAD51
+3.210490e-15	7	19	15	6526	97048	Saccharomyces	cerevisiae	GO:0005940	cellular_component	"septin ring"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+3.967140e-05	7	19	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+9.460950e-02	1	19	34	6526	97048	Saccharomyces	cerevisiae	GO:0006769	biological_process	"nicotinamide metabolism"	BNA3
+1.002120e-01	8	19	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	CDC10	CDC11	CDC12	CDC3	RAD51	SHS1	SPR28	SPR3
+8.001900e-09	7	19	102	6526	97048	Saccharomyces	cerevisiae	GO:0005938	cellular_component	"cell cortex"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+1.562140e-01	1	19	58	6526	97048	Saccharomyces	cerevisiae	GO:0009165	biological_process	"nucleotide biosynthesis"	BNA3
+9.954620e-01	1	19	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YDL156W
+6.786730e-01	1	19	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	ACE2
+2.307920e-07	5	19	50	6526	97048	Saccharomyces	cerevisiae	GO:0006302	biological_process	"double-strand break repair"	RAD51	RAD55	RFA1	RFA2	RFA3
+4.563070e-02	1	19	16	6526	97048	Saccharomyces	cerevisiae	GO:0003697	molecular_function	"single-stranded DNA binding"	RFA1
+1.763730e-09	4	19	7	6526	97048	Saccharomyces	cerevisiae	GO:0000710	biological_process	"meiotic mismatch repair"	MSH2	MSH3	MSH6	PMS1
+6.601500e-04	5	19	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	CDC10	CDC12	MSH2	MSH6	PMS1
+1.877780e-02	6	19	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	BNA3	CDC10	CDC12	MSH2	MSH6	PMS1
+7.873880e-01	1	19	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	RAD55
+1.455500e-07	11	19	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	CDC10	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SPR3
+1.531950e-02	3	19	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	RFA1	RFA2	RFA3
+1.422790e-02	3	19	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	MSH2	MSH6	PMS1
+6.752240e-03	2	19	43	6526	97048	Saccharomyces	cerevisiae	GO:0005937	cellular_component	"mating projection"	CDC11	CDC3
+2.479200e-06	3	19	10	6526	97048	Saccharomyces	cerevisiae	GO:0031160	cellular_component	"spore wall"	CDC11	CDC3	SPR3
+2.078030e-08	6	19	66	6526	97048	Saccharomyces	cerevisiae	GO:0007127	biological_process	"meiosis I"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55
+2.044960e-01	1	19	78	6526	97048	Saccharomyces	cerevisiae	GO:0006766	biological_process	"vitamin metabolism"	BNA3
+4.195130e-02	2	19	113	6526	97048	Saccharomyces	cerevisiae	GO:0030154	biological_process	"cell differentiation"	CDC10	SPR3
+3.099180e-02	19	19	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3	YDL156W
+2.142160e-05	6	19	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	MSH2	PMS1	RAD51	RFA1	RFA2	RFA3
+2.909680e-06	6	19	157	6526	97048	Saccharomyces	cerevisiae	GO:0007047	biological_process	"cell wall organization and biogenesis"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+2.118270e-14	6	19	9	6526	97048	Saccharomyces	cerevisiae	GO:0000144	cellular_component	"bud neck septin ring"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+3.210490e-15	7	19	15	6526	97048	Saccharomyces	cerevisiae	GO:0032156	cellular_component	"septin cytoskeleton"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+4.373390e-07	4	19	23	6526	97048	Saccharomyces	cerevisiae	GO:0008289	molecular_function	"lipid binding"	CDC10	CDC11	CDC12	CDC3
+8.354860e-06	5	19	105	6526	97048	Saccharomyces	cerevisiae	GO:0030010	biological_process	"establishment of cell polarity"	CDC10	CDC11	CDC12	CDC3	SHS1
+2.306770e-02	1	19	8	6526	97048	Saccharomyces	cerevisiae	GO:0003684	molecular_function	"damaged DNA binding"	RFA1
+2.118270e-14	6	19	9	6526	97048	Saccharomyces	cerevisiae	GO:0032161	cellular_component	"cleavage apparatus septin structure"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+2.206270e-02	18	19	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3
+1.195140e-03	2	19	18	6526	97048	Saccharomyces	cerevisiae	GO:0000724	biological_process	"double-strand break repair via homologous recombination"	RAD51	RAD55
+1.758270e-04	3	19	39	6526	97048	Saccharomyces	cerevisiae	GO:0005657	cellular_component	"replication fork"	RFA1	RFA2	RFA3
+6.231320e-05	19	19	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	ACE2	BNA3	CDC10	CDC11	CDC12	CDC3	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	SHS1	SPR28	SPR3	YDL156W
+4.348790e-04	2	19	11	6526	97048	Saccharomyces	cerevisiae	GO:0045002	biological_process	"double-strand break repair via single-strand annealing"	RAD51	RAD55
+6.181630e-01	1	19	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	ACE2
+3.778220e-03	2	19	32	6526	97048	Saccharomyces	cerevisiae	GO:0000726	biological_process	"non-recombinational repair"	RAD51	RAD55
+4.402130e-01	1	19	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	ACE2
+4.793650e-05	6	19	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55
+8.569560e-01	1	19	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	ACE2
+9.742790e-01	1	19	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	BNA3
+5.578690e-03	2	19	39	6526	97048	Saccharomyces	cerevisiae	GO:0030476	biological_process	"spore wall assembly (sensu Fungi)"	CDC10	SPR3
+1.157450e-02	11	19	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	ACE2	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3	YDL156W
+1.915370e-10	9	19	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55	RFA1	RFA2	RFA3
+1.590790e-03	2	19	20	6526	97048	Saccharomyces	cerevisiae	GO:0000767	biological_process	"cellular morphogenesis during conjugation"	CDC10	SPR3
+3.858390e-09	7	19	92	6526	97048	Saccharomyces	cerevisiae	GO:0044448	cellular_component	"cell cortex part"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+7.989750e-05	2	19	5	6526	97048	Saccharomyces	cerevisiae	GO:0001400	cellular_component	"mating projection base"	CDC11	CDC3
+2.911430e-03	1	19	1	6526	97048	Saccharomyces	cerevisiae	GO:0004061	molecular_function	"arylformamidase activity"	BNA3
+4.710520e-11	7	19	50	6526	97048	Saccharomyces	cerevisiae	GO:0005200	molecular_function	"structural constituent of cytoskeleton"	CDC10	CDC11	CDC12	CDC3	SHS1	SPR28	SPR3
+3.113060e-05	4	19	66	6526	97048	Saccharomyces	cerevisiae	GO:0007105	biological_process	"cytokinesis, site selection"	CDC10	CDC11	CDC12	CDC3
+3.850960e-07	6	19	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	CDC10	CDC11	CDC12	CDC3	SPR28	SPR3
+3.618870e-07	4	19	22	6526	97048	Saccharomyces	cerevisiae	GO:0007120	biological_process	"axial bud site selection"	CDC10	CDC11	CDC12	CDC3
+2.013550e-02	2	19	76	6526	97048	Saccharomyces	cerevisiae	GO:0019236	biological_process	"response to pheromone"	CDC10	SPR3
+5.840040e-01	1	19	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	ACE2
+6.228720e-06	6	19	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	MSH2	PMS1	RAD51	RFA1	RFA2	RFA3
+1.099290e-06	6	19	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55
+1.195140e-03	2	19	18	6526	97048	Saccharomyces	cerevisiae	GO:0000753	biological_process	"cellular morphogenesis during conjugation with cellular fusion"	CDC10	SPR3
+1.997880e-01	1	19	76	6526	97048	Saccharomyces	cerevisiae	GO:0000794	cellular_component	"condensed nuclear chromosome"	RAD51
+8.031520e-06	2	19	2	6526	97048	Saccharomyces	cerevisiae	GO:0032138	molecular_function	"single base insertion or deletion binding"	MSH2	MSH6
+9.816420e-05	7	19	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	ACE2	MSH2	MSH3	MSH6	PMS1	RAD51	RAD55

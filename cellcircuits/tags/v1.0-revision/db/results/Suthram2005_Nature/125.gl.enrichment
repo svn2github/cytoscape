@@ -1,0 +1,79 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.350720e-01	1	15	25	2604	7015	Plasmodium	falciparum	GO:0046365	biological_process	"monosaccharide catabolism"	PF10_0155
+9.496280e-01	1	15	373	2072	7015	Plasmodium	falciparum	GO:0016020	cellular_component	"membrane"	PF11_0507
+9.907060e-02	1	15	18	2604	7015	Plasmodium	falciparum	GO:0006096	biological_process	"glycolysis"	PF10_0155
+4.522410e-02	1	15	8	2604	7015	Plasmodium	falciparum	GO:0019319	biological_process	"hexose biosynthesis"	PF10_0155
+1.936630e-01	1	15	37	2604	7015	Plasmodium	falciparum	GO:0006066	biological_process	"alcohol metabolism"	PF10_0155
+9.997770e-01	1	15	886	2072	7015	Plasmodium	falciparum	GO:0005737	cellular_component	"cytoplasm"	PF10_0155
+5.321040e-03	1	15	1	2819	7015	Plasmodium	falciparum	GO:0005179	molecular_function	"hormone activity"	PFE0070W
+9.105160e-01	1	15	386	2604	7015	Plasmodium	falciparum	GO:0009058	biological_process	"biosynthesis"	PF10_0155
+9.999980e-01	3	15	1512	2072	7015	Plasmodium	falciparum	GO:0005623	cellular_component	"cell"	MAL7P1.19	PF10_0155	PF11_0507
+1.300740e-01	1	15	26	2819	7015	Plasmodium	falciparum	GO:0004871	molecular_function	"signal transducer activity"	PFE0070W
+9.988500e-01	2	15	1211	2604	7015	Plasmodium	falciparum	GO:0044237	biological_process	"cellular metabolism"	MAL7P1.19	PF10_0155
+1.401020e-01	1	15	26	2604	7015	Plasmodium	falciparum	GO:0006006	biological_process	"glucose metabolism"	PF10_0155
+9.992670e-01	2	15	1258	2604	7015	Plasmodium	falciparum	GO:0008152	biological_process	"metabolism"	MAL7P1.19	PF10_0155
+3.410060e-02	1	15	6	2604	7015	Plasmodium	falciparum	GO:0006094	biological_process	"gluconeogenesis"	PF10_0155
+4.869120e-01	1	15	113	2604	7015	Plasmodium	falciparum	GO:0006091	biological_process	"generation of precursor metabolites and energy"	PF10_0155
+9.999760e-01	2	15	1241	2072	7015	Plasmodium	falciparum	GO:0005622	cellular_component	"intracellular"	MAL7P1.19	PF10_0155
+2.440990e-01	1	15	48	2604	7015	Plasmodium	falciparum	GO:0044262	biological_process	"cellular carbohydrate metabolism"	PF10_0155
+9.907510e-01	2	15	1046	2819	7015	Plasmodium	falciparum	GO:0003824	molecular_function	"catalytic activity"	MAL7P1.19	PF10_0155
+9.995350e-01	1	15	1126	2819	7015	Plasmodium	falciparum	GO:0005488	molecular_function	"binding"	PFE0070W
+9.887140e-01	2	15	940	2604	7015	Plasmodium	falciparum	GO:0043170	biological_process	"macromolecule metabolism"	MAL7P1.19	PF10_0155
+9.888830e-01	1	15	673	2604	7015	Plasmodium	falciparum	GO:0019538	biological_process	"protein metabolism"	MAL7P1.19
+1.000000e+00	14	15	2604	2604	7015	Plasmodium	falciparum	GO:0008150	biological_process	"biological_process"	CHR13_2000027	CHR7_000020	MAL6P1.106	MAL6P1.248	MAL7P1.19	PF10_0155	PF11_0507	PF14_0495	PF14_0594	PF14_0700	PFC0390W	PFD1185W	PFE1590W	PFL0280C
+2.191820e-01	1	15	46	2819	7015	Plasmodium	falciparum	GO:0019787	molecular_function	"small conjugating protein ligase activity"	MAL7P1.19
+3.977220e-04	10	15	481	2072	7015	Plasmodium	falciparum	GO:0008372	cellular_component	"cellular component unknown"	CHR13_2000027	CHR7_000020	MAL6P1.106	MAL6P1.248	PF14_0594	PF14_0700	PFC0390W	PFD1185W	PFE1590W	PFL0280C
+1.000000e+00	15	15	2819	2819	7015	Plasmodium	falciparum	GO:0003674	molecular_function	"molecular_function"	CHR13_2000027	CHR7_000020	MAL6P1.106	MAL6P1.248	MAL7P1.19	PF10_0155	PF11_0507	PF14_0495	PF14_0594	PF14_0700	PFC0390W	PFD1185W	PFE0070W	PFE1590W	PFL0280C
+2.660370e-01	1	15	53	2604	7015	Plasmodium	falciparum	GO:0005975	biological_process	"carbohydrate metabolism"	PF10_0155
+8.184180e-01	1	15	222	2072	7015	Plasmodium	falciparum	GO:0005576	cellular_component	"extracellular region"	PFE0070W
+2.442060e-01	1	15	52	2819	7015	Plasmodium	falciparum	GO:0016881	molecular_function	"acid-amino acid ligase activity"	MAL7P1.19
+1.401020e-01	1	15	26	2604	7015	Plasmodium	falciparum	GO:0016052	biological_process	"carbohydrate catabolism"	PF10_0155
+2.997140e-01	1	15	66	2819	7015	Plasmodium	falciparum	GO:0016879	molecular_function	"ligase activity, forming carbon-nitrogen bonds"	MAL7P1.19
+1.000000e+00	14	15	2072	2072	7015	Plasmodium	falciparum	GO:0005575	cellular_component	"cellular_component"	CHR13_2000027	CHR7_000020	MAL6P1.106	MAL6P1.248	MAL7P1.19	PF10_0155	PF11_0507	PF14_0594	PF14_0700	PFC0390W	PFD1185W	PFE0070W	PFE1590W	PFL0280C
+4.712000e-01	1	15	108	2604	7015	Plasmodium	falciparum	GO:0006512	biological_process	"ubiquitin cycle"	MAL7P1.19
+2.123560e-01	1	15	41	2604	7015	Plasmodium	falciparum	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	PF10_0155
+2.191820e-01	1	15	46	2819	7015	Plasmodium	falciparum	GO:0004842	molecular_function	"ubiquitin-protein ligase activity"	MAL7P1.19
+9.867140e-01	1	15	650	2604	7015	Plasmodium	falciparum	GO:0044260	biological_process	"cellular macromolecule metabolism"	MAL7P1.19
+8.060630e-01	1	15	269	2604	7015	Plasmodium	falciparum	GO:0006464	biological_process	"protein modification"	MAL7P1.19
+9.814480e-01	1	15	482	2072	7015	Plasmodium	falciparum	GO:0043234	cellular_component	"protein complex"	PF10_0155
+4.743780e-01	1	15	109	2604	7015	Plasmodium	falciparum	GO:0006082	biological_process	"organic acid metabolism"	PF10_0155
+7.239380e-03	1	15	1	2072	7015	Plasmodium	falciparum	GO:0000015	cellular_component	"phosphopyruvate hydratase complex"	PF10_0155
+5.074090e-02	1	15	9	2604	7015	Plasmodium	falciparum	GO:0016051	biological_process	"carbohydrate biosynthesis"	PF10_0155
+8.694410e-02	1	15	17	2819	7015	Plasmodium	falciparum	GO:0005102	molecular_function	"receptor binding"	PFE0070W
+7.092700e-04	12	15	949	2604	7015	Plasmodium	falciparum	GO:0000004	biological_process	"biological process unknown"	CHR13_2000027	CHR7_000020	MAL6P1.106	MAL6P1.248	PF11_0507	PF14_0495	PF14_0594	PF14_0700	PFC0390W	PFD1185W	PFE1590W	PFL0280C
+1.401020e-01	1	15	26	2604	7015	Plasmodium	falciparum	GO:0044275	biological_process	"cellular carbohydrate catabolism"	PF10_0155
+4.772270e-01	1	15	119	2819	7015	Plasmodium	falciparum	GO:0016874	molecular_function	"ligase activity"	MAL7P1.19
+9.866110e-01	1	15	649	2604	7015	Plasmodium	falciparum	GO:0044267	biological_process	"cellular protein metabolism"	MAL7P1.19
+9.999990e-01	1	15	1207	2072	7015	Plasmodium	falciparum	GO:0044424	cellular_component	"intracellular part"	PF10_0155
+6.142030e-01	1	15	173	2819	7015	Plasmodium	falciparum	GO:0005515	molecular_function	"protein binding"	PFE0070W
+4.522410e-02	1	15	8	2604	7015	Plasmodium	falciparum	GO:0046364	biological_process	"monosaccharide biosynthesis"	PF10_0155
+1.350720e-01	1	15	25	2604	7015	Plasmodium	falciparum	GO:0046164	biological_process	"alcohol catabolism"	PF10_0155
+9.183200e-02	1	15	18	2819	7015	Plasmodium	falciparum	GO:0016835	molecular_function	"carbon-oxygen lyase activity"	PF10_0155
+9.999520e-01	2	15	1507	2604	7015	Plasmodium	falciparum	GO:0007582	biological_process	"physiological process"	MAL7P1.19	PF10_0155
+6.711330e-02	1	15	12	2604	7015	Plasmodium	falciparum	GO:0006090	biological_process	"pyruvate metabolism"	PF10_0155
+9.999980e-01	3	15	1512	2072	7015	Plasmodium	falciparum	GO:0044464	cellular_component	"cell part"	MAL7P1.19	PF10_0155	PF11_0507
+1.550300e-01	1	15	29	2604	7015	Plasmodium	falciparum	GO:0005996	biological_process	"monosaccharide metabolism"	PF10_0155
+4.127750e-01	1	15	72	2072	7015	Plasmodium	falciparum	GO:0044445	cellular_component	"cytosolic part"	PF10_0155
+4.615580e-01	1	15	105	2604	7015	Plasmodium	falciparum	GO:0044248	biological_process	"cellular catabolism"	PF10_0155
+8.048090e-01	1	15	268	2604	7015	Plasmodium	falciparum	GO:0009059	biological_process	"macromolecule biosynthesis"	PF10_0155
+9.999760e-01	2	15	1561	2604	7015	Plasmodium	falciparum	GO:0009987	biological_process	"cellular process"	MAL7P1.19	PF10_0155
+5.321040e-03	1	15	1	2819	7015	Plasmodium	falciparum	GO:0004634	molecular_function	"phosphopyruvate hydratase activity"	PF10_0155
+3.929670e-01	1	15	85	2604	7015	Plasmodium	falciparum	GO:0044265	biological_process	"cellular macromolecule catabolism"	PF10_0155
+9.999180e-01	2	15	1463	2604	7015	Plasmodium	falciparum	GO:0050875	biological_process	"cellular physiological process"	MAL7P1.19	PF10_0155
+9.730500e-01	1	15	556	2604	7015	Plasmodium	falciparum	GO:0043283	biological_process	"biopolymer metabolism"	MAL7P1.19
+4.522410e-02	1	15	8	2604	7015	Plasmodium	falciparum	GO:0046165	biological_process	"alcohol biosynthesis"	PF10_0155
+2.063820e-01	1	15	43	2819	7015	Plasmodium	falciparum	GO:0016829	molecular_function	"lyase activity"	PF10_0155
+7.213280e-02	1	15	14	2819	7015	Plasmodium	falciparum	GO:0016836	molecular_function	"hydro-lyase activity"	PF10_0155
+4.302080e-01	1	15	76	2072	7015	Plasmodium	falciparum	GO:0005829	cellular_component	"cytosol"	PF10_0155
+9.976220e-01	2	15	1131	2604	7015	Plasmodium	falciparum	GO:0044238	biological_process	"primary metabolism"	MAL7P1.19	PF10_0155
+8.961880e-01	1	15	364	2604	7015	Plasmodium	falciparum	GO:0044249	biological_process	"cellular biosynthesis"	PF10_0155
+1.350720e-01	1	15	25	2604	7015	Plasmodium	falciparum	GO:0006007	biological_process	"glucose catabolism"	PF10_0155
+4.213270e-01	1	15	93	2604	7015	Plasmodium	falciparum	GO:0009057	biological_process	"macromolecule catabolism"	PF10_0155
+4.743780e-01	1	15	109	2604	7015	Plasmodium	falciparum	GO:0019752	biological_process	"carboxylic acid metabolism"	PF10_0155
+2.077210e-01	1	15	40	2604	7015	Plasmodium	falciparum	GO:0006092	biological_process	"main pathways of carbohydrate metabolism"	PF10_0155
+1.350720e-01	1	15	25	2604	7015	Plasmodium	falciparum	GO:0019320	biological_process	"hexose catabolism"	PF10_0155
+1.285530e-03	12	15	1087	2819	7015	Plasmodium	falciparum	GO:0005554	molecular_function	"molecular function unknown"	CHR13_2000027	CHR7_000020	MAL6P1.106	MAL6P1.248	PF11_0507	PF14_0495	PF14_0594	PF14_0700	PFC0390W	PFD1185W	PFE1590W	PFL0280C
+8.350600e-01	1	15	294	2604	7015	Plasmodium	falciparum	GO:0043412	biological_process	"biopolymer modification"	MAL7P1.19
+4.869120e-01	1	15	113	2604	7015	Plasmodium	falciparum	GO:0009056	biological_process	"catabolism"	PF10_0155
+9.996500e-01	1	15	850	2072	7015	Plasmodium	falciparum	GO:0044444	cellular_component	"cytoplasmic part"	PF10_0155
+1.550300e-01	1	15	29	2604	7015	Plasmodium	falciparum	GO:0019318	biological_process	"hexose metabolism"	PF10_0155

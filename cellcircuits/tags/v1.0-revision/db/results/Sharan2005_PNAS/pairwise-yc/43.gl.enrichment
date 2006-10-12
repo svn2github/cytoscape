@@ -1,0 +1,339 @@
+#USING akt-2 instead of its synonym F28H6.1 in Caenorhabditis elegans
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.442640e-03	1	5	8	27713	88307	Caenorhabditis	elegans	GO:0008286	biological_process	"insulin receptor signaling pathway"	F28H6.1
+3.120840e-01	1	5	844	11710	88307	Caenorhabditis	elegans	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	F59A6.1
+1.161660e-01	1	5	676	27713	88307	Caenorhabditis	elegans	GO:0007166	biological_process	"cell surface receptor linked signal transduction"	F28H6.1
+9.953490e-01	1	5	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	F28H6.1
+1.000000e+00	1	5	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	Y56A3A.20
+2.818040e-01	1	5	750	11710	88307	Caenorhabditis	elegans	GO:0004672	molecular_function	"protein kinase activity"	F59A6.1
+1.880730e-01	2	5	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	F59A6.1	Y56A3A.20
+1.551790e-01	1	5	919	27713	88307	Caenorhabditis	elegans	GO:0006796	biological_process	"phosphate metabolism"	F59A6.1
+9.865650e-01	1	5	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	H28O16.1
+9.859700e-01	1	5	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	H28O16.1
+2.117760e-01	1	5	1288	27713	88307	Caenorhabditis	elegans	GO:0050791	biological_process	"regulation of physiological process"	Y56A3A.20
+2.421890e-01	2	5	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	F59A6.1	Y56A3A.20
+1.959900e-01	1	5	1183	27713	88307	Caenorhabditis	elegans	GO:0007165	biological_process	"signal transduction"	F28H6.1
+9.619440e-01	1	5	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	Y56A3A.20
+2.096860e-01	1	5	1274	27713	88307	Caenorhabditis	elegans	GO:0007154	biological_process	"cell communication"	F28H6.1
+6.478690e-01	2	5	4582	11710	88307	Caenorhabditis	elegans	GO:0003824	molecular_function	"catalytic activity"	F59A6.1	W09C3.6
+9.701910e-01	1	5	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	F59A6.1
+9.859700e-01	1	5	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	H28O16.1
+8.095840e-01	1	5	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	Y56A3A.20
+3.998470e-01	1	5	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	F59A6.1
+3.207860e-01	1	5	2063	27713	88307	Caenorhabditis	elegans	GO:0019538	biological_process	"protein metabolism"	F59A6.1
+4.408220e-01	1	5	1285	11710	88307	Caenorhabditis	elegans	GO:0030554	molecular_function	"adenyl nucleotide binding"	F59A6.1
+9.724090e-01	2	5	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	F28H6.1	H28O16.1
+6.389480e-03	1	5	15	11710	88307	Caenorhabditis	elegans	GO:0016564	molecular_function	"transcriptional repressor activity"	Y56A3A.20
+5.760800e-03	1	5	32	27713	88307	Caenorhabditis	elegans	GO:0007167	biological_process	"enzyme linked receptor protein signaling pathway"	F28H6.1
+1.000000e+00	4	5	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	F28H6.1	F59A6.1	H28O16.1	Y56A3A.20
+4.313700e-01	1	5	1250	11710	88307	Caenorhabditis	elegans	GO:0005524	molecular_function	"ATP binding"	F59A6.1
+3.142980e-01	1	5	851	11710	88307	Caenorhabditis	elegans	GO:0030528	molecular_function	"transcription regulator activity"	Y56A3A.20
+1.000000e+00	3	5	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	F59A6.1	W09C3.6	Y56A3A.20
+3.783730e-03	1	5	21	27713	88307	Caenorhabditis	elegans	GO:0007169	biological_process	"transmembrane receptor protein tyrosine kinase signaling pathway"	F28H6.1
+5.447630e-01	1	5	1705	11710	88307	Caenorhabditis	elegans	GO:0000166	molecular_function	"nucleotide binding"	F59A6.1
+1.726900e-01	1	5	1031	27713	88307	Caenorhabditis	elegans	GO:0031323	biological_process	"regulation of cellular metabolism"	Y56A3A.20
+2.695020e-02	1	5	151	27713	88307	Caenorhabditis	elegans	GO:0002164	biological_process	"larval development"	F28H6.1
+9.953490e-01	1	5	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	F28H6.1
+8.087660e-01	1	5	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	Y56A3A.20
+1.000000e+00	1	5	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	Y56A3A.20
+9.303120e-01	2	5	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	H28O16.1	Y56A3A.20
+9.204120e-02	1	5	530	27713	88307	Caenorhabditis	elegans	GO:0007568	biological_process	"aging"	F28H6.1
+3.181340e-01	1	5	2043	27713	88307	Caenorhabditis	elegans	GO:0044260	biological_process	"cellular macromolecule metabolism"	F59A6.1
+1.386540e-01	1	5	815	27713	88307	Caenorhabditis	elegans	GO:0050874	biological_process	"organismal physiological process"	F28H6.1
+1.760960e-01	1	5	1053	27713	88307	Caenorhabditis	elegans	GO:0019222	biological_process	"regulation of metabolism"	Y56A3A.20
+1.808750e-01	1	5	1084	27713	88307	Caenorhabditis	elegans	GO:0006464	biological_process	"protein modification"	F59A6.1
+1.602860e-01	1	5	402	11710	88307	Caenorhabditis	elegans	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	F59A6.1
+9.953540e-01	1	5	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	F28H6.1
+2.659710e-02	1	5	149	27713	88307	Caenorhabditis	elegans	GO:0002119	biological_process	"larval development (sensu Nematoda)"	F28H6.1
+2.065420e-01	1	5	1253	27713	88307	Caenorhabditis	elegans	GO:0050794	biological_process	"regulation of cellular process"	Y56A3A.20
+9.707580e-01	2	5	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	F28H6.1	H28O16.1
+1.257680e-01	1	5	735	27713	88307	Caenorhabditis	elegans	GO:0016310	biological_process	"phosphorylation"	F59A6.1
+9.866970e-01	1	5	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	H28O16.1
+1.691180e-01	1	5	1008	27713	88307	Caenorhabditis	elegans	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	Y56A3A.20
+3.098590e-01	1	5	1981	27713	88307	Caenorhabditis	elegans	GO:0044267	biological_process	"cellular protein metabolism"	F59A6.1
+9.367630e-01	1	5	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	Y56A3A.20
+5.562500e-01	1	5	1756	11710	88307	Caenorhabditis	elegans	GO:0016787	molecular_function	"hydrolase activity"	W09C3.6
+1.310260e-02	1	5	73	27713	88307	Caenorhabditis	elegans	GO:0043118	biological_process	"negative regulation of physiological process"	Y56A3A.20
+9.954220e-01	1	5	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	F28H6.1
+3.521900e-02	1	5	198	27713	88307	Caenorhabditis	elegans	GO:0048519	biological_process	"negative regulation of biological process"	Y56A3A.20
+1.345960e-02	1	5	75	27713	88307	Caenorhabditis	elegans	GO:0048523	biological_process	"negative regulation of cellular process"	Y56A3A.20
+6.299470e-03	1	5	35	27713	88307	Caenorhabditis	elegans	GO:0031324	biological_process	"negative regulation of cellular metabolism"	Y56A3A.20
+9.639080e-01	3	5	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	F28H6.1	F59A6.1	Y56A3A.20
+9.954990e-01	1	5	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	F28H6.1
+3.246560e-01	1	5	884	11710	88307	Caenorhabditis	elegans	GO:0016301	molecular_function	"kinase activity"	F59A6.1
+1.119070e-01	1	5	650	27713	88307	Caenorhabditis	elegans	GO:0006468	biological_process	"protein amino acid phosphorylation"	F59A6.1
+1.000000e+00	1	5	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	Y56A3A.20
+2.734400e-01	1	5	1715	27713	88307	Caenorhabditis	elegans	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	Y56A3A.20
+4.143440e-03	1	5	23	27713	88307	Caenorhabditis	elegans	GO:0016481	biological_process	"negative regulation of transcription"	Y56A3A.20
+1.748590e-01	1	5	1045	27713	88307	Caenorhabditis	elegans	GO:0006350	biological_process	"transcription"	Y56A3A.20
+9.741630e-01	2	5	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	F28H6.1	H28O16.1
+1.400750e-01	3	5	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	F28H6.1	F59A6.1	Y56A3A.20
+5.172710e-01	1	5	1587	11710	88307	Caenorhabditis	elegans	GO:0016740	molecular_function	"transferase activity"	F59A6.1
+1.678730e-01	1	5	1000	27713	88307	Caenorhabditis	elegans	GO:0045449	biological_process	"regulation of transcription"	Y56A3A.20
+4.956700e-01	1	5	1498	11710	88307	Caenorhabditis	elegans	GO:0017076	molecular_function	"purine nucleotide binding"	F59A6.1
+8.798520e-01	1	5	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	Y56A3A.20
+3.543060e-01	2	5	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	F59A6.1	Y56A3A.20
+2.606340e-01	1	5	1624	27713	88307	Caenorhabditis	elegans	GO:0043283	biological_process	"biopolymer metabolism"	F59A6.1
+9.720920e-01	2	5	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	F28H6.1	H28O16.1
+4.682780e-03	1	5	26	27713	88307	Caenorhabditis	elegans	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	Y56A3A.20
+1.946250e-01	1	5	1174	27713	88307	Caenorhabditis	elegans	GO:0051244	biological_process	"regulation of cellular physiological process"	Y56A3A.20
+1.713310e-01	2	5	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	F59A6.1	Y56A3A.20
+9.870180e-01	1	5	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	H28O16.1
+7.914090e-03	1	5	44	27713	88307	Caenorhabditis	elegans	GO:0009892	biological_process	"negative regulation of metabolism"	Y56A3A.20
+8.798520e-01	1	5	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	Y56A3A.20
+7.422270e-01	1	5	1542	6495	88307	Caenorhabditis	elegans	GO:0005634	cellular_component	"nucleus"	Y56A3A.20
+1.185220e-02	1	5	66	27713	88307	Caenorhabditis	elegans	GO:0051243	biological_process	"negative regulation of cellular physiological process"	Y56A3A.20
+1.551790e-01	1	5	919	27713	88307	Caenorhabditis	elegans	GO:0006793	biological_process	"phosphorus metabolism"	F59A6.1
+9.187410e-02	1	5	529	27713	88307	Caenorhabditis	elegans	GO:0008340	biological_process	"determination of adult life span"	F28H6.1
+1.868560e-01	1	5	1123	27713	88307	Caenorhabditis	elegans	GO:0043412	biological_process	"biopolymer modification"	F59A6.1
+9.882320e-01	1	5	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	H28O16.1
+4.323240e-03	1	5	24	27713	88307	Caenorhabditis	elegans	GO:0040024	biological_process	"dauer larval development"	F28H6.1
+3.588800e-01	1	5	996	11710	88307	Caenorhabditis	elegans	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	F59A6.1
+#USING GLC7 instead of its synonym YER133W in Saccharomyces cerevisiae
+#USING DBF2 instead of its synonym YGR092W in Saccharomyces cerevisiae
+#USING CDC15 instead of its synonym YAR019C in Saccharomyces cerevisiae
+#USING POP2 instead of its synonym YNR052C in Saccharomyces cerevisiae
+#USING TFP1 instead of its synonym YDL185W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+7.288480e-02	1	5	98	6526	97048	Saccharomyces	cerevisiae	GO:0048622	biological_process	"reproductive sporulation"	YER133W
+6.128520e-02	1	5	82	6526	97048	Saccharomyces	cerevisiae	GO:0007114	biological_process	"cell budding"	YER133W
+7.288480e-02	1	5	98	6526	97048	Saccharomyces	cerevisiae	GO:0030437	biological_process	"sporulation (sensu Fungi)"	YER133W
+6.553950e-03	2	5	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	YAR019C	YGR092W
+5.087780e-02	5	5	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+1.296110e-02	1	5	17	6526	97048	Saccharomyces	cerevisiae	GO:0008287	cellular_component	"protein serine/threonine phosphatase complex"	YER133W
+1.826020e-02	1	5	24	6526	97048	Saccharomyces	cerevisiae	GO:0030641	biological_process	"hydrogen ion homeostasis"	YDL185W
+2.503770e-02	1	5	33	6526	97048	Saccharomyces	cerevisiae	GO:0030004	biological_process	"monovalent inorganic cation homeostasis"	YDL185W
+3.672000e-03	2	5	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	YAR019C	YGR092W
+1.807400e-01	1	5	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	YER133W
+4.070680e-02	1	5	54	6526	97048	Saccharomyces	cerevisiae	GO:0015078	molecular_function	"hydrogen ion transporter activity"	YDL185W
+3.501150e-02	5	5	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+4.440770e-02	1	5	59	6526	97048	Saccharomyces	cerevisiae	GO:0044264	biological_process	"cellular polysaccharide metabolism"	YER133W
+2.459640e-02	3	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YAR019C	YER133W	YGR092W
+5.104060e-02	1	5	68	6526	97048	Saccharomyces	cerevisiae	GO:0000329	cellular_component	"vacuolar membrane (sensu Fungi)"	YDL185W
+2.197850e-02	2	5	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	YER133W	YNR052C
+3.987800e-02	5	5	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+1.296110e-02	1	5	17	6526	97048	Saccharomyces	cerevisiae	GO:0019829	molecular_function	"cation-transporting ATPase activity"	YDL185W
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0031577	biological_process	"spindle checkpoint"	YER133W
+1.656010e-01	1	5	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	YER133W
+2.686690e-01	5	5	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+1.495660e-01	1	5	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	YER133W
+2.466200e-03	5	5	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+4.366840e-02	1	5	58	6526	97048	Saccharomyces	cerevisiae	GO:0043492	molecular_function	"ATPase activity, coupled to movement of substances"	YDL185W
+1.229830e-01	1	5	169	6526	97048	Saccharomyces	cerevisiae	GO:0006364	biological_process	"rRNA processing"	YER133W
+1.371930e-02	1	5	18	6526	97048	Saccharomyces	cerevisiae	GO:0009408	biological_process	"response to heat"	YER133W
+5.353310e-03	1	5	7	6526	97048	Saccharomyces	cerevisiae	GO:0030015	cellular_component	"CCR4-NOT core complex"	YNR052C
+7.661660e-04	1	5	1	6526	97048	Saccharomyces	cerevisiae	GO:0000163	molecular_function	"protein phosphatase type 1 activity"	YER133W
+7.810370e-03	5	5	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+1.057840e-02	4	5	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YAR019C	YDL185W	YER133W	YGR092W
+1.674900e-02	1	5	22	6526	97048	Saccharomyces	cerevisiae	GO:0007096	biological_process	"regulation of exit from mitosis"	YAR019C
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+1.163900e-01	2	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YER133W	YNR052C
+1.090960e-01	1	5	149	6526	97048	Saccharomyces	cerevisiae	GO:0000323	cellular_component	"lytic vacuole"	YDL185W
+2.391160e-01	1	5	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	YER133W
+1.755000e-01	1	5	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	YNR052C
+1.201570e-02	2	5	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YAR019C	YER133W
+8.801340e-06	3	5	65	6526	97048	Saccharomyces	cerevisiae	GO:0000922	cellular_component	"spindle pole"	YAR019C	YER133W	YGR092W
+3.252440e-02	1	5	43	6526	97048	Saccharomyces	cerevisiae	GO:0042995	cellular_component	"cell projection"	YER133W
+8.222480e-02	1	5	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	YER133W
+6.753310e-06	3	5	60	6526	97048	Saccharomyces	cerevisiae	GO:0005816	cellular_component	"spindle pole body"	YAR019C	YER133W	YGR092W
+1.104920e-01	1	5	151	6526	97048	Saccharomyces	cerevisiae	GO:0015075	molecular_function	"ion transporter activity"	YDL185W
+2.361740e-04	3	5	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	YAR019C	YER133W	YGR092W
+1.371930e-02	1	5	18	6526	97048	Saccharomyces	cerevisiae	GO:0000175	molecular_function	"3'-5'-exoribonuclease activity"	YNR052C
+5.663250e-04	2	5	50	6526	97048	Saccharomyces	cerevisiae	GO:0007088	biological_process	"regulation of mitosis"	YAR019C	YER133W
+1.447700e-02	1	5	19	6526	97048	Saccharomyces	cerevisiae	GO:0004520	molecular_function	"endodeoxyribonuclease activity"	YDL185W
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0016896	molecular_function	"exoribonuclease activity, producing 5'-phosphomonoesters"	YNR052C
+6.870360e-02	2	5	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	YER133W	YNR052C
+1.807400e-01	1	5	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	YER133W
+2.097250e-01	1	5	300	6526	97048	Saccharomyces	cerevisiae	GO:0005730	cellular_component	"nucleolus"	YER133W
+1.059380e-04	3	5	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	YAR019C	YER133W	YGR092W
+1.689110e-01	1	5	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	YDL185W
+2.941160e-01	1	5	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YNR052C
+1.629450e-01	1	5	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	YER133W
+6.116190e-03	1	5	8	6526	97048	Saccharomyces	cerevisiae	GO:0030847	biological_process	"transcription termination from Pol II promoter, RNA polymerase(A)-independent"	YER133W
+9.923590e-03	1	5	13	6526	97048	Saccharomyces	cerevisiae	GO:0046961	molecular_function	"hydrogen-transporting ATPase activity, rotational mechanism"	YDL185W
+1.339680e-01	1	5	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	YER133W
+5.352640e-01	1	5	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YDL185W
+1.669260e-01	1	5	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	YER133W
+2.428650e-02	1	5	32	6526	97048	Saccharomyces	cerevisiae	GO:0015405	molecular_function	"P-P-bond-hydrolysis-driven transporter activity"	YDL185W
+8.294020e-02	1	5	112	6526	97048	Saccharomyces	cerevisiae	GO:0044437	cellular_component	"vacuolar part"	YDL185W
+4.144790e-02	1	5	55	6526	97048	Saccharomyces	cerevisiae	GO:0006402	biological_process	"mRNA catabolism"	YNR052C
+6.947990e-02	3	5	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	YAR019C	YER133W	YGR092W
+5.250960e-02	1	5	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	YGR092W
+5.652020e-03	3	5	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	YAR019C	YER133W	YGR092W
+3.672000e-03	2	5	128	6526	97048	Saccharomyces	cerevisiae	GO:0051301	biological_process	"cell division"	YAR019C	YER133W
+8.062450e-02	3	5	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YDL185W	YER133W	YNR052C
+1.360150e-01	1	5	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	YNR052C
+1.441660e-01	1	5	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	YER133W
+7.891670e-03	3	5	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YAR019C	YER133W	YNR052C
+1.879030e-01	1	5	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	YER133W
+3.360060e-01	1	5	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YDL185W
+4.819610e-03	2	5	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	YAR019C	YGR092W
+1.556080e-01	1	5	217	6526	97048	Saccharomyces	cerevisiae	GO:0007046	biological_process	"ribosome biogenesis"	YER133W
+2.127700e-02	1	5	28	6526	97048	Saccharomyces	cerevisiae	GO:0006885	biological_process	"regulation of pH"	YDL185W
+1.826020e-02	1	5	24	6526	97048	Saccharomyces	cerevisiae	GO:0007035	biological_process	"vacuolar acidification"	YDL185W
+2.248450e-01	1	5	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	YER133W
+4.490660e-02	2	5	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YDL185W	YER133W
+2.052350e-02	1	5	27	6526	97048	Saccharomyces	cerevisiae	GO:0004722	molecular_function	"protein serine/threonine phosphatase activity"	YER133W
+4.736020e-02	1	5	63	6526	97048	Saccharomyces	cerevisiae	GO:0016570	biological_process	"histone modification"	YER133W
+6.300830e-02	3	5	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YAR019C	YER133W	YGR092W
+2.589050e-01	5	5	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0043487	biological_process	"regulation of RNA stability"	YNR052C
+2.208090e-01	5	5	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+2.914150e-04	3	5	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	YAR019C	YER133W	YGR092W
+1.163900e-01	2	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YER133W	YNR052C
+1.669260e-01	1	5	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	YER133W
+1.522550e-01	1	5	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	YER133W
+1.807400e-01	1	5	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	YDL185W
+8.621900e-03	2	5	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	YAR019C	YGR092W
+7.216320e-02	1	5	97	6526	97048	Saccharomyces	cerevisiae	GO:0000910	biological_process	"cytokinesis"	YAR019C
+7.534670e-02	3	5	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDL185W	YER133W	YNR052C
+3.826140e-03	1	5	5	6526	97048	Saccharomyces	cerevisiae	GO:0006314	biological_process	"intron homing"	YDL185W
+1.599250e-02	1	5	21	6526	97048	Saccharomyces	cerevisiae	GO:0007093	biological_process	"mitotic checkpoint"	YER133W
+2.574150e-01	1	5	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	YNR052C
+2.634350e-01	1	5	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	YER133W
+4.736020e-02	1	5	63	6526	97048	Saccharomyces	cerevisiae	GO:0016569	biological_process	"covalent chromatin modification"	YER133W
+5.126220e-02	2	5	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YER133W	YNR052C
+1.813940e-01	1	5	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	YDL185W
+8.944260e-02	2	5	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	YAR019C	YGR092W
+2.366500e-01	1	5	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YNR052C
+7.432670e-02	1	5	100	6526	97048	Saccharomyces	cerevisiae	GO:0004540	molecular_function	"ribonuclease activity"	YNR052C
+2.812630e-01	1	5	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	YDL185W
+1.901510e-02	1	5	25	6526	97048	Saccharomyces	cerevisiae	GO:0004536	molecular_function	"deoxyribonuclease activity"	YDL185W
+2.056760e-01	5	5	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+2.297090e-03	1	5	3	6526	97048	Saccharomyces	cerevisiae	GO:0016576	biological_process	"histone dephosphorylation"	YER133W
+2.459640e-02	3	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YAR019C	YER133W	YGR092W
+7.569640e-04	5	5	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+2.929560e-01	1	5	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	YER133W
+4.624390e-03	5	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+2.203010e-02	1	5	29	6526	97048	Saccharomyces	cerevisiae	GO:0005977	biological_process	"glycogen metabolism"	YER133W
+9.219900e-02	1	5	125	6526	97048	Saccharomyces	cerevisiae	GO:0005667	cellular_component	"transcription factor complex"	YNR052C
+2.803790e-02	1	5	37	6526	97048	Saccharomyces	cerevisiae	GO:0044463	cellular_component	"cell projection part"	YER133W
+2.562230e-02	5	5	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+2.127700e-02	1	5	28	6526	97048	Saccharomyces	cerevisiae	GO:0006109	biological_process	"regulation of carbohydrate metabolism"	YER133W
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0005849	cellular_component	"mRNA cleavage factor complex"	YER133W
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+8.222480e-02	1	5	111	6526	97048	Saccharomyces	cerevisiae	GO:0030435	biological_process	"sporulation"	YER133W
+1.090960e-01	1	5	149	6526	97048	Saccharomyces	cerevisiae	GO:0000324	cellular_component	"vacuole (sensu Fungi)"	YDL185W
+3.079270e-01	1	5	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YER133W
+1.826020e-02	1	5	24	6526	97048	Saccharomyces	cerevisiae	GO:0051453	biological_process	"regulation of cellular pH"	YDL185W
+2.437590e-03	2	5	104	6526	97048	Saccharomyces	cerevisiae	GO:0006873	biological_process	"cell ion homeostasis"	YDL185W	YER133W
+2.628440e-04	3	5	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	YAR019C	YER133W	YGR092W
+6.071570e-01	1	5	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YER133W
+8.793500e-02	1	5	119	6526	97048	Saccharomyces	cerevisiae	GO:0042623	molecular_function	"ATPase activity, coupled"	YDL185W
+7.560380e-04	3	5	283	6526	97048	Saccharomyces	cerevisiae	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	YDL185W	YER133W	YNR052C
+2.297090e-03	1	5	3	6526	97048	Saccharomyces	cerevisiae	GO:0000280	biological_process	"nuclear division"	YGR092W
+5.632120e-01	1	5	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YDL185W
+1.066190e-02	3	5	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	YAR019C	YER133W	YGR092W
+1.034920e-01	1	5	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	YER133W
+8.206360e-02	4	5	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YAR019C	YDL185W	YER133W	YGR092W
+1.927540e-01	2	5	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YER133W	YNR052C
+5.886720e-01	1	5	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YDL185W
+2.503770e-02	1	5	33	6526	97048	Saccharomyces	cerevisiae	GO:0042625	molecular_function	"ATPase activity, coupled to transmembrane movement of ions"	YDL185W
+3.873620e-01	1	5	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YDL185W
+3.016240e-01	1	5	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YER133W
+6.564860e-02	1	5	88	6526	97048	Saccharomyces	cerevisiae	GO:0016791	molecular_function	"phosphoric monoester hydrolase activity"	YER133W
+3.340690e-03	2	5	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	YAR019C	YER133W
+4.292870e-02	1	5	57	6526	97048	Saccharomyces	cerevisiae	GO:0015077	molecular_function	"monovalent inorganic cation transporter activity"	YDL185W
+7.640550e-03	1	5	10	6526	97048	Saccharomyces	cerevisiae	GO:0030846	biological_process	"transcription termination from Pol II promoter, RNA polymerase(A) coupled"	YER133W
+1.090960e-01	1	5	149	6526	97048	Saccharomyces	cerevisiae	GO:0000322	cellular_component	"storage vacuole"	YDL185W
+4.016310e-01	5	5	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+5.353310e-03	1	5	7	6526	97048	Saccharomyces	cerevisiae	GO:0000164	cellular_component	"protein phosphatase type 1 complex"	YER133W
+4.624390e-03	5	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+2.628440e-04	3	5	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	YAR019C	YER133W	YGR092W
+5.430980e-01	1	5	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YDL185W
+2.127700e-02	1	5	28	6526	97048	Saccharomyces	cerevisiae	GO:0016796	molecular_function	"exonuclease activity, active with either ribo- or deoxyribonucleic acids and producing 5'-phosphomonoesters"	YNR052C
+1.296110e-02	1	5	17	6526	97048	Saccharomyces	cerevisiae	GO:0006353	biological_process	"transcription termination"	YER133W
+8.507890e-03	3	5	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YAR019C	YER133W	YNR052C
+3.415110e-01	1	5	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YDL185W
+3.848070e-02	1	5	51	6526	97048	Saccharomyces	cerevisiae	GO:0000075	biological_process	"cell cycle checkpoint"	YER133W
+9.163040e-03	1	5	12	6526	97048	Saccharomyces	cerevisiae	GO:0030014	cellular_component	"CCR4-NOT complex"	YNR052C
+5.964480e-01	3	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YDL185W	YER133W	YNR052C
+6.201360e-02	1	5	83	6526	97048	Saccharomyces	cerevisiae	GO:0005386	molecular_function	"carrier activity"	YDL185W
+1.932800e-02	2	5	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	YER133W	YNR052C
+4.691810e-03	2	5	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	YAR019C	YER133W
+7.432670e-02	1	5	100	6526	97048	Saccharomyces	cerevisiae	GO:0006310	biological_process	"DNA recombination"	YDL185W
+8.947270e-05	3	5	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	YAR019C	YER133W	YGR092W
+1.761560e-01	1	5	248	6526	97048	Saccharomyces	cerevisiae	GO:0016072	biological_process	"rRNA metabolism"	YER133W
+2.626430e-03	2	5	108	6526	97048	Saccharomyces	cerevisiae	GO:0050801	biological_process	"ion homeostasis"	YDL185W	YER133W
+3.103080e-02	1	5	41	6526	97048	Saccharomyces	cerevisiae	GO:0006073	biological_process	"glucan metabolism"	YER133W
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0007094	biological_process	"mitotic spindle checkpoint"	YER133W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+2.203010e-02	1	5	29	6526	97048	Saccharomyces	cerevisiae	GO:0008408	molecular_function	"3'-5' exonuclease activity"	YNR052C
+2.973230e-03	2	5	115	6526	97048	Saccharomyces	cerevisiae	GO:0019725	biological_process	"cell homeostasis"	YDL185W	YER133W
+1.441660e-01	1	5	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	YER133W
+1.034920e-01	1	5	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	YER133W
+4.809720e-02	1	5	64	6526	97048	Saccharomyces	cerevisiae	GO:0006401	biological_process	"RNA catabolism"	YNR052C
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+5.964480e-01	3	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YDL185W	YER133W	YNR052C
+5.874170e-02	2	5	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	YER133W	YNR052C
+4.691810e-03	2	5	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	YAR019C	YER133W
+8.998860e-03	3	5	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YAR019C	YER133W	YNR052C
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0000288	biological_process	"mRNA catabolism, deadenylylation-dependent decay"	YNR052C
+5.763660e-02	1	5	77	6526	97048	Saccharomyces	cerevisiae	GO:0006365	biological_process	"35S primary transcript processing"	YER133W
+7.432670e-02	1	5	100	6526	97048	Saccharomyces	cerevisiae	GO:0042578	molecular_function	"phosphoric ester hydrolase activity"	YER133W
+4.332870e-02	2	5	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YER133W	YNR052C
+6.128520e-02	1	5	82	6526	97048	Saccharomyces	cerevisiae	GO:0019954	biological_process	"asexual reproduction"	YER133W
+6.116190e-03	1	5	8	6526	97048	Saccharomyces	cerevisiae	GO:0000221	cellular_component	"hydrogen-transporting ATPase V1 domain"	YDL185W
+1.387390e-01	1	5	192	6526	97048	Saccharomyces	cerevisiae	GO:0005773	cellular_component	"vacuole"	YDL185W
+4.691810e-03	2	5	145	6526	97048	Saccharomyces	cerevisiae	GO:0004518	molecular_function	"nuclease activity"	YDL185W	YNR052C
+1.400990e-01	1	5	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	YER133W
+2.953530e-02	1	5	39	6526	97048	Saccharomyces	cerevisiae	GO:0004527	molecular_function	"exonuclease activity"	YNR052C
+4.385210e-02	2	5	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YER133W	YNR052C
+1.522550e-01	1	5	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	YER133W
+6.116190e-03	1	5	8	6526	97048	Saccharomyces	cerevisiae	GO:0000903	biological_process	"cellular morphogenesis during vegetative growth"	YER133W
+3.957830e-01	2	5	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YDL185W	YER133W
+1.144330e-02	1	5	15	6526	97048	Saccharomyces	cerevisiae	GO:0005847	cellular_component	"mRNA cleavage and polyadenylation specificity factor complex"	YER133W
+1.826020e-02	1	5	24	6526	97048	Saccharomyces	cerevisiae	GO:0045851	biological_process	"pH reduction"	YDL185W
+2.428650e-02	1	5	32	6526	97048	Saccharomyces	cerevisiae	GO:0015399	molecular_function	"primary active transporter activity"	YDL185W
+6.854850e-02	1	5	92	6526	97048	Saccharomyces	cerevisiae	GO:0030003	biological_process	"cation homeostasis"	YDL185W
+2.580190e-01	1	5	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YNR052C
+1.813940e-01	1	5	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	YDL185W
+1.371760e-02	3	5	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YDL185W	YER133W	YNR052C
+3.401630e-02	1	5	45	6526	97048	Saccharomyces	cerevisiae	GO:0004721	molecular_function	"phosphoprotein phosphatase activity"	YER133W
+2.728850e-02	1	5	36	6526	97048	Saccharomyces	cerevisiae	GO:0006112	biological_process	"energy reserve metabolism"	YER133W
+3.842480e-01	1	5	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	YER133W
+1.298620e-01	1	5	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	YDL185W
+3.252440e-02	1	5	43	6526	97048	Saccharomyces	cerevisiae	GO:0005937	cellular_component	"mating projection"	YER133W
+6.753310e-06	3	5	60	6526	97048	Saccharomyces	cerevisiae	GO:0005815	cellular_component	"microtubule organizing center"	YAR019C	YER133W	YGR092W
+3.286940e-03	2	5	121	6526	97048	Saccharomyces	cerevisiae	GO:0042592	biological_process	"homeostasis"	YDL185W	YER133W
+8.365510e-02	1	5	113	6526	97048	Saccharomyces	cerevisiae	GO:0030154	biological_process	"cell differentiation"	YER133W
+3.592880e-05	3	5	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	YAR019C	YER133W	YGR092W
+3.800770e-01	1	5	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YDL185W
+1.912080e-03	2	5	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	YAR019C	YGR092W
+4.012620e-01	5	5	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+1.599250e-02	1	5	21	6526	97048	Saccharomyces	cerevisiae	GO:0009266	biological_process	"response to temperature stimulus"	YER133W
+4.440770e-02	1	5	59	6526	97048	Saccharomyces	cerevisiae	GO:0005976	biological_process	"polysaccharide metabolism"	YER133W
+4.366840e-02	1	5	58	6526	97048	Saccharomyces	cerevisiae	GO:0016820	molecular_function	"hydrolase activity, acting on acid anhydrides, catalyzing transmembrane movement of substances"	YDL185W
+2.131350e-01	5	5	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+4.292870e-02	1	5	57	6526	97048	Saccharomyces	cerevisiae	GO:0004519	molecular_function	"endonuclease activity"	YDL185W
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YAR019C	YDL185W	YER133W	YGR092W	YNR052C
+2.007970e-01	1	5	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	YNR052C
+3.394860e-03	2	5	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	YAR019C	YER133W
+2.235940e-01	1	5	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YNR052C
+1.144330e-02	1	5	15	6526	97048	Saccharomyces	cerevisiae	GO:0006369	biological_process	"transcription termination from RNA polymerase II promoter"	YER133W
+1.414560e-01	1	5	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	YNR052C
+1.312430e-02	2	5	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	YAR019C	YER133W
+5.353310e-03	1	5	7	6526	97048	Saccharomyces	cerevisiae	GO:0000289	biological_process	"poly(A) tail shortening"	YNR052C
+7.856320e-03	3	5	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YAR019C	YER133W	YNR052C
+2.127700e-02	1	5	28	6526	97048	Saccharomyces	cerevisiae	GO:0006470	biological_process	"protein amino acid dephosphorylation"	YER133W
+1.909210e-05	3	5	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	YAR019C	YER133W	YGR092W
+1.901510e-02	1	5	25	6526	97048	Saccharomyces	cerevisiae	GO:0051252	biological_process	"regulation of RNA metabolism"	YNR052C
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0043488	biological_process	"regulation of mRNA stability"	YNR052C
+2.803790e-02	1	5	37	6526	97048	Saccharomyces	cerevisiae	GO:0016311	biological_process	"dephosphorylation"	YER133W
+1.144330e-02	1	5	15	6526	97048	Saccharomyces	cerevisiae	GO:0016471	cellular_component	"hydrogen-translocating V-type ATPase complex"	YDL185W
+3.561920e-01	1	5	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YDL185W
+4.797460e-01	2	5	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YER133W	YNR052C
+4.366840e-02	1	5	58	6526	97048	Saccharomyces	cerevisiae	GO:0042626	molecular_function	"ATPase activity, coupled to transmembrane movement of substances"	YDL185W
+3.826140e-03	1	5	5	6526	97048	Saccharomyces	cerevisiae	GO:0001400	cellular_component	"mating projection base"	YER133W
+5.104060e-02	1	5	68	6526	97048	Saccharomyces	cerevisiae	GO:0007034	biological_process	"vacuolar transport"	YDL185W
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0004532	molecular_function	"exoribonuclease activity"	YNR052C
+4.154920e-05	3	5	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	YAR019C	YER133W	YGR092W
+2.154230e-01	1	5	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	YNR052C
+1.847850e-02	2	5	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	YER133W	YNR052C
+7.792350e-02	1	5	105	6526	97048	Saccharomyces	cerevisiae	GO:0005774	cellular_component	"vacuolar membrane"	YDL185W
+1.034920e-01	1	5	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	YER133W
+1.826020e-02	1	5	24	6526	97048	Saccharomyces	cerevisiae	GO:0051452	biological_process	"cellular pH reduction"	YDL185W
+2.652340e-01	1	5	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	YNR052C
+9.574010e-02	1	5	130	6526	97048	Saccharomyces	cerevisiae	GO:0008324	molecular_function	"cation transporter activity"	YDL185W
+3.499890e-02	2	5	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YAR019C	YER133W
+2.369480e-02	2	5	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	YAR019C	YGR092W

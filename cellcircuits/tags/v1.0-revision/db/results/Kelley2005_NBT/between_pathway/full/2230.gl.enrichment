@@ -1,0 +1,198 @@
+#USING RPD3 instead of its synonym YNL330C in Saccharomyces cerevisiae
+#USING RXT3 instead of its synonym YDL076C in Saccharomyces cerevisiae
+#USING SWC3 instead of its synonym YAL011W in Saccharomyces cerevisiae
+#USING KEL1 instead of its synonym YHR158C in Saccharomyces cerevisiae
+#USING SIN3 instead of its synonym YOL004W in Saccharomyces cerevisiae
+#USING CTI6 instead of its synonym YPL181W in Saccharomyces cerevisiae
+#USING LTE1 instead of its synonym YAL024C in Saccharomyces cerevisiae
+#USING CDC45 instead of its synonym YLR103C in Saccharomyces cerevisiae
+#USING SAP30 instead of its synonym YMR263W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.664970e-02	1	9	27	6526	97048	Saccharomyces	cerevisiae	GO:0005085	molecular_function	"guanyl-nucleotide exchange factor activity"	YAL024C
+9.911530e-01	2	9	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YAL011W	YHR158C
+9.128560e-02	1	9	69	6526	97048	Saccharomyces	cerevisiae	GO:0030695	molecular_function	"GTPase regulator activity"	YAL024C
+1.016920e-01	7	9	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+7.583040e-01	1	9	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YLR103C
+3.014610e-05	5	9	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	YAL011W	YLR103C	YMR263W	YNL330C	YOL004W
+1.169830e-01	7	9	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+1.204950e-04	3	9	76	6526	97048	Saccharomyces	cerevisiae	GO:0045941	biological_process	"positive regulation of transcription"	YNL330C	YOL004W	YPL181W
+3.479260e-01	8	9	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YAL011W	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+1.235120e-02	1	9	9	6526	97048	Saccharomyces	cerevisiae	GO:0006345	biological_process	"loss of chromatin silencing"	YNL330C
+5.401930e-01	3	9	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YMR263W	YNL330C	YOL004W
+2.756510e-03	1	9	2	6526	97048	Saccharomyces	cerevisiae	GO:0008360	biological_process	"regulation of cell shape"	YHR158C
+2.728890e-05	3	9	47	6526	97048	Saccharomyces	cerevisiae	GO:0006348	biological_process	"chromatin silencing at telomere"	YMR263W	YNL330C	YOL004W
+6.012990e-02	4	9	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YLR103C	YNL330C	YOL004W	YPL181W
+2.162230e-03	2	9	52	6526	97048	Saccharomyces	cerevisiae	GO:0016563	molecular_function	"transcriptional activator activity"	YNL330C	YOL004W
+3.224550e-02	2	9	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	YNL330C	YOL004W
+4.462910e-02	1	9	33	6526	97048	Saccharomyces	cerevisiae	GO:0001302	biological_process	"replicative cell aging"	YNL330C
+7.770540e-02	6	9	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W
+3.310700e-01	3	9	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YDL076C	YNL330C	YOL004W
+3.824360e-04	2	9	22	6526	97048	Saccharomyces	cerevisiae	GO:0007096	biological_process	"regulation of exit from mitosis"	YAL024C	YHR158C
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YAL011W	YAL024C	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+2.239430e-03	5	9	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YAL011W	YLR103C	YMR263W	YNL330C	YOL004W
+8.186390e-07	3	9	15	6526	97048	Saccharomyces	cerevisiae	GO:0006476	biological_process	"protein amino acid deacetylation"	YDL076C	YNL330C	YOL004W
+2.562000e-01	1	9	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	YLR103C
+3.933310e-02	2	9	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YAL024C	YHR158C
+5.779800e-02	1	9	43	6526	97048	Saccharomyces	cerevisiae	GO:0042995	cellular_component	"cell projection"	YHR158C
+1.235120e-02	1	9	9	6526	97048	Saccharomyces	cerevisiae	GO:0045815	biological_process	"positive regulation of gene expression, epigenetic"	YNL330C
+2.000280e-03	2	9	50	6526	97048	Saccharomyces	cerevisiae	GO:0007088	biological_process	"regulation of mitosis"	YAL024C	YHR158C
+3.998490e-03	2	9	71	6526	97048	Saccharomyces	cerevisiae	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	YNL330C	YOL004W
+6.171710e-02	1	9	46	6526	97048	Saccharomyces	cerevisiae	GO:0000122	biological_process	"negative regulation of transcription from RNA polymerase II promoter"	YOL004W
+1.383270e-01	1	9	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	YHR158C
+5.673620e-04	5	9	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	YAL011W	YLR103C	YMR263W	YNL330C	YOL004W
+2.050980e-02	1	9	15	6526	97048	Saccharomyces	cerevisiae	GO:0005656	cellular_component	"pre-replicative complex"	YLR103C
+1.843430e-01	1	9	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	YHR158C
+1.351730e-04	5	9	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YDL076C	YMR263W	YNL330C	YOL004W	YPL181W
+7.898890e-01	1	9	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YAL011W
+1.562920e-01	1	9	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	YHR158C
+1.680500e-06	5	9	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	YAL011W	YDL076C	YMR263W	YNL330C	YOL004W
+2.802440e-01	1	9	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	YHR158C
+3.170570e-06	3	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0030466	biological_process	"chromatin silencing at silent mating-type cassette"	YMR263W	YNL330C	YOL004W
+5.779800e-02	1	9	43	6526	97048	Saccharomyces	cerevisiae	GO:0007569	biological_process	"cell aging"	YNL330C
+4.064680e-02	1	9	30	6526	97048	Saccharomyces	cerevisiae	GO:0006271	biological_process	"DNA strand elongation"	YLR103C
+3.003360e-01	3	9	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	YDL076C	YNL330C	YOL004W
+3.650630e-02	3	9	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	YDL076C	YNL330C	YOL004W
+2.747050e-06	3	9	22	6526	97048	Saccharomyces	cerevisiae	GO:0019213	molecular_function	"deacetylase activity"	YMR263W	YNL330C	YOL004W
+4.897260e-02	2	9	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	YMR263W	YOL004W
+4.132230e-03	1	9	3	6526	97048	Saccharomyces	cerevisiae	GO:0045026	biological_process	"plasma membrane fusion"	YHR158C
+3.300610e-02	5	9	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YAL011W	YLR103C	YMR263W	YNL330C	YOL004W
+3.664970e-02	1	9	27	6526	97048	Saccharomyces	cerevisiae	GO:0006312	biological_process	"mitotic recombination"	YNL330C
+6.819220e-05	3	9	63	6526	97048	Saccharomyces	cerevisiae	GO:0016810	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds"	YMR263W	YNL330C	YOL004W
+2.444500e-01	1	9	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	YHR158C
+3.125460e-01	1	9	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	YHR158C
+2.327900e-06	7	9	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YAL024C	YDL076C	YHR158C	YMR263W	YNL330C	YOL004W	YPL181W
+4.148200e-07	5	9	135	6526	97048	Saccharomyces	cerevisiae	GO:0006338	biological_process	"chromatin remodeling"	YAL011W	YDL076C	YMR263W	YNL330C	YOL004W
+1.395350e-01	1	9	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	YLR103C
+9.417080e-06	6	9	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W
+6.819220e-05	3	9	63	6526	97048	Saccharomyces	cerevisiae	GO:0016570	biological_process	"histone modification"	YDL076C	YNL330C	YOL004W
+2.791960e-01	3	9	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YDL076C	YNL330C	YOL004W
+3.331340e-01	8	9	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YAL011W	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+7.474770e-05	4	9	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	YDL076C	YMR263W	YNL330C	YOL004W
+7.166610e-05	4	9	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	YDL076C	YMR263W	YNL330C	YOL004W
+8.457330e-05	4	9	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	YDL076C	YMR263W	YNL330C	YOL004W
+1.870520e-04	3	9	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	YNL330C	YOL004W	YPL181W
+1.098550e-02	1	9	8	6526	97048	Saccharomyces	cerevisiae	GO:0001308	biological_process	"loss of chromatin silencing during replicative cell aging"	YNL330C
+1.655810e-05	4	9	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	YDL076C	YMR263W	YNL330C	YOL004W
+6.588800e-02	9	9	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YAL011W	YAL024C	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+2.239430e-03	5	9	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YAL011W	YLR103C	YMR263W	YNL330C	YOL004W
+2.802440e-01	1	9	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	YHR158C
+3.638380e-06	5	9	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	YAL011W	YDL076C	YMR263W	YNL330C	YOL004W
+5.998970e-04	7	9	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+1.934260e-05	4	9	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	YDL076C	YMR263W	YNL330C	YOL004W
+9.577450e-02	2	9	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	YHR158C	YNL330C
+2.661620e-04	5	9	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YDL076C	YMR263W	YNL330C	YOL004W	YPL181W
+6.819220e-05	3	9	63	6526	97048	Saccharomyces	cerevisiae	GO:0016569	biological_process	"covalent chromatin modification"	YDL076C	YNL330C	YOL004W
+4.104000e-05	5	9	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YDL076C	YMR263W	YNL330C	YOL004W	YPL181W
+2.856390e-04	2	9	19	6526	97048	Saccharomyces	cerevisiae	GO:0003714	molecular_function	"transcription corepressor activity"	YNL330C	YOL004W
+7.583040e-01	1	9	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YLR103C
+5.798060e-02	9	9	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YAL011W	YAL024C	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+7.660680e-03	6	9	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W
+1.178330e-01	2	9	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	YNL330C	YOL004W
+1.224830e-01	1	9	94	6526	97048	Saccharomyces	cerevisiae	GO:0016044	biological_process	"membrane organization and biogenesis"	YHR158C
+1.573870e-01	5	9	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YAL011W	YLR103C	YMR263W	YNL330C	YOL004W
+4.991610e-02	1	9	37	6526	97048	Saccharomyces	cerevisiae	GO:0044463	cellular_component	"cell projection part"	YHR158C
+5.292580e-04	3	9	125	6526	97048	Saccharomyces	cerevisiae	GO:0005667	cellular_component	"transcription factor complex"	YMR263W	YNL330C	YOL004W
+6.553580e-07	3	9	14	6526	97048	Saccharomyces	cerevisiae	GO:0000183	biological_process	"chromatin silencing at rDNA"	YMR263W	YNL330C	YOL004W
+7.212860e-02	7	9	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+5.141630e-05	4	9	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	YDL076C	YMR263W	YNL330C	YOL004W
+3.056500e-02	2	9	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	YNL330C	YOL004W
+5.506260e-03	1	9	4	6526	97048	Saccharomyces	cerevisiae	GO:0000755	biological_process	"cytogamy"	YHR158C
+2.340430e-01	7	9	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+4.132230e-03	1	9	3	6526	97048	Saccharomyces	cerevisiae	GO:0001100	biological_process	"negative regulation of exit from mitosis"	YHR158C
+1.743740e-04	5	9	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YAL011W	YDL076C	YMR263W	YNL330C	YOL004W
+9.805060e-03	5	9	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YAL011W	YDL076C	YMR263W	YNL330C	YOL004W
+1.627530e-04	3	9	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	YNL330C	YOL004W	YPL181W
+6.731030e-01	3	9	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YAL011W	YDL076C	YHR158C
+6.439520e-02	3	9	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	YDL076C	YNL330C	YOL004W
+1.383270e-01	1	9	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	YHR158C
+9.889360e-01	1	9	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YAL011W
+4.897260e-02	2	9	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	YMR263W	YOL004W
+8.491580e-03	5	9	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YAL011W	YLR103C	YMR263W	YNL330C	YOL004W
+1.383270e-01	1	9	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	YHR158C
+1.554430e-04	5	9	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YAL011W	YDL076C	YMR263W	YNL330C	YOL004W
+1.145150e-02	2	9	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	YAL024C	YHR158C
+1.934860e-01	9	9	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YAL011W	YAL024C	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+1.790350e-06	4	9	80	6526	97048	Saccharomyces	cerevisiae	GO:0031507	biological_process	"heterochromatin formation"	YDL076C	YMR263W	YNL330C	YOL004W
+1.573870e-01	5	9	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YAL011W	YLR103C	YMR263W	YNL330C	YOL004W
+2.809810e-06	7	9	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YAL024C	YDL076C	YHR158C	YMR263W	YNL330C	YOL004W	YPL181W
+4.132230e-03	1	9	3	6526	97048	Saccharomyces	cerevisiae	GO:0016580	cellular_component	"Sin3 complex"	YOL004W
+6.432180e-02	1	9	48	6526	97048	Saccharomyces	cerevisiae	GO:0005934	cellular_component	"bud tip"	YHR158C
+1.627530e-04	3	9	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	YNL330C	YOL004W	YPL181W
+6.821670e-02	1	9	51	6526	97048	Saccharomyces	cerevisiae	GO:0000075	biological_process	"cell cycle checkpoint"	YAL024C
+7.981540e-02	1	9	60	6526	97048	Saccharomyces	cerevisiae	GO:0045944	biological_process	"positive regulation of transcription from RNA polymerase II promoter"	YOL004W
+1.518770e-01	7	9	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+1.138450e-01	1	9	87	6526	97048	Saccharomyces	cerevisiae	GO:0006261	biological_process	"DNA-dependent DNA replication"	YLR103C
+1.338690e-05	3	9	38	6526	97048	Saccharomyces	cerevisiae	GO:0016811	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds, in linear amides"	YMR263W	YNL330C	YOL004W
+1.593250e-02	2	9	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	YAL024C	YHR158C
+1.550970e-03	2	9	44	6526	97048	Saccharomyces	cerevisiae	GO:0016564	molecular_function	"transcriptional repressor activity"	YNL330C	YOL004W
+2.164770e-05	5	9	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	YAL011W	YLR103C	YMR263W	YNL330C	YOL004W
+2.529530e-06	4	9	85	6526	97048	Saccharomyces	cerevisiae	GO:0031497	biological_process	"chromatin assembly"	YDL076C	YMR263W	YNL330C	YOL004W
+1.298280e-01	1	9	100	6526	97048	Saccharomyces	cerevisiae	GO:0006310	biological_process	"DNA recombination"	YNL330C
+1.449890e-02	2	9	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	YAL024C	YHR158C
+5.842640e-06	4	9	101	6526	97048	Saccharomyces	cerevisiae	GO:0006333	biological_process	"chromatin assembly or disassembly"	YDL076C	YMR263W	YNL330C	YOL004W
+7.136540e-02	2	9	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	YNL330C	YOL004W
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YAL011W	YAL024C	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+1.870520e-04	3	9	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	YNL330C	YOL004W	YPL181W
+2.444500e-01	1	9	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	YHR158C
+1.218800e-03	2	9	39	6526	97048	Saccharomyces	cerevisiae	GO:0003712	molecular_function	"transcription cofactor activity"	YNL330C	YOL004W
+1.518770e-01	7	9	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YAL011W	YAL024C	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+1.593250e-02	2	9	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	YAL024C	YHR158C
+3.230600e-06	7	9	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YAL024C	YDL076C	YHR158C	YMR263W	YNL330C	YOL004W	YPL181W
+2.237660e-01	1	9	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	YAL024C
+2.344970e-03	4	9	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YDL076C	YMR263W	YNL330C	YOL004W
+6.130550e-01	1	9	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YLR103C
+5.910600e-02	1	9	44	6526	97048	Saccharomyces	cerevisiae	GO:0007568	biological_process	"aging"	YNL330C
+1.780000e-04	5	9	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YDL076C	YMR263W	YNL330C	YOL004W	YPL181W
+1.235120e-02	1	9	9	6526	97048	Saccharomyces	cerevisiae	GO:0001304	biological_process	"progressive alteration of chromatin during replicative cell aging"	YNL330C
+3.638380e-06	5	9	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	YAL011W	YDL076C	YMR263W	YNL330C	YOL004W
+1.790350e-06	4	9	80	6526	97048	Saccharomyces	cerevisiae	GO:0045814	biological_process	"negative regulation of gene expression, epigenetic"	YDL076C	YMR263W	YNL330C	YOL004W
+1.887310e-05	3	9	42	6526	97048	Saccharomyces	cerevisiae	GO:0008134	molecular_function	"transcription factor binding"	YNL330C	YOL004W	YPL181W
+4.189340e-04	2	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0006303	biological_process	"double-strand break repair via nonhomologous end joining"	YNL330C	YOL004W
+6.878600e-03	1	9	5	6526	97048	Saccharomyces	cerevisiae	GO:0007029	biological_process	"endoplasmic reticulum organization and biogenesis"	YAL011W
+1.779690e-02	1	9	13	6526	97048	Saccharomyces	cerevisiae	GO:0000812	cellular_component	"SWR1 complex"	YAL011W
+1.307400e-02	6	9	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YAL011W	YDL076C	YHR158C	YMR263W	YNL330C	YOL004W
+4.330330e-02	1	9	32	6526	97048	Saccharomyces	cerevisiae	GO:0043332	cellular_component	"mating projection tip"	YHR158C
+6.577230e-05	5	9	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDL076C	YMR263W	YNL330C	YOL004W	YPL181W
+1.870520e-04	3	9	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	YNL330C	YOL004W	YPL181W
+2.000280e-03	2	9	50	6526	97048	Saccharomyces	cerevisiae	GO:0006302	biological_process	"double-strand break repair"	YNL330C	YOL004W
+8.027760e-02	3	9	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YMR263W	YNL330C	YOL004W
+2.791430e-02	3	9	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YNL330C	YOL004W	YPL181W
+4.355850e-05	4	9	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	YDL076C	YMR263W	YNL330C	YOL004W
+1.991660e-01	2	9	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	YNL330C	YOL004W
+3.170570e-06	3	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0000118	cellular_component	"histone deacetylase complex"	YMR263W	YNL330C	YOL004W
+2.270650e-01	1	9	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	YLR103C
+5.779800e-02	1	9	43	6526	97048	Saccharomyces	cerevisiae	GO:0005937	cellular_component	"mating projection"	YHR158C
+1.790350e-06	4	9	80	6526	97048	Saccharomyces	cerevisiae	GO:0006342	biological_process	"chromatin silencing"	YDL076C	YMR263W	YNL330C	YOL004W
+3.531400e-02	1	9	26	6526	97048	Saccharomyces	cerevisiae	GO:0006270	biological_process	"DNA replication initiation"	YLR103C
+1.931660e-01	9	9	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YAL011W	YAL024C	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+2.593760e-01	1	9	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	YLR103C
+6.182200e-02	9	9	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YAL011W	YAL024C	YDL076C	YHR158C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+5.152770e-07	3	9	13	6526	97048	Saccharomyces	cerevisiae	GO:0016575	biological_process	"histone deacetylation"	YDL076C	YNL330C	YOL004W
+5.254990e-02	1	9	39	6526	97048	Saccharomyces	cerevisiae	GO:0005657	cellular_component	"replication fork"	YLR103C
+2.340430e-01	7	9	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+9.634250e-02	1	9	73	6526	97048	Saccharomyces	cerevisiae	GO:0016585	cellular_component	"chromatin remodeling complex"	YAL011W
+1.163240e-02	2	9	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	YAL024C	YHR158C
+6.015000e-04	4	9	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YDL076C	YMR263W	YNL330C	YOL004W
+2.728890e-05	3	9	47	6526	97048	Saccharomyces	cerevisiae	GO:0031509	biological_process	"telomeric heterochromatin formation"	YMR263W	YNL330C	YOL004W
+7.467640e-02	1	9	56	6526	97048	Saccharomyces	cerevisiae	GO:0006944	biological_process	"membrane fusion"	YHR158C
+8.191310e-04	2	9	32	6526	97048	Saccharomyces	cerevisiae	GO:0000726	biological_process	"non-recombinational repair"	YNL330C	YOL004W
+2.401370e-01	1	9	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	YOL004W
+4.277010e-02	2	9	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	YAL024C	YHR158C
+2.662150e-05	4	9	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDL076C	YMR263W	YNL330C	YOL004W
+2.301780e-06	7	9	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YAL024C	YDL076C	YHR158C	YMR263W	YNL330C	YOL004W	YPL181W
+5.506260e-03	1	9	4	6526	97048	Saccharomyces	cerevisiae	GO:0031578	biological_process	"spindle orientation checkpoint"	YAL024C
+2.424480e-04	3	9	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	YNL330C	YOL004W	YPL181W
+1.371510e-02	1	9	10	6526	97048	Saccharomyces	cerevisiae	GO:0001301	biological_process	"progressive alteration of chromatin during cell aging"	YNL330C
+1.738630e-06	3	9	19	6526	97048	Saccharomyces	cerevisiae	GO:0004407	molecular_function	"histone deacetylase activity"	YMR263W	YNL330C	YOL004W
+4.623900e-03	7	9	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YAL011W	YDL076C	YLR103C	YMR263W	YNL330C	YOL004W	YPL181W
+2.529530e-06	4	9	85	6526	97048	Saccharomyces	cerevisiae	GO:0040029	biological_process	"regulation of gene expression, epigenetic"	YDL076C	YMR263W	YNL330C	YOL004W
+1.920410e-02	2	9	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	YNL330C	YOL004W
+1.790350e-06	4	9	80	6526	97048	Saccharomyces	cerevisiae	GO:0016458	biological_process	"gene silencing"	YDL076C	YMR263W	YNL330C	YOL004W
+7.166610e-05	4	9	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	YDL076C	YMR263W	YNL330C	YOL004W
+1.383270e-01	1	9	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	YHR158C
+3.397470e-01	1	9	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	YOL004W
+1.779690e-02	1	9	13	6526	97048	Saccharomyces	cerevisiae	GO:0006267	biological_process	"pre-replicative complex formation and maintenance"	YLR103C
+1.758950e-04	2	9	15	6526	97048	Saccharomyces	cerevisiae	GO:0003713	molecular_function	"transcription coactivator activity"	YNL330C	YOL004W
+1.353830e-04	3	9	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YNL330C	YOL004W	YPL181W
+1.066270e-01	2	9	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YAL024C	YHR158C

@@ -1,0 +1,295 @@
+#USING eya-1 instead of its synonym C49A1.4 in Caenorhabditis elegans
+#USING pha-4 instead of its synonym F38A6.1 in Caenorhabditis elegans
+#USING kin-10 instead of its synonym T01G9.6 in Caenorhabditis elegans
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+5.778180e-01	3	4	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	C49A1.4	F38A6.1	T01G9.6
+9.999970e-01	1	4	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	F56A12.1
+5.078500e-01	1	4	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	F56A12.1
+7.941010e-01	2	4	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	F38A6.1	T01G9.6
+1.048360e-02	2	4	1193	27713	88307	Caenorhabditis	elegans	GO:0007610	biological_process	"behavior"	F38A6.1	T01G9.6
+7.895250e-01	2	4	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	F38A6.1	T01G9.6
+1.733510e-01	1	4	1288	27713	88307	Caenorhabditis	elegans	GO:0050791	biological_process	"regulation of physiological process"	F56A12.1
+5.693650e-01	1	4	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	F56A12.1
+9.268080e-01	1	4	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	F56A12.1
+9.398050e-01	1	4	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	F56A12.1
+7.895250e-01	2	4	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	F38A6.1	T01G9.6
+7.346530e-01	1	4	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	F56A12.1
+6.670670e-01	3	4	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	C49A1.4	F38A6.1	T01G9.6
+1.000000e+00	4	4	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C49A1.4	F38A6.1	F56A12.1	T01G9.6
+3.240410e-01	1	4	1092	11710	88307	Caenorhabditis	elegans	GO:0003677	molecular_function	"DNA binding"	F56A12.1
+6.627250e-02	1	4	471	27713	88307	Caenorhabditis	elegans	GO:0040014	biological_process	"regulation of body size"	T01G9.6
+2.605410e-01	1	4	851	11710	88307	Caenorhabditis	elegans	GO:0030528	molecular_function	"transcription regulator activity"	F56A12.1
+9.623910e-01	1	4	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	T01G9.6
+1.000000e+00	1	4	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	F56A12.1
+7.569710e-02	1	4	540	27713	88307	Caenorhabditis	elegans	GO:0040035	biological_process	"hermaphrodite genitalia development"	T01G9.6
+1.818480e-01	1	4	573	11710	88307	Caenorhabditis	elegans	GO:0043565	molecular_function	"sequence-specific DNA binding"	F56A12.1
+1.407180e-01	1	4	1031	27713	88307	Caenorhabditis	elegans	GO:0031323	biological_process	"regulation of cellular metabolism"	F56A12.1
+5.778180e-01	3	4	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	C49A1.4	F38A6.1	T01G9.6
+7.337410e-01	1	4	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	F56A12.1
+1.000000e+00	1	4	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	F56A12.1
+8.922910e-02	1	4	640	27713	88307	Caenorhabditis	elegans	GO:0048513	biological_process	"organ development"	T01G9.6
+5.174870e-01	3	4	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	F38A6.1	F56A12.1	T01G9.6
+1.190010e-01	1	4	864	27713	88307	Caenorhabditis	elegans	GO:0006351	biological_process	"transcription, DNA-dependent"	F56A12.1
+5.214100e-01	1	4	1970	11710	88307	Caenorhabditis	elegans	GO:0003676	molecular_function	"nucleic acid binding"	F56A12.1
+1.435490e-01	1	4	1053	27713	88307	Caenorhabditis	elegans	GO:0019222	biological_process	"regulation of metabolism"	F56A12.1
+5.779470e-01	3	4	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	C49A1.4	F38A6.1	T01G9.6
+1.689620e-01	1	4	1253	27713	88307	Caenorhabditis	elegans	GO:0050794	biological_process	"regulation of cellular process"	F56A12.1
+6.589460e-01	3	4	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	C49A1.4	F38A6.1	T01G9.6
+3.447650e-02	1	4	242	27713	88307	Caenorhabditis	elegans	GO:0002009	biological_process	"morphogenesis of an epithelium"	T01G9.6
+7.951260e-01	2	4	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	F38A6.1	T01G9.6
+1.377510e-01	1	4	1008	27713	88307	Caenorhabditis	elegans	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	F56A12.1
+8.901310e-01	1	4	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	F56A12.1
+5.797420e-01	3	4	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	C49A1.4	F38A6.1	T01G9.6
+1.626340e-02	2	4	1497	27713	88307	Caenorhabditis	elegans	GO:0050896	biological_process	"response to stimulus"	F38A6.1	T01G9.6
+2.139860e-01	1	4	684	11710	88307	Caenorhabditis	elegans	GO:0003700	molecular_function	"transcription factor activity"	F56A12.1
+9.835100e-01	2	4	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	F38A6.1	F56A12.1
+5.817940e-01	3	4	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	C49A1.4	F38A6.1	T01G9.6
+9.999950e-01	1	4	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	F56A12.1
+2.255040e-01	1	4	1715	27713	88307	Caenorhabditis	elegans	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	F56A12.1
+6.627250e-02	1	4	471	27713	88307	Caenorhabditis	elegans	GO:0035264	biological_process	"body growth"	T01G9.6
+8.180500e-02	1	4	585	27713	88307	Caenorhabditis	elegans	GO:0007548	biological_process	"sex differentiation"	T01G9.6
+2.596550e-01	4	4	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	C49A1.4	F38A6.1	F56A12.1	T01G9.6
+1.425200e-01	1	4	1045	27713	88307	Caenorhabditis	elegans	GO:0006350	biological_process	"transcription"	F56A12.1
+7.692110e-02	1	4	549	27713	88307	Caenorhabditis	elegans	GO:0048806	biological_process	"genitalia development"	T01G9.6
+7.342540e-01	1	4	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	F56A12.1
+1.367170e-01	1	4	1000	27713	88307	Caenorhabditis	elegans	GO:0045449	biological_process	"regulation of transcription"	F56A12.1
+8.164120e-01	1	4	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	F56A12.1
+1.166360e-01	1	4	846	27713	88307	Caenorhabditis	elegans	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	F56A12.1
+6.731840e-01	1	4	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	F56A12.1
+6.654820e-01	3	4	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	C49A1.4	F38A6.1	T01G9.6
+1.589920e-01	1	4	1174	27713	88307	Caenorhabditis	elegans	GO:0051244	biological_process	"regulation of cellular physiological process"	F56A12.1
+4.866510e-01	1	4	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	F56A12.1
+7.976550e-01	2	4	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	F38A6.1	T01G9.6
+9.621060e-01	1	4	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	T01G9.6
+8.164120e-01	1	4	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	F56A12.1
+6.619100e-01	1	4	1542	6495	88307	Caenorhabditis	elegans	GO:0005634	cellular_component	"nucleus"	F56A12.1
+7.742850e-03	2	4	1021	27713	88307	Caenorhabditis	elegans	GO:0007626	biological_process	"locomotory behavior"	F38A6.1	T01G9.6
+5.636150e-02	1	4	399	27713	88307	Caenorhabditis	elegans	GO:0040018	biological_process	"positive regulation of body size"	T01G9.6
+8.075270e-01	2	4	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	F38A6.1	T01G9.6
+#USING eya instead of its synonym CG9554 in Drosophila melanogaster
+#USING CkIIbeta instead of its synonym CG15224 in Drosophila melanogaster
+#USING fkh instead of its synonym CG10002 in Drosophila melanogaster
+#USING so instead of its synonym CG11121 in Drosophila melanogaster
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.962900e-03	1	4	5	10183	157890	Drosophila	melanogaster	GO:0035271	biological_process	"ring gland development"	CG11121
+1.017620e-02	1	4	26	10183	157890	Drosophila	melanogaster	GO:0007443	biological_process	"Malpighian tubule morphogenesis"	CG10002
+1.043800e-03	2	4	136	10183	157890	Drosophila	melanogaster	GO:0048732	biological_process	"gland development"	CG10002	CG11121
+1.442240e-01	1	4	390	10214	157890	Drosophila	melanogaster	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	CG15224
+3.029370e-02	1	4	78	10183	157890	Drosophila	melanogaster	GO:0007601	biological_process	"visual perception"	CG9554
+2.760350e-02	1	4	71	10183	157890	Drosophila	melanogaster	GO:0007420	biological_process	"brain development"	CG15224
+6.660170e-01	1	4	1818	7583	157890	Drosophila	melanogaster	GO:0005737	cellular_component	"cytoplasm"	CG15224
+1.523450e-02	1	4	39	10183	157890	Drosophila	melanogaster	GO:0008354	biological_process	"germ cell migration"	CG9554
+1.962900e-03	1	4	5	10183	157890	Drosophila	melanogaster	GO:0008584	biological_process	"male gonad development"	CG9554
+1.213460e-01	1	4	325	10214	157890	Drosophila	melanogaster	GO:0004672	molecular_function	"protein kinase activity"	CG15224
+6.594520e-02	4	4	5161	10183	157890	Drosophila	melanogaster	GO:0044237	biological_process	"cellular metabolism"	CG10002	CG11121	CG15224	CG9554
+1.056600e-02	1	4	27	10183	157890	Drosophila	melanogaster	GO:0048557	biological_process	"embryonic digestive tract morphogenesis"	CG10002
+2.418790e-01	1	4	681	10183	157890	Drosophila	melanogaster	GO:0050877	biological_process	"neurophysiological process"	CG9554
+1.095570e-02	1	4	28	10183	157890	Drosophila	melanogaster	GO:0007622	biological_process	"rhythmic behavior"	CG15224
+6.271110e-03	1	4	16	10183	157890	Drosophila	melanogaster	GO:0007492	biological_process	"endoderm development"	CG10002
+1.319890e-01	1	4	354	10183	157890	Drosophila	melanogaster	GO:0007610	biological_process	"behavior"	CG15224
+9.194330e-02	4	4	5608	10183	157890	Drosophila	melanogaster	GO:0008152	biological_process	"metabolism"	CG10002	CG11121	CG15224	CG9554
+9.215250e-08	3	4	30	10183	157890	Drosophila	melanogaster	GO:0048562	biological_process	"embryonic organ morphogenesis"	CG10002	CG11121	CG9554
+6.605210e-02	4	4	3845	7583	157890	Drosophila	melanogaster	GO:0005622	cellular_component	"intracellular"	CG10002	CG11121	CG15224	CG9554
+5.225140e-01	2	4	4072	10214	157890	Drosophila	melanogaster	GO:0003824	molecular_function	"catalytic activity"	CG15224	CG9554
+5.638950e-01	2	4	4319	10214	157890	Drosophila	melanogaster	GO:0005488	molecular_function	"binding"	CG10002	CG11121
+4.403250e-01	2	4	3583	10183	157890	Drosophila	melanogaster	GO:0043170	biological_process	"macromolecule metabolism"	CG15224	CG9554
+2.564470e-01	2	4	2514	10183	157890	Drosophila	melanogaster	GO:0019538	biological_process	"protein metabolism"	CG15224	CG9554
+4.508670e-04	3	4	499	10183	157890	Drosophila	melanogaster	GO:0009790	biological_process	"embryonic development"	CG10002	CG11121	CG9554
+1.000000e+00	4	4	10183	10183	157890	Drosophila	melanogaster	GO:0008150	biological_process	"biological_process"	CG10002	CG11121	CG15224	CG9554
+9.316970e-06	3	4	137	10183	157890	Drosophila	melanogaster	GO:0048598	biological_process	"embryonic morphogenesis"	CG10002	CG11121	CG9554
+1.949960e-02	1	4	50	10183	157890	Drosophila	melanogaster	GO:0042462	biological_process	"eye photoreceptor cell development"	CG9554
+1.716720e-02	2	4	566	10183	157890	Drosophila	melanogaster	GO:0007399	biological_process	"nervous system development"	CG11121	CG15224
+3.938620e-02	2	4	878	10214	157890	Drosophila	melanogaster	GO:0003677	molecular_function	"DNA binding"	CG10002	CG11121
+3.471760e-07	2	4	3	10183	157890	Drosophila	melanogaster	GO:0048049	biological_process	"embryonic eye morphogenesis (sensu Endopterygota)"	CG11121	CG9554
+1.013170e-02	2	4	431	10183	157890	Drosophila	melanogaster	GO:0007560	biological_process	"imaginal disc morphogenesis"	CG11121	CG9554
+5.221530e-03	2	4	307	10183	157890	Drosophila	melanogaster	GO:0048592	biological_process	"eye morphogenesis"	CG11121	CG9554
+2.914140e-02	1	4	75	10183	157890	Drosophila	melanogaster	GO:0035239	biological_process	"tube morphogenesis"	CG10002
+2.066040e-02	1	4	53	10183	157890	Drosophila	melanogaster	GO:0000122	biological_process	"negative regulation of transcription from RNA polymerase II promoter"	CG10002
+2.911360e-02	2	4	746	10183	157890	Drosophila	melanogaster	GO:0019953	biological_process	"sexual reproduction"	CG11121	CG9554
+4.480010e-02	1	4	116	10183	157890	Drosophila	melanogaster	GO:0046530	biological_process	"photoreceptor cell differentiation"	CG9554
+5.097530e-03	1	4	13	10183	157890	Drosophila	melanogaster	GO:0008347	biological_process	"glial cell migration"	CG11121
+5.097530e-03	1	4	13	10183	157890	Drosophila	melanogaster	GO:0009996	biological_process	"negative regulation of cell fate specification"	CG9554
+5.819280e-02	2	4	1079	10183	157890	Drosophila	melanogaster	GO:0031323	biological_process	"regulation of cellular metabolism"	CG10002	CG11121
+7.776870e-02	1	4	204	10183	157890	Drosophila	melanogaster	GO:0007498	biological_process	"mesoderm development"	CG9554
+1.435890e-01	1	4	387	10183	157890	Drosophila	melanogaster	GO:0000902	biological_process	"cellular morphogenesis"	CG9554
+7.885640e-05	4	4	961	10183	157890	Drosophila	melanogaster	GO:0048513	biological_process	"organ development"	CG10002	CG11121	CG15224	CG9554
+9.396290e-03	1	4	24	10183	157890	Drosophila	melanogaster	GO:0042063	biological_process	"gliogenesis"	CG11121
+1.570550e-03	1	4	4	10183	157890	Drosophila	melanogaster	GO:0009649	biological_process	"entrainment of circadian clock"	CG11121
+1.066820e-01	1	4	284	10214	157890	Drosophila	melanogaster	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	CG11121
+1.441390e-02	1	4	37	10214	157890	Drosophila	melanogaster	GO:0004725	molecular_function	"protein tyrosine phosphatase activity"	CG9554
+6.064350e-02	1	4	158	10183	157890	Drosophila	melanogaster	GO:0007417	biological_process	"central nervous system development"	CG15224
+2.104710e-02	1	4	54	10183	157890	Drosophila	melanogaster	GO:0008594	biological_process	"photoreceptor cell morphogenesis (sensu Endopterygota)"	CG9554
+3.386860e-01	1	4	1000	10183	157890	Drosophila	melanogaster	GO:0050874	biological_process	"organismal physiological process"	CG9554
+2.498640e-01	2	4	2474	10183	157890	Drosophila	melanogaster	GO:0044260	biological_process	"cellular macromolecule metabolism"	CG15224	CG9554
+5.952540e-04	3	4	548	10183	157890	Drosophila	melanogaster	GO:0009887	biological_process	"organ morphogenesis"	CG10002	CG11121	CG9554
+8.635610e-02	1	4	228	10214	157890	Drosophila	melanogaster	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	CG15224
+4.333130e-02	2	4	921	10183	157890	Drosophila	melanogaster	GO:0006464	biological_process	"protein modification"	CG15224	CG9554
+6.514120e-01	1	4	1756	7583	157890	Drosophila	melanogaster	GO:0043234	cellular_component	"protein complex"	CG15224
+6.271110e-03	1	4	16	10183	157890	Drosophila	melanogaster	GO:0007562	biological_process	"eclosion"	CG15224
+4.700610e-03	2	4	291	10183	157890	Drosophila	melanogaster	GO:0048748	biological_process	"eye morphogenesis (sensu Endopterygota)"	CG11121	CG9554
+4.700610e-03	2	4	291	10183	157890	Drosophila	melanogaster	GO:0007455	biological_process	"eye-antennal disc morphogenesis"	CG11121	CG9554
+3.530800e-02	2	4	826	10183	157890	Drosophila	melanogaster	GO:0000003	biological_process	"reproduction"	CG11121	CG9554
+1.137750e-02	3	4	1501	10183	157890	Drosophila	melanogaster	GO:0050794	biological_process	"regulation of cellular process"	CG10002	CG11121	CG9554
+1.810810e-01	1	4	496	10183	157890	Drosophila	melanogaster	GO:0016310	biological_process	"phosphorylation"	CG15224
+9.938970e-02	1	4	263	10183	157890	Drosophila	melanogaster	GO:0016265	biological_process	"death"	CG10002
+1.562280e-02	1	4	40	10183	157890	Drosophila	melanogaster	GO:0007442	biological_process	"hindgut morphogenesis"	CG10002
+1.634960e-02	1	4	42	10214	157890	Drosophila	melanogaster	GO:0004722	molecular_function	"protein serine/threonine phosphatase activity"	CG9554
+1.402650e-02	1	4	36	10214	157890	Drosophila	melanogaster	GO:0019204	molecular_function	"nucleotide phosphatase activity"	CG9554
+4.821180e-02	1	4	125	10183	157890	Drosophila	melanogaster	GO:0043067	biological_process	"regulation of programmed cell death"	CG10002
+1.484610e-02	1	4	38	10183	157890	Drosophila	melanogaster	GO:0016319	biological_process	"mushroom body development"	CG15224
+1.056600e-02	1	4	27	10183	157890	Drosophila	melanogaster	GO:0008406	biological_process	"gonad development"	CG9554
+2.373000e-01	2	4	2397	10183	157890	Drosophila	melanogaster	GO:0044267	biological_process	"cellular protein metabolism"	CG15224	CG9554
+5.912470e-02	4	4	3740	7583	157890	Drosophila	melanogaster	GO:0044424	cellular_component	"intracellular part"	CG10002	CG11121	CG15224	CG9554
+1.224110e-01	1	4	327	10183	157890	Drosophila	melanogaster	GO:0043118	biological_process	"negative regulation of physiological process"	CG10002
+1.630160e-02	2	4	551	10183	157890	Drosophila	melanogaster	GO:0009791	biological_process	"post-embryonic development"	CG11121	CG9554
+7.485450e-03	2	4	369	10183	157890	Drosophila	melanogaster	GO:0048523	biological_process	"negative regulation of cellular process"	CG10002	CG9554
+8.676240e-03	2	4	398	10183	157890	Drosophila	melanogaster	GO:0048519	biological_process	"negative regulation of biological process"	CG10002	CG9554
+1.017620e-02	1	4	26	10183	157890	Drosophila	melanogaster	GO:0048613	biological_process	"embryonic ectodermal gut morphogenesis"	CG10002
+1.756260e-02	1	4	45	10183	157890	Drosophila	melanogaster	GO:0048547	biological_process	"gut morphogenesis"	CG10002
+6.214200e-02	1	4	162	10183	157890	Drosophila	melanogaster	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	CG10002
+3.545430e-01	4	4	7858	10183	157890	Drosophila	melanogaster	GO:0007582	biological_process	"physiological process"	CG10002	CG11121	CG15224	CG9554
+2.848500e-03	3	4	932	10183	157890	Drosophila	melanogaster	GO:0009653	biological_process	"morphogenesis"	CG10002	CG11121	CG9554
+5.880030e-03	1	4	15	10183	157890	Drosophila	melanogaster	GO:0007432	biological_process	"salivary gland determination"	CG10002
+6.750570e-03	2	4	350	10183	157890	Drosophila	melanogaster	GO:0001654	biological_process	"eye development"	CG11121	CG9554
+1.604870e-01	1	4	437	10214	157890	Drosophila	melanogaster	GO:0016301	molecular_function	"kinase activity"	CG15224
+2.406490e-02	3	4	1951	10183	157890	Drosophila	melanogaster	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG10002	CG11121	CG9554
+6.774560e-02	1	4	177	10183	157890	Drosophila	melanogaster	GO:0016481	biological_process	"negative regulation of transcription"	CG10002
+2.066040e-02	1	4	53	10183	157890	Drosophila	melanogaster	GO:0007548	biological_process	"sex differentiation"	CG9554
+1.567990e-02	2	4	540	10183	157890	Drosophila	melanogaster	GO:0002165	biological_process	"larval or pupal development (sensu Insecta)"	CG11121	CG9554
+1.975490e-03	4	4	2148	10183	157890	Drosophila	melanogaster	GO:0007275	biological_process	"development"	CG10002	CG11121	CG15224	CG9554
+3.991940e-03	3	4	1046	10183	157890	Drosophila	melanogaster	GO:0006350	biological_process	"transcription"	CG10002	CG11121	CG9554
+6.662070e-03	1	4	17	10183	157890	Drosophila	melanogaster	GO:0007280	biological_process	"pole cell migration"	CG9554
+3.486700e-01	1	4	1038	10214	157890	Drosophila	melanogaster	GO:0016740	molecular_function	"transferase activity"	CG15224
+1.020160e-07	3	4	31	10183	157890	Drosophila	melanogaster	GO:0048646	biological_process	"anatomical structure formation"	CG10002	CG11121	CG9554
+4.280380e-02	2	4	915	10183	157890	Drosophila	melanogaster	GO:0045449	biological_process	"regulation of transcription"	CG10002	CG11121
+1.213170e-05	2	4	15	10183	157890	Drosophila	melanogaster	GO:0001746	biological_process	"Bolwig's organ morphogenesis"	CG11121	CG9554
+3.680360e-02	1	4	95	10183	157890	Drosophila	melanogaster	GO:0007467	biological_process	"photoreceptor cell differentiation (sensu Endopterygota)"	CG9554
+2.416470e-01	4	4	7140	10183	157890	Drosophila	melanogaster	GO:0050875	biological_process	"cellular physiological process"	CG10002	CG11121	CG15224	CG9554
+9.463030e-03	1	4	18	7583	157890	Drosophila	melanogaster	GO:0005956	cellular_component	"protein kinase CK2 complex"	CG15224
+1.563210e-01	2	4	1871	10183	157890	Drosophila	melanogaster	GO:0043283	biological_process	"biopolymer metabolism"	CG15224	CG9554
+3.489240e-02	1	4	90	10183	157890	Drosophila	melanogaster	GO:0001754	biological_process	"eye photoreceptor cell differentiation"	CG9554
+1.238070e-03	3	4	702	10183	157890	Drosophila	melanogaster	GO:0048731	biological_process	"system development"	CG10002	CG11121	CG15224
+1.645150e-03	2	4	171	10183	157890	Drosophila	melanogaster	GO:0007283	biological_process	"spermatogenesis"	CG11121	CG9554
+1.756260e-02	1	4	45	10183	157890	Drosophila	melanogaster	GO:0048546	biological_process	"digestive tract morphogenesis"	CG10002
+4.314570e-03	1	4	11	10183	157890	Drosophila	melanogaster	GO:0008062	biological_process	"eclosion rhythm"	CG15224
+1.717490e-02	1	4	44	10183	157890	Drosophila	melanogaster	GO:0048567	biological_process	"ectodermal gut morphogenesis"	CG10002
+3.067750e-02	1	4	79	10183	157890	Drosophila	melanogaster	GO:0001751	biological_process	"eye photoreceptor cell differentiation (sensu Endopterygota)"	CG9554
+1.908750e-01	1	4	391	7583	157890	Drosophila	melanogaster	GO:0005829	cellular_component	"cytosol"	CG15224
+6.194930e-02	4	4	5081	10183	157890	Drosophila	melanogaster	GO:0044238	biological_process	"primary metabolism"	CG10002	CG11121	CG15224	CG9554
+9.283420e-02	1	4	245	10183	157890	Drosophila	melanogaster	GO:0009892	biological_process	"negative regulation of metabolism"	CG10002
+7.554840e-02	1	4	198	10183	157890	Drosophila	melanogaster	GO:0045165	biological_process	"cell fate commitment"	CG9554
+2.469710e-02	4	4	3007	7583	157890	Drosophila	melanogaster	GO:0043226	cellular_component	"organelle"	CG10002	CG11121	CG15224	CG9554
+1.639910e-02	1	4	42	10183	157890	Drosophila	melanogaster	GO:0006916	biological_process	"anti-apoptosis"	CG10002
+2.245550e-02	2	4	651	10183	157890	Drosophila	melanogaster	GO:0006793	biological_process	"phosphorus metabolism"	CG15224	CG9554
+2.644890e-02	1	4	68	10183	157890	Drosophila	melanogaster	GO:0048565	biological_process	"gut development"	CG10002
+1.836030e-01	1	4	505	10214	157890	Drosophila	melanogaster	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	CG9554
+7.052920e-03	1	4	18	10183	157890	Drosophila	melanogaster	GO:0042659	biological_process	"regulation of cell fate specification"	CG9554
+5.023110e-03	2	4	301	10183	157890	Drosophila	melanogaster	GO:0006928	biological_process	"cell motility"	CG11121	CG9554
+9.829960e-02	1	4	260	10183	157890	Drosophila	melanogaster	GO:0012501	biological_process	"programmed cell death"	CG10002
+6.271110e-03	1	4	16	10183	157890	Drosophila	melanogaster	GO:0007435	biological_process	"salivary gland morphogenesis"	CG10002
+1.962900e-03	1	4	5	10183	157890	Drosophila	melanogaster	GO:0046546	biological_process	"development of primary male sexual characteristics"	CG9554
+9.106070e-03	2	4	408	10183	157890	Drosophila	melanogaster	GO:0007423	biological_process	"sensory organ development"	CG11121	CG9554
+4.710130e-02	2	4	963	10183	157890	Drosophila	melanogaster	GO:0043412	biological_process	"biopolymer modification"	CG15224	CG9554
+1.627090e-01	2	4	1915	10183	157890	Drosophila	melanogaster	GO:0051179	biological_process	"localization"	CG11121	CG9554
+1.068720e-02	2	4	443	10183	157890	Drosophila	melanogaster	GO:0046698	biological_process	"metamorphosis (sensu Insecta)"	CG11121	CG9554
+3.144490e-02	1	4	81	10183	157890	Drosophila	melanogaster	GO:0050793	biological_process	"regulation of development"	CG9554
+5.777490e-01	1	4	1470	7583	157890	Drosophila	melanogaster	GO:0044444	cellular_component	"cytoplasmic part"	CG15224
+1.420140e-02	2	4	513	10183	157890	Drosophila	melanogaster	GO:0007444	biological_process	"imaginal disc development"	CG11121	CG9554
+1.056600e-02	1	4	27	10183	157890	Drosophila	melanogaster	GO:0051093	biological_process	"negative regulation of development"	CG9554
+5.023110e-03	2	4	301	10183	157890	Drosophila	melanogaster	GO:0051674	biological_process	"localization of cell"	CG11121	CG9554
+7.532570e-02	1	4	198	10214	157890	Drosophila	melanogaster	GO:0016791	molecular_function	"phosphoric monoester hydrolase activity"	CG9554
+8.844410e-02	1	4	233	10183	157890	Drosophila	melanogaster	GO:0022008	biological_process	"neurogenesis"	CG11121
+2.253340e-01	4	4	5225	7583	157890	Drosophila	melanogaster	GO:0005623	cellular_component	"cell"	CG10002	CG11121	CG15224	CG9554
+6.903110e-02	1	4	181	10214	157890	Drosophila	melanogaster	GO:0004702	molecular_function	"receptor signaling protein serine/threonine kinase activity"	CG15224
+3.635900e-01	1	4	1091	10214	157890	Drosophila	melanogaster	GO:0004871	molecular_function	"signal transducer activity"	CG15224
+2.245550e-02	2	4	651	10183	157890	Drosophila	melanogaster	GO:0006796	biological_process	"phosphate metabolism"	CG15224	CG9554
+1.498720e-01	2	4	1826	10183	157890	Drosophila	melanogaster	GO:0051234	biological_process	"establishment of localization"	CG11121	CG9554
+1.007460e-01	2	4	1458	10183	157890	Drosophila	melanogaster	GO:0050791	biological_process	"regulation of physiological process"	CG10002	CG11121
+4.351840e-01	1	4	1355	10183	157890	Drosophila	melanogaster	GO:0007165	biological_process	"signal transduction"	CG15224
+1.157400e-07	2	4	2	10183	157890	Drosophila	melanogaster	GO:0001744	biological_process	"optic placode formation (sensu Endopterygota)"	CG11121	CG9554
+1.056600e-02	1	4	27	10183	157890	Drosophila	melanogaster	GO:0048558	biological_process	"embryonic gut morphogenesis"	CG10002
+5.000200e-01	1	4	1620	10183	157890	Drosophila	melanogaster	GO:0007154	biological_process	"cell communication"	CG15224
+1.717490e-02	1	4	44	10183	157890	Drosophila	melanogaster	GO:0007439	biological_process	"ectodermal gut development"	CG10002
+7.146730e-02	1	4	187	10183	157890	Drosophila	melanogaster	GO:0006915	biological_process	"apoptosis"	CG10002
+1.379970e-02	4	4	2600	7583	157890	Drosophila	melanogaster	GO:0043227	cellular_component	"membrane-bound organelle"	CG10002	CG11121	CG15224	CG9554
+2.220650e-02	1	4	57	10183	157890	Drosophila	melanogaster	GO:0042461	biological_process	"photoreceptor cell development"	CG9554
+2.143370e-02	1	4	55	10183	157890	Drosophila	melanogaster	GO:0001708	biological_process	"cell fate specification"	CG9554
+7.443650e-03	1	4	19	10183	157890	Drosophila	melanogaster	GO:0045596	biological_process	"negative regulation of cell differentiation"	CG9554
+9.786300e-03	1	4	25	10183	157890	Drosophila	melanogaster	GO:0048512	biological_process	"circadian behavior"	CG15224
+3.412710e-02	1	4	88	10183	157890	Drosophila	melanogaster	GO:0035295	biological_process	"tube development"	CG10002
+1.073540e-01	1	4	285	10183	157890	Drosophila	melanogaster	GO:0007600	biological_process	"sensory perception"	CG9554
+9.236920e-03	2	4	411	10183	157890	Drosophila	melanogaster	GO:0009888	biological_process	"tissue development"	CG10002	CG9554
+1.017620e-02	1	4	26	10183	157890	Drosophila	melanogaster	GO:0048611	biological_process	"embryonic ectodermal gut development"	CG10002
+3.631870e-02	2	4	841	10214	157890	Drosophila	melanogaster	GO:0030528	molecular_function	"transcription regulator activity"	CG10002	CG11121
+1.134520e-02	1	4	29	10183	157890	Drosophila	melanogaster	GO:0001704	biological_process	"formation of primary germ layer"	CG10002
+1.000000e+00	4	4	10214	10214	157890	Drosophila	melanogaster	GO:0003674	molecular_function	"molecular_function"	CG10002	CG11121	CG15224	CG9554
+6.641900e-03	1	4	17	10214	157890	Drosophila	melanogaster	GO:0008605	molecular_function	"protein kinase CK2 regulator activity"	CG15224
+8.054740e-05	2	4	38	10183	157890	Drosophila	melanogaster	GO:0007623	biological_process	"circadian rhythm"	CG11121	CG15224
+1.000000e+00	4	4	7583	7583	157890	Drosophila	melanogaster	GO:0005575	cellular_component	"cellular_component"	CG10002	CG11121	CG15224	CG9554
+1.375730e-02	4	4	2598	7583	157890	Drosophila	melanogaster	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CG10002	CG11121	CG15224	CG9554
+1.048250e-01	1	4	278	10183	157890	Drosophila	melanogaster	GO:0048749	biological_process	"compound eye development (sensu Endopterygota)"	CG9554
+1.513760e-02	3	4	1658	10183	157890	Drosophila	melanogaster	GO:0050789	biological_process	"regulation of biological process"	CG10002	CG11121	CG9554
+1.414330e-01	1	4	382	10214	157890	Drosophila	melanogaster	GO:0030234	molecular_function	"enzyme regulator activity"	CG15224
+4.968830e-02	2	4	991	10183	157890	Drosophila	melanogaster	GO:0006351	biological_process	"transcription, DNA-dependent"	CG10002	CG11121
+8.195590e-02	1	4	216	10214	157890	Drosophila	melanogaster	GO:0042578	molecular_function	"phosphoric ester hydrolase activity"	CG9554
+1.962900e-03	1	4	5	10183	157890	Drosophila	melanogaster	GO:0035270	biological_process	"endocrine system development"	CG11121
+1.517830e-01	2	4	1845	10214	157890	Drosophila	melanogaster	GO:0003676	molecular_function	"nucleic acid binding"	CG10002	CG11121
+1.017620e-02	1	4	26	10183	157890	Drosophila	melanogaster	GO:0048619	biological_process	"embryonic hindgut morphogenesis"	CG10002
+6.316700e-02	2	4	1128	10183	157890	Drosophila	melanogaster	GO:0019222	biological_process	"regulation of metabolism"	CG10002	CG11121
+5.188200e-03	2	4	306	10183	157890	Drosophila	melanogaster	GO:0040011	biological_process	"locomotion"	CG11121	CG9554
+2.636580e-03	2	4	217	10183	157890	Drosophila	melanogaster	GO:0016477	biological_process	"cell migration"	CG11121	CG9554
+4.903740e-01	1	4	1579	10183	157890	Drosophila	melanogaster	GO:0016043	biological_process	"cell organization and biogenesis"	CG9554
+1.872510e-02	1	4	48	10183	157890	Drosophila	melanogaster	GO:0043069	biological_process	"negative regulation of programmed cell death"	CG10002
+2.240560e-07	3	4	40	10183	157890	Drosophila	melanogaster	GO:0048568	biological_process	"embryonic organ development"	CG10002	CG11121	CG9554
+5.389690e-03	2	4	312	10183	157890	Drosophila	melanogaster	GO:0035214	biological_process	"eye-antennal disc development"	CG11121	CG9554
+4.811060e-02	2	4	974	10183	157890	Drosophila	melanogaster	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG10002	CG11121
+3.139250e-03	1	4	8	10183	157890	Drosophila	melanogaster	GO:0046661	biological_process	"male sex differentiation"	CG9554
+1.174510e-03	1	4	3	10214	157890	Drosophila	melanogaster	GO:0042577	molecular_function	"lipid phosphatase activity"	CG9554
+4.252050e-02	1	4	110	10183	157890	Drosophila	melanogaster	GO:0007431	biological_process	"salivary gland development"	CG10002
+5.684130e-01	1	4	1935	10214	157890	Drosophila	melanogaster	GO:0016787	molecular_function	"hydrolase activity"	CG9554
+8.624300e-02	1	4	227	10183	157890	Drosophila	melanogaster	GO:0031324	biological_process	"negative regulation of cellular metabolism"	CG10002
+3.821600e-02	1	4	99	10214	157890	Drosophila	melanogaster	GO:0004721	molecular_function	"phosphoprotein phosphatase activity"	CG9554
+3.096810e-02	1	4	80	10214	157890	Drosophila	melanogaster	GO:0019207	molecular_function	"kinase regulator activity"	CG15224
+9.389910e-02	2	4	1402	10183	157890	Drosophila	melanogaster	GO:0050896	biological_process	"response to stimulus"	CG15224	CG9554
+8.498750e-03	2	4	395	10214	157890	Drosophila	melanogaster	GO:0003700	molecular_function	"transcription factor activity"	CG10002	CG11121
+1.746360e-01	1	4	477	10183	157890	Drosophila	melanogaster	GO:0048468	biological_process	"cell development"	CG9554
+7.665910e-02	1	4	201	10183	157890	Drosophila	melanogaster	GO:0000904	biological_process	"cellular morphogenesis during differentiation"	CG9554
+2.529330e-02	1	4	65	10183	157890	Drosophila	melanogaster	GO:0007369	biological_process	"gastrulation"	CG10002
+2.380410e-01	1	4	669	10183	157890	Drosophila	melanogaster	GO:0030154	biological_process	"cell differentiation"	CG9554
+1.156230e-01	1	4	308	10183	157890	Drosophila	melanogaster	GO:0006468	biological_process	"protein amino acid phosphorylation"	CG15224
+2.253340e-01	4	4	5225	7583	157890	Drosophila	melanogaster	GO:0044464	cellular_component	"cell part"	CG10002	CG11121	CG15224	CG9554
+1.833780e-02	1	4	47	10183	157890	Drosophila	melanogaster	GO:0043066	biological_process	"negative regulation of apoptosis"	CG10002
+1.174510e-03	1	4	3	10214	157890	Drosophila	melanogaster	GO:0004682	molecular_function	"protein kinase CK2 activity"	CG15224
+1.078110e-02	2	4	445	10183	157890	Drosophila	melanogaster	GO:0007552	biological_process	"metamorphosis"	CG11121	CG9554
+3.471760e-07	2	4	3	10183	157890	Drosophila	melanogaster	GO:0048048	biological_process	"embryonic eye morphogenesis"	CG11121	CG9554
+1.056600e-02	1	4	27	10183	157890	Drosophila	melanogaster	GO:0048566	biological_process	"embryonic gut development"	CG10002
+3.392730e-01	4	4	7772	10183	157890	Drosophila	melanogaster	GO:0009987	biological_process	"cellular process"	CG10002	CG11121	CG15224	CG9554
+1.157400e-07	2	4	2	10183	157890	Drosophila	melanogaster	GO:0001743	biological_process	"optic placode formation"	CG11121	CG9554
+1.056600e-02	1	4	27	10183	157890	Drosophila	melanogaster	GO:0045137	biological_process	"development of primary sexual characteristics"	CG9554
+1.639910e-02	1	4	42	10183	157890	Drosophila	melanogaster	GO:0045595	biological_process	"regulation of cell differentiation"	CG9554
+2.469710e-02	4	4	3007	7583	157890	Drosophila	melanogaster	GO:0043229	cellular_component	"intracellular organelle"	CG10002	CG11121	CG15224	CG9554
+4.301490e-03	1	4	11	10214	157890	Drosophila	melanogaster	GO:0004680	molecular_function	"casein kinase activity"	CG15224
+4.252050e-02	1	4	110	10183	157890	Drosophila	melanogaster	GO:0035272	biological_process	"exocrine system development"	CG10002
+3.859970e-02	2	4	866	10183	157890	Drosophila	melanogaster	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	CG10002	CG11121
+1.962900e-03	1	4	5	10183	157890	Drosophila	melanogaster	GO:0001706	biological_process	"endoderm formation"	CG10002
+1.645150e-03	2	4	171	10183	157890	Drosophila	melanogaster	GO:0048232	biological_process	"male gamete generation"	CG11121	CG9554
+6.087740e-03	2	4	332	10183	157890	Drosophila	melanogaster	GO:0007456	biological_process	"eye development (sensu Endopterygota)"	CG11121	CG9554
+1.037400e-01	1	4	275	10183	157890	Drosophila	melanogaster	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	CG10002
+1.641580e-02	2	4	553	10183	157890	Drosophila	melanogaster	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	CG10002	CG11121
+7.183890e-02	1	4	188	10183	157890	Drosophila	melanogaster	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG10002
+9.510850e-02	2	4	1412	10183	157890	Drosophila	melanogaster	GO:0051244	biological_process	"regulation of cellular physiological process"	CG10002	CG11121
+3.029370e-02	1	4	78	10183	157890	Drosophila	melanogaster	GO:0050953	biological_process	"sensory perception of light stimulus"	CG9554
+1.866870e-02	1	4	48	10214	157890	Drosophila	melanogaster	GO:0019887	molecular_function	"protein kinase regulator activity"	CG15224
+3.680360e-02	1	4	95	10183	157890	Drosophila	melanogaster	GO:0006470	biological_process	"protein amino acid dephosphorylation"	CG9554
+4.631750e-02	1	4	120	10183	157890	Drosophila	melanogaster	GO:0016311	biological_process	"dephosphorylation"	CG9554
+2.728680e-02	2	4	721	10183	157890	Drosophila	melanogaster	GO:0007276	biological_process	"gametogenesis"	CG11121	CG9554
+1.048250e-01	1	4	278	10183	157890	Drosophila	melanogaster	GO:0001745	biological_process	"compound eye morphogenesis (sensu Endopterygota)"	CG9554
+2.701810e-03	4	4	1730	7583	157890	Drosophila	melanogaster	GO:0005634	cellular_component	"nucleus"	CG10002	CG11121	CG15224	CG9554
+1.192000e-01	1	4	318	10183	157890	Drosophila	melanogaster	GO:0051243	biological_process	"negative regulation of cellular physiological process"	CG10002
+9.256260e-02	1	4	245	10214	157890	Drosophila	melanogaster	GO:0005057	molecular_function	"receptor signaling protein activity"	CG15224
+9.902650e-02	1	4	262	10183	157890	Drosophila	melanogaster	GO:0008219	biological_process	"cell death"	CG10002
+8.492520e-05	2	4	39	10183	157890	Drosophila	melanogaster	GO:0048511	biological_process	"rhythmic process"	CG11121	CG15224
+2.544310e-02	2	4	695	10183	157890	Drosophila	melanogaster	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	CG10002	CG11121
+1.911240e-02	1	4	49	10183	157890	Drosophila	melanogaster	GO:0042051	biological_process	"eye photoreceptor development (sensu Endopterygota)"	CG9554
+4.404070e-02	1	4	114	10183	157890	Drosophila	melanogaster	GO:0042981	biological_process	"regulation of apoptosis"	CG10002
+1.963110e-01	1	4	543	10214	157890	Drosophila	melanogaster	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	CG15224

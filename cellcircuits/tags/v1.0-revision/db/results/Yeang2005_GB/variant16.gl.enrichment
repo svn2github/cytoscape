@@ -1,0 +1,215 @@
+#USING FRE8 instead of its synonym YLR047C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+6.575620e-01	8	15	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	GCN3	GDS1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YPL199C
+5.382670e-02	1	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0030641	biological_process	"hydrogen ion homeostasis"	VMA8
+7.330240e-02	1	15	33	6526	97048	Saccharomyces	cerevisiae	GO:0030004	biological_process	"monovalent inorganic cation homeostasis"	VMA8
+5.382670e-02	1	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0008194	molecular_function	"UDP-glycosyltransferase activity"	TPS1
+4.503820e-01	1	15	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	FHL1
+1.598630e-02	1	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0000293	molecular_function	"ferric-chelate reductase activity"	FRE1
+1.173020e-01	1	15	54	6526	97048	Saccharomyces	cerevisiae	GO:0015078	molecular_function	"hydrogen ion transporter activity"	VMA8
+5.365850e-01	8	15	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	FHL1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1
+9.155750e-03	2	15	64	6526	97048	Saccharomyces	cerevisiae	GO:0005843	cellular_component	"cytosolic small ribosomal subunit (sensu Eukaryota)"	RPS16B	RPS21A
+1.453160e-02	3	15	231	6526	97048	Saccharomyces	cerevisiae	GO:0003735	molecular_function	"structural constituent of ribosome"	RPL43A	RPS16B	RPS21A
+1.646020e-01	4	15	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	FHL1	RPL43A	RPS16B	RPS21A
+1.455430e-01	1	15	68	6526	97048	Saccharomyces	cerevisiae	GO:0000329	cellular_component	"vacuolar membrane (sensu Fungi)"	VMA8
+3.837840e-03	2	15	41	6526	97048	Saccharomyces	cerevisiae	GO:0000041	biological_process	"transition metal ion transport"	FRE1	FTR1
+1.613000e-01	1	15	76	6526	97048	Saccharomyces	cerevisiae	GO:0045941	biological_process	"positive regulation of transcription"	MAC1
+5.785820e-01	8	15	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	FHL1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1
+3.841040e-02	1	15	17	6526	97048	Saccharomyces	cerevisiae	GO:0019829	molecular_function	"cation-transporting ATPase activity"	VMA8
+9.754140e-02	2	15	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	GDS1	TPS1
+8.903340e-01	10	15	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	FHL1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YPL199C
+3.851660e-01	1	15	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	TPS1
+7.066080e-01	4	15	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	FRE1	TPS1	VMA8	YLR047C
+1.254580e-01	1	15	58	6526	97048	Saccharomyces	cerevisiae	GO:0043492	molecular_function	"ATPase activity, coupled to movement of substances"	VMA8
+3.256420e-01	1	15	169	6526	97048	Saccharomyces	cerevisiae	GO:0006364	biological_process	"rRNA processing"	FHL1
+7.781980e-01	2	15	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	FHL1	GCN3
+3.266500e-01	7	15	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	FHL1	GCN3	MAC1	RPL43A	RPS16B	RPS21A	TPS1
+2.358120e-01	5	15	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	GCN3	MAC1	RPL43A	RPS16B	RPS21A
+8.593220e-01	1	15	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	FHL1
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	FHL1	FRE1	FTR1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YER130C	YLR047C	YPL080C	YPL199C
+2.930700e-01	1	15	149	6526	97048	Saccharomyces	cerevisiae	GO:0000323	cellular_component	"lytic vacuole"	VMA8
+5.597760e-01	1	15	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	FHL1
+2.514960e-02	3	15	284	6526	97048	Saccharomyces	cerevisiae	GO:0005840	cellular_component	"ribosome"	RPL43A	RPS16B	RPS21A
+3.895360e-01	1	15	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	FHL1
+4.397580e-01	1	15	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	MAC1
+1.632510e-01	1	15	77	6526	97048	Saccharomyces	cerevisiae	GO:0016758	molecular_function	"transferase activity, transferring hexosyl groups"	TPS1
+4.585310e-02	2	15	151	6526	97048	Saccharomyces	cerevisiae	GO:0015075	molecular_function	"ion transporter activity"	FTR1	VMA8
+1.514840e-01	1	15	71	6526	97048	Saccharomyces	cerevisiae	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	MAC1
+2.949860e-02	1	15	13	6526	97048	Saccharomyces	cerevisiae	GO:0009894	biological_process	"regulation of catabolism"	MAC1
+7.348140e-01	2	15	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	YER130C	YPL080C
+7.614330e-01	1	15	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	FHL1
+4.503820e-01	1	15	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	FHL1
+5.067200e-01	1	15	300	6526	97048	Saccharomyces	cerevisiae	GO:0005730	cellular_component	"nucleolus"	FHL1
+4.262090e-01	1	15	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	VMA8
+4.137540e-01	1	15	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	TPS1
+6.485700e-01	1	15	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	MAC1
+9.258380e-01	1	15	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	GDS1
+1.106620e-01	2	15	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	FRE1	FTR1
+2.949860e-02	1	15	13	6526	97048	Saccharomyces	cerevisiae	GO:0046961	molecular_function	"hydrogen-transporting ATPase activity, rotational mechanism"	VMA8
+1.049340e-01	1	15	48	6526	97048	Saccharomyces	cerevisiae	GO:0046916	biological_process	"transition metal ion homeostasis"	MAC1
+3.609590e-01	3	15	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	FRE1	FTR1	VMA8
+1.007750e-01	1	15	46	6526	97048	Saccharomyces	cerevisiae	GO:0008135	molecular_function	"translation factor activity, nucleic acid binding"	GCN3
+7.115700e-02	1	15	32	6526	97048	Saccharomyces	cerevisiae	GO:0015405	molecular_function	"P-P-bond-hydrolysis-driven transporter activity"	VMA8
+2.728290e-01	1	15	137	6526	97048	Saccharomyces	cerevisiae	GO:0015934	cellular_component	"large ribosomal subunit"	RPL43A
+2.289090e-01	1	15	112	6526	97048	Saccharomyces	cerevisiae	GO:0044437	cellular_component	"vacuolar part"	VMA8
+2.485300e-01	1	15	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	MAC1
+3.127850e-01	1	15	161	6526	97048	Saccharomyces	cerevisiae	GO:0030163	biological_process	"protein catabolism"	MAC1
+9.164440e-03	1	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0046351	biological_process	"disaccharide biosynthesis"	TPS1
+4.060870e-01	4	15	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	GCN3	RPL43A	RPS16B	RPS21A
+1.219530e-01	2	15	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	RPS16B	RPS21A
+1.021350e-01	6	15	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	GCN3	RPL43A	RPS16B	RPS21A	TPS1	VMA8
+1.073490e-01	3	15	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	RPL43A	RPS16B	RPS21A
+7.850320e-01	1	15	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	MAC1
+7.075410e-01	1	15	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	VMA8
+2.680150e-04	2	15	11	6526	97048	Saccharomyces	cerevisiae	GO:0016722	molecular_function	"oxidoreductase activity, oxidizing metal ions"	FRE1	YLR047C
+3.981880e-01	1	15	217	6526	97048	Saccharomyces	cerevisiae	GO:0007046	biological_process	"ribosome biogenesis"	FHL1
+6.252920e-02	1	15	28	6526	97048	Saccharomyces	cerevisiae	GO:0006885	biological_process	"regulation of pH"	VMA8
+5.382670e-02	1	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0007035	biological_process	"vacuolar acidification"	VMA8
+6.824570e-03	2	15	55	6526	97048	Saccharomyces	cerevisiae	GO:0030001	biological_process	"metal ion transport"	FRE1	FTR1
+3.764990e-01	4	15	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	GCN3	RPL43A	RPS16B	RPS21A
+8.795010e-01	10	15	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	FHL1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YPL199C
+5.447170e-03	2	15	49	6526	97048	Saccharomyces	cerevisiae	GO:0015674	biological_process	"di-, tri-valent inorganic cation transport"	FRE1	FTR1
+1.844280e-01	1	15	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	MAC1
+8.593220e-01	1	15	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	FHL1
+4.233270e-01	12	15	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	FHL1	FRE1	FTR1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YLR047C
+8.607800e-02	1	15	39	6526	97048	Saccharomyces	cerevisiae	GO:0046873	molecular_function	"metal ion transporter activity"	FTR1
+9.164440e-03	1	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0005992	biological_process	"trehalose biosynthesis"	TPS1
+4.503820e-01	1	15	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	VMA8
+8.764270e-01	2	15	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	FHL1	MAC1
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0042176	biological_process	"regulation of protein catabolism"	MAC1
+3.262810e-01	2	15	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	FHL1	MAC1
+4.516960e-01	1	15	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	VMA8
+8.123150e-01	1	15	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	TPS1
+5.554770e-01	1	15	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	MAC1
+2.482710e-01	2	15	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	FTR1	VMA8
+3.876110e-01	12	15	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	FHL1	FRE1	FTR1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YLR047C
+1.646020e-01	4	15	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	FHL1	RPL43A	RPS16B	RPS21A
+6.468320e-01	1	15	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	TPS1
+9.035990e-01	2	15	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	FHL1	MAC1
+6.217380e-01	5	15	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	FHL1	RPL43A	RPS16B	RPS21A	VMA8
+2.725860e-02	1	15	12	6526	97048	Saccharomyces	cerevisiae	GO:0006825	biological_process	"copper ion transport"	FRE1
+1.587160e-01	3	15	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	RPL43A	RPS16B	RPS21A
+6.415540e-01	7	15	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	FHL1	GCN3	MAC1	RPL43A	RPS16B	RPS21A	TPS1
+9.164440e-03	1	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0006827	biological_process	"high affinity iron ion transport"	FTR1
+9.069660e-01	7	15	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	FHL1	GDS1	MAC1	RPL43A	RPS16B	RPS21A	VMA8
+2.930700e-01	1	15	149	6526	97048	Saccharomyces	cerevisiae	GO:0000324	cellular_component	"vacuole (sensu Fungi)"	VMA8
+2.885700e-01	2	15	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	RPS16B	RPS21A
+5.382670e-02	1	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0051453	biological_process	"regulation of cellular pH"	VMA8
+1.555400e-03	3	15	104	6526	97048	Saccharomyces	cerevisiae	GO:0006873	biological_process	"cell ion homeostasis"	MAC1	VMA8	YLR047C
+2.475950e-02	2	15	108	6526	97048	Saccharomyces	cerevisiae	GO:0006811	biological_process	"ion transport"	FRE1	FTR1
+4.836820e-01	3	15	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	FHL1	RPS16B	RPS21A
+2.414500e-01	1	15	119	6526	97048	Saccharomyces	cerevisiae	GO:0042623	molecular_function	"ATPase activity, coupled"	VMA8
+1.767860e-01	1	15	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	MAC1
+2.276420e-02	1	15	10	6526	97048	Saccharomyces	cerevisiae	GO:0043614	cellular_component	"multi-eIF complex"	GCN3
+1.210590e-02	2	15	74	6526	97048	Saccharomyces	cerevisiae	GO:0016282	cellular_component	"eukaryotic 43S preinitiation complex"	RPS16B	RPS21A
+8.365050e-01	4	15	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	GDS1	YER130C	YPL080C	YPL199C
+4.072540e-01	3	15	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	FRE1	FTR1	VMA8
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0006876	biological_process	"cadmium ion homeostasis"	MAC1
+1.598630e-02	1	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0005991	biological_process	"trehalose metabolism"	TPS1
+3.700540e-01	7	15	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	GCN3	GDS1	RPL43A	RPS16B	RPS21A	TPS1	VMA8
+8.607800e-02	1	15	39	6526	97048	Saccharomyces	cerevisiae	GO:0006383	biological_process	"transcription from RNA polymerase III promoter"	FHL1
+9.331870e-01	1	15	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	FHL1
+1.219530e-01	2	15	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	RPS16B	RPS21A
+2.180840e-01	4	15	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	FRE1	FTR1	VMA8	YLR047C
+7.330240e-02	1	15	33	6526	97048	Saccharomyces	cerevisiae	GO:0042625	molecular_function	"ATPase activity, coupled to transmembrane movement of ions"	VMA8
+7.703340e-01	1	15	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	VMA8
+2.789140e-01	2	15	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	RPS16B	RPS21A
+2.103580e-02	2	15	99	6526	97048	Saccharomyces	cerevisiae	GO:0015935	cellular_component	"small ribosomal subunit"	RPS16B	RPS21A
+1.938880e-01	1	15	93	6526	97048	Saccharomyces	cerevisiae	GO:0005842	cellular_component	"cytosolic large ribosomal subunit (sensu Eukaryota)"	RPL43A
+6.469310e-02	1	15	29	6526	97048	Saccharomyces	cerevisiae	GO:0003743	molecular_function	"translation initiation factor activity"	GCN3
+1.234260e-01	1	15	57	6526	97048	Saccharomyces	cerevisiae	GO:0015077	molecular_function	"monovalent inorganic cation transporter activity"	VMA8
+1.334350e-01	5	15	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	GCN3	RPL43A	RPS16B	RPS21A	TPS1
+2.930700e-01	1	15	149	6526	97048	Saccharomyces	cerevisiae	GO:0000322	cellular_component	"storage vacuole"	VMA8
+6.252920e-02	1	15	28	6526	97048	Saccharomyces	cerevisiae	GO:0005984	biological_process	"disaccharide metabolism"	TPS1
+5.318990e-01	13	15	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	FHL1	FRE1	FTR1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YLR047C	YPL199C
+1.173020e-01	1	15	54	6526	97048	Saccharomyces	cerevisiae	GO:0030005	biological_process	"di-, tri-valent inorganic cation homeostasis"	MAC1
+1.234260e-01	1	15	57	6526	97048	Saccharomyces	cerevisiae	GO:0045182	molecular_function	"translation regulator activity"	GCN3
+6.217380e-01	5	15	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	FHL1	RPL43A	RPS16B	RPS21A	VMA8
+4.935540e-02	4	15	629	6526	97048	Saccharomyces	cerevisiae	GO:0043037	biological_process	"translation"	GCN3	RPL43A	RPS16B	RPS21A
+3.737270e-01	3	15	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	FRE1	FTR1	VMA8
+7.941620e-01	1	15	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	MAC1
+7.147610e-01	1	15	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	VMA8
+1.767860e-01	1	15	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	MAC1
+1.049340e-01	1	15	48	6526	97048	Saccharomyces	cerevisiae	GO:0006413	biological_process	"translational initiation"	GCN3
+9.939670e-01	4	15	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	FHL1	GDS1	MAC1	VMA8
+1.295100e-01	1	15	60	6526	97048	Saccharomyces	cerevisiae	GO:0045944	biological_process	"positive regulation of transcription from RNA polymerase II promoter"	MAC1
+1.748650e-01	1	15	83	6526	97048	Saccharomyces	cerevisiae	GO:0005386	molecular_function	"carrier activity"	VMA8
+1.144330e-02	1	15	5	6526	97048	Saccharomyces	cerevisiae	GO:0015677	biological_process	"copper ion import"	FRE1
+1.024400e-01	4	15	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	GCN3	RPL43A	RPS16B	RPS21A
+1.598630e-02	1	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0016723	molecular_function	"oxidoreductase activity, oxidizing metal ions, NAD or NADP as acceptor"	FRE1
+4.410960e-01	1	15	248	6526	97048	Saccharomyces	cerevisiae	GO:0016072	biological_process	"rRNA metabolism"	FHL1
+1.714070e-01	2	15	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	FHL1	MAC1
+1.734260e-03	3	15	108	6526	97048	Saccharomyces	cerevisiae	GO:0050801	biological_process	"ion homeostasis"	MAC1	VMA8	YLR047C
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	FHL1	FRE1	FTR1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YER130C	YLR047C	YPL080C	YPL199C
+3.396410e-02	1	15	15	6526	97048	Saccharomyces	cerevisiae	GO:0046527	molecular_function	"glucosyltransferase activity"	TPS1
+1.844280e-01	1	15	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	MAC1
+2.077400e-03	3	15	115	6526	97048	Saccharomyces	cerevisiae	GO:0019725	biological_process	"cell homeostasis"	MAC1	VMA8	YLR047C
+1.196700e-01	2	15	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	FRE1	YLR047C
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	FHL1	FRE1	FTR1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YER130C	YLR047C	YPL080C	YPL199C
+9.939670e-01	4	15	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	FHL1	GDS1	MAC1	VMA8
+7.300630e-01	1	15	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	FHL1
+8.008980e-01	1	15	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	MAC1
+3.445070e-01	1	15	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	GCN3
+2.876920e-01	2	15	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	FHL1	MAC1
+1.825040e-02	1	15	8	6526	97048	Saccharomyces	cerevisiae	GO:0000221	cellular_component	"hydrogen-transporting ATPase V1 domain"	VMA8
+3.613660e-01	1	15	192	6526	97048	Saccharomyces	cerevisiae	GO:0005773	cellular_component	"vacuole"	VMA8
+7.162980e-02	2	15	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	GDS1	TPS1
+4.514480e-01	2	15	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	FHL1	GCN3
+6.704500e-01	1	15	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	MAC1
+2.032450e-01	1	15	98	6526	97048	Saccharomyces	cerevisiae	GO:0016757	molecular_function	"transferase activity, transferring glycosyl groups"	TPS1
+4.555240e-02	3	15	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	RPL43A	RPS16B	RPS21A
+6.480960e-03	3	15	172	6526	97048	Saccharomyces	cerevisiae	GO:0005830	cellular_component	"cytosolic ribosome (sensu Eukaryota)"	RPL43A	RPS16B	RPS21A
+5.867900e-01	4	15	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	FHL1	RPS16B	RPS21A	VMA8
+1.455430e-01	1	15	68	6526	97048	Saccharomyces	cerevisiae	GO:0016051	biological_process	"carbohydrate biosynthesis"	TPS1
+5.382670e-02	1	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0045851	biological_process	"pH reduction"	VMA8
+7.115700e-02	1	15	32	6526	97048	Saccharomyces	cerevisiae	GO:0015399	molecular_function	"primary active transporter activity"	VMA8
+7.556260e-01	3	15	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YER130C	YPL080C	YPL199C
+1.844280e-01	1	15	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	MAC1
+5.918020e-01	1	15	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MAC1
+1.090190e-03	3	15	92	6526	97048	Saccharomyces	cerevisiae	GO:0030003	biological_process	"cation homeostasis"	MAC1	VMA8	YLR047C
+4.516960e-01	1	15	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	VMA8
+8.490260e-01	1	15	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	VMA8
+7.386690e-04	2	15	18	6526	97048	Saccharomyces	cerevisiae	GO:0006826	biological_process	"iron ion transport"	FRE1	FTR1
+7.971090e-02	1	15	36	6526	97048	Saccharomyces	cerevisiae	GO:0006112	biological_process	"energy reserve metabolism"	TPS1
+7.668110e-01	1	15	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	TPS1
+1.295100e-01	1	15	60	6526	97048	Saccharomyces	cerevisiae	GO:0003700	molecular_function	"transcription factor activity"	FHL1
+3.413970e-01	1	15	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	VMA8
+2.403110e-03	3	15	121	6526	97048	Saccharomyces	cerevisiae	GO:0042592	biological_process	"homeostasis"	MAC1	VMA8	YLR047C
+7.620360e-01	1	15	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	VMA8
+5.312470e-01	13	15	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	FHL1	FRE1	FTR1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YLR047C	YPL199C
+1.757490e-02	2	15	90	6526	97048	Saccharomyces	cerevisiae	GO:0006812	biological_process	"cation transport"	FRE1	FTR1
+2.949860e-02	1	15	13	6526	97048	Saccharomyces	cerevisiae	GO:0035251	molecular_function	"UDP-glucosyltransferase activity"	TPS1
+7.971090e-02	1	15	36	6526	97048	Saccharomyces	cerevisiae	GO:0015082	molecular_function	"di-, tri-valent inorganic cation transporter activity"	FTR1
+9.659860e-02	1	15	44	6526	97048	Saccharomyces	cerevisiae	GO:0003704	molecular_function	"specific RNA polymerase II transcription factor activity"	MAC1
+8.910890e-03	3	15	193	6526	97048	Saccharomyces	cerevisiae	GO:0044445	cellular_component	"cytosolic part"	RPL43A	RPS16B	RPS21A
+1.254580e-01	1	15	58	6526	97048	Saccharomyces	cerevisiae	GO:0016820	molecular_function	"hydrolase activity, acting on acid anhydrides, catalyzing transmembrane movement of substances"	VMA8
+1.144330e-02	1	15	5	6526	97048	Saccharomyces	cerevisiae	GO:0005851	cellular_component	"eukaryotic translation initiation factor 2B complex"	GCN3
+3.908500e-02	5	15	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	GCN3	RPL43A	RPS16B	RPS21A	TPS1
+4.052970e-01	12	15	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	FHL1	FRE1	FTR1	GCN3	GDS1	MAC1	RPL43A	RPS16B	RPS21A	TPS1	VMA8	YLR047C
+9.069660e-01	7	15	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	FHL1	GDS1	MAC1	RPL43A	RPS16B	RPS21A	VMA8
+5.322570e-01	1	15	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	MAC1
+6.252920e-02	1	15	28	6526	97048	Saccharomyces	cerevisiae	GO:0046915	molecular_function	"transition metal ion transporter activity"	FTR1
+3.673950e-01	1	15	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	MAC1
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0003825	molecular_function	"alpha,alpha-trehalose-phosphate synthase (UDP-forming) activity"	TPS1
+7.844830e-01	1	15	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	MAC1
+1.748650e-01	1	15	83	6526	97048	Saccharomyces	cerevisiae	GO:0045333	biological_process	"cellular respiration"	GDS1
+1.995140e-01	1	15	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	MAC1
+3.396410e-02	1	15	15	6526	97048	Saccharomyces	cerevisiae	GO:0016471	cellular_component	"hydrogen-translocating V-type ATPase complex"	VMA8
+1.058740e-01	5	15	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	GCN3	RPL43A	RPS16B	RPS21A	TPS1
+7.334320e-01	1	15	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	VMA8
+8.798890e-01	3	15	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	FHL1	GDS1	MAC1
+9.164440e-03	1	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0005946	cellular_component	"alpha,alpha-trehalose-phosphate synthase complex (UDP-forming)"	TPS1
+1.254580e-01	1	15	58	6526	97048	Saccharomyces	cerevisiae	GO:0042626	molecular_function	"ATPase activity, coupled to transmembrane movement of substances"	VMA8
+9.155750e-03	2	15	64	6526	97048	Saccharomyces	cerevisiae	GO:0016283	cellular_component	"eukaryotic 48S initiation complex"	RPS16B	RPS21A
+1.455430e-01	1	15	68	6526	97048	Saccharomyces	cerevisiae	GO:0007034	biological_process	"vacuolar transport"	VMA8
+2.501390e-02	1	15	11	6526	97048	Saccharomyces	cerevisiae	GO:0005381	molecular_function	"iron ion transporter activity"	FTR1
+1.651970e-01	1	15	78	6526	97048	Saccharomyces	cerevisiae	GO:0009060	biological_process	"aerobic respiration"	GDS1
+1.173020e-01	1	15	54	6526	97048	Saccharomyces	cerevisiae	GO:0051246	biological_process	"regulation of protein metabolism"	MAC1
+4.995330e-01	1	15	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	MAC1
+5.173200e-01	1	15	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	MAC1
+2.161750e-01	1	15	105	6526	97048	Saccharomyces	cerevisiae	GO:0005774	cellular_component	"vacuolar membrane"	VMA8
+8.881330e-03	2	15	63	6526	97048	Saccharomyces	cerevisiae	GO:0006875	biological_process	"metal ion homeostasis"	MAC1	YLR047C
+1.671390e-01	1	15	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MAC1
+5.382670e-02	1	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0051452	biological_process	"cellular pH reduction"	VMA8
+6.036040e-01	1	15	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	MAC1
+3.490250e-02	2	15	130	6526	97048	Saccharomyces	cerevisiae	GO:0008324	molecular_function	"cation transporter activity"	FTR1	VMA8

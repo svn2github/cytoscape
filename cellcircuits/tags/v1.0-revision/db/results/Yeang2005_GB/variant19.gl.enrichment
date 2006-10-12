@@ -1,0 +1,233 @@
+#USING BTN2 instead of its synonym YGR142W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.689320e-04	2	12	11	6526	97048	Saccharomyces	cerevisiae	GO:0000782	cellular_component	"telomere cap complex"	RAP1	SIR4
+1.838800e-03	1	12	1	6526	97048	Saccharomyces	cerevisiae	GO:0031848	biological_process	"protection from non-homologous end joining at telomere"	RAP1
+3.075580e-01	8	12	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	CTT1	HSP104	HSP26	MSN4	SSA4	TRP4	YGR142W	YHR033W
+7.336610e-03	1	12	4	6526	97048	Saccharomyces	cerevisiae	GO:0016233	biological_process	"telomere capping"	RAP1
+3.797250e-02	1	12	21	6526	97048	Saccharomyces	cerevisiae	GO:0042398	biological_process	"amino acid derivative biosynthesis"	TRP4
+4.189920e-01	7	12	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4
+8.022550e-02	2	12	260	6526	97048	Saccharomyces	cerevisiae	GO:0015031	biological_process	"protein transport"	SSA4	YGR142W
+5.404900e-01	2	12	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	RAP1	SIR4
+4.505400e-02	1	12	25	6526	97048	Saccharomyces	cerevisiae	GO:0009605	biological_process	"response to external stimulus"	YGP1
+4.554120e-01	1	12	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	SIR4
+1.312410e-01	1	12	76	6526	97048	Saccharomyces	cerevisiae	GO:0045941	biological_process	"positive regulation of transcription"	SIR4
+4.566010e-01	7	12	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4
+2.832490e-02	2	12	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	RAP1	SIR4
+4.512450e-01	10	12	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	CTT1	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4	YGR142W	YHR033W
+1.643800e-02	1	12	9	6526	97048	Saccharomyces	cerevisiae	GO:0006345	biological_process	"loss of chromatin silencing"	SIR4
+5.109550e-01	4	12	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	CTT1	HSP104	SSA4	TRP4
+8.315010e-02	1	12	47	6526	97048	Saccharomyces	cerevisiae	GO:0006348	biological_process	"chromatin silencing at telomere"	RAP1
+1.118150e-02	6	12	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4
+5.548670e-02	2	12	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	RAP1	SIR4
+1.583550e-03	2	12	33	6526	97048	Saccharomyces	cerevisiae	GO:0001302	biological_process	"replicative cell aging"	MSN4	SIR4
+5.016980e-01	5	12	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	HSP104	HSP26	RAP1	SIR4	SSA4
+5.303260e-01	3	12	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	HSP104	HSP26	SSA4
+1.043560e-01	2	12	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	SSA4	YGR142W
+7.916720e-01	1	12	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	SIR4
+1.000000e+00	12	12	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	CTT1	HSP104	HSP26	HSP30	MSN4	RAP1	SIR4	SSA4	TRP4	YGP1	YGR142W	YHR033W
+3.388470e-01	1	12	221	6526	97048	Saccharomyces	cerevisiae	GO:0046903	biological_process	"secretion"	SSA4
+2.366390e-02	1	12	13	6526	97048	Saccharomyces	cerevisiae	GO:0001300	biological_process	"chronological cell aging"	MSN4
+3.797250e-02	1	12	21	6526	97048	Saccharomyces	cerevisiae	GO:0009072	biological_process	"aromatic amino acid family metabolism"	TRP4
+1.643800e-02	1	12	9	6526	97048	Saccharomyces	cerevisiae	GO:0045815	biological_process	"positive regulation of gene expression, epigenetic"	SIR4
+5.548670e-02	2	12	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	MSN4	RAP1
+2.186200e-02	1	12	12	6526	97048	Saccharomyces	cerevisiae	GO:0051087	molecular_function	"chaperone binding"	HSP104
+8.484820e-02	1	12	48	6526	97048	Saccharomyces	cerevisiae	GO:0015837	biological_process	"amine transport"	YGR142W
+1.231180e-01	1	12	71	6526	97048	Saccharomyces	cerevisiae	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	SIR4
+3.674500e-03	1	12	2	6526	97048	Saccharomyces	cerevisiae	GO:0030527	molecular_function	"structural constituent of chromatin"	SIR4
+3.611710e-02	1	12	20	6526	97048	Saccharomyces	cerevisiae	GO:0016209	molecular_function	"antioxidant activity"	CTT1
+6.821600e-01	1	12	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	SIR4
+5.907170e-02	1	12	33	6526	97048	Saccharomyces	cerevisiae	GO:0045047	biological_process	"protein targeting to ER"	SSA4
+8.992520e-02	1	12	51	6526	97048	Saccharomyces	cerevisiae	GO:0046942	biological_process	"carboxylic acid transport"	YGR142W
+6.821140e-02	2	12	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	HSP104	SSA4
+4.216570e-02	3	12	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	MSN4	RAP1	SIR4
+3.744600e-01	1	12	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	HSP30
+4.376990e-02	2	12	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	RAP1	SIR4
+5.250970e-01	2	12	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	SSA4	YGR142W
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0046219	biological_process	"indolalkylamine biosynthesis"	TRP4
+2.682750e-03	2	12	43	6526	97048	Saccharomyces	cerevisiae	GO:0007569	biological_process	"cell aging"	MSN4	SIR4
+1.838800e-03	1	12	1	6526	97048	Saccharomyces	cerevisiae	GO:0043247	biological_process	"telomere maintenance in response to DNA damage"	RAP1
+4.921160e-01	3	12	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	HSP104	HSP26	SSA4
+1.108880e-02	3	12	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	HSP104	RAP1	SIR4
+7.942150e-01	2	12	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	RAP1	SIR4
+1.689320e-04	2	12	11	6526	97048	Saccharomyces	cerevisiae	GO:0000783	cellular_component	"nuclear telomere cap complex"	RAP1	SIR4
+1.280670e-02	1	12	7	6526	97048	Saccharomyces	cerevisiae	GO:0001323	biological_process	"age-dependent general metabolic decline during chronological cell aging"	MSN4
+1.038910e-01	3	12	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	MSN4	RAP1	SIR4
+2.422590e-01	2	12	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	SSA4	YGR142W
+2.447690e-02	2	12	135	6526	97048	Saccharomyces	cerevisiae	GO:0006338	biological_process	"chromatin remodeling"	RAP1	SIR4
+5.033290e-02	1	12	28	6526	97048	Saccharomyces	cerevisiae	GO:0006885	biological_process	"regulation of pH"	YGR142W
+2.129980e-01	2	12	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	RAP1	SIR4
+1.168320e-01	2	12	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	MSN4	YGP1
+4.648610e-01	3	12	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	HSP104	HSP26	SSA4
+4.326240e-01	10	12	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	CTT1	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4	YGR142W	YHR033W
+4.506700e-02	2	12	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	RAP1	SIR4
+4.770500e-02	2	12	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	RAP1	SIR4
+4.420060e-02	2	12	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	RAP1	SIR4
+1.504550e-01	1	12	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	SIR4
+1.462390e-02	1	12	8	6526	97048	Saccharomyces	cerevisiae	GO:0001308	biological_process	"loss of chromatin silencing during replicative cell aging"	SIR4
+4.505400e-02	1	12	25	6526	97048	Saccharomyces	cerevisiae	GO:0006576	biological_process	"biogenic amine metabolism"	TRP4
+2.247890e-02	2	12	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	RAP1	SIR4
+7.916720e-01	1	12	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	SIR4
+6.156290e-01	9	12	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4	YGP1	YGR142W
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0042434	biological_process	"indole derivative metabolism"	TRP4
+5.595820e-02	2	12	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	RAP1	SIR4
+7.755690e-02	2	12	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	HSP104	SSA4
+1.247480e-01	1	12	72	6526	97048	Saccharomyces	cerevisiae	GO:0046483	biological_process	"heterocycle metabolism"	TRP4
+1.462390e-02	1	12	8	6526	97048	Saccharomyces	cerevisiae	GO:0007571	biological_process	"age-dependent general metabolic decline"	MSN4
+3.084120e-02	1	12	17	6526	97048	Saccharomyces	cerevisiae	GO:0019438	biological_process	"aromatic compound biosynthesis"	TRP4
+5.152730e-01	3	12	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MSN4	RAP1	SIR4
+1.907570e-01	1	12	114	6526	97048	Saccharomyces	cerevisiae	GO:0009277	cellular_component	"cell wall (sensu Fungi)"	YGP1
+3.611710e-02	1	12	20	6526	97048	Saccharomyces	cerevisiae	GO:0006614	biological_process	"SRP-dependent cotranslational protein targeting to membrane"	SSA4
+6.600960e-02	1	12	37	6526	97048	Saccharomyces	cerevisiae	GO:0006865	biological_process	"amino acid transport"	YGR142W
+2.413890e-02	2	12	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	RAP1	SIR4
+6.020540e-02	3	12	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	MSN4	RAP1	SIR4
+1.564570e-01	2	12	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	MSN4	SIR4
+3.299770e-01	1	12	214	6526	97048	Saccharomyces	cerevisiae	GO:0045045	biological_process	"secretory pathway"	SSA4
+7.808820e-02	2	12	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	HSP104	SSA4
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0042430	biological_process	"indole and derivative metabolism"	TRP4
+7.376470e-01	1	12	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	TRP4
+3.413620e-01	1	12	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	TRP4
+2.221120e-02	3	12	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	MSN4	RAP1	SIR4
+3.084120e-02	1	12	17	6526	97048	Saccharomyces	cerevisiae	GO:0016684	molecular_function	"oxidoreductase activity, acting on peroxide as acceptor"	CTT1
+1.739250e-01	1	12	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	TRP4
+2.905140e-02	1	12	16	6526	97048	Saccharomyces	cerevisiae	GO:0016763	molecular_function	"transferase activity, transferring pentosyl groups"	TRP4
+5.404900e-01	2	12	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	RAP1	SIR4
+5.828970e-01	9	12	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4	YGP1	YGR142W
+1.838800e-03	1	12	1	6526	97048	Saccharomyces	cerevisiae	GO:0051084	biological_process	"posttranslational protein folding"	HSP104
+8.179210e-01	2	12	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	RAP1	SIR4
+6.476580e-05	2	12	7	6526	97048	Saccharomyces	cerevisiae	GO:0031933	cellular_component	"telomeric heterochromatin"	RAP1	SIR4
+4.591780e-09	9	12	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	CTT1	HSP104	HSP26	HSP30	MSN4	RAP1	SIR4	SSA4	YGP1
+9.520620e-01	2	12	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	RAP1	SIR4
+3.674500e-03	1	12	2	6526	97048	Saccharomyces	cerevisiae	GO:0004096	molecular_function	"catalase activity"	CTT1
+6.916800e-01	1	12	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	YGR142W
+1.643800e-02	1	12	9	6526	97048	Saccharomyces	cerevisiae	GO:0007584	biological_process	"response to nutrient"	YGP1
+3.359350e-01	7	12	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4
+9.161180e-02	1	12	52	6526	97048	Saccharomyces	cerevisiae	GO:0015849	biological_process	"organic acid transport"	YGR142W
+3.791630e-02	2	12	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	RAP1	SIR4
+1.462390e-02	1	12	8	6526	97048	Saccharomyces	cerevisiae	GO:0005677	cellular_component	"chromatin silencing complex"	SIR4
+5.268950e-02	2	12	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	RAP1	SIR4
+8.675220e-02	2	12	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	SSA4	YGR142W
+6.687370e-01	7	12	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4
+4.824450e-02	3	12	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	HSP104	RAP1	SIR4
+3.358150e-01	3	12	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	HSP104	RAP1	SIR4
+1.983040e-01	1	12	119	6526	97048	Saccharomyces	cerevisiae	GO:0042623	molecular_function	"ATPase activity, coupled"	HSP104
+1.440940e-01	1	12	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	SIR4
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0009096	biological_process	"aromatic amino acid family biosynthesis, anthranilate pathway"	TRP4
+6.654100e-01	4	12	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	HSP30	YGP1	YGR142W	YHR033W
+5.668860e-01	2	12	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	SSA4	YGR142W
+9.975390e-01	1	12	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YGR142W
+1.838800e-03	1	12	1	6526	97048	Saccharomyces	cerevisiae	GO:0004048	molecular_function	"anthranilate phosphoribosyltransferase activity"	TRP4
+6.946100e-02	1	12	39	6526	97048	Saccharomyces	cerevisiae	GO:0006383	biological_process	"transcription from RNA polymerase III promoter"	RAP1
+1.108880e-02	3	12	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	HSP104	RAP1	SIR4
+6.125060e-01	2	12	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	RAP1	SIR4
+8.815570e-01	1	12	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	HSP30
+1.057920e-03	2	12	27	6526	97048	Saccharomyces	cerevisiae	GO:0000781	cellular_component	"chromosome, telomeric region"	RAP1	SIR4
+1.907570e-01	1	12	114	6526	97048	Saccharomyces	cerevisiae	GO:0030312	cellular_component	"external encapsulating structure"	YGP1
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0000162	biological_process	"tryptophan biosynthesis"	TRP4
+4.540480e-02	3	12	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	HSP104	RAP1	SIR4
+9.174920e-01	1	12	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	TRP4
+1.118470e-01	12	12	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	CTT1	HSP104	HSP26	HSP30	MSN4	RAP1	SIR4	SSA4	TRP4	YGP1	YGR142W	YHR033W
+9.044500e-03	2	12	80	6526	97048	Saccharomyces	cerevisiae	GO:0031507	biological_process	"heterochromatin formation"	RAP1	SIR4
+6.476580e-05	2	12	7	6526	97048	Saccharomyces	cerevisiae	GO:0000792	cellular_component	"heterochromatin"	RAP1	SIR4
+9.520620e-01	2	12	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	RAP1	SIR4
+3.119090e-01	1	12	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	TRP4
+5.368210e-01	2	12	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	SSA4	YGR142W
+2.851060e-04	3	12	74	6526	97048	Saccharomyces	cerevisiae	GO:0006457	biological_process	"protein folding"	HSP104	HSP26	SSA4
+1.104580e-01	3	12	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	MSN4	RAP1	SIR4
+3.562650e-01	1	12	235	6526	97048	Saccharomyces	cerevisiae	GO:0006605	biological_process	"protein targeting"	SSA4
+5.732980e-02	1	12	32	6526	97048	Saccharomyces	cerevisiae	GO:0006612	biological_process	"protein targeting to membrane"	SSA4
+2.907130e-01	1	12	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	TRP4
+2.492870e-01	2	12	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	SSA4	YGR142W
+3.040290e-01	1	12	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	YGP1
+1.440940e-01	1	12	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	SIR4
+2.098680e-03	2	12	38	6526	97048	Saccharomyces	cerevisiae	GO:0000790	cellular_component	"nuclear chromatin"	RAP1	SIR4
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0006586	biological_process	"indolalkylamine metabolism"	TRP4
+1.033380e-01	1	12	59	6526	97048	Saccharomyces	cerevisiae	GO:0006979	biological_process	"response to oxidative stress"	MSN4
+1.280670e-02	1	12	7	6526	97048	Saccharomyces	cerevisiae	GO:0001324	biological_process	"age-dependent response to oxidative stress during chronological cell aging"	MSN4
+5.320210e-01	7	12	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4
+4.328540e-01	1	12	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	SIR4
+1.016610e-02	2	12	85	6526	97048	Saccharomyces	cerevisiae	GO:0031497	biological_process	"chromatin assembly"	RAP1	SIR4
+5.507100e-03	1	12	3	6526	97048	Saccharomyces	cerevisiae	GO:0042393	molecular_function	"histone binding"	SIR4
+1.414800e-02	2	12	101	6526	97048	Saccharomyces	cerevisiae	GO:0006333	biological_process	"chromatin assembly or disassembly"	RAP1	SIR4
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0006616	biological_process	"SRP-dependent cotranslational protein targeting to membrane, translocation"	SSA4
+1.816160e-01	1	12	108	6526	97048	Saccharomyces	cerevisiae	GO:0050801	biological_process	"ion homeostasis"	YGR142W
+1.186480e-01	2	12	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	MSN4	RAP1
+1.000000e+00	12	12	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	CTT1	HSP104	HSP26	HSP30	MSN4	RAP1	SIR4	SSA4	TRP4	YGP1	YGR142W	YHR033W
+1.504550e-01	1	12	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	SIR4
+3.886750e-01	1	12	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	CTT1
+6.476580e-05	2	12	7	6526	97048	Saccharomyces	cerevisiae	GO:0005720	cellular_component	"nuclear heterochromatin"	RAP1	SIR4
+3.441170e-02	1	12	19	6526	97048	Saccharomyces	cerevisiae	GO:0042401	biological_process	"biogenic amine biosynthesis"	TRP4
+1.000000e+00	12	12	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	CTT1	HSP104	HSP26	HSP30	MSN4	RAP1	SIR4	SSA4	TRP4	YGP1	YGR142W	YHR033W
+5.320210e-01	7	12	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4
+7.076530e-02	2	12	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	MSN4	YGP1
+1.155990e-01	3	12	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	MSN4	RAP1	SIR4
+2.324090e-03	2	12	40	6526	97048	Saccharomyces	cerevisiae	GO:0000785	cellular_component	"chromatin"	RAP1	SIR4
+4.798260e-02	3	12	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	MSN4	RAP1	SIR4
+3.413150e-01	2	12	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	MSN4	RAP1
+2.807740e-03	2	12	44	6526	97048	Saccharomyces	cerevisiae	GO:0007568	biological_process	"aging"	MSN4	SIR4
+4.877050e-02	3	12	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	MSN4	RAP1	SIR4
+1.907570e-01	1	12	114	6526	97048	Saccharomyces	cerevisiae	GO:0005618	cellular_component	"cell wall"	YGP1
+1.661690e-01	1	12	98	6526	97048	Saccharomyces	cerevisiae	GO:0016757	molecular_function	"transferase activity, transferring glycosyl groups"	TRP4
+3.084120e-02	1	12	17	6526	97048	Saccharomyces	cerevisiae	GO:0004601	molecular_function	"peroxidase activity"	CTT1
+5.595820e-02	2	12	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	RAP1	SIR4
+1.643800e-02	1	12	9	6526	97048	Saccharomyces	cerevisiae	GO:0001304	biological_process	"progressive alteration of chromatin during replicative cell aging"	SIR4
+9.044500e-03	2	12	80	6526	97048	Saccharomyces	cerevisiae	GO:0045814	biological_process	"negative regulation of gene expression, epigenetic"	RAP1	SIR4
+5.339830e-03	2	12	61	6526	97048	Saccharomyces	cerevisiae	GO:0051082	molecular_function	"unfolded protein binding"	HSP26	SSA4
+4.372160e-01	1	12	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	TRP4
+4.921770e-01	1	12	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	SIR4
+1.280670e-02	1	12	7	6526	97048	Saccharomyces	cerevisiae	GO:0042026	biological_process	"protein refolding"	HSP104
+4.151990e-02	1	12	23	6526	97048	Saccharomyces	cerevisiae	GO:0006303	biological_process	"double-strand break repair via nonhomologous end joining"	SIR4
+1.866920e-01	5	12	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	HSP104	RAP1	SIR4	SSA4	YGR142W
+7.643930e-04	2	12	23	6526	97048	Saccharomyces	cerevisiae	GO:0000784	cellular_component	"nuclear chromosome, telomeric region"	RAP1	SIR4
+9.832960e-02	1	12	56	6526	97048	Saccharomyces	cerevisiae	GO:0006725	biological_process	"aromatic compound metabolism"	TRP4
+9.668050e-01	1	12	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YHR033W
+1.504550e-01	1	12	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	SIR4
+2.867560e-02	3	12	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MSN4	RAP1	SIR4
+8.823580e-02	1	12	50	6526	97048	Saccharomyces	cerevisiae	GO:0006302	biological_process	"double-strand break repair"	SIR4
+7.808820e-02	2	12	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	HSP104	SSA4
+1.099330e-02	4	12	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	HSP104	HSP26	SIR4	SSA4
+4.239790e-01	2	12	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	HSP104	SSA4
+3.511640e-02	2	12	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	RAP1	SIR4
+4.151990e-02	1	12	23	6526	97048	Saccharomyces	cerevisiae	GO:0006613	biological_process	"cotranslational protein targeting to membrane"	SSA4
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0042435	biological_process	"indole derivative biosynthesis"	TRP4
+7.913610e-08	9	12	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	CTT1	HSP104	HSP26	HSP30	MSN4	RAP1	SIR4	SSA4	YGP1
+5.169980e-03	2	12	60	6526	97048	Saccharomyces	cerevisiae	GO:0003700	molecular_function	"transcription factor activity"	MSN4	RAP1
+4.122060e-02	2	12	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	HSP104	SSA4
+4.334090e-02	2	12	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	RAP1	SIR4
+4.505400e-02	1	12	25	6526	97048	Saccharomyces	cerevisiae	GO:0009991	biological_process	"response to extracellular stimulus"	YGP1
+2.013040e-01	1	12	121	6526	97048	Saccharomyces	cerevisiae	GO:0042592	biological_process	"homeostasis"	YGR142W
+9.044500e-03	2	12	80	6526	97048	Saccharomyces	cerevisiae	GO:0006342	biological_process	"chromatin silencing"	RAP1	SIR4
+6.476580e-05	2	12	7	6526	97048	Saccharomyces	cerevisiae	GO:0005724	cellular_component	"nuclear telomeric heterochromatin"	RAP1	SIR4
+5.033290e-02	1	12	28	6526	97048	Saccharomyces	cerevisiae	GO:0006575	biological_process	"amino acid derivative metabolism"	TRP4
+1.116000e-01	12	12	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	CTT1	HSP104	HSP26	HSP30	MSN4	RAP1	SIR4	SSA4	TRP4	YGP1	YGR142W	YHR033W
+5.690550e-02	2	12	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	RAP1	SIR4
+7.649810e-02	2	12	253	6526	97048	Saccharomyces	cerevisiae	GO:0006886	biological_process	"intracellular protein transport"	SSA4	YGR142W
+5.992800e-01	9	12	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4	YGP1	YGR142W
+6.687370e-01	7	12	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4
+1.263750e-01	1	12	73	6526	97048	Saccharomyces	cerevisiae	GO:0016585	cellular_component	"chromatin remodeling complex"	SIR4
+1.838800e-03	1	12	1	6526	97048	Saccharomyces	cerevisiae	GO:0051085	biological_process	"chaperone cofactor-dependent protein folding"	HSP104
+1.877590e-02	3	12	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	MSN4	RAP1	SIR4
+8.315010e-02	1	12	47	6526	97048	Saccharomyces	cerevisiae	GO:0031509	biological_process	"telomeric heterochromatin formation"	RAP1
+5.732980e-02	1	12	32	6526	97048	Saccharomyces	cerevisiae	GO:0000726	biological_process	"non-recombinational repair"	SIR4
+3.636010e-01	1	12	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	TRP4
+2.905140e-02	1	12	16	6526	97048	Saccharomyces	cerevisiae	GO:0009073	biological_process	"aromatic amino acid family biosynthesis"	TRP4
+2.796540e-02	2	12	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	RAP1	SIR4
+1.035100e-01	3	12	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	MSN4	RAP1	SIR4
+2.366390e-02	1	12	13	6526	97048	Saccharomyces	cerevisiae	GO:0007004	biological_process	"telomere maintenance via telomerase"	RAP1
+1.630480e-01	1	12	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	SIR4
+9.007880e-01	1	12	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	TRP4
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0001301	biological_process	"progressive alteration of chromatin during cell aging"	SIR4
+2.683400e-01	2	12	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	SSA4	YGR142W
+1.016610e-02	2	12	85	6526	97048	Saccharomyces	cerevisiae	GO:0040029	biological_process	"regulation of gene expression, epigenetic"	RAP1	SIR4
+4.114420e-02	7	12	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	HSP104	HSP26	MSN4	RAP1	SIR4	SSA4	TRP4
+9.044500e-03	2	12	80	6526	97048	Saccharomyces	cerevisiae	GO:0016458	biological_process	"gene silencing"	RAP1	SIR4
+2.577950e-01	1	12	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	SIR4
+4.420060e-02	2	12	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	RAP1	SIR4
+1.877210e-01	1	12	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	TRP4
+4.372160e-01	1	12	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	TRP4
+3.955470e-02	2	12	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	RAP1	SIR4
+1.877210e-01	1	12	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	TRP4
+1.360810e-01	1	12	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	SIR4
+1.066630e-01	1	12	61	6526	97048	Saccharomyces	cerevisiae	GO:0006800	biological_process	"oxygen and reactive oxygen species metabolism"	MSN4
+4.505400e-02	1	12	25	6526	97048	Saccharomyces	cerevisiae	GO:0031667	biological_process	"response to nutrient levels"	YGP1
+1.824910e-02	1	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0006568	biological_process	"tryptophan metabolism"	TRP4
+1.280670e-02	1	12	7	6526	97048	Saccharomyces	cerevisiae	GO:0001306	biological_process	"age-dependent response to oxidative stress"	MSN4

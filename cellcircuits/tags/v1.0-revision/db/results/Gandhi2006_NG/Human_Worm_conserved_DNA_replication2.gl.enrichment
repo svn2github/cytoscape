@@ -1,0 +1,115 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.413020e-08	3	3	68	27713	88307	Caenorhabditis	elegans	GO:0006260	biological_process	"DNA replication"	C25D7.6	F32D1.10	R10E4.4
+7.073120e-07	3	3	250	27713	88307	Caenorhabditis	elegans	GO:0006259	biological_process	"DNA metabolism"	C25D7.6	F32D1.10	R10E4.4
+7.627020e-02	3	3	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	C25D7.6	F32D1.10	R10E4.4
+4.514400e-05	3	3	418	11710	88307	Caenorhabditis	elegans	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	C25D7.6	F32D1.10	R10E4.4
+3.367220e-03	3	3	1756	11710	88307	Caenorhabditis	elegans	GO:0016787	molecular_function	"hydrolase activity"	C25D7.6	F32D1.10	R10E4.4
+8.795350e-01	3	3	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	C25D7.6	F32D1.10	R10E4.4
+4.281870e-03	3	3	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	C25D7.6	F32D1.10	R10E4.4
+1.661570e-05	3	3	300	11710	88307	Caenorhabditis	elegans	GO:0016887	molecular_function	"ATPase activity"	C25D7.6	F32D1.10	R10E4.4
+5.765010e-01	3	3	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	C25D7.6	F32D1.10	R10E4.4
+6.846190e-03	3	3	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	C25D7.6	F32D1.10	R10E4.4
+4.385640e-05	3	3	414	11710	88307	Caenorhabditis	elegans	GO:0016462	molecular_function	"pyrophosphatase activity"	C25D7.6	F32D1.10	R10E4.4
+1.206810e-11	3	3	8	27713	88307	Caenorhabditis	elegans	GO:0006270	biological_process	"DNA replication initiation"	C25D7.6	F32D1.10	R10E4.4
+8.656150e-01	3	3	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	C25D7.6	F32D1.10	R10E4.4
+1.103660e-01	3	3	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	C25D7.6	F32D1.10	R10E4.4
+2.366050e-04	3	3	1715	27713	88307	Caenorhabditis	elegans	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	C25D7.6	F32D1.10	R10E4.4
+5.988550e-02	3	3	4582	11710	88307	Caenorhabditis	elegans	GO:0003824	molecular_function	"catalytic activity"	C25D7.6	F32D1.10	R10E4.4
+1.284580e-01	3	3	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	C25D7.6	F32D1.10	R10E4.4
+9.136250e-04	3	3	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	C25D7.6	F32D1.10	R10E4.4
+2.245120e-02	3	3	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	C25D7.6	F32D1.10	R10E4.4
+1.318660e-03	3	3	1285	11710	88307	Caenorhabditis	elegans	GO:0030554	molecular_function	"adenyl nucleotide binding"	C25D7.6	F32D1.10	R10E4.4
+1.030530e-09	3	3	29	27713	88307	Caenorhabditis	elegans	GO:0006261	biological_process	"DNA-dependent DNA replication"	C25D7.6	F32D1.10	R10E4.4
+4.385640e-05	3	3	414	11710	88307	Caenorhabditis	elegans	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	C25D7.6	F32D1.10	R10E4.4
+2.241900e-02	3	3	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	C25D7.6	F32D1.10	R10E4.4
+2.545610e-09	3	3	17	11710	88307	Caenorhabditis	elegans	GO:0008094	molecular_function	"DNA-dependent ATPase activity"	C25D7.6	F32D1.10	R10E4.4
+1.000000e+00	3	3	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C25D7.6	F32D1.10	R10E4.4
+2.089800e-03	3	3	1498	11710	88307	Caenorhabditis	elegans	GO:0017076	molecular_function	"purine nucleotide binding"	C25D7.6	F32D1.10	R10E4.4
+4.115000e-02	3	3	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	C25D7.6	F32D1.10	R10E4.4
+8.089270e-04	3	3	1092	11710	88307	Caenorhabditis	elegans	GO:0003677	molecular_function	"DNA binding"	C25D7.6	F32D1.10	R10E4.4
+1.213740e-03	3	3	1250	11710	88307	Caenorhabditis	elegans	GO:0005524	molecular_function	"ATP binding"	C25D7.6	F32D1.10	R10E4.4
+1.450280e-02	3	3	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	C25D7.6	F32D1.10	R10E4.4
+2.008840e-04	3	3	1624	27713	88307	Caenorhabditis	elegans	GO:0043283	biological_process	"biopolymer metabolism"	C25D7.6	F32D1.10	R10E4.4
+1.000000e+00	3	3	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	C25D7.6	F32D1.10	R10E4.4
+3.082110e-03	3	3	1705	11710	88307	Caenorhabditis	elegans	GO:0000166	molecular_function	"nucleotide binding"	C25D7.6	F32D1.10	R10E4.4
+3.617330e-03	3	3	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	C25D7.6	F32D1.10	R10E4.4
+3.865640e-05	3	3	397	11710	88307	Caenorhabditis	elegans	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	C25D7.6	F32D1.10	R10E4.4
+4.115000e-02	3	3	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	C25D7.6	F32D1.10	R10E4.4
+1.000000e+00	3	3	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	C25D7.6	F32D1.10	R10E4.4
+2.230440e-02	3	3	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	C25D7.6	F32D1.10	R10E4.4
+1.336200e-02	3	3	1542	6495	88307	Caenorhabditis	elegans	GO:0005634	cellular_component	"nucleus"	C25D7.6	F32D1.10	R10E4.4
+4.755290e-03	3	3	1970	11710	88307	Caenorhabditis	elegans	GO:0003676	molecular_function	"nucleic acid binding"	C25D7.6	F32D1.10	R10E4.4
+9.230010e-06	3	3	247	11710	88307	Caenorhabditis	elegans	GO:0042623	molecular_function	"ATPase activity, coupled"	C25D7.6	F32D1.10	R10E4.4
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+7.619610e-01	3	3	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	MCM3	MCM5	MCM7
+1.465070e-01	3	3	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	MCM3	MCM5	MCM7
+4.856280e-02	2	3	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	MCM3	MCM7
+4.293360e-02	2	3	2621	20974	92001	Homo	sapiens	GO:0043228	cellular_component	"non-membrane-bound organelle"	MCM3	MCM7
+8.973480e-03	3	3	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	MCM3	MCM5	MCM7
+1.914670e-01	3	3	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	MCM3	MCM5	MCM7
+6.138310e-03	1	3	43	20974	92001	Homo	sapiens	GO:0044454	cellular_component	"nuclear chromosome part"	MCM3
+2.101420e-01	3	3	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	MCM3	MCM5	MCM7
+3.790300e-02	3	3	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	MCM3	MCM5	MCM7
+1.715510e-03	1	3	12	20974	92001	Homo	sapiens	GO:0030894	cellular_component	"replisome"	MCM3
+2.677590e-01	3	3	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	MCM3	MCM5	MCM7
+3.306270e-02	3	3	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	MCM3	MCM5	MCM7
+4.593160e-02	3	3	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	MCM3	MCM5	MCM7
+9.508460e-04	3	3	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	MCM3	MCM5	MCM7
+1.989170e-07	3	3	145	23297	92001	Homo	sapiens	GO:0006261	biological_process	"DNA-dependent DNA replication"	MCM3	MCM5	MCM7
+6.744880e-02	1	3	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	MCM5
+3.796090e-08	3	3	94	27672	92001	Homo	sapiens	GO:0008094	molecular_function	"DNA-dependent ATPase activity"	MCM3	MCM5	MCM7
+1.000000e+00	3	3	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	MCM3	MCM5	MCM7
+1.591970e-03	3	3	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	MCM3	MCM5	MCM7
+8.469030e-04	3	3	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	MCM3	MCM5	MCM7
+1.000000e+00	3	3	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	MCM3	MCM5	MCM7
+2.697640e-03	3	3	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	MCM3	MCM5	MCM7
+3.855710e-03	3	3	3654	23297	92001	Homo	sapiens	GO:0031323	biological_process	"regulation of cellular metabolism"	MCM3	MCM5	MCM7
+4.691100e-05	3	3	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	MCM3	MCM5	MCM7
+1.000000e+00	3	3	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	MCM3	MCM5	MCM7
+4.589490e-02	3	3	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	MCM3	MCM5	MCM7
+6.683400e-02	1	3	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	MCM5
+1.326760e-02	3	3	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	MCM3	MCM5	MCM7
+4.244040e-02	1	3	301	20974	92001	Homo	sapiens	GO:0000785	cellular_component	"chromatin"	MCM7
+2.692730e-03	3	3	3242	23297	92001	Homo	sapiens	GO:0006351	biological_process	"transcription, DNA-dependent"	MCM3	MCM5	MCM7
+9.737950e-03	3	3	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	MCM3	MCM5	MCM7
+4.161090e-03	3	3	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	MCM3	MCM5	MCM7
+3.956460e-01	1	3	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	MCM3
+5.720550e-04	1	3	4	20974	92001	Homo	sapiens	GO:0005658	cellular_component	"alpha DNA polymerase:primase complex"	MCM3
+1.088580e-02	3	3	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	MCM3	MCM5	MCM7
+2.361990e-06	3	3	312	23297	92001	Homo	sapiens	GO:0006260	biological_process	"DNA replication"	MCM3	MCM5	MCM7
+1.715510e-03	1	3	12	20974	92001	Homo	sapiens	GO:0043601	cellular_component	"replisome (sensu Eukaryota)"	MCM3
+1.129150e-04	3	3	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	MCM3	MCM5	MCM7
+3.376740e-03	3	3	3496	23297	92001	Homo	sapiens	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MCM3	MCM5	MCM7
+5.541780e-05	3	3	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	MCM3	MCM5	MCM7
+1.346620e-01	3	3	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	MCM3	MCM5	MCM7
+1.230330e-02	3	3	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	MCM3	MCM5	MCM7
+2.539080e-03	3	3	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	MCM3	MCM5	MCM7
+1.337820e-05	3	3	658	27672	92001	Homo	sapiens	GO:0016887	molecular_function	"ATPase activity"	MCM3	MCM5	MCM7
+1.085390e-03	2	3	402	20974	92001	Homo	sapiens	GO:0044427	cellular_component	"chromosomal part"	MCM3	MCM7
+5.929180e-01	3	3	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	MCM3	MCM5	MCM7
+5.247690e-05	3	3	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	MCM3	MCM5	MCM7
+7.618420e-01	3	3	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	MCM3	MCM5	MCM7
+2.840550e-09	3	3	34	23297	92001	Homo	sapiens	GO:0006270	biological_process	"DNA replication initiation"	MCM3	MCM5	MCM7
+1.468440e-03	2	3	468	20974	92001	Homo	sapiens	GO:0005694	cellular_component	"chromosome"	MCM3	MCM7
+1.259370e-02	3	3	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MCM3	MCM5	MCM7
+3.647430e-03	3	3	3587	23297	92001	Homo	sapiens	GO:0006350	biological_process	"transcription"	MCM3	MCM5	MCM7
+5.339410e-05	3	3	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	MCM3	MCM5	MCM7
+6.775420e-01	3	3	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	MCM3	MCM5	MCM7
+3.256460e-03	3	3	3454	23297	92001	Homo	sapiens	GO:0045449	biological_process	"regulation of transcription"	MCM3	MCM5	MCM7
+2.715320e-03	1	3	19	20974	92001	Homo	sapiens	GO:0005657	cellular_component	"replication fork"	MCM3
+1.827390e-03	3	3	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	MCM3	MCM5	MCM7
+8.937380e-02	3	3	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	MCM3	MCM5	MCM7
+4.293360e-02	2	3	2621	20974	92001	Homo	sapiens	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	MCM3	MCM7
+2.514840e-03	3	3	3169	23297	92001	Homo	sapiens	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	MCM3	MCM5	MCM7
+3.825280e-01	3	3	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	MCM3	MCM5	MCM7
+6.641720e-03	3	3	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	MCM3	MCM5	MCM7
+4.856280e-02	2	3	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	MCM3	MCM7
+8.306720e-03	3	3	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	MCM3	MCM5	MCM7
+1.319840e-01	3	3	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	MCM3	MCM5	MCM7
+1.715510e-03	1	3	12	20974	92001	Homo	sapiens	GO:0043596	cellular_component	"replication fork (sensu Eukaryota)"	MCM3
+8.940240e-02	3	3	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	MCM3	MCM5	MCM7
+1.812330e-02	3	3	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	MCM3	MCM5	MCM7
+8.504770e-06	3	3	566	27672	92001	Homo	sapiens	GO:0042623	molecular_function	"ATPase activity, coupled"	MCM3	MCM5	MCM7
+1.040580e-02	1	3	73	20974	92001	Homo	sapiens	GO:0000228	cellular_component	"nuclear chromosome"	MCM3
+5.225870e-05	3	3	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	MCM3	MCM5	MCM7
+1.008280e-01	1	3	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	MCM3

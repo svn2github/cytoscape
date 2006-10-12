@@ -1,0 +1,52 @@
+#USING FIT2 instead of its synonym YOR382W in Saccharomyces cerevisiae
+#USING ARO10 instead of its synonym YDR380W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.463480e-02	1	2	114	6526	97048	Saccharomyces	cerevisiae	GO:0030312	cellular_component	"external encapsulating structure"	YOR382W
+1.709000e-02	1	2	56	6526	97048	Saccharomyces	cerevisiae	GO:0006725	biological_process	"aromatic compound metabolism"	YDR380W
+7.987360e-01	1	2	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YDR380W
+9.439790e-01	1	2	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YDR380W
+6.943380e-01	2	2	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YDR380W	YOR382W
+7.615480e-01	1	2	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YDR380W
+6.035870e-02	1	2	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	YDR380W
+3.064660e-04	1	2	1	6526	97048	Saccharomyces	cerevisiae	GO:0006559	biological_process	"L-phenylalanine catabolism"	YDR380W
+2.689230e-01	1	2	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YOR382W
+1.225580e-03	1	2	4	6526	97048	Saccharomyces	cerevisiae	GO:0004737	molecular_function	"pyruvate decarboxylase activity"	YDR380W
+5.466090e-01	2	2	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YDR380W	YOR382W
+9.479050e-03	1	2	31	6526	97048	Saccharomyces	cerevisiae	GO:0044270	biological_process	"nitrogen compound catabolism"	YDR380W
+7.745370e-01	1	2	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YDR380W
+5.559910e-02	1	2	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	YDR380W
+9.466310e-01	1	2	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YDR380W
+6.940830e-01	2	2	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YDR380W	YOR382W
+5.115760e-01	1	2	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YDR380W
+8.563780e-03	1	2	28	6526	97048	Saccharomyces	cerevisiae	GO:0016830	molecular_function	"carbon-carbon lyase activity"	YDR380W
+6.107680e-03	1	2	20	6526	97048	Saccharomyces	cerevisiae	GO:0016831	molecular_function	"carboxy-lyase activity"	YDR380W
+3.463480e-02	1	2	114	6526	97048	Saccharomyces	cerevisiae	GO:0009277	cellular_component	"cell wall (sensu Fungi)"	YOR382W
+1.122090e-01	1	2	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	YDR380W
+4.897830e-03	1	2	16	6526	97048	Saccharomyces	cerevisiae	GO:0009081	biological_process	"branched chain family amino acid metabolism"	YDR380W
+5.389320e-01	2	2	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YDR380W	YOR382W
+6.717950e-02	1	2	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	YDR380W
+1.000000e+00	2	2	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YDR380W	YOR382W
+3.064660e-04	1	2	1	6526	97048	Saccharomyces	cerevisiae	GO:0050177	molecular_function	"phenylpyruvate decarboxylase activity"	YDR380W
+6.426550e-03	1	2	21	6526	97048	Saccharomyces	cerevisiae	GO:0009072	biological_process	"aromatic amino acid family metabolism"	YDR380W
+5.313090e-01	2	2	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YDR380W	YOR382W
+6.128860e-04	1	2	2	6526	97048	Saccharomyces	cerevisiae	GO:0009074	biological_process	"aromatic amino acid family catabolism"	YDR380W
+1.000000e+00	2	2	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YDR380W	YOR382W
+2.497440e-02	1	2	82	6526	97048	Saccharomyces	cerevisiae	GO:0016829	molecular_function	"lyase activity"	YDR380W
+7.250010e-02	1	2	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	YDR380W
+7.303580e-01	1	2	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YDR380W
+2.639360e-01	1	2	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YOR382W
+1.000000e+00	2	2	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YDR380W	YOR382W
+1.225580e-03	1	2	4	6526	97048	Saccharomyces	cerevisiae	GO:0009083	biological_process	"branched chain family amino acid catabolism"	YDR380W
+9.192580e-04	1	2	3	6526	97048	Saccharomyces	cerevisiae	GO:0019439	biological_process	"aromatic compound catabolism"	YDR380W
+6.128860e-04	1	2	2	6526	97048	Saccharomyces	cerevisiae	GO:0006558	biological_process	"L-phenylalanine metabolism"	YDR380W
+2.144280e-03	1	2	7	6526	97048	Saccharomyces	cerevisiae	GO:0006551	biological_process	"leucine metabolism"	YDR380W
+2.756510e-03	1	2	9	6526	97048	Saccharomyces	cerevisiae	GO:0015891	biological_process	"siderophore transport"	YOR382W
+9.479050e-03	1	2	31	6526	97048	Saccharomyces	cerevisiae	GO:0009310	biological_process	"amine catabolism"	YDR380W
+9.129490e-02	1	2	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	YDR380W
+6.128860e-04	1	2	2	6526	97048	Saccharomyces	cerevisiae	GO:0006552	biological_process	"leucine catabolism"	YDR380W
+8.563780e-03	1	2	28	6526	97048	Saccharomyces	cerevisiae	GO:0009063	biological_process	"amino acid catabolism"	YDR380W
+3.463480e-02	1	2	114	6526	97048	Saccharomyces	cerevisiae	GO:0005618	cellular_component	"cell wall"	YOR382W
+5.832720e-01	1	2	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YOR382W
+9.129490e-02	1	2	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	YDR380W
+2.819670e-01	1	2	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YOR382W
+1.159590e-01	1	2	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	YDR380W

@@ -1,0 +1,208 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.220890e-01	3	4	3289	6495	88307	Caenorhabditis	elegans	GO:0016020	cellular_component	"membrane"	C53D5.6	F28B3.8	Y48G1A.5
+3.841830e-05	3	4	140	6495	88307	Caenorhabditis	elegans	GO:0031090	cellular_component	"organelle membrane"	C53D5.6	F28B3.8	Y48G1A.5
+9.231670e-10	3	4	18	27713	88307	Caenorhabditis	elegans	GO:0017038	biological_process	"protein import"	C53D5.6	F28B3.8	Y48G1A.5
+1.337150e-02	3	4	1013	6495	88307	Caenorhabditis	elegans	GO:0005737	cellular_component	"cytoplasm"	C53D5.6	F28B3.8	Y48G1A.5
+3.029490e-10	3	4	13	27713	88307	Caenorhabditis	elegans	GO:0051169	biological_process	"nuclear transport"	C53D5.6	F28B3.8	Y48G1A.5
+8.426840e-01	4	4	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+1.909000e-03	3	4	519	6495	88307	Caenorhabditis	elegans	GO:0044422	cellular_component	"organelle part"	C53D5.6	F28B3.8	Y48G1A.5
+1.182330e-09	4	4	164	27713	88307	Caenorhabditis	elegans	GO:0015031	biological_process	"protein transport"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+2.066640e-05	4	4	1870	27713	88307	Caenorhabditis	elegans	GO:0051234	biological_process	"establishment of localization"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+6.744310e-09	3	4	34	27713	88307	Caenorhabditis	elegans	GO:0006605	biological_process	"protein targeting"	C53D5.6	F28B3.8	Y48G1A.5
+8.475070e-08	3	4	19	6495	88307	Caenorhabditis	elegans	GO:0031965	cellular_component	"nuclear membrane"	C53D5.6	F28B3.8	Y48G1A.5
+1.601330e-01	1	4	1183	27713	88307	Caenorhabditis	elegans	GO:0007165	biological_process	"signal transduction"	K01G5.4
+9.350030e-09	4	4	274	27713	88307	Caenorhabditis	elegans	GO:0051649	biological_process	"establishment of cellular localization"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+1.715980e-01	1	4	1274	27713	88307	Caenorhabditis	elegans	GO:0007154	biological_process	"cell communication"	K01G5.4
+5.292220e-02	4	4	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+6.480520e-02	4	4	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+6.767080e-03	1	4	47	27713	88307	Caenorhabditis	elegans	GO:0006915	biological_process	"apoptosis"	Y48G1A.5
+7.081880e-02	3	4	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	C53D5.6	F28B3.8	Y48G1A.5
+1.852580e-10	3	4	11	27713	88307	Caenorhabditis	elegans	GO:0006606	biological_process	"protein import into nucleus"	C53D5.6	F28B3.8	Y48G1A.5
+2.686010e-09	4	4	201	27713	88307	Caenorhabditis	elegans	GO:0008104	biological_process	"protein localization"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+1.000000e+00	4	4	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+3.980760e-08	3	4	15	6495	88307	Caenorhabditis	elegans	GO:0005643	cellular_component	"nuclear pore"	C53D5.6	F28B3.8	Y48G1A.5
+8.930650e-08	3	4	34	11710	88307	Caenorhabditis	elegans	GO:0008565	molecular_function	"protein transporter activity"	C53D5.6	F28B3.8	Y48G1A.5
+6.540290e-06	3	4	79	6495	88307	Caenorhabditis	elegans	GO:0031967	cellular_component	"organelle envelope"	C53D5.6	F28B3.8	Y48G1A.5
+1.000000e+00	4	4	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+2.247020e-02	1	4	157	27713	88307	Caenorhabditis	elegans	GO:0007264	biological_process	"small GTPase mediated signal transduction"	K01G5.4
+4.671530e-01	1	4	1705	11710	88307	Caenorhabditis	elegans	GO:0000166	molecular_function	"nucleotide binding"	K01G5.4
+1.495900e-05	4	4	1725	27713	88307	Caenorhabditis	elegans	GO:0006810	biological_process	"transport"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+7.039710e-02	3	4	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	C53D5.6	F28B3.8	Y48G1A.5
+1.000000e+00	4	4	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+8.580730e-06	3	4	86	6495	88307	Caenorhabditis	elegans	GO:0031975	cellular_component	"envelope"	C53D5.6	F28B3.8	Y48G1A.5
+8.475070e-08	3	4	19	6495	88307	Caenorhabditis	elegans	GO:0044453	cellular_component	"nuclear membrane part"	C53D5.6	F28B3.8	Y48G1A.5
+5.100790e-10	3	4	15	27713	88307	Caenorhabditis	elegans	GO:0006913	biological_process	"nucleocytoplasmic transport"	C53D5.6	F28B3.8	Y48G1A.5
+1.746290e-04	4	4	748	6495	88307	Caenorhabditis	elegans	GO:0043234	cellular_component	"protein complex"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+2.226060e-07	4	4	610	27713	88307	Caenorhabditis	elegans	GO:0016043	biological_process	"cell organization and biogenesis"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+2.328400e-09	4	4	194	27713	88307	Caenorhabditis	elegans	GO:0046907	biological_process	"intracellular transport"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+1.235600e-02	1	4	86	27713	88307	Caenorhabditis	elegans	GO:0016265	biological_process	"death"	Y48G1A.5
+3.985970e-02	3	4	1489	6495	88307	Caenorhabditis	elegans	GO:0031224	cellular_component	"intrinsic to membrane"	C53D5.6	F28B3.8	Y48G1A.5
+3.233140e-02	4	4	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+3.230220e-01	1	4	1088	11710	88307	Caenorhabditis	elegans	GO:0005515	molecular_function	"protein binding"	Y48G1A.5
+5.829470e-02	1	4	413	27713	88307	Caenorhabditis	elegans	GO:0007242	biological_process	"intracellular signaling cascade"	K01G5.4
+4.798010e-01	4	4	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+8.249470e-01	4	4	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+5.126990e-02	3	4	1630	6495	88307	Caenorhabditis	elegans	GO:0044425	cellular_component	"membrane part"	C53D5.6	F28B3.8	Y48G1A.5
+2.914140e-10	4	4	116	27713	88307	Caenorhabditis	elegans	GO:0006886	biological_process	"intracellular protein transport"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+7.435750e-02	1	4	224	11710	88307	Caenorhabditis	elegans	GO:0019001	molecular_function	"guanyl nucleotide binding"	K01G5.4
+6.320370e-03	4	4	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+7.048260e-02	1	4	212	11710	88307	Caenorhabditis	elegans	GO:0005525	molecular_function	"GTP binding"	K01G5.4
+1.127680e-11	3	4	5	27713	88307	Caenorhabditis	elegans	GO:0000059	biological_process	"protein import into nucleus, docking"	C53D5.6	F28B3.8	Y48G1A.5
+3.582680e-03	3	4	1159	11710	88307	Caenorhabditis	elegans	GO:0005215	molecular_function	"transporter activity"	C53D5.6	F28B3.8	Y48G1A.5
+4.216600e-01	1	4	1498	11710	88307	Caenorhabditis	elegans	GO:0017076	molecular_function	"purine nucleotide binding"	K01G5.4
+1.220050e-01	3	4	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	C53D5.6	F28B3.8	Y48G1A.5
+3.415880e-04	1	4	1	11710	88307	Caenorhabditis	elegans	GO:0008262	molecular_function	"importin-alpha export receptor activity"	Y48G1A.5
+1.341520e-07	3	4	22	6495	88307	Caenorhabditis	elegans	GO:0005635	cellular_component	"nuclear envelope"	C53D5.6	F28B3.8	Y48G1A.5
+3.535930e-03	4	4	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+3.980760e-08	3	4	15	6495	88307	Caenorhabditis	elegans	GO:0046930	cellular_component	"pore complex"	C53D5.6	F28B3.8	Y48G1A.5
+1.909000e-03	3	4	519	6495	88307	Caenorhabditis	elegans	GO:0044446	cellular_component	"intracellular organelle part"	C53D5.6	F28B3.8	Y48G1A.5
+1.333130e-05	3	4	99	6495	88307	Caenorhabditis	elegans	GO:0012505	cellular_component	"endomembrane system"	C53D5.6	F28B3.8	Y48G1A.5
+1.586840e-03	1	4	11	27713	88307	Caenorhabditis	elegans	GO:0008283	biological_process	"cell proliferation"	Y48G1A.5
+3.948670e-02	3	4	1484	6495	88307	Caenorhabditis	elegans	GO:0016021	cellular_component	"integral to membrane"	C53D5.6	F28B3.8	Y48G1A.5
+9.627570e-09	4	4	276	27713	88307	Caenorhabditis	elegans	GO:0051641	biological_process	"cellular localization"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+1.220050e-01	3	4	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	C53D5.6	F28B3.8	Y48G1A.5
+1.303120e-09	4	4	168	27713	88307	Caenorhabditis	elegans	GO:0045184	biological_process	"establishment of protein localization"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+4.394510e-02	3	4	1542	6495	88307	Caenorhabditis	elegans	GO:0005634	cellular_component	"nucleus"	C53D5.6	F28B3.8	Y48G1A.5
+1.852580e-10	3	4	11	27713	88307	Caenorhabditis	elegans	GO:0051170	biological_process	"nuclear import"	C53D5.6	F28B3.8	Y48G1A.5
+1.235600e-02	1	4	86	27713	88307	Caenorhabditis	elegans	GO:0008219	biological_process	"cell death"	Y48G1A.5
+8.202390e-03	1	4	57	27713	88307	Caenorhabditis	elegans	GO:0012501	biological_process	"programmed cell death"	Y48G1A.5
+2.197980e-05	4	4	1899	27713	88307	Caenorhabditis	elegans	GO:0051179	biological_process	"localization"	C53D5.6	F28B3.8	K01G5.4	Y48G1A.5
+2.724670e-05	3	4	125	6495	88307	Caenorhabditis	elegans	GO:0044428	cellular_component	"nuclear part"	C53D5.6	F28B3.8	Y48G1A.5
+5.532490e-03	1	4	9	6495	88307	Caenorhabditis	elegans	GO:0000178	cellular_component	"exosome (RNase complex)"	K01G5.4
+#NOT FOUND: KPNB3_HUMAN in Homo sapiens
+#NOT FOUND: CSE1L_HUMAN in Homo sapiens
+#NOT FOUND: KPNB1_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.961780e-03	1	1	69	23297	92001	Homo	sapiens	GO:0050658	biological_process	"RNA transport"	RAN
+2.215120e-01	1	1	4646	20974	92001	Homo	sapiens	GO:0005737	cellular_component	"cytoplasm"	RAN
+5.880600e-03	1	1	137	23297	92001	Homo	sapiens	GO:0051169	biological_process	"nuclear transport"	RAN
+5.271920e-01	1	1	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	RAN
+3.176370e-02	1	1	740	23297	92001	Homo	sapiens	GO:0015031	biological_process	"protein transport"	RAN
+1.249640e-01	1	1	2621	20974	92001	Homo	sapiens	GO:0043228	cellular_component	"non-membrane-bound organelle"	RAN
+3.718920e-03	1	1	78	20974	92001	Homo	sapiens	GO:0031965	cellular_component	"nuclear membrane"	RAN
+5.763830e-01	1	1	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	RAN
+6.009370e-03	1	1	140	23297	92001	Homo	sapiens	GO:0045941	biological_process	"positive regulation of transcription"	RAN
+5.945460e-01	1	1	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	RAN
+3.359350e-01	1	1	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	RAN
+3.391020e-03	1	1	79	23297	92001	Homo	sapiens	GO:0015931	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid transport"	RAN
+6.445500e-01	1	1	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	RAN
+9.142820e-03	1	1	253	27672	92001	Homo	sapiens	GO:0016563	molecular_function	"transcriptional activator activity"	RAN
+9.178960e-03	1	1	254	27672	92001	Homo	sapiens	GO:0003924	molecular_function	"GTPase activity"	RAN
+2.146240e-03	1	1	50	23297	92001	Homo	sapiens	GO:0030522	biological_process	"intracellular receptor-mediated signaling pathway"	RAN
+3.209860e-01	1	1	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	RAN
+3.476840e-02	1	1	810	23297	92001	Homo	sapiens	GO:0008104	biological_process	"protein localization"	RAN
+1.000000e+00	1	1	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	RAN
+2.017470e-03	1	1	47	23297	92001	Homo	sapiens	GO:0030518	biological_process	"steroid hormone receptor signaling pathway"	RAN
+1.004420e-02	1	1	234	23297	92001	Homo	sapiens	GO:0000278	biological_process	"mitotic cell cycle"	RAN
+4.378260e-03	1	1	102	23297	92001	Homo	sapiens	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	RAN
+2.747140e-02	1	1	640	23297	92001	Homo	sapiens	GO:0007264	biological_process	"small GTPase mediated signal transduction"	RAN
+1.568440e-01	1	1	3654	23297	92001	Homo	sapiens	GO:0031323	biological_process	"regulation of cellular metabolism"	RAN
+3.610150e-02	1	1	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	RAN
+3.433920e-04	1	1	8	23297	92001	Homo	sapiens	GO:0006611	biological_process	"protein export from nucleus"	RAN
+1.604070e-01	1	1	3737	23297	92001	Homo	sapiens	GO:0006810	biological_process	"transport"	RAN
+4.421190e-03	1	1	103	23297	92001	Homo	sapiens	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	RAN
+6.223990e-03	1	1	145	23297	92001	Homo	sapiens	GO:0006913	biological_process	"nucleocytoplasmic transport"	RAN
+1.545250e-01	1	1	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	RAN
+2.216590e-01	1	1	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	RAN
+3.871740e-02	1	1	902	23297	92001	Homo	sapiens	GO:0046907	biological_process	"intracellular transport"	RAN
+3.017490e-02	1	1	835	27672	92001	Homo	sapiens	GO:0005102	molecular_function	"receptor binding"	RAN
+4.837530e-02	1	1	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	RAN
+2.802520e-01	1	1	5878	20974	92001	Homo	sapiens	GO:0031224	cellular_component	"intrinsic to membrane"	RAN
+9.873330e-04	1	1	23	23297	92001	Homo	sapiens	GO:0007051	biological_process	"spindle organization and biogenesis"	RAN
+5.125870e-01	1	1	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	RAN
+2.854890e-03	1	1	79	27672	92001	Homo	sapiens	GO:0003682	molecular_function	"chromatin binding"	RAN
+2.322190e-02	1	1	541	23297	92001	Homo	sapiens	GO:0051242	biological_process	"positive regulation of cellular physiological process"	RAN
+7.408680e-02	1	1	1726	23297	92001	Homo	sapiens	GO:0007242	biological_process	"intracellular signaling cascade"	RAN
+2.961780e-03	1	1	69	23297	92001	Homo	sapiens	GO:0051236	biological_process	"establishment of RNA localization"	RAN
+8.401080e-01	1	1	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	RAN
+3.747470e-02	1	1	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	RAN
+2.326910e-01	1	1	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	RAN
+1.011910e-03	1	1	28	27672	92001	Homo	sapiens	GO:0035258	molecular_function	"steroid hormone receptor binding"	RAN
+1.539680e-01	1	1	3587	23297	92001	Homo	sapiens	GO:0006350	biological_process	"transcription"	RAN
+2.781470e-02	1	1	648	23297	92001	Homo	sapiens	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	RAN
+2.551320e-02	1	1	706	27672	92001	Homo	sapiens	GO:0019001	molecular_function	"guanyl nucleotide binding"	RAN
+3.769150e-02	1	1	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	RAN
+1.482590e-01	1	1	3454	23297	92001	Homo	sapiens	GO:0045449	biological_process	"regulation of transcription"	RAN
+1.222900e-01	1	1	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	RAN
+7.259300e-01	1	1	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	RAN
+1.249640e-01	1	1	2621	20974	92001	Homo	sapiens	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	RAN
+1.880070e-01	1	1	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	RAN
+3.004700e-03	1	1	70	23297	92001	Homo	sapiens	GO:0006403	biological_process	"RNA localization"	RAN
+1.333080e-01	1	1	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	RAN
+2.704240e-03	1	1	63	23297	92001	Homo	sapiens	GO:0006405	biological_process	"RNA export from nucleus"	RAN
+5.091640e-01	1	1	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	RAN
+2.796800e-01	1	1	5866	20974	92001	Homo	sapiens	GO:0016021	cellular_component	"integral to membrane"	RAN
+1.455120e-02	1	1	339	23297	92001	Homo	sapiens	GO:0007017	biological_process	"microtubule-based process"	RAN
+3.352360e-02	1	1	781	23297	92001	Homo	sapiens	GO:0045184	biological_process	"establishment of protein localization"	RAN
+4.471730e-01	1	1	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	RAN
+5.747520e-02	1	1	1339	23297	92001	Homo	sapiens	GO:0006996	biological_process	"organelle organization and biogenesis"	RAN
+8.413110e-03	1	1	196	23297	92001	Homo	sapiens	GO:0031325	biological_process	"positive regulation of cellular metabolism"	RAN
+1.739710e-01	1	1	4053	23297	92001	Homo	sapiens	GO:0051179	biological_process	"localization"	RAN
+6.198150e-04	1	1	13	20974	92001	Homo	sapiens	GO:0000178	cellular_component	"exosome (RNase complex)"	RAN
+3.480500e-02	1	1	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	RAN
+4.036900e-01	1	1	8467	20974	92001	Homo	sapiens	GO:0016020	cellular_component	"membrane"	RAN
+3.213500e-02	1	1	674	20974	92001	Homo	sapiens	GO:0031090	cellular_component	"organelle membrane"	RAN
+7.468780e-03	1	1	174	23297	92001	Homo	sapiens	GO:0007067	biological_process	"mitosis"	RAN
+2.961780e-03	1	1	69	23297	92001	Homo	sapiens	GO:0051168	biological_process	"nuclear export"	RAN
+9.133690e-01	1	1	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	RAN
+1.646790e-01	1	1	4557	27672	92001	Homo	sapiens	GO:0004871	molecular_function	"signal transducer activity"	RAN
+1.333080e-01	1	1	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	RAN
+1.726400e-01	1	1	4022	23297	92001	Homo	sapiens	GO:0051234	biological_process	"establishment of localization"	RAN
+8.112640e-03	1	1	189	23297	92001	Homo	sapiens	GO:0006605	biological_process	"protein targeting"	RAN
+2.078380e-01	1	1	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	RAN
+1.981370e-01	1	1	4616	23297	92001	Homo	sapiens	GO:0007165	biological_process	"signal transduction"	RAN
+3.910370e-02	1	1	911	23297	92001	Homo	sapiens	GO:0051649	biological_process	"establishment of cellular localization"	RAN
+2.110140e-01	1	1	4916	23297	92001	Homo	sapiens	GO:0007154	biological_process	"cell communication"	RAN
+9.056970e-03	1	1	211	23297	92001	Homo	sapiens	GO:0009893	biological_process	"positive regulation of metabolism"	RAN
+2.961780e-03	1	1	69	23297	92001	Homo	sapiens	GO:0050657	biological_process	"nucleic acid transport"	RAN
+3.581580e-01	1	1	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	RAN
+2.300730e-02	1	1	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	RAN
+2.956070e-03	1	1	62	20974	92001	Homo	sapiens	GO:0005643	cellular_component	"nuclear pore"	RAN
+7.325090e-02	1	1	2027	27672	92001	Homo	sapiens	GO:0030528	molecular_function	"transcription regulator activity"	RAN
+1.735480e-02	1	1	364	20974	92001	Homo	sapiens	GO:0031967	cellular_component	"organelle envelope"	RAN
+1.459470e-03	1	1	34	23297	92001	Homo	sapiens	GO:0030521	biological_process	"androgen receptor signaling pathway"	RAN
+1.000000e+00	1	1	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	RAN
+2.738550e-02	1	1	638	23297	92001	Homo	sapiens	GO:0048522	biological_process	"positive regulation of cellular process"	RAN
+1.392380e-01	1	1	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	RAN
+1.004630e-02	1	1	278	27672	92001	Homo	sapiens	GO:0003712	molecular_function	"transcription cofactor activity"	RAN
+3.580620e-01	1	1	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	RAN
+1.000000e+00	1	1	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	RAN
+2.279260e-02	1	1	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	RAN
+1.435110e-02	1	1	301	20974	92001	Homo	sapiens	GO:0000785	cellular_component	"chromatin"	RAN
+2.367690e-01	1	1	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	RAN
+1.773630e-02	1	1	372	20974	92001	Homo	sapiens	GO:0031975	cellular_component	"envelope"	RAN
+1.391600e-01	1	1	3242	23297	92001	Homo	sapiens	GO:0006351	biological_process	"transcription, DNA-dependent"	RAN
+3.528200e-03	1	1	74	20974	92001	Homo	sapiens	GO:0044453	cellular_component	"nuclear membrane part"	RAN
+1.608790e-01	1	1	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	RAN
+1.373230e-02	1	1	380	27672	92001	Homo	sapiens	GO:0008134	molecular_function	"transcription factor binding"	RAN
+9.494780e-02	1	1	2212	23297	92001	Homo	sapiens	GO:0016043	biological_process	"cell organization and biogenesis"	RAN
+1.500620e-01	1	1	3496	23297	92001	Homo	sapiens	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	RAN
+2.420910e-02	1	1	564	23297	92001	Homo	sapiens	GO:0043119	biological_process	"positive regulation of physiological process"	RAN
+3.816130e-02	1	1	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	RAN
+8.312340e-04	1	1	23	27672	92001	Homo	sapiens	GO:0050681	molecular_function	"androgen receptor binding"	RAN
+1.364560e-01	1	1	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	RAN
+2.308830e-01	1	1	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	RAN
+1.806910e-03	1	1	50	27672	92001	Homo	sapiens	GO:0051427	molecular_function	"hormone receptor binding"	RAN
+1.916660e-02	1	1	402	20974	92001	Homo	sapiens	GO:0044427	cellular_component	"chromosomal part"	RAN
+9.133210e-01	1	1	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	RAN
+3.051400e-01	1	1	6400	20974	92001	Homo	sapiens	GO:0044425	cellular_component	"membrane part"	RAN
+2.231330e-02	1	1	468	20974	92001	Homo	sapiens	GO:0005694	cellular_component	"chromosome"	RAN
+1.845730e-02	1	1	430	23297	92001	Homo	sapiens	GO:0006886	biological_process	"intracellular protein transport"	RAN
+6.867840e-04	1	1	16	23297	92001	Homo	sapiens	GO:0007052	biological_process	"mitotic spindle organization and biogenesis"	RAN
+2.486270e-02	1	1	688	27672	92001	Homo	sapiens	GO:0005525	molecular_function	"GTP binding"	RAN
+8.783110e-01	1	1	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	RAN
+4.471250e-01	1	1	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	RAN
+7.683400e-03	1	1	179	23297	92001	Homo	sapiens	GO:0000087	biological_process	"M phase of mitotic cell cycle"	RAN
+5.721390e-03	1	1	120	20974	92001	Homo	sapiens	GO:0005635	cellular_component	"nuclear envelope"	RAN
+1.360260e-01	1	1	3169	23297	92001	Homo	sapiens	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	RAN
+2.956070e-03	1	1	62	20974	92001	Homo	sapiens	GO:0046930	cellular_component	"pore complex"	RAN
+2.207500e-02	1	1	463	20974	92001	Homo	sapiens	GO:0012505	cellular_component	"endomembrane system"	RAN
+9.872520e-03	1	1	230	23297	92001	Homo	sapiens	GO:0000279	biological_process	"M phase"	RAN
+2.025580e-01	1	1	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	RAN
+3.326610e-02	1	1	775	23297	92001	Homo	sapiens	GO:0048518	biological_process	"positive regulation of biological process"	RAN
+3.949010e-02	1	1	920	23297	92001	Homo	sapiens	GO:0051641	biological_process	"cellular localization"	RAN
+2.627060e-01	1	1	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	RAN
+1.770770e-03	1	1	49	27672	92001	Homo	sapiens	GO:0035257	molecular_function	"nuclear hormone receptor binding"	RAN
+6.266910e-03	1	1	146	23297	92001	Homo	sapiens	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	RAN
+6.215680e-03	1	1	172	27672	92001	Homo	sapiens	GO:0003713	molecular_function	"transcription coactivator activity"	RAN
+3.742970e-02	1	1	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	RAN

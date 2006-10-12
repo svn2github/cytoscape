@@ -1,0 +1,95 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.537300e-01	2	6	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	NUC1	PEX2
+1.098640e-02	1	6	12	6526	97048	Saccharomyces	cerevisiae	GO:0006308	biological_process	"DNA catabolism"	NUC1
+1.012890e-01	2	6	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	NUC1	PEX2
+2.803310e-02	6	6	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	NUC1	PEX2	RPP0	RPP1B	RPP2B	YLR287C
+2.997170e-02	1	6	33	6526	97048	Saccharomyces	cerevisiae	GO:0044438	cellular_component	"microbody part"	PEX2
+5.391690e-05	3	6	93	6526	97048	Saccharomyces	cerevisiae	GO:0005842	cellular_component	"cytosolic large ribosomal subunit (sensu Eukaryota)"	RPP0	RPP1B	RPP2B
+8.409870e-02	3	6	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	RPP0	RPP1B	RPP2B
+2.127770e-01	1	6	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	RPP0
+3.346210e-01	6	6	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	NUC1	PEX2	RPP0	RPP1B	RPP2B	YLR287C
+3.657670e-01	4	6	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	NUC1	RPP0	RPP1B	RPP2B
+1.426770e-02	3	6	629	6526	97048	Saccharomyces	cerevisiae	GO:0043037	biological_process	"translation"	RPP0	RPP1B	RPP2B
+1.986410e-02	5	6	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	NUC1	PEX2	RPP0	RPP1B	RPP2B
+8.087690e-04	3	6	231	6526	97048	Saccharomyces	cerevisiae	GO:0003735	molecular_function	"structural constituent of ribosome"	RPP0	RPP1B	RPP2B
+2.006650e-02	1	6	22	6526	97048	Saccharomyces	cerevisiae	GO:0005778	cellular_component	"peroxisomal membrane"	PEX2
+4.391270e-02	3	6	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	RPP0	RPP1B	RPP2B
+3.919150e-01	4	6	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	NUC1	RPP0	RPP1B	RPP2B
+3.623170e-02	1	6	40	6526	97048	Saccharomyces	cerevisiae	GO:0000027	biological_process	"ribosomal large subunit assembly and maintenance"	RPP0
+2.065390e-01	6	6	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	NUC1	PEX2	RPP0	RPP1B	RPP2B	YLR287C
+8.835750e-01	1	6	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	NUC1
+6.935200e-01	1	6	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	PEX2
+9.320970e-01	2	6	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	NUC1	PEX2
+1.326410e-01	3	6	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	RPP0	RPP1B	RPP2B
+1.514710e-01	4	6	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	NUC1	RPP0	RPP1B	RPP2B
+1.416710e-01	1	6	164	6526	97048	Saccharomyces	cerevisiae	GO:0005743	cellular_component	"mitochondrial inner membrane"	NUC1
+2.776590e-02	3	6	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	RPP0	RPP1B	RPP2B
+8.852200e-02	1	6	100	6526	97048	Saccharomyces	cerevisiae	GO:0006310	biological_process	"DNA recombination"	NUC1
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	NUC1	PEX2	RPP0	RPP1B	RPP2B	YLR287C
+1.478790e-03	3	6	284	6526	97048	Saccharomyces	cerevisiae	GO:0005840	cellular_component	"ribosome"	RPP0	RPP1B	RPP2B
+2.067300e-01	1	6	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	NUC1
+2.997170e-02	1	6	33	6526	97048	Saccharomyces	cerevisiae	GO:0044439	cellular_component	"peroxisomal part"	PEX2
+5.505840e-03	1	6	6	6526	97048	Saccharomyces	cerevisiae	GO:0004529	molecular_function	"exodeoxyribonuclease activity"	NUC1
+3.017110e-01	1	6	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	NUC1
+1.734850e-02	1	6	19	6526	97048	Saccharomyces	cerevisiae	GO:0004520	molecular_function	"endodeoxyribonuclease activity"	NUC1
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	NUC1	PEX2	RPP0	RPP1B	RPP2B	YLR287C
+2.127770e-01	1	6	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	RPP0
+6.464810e-01	1	6	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	NUC1
+5.743970e-02	1	6	64	6526	97048	Saccharomyces	cerevisiae	GO:0006401	biological_process	"RNA catabolism"	NUC1
+4.075260e-01	1	6	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	NUC1
+9.320970e-01	2	6	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	NUC1	PEX2
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	NUC1	PEX2	RPP0	RPP1B	RPP2B	YLR287C
+1.725710e-04	3	6	137	6526	97048	Saccharomyces	cerevisiae	GO:0015934	cellular_component	"large ribosomal subunit"	RPP0	RPP1B	RPP2B
+3.017110e-01	1	6	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	NUC1
+1.261690e-01	1	6	145	6526	97048	Saccharomyces	cerevisiae	GO:0004518	molecular_function	"nuclease activity"	NUC1
+1.172300e-01	3	6	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	RPP0	RPP1B	RPP2B
+3.533950e-02	1	6	39	6526	97048	Saccharomyces	cerevisiae	GO:0004527	molecular_function	"exonuclease activity"	NUC1
+1.346040e-01	3	6	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	RPP0	RPP1B	RPP2B
+7.978240e-03	3	6	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	RPP0	RPP1B	RPP2B
+2.067300e-01	1	6	247	6526	97048	Saccharomyces	cerevisiae	GO:0031966	cellular_component	"mitochondrial membrane"	NUC1
+2.891540e-03	3	6	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	RPP0	RPP1B	RPP2B
+3.391910e-04	3	6	172	6526	97048	Saccharomyces	cerevisiae	GO:0005830	cellular_component	"cytosolic ribosome (sensu Eukaryota)"	RPP0	RPP1B	RPP2B
+4.979910e-01	2	6	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	PEX2	RPP0
+3.621410e-01	1	6	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	NUC1
+8.176390e-01	1	6	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YLR287C
+1.070080e-01	3	6	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	RPP0	RPP1B	RPP2B
+1.975640e-01	6	6	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	NUC1	PEX2	RPP0	RPP1B	RPP2B	YLR287C
+5.303190e-01	1	6	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	NUC1
+3.864080e-01	1	6	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	PEX2
+2.336410e-01	1	6	283	6526	97048	Saccharomyces	cerevisiae	GO:0005740	cellular_component	"mitochondrial envelope"	NUC1
+5.087980e-01	5	6	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	NUC1	PEX2	RPP0	RPP1B	RPP2B
+3.444660e-02	1	6	38	6526	97048	Saccharomyces	cerevisiae	GO:0007031	biological_process	"peroxisome organization and biogenesis"	PEX2
+3.342520e-01	6	6	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	NUC1	PEX2	RPP0	RPP1B	RPP2B	YLR287C
+7.768720e-01	1	6	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	NUC1
+4.600080e-02	1	6	51	6526	97048	Saccharomyces	cerevisiae	GO:0042579	cellular_component	"microbody"	PEX2
+1.465190e-01	1	6	170	6526	97048	Saccharomyces	cerevisiae	GO:0019866	cellular_component	"organelle inner membrane"	NUC1
+3.003460e-01	1	6	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	NUC1
+4.767200e-04	3	6	193	6526	97048	Saccharomyces	cerevisiae	GO:0044445	cellular_component	"cytosolic part"	RPP0	RPP1B	RPP2B
+3.424280e-02	3	6	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	RPP0	RPP1B	RPP2B
+4.966720e-01	5	6	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	NUC1	PEX2	RPP0	RPP1B	RPP2B
+1.310900e-01	1	6	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	RPP0
+5.129460e-02	1	6	57	6526	97048	Saccharomyces	cerevisiae	GO:0004519	molecular_function	"endonuclease activity"	NUC1
+8.852200e-02	1	6	100	6526	97048	Saccharomyces	cerevisiae	GO:0004540	molecular_function	"ribonuclease activity"	NUC1
+2.351680e-01	5	6	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	NUC1	PEX2	RPP0	RPP1B	RPP2B
+2.006650e-02	1	6	22	6526	97048	Saccharomyces	cerevisiae	GO:0031903	cellular_component	"microbody membrane"	PEX2
+2.358490e-01	1	6	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	NUC1
+3.396870e-01	1	6	436	6526	97048	Saccharomyces	cerevisiae	GO:0044429	cellular_component	"mitochondrial part"	NUC1
+4.846510e-01	5	6	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	NUC1	PEX2	RPP0	RPP1B	RPP2B
+4.391270e-02	3	6	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	RPP0	RPP1B	RPP2B
+2.277620e-02	1	6	25	6526	97048	Saccharomyces	cerevisiae	GO:0004536	molecular_function	"deoxyribonuclease activity"	NUC1
+8.040970e-01	1	6	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	NUC1
+1.943210e-03	3	6	312	6526	97048	Saccharomyces	cerevisiae	GO:0006414	biological_process	"translational elongation"	RPP0	RPP1B	RPP2B
+4.600080e-02	1	6	51	6526	97048	Saccharomyces	cerevisiae	GO:0005777	cellular_component	"peroxisome"	PEX2
+1.986410e-02	5	6	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	NUC1	PEX2	RPP0	RPP1B	RPP2B
+1.304300e-02	3	6	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	RPP0	RPP1B	RPP2B
+3.082000e-01	4	6	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	NUC1	RPP0	RPP1B	RPP2B
+7.050700e-02	3	6	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	RPP0	RPP1B	RPP2B
+5.743970e-02	1	6	64	6526	97048	Saccharomyces	cerevisiae	GO:0042255	biological_process	"ribosome assembly"	RPP0
+2.351680e-01	5	6	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	NUC1	PEX2	RPP0	RPP1B	RPP2B
+4.776810e-02	1	6	53	6526	97048	Saccharomyces	cerevisiae	GO:0042257	biological_process	"ribosomal subunit assembly"	RPP0
+2.722070e-01	2	6	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	PEX2	RPP0
+2.526000e-01	1	6	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	NUC1
+2.336410e-01	1	6	283	6526	97048	Saccharomyces	cerevisiae	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	NUC1
+9.277030e-01	1	6	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YLR287C
+3.091780e-01	1	6	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	NUC1
+3.797840e-02	5	6	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	NUC1	PEX2	RPP0	RPP1B	RPP2B

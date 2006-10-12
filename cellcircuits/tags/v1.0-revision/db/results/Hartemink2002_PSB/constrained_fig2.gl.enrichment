@@ -1,0 +1,343 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+5.601280e-01	1	33	160	6526	97048	Saccharomyces	cerevisiae	GO:0008233	molecular_function	"peptidase activity"	BAR1
+9.991770e-01	9	33	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	FAR1	FUS3	GPA1	KAR3	STE11	STE18	STE5	STE50	STE7
+3.824330e-04	5	33	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	FUS3	KSS1	STE11	STE20	STE7
+9.869840e-01	11	33	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	FUS3	MCM1	SIN3	SNF2	STE11	STE12	STE20	STE7	SWI1	TEC1	TUP1
+9.640660e-01	2	33	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	KAR3	MCM1
+6.427720e-03	3	33	76	6526	97048	Saccharomyces	cerevisiae	GO:0045941	biological_process	"positive regulation of transcription"	SIN3	STE12	TEC1
+9.788750e-01	12	33	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	BAR1	FUS3	MCM1	SIN3	SNF2	STE11	STE12	STE20	STE7	SWI1	TEC1	TUP1
+2.126890e-01	1	33	47	6526	97048	Saccharomyces	cerevisiae	GO:0006348	biological_process	"chromatin silencing at telomere"	SIN3
+2.996710e-05	3	33	13	6526	97048	Saccharomyces	cerevisiae	GO:0007157	biological_process	"heterophilic cell adhesion"	AGA1	AGA2	SAG1
+2.403480e-01	1	33	54	6526	97048	Saccharomyces	cerevisiae	GO:0003924	molecular_function	"GTPase activity"	GPA1
+4.946700e-02	1	33	10	6526	97048	Saccharomyces	cerevisiae	GO:0000742	biological_process	"karyogamy during conjugation with cellular fusion"	KAR3
+1.057100e-01	1	33	22	6526	97048	Saccharomyces	cerevisiae	GO:0007096	biological_process	"regulation of exit from mitosis"	STE20
+1.500930e-01	1	33	32	6526	97048	Saccharomyces	cerevisiae	GO:0008094	molecular_function	"DNA-dependent ATPase activity"	SNF2
+1.000000e+00	33	33	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	AGA1	AGA2	BAR1	FAR1	FUS1	FUS3	GPA1	KAR3	KSS1	MCM1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SIN3	SNF2	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE6	STE7	SWI1	TEC1	TUP1	mating_type
+5.428120e-02	1	33	11	6526	97048	Saccharomyces	cerevisiae	GO:0003688	molecular_function	"DNA replication origin binding"	MCM1
+2.892800e-01	2	33	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	MCM1	STE12
+3.345380e-01	2	33	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	KAR3	STE20
+4.330980e-01	1	33	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	KAR3
+2.633040e-01	1	33	60	6526	97048	Saccharomyces	cerevisiae	GO:0005816	cellular_component	"spindle pole body"	KAR3
+9.976830e-01	1	33	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	mating_type
+2.996710e-05	3	33	13	6526	97048	Saccharomyces	cerevisiae	GO:0019897	cellular_component	"extrinsic to plasma membrane"	GPA1	STE18	STE4
+1.413900e-01	1	33	30	6526	97048	Saccharomyces	cerevisiae	GO:0019932	biological_process	"second-messenger-mediated signaling"	GPA1
+1.164250e-01	3	33	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	GPA1	SNF2	STE6
+1.612940e-33	23	33	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	KAR3	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+2.651740e-06	9	33	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	FUS1	GPA1	SST2	STE18	STE2	STE3	STE4	STE5	STE6
+6.568250e-02	3	33	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	SIN3	SNF2	SWI1
+9.939300e-01	1	33	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	STE6
+1.102480e-01	1	33	23	6526	97048	Saccharomyces	cerevisiae	GO:0030466	biological_process	"chromatin silencing at silent mating-type cassette"	SIN3
+8.267340e-02	1	33	17	6526	97048	Saccharomyces	cerevisiae	GO:0000165	biological_process	"MAPKKK cascade"	STE50
+3.603840e-03	2	33	18	6526	97048	Saccharomyces	cerevisiae	GO:0004872	molecular_function	"receptor activity"	STE2	STE3
+3.196430e-03	4	33	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	MCM1	SNF2	SWI1	TEC1
+1.029250e-25	13	33	23	6526	97048	Saccharomyces	cerevisiae	GO:0032005	biological_process	"signal transduction during conjugation with cellular fusion"	FAR1	FUS3	GPA1	MFA1	MFA2	STE11	STE18	STE20	STE3	STE4	STE5	STE50	STE7
+5.624090e-01	1	33	161	6526	97048	Saccharomyces	cerevisiae	GO:0030163	biological_process	"protein catabolism"	BAR1
+8.660900e-01	5	33	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	FUS3	SIN3	STE11	STE20	STE7
+7.799950e-02	1	33	16	6526	97048	Saccharomyces	cerevisiae	GO:0007231	biological_process	"osmosensory signaling pathway"	STE50
+3.758200e-04	4	33	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	FUS3	KSS1	STE11	STE20
+2.745280e-01	1	33	63	6526	97048	Saccharomyces	cerevisiae	GO:0016810	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds"	SIN3
+3.051590e-28	23	33	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	KAR3	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+2.725820e-25	23	33	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	KAR3	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+6.056480e-03	4	33	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	FUS3	STE11	STE20	STE7
+4.242610e-01	1	33	108	6526	97048	Saccharomyces	cerevisiae	GO:0030467	biological_process	"establishment and/or maintenance of cell polarity (sensu Fungi)"	STE20
+8.539720e-02	5	33	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	MCM1	SIN3	SNF2	SWI1	TUP1
+2.745280e-01	1	33	63	6526	97048	Saccharomyces	cerevisiae	GO:0016570	biological_process	"histone modification"	SIN3
+9.987900e-01	18	33	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	FAR1	FUS3	GPA1	KAR3	KSS1	MCM1	SIN3	SNF2	STE11	STE12	STE18	STE20	STE5	STE50	STE7	SWI1	TEC1	TUP1
+1.417310e-02	4	33	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	FAR1	FUS3	SIN3	TUP1
+1.575230e-02	4	33	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	FAR1	FUS3	SIN3	TUP1
+9.636590e-03	3	33	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	SIN3	STE12	TEC1
+1.323620e-03	2	33	11	6526	97048	Saccharomyces	cerevisiae	GO:0004888	molecular_function	"transmembrane receptor activity"	STE2	STE3
+1.142620e-01	2	33	115	6526	97048	Saccharomyces	cerevisiae	GO:0007242	biological_process	"intracellular signaling cascade"	GPA1	STE50
+4.834270e-01	1	33	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	SIN3
+9.623140e-09	11	33	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	FUS1	FUS3	KSS1	STE11	STE12	STE2	STE20	STE4	STE5	STE7	TEC1
+2.863200e-03	5	33	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	FUS3	KSS1	STE11	STE20	STE7
+1.178670e-07	3	33	3	6526	97048	Saccharomyces	cerevisiae	GO:0005834	cellular_component	"heterotrimeric G-protein complex"	GPA1	STE18	STE4
+6.175920e-01	7	33	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MCM1	SIN3	SNF2	STE12	SWI1	TEC1	TUP1
+5.056900e-03	1	33	1	6526	97048	Saccharomyces	cerevisiae	GO:0000770	biological_process	"peptide pheromone export"	STE6
+2.007930e-02	1	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0004708	molecular_function	"MAP kinase kinase activity"	STE7
+1.378630e-01	3	33	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	GPA1	SNF2	STE6
+7.330240e-02	1	33	15	6526	97048	Saccharomyces	cerevisiae	GO:0048015	biological_process	"phosphoinositide-mediated signaling"	GPA1
+2.644360e-01	5	33	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	FUS3	KSS1	STE11	STE20	STE7
+5.377070e-35	20	33	56	6526	97048	Saccharomyces	cerevisiae	GO:0000749	biological_process	"response to pheromone during conjugation with cellular fusion"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	STE11	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+9.640660e-01	2	33	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	KAR3	MCM1
+6.587540e-01	2	33	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	SIN3	SNF2
+9.962760e-01	5	33	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	KAR3	MCM1	SIN3	SNF2	SWI1
+8.267340e-02	1	33	17	6526	97048	Saccharomyces	cerevisiae	GO:0048284	biological_process	"organelle fusion"	KAR3
+5.907170e-02	1	33	12	6526	97048	Saccharomyces	cerevisiae	GO:0000160	biological_process	"two-component signal transduction system (phosphorelay)"	STE50
+4.726320e-01	1	33	125	6526	97048	Saccharomyces	cerevisiae	GO:0005667	cellular_component	"transcription factor complex"	SIN3
+2.997170e-02	1	33	6	6526	97048	Saccharomyces	cerevisiae	GO:0031383	biological_process	"regulation of mating projection biogenesis"	FUS1
+3.976540e-10	7	33	37	6526	97048	Saccharomyces	cerevisiae	GO:0044463	cellular_component	"cell projection part"	FAR1	FUS1	FUS3	STE20	STE5	STE6	STE7
+6.858220e-02	1	33	14	6526	97048	Saccharomyces	cerevisiae	GO:0000183	biological_process	"chromatin silencing at rDNA"	SIN3
+9.195250e-02	1	33	19	6526	97048	Saccharomyces	cerevisiae	GO:0007064	biological_process	"mitotic sister chromatid cohesion"	KAR3
+2.779150e-01	2	33	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	SIN3	SNF2
+3.322770e-24	13	33	28	6526	97048	Saccharomyces	cerevisiae	GO:0007186	biological_process	"G-protein coupled receptor protein signaling pathway"	FAR1	FUS3	GPA1	MFA1	MFA2	STE11	STE18	STE20	STE3	STE4	STE5	STE50	STE7
+2.997170e-02	1	33	6	6526	97048	Saccharomyces	cerevisiae	GO:0009373	biological_process	"regulation of transcription by pheromones"	STE12
+6.850730e-01	5	33	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	KAR3	SIN3	SNF2	SWI1	TUP1
+8.481060e-03	3	33	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	SIN3	STE12	TEC1
+1.509640e-02	1	33	3	6526	97048	Saccharomyces	cerevisiae	GO:0016584	biological_process	"nucleosome spacing"	TUP1
+1.008900e-02	1	33	2	6526	97048	Saccharomyces	cerevisiae	GO:0030159	molecular_function	"receptor signaling complex scaffold activity"	STE5
+9.999900e-01	2	33	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	FUS1	mating_type
+2.007930e-02	1	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0007329	biological_process	"positive regulation of transcription from RNA polymerase II promoter by pheromones"	STE12
+2.825020e-01	5	33	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	FUS3	SIN3	STE11	STE20	STE7
+5.145430e-01	1	33	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	KAR3
+5.769450e-35	23	33	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	KAR3	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+4.366330e-10	10	33	130	6526	97048	Saccharomyces	cerevisiae	GO:0040007	biological_process	"growth"	FUS3	KSS1	STE11	STE12	STE20	STE4	STE5	STE50	STE7	TEC1
+8.175310e-01	4	33	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	MCM1	SIN3	SNF2	SWI1
+3.213730e-02	10	33	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	FAR1	FUS1	GPA1	SST2	STE18	STE2	STE3	STE4	STE5	STE6
+5.769450e-35	23	33	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	KAR3	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+8.732440e-02	1	33	18	6526	97048	Saccharomyces	cerevisiae	GO:0003774	molecular_function	"motor activity"	KAR3
+1.919220e-01	4	33	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	SIN3	SNF2	SWI1	TUP1
+1.259350e-01	2	33	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	KAR3	STE20
+2.503770e-02	1	33	5	6526	97048	Saccharomyces	cerevisiae	GO:0031385	biological_process	"regulation of termination of mating projection growth"	FUS1
+9.962760e-01	5	33	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	KAR3	MCM1	SIN3	SNF2	SWI1
+1.686480e-02	4	33	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	FUS3	STE11	STE20	STE7
+7.330240e-02	1	33	15	6526	97048	Saccharomyces	cerevisiae	GO:0048017	biological_process	"inositol lipid-mediated signaling"	GPA1
+1.629020e-11	19	33	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	FAR1	FUS1	FUS3	GPA1	MCM1	MFA1	MFA2	SIN3	STE11	STE12	STE18	STE20	STE3	STE4	STE5	STE50	STE7	TEC1	TUP1
+8.346240e-16	15	33	173	6526	97048	Saccharomyces	cerevisiae	GO:0007165	biological_process	"signal transduction"	FAR1	FUS3	GPA1	KSS1	MFA1	MFA2	SST2	STE11	STE18	STE20	STE3	STE4	STE5	STE50	STE7
+3.850560e-05	3	33	14	6526	97048	Saccharomyces	cerevisiae	GO:0016337	biological_process	"cell-cell adhesion"	AGA1	AGA2	SAG1
+1.509640e-02	1	33	3	6526	97048	Saccharomyces	cerevisiae	GO:0016580	cellular_component	"Sin3 complex"	SIN3
+1.855920e-11	10	33	95	6526	97048	Saccharomyces	cerevisiae	GO:0030447	biological_process	"filamentous growth"	FUS3	KSS1	STE11	STE12	STE20	STE4	STE5	STE50	STE7	TEC1
+8.481060e-03	3	33	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	SIN3	STE12	TEC1
+1.798820e-01	1	33	39	6526	97048	Saccharomyces	cerevisiae	GO:0005625	cellular_component	"soluble fraction"	MFA1
+3.299040e-03	3	33	60	6526	97048	Saccharomyces	cerevisiae	GO:0045944	biological_process	"positive regulation of transcription from RNA polymerase II promoter"	SIN3	STE12	TEC1
+9.901810e-01	12	33	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	FAR1	FUS3	GPA1	KSS1	MCM1	SIN3	SNF2	STE12	STE5	SWI1	TEC1	TUP1
+2.054090e-02	2	33	44	6526	97048	Saccharomyces	cerevisiae	GO:0016564	molecular_function	"transcriptional repressor activity"	SIN3	TUP1
+3.603270e-02	3	33	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	FAR1	FUS3	STE20
+4.152890e-01	1	33	105	6526	97048	Saccharomyces	cerevisiae	GO:0030468	biological_process	"establishment of cell polarity (sensu Fungi)"	STE20
+2.440410e-05	2	33	2	6526	97048	Saccharomyces	cerevisiae	GO:0032093	molecular_function	"SAM domain binding"	STE11	STE50
+5.145430e-01	1	33	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	KAR3
+1.798820e-01	1	33	39	6526	97048	Saccharomyces	cerevisiae	GO:0003712	molecular_function	"transcription cofactor activity"	SIN3
+3.705330e-06	4	33	22	6526	97048	Saccharomyces	cerevisiae	GO:0005576	cellular_component	"extracellular region"	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2
+2.446850e-04	2	33	5	6526	97048	Saccharomyces	cerevisiae	GO:0004707	molecular_function	"MAP kinase activity"	FUS3	KSS1
+1.000000e+00	33	33	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	AGA1	AGA2	BAR1	FAR1	FUS1	FUS3	GPA1	KAR3	KSS1	MCM1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SIN3	SNF2	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE6	STE7	SWI1	TEC1	TUP1	mating_type
+3.603270e-02	3	33	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	FAR1	FUS3	STE20
+2.024330e-01	4	33	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	MCM1	SIN3	STE12	TEC1
+8.568480e-01	2	33	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	MCM1	STE12
+1.933840e-02	3	33	114	6526	97048	Saccharomyces	cerevisiae	GO:0005618	cellular_component	"cell wall"	AGA1	AGA2	SAG1
+2.114510e-02	4	33	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	SIN3	SNF2	SWI1	TUP1
+1.923370e-01	1	33	42	6526	97048	Saccharomyces	cerevisiae	GO:0008134	molecular_function	"transcription factor binding"	SIN3
+1.457520e-01	1	33	31	6526	97048	Saccharomyces	cerevisiae	GO:0005096	molecular_function	"GTPase activator activity"	SST2
+4.763270e-03	16	33	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	FUS1	FUS3	KAR3	KSS1	SIN3	SNF2	STE11	STE12	STE2	STE20	STE4	STE5	STE7	SWI1	TEC1	TUP1
+1.323620e-03	2	33	11	6526	97048	Saccharomyces	cerevisiae	GO:0045786	biological_process	"negative regulation of progression through cell cycle"	FAR1	FUS3
+1.323280e-10	7	33	32	6526	97048	Saccharomyces	cerevisiae	GO:0043332	cellular_component	"mating projection tip"	FAR1	FUS1	FUS3	STE20	STE5	STE6	STE7
+9.999160e-01	1	33	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	mating_type
+2.610650e-02	2	33	50	6526	97048	Saccharomyces	cerevisiae	GO:0006302	biological_process	"double-strand break repair"	SIN3	SNF2
+3.976740e-02	1	33	8	6526	97048	Saccharomyces	cerevisiae	GO:0004860	molecular_function	"protein kinase inhibitor activity"	FAR1
+2.233390e-02	2	33	46	6526	97048	Saccharomyces	cerevisiae	GO:0019207	molecular_function	"kinase regulator activity"	FAR1	STE50
+1.147630e-01	1	33	24	6526	97048	Saccharomyces	cerevisiae	GO:0004857	molecular_function	"enzyme inhibitor activity"	FAR1
+2.633040e-01	1	33	60	6526	97048	Saccharomyces	cerevisiae	GO:0003700	molecular_function	"transcription factor activity"	STE12
+6.118080e-01	1	33	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	MCM1
+4.698430e-07	3	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0000771	biological_process	"agglutination"	AGA1	AGA2	SAG1
+2.556340e-09	9	33	112	6526	97048	Saccharomyces	cerevisiae	GO:0008361	biological_process	"regulation of cell size"	FUS3	KSS1	STE11	STE12	STE20	STE4	STE5	STE7	TEC1
+1.086560e-03	4	33	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	FUS3	STE11	STE20	STE7
+6.681800e-01	1	33	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	MCM1
+4.152890e-01	1	33	105	6526	97048	Saccharomyces	cerevisiae	GO:0030010	biological_process	"establishment of cell polarity"	STE20
+2.005380e-01	1	33	44	6526	97048	Saccharomyces	cerevisiae	GO:0003704	molecular_function	"specific RNA polymerase II transcription factor activity"	TEC1
+2.557280e-01	1	33	58	6526	97048	Saccharomyces	cerevisiae	GO:0016820	molecular_function	"hydrolase activity, acting on acid anhydrides, catalyzing transmembrane movement of substances"	STE6
+4.462910e-02	1	33	9	6526	97048	Saccharomyces	cerevisiae	GO:0030287	cellular_component	"periplasmic space (sensu Fungi)"	BAR1
+2.745280e-01	1	33	63	6526	97048	Saccharomyces	cerevisiae	GO:0008047	molecular_function	"enzyme activator activity"	SST2
+5.214040e-02	2	33	73	6526	97048	Saccharomyces	cerevisiae	GO:0016585	cellular_component	"chromatin remodeling complex"	SNF2	SWI1
+3.488160e-02	1	33	7	6526	97048	Saccharomyces	cerevisiae	GO:0031382	biological_process	"mating projection biogenesis"	FUS1
+7.725980e-02	4	33	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	MCM1	SIN3	STE12	TEC1
+2.126890e-01	1	33	47	6526	97048	Saccharomyces	cerevisiae	GO:0031509	biological_process	"telomeric heterochromatin formation"	SIN3
+4.698430e-07	3	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0000752	biological_process	"agglutination during conjugation with cellular fusion"	AGA1	AGA2	SAG1
+1.500930e-01	1	33	32	6526	97048	Saccharomyces	cerevisiae	GO:0000726	biological_process	"non-recombinational repair"	SIN3
+1.323620e-03	2	33	11	6526	97048	Saccharomyces	cerevisiae	GO:0007050	biological_process	"cell cycle arrest"	FAR1	FUS3
+9.635710e-02	1	33	20	6526	97048	Saccharomyces	cerevisiae	GO:0007243	biological_process	"protein kinase cascade"	STE50
+2.442210e-01	1	33	55	6526	97048	Saccharomyces	cerevisiae	GO:0000070	biological_process	"mitotic sister chromatid segregation"	KAR3
+1.660900e-01	2	33	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	SIN3	TUP1
+9.888890e-12	19	33	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	FAR1	FUS1	FUS3	GPA1	MCM1	MFA1	MFA2	SIN3	STE11	STE12	STE18	STE20	STE3	STE4	STE5	STE50	STE7	TEC1	TUP1
+2.440410e-05	2	33	2	6526	97048	Saccharomyces	cerevisiae	GO:0004932	molecular_function	"mating-type factor pheromone receptor activity"	STE2	STE3
+9.195250e-02	1	33	19	6526	97048	Saccharomyces	cerevisiae	GO:0004407	molecular_function	"histone deacetylase activity"	SIN3
+5.421370e-10	4	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0000772	molecular_function	"mating pheromone activity"	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2
+3.519220e-01	1	33	85	6526	97048	Saccharomyces	cerevisiae	GO:0040029	biological_process	"regulation of gene expression, epigenetic"	SIN3
+1.178670e-07	3	33	3	6526	97048	Saccharomyces	cerevisiae	GO:0050839	molecular_function	"cell adhesion molecule binding"	AGA1	AGA2	SAG1
+2.997170e-02	1	33	6	6526	97048	Saccharomyces	cerevisiae	GO:0046019	biological_process	"regulation of transcription from RNA polymerase II promoter by pheromones"	STE12
+1.933950e-01	2	33	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	SIN3	SNF2
+9.453920e-07	4	33	16	6526	97048	Saccharomyces	cerevisiae	GO:0005057	molecular_function	"receptor signaling protein activity"	FUS3	KSS1	STE11	STE5
+1.367020e-02	4	33	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	FAR1	FUS3	SIN3	TUP1
+9.635710e-02	1	33	20	6526	97048	Saccharomyces	cerevisiae	GO:0000767	biological_process	"cellular morphogenesis during conjugation"	FUS1
+2.855870e-01	1	33	66	6526	97048	Saccharomyces	cerevisiae	GO:0007105	biological_process	"cytokinesis, site selection"	STE20
+5.911830e-02	4	33	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	MCM1	SIN3	STE12	TEC1
+1.797430e-36	22	33	76	6526	97048	Saccharomyces	cerevisiae	GO:0019236	biological_process	"response to pheromone"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+5.931580e-01	1	33	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	MCM1
+7.330240e-02	1	33	15	6526	97048	Saccharomyces	cerevisiae	GO:0003713	molecular_function	"transcription coactivator activity"	SIN3
+2.440410e-05	2	33	2	6526	97048	Saccharomyces	cerevisiae	GO:0019904	molecular_function	"protein domain specific binding"	STE11	STE50
+8.698800e-01	1	33	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	BAR1
+1.519550e-01	4	33	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	FAR1	FUS3	KAR3	STE20
+5.907170e-02	1	33	12	6526	97048	Saccharomyces	cerevisiae	GO:0007234	biological_process	"osmosensory signaling pathway via two-component system"	STE50
+1.271730e-05	5	33	62	6526	97048	Saccharomyces	cerevisiae	GO:0007124	biological_process	"pseudohyphal growth"	STE11	STE12	STE20	STE7	TEC1
+1.529190e-03	5	33	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	FUS3	KSS1	STE11	STE20	STE7
+2.184040e-21	13	33	42	6526	97048	Saccharomyces	cerevisiae	GO:0007166	biological_process	"cell surface receptor linked signal transduction"	FAR1	FUS3	GPA1	MFA1	MFA2	STE11	STE18	STE20	STE3	STE4	STE5	STE50	STE7
+2.964820e-01	1	33	69	6526	97048	Saccharomyces	cerevisiae	GO:0030695	molecular_function	"GTPase regulator activity"	SST2
+7.441910e-14	9	33	37	6526	97048	Saccharomyces	cerevisiae	GO:0001403	biological_process	"invasive growth (sensu Saccharomyces)"	FUS3	KSS1	STE11	STE12	STE20	STE4	STE5	STE7	TEC1
+1.178670e-07	3	33	3	6526	97048	Saccharomyces	cerevisiae	GO:0031684	biological_process	"heterotrimeric G-protein complex cycle"	GPA1	STE18	STE4
+1.629860e-01	1	33	35	6526	97048	Saccharomyces	cerevisiae	GO:0000131	cellular_component	"incipient bud site"	STE20
+5.056900e-03	1	33	1	6526	97048	Saccharomyces	cerevisiae	GO:0004933	molecular_function	"mating-type a-factor pheromone receptor activity"	STE3
+2.211370e-01	3	33	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	SIN3	SNF2	SWI1
+5.269650e-01	1	33	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	MCM1
+9.991660e-01	18	33	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	FAR1	FUS3	GPA1	KAR3	KSS1	MCM1	SIN3	SNF2	STE11	STE12	STE18	STE20	STE5	STE50	STE7	SWI1	TEC1	TUP1
+5.560100e-01	10	33	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	BAR1	FUS3	GPA1	KSS1	SIN3	SNF2	STE11	STE20	STE6	STE7
+2.325430e-01	1	33	52	6526	97048	Saccharomyces	cerevisiae	GO:0016563	molecular_function	"transcriptional activator activity"	SIN3
+8.652430e-03	12	33	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	AGA1	AGA2	MCM1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SIN3	STE11	STE12	STE50
+1.008900e-02	1	33	2	6526	97048	Saccharomyces	cerevisiae	GO:0005076	molecular_function	"receptor signaling protein serine/threonine kinase signaling protein activity"	STE5
+2.557280e-01	1	33	58	6526	97048	Saccharomyces	cerevisiae	GO:0043492	molecular_function	"ATPase activity, coupled to movement of substances"	STE6
+4.462910e-02	1	33	9	6526	97048	Saccharomyces	cerevisiae	GO:0000161	biological_process	"MAPKKK cascade during osmolarity sensing"	STE50
+3.229160e-04	3	33	20	6526	97048	Saccharomyces	cerevisiae	GO:0007155	biological_process	"cell adhesion"	AGA1	AGA2	SAG1
+2.892800e-01	2	33	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	SIN3	SNF2
+7.877630e-01	6	33	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	BAR1	FUS3	SIN3	STE11	STE20	STE7
+8.611300e-01	10	33	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	BAR1	FUS3	MCM1	SIN3	SNF2	STE11	STE20	STE7	SWI1	TUP1
+7.875070e-01	3	33	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	SIN3	SNF2	SWI1
+7.330240e-02	1	33	15	6526	97048	Saccharomyces	cerevisiae	GO:0006476	biological_process	"protein amino acid deacetylation"	SIN3
+2.819190e-01	1	33	65	6526	97048	Saccharomyces	cerevisiae	GO:0000922	cellular_component	"spindle pole"	KAR3
+2.201250e-11	8	33	43	6526	97048	Saccharomyces	cerevisiae	GO:0042995	cellular_component	"cell projection"	FAR1	FUS1	FUS3	STE20	STE4	STE5	STE6	STE7
+7.210250e-01	1	33	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	BAR1
+1.008900e-02	1	33	2	6526	97048	Saccharomyces	cerevisiae	GO:0016565	molecular_function	"general transcriptional repressor activity"	TUP1
+1.029250e-25	13	33	23	6526	97048	Saccharomyces	cerevisiae	GO:0031137	biological_process	"regulation of conjugation with cellular fusion"	FAR1	FUS3	GPA1	MFA1	MFA2	STE11	STE18	STE20	STE3	STE4	STE5	STE50	STE7
+6.257380e-01	1	33	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	KAR3
+3.194380e-10	9	33	89	6526	97048	Saccharomyces	cerevisiae	GO:0016049	biological_process	"cell growth"	FUS3	KSS1	STE11	STE12	STE20	STE4	STE5	STE7	TEC1
+5.313850e-03	3	33	71	6526	97048	Saccharomyces	cerevisiae	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	SIN3	STE12	TEC1
+2.246600e-01	1	33	50	6526	97048	Saccharomyces	cerevisiae	GO:0007088	biological_process	"regulation of mitosis"	STE20
+2.086580e-01	1	33	46	6526	97048	Saccharomyces	cerevisiae	GO:0000122	biological_process	"negative regulation of transcription from RNA polymerase II promoter"	SIN3
+5.769450e-35	23	33	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	KAR3	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+5.890050e-01	3	33	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	SIN3	SNF2	SWI1
+6.377990e-06	7	33	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	FAR1	FUS1	FUS3	STE20	STE5	STE6	STE7
+4.242610e-01	1	33	108	6526	97048	Saccharomyces	cerevisiae	GO:0007163	biological_process	"establishment and/or maintenance of cell polarity"	STE20
+6.724550e-02	5	33	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	MCM1	SIN3	STE12	TEC1	TUP1
+9.970070e-01	1	33	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	FUS3
+4.462910e-02	1	33	9	6526	97048	Saccharomyces	cerevisiae	GO:0042597	cellular_component	"periplasmic space"	BAR1
+9.623140e-09	11	33	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	FUS1	FUS3	KSS1	STE11	STE12	STE2	STE20	STE4	STE5	STE7	TEC1
+2.007930e-02	1	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0004709	molecular_function	"MAP kinase kinase kinase activity"	STE11
+3.976740e-02	1	33	8	6526	97048	Saccharomyces	cerevisiae	GO:0004190	molecular_function	"aspartic-type endopeptidase activity"	BAR1
+1.057100e-01	1	33	22	6526	97048	Saccharomyces	cerevisiae	GO:0019213	molecular_function	"deacetylase activity"	SIN3
+1.522380e-01	5	33	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	FUS3	SIN3	STE11	STE20	STE7
+7.463110e-01	1	33	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	SIN3
+7.931050e-01	6	33	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	GPA1	SIN3	SNF2	STE18	STE4	SWI1
+4.807480e-01	1	33	128	6526	97048	Saccharomyces	cerevisiae	GO:0051301	biological_process	"cell division"	STE20
+1.583550e-03	2	33	12	6526	97048	Saccharomyces	cerevisiae	GO:0016514	cellular_component	"SWI/SNF complex"	SNF2	SWI1
+1.017110e-11	19	33	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	FAR1	FUS1	FUS3	GPA1	MCM1	MFA1	MFA2	SIN3	STE11	STE12	STE18	STE20	STE3	STE4	STE5	STE50	STE7	TEC1	TUP1
+3.003430e-02	3	33	135	6526	97048	Saccharomyces	cerevisiae	GO:0006338	biological_process	"chromatin remodeling"	SIN3	SNF2	SWI1
+4.242610e-01	1	33	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	MCM1
+3.882210e-02	2	33	62	6526	97048	Saccharomyces	cerevisiae	GO:0016251	molecular_function	"general RNA polymerase II transcription factor activity"	SNF2	SWI1
+5.421370e-10	4	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0005102	molecular_function	"receptor binding"	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2
+1.198510e-21	22	33	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+1.008900e-02	1	33	2	6526	97048	Saccharomyces	cerevisiae	GO:0005078	molecular_function	"MAP-kinase scaffold activity"	STE5
+8.417430e-01	5	33	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	FUS3	SIN3	STE11	STE20	STE7
+1.460930e-01	3	33	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	STE2	STE3	STE6
+4.503810e-01	1	33	117	6526	97048	Saccharomyces	cerevisiae	GO:0000267	cellular_component	"cell fraction"	MFA1
+1.367020e-02	4	33	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	FAR1	FUS3	SIN3	TUP1
+6.521590e-01	1	33	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	KAR3
+5.805630e-04	32	33	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	AGA1	AGA2	BAR1	FAR1	FUS1	FUS3	GPA1	KAR3	KSS1	MCM1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SIN3	SNF2	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE6	STE7	SWI1	TEC1	TUP1
+7.875070e-01	3	33	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	SIN3	SNF2	SWI1
+2.114510e-02	4	33	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	SIN3	SNF2	SWI1	TUP1
+1.367010e-01	3	33	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	GPA1	SNF2	STE6
+3.906980e-01	1	33	97	6526	97048	Saccharomyces	cerevisiae	GO:0000910	biological_process	"cytokinesis"	STE20
+3.350690e-01	1	33	80	6526	97048	Saccharomyces	cerevisiae	GO:0005768	cellular_component	"endosome"	GPA1
+1.933840e-02	3	33	114	6526	97048	Saccharomyces	cerevisiae	GO:0009277	cellular_component	"cell wall (sensu Fungi)"	AGA1	AGA2	SAG1
+1.465790e-01	2	33	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	SIN3	TUP1
+2.745280e-01	1	33	63	6526	97048	Saccharomyces	cerevisiae	GO:0016569	biological_process	"covalent chromatin modification"	SIN3
+1.639050e-06	11	33	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	FUS1	FUS3	KSS1	STE11	STE12	STE2	STE20	STE4	STE5	STE7	TEC1
+1.080070e-01	5	33	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	MCM1	SIN3	STE12	TEC1	TUP1
+2.007930e-02	1	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0009371	biological_process	"positive regulation of transcription by pheromones"	STE12
+5.056900e-03	1	33	1	6526	97048	Saccharomyces	cerevisiae	GO:0004934	molecular_function	"mating-type alpha-factor pheromone receptor activity"	STE2
+2.855870e-01	1	33	66	6526	97048	Saccharomyces	cerevisiae	GO:0000282	biological_process	"bud site selection"	STE20
+2.742190e-02	5	33	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	MCM1	SIN3	STE12	TEC1	TUP1
+8.875630e-01	1	33	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	STE6
+9.195250e-02	1	33	19	6526	97048	Saccharomyces	cerevisiae	GO:0003714	molecular_function	"transcription corepressor activity"	SIN3
+2.095460e-03	31	33	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	KAR3	KSS1	MCM1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SIN3	SNF2	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE6	STE7	SWI1	TEC1	TUP1
+2.430720e-01	10	33	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	BAR1	FUS3	MCM1	SIN3	SNF2	STE11	STE20	STE7	SWI1	TUP1
+9.365230e-01	12	33	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	BAR1	FUS3	MCM1	SIN3	SNF2	STE11	STE12	STE20	STE7	SWI1	TEC1	TUP1
+1.390280e-01	3	33	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	STE2	STE3	STE6
+2.137990e-01	2	33	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	SIN3	TUP1
+6.798050e-04	2	33	8	6526	97048	Saccharomyces	cerevisiae	GO:0030031	biological_process	"cell projection biogenesis"	FUS1	STE2
+9.949690e-01	13	33	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	FAR1	FUS3	GPA1	KAR3	KSS1	MCM1	SIN3	SNF2	STE12	STE5	SWI1	TEC1	TUP1
+2.034940e-01	4	33	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	SIN3	SNF2	SWI1	TUP1
+1.686480e-02	4	33	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	FUS3	STE11	STE20	STE7
+4.462910e-02	1	33	9	6526	97048	Saccharomyces	cerevisiae	GO:0019210	molecular_function	"kinase inhibitor activity"	FAR1
+1.208960e-01	2	33	119	6526	97048	Saccharomyces	cerevisiae	GO:0042623	molecular_function	"ATPase activity, coupled"	SNF2	STE6
+1.370070e-01	1	33	29	6526	97048	Saccharomyces	cerevisiae	GO:0007062	biological_process	"sister chromatid cohesion"	KAR3
+9.960650e-01	1	33	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	STE6
+9.998480e-01	3	33	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	FUS3	GPA1	KAR3
+7.463110e-01	1	33	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	SIN3
+1.933840e-02	3	33	114	6526	97048	Saccharomyces	cerevisiae	GO:0030312	cellular_component	"external encapsulating structure"	AGA1	AGA2	SAG1
+1.253730e-03	3	33	43	6526	97048	Saccharomyces	cerevisiae	GO:0019898	cellular_component	"extrinsic to membrane"	GPA1	STE18	STE4
+2.440410e-05	2	33	2	6526	97048	Saccharomyces	cerevisiae	GO:0016503	molecular_function	"pheromone receptor activity"	STE2	STE3
+3.804900e-04	3	33	29	6526	97048	Saccharomyces	cerevisiae	GO:0005887	cellular_component	"integral to plasma membrane"	STE2	STE3	STE6
+3.350200e-01	29	33	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	AGA1	AGA2	BAR1	FAR1	FUS1	FUS3	GPA1	KAR3	KSS1	MCM1	MFA1	SAG1	SIN3	SNF2	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE6	STE7	SWI1	TEC1	TUP1
+3.350690e-01	1	33	80	6526	97048	Saccharomyces	cerevisiae	GO:0031507	biological_process	"heterochromatin formation"	SIN3
+2.273880e-05	3	33	12	6526	97048	Saccharomyces	cerevisiae	GO:0004702	molecular_function	"receptor signaling protein serine/threonine kinase activity"	FUS3	KSS1	STE11
+9.907680e-17	12	33	65	6526	97048	Saccharomyces	cerevisiae	GO:0004871	molecular_function	"signal transducer activity"	FUS3	KSS1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	STE11	STE18	STE2	STE3	STE4	STE5
+9.946040e-01	1	33	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	STE6
+2.519110e-01	1	33	57	6526	97048	Saccharomyces	cerevisiae	GO:0000819	biological_process	"sister chromatid segregation"	KAR3
+4.717850e-15	15	33	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	FAR1	FUS3	GPA1	KSS1	MFA1	MFA2	SST2	STE11	STE18	STE20	STE3	STE4	STE5	STE50	STE7
+1.756890e-01	1	33	38	6526	97048	Saccharomyces	cerevisiae	GO:0000790	cellular_component	"nuclear chromatin"	MCM1
+3.585470e-01	1	33	87	6526	97048	Saccharomyces	cerevisiae	GO:0006261	biological_process	"DNA-dependent DNA replication"	MCM1
+1.756890e-01	1	33	38	6526	97048	Saccharomyces	cerevisiae	GO:0016811	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds, in linear amides"	SIN3
+1.934180e-01	3	33	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	SIN3	SNF2	SWI1
+6.824650e-02	2	33	85	6526	97048	Saccharomyces	cerevisiae	GO:0031497	biological_process	"chromatin assembly"	SIN3	TUP1
+5.667730e-04	3	33	33	6526	97048	Saccharomyces	cerevisiae	GO:0031226	cellular_component	"intrinsic to plasma membrane"	STE2	STE3	STE6
+9.189180e-02	2	33	101	6526	97048	Saccharomyces	cerevisiae	GO:0006333	biological_process	"chromatin assembly or disassembly"	SIN3	TUP1
+5.907170e-02	1	33	12	6526	97048	Saccharomyces	cerevisiae	GO:0000741	biological_process	"karyogamy"	KAR3
+9.581550e-04	7	33	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	MCM1	SIN3	SNF2	STE12	SWI1	TEC1	TUP1
+1.000000e+00	33	33	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	AGA1	AGA2	BAR1	FAR1	FUS1	FUS3	GPA1	KAR3	KSS1	MCM1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SIN3	SNF2	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE6	STE7	SWI1	TEC1	TUP1	mating_type
+9.636590e-03	3	33	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	SIN3	STE12	TEC1
+3.051590e-28	23	33	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	KAR3	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+1.672410e-01	1	33	36	6526	97048	Saccharomyces	cerevisiae	GO:0043565	molecular_function	"sequence-specific DNA binding"	MCM1
+9.901810e-01	12	33	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	FAR1	FUS3	GPA1	KSS1	MCM1	SIN3	SNF2	STE12	STE5	SWI1	TEC1	TUP1
+2.745280e-01	1	33	63	6526	97048	Saccharomyces	cerevisiae	GO:0004175	molecular_function	"endopeptidase activity"	BAR1
+3.488160e-02	1	33	7	6526	97048	Saccharomyces	cerevisiae	GO:0004712	molecular_function	"protein threonine/tyrosine kinase activity"	STE7
+2.333040e-06	3	33	6	6526	97048	Saccharomyces	cerevisiae	GO:0001402	biological_process	"signal transduction during filamentous growth"	FUS3	KSS1	STE50
+1.840540e-01	1	33	40	6526	97048	Saccharomyces	cerevisiae	GO:0000785	cellular_component	"chromatin"	MCM1
+2.314270e-11	19	33	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	FAR1	FUS1	FUS3	GPA1	MCM1	MFA1	MFA2	SIN3	STE11	STE12	STE18	STE20	STE3	STE4	STE5	STE50	STE7	TEC1	TUP1
+1.737090e-24	22	33	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+6.232480e-02	3	33	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	FAR1	SST2	STE50
+6.798050e-04	2	33	8	6526	97048	Saccharomyces	cerevisiae	GO:0030030	biological_process	"cell projection organization and biogenesis"	FUS1	STE2
+8.180800e-02	5	33	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	MCM1	SIN3	STE12	TEC1	TUP1
+3.350690e-01	1	33	80	6526	97048	Saccharomyces	cerevisiae	GO:0045814	biological_process	"negative regulation of gene expression, epigenetic"	SIN3
+5.421370e-10	4	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0005186	molecular_function	"pheromone activity"	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2
+2.007930e-02	1	33	4	6526	97048	Saccharomyces	cerevisiae	GO:0015833	biological_process	"peptide transport"	STE6
+1.102480e-01	1	33	23	6526	97048	Saccharomyces	cerevisiae	GO:0006303	biological_process	"double-strand break repair via nonhomologous end joining"	SIN3
+2.206890e-01	1	33	49	6526	97048	Saccharomyces	cerevisiae	GO:0006997	biological_process	"nuclear organization and biogenesis"	KAR3
+1.587090e-01	1	33	34	6526	97048	Saccharomyces	cerevisiae	GO:0005874	cellular_component	"microtubule"	KAR3
+3.944040e-02	5	33	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MCM1	SIN3	STE12	TEC1	TUP1
+9.636590e-03	3	33	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	SIN3	STE12	TEC1
+1.378630e-01	3	33	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	GPA1	SNF2	STE6
+2.997170e-02	1	33	6	6526	97048	Saccharomyces	cerevisiae	GO:0031344	biological_process	"regulation of cell projection organization and biogenesis"	FUS1
+1.389030e-04	10	33	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	AGA1	AGA2	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SIN3	STE11	STE50
+3.507930e-01	5	33	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	BAR1	GPA1	SIN3	SNF2	STE6
+2.007830e-01	2	33	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	SIN3	TUP1
+1.699820e-18	24	33	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SIN3	SNF2	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE7
+1.102480e-01	1	33	23	6526	97048	Saccharomyces	cerevisiae	GO:0000118	cellular_component	"histone deacetylase complex"	SIN3
+2.201250e-11	8	33	43	6526	97048	Saccharomyces	cerevisiae	GO:0005937	cellular_component	"mating projection"	FAR1	FUS1	FUS3	STE20	STE4	STE5	STE6	STE7
+2.287810e-01	2	33	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	SNF2	STE6
+2.633040e-01	1	33	60	6526	97048	Saccharomyces	cerevisiae	GO:0005815	cellular_component	"microtubule organizing center"	KAR3
+3.350690e-01	1	33	80	6526	97048	Saccharomyces	cerevisiae	GO:0006342	biological_process	"chromatin silencing"	SIN3
+4.061830e-01	1	33	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	KAR3
+1.237260e-01	1	33	26	6526	97048	Saccharomyces	cerevisiae	GO:0006270	biological_process	"DNA replication initiation"	MCM1
+7.446520e-02	6	33	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	GPA1	STE18	STE2	STE3	STE4	STE6
+3.341680e-01	29	33	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	AGA1	AGA2	BAR1	FAR1	FUS1	FUS3	GPA1	KAR3	KSS1	MCM1	MFA1	SAG1	SIN3	SNF2	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE6	STE7	SWI1	TEC1	TUP1
+1.029250e-25	13	33	23	6526	97048	Saccharomyces	cerevisiae	GO:0046999	biological_process	"regulation of conjugation"	FAR1	FUS3	GPA1	MFA1	MFA2	STE11	STE18	STE20	STE3	STE4	STE5	STE50	STE7
+4.462910e-02	1	33	9	6526	97048	Saccharomyces	cerevisiae	GO:0003777	molecular_function	"microtubule motor activity"	KAR3
+2.607690e-03	31	33	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	AGA1	AGA2	FAR1	FUS1	FUS3	GPA1	KAR3	KSS1	MCM1	MF(ALPHA)1	MF(ALPHA)2	MFA1	MFA2	SAG1	SIN3	SNF2	SST2	STE11	STE12	STE18	STE2	STE20	STE3	STE4	STE5	STE50	STE6	STE7	SWI1	TEC1	TUP1
+6.383860e-02	1	33	13	6526	97048	Saccharomyces	cerevisiae	GO:0016575	biological_process	"histone deacetylation"	SIN3
+9.949690e-01	13	33	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	FAR1	FUS3	GPA1	KAR3	KSS1	MCM1	SIN3	SNF2	STE12	STE5	SWI1	TEC1	TUP1
+1.276260e-01	2	33	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	KAR3	STE20
+7.357500e-05	2	33	3	6526	97048	Saccharomyces	cerevisiae	GO:0004930	molecular_function	"G-protein coupled receptor activity"	STE2	STE3
+6.383860e-02	1	33	13	6526	97048	Saccharomyces	cerevisiae	GO:0000754	biological_process	"adaptation to pheromone during conjugation with cellular fusion"	SST2
+1.630250e-02	4	33	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	MCM1	SIN3	STE12	TEC1
+3.550690e-01	2	33	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	KAR3	STE20
+1.966840e-02	2	33	43	6526	97048	Saccharomyces	cerevisiae	GO:0019887	molecular_function	"protein kinase regulator activity"	FAR1	STE50
+3.452310e-01	1	33	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	KAR3
+1.221260e-02	3	33	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	SIN3	STE12	TEC1
+4.194620e-01	11	33	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	FAR1	FUS3	KSS1	MCM1	SIN3	SNF2	STE12	STE5	SWI1	TEC1	TUP1
+3.350690e-01	1	33	80	6526	97048	Saccharomyces	cerevisiae	GO:0016458	biological_process	"gene silencing"	SIN3
+3.863040e-07	6	33	59	6526	97048	Saccharomyces	cerevisiae	GO:0044459	cellular_component	"plasma membrane part"	GPA1	STE18	STE2	STE3	STE4	STE6
+2.557280e-01	1	33	58	6526	97048	Saccharomyces	cerevisiae	GO:0042626	molecular_function	"ATPase activity, coupled to transmembrane movement of substances"	STE6
+7.991270e-01	1	33	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	BAR1
+1.008900e-02	1	33	2	6526	97048	Saccharomyces	cerevisiae	GO:0004861	molecular_function	"cyclin-dependent protein kinase inhibitor activity"	FAR1
+5.145430e-01	1	33	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	KAR3
+8.732440e-02	1	33	18	6526	97048	Saccharomyces	cerevisiae	GO:0000753	biological_process	"cellular morphogenesis during conjugation with cellular fusion"	FUS1
+7.158030e-03	3	33	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	SIN3	STE12	TEC1
+1.057100e-01	1	33	22	6526	97048	Saccharomyces	cerevisiae	GO:0051128	biological_process	"regulation of cell organization and biogenesis"	FUS1
+1.029250e-25	13	33	23	6526	97048	Saccharomyces	cerevisiae	GO:0000750	biological_process	"pheromone-dependent signal transduction during conjugation with cellular fusion"	FAR1	FUS3	GPA1	MFA1	MFA2	STE11	STE18	STE20	STE3	STE4	STE5	STE50	STE7
+2.505830e-02	5	33	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	FUS3	KSS1	STE11	STE20	STE7

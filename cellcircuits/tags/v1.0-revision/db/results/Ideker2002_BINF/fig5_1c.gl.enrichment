@@ -1,0 +1,47 @@
+#USING YIG1 instead of its synonym YPL201C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.490280e-05	3	3	162	6526	97048	Saccharomyces	cerevisiae	GO:0006066	biological_process	"alcohol metabolism"	HOR2	RHR2	YPL201C
+7.130300e-03	2	3	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	HOR2	RHR2
+1.675250e-01	3	3	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	HOR2	RHR2	YPL201C
+5.344320e-04	2	3	88	6526	97048	Saccharomyces	cerevisiae	GO:0016791	molecular_function	"phosphoric monoester hydrolase activity"	HOR2	RHR2
+1.808530e-09	3	3	9	6526	97048	Saccharomyces	cerevisiae	GO:0006071	biological_process	"glycerol metabolism"	HOR2	RHR2	YPL201C
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	HOR2	RHR2	YPL201C
+6.584710e-03	3	3	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	HOR2	RHR2	YPL201C
+3.863440e-02	2	3	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	HOR2	RHR2
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	HOR2	RHR2	YPL201C
+1.868150e-11	3	3	3	6526	97048	Saccharomyces	cerevisiae	GO:0006114	biological_process	"glycerol biosynthesis"	HOR2	RHR2	YPL201C
+2.400390e-02	2	3	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	HOR2	RHR2
+1.338810e-01	3	3	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	HOR2	RHR2	YPL201C
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	HOR2	RHR2	YPL201C
+1.447510e-01	3	3	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	HOR2	RHR2	YPL201C
+4.428680e-05	3	3	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	HOR2	RHR2	YPL201C
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	HOR2	RHR2	YPL201C
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	HOR2	RHR2	YPL201C
+2.173530e-01	2	3	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	HOR2	RHR2
+7.606990e-01	1	3	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	HOR2
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	HOR2	RHR2	YPL201C
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	HOR2	RHR2	YPL201C
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	HOR2	RHR2	YPL201C
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	HOR2	RHR2	YPL201C
+2.559920e-04	2	3	61	6526	97048	Saccharomyces	cerevisiae	GO:0006970	biological_process	"response to osmotic stress"	HOR2	RHR2
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	HOR2	RHR2	YPL201C
+1.282670e-02	2	3	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	HOR2	RHR2
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	HOR2	RHR2	YPL201C
+9.711010e-08	3	3	31	6526	97048	Saccharomyces	cerevisiae	GO:0046165	biological_process	"alcohol biosynthesis"	HOR2	RHR2	YPL201C
+1.408960e-07	2	3	2	6526	97048	Saccharomyces	cerevisiae	GO:0000121	molecular_function	"glycerol-1-phosphatase activity"	HOR2	RHR2
+2.546800e-01	1	3	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	YPL201C
+8.600130e-01	1	3	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	HOR2
+1.012070e-01	1	3	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	HOR2
+1.808530e-09	3	3	9	6526	97048	Saccharomyces	cerevisiae	GO:0019751	biological_process	"polyol metabolism"	HOR2	RHR2	YPL201C
+5.347040e-03	3	3	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	HOR2	RHR2	YPL201C
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	HOR2	RHR2	YPL201C
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	HOR2	RHR2	YPL201C
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	HOR2	RHR2	YPL201C
+2.802650e-02	3	3	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	HOR2	RHR2	YPL201C
+6.903090e-04	2	3	100	6526	97048	Saccharomyces	cerevisiae	GO:0042578	molecular_function	"phosphoric ester hydrolase activity"	HOR2	RHR2
+2.577810e-05	3	3	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	HOR2	RHR2	YPL201C
+5.460990e-03	2	3	283	6526	97048	Saccharomyces	cerevisiae	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	HOR2	RHR2
+1.868150e-11	3	3	3	6526	97048	Saccharomyces	cerevisiae	GO:0046173	biological_process	"polyol biosynthesis"	HOR2	RHR2	YPL201C
+7.310180e-01	1	3	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YPL201C
+7.769730e-01	1	3	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YPL201C
+1.467640e-08	3	3	17	6526	97048	Saccharomyces	cerevisiae	GO:0006113	biological_process	"fermentation"	HOR2	RHR2	YPL201C

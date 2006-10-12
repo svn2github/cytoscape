@@ -1,0 +1,300 @@
+#USING DebB instead of its synonym CG16792 in Drosophila melanogaster
+#USING CG17768 instead of its synonym CG31990 in Drosophila melanogaster
+#USING Sxl instead of its synonym CG33070 in Drosophila melanogaster
+#USING SmD3 instead of its synonym CG8427 in Drosophila melanogaster
+#USING Ef2b instead of its synonym CG2238 in Drosophila melanogaster
+#USING Gbp instead of its synonym CG5519 in Drosophila melanogaster
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+8.222750e-03	1	14	6	10183	157890	Drosophila	melanogaster	GO:0007541	biological_process	"sex determination, primary response to X:A ratio"	CG33070
+4.106770e-03	1	14	3	10214	157890	Drosophila	melanogaster	GO:0048027	molecular_function	"mRNA 5'-UTR binding"	CG33070
+6.663290e-02	1	14	50	10183	157890	Drosophila	melanogaster	GO:0000381	biological_process	"regulation of alternative nuclear mRNA splicing, via spliceosome"	CG1646
+1.716830e-01	1	14	136	10183	157890	Drosophila	melanogaster	GO:0048732	biological_process	"gland development"	CG8427
+9.785330e-01	1	14	1818	7583	157890	Drosophila	melanogaster	GO:0005737	cellular_component	"cytoplasm"	CG2238
+5.488840e-03	1	14	4	10183	157890	Drosophila	melanogaster	GO:0050686	biological_process	"negative regulation of mRNA processing"	CG33070
+6.856670e-03	1	14	5	10183	157890	Drosophila	melanogaster	GO:0019099	biological_process	"female germ-line sex determination"	CG33070
+1.502700e-02	1	14	11	10183	157890	Drosophila	melanogaster	GO:0030237	biological_process	"female sex determination"	CG33070
+7.313610e-05	14	14	5161	10183	157890	Drosophila	melanogaster	GO:0044237	biological_process	"cellular metabolism"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+1.973710e-06	9	14	808	7583	157890	Drosophila	melanogaster	GO:0043228	cellular_component	"non-membrane-bound organelle"	CG1249	CG13277	CG16792	CG18591	CG2021	CG31990	CG6610	CG8427	CG9344
+2.343420e-04	14	14	5608	10183	157890	Drosophila	melanogaster	GO:0008152	biological_process	"metabolism"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+7.336990e-05	14	14	3845	7583	157890	Drosophila	melanogaster	GO:0005622	cellular_component	"intracellular"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+9.991960e-01	1	14	4072	10214	157890	Drosophila	melanogaster	GO:0003824	molecular_function	"catalytic activity"	CG5519
+3.725560e-01	7	14	4319	10214	157890	Drosophila	melanogaster	GO:0005488	molecular_function	"binding"	CG1249	CG16792	CG18591	CG2238	CG31990	CG33070	CG5519
+4.676900e-01	4	14	2514	10183	157890	Drosophila	melanogaster	GO:0019538	biological_process	"protein metabolism"	CG18591	CG2238	CG33070	CG5519
+4.194970e-07	14	14	3583	10183	157890	Drosophila	melanogaster	GO:0043170	biological_process	"macromolecule metabolism"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+1.193920e-01	1	14	92	10183	157890	Drosophila	melanogaster	GO:0007422	biological_process	"peripheral nervous system development"	CG8427
+1.046080e-01	1	14	80	10183	157890	Drosophila	melanogaster	GO:0006445	biological_process	"regulation of translation"	CG33070
+4.106770e-03	1	14	3	10214	157890	Drosophila	melanogaster	GO:0017069	molecular_function	"snRNA binding"	CG31990
+1.000000e+00	14	14	10183	10183	157890	Drosophila	melanogaster	GO:0008150	biological_process	"biological_process"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+4.228550e-08	9	14	515	7583	157890	Drosophila	melanogaster	GO:0043233	cellular_component	"organelle lumen"	CG1249	CG13277	CG16792	CG18591	CG2021	CG31990	CG6610	CG8427	CG9344
+5.511870e-01	1	14	566	10183	157890	Drosophila	melanogaster	GO:0007399	biological_process	"nervous system development"	CG8427
+1.163610e-19	13	14	297	10183	157890	Drosophila	melanogaster	GO:0006396	biological_process	"RNA processing"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+3.118350e-02	1	14	23	10183	157890	Drosophila	melanogaster	GO:0016478	biological_process	"negative regulation of translation"	CG33070
+1.374840e-03	1	14	1	10183	157890	Drosophila	melanogaster	GO:0007544	biological_process	"sex determination, female germ-line determination"	CG33070
+1.746560e-01	1	14	139	10214	157890	Drosophila	melanogaster	GO:0019787	molecular_function	"small conjugating protein ligase activity"	CG5519
+2.635970e-01	1	14	220	10183	157890	Drosophila	melanogaster	GO:0048699	biological_process	"generation of neurons"	CG8427
+8.222750e-03	1	14	6	10183	157890	Drosophila	melanogaster	GO:0018992	biological_process	"germ-line sex determination"	CG33070
+6.555650e-01	1	14	746	10183	157890	Drosophila	melanogaster	GO:0019953	biological_process	"sexual reproduction"	CG33070
+1.512560e-09	9	14	353	7583	157890	Drosophila	melanogaster	GO:0031981	cellular_component	"nuclear lumen"	CG1249	CG13277	CG16792	CG18591	CG2021	CG31990	CG6610	CG8427	CG9344
+2.714710e-20	9	14	26	7583	157890	Drosophila	melanogaster	GO:0044452	cellular_component	"nucleolar part"	CG1249	CG13277	CG16792	CG18591	CG2021	CG31990	CG6610	CG8427	CG9344
+2.499470e-03	2	14	55	10183	157890	Drosophila	melanogaster	GO:0050684	biological_process	"regulation of mRNA processing"	CG1646	CG33070
+2.089230e-14	9	14	103	7583	157890	Drosophila	melanogaster	GO:0005730	cellular_component	"nucleolus"	CG1249	CG13277	CG16792	CG18591	CG2021	CG31990	CG6610	CG8427	CG9344
+4.457820e-01	2	14	1079	10183	157890	Drosophila	melanogaster	GO:0031323	biological_process	"regulation of cellular metabolism"	CG1646	CG33070
+6.243380e-03	2	14	88	10214	157890	Drosophila	melanogaster	GO:0008135	molecular_function	"translation factor activity, nucleic acid binding"	CG2238	CG33070
+7.506060e-01	1	14	961	10183	157890	Drosophila	melanogaster	GO:0048513	biological_process	"organ development"	CG8427
+3.385150e-02	1	14	25	10183	157890	Drosophila	melanogaster	GO:0048542	biological_process	"lymph gland development (sensu Arthropoda)"	CG8427
+2.820180e-01	1	14	238	10183	157890	Drosophila	melanogaster	GO:0006512	biological_process	"ubiquitin cycle"	CG5519
+1.967340e-01	1	14	158	10183	157890	Drosophila	melanogaster	GO:0007417	biological_process	"central nervous system development"	CG8427
+6.982580e-01	3	14	2474	10183	157890	Drosophila	melanogaster	GO:0044260	biological_process	"cellular macromolecule metabolism"	CG2238	CG33070	CG5519
+7.350160e-01	1	14	921	10183	157890	Drosophila	melanogaster	GO:0006464	biological_process	"protein modification"	CG5519
+5.857020e-08	13	14	1756	7583	157890	Drosophila	melanogaster	GO:0043234	cellular_component	"protein complex"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+2.129320e-14	12	14	386	7583	157890	Drosophila	melanogaster	GO:0030529	cellular_component	"ribonucleoprotein complex"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG6610	CG8427	CG9344
+1.247490e-20	13	14	251	10183	157890	Drosophila	melanogaster	GO:0016071	biological_process	"mRNA metabolism"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+1.908880e-02	1	14	14	10183	157890	Drosophila	melanogaster	GO:0007539	biological_process	"primary sex determination, soma"	CG33070
+6.333230e-01	2	14	1501	10183	157890	Drosophila	melanogaster	GO:0050794	biological_process	"regulation of cellular process"	CG1646	CG33070
+6.942900e-01	1	14	826	10183	157890	Drosophila	melanogaster	GO:0000003	biological_process	"reproduction"	CG33070
+1.374840e-03	1	14	1	10183	157890	Drosophila	melanogaster	GO:0035056	biological_process	"negative regulation of nuclear mRNA splicing via U2-type spliceosome"	CG33070
+4.796970e-01	1	14	464	10183	157890	Drosophila	melanogaster	GO:0006259	biological_process	"DNA metabolism"	CG33070
+6.748950e-01	3	14	2397	10183	157890	Drosophila	melanogaster	GO:0044267	biological_process	"cellular protein metabolism"	CG2238	CG33070	CG5519
+8.922100e-10	6	14	65	7583	157890	Drosophila	melanogaster	GO:0005684	cellular_component	"major (U2-dependent) spliceosome"	CG13277	CG1646	CG2021	CG3198	CG6610	CG9344
+2.178800e-02	1	14	16	10183	157890	Drosophila	melanogaster	GO:0007538	biological_process	"primary sex determination"	CG33070
+4.975040e-05	14	14	3740	7583	157890	Drosophila	melanogaster	GO:0044424	cellular_component	"intracellular part"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+3.669760e-01	1	14	327	10183	157890	Drosophila	melanogaster	GO:0043118	biological_process	"negative regulation of physiological process"	CG33070
+3.651280e-02	1	14	27	10183	157890	Drosophila	melanogaster	GO:0017148	biological_process	"negative regulation of protein biosynthesis"	CG33070
+4.037370e-01	1	14	369	10183	157890	Drosophila	melanogaster	GO:0048523	biological_process	"negative regulation of cellular process"	CG33070
+4.279510e-01	1	14	398	10183	157890	Drosophila	melanogaster	GO:0048519	biological_process	"negative regulation of biological process"	CG33070
+4.228550e-08	9	14	515	7583	157890	Drosophila	melanogaster	GO:0031974	cellular_component	"membrane-enclosed lumen"	CG1249	CG13277	CG16792	CG18591	CG2021	CG31990	CG6610	CG8427	CG9344
+2.648240e-02	14	14	7858	10183	157890	Drosophila	melanogaster	GO:0007582	biological_process	"physiological process"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+1.107280e-19	12	14	190	10183	157890	Drosophila	melanogaster	GO:0000377	biological_process	"RNA splicing, via transesterification reactions with bulged adenosine as nucleophile"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG33070	CG5519	CG6610	CG8427	CG9344
+5.229290e-09	13	14	1951	10183	157890	Drosophila	melanogaster	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+1.132590e-01	1	14	87	10183	157890	Drosophila	melanogaster	GO:0009889	biological_process	"regulation of biosynthesis"	CG33070
+1.107280e-19	12	14	190	10183	157890	Drosophila	melanogaster	GO:0000375	biological_process	"RNA splicing, via transesterification reactions"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG33070	CG5519	CG6610	CG8427	CG9344
+7.049660e-02	1	14	53	10183	157890	Drosophila	melanogaster	GO:0007548	biological_process	"sex differentiation"	CG33070
+8.281790e-01	2	14	2148	10183	157890	Drosophila	melanogaster	GO:0007275	biological_process	"development"	CG33070	CG8427
+2.078060e-02	2	14	165	10214	157890	Drosophila	melanogaster	GO:0019001	molecular_function	"guanyl nucleotide binding"	CG2238	CG5519
+1.624120e-19	12	14	196	10183	157890	Drosophila	melanogaster	GO:0008380	biological_process	"RNA splicing"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG33070	CG5519	CG6610	CG8427	CG9344
+1.647270e-01	1	14	130	10183	157890	Drosophila	melanogaster	GO:0006461	biological_process	"protein complex assembly"	CG18591
+3.334700e-01	2	14	862	10214	157890	Drosophila	melanogaster	GO:0017076	molecular_function	"purine nucleotide binding"	CG2238	CG5519
+1.438050e-04	5	14	406	10214	157890	Drosophila	melanogaster	GO:0003723	molecular_function	"RNA binding"	CG1249	CG16792	CG18591	CG31990	CG33070
+6.916040e-03	14	14	7140	10183	157890	Drosophila	melanogaster	GO:0050875	biological_process	"cellular physiological process"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+1.973710e-06	9	14	808	7583	157890	Drosophila	melanogaster	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CG1249	CG13277	CG16792	CG18591	CG2021	CG31990	CG6610	CG8427	CG9344
+1.447200e-01	1	14	113	10183	157890	Drosophila	melanogaster	GO:0016567	biological_process	"protein ubiquitination"	CG5519
+3.055970e-09	13	14	1871	10183	157890	Drosophila	melanogaster	GO:0043283	biological_process	"biopolymer metabolism"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+3.118350e-02	1	14	23	10183	157890	Drosophila	melanogaster	GO:0006414	biological_process	"translational elongation"	CG2238
+6.323710e-01	1	14	702	10183	157890	Drosophila	melanogaster	GO:0048731	biological_process	"system development"	CG8427
+5.107310e-07	12	14	1632	7583	157890	Drosophila	melanogaster	GO:0044446	cellular_component	"intracellular organelle part"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG6610	CG8427	CG9344
+5.237480e-01	1	14	391	7583	157890	Drosophila	melanogaster	GO:0005829	cellular_component	"cytosol"	CG2238
+5.874910e-05	14	14	5081	10183	157890	Drosophila	melanogaster	GO:0044238	biological_process	"primary metabolism"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+2.890660e-01	1	14	245	10183	157890	Drosophila	melanogaster	GO:0009892	biological_process	"negative regulation of metabolism"	CG33070
+5.481730e-04	12	14	3007	7583	157890	Drosophila	melanogaster	GO:0043226	cellular_component	"organelle"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG6610	CG8427	CG9344
+2.297610e-01	1	14	188	10183	157890	Drosophila	melanogaster	GO:0030182	biological_process	"neuron differentiation"	CG8427
+3.784090e-02	1	14	28	10183	157890	Drosophila	melanogaster	GO:0009890	biological_process	"negative regulation of biosynthesis"	CG33070
+3.553090e-09	4	14	12	7583	157890	Drosophila	melanogaster	GO:0005688	cellular_component	"snRNP U6"	CG13277	CG2021	CG6610	CG9344
+7.513620e-01	1	14	963	10183	157890	Drosophila	melanogaster	GO:0043412	biological_process	"biopolymer modification"	CG5519
+1.908880e-02	1	14	14	10183	157890	Drosophila	melanogaster	GO:0000245	biological_process	"spliceosome assembly"	CG18591
+2.759260e-01	1	14	232	10183	157890	Drosophila	melanogaster	GO:0051327	biological_process	"M phase of meiotic cell cycle"	CG33070
+5.488840e-03	1	14	4	10183	157890	Drosophila	melanogaster	GO:0048025	biological_process	"negative regulation of nuclear mRNA splicing, via spliceosome"	CG33070
+9.511870e-01	1	14	1470	7583	157890	Drosophila	melanogaster	GO:0044444	cellular_component	"cytoplasmic part"	CG2238
+1.150610e-11	12	14	652	7583	157890	Drosophila	melanogaster	GO:0044428	cellular_component	"nuclear part"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG6610	CG8427	CG9344
+3.278510e-04	2	14	15	7583	157890	Drosophila	melanogaster	GO:0005685	cellular_component	"snRNP U1"	CG1646	CG3198
+4.081740e-06	3	14	24	10214	157890	Drosophila	melanogaster	GO:0031202	molecular_function	"RNA splicing factor activity, transesterification mechanism"	CG1249	CG16792	CG18591
+2.769450e-01	1	14	233	10183	157890	Drosophila	melanogaster	GO:0022008	biological_process	"neurogenesis"	CG8427
+5.472210e-03	1	14	4	10214	157890	Drosophila	melanogaster	GO:0000900	molecular_function	"translation repressor activity, nucleic acid binding"	CG33070
+2.313500e-02	1	14	17	10183	157890	Drosophila	melanogaster	GO:0007131	biological_process	"meiotic recombination"	CG33070
+4.899000e-01	2	14	1170	10183	157890	Drosophila	melanogaster	GO:0009058	biological_process	"biosynthesis"	CG2238	CG33070
+5.408480e-03	14	14	5225	7583	157890	Drosophila	melanogaster	GO:0005623	cellular_component	"cell"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+8.222750e-03	1	14	6	10183	157890	Drosophila	melanogaster	GO:0019101	biological_process	"female somatic sex determination"	CG33070
+6.806020e-03	2	14	92	10214	157890	Drosophila	melanogaster	GO:0045182	molecular_function	"translation regulator activity"	CG2238	CG33070
+5.107310e-07	12	14	1632	7583	157890	Drosophila	melanogaster	GO:0044422	cellular_component	"organelle part"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG6610	CG8427	CG9344
+5.488840e-03	1	14	4	10183	157890	Drosophila	melanogaster	GO:0051253	biological_process	"negative regulation of RNA metabolism"	CG33070
+2.178800e-02	1	14	16	10183	157890	Drosophila	melanogaster	GO:0046660	biological_process	"female sex differentiation"	CG33070
+3.074290e-02	2	14	203	10183	157890	Drosophila	melanogaster	GO:0043037	biological_process	"translation"	CG2238	CG33070
+6.163460e-01	2	14	1458	10183	157890	Drosophila	melanogaster	GO:0050791	biological_process	"regulation of physiological process"	CG1646	CG33070
+3.723400e-01	1	14	334	10214	157890	Drosophila	melanogaster	GO:0003729	molecular_function	"mRNA binding"	CG33070
+1.091660e-02	1	14	8	10214	157890	Drosophila	melanogaster	GO:0008187	molecular_function	"poly-pyrimidine tract binding"	CG33070
+6.016040e-02	1	14	45	10183	157890	Drosophila	melanogaster	GO:0007530	biological_process	"sex determination"	CG33070
+2.092580e-01	1	14	126	7583	157890	Drosophila	melanogaster	GO:0000151	cellular_component	"ubiquitin ligase complex"	CG5519
+1.107800e-04	12	14	2600	7583	157890	Drosophila	melanogaster	GO:0043227	cellular_component	"membrane-bound organelle"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG6610	CG8427	CG9344
+2.701700e-01	2	14	739	10183	157890	Drosophila	melanogaster	GO:0006412	biological_process	"protein biosynthesis"	CG2238	CG33070
+5.886090e-02	1	14	44	10183	157890	Drosophila	melanogaster	GO:0006310	biological_process	"DNA recombination"	CG33070
+2.499470e-03	2	14	55	10183	157890	Drosophila	melanogaster	GO:0048024	biological_process	"regulation of nuclear mRNA splicing, via spliceosome"	CG1646	CG33070
+4.966840e-01	1	14	487	10183	157890	Drosophila	melanogaster	GO:0048477	biological_process	"oogenesis"	CG33070
+1.132590e-01	1	14	87	10183	157890	Drosophila	melanogaster	GO:0031326	biological_process	"regulation of cellular biosynthesis"	CG33070
+1.000000e+00	7	14	10214	10214	157890	Drosophila	melanogaster	GO:0003674	molecular_function	"molecular_function"	CG1249	CG16792	CG18591	CG2238	CG31990	CG33070	CG5519
+5.980930e-18	11	14	126	7583	157890	Drosophila	melanogaster	GO:0005681	cellular_component	"spliceosome complex"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG33070	CG6610	CG8427	CG9344
+3.485880e-01	2	14	891	10214	157890	Drosophila	melanogaster	GO:0000166	molecular_function	"nucleotide binding"	CG2238	CG5519
+2.769450e-01	1	14	233	10183	157890	Drosophila	melanogaster	GO:0051321	biological_process	"meiotic cell cycle"	CG33070
+1.961950e-01	1	14	158	10214	157890	Drosophila	melanogaster	GO:0016881	molecular_function	"acid-amino acid ligase activity"	CG5519
+6.835910e-03	1	14	5	10214	157890	Drosophila	melanogaster	GO:0030371	molecular_function	"translation repressor activity"	CG33070
+2.248250e-01	1	14	184	10214	157890	Drosophila	melanogaster	GO:0016879	molecular_function	"ligase activity, forming carbon-nitrogen bonds"	CG5519
+1.000000e+00	14	14	7583	7583	157890	Drosophila	melanogaster	GO:0005575	cellular_component	"cellular_component"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+1.098370e-04	12	14	2598	7583	157890	Drosophila	melanogaster	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG6610	CG8427	CG9344
+6.871770e-21	13	14	240	10183	157890	Drosophila	melanogaster	GO:0006397	biological_process	"mRNA processing"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+9.616130e-18	13	14	415	10183	157890	Drosophila	melanogaster	GO:0016070	biological_process	"RNA metabolism"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+6.909270e-01	2	14	1658	10183	157890	Drosophila	melanogaster	GO:0050789	biological_process	"regulation of biological process"	CG1646	CG33070
+1.588880e-01	1	14	125	10183	157890	Drosophila	melanogaster	GO:0007517	biological_process	"muscle development"	CG8427
+1.746560e-01	1	14	139	10214	157890	Drosophila	melanogaster	GO:0004842	molecular_function	"ubiquitin-protein ligase activity"	CG5519
+2.763990e-02	6	14	1845	10214	157890	Drosophila	melanogaster	GO:0003676	molecular_function	"nucleic acid binding"	CG1249	CG16792	CG18591	CG2238	CG31990	CG33070
+3.518300e-02	1	14	26	10183	157890	Drosophila	melanogaster	GO:0006374	biological_process	"nuclear mRNA splicing via U2-type spliceosome"	CG33070
+4.697550e-01	2	14	1128	10183	157890	Drosophila	melanogaster	GO:0019222	biological_process	"regulation of metabolism"	CG1646	CG33070
+2.842240e-02	1	14	21	10214	157890	Drosophila	melanogaster	GO:0003746	molecular_function	"translation elongation factor activity"	CG2238
+5.131540e-01	1	14	510	10183	157890	Drosophila	melanogaster	GO:0007292	biological_process	"female gamete generation"	CG33070
+3.669790e-01	1	14	328	10214	157890	Drosophila	melanogaster	GO:0016874	molecular_function	"ligase activity"	CG5519
+3.929170e-01	2	14	974	10183	157890	Drosophila	melanogaster	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG1646	CG33070
+8.465290e-01	1	14	1279	10214	157890	Drosophila	melanogaster	GO:0005515	molecular_function	"protein binding"	CG33070
+2.708120e-01	1	14	227	10183	157890	Drosophila	melanogaster	GO:0031324	biological_process	"negative regulation of cellular metabolism"	CG33070
+1.374840e-03	1	14	1	10183	157890	Drosophila	melanogaster	GO:0035055	biological_process	"regulation of nuclear mRNA splicing via U2-type spliceosome"	CG33070
+4.893630e-01	1	14	477	10183	157890	Drosophila	melanogaster	GO:0048468	biological_process	"cell development"	CG33070
+4.445590e-02	1	14	33	10183	157890	Drosophila	melanogaster	GO:0007127	biological_process	"meiosis I"	CG33070
+1.107280e-19	12	14	190	10183	157890	Drosophila	melanogaster	GO:0000398	biological_process	"nuclear mRNA splicing, via spliceosome"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG33070	CG5519	CG6610	CG8427	CG9344
+2.335500e-01	2	14	669	10183	157890	Drosophila	melanogaster	GO:0030154	biological_process	"cell differentiation"	CG33070	CG8427
+5.408480e-03	14	14	5225	7583	157890	Drosophila	melanogaster	GO:0044464	cellular_component	"cell part"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+1.773660e-02	1	14	13	10183	157890	Drosophila	melanogaster	GO:0007549	biological_process	"dosage compensation"	CG33070
+1.956110e-01	1	14	157	10183	157890	Drosophila	melanogaster	GO:0007281	biological_process	"germ cell development"	CG33070
+1.374840e-03	1	14	1	10183	157890	Drosophila	melanogaster	GO:0007542	biological_process	"primary sex determination, germ-line"	CG33070
+2.448020e-02	1	14	18	10183	157890	Drosophila	melanogaster	GO:0018993	biological_process	"somatic sex determination"	CG33070
+2.854240e-01	2	14	768	10183	157890	Drosophila	melanogaster	GO:0009059	biological_process	"macromolecule biosynthesis"	CG2238	CG33070
+2.054470e-02	2	14	164	10214	157890	Drosophila	melanogaster	GO:0005525	molecular_function	"GTP binding"	CG2238	CG5519
+2.269830e-02	14	14	7772	10183	157890	Drosophila	melanogaster	GO:0009987	biological_process	"cellular process"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG2238	CG3198	CG31990	CG33070	CG5519	CG6610	CG8427	CG9344
+5.481730e-04	12	14	3007	7583	157890	Drosophila	melanogaster	GO:0043229	cellular_component	"intracellular organelle"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG6610	CG8427	CG9344
+4.811950e-01	1	14	466	10183	157890	Drosophila	melanogaster	GO:0009993	biological_process	"oogenesis (sensu Insecta)"	CG33070
+4.744230e-01	1	14	457	10183	157890	Drosophila	melanogaster	GO:0000279	biological_process	"M phase"	CG33070
+2.297610e-01	1	14	188	10183	157890	Drosophila	melanogaster	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG33070
+5.976190e-01	2	14	1412	10183	157890	Drosophila	melanogaster	GO:0051244	biological_process	"regulation of cellular physiological process"	CG1646	CG33070
+2.682190e-03	2	14	57	10183	157890	Drosophila	melanogaster	GO:0051252	biological_process	"regulation of RNA metabolism"	CG1646	CG33070
+1.033650e-01	1	14	79	10183	157890	Drosophila	melanogaster	GO:0048534	biological_process	"hemopoietic or lymphoid organ development"	CG8427
+6.425590e-01	1	14	721	10183	157890	Drosophila	melanogaster	GO:0007276	biological_process	"gametogenesis"	CG33070
+4.541550e-01	2	14	1096	10183	157890	Drosophila	melanogaster	GO:0044249	biological_process	"cellular biosynthesis"	CG2238	CG33070
+1.050650e-06	12	14	1730	7583	157890	Drosophila	melanogaster	GO:0005634	cellular_component	"nucleus"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG31990	CG33070	CG6610	CG8427	CG9344
+1.751410e-01	1	14	139	10183	157890	Drosophila	melanogaster	GO:0040029	biological_process	"regulation of gene expression, epigenetic"	CG33070
+3.588300e-01	1	14	318	10183	157890	Drosophila	melanogaster	GO:0051243	biological_process	"negative regulation of cellular physiological process"	CG33070
+7.552150e-05	9	14	20	7583	157890	Drosophila	melanogaster	GO:0005732	cellular_component	"small nucleolar ribonucleoprotein complex"	CG1249	CG13277	CG16792	CG18591	CG2021	CG31990	CG6610	CG8427	CG9344
+2.152550e-03	2	14	51	10183	157890	Drosophila	melanogaster	GO:0000380	biological_process	"alternative nuclear mRNA splicing, via spliceosome"	CG1646	CG33070
+1.083250e-01	1	14	83	10183	157890	Drosophila	melanogaster	GO:0006417	biological_process	"regulation of protein biosynthesis"	CG33070
+1.888410e-01	1	14	151	10183	157890	Drosophila	melanogaster	GO:0051246	biological_process	"regulation of protein metabolism"	CG33070
+1.370670e-03	1	14	1	10214	157890	Drosophila	melanogaster	GO:0017070	molecular_function	"U6 snRNA binding"	CG31990
+7.562510e-02	1	14	57	10183	157890	Drosophila	melanogaster	GO:0051248	biological_process	"negative regulation of protein metabolism"	CG33070
+2.563160e-01	1	14	213	10183	157890	Drosophila	melanogaster	GO:0007126	biological_process	"meiosis"	CG33070
+3.784090e-02	1	14	28	10183	157890	Drosophila	melanogaster	GO:0031327	biological_process	"negative regulation of cellular biosynthesis"	CG33070
+1.311140e-16	10	14	103	7583	157890	Drosophila	melanogaster	GO:0030532	cellular_component	"small nuclear ribonucleoprotein complex"	CG1249	CG13277	CG1646	CG16792	CG18591	CG2021	CG3198	CG6610	CG8427	CG9344
+6.071560e-01	1	14	657	10183	157890	Drosophila	melanogaster	GO:0007049	biological_process	"cell cycle"	CG33070
+#USING LSM8 instead of its synonym YJR022W in Saccharomyces cerevisiae
+#USING SMD3 instead of its synonym YLR147C in Saccharomyces cerevisiae
+#USING LSM1 instead of its synonym YJL124C in Saccharomyces cerevisiae
+#USING LSM4 instead of its synonym YER112W in Saccharomyces cerevisiae
+#USING LSM6 instead of its synonym YDR378C in Saccharomyces cerevisiae
+#USING LSM5 instead of its synonym YER146W in Saccharomyces cerevisiae
+#USING PRP42 instead of its synonym YDR235W in Saccharomyces cerevisiae
+#USING SME1 instead of its synonym YOR159C in Saccharomyces cerevisiae
+#USING NAM8 instead of its synonym YHR086W in Saccharomyces cerevisiae
+#USING SNU114 instead of its synonym YKL173W in Saccharomyces cerevisiae
+#USING LUC7 instead of its synonym YDL087C in Saccharomyces cerevisiae
+#USING LSM7 instead of its synonym YNL147W in Saccharomyces cerevisiae
+#USING PRP4 instead of its synonym YPR178W in Saccharomyces cerevisiae
+#USING SMD2 instead of its synonym YLR275W in Saccharomyces cerevisiae
+#USING SMX3 instead of its synonym YPR182W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.029860e-15	7	15	18	6526	97048	Saccharomyces	cerevisiae	GO:0005685	cellular_component	"snRNP U1"	YDL087C	YDR235W	YHR086W	YLR147C	YLR275W	YOR159C	YPR182W
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0000339	molecular_function	"RNA cap binding"	YJL124C
+6.596740e-01	1	15	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YNL147W
+9.999940e-01	1	15	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YJL124C
+8.726830e-21	11	15	56	6526	97048	Saccharomyces	cerevisiae	GO:0031202	molecular_function	"RNA splicing factor activity, transesterification mechanism"	YDR378C	YER112W	YER146W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+6.463700e-02	15	15	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+4.240370e-05	15	15	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+2.862320e-06	14	15	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.646020e-01	4	15	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YDR378C	YER112W	YER146W	YNL147W
+7.941620e-01	1	15	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YJL124C
+5.872750e-05	3	15	35	6526	97048	Saccharomyces	cerevisiae	GO:0003729	molecular_function	"mRNA binding"	YDL087C	YHR086W	YLR147C
+6.271430e-05	15	15	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.932630e-02	15	15	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+9.953960e-01	1	15	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YKL173W
+1.598630e-02	1	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0000290	biological_process	"deadenylylation-dependent decapping"	YJL124C
+5.676910e-12	15	15	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.173020e-01	1	15	54	6526	97048	Saccharomyces	cerevisiae	GO:0003924	molecular_function	"GTPase activity"	YKL173W
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0005845	cellular_component	"mRNA cap complex"	YJL124C
+8.842180e-01	2	15	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YDL087C	YHR086W
+4.197410e-07	15	15	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.748060e-03	14	15	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.825040e-02	1	15	8	6526	97048	Saccharomyces	cerevisiae	GO:0000393	biological_process	"spliceosomal conformational changes to generate catalytic conformation"	YKL173W
+9.164440e-03	1	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0017069	molecular_function	"snRNA binding"	YKL173W
+1.013420e-01	4	15	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YDR378C	YER112W	YER146W	YNL147W
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.603510e-17	14	15	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0000349	biological_process	"formation of catalytic spliceosome for first transesterification step"	YKL173W
+1.636120e-04	5	15	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	YDR378C	YER112W	YER146W	YJL124C	YNL147W
+4.120440e-02	4	15	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	YDR378C	YER112W	YER146W	YNL147W
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+2.493690e-04	4	15	143	6526	97048	Saccharomyces	cerevisiae	GO:0044452	cellular_component	"nucleolar part"	YDR378C	YER112W	YER146W	YNL147W
+3.993300e-03	4	15	300	6526	97048	Saccharomyces	cerevisiae	GO:0005730	cellular_component	"nucleolus"	YDR378C	YER112W	YER146W	YNL147W
+6.256760e-24	13	15	81	6526	97048	Saccharomyces	cerevisiae	GO:0005681	cellular_component	"spliceosome complex"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR182W
+7.757930e-02	1	15	35	6526	97048	Saccharomyces	cerevisiae	GO:0000166	molecular_function	"nucleotide binding"	YKL173W
+4.262090e-01	1	15	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	YKL173W
+6.485700e-01	1	15	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YJL124C
+2.155610e-07	5	15	64	6526	97048	Saccharomyces	cerevisiae	GO:0006401	biological_process	"RNA catabolism"	YDR378C	YER112W	YER146W	YJL124C	YNL147W
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.748060e-03	14	15	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.955130e-23	14	15	135	6526	97048	Saccharomyces	cerevisiae	GO:0006397	biological_process	"mRNA processing"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+5.608060e-17	15	15	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+8.008980e-01	1	15	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YJL124C
+4.495040e-02	1	15	20	6526	97048	Saccharomyces	cerevisiae	GO:0000288	biological_process	"mRNA catabolism, deadenylylation-dependent decay"	YJL124C
+9.950050e-08	5	15	55	6526	97048	Saccharomyces	cerevisiae	GO:0006402	biological_process	"mRNA catabolism"	YDR378C	YER112W	YER146W	YJL124C	YNL147W
+8.722280e-16	15	15	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+6.704500e-01	1	15	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YJL124C
+4.633970e-01	1	15	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	YNL147W
+2.064050e-10	15	15	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+3.844710e-15	14	15	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+9.214310e-11	5	15	16	6526	97048	Saccharomyces	cerevisiae	GO:0005682	cellular_component	"snRNP U5"	YKL173W	YLR147C	YLR275W	YOR159C	YPR182W
+4.473270e-24	15	15	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+7.850320e-01	1	15	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YJL124C
+9.898950e-01	1	15	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YNL147W
+2.951130e-05	2	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0006376	biological_process	"mRNA splice site selection"	YDL087C	YHR086W
+1.598630e-02	1	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0000932	cellular_component	"cytoplasmic mRNA processing body"	YJL124C
+5.918020e-01	1	15	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YJL124C
+8.009770e-27	13	15	51	6526	97048	Saccharomyces	cerevisiae	GO:0005684	cellular_component	"major (U2-dependent) spliceosome"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR182W
+4.516960e-01	1	15	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	YKL173W
+1.729300e-02	15	15	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+8.490260e-01	1	15	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YKL173W
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0030623	molecular_function	"U5 snRNA binding"	YKL173W
+5.163940e-02	1	15	23	6526	97048	Saccharomyces	cerevisiae	GO:0043487	biological_process	"regulation of RNA stability"	YJL124C
+1.013420e-01	4	15	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YDR378C	YER112W	YER146W	YNL147W
+1.072220e-02	15	15	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+2.277550e-25	14	15	100	6526	97048	Saccharomyces	cerevisiae	GO:0000398	biological_process	"nuclear mRNA splicing, via spliceosome"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+4.503820e-01	1	15	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	YKL173W
+2.643660e-25	14	15	101	6526	97048	Saccharomyces	cerevisiae	GO:0000377	biological_process	"RNA splicing, via transesterification reactions with bulged adenosine as nucleophile"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+6.445870e-02	15	15	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.395000e-10	15	15	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+7.194060e-25	14	15	108	6526	97048	Saccharomyces	cerevisiae	GO:0000375	biological_process	"RNA splicing, via transesterification reactions"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+1.160940e-03	5	15	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	YDR378C	YER112W	YER146W	YJL124C	YNL147W
+2.725860e-02	1	15	12	6526	97048	Saccharomyces	cerevisiae	GO:0019001	molecular_function	"guanyl nucleotide binding"	YKL173W
+4.516960e-01	1	15	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	YKL173W
+2.501390e-02	1	15	11	6526	97048	Saccharomyces	cerevisiae	GO:0005525	molecular_function	"GTP binding"	YKL173W
+1.001200e-23	14	15	129	6526	97048	Saccharomyces	cerevisiae	GO:0008380	biological_process	"RNA splicing"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+9.641600e-03	15	15	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+9.214310e-11	5	15	16	6526	97048	Saccharomyces	cerevisiae	GO:0005689	cellular_component	"minor (U12-dependent) spliceosome complex"	YKL173W	YLR147C	YLR275W	YOR159C	YPR182W
+4.585310e-02	2	15	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	YDL087C	YHR086W
+7.544320e-02	1	15	34	6526	97048	Saccharomyces	cerevisiae	GO:0017076	molecular_function	"purine nucleotide binding"	YKL173W
+3.211910e-04	2	15	12	6526	97048	Saccharomyces	cerevisiae	GO:0000243	cellular_component	"commitment complex"	YHR086W	YLR147C
+5.275550e-03	14	15	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+4.672440e-19	15	15	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+3.258190e-04	5	15	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	YDR378C	YER112W	YER146W	YJL124C	YNL147W
+1.646020e-01	4	15	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YDR378C	YER112W	YER146W	YNL147W
+8.663340e-03	15	15	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+4.180120e-10	15	15	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+2.862320e-06	14	15	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+7.672830e-24	11	15	32	6526	97048	Saccharomyces	cerevisiae	GO:0046540	cellular_component	"U4/U6 x U5 tri-snRNP complex"	YDR378C	YER112W	YER146W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+7.844830e-01	1	15	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YJL124C
+1.656870e-05	15	15	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJL124C	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+5.600930e-02	1	15	25	6526	97048	Saccharomyces	cerevisiae	GO:0051252	biological_process	"regulation of RNA metabolism"	YJL124C
+5.163940e-02	1	15	23	6526	97048	Saccharomyces	cerevisiae	GO:0043488	biological_process	"regulation of mRNA stability"	YJL124C
+5.275550e-03	14	15	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+5.416850e-07	14	15	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+6.127610e-05	4	15	100	6526	97048	Saccharomyces	cerevisiae	GO:0005732	cellular_component	"small nucleolar ribonucleoprotein complex"	YDR378C	YER112W	YER146W	YNL147W
+6.688130e-01	1	15	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YNL147W
+9.395180e-01	1	15	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YNL147W
+4.667810e-04	5	15	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	YDR378C	YER112W	YER146W	YJL124C	YNL147W
+3.822220e-12	5	15	9	6526	97048	Saccharomyces	cerevisiae	GO:0005688	cellular_component	"snRNP U6"	YDR378C	YER112W	YER146W	YJR022W	YNL147W
+3.160420e-28	14	15	65	6526	97048	Saccharomyces	cerevisiae	GO:0030532	cellular_component	"small nuclear ribonucleoprotein complex"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W
+6.574670e-04	2	15	17	6526	97048	Saccharomyces	cerevisiae	GO:0000245	biological_process	"spliceosome assembly"	YDL087C	YHR086W
+1.353160e-03	5	15	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	YDR378C	YER112W	YER146W	YJL124C	YNL147W
+9.994530e-01	1	15	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YJL124C
+4.633970e-01	1	15	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	YNL147W
+1.299780e-10	14	15	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YDL087C	YDR235W	YDR378C	YER112W	YER146W	YHR086W	YJR022W	YKL173W	YLR147C	YLR275W	YNL147W	YOR159C	YPR178W	YPR182W

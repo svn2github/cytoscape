@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+ <head>
+  <title>Cell Circuit Search : Hartemink et al. (2002)</title>
+  <link rel="stylesheet" type="text/css" href="/master.css" />
+ </head>
+<body>
+
+
+
+<h2>FAQ: Hartemink et al. (2002)</h2> 
+
+"Combining location and expression data for principled discovery of genetic regulatory network models"
+<a class="white-bg-link" href="http://helix-web.stanford.edu/psb02/abstracts/p437.html">[fulltext]</a>
+   
+<h2>Original figures from this paper</h2><a href="./fig2_lrg.jpg"><img src="./fig2_small.jpg" align="left" hspace="10"><p>Figure 2. Bayesian network models learned by model averaging over the 500 highest scoring models visited during the unconstrained and constrained simulated annealing search runs, respectively. Edges are included in the gure if and only if their posterior probability exceeds 0.5. Node and edge color descriptions are included in the text.
+<br><br>
+Excepted from text:
+Graph nodes have been augmented with color information to indicate the different groups of variables with known relationships in the literature, as indicated in Table 1 and below. Graph edges have also been augmented with color information: solid black edges have posterior probabil- ity of 1, solid blue edges have probability between 1 and 0.99, dashed blue edges have probability between 0.99 and 0.75, and dotted blue edges have probability between 0.75 and 0.5. The strength of an edge does not indicate how signicantly a parent node contributes to the ability to explain the child node but rather an approximate measure of how likely a parent node is to contribute to the ability to explain the child node.<br clear=left><br><a href="table1_lrg.jpg"><img src="table1_lrg.jpg" align="left" hspace="10">Table 1. Descriptions of the 32 genes selected for model induction. The color mnemonics are used later in Figure 2: genes expressed only in MATa cells are magenta, genes expressed only in MATalpha cells are red, genes whose promoters are bound by Ste12 are blue, genes coding for components of the G-protein complex are green, genes coding for core components of the signaling cascade complex are yellow (except FUS3 which is already blue), genes coding for auxiliary components of the signaling cascade are orange, and genes coding for components of the SWI-SNF complex are aqua.
+<br clear=left><br>
+
+<h2>Q&A</h2>
+<ol>
+<li><b>What is this paper about?</b>
+<p>
+<table width="80%">
+<tr><td>
+<b>Abstract:</b> We develop principled methods for the automatic induction (discovery) of genetic regulatory network models from multiple data sources and data modalities. Models of regulatory networks are represented as Bayesian networks, allowing the models to compactly and robustly capture probabilistic multivariate statistical dependencies between the various cellular factors in these networks. We build on previous Bayesian network validation results by extending the validation framework to the context of model induction, leveraging heuristic simulated annealing search algorithms and posterior model averaging. Using expression data in isolation yields results inconsistent with location data so we incorporate genomic location data to guide the model induction process. We combine these two data modalities by allowing location data to influence the model prior and expression data to influence the model likelihood. We demonstrate the utility of this approach by discovering genetic regulatory models of thirty-three variables involved in S. cerevisiae pheromone response. The models we automatically generate are consistent with the current understanding regarding this regulatory network, but also suggest new directions for future experimental investigation.
+</td>
+</tr>
+</table>
+<br>
+<li><a name="organisms"><b>What organism is being modeled?</b></a>
+<p>
+Yeast <i>(Saccharomyces cerevisiae)</i>
+<p>
+</ol>
+</body>
+</html>
+  

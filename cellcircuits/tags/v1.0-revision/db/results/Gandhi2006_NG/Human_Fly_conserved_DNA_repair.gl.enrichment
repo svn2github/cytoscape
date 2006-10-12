@@ -1,0 +1,117 @@
+#USING Xpac instead of its synonym CG6358 in Drosophila melanogaster
+#USING Ercc1 instead of its synonym CG10215 in Drosophila melanogaster
+#USING mei-9 instead of its synonym CG3697 in Drosophila melanogaster
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.724160e-02	1	3	128	10183	157890	Drosophila	melanogaster	GO:0006260	biological_process	"DNA replication"	CG3697
+9.399820e-05	3	3	464	10183	157890	Drosophila	melanogaster	GO:0006259	biological_process	"DNA metabolism"	CG10215	CG3697	CG6358
+5.515020e-09	3	3	19	10183	157890	Drosophila	melanogaster	GO:0006289	biological_process	"nucleotide-excision repair"	CG10215	CG3697	CG6358
+2.943480e-03	1	3	10	10183	157890	Drosophila	melanogaster	GO:0006302	biological_process	"double-strand break repair"	CG3697
+2.649400e-03	1	3	9	10183	157890	Drosophila	melanogaster	GO:0045005	biological_process	"maintenance of fidelity during DNA-dependent DNA replication"	CG3697
+1.199260e-01	3	3	3740	7583	157890	Drosophila	melanogaster	GO:0044424	cellular_component	"intracellular part"	CG10215	CG3697	CG6358
+5.000480e-03	1	3	17	10183	157890	Drosophila	melanogaster	GO:0007131	biological_process	"meiotic recombination"	CG3697
+4.308930e-02	2	3	1279	10214	157890	Drosophila	melanogaster	GO:0005515	molecular_function	"protein binding"	CG10215	CG3697
+9.404290e-02	2	3	1935	10214	157890	Drosophila	melanogaster	GO:0016787	molecular_function	"hydrolase activity"	CG10215	CG3697
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0005623	cellular_component	"cell"	CG10215	CG3697	CG6358
+2.605030e-03	3	3	1402	10183	157890	Drosophila	melanogaster	GO:0050896	biological_process	"response to stimulus"	CG10215	CG3697	CG6358
+1.301520e-01	3	3	5161	10183	157890	Drosophila	melanogaster	GO:0044237	biological_process	"cellular metabolism"	CG10215	CG3697	CG6358
+4.594850e-01	3	3	7858	10183	157890	Drosophila	melanogaster	GO:0007582	biological_process	"physiological process"	CG10215	CG3697	CG6358
+9.691950e-03	1	3	33	10183	157890	Drosophila	melanogaster	GO:0007127	biological_process	"meiosis I"	CG3697
+8.836520e-04	1	3	3	10183	157890	Drosophila	melanogaster	GO:0000712	biological_process	"resolution of meiotic joint molecules as recombinants"	CG3697
+1.669910e-01	3	3	5608	10183	157890	Drosophila	melanogaster	GO:0008152	biological_process	"metabolism"	CG10215	CG3697	CG6358
+1.472460e-03	1	3	5	10183	157890	Drosophila	melanogaster	GO:0045143	biological_process	"homologous chromosome segregation"	CG3697
+1.303160e-01	3	3	3845	7583	157890	Drosophila	melanogaster	GO:0005622	cellular_component	"intracellular"	CG10215	CG3697	CG6358
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0044464	cellular_component	"cell part"	CG10215	CG3697	CG6358
+3.500690e-01	2	3	4072	10214	157890	Drosophila	melanogaster	GO:0003824	molecular_function	"catalytic activity"	CG10215	CG3697
+7.024320e-03	3	3	1951	10183	157890	Drosophila	melanogaster	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG10215	CG3697	CG6358
+7.557670e-02	3	3	4319	10214	157890	Drosophila	melanogaster	GO:0005488	molecular_function	"binding"	CG10215	CG3697	CG6358
+2.346190e-06	3	3	138	10183	157890	Drosophila	melanogaster	GO:0009719	biological_process	"response to endogenous stimulus"	CG10215	CG3697	CG6358
+2.287890e-05	2	3	29	10214	157890	Drosophila	melanogaster	GO:0003684	molecular_function	"damaged DNA binding"	CG10215	CG6358
+4.353890e-02	3	3	3583	10183	157890	Drosophila	melanogaster	GO:0043170	biological_process	"macromolecule metabolism"	CG10215	CG3697	CG6358
+4.027800e-02	3	3	2600	7583	157890	Drosophila	melanogaster	GO:0043227	cellular_component	"membrane-bound organelle"	CG10215	CG3697	CG6358
+1.932050e-02	1	3	66	10183	157890	Drosophila	melanogaster	GO:0006261	biological_process	"DNA-dependent DNA replication"	CG3697
+4.445610e-01	3	3	7772	10183	157890	Drosophila	melanogaster	GO:0009987	biological_process	"cellular process"	CG10215	CG3697	CG6358
+1.290840e-02	1	3	44	10183	157890	Drosophila	melanogaster	GO:0006310	biological_process	"DNA recombination"	CG3697
+8.804740e-05	2	3	56	10214	157890	Drosophila	melanogaster	GO:0004519	molecular_function	"endonuclease activity"	CG10215	CG3697
+1.000000e+00	3	3	10183	10183	157890	Drosophila	melanogaster	GO:0008150	biological_process	"biological_process"	CG10215	CG3697	CG6358
+2.338650e-02	1	3	80	10183	157890	Drosophila	melanogaster	GO:0045132	biological_process	"meiotic chromosome segregation"	CG3697
+6.231830e-02	3	3	3007	7583	157890	Drosophila	melanogaster	GO:0043229	cellular_component	"intracellular organelle"	CG10215	CG3697	CG6358
+2.087810e-02	2	3	878	10214	157890	Drosophila	melanogaster	GO:0003677	molecular_function	"DNA binding"	CG10215	CG6358
+4.925680e-02	1	3	170	10183	157890	Drosophila	melanogaster	GO:0007059	biological_process	"chromosome segregation"	CG3697
+3.446770e-01	3	3	7140	10183	157890	Drosophila	melanogaster	GO:0050875	biological_process	"cellular physiological process"	CG10215	CG3697	CG6358
+5.398290e-05	2	3	44	10214	157890	Drosophila	melanogaster	GO:0004536	molecular_function	"deoxyribonuclease activity"	CG10215	CG3697
+4.565430e-05	3	3	365	10183	157890	Drosophila	melanogaster	GO:0006950	biological_process	"response to stress"	CG10215	CG3697	CG6358
+6.194770e-03	3	3	1871	10183	157890	Drosophila	melanogaster	GO:0043283	biological_process	"biopolymer metabolism"	CG10215	CG3697	CG6358
+2.629210e-05	2	3	31	10214	157890	Drosophila	melanogaster	GO:0004520	molecular_function	"endodeoxyribonuclease activity"	CG10215	CG3697
+1.000000e+00	3	3	10214	10214	157890	Drosophila	melanogaster	GO:0003674	molecular_function	"molecular_function"	CG10215	CG3697	CG6358
+1.286960e-01	1	3	457	10183	157890	Drosophila	melanogaster	GO:0000279	biological_process	"M phase"	CG3697
+8.836520e-04	1	3	3	10183	157890	Drosophila	melanogaster	GO:0051304	biological_process	"chromosome separation"	CG3697
+6.709160e-02	1	3	233	10183	157890	Drosophila	melanogaster	GO:0051321	biological_process	"meiotic cell cycle"	CG3697
+1.241910e-01	3	3	5081	10183	157890	Drosophila	melanogaster	GO:0044238	biological_process	"primary metabolism"	CG10215	CG3697	CG6358
+1.619470e-06	3	3	123	10183	157890	Drosophila	melanogaster	GO:0006974	biological_process	"response to DNA damage stimulus"	CG10215	CG3697	CG6358
+4.018500e-02	3	3	2598	7583	157890	Drosophila	melanogaster	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CG10215	CG3697	CG6358
+1.000000e+00	3	3	7583	7583	157890	Drosophila	melanogaster	GO:0005575	cellular_component	"cellular_component"	CG10215	CG3697	CG6358
+6.231830e-02	3	3	3007	7583	157890	Drosophila	melanogaster	GO:0043226	cellular_component	"organelle"	CG10215	CG3697	CG6358
+1.185860e-02	3	3	1730	7583	157890	Drosophila	melanogaster	GO:0005634	cellular_component	"nucleus"	CG10215	CG3697	CG6358
+1.295720e-06	3	3	115	10183	157890	Drosophila	melanogaster	GO:0006281	biological_process	"DNA repair"	CG10215	CG3697	CG6358
+2.649400e-03	1	3	9	10183	157890	Drosophila	melanogaster	GO:0006298	biological_process	"mismatch repair"	CG3697
+1.174510e-03	1	3	4	10214	157890	Drosophila	melanogaster	GO:0000014	molecular_function	"single-stranded DNA specific endodeoxyribonuclease activity"	CG10215
+2.942240e-04	2	3	102	10214	157890	Drosophila	melanogaster	GO:0004518	molecular_function	"nuclease activity"	CG10215	CG3697
+7.079330e-03	2	3	505	10214	157890	Drosophila	melanogaster	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	CG10215	CG3697
+5.886030e-03	3	3	1845	10214	157890	Drosophila	melanogaster	GO:0003676	molecular_function	"nucleic acid binding"	CG10215	CG3697	CG6358
+6.145420e-02	1	3	213	10183	157890	Drosophila	melanogaster	GO:0007126	biological_process	"meiosis"	CG3697
+8.836520e-04	1	3	3	10183	157890	Drosophila	melanogaster	GO:0051307	biological_process	"meiotic chromosome separation"	CG3697
+6.681030e-02	1	3	232	10183	157890	Drosophila	melanogaster	GO:0051327	biological_process	"M phase of meiotic cell cycle"	CG3697
+1.813550e-01	1	3	657	10183	157890	Drosophila	melanogaster	GO:0007049	biological_process	"cell cycle"	CG3697
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.129150e-04	3	3	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	ERCC1	ERCC4	XPA
+2.354540e-09	3	3	32	23297	92001	Homo	sapiens	GO:0006289	biological_process	"nucleotide-excision repair"	ERCC1	ERCC4	XPA
+1.346620e-01	3	3	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	ERCC1	ERCC4	XPA
+5.450510e-01	1	3	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	XPA
+5.076950e-02	2	3	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	ERCC1	ERCC4
+7.619610e-01	3	3	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	ERCC1	ERCC4	XPA
+2.715220e-03	3	3	3251	23297	92001	Homo	sapiens	GO:0050896	biological_process	"response to stimulus"	ERCC1	ERCC4	XPA
+1.465070e-01	3	3	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	ERCC1	ERCC4	XPA
+4.856280e-02	2	3	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	ERCC1	ERCC4
+5.929180e-01	3	3	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	ERCC1	ERCC4	XPA
+1.914670e-01	3	3	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	ERCC1	ERCC4	XPA
+7.618420e-01	3	3	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	ERCC1	ERCC4	XPA
+2.101420e-01	3	3	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	ERCC1	ERCC4	XPA
+1.259370e-02	3	3	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	ERCC1	ERCC4	XPA
+2.627270e-01	2	3	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	ERCC1	ERCC4
+2.677590e-01	3	3	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	ERCC1	ERCC4	XPA
+5.056800e-01	1	3	5792	27672	92001	Homo	sapiens	GO:0043169	molecular_function	"cation binding"	XPA
+6.725540e-06	3	3	441	23297	92001	Homo	sapiens	GO:0009719	biological_process	"response to endogenous stimulus"	ERCC1	ERCC4	XPA
+1.240940e-05	2	3	57	27672	92001	Homo	sapiens	GO:0003684	molecular_function	"damaged DNA binding"	ERCC1	XPA
+3.306270e-02	3	3	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	ERCC1	ERCC4	XPA
+4.593160e-02	3	3	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	ERCC1	ERCC4	XPA
+6.775420e-01	3	3	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	ERCC1	ERCC4	XPA
+1.000000e+00	3	3	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	ERCC1	ERCC4	XPA
+5.858460e-05	2	3	123	27672	92001	Homo	sapiens	GO:0004519	molecular_function	"endonuclease activity"	ERCC1	ERCC4
+3.672790e-02	1	3	343	27672	92001	Homo	sapiens	GO:0000287	molecular_function	"magnesium ion binding"	ERCC4
+8.937380e-02	3	3	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	ERCC1	ERCC4	XPA
+1.591970e-03	3	3	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	ERCC1	ERCC4	XPA
+3.249130e-03	1	3	30	27672	92001	Homo	sapiens	GO:0004536	molecular_function	"deoxyribonuclease activity"	ERCC4
+3.825280e-01	3	3	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	ERCC1	ERCC4	XPA
+2.083190e-04	3	3	1382	23297	92001	Homo	sapiens	GO:0006950	biological_process	"response to stress"	ERCC1	ERCC4	XPA
+6.641720e-03	3	3	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	ERCC1	ERCC4	XPA
+4.856280e-02	2	3	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	ERCC1	ERCC4
+1.267780e-01	2	3	6165	27672	92001	Homo	sapiens	GO:0043167	molecular_function	"ion binding"	ERCC4	XPA
+1.000000e+00	3	3	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	ERCC1	ERCC4	XPA
+1.733670e-03	1	3	16	27672	92001	Homo	sapiens	GO:0004520	molecular_function	"endodeoxyribonuclease activity"	ERCC4
+3.486730e-01	1	3	3685	27672	92001	Homo	sapiens	GO:0008270	molecular_function	"zinc ion binding"	XPA
+8.435220e-02	1	3	801	27672	92001	Homo	sapiens	GO:0043565	molecular_function	"sequence-specific DNA binding"	ERCC1
+1.319840e-01	3	3	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	ERCC1	ERCC4	XPA
+5.319390e-06	3	3	408	23297	92001	Homo	sapiens	GO:0006974	biological_process	"response to DNA damage stimulus"	ERCC1	ERCC4	XPA
+8.940240e-02	3	3	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	ERCC1	ERCC4	XPA
+4.589490e-02	3	3	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	ERCC1	ERCC4	XPA
+1.000000e+00	3	3	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	ERCC1	ERCC4	XPA
+1.812330e-02	3	3	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	ERCC1	ERCC4	XPA
+3.991930e-06	3	3	371	23297	92001	Homo	sapiens	GO:0006281	biological_process	"DNA repair"	ERCC1	ERCC4	XPA
+4.002020e-01	1	3	4335	27672	92001	Homo	sapiens	GO:0046914	molecular_function	"transition metal ion binding"	XPA
+9.737950e-03	3	3	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	ERCC1	ERCC4	XPA
+2.328240e-04	2	3	245	27672	92001	Homo	sapiens	GO:0004518	molecular_function	"nuclease activity"	ERCC1	ERCC4
+4.990680e-03	2	3	1145	27672	92001	Homo	sapiens	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	ERCC1	ERCC4
+1.226740e-01	2	3	6055	27672	92001	Homo	sapiens	GO:0046872	molecular_function	"metal ion binding"	ERCC4	XPA
+6.424120e-02	2	3	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	ERCC1	ERCC4
+8.185430e-08	2	3	4	20974	92001	Homo	sapiens	GO:0000109	cellular_component	"nucleotide-excision repair complex"	ERCC1	ERCC4
+3.545360e-03	2	3	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	ERCC1	ERCC4

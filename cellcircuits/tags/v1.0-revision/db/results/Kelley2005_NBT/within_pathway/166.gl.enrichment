@@ -1,0 +1,138 @@
+#USING NUP157 instead of its synonym YER105C in Saccharomyces cerevisiae
+#USING NUP82 instead of its synonym YJL061W in Saccharomyces cerevisiae
+#USING NUP170 instead of its synonym YBL079W in Saccharomyces cerevisiae
+#USING NUP1 instead of its synonym YOR098C in Saccharomyces cerevisiae
+#USING NUP2 instead of its synonym YLR335W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.752550e-10	5	5	75	6526	97048	Saccharomyces	cerevisiae	GO:0050658	biological_process	"RNA transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+6.684000e-13	5	5	26	6526	97048	Saccharomyces	cerevisiae	GO:0051029	biological_process	"rRNA transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+9.818530e-01	1	5	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YLR335W
+1.242740e-09	5	5	110	6526	97048	Saccharomyces	cerevisiae	GO:0051169	biological_process	"nuclear transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+9.722680e-01	1	5	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YLR335W
+9.671610e-08	5	5	260	6526	97048	Saccharomyces	cerevisiae	GO:0015031	biological_process	"protein transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+5.455500e-01	1	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YLR335W
+4.251930e-11	5	5	57	6526	97048	Saccharomyces	cerevisiae	GO:0031965	cellular_component	"nuclear membrane"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+9.758930e-01	1	5	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YLR335W
+1.069970e-01	1	5	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	YLR335W
+2.686690e-01	5	5	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.550630e-02	1	5	47	6526	97048	Saccharomyces	cerevisiae	GO:0006348	biological_process	"chromatin silencing at telomere"	YLR335W
+6.267170e-01	1	5	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YOR098C
+3.134760e-10	5	5	84	6526	97048	Saccharomyces	cerevisiae	GO:0015931	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+9.078050e-01	1	5	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YLR335W
+1.557800e-11	5	5	47	6526	97048	Saccharomyces	cerevisiae	GO:0006606	biological_process	"protein import into nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+2.090450e-07	5	5	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+6.684000e-13	5	5	26	6526	97048	Saccharomyces	cerevisiae	GO:0051031	biological_process	"tRNA transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+8.222480e-02	1	5	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	YBL079W
+2.941160e-01	1	5	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YLR335W
+5.795550e-01	1	5	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YLR335W
+2.151660e-11	5	5	50	6526	97048	Saccharomyces	cerevisiae	GO:0006611	biological_process	"protein export from nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.339680e-01	1	5	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	YLR335W
+5.726230e-05	5	5	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.404160e-13	5	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0006608	biological_process	"snRNP protein import into nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.701250e-09	5	5	117	6526	97048	Saccharomyces	cerevisiae	GO:0006913	biological_process	"nucleocytoplasmic transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+5.987610e-04	5	5	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+4.007090e-01	1	5	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YLR335W
+2.885190e-06	5	5	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+9.927010e-02	1	5	135	6526	97048	Saccharomyces	cerevisiae	GO:0006338	biological_process	"chromatin remodeling"	YLR335W
+3.124830e-01	1	5	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YLR335W
+7.742330e-11	5	5	64	6526	97048	Saccharomyces	cerevisiae	GO:0051028	biological_process	"mRNA transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.024720e-07	5	5	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+2.589050e-01	5	5	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.360150e-01	1	5	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	YLR335W
+1.346510e-01	1	5	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	YLR335W
+1.400990e-01	1	5	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	YLR335W
+1.752550e-10	5	5	75	6526	97048	Saccharomyces	cerevisiae	GO:0051236	biological_process	"establishment of RNA localization"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+9.503280e-02	1	5	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	YLR335W
+2.208090e-01	5	5	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.522550e-01	1	5	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	YLR335W
+7.134660e-01	1	5	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YLR335W
+9.856500e-02	1	5	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	YLR335W
+3.321310e-01	1	5	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YLR335W
+2.366500e-01	1	5	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YLR335W
+5.455500e-01	1	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YLR335W
+2.056760e-01	5	5	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+7.429100e-01	1	5	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YLR335W
+6.999570e-02	1	5	94	6526	97048	Saccharomyces	cerevisiae	GO:0016044	biological_process	"membrane organization and biogenesis"	YOR098C
+4.624390e-03	5	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.330670e-10	5	5	85	6526	97048	Saccharomyces	cerevisiae	GO:0006403	biological_process	"RNA localization"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.635720e-10	5	5	74	6526	97048	Saccharomyces	cerevisiae	GO:0006405	biological_process	"RNA export from nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+9.622860e-01	1	5	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YLR335W
+9.122220e-08	5	5	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.243620e-01	1	5	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	YLR335W
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.214010e-07	5	5	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.079270e-01	1	5	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YLR335W
+6.684000e-13	5	5	26	6526	97048	Saccharomyces	cerevisiae	GO:0006409	biological_process	"tRNA export from nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.425450e-04	5	5	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+8.207020e-05	5	5	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+9.180190e-01	1	5	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YLR335W
+1.208760e-04	5	5	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.131980e-04	5	5	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.404160e-13	5	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0006607	biological_process	"NLS-bearing substrate import into nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+6.919130e-06	5	5	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.404160e-13	5	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0006408	biological_process	"snRNA export from nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.016240e-01	1	5	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YLR335W
+4.993410e-10	5	5	92	6526	97048	Saccharomyces	cerevisiae	GO:0017038	biological_process	"protein import"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.404160e-13	5	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0051030	biological_process	"snRNA transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+5.277120e-10	5	5	93	6526	97048	Saccharomyces	cerevisiae	GO:0051168	biological_process	"nuclear export"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+4.016310e-01	5	5	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+5.399000e-13	5	5	25	6526	97048	Saccharomyces	cerevisiae	GO:0006609	biological_process	"mRNA-binding (hnRNP) protein import into nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+5.982710e-02	1	5	80	6526	97048	Saccharomyces	cerevisiae	GO:0031507	biological_process	"heterochromatin formation"	YLR335W
+4.624390e-03	5	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+6.339440e-05	5	5	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+5.809960e-08	5	5	235	6526	97048	Saccharomyces	cerevisiae	GO:0006605	biological_process	"protein targeting"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+4.093090e-01	1	5	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YLR335W
+3.186350e-06	5	5	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.752550e-10	5	5	75	6526	97048	Saccharomyces	cerevisiae	GO:0050657	biological_process	"nucleic acid transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+2.878680e-02	1	5	38	6526	97048	Saccharomyces	cerevisiae	GO:0000790	cellular_component	"nuclear chromatin"	YLR335W
+5.109040e-02	5	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+6.346890e-02	1	5	85	6526	97048	Saccharomyces	cerevisiae	GO:0031497	biological_process	"chromatin assembly"	YLR335W
+2.385520e-11	5	5	51	6526	97048	Saccharomyces	cerevisiae	GO:0005643	cellular_component	"nuclear pore"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+7.504690e-02	1	5	101	6526	97048	Saccharomyces	cerevisiae	GO:0006333	biological_process	"chromatin assembly or disassembly"	YLR335W
+8.202590e-13	5	5	27	6526	97048	Saccharomyces	cerevisiae	GO:0006999	biological_process	"nuclear pore organization and biogenesis"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+5.595430e-07	5	5	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.404160e-13	5	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0006610	biological_process	"ribosomal protein import into nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+5.109040e-02	5	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+6.684000e-13	5	5	26	6526	97048	Saccharomyces	cerevisiae	GO:0006407	biological_process	"rRNA export from nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.028320e-02	1	5	40	6526	97048	Saccharomyces	cerevisiae	GO:0000785	cellular_component	"chromatin"	YLR335W
+4.158190e-01	1	5	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YLR335W
+5.595430e-07	5	5	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.073560e-01	1	5	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YLR335W
+4.251930e-11	5	5	57	6526	97048	Saccharomyces	cerevisiae	GO:0044453	cellular_component	"nuclear membrane part"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.090690e-01	1	5	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YLR335W
+1.522550e-01	1	5	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	YLR335W
+5.982710e-02	1	5	80	6526	97048	Saccharomyces	cerevisiae	GO:0045814	biological_process	"negative regulation of gene expression, epigenetic"	YLR335W
+3.940320e-07	5	5	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.266310e-03	5	5	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.936510e-11	5	5	49	6526	97048	Saccharomyces	cerevisiae	GO:0006997	biological_process	"nuclear organization and biogenesis"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+2.580190e-01	1	5	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YLR335W
+3.343480e-01	1	5	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YOR098C
+1.195280e-01	1	5	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	YLR335W
+5.353310e-03	1	5	7	6526	97048	Saccharomyces	cerevisiae	GO:0006998	biological_process	"nuclear membrane organization and biogenesis"	YOR098C
+1.332850e-01	1	5	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	YLR335W
+5.982710e-02	1	5	80	6526	97048	Saccharomyces	cerevisiae	GO:0006342	biological_process	"chromatin silencing"	YLR335W
+4.012620e-01	5	5	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+6.150100e-06	5	5	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.535970e-01	1	5	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	YLR335W
+8.428830e-08	5	5	253	6526	97048	Saccharomyces	cerevisiae	GO:0006886	biological_process	"intracellular protein transport"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+2.131350e-01	5	5	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.061850e-03	1	5	4	6526	97048	Saccharomyces	cerevisiae	GO:0000059	biological_process	"protein import into nucleus, docking"	YBL079W
+7.742330e-11	5	5	64	6526	97048	Saccharomyces	cerevisiae	GO:0006406	biological_process	"mRNA export from nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+8.042730e-10	5	5	101	6526	97048	Saccharomyces	cerevisiae	GO:0005635	cellular_component	"nuclear envelope"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+2.235940e-01	1	5	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YLR335W
+2.385520e-11	5	5	51	6526	97048	Saccharomyces	cerevisiae	GO:0046930	cellular_component	"pore complex"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+3.550630e-02	1	5	47	6526	97048	Saccharomyces	cerevisiae	GO:0031509	biological_process	"telomeric heterochromatin formation"	YLR335W
+1.535810e-07	5	5	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.062970e-01	1	5	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YLR335W
+4.002000e-01	1	5	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YLR335W
+4.122810e-06	5	5	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+2.581360e-03	5	5	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+6.346890e-02	1	5	85	6526	97048	Saccharomyces	cerevisiae	GO:0040029	biological_process	"regulation of gene expression, epigenetic"	YLR335W
+1.346510e-01	1	5	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	YLR335W
+5.982710e-02	1	5	80	6526	97048	Saccharomyces	cerevisiae	GO:0016458	biological_process	"gene silencing"	YLR335W
+1.557800e-11	5	5	47	6526	97048	Saccharomyces	cerevisiae	GO:0051170	biological_process	"nuclear import"	YBL079W	YER105C	YJL061W	YLR335W	YOR098C
+1.271160e-01	1	5	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	YLR335W

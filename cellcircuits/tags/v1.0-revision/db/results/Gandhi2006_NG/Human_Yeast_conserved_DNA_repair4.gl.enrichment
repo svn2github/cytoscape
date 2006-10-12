@@ -1,0 +1,208 @@
+#NOT FOUND: GTF2H3_HUMAN in Homo sapiens
+#NOT FOUND: GTF2H4_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+5.306590e-06	2	3	32	23297	92001	Homo	sapiens	GO:0006289	biological_process	"nucleotide-excision repair"	ERCC2	ERCC3
+2.723450e-04	2	3	265	27672	92001	Homo	sapiens	GO:0008026	molecular_function	"ATP-dependent helicase activity"	ERCC2	ERCC3
+7.619610e-01	3	3	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	CCNH	ERCC2	ERCC3
+1.452580e-04	2	3	163	23297	92001	Homo	sapiens	GO:0006917	biological_process	"induction of apoptosis"	ERCC2	ERCC3
+1.465070e-01	3	3	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	CCNH	ERCC2	ERCC3
+4.856280e-02	2	3	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	ERCC2	ERCC3
+1.930420e-03	1	3	15	23297	92001	Homo	sapiens	GO:0006265	biological_process	"DNA topological change"	ERCC3
+4.678520e-03	2	3	933	23297	92001	Homo	sapiens	GO:0050877	biological_process	"neurophysiological process"	ERCC2	ERCC3
+8.973480e-03	3	3	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	CCNH	ERCC2	ERCC3
+7.194890e-04	2	3	327	20974	92001	Homo	sapiens	GO:0005654	cellular_component	"nucleoplasm"	ERCC2	ERCC3
+1.914670e-01	3	3	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	CCNH	ERCC2	ERCC3
+2.101420e-01	3	3	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	CCNH	ERCC2	ERCC3
+2.627270e-01	2	3	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	ERCC2	ERCC3
+7.107920e-01	2	3	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	ERCC2	ERCC3
+2.590960e-03	2	3	692	23297	92001	Homo	sapiens	GO:0006915	biological_process	"apoptosis"	ERCC2	ERCC3
+1.197000e-05	2	3	56	27672	92001	Homo	sapiens	GO:0004003	molecular_function	"ATP-dependent DNA helicase activity"	ERCC2	ERCC3
+2.045880e-07	2	3	6	20974	92001	Homo	sapiens	GO:0005675	cellular_component	"transcription factor TFIIH complex"	ERCC2	ERCC3
+6.725540e-06	3	3	441	23297	92001	Homo	sapiens	GO:0009719	biological_process	"response to endogenous stimulus"	CCNH	ERCC2	ERCC3
+3.306270e-02	3	3	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	CCNH	ERCC2	ERCC3
+4.593160e-02	3	3	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	CCNH	ERCC2	ERCC3
+2.711660e-02	2	3	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	ERCC2	ERCC3
+1.084130e-04	1	3	1	27672	92001	Homo	sapiens	GO:0043138	molecular_function	"3' to 5' DNA helicase activity"	ERCC3
+6.744880e-02	1	3	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	CCNH
+4.947260e-04	2	3	271	20974	92001	Homo	sapiens	GO:0044451	cellular_component	"nucleoplasm part"	ERCC2	ERCC3
+3.412660e-05	2	3	94	27672	92001	Homo	sapiens	GO:0008094	molecular_function	"DNA-dependent ATPase activity"	ERCC2	ERCC3
+1.000000e+00	3	3	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	CCNH	ERCC2	ERCC3
+1.972620e-03	2	3	543	20974	92001	Homo	sapiens	GO:0043233	cellular_component	"organelle lumen"	ERCC2	ERCC3
+3.672790e-02	1	3	343	27672	92001	Homo	sapiens	GO:0000287	molecular_function	"magnesium ion binding"	ERCC2
+3.772930e-02	2	3	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	ERCC2	ERCC3
+2.605820e-03	2	3	694	23297	92001	Homo	sapiens	GO:0007600	biological_process	"sensory perception"	ERCC2	ERCC3
+2.516960e-02	2	3	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	ERCC2	ERCC3
+1.000000e+00	2	3	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	ERCC2	ERCC3
+1.206750e-03	2	3	424	20974	92001	Homo	sapiens	GO:0031981	cellular_component	"nuclear lumen"	ERCC2	ERCC3
+2.205570e-03	2	3	638	23297	92001	Homo	sapiens	GO:0048522	biological_process	"positive regulation of cellular process"	ERCC2	ERCC3
+5.275360e-02	2	3	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	ERCC2	ERCC3
+3.855710e-03	3	3	3654	23297	92001	Homo	sapiens	GO:0031323	biological_process	"regulation of cellular metabolism"	CCNH	ERCC2	ERCC3
+3.812340e-03	2	3	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	ERCC2	ERCC3
+6.590320e-05	2	3	99	20974	92001	Homo	sapiens	GO:0016591	cellular_component	"DNA-directed RNA polymerase II, holoenzyme"	ERCC2	ERCC3
+1.000000e+00	3	3	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	CCNH	ERCC2	ERCC3
+4.589490e-02	3	3	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CCNH	ERCC2	ERCC3
+6.683400e-02	1	3	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	CCNH
+1.326760e-02	3	3	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	CCNH	ERCC2	ERCC3
+2.692730e-03	3	3	3242	23297	92001	Homo	sapiens	GO:0006351	biological_process	"transcription, DNA-dependent"	CCNH	ERCC2	ERCC3
+4.589680e-02	1	3	362	23297	92001	Homo	sapiens	GO:0050790	biological_process	"regulation of catalytic activity"	CCNH
+1.173470e-01	2	3	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	ERCC2	ERCC3
+4.037120e-02	2	3	2819	23297	92001	Homo	sapiens	GO:0050874	biological_process	"organismal physiological process"	ERCC2	ERCC3
+4.161090e-03	3	3	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	CCNH	ERCC2	ERCC3
+6.424120e-02	2	3	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	ERCC2	ERCC3
+2.350840e-02	1	3	184	23297	92001	Homo	sapiens	GO:0043549	biological_process	"regulation of kinase activity"	CCNH
+2.165460e-04	2	3	199	23297	92001	Homo	sapiens	GO:0043068	biological_process	"positive regulation of programmed cell death"	ERCC2	ERCC3
+4.063520e-02	1	3	380	27672	92001	Homo	sapiens	GO:0008134	molecular_function	"transcription factor binding"	ERCC3
+5.270720e-03	1	3	41	23297	92001	Homo	sapiens	GO:0000079	biological_process	"regulation of cyclin-dependent protein kinase activity"	CCNH
+6.245640e-05	2	3	107	23297	92001	Homo	sapiens	GO:0050954	biological_process	"sensory perception of mechanical stimulus"	ERCC2	ERCC3
+2.325490e-02	1	3	182	23297	92001	Homo	sapiens	GO:0045859	biological_process	"regulation of protein kinase activity"	CCNH
+1.088580e-02	3	3	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	CCNH	ERCC2	ERCC3
+2.810460e-03	2	3	721	23297	92001	Homo	sapiens	GO:0016265	biological_process	"death"	ERCC2	ERCC3
+1.105740e-07	2	3	5	23297	92001	Homo	sapiens	GO:0006283	biological_process	"transcription-coupled nucleotide-excision repair"	ERCC2	ERCC3
+1.129150e-04	3	3	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	CCNH	ERCC2	ERCC3
+1.726960e-03	2	3	564	23297	92001	Homo	sapiens	GO:0043119	biological_process	"positive regulation of physiological process"	ERCC2	ERCC3
+3.376740e-03	3	3	3496	23297	92001	Homo	sapiens	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CCNH	ERCC2	ERCC3
+1.112300e-03	2	3	452	23297	92001	Homo	sapiens	GO:0043067	biological_process	"regulation of programmed cell death"	ERCC2	ERCC3
+4.254030e-03	2	3	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	ERCC2	ERCC3
+1.346620e-01	3	3	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	CCNH	ERCC2	ERCC3
+2.122160e-04	2	3	197	23297	92001	Homo	sapiens	GO:0043065	biological_process	"positive regulation of apoptosis"	ERCC2	ERCC3
+5.076950e-02	2	3	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	ERCC2	ERCC3
+1.352950e-01	2	3	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	ERCC2	ERCC3
+1.589930e-03	2	3	541	23297	92001	Homo	sapiens	GO:0051242	biological_process	"positive regulation of cellular physiological process"	ERCC2	ERCC3
+2.715220e-03	3	3	3251	23297	92001	Homo	sapiens	GO:0050896	biological_process	"response to stimulus"	CCNH	ERCC2	ERCC3
+1.666970e-03	2	3	658	27672	92001	Homo	sapiens	GO:0016887	molecular_function	"ATPase activity"	ERCC2	ERCC3
+1.972620e-03	2	3	543	20974	92001	Homo	sapiens	GO:0031974	cellular_component	"membrane-enclosed lumen"	ERCC2	ERCC3
+5.929180e-01	3	3	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	CCNH	ERCC2	ERCC3
+4.104180e-03	2	3	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	ERCC2	ERCC3
+7.618420e-01	3	3	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	CCNH	ERCC2	ERCC3
+1.259370e-02	3	3	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CCNH	ERCC2	ERCC3
+2.388860e-02	1	3	187	23297	92001	Homo	sapiens	GO:0051338	biological_process	"regulation of transferase activity"	CCNH
+6.167110e-03	1	3	57	27672	92001	Homo	sapiens	GO:0003684	molecular_function	"damaged DNA binding"	ERCC3
+3.647430e-03	3	3	3587	23297	92001	Homo	sapiens	GO:0006350	biological_process	"transcription"	CCNH	ERCC2	ERCC3
+4.151220e-03	2	3	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	ERCC2	ERCC3
+6.775420e-01	3	3	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	CCNH	ERCC2	ERCC3
+3.256460e-03	3	3	3454	23297	92001	Homo	sapiens	GO:0045449	biological_process	"regulation of transcription"	CCNH	ERCC2	ERCC3
+1.620390e-05	2	3	65	27672	92001	Homo	sapiens	GO:0003678	molecular_function	"DNA helicase activity"	ERCC2	ERCC3
+4.119790e-02	2	3	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	ERCC2	ERCC3
+8.937380e-02	3	3	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	CCNH	ERCC2	ERCC3
+2.514840e-03	3	3	3169	23297	92001	Homo	sapiens	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	CCNH	ERCC2	ERCC3
+3.825280e-01	3	3	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	CCNH	ERCC2	ERCC3
+2.083190e-04	3	3	1382	23297	92001	Homo	sapiens	GO:0006950	biological_process	"response to stress"	CCNH	ERCC2	ERCC3
+6.641720e-03	3	3	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	CCNH	ERCC2	ERCC3
+3.677180e-04	2	3	308	27672	92001	Homo	sapiens	GO:0004386	molecular_function	"helicase activity"	ERCC2	ERCC3
+4.856280e-02	2	3	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	ERCC2	ERCC3
+5.305340e-01	1	3	6165	27672	92001	Homo	sapiens	GO:0043167	molecular_function	"ion binding"	ERCC2
+8.306720e-03	3	3	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	CCNH	ERCC2	ERCC3
+1.359000e-04	2	3	142	20974	92001	Homo	sapiens	GO:0005667	cellular_component	"transcription factor complex"	ERCC2	ERCC3
+1.319840e-01	3	3	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	CCNH	ERCC2	ERCC3
+3.242400e-03	2	3	775	23297	92001	Homo	sapiens	GO:0048518	biological_process	"positive regulation of biological process"	ERCC2	ERCC3
+5.319390e-06	3	3	408	23297	92001	Homo	sapiens	GO:0006974	biological_process	"response to DNA damage stimulus"	CCNH	ERCC2	ERCC3
+1.470480e-04	2	3	164	23297	92001	Homo	sapiens	GO:0012502	biological_process	"induction of programmed cell death"	ERCC2	ERCC3
+8.940240e-02	3	3	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	CCNH	ERCC2	ERCC3
+1.812330e-02	3	3	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	CCNH	ERCC2	ERCC3
+3.991930e-06	3	3	371	23297	92001	Homo	sapiens	GO:0006281	biological_process	"DNA repair"	CCNH	ERCC2	ERCC3
+2.810460e-03	2	3	721	23297	92001	Homo	sapiens	GO:0008219	biological_process	"cell death"	ERCC2	ERCC3
+1.397570e-03	2	3	507	23297	92001	Homo	sapiens	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	ERCC2	ERCC3
+1.235880e-03	2	3	566	27672	92001	Homo	sapiens	GO:0042623	molecular_function	"ATPase activity, coupled"	ERCC2	ERCC3
+1.084130e-04	1	3	1	27672	92001	Homo	sapiens	GO:0043139	molecular_function	"5' to 3' DNA helicase activity"	ERCC2
+5.232930e-01	1	3	6055	27672	92001	Homo	sapiens	GO:0046872	molecular_function	"metal ion binding"	ERCC2
+2.605820e-03	2	3	694	23297	92001	Homo	sapiens	GO:0012501	biological_process	"programmed cell death"	ERCC2	ERCC3
+6.245640e-05	2	3	107	23297	92001	Homo	sapiens	GO:0007605	biological_process	"sensory perception of sound"	ERCC2	ERCC3
+1.081430e-01	1	3	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	CCNH
+1.097660e-03	2	3	449	23297	92001	Homo	sapiens	GO:0042981	biological_process	"regulation of apoptosis"	ERCC2	ERCC3
+3.545360e-03	2	3	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	ERCC2	ERCC3
+#USING TFB4 instead of its synonym YPR056W in Saccharomyces cerevisiae
+#USING SSL2 instead of its synonym YIL143C in Saccharomyces cerevisiae
+#USING TFB2 instead of its synonym YPL122C in Saccharomyces cerevisiae
+#USING RAD3 instead of its synonym YER171W in Saccharomyces cerevisiae
+#USING CCL1 instead of its synonym YPR025C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0016538	molecular_function	"cyclin-dependent protein kinase regulator activity"	YPR025C
+9.818530e-01	1	5	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YPR025C
+1.064410e-06	3	5	32	6526	97048	Saccharomyces	cerevisiae	GO:0006289	biological_process	"nucleotide-excision repair"	YER171W	YIL143C	YPL122C
+2.104740e-09	5	5	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+4.016310e-01	5	5	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+3.501150e-02	5	5	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+4.624390e-03	5	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+9.767690e-06	5	5	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.841300e-07	5	5	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+3.987800e-02	5	5	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.686690e-01	5	5	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+4.740820e-01	2	5	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YER171W	YIL143C
+2.558660e-15	5	5	10	6526	97048	Saccharomyces	cerevisiae	GO:0005675	cellular_component	"transcription factor TFIIH complex"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+3.174620e-04	3	5	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	YER171W	YIL143C	YPL122C
+2.819300e-01	3	5	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YER171W	YIL143C	YPL122C
+5.109040e-02	5	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.021920e-07	5	5	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.716870e-05	5	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+5.809960e-08	5	5	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.085350e-07	5	5	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.392090e-11	5	5	46	6526	97048	Saccharomyces	cerevisiae	GO:0000122	biological_process	"negative regulation of transcription from RNA polymerase II promoter"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+6.097880e-06	5	5	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.275140e-06	5	5	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+5.795550e-01	1	5	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YPR025C
+2.006240e-10	5	5	77	6526	97048	Saccharomyces	cerevisiae	GO:0016591	cellular_component	"DNA-directed RNA polymerase II, holoenzyme"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+5.109040e-02	5	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.079040e-05	5	5	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.312320e-01	1	5	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	YPR025C
+1.672990e-06	5	5	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.193920e-09	5	5	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.731000e-06	5	5	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+5.987610e-04	5	5	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+8.548000e-06	5	5	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+6.571040e-11	5	5	62	6526	97048	Saccharomyces	cerevisiae	GO:0016251	molecular_function	"general RNA polymerase II transcription factor activity"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+3.346490e-03	3	5	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YER171W	YIL143C	YPL122C
+5.508210e-07	5	5	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+4.251930e-11	5	5	57	6526	97048	Saccharomyces	cerevisiae	GO:0006352	biological_process	"transcription initiation"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.589050e-01	5	5	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.883380e-08	5	5	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+3.476150e-02	1	5	46	6526	97048	Saccharomyces	cerevisiae	GO:0019207	molecular_function	"kinase regulator activity"	YPR025C
+2.207410e-08	5	5	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.784270e-08	5	5	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+9.439080e-09	5	5	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+6.809430e-03	3	5	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	YER171W	YIL143C	YPL122C
+7.548780e-09	3	5	7	6526	97048	Saccharomyces	cerevisiae	GO:0000112	cellular_component	"nucleotide-excision repair factor 3 complex"	YER171W	YIL143C	YPL122C
+2.716870e-05	5	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.208090e-01	5	5	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.794640e-09	5	5	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+4.012620e-01	5	5	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+5.256900e-04	5	5	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+3.389890e-09	5	5	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.687870e-06	5	5	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.279330e-15	5	5	9	6526	97048	Saccharomyces	cerevisiae	GO:0007068	biological_process	"negative regulation of transcription, mitotic"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.131350e-01	5	5	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.599870e-04	2	5	34	6526	97048	Saccharomyces	cerevisiae	GO:0003678	molecular_function	"DNA helicase activity"	YER171W	YIL143C
+2.964370e-07	5	5	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.392090e-11	5	5	46	6526	97048	Saccharomyces	cerevisiae	GO:0006367	biological_process	"transcription initiation from RNA polymerase II promoter"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+5.685900e-16	5	5	8	6526	97048	Saccharomyces	cerevisiae	GO:0046021	biological_process	"regulation of transcription from RNA polymerase II promoter, mitotic"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.193920e-09	5	5	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.841300e-07	5	5	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.056760e-01	5	5	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.693520e-03	3	5	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	YER171W	YIL143C	YPL122C
+9.100760e-02	3	5	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YER171W	YIL143C	YPL122C
+4.306760e-09	3	5	6	6526	97048	Saccharomyces	cerevisiae	GO:0000717	biological_process	"nucleotide-excision repair, DNA duplex unwinding"	YER171W	YIL143C	YPL122C
+1.830510e-03	2	5	90	6526	97048	Saccharomyces	cerevisiae	GO:0004386	molecular_function	"helicase activity"	YER171W	YIL143C
+4.624390e-03	5	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+7.317220e-08	5	5	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.324800e-08	5	5	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.279330e-15	5	5	9	6526	97048	Saccharomyces	cerevisiae	GO:0045896	biological_process	"regulation of transcription, mitotic"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+3.252440e-02	1	5	43	6526	97048	Saccharomyces	cerevisiae	GO:0019887	molecular_function	"protein kinase regulator activity"	YPR025C
+2.381360e-09	5	5	125	6526	97048	Saccharomyces	cerevisiae	GO:0005667	cellular_component	"transcription factor complex"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+5.058400e-09	5	5	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+8.480220e-06	5	5	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.562230e-02	5	5	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.166260e-08	5	5	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.914150e-04	3	5	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	YER171W	YIL143C	YPL122C
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+2.581360e-03	5	5	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.393150e-04	3	5	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	YER171W	YIL143C	YPL122C
+5.685900e-16	5	5	8	6526	97048	Saccharomyces	cerevisiae	GO:0007070	biological_process	"negative regulation of transcription from RNA polymerase II promoter, mitotic"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.784270e-08	5	5	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.796060e-07	5	5	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+9.180190e-01	1	5	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YPR025C
+3.191370e-05	3	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0000109	cellular_component	"nucleotide-excision repair complex"	YER171W	YIL143C	YPL122C
+9.021980e-07	5	5	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W
+1.208760e-04	5	5	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YER171W	YIL143C	YPL122C	YPR025C	YPR056W

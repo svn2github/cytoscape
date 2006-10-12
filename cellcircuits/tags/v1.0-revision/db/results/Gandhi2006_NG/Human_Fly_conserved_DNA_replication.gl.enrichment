@@ -1,0 +1,143 @@
+#USING RfC3 instead of its synonym CG5313 in Drosophila melanogaster
+#USING RfC40 instead of its synonym CG14999 in Drosophila melanogaster
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+7.466630e-02	1	3	260	10183	157890	Drosophila	melanogaster	GO:0007067	biological_process	"mitosis"	CG14999
+2.504990e-02	1	3	86	10214	157890	Drosophila	melanogaster	GO:0008026	molecular_function	"ATP-dependent helicase activity"	CG14999
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0005623	cellular_component	"cell"	CG14999	CG5313	CG8142
+1.301520e-01	3	3	5161	10183	157890	Drosophila	melanogaster	GO:0044237	biological_process	"cellular metabolism"	CG14999	CG5313	CG8142
+9.954280e-03	3	3	1632	7583	157890	Drosophila	melanogaster	GO:0044422	cellular_component	"organelle part"	CG14999	CG5313	CG8142
+1.205760e-03	3	3	808	7583	157890	Drosophila	melanogaster	GO:0043228	cellular_component	"non-membrane-bound organelle"	CG14999	CG5313	CG8142
+1.056980e-02	1	3	36	10183	157890	Drosophila	melanogaster	GO:0000819	biological_process	"sister chromatid segregation"	CG14999
+1.669910e-01	3	3	5608	10183	157890	Drosophila	melanogaster	GO:0008152	biological_process	"metabolism"	CG14999	CG5313	CG8142
+1.728330e-02	1	3	59	10183	157890	Drosophila	melanogaster	GO:0016321	biological_process	"female meiosis chromosome segregation"	CG14999
+1.303160e-01	3	3	3845	7583	157890	Drosophila	melanogaster	GO:0005622	cellular_component	"intracellular"	CG14999	CG5313	CG8142
+6.333490e-02	3	3	4072	10214	157890	Drosophila	melanogaster	GO:0003824	molecular_function	"catalytic activity"	CG14999	CG5313	CG8142
+7.557670e-02	3	3	4319	10214	157890	Drosophila	melanogaster	GO:0005488	molecular_function	"binding"	CG14999	CG5313	CG8142
+6.449020e-03	1	3	22	10214	157890	Drosophila	melanogaster	GO:0004003	molecular_function	"ATP-dependent DNA helicase activity"	CG14999
+2.346190e-06	3	3	138	10183	157890	Drosophila	melanogaster	GO:0009719	biological_process	"response to endogenous stimulus"	CG14999	CG5313	CG8142
+1.845820e-08	3	3	28	10214	157890	Drosophila	melanogaster	GO:0003887	molecular_function	"DNA-directed DNA polymerase activity"	CG14999	CG5313	CG8142
+7.163000e-01	1	3	2600	7583	157890	Drosophila	melanogaster	GO:0043227	cellular_component	"membrane-bound organelle"	CG14999
+4.353890e-02	3	3	3583	10183	157890	Drosophila	melanogaster	GO:0043170	biological_process	"macromolecule metabolism"	CG14999	CG5313	CG8142
+3.205880e-04	3	3	700	10214	157890	Drosophila	melanogaster	GO:0030554	molecular_function	"adenyl nucleotide binding"	CG14999	CG5313	CG8142
+1.932050e-02	1	3	66	10183	157890	Drosophila	melanogaster	GO:0006261	biological_process	"DNA-dependent DNA replication"	CG14999
+1.141260e-02	1	3	39	10214	157890	Drosophila	melanogaster	GO:0008094	molecular_function	"DNA-dependent ATPase activity"	CG14999
+1.000000e+00	3	3	10183	10183	157890	Drosophila	melanogaster	GO:0008150	biological_process	"biological_process"	CG14999	CG5313	CG8142
+2.338650e-02	1	3	80	10183	157890	Drosophila	melanogaster	GO:0045132	biological_process	"meiotic chromosome segregation"	CG14999
+8.913890e-02	1	3	312	10183	157890	Drosophila	melanogaster	GO:0000278	biological_process	"mitotic cell cycle"	CG14999
+6.331820e-04	3	3	878	10214	157890	Drosophila	melanogaster	GO:0003677	molecular_function	"DNA binding"	CG14999	CG5313	CG8142
+7.627750e-10	3	3	8	7583	157890	Drosophila	melanogaster	GO:0005663	cellular_component	"DNA replication factor C complex"	CG14999	CG5313	CG8142
+4.925680e-02	1	3	170	10183	157890	Drosophila	melanogaster	GO:0007059	biological_process	"chromosome segregation"	CG14999
+2.977600e-04	3	3	683	10214	157890	Drosophila	melanogaster	GO:0005524	molecular_function	"ATP binding"	CG14999	CG5313	CG8142
+1.000000e+00	3	3	10214	10214	157890	Drosophila	melanogaster	GO:0003674	molecular_function	"molecular_function"	CG14999	CG5313	CG8142
+6.709160e-02	1	3	233	10183	157890	Drosophila	melanogaster	GO:0051321	biological_process	"meiotic cell cycle"	CG14999
+6.617600e-04	3	3	891	10214	157890	Drosophila	melanogaster	GO:0000166	molecular_function	"nucleotide binding"	CG14999	CG5313	CG8142
+1.469730e-04	3	3	540	10214	157890	Drosophila	melanogaster	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	CG14999	CG5313	CG8142
+7.159580e-01	1	3	2598	7583	157890	Drosophila	melanogaster	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CG14999
+1.000000e+00	3	3	7583	7583	157890	Drosophila	melanogaster	GO:0005575	cellular_component	"cellular_component"	CG14999	CG5313	CG8142
+2.061050e-03	1	3	7	10183	157890	Drosophila	melanogaster	GO:0006271	biological_process	"DNA strand elongation"	CG14999
+5.886030e-03	3	3	1845	10214	157890	Drosophila	melanogaster	GO:0003676	molecular_function	"nucleic acid binding"	CG14999	CG5313	CG8142
+2.309640e-02	1	3	79	10183	157890	Drosophila	melanogaster	GO:0007143	biological_process	"female meiosis"	CG14999
+1.240170e-02	3	3	1756	7583	157890	Drosophila	melanogaster	GO:0043234	cellular_component	"protein complex"	CG14999	CG5313	CG8142
+3.968150e-01	1	3	1579	10183	157890	Drosophila	melanogaster	GO:0016043	biological_process	"cell organization and biogenesis"	CG14999
+1.843710e-06	3	3	128	10183	157890	Drosophila	melanogaster	GO:0006260	biological_process	"DNA replication"	CG14999	CG5313	CG8142
+9.399820e-05	3	3	464	10183	157890	Drosophila	melanogaster	GO:0006259	biological_process	"DNA metabolism"	CG14999	CG5313	CG8142
+1.692890e-04	3	3	566	10214	157890	Drosophila	melanogaster	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	CG14999	CG5313	CG8142
+1.199260e-01	3	3	3740	7583	157890	Drosophila	melanogaster	GO:0044424	cellular_component	"intracellular part"	CG14999	CG5313	CG8142
+6.790610e-03	3	3	1935	10214	157890	Drosophila	melanogaster	GO:0016787	molecular_function	"hydrolase activity"	CG14999	CG5313	CG8142
+2.605030e-03	3	3	1402	10183	157890	Drosophila	melanogaster	GO:0050896	biological_process	"response to stimulus"	CG14999	CG5313	CG8142
+1.137520e-05	3	3	172	7583	157890	Drosophila	melanogaster	GO:0044427	cellular_component	"chromosomal part"	CG14999	CG5313	CG8142
+1.086100e-01	1	3	384	10214	157890	Drosophila	melanogaster	GO:0016887	molecular_function	"ATPase activity"	CG14999
+4.594850e-01	3	3	7858	10183	157890	Drosophila	melanogaster	GO:0007582	biological_process	"physiological process"	CG14999	CG5313	CG8142
+8.227640e-03	1	3	28	10183	157890	Drosophila	melanogaster	GO:0030261	biological_process	"chromosome condensation"	CG14999
+1.544610e-04	3	3	549	10214	157890	Drosophila	melanogaster	GO:0016462	molecular_function	"pyrophosphatase activity"	CG14999	CG5313	CG8142
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0044464	cellular_component	"cell part"	CG14999	CG5313	CG8142
+2.116850e-05	3	3	211	7583	157890	Drosophila	melanogaster	GO:0005694	cellular_component	"chromosome"	CG14999	CG5313	CG8142
+7.024320e-03	3	3	1951	10183	157890	Drosophila	melanogaster	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG14999	CG5313	CG8142
+1.692890e-04	3	3	566	10214	157890	Drosophila	melanogaster	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	CG14999	CG5313	CG8142
+1.046820e-03	3	3	1038	10214	157890	Drosophila	melanogaster	GO:0016740	molecular_function	"transferase activity"	CG14999	CG5313	CG8142
+4.445610e-01	3	3	7772	10183	157890	Drosophila	melanogaster	GO:0009987	biological_process	"cellular process"	CG14999	CG5313	CG8142
+1.519730e-02	1	3	52	10214	157890	Drosophila	melanogaster	GO:0003678	molecular_function	"DNA helicase activity"	CG14999
+5.991540e-04	3	3	862	10214	157890	Drosophila	melanogaster	GO:0017076	molecular_function	"purine nucleotide binding"	CG14999	CG5313	CG8142
+2.439240e-08	3	3	23	7583	157890	Drosophila	melanogaster	GO:0005657	cellular_component	"replication fork"	CG14999	CG5313	CG8142
+6.231830e-02	3	3	3007	7583	157890	Drosophila	melanogaster	GO:0043229	cellular_component	"intracellular organelle"	CG14999	CG5313	CG8142
+7.522580e-02	1	3	262	10183	157890	Drosophila	melanogaster	GO:0000087	biological_process	"M phase of mitotic cell cycle"	CG14999
+1.205760e-03	3	3	808	7583	157890	Drosophila	melanogaster	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CG14999	CG5313	CG8142
+3.446770e-01	3	3	7140	10183	157890	Drosophila	melanogaster	GO:0050875	biological_process	"cellular physiological process"	CG14999	CG5313	CG8142
+4.565430e-05	3	3	365	10183	157890	Drosophila	melanogaster	GO:0006950	biological_process	"response to stress"	CG14999	CG5313	CG8142
+6.194770e-03	3	3	1871	10183	157890	Drosophila	melanogaster	GO:0043283	biological_process	"biopolymer metabolism"	CG14999	CG5313	CG8142
+3.426290e-02	1	3	118	10214	157890	Drosophila	melanogaster	GO:0004386	molecular_function	"helicase activity"	CG14999
+9.954280e-03	3	3	1632	7583	157890	Drosophila	melanogaster	GO:0044446	cellular_component	"intracellular organelle part"	CG14999	CG5313	CG8142
+4.706800e-03	1	3	16	10183	157890	Drosophila	melanogaster	GO:0007076	biological_process	"mitotic chromosome condensation"	CG14999
+1.056980e-02	1	3	36	10183	157890	Drosophila	melanogaster	GO:0000070	biological_process	"mitotic sister chromatid segregation"	CG14999
+1.286960e-01	1	3	457	10183	157890	Drosophila	melanogaster	GO:0000279	biological_process	"M phase"	CG14999
+1.241910e-01	3	3	5081	10183	157890	Drosophila	melanogaster	GO:0044238	biological_process	"primary metabolism"	CG14999	CG5313	CG8142
+1.619470e-06	3	3	123	10183	157890	Drosophila	melanogaster	GO:0006974	biological_process	"response to DNA damage stimulus"	CG14999	CG5313	CG8142
+6.231830e-02	3	3	3007	7583	157890	Drosophila	melanogaster	GO:0043226	cellular_component	"organelle"	CG14999	CG5313	CG8142
+5.402080e-01	1	3	1730	7583	157890	Drosophila	melanogaster	GO:0005634	cellular_component	"nucleus"	CG14999
+1.295720e-06	3	3	115	10183	157890	Drosophila	melanogaster	GO:0006281	biological_process	"DNA repair"	CG14999	CG5313	CG8142
+7.438650e-02	1	3	259	10183	157890	Drosophila	melanogaster	GO:0051276	biological_process	"chromosome organization and biogenesis"	CG14999
+7.029540e-07	3	3	97	10214	157890	Drosophila	melanogaster	GO:0016779	molecular_function	"nucleotidyltransferase activity"	CG14999	CG5313	CG8142
+2.318480e-01	1	3	857	10183	157890	Drosophila	melanogaster	GO:0006996	biological_process	"organelle organization and biogenesis"	CG14999
+9.740810e-02	1	3	343	10214	157890	Drosophila	melanogaster	GO:0042623	molecular_function	"ATPase activity, coupled"	CG14999
+6.145420e-02	1	3	213	10183	157890	Drosophila	melanogaster	GO:0007126	biological_process	"meiosis"	CG14999
+6.681030e-02	1	3	232	10183	157890	Drosophila	melanogaster	GO:0051327	biological_process	"M phase of meiotic cell cycle"	CG14999
+1.813550e-01	1	3	657	10183	157890	Drosophila	melanogaster	GO:0007049	biological_process	"cell cycle"	CG14999
+1.494410e-04	3	3	543	10214	157890	Drosophila	melanogaster	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	CG14999	CG5313	CG8142
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.361990e-06	3	3	312	23297	92001	Homo	sapiens	GO:0006260	biological_process	"DNA replication"	RFC2	RFC4	RFC5
+1.129150e-04	3	3	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	RFC2	RFC4	RFC5
+1.346620e-01	3	3	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	RFC2	RFC4	RFC5
+5.541780e-05	3	3	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	RFC2	RFC4	RFC5
+2.539080e-03	3	3	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	RFC2	RFC4	RFC5
+1.230330e-02	3	3	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	RFC2	RFC4	RFC5
+7.619610e-01	3	3	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	RFC2	RFC4	RFC5
+5.297320e-02	2	3	3251	23297	92001	Homo	sapiens	GO:0050896	biological_process	"response to stimulus"	RFC4	RFC5
+1.465070e-01	3	3	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	RFC2	RFC4	RFC5
+2.062090e-01	1	3	1726	23297	92001	Homo	sapiens	GO:0007242	biological_process	"intracellular signaling cascade"	RFC4
+2.366810e-03	3	3	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	RFC2	RFC4	RFC5
+6.974710e-06	3	3	402	20974	92001	Homo	sapiens	GO:0044427	cellular_component	"chromosomal part"	RFC2	RFC4	RFC5
+1.949490e-03	3	3	2621	20974	92001	Homo	sapiens	GO:0043228	cellular_component	"non-membrane-bound organelle"	RFC2	RFC4	RFC5
+5.929180e-01	3	3	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	RFC2	RFC4	RFC5
+1.914670e-01	3	3	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	RFC2	RFC4	RFC5
+4.844310e-01	1	3	4616	23297	92001	Homo	sapiens	GO:0007165	biological_process	"signal transduction"	RFC4
+5.247690e-05	3	3	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	RFC2	RFC4	RFC5
+5.088750e-01	1	3	4916	23297	92001	Homo	sapiens	GO:0007154	biological_process	"cell communication"	RFC4
+2.101420e-01	3	3	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	RFC2	RFC4	RFC5
+7.618420e-01	3	3	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	RFC2	RFC4	RFC5
+1.259370e-02	3	3	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	RFC2	RFC4	RFC5
+1.102720e-05	3	3	468	20974	92001	Homo	sapiens	GO:0005694	cellular_component	"chromosome"	RFC2	RFC4	RFC5
+3.790300e-02	3	3	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	RFC2	RFC4	RFC5
+2.677590e-01	3	3	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	RFC2	RFC4	RFC5
+1.059100e-03	2	3	441	23297	92001	Homo	sapiens	GO:0009719	biological_process	"response to endogenous stimulus"	RFC4	RFC5
+3.306270e-02	3	3	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	RFC2	RFC4	RFC5
+4.593160e-02	3	3	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	RFC2	RFC4	RFC5
+9.508460e-04	3	3	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	RFC2	RFC4	RFC5
+1.855680e-02	1	3	145	23297	92001	Homo	sapiens	GO:0006261	biological_process	"DNA-dependent DNA replication"	RFC4
+5.339410e-05	3	3	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	RFC2	RFC4	RFC5
+6.775420e-01	3	3	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	RFC2	RFC4	RFC5
+1.192860e-02	1	3	93	23297	92001	Homo	sapiens	GO:0048015	biological_process	"phosphoinositide-mediated signaling"	RFC4
+1.000000e+00	3	3	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	RFC2	RFC4	RFC5
+6.411870e-10	3	3	19	20974	92001	Homo	sapiens	GO:0005657	cellular_component	"replication fork"	RFC2	RFC4	RFC5
+1.827390e-03	3	3	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	RFC2	RFC4	RFC5
+8.937380e-02	3	3	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	RFC2	RFC4	RFC5
+2.908260e-11	3	3	6	20974	92001	Homo	sapiens	GO:0005663	cellular_component	"DNA replication factor C complex"	RFC2	RFC4	RFC5
+8.469030e-04	3	3	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	RFC2	RFC4	RFC5
+3.825280e-01	3	3	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	RFC2	RFC4	RFC5
+1.949490e-03	3	3	2621	20974	92001	Homo	sapiens	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	RFC2	RFC4	RFC5
+6.641720e-03	3	3	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	RFC2	RFC4	RFC5
+1.013310e-02	2	3	1382	23297	92001	Homo	sapiens	GO:0006950	biological_process	"response to stress"	RFC4	RFC5
+2.366810e-03	3	3	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	RFC2	RFC4	RFC5
+1.000000e+00	3	3	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	RFC2	RFC4	RFC5
+2.717960e-02	1	3	213	23297	92001	Homo	sapiens	GO:0019932	biological_process	"second-messenger-mediated signaling"	RFC4
+2.697640e-03	3	3	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	RFC2	RFC4	RFC5
+1.319840e-01	3	3	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	RFC2	RFC4	RFC5
+4.691100e-05	3	3	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	RFC2	RFC4	RFC5
+9.072210e-04	2	3	408	23297	92001	Homo	sapiens	GO:0006974	biological_process	"response to DNA damage stimulus"	RFC4	RFC5
+4.589490e-02	3	3	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	RFC2	RFC4	RFC5
+1.000000e+00	3	3	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	RFC2	RFC4	RFC5
+8.940240e-02	3	3	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	RFC2	RFC4	RFC5
+1.812330e-02	3	3	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	RFC2	RFC4	RFC5
+7.507530e-04	2	3	371	23297	92001	Homo	sapiens	GO:0006281	biological_process	"DNA repair"	RFC4	RFC5
+7.724660e-04	1	3	6	23297	92001	Homo	sapiens	GO:0006271	biological_process	"DNA strand elongation"	RFC4
+3.686830e-03	3	3	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	RFC2	RFC4	RFC5
+2.611460e-02	1	3	243	27672	92001	Homo	sapiens	GO:0019899	molecular_function	"enzyme binding"	RFC5

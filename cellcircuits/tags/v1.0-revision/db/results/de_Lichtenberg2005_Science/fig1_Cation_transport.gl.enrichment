@@ -1,0 +1,49 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+6.979710e-04	4	4	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	PMA1	PMA2	PMP1	PMP2
+1.470790e-04	2	4	33	6526	97048	Saccharomyces	cerevisiae	GO:0042625	molecular_function	"ATPase activity, coupled to transmembrane movement of ions"	PMA1	PMA2
+1.050360e-04	2	4	28	6526	97048	Saccharomyces	cerevisiae	GO:0006885	biological_process	"regulation of pH"	PMA1	PMA2
+1.381210e-04	2	4	32	6526	97048	Saccharomyces	cerevisiae	GO:0015399	molecular_function	"primary active transporter activity"	PMA1	PMA2
+8.727600e-03	2	4	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	PMA1	PMA2
+4.442930e-04	2	4	57	6526	97048	Saccharomyces	cerevisiae	GO:0015077	molecular_function	"monovalent inorganic cation transporter activity"	PMA1	PMA2
+7.125320e-02	2	4	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	PMA1	PMA2
+4.820460e-01	4	4	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	PMA1	PMA2	PMP1	PMP2
+3.985360e-04	2	4	54	6526	97048	Saccharomyces	cerevisiae	GO:0015078	molecular_function	"hydrogen ion transporter activity"	PMA1	PMA2
+4.391270e-04	4	4	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	PMA1	PMA2	PMP1	PMP2
+4.328610e-03	2	4	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	PMA1	PMA2
+2.987170e-01	4	4	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	PMA1	PMA2	PMP1	PMP2
+1.996320e-03	2	4	121	6526	97048	Saccharomyces	cerevisiae	GO:0042592	biological_process	"homeostasis"	PMA1	PMA2
+8.661230e-03	2	4	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	PMA1	PMA2
+4.816920e-01	4	4	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	PMA1	PMA2	PMP1	PMP2
+3.178450e-01	1	4	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	PMA1
+3.384260e-08	4	4	90	6526	97048	Saccharomyces	cerevisiae	GO:0006812	biological_process	"cation transport"	PMA1	PMA2	PMP1	PMP2
+3.502340e-01	2	4	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	PMA1	PMA2
+4.600900e-04	2	4	58	6526	97048	Saccharomyces	cerevisiae	GO:0043492	molecular_function	"ATPase activity, coupled to movement of substances"	PMA1	PMA2
+3.673370e-03	1	4	6	6526	97048	Saccharomyces	cerevisiae	GO:0045121	cellular_component	"lipid raft"	PMA1
+4.600900e-04	2	4	58	6526	97048	Saccharomyces	cerevisiae	GO:0016820	molecular_function	"hydrolase activity, acting on acid anhydrides, catalyzing transmembrane movement of substances"	PMA1	PMA2
+8.727600e-03	2	4	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	PMA1	PMA2
+9.429030e-04	2	4	83	6526	97048	Saccharomyces	cerevisiae	GO:0005386	molecular_function	"carrier activity"	PMA1	PMA2
+2.903830e-01	4	4	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	PMA1	PMA2	PMP1	PMP2
+2.818030e-07	2	4	2	6526	97048	Saccharomyces	cerevisiae	GO:0008553	molecular_function	"hydrogen-exporting ATPase activity, phosphorylative mechanism"	PMA1	PMA2
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	PMA1	PMA2	PMP1	PMP2
+2.241910e-02	2	4	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	PMA1	PMA2
+2.822250e-01	4	4	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	PMA1	PMA2	PMP1	PMP2
+1.593010e-03	2	4	108	6526	97048	Saccharomyces	cerevisiae	GO:0050801	biological_process	"ion homeostasis"	PMA1	PMA2
+3.094970e-03	2	4	151	6526	97048	Saccharomyces	cerevisiae	GO:0015075	molecular_function	"ion transporter activity"	PMA1	PMA2
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	PMA1	PMA2	PMP1	PMP2
+7.507550e-03	2	4	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	PMA1	PMA2
+7.634340e-05	2	4	24	6526	97048	Saccharomyces	cerevisiae	GO:0006818	biological_process	"hydrogen transport"	PMA1	PMA2
+7.634340e-05	2	4	24	6526	97048	Saccharomyces	cerevisiae	GO:0015992	biological_process	"proton transport"	PMA1	PMA2
+2.158700e-04	3	4	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	PMA1	PMA2	PMP1
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	PMA1	PMA2	PMP1	PMP2
+4.048420e-04	4	4	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	PMA1	PMA2	PMP1	PMP2
+4.297580e-05	2	4	18	6526	97048	Saccharomyces	cerevisiae	GO:0015662	molecular_function	"ATPase activity, coupled to transmembrane movement of ions, phosphorylative mechanism"	PMA1	PMA2
+1.381210e-04	2	4	32	6526	97048	Saccharomyces	cerevisiae	GO:0015405	molecular_function	"P-P-bond-hydrolysis-driven transporter activity"	PMA1	PMA2
+3.568410e-02	1	4	59	6526	97048	Saccharomyces	cerevisiae	GO:0044459	cellular_component	"plasma membrane part"	PMA1
+1.064340e-01	1	4	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	PMP1
+4.600900e-04	2	4	58	6526	97048	Saccharomyces	cerevisiae	GO:0042626	molecular_function	"ATPase activity, coupled to transmembrane movement of substances"	PMA1	PMA2
+7.097850e-08	4	4	108	6526	97048	Saccharomyces	cerevisiae	GO:0006811	biological_process	"ion transport"	PMA1	PMA2	PMP1	PMP2
+1.931390e-03	2	4	119	6526	97048	Saccharomyces	cerevisiae	GO:0042623	molecular_function	"ATPase activity, coupled"	PMA1	PMA2
+8.263970e-01	1	4	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	PMP2
+5.397690e-04	4	4	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	PMA1	PMA2	PMP1	PMP2
+1.210290e-04	2	4	30	6526	97048	Saccharomyces	cerevisiae	GO:0015672	biological_process	"monovalent inorganic cation transport"	PMA1	PMA2
+2.301420e-03	2	4	130	6526	97048	Saccharomyces	cerevisiae	GO:0008324	molecular_function	"cation transporter activity"	PMA1	PMA2

@@ -1,0 +1,62 @@
+#NOT FOUND: TIMM23_HUMAN in Homo sapiens
+#NOT FOUND: TIMM44_HUMAN in Homo sapiens
+#NOT FOUND: TIMM17B_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+#USING TIM17 instead of its synonym YJL143W in Saccharomyces cerevisiae
+#USING TIM44 instead of its synonym YIL022W in Saccharomyces cerevisiae
+#USING MAS6 instead of its synonym YNR017W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+4.299350e-03	3	3	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YIL022W	YJL143W	YNR017W
+4.830960e-04	3	3	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YIL022W	YJL143W	YNR017W
+1.828460e-02	3	3	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YIL022W	YJL143W	YNR017W
+8.090050e-04	3	3	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YIL022W	YJL143W	YNR017W
+2.501740e-06	3	3	92	6526	97048	Saccharomyces	cerevisiae	GO:0017038	biological_process	"protein import"	YIL022W	YJL143W	YNR017W
+1.675250e-01	3	3	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YIL022W	YJL143W	YNR017W
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YIL022W	YJL143W	YNR017W
+3.559020e-09	3	3	11	6526	97048	Saccharomyces	cerevisiae	GO:0005744	cellular_component	"mitochondrial inner membrane presequence translocase complex"	YIL022W	YJL143W	YNR017W
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YIL022W	YJL143W	YNR017W
+2.594440e-06	3	3	93	6526	97048	Saccharomyces	cerevisiae	GO:0044455	cellular_component	"mitochondrial membrane part"	YIL022W	YJL143W	YNR017W
+3.975750e-02	3	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YIL022W	YJL143W	YNR017W
+6.246520e-05	3	3	260	6526	97048	Saccharomyces	cerevisiae	GO:0015031	biological_process	"protein transport"	YIL022W	YJL143W	YNR017W
+3.037740e-03	3	3	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YIL022W	YJL143W	YNR017W
+3.242090e-01	1	3	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YIL022W
+4.603920e-05	3	3	235	6526	97048	Saccharomyces	cerevisiae	GO:0006605	biological_process	"protein targeting"	YIL022W	YJL143W	YNR017W
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YIL022W	YJL143W	YNR017W
+8.065570e-05	3	3	283	6526	97048	Saccharomyces	cerevisiae	GO:0005740	cellular_component	"mitochondrial envelope"	YIL022W	YJL143W	YNR017W
+7.396000e-02	1	3	165	6526	97048	Saccharomyces	cerevisiae	GO:0031980	cellular_component	"mitochondrial lumen"	YIL022W
+5.119620e-04	3	3	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YIL022W	YJL143W	YNR017W
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YIL022W	YJL143W	YNR017W
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YIL022W	YJL143W	YNR017W
+7.543940e-04	3	3	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YIL022W	YJL143W	YNR017W
+1.726080e-05	3	3	170	6526	97048	Saccharomyces	cerevisiae	GO:0019866	cellular_component	"organelle inner membrane"	YIL022W	YJL143W	YNR017W
+5.752820e-05	3	3	253	6526	97048	Saccharomyces	cerevisiae	GO:0006886	biological_process	"intracellular protein transport"	YIL022W	YJL143W	YNR017W
+3.979620e-07	3	3	49	6526	97048	Saccharomyces	cerevisiae	GO:0006626	biological_process	"protein targeting to mitochondrion"	YIL022W	YJL143W	YNR017W
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YIL022W	YJL143W	YNR017W
+9.908250e-05	3	3	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	YIL022W	YJL143W	YNR017W
+1.547100e-05	3	3	164	6526	97048	Saccharomyces	cerevisiae	GO:0005743	cellular_component	"mitochondrial inner membrane"	YIL022W	YJL143W	YNR017W
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YIL022W	YJL143W	YNR017W
+3.242090e-01	1	3	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YIL022W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YIL022W	YJL143W	YNR017W
+3.313490e-08	3	3	22	6526	97048	Saccharomyces	cerevisiae	GO:0030150	biological_process	"protein import into mitochondrial matrix"	YIL022W	YJL143W	YNR017W
+2.590950e-04	3	3	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	YIL022W	YJL143W	YNR017W
+7.396000e-02	1	3	165	6526	97048	Saccharomyces	cerevisiae	GO:0005759	cellular_component	"mitochondrial matrix"	YIL022W
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YIL022W	YJL143W	YNR017W
+2.962510e-04	3	3	436	6526	97048	Saccharomyces	cerevisiae	GO:0044429	cellular_component	"mitochondrial part"	YIL022W	YJL143W	YNR017W
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YIL022W	YJL143W	YNR017W
+5.357610e-07	3	3	54	6526	97048	Saccharomyces	cerevisiae	GO:0008565	molecular_function	"protein transporter activity"	YIL022W	YJL143W	YNR017W
+1.943650e-04	3	3	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	YIL022W	YJL143W	YNR017W
+3.975750e-02	3	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YIL022W	YJL143W	YNR017W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YIL022W	YJL143W	YNR017W
+4.014140e-03	3	3	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YIL022W	YJL143W	YNR017W
+5.955920e-04	3	3	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YIL022W	YJL143W	YNR017W
+2.858170e-03	3	3	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YIL022W	YJL143W	YNR017W
+7.157020e-05	3	3	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	YIL022W	YJL143W	YNR017W
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YIL022W	YJL143W	YNR017W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YIL022W	YJL143W	YNR017W
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YIL022W	YJL143W	YNR017W
+1.943650e-04	3	3	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	YIL022W	YJL143W	YNR017W
+3.214940e-03	1	3	7	6526	97048	Saccharomyces	cerevisiae	GO:0001405	cellular_component	"presequence translocase-associated import motor"	YIL022W
+1.166920e-02	3	3	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YIL022W	YJL143W	YNR017W
+3.545890e-03	3	3	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YIL022W	YJL143W	YNR017W
+5.350890e-05	3	3	247	6526	97048	Saccharomyces	cerevisiae	GO:0031966	cellular_component	"mitochondrial membrane"	YIL022W	YJL143W	YNR017W
+6.088860e-02	3	3	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YIL022W	YJL143W	YNR017W

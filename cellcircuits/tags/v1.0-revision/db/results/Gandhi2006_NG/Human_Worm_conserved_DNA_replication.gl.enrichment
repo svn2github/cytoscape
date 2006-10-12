@@ -1,0 +1,144 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.766830e-01	1	7	1253	27713	88307	Caenorhabditis	elegans	GO:0050794	biological_process	"regulation of cellular process"	W03D2.4
+1.216220e-15	6	7	68	27713	88307	Caenorhabditis	elegans	GO:0006260	biological_process	"DNA replication"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+2.525890e-04	1	7	1	27713	88307	Caenorhabditis	elegans	GO:0006275	biological_process	"regulation of DNA replication"	W03D2.4
+3.526420e-12	6	7	250	27713	88307	Caenorhabditis	elegans	GO:0006259	biological_process	"DNA metabolism"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+2.284730e-01	1	7	1008	27713	88307	Caenorhabditis	elegans	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	W03D2.4
+5.136430e-05	4	7	418	11710	88307	Caenorhabditis	elegans	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+1.206480e-02	4	7	1756	11710	88307	Caenorhabditis	elegans	GO:0016787	molecular_function	"hydrolase activity"	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+1.103070e-04	6	7	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+2.833550e-01	1	7	1288	27713	88307	Caenorhabditis	elegans	GO:0050791	biological_process	"regulation of physiological process"	W03D2.4
+6.668350e-01	6	7	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+2.743520e-04	6	7	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+4.945810e-05	4	7	414	11710	88307	Caenorhabditis	elegans	GO:0016462	molecular_function	"pyrophosphatase activity"	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+3.631660e-07	6	7	1715	27713	88307	Caenorhabditis	elegans	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+8.800590e-02	5	7	4582	11710	88307	Caenorhabditis	elegans	GO:0003824	molecular_function	"catalytic activity"	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+6.552520e-02	6	7	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+8.341090e-03	1	7	14	11710	88307	Caenorhabditis	elegans	GO:0003887	molecular_function	"DNA-directed DNA polymerase activity"	W03D2.4
+5.337710e-06	6	7	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+9.998430e-01	1	7	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	F44B9.8
+3.843900e-03	4	7	1285	11710	88307	Caenorhabditis	elegans	GO:0030554	molecular_function	"adenyl nucleotide binding"	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+7.303290e-03	1	7	29	27713	88307	Caenorhabditis	elegans	GO:0006261	biological_process	"DNA-dependent DNA replication"	W03D2.4
+9.998220e-01	1	7	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	F44B9.8
+4.945810e-05	4	7	414	11710	88307	Caenorhabditis	elegans	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+6.393020e-01	1	7	1587	11710	88307	Caenorhabditis	elegans	GO:0016740	molecular_function	"transferase activity"	W03D2.4
+2.666130e-03	6	7	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+1.000000e+00	6	7	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+6.772470e-03	4	7	1498	11710	88307	Caenorhabditis	elegans	GO:0017076	molecular_function	"purine nucleotide binding"	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+4.161810e-06	6	7	1092	11710	88307	Caenorhabditis	elegans	GO:0003677	molecular_function	"DNA binding"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+3.468360e-03	4	7	1250	11710	88307	Caenorhabditis	elegans	GO:0005524	molecular_function	"ATP binding"	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+1.163560e-03	6	7	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+2.604360e-07	6	7	1624	27713	88307	Caenorhabditis	elegans	GO:0043283	biological_process	"biopolymer metabolism"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+9.998190e-01	1	7	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	F44B9.8
+5.977800e-04	1	7	1	11710	88307	Caenorhabditis	elegans	GO:0030337	molecular_function	"DNA polymerase processivity factor activity"	W03D2.4
+1.000000e+00	6	7	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+2.614290e-01	1	7	1174	27713	88307	Caenorhabditis	elegans	GO:0051244	biological_process	"regulation of cellular physiological process"	W03D2.4
+1.084820e-02	4	7	1705	11710	88307	Caenorhabditis	elegans	GO:0000166	molecular_function	"nucleotide binding"	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+2.331130e-01	1	7	1031	27713	88307	Caenorhabditis	elegans	GO:0031323	biological_process	"regulation of cellular metabolism"	W03D2.4
+4.193320e-05	4	7	397	11710	88307	Caenorhabditis	elegans	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+7.941090e-05	6	7	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+1.000000e+00	5	7	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+9.989440e-01	1	7	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	W03D2.4
+5.051230e-04	1	7	2	27713	88307	Caenorhabditis	elegans	GO:0051052	biological_process	"regulation of DNA metabolism"	W03D2.4
+5.430020e-02	1	7	93	11710	88307	Caenorhabditis	elegans	GO:0016779	molecular_function	"nucleotidyltransferase activity"	W03D2.4
+1.349950e-04	6	7	1970	11710	88307	Caenorhabditis	elegans	GO:0003676	molecular_function	"nucleic acid binding"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4	W03D2.4
+2.375290e-01	1	7	1053	27713	88307	Caenorhabditis	elegans	GO:0019222	biological_process	"regulation of metabolism"	W03D2.4
+3.440710e-04	5	7	748	6495	88307	Caenorhabditis	elegans	GO:0043234	cellular_component	"protein complex"	C39E9.13	C54G10.2	F31E3.3	F44B9.8	F58F6.4
+4.633500e-01	1	7	996	11710	88307	Caenorhabditis	elegans	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	W03D2.4
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.090490e-01	1	6	444	23297	92001	Homo	sapiens	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	RFC1
+5.805610e-01	6	6	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+2.145670e-02	6	6	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+5.581820e-06	6	6	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+3.784490e-06	6	6	2621	20974	92001	Homo	sapiens	GO:0043228	cellular_component	"non-membrane-bound organelle"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+3.638980e-01	2	6	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	PCNA	RFC1
+3.400610e-01	2	6	4616	23297	92001	Homo	sapiens	GO:0007165	biological_process	"signal transduction"	PCNA	RFC4
+5.720690e-04	1	6	2	20974	92001	Homo	sapiens	GO:0043626	cellular_component	"PCNA complex"	PCNA
+3.664900e-02	6	6	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+3.716950e-01	2	6	4916	23297	92001	Homo	sapiens	GO:0007154	biological_process	"cell communication"	PCNA	RFC4
+4.414680e-02	6	6	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.435710e-03	6	6	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+7.168230e-02	6	6	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.291140e-04	3	6	441	23297	92001	Homo	sapiens	GO:0009719	biological_process	"response to endogenous stimulus"	PCNA	RFC4	RFC5
+7.114400e-05	2	6	61	27672	92001	Homo	sapiens	GO:0003887	molecular_function	"DNA-directed DNA polymerase activity"	PCNA	RFC3
+1.190290e-03	4	6	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	RFC1	RFC2	RFC4	RFC5
+1.092250e-03	6	6	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+2.108090e-03	6	6	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+2.138700e-08	4	6	145	23297	92001	Homo	sapiens	GO:0006261	biological_process	"DNA-dependent DNA replication"	PCNA	RFC1	RFC3	RFC4
+1.303560e-01	1	6	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	PCNA
+1.000000e+00	6	6	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+2.423420e-02	3	6	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	PCNA	RFC1	RFC3
+8.463610e-24	6	6	6	20974	92001	Homo	sapiens	GO:0005663	cellular_component	"DNA replication factor C complex"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.026590e-03	4	6	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	RFC1	RFC2	RFC4	RFC5
+4.336120e-04	1	6	2	27672	92001	Homo	sapiens	GO:0030337	molecular_function	"DNA polymerase processivity factor activity"	PCNA
+1.000000e+00	6	6	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.218140e-03	2	6	213	23297	92001	Homo	sapiens	GO:0019932	biological_process	"second-messenger-mediated signaling"	PCNA	RFC4
+2.769930e-04	5	6	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	RFC1	RFC2	RFC3	RFC4	RFC5
+2.396840e-01	2	6	3654	23297	92001	Homo	sapiens	GO:0031323	biological_process	"regulation of cellular metabolism"	PCNA	RFC1
+3.444410e-07	5	6	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	RFC1	RFC2	RFC3	RFC4	RFC5
+2.104720e-03	6	6	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.000000e+00	6	6	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.292090e-01	1	6	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	PCNA
+4.344190e-01	2	6	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	PCNA	RFC1
+9.748180e-03	1	6	38	23297	92001	Homo	sapiens	GO:0051052	biological_process	"regulation of DNA metabolism"	PCNA
+2.099320e-02	2	6	1092	27672	92001	Homo	sapiens	GO:0030234	molecular_function	"enzyme regulator activity"	RFC1	RFC3
+5.930970e-01	1	6	3242	23297	92001	Homo	sapiens	GO:0006351	biological_process	"transcription, DNA-dependent"	RFC1
+8.287480e-07	2	6	6	23297	92001	Homo	sapiens	GO:0006271	biological_process	"DNA strand elongation"	RFC3	RFC4
+1.162350e-01	3	6	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	PCNA	RFC1	RFC3
+2.493110e-01	2	6	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	PCNA	RFC1
+5.397340e-03	1	6	21	23297	92001	Homo	sapiens	GO:0032200	biological_process	"telomere organization and biogenesis"	RFC1
+1.355700e-05	6	6	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+3.977510e-01	2	6	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	PCNA	RFC1
+4.504440e-01	1	6	2212	23297	92001	Homo	sapiens	GO:0016043	biological_process	"cell organization and biogenesis"	RFC1
+5.500550e-12	6	6	312	23297	92001	Homo	sapiens	GO:0006260	biological_process	"DNA replication"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+4.627340e-03	1	6	18	23297	92001	Homo	sapiens	GO:0006275	biological_process	"regulation of DNA replication"	PCNA
+1.265420e-08	6	6	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+2.236490e-01	2	6	3496	23297	92001	Homo	sapiens	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	PCNA	RFC1
+4.573890e-07	5	6	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	RFC1	RFC2	RFC3	RFC4	RFC5
+1.812630e-02	6	6	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+2.510430e-04	5	6	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	RFC1	RFC2	RFC3	RFC4	RFC5
+3.175750e-03	5	6	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	PCNA	RFC1	RFC2	RFC4	RFC5
+3.909400e-02	3	6	3251	23297	92001	Homo	sapiens	GO:0050896	biological_process	"response to stimulus"	PCNA	RFC4	RFC5
+6.734760e-02	2	6	1726	23297	92001	Homo	sapiens	GO:0007242	biological_process	"intracellular signaling cascade"	PCNA	RFC4
+4.778610e-11	6	6	402	20974	92001	Homo	sapiens	GO:0044427	cellular_component	"chromosomal part"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+3.515260e-01	6	6	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+4.169570e-07	5	6	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	RFC1	RFC2	RFC3	RFC4	RFC5
+5.803790e-01	6	6	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.195980e-10	6	6	468	20974	92001	Homo	sapiens	GO:0005694	cellular_component	"chromosome"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.583970e-04	6	6	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+7.556690e-01	1	6	5792	27672	92001	Homo	sapiens	GO:0043169	molecular_function	"cation binding"	RFC1
+6.333360e-01	1	6	3587	23297	92001	Homo	sapiens	GO:0006350	biological_process	"transcription"	RFC1
+4.294170e-07	5	6	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	RFC1	RFC2	RFC3	RFC4	RFC5
+1.320720e-01	2	6	3012	27672	92001	Homo	sapiens	GO:0016740	molecular_function	"transferase activity"	PCNA	RFC3
+4.590390e-01	6	6	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+2.339080e-04	2	6	93	23297	92001	Homo	sapiens	GO:0048015	biological_process	"phosphoinositide-mediated signaling"	PCNA	RFC4
+6.182360e-01	1	6	3454	23297	92001	Homo	sapiens	GO:0045449	biological_process	"regulation of transcription"	RFC1
+1.640530e-03	2	6	294	27672	92001	Homo	sapiens	GO:0008047	molecular_function	"enzyme activator activity"	RFC1	RFC3
+2.728080e-03	4	6	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	RFC1	RFC2	RFC4	RFC5
+2.296350e-19	6	6	19	20974	92001	Homo	sapiens	GO:0005657	cellular_component	"replication fork"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+7.983430e-03	6	6	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+5.841280e-01	1	6	3169	23297	92001	Homo	sapiens	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	RFC1
+3.784490e-06	6	6	2621	20974	92001	Homo	sapiens	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.463070e-01	6	6	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+3.637310e-03	3	6	1382	23297	92001	Homo	sapiens	GO:0006950	biological_process	"response to stress"	PCNA	RFC4	RFC5
+4.403630e-05	6	6	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+5.581820e-06	6	6	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+7.796220e-01	1	6	6165	27672	92001	Homo	sapiens	GO:0043167	molecular_function	"ion binding"	RFC1
+1.372120e-01	1	6	566	23297	92001	Homo	sapiens	GO:0008283	biological_process	"cell proliferation"	PCNA
+3.509280e-01	2	6	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	PCNA	RFC1
+2.829940e-03	1	6	11	23297	92001	Homo	sapiens	GO:0007004	biological_process	"telomere maintenance via telomerase"	RFC1
+5.757950e-01	1	6	3685	27672	92001	Homo	sapiens	GO:0008270	molecular_function	"zinc ion binding"	RFC1
+1.741320e-02	6	6	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+1.025110e-04	3	6	408	23297	92001	Homo	sapiens	GO:0006974	biological_process	"response to DNA damage stimulus"	PCNA	RFC4	RFC5
+7.988540e-03	6	6	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+3.280550e-04	6	6	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	PCNA	RFC1	RFC2	RFC3	RFC4	RFC5
+7.728730e-05	3	6	371	23297	92001	Homo	sapiens	GO:0006281	biological_process	"DNA repair"	PCNA	RFC4	RFC5
+1.169730e-01	1	6	478	23297	92001	Homo	sapiens	GO:0051276	biological_process	"chromosome organization and biogenesis"	RFC1
+6.402650e-01	1	6	4335	27672	92001	Homo	sapiens	GO:0046914	molecular_function	"transition metal ion binding"	RFC1
+1.026760e-03	2	6	232	27672	92001	Homo	sapiens	GO:0016779	molecular_function	"nucleotidyltransferase activity"	PCNA	RFC3
+2.989650e-01	1	6	1339	23297	92001	Homo	sapiens	GO:0006996	biological_process	"organelle organization and biogenesis"	RFC1
+7.727710e-01	1	6	6055	27672	92001	Homo	sapiens	GO:0046872	molecular_function	"metal ion binding"	RFC1
+5.155000e-02	1	6	243	27672	92001	Homo	sapiens	GO:0019899	molecular_function	"enzyme binding"	RFC5
+2.046030e-01	1	6	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	PCNA
+5.397340e-03	1	6	21	23297	92001	Homo	sapiens	GO:0000723	biological_process	"telomere maintenance"	RFC1
+5.720920e-02	2	6	1873	27672	92001	Homo	sapiens	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	PCNA	RFC3
