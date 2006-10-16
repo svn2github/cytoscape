@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Cytoscape BioPAX Plug In -->
+<project basedir="." default="compile" name="Cytoscape BioPAX PlugIn">
+    <!-- Version Numbers -->
+    <property name="biopax_version" value="0_4"/>
+    <!--  Define Check Style Task -->
+    <taskdef resource="checkstyletask.properties"/>
+    <!-- The directory containing source code -->
+    <property name="src.dir" value="src"/>
+    <!-- The directory containing the configuration files -->
+    <property name="config.dir" value="config"/>
+    <!-- Temporary build directories -->
+    <property name="build.dir" value="build"/>
+    <property name="build.classes" value="${build.dir}/classes"/>
+    <!-- Jars directory -->
+    <property name="jars.dir" value="${build.dir}/jars"/>
+    <!-- PlugIns directory -->
+    <property name="plugins.dir" value="plugins"/>
+    <!-- Styles Directory -->
+    <property name="style.dir" value="style"/>
+    <!-- Release directories -->
+    <property name="release.dir" value="${build.dir}/release"/>
+    <!-- Versioned Release Directory -->
+    <property name="version_release.dir"
+        value="${release.dir}/biopax_${biopax_version}"/>
+    <!-- Zip Release directories -->
+    <property name="zip.dir" value="${build.dir}/zip_release"/>
+    <!-- Global "magic" property for <javac> -->
+    <property name="build.compiler" value="modern"/>
+    <!-- Junit Directory -->
+    <property name="junit.dir" value="${build.dir}/junit"/>
+    <!-- Temp Directory -->
+    <property name="temp.dir" value="temp"/>
+
+    <!-- Classpath with all lib JAR Files -->
+    <path id="classpath">
+        <pathelement path="${build.classes}"/>
+        <fileset dir="../../cytoscape/lib">
+                <include name="*.jar"/>
+        </fileset>
+         <fileset dir="../../cytoscape/">
+                     <include name="cytoscape.jar"/>
+         </fileset>
+    </path>
+
+    <!-- Target to create the build directories prior to compilation -->
+    <target name="prepare">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.dir}/docs"/>
+        <mkdir dir="${build.classes}"/>
+        <mkdir dir="${jars.dir}"/>
+    </target>
+
+    <!--  Target to clean out all directories -->
+    <target description="Removes all generated files." name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${jars.dir}"/>
+        <delete dir="${junit.dir}"/>
+        <delete dir="${temp.dir}"/>
+        <delete>
+            <fileset dir="." includes="*.log"/>
+            <fileset dir="${plugins.dir}" includes="biopax*.jar"/>
+        </delete>
+    </target>
+
+    <!--  Target to compile all code -->
+    <target depends="prepare" description="Compiles all source code."
+        name="compile">
+        <javac debug="true" debuglevel="source,lines,var"
+            destdir="${build.classes}" nowarn="on" srcdir="${src.dir}">
+            <classpath refid="classpath"/>
+        </javac>
+
+        <!-- Copy all resources -->
+        <copy todir="${build.classes}">
+            <fileset dir="${src.dir}">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!--  Target to Run Cytoscape with BioPAX PlugIn -->
+    <target depends="jar" description="Runs Cytoscape with BioPAX Data."
+        name="run">
+        <copy todir="${plugins.dir}">
+            <fileset dir="${jars.dir}"/>
+        </copy>
+        <java classname="cytoscape.CyMain" classpathref="classpath"
+            fork="true" maxmemory="1000M">
+            <arg line="-p plugins"/>
+        </java>
+    </target>
+
+    <!--  Target to Create PlugIn JAR -->
+    <target depends="compile" description="Creates PlugIn JAR" name="jar">
+
+        <!-- Start clean -->
+        <delete dir="${jars.dir}"/>
+        <mkdir dir="${jars.dir}"/>
+
+        <!--  Create BioPAX Jar -->
+        <jar destfile="${jars.dir}/biopax_${biopax_version}.jar">
+            <fileset dir="${build.classes}">
+            </fileset>
+        </jar>
+    </target>
+
+    <!--  Target to Run CheckStyle on all Source Code -->
+    <!--  Uses the Sun Coding Conventions Configuration -->
+    <target description="Checks Sun Coding Conventions" name="check">
+        <checkstyle config="${config.dir}/sun_checks.xml">
+            <fileset dir="${src.dir}/org">
+                <include name="**/*.java"/>
+            </fileset>
+        </checkstyle>
+    </target>
+
+    <!--  Target to Run All JUnit Tests -->
+    <target depends="compile" description="Runs all JUnit Tests" name="test">
+        <delete dir="${junit.dir}"/>
+        <mkdir dir="${junit.dir}"/>
+        <mkdir dir="${junit.dir}/reports"/>
+        <junit fork="no" haltonfailure="no" printsummary="yes">
+            <batchtest haltonfailure="no"  fork="yes" todir="${junit.dir}">
+                <formatter type="xml"/>
+                <fileset dir="${src.dir}">
+                    <include name="**/*Test*.java"/>
+                </fileset>
+            </batchtest>
+            <classpath refid="classpath"/>
+        </junit>
+    </target>
+
+    <!-- Target to Generate HTML Reports for All JUnit Tests -->
+    <target description="Generates HTML Reports for All JUnit Tests"
+        name="test_report">
+        <junitreport todir="${junit.dir}/reports">
+            <fileset dir="${junit.dir}">
+                <include name="*.xml"/>
+            </fileset>
+            <report format="noframes" styledir="${config.dir}"
+                todir="${junit.dir}/reports"/>
+        </junitreport>
+        <echo>JUnit Reports written to: ${junit.dir}/reports</echo>
+    </target>
+</project>
