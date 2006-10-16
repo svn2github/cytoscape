@@ -60,6 +60,7 @@ import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.Cytoscape;
 import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Interaction;
 import cytoscape.data.servers.BioDataServer;
@@ -350,6 +351,11 @@ public class InteractionsReader extends AbstractGraphReader {
 		return edge_indices.elements();
 
 	}
+
+    /**
+     * Executes post-processing:  no-op.
+     */
+    public void doPostProcessing(CyNetwork newtork) { }
 
 } // InteractionsReader
 
