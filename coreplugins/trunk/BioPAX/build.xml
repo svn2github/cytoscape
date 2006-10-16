@@ -120,27 +120,10 @@
         <delete dir="${junit.dir}"/>
         <mkdir dir="${junit.dir}"/>
         <mkdir dir="${junit.dir}/reports"/>
-        <junit fork="no" haltonfailure="no" printsummary="yes">
-            <batchtest haltonfailure="no"  fork="yes" todir="${junit.dir}">
-                <formatter type="xml"/>
-                <fileset dir="${src.dir}">
-                    <include name="**/*Test*.java"/>
-                </fileset>
-            </batchtest>
+        <junit printsummary="yes" fork="yes" haltonfailure="yes">
+            <formatter type="plain" usefile="false"/>
+            <test name="org.mskcc.test.AllTest"/>
             <classpath refid="classpath"/>
         </junit>
-    </target>
-
-    <!-- Target to Generate HTML Reports for All JUnit Tests -->
-    <target description="Generates HTML Reports for All JUnit Tests"
-        name="test_report">
-        <junitreport todir="${junit.dir}/reports">
-            <fileset dir="${junit.dir}">
-                <include name="*.xml"/>
-            </fileset>
-            <report format="noframes" styledir="${config.dir}"
-                todir="${junit.dir}/reports"/>
-        </junitreport>
-        <echo>JUnit Reports written to: ${junit.dir}/reports</echo>
     </target>
 </project>
