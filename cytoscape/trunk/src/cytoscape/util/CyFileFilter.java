@@ -41,8 +41,7 @@ package cytoscape.util;
 import cytoscape.data.readers.GraphReader;
 
 import javax.swing.filechooser.FileFilter;
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
@@ -179,16 +178,11 @@ public class CyFileFilter
 
 
     /**
-     * Return true if this file should be shown in the directory pane,
-     * false if it shouldn't.
-     * <p/>
-     * Files that begin with "." are ignored.
+     * Returns true if this class is capable of processing the specified file.
      *
-     * @see #getExtension
-     * @see FileFilter#accepts
+     * @param f File
      */
     public boolean accept(File f) {
-
         if (f != null) {
             //  If there are no filters, always accept
             if (filters.size() == 0) {
@@ -201,24 +195,29 @@ public class CyFileFilter
             if (extension != null && filters.get(extension) != null) {
                 return true;
             }
-            ;
         }
         return false;
     }
 
     /**
-     * In order to implement the AWT version of this class
-     * "FileNameFilter", the following method must also be
-     * implemented.
+     * Returns true if this class is capable of processing the specified file.
+     *
+     * @param dir       Directory.
+     * @param fileName  File name.
+     *
      */
-    public boolean accept(File dir, String name) {
-        return accept(new File(name));
+    public boolean accept(File dir, String fileName) {
+        return accept(new File(fileName));
     }
 
-    public boolean accept(String name) {
-        return accept(new File(name));
+    /**
+     * Returns true if this class is capable of processing the specified file.
+     *
+     * @param fileName  File name.
+     */
+    public boolean accept(String fileName) {
+        return accept(new File(fileName));
     }
-
 
     /**
      * Return the extension portion of the file's name.
@@ -385,5 +384,29 @@ public class CyFileFilter
      */
     public void setFileNature(String nature) {
         fileNature = nature;
+    }
+
+    /**
+     * Gets header of specified file.
+     */
+    protected String getHeader(File file) throws IOException {
+        FileReader reader = null;
+        BufferedReader bufferedReader = null;
+        try {
+            reader = new FileReader (file);
+            bufferedReader = new BufferedReader (reader);
+            String line = bufferedReader.readLine();
+            StringBuffer header = new StringBuffer();
+            int numLines = 0;
+            while (line != null && numLines < 5) {
+                header.append(line + "\n");
+                line = bufferedReader.readLine();
+                numLines++;
+            }
+            return header.toString();
+        } finally {
+            bufferedReader.close();
+            reader.close();
+        }
     }
 }
