@@ -33,6 +33,7 @@ package org.mskcc.biopax_plugin.plugin;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.data.ImportHandler;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CytoscapeDesktop;
@@ -58,7 +59,7 @@ public class BioPaxPlugIn extends CytoscapePlugin {
     /**
      * Version Minor Number.
      */
-    public static final int VERSION_MINOR_NUM = 4;
+    public static final int VERSION_MINOR_NUM = 5;
 
     /**
      * Attribute Name for BioPAX Utility Class.
@@ -81,17 +82,8 @@ public class BioPaxPlugIn extends CytoscapePlugin {
      * This method is called by the main Cytoscape Application upon startup.
      */
     public BioPaxPlugIn() {
-        CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        CyMenus cyMenus = desktop.getCyMenus();
-        JMenu plugInMenu = cyMenus.getOperationsMenu();
-        JMenuItem menuItem1 = new JMenuItem
-                ("Import BioPAX Document from file...");
-        JMenuItem menuItem2 = new JMenuItem
-                ("Import BioPAX Document from web...");
-        plugInMenu.add(menuItem1);
-        plugInMenu.add(menuItem2);
-        menuItem1.addActionListener(new ImportBioPaxFromFile());
-        menuItem2.addActionListener(new ImportBioPaxFromWeb());
+        ImportHandler importHandler = new ImportHandler();
+        importHandler.addFilter(new BioPaxFilter());
 
         //  Optionally set up HTTP Proxy
         Properties cytoProps = CytoscapeInit.getProperties();
