@@ -60,6 +60,7 @@ import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.Cytoscape;
 import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.task.TaskMonitor;
@@ -1373,4 +1374,10 @@ public class GMLReader extends AbstractGraphReader {
 	public Color getColor(String colorString) {
 		return new Color(Integer.parseInt(colorString.substring(1), 16));
 	}
+
+    /**
+     * Executes post-processing:  no-op.
+     */
+    public void doPostProcessing(CyNetwork network) { }
+
 }
