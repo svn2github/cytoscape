@@ -211,9 +211,9 @@ public class MapNodeAttributes {
      * This class is based on MapBioPaxToCytoscape.
      *
      * @param bpUtil    BioPaxUtil
-     * @param cyNetwork CyNetwork
+     * @param nodeList  ArrayList of Nodes
      */
-    public static void doMapping(BioPaxUtil bpUtil, CyNetwork cyNetwork) {
+    public static void doMapping(BioPaxUtil bpUtil, ArrayList nodeList) {
 
         // class instances we need for rdf queries
         HashMap rdfMap = bpUtil.getRdfResourceMap();
@@ -224,7 +224,7 @@ public class MapNodeAttributes {
         initAttributes(nodeAttributes);
 
         // interate through all nodes in this network
-        Iterator nodeIterator = cyNetwork.nodesIterator();
+        Iterator nodeIterator = nodeList.iterator();
         while (nodeIterator.hasNext()) {
 
             // get node id

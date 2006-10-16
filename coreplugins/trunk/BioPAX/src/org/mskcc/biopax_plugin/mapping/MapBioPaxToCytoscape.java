@@ -111,7 +111,8 @@ public class MapBioPaxToCytoscape {
     public static final String CONTAINS = "CONTAINS";
 
     private BioPaxUtil bpUtil;
-    private CyNetwork cyNetwork;
+    private ArrayList nodeList = new ArrayList();
+    private ArrayList edgeList = new ArrayList();
     private BioPaxConstants bpConstants;
     private RdfQuery rdfQuery;
     private TaskMonitor taskMonitor;
@@ -165,12 +166,10 @@ public class MapBioPaxToCytoscape {
      * Constructor.
      *
      * @param bpUtil      BioPAX Utility Class.
-     * @param cyNetwork   CyNetwork Object.
      * @param taskMonitor TaskMonitor Object.
      */
-    public MapBioPaxToCytoscape(BioPaxUtil bpUtil, CyNetwork cyNetwork,
-            TaskMonitor taskMonitor) {
-        this(bpUtil, cyNetwork);
+    public MapBioPaxToCytoscape(BioPaxUtil bpUtil, TaskMonitor taskMonitor) {
+        this(bpUtil);
         this.taskMonitor = taskMonitor;
     }
 
@@ -178,11 +177,9 @@ public class MapBioPaxToCytoscape {
      * Constructor.
      *
      * @param bpUtil    BioPAX Utility Class.
-     * @param cyNetwork CyNetwork Object.
      */
-    public MapBioPaxToCytoscape(BioPaxUtil bpUtil, CyNetwork cyNetwork) {
+    public MapBioPaxToCytoscape(BioPaxUtil bpUtil) {
         this.bpUtil = bpUtil;
-        this.cyNetwork = cyNetwork;
         this.bpConstants = new BioPaxConstants();
         this.rdfQuery = new RdfQuery(bpUtil.getRdfResourceMap());
         this.warningList = new ArrayList();
@@ -209,19 +206,33 @@ public class MapBioPaxToCytoscape {
         mapComplexEdges();
 
         // map attributes
-        MapNodeAttributes.doMapping(bpUtil, cyNetwork);
+        MapNodeAttributes.doMapping(bpUtil, nodeList);
+    }
 
-        // indicate this network is a biopax network by setting a
-        // network attribute
-        mapNetworkAttributes();
-
-        //  Set default Quick Find Index
-        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-        if (networkAttributes != null) {
-            networkAttributes.setAttribute(cyNetwork.getIdentifier(),
-                    "quickfind.default_index",
-                    MapNodeAttributes.BIOPAX_SHORT_NAME);
+    /**
+     * Gets all node indices.
+     * @return array of root graph indices.
+     */
+    public int[] getNodeIndices() {
+        int nodeIndices[] = new int[nodeList.size()];
+        for (int i=0; i<nodeList.size(); i++) {
+            CyNode node = (CyNode) nodeList.get(i);
+            nodeIndices[i] = node.getRootGraphIndex();
         }
+        return nodeIndices;
+    }
+
+    /**
+     * Gets all edge indices.
+     * @return array of root graph indices.
+     */
+    public int[] getEdgeIndices() {
+        int edgeIndices[] = new int[edgeList.size()];
+        for (int i=0; i<edgeList.size(); i++) {
+            CyEdge edge = (CyEdge) edgeList.get(i);
+            edgeIndices[i] = edge.getRootGraphIndex();
+        }
+        return edgeIndices;
     }
 
     /**
@@ -309,7 +320,7 @@ public class MapBioPaxToCytoscape {
             CyNode interactionNode = Cytoscape.getCyNode(id, true);
 
             //  Add New Interaction Node to Network
-            cyNetwork.addNode(interactionNode);
+            nodeList.add(interactionNode);
 
             //  Set Node Identifier
             interactionNode.setIdentifier(id);
@@ -404,7 +415,7 @@ public class MapBioPaxToCytoscape {
             CyNode node = Cytoscape.getCyNode(id, true);
 
             //  Add New Node to Network
-            cyNetwork.addNode(node);
+            nodeList.add(node);
 
             //  Set Node Identifier
             node.setIdentifier(id);
@@ -507,7 +518,7 @@ public class MapBioPaxToCytoscape {
                     // (edge, BIOPAX_EDGE_TYPE, CONTAINS);
                     attributes.setAttribute(edge.getIdentifier(),
                             BIOPAX_EDGE_TYPE, CONTAINS);
-                    cyNetwork.addEdge(edge);
+                    edgeList.add(edge);
                 }
             }
         }
@@ -587,7 +598,7 @@ public class MapBioPaxToCytoscape {
             //Cytoscape.setEdgeAttributeValue(edge, BIOPAX_EDGE_TYPE, type);
             attributes.setAttribute(edge.getIdentifier(), BIOPAX_EDGE_TYPE,
                     type);
-            cyNetwork.addEdge(edge);
+            edgeList.add(edge);
         }
     }
 
@@ -629,7 +640,7 @@ public class MapBioPaxToCytoscape {
                 //Cytoscape.setEdgeAttributeValue(edge, BIOPAX_EDGE_TYPE, typeStr);
                 Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(),
                         BIOPAX_EDGE_TYPE, typeStr);
-                cyNetwork.addEdge(edge);
+                edgeList.add(edge);
 
                 //  Create Edges from the Controller(s) to the
                 //  Control Interaction
@@ -695,23 +706,6 @@ public class MapBioPaxToCytoscape {
                     + "I am not yet equipped "
                     + "to handle this.");
         }
-    }
-
-    /**
-     * Sets a network attribute
-     * which indicates this network
-     * is a biopax network
-     */
-    private void mapNetworkAttributes() {
-
-        // get the network attributes
-        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-
-        // get cyNetwork id
-        String networkID = cyNetwork.getIdentifier();
-
-        // set biopax network attribute
-        networkAttributes.setAttribute(networkID, BIOPAX_NETWORK, Boolean.TRUE);
     }
 
     /**
@@ -797,7 +791,7 @@ public class MapBioPaxToCytoscape {
 
         // haven't seen this node before, lets create a new one
         CyNode node = Cytoscape.getCyNode(cyNodeId, true);
-        cyNetwork.addNode(node);
+        nodeList.add(node);
         node.setIdentifier(cyNodeId);
 
         //  set node attributes
