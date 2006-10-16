@@ -33,7 +33,7 @@
 <li><b><a href="#IO_PLUGINS">Network and Attribute I/O Plugins</a></b> - Used for importing networks and attributes in different file formats.</li>
 <li><b><a href="#NET_INFERENCE_PLUGINS">Network Inference Plugins</a></b> - Used for inferring new networks.</li>
 <li><b><a href="#FUNC_ENRICHMENT_PLUGINS">Functional Enrichment Plugins</a></b> - Used for functional enrichment of networks.</li>
-<li><b><a href="#SCRIPTING_PLUGINS">Scripting Plugins</a></b> - Used for scripting Cytoscape.</li>
+<li><b><a href="#SCRIPTING_PLUGINS">Communication/Scripting Plugins</a></b> - Used for communicating with or scripting Cytoscape.</li>
 </ul>
 
     
@@ -542,6 +542,42 @@ The plugin API makes possible to use its functionality from another plugin.
 	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%" bgcolor="#ebebff">
 
 		<tbody>
+			<tr>
+				<td width="20%" valign="top">
+					<b>BioNetBuilder Plugin</b> <font size="-1">
+						<br>
+						Version: 1.0 
+						<br> 
+						Release Date: September 25, 2006</font>
+				</td>
+				<td width="40%" valign="top">
+				<p>
+				BioNetBuilder is an open-source client-server Cytoscape plugin that
+				offers a user-friendly interface to create biological networks
+				integrated from several databases. Users can create networks for ~1500
+				organisms, including common model organisms and human. Currently
+				supported databases include: DIP, BIND, Prolinks, KEGG, HPRD, The
+				BioGrid, and GO, among others. The BioNetBuilder plugin client is
+				available as a Java Webstart, providing a platform-independent network
+				interface to these public databases.
+				</p>
+				<p>
+				Released by: Iliana Avila-Campillo, Kevin Drew, John Lin, David J. Reiss
+				and Richard Bonneau, <a href="http://homepages.nyu.edu/%7erb133/">NYU Bonneau Lab</a>.
+				</p>
+				</td>
+				<td width="20%" valign="top">
+					Verified to work in 2.3, 2.3.1	
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://err.bio.nyu.edu/cytoscape/bionetbuilder/">Download</a>]
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>BioPAX Import Plugin</b> <font size="-1">
@@ -1114,12 +1150,47 @@ processing technique with supercomputing center resources.
 
 	<div id="indent">
 	<p>
-		<big><b><a name="SCRIPTING_PLUGINS">Current Cytoscape 2.x Scripting Plugins</a></b></big>
+		<big><b><a name="SCRIPTING_PLUGINS">Current Cytoscape 2.x Communication/Scripting Plugins</a></b></big>
 	</p>
 	</div>
 	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%" bgcolor="#ebebff">
 
 		<tbody>
+			<tr>
+				<td width="20%" valign="top">
+					<b>CyGoose Plugin</b>
+					<br>
+					<font size="-1">Version: BETA
+						<br>
+						Release Date: September 25, 2006</font>
+				</td>
+				<td width="40%" valign="top">
+				<p>
+				The CyGoose Cytoscape Plugin gives any network in Cytoscape full access
+				to <a href="http://gaggle.systemsbiology.org/">the Gaggle</a>.  The Gaggle is a tool
+				to create a data exploration and analysis environment. Other geese
+				(independent threads/tools which Cytoscape can now interact with through
+				the Gaggle Boss) can be found at
+				<a href="http://gaggle.systemsbiology.org/docs/geese/">http://gaggle.systemsbiology.org/docs/geese/</a>
+				</p>
+
+				<p>
+				Released by: John Lin, Kevin Drew and Richard Bonneau, <a href="http://homepages.nyu.edu/%7erb133/">NYU Bonneau Lab</a>.
+				</p>
+		</td>
+		<td width="20%" valign="top">
+				 Verified to work in 2.3, 2.3.1.
+				</td>
+		<td width="20%" valign="top">
+			[<a href="http://err.bio.nyu.edu/cytoscape/gaggle">Download</a>]
+			<br>
+		</td>
+	</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>CytoTalk Plugin</b>
