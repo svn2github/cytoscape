@@ -570,7 +570,7 @@ The plugin API makes possible to use its functionality from another plugin.
 					Verified to work in 2.3, 2.3.1	
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://err.bio.nyu.edu/cytoscape/bionetbuilder/">Download</a>]
+					[<a href="http://err.bio.nyu.edu/cytoscape/bionetbuilder/">Project Website</a>]
 				</td>
 			</tr>
 			<tr>
@@ -1182,7 +1182,7 @@ processing technique with supercomputing center resources.
 				 Verified to work in 2.3, 2.3.1.
 				</td>
 		<td width="20%" valign="top">
-			[<a href="http://err.bio.nyu.edu/cytoscape/gaggle">Download</a>]
+			[<a href="http://err.bio.nyu.edu/cytoscape/gaggle">Project Website</a>]
 			<br>
 		</td>
 	</tr>
