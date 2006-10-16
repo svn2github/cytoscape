@@ -217,7 +217,7 @@ public class ImportBioPax implements Task {
 
         //  Map BioPAX Data to Cytoscape Nodes/Edges
         MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape
-                (bpUtil, cyNetwork, taskMonitor);
+                (bpUtil, taskMonitor);
         mapper.doMapping();
 
         //  Set-up the BioPax Visual Style
