@@ -1393,7 +1393,9 @@ public abstract class Cytoscape {
 
 		System.out.println("NV: " + getNetworkView(network.getIdentifier()));
 
-		return network;
+        //  Execute any necessary post-processing.
+        reader.doPostProcessing(network);
+        return network;
 
 	}
 
