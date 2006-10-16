@@ -108,4 +108,13 @@ public abstract class DingCanvas extends JComponent {
 	public void setBackground(Color backgroundColor) {
 		m_backgroundColor = backgroundColor;
 	}
+
+	/**
+	 * Returns the image maintained by the canvas.
+	 *
+	 * @return Image
+	 */
+	public Image getImage() {
+		return m_img;
+	}
 }
