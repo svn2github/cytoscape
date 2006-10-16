@@ -654,7 +654,9 @@ public class CytoscapeSessionReader {
 				((DGraphView) curView).setCenter(center.getX(), center.getY());
 			}
 		}
-		return network;
+        //  Execute any necessary post-processing.
+        reader.doPostProcessing(network);
+        return network;
 	}
 
 	// same as other loaders
