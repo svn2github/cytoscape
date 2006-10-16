@@ -2,7 +2,7 @@
 <!-- build.xml - Build file for Cytoscape BioPAX Plug In -->
 <project basedir="." default="compile" name="Cytoscape BioPAX PlugIn">
     <!-- Version Numbers -->
-    <property name="biopax_version" value="0_4"/>
+    <property name="biopax_version" value="0_5"/>
     <!--  Define Check Style Task -->
     <taskdef resource="checkstyletask.properties"/>
     <!-- The directory containing source code -->
