@@ -85,12 +85,12 @@ public class AboutPanel extends JPanel {
             }
             temp.append("<P>");
         }
-        temp.append("PlugIn released by:  Sander Group, "
+        temp.append("Extension released by:  Sander Group, "
                 + "<A HREF=\"http://www.cbio.mskcc.org/\">"
                 + "Computational Biology Center</A>, "
                 + "<A HREF=\"http://www.mskcc.org\">Memorial Sloan-Kettering "
                 + "Cancer Center</A>.");
-        temp.append("<P>For any questions concerning this plugin, please "
+        temp.append("<P>For any questions concerning this extension, please "
                 + "contact:<P>Gary Bader:  baderg AT mskcc.org"
                 + "<BR>Ethan Cerami:  cerami AT cbio.mskcc.org"
                 + "<BR>Benjamin Gross:  grossb AT cbio.mskcc.org"

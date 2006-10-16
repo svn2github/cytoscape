@@ -58,7 +58,7 @@ public class BioPaxWindow extends JFrame {
     public BioPaxWindow() {
         this.setResizable(false);
         this.setBackground(bgColor);
-        this.setTitle("BioPAX PlugIn");
+        this.setTitle("BioPAX Extension");
         Container container = this.getContentPane();
         bpContainer = BioPaxContainer.getInstance();
         container.add(bpContainer);

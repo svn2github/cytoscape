@@ -83,10 +83,10 @@ public class BioPaxContainer extends JPanel {
                 new LegendPanel(BioPaxDetailsPanel.BG_COLOR),
                 "View Visual Legend");
         tabbedPane.addTab("About", icon3, new AboutPanel
-                ("BioPAX PlugIn", BioPaxPlugIn.VERSION_MAJOR_NUM,
+                ("BioPAX Extension", BioPaxPlugIn.VERSION_MAJOR_NUM,
                         BioPaxPlugIn.VERSION_MINOR_NUM,
                         BioPaxDetailsPanel.BG_COLOR),
-                "About the BioPAX PlugIn");
+                "About the BioPAX Extension");
         this.setLayout(new BorderLayout());
         this.add(tabbedPane);
         this.networkListener = new NetworkListener(bpDetailsPanel);
