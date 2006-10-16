@@ -67,7 +67,9 @@ public class ImportHandler {
         Set check = cff.getExtensionSet();
 
         for (Iterator it = check.iterator(); it.hasNext();) {
-            if (this.getAllExtensions().contains(it.next())) {
+            String extension = (String) it.next();
+            if (getAllExtensions().contains(extension)
+                    && ! extension.equals("xml")) {
                 return false;
             }
         }
