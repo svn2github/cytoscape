@@ -1429,4 +1429,10 @@ public class XGMMLReader extends AbstractGraphReader {
 			readAttributes(targetName, attrs, type, parent);
 		}
 	}
+
+
+    /**
+     * Executes post-processing:  no-op.
+     */
+    public void doPostProcessing(CyNetwork network) { }
 }
