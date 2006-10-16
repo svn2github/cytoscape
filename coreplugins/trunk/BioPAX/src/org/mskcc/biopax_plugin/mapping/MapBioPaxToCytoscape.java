@@ -422,8 +422,8 @@ public class MapBioPaxToCytoscape {
         }
     }
 
-    private String getNodeName(String nodeName, Element e) {
-
+    private String getNodeName(String id, Element e) {
+        String nodeName = null;
         List nameList = null;
         Element nameElement = null;
 
@@ -435,7 +435,7 @@ public class MapBioPaxToCytoscape {
         }
         if (nodeName != null && nodeName.length() > 0) {
             return nodeName;
-        }        
+        }
 
         // name
         nameList = rdfQuery.getNodes(e, "NAME");
@@ -570,7 +570,6 @@ public class MapBioPaxToCytoscape {
 
         for (int i = 0; i < physicalEntityList.size(); i++) {
             Element physicalEntity = (Element) physicalEntityList.get(i);
-            String id = BioPaxUtil.extractRdfId(physicalEntity);
             CyNode nodeB = getCyNode(interactionElement, physicalEntity, type);
             if (nodeB == null) {
                 return;
@@ -776,8 +775,13 @@ public class MapBioPaxToCytoscape {
                     && cellularLocation.length() > 0)
                     ? ("\n(" + cellularLocation + ")") : "");
 
-            // add label to cynode id
-            cyNodeId += "-" + nodeLabel;
+            // add modifications to cynode id
+            cyNodeId += ((chemicalModification != null
+                    && chemicalModification.length() > 0)
+                    ? chemicalModification : "");
+            cyNodeId += ((cellularLocation != null
+                    && cellularLocation.length() > 0)
+                    ? ("(" + cellularLocation + ")") : "");
         }
 
         // if binding element is complex, lets also tack on complex id
