@@ -41,7 +41,9 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
+import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
+import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
 import java.io.FileReader;
 import java.util.HashMap;
@@ -134,9 +136,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
             Node target = edge.getTarget();
 
             if (i == 0) {
-                assertEquals("CPATH-125-UniProt:P19438 Tumor necr...\n(PM)-CPATH-126", target.getIdentifier());
+                assertEquals("CPATH-125(PM)-CPATH-126", target.getIdentifier());
             } else if (i == 1) {
-                assertEquals("CPATH-124-UniProt:P01375 Tumor necr...\n(PM)-CPATH-126", target.getIdentifier());
+                assertEquals("CPATH-124(PM)-CPATH-126", target.getIdentifier());
             }
         }
     }
@@ -182,9 +184,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
             Node target = edge.getTarget();
 
             if (i == 0) {
-                assertEquals("protein2-Serine-protein kinase ATM", target.getIdentifier());
+                assertEquals("protein2", target.getIdentifier());
             } else if (i == 1) {
-                assertEquals("protein1-replication protein repA ...", target.getIdentifier());
+                assertEquals("protein1", target.getIdentifier());
             }
         }
     }
@@ -200,28 +202,35 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 
         //  This HashMap contains a list of expected node identifiers.
         HashMap nodeMap = new HashMap();
-        nodeMap.put("protein45-phosphoglucose isomerase", new Integer(0));
-        nodeMap.put("protein45-phosphoglucose isomerase\n(CY)", new Integer(0));
-        nodeMap.put("smallMolecule27-alpha-D-glucose 6-phospha...", new Integer(0));
-        nodeMap.put("smallMolecule18-Adenosine 5'-diphosphate", new Integer(0));
-        nodeMap.put("smallMolecule23-Adenosine 5'-triphosphate", new Integer(0));
-        nodeMap.put("smallMolecule10-alpha-D-glucose", new Integer(0));
-        nodeMap.put("protein32-glucokinase\n(CY)", new Integer(0));
-        nodeMap.put("smallMolecule39-beta-D-fructose 6-phospha...\n(CY)", new Integer(0));
-        nodeMap.put("smallMolecule27-alpha-D-glucose 6-phospha...\n(CY)", new Integer(0));
-        nodeMap.put("smallMolecule99-Mg2+", new Integer(0));
-        nodeMap.put("catalysis43", new Integer(0));
-        nodeMap.put("catalysis5", new Integer(0));
+        nodeMap.put("protein45", new Integer(0));
+        nodeMap.put("protein45(CY)", new Integer(0));
+        nodeMap.put("protein32(CY)", new Integer(0));
+        nodeMap.put("smallMolecule10", new Integer(0));
+        nodeMap.put("smallMolecule18", new Integer(0));
+        nodeMap.put("smallMolecule23", new Integer(0));
+        nodeMap.put("smallMolecule27", new Integer(0));
+        nodeMap.put("smallMolecule27(CY)", new Integer(0));
+        nodeMap.put("smallMolecule39(CY)", new Integer(0));
+        nodeMap.put("smallMolecule99", new Integer(0));
 
         //  These represent interaction nodes
+        nodeMap.put("catalysis43", new Integer(0));
         nodeMap.put("biochemicalReaction6", new Integer(0));
         nodeMap.put("biochemicalReaction37", new Integer(0));
+        nodeMap.put("catalysis5", new Integer(0));
 
         //  We don't know the order of nodes;  so use nodeMap for look up.
         Iterator nodeIterator = cyNetwork.nodesIterator();
         while (nodeIterator.hasNext()) {
             CyNode node = (CyNode) nodeIterator.next();
             String id = node.getIdentifier();
+
+            //  Test a specific node label
+            if (id.equals("smallMolecule99")) {
+                String label = Cytoscape.getNodeAttributes().getStringAttribute(id,
+                        BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+                assertEquals ("Mg2+", label);
+            }
             if (nodeMap.containsKey(id)) {
                 nodeMap.put(id, new Integer(1));
             } else {
@@ -276,7 +285,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
                 //  Validate the Right Side of the Reaction
                 //  biochemicalReaction37 --> (RIGHT) --> smallMolecule39
                 assertEquals("biochemicalReaction37", source.getIdentifier());
-                assertEquals("smallMolecule39-beta-D-fructose 6-phospha...\n(CY)", target.getIdentifier());
+                assertEquals("smallMolecule39(CY)", target.getIdentifier());
             } else if (i == 1) {
                 //  Validate the Control the Reaction
                 //  protein45 --> (CONTROLS) --> biochemicalReaction37
@@ -290,7 +299,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
             } else if (i == 2) {
                 //  Validate the Left Side of the Reaction
                 //  smallMolecule27 --> (LEFT) --> biochemicalReaction37
-                assertEquals("smallMolecule27-alpha-D-glucose 6-phospha...\n(CY)", source.getIdentifier());
+                assertEquals("smallMolecule27(CY)", source.getIdentifier());
                 assertEquals("biochemicalReaction37", target.getIdentifier());
             }
         }
