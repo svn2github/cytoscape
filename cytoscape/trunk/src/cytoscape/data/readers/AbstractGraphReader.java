@@ -40,6 +40,7 @@ package cytoscape.data.readers;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 import cytoscape.util.CyNetworkNaming;
 
 import giny.model.RootGraph;
@@ -106,4 +107,9 @@ public abstract class AbstractGraphReader implements GraphReader {
 		}
 		return CyNetworkNaming.getSuggestedNetworkTitle(t);
 	}
+
+    	/**
+         * Executes post-processing:  no-op.
+	 */
+	public void doPostProcessing(CyNetwork network) {}; 
 }

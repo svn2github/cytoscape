@@ -352,10 +352,5 @@ public class InteractionsReader extends AbstractGraphReader {
 
 	}
 
-    /**
-     * Executes post-processing:  no-op.
-     */
-    public void doPostProcessing(CyNetwork newtork) { }
-
 } // InteractionsReader
 

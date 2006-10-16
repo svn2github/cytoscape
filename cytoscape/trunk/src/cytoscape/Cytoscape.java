@@ -1388,9 +1388,6 @@ public abstract class Cytoscape {
 		network.putClientData(READER_CLIENT_KEY, reader);
 		addNetwork(network, title, parent, create_view);
 
-		if (reader.getClass() == XGMMLReader.class)
-			((XGMMLReader) reader).setNetworkAttributes(network);
-
 		System.out.println("NV: " + getNetworkView(network.getIdentifier()));
 
         //  Execute any necessary post-processing.

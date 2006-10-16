@@ -1375,9 +1375,4 @@ public class GMLReader extends AbstractGraphReader {
 		return new Color(Integer.parseInt(colorString.substring(1), 16));
 	}
 
-    /**
-     * Executes post-processing:  no-op.
-     */
-    public void doPostProcessing(CyNetwork network) { }
-
 }

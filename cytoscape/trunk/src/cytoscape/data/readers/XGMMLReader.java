@@ -1430,9 +1430,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
-
-    /**
-     * Executes post-processing:  no-op.
-     */
-    public void doPostProcessing(CyNetwork network) { }
+	public void doPostProcessing(CyNetwork network) {
+		setNetworkAttributes(network);
+	}
 }
