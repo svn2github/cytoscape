@@ -112,7 +112,7 @@ public class CytoscapeWrapper {
             URL url = BioPaxDetailsPanel.class.getResource
                     ("resources/read_obj.gif");
             Icon icon = new ImageIcon(url);
-            cytoPanel.add("BioPAX PlugIn", icon, bpContainer, "BioPAX PlugIn");
+            cytoPanel.add("BioPAX Extension", icon, bpContainer, "BioPAX Extension");
             cytoPanel.setState(CytoPanelState.DOCK);
             bioPaxUIInitialized = true;
         }
