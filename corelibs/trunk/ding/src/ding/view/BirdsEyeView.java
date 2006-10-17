@@ -87,15 +87,16 @@ public class BirdsEyeView extends Component {
     }
 
     /**
-     * DOCUMENT ME!
+     * This used to be called reshape, which is deprecated, so I've changed
+     * it to setBounds.  Not sure if this will break anything!
      *
-     * @param x DOCUMENT ME!
-     * @param y DOCUMENT ME!
-     * @param width DOCUMENT ME!
-     * @param height DOCUMENT ME!
+     * @param x 
+     * @param y 
+     * @param width 
+     * @param height 
      */
-    public void reshape(int x, int y, int width, int height) {
-        super.reshape(x, y, width, height);
+    public void setBounds(int x, int y, int width, int height) {
+        super.setBounds(x, y, width, height);
 
         if ((width > 0) && (height > 0))
             m_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

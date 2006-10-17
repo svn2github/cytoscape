@@ -17,6 +17,7 @@ import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -89,8 +90,8 @@ public class SanityTest {
                     f.add(view.getComponent());
 
                     for (int i = 0; i < 10; i++) {
-                        f.show();
-                        f.resize(400, 300);
+                        f.setVisible(true);
+                        f.setSize(new Dimension(400, 300));
                     }
 
                     f.addWindowListener(
@@ -146,8 +147,8 @@ public class SanityTest {
                     f.add(new BirdsEyeView(view));
 
                     for (int i = 0; i < 10; i++) {
-                        f.show();
-                        f.resize(150, 100);
+                        f.setVisible(true);
+                        f.setSize(new Dimension(150, 100));
                     }
 
                     f.addWindowListener(
