@@ -77,6 +77,8 @@ public class StructureViz extends CytoscapePlugin
 	public static final int CLOSE = 2;
 	public static final int ALIGN = 3;
 	public static final int EXIT = 4;
+	public static final int COMPARE = 5;
+	public static final int SALIGN = 6;
 	public static final String[] attributeKeys = {"Structure","pdb","pdbFileName"};
 
   /**
@@ -94,7 +96,7 @@ public class StructureViz extends CytoscapePlugin
 			System.out.println(e.getMessage());
 		}
 	    
-		JMenu menu = new JMenu("Structure Visualization");
+		JMenu menu = new JMenu("Sequence/Structure Tools");
 		menu.addMenuListener(new StructureVizMenuListener(null));
 
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
@@ -173,6 +175,23 @@ public class StructureViz extends CytoscapePlugin
 				if (l.getChimera() == null || !l.getChimera().isLaunched()) item.setEnabled(false);
 				m.add(item);
 			}
+			m.addSeparator();
+			{
+				JMenuItem item = new JMenuItem("Compare sequences");
+				List sequences = CyChimera.getSelectedSequences(overNode);
+				if (sequences.size() < 2) item.setEnabled(false);
+				StructureVizCommandListener l = new StructureVizCommandListener(COMPARE, sequences);
+				item.addActionListener(l);
+				m.add(item);
+			}
+			{
+				JMenuItem item = new JMenuItem("Align sequences");
+				List sequences = CyChimera.getSelectedSequences(overNode);
+				if (sequences.size() < 2) item.setEnabled(false);
+				StructureVizCommandListener l = new StructureVizCommandListener(SALIGN, sequences);
+				item.addActionListener(l);
+				m.add(item);
+			}
 		}
 
 		private void addSubMenu(JMenu menu, String label, int command, Object userData) {
@@ -212,6 +231,10 @@ public class StructureViz extends CytoscapePlugin
 				alignAction(label);
 			} else if (command == CLOSE) {
 				closeAction(label);
+			} else if (command == SALIGN) {
+				seqAlignAction(label);
+			} else if (command == COMPARE) {
+				seqCompareAction(label);
 			}
 		}
 
@@ -220,7 +243,6 @@ public class StructureViz extends CytoscapePlugin
 		}
 
 		public List<Structure>getOpenStructs() {
-	
 			List<Structure>st = new ArrayList<Structure>();
 			if (chimera == null) return st;
 
@@ -237,7 +259,6 @@ public class StructureViz extends CytoscapePlugin
 		}
 
 		private void alignAction(String label) {
-
 			// Launch Chimera (if necessary)
 			boolean isLaunched = (chimera != null && chimera.isLaunched());
 			if (!isLaunched) {
@@ -262,10 +283,6 @@ public class StructureViz extends CytoscapePlugin
 		}
 
 		private void exitAction() {
-			if (chimera != null) {
-				chimera.exit();
-				chimera = null;
-			}
 			if (mnDialog != null) {
 				// get rid of the dialog
 				mnDialog.setVisible(false);
@@ -278,6 +295,10 @@ public class StructureViz extends CytoscapePlugin
 				alDialog.dispose();
 				alDialog = null;
 				chimera.setAlignDialog(alDialog);
+			}
+			if (chimera != null) {
+				chimera.exit();
+				chimera = null;
 			}
 		}
 
@@ -329,6 +350,21 @@ public class StructureViz extends CytoscapePlugin
 				mnDialog.setVisible(true);
 				mnDialog.modelChanged();
 			}
+		}
+
+		private void seqAlignAction(String commandLabel) {
+			List sequenceList = (List)userData;
+			// Start a new thread
+			// Call backend to calculate alignment
+			// Open resulting alignment in Chimera
+		}
+
+		private void seqCompareAction(String commandLabel) {
+			List sequenceList = (List)userData;
+			// Start a new thread
+			// Iterate through all pairs
+			// Call backend to calculate comparison
+			// Store results back onto connecting edge
 		}
   }
 

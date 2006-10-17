@@ -172,6 +172,7 @@ public class Align {
 		List edgeList = network.getConnectingEdges(nodeList);
 		if (edgeList == null || edgeList.size() == 0) {
 			edgeList = new ArrayList();
+			// Use Cytoscape.getCyEdge()?
 			edge = (CyEdge) Cytoscape.getRootGraph().getEdge(Cytoscape.getRootGraph().createEdge(source, target));
 			String edge_name = source.getIdentifier() + " (isRelated) "+target.getIdentifier();
 			edge.setIdentifier(edge_name);

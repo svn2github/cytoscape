@@ -41,7 +41,6 @@ import java.io.*;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraResidue;
-import structureViz.ui.ModelNavigatorDialog;
 
 /***************************************************
 *                 Thread Classes                  *

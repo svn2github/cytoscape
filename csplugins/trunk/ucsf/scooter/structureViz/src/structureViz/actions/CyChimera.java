@@ -53,11 +53,15 @@ import cytoscape.util.CytoscapeAction;
 // structureViz imports
 import structureViz.actions.Chimera;
 import structureViz.model.Structure;
+import structureViz.model.Sequence;
 import structureViz.model.ChimeraModel;
 
 
 public class CyChimera {
-	public static final String[] attributeKeys = {"Structure","pdb","pdbFileName",null};
+	public static final String[] structureKeys = {"Structure","pdb","pdbFileName",null};
+	public static final String[] sequenceKeys = {"sequence",null};
+	private static CyAttributes cyAttributes;
+
 	static List selectedList = null;
 
   public CyChimera() { }
@@ -65,7 +69,7 @@ public class CyChimera {
 	public static List getSelectedStructures(NodeView nodeView) {
 		String structureAttribute = getProperty("structureAttribute");
 		if (structureAttribute != null) {
-			attributeKeys[3] = structureAttribute;
+			structureKeys[3] = structureAttribute;
 		}
 		List<Structure>structureList = new ArrayList<Structure>();
     //get the network object; this contains the graph
@@ -73,7 +77,7 @@ public class CyChimera {
     //get the network view object
     CyNetworkView view = Cytoscape.getCurrentNetworkView();
     //get the list of node attributes
-    CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
+    cyAttributes = Cytoscape.getNodeAttributes();
     //can't continue if any of these is null
     if (network == null || view == null || cyAttributes == null) {return structureList;}
 
@@ -87,37 +91,100 @@ public class CyChimera {
 			selectedNodes.add(nodeView);
     }
     //iterate over every node view
-    for (Iterator i = selectedNodes.iterator(); i.hasNext(); ) {
-      NodeView nView = (NodeView)i.next();
+    for (Iterator iter = selectedNodes.iterator(); iter.hasNext(); ) {
+      NodeView nView = (NodeView)iter.next();
       //first get the corresponding node in the network
       CyNode node = (CyNode)nView.getNode();
-      String nodeID = node.getIdentifier();
-			for (int key = 0; key < attributeKeys.length; key++) {
-				if (attributeKeys[key] == null) continue;
-      	if (cyAttributes.hasAttribute(nodeID, attributeKeys[key])) {
-        	// Add it to our list
-         	String structure = cyAttributes.getStringAttribute(nodeID, attributeKeys[key]);
-         	structureList.add(new Structure(structure,node));
-					break;
-       	}
+			String structure = getStructureName(node);
+			// Check to see if this node has a list of structures, first
+			String[] sList = structure.split(",");
+			if (sList != null && sList.length > 0) {
+				// It does, so add them all
+				for (int i = 0; i < sList.length; i++) {
+					structureList.add(new Structure(sList[i].trim(),node));
+				}
+			} else if (structure != null) {
+        structureList.add(new Structure(structure,node));
 			}
-    }
+		}
 		return structureList;
 	}
 
+	public static String getStructureName(CyNode node) {
+    String nodeID = node.getIdentifier();
+		for (int key = 0; key < structureKeys.length; key++) {
+			if (structureKeys[key] == null) continue;
+     	if (cyAttributes.hasAttribute(nodeID, structureKeys[key])) {
+       	// Add it to our list
+       	return cyAttributes.getStringAttribute(nodeID, structureKeys[key]);
+			}
+    }
+		return null;
+	}
+
 	public static Structure findStructureForModel(CyNetworkView networkView, String name) {
-		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+		cyAttributes = Cytoscape.getNodeAttributes();
 		Iterator nodeIter = networkView.getNetwork().nodesIterator();
 		while(nodeIter.hasNext()) {
 			CyNode node = (CyNode)nodeIter.next();
-			for (int key = 0; key < attributeKeys.length; key++) {
-				if (attributeKeys[key] == null) continue;
-				if (nodeAttrs.hasAttribute(node.getIdentifier(),attributeKeys[key]) &&
-              nodeAttrs.getStringAttribute(node.getIdentifier(), attributeKeys[key])
+			for (int key = 0; key < structureKeys.length; key++) {
+				if (structureKeys[key] == null) continue;
+				if (cyAttributes.hasAttribute(node.getIdentifier(),structureKeys[key]) &&
+              cyAttributes.getStringAttribute(node.getIdentifier(), structureKeys[key])
 							.equals(name)) {
 					return new Structure(name, node);
 				}
 			}
+		}
+		return null;
+	}
+
+	public static List getSelectedSequences(NodeView nodeView) {
+		String sequenceAttribute = getProperty("sequenceAttribute");
+		if (sequenceAttribute != null) {
+			sequenceKeys[1] = sequenceAttribute;
+		}
+		List<Sequence>sequenceList = new ArrayList<Sequence>();
+    //get the network object; this contains the graph
+    CyNetwork network = Cytoscape.getCurrentNetwork();
+    //get the network view object
+    CyNetworkView view = Cytoscape.getCurrentNetworkView();
+    //get the list of node attributes
+    cyAttributes = Cytoscape.getNodeAttributes();
+    //can't continue if any of these is null
+    if (network == null || view == null || cyAttributes == null) {return sequenceList;}
+
+		List selectedNodes = view.getSelectedNodes();
+
+    if (selectedNodes.size() == 0) {
+			if (nodeView == null) {
+				return sequenceList;
+			}
+			selectedNodes = new ArrayList();
+			selectedNodes.add(nodeView);
+    }
+    //iterate over every node view
+    for (Iterator iter = selectedNodes.iterator(); iter.hasNext(); ) {
+      NodeView nView = (NodeView)iter.next();
+      //first get the corresponding node in the network
+      CyNode node = (CyNode)nView.getNode();
+			Sequence seq = getSequence(node);
+			if (seq != null) sequenceList.add(seq);
+    }
+		return sequenceList;
+	}
+
+	public static Sequence getSequence(CyNode node) {
+    String nodeID = node.getIdentifier();
+		for (int key = 0; key < sequenceKeys.length; key++) {
+			if (sequenceKeys[key] == null) continue;
+     	if (cyAttributes.hasAttribute(nodeID, sequenceKeys[key])) {
+       	// Add it to our list
+       	String sequence = cyAttributes.getStringAttribute(nodeID, sequenceKeys[key]);
+				String sequenceName = getStructureName(node);
+				if (sequenceName == null) sequenceName = nodeID;
+       	return new Sequence(sequenceName,sequence,node);
+     	}
 		}
 		return null;
 	}
