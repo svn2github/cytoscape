@@ -225,7 +225,7 @@ public class BioPaxDetailsPanel extends JPanel {
         Container parent = this.getTopLevelAncestor();
         if (parent instanceof BioPaxWindow) {
             JFrame parentFrame = (BioPaxWindow) parent;
-            parentFrame.show();
+            parentFrame.setVisible(true);
         }
     }
 

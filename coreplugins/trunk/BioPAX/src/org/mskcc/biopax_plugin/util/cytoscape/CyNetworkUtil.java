@@ -63,9 +63,10 @@ public class CyNetworkUtil {
         sb.append(" nodes and " + formatter.format(network.getEdgeCount()));
         sb.append(" edges.  ");
 
-        if (network.getNodeCount() > CytoscapeInit.getViewThreshold()) {
+	int thresh = Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold"));
+        if (network.getNodeCount() > thresh) {
             sb.append("Network is over "
-                    + CytoscapeInit.getViewThreshold()
+                    + thresh 
                     + " nodes.  A view has not been created."
                     + "  If you wish to view this network, use "
                     + "\"Create View\" from the \"Edit\" menu.");

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build.xml - Build file for Cytoscape BioPAX Plug In -->
-<project basedir="." default="compile" name="Cytoscape BioPAX PlugIn">
+<project basedir="." default="all" name="Cytoscape BioPAX PlugIn">
     <!-- Version Numbers -->
     <property name="biopax_version" value="0_5"/>
     <!--  Define Check Style Task -->
@@ -67,7 +67,7 @@
     <target depends="prepare" description="Compiles all source code."
         name="compile">
         <javac debug="true" debuglevel="source,lines,var"
-            destdir="${build.classes}" nowarn="on" srcdir="${src.dir}">
+            destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="true">
             <classpath refid="classpath"/>
         </javac>
 
@@ -99,7 +99,8 @@
         <mkdir dir="${jars.dir}"/>
 
         <!--  Create BioPAX Jar -->
-        <jar destfile="${jars.dir}/biopax_${biopax_version}.jar">
+        <!--<jar destfile="${jars.dir}/biopax_${biopax_version}.jar">-->
+        <jar destfile="${jars.dir}/biopax.jar">
             <fileset dir="${build.classes}">
             </fileset>
         </jar>
@@ -126,4 +127,8 @@
             <classpath refid="classpath"/>
         </junit>
     </target>
+
+    <!--  Builds and tests everything -->
+    <target depends="jar,test" description="Builds and tests everything" name="all"/>
+
 </project>

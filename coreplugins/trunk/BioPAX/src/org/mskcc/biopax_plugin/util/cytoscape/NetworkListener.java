@@ -34,7 +34,7 @@ package org.mskcc.biopax_plugin.util.cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.FlagFilter;
+import cytoscape.data.SelectFilter;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import org.mskcc.biopax_plugin.action.DisplayBioPaxDetails;
@@ -89,8 +89,8 @@ public class NetworkListener implements PropertyChangeListener {
      * @param cyNetwork CyNetwork Object.
      */
     private void registerNodeSelectionEvents(CyNetwork cyNetwork) {
-        FlagFilter flagFilter = cyNetwork.getFlagger();
-        flagFilter.addFlagEventListener(new DisplayBioPaxDetails(bpPanel));
+        SelectFilter flagFilter = cyNetwork.getSelectFilter();
+        flagFilter.addSelectEventListener(new DisplayBioPaxDetails(bpPanel));
         bpPanel.resetText();
     }
 

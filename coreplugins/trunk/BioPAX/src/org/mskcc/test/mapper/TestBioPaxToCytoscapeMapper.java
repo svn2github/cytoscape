@@ -303,8 +303,11 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
                 assertEquals("biochemicalReaction37", target.getIdentifier());
 
                 // Validate the Edge Type
-                String edgeType = (String) Cytoscape.getEdgeAttributeValue(edge,
-                        MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE);
+                //String edgeType = (String) Cytoscape.getEdgeAttributeValue(edge,
+                 //       MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE);
+                String edgeType = Cytoscape.getEdgeAttributes().
+					getStringAttribute(edge.getIdentifier(), 
+						MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE);
                 assertEquals("ACTIVATION-NONALLOSTERIC", edgeType);
             } else if (i == 2) {
                 //  Validate the Left Side of the Reaction
@@ -355,8 +358,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
                 assertEquals("protein45", target.getIdentifier());
 
                 // Validate the Edge Type
-                String edgeType = (String) Cytoscape.getEdgeAttributeValue(edge,
-                        MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE);
+                String edgeType = Cytoscape.getEdgeAttributes().
+					getStringAttribute(edge.getIdentifier(),
+                        			MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE);
                 assertEquals("COFACTOR", edgeType);
             }
         }

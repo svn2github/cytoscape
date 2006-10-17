@@ -34,8 +34,8 @@ package org.mskcc.biopax_plugin.action;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.data.FlagEvent;
-import cytoscape.data.FlagEventListener;
+import cytoscape.data.SelectEventListener;
+import cytoscape.data.SelectEvent;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
@@ -55,7 +55,7 @@ import java.util.Iterator;
  *
  * @author Ethan Cerami
  */
-public class DisplayBioPaxDetails implements FlagEventListener {
+public class DisplayBioPaxDetails implements SelectEventListener {
     private int totalNumNodesSelected = 0;
     private BioPaxDetailsPanel bpPanel;
 
@@ -72,21 +72,21 @@ public class DisplayBioPaxDetails implements FlagEventListener {
     /**
      * User has selected/unselected one or more nodes.
      *
-     * @param event Flag Event.
+     * @param event Select Event.
      */
-    public void onFlagEvent(FlagEvent event) {
+    public void onSelectEvent(SelectEvent event) {
         int targetType = event.getTargetType();
 
         //  Only show details when exactly one node/edge is selected.
         //  This is done by keeping a running total of number of nodes/edges
         //  currently selected.
 
-        //  A simpler option would be to obtain a FlagFilter object from
+        //  A simpler option would be to obtain a SelectFilter object from
         //  the current network, and simply query it for a list of selected
         //  nodes/edges.  However, we want the listener to work on multiple
         //  networks.  For example, we want to display node/edge details
         //  for a parent network and any of its subnetworks.
-        if (targetType == FlagEvent.NODE_SET) {
+        if (targetType == SelectEvent.NODE_SET) {
             HashSet set = (HashSet) event.getTarget();
             trackTotalNumberNodesSelected(event, set);
             if (event.getEventType() && totalNumNodesSelected == 1) {
@@ -138,7 +138,7 @@ public class DisplayBioPaxDetails implements FlagEventListener {
     /**
      * Keeps track of total number of Nodes currently selected by the user.
      */
-    private void trackTotalNumberNodesSelected(FlagEvent event, HashSet set) {
+    private void trackTotalNumberNodesSelected(SelectEvent event, HashSet set) {
         if (event.getEventType()) {
             totalNumNodesSelected += set.size();
         } else {

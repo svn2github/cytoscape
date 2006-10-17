@@ -76,7 +76,7 @@ public class CyNetworkViewUtil {
 
         //  Conditionally Create Network View
         if (cyNetwork.getNodeCount()
-                < CytoscapeInit.getViewThreshold()) {
+                < Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold"))) {
             taskMonitor.setStatus("Creating Network View");
             taskMonitor.setPercentCompleted(-1);
             CyNetworkView networkView = createCyNetworkView(cyNetwork, applyVisualStyle);
@@ -89,7 +89,7 @@ public class CyNetworkViewUtil {
 
             if (applyVisualStyle) {
                 taskMonitor.setStatus("Applying Visual Styles");
-                Cytoscape.getDesktop().getVizMapManager().applyAppearances();
+                Cytoscape.getVisualMappingManager().applyAppearances();
                 MapNodeAttributes.customNodes(networkView);
             }
 
