@@ -31,14 +31,9 @@
  **/
 package org.mskcc.biopax_plugin.plugin;
 
-import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.ImportHandler;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.view.CyMenus;
-import cytoscape.view.CytoscapeDesktop;
-import org.mskcc.biopax_plugin.action.ImportBioPaxFromFile;
-import org.mskcc.biopax_plugin.action.ImportBioPaxFromWeb;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import javax.swing.*;
