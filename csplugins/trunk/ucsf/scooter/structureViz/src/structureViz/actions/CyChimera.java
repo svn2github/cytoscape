@@ -96,6 +96,7 @@ public class CyChimera {
       //first get the corresponding node in the network
       CyNode node = (CyNode)nView.getNode();
 			String structure = getStructureName(node);
+			if (structure == null) continue;
 			// Check to see if this node has a list of structures, first
 			String[] sList = structure.split(",");
 			if (sList != null && sList.length > 0) {
