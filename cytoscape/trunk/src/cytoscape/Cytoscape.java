@@ -63,7 +63,6 @@ import cytoscape.actions.ImportGraphFileAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.ExpressionData;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.CyAttributesReader;
@@ -99,14 +98,15 @@ public abstract class Cytoscape {
 	//
 	// Signals
 	//
-	public static String NETWORK_CREATED = "NETWORK_CREATED";
 	/**
 	 * Please consult CyAttributes documentation for event listening
 	 * 
-	 * @deprecated this event should not be used, it is not fired
+	 * @deprecated this event should not be used, it is not fired. Will be removed
+	 * June 2007.
 	 * @see CyAttributes
 	 */
 	public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
+	public static String NETWORK_CREATED = "NETWORK_CREATED";
 	public static String DATASERVER_CHANGED = "DATASERVER_CHANGED";
 	public static String EXPRESSION_DATA_LOADED = "EXPRESSION_DATA_LOADED";
 	public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
@@ -191,15 +191,11 @@ public abstract class Cytoscape {
 	 * Node CyAttributes.
 	 */
 	private static CyAttributes nodeAttributes = new CyAttributesImpl();
-	private static GraphObjAttributes nodeData = new GraphObjAttributes(
-			nodeAttributes);
 
 	/**
 	 * Edge CyAttributes.
 	 */
 	private static CyAttributes edgeAttributes = new CyAttributesImpl();
-	private static GraphObjAttributes edgeData = new GraphObjAttributes(
-			edgeAttributes);
 
 	/**
 	 * Network CyAttributes.
@@ -287,15 +283,6 @@ public abstract class Cytoscape {
 		return nullNetwork;
 	}
 
-	/**
-	 * Shuts down Cytoscape, after giving plugins time to react.
-	 * 
-	 * @deprecated Use exit(returnVal) instead. This will be removed in Sept
-	 *             2006.
-	 */
-	public static void exit() {
-		exit(0);
-	}
 
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
@@ -413,15 +400,6 @@ public abstract class Cytoscape {
 		// getRootGraph().ensureCapacity( nodes, edges );
 	}
 
-	/**
-	 * @deprecated WARNING: this should only be used under special
-	 *             circumstances.
-	 */
-	public static void clearCytoscape() {
-
-		// removed since it was only added for old unit test code to work.
-
-	}
 
 	/**
 	 * @return all CyNodes that are present in Cytoscape
@@ -595,9 +573,6 @@ public abstract class Cytoscape {
 								   target.getIdentifier() );
 			edge.setIdentifier(edge_name);
 
-			// Store Edge Name Mapping within GOB.
-			Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
-
 			// store edge id as INTERACTION / CANONICAL_NAME Attributes
 			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
 					(String) attribute_value);
@@ -632,66 +607,7 @@ public abstract class Cytoscape {
 		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, true);
 	}
 
-	/**
-	 * Returns the requested Attribute for the given Node
-	 * 
-	 * @param node
-	 *            the given CyNode
-	 * @param attribute
-	 *            the name of the requested attribute
-	 * @return the value for the give node, for the given attribute.
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in September, 2006.
-	 */
-	public static Object getNodeAttributeValue(Node node, String attribute) {
-		final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-		final String canonName = node.getIdentifier();
-		final byte cyType = nodeAttrs.getType(attribute);
-		if (cyType == CyAttributes.TYPE_BOOLEAN) {
-			return nodeAttrs.getBooleanAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_FLOATING) {
-			return nodeAttrs.getDoubleAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_INTEGER) {
-			return nodeAttrs.getIntegerAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_STRING) {
-			return nodeAttrs.getStringAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
-			return nodeAttrs.getAttributeList(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
-			return nodeAttrs.getAttributeMap(canonName, attribute);
-		} else {
-			// As a last resort, check the GOB for arbitary objects.
-			return nodeData.get(attribute, canonName);
-		}
-	}
 
-	/**
-	 * Returns the requested Attribute for the given Edge
-	 * 
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in September, 2006.
-	 */
-	public static Object getEdgeAttributeValue(Edge edge, String attribute) {
-		final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-		final String canonName = edge.getIdentifier();
-		final byte cyType = edgeAttrs.getType(attribute);
-		if (cyType == CyAttributes.TYPE_BOOLEAN) {
-			return edgeAttrs.getBooleanAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_FLOATING) {
-			return edgeAttrs.getDoubleAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_INTEGER) {
-			return edgeAttrs.getIntegerAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_STRING) {
-			return edgeAttrs.getStringAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
-			return edgeAttrs.getAttributeList(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
-			return edgeAttrs.getAttributeMap(canonName, attribute);
-		} else {
-			// As a last resort, check the GOB for arbitary objects.
-			return edgeData.get(attribute, canonName);
-		}
-	}
 
 	private static Object private_getEdgeAttributeValue(Edge edge,
 			String attribute) {
@@ -715,115 +631,9 @@ public abstract class Cytoscape {
 		}
 	}
 
-	/**
-	 * Return all availble Attributes for the Nodes in this CyNetwork.
-	 * 
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in September, 2006.
-	 */
-	public static String[] getNodeAttributesList() {
-		return Cytoscape.getNodeAttributes().getAttributeNames();
-	}
 
 	/**
-	 * Return all available Attributes for the given Nodes.
-	 * 
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in September, 2006.
-	 */
-	public static String[] getNodeAttributesList(Node[] nodes) {
-		return Cytoscape.getNodeAttributes().getAttributeNames();
-	}
-
-	/**
-	 * Return all availble Attributes for the Edges in this CyNetwork.
-	 * 
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in September, 2006.
-	 */
-	public static String[] getEdgeAttributesList() {
-		return Cytoscape.getEdgeAttributes().getAttributeNames();
-	}
-
-	/**
-	 * Return all available Attributes for the given Edges
-	 * 
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in September, 2006.
-	 */
-	public static String[] getNodeAttributesList(Edge[] edges) {
-		return Cytoscape.getEdgeAttributes().getAttributeNames();
-	}
-
-	/**
-	 * Return the requested Attribute for the given Node
-	 * 
-	 * @param node
-	 *            the given CyNode
-	 * @param attribute
-	 *            the name of the requested attribute
-	 * @param value
-	 *            the value to be set
-	 * @return if it overwrites a previous value
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in September, 2006.
-	 */
-	public static boolean setNodeAttributeValue(Node node, String attribute,
-			Object value) {
-		final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-		final String canonName = node.getIdentifier();
-		if (value instanceof Boolean) {
-			nodeAttrs.setAttribute(canonName, attribute, (Boolean) value);
-			return true;
-		} else if (value instanceof Integer) {
-			nodeAttrs.setAttribute(canonName, attribute, (Integer) value);
-			return true;
-		} else if (value instanceof Double) {
-			nodeAttrs.setAttribute(canonName, attribute, (Double) value);
-			return true;
-		} else if (value instanceof String) {
-			nodeAttrs.setAttribute(canonName, attribute, (String) value);
-			return true;
-		} else {
-			// If this is an arbitary object, use GOB for backward
-			// compatibility.
-			nodeData.set(attribute, canonName, value);
-		}
-		return false;
-	}
-
-	/**
-	 * Return the requested Attribute for the given Edge
-	 * 
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in September, 2006.
-	 */
-	public static boolean setEdgeAttributeValue(Edge edge, String attribute,
-			Object value) {
-		final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-		final String canonName = edge.getIdentifier();
-		if (value instanceof Boolean) {
-			edgeAttrs.setAttribute(canonName, attribute, (Boolean) value);
-			return true;
-		} else if (value instanceof Integer) {
-			edgeAttrs.setAttribute(canonName, attribute, (Integer) value);
-			return true;
-		} else if (value instanceof Double) {
-			edgeAttrs.setAttribute(canonName, attribute, (Double) value);
-			return true;
-		} else if (value instanceof String) {
-			edgeAttrs.setAttribute(canonName, attribute, (String) value);
-			return true;
-		} else {
-			// If this is an arbitary object, use GOB for backward
-			// compatibility.
-			edgeData.set(attribute, canonName, value);
-		}
-		return false;
-	}
-
-	/**
-	 * @deprecated argh!...
+	 * @deprecated This will be removed Feb 2007. 
 	 */
 	private static String canonicalizeName(String name) {
 		String canonicalName = name;
@@ -838,7 +648,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @deprecated argh!...
+	 * @deprecated This will be removed Feb 2007. 
 	 */
 	public static void setSpecies() {
 		species = CytoscapeInit.getProperties().getProperty(
@@ -931,7 +741,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated This will be removed Feb 2007.
 	 */
 	public static void setCurrentNetwork(String id) {
 		if (getNetworkMap().containsKey(id))
@@ -943,7 +753,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated This will be removed Feb 2007.
 	 * @return true if there is network view, false if not
 	 */
 	public static boolean setCurrentNetworkView(String id) {
@@ -1400,34 +1210,6 @@ public abstract class Cytoscape {
 	// Network Data Methods
 	// --------------------//
 
-	/**
-	 * @deprecated
-	 */
-	public static CytoscapeObj getCytoscapeObj() {
-		return new CytoscapeObj();
-	}
-
-	/**
-	 * Gets Node Network Data: GraphObjAttributes.
-	 * 
-	 * @return GraphObjAttributes Object.
-	 * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead. This
-	 *             method will be removed in September, 2006.
-	 */
-	public static GraphObjAttributes getNodeNetworkData() {
-		return nodeData;
-	}
-
-	/**
-	 * Gets Edge Network Data: GraphObjAttributes.
-	 * 
-	 * @return GraphObjAttributes Object.
-	 * @deprecated Use {@link Cytoscape#getEdgeAttributes()} instead. This
-	 *             method will be removed in September, 2006.
-	 */
-	public static GraphObjAttributes getEdgeNetworkData() {
-		return edgeData;
-	}
 
 	/**
 	 * Gets Global Node Attributes.
@@ -1569,59 +1351,6 @@ public abstract class Cytoscape {
 		loadAttributes(nodeAttrLocations, edgeAttrLocations, false, null, null);
 	}
 
-	/**
-	 * Constructs a network using information from a CyProject argument that
-	 * contains information on the location of the graph file, any node/edge
-	 * attribute files, and a possible expression data file. If the data server
-	 * argument is non-null and the project requests canonicalization, the data
-	 * server will be used for name resolution given the names in the
-	 * graph/attributes files.
-	 * 
-	 * @see CyProject
-	 * @deprecated Will be removed Oct 2006. This is not apparently used, so
-	 *             don't start. This functionality has been subsumed by
-	 *             Cytoscape Sessions.
-	 */
-	public static CyNetwork createNetworkFromProject(CyProject project,
-			BioDataServer bioDataServer) {
-		if (project == null) {
-			return null;
-		}
-
-		boolean canonicalize = project.getCanonicalize();
-		String species = project.getDefaultSpeciesName();
-		CyNetwork network = null;
-		if (project.getInteractionsFilename() != null) {
-			// read graph from interaction data
-			String filename = project.getInteractionsFilename();
-			network = createNetwork(filename);
-		} else if (project.getGeometryFilename() != null) {
-			// read a GML file
-			String filename = project.getGeometryFilename();
-			network = createNetwork(filename);
-
-		}
-
-		if (network == null) {// no graph specified, or unable to read
-			// create a default network
-			network = createNetwork(null);
-		}
-
-		// load attributes files
-		String[] nodeAttributeFilenames = project.getNodeAttributeFilenames();
-		String[] edgeAttributeFilenames = project.getEdgeAttributeFilenames();
-		loadAttributes(nodeAttributeFilenames, edgeAttributeFilenames,
-				canonicalize, bioDataServer, species);
-		// load expression data
-		// ExpressionData expData = null;
-		// if (project.getExpressionFilename() != null) {
-		// expData = new ExpressionData( project.getExpressionFilename() );
-		// network.setExpressionData(expData);
-		// }
-		loadExpressionData(project.getExpressionFilename(), true);
-
-		return network;
-	}
 
 	/**
 	 * A BioDataServer should be loadable from a file systems file or from a
@@ -1754,44 +1483,6 @@ public abstract class Cytoscape {
 		getPropertyChangeSupport().firePropertyChange(e);
 	}
 
-	/**
-	 * Utility method to enable Squiggle function.
-	 * 
-	 * @deprecated Squiggle is gone and we don't expect the functionality to
-	 *             return. if this causes major problems, let us know. This
-	 *             method will be removed Sept 2006.
-	 */
-	public static void enableSquiggle() {
-
-		// set the global flag to indicate that Squiggle is enabled
-		squiggleEnabled = true;
-
-	}
-
-	/**
-	 * Utility method to disable Squiggle function.
-	 * 
-	 * @deprecated Squiggle is gone and we don't expect the functionality to
-	 *             return. if this causes major problems, let us know. This
-	 *             method will be removed Sept 2006.
-	 */
-	public static void disableSquiggle() {
-
-		// set the global flag to indicate that Squiggle is disabled
-		squiggleEnabled = false;
-	}
-
-	/**
-	 * Returns the value of the global flag to indicate whether the Squiggle
-	 * function is enabled.
-	 * 
-	 * @deprecated Squiggle is gone and we don't expect the functionality to
-	 *             return. if this causes major problems, let us know. This
-	 *             method will be removed Sept 2006.
-	 */
-	public static boolean isSquiggleEnabled() {
-		return squiggleEnabled;
-	}
 
 	/**
 	 * Gets the selection mode value.

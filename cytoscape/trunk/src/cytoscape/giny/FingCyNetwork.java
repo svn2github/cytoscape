@@ -191,119 +191,6 @@ public class FingCyNetwork
   }
   
 
-  //------------------------------//
-  // Deperecation
-  //------------------------------//
- /**
-   * @deprecated
-   * This method should be called before reading or changing the data held
-   * in this network object. A CyNetworkEvent of type CyNetworkEvent.BEGIN
-   * will be fired to all listeners attached to this object, *only* if this
-   * is the first begin of a nested stack of begin/end methods. No event
-   * will be fired if a previous beginActivity call hasn't been closed by
-   * a matching endActivity call.<P>
-   *
-   * The argument is simply a String that is useful for identifying the
-   * caller of this method. This is provided for debugging purposes, in case
-   * an algorithm forgets to provide a matching end method for each begin.
-   */
-  public void beginActivity(String callerID) {
-    activityCount++;
-    if (activityCount == 1) {fireEvent(CyNetworkEvent.BEGIN);}
-  }
-    
-  /**
-   * @deprecated
-   * This method should be called when an algorithm is finished reading
-   * or changing the data held in this network object. A CyNetworkEvent
-   * of type CyNetworkEvent.END will be fired to listeners attached to
-   * this object, *only* if this is the last end in a nested block of
-   * begin/end calls.<P>
-   *
-   * The argument is a String for identifying the caller of this method.
-   */
-  public void endActivity(String callerID) {
-    if (activityCount == 0) {return;} //discard calls without a matching begin
-    activityCount--;
-    if (activityCount == 0) {fireEvent(CyNetworkEvent.END);}
-  }
-    
-  /**
-   * @deprecated
-   * This method returns true if the current state of this object is clear;
-   * that is, if every beginActivity call has been followed by a matching
-   * endActivity call, so that one can reasonably assume that no one is
-   * currently working with the network.
-   */
-  public boolean isStateClear() {return (activityCount == 0);}
-    
-  /**
-   * @deprecated
-   * This method is provided as a failsafe in case an algorithm fails to
-   * close its beginActivity calls without matching endActivity calls. If
-   * the current state is not clear, this method resets this object to the
-   * state of no activity and fires a CyNetworkEvent of type
-   * CyNetworkEvent.END to all registered listeners.<P>
-   *
-   * If the current state is clear (i.e., there are no calls to beginActivity
-   * without matching endActivity calls), then this method does nothing.<P>
-   *
-   * The argument is a String for identifying the caller of this method.
-   */
-  public void forceClear(String callerID) {
-    if (activityCount > 0) {
-      activityCount = 0;
-      fireEvent(CyNetworkEvent.END);
-    }
-  }
-  /**
-   * @deprecated
-   * use @link{Cytoscape.getRootGraph()} instead
-   */
-  public RootGraph getRootGraph() {
-    // delegate to the Central CytoscapeRootGraph
-    return Cytoscape.getRootGraph();
-  }
-  
-  /**
-   * @deprecated
-   * This <b>is a</b> GraphPerspective now! Therefore treat it as such.
-   * This method will not be changed and will simply return itself, 
-   * recasted as a GraphPerspective
-   */
-  public GraphPerspective getGraphPerspective() {
-    return ( GraphPerspective )this;
-  }
-
-  /**
-   * A new Network should be made instead.  
-   * @see #appendNetwork 
-   * @deprecated
-   */
-  public void setGraphPerspective( GraphPerspective perspective ) {
-   
-    // hide the current nodes 
-    hideNodes( getNodeIndicesArray() );
-    // hide the current edges
-    hideEdges( getEdgeIndicesArray() );
-
-    // restore the new nodes and edges
-    restoreNodes( perspective.getNodeIndicesArray() );
-    restoreEdges( perspective.getEdgeIndicesArray() );
-    
-    fireEvent(CyNetworkEvent.GRAPH_REPLACED);
-  }
-
-  /**
-   * A new Network should be made instead.  
-   * @see #appendNetwork 
-   * @deprecated
-   */
-  public void setNewGraphFrom(CyNetwork newNetwork, boolean replaceAttributes) {
-  
-    // this will call the GRAPH_REPLACED event as well
-    setGraphPerspective( newNetwork );
-  }
 
   /**
    * Appends all of the nodes and edges in teh given Network to 
@@ -316,56 +203,11 @@ public class FingCyNetwork
     restoreEdges( edges );
   }
     
-  /**
-   * @deprecated
-   */
-  public boolean getNeedsLayout () {
-    return false;
-  }
-  
-  /**
-   * @deprecated
-   */
-  public void setNeedsLayout ( boolean needsLayout ) {
-  }
     
-   /**
-   * Returns the node attributes data object for this network.
-   * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
-   * method will be removed in September, 2006.
-   */
-  public GraphObjAttributes getNodeAttributes () {
-    return Cytoscape.getNodeNetworkData();
-  }
-  
-  /**
-   * does nothing, all attributes are shared right now
-   * @deprecated This
-   * method will be removed in September, 2006.
-   */
-  public void setNodeAttributes ( GraphObjAttributes newNodeAttributes ) {
-  }
-
-  /**
-   * Returns the edge attributes data object for this network.
-   * @deprecated Use {@link Cytoscape#getEdgeAttributes()} instead.  This
-   * method will be removed in September, 2006.
-   */
-  public GraphObjAttributes getEdgeAttributes () {
-    return Cytoscape.getEdgeNetworkData();
-  }
-  
-  /**
-   * does nothing, all attributes are shared right now
-   * @deprecated This
-   * method will be removed in September, 2006.
-   */
-  public void setEdgeAttributes ( GraphObjAttributes newEdgeAttributes ) {
-  }
-
   /**
    * @deprecated @see{getNetworkData}
    * Returns the expression data object associated with this network.
+   * Will be removed Feb 2007.
    */
   public ExpressionData getExpressionData () {
     return Cytoscape.getExpressionData();
@@ -374,6 +216,7 @@ public class FingCyNetwork
   /**
    * @deprecated
    * Sets the expression data object associated with this network.
+   * Will be removed Feb 2007.
    */
   public void setExpressionData ( ExpressionData newData ) {
     //null?

@@ -38,7 +38,7 @@ public class SIFFileFilter extends CyFileFilter {
      * @return GraphReader Object.
      */
     public GraphReader getReader(String fileName) {
-        reader = new InteractionsReader(null, null, fileName);
+        reader = new InteractionsReader(fileName);
         return reader;
     }
 }

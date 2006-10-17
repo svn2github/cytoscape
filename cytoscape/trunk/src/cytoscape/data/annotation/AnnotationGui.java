@@ -89,7 +89,6 @@ import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.servers.BioDataServer;
-import cytoscape.layout.AttributeLayout;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 
@@ -108,7 +107,6 @@ public class AnnotationGui extends CytoscapeAction {
 	int actionListBoxCurrentSelection;
 	TreePath annotationPath;
 	String currentAnnotationCategory;
-	AttributeLayout attributeLayouter;
 
 	JDialog mainDialog;
 	JButton annotateNodesButton;
@@ -164,9 +162,6 @@ public class AnnotationGui extends CytoscapeAction {
 			annotationDescriptions = dataServer.getAnnotationDescriptions();
 		}
 
-		if (this.attributeLayouter == null) {
-			this.attributeLayouter = new AttributeLayout(networkView);
-		}
 		
 		Semantics.applyNamingServices(network);
 		
@@ -500,8 +495,6 @@ public class AnnotationGui extends CytoscapeAction {
 				 * JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
 				 * message, title, JOptionPane.ERROR_MESSAGE);
 				 */
-				attributeLayouter.doCallback(currentAnnotationCategory,
-						AttributeLayout.DO_LAYOUT);
 				deleteCreatedObjectsButton.setEnabled(true);
 			}
 
@@ -519,8 +512,6 @@ public class AnnotationGui extends CytoscapeAction {
 				 * JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
 				 * message, title, JOptionPane.ERROR_MESSAGE);
 				 */
-				attributeLayouter.doCallback(currentAnnotationCategory,
-						AttributeLayout.CREATE_EDGES);
 				deleteCreatedObjectsButton.setEnabled(true);
 			}
 
@@ -532,8 +523,6 @@ public class AnnotationGui extends CytoscapeAction {
 			}
 
 			public void actionPerformed(ActionEvent e) {
-				attributeLayouter.doCallback(currentAnnotationCategory,
-						AttributeLayout.CLEAR_OBJECTS);
 				deleteCreatedObjectsButton.setEnabled(false);
 			}
 		}
@@ -637,7 +626,6 @@ public class AnnotationGui extends CytoscapeAction {
 // 						+ "has been partially removed "
 // 						+ "(AnnotationGui.addAnnotationToNodes()).");
 
-		//network.endActivity(callerID);
 
 		return annotationNameAtLevel;
 
@@ -710,7 +698,6 @@ public class AnnotationGui extends CytoscapeAction {
 			if (aDesc == null)
 				return;
 			String callerID = "ApplyAnnotationAction.actionPerformed";
-			network.beginActivity(callerID);
 			currentAnnotationCategory = addAnnotationToNodes(aDesc, level);
 
 			// Modified by kono@ucsd.edu
@@ -720,10 +707,6 @@ public class AnnotationGui extends CytoscapeAction {
 			// there is no match in the annotation.
 			// Now it creates pop-up window when no match error found.
 			//
-
-			// Above modification commented out by iavila@systemsbiology.org
-			// The exception was thrown by GraphObjAttrib*tes, but now, we use
-			// CyAttributes
 
 			Object[] uniqueAnnotationValues = null;
 
@@ -780,7 +763,6 @@ public class AnnotationGui extends CytoscapeAction {
 				appendToSelectionTree(currentAnnotationCategory,
 						uniqueAnnotationValues);
 			}
-			network.endActivity(callerID);
 		}
 
 		// --------------------------------------------------------------------------------------

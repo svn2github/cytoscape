@@ -75,7 +75,6 @@ public class DestroySelectedAction extends CytoscapeAction {
 	   public void actionPerformed(ActionEvent e) {
 	        String callerID = "DeleteSelectedAction.actionPerformed";
 	        final CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-	        networkView.getNetwork().beginActivity(callerID);
 
 			java.util.List edgeViews = networkView.getSelectedEdges();
 			java.util.List nodeViews = networkView.getSelectedNodes();
@@ -161,7 +160,6 @@ public class DestroySelectedAction extends CytoscapeAction {
 			
 
 	        networkView.redrawGraph(false, false);
-	        networkView.getNetwork().endActivity(callerID);
 	        
 	        // AJK: 06/10/06 BEGIN
 	        //     make this action undo-able

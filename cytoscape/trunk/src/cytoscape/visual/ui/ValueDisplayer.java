@@ -359,7 +359,7 @@ public class ValueDisplayer extends JButton {
 				content.add(chooser, BorderLayout.CENTER);
 				content.add(butPanel, BorderLayout.SOUTH);
 				popup.pack();
-				popup.show();
+				popup.setVisible(true);
 			}
 		}
 

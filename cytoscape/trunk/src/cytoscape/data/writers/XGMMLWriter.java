@@ -1091,7 +1091,7 @@ public class XGMMLWriter {
 			jxbChildNode.setId(childNode.getIdentifier());
 			jxbChildNode.setLabel(childNode.getIdentifier());
 			subGraph.getNodeOrEdge().add(jxbChildNode);
-			int[] grandChildrenIndices = network
+			int[] grandChildrenIndices = Cytoscape
 					.getRootGraph()
 					.getNodeMetaChildIndicesArray(childNode.getRootGraphIndex());
 			if (grandChildrenIndices == null
@@ -1226,11 +1226,11 @@ public class XGMMLWriter {
 		CyNode childNode = null;
 		GraphicNode jxbNode = null;
 
-		final int[] childrenIndices = network.getRootGraph()
+		final int[] childrenIndices = Cytoscape.getRootGraph()
 				.getNodeMetaChildIndicesArray(node.getRootGraphIndex());
 
 		for (int i = 0; i < childrenIndices.length; i++) {
-			childNode = (CyNode) network.getRootGraph().getNode(
+			childNode = (CyNode) Cytoscape.getRootGraph().getNode(
 					childrenIndices[i]);
 
 			if (isMetanode(childNode)) {
@@ -1254,7 +1254,7 @@ public class XGMMLWriter {
 	 */
 	private void writeMetanodes() throws JAXBException {
 		Iterator it;
-		RootGraph rootGraph = network.getRootGraph();
+		RootGraph rootGraph = Cytoscape.getRootGraph();
 
                 // Two pass approach. First, walk through the list
                 // and see if any of the children of a metanode are
@@ -1273,7 +1273,7 @@ public class XGMMLWriter {
 					.getNodeMetaChildIndicesArray(curNodeID);
 			if (childrenIndices == null) continue;
 			for (int i = 0; i < childrenIndices.length; i++) {
-				CyNode childNode = (CyNode) network.getRootGraph().getNode(
+				CyNode childNode = (CyNode) Cytoscape.getRootGraph().getNode(
 						childrenIndices[i]);
 				if (isMetanode(childNode)) {
 					embeddedMetaList.put(childNode.getIdentifier(), 
@@ -1305,7 +1305,7 @@ public class XGMMLWriter {
 		jxbNode = buildJAXBNode(curNode);
 		HashMap childMap = new HashMap();
 
-		int[] childrenIndices = network.getRootGraph()
+		int[] childrenIndices = Cytoscape.getRootGraph()
 				.getNodeMetaChildIndicesArray(curNode.getRootGraphIndex());
 		Att children = objFactory.createAtt();
 		GraphicGraph subGraph = objFactory.createGraphicGraph();
@@ -1314,7 +1314,7 @@ public class XGMMLWriter {
 			CyNode childNode = null;
 			GraphicNode childJxbNode = null;
 
-			childNode = (CyNode) network.getRootGraph().getNode(
+			childNode = (CyNode) Cytoscape.getRootGraph().getNode(
 					childrenIndices[i]);
 			childMap.put(childNode.getIdentifier(),childNode);
 			String targetnodeID = Integer.toString(childNode.getRootGraphIndex());
@@ -1335,7 +1335,7 @@ public class XGMMLWriter {
 		// Note this iterator is over the RootGraph, which
 		// is intentional, otherwise we lose the edges between
 		// the metanode children and the other nodes in the network
-		Iterator it = curNode.getRootGraph().edgesIterator();
+		Iterator it = Cytoscape.getRootGraph().edgesIterator();
 		while (it.hasNext()) {
 			CyEdge curEdge = (CyEdge)it.next();
 			if (childMap.containsKey(curEdge.getTarget().getIdentifier()) 
@@ -1356,7 +1356,7 @@ public class XGMMLWriter {
 	 */
 	private boolean isMetanode(final CyNode node) {
 
-		final int[] childrenIndices = network.getRootGraph()
+		final int[] childrenIndices = Cytoscape.getRootGraph()
 				.getNodeMetaChildIndicesArray(node.getRootGraphIndex());
 		if (childrenIndices == null || childrenIndices.length == 0) {
 			return false;

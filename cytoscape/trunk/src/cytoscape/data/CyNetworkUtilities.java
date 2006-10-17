@@ -120,7 +120,6 @@ public class CyNetworkUtilities {
 		}
 
 		String callerID = "CyNetworkUtilities.saveVisibleNodeNames";
-		network.beginActivity(callerID);
 
 		//GraphPerspective theGraph = network.getGraphPerspective();
 		//CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -138,13 +137,11 @@ public class CyNetworkUtilities {
 				fout.write(node.getIdentifier() + lineSep);
 			} // for i
 			fout.close();
-			network.endActivity(callerID);
 			return true;
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, e.toString(),
 					"Error Writing to \"" + filename + "\"",
 					JOptionPane.ERROR_MESSAGE);
-			network.endActivity(callerID);
 			return false;
 		}
 	}
@@ -168,7 +165,6 @@ public class CyNetworkUtilities {
 		key = key.toLowerCase();
 		boolean found = false;
 		String callerID = "CyNetworkUtilities.selectNodesStartingWith";
-		network.beginActivity(callerID);
 
 		//GraphPerspective theGraph = network.getGraphPerspective();
 		//CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -211,7 +207,6 @@ public class CyNetworkUtilities {
 		}
 
 		//System.out.println("node found = " + nodeFound);
-		network.endActivity(callerID);
 		return found;
 	}
 	// -------------------------------------------------------------------------

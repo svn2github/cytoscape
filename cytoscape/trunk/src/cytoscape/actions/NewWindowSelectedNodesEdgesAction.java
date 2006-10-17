@@ -77,7 +77,6 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 		CyNetwork new_network = Cytoscape.createNetwork(nodes, edges,
 				CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 				current_network);
-		new_network.setExpressionData(current_network.getExpressionData());
 
 		String title = " selection";
 		Cytoscape.createNetworkView(new_network, title);

@@ -78,7 +78,6 @@ public class DeleteSelectedAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {
         String callerID = "DeleteSelectedAction.actionPerformed";
-        networkView.getNetwork().beginActivity(callerID);
         
         // AJK: 06/10/06 BEGIN
         //   make this action undo-able
@@ -116,7 +115,6 @@ public class DeleteSelectedAction extends AbstractAction {
  
         
         networkView.redrawGraph(false, false);
-        networkView.getNetwork().endActivity(callerID);
         
         // AJK: 06/10/06 BEGIN
         //     make this action undo-able
