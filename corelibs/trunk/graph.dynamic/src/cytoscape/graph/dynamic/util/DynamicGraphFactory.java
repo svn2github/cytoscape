@@ -2,6 +2,7 @@ package cytoscape.graph.dynamic.util;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 
+
 /**
  * A factory for getting cytoscape.graph.dynamic.DynamicGraph instances.
  * This DynamicGraph implementation requires a bare minimum of roughly 64
@@ -99,18 +100,15 @@ import cytoscape.graph.dynamic.DynamicGraph;
  *     the other node.</td>
  * </tr></table></blockquote>
  */
-public final class DynamicGraphFactory
-{
+public final class DynamicGraphFactory {
+    // "No constructor".
+    private DynamicGraphFactory() {
+    }
 
-  // "No constructor".
-  private DynamicGraphFactory() { }
-
-  /**
-   * Returns a new instance of DynamicGraph with every invocation.
-   */
-  public static DynamicGraph instantiateDynamicGraph()
-  {
-    return new DynamicGraphRepresentation();
-  }
-
+    /**
+     * Returns a new instance of DynamicGraph with every invocation.
+     */
+    public static DynamicGraph instantiateDynamicGraph() {
+        return new DynamicGraphRepresentation();
+    }
 }
