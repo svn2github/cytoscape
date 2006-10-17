@@ -916,8 +916,6 @@ public abstract class Cytoscape {
 	protected static void addNetwork(CyNetwork network, String title,
 			CyNetwork parent, boolean create_view) {
 
-		System.out.println( "CyNetwork Added: "+network.getIdentifier() );
-
 		getNetworkMap().put(network.getIdentifier(), network);
 		network.setTitle(title);
 		String p_id = null;
@@ -1197,8 +1195,6 @@ public abstract class Cytoscape {
 		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
 		network.putClientData(READER_CLIENT_KEY, reader);
 		addNetwork(network, title, parent, create_view);
-
-		System.out.println("NV: " + getNetworkView(network.getIdentifier()));
 
         //  Execute any necessary post-processing.
         reader.doPostProcessing(network);
