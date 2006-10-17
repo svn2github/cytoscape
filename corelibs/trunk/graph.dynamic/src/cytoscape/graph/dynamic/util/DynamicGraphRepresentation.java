@@ -8,7 +8,7 @@ import cytoscape.util.intr.IntStack;
 final class DynamicGraphRepresentation
   implements DynamicGraph, java.io.Externalizable
 {
-
+  private static final long serialVersionUID = 44615510L;
   private int m_nodeCount;
   private int m_maxNode;
   private int m_edgeCount;

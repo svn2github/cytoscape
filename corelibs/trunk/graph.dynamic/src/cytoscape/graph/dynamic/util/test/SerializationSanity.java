@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class SerializationSanity implements Serializable
 {
-
+  private static final long serialVersionUID = 796950138L;
   public static void main(String[] args) throws Exception
   {
     final int loopSize = Integer.parseInt(args[0]);
@@ -79,6 +79,7 @@ public class SerializationSanity implements Serializable
   private SerializationSanity() {}
 
   private static class Node implements Serializable {
+    private static final long serialVersionUID = 629716647L;
     private Node m_next;
     private Node m_prev;
     private Node() {} }
