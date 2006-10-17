@@ -47,31 +47,6 @@ import java.util.ArrayList;
 public class CyNetworkUtil {
 
     /**
-     * Creates a CyNetwork Object without a CyNetworkView.
-     *
-     * @param networkName Network Name.
-     * @return CyNetwork Object.
-     */
-    public static CyNetwork createCyNetwork(String networkName) {
-        //  First, set the view threshold to 0.  By doing so, we can disable
-        //  the auto-creating of the CyNetworkView.
-        //  This is important because we do not want to show any network view
-        //  to the user until everything is all done.
-        CyNetwork cyNetwork = null;
-        int realThreshold = CytoscapeInit.getViewThreshold();
-        CytoscapeInit.setViewThreshold(0);
-
-        //  Create the CyNetwork
-        cyNetwork = Cytoscape.createNetwork(networkName);
-        cyNetwork.setTitle(networkName);
-
-        //  Reset back to the real View Threshold
-        CytoscapeInit.setViewThreshold(realThreshold);
-
-        return cyNetwork;
-    }
-
-    /**
      * Gets Network Stats, for presentation to end-user.
      *
      * @param network     CyNetwork Object.
