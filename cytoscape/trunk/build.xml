@@ -272,6 +272,7 @@
 			<include name="cytoscape/**" />
 			<src path="${src.dir}" />
 			<src path="${tests.dir}" />
+			<compilerarg line="-Xmaxwarns 10000" />
 		</javac>
 
 		<!-- Run RMIC for BioDataServer -->
