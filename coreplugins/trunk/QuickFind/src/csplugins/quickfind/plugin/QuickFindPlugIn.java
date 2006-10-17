@@ -246,7 +246,7 @@ class UserSelectionListener implements ActionListener {
 
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    currentNetwork.setFlaggedNodes(list, true);
+                    currentNetwork.setSelectedNodeState(list, true);
                     ((DingNetworkView)
                             Cytoscape.getCurrentNetworkView()).fitSelected();
                     //  If only one node is selected, auto-adjust zoom factor
@@ -317,7 +317,7 @@ class RangeSelectionListener implements ChangeListener {
                     public void run() {
                         cyNetwork.unselectAllNodes();
                         cyNetwork.unselectAllEdges();
-                        cyNetwork.setFlaggedNodes(nodeList, true);
+                        cyNetwork.setSelectedNodeState(nodeList, true);
                         Cytoscape.getCurrentNetworkView().updateView();
                     }
                 }
