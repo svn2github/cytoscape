@@ -131,7 +131,7 @@ public class BioPaxVisualStyleUtil {
      */
     public static VisualStyle getBioPaxVisualStyle() {
         VisualMappingManager manager =
-                Cytoscape.getDesktop().getVizMapManager();
+                Cytoscape.getVisualMappingManager();
         CalculatorCatalog catalog = manager.getCalculatorCatalog();
 
         VisualStyle bioPaxVisualStyle = catalog.getVisualStyle
