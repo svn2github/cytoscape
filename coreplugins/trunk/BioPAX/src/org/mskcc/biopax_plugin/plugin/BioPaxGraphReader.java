@@ -184,14 +184,11 @@ public class BioPaxGraphReader implements GraphReader {
         final VisualStyle bioPaxVisualStyle =
                 BioPaxVisualStyleUtil.getBioPaxVisualStyle();
         final VisualMappingManager manager =
-                Cytoscape.getDesktop().getVizMapManager();
+                Cytoscape.getVisualMappingManager();
         final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                manager.setVisualStyle(bioPaxVisualStyle);
-                view.applyVizmapper(bioPaxVisualStyle);
-            }
-        });
+        view.setVisualStyle(bioPaxVisualStyle.getName());
+        manager.setVisualStyle(bioPaxVisualStyle);
+        view.applyVizmapper(bioPaxVisualStyle);
 
         //  Set up BP UI
         CytoscapeWrapper.initBioPaxPlugInUI();
