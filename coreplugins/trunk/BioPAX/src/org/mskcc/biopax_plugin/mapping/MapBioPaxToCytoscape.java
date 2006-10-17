@@ -281,7 +281,6 @@ public class MapBioPaxToCytoscape {
             String pathwayName = nodeAttributes.getStringAttribute
                     (node.getIdentifier(),
                             MapNodeAttributes.BIOPAX_PATHWAY_NAME);
-            System.out.println("Setting network name:  " + pathwayName);
             if (pathwayName != null) {
                 cyNetwork.setTitle(pathwayName);
 
