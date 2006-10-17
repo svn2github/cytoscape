@@ -49,7 +49,7 @@ public class XGMMLReaderTest extends TestCase {
 		File testfile = new File("testData/galFiltered2.xgmml");
 		if(testfile.canRead()) {
 			System.out.println("Reading XGMML: " + testfile.getAbsolutePath());
-			RootGraph network = reader.getRootGraph();
+			RootGraph network = Cytoscape.getRootGraph();
 			network.removeNodes(network.nodesList());
 			reader.read();
 			
@@ -82,7 +82,7 @@ public class XGMMLReaderTest extends TestCase {
 		File testfile = new File("testData/BINDyeast.xgmml");
 		if(testfile.canRead()) {
 			System.out.println("Reading XGMML: " + testfile.getAbsolutePath());
-			RootGraph network = reader.getRootGraph();
+			RootGraph network = Cytoscape.getRootGraph();
 			network.removeNodes(network.nodesList());
 			reader.read();
 			

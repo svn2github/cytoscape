@@ -239,7 +239,7 @@ private InteractionsReader getReader (String file) {
     if (runAllTests) {
         file = new String ("testData/"+file);
     }
-    InteractionsReader reader = new InteractionsReader (nullServer, species, file);
+    InteractionsReader reader = new InteractionsReader (file);
     return reader;
 }
 
