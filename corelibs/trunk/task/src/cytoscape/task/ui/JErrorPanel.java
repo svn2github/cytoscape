@@ -12,6 +12,9 @@ import java.awt.event.ActionListener;
  * Common UI element for displaying errors and stack traces.
  */
 public class JErrorPanel extends JPanel {
+
+    private static final long serialVersionUID = 333614801L;
+    
     /**
      * The Error Object
      */

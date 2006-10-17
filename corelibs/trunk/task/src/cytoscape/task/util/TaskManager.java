@@ -63,7 +63,7 @@ public class TaskManager {
                 if (taskThread.isAlive()) {
                     //  Thread will now block until modal dialog is
                     //  disposed automatically or by user.
-                    jTask.show();
+                    jTask.setVisible(true);
                 }
             }
         } catch (InterruptedException e) {

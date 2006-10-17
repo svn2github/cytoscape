@@ -17,6 +17,8 @@ import java.util.Date;
  */
 public class JTask extends JDialog implements TaskMonitor, ActionListener {
 
+    private static final long serialVersionUID = 333614801L;
+
     /**
      * ProgressBar UI component.
      */

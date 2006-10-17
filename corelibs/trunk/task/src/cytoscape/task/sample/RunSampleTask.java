@@ -74,7 +74,7 @@ public class RunSampleTask {
         frame.getContentPane().add(panel);
         frame.setSize(400, 400);
         frame.setLocationRelativeTo(null);
-        frame.show();
+        frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         return frame;
     }

@@ -71,11 +71,11 @@ public final class ProgressUIControl implements TaskMonitor {
             throw new IllegalThreadStateException
                     ("show() required to be called from the AWT event dispatch thread");
         m_dialog.pack();
-        m_dialog.move((m_parent.size().width - m_dialog.size().width) / 2 +
-                m_parent.location().x,
-                (m_parent.size().height - m_dialog.size().height) / 2 +
-                m_parent.location().y);
-        m_dialog.show(); // This blocks until m_dialog.dispose() is called; see
+        m_dialog.setLocation((m_parent.getSize().width - m_dialog.getSize().width) / 2 +
+                m_parent.getLocation().x,
+                (m_parent.getSize().height - m_dialog.getSize().height) / 2 +
+                m_parent.getLocation().y);
+        m_dialog.setVisible(true); // This blocks until m_dialog.dispose() is called; see
         // the JDK API spec.
     }
 
