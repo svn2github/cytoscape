@@ -38,6 +38,7 @@ import cytoscape.data.FlagEvent;
 import cytoscape.data.FlagEventListener;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
+import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -106,6 +107,9 @@ public class DisplayBioPaxDetails implements FlagEventListener {
     }
 
     private void displayDetails(String id) {
+        //  Conditionally, set up BP UI
+        CytoscapeWrapper.initBioPaxPlugInUI();
+        
         //  Show the details
         bpPanel.showDetails(id);
 
