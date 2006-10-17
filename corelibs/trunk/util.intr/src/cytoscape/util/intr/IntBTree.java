@@ -20,9 +20,6 @@ public final class IntBTree implements java.io.Serializable
   // This quantity must be at least 3.
   // The author prefers that this quantity be odd because that way nodes
   // are split evenly when they get full.
-  /**
-   * @deprecated Use the no-arg contructor.
-   */
   public final static int DEFAULT_MAX_BRANCHES = 27;
 
   private final int m_maxBranches;
@@ -34,7 +31,19 @@ public final class IntBTree implements java.io.Serializable
    */
   public IntBTree()
   {
-    m_maxBranches = DEFAULT_MAX_BRANCHES;
+    this(DEFAULT_MAX_BRANCHES);
+  }
+
+  /**
+   * Creates a new tree structure with the specified maximum branching
+   * factor.  Overriding the default maximum branching factor is only
+   * useful for testing purposes; there are no performance gains to be had.
+   * @param maxBranches the maximum branching factor of this tree.
+   * @exception IllegalArgumentException if maxBranches is less than three.
+   */
+  public IntBTree(final int maxBranches)
+  {
+    m_maxBranches = maxBranches;
 
     // Letting minimum fill fall below half actually decreases performance by
     // a hair, my tests show.  However, I like the idea of letting nodes fall
@@ -57,23 +66,6 @@ public final class IntBTree implements java.io.Serializable
     //   27              11
     m_minBranches = Math.max(2, (int) (((double) (m_maxBranches + 1)) * 0.4d));
 
-    m_root = new Node(m_maxBranches, true);
-  }
-
-  /**
-   * Creates a new tree structure with the specified maximum branching
-   * factor.  Overriding the default maximum branching factor is only
-   * useful for testing purposes; there are no performance gains to be had.
-   * @param maxBranches the maximum branching factor of this tree.
-   * @exception IllegalArgumentException if maxBranches is less than three.
-   * @deprecated Use the no-arg constructor instead.
-   */
-  public IntBTree(final int maxBranches)
-  {
-    if (maxBranches < 3) throw new IllegalArgumentException
-                           ("maxBranches is less than three");
-    m_maxBranches = maxBranches;
-    m_minBranches = (m_maxBranches + 1) / 2;
     m_root = new Node(m_maxBranches, true);
   }
 
@@ -588,8 +580,6 @@ public final class IntBTree implements java.io.Serializable
    * get the same information, paying the same hit in time complexity.
    * @param x the integer whose count to query.
    * @return the number of entries x currently in this structure.
-   * @deprecated Use searchRange(x, x, false) in place of this method; the
-   *   author may decide to remove this method at some point.
    */
   public final int count(final int x)
   {
