@@ -155,10 +155,6 @@ public interface FixedGraph
    * @return an iteration of edges connecting node0 with node1 in a fashion
    *   specified by boolean input parameters or null if either of node0 or
    *   node1 does not exist in this graph.
-   * @deprecated This method may go away at some point; please use
-   *   edgesAdjacent(int, boolean, boolean, boolean) where it is reasonable
-   *   to do so.
-   * @see #edgesAdjacent(int, boolean, boolean, boolean)
    */
   public IntIterator edgesConnecting(int node0, int node1,
                                      boolean outgoing, boolean incoming,
