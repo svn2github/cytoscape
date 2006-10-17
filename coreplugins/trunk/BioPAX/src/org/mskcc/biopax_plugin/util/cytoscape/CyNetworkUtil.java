@@ -32,7 +32,6 @@
 package org.mskcc.biopax_plugin.util.cytoscape;
 
 import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import java.text.DecimalFormat;
@@ -54,7 +53,7 @@ public class CyNetworkUtil {
      * @return Human Readable String.
      */
     public static String getNetworkStats(CyNetwork network,
-                                         ArrayList warningList) {
+            ArrayList warningList) {
         NumberFormat formatter = new DecimalFormat("#,###,###");
         StringBuffer sb = new StringBuffer();
 

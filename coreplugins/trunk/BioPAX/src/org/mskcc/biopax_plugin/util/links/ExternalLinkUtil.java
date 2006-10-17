@@ -132,7 +132,7 @@ public class ExternalLinkUtil {
      * @return URL String, or null if a URL cannot be constructed.
      */
     public static String getIHOPUrl(String type, ArrayList synList,
-                                    ArrayList dbList, int taxonomyId) {
+            ArrayList dbList, int taxonomyId) {
         if (type.equals(BioPaxConstants.PROTEIN)
                 || type.equals(BioPaxConstants.DNA)
                 || type.equals(BioPaxConstants.RNA)) {
@@ -178,7 +178,7 @@ public class ExternalLinkUtil {
      * dbrefs_1=UNIPROT__AC|P0214,NCBI_GENE__ID=327..
      */
     private static String createDbParameter(ArrayList dbList,
-                                            ArrayList synList) {
+            ArrayList synList) {
         int dbHits = 0;
         int uniProtHits = 0;
         StringBuffer temp = new StringBuffer();
@@ -237,7 +237,7 @@ public class ExternalLinkUtil {
      * @return HTML Link.
      */
     public static String createIHOPLink(String type, ArrayList synList,
-                                        ArrayList linkList, int taxonomyId) {
+            ArrayList linkList, int taxonomyId) {
         String url = getIHOPUrl(type, synList, linkList, taxonomyId);
         if (url != null) {
             StringBuffer buf = new StringBuffer();

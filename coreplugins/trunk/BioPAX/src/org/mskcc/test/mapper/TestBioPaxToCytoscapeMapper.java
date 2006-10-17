@@ -41,9 +41,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
-import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
-import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 
 import java.io.FileReader;
 import java.util.HashMap;
@@ -57,22 +56,22 @@ import java.util.Set;
  */
 public class TestBioPaxToCytoscapeMapper extends TestCase {
 
-	/**
-	 * Test boostrap.
-	 *
-	 * @return Test
-	 */
+    /**
+     * Test boostrap.
+     *
+     * @return Test
+     */
     public static Test suite() {
         // Will dynamically add all methods as tests that begin with 'test'
         // and have no arguments:
         return new TestSuite(TestBioPaxToCytoscapeMapper.class);
     }
 
-	/**
-	 * Test main.
-	 *
-	 * @param args String[]
-	 */
+    /**
+     * Test main.
+     *
+     * @param args String[]
+     */
     public static void main(String[] args) {
         junit.textui.TestRunner.run(suite());
     }
@@ -86,7 +85,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
         FileReader fileReader = new FileReader("testData/biopax_sample1.owl");
         BioPaxUtil bpUtil = new BioPaxUtil(fileReader);
 
-        MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape (bpUtil);
+        MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(bpUtil);
         mapper.doMapping();
 
         CyNetwork cyNetwork = createNetwork("network1", mapper);
@@ -104,7 +103,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
         FileReader fileReader = new FileReader("testData/biopax_complex.owl");
         BioPaxUtil bpUtil = new BioPaxUtil(fileReader);
 
-        MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape (bpUtil);
+        MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(bpUtil);
         mapper.doMapping();
 
         CyNetwork cyNetwork = createNetwork("network1", mapper);
@@ -146,10 +145,10 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
         CyNetwork cyNetwork = Cytoscape.createNetwork(name);
         int nodeIndices[] = mapper.getNodeIndices();
         int edgeIndices[] = mapper.getEdgeIndices();
-        for (int i=0; i<nodeIndices.length; i++) {
+        for (int i = 0; i < nodeIndices.length; i++) {
             cyNetwork.addNode(nodeIndices[i]);
         }
-        for (int i=0; i<edgeIndices.length; i++) {
+        for (int i = 0; i < edgeIndices.length; i++) {
             cyNetwork.addEdge(edgeIndices[i]);
         }
         return cyNetwork;
@@ -164,7 +163,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
         FileReader fileReader = new FileReader("testData/DIP_ppi.owl");
         BioPaxUtil bpUtil = new BioPaxUtil(fileReader);
 
-        MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape (bpUtil);
+        MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(bpUtil);
         mapper.doMapping();
 
         CyNetwork cyNetwork = createNetwork("network1", mapper);
@@ -240,7 +239,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
             if (id.equals("smallMolecule99")) {
                 String label = Cytoscape.getNodeAttributes().getStringAttribute(id,
                         BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
-                assertEquals ("Mg2+", label);
+                assertEquals("Mg2+", label);
             }
             if (nodeMap.containsKey(id)) {
                 nodeMap.put(id, new Integer(1));

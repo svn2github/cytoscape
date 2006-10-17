@@ -14,20 +14,19 @@ package legacy;
  * information instead of computing it inside of this &quot;wrapper&quot;
  * graph framework - that's exactly what this interface is for.
  */
-public interface NodeNeighbors
-{
+public interface NodeNeighbors {
 
-  /**
-   * Returns a neighboring nodes list.<p>
-   *
-   * @param nodeIndex the index of the node whose neighbors we're trying
-   *   to find.
-   * @return a non-repeating list of indices of all nodes B such that
-   *   B is a neighbor of node at index <code>nodeIndex</code>; this method
-   *   never returns <code>null</code>.
-   * @exception IndexOutOfBoundsException if <code>nodeIndex</code> does not
-   *   fall within a suitable interval.
-   */
-  public IndexIterator getNeighboringNodeIndices(int nodeIndex);
+    /**
+     * Returns a neighboring nodes list.<p>
+     *
+     * @param nodeIndex the index of the node whose neighbors we're trying
+     *                  to find.
+     * @return a non-repeating list of indices of all nodes B such that
+     *         B is a neighbor of node at index <code>nodeIndex</code>; this method
+     *         never returns <code>null</code>.
+     * @throws IndexOutOfBoundsException if <code>nodeIndex</code> does not
+     *                                   fall within a suitable interval.
+     */
+    public IndexIterator getNeighboringNodeIndices(int nodeIndex);
 
 }

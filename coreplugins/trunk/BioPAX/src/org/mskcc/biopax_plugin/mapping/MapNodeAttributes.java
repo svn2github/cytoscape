@@ -139,6 +139,9 @@ public class MapNodeAttributes {
     public static final String BIOPAX_PUBLICATION_REFERENCES =
             "biopax.publication_references";
 
+    /**
+     * BioPAX Node Attribute:  XREF_IDs.
+     */
     public static final String BIOPAX_XREF_IDS =
             "biopax.xref_ids";
 
@@ -173,45 +176,44 @@ public class MapNodeAttributes {
             "PHOSPHORYLATION_GRAPHICS";
 
     // strange, cant get this to work with final keyword
-    private static BufferedImage PHOS_NODE = null;
-    private static BufferedImage PHOS_NODE_SELECTED_TOP = null;
-    private static BufferedImage PHOS_NODE_SELECTED_RIGHT = null;
-    private static BufferedImage PHOS_NODE_SELECTED_BOTTOM = null;
-    private static BufferedImage PHOS_NODE_SELECTED_LEFT = null;
+    private static BufferedImage phosNode = null;
+    private static BufferedImage phosNodeSelectedTop = null;
+    private static BufferedImage phosNodeSelectedRight = null;
+    private static BufferedImage phosNodeSelectedBottom = null;
+    private static BufferedImage phosNodeSelectedLeft = null;
 
     static {
         try {
-            PHOS_NODE = javax.imageio.ImageIO.read
+            phosNode = javax.imageio.ImageIO.read
                     (MapNodeAttributes.class.getResource
                             ("resources/phos-node.jpg"));
-            PHOS_NODE_SELECTED_TOP = javax.imageio.ImageIO.read
+            phosNodeSelectedTop = javax.imageio.ImageIO.read
                     (MapNodeAttributes.class.getResource
                             ("resources/phos-node-selected-top.jpg"));
-            PHOS_NODE_SELECTED_RIGHT = javax.imageio.ImageIO.read
+            phosNodeSelectedRight = javax.imageio.ImageIO.read
                     (MapNodeAttributes.class.getResource
                             ("resources/phos-node-selected-right.jpg"));
-            PHOS_NODE_SELECTED_BOTTOM = javax.imageio.ImageIO.read
+            phosNodeSelectedBottom = javax.imageio.ImageIO.read
                     (MapNodeAttributes.class.getResource
                             ("resources/phos-node-selected-bottom.jpg"));
-            PHOS_NODE_SELECTED_LEFT = javax.imageio.ImageIO.read
+            phosNodeSelectedLeft = javax.imageio.ImageIO.read
                     (MapNodeAttributes.class.getResource
                             ("resources/phos-node-selected-left.jpg"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static BufferedImage[] CUSTOM_PHOS_GRAPHICS =
-            {PHOS_NODE_SELECTED_TOP, PHOS_NODE_SELECTED_RIGHT,
-                    PHOS_NODE_SELECTED_BOTTOM, PHOS_NODE_SELECTED_LEFT};
+    private static BufferedImage[] customPhosGraphics =
+            {phosNodeSelectedTop, phosNodeSelectedRight,
+                    phosNodeSelectedBottom, phosNodeSelectedLeft};
 
     /**
      * Maps biopax details to node attributes.
      * This class is based on MapBioPaxToCytoscape.
      *
-     * @param bpUtil    BioPaxUtil
-     * @param nodeList  ArrayList of Nodes
+     * @param bpUtil   BioPaxUtil
+     * @param nodeList ArrayList of Nodes
      */
     public static void doMapping(BioPaxUtil bpUtil, ArrayList nodeList) {
 
@@ -335,7 +337,7 @@ public class MapNodeAttributes {
                 }
 
                 //  add all xref ids for global lookup
-                List idList = addXRefIds (bpParser.getAllXRefs());
+                List idList = addXRefIds(bpParser.getAllXRefs());
                 if (idList != null) {
                     nodeAttributes.setAttributeList(nodeID, BIOPAX_XREF_IDS, idList);
                 }
@@ -383,7 +385,7 @@ public class MapNodeAttributes {
                         String countStr = (String) mhmap.getAttributeValue
                                 (node.getIdentifier(),
                                         MapNodeAttributes.
-                                        BIOPAX_CHEMICAL_MODIFICATIONS_MAP, key);
+                                                BIOPAX_CHEMICAL_MODIFICATIONS_MAP, key);
                         count = ((Integer) Integer.valueOf
                                 (countStr)).intValue();
                         break;
@@ -447,7 +449,8 @@ public class MapNodeAttributes {
                         "Indicates the database source of the entity.");
         nodeAttributes.setAttributeDescription(BIOPAX_XREF_IDS,
                 "External reference IDs associated with this entity.  For example, "
-                + "a protein record may be annotated with UNIPROT or REFSeq accession numbers.");
+                        + "a protein record may be annotated with UNIPROT or "
+                        + "REFSeq accession numbers.");
 
         //  Hide these attributes from the user, as they currently
         //  contain HTML, and don't make much sense within the default
@@ -488,7 +491,7 @@ public class MapNodeAttributes {
             BufferedImage image = null;
             if (shapeType.equals(PHOSPHORYLATION_GRAPHICS)) {
                 image = (cyNetwork.isSelected(node))
-                        ? CUSTOM_PHOS_GRAPHICS[lc] : PHOS_NODE;
+                        ? customPhosGraphics[lc] : phosNode;
             }
 
             // set rect
@@ -498,8 +501,7 @@ public class MapNodeAttributes {
             Paint paint = null;
             try {
                 paint = new java.awt.TexturePaint(image, rect);
-            }
-            catch (Exception exc) {
+            } catch (Exception exc) {
                 paint = java.awt.Color.black;
             }
 
@@ -544,8 +546,8 @@ public class MapNodeAttributes {
         // create and return rect
         return new java.awt.geom.Rectangle2D.Double(startX[modificationCount]
                 + (-1 * (image.getWidth() / 2)) * scale,
-                startY[modificationCount] + (-1 *
-                        (image.getHeight() / 2)) * scale,
+                startY[modificationCount] + (-1
+                * (image.getHeight() / 2)) * scale,
                 (double) image.getWidth() * scale,
                 (double) image.getHeight() * scale);
     }
@@ -710,12 +712,12 @@ public class MapNodeAttributes {
         return null;
     }
 
-    private static ArrayList addXRefIds (ArrayList xrefList) {
+    private static ArrayList addXRefIds(ArrayList xrefList) {
         ArrayList idList = new ArrayList();
         if (xrefList != null && xrefList.size() > 0) {
             for (int i = 0; i < xrefList.size(); i++) {
                 ExternalLink link = (ExternalLink) xrefList.get(i);
-                    idList.add(link.getDbName() + ":" + link.getId());
+                idList.add(link.getDbName() + ":" + link.getId());
             }
         }
         return idList;

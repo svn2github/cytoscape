@@ -172,8 +172,9 @@ public class BioPaxUtil {
 
     /**
      * Gets the RDF ID / About ID.
+     *
      * @param e Element Object.
-     * @return  RDF ID.
+     * @return RDF ID.
      */
     public static String extractRdfId(Element e) {
         //  First, try to obtain RDF ID
@@ -183,15 +184,16 @@ public class BioPaxUtil {
         //  If RDF ID Fails, try using the RDF About Attribute
         if (id == null) {
             id = e.getAttributeValue
-                (RdfConstants.ABOUT_ATTRIBUTE, RdfConstants.RDF_NAMESPACE);
+                    (RdfConstants.ABOUT_ATTRIBUTE, RdfConstants.RDF_NAMESPACE);
         }
         return id;
     }
 
     /**
      * Gets the RDF ID / About Attribute.
+     *
      * @param e Element Object.
-     * @return  RDF ID.
+     * @return RDF ID.
      */
     public static Attribute extractRdfIdAttribute(Element e) {
         //  First, try to obtain RDF ID
@@ -200,7 +202,7 @@ public class BioPaxUtil {
 
         if (idAttribute == null) {
             idAttribute = e.getAttribute(RdfConstants.ABOUT_ATTRIBUTE,
-                RdfConstants.RDF_NAMESPACE);
+                    RdfConstants.RDF_NAMESPACE);
         }
         return idAttribute;
     }

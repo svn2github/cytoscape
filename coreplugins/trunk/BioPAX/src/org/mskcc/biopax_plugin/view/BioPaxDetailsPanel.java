@@ -33,10 +33,6 @@ package org.mskcc.biopax_plugin.view;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.attr.CountedIterator;
-
 import org.mskcc.biopax_plugin.action.LaunchExternalBrowser;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
@@ -159,15 +155,18 @@ public class BioPaxDetailsPanel extends JPanel {
         addType(nodeID, buf);
 
         // cellular location
-        addAttributeList(nodeID, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS, "Cellular Location(s)", buf);
+        addAttributeList(nodeID, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS,
+                "Cellular Location(s)", buf);
 
         // node label
-        stringRef = nodeAttributes.getStringAttribute(nodeID, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+        stringRef = nodeAttributes.getStringAttribute(nodeID,
+                BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
         addField("Label", stringRef, buf);
 
         // name, shortname
         stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_NAME);
-        String shortName = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_SHORT_NAME);
+        String shortName = nodeAttributes.getStringAttribute(nodeID,
+                MapNodeAttributes.BIOPAX_SHORT_NAME);
         if (shortName != null && shortName.length() > 0 && !stringRef.equals(shortName)) {
             addField("Short Name", shortName, buf);
             addField("Name", stringRef, buf);
@@ -180,7 +179,7 @@ public class BioPaxDetailsPanel extends JPanel {
                 "Chemical Modifications", buf);
 
         // synonyms
-        addAttributeList (nodeID, MapNodeAttributes.BIOPAX_SYNONYMS, "Synonyms", buf);
+        addAttributeList(nodeID, MapNodeAttributes.BIOPAX_SYNONYMS, "Synonyms", buf);
 
         // organism
         stringRef = nodeAttributes.getStringAttribute(nodeID,
@@ -242,13 +241,15 @@ public class BioPaxDetailsPanel extends JPanel {
     }
 
     private void addType(String nodeID, StringBuffer buf) {
-        String type = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_ENTITY_TYPE);
+        String type = nodeAttributes.getStringAttribute(nodeID,
+                MapNodeAttributes.BIOPAX_ENTITY_TYPE);
         addField("Type", type, buf);
     }
 
     private void addDataSource(String nodeID, StringBuffer buf) {
 
-        String dataSources = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_DATA_SOURCES);
+        String dataSources = nodeAttributes.getStringAttribute(nodeID,
+                MapNodeAttributes.BIOPAX_DATA_SOURCES);
 
         if (dataSources != null) {
             appendHeader("Data Sources", buf);
@@ -258,7 +259,8 @@ public class BioPaxDetailsPanel extends JPanel {
 
     private void addPublicationXRefs(String nodeID, StringBuffer buf) {
 
-        String xrefs = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_PUBLICATION_REFERENCES);
+        String xrefs = nodeAttributes.getStringAttribute(nodeID,
+                MapNodeAttributes.BIOPAX_PUBLICATION_REFERENCES);
 
         if (xrefs != null) {
             appendHeader("Publication References", buf);
@@ -268,7 +270,8 @@ public class BioPaxDetailsPanel extends JPanel {
 
     private void addUnificationReferences(String nodeID, StringBuffer buf) {
 
-        String xrefs = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_UNIFICATION_REFERENCES);
+        String xrefs = nodeAttributes.getStringAttribute(nodeID,
+                MapNodeAttributes.BIOPAX_UNIFICATION_REFERENCES);
 
         if (xrefs != null) {
             appendHeader("Unification References", buf);
@@ -278,7 +281,8 @@ public class BioPaxDetailsPanel extends JPanel {
 
     private void addRelationshipReferences(String nodeID, StringBuffer buf) {
 
-        String xrefs = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_RELATIONSHIP_REFERENCES);
+        String xrefs = nodeAttributes.getStringAttribute(nodeID,
+                MapNodeAttributes.BIOPAX_RELATIONSHIP_REFERENCES);
 
         if (xrefs != null) {
             appendHeader("Relationship References", buf);
@@ -298,8 +302,8 @@ public class BioPaxDetailsPanel extends JPanel {
                     String plainEnglish = BioPaxPlainEnglish.getTypeInPlainEnglish(listItem);
                     displayString += "- " + ((plainEnglish != null) ? plainEnglish : listItem);
                     if (lc < list.size() - 1) {
-						displayString += "<BR>";
-					}
+                        displayString += "<BR>";
+                    }
                 }
             }
         }
@@ -339,7 +343,8 @@ public class BioPaxDetailsPanel extends JPanel {
 
     private void addIHOPLinks(String nodeID, StringBuffer buf) {
 
-        String ihopLinks = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_IHOP_LINKS);
+        String ihopLinks = nodeAttributes.getStringAttribute(nodeID,
+                MapNodeAttributes.BIOPAX_IHOP_LINKS);
 
         if (ihopLinks != null) {
             appendData(ihopLinks, buf, true);
@@ -385,7 +390,7 @@ class MyEditorKit extends HTMLEditorKit {
         }
 
         protected SizeRequirements calculateMinorAxisRequirements(int axis,
-                                                                  SizeRequirements r) {
+                SizeRequirements r) {
             SizeRequirements sup = super.calculateMinorAxisRequirements(axis,
                     r);
             sup.minimum = 1;

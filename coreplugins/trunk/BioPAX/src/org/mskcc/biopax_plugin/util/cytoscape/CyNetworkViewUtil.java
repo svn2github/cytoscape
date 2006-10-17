@@ -31,29 +31,25 @@
  **/
 package org.mskcc.biopax_plugin.util.cytoscape;
 
-import cytoscape.CyNode;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
-import cytoscape.view.CyNetworkView;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
-import giny.view.NodeView;
+import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
-
-import legacy.util.GraphConverter;
-import legacy.layout.impl.SpringEmbeddedLayouter2;
+import giny.view.NodeView;
 import legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
-
+import legacy.layout.impl.SpringEmbeddedLayouter2;
+import legacy.util.GraphConverter;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
+import javax.swing.*;
 import java.util.Iterator;
-
-import javax.swing.SwingUtilities;
 
 /**
  * A Utility Class for Creating CyNetwork Views.
@@ -62,7 +58,7 @@ import javax.swing.SwingUtilities;
  */
 public class CyNetworkViewUtil {
 
-    /**          
+    /**
      * Creates a CyNetworkView from the specified CyNetwork.
      *
      * @param cyNetwork           CyNetwork Object.
@@ -72,7 +68,7 @@ public class CyNetworkViewUtil {
      */
     public static void createNetworkView(CyNetwork cyNetwork, TaskMonitor
             taskMonitor, boolean executeSpringLayout,
-                         boolean applyVisualStyle) {
+            boolean applyVisualStyle) {
 
         // hack to make sure progress bar get set to 100%
         // after network creation is complete
@@ -94,7 +90,7 @@ public class CyNetworkViewUtil {
             if (applyVisualStyle) {
                 taskMonitor.setStatus("Applying Visual Styles");
                 Cytoscape.getDesktop().getVizMapManager().applyAppearances();
-				MapNodeAttributes.customNodes(networkView);
+                MapNodeAttributes.customNodes(networkView);
             }
 
             //  Lastly, make the GraphView Canvas Visible.
@@ -104,7 +100,7 @@ public class CyNetworkViewUtil {
                     DingNetworkView view = (DingNetworkView) Cytoscape
                             .getCurrentNetworkView();
                     view.setGraphLOD(new CyGraphLOD());
-					((DGraphView) view).fitContent();
+                    ((DGraphView) view).fitContent();
                 }
             });
         }
@@ -119,10 +115,10 @@ public class CyNetworkViewUtil {
      *
      * @param cyNetwork        CyNetwork
      * @param applyVisualStyle Flag to Apply Current Visual Style.
-	 *
-	 * @return CyNetworkView
+     * @return CyNetworkView
      */
-    private static CyNetworkView createCyNetworkView(CyNetwork cyNetwork, boolean applyVisualStyle) {
+    private static CyNetworkView createCyNetworkView(CyNetwork cyNetwork,
+            boolean applyVisualStyle) {
         final DingNetworkView view = new DingNetworkView(cyNetwork,
                 cyNetwork.getTitle());
 
@@ -140,28 +136,28 @@ public class CyNetworkViewUtil {
                 (cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
                         view);
 
-		// outta here
-		return view;
+        // outta here
+        return view;
     }
 
     /**
      * Executes the Spring Embedded Layout2.
      *
-	 * @param networkView CyNetworkView
+     * @param networkView CyNetworkView
      * @param taskMonitor TaskMonitor
      */
     private static void executeLayout(CyNetworkView networkView, TaskMonitor taskMonitor) {
 
-		// move a network node to jumpstart the SpringEmbeddedLayouter2
-		Iterator i = networkView.getNetwork().nodesIterator();
-		if (i.hasNext()) {
-			CyNode node = (CyNode) i.next();
-			NodeView nodeView = networkView.getNodeView(node);
-			double xPos = nodeView.getXPosition();
-			double yPos = nodeView.getYPosition();
-			nodeView.setXPosition(xPos + 2500);
-			nodeView.setYPosition(yPos + 2500);
-		}
+        // move a network node to jumpstart the SpringEmbeddedLayouter2
+        Iterator i = networkView.getNetwork().nodesIterator();
+        if (i.hasNext()) {
+            CyNode node = (CyNode) i.next();
+            NodeView nodeView = networkView.getNodeView(node);
+            double xPos = nodeView.getXPosition();
+            double yPos = nodeView.getYPosition();
+            nodeView.setXPosition(xPos + 2500);
+            nodeView.setYPosition(yPos + 2500);
+        }
 
         final MutablePolyEdgeGraphLayout nativeGraph =
                 GraphConverter.getGraphCopy(0.0d, false, false);

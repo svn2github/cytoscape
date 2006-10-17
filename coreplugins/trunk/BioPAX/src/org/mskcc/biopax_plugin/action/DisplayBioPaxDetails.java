@@ -36,9 +36,8 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.FlagEvent;
 import cytoscape.data.FlagEventListener;
-
-import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
+import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -102,8 +101,8 @@ public class DisplayBioPaxDetails implements FlagEventListener {
             }
         }
 
-		// update custom nodes
-		MapNodeAttributes.customNodes(Cytoscape.getCurrentNetworkView());
+        // update custom nodes
+        MapNodeAttributes.customNodes(Cytoscape.getCurrentNetworkView());
     }
 
     private void displayDetails(String id) {
@@ -141,8 +140,8 @@ public class DisplayBioPaxDetails implements FlagEventListener {
         } else {
             totalNumNodesSelected -= set.size();
             if (totalNumNodesSelected < 0) {
-				totalNumNodesSelected = 0;
-			}
+                totalNumNodesSelected = 0;
+            }
         }
     }
 }

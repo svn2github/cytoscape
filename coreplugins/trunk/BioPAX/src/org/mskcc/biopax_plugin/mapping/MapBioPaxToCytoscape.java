@@ -176,7 +176,7 @@ public class MapBioPaxToCytoscape {
     /**
      * Constructor.
      *
-     * @param bpUtil    BioPAX Utility Class.
+     * @param bpUtil BioPAX Utility Class.
      */
     public MapBioPaxToCytoscape(BioPaxUtil bpUtil) {
         this.bpUtil = bpUtil;
@@ -211,11 +211,12 @@ public class MapBioPaxToCytoscape {
 
     /**
      * Gets all node indices.
+     *
      * @return array of root graph indices.
      */
     public int[] getNodeIndices() {
         int nodeIndices[] = new int[nodeList.size()];
-        for (int i=0; i<nodeList.size(); i++) {
+        for (int i = 0; i < nodeList.size(); i++) {
             CyNode node = (CyNode) nodeList.get(i);
             nodeIndices[i] = node.getRootGraphIndex();
         }
@@ -224,11 +225,12 @@ public class MapBioPaxToCytoscape {
 
     /**
      * Gets all edge indices.
+     *
      * @return array of root graph indices.
      */
     public int[] getEdgeIndices() {
         int edgeIndices[] = new int[edgeList.size()];
-        for (int i=0; i<edgeList.size(); i++) {
+        for (int i = 0; i < edgeList.size(); i++) {
             CyEdge edge = (CyEdge) edgeList.get(i);
             edgeIndices[i] = edge.getRootGraphIndex();
         }
@@ -278,7 +280,7 @@ public class MapBioPaxToCytoscape {
         if (node != null) {
             String pathwayName = nodeAttributes.getStringAttribute
                     (node.getIdentifier(),
-                    MapNodeAttributes.BIOPAX_PATHWAY_NAME);
+                            MapNodeAttributes.BIOPAX_PATHWAY_NAME);
             System.out.println("Setting network name:  " + pathwayName);
             if (pathwayName != null) {
                 cyNetwork.setTitle(pathwayName);
@@ -797,7 +799,7 @@ public class MapBioPaxToCytoscape {
         //  set node attributes
         setNodeAttributes(node, nodeName, physicalEntity.getName(), id,
                 (isComplexOrInteraction)
-                ? null : nodeLabel);
+                        ? null : nodeLabel);
         CyAttributes attributes = Cytoscape.getNodeAttributes();
         Map modificationsMap = (chemicalModificationsWrapper != null)
                 ? chemicalModificationsWrapper.getMap() : null;
@@ -812,7 +814,7 @@ public class MapBioPaxToCytoscape {
             //  this cannot be represented as a SimpleMap, and must be represented as
             //  a multi-hashmap.  This second form is used primarily by the custom
             //  rendering engine for, e.g. drawing number of phosphorylation sies.
-            
+
             //  Store List of Chemical Modifications Only
             Set keySet = modificationsMap.keySet();
             List list = new ArrayList();
@@ -825,8 +827,7 @@ public class MapBioPaxToCytoscape {
                     MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP,
                     modificationsMap);
             if (modificationsMap.containsKey
-                    (BioPaxConstants.PHOSPHORYLATION_SITE))
-            {
+                    (BioPaxConstants.PHOSPHORYLATION_SITE)) {
                 attributes.setAttribute(cyNodeId,
                         MapNodeAttributes.BIOPAX_ENTITY_TYPE,
                         BioPaxConstants.PROTEIN_PHOSPHORYLATED);
@@ -1027,7 +1028,7 @@ public class MapBioPaxToCytoscape {
                             (Element) physicalEntityList.get(0);
                     String id = physicalEntityElement.getAttributeValue
                             (RdfConstants.RESOURCE_ATTRIBUTE,
-                            RdfConstants.RDF_NAMESPACE);
+                                    RdfConstants.RDF_NAMESPACE);
                     if (id == null || id.length() == 0) {
                         continue;
                     }
@@ -1095,7 +1096,7 @@ public class MapBioPaxToCytoscape {
             String attributeName, Map map) {
 
         // our key format
-        final byte[] MHM_KEYFORMAT = new byte[]{
+        final byte[] mhmKeyFormat = new byte[]{
                 MultiHashMapDefinition.TYPE_STRING
         };
 
@@ -1105,12 +1106,11 @@ public class MapBioPaxToCytoscape {
         try {
             byte[] vals = mmapDefinition.getAttributeKeyspaceDimensionTypes
                     (attributeName);
-        }
-        catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             // define the multihashmap attribute
             mmapDefinition.defineAttribute(attributeName,
                     MultiHashMapDefinition.TYPE_STRING,
-                    MHM_KEYFORMAT);
+                    mhmKeyFormat);
         }
 
         // add the map attributes

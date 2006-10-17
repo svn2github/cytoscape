@@ -54,7 +54,7 @@ public class AboutPanel extends JPanel {
      * @param bgColor      Background Color.
      */
     public AboutPanel(String title, int majorVersion, int minorVersion,
-                      Color bgColor) {
+            Color bgColor) {
         this.setBackground(bgColor);
         this.setLayout(new BorderLayout());
         JTextPane textPane = new JTextPane();

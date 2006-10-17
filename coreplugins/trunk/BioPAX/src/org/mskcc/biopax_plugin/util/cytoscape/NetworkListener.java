@@ -257,8 +257,8 @@ public class NetworkListener implements PropertyChangeListener {
 
         // outta here
         if (b == null) {
-			return false;
-		}
+            return false;
+        }
         return (b.booleanValue());
     }
 }

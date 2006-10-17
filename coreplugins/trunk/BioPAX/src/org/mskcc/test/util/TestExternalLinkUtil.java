@@ -2,7 +2,7 @@
 //------------------------------------------------------------------------------
 /** Copyright (c) 2006 Memorial Sloan-Kettering Cancer Center.
  **
- ** Code written by: Ethan Cerami
+ ** Code written by: Ethan Cerami, Benjamin Gross.
  ** Authors: Ethan Cerami, Gary Bader, Chris Sander
  **
  ** This library is free software; you can redistribute it and/or modify it
@@ -47,22 +47,22 @@ import java.util.ArrayList;
  */
 public class TestExternalLinkUtil extends TestCase {
 
-	/**
-	 * Test bootstrap
-	 *
-	 * @return Test
-	 */
+    /**
+     * Test bootstrap
+     *
+     * @return Test
+     */
     public static Test suite() {
         // Will dynamically add all methods as tests that begin with 'test'
         // and have no arguments:
         return new TestSuite(TestExternalLinkUtil.class);
     }
 
-	/**
-	 * Test main
-	 *
-	 * @param args String[]
-	 */
+    /**
+     * Test main
+     *
+     * @param args String[]
+     */
     public static void main(String[] args) {
         junit.textui.TestRunner.run(suite());
     }
@@ -98,7 +98,8 @@ public class TestExternalLinkUtil extends TestCase {
         //  Verify a Sample URL to IHOP
         String url = ExternalLinkUtil.getIHOPUrl(BioPaxConstants.PROTEIN,
                 synList, dbList, 9606);
-        assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD|AIS|TFM&dbrefs_1=UNIPROT__AC|P10275,NCBI_GENE__ID|367&ncbi_tax_id_1=9606", url);
+        assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD|"
+            + "AIS|TFM&dbrefs_1=UNIPROT__AC|P10275,NCBI_GENE__ID|367&ncbi_tax_id_1=9606", url);
 
         //  Verify that no link is generated for small molecules
         url = ExternalLinkUtil.getIHOPUrl(BioPaxConstants.SMALL_MOLECULE,
@@ -117,7 +118,8 @@ public class TestExternalLinkUtil extends TestCase {
         dbList.add(new ExternalLink("Reactome", "XYZ"));
         url = ExternalLinkUtil.getIHOPUrl(BioPaxConstants.PROTEIN, synList,
                 dbList, 9606);
-        assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD|AIS|TFM&ncbi_tax_id_1=9606", url);
+        assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD|AIS|TFM&ncbi_tax_id_1=9606",
+                url);
 
         //  Try using no Synonyms + XRefs not supported by IHOP
         //  Should result in null.
@@ -135,7 +137,8 @@ public class TestExternalLinkUtil extends TestCase {
         ExternalLinkUtil.useUrlEncoding(true);
         url = ExternalLinkUtil.getIHOPUrl(BioPaxConstants.PROTEIN,
                 synList, dbList, 9606);
-        assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD%7CAIS%7CTFM&ncbi_tax_id_1=9606", url);
+        assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD%7"
+             + "CAIS%7CTFM&ncbi_tax_id_1=9606", url);
 
         //  Test Special Case where we have exactly dbRef of type UniProt,
         //  and no synonyms
@@ -150,7 +153,8 @@ public class TestExternalLinkUtil extends TestCase {
         synList.add("TNF");
         url = ExternalLinkUtil.getIHOPUrl(BioPaxConstants.PROTEIN,
                 synList, dbList, 9606);
-        assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=TNF&dbrefs_1=UNIPROT__AC%7CP10275&ncbi_tax_id_1=9606",
+        assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=TNF&dbrefs_1="
+                + "UNIPROT__AC%7CP10275&ncbi_tax_id_1=9606",
                 url);
     }
 }
