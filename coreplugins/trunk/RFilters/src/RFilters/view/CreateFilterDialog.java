@@ -56,7 +56,7 @@ public class CreateFilterDialog extends JDialog{
 		    FilterEditor selectedEditor = (FilterEditor)filterEditorList.getSelectedValue();
 		    Filter newFilter = selectedEditor.createDefaultFilter();
 		    FilterManager.defaultManager().addFilter(newFilter);
-		    CreateFilterDialog.this.hide();
+		    CreateFilterDialog.this.setVisible(false);
 		}
 	    });
 	southPanel.add(goButton);

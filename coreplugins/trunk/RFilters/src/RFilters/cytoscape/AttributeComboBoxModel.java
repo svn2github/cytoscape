@@ -113,7 +113,7 @@ class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
       return;
 						*/
 
-				String [] na = Cytoscape.getNodeAttributesList();
+				String [] na = Cytoscape.getNodeAttributes().getAttributeNames();
 				attributeList = new Vector();
 				for ( int idx = 0; idx < na.length; idx++) {
 						if(attributeClass.isAssignableFrom(type2Class(nodeAttributes.getType(na[idx])))){
@@ -154,12 +154,12 @@ class EdgeAttributeComboBoxModel extends AttributeComboBoxModel{
     else 
       return;
 						*/
-    String [] ea = Cytoscape.getEdgeAttributesList();
+    String [] ea = Cytoscape.getEdgeAttributes().getAttributeNames(); 
     attributeList = new Vector();
-    for ( int idx = 0; idx < ea.length; idx++) {
-								if(attributeClass.isAssignableFrom(type2Class(edgeAttributes.getType(ea[idx])))){
-												attributeList.add(ea[idx]);
-								}
+      for ( int idx = 0; idx < ea.length; idx++) {
+		if(attributeClass.isAssignableFrom(type2Class(edgeAttributes.getType(ea[idx])))){
+		attributeList.add(ea[idx]);
+      }
       notifyListeners();
     }
   }

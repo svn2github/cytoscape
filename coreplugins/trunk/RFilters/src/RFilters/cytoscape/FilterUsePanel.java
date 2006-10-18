@@ -102,7 +102,7 @@ public class FilterUsePanel extends JPanel
       if (createFilterDialog == null){
         createFilterDialog = new CreateFilterDialog(FilterEditorManager.defaultManager());
       }
-      createFilterDialog.show();
+      createFilterDialog.setVisible(true);
     }
     if ( e.getSource() == removeButton ) {
       Filter filter = filterListPanel.getSelectedFilter();
@@ -121,10 +121,10 @@ public class FilterUsePanel extends JPanel
     if (passes ) {
       
       if ( object instanceof Node ) {
-        Cytoscape.getCurrentNetwork().setFlagged((Node)object,true);
+        Cytoscape.getCurrentNetwork().setSelectedNodeState((Node)object,true);
       } 
       else if ( object instanceof Edge ) {
-        Cytoscape.getCurrentNetwork().setFlagged((Edge)object,true);
+        Cytoscape.getCurrentNetwork().setSelectedEdgeState((Edge)object,true);
       } 
     }
   }
