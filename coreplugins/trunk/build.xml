@@ -27,8 +27,8 @@
     <copy todir="${build.dir}" file="AutomaticLayout/lib/cytoscape-graph-layout.jar"/>
     <copy todir="${build.dir}" file="AutomaticLayout/lib/cytoscape-graph-legacy.jar"/>
     <copy todir="${build.dir}" file="GraphMerge/GraphMerge.jar"/>
-    <copy todir="${build.dir}" file="QuickFind/plugins/QuickFind.jar"/>
-    <copy todir="${build.dir}" file="BioPAX/jars/biopax.jar"/>
+    <copy todir="${build.dir}" file="QuickFind/plugins/quick_find.jar"/>
+    <copy todir="${build.dir}" file="BioPAX/build/jars/biopax.jar"/>
   </target>
 
   <!-- clean all coreplugin projects  -->
