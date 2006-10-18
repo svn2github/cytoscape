@@ -62,6 +62,7 @@
                 <javac debug="Yes" 
 		       srcdir="${src.dir}" 
 		       destdir="${build.dir}"
+		       deprecation="true"
 		       classpathref="plugin.classpath"/>
 	</target>
   	

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build.xml - Build file for Cytoscape BioPAX Plug In -->
-<project basedir="." default="all" name="Cytoscape BioPAX PlugIn">
+<project  default="all" name="Cytoscape BioPAX PlugIn">
     <!-- Version Numbers -->
     <property name="biopax_version" value="0_5"/>
     <!--  Define Check Style Task -->
@@ -49,6 +49,7 @@
         <mkdir dir="${build.dir}/docs"/>
         <mkdir dir="${build.classes}"/>
         <mkdir dir="${jars.dir}"/>
+	<echo>"basedir ${basedir}"</echo>
     </target>
 
     <!--  Target to clean out all directories -->
@@ -121,12 +122,13 @@
         <delete dir="${junit.dir}"/>
         <mkdir dir="${junit.dir}"/>
         <mkdir dir="${junit.dir}/reports"/>
-        <junit printsummary="yes" fork="yes" haltonfailure="yes">
+        <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
             <formatter type="plain" usefile="false"/>
             <test name="org.mskcc.test.AllTest"/>
             <classpath refid="classpath"/>
         </junit>
     </target>
+
 
     <!--  Builds and tests everything -->
     <target depends="jar,test" description="Builds and tests everything" name="all"/>
