@@ -47,8 +47,8 @@
 package cytoscape.data.readers;
 //--------------------------------------------------------------------------------------
 import junit.framework.*;
-import java.io.*;
-import java.util.*;
+import java.net.URL;
+import java.io.IOException;
 import cytoscape.data.readers.TextJarReader;
 import cytoscape.AllTests;
 //-----------------------------------------------------------------------------------------
@@ -60,26 +60,44 @@ public TextJarReaderTest (String name)
 {
   super (name);
 }
-//------------------------------------------------------------------------------
-public void setUp () throws Exception
-{
-  }
-//------------------------------------------------------------------------------
-public void tearDown () throws Exception
-{
-}
-//------------------------------------------------------------------------------
-public void testSimple () throws Exception
-{ 
- //  AllTests.standardOut("testCtor");
-//   TextJarReader reader = new TextJarReader ("jabberwocky.txt");
-//   if (AllTests.runAllTests()) {
-//       reader = new TextJarReader ("jabberwocky.txt");
-//   }
-//   int count = reader.read ();
-//   String text = reader.getText ();
 
-} // testSimple
+//------------------------------------------------------------------------------
+public void testOldSchool () throws Exception
+{ 
+	TextJarReader reader = new TextJarReader ("jar://vizmap.props");
+	int count = reader.read ();
+	String text = reader.getText ();
+	assertTrue(text.length() > 0);
+}
+
+public void testNewSchool () throws Exception
+{ 
+	// rather than hardcoding the url, do it this way because
+	// we won't know where the jar file actually lives
+	// While this may not appear like it's testing anything it
+	// is.  This only makes sure the url is constructed
+	// properly.
+	URL url = getClass().getResource("/vizmap.props");
+
+	TextJarReader reader = new TextJarReader (url.toString());
+	int count = reader.read ();
+	String text = reader.getText ();
+	System.out.println(text);
+	assertTrue(text.length() > 0);
+}
+
+public void testBadURL() throws Exception
+{ 
+	URL url = new URL("http://google.com");
+	try {
+		TextJarReader reader = new TextJarReader (url.toString());
+	} catch (IOException ioe) {
+		assertTrue(1==1);
+		return;
+	}
+	fail("didn't catch an expected exception for url: " + url.toString());
+}
+
 //-------------------------------------------------------------------------
 public static void main (String[] args) 
 {
