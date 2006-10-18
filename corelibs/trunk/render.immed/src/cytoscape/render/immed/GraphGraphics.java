@@ -101,7 +101,7 @@ public final class GraphGraphics
   private final Line2D.Double m_line2d = new Line2D.Double();
   private final double[] m_polyCoords = // I need this for extra precision.
     new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
-  private final HashMap m_customShapes = new HashMap();
+  private final HashMap<Byte,double[]> m_customShapes = new HashMap<Byte,double[]>();
   private final double[] m_ptsBuff = new double[4];
   private final EdgeAnchors m_noAnchors = new EdgeAnchors() {
       public final int numAnchors() { return 0; }
@@ -704,9 +704,8 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher"); }
-    final Object o = m_customShapes.get(new Byte(customShape));
-    if (o == null) return null;
-    final double[] dCoords = (double[]) o;
+    final double[] dCoords =  m_customShapes.get(new Byte(customShape));
+    if (dCoords == null) return null;
     final float[] returnThis = new float[dCoords.length];
     for (int i = 0; i < returnThis.length; i++) {
       returnThis[i] = (float) dCoords[i]; }
@@ -726,17 +725,17 @@ public final class GraphGraphics
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
-          ("calling thread is not AWT event dispatcher"); }
+          ("calling thread is not AWT event dispatcher"); 
+    }
     // I define this error check outside the scope of m_debug because
     // clobbering existing custom node shape definitions could be major.
     if (m_lastCustomShapeType != s_last_shape)
       throw new IllegalStateException
         ("a custom node shape is already defined in this GraphGraphics");
-    final Iterator oldEntries = grafx.m_customShapes.entrySet().iterator();
-    while (oldEntries.hasNext()) {
-      final Map.Entry entry = (Map.Entry) oldEntries.next();
+    for ( Map.Entry<Byte,double[]> entry : grafx.m_customShapes.entrySet() ) {
       m_customShapes.put(entry.getKey(), entry.getValue());
-      m_lastCustomShapeType++; }
+      m_lastCustomShapeType++; 
+    }
   }
 
   /*
@@ -1258,6 +1257,7 @@ public final class GraphGraphics
     }
   }
 
+  @SuppressWarnings("fallthrough")
   private final void edgeFullDebug(final byte arrow0Type,
                                    final float arrow0Size,
                                    final byte arrow1Type,
