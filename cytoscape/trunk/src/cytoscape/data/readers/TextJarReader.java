@@ -36,13 +36,6 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// TextJarReader.java
-
-
-//  $Revision$ 
-//  $Date$
-//  $Author$
-
 package cytoscape.data.readers;
 
 import java.io.*;
@@ -51,47 +44,56 @@ import java.util.jar.*;
 import java.net.*;
 
 import cytoscape.*;
-//---------------------------------------------------------------------------
+
 public class TextJarReader {
-  String filename;
-  InputStreamReader reader;
-  StringBuffer sb;
-//---------------------------------------------------------------------------
-public TextJarReader (String URI) throws IOException {
-  sb = new StringBuffer ();
-  filename = URI.substring (6);
-  //we've created a new class loader that is used to load plugins and also
-  //should bootstrap to the class loader that loads the Cytoscape core classes
-  //However, we can't use it until it's been instantiated, so if we get a null
-  //reference then we'll fall back to the class loader that loaded this class
-  ClassLoader cl = CytoscapeInit.getClassLoader();
-  if (cl == null) {cl = this.getClass().getClassLoader();}
-  URL url = cl.getResource (filename);
-  JarURLConnection juc = (JarURLConnection) url.openConnection ();
-  JarFile jarFile = juc.getJarFile();
-  InputStream is = jarFile.getInputStream (jarFile.getJarEntry (filename));
-  reader = new InputStreamReader (is);
+	  String filename;
+	  InputStreamReader reader;
+	  StringBuffer sb;
 
-} // ctor
-//-----------------------------------------------------------------------------------
-public int read () throws IOException
-{
-  System.out.println ("-- reading " + filename);
-  char [] cBuffer = new char [1024];
-  int bytesRead;
-  while ((bytesRead = reader.read (cBuffer, 0, 1024)) != -1)
-    sb.append (new String (cBuffer, 0, bytesRead));
+	public TextJarReader(String urlString) throws IOException {
 
-  return sb.length ();
+	  if ( !urlString.matches("jar.+") ) 
+	  	throw new IOException( "Ok, so this isn't an IOException, but it's still a problem: " +
+		                       urlString + "  This class only accepts JAR urls!!! " +  
+		                       "  See java.net.JarURLConnection for syntax");
 
-} // read
-//---------------------------------------------------------------------------
-public String getText ()
-{
-  return sb.toString ();
+	  sb = new StringBuffer ();
+	  InputStream is = null; 
 
-} // read
-//---------------------------------------------------------------------------
-} // TextJarReader
+	  if ( urlString.matches("jar\\:\\/\\/.+") ) {
+		// to support the old way of doing things
+		filename = urlString.substring(5);
+	        is = getClass().getResourceAsStream(filename);
+	  } else  {
+		// assume that we match proper jar url syntax 
+		// jar:<url>!/{file}  
+		// see JarURLConnection api for more details
+		filename = urlString;
+		URL url = new URL(urlString);
+		is = url.openStream();
+	  }
+  	  reader = new InputStreamReader (is);
+
+	}
+
+	public int read() throws IOException
+	{
+	  System.out.println ("-- reading " + filename);
+	  char [] cBuffer = new char [1024];
+	  int bytesRead;
+	  while ((bytesRead = reader.read (cBuffer, 0, 1024)) != -1)
+	    sb.append (new String (cBuffer, 0, bytesRead));
+
+	  return sb.length();
+
+	}
+
+	public String getText()
+	{
+	  return sb.toString();
+
+	}
+
+}
 
 
