@@ -132,7 +132,7 @@ public class VizMapAttrTab extends VizMapTab {
 
     // set the name of this component appropriately
     setName(getTypeName(type));
-
+    
     this.VMM = VMM;
     this.mainUIDialog = mainUI;
     this.catalog = VMM.getCalculatorCatalog();
@@ -175,7 +175,8 @@ public class VizMapAttrTab extends VizMapTab {
     public void stateChanged(ChangeEvent e) {
 	    JTabbedPane source = (JTabbedPane) e.getSource();
 	    if (source.getModel().getSelectedIndex() == tabIndex) {
-        refreshUI();
+	    	//System.out.println("Tab click event was received, it is from " + getTypeName(type));	    	
+	    	refreshUI();
       }
     }
   }
@@ -200,12 +201,14 @@ public class VizMapAttrTab extends VizMapTab {
     }
   }
 
+  
   /**
    * Refreshes the panel that displays the UI for the currently selected calculator.
    * This method replaces the current panel with the panel provided by the current
    * calculator, or nothing if there is no currently selected calculator.
    */
   public void refreshUI() {
+	//System.out.println("VizmapAttrTab.refreshUI(): "+getTypeName(type));
     if (this.calcPanel != null) {
 	    this.calcContainer.remove(this.calcPanel);
     }
@@ -215,8 +218,12 @@ public class VizMapAttrTab extends VizMapTab {
     } else {
 	    this.calcPanel = null;
     }    
+
     validate();
-    repaint();
+    repaint();  
+    
+    mainUIDialog.pack();
+
   }
 
   /**
@@ -379,11 +386,14 @@ public class VizMapAttrTab extends VizMapTab {
   private class CalcComboSelectionListener implements ItemListener {
     public void itemStateChanged(ItemEvent e) {
 	    if (e.getStateChange() == ItemEvent.SELECTED) {
-        if (calcComboBox.getSelectedIndex() == 0) // "None" selected, use null
+	    	if (calcComboBox.getSelectedIndex() == 0) // "None" selected, use null
+        {        	
           switchCalculator(null);
+        }
         else {
-          Object selected = calcComboBox.getSelectedItem();
-          switchCalculator((Calculator) selected);
+        	Object selected = calcComboBox.getSelectedItem();
+            switchCalculator((Calculator) selected);      	
+      	    refreshUI();
         }
 	    }
     }
@@ -399,7 +409,7 @@ public class VizMapAttrTab extends VizMapTab {
   void switchCalculator(Calculator calc) {
     //do nothing if the new calculator is the same as the current one
     if (calc != null && calc.equals(this.currentCalculator)) {return;}
-
+    
     setCurrentCalculator(calc); //handles listeners
 
     // tell the respective appearance calculators
@@ -861,6 +871,8 @@ public class VizMapAttrTab extends VizMapTab {
 	    return "Edge Font Size";
     case VizMapUI.NODE_FONT_FACE:
 	    return "Node Font Face";
+    case VizMapUI.NODE_FONT_SIZE:
+	    return "Node Font Size";	    
     case VizMapUI.NODE_LABEL_FONT:
 	    return "Node Font Size";
     case VizMapUI.NODE_LABEL_COLOR:
