@@ -167,8 +167,7 @@ public abstract class WindowUtilities
     splashWindow.pack();
     centerWindowLocation( splashWindow );
     splashWindow.setVisible( true );
-    // this is a 1.5 only feature
-    //splashWindow.setAlwaysOnTop(true);
+    splashWindow.setAlwaysOnTop(true);
 
 
     splashContent.addMouseListener( 
