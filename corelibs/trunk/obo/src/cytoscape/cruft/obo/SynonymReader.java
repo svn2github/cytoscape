@@ -19,7 +19,7 @@ public final class SynonymReader extends Reader
 {
 
   private final String NL = System.getProperty("line.separator");
-  private final HashMap m_dupsFilter = new HashMap();
+  private final HashMap<String,String> m_dupsFilter = new HashMap<String,String>();
   private BufferedReader m_file;
   private String m_readString;
   private int m_readInx; // Index into a m_readString character.
