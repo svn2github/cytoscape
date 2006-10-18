@@ -46,49 +46,11 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
     final int[] nodes = network.getNodeIndicesArray();
     final int[] edges = network.getEdgeIndicesArray();
     for (int i = 0; i < nodes.length; i++) {
-      addNodeView(nodes[i]); }
+      addNodeView(nodes[i]); 
+    }
     for (int i = 0; i < edges.length; i++) {
-      addEdgeView(edges[i]); }
-//     java.awt.geom.Rectangle2D rect =
-//       new java.awt.geom.Rectangle2D.Double(-11.0, -15.0, 22.0, 30.0);
-//     java.awt.Paint paint = null;
-//     try {
-//       paint = new java.awt.TexturePaint
-//         (javax.imageio.ImageIO.read
-//          (new java.net.URL("http://cytoscape.org/people_photos/nerius.jpg")),
-//          rect); }
-//     catch (Exception exc) {
-//       paint = java.awt.Color.black; }
-//     for (int i = 0; i < nodes.length; i++) {
-//       ding.view.DNodeView nv = (ding.view.DNodeView) getNodeView(nodes[i]);
-//       nv.addCustomGraphic
-//         (new java.awt.geom.Ellipse2D.Double
-//          (-11.0, -15.0, 22.0, 30.0),
-//          paint, 0); }
-
-//       path.moveTo(0.0f, 0.0f);
-//       path.lineTo(10.0f, 0.0f);
-//       path.lineTo(0.0f, 10.0f);
-//       path.closePath();
-//       nv.addCustomGraphic(path, java.awt.Color.yellow, 0);
-//       path = new java.awt.geom.GeneralPath();
-//       path.moveTo(0.0f, 0.0f);
-//       path.lineTo(0.0f, 10.0f);
-//       path.lineTo(-10.0f, 0.0f);
-//       path.closePath();
-//       nv.addCustomGraphic(path, java.awt.Color.red, 0);
-//       path = new java.awt.geom.GeneralPath();
-//       path.moveTo(0.0f, 0.0f);
-//       path.lineTo(-10.0f, 0.0f);
-//       path.lineTo(0.0f, -10.0f);
-//       path.closePath();
-//       nv.addCustomGraphic(path, java.awt.Color.blue, 0);
-//       path = new java.awt.geom.GeneralPath();
-//       path.moveTo(0.0f, 0.0f);
-//       path.lineTo(0.0f, -10.0f);
-//       path.lineTo(10.0f, 0.0f);
-//       path.closePath();
-//       nv.addCustomGraphic(path, java.awt.Color.green, 0); }
+      addEdgeView(edges[i]); 
+    }
     new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getFlagger(), this);
   }
 

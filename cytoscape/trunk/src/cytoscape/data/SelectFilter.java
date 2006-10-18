@@ -209,8 +209,6 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
             for (Iterator i = nodesToSet.iterator(); i.hasNext(); ) {
                 Node node = (Node)i.next();
 
-                //System.out.println( "Flagging node"+node );
-
                 if (!graph.containsNode(node)) {continue;}
                 boolean setChanged = selectedNodes.add(node);
                 if (setChanged) {returnSet.add(node);}
@@ -219,10 +217,8 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
         } else {
             for (Iterator i = nodesToSet.iterator(); i.hasNext(); ) {
                 Node node = (Node)i.next();
-                //System.out.println( "UNFlagging node"+node );
                 boolean setChanged = selectedNodes.remove(node);
                 if (setChanged) {
-                  //System.out.println( setChanged+" Set Changed: "+node);
                   returnSet.add(node);
                 }
             }

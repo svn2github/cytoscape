@@ -160,7 +160,7 @@ public interface CyNetwork extends GraphPerspective {
 	/**
 	 * Flags a node
 	 * 
-	 * @deprecated As of 2.3, replaced by {@link #setSelectedNodeState(Collection,boolean)}
+	 * @deprecated As of 2.3, replaced by {@link #setSelectedNodeState(Node,boolean)}
 	 */
 	public void setFlagged(Node node, boolean state);
 
@@ -181,7 +181,7 @@ public interface CyNetwork extends GraphPerspective {
 	/**
 	 * Flags a edge
 	 * 
-	 * @deprecated As of 2.3, replaced by {@link #setSelectedEdgeState(Collection,boolean)}
+	 * @deprecated As of 2.3, replaced by {@link #setSelectedEdgeState(Edge,boolean)}
 	 */
 	public void setFlagged(Edge edge, boolean state);
 
@@ -302,12 +302,28 @@ public interface CyNetwork extends GraphPerspective {
 	public void setSelectedNodeState (Collection nodes, boolean selected_state);
 	
 	/**
+	 * Sets the selected state of a single node. 
+	 * 
+	 * @param node a single Node
+	 * @param selected_state the desired selection state for the nodes
+	 */
+	public void setSelectedNodeState (Node node, boolean selected_state);
+
+	/**
 	 * Sets the selected state of a collection of edges.
 	 * 
 	 * @param edges a Collection of Edges
 	 * @param selected_state the desired selection state for the edges
 	 */
 	public void setSelectedEdgeState (Collection edges, boolean selected_state);
+	
+	/**
+	 * Sets the selected state of a single edge.
+	 * 
+	 * @param edge a single Edge
+	 * @param selected_state the desired selection state for the edges
+	 */
+	public void setSelectedEdgeState (Edge edge, boolean selected_state);
 	
 	/**
 	 * Returns the selected state of the given node.

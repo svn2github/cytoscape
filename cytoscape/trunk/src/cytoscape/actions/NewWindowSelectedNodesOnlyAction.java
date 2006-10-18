@@ -47,6 +47,8 @@ import giny.model.Node;
 
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.ArrayList;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -66,9 +68,6 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		// save the vizmapper catalog
 
-		// CyNetworkView current_network_view =
-		// Cytoscape.getCurrentNetworkView();
-		// CyNetwork current_network = current_network_view.getNetwork();
 		CyNetwork current_network = Cytoscape.getCurrentNetwork();
 		CyNetworkView current_network_view = null;
 		if (Cytoscape.viewExists(current_network.getIdentifier())) {
@@ -76,11 +75,10 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 					.getIdentifier());
 		} // end of if ()
 
-		int[] nodes = current_network.getFlaggedNodeIndicesArray();
-		// int [] nodes = current_network_view.getSelectedNodeIndices();
+		Set nodes = current_network.getSelectedNodes();
 
 		CyNetwork new_network = Cytoscape.createNetwork(nodes, current_network
-				.getConnectingEdgeIndicesArray(nodes), CyNetworkNaming
+				.getConnectingEdges(new ArrayList(nodes)), CyNetworkNaming
 				.getSuggestedSubnetworkTitle(current_network), current_network);
 
 		CyNetworkView new_view = Cytoscape.getNetworkView(new_network

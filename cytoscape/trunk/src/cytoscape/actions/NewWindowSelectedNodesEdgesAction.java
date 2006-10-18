@@ -44,6 +44,7 @@ package cytoscape.actions;
 
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
+import java.util.Set;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -63,17 +64,11 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		// save the vizmapper catalog
 
-		// CyNetworkView current_network_view =
-		// Cytoscape.getCurrentNetworkView();
-		// CyNetwork current_network = current_network_view.getNetwork();
 		CyNetwork current_network = Cytoscape.getCurrentNetwork();
-		int[] nodes = current_network.getFlaggedNodeIndicesArray();
-		int[] edges = current_network.getFlaggedEdgeIndicesArray();
 
-		// int[] nodes = current_network_view.getSelectedNodeIndices();
-		// int[] edges = current_network_view.getSelectedEdgeIndices();
+		Set nodes = current_network.getSelectedNodes();
+		Set edges = current_network.getSelectedEdges();
 
-		// CyNetwork new_network = Cytoscape.createNetwork( nodes, edges );
 		CyNetwork new_network = Cytoscape.createNetwork(nodes, edges,
 				CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 				current_network);

@@ -260,6 +260,16 @@ public class FingCyNetwork
 	public void setSelectedNodeState (Collection nodes, boolean selected_state) {
 		this.selectFilter.setSelectedNodes(nodes,selected_state);
 	}
+
+	/**
+	 * Sets the selected state of a node.
+	 * 
+	 * @param nodes a Node
+	 * @param selected_state the desired selection state for the node
+	 */
+	public void setSelectedNodeState (Node node, boolean selected_state) {
+		this.selectFilter.setSelected(node,selected_state);
+	}
 	
 	/**
 	 * Sets the selected state of a collection of edges.
@@ -271,6 +281,16 @@ public class FingCyNetwork
 		this.selectFilter.setSelectedEdges(edges,selected_state);
 	}
 	
+	/**
+	 * Sets the selected state of an edge.
+	 * 
+	 * @param edges an Edge
+	 * @param selected_state the desired selection state for the edge
+	 */
+	public void setSelectedEdgeState (Edge edge, boolean selected_state) {
+		this.selectFilter.setSelected(edge,selected_state);
+	}
+
 	/**
 	 * Returns the selected state of the given node.
 	 * 

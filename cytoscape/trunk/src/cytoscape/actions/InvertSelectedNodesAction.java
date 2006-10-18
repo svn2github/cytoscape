@@ -45,6 +45,8 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import java.util.Iterator;
+import java.util.Set;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.util.CytoscapeAction;
@@ -59,9 +61,9 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 
     public void actionPerformed (ActionEvent e) {
 	CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-	int [] flaggedNodeIndices = cyNetwork.getFlaggedNodeIndicesArray();
-	cyNetwork.flagAllNodes();
-	cyNetwork.setFlaggedNodes(flaggedNodeIndices,false);
+	Set selectedNodes = cyNetwork.getSelectedNodes();
+	cyNetwork.selectAllNodes();
+	cyNetwork.setSelectedNodeState(selectedNodes,false);
         Cytoscape.getCurrentNetworkView().updateView();
     }
 }
