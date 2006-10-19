@@ -89,6 +89,7 @@ import cytoscape.actions.ExportNodeAttributesAction;
 import cytoscape.actions.ExportVizmapAction;
 import cytoscape.actions.FitContentAction;
 import cytoscape.actions.HelpAboutAction;
+import cytoscape.actions.HelpContactHelpDeskAction;
 import cytoscape.actions.HideSelectedEdgesAction;
 import cytoscape.actions.HideSelectedNodesAction;
 import cytoscape.actions.ImportAnnotationAction;
@@ -177,7 +178,7 @@ public class CyMenus implements GraphViewChangeListener {
 			networkOverviewItem;
 
 	JMenuItem helpContentsMenuItem, // helpContextSensitiveMenuItem,
-			helpAboutMenuItem;
+			helpAboutMenuItem, helpContactHelpDeskMenuItem;
 
 	JButton openSessionButton, saveButton, zoomInButton, zoomOutButton,
 			zoomSelectedButton, zoomDisplayAllButton, showAllButton,
@@ -847,6 +848,8 @@ public class CyMenus implements GraphViewChangeListener {
 		helpContentsMenuItem = new JMenuItem("Contents...", KeyEvent.VK_C);
 		helpContentsMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
 
+		helpContactHelpDeskMenuItem = new JMenuItem(new HelpContactHelpDeskAction());
+
 		/*
 		 * ImageIcon contextSensitiveHelpIcon = new ImageIcon(getClass()
 		 * .getResource("images/contextSensitiveHelp.gif")); // ImageIcon
@@ -857,6 +860,7 @@ public class CyMenus implements GraphViewChangeListener {
 		 * .getKeyStroke("shift F1"));
 		 */
 		helpMenu.add(helpContentsMenuItem);
+		helpMenu.add(helpContactHelpDeskMenuItem);
 		// helpMenu.add(helpContextSensitiveMenuItem);
 		helpMenu.addSeparator();
 		helpMenu.add(helpAboutMenuItem);
