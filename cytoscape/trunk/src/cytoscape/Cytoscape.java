@@ -1307,9 +1307,11 @@ public abstract class Cytoscape {
 					CyAttributesReader.loadAttributes(nodeAttributes, reader);
 					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 				} catch (Exception e) {
+					e.printStackTrace();
 					throw new IllegalArgumentException(
 							"Failure loading node attribute data: "
-									+ nodeAttrLocations[i]);
+									+ nodeAttrLocations[i] +
+							"  because of:" + e.getMessage());
 				}
 			}
 		}
@@ -1323,9 +1325,11 @@ public abstract class Cytoscape {
 					CyAttributesReader.loadAttributes(edgeAttributes, reader);
 					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 				} catch (Exception e) {
+					e.printStackTrace();
 					throw new IllegalArgumentException(
 							"Failure loading edge attribute data: "
-									+ edgeAttrLocations[j]);
+									+ edgeAttrLocations[j] +
+							"  because of:" + e.getMessage());
 				}
 			}
 		}

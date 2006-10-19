@@ -53,6 +53,8 @@ public class CyAttributesReader
   public static void loadAttributes(CyAttributes cyAttrs,
                                     Reader fileIn) throws IOException
   {
+    int lineNum = 0;
+    try {
     final BufferedReader reader;
     if (fileIn instanceof BufferedReader) { reader = (BufferedReader) fileIn; }
     else { reader = new BufferedReader(fileIn); }
@@ -60,6 +62,7 @@ public class CyAttributesReader
     byte type = -1;
     {
       final String firstLine = reader.readLine();
+      lineNum++;
       if (firstLine == null) { return; }
       final String searchStr = "class=";
       final int inx = firstLine.indexOf(searchStr);
@@ -89,6 +92,7 @@ public class CyAttributesReader
     boolean list = false;
     while (true) {
       final String line = reader.readLine();
+      lineNum++;
       if (line == null) { break; }
       if ("".equals(line.trim())) { continue; }
       int inx = line.indexOf('=');
@@ -207,6 +211,11 @@ public class CyAttributesReader
           cyAttrs.setAttribute(key, attributeName, new Double(val)); }
         else {
           cyAttrs.setAttribute(key, attributeName, val); } } }            
+     } catch (Exception e) {
+     	e.printStackTrace();
+	String message = "failed parsing attributes file at line: " + lineNum + " with exception: ";
+	throw new IOException( message + e.getMessage());
+     }
   }
 
 }
