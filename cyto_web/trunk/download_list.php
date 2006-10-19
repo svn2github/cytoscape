@@ -64,7 +64,7 @@
 			from our <a href="http://subversion.tigris.org">Subversion</a> server are provided below.
 
 			<P>
-			<ul><li> svn checkout http://chianti.ucsd.edu/svn/cytoscape cytoscape</li></ul>
+			<ul><li> svn checkout http://chianti.ucsd.edu/svn/cytoscape/trunk cytoscape</li></ul>
 			</P>
 			Read a 
 			<a href="http://svnbook.red-bean.com">book</a>
