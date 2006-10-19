@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
+import java.awt.Cursor;
 
 import javax.swing.ImageIcon;
 
@@ -137,6 +138,7 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 	 */
 	public boolean init(CyInitParams params) {
 
+
 		initParams = params;
 
 		initProperties();
@@ -157,6 +159,9 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 					"/cytoscape/images/CytoscapeSplashScreen.png"));
 			WindowUtilities.showSplash(image, 8000);
 			Cytoscape.getDesktop();
+			// set the wait cursor
+			Cytoscape.getDesktop().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
 			/*
 			 * This cannot be done in CytoscapeDesktop construction (like the
 			 * other menus) because we need CytoscapeDesktop created first. This
@@ -252,11 +257,15 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 		if (initParams.getMode() == CyInitParams.GUI
 				|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
 			WindowUtilities.hideSplash();
+			// restore cursor
+			Cytoscape.getDesktop().setCursor(Cursor.getDefaultCursor());
 		}
 
 		System.out.println("Cytoscape initialized successfully.");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null,
 				null);
+
+
 		return true;
 	}
 
