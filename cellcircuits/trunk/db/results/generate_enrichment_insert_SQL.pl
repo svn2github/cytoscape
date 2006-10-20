@@ -66,20 +66,33 @@ my $enrichment_fields = [
 		      ];
 
 
+
+my $tmp_dir = "BandyopadhyayGersten2007";
+chdir $tmp_dir or die "Cannot cd into $tmp_dir: $!\n";
+
 my $find_cmd = `find . -name "*.gl.enrichment"\n`;
 
 my @files = split(/\n/, $find_cmd);
+
+my $tmp_dir = '..';
+chdir $tmp_dir or die "Cannot cd into $tmp_dir: $!\n";
 
 foreach my $file (@files)
 {
     print STDERR "file = $file\n";
 
+    my $pub = 'BandyopadhyayGersten2007';
+
     $file =~ s/^\.\///;
+
+    $file = join "/", $pub, $file;
 
     my @a = split(/\//, $file);
     
-    my $pub = shift @a;
+#    my $pub = shift @a;
     
+    $pub = shift @a;
+
     my $tmp_file = join '/', @a[0..$#a];
 
     my @fp = split(/[.]/, $tmp_file);

@@ -1,6 +1,7 @@
 #! /usr/bin/perl
 
-my $dir_prefix = "/var/www/html/search/data";
+#my $dir_prefix = "/var/www/html/search/data";
+my $dir_prefix = "/cellar/users/mdaly/cellcircuits/trunk/data";
 my $hyper_p    = "/cellar/users/cworkman/src/hypergeometric_Pvalue/hyper_p";
 my $genes_beneath_terms_FILE = "n_genes_beneath_BY_GO_term_accession.tab";
 
