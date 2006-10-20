@@ -1,11 +1,11 @@
-#sif=./BandyopadhyayGersten2007/sifs/2.sif
+#sif=./BandyopadhyayGersten2007/sif/2.sif
 #Saccharomyces cerevisiae|Homo sapiens
 #n_genes=6
-#n_intxns=10
-#pp=10
-YHR030C|MK03
-YLR362W|SRC
+#n_intxns=5
+#11=5
 YDL070W|CBP
 YGL008C|AT1A1
-YOL016C|MYLK
+YHR030C|MK03
+YLR362W|SRC
 YNL298W|CSK
+YOL016C|MYLK

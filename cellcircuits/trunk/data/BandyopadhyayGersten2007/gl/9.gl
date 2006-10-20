@@ -1,13 +1,13 @@
-#sif=./BandyopadhyayGersten2007/sifs/9.sif
+#sif=./BandyopadhyayGersten2007/sif/9.sif
 #Saccharomyces cerevisiae|Homo sapiens
 #n_genes=8
-#n_intxns=13
-#pp=13
+#n_intxns=9
+#11=9
+YBL016W|MK10
+YDL070W|CBP
 YHR030C|MK03
 YHR030C|MK14
-YBL016W|MK10
-YNL053W|DUS10
 YHR102W|INSR
-YDL070W|CBP
 YJL095W|CSK
+YNL053W|DUS10
 YPL089C|MEF2C

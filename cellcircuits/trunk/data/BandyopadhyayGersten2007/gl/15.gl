@@ -1,13 +1,13 @@
-#sif=./BandyopadhyayGersten2007/sifs/15.sif
+#sif=./BandyopadhyayGersten2007/sif/15.sif
 #Saccharomyces cerevisiae|Homo sapiens
 #n_genes=8
-#n_intxns=14
-#pp=14
+#n_intxns=7
+#11=7
+YBL075C|HSP71
+YBR182C|MEF2D
 YHR102W|ERBB2
 YJL128C|MP2K6
-YLR113W|MK14
-YBR182C|MEF2D
 YJR032W|PPIA
-YBL075C|HSP71
-YMR186W|ENPL
+YLR113W|MK14
 YLR362W|M3K5
+YMR186W|ENPL

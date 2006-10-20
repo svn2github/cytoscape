@@ -1,12 +1,12 @@
-#sif=./BandyopadhyayGersten2007/sifs/5.sif
+#sif=./BandyopadhyayGersten2007/sif/5.sif
 #Saccharomyces cerevisiae|Homo sapiens
 #n_genes=7
-#n_intxns=12
-#pp=12
+#n_intxns=6
+#11=6
 YDR490C|PDPK1
-YOL016C|RAF1
-YPL089C|MEF2C
 YHR030C|MK07
+YJL128C|MP2K2
 YKL166C|KS6A3
 YLR113W|MK01
-YJL128C|MP2K2
+YOL016C|RAF1
+YPL089C|MEF2C

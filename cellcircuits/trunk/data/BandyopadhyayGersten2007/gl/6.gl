@@ -1,13 +1,13 @@
-#sif=./BandyopadhyayGersten2007/sifs/6.sif
+#sif=./BandyopadhyayGersten2007/sif/6.sif
 #Saccharomyces cerevisiae|Homo sapiens
 #n_genes=8
-#n_intxns=14
-#pp=14
-YGR152C|RHOA
-YLR113W|MK14
-YLR362W|M3K4
+#n_intxns=7
+#11=7
 YBR182C|MEF2A
-YOR089C|CDC42
-YNL293W|TBCD3
+YGR152C|RHOA
 YJL128C|MP2K1
+YLR113W|MK14
 YLR229C|RAC1
+YLR362W|M3K4
+YNL293W|TBCD3
+YOR089C|CDC42
