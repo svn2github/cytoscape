@@ -56,7 +56,8 @@ import cytoscape.visual.parsers.FontParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
-public class GenericNodeFontFaceCalculator extends NodeCalculator {
+public class GenericNodeFontFaceCalculator extends NodeCalculator 
+    implements NodeFontFaceCalculator {
   
     public byte getType() {
         return VizMapUI.NODE_FONT_FACE;
@@ -91,4 +92,11 @@ public class GenericNodeFontFaceCalculator extends NodeCalculator {
 
 	appr.setFont( f ); 
     }
+
+    public Font calculateNodeFontFace(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getFont();
+    }
+
 }

@@ -56,7 +56,8 @@ import cytoscape.visual.parsers.StringParser;
 import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericEdgeToolTipCalculator extends EdgeCalculator {
+public class GenericEdgeToolTipCalculator extends EdgeCalculator 
+    implements EdgeToolTipCalculator {
 
     public byte getType() {
         return VizMapUI.EDGE_TOOLTIP;
@@ -91,5 +92,12 @@ public class GenericEdgeToolTipCalculator extends EdgeCalculator {
 
         appr.setToolTip( tt ); 
     }
+
+    public String calculateEdgeToolTip(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+        return ea.getToolTip();
+    }
+
 }
 

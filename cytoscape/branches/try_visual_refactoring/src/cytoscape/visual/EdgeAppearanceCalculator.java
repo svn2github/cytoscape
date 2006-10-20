@@ -55,6 +55,7 @@ import cytoscape.visual.Arrow;
 import cytoscape.CyNetwork;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 /**
  * This class calculates the appearance of an Edge. It holds a default value
@@ -63,6 +64,14 @@ import cytoscape.visual.parsers.*;
 public class EdgeAppearanceCalculator extends AppearanceCalculator {
    
     EdgeAppearance defaultAppearance = new EdgeAppearance();
+
+  /** Used _ONLY_ to support deprecated code - DO NOT USE OTHERWISE!!!! */
+  private EdgeAppearance currentAppearance;
+  /** Used _ONLY_ to support deprecated code - DO NOT USE OTHERWISE!!!! */
+  private CyNetwork currentNetwork;
+  /** Used _ONLY_ to support deprecated code - DO NOT USE OTHERWISE!!!! */
+  private Edge currentEdge;
+
 
     public EdgeAppearanceCalculator() {
     	super();
@@ -93,6 +102,11 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
     public EdgeAppearance calculateEdgeAppearance(Edge edge, CyNetwork network) {
         EdgeAppearance appr = (EdgeAppearance)defaultAppearance.clone(); 
         calculateEdgeAppearance(appr, edge, network);
+ 	
+	currentAppearance = appr;
+	currentEdge = edge;
+	currentNetwork = network;
+
         return appr;
     }
     
@@ -139,5 +153,143 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
           else
                   return false;
   }
+
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeColorCalculator getEdgeColorCalculator() {
+    	return (EdgeColorCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeLineTypeCalculator getEdgeLineTypeCalculator() {
+    	return (EdgeLineTypeCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeArrowCalculator getEdgeSourceArrowCalculator() {
+    	return (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeArrowCalculator getEdgeTargetArrowCalculator() {
+    	return (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeLabelCalculator getEdgeLabelCalculator() {
+    	return (EdgeLabelCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeFontFaceCalculator getEdgeFontFaceCalculator() {
+    	return (EdgeFontFaceCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeFontSizeCalculator getEdgeFontSizeCalculator() {
+    	return (EdgeFontSizeCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeToolTipCalculator getEdgeToolTipCalculator() {
+    	return (EdgeToolTipCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeColor(Color c) { defaultAppearance.setColor(c); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeLineType(LineType lt) { defaultAppearance.setLineType(lt); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeSourceArrow(Arrow a) { defaultAppearance.setSourceArrow(a); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeTargetArrow(Arrow a) { defaultAppearance.setTargetArrow(a); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeLabel(String s) { defaultAppearance.setLabel(s); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeFont(Font f) { defaultAppearance.setFont(f); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeFontFace(Font f) { defaultAppearance.setFont(f); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeFontSize(float f) { defaultAppearance.setFontSize(f); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeToolTip(String s) { defaultAppearance.setToolTip(s); }
+
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Color getDefaultEdgeColor() {return defaultAppearance.getColor();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public LineType getDefaultEdgeLineType() {return defaultAppearance.getLineType();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Arrow getDefaultEdgeSourceArrow() {return defaultAppearance.getSourceArrow();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Arrow getDefaultEdgeTargetArrow() {return defaultAppearance.getTargetArrow();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public String getDefaultEdgeLabel() {return defaultAppearance.getLabel();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Font getDefaultEdgeFont() {return defaultAppearance.getFont();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Font getDefaultEdgeFontFace() {return defaultAppearance.getFont();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public float getDefaultEdgeFontSize() {return defaultAppearance.getFontSize();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public String getDefaultEdgeToolTip() {return defaultAppearance.getToolTip();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public Color calculateEdgeColor(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getColor();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public LineType calculateEdgeLineType(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getLineType();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public Arrow calculateEdgeSourceArrow(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getSourceArrow();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public Arrow calculateEdgeTargetArrow(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getTargetArrow();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public String calculateEdgeLabel(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getLabel();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public Font calculateEdgeFont(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getFont();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public String calculateEdgeToolTip(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getToolTip();
+    }
+
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeColorCalculator(EdgeColorCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeLineTypeCalculator(EdgeLineTypeCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeSourceArrowCalculator(EdgeArrowCalculator c) {
+    	c.set(VizMapUI.EDGE_SRCARROW,"edgeSourceArrowCalculator","Edge Source Arrow");
+    	setCalculator(c);
+    }
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeTargetArrowCalculator(EdgeArrowCalculator c) {
+    	c.set(VizMapUI.EDGE_TGTARROW,"edgeSourceTargetCalculator","Edge Target Arrow");
+    	setCalculator(c);
+    }
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeLabelCalculator(EdgeLabelCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeFontFaceCalculator(EdgeFontFaceCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeFontSizeCalculator(EdgeFontSizeCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeToolTipCalculator(EdgeToolTipCalculator c) {setCalculator(c);}
+
+  /** Used _ONLY_ to support deprecated code - DO NOT USE for anything else!!!! */
+  private void doCalc(Edge edge, CyNetwork network) {
+        if ( edge != currentEdge && network != currentNetwork )
+                calculateEdgeAppearance(edge,network);
+  }
+
 }
 

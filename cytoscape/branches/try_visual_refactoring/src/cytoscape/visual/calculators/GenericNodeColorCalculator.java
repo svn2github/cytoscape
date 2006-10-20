@@ -1,6 +1,6 @@
 
 /*
-  File: GenericNodeHeightCalculator.java 
+  File: GenericNodeColorCalculator.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -36,16 +36,12 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision: 8189 $
-// $Date: 2006-09-13 13:51:38 -0700 (Wed, 13 Sep 2006) $
-// $Author: mes $
-//----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
-//----------------------------------------------------------------------------
+
 import java.util.Map;
 import java.util.Properties;
 import javax.swing.JPanel;
+import java.awt.Color;
 
 import giny.model.Node;
 
@@ -55,43 +51,54 @@ import cytoscape.visual.parsers.DoubleParser;
 
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
-//----------------------------------------------------------------------------
-public class GenericNodeHeightCalculator extends AbstractNodeSizeCalculator 
-    implements NodeSizeCalculator {
+
+/** @deprecated Use NodeFillColor or NodeBorderColor instead.
+    will be removed 10/2007 */
+public class GenericNodeColorCalculator extends AbstractNodeColorCalculator 
+    implements NodeColorCalculator {
 
     public byte getType() {
-	return VizMapUI.NODE_HEIGHT;
+	return colType; 
     } 
 
     public String getPropertyLabel() {
-        return "nodeHeightCalculator";
+        return propertyLabel; 
     }
 
     public String getTypeName() {
-        return "Node Height";
+        return typename; 
     }
     
-    GenericNodeHeightCalculator() {
+    GenericNodeColorCalculator() {
 	super();
     }
    
-    public GenericNodeHeightCalculator(String name, ObjectMapping m) {
+    public GenericNodeColorCalculator(String name, ObjectMapping m) {
 	super(name, m);
     }
    
-    public GenericNodeHeightCalculator(String name, Properties props, String baseKey) {
+    public GenericNodeColorCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey);
     }
     
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-	apply(appr,node,network,HEIGHT);
+    	if ( colType == VizMapUI.NODE_COLOR )
+		apply(appr,node,network,FILL);
+	else if  ( colType == VizMapUI.NODE_BORDER_COLOR )
+		apply(appr,node,network,BORDER);
+	else
+		System.err.println("don't know what kind of calculator this is!");
     }
 
-    public double calculateNodeSize(Node e, CyNetwork n) {
+    public Color calculateNodeColor(Node e, CyNetwork n) {
         NodeAppearance ea = new NodeAppearance();
         apply(ea,e,n);
-        return ea.getHeight();
+    	if ( colType == VizMapUI.NODE_COLOR )
+		return ea.getFillColor();	
+	else if  ( colType == VizMapUI.NODE_BORDER_COLOR )
+		return ea.getBorderColor();	
+	else
+		return Color.white;	
     }
-
 }
 

@@ -58,7 +58,7 @@ import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
 public class GenericEdgeFontFaceCalculator extends EdgeCalculator
-    {
+    implements EdgeFontFaceCalculator {
 
     public String getPropertyLabel() {
         return "edgeFontFaceCalculator";
@@ -93,4 +93,11 @@ public class GenericEdgeFontFaceCalculator extends EdgeCalculator
 
 	appr.setFont( f ); 
     }
+
+    public Font calculateEdgeFontFace(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+        return ea.getFont();
+    }
+
 }

@@ -56,7 +56,8 @@ import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
-public class GenericEdgeFontSizeCalculator extends EdgeCalculator {
+public class GenericEdgeFontSizeCalculator extends EdgeCalculator 
+    implements EdgeFontSizeCalculator {
 
     public byte getType() {
         return VizMapUI.EDGE_FONT_SIZE;
@@ -90,5 +91,11 @@ public class GenericEdgeFontSizeCalculator extends EdgeCalculator {
 			return;
 		
 		appr.setFontSize( ((Number) rangeValue).floatValue() );
+    }
+
+    public float calculateEdgeFontSize(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+        return ea.getFontSize();
     }
 }

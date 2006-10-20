@@ -57,7 +57,8 @@ import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericEdgeColorCalculator extends EdgeCalculator {
+public class GenericEdgeColorCalculator extends EdgeCalculator 
+	implements EdgeColorCalculator {
 
     public byte getType() {
 	return VizMapUI.EDGE_COLOR;
@@ -91,6 +92,12 @@ public class GenericEdgeColorCalculator extends EdgeCalculator {
 			return;
 
         	appr.setColor( c );
+    }
+
+    public Color calculateEdgeColor(Edge e, CyNetwork n) {
+    	EdgeAppearance ea = new EdgeAppearance();
+	apply(ea,e,n);
+	return ea.getColor();
     }
 }
 

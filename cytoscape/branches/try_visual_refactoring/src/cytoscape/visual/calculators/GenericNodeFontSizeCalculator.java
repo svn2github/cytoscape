@@ -56,7 +56,8 @@ import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
-public class GenericNodeFontSizeCalculator extends NodeCalculator {
+public class GenericNodeFontSizeCalculator extends NodeCalculator 
+    implements NodeFontSizeCalculator {
 
     public byte getType() {
         return VizMapUI.NODE_FONT_SIZE;
@@ -91,4 +92,11 @@ public class GenericNodeFontSizeCalculator extends NodeCalculator {
 
 	appr.setFontSize(((Number) rangeValue).floatValue());
     }
+
+    public float calculateNodeFontSize(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getFontSize();
+    }
+
 }

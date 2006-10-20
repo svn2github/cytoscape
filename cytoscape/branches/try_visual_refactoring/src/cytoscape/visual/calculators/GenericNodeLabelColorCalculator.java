@@ -49,7 +49,8 @@ import java.util.Properties;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 
-public class GenericNodeLabelColorCalculator extends NodeCalculator {
+public class GenericNodeLabelColorCalculator extends NodeCalculator 
+        implements NodeLabelColorCalculator {
 
 	public byte getType() {
 		return VizMapUI.NODE_LABEL_COLOR;
@@ -84,4 +85,11 @@ public class GenericNodeLabelColorCalculator extends NodeCalculator {
 
 		appr.setLabelColor( c ); 
 	}
+
+    public Color calculateNodeLabelColor(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getLabelColor();
+    }
+
 }

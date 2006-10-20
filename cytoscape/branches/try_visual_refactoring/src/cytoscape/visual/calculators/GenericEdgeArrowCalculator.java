@@ -1,6 +1,6 @@
 
 /*
-  File: GenericNodeHeightCalculator.java 
+  File: GenericEdgeArrowCalculator.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -43,55 +43,68 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 //----------------------------------------------------------------------------
+import java.awt.Color;
 import java.util.Map;
 import java.util.Properties;
 import javax.swing.JPanel;
 
-import giny.model.Node;
+import giny.model.Edge;
 
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.DoubleParser;
 
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Arrow;
 import cytoscape.visual.ui.VizMapUI;
-//----------------------------------------------------------------------------
-public class GenericNodeHeightCalculator extends AbstractNodeSizeCalculator 
-    implements NodeSizeCalculator {
+
+/** @deprecated Use EdgeSourceArrow or EdgeTargetArrow instead.
+    will be removed 10/2007 */
+public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator 
+    implements EdgeArrowCalculator {
 
     public byte getType() {
-	return VizMapUI.NODE_HEIGHT;
+	return arrowType; 
     } 
 
     public String getPropertyLabel() {
-        return "nodeHeightCalculator";
+        return propertyLabel; 
     }
 
     public String getTypeName() {
-        return "Node Height";
+        return typename; 
     }
     
-    GenericNodeHeightCalculator() {
+    GenericEdgeArrowCalculator() {
 	super();
     }
    
-    public GenericNodeHeightCalculator(String name, ObjectMapping m) {
+    public GenericEdgeArrowCalculator(String name, ObjectMapping m) {
 	super(name, m);
     }
    
-    public GenericNodeHeightCalculator(String name, Properties props, String baseKey) {
+    public GenericEdgeArrowCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey);
     }
     
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-	apply(appr,node,network,HEIGHT);
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
+    	if ( arrowType == VizMapUI.EDGE_SRCARROW )
+		apply(appr,edge,network,SOURCE);
+	else if  ( arrowType == VizMapUI.EDGE_TGTARROW )
+		apply(appr,edge,network,TARGET);
+	else
+		System.err.println("don't know what kind of calculator this is!");
     }
 
-    public double calculateNodeSize(Node e, CyNetwork n) {
-        NodeAppearance ea = new NodeAppearance();
+    public Arrow calculateEdgeArrow(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
         apply(ea,e,n);
-        return ea.getHeight();
+    	if ( arrowType == VizMapUI.EDGE_SRCARROW )
+		return ea.getSourceArrow();	
+	else if  ( arrowType == VizMapUI.EDGE_TGTARROW )
+		return ea.getTargetArrow();	
+	else
+		return null; 
     }
-
 }
 

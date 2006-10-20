@@ -57,7 +57,8 @@ import cytoscape.visual.parsers.LineTypeParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeLineTypeCalculator extends NodeCalculator {
+public class GenericNodeLineTypeCalculator extends NodeCalculator 
+    implements NodeLineTypeCalculator {
 
     public byte getType() {
         return VizMapUI.NODE_LINETYPE;
@@ -92,5 +93,13 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator {
 
         appr.setBorderLineType( lt ); 
     }
+
+    public LineType calculateNodeLineType(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getBorderLineType();
+    }
+
+
 }
 

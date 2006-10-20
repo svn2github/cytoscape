@@ -56,7 +56,8 @@ import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeWidthCalculator extends AbstractNodeSizeCalculator {
+public class GenericNodeWidthCalculator extends AbstractNodeSizeCalculator 
+    implements NodeSizeCalculator {
 
     public byte getType() {
 	return VizMapUI.NODE_WIDTH;
@@ -85,5 +86,13 @@ public class GenericNodeWidthCalculator extends AbstractNodeSizeCalculator {
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
 	apply(appr,node,network,WIDTH);
     }
+
+    public double calculateNodeSize(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getWidth();
+    }
+
+
 }
 

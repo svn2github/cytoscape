@@ -58,6 +58,25 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 abstract class AbstractNodeSizeCalculator extends NodeCalculator {
 
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    protected byte sizeType;
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    protected String propertyLabel;
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    protected String typename;
+
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    public void set( byte b, String p, String n) {
+        sizeType = b;
+        propertyLabel = p;
+        typename = n;
+    }
+
+
     protected int WIDTH = 1;
     protected int HEIGHT = 2;
     protected int SIZE = 4;

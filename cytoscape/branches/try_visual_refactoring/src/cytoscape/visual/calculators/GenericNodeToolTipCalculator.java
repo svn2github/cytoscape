@@ -56,7 +56,8 @@ import cytoscape.visual.parsers.StringParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeToolTipCalculator extends NodeCalculator {
+public class GenericNodeToolTipCalculator extends NodeCalculator 
+    implements NodeToolTipCalculator {
 
     public byte getType() {
         return VizMapUI.NODE_TOOLTIP;
@@ -91,5 +92,12 @@ public class GenericNodeToolTipCalculator extends NodeCalculator {
 
         appr.setToolTip( tt ); 
     }
+
+    public String calculateNodeToolTip(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getToolTip();
+    }
+
 }
 

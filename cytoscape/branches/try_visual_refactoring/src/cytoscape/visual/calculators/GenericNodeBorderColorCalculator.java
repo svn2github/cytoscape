@@ -57,7 +57,8 @@ import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeBorderColorCalculator extends AbstractNodeColorCalculator {
+public class GenericNodeBorderColorCalculator extends AbstractNodeColorCalculator 
+    implements NodeColorCalculator {
 
     public byte getType() {
     	return VizMapUI.NODE_BORDER_COLOR;
@@ -86,5 +87,11 @@ public class GenericNodeBorderColorCalculator extends AbstractNodeColorCalculato
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
     	apply(appr,node,network,BORDER);
     }
+    public Color calculateNodeColor(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getBorderColor();
+    }
+
 }
 

@@ -62,6 +62,13 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
 
   NodeAppearance defaultAppearance = new NodeAppearance();
 
+  /** Used _ONLY_ to support deprecated code - DO NOT USE OTHERWISE!!!! */
+  private NodeAppearance currentAppearance; 
+  /** Used _ONLY_ to support deprecated code - DO NOT USE OTHERWISE!!!! */
+  private CyNetwork currentNetwork; 
+  /** Used _ONLY_ to support deprecated code - DO NOT USE OTHERWISE!!!! */
+  private Node currentNode; 
+
   public NodeAppearanceCalculator() {
     super();
   }
@@ -105,6 +112,10 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
 	appr.copy(defaultAppearance); // set defaults and node lock state
   	for (Calculator nc : calcs) 
 		nc.apply( appr, node, network );
+
+	currentAppearance = appr;
+	currentNode = node;
+	currentNetwork = network;
   }
    
   public NodeAppearance getDefaultAppearance() {
@@ -152,6 +163,225 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
 	else
 		return false;
   }
+
+ //===================================================================================
+ //
+ // Beyond this point all code is deprecated or exists solely to support 
+ // said deprecated code.  
+ // 
+ // Avert your eyes and save yourself the pain!!!
+ //
+ //
+
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeFillColor(Color c) { defaultAppearance.setFillColor(c); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeBorderColor(Color c) { defaultAppearance.setBorderColor(c); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeLineType(LineType lt) { defaultAppearance.setBorderLineType(lt); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeShape(byte s) { defaultAppearance.setShape(s); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeWidth(double d) { defaultAppearance.setWidth(d); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeHeight(double d) { defaultAppearance.setHeight(d); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeLabel(String s) { defaultAppearance.setLabel(s); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeToolTip(String s) { defaultAppearance.setToolTip(s); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeFont(Font f) { defaultAppearance.setFont(f); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeFontFace(Font f) { defaultAppearance.setFont(f); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeFontSize(float f) { defaultAppearance.setFontSize(f); }
+  /** @deprecated Use getDefaultAppearance() and then set that. This method will be removed Sept 2007. */ 
+  public void setDefaultNodeLabelColor(Color c) { defaultAppearance.setLabelColor(c); }
+
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public Color getDefaultNodeFillColor() {return defaultAppearance.getFillColor();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public Color getDefaultNodeBorderColor() {return defaultAppearance.getBorderColor();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public LineType getDefaultNodeLineType() {return defaultAppearance.getBorderLineType();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public byte getDefaultNodeShape() {return defaultAppearance.getShape();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public double getDefaultNodeWidth() {return defaultAppearance.getWidth();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public double getDefaultNodeHeight() {return defaultAppearance.getHeight();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public String getDefaultNodeLabel() {return defaultAppearance.getLabel();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public String getDefaultNodeToolTip() {return defaultAppearance.getToolTip();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public Font getDefaultNodeFont() {return defaultAppearance.getFont();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public Font getDefaultNodeFontFace() {return defaultAppearance.getFont();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public float getDefaultNodeFontSize() {return defaultAppearance.getFontSize();}
+  /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept 2007. */ 
+  public Color getDefaultNodeLabelColor() {return defaultAppearance.getLabelColor();}
+
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public Color calculateNodeFillColor(Node node, CyNetwork network) {
+	doCalc(node,network);
+	return currentAppearance.getFillColor();
+  } 
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public Color calculateNodeBorderColor(Node node, CyNetwork network) {
+        doCalc(node,network);
+        return currentAppearance.getBorderColor();
+  }
+
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public LineType calculateNodeLineType(Node node, CyNetwork network) {
+        doCalc(node,network);
+        return currentAppearance.getBorderLineType();
+  }
+
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public byte calculateNodeShape(Node node, CyNetwork network) {
+        doCalc(node,network);
+        return currentAppearance.getShape();
+  }
+
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public double calculateNodeWidth(Node node, CyNetwork network) {
+        doCalc(node,network);
+        return currentAppearance.getWidth();
+  }
+
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public double calculateNodeHeight(Node node, CyNetwork network) {
+        doCalc(node,network);
+        return currentAppearance.getHeight();
+  }
+
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public String calculateNodeLabel(Node node, CyNetwork network) {
+        doCalc(node,network);
+        return currentAppearance.getLabel();
+  }
+
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public String calculateNodeToolTip(Node node, CyNetwork network) {
+        doCalc(node,network);
+        return currentAppearance.getToolTip();
+  }
+
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public Font calculateNodeFont(Node node, CyNetwork network) {
+        doCalc(node,network);
+        return currentAppearance.getFont();
+  }
+
+  /** @deprecated Use calculateNodeAppearance() and get the value from the NodeAppearance.
+       This method will be removed Sept 2007. */ 
+  public Color calculateNodeLabelColor(Node node, CyNetwork network) {
+        doCalc(node,network);
+        return currentAppearance.getLabelColor();
+  }
+
+  /** Used _ONLY_ to support deprecated code - DO NOT USE for anything else!!!! */
+  private void doCalc(Node node, CyNetwork network) {
+	if ( node != currentNode && network != currentNetwork ) 
+		calculateNodeAppearance(node,network);
+  }
+
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeColorCalculator getNodeFillColorCalculator() {
+  	return (NodeColorCalculator)getCalculator(VizMapUI.NODE_COLOR);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeColorCalculator getNodeBorderColorCalculator() {
+  	return (NodeColorCalculator)getCalculator(VizMapUI.NODE_BORDER_COLOR);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeLineTypeCalculator getNodeLineTypeCalculator() {
+  	return (NodeLineTypeCalculator)getCalculator(VizMapUI.NODE_LINETYPE);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeShapeCalculator getNodeShapeCalculator() {
+  	return (NodeShapeCalculator)getCalculator(VizMapUI.NODE_SHAPE);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeSizeCalculator getNodeWidthCalculator() {
+  	return (NodeSizeCalculator)getCalculator(VizMapUI.NODE_WIDTH);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeSizeCalculator getNodeHeightCalculator() {
+  	return (NodeSizeCalculator)getCalculator(VizMapUI.NODE_HEIGHT);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeLabelCalculator getNodeLabelCalculator() {
+  	return (NodeLabelCalculator)getCalculator(VizMapUI.NODE_LABEL);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeToolTipCalculator getNodeToolTipCalculator() {
+  	return (NodeToolTipCalculator)getCalculator(VizMapUI.NODE_TOOLTIP);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeFontFaceCalculator getNodeFontFaceCalculator() {
+  	return (NodeFontFaceCalculator)getCalculator(VizMapUI.NODE_FONT_FACE);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeFontSizeCalculator getNodeFontSizeCalculator() {
+  	return (NodeFontSizeCalculator)getCalculator(VizMapUI.NODE_FONT_SIZE);
+  }
+  /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
+  public NodeLabelColorCalculator getNodeLabelColorCalculator() {
+  	return (NodeLabelColorCalculator)getCalculator(VizMapUI.NODE_LABEL_COLOR);
+  }
+
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeFillColorCalculator(NodeColorCalculator c) {
+        // special handling for deprecated code
+  	c.set(VizMapUI.NODE_COLOR,"nodeFillColorCalculator","Node Color");
+  	setCalculator(c);
+  }
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeBorderColorCalculator(NodeColorCalculator c) {
+        // special handling for deprecated code
+  	c.set(VizMapUI.NODE_BORDER_COLOR,"nodeBorderColorCalculator","Node Border Color");
+  	setCalculator(c);
+  }
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeLineTypeCalculator(NodeLineTypeCalculator c) {setCalculator(c);}
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeShapeCalculator(NodeShapeCalculator c) {setCalculator(c);}
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeWidthCalculator(NodeSizeCalculator c) {
+        // special handling for deprecated code
+  	c.set(VizMapUI.NODE_WIDTH,"nodeWidthCalculator","Node Width");
+  	setCalculator(c);
+  }
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeHeightCalculator(NodeSizeCalculator c) {
+        // special handling for deprecated code
+  	c.set(VizMapUI.NODE_HEIGHT,"nodeHeightCalculator","Node Height");
+  	setCalculator(c);
+  }
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeLabelCalculator(NodeLabelCalculator c) {setCalculator(c);}
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeToolTipCalculator(NodeToolTipCalculator c) {setCalculator(c);}
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeFontFaceCalculator(NodeFontFaceCalculator c) {setCalculator(c);}
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeFontSizeCalculator(NodeFontSizeCalculator c) {setCalculator(c);}
+  /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
+  public void setNodeLabelColorCalculator(NodeLabelColorCalculator c) {setCalculator(c);}
+
 }
 
 

@@ -1,6 +1,6 @@
 
 /*
-  File: GenericNodeHeightCalculator.java 
+  File: GenericNodeSizeCalculator.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -55,43 +55,58 @@ import cytoscape.visual.parsers.DoubleParser;
 
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
-//----------------------------------------------------------------------------
-public class GenericNodeHeightCalculator extends AbstractNodeSizeCalculator 
+
+/** @deprecated Use NodeWidth,NodeHeight, or NodeUniformSize instead. 
+    will be removed 10/2007 */
+public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator 
     implements NodeSizeCalculator {
 
     public byte getType() {
-	return VizMapUI.NODE_HEIGHT;
+	return sizeType; 
     } 
 
     public String getPropertyLabel() {
-        return "nodeHeightCalculator";
+        return propertyLabel; 
     }
 
     public String getTypeName() {
-        return "Node Height";
+        return typename; 
     }
     
-    GenericNodeHeightCalculator() {
+    GenericNodeSizeCalculator() {
 	super();
     }
    
-    public GenericNodeHeightCalculator(String name, ObjectMapping m) {
+    public GenericNodeSizeCalculator(String name, ObjectMapping m) {
 	super(name, m);
     }
    
-    public GenericNodeHeightCalculator(String name, Properties props, String baseKey) {
+    public GenericNodeSizeCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey);
     }
     
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-	apply(appr,node,network,HEIGHT);
+    	if ( sizeType == VizMapUI.NODE_WIDTH )
+		apply(appr,node,network,WIDTH);
+	else if  ( sizeType == VizMapUI.NODE_HEIGHT )
+		apply(appr,node,network,HEIGHT);
+	else if  ( sizeType == VizMapUI.NODE_SIZE )
+		apply(appr,node,network,SIZE);
+	else
+		System.err.println("don't know what kind of calculator this is!");
     }
 
     public double calculateNodeSize(Node e, CyNetwork n) {
         NodeAppearance ea = new NodeAppearance();
         apply(ea,e,n);
-        return ea.getHeight();
+    	if ( sizeType == VizMapUI.NODE_WIDTH )
+		return ea.getWidth();	
+	else if  ( sizeType == VizMapUI.NODE_HEIGHT )
+		return ea.getHeight();	
+	else if  ( sizeType == VizMapUI.NODE_SIZE )
+		return ea.getSize();	
+	else
+		return -1;	
     }
-
 }
 

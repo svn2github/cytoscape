@@ -92,5 +92,6 @@ public class GenericNodeLabelPositionCalculator extends NodeCalculator {
 	
         appr.setLabelPosition( lp ); 
     }
+
 }
 

@@ -1,6 +1,6 @@
 
 /*
-  File: GenericNodeHeightCalculator.java 
+  File: EdgeArrowCalculator.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -37,61 +37,26 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 8189 $
-// $Date: 2006-09-13 13:51:38 -0700 (Wed, 13 Sep 2006) $
+// $Revision: 7760 $
+// $Date: 2006-06-26 09:28:49 -0700 (Mon, 26 Jun 2006) $
 // $Author: mes $
 //----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 //----------------------------------------------------------------------------
 import java.util.Map;
-import java.util.Properties;
 import javax.swing.JPanel;
 
-import giny.model.Node;
+import giny.model.Edge;
+import cytoscape.visual.Arrow;
 
 import cytoscape.CyNetwork;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.parsers.DoubleParser;
 
-import cytoscape.visual.NodeAppearance;
-import cytoscape.visual.ui.VizMapUI;
-//----------------------------------------------------------------------------
-public class GenericNodeHeightCalculator extends AbstractNodeSizeCalculator 
-    implements NodeSizeCalculator {
-
-    public byte getType() {
-	return VizMapUI.NODE_HEIGHT;
-    } 
-
-    public String getPropertyLabel() {
-        return "nodeHeightCalculator";
-    }
-
-    public String getTypeName() {
-        return "Node Height";
-    }
-    
-    GenericNodeHeightCalculator() {
-	super();
-    }
-   
-    public GenericNodeHeightCalculator(String name, ObjectMapping m) {
-	super(name, m);
-    }
-   
-    public GenericNodeHeightCalculator(String name, Properties props, String baseKey) {
-        super(name, props, baseKey);
-    }
-    
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-	apply(appr,node,network,HEIGHT);
-    }
-
-    public double calculateNodeSize(Node e, CyNetwork n) {
-        NodeAppearance ea = new NodeAppearance();
-        apply(ea,e,n);
-        return ea.getHeight();
-    }
-
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
+public interface EdgeArrowCalculator extends Calculator {
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */    
+    public Arrow calculateEdgeArrow(Edge edge, CyNetwork network);
+    /** @deprecated DON'T USE. Only exists to support deprecated code.
+         Will be removed 10/2007 */
+    public void set( byte b, String p, String n);
 }
 

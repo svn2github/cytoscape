@@ -58,7 +58,8 @@ import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 
 //----------------------------------------------------------------------------
-public class GenericEdgeSourceArrowCalculator extends AbstractEdgeArrowCalculator {
+public class GenericEdgeSourceArrowCalculator extends AbstractEdgeArrowCalculator 
+        implements EdgeArrowCalculator {
 
 	public byte getType() {
 		return VizMapUI.EDGE_SRCARROW;
@@ -84,6 +85,12 @@ public class GenericEdgeSourceArrowCalculator extends AbstractEdgeArrowCalculato
 		super(name, props, baseKey);
 	}
 	public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-		apply(appr,edge,network,true);
+		apply(appr,edge,network,SOURCE);
 	}
+
+    public Arrow calculateEdgeArrow(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+        return ea.getSourceArrow();
+    }
 }

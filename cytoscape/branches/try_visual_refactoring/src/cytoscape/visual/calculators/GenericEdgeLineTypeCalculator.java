@@ -57,7 +57,8 @@ import cytoscape.visual.parsers.LineTypeParser;
 import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericEdgeLineTypeCalculator extends EdgeCalculator {
+public class GenericEdgeLineTypeCalculator extends EdgeCalculator 
+    implements EdgeLineTypeCalculator {
 
     public byte getType() {
         return VizMapUI.EDGE_LINETYPE;
@@ -92,5 +93,12 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator {
 
 	appr.setLineType( lt ); 
     }
+
+    public LineType calculateEdgeLineType(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+        return ea.getLineType();
+    }
+
 }
 

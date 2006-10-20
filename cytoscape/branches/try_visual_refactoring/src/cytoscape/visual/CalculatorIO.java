@@ -58,9 +58,9 @@ import cytoscape.visual.ui.VizMapUI;
 public class CalculatorIO {
     
     // old labels no longer used, but that we need to account for
-    private static final String nodeColorBaseKey = "nodeColorCalculator";
-    private static final String nodeSizeBaseKey = "nodeSizeCalculator";
-    private static final String edgeArrowBaseKey = "edgeArrowCalculator";
+    public static final String nodeColorBaseKey = "nodeColorCalculator";
+    public static final String nodeSizeBaseKey = "nodeSizeCalculator";
+    public static final String edgeArrowBaseKey = "edgeArrowCalculator";
 
     // new labels to replace old labels 
     private static final String nodeFillColorBaseKey = 
@@ -463,7 +463,7 @@ public class CalculatorIO {
      * gets a new unique name from the catalog and applied it to the
      * calculator argument.
      */
-    private static void renameAsNeeded(Calculator c, CalculatorCatalog catalog) {
+    public static void renameAsNeeded(Calculator c, CalculatorCatalog catalog) {
         String name = c.toString();
 	String newName = catalog.checkCalculatorName(c.getType(),name);
         if (!newName.equals(name)) {c.setName(newName);}
@@ -484,5 +484,69 @@ public class CalculatorIO {
 
 	return key;
     }
+
+// agony
+
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String dirHeader = "cytoscape.visual.calculators.";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String nodeColorClassName = "NodeColorCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String nodeLineTypeBaseKey = "nodeLineTypeCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String nodeLineTypeClassName = "NodeLineTypeCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String nodeShapeBaseKey = "nodeShapeCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String nodeShapeClassName = "NodeShapeCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String nodeSizeClassName = "NodeSizeCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String nodeLabelBaseKey = "nodeLabelCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String nodeLabelClassName = "NodeLabelCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String nodeToolTipBaseKey = "nodeToolTipCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String nodeToolTipClassName = "NodeToolTipCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String nodeFontFaceBaseKey = "nodeFontFaceCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String nodeFontFaceClassName = "NodeFontFaceCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String nodeFontSizeBaseKey = "nodeFontSizeCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String nodeFontSizeClassName = "NodeFontSizeCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String edgeColorBaseKey = "edgeColorCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String edgeColorClassName = "EdgeColorCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String edgeLineTypeBaseKey = "edgeLineTypeCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String edgeLineTypeClassName = "EdgeLineTypeCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String edgeArrowClassName = "EdgeArrowCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String edgeLabelBaseKey = "edgeLabelCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String edgeLabelClassName = "EdgeLabelCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String edgeToolTipBaseKey = "edgeToolTipCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String edgeToolTipClassName = "EdgeToolTipCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String edgeFontFaceBaseKey = "edgeFontFaceCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String edgeFontFaceClassName = "EdgeFontFaceCalculator";
+    /** @deprecated Use Calculator.getPropertyLabel(). Will be removed 10/2007 */
+    public static final String edgeFontSizeBaseKey = "edgeFontSizeCalculator";
+    /** @deprecated Implement this yourself. Will be removed 10/2007 */
+    public static final String edgeFontSizeClassName = "EdgeFontSizeCalculator";
+
+    /** @deprecated WTF? Use CalculatorCatalog.removeCalculator() Will be removed 10/2007 */
+    public static void removeDuplicate(Calculator c, CalculatorCatalog catalog){ 
+ 		   catalog.removeCalculator(c);
+    }	
 }
 

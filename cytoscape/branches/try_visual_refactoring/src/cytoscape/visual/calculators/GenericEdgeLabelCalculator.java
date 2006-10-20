@@ -56,7 +56,8 @@ import cytoscape.visual.parsers.StringParser;
 import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericEdgeLabelCalculator extends EdgeCalculator {
+public class GenericEdgeLabelCalculator extends EdgeCalculator 
+    implements EdgeLabelCalculator {
 
     public byte getType() {
         return VizMapUI.EDGE_LABEL;
@@ -91,5 +92,13 @@ public class GenericEdgeLabelCalculator extends EdgeCalculator {
 
 	appr.setLabel( l ); 
     }
+
+    public String calculateEdgeLabel(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+        return ea.getLabel();
+    }
+
+
 }
 

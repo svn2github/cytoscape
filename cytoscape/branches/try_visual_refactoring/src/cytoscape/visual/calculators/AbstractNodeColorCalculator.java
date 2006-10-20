@@ -59,6 +59,25 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 abstract class AbstractNodeColorCalculator extends NodeCalculator {
 
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    protected byte colType;
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    protected String propertyLabel;
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    protected String typename;
+
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    public void set( byte b, String p, String n) {
+        colType = b;
+        propertyLabel = p;
+        typename = n;
+    }
+
+
     protected byte FILL = 1;
     protected byte BORDER = 2;
 

@@ -59,6 +59,28 @@ import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
 
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    protected byte arrowType;
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    protected String propertyLabel;
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    protected String typename;
+
+    /** @deprecated This only exists to support deprecated code. DO NOT USE!!!
+        will be removed 10/2007 */
+    public void set( byte b, String p, String n) {
+        arrowType = b;
+        propertyLabel = p;
+        typename = n;
+    }
+
+	protected static final byte SOURCE=0;
+	protected static final byte TARGET=0;
+
+
 	public abstract byte getType(); 
 	public abstract String getPropertyLabel();
 	public abstract String getTypeName();
@@ -77,7 +99,7 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
 
 	abstract public void apply(EdgeAppearance appr, Edge edge, CyNetwork network);
 
-	protected void apply(EdgeAppearance appr, Edge edge, CyNetwork network, boolean source) {
+	protected void apply(EdgeAppearance appr, Edge edge, CyNetwork network, byte end ) {
 
 		Arrow a = (Arrow) getRangeValue(edge); 
 
@@ -85,9 +107,9 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
 		if ( a == null )
 			return;
 
-		if ( source )
+		if ( end  == SOURCE )
 			appr.setSourceArrow( a );
-		else
+		else if ( end  == TARGET )
 			appr.setTargetArrow( a ); 
 	}
 }

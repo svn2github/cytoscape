@@ -57,7 +57,8 @@ import cytoscape.visual.parsers.NodeShapeParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeShapeCalculator extends NodeCalculator {
+public class GenericNodeShapeCalculator extends NodeCalculator 
+    implements NodeShapeCalculator {
 
     public byte getType() {
         return VizMapUI.NODE_SHAPE;
@@ -92,5 +93,13 @@ public class GenericNodeShapeCalculator extends NodeCalculator {
 
 	appr.setShape( ((Byte)rangeValue).byteValue()) ;
     }
+
+    public byte calculateNodeShape(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getShape();
+    }
+
+
 }
 

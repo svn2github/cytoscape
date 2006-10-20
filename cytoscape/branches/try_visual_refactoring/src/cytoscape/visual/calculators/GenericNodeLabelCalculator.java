@@ -56,7 +56,8 @@ import cytoscape.visual.parsers.StringParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeLabelCalculator extends NodeCalculator {
+public class GenericNodeLabelCalculator extends NodeCalculator 
+    implements NodeLabelCalculator {
 
     public byte getType() {
         return VizMapUI.NODE_LABEL;
@@ -91,5 +92,13 @@ public class GenericNodeLabelCalculator extends NodeCalculator {
 	
         appr.setLabel( s ); 
     }
+
+    public String calculateNodeLabel(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getLabel();
+    }
+
+
 }
 
