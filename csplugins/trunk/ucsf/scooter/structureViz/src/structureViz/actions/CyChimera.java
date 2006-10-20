@@ -199,6 +199,7 @@ public class CyChimera {
 		Iterator modelIter = chimeraModels.iterator();
 		while (modelIter.hasNext()) {
 			ChimeraModel model = (ChimeraModel)modelIter.next();
+			if (model == null) continue;
 			CyNode node = model.getStructure().node();
 			NodeView nodeView = networkView.getNodeView(node);
 

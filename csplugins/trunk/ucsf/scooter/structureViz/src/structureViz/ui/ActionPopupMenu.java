@@ -35,6 +35,7 @@ package structureViz.ui;
 // System imports
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -190,15 +191,32 @@ public class ActionPopupMenu extends JPopupMenu {
 		addItem(null, "Clear selection", "~select", PopupActionListener.CLEAR_SELECTION);
 	}
 
-	private void createModelMenu() { return; }
+	private void createModelMenu() { 
+		addHeader("Model Actions");
+		addItem(null, "Close model(s)", null,PopupActionListener.CLOSE);
+		JMenu selectMenu = new JMenu("Select");
+		addItem(selectMenu, "Ligand", "select %sel & ligand", PopupActionListener.MODEL_SELECTION);
+		addItem(selectMenu, "Ions", "select %sel & ions", PopupActionListener.MODEL_SELECTION);
+		addItem(selectMenu, "Solvent", "select %sel & solvent", PopupActionListener.MODEL_SELECTION);
+		JMenu secondaryMenu = new JMenu("Secondary Structure");
+		addItem(secondaryMenu, "Helix", "select %sel & helix", PopupActionListener.MODEL_SELECTION);
+		addItem(secondaryMenu, "Strand", "select %sel & strand", PopupActionListener.MODEL_SELECTION);
+		addItem(secondaryMenu, "Turn", "select %sel & turn", PopupActionListener.MODEL_SELECTION);
+		selectMenu.add(secondaryMenu);
+		add(selectMenu);
+		return; 
+	}
 
 	private void createChainMenu() { return; }
 
 	private void createResidueMenu() { return; }
 
 	private void addHeader(String header) {
-		add(new JMenuItem(header));
-		add(new JPopupMenu.Separator());
+    // XXX Change this to use dk gray background instead of separators 
+		JMenuItem item = new JMenuItem(header);
+		item.setBackground(Color.gray);
+		item.setForeground(Color.white);
+		add(item);
 	}
 
 	private JMenuItem addItem(JMenu menu, String text, String command, int postCommand) {
@@ -253,6 +271,7 @@ public class ActionPopupMenu extends JPopupMenu {
 		public static final int NO_POST = 0;
 		public static final int CLEAR_SELECTION = 1;
 		public static final int CLOSE = 2;
+		public static final int MODEL_SELECTION = 3;
 		int postCommand = NO_POST;
 
 		PopupActionListener (String command) {
@@ -268,8 +287,23 @@ public class ActionPopupMenu extends JPopupMenu {
 			// We need to be a little careful.  If the context is not generic,
 			// then the object might not be selected.  To make things easy,
 			// we selected it, execute our command, and then deselected
+			this.postCommand = postCommand;
+			if (command == null) {
+				commandList = new String[0];
+				return;
+			}
 			if (context != GENERIC_CONTEXT && objectList.size() == 1) {
 				String spec = ((ChimeraStructuralObject)objectList.get(0)).toSpec();
+				command = command.replaceAll("%sel",spec);
+			} else if (postCommand == MODEL_SELECTION) {
+				// Special case for chemistry selection commands
+				String spec = new String();
+				Iterator modelIter = objectList.iterator();
+				while (modelIter.hasNext()) {
+					ChimeraStructuralObject obj = (ChimeraStructuralObject)modelIter.next();
+					spec = spec.concat(obj.toSpec());
+					if (modelIter.hasNext()) spec = spec.concat(",");
+				}
 				command = command.replaceAll("%sel",spec);
 			} else {
 				command = command.replaceAll("%sel","sel");
@@ -279,10 +313,15 @@ public class ActionPopupMenu extends JPopupMenu {
 				commandList = new String[1];
 				commandList[0] = command;
 			}
-			this.postCommand = postCommand;
 		}
 
 		public void actionPerformed(ActionEvent ev) {
+			// Special case for chemistry selection commands
+			if (postCommand == MODEL_SELECTION) {
+				chimeraObject.select(commandList[0]);
+				chimeraObject.modelChanged();
+				return;
+			}
 			for (int i=0; i<commandList.length; i++) {
 					// System.out.println("To Chimera: "+commandList[i]);
 					chimeraObject.command(commandList[i]);
@@ -290,6 +329,14 @@ public class ActionPopupMenu extends JPopupMenu {
 			if (postCommand == CLEAR_SELECTION) {
 				navTree.clearSelection();
 			} else if (postCommand == CLOSE) {
+				// Get the object
+				Iterator objIterator = objectList.iterator();
+				while (objIterator.hasNext()) {
+					ChimeraStructuralObject obj = (ChimeraStructuralObject)objIterator.next();
+					ChimeraModel model = obj.getChimeraModel();
+					chimeraObject.close(model.getStructure());
+				}
+				chimeraObject.modelChanged();
 			}
 		}
 	}

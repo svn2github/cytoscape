@@ -216,6 +216,8 @@ public class Chimera {
 	 */
 	public void close(Structure structure) {
 		this.command("listen stop models");
+		// This model might be selected -- don't listen to it
+		this.command("listen stop select");
 		int model = structure.modelNumber();
 		this.command("close #"+model);
 		
@@ -225,6 +227,7 @@ public class Chimera {
 			modelHash.remove(new Integer(model));
 		}
 		this.command("listen start models");
+		this.command("listen start select");
 		return;
 	}
 
@@ -337,7 +340,7 @@ public class Chimera {
 		HashMap modelSelHash = new HashMap();
 		ArrayList selectionList = new ArrayList();
 		Iterator lineIter;
-		// Clear the reply log
+
 		// Execute the command to get the list of models with selections
 		lineIter = commandReply("lists level molecule");
 		while (lineIter.hasNext()) {

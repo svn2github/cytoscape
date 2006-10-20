@@ -61,16 +61,20 @@ public class Align {
 	public static final int RMSD = 0;
 	public static final int SCORE = 1;
 	public static final int PAIRS = 2;
+	public static final String structureInteraction = "structuralSimilarity";
 	private Chimera chimeraObject = null;
 	private HashMap results = null;
 	private boolean createEdges = false;
 	private boolean showSequence = false;
+	private boolean createNewEdges = true;
 
   public Align(Chimera chimeraObject) { 
 		this.chimeraObject = chimeraObject;
 	}
 
 	public void setCreateEdges(boolean val) { this.createEdges = val; };
+
+	public void setCreateNewEdges(boolean val) { this.createNewEdges = val; };
 
 	public void setShowSequence(boolean val) { this.showSequence = val; };
 
@@ -170,20 +174,22 @@ public class Align {
 		nodeList.add(source);
 		nodeList.add(target);
 		List edgeList = network.getConnectingEdges(nodeList);
-		if (edgeList == null || edgeList.size() == 0) {
+		CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+		if (edgeList == null || edgeList.size() == 0 || createNewEdges ) {
 			edgeList = new ArrayList();
 			// Use Cytoscape.getCyEdge()?
 			edge = (CyEdge) Cytoscape.getRootGraph().getEdge(Cytoscape.getRootGraph().createEdge(source, target));
-			String edge_name = source.getIdentifier() + " (isRelated) "+target.getIdentifier();
+			String edge_name = source.getIdentifier() + " ("+structureInteraction+") "+target.getIdentifier();
 			edge.setIdentifier(edge_name);
+			edgeAttr.setAttribute(edge.getIdentifier(), "interaction", structureInteraction);
 			network.addEdge(edge);
 		} else {
 			edge = (CyEdge) edgeList.get(0);
 		}
 		// Now add the attributes
-		CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+		Double d;
 		for (int i = 0; i < 3; i++) {
-			Double d = new Double(results[i]);
+			d = new Double(1/results[i]);
 			edgeAttr.setAttribute(edge.getIdentifier(), attributeKeys[i], d);
 		}
 	}

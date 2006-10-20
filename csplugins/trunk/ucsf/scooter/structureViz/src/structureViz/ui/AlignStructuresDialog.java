@@ -64,6 +64,7 @@ import giny.view.NodeView;
 // StructureViz imports
 import structureViz.model.Structure;
 import structureViz.model.AlignmentTableModel;
+import structureViz.model.TableSorter;
 import structureViz.actions.CyChimera;
 import structureViz.actions.Chimera;
 import structureViz.actions.Align;
@@ -132,7 +133,10 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 		// Create the results table
 		tableModel = new AlignmentTableModel(chimeraObject, structures, this);
 
-		JTable results = new JTable(tableModel);
+		TableSorter sorter = new TableSorter(tableModel);
+		JTable results = new JTable(sorter);
+		sorter.setTableHeader(results.getTableHeader());
+
 		ListSelectionModel lsm = results.getSelectionModel();
 		lsm.addListSelectionListener(tableModel);
 
