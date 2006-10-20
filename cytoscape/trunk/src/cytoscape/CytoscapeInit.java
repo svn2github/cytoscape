@@ -252,14 +252,18 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 
 		loadExpressionFiles();
 
-		loadPlugins();
-
-		if (initParams.getMode() == CyInitParams.GUI
-				|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
-			WindowUtilities.hideSplash();
-			// restore cursor
-			Cytoscape.getDesktop().setCursor(Cursor.getDefaultCursor());
+		try {
+			loadPlugins();			
 		}
+		finally {
+			// Always restore the cursor and hide the splash, even there is exception
+			if (initParams.getMode() == CyInitParams.GUI
+					|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
+				WindowUtilities.hideSplash();
+				Cytoscape.getDesktop().setCursor(Cursor.getDefaultCursor());
+			}			
+		} 
+
 
 		System.out.println("Cytoscape initialized successfully.");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null,
