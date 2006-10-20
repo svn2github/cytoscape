@@ -189,7 +189,7 @@ public class Align {
 		// Now add the attributes
 		Double d;
 		for (int i = 0; i < 3; i++) {
-			d = new Double(1/results[i]);
+			d = new Double(results[i]);
 			edgeAttr.setAttribute(edge.getIdentifier(), attributeKeys[i], d);
 		}
 	}
