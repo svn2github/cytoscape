@@ -466,4 +466,358 @@ public class CalculatorCatalog {
 		addVisualStyle(defaultVS);
 	}
 
+	//==========================================================================
+	//
+	// from here on out everything is deprecated.  run for your life. 
+	//
+	//==========================================================================
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeColorCalculators() { 
+		Collection c = getCalculators(VizMapUI.NODE_COLOR); 
+		c.addAll(getCalculators(VizMapUI.NODE_BORDER_COLOR));
+		return c;
+	}
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeColorCalculator(NodeColorCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeColorCalculator removeNodeColorCalculator(String name) { 
+		NodeColorCalculator c = (NodeColorCalculator)removeCalculator(VizMapUI.NODE_COLOR,name); 
+		if ( c == null )
+			c = (NodeColorCalculator)removeCalculator(VizMapUI.NODE_BORDER_COLOR,name); 
+		return c;
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeColorCalculator getNodeColorCalculator(String name) { 
+		NodeColorCalculator c = (NodeColorCalculator)getCalculator(VizMapUI.NODE_COLOR,name);
+		if ( c == null )
+			c = (NodeColorCalculator)getCalculator(VizMapUI.NODE_BORDER_COLOR,name);
+		return c;
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeColorCalculatorName(String name) {
+		String s = checkCalculatorName(VizMapUI.NODE_COLOR,name);
+		if ( s == null )
+			s = checkCalculatorName(VizMapUI.NODE_BORDER_COLOR,name);
+		return s;
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeLineTypeCalculators() { return getCalculators(VizMapUI.NODE_LINETYPE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeLineTypeCalculator(NodeLineTypeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLineTypeCalculator removeNodeLineTypeCalculator(String name) { 
+		return (NodeLineTypeCalculator)removeCalculator(VizMapUI.NODE_LINETYPE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLineTypeCalculator getNodeLineTypeCalculator(String name) { 
+		return (NodeLineTypeCalculator)getCalculator(VizMapUI.NODE_LINETYPE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeLineTypeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_LINETYPE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeShapeCalculators() { return getCalculators(VizMapUI.NODE_SHAPE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeShapeCalculator(NodeShapeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeShapeCalculator removeNodeShapeCalculator(String name) { 
+		return (NodeShapeCalculator)removeCalculator(VizMapUI.NODE_SHAPE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeShapeCalculator getNodeShapeCalculator(String name) {
+		return (NodeShapeCalculator)getCalculator(VizMapUI.NODE_SHAPE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeShapeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_SHAPE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeSizeCalculators() { 
+		Collection c = getCalculators(VizMapUI.NODE_SIZE); 
+		c.addAll(getCalculators(VizMapUI.NODE_WIDTH));
+		c.addAll(getCalculators(VizMapUI.NODE_HEIGHT));
+		return c;
+	}
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeSizeCalculator(NodeSizeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeSizeCalculator removeNodeSizeCalculator(String name) { 
+		NodeSizeCalculator c = (NodeSizeCalculator)removeCalculator(VizMapUI.NODE_SIZE,name); 
+		if ( c == null )
+			c = (NodeSizeCalculator)removeCalculator(VizMapUI.NODE_WIDTH,name);
+		if ( c == null )
+			c = (NodeSizeCalculator)removeCalculator(VizMapUI.NODE_HEIGHT,name); 
+		return c;
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeSizeCalculator getNodeSizeCalculator(String name) {
+		NodeSizeCalculator c = (NodeSizeCalculator)getCalculator(VizMapUI.NODE_SIZE,name);
+		if ( c == null )
+			c = (NodeSizeCalculator)getCalculator(VizMapUI.NODE_WIDTH,name);
+		if ( c == null )
+			c = (NodeSizeCalculator)getCalculator(VizMapUI.NODE_HEIGHT,name);
+		return c;
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeSizeCalculatorName(String name) {
+		String s = checkCalculatorName(VizMapUI.NODE_SIZE,name);
+		if ( s == null )
+			s = checkCalculatorName(VizMapUI.NODE_WIDTH,name);
+		if ( s == null )
+			s = checkCalculatorName(VizMapUI.NODE_HEIGHT,name);
+		return s;
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeLabelCalculators() { return getCalculators(VizMapUI.NODE_LABEL); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeLabelCalculator(NodeLabelCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLabelCalculator removeNodeLabelCalculator(String name) { 
+		return (NodeLabelCalculator)removeCalculator(VizMapUI.NODE_LABEL,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLabelCalculator getNodeLabelCalculator(String name) {
+		return (NodeLabelCalculator)getCalculator(VizMapUI.NODE_LABEL,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeLabelCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_LABEL,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeLabelColorCalculators() { return getCalculators(VizMapUI.NODE_LABEL_COLOR); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeLabelColorCalculator(NodeLabelColorCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLabelColorCalculator removeNodeLabelColorCalculator(String name) { 
+		return (NodeLabelColorCalculator)removeCalculator(VizMapUI.NODE_LABEL_COLOR,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLabelColorCalculator getNodeLabelColorCalculator(String name) {
+		return (NodeLabelColorCalculator)getCalculator(VizMapUI.NODE_LABEL_COLOR,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeLabelColorCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_LABEL_COLOR,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeToolTipCalculators() { return getCalculators(VizMapUI.NODE_TOOLTIP); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeToolTipCalculator(NodeToolTipCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeToolTipCalculator removeNodeToolTipCalculator(String name) { 
+		return (NodeToolTipCalculator)removeCalculator(VizMapUI.NODE_TOOLTIP,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeToolTipCalculator getNodeToolTipCalculator(String name) {
+		return (NodeToolTipCalculator)getCalculator(VizMapUI.NODE_TOOLTIP,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeToolTipCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_TOOLTIP,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeFontFaceCalculators() { return getCalculators(VizMapUI.NODE_FONT_FACE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeFontFaceCalculator(NodeFontFaceCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeFontFaceCalculator removeNodeFontFaceCalculator(String name) { 
+		return (NodeFontFaceCalculator)removeCalculator(VizMapUI.NODE_FONT_FACE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeFontFaceCalculator getNodeFontFaceCalculator(String name) {
+		return (NodeFontFaceCalculator)getCalculator(VizMapUI.NODE_FONT_FACE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeFontFaceCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_FONT_FACE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeFontSizeCalculators() { return getCalculators(VizMapUI.NODE_FONT_SIZE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeFontSizeCalculator(NodeFontSizeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeFontSizeCalculator removeNodeFontSizeCalculator(String name) { 
+		return (NodeFontSizeCalculator)removeCalculator(VizMapUI.NODE_FONT_SIZE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeFontSizeCalculator getNodeFontSizeCalculator(String name) {
+		return (NodeFontSizeCalculator)getCalculator(VizMapUI.NODE_FONT_SIZE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeFontSizeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_FONT_SIZE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeColorCalculators() { return getCalculators(VizMapUI.EDGE_COLOR); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeColorCalculator(EdgeColorCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeColorCalculator removeEdgeColorCalculator(String name) { 
+		return (EdgeColorCalculator)removeCalculator(VizMapUI.EDGE_COLOR,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeColorCalculator getEdgeColorCalculator(String name) {
+		return (EdgeColorCalculator)getCalculator(VizMapUI.EDGE_COLOR,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeColorCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_COLOR,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeLineTypeCalculators() { return getCalculators(VizMapUI.EDGE_LINETYPE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeLineTypeCalculator(EdgeLineTypeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeLineTypeCalculator removeEdgeLineTypeCalculator(String name) { 
+		return (EdgeLineTypeCalculator)removeCalculator(VizMapUI.EDGE_LINETYPE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeLineTypeCalculator getEdgeLineTypeCalculator(String name) {
+		return (EdgeLineTypeCalculator)getCalculator(VizMapUI.EDGE_LINETYPE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeLineTypeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_LINETYPE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeArrowCalculators() { 
+		Collection c = getCalculators(VizMapUI.EDGE_SRCARROW); 
+		c.addAll(getCalculators(VizMapUI.EDGE_TGTARROW));
+		return c;
+	}
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeArrowCalculator(EdgeArrowCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeArrowCalculator removeEdgeArrowCalculator(String name) { 
+		EdgeArrowCalculator c = (EdgeArrowCalculator)removeCalculator(VizMapUI.EDGE_SRCARROW,name); 
+		if ( c == null )
+			c = (EdgeArrowCalculator)removeCalculator(VizMapUI.EDGE_TGTARROW,name); 
+		return c;
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeArrowCalculator getEdgeArrowCalculator(String name) {
+		EdgeArrowCalculator c = (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_SRCARROW,name);
+		if ( c == null )
+			c = (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_TGTARROW,name);
+		return c;
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeArrowCalculatorName(String name) {
+		String s = checkCalculatorName(VizMapUI.EDGE_SRCARROW,name);
+		if ( s == null )
+			s = checkCalculatorName(VizMapUI.EDGE_TGTARROW,name);
+		return s;
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeLabelCalculators() { return getCalculators(VizMapUI.EDGE_LABEL); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeLabelCalculator(EdgeLabelCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeLabelCalculator removeEdgeLabelCalculator(String name) { 
+		return (EdgeLabelCalculator)removeCalculator(VizMapUI.EDGE_LABEL,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeLabelCalculator getEdgeLabelCalculator(String name) {
+		return (EdgeLabelCalculator)getCalculator(VizMapUI.EDGE_LABEL,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeLabelCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_LABEL,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeToolTipCalculators() { return getCalculators(VizMapUI.EDGE_TOOLTIP); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeToolTipCalculator(EdgeToolTipCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeToolTipCalculator removeEdgeToolTipCalculator(String name) { 
+		return (EdgeToolTipCalculator)removeCalculator(VizMapUI.EDGE_TOOLTIP,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeToolTipCalculator getEdgeToolTipCalculator(String name) {
+		return (EdgeToolTipCalculator)getCalculator(VizMapUI.EDGE_TOOLTIP,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeToolTipCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_TOOLTIP,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeFontFaceCalculators() { return getCalculators(VizMapUI.EDGE_FONT_FACE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeFontFaceCalculator(EdgeFontFaceCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeFontFaceCalculator removeEdgeFontFaceCalculator(String name) { 
+		return (EdgeFontFaceCalculator)removeCalculator(VizMapUI.EDGE_FONT_FACE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeFontFaceCalculator getEdgeFontFaceCalculator(String name) {
+		return (EdgeFontFaceCalculator)getCalculator(VizMapUI.EDGE_FONT_FACE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeFontFaceCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_FONT_FACE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeFontSizeCalculators() { return getCalculators(VizMapUI.EDGE_FONT_SIZE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeFontSizeCalculator(EdgeFontSizeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeFontSizeCalculator removeEdgeFontSizeCalculator(String name) { 
+		return (EdgeFontSizeCalculator)removeCalculator(VizMapUI.EDGE_FONT_SIZE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeFontSizeCalculator getEdgeFontSizeCalculator(String name) {
+		return (EdgeFontSizeCalculator)getCalculator(VizMapUI.EDGE_FONT_SIZE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeFontSizeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_FONT_SIZE,name);
+	}
+
 }

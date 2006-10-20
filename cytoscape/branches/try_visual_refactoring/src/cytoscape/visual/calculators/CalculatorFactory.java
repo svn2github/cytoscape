@@ -88,6 +88,13 @@ public class CalculatorFactory {
 	calcs.add( new GenericNodeWidthCalculator() );
     }
 
+    /** @deprecated Use othe newCalculator - we don't need the base interface class name any
+        more. Will be removed 10/2007. */
+    public static Calculator newCalculator(String name, Properties calcProps, 
+                                           String baseKey, String intClassName) {
+    	return newCalculator(name,calcProps,baseKey);
+    }
+
     /**
      * Attempt to construct an instance of Calculator as defined by
      * the supplied arguments.
