@@ -1,0 +1,343 @@
+#NOT FOUND: Q9H0H5_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+6.882670e-05	4	6	1307	27672	92001	Homo	sapiens	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	ABL2	EPHB2	M3K10	SRC
+1.037860e-01	2	6	2204	23297	92001	Homo	sapiens	GO:0007166	biological_process	"cell surface receptor linked signal transduction"	EPHB2	SRC
+7.774530e-01	1	6	4646	20974	92001	Homo	sapiens	GO:0005737	cellular_component	"cytoplasm"	ABL2
+4.370730e-03	1	6	17	23297	92001	Homo	sapiens	GO:0043506	biological_process	"regulation of JNK activity"	M3K10
+3.632430e-05	4	6	1111	27672	92001	Homo	sapiens	GO:0004672	molecular_function	"protein kinase activity"	ABL2	EPHB2	M3K10	SRC
+1.369630e-01	5	6	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	ABL2	EPHB2	M3K10	SRC	WT1
+1.983220e-01	5	6	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	ABL2	EPHB2	M3K10	SRC	WT1
+4.572540e-02	1	6	215	27672	92001	Homo	sapiens	GO:0042802	molecular_function	"identical protein binding"	M3K10
+8.132070e-01	3	6	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	ABL2	RND2	WT1
+1.847330e-02	5	6	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	ABL2	EPHB2	M3K10	RND2	SRC
+7.168230e-02	6	6	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	ABL2	EPHB2	M3K10	RND2	SRC	WT1
+5.383010e-02	1	6	254	27672	92001	Homo	sapiens	GO:0003924	molecular_function	"GTPase activity"	RND2
+2.599320e-03	1	6	12	27672	92001	Homo	sapiens	GO:0035014	molecular_function	"phosphoinositide 3-kinase regulator activity"	ABL2
+2.623840e-02	1	6	103	23297	92001	Homo	sapiens	GO:0051347	biological_process	"positive regulation of transferase activity"	M3K10
+8.836460e-02	4	6	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	ABL2	EPHB2	M3K10	SRC
+3.164680e-02	4	6	5547	23297	92001	Homo	sapiens	GO:0019538	biological_process	"protein metabolism"	ABL2	EPHB2	M3K10	SRC
+5.625110e-03	1	6	26	27672	92001	Homo	sapiens	GO:0005003	molecular_function	"ephrin receptor activity"	EPHB2
+1.000000e+00	6	6	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	ABL2	EPHB2	M3K10	RND2	SRC	WT1
+1.181340e-01	1	6	483	23297	92001	Homo	sapiens	GO:0007399	biological_process	"nervous system development"	EPHB2
+5.253940e-01	1	6	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	WT1
+1.026590e-03	4	6	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	ABL2	EPHB2	M3K10	SRC
+5.912490e-04	2	6	148	23297	92001	Homo	sapiens	GO:0007169	biological_process	"transmembrane receptor protein tyrosine kinase signaling pathway"	EPHB2	SRC
+1.539300e-01	1	6	640	23297	92001	Homo	sapiens	GO:0007264	biological_process	"small GTPase mediated signal transduction"	RND2
+1.979910e-01	1	6	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	RND2
+6.407520e-01	1	6	3654	23297	92001	Homo	sapiens	GO:0031323	biological_process	"regulation of cellular metabolism"	WT1
+2.472590e-02	1	6	97	23297	92001	Homo	sapiens	GO:0000165	biological_process	"MAPKKK cascade"	M3K10
+2.599320e-03	1	6	12	27672	92001	Homo	sapiens	GO:0004709	molecular_function	"MAP kinase kinase kinase activity"	M3K10
+5.260930e-01	1	6	3238	27672	92001	Homo	sapiens	GO:0004872	molecular_function	"receptor activity"	EPHB2
+8.969270e-02	1	6	362	23297	92001	Homo	sapiens	GO:0050790	biological_process	"regulation of catalytic activity"	M3K10
+2.578220e-02	4	6	5236	23297	92001	Homo	sapiens	GO:0044260	biological_process	"cellular macromolecule metabolism"	ABL2	EPHB2	M3K10	SRC
+1.313850e-01	1	6	642	27672	92001	Homo	sapiens	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	M3K10
+1.879750e-03	4	6	2583	23297	92001	Homo	sapiens	GO:0006464	biological_process	"protein modification"	ABL2	EPHB2	M3K10	SRC
+6.347850e-01	1	6	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	ABL2
+5.017450e-02	1	6	199	23297	92001	Homo	sapiens	GO:0043068	biological_process	"positive regulation of programmed cell death"	M3K10
+3.977510e-01	2	6	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	M3K10	WT1
+1.133890e-04	4	6	1250	23297	92001	Homo	sapiens	GO:0016310	biological_process	"phosphorylation"	ABL2	EPHB2	M3K10	SRC
+1.719190e-01	1	6	721	23297	92001	Homo	sapiens	GO:0016265	biological_process	"death"	M3K10
+6.208280e-02	1	6	294	27672	92001	Homo	sapiens	GO:0046983	molecular_function	"protein dimerization activity"	M3K10
+8.610170e-01	1	6	5878	20974	92001	Homo	sapiens	GO:0031224	cellular_component	"intrinsic to membrane"	EPHB2
+1.109190e-01	1	6	452	23297	92001	Homo	sapiens	GO:0043067	biological_process	"regulation of programmed cell death"	M3K10
+2.453840e-02	4	6	5164	23297	92001	Homo	sapiens	GO:0044267	biological_process	"cellular protein metabolism"	ABL2	EPHB2	M3K10	SRC
+9.020170e-01	2	6	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	ABL2	WT1
+1.880730e-01	1	6	795	23297	92001	Homo	sapiens	GO:0043118	biological_process	"negative regulation of physiological process"	WT1
+1.988390e-01	1	6	845	23297	92001	Homo	sapiens	GO:0048523	biological_process	"negative regulation of cellular process"	WT1
+2.126570e-01	1	6	910	23297	92001	Homo	sapiens	GO:0048519	biological_process	"negative regulation of biological process"	WT1
+3.968450e-01	1	6	2236	27672	92001	Homo	sapiens	GO:0004888	molecular_function	"transmembrane receptor activity"	EPHB2
+1.315020e-01	1	6	541	23297	92001	Homo	sapiens	GO:0051242	biological_process	"positive regulation of cellular physiological process"	M3K10
+3.988110e-04	4	6	1726	23297	92001	Homo	sapiens	GO:0007242	biological_process	"intracellular signaling cascade"	ABL2	M3K10	RND2	SRC
+2.319200e-02	1	6	108	27672	92001	Homo	sapiens	GO:0004714	molecular_function	"transmembrane receptor protein tyrosine kinase activity"	EPHB2
+7.530500e-01	5	6	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	ABL2	EPHB2	M3K10	SRC	WT1
+2.048230e-01	1	6	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	RND2
+1.568890e-04	4	6	1613	27672	92001	Homo	sapiens	GO:0016301	molecular_function	"kinase activity"	ABL2	EPHB2	M3K10	SRC
+7.959500e-01	1	6	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	WT1
+4.720960e-02	1	6	187	23297	92001	Homo	sapiens	GO:0051338	biological_process	"regulation of transferase activity"	M3K10
+6.333360e-01	1	6	3587	23297	92001	Homo	sapiens	GO:0006350	biological_process	"transcription"	WT1
+4.336550e-01	1	6	2106	23297	92001	Homo	sapiens	GO:0007275	biological_process	"development"	EPHB2
+2.058970e-01	1	6	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	RND2
+1.436530e-01	1	6	706	27672	92001	Homo	sapiens	GO:0019001	molecular_function	"guanyl nucleotide binding"	RND2
+1.752690e-03	4	6	3012	27672	92001	Homo	sapiens	GO:0016740	molecular_function	"transferase activity"	ABL2	EPHB2	M3K10	SRC
+6.182360e-01	1	6	3454	23297	92001	Homo	sapiens	GO:0045449	biological_process	"regulation of transcription"	WT1
+1.083740e-03	1	6	5	27672	92001	Homo	sapiens	GO:0005005	molecular_function	"transmembrane-ephrin receptor activity"	EPHB2
+1.470110e-04	5	6	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	ABL2	EPHB2	M3K10	RND2	SRC
+4.778270e-01	5	6	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	ABL2	EPHB2	M3K10	SRC	WT1
+1.353330e-02	4	6	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	ABL2	EPHB2	M3K10	SRC
+1.190610e-01	1	6	487	23297	92001	Homo	sapiens	GO:0048731	biological_process	"system development"	EPHB2
+1.135290e-01	1	6	417	20974	92001	Homo	sapiens	GO:0005829	cellular_component	"cytosol"	ABL2
+8.603520e-01	1	6	5866	20974	92001	Homo	sapiens	GO:0016021	cellular_component	"integral to membrane"	EPHB2
+1.181740e-01	5	6	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	ABL2	EPHB2	M3K10	SRC	WT1
+5.259620e-02	1	6	188	20974	92001	Homo	sapiens	GO:0045202	cellular_component	"synapse"	EPHB2
+9.714710e-01	1	6	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	WT1
+9.288410e-03	1	6	43	27672	92001	Homo	sapiens	GO:0005070	molecular_function	"SH3/SH2 adaptor activity"	SRC
+9.748180e-03	1	6	38	23297	92001	Homo	sapiens	GO:0043406	biological_process	"positive regulation of MAPK activity"	M3K10
+6.402650e-01	1	6	4335	27672	92001	Homo	sapiens	GO:0046914	molecular_function	"transition metal ion binding"	WT1
+2.554250e-04	4	6	1539	23297	92001	Homo	sapiens	GO:0006793	biological_process	"phosphorus metabolism"	ABL2	EPHB2	M3K10	SRC
+3.896870e-03	1	6	18	27672	92001	Homo	sapiens	GO:0042169	molecular_function	"SH2 domain binding"	SRC
+1.659580e-01	1	6	694	23297	92001	Homo	sapiens	GO:0012501	biological_process	"programmed cell death"	M3K10
+2.081110e-03	4	6	2653	23297	92001	Homo	sapiens	GO:0043412	biological_process	"biopolymer modification"	ABL2	EPHB2	M3K10	SRC
+6.506790e-01	1	6	3372	20974	92001	Homo	sapiens	GO:0044444	cellular_component	"cytoplasmic part"	ABL2
+7.724520e-01	2	6	8467	20974	92001	Homo	sapiens	GO:0016020	cellular_component	"membrane"	EPHB2	RND2
+9.893730e-01	4	6	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	ABL2	EPHB2	RND2	WT1
+1.814890e-02	1	6	71	23297	92001	Homo	sapiens	GO:0016485	biological_process	"protein processing"	M3K10
+1.422690e-02	1	6	66	27672	92001	Homo	sapiens	GO:0004702	molecular_function	"receptor signaling protein serine/threonine kinase activity"	M3K10
+4.125660e-02	1	6	163	23297	92001	Homo	sapiens	GO:0006917	biological_process	"induction of apoptosis"	M3K10
+6.036450e-02	3	6	4557	27672	92001	Homo	sapiens	GO:0004871	molecular_function	"signal transducer activity"	EPHB2	M3K10	SRC
+2.554250e-04	4	6	1539	23297	92001	Homo	sapiens	GO:0006796	biological_process	"phosphate metabolism"	ABL2	EPHB2	M3K10	SRC
+1.230010e-02	1	6	48	23297	92001	Homo	sapiens	GO:0031098	biological_process	"stress-activated protein kinase signaling pathway"	M3K10
+3.638980e-01	2	6	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	M3K10	WT1
+1.527310e-03	5	6	4616	23297	92001	Homo	sapiens	GO:0007165	biological_process	"signal transduction"	ABL2	EPHB2	M3K10	RND2	SRC
+2.065840e-03	5	6	4916	23297	92001	Homo	sapiens	GO:0007154	biological_process	"cell communication"	ABL2	EPHB2	M3K10	RND2	SRC
+6.422480e-03	1	6	25	23297	92001	Homo	sapiens	GO:0046777	biological_process	"protein amino acid autophosphorylation"	M3K10
+1.655150e-01	1	6	692	23297	92001	Homo	sapiens	GO:0006915	biological_process	"apoptosis"	M3K10
+9.301130e-01	1	6	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	WT1
+1.190290e-03	4	6	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	ABL2	EPHB2	M3K10	SRC
+1.303560e-01	1	6	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	WT1
+1.107460e-03	2	6	203	23297	92001	Homo	sapiens	GO:0007167	biological_process	"enzyme linked receptor protein signaling pathway"	EPHB2	SRC
+3.664890e-01	1	6	2027	27672	92001	Homo	sapiens	GO:0030528	molecular_function	"transcription regulator activity"	WT1
+1.000000e+00	6	6	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	ABL2	EPHB2	M3K10	RND2	SRC	WT1
+1.534810e-01	1	6	638	23297	92001	Homo	sapiens	GO:0048522	biological_process	"positive regulation of cellular process"	M3K10
+2.769930e-04	5	6	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	ABL2	EPHB2	M3K10	RND2	SRC
+9.300510e-01	1	6	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	WT1
+1.000000e+00	4	6	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	ABL2	EPHB2	RND2	WT1
+1.292090e-01	1	6	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	WT1
+4.344190e-01	2	6	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	M3K10	WT1
+2.146250e-01	1	6	1092	27672	92001	Homo	sapiens	GO:0030234	molecular_function	"enzyme regulator activity"	ABL2
+5.930970e-01	1	6	3242	23297	92001	Homo	sapiens	GO:0006351	biological_process	"transcription, DNA-dependent"	WT1
+1.914480e-02	1	6	89	27672	92001	Homo	sapiens	GO:0042803	molecular_function	"protein homodimerization activity"	M3K10
+3.857360e-03	1	6	15	23297	92001	Homo	sapiens	GO:0043507	biological_process	"positive regulation of JNK activity"	M3K10
+1.204520e-02	1	6	47	23297	92001	Homo	sapiens	GO:0007254	biological_process	"JNK cascade"	M3K10
+7.634700e-01	1	6	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	WT1
+6.509450e-01	1	6	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	WT1
+6.278340e-03	1	6	22	20974	92001	Homo	sapiens	GO:0005942	cellular_component	"phosphoinositide 3-kinase complex"	ABL2
+4.646710e-02	1	6	184	23297	92001	Homo	sapiens	GO:0043549	biological_process	"regulation of kinase activity"	M3K10
+4.597190e-02	1	6	182	23297	92001	Homo	sapiens	GO:0045859	biological_process	"regulation of protein kinase activity"	M3K10
+4.844590e-02	1	6	192	23297	92001	Homo	sapiens	GO:0045786	biological_process	"negative regulation of progression through cell cycle"	WT1
+6.503600e-04	1	6	3	27672	92001	Homo	sapiens	GO:0004706	molecular_function	"JUN kinase kinase kinase activity"	M3K10
+2.315910e-03	1	6	9	23297	92001	Homo	sapiens	GO:0007172	biological_process	"signal complex formation"	SRC
+1.535530e-02	1	6	60	23297	92001	Homo	sapiens	GO:0043405	biological_process	"regulation of MAPK activity"	M3K10
+6.230590e-01	1	6	3496	23297	92001	Homo	sapiens	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	WT1
+1.367560e-01	1	6	564	23297	92001	Homo	sapiens	GO:0043119	biological_process	"positive regulation of physiological process"	M3K10
+2.082210e-01	1	6	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	RND2
+2.268800e-07	4	6	319	27672	92001	Homo	sapiens	GO:0004713	molecular_function	"protein-tyrosine kinase activity"	ABL2	EPHB2	M3K10	SRC
+4.968090e-02	1	6	197	23297	92001	Homo	sapiens	GO:0043065	biological_process	"positive regulation of apoptosis"	M3K10
+5.853600e-01	1	6	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	RND2
+2.837880e-02	4	6	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	EPHB2	M3K10	RND2	SRC
+2.234110e-02	1	6	104	27672	92001	Homo	sapiens	GO:0019207	molecular_function	"kinase regulator activity"	ABL2
+2.683450e-01	1	6	1404	27672	92001	Homo	sapiens	GO:0003700	molecular_function	"transcription factor activity"	WT1
+6.678630e-03	1	6	26	23297	92001	Homo	sapiens	GO:0016540	biological_process	"protein autoprocessing"	M3K10
+9.893560e-01	4	6	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	ABL2	EPHB2	RND2	WT1
+6.413770e-05	4	6	1081	23297	92001	Homo	sapiens	GO:0006468	biological_process	"protein amino acid phosphorylation"	ABL2	EPHB2	M3K10	SRC
+8.874750e-01	1	6	6400	20974	92001	Homo	sapiens	GO:0044425	cellular_component	"membrane part"	EPHB2
+3.857360e-03	1	6	15	23297	92001	Homo	sapiens	GO:0007257	biological_process	"activation of JNK activity"	M3K10
+4.243130e-02	1	6	151	20974	92001	Homo	sapiens	GO:0044445	cellular_component	"cytosolic part"	ABL2
+7.556690e-01	1	6	5792	27672	92001	Homo	sapiens	GO:0043169	molecular_function	"cation binding"	WT1
+1.402170e-01	1	6	688	27672	92001	Homo	sapiens	GO:0005525	molecular_function	"GTP binding"	RND2
+4.590390e-01	6	6	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	ABL2	EPHB2	M3K10	RND2	SRC	WT1
+9.714560e-01	1	6	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	WT1
+5.841280e-01	1	6	3169	23297	92001	Homo	sapiens	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	WT1
+1.593980e-02	1	6	74	27672	92001	Homo	sapiens	GO:0030674	molecular_function	"protein binding, bridging"	SRC
+7.796220e-01	1	6	6165	27672	92001	Homo	sapiens	GO:0043167	molecular_function	"ion binding"	WT1
+2.443140e-03	2	6	303	23297	92001	Homo	sapiens	GO:0007243	biological_process	"protein kinase cascade"	M3K10	SRC
+3.509280e-01	2	6	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	M3K10	WT1
+2.548240e-02	1	6	100	23297	92001	Homo	sapiens	GO:0045860	biological_process	"positive regulation of protein kinase activity"	M3K10
+5.757950e-01	1	6	3685	27672	92001	Homo	sapiens	GO:0008270	molecular_function	"zinc ion binding"	WT1
+1.837330e-01	1	6	775	23297	92001	Homo	sapiens	GO:0048518	biological_process	"positive regulation of biological process"	M3K10
+4.225090e-02	1	6	167	23297	92001	Homo	sapiens	GO:0043085	biological_process	"positive regulation of enzyme activity"	M3K10
+4.150530e-02	1	6	164	23297	92001	Homo	sapiens	GO:0012502	biological_process	"induction of programmed cell death"	M3K10
+8.394050e-01	1	6	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	WT1
+2.701340e-02	1	6	126	27672	92001	Homo	sapiens	GO:0019199	molecular_function	"transmembrane receptor protein kinase activity"	EPHB2
+1.817740e-01	1	6	766	23297	92001	Homo	sapiens	GO:0051243	biological_process	"negative regulation of cellular physiological process"	WT1
+3.756300e-02	1	6	176	27672	92001	Homo	sapiens	GO:0005057	molecular_function	"receptor signaling protein activity"	M3K10
+8.725860e-03	1	6	34	23297	92001	Homo	sapiens	GO:0000187	biological_process	"activation of MAPK activity"	M3K10
+1.719190e-01	1	6	721	23297	92001	Homo	sapiens	GO:0008219	biological_process	"cell death"	M3K10
+7.727710e-01	1	6	6055	27672	92001	Homo	sapiens	GO:0046872	molecular_function	"metal ion binding"	WT1
+1.957150e-02	1	6	91	27672	92001	Homo	sapiens	GO:0019904	molecular_function	"protein domain specific binding"	SRC
+2.046030e-01	1	6	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	WT1
+1.102180e-01	1	6	449	23297	92001	Homo	sapiens	GO:0042981	biological_process	"regulation of apoptosis"	M3K10
+2.809170e-04	4	6	1873	27672	92001	Homo	sapiens	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	ABL2	EPHB2	M3K10	SRC
+#USING PHO85 instead of its synonym YPL031C in Saccharomyces cerevisiae
+#USING CDC42 instead of its synonym YLR229C in Saccharomyces cerevisiae
+#USING TPK3 instead of its synonym YKL166C in Saccharomyces cerevisiae
+#USING TPK1 instead of its synonym YJL164C in Saccharomyces cerevisiae
+#USING SWI5 instead of its synonym YDR146C in Saccharomyces cerevisiae
+#USING RGA2 instead of its synonym YDR379W in Saccharomyces cerevisiae
+#USING TPK2 instead of its synonym YPL203W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.359890e-09	5	7	62	6526	97048	Saccharomyces	cerevisiae	GO:0007124	biological_process	"pseudohyphal growth"	YDR379W	YJL164C	YKL166C	YLR229C	YPL203W
+3.143650e-03	2	7	82	6526	97048	Saccharomyces	cerevisiae	GO:0007114	biological_process	"cell budding"	YDR379W	YLR229C
+1.507150e-05	4	7	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	YJL164C	YKL166C	YPL031C	YPL203W
+8.310200e-04	2	7	42	6526	97048	Saccharomyces	cerevisiae	GO:0007166	biological_process	"cell surface receptor linked signal transduction"	YDR379W	YLR229C
+6.111650e-01	4	7	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YDR146C	YJL164C	YKL166C	YPL203W
+7.173760e-02	1	7	69	6526	97048	Saccharomyces	cerevisiae	GO:0030695	molecular_function	"GTPase regulator activity"	YDR379W
+6.440800e-04	2	7	37	6526	97048	Saccharomyces	cerevisiae	GO:0001403	biological_process	"invasive growth (sensu Saccharomyces)"	YDR379W	YLR229C
+4.370690e-06	4	7	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	YJL164C	YKL166C	YPL031C	YPL203W
+2.459880e-01	5	7	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YDR146C	YJL164C	YKL166C	YPL031C	YPL203W
+6.162280e-02	1	7	59	6526	97048	Saccharomyces	cerevisiae	GO:0044264	biological_process	"cellular polysaccharide metabolism"	YPL031C
+1.064070e-01	1	7	104	6526	97048	Saccharomyces	cerevisiae	GO:0030036	biological_process	"actin cytoskeleton organization and biogenesis"	YDR379W
+2.697070e-01	5	7	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YDR146C	YJL164C	YKL166C	YPL031C	YPL203W
+2.239210e-01	1	7	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	YPL031C
+4.931590e-01	6	7	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YDR146C	YDR379W	YJL164C	YKL166C	YPL031C	YPL203W
+2.029570e-01	1	7	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	YPL031C
+2.918710e-02	5	7	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+5.448650e-02	1	7	52	6526	97048	Saccharomyces	cerevisiae	GO:0016563	molecular_function	"transcriptional activator activity"	YDR146C
+7.548430e-10	3	7	3	6526	97048	Saccharomyces	cerevisiae	GO:0004691	molecular_function	"cAMP-dependent protein kinase activity"	YJL164C	YKL166C	YPL203W
+5.653020e-02	1	7	54	6526	97048	Saccharomyces	cerevisiae	GO:0003924	molecular_function	"GTPase activity"	YLR229C
+2.503560e-01	4	7	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YJL164C	YKL166C	YPL031C	YPL203W
+5.008300e-02	4	7	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YJL164C	YKL166C	YPL031C	YPL203W
+2.337340e-02	1	7	22	6526	97048	Saccharomyces	cerevisiae	GO:0007096	biological_process	"regulation of exit from mitosis"	YLR229C
+4.804110e-04	2	7	32	6526	97048	Saccharomyces	cerevisiae	GO:0048590	biological_process	"non-developmental growth"	YDR379W	YLR229C
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YDR146C	YDR379W	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+2.143720e-01	1	7	221	6526	97048	Saccharomyces	cerevisiae	GO:0046903	biological_process	"secretion"	YLR229C
+2.405800e-02	2	7	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YDR146C	YLR229C
+4.524290e-02	1	7	43	6526	97048	Saccharomyces	cerevisiae	GO:0042995	cellular_component	"cell projection"	YLR229C
+2.449280e-04	2	7	23	6526	97048	Saccharomyces	cerevisiae	GO:0031137	biological_process	"regulation of conjugation with cellular fusion"	YDR379W	YLR229C
+8.661830e-09	5	7	89	6526	97048	Saccharomyces	cerevisiae	GO:0016049	biological_process	"cell growth"	YDR379W	YJL164C	YKL166C	YLR229C	YPL203W
+5.243900e-02	1	7	50	6526	97048	Saccharomyces	cerevisiae	GO:0007088	biological_process	"regulation of mitosis"	YLR229C
+5.300140e-03	2	7	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	YDR379W	YLR229C
+1.551640e-07	4	7	55	6526	97048	Saccharomyces	cerevisiae	GO:0007264	biological_process	"small GTPase mediated signal transduction"	YDR379W	YJL164C	YLR229C	YPL203W
+5.397370e-03	2	7	108	6526	97048	Saccharomyces	cerevisiae	GO:0007163	biological_process	"establishment and/or maintenance of cell polarity"	YDR379W	YLR229C
+1.465400e-01	1	7	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	YLR229C
+3.859660e-01	1	7	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YDR146C
+2.282280e-01	1	7	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	YLR229C
+2.204600e-01	1	7	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	YPL031C
+6.845480e-03	2	7	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	YDR379W	YLR229C
+4.804110e-04	2	7	32	6526	97048	Saccharomyces	cerevisiae	GO:0007117	biological_process	"budding cell bud growth"	YDR379W	YLR229C
+2.393320e-01	1	7	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	YLR229C
+9.330390e-07	5	7	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	YDR379W	YJL164C	YKL166C	YLR229C	YPL203W
+6.580110e-01	1	7	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YLR229C
+2.449280e-04	2	7	23	6526	97048	Saccharomyces	cerevisiae	GO:0032005	biological_process	"signal transduction during conjugation with cellular fusion"	YDR379W	YLR229C
+4.217750e-02	4	7	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	YJL164C	YKL166C	YPL031C	YPL203W
+1.573350e-03	4	7	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	YJL164C	YKL166C	YPL031C	YPL203W
+4.148140e-07	4	7	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	YJL164C	YKL166C	YPL031C	YPL203W
+1.972180e-01	3	7	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YJL164C	YKL166C	YPL203W
+7.515110e-03	2	7	128	6526	97048	Saccharomyces	cerevisiae	GO:0051301	biological_process	"cell division"	YDR379W	YLR229C
+2.519730e-01	1	7	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	YPL031C
+1.773000e-02	2	7	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	YDR379W	YLR229C
+2.380080e-02	3	7	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YDR146C	YDR379W	YLR229C
+3.034860e-02	2	7	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	YDR379W	YLR229C
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0000080	biological_process	"G1 phase of mitotic cell cycle"	YDR146C
+7.901580e-06	4	7	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	YJL164C	YKL166C	YPL031C	YPL203W
+5.397370e-03	2	7	108	6526	97048	Saccharomyces	cerevisiae	GO:0030467	biological_process	"establishment and/or maintenance of cell polarity (sensu Fungi)"	YDR379W	YLR229C
+4.372220e-02	2	7	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	YDR379W	YLR229C
+3.716160e-02	4	7	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YJL164C	YKL166C	YPL031C	YPL203W
+7.835080e-01	5	7	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YDR146C	YJL164C	YKL166C	YPL031C	YPL203W
+1.189980e-01	1	7	117	6526	97048	Saccharomyces	cerevisiae	GO:0000267	cellular_component	"cell fraction"	YLR229C
+2.683120e-06	4	7	115	6526	97048	Saccharomyces	cerevisiae	GO:0007242	biological_process	"intracellular signaling cascade"	YDR379W	YJL164C	YLR229C	YPL203W
+1.206310e-01	7	7	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YDR146C	YDR379W	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+9.330390e-07	5	7	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	YDR379W	YJL164C	YKL166C	YLR229C	YPL203W
+2.656160e-05	4	7	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	YJL164C	YKL166C	YPL031C	YPL203W
+2.435660e-01	1	7	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	YLR229C
+4.420370e-05	2	7	10	6526	97048	Saccharomyces	cerevisiae	GO:0007119	biological_process	"budding cell isotropic bud growth"	YDR379W	YLR229C
+8.262540e-01	1	7	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDR146C
+9.168710e-02	1	7	89	6526	97048	Saccharomyces	cerevisiae	GO:0051325	biological_process	"interphase"	YDR146C
+4.317650e-01	1	7	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YDR146C
+1.348240e-05	5	7	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	YDR379W	YJL164C	YKL166C	YLR229C	YPL203W
+2.099980e-01	1	7	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	YDR379W
+2.082430e-01	1	7	214	6526	97048	Saccharomyces	cerevisiae	GO:0045045	biological_process	"secretory pathway"	YLR229C
+2.444100e-01	1	7	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	YLR229C
+3.301430e-03	4	7	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	YJL164C	YKL166C	YPL031C	YPL203W
+3.148470e-01	1	7	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YDR146C
+1.476810e-03	2	7	56	6526	97048	Saccharomyces	cerevisiae	GO:0000749	biological_process	"response to pheromone during conjugation with cellular fusion"	YDR379W	YLR229C
+1.092150e-01	7	7	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YDR146C	YDR379W	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+5.975840e-02	4	7	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YJL164C	YKL166C	YPL031C	YPL203W
+2.759030e-01	1	7	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	YLR229C
+3.071020e-02	1	7	29	6526	97048	Saccharomyces	cerevisiae	GO:0005977	biological_process	"glycogen metabolism"	YPL031C
+6.421020e-03	1	7	6	6526	97048	Saccharomyces	cerevisiae	GO:0031383	biological_process	"regulation of mating projection biogenesis"	YLR229C
+3.903760e-02	1	7	37	6526	97048	Saccharomyces	cerevisiae	GO:0044463	cellular_component	"cell projection part"	YLR229C
+1.959940e-01	5	7	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YDR146C	YJL164C	YKL166C	YPL031C	YPL203W
+8.553490e-03	1	7	8	6526	97048	Saccharomyces	cerevisiae	GO:0030031	biological_process	"cell projection biogenesis"	YLR229C
+9.168710e-02	1	7	89	6526	97048	Saccharomyces	cerevisiae	GO:0051329	biological_process	"interphase of mitotic cell cycle"	YDR146C
+7.548430e-10	3	7	3	6526	97048	Saccharomyces	cerevisiae	GO:0005952	cellular_component	"cAMP-dependent protein kinase complex"	YJL164C	YKL166C	YPL203W
+3.663360e-04	2	7	28	6526	97048	Saccharomyces	cerevisiae	GO:0007186	biological_process	"G-protein coupled receptor protein signaling pathway"	YDR379W	YLR229C
+9.815390e-01	2	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YDR146C	YPL031C
+4.027220e-01	1	7	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YPL031C
+2.656160e-05	4	7	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	YJL164C	YKL166C	YPL031C	YPL203W
+3.406970e-01	2	7	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YDR379W	YPL031C
+1.102980e-01	1	7	108	6526	97048	Saccharomyces	cerevisiae	GO:0030029	biological_process	"actin filament-based process"	YDR379W
+1.492740e-02	1	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0000114	biological_process	"G1-specific transcription in mitotic cell cycle"	YDR146C
+6.864590e-01	1	7	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YLR229C
+3.635360e-03	4	7	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	YJL164C	YKL166C	YPL031C	YPL203W
+5.300140e-03	2	7	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	YDR379W	YLR229C
+5.910080e-08	5	7	130	6526	97048	Saccharomyces	cerevisiae	GO:0040007	biological_process	"growth"	YDR379W	YJL164C	YKL166C	YLR229C	YPL203W
+3.903760e-02	1	7	37	6526	97048	Saccharomyces	cerevisiae	GO:0006887	biological_process	"exocytosis"	YLR229C
+2.519730e-01	1	7	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	YPL031C
+9.618250e-03	1	7	9	6526	97048	Saccharomyces	cerevisiae	GO:0005100	molecular_function	"Rho GTPase activator activity"	YDR379W
+7.117470e-01	1	7	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YLR229C
+5.300140e-03	2	7	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	YDR379W	YLR229C
+3.950910e-01	1	7	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YPL031C
+1.238010e-01	1	7	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	YLR229C
+7.487740e-03	1	7	7	6526	97048	Saccharomyces	cerevisiae	GO:0004693	molecular_function	"cyclin-dependent protein kinase activity"	YPL031C
+2.787820e-01	7	7	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YDR146C	YDR379W	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+1.985840e-03	2	7	65	6526	97048	Saccharomyces	cerevisiae	GO:0004871	molecular_function	"signal transducer activity"	YDR379W	YLR229C
+2.656160e-05	4	7	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	YJL164C	YKL166C	YPL031C	YPL203W
+6.660570e-01	1	7	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YLR229C
+2.555430e-02	3	7	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YDR146C	YDR379W	YLR229C
+1.543010e-05	4	7	173	6526	97048	Saccharomyces	cerevisiae	GO:0007165	biological_process	"signal transduction"	YDR379W	YJL164C	YLR229C	YPL203W
+5.038770e-02	1	7	48	6526	97048	Saccharomyces	cerevisiae	GO:0005934	cellular_component	"bud tip"	YLR229C
+1.207220e-08	5	7	95	6526	97048	Saccharomyces	cerevisiae	GO:0030447	biological_process	"filamentous growth"	YDR379W	YJL164C	YKL166C	YLR229C	YPL203W
+2.447840e-05	4	7	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	YDR379W	YJL164C	YLR229C	YPL203W
+4.110980e-02	1	7	39	6526	97048	Saccharomyces	cerevisiae	GO:0005625	cellular_component	"soluble fraction"	YLR229C
+1.810110e-02	1	7	17	6526	97048	Saccharomyces	cerevisiae	GO:0007266	biological_process	"Rho protein signal transduction"	YLR229C
+9.651260e-01	2	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YDR146C	YPL031C
+7.548430e-10	3	7	3	6526	97048	Saccharomyces	cerevisiae	GO:0004690	molecular_function	"cyclic nucleotide-dependent protein kinase activity"	YJL164C	YKL166C	YPL203W
+1.456030e-01	1	7	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	YLR229C
+1.390170e-01	1	7	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	YLR229C
+3.023330e-01	1	7	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	YDR146C
+4.317830e-02	1	7	41	6526	97048	Saccharomyces	cerevisiae	GO:0006073	biological_process	"glucan metabolism"	YPL031C
+5.108160e-03	2	7	105	6526	97048	Saccharomyces	cerevisiae	GO:0030468	biological_process	"establishment of cell polarity (sensu Fungi)"	YDR379W	YLR229C
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YDR146C	YDR379W	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+5.399910e-05	2	7	11	6526	97048	Saccharomyces	cerevisiae	GO:0007118	biological_process	"budding cell apical bud growth"	YDR379W	YLR229C
+1.773000e-02	2	7	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	YDR379W	YLR229C
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0051318	biological_process	"G1 phase"	YDR146C
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YDR146C	YDR379W	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+9.651260e-01	2	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YDR146C	YPL031C
+1.456030e-01	1	7	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	YLR229C
+2.542350e-02	2	7	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	YDR379W	YLR229C
+2.694430e-02	3	7	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YDR146C	YDR379W	YLR229C
+1.787940e-01	1	7	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	YDR379W
+4.020320e-01	1	7	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YDR146C
+8.553490e-03	1	7	8	6526	97048	Saccharomyces	cerevisiae	GO:0030030	biological_process	"cell projection organization and biogenesis"	YLR229C
+3.143650e-03	2	7	82	6526	97048	Saccharomyces	cerevisiae	GO:0019954	biological_process	"asexual reproduction"	YDR379W	YLR229C
+1.905060e-01	1	7	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	YPL031C
+4.041000e-01	1	7	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YDR146C
+1.331160e-04	2	7	17	6526	97048	Saccharomyces	cerevisiae	GO:0007265	biological_process	"Ras protein signal transduction"	YJL164C	YPL203W
+3.279780e-02	1	7	31	6526	97048	Saccharomyces	cerevisiae	GO:0005096	molecular_function	"GTPase activator activity"	YDR379W
+1.805940e-03	6	7	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YDR379W	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+3.384020e-02	1	7	32	6526	97048	Saccharomyces	cerevisiae	GO:0043332	cellular_component	"mating projection tip"	YLR229C
+3.415520e-01	1	7	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDR146C
+6.365330e-02	1	7	61	6526	97048	Saccharomyces	cerevisiae	GO:0007015	biological_process	"actin filament organization"	YDR379W
+2.444100e-01	1	7	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	YLR229C
+5.859320e-01	1	7	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YLR229C
+6.421020e-03	1	7	6	6526	97048	Saccharomyces	cerevisiae	GO:0031344	biological_process	"regulation of cell projection organization and biogenesis"	YLR229C
+3.800000e-02	1	7	36	6526	97048	Saccharomyces	cerevisiae	GO:0006112	biological_process	"energy reserve metabolism"	YPL031C
+1.310980e-01	2	7	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	YDR379W	YLR229C
+4.524290e-02	1	7	43	6526	97048	Saccharomyces	cerevisiae	GO:0005937	cellular_component	"mating projection"	YLR229C
+2.782860e-08	5	7	112	6526	97048	Saccharomyces	cerevisiae	GO:0008361	biological_process	"regulation of cell size"	YDR379W	YJL164C	YKL166C	YLR229C	YPL203W
+7.620990e-07	4	7	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	YJL164C	YKL166C	YPL031C	YPL203W
+2.784230e-01	7	7	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YDR146C	YDR379W	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+6.162280e-02	1	7	59	6526	97048	Saccharomyces	cerevisiae	GO:0005976	biological_process	"polysaccharide metabolism"	YPL031C
+5.108160e-03	2	7	105	6526	97048	Saccharomyces	cerevisiae	GO:0030010	biological_process	"establishment of cell polarity"	YDR379W	YLR229C
+2.449280e-04	2	7	23	6526	97048	Saccharomyces	cerevisiae	GO:0046999	biological_process	"regulation of conjugation"	YDR379W	YLR229C
+1.148010e-01	7	7	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YDR146C	YDR379W	YJL164C	YKL166C	YLR229C	YPL031C	YPL203W
+6.568000e-02	1	7	63	6526	97048	Saccharomyces	cerevisiae	GO:0008047	molecular_function	"enzyme activator activity"	YDR379W
+9.815390e-01	2	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YDR146C	YPL031C
+7.487740e-03	1	7	7	6526	97048	Saccharomyces	cerevisiae	GO:0031382	biological_process	"mating projection biogenesis"	YLR229C
+1.247580e-01	1	7	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	YLR229C
+2.983830e-01	1	7	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YDR146C
+1.922940e-01	1	7	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	YDR146C
+2.359300e-01	1	7	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	YLR229C
+2.369990e-02	3	7	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YDR146C	YDR379W	YLR229C
+4.284620e-03	1	7	4	6526	97048	Saccharomyces	cerevisiae	GO:0031384	biological_process	"regulation of initiation of mating projection growth"	YLR229C
+6.788320e-01	2	7	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YDR146C	YPL031C
+2.122190e-02	1	7	20	6526	97048	Saccharomyces	cerevisiae	GO:0000767	biological_process	"cellular morphogenesis during conjugation"	YLR229C
+1.093260e-01	1	7	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	YLR229C
+2.759030e-01	1	7	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	YDR146C
+2.706010e-03	2	7	76	6526	97048	Saccharomyces	cerevisiae	GO:0019236	biological_process	"response to pheromone"	YDR379W	YLR229C
+4.936070e-02	1	7	47	6526	97048	Saccharomyces	cerevisiae	GO:0005083	molecular_function	"small GTPase regulator activity"	YDR379W
+1.915710e-02	1	7	18	6526	97048	Saccharomyces	cerevisiae	GO:0000753	biological_process	"cellular morphogenesis during conjugation with cellular fusion"	YLR229C
+2.337340e-02	1	7	22	6526	97048	Saccharomyces	cerevisiae	GO:0051128	biological_process	"regulation of cell organization and biogenesis"	YLR229C
+2.449280e-04	2	7	23	6526	97048	Saccharomyces	cerevisiae	GO:0000750	biological_process	"pheromone-dependent signal transduction during conjugation with cellular fusion"	YDR379W	YLR229C
+7.220690e-03	3	7	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YDR146C	YLR229C	YPL031C
+2.108950e-04	4	7	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	YJL164C	YKL166C	YPL031C	YPL203W

@@ -130,9 +130,12 @@ my $last_gene_product_idx = $gp_row->[0];
 undef($gp_row);
 
 #########
-
+##
+##  select MAX(dbxref)... is really BAD!!!!!  not flexible!!!!!
+##
+#########
 my $get_last_index_of_dbxref_table = qq{
-SELECT COUNT(*) FROM dbxref
+SELECT MAX(dbxref_id) FROM gene_product
 };
 my $get_last_index_of_dbxref_table_STH =
     $dbh->prepare($get_last_index_of_dbxref_table);
@@ -159,19 +162,23 @@ my %imgFormat =
      );
 
 my @pubs = qw(
-	      Begley2002_MCR
-	      Bernard2005_PSB
-	      de_Lichtenberg2005_Science
-	      Gandhi2006_NG
-	      Hartemink2002_PSB
-	      Haugen2004_GB
-	      Ideker2002_BINF
-	      Kelley2005_NBT
-	      Sharan2005_PNAS
-	      Suthram2005_Nature
-	      Yeang2005_GB
+	      BandyopadhyayGersten2007
 	      );
+	      #Begley2002_MCR
+	      #Bernard2005_PSB
+	      #de_Lichtenberg2005_Science
+	      #Gandhi2006_NG
+	      #Hartemink2002_PSB
+	      #Haugen2004_GB
+	      #Ideker2002_BINF
+	      #Kelley2005_NBT
+	      #Sharan2005_PNAS
+	      #Suthram2005_Nature
+	      #Yeang2005_GB
+	      #);
 
+
+print STDERR "Here...1\n";
 
 #my $errorlog = "insert_into_gene_model.missing_genes.log";
 #open(ERROR_LOG, "> $errorlog") or die "Cannot open $errorlog: $!\n";
@@ -184,7 +191,7 @@ my $gene_model_sql = 'INSERT INTO gene_model (model_id, gene_product_id)';
 
 
 
-my $sifList_path = "/var/www/html/search/data";
+my $sifList_path = "/cellar/users/mdaly/cellcircuits/trunk/data";
 
 my $c = 0;
 
@@ -199,6 +206,8 @@ my $missing = {};
 foreach my $pub (@pubs){
 
     my $sifList = "$sifList_path/$pub/sifList";
+
+    print STDERR "sifList = $sifList\n";
 
     open(LIST_FILE, "< $sifList") or die "Cannot open $sifList: $!\n";
     while(<LIST_FILE>)
@@ -259,6 +268,8 @@ foreach my $pub (@pubs){
 }
 
 
+print "Here...Finished collecting missing genes\n";
+
 
 my $tmp_gp_insert = "tmp.GP.$$";
 open GP, "> $tmp_gp_insert" or die "Cannot open $tmp_gp_insert: $!\n";
@@ -286,6 +297,11 @@ close GP;
 
 #print STDERR "cat $tmp_gp_insert > tmp.gp\n";
 #print        `cat $tmp_gp_insert > tmp.gp\n`;
+
+
+#print "cat $tmp_gp_insert\n";
+#print `cat $tmp_gp_insert\n`;
+#exit;
 
 print STDERR "cat $tmp_gp_insert | $ccdev\n";
 print        `cat $tmp_gp_insert | $ccdev\n`;

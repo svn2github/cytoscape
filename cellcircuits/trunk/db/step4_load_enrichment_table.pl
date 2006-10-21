@@ -106,5 +106,5 @@ chdir "$sql_dir" or die "Cannot cd to $sql_dir: $!\n";
 #print STDERR "cat create_enrichment.sql | $ccdev\n";
 #print        `cat create_enrichment.sql | $ccdev\n`;
 
-#print STDERR "cat $insert_into_enrichment_sql_FILE | $ccdev\n";
-#print        `cat $insert_into_enrichment_sql_FILE | $ccdev\n`;
+print STDERR "cat $insert_into_enrichment_sql_FILE | $ccdev\n";
+print        `cat $insert_into_enrichment_sql_FILE | $ccdev\n`;
