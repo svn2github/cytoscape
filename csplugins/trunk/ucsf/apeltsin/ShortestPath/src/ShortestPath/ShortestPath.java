@@ -36,6 +36,7 @@ public class ShortestPath {
 	private String selectedAttribute;
 	private boolean attributeIsInt;
 	private boolean attributeIsDouble;
+	private boolean attributeIsNegLog;
 
 	/**
 	 * Get the selected nodes and calculate the shortest path
@@ -55,23 +56,18 @@ public class ShortestPath {
 		
 			if(type == EdgeAttributes.TYPE_INTEGER)
 				attributeIsInt = true;
-		
 			else if(type == EdgeAttributes.TYPE_FLOATING)
 				attributeIsDouble = true;
-		
-			else
-			{
+			else {
 				JOptionPane.showMessageDialog(view.getComponent(), 
 				"The Attribute selected is no longer availible. Please update the attribute list");
 				return;
 			}
 		}
 		
-		
 		if (directed) {
 			setDirected();
-		}
-		else {
+		} else {
 			setUndirected();
 		}
 		int[] selNodes = view.getSelectedNodeIndices();
@@ -87,9 +83,9 @@ public class ShortestPath {
 		
 		if (directed) {
 			 result = JOptionPane.showConfirmDialog(view.getComponent(),"Source node = " +
-					NodeAttributes.getStringAttribute(n1.getIdentifier(),Semantics.CANONICAL_NAME) +
+					n1.getIdentifier() +
 					"\nTarget node = " +
-					NodeAttributes.getStringAttribute(n2.getIdentifier(),Semantics.CANONICAL_NAME) +
+					n2.getIdentifier() +
 					"\n \n Do you want to switch them around?");			
 			
 			if (result == 0) {
@@ -100,14 +96,14 @@ public class ShortestPath {
 			}
 		}
 		if (result == 2) return; 
-		int[] shortestPath = getShortestPath(node1,node2);
+		List shortestPath = getShortestPath(node1,node2);
 		
 		if (shortestPath == null){
 			JOptionPane.showMessageDialog(view.getComponent(),
 					"There is no path between the selected nodes");
 		}
 		else {
-			network.setFlaggedNodes(shortestPath, true);
+			network.setSelectedNodeState(shortestPath, true);
 		}
 	}
 
@@ -127,6 +123,20 @@ public class ShortestPath {
 		undirected = false;
 		incoming = false;
 		outcoming = true;
+	}
+
+	/**
+	 *
+	 */
+	public void setNegativeLog(boolean val) {
+		this.attributeIsNegLog = val;
+	}
+
+	/**
+	 *
+	 */
+	public boolean getNegativeLog() {
+		return this.attributeIsNegLog;
 	}
 
 	/**
@@ -153,7 +163,7 @@ public class ShortestPath {
 	 * @param node2 target node
 	 * @return list of nodes in the path between node1 and node2. If there is no path, returns null
 	 */
-	public int[] getShortestPath(int node1, int node2) {
+	public List getShortestPath(int node1, int node2) {
 		if (node1 == node2) return null;
 		int nnodes = root.getNodeCount();
 		CyNode cynode1 = (CyNode) network.getNode(node1);
@@ -212,21 +222,13 @@ public class ShortestPath {
 			}
 		}
 		List path = (List) paths.get(cynode2);
-		if (path == null) return null;
-		int[] pathArray = new int[path.size()];
-//		for (int i = 0; i < pathArray.length; i++) {
-//			Integer tmp4  = (Integer)path.get(i);
-//			pathArray[i] = tmp4.intValue();
-//		}
-		int i = 0;
-		for (Iterator iter = path.iterator(); iter.hasNext();) {
-			CyNode node = (CyNode) iter.next();
-			pathArray[i] = root.getIndex(node);
-			i++;
+		double pathDist = ((Double)dist.get(cynode2)).doubleValue();
+		if (attributeIsNegLog && pathDist != 0.0) {
+			pathDist = Math.pow(10,-pathDist);
 		}
 		JOptionPane.showMessageDialog(view.getComponent(), 
-		"Length of Path is " + (Double)dist.get(cynode2));
-		return pathArray;
+			"Length of Path is " + pathDist);
+		return path;
 	}
 
 	
@@ -237,11 +239,13 @@ public class ShortestPath {
 		
 		else if(attributeIsInt)
 			return EdgeAttributes.getIntegerAttribute(edge.getIdentifier(),selectedAttribute).doubleValue();
-		else
-			return EdgeAttributes.getDoubleAttribute(edge.getIdentifier(),"BlastProbability").doubleValue();
+		else {
+			double attr = EdgeAttributes.getDoubleAttribute(edge.getIdentifier(),selectedAttribute).doubleValue();
+			if (attributeIsNegLog) {
+				attr = -Math.log10(attr);
+			}
+			return attr;	
+		}
 	}
-	
-	
-
 }
 

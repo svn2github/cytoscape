@@ -7,8 +7,11 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
+import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.view.CyNetworkView;
 import cytoscape.plugin.CytoscapePlugin;
 
 /**
@@ -29,44 +32,50 @@ public class ShortestPathPlugin extends CytoscapePlugin {
 	public ShortestPathPlugin() {
 		JMenu menu = new JMenu("Shortest Path...");
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins").add(menu);
-		final SelectSetup selecter = new SelectSetup();
-		
-		menu.add(new JMenuItem(new AbstractAction("Update Availible Attribute List"){
-			public void actionPerformed(ActionEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						
-						
-						 selecter.attributeUpdate();
-	
-					}
-				}); 
+		// final SelectSetup selecter = new SelectSetup();
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		String[] attributeNames = edgeAttributes.getAttributeNames();
+
+		addMenuItem(menu, "Hop Distance");
+
+		//Finds all attributes that are integers or doubles, and adds them to list
+		for(int i = 0; i < attributeNames.length; i++)
+		{
+			String name = attributeNames[i];
+			byte type = edgeAttributes.getType(name);
+
+			if((type == edgeAttributes.TYPE_INTEGER) || (type == edgeAttributes.TYPE_FLOATING)) {
+				addMenuItem(menu, name);
 			}
-		}));
-		
-		/*menu.add(new JMenuItem(new AbstractAction("Shortest Path (directed)"){
-			public void actionPerformed(ActionEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						AttributeSelect selecter = new AttributeSelect();
-						selecter.attributeUpdate();
-						ShortestPath sp = new ShortestPath();
-						sp.calculate(true); 
-					}
-				}); 
-			}
-		})); */
-		
-		/* menu.add(new JMenuItem(new AbstractAction("Shortest Path (undirected)"){
-			public void actionPerformed(ActionEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						ShortestPath sp = new ShortestPath();
-						sp.calculate(false);
-					}
-				});
-			}
-		})); */
+		}
 	}
 
+	private JMenuItem addMenuItem(JMenu menu, String label) {
+		JMenuItem item = new JMenuItem(label);
+		{
+			MenuActionListener va = new MenuActionListener(label);
+			item.addActionListener(va);
+		}
+		menu.add(item);
+		return item;
+	}
+
+	private class MenuActionListener extends AbstractAction {
+		String selectedAttribute = null;
+
+		public MenuActionListener (String label) {
+			this.selectedAttribute = label;
+		}
+
+		public void actionPerformed(ActionEvent ev) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					ShortestPathDialog d = new ShortestPathDialog(Cytoscape.getDesktop(),selectedAttribute);
+					d.pack();
+					d.setLocationRelativeTo(Cytoscape.getDesktop());
+					d.setVisible(true);
+				}
+			});
+		}
+	}
 }
