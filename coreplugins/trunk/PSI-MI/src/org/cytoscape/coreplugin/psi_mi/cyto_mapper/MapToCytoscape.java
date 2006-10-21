@@ -424,7 +424,6 @@ public class MapToCytoscape implements Mapper {
         // If no edge exists then create a new one
         if ((!edgeExists(node1, node2, interaction, edgeMap))) {
             cyNetwork.addEdge(edge);
-            Cytoscape.getEdgeAttributes().setAttribute(key, edge.getIdentifier(), edge.toString());
             mapEdgeAttributes(interaction, edge);
             int edgeRootGraphIndex = edge.getRootGraphIndex();
             ArrayList indexes = (ArrayList) interaction.getAttribute
