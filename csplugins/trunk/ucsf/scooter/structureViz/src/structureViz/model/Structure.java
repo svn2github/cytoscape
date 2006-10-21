@@ -37,6 +37,7 @@ import cytoscape.*;
 public class Structure {
 	static int nStructures = 0;
 	String structureName;
+	String residueList;
 	CyNode cytoscapeNode;
 	int modelNumber;
 
@@ -44,6 +45,7 @@ public class Structure {
 		this.structureName = name;
 		this.cytoscapeNode = node;
 		this.modelNumber = nStructures++;
+		this.residueList = null;
 	}
 
 	public String name() {return this.structureName;}
@@ -62,4 +64,11 @@ public class Structure {
 		return "Node "+getIdentifier()+"; model "+structureName;
 	}
 
+	public String getResidueList() {
+		return residueList;
+	}
+
+	public void setResidueList(String residues) {
+		this.residueList = residues;
+	}
 }

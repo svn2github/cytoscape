@@ -59,6 +59,7 @@ import structureViz.model.ChimeraModel;
 
 public class CyChimera {
 	public static final String[] structureKeys = {"Structure","pdb","pdbFileName",null};
+	public static final String[] residueKeys = {"FunctionalResidues",null};
 	public static final String[] sequenceKeys = {"sequence",null};
 	private static CyAttributes cyAttributes;
 
@@ -96,16 +97,21 @@ public class CyChimera {
       //first get the corresponding node in the network
       CyNode node = (CyNode)nView.getNode();
 			String structure = getStructureName(node);
+			String residues = getResidueList(node);
 			if (structure == null) continue;
 			// Check to see if this node has a list of structures, first
 			String[] sList = structure.split(",");
 			if (sList != null && sList.length > 0) {
 				// It does, so add them all
 				for (int i = 0; i < sList.length; i++) {
-					structureList.add(new Structure(sList[i].trim(),node));
+					Structure s = new Structure(sList[i].trim(),node);
+					s.setResidueList(residues);
+					structureList.add(s);
 				}
 			} else if (structure != null) {
-        structureList.add(new Structure(structure,node));
+				Structure s = new Structure(structure,node);
+				s.setResidueList(residues);
+        structureList.add(s);
 			}
 		}
 		return structureList;
@@ -118,6 +124,18 @@ public class CyChimera {
      	if (cyAttributes.hasAttribute(nodeID, structureKeys[key])) {
        	// Add it to our list
        	return cyAttributes.getStringAttribute(nodeID, structureKeys[key]);
+			}
+    }
+		return null;
+	}
+
+	public static String getResidueList(CyNode node) {
+    String nodeID = node.getIdentifier();
+		for (int key = 0; key < residueKeys.length; key++) {
+			if (residueKeys[key] == null) continue;
+     	if (cyAttributes.hasAttribute(nodeID, residueKeys[key])) {
+       	// Add it to our list
+       	return cyAttributes.getStringAttribute(nodeID, residueKeys[key]);
 			}
     }
 		return null;

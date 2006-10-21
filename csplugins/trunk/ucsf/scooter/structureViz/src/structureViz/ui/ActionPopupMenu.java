@@ -198,6 +198,7 @@ public class ActionPopupMenu extends JPopupMenu {
 		addItem(selectMenu, "Ligand", "select %sel & ligand", PopupActionListener.MODEL_SELECTION);
 		addItem(selectMenu, "Ions", "select %sel & ions", PopupActionListener.MODEL_SELECTION);
 		addItem(selectMenu, "Solvent", "select %sel & solvent", PopupActionListener.MODEL_SELECTION);
+		addItem(selectMenu, "Functional Residues", null, PopupActionListener.FUNCTIONAL_RESIDUES);
 		JMenu secondaryMenu = new JMenu("Secondary Structure");
 		addItem(secondaryMenu, "Helix", "select %sel & helix", PopupActionListener.MODEL_SELECTION);
 		addItem(secondaryMenu, "Strand", "select %sel & strand", PopupActionListener.MODEL_SELECTION);
@@ -272,6 +273,7 @@ public class ActionPopupMenu extends JPopupMenu {
 		public static final int CLEAR_SELECTION = 1;
 		public static final int CLOSE = 2;
 		public static final int MODEL_SELECTION = 3;
+		public static final int FUNCTIONAL_RESIDUES = 4;
 		int postCommand = NO_POST;
 
 		PopupActionListener (String command) {
@@ -319,6 +321,29 @@ public class ActionPopupMenu extends JPopupMenu {
 			// Special case for chemistry selection commands
 			if (postCommand == MODEL_SELECTION) {
 				chimeraObject.select(commandList[0]);
+				chimeraObject.modelChanged();
+				return;
+			} else if (postCommand == FUNCTIONAL_RESIDUES) {
+				// Get the object
+				int index = 0;
+				Iterator objIterator = objectList.iterator();
+				while (objIterator.hasNext()) {
+					ChimeraStructuralObject obj = (ChimeraStructuralObject)objIterator.next();
+					ChimeraModel model = obj.getChimeraModel();
+					String residueL = model.getStructure().getResidueList();
+					if (residueL == null) return;
+					// The residue list is of the form RRRnnn,RRRnnn.  We want
+					// to reformat this to nnn,nnn
+					String[] list = residueL.split(",");
+					String residues = new String();
+					for (int i = 0; i < list.length; i++) {
+						String residue = list[i];
+						residues = residues.concat(residue.substring(3)+",");
+					}
+					residues = residues.substring(1,residues.length()-1);
+					String command = "select #"+model.getModelNumber()+":"+residues;
+					chimeraObject.select(command);
+				}
 				chimeraObject.modelChanged();
 				return;
 			}
