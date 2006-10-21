@@ -32,7 +32,7 @@ import giny.model.*;
 import giny.view.*;
 import cytoscape.*;
 import cytoscape.view.*;
-import cytoscape.layout.LayoutUtils;
+// import cytoscape.layout.LayoutUtils;
 import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
 import org.isb.metanodes.data.MetaNodeAttributesHandler;
@@ -779,10 +779,12 @@ public class AbstractMetaNodeModeler {
             cnNodes.remove(node);
         } 
 
+		/*
 		if (!foundPos || !diffPos) {
 			// Don't have any position hints -- use the stack approach
 	    	if(childrenRindices.length > 0) LayoutUtils.layoutNodesInAStack(networkView,childNodes,metaX,metaY);
 		}
+		*/
 
 		profile_mark(startOfUndo,"undoModel time = ");
 
