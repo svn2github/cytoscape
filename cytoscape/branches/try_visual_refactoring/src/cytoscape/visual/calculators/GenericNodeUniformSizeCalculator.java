@@ -56,7 +56,7 @@ import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeUniformSizeCalculator extends AbstractNodeSizeCalculator 
+public class GenericNodeUniformSizeCalculator extends GenericNodeSizeCalculator 
     implements NodeSizeCalculator {
 
     public byte getType() {

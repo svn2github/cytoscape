@@ -112,6 +112,8 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
 	appr.copy(defaultAppearance); // set defaults and node lock state
   	for (Calculator nc : calcs) 
 		nc.apply( appr, node, network );
+	
+	appr.applyBypass(node);
 
 	currentAppearance = appr;
 	currentNode = node;
@@ -316,11 +318,17 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
   }
   /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
   public NodeSizeCalculator getNodeWidthCalculator() {
-  	return (NodeSizeCalculator)getCalculator(VizMapUI.NODE_WIDTH);
+  	if ( getNodeSizeLocked() )
+  		return (NodeSizeCalculator)getCalculator(VizMapUI.NODE_SIZE);
+	else
+  		return (NodeSizeCalculator)getCalculator(VizMapUI.NODE_WIDTH);
   }
   /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
   public NodeSizeCalculator getNodeHeightCalculator() {
-  	return (NodeSizeCalculator)getCalculator(VizMapUI.NODE_HEIGHT);
+  	if ( getNodeSizeLocked() )
+  		return (NodeSizeCalculator)getCalculator(VizMapUI.NODE_SIZE);
+	else
+  		return (NodeSizeCalculator)getCalculator(VizMapUI.NODE_HEIGHT);
   }
   /** @deprecated Use getCalculator(type) instead.  This method will be removed Sept 2007. */ 
   public NodeLabelCalculator getNodeLabelCalculator() {
@@ -362,13 +370,19 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
   /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
   public void setNodeWidthCalculator(NodeSizeCalculator c) {
         // special handling for deprecated code
-  	c.set(VizMapUI.NODE_WIDTH,"nodeWidthCalculator","Node Width");
+  	if ( getNodeSizeLocked() )
+  		c.set(VizMapUI.NODE_SIZE,"nodeUniformSizeCalculator","Node Size");
+	else
+  		c.set(VizMapUI.NODE_WIDTH,"nodeWidthCalculator","Node Width");
   	setCalculator(c);
   }
   /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
   public void setNodeHeightCalculator(NodeSizeCalculator c) {
         // special handling for deprecated code
-  	c.set(VizMapUI.NODE_HEIGHT,"nodeHeightCalculator","Node Height");
+  	if ( getNodeSizeLocked() )
+  		c.set(VizMapUI.NODE_SIZE,"nodeUniformSizeCalculator","Node Size");
+	else
+  		c.set(VizMapUI.NODE_HEIGHT,"nodeHeightCalculator","Node Height");
   	setCalculator(c);
   }
   /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
@@ -381,6 +395,28 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
   public void setNodeFontSizeCalculator(NodeFontSizeCalculator c) {setCalculator(c);}
   /** @deprecated Use setCalculator(calc) instead.  This method will be removed Sept 2007. */ 
   public void setNodeLabelColorCalculator(NodeLabelColorCalculator c) {setCalculator(c);}
+
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeFillColorBypass = "node.fillColor";
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeBorderColorBypass = "node.borderColor";
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeLineTypeBypass = "node.lineType";
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeShapeBypass = "node.shape";
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeWidthBypass = "node.width";
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeHeightBypass = "node.height";
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeLabelBypass = "node.label";
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeToolTipBypass = "node.toolTip";
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeFontBypass = "node.font";
+  /** @deprecated Use calculator.getAttrNameBypass() instead. Will be removed Sept 2007. */
+  public static final String nodeLabelColorBypass = "node.labelColor";
+
 
 }
 

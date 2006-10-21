@@ -120,6 +120,8 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
     	appr.copy(defaultAppearance); // set default values
     	for (Calculator c : calcs)
 		c.apply(appr,edge,network);
+
+	appr.applyBypass(edge);
     }
     
     public EdgeAppearance getDefaultAppearance() {

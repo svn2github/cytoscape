@@ -57,7 +57,7 @@ import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
-public class GenericNodeBorderColorCalculator extends AbstractNodeColorCalculator 
+public class GenericNodeBorderColorCalculator extends GenericNodeColorCalculator 
     implements NodeColorCalculator {
 
     public byte getType() {

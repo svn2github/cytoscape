@@ -58,7 +58,7 @@ import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.ui.VizMapUI;
 
 //----------------------------------------------------------------------------
-public class GenericEdgeSourceArrowCalculator extends AbstractEdgeArrowCalculator 
+public class GenericEdgeSourceArrowCalculator extends GenericEdgeArrowCalculator 
         implements EdgeArrowCalculator {
 
 	public byte getType() {

@@ -1,6 +1,6 @@
 
 /*
-  File: GenericNodeHeightCalculator.java 
+  File: ParserFactory.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -37,61 +37,50 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 8189 $
-// $Date: 2006-09-13 13:51:38 -0700 (Wed, 13 Sep 2006) $
+// $Revision: 8333 $
+// $Date: 2006-09-25 19:37:03 -0700 (Mon, 25 Sep 2006) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package cytoscape.visual.calculators;
+package cytoscape.visual.parsers;
 //----------------------------------------------------------------------------
-import java.util.Map;
-import java.util.Properties;
-import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Font;
 
-import giny.model.Node;
+import cytoscape.visual.LineType;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.visual.LabelPosition;
 
-import cytoscape.CyNetwork;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.parsers.DoubleParser;
+import cytoscape.util.Misc;
 
-import cytoscape.visual.NodeAppearance;
-import cytoscape.visual.ui.VizMapUI;
-//----------------------------------------------------------------------------
-public class GenericNodeHeightCalculator extends GenericNodeSizeCalculator 
-    implements NodeSizeCalculator {
+public class ParserFactory {
+	
+	public static ValueParser getParser(Object o) {
+		return getParser(o.getClass());
+	}
 
-    public byte getType() {
-	return VizMapUI.NODE_HEIGHT;
-    } 
+	public static ValueParser getParser(Class c) {
+		ValueParser parser = null;
+		if ( c.isAssignableFrom(String.class) )
+			parser = new StringParser();
+		else if ( c.isAssignableFrom(Font.class) )
+			parser = new FontParser();
+		else if ( c.isAssignableFrom(Double.class) )
+			parser = new DoubleParser();
+		else if ( c.isAssignableFrom(Arrow.class) )
+			parser = new ArrowParser();
+		else if ( c.isAssignableFrom(LineType.class) )
+			parser = new LineTypeParser();
+		else if ( c.isAssignableFrom(Byte.class) )
+			parser = new NodeShapeParser();
+		else if ( c.isAssignableFrom(LabelPosition.class) )
+			parser = new LabelPositionParser();
+		else if ( c.isAssignableFrom(Color.class) )
+			parser = new ColorParser();
+		else 
+			System.err.println("couldn't construct parser for class: " + c.toString());
 
-    public String getPropertyLabel() {
-        return "nodeHeightCalculator";
-    }
-
-    public String getTypeName() {
-        return "Node Height";
-    }
-    
-    GenericNodeHeightCalculator() {
-	super();
-    }
-   
-    public GenericNodeHeightCalculator(String name, ObjectMapping m) {
-	super(name, m);
-    }
-   
-    public GenericNodeHeightCalculator(String name, Properties props, String baseKey) {
-        super(name, props, baseKey);
-    }
-    
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-	apply(appr,node,network,HEIGHT);
-    }
-
-    public double calculateNodeSize(Node e, CyNetwork n) {
-        NodeAppearance ea = new NodeAppearance();
-        apply(ea,e,n);
-        return ea.getHeight();
-    }
-
+		return parser;
+	}
 }
 

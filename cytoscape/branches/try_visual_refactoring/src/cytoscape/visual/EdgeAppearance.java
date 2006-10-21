@@ -47,6 +47,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
 import java.awt.Paint;
+import java.util.Map;
+import java.util.HashMap;
 import cytoscape.visual.LineType;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.parsers.ObjectToString;
@@ -54,9 +56,14 @@ import cytoscape.visual.parsers.ArrowParser;
 import cytoscape.visual.parsers.FontParser;
 import cytoscape.visual.parsers.LineTypeParser;
 import cytoscape.visual.parsers.ColorParser;
+import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.parsers.ParserFactory;
 import cytoscape.visual.ui.VizMapUI;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 
 import giny.view.EdgeView;
+import giny.model.Edge;
 import giny.view.Label;
 import java.util.Properties;
 //----------------------------------------------------------------------------
@@ -330,4 +337,39 @@ public class EdgeAppearance implements Appearance, Cloneable {
 	ea.setFont(font);
 	return ea;
     }
+
+  Map<Class,ValueParser> parsers = new HashMap<Class,ValueParser>();
+
+  public void applyBypass(Edge e) {
+        CyAttributes attrs = Cytoscape.getEdgeAttributes();
+        String id = e.getIdentifier();
+
+        setColor( (Color)getBypass(attrs,id,"edge.color",Color.class) );
+        setLineType( (LineType)getBypass(attrs,id,"edge.lineType",LineType.class) ); 
+	setSourceArrow((Arrow)getBypass(attrs,id,"edge.sourceArrow",Arrow.class) );
+	setTargetArrow((Arrow) getBypass(attrs,id,"edge.targetArrow",Arrow.class) );
+	setLabel((String) getBypass(attrs,id,"edge.label",String.class) );
+	setToolTip((String)  getBypass(attrs,id,"edge.toolTip",String.class) );
+	setFont((Font)  getBypass(attrs,id,"edge.font",Font.class) );
+	Double d = (Double)getBypass(attrs,id,"edge.fontSize",Double.class);
+	if ( d != null )
+		setFontSize(d.floatValue());
+  }
+
+  private Object getBypass(CyAttributes attrs, String id, String attrName, Class type) {
+        String value = attrs.getStringAttribute(id,attrName);
+	if ( value == null )
+		return null;
+
+        ValueParser p = parsers.get(type);
+        if ( p == null ) {
+                p = ParserFactory.getParser(type);
+                parsers.put(type,p);
+        }
+        if ( p != null )
+                return p.parseStringValue(value);
+        else
+                return null;
+  }
+
 } 

@@ -50,7 +50,10 @@ import java.awt.Stroke;
 import cytoscape.visual.LineType;
 import giny.view.NodeView;
 import giny.view.Label;
+import giny.model.Node;
 import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 import cytoscape.visual.parsers.ObjectToString;
 import cytoscape.visual.parsers.ArrowParser;
 import cytoscape.visual.parsers.FontParser;
@@ -59,7 +62,12 @@ import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.parsers.NodeShapeParser;
 import cytoscape.visual.parsers.LabelPositionParser;
+import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.parsers.ParserFactory;
 import cytoscape.visual.ui.VizMapUI;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+
 //----------------------------------------------------------------------------
 /**
  * Objects of this class hold data describing the appearance of a Node.
@@ -430,7 +438,6 @@ public class NodeAppearance implements Appearance, Cloneable {
   	return getDescription(null);
   }
 
-
     public Object get( byte type) {
 
 	Object defaultObj = null;
@@ -552,6 +559,53 @@ public class NodeAppearance implements Appearance, Cloneable {
   }
   public void setNodeSizeLocked(boolean b) {
     nodeSizeLocked = b;
+  }
+ 
+  Map<Class,ValueParser> parsers = new HashMap<Class,ValueParser>();
+
+  public void applyBypass(Node n) {
+  	CyAttributes attrs = Cytoscape.getNodeAttributes();
+	String id = n.getIdentifier();
+
+	setFillColor( (Color)getBypass(attrs,id,"node.fillColor",Color.class) ); 
+	setBorderColor( (Color)getBypass(attrs,id,"node.borderColor",Color.class) );
+	setBorderLineType( (LineType)getBypass(attrs,id,"node.lineType",LineType.class) );
+	Byte b = (Byte)getBypass(attrs,id,"node.shape",Byte.class);
+	if ( b != null )
+		setShape( b.byteValue() );
+	Double d = (Double)getBypass(attrs,id,"node.width",Double.class);
+	if ( d != null )
+		setWidth( d.doubleValue() ); 
+	d = (Double)getBypass(attrs,id,"node.height",Double.class);
+	if ( d != null )
+		setHeight( d.doubleValue() ); 
+	d = (Double)getBypass(attrs,id,"node.size",Double.class);
+	if ( d != null )
+		setSize( d.doubleValue() ); 
+	setLabel( (String)getBypass(attrs,id,"node.label",String.class) );
+	setToolTip((String)getBypass(attrs,id,"node.toolTip",String.class) );
+	setFont( (Font)getBypass(attrs,id,"node.font",Font.class) );
+	d = (Double)getBypass(attrs,id,"node.fontSize",Double.class);
+	if ( d != null )
+		setFontSize( d.floatValue() ); 
+	setLabelColor( (Color)getBypass(attrs,id,"node.labelColor",Color.class) );
+	setLabelPosition( (LabelPosition)getBypass(attrs,id,"node.labelPosition",LabelPosition.class) );
+  }
+
+  private Object getBypass(CyAttributes attrs, String id, String attrName, Class type) {
+	String value = attrs.getStringAttribute(id,attrName);
+	if ( value == null )
+		return null;
+
+	ValueParser p = parsers.get(type);
+	if ( p == null ) {
+		p = ParserFactory.getParser(type);
+		parsers.put(type,p);
+	}
+	if ( p != null )
+		return p.parseStringValue(value);
+	else
+		return null;
   }
 }
 
