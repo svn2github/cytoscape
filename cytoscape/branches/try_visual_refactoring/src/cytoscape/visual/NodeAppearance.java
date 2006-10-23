@@ -103,11 +103,49 @@ public class NodeAppearance implements Appearance, Cloneable {
     public byte getShape() {return shape;}
     public void setShape(byte s) {shape = s;}
     
-    public double getWidth() { return width;}
-    public void setWidth(double d) {width = d;}
+    public double getWidth() { 
+    	if ( nodeSizeLocked )
+		return size;
+	else
+		return width;
+    }
+    /** 
+     * Sets only the height variable.
+     */
+    public void setJustWidth(double d) { width = d; }
+    /** 
+     * Sets the width variable, but also the size variable if
+     * the node size is locked. This is to support deprecated
+     * code that used setting width/height for setting uniform
+     * size as well.
+     */
+    public void setWidth(double d) {
+    	width = d;
+	if ( nodeSizeLocked )
+		size = d;
+    }
     
-    public double getHeight() {return height;}
-    public void setHeight(double d) {height = d;}
+    public double getHeight() {
+    	if ( nodeSizeLocked )
+		return size;
+	else
+    		return height;
+    }
+    /** 
+     * Sets only the height variable.
+     */
+    public void setJustHeight(double d) { height = d; }
+    /** 
+     * Sets the height variable, but also the size variable if
+     * the node size is locked. This is to support deprecated
+     * code that used setting width/height for setting uniform
+     * size as well.
+     */
+    public void setHeight(double d) {
+    	height = d;
+	if ( nodeSizeLocked )
+		size = d;
+    }
     
     public double getSize() {return size;}
     public void setSize(double s) {size = s;}
@@ -197,7 +235,6 @@ public class NodeAppearance implements Appearance, Cloneable {
 			double difference = height - existingHeight;
 			if (Math.abs(difference) > .1) {
 				change_made = true;
-				System.out.println("setting height");
 				nodeView.setHeight(height);
 			}
 
@@ -313,7 +350,7 @@ public class NodeAppearance implements Appearance, Cloneable {
       Double dObj = (new DoubleParser()).parseDouble(value);
       if (dObj != null) {
         double d = dObj.doubleValue();
-        if (d > 0) {setWidth(d);}
+        if (d > 0) { width = d;}
       }
     }
     value = nacProps.getProperty(baseKey + ".defaultNodeHeight");
@@ -321,7 +358,7 @@ public class NodeAppearance implements Appearance, Cloneable {
       Double dObj = (new DoubleParser()).parseDouble(value);
       if (dObj != null) {
         double d = dObj.doubleValue();
-        if (d > 0) {setHeight(d);}
+        if (d > 0) { height = d;}
       }
     }
     value = nacProps.getProperty(baseKey + ".defaultNodeSize");
@@ -329,7 +366,7 @@ public class NodeAppearance implements Appearance, Cloneable {
       Double dObj = (new DoubleParser()).parseDouble(value);
       if (dObj != null) {
         double d = dObj.doubleValue();
-        if (d > 0) {setSize(d);}
+        if (d > 0) { size = d;}
       }
     }
     value = nacProps.getProperty(baseKey + ".defaultNodeLabel");
@@ -533,19 +570,31 @@ public class NodeAppearance implements Appearance, Cloneable {
     }
 
     public void copy(NodeAppearance na) {
-	setFillColor( na.getFillColor());
-	setBorderColor( na.getBorderColor());
-	setBorderLineType( na.getBorderLineType()); 
-	setShape( na.getShape());
-	setWidth( na.getWidth());
-	setHeight( na.getHeight());
-	setSize( na.getSize());
-	setLabel( na.getLabel());
-	setToolTip( na.getToolTip());
-	setFont( na.getFont());
-	setLabelColor( na.getLabelColor());
-	setNodeSizeLocked( na.getNodeSizeLocked() );
+
+	// remember the new lock state 
+        boolean actualLockState = na.getNodeSizeLocked(); 
+
+	// set everything to false so that it copy
+	// correctly
+	setNodeSizeLocked( false );
+	na.setNodeSizeLocked( false );
+
+	setFillColor( na.getFillColor() );
+	setBorderColor( na.getBorderColor() );
+	setBorderLineType( na.getBorderLineType() ); 
+	setShape( na.getShape() );
+	setWidth( na.getWidth() );
+	setHeight( na.getHeight() );
+	setSize( na.getSize() );
+	setLabel( na.getLabel() );
+	setToolTip( na.getToolTip() );
+	setFont( na.getFont() );
+	setLabelColor( na.getLabelColor() );
 	setLabelPosition( na.getLabelPosition() );
+
+	// now set the lock state correctly
+	setNodeSizeLocked( actualLockState );
+	na.setNodeSizeLocked( actualLockState );
     }
 
     public Object clone() {
@@ -573,21 +622,21 @@ public class NodeAppearance implements Appearance, Cloneable {
 	Byte b = (Byte)getBypass(attrs,id,"node.shape",Byte.class);
 	if ( b != null )
 		setShape( b.byteValue() );
-	Double d = (Double)getBypass(attrs,id,"node.width",Double.class);
-	if ( d != null )
-		setWidth( d.doubleValue() ); 
-	d = (Double)getBypass(attrs,id,"node.height",Double.class);
-	if ( d != null )
-		setHeight( d.doubleValue() ); 
-	d = (Double)getBypass(attrs,id,"node.size",Double.class);
-	if ( d != null )
-		setSize( d.doubleValue() ); 
+	Double w = (Double)getBypass(attrs,id,"node.width",Double.class);
+	if ( w != null )
+		width = w.doubleValue(); 
+	Double h = (Double)getBypass(attrs,id,"node.height",Double.class);
+	if ( h != null )
+		height = h.doubleValue(); 
+	Double s = (Double)getBypass(attrs,id,"node.size",Double.class);
+	if ( s != null )
+		size = s.doubleValue(); 
 	setLabel( (String)getBypass(attrs,id,"node.label",String.class) );
 	setToolTip((String)getBypass(attrs,id,"node.toolTip",String.class) );
 	setFont( (Font)getBypass(attrs,id,"node.font",Font.class) );
-	d = (Double)getBypass(attrs,id,"node.fontSize",Double.class);
-	if ( d != null )
-		setFontSize( d.floatValue() ); 
+	Double f = (Double)getBypass(attrs,id,"node.fontSize",Double.class);
+	if ( f != null )
+		setFontSize( f.floatValue() ); 
 	setLabelColor( (Color)getBypass(attrs,id,"node.labelColor",Color.class) );
 	setLabelPosition( (LabelPosition)getBypass(attrs,id,"node.labelPosition",LabelPosition.class) );
   }

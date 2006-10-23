@@ -102,7 +102,7 @@ abstract class AbstractNodeSizeCalculator extends NodeCalculator {
     protected void apply(NodeAppearance appr, Node node, CyNetwork network, int type) {
 		Object rangeValue = getRangeValue(node); 
 
-		// If null don't set anything - the existing value in appr is already
+		// If null, don't set anything - the existing value in appr is already
 		// the default.
 		if(rangeValue==null)
 			return; 
@@ -110,10 +110,10 @@ abstract class AbstractNodeSizeCalculator extends NodeCalculator {
 		double ret =  ((Number)rangeValue).doubleValue();
 
 		if ( type == WIDTH )
-			appr.setWidth(ret);
+			appr.setJustWidth(ret);
 
 		if ( type == HEIGHT )
-			appr.setHeight(ret);
+			appr.setJustHeight(ret);
 
 		if ( type == SIZE )
 			appr.setSize(ret);

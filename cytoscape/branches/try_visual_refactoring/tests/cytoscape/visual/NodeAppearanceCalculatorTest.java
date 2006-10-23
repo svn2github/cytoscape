@@ -124,9 +124,12 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	            na.getBorderColor().equals(Color.BLACK) );
 	assertEquals( "a lineType  ",LineType.LINE_1, na.getBorderLineType() );
 	assertEquals( "a shape  ", ShapeNodeRealizer.RECT, na.getShape() );
-	assertEquals( "a width  ", 70.0, na.getWidth() );
-	assertEquals( "a height  ", 30.0, na.getHeight() );
+
+	// node size is locked so all should be the same
+	assertEquals( "a width  ", 35.0, na.getWidth() );
+	assertEquals( "a height  ", 35.0, na.getHeight() );
 	assertEquals( "a size  ", 35.0, na.getSize() );
+
 	assertEquals( "a label  ", "", na.getLabel() );
 	assertEquals( "a tooltip  ","", na.getToolTip() );
 	assertEquals( "a font size  ", 12, na.getFont().getSize() ); 
@@ -143,9 +146,11 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	            nb.getBorderColor().equals(Color.BLACK) );
 	assertEquals( "b lineType  ",LineType.LINE_1, nb.getBorderLineType() );
 	assertEquals( "b shape  ", ShapeNodeRealizer.RECT, nb.getShape() );
-	assertEquals( "b width  ", 70.0, nb.getWidth() );
-	assertEquals( "b height  ", 30.0, nb.getHeight() );
+	// still locked
+	assertEquals( "b width  ", 35.0, nb.getWidth() );
+	assertEquals( "b height  ", 35.0, nb.getHeight() );
 	assertEquals( "b size  ", 35.0, nb.getSize() );
+
 	assertEquals( "b label  ", "", nb.getLabel() );
 	assertEquals( "b tooltip  ","", nb.getToolTip() );
 	assertEquals( "b font size  ", 12, nb.getFont().getSize() ); 
@@ -163,6 +168,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	            nc.getBorderColor().equals(Color.BLACK) );
 	assertEquals( "c lineType  ",LineType.LINE_1, nc.getBorderLineType() );
 	assertEquals( "c shape  ", ShapeNodeRealizer.RECT, nc.getShape() );
+	// now we see the default width and height
 	assertEquals( "c width  ", 70.0, nc.getWidth() );
 	assertEquals( "c height  ", 30.0, nc.getHeight() );
 	assertEquals( "c size  ", 35.0, nc.getSize() );
@@ -220,7 +226,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	assertEquals( "a shape  ", ShapeNodeRealizer.RECT, na.getShape() );
 	assertEquals( "a width  ", 70.0, na.getWidth() );
 	assertEquals( "a height  ", 10.0, na.getHeight() ); // only height has a calc set
-	assertEquals( "a size  ", 35.0, na.getSize() ); 
+	assertEquals( "a size  ", 35.0, na.getSize() ); // props don't set size
 	assertEquals( "a label  ", "a", na.getLabel() );
 	assertEquals( "a tooltip  ","", na.getToolTip() );
 	assertEquals( "a font size  ", 12, na.getFont().getSize() ); 
@@ -241,7 +247,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	assertEquals( "b shape  ",ShapeNodeRealizer.RECT,  nb.getShape() );
 	assertEquals( "b width  ", 70.0, nb.getWidth() ); 
 	assertEquals( "b height  ", 30.0, nb.getHeight() );
-	assertEquals( "b size  ", 35.0, nb.getSize() );
+	assertEquals( "b size  ", 35.0, nb.getSize() ); // props don't set size
 	assertEquals( "b label  ", "b" , nb.getLabel() );
 	assertEquals( "b tooltip  ","", nb.getToolTip() );
 	assertEquals( "b font size  ",12, nb.getFont().getSize() ); 
@@ -260,8 +266,8 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	            nc.getBorderColor().equals(Color.BLACK) );
 	assertEquals( "c lineType  ", LineType.DASHED_1, nc.getBorderLineType() );
 	assertEquals( "c shape  ",ShapeNodeRealizer.RECT,  nc.getShape() );
-	assertEquals( "c width  ", 70.0, nc.getWidth() ); 
-	assertEquals( "c height  ", 40.0, nc.getHeight() );
+	assertEquals( "c width  ", 35.0, nc.getWidth() ); // since node size is locked
+	assertEquals( "c height  ", 35.0, nc.getHeight() );// since node size is locked
 	assertEquals( "c size  ", 35.0, nc.getSize() );
 	assertEquals( "c label  ", "c" , nc.getLabel() );
 	assertEquals( "c tooltip  ","", nc.getToolTip() );
@@ -316,9 +322,67 @@ public class NodeAppearanceCalculatorTest extends TestCase {
     	System.out.println("end NodeAppearanceCalculatorTest.testNodeSizeLock()");
     }
 
+    public void testBypass () throws Exception {
+
+        Color fillColor = new Color(63, 128, 255);
+        Color borderColor = new Color(100, 100, 50);
+	String fillColorString = "63,128,255"; 
+	String borderColorString = "100,100,50";
+        LineType lineType = LineType.DASHED_3;
+        String lineTypeString = "DASHED_3";
+        byte shape = ShapeNodeRealizer.DIAMOND;
+        double width = 49.0;
+        double height = 79.0;
+        String label = "testLabel";
+        String toolTip = "testToolTip";
+        Font font = new Font("SansSerif", Font.ITALIC, 10);
+        String fontString = "SansSerif,italic,10";
+        
+        RootGraph graph = Cytoscape.getRootGraph();
+        int index1 = graph.createNode();
+        Node first = graph.getNode(index1);
+        int index2 = graph.createNode();
+        Node second = graph.getNode(index2);
+        
+        CyNetwork network2 = Cytoscape.createNetwork( Cytoscape.getRootGraph().getNodeIndicesArray(),
+                                                      Cytoscape.getRootGraph().getEdgeIndicesArray(),
+                                                      null);
+
+        CyAttributes secondNodeAttr = Cytoscape.getNodeAttributes();
+        String secondName = second.getIdentifier(); 
+        secondNodeAttr.setAttribute(secondName, "node.fillColor", "63,128,255");
+        secondNodeAttr.setAttribute(secondName, "node.borderColor", "100,100,50");
+        secondNodeAttr.setAttribute(secondName, "node.lineType", "dashed3");
+        secondNodeAttr.setAttribute(secondName, "node.shape", "diamond");
+        secondNodeAttr.setAttribute(secondName, "node.width", "49.0");
+        secondNodeAttr.setAttribute(secondName, "node.height", "79.0");
+        secondNodeAttr.setAttribute(secondName, "node.size", "32.0");
+        secondNodeAttr.setAttribute(secondName, "node.label", "testLabel");
+        secondNodeAttr.setAttribute(secondName, "node.toolTip", "testToolTip");
+        secondNodeAttr.setAttribute(secondName, "node.font", "SansSerif,italic,10");
+
+	NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+	nac.setNodeSizeLocked(false);
+
+        NodeAppearance secondApp = nac.calculateNodeAppearance(second, network2);
+	System.out.println("secondApp\n" + secondApp.getDescription());
+        assertTrue( secondApp.getFillColor().equals(fillColor) );
+        assertTrue( secondApp.getBorderColor().equals(borderColor) );
+        assertTrue( secondApp.getBorderLineType().equals(lineType) );
+        assertTrue( secondApp.getShape() == shape );
+        assertEquals("width ", secondApp.getWidth(), width, 0.0001 );
+        assertEquals("height ", secondApp.getHeight(), height, 0.0001 );
+        assertTrue( secondApp.getLabel().equals(label) );
+        assertTrue( secondApp.getToolTip().equals(toolTip) );
+        assertTrue( secondApp.getFont().equals(font) );
+        
+        nac.setNodeSizeLocked(true);
+        nac.calculateNodeAppearance(secondApp, second, network2);
+        assertEquals( "width",secondApp.getWidth(), 32.0,0.0001 );
+    }
+
     public static void main (String [] args) {
 	junit.textui.TestRunner.run (new TestSuite (NodeAppearanceCalculatorTest.class));
     }
 }
-
 
