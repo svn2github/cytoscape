@@ -85,9 +85,14 @@ public class MapToCytoscape implements Mapper {
     public static final String DS_INTERACTION = "DS_INTERACTION";
 
     /**
-     * CyNetwork Object
+     * Node List
      */
-    protected CyNetwork cyNetwork;
+    private ArrayList nodeList = new ArrayList();
+
+    /**
+     * Edge List
+     */
+    private ArrayList edgeList = new ArrayList();
 
     /**
      * CyMap Object.
@@ -160,17 +165,14 @@ public class MapToCytoscape implements Mapper {
      * not require a "bait" interactor.
      *
      * @param interactionList interactionList ArrayList of Interaction objects.
-     * @param cyNetwork       CyNetwork
      * @param graphType       graphType (SPOKE_VIEW or MATRIX_VIEW).
      */
-    public MapToCytoscape(ArrayList interactionList,
-            CyNetwork cyNetwork, int graphType) {
+    public MapToCytoscape(ArrayList interactionList, int graphType) {
         if (graphType < SPOKE_VIEW || graphType > MATRIX_VIEW) {
             throw new IllegalArgumentException("Illegal GraphType Parameter.");
         }
         this.cyMap = new HashMap();
         this.interactions = interactionList;
-        this.cyNetwork = cyNetwork;
         this.graphType = graphType;
     }
 
@@ -189,9 +191,8 @@ public class MapToCytoscape implements Mapper {
      * @throws MapperException Indicates Error in mapping.
      */
     public final void doMapping() throws MapperException {
-        //  Collect all existing nodes and edges to avoid redundancy.
-        HashMap nodeMap = createNodeMap();
-        HashMap edgeMap = createEdgeMap();
+        HashMap nodeMap = new HashMap();
+        HashMap edgeMap = new HashMap();
         intMap = new HashMap();
         //  Validate Interaction Data
         validateInteractions();
@@ -202,6 +203,34 @@ public class MapToCytoscape implements Mapper {
         //  Second pass, add all new interactions.
         addNewEdges(nodeMap, edgeMap);
     }
+
+    /**
+     * Gets all node indices.
+     *
+     * @return array of root graph indices.
+     */
+    public int[] getNodeIndices() {
+        int nodeIndices[] = new int[nodeList.size()];
+        for (int i = 0; i < nodeList.size(); i++) {
+            CyNode node = (CyNode) nodeList.get(i);
+            nodeIndices[i] = node.getRootGraphIndex();
+        }
+        return nodeIndices;
+    }
+
+    /**
+     * Gets all edge indices.
+     *
+     * @return array of root graph indices.
+     */
+    public int[] getEdgeIndices() {
+        int edgeIndices[] = new int[edgeList.size()];
+        for (int i = 0; i < edgeList.size(); i++) {
+            CyEdge edge = (CyEdge) edgeList.get(i);
+            edgeIndices[i] = edge.getRootGraphIndex();
+        }
+        return edgeIndices;
+    }    
 
     /**
      * Gets Mapping Warnings.
@@ -423,7 +452,7 @@ public class MapToCytoscape implements Mapper {
 
         // If no edge exists then create a new one
         if ((!edgeExists(node1, node2, interaction, edgeMap))) {
-            cyNetwork.addEdge(edge);
+            edgeList.add(edge);
             mapEdgeAttributes(interaction, edge);
             int edgeRootGraphIndex = edge.getRootGraphIndex();
             ArrayList indexes = (ArrayList) interaction.getAttribute
@@ -474,7 +503,7 @@ public class MapToCytoscape implements Mapper {
             //  Create New Node via getCyNode Method.
             CyNode node = Cytoscape.getCyNode(name, true);
             //  Add New Node to Network
-            cyNetwork.addNode(node);
+            nodeList.add(node);
 
             //  Set Node Identifier, Canonical Name, and Common Name.
             node.setIdentifier(name);
@@ -632,39 +661,5 @@ public class MapToCytoscape implements Mapper {
 
         return new String(node1Ident
                 + interactionType + node2Ident);
-    }
-
-    /**
-     * Creates a map of all existing nodes.
-     * Enables code to detect duplicate nodes.
-     *
-     * @return HashMap of existing nodes, indexed by Identifer.
-     */
-    private HashMap createNodeMap() {
-        HashMap nodeMap = new HashMap();
-        Iterator nodeIterator = cyNetwork.nodesIterator();
-        while (nodeIterator.hasNext()) {
-            CyNode node = (CyNode) nodeIterator.next();
-            String id = node.getIdentifier();
-            nodeMap.put(id, node);
-        }
-        return nodeMap;
-    }
-
-    /**
-     * Creates a map of all existing edges.
-     * Enables code to detect duplicate edges.
-     *
-     * @return HashMap of existing edges, indexed by Identifier.
-     */
-    private HashMap createEdgeMap() {
-        HashMap edgeMap = new HashMap();
-        Iterator edgeIterator = cyNetwork.edgesIterator();
-        while (edgeIterator.hasNext()) {
-            CyEdge edge = (CyEdge) edgeIterator.next();
-            String id = edge.getIdentifier();
-            edgeMap.put(id, edge);
-        }
-        return edgeMap;
     }
 }
