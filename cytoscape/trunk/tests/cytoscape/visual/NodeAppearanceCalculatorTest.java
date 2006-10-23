@@ -88,7 +88,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 
     public NodeAppearanceCalculatorTest (String name) {super (name);}
 
-    public void setUp() {
+    public void setUp() throws IOException {
 	cyNet = Cytoscape.createNetworkFromFile("testData/small.sif");
 	a = Cytoscape.getCyNode("a");
 	b = Cytoscape.getCyNode("b");
