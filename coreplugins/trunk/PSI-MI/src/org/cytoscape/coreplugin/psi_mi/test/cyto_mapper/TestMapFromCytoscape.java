@@ -66,9 +66,18 @@ public class TestMapFromCytoscape extends TestCase {
 
         //  Now Map from Data Server --> Cytocape Network Objects.
         CyNetwork cyNetwork = Cytoscape.createNetwork("network1");
-        MapToCytoscape mapper2 = new MapToCytoscape
-                (interactions, cyNetwork, MapToCytoscape.MATRIX_VIEW);
+        MapToCytoscape mapper2 = new MapToCytoscape (interactions, MapToCytoscape.MATRIX_VIEW);
         mapper2.doMapping();
+
+        //  Add new nodes/edges to network
+        int nodeIndices[] = mapper2.getNodeIndices();
+        int edgeIndices[] = mapper2.getEdgeIndices();
+        for (int i=0; i<nodeIndices.length; i++) {
+            cyNetwork.addNode(nodeIndices[i]);
+        }
+        for (int i=0; i<edgeIndices.length; i++) {
+            cyNetwork.addEdge(edgeIndices[i]);
+        }
 
         //  And, now map back from Cytoscape --> DataService Interaction Objects
         MapFromCytoscape mapper3 = new MapFromCytoscape(cyNetwork);

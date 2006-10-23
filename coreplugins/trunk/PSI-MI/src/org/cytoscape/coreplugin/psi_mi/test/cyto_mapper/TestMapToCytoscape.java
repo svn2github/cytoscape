@@ -76,8 +76,9 @@ public class TestMapToCytoscape extends TestCase {
         //  Now Map to Cytocape Network Objects.
         CyNetwork network = Cytoscape.createNetwork("network1");
         MapToCytoscape mapper2 = new MapToCytoscape
-                (interactions, network, MapToCytoscape.MATRIX_VIEW);
+                (interactions, MapToCytoscape.MATRIX_VIEW);
         mapper2.doMapping();
+        addToCyNetwork (mapper2, network);
 
         //  Verify Number of Nodes and Number of Edges
         int nodeCount = network.getNodeCount();
@@ -184,8 +185,9 @@ public class TestMapToCytoscape extends TestCase {
 
         //  Now map interactions to cyNetwork.
         MapToCytoscape mapper2 = new MapToCytoscape
-                (interactions, network, MapToCytoscape.MATRIX_VIEW);
+                (interactions, MapToCytoscape.MATRIX_VIEW);
         mapper2.doMapping();
+        addToCyNetwork (mapper2, network);
 
         //  Verify Number of Nodes;  it should still be 7.
         //  If the mapper failed to check for pre-existing nodes, it would be 9.
@@ -220,8 +222,9 @@ public class TestMapToCytoscape extends TestCase {
 
         //  Now map interactions to cyNetwork.
         MapToCytoscape mapper2 = new MapToCytoscape
-                (interactions, network, MapToCytoscape.MATRIX_VIEW);
+                (interactions, MapToCytoscape.MATRIX_VIEW);
         mapper2.doMapping();
+        addToCyNetwork (mapper2, network);
 
         //  Verify Number of Nodes;  there should be 4.
         int nodeCount = network.getNodeCount();
@@ -275,8 +278,9 @@ public class TestMapToCytoscape extends TestCase {
 
         //  Now map interactions to cyNetwork.
         MapToCytoscape mapper2 = new MapToCytoscape
-                (interactions, network, MapToCytoscape.SPOKE_VIEW);
+                (interactions,  MapToCytoscape.SPOKE_VIEW);
         mapper2.doMapping();
+        addToCyNetwork (mapper2, network);
 
         //  Verify Number of Nodes;  there should be 4.
         int nodeCount = network.getNodeCount();
@@ -321,9 +325,10 @@ public class TestMapToCytoscape extends TestCase {
 
         //  Now map interactions to cyNetwork.
         MapToCytoscape mapper2 = new MapToCytoscape
-                (interactions, network, MapToCytoscape.SPOKE_VIEW);
+                (interactions, MapToCytoscape.SPOKE_VIEW);
         mapper2.doMapping();
-
+        addToCyNetwork (mapper2, network);
+        
         //  Verify Number of Nodes;  there should be 3.
         int nodeCount = network.getNodeCount();
         assertEquals(3, nodeCount);
@@ -375,9 +380,22 @@ public class TestMapToCytoscape extends TestCase {
                 + allInteractions.size());
         CyNetwork network = Cytoscape.createNetwork("network1");
         MapToCytoscape mapper2 = new MapToCytoscape
-                (allInteractions, network, MapToCytoscape.MATRIX_VIEW);
+                (allInteractions, MapToCytoscape.MATRIX_VIEW);
+        addToCyNetwork (mapper2, network);
         mapper2.doMapping();
         System.out.println("DONE");
+    }
+
+    private void addToCyNetwork(MapToCytoscape mapper, CyNetwork cyNetwork) {
+        //  Add new nodes/edges to network
+        int nodeIndices[] = mapper.getNodeIndices();
+        int edgeIndices[] = mapper.getEdgeIndices();
+        for (int i=0; i<nodeIndices.length; i++) {
+            cyNetwork.addNode(nodeIndices[i]);
+        }
+        for (int i=0; i<edgeIndices.length; i++) {
+            cyNetwork.addEdge(edgeIndices[i]);
+        }
     }
 
     /**
