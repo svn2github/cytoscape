@@ -40,6 +40,7 @@ import giny.view.NodeView;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
+import org.cytoscape.coreplugin.psi_mi.util.XmlValidator;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 
 import java.io.IOException;
@@ -76,9 +77,13 @@ public class PsiMiGraphReader implements GraphReader {
             //  set network name - use pathway name
             networkName = fileName;
 
-            //  Map BioPAX Data to Cytoscape Nodes/Edges
             ContentReader reader = new ContentReader();
             String xml = reader.retrieveContent(fileName);
+
+            //  Before doing anything, validate
+            XmlValidator.validate(xml);
+
+            //  Map BioPAX Data to Cytoscape Nodes/Edges
             ArrayList interactions = new ArrayList();
 
             //  Pick one of two mappers
@@ -99,7 +104,6 @@ public class PsiMiGraphReader implements GraphReader {
             nodeIndices = mapper2.getNodeIndices();
             edgeIndices = mapper2.getEdgeIndices();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IOException(e.getMessage());
         }
     }
