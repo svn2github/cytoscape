@@ -47,6 +47,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import java.io.InputStreamReader;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -1086,7 +1087,7 @@ public abstract class Cytoscape {
 	 * @param location
 	 *            the location of the file
 	 */
-	public static CyNetwork createNetworkFromFile(String location) {
+	public static CyNetwork createNetworkFromFile(String location) throws IOException {
 		return createNetworkFromFile(location, true);
 	}
 
@@ -1107,7 +1108,7 @@ public abstract class Cytoscape {
 	 *         supported but the file is not of Graph Nature.
 	 */
 	public static CyNetwork createNetworkFromFile(String location,
-			boolean create_view) {
+			boolean create_view) throws IOException {
 		return createNetwork(getImportHandler().getReader(location),
 				create_view, null);
 	}
@@ -1139,7 +1140,7 @@ public abstract class Cytoscape {
 	 *             manages all file types.
 	 */
 	public static CyNetwork createNetwork(String location, int file_type,
-			boolean canonicalize, BioDataServer biodataserver, String species) {
+			boolean canonicalize, BioDataServer biodataserver, String species) throws IOException{
 		return createNetworkFromFile(location, true);
 	}
 
@@ -1159,7 +1160,7 @@ public abstract class Cytoscape {
 	 *            whether or not a view will be created
 	 */
 	public static CyNetwork createNetwork(GraphReader reader,
-			boolean create_view, CyNetwork parent) {
+			boolean create_view, CyNetwork parent) throws IOException {
 
 		if (reader == null) {
 			System.err.println("File Type not Supported, sorry");
@@ -1168,16 +1169,8 @@ public abstract class Cytoscape {
 
 		// have the GraphReader read the given file
 		String title = "";
-		try {
-			reader.read();
-			title = reader.getNetworkName();
-		} catch (Exception e) {
-
-			System.err.println("Cytoscape: Error Reading Network File: "
-					+ title + "\n--------------------\n");
-			e.printStackTrace();
-			return null;
-		}
+        reader.read();
+        title = reader.getNetworkName();
 
 		// get the RootGraph indices of the nodes and
 		// edges that were just created

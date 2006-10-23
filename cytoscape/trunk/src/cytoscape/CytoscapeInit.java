@@ -221,13 +221,17 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 			CyNetwork network = null;
 
 			// be careful not to assume that a view has been created
-			if (initParams.getMode() == CyInitParams.GUI
-					|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)
-				network = Cytoscape.createNetworkFromFile(net, true);
-			else
-				network = Cytoscape.createNetworkFromFile(net, false);
+            try {
+                if (initParams.getMode() == CyInitParams.GUI
+                        || initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)
+                    network = Cytoscape.createNetworkFromFile(net, true);
+                else
+                    network = Cytoscape.createNetworkFromFile(net, false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-			// This is for browser and other plugins.
+            // This is for browser and other plugins.
 			Object[] ret_val = new Object[3];
 			ret_val[0] = network;
 			ret_val[1] = net;

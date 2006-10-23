@@ -269,7 +269,7 @@ class LoadNetworkTask implements Task {
 
 			}
 
-		} catch (GMLException e) {
+		} catch (Exception e) {
 			taskMonitor.setException(e, "Unable to load network file.");
 		}
 	}
