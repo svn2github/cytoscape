@@ -58,11 +58,10 @@ public class DataServiceException extends Exception {
     }
 
     /**
-     * Gets Human Readable Error Message.
-     *
-     * @return msg Message
+     * Gets Exception Message.
+     * @return Error Message.
      */
-    public String getHumanReadableErrorMessage() {
+    public String getMessage() {
         return this.humanReadableErrorMessage;
     }
 }

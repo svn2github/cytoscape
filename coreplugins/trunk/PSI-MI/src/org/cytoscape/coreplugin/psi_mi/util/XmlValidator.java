@@ -43,12 +43,6 @@ import java.io.StringReader;
  */
 public class XmlValidator extends DefaultHandler {
 
-    /**
-     * Default parser name.
-     */
-    protected static final String DEFAULT_PARSER_NAME =
-            "org.apache.xerces.parsers.SAXParser";
-
     // Validation feature id
     protected static final String VALIDATION_FEATURE_ID =
             "http://xml.org/sax/features/validation";
@@ -57,23 +51,9 @@ public class XmlValidator extends DefaultHandler {
     protected static final String SCHEMA_VALIDATION_FEATURE_ID =
             "http://apache.org/xml/features/validation/schema";
 
-    /* Schema full checking feature id
-    protected static final String SCHEMA_FULL_CHECKING_FEATURE_ID =
-            "http://apache.org/xml/features/validation/schema-full-checking"; */
-
     // Dynamic validation feature id
     protected static final String DYNAMIC_VALIDATION_FEATURE_ID
             = "http://apache.org/xml/features/validation/dynamic";
-
-    /* Schema location property name
-    protected static final String SCHEMA_LOCATION_PROPERTY_NAME
-            = "http://apache.org/xml/properties/schema/" +
-            "external-schemaLocation"; */
-
-    /* Schema location property value
-    protected static final String SCHEMA_LOCATION_PROPERTY_VALUE
-            = "http://www.cbio.mskcc.org/cpath/xml/MIF" + "\n"
-            + "http://www.cbio.mskcc.org/cpath/xml/MIF.xsd"; */
 
     /**
      * Warning.
@@ -131,34 +111,29 @@ public class XmlValidator extends DefaultHandler {
      * Warnings are printed to System.out and then ignored.
      *
      * @param content a string containing the XML content to validate.
-     * @throws org.mskcc.dataservices.core.DataServiceException
-     *          DataServiceException.
+     * @throws DataServiceException DataServiceException.
      */
     public static void validate(String content) throws DataServiceException {
 
         XmlValidator validator = new XmlValidator();
         try {
-            XMLReader parser = XMLReaderFactory.createXMLReader
-                    (DEFAULT_PARSER_NAME);
+            XMLReader parser = XMLReaderFactory.createXMLReader ();
             parser.setFeature(VALIDATION_FEATURE_ID, true);
             parser.setFeature(SCHEMA_VALIDATION_FEATURE_ID, true);
-            /* parser.setFeature(SCHEMA_FULL_CHECKING_FEATURE_ID, true); */
             parser.setFeature(DYNAMIC_VALIDATION_FEATURE_ID, true);
             parser.setContentHandler(validator);
             parser.setErrorHandler(validator);
-            /* parser.setProperty(SCHEMA_LOCATION_PROPERTY_NAME,
-                    SCHEMA_LOCATION_PROPERTY_VALUE); */
             parser.parse(new InputSource(new StringReader(content)));
         } catch (SAXNotRecognizedException e) {
-            throw new DataServiceException(e.toString());
+            throw new DataServiceException(e, e.toString());
         } catch (SAXNotSupportedException e) {
-            throw new DataServiceException(e.toString());
+            throw new DataServiceException(e, e.toString());
         } catch (SAXParseException e) {
-            throw new DataServiceException(e.toString());
+            throw new DataServiceException(e, e.toString());
         } catch (SAXException e) {
-            throw new DataServiceException(e.toString());
+            throw new DataServiceException(e, e.toString());
         } catch (IOException e) {
-            throw new DataServiceException(e.toString());
+            throw new DataServiceException(e, e.toString());
         }
     }
 
