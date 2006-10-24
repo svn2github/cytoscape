@@ -47,6 +47,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.awt.Frame;
+import java.awt.Dialog;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
@@ -57,6 +59,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.plaf.metal.MetalButtonUI;
+import java.awt.Dialog;
+import java.awt.Frame;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
@@ -67,7 +71,12 @@ import cytoscape.util.CyColorChooser;
  
 public class PopupFontChooser extends JDialog {
 
-	public static Font showDialog(JDialog f, Font begin) {
+	public static Font showDialog(Frame f, Font begin) {
+		PopupFontChooser fpc = new PopupFontChooser(f,begin);
+		return fpc.getThisFont();
+	}
+
+	public static Font showDialog(Dialog f, Font begin) {
 		PopupFontChooser fpc = new PopupFontChooser(f,begin);
 		return fpc.getThisFont();
 	}
@@ -75,12 +84,22 @@ public class PopupFontChooser extends JDialog {
 	private Font font;
 	private FontChooser chooser; 
 
-	private PopupFontChooser(JDialog parent, Font begin) {
+	private PopupFontChooser(Frame parent, Font begin) {
 		super(parent,true);
+		init(begin);
+	}
 
+	private PopupFontChooser(Dialog parent, Font begin) {
+		super(parent,true);
+		init(begin);
+	}
+
+	private void init(Font begin) {
 		font = begin;
-
-		chooser = new FontChooser(begin.deriveFont(1F));
+		if ( font == null ) 
+			chooser = new FontChooser();
+		else
+			chooser = new FontChooser(begin.deriveFont(1F));
 
 		JComboBox face = chooser.getFaceComboBox();
 

@@ -38,6 +38,7 @@
 
 package cytoscape.visual.ui;
 
+import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -67,7 +68,7 @@ import cytoscape.util.CyColorChooser;
 /** An input dialog for strings, ints, and doubles. */ 
 public class PopupStringChooser {
 
-	public static Object showDialog(JDialog parent, String title, String prompt, 
+	public static Object showDialog(Component parent, String title, String prompt, 
 	                                Object input, byte type) { 
 		// keep prompting for input until a valid input is received
 		inputLoop: while (true) {

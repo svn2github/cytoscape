@@ -56,9 +56,22 @@ public class PopupLabelPlacementChooser extends JDialog implements PropertyChang
 	return placer.getLabelPosition();
     }
 
+    public static LabelPosition showDialog(Frame f, LabelPosition pos) {
+    	PopupLabelPlacementChooser placer = new PopupLabelPlacementChooser(f,true,pos);
+	return placer.getLabelPosition();
+    }
+
+    private PopupLabelPlacementChooser(Frame f, boolean modal, LabelPosition pos) {
+    	super(f,modal);
+	init(pos);
+    }
+
     private PopupLabelPlacementChooser(Dialog f, boolean modal, LabelPosition pos) {
     	super(f,modal);
+	init(pos);
+    }
 
+    private void init(LabelPosition pos) {
 	if ( pos == null )
 		lp = new LabelPosition(Label.NONE,Label.NONE,Label.JUSTIFY_CENTER,0.0,0.0); 
 	else

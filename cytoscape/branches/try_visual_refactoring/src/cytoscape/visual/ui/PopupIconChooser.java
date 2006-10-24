@@ -57,7 +57,10 @@ import java.util.*;
 public class PopupIconChooser {
     private String title, objectName;
     private ImageIcon currentIcon;
-    private JDialog mainDialog, parentDialog;
+    private JDialog mainDialog;
+    private Dialog parentDialog;
+    private Frame parentFrame;
+    private Component parent;
     private JPanel mainPanel;
     private JList iconList;
     private boolean alreadyConstructed = false;
@@ -75,8 +78,28 @@ public class PopupIconChooser {
 			    String objectName,
 			    ImageIcon[] icons,
 			    ImageIcon startIconObject,
-			    JDialog parentDialog) {
+			    Frame parentFrame) {
+	this.parentDialog = null;
+	this.parentFrame = parentFrame;
+	this.parent = parentFrame;
+	commonInit(title,objectName,icons,startIconObject);
+    }
+
+    public PopupIconChooser(String title,
+			    String objectName,
+			    ImageIcon[] icons,
+			    ImageIcon startIconObject,
+			    Dialog parentDialog) {
 	this.parentDialog = parentDialog;
+	this.parentFrame = null;
+	this.parent = parentDialog;
+	commonInit(title,objectName,icons,startIconObject);
+    }
+
+    private void commonInit(String title,
+			    String objectName,
+			    ImageIcon[] icons,
+			    ImageIcon startIconObject) {
 	this.title = title;
 	this.objectName = objectName;
 
@@ -92,7 +115,13 @@ public class PopupIconChooser {
 
     public ImageIcon showDialog() {
 	if(!alreadyConstructed) {
-	    mainDialog = new JDialog(parentDialog, this.title, true);
+	   
+	    if ( parentFrame != null )
+	    	mainDialog = new JDialog(parentFrame, this.title, true);
+	    else if ( parentDialog != null )
+	    	mainDialog = new JDialog(parentDialog, this.title, true);
+	    else 
+	    	return null;
 
 	    JPanel mainPanel = new JPanel(new GridLayout(0,1));
 
@@ -150,7 +179,7 @@ public class PopupIconChooser {
 	}
 
 	mainDialog.pack ();
-	mainDialog.setLocationRelativeTo (parentDialog);
+	mainDialog.setLocationRelativeTo (parent);
   	mainDialog.show(); // blocks until user makes selection
 
 	return currentIcon;
