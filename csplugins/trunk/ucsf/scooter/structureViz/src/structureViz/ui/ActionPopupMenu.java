@@ -208,7 +208,11 @@ public class ActionPopupMenu extends JPopupMenu {
 		return; 
 	}
 
-	private void createChainMenu() { return; }
+	private void createChainMenu() { 
+		addHeader("Chain Actions");
+		addItem(null, "Delete chain(s)", "delete %sel", PopupActionListener.DELETE);
+		return; 
+	}
 
 	private void createResidueMenu() { return; }
 
@@ -274,6 +278,7 @@ public class ActionPopupMenu extends JPopupMenu {
 		public static final int CLOSE = 2;
 		public static final int MODEL_SELECTION = 3;
 		public static final int FUNCTIONAL_RESIDUES = 4;
+		public static final int DELETE = 5;
 		int postCommand = NO_POST;
 
 		PopupActionListener (String command) {
@@ -346,6 +351,18 @@ public class ActionPopupMenu extends JPopupMenu {
 				}
 				chimeraObject.modelChanged();
 				return;
+			} else if (postCommand == DELETE) {
+				String message;
+				if (objectList.size() > 1) {
+					message = "Are you sure you want to delete these chains?";
+				} else {
+					message = "Are you sure you want to delete chain "+objectList.get(0).toString()+"?";
+				}
+				int answer = JOptionPane.showConfirmDialog(chimeraObject.getDialog(), 
+												message, "Confirm", JOptionPane.YES_NO_OPTION);
+				if (answer == JOptionPane.NO_OPTION) {
+					return;
+				}
 			}
 			for (int i=0; i<commandList.length; i++) {
 					// System.out.println("To Chimera: "+commandList[i]);
@@ -361,6 +378,14 @@ public class ActionPopupMenu extends JPopupMenu {
 					ChimeraModel model = obj.getChimeraModel();
 					chimeraObject.close(model.getStructure());
 				}
+				chimeraObject.modelChanged();
+			} else if (postCommand == DELETE) {
+				// Delete triggers selection events that we need to let complete
+				try { Thread.sleep(200); } catch (java.lang.InterruptedException e) {}
+				// System.out.println("Chain delete -- calling refresh");
+				chimeraObject.refresh();
+				try { Thread.sleep(200); } catch (java.lang.InterruptedException e) {}
+				// System.out.println("Chain delete -- calling modelChanged");
 				chimeraObject.modelChanged();
 			}
 		}

@@ -297,6 +297,10 @@ public class Chimera {
 		// Get a new model list
 		HashMap newHash = new HashMap();
 
+		// Stop all of our listeners while we try to handle this
+		this.command("listen stop select");
+		this.command("listen stop models");
+
 		// Get all of the open models
 		List newModelList = getModelList();
 
@@ -324,6 +328,10 @@ public class Chimera {
 		// Replace the old model list
 		models = (ArrayList)newModelList;
 		modelHash = newHash;
+
+		// Restart all of our listeners
+		this.command("listen start models");
+		this.command("listen start select");
 
 		// Done
 	}
