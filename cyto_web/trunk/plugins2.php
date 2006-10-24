@@ -287,8 +287,43 @@ Toronto, Canada
 				</td>
 			</tr>
 
+            <tr>
+                
+		<td width="20%" valign="top">
+			<b>GOlorize</b>
+			<br>
+			<font size="-1">Version: 1.0
+				<br>
+				Release Date: Oct. 17, 2006</font>
+		</td>
+		<td width="40%" valign="top">
+GOlorize provides an automated network visualization in Cytoscape, where Gene Ontology (GO) categories are used to direct the network graph layout process and to emphasize the biological function of the nodes. GOlorize is used in conjunction with BiNGO plug-in, an efficient tool to find the GO categories that are overrepresented in a selected part of a given network. GOlorize first highlights the nodes that belong to the same category using color-coding and then constructs an enhanced visualization of the network using a class-directed layout algorithm.
 
-
+			<br>
+			<br>
+			Released by: <a href="http://www.pasteur.fr/recherche/unites/Biolsys/index.htm">Schwikowski Group</a>, Institut Pasteur
+                         <br>
+                         Licensed under GNU Public License.
+		</td>
+ 		<td width="20%" valign="top">
+				 Verified to work in 2.2.
+				</td>
+		<td width="20%" valign="top">
+			[<a href="plugins/GOlorize/GOlorizeUserGuide.pdf">User Guide</a>]
+			<br>
+			[<a href="plugins/GOlorize/GOlorize.jar">Download Jar</a>]
+			<br>
+			<br>
+			[<a href="plugins/GOlorize/GOlorize.tar.gz">Source Code</a>]
+			<br>
+		</td>
+	</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+			<tr>
 
 		<td width="20%" valign="top">
 			<b>jActiveModules</b>
