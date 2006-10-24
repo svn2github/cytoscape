@@ -1,7 +1,6 @@
 
-
 /*
- File: NodeBypassNetworkListener.java 
+ File: EdgeBypassMenuListener.java 
  
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
  
@@ -37,24 +36,31 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-
 package cytoscape.visual.ui;
 
-import ding.view.*;
-import cytoscape.Cytoscape;
-import cytoscape.view.CytoscapeDesktop;
-import java.beans.*;
 
+import javax.swing.JPopupMenu;
+import giny.view.EdgeView;
+import ding.view.EdgeContextMenuListener;
 
-public class NodeBypassNetworkListener implements PropertyChangeListener{
+/**
+ * EdgeBypassMenuListener implements EdgeContextMenuListener
+ * When a node is selected it calls bypass andd add 
+ */
+public class EdgeBypassMenuListener implements EdgeContextMenuListener {
 
-    public void propertyChange (PropertyChangeEvent evnt){
-        if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED){
+    public EdgeBypassMenuListener(){ }
 
-            NodeBypassMenuListener menu_listener=new NodeBypassMenuListener();
+    /**
+     * @param nodeView The clicked EdgeView
+     * @param menu popup menu to add the Bypass menu
+     */
+    public void addEdgeContextMenuItems (EdgeView edgeView, JPopupMenu menu){
 
-            ((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(menu_listener);
-
+       	EdgeBypass eb = new EdgeBypass(); 
+        if(menu==null){
+            menu=new JPopupMenu();
         }
+        menu.add(eb.addMenu(edgeView.getEdge()));
     }
 }

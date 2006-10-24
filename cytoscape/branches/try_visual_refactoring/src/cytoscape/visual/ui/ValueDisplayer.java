@@ -327,7 +327,7 @@ public class ValueDisplayer extends JButton {
 		}
 		public void actionPerformed(ActionEvent e) {
 			if (enabled) {
-				LabelPosition pos = PopupLabelPlacementChooser.showDialog(
+				LabelPosition pos = PopupLabelPositionChooser.showDialog(
 						parent.parent, (LabelPosition)parent.inputObj);
 				if ( pos != null ) {
 					parent.inputObj = pos;

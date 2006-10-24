@@ -85,7 +85,7 @@ public class NodeAppearance implements Appearance, Cloneable {
     String label = "";
     String toolTip = "";
     Font font = new Font(null, Font.PLAIN, 12);
-    Color fontColor = Color.black;
+    Color labelColor = Color.black;
     boolean nodeSizeLocked = true;
     LabelPosition labelPosition = new LabelPosition();
 
@@ -162,160 +162,139 @@ public class NodeAppearance implements Appearance, Cloneable {
     public float getFontSize() {return (float)font.getSize2D();}
     public void setFontSize(float f) { font = font.deriveFont(f); }
 
-    public Color getLabelColor() {return fontColor;}
-    public void setLabelColor(Color c) {if ( c != null ) fontColor = c;}
+    public Color getLabelColor() {return labelColor;}
+    public void setLabelColor(Color c) {if ( c != null ) labelColor = c;}
 
     public LabelPosition getLabelPosition() {return labelPosition;}
     public void setLabelPosition(LabelPosition c) {if ( c != null ) labelPosition = c;}
 
+    /** @deprecated use applyAppearance(nodeView) instead - now we always optimize.
+        will be removed 10/2007 */
     public void applyAppearance(NodeView nodeView, boolean optimizer) {
+    	applyAppearance(nodeView);
+    }
 
-	if (optimizer == false) {
+    public void applyAppearance(NodeView nodeView) {
+
+	boolean change_made = false;
+
+	Paint existingUnselectedColor = nodeView.getUnselectedPaint();
+	if (!fillColor.equals(existingUnselectedColor)) {
+		change_made = true;
 		nodeView.setUnselectedPaint(fillColor);
+	}
+
+	Paint existingBorderPaint = nodeView.getBorderPaint();
+	if (!borderColor.equals(existingBorderPaint)) {
+		change_made = true;
 		nodeView.setBorderPaint(borderColor);
-		nodeView.setBorder(borderLineType.getStroke());
-		if ( nodeSizeLocked ) {
+	}
+
+	Stroke existingBorderType = nodeView.getBorder();
+	Stroke newBorderType = borderLineType.getStroke();
+	if (!newBorderType.equals(existingBorderType)) {
+		change_made = true;
+		nodeView.setBorder(newBorderType);
+	}
+
+	if ( nodeSizeLocked ) {
+		double existingHeight = nodeView.getHeight();
+		double difference = size - existingHeight;
+		if (Math.abs(difference) > .1) {
+			change_made = true;
 			nodeView.setHeight(size);
+		}
+		double existingWidth = nodeView.getWidth(); 
+		difference = size - existingWidth;
+		if (Math.abs(difference) > .1) {
+			change_made = true;
 			nodeView.setWidth(size);
-		} else {
+		}
+	} else {
+		double existingHeight = nodeView.getHeight();
+		double difference = height - existingHeight;
+		if (Math.abs(difference) > .1) {
+			change_made = true;
 			nodeView.setHeight(height);
+		}
+
+		double existingWidth = nodeView.getWidth();
+		difference = width - existingWidth;
+		if (Math.abs(difference) > .1) {
+			change_made = true;
 			nodeView.setWidth(width);
 		}
-		nodeView.setShape(ShapeNodeRealizer.getGinyShape(shape));
-		nodeView.getLabel().setText(label);
-
-		Label nodeLabel = nodeView.getLabel();
-		nodeLabel.setFont(font);
-		nodeLabel.setTextPaint(fontColor);
-
-
-		nodeLabel.setTextAnchor( labelPosition.getLabelAnchor());
-		nodeLabel.setJustify( labelPosition.getJustify());
-
-		nodeView.setLabelOffsetX( labelPosition.getOffsetX() );
-		nodeView.setLabelOffsetY( labelPosition.getOffsetY() );
-		nodeView.setNodeLabelAnchor( labelPosition.getTargetAnchor() );
-	} else {
-		boolean change_made = false;
-
-		Paint existingUnselectedColor = nodeView.getUnselectedPaint();
-		if (!fillColor.equals(existingUnselectedColor)) {
-			change_made = true;
-			nodeView.setUnselectedPaint(fillColor);
-		}
-
-		Paint existingBorderPaint = nodeView.getBorderPaint();
-		if (!borderColor.equals(existingBorderPaint)) {
-			change_made = true;
-			nodeView.setBorderPaint(borderColor);
-		}
-
-		Stroke existingBorderType = nodeView.getBorder();
-		Stroke newBorderType = borderLineType.getStroke();
-		if (!newBorderType.equals(existingBorderType)) {
-			change_made = true;
-			nodeView.setBorder(newBorderType);
-		}
-
-		if ( nodeSizeLocked ) {
-			double existingHeight = nodeView.getHeight();
-			double difference = size - existingHeight;
-			if (Math.abs(difference) > .1) {
-				change_made = true;
-				nodeView.setHeight(size);
-			}
-			double existingWidth = nodeView.getWidth(); 
-			difference = size - existingWidth;
-			if (Math.abs(difference) > .1) {
-				change_made = true;
-				nodeView.setWidth(size);
-			}
-		} else {
-			double existingHeight = nodeView.getHeight();
-			double difference = height - existingHeight;
-			if (Math.abs(difference) > .1) {
-				change_made = true;
-				nodeView.setHeight(height);
-			}
-
-			double existingWidth = nodeView.getWidth();
-			difference = width - existingWidth;
-			if (Math.abs(difference) > .1) {
-				change_made = true;
-				nodeView.setWidth(width);
-			}
-		}
-
-		int existingShape = nodeView.getShape();
-		int newShape = ShapeNodeRealizer.getGinyShape(shape);
-		if (existingShape != newShape) {
-			change_made = true;
-			nodeView.setShape(newShape);
-		}
-
-		Label nodelabel = nodeView.getLabel();
-		String existingLabel = nodelabel.getText();
-		String newLabel = label; 
-		if (!newLabel.equals(existingLabel)) {
-			change_made = true;
-			nodelabel.setText(newLabel);
-		}
-
-		Font existingFont = nodelabel.getFont();
-		Font newFont = getFont();
-		if (!newFont.equals(existingFont)) {
-			change_made = true;
-			nodelabel.setFont(newFont);
-		}
-
-		Paint existingTextColor = nodelabel.getTextPaint();
-		Paint newTextColor = fontColor; 
-		if (!newTextColor.equals(existingTextColor)) {
-			change_made = true;
-			nodelabel.setTextPaint(newTextColor);
-		}
-
-
-		int existingTextAnchor = nodelabel.getTextAnchor();
-		int newTextAnchor = labelPosition.getLabelAnchor();
-		if ( existingTextAnchor != newTextAnchor ) {
-			change_made = true;
-			nodelabel.setTextAnchor( newTextAnchor );
-		}
-
-		int existingJustify = nodelabel.getJustify();
-		int newJustify =  labelPosition.getJustify();
-		if ( existingJustify != newJustify ) {
-			change_made = true;
-			nodelabel.setJustify( newJustify );
-		}
-
-		int existingNodeAnchor = nodeView.getNodeLabelAnchor();
-		int newNodeAnchor = labelPosition.getTargetAnchor();
-		if ( existingNodeAnchor != newNodeAnchor ) {
-			change_made = true;
-			nodeView.setNodeLabelAnchor( newNodeAnchor );
-		}
-
-		double existingOffsetX = nodeView.getLabelOffsetX();
-		double newOffsetX = labelPosition.getOffsetX();
-		if ( existingOffsetX != newOffsetX ) {
-			change_made = true;
-			nodeView.setLabelOffsetX( newOffsetX );
-		}
-
-		double existingOffsetY = nodeView.getLabelOffsetY();
-		double newOffsetY = labelPosition.getOffsetY();
-		if ( existingOffsetY != newOffsetY ) {
-			change_made = true;
-			nodeView.setLabelOffsetY( newOffsetY );
-		}
-
-		if (change_made) {
-			nodeView.setNodePosition(false);
-		}
-
 	}
+
+	int existingShape = nodeView.getShape();
+	int newShape = ShapeNodeRealizer.getGinyShape(shape);
+	if (existingShape != newShape) {
+		change_made = true;
+		nodeView.setShape(newShape);
+	}
+
+	Label nodelabel = nodeView.getLabel();
+	String existingLabel = nodelabel.getText();
+	String newLabel = label; 
+	if (!newLabel.equals(existingLabel)) {
+		change_made = true;
+		nodelabel.setText(newLabel);
+	}
+
+	Font existingFont = nodelabel.getFont();
+	Font newFont = getFont();
+	if (!newFont.equals(existingFont)) {
+		change_made = true;
+		nodelabel.setFont(newFont);
+	}
+
+	Paint existingTextColor = nodelabel.getTextPaint();
+	Paint newTextColor = labelColor; 
+	if (!newTextColor.equals(existingTextColor)) {
+		change_made = true;
+		nodelabel.setTextPaint(newTextColor);
+	}
+
+
+	int existingTextAnchor = nodelabel.getTextAnchor();
+	int newTextAnchor = labelPosition.getLabelAnchor();
+	if ( existingTextAnchor != newTextAnchor ) {
+		change_made = true;
+		nodelabel.setTextAnchor( newTextAnchor );
+	}
+
+	int existingJustify = nodelabel.getJustify();
+	int newJustify =  labelPosition.getJustify();
+	if ( existingJustify != newJustify ) {
+		change_made = true;
+		nodelabel.setJustify( newJustify );
+	}
+
+	int existingNodeAnchor = nodeView.getNodeLabelAnchor();
+	int newNodeAnchor = labelPosition.getTargetAnchor();
+	if ( existingNodeAnchor != newNodeAnchor ) {
+		change_made = true;
+		nodeView.setNodeLabelAnchor( newNodeAnchor );
+	}
+
+	double existingOffsetX = nodeView.getLabelOffsetX();
+	double newOffsetX = labelPosition.getOffsetX();
+	if ( existingOffsetX != newOffsetX ) {
+		change_made = true;
+		nodeView.setLabelOffsetX( newOffsetX );
+	}
+
+	double existingOffsetY = nodeView.getLabelOffsetY();
+	double newOffsetY = labelPosition.getOffsetY();
+	if ( existingOffsetY != newOffsetY ) {
+		change_made = true;
+		nodeView.setLabelOffsetY( newOffsetY );
+	}
+
+	if (change_made) {
+		nodeView.setNodePosition(false);
+	}
+
     }
 
     public void applyDefaultProperties(Properties nacProps, String baseKey) {
@@ -465,7 +444,7 @@ public class NodeAppearance implements Appearance, Cloneable {
 	sb.append(prefix + "NodeLabel = ").append(label).append(lineSep);
 	sb.append(prefix + "NodeToolTip = ").append(toolTip).append(lineSep);
 	sb.append(prefix + "NodeFont = ").append(font).append(lineSep);
-	sb.append(prefix + "NodeFontColor = ").append(fontColor.toString()).append(lineSep);
+	sb.append(prefix + "NodeFontColor = ").append(labelColor.toString()).append(lineSep);
 	sb.append(prefix + "NodeLabelPosition = ").append(labelPosition.toString()).append(lineSep);
 	sb.append(prefix + "nodeSizeLocked = ").append(nodeSizeLocked).append(lineSep);
 

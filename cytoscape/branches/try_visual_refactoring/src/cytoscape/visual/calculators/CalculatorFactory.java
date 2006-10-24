@@ -73,6 +73,7 @@ public class CalculatorFactory {
 	calcs.add( new GenericEdgeSourceArrowCalculator() );
 	calcs.add( new GenericEdgeTargetArrowCalculator() );
 	calcs.add( new GenericEdgeToolTipCalculator() );
+	calcs.add( new GenericEdgeLabelColorCalculator() );
 	calcs.add( new GenericNodeBorderColorCalculator() );
 	calcs.add( new GenericNodeFillColorCalculator() );
 	calcs.add( new GenericNodeFontFaceCalculator() );

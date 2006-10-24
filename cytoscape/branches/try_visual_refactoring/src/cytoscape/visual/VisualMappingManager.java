@@ -91,9 +91,6 @@ public class VisualMappingManager extends SubjectBase {
 	EdgeAppearance myEdgeApp = new EdgeAppearance();
 	GlobalAppearance myGlobalApp = new GlobalAppearance();
 
-	// Optimizer Flag
-	private boolean optimizer = true;
-
 	public VisualMappingManager(CyNetworkView networkView) {
 		this.networkView = networkView;
 		this.logger = logger;
@@ -223,7 +220,7 @@ public class VisualMappingManager extends SubjectBase {
 			Node node = nodeView.getNode();
 
 			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network);
-			myNodeApp.applyAppearance(nodeView,optimizer);
+			myNodeApp.applyAppearance(nodeView);
 		}
 	}
 
@@ -256,7 +253,7 @@ public class VisualMappingManager extends SubjectBase {
 
 			Edge edge = edgeView.getEdge();
 			edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network);
-			myEdgeApp.applyAppearance(edgeView,optimizer);
+			myEdgeApp.applyAppearance(edgeView);
 
 		}
 	}
@@ -341,7 +338,7 @@ public class VisualMappingManager extends SubjectBase {
 				.getNodeAppearanceCalculator();
 		nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node,
 				network_view.getNetwork());
-		myNodeApp.applyAppearance(nodeView,optimizer);
+		myNodeApp.applyAppearance(nodeView);
 	}
 
 	public void vizmapEdge(EdgeView edgeView, CyNetworkView network_view) {
@@ -350,7 +347,7 @@ public class VisualMappingManager extends SubjectBase {
 				.getEdgeAppearanceCalculator();
 		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge,
 				network_view.getNetwork());
-		myEdgeApp.applyAppearance(edgeView,optimizer);
+		myEdgeApp.applyAppearance(edgeView);
 
 	}
 }

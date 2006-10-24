@@ -1,6 +1,7 @@
 
+
 /*
- File: NodeBypassMenuListener.java 
+ File: VizMapBypassNetworkListener.java 
  
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
  
@@ -36,31 +37,34 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+
 package cytoscape.visual.ui;
 
-
-import giny.view.NodeView;
-import ding.view.NodeContextMenuListener;
-import javax.swing.JPopupMenu;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
- * NodeBypassMenuListener implements NodeContextMenuListener
- * When a node is selected it calls bypass andd add 
+ * Adds NodeView and EdgeView vizmap bypass listeners to network views as 
+ * the views are created.
  */
-public class NodeBypassMenuListener implements NodeContextMenuListener {
-
-    public NodeBypassMenuListener(){ }
+public class VizMapBypassNetworkListener implements PropertyChangeListener{
 
     /**
-     * @param nodeView The clicked NodeView
-     * @param menu popup menu to add the Bypass menu
+     * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
+     * node and edge context menu listeners to the view.
+     * @param evnt The event we're hearing.
      */
-    public void addNodeContextMenuItems (NodeView nodeView, JPopupMenu menu){
+    public void propertyChange (PropertyChangeEvent evnt) {
+        if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 
-       	NodeBypass nb = new NodeBypass(); 
-        if(menu==null){
-            menu=new JPopupMenu();
+            NodeBypassMenuListener node_menu_listener=new NodeBypassMenuListener();
+            Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
+
+            EdgeBypassMenuListener edge_menu_listener=new EdgeBypassMenuListener();
+            Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
         }
-        menu.add(nb.addMenu(nodeView.getNode()));
     }
 }

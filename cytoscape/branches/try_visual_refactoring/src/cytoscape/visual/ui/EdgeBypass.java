@@ -1,6 +1,7 @@
 
+
 /*
- File: NodeBypassMenuListener.java 
+ File: EdgeBypass.java 
  
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
  
@@ -39,28 +40,41 @@
 package cytoscape.visual.ui;
 
 
-import giny.view.NodeView;
-import ding.view.NodeContextMenuListener;
-import javax.swing.JPopupMenu;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.LineType;
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.VisualMappingManager;
 
-/**
- * NodeBypassMenuListener implements NodeContextMenuListener
- * When a node is selected it calls bypass andd add 
- */
-public class NodeBypassMenuListener implements NodeContextMenuListener {
+import giny.model.Edge;
 
-    public NodeBypassMenuListener(){ }
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
-    /**
-     * @param nodeView The clicked NodeView
-     * @param menu popup menu to add the Bypass menu
-     */
-    public void addNodeContextMenuItems (NodeView nodeView, JPopupMenu menu){
+import java.awt.Color;
+import java.awt.Font;
 
-       	NodeBypass nb = new NodeBypass(); 
-        if(menu==null){
-            menu=new JPopupMenu();
-        }
-        menu.add(nb.addMenu(nodeView.getNode()));
+public class EdgeBypass extends VizMapBypass {
+
+    public JMenuItem addMenu(Edge e) {
+    	graphObj = e;
+	attrs = Cytoscape.getEdgeAttributes();
+
+        JMenu menu =new JMenu("Visual Mapping Bypass");
+        menu.add( new JMenuItem("Change Edge Visualization") );
+        menu.addSeparator();
+	
+	menu.add( getMenuItem("Color", "edge.color", Color.class) ); 
+	menu.add( getMenuItem("Line Type", "edge.lineType", LineType.class) ); 
+	menu.add( getMenuItem("Source Arrow", "edge.sourceArrow", Arrow.class) ); 
+	menu.add( getMenuItem("Target Arrow", "edge.targetArrow", Arrow.class) ); 
+	menu.add( getMenuItem("Label", "edge.label", String.class) ); 
+	menu.add( getMenuItem("Label Color", "edge.labelColor", Color.class) ); 
+	menu.add( getMenuItem("Font", "edge.font", Font.class) ); 
+	menu.add( getMenuItem("Font Size", "edge.fontSize", Font.class) ); 
+	menu.add( getMenuItem("ToolTip", "edge.toolTip", String.class) ); 
+
+        return menu;
     }
 }

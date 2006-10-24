@@ -1,5 +1,5 @@
 /*
- File: PopupLabelPlacementChooser.java
+ File: PopupLabelPositionChooser.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -46,27 +46,27 @@ import java.beans.*;
 import cytoscape.visual.LabelPosition;
 import giny.view.Label;
 
-public class PopupLabelPlacementChooser extends JDialog implements PropertyChangeListener { 
+public class PopupLabelPositionChooser extends JDialog implements PropertyChangeListener { 
 
     protected LabelPosition lp;
     protected LabelPosition newlp;
 
     public static LabelPosition showDialog(Dialog f, LabelPosition pos) {
-    	PopupLabelPlacementChooser placer = new PopupLabelPlacementChooser(f,true,pos);
+    	PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f,true,pos);
 	return placer.getLabelPosition();
     }
 
     public static LabelPosition showDialog(Frame f, LabelPosition pos) {
-    	PopupLabelPlacementChooser placer = new PopupLabelPlacementChooser(f,true,pos);
+    	PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f,true,pos);
 	return placer.getLabelPosition();
     }
 
-    private PopupLabelPlacementChooser(Frame f, boolean modal, LabelPosition pos) {
+    private PopupLabelPositionChooser(Frame f, boolean modal, LabelPosition pos) {
     	super(f,modal);
 	init(pos);
     }
 
-    private PopupLabelPlacementChooser(Dialog f, boolean modal, LabelPosition pos) {
+    private PopupLabelPositionChooser(Dialog f, boolean modal, LabelPosition pos) {
     	super(f,modal);
 	init(pos);
     }

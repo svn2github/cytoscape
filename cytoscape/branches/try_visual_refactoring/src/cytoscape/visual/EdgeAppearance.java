@@ -79,6 +79,7 @@ public class EdgeAppearance implements Appearance, Cloneable {
     String label = "";
     String toolTip = "";
     Font font = new Font(null, Font.PLAIN, 10);
+    Color labelColor = Color.BLACK;
 
     public EdgeAppearance() {}
     
@@ -105,55 +106,56 @@ public class EdgeAppearance implements Appearance, Cloneable {
 
     public float getFontSize() {return (float)font.getSize2D();}
     public void setFontSize(float f) { font = font.deriveFont(f); }
+    
+    public Color getLabelColor() {return labelColor;}
+    public void setLabelColor(Color c) {if (c != null ) labelColor = c;}
 
-
+    /** @deprecated Use applyAppearance(edgeView) instead - now we always optimize.
+        Will be removed 10/2007 */
     public void applyAppearance(EdgeView edgeView, boolean optimizer) {
+    	applyAppearance(edgeView);
+    }
 
-	if (optimizer == false) {
-		edgeView.setUnselectedPaint(getColor());
-		edgeView.setStroke(getLineType().getStroke());
-		edgeView.setSourceEdgeEnd(getSourceArrow()
-				.getGinyArrow());
-		edgeView.setTargetEdgeEnd(getTargetArrow()
-				.getGinyArrow());
-		Label label = edgeView.getLabel();
-		label.setText(getLabel());
-		label.setFont(getFont());
-	} else {
-		Paint existingUnselectedPaint = edgeView.getUnselectedPaint();
-		Paint newUnselectedPaint = getColor();
-		if (!newUnselectedPaint.equals(existingUnselectedPaint)) {
-			edgeView.setUnselectedPaint(newUnselectedPaint);
-		}
-		Stroke existingStroke = edgeView.getStroke();
-		Stroke newStroke = getLineType().getStroke();
-		if (!newStroke.equals(existingStroke)) {
-			edgeView.setStroke(newStroke);
-		}
+    public void applyAppearance(EdgeView edgeView) {
 
-		int existingSourceEdge = edgeView.getSourceEdgeEnd();
-		int newSourceEdge = getSourceArrow().getGinyArrow();
-		if (newSourceEdge != existingSourceEdge) {
-			edgeView.setSourceEdgeEnd(newSourceEdge);
-		}
+	Paint existingUnselectedPaint = edgeView.getUnselectedPaint();
+	Paint newUnselectedPaint = getColor();
+	if (!newUnselectedPaint.equals(existingUnselectedPaint)) {
+		edgeView.setUnselectedPaint(newUnselectedPaint);
+	}
+	Stroke existingStroke = edgeView.getStroke();
+	Stroke newStroke = getLineType().getStroke();
+	if (!newStroke.equals(existingStroke)) {
+		edgeView.setStroke(newStroke);
+	}
 
-		int existingTargetEdge = edgeView.getTargetEdgeEnd();
-		int newTargetEdge = getTargetArrow().getGinyArrow();
-		if (newTargetEdge != existingTargetEdge) {
-			edgeView.setTargetEdgeEnd(newTargetEdge);
-		}
+	int existingSourceEdge = edgeView.getSourceEdgeEnd();
+	int newSourceEdge = getSourceArrow().getGinyArrow();
+	if (newSourceEdge != existingSourceEdge) {
+		edgeView.setSourceEdgeEnd(newSourceEdge);
+	}
 
-		Label label = edgeView.getLabel();
-		String existingText = label.getText();
-		String newText = getLabel();
-		if (!newText.equals(existingText)) {
-			label.setText(newText);
-		}
-		Font existingFont = label.getFont();
-		Font newFont = getFont();
-		if (!newFont.equals(existingFont)) {
-			label.setFont(newFont);
-		}
+	int existingTargetEdge = edgeView.getTargetEdgeEnd();
+	int newTargetEdge = getTargetArrow().getGinyArrow();
+	if (newTargetEdge != existingTargetEdge) {
+		edgeView.setTargetEdgeEnd(newTargetEdge);
+	}
+
+	Label label = edgeView.getLabel();
+	String existingText = label.getText();
+	String newText = getLabel();
+	if (!newText.equals(existingText)) {
+		label.setText(newText);
+	}
+	Font existingFont = label.getFont();
+	Font newFont = getFont();
+	if (!newFont.equals(existingFont)) {
+		label.setFont(newFont);
+	}
+	Paint existingLabelColor = label.getTextPaint();
+	Paint newLabelColor = getLabelColor();
+	if (!newLabelColor.equals(existingLabelColor)) {
+		label.setTextPaint(newLabelColor);
 	}
     }
 
@@ -199,6 +201,11 @@ public class EdgeAppearance implements Appearance, Cloneable {
 		setFont(f);
 	    }
         }
+        value = eacProps.getProperty(baseKey + ".defaultEdgeLabelColor");
+        if (value != null) {
+            Color c = (new ColorParser()).parseColor(value);
+            setLabelColor(c);
+        }
     }
     
     public Properties getDefaultProperties(String baseKey) {
@@ -210,25 +217,35 @@ public class EdgeAppearance implements Appearance, Cloneable {
         key = baseKey + ".defaultEdgeColor";
         value = ObjectToString.getStringValue( getColor() );
         newProps.setProperty(key, value);
+
         key = baseKey + ".defaultEdgeLineType";
         value = ObjectToString.getStringValue( getLineType() );
         newProps.setProperty(key, value);
+
         key = baseKey + ".defaultEdgeSourceArrow";
         value = ObjectToString.getStringValue( getSourceArrow() );
         newProps.setProperty(key, value);
+
         key = baseKey + ".defaultEdgeTargetArrow";
         value = ObjectToString.getStringValue( getTargetArrow() );
         newProps.setProperty(key, value);
+
         key = baseKey + ".defaultEdgeLabel";
         value = ObjectToString.getStringValue( getLabel() );
         newProps.setProperty(key, value);
+
         key = baseKey + ".defaultEdgeToolTip";
         value = ObjectToString.getStringValue( getToolTip() );
         newProps.setProperty(key, value);
+
         key = baseKey + ".defaultEdgeFont";
         value = ObjectToString.getStringValue( getFont() );
         newProps.setProperty(key, value);
         
+        key = baseKey + ".defaultLabelColor";
+        value = ObjectToString.getStringValue( getLabelColor() );
+        newProps.setProperty(key, value);
+
         return newProps;
     }
 
@@ -248,6 +265,7 @@ public class EdgeAppearance implements Appearance, Cloneable {
         sb.append(prefix + "EdgeLabel = ").append(label).append(lineSep);
         sb.append(prefix + "EdgeToolTip = ").append(toolTip).append(lineSep);
         sb.append(prefix + "EdgeFont = ").append(font).append(lineSep);
+        sb.append(prefix + "EdgeLabelColor = ").append(labelColor).append(lineSep);
 
 	return sb.toString();
     }
@@ -283,6 +301,9 @@ public class EdgeAppearance implements Appearance, Cloneable {
 	case VizMapUI.EDGE_FONT_SIZE:
 	    defaultObj = new Double(getFont().getSize2D());
 	    break;
+	case VizMapUI.EDGE_LABEL_COLOR:
+	    defaultObj = getLabelColor();
+	    break;
 	}
         return defaultObj;
     }
@@ -313,6 +334,9 @@ public class EdgeAppearance implements Appearance, Cloneable {
 	case VizMapUI.EDGE_FONT_SIZE:
 	    setFontSize(((Double) c).floatValue());
 	    break;
+	case VizMapUI.EDGE_LABEL_COLOR:
+	    setLabelColor((Color) c);
+	    break;
 	}
     }
 
@@ -324,21 +348,15 @@ public class EdgeAppearance implements Appearance, Cloneable {
     	setLabel( ea.getLabel() );
     	setToolTip( ea.getToolTip() );
     	setFont( ea.getFont() );
+    	setLabelColor( ea.getLabelColor() );
     }
 
     public Object clone() {
     	EdgeAppearance ea = new EdgeAppearance();
-	ea.setColor(color);
-	ea.setLineType(lineType);
-	ea.setSourceArrow(sourceArrow); 
-	ea.setTargetArrow(targetArrow );
-	ea.setLabel(label );
-	ea.setToolTip(toolTip);
-	ea.setFont(font);
+	ea.copy(this);
 	return ea;
     }
 
-  Map<Class,ValueParser> parsers = new HashMap<Class,ValueParser>();
 
   public void applyBypass(Edge e) {
         CyAttributes attrs = Cytoscape.getEdgeAttributes();
@@ -354,7 +372,10 @@ public class EdgeAppearance implements Appearance, Cloneable {
 	Double d = (Double)getBypass(attrs,id,"edge.fontSize",Double.class);
 	if ( d != null )
 		setFontSize(d.floatValue());
+        setLabelColor( (Color)getBypass(attrs,id,"edge.labelColor",Color.class) );
   }
+
+  private Map<Class,ValueParser> parsers = new HashMap<Class,ValueParser>();
 
   private Object getBypass(CyAttributes attrs, String id, String attrName, Class type) {
         String value = attrs.getStringAttribute(id,attrName);

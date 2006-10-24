@@ -112,6 +112,8 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	public static final byte NODE_LABEL_POSITION = 16;
 	public static final byte EDGE_LABEL_POSITION = 17;
 
+	public static final byte EDGE_LABEL_COLOR = 18;
+
 	// for creating VizMapTabs with font face/size on one page
 	public static final byte NODE_FONT_FACE = 122;
 	public static final byte NODE_FONT_SIZE = 123;
@@ -188,6 +190,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,3,VMM,EDGE_TGTARROW));
 		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,4,VMM,EDGE_LABEL));
 		addTab(tabs,edgePane,new VizMapFontTab(this,edgePane,5,VMM,EDGE_LABEL_FONT));
+		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,6,VMM,EDGE_LABEL_COLOR));
 
 		// global default pane
 		JPanel defaultPane = new DefaultPanel(this, VMM);

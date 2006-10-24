@@ -134,7 +134,6 @@ public class PopupFontChooser extends JDialog {
 	}
 
 	private Font getThisFont() {
-		System.out.println("about to return font " + font.toString());
 		return font;
 	}
 

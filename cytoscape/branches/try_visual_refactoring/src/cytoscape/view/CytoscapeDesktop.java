@@ -76,7 +76,7 @@ import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.ui.VizMapUI;
-import cytoscape.visual.ui.NodeBypassNetworkListener;
+import cytoscape.visual.ui.VizMapBypassNetworkListener;
 
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
@@ -319,7 +319,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 				this);
 	
 		// add a listener for node bypass
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(new NodeBypassNetworkListener());
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(new VizMapBypassNetworkListener());
 
 		// initialize undo manager
 		undo = new cytoscape.util.UndoManager(cyMenus);

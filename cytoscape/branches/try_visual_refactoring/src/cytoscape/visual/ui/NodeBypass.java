@@ -40,99 +40,50 @@
 package cytoscape.visual.ui;
 
 
-import cytoscape.*;
-import cytoscape.util.*;
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.data.CyAttributes;
 import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
+import cytoscape.data.CyAttributes;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.LineType;
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.VisualMappingManager;
 
-import java.net.URL;
-import java.util.*;
-import java.awt.*;
-import giny.model.*;
-import javax.swing.*;
-import java.awt.event.*;
-import java.io.*;
+import giny.model.Node;
 
-public class NodeBypass {
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
-    CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-    Frame parent = Cytoscape.getDesktop();
-    Node node;
-    VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+import java.awt.Color;
+import java.awt.Font;
 
-    public JMenuItem addLinks(Node n) {
-    	node = n;
+public class NodeBypass extends VizMapBypass {
+
+    public JMenuItem addMenu(Node n) {
+    	graphObj = n;
+	attrs = Cytoscape.getNodeAttributes();
 
         JMenu menu =new JMenu("Visual Mapping Bypass");
+	menu.add( new JMenuItem("Change Node Visualization") );
+	menu.addSeparator();
 	
-	menu.add( getMenuItem("Node Color", "node.fillColor", Color.class) ); 
-	menu.add( getMenuItem("Node Border Color", "node.borderColor", Color.class) ); 
-	menu.add( getMenuItem("Node Border Line Type", "node.lineType", LineType.class) ); 
-	menu.add( getMenuItem("Node Label Position", "node.labelPosition", LabelPosition.class) ); 
-	menu.add( getMenuItem("Node Size", "node.size",Double.class) ); 
-	menu.add( getMenuItem("Node Width", "node.width",Double.class) ); 
-	menu.add( getMenuItem("Node Height", "node.height",Double.class) ); 
-	menu.add( getMenuItem("Node Shape", "node.shape",Byte.class) ); 
-	menu.add( getMenuItem("Node ToolTip", "node.toolTip",String.class) ); 
-	menu.add( getMenuItem("Node Label", "node.label",String.class) ); 
-	menu.add( getMenuItem("Node Label Color", "node.labelColor",Color.class) ); 
-	menu.add( getMenuItem("Node Font", "node.font",Font.class) ); 
-	menu.add( getMenuItem("Node Font Size", "node.fontSize",Double.class) ); 
+	menu.add( getMenuItem("Fill Color", "node.fillColor", Color.class) ); 
+	menu.add( getMenuItem("Border Color", "node.borderColor", Color.class) ); 
+	menu.add( getMenuItem("Border Line Type", "node.lineType", LineType.class) ); 
+	menu.add( getMenuItem("Label Position", "node.labelPosition", LabelPosition.class) ); 
+
+	if ( vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() ) {
+		menu.add( getMenuItem("Size", "node.size",Double.class) ); 
+	} else {
+		menu.add( getMenuItem("Width", "node.width",Double.class) ); 
+		menu.add( getMenuItem("Height", "node.height",Double.class) ); 
+	}
+
+	menu.add( getMenuItem("Shape", "node.shape",Byte.class) ); 
+	menu.add( getMenuItem("ToolTip", "node.toolTip",String.class) ); 
+	menu.add( getMenuItem("Label", "node.label",String.class) ); 
+	menu.add( getMenuItem("Label Color", "node.labelColor",Color.class) ); 
+	menu.add( getMenuItem("Font", "node.font",Font.class) ); 
+	menu.add( getMenuItem("Font Size", "node.fontSize",Double.class) ); 
 	
         return menu;
     }
-
-	private JMenuItem getMenuItem(final String title, final String attrName, final Class c) {
-
-		JMenuItem jmi = new JMenuItem (new AbstractAction(title) {
-			public void actionPerformed (ActionEvent e) {
-				Object obj = getBypassValue(title,c);
-				if ( obj == null )
-					return;
-				String val = ObjectToString.getStringValue(obj);
-				nodeAttrs.setAttribute(node.getIdentifier(),attrName,val);
-				vmm.getNetworkView().redrawGraph(false, true);
-			}
-
-			private Object getBypassValue(String title, Class c) {
-				if ( c == Color.class ) {
-					return CyColorChooser.showDialog(parent,"Choose " + title,null);
-				} else if ( c == Double.class ) {
-					return PopupStringChooser.showDialog(parent,"Choose " + title,"Input a double:",
-									     null,ValueDisplayer.DOUBLE);
-				} else if ( c == Integer.class ) {
-					return PopupStringChooser.showDialog(parent,"Choose " + title,"Input an integer:",
-									     null,ValueDisplayer.INT);
-				} else if ( c == Byte.class ) {
-					IconSupport is = new IconSupport(null,ValueDisplayer.NODESHAPE);
-					PopupIconChooser chooser = new PopupIconChooser("Choose " + title,null,
-											is.getIcons(),null,parent);
-					return chooser.showDialog();
-				} else if ( c == Arrow.class ) {
-					IconSupport is = new IconSupport(null,ValueDisplayer.ARROW);
-					PopupIconChooser chooser = new PopupIconChooser("Choose " + title,null,
-											is.getIcons(),null,parent);
-					return chooser.showDialog();
-				} else if ( c == LineType.class ) {
-					IconSupport is = new IconSupport(null,ValueDisplayer.LINETYPE);
-					PopupIconChooser chooser = new PopupIconChooser("Choose " + title,null,
-											is.getIcons(),null,parent);
-					return chooser.showDialog();
-				} else if ( c == String.class ) {
-					return PopupStringChooser.showDialog(parent,"Choose " + title,"Input a String:",
-									     null,ValueDisplayer.STRING);
-				} else if ( c == LabelPosition.class ) {
-					return PopupLabelPlacementChooser.showDialog(parent,null);
-				} else if ( c == Font.class ) {
-					return PopupFontChooser.showDialog(parent,null);
-				}
-
-				return null;
-			}
-		}); 
-		return jmi;
-	}
 }
