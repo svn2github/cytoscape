@@ -189,6 +189,8 @@ public class ActionPopupMenu extends JPopupMenu {
 		add(submenu);
 		// Clear Selection
 		addItem(null, "Clear selection", "~select", PopupActionListener.CLEAR_SELECTION);
+		add (new JSeparator());
+		addItem(null, "Delete selection", "delete %sel", PopupActionListener.DELETE);
 	}
 
 	private void createModelMenu() { 
@@ -209,8 +211,6 @@ public class ActionPopupMenu extends JPopupMenu {
 	}
 
 	private void createChainMenu() { 
-		addHeader("Chain Actions");
-		addItem(null, "Delete chain(s)", "delete %sel", PopupActionListener.DELETE);
 		return; 
 	}
 
@@ -354,9 +354,9 @@ public class ActionPopupMenu extends JPopupMenu {
 			} else if (postCommand == DELETE) {
 				String message;
 				if (objectList.size() > 1) {
-					message = "Are you sure you want to delete these chains?";
+					message = "Are you sure you want to delete the selected items?";
 				} else {
-					message = "Are you sure you want to delete chain "+objectList.get(0).toString()+"?";
+					message = "Are you sure you want to delete "+objectList.get(0).toString()+"?";
 				}
 				int answer = JOptionPane.showConfirmDialog(chimeraObject.getDialog(), 
 												message, "Confirm", JOptionPane.YES_NO_OPTION);
