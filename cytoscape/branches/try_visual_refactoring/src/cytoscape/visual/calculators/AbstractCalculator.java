@@ -496,6 +496,8 @@ public abstract class AbstractCalculator implements Calculator {
     public void apply(NodeAppearance appr, Node n, CyNetwork net){}; 
    
     protected Object getRangeValue(GraphObject obj) {
+    	if ( obj == null )
+		return null;
 	String canonicalName = obj.getIdentifier();
 	Map attrBundle = getAttrBundle(canonicalName);
 	attrBundle.put(AbstractCalculator.ID, obj.getIdentifier());

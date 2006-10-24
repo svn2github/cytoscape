@@ -57,7 +57,6 @@ import java.awt.Component;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
-import cytoscape.visual.ui.MiscDialog;
 import cytoscape.visual.mappings.LegendTable;
 
 public class DiscreteLegend extends JPanel {

@@ -57,7 +57,7 @@ import java.awt.Component;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
-import cytoscape.visual.ui.MiscDialog;
+import cytoscape.visual.ui.IconSupport;
 
 public class LegendTable extends JPanel {
 
@@ -139,29 +139,7 @@ class LegendTableCellRenderer extends JLabel implements TableCellRenderer {
 		if ( o == null )
 			return null;
 
-                ImageIcon[] icons = null;
-                Map iToS = null;
-
-                MiscDialog md = new MiscDialog();
-
-		if ( o instanceof Arrow ) {
-                        icons = md.getArrowIcons();
-                        iToS = MiscDialog.getArrowToStringHashMap(25);
-                } else if ( o instanceof Byte ) {
-                        icons = MiscDialog.getShapeIcons();
-                        iToS = MiscDialog.getShapeByteToStringHashMap();
-                } else if ( o instanceof LineType ) {
-                        icons = MiscDialog.getLineTypeIcons();
-                        iToS = MiscDialog.getLineTypeToStringHashMap();
-                } else {
-			return null;
-		}
-
-		String name = (String) iToS.get(o);
-		for (int i = 0; i < icons.length; i++) 
-			if (icons[i].getDescription().equals(name))
-				return icons[i];
-
-		return null;
+		IconSupport is = new IconSupport(o);
+		return is.getCurrentIcon();
 	}
 }
