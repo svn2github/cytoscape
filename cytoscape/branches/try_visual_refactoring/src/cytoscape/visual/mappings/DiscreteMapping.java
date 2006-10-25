@@ -279,7 +279,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
      * @param visualAttr The name of the visual attribute using this mapping.
      * @return JPanel Object.
      */
-    public JPanel getLegend(String visualAttr) {
-    	return new DiscreteLegend(treeMap, visualAttr, attrName);
+    public JPanel getLegend(String visualAttr, byte b) {
+    	return new DiscreteLegend(treeMap, visualAttr, attrName, b);
     }
 }

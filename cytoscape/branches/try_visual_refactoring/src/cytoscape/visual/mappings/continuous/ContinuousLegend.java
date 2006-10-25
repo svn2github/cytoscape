@@ -63,9 +63,9 @@ public class ContinuousLegend extends JPanel {
 	int width = 20;
 	int height = 40;
 	int yoff = height;
-	int xoff = 100;
+	int xoff = 10;
 
-	public ContinuousLegend(String visualAttr, String dataAttr, List points,Object obj) {
+	public ContinuousLegend(String visualAttr, String dataAttr, List points,Object obj, byte b) {
 		super();
 		this.points = points;
 		this.obj = obj;
@@ -74,16 +74,16 @@ public class ContinuousLegend extends JPanel {
 
 	        add(new JLabel(visualAttr + " is continuously mapped to " + dataAttr));
 		if ( obj instanceof Color ) 
-	        	add( new ColorPanel() );
+	        	add( new GradientPanel() );
 		else 
-	        	add( new ObjectPanel() );
+	        	add( new ObjectPanel(b) );
 
 	}
 	
 
-	private class ColorPanel extends JPanel {
+	private class GradientPanel extends JPanel {
 
-		public ColorPanel() {
+		public GradientPanel() {
 			setPreferredSize(new Dimension(xoff*3,height*(points.size()+1)));
         		setBackground(Color.white);
 		}
@@ -131,7 +131,7 @@ public class ContinuousLegend extends JPanel {
 	}
 
 	private class ObjectPanel extends JPanel {
-		public ObjectPanel() {
+		public ObjectPanel(byte b) {
         		setBackground(Color.white);
 
 			Object[][] data = new Object[points.size()+2][2];
@@ -160,7 +160,7 @@ public class ContinuousLegend extends JPanel {
 				}
 			}
 
-			add( new LegendTable(data,columnNames) );
+			add( new LegendTable(data,columnNames,b) );
 		}
 	}
 }

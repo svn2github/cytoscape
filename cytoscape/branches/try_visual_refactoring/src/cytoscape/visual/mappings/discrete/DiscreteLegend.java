@@ -61,7 +61,7 @@ import cytoscape.visual.mappings.LegendTable;
 
 public class DiscreteLegend extends JPanel {
 
-    public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr) {
+    public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr, byte b) {
     	super();
 
 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -70,7 +70,6 @@ public class DiscreteLegend extends JPanel {
 	JLabel title = new JLabel(visualAttr + " is discretely mapped to " + dataAttr);
 	add(title);
 	
-
 	Object[][] data = new Object[legendMap.keySet().size()][2];
 	Object[] columnNames = new Object[2];
 
@@ -84,7 +83,7 @@ public class DiscreteLegend extends JPanel {
 		data[i][1] = key;
 	}
 
-	add( new LegendTable( data, columnNames ) );
+	add( new LegendTable( data, columnNames, b ) );
 
     }
 }

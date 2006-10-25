@@ -58,6 +58,7 @@ import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -83,6 +84,7 @@ import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.util.SwingWorker;
 
 //------------------------------------------------------------------------------
 
@@ -384,21 +386,14 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 					GridBagConstraints.HORIZONTAL);
 			rmStyle.setToolTipText("Delete the current style");
 
-			// define style button
-			JButton defStyle = new JButton("Define");
-			defStyle.addActionListener(new DefStyleListener());
-			MiscGB.insert(styleGBG, defStyle, 4, 0, 1, 1, 1, 0,
-					GridBagConstraints.HORIZONTAL);
-			defStyle.setToolTipText("Change the current style's settings");
-
                         // create legend button
+			
                         JButton createLegend = new JButton("Create Legend");
-                        createLegend.addActionListener(new LegendListener());
-                        MiscGB.insert(styleGBG, createLegend, 5, 0, 1, 1, 1, 0,
+                        createLegend.addActionListener(new LegendListener(this));
+                        MiscGB.insert(styleGBG, createLegend, 4, 1, 1, 1, 1, 0,
                                         GridBagConstraints.HORIZONTAL);
                         createLegend.setToolTipText("Create a figure legend for the selected visual style");
-
-
+		
 			// close button
 			JButton closeBut = new JButton("Close");
 			closeBut.addActionListener(new AbstractAction() {
@@ -406,11 +401,20 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 					dispose();
 				}
 			});
-			MiscGB.insert(styleGBG, closeBut, 4, 1, 1, 1, 1, 0,
+			MiscGB.insert(styleGBG, closeBut, 5, 1, 1, 1, 1, 0,
 					GridBagConstraints.HORIZONTAL);
 			closeBut.setToolTipText("Close this dialog");
 
-			MiscGB.insert(this.styleGBG, this.styleComboBox, 0, 0, 4, 1, 1, 0,
+			// define style button
+			JButton defStyle = new JButton("Define");
+			defStyle.addActionListener(new DefStyleListener());
+			MiscGB.insert(styleGBG, defStyle, 5, 0, 1, 1, 1, 0,
+					GridBagConstraints.HORIZONTAL);
+			defStyle.setToolTipText("Change the current style's settings");
+
+
+
+			MiscGB.insert(this.styleGBG, this.styleComboBox, 0, 0, 5, 1, 1, 0,
 					GridBagConstraints.HORIZONTAL);
 			setContentPane(styleGBG.panel);
 			styleGBG.panel
@@ -459,8 +463,17 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 
                 protected class LegendListener extends AbstractAction {
+			JDialog parent;
+			public LegendListener(JDialog p) { parent = p; }
                         public void actionPerformed(ActionEvent e) {
-                                new LegendDialog(mainFrame, currentStyle);
+				final SwingWorker worker = new SwingWorker() {
+				        public Object construct() {
+                                		LegendDialog ld = new LegendDialog(parent, currentStyle);
+						ld.setVisible(true);
+						return null;
+				        }
+			        };
+			        worker.start();
                         }
                 }
 

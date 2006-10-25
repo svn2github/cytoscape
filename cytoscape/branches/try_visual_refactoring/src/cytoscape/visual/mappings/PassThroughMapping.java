@@ -192,7 +192,7 @@ public class PassThroughMapping implements ObjectMapping {
         return newProps;
     }
 
-    public JPanel getLegend(String visualAttr) {
+    public JPanel getLegend(String visualAttr,byte b) {
         JPanel p = new JPanel();
 	p.setBackground(Color.white);
 	p.setLayout(new BoxLayout(p,BoxLayout.Y_AXIS));

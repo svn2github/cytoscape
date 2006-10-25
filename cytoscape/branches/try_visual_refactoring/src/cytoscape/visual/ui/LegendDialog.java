@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 
+import java.awt.Dialog;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.WindowConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 
 import org.freehep.util.export.ExportDialog;
@@ -38,10 +40,13 @@ import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ContinuousMapping;
 
 import cytoscape.Cytoscape;
 
 public class LegendDialog extends JDialog {
+
 
 	private Map legendMap;
 	private VisualStyle visualStyle;
@@ -49,14 +54,17 @@ public class LegendDialog extends JDialog {
 	private JButton jButton1;
 	private JButton jButton2;
 	private JScrollPane jScrollPane1;
+	private Component parent;
 
-	public LegendDialog(JFrame parent, VisualStyle vs) {
+	public LegendDialog(Dialog parent, VisualStyle vs) {
 		super(parent,true);
 		visualStyle = vs;
+		this.parent = parent;
 		initComponents();
 	}
 
 	private JPanel generateLegendPanel() {
+
 		JPanel legend = new JPanel();
 		legend.setLayout(new BoxLayout(legend, BoxLayout.Y_AXIS));
 		legend.setBackground(Color.white);
@@ -65,7 +73,7 @@ public class LegendDialog extends JDialog {
 		List<Calculator> calcs = nac.getCalculators();
 		for ( Calculator calc : calcs ) {
 			ObjectMapping om = calc.getMapping(0);
-			JPanel mleg = om.getLegend(calc.getTypeName()); 
+			JPanel mleg = om.getLegend(calc.getTypeName(),calc.getType()); 
 			// Add passthrough mappings to the top since they don't
 			// display anything besides the title.
 			if ( om instanceof PassThroughMapping )
@@ -79,7 +87,7 @@ public class LegendDialog extends JDialog {
 		int top = legend.getComponentCount(); 
 		for ( Calculator calc : calcs ) {
 			ObjectMapping om = calc.getMapping(0);
-			JPanel mleg = om.getLegend(calc.getTypeName()); 
+			JPanel mleg = om.getLegend(calc.getTypeName(),calc.getType()); 
 			// Add passthrough mappings to the top since they don't
 			// display anything besides the title.
 			if ( om instanceof PassThroughMapping )
@@ -93,8 +101,6 @@ public class LegendDialog extends JDialog {
 
 	private void initComponents() {
 
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
 		jPanel1 = generateLegendPanel();
 
 		jScrollPane1 = new JScrollPane();
@@ -104,7 +110,7 @@ public class LegendDialog extends JDialog {
 		jButton1.setText("Export");
 		jButton1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				jButton1ActionPerformed(evt);
+				export();
 			}
 		});
 
@@ -128,14 +134,11 @@ public class LegendDialog extends JDialog {
 		setContentPane(containerPanel);
 
 		pack();
-		setVisible(true);
-
 	}
 
-	private void jButton1ActionPerformed(ActionEvent evt) {
+	private void export() {
 		ExportDialog export = new ExportDialog();
-		export.showExportDialog(this, "Export legend as ...",
-				jPanel1, "export");
+		export.showExportDialog(parent, "Export legend as ...",
+			jPanel1, "export");
 	}
-
 }

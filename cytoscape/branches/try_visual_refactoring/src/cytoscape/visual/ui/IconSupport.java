@@ -43,6 +43,10 @@ import java.util.HashMap;
 import java.io.*;
 import java.awt.Color;
 import java.awt.Polygon;
+import java.awt.image.BufferedImage;
+import java.awt.RenderingHints;
+import java.awt.Graphics2D;
+import java.awt.Font;
 import java.util.*;
 import java.net.URL;
 
@@ -376,5 +380,121 @@ public class IconSupport {
     IconSupport is = new IconSupport();
     return is.getClass().getResource(imageFilename);
   }
+  
+
+
+	public static ImageIcon getColorIcon(Color c) {
+		int size = 30;
+		BufferedImage bi = new BufferedImage(size,size,BufferedImage.TYPE_INT_RGB );
+		Graphics2D g2 = bi.createGraphics(); 
+		g2.setPaint(c);
+		g2.fillRect(0,0,size,size);
+		return new ImageIcon(bi);
+	}
+
+	public static ImageIcon getNodeWidthIcon(Double d) {
+		int w = d.intValue();
+		int bound = 4;
+		int edgeHeight = 4;
+		int height = 30;
+
+		String s = Integer.toString(w);
+		Font f = new Font("SansSerif",Font.PLAIN,8);
+
+		BufferedImage bi = new BufferedImage(w+bound+bound,height,BufferedImage.TYPE_INT_RGB );
+
+		Graphics2D g2 = bi.createGraphics(); 
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setFont(f);
+
+		int stringWidth = g2.getFontMetrics().stringWidth(s);
+
+		g2.setBackground(Color.white);
+		g2.setPaint(Color.white);
+		g2.fillRect(0,0,w+bound+bound,height);
+		g2.setPaint(Color.black);
+
+		g2.drawLine( bound, (height/2) + edgeHeight, bound, (height/2) - edgeHeight);
+		g2.drawLine( w+bound, (height/2) + edgeHeight, w+bound, (height/2) - edgeHeight);
+		g2.drawLine( bound, height/2, w+bound, height/2);
+		g2.setPaint(Color.black);
+		g2.drawString(s, (w/2)+bound-(stringWidth/2),(height/2)-edgeHeight);
+
+		return new ImageIcon(bi);
+	} 
+
+	public static ImageIcon getNodeHeightIcon(Double d) {
+		int h = d.intValue();
+		int bound = 4;
+		int edgeWidth = 4;
+		int width = 40;
+
+		String s = Integer.toString(h);
+		Font f = new Font("SansSerif",Font.PLAIN,8);
+
+		BufferedImage bi = new BufferedImage(width, h+bound+bound,BufferedImage.TYPE_INT_RGB );
+
+		Graphics2D g2 = bi.createGraphics(); 
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setFont(f);
+		int stringHeight = g2.getFontMetrics().getMaxAscent();
+
+		g2.setBackground(Color.white);
+		g2.setPaint(Color.white);
+		g2.fillRect(0,0,width,h+bound+bound);
+		g2.setPaint(Color.black);
+
+		g2.drawLine(bound,bound,bound+edgeWidth+edgeWidth,bound);
+		g2.drawLine(bound,h+bound,bound+edgeWidth+edgeWidth,h+bound);
+		g2.drawLine(bound+edgeWidth,bound,bound+edgeWidth,h+bound);
+		g2.setPaint(Color.black);
+		g2.drawString(s,bound+edgeWidth+edgeWidth, ((h+bound+bound)/2) + (stringHeight/2)); 
+
+		return new ImageIcon(bi);
+	} 
+
+	public static ImageIcon getNodeSizeIcon(Double d) {
+		int size = d.intValue();
+
+		int bound = 4;
+
+		String s = Integer.toString(size);
+		Font f = new Font("SansSerif",Font.PLAIN,8);
+
+		BufferedImage bi = new BufferedImage(size+bound+bound, size+bound+bound,BufferedImage.TYPE_INT_RGB );
+		Graphics2D g2 = bi.createGraphics(); 
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setFont(f);
+
+		g2.setBackground(Color.white);
+		g2.setPaint(Color.white);
+		g2.fillRect(0,0,size+bound+bound,size+bound+bound);
+		g2.setPaint(Color.black);
+
+		g2.drawLine(bound,bound,bound,size+bound);
+		g2.drawLine(bound,size+bound,size+bound,size+bound);
+		g2.setPaint(Color.black);
+		g2.drawString(s, bound + bound, size); 
+
+		return new ImageIcon(bi);
+	} 
+/*
+	public ImageIcon getLabelPositionIcon(LabelPosition pos) {
+
+		int size = 60;
+
+		String n = "node";
+		String s = "label";
+		Font f = new Font("SansSerif",Font.PLAIN,8);
+
+		BufferedImage bi = new BufferedImage(size,size,BufferedImage.TYPE_INT_RGB );
+		Graphics2D g2 = bi.createGraphics(); 
+
+		LabelPlacerGraphic lp = new LabelPlacerGraphic(size);
+		lp.drawGraphic(g2,pos);
+
+		return new JLabel(new ImageIcon(bi));
+	} 
+	*/
 
 }

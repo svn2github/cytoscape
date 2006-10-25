@@ -61,6 +61,7 @@ import javax.swing.JPanel;
 import javax.swing.plaf.metal.MetalButtonUI;
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.Component;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
@@ -83,18 +84,20 @@ public class PopupFontChooser extends JDialog {
 
 	private Font font;
 	private FontChooser chooser; 
+	private Component parent;
 
 	private PopupFontChooser(Frame parent, Font begin) {
 		super(parent,true);
-		init(begin);
+		init(parent,begin);
 	}
 
 	private PopupFontChooser(Dialog parent, Font begin) {
 		super(parent,true);
-		init(begin);
+		init(parent,begin);
 	}
 
-	private void init(Font begin) {
+	private void init(Component parent, Font begin) {
+		this.parent = parent;
 		font = begin;
 		if ( font == null ) 
 			chooser = new FontChooser();
@@ -130,6 +133,7 @@ public class PopupFontChooser extends JDialog {
 		content.add(chooser, BorderLayout.CENTER);
 		content.add(butPanel, BorderLayout.SOUTH);
 		pack();
+		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
 

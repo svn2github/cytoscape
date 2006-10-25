@@ -124,7 +124,7 @@ public interface ObjectMapping extends Cloneable {
 
     JPanel getUI(JDialog parent, CyNetwork network);
 
-    JPanel getLegend(String s);
+    JPanel getLegend(String s, byte type);
 
     Object clone();
     
