@@ -5,7 +5,7 @@ use Object;
 @ISA = qw(Object);
 
 MultiOrganismSIF->_generateAccessors(qw(org2genes org2interactions 
-					file organisms name pub));
+					file organisms name pub genes));
 
 sub new
 {
@@ -13,6 +13,7 @@ sub new
     my $self = $caller->SUPER::new();
 
     $self->org2genes({});
+    $self->genes({});
     $self->file($file);
     $self->organisms($organisms);
     $self->org2interactions({});
@@ -98,6 +99,7 @@ sub parse
     my ($self, $geneNameMapper, $edgeMapper) = @_;
     
     my @orgs = @{ $self->organisms() }; 
+    my $genes = $self->genes();
     my $org2genes = $self->org2genes();
     my $org2interactions = $self->org2interactions();
 
@@ -114,6 +116,8 @@ sub parse
 	    my $type = lc($line[1]);
 	    my $gene2 = uc($line[2]);
 	    
+	    $genes->{$gene1}++;
+	    $genes->{$gene2}++;
 	    my @g1 = split(/\|/,$gene1);
 	    my @g2 = split(/\|/,$gene2);
 	    
