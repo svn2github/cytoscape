@@ -86,7 +86,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	private static final String distanceStrengthProp = "distance_strength";
 	private static final String restLengthProp = "rest_length";
 	private static final String disconnectedStrengthProp = "disconnected_strength";
-	private static final String disconnectedRestProp = "disconnected_rect_length";
+	private static final String disconnectedRestProp = "disconnected_rest_length";
 	private static final String anticollissionProp = "anticollisionStrength";
 
   /**
@@ -331,6 +331,11 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     m_nodeDistanceSpringRestLengths = new double[m_nodeCount][m_nodeCount];
     m_nodeDistanceSpringStrengths = new double[m_nodeCount][m_nodeCount];
 
+		// Figure out our starting point
+		if (selectedOnly) {
+			initialLocation = calculateAverageLocation();
+		}
+
 		// Randomize our points, if any points lie
 		// outside of our bounds
 		if (randomize) randomizeLocations();
@@ -356,10 +361,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     final double percentCompletedAfterPass2 = 90.0d;
     double currentProgress = percentCompletedBeforePasses;
 
-		// Figure out our starting point
-		if (selectedOnly)
-			initialLocation = calculateAverageLocation();
-
 		// Compute our optimal lengths
     for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
     {
@@ -384,7 +385,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			while (nodeIter.hasNext()) 
 			{
 				LayoutNode v = (LayoutNode)nodeIter.next();
-				// if (v.isLocked()) continue;
 
         if (this.cancel) return;
 
@@ -392,6 +392,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
           taskMonitor.setStatus("Calculating partial derivatives"); 
 				}
         taskMonitor.setPercentCompleted((int) currentProgress);
+				if (v.isLocked()) continue;
 
         partials = new PartialDerivatives(v);
         calculatePartials(partials, null, potentialEnergy, false);
@@ -425,25 +426,27 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
       }
     }
 
-		// Translate back to the starting midpoint
-		if (selectedOnly) {
-			iter = nodeList.iterator();
-			while (iter.hasNext()) {
-				LayoutNode v = (LayoutNode)iter.next();
-				if (!v.isLocked())
-					v.decrement(initialLocation.getWidth(),initialLocation.getHeight());
-			}
-		}
-
     taskMonitor.setPercentCompleted((int) percentCompletedAfterPass2);
 		taskMonitor.setStatus("Updating display");
+
+		double xDelta = 0.0;
+		double yDelta = 0.0;
+		if (selectedOnly) {
+			Dimension finalLocation = calculateAverageLocation();
+			xDelta = finalLocation.getWidth()-initialLocation.getWidth();
+			yDelta = finalLocation.getHeight()-initialLocation.getHeight();
+		}
 
 		// Actually move the pieces around
 		iter = nodeList.iterator();
 		while (iter.hasNext()) {
 			LayoutNode v = (LayoutNode)iter.next();
-			if (!v.isLocked())
+			if (!v.isLocked()) {
+				if (selectedOnly) {
+					v.decrement(xDelta, yDelta);
+				}
 				v.moveToLocation();
+			}
 		}
 	}
 

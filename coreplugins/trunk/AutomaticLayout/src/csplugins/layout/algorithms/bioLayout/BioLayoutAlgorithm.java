@@ -363,7 +363,9 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		Random random = new Random(today.getTime());
 		Iterator iter = nodeList.iterator();
 		while (iter.hasNext()) { 
-			((LayoutNode)iter.next()).setRandomLocation(random); 
+			LayoutNode node = (LayoutNode)iter.next();
+			if (!node.isLocked())
+				node.setRandomLocation(random); 
 		}
 		return;
 	}
@@ -378,8 +380,12 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		ListIterator iter = edgeList.listIterator();
 		while (iter.hasNext()) { 
 			LayoutEdge edge = (LayoutEdge)iter.next();
+			// If we're only dealing with selected nodes, drop any edges
+			// that don't have any selected nodes
+			if (edge.getSource().isLocked() && edge.getTarget().isLocked()) {
+				iter.remove();
+			} else if (edge.getWeight() <= minWeightCutoff || edge.getWeight() > maxWeightCutoff) {
 			// Drop any edges that are outside of our bounds
-			if (edge.getWeight() <= minWeightCutoff || edge.getWeight() > maxWeightCutoff) {
 				iter.remove();
 			} else {
 				edge.normalizeWeight();

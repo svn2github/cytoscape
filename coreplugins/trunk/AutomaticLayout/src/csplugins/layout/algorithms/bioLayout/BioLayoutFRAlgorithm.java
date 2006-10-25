@@ -319,6 +319,10 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			temp = this.temperature;
 		}
 
+		// Figure out our starting point
+		if (selectedOnly)
+			initialLocation = calculateAverageLocation();
+
 		// Randomize our points, if any points lie
 		// outside of our bounds
 		if (randomize) randomizeLocations();
@@ -328,10 +332,6 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 		// Calculate our edge weights
 		calculateEdgeWeights();
-
-		// Figure out our starting point
-		if (selectedOnly)
-			initialLocation = calculateAverageLocation();
 
 		taskMonitor.setStatus("Calculating new node positions");
 		taskMonitor.setPercentCompleted(1);
@@ -364,23 +364,22 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 		taskMonitor.setStatus("Updating display");
 
-		// Translate back to the starting midpoint
+		double xDelta = 0.0;
+		double yDelta = 0.0;
 		if (selectedOnly) {
-			iter = nodeList.iterator();
-			while (iter.hasNext()) {
-				LayoutNode v = (LayoutNode)iter.next();
-				if (!v.isLocked())
-					v.decrement(initialLocation.getWidth(),initialLocation.getHeight());
-			}
+			Dimension finalLocation = calculateAverageLocation();
+			xDelta = finalLocation.getWidth()-initialLocation.getWidth();
+			yDelta = finalLocation.getHeight()-initialLocation.getHeight();
 		}
 
 		// Actually move the pieces around
 		iter = nodeList.iterator();
 		while (iter.hasNext()) {
 			LayoutNode v = (LayoutNode) iter.next();
-			// if this is locked, the move just resets X and Y
+			if (selectedOnly && !v.isLocked()) {
+				v.decrement(xDelta, yDelta);
+			}
 			v.moveToLocation();
-			// System.out.println("Node "+v.getIdentifier()+" moved to "+v.getX()+","+v.getY());
 		}
 		// System.out.println("Layout complete after "+iteration+" iterations");
 	}
