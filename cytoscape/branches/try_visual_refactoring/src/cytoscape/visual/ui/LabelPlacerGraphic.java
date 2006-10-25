@@ -54,36 +54,39 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 
     private LabelPosition lp; 
 
+    // dimensions of panel 
+    private int default_xy = 500; 
+    private int xy; 
+    private int center; 
+
+    private float offsetRatio;
+
+    // dimensions for node box
+    private int nxy; 
+
+    // locations of node points
+    private int[] npoints; 
+
+    // dimensions for label box
+    private int lx; 
+    private int ly;
+
+    // locations for label points
+    private int[] lxpoints; 
+    private int[] lypoints;
+
+    // diameter of a point
+    private int dot;
+
+    // x/y positions for label box, initially offset
+    private int xPos; 
+    private int yPos;
+
     // indices of the closest points
     private int bestLabelX = 1;
     private int bestLabelY = 1;
     private int bestNodeX = 1;
     private int bestNodeY = 1;
-
-    // dimensions of panel 
-    private int xy = 500; 
-    private int center = xy/2;
-
-    // dimensions for node box
-    private int nxy = (int)(0.4*xy);
-
-    // locations of node points
-    private int[] npoints = {center-nxy/2,center,center+nxy/2};
-
-    // dimensions for label box
-    private int lx = (int)(0.24*xy);
-    private int ly = (int)(0.1*xy);
-
-    // locations for label points
-    private int[] lxpoints = {0,lx/2,lx};
-    private int[] lypoints = {0,ly/2,ly};
-
-    // diameter of a point
-    private int dot = (int)(0.02*xy);
-
-    // x/y positions for label box, initially offset
-    private int xPos = dot; 
-    private int yPos = dot;
 
     // mouse drag state
     private boolean beenDragged = false;
@@ -105,10 +108,42 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
     private Color transparentRed = new Color(1.0f,0.0f,0.0f,0.1f);
     private Color transparentBlue = new Color(0.0f,0.0f,1.0f,0.1f);
 
+    // used to determine the render level of detail
+    private boolean renderDetail; 
+
+    // strings for the graphic
+    private String label = "LABEL";
+    private String node = "NODE";
+    private String click = "CLICK 'N DRAG";
+
+    // font metrics for strings
+    private int labelLen = 0;
+    private int nodeLen = 0; 
+    private int clickLen = 0; 
+    private int ascent = 0; 
+
+    private int detailStrokeWidth = 3;
+    private int lowStrokeWidth = 1;
+
+    private Stroke detailStroke = new BasicStroke(detailStrokeWidth);
+    private Stroke lowStroke = new BasicStroke(lowStrokeWidth);
+
     /**
-     * A gui for placing a label relative to a node.
+     * A gui for placing a label relative to a node. Draws the graphic
+     * in full detail at a size of 500 pixels.
+     * @param pos initial label position
      */
     public LabelPlacerGraphic(LabelPosition pos) {
+    	this(pos,500,true);
+    }
+
+    /**
+     * A gui for placing a label relative to a node.
+     * @param pos initial label position
+     * @param size number of pixels square the that graphic should be
+     * @param fullDetail whether or not to render at full detail or not 
+     */
+    public LabelPlacerGraphic(LabelPosition pos, int size, boolean fullDetail) {
         super();
 
 	if (pos == null)
@@ -116,27 +151,74 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	else
 		lp = pos;
 
+	renderDetail = fullDetail;
+
+	initSize(size);
+
 	setPreferredSize(new Dimension(xy,xy));
 	setBackground(Color.white);
 
 	addMouseListener(new MouseClickHandler());
 	addMouseMotionListener(new MouseDragHandler());
 
+
 	applyPosition();
 
 	repaint();
+    }
+
+    private void initSize(int size) {
+	    // dimensions of panel 
+	    xy = size; 
+	    center = xy/2;
+
+	    offsetRatio = (float)xy/(float)default_xy;
+
+	    // dimensions for node box
+	    nxy = (int)(0.4*xy);
+
+	    // locations of node points
+	    int[] tnpoints = {center-nxy/2,center,center+nxy/2};
+	    npoints = tnpoints; 
+
+	    // dimensions for label box
+	    lx = (int)(0.24*xy);
+	    ly = (int)(0.1*xy);
+
+	    // locations for label points
+	    int[] tlxpoints = {0,lx/2,lx};
+	    int[] tlypoints = {0,ly/2,ly};
+	    lxpoints = tlxpoints;
+	    lypoints = tlypoints;
+
+	    // diameter of a point
+	    dot = (int)(0.02*xy);
+
+	    // x/y positions for label box, initially offset
+	    xPos = dot; 
+	    yPos = dot;
     }
    
     /**
      * The method that handles the rendering of placement gui.
      */
-    public void paint(Graphics g) {
-    	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-	                                 RenderingHints.VALUE_ANTIALIAS_ON);
+    public void paint(Graphics gin) {
+    	Graphics2D g = (Graphics2D)gin;
+
+    	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+	// calculate the font 
+	if ( labelLen <= 0 ) {
+		FontMetrics fm = g.getFontMetrics();
+		labelLen = fm.stringWidth(label);
+		nodeLen = fm.stringWidth(node);
+		clickLen = fm.stringWidth(click);
+		ascent = fm.getMaxAscent();
+	}
 
     	// clear the screen
     	g.setColor(Color.white);
-    	g.clearRect(0,0,xy,xy);
+    	g.fillRect(0,0,xy,xy);
 
 	// draw the node box
 	int x = center - nxy/2;
@@ -145,19 +227,26 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	g.setColor(transparentBlue);
 	g.fillOval(x,y,nxy,nxy);
 
-    	((Graphics2D)g).setStroke( new BasicStroke(3) );
+	if ( renderDetail )
+    		g.setStroke( detailStroke );
+	else
+    		g.setStroke( lowStroke );
+
     	g.setColor(Color.blue);
 	g.drawLine(x,y,x+nxy,y);
 	g.drawLine(x+nxy,y,x+nxy,y+nxy);
 	g.drawLine(x+nxy,y+nxy,x,y+nxy);
 	g.drawLine(x,y+nxy,x,y);
-	g.drawString("NODE",center-nxy/12,center-nxy/6);
 
-	// draw the node box points
-    	g.setColor(Color.black);
-	for ( int i = 0; i < npoints.length; i++ )
-		for ( int j = 0; j < npoints.length; j++ )
-			g.fillOval(npoints[i]-dot/2,npoints[j]-dot/2,dot,dot);
+	if ( renderDetail ) {
+		g.drawString(node,center-nxy/12,center-nxy/6);
+
+		// draw the node box points
+		g.setColor(Color.black);
+		for ( int i = 0; i < npoints.length; i++ )
+			for ( int j = 0; j < npoints.length; j++ )
+				g.fillOval(npoints[i]-dot/2,npoints[j]-dot/2,dot,dot);
+	}
 
 
 	// draw the base box if any offsets are used
@@ -179,28 +268,46 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	g.drawLine(xOffset+xPos+lx,yOffset+yPos+ly,xOffset+xPos,yOffset+yPos+ly);
 	g.drawLine(xOffset+xPos,yOffset+yPos+ly,xOffset+xPos,yOffset+yPos);
 
-	if ( justify == Label.JUSTIFY_LEFT ) {
-		g.drawString("LABEL",xOffset+xPos+3,yOffset+yPos+ly/3);
-		g.drawString("CLICK 'N DRAG",xOffset+xPos+3,yOffset+yPos+5*ly/6);
-	} else if ( justify == Label.JUSTIFY_RIGHT ) {
-		g.drawString("LABEL",xOffset+xPos+4*lx/5-10,yOffset+yPos+ly/3);
-		g.drawString("CLICK 'N DRAG",xOffset+xPos+lx/3-10,yOffset+yPos+5*ly/6);
-	} else { // center
-		g.drawString("LABEL",xOffset+xPos+2*lx/5,yOffset+yPos+ly/3);
-		g.drawString("CLICK 'N DRAG",xOffset+xPos+lx/5,yOffset+yPos+5*ly/6);
+	// draw the string in the justified location
+	if ( renderDetail ) {
+		int vspace = (ly-ascent-ascent)/3;
+		if ( justify == Label.JUSTIFY_LEFT ) {
+			g.drawString(label,xOffset+xPos+detailStrokeWidth,yOffset+yPos+vspace+ascent);
+			g.drawString(click,xOffset+xPos+detailStrokeWidth,yOffset+yPos+(2*(vspace+ascent)));
+		} else if ( justify == Label.JUSTIFY_RIGHT ) {
+			g.drawString(label,xOffset+xPos+(lx-labelLen),yOffset+yPos+vspace+ascent);;
+			g.drawString(click,xOffset+xPos+(lx-clickLen),yOffset+yPos+(2*(vspace+ascent)));
+		} else { // center
+			g.drawString(label,xOffset+xPos+((lx-labelLen)/2)-detailStrokeWidth,yOffset+yPos+vspace+ascent);
+			g.drawString(click,xOffset+xPos+((lx-clickLen)/2)-detailStrokeWidth,yOffset+yPos+(2*(vspace+ascent)));
+		}
+	} else {
+                g.setColor(Color.gray);
+                if ( justify == Label.JUSTIFY_LEFT ) {
+                        g.drawLine(xOffset+xPos+lowStrokeWidth,yOffset+yPos+(ly/2),  
+                                   xOffset+xPos+(lx/3),yOffset+yPos+(ly/2));
+                } else if ( justify == Label.JUSTIFY_RIGHT ) {
+                        g.drawLine(xOffset+xPos+(2*lx/3),yOffset+yPos+(ly/2),   
+                                   xOffset+xPos+lx,yOffset+yPos+(ly/2));
+                } else { // center
+                        g.drawLine(xOffset+xPos+(lx/3),yOffset+yPos+(ly/2),        
+                                   xOffset+xPos+(2*lx/3)-lowStrokeWidth,yOffset+yPos+(ly/2));
+                }
 	}
 
 
-	// draw the label box points
-    	g.setColor(Color.black);
-	for ( int i = 0; i < lxpoints.length; i++ )
-		for ( int j = 0; j < lypoints.length; j++ ) {
-			if ( i == bestLabelX && j == bestLabelY && !beenDragged)
-				g.setColor(Color.yellow);
-			g.fillOval(xPos+lxpoints[i]-dot/2,yPos+lypoints[j]-dot/2,dot,dot);
-			if ( i == bestLabelX && j == bestLabelY )
-				g.setColor(Color.black);
-		}
+	if ( renderDetail ) {
+		// draw the label box points
+		g.setColor(Color.black);
+		for ( int i = 0; i < lxpoints.length; i++ )
+			for ( int j = 0; j < lypoints.length; j++ ) {
+				if ( i == bestLabelX && j == bestLabelY && !beenDragged)
+					g.setColor(Color.yellow);
+				g.fillOval(xPos+lxpoints[i]-dot/2,yPos+lypoints[j]-dot/2,dot,dot);
+				if ( i == bestLabelX && j == bestLabelY )
+					g.setColor(Color.black);
+			}
+	}
 
     }
 
@@ -323,8 +430,8 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
      */
     private void applyPosition() {
 
-	xOffset = (int)lp.getOffsetX();
-	yOffset = (int)lp.getOffsetY();
+	xOffset = (int)(lp.getOffsetX()*offsetRatio);
+	yOffset = (int)(lp.getOffsetY()*offsetRatio);
 	justify = lp.getJustify();
 
 	int nodeAnchor = lp.getTargetAnchor(); 

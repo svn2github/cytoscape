@@ -72,6 +72,19 @@ public class LegendDialog extends JDialog {
 		NodeAppearanceCalculator nac = visualStyle.getNodeAppearanceCalculator();
 		List<Calculator> calcs = nac.getCalculators();
 		for ( Calculator calc : calcs ) {
+
+			// AAARGH
+			if ( nac.getNodeSizeLocked() ) {
+				if ( calc.getType() == VizMapUI.NODE_WIDTH ) 
+					continue;
+				else if ( calc.getType() == VizMapUI.NODE_HEIGHT ) 
+					continue;
+			} else {
+				if ( calc.getType() == VizMapUI.NODE_SIZE ) 
+					continue;
+			}
+
+
 			ObjectMapping om = calc.getMapping(0);
 			JPanel mleg = om.getLegend(calc.getTypeName(),calc.getType()); 
 			// Add passthrough mappings to the top since they don't
@@ -132,6 +145,7 @@ public class LegendDialog extends JDialog {
 		containerPanel.add(buttonPanel);
 		
 		setContentPane(containerPanel);
+		setPreferredSize(new Dimension(400,400));
 
 		pack();
 	}

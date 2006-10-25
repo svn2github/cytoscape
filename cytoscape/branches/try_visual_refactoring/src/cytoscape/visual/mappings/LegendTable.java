@@ -49,12 +49,15 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.SwingConstants;
+import javax.swing.JComponent;
 import java.util.Map;
 import java.util.Iterator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Component;
+import java.awt.GridLayout;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
@@ -65,90 +68,61 @@ import cytoscape.visual.ui.VizMapUI;
 public class LegendTable extends JPanel {
 
 
-	public LegendTable(Object[][] data, Object[] col,byte b) {
-		super();
-
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBackground(Color.white);
-
-		JTable jTable1 = new JTable();
-
-		jTable1.setModel(new DefaultTableModel(data, col));
-		jTable1.setGridColor(Color.white);
-		jTable1.setIntercellSpacing(new Dimension(2, 2));
-		jTable1.setDefaultRenderer(Object.class, new LegendTableCellRenderer(b));
-		jTable1.setRowHeight(50);
-
-		add(jTable1);
-	}
-}
-
-class LegendTableCellRenderer extends DefaultTableCellRenderer {
-
-	private Font normalFont; 
-	private byte type;
-
-	public LegendTableCellRenderer(byte b) {
+	byte type;
+	public LegendTable(Object[][] data, byte b) {
 		super();
 		type = b;
-		setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
-		setOpaque(true);
-		normalFont = getFont();
+		setLayout(new GridLayout(data.length, data[0].length,4,4) );
+		setBackground(Color.white);
+		setAlignmentX(0);
+
+		for ( int i = 0; i < data.length; i++ )
+			for ( int j = 0; j < data[i].length; j++ ) 
+				add( getValue(data[i][j]) );
 	}
 
-	public Component getTableCellRendererComponent(JTable table, Object value,
-			boolean isSelected, boolean hasFocus, int row, int column) {
 
-		// initialize everything
-		//setHorizontalAlignment(CENTER);
-		setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-		setText("");
-		setIcon(null);
-		setBackground(Color.WHITE);
-		setForeground(table.getForeground());
-		setFont( normalFont );
+	private JComponent getValue(Object value) {
+			JComponent j = null;
 
-		// now make column specific changes
-		if (column == 1) {
-			setText((value == null) ? "" : value.toString());
-		} else if (column == 0) {
 			if (value instanceof Byte) {
 				ImageIcon i = getIcon(value);
 				//table.setRowHeight( row, i.getIconHeight() );	
-				setIcon( i );
+				j = new JLabel( i );
 			} else if (value instanceof LineType) {
 				ImageIcon i = getIcon(value);
 				//table.setRowHeight( row, i.getIconHeight() );	
-				setIcon( i );
+				j = new JLabel( i );
 			} else if (value instanceof Arrow) {
 				ImageIcon i = getIcon(value);
 				//table.setRowHeight( row, i.getIconHeight() );	
-				setIcon( i );
+				j = new JLabel( i );
 			} else if (value instanceof Color) {
 				//setBackground((Color) value);
-				setIcon( IconSupport.getColorIcon((Color)value) );
+				j = new JLabel( IconSupport.getColorIcon((Color)value) );
 			} else if (value instanceof Font) {
 				Font f = (Font) value;
-				setFont(f);
-				setText(f.getFontName());
+				JLabel lab = new JLabel();
+				lab.setText(f.getFontName());
+				lab.setFont(f);
+				j = lab;
 			} else if (value instanceof Double) {
 				if ( type == VizMapUI.NODE_SIZE )
-					setIcon( IconSupport.getNodeSizeIcon((Double)value) );
+					j = new JLabel( IconSupport.getNodeSizeIcon((Double)value) );
 				else if ( type == VizMapUI.NODE_WIDTH )
-					setIcon( IconSupport.getNodeWidthIcon((Double)value) );
+					j = new JLabel( IconSupport.getNodeWidthIcon((Double)value) );
 				else if ( type == VizMapUI.NODE_HEIGHT )
-					setIcon( IconSupport.getNodeHeightIcon((Double)value) );
+					j = new JLabel( IconSupport.getNodeHeightIcon((Double)value) );
 			} else if (value instanceof LabelPosition) {
-					/*
-					setIcon( IconSupport.getLabelPositionIcon(value) );
-					*/
-					setText(value.toString()); // presumably a string or size 
+					j = new JLabel( IconSupport.getLabelPositionIcon((LabelPosition)value) );
 			} else { 
-					setText(value.toString()); // presumably a string or size 
+				j = new JLabel(value.toString());
 			}
-		}
-		return this;
+
+			j.setAlignmentX(0);
+
+			return j;
 	}
 
 	private ImageIcon getIcon(Object o) {
@@ -159,4 +133,16 @@ class LegendTableCellRenderer extends DefaultTableCellRenderer {
 		IconSupport is = new IconSupport(o);
 		return is.getCurrentIcon(); 
 	}
+
+        public static JPanel getHeader() {
+                JPanel titles = new JPanel();
+                titles.setLayout(new GridLayout(1,2));
+                titles.setAlignmentX(0);
+                titles.setBackground(Color.white);
+
+                titles.add( new JLabel("Visual Representation"));
+                titles.add( new JLabel("Attribute Value"));
+                return titles;
+        }
+
 }

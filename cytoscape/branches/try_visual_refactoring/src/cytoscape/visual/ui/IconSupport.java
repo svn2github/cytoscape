@@ -55,6 +55,7 @@ import javax.swing.*;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
 import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.visual.LabelPosition;
 
 /**
  * This used to be the MiscDialog class, but that was so poorly named, I had to
@@ -478,23 +479,17 @@ public class IconSupport {
 
 		return new ImageIcon(bi);
 	} 
-/*
-	public ImageIcon getLabelPositionIcon(LabelPosition pos) {
+
+	public static ImageIcon getLabelPositionIcon(LabelPosition pos) {
 
 		int size = 60;
-
-		String n = "node";
-		String s = "label";
-		Font f = new Font("SansSerif",Font.PLAIN,8);
 
 		BufferedImage bi = new BufferedImage(size,size,BufferedImage.TYPE_INT_RGB );
 		Graphics2D g2 = bi.createGraphics(); 
 
-		LabelPlacerGraphic lp = new LabelPlacerGraphic(size);
-		lp.drawGraphic(g2,pos);
+		LabelPlacerGraphic lp = new LabelPlacerGraphic(pos,size,false);
+		lp.paint(g2);
 
-		return new JLabel(new ImageIcon(bi));
+		return new ImageIcon(bi);
 	} 
-	*/
-
 }
