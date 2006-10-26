@@ -1,0 +1,47 @@
+Major TODO items:
+1. Implement directed mode.
+	The user would use a slider bar to find a high scoring cluster around a node of interest.  Moving the slider bar
+to the right would expand the cluster, moving all the way to the left would reduce the cluster to the single node of interest.
+To find the complex from a given node, the neighborhood of selected node should be searched for a high scoring node and
+base complex on that high scoring node.  Need to be able to specify parameters on the fly.
+
+2. Analysis option to evaluate results using a statistical model, as done in the MCODE paper.
+
+3. "CLAST" feature to compare one set of complexes with another (in CASTA format) using various similarity measures
+e.g. Dice, Jaccard, original one from MCODE, etc.
+
+
+Minor TODO items:
+1. Advanced options menu: Thread and progress bar for scoring and (finding+displaying) complexes
+
+2. Deal better with parameter changes:
+-If scoring parameters change, entire network must be rescored and find complexes must run again
+-If only cluster finding parameters change, results dialog box must be recalculated (currently you must reload the network or
+use the advanced options to force this to happen)
+-When user changes the parameters and runs MCODE again and selects to create a new view for the complex, the views should
+be labelled with the parameters that were used to find them (and possibly grouped under their own subnetwork).
+
+3. Feature to save and load parameters (low priority)
+
+4. Mark seed node by a node attribute that can be visualized (e.g. by node color)
+
+5. Option to color by score in the menu (global options, would also have a visual attribute for a seed node). User
+can do this now using visual styles, so this would be a convenience feature.
+
+6. Convenience feature to save all complexes as sif or GML files.
+
+7. Allow filter to filter by k-core - currently only filters by 2 core - k could be a parameter
+
+8. Allow different node scoring functions - currently only MCODE, could have just clustering coefficient
+
+9. Visualize functional information from GO - provide functional consistency score (number of functional terms/protein/complex)
+
+10. Convenience option to turn off tooltips and some warning messages e.g. can't select nodes b/c no view created (advanced user mode)
+
+
+Refactoring TODO items:
+1. Have MCODE return Cluster objects and implement a Java network clustering framework where MCODE is only one
+network clustering algorithm. Others are e.g. MCL, spectral clustering, etc.  At least 6 papers have been published in the past
+year describing others.
+
+
