@@ -70,6 +70,7 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicComboPopup;
 import javax.swing.table.JTableHeader;
@@ -206,6 +207,7 @@ public class JSortTable extends JTable implements MouseListener,
 
 		this.setDefaultRenderer(Object.class, new BrowserTableCellRenderer(
 				false, objectType));
+
 	}
 
 	private void setKeyStroke() {
@@ -991,6 +993,12 @@ public class JSortTable extends JTable implements MouseListener,
 		if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
 			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		}
+	}
+
+
+	public void editingStopped(ChangeEvent e) {
+		super.editingStopped(e);
+		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false,true);
 	}
 }
 

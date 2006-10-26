@@ -24,6 +24,10 @@ import cytoscape.view.cytopanels.CytoPanelState;
 /**
  * 
  * DataTable class constructs all Panels for the browser.<br>
+ * One DataTable contains the table of values and the toolbar
+ * above the table within a jpanel.  This panel is then added
+ * to CytoPanel2.  Tabbed browsing between attribute tables
+ * is handled by CytoPanel2.
  * 
  * @author kono
  * 
@@ -140,54 +144,15 @@ public class DataTable implements PropertyChangeListener {
 		mainPanel.setName(type + "AttributeBrowser");
 		mainPanel.add(mainTable, java.awt.BorderLayout.CENTER);
 		mainPanel.add(attributeBrowserPanel, java.awt.BorderLayout.NORTH);
-		// BrowserPanel mainPanel = new BmakeModelrowserPanel(new
-		// JSortTable(tableModel));
-
-		//
-		// Advanced Window: CytoPanel 3
-		//
-		//JTabbedPane advancedPanel = new JTabbedPane();
-		//advancedPanel.setPreferredSize(new Dimension(200, 100));
 
 		// modPanel will be added to JDialog for attribute modification
 		modPanel = new AttrSelectModPanel(this, data, tableModel, tableObjectType);
 		attributeBrowserPanel.setAttrModPane(modPanel, type);
 		
-		//selectionPanel = new SelectPanel(this, tableObjectType);
-		//selectionPanel.setPreferredSize(new Dimension(500, 100));
-		//advancedPanel.add("Selection", selectionPanel);
-		//advancedPanel.add("Modification", modPanel);
-
-		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add(
-		// type + "Attributes", attributePanel);
-
-
 		// Add main browser panel to CytoPanel 2 (SOUTH)
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
 				type + " Attribute Browser", mainPanel);
 
-		// Add advanced panel to the CytoPanel 2 (SOUTH)
-		//Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
-		//		type + "Attr Mod/Object Select", advancedPanel);	
-
-		
-		// Get indexes for the panels.
-		//modPanelIndex = Cytoscape.getDesktop()
-		//		.getCytoPanel(SwingConstants.EAST).indexOfComponent(
-		//				advancedPanel);
-
-		//tableIndex = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
-		//		.indexOfComponent(mainPanel);
-
-		//Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
-		//		.addCytoPanelListener(
-		//				new Listener(attributePanelIndex, -1, -1,
-		//						tableIndex));
-
-		//Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
-		//		.addCytoPanelListener(
-		//				new Listener(attributePanelIndex, tableIndex, -1,
-		//						modPanelIndex));
 
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(
 				CytoPanelState.DOCK);

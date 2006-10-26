@@ -700,7 +700,7 @@ public class AttributeBrowserPanel extends JPanel implements
 	protected void editMetadata() {
 		NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape
 				.getDesktop(), false, Cytoscape.getCurrentNetwork());
-		mdd.show();
+		mdd.setVisible(true);
 	}
 
 	protected void importAttributes() {
