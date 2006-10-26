@@ -22,5 +22,5 @@ public interface TextTableReader {
 	public List getColumnNames();
 	
 	public void setColumnNames(String[] columnNames);
-	public void setColumnNames(List<String> columnNames);
+	//public void setColumnNames(List<String> columnNames);
 }
