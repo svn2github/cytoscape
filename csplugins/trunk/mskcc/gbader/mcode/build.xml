@@ -11,14 +11,14 @@
   	<!-- The directory containing source code -->
   	<property name="src.dir" value="src"/>
 
-	<!--  The directory containing library jar files -->
-	<property name="lib.dir" value="../../../../cytoscape/lib"/>
+    <!--  The directory containing library jar files -->
+	<property name="lib.dir" value="/Applications/Cytoscape_2.3.2/lib"/>
 
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
-	<property name="release.dir" value="${build.dir}/release"/>
-	<property name="src_release.dir" value="${build.dir}/src_release/csplugins/mskcc/gbader/mcode"/>
+    <property name="release.dir" value="${build.dir}/release"/>
+	<property name="src_release.dir" value="${build.dir}/src_release/csplugins/mcode"/>
 	<property name="zip_release.dir" value="${build.dir}/zip_release"/>
 
 	<!-- Global "magic" property for <javac> -->
@@ -27,7 +27,7 @@
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>
-		<pathelement path="../../../../cytoscape/build/classes"/>
+        <pathelement path="/Applications/Cytoscape_2.3.2/cytoscape.jar"/>
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
@@ -37,7 +37,7 @@
   	<target name="prepare">
     		<mkdir dir="${build.dir}"/>
     		<mkdir dir="${build.classes}"/>
-  	</target>
+      </target>
 
 	<!--  Target to clean out all directories -->
   	<target name="clean" description="Removes all generated files.">
@@ -46,19 +46,19 @@
 
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare"
-		description="Compiles all PlugIn source code (Note: Expects to run from csplugins/mskcc/gbader/mcode directory).">
+		description="Compiles all PlugIn source code (Note: Expects to run from csplugins/mcode directory).">
     		<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4">
 			<include name="csplugins/**"/>
-			<classpath refid="classpath"/>
+            <classpath refid="classpath"/>
 		</javac>
 	</target>
 
 	<!--  Create PlugIn Jar File -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
-	   <jar destfile="${build.dir}/${plugin.name}.jar">
+	    <jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
-		</jar>
-		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+        </jar>
+	    <echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 	</target>
 
 	<!-- Target to Run JavaDoc -->

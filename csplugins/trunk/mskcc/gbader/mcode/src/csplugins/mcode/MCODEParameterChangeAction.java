@@ -1,9 +1,14 @@
 package csplugins.mcode;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -51,9 +56,21 @@ public class MCODEParameterChangeAction implements ActionListener {
      * @param event Menu Item Selected.
      */
     public void actionPerformed(ActionEvent event) {
-        //display complexes in a new non modal dialog box
-        MCODEParameterChangeDialog paramChangeDialog = new MCODEParameterChangeDialog(Cytoscape.getDesktop());
-        paramChangeDialog.pack();
-        paramChangeDialog.setVisible(true);
+        //display parameter panel in left cytopanel
+        CytoscapeDesktop desktop = Cytoscape.getDesktop();
+        CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.WEST);
+        MCODEParameterChangePanel paramChangePanel = new MCODEParameterChangePanel();
+        //Incase we choose to have an icon for the MCODE panel at some point
+        URL iconURL = MCODEPlugin.class.getResource("images/some_icon.gif");
+        if (iconURL != null) {
+            Icon icon = new ImageIcon(iconURL);
+            String tip = "MCODE Scoring/Complex-Finding Parameters";
+            cytoPanel.add("MCODE PlugIn", icon, paramChangePanel, tip);
+        } else {
+            cytoPanel.add("MCODE PlugIn", paramChangePanel);
+        }
+        int index = cytoPanel.indexOfComponent(paramChangePanel);
+        cytoPanel.setSelectedIndex(index);
+        cytoPanel.setState(CytoPanelState.DOCK);
     }
 }

@@ -2,13 +2,16 @@ package csplugins.mcode;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -50,7 +53,8 @@ import java.awt.event.ActionListener;
  * Simple score and find action for MCODE. This should be the default for general users.
  */
 public class MCODEScoreAndFindAction implements ActionListener {
-    private MCODEResultsDialog resultDialog;
+    private MCODEResultsPanel resultPanel;
+    private boolean showResultPanel = false;
 
     /**
      * This method is called when the user selects the menu item.
@@ -87,10 +91,11 @@ public class MCODEScoreAndFindAction implements ActionListener {
         }
 
         //check if MCODE has already been run on this network
-        resultDialog = (MCODEResultsDialog) network.getClientData("MCODE_dialog");
-        if (resultDialog != null) {
-            resultDialog.setVisible(true);
+        resultPanel = (MCODEResultsPanel) network.getClientData("MCODE_panel");
+        if (resultPanel != null) {
+            //resultPanel.setVisible(true);
             network.putClientData("MCODE_running", new Boolean(false));
+            showResultPanel = true;
         } else {
             //run MCODE
             MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network);
@@ -106,14 +111,31 @@ public class MCODEScoreAndFindAction implements ActionListener {
             TaskManager.executeTask(MCODEScoreAndFindTask, config);
             //display clusters in a new non modal dialog box
             if (MCODEScoreAndFindTask.isCompletedSuccessfully()) {
-                resultDialog = new MCODEResultsDialog(Cytoscape.getDesktop(), MCODEScoreAndFindTask.getClusters(),
+                resultPanel = new MCODEResultsPanel(Cytoscape.getDesktop(), MCODEScoreAndFindTask.getClusters(),
                         network, MCODEScoreAndFindTask.getImageList());
-                resultDialog.pack();
+                //resultDialog.pack();
                 //store the results dialog box if the user wants to see it later
-                network.putClientData("MCODE_dialog", resultDialog);
+                network.putClientData("MCODE_panel", resultPanel);
                 network.putClientData("MCODE_running", new Boolean(false));
-                resultDialog.setVisible(true);
+                //resultDialog.setVisible(true);
+                showResultPanel = true;
             }
+        }
+        if (showResultPanel == true) {
+            CytoscapeDesktop desktop = Cytoscape.getDesktop();
+            CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.SOUTH);
+            //Incase we choose to have an icon for the MCODE panel at some point
+            URL iconURL = MCODEPlugin.class.getResource("images/some_icon.gif");
+            if (iconURL != null){
+                Icon icon = new ImageIcon(iconURL);
+                String tip = "MCODE Complex Finder";
+                cytoPanel.add("MCODE Results", icon, resultPanel, tip);
+            } else {
+                cytoPanel.add("MCODE Results", resultPanel);
+            }
+            int index = cytoPanel.indexOfComponent(resultPanel);
+            cytoPanel.setSelectedIndex(index);
+            cytoPanel.setState(CytoPanelState.DOCK);
         }
     }
 }
