@@ -1,0 +1,94 @@
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;   
+        text-decoration:none;
+	font-size: 10pt;
+	color: black;
+	background: white;
+}
+
+td.explanation-header {
+	font-size: 2em;
+	font-weight: bold;
+}
+td.tutorial-title-header {
+	font-size: 2em;
+	font-weight: bold;
+	padding-left: 1.2em;
+}
+
+td.left-col {
+	border-right: #ccc 0.15em dotted;
+}
+
+div.left-col {
+	text-align: left;
+//	margin-left: 1.5em;
+	padding-left: 1.5em;
+}
+
+div.image {
+	padding-left: 1.5em;
+}
+
+span.welcome-header {
+	color: #555;
+	font-weight: bold;
+	font-size: 1.5em;
+}
+
+div.tutorial-body {
+	padding-left: 1.5em;
+}
+
+/*****************************************/
+/*                LINKS                  */
+/*****************************************/
+
+a.blue-indented-link {
+	color: blue;
+	font-size: 1.0em;
+	text-decoration: none;
+	padding: 1.0em;
+}
+a.blue-indented-link:hover {
+	color: blue;
+	font-size: 1.0em;
+	text-decoration: underline;
+	padding: 1.0em;
+}
+
+a.blue-link {
+	color: blue;
+	font-size: 1.0em;
+	text-decoration: none;
+}
+a.blue-link:hover {
+	color: blue;
+	font-size: 1.0em;
+	text-decoration: underline;
+}
+
+a.black-no-decoration-link {
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a.grey-indented-no-decoration-link {
+	color: #555;
+	font-weight: bold;
+	text-decoration: none;
+	padding: 1.0em;
+}
+
+
+a.color-bg-link {
+	color: blue;
+	font-size: 0.8em;
+	//text-decoration: none;
+}
+a.color-bg-link:hover {
+	color: blue; 
+	font-size: 0.8em;
+	background-color: white;
+}

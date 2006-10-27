@@ -1,0 +1,141 @@
+#USING NSP1 instead of its synonym YJL041W in Saccharomyces cerevisiae
+#USING ARC1 instead of its synonym YGL105W in Saccharomyces cerevisiae
+#USING MES1 instead of its synonym YGR264C in Saccharomyces cerevisiae
+#USING GUS1 instead of its synonym YGL245W in Saccharomyces cerevisiae
+#USING LOS1 instead of its synonym YKL205W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.391250e-05	3	5	75	6526	97048	Saccharomyces	cerevisiae	GO:0050658	biological_process	"RNA transport"	YGL105W	YJL041W	YKL205W
+1.976950e-02	1	5	26	6526	97048	Saccharomyces	cerevisiae	GO:0051029	biological_process	"rRNA transport"	YJL041W
+2.581260e-01	4	5	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YGL105W	YGL245W	YGR264C	YKL205W
+4.518080e-05	3	5	110	6526	97048	Saccharomyces	cerevisiae	GO:0051169	biological_process	"nuclear transport"	YGL105W	YJL041W	YKL205W
+1.807400e-01	1	5	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	YJL041W
+2.023010e-01	4	5	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YGL105W	YGL245W	YGR264C	YKL205W
+1.840020e-01	1	5	260	6526	97048	Saccharomyces	cerevisiae	GO:0015031	biological_process	"protein transport"	YJL041W
+4.292870e-02	1	5	57	6526	97048	Saccharomyces	cerevisiae	GO:0031965	cellular_component	"nuclear membrane"	YJL041W
+2.203950e-01	4	5	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YGL105W	YGL245W	YGR264C	YKL205W
+2.686690e-01	5	5	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+4.740820e-01	2	5	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YGL245W	YGR264C
+2.199740e-01	2	5	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YGL105W	YKL205W
+1.981360e-05	3	5	84	6526	97048	Saccharomyces	cerevisiae	GO:0015931	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid transport"	YGL105W	YJL041W	YKL205W
+3.061850e-03	1	5	4	6526	97048	Saccharomyces	cerevisiae	GO:0008536	molecular_function	"Ran GTPase binding"	YKL205W
+8.717050e-07	3	5	30	6526	97048	Saccharomyces	cerevisiae	GO:0006418	biological_process	"tRNA aminoacylation for protein translation"	YGL105W	YGL245W	YGR264C
+7.187450e-02	4	5	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YGL105W	YGL245W	YGR264C	YKL205W
+7.935680e-02	3	5	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YGL105W	YGL245W	YGR264C
+4.589960e-03	1	5	6	6526	97048	Saccharomyces	cerevisiae	GO:0051020	molecular_function	"GTPase binding"	YKL205W
+2.297090e-03	1	5	3	6526	97048	Saccharomyces	cerevisiae	GO:0006431	biological_process	"methionyl-tRNA aminoacylation"	YGR264C
+2.116280e-01	1	5	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	YJL041W
+3.550630e-02	1	5	47	6526	97048	Saccharomyces	cerevisiae	GO:0006606	biological_process	"protein import into nucleus"	YJL041W
+2.919530e-04	2	5	36	6526	97048	Saccharomyces	cerevisiae	GO:0004812	molecular_function	"aminoacyl-tRNA ligase activity"	YGL245W	YGR264C
+4.796360e-01	1	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YKL205W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+5.588110e-07	3	5	26	6526	97048	Saccharomyces	cerevisiae	GO:0051031	biological_process	"tRNA transport"	YGL105W	YJL041W	YKL205W
+2.391160e-01	1	5	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	YKL205W
+3.795540e-01	1	5	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	YKL205W
+1.807400e-01	1	5	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	YJL041W
+5.795550e-01	1	5	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YKL205W
+3.773780e-02	1	5	50	6526	97048	Saccharomyces	cerevisiae	GO:0006611	biological_process	"protein export from nucleus"	YJL041W
+2.285260e-02	3	5	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YGL105W	YJL041W	YKL205W
+2.578840e-02	1	5	34	6526	97048	Saccharomyces	cerevisiae	GO:0008033	biological_process	"tRNA processing"	YKL205W
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0006608	biological_process	"snRNP protein import into nucleus"	YJL041W
+6.947990e-02	3	5	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	YGL105W	YGL245W	YGR264C
+5.444530e-05	3	5	117	6526	97048	Saccharomyces	cerevisiae	GO:0006913	biological_process	"nucleocytoplasmic transport"	YGL105W	YJL041W	YKL205W
+1.082510e-02	4	5	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YGL105W	YGL245W	YGR264C	YJL041W
+2.919530e-04	2	5	36	6526	97048	Saccharomyces	cerevisiae	GO:0016876	molecular_function	"ligase activity, forming aminoacyl-tRNA and related compounds"	YGL245W	YGR264C
+1.556080e-01	1	5	217	6526	97048	Saccharomyces	cerevisiae	GO:0007046	biological_process	"ribosome biogenesis"	YJL041W
+4.282350e-03	3	5	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YGL105W	YJL041W	YKL205W
+2.099860e-10	3	5	3	6526	97048	Saccharomyces	cerevisiae	GO:0017102	cellular_component	"methionyl glutamyl tRNA synthetase complex"	YGL105W	YGL245W	YGR264C
+4.809720e-02	1	5	64	6526	97048	Saccharomyces	cerevisiae	GO:0051028	biological_process	"mRNA transport"	YJL041W
+6.300830e-02	3	5	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YGL105W	YGL245W	YGR264C
+1.859540e-01	1	5	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	YJL041W
+2.589050e-01	5	5	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+1.391250e-05	3	5	75	6526	97048	Saccharomyces	cerevisiae	GO:0051236	biological_process	"establishment of RNA localization"	YGL105W	YJL041W	YKL205W
+4.796360e-01	1	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YKL205W
+2.208090e-01	5	5	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+9.810620e-03	4	5	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YGL105W	YGL245W	YGR264C	YKL205W
+2.816350e-06	2	5	4	6526	97048	Saccharomyces	cerevisiae	GO:0000049	molecular_function	"tRNA binding"	YGL105W	YKL205W
+9.503280e-02	1	5	129	6526	97048	Saccharomyces	cerevisiae	GO:0008380	biological_process	"RNA splicing"	YKL205W
+3.740310e-04	3	5	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	YGL105W	YGL245W	YGR264C
+3.280280e-02	2	5	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	YGL105W	YKL205W
+2.056760e-01	5	5	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+1.291860e-02	4	5	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YGL105W	YGL245W	YGR264C	YKL205W
+5.549920e-01	2	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YJL041W	YKL205W
+2.055230e-05	3	5	85	6526	97048	Saccharomyces	cerevisiae	GO:0006403	biological_process	"RNA localization"	YGL105W	YJL041W	YKL205W
+1.333600e-05	3	5	74	6526	97048	Saccharomyces	cerevisiae	GO:0006405	biological_process	"RNA export from nucleus"	YGL105W	YJL041W	YKL205W
+1.642020e-01	4	5	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YGL105W	YGL245W	YGR264C	YKL205W
+1.820460e-01	1	5	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	YJL041W
+1.917890e-01	1	5	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	YJL041W
+9.140270e-01	2	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YJL041W	YKL205W
+1.068370e-02	1	5	14	6526	97048	Saccharomyces	cerevisiae	GO:0000394	biological_process	"RNA splicing, via endonucleolytic cleavage and ligation"	YKL205W
+5.588110e-07	3	5	26	6526	97048	Saccharomyces	cerevisiae	GO:0006409	biological_process	"tRNA export from nucleus"	YGL105W	YJL041W	YKL205W
+7.661660e-04	1	5	1	6526	97048	Saccharomyces	cerevisiae	GO:0016363	cellular_component	"nuclear matrix"	YKL205W
+6.071570e-01	1	5	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YJL041W
+8.717050e-07	3	5	30	6526	97048	Saccharomyces	cerevisiae	GO:0043038	biological_process	"amino acid activation"	YGL105W	YGL245W	YGR264C
+2.785470e-02	3	5	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YGL105W	YJL041W	YKL205W
+9.180190e-01	1	5	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YKL205W
+1.927540e-01	2	5	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YJL041W	YKL205W
+5.886720e-01	1	5	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YJL041W
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0006607	biological_process	"NLS-bearing substrate import into nucleus"	YJL041W
+3.873620e-01	1	5	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YJL041W
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0006408	biological_process	"snRNA export from nucleus"	YJL041W
+1.531860e-03	1	5	2	6526	97048	Saccharomyces	cerevisiae	GO:0004825	molecular_function	"methionine-tRNA ligase activity"	YGR264C
+6.854850e-02	1	5	92	6526	97048	Saccharomyces	cerevisiae	GO:0017038	biological_process	"protein import"	YJL041W
+1.531860e-03	1	5	2	6526	97048	Saccharomyces	cerevisiae	GO:0004818	molecular_function	"glutamate-tRNA ligase activity"	YGL245W
+6.116190e-03	1	5	8	6526	97048	Saccharomyces	cerevisiae	GO:0000055	biological_process	"ribosomal large subunit export from nucleus"	YJL041W
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0051030	biological_process	"snRNA transport"	YJL041W
+2.710330e-05	3	5	93	6526	97048	Saccharomyces	cerevisiae	GO:0051168	biological_process	"nuclear export"	YGL105W	YJL041W	YKL205W
+4.874230e-02	3	5	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	YGL105W	YGL245W	YGR264C
+4.016310e-01	5	5	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+1.901510e-02	1	5	25	6526	97048	Saccharomyces	cerevisiae	GO:0006609	biological_process	"mRNA-binding (hnRNP) protein import into nucleus"	YJL041W
+5.549920e-01	2	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YJL041W	YKL205W
+7.681080e-03	3	5	629	6526	97048	Saccharomyces	cerevisiae	GO:0043037	biological_process	"translation"	YGL105W	YGL245W	YGR264C
+2.417080e-02	3	5	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YGL105W	YJL041W	YKL205W
+2.708110e-04	3	5	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	YGL105W	YGL245W	YGR264C
+1.675880e-01	1	5	235	6526	97048	Saccharomyces	cerevisiae	GO:0006605	biological_process	"protein targeting"	YJL041W
+4.527180e-03	3	5	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YGL105W	YJL041W	YKL205W
+2.113430e-04	3	5	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	YGL105W	YGL245W	YGR264C
+1.391250e-05	3	5	75	6526	97048	Saccharomyces	cerevisiae	GO:0050657	biological_process	"nucleic acid transport"	YGL105W	YJL041W	YKL205W
+8.706610e-01	2	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YJL041W	YKL205W
+1.526670e-02	3	5	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	YGL105W	YGL245W	YGR264C
+3.848070e-02	1	5	51	6526	97048	Saccharomyces	cerevisiae	GO:0005643	cellular_component	"nuclear pore"	YJL041W
+2.052350e-02	1	5	27	6526	97048	Saccharomyces	cerevisiae	GO:0006999	biological_process	"nuclear pore organization and biogenesis"	YJL041W
+2.586220e-01	1	5	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	YJL041W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0006610	biological_process	"ribosomal protein import into nucleus"	YJL041W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+8.706610e-01	2	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YJL041W	YKL205W
+2.247200e-04	4	5	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	YGL105W	YGL245W	YGR264C	YKL205W
+1.976950e-02	1	5	26	6526	97048	Saccharomyces	cerevisiae	GO:0006407	biological_process	"rRNA export from nucleus"	YJL041W
+1.599250e-02	1	5	21	6526	97048	Saccharomyces	cerevisiae	GO:0000054	biological_process	"ribosome export from nucleus"	YJL041W
+2.586220e-01	1	5	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	YJL041W
+4.292870e-02	1	5	57	6526	97048	Saccharomyces	cerevisiae	GO:0044453	cellular_component	"nuclear membrane part"	YJL041W
+8.148230e-02	2	5	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YGL105W	YKL205W
+9.422510e-04	3	5	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	YGL105W	YGL245W	YGR264C
+2.458670e-01	1	5	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	YJL041W
+1.463780e-07	3	5	17	6526	97048	Saccharomyces	cerevisiae	GO:0005941	cellular_component	"unlocalized protein complex"	YGL105W	YGL245W	YGR264C
+1.182500e-01	3	5	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YGL105W	YJL041W	YKL205W
+3.699440e-02	1	5	49	6526	97048	Saccharomyces	cerevisiae	GO:0006997	biological_process	"nuclear organization and biogenesis"	YJL041W
+2.919530e-04	2	5	36	6526	97048	Saccharomyces	cerevisiae	GO:0016875	molecular_function	"ligase activity, forming carbon-oxygen bonds"	YGL245W	YGR264C
+3.286940e-03	2	5	121	6526	97048	Saccharomyces	cerevisiae	GO:0016874	molecular_function	"ligase activity"	YGL245W	YGR264C
+3.343480e-01	1	5	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YKL205W
+8.717050e-07	3	5	30	6526	97048	Saccharomyces	cerevisiae	GO:0043039	biological_process	"tRNA aminoacylation"	YGL105W	YGL245W	YGR264C
+4.012620e-01	5	5	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+3.800770e-01	1	5	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YJL041W
+1.794330e-01	1	5	253	6526	97048	Saccharomyces	cerevisiae	GO:0006886	biological_process	"intracellular protein transport"	YJL041W
+1.897920e-02	3	5	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	YGL105W	YGL245W	YGR264C
+2.131350e-01	5	5	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YGL105W	YGL245W	YGR264C	YJL041W	YKL205W
+4.809720e-02	1	5	64	6526	97048	Saccharomyces	cerevisiae	GO:0006406	biological_process	"mRNA export from nucleus"	YJL041W
+9.140270e-01	2	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YJL041W	YKL205W
+4.589960e-03	1	5	6	6526	97048	Saccharomyces	cerevisiae	GO:0031267	molecular_function	"small GTPase binding"	YKL205W
+7.504690e-02	1	5	101	6526	97048	Saccharomyces	cerevisiae	GO:0005635	cellular_component	"nuclear envelope"	YJL041W
+3.848070e-02	1	5	51	6526	97048	Saccharomyces	cerevisiae	GO:0046930	cellular_component	"pore complex"	YJL041W
+2.001560e-01	1	5	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	YJL041W
+4.706360e-04	3	5	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	YGL105W	YGL245W	YGR264C
+4.044310e-02	3	5	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	YGL105W	YGL245W	YGR264C
+5.232090e-03	3	5	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YGL105W	YJL041W	YKL205W
+4.797460e-01	2	5	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YJL041W	YKL205W
+1.068370e-02	1	5	14	6526	97048	Saccharomyces	cerevisiae	GO:0006388	biological_process	"tRNA splicing"	YKL205W
+3.126370e-07	4	5	105	6526	97048	Saccharomyces	cerevisiae	GO:0006399	biological_process	"tRNA metabolism"	YGL105W	YGL245W	YGR264C	YKL205W
+3.550630e-02	1	5	47	6526	97048	Saccharomyces	cerevisiae	GO:0051170	biological_process	"nuclear import"	YJL041W
+9.422510e-04	3	5	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	YGL105W	YGL245W	YGR264C
+1.531860e-03	1	5	2	6526	97048	Saccharomyces	cerevisiae	GO:0006424	biological_process	"glutamyl-tRNA aminoacylation"	YGL245W
+7.640550e-03	1	5	10	6526	97048	Saccharomyces	cerevisiae	GO:0019899	molecular_function	"enzyme binding"	YKL205W

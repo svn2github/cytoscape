@@ -1,0 +1,24 @@
+==LEGEND
+Sharan_legend_only.jpg
+
+==CITATION
+Sharan et al. (2005)
+
+==TITLE
+Conserved patterns of protein interaction in multiple species
+
+==FULLTEXT
+http://www.pnas.org/cgi/content/full/102/6/1974
+
+==SUPPL
+/Sharan2005/
+
+==ABSTRACT
+To elucidate cellular machinery on a global scale, we performed a multiple comparison of the recently available protein-protein interaction networks of Caenorhabditis elegans, Drosophila melanogaster, and Saccharomyces cerevisiae. This comparison integrated protein interaction and sequence information to reveal 71 network regions that were conserved across all three species and many exclusive to the metazoans. We used this conservation, and found statistically significant support for 4,645 previously undescribed protein functions and 2,609 previously undescribed protein interactions. We tested 60 interaction predictions for yeast by two-hybrid analysis, confirming approximately half of these. Significantly, many of the predicted functions and interactions would not have been identified from sequence similarity alone, demonstrating that network comparisons provide essential biological information beyond what is gleaned from the genome.
+
+==ORGANISM
+<i>Caenorhabdities elegans</i>(Worm)
+<i>Drosophila melanogaster</i>(Fly)
+<i>Saccharomyces cerevisiae</i>(Yeast)
+
+==FIGURES

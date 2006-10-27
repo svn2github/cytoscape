@@ -1,0 +1,200 @@
+#USING tag-327 instead of its synonym C28H8.6 in Caenorhabditis elegans
+#USING tag-163 instead of its synonym M01E11.7 in Caenorhabditis elegans
+#USING eps-8 instead of its synonym Y57G11C.24 in Caenorhabditis elegans
+#USING atn-1 instead of its synonym W04D2.1 in Caenorhabditis elegans
+#USING eat-1 instead of its synonym T11B7.4 in Caenorhabditis elegans
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+4.738220e-01	7	9	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+1.934230e-01	7	9	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+4.870600e-01	1	9	1981	27713	88307	Caenorhabditis	elegans	GO:0044267	biological_process	"cellular protein metabolism"	R08D7.3
+3.569760e-01	7	9	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+2.433650e-02	1	9	32	11710	88307	Caenorhabditis	elegans	GO:0003743	molecular_function	"translation initiation factor activity"	R08D7.3
+2.366400e-01	1	9	819	27713	88307	Caenorhabditis	elegans	GO:0009058	biological_process	"biosynthesis"	R08D7.3
+3.595730e-01	7	9	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+2.271330e-03	1	9	7	27713	88307	Caenorhabditis	elegans	GO:0043050	biological_process	"pharyngeal pumping"	T11B7.4
+8.153530e-02	2	9	1497	27713	88307	Caenorhabditis	elegans	GO:0050896	biological_process	"response to stimulus"	T11B7.4	Y57G11C.24
+4.445810e-02	1	9	59	11710	88307	Caenorhabditis	elegans	GO:0045182	molecular_function	"translation regulator activity"	R08D7.3
+7.971610e-01	1	9	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	R08D7.3
+4.425250e-02	1	9	139	27713	88307	Caenorhabditis	elegans	GO:0043037	biological_process	"translation"	R08D7.3
+1.920340e-01	7	9	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+5.451090e-02	2	9	1193	27713	88307	Caenorhabditis	elegans	GO:0007610	biological_process	"behavior"	T11B7.4	Y57G11C.24
+8.192950e-01	7	9	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	F42H10.7	M01E11.7	R08D7.3	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+4.182020e-01	6	9	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24
+7.712240e-02	1	9	246	27713	88307	Caenorhabditis	elegans	GO:0042592	biological_process	"homeostasis"	Y57G11C.24
+3.623540e-01	7	9	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+8.498020e-01	1	9	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	R08D7.3
+9.817650e-01	2	9	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	R08D7.3	Y73B6BL.33
+1.429830e-01	1	9	471	27713	88307	Caenorhabditis	elegans	GO:0035264	biological_process	"body growth"	Y73B6BL.33
+1.002440e-02	1	9	31	27713	88307	Caenorhabditis	elegans	GO:0006413	biological_process	"translational initiation"	R08D7.3
+4.182020e-01	6	9	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24
+5.831310e-03	1	9	18	27713	88307	Caenorhabditis	elegans	GO:0007631	biological_process	"feeding behavior"	T11B7.4
+5.015870e-01	1	9	2063	27713	88307	Caenorhabditis	elegans	GO:0019538	biological_process	"protein metabolism"	R08D7.3
+6.011200e-01	1	9	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	R08D7.3
+5.002300e-01	7	9	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+1.292950e-01	1	9	423	27713	88307	Caenorhabditis	elegans	GO:0009059	biological_process	"macromolecule biosynthesis"	R08D7.3
+1.186110e-01	1	9	386	27713	88307	Caenorhabditis	elegans	GO:0006412	biological_process	"protein biosynthesis"	R08D7.3
+4.862900e-01	7	9	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+6.188990e-02	1	9	196	27713	88307	Caenorhabditis	elegans	GO:0018987	biological_process	"osmoregulation"	Y57G11C.24
+9.493110e-01	1	9	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	R08D7.3
+1.000000e+00	8	9	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C28H8.6	F42H10.7	M01E11.7	R08D7.3	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+1.429830e-01	1	9	471	27713	88307	Caenorhabditis	elegans	GO:0040014	biological_process	"regulation of body size"	Y73B6BL.33
+9.192640e-01	1	9	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	R08D7.3
+4.838470e-01	7	9	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+8.486570e-01	4	9	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	F42H10.7	M01E11.7	T11B7.4	W04D2.1
+1.000000e+00	2	9	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	R08D7.3	Y73B6BL.33
+7.574990e-01	1	9	1705	11710	88307	Caenorhabditis	elegans	GO:0000166	molecular_function	"nucleotide binding"	Y73B6BL.33
+7.769690e-01	1	9	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	R08D7.3
+1.968940e-01	7	9	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+8.474400e-01	4	9	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	F42H10.7	M01E11.7	T11B7.4	W04D2.1
+2.035720e-01	1	9	692	27713	88307	Caenorhabditis	elegans	GO:0044249	biological_process	"cellular biosynthesis"	R08D7.3
+3.569760e-01	7	9	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+4.224070e-02	1	9	56	11710	88307	Caenorhabditis	elegans	GO:0008135	molecular_function	"translation factor activity, nucleic acid binding"	R08D7.3
+2.271330e-03	1	9	7	27713	88307	Caenorhabditis	elegans	GO:0042755	biological_process	"eating behavior"	T11B7.4
+2.801170e-01	7	9	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+1.595470e-01	1	9	530	27713	88307	Caenorhabditis	elegans	GO:0007568	biological_process	"aging"	T11B7.4
+4.626240e-01	2	9	1970	11710	88307	Caenorhabditis	elegans	GO:0003676	molecular_function	"nucleic acid binding"	R08D7.3	Y73B6BL.33
+2.356170e-01	1	9	815	27713	88307	Caenorhabditis	elegans	GO:0050874	biological_process	"organismal physiological process"	T11B7.4
+4.980780e-01	1	9	2043	27713	88307	Caenorhabditis	elegans	GO:0044260	biological_process	"cellular macromolecule metabolism"	R08D7.3
+1.592680e-01	1	9	529	27713	88307	Caenorhabditis	elegans	GO:0008340	biological_process	"determination of adult life span"	T11B7.4
+4.109990e-02	2	9	1021	27713	88307	Caenorhabditis	elegans	GO:0007626	biological_process	"locomotory behavior"	T11B7.4	Y57G11C.24
+1.223780e-01	1	9	399	27713	88307	Caenorhabditis	elegans	GO:0040018	biological_process	"positive regulation of body size"	Y73B6BL.33
+3.571490e-01	7	9	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+2.110490e-01	7	9	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	C28H8.6	F42H10.7	M01E11.7	T11B7.4	W04D2.1	Y57G11C.24	Y73B6BL.33
+#USING Es2 instead of its synonym CG1474 in Drosophila melanogaster
+#USING aru instead of its synonym CG4276 in Drosophila melanogaster
+#USING Actn instead of its synonym CG4376 in Drosophila melanogaster
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.054790e-03	1	7	3	10214	157890	Drosophila	melanogaster	GO:0051015	molecular_function	"actin filament binding"	CG4376
+3.387930e-02	1	7	50	10183	157890	Drosophila	melanogaster	GO:0000381	biological_process	"regulation of alternative nuclear mRNA splicing, via spliceosome"	CG7879
+3.953570e-01	1	7	706	10183	157890	Drosophila	melanogaster	GO:0007166	biological_process	"cell surface receptor linked signal transduction"	CG4276
+5.292390e-01	2	7	1818	7583	157890	Drosophila	melanogaster	GO:0005737	cellular_component	"cytoplasm"	CG4276	CG4810
+7.845630e-01	3	7	5161	10183	157890	Drosophila	melanogaster	GO:0044237	biological_process	"cellular metabolism"	CG4276	CG4810	CG7879
+1.262600e-01	1	7	195	10214	157890	Drosophila	melanogaster	GO:0003735	molecular_function	"structural constituent of ribosome"	CG4276
+5.457090e-01	1	7	808	7583	157890	Drosophila	melanogaster	GO:0043228	cellular_component	"non-membrane-bound organelle"	CG4276
+2.194460e-01	1	7	354	10183	157890	Drosophila	melanogaster	GO:0007610	biological_process	"behavior"	CG4376
+7.323050e-02	1	7	110	10183	157890	Drosophila	melanogaster	GO:0030036	biological_process	"actin cytoskeleton organization and biogenesis"	CG4376
+8.480940e-01	3	7	5608	10183	157890	Drosophila	melanogaster	GO:0008152	biological_process	"metabolism"	CG4276	CG4810	CG7879
+4.283700e-04	3	7	242	10214	157890	Drosophila	melanogaster	GO:0008092	molecular_function	"cytoskeletal protein binding"	CG30084	CG4376	CG4810
+5.154360e-01	4	7	3845	7583	157890	Drosophila	melanogaster	GO:0005622	cellular_component	"intracellular"	CG1474	CG4276	CG4810	CG7879
+9.716070e-01	1	7	4072	10214	157890	Drosophila	melanogaster	GO:0003824	molecular_function	"catalytic activity"	CG1474
+3.351510e-01	4	7	4319	10214	157890	Drosophila	melanogaster	GO:0005488	molecular_function	"binding"	CG30084	CG4376	CG4810	CG7879
+1.377030e-02	1	7	15	7583	157890	Drosophila	melanogaster	GO:0030055	cellular_component	"cell-matrix junction"	CG4376
+5.473120e-01	2	7	2514	10183	157890	Drosophila	melanogaster	GO:0019538	biological_process	"protein metabolism"	CG4276	CG4810
+4.720000e-01	3	7	3583	10183	157890	Drosophila	melanogaster	GO:0043170	biological_process	"macromolecule metabolism"	CG4276	CG4810	CG7879
+1.285730e-02	1	7	14	7583	157890	Drosophila	melanogaster	GO:0005924	cellular_component	"cell-substrate adherens junction"	CG4376
+1.000000e+00	7	7	10183	10183	157890	Drosophila	melanogaster	GO:0008150	biological_process	"biological_process"	CG1474	CG30084	CG32406	CG4276	CG4376	CG4810	CG7879
+1.871940e-01	1	7	297	10183	157890	Drosophila	melanogaster	GO:0006396	biological_process	"RNA processing"	CG7879
+3.299700e-01	1	7	566	10183	157890	Drosophila	melanogaster	GO:0007399	biological_process	"nervous system development"	CG1474
+1.730600e-01	1	7	203	7583	157890	Drosophila	melanogaster	GO:0005840	cellular_component	"ribosome"	CG4276
+1.957900e-01	1	7	312	10183	157890	Drosophila	melanogaster	GO:0000278	biological_process	"mitotic cell cycle"	CG4810
+6.074070e-02	1	7	91	10214	157890	Drosophila	melanogaster	GO:0015631	molecular_function	"tubulin binding"	CG4810
+8.603850e-02	1	7	130	10183	157890	Drosophila	melanogaster	GO:0007169	biological_process	"transmembrane receptor protein tyrosine kinase signaling pathway"	CG4276
+3.721230e-02	1	7	55	10183	157890	Drosophila	melanogaster	GO:0050684	biological_process	"regulation of mRNA processing"	CG7879
+5.435540e-01	1	7	1079	10183	157890	Drosophila	melanogaster	GO:0031323	biological_process	"regulation of cellular metabolism"	CG7879
+4.179740e-01	1	7	564	7583	157890	Drosophila	melanogaster	GO:0005886	cellular_component	"plasma membrane"	CG4376
+5.878990e-02	1	7	88	10214	157890	Drosophila	melanogaster	GO:0008135	molecular_function	"translation factor activity, nucleic acid binding"	CG4810
+5.150860e-01	1	7	1000	10183	157890	Drosophila	melanogaster	GO:0050874	biological_process	"organismal physiological process"	CG30084
+5.373920e-01	2	7	2474	10183	157890	Drosophila	melanogaster	GO:0044260	biological_process	"cellular macromolecule metabolism"	CG4276	CG4810
+1.444150e-01	1	7	225	10214	157890	Drosophila	melanogaster	GO:0005509	molecular_function	"calcium ion binding"	CG4376
+5.081220e-01	2	7	1756	7583	157890	Drosophila	melanogaster	GO:0043234	cellular_component	"protein complex"	CG4276	CG4810
+3.064010e-01	1	7	386	7583	157890	Drosophila	melanogaster	GO:0030529	cellular_component	"ribonucleoprotein complex"	CG4276
+1.603390e-01	1	7	251	10183	157890	Drosophila	melanogaster	GO:0016071	biological_process	"mRNA metabolism"	CG7879
+1.377030e-02	1	7	15	7583	157890	Drosophila	melanogaster	GO:0005852	cellular_component	"eukaryotic translation initiation factor 3 complex"	CG4810
+2.761470e-01	2	7	1501	10183	157890	Drosophila	melanogaster	GO:0050794	biological_process	"regulation of cellular process"	CG4810	CG7879
+1.163120e-02	1	7	17	10183	157890	Drosophila	melanogaster	GO:0007016	biological_process	"cytoskeletal anchoring"	CG4376
+6.200690e-02	1	7	69	7583	157890	Drosophila	melanogaster	GO:0030054	cellular_component	"cell junction"	CG4376
+5.180240e-01	2	7	2397	10183	157890	Drosophila	melanogaster	GO:0044267	biological_process	"cellular protein metabolism"	CG4276	CG4810
+4.851400e-01	4	7	3740	7583	157890	Drosophila	melanogaster	GO:0044424	cellular_component	"intracellular part"	CG1474	CG4276	CG4810	CG7879
+2.852580e-02	1	7	42	10183	157890	Drosophila	melanogaster	GO:0007173	biological_process	"epidermal growth factor receptor signaling pathway"	CG4276
+3.166860e-01	1	7	539	10183	157890	Drosophila	melanogaster	GO:0007242	biological_process	"intracellular signaling cascade"	CG32406
+8.642190e-02	1	7	131	10214	157890	Drosophila	melanogaster	GO:0016614	molecular_function	"oxidoreductase activity, acting on CH-OH group of donors"	CG1474
+8.000690e-01	5	7	7858	10183	157890	Drosophila	melanogaster	GO:0007582	biological_process	"physiological process"	CG30084	CG4276	CG4376	CG4810	CG7879
+1.235570e-01	1	7	190	10183	157890	Drosophila	melanogaster	GO:0000377	biological_process	"RNA splicing, via transesterification reactions with bulged adenosine as nucleophile"	CG7879
+7.744750e-01	1	7	1951	10183	157890	Drosophila	melanogaster	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG7879
+5.095200e-02	1	7	76	10214	157890	Drosophila	melanogaster	GO:0008017	molecular_function	"microtubule binding"	CG4810
+1.235570e-01	1	7	190	10183	157890	Drosophila	melanogaster	GO:0000375	biological_process	"RNA splicing, via transesterification reactions"	CG7879
+8.096590e-01	1	7	2148	10183	157890	Drosophila	melanogaster	GO:0007275	biological_process	"development"	CG1474
+6.482310e-02	1	7	97	10183	157890	Drosophila	melanogaster	GO:0030534	biological_process	"adult behavior"	CG4376
+4.007930e-02	2	7	482	10183	157890	Drosophila	melanogaster	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	CG30084	CG4376
+1.272350e-01	1	7	196	10183	157890	Drosophila	melanogaster	GO:0008380	biological_process	"RNA splicing"	CG7879
+2.852580e-02	1	7	42	10183	157890	Drosophila	melanogaster	GO:0007629	biological_process	"flight behavior"	CG4376
+2.472420e-01	1	7	406	10214	157890	Drosophila	melanogaster	GO:0003723	molecular_function	"RNA binding"	CG7879
+5.457090e-01	1	7	808	7583	157890	Drosophila	melanogaster	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CG4276
+6.497430e-01	5	7	7140	10183	157890	Drosophila	melanogaster	GO:0050875	biological_process	"cellular physiological process"	CG30084	CG4276	CG4376	CG4810	CG7879
+7.586730e-01	1	7	1871	10183	157890	Drosophila	melanogaster	GO:0043283	biological_process	"biopolymer metabolism"	CG7879
+3.935680e-01	1	7	702	10183	157890	Drosophila	melanogaster	GO:0048731	biological_process	"system development"	CG1474
+7.718230e-01	3	7	5081	10183	157890	Drosophila	melanogaster	GO:0044238	biological_process	"primary metabolism"	CG4276	CG4810	CG7879
+5.726070e-01	3	7	3007	7583	157890	Drosophila	melanogaster	GO:0043226	cellular_component	"organelle"	CG1474	CG4276	CG7879
+3.840660e-01	1	7	683	10214	157890	Drosophila	melanogaster	GO:0046914	molecular_function	"transition metal ion binding"	CG30084
+1.118840e-01	2	7	857	10183	157890	Drosophila	melanogaster	GO:0006996	biological_process	"organelle organization and biogenesis"	CG30084	CG4376
+7.323050e-02	1	7	110	10183	157890	Drosophila	melanogaster	GO:0030029	biological_process	"actin filament-based process"	CG4376
+5.762730e-02	1	7	64	7583	157890	Drosophila	melanogaster	GO:0016282	cellular_component	"eukaryotic 43S preinitiation complex"	CG4810
+1.657570e-02	2	7	301	10183	157890	Drosophila	melanogaster	GO:0006928	biological_process	"cell motility"	CG30084	CG4376
+3.902120e-01	2	7	1915	10183	157890	Drosophila	melanogaster	GO:0051179	biological_process	"localization"	CG30084	CG4376
+4.063360e-01	2	7	1470	7583	157890	Drosophila	melanogaster	GO:0044444	cellular_component	"cytoplasmic part"	CG4276	CG4810
+8.757620e-01	1	7	1953	7583	157890	Drosophila	melanogaster	GO:0016020	cellular_component	"membrane"	CG4376
+1.657570e-02	2	7	301	10183	157890	Drosophila	melanogaster	GO:0051674	biological_process	"localization of cell"	CG30084	CG4376
+1.656520e-01	1	7	260	10183	157890	Drosophila	melanogaster	GO:0007067	biological_process	"mitosis"	CG4810
+3.842770e-02	1	7	57	10214	157890	Drosophila	melanogaster	GO:0003743	molecular_function	"translation initiation factor activity"	CG4810
+1.877090e-01	2	7	1170	10183	157890	Drosophila	melanogaster	GO:0009058	biological_process	"biosynthesis"	CG4276	CG4810
+6.221100e-01	5	7	5225	7583	157890	Drosophila	melanogaster	GO:0005623	cellular_component	"cell"	CG1474	CG4276	CG4376	CG4810	CG7879
+6.139020e-02	1	7	92	10214	157890	Drosophila	melanogaster	GO:0045182	molecular_function	"translation regulator activity"	CG4810
+2.054790e-03	1	7	3	10214	157890	Drosophila	melanogaster	GO:0004757	molecular_function	"sepiapterin reductase activity"	CG1474
+1.315090e-01	1	7	203	10183	157890	Drosophila	melanogaster	GO:0043037	biological_process	"translation"	CG4810
+3.657660e-01	2	7	1826	10183	157890	Drosophila	melanogaster	GO:0051234	biological_process	"establishment of localization"	CG30084	CG4376
+2.643910e-01	2	7	1458	10183	157890	Drosophila	melanogaster	GO:0050791	biological_process	"regulation of physiological process"	CG4810	CG7879
+2.076860e-01	1	7	334	10214	157890	Drosophila	melanogaster	GO:0003729	molecular_function	"mRNA binding"	CG7879
+2.364830e-01	2	7	1355	10183	157890	Drosophila	melanogaster	GO:0007165	biological_process	"signal transduction"	CG32406	CG4276
+1.194370e-02	1	7	13	7583	157890	Drosophila	melanogaster	GO:0005925	cellular_component	"focal adhesion"	CG4376
+3.088890e-01	2	7	1620	10183	157890	Drosophila	melanogaster	GO:0007154	biological_process	"cell communication"	CG32406	CG4276
+4.053550e-02	1	7	60	10183	157890	Drosophila	melanogaster	GO:0006413	biological_process	"translational initiation"	CG4810
+7.539570e-01	2	7	2600	7583	157890	Drosophila	melanogaster	GO:0043227	cellular_component	"membrane-bound organelle"	CG1474	CG7879
+8.653590e-02	2	7	739	10183	157890	Drosophila	melanogaster	GO:0006412	biological_process	"protein biosynthesis"	CG4276	CG4810
+1.321180e-01	1	7	204	10183	157890	Drosophila	melanogaster	GO:0051726	biological_process	"regulation of cell cycle"	CG4810
+3.721230e-02	1	7	55	10183	157890	Drosophila	melanogaster	GO:0048024	biological_process	"regulation of nuclear mRNA splicing, via spliceosome"	CG7879
+1.204810e-01	1	7	185	10183	157890	Drosophila	melanogaster	GO:0007167	biological_process	"enzyme linked receptor protein signaling pathway"	CG4276
+1.000000e+00	6	7	10214	10214	157890	Drosophila	melanogaster	GO:0003674	molecular_function	"molecular_function"	CG1474	CG30084	CG4276	CG4376	CG4810	CG7879
+3.795260e-01	1	7	673	10214	157890	Drosophila	melanogaster	GO:0016491	molecular_function	"oxidoreductase activity"	CG1474
+1.000000e+00	5	7	7583	7583	157890	Drosophila	melanogaster	GO:0005575	cellular_component	"cellular_component"	CG1474	CG4276	CG4376	CG4810	CG7879
+7.534920e-01	2	7	2598	7583	157890	Drosophila	melanogaster	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CG1474	CG7879
+1.538060e-01	1	7	240	10183	157890	Drosophila	melanogaster	GO:0006397	biological_process	"mRNA processing"	CG7879
+2.527410e-01	1	7	415	10183	157890	Drosophila	melanogaster	GO:0016070	biological_process	"RNA metabolism"	CG7879
+1.321180e-01	1	7	204	10183	157890	Drosophila	melanogaster	GO:0000074	biological_process	"regulation of progression through cell cycle"	CG4810
+3.193820e-01	2	7	1658	10183	157890	Drosophila	melanogaster	GO:0050789	biological_process	"regulation of biological process"	CG4810	CG7879
+3.694550e-01	2	7	1845	10214	157890	Drosophila	melanogaster	GO:0003676	molecular_function	"nucleic acid binding"	CG4810	CG7879
+3.092140e-03	2	7	127	10214	157890	Drosophila	melanogaster	GO:0003779	molecular_function	"actin binding"	CG30084	CG4376
+5.604810e-01	1	7	1128	10183	157890	Drosophila	melanogaster	GO:0019222	biological_process	"regulation of metabolism"	CG7879
+1.710360e-02	2	7	306	10183	157890	Drosophila	melanogaster	GO:0040011	biological_process	"locomotion"	CG30084	CG4376
+8.826930e-04	4	7	759	10214	157890	Drosophila	melanogaster	GO:0005198	molecular_function	"structural molecule activity"	CG30084	CG4276	CG4376	CG4810
+2.195580e-02	1	7	24	7583	157890	Drosophila	melanogaster	GO:0016323	cellular_component	"basolateral plasma membrane"	CG4376
+2.975820e-01	2	7	1579	10183	157890	Drosophila	melanogaster	GO:0016043	biological_process	"cell organization and biogenesis"	CG30084	CG4376
+4.912980e-02	1	7	73	10183	157890	Drosophila	melanogaster	GO:0008344	biological_process	"adult locomotory behavior"	CG4376
+5.053910e-01	1	7	974	10183	157890	Drosophila	melanogaster	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG7879
+4.318690e-02	1	7	64	10183	157890	Drosophila	melanogaster	GO:0007015	biological_process	"actin filament organization"	CG4376
+4.646310e-02	3	7	1279	10214	157890	Drosophila	melanogaster	GO:0005515	molecular_function	"protein binding"	CG30084	CG4376	CG4810
+7.539380e-03	1	7	11	10183	157890	Drosophila	melanogaster	GO:0051017	biological_process	"actin filament bundle formation"	CG4376
+6.455670e-01	1	7	1402	10183	157890	Drosophila	melanogaster	GO:0050896	biological_process	"response to stimulus"	CG4376
+6.203930e-02	1	7	93	10214	157890	Drosophila	melanogaster	GO:0016616	molecular_function	"oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor"	CG1474
+1.235570e-01	1	7	190	10183	157890	Drosophila	melanogaster	GO:0000398	biological_process	"nuclear mRNA splicing, via spliceosome"	CG7879
+6.026900e-02	1	7	90	10183	157890	Drosophila	melanogaster	GO:0006936	biological_process	"muscle contraction"	CG30084
+6.221100e-01	5	7	5225	7583	157890	Drosophila	melanogaster	GO:0044464	cellular_component	"cell part"	CG1474	CG4276	CG4376	CG4810	CG7879
+7.238940e-01	1	7	1273	7583	157890	Drosophila	melanogaster	GO:0044425	cellular_component	"membrane part"	CG4376
+4.615830e-02	1	7	51	7583	157890	Drosophila	melanogaster	GO:0005912	cellular_component	"adherens junction"	CG4376
+1.212320e-01	2	7	901	10214	157890	Drosophila	melanogaster	GO:0043169	molecular_function	"cation binding"	CG30084	CG4376
+9.256230e-02	2	7	768	10183	157890	Drosophila	melanogaster	GO:0009059	biological_process	"macromolecule biosynthesis"	CG4276	CG4810
+4.784290e-01	6	7	7772	10183	157890	Drosophila	melanogaster	GO:0009987	biological_process	"cellular process"	CG30084	CG32406	CG4276	CG4376	CG4810	CG7879
+5.726070e-01	3	7	3007	7583	157890	Drosophila	melanogaster	GO:0043229	cellular_component	"intracellular organelle"	CG1474	CG4276	CG7879
+1.668290e-01	1	7	262	10183	157890	Drosophila	melanogaster	GO:0000087	biological_process	"M phase of mitotic cell cycle"	CG4810
+1.316490e-01	2	7	946	10214	157890	Drosophila	melanogaster	GO:0043167	molecular_function	"ion binding"	CG30084	CG4376
+2.749510e-01	1	7	457	10183	157890	Drosophila	melanogaster	GO:0000279	biological_process	"M phase"	CG4810
+2.518770e-01	2	7	1412	10183	157890	Drosophila	melanogaster	GO:0051244	biological_process	"regulation of cellular physiological process"	CG4810	CG7879
+3.483660e-01	1	7	606	10214	157890	Drosophila	melanogaster	GO:0008270	molecular_function	"zinc ion binding"	CG30084
+3.854270e-02	1	7	57	10183	157890	Drosophila	melanogaster	GO:0051252	biological_process	"regulation of RNA metabolism"	CG7879
+1.688790e-01	2	7	1096	10183	157890	Drosophila	melanogaster	GO:0044249	biological_process	"cellular biosynthesis"	CG4276	CG4810
+4.991510e-01	2	7	1730	7583	157890	Drosophila	melanogaster	GO:0005634	cellular_component	"nucleus"	CG1474	CG7879
+2.733500e-01	1	7	338	7583	157890	Drosophila	melanogaster	GO:0044459	cellular_component	"plasma membrane part"	CG4376
+7.656090e-04	3	7	295	10214	157890	Drosophila	melanogaster	GO:0005200	molecular_function	"structural constituent of cytoskeleton"	CG30084	CG4376	CG4810
+3.454670e-02	1	7	51	10183	157890	Drosophila	melanogaster	GO:0000380	biological_process	"alternative nuclear mRNA splicing, via spliceosome"	CG7879
+1.316490e-01	2	7	946	10214	157890	Drosophila	melanogaster	GO:0046872	molecular_function	"metal ion binding"	CG30084	CG4376
+7.965360e-02	1	7	120	10183	157890	Drosophila	melanogaster	GO:0007626	biological_process	"locomotory behavior"	CG4376
+3.731230e-01	1	7	657	10183	157890	Drosophila	melanogaster	GO:0007049	biological_process	"cell cycle"	CG4810

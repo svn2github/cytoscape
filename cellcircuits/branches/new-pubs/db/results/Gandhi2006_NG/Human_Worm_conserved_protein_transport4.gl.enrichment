@@ -1,0 +1,91 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+9.977340e-01	1	5	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	W06B4.3
+3.451750e-02	1	5	194	27713	88307	Caenorhabditis	elegans	GO:0046907	biological_process	"intracellular transport"	C05D11.2
+1.053240e-01	1	5	610	27713	88307	Caenorhabditis	elegans	GO:0016043	biological_process	"cell organization and biogenesis"	C05D11.2
+8.953880e-01	2	5	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	R06F6.2	W06B4.3
+9.452240e-05	2	5	86	27713	88307	Caenorhabditis	elegans	GO:0016265	biological_process	"death"	R06F6.2	W06B4.3
+5.717710e-01	1	5	1013	6495	88307	Caenorhabditis	elegans	GO:0005737	cellular_component	"cytoplasm"	C05D11.2
+1.702420e-02	1	5	95	27713	88307	Caenorhabditis	elegans	GO:0042303	biological_process	"molting cycle"	R06F6.2
+9.505140e-01	2	5	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	R06F6.2	W06B4.3
+9.367630e-01	1	5	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	C05D11.2
+9.510800e-01	2	5	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	R06F6.2	W06B4.3
+3.859430e-01	1	5	1088	11710	88307	Caenorhabditis	elegans	GO:0005515	molecular_function	"protein binding"	R06F6.2
+1.000000e+00	1	5	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	C05D11.2
+2.924300e-02	1	5	164	27713	88307	Caenorhabditis	elegans	GO:0015031	biological_process	"protein transport"	C05D11.2
+2.948430e-01	1	5	1870	27713	88307	Caenorhabditis	elegans	GO:0051234	biological_process	"establishment of localization"	C05D11.2
+8.946670e-01	2	5	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	R06F6.2	W06B4.3
+9.639080e-01	3	5	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	C05D11.2	R06F6.2	W06B4.3
+8.914310e-01	2	5	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	R06F6.2	W06B4.3
+9.516790e-01	2	5	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	R06F6.2	W06B4.3
+4.847080e-02	1	5	274	27713	88307	Caenorhabditis	elegans	GO:0051649	biological_process	"establishment of cellular localization"	C05D11.2
+1.000000e+00	1	5	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	C05D11.2
+9.619440e-01	1	5	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	C05D11.2
+8.182650e-01	2	5	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	R06F6.2	W06B4.3
+8.214410e-02	1	5	471	27713	88307	Caenorhabditis	elegans	GO:0035264	biological_process	"body growth"	R06F6.2
+2.075590e-02	1	5	116	27713	88307	Caenorhabditis	elegans	GO:0006886	biological_process	"intracellular protein transport"	C05D11.2
+1.702420e-02	1	5	95	27713	88307	Caenorhabditis	elegans	GO:0018988	biological_process	"molting cycle (sensu Protostomia and Nematoda)"	R06F6.2
+8.914310e-01	2	5	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	R06F6.2	W06B4.3
+5.465800e-01	1	5	1713	11710	88307	Caenorhabditis	elegans	GO:0043169	molecular_function	"cation binding"	R06F6.2
+9.741630e-01	2	5	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	R06F6.2	W06B4.3
+3.574490e-02	1	5	201	27713	88307	Caenorhabditis	elegans	GO:0008104	biological_process	"protein localization"	C05D11.2
+9.724090e-01	2	5	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	R06F6.2	W06B4.3
+1.400750e-01	3	5	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	C05D11.2	R06F6.2	W06B4.3
+1.000000e+00	3	5	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C05D11.2	R06F6.2	W06B4.3
+9.716070e-02	3	5	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	C05D11.2	R06F6.2	W06B4.3
+8.214410e-02	1	5	471	27713	88307	Caenorhabditis	elegans	GO:0040014	biological_process	"regulation of body size"	R06F6.2
+5.562500e-01	1	5	1756	11710	88307	Caenorhabditis	elegans	GO:0043167	molecular_function	"ion binding"	R06F6.2
+9.720920e-01	2	5	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	R06F6.2	W06B4.3
+9.834400e-01	1	5	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	W06B4.3
+1.000000e+00	2	5	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	R06F6.2	W06B4.3
+4.405540e-01	1	5	1284	11710	88307	Caenorhabditis	elegans	GO:0008270	molecular_function	"zinc ion binding"	R06F6.2
+8.971600e-01	2	5	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	R06F6.2	W06B4.3
+9.832830e-01	1	5	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	W06B4.3
+4.881760e-02	1	5	276	27713	88307	Caenorhabditis	elegans	GO:0051641	biological_process	"cellular localization"	C05D11.2
+9.505140e-01	2	5	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	R06F6.2	W06B4.3
+2.748360e-01	1	5	1725	27713	88307	Caenorhabditis	elegans	GO:0006810	biological_process	"transport"	C05D11.2
+2.994760e-02	1	5	168	27713	88307	Caenorhabditis	elegans	GO:0045184	biological_process	"establishment of protein localization"	C05D11.2
+1.000000e+00	1	5	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	C05D11.2
+9.303120e-01	2	5	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	R06F6.2	W06B4.3
+4.829470e-01	1	5	1447	11710	88307	Caenorhabditis	elegans	GO:0046914	molecular_function	"transition metal ion binding"	R06F6.2
+9.452240e-05	2	5	86	27713	88307	Caenorhabditis	elegans	GO:0008219	biological_process	"cell death"	R06F6.2	W06B4.3
+1.386540e-01	1	5	815	27713	88307	Caenorhabditis	elegans	GO:0050874	biological_process	"organismal physiological process"	R06F6.2
+5.562500e-01	1	5	1756	11710	88307	Caenorhabditis	elegans	GO:0046872	molecular_function	"metal ion binding"	R06F6.2
+2.987910e-01	1	5	1899	27713	88307	Caenorhabditis	elegans	GO:0051179	biological_process	"localization"	C05D11.2
+6.994950e-02	1	5	399	27713	88307	Caenorhabditis	elegans	GO:0040018	biological_process	"positive regulation of body size"	R06F6.2
+9.505520e-01	2	5	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	R06F6.2	W06B4.3
+9.039940e-01	2	5	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	R06F6.2	W06B4.3
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+6.577380e-02	3	3	8467	20974	92001	Homo	sapiens	GO:0016020	cellular_component	"membrane"	VPS11	VPS16	VPS18
+1.117180e-01	1	3	902	23297	92001	Homo	sapiens	GO:0046907	biological_process	"intracellular transport"	VPS16
+2.586640e-01	1	3	2212	23297	92001	Homo	sapiens	GO:0016043	biological_process	"cell organization and biogenesis"	VPS16
+2.579170e-01	1	3	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	VPS11
+3.825280e-01	3	3	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	VPS11	VPS16	VPS18
+5.282220e-01	1	3	4646	20974	92001	Homo	sapiens	GO:0005737	cellular_component	"cytoplasm"	VPS16
+1.267780e-01	2	3	6165	27672	92001	Homo	sapiens	GO:0043167	molecular_function	"ion binding"	VPS11	VPS18
+1.000000e+00	2	3	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	VPS11	VPS18
+8.842220e-01	1	3	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	VPS16
+5.450510e-01	1	3	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	VPS11
+3.622630e-01	1	3	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	VPS11
+7.619610e-01	3	3	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	VPS11	VPS16	VPS18
+4.846820e-02	2	3	3685	27672	92001	Homo	sapiens	GO:0008270	molecular_function	"zinc ion binding"	VPS11	VPS18
+3.191470e-05	3	3	740	23297	92001	Homo	sapiens	GO:0015031	biological_process	"protein transport"	VPS11	VPS16	VPS18
+1.138580e-01	1	3	920	23297	92001	Homo	sapiens	GO:0051641	biological_process	"cellular localization"	VPS16
+5.142310e-03	3	3	4022	23297	92001	Homo	sapiens	GO:0051234	biological_process	"establishment of localization"	VPS11	VPS16	VPS18
+1.000000e+00	3	3	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	VPS11	VPS16	VPS18
+3.752840e-05	3	3	781	23297	92001	Homo	sapiens	GO:0045184	biological_process	"establishment of protein localization"	VPS11	VPS16	VPS18
+4.124550e-03	3	3	3737	23297	92001	Homo	sapiens	GO:0006810	biological_process	"transport"	VPS11	VPS16	VPS18
+5.929180e-01	3	3	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	VPS11	VPS16	VPS18
+1.127880e-01	1	3	911	23297	92001	Homo	sapiens	GO:0051649	biological_process	"establishment of cellular localization"	VPS16
+6.592490e-02	2	3	4335	27672	92001	Homo	sapiens	GO:0046914	molecular_function	"transition metal ion binding"	VPS11	VPS18
+9.333600e-01	1	3	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	VPS16
+7.618420e-01	3	3	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	VPS11	VPS16	VPS18
+7.107920e-01	2	3	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	VPS11	VPS18
+5.435850e-02	1	3	430	23297	92001	Homo	sapiens	GO:0006886	biological_process	"intracellular protein transport"	VPS16
+1.130810e-01	2	3	5792	27672	92001	Homo	sapiens	GO:0043169	molecular_function	"cation binding"	VPS11	VPS18
+1.226740e-01	2	3	6055	27672	92001	Homo	sapiens	GO:0046872	molecular_function	"metal ion binding"	VPS11	VPS18
+2.670320e-01	1	3	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	VPS11
+4.187280e-05	3	3	810	23297	92001	Homo	sapiens	GO:0008104	biological_process	"protein localization"	VPS11	VPS16	VPS18
+5.262160e-03	3	3	4053	23297	92001	Homo	sapiens	GO:0051179	biological_process	"localization"	VPS11	VPS16	VPS18
+6.775420e-01	3	3	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	VPS11	VPS16	VPS18
+1.000000e+00	3	3	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	VPS11	VPS16	VPS18
+3.238440e-01	1	3	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	VPS11

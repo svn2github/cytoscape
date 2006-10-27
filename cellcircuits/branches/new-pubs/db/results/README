@@ -1,0 +1,34 @@
+./generate_enrichment_insert_SQL.pl cellcircuits_dev no-path \
+./Begley2002_MCR/*.13191 \
+./Bernard2005_PSB/*.13191 \
+./de_Lichtenberg2005_Science/*.13191 \
+./Gandhi2006_NG/*.13191 \
+./Hartemink2002_PSB/*.13191 \
+./Haugen2004_GB/*.13191 \
+./Ideker2002_BINF/*.13191 \
+./Suthram2005_Nature/*.13191 \
+./Yeang2005_GB/*.13191 > tmp.sql ;\
+\
+./generate_enrichment_insert_SQL.pl cellcircuits_dev between_pathway/full/ \
+./Kelley2005_NBT/between_pathway/full/*.13191 >> tmp.sql ;\
+\
+./generate_enrichment_insert_SQL.pl cellcircuits_dev between_pathway/restricted/ \
+./Kelley2005_NBT/between_pathway/restricted/*.13191 >> tmp.sql ;\
+\
+./generate_enrichment_insert_SQL.pl cellcircuits_dev within_pathway/ \
+./Kelley2005_NBT/within_pathway/*.13191 >> tmp.sql ;\
+\
+./generate_enrichment_insert_SQL.pl cellcircuits_dev pairwise-cd/ \
+./Sharan2005_PNAS/pairwise-cd/*.13191 >> tmp.sql ;\
+\
+./generate_enrichment_insert_SQL.pl cellcircuits_dev pairwise-yc/ \
+./Sharan2005_PNAS/pairwise-yc/*.13191 >> tmp.sql ;\
+\
+./generate_enrichment_insert_SQL.pl cellcircuits_dev pairwise-yd/ \
+./Sharan2005_PNAS/pairwise-yd/*.13191 >> tmp.sql ;\
+\
+./generate_enrichment_insert_SQL.pl cellcircuits_dev three-way/ \
+./Sharan2005_PNAS/three-way/*.13191 >> tmp.sql ;
+
+
+mv tmp.sql insert_into_enrichment.sql

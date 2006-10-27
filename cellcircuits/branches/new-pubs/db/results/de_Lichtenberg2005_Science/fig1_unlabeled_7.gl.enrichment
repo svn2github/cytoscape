@@ -1,0 +1,58 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+4.131160e-01	1	3	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	LIP1
+1.364870e-04	3	3	337	6526	97048	Saccharomyces	cerevisiae	GO:0005783	cellular_component	"endoplasmic reticulum"	LAC1	LAG1	LIP1
+5.991160e-02	1	3	133	6526	97048	Saccharomyces	cerevisiae	GO:0042175	cellular_component	"nuclear envelope-endoplasmic reticulum network"	LIP1
+2.546800e-01	1	3	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	LIP1
+4.750010e-06	3	3	112	6526	97048	Saccharomyces	cerevisiae	GO:0006643	biological_process	"membrane lipid metabolism"	LAC1	LAG1	LIP1
+1.675250e-01	3	3	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	LAC1	LAG1	LIP1
+7.548430e-10	3	3	7	6526	97048	Saccharomyces	cerevisiae	GO:0006672	biological_process	"ceramide metabolism"	LAC1	LAG1	LIP1
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	LAC1	LAG1	LIP1
+3.772040e-05	3	3	220	6526	97048	Saccharomyces	cerevisiae	GO:0044255	biological_process	"cellular lipid metabolism"	LAC1	LAG1	LIP1
+6.584710e-03	3	3	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	LAC1	LAG1	LIP1
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	LAC1	LAG1	LIP1
+1.338810e-01	3	3	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	LAC1	LAG1	LIP1
+7.144020e-01	1	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	LIP1
+1.868150e-11	3	3	3	6526	97048	Saccharomyces	cerevisiae	GO:0050291	molecular_function	"sphingosine N-acyltransferase activity"	LAC1	LAG1	LIP1
+7.048160e-06	3	3	127	6526	97048	Saccharomyces	cerevisiae	GO:0008610	biological_process	"lipid biosynthesis"	LAC1	LAG1	LIP1
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	LAC1	LAG1	LIP1
+1.868150e-11	3	3	3	6526	97048	Saccharomyces	cerevisiae	GO:0046520	biological_process	"sphingoid biosynthesis"	LAC1	LAG1	LIP1
+1.447510e-01	3	3	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	LAC1	LAG1	LIP1
+4.106130e-06	3	3	107	6526	97048	Saccharomyces	cerevisiae	GO:0016746	molecular_function	"transferase activity, transferring acyl groups"	LAC1	LAG1	LIP1
+2.091700e-08	3	3	19	6526	97048	Saccharomyces	cerevisiae	GO:0030148	biological_process	"sphingolipid biosynthesis"	LAC1	LAG1	LIP1
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	LAC1	LAG1	LIP1
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	LAC1	LAG1	LIP1
+2.493760e-01	1	3	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	LIP1
+2.726980e-02	3	3	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	LAC1	LAG1	LIP1
+1.509640e-02	1	3	33	6526	97048	Saccharomyces	cerevisiae	GO:0001302	biological_process	"replicative cell aging"	LAG1
+8.771420e-08	3	3	30	6526	97048	Saccharomyces	cerevisiae	GO:0006665	biological_process	"sphingolipid metabolism"	LAC1	LAG1	LIP1
+1.011020e-02	2	3	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	LAC1	LAG1
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	LAC1	LAG1	LIP1
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	LAC1	LAG1	LIP1
+5.504990e-02	1	3	122	6526	97048	Saccharomyces	cerevisiae	GO:0005789	cellular_component	"endoplasmic reticulum membrane"	LIP1
+1.167130e-03	3	3	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	LAC1	LAG1	LIP1
+9.607400e-07	3	3	71	6526	97048	Saccharomyces	cerevisiae	GO:0046467	biological_process	"membrane lipid biosynthesis"	LAC1	LAG1	LIP1
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	LAC1	LAG1	LIP1
+4.486590e-05	3	3	233	6526	97048	Saccharomyces	cerevisiae	GO:0006629	biological_process	"lipid metabolism"	LAC1	LAG1	LIP1
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	LAC1	LAG1	LIP1
+1.808530e-09	3	3	9	6526	97048	Saccharomyces	cerevisiae	GO:0046519	biological_process	"sphingoid metabolism"	LAC1	LAG1	LIP1
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	LAC1	LAG1	LIP1
+4.572190e-02	1	3	101	6526	97048	Saccharomyces	cerevisiae	GO:0005635	cellular_component	"nuclear envelope"	LIP1
+1.643280e-01	1	3	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	LIP1
+7.144020e-01	1	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	LIP1
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	LAC1	LAG1	LIP1
+1.253950e-01	1	3	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	LIP1
+1.110160e-01	3	3	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	LAC1	LAG1	LIP1
+2.501740e-06	3	3	92	6526	97048	Saccharomyces	cerevisiae	GO:0016747	molecular_function	"transferase activity, transferring groups other than amino-acyl groups"	LAC1	LAG1	LIP1
+2.665770e-07	3	3	43	6526	97048	Saccharomyces	cerevisiae	GO:0016410	molecular_function	"N-acyltransferase activity"	LAC1	LAG1	LIP1
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	LAC1	LAG1	LIP1
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	LAC1	LAG1	LIP1
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	LAC1	LAG1	LIP1
+6.627130e-01	1	3	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	LIP1
+1.964060e-02	1	3	43	6526	97048	Saccharomyces	cerevisiae	GO:0007569	biological_process	"cell aging"	LAG1
+6.035280e-02	1	3	134	6526	97048	Saccharomyces	cerevisiae	GO:0044432	cellular_component	"endoplasmic reticulum part"	LIP1
+1.643280e-01	1	3	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	LIP1
+1.322900e-04	2	3	44	6526	97048	Saccharomyces	cerevisiae	GO:0007568	biological_process	"aging"	LAC1	LAG1
+2.410960e-06	3	3	91	6526	97048	Saccharomyces	cerevisiae	GO:0008415	molecular_function	"acyltransferase activity"	LAC1	LAG1	LIP1
+6.088860e-02	3	3	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	LAC1	LAG1	LIP1
+1.868150e-11	3	3	3	6526	97048	Saccharomyces	cerevisiae	GO:0046513	biological_process	"ceramide biosynthesis"	LAC1	LAG1	LIP1
+4.176170e-01	1	3	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	LIP1

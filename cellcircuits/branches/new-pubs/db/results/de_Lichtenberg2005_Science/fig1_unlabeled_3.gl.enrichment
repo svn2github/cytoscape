@@ -1,0 +1,50 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+6.006640e-01	1	3	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	GCV3
+8.053790e-11	3	3	4	6526	97048	Saccharomyces	cerevisiae	GO:0005960	cellular_component	"glycine cleavage complex"	GCV1	GCV2	GCV3
+1.937530e-01	1	3	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	GCV3
+1.675250e-01	3	3	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	GCV1	GCV2	GCV3
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	GCV1	GCV2	GCV3
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	GCV1	GCV2	GCV3
+4.251020e-10	3	3	6	6526	97048	Saccharomyces	cerevisiae	GO:0006544	biological_process	"glycine metabolism"	GCV1	GCV2	GCV3
+1.338810e-01	3	3	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	GCV1	GCV2	GCV3
+2.827040e-05	3	3	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	GCV1	GCV2	GCV3
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	GCV1	GCV2	GCV3
+9.711010e-08	3	3	31	6526	97048	Saccharomyces	cerevisiae	GO:0044270	biological_process	"nitrogen compound catabolism"	GCV1	GCV2	GCV3
+1.447510e-01	3	3	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	GCV1	GCV2	GCV3
+8.053790e-11	3	3	4	6526	97048	Saccharomyces	cerevisiae	GO:0006546	biological_process	"glycine catabolism"	GCV1	GCV2	GCV3
+2.195500e-05	3	3	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	GCV1	GCV2	GCV3
+4.743330e-09	3	3	12	6526	97048	Saccharomyces	cerevisiae	GO:0006730	biological_process	"one-carbon compound metabolism"	GCV1	GCV2	GCV3
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	GCV1	GCV2	GCV3
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	GCV1	GCV2	GCV3
+2.726980e-02	3	3	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	GCV1	GCV2	GCV3
+1.912950e-04	3	3	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	GCV1	GCV2	GCV3
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	GCV1	GCV2	GCV3
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	GCV1	GCV2	GCV3
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	GCV1	GCV2	GCV3
+3.929680e-05	3	3	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	GCV1	GCV2	GCV3
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	GCV1	GCV2	GCV3
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	GCV1	GCV2	GCV3
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	GCV1	GCV2	GCV3
+4.968080e-05	3	3	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	GCV1	GCV2	GCV3
+1.110160e-01	3	3	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	GCV1	GCV2	GCV3
+4.014140e-03	3	3	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	GCV1	GCV2	GCV3
+6.392580e-05	3	3	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	GCV1	GCV2	GCV3
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	GCV1	GCV2	GCV3
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	GCV1	GCV2	GCV3
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	GCV1	GCV2	GCV3
+1.981260e-01	1	3	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	GCV3
+4.373570e-08	3	3	24	6526	97048	Saccharomyces	cerevisiae	GO:0009069	biological_process	"serine family amino acid metabolism"	GCV1	GCV2	GCV3
+2.099860e-10	3	3	5	6526	97048	Saccharomyces	cerevisiae	GO:0009071	biological_process	"serine family amino acid catabolism"	GCV1	GCV2	GCV3
+8.053790e-11	3	3	4	6526	97048	Saccharomyces	cerevisiae	GO:0016642	molecular_function	"oxidoreductase activity, acting on the CH-NH2 group of donors, disulfide as acceptor"	GCV1	GCV2	GCV3
+4.290840e-01	1	3	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	GCV3
+9.711010e-08	3	3	31	6526	97048	Saccharomyces	cerevisiae	GO:0009310	biological_process	"amine catabolism"	GCV1	GCV2	GCV3
+8.053790e-11	3	3	4	6526	97048	Saccharomyces	cerevisiae	GO:0004375	molecular_function	"glycine dehydrogenase (decarboxylating) activity"	GCV1	GCV2	GCV3
+1.010660e-04	3	3	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	GCV1	GCV2	GCV3
+7.077970e-08	3	3	28	6526	97048	Saccharomyces	cerevisiae	GO:0009063	biological_process	"amino acid catabolism"	GCV1	GCV2	GCV3
+1.169580e-01	1	3	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	GCV3
+1.166920e-02	3	3	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	GCV1	GCV2	GCV3
+2.583120e-09	3	3	10	6526	97048	Saccharomyces	cerevisiae	GO:0016638	molecular_function	"oxidoreductase activity, acting on the CH-NH2 group of donors"	GCV1	GCV2	GCV3
+1.010660e-04	3	3	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	GCV1	GCV2	GCV3
+2.118380e-04	3	3	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	GCV1	GCV2	GCV3
+6.088860e-02	3	3	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	GCV1	GCV2	GCV3
+1.169580e-01	1	3	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	GCV3

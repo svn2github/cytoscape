@@ -1,0 +1,117 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.030760e-06	2	4	12	27713	88307	Caenorhabditis	elegans	GO:0030833	biological_process	"regulation of actin filament polymerization"	M01B12.3	Y6D11A.2
+1.153090e-02	2	4	1253	27713	88307	Caenorhabditis	elegans	GO:0050794	biological_process	"regulation of cellular process"	M01B12.3	Y6D11A.2
+4.174560e-05	3	4	610	27713	88307	Caenorhabditis	elegans	GO:0016043	biological_process	"cell organization and biogenesis"	C35D10.16	M01B12.3	Y6D11A.2
+1.380880e-03	3	4	1981	27713	88307	Caenorhabditis	elegans	GO:0044267	biological_process	"cellular protein metabolism"	C35D10.16	M01B12.3	Y6D11A.2
+3.233140e-02	4	4	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+3.230220e-01	1	4	1088	11710	88307	Caenorhabditis	elegans	GO:0005515	molecular_function	"protein binding"	K07C5.1
+8.426840e-01	4	4	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+1.030760e-06	2	4	12	27713	88307	Caenorhabditis	elegans	GO:0030832	biological_process	"regulation of actin filament length"	M01B12.3	Y6D11A.2
+2.833770e-01	1	4	519	6495	88307	Caenorhabditis	elegans	GO:0044422	cellular_component	"organelle part"	K07C5.1
+1.504230e-02	3	4	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	C35D10.16	M01B12.3	Y6D11A.2
+3.029490e-10	3	4	13	27713	88307	Caenorhabditis	elegans	GO:0030041	biological_process	"actin filament polymerization"	C35D10.16	M01B12.3	Y6D11A.2
+4.689760e-05	4	4	539	6495	88307	Caenorhabditis	elegans	GO:0043228	cellular_component	"non-membrane-bound organelle"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+8.666040e-01	3	4	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	C35D10.16	M01B12.3	Y6D11A.2
+1.216330e-02	2	4	1288	27713	88307	Caenorhabditis	elegans	GO:0050791	biological_process	"regulation of physiological process"	M01B12.3	Y6D11A.2
+9.824570e-07	4	4	212	6495	88307	Caenorhabditis	elegans	GO:0005856	cellular_component	"cytoskeleton"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+2.348610e-02	3	4	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	C35D10.16	M01B12.3	Y6D11A.2
+1.029820e-08	3	4	39	27713	88307	Caenorhabditis	elegans	GO:0030036	biological_process	"actin cytoskeleton organization and biogenesis"	C35D10.16	M01B12.3	Y6D11A.2
+5.292220e-02	4	4	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+8.249470e-01	4	4	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+9.398050e-01	1	4	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	K07C5.1
+6.758810e-03	1	4	11	6495	88307	Caenorhabditis	elegans	GO:0005884	cellular_component	"actin filament"	K07C5.1
+3.718700e-01	1	4	1285	11710	88307	Caenorhabditis	elegans	GO:0030554	molecular_function	"adenyl nucleotide binding"	K07C5.1
+3.388720e-03	3	4	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	C35D10.16	M01B12.3	Y6D11A.2
+1.555990e-03	3	4	2063	27713	88307	Caenorhabditis	elegans	GO:0019538	biological_process	"protein metabolism"	C35D10.16	M01B12.3	Y6D11A.2
+1.702180e-06	3	4	211	27713	88307	Caenorhabditis	elegans	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	C35D10.16	M01B12.3	Y6D11A.2
+7.071500e-02	3	4	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	C35D10.16	M01B12.3	Y6D11A.2
+1.000000e+00	3	4	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C35D10.16	M01B12.3	Y6D11A.2
+4.216600e-01	1	4	1498	11710	88307	Caenorhabditis	elegans	GO:0017076	molecular_function	"purine nucleotide binding"	K07C5.1
+1.419840e-02	4	4	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+3.633910e-01	1	4	1250	11710	88307	Caenorhabditis	elegans	GO:0005524	molecular_function	"ATP binding"	K07C5.1
+4.689760e-05	4	4	539	6495	88307	Caenorhabditis	elegans	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+4.740330e-02	3	4	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	C35D10.16	M01B12.3	Y6D11A.2
+9.096930e-02	1	4	153	6495	88307	Caenorhabditis	elegans	GO:0044430	cellular_component	"cytoskeletal part"	K07C5.1
+2.833770e-01	1	4	519	6495	88307	Caenorhabditis	elegans	GO:0044446	cellular_component	"intracellular organelle part"	K07C5.1
+1.000000e+00	1	4	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	K07C5.1
+4.002910e-10	3	4	14	27713	88307	Caenorhabditis	elegans	GO:0008154	biological_process	"actin polymerization and/or depolymerization"	C35D10.16	M01B12.3	Y6D11A.2
+4.671530e-01	1	4	1705	11710	88307	Caenorhabditis	elegans	GO:0000166	molecular_function	"nucleotide binding"	K07C5.1
+1.016180e-02	2	4	1174	27713	88307	Caenorhabditis	elegans	GO:0051244	biological_process	"regulation of cellular physiological process"	M01B12.3	Y6D11A.2
+3.585210e-02	1	4	59	6495	88307	Caenorhabditis	elegans	GO:0015629	cellular_component	"actin cytoskeleton"	K07C5.1
+1.280410e-02	3	4	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	C35D10.16	M01B12.3	Y6D11A.2
+1.000000e+00	4	4	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+1.419840e-02	4	4	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	C35D10.16	K07C5.1	M01B12.3	Y6D11A.2
+1.030760e-06	2	4	12	27713	88307	Caenorhabditis	elegans	GO:0008064	biological_process	"regulation of actin polymerization and/or depolymerization"	M01B12.3	Y6D11A.2
+8.476190e-01	2	4	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	M01B12.3	Y6D11A.2
+5.114640e-03	1	4	15	11710	88307	Caenorhabditis	elegans	GO:0005200	molecular_function	"structural constituent of cytoskeleton"	K07C5.1
+1.530170e-05	2	4	45	27713	88307	Caenorhabditis	elegans	GO:0051246	biological_process	"regulation of protein metabolism"	M01B12.3	Y6D11A.2
+1.215340e-05	3	4	404	27713	88307	Caenorhabditis	elegans	GO:0006996	biological_process	"organelle organization and biogenesis"	C35D10.16	M01B12.3	Y6D11A.2
+1.113280e-08	3	4	40	27713	88307	Caenorhabditis	elegans	GO:0030029	biological_process	"actin filament-based process"	C35D10.16	M01B12.3	Y6D11A.2
+1.512010e-03	3	4	2043	27713	88307	Caenorhabditis	elegans	GO:0044260	biological_process	"cellular macromolecule metabolism"	C35D10.16	M01B12.3	Y6D11A.2
+4.576680e-09	3	4	30	27713	88307	Caenorhabditis	elegans	GO:0051258	biological_process	"protein polymerization"	C35D10.16	M01B12.3	Y6D11A.2
+8.223100e-03	2	4	1053	27713	88307	Caenorhabditis	elegans	GO:0019222	biological_process	"regulation of metabolism"	M01B12.3	Y6D11A.2
+2.669740e-06	2	4	19	27713	88307	Caenorhabditis	elegans	GO:0051128	biological_process	"regulation of cell organization and biogenesis"	M01B12.3	Y6D11A.2
+1.792000e-01	1	4	564	11710	88307	Caenorhabditis	elegans	GO:0005198	molecular_function	"structural molecule activity"	K07C5.1
+#NOT FOUND: ACTR2_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.275250e-03	1	3	21	27672	92001	Homo	sapiens	GO:0051015	molecular_function	"actin filament binding"	ARPC4
+1.690710e-06	2	3	18	23297	92001	Homo	sapiens	GO:0030833	biological_process	"regulation of actin filament polymerization"	ARPC2	ARPC5
+1.256050e-01	2	3	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	ARPC2	ARPC5
+8.549110e-04	3	3	2212	23297	92001	Homo	sapiens	GO:0016043	biological_process	"cell organization and biogenesis"	ARPC2	ARPC4	ARPC5
+3.471120e-04	2	3	252	23297	92001	Homo	sapiens	GO:0051674	biological_process	"localization of cell"	ARPC2	ARPC5
+5.282220e-01	1	3	4646	20974	92001	Homo	sapiens	GO:0005737	cellular_component	"cytoplasm"	ARPC5
+1.088580e-02	3	3	5164	23297	92001	Homo	sapiens	GO:0044267	biological_process	"cellular protein metabolism"	ARPC2	ARPC4	ARPC5
+1.346620e-01	3	3	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	ARPC2	ARPC4	ARPC5
+5.450510e-01	1	3	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	ARPC4
+7.619610e-01	3	3	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	ARPC2	ARPC4	ARPC5
+1.081030e-05	2	3	45	23297	92001	Homo	sapiens	GO:0030832	biological_process	"regulation of actin filament length"	ARPC2	ARPC5
+1.465070e-01	3	3	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	ARPC2	ARPC4	ARPC5
+2.366810e-03	3	3	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	ARPC2	ARPC4	ARPC5
+1.927380e-09	3	3	30	23297	92001	Homo	sapiens	GO:0030041	biological_process	"actin filament polymerization"	ARPC2	ARPC4	ARPC5
+7.911100e-02	2	3	4022	23297	92001	Homo	sapiens	GO:0051234	biological_process	"establishment of localization"	ARPC2	ARPC5
+1.949490e-03	3	3	2621	20974	92001	Homo	sapiens	GO:0043228	cellular_component	"non-membrane-bound organelle"	ARPC2	ARPC4	ARPC5
+5.929180e-01	3	3	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	ARPC2	ARPC4	ARPC5
+1.116220e-01	2	3	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	ARPC2	ARPC5
+2.608110e-04	3	3	1341	20974	92001	Homo	sapiens	GO:0005856	cellular_component	"cytoskeleton"	ARPC2	ARPC4	ARPC5
+2.908260e-11	3	3	6	20974	92001	Homo	sapiens	GO:0005885	cellular_component	"Arp2/3 protein complex"	ARPC2	ARPC4	ARPC5
+7.722550e-07	3	3	217	23297	92001	Homo	sapiens	GO:0030036	biological_process	"actin cytoskeleton organization and biogenesis"	ARPC2	ARPC4	ARPC5
+1.914670e-01	3	3	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	ARPC2	ARPC4	ARPC5
+5.511510e-02	1	3	518	27672	92001	Homo	sapiens	GO:0008092	molecular_function	"cytoskeletal protein binding"	ARPC4
+2.101420e-01	3	3	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	ARPC2	ARPC4	ARPC5
+7.618420e-01	3	3	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	ARPC2	ARPC4	ARPC5
+9.551000e-01	1	3	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	ARPC4
+3.862830e-04	1	3	3	23297	92001	Homo	sapiens	GO:0045010	biological_process	"actin nucleation"	ARPC4
+3.306270e-02	3	3	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	ARPC2	ARPC4	ARPC5
+1.349260e-02	3	3	5547	23297	92001	Homo	sapiens	GO:0019538	biological_process	"protein metabolism"	ARPC2	ARPC4	ARPC5
+2.141410e-05	3	3	648	23297	92001	Homo	sapiens	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	ARPC2	ARPC4	ARPC5
+6.775420e-01	3	3	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	ARPC2	ARPC4	ARPC5
+1.000000e+00	3	3	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	ARPC2	ARPC4	ARPC5
+8.937380e-02	3	3	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	ARPC2	ARPC4	ARPC5
+8.001470e-03	1	3	74	27672	92001	Homo	sapiens	GO:0030674	molecular_function	"protein binding, bridging"	ARPC4
+3.825280e-01	3	3	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	ARPC2	ARPC4	ARPC5
+1.949490e-03	3	3	2621	20974	92001	Homo	sapiens	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	ARPC2	ARPC4	ARPC5
+6.942190e-05	3	3	863	20974	92001	Homo	sapiens	GO:0044430	cellular_component	"cytoskeletal part"	ARPC2	ARPC4	ARPC5
+2.366810e-03	3	3	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	ARPC2	ARPC4	ARPC5
+1.000000e+00	3	3	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	ARPC2	ARPC4	ARPC5
+1.464470e-08	3	3	58	23297	92001	Homo	sapiens	GO:0008154	biological_process	"actin polymerization and/or depolymerization"	ARPC2	ARPC4	ARPC5
+1.064550e-01	2	3	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	ARPC2	ARPC5
+1.319840e-01	3	3	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	ARPC2	ARPC4	ARPC5
+2.762600e-06	3	3	296	20974	92001	Homo	sapiens	GO:0015629	cellular_component	"actin cytoskeleton"	ARPC2	ARPC4	ARPC5
+8.940240e-02	3	3	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	ARPC2	ARPC4	ARPC5
+1.000000e+00	3	3	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	ARPC2	ARPC4	ARPC5
+9.844420e-06	2	3	43	23297	92001	Homo	sapiens	GO:0008064	biological_process	"regulation of actin polymerization and/or depolymerization"	ARPC2	ARPC5
+1.416200e-01	2	3	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	ARPC2	ARPC5
+4.719470e-08	3	3	101	27672	92001	Homo	sapiens	GO:0005200	molecular_function	"structural constituent of cytoskeleton"	ARPC2	ARPC4	ARPC5
+1.894590e-04	3	3	1339	23297	92001	Homo	sapiens	GO:0006996	biological_process	"organelle organization and biogenesis"	ARPC2	ARPC4	ARPC5
+3.780230e-04	2	3	263	23297	92001	Homo	sapiens	GO:0051246	biological_process	"regulation of protein metabolism"	ARPC2	ARPC5
+9.390170e-07	3	3	231	23297	92001	Homo	sapiens	GO:0030029	biological_process	"actin filament-based process"	ARPC2	ARPC4	ARPC5
+3.979130e-02	1	3	372	27672	92001	Homo	sapiens	GO:0003779	molecular_function	"actin binding"	ARPC4
+5.650830e-08	3	3	111	23297	92001	Homo	sapiens	GO:0051258	biological_process	"protein polymerization"	ARPC2	ARPC4	ARPC5
+1.134770e-02	3	3	5236	23297	92001	Homo	sapiens	GO:0044260	biological_process	"cellular macromolecule metabolism"	ARPC2	ARPC4	ARPC5
+3.471120e-04	2	3	252	23297	92001	Homo	sapiens	GO:0006928	biological_process	"cell motility"	ARPC2	ARPC5
+6.930670e-02	2	3	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	ARPC2	ARPC5
+3.054270e-05	2	3	75	23297	92001	Homo	sapiens	GO:0051128	biological_process	"regulation of cell organization and biogenesis"	ARPC2	ARPC5
+3.471120e-04	2	3	252	23297	92001	Homo	sapiens	GO:0040011	biological_process	"locomotion"	ARPC2	ARPC5
+3.686830e-03	3	3	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	ARPC2	ARPC4	ARPC5
+8.025480e-02	2	3	4053	23297	92001	Homo	sapiens	GO:0051179	biological_process	"localization"	ARPC2	ARPC5
+1.947750e-04	3	3	1605	27672	92001	Homo	sapiens	GO:0005198	molecular_function	"structural molecule activity"	ARPC2	ARPC4	ARPC5

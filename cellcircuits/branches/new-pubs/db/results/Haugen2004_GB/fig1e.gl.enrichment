@@ -1,0 +1,221 @@
+#USING RMD6 instead of its synonym YEL072W in Saccharomyces cerevisiae
+#USING OPT1 instead of its synonym YJL212C in Saccharomyces cerevisiae
+#USING STR3 instead of its synonym YGL184C in Saccharomyces cerevisiae
+#USING BNA3 instead of its synonym YJL060W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.386890e-01	1	18	98	6526	97048	Saccharomyces	cerevisiae	GO:0048622	biological_process	"reproductive sporulation"	SPS2
+2.386890e-01	1	18	98	6526	97048	Saccharomyces	cerevisiae	GO:0030437	biological_process	"sporulation (sensu Fungi)"	SPS2
+9.740490e-02	1	18	37	6526	97048	Saccharomyces	cerevisiae	GO:0019362	biological_process	"pyridine nucleotide metabolism"	YJL060W
+3.191710e-04	2	18	10	6526	97048	Saccharomyces	cerevisiae	GO:0000097	biological_process	"sulfur amino acid biosynthesis"	MET2	YGL184C
+8.747720e-01	8	18	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	ECM17	MET16	MET2	MET31	SAM1	YJL060W	YJL212C	YLR179C
+2.456660e-02	1	18	9	6526	97048	Saccharomyces	cerevisiae	GO:0016413	molecular_function	"O-acetyltransferase activity"	MET2
+1.070880e-04	2	18	6	6526	97048	Saccharomyces	cerevisiae	GO:0046685	biological_process	"response to arsenic"	MET30	MET4
+5.860600e-02	13	18	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	YGL184C	YJL060W	YJL212C
+1.071080e-03	2	18	18	6526	97048	Saccharomyces	cerevisiae	GO:0044272	biological_process	"sulfur compound biosynthesis"	MET2	YGL184C
+9.417070e-01	1	18	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	REC104
+8.253050e-03	1	18	3	6526	97048	Saccharomyces	cerevisiae	GO:0015198	molecular_function	"oligopeptide transporter activity"	YJL212C
+5.509210e-03	1	18	2	6526	97048	Saccharomyces	cerevisiae	GO:0043224	cellular_component	"nuclear SCF ubiquitin ligase complex"	MET30
+1.903330e-01	1	18	76	6526	97048	Saccharomyces	cerevisiae	GO:0045941	biological_process	"positive regulation of transcription"	MET4
+7.324570e-02	13	18	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	YGL184C	YJL060W	YJL212C
+7.801250e-01	13	18	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	YJL060W	YJL212C	YLR179C
+4.697860e-01	6	18	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	ECM17	MET16	MET2	SAM1	YGL184C	YJL060W
+8.780150e-03	2	18	52	6526	97048	Saccharomyces	cerevisiae	GO:0016563	molecular_function	"transcriptional activator activity"	GCN4	MET4
+2.073840e-01	5	18	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	GCN4	MET30	MET31	MET4	PLM2
+3.460740e-07	4	18	23	6526	97048	Saccharomyces	cerevisiae	GO:0006555	biological_process	"methionine metabolism"	MET16	MET2	SAM1	YGL184C
+1.509950e-01	1	18	59	6526	97048	Saccharomyces	cerevisiae	GO:0009108	biological_process	"coenzyme biosynthesis"	YJL060W
+9.900270e-01	1	18	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	MET30
+9.977680e-01	2	18	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	MET30	REC104
+1.000000e+00	18	18	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	RLP36A	SAM1	SPS2	YDR042C	YEL072W	YGL184C	YJL060W	YJL212C	YLR179C
+1.114040e-12	8	18	59	6526	97048	Saccharomyces	cerevisiae	GO:0006790	biological_process	"sulfur metabolism"	ECM17	MET16	MET2	MET31	MET4	SAM1	YGL184C	YJL212C
+4.836720e-01	1	18	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	PLM2
+1.899480e-02	3	18	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	GCN4	MET31	PLM2
+1.469480e-01	2	18	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	MET30	REC104
+1.789450e-01	1	18	71	6526	97048	Saccharomyces	cerevisiae	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	MET4
+2.726070e-02	1	18	10	6526	97048	Saccharomyces	cerevisiae	GO:0031461	cellular_component	"cullin-RING ubiquitin ligase complex"	MET30
+3.441990e-01	4	18	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	RLP36A	YDR042C	YEL072W	YGL184C
+2.758200e-03	1	18	1	6526	97048	Saccharomyces	cerevisiae	GO:0004414	molecular_function	"homoserine O-acetyltransferase activity"	MET2
+2.863190e-01	1	18	121	6526	97048	Saccharomyces	cerevisiae	GO:0006732	biological_process	"coenzyme metabolism"	YJL060W
+2.905700e-02	4	18	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	GCN4	MET31	MET4	PLM2
+2.257790e-01	1	18	92	6526	97048	Saccharomyces	cerevisiae	GO:0016747	molecular_function	"transferase activity, transferring groups other than amino-acyl groups"	MET2
+9.559570e-01	1	18	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YJL060W
+5.054170e-01	1	18	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	YJL212C
+1.915710e-02	1	18	7	6526	97048	Saccharomyces	cerevisiae	GO:0009092	biological_process	"homoserine metabolism"	MET2
+2.903250e-01	1	18	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	MET31
+3.530110e-02	1	18	13	6526	97048	Saccharomyces	cerevisiae	GO:0019674	biological_process	"NAD metabolism"	YJL060W
+3.625210e-01	1	18	161	6526	97048	Saccharomyces	cerevisiae	GO:0030163	biological_process	"protein catabolism"	MET30
+3.976750e-01	1	18	181	6526	97048	Saccharomyces	cerevisiae	GO:0006512	biological_process	"ubiquitin cycle"	MET30
+9.870850e-01	1	18	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	MET30
+8.045080e-01	1	18	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	MET30
+9.391400e-01	2	18	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	ECM17	MET30
+1.604100e-01	1	18	63	6526	97048	Saccharomyces	cerevisiae	GO:0016810	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds"	YJL060W
+4.293690e-01	1	18	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	SPS2
+9.051520e-02	4	18	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	GCN4	MET31	MET4	PLM2
+5.276580e-01	1	18	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	SPS2
+7.408130e-01	1	18	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	REC104
+2.240250e-01	2	18	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	MET30	MET4
+5.235610e-01	1	18	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	YJL212C
+9.845610e-01	1	18	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	MET30
+3.009060e-06	4	18	45	6526	97048	Saccharomyces	cerevisiae	GO:0009066	biological_process	"aspartate family amino acid metabolism"	MET16	MET2	SAM1	YGL184C
+7.620410e-01	13	18	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	YJL060W	YJL212C	YLR179C
+2.170570e-01	1	18	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	MET4
+1.070880e-04	2	18	6	6526	97048	Saccharomyces	cerevisiae	GO:0009086	biological_process	"methionine biosynthesis"	MET2	YGL184C
+4.765680e-01	14	18	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	SPS2	YGL184C	YJL060W	YJL212C
+1.896070e-01	6	18	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	GCN4	MET31	MET4	PLM2	REC104	YJL060W
+2.192460e-01	1	18	89	6526	97048	Saccharomyces	cerevisiae	GO:0051325	biological_process	"interphase"	PLM2
+2.721300e-01	1	18	114	6526	97048	Saccharomyces	cerevisiae	GO:0009277	cellular_component	"cell wall (sensu Fungi)"	SPS2
+2.792220e-01	2	18	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	MET30	REC104
+4.568060e-02	4	18	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	GCN4	MET31	MET4	PLM2
+6.677490e-01	1	18	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	SPS2
+5.801470e-01	2	18	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	MET2	SAM1
+1.948460e-01	1	18	78	6526	97048	Saccharomyces	cerevisiae	GO:0006767	biological_process	"water-soluble vitamin metabolism"	YJL060W
+1.275990e-02	4	18	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	GCN4	MET31	MET4	PLM2
+5.344920e-08	8	18	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	ECM17	GCN4	MET16	MET2	MET31	MET4	SAM1	YGL184C
+4.856230e-02	1	18	18	6526	97048	Saccharomyces	cerevisiae	GO:0008374	molecular_function	"O-acyltransferase activity"	MET2
+6.958290e-01	1	18	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	YJL212C
+1.195140e-03	2	18	19	6526	97048	Saccharomyces	cerevisiae	GO:0009067	biological_process	"aspartate family amino acid biosynthesis"	MET2	YGL184C
+1.499510e-04	4	18	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	ECM17	GCN4	MET2	YGL184C
+9.417070e-01	1	18	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	REC104
+4.364050e-01	14	18	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	SPS2	YGL184C	YJL060W	YJL212C
+1.915710e-02	1	18	7	6526	97048	Saccharomyces	cerevisiae	GO:0031146	biological_process	"SCF-dependent proteasomal ubiquitin-dependent protein catabolism"	MET30
+9.503690e-01	2	18	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	MET30	REC104
+1.342790e-01	1	18	52	6526	97048	Saccharomyces	cerevisiae	GO:0016567	biological_process	"protein ubiquitination"	MET30
+9.944340e-01	2	18	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	MET30	REC104
+2.038010e-01	1	18	82	6526	97048	Saccharomyces	cerevisiae	GO:0016829	molecular_function	"lyase activity"	YGL184C
+3.262790e-02	1	18	12	6526	97048	Saccharomyces	cerevisiae	GO:0000083	biological_process	"G1/S-specific transcription in mitotic cell cycle"	PLM2
+5.152670e-01	1	18	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	YJL212C
+8.892140e-02	12	18	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	YGL184C	YJL060W
+2.726070e-02	1	18	10	6526	97048	Saccharomyces	cerevisiae	GO:0000737	biological_process	"DNA catabolism, endonucleolytic"	REC104
+1.342790e-01	1	18	52	6526	97048	Saccharomyces	cerevisiae	GO:0016407	molecular_function	"acetyltransferase activity"	MET2
+1.915710e-02	1	18	7	6526	97048	Saccharomyces	cerevisiae	GO:0009435	biological_process	"NAD biosynthesis"	YJL060W
+2.192460e-01	1	18	89	6526	97048	Saccharomyces	cerevisiae	GO:0051329	biological_process	"interphase of mitotic cell cycle"	PLM2
+8.680760e-01	9	18	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	GCN4	MET30	MET31	MET4	PLM2	REC104	YJL060W	YJL212C	YLR179C
+6.165660e-02	1	18	23	6526	97048	Saccharomyces	cerevisiae	GO:0000152	cellular_component	"nuclear ubiquitin ligase complex"	MET30
+2.659670e-01	1	18	111	6526	97048	Saccharomyces	cerevisiae	GO:0030435	biological_process	"sporulation"	SPS2
+2.082430e-01	1	18	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	MET4
+4.665890e-04	2	18	12	6526	97048	Saccharomyces	cerevisiae	GO:0016667	molecular_function	"oxidoreductase activity, acting on sulfur group of donors"	ECM17	MET16
+1.486260e-01	1	18	58	6526	97048	Saccharomyces	cerevisiae	GO:0043161	biological_process	"proteasomal ubiquitin-dependent protein catabolism"	MET30
+6.598570e-01	6	18	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	REC104	RLP36A	SPS2	YDR042C	YEL072W	YLR179C
+8.730220e-01	1	18	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	MET30
+3.254360e-01	1	18	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	REC104
+3.552620e-01	1	18	157	6526	97048	Saccharomyces	cerevisiae	GO:0045229	biological_process	"external encapsulating structure organization and biogenesis"	ECM17
+9.984540e-01	2	18	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YJL060W	YJL212C
+8.226200e-01	2	18	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	MET30	REC104
+5.905260e-02	1	18	22	6526	97048	Saccharomyces	cerevisiae	GO:0006311	biological_process	"meiotic gene conversion"	REC104
+1.835180e-01	1	18	73	6526	97048	Saccharomyces	cerevisiae	GO:0051188	biological_process	"cofactor biosynthesis"	YJL060W
+3.191710e-04	2	18	10	6526	97048	Saccharomyces	cerevisiae	GO:0000103	biological_process	"sulfate assimilation"	ECM17	MET16
+9.593030e-01	1	18	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YJL212C
+1.123290e-01	1	18	43	6526	97048	Saccharomyces	cerevisiae	GO:0009110	biological_process	"vitamin biosynthesis"	YJL060W
+3.262790e-02	1	18	12	6526	97048	Saccharomyces	cerevisiae	GO:0006308	biological_process	"DNA catabolism"	REC104
+2.721300e-01	1	18	114	6526	97048	Saccharomyces	cerevisiae	GO:0030312	cellular_component	"external encapsulating structure"	SPS2
+2.301050e-01	1	18	94	6526	97048	Saccharomyces	cerevisiae	GO:0009117	biological_process	"nucleotide metabolism"	YJL060W
+2.726070e-02	1	18	10	6526	97048	Saccharomyces	cerevisiae	GO:0019005	cellular_component	"SCF ubiquitin ligase complex"	MET30
+1.245870e-01	1	18	48	6526	97048	Saccharomyces	cerevisiae	GO:0007131	biological_process	"meiotic recombination"	REC104
+2.456660e-02	1	18	9	6526	97048	Saccharomyces	cerevisiae	GO:0042138	biological_process	"meiotic DNA double-strand break formation"	REC104
+2.377580e-01	5	18	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	ECM17	GCN4	MET2	YGL184C	YJL060W
+7.713770e-02	1	18	29	6526	97048	Saccharomyces	cerevisiae	GO:0005887	cellular_component	"integral to plasma membrane"	YJL212C
+2.726070e-02	1	18	10	6526	97048	Saccharomyces	cerevisiae	GO:0019363	biological_process	"pyridine nucleotide biosynthesis"	YJL060W
+8.318700e-01	14	18	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	SPS2	YJL060W	YJL212C	YLR179C
+9.944340e-01	2	18	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	MET30	REC104
+1.509220e-10	6	18	32	6526	97048	Saccharomyces	cerevisiae	GO:0000096	biological_process	"sulfur amino acid metabolism"	MET16	MET2	MET31	MET4	SAM1	YGL184C
+2.276630e-08	8	18	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	ECM17	GCN4	MET16	MET2	MET31	MET4	SAM1	YGL184C
+2.082430e-01	1	18	84	6526	97048	Saccharomyces	cerevisiae	GO:0000793	cellular_component	"condensed chromosome"	REC104
+9.766010e-02	4	18	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	GCN4	MET31	MET4	PLM2
+6.165660e-02	1	18	23	6526	97048	Saccharomyces	cerevisiae	GO:0009055	molecular_function	"electron carrier activity"	ECM17
+2.576740e-01	1	18	107	6526	97048	Saccharomyces	cerevisiae	GO:0016746	molecular_function	"transferase activity, transferring acyl groups"	MET2
+8.253050e-03	1	18	3	6526	97048	Saccharomyces	cerevisiae	GO:0004121	molecular_function	"cystathionine beta-lyase activity"	YGL184C
+1.179950e-08	8	18	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	ECM17	GCN4	MET16	MET2	MET31	MET4	SAM1	YGL184C
+2.082430e-01	1	18	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	MET4
+1.123290e-01	1	18	43	6526	97048	Saccharomyces	cerevisiae	GO:0042364	biological_process	"water-soluble vitamin biosynthesis"	YJL060W
+8.985440e-02	1	18	34	6526	97048	Saccharomyces	cerevisiae	GO:0016765	molecular_function	"transferase activity, transferring alkyl or aryl (other than methyl) groups"	SAM1
+4.297580e-05	2	18	4	6526	97048	Saccharomyces	cerevisiae	GO:0046686	biological_process	"response to cadmium ion"	MET30	MET4
+1.533580e-01	1	18	60	6526	97048	Saccharomyces	cerevisiae	GO:0045944	biological_process	"positive regulation of transcription from RNA polymerase II promoter"	MET4
+7.525170e-01	9	18	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	GCN4	MET30	MET31	MET4	PLM2	REC104	YJL060W	YJL212C	YLR179C
+9.489460e-02	1	18	36	6526	97048	Saccharomyces	cerevisiae	GO:0000151	cellular_component	"ubiquitin ligase complex"	MET30
+1.454570e-03	2	18	21	6526	97048	Saccharomyces	cerevisiae	GO:0010035	biological_process	"response to inorganic substance"	MET30	MET4
+9.990850e-02	1	18	38	6526	97048	Saccharomyces	cerevisiae	GO:0016811	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds, in linear amides"	YJL060W
+2.429470e-01	1	18	100	6526	97048	Saccharomyces	cerevisiae	GO:0006310	biological_process	"DNA recombination"	REC104
+8.732440e-02	1	18	33	6526	97048	Saccharomyces	cerevisiae	GO:0031226	cellular_component	"intrinsic to plasma membrane"	YJL212C
+2.758200e-03	1	18	1	6526	97048	Saccharomyces	cerevisiae	GO:0004604	molecular_function	"phosphoadenylyl-sulfate reductase (thioredoxin) activity"	MET16
+1.245870e-01	1	18	48	6526	97048	Saccharomyces	cerevisiae	GO:0006733	biological_process	"oxidoreduction coenzyme metabolism"	YJL060W
+1.082980e-02	4	18	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	GCN4	MET31	MET4	PLM2
+1.024060e-01	1	18	39	6526	97048	Saccharomyces	cerevisiae	GO:0042244	biological_process	"spore wall assembly"	SPS2
+1.000000e+00	18	18	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	RLP36A	SAM1	SPS2	YDR042C	YEL072W	YGL184C	YJL060W	YJL212C	YLR179C
+2.170570e-01	1	18	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	MET4
+4.293690e-01	1	18	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	SPS2
+3.177780e-01	1	18	137	6526	97048	Saccharomyces	cerevisiae	GO:0006511	biological_process	"ubiquitin-dependent protein catabolism"	MET30
+3.254360e-01	1	18	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	REC104
+1.024060e-01	1	18	39	6526	97048	Saccharomyces	cerevisiae	GO:0003712	molecular_function	"transcription cofactor activity"	MET4
+5.509210e-03	1	18	2	6526	97048	Saccharomyces	cerevisiae	GO:0004478	molecular_function	"methionine adenosyltransferase activity"	SAM1
+9.536300e-04	2	18	17	6526	97048	Saccharomyces	cerevisiae	GO:0010038	biological_process	"response to metal ion"	MET30	MET4
+3.479240e-01	1	18	153	6526	97048	Saccharomyces	cerevisiae	GO:0051186	biological_process	"cofactor metabolism"	YJL060W
+1.614760e-01	2	18	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	ECM17	MET16
+1.000000e+00	18	18	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	RLP36A	SAM1	SPS2	YDR042C	YEL072W	YGL184C	YJL060W	YJL212C	YLR179C
+7.525170e-01	9	18	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	GCN4	MET30	MET31	MET4	PLM2	REC104	YJL060W	YJL212C	YLR179C
+1.033100e-01	4	18	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	GCN4	MET31	MET4	PLM2
+1.421750e-01	2	18	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	MET30	MET4
+6.425360e-02	1	18	24	6526	97048	Saccharomyces	cerevisiae	GO:0009069	biological_process	"serine family amino acid metabolism"	MET2
+1.304610e-01	3	18	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	GCN4	MET4	PLM2
+2.663970e-01	3	18	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	GCN4	MET31	PLM2
+3.497350e-02	4	18	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	GCN4	MET31	MET4	PLM2
+8.253050e-03	1	18	3	6526	97048	Saccharomyces	cerevisiae	GO:0016671	molecular_function	"oxidoreductase activity, acting on sulfur group of donors, disulfide as acceptor"	MET16
+2.721300e-01	1	18	114	6526	97048	Saccharomyces	cerevisiae	GO:0005618	cellular_component	"cell wall"	SPS2
+1.371930e-02	1	18	5	6526	97048	Saccharomyces	cerevisiae	GO:0015197	molecular_function	"peptide transporter activity"	YJL212C
+6.035490e-07	8	18	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	ECM17	GCN4	MET16	MET2	MET31	MET4	SAM1	YGL184C
+3.191710e-04	2	18	10	6526	97048	Saccharomyces	cerevisiae	GO:0006791	biological_process	"sulfur utilization"	ECM17	MET16
+1.098580e-01	1	18	42	6526	97048	Saccharomyces	cerevisiae	GO:0008134	molecular_function	"transcription factor binding"	MET4
+8.985440e-02	1	18	34	6526	97048	Saccharomyces	cerevisiae	GO:0006769	biological_process	"nicotinamide metabolism"	YJL060W
+9.959750e-01	1	18	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	ECM17
+6.154390e-01	1	18	337	6526	97048	Saccharomyces	cerevisiae	GO:0005783	cellular_component	"endoplasmic reticulum"	YJL212C
+3.216170e-01	1	18	139	6526	97048	Saccharomyces	cerevisiae	GO:0051603	biological_process	"proteolysis during cellular protein catabolism"	MET30
+1.486260e-01	1	18	58	6526	97048	Saccharomyces	cerevisiae	GO:0009165	biological_process	"nucleotide biosynthesis"	YJL060W
+3.386420e-01	1	18	148	6526	97048	Saccharomyces	cerevisiae	GO:0044257	biological_process	"cellular protein catabolism"	MET30
+6.838140e-01	4	18	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	RLP36A	YDR042C	YEL072W	YLR179C
+2.170570e-01	1	18	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	MET4
+1.773300e-02	4	18	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	GCN4	MET31	MET4	PLM2
+8.966190e-01	1	18	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YJL060W
+4.162950e-01	2	18	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	MET30	MET4
+5.056370e-01	2	18	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	MET30	MET4
+1.644170e-02	1	18	6	6526	97048	Saccharomyces	cerevisiae	GO:0016668	molecular_function	"oxidoreductase activity, acting on sulfur group of donors, NAD or NADP as acceptor"	ECM17
+1.533580e-01	1	18	60	6526	97048	Saccharomyces	cerevisiae	GO:0003700	molecular_function	"transcription factor activity"	PLM2
+1.674070e-01	1	18	66	6526	97048	Saccharomyces	cerevisiae	GO:0007127	biological_process	"meiosis I"	REC104
+1.948460e-01	1	18	78	6526	97048	Saccharomyces	cerevisiae	GO:0006766	biological_process	"vitamin metabolism"	YJL060W
+2.700810e-01	1	18	113	6526	97048	Saccharomyces	cerevisiae	GO:0030154	biological_process	"cell differentiation"	SPS2
+8.313960e-01	14	18	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	SPS2	YJL060W	YJL212C	YLR179C
+8.215030e-01	1	18	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YJL212C
+4.517070e-01	1	18	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	REC104
+3.552620e-01	1	18	157	6526	97048	Saccharomyces	cerevisiae	GO:0007047	biological_process	"cell wall organization and biogenesis"	ECM17
+1.147930e-01	1	18	44	6526	97048	Saccharomyces	cerevisiae	GO:0003704	molecular_function	"specific RNA polymerase II transcription factor activity"	MET31
+3.820890e-01	1	18	172	6526	97048	Saccharomyces	cerevisiae	GO:0006508	biological_process	"proteolysis"	MET30
+2.456660e-02	1	18	9	6526	97048	Saccharomyces	cerevisiae	GO:0016846	molecular_function	"carbon-sulfur lyase activity"	YGL184C
+1.197030e-01	1	18	46	6526	97048	Saccharomyces	cerevisiae	GO:0000082	biological_process	"G1/S transition of mitotic cell cycle"	PLM2
+4.563470e-01	14	18	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	ECM17	GCN4	MET16	MET2	MET30	MET31	MET4	PLM2	REC104	SAM1	SPS2	YGL184C	YJL060W	YJL212C
+8.680760e-01	9	18	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	GCN4	MET30	MET31	MET4	PLM2	REC104	YJL060W	YJL212C	YLR179C
+3.177780e-01	1	18	137	6526	97048	Saccharomyces	cerevisiae	GO:0043632	biological_process	"modification-dependent macromolecule catabolism"	MET30
+5.541310e-01	1	18	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	MET30
+5.602670e-02	3	18	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	GCN4	MET4	PLM2
+5.509210e-03	1	18	2	6526	97048	Saccharomyces	cerevisiae	GO:0009337	cellular_component	"sulfite reductase complex (NADPH)"	ECM17
+5.509210e-03	1	18	2	6526	97048	Saccharomyces	cerevisiae	GO:0004783	molecular_function	"sulfite reductase (NADPH) activity"	ECM17
+3.177780e-01	1	18	137	6526	97048	Saccharomyces	cerevisiae	GO:0019941	biological_process	"modification-dependent protein catabolism"	MET30
+4.997050e-01	1	18	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	REC104
+9.791250e-08	8	18	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	ECM17	GCN4	MET16	MET2	MET31	MET4	SAM1	YGL184C
+1.560690e-02	3	18	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	GCN4	MET4	PLM2
+9.010370e-02	4	18	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	GCN4	MET31	MET4	PLM2
+2.344080e-01	1	18	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	MET4
+1.945820e-01	5	18	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	ECM17	GCN4	MET2	YGL184C	YJL060W
+1.024060e-01	1	18	39	6526	97048	Saccharomyces	cerevisiae	GO:0030476	biological_process	"spore wall assembly (sensu Fungi)"	SPS2
+2.905950e-01	7	18	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	GCN4	MET30	MET31	MET4	PLM2	REC104	YLR179C
+1.509950e-01	1	18	59	6526	97048	Saccharomyces	cerevisiae	GO:0044459	cellular_component	"plasma membrane part"	YJL212C
+2.079170e-04	4	18	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	ECM17	GCN4	MET2	YGL184C
+2.758200e-03	1	18	1	6526	97048	Saccharomyces	cerevisiae	GO:0004061	molecular_function	"arylformamidase activity"	YJL060W
+4.471260e-02	3	18	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	GCN4	MET4	PLM2
+2.086100e-01	2	18	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	MET30	REC104
+2.236070e-01	1	18	91	6526	97048	Saccharomyces	cerevisiae	GO:0008415	molecular_function	"acyltransferase activity"	MET2
+3.873260e-01	1	18	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	REC104
+6.035490e-07	8	18	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	ECM17	GCN4	MET16	MET2	MET31	MET4	SAM1	YGL184C
+3.254360e-01	1	18	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	REC104
+1.970930e-01	1	18	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MET4
+4.062640e-02	1	18	15	6526	97048	Saccharomyces	cerevisiae	GO:0003713	molecular_function	"transcription coactivator activity"	MET4
+2.079170e-04	4	18	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	ECM17	GCN4	MET2	YGL184C
+1.903330e-01	1	18	76	6526	97048	Saccharomyces	cerevisiae	GO:0000794	cellular_component	"condensed nuclear chromosome"	REC104
+2.928320e-01	2	18	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	MET30	REC104
+1.007330e-01	3	18	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	MET30	PLM2	REC104

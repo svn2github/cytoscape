@@ -1,0 +1,22 @@
+==LEGEND
+Kelley_legend_only.jpg
+
+==CITATION
+Kelley et al. (2005)
+
+==TITLE
+Systematic interpretation of genetic interactions using protein networks
+
+==FULLTEXT
+http://www.nature.com/nbt/journal/v23/n5/full/nbt1096.html
+
+==SUPPL
+/Kelley2005
+
+==ABSTRACT
+Genetic interaction analysis,in which two mutations have a combined effect not exhibited by either mutation alone, is a powerful and widespread tool for establishing functional linkages between genes. In the yeast Saccharomyces cerevisiae, ongoing screens have generated >4,800 such genetic interaction data. We demonstrate that by combining these data with information on protein-protein, prote in-DNA or metabolic networks, it is possible to uncover physical mechanisms behind many of the observed genetic effects. Using a probabilistic model, we found that 1,922 genetic interactions are significantly associated with either between- or within-pathway explanations encoded in the physical networks, covering approx40% of known genetic interactions. These models predict new functions for 343 proteins and suggest that between-pathway explanations are better than within-pathway explanations at interpreting genetic interactions identified in systematic screens. This study provides a road map for how genetic and physical interactions can be integrated to reveal pathway organization and function
+
+==ORGANISM
+<i>Saccharomyces cerevisiae</i>(Yeast)
+
+==FIGURES

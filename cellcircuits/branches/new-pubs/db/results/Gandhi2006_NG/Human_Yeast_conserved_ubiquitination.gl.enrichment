@@ -1,0 +1,49 @@
+#NOT FOUND: PSMA1_HUMAN in Homo sapiens
+#NOT FOUND: PSMA3_HUMAN in Homo sapiens
+#NOT FOUND: PSMA2_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+#USING PRE8 instead of its synonym YML092C in Saccharomyces cerevisiae
+#USING PRE10 instead of its synonym YOR362C in Saccharomyces cerevisiae
+#USING PRE5 instead of its synonym YMR314W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+9.320820e-06	3	3	139	6526	97048	Saccharomyces	cerevisiae	GO:0051603	biological_process	"proteolysis during cellular protein catabolism"	YML092C	YMR314W	YOR362C
+1.434840e-05	3	3	160	6526	97048	Saccharomyces	cerevisiae	GO:0008233	molecular_function	"peptidase activity"	YML092C	YMR314W	YOR362C
+1.130350e-05	3	3	148	6526	97048	Saccharomyces	cerevisiae	GO:0044257	biological_process	"cellular protein catabolism"	YML092C	YMR314W	YOR362C
+8.797520e-03	3	3	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YML092C	YMR314W	YOR362C
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YML092C	YMR314W	YOR362C
+1.649740e-03	3	3	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YML092C	YMR314W	YOR362C
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YML092C	YMR314W	YOR362C
+1.338810e-01	3	3	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YML092C	YMR314W	YOR362C
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YML092C	YMR314W	YOR362C
+1.447510e-01	3	3	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YML092C	YMR314W	YOR362C
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YML092C	YMR314W	YOR362C
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YML092C	YMR314W	YOR362C
+2.726980e-02	3	3	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YML092C	YMR314W	YOR362C
+1.912950e-04	3	3	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	YML092C	YMR314W	YOR362C
+1.788630e-05	3	3	172	6526	97048	Saccharomyces	cerevisiae	GO:0006508	biological_process	"proteolysis"	YML092C	YMR314W	YOR362C
+5.444160e-02	3	3	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YML092C	YMR314W	YOR362C
+1.145770e-02	3	3	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YML092C	YMR314W	YOR362C
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YML092C	YMR314W	YOR362C
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YML092C	YMR314W	YOR362C
+8.913410e-06	3	3	137	6526	97048	Saccharomyces	cerevisiae	GO:0043632	biological_process	"modification-dependent macromolecule catabolism"	YML092C	YMR314W	YOR362C
+7.548430e-10	3	3	7	6526	97048	Saccharomyces	cerevisiae	GO:0019773	cellular_component	"proteasome core complex, alpha-subunit complex (sensu Eukaryota)"	YML092C	YMR314W	YOR362C
+5.350890e-05	3	3	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	YML092C	YMR314W	YOR362C
+3.502510e-07	3	3	47	6526	97048	Saccharomyces	cerevisiae	GO:0000502	cellular_component	"proteasome complex (sensu Eukaryota)"	YML092C	YMR314W	YOR362C
+8.326030e-05	3	3	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	YML092C	YMR314W	YOR362C
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YML092C	YMR314W	YOR362C
+1.343050e-02	3	3	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YML092C	YMR314W	YOR362C
+8.913410e-06	3	3	137	6526	97048	Saccharomyces	cerevisiae	GO:0019941	biological_process	"modification-dependent protein catabolism"	YML092C	YMR314W	YOR362C
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YML092C	YMR314W	YOR362C
+8.913410e-06	3	3	137	6526	97048	Saccharomyces	cerevisiae	GO:0006511	biological_process	"ubiquitin-dependent protein catabolism"	YML092C	YMR314W	YOR362C
+1.110160e-01	3	3	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YML092C	YMR314W	YOR362C
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YML092C	YMR314W	YOR362C
+5.486700e-07	3	3	63	6526	97048	Saccharomyces	cerevisiae	GO:0004175	molecular_function	"endopeptidase activity"	YML092C	YMR314W	YOR362C
+2.088610e-05	3	3	181	6526	97048	Saccharomyces	cerevisiae	GO:0006512	biological_process	"ubiquitin cycle"	YML092C	YMR314W	YOR362C
+1.462380e-05	3	3	161	6526	97048	Saccharomyces	cerevisiae	GO:0030163	biological_process	"protein catabolism"	YML092C	YMR314W	YOR362C
+1.208520e-08	3	3	16	6526	97048	Saccharomyces	cerevisiae	GO:0005839	cellular_component	"proteasome core complex (sensu Eukaryota)"	YML092C	YMR314W	YOR362C
+1.051110e-04	3	3	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	YML092C	YMR314W	YOR362C
+9.835110e-03	3	3	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	YML092C	YMR314W	YOR362C
+6.457610e-04	3	3	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	YML092C	YMR314W	YOR362C
+1.166920e-02	3	3	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YML092C	YMR314W	YOR362C
+1.261290e-03	3	3	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	YML092C	YMR314W	YOR362C
+2.118380e-04	3	3	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	YML092C	YMR314W	YOR362C
