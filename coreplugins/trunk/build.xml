@@ -17,6 +17,8 @@
     <ant dir="GraphMerge"/>
     <ant dir="QuickFind"/>
     <ant dir="BioPAX"/>
+    <ant dir="PSI-MI"/>
+    <ant dir="SBMLReader"/>
     <mkdir dir="${build.dir}"/>
     <copy todir="${build.dir}" file="browser/browser.jar"/>
     <copy todir="${build.dir}" file="ManualLayout/ManualLayout.jar"/>
@@ -29,6 +31,8 @@
     <copy todir="${build.dir}" file="GraphMerge/GraphMerge.jar"/>
     <copy todir="${build.dir}" file="QuickFind/plugins/quick_find.jar"/>
     <copy todir="${build.dir}" file="BioPAX/build/jars/biopax.jar"/>
+    <copy todir="${build.dir}" file="PSI-MI/build/jars/psi_mi.jar"/>
+    <copy todir="${build.dir}" file="SBMLReader/SBMLReader.jar"/>
   </target>
 
   <!-- clean all coreplugin projects  -->
@@ -42,6 +46,8 @@
     <ant dir="GraphMerge" target="clean"/>
     <ant dir="QuickFind" target="clean"/>
     <ant dir="BioPAX" target="clean"/>
+    <ant dir="PSI-MI" target="clean"/>
+    <ant dir="SBMLReader" target="clean"/>
     <delete dir="${build.dir}"/>
   </target>
 
