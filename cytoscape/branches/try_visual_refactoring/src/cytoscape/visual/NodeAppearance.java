@@ -589,51 +589,34 @@ public class NodeAppearance implements Appearance, Cloneable {
     nodeSizeLocked = b;
   }
  
-  Map<Class,ValueParser> parsers = new HashMap<Class,ValueParser>();
 
   public void applyBypass(Node n) {
   	CyAttributes attrs = Cytoscape.getNodeAttributes();
 	String id = n.getIdentifier();
 
-	setFillColor( (Color)getBypass(attrs,id,"node.fillColor",Color.class) ); 
-	setBorderColor( (Color)getBypass(attrs,id,"node.borderColor",Color.class) );
-	setBorderLineType( (LineType)getBypass(attrs,id,"node.lineType",LineType.class) );
-	Byte b = (Byte)getBypass(attrs,id,"node.shape",Byte.class);
+	setFillColor( BypassHelper.getColorBypass(attrs,id,"node.fillColor") ); 
+	setBorderColor( BypassHelper.getColorBypass(attrs,id,"node.borderColor") );
+	setBorderLineType( (LineType)BypassHelper.getBypass(attrs,id,"node.lineType",LineType.class) );
+	Byte b = (Byte)BypassHelper.getBypass(attrs,id,"node.shape",Byte.class);
 	if ( b != null )
 		setShape( b.byteValue() );
-	Double w = (Double)getBypass(attrs,id,"node.width",Double.class);
+	Double w = (Double)BypassHelper.getBypass(attrs,id,"node.width",Double.class);
 	if ( w != null )
 		width = w.doubleValue(); 
-	Double h = (Double)getBypass(attrs,id,"node.height",Double.class);
+	Double h = (Double)BypassHelper.getBypass(attrs,id,"node.height",Double.class);
 	if ( h != null )
 		height = h.doubleValue(); 
-	Double s = (Double)getBypass(attrs,id,"node.size",Double.class);
+	Double s = (Double)BypassHelper.getBypass(attrs,id,"node.size",Double.class);
 	if ( s != null )
 		size = s.doubleValue(); 
-	setLabel( (String)getBypass(attrs,id,"node.label",String.class) );
-	setToolTip((String)getBypass(attrs,id,"node.toolTip",String.class) );
-	setFont( (Font)getBypass(attrs,id,"node.font",Font.class) );
-	Double f = (Double)getBypass(attrs,id,"node.fontSize",Double.class);
+	setLabel( (String)BypassHelper.getBypass(attrs,id,"node.label",String.class) );
+	setToolTip((String)BypassHelper.getBypass(attrs,id,"node.toolTip",String.class) );
+	setFont( (Font)BypassHelper.getBypass(attrs,id,"node.font",Font.class) );
+	Double f = (Double)BypassHelper.getBypass(attrs,id,"node.fontSize",Double.class);
 	if ( f != null )
 		setFontSize( f.floatValue() ); 
-	setLabelColor( (Color)getBypass(attrs,id,"node.labelColor",Color.class) );
-	setLabelPosition( (LabelPosition)getBypass(attrs,id,"node.labelPosition",LabelPosition.class) );
-  }
-
-  private Object getBypass(CyAttributes attrs, String id, String attrName, Class type) {
-	String value = attrs.getStringAttribute(id,attrName);
-	if ( value == null )
-		return null;
-
-	ValueParser p = parsers.get(type);
-	if ( p == null ) {
-		p = ParserFactory.getParser(type);
-		parsers.put(type,p);
-	}
-	if ( p != null )
-		return p.parseStringValue(value);
-	else
-		return null;
+	setLabelColor( (Color)BypassHelper.getBypass(attrs,id,"node.labelColor",Color.class) );
+	setLabelPosition( (LabelPosition)BypassHelper.getBypass(attrs,id,"node.labelPosition",LabelPosition.class) );
   }
 }
 

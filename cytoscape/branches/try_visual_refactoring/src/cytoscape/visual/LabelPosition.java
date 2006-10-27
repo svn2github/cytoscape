@@ -97,9 +97,9 @@ public class LabelPosition {
 		justify = lp.getJustify();
 	}
 
-	public LabelPosition(int lab, int targ, int just, double x, double y) {
-		labelAnchor = lab;
+	public LabelPosition(int targ, int lab, int just, double x, double y) {
 		targetAnchor = targ;
+		labelAnchor = lab;
 		justify = just;
 		xOffset = x;
 		yOffset = y;
@@ -134,6 +134,44 @@ public class LabelPosition {
 	}
 	public void setOffsetY(double d) {
 		yOffset = d;
+	}
+
+	public boolean equals(Object lp) {
+		if ( lp == null )
+			return false;
+
+		if (  lp instanceof LabelPosition ) {
+
+			LabelPosition LP = (LabelPosition)lp;
+
+			if ( Math.abs(LP.getOffsetX() - xOffset) > 0.0000001 ) {
+				System.out.println("xoff");
+				return false;
+				}
+			if ( Math.abs(LP.getOffsetY() - yOffset) > 0.0000001 ) {
+				System.out.println("yoff");
+				return false;
+				}
+			if ( LP.getLabelAnchor() != labelAnchor ) {
+				System.out.println("label");
+				return false;
+				}
+			if ( LP.getTargetAnchor() != targetAnchor ) {
+				System.out.println("taret");
+				return false;
+				}
+			if ( LP.getJustify() != justify ) {
+				System.out.println("justify");
+				return false;
+				}
+		
+			return true;
+
+		} else {
+				System.out.println("not lp");
+			
+			return false;
+		}
 	}
 
 	public static String convert(int b) {
@@ -241,17 +279,18 @@ public class LabelPosition {
 	public static LabelPosition parse(String value) {
 		Pattern p = Pattern.compile("^([NSEWC]{1,2}+),([NSEWC]{1,2}+),([clr]{1}+),(-?\\d+(.\\d+)?),(-?\\d+(.\\d+)?)$");
 		Matcher m = p.matcher(value);
-		LabelPosition lp = new LabelPosition();
 
 		if ( m.matches() ) {
+			LabelPosition lp = new LabelPosition();
 			lp.setTargetAnchor( convert(m.group(1)) );
 			lp.setLabelAnchor( convert(m.group(2)) );
 			lp.setJustify( convert(m.group(3)) );
 			lp.setOffsetX( Double.parseDouble(m.group(4)) );
 			lp.setOffsetY( Double.parseDouble(m.group(6)) );
+			return lp;
 		}
 
-		return lp;
+		return null;
 	}
 
 	protected static String getShortName(int x) {

@@ -362,35 +362,16 @@ public class EdgeAppearance implements Appearance, Cloneable {
         CyAttributes attrs = Cytoscape.getEdgeAttributes();
         String id = e.getIdentifier();
 
-        setColor( (Color)getBypass(attrs,id,"edge.color",Color.class) );
-        setLineType( (LineType)getBypass(attrs,id,"edge.lineType",LineType.class) ); 
-	setSourceArrow((Arrow)getBypass(attrs,id,"edge.sourceArrow",Arrow.class) );
-	setTargetArrow((Arrow) getBypass(attrs,id,"edge.targetArrow",Arrow.class) );
-	setLabel((String) getBypass(attrs,id,"edge.label",String.class) );
-	setToolTip((String)  getBypass(attrs,id,"edge.toolTip",String.class) );
-	setFont((Font)  getBypass(attrs,id,"edge.font",Font.class) );
-	Double d = (Double)getBypass(attrs,id,"edge.fontSize",Double.class);
+        setColor( BypassHelper.getColorBypass(attrs,id,"edge.color") );
+        setLineType( (LineType)BypassHelper.getBypass(attrs,id,"edge.lineType",LineType.class) ); 
+	setSourceArrow((Arrow)BypassHelper.getBypass(attrs,id,"edge.sourceArrow",Arrow.class) );
+	setTargetArrow((Arrow) BypassHelper.getBypass(attrs,id,"edge.targetArrow",Arrow.class) );
+	setLabel((String) BypassHelper.getBypass(attrs,id,"edge.label",String.class) );
+	setToolTip((String)  BypassHelper.getBypass(attrs,id,"edge.toolTip",String.class) );
+	setFont((Font)  BypassHelper.getBypass(attrs,id,"edge.font",Font.class) );
+	Double d = (Double)BypassHelper.getBypass(attrs,id,"edge.fontSize",Double.class);
 	if ( d != null )
 		setFontSize(d.floatValue());
-        setLabelColor( (Color)getBypass(attrs,id,"edge.labelColor",Color.class) );
+        setLabelColor( BypassHelper.getColorBypass(attrs,id,"edge.labelColor") );
   }
-
-  private Map<Class,ValueParser> parsers = new HashMap<Class,ValueParser>();
-
-  private Object getBypass(CyAttributes attrs, String id, String attrName, Class type) {
-        String value = attrs.getStringAttribute(id,attrName);
-	if ( value == null )
-		return null;
-
-        ValueParser p = parsers.get(type);
-        if ( p == null ) {
-                p = ParserFactory.getParser(type);
-                parsers.put(type,p);
-        }
-        if ( p != null )
-                return p.parseStringValue(value);
-        else
-                return null;
-  }
-
 } 
