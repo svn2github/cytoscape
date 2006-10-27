@@ -1437,9 +1437,16 @@ public abstract class Cytoscape {
 		if (network.getClientData(READER_CLIENT_KEY) != null) {
 			((GraphReader) network.getClientData(READER_CLIENT_KEY))
 					.layout(Cytoscape.getNetworkView(network.getIdentifier()));
-		}
-
-		else {
+		} else {
+			// TODO 
+			// This creates the default square layout.
+			// This code should not be here, rather it should
+			// be somewhere in the cytoscape.layout package.
+			// This change should be made when we add the
+			// layoutbroker code in 2.5. 
+			// When you move this code, don't forget to update
+			// cytoscape.data.readers.AbstractGraphReader.doLayout()
+			// as well.
 			double distanceBetweenNodes = 80.0d;
 			int columns = (int) Math.sqrt(view.nodeCount());
 			Iterator nodeViews = view.getNodeViewsIterator();

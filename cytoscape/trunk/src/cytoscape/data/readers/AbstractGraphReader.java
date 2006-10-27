@@ -45,9 +45,11 @@ import cytoscape.util.CyNetworkNaming;
 
 import giny.model.RootGraph;
 import giny.view.GraphView;
+import giny.view.NodeView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 
 public abstract class AbstractGraphReader implements GraphReader {
@@ -88,7 +90,34 @@ public abstract class AbstractGraphReader implements GraphReader {
 		return Cytoscape.getEdgeAttributes();
 	}
 
-	public void layout(GraphView myView) {
+	public void layout(GraphView view) {
+		// TODO 
+		// This is a basic, random square layout.
+		// This code shouldn't live here. 
+		// This code should exist somewhere in cytoscape.layout.	
+		// We're not fixing the duplication until we've cleaned up
+		// cytoscape.layout.
+		// When you fix this code, don't forget to fix 
+		// Cytoscape.createNetworkView() as well.
+		double distanceBetweenNodes = 80.0d;
+		int columns = (int) Math.sqrt(view.nodeCount());
+		Iterator nodeViews = view.getNodeViewsIterator();
+		double currX = 0.0d;
+		double currY = 0.0d;
+		int count = 0;
+		while (nodeViews.hasNext()) {
+			NodeView nView = (NodeView) nodeViews.next();
+			nView.setOffset(currX, currY);
+			count++;
+			if (count == columns) {
+				count = 0;
+				currX = 0.0d;
+				currY += distanceBetweenNodes;
+			} else {
+				currX += distanceBetweenNodes;
+			}
+		}
+	
 	}
 
 	public int[] getNodeIndicesArray() {
