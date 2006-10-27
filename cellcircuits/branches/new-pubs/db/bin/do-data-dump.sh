@@ -20,3 +20,7 @@ echo "Getting yeast genes"
 mysql -u mdaly --password=mdalysql $DB \
     < cache-sql/dump-yeast-genes.sql \
     > $OUT/cache/yeast-genes-in-GO-DB.txt
+
+echo "Getting model table"
+mysql -u mdaly --password=mdalysql $DB \
+    -e "SELECT * FROM model;" > $OUT/cache/model.txt
