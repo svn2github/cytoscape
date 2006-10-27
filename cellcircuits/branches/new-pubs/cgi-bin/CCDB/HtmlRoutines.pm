@@ -21,43 +21,15 @@ use CCDB::Constants qw($cgi_version
 		       $pubName 
 		       $db_link_by_species 
 		       $colors 
+		       $img_format
+		       $species_abbrev
+		       $pubSupplementURL
 		       );
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw();
 our @EXPORT_OK = qw(highlight gen_go_url $TRAILER format_header query_form);
 our $VERSION = 1.0;
-
-my $pubSupplementURL = {
-    'de_Lichtenberg2005_Science' => "http://www.cbs.dtu.dk/cellcycle/yeast_complexes/complexes.php",
-    'Kelley2005_NBT'             => "$chianti_url/Kelley2005",
-    'Sharan2005_PNAS'            => "$chianti_url/Sharan2005",
-    'Yeang2005_GB'               => "$chianti_url/Yeang2005"
-};
-
-
-my %img_format =
-    (
-     Begley2002_MCR             => "jpg",
-     Bernard2005_PSB            => "jpg",
-     de_Lichtenberg2005_Science => "jpg",
-     Gandhi2006_NG              => "jpg",
-     Hartemink2002_PSB          => "jpg",
-     Haugen2004_GB              => "jpg",
-     Ideker2002_BINF            => "jpg",
-     Kelley2005_NBT             => "png",
-     Sharan2005_PNAS            => "png",
-     Suthram2005_Nature         => "jpg",
-     Yeang2005_GB               => "gif",
-     );
-
-my $species_abbrev = {
-    'Caenorhabditis elegans'   => 'C. ele',
-    'Drosophila melanogaster'  => 'D. mel',
-    'Homo sapiens'             => 'H. sap',
-    'Plasmodium falciparum'    => 'P. fal',
-    'Saccharomyces cerevisiae' => 'S. cer'
-    };
 
 my $sortMethods = {
     "optionA_by_number_of_query_terms_matching_model" => "By Number of Query Terms Matching Model",
@@ -777,7 +749,7 @@ sub format_eo
 
     my $url = sprintf("$cgi_url/get_genes_by_eid.pl?eid=%s&thm=%s",
 		      $eid,
-		      "$data_url/${thm_img}.$img_format{$pub}");
+		      "$data_url/${thm_img}.$img_format->{$pub}");
     
     foreach my $g (@{ $model->eid2genes()->{ $eid } })
     {
@@ -1011,14 +983,16 @@ sub format_model_thm_td
     {
 	$score = $model->score();
     }
+    my $name = $model->name();
 
     my $model_thm_html = <<MODEL_HTML;
       <td class='search-result' align='center' valign='top' >$score</td>
       <td class='search-result' align='center' valign='top' bgcolor='white'>
-         <a href='$data_url/${lrg_img}.$img_format{$pub}'>
-            <img src='$data_url/${thm_img}.$img_format{$pub}' border='0'>
+         <a href='$data_url/${lrg_img}.$img_format->{$pub}'>
+            <img src='$data_url/${thm_img}.$img_format->{$pub}' border='0'>
          </a><br />
-	 <b class='pub-citation'>$pubName->{$pub}</b><br>
+	 <b class='pub-citation'></b><br>
+	 <b class='pub-citation'>$pubName->{$pub} [model: $name]</b><br>
 	 <a class='white-bg-link' href='$pubCitation->{$pub}' title='PubMed abstract'>[PubMed]</a>
 MODEL_HTML
       

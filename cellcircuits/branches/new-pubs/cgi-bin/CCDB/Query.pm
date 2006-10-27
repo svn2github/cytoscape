@@ -341,6 +341,8 @@ sub get_gene_ids
 	$gene_query =~ s/\*/.*/g;
     }
 
+    printf STDERR "get_gene_ids: $gene_query\n" if ($DEBUG);
+
     $sth->bind_param(1,$gene_query);
     $sth->execute();
 
@@ -348,11 +350,11 @@ sub get_gene_ids
     {
 	my $genus_species_str = get_species_string($Ref->{sid});
 
-	#printf STDERR ("### get_gene_ids: sid=%s gid=%s symbol=%s ss=%s\n", 
-	#	       $Ref->{sid},
-	#	       $Ref->{gid},
-	#	       $Ref->{symbol},
-	#	       $genus_species_str);
+	printf STDERR ("### get_gene_ids: sid=%s gid=%s symbol=%s ss=%s\n", 
+		       $Ref->{sid},
+		       $Ref->{gid},
+		       $Ref->{symbol},
+		       $genus_species_str) if ($DEBUG);
 	
 	### filter by species constraint
 
@@ -441,7 +443,7 @@ sub gene_query
 	$error_msg
 	) = @_;
 
-    printf STDERR "gene_query:\n" . $queryInput->print() . "\n"  if($DEBUG);
+#    printf STDERR "gene_query:\n" . $queryInput->print() . "\n"  if($DEBUG);
     
     foreach my $gid (keys %{ $queryInput->geneId2Symbol() })
     {
@@ -555,7 +557,9 @@ sub name_acc_query
 
     foreach my $q (keys %{$queryTermHash})
     {
-
+	print STDERR "$q: query by term name\n"  if($DEBUG);
+	print STDERR "$q: pval=$pval_thresh\n"  if($DEBUG);
+		
 	$queryInput->expandedQuery()->{$q}++;
 	$sth->bind_param(1,$pval_thresh);
 	$sth->bind_param(2,$q);
@@ -565,16 +569,20 @@ sub name_acc_query
 
 	while(my $Ref = $sth->fetchrow_hashref())
 	{
-
+	    print STDERR "eid=" . $Ref->{e_id} . "\n" if $DEBUG;
 	    ### filter by contraints (pval, species, publications) ###
 	    next if($Ref->{e_pval} > $pval_thresh);
 
+	    print STDERR "  pval ok\n" if $DEBUG;
+	    
 	    my $sid = $Ref->{sid};
 
 	    my $genus_species_str = get_species_string($sid);
 
 	    next unless(exists $species->{$genus_species_str});
 	    next unless(exists $publications->{$Ref->{mpub}});
+
+	    print STDERR "  species and pub ok\n" if $DEBUG;
 
 	    $found->{$q}++;
 
