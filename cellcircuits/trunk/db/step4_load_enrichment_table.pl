@@ -17,11 +17,9 @@ my $dbname = shift @ARGV;
 
 
 ## this block is specific to updating the database with a new GO version
-
-my $gwt_file = "genes_with_term.tab";
-my $n_genes_beneath_file = "n_genes_beneath_BY_GO_term_accession.tab";
-
-if(0){    
+if(0){
+    my $gwt_file = "genes_with_term.tab";
+    
 #print STDERR "\n\nNOTE: Loading the enrichment table takes 5-6 hours!!\n\n";
 #print STDERR "./precompute_genes_with_term.pl > genes_with_term.tab\n";
 #print        `./precompute_genes_with_term.pl > genes_with_term.tab\n`;
@@ -47,6 +45,7 @@ if(0){
     }
     close F;
 
+    my $n_genes_beneath_file = "n_genes_beneath_BY_GO_term_accession.tab";
     print STDERR "sort $tmp_out > $n_genes_beneath_file\n";
     print        `sort $tmp_out > $n_genes_beneath_file\n`;
 
@@ -80,8 +79,8 @@ my @pubs = qw( BandyopadhyayGersten2007 );
 
 my $pubs_list = join " ", @pubs;
 
-#print STDERR "./compute_enrichment.pl cellcircuits_dev $n_genes_beneath_file $pubs_list\n";
-#print        `./compute_enrichment.pl cellcircuits_dev $n_genes_beneath_file $pubs_list\n`;
+print STDERR "./compute_enrichment.pl cellcircuits_dev $n_genes_beneath_file $pubs_list\n";
+print        `./compute_enrichment.pl cellcircuits_dev $n_genes_beneath_file $pubs_list\n`;
 
 
 my $dir         = '/cellar/users/mdaly/cellcircuits/trunk/db';
@@ -106,5 +105,5 @@ chdir "$sql_dir" or die "Cannot cd to $sql_dir: $!\n";
 #print STDERR "cat create_enrichment.sql | $ccdev\n";
 #print        `cat create_enrichment.sql | $ccdev\n`;
 
-print STDERR "cat $insert_into_enrichment_sql_FILE | $ccdev\n";
-print        `cat $insert_into_enrichment_sql_FILE | $ccdev\n`;
+#print STDERR "cat $insert_into_enrichment_sql_FILE | $ccdev\n";
+#print        `cat $insert_into_enrichment_sql_FILE | $ccdev\n`;
