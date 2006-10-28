@@ -223,6 +223,11 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
                     config.setAutoDispose(false);
                     pack();
                     setTitle("An Error Has Occurred");
+
+                    //  Make sure JTask is actually visible
+                    if (!JTask.this.isShowing()) {
+                       JTask.this.setVisible(true);
+                    }
                 }
             });
         }
