@@ -42,7 +42,7 @@ public class GeneAssociationReader implements TextTableReader {
 	private String targetOntologyName;
 
 	private final InputStream is;
-	private final TableFileType type;
+	private final TextFileDelimiters type;
 	private final String keyAttributeName;
 
 	private Aliases nodeAliases;
@@ -104,14 +104,14 @@ public class GeneAssociationReader implements TextTableReader {
 	 * @throws
 	 */
 	public GeneAssociationReader(String ontologyName, final URL url,
-			final boolean isColumnName, final TableFileType type,
+			final boolean isColumnName, final TextFileDelimiters type,
 			String keyAttributeName) throws IOException {
 		this(ontologyName, URLUtil.getInputStream(url), isColumnName, type,
 				keyAttributeName);
 	}
 
 	public GeneAssociationReader(String ontologyName, final InputStream is,
-			final boolean isColumnName, final TableFileType type,
+			final boolean isColumnName, final TextFileDelimiters type,
 			final String keyAttributeName) throws IOException {
 		this.is = is;
 		this.type = type;
