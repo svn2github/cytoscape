@@ -444,7 +444,7 @@ public class DNodeView
             final float yMax = (float) (yCenter + hDiv2);
 
             if (!(yMax > yMin))
-                throw new IllegalArgumentException("height is too small");
+                throw new IllegalArgumentException("height is too small max:" + yMax + " min:" + yMin + " center:" + yCenter + " height:" + height );
 
             m_view.m_spacial.delete(m_inx);
             m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
@@ -1035,6 +1035,67 @@ public class DNodeView
             m_graphicShapes.add(index, s);
             m_graphicPaints.add(index, p);
             m_view.m_contentChanged = true;
+        }
+    }
+
+    public void setTextAnchor ( int position ) { 
+        synchronized (m_view.m_lock) {
+            m_view.m_nodeDetails.overrideLabelTextAnchor(m_inx, 0, position);
+            m_view.m_contentChanged = true;
+        }
+    }
+    public int getTextAnchor ( ){
+        synchronized (m_view.m_lock) {
+            return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelTextAnchor(m_inx, 0));
+        }
+    }
+
+    public void setJustify ( int justify ){
+        synchronized (m_view.m_lock) {
+            m_view.m_nodeDetails.overrideLabelJustify(m_inx, 0, justify);
+            m_view.m_contentChanged = true;
+        }
+    }
+    public int getJustify ( ){ 
+        synchronized (m_view.m_lock) {
+            return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelJustify(m_inx, 0));
+        }
+    }
+
+
+    public void setLabelOffsetX(double x){ 
+        synchronized (m_view.m_lock) {
+            m_view.m_nodeDetails.overrideLabelOffsetVectorX(m_inx, 0, x);
+            m_view.m_contentChanged = true;
+        }
+    }
+    public double getLabelOffsetX(){ 
+        synchronized (m_view.m_lock) {
+            return m_view.m_nodeDetails.labelOffsetVectorX(m_inx, 0);
+        }
+    }
+
+    public void setLabelOffsetY(double y){ 
+        synchronized (m_view.m_lock) {
+            m_view.m_nodeDetails.overrideLabelOffsetVectorY(m_inx, 0, y);
+            m_view.m_contentChanged = true;
+        }
+    }
+    public double getLabelOffsetY(){ 
+        synchronized (m_view.m_lock) {
+            return m_view.m_nodeDetails.labelOffsetVectorY(m_inx, 0);
+        }
+    }
+
+    public void setNodeLabelAnchor(int position){ 
+        synchronized (m_view.m_lock) {
+            m_view.m_nodeDetails.overrideLabelNodeAnchor(m_inx, 0, position);
+            m_view.m_contentChanged = true;
+        }
+    }
+    public int getNodeLabelAnchor(){ 
+        synchronized (m_view.m_lock) {
+            return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelNodeAnchor(m_inx, 0));
         }
     }
 }

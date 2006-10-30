@@ -11,6 +11,8 @@ import java.awt.Shape;
 
 import java.util.HashMap;
 
+import giny.view.Label;
+
 
 /*
  * Access to the methods of this class should be synchronized externally if
@@ -32,6 +34,12 @@ class DNodeDetails extends IntermediateNodeDetails {
     final HashMap m_labelFonts = new HashMap();
     final HashMap m_labelPaints = new HashMap();
 
+    final HashMap m_labelTextAnchors = new HashMap();
+    final HashMap m_labelNodeAnchors = new HashMap();
+    final HashMap m_labelJustifys = new HashMap();
+    final HashMap m_labelOffsetXs = new HashMap();
+    final HashMap m_labelOffsetYs = new HashMap();
+
     DNodeDetails(DGraphView view) {
         m_view = view;
     }
@@ -47,6 +55,11 @@ class DNodeDetails extends IntermediateNodeDetails {
         m_fillPaints.remove(key);
         m_borderWidths.remove(key);
         m_borderPaints.remove(key);
+	m_labelTextAnchors.remove(key);
+	m_labelNodeAnchors.remove(key);
+	m_labelJustifys.remove(key);
+	m_labelOffsetXs.remove(key);
+	m_labelOffsetYs.remove(key);
 
         final Object intr = m_labelCounts.remove(key);
         final int labelCount = ((intr == null) ? 0 : ((Integer) intr).intValue());
@@ -364,5 +377,150 @@ class DNodeDetails extends IntermediateNodeDetails {
         final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
 
         return nv.getCustomGraphicPaint(inx);
+    }
+
+
+    // label positioning
+
+    public byte labelTextAnchor(final int node, final int labelInx) {
+        final Object o = m_labelTextAnchors.get(new Integer(node));
+
+        if (o == null)
+            return super.labelTextAnchor(node,labelInx);
+
+        return convertG2ND(((Integer)o).intValue());
+    }
+
+    void overrideLabelTextAnchor(final int node, final int inx, final int anchor) {
+        if ( convertG2ND(anchor) ==  super.labelTextAnchor(node,inx) )
+            m_labelTextAnchors.remove(new Integer(node));
+        else
+            m_labelTextAnchors.put( new Integer(node), new Integer(anchor));
+    }
+
+    public byte labelNodeAnchor(final int node, final int labelInx) {
+        final Object o = m_labelNodeAnchors.get(new Integer(node));
+
+        if (o == null)
+            return super.labelNodeAnchor(node,labelInx);
+
+        return convertG2ND(((Integer)o).intValue());
+    }
+
+    void overrideLabelNodeAnchor(final int node, final int inx, final int anchor) {
+        if ( convertG2ND(anchor) ==  super.labelNodeAnchor(node,inx) )
+            m_labelNodeAnchors.remove(new Integer(node));
+        else
+            m_labelNodeAnchors.put( new Integer(node), new Integer(anchor));
+    }
+
+    public float labelOffsetVectorX(final int node, final int labelInx) {
+        final Object o = m_labelOffsetXs.get(new Integer(node));
+
+        if (o == null)
+            return super.labelOffsetVectorX(node,labelInx);
+
+        return ((Double)o).floatValue();
+    }
+
+    void overrideLabelOffsetVectorX(final int node, final int inx, final double x) {
+        if ( ((float)x) ==  super.labelOffsetVectorX(node,inx) )
+            m_labelOffsetXs.remove(new Integer(node));
+        else
+            m_labelOffsetXs.put( new Integer(node), new Double(x));
+    }
+
+    public float labelOffsetVectorY(final int node, final int labelInx) {
+        final Object o = m_labelOffsetYs.get(new Integer(node));
+
+        if (o == null)
+            return super.labelOffsetVectorY(node,labelInx);
+
+        return ((Double)o).floatValue();
+    }
+
+    void overrideLabelOffsetVectorY(final int node, final int inx, final double y) {
+        if ( ((float)y) ==  super.labelOffsetVectorY(node,inx) )
+            m_labelOffsetYs.remove(new Integer(node));
+        else
+            m_labelOffsetYs.put( new Integer(node), new Double(y));
+    }
+
+    public byte labelJustify(final int node, final int labelInx) {
+        final Object o = m_labelJustifys.get(new Integer(node));
+
+        if (o == null)
+            return super.labelJustify(node,labelInx);
+
+        return convertG2ND(((Integer)o).intValue());
+    }
+
+    void overrideLabelJustify(final int node, final int inx, final int justify) {
+        if ( convertG2ND(justify) ==  super.labelJustify(node,inx) )
+            m_labelJustifys.remove(new Integer(node));
+        else 
+            m_labelJustifys.put( new Integer(node), new Integer(justify));
+    }
+
+    static byte convertG2ND(int giny) {
+    	switch (giny) {
+		case (Label.NORTH):
+			return NodeDetails.ANCHOR_NORTH;
+		case (Label.SOUTH):
+			return NodeDetails.ANCHOR_SOUTH;
+		case (Label.EAST):
+			return NodeDetails.ANCHOR_EAST;
+		case (Label.WEST):
+			return NodeDetails.ANCHOR_WEST;
+		case (Label.NORTHEAST):
+			return NodeDetails.ANCHOR_NORTHEAST;
+		case (Label.NORTHWEST):
+			return NodeDetails.ANCHOR_NORTHWEST;
+		case (Label.SOUTHEAST):
+			return NodeDetails.ANCHOR_SOUTHEAST;
+		case (Label.SOUTHWEST):
+			return NodeDetails.ANCHOR_SOUTHWEST;
+		case (Label.CENTER):
+			return NodeDetails.ANCHOR_CENTER;
+		case (Label.JUSTIFY_CENTER):
+			return NodeDetails.LABEL_WRAP_JUSTIFY_CENTER;
+		case (Label.JUSTIFY_RIGHT):
+			return NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT;
+		case (Label.JUSTIFY_LEFT):
+			return NodeDetails.LABEL_WRAP_JUSTIFY_LEFT;
+		default:
+			return -1;
+	}
+    }
+
+    static int convertND2G(byte nd) {
+        switch (nd) {
+                case (NodeDetails.ANCHOR_NORTH):
+                        return Label.NORTH;
+                case (NodeDetails.ANCHOR_SOUTH):
+                        return Label.SOUTH;
+                case (NodeDetails.ANCHOR_EAST):
+                        return Label.EAST;
+                case (NodeDetails.ANCHOR_WEST):
+                        return Label.WEST;
+                case (NodeDetails.ANCHOR_NORTHEAST):
+                        return Label.NORTHEAST;
+                case (NodeDetails.ANCHOR_NORTHWEST):
+                        return Label.NORTHWEST;
+                case (NodeDetails.ANCHOR_SOUTHEAST):
+                        return Label.SOUTHEAST;
+                case (NodeDetails.ANCHOR_SOUTHWEST):
+                        return Label.SOUTHWEST;
+                case (NodeDetails.ANCHOR_CENTER):
+                        return Label.CENTER;
+                case (NodeDetails.LABEL_WRAP_JUSTIFY_CENTER):
+                        return Label.JUSTIFY_CENTER;
+                case (NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT):
+                        return Label.JUSTIFY_RIGHT;
+                case (NodeDetails.LABEL_WRAP_JUSTIFY_LEFT):
+                        return Label.JUSTIFY_LEFT;
+                default:
+                        return -1;
+        }
     }
 }

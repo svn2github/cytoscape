@@ -1341,4 +1341,16 @@ class DEdgeView
     }
 
     // Auxillary methods for edge anchors.
+    public void setTextAnchor ( int position ) { System.out.println("setTextAnchor"); }
+    public void setJustify ( int justify ){ System.out.println("setJustify"); }
+    public int getTextAnchor ( ){ System.out.println("getTextAnchor"); return 0; }
+    public int getJustify ( ){ System.out.println("getJustify"); return 0; }
+    public void setLabelOffsetX(double x){ System.out.println("setLabelOffsetX"); }
+    public void setLabelOffsetY(double y){ System.out.println("setLabelOffsetY"); }
+    public void setEdgeLabelAnchor(int position){ System.out.println("setEdgeLabelAnchor"); }
+    public double getLabelOffsetX(){ System.out.println("getLabelOffsetX"); return 0.0; }
+    public double getLabelOffsetY(){ System.out.println("getLabelOffsetY"); return 0.0; }
+    public int getEdgeLabelAnchor(){ System.out.println("getEdgeLabelAnchor"); return 0; }
+
+
 }
