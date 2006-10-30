@@ -6,14 +6,22 @@ body {
 	background: white;
 }
 
-td.explanation-header {
-	font-size: 1.5em;
-	font-weight: bold;
-}
+
+
 td.tutorial-title-header {
 	font-size: 2em;
 	font-weight: bold;
 	padding-left: 22px;
+}
+
+span.explanation-header {
+	font-size: 1.4em;
+	font-weight: bold;
+}
+span.welcome-header {
+	color: #555;
+	font-weight: bold;
+	font-size: 1.5em;
 }
 
 td.left-col {
@@ -28,12 +36,6 @@ div.left-col {
 
 div.image {
 	padding-left: 1.5em;
-}
-
-span.welcome-header {
-	color: #555;
-	font-weight: bold;
-	font-size: 1.5em;
 }
 
 
