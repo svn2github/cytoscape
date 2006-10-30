@@ -7,13 +7,13 @@ body {
 }
 
 td.explanation-header {
-	font-size: 2em;
+	font-size: 1.5em;
 	font-weight: bold;
 }
 td.tutorial-title-header {
 	font-size: 2em;
 	font-weight: bold;
-	padding-left: 1.2em;
+	padding-left: 22px;
 }
 
 td.left-col {
@@ -35,6 +35,8 @@ span.welcome-header {
 	font-weight: bold;
 	font-size: 1.5em;
 }
+
+
 
 div.tutorial-body {
 	padding-left: 1.5em;
