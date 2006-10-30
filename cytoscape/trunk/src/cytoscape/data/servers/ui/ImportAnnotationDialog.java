@@ -38,7 +38,6 @@ import cytoscape.bookmarks.DataSource;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.ontology.Ontology;
 import cytoscape.data.readers.GeneAssociationReader;
-import cytoscape.data.readers.TableFileType;
 import cytoscape.data.readers.TextTableReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -47,6 +46,8 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.BookmarksUtil;
 import cytoscape.util.FileUtil;
 import cytoscape.util.URLUtil;
+
+import static cytoscape.data.readers.TextFileDelimiters.*;
 
 /*
  * ImportAttributesDialog.java
@@ -722,7 +723,7 @@ public class ImportAnnotationDialog extends JDialog {
 			 * Import as normal Gene Association file.
 			 */
 			reader = new GeneAssociationReader(ontologyName, new URL(
-					dataSourceString), false, TableFileType.TAB, ID);
+					dataSourceString), false, TAB, ID);
 		} else {
 			/*
 			 * Check user selection.
@@ -735,7 +736,7 @@ public class ImportAnnotationDialog extends JDialog {
 					&& aliases[0] == ALIAS) {
 				
 				reader = new GeneAssociationReader(ontologyName, new URL(
-						dataSourceString), false, TableFileType.TAB, keyAttribute);
+						dataSourceString), false, TAB, keyAttribute);
 			}
 			/*
 			 * Import GA file using selected attribute
