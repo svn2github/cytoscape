@@ -6,9 +6,7 @@ package linkout;
 import cytoscape.*;
 import cytoscape.plugin.*;
 import ding.view.*;
-
-import javax.swing.*;
-import java.awt.*;
+import java.util.*;
 
 /**
  * Linkout plugin for customized url links
@@ -34,14 +32,14 @@ public class LinkOutPlugin
       CyNetworkView view = ( CyNetworkView )e.getNewValue();
 
 
-	//Add LinkOut Menu
-	//TODO- check the bool return value 
-	view.addContextMethod("class phoebe.PNodeView",//phoebe class is part of the GINY graph library
-							 // the package name
-							"csplugins.mskcc.doron.LinkOut",
+    //Add LinkOut Menu
+    //TODO- check the bool return value
+    view.addContextMethod("class phoebe.PNodeView",//phoebe class is part of the GINY graph library
+                             // the package name
+                            "csplugins.mskcc.doron.LinkOut",
                             "AddLinks", //method name
-							new Object[] {view}, // arguments
-							CytoscapeInit.getClassLoader() ); // the class load
+                            new Object[] {view}, // arguments
+                            CytoscapeInit.getClassLoader() ); // the class load
 
     }
 
@@ -65,16 +63,37 @@ public class LinkOutPlugin
             LinkOutNetworkListener m_listener=new LinkOutNetworkListener();
             Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(m_listener);
 
-            // Create a new ContextMenuListener and register with the CURRENT network.
-            // This deals with cases where networks are loaded before the plugins. For example, when running Cytoscape
+            // Create a new ContextMenuListener and register with the pre-loaded networks.
+            // Cases where networks are loaded before the plugins. For example, when running Cytoscape
             // from the command line.
-            // Note -  plugins should be loaded before any network - See CytoscapeInit.
-            DGraphView currentNetwork=((DGraphView)Cytoscape.getCurrentNetworkView());
-            if(currentNetwork!=null){
-                LinkOutContextMenuListener menu_listener=new LinkOutContextMenuListener();
+            //Todo - To be tested
+            Set networkSet = Cytoscape.getNetworkSet();
+            for (Iterator it = networkSet.iterator(); it.hasNext();) {
 
-                currentNetwork.addNodeContextMenuListener(menu_listener);
+                CyNetwork cyNetwork = (CyNetwork) it.next();
+
+                LinkOutNodeContextMenuListener nodeMenuListener= new LinkOutNodeContextMenuListener();
+                ((DGraphView)Cytoscape.getNetworkView(cyNetwork.getIdentifier())).addNodeContextMenuListener(nodeMenuListener);
+
+                LinkOutEdgeContextMenuListener edgeMenuListener=new LinkOutEdgeContextMenuListener();
+                ((DGraphView)Cytoscape.getNetworkView(cyNetwork.getIdentifier())).addEdgeContextMenuListener(edgeMenuListener);
+
             }
+
+
+/*
+            DGraphView currentNetwork=((DGraphView)Cytoscape.getCurrentNetworkView());
+
+            if(currentNetwork!=null){
+
+                LinkOutNodeContextMenuListener nodeMenuListener=new LinkOutNodeContextMenuListener();
+                currentNetwork.addNodeContextMenuListener(nodeMenuListener);
+
+                LinkOutEdgeContextMenuListener edgeMenuListener=new LinkOutEdgeContextMenuListener();
+                currentNetwork.addEdgeContextMenuListener(edgeMenuListener);
+
+            }
+*/
 
         }
         catch (ClassCastException e){
@@ -86,10 +105,7 @@ public class LinkOutPlugin
 }
 
 /*
-$Log$
-Revision 1.2  2006/07/07 21:00:57  mes
-fixed bug 1075 - so that linkout will work from webstart
-
+$Log: LinkOutPlugin.java,v $
 Revision 1.1  2006/06/14 18:12:46  mes
 updated project to actually compile and work with ant
 

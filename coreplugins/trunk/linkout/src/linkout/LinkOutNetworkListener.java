@@ -20,7 +20,7 @@ public class LinkOutNetworkListener implements PropertyChangeListener{
     }
 
     /**
-     * Register a LinkOutContextMenuListener for all new DGraphView 
+     * Register a LinkOut[Node/Edge]ContextMenuListener for all new DGraphView
      * objects (ie new network instances).
      * @param evnt PropertyChangeEvent
      */
@@ -28,18 +28,19 @@ public class LinkOutNetworkListener implements PropertyChangeListener{
         if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED){
             //System.out.println("[LinkOutNetworkListener]: propertyChange called");
 
-            LinkOutContextMenuListener menu_listener=new LinkOutContextMenuListener();
+            //Register NodeContext...
+            LinkOutNodeContextMenuListener nodeMenuListener=new LinkOutNodeContextMenuListener();
+            ((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(nodeMenuListener);
 
-            ((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(menu_listener);
+            //Register EdgeContext...
+            LinkOutEdgeContextMenuListener edgeMenuListener=new LinkOutEdgeContextMenuListener();
+            ((DGraphView)Cytoscape.getCurrentNetworkView()).addEdgeContextMenuListener(edgeMenuListener);
 
         }
     }
 }
 
-/*$Log$
- *Revision 1.2  2006/07/07 21:00:57  mes
- *fixed bug 1075 - so that linkout will work from webstart
- *
+/*$Log: LinkOutNetworkListener.java,v $
 /*Revision 1.1  2006/06/14 18:12:46  mes
 /*updated project to actually compile and work with ant
 /*
