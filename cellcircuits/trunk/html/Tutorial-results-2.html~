@@ -94,10 +94,10 @@
 	       <td>&nbsp;&nbsp;</td>
 
                <td width=40 valign=center>
-                 <img src="images/tutorial/2_red.gif"></img>
+                 <img src="images/tutorial/3_red.gif"></img>
                </td>
                <td width=250>
-                  <span class="explanation-header">Select Species</span>
+                 <span class="explanation-header">Sort</span>
                </td>
 
              </tr>
@@ -112,8 +112,7 @@
 	       <td>&nbsp;&nbsp;</td>
 
                <td colspan=2 valign=top>
-
-	         Hold down the 'Ctrl' key to select/exclude species from your search.  All species are selected by default.
+                 Models are sorted by the number of matching query terms, <em>i.e</em>. gene names, GO term accessions, and/or GO term names.  Currently this is the only choice available.  More sorting/scoring metrics will be available soon.
 
                </td>
 
@@ -122,10 +121,10 @@
              <tr id="explanation" valign="center">
   
                <td width=40 valign=center>
-                 <img src="images/tutorial/3_red.gif"></img>
+                 <img src="images/tutorial/2_red.gif"></img>
                </td>
                <td width=250>
-                 <span class="explanation-header">Sort</span>
+                  <span class="explanation-header">Select Species</span>
                </td>
 
 	       <td>&nbsp;&nbsp;</td>
@@ -142,7 +141,7 @@
              <tr valign=top>
                <td colspan=2>
 
-                 Models are sorted by the number of matching query terms, <em>i.e</em>. gene names, GO term accessions, and/or GO term names.  Currently this is the only choice available.  More sorting/scoring metrics will be available soon.
+	         Hold down the 'Ctrl' key to select/exclude species from your search.  All species are selected by default.
 
                </td>
 

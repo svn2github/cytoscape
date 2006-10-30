@@ -14,7 +14,7 @@
   <!--<link type="text/css" rel="stylesheet" href="master.css">-->
   <link type="text/css" rel="stylesheet" href="css/tutorial.css">
 
-  <title>Cell Circuits - Tutorial (Page 2/4) - Advanced Search</title>
+  <title>CellCircuits - Tutorial (Page 4/4) - Results</title>
 
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
@@ -30,7 +30,7 @@
         <a href="http://www.cellcircuits.org"><img src="CC-logo-xxsmall.jpg" border=0></img></a>
      </td>
 
-     <td class="tutorial-title-header" align=left valign=bottom>Tutorial (2 of 4)</td>
+     <td class="tutorial-title-header" align=left valign=bottom>Tutorial (4 of 4)</td>
 
   </tr>
   <tr>
@@ -42,9 +42,9 @@
 	 <a class="blue-link" href="about_cell_circuits.html" title="About CellCircuits">About CellCircuits</a><br><br>
          <a class="black-no-decoration-link" href="Tutorial-home.html" title="Have Questions? Take the Cellcircuits tour">Tutorial</a><br><br>
          <a class="blue-indented-link" href="Tutorial-home.html">Welcome</a><br><br>
-         <a class="grey-indented-no-decoration-link" href="Tutorial-advanced-search.html">Advanced Search</a><br><br>
+         <a class="blue-indented-link" href="Tutorial-advanced-search.html">Advanced Search</a><br><br>
          <a class="blue-indented-link" href="Tutorial-results-1.html">Results - 1 of 2</a><br><br>
-         <a class="blue-indented-link" href="Tutorial-results-2.html">Results - 2 of 2</a><br><br>
+         <a class="grey-indented-no-decoration-link" href="Tutorial-results-2.html">Results - 2 of 2</a><br><br>
          <a class="blue-link" href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab" title="Dr. Trey Ideker's Lab Home Page">Ideker Lab</a><br><br>
          <a class="blue-link" href="http://www-bioeng.ucsd.edu/" title="UCSD Bioengineering Home Page">UCSD</a><br>
 
@@ -62,8 +62,7 @@
 
 	      <tr>
 	        <td colspan=5 align=right>
-	          <a href="Tutorial-home.html"><img src="images/tutorial/red-back.gif" align=absmiddle border=0></img></a>
-                  <a href="Tutorial-results-1.html"><img src="images/tutorial/red-next.gif" align=absmiddle border=0></img></a>
+	          <a href="Tutorial-results-1.html"><img src="images/tutorial/red-back.gif" align=absmiddle border=0></img></a>
 	        </td>
 	      </tr>
 
@@ -71,11 +70,12 @@
 	       <td colspan=5>
                  <span class="welcome-header">Welcome to CellCircuits</span>
                  <div class="image">
-                   <img id="tutorial-img" src="images/tutorial/CC-advanced-search.gif" border=0 usemap="#home_tutorial_map" title="Home Tutorial image"></img>
+                   <img id="tutorial-img" src="images/tutorial/CC-results-2.gif" border=0 usemap="#home_tutorial_map" title="Home Tutorial image"></img>
                  </div>
 
                  <map name="home_tutorial_map">
                    <area shape="circle" coords="44,198,32"  href="#explanation">
+                   <area shape="circle" coords="410,282,32"  href="#explanation">
                    <area shape="circle" coords="410,282,32"  href="#explanation">
                  </map>
 
@@ -88,7 +88,7 @@
                  <img src="images/tutorial/1_red.gif"></img>
                </td>
                <td width=250>
-	         <span class="explanation-header">Publications</span>
+	         <span class="explanation-header">Show/Hide GO Annotations</span>
                </td>
 
 	       <td>&nbsp;&nbsp;</td>
@@ -97,7 +97,7 @@
                  <img src="images/tutorial/2_red.gif"></img>
                </td>
                <td width=250>
-                  <span class="explanation-header">Select Species</span>
+                 <span class="explanation-header">View Similar Models</span>
                </td>
 
              </tr>
@@ -105,15 +105,14 @@
              <tr valign=top>
                <td colspan=2>
 
-	         Limit the search by publication.  All publications are selected by default.
+	         Click these tabs to expand or collapse all results for an ontology: Biological Process, Cellular Component, or Molecular Function.
 
                </td>
 
 	       <td>&nbsp;&nbsp;</td>
 
                <td colspan=2 valign=top>
-
-	         Hold down the 'Ctrl' key to select/exclude species from your search.  All species are selected by default.
+                 Click here to see up to the top 20 models that share 3 of more genes with this model.  When viewing similar models, a model score indicates the number of genes shared with the "Query" model.  Currently, similarity is only based on shared yeast genes.
 
                </td>
 
@@ -125,16 +124,7 @@
                  <img src="images/tutorial/3_red.gif"></img>
                </td>
                <td width=250>
-                 <span class="explanation-header">Sort</span>
-               </td>
-
-	       <td>&nbsp;&nbsp;</td>
-
-               <td width=40 valign=center>
-                 <img src="images/tutorial/4_red.gif"></img>
-               </td>
-               <td width=250>
-                 <span class="explanation-header">P-value threshold</span>
+                  <span class="explanation-header">GO Annotations</span>
                </td>
 
              </tr>
@@ -142,7 +132,7 @@
              <tr valign=top>
                <td colspan=2>
 
-                 Models are sorted by the number of matching query terms, <em>i.e</em>. gene names, GO term accessions, and/or GO term names.  Currently this is the only choice available.  More sorting/scoring metrics will be available soon.
+	         The GO annotations for each model are organized into tables which can be expanded or collapsed by clicking on the tabs in the header labeled <font class="group-toggle">Biological Process</font>, <font class="group-toggle">Molecular function</font>, or <font class="group-toggle">Cellular Component</font>.  For each model, the GO annotation tables are grouped first by organism, then by GO ontology.  Within each ontology, the annotations are first sorted by the number of matching query terms, then by enrichment P-value.
 
                </td>
 
@@ -150,11 +140,6 @@
 
                <td colspan=2 valign=top>
 
-	         All search results are filtered using a P-value cutoff.  Valid P-values must be between 0 and 1 and may be entered in decimal or scientific notation (<em>e.g.</em> 0.001 or 1e-3). <br/><br/>
-      
-      <b>NOTE: To find all models containing a specific gene, use a P-value cutoff of 1.</b>
-      <br>
-      Smaller P-values limit the search, yielding fewer search results.<br/<br/>
 
                </td>
 
@@ -163,8 +148,7 @@
 
 	     <tr>
 	       <td colspan=5 align=right>
-	         <a href="Tutorial-home.html"><img src="images/tutorial/red-back.gif" align=absmiddle border=0></img></a>
-	         <a href="Tutorial-results-1.html"><img src="images/tutorial/red-next.gif" align=absmiddle border=0></img></a>
+	         <a href="Tutorial-results-1.html"><img src="images/tutorial/red-back.gif" align=absmiddle border=0></img></a>
 	       </td>
              </tr>
            </table>
