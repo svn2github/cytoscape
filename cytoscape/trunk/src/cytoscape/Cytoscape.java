@@ -1285,21 +1285,31 @@ public abstract class Cytoscape {
 	 * locations. Currently, the only supported attribute types are of the type
 	 * "name = value".
 	 * 
-	 * @param nodeAttrLocations
-	 *            an array of node attribute file locations. May be null.
-	 * @param edgeAttrLocations
-	 *            an array of edge attribute file locations. May be null.
-	 * @param canonicalize
-	 *            convert to the preffered name on the biodataserver
-	 * @param bioDataServer
-	 *            provides the name conversion service
-	 * @param species
-	 *            the species to use with the bioDataServer's
+	 * @param nodeAttrLocations an array of node attribute file locations. May be null.
+	 * @param edgeAttrLocations an array of edge attribute file locations. May be null.
+	 * @param canonicalize convert to the preffered name on the biodataserver
+	 * @param bioDataServer provides the name conversion service
+	 * @param species the species to use with the bioDataServer's
+	 * @deprecated Use loadAttributes(nodeAttrLocations,edgeAttrLocations) instead.
+	 * BioDataServer, canonicalize, and species are no longer used.
+	 * Will be removed 10/2007.
 	 */
 	public static void loadAttributes(String[] nodeAttrLocations,
 			String[] edgeAttrLocations, boolean canonicalize,
 			BioDataServer bioDataServer, String species) {
+		loadAttributes(nodeAttrLocations,edgeAttrLocations);
+	}
 
+	/**
+	 * Loads Node and Edge attribute data into Cytoscape from the given file
+	 * locations. Currently, the only supported attribute types are of the type
+	 * "name = value".
+	 * 
+	 * @param nodeAttrLocations an array of node attribute file locations. May be null.
+	 * @param edgeAttrLocations an array of edge attribute file locations. May be null.
+	 */
+	public static void loadAttributes(String[] nodeAttrLocations,
+	                                  String[] edgeAttrLocations) {
 		// check to see if there are Node Attributes passed
 		if (nodeAttrLocations != null) {
 			for (int i = 0; i < nodeAttrLocations.length; ++i) {
@@ -1337,22 +1347,6 @@ public abstract class Cytoscape {
 		}
 
 	}
-
-	/**
-	 * Loads Node and Edge attribute data into Cytoscape from the given file
-	 * locations. Currently, the only supported attribute types are of the type
-	 * "name = value".
-	 * 
-	 * @param nodeAttrLocations
-	 *            an array of node attribute file locations. May be null.
-	 * @param edgeAttrLocations
-	 *            an array of edge attribute file locations. May be null.
-	 */
-	public static void loadAttributes(String[] nodeAttrLocations,
-			String[] edgeAttrLocations) {
-		loadAttributes(nodeAttrLocations, edgeAttrLocations, false, null, null);
-	}
-
 
 	/**
 	 * A BioDataServer should be loadable from a file systems file or from a

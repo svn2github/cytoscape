@@ -123,11 +123,7 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 	// View Only Variables
 	private static String vizmapPropertiesLocation;
 
-	public CytoscapeInit() {
-	}
-
-	// public void propertyChange(PropertyChangeEvent e) {
-	// }
+	public CytoscapeInit() { }
 
 	/**
 	 * Cytoscape Init must be initialized using the command line arguments.
@@ -138,9 +134,11 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 	 */
 	public boolean init(CyInitParams params) {
 
+		try {
 
 		initParams = params;
-
+	
+		// setup properties
 		initProperties();
 		properties.putAll(initParams.getProps());
 		visualProperties.putAll(initParams.getVizProps());
@@ -152,123 +150,47 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 		// see if we are in headless mode
 		// show splash screen, if appropriate
 		System.out.println("init mode: " + initParams.getMode());
-		if (initParams.getMode() == CyInitParams.GUI
-				|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
+		if ( initParams.getMode() == CyInitParams.GUI || 
+		     initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
 
 			ImageIcon image = new ImageIcon(this.getClass().getResource(
 					"/cytoscape/images/CytoscapeSplashScreen.png"));
 			WindowUtilities.showSplash(image, 8000);
+
+			// creates the desktop
 			Cytoscape.getDesktop();
+
 			// set the wait cursor
 			Cytoscape.getDesktop().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-			/*
-			 * This cannot be done in CytoscapeDesktop construction (like the
-			 * other menus) because we need CytoscapeDesktop created first. This
-			 * is because CytoPanel menu item listeners need to register for
-			 * CytoPanel events via a CytoPanel reference, and the only way to
-			 * get a CytoPanel reference is via CytoscapeDeskop:
-			 * Cytoscape.getDesktop().getCytoPanel(...)
-			 * Cytoscape.getDesktop().getCyMenus().initCytoPanelMenus(); Add a
-			 * listener that will apply vizmaps every time attributes change
-			 */
-			PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
+			setUpAttributesChangedListener();
+		}
 
-				public void propertyChange(PropertyChangeEvent e) {
-					if (e.getPropertyName()
-							.equals(Cytoscape.ATTRIBUTES_CHANGED)) {
-						// apply vizmaps
-						Cytoscape.getCurrentNetworkView().redrawGraph(false,
-								true);
-					}
-				}
-			};
+		loadPlugins();			
 
-			Cytoscape.getSwingPropertyChangeSupport()
-					.addPropertyChangeListener(attsChangeListener);
+		loadOntologyServer();
 
-			// load the session, if it exists
+		if  (initParams.getMode() == CyInitParams.GUI || 
+		     initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) 
 			loadSessionFile();
-		}
 
-		// now that we are properly set up,
-		// load all data, then load all plugins
+		loadNetworks();
 
-		// Load the BioDataServer(s)
-		BioDataServer bds = Cytoscape.loadBioDataServer(properties
-				.getProperty("bioDataServer"));
-
-		String ontologyRoot = null;
-		Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
-		for (CyNetwork net : networkSet) {
-			if (net.getTitle().equals("Ontology Root")) {
-				Cytoscape.setOntologyRootID(net.getIdentifier());
-				ontologyRoot = net.getIdentifier();
-			}
-		}
-		if (ontologyRoot == null) {
-			Cytoscape.setOntologyRootID(Cytoscape.createNetwork(
-					"Ontology Root", false).getIdentifier());
-		}
-
-		// Load all requested networks
-		boolean canonicalize = properties.getProperty("canonicalizeNames")
-				.equals("true");
-		for (Iterator i = initParams.getGraphFiles().iterator(); i.hasNext();) {
-			String net = (String) i.next();
-			System.out.println("Load: " + net);
-
-			CyNetwork network = null;
-
-			// be careful not to assume that a view has been created
-            if (initParams.getMode() == CyInitParams.GUI
-                    || initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)
-                network = Cytoscape.createNetworkFromFile(net, true);
-                else
-                    network = Cytoscape.createNetworkFromFile(net, false);
-    
-            // This is for browser and other plugins.
-			Object[] ret_val = new Object[3];
-			ret_val[0] = network;
-			ret_val[1] = net;
-			ret_val[2] = new Integer(0);
-
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null,
-					ret_val);
-
-		}
-
-		// load any specified data attribute files
-		try {
-			Cytoscape.loadAttributes((String[]) initParams
-					.getNodeAttributeFiles().toArray(new String[] {}),
-					(String[]) initParams.getEdgeAttributeFiles().toArray(
-							new String[] {}), canonicalize, bds, properties
-							.getProperty("defaultSpeciesName"));
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("failure loading specified attributes");
-		}
+		loadAttributes();
 
 		loadExpressionFiles();
 
-		try {
-			loadPlugins();			
-		}
-		finally {
+		} finally {
 			// Always restore the cursor and hide the splash, even there is exception
-			if (initParams.getMode() == CyInitParams.GUI
-					|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
+			if ( initParams.getMode() == CyInitParams.GUI || 
+			     initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
 				WindowUtilities.hideSplash();
 				Cytoscape.getDesktop().setCursor(Cursor.getDefaultCursor());
-			}			
+			}
 		} 
 
-
 		System.out.println("Cytoscape initialized successfully.");
-		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null,
-				null);
-
+		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 
 		return true;
 	}
@@ -536,6 +458,8 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 	 */
 	private void loadPlugins() {
 
+		try {
+
 		Set plugins = new HashSet();
 		List p = initParams.getPlugins();
 		if (p != null)
@@ -614,6 +538,11 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 		// now load the plugins in the appropriate manner
 		loadURLPlugins(pluginURLs);
 		loadResourcePlugins(resourcePlugins);
+
+		} catch (Exception e) { 
+			System.out.println("failed loading plugin!");
+			e.printStackTrace();
+		}
 
 	}
 
@@ -988,6 +917,81 @@ public class CytoscapeInit { // implements PropertyChangeListener {
 		if (visualProperties == null) {
 			visualProperties = new Properties();
 			loadStaticProperties("vizmap.props", visualProperties);
+		}
+	}
+
+	private void setUpAttributesChangedListener() {
+		/*
+		 * This cannot be done in CytoscapeDesktop construction (like the
+		 * other menus) because we need CytoscapeDesktop created first. This
+		 * is because CytoPanel menu item listeners need to register for
+		 * CytoPanel events via a CytoPanel reference, and the only way to
+		 * get a CytoPanel reference is via CytoscapeDeskop:
+		 * Cytoscape.getDesktop().getCytoPanel(...)
+		 * Cytoscape.getDesktop().getCyMenus().initCytoPanelMenus(); Add a
+		 * listener that will apply vizmaps every time attributes change
+		 */
+		PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent e) {
+				if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
+					// apply vizmaps
+					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				}
+			}
+		};
+
+		Cytoscape.getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(attsChangeListener);
+	}
+
+	private void loadOntologyServer() {
+		String ontologyRoot = null;
+		Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
+		for (CyNetwork net : networkSet) {
+			if (net.getTitle().equals("Ontology Root")) {
+				Cytoscape.setOntologyRootID(net.getIdentifier());
+				ontologyRoot = net.getIdentifier();
+			}
+		}
+		if (ontologyRoot == null) {
+			Cytoscape.setOntologyRootID(Cytoscape.createNetwork(
+					"Ontology Root", false).getIdentifier());
+		}
+	}
+
+	// Load all requested networks
+	private void loadNetworks() {
+		for (Iterator i = initParams.getGraphFiles().iterator(); i.hasNext();) {
+			String net = (String) i.next();
+			System.out.println("Load: " + net);
+			CyNetwork network = null;
+
+			// be careful not to assume that a view has been created
+            		if (initParams.getMode() == CyInitParams.GUI
+		                    || initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)
+               		 	network = Cytoscape.createNetworkFromFile(net, true);
+		        else
+               			network = Cytoscape.createNetworkFromFile(net, false);
+    
+            		// This is for browser and other plugins.
+			Object[] ret_val = new Object[3];
+			ret_val[0] = network;
+			ret_val[1] = net;
+			ret_val[2] = new Integer(0);
+
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
+		}
+	}
+
+	// load any specified data attribute files
+	private void loadAttributes() {
+		try {
+			Cytoscape.loadAttributes(
+			  (String[]) initParams.getNodeAttributeFiles().toArray(new String[] {}),
+			  (String[]) initParams.getEdgeAttributeFiles().toArray( new String[] {}));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.println("failure loading specified attributes");
 		}
 	}
 }
