@@ -253,6 +253,14 @@ public abstract class AbstractCalculator implements Calculator {
     }
 
     /**
+     * @deprecated Just use getProperties() - baseKey is already known by the calculator. This will
+     * be removed 10/2007.
+     */
+    public Properties getProperties(String baseKey) {
+    	return getProperties();
+    }
+
+    /**
      * updateAttribute is called when the currently selected attribute changes.
      * Any changes needed in the mapping UI should be performed at this point.
      * Use {@link #updateAttribute(String, CyNetwork, int)} for best performance.

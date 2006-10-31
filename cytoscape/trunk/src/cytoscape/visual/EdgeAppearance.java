@@ -359,8 +359,11 @@ public class EdgeAppearance implements Appearance, Cloneable {
 
 
   public void applyBypass(Edge e) {
-        CyAttributes attrs = Cytoscape.getEdgeAttributes();
+  	if ( e == null )
+		return;
+
         String id = e.getIdentifier();
+        CyAttributes attrs = Cytoscape.getEdgeAttributes();
 
         setColor( BypassHelper.getColorBypass(attrs,id,"edge.color") );
         setLineType( (LineType)BypassHelper.getBypass(attrs,id,"edge.lineType",LineType.class) ); 

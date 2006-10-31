@@ -591,8 +591,11 @@ public class NodeAppearance implements Appearance, Cloneable {
  
 
   public void applyBypass(Node n) {
-  	CyAttributes attrs = Cytoscape.getNodeAttributes();
+  	if ( n == null )
+		return;
+
 	String id = n.getIdentifier();
+  	CyAttributes attrs = Cytoscape.getNodeAttributes();
 
 	setFillColor( BypassHelper.getColorBypass(attrs,id,"node.fillColor") ); 
 	setBorderColor( BypassHelper.getColorBypass(attrs,id,"node.borderColor") );
@@ -602,13 +605,13 @@ public class NodeAppearance implements Appearance, Cloneable {
 		setShape( b.byteValue() );
 	Double w = (Double)BypassHelper.getBypass(attrs,id,"node.width",Double.class);
 	if ( w != null )
-		width = w.doubleValue(); 
+		setWidth(w.doubleValue()); 
 	Double h = (Double)BypassHelper.getBypass(attrs,id,"node.height",Double.class);
 	if ( h != null )
-		height = h.doubleValue(); 
+		setHeight(h.doubleValue()); 
 	Double s = (Double)BypassHelper.getBypass(attrs,id,"node.size",Double.class);
 	if ( s != null )
-		size = s.doubleValue(); 
+		setSize(s.doubleValue()); 
 	setLabel( (String)BypassHelper.getBypass(attrs,id,"node.label",String.class) );
 	setToolTip((String)BypassHelper.getBypass(attrs,id,"node.toolTip",String.class) );
 	setFont( (Font)BypassHelper.getBypass(attrs,id,"node.font",Font.class) );
