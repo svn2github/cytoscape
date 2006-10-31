@@ -1,6 +1,9 @@
 package cytoscape.data.servers.ui;
 
 import static cytoscape.data.servers.ui.enums.ImportDialogColorTheme.ATTRIBUTE_NAME_COLOR;
+import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.SPREADSHEET_ICON;
+import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.TEXT_FILE_ICON;
+import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.RIGHT_ARROW_ICON;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -31,7 +34,6 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -66,19 +68,19 @@ import cytoscape.util.swing.ColumnResizer;
  */
 public class PreviewTablePanel extends JPanel {
 
+	/*
+	 * Define type of preview.
+	 */
 	public static final int ATTRIBUTE_PREVIEW = 1;
 	public static final int NETWORK_PREVIEW = 2;
 
+	/*
+	 * Default messages
+	 */
 	private static final String DEF_MESSAGE = "Table header will be used as attribute names.  (Left click = enable/disable, Right click = edit)";
-
 	private static final String DEF_TAB_MESSAGE = "Data File Preview Window";
-
 	private static final String EXCEL_EXT = ".xls";
-
-	private final ImageIcon spreadsheetIcon = new ImageIcon(Cytoscape.class
-			.getResource("images/ximian/stock_new-spreadsheet.png"));
-	private final ImageIcon textFileIcon = new ImageIcon(Cytoscape.class
-			.getResource("images/ximian/stock_new-text-32.png"));
+	private static final String COMMENT_CHAR = "!";
 
 	private final String message;
 	
@@ -175,7 +177,7 @@ public class PreviewTablePanel extends JPanel {
 		previewTable.setBackground(Color.white);
 
 		fileTypeLabel = new JLabel();
-		fileTypeLabel.setIcon(spreadsheetIcon);
+		fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
 		fileTypeLabel.setText("Excel Workbook");
 		fileTypeLabel.setFont(new Font("Sans-Serif", Font.BOLD, 14));
 		keyPreviewScrollPane.setBorder(javax.swing.BorderFactory
@@ -213,8 +215,7 @@ public class PreviewTablePanel extends JPanel {
 		// tableTabbedPane.setBorder(new CentredBackgroundBorder(bi));
 
 		rightArrowLabel
-				.setIcon(new javax.swing.ImageIcon(
-						"/cellar/users/kono/workspace/FreshSVN2/images/ximian/stock_right-16.png"));
+				.setIcon(RIGHT_ARROW_ICON.getIcon());
 
 		JTableHeader hd = previewTable.getTableHeader();
 		hd.setReorderingAllowed(false);
@@ -406,20 +407,18 @@ public class PreviewTablePanel extends JPanel {
 	public void setPreviewTable(URL sourceURL, List<String> delimiters,
 			TableCellRenderer renderer, int size) throws IOException {
 
-		PreviewTablePanel curPanel = new PreviewTablePanel();
 
 		for (int i = 0; i < tableTabbedPane.getTabCount(); i++) {
 			System.out.println(tableTabbedPane.getTitleAt(i));
-
 			tableTabbedPane.removeTabAt(i);
 		}
 
 		if (sourceURL.toString().endsWith(EXCEL_EXT)) {
-			fileTypeLabel.setIcon(spreadsheetIcon);
+			fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
 			fileTypeLabel.setText("Excel Workbook");
 			parseExcel(sourceURL, size, renderer);
 		} else {
-			fileTypeLabel.setIcon(textFileIcon);
+			fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
 			fileTypeLabel.setText("Text file");
 
 			final BufferedReader bufRd = new BufferedReader(
@@ -456,7 +455,7 @@ public class PreviewTablePanel extends JPanel {
 
 			while ((line = bufRd.readLine()) != null) {
 
-				if (line.startsWith("!") || line.trim().length() == 0) {
+				if (line.startsWith(COMMENT_CHAR) || line.trim().length() == 0) {
 					// ignore
 				} else {
 					Vector row = new Vector();
@@ -536,10 +535,12 @@ public class PreviewTablePanel extends JPanel {
 			int rowCount = 0;
 			HSSFRow row;
 			while ((row = sheet.getRow(rowCount)) != null && rowCount < size) {
-				Iterator it = row.cellIterator();
 				
-				Vector rowVector = new Vector();
-				for(short j=0; j<row.getPhysicalNumberOfCells(); j++) {
+				Vector<Object> rowVector = new Vector<Object>();
+				if(maxCol<row.getPhysicalNumberOfCells()) {
+					maxCol = row.getPhysicalNumberOfCells();
+				}
+				for(short j=0; j<maxCol; j++) {
 					HSSFCell cell = row.getCell(j);
 					if(cell == null) {
 						rowVector.add(null);
@@ -557,17 +558,11 @@ public class PreviewTablePanel extends JPanel {
 					
 				}
 				
-
-				if (rowVector.size() > maxCol) {
-					maxCol = rowVector.size();
-				}
 				data.add(rowVector);
 				rowCount++;
 			}
 
-			System.out.println("** rows = " + data.size() + ", Cols = "
-					+ maxCol);
-			final Vector colNames = new Vector();
+			final Vector<String> colNames = new Vector<String>();
 			for (int j = 0; j < maxCol; j++) {
 				colNames.add("Column " + (j + 1));
 			}
@@ -612,8 +607,6 @@ public class PreviewTablePanel extends JPanel {
 			newTable.revalidate();
 			newTable.repaint();
 
-			// model = (DefaultTableModel) newModel;
-			// previewTable = newTable;
 		}
 
 	}
@@ -743,8 +736,6 @@ class KeyAttributeListRenderer extends JLabel implements ListCellRenderer {
 		setForeground(FONT_COLOR);
 		setText(value.toString());
 
-		// setIcon(new ImageIcon(Cytoscape.class
-		// .getResource("images/ximian/stock_form-checkbox-16.png")));
 		this.setOpaque(false);
 		return this;
 
