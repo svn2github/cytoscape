@@ -136,8 +136,7 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
             VisualStyle vsNow = manager.getVisualStyle();
             String vsName = vsNow.getName();
             if(vsName.equals("SBMLReader Style") == false){
-                SBMLVisualStyleFactory vsFactory = new SBMLVisualStyleFactory();
-                VisualStyle vs = vsFactory.createSBMLReaderVisualStyle(network);
+                VisualStyle vs = SBMLVisualStyleFactory.createVisualStyle(network);
                 manager.setVisualStyle(vs);
                 Cytoscape.getCurrentNetworkView().applyVizmapper(vs);
             }
