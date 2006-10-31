@@ -76,6 +76,8 @@ public class PreviewTablePanel extends JPanel {
 	private static final String DEF_MESSAGE = "Table header will be used as attribute names.  (Left click = enable/disable, Right click = edit)";
 	private static final String DEF_TAB_MESSAGE = "Data File Preview Window";
 	private static final String EXCEL_EXT = ".xls";
+
+	// Lines start with this char will be ignored.
 	private static final String COMMENT_CHAR = "!";
 
 	private final String message;
@@ -83,7 +85,7 @@ public class PreviewTablePanel extends JPanel {
 	private boolean loadFlag = false;
 
 	// Tracking attribute data type.
-	private Byte[] dataTypes;
+	//private Byte[] dataTypes;
 	private Map<String, Byte[]> dataTypeMap;
 
 	/*
@@ -351,6 +353,10 @@ public class PreviewTablePanel extends JPanel {
 		return tableTabbedPane.getTitleAt(index);
 	}
 
+	public Byte[] getDataTypes(final String selectedTabName) {
+		return dataTypeMap.get(selectedTabName);
+	}
+	
 	/**
 	 * Get selected tab name.
 	 * 
@@ -378,6 +384,12 @@ public class PreviewTablePanel extends JPanel {
 		}
 	}
 
+	/**
+	 * Get backgroung images for table & list.
+	 * 
+	 * @param url
+	 * @return
+	 */
 	private BufferedImage getBufferedImage(URL url) {
 		BufferedImage image;
 		try {
@@ -425,7 +437,9 @@ public class PreviewTablePanel extends JPanel {
 			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 				HSSFSheet sheet = wb.getSheetAt(i);
 				newModel = parseExcel(sourceURL, size, renderer, sheet);
+				guessDataTypes(newModel, wb.getSheetName(i));
 				addTableTab(newModel, wb.getSheetName(i), renderer);
+				
 			}
 
 		} else {
@@ -436,7 +450,9 @@ public class PreviewTablePanel extends JPanel {
 
 			String[] urlParts = sourceURL.toString().split("/");
 			final String tabName = urlParts[urlParts.length - 1];
+			guessDataTypes(newModel, tabName);
 			addTableTab(newModel, tabName, renderer);
+			
 		}
 
 		loadFlag = true;
@@ -455,16 +471,18 @@ public class PreviewTablePanel extends JPanel {
 		/*
 		 * Initialize data type atrray. By default, everything is a String.
 		 */
-		dataTypes = new Byte[newModel.getColumnCount()];
-		for (int j = 0; j < newModel.getColumnCount(); j++) {
-			dataTypes[j] = CyAttributes.TYPE_STRING;
-		}
+		//dataTypes = new Byte[newModel.getColumnCount()];
+		//dataTypeMap.put(tabName, new Byte[newModel.getColumnCount()]);
+
+//		for (int j = 0; j < newModel.getColumnCount(); j++) {
+//			dataTypes[j] = CyAttributes.TYPE_STRING;
+//		}
 
 		JTableHeader hd = newTable.getTableHeader();
 		hd.setReorderingAllowed(false);
 		hd
 				.setDefaultRenderer(new HeaderRenderer(hd.getDefaultRenderer(),
-						null));
+						dataTypeMap.get(tabName)));
 
 		/*
 		 * Setting table properties
@@ -535,12 +553,14 @@ public class PreviewTablePanel extends JPanel {
 				// ignore
 			} else {
 				Vector row = new Vector();
+
 				if (delimiterRegEx.length() == 0) {
 					parts = new String[1];
 					parts[0] = line;
 				} else {
 					parts = line.split(delimiterRegEx);
 				}
+
 				for (String entry : parts) {
 					row.add(entry);
 				}
@@ -582,9 +602,17 @@ public class PreviewTablePanel extends JPanel {
 				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
 					rowVector.add(cell.getStringCellValue());
 				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-					rowVector.add(cell.getNumericCellValue());
+					final Double dblValue = cell.getNumericCellValue();
+					final Integer intValue = dblValue.intValue();
+					
+					if(intValue.doubleValue() == dblValue) {
+						rowVector.add(intValue.toString());
+					} else {
+						rowVector.add(dblValue.toString());
+					}
+					
 				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
-					rowVector.add(cell.getBooleanCellValue());
+					rowVector.add(Boolean.toString(cell.getBooleanCellValue()));
 				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK
 						|| cell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
 					rowVector.add(null);
@@ -604,6 +632,100 @@ public class PreviewTablePanel extends JPanel {
 		}
 
 		return new DefaultTableModel(data, colNames);
+	}
+
+	private void guessDataTypes(final TableModel model, final String tableName) {
+		/*
+		 * Assume: Row1 = Boolean Row2 = Integer Row3 = Double Row4 = String
+		 */
+
+		final Integer[][] typeChecker = new Integer[4][model.getColumnCount()];
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < model.getColumnCount(); j++) {
+				typeChecker[i][j] = 0;
+			}
+		}
+
+		String cell = null;
+		for (int i = 0; i < model.getRowCount(); i++) {
+
+			for (int j = 0; j < model.getColumnCount(); j++) {
+				cell = (String) model.getValueAt(i, j);
+				boolean found = false;
+				if (cell != null && Boolean.valueOf(cell)) {
+					try {
+						Integer.valueOf(cell);
+						typeChecker[1][j]++;
+						found = true;
+					} catch (NumberFormatException e) {
+
+					}
+					if (found == false) {
+						typeChecker[0][j]++;
+						found = true;
+					}
+				} else if(cell != null) {
+
+					try {
+						Integer.valueOf(cell);
+						typeChecker[1][j]++;
+						found = true;
+					} catch (NumberFormatException e) {
+
+					}
+
+					try {
+						Double.valueOf(cell);
+						typeChecker[2][j]++;
+						found = true;
+					} catch (NumberFormatException e) {
+
+					}
+				}
+
+				if (found == false) {
+					typeChecker[3][j]++;
+				}
+
+			}
+		}
+
+		Byte[] dataType = dataTypeMap.get(tableName);
+		if(dataType == null) {
+			dataType = new Byte[model.getColumnCount()];
+		}
+		for (int i = 0; i < dataType.length; i++) {
+
+			int maxVal = 0;
+			int maxIndex = 0;
+
+			for (int j = 0; j < 4; j++) {
+				if (maxVal < typeChecker[j][i]) {
+					maxVal = typeChecker[j][i];
+					maxIndex = j;
+				}
+			}
+
+			if (maxIndex == 0) {
+				dataType[i] = CyAttributes.TYPE_BOOLEAN;
+				System.out.print(i + " Boolean, ");
+			} else if (maxIndex == 1) {
+				dataType[i] = CyAttributes.TYPE_INTEGER;
+				System.out.print(i + " Int, ");
+			} else if (maxIndex == 2) {
+				dataType[i] = CyAttributes.TYPE_FLOATING;
+				System.out.print(i + " Float, ");
+			} else {
+				dataType[i] = CyAttributes.TYPE_STRING;
+				System.out.print(i + " String, ");
+			}
+
+			System.out.println("");
+
+		}
+
+		dataTypeMap.put(tableName, dataType);
+
 	}
 
 	/**
@@ -647,6 +769,8 @@ public class PreviewTablePanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 
 			JTable targetTable = getPreviewTable();
+			final String selectedTabName = getSelectedSheetName();
+			Byte[] dataTypes = dataTypeMap.get(selectedTabName);
 
 			final int column = targetTable.getColumnModel().getColumnIndexAtX(
 					e.getX());
@@ -656,7 +780,6 @@ public class PreviewTablePanel extends JPanel {
 				 * Right click: This action pops up an dialog to edit the
 				 * attribute type and name.
 				 */
-
 				AttributeTypeDialog atd = new AttributeTypeDialog(Cytoscape
 						.getDesktop(), true, targetTable.getColumnModel()
 						.getColumn(column).getHeaderValue().toString(),
@@ -694,11 +817,16 @@ public class PreviewTablePanel extends JPanel {
 					changes.firePropertyChange(
 							ImportTextTableDialog.ATTRIBUTE_NAME_CHANGED, null,
 							colNamePair);
+					
+					
 					dataTypes[column] = newType;
-
+					
+					
 					targetTable.getTableHeader().setDefaultRenderer(
 							new HeaderRenderer(targetTable.getTableHeader()
 									.getDefaultRenderer(), dataTypes));
+					dataTypeMap.put(selectedTabName, dataTypes);
+					
 				}
 			} else if (SwingUtilities.isLeftMouseButton(e)
 					&& e.getClickCount() == 1) {
@@ -726,8 +854,7 @@ public class PreviewTablePanel extends JPanel {
 
 class KeyAttributeListRenderer extends JLabel implements ListCellRenderer {
 
-	private static final Font KEY_LIST_FONT = new Font("Sans-Serif", Font.BOLD,
-			16);
+	private static final Font KEY_LIST_FONT = new Font("Sans-Serif", Font.BOLD, 16);
 	private static final Color FONT_COLOR = Color.BLACK;
 
 	public KeyAttributeListRenderer() {

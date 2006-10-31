@@ -2248,6 +2248,7 @@ public class ImportTextTableDialog extends JDialog implements
 		curModel = aliasTableModelMap.get(tabName);
 
 		curModel = new AliasTableModel();
+		Byte[] dataTypeArray = previewPanel.getDataTypes(tabName);
 		for (int i = 0; i < rowCount; i++) {
 			keyTableData[i][0] = new Boolean(false);
 			if (columnNames == null) {
@@ -2256,7 +2257,7 @@ public class ImportTextTableDialog extends JDialog implements
 			} else {
 				keyTableData[i][1] = columnNames[i];
 			}
-			attributeDataTypes.add(CyAttributes.TYPE_STRING);
+			attributeDataTypes.add(dataTypeArray[i]);
 			keyTableData[i][2] = "String";
 		}
 
