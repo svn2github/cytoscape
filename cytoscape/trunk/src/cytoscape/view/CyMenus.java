@@ -92,6 +92,7 @@ import cytoscape.actions.HelpAboutAction;
 import cytoscape.actions.HelpContactHelpDeskAction;
 import cytoscape.actions.HideSelectedEdgesAction;
 import cytoscape.actions.HideSelectedNodesAction;
+import cytoscape.actions.ImportAttributeTableAction;
 import cytoscape.actions.ImportBioDataServerAction;
 import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
@@ -720,6 +721,7 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// fill the Import submenu
 		addAction(new ImportGraphFileAction(this));
+		addAction(new ImportAttributeTableAction());
 		addAction(new ImportNodeAttributesAction());
 		addAction(new ImportEdgeAttributesAction());
 		addAction(new ImportVizmapAction());
