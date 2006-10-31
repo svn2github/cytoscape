@@ -25,7 +25,12 @@ span.welcome-header {
 }
 
 td.left-col {
-	border-right: #ccc 0.15em dotted;
+	border-right: #ccc 0.15em solid;
+	border-bottom: #ccc 0.15em solid;
+}
+
+td.footer-hr {
+	border-bottom: #ccc 0.15em solid;
 }
 
 div.left-col {
