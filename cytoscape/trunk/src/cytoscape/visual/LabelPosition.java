@@ -90,8 +90,8 @@ public class LabelPosition {
 	}
 
 	public LabelPosition(LabelPosition lp) {
-		labelAnchor = lp.getLabelAnchor();
 		targetAnchor = lp.getTargetAnchor();
+		labelAnchor = lp.getLabelAnchor();
 		xOffset = lp.getOffsetX();
 		yOffset = lp.getOffsetY();
 		justify = lp.getJustify();
@@ -250,8 +250,8 @@ public class LabelPosition {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("label: ").append(convert(labelAnchor));
-		sb.append("  target: ").append(convert(targetAnchor));
+		sb.append("target: ").append(convert(targetAnchor));
+		sb.append("  label: ").append(convert(labelAnchor));
 		sb.append("  justify: ").append(convert(justify));
 		sb.append("  X offset: ").append(Double.toString(xOffset));
 		sb.append("  Y offset: ").append(Double.toString(yOffset));

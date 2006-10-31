@@ -68,7 +68,6 @@ public class NodeBypass extends VizMapBypass {
 	menu.add( getMenuItem("Fill Color", "node.fillColor", Color.class) ); 
 	menu.add( getMenuItem("Border Color", "node.borderColor", Color.class) ); 
 	menu.add( getMenuItem("Border Line Type", "node.lineType", LineType.class) ); 
-	menu.add( getMenuItem("Label Position", "node.labelPosition", LabelPosition.class) ); 
 
 	if ( vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() ) {
 		menu.add( getMenuItem("Size", "node.size",Double.class) ); 
@@ -81,6 +80,7 @@ public class NodeBypass extends VizMapBypass {
 	menu.add( getMenuItem("ToolTip", "node.toolTip",String.class) ); 
 	menu.add( getMenuItem("Label", "node.label",String.class) ); 
 	menu.add( getMenuItem("Label Color", "node.labelColor",Color.class) ); 
+	menu.add( getMenuItem("Label Position", "node.labelPosition", LabelPosition.class) ); 
 	menu.add( getMenuItem("Font", "node.font",Font.class) ); 
 	menu.add( getMenuItem("Font Size", "node.fontSize",Double.class) ); 
 	
