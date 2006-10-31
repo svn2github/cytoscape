@@ -1,9 +1,9 @@
 package cytoscape.data.servers.ui;
 
 import static cytoscape.data.servers.ui.enums.ImportDialogColorTheme.ATTRIBUTE_NAME_COLOR;
+import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.RIGHT_ARROW_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.SPREADSHEET_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.TEXT_FILE_ICON;
-import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.RIGHT_ARROW_ICON;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -15,9 +15,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ByteLookupTable;
-import java.awt.image.LookupOp;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
@@ -25,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,19 +85,22 @@ public class PreviewTablePanel extends JPanel {
 	// Tracking attribute data type.
 	private Byte[] dataTypes;
 
+	/*
+	 * GUI Components
+	 */
 	private JLabel messageLabel;
 	private JLabel rightArrowLabel;
 	private JLabel fileTypeLabel;
 	private JScrollPane previewScrollPane;
 	private JTable previewTable;
 
+	// Tables for each worksheet.
 	private Map<String, JTable> previewTables;
 
 	private JTabbedPane tableTabbedPane;
 	private JScrollPane keyPreviewScrollPane;
 
 	private JList keyPreviewList;
-	//private FilterField filterField;
 
 	private DefaultTableModel model;
 	private DefaultListModel keyListModel;
@@ -137,7 +136,6 @@ public class PreviewTablePanel extends JPanel {
 
 			repaint();
 		}
-
 	}
 
 	public void setKeyAttributeList(Set data) {
@@ -177,9 +175,8 @@ public class PreviewTablePanel extends JPanel {
 		previewTable.setBackground(Color.white);
 
 		fileTypeLabel = new JLabel();
-		fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
-		fileTypeLabel.setText("Excel Workbook");
 		fileTypeLabel.setFont(new Font("Sans-Serif", Font.BOLD, 14));
+		
 		keyPreviewScrollPane.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Key Attributes"));
 
@@ -191,10 +188,10 @@ public class PreviewTablePanel extends JPanel {
 		previewScrollPane.setViewportView(previewTable);
 		previewScrollPane.setBackground(Color.WHITE);
 
-		BufferedImage datasourceImage = getFilteredImage(Cytoscape.class
+		final BufferedImage datasourceImage = getBufferedImage(Cytoscape.class
 				.getResource("images/ximian/data_sources_trans.png"));
 
-		BufferedImage bi = getFilteredImage(Cytoscape.class
+		final BufferedImage bi = getBufferedImage(Cytoscape.class
 				.getResource("images/icon100_trans.png"));
 
 		tableTabbedPane.setBackground(Color.white);
@@ -378,7 +375,7 @@ public class PreviewTablePanel extends JPanel {
 		}
 	}
 
-	private BufferedImage getFilteredImage(URL url) {
+	private BufferedImage getBufferedImage(URL url) {
 		BufferedImage image;
 		try {
 			image = ImageIO.read(url);
@@ -386,13 +383,6 @@ public class PreviewTablePanel extends JPanel {
 			ioe.printStackTrace();
 			return new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		}
-		BufferedImage dest = new BufferedImage(image.getWidth(), image
-				.getHeight(), BufferedImage.TYPE_INT_RGB);
-		byte[] b = new byte[256];
-		for (int i = 0; i < 256; i++)
-			b[i] = (byte) (i * 0.2f);
-		BufferedImageOp op = new LookupOp(new ByteLookupTable(0, b), null);
-		// op.filter(image, dest);
 		return image;
 	}
 
@@ -407,19 +397,22 @@ public class PreviewTablePanel extends JPanel {
 	public void setPreviewTable(URL sourceURL, List<String> delimiters,
 			TableCellRenderer renderer, int size) throws IOException {
 
-
+		/*
+		 * Reset current state
+		 */
 		for (int i = 0; i < tableTabbedPane.getTabCount(); i++) {
-			System.out.println(tableTabbedPane.getTitleAt(i));
 			tableTabbedPane.removeTabAt(i);
+			previewTables = new HashMap<String, JTable>();
 		}
 
+		fileTypeLabel.setVisible(true);
 		if (sourceURL.toString().endsWith(EXCEL_EXT)) {
 			fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
-			fileTypeLabel.setText("Excel Workbook");
+			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");
 			parseExcel(sourceURL, size, renderer);
 		} else {
 			fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
-			fileTypeLabel.setText("Text file");
+			fileTypeLabel.setText("Text File");
 
 			final BufferedReader bufRd = new BufferedReader(
 					new InputStreamReader(URLUtil.getInputStream(sourceURL)));
@@ -611,6 +604,13 @@ public class PreviewTablePanel extends JPanel {
 
 	}
 
+	/**
+	 * Not yet implemented.
+	 * <p>
+	 * </p>
+	 * @param targetColumn
+	 * @return
+	 */
 	public int checkKeyMatch(int targetColumn) {
 //		final List fileKeyList = new ArrayList();
 //		int matched = 0;
@@ -722,8 +722,7 @@ public class PreviewTablePanel extends JPanel {
 
 class KeyAttributeListRenderer extends JLabel implements ListCellRenderer {
 
-	private static final Font KEY_LIST_FONT = new Font("Sans-Serif", Font.BOLD,
-			16);
+	private static final Font KEY_LIST_FONT = new Font("Sans-Serif", Font.BOLD,16);
 	private static final Color FONT_COLOR = Color.BLACK;
 
 	public KeyAttributeListRenderer() {
