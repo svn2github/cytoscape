@@ -58,5 +58,20 @@ public class NodeShapeParser implements ValueParser {
     public Byte parseNodeShape(String value) {
         return ShapeNodeRealizer.parseNodeShapeTextIntoByte(value);
     }
-}
 
+  public static boolean isValidShape(byte shape) {
+    if(shape == ShapeNodeRealizer.RECT){return true;}
+    if(shape == ShapeNodeRealizer.ROUND_RECT){return true;}
+    if(shape == ShapeNodeRealizer.RECT_3D){return true;}
+    if(shape == ShapeNodeRealizer.TRAPEZOID){return true;}
+    if(shape == ShapeNodeRealizer.TRAPEZOID_2){return true;}
+    if(shape == ShapeNodeRealizer.TRIANGLE){return true;}
+    if(shape == ShapeNodeRealizer.PARALLELOGRAM){return true;}
+    if(shape == ShapeNodeRealizer.DIAMOND){return true;}
+    if(shape == ShapeNodeRealizer.ELLIPSE){return true;}
+    if(shape == ShapeNodeRealizer.HEXAGON){return true;}
+    if(shape == ShapeNodeRealizer.OCTAGON){return true;}
+        
+    return false;
+  }
+}

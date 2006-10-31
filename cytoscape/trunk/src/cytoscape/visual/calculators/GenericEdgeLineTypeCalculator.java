@@ -53,34 +53,52 @@ import cytoscape.visual.LineType;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.LineTypeParser;
-//----------------------------------------------------------------------------
-public class GenericEdgeLineTypeCalculator extends EdgeCalculator implements EdgeLineTypeCalculator {
-    
-    public GenericEdgeLineTypeCalculator(String name, ObjectMapping m) {
-	super(name, m);
 
-        Class c = null;
-	//c = LineType.class;  // this line won't obfuscate; the one below does.
-	c = LineType.LINE_1.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-		+ ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.ui.VizMapUI;
+//----------------------------------------------------------------------------
+public class GenericEdgeLineTypeCalculator extends EdgeCalculator 
+    implements EdgeLineTypeCalculator {
+
+    public byte getType() {
+        return VizMapUI.EDGE_LINETYPE;
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public String getPropertyLabel() {
+        return "edgeLineTypeCalculator";
+    }
+
+    public String getTypeName() {
+        return "Edge Line Type";
+    }
+
+    GenericEdgeLineTypeCalculator() {
+	super();
+    }
+
+    public GenericEdgeLineTypeCalculator(String name, ObjectMapping m) {
+	super(name, m, LineType.class);
+    }
+
     public GenericEdgeLineTypeCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1);
     }
     
-    public LineType calculateEdgeLineType(Edge edge, CyNetwork network) {
-        String canonicalName = edge.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-        return (LineType)super.getMapping(0).calculateRangeValue(attrBundle);
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
+	LineType lt = (LineType)getRangeValue(edge);
+
+	// default has already been set - no need to do anything
+	if ( lt == null )
+		return;
+
+	appr.setLineType( lt ); 
     }
+
+    public LineType calculateEdgeLineType(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+        return ea.getLineType();
+    }
+
 }
 

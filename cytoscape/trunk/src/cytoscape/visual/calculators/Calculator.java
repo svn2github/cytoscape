@@ -49,7 +49,11 @@ import javax.swing.JPanel;
 import javax.swing.JDialog;
 import javax.swing.event.ChangeListener;
 import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.NodeAppearance;
 import cytoscape.CyNetwork;
+import giny.model.Node;
+import giny.model.Edge;
 //------------------------------------------------------------------------------
 /**
  *  Calculator specifies a super-interface for all calculator interfaces.
@@ -58,6 +62,7 @@ import cytoscape.CyNetwork;
  *  {@link EdgeCalculator} and implement one of the 11 attribute calculator interfaces.
  */
 public interface Calculator extends Cloneable {
+
     /**
      *	Get the UI for a calculator.
      *
@@ -87,7 +92,7 @@ public interface Calculator extends Cloneable {
     /**
      * Get a description of this calculator as a Properties object.
      */
-    public Properties getProperties(String baseKey);
+    public Properties getProperties();
 
     /**
      * Add a ChangeListener to the calcaultor. When the state underlying the
@@ -110,4 +115,18 @@ public interface Calculator extends Cloneable {
      * @param	l	ChangeListener to add
      */
     public void removeChangeListener(ChangeListener l);
+
+    public String getPropertyLabel();
+
+    public byte getType();
+
+    public void apply(EdgeAppearance appr, Edge e, CyNetwork net);
+
+    public void apply(NodeAppearance appr, Node n, CyNetwork net);
+
+    public Vector getMappings();
+
+    public ObjectMapping getMapping(int i);
+
+    public String getTypeName();
 }

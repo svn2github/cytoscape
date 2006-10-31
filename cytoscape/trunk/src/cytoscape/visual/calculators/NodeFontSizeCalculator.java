@@ -45,7 +45,9 @@ package cytoscape.visual.calculators;
 //--------------------------------------------------------------------------
 import cytoscape.CyNetwork;
 import giny.model.Node;
-//--------------------------------------------------------------------------
+
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface NodeFontSizeCalculator extends Calculator {
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */
     public float calculateNodeFontSize(Node node, CyNetwork network);
 }

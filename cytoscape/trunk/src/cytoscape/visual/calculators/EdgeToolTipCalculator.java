@@ -49,9 +49,10 @@ import javax.swing.JPanel;
 import giny.model.Edge;
 
 import cytoscape.CyNetwork;
-//----------------------------------------------------------------------------
+
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface EdgeToolTipCalculator extends Calculator {
-    
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */    
     String calculateEdgeToolTip(Edge edge, CyNetwork network);
 }
 

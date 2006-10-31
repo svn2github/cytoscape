@@ -52,29 +52,51 @@ import java.util.Properties;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.FontParser;
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
-public class GenericNodeFontFaceCalculator extends NodeCalculator
-    implements NodeFontFaceCalculator{
-    
-    public GenericNodeFontFaceCalculator(String name, ObjectMapping m) {
-	super(name, m);
-	if (!(Font.class.isAssignableFrom(m.getRangeClass()))) {
-	    throw new ClassCastException("Invalid Calculator: Expected class Font, got " + 
-					 m.getRangeClass().toString());
-	}
+public class GenericNodeFontFaceCalculator extends NodeCalculator 
+    implements NodeFontFaceCalculator {
+  
+    public byte getType() {
+        return VizMapUI.NODE_FONT_FACE;
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public String getPropertyLabel() {
+        return "nodeFontFaceCalculator";
+    }
+
+    public String getTypeName() {
+        return "Node Font Face";
+    }
+  
+    GenericNodeFontFaceCalculator() {
+	super();
+    }
+
+    public GenericNodeFontFaceCalculator(String name, ObjectMapping m) {
+	super(name, m,Font.class);
+    }
+
     public GenericNodeFontFaceCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new FontParser(), new Font(null, Font.PLAIN, 12));
     }
     
-    public Font calculateNodeFontFace(Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		return (Font) super.getMapping(0).calculateRangeValue(attrBundle);
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+	Font f = (Font) getRangeValue(node); 
+
+	// default has already been set - no need to do anything
+	if ( f == null )
+		return;
+
+	appr.setFont( f ); 
     }
+
+    public Font calculateNodeFontFace(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getFont();
+    }
+
 }

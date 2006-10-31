@@ -264,6 +264,10 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
         return ui;
     }
 
+    public JPanel getLegend(String visualAttr, byte b) {
+    	return new ContinuousLegend(visualAttr,attrName,points,defaultObj,b);
+    }
+
     /**
      * Calculates the Range Value.
      * Required by the ObjectMapping interface.

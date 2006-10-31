@@ -35,11 +35,6 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.ui;
 
 import java.awt.BorderLayout;
@@ -65,6 +60,7 @@ import javax.swing.plaf.metal.MetalButtonUI;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
 import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.visual.LabelPosition;
 import cytoscape.util.CyColorChooser;
 
 /**
@@ -121,6 +117,11 @@ public class ValueDisplayer extends JButton {
 	 * Display and get input for a font
 	 */
 	public static final byte FONT = 7;
+
+	/**
+	 * Display and get input for label position 
+	 */
+	public static final byte LABEL_POSITION = 8;
 
 	/**
 	 * Holds the type of UI this ValueDisplayer will pop up.
@@ -220,6 +221,19 @@ public class ValueDisplayer extends JButton {
 		this(parent, null, title, dispType);
 	}
 
+	public static ValueDisplayer getDisplayForLabelPosition(JDialog parent,
+			String title, LabelPosition c) {
+		ValueDisplayer v = new ValueDisplayer(parent, c.shortString(), title, LABEL_POSITION);
+		v.setInputLabelPositionListener();
+		v.inputObj = c;
+		return v;
+	}
+
+	private void setInputLabelPositionListener() {
+		this.inputListener = new LabelPositionListener(this);
+		addActionListener(this.inputListener);
+	}
+
 	public static ValueDisplayer getDisplayForColor(JDialog parent,
 			String title, Color c) {
 		String dispString = "   "; // just display the color
@@ -270,12 +284,13 @@ public class ValueDisplayer extends JButton {
 		inputObj = o;
 		if (o instanceof Icon) {
 			setIcon((Icon) o);
+		} else if (o instanceof LabelPosition) {
+			setText(((LabelPosition)o).shortString());
 		} else if (o instanceof Color) {
 			setBackground((Color) o);
 		} else if (o instanceof Font) {
 			Font f = (Font) o;
-			setFont(f);
-			setText(f.getFontName());
+			setSelectedFont(f);
 		} else { // anything else must be a Double, Integer, or String
 			setText(o.toString());
 		}
@@ -304,6 +319,26 @@ public class ValueDisplayer extends JButton {
 		}
 	}
 
+	private class LabelPositionListener extends AbstractAction {
+		ValueDisplayer parent;
+		LabelPositionListener(ValueDisplayer parent) {
+			super("ValueDisplayer LabelPositionListener");
+			this.parent = parent;
+		}
+		public void actionPerformed(ActionEvent e) {
+			if (enabled) {
+				LabelPosition pos = PopupLabelPositionChooser.showDialog(
+						parent.parent, (LabelPosition)parent.inputObj);
+				if ( pos != null ) {
+					parent.inputObj = pos;
+					setText(pos.shortString());
+					parent.fireItemSelected();
+				}
+			}
+		}
+	}
+
+
 	private static ValueDisplayer getDisplayForFont(JDialog parent,
 			String title, Font startFont) {
 		ValueDisplayer v = new ValueDisplayer(parent, title, FONT);
@@ -314,19 +349,17 @@ public class ValueDisplayer extends JButton {
 
 	private void setSelectedFont(Font f) {
 		this.inputObj = f;
-		String dispFontName = f.getFontName();
-		setFont(f.deriveFont(12F));
-		setText(dispFontName);
+		setFont(f);
+		setText(f.getFontName());
 	}
 
 	private void setInputFontListener() {
 		this.inputListener = new FontListener(this);
 		addActionListener(this.inputListener);
 	}
-	// internal class FontListener
+
 	private class FontListener extends AbstractAction {
 		ValueDisplayer parent;
-		JDialog popup;
 
 		FontListener(ValueDisplayer parent) {
 			super("ValueDisplayer FontListener");
@@ -334,56 +367,10 @@ public class ValueDisplayer extends JButton {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			if (enabled) {
-				FontChooser chooser = new FontChooser(((Font) inputObj)
-						.deriveFont(1F));
-				this.popup = new JDialog(parent.parent, parent.title, true);
-				JComboBox face = chooser.getFaceComboBox();
-				face.setSelectedItem(parent.inputObj);
-
-				JPanel butPanel = new JPanel(false);
-
-				// buttons - OK/Cancel
-				JButton okBut = new JButton("OK");
-				okBut.addActionListener(new OKListener(chooser));
-
-				JButton cancelBut = new JButton("Cancel");
-				cancelBut.addActionListener(new CancelListener());
-
-				butPanel.add(okBut);
-				butPanel.add(cancelBut);
-
-				Container content = popup.getContentPane();
-				content.setLayout(new BorderLayout());
-
-				content.add(chooser, BorderLayout.CENTER);
-				content.add(butPanel, BorderLayout.SOUTH);
-				popup.pack();
-				popup.setVisible(true);
-			}
-		}
-
-		private class OKListener extends AbstractAction {
-			FontChooser chooser;
-
-			private OKListener(FontChooser chooser) {
-				this.chooser = chooser;
-			}
-
-			public void actionPerformed(ActionEvent e) {
-				setSelectedFont(chooser.getSelectedFont().deriveFont(12F));
-				// System.out.println("Set selected font to " + inputObj);
-				fireItemSelected();
-				popup.dispose();
-			}
-		}
-
-		private class CancelListener extends AbstractAction {
-			private CancelListener() {
-			};
-
-			public void actionPerformed(ActionEvent e) {
-				popup.dispose();
+			Font f = PopupFontChooser.showDialog(parent.parent, (Font)parent.inputObj);
+			if ( f != null ) {
+				parent.setSelectedFont(f);
+				parent.fireItemSelected();
 			}
 		}
 	}
@@ -398,56 +385,16 @@ public class ValueDisplayer extends JButton {
 
 	private void setInputIconListener(String title, String objectName,
 			Object startObject, JDialog parentDialog, byte type) {
-		// get icons - cannot be done from a static context
-		ImageIcon[] icons = null;
-		HashMap iToS = null;
-		HashMap sToI = null;
 
-		MiscDialog md = new MiscDialog();
+		IconSupport is = new IconSupport(startObject,type);
 
-		switch (type) {
-		case ARROW:
-			icons = md.getArrowIcons();
-			iToS = MiscDialog.getArrowToStringHashMap(25);
-			sToI = MiscDialog.getStringToArrowHashMap(25);
-			break;
-		case NODESHAPE:
-			icons = MiscDialog.getShapeIcons();
-			iToS = MiscDialog.getShapeByteToStringHashMap();
-			sToI = MiscDialog.getStringToShapeByteHashMap();
-			break;
-		case LINETYPE:
-			icons = MiscDialog.getLineTypeIcons();
-			iToS = MiscDialog.getLineTypeToStringHashMap();
-			sToI = MiscDialog.getStringToLineTypeHashMap();
-			break;
-		}
-
-		ImageIcon currentIcon = null;
 		if (startObject != null) {
-			// set up button to display icon only
 			this.setContentAreaFilled(false);
-			// find the right icon
-			String ltName = (String) iToS.get(startObject);
-			int iconIndex = 0;
-			for (; iconIndex < icons.length; iconIndex++) {
-				if (icons[iconIndex].getDescription().equals(ltName)) {
-					break;
-				}
-			}
-			if (iconIndex == icons.length) {// not found
-				System.err.println("Icon for object " + startObject
-						+ " not found!");
-				iconIndex = 0;
-			}
-			currentIcon = icons[iconIndex];
-			// set currentIcon
-			this.setIcon(currentIcon);
-			this.inputObj = sToI.get(currentIcon.getDescription());
+			this.setIcon(is.getCurrentIcon());
+			this.inputObj = is.getIconType(is.getCurrentIcon());
 		}
 
-		this.inputListener = new IconListener(title, objectName, icons, sToI,
-				currentIcon, parentDialog, this);
+		this.inputListener = new IconListener(title, objectName, is, parentDialog, this);
 		addActionListener(this.inputListener);
 	}
 
@@ -456,30 +403,24 @@ public class ValueDisplayer extends JButton {
 	private class IconListener extends AbstractAction {
 		private PopupIconChooser chooser;
 		private ValueDisplayer parent;
-		private HashMap sToI; // map from the image icon description to type
+		private IconSupport is;
 
-		IconListener(String title, String objectName, ImageIcon[] icons,
-				HashMap sToI, ImageIcon startIconObject, JDialog parentDialog,
+		IconListener(String title, String objectName, IconSupport is , JDialog parentDialog,
 				ValueDisplayer parent) {
 			super("ValueDisplayer IconListener");
-			this.chooser = new PopupIconChooser(title, objectName, icons,
-					startIconObject, parentDialog);
+			this.chooser = new PopupIconChooser(title, objectName, is.getIcons(),
+					is.getCurrentIcon(), parentDialog);
 			this.parent = parent;
-			this.sToI = sToI;
+			this.is = is;
 		}
 
 		public void actionPerformed(ActionEvent e) {
 			if (enabled) {
 				ImageIcon icon = chooser.showDialog();
 				if (icon != null) {
-					// set up button to display icon only
 					parent.setContentAreaFilled(false);
-					// set the new icon to be displayed
 					parent.setIcon(icon);
-
-					// convert from ImageIcon description to expected type
-					// (see MiscDialog)
-					parent.inputObj = sToI.get(icon.getDescription());
+					parent.inputObj = is.getIconType(icon);
 					parent.fireItemSelected();
 				}
 			}
@@ -527,46 +468,14 @@ public class ValueDisplayer extends JButton {
 
 		public void actionPerformed(ActionEvent e) {
 			if (enabled) {
-				// keep prompting for input until a valid input is received
-				input: while (true) {
-					String ret = (String) JOptionPane.showInputDialog(parent,
-							prompt, title, JOptionPane.QUESTION_MESSAGE, null,
-							null, inputObj);
-					if (ret == null) {
-						return;
-					} else {
-						switch (type) {
-						case DOUBLE:
-							try {
-								inputObj = new Double(Double.parseDouble(ret));
-								break input;
-							} catch (NumberFormatException exc) {
-								showErrorDialog("That is not a valid double");
-								continue input;
-							}
-						case INT:
-							try {
-								inputObj = new Integer(Integer.parseInt(ret));
-								break input;
-							} catch (NumberFormatException exc) {
-								showErrorDialog("That is not a valid integer");
-								continue input;
-							}
-						default: // simple string assignment
-							inputObj = ret;
-							break input;
-						}
-					}
+				Object o = PopupStringChooser.showDialog(parent,title,prompt,inputObj,type); 
+				if ( o != null ) { 
+					inputObj = o;
+					setText(inputObj.toString());
+					fireItemSelected();
 				}
-				setText(inputObj.toString());
-				fireItemSelected();
 			}
 		}
-	}
-
-	private void showErrorDialog(String errorMsg) {
-		JOptionPane.showMessageDialog(parent, errorMsg, "Bad Input",
-				JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**
@@ -604,8 +513,9 @@ public class ValueDisplayer extends JButton {
 		case INT:
 			return getDisplayForInt(parent, title, 0);
 		case FONT:
-			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN,
-					1));
+			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN, 1));
+		case LABEL_POSITION:
+			return getDisplayForLabelPosition(parent, title, new LabelPosition());
 		default:
 			throw new ClassCastException(
 					"ValueDisplayer didn't understand type flag " + type);
@@ -646,8 +556,9 @@ public class ValueDisplayer extends JButton {
 				return getDisplayForInt(parent, title, 0);
 			}
 		} else if (sampleObj instanceof Font) {
-			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN,
-					1));
+			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN, 1));
+		} else if (sampleObj instanceof LabelPosition) {
+			return getDisplayForLabelPosition(parent, title, new LabelPosition());
 		} else {// don't know what to do this this
 			throw new ClassCastException(
 					"ValueDisplayer doesn't know how to display type "
@@ -692,6 +603,8 @@ public class ValueDisplayer extends JButton {
 			}
 		} else if (o instanceof Font) {
 			return getDisplayForFont(parent, title, (Font) o);
+		} else if (o instanceof LabelPosition) {
+			return getDisplayForLabelPosition(parent, title, (LabelPosition) o);
 		} else {// don't know what to do this this
 			throw new ClassCastException(
 					"ValueDisplayer doesn't know how to display type "

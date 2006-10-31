@@ -39,15 +39,11 @@
 //LinearNumberToColorInterpolator.java
 
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
+
 package cytoscape.visual.mappings;
-//----------------------------------------------------------------------------
+
 import java.awt.Color;
-//----------------------------------------------------------------------------
+
 /**
  * The class provides a linear interpolation between color values. The
  * (red,green,blue,alpha) values of the returned color are linearly

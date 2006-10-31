@@ -53,34 +53,53 @@ import cytoscape.visual.LineType;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.LineTypeParser;
-//----------------------------------------------------------------------------
-public class GenericNodeLineTypeCalculator extends NodeCalculator implements NodeLineTypeCalculator {
-    
-    public GenericNodeLineTypeCalculator(String name, ObjectMapping m) {
-	super(name, m);
 
-        Class c = null;
-	//c = LineType.class;  // this line won't obfuscate; the one below does.
-	c = LineType.LINE_1.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
+//----------------------------------------------------------------------------
+public class GenericNodeLineTypeCalculator extends NodeCalculator 
+    implements NodeLineTypeCalculator {
+
+    public byte getType() {
+        return VizMapUI.NODE_LINETYPE;
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public String getPropertyLabel() {
+        return "nodeLineTypeCalculator";
+    }
+
+    public String getTypeName() {
+        return "Node Line Type";
+    }
+    
+    GenericNodeLineTypeCalculator() {
+	super();
+    }
+
+    public GenericNodeLineTypeCalculator(String name, ObjectMapping m) {
+	super(name, m, LineType.class);
+    }
+
     public GenericNodeLineTypeCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1);
     }
     
-    public LineType calculateNodeLineType(Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        return (LineType)super.getMapping(0).calculateRangeValue(attrBundle);
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+	LineType lt = (LineType)getRangeValue(node);
+	
+	// default has already been set - no need to do anything
+	if ( lt == null )
+		return;
+
+        appr.setBorderLineType( lt ); 
     }
+
+    public LineType calculateNodeLineType(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getBorderLineType();
+    }
+
+
 }
 

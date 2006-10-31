@@ -49,6 +49,7 @@ import java.awt.Font;
 import cytoscape.visual.LineType;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.visual.LabelPosition;
 
 import cytoscape.util.Misc;
 //----------------------------------------------------------------------------
@@ -76,17 +77,19 @@ public class ObjectToString {
             //return Misc.getArrowText((Arrow)o);
             return o.toString();
         } else if (o instanceof Font) {
-            return getStringValue((Font)o);
+            return getFontStringValue((Font)o);
         } else if (o instanceof Number) {
             //just trust the default String representation for numbers
             return o.toString();
+        } else if (o instanceof LabelPosition) {
+	    return ((LabelPosition)o).shortString();
         } else {
             //default: use the toString() method
             return o.toString();
         }
     }
     
-    public static String getStringValue(Font f) {
+    private static String getFontStringValue(Font f) {
         String name = f.getName();
         int style = f.getStyle();
         String styleString = "plain";

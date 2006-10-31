@@ -52,42 +52,50 @@ import giny.model.Edge;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.DoubleParser;
+
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 //--------------------------------------------------------------------------
-public class GenericEdgeFontSizeCalculator extends EdgeCalculator
-    implements EdgeFontSizeCalculator{
-    
-    public GenericEdgeFontSizeCalculator(String name, ObjectMapping m) {
-	super(name, m);
-	//All we need is some kind of Number
-	if (!(Number.class.isAssignableFrom(m.getRangeClass()))) {
-	    throw new ClassCastException("Invalid Calculator: Expected class Font, got " + 
-					 m.getRangeClass().toString());
-	}
+public class GenericEdgeFontSizeCalculator extends EdgeCalculator 
+    implements EdgeFontSizeCalculator {
+
+    public byte getType() {
+        return VizMapUI.EDGE_FONT_SIZE;
+    }
+
+    public String getPropertyLabel() {
+        return "edgeFontSizeCalculator";
+    }
+
+    public String getTypeName() {
+        return "Edge Font Size";
     }
     
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+    GenericEdgeFontSizeCalculator() {
+	super();
+    }
+    
+    public GenericEdgeFontSizeCalculator(String name, ObjectMapping m) {
+	super(name, m, Number.class);
+    }
+    
     public GenericEdgeFontSizeCalculator(String name, Properties props, String baseKey) {
 	super(name, props, baseKey, new DoubleParser(), new Double(12));
     }
 
-    /** 
-     *  calculateEdgeFontSize returns -1 if there is no mapping;
-     *  since a negative number has no meaning as a font size,
-     *  this is a case that the caller of calculateEdgeFontSize
-     *  should expect to handle.  The usual caller is
-     *  NodeAppearanceCalculator.
-     */
-    public float calculateEdgeFontSize(Edge edge, CyNetwork network) {
-        String canonicalName = edge.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
+		Object rangeValue = getRangeValue(edge); 
+		
+		// default has already been set - no need to do anything
 		if (rangeValue != null)
-			return ((Number) rangeValue).floatValue();
-		else
-			return -1;
+			return;
+		
+		appr.setFontSize( ((Number) rangeValue).floatValue() );
+    }
+
+    public float calculateEdgeFontSize(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+        return ea.getFontSize();
     }
 }

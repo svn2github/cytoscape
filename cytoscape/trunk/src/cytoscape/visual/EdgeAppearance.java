@@ -45,43 +45,333 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Stroke;
+import java.awt.Paint;
+import java.util.Map;
+import java.util.HashMap;
 import cytoscape.visual.LineType;
 import cytoscape.visual.Arrow;
+import cytoscape.visual.parsers.ObjectToString;
+import cytoscape.visual.parsers.ArrowParser;
+import cytoscape.visual.parsers.FontParser;
+import cytoscape.visual.parsers.LineTypeParser;
+import cytoscape.visual.parsers.ColorParser;
+import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.parsers.ParserFactory;
+import cytoscape.visual.ui.VizMapUI;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+
+import giny.view.EdgeView;
+import giny.model.Edge;
+import giny.view.Label;
+import java.util.Properties;
 //----------------------------------------------------------------------------
 /**
  * Objects of this class hold data describing the appearance of an Edge.
  */
-public class EdgeAppearance {
+public class EdgeAppearance implements Appearance, Cloneable {
     
-    Color color;
-    LineType lineType;
-    Arrow sourceArrow;
-    Arrow targetArrow;
-    String label;
-    String toolTip;
-    Font font;
-    
+    Color color = Color.BLACK;
+    LineType lineType = LineType.LINE_1;
+    Arrow sourceArrow = Arrow.NONE;
+    Arrow targetArrow = Arrow.NONE;
+    String label = "";
+    String toolTip = "";
+    Font font = new Font(null, Font.PLAIN, 10);
+    Color labelColor = Color.BLACK;
+
     public EdgeAppearance() {}
     
     public Color getColor() {return color;}
-    public void setColor(Color c) {color = c;}
+    public void setColor(Color c) {if (c != null ) color = c;}
     
     public LineType getLineType() {return lineType;}
-    public void setLineType(LineType lt) {lineType = lt;}
+    public void setLineType(LineType lt) {if (lt != null ) lineType = lt;}
     
     public Arrow getSourceArrow() {return sourceArrow;}
-    public void setSourceArrow(Arrow a) {sourceArrow = a;}
+    public void setSourceArrow(Arrow a) {if (a != null ) sourceArrow = a;}
     
     public Arrow getTargetArrow() {return targetArrow;}
-    public void setTargetArrow(Arrow a) {targetArrow = a;}
+    public void setTargetArrow(Arrow a) {if (a != null ) targetArrow = a;}
     
     public String getLabel() {return label;}
-    public void setLabel(String s) {label = s;}
+    public void setLabel(String s) {if (s != null ) label = s;}
     
     public String getToolTip() {return toolTip;}
-    public void setToolTip(String s) {toolTip = s;}
+    public void setToolTip(String s) {if (s != null ) toolTip = s;}
 
     public Font getFont() {return font;}
-    public void setFont(Font f) {font = f;}
-}
+    public void setFont(Font f) {if (f != null ) font = f;}
 
+    public float getFontSize() {return (float)font.getSize2D();}
+    public void setFontSize(float f) { font = font.deriveFont(f); }
+    
+    public Color getLabelColor() {return labelColor;}
+    public void setLabelColor(Color c) {if (c != null ) labelColor = c;}
+
+    /** @deprecated Use applyAppearance(edgeView) instead - now we always optimize.
+        Will be removed 10/2007 */
+    public void applyAppearance(EdgeView edgeView, boolean optimizer) {
+    	applyAppearance(edgeView);
+    }
+
+    public void applyAppearance(EdgeView edgeView) {
+
+	Paint existingUnselectedPaint = edgeView.getUnselectedPaint();
+	Paint newUnselectedPaint = getColor();
+	if (!newUnselectedPaint.equals(existingUnselectedPaint)) {
+		edgeView.setUnselectedPaint(newUnselectedPaint);
+	}
+	Stroke existingStroke = edgeView.getStroke();
+	Stroke newStroke = getLineType().getStroke();
+	if (!newStroke.equals(existingStroke)) {
+		edgeView.setStroke(newStroke);
+	}
+
+	int existingSourceEdge = edgeView.getSourceEdgeEnd();
+	int newSourceEdge = getSourceArrow().getGinyArrow();
+	if (newSourceEdge != existingSourceEdge) {
+		edgeView.setSourceEdgeEnd(newSourceEdge);
+	}
+
+	int existingTargetEdge = edgeView.getTargetEdgeEnd();
+	int newTargetEdge = getTargetArrow().getGinyArrow();
+	if (newTargetEdge != existingTargetEdge) {
+		edgeView.setTargetEdgeEnd(newTargetEdge);
+	}
+
+	Label label = edgeView.getLabel();
+	String existingText = label.getText();
+	String newText = getLabel();
+	if (!newText.equals(existingText)) {
+		label.setText(newText);
+	}
+	Font existingFont = label.getFont();
+	Font newFont = getFont();
+	if (!newFont.equals(existingFont)) {
+		label.setFont(newFont);
+	}
+	Paint existingLabelColor = label.getTextPaint();
+	Paint newLabelColor = getLabelColor();
+	if (!newLabelColor.equals(existingLabelColor)) {
+		label.setTextPaint(newLabelColor);
+	}
+    }
+
+
+    
+    public void applyDefaultProperties(Properties eacProps, String baseKey ) {
+
+        String value = null;
+        
+        //look for default values
+        value = eacProps.getProperty(baseKey + ".defaultEdgeColor");
+        if (value != null) {
+            Color c = (new ColorParser()).parseColor(value);
+            if (c != null) {setColor(c);}
+        }
+        value = eacProps.getProperty(baseKey + ".defaultEdgeLineType");
+        if (value != null) {
+            LineType lt = (new LineTypeParser()).parseLineType(value);
+            if (lt != null) {setLineType(lt);}
+        }
+        value = eacProps.getProperty(baseKey + ".defaultEdgeSourceArrow");
+        if (value != null) {
+            Arrow a = (new ArrowParser()).parseArrow(value);
+            if (a != null) {setSourceArrow(a);}
+        }
+        value = eacProps.getProperty(baseKey + ".defaultEdgeTargetArrow");
+        if (value != null) {
+            Arrow a = (new ArrowParser()).parseArrow(value);
+            if (a != null) {setTargetArrow(a);}
+        }
+        value = eacProps.getProperty(baseKey + ".defaultEdgeLabel");
+        if (value != null) {
+            setLabel(value);
+        }
+        value = eacProps.getProperty(baseKey + ".defaultEdgeToolTip");
+        if (value != null) {
+            setToolTip(value);
+        }
+        value = eacProps.getProperty(baseKey + ".defaultEdgeFont");
+        if (value != null) {
+	    Font f = (new FontParser()).parseFont(value);
+            if (f != null) {
+		setFont(f);
+	    }
+        }
+        value = eacProps.getProperty(baseKey + ".defaultEdgeLabelColor");
+        if (value != null) {
+            Color c = (new ColorParser()).parseColor(value);
+            setLabelColor(c);
+        }
+    }
+    
+    public Properties getDefaultProperties(String baseKey) {
+        String key = null;
+        String value = null;
+        Properties newProps = new Properties();
+        
+        //save default values
+        key = baseKey + ".defaultEdgeColor";
+        value = ObjectToString.getStringValue( getColor() );
+        newProps.setProperty(key, value);
+
+        key = baseKey + ".defaultEdgeLineType";
+        value = ObjectToString.getStringValue( getLineType() );
+        newProps.setProperty(key, value);
+
+        key = baseKey + ".defaultEdgeSourceArrow";
+        value = ObjectToString.getStringValue( getSourceArrow() );
+        newProps.setProperty(key, value);
+
+        key = baseKey + ".defaultEdgeTargetArrow";
+        value = ObjectToString.getStringValue( getTargetArrow() );
+        newProps.setProperty(key, value);
+
+        key = baseKey + ".defaultEdgeLabel";
+        value = ObjectToString.getStringValue( getLabel() );
+        newProps.setProperty(key, value);
+
+        key = baseKey + ".defaultEdgeToolTip";
+        value = ObjectToString.getStringValue( getToolTip() );
+        newProps.setProperty(key, value);
+
+        key = baseKey + ".defaultEdgeFont";
+        value = ObjectToString.getStringValue( getFont() );
+        newProps.setProperty(key, value);
+        
+        key = baseKey + ".defaultLabelColor";
+        value = ObjectToString.getStringValue( getLabelColor() );
+        newProps.setProperty(key, value);
+
+        return newProps;
+    }
+
+    public String getDescription(String prefix) {
+        if ( prefix == null )
+		prefix = "";
+
+        String lineSep = System.getProperty("line.separator");
+        StringBuffer sb = new StringBuffer();
+        sb.append(prefix + "EdgeColor = ").append(color).append(lineSep);
+        String edgeLineTypeText = ObjectToString.getStringValue(lineType);
+        sb.append(prefix + "EdgeLineType = ").append(edgeLineTypeText).append(lineSep);
+        String sourceArrowText = ObjectToString.getStringValue(sourceArrow);
+        sb.append(prefix + "EdgeSourceArrow = ").append(sourceArrowText).append(lineSep);
+        String targetArrowText = ObjectToString.getStringValue(targetArrow);
+        sb.append(prefix + "EdgeTargetArrow = ").append(targetArrowText).append(lineSep);
+        sb.append(prefix + "EdgeLabel = ").append(label).append(lineSep);
+        sb.append(prefix + "EdgeToolTip = ").append(toolTip).append(lineSep);
+        sb.append(prefix + "EdgeFont = ").append(font).append(lineSep);
+        sb.append(prefix + "EdgeLabelColor = ").append(labelColor).append(lineSep);
+
+	return sb.toString();
+    }
+    public String getDescription() {
+    	return getDescription(null);
+    }
+
+
+    public Object get(byte type) {
+	Object defaultObj = null;
+        switch (type) {
+	case VizMapUI.EDGE_COLOR:
+	    defaultObj = getColor();
+	    break;
+	case VizMapUI.EDGE_LINETYPE:
+	    defaultObj = getLineType();
+	    break;
+	case VizMapUI.EDGE_SRCARROW:
+	    defaultObj = getSourceArrow();
+	    break;
+	case VizMapUI.EDGE_TGTARROW:
+	    defaultObj = getTargetArrow();
+	    break;
+	case VizMapUI.EDGE_LABEL:
+	    defaultObj = getLabel();
+	    break;
+	case VizMapUI.EDGE_TOOLTIP:
+	    defaultObj = getToolTip();
+	    break;
+	case VizMapUI.EDGE_FONT_FACE:
+	    defaultObj = getFont();
+	    break;	  
+	case VizMapUI.EDGE_FONT_SIZE:
+	    defaultObj = new Double(getFont().getSize2D());
+	    break;
+	case VizMapUI.EDGE_LABEL_COLOR:
+	    defaultObj = getLabelColor();
+	    break;
+	}
+        return defaultObj;
+    }
+    
+    public void set(byte type, Object c) {
+        switch(type) {
+	case VizMapUI.EDGE_COLOR:
+	    setColor((Color) c);
+	    break;
+	case VizMapUI.EDGE_LINETYPE:
+	    setLineType((LineType) c);
+	    break;
+	case VizMapUI.EDGE_SRCARROW:
+	    setSourceArrow((Arrow) c);
+	    break;
+	case VizMapUI.EDGE_TGTARROW:
+	    setTargetArrow((Arrow) c);
+	    break;
+	case VizMapUI.EDGE_LABEL:
+	    setLabel((String) c);
+	    break;
+	case VizMapUI.EDGE_TOOLTIP:
+	    setToolTip((String) c);
+	    break;
+	case VizMapUI.EDGE_FONT_FACE:
+	    setFont((Font) c);
+	    break;
+	case VizMapUI.EDGE_FONT_SIZE:
+	    setFontSize(((Double) c).floatValue());
+	    break;
+	case VizMapUI.EDGE_LABEL_COLOR:
+	    setLabelColor((Color) c);
+	    break;
+	}
+    }
+
+    public void copy(EdgeAppearance ea) {
+    	setColor( ea.getColor() );
+    	setLineType( ea.getLineType() );
+    	setSourceArrow( ea.getSourceArrow() );
+    	setTargetArrow( ea.getTargetArrow() );
+    	setLabel( ea.getLabel() );
+    	setToolTip( ea.getToolTip() );
+    	setFont( ea.getFont() );
+    	setLabelColor( ea.getLabelColor() );
+    }
+
+    public Object clone() {
+    	EdgeAppearance ea = new EdgeAppearance();
+	ea.copy(this);
+	return ea;
+    }
+
+
+  public void applyBypass(Edge e) {
+        CyAttributes attrs = Cytoscape.getEdgeAttributes();
+        String id = e.getIdentifier();
+
+        setColor( BypassHelper.getColorBypass(attrs,id,"edge.color") );
+        setLineType( (LineType)BypassHelper.getBypass(attrs,id,"edge.lineType",LineType.class) ); 
+	setSourceArrow((Arrow)BypassHelper.getBypass(attrs,id,"edge.sourceArrow",Arrow.class) );
+	setTargetArrow((Arrow) BypassHelper.getBypass(attrs,id,"edge.targetArrow",Arrow.class) );
+	setLabel((String) BypassHelper.getBypass(attrs,id,"edge.label",String.class) );
+	setToolTip((String)  BypassHelper.getBypass(attrs,id,"edge.toolTip",String.class) );
+	setFont((Font)  BypassHelper.getBypass(attrs,id,"edge.font",Font.class) );
+	Double d = (Double)BypassHelper.getBypass(attrs,id,"edge.fontSize",Double.class);
+	if ( d != null )
+		setFontSize(d.floatValue());
+        setLabelColor( BypassHelper.getColorBypass(attrs,id,"edge.labelColor") );
+  }
+} 

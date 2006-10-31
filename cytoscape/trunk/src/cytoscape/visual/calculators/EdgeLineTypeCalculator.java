@@ -50,9 +50,10 @@ import giny.model.Edge;
 import cytoscape.visual.LineType;
 
 import cytoscape.CyNetwork;
-//----------------------------------------------------------------------------
+
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface EdgeLineTypeCalculator extends Calculator{
-    
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */    
     LineType calculateEdgeLineType(Edge edge, CyNetwork network);
 }
 

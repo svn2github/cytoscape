@@ -52,33 +52,52 @@ import giny.model.Edge;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.StringParser;
-//----------------------------------------------------------------------------
-public class GenericEdgeToolTipCalculator extends EdgeCalculator implements EdgeToolTipCalculator {
-    
-    public GenericEdgeToolTipCalculator(String name, ObjectMapping m) {
-	super(name, m);
 
-        String sc = new String();
-        Class c = sc.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-		+ ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.ui.VizMapUI;
+//----------------------------------------------------------------------------
+public class GenericEdgeToolTipCalculator extends EdgeCalculator 
+    implements EdgeToolTipCalculator {
+
+    public byte getType() {
+        return VizMapUI.EDGE_TOOLTIP;
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public String getPropertyLabel() {
+        return "edgeToolTipCalculator";
+    }
+
+    public String getTypeName() {
+        return "Edge Tooltip";
+    }
+
+    GenericEdgeToolTipCalculator() {
+	super();
+    }
+
+    public GenericEdgeToolTipCalculator(String name, ObjectMapping m) {
+	super(name, m,String.class);
+    }
+
     public GenericEdgeToolTipCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new StringParser(), new String());
     }
     
-    public String calculateEdgeToolTip(Edge edge, CyNetwork network) {
-        String canonicalName = edge.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-        return (String) super.getMapping(0).calculateRangeValue(attrBundle);
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
+	String tt = (String) getRangeValue(edge); 
+
+	// default has already been set - no need to do anything
+	if ( tt == null )
+		return;
+
+        appr.setToolTip( tt ); 
     }
+
+    public String calculateEdgeToolTip(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+        return ea.getToolTip();
+    }
+
 }
 

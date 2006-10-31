@@ -53,33 +53,51 @@ import giny.model.Edge;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.ColorParser;
-//----------------------------------------------------------------------------
-public class GenericEdgeColorCalculator extends EdgeCalculator implements EdgeColorCalculator {
-    
-    public GenericEdgeColorCalculator(String name, ObjectMapping m) {
-	super(name, m);
 
-        Color color = new Color(0,0,0);
-        Class c = color.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-		+ ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.ui.VizMapUI;
+//----------------------------------------------------------------------------
+public class GenericEdgeColorCalculator extends EdgeCalculator 
+	implements EdgeColorCalculator {
+
+    public byte getType() {
+	return VizMapUI.EDGE_COLOR;
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public String getPropertyLabel() {
+	return "edgeColorCalculator";
+    }
+
+    public String getTypeName() {
+    	return "Edge Color";
+    }
+
+    GenericEdgeColorCalculator() {
+    	super();
+    }
+
+    public GenericEdgeColorCalculator(String name, ObjectMapping m) {
+	super(name, m, Color.class);
+    }
+
     public GenericEdgeColorCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new ColorParser(), Color.WHITE);
     }
     
-    public Color calculateEdgeColor(Edge edge, CyNetwork network) {
-		String canonicalName = edge.getIdentifier();
-		Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-        return (Color) super.getMapping(0).calculateRangeValue(attrBundle);
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
+		Color c = (Color) getRangeValue(edge); 
+
+		// default has already been set - no need to do anything
+		if ( c == null )
+			return;
+
+        	appr.setColor( c );
+    }
+
+    public Color calculateEdgeColor(Edge e, CyNetwork n) {
+    	EdgeAppearance ea = new EdgeAppearance();
+	apply(ea,e,n);
+	return ea.getColor();
     }
 }
 

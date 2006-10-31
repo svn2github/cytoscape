@@ -54,6 +54,12 @@ import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.visual.parsers.ValueParser;
+import giny.model.Edge; 
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.NodeAppearance;
+import giny.model.Edge;
+import giny.model.Node;
+
 //------------------------------------------------------------------------------
 /**
  * EdgeCalculator implements some UI features for calculators lower in the
@@ -61,8 +67,12 @@ import cytoscape.visual.parsers.ValueParser;
  */
 public abstract class EdgeCalculator extends AbstractCalculator {
 
-    public EdgeCalculator(String name, ObjectMapping m) {
-	super(name, m);
+    EdgeCalculator() {
+    	super();
+    }
+
+    public EdgeCalculator(String name, ObjectMapping m, Class c) {
+	super(name, m, c);
     }
     /**
      * Constructor that calls {@link MappingFactory} to construct a new
@@ -71,7 +81,7 @@ public abstract class EdgeCalculator extends AbstractCalculator {
     public EdgeCalculator(String name, Properties props, String baseKey,
                           ValueParser parser, Object defObj) {
         super(name, MappingFactory.newMapping(props, baseKey + ".mapping", parser,
-                                              defObj, ObjectMapping.EDGE_MAPPING) );
+                                              defObj, ObjectMapping.EDGE_MAPPING), defObj.getClass() );
     }
 
     /**
@@ -86,19 +96,6 @@ public abstract class EdgeCalculator extends AbstractCalculator {
      */
     public JPanel getUI(JDialog parent, CyNetwork n) {
 	return super.getUI(Cytoscape.getEdgeAttributes(), parent, n);
-	/*
-	// attribute select combo box - delivered complete from the superclass
-	JPanel selectAttributePanel = super.getUI(Cytoscape.getEdgeAttributes());
-	
-	// underlying mapper's UI
-	JPanel mapperUI = super.getMapping(0).getUI(parent, n);
-
-	// stick them together
-	GridBagGroup g = new GridBagGroup();
-	MiscGB.insert(g, selectAttributePanel, 0, 0);
-	MiscGB.insert(g, mapperUI, 0, 1, 1, 1, 5, 5, GridBagConstraints.BOTH);
-	return g.panel;
-	*/
     }
 
     /**
@@ -108,4 +105,10 @@ public abstract class EdgeCalculator extends AbstractCalculator {
     protected Map getAttrBundle(String name) {
         return super.getAttrBundle(name,Cytoscape.getEdgeAttributes());
     }
+
+    abstract public void apply(EdgeAppearance appr, Edge edge, CyNetwork network); 
+    abstract public String getPropertyLabel();
+    abstract public byte getType();
+    abstract public String getTypeName();
+
 }

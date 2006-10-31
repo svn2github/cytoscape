@@ -84,7 +84,7 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 
     public EdgeAppearanceCalculatorTest (String name) {super (name);}
 
-    public void setUp() throws IOException {
+    public void setUp() {
 	cyNet = Cytoscape.createNetworkFromFile("testData/small.sif");
 	a = Cytoscape.getCyNode("a");
 	b = Cytoscape.getCyNode("b");

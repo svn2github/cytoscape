@@ -52,33 +52,53 @@ import giny.model.Node;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.StringParser;
-//----------------------------------------------------------------------------
-public class GenericNodeLabelCalculator extends NodeCalculator implements NodeLabelCalculator {
-    
-    public GenericNodeLabelCalculator(String name, ObjectMapping m) {
-	super(name, m);
 
-        String sc = new String();
-        Class c = sc.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
+//----------------------------------------------------------------------------
+public class GenericNodeLabelCalculator extends NodeCalculator 
+    implements NodeLabelCalculator {
+
+    public byte getType() {
+        return VizMapUI.NODE_LABEL;
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public String getPropertyLabel() {
+        return "nodeLabelCalculator";
+    }
+
+    public String getTypeName() {
+        return "Node Label";
+    }
+    
+    GenericNodeLabelCalculator() {
+	super();
+    }
+
+    public GenericNodeLabelCalculator(String name, ObjectMapping m) {
+	super(name, m, String.class);
+    }
+
     public GenericNodeLabelCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new StringParser(), new String());
     }
     
-    public String calculateNodeLabel(Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        return (String)super.getMapping(0).calculateRangeValue(attrBundle);
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+	String s = (String)getRangeValue(node);
+
+	// default has already been set - no need to do anything
+	if ( s == null )
+		return;
+	
+        appr.setLabel( s ); 
     }
+
+    public String calculateNodeLabel(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getLabel();
+    }
+
+
 }
 

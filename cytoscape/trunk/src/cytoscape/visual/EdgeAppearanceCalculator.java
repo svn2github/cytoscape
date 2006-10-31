@@ -55,63 +55,33 @@ import cytoscape.visual.Arrow;
 import cytoscape.CyNetwork;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 /**
  * This class calculates the appearance of an Edge. It holds a default value
  * and a (possibly null) calculator for each visual attribute.
  */
-public class EdgeAppearanceCalculator implements Cloneable {
+public class EdgeAppearanceCalculator extends AppearanceCalculator {
+   
+    EdgeAppearance defaultAppearance = new EdgeAppearance();
 
-    Color defaultEdgeColor = Color.BLACK;
-    LineType defaultEdgeLineType = LineType.LINE_1;
-    Arrow defaultEdgeSourceArrow = Arrow.NONE;
-    Arrow defaultEdgeTargetArrow = Arrow.NONE;
-    String defaultEdgeLabel = "";
-    String defaultEdgeToolTip = "";
-    Font defaultEdgeFont = new Font(null, Font.PLAIN, 10);
-    
-    EdgeColorCalculator edgeColorCalculator;
-    EdgeLineTypeCalculator edgeLineTypeCalculator;
-    EdgeArrowCalculator edgeSourceArrowCalculator;
-    EdgeArrowCalculator edgeTargetArrowCalculator;
-    EdgeLabelCalculator edgeLabelCalculator;
-    EdgeToolTipCalculator edgeToolTipCalculator;
-    EdgeFontFaceCalculator edgeFontFaceCalculator;
-    EdgeFontSizeCalculator edgeFontSizeCalculator;
+  /** Used _ONLY_ to support deprecated code - DO NOT USE OTHERWISE!!!! */
+  private EdgeAppearance currentAppearance;
+  /** Used _ONLY_ to support deprecated code - DO NOT USE OTHERWISE!!!! */
+  private CyNetwork currentNetwork;
+  /** Used _ONLY_ to support deprecated code - DO NOT USE OTHERWISE!!!! */
+  private Edge currentEdge;
 
-    /**
-     * Make shallow copy of this object
-     */
-    public Object clone() throws CloneNotSupportedException {
-	Object copy = null;
-	copy = super.clone();
-	return copy;
+
+    public EdgeAppearanceCalculator() {
+    	super();
     }
-
-    public EdgeAppearanceCalculator() {}
     
     /**
      * Copy constructor. Returns a default object if the argument is null.
      */
     public EdgeAppearanceCalculator(EdgeAppearanceCalculator toCopy) {
-        if (toCopy == null) {return;}
-        
-        setDefaultEdgeColor( toCopy.getDefaultEdgeColor() );
-        setDefaultEdgeLineType( toCopy.getDefaultEdgeLineType() );
-        setDefaultEdgeSourceArrow( toCopy.getDefaultEdgeSourceArrow() );
-        setDefaultEdgeTargetArrow( toCopy.getDefaultEdgeTargetArrow() );
-        setDefaultEdgeLabel( toCopy.getDefaultEdgeLabel() );
-        setDefaultEdgeToolTip( toCopy.getDefaultEdgeToolTip() );
-        setDefaultEdgeFont( toCopy.getDefaultEdgeFont() );
-        
-        setEdgeColorCalculator( toCopy.getEdgeColorCalculator() );
-        setEdgeLineTypeCalculator( toCopy.getEdgeLineTypeCalculator() );
-        setEdgeSourceArrowCalculator( toCopy.getEdgeSourceArrowCalculator() );
-        setEdgeTargetArrowCalculator( toCopy.getEdgeTargetArrowCalculator() );
-        setEdgeLabelCalculator( toCopy.getEdgeLabelCalculator() );
-        setEdgeToolTipCalculator( toCopy.getEdgeToolTipCalculator() );
-        setEdgeFontFaceCalculator( toCopy.getEdgeFontFaceCalculator() );
-        setEdgeFontSizeCalculator( toCopy.getEdgeFontSizeCalculator() );
+    	super(toCopy);
     }
     
     /**
@@ -120,7 +90,8 @@ public class EdgeAppearanceCalculator implements Cloneable {
      */
     public EdgeAppearanceCalculator(String name, Properties eacProps,
                                     String baseKey, CalculatorCatalog catalog) {
-        applyProperties(name, eacProps, baseKey, catalog);
+        super(name, eacProps, baseKey, catalog, new EdgeAppearance() );
+	defaultAppearance = (EdgeAppearance)tmpDefaultAppearance;
     }
 
     /**
@@ -129,8 +100,13 @@ public class EdgeAppearanceCalculator implements Cloneable {
      * CyNetwork. A new EdgeApperance object will be created.
      */
     public EdgeAppearance calculateEdgeAppearance(Edge edge, CyNetwork network) {
-        EdgeAppearance appr = new EdgeAppearance();
+        EdgeAppearance appr = (EdgeAppearance)defaultAppearance.clone(); 
         calculateEdgeAppearance(appr, edge, network);
+ 	
+	currentAppearance = appr;
+	currentEdge = edge;
+	currentNetwork = network;
+
         return appr;
     }
     
@@ -141,354 +117,181 @@ public class EdgeAppearanceCalculator implements Cloneable {
      * the new values.
      */
     public void calculateEdgeAppearance(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        appr.setColor( calculateEdgeColor(edge, network) );
-        appr.setLineType( calculateEdgeLineType(edge, network) );
-        appr.setSourceArrow( calculateEdgeSourceArrow(edge, network) );
-        appr.setTargetArrow( calculateEdgeTargetArrow(edge, network) );
-        appr.setLabel( calculateEdgeLabel(edge, network) );
-        appr.setToolTip( calculateEdgeToolTip(edge, network) );
-	appr.setFont( calculateEdgeFont(edge, network) );
-    }
-    
-    
-    public Color getDefaultEdgeColor() {return defaultEdgeColor;}
-    public void setDefaultEdgeColor(Color c) {
-        if (c != null) {defaultEdgeColor = c;}
-    }
-    public EdgeColorCalculator getEdgeColorCalculator() {return edgeColorCalculator;}
-    public void setEdgeColorCalculator(EdgeColorCalculator c) {edgeColorCalculator = c;}
-    public Color calculateEdgeColor(Edge edge, CyNetwork network) {
-        if (edge == null || network == null || edgeColorCalculator == null) {
-            return defaultEdgeColor;
-        }
-        Color c = edgeColorCalculator.calculateEdgeColor(edge, network);
-        return (c == null) ? defaultEdgeColor : c;
-    }
-    
-    public LineType getDefaultEdgeLineType() {return defaultEdgeLineType;}
-    public void setDefaultEdgeLineType(LineType lt) {
-        if (lt != null) {defaultEdgeLineType = lt;}
-    }
-    public EdgeLineTypeCalculator getEdgeLineTypeCalculator() {
-        return edgeLineTypeCalculator;
-    }
-    public void setEdgeLineTypeCalculator(EdgeLineTypeCalculator c) {
-        edgeLineTypeCalculator = c;
-    }
-    public LineType calculateEdgeLineType(Edge edge, CyNetwork network) {
-        if (edge == null || network == null || edgeLineTypeCalculator == null) {
-            return defaultEdgeLineType;
-        }
-        LineType lt = edgeLineTypeCalculator.calculateEdgeLineType(edge, network);
-        return (lt == null) ? defaultEdgeLineType : lt;
-    }
-    
-    public Arrow getDefaultEdgeSourceArrow() {return defaultEdgeSourceArrow;}
-    public void setDefaultEdgeSourceArrow(Arrow a) {
-        if (a != null) {defaultEdgeSourceArrow = a;}
-    }
-    public EdgeArrowCalculator getEdgeSourceArrowCalculator() {
-        return edgeSourceArrowCalculator;
-    }
-    public void setEdgeSourceArrowCalculator(EdgeArrowCalculator c) {
-        edgeSourceArrowCalculator = c;
-    }
-    public Arrow calculateEdgeSourceArrow(Edge edge, CyNetwork network) {
-        if (edge == null || network == null || edgeSourceArrowCalculator == null) {
-            return defaultEdgeSourceArrow;
-        }
-        Arrow a = edgeSourceArrowCalculator.calculateEdgeArrow(edge, network);
-        return (a == null) ? defaultEdgeSourceArrow : a;
-    }
-    
-    public Arrow getDefaultEdgeTargetArrow() {return defaultEdgeTargetArrow;}
-    public void setDefaultEdgeTargetArrow(Arrow a) {
-        if (a != null) {defaultEdgeTargetArrow = a;}
-    }
-    public EdgeArrowCalculator getEdgeTargetArrowCalculator() {
-        return edgeTargetArrowCalculator;
-    }
-    public void setEdgeTargetArrowCalculator(EdgeArrowCalculator c) {
-        edgeTargetArrowCalculator = c;
-    }
-    public Arrow calculateEdgeTargetArrow(Edge edge, CyNetwork network) {
-        if (edge == null || network == null || edgeTargetArrowCalculator == null) {
-            return defaultEdgeTargetArrow;
-        }
-        Arrow a = edgeTargetArrowCalculator.calculateEdgeArrow(edge, network);
-        return (a == null) ? defaultEdgeTargetArrow : a;
-    }
-    
-    public String getDefaultEdgeLabel() {return defaultEdgeLabel;}
-    public void setDefaultEdgeLabel(String s) {
-        if (s != null) {defaultEdgeLabel = s;}
-    }
-    public EdgeLabelCalculator getEdgeLabelCalculator() {return edgeLabelCalculator;}
-    public void setEdgeLabelCalculator(EdgeLabelCalculator c) {edgeLabelCalculator = c;}
-    public String calculateEdgeLabel(Edge edge, CyNetwork network) {
-        if (edge == null || network == null || edgeLabelCalculator == null) {
-            return defaultEdgeLabel;
-        }
-        String s = edgeLabelCalculator.calculateEdgeLabel(edge, network);
-        return (s == null) ? defaultEdgeLabel : s;
-    }
-        
-    public Font getDefaultEdgeFont() {return defaultEdgeFont;}
-    public void setDefaultEdgeFont(Font f) {
-	if (f != null) {defaultEdgeFont = f;}
-    }
-    public Font getDefaultEdgeFontFace() {return defaultEdgeFont;}
-    public void setDefaultEdgeFontFace(Font f) {
-	if (f != null) {
-	    float fontSize = defaultEdgeFont.getSize2D();
-	    defaultEdgeFont = f.deriveFont(fontSize);
-	}
-    }
-    public EdgeFontFaceCalculator getEdgeFontFaceCalculator() {return edgeFontFaceCalculator;}
-    public void setEdgeFontFaceCalculator(EdgeFontFaceCalculator c) {edgeFontFaceCalculator = c;}
-    
+    	appr.copy(defaultAppearance); // set default values
+    	for (Calculator c : calcs)
+		c.apply(appr,edge,network);
 
-    public float getDefaultEdgeFontSize() {return defaultEdgeFont.getSize2D();}
-    public void setDefaultEdgeFontSize(float f) {
-	if (f > 0.0) defaultEdgeFont = defaultEdgeFont.deriveFont(f);
+	appr.applyBypass(edge);
     }
-    public EdgeFontSizeCalculator getEdgeFontSizeCalculator() {return edgeFontSizeCalculator;}
-    public void setEdgeFontSizeCalculator(EdgeFontSizeCalculator c) {edgeFontSizeCalculator = c;}
     
-    public Font calculateEdgeFont(Edge edge, CyNetwork network) {
-	if (edge == null || network == null ||
-	    (edgeFontFaceCalculator == null && edgeFontSizeCalculator == null)) {
-	    return defaultEdgeFont;
-	}
-	Font f;
-	float defaultSize = defaultEdgeFont.getSize2D();
-	if (edgeFontFaceCalculator == null) { // edgeFontSizeCalculator != null
-	    float fontSize = edgeFontSizeCalculator.calculateEdgeFontSize(edge, network);
-	    if (fontSize == -1)
-		fontSize = defaultSize;
-	    f = defaultEdgeFont.deriveFont(fontSize);
-	    return (f == null) ? defaultEdgeFont : f;
-	}
-	else {
-	    Font g = edgeFontFaceCalculator.calculateEdgeFontFace(edge, network);
-	    if (g == null) {
-		g = defaultEdgeFont;
-	    }
-	    if (edgeFontSizeCalculator == null) {
-		f = g.deriveFont(defaultSize);
-            } else {
-		float fontSize = edgeFontSizeCalculator.calculateEdgeFontSize(edge, network);
-		if (fontSize == -1)
-		    fontSize = defaultSize;
-                f = g.deriveFont(fontSize);
-            }
-	}
-        return (f == null) ? defaultEdgeFont : f;
+    public EdgeAppearance getDefaultAppearance() {
+    	return defaultAppearance;
     }
 
-    public String getDefaultEdgeToolTip() {return defaultEdgeToolTip;}
-    public void setDefaultEdgeToolTip(String s) {
-        if (s != null) {defaultEdgeToolTip = s;}
+    public void setDefaultAppearance(EdgeAppearance appr) {
+    	defaultAppearance = appr;
     }
-    public EdgeToolTipCalculator getEdgeToolTipCalculator() {
-        return edgeToolTipCalculator;
-    }
-    public void setEdgeToolTipCalculator(EdgeToolTipCalculator c) {
-        edgeToolTipCalculator = c;
-    }
-    public String calculateEdgeToolTip(Edge edge, CyNetwork network) {
-        if (edge == null || network == null || edgeToolTipCalculator == null) {
-            return defaultEdgeToolTip;
-        }
-        String s = edgeToolTipCalculator.calculateEdgeToolTip(edge, network);
-        return (s == null) ? defaultEdgeToolTip : s;
-    }
-    
-    /**
-     * Returns a text description of the current default values and calculator
-     * names.
-     */
+
     public String getDescription() {
-        String lineSep = System.getProperty("line.separator");
-        StringBuffer sb = new StringBuffer();
-        sb.append("EdgeAppearanceCalculator:" + lineSep);
-        sb.append("defaultEdgeColor = ").append(defaultEdgeColor).append(lineSep);
-        String edgeLineTypeText = ObjectToString.getStringValue(defaultEdgeLineType);
-        sb.append("defaultEdgeLineType = ").append(edgeLineTypeText).append(lineSep);
-        String sourceArrowText = ObjectToString.getStringValue(defaultEdgeSourceArrow);
-        sb.append("defaultEdgeSourceArrow = ").append(sourceArrowText).append(lineSep);
-        String targetArrowText = ObjectToString.getStringValue(defaultEdgeTargetArrow);
-        sb.append("defaultEdgeTargetArrow = ").append(targetArrowText).append(lineSep);
-        sb.append("defaultEdgeLabel = ").append(defaultEdgeLabel).append(lineSep);
-        sb.append("defaultEdgeToolTip = ").append(defaultEdgeToolTip).append(lineSep);
-        sb.append("defaultEdgeFont = ").append(defaultEdgeFont).append(lineSep);
-        sb.append("edgeColorCalculator = ").append(edgeColorCalculator).append(lineSep);
-        sb.append("edgeLineTypeCalculator = ").append(edgeLineTypeCalculator).append(lineSep);
-        sb.append("edgeSourceArrowCalculator = ").append(edgeSourceArrowCalculator).append(lineSep);
-        sb.append("edgeTargetArrowCalculator = ").append(edgeTargetArrowCalculator).append(lineSep);
-        sb.append("edgeLabelCalculator = ").append(edgeLabelCalculator).append(lineSep);
-        sb.append("edgeToolTipCalculator = ").append(edgeToolTipCalculator).append(lineSep);
-        sb.append("edgeFontFaceCalculator = ").append(edgeFontFaceCalculator).append(lineSep);
-        sb.append("edgeFontSizeCalculator = ").append(edgeFontSizeCalculator).append(lineSep);
-        return sb.toString();
+    	return getDescription("EdgeAppearanceCalculator",defaultAppearance);
     }
     
-    /**
-     * This method customizes this object by searching the supplied properties
-     * object for keys identifying default values and calculators. Recognized
-     * keys are of the form "nodeAppearanceCalculator." + name + ident, where
-     * name is a supplied argument and ident is a String indicating a default
-     * value or a calculator for a specific visual attribute. The specified
-     * calculators are aquired by name from the supplied catalog.
-     */
     public void applyProperties(String name, Properties eacProps, String baseKey,
                                 CalculatorCatalog catalog) {
-        String value = null;
-        
-        //look for default values
-        value = eacProps.getProperty(baseKey + ".defaultEdgeColor");
-        if (value != null) {
-            Color c = (new ColorParser()).parseColor(value);
-            if (c != null) {setDefaultEdgeColor(c);}
-        }
-        value = eacProps.getProperty(baseKey + ".defaultEdgeLineType");
-        if (value != null) {
-            LineType lt = (new LineTypeParser()).parseLineType(value);
-            if (lt != null) {setDefaultEdgeLineType(lt);}
-        }
-        value = eacProps.getProperty(baseKey + ".defaultEdgeSourceArrow");
-        if (value != null) {
-            Arrow a = (new ArrowParser()).parseArrow(value);
-            if (a != null) {setDefaultEdgeSourceArrow(a);}
-        }
-        value = eacProps.getProperty(baseKey + ".defaultEdgeTargetArrow");
-        if (value != null) {
-            Arrow a = (new ArrowParser()).parseArrow(value);
-            if (a != null) {setDefaultEdgeTargetArrow(a);}
-        }
-        value = eacProps.getProperty(baseKey + ".defaultEdgeLabel");
-        if (value != null) {
-            setDefaultEdgeLabel(value);
-        }
-        value = eacProps.getProperty(baseKey + ".defaultEdgeToolTip");
-        if (value != null) {
-            setDefaultEdgeToolTip(value);
-        }
-        value = eacProps.getProperty(baseKey + ".defaultEdgeFont");
-        if (value != null) {
-	    Font f = (new FontParser()).parseFont(value);
-            if (f != null) {
-		setDefaultEdgeFont(f);
-	    }
-        }
-        
-        //look for calculators
-        value = eacProps.getProperty(baseKey + ".edgeColorCalculator");
-        if (value != null && !value.equals("null")) {
-            EdgeColorCalculator c = catalog.getEdgeColorCalculator(value);
-            if (c != null) {setEdgeColorCalculator(c);}
-        }
-        value = eacProps.getProperty(baseKey + ".edgeLineTypeCalculator");
-        if (value != null && !value.equals("null")) {
-            EdgeLineTypeCalculator c = catalog.getEdgeLineTypeCalculator(value);
-            if (c != null) {setEdgeLineTypeCalculator(c);}
-        }
-        value = eacProps.getProperty(baseKey + ".edgeSourceArrowCalculator");
-        if (value != null && !value.equals("null")) {
-            EdgeArrowCalculator c = catalog.getEdgeArrowCalculator(value);
-            if (c != null) {setEdgeSourceArrowCalculator(c);}
-        }
-        value = eacProps.getProperty(baseKey + ".edgeTargetArrowCalculator");
-        if (value != null && !value.equals("null")) {
-            EdgeArrowCalculator c = catalog.getEdgeArrowCalculator(value);
-            if (c != null) {setEdgeTargetArrowCalculator(c);}
-        }
-        value = eacProps.getProperty(baseKey + ".edgeLabelCalculator");
-        if (value != null && !value.equals("null")) {
-            EdgeLabelCalculator c = catalog.getEdgeLabelCalculator(value);
-            if (c != null) {setEdgeLabelCalculator(c);}
-        }
-        value = eacProps.getProperty(baseKey + ".edgeToolTipCalculator");
-        if (value != null && !value.equals("null")) {
-            EdgeToolTipCalculator c = catalog.getEdgeToolTipCalculator(value);
-            if (c != null) {setEdgeToolTipCalculator(c);}
-        }
-        value = eacProps.getProperty(baseKey + ".edgeFontFaceCalculator");
-        if (value != null && !value.equals("null")) {
-            EdgeFontFaceCalculator c = catalog.getEdgeFontFaceCalculator(value);
-            if (c != null) {setEdgeFontFaceCalculator(c);}
-        }
-	value = eacProps.getProperty(baseKey + ".edgeFontSizeCalculator");
-	if (value != null && !value.equals("null")) {
-	    EdgeFontSizeCalculator c = catalog.getEdgeFontSizeCalculator(value);
-	    if (c != null) {setEdgeFontSizeCalculator(c);}
-	}
+	applyProperties(defaultAppearance,name,eacProps,baseKey,catalog);
+
     }
     
     public Properties getProperties(String baseKey) {
-        String key = null;
-        String value = null;
-        Properties newProps = new Properties();
-        
-        //save default values
-        key = baseKey + ".defaultEdgeColor";
-        value = ObjectToString.getStringValue( getDefaultEdgeColor() );
-        newProps.setProperty(key, value);
-        key = baseKey + ".defaultEdgeLineType";
-        value = ObjectToString.getStringValue( getDefaultEdgeLineType() );
-        newProps.setProperty(key, value);
-        key = baseKey + ".defaultEdgeSourceArrow";
-        value = ObjectToString.getStringValue( getDefaultEdgeSourceArrow() );
-        newProps.setProperty(key, value);
-        key = baseKey + ".defaultEdgeTargetArrow";
-        value = ObjectToString.getStringValue( getDefaultEdgeTargetArrow() );
-        newProps.setProperty(key, value);
-        key = baseKey + ".defaultEdgeLabel";
-        value = ObjectToString.getStringValue( getDefaultEdgeLabel() );
-        newProps.setProperty(key, value);
-        key = baseKey + ".defaultEdgeToolTip";
-        value = ObjectToString.getStringValue( getDefaultEdgeToolTip() );
-        newProps.setProperty(key, value);
-        key = baseKey + ".defaultEdgeFont";
-        value = ObjectToString.getStringValue( getDefaultEdgeFont() );
-        newProps.setProperty(key, value);
-        
-        //save an entry for all calculators, including null values
-        Calculator c = null;
-        key = baseKey + ".edgeColorCalculator";
-        c = getEdgeColorCalculator();
-        value = (c == null) ? "null" : c.toString();
-        newProps.setProperty(key, value);
-        key = baseKey + ".edgeLineTypeCalculator";
-        c = getEdgeLineTypeCalculator();
-        value = (c == null) ? "null" : c.toString();
-        newProps.setProperty(key, value);
-        key = baseKey + ".edgeSourceArrowCalculator";
-        c = getEdgeSourceArrowCalculator();
-        value = (c == null) ? "null" : c.toString();
-        newProps.setProperty(key, value);
-        key = baseKey + ".edgeTargetArrowCalculator";
-        c = getEdgeTargetArrowCalculator();
-        value = (c == null) ? "null" : c.toString();
-        newProps.setProperty(key, value);
-        key = baseKey + ".edgeLabelCalculator";
-        c = getEdgeLabelCalculator();
-        value = (c == null) ? "null" : c.toString();
-        newProps.setProperty(key, value);
-        key = baseKey + ".edgeToolTipCalculator";
-        c = getEdgeToolTipCalculator();
-        value = (c == null) ? "null" : c.toString();
-        newProps.setProperty(key, value);
-        key = baseKey + ".edgeFontFaceCalculator";
-        c = getEdgeFontFaceCalculator();
-        value = (c == null) ? "null" : c.toString();
-        newProps.setProperty(key, value);
-        key = baseKey + ".edgeFontSizeCalculator";
-        c = getEdgeFontSizeCalculator();
-        value = (c == null) ? "null" : c.toString();
-        newProps.setProperty(key, value);
-        
-        return newProps;
+    	return getProperties(defaultAppearance,baseKey);
     }
+
+    protected void copyDefaultAppearance(AppearanceCalculator toCopy) {
+        defaultAppearance = (EdgeAppearance)(((EdgeAppearanceCalculator)toCopy).getDefaultAppearance().clone());
+    }
+  protected boolean isValidCalculator(Calculator c) {
+          if ( c instanceof EdgeCalculator )
+                  return true;
+          else
+                  return false;
+  }
+
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeColorCalculator getEdgeColorCalculator() {
+    	return (EdgeColorCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeLineTypeCalculator getEdgeLineTypeCalculator() {
+    	return (EdgeLineTypeCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeArrowCalculator getEdgeSourceArrowCalculator() {
+    	return (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeArrowCalculator getEdgeTargetArrowCalculator() {
+    	return (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeLabelCalculator getEdgeLabelCalculator() {
+    	return (EdgeLabelCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeFontFaceCalculator getEdgeFontFaceCalculator() {
+    	return (EdgeFontFaceCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeFontSizeCalculator getEdgeFontSizeCalculator() {
+    	return (EdgeFontSizeCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+    /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
+    public EdgeToolTipCalculator getEdgeToolTipCalculator() {
+    	return (EdgeToolTipCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    }
+
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeColor(Color c) { defaultAppearance.setColor(c); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeLineType(LineType lt) { defaultAppearance.setLineType(lt); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeSourceArrow(Arrow a) { defaultAppearance.setSourceArrow(a); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeTargetArrow(Arrow a) { defaultAppearance.setTargetArrow(a); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeLabel(String s) { defaultAppearance.setLabel(s); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeFont(Font f) { defaultAppearance.setFont(f); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeFontFace(Font f) { defaultAppearance.setFont(f); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeFontSize(float f) { defaultAppearance.setFontSize(f); }
+    /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public void setDefaultEdgeToolTip(String s) { defaultAppearance.setToolTip(s); }
+
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Color getDefaultEdgeColor() {return defaultAppearance.getColor();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public LineType getDefaultEdgeLineType() {return defaultAppearance.getLineType();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Arrow getDefaultEdgeSourceArrow() {return defaultAppearance.getSourceArrow();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Arrow getDefaultEdgeTargetArrow() {return defaultAppearance.getTargetArrow();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public String getDefaultEdgeLabel() {return defaultAppearance.getLabel();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Font getDefaultEdgeFont() {return defaultAppearance.getFont();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public Font getDefaultEdgeFontFace() {return defaultAppearance.getFont();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public float getDefaultEdgeFontSize() {return defaultAppearance.getFontSize();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+    public String getDefaultEdgeToolTip() {return defaultAppearance.getToolTip();}
+    /** @deprecated Use getDefaultAppearance() instead. This method will be removed Sept. 2007. */
+
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public Color calculateEdgeColor(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getColor();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public LineType calculateEdgeLineType(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getLineType();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public Arrow calculateEdgeSourceArrow(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getSourceArrow();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public Arrow calculateEdgeTargetArrow(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getTargetArrow();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public String calculateEdgeLabel(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getLabel();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public Font calculateEdgeFont(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getFont();
+    }
+    /** @deprecated Use calculateEdgeAppearance() instead. This method will be removed Sept. 2007. */
+    public String calculateEdgeToolTip(Edge edge, CyNetwork network) {
+	doCalc(edge,network);
+	return currentAppearance.getToolTip();
+    }
+
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeColorCalculator(EdgeColorCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeLineTypeCalculator(EdgeLineTypeCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeSourceArrowCalculator(EdgeArrowCalculator c) {
+    	c.set(VizMapUI.EDGE_SRCARROW,"edgeSourceArrowCalculator","Edge Source Arrow");
+    	setCalculator(c);
+    }
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeTargetArrowCalculator(EdgeArrowCalculator c) {
+    	c.set(VizMapUI.EDGE_TGTARROW,"edgeSourceTargetCalculator","Edge Target Arrow");
+    	setCalculator(c);
+    }
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeLabelCalculator(EdgeLabelCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeFontFaceCalculator(EdgeFontFaceCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeFontSizeCalculator(EdgeFontSizeCalculator c) {setCalculator(c);}
+    /** @deprecated Use setCalculator(calc) instead. This method will be removed Sept. 2007. */
+    public void setEdgeToolTipCalculator(EdgeToolTipCalculator c) {setCalculator(c);}
+
+  /** Used _ONLY_ to support deprecated code - DO NOT USE for anything else!!!! */
+  private void doCalc(Edge edge, CyNetwork network) {
+        if ( edge != currentEdge && network != currentNetwork )
+                calculateEdgeAppearance(edge,network);
+  }
+
 }
 

@@ -45,7 +45,9 @@ package cytoscape.visual.calculators;
 //--------------------------------------------------------------------------
 import cytoscape.CyNetwork;
 import giny.model.Edge;
-//--------------------------------------------------------------------------
+
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface EdgeFontSizeCalculator extends Calculator {
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */
     public float calculateEdgeFontSize(Edge edge, CyNetwork network);
 }

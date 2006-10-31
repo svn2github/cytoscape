@@ -46,7 +46,9 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 import java.awt.Font;
 import giny.model.Edge;
-//--------------------------------------------------------------------------
+
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface EdgeFontFaceCalculator extends Calculator {
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */
     public Font calculateEdgeFontFace(Edge edge, CyNetwork network);
 }

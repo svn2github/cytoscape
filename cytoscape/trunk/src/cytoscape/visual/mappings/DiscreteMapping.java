@@ -51,11 +51,19 @@ import cytoscape.visual.mappings.discrete.DiscreteMappingWriter;
 import cytoscape.visual.mappings.discrete.DiscreteRangeCalculator;
 import cytoscape.visual.mappings.discrete.DiscreteUI;
 import cytoscape.visual.mappings.discrete.DiscreteMappingReader;
+import cytoscape.visual.mappings.discrete.DiscreteLegend;
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.ui.*;
+import cytoscape.visual.*;
 
 import javax.swing.*;
+import javax.swing.table.*;
 import javax.swing.event.ChangeListener;
 import java.util.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Component;
 
 /**
  * Implements a lookup table mapping data to values of a particular class.
@@ -262,8 +270,16 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
      * @return JPanel Object.
      */
     public JPanel getUI(JDialog parent, CyNetwork network) {
-        DiscreteUI ui = new DiscreteUI (parent, network ,attrName, defaultObj,
-                mapType, this);
+        DiscreteUI ui = new DiscreteUI (parent, network ,attrName, defaultObj, mapType, this);
         return ui;
+    }
+
+    /**
+     * Returns a JPanel containing a legend for this mapping.
+     * @param visualAttr The name of the visual attribute using this mapping.
+     * @return JPanel Object.
+     */
+    public JPanel getLegend(String visualAttr, byte b) {
+    	return new DiscreteLegend(treeMap, visualAttr, attrName, b);
     }
 }

@@ -36,12 +36,6 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// VizMapAttrTab.java
-//--------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------
 package cytoscape.visual.ui;
 
 import javax.swing.*;
@@ -131,8 +125,8 @@ public class VizMapAttrTab extends VizMapTab {
     super(new BorderLayout(), false);
 
     // set the name of this component appropriately
-    setName(getTypeName(type));
-    
+    setName(CalculatorFactory.getTypeName(type));
+
     this.VMM = VMM;
     this.mainUIDialog = mainUI;
     this.catalog = VMM.getCalculatorCatalog();
@@ -175,8 +169,7 @@ public class VizMapAttrTab extends VizMapTab {
     public void stateChanged(ChangeEvent e) {
 	    JTabbedPane source = (JTabbedPane) e.getSource();
 	    if (source.getModel().getSelectedIndex() == tabIndex) {
-	    	//System.out.println("Tab click event was received, it is from " + getTypeName(type));	    	
-	    	refreshUI();
+        refreshUI();
       }
     }
   }
@@ -187,28 +180,23 @@ public class VizMapAttrTab extends VizMapTab {
   public void visualStyleChanged() {
     // get current defaults
     Object defaultObj = VizUIUtilities.getDefault(VMM.getVisualStyle(), this.type);
-    setCurrentCalculator(
-                         VizUIUtilities.getCurrentCalculator(VMM.getVisualStyle(), this.type) );
+    setCurrentCalculator( VizUIUtilities.getCurrentCalculator(VMM.getVisualStyle(), this.type) );
 
     if (defaultValueDisplayer == null) { // haven't initialized yet
-	    drawDefault(defaultObj);
-	    drawCalc();
-      refreshUI();
-    }
-    else {
+      drawDefault(defaultObj);
+      drawCalc();
+    } else {
       defaultValueDisplayer.setObject(defaultObj);
-	    refreshUI();
     }
+    refreshUI();
   }
 
-  
   /**
    * Refreshes the panel that displays the UI for the currently selected calculator.
    * This method replaces the current panel with the panel provided by the current
    * calculator, or nothing if there is no currently selected calculator.
    */
   public void refreshUI() {
-	//System.out.println("VizmapAttrTab.refreshUI(): "+getTypeName(type));
     if (this.calcPanel != null) {
 	    this.calcContainer.remove(this.calcPanel);
     }
@@ -218,12 +206,8 @@ public class VizMapAttrTab extends VizMapTab {
     } else {
 	    this.calcPanel = null;
     }    
-
     validate();
-    repaint();  
-    
-    mainUIDialog.pack();
-
+    repaint();
   }
 
   /**
@@ -331,11 +315,8 @@ public class VizMapAttrTab extends VizMapTab {
 	    // prevent bugs, could be removed later
 	    if (e.getItemSelectable() == defaultValueDisplayer &&
           e.getStateChange() == ItemEvent.SELECTED) {
-        //_setDefault(defaultValueDisplayer.getValue());
         Object newDefault = defaultValueDisplayer.getValue();
         VizUIUtilities.setDefault(VMM.getVisualStyle(), type, newDefault);
-        // Commented out to prevent auto-updates
-        // VMM.getNetworkView().redrawGraph(false, true);
 	    }
     }
   }
@@ -352,8 +333,11 @@ public class VizMapAttrTab extends VizMapTab {
        method that returns the name, so calculators can be passed to the
        JComboBox.
     */
-    Collection calculators = getCalculators(this.type);
-    Vector comboCalcs = new Vector(calculators);
+    Collection calculators = catalog.getCalculators(this.type);
+    Vector comboCalcs = new Vector();
+    if ( calculators != null )
+    	comboCalcs.addAll(calculators);
+
 
     //it's possible the current calculator isn't in the catalog; if so,
     //add it to the combo box
@@ -386,14 +370,11 @@ public class VizMapAttrTab extends VizMapTab {
   private class CalcComboSelectionListener implements ItemListener {
     public void itemStateChanged(ItemEvent e) {
 	    if (e.getStateChange() == ItemEvent.SELECTED) {
-	    	if (calcComboBox.getSelectedIndex() == 0) // "None" selected, use null
-        {        	
+        if (calcComboBox.getSelectedIndex() == 0) // "None" selected, use null
           switchCalculator(null);
-        }
         else {
-        	Object selected = calcComboBox.getSelectedItem();
-            switchCalculator((Calculator) selected);      	
-      	    refreshUI();
+          Object selected = calcComboBox.getSelectedItem();
+          switchCalculator((Calculator) selected);
         }
 	    }
     }
@@ -409,7 +390,7 @@ public class VizMapAttrTab extends VizMapTab {
   void switchCalculator(Calculator calc) {
     //do nothing if the new calculator is the same as the current one
     if (calc != null && calc.equals(this.currentCalculator)) {return;}
-    
+
     setCurrentCalculator(calc); //handles listeners
 
     // tell the respective appearance calculators
@@ -490,10 +471,6 @@ public class VizMapAttrTab extends VizMapTab {
 	    // convert to array for JOptionPane
 	    Object[] mapperArray = mapperNames.toArray();
 
-//	    for(int i = 0; i<mapperArray.length; i++) {
-//	    	System.out.println("Map: " + i + " " +  mapperArray[i].toString());
-//	    }
-	    
 	    // show JOptionPane with the available mappers
 	    String selectedMapper = (String) JOptionPane.showInputDialog(mainUIDialog,
                                                                    "Choose a mapper",
@@ -559,56 +536,8 @@ public class VizMapAttrTab extends VizMapTab {
                                       JOptionPane.ERROR_MESSAGE);
 	    }
 	    // create and add a generic calculator based on this tab's type
-	    Calculator calc = null;
-	    if (type == VizMapUI.NODE_COLOR || type == VizMapUI.NODE_BORDER_COLOR) {
-        calc = new GenericNodeColorCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_LINETYPE) {
-        calc = new GenericNodeLineTypeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_SHAPE) {
-        calc = new GenericNodeShapeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_HEIGHT || type == VizMapUI.NODE_WIDTH
-               || type == VizMapUI.NODE_SIZE) {
-        calc = new GenericNodeSizeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_LABEL) {
-        calc = new GenericNodeLabelCalculator(calcName, mapper);
-	    }
-            else if (type == VizMapUI.NODE_LABEL_COLOR) {
-        calc = new GenericNodeLabelColorCalculator(calcName, mapper);
-            }
-	    else if (type == VizMapUI.NODE_TOOLTIP) {
-        calc = new GenericNodeToolTipCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_COLOR) {
-        calc = new GenericEdgeColorCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_LINETYPE) {
-        calc = new GenericEdgeLineTypeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_SRCARROW || type == VizMapUI.EDGE_TGTARROW) {
-        calc = new GenericEdgeArrowCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_LABEL) {
-        calc = new GenericEdgeLabelCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_TOOLTIP) {
-        calc = new GenericEdgeToolTipCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_FONT_FACE) {
-        calc = new GenericEdgeFontFaceCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.EDGE_FONT_SIZE) {
-        calc = new GenericEdgeFontSizeCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_FONT_FACE) {
-        calc = new GenericNodeFontFaceCalculator(calcName, mapper);
-	    }
-	    else if (type == VizMapUI.NODE_FONT_SIZE) {
-        calc = new GenericNodeFontSizeCalculator(calcName, mapper);
-	    }
+	    Calculator calc = CalculatorFactory.newDefaultCalculator(type,calcName,mapper);
+	    
 	    // set current calculator to the new calculator
 	    switchCalculator(calc);  //handles listeners
 	    // notify the catalog - this triggers events that refresh the UI
@@ -782,103 +711,6 @@ public class VizMapAttrTab extends VizMapTab {
     }
     else {
 	    this.calcComboBox.setSelectedItem(c);
-    }
-  }
-
-
-
-  private Collection getCalculators(byte type) {
-    switch(type) {
-    case VizMapUI.NODE_COLOR:
-	    return catalog.getNodeColorCalculators();
-    case VizMapUI.NODE_BORDER_COLOR:
-	    return catalog.getNodeColorCalculators();
-    case VizMapUI.NODE_LINETYPE:
-	    return catalog.getNodeLineTypeCalculators();
-    case VizMapUI.NODE_SHAPE:
-	    return catalog.getNodeShapeCalculators();
-    case VizMapUI.NODE_SIZE:
-    case VizMapUI.NODE_HEIGHT:
-    case VizMapUI.NODE_WIDTH:
-	    return catalog.getNodeSizeCalculators();
-    case VizMapUI.NODE_LABEL:
-	    return catalog.getNodeLabelCalculators();
-    case VizMapUI.NODE_LABEL_COLOR:
-            return catalog.getNodeLabelColorCalculators();
-    case VizMapUI.NODE_TOOLTIP:
-	    return catalog.getNodeToolTipCalculators();
-    case VizMapUI.EDGE_COLOR:
-	    return catalog.getEdgeColorCalculators();
-    case VizMapUI.EDGE_LINETYPE:
-	    return catalog.getEdgeLineTypeCalculators();
-    case VizMapUI.EDGE_SRCARROW:
-	    return catalog.getEdgeArrowCalculators();
-    case VizMapUI.EDGE_TGTARROW:
-	    return catalog.getEdgeArrowCalculators();
-    case VizMapUI.EDGE_LABEL:
-	    return catalog.getEdgeLabelCalculators();
-    case VizMapUI.EDGE_TOOLTIP:
-	    return catalog.getEdgeToolTipCalculators();
-    case VizMapUI.EDGE_FONT_FACE:
-	    return catalog.getEdgeFontFaceCalculators();
-    case VizMapUI.EDGE_FONT_SIZE:
-	    return catalog.getEdgeFontSizeCalculators();
-    case VizMapUI.NODE_FONT_FACE:
-	    return catalog.getNodeFontFaceCalculators();
-    case VizMapUI.NODE_FONT_SIZE:
-	    return catalog.getNodeFontSizeCalculators();
-    default:
-	    System.err.println("WARNING: Couldn't find match for type " + type);
-	    return null;
-    }
-  }
-
-  protected static String getTypeName(byte type) {
-    switch (type) {
-    case VizMapUI.NODE_COLOR:
-	    return "Node Color";
-    case VizMapUI.NODE_BORDER_COLOR:
-	    return "Node Border Color";
-    case VizMapUI.NODE_LINETYPE:
-	    return "Node Border Type";
-    case VizMapUI.NODE_SHAPE:
-	    return "Node Shape";
-    case VizMapUI.NODE_WIDTH:
-	    return "Node Width";
-    case VizMapUI.NODE_HEIGHT:
-	    return "Node Height";
-    case VizMapUI.NODE_SIZE:
-	    return "Node Size";
-    case VizMapUI.NODE_LABEL:
-	    return "Node Label";
-    case VizMapUI.NODE_TOOLTIP:
-	    return "Node Tooltip";
-    case VizMapUI.EDGE_COLOR:
-	    return "Edge Color";
-    case VizMapUI.EDGE_LINETYPE:
-	    return "Edge Line Type";
-    case VizMapUI.EDGE_SRCARROW:
-	    return "Edge Source Arrow";
-    case VizMapUI.EDGE_TGTARROW:
-	    return "Edge Target Arrow";
-    case VizMapUI.EDGE_LABEL:
-	    return "Edge Label";
-    case VizMapUI.EDGE_TOOLTIP:
-	    return "Edge Tooltip";
-    case VizMapUI.EDGE_FONT_FACE:
-	    return "Edge Font Face";
-    case VizMapUI.EDGE_FONT_SIZE:
-	    return "Edge Font Size";
-    case VizMapUI.NODE_FONT_FACE:
-	    return "Node Font Face";
-    case VizMapUI.NODE_FONT_SIZE:
-	    return "Node Font Size";	    
-    case VizMapUI.NODE_LABEL_FONT:
-	    return "Node Font Size";
-    case VizMapUI.NODE_LABEL_COLOR:
-            return "Node Label Color";
-    default:
-	    return null;
     }
   }
 }

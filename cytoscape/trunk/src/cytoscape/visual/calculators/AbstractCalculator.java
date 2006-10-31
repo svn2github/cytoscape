@@ -57,12 +57,18 @@ import cytoscape.dialogs.MiscGB;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.CyNetwork;
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.NodeAppearance;
+import giny.model.Edge;
+import giny.model.Node;
+import giny.model.GraphObject;
 //------------------------------------------------------------------------------
 /**
  * AbstractCalculator is the top of the tree for the Calculator classes. <b>DO NOT</b>
  * extend this class directly! All calculators should extend one of {@link NodeCalculator}
  * or {@link EdgeCalculator} <b>AND</b> implement one of the 11 attribute calculator
  * interfaces.
+ * TODOOOO this shouldn't be public
  */
 public abstract class AbstractCalculator implements Calculator {
 
@@ -108,10 +114,22 @@ public abstract class AbstractCalculator implements Calculator {
      * @param	m	Object mapping for this calculator, or null
      * @param	name	Name of this calculator
      */
-    public AbstractCalculator(String name, ObjectMapping m) {
+    public AbstractCalculator(String name, ObjectMapping m, Class c) {
 	this.name = name;
 	this.addMapping(m);
+	
+	if (!c.isAssignableFrom(m.getRangeClass()) ) 
+                throw new ClassCastException( "Invalid Calculator: Expected class " + c.toString()
+	                                      + ", got " + m.getRangeClass().toString());
     }
+
+    /**
+     * A dummy constructor used only to access type information within the
+     * the CalculatorFactory. 
+     */
+    AbstractCalculator() {
+    }
+
 
     /**
      * Add a mapping to the mappings contained by the calculator.
@@ -226,10 +244,12 @@ public abstract class AbstractCalculator implements Calculator {
      * getProperties method of MappingFactory with the ObjectMapping
      * and the augmented base key.
      */ 
-    public Properties getProperties(String baseKey) {
-        String mapBaseKey = baseKey + ".mapping";
+    public Properties getProperties() {
+        String mapBaseKey = getPropertyLabel() + "." + toString() + ".mapping";
         ObjectMapping m = getMapping(0);
-        return MappingFactory.getProperties(m, mapBaseKey);
+	Properties props = MappingFactory.getProperties(m, mapBaseKey);
+	props.put( getPropertyLabel() + "." + toString() + ".class", this.getClass().getName() );
+	return props;
     }
 
     /**
@@ -244,7 +264,7 @@ public abstract class AbstractCalculator implements Calculator {
      *		    calculator.
      */
     void updateAttribute(String attrName, CyNetwork network, ObjectMapping m)
-    throws IllegalArgumentException {
+    	throws IllegalArgumentException {
 	int mapIndex = this.mappings.indexOf(m);
 	if (mapIndex == -1) {
 	    throw new IllegalArgumentException(m.getClass().getName() + " " + m.toString() +
@@ -266,7 +286,7 @@ public abstract class AbstractCalculator implements Calculator {
      *		    is out of bounds.
      */
     void updateAttribute(String attrName, CyNetwork network, int mIndex)
-    throws ArrayIndexOutOfBoundsException {
+    	throws ArrayIndexOutOfBoundsException {
 	ObjectMapping m = (ObjectMapping) this.mappings.get(mIndex);
 	m.setControllingAttributeName(attrName, network, false);
 	//  fireStateChanged();
@@ -468,4 +488,21 @@ public abstract class AbstractCalculator implements Calculator {
     protected Map getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
     	return CyAttributesUtils.getAttributes(canonicalName, cyAttrs);
     }
+
+    abstract protected Map getAttrBundle(String canonicalName);
+
+    public void apply(EdgeAppearance appr, Edge e, CyNetwork net){}; 
+
+    public void apply(NodeAppearance appr, Node n, CyNetwork net){}; 
+   
+    protected Object getRangeValue(GraphObject obj) {
+    	if ( obj == null )
+		return null;
+	String canonicalName = obj.getIdentifier();
+	Map attrBundle = getAttrBundle(canonicalName);
+	attrBundle.put(AbstractCalculator.ID, obj.getIdentifier());
+	return getMapping(0).calculateRangeValue(attrBundle);
+    }
+
+    abstract public String getTypeName();
 }

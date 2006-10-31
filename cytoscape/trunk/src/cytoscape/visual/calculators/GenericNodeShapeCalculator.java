@@ -53,42 +53,53 @@ import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.NodeShapeParser;
-//----------------------------------------------------------------------------
-public class GenericNodeShapeCalculator extends NodeCalculator implements NodeShapeCalculator {
-    
-    public GenericNodeShapeCalculator(String name, ObjectMapping m) {
-	super(name, m);
 
-        byte b = 0;
-        Byte bObject = new Byte(b);
-        Class c = bObject.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
+//----------------------------------------------------------------------------
+public class GenericNodeShapeCalculator extends NodeCalculator 
+    implements NodeShapeCalculator {
+
+    public byte getType() {
+        return VizMapUI.NODE_SHAPE;
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public String getPropertyLabel() {
+        return "nodeShapeCalculator";
+    }
+
+    public String getTypeName() {
+        return "Node Shape";
+    }
+
+    GenericNodeShapeCalculator() {
+	super();
+    }
+
+    public GenericNodeShapeCalculator(String name, ObjectMapping m) {
+	super(name, m, Byte.class);
+    }
+
     public GenericNodeShapeCalculator(String name, Properties props, String baseKey) {
-        super(name, props, baseKey, new NodeShapeParser(),
-              new Byte(ShapeNodeRealizer.RECT));
+        super(name, props, baseKey, new NodeShapeParser(), new Byte(ShapeNodeRealizer.RECT));
     }
     
-    /**  It is hoped that the -1 value of a byte will not conflict
-     *   with any of the values used by ShapeNodeRealizer.
-     */
-    public byte calculateNodeShape(Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
-		if(rangeValue!=null)
-			return ((Byte)super.getMapping(0).calculateRangeValue(attrBundle)).byteValue();
-		else
-			return (byte)(-1);
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+	Object rangeValue = getRangeValue(node); 
+
+	// default has already been set - no need to do anything
+	if(rangeValue==null)
+		return;
+
+	appr.setShape( ((Byte)rangeValue).byteValue()) ;
     }
+
+    public byte calculateNodeShape(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getShape();
+    }
+
+
 }
 

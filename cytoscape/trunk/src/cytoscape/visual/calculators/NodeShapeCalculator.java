@@ -49,9 +49,10 @@ import javax.swing.JPanel;
 import giny.model.Node;
 
 import cytoscape.CyNetwork;
-//----------------------------------------------------------------------------
+
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface NodeShapeCalculator extends Calculator {
-    
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */    
     byte calculateNodeShape(Node node, CyNetwork network);
 }
 

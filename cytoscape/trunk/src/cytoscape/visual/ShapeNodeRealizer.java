@@ -99,17 +99,17 @@ public class ShapeNodeRealizer {
     }
     
     public static String getNodeShapeText(byte shape) {
-        if(shape == RECT){return "rect";}
-        if(shape == ROUND_RECT){return "roundrect";}
-        if(shape == RECT_3D){return "rect3d";}
-        if(shape == TRAPEZOID){return "trapezoid";}
-        if(shape == TRAPEZOID_2){return "trapezoid2";}
-        if(shape == TRIANGLE){return "triangle";}
-        if(shape == PARALLELOGRAM){return "parallelogram";}
-        if(shape == DIAMOND){return "diamond";}
-        if(shape == ELLIPSE){return "ellipse";}
-        if(shape == HEXAGON){return "hexagon";}
-        if(shape == OCTAGON){return "octagon";}
+        if(shape == RECT) return "rect";
+        if(shape == ROUND_RECT) return "roundrect";
+        if(shape == RECT_3D) return "rect3d";
+        if(shape == TRAPEZOID) return "trapezoid";
+        if(shape == TRAPEZOID_2) return "trapezoid2";
+        if(shape == TRIANGLE) return "triangle";
+        if(shape == PARALLELOGRAM) return "parallelogram";
+        if(shape == DIAMOND) return "diamond";
+        if(shape == ELLIPSE) return "ellipse";
+        if(shape == HEXAGON) return "hexagon";
+        if(shape == OCTAGON) return "octagon";
         
         return "rect";
     }
@@ -133,5 +133,21 @@ public class ShapeNodeRealizer {
             return NodeView.RECTANGLE;
         }
     }
+
+  public boolean isValidShape(byte shape) {
+    if(shape == RECT) return true;
+    if(shape == ROUND_RECT) return true;
+    if(shape == RECT_3D) return true;
+    if(shape == TRAPEZOID) return true;
+    if(shape == TRAPEZOID_2) return true;
+    if(shape == TRIANGLE) return true;
+    if(shape == PARALLELOGRAM) return true;
+    if(shape == DIAMOND) return true;
+    if(shape == ELLIPSE) return true;
+    if(shape == HEXAGON) return true;
+    if(shape == OCTAGON) return true;
+
+    return false;
+  }
 }
 

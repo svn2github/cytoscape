@@ -46,40 +46,50 @@ import java.awt.Color;
 import java.util.Map;
 import java.util.Properties;
 
-public class GenericNodeLabelColorCalculator
-  extends NodeCalculator
-  implements NodeLabelColorCalculator
-{
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
 
-  public GenericNodeLabelColorCalculator(String name, ObjectMapping m)
-  {
-    super(name, m);
-    Class c = Color.class;
-    if (!c.isAssignableFrom(m.getRangeClass()))
-    {
-      String s = "Invalid Calculator: Expected class " +
-        c.toString() + ", got " + m.getRangeClass().toString();
-      throw new ClassCastException(s);
-    }
-  }
+public class GenericNodeLabelColorCalculator extends NodeCalculator 
+        implements NodeLabelColorCalculator {
 
-  /**
-   * Constructor for dynamic creation via properties.
-   */
-  public GenericNodeLabelColorCalculator(String name,
-                                         Properties props,
-                                         String baseKey)
-  {
-    super(name, props, baseKey, new ColorParser(), Color.black);
-  }
+	public byte getType() {
+		return VizMapUI.NODE_LABEL_COLOR;
+	}
+
+	public String getPropertyLabel() {
+		return "nodeLabelColorCalculator";
+	}
+
+	public String getTypeName() {
+		return "Node Label Color";
+	}
+
+	GenericNodeLabelColorCalculator() {
+		super();
+	}
+
+	public GenericNodeLabelColorCalculator(String name, ObjectMapping m) {
+		super(name, m,Color.class);
+	}
+
+	public GenericNodeLabelColorCalculator(String name, Properties props, String baseKey) {
+		super(name, props, baseKey, new ColorParser(), Color.black);
+	}
  
-  public Color calculateNodeLabelColor(Node node, CyNetwork network)
-  {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		return (Color) super.getMapping(0).calculateRangeValue(attrBundle);
-  }
+	public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+		Color c = (Color) getRangeValue(node); 
+	
+		// default has already been set - no need to do anything
+		if ( c == null )
+			return;
+
+		appr.setLabelColor( c ); 
+	}
+
+    public Color calculateNodeLabelColor(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getLabelColor();
+    }
 
 }

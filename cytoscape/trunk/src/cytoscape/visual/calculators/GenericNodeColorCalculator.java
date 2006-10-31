@@ -36,50 +36,69 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
-//----------------------------------------------------------------------------
+
 import java.util.Map;
 import java.util.Properties;
-import java.awt.Color;
 import javax.swing.JPanel;
+import java.awt.Color;
 
 import giny.model.Node;
 
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.parsers.ColorParser;
-//----------------------------------------------------------------------------
-public class GenericNodeColorCalculator extends NodeCalculator implements NodeColorCalculator {
+import cytoscape.visual.parsers.DoubleParser;
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
+
+/** @deprecated Use NodeFillColor or NodeBorderColor instead.
+    will be removed 10/2007 */
+public class GenericNodeColorCalculator extends AbstractNodeColorCalculator 
+    implements NodeColorCalculator {
+
+    public byte getType() {
+	return colType; 
+    } 
+
+    public String getPropertyLabel() {
+        return propertyLabel; 
+    }
+
+    public String getTypeName() {
+        return typename; 
+    }
     
+    GenericNodeColorCalculator() {
+	super();
+    }
+   
     public GenericNodeColorCalculator(String name, ObjectMapping m) {
 	super(name, m);
-
-        Color color = new Color(0,0,0);
-        Class c = color.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+   
     public GenericNodeColorCalculator(String name, Properties props, String baseKey) {
-        super(name, props, baseKey, new ColorParser(), Color.WHITE);
+        super(name, props, baseKey);
     }
     
-    public Color calculateNodeColor(Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        return (Color)super.getMapping(0).calculateRangeValue(attrBundle);
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+    	if ( colType == VizMapUI.NODE_COLOR )
+		apply(appr,node,network,FILL);
+	else if  ( colType == VizMapUI.NODE_BORDER_COLOR )
+		apply(appr,node,network,BORDER);
+	else
+		System.err.println("don't know what kind of calculator this is!");
+    }
+
+    public Color calculateNodeColor(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+    	if ( colType == VizMapUI.NODE_COLOR )
+		return ea.getFillColor();	
+	else if  ( colType == VizMapUI.NODE_BORDER_COLOR )
+		return ea.getBorderColor();	
+	else
+		return Color.white;	
     }
 }
 

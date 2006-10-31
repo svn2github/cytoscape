@@ -1,39 +1,40 @@
+
 /*
- File: GenericEdgeArrowCalculator.java 
- 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
- 
- The Cytoscape Consortium is: 
- - Institute of Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
- 
- This library is free software; you can redistribute it and/or modify it
- under the terms of the GNU Lesser General Public License as published
- by the Free Software Foundation; either version 2.1 of the License, or
- any later version.
- 
- This library is distributed in the hope that it will be useful, but
- WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute 
- have no obligations to provide maintenance, support,
- updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute 
- be liable to any party for direct, indirect, special,
- incidental or consequential damages, including lost profits, arising
- out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute 
- have been advised of the possibility of such damage.  See
- the GNU Lesser General Public License for more details.
- 
- You should have received a copy of the GNU Lesser General Public License
- along with this library; if not, write to the Free Software Foundation,
- Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+  File: GenericEdgeArrowCalculator.java 
+  
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+  
+  The Cytoscape Consortium is: 
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
+  
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+  
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute 
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute 
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute 
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+  
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 
 //----------------------------------------------------------------------------
 // $Revision$
@@ -41,48 +42,69 @@
 // $Author$
 //----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
-
 //----------------------------------------------------------------------------
-import giny.model.Edge;
-
+import java.awt.Color;
 import java.util.Map;
 import java.util.Properties;
+import javax.swing.JPanel;
+
+import giny.model.Edge;
 
 import cytoscape.CyNetwork;
-import cytoscape.visual.Arrow;
 import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.parsers.ArrowParser;
+import cytoscape.visual.parsers.DoubleParser;
 
-//----------------------------------------------------------------------------
-public class GenericEdgeArrowCalculator extends EdgeCalculator implements
-		EdgeArrowCalculator {
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.ui.VizMapUI;
 
-	public GenericEdgeArrowCalculator(String name, ObjectMapping m) {
-		super(name, m);
+/** @deprecated Use EdgeSourceArrow or EdgeTargetArrow instead.
+    will be removed 10/2007 */
+public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator 
+    implements EdgeArrowCalculator {
 
-		Class c = null;
-		// c = Arrow.class; // this line won't obfuscate; the one below does.
-		c = Arrow.NONE.getClass();
-		if (!c.isAssignableFrom(m.getRangeClass())) {
-			String s = "Invalid Calculator: Expected class " + c.toString()
-					+ ", got " + m.getRangeClass().toString();
-			throw new ClassCastException(s);
-		}
-	}
+    public byte getType() {
+	return arrowType; 
+    } 
 
-	/**
-	 * Constructor for dynamic creation via properties.
-	 */
-	public GenericEdgeArrowCalculator(String name, Properties props,
-			String baseKey) {
-		super(name, props, baseKey, new ArrowParser(), Arrow.NONE);
-	}
+    public String getPropertyLabel() {
+        return propertyLabel; 
+    }
 
-	public Arrow calculateEdgeArrow(Edge edge, CyNetwork network) {
-		String canonicalName = edge.getIdentifier();
-		Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
-		return (Arrow) super.getMapping(0).calculateRangeValue(attrBundle);
-	}
+    public String getTypeName() {
+        return typename; 
+    }
+    
+    GenericEdgeArrowCalculator() {
+	super();
+    }
+   
+    public GenericEdgeArrowCalculator(String name, ObjectMapping m) {
+	super(name, m);
+    }
+   
+    public GenericEdgeArrowCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey);
+    }
+    
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
+    	if ( arrowType == VizMapUI.EDGE_SRCARROW )
+		apply(appr,edge,network,SOURCE);
+	else if  ( arrowType == VizMapUI.EDGE_TGTARROW )
+		apply(appr,edge,network,TARGET);
+	else
+		System.err.println("don't know what kind of calculator this is!");
+    }
+
+    public Arrow calculateEdgeArrow(Edge e, CyNetwork n) {
+        EdgeAppearance ea = new EdgeAppearance();
+        apply(ea,e,n);
+    	if ( arrowType == VizMapUI.EDGE_SRCARROW )
+		return ea.getSourceArrow();	
+	else if  ( arrowType == VizMapUI.EDGE_TGTARROW )
+		return ea.getTargetArrow();	
+	else
+		return null; 
+    }
 }
+

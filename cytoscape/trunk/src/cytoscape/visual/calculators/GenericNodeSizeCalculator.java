@@ -52,44 +52,61 @@ import giny.model.Node;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.DoubleParser;
-//----------------------------------------------------------------------------
-public class GenericNodeSizeCalculator extends NodeCalculator implements NodeSizeCalculator {
+
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
+
+/** @deprecated Use NodeWidth,NodeHeight, or NodeUniformSize instead. 
+    will be removed 10/2007 */
+public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator 
+    implements NodeSizeCalculator {
+
+    public byte getType() {
+	return sizeType; 
+    } 
+
+    public String getPropertyLabel() {
+        return propertyLabel; 
+    }
+
+    public String getTypeName() {
+        return typename; 
+    }
     
+    GenericNodeSizeCalculator() {
+	super();
+    }
+   
     public GenericNodeSizeCalculator(String name, ObjectMapping m) {
 	super(name, m);
-
-        Double d = new Double(0.0);
-        Class c = d.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+   
     public GenericNodeSizeCalculator(String name, Properties props, String baseKey) {
-        super(name, props, baseKey, new DoubleParser(), new Double(0));
+        super(name, props, baseKey);
     }
     
-    /** 
-     *  calculateNodeSize returns -1 if there is no mapping;
-     *  since a negative number has no meaning as a node size,
-     *  this is a case that the caller of calculateNodeSize
-     *  should expect to handle.  The usual caller is
-     *  NodeAppearanceCalculator.
-     */
-    public double calculateNodeSize(Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-		Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
-		if(rangeValue!=null)
-			return ((Number)rangeValue).doubleValue();
-		else
-			return -1;
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+    	if ( sizeType == VizMapUI.NODE_WIDTH )
+		apply(appr,node,network,WIDTH);
+	else if  ( sizeType == VizMapUI.NODE_HEIGHT )
+		apply(appr,node,network,HEIGHT);
+	else if  ( sizeType == VizMapUI.NODE_SIZE )
+		apply(appr,node,network,SIZE);
+	else
+		System.err.println("don't know what kind of calculator this is!");
+    }
+
+    public double calculateNodeSize(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+    	if ( sizeType == VizMapUI.NODE_WIDTH )
+		return ea.getWidth();	
+	else if  ( sizeType == VizMapUI.NODE_HEIGHT )
+		return ea.getHeight();	
+	else if  ( sizeType == VizMapUI.NODE_SIZE )
+		return ea.getSize();	
+	else
+		return -1;	
     }
 }
 

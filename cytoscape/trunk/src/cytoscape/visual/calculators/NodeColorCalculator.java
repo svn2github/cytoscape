@@ -50,9 +50,15 @@ import javax.swing.JPanel;
 import giny.model.Node;
 
 import cytoscape.CyNetwork;
-//----------------------------------------------------------------------------
+
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface NodeColorCalculator extends Calculator {
-    
+
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */    
     Color calculateNodeColor(Node node, CyNetwork network);
+    /** @deprecated DON'T USE. Only exists to support deprecated code.
+        Will be removed 10/2007 */
+    public void set( byte b, String p, String n);
+
 }
 

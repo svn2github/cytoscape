@@ -50,9 +50,13 @@ import giny.model.Edge;
 import cytoscape.visual.Arrow;
 
 import cytoscape.CyNetwork;
-//----------------------------------------------------------------------------
+
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface EdgeArrowCalculator extends Calculator {
-    
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */    
     public Arrow calculateEdgeArrow(Edge edge, CyNetwork network);
+    /** @deprecated DON'T USE. Only exists to support deprecated code.
+         Will be removed 10/2007 */
+    public void set( byte b, String p, String n);
 }
 

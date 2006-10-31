@@ -52,33 +52,52 @@ import giny.model.Node;
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.StringParser;
-//----------------------------------------------------------------------------
-public class GenericNodeToolTipCalculator extends NodeCalculator implements NodeToolTipCalculator {
-    
-    public GenericNodeToolTipCalculator(String name, ObjectMapping m) {
-	super(name, m);
 
-        String sc = new String();
-        Class c = sc.getClass();
-        if (!c.isAssignableFrom(m.getRangeClass()) ) {
-            String s = "Invalid Calculator: Expected class " + c.toString()
-                    + ", got " + m.getRangeClass().toString();
-            throw new ClassCastException(s);
-        }
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.ui.VizMapUI;
+//----------------------------------------------------------------------------
+public class GenericNodeToolTipCalculator extends NodeCalculator 
+    implements NodeToolTipCalculator {
+
+    public byte getType() {
+        return VizMapUI.NODE_TOOLTIP;
     }
-    /**
-     * Constructor for dynamic creation via properties.
-     */
+
+    public String getPropertyLabel() {
+        return "nodeToolTipCalculator";
+    }
+
+    public String getTypeName() {
+        return "Node Tooltip";
+    }
+    
+    GenericNodeToolTipCalculator() {
+	super();
+    }
+
+    public GenericNodeToolTipCalculator(String name, ObjectMapping m) {
+	super(name, m,String.class);
+    }
+
     public GenericNodeToolTipCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, new StringParser(), new String());
     }
     
-    public String calculateNodeToolTip(Node node, CyNetwork network) {
-        String canonicalName = node.getIdentifier();
-        Map attrBundle = getAttrBundle(canonicalName);
-		// add generic "ID" attribute
-		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
-        return (String)super.getMapping(0).calculateRangeValue(attrBundle);
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+	String tt = (String)getRangeValue(node);
+	
+	// default has already been set - no need to do anything
+	if ( tt == null )
+		return;
+
+        appr.setToolTip( tt ); 
     }
+
+    public String calculateNodeToolTip(Node e, CyNetwork n) {
+        NodeAppearance ea = new NodeAppearance();
+        apply(ea,e,n);
+        return ea.getToolTip();
+    }
+
 }
 

@@ -44,6 +44,7 @@
 package cytoscape.visual.mappings;
 //----------------------------------------------------------------------------
 import java.util.*;
+import java.awt.Color;
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
@@ -177,7 +178,7 @@ public class PassThroughMapping implements ObjectMapping {
         String contValue = props.getProperty(contKey);
         if (contValue != null) {setControllingAttributeName(contValue, null, false);}
     }
-    
+
     /**
      * Return a Properties object with entries suitable for customizing this
      * object via the applyProperties method.
@@ -190,5 +191,15 @@ public class PassThroughMapping implements ObjectMapping {
         	newProps.setProperty(contKey, contValue);
         return newProps;
     }
+
+    public JPanel getLegend(String visualAttr,byte b) {
+        JPanel p = new JPanel();
+	p.setBackground(Color.white);
+	p.setLayout(new BoxLayout(p,BoxLayout.Y_AXIS));
+        JLabel l = new JLabel(visualAttr + " is displayed as " + attrName);
+        p.add(l);
+        return p;
+    }
+
 }
 

@@ -46,7 +46,9 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 import java.awt.Font;
 import giny.model.Node;
-//--------------------------------------------------------------------------
+
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface NodeFontFaceCalculator extends Calculator {
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */
     public Font calculateNodeFontFace(Node node, CyNetwork network);
 }

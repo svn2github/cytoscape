@@ -71,6 +71,7 @@ import cytoscape.visual.calculators.*;
  * In addition to the attribute specific calculators, this class will create
  * a NodeAppearance and EdgeAppearanceCalculator, also named 'calcName', and
  * set them to use the attribute calculators defined here.
+ * @deprecated Use CalculatorIO instead. Will be removed 10/2007 
  */
 public class OldStyleCalculatorIO {
     
@@ -90,6 +91,7 @@ public class OldStyleCalculatorIO {
      *
      * @param props  a properties object, should come from cytoscape.props
      * @param catalog  the catalog in which to store any found visual mappings
+ * @deprecated Use CalculatorIO instead. Will be removed 10/2007 
      */
     public static void checkForCalculators(Properties props, CalculatorCatalog catalog) {
         boolean found = false;
@@ -243,6 +245,7 @@ public class OldStyleCalculatorIO {
      * specified in the old format by first converting the properties into the
      * new format and then running the converted properties through the
      * machinery of the CalculatorIO class.
+ * @deprecated Use CalculatorIO instead. Will be removed 10/2007 
      */
     public static void loadCalculators(Properties props, CalculatorCatalog catalog) {
         String colorInterpolator = "LinearNumberToColorInterpolator";
@@ -317,6 +320,7 @@ public class OldStyleCalculatorIO {
      * Helper method called with the keys specific to one of the visual
      * attributes. First converts those properties to the new format, then
      * loads the calculators into the catalog.
+ * @deprecated Use CalculatorIO instead. Will be removed 10/2007 
      */
     private static void loadCalculator(Properties props, CalculatorCatalog catalog,
                                        String oldBaseKey, String newBaseKey,

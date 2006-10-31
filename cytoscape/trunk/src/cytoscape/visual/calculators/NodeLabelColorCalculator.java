@@ -42,9 +42,10 @@ import cytoscape.CyNetwork;
 import giny.model.Node;
 import java.awt.Color;
 
+/** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface NodeLabelColorCalculator extends Calculator
 {
-
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */
   Color calculateNodeLabelColor(Node node, CyNetwork network);
 
 }

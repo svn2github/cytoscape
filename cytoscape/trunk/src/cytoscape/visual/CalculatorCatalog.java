@@ -59,40 +59,11 @@ import cytoscape.data.Semantics;
  */
 public class CalculatorCatalog {
 
-	Map nodeColorCalculators ;
-	List nodeColorListeners ;
-	Map nodeLineTypeCalculators ;
-	List nodeLineTypeListeners ;
-	Map nodeShapeCalculators ;
-	List nodeShapeListeners ;
-	Map nodeSizeCalculators ;
-	List nodeSizeListeners ;
-	Map nodeLabelCalculators ;
-	List nodeLabelListeners ;
-	Map nodeLabelColorCalculators ;
-	List nodeLabelColorListeners ;
-	Map nodeToolTipCalculators ;
-	List nodeToolTipListeners ;
-	Map nodeFontFaceCalculators ;
-	List nodeFontFaceListeners ;
-	Map nodeFontSizeCalculators ;
-	List nodeFontSizeListeners;
-	Map edgeColorCalculators ;
-	List edgeColorListeners ;
-	Map edgeLineTypeCalculators ;
-	List edgeLineTypeListeners ;
-	Map edgeArrowCalculators ;
-	List edgeArrowListeners ;
-	Map edgeLabelCalculators ;
-	List edgeLabelListeners ;
-	Map edgeToolTipCalculators ;
-	List edgeToolTipListeners ;
-	Map edgeFontFaceCalculators ;
-	List edgeFontFaceListeners ;
-	Map edgeFontSizeCalculators ;
-	List edgeFontSizeListeners ;
+	Map<Byte,Map<String,Calculator>> calculators;
+	Map<Byte,List> listeners;
+
 	Map visualStyles ;
-	// mapping database
+	
 	Map mappers; 
 
 	/**
@@ -113,53 +84,8 @@ public class CalculatorCatalog {
 	}
 
 	public void clear() {
-		nodeColorCalculators = new HashMap();
-		nodeColorListeners = new Vector(2, 1);
-
-		nodeLineTypeCalculators = new HashMap();
-		nodeLineTypeListeners = new Vector(1, 1);
-
-		nodeShapeCalculators = new HashMap();
-		nodeShapeListeners = new Vector(1, 1);
-
-		nodeSizeCalculators = new HashMap();
-		nodeSizeListeners = new Vector(2, 1);
-
-		nodeLabelCalculators = new HashMap();
-		nodeLabelListeners = new Vector(1, 1);
-
-		nodeLabelColorCalculators = new HashMap();
-		nodeLabelColorListeners = new Vector(1, 1);
-
-		nodeToolTipCalculators = new HashMap();
-		nodeToolTipListeners = new Vector(1, 1);
-
-		nodeFontFaceCalculators = new HashMap();
-		nodeFontFaceListeners = new Vector(1, 1);
-
-		nodeFontSizeCalculators = new HashMap();
-		nodeFontSizeListeners = new Vector(1, 1);
-
-		edgeColorCalculators = new HashMap();
-		edgeColorListeners = new Vector(1, 1);
-
-		edgeLineTypeCalculators = new HashMap();
-		edgeLineTypeListeners = new Vector(1, 1);
-
-		edgeArrowCalculators = new HashMap();
-		edgeArrowListeners = new Vector(2, 1);
-
-		edgeLabelCalculators = new HashMap();
-		edgeLabelListeners = new Vector(1, 1);
-
-		edgeToolTipCalculators = new HashMap();
-		edgeToolTipListeners = new Vector(1, 1);
-
-		edgeFontFaceCalculators = new HashMap();
-		edgeFontFaceListeners = new Vector(1, 1);
-
-		edgeFontSizeCalculators = new HashMap();
-		edgeFontSizeListeners = new Vector(1, 1);
+		calculators = new HashMap<Byte,Map<String,Calculator>>();
+		listeners = new HashMap<Byte,List>();
 
 		visualStyles = new HashMap();
 
@@ -179,46 +105,14 @@ public class CalculatorCatalog {
 	 *             if unknown type passed in
 	 */
 	protected List getListenerList(byte type) throws IllegalArgumentException {
-		switch (type) {
-		case VizMapUI.NODE_COLOR:
-		case VizMapUI.NODE_BORDER_COLOR:
-			return nodeColorListeners;
-		case VizMapUI.NODE_LINETYPE:
-			return nodeLineTypeListeners;
-		case VizMapUI.NODE_SHAPE:
-			return nodeShapeListeners;
-		case VizMapUI.NODE_HEIGHT:
-		case VizMapUI.NODE_WIDTH:
-		case VizMapUI.NODE_SIZE:
-			return nodeSizeListeners;
-		case VizMapUI.NODE_LABEL:
-			return nodeLabelListeners;
-		case VizMapUI.NODE_LABEL_COLOR:
-			return nodeLabelColorListeners;
-		case VizMapUI.NODE_TOOLTIP:
-			return nodeToolTipListeners;
-		case VizMapUI.NODE_FONT_FACE:
-			return nodeFontFaceListeners;
-		case VizMapUI.NODE_FONT_SIZE:
-			return nodeFontSizeListeners;
-		case VizMapUI.EDGE_COLOR:
-			return edgeColorListeners;
-		case VizMapUI.EDGE_LINETYPE:
-			return edgeLineTypeListeners;
-		case VizMapUI.EDGE_SRCARROW:
-		case VizMapUI.EDGE_TGTARROW:
-			return edgeArrowListeners;
-		case VizMapUI.EDGE_LABEL:
-			return edgeLabelListeners;
-		case VizMapUI.EDGE_TOOLTIP:
-			return edgeToolTipListeners;
-		case VizMapUI.EDGE_FONT_FACE:
-			return edgeFontFaceListeners;
-		case VizMapUI.EDGE_FONT_SIZE:
-			return edgeFontSizeListeners;
-		default:
-			throw new IllegalArgumentException("Unknown type " + type);
+		Byte b = new Byte(type);
+		List l = listeners.get( b );
+		if ( l == null ) {
+			l = new ArrayList();
+			listeners.put( b, l ); 
 		}
+		return l;
+
 	}
 
 	/**
@@ -284,41 +178,7 @@ public class CalculatorCatalog {
 	 * @return byte the byte identifier
 	 */
 	public byte getType(Calculator c) throws IllegalArgumentException {
-		if (c instanceof NodeColorCalculator) {
-			return VizMapUI.NODE_COLOR;
-		} else if (c instanceof NodeLineTypeCalculator) {
-			return VizMapUI.NODE_LINETYPE;
-		} else if (c instanceof NodeShapeCalculator) {
-			return VizMapUI.NODE_SHAPE;
-		} else if (c instanceof NodeSizeCalculator) {
-			return VizMapUI.NODE_SIZE;
-		} else if (c instanceof NodeLabelCalculator) {
-			return VizMapUI.NODE_LABEL;
-		} else if (c instanceof NodeLabelColorCalculator) {
-			return VizMapUI.NODE_LABEL_COLOR;
-		} else if (c instanceof NodeToolTipCalculator) {
-			return VizMapUI.NODE_TOOLTIP;
-		} else if (c instanceof NodeFontFaceCalculator) {
-			return VizMapUI.NODE_FONT_FACE;
-		} else if (c instanceof NodeFontSizeCalculator) {
-			return VizMapUI.NODE_FONT_SIZE;
-		} else if (c instanceof EdgeColorCalculator) {
-			return VizMapUI.EDGE_COLOR;
-		} else if (c instanceof EdgeLineTypeCalculator) {
-			return VizMapUI.EDGE_LINETYPE;
-		} else if (c instanceof EdgeArrowCalculator) {
-			return VizMapUI.EDGE_SRCARROW;
-		} else if (c instanceof EdgeLabelCalculator) {
-			return VizMapUI.EDGE_LABEL;
-		} else if (c instanceof EdgeToolTipCalculator) {
-			return VizMapUI.EDGE_TOOLTIP;
-		} else if (c instanceof EdgeFontFaceCalculator) {
-			return VizMapUI.EDGE_FONT_FACE;
-		} else if (c instanceof EdgeFontSizeCalculator) {
-			return VizMapUI.EDGE_FONT_SIZE;
-		} else {
-			throw new IllegalArgumentException("Unknown calculator type");
-		}
+		return c.getType();
 	}
 
 	/**
@@ -329,47 +189,14 @@ public class CalculatorCatalog {
 	 *            a known type identifier
 	 * @return Map the matching Map structure
 	 */
-	protected Map getCalculatorMap(byte type) {
-		switch (type) {
-		case VizMapUI.NODE_COLOR:
-		case VizMapUI.NODE_BORDER_COLOR:
-			return nodeColorCalculators;
-		case VizMapUI.NODE_LINETYPE:
-			return nodeLineTypeCalculators;
-		case VizMapUI.NODE_SHAPE:
-			return nodeShapeCalculators;
-		case VizMapUI.NODE_HEIGHT:
-		case VizMapUI.NODE_WIDTH:
-		case VizMapUI.NODE_SIZE:
-			return nodeSizeCalculators;
-		case VizMapUI.NODE_LABEL:
-			return nodeLabelCalculators;
-		case VizMapUI.NODE_LABEL_COLOR:
-			return nodeLabelColorCalculators;
-		case VizMapUI.NODE_TOOLTIP:
-			return nodeToolTipCalculators;
-		case VizMapUI.NODE_FONT_FACE:
-			return nodeFontFaceCalculators;
-		case VizMapUI.NODE_FONT_SIZE:
-			return nodeFontSizeCalculators;
-		case VizMapUI.EDGE_COLOR:
-			return edgeColorCalculators;
-		case VizMapUI.EDGE_LINETYPE:
-			return edgeLineTypeCalculators;
-		case VizMapUI.EDGE_SRCARROW:
-		case VizMapUI.EDGE_TGTARROW:
-			return edgeArrowCalculators;
-		case VizMapUI.EDGE_LABEL:
-			return edgeLabelCalculators;
-		case VizMapUI.EDGE_TOOLTIP:
-			return edgeToolTipCalculators;
-		case VizMapUI.EDGE_FONT_FACE:
-			return edgeFontFaceCalculators;
-		case VizMapUI.EDGE_FONT_SIZE:
-			return edgeFontSizeCalculators;
-		default:
-			throw new IllegalArgumentException("Unknown type " + type);
+	protected Map<String,Calculator> getCalculatorMap(byte type) {
+		Byte b = new Byte(type); 
+		Map<String,Calculator> m = calculators.get( b );
+		if ( m == null ) { 
+			m = new HashMap<String,Calculator>();
+			calculators.put(b,m);
 		}
+		return m;
 	}
 
 	/**
@@ -387,8 +214,9 @@ public class CalculatorCatalog {
 	public void addCalculator(Calculator dupe)
 			throws DuplicateCalculatorNameException, IllegalArgumentException {
 		byte calcType = getType(dupe);
-		Map theMap = getCalculatorMap(calcType);
+		Map<String,Calculator> theMap = getCalculatorMap(calcType);
 		addCalculator(dupe, theMap);
+			
 		// throw event listeners
 		fireStateChanged(calcType);
 	}
@@ -406,7 +234,7 @@ public class CalculatorCatalog {
 	 *         is returned to the caller.
 	 */
 	public String checkCalculatorName(String calcName, byte calcType) {
-		Map theMap = getCalculatorMap(calcType);
+		Map<String,Calculator> theMap = getCalculatorMap(calcType);
 		return checkName(calcName, theMap);
 	}
 
@@ -425,7 +253,7 @@ public class CalculatorCatalog {
 	public void renameCalculator(Calculator c, String name)
 			throws DuplicateCalculatorNameException, IllegalArgumentException {
 		byte calcType = getType(c);
-		Map theMap = getCalculatorMap(calcType);
+		Map<String,Calculator> theMap = getCalculatorMap(calcType);
 		String newName = checkName(name, theMap);
 		if (newName.equals(name)) {// given name is unique
 			theMap.remove(c.toString());
@@ -447,7 +275,7 @@ public class CalculatorCatalog {
 	 */
 	public void removeCalculator(Calculator c) throws IllegalArgumentException {
 		byte calcType = getType(c);
-		Map theMap = getCalculatorMap(calcType);
+		Map<String,Calculator> theMap = getCalculatorMap(calcType);
 		theMap.remove(c.toString());
 		// fire event
 		fireStateChanged(calcType);
@@ -482,8 +310,7 @@ public class CalculatorCatalog {
 
 		// check for duplicate names
 		if (mappers.keySet().contains(name))
-			throw new DuplicateCalculatorNameException("Duplicate mapper name "
-					+ name);
+			throw new DuplicateCalculatorNameException("Duplicate mapper name " + name);
 		mappers.put(name, m);
 	}
 
@@ -518,6 +345,7 @@ public class CalculatorCatalog {
 			return;
 		}
 		String name = vs.toString();
+		System.out.println("visual style name " + name);
 		// check for duplicate names
 		//System.out.println ("Keyset = " + visualStyles.keySet());
 		if (visualStyles.keySet().contains(name)) {
@@ -546,84 +374,20 @@ public class CalculatorCatalog {
 	}
 
 	private void addNodeAppearanceCalculator(NodeAppearanceCalculator c) {
-		NodeColorCalculator ncc1 = c.getNodeFillColorCalculator();
-		if (ncc1 != null && !nodeColorCalculators.values().contains(ncc1)) {
-			addNodeColorCalculator(ncc1);
-		}
-		NodeColorCalculator ncc2 = c.getNodeBorderColorCalculator();
-		if (ncc2 != null && !nodeColorCalculators.values().contains(ncc2)) {
-			addNodeColorCalculator(ncc2);
-		}
-		NodeLineTypeCalculator nltc = c.getNodeLineTypeCalculator();
-		if (nltc != null && !nodeLineTypeCalculators.values().contains(nltc)) {
-			addNodeLineTypeCalculator(nltc);
-		}
-		NodeShapeCalculator nsc = c.getNodeShapeCalculator();
-		if (nsc != null && !nodeShapeCalculators.values().contains(nsc)) {
-			addNodeShapeCalculator(nsc);
-		}
-		NodeSizeCalculator nsc1 = c.getNodeHeightCalculator();
-		if (nsc1 != null && !nodeSizeCalculators.values().contains(nsc1)) {
-			addNodeSizeCalculator(nsc1);
-		}
-		NodeSizeCalculator nsc2 = c.getNodeWidthCalculator();
-		if (nsc2 != null && !nodeSizeCalculators.values().contains(nsc2)) {
-			addNodeSizeCalculator(nsc2);
-		}
-		NodeLabelCalculator nlc = c.getNodeLabelCalculator();
-		if (nlc != null && !nodeLabelCalculators.values().contains(nlc)) {
-			addNodeLabelCalculator(nlc);
-		}
-		NodeLabelColorCalculator nlcc = c.getNodeLabelColorCalculator();
-		if (nlcc != null && !nodeLabelColorCalculators.values().contains(nlcc)) {
-			addNodeLabelColorCalculator(nlcc);
-		}
-		NodeToolTipCalculator nttc = c.getNodeToolTipCalculator();
-		if (nttc != null && !nodeToolTipCalculators.values().contains(nttc)) {
-			addNodeToolTipCalculator(nttc);
-		}
-		NodeFontFaceCalculator nffc = c.getNodeFontFaceCalculator();
-		if (nffc != null && !nodeFontFaceCalculators.values().contains(nffc)) {
-			addNodeFontFaceCalculator(nffc);
-		}
-		NodeFontSizeCalculator nfsc = c.getNodeFontSizeCalculator();
-		if (nfsc != null && !nodeFontSizeCalculators.values().contains(nfsc)) {
-			addNodeFontSizeCalculator(nfsc);
+		for ( Calculator cc : c.getCalculators() ) {
+			Byte b = new Byte(cc.getType());
+			Map m = calculators.get(b);
+			if ( !m.values().contains(cc) )
+				m.put(cc.toString(),cc);
 		}
 	}
 
 	private void addEdgeAppearanceCalculator(EdgeAppearanceCalculator c) {
-		EdgeColorCalculator ecc = c.getEdgeColorCalculator();
-		if (ecc != null && !edgeColorCalculators.values().contains(ecc)) {
-			addEdgeColorCalculator(ecc);
-		}
-		EdgeLineTypeCalculator eltc = c.getEdgeLineTypeCalculator();
-		if (eltc != null && !edgeLineTypeCalculators.values().contains(eltc)) {
-			addEdgeLineTypeCalculator(eltc);
-		}
-		EdgeArrowCalculator eac1 = c.getEdgeSourceArrowCalculator();
-		if (eac1 != null && !edgeArrowCalculators.values().contains(eac1)) {
-			addEdgeArrowCalculator(eac1);
-		}
-		EdgeArrowCalculator eac2 = c.getEdgeTargetArrowCalculator();
-		if (eac2 != null && !edgeArrowCalculators.values().contains(eac2)) {
-			addEdgeArrowCalculator(eac2);
-		}
-		EdgeLabelCalculator elc = c.getEdgeLabelCalculator();
-		if (elc != null && !edgeLabelCalculators.values().contains(elc)) {
-			addEdgeLabelCalculator(elc);
-		}
-		EdgeToolTipCalculator ettc = c.getEdgeToolTipCalculator();
-		if (ettc != null && !edgeToolTipCalculators.values().contains(ettc)) {
-			addEdgeToolTipCalculator(ettc);
-		}
-		EdgeFontFaceCalculator effc = c.getEdgeFontFaceCalculator();
-		if (effc != null && !edgeFontFaceCalculators.values().contains(effc)) {
-			addEdgeFontFaceCalculator(effc);
-		}
-		EdgeFontSizeCalculator efsc = c.getEdgeFontSizeCalculator();
-		if (efsc != null && !edgeFontSizeCalculators.values().contains(efsc)) {
-			addEdgeFontSizeCalculator(efsc);
+		for ( Calculator cc : c.getCalculators() ) {
+			Byte b = new Byte(cc.getType());
+			Map m = calculators.get(b);
+			if ( !m.values().contains(cc) )
+				m.put(cc.toString(),cc);
 		}
 	}
 
@@ -639,6 +403,7 @@ public class CalculatorCatalog {
 			throw new DuplicateCalculatorNameException(s);
 		}
 		m.put(name, c);
+
 	}
 
 	protected String checkName(String name, Map m) {
@@ -654,366 +419,405 @@ public class CalculatorCatalog {
 		return newName;
 	}
 
-	public Collection getNodeColorCalculators() {
-		return nodeColorCalculators.values();
+	public Collection<Calculator> getCalculators() {
+		List<Calculator> l = new ArrayList<Calculator>();
+		for (Byte b : calculators.keySet() ) 
+			for (String s : calculators.get(b).keySet() )
+				l.add( calculators.get(b).get(s) );
+		return l;
 	}
 
-	public void addNodeColorCalculator(NodeColorCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, nodeColorCalculators);
+	public Collection<Calculator> getCalculators(byte b) {	
+		Map<String,Calculator> m = getCalculatorMap(b); 
+		return m.values();
 	}
 
-	public NodeColorCalculator removeNodeColorCalculator(String name) {
-		return (NodeColorCalculator) nodeColorCalculators.remove(name);
+	public Calculator getCalculator(byte b, String name) {	
+		Map<String,Calculator> m = getCalculatorMap(b); 
+		return (Calculator)m.get(name);
 	}
 
-	public NodeColorCalculator getNodeColorCalculator(String name) {
-		return (NodeColorCalculator) nodeColorCalculators.get(name);
+	public String checkCalculatorName(byte b, String name) {
+		return checkName(name,getCalculatorMap(b));
 	}
-
-	public String checkNodeColorCalculatorName(String name) {
-		return checkName(name, nodeColorCalculators);
-	}
-
-	public Collection getNodeLineTypeCalculators() {
-		return nodeLineTypeCalculators.values();
-	}
-
-	public void addNodeLineTypeCalculator(NodeLineTypeCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, nodeLineTypeCalculators);
-	}
-
-	public NodeLineTypeCalculator removeNodeLineTypeCalculator(String name) {
-		return (NodeLineTypeCalculator) nodeLineTypeCalculators.remove(name);
-	}
-
-	public NodeLineTypeCalculator getNodeLineTypeCalculator(String name) {
-		return (NodeLineTypeCalculator) nodeLineTypeCalculators.get(name);
-	}
-
-	public String checkNodeLineTypeCalculatorName(String name) {
-		return checkName(name, nodeLineTypeCalculators);
-	}
-
-	public Collection getNodeShapeCalculators() {
-		return nodeShapeCalculators.values();
-	}
-
-	public void addNodeShapeCalculator(NodeShapeCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, nodeShapeCalculators);
-	}
-
-	public NodeShapeCalculator removeNodeShapeCalculator(String name) {
-		return (NodeShapeCalculator) nodeShapeCalculators.remove(name);
-	}
-
-	public NodeShapeCalculator getNodeShapeCalculator(String name) {
-		return (NodeShapeCalculator) nodeShapeCalculators.get(name);
-	}
-
-	public String checkNodeShapeCalculatorName(String name) {
-		return checkName(name, nodeShapeCalculators);
-	}
-
-	public Collection getNodeSizeCalculators() {
-		return nodeSizeCalculators.values();
-	}
-
-	public void addNodeSizeCalculator(NodeSizeCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, nodeSizeCalculators);
-	}
-
-	public NodeSizeCalculator removeNodeSizeCalculator(String name) {
-		return (NodeSizeCalculator) nodeSizeCalculators.remove(name);
-	}
-
-	public NodeSizeCalculator getNodeSizeCalculator(String name) {
-		return (NodeSizeCalculator) nodeSizeCalculators.get(name);
-	}
-
-	public String checkNodeSizeCalculatorName(String name) {
-		return checkName(name, nodeSizeCalculators);
-	}
-
-	public Collection getNodeLabelCalculators() {
-		return nodeLabelCalculators.values();
-	}
-
-	public void addNodeLabelCalculator(NodeLabelCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, nodeLabelCalculators);
-	}
-
-	public NodeLabelCalculator removeNodeLabelCalculator(String name) {
-		return (NodeLabelCalculator) nodeLabelCalculators.remove(name);
-	}
-
-	public NodeLabelCalculator getNodeLabelCalculator(String name) {
-		return (NodeLabelCalculator) nodeLabelCalculators.get(name);
-	}
-
-	public String checkNodeLabelCalculatorName(String name) {
-		return checkName(name, nodeLabelCalculators);
-	}
-
-	public Collection getNodeLabelColorCalculators() {
-		return nodeLabelColorCalculators.values();
-	}
-
-	public void addNodeLabelColorCalculator(NodeLabelColorCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, nodeLabelColorCalculators);
-	}
-
-	public NodeLabelColorCalculator removeNodeLabelColorCalculator(String name) {
-		return (NodeLabelColorCalculator) nodeLabelColorCalculators
-				.remove(name);
-	}
-
-	public NodeLabelColorCalculator getNodeLabelColorCalculator(String name) {
-		return (NodeLabelColorCalculator) nodeLabelColorCalculators.get(name);
-	}
-
-	public String checkNodeLabelColorCalculatorName(String name) {
-		return checkName(name, nodeLabelColorCalculators);
-	}
-
-	public Collection getNodeToolTipCalculators() {
-		return nodeToolTipCalculators.values();
-	}
-
-	public void addNodeToolTipCalculator(NodeToolTipCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, nodeToolTipCalculators);
-	}
-
-	public NodeToolTipCalculator removeNodeToolTipCalculator(String name) {
-		return (NodeToolTipCalculator) nodeToolTipCalculators.remove(name);
-	}
-
-	public NodeToolTipCalculator getNodeToolTipCalculator(String name) {
-		return (NodeToolTipCalculator) nodeToolTipCalculators.get(name);
-	}
-
-	public String checkNodeToolTipCalculatorName(String name) {
-		return checkName(name, nodeToolTipCalculators);
-	}
-
-	public Collection getNodeFontFaceCalculators() {
-		return nodeFontFaceCalculators.values();
-	}
-
-	public void addNodeFontFaceCalculator(NodeFontFaceCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, nodeFontFaceCalculators);
-	}
-
-	public NodeFontFaceCalculator removeNodeFontFaceCalculator(String name) {
-		return (NodeFontFaceCalculator) nodeFontFaceCalculators.remove(name);
-	}
-
-	public NodeFontFaceCalculator getNodeFontFaceCalculator(String name) {
-		return (NodeFontFaceCalculator) nodeFontFaceCalculators.get(name);
-	}
-
-	public String checkNodeFontFaceCalculatorName(String name) {
-		return checkName(name, nodeFontFaceCalculators);
-	}
-
-	public Collection getNodeFontSizeCalculators() {
-		return nodeFontSizeCalculators.values();
-	}
-
-	public void addNodeFontSizeCalculator(NodeFontSizeCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, nodeFontSizeCalculators);
-	}
-
-	public NodeFontSizeCalculator removeNodeFontSizeCalculator(String name) {
-		return (NodeFontSizeCalculator) nodeFontSizeCalculators.remove(name);
-	}
-
-	public NodeFontSizeCalculator getNodeFontSizeCalculator(String name) {
-		return (NodeFontSizeCalculator) nodeFontSizeCalculators.get(name);
-	}
-
-	public String checkNodeFontSizeCalculatorName(String name) {
-		return checkName(name, nodeFontSizeCalculators);
-	}
-
-	public Collection getEdgeColorCalculators() {
-		return edgeColorCalculators.values();
-	}
-
-	public void addEdgeColorCalculator(EdgeColorCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, edgeColorCalculators);
-	}
-
-	public EdgeColorCalculator removeEdgeColorCalculator(String name) {
-		return (EdgeColorCalculator) edgeColorCalculators.remove(name);
-	}
-
-	public EdgeColorCalculator getEdgeColorCalculator(String name) {
-		return (EdgeColorCalculator) edgeColorCalculators.get(name);
-	}
-
-	public String checkEdgeColorCalculatorName(String name) {
-		return checkName(name, edgeColorCalculators);
-	}
-
-	public Collection getEdgeLineTypeCalculators() {
-		return edgeLineTypeCalculators.values();
-	}
-
-	public void addEdgeLineTypeCalculator(EdgeLineTypeCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, edgeLineTypeCalculators);
-	}
-
-	public EdgeLineTypeCalculator removeEdgeLineTypeCalculator(String name) {
-		return (EdgeLineTypeCalculator) edgeLineTypeCalculators.remove(name);
-	}
-
-	public EdgeLineTypeCalculator getEdgeLineTypeCalculator(String name) {
-		return (EdgeLineTypeCalculator) edgeLineTypeCalculators.get(name);
-	}
-
-	public String checkEdgeLineTypeCalculatorName(String name) {
-		return checkName(name, edgeLineTypeCalculators);
-	}
-
-	public Collection getEdgeArrowCalculators() {
-		return edgeArrowCalculators.values();
-	}
-
-	public void addEdgeArrowCalculator(EdgeArrowCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, edgeArrowCalculators);
-	}
-
-	public EdgeArrowCalculator removeEdgeArrowCalculator(String name) {
-		return (EdgeArrowCalculator) edgeArrowCalculators.remove(name);
-	}
-
-	public EdgeArrowCalculator getEdgeArrowCalculator(String name) {
-		return (EdgeArrowCalculator) edgeArrowCalculators.get(name);
-	}
-
-	public String checkEdgeArrowCalculatorName(String name) {
-		return checkName(name, edgeArrowCalculators);
+	
+	public Calculator removeCalculator(byte b, String name) {	
+		Map<String,Calculator> m = getCalculatorMap(b); 
+		return m.remove(name);
 	}
 
-	public Collection getEdgeLabelCalculators() {
-		return edgeLabelCalculators.values();
+	public Collection<Byte> getCalculatorTypes() {
+		return calculators.keySet();
 	}
 
-	public void addEdgeLabelCalculator(EdgeLabelCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, edgeLabelCalculators);
-	}
-
-	public EdgeLabelCalculator removeEdgeLabelCalculator(String name) {
-		return (EdgeLabelCalculator) edgeLabelCalculators.remove(name);
-	}
-
-	public EdgeLabelCalculator getEdgeLabelCalculator(String name) {
-		return (EdgeLabelCalculator) edgeLabelCalculators.get(name);
-	}
-
-	public String checkEdgeLabelCalculatorName(String name) {
-		return checkName(name, edgeLabelCalculators);
-	}
-
-	public Collection getEdgeToolTipCalculators() {
-		return edgeToolTipCalculators.values();
-	}
-
-	public void addEdgeToolTipCalculator(EdgeToolTipCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, edgeToolTipCalculators);
-	}
-
-	public EdgeToolTipCalculator removeEdgeToolTipCalculator(String name) {
-		return (EdgeToolTipCalculator) edgeToolTipCalculators.remove(name);
-	}
-
-	public EdgeToolTipCalculator getEdgeToolTipCalculator(String name) {
-		return (EdgeToolTipCalculator) edgeToolTipCalculators.get(name);
-	}
-
-	public String checkEdgeToolTipCalculatorName(String name) {
-		return checkName(name, edgeToolTipCalculators);
-	}
-
-	public Collection getEdgeFontFaceCalculators() {
-		return edgeFontFaceCalculators.values();
-	}
-
-	public void addEdgeFontFaceCalculator(EdgeFontFaceCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, edgeFontFaceCalculators);
-	}
-
-	public EdgeFontFaceCalculator removeEdgeFontFaceCalculator(String name) {
-		return (EdgeFontFaceCalculator) edgeFontFaceCalculators.remove(name);
-	}
-
-	public EdgeFontFaceCalculator getEdgeFontFaceCalculator(String name) {
-		return (EdgeFontFaceCalculator) edgeFontFaceCalculators.get(name);
-	}
-
-	public String checkEdgeFontFaceCalculatorName(String name) {
-		return checkName(name, edgeFontFaceCalculators);
-	}
-
-	public Collection getEdgeFontSizeCalculators() {
-		return edgeFontSizeCalculators.values();
-	}
-
-	public void addEdgeFontSizeCalculator(EdgeFontSizeCalculator c)
-			throws DuplicateCalculatorNameException {
-		addCalculator(c, edgeFontSizeCalculators);
-	}
-
-	public EdgeFontSizeCalculator removeEdgeFontSizeCalculator(String name) {
-		return (EdgeFontSizeCalculator) edgeFontSizeCalculators.remove(name);
-	}
-
-	public EdgeFontSizeCalculator getEdgeFontSizeCalculator(String name) {
-		return (EdgeFontSizeCalculator) edgeFontSizeCalculators.get(name);
-	}
-
-	public String checkEdgeFontSizeCalculatorName(String name) {
-		return checkName(name, edgeFontSizeCalculators);
-	}
 
 	public void createDefaultVisualStyle() {
-		// System.out.println("Creating default visual style");
 		VisualStyle defaultVS = new VisualStyle("default");
-		// Commented by iavila on 5.5.06
-		// setup the default to at least put canonical names on the nodes
-		// String cName = "Common Names";
-		// NodeLabelCalculator nlc = getNodeLabelCalculator(cName);
-		// if (nlc == null) {
-		// PassThroughMapping m = new PassThroughMapping("",
-		// AbstractCalculator.ID);
-		// nlc = new GenericNodeLabelCalculator(cName, m);
-		// }
 
 		// Use Semantics.LABEL instead for node labels
 		String label = Semantics.LABEL;
-		NodeLabelCalculator nlc = getNodeLabelCalculator(label);
+		Calculator nlc = getCalculator(VizMapUI.NODE_LABEL, label);
 		if (nlc == null) {
-			PassThroughMapping m = 
-				new PassThroughMapping("",AbstractCalculator.ID);
-			nlc = new GenericNodeLabelCalculator(label, m);
+			PassThroughMapping m = new PassThroughMapping("",AbstractCalculator.ID);
+			nlc = CalculatorFactory.newDefaultCalculator(VizMapUI.NODE_LABEL, label, m);
 		}
 
-		defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
+		defaultVS.getNodeAppearanceCalculator().setCalculator(nlc);
 		addVisualStyle(defaultVS);
 	}
+
+	//==========================================================================
+	//
+	// from here on out everything is deprecated.  run for your life. 
+	//
+	//==========================================================================
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeColorCalculators() { 
+		Collection c = getCalculators(VizMapUI.NODE_COLOR); 
+		c.addAll(getCalculators(VizMapUI.NODE_BORDER_COLOR));
+		return c;
+	}
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeColorCalculator(NodeColorCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeColorCalculator removeNodeColorCalculator(String name) { 
+		NodeColorCalculator c = (NodeColorCalculator)removeCalculator(VizMapUI.NODE_COLOR,name); 
+		if ( c == null )
+			c = (NodeColorCalculator)removeCalculator(VizMapUI.NODE_BORDER_COLOR,name); 
+		return c;
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeColorCalculator getNodeColorCalculator(String name) { 
+		NodeColorCalculator c = (NodeColorCalculator)getCalculator(VizMapUI.NODE_COLOR,name);
+		if ( c == null )
+			c = (NodeColorCalculator)getCalculator(VizMapUI.NODE_BORDER_COLOR,name);
+		return c;
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeColorCalculatorName(String name) {
+		String s = checkCalculatorName(VizMapUI.NODE_COLOR,name);
+		if ( s == null )
+			s = checkCalculatorName(VizMapUI.NODE_BORDER_COLOR,name);
+		return s;
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeLineTypeCalculators() { return getCalculators(VizMapUI.NODE_LINETYPE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeLineTypeCalculator(NodeLineTypeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLineTypeCalculator removeNodeLineTypeCalculator(String name) { 
+		return (NodeLineTypeCalculator)removeCalculator(VizMapUI.NODE_LINETYPE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLineTypeCalculator getNodeLineTypeCalculator(String name) { 
+		return (NodeLineTypeCalculator)getCalculator(VizMapUI.NODE_LINETYPE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeLineTypeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_LINETYPE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeShapeCalculators() { return getCalculators(VizMapUI.NODE_SHAPE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeShapeCalculator(NodeShapeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeShapeCalculator removeNodeShapeCalculator(String name) { 
+		return (NodeShapeCalculator)removeCalculator(VizMapUI.NODE_SHAPE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeShapeCalculator getNodeShapeCalculator(String name) {
+		return (NodeShapeCalculator)getCalculator(VizMapUI.NODE_SHAPE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeShapeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_SHAPE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeSizeCalculators() { 
+		Collection c = getCalculators(VizMapUI.NODE_SIZE); 
+		c.addAll(getCalculators(VizMapUI.NODE_WIDTH));
+		c.addAll(getCalculators(VizMapUI.NODE_HEIGHT));
+		return c;
+	}
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeSizeCalculator(NodeSizeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeSizeCalculator removeNodeSizeCalculator(String name) { 
+		NodeSizeCalculator c = (NodeSizeCalculator)removeCalculator(VizMapUI.NODE_SIZE,name); 
+		if ( c == null )
+			c = (NodeSizeCalculator)removeCalculator(VizMapUI.NODE_WIDTH,name);
+		if ( c == null )
+			c = (NodeSizeCalculator)removeCalculator(VizMapUI.NODE_HEIGHT,name); 
+		return c;
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeSizeCalculator getNodeSizeCalculator(String name) {
+		NodeSizeCalculator c = (NodeSizeCalculator)getCalculator(VizMapUI.NODE_SIZE,name);
+		if ( c == null )
+			c = (NodeSizeCalculator)getCalculator(VizMapUI.NODE_WIDTH,name);
+		if ( c == null )
+			c = (NodeSizeCalculator)getCalculator(VizMapUI.NODE_HEIGHT,name);
+		return c;
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeSizeCalculatorName(String name) {
+		String s = checkCalculatorName(VizMapUI.NODE_SIZE,name);
+		if ( s == null )
+			s = checkCalculatorName(VizMapUI.NODE_WIDTH,name);
+		if ( s == null )
+			s = checkCalculatorName(VizMapUI.NODE_HEIGHT,name);
+		return s;
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeLabelCalculators() { return getCalculators(VizMapUI.NODE_LABEL); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeLabelCalculator(NodeLabelCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLabelCalculator removeNodeLabelCalculator(String name) { 
+		return (NodeLabelCalculator)removeCalculator(VizMapUI.NODE_LABEL,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLabelCalculator getNodeLabelCalculator(String name) {
+		return (NodeLabelCalculator)getCalculator(VizMapUI.NODE_LABEL,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeLabelCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_LABEL,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeLabelColorCalculators() { return getCalculators(VizMapUI.NODE_LABEL_COLOR); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeLabelColorCalculator(NodeLabelColorCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLabelColorCalculator removeNodeLabelColorCalculator(String name) { 
+		return (NodeLabelColorCalculator)removeCalculator(VizMapUI.NODE_LABEL_COLOR,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeLabelColorCalculator getNodeLabelColorCalculator(String name) {
+		return (NodeLabelColorCalculator)getCalculator(VizMapUI.NODE_LABEL_COLOR,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeLabelColorCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_LABEL_COLOR,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeToolTipCalculators() { return getCalculators(VizMapUI.NODE_TOOLTIP); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeToolTipCalculator(NodeToolTipCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeToolTipCalculator removeNodeToolTipCalculator(String name) { 
+		return (NodeToolTipCalculator)removeCalculator(VizMapUI.NODE_TOOLTIP,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeToolTipCalculator getNodeToolTipCalculator(String name) {
+		return (NodeToolTipCalculator)getCalculator(VizMapUI.NODE_TOOLTIP,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeToolTipCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_TOOLTIP,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeFontFaceCalculators() { return getCalculators(VizMapUI.NODE_FONT_FACE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeFontFaceCalculator(NodeFontFaceCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeFontFaceCalculator removeNodeFontFaceCalculator(String name) { 
+		return (NodeFontFaceCalculator)removeCalculator(VizMapUI.NODE_FONT_FACE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeFontFaceCalculator getNodeFontFaceCalculator(String name) {
+		return (NodeFontFaceCalculator)getCalculator(VizMapUI.NODE_FONT_FACE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeFontFaceCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_FONT_FACE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getNodeFontSizeCalculators() { return getCalculators(VizMapUI.NODE_FONT_SIZE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addNodeFontSizeCalculator(NodeFontSizeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeFontSizeCalculator removeNodeFontSizeCalculator(String name) { 
+		return (NodeFontSizeCalculator)removeCalculator(VizMapUI.NODE_FONT_SIZE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public NodeFontSizeCalculator getNodeFontSizeCalculator(String name) {
+		return (NodeFontSizeCalculator)getCalculator(VizMapUI.NODE_FONT_SIZE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkNodeFontSizeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.NODE_FONT_SIZE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeColorCalculators() { return getCalculators(VizMapUI.EDGE_COLOR); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeColorCalculator(EdgeColorCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeColorCalculator removeEdgeColorCalculator(String name) { 
+		return (EdgeColorCalculator)removeCalculator(VizMapUI.EDGE_COLOR,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeColorCalculator getEdgeColorCalculator(String name) {
+		return (EdgeColorCalculator)getCalculator(VizMapUI.EDGE_COLOR,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeColorCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_COLOR,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeLineTypeCalculators() { return getCalculators(VizMapUI.EDGE_LINETYPE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeLineTypeCalculator(EdgeLineTypeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeLineTypeCalculator removeEdgeLineTypeCalculator(String name) { 
+		return (EdgeLineTypeCalculator)removeCalculator(VizMapUI.EDGE_LINETYPE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeLineTypeCalculator getEdgeLineTypeCalculator(String name) {
+		return (EdgeLineTypeCalculator)getCalculator(VizMapUI.EDGE_LINETYPE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeLineTypeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_LINETYPE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeArrowCalculators() { 
+		Collection c = getCalculators(VizMapUI.EDGE_SRCARROW); 
+		c.addAll(getCalculators(VizMapUI.EDGE_TGTARROW));
+		return c;
+	}
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeArrowCalculator(EdgeArrowCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeArrowCalculator removeEdgeArrowCalculator(String name) { 
+		EdgeArrowCalculator c = (EdgeArrowCalculator)removeCalculator(VizMapUI.EDGE_SRCARROW,name); 
+		if ( c == null )
+			c = (EdgeArrowCalculator)removeCalculator(VizMapUI.EDGE_TGTARROW,name); 
+		return c;
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeArrowCalculator getEdgeArrowCalculator(String name) {
+		EdgeArrowCalculator c = (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_SRCARROW,name);
+		if ( c == null )
+			c = (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_TGTARROW,name);
+		return c;
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeArrowCalculatorName(String name) {
+		String s = checkCalculatorName(VizMapUI.EDGE_SRCARROW,name);
+		if ( s == null )
+			s = checkCalculatorName(VizMapUI.EDGE_TGTARROW,name);
+		return s;
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeLabelCalculators() { return getCalculators(VizMapUI.EDGE_LABEL); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeLabelCalculator(EdgeLabelCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeLabelCalculator removeEdgeLabelCalculator(String name) { 
+		return (EdgeLabelCalculator)removeCalculator(VizMapUI.EDGE_LABEL,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeLabelCalculator getEdgeLabelCalculator(String name) {
+		return (EdgeLabelCalculator)getCalculator(VizMapUI.EDGE_LABEL,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeLabelCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_LABEL,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeToolTipCalculators() { return getCalculators(VizMapUI.EDGE_TOOLTIP); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeToolTipCalculator(EdgeToolTipCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeToolTipCalculator removeEdgeToolTipCalculator(String name) { 
+		return (EdgeToolTipCalculator)removeCalculator(VizMapUI.EDGE_TOOLTIP,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeToolTipCalculator getEdgeToolTipCalculator(String name) {
+		return (EdgeToolTipCalculator)getCalculator(VizMapUI.EDGE_TOOLTIP,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeToolTipCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_TOOLTIP,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeFontFaceCalculators() { return getCalculators(VizMapUI.EDGE_FONT_FACE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeFontFaceCalculator(EdgeFontFaceCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeFontFaceCalculator removeEdgeFontFaceCalculator(String name) { 
+		return (EdgeFontFaceCalculator)removeCalculator(VizMapUI.EDGE_FONT_FACE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeFontFaceCalculator getEdgeFontFaceCalculator(String name) {
+		return (EdgeFontFaceCalculator)getCalculator(VizMapUI.EDGE_FONT_FACE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeFontFaceCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_FONT_FACE,name);
+	}
+
+
+
+	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
+        public Collection getEdgeFontSizeCalculators() { return getCalculators(VizMapUI.EDGE_FONT_SIZE); }
+	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
+        public void addEdgeFontSizeCalculator(EdgeFontSizeCalculator c) { addCalculator(c); }
+	/** @deprecated Use removeCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeFontSizeCalculator removeEdgeFontSizeCalculator(String name) { 
+		return (EdgeFontSizeCalculator)removeCalculator(VizMapUI.EDGE_FONT_SIZE,name); 
+	}
+	/** @deprecated Use getCalculator(type,name) instead. Will be removed 10/2007. */
+        public EdgeFontSizeCalculator getEdgeFontSizeCalculator(String name) {
+		return (EdgeFontSizeCalculator)getCalculator(VizMapUI.EDGE_FONT_SIZE,name);
+	}
+	/** @deprecated Use checkCalculatorName(type,name) instead. Will be removed 10/2007. */
+        public String checkEdgeFontSizeCalculatorName(String name) {
+		return checkCalculatorName(VizMapUI.EDGE_FONT_SIZE,name);
+	}
+
 }
