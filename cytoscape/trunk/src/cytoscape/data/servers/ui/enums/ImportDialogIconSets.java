@@ -23,7 +23,8 @@ public enum ImportDialogIconSets {
 	REMOTE_SOURCE_ICON("images/ximian/stock_internet-16.png"),
 	LOCAL_SOURCE_ICON("images/ximian/stock_data-sources-modified-16.png"),
 	SPREADSHEET_ICON("images/ximian/stock_new-spreadsheet.png"),
-	TEXT_FILE_ICON("images/ximian/stock_new-text-32.png");
+	TEXT_FILE_ICON("images/ximian/stock_new-text-32.png"),
+	RIGHT_ARROW_ICON("images/ximian/stock_right-16.png");
 	
 	private String resourceLoc;
 	
