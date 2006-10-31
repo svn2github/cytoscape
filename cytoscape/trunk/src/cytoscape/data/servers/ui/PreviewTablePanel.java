@@ -79,11 +79,12 @@ public class PreviewTablePanel extends JPanel {
 	private static final String COMMENT_CHAR = "!";
 
 	private final String message;
-	
+
 	private boolean loadFlag = false;
 
 	// Tracking attribute data type.
 	private Byte[] dataTypes;
+	private Map<String, Byte[]> dataTypeMap;
 
 	/*
 	 * GUI Components
@@ -102,7 +103,6 @@ public class PreviewTablePanel extends JPanel {
 
 	private JList keyPreviewList;
 
-	private DefaultTableModel model;
 	private DefaultListModel keyListModel;
 
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
@@ -120,6 +120,8 @@ public class PreviewTablePanel extends JPanel {
 	public PreviewTablePanel(String message, int panelType) {
 		this.message = message;
 		this.panelType = panelType;
+
+		dataTypeMap = new HashMap<String, Byte[]>();
 
 		initComponents();
 
@@ -176,7 +178,7 @@ public class PreviewTablePanel extends JPanel {
 
 		fileTypeLabel = new JLabel();
 		fileTypeLabel.setFont(new Font("Sans-Serif", Font.BOLD, 14));
-		
+
 		keyPreviewScrollPane.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Key Attributes"));
 
@@ -211,8 +213,7 @@ public class PreviewTablePanel extends JPanel {
 		tableTabbedPane.addTab(DEF_TAB_MESSAGE, previewScrollPane);
 		// tableTabbedPane.setBorder(new CentredBackgroundBorder(bi));
 
-		rightArrowLabel
-				.setIcon(RIGHT_ARROW_ICON.getIcon());
+		rightArrowLabel.setIcon(RIGHT_ARROW_ICON.getIcon());
 
 		JTableHeader hd = previewTable.getTableHeader();
 		hd.setReorderingAllowed(false);
@@ -341,15 +342,15 @@ public class PreviewTablePanel extends JPanel {
 				.getSelectedComponent();
 		return (JTable) selected.getViewport().getComponent(0);
 	}
-	
+
 	public int getTableCount() {
 		return tableTabbedPane.getTabCount();
 	}
-	
+
 	public String getSheetName(int index) {
 		return tableTabbedPane.getTitleAt(index);
 	}
-	
+
 	/**
 	 * Get selected tab name.
 	 * 
@@ -358,17 +359,19 @@ public class PreviewTablePanel extends JPanel {
 	public String getSelectedSheetName() {
 		return tableTabbedPane.getTitleAt(tableTabbedPane.getSelectedIndex());
 	}
-	
+
 	public JTable getPreviewTable(int index) {
-		JScrollPane selected = (JScrollPane) tableTabbedPane.getComponentAt(index);
+		JScrollPane selected = (JScrollPane) tableTabbedPane
+				.getComponentAt(index);
 		return (JTable) selected.getViewport().getComponent(0);
 	}
 
 	private void tableTabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {
 		System.out.println("tab cnahged!");
-		if ( tableTabbedPane
-				.getSelectedComponent() != null && ((JScrollPane) tableTabbedPane
-				.getSelectedComponent()).getViewport().getComponent(0) != null && loadFlag == true) {
+		if (tableTabbedPane.getSelectedComponent() != null
+				&& ((JScrollPane) tableTabbedPane.getSelectedComponent())
+						.getViewport().getComponent(0) != null
+				&& loadFlag == true) {
 
 			changes.firePropertyChange(ImportTextTableDialog.SHEET_CHANGED,
 					null, null);
@@ -402,229 +405,230 @@ public class PreviewTablePanel extends JPanel {
 		 */
 		for (int i = 0; i < tableTabbedPane.getTabCount(); i++) {
 			tableTabbedPane.removeTabAt(i);
-			previewTables = new HashMap<String, JTable>();
 		}
+		previewTables = new HashMap<String, JTable>();
+
+		TableModel newModel;
 
 		fileTypeLabel.setVisible(true);
 		if (sourceURL.toString().endsWith(EXCEL_EXT)) {
 			fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
 			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");
-			parseExcel(sourceURL, size, renderer);
+
+			POIFSFileSystem excelIn = new POIFSFileSystem(sourceURL
+					.openStream());
+			HSSFWorkbook wb = new HSSFWorkbook(excelIn);
+
+			/*
+			 * Load each sheet in the workbook.
+			 */
+			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+				HSSFSheet sheet = wb.getSheetAt(i);
+				newModel = parseExcel(sourceURL, size, renderer, sheet);
+				addTableTab(newModel, wb.getSheetName(i), renderer);
+			}
+
 		} else {
 			fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
 			fileTypeLabel.setText("Text File");
 
-			final BufferedReader bufRd = new BufferedReader(
-					new InputStreamReader(URLUtil.getInputStream(sourceURL)));
-			String line;
+			newModel = parseText(sourceURL, size, renderer, delimiters);
 
-			/*
-			 * Generate reg. exp. for delimiter.
-			 */
-			StringBuffer delimiterBuffer = new StringBuffer();
-
-			if (delimiters.size() != 0) {
-				delimiterBuffer.append("[");
-				for (String delimiter : delimiters) {
-					delimiterBuffer.append(delimiter);
-				}
-				delimiterBuffer.append("]");
-			}
-
-			/*
-			 * Read & extract one line at a time. The line can be Tab delimited,
-			 */
-			boolean importAll = false;
-			if (size == -1) {
-				importAll = true;
-			}
-
-			int counter = 0;
-			int maxColumn = 0;
-			String[] parts;
-			Vector data = new Vector();
-
-			final String delimiterRegEx = delimiterBuffer.toString();
-
-			while ((line = bufRd.readLine()) != null) {
-
-				if (line.startsWith(COMMENT_CHAR) || line.trim().length() == 0) {
-					// ignore
-				} else {
-					Vector row = new Vector();
-					if (delimiterRegEx.length() == 0) {
-						parts = new String[1];
-						parts[0] = line;
-					} else {
-						parts = line.split(delimiterRegEx);
-					}
-					for (String entry : parts) {
-						row.add(entry);
-					}
-					if (parts.length > maxColumn) {
-						maxColumn = parts.length;
-					}
-					data.add(row);
-				}
-				counter++;
-				if (importAll == false && counter >= size) {
-					break;
-				}
-			}
-
-			bufRd.close();
-
-			final Vector colNames = new Vector();
-			for (int i = 0; i < maxColumn; i++) {
-				colNames.add("Column " + (i + 1));
-			}
-
-			model = new DefaultTableModel(data, colNames);
-			previewTable.setModel(model);
 			String[] urlParts = sourceURL.toString().split("/");
-			tableTabbedPane.add(urlParts[urlParts.length - 1],
-					previewScrollPane);
-
-			/*
-			 * Initialize data type atrray. By default, everything is a String.
-			 */
-			dataTypes = new Byte[model.getColumnCount()];
-			for (int i = 0; i < model.getColumnCount(); i++) {
-				dataTypes[i] = CyAttributes.TYPE_STRING;
-			}
-
-			fileTypeLabel.setVisible(true);
-
-			previewTable.setDefaultRenderer(Object.class, renderer);
-
-			previewTable.getTableHeader().setForeground(
-					ATTRIBUTE_NAME_COLOR.getColor());
-
-			previewTable.getTableHeader().addMouseListener(
-					new TableHeaderListener());
-
-			ColumnResizer.adjustColumnPreferredWidths(previewTable);
-			previewTable.revalidate();
-			repaint();
+			final String tabName = urlParts[urlParts.length - 1];
+			addTableTab(newModel, tabName, renderer);
 		}
 
 		loadFlag = true;
 	}
 
-	private void parseExcel(URL sourceURL, int size, TableCellRenderer renderer)
-			throws IOException {
-		// Load Excel workbook
-		POIFSFileSystem excelIn = new POIFSFileSystem(sourceURL.openStream());
-		HSSFWorkbook wb = new HSSFWorkbook(excelIn);
+	private void addTableTab(TableModel newModel, final String tabName,
+			TableCellRenderer renderer) {
+		JTable newTable = new JTable(newModel);
+		previewTables.put(tabName, newTable);
+		JScrollPane newScrollPane = new JScrollPane();
+		newScrollPane.setViewportView(newTable);
+		newScrollPane.setBackground(Color.WHITE);
 
-		int maxCol = 0;
+		tableTabbedPane.add(tabName, newScrollPane);
 
-		// Load all sheets in the table
-		for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-
-			HSSFSheet sheet = wb.getSheetAt(i);
-			Vector data = new Vector();
-
-			int rowCount = 0;
-			HSSFRow row;
-			while ((row = sheet.getRow(rowCount)) != null && rowCount < size) {
-				
-				Vector<Object> rowVector = new Vector<Object>();
-				if(maxCol<row.getPhysicalNumberOfCells()) {
-					maxCol = row.getPhysicalNumberOfCells();
-				}
-				for(short j=0; j<maxCol; j++) {
-					HSSFCell cell = row.getCell(j);
-					if(cell == null) {
-						rowVector.add(null);
-					} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-						rowVector.add(cell.getStringCellValue());
-					} else if(cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						rowVector.add(cell.getNumericCellValue());
-					} else if(cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
-						rowVector.add(cell.getBooleanCellValue());
-					} else if(cell.getCellType() == HSSFCell.CELL_TYPE_BLANK || cell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
-						rowVector.add(null);
-					} else {
-						rowVector.add(null);
-					}
-					
-				}
-				
-				data.add(rowVector);
-				rowCount++;
-			}
-
-			final Vector<String> colNames = new Vector<String>();
-			for (int j = 0; j < maxCol; j++) {
-				colNames.add("Column " + (j + 1));
-			}
-
-			TableModel newModel = new DefaultTableModel(data, colNames);
-			JTable newTable = new JTable(newModel);
-			previewTables.put(wb.getSheetName(i), newTable);
-			JScrollPane newScrollPane = new JScrollPane();
-			newScrollPane.setViewportView(newTable);
-			newScrollPane.setBackground(Color.WHITE);
-
-			tableTabbedPane.add(wb.getSheetName(i), newScrollPane);
-
-			/*
-			 * Initialize data type atrray. By default, everything is a String.
-			 */
-			dataTypes = new Byte[newModel.getColumnCount()];
-			for (int j = 0; j < newModel.getColumnCount(); j++) {
-				dataTypes[j] = CyAttributes.TYPE_STRING;
-			}
-
-			JTableHeader hd = newTable.getTableHeader();
-			hd.setReorderingAllowed(false);
-			hd.setDefaultRenderer(new HeaderRenderer(hd.getDefaultRenderer(),
-					null));
-
-			/*
-			 * Setting table properties
-			 */
-			newTable.setCellSelectionEnabled(false);
-			newTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			newTable.setDefaultEditor(Object.class, null);
-			newTable.setDefaultRenderer(Object.class, renderer);
-
-			newTable.getTableHeader().setForeground(
-					ATTRIBUTE_NAME_COLOR.getColor());
-
-			newTable.getTableHeader().addMouseListener(
-					new TableHeaderListener());
-
-			ColumnResizer.adjustColumnPreferredWidths(newTable);
-			newTable.revalidate();
-			newTable.repaint();
-
+		/*
+		 * Initialize data type atrray. By default, everything is a String.
+		 */
+		dataTypes = new Byte[newModel.getColumnCount()];
+		for (int j = 0; j < newModel.getColumnCount(); j++) {
+			dataTypes[j] = CyAttributes.TYPE_STRING;
 		}
 
+		JTableHeader hd = newTable.getTableHeader();
+		hd.setReorderingAllowed(false);
+		hd
+				.setDefaultRenderer(new HeaderRenderer(hd.getDefaultRenderer(),
+						null));
+
+		/*
+		 * Setting table properties
+		 */
+		newTable.setCellSelectionEnabled(false);
+		newTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		newTable.setDefaultEditor(Object.class, null);
+		newTable.setDefaultRenderer(Object.class, renderer);
+
+		newTable.getTableHeader()
+				.setForeground(ATTRIBUTE_NAME_COLOR.getColor());
+
+		newTable.getTableHeader().addMouseListener(new TableHeaderListener());
+
+		ColumnResizer.adjustColumnPreferredWidths(newTable);
+		newTable.revalidate();
+		newTable.repaint();
+	}
+
+	private Vector<String> getDefaultColumnNames(final int colCount) {
+
+		final Vector<String> colNames = new Vector<String>();
+		for (int i = 0; i < colCount; i++) {
+			colNames.add("Column " + (i + 1));
+		}
+		return colNames;
+	}
+
+	private TableModel parseText(URL sourceURL, int size,
+			TableCellRenderer renderer, List<String> delimiters)
+			throws IOException {
+
+		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(
+				URLUtil.getInputStream(sourceURL)));
+		String line;
+
+		/*
+		 * Generate reg. exp. for delimiter.
+		 */
+		StringBuffer delimiterBuffer = new StringBuffer();
+
+		if (delimiters.size() != 0) {
+			delimiterBuffer.append("[");
+			for (String delimiter : delimiters) {
+				delimiterBuffer.append(delimiter);
+			}
+			delimiterBuffer.append("]");
+		}
+
+		/*
+		 * Read & extract one line at a time. The line can be Tab delimited,
+		 */
+		boolean importAll = false;
+		if (size == -1) {
+			importAll = true;
+		}
+
+		int counter = 0;
+		int maxColumn = 0;
+		String[] parts;
+		Vector data = new Vector();
+
+		final String delimiterRegEx = delimiterBuffer.toString();
+
+		while ((line = bufRd.readLine()) != null) {
+
+			if (line.startsWith(COMMENT_CHAR) || line.trim().length() == 0) {
+				// ignore
+			} else {
+				Vector row = new Vector();
+				if (delimiterRegEx.length() == 0) {
+					parts = new String[1];
+					parts[0] = line;
+				} else {
+					parts = line.split(delimiterRegEx);
+				}
+				for (String entry : parts) {
+					row.add(entry);
+				}
+				if (parts.length > maxColumn) {
+					maxColumn = parts.length;
+				}
+				data.add(row);
+			}
+			counter++;
+			if (importAll == false && counter >= size) {
+				break;
+			}
+		}
+
+		bufRd.close();
+
+		return new DefaultTableModel(data, getDefaultColumnNames(maxColumn));
+
+	}
+
+	private TableModel parseExcel(URL sourceURL, int size,
+			TableCellRenderer renderer, HSSFSheet sheet) throws IOException {
+
+		int maxCol = 0;
+		Vector data = new Vector();
+
+		int rowCount = 0;
+		HSSFRow row;
+		while ((row = sheet.getRow(rowCount)) != null && rowCount < size) {
+
+			Vector<Object> rowVector = new Vector<Object>();
+			if (maxCol < row.getPhysicalNumberOfCells()) {
+				maxCol = row.getPhysicalNumberOfCells();
+			}
+			for (short j = 0; j < maxCol; j++) {
+				HSSFCell cell = row.getCell(j);
+				if (cell == null) {
+					rowVector.add(null);
+				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+					rowVector.add(cell.getStringCellValue());
+				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+					rowVector.add(cell.getNumericCellValue());
+				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+					rowVector.add(cell.getBooleanCellValue());
+				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK
+						|| cell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
+					rowVector.add(null);
+				} else {
+					rowVector.add(null);
+				}
+
+			}
+
+			data.add(rowVector);
+			rowCount++;
+		}
+
+		final Vector<String> colNames = new Vector<String>();
+		for (int j = 0; j < maxCol; j++) {
+			colNames.add("Column " + (j + 1));
+		}
+
+		return new DefaultTableModel(data, colNames);
 	}
 
 	/**
 	 * Not yet implemented.
 	 * <p>
 	 * </p>
+	 * 
 	 * @param targetColumn
 	 * @return
 	 */
 	public int checkKeyMatch(int targetColumn) {
-//		final List fileKeyList = new ArrayList();
-//		int matched = 0;
-//
-//		TableModel curModel = getPreviewTable().getModel();
-//		for (int i = 0; i < curModel.getRowCount(); i++) {
-//			fileKeyList.add(curModel.getValueAt(i, targetColumn));
-//		}
-//
-//		for (int i = 0; i < keyPreviewList.getModel().getSize(); i++) {
-//			if (fileKeyList.contains(keyPreviewList.getModel().getElementAt(i))) {
-//				matched++;
-//			}
-//		}
+		// final List fileKeyList = new ArrayList();
+		// int matched = 0;
+		//
+		// TableModel curModel = getPreviewTable().getModel();
+		// for (int i = 0; i < curModel.getRowCount(); i++) {
+		// fileKeyList.add(curModel.getValueAt(i, targetColumn));
+		// }
+		//
+		// for (int i = 0; i < keyPreviewList.getModel().getSize(); i++) {
+		// if (fileKeyList.contains(keyPreviewList.getModel().getElementAt(i)))
+		// {
+		// matched++;
+		// }
+		// }
 
 		return 0;
 	}
@@ -722,7 +726,8 @@ public class PreviewTablePanel extends JPanel {
 
 class KeyAttributeListRenderer extends JLabel implements ListCellRenderer {
 
-	private static final Font KEY_LIST_FONT = new Font("Sans-Serif", Font.BOLD,16);
+	private static final Font KEY_LIST_FONT = new Font("Sans-Serif", Font.BOLD,
+			16);
 	private static final Color FONT_COLOR = Color.BLACK;
 
 	public KeyAttributeListRenderer() {
