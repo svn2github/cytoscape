@@ -15,7 +15,7 @@ import static cytoscape.data.servers.ui.enums.ImportDialogFontTheme.SELECTED_FON
 import static cytoscape.data.servers.ui.enums.ImportDialogFontTheme.UNSELECTED_FONT;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.BOOLEAN_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.FLOAT_ICON;
-import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.INTEGER;
+import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.INTEGER_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.LIST_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.STRING_ICON;
 
@@ -219,7 +219,7 @@ class HeaderRenderer implements TableCellRenderer {
 		if (dataType == CyAttributes.TYPE_STRING) {
 			dataTypeIcon = STRING_ICON.getIcon();
 		} else if (dataType == CyAttributes.TYPE_INTEGER) {
-			dataTypeIcon = INTEGER.getIcon();
+			dataTypeIcon = INTEGER_ICON.getIcon();
 		} else if (dataType == CyAttributes.TYPE_FLOATING) {
 			dataTypeIcon = FLOAT_ICON.getIcon();
 		} else if (dataType == CyAttributes.TYPE_BOOLEAN) {

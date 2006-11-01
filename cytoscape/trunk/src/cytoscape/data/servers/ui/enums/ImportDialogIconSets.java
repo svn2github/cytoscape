@@ -12,7 +12,7 @@ import cytoscape.Cytoscape;
  *
  */
 public enum ImportDialogIconSets {
-	STRING_ICON("images/ximian/stock_font-16.png"), INTEGER("images/ximian/stock_sort-row-ascending-16.png"), 
+	STRING_ICON("images/ximian/stock_font-16.png"), INTEGER_ICON("images/ximian/stock_sort-row-ascending-16.png"), 
 	FLOAT_ICON("images/ximian/stock_format-scientific-16.png"),
 	INT_ICON("images/ximian/stock_sort-row-ascending-16.png"),
 	LIST_ICON("images/ximian/stock_navigator-list-box-toggle-16.png"), 
