@@ -326,10 +326,6 @@ public class ImportTextTableDialog extends JDialog implements
 		simpleAttributeImportPanel = new javax.swing.JPanel();
 		attributeFileLabel = new javax.swing.JLabel();
 
-		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
-			titleIconLabel1.setIcon(SPREADSHEET_ICON_LARGE.getIcon());
-		}
-
 		primaryLabel = new JLabel("Primary Key: ");
 		primaryKeyComboBox = new JComboBox();
 		primaryKeyComboBox.setEnabled(false);
@@ -348,8 +344,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-		titleIconLabel2.setIcon(new ImageIcon(Cytoscape.class
-				.getResource("images/ximian/stock_right-16.png")));
+		titleIconLabel2.setIcon(RIGHT_ARROW_ICON.getIcon());
 
 		titleIconLabel3.setIcon(new ImageIcon(Cytoscape.class
 				.getResource("images/icon48.png")));
@@ -482,6 +477,9 @@ public class ImportTextTableDialog extends JDialog implements
 		 * This panel is necessary only when this is an ontology import dialog.
 		 */
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+			
+			titleIconLabel1.setIcon(REMOTE_SOURCE_ICON.getIcon());
+			
 			ontologyLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 			ontologyLabel.setForeground(new java.awt.Color(73, 127, 235));
 			ontologyLabel.setText("Ontology");
@@ -676,6 +674,9 @@ public class ImportTextTableDialog extends JDialog implements
 		}
 
 		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
+			
+			titleIconLabel1.setIcon(SPREADSHEET_ICON_LARGE.getIcon());
+			
 			attributeFileLabel.setText("Input File");
 			attributeFileLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 			selectAttributeFileButton.setText("Select File");
@@ -857,8 +858,8 @@ public class ImportTextTableDialog extends JDialog implements
 					});
 
 			arrowButton1.setBackground(new java.awt.Color(250, 250, 250));
-			arrowButton1.setIcon(new javax.swing.ImageIcon(Cytoscape.class
-					.getResource("images/ximian/stock_right-16.png")));
+			arrowButton1.setOpaque(false);
+			arrowButton1.setIcon(RIGHT_ARROW_ICON.getIcon());
 			arrowButton1.setBorder(null);
 			arrowButton1.setBorderPainted(false);
 
@@ -1829,20 +1830,22 @@ public class ImportTextTableDialog extends JDialog implements
 		/*
 		 * Do misc. GUI setups
 		 */
-		if(dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
+		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
 			setTitle("Import Annotation File");
 			titleLabel.setText("Import Attribute File");
 			annotationAndOntologyImportPanel.setVisible(false);
-		} else if(dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			setTitle("Import Ontology Data and Annotations");
 			titleLabel.setText("Import Ontology and Annotation");
-			simpleAttributeImportPanel.setVisible(false);
-		} else if(dialogType == NETWORK_IMPORT) {
+			ontology2annotationPanel.setVisible(false);
+		} else if (dialogType == NETWORK_IMPORT) {
 			setTitle("Import Network and Edge Attributes from File");
 			titleLabel.setText("Import Network Table");
 			annotationAndOntologyImportPanel.setVisible(false);
 		}
 		
+		reloadButton.setEnabled(false);
+
 		previewPanel.getPreviewTable().getTableHeader().setReorderingAllowed(
 				false);
 		setRadioButtonGroup();
@@ -2053,7 +2056,7 @@ public class ImportTextTableDialog extends JDialog implements
 					new AliasTableModel(keyTable, columnCount));
 
 			initializeAliasTable(columnCount, null, i);
-		
+
 			updatePrimaryKeyComboBox();
 
 		}
@@ -2078,6 +2081,8 @@ public class ImportTextTableDialog extends JDialog implements
 		}
 		pack();
 		repaint();
+		
+		reloadButton.setEnabled(true);
 	}
 
 	private void setStatusBar(URL sourceURL) {
@@ -2140,21 +2145,6 @@ public class ImportTextTableDialog extends JDialog implements
 				}
 			}
 
-			// final Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
-			// for (CyNetwork network : networkSet) {
-			// // Try to get isOntology Attribute
-			// Boolean isOntology = Cytoscape.getNetworkAttributes()
-			// .getBooleanAttribute(network.getIdentifier(),
-			// Ontology.IS_ONTOLOGY);
-			// if (isOntology == null || isOntology == false) {
-			// Iterator nodeIt = network.nodesIterator();
-			// while (nodeIt.hasNext()) {
-			// Node node = (Node) nodeIt.next();
-			// valueSet.add(node.getIdentifier());
-			// }
-			// }
-			// }
-
 		} else {
 
 			final byte attrType = selectedAttributes
@@ -2208,11 +2198,6 @@ public class ImportTextTableDialog extends JDialog implements
 	private void updateAliasTable() {
 		JTable curTable = aliasTableMap
 				.get(previewPanel.getSelectedSheetName());
-		// System.out.println("Sheet = " + previewPanel.getSelectedSheetName());
-		// //System.out.println("Sheet = " + previewPanel.getSelectedSheetName()
-		// + " === "+curTable.getModel().getRowCount() + ", " +
-		// curTable.getModel().getColumnCount());
-		//		
 
 		curTable.setDefaultRenderer(Object.class, new AliasTableRenderer(
 				attributeDataTypes, primaryKeyComboBox.getSelectedIndex()));
@@ -2567,6 +2552,178 @@ public class ImportTextTableDialog extends JDialog implements
 											.addContainerGap()));
 			pack();
 
+		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+			layout
+					.setHorizontalGroup(layout
+							.createParallelGroup(
+									org.jdesktop.layout.GroupLayout.LEADING)
+							.add(
+									layout
+											.createSequentialGroup()
+											.addContainerGap()
+											.add(
+													layout
+															.createParallelGroup(
+																	org.jdesktop.layout.GroupLayout.LEADING)
+															.add(
+																	org.jdesktop.layout.GroupLayout.TRAILING,
+																	layout
+																			.createSequentialGroup()
+																			.add(
+																					statusBar,
+																					org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																					org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																					Short.MAX_VALUE)
+																			.addPreferredGap(
+																					org.jdesktop.layout.LayoutStyle.RELATED)
+																			.add(
+																					importButton)
+																			.addPreferredGap(
+																					org.jdesktop.layout.LayoutStyle.RELATED)
+																			.add(
+																					cancelButton))
+															.add(
+																	previewPanel,
+																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																	Short.MAX_VALUE)
+															.add(
+																	org.jdesktop.layout.GroupLayout.TRAILING,
+																	advancedPanel,
+																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																	Short.MAX_VALUE)
+															.add(
+																	basicPanel,
+																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																	Short.MAX_VALUE)
+															.add(
+																	org.jdesktop.layout.GroupLayout.TRAILING,
+																	layout
+																			.createSequentialGroup()
+																			.add(
+																					titleIconLabel1)
+																			.addPreferredGap(
+																					org.jdesktop.layout.LayoutStyle.RELATED)
+																			.add(
+																					titleIconLabel2)
+																			.addPreferredGap(
+																					org.jdesktop.layout.LayoutStyle.RELATED)
+																			.add(
+																					titleIconLabel3)
+																			.add(
+																					20,
+																					20,
+																					20)
+																			.add(
+																					titleLabel)
+																			.addPreferredGap(
+																					org.jdesktop.layout.LayoutStyle.RELATED,
+																					487,
+																					Short.MAX_VALUE)
+																			.add(
+																					helpButton,
+																					org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																					org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																					org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+															.add(
+																	titleSeparator,
+																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																	931,
+																	Short.MAX_VALUE))
+											.addContainerGap()));
+			layout
+					.setVerticalGroup(layout
+							.createParallelGroup(
+									org.jdesktop.layout.GroupLayout.LEADING)
+							.add(
+									layout
+											.createSequentialGroup()
+											.addContainerGap()
+											.add(
+													layout
+															.createParallelGroup(
+																	org.jdesktop.layout.GroupLayout.TRAILING)
+															.add(
+																	layout
+																			.createSequentialGroup()
+																			.add(
+																					layout
+																							.createParallelGroup(
+																									org.jdesktop.layout.GroupLayout.BASELINE)
+																							.add(
+																									helpButton,
+																									org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																									20,
+																									org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+																							.add(
+																									titleIconLabel1)
+																							.add(
+																									titleIconLabel2)
+																							.add(
+																									titleIconLabel3))
+																			.add(
+																					2,
+																					2,
+																					2))
+															.add(
+																	layout
+																			.createSequentialGroup()
+																			.add(
+																					titleLabel)
+																			.addPreferredGap(
+																					org.jdesktop.layout.LayoutStyle.RELATED)))
+											.add(
+													titleSeparator,
+													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+													10,
+													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(
+													org.jdesktop.layout.LayoutStyle.RELATED)
+											.add(
+													basicPanel,
+													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(
+													org.jdesktop.layout.LayoutStyle.RELATED)
+											.add(
+													advancedPanel,
+													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(
+													org.jdesktop.layout.LayoutStyle.RELATED)
+											.add(
+													previewPanel,
+													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+													Short.MAX_VALUE)
+											.addPreferredGap(
+													org.jdesktop.layout.LayoutStyle.RELATED)
+											.add(
+													layout
+															.createParallelGroup(
+																	org.jdesktop.layout.GroupLayout.LEADING,
+																	false)
+															.add(
+																	layout
+																			.createParallelGroup(
+																					org.jdesktop.layout.GroupLayout.BASELINE)
+																			.add(
+																					cancelButton)
+																			.add(
+																					importButton))
+															.add(
+																	statusBar,
+																	org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																	org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+											.addContainerGap()));
+
+			annotationAndOntologyImportPanel.setVisible(true);
+			attrTypePanel.setVisible(true);
 		} else {
 			layout
 					.setHorizontalGroup(layout
