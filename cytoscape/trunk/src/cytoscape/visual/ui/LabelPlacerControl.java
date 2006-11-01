@@ -51,7 +51,7 @@ import giny.view.Label;
  * A group of widgets that specifies the placement of
  * node labels.
  */
-public class LabelPlacerControl extends JPanel implements ActionListener, PropertyChangeListener {
+class LabelPlacerControl extends JPanel implements ActionListener, PropertyChangeListener {
 
     private LabelPosition lp;
     private JComboBox justifyCombo;
@@ -62,7 +62,7 @@ public class LabelPlacerControl extends JPanel implements ActionListener, Proper
     private LabelPlacerGraphic labelPlacer; 
     private boolean ignoreEvents;
 
-    public LabelPlacerControl(LabelPosition pos) {
+    LabelPlacerControl(LabelPosition pos) {
         super(); 
 
 	if ( pos == null )

@@ -55,9 +55,9 @@ import javax.swing.JMenuItem;
 import java.awt.Color;
 import java.awt.Font;
 
-public class EdgeBypass extends VizMapBypass {
+class EdgeBypass extends VizMapBypass {
 
-    public JMenuItem addMenu(Edge e) {
+    JMenuItem addMenu(Edge e) {
     	graphObj = e;
 	attrs = Cytoscape.getEdgeAttributes();
 

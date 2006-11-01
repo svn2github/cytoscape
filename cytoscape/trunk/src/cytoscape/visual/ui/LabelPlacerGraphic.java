@@ -50,7 +50,7 @@ import giny.view.Label;
  * A drag and drop graphic that allows users to set the placement
  * of node labels.
  */
-public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener {
+class LabelPlacerGraphic extends JPanel implements PropertyChangeListener {
 
     private LabelPosition lp; 
 
@@ -133,7 +133,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
      * in full detail at a size of 500 pixels.
      * @param pos initial label position
      */
-    public LabelPlacerGraphic(LabelPosition pos) {
+    LabelPlacerGraphic(LabelPosition pos) {
     	this(pos,500,true);
     }
 
@@ -143,7 +143,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
      * @param size number of pixels square the that graphic should be
      * @param fullDetail whether or not to render at full detail or not 
      */
-    public LabelPlacerGraphic(LabelPosition pos, int size, boolean fullDetail) {
+    LabelPlacerGraphic(LabelPosition pos, int size, boolean fullDetail) {
         super();
 
 	if (pos == null)

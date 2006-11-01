@@ -55,9 +55,9 @@ import javax.swing.JMenuItem;
 import java.awt.Color;
 import java.awt.Font;
 
-public class NodeBypass extends VizMapBypass {
+class NodeBypass extends VizMapBypass {
 
-    public JMenuItem addMenu(Node n) {
+    JMenuItem addMenu(Node n) {
     	graphObj = n;
 	attrs = Cytoscape.getNodeAttributes();
 

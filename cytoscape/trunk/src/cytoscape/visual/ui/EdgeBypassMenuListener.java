@@ -47,9 +47,9 @@ import ding.view.EdgeContextMenuListener;
  * EdgeBypassMenuListener implements EdgeContextMenuListener
  * When a node is selected it calls bypass andd add 
  */
-public class EdgeBypassMenuListener implements EdgeContextMenuListener {
+class EdgeBypassMenuListener implements EdgeContextMenuListener {
 
-    public EdgeBypassMenuListener(){ }
+    EdgeBypassMenuListener(){ }
 
     /**
      * @param nodeView The clicked EdgeView

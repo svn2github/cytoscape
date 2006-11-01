@@ -47,9 +47,9 @@ import javax.swing.JPopupMenu;
  * NodeBypassMenuListener implements NodeContextMenuListener
  * When a node is selected it calls bypass andd add 
  */
-public class NodeBypassMenuListener implements NodeContextMenuListener {
+class NodeBypassMenuListener implements NodeContextMenuListener {
 
-    public NodeBypassMenuListener(){ }
+    NodeBypassMenuListener(){ }
 
     /**
      * @param nodeView The clicked NodeView
