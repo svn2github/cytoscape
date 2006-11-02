@@ -97,7 +97,7 @@ public class CsFilter
     button.addActionListener(action);
     button.setToolTipText("Use Filters");
     button.setBorderPainted(false);
-    toolBar.add(button, 7);
+    toolBar.add(button);
 
     FilterEditorManager.defaultManager().addEditor( new NumericAttributeFilterEditor() );
     FilterEditorManager.defaultManager().addEditor( new StringPatternFilterEditor ()); 
