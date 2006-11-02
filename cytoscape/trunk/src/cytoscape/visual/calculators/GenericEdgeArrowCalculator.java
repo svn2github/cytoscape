@@ -74,17 +74,31 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
     public String getTypeName() {
         return typename; 
     }
-    
+   
+    protected String getClassName() {
+    	if ( arrowType == VizMapUI.EDGE_SRCARROW )
+		return "cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator";	
+	if  ( arrowType == VizMapUI.EDGE_TGTARROW )
+		return "cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator";	
+	return getClass().getName(); 
+    }
+
     GenericEdgeArrowCalculator() {
 	super();
+	// do this as a better default than 0,null,null - still not good though
+	set(VizMapUI.EDGE_TGTARROW,"edgeSourceTargetCalculator","Edge Target Arrow");
     }
    
     public GenericEdgeArrowCalculator(String name, ObjectMapping m) {
 	super(name, m);
+	// do this as a better default than 0,null,null - still not good though
+	set(VizMapUI.EDGE_TGTARROW,"edgeSourceTargetCalculator","Edge Target Arrow");
     }
    
     public GenericEdgeArrowCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey);
+	// do this as a better default than 0,null,null - still not good though
+	set(VizMapUI.EDGE_TGTARROW,"edgeSourceTargetCalculator","Edge Target Arrow");
     }
     
     public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {

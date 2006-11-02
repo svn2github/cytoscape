@@ -248,8 +248,18 @@ public abstract class AbstractCalculator implements Calculator {
         String mapBaseKey = getPropertyLabel() + "." + toString() + ".mapping";
         ObjectMapping m = getMapping(0);
 	Properties props = MappingFactory.getProperties(m, mapBaseKey);
-	props.put( getPropertyLabel() + "." + toString() + ".class", this.getClass().getName() );
+	props.put( getPropertyLabel() + "." + toString() + ".class", getClassName() );
 	return props;
+    }
+
+    /**
+     * This exists so that it can be overridden in legacy classes (GenericNodeSizeCalculator,
+     * GenericColorCalculator, GenericArrowCalculator) such that they return the a new class name
+     * instead of a legacy class name. This will help prevent legacy classes from persisting in
+     * vizmap.props files.
+     */
+    protected String getClassName() {
+    	return this.getClass().getName();
     }
 
     /**

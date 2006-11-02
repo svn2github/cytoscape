@@ -72,17 +72,33 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
     public String getTypeName() {
         return typename; 
     }
+
+    protected String getClassName() {
+    	if ( sizeType == VizMapUI.NODE_SIZE )
+		return "cytoscape.visual.calculators.GenericNodeUniformSizeCalculator";
+    	if ( sizeType == VizMapUI.NODE_WIDTH )
+		return "cytoscape.visual.calculators.GenericNodeWidthCalculator";
+    	if ( sizeType == VizMapUI.NODE_HEIGHT )
+		return "cytoscape.visual.calculators.GenericNodeHeightCalculator";
+	return getClass().getName();
+    }
     
     GenericNodeSizeCalculator() {
 	super();
+	// do this as a better default than 0,null,null - still not good though
+	set(VizMapUI.NODE_SIZE,"nodeUniformSizeCalculator","Node Size");
     }
    
     public GenericNodeSizeCalculator(String name, ObjectMapping m) {
 	super(name, m);
+	// do this as a better default than 0,null,null - still not good though
+	set(VizMapUI.NODE_SIZE,"nodeUniformSizeCalculator","Node Size");
     }
    
     public GenericNodeSizeCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey);
+	// do this as a better default than 0,null,null - still not good though
+	set(VizMapUI.NODE_SIZE,"nodeUniformSizeCalculator","Node Size");
     }
     
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {

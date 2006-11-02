@@ -741,15 +741,11 @@ public class XGMMLReader extends AbstractGraphReader {
 		h = graphics.getH();
 		w = graphics.getW();
 
-		if (x > 0)
-			nodeView.setXPosition(x);
-		if (y > 0)
-			nodeView.setYPosition(y);
+		nodeView.setXPosition(x);
+		nodeView.setYPosition(y);
 
-		if (h > 0)
-			nodeView.setHeight(h);
-		if (w > 0)
-			nodeView.setWidth(w);
+		nodeView.setHeight(h);
+		nodeView.setWidth(w);
 
 		// Set color
 		if (graphics.getFill() != null)

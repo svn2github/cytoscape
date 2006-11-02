@@ -186,6 +186,7 @@ public class VizMapAttrTab extends VizMapTab {
       drawDefault(defaultObj);
       drawCalc();
     } else {
+      rebuildCalcComboBox();
       defaultValueDisplayer.setObject(defaultObj);
     }
     refreshUI();

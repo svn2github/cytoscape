@@ -432,7 +432,7 @@ public class CalculatorIO {
      */
     private static void handleCalculators(Map<String,Properties> nameMap, CalculatorCatalog catalog,
                     boolean overWrite, String calcTypeKey) {
-	
+
 	// for each calculator name
 	for ( String name : nameMap.keySet() ) {
 	    // get the properties object that contains all info for
@@ -453,7 +453,7 @@ public class CalculatorIO {
                 }
 
                 catalog.addCalculator(c);
-	    }
+	    } 
         }
     }
     

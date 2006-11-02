@@ -176,6 +176,7 @@ public class CalculatorCatalog {
 	 * @param c
 	 *            the calculator
 	 * @return byte the byte identifier
+	 * @deprecated Use calc.getType() instead. Will be removed 10/2007. 
 	 */
 	public byte getType(Calculator c) throws IllegalArgumentException {
 		return c.getType();
@@ -213,7 +214,7 @@ public class CalculatorCatalog {
 	 */
 	public void addCalculator(Calculator dupe)
 			throws DuplicateCalculatorNameException, IllegalArgumentException {
-		byte calcType = getType(dupe);
+		byte calcType = dupe.getType();
 		Map<String,Calculator> theMap = getCalculatorMap(calcType);
 		addCalculator(dupe, theMap);
 			
@@ -252,7 +253,7 @@ public class CalculatorCatalog {
 	 */
 	public void renameCalculator(Calculator c, String name)
 			throws DuplicateCalculatorNameException, IllegalArgumentException {
-		byte calcType = getType(c);
+		byte calcType = c.getType();
 		Map<String,Calculator> theMap = getCalculatorMap(calcType);
 		String newName = checkName(name, theMap);
 		if (newName.equals(name)) {// given name is unique
@@ -274,7 +275,7 @@ public class CalculatorCatalog {
 	 *             if c is of an unknown calculator type
 	 */
 	public void removeCalculator(Calculator c) throws IllegalArgumentException {
-		byte calcType = getType(c);
+		byte calcType = c.getType();
 		Map<String,Calculator> theMap = getCalculatorMap(calcType);
 		theMap.remove(c.toString());
 		// fire event
@@ -347,7 +348,6 @@ public class CalculatorCatalog {
 		String name = vs.toString();
 		System.out.println("visual style name " + name);
 		// check for duplicate names
-		//System.out.println ("Keyset = " + visualStyles.keySet());
 		if (visualStyles.keySet().contains(name)) {
 			String s = "Duplicate visual style name " + name;
 			throw new DuplicateCalculatorNameException(s);

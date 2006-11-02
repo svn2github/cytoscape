@@ -635,8 +635,8 @@ public class CytoscapeSessionReader {
 				curView.setVisualStyle(curVS);
 				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
 						.resetStyles(curVS);
-				Cytoscape.getDesktop().getVizMapUI().visualStyleChanged();
 				Cytoscape.getVisualMappingManager().setVisualStyle(curVS);
+				Cytoscape.getDesktop().getVizMapUI().visualStyleChanged();
 
 			} else {
 				curView.setVisualStyle(Cytoscape.getVisualMappingManager()

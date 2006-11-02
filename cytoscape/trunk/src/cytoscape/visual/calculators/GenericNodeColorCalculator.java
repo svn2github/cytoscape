@@ -68,17 +68,31 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
     public String getTypeName() {
         return typename; 
     }
+
+    protected String getClassName() {
+    	if ( colType == VizMapUI.NODE_COLOR )
+		return "cytoscape.visual.calculators.GenericNodeFillColorCalculator";
+    	if ( colType == VizMapUI.NODE_BORDER_COLOR )
+		return "cytoscape.visual.calculators.GenericNodeBorderColorCalculator";
+	return getClass().getName();
+    }
     
     GenericNodeColorCalculator() {
 	super();
+	// do this as a better default than 0,null,null - still not good though	
+	set(VizMapUI.NODE_COLOR,"nodeFillColorCalculator","Node Color");
     }
    
     public GenericNodeColorCalculator(String name, ObjectMapping m) {
 	super(name, m);
+	// do this as a better default than 0,null,null - still not good though	
+	set(VizMapUI.NODE_COLOR,"nodeFillColorCalculator","Node Color");
     }
    
     public GenericNodeColorCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey);
+	// do this as a better default than 0,null,null - still not good though	
+	set(VizMapUI.NODE_COLOR,"nodeFillColorCalculator","Node Color");
     }
     
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
