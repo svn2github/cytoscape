@@ -16,11 +16,18 @@ nodelinkouturl.Web\ resources.Google=http://www.google.com/search?hl=en&q=%ID%&b
 nodelinkouturl.UniProt.PIR=http://www.uniprot.org/entry/%ID%
 nodelinkouturl.UniProt.EBI=http://www.ebi.uniprot.org/uniprot-srv/uniProtView.do?proteinId=%ID%&pager.offset=0
 nodelinkouturl.fly.FlyBase=http://flybase.bio.indiana.edu/.bin/fbidq.html?%ID%
-nodelinkouturl.worm.WormBase=http://flybase.bio.indiana.edu/.bin/fbidq.html?%ID%
+nodelinkouturl.worm.WormBase=http://www.wormbase.org/db/gene/gene?name=%ID%
 nodelinkouturl.Biological\ resources.GeneCards=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%ID%&alias=yes
 nodelinkouturl.Biological\ resources.Pfam=http://www.sanger.ac.uk/cgi-bin/Pfam/getacc?%ID%
 nodelinkouturl.Biological\ resources.InterPro=http://www.ebi.ac.uk/interpro/IEntry?ac=%ID%
 nodelinkouturl.Web\ resources.Ask=http://www.ask.com/web?q=%ID%&qsrc=0&o=0
+
+#Reactome links
+nodelinkouturl.Reactome.Entrez=http://www.reactome.org/cgi-bin/link?SOURCE=Entrez+Gene&ID=%ID%
+nodelinkouturl.Reactome.UniProt=http://www.reactome.org/cgi-bin/link?SOURCE=UNIPROT&ID=%ID%
+nodelinkouturl.Reactome.SGD=http://www.reactome.org/cgi-bin/link?SOURCE=SGD&ID=%ID%&FOCUS_SPECIES=Saccharomyces+cerevisiae
+nodelinkouturl.Reactome.RefSeq=http://www.reactome.org/cgi-bin/link?SOURCE=RefSeq&ID=%ID%
+nodelinkouturl.Reactome.Wormbase=http://www.reactome.org/cgi-bin/link?SOURCE=Wormbase&ID=%ID%&FOCUS_SPECIES=Caenorhabditis+elegans
 
 #Edge Links
 edgelinkouturl.iHop.yeast=http://www.ihop-net.org/UniPub/iHOP/in?dbrefs_1=%ID1%&ncbi_tax_id_1=4932&dbrefs_2=%ID2%&ncbi_tax_id_2=4932
