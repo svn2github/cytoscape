@@ -52,7 +52,7 @@ public class BookmarksUtilTest extends TestCase {
 		List<DataSource> sources = BookmarksUtil.getDataSourceList("ontology", bk.getCategory());
 		
 		assertNotNull(sources);
-		assertEquals(5, sources.size());
+		assertEquals(10, sources.size());
 		
 		List<DataSource> sources2 = BookmarksUtil.getDataSourceList("annotation", bk.getCategory());
 		assertNotNull(sources2);

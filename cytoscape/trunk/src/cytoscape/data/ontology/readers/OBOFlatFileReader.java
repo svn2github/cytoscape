@@ -1,18 +1,25 @@
 package cytoscape.data.ontology.readers;
 
-import static cytoscape.data.ontology.readers.OBOTags.*;
+import static cytoscape.data.ontology.readers.OBOTags.BROAD_SYNONYM;
+import static cytoscape.data.ontology.readers.OBOTags.DEF;
+import static cytoscape.data.ontology.readers.OBOTags.EXACT_SYNONYM;
+import static cytoscape.data.ontology.readers.OBOTags.ID;
+import static cytoscape.data.ontology.readers.OBOTags.IS_A;
+import static cytoscape.data.ontology.readers.OBOTags.IS_OBSOLETE;
+import static cytoscape.data.ontology.readers.OBOTags.NARROW_SYNONYM;
+import static cytoscape.data.ontology.readers.OBOTags.RELATED_SYNONYM;
+import static cytoscape.data.ontology.readers.OBOTags.RELATIONSHIP;
+import static cytoscape.data.ontology.readers.OBOTags.SYNONYM;
+import static cytoscape.data.ontology.readers.OBOTags.XREF_ANALOG;
 import giny.model.Edge;
 import giny.model.Node;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +35,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
 /**
- * OBO file reader.
+ * OBO file reader.<br>
  * 
  * <p>
  * This is a general OBO (Open Biomedical Ontologies:
@@ -42,21 +49,16 @@ import cytoscape.data.Semantics;
  * </p>
  * </p>
  * 
- * @author kono
+ * @since Cytoscape 2.4
+ * @version 0.7
+ * @author Keiichiro Ono
  * 
  */
 public class OBOFlatFileReader implements OntologyReader {
 
-	/*
-	 * Represents the start of an entry.
-	 */
-	
 	private static final String DEF_ORIGIN = "def_origin";
-	
 	private static final String IS_ONTOLOGY = "IsOntology";
-	
 	protected static final String TERM_TAG = "[Term]";
-
 	private static final String DEF_ONTOLOGY_NAME = "Ontology DAG";
 
 	private ArrayList<String[]> interactionList;
@@ -66,19 +68,15 @@ public class OBOFlatFileReader implements OntologyReader {
 	 * This is for attributes of nodes.
 	 */
 	private CyAttributes termAttributes;
-	
+
 	/*
 	 * Attribute for the Ontology DAG.
 	 */
 	private CyAttributes networkAttributes;
 
 	private Map<String, String> header;
-	
 	private String name;
 
-	/**
-	 * @uml.property name="inputStream"
-	 */
 	private InputStream inputStream;
 
 	/**
@@ -103,7 +101,8 @@ public class OBOFlatFileReader implements OntologyReader {
 	/**
 	 * 
 	 * @param oboStream
-	 * @param name TODO
+	 * @param name
+	 *            TODO
 	 */
 	public OBOFlatFileReader(InputStream oboStream, String name) {
 		this.inputStream = oboStream;
@@ -114,17 +113,18 @@ public class OBOFlatFileReader implements OntologyReader {
 	private void initialize() {
 		interactionList = new ArrayList<String[]>();
 		header = new HashMap<String, String>();
-		
-		if(name != null) {
-			ontologyDAG = Cytoscape.createNetwork(name, Cytoscape.getNetwork(Cytoscape.getOntologyRootID()), false);
+
+		if (name != null) {
+			ontologyDAG = Cytoscape.createNetwork(name, Cytoscape
+					.getNetwork(Cytoscape.getOntologyRootID()), false);
 		} else {
 			name = DEF_ONTOLOGY_NAME;
 			ontologyDAG = Cytoscape.createNetwork(DEF_ONTOLOGY_NAME, false);
 		}
-		
+
 		networkAttributes = Cytoscape.getNetworkAttributes();
 		termAttributes = Cytoscape.getNodeAttributes();
-		
+
 		/*
 		 * Ontology DAGs will be distinguished by this attribute.
 		 */
@@ -145,6 +145,7 @@ public class OBOFlatFileReader implements OntologyReader {
 		while ((line = bufRd.readLine()) != null) {
 			// Read header
 			if (line.startsWith(TERM_TAG)) {
+				readEntry(bufRd);
 				break;
 			} else if (line.length() != 0) {
 				final int colonInx = line.indexOf(':');
@@ -160,11 +161,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				readEntry(bufRd);
 			}
 		}
-		
-		/*
-		 * Set description of attributes
-		 */
-		
+
 		try {
 			if (inputStream != null) {
 				inputStream.close();
@@ -175,7 +172,6 @@ public class OBOFlatFileReader implements OntologyReader {
 		}
 
 		buildDag();
-		
 		setAttributeDescriptions();
 	}
 
@@ -188,8 +184,7 @@ public class OBOFlatFileReader implements OntologyReader {
 	private void readEntry(final BufferedReader rd) throws IOException {
 		String id = "";
 
-		while (true) // Parse until blank line.
-		{
+		while (true) {
 
 			boolean isObsolete = false;
 
@@ -204,39 +199,32 @@ public class OBOFlatFileReader implements OntologyReader {
 			if (key.equals(ID.toString())) {
 				// There's only one id.
 				id = val;
-				/*
-				 * Create a node in the Ontology DAG.
-				 */
-
-			} else if(key.equals(DEF.toString())) {	
+			} else if (key.equals(DEF.toString())) {
+				// System.out.println("DEF: " + id + " = " + val);
 				String[] definitionParts = val.split("\"");
 				termAttributes.setAttribute(id, key, definitionParts[1]);
-				List<String> originList = getReferences(val.substring(definitionParts[1].length()+2));
-				if(originList != null) {
+				List<String> originList = getReferences(val
+						.substring(definitionParts[1].length() + 2));
+				if (originList != null) {
 					termAttributes.setAttributeList(id, DEF_ORIGIN, originList);
-					
-//					for(String value:originList) {
-//						System.out.println("ORG = " + value);
-//					}
 				}
-				//System.out.println("Origine = " + definitionParts[2] + ", "+ getReferences(val.substring(definitionParts[1].length()+2)));
-				
-				
-			} else if (key.equals(EXACT_SYNONYM.toString()) ||
-							key.equals(RELATED_SYNONYM.toString()) ||
-							key.equals(BROAD_SYNONYM.toString()) ||
-							key.equals(NARROW_SYNONYM.toString()) || key.equals(SYNONYM.toString())
-						) {
-				
+			} else if (key.equals(EXACT_SYNONYM.toString())
+					|| key.equals(RELATED_SYNONYM.toString())
+					|| key.equals(BROAD_SYNONYM.toString())
+					|| key.equals(NARROW_SYNONYM.toString())
+					|| key.equals(SYNONYM.toString())) {
+
 				String[] synonymParts = val.split("\"");
-				Map<String, String> synoMap = termAttributes.getAttributeMap(id, OBOTags.SYNONYM.toString());
-				if(synoMap == null) {
+				Map<String, String> synoMap = termAttributes.getAttributeMap(
+						id, OBOTags.SYNONYM.toString());
+				if (synoMap == null) {
 					synoMap = new HashMap<String, String>();
 				}
 				synoMap.put(synonymParts[1], key);
-				termAttributes.setAttributeMap(id, OBOTags.SYNONYM.toString(), synoMap);
-				
-				//nodeAttributes.getAttributeMap(id, SYNONYMS).put(val, "");
+				termAttributes.setAttributeMap(id, OBOTags.SYNONYM.toString(),
+						synoMap);
+
+				// nodeAttributes.getAttributeMap(id, SYNONYMS).put(val, "");
 			} else if (key.equals(RELATIONSHIP.toString())) {
 
 				if (source == null) {
@@ -244,6 +232,7 @@ public class OBOFlatFileReader implements OntologyReader {
 					ontologyDAG.addNode(source);
 				}
 				String[] entry = val.split(" ");
+
 				final String[] itr = new String[3];
 				itr[0] = id;
 				itr[1] = entry[1];
@@ -262,11 +251,11 @@ public class OBOFlatFileReader implements OntologyReader {
 				}
 				int colonidx = val.indexOf('!');
 				final String targetId;
-				if(colonidx == -1) {
+				if (colonidx == -1) {
 					// GO Slim.
 					targetId = val.trim();
 				} else {
-					targetId= val.substring(0, colonidx).trim();
+					targetId = val.substring(0, colonidx).trim();
 				}
 				target = Cytoscape.getCyNode(targetId, true);
 				ontologyDAG.addNode(target);
@@ -289,11 +278,20 @@ public class OBOFlatFileReader implements OntologyReader {
 				itr[2] = "is_a";
 				interactionList.add(itr);
 
-			} else if(key.equals(OBOTags.IS_OBSOLETE.toString())) {
+			} else if (key.equals(IS_OBSOLETE.toString())) {
 				Boolean obsolete = new Boolean(val);
 				termAttributes.setAttribute(id, key, obsolete);
-			} else if(key.equals(OBOTags.XREF_ANALOG.toString())) {
-				
+			} else if (key.equals(XREF_ANALOG.toString())) {
+				List xrefAnalog = termAttributes.getAttributeList(id,
+						XREF_ANALOG.toString());
+				if (xrefAnalog == null) {
+					xrefAnalog = new ArrayList<String>();
+				}
+				if (val != null) {
+					xrefAnalog.add(val.toString());
+				}
+				termAttributes.setAttributeList(id, XREF_ANALOG.toString(),
+						xrefAnalog);
 			} else {
 				termAttributes.setAttribute(id, key, val);
 			}
@@ -307,11 +305,11 @@ public class OBOFlatFileReader implements OntologyReader {
 	private void buildDag() {
 		Iterator<String[]> it = interactionList.iterator();
 		while (it.hasNext()) {
-
 			String[] interaction = it.next();
-			Edge isA = Cytoscape.getCyEdge(Cytoscape.getCyNode(interaction[0]),
-					Cytoscape.getCyNode(interaction[1]), Semantics.INTERACTION,
-					interaction[2], true, true);
+
+			Edge isA = Cytoscape.getCyEdge(Cytoscape.getCyNode(interaction[0],
+					true), Cytoscape.getCyNode(interaction[1], true),
+					Semantics.INTERACTION, interaction[2], true, true);
 			ontologyDAG.addEdge(isA);
 		}
 	}
@@ -326,45 +324,30 @@ public class OBOFlatFileReader implements OntologyReader {
 
 	private List<String> getReferences(String list) {
 		String trimed = list.trim();
-		trimed = trimed.substring(trimed.indexOf("[")+1, trimed.indexOf("]"));
-		if(trimed.length() == 0) {
+		trimed = trimed.substring(trimed.indexOf("[") + 1, trimed.indexOf("]"));
+		if (trimed.length() == 0) {
 			return null;
 		} else {
 			List<String> entries = new ArrayList<String>();
-			for(String entry: trimed.split(",")) {
+			for (String entry : trimed.split(",")) {
 				entries.add(entry.trim());
 			}
 			return entries;
 		}
 	}
-	
+
 	private void setAttributeDescriptions() {
 		String[] attrNames = termAttributes.getAttributeNames();
 		Set<String> attrNameSet = new TreeSet<String>();
-		for(String name: attrNames) {
+		for (String name : attrNames) {
 			attrNameSet.add(name);
 		}
-		
-		for(OBOTags tags: OBOTags.values()) {
-			if(attrNameSet.contains(tags.toString())) {
-				termAttributes.setAttributeDescription(tags.toString(), tags.getDescription());
+
+		for (OBOTags tags : OBOTags.values()) {
+			if (attrNameSet.contains(tags.toString())) {
+				termAttributes.setAttributeDescription(tags.toString(), tags
+						.getDescription());
 			}
 		}
-	}
-	
-	public void writeSif(String fileName) throws IOException {
-		PrintWriter writer = null;
-		writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
-
-		try {
-			if (writer != null) {
-				writer.flush();
-				writer.close();
-			}
-		} catch (Exception e) {
-		} finally {
-			writer = null;
-		}
-
 	}
 }

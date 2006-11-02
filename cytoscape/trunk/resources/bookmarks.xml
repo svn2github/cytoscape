@@ -35,6 +35,22 @@
 			</attribute>
 			<attribute name="ontologyType">GO</attribute>
 		</dataSource>
+		<dataSource name="Molecule role (INOH Protein name/family name ontology)"
+			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/molecule_role.obo"
+			format="obo">
+			<attribute name="description">
+				A structured controlled vocabulary of concrete protein names and generic (abstract) protein names. This ontology is a INOH pathway annotation ontology, one of a set of ontologies intended to be used in pathway data annotation to ease data integration. This ontology is used to annotate protein names, protein family names, generic/concrete protein names in the INOH pathway data.
+				INOH is part of the BioPAX working group.
+			</attribute>
+		</dataSource>
+		<dataSource name="Event (INOH pathway ontology)"
+			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/event.obo"
+			format="obo">
+			<attribute name="description">
+				A structured controlled vocabulary of pathway centric biological processes. This ontology is a INOH pathway annotation ontology, one of a set of ontologies intended to be used in pathway data annotation to ease data integration. This ontology is used to annotate biological processes, pathways, sub-pathways in the INOH pathway data.
+				INOH is part of the BioPAX working group.
+			</attribute>
+		</dataSource>
 		<dataSource name="Protein-protein interaction"
 			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/protein/psi-mi.obo"
 			format="obo">
@@ -47,6 +63,27 @@
 			format="obo">
 			<attribute name="description">
 				The Pathway Ontology is a controlled vocabulary for pathways that provides standard terms for the annotation of geneproducts.
+			</attribute>
+		</dataSource>
+		<dataSource name="PATO"
+			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/quality.obo"
+			format="obo">
+			<attribute name="description">
+				PATO is an ontology of phenotypic qualities, intended for use in a number of applications, primarily phenotype annotation.  For more information, please visit PATO wiki (http://www.bioontology.org/wiki/index.php/PATO:Main_Page). 
+			</attribute>
+		</dataSource>
+		<dataSource name="Mouse pathology"
+			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/mouse_pathology/mouse_pathology.obo"
+			format="obo">
+			<attribute name="description">
+				Mouse Pathology Ontology (MPATH) is an ontology for mutant mouse pathology.  This is Version 1.
+			</attribute>
+		</dataSource>
+		<dataSource name="Human disease"
+			xlink:href="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/human_disease.obo"
+			format="obo">
+			<attribute name="description">
+				This ontology is a comprehensive hierarchical controlled vocabulary for human disease representation.  For more information, please visit Disease Ontology website (http://diseaseontology.sourceforge.net/).
 			</attribute>
 		</dataSource>
 		<!-- List of Gene Association files-->
