@@ -99,7 +99,7 @@ public class PsiMiGraphReader implements GraphReader {
 
             //  Now Map to Cytocape Network Objects.
             MapToCytoscape mapper2 = new MapToCytoscape
-                (interactions, MapToCytoscape.MATRIX_VIEW);
+                (interactions, MapToCytoscape.SPOKE_VIEW);
             mapper2.doMapping();
             nodeIndices = mapper2.getNodeIndices();
             edgeIndices = mapper2.getEdgeIndices();
