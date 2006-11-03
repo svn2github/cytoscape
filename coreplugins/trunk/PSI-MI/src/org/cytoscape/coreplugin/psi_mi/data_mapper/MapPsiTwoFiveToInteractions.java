@@ -55,7 +55,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
     private HashMap experimentMap;
     private ArrayList interactions;
     private String xml;
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     /**
      * Constructor.
@@ -181,23 +181,23 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
                             : role.getExperimentalRole()) {
                         NamesType namesType = expRole.getNames();
                         String roleName = namesType.getShortLabel();
+                        log("Storing role for:  " + interactor.getName() + " --> " + roleName);
                         interactorRoles.put(interactor.getName(), roleName);
                     }
                 }
             }
             interaction.setInteractors(interactorList);
             interaction.setInteractionId(cInteraction.getId());
-            ArrayList expDatalist = extractExperimentalData
-                    (cInteraction, interaction);
+            ArrayList expDatalist = extractExperimentalData (cInteraction, interaction);
 
             //  Add BAIT MAP / Names To all Interactions.
             for (int j = 0; j < expDatalist.size(); j++) {
                 interaction = (org.cytoscape.coreplugin.psi_mi.model.Interaction)
                         expDatalist.get(j);
-                interaction.addAttribute(InteractionVocab.BAIT_MAP,
-                        interactorRoles);
+                interaction.addAttribute(InteractionVocab.BAIT_MAP, interactorRoles);
                 extractInteractionNamesXrefs(cInteraction, interaction);
             }
+            log("Adding num interactions:  " + expDatalist.size());
             interactions.addAll(expDatalist);
         }
         log("Extracting Interaction List: End");
@@ -322,13 +322,9 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
             int expCount = expList.getExperimentRefOrExperimentDescription().size();
             for (int i = 0; i < expCount; i++) {
                 org.cytoscape.coreplugin.psi_mi.model.Interaction interaction
-                        = cloneInteractionTemplate
-                        (interactionTemplate);
-                Object expItem = expList.getExperimentRefOrExperimentDescription()
-                        .get(i);
-                ExperimentType expType =
-                        extractExperimentReferenceOrElement(expItem);
-
+                        = cloneInteractionTemplate (interactionTemplate);
+                Object expItem = expList.getExperimentRefOrExperimentDescription().get(i);
+                ExperimentType expType = extractExperimentReferenceOrElement(expItem);
                 String id = getPubMedId(expType);
                 if (id != null) {
                     interaction.addAttribute(InteractionVocab.PUB_MED_ID, id);
