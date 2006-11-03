@@ -54,6 +54,8 @@
         <delete dir="${jars.dir}"/>
         <delete dir="${plugins.dir}"/>
         <delete dir="${junit.dir}"/>
+        <delete dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi1"/>
+        <delete dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi25"/>
     </target>
 
     <!--  Target to compile all code -->
@@ -73,11 +75,13 @@
              target="${src.dir}"
              package="org.cytoscape.coreplugin.psi_mi.schema.mi1">
             <produces dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi1"/>
+            <arg value="-nv"/>
         </xjc>
         <xjc schema="schemas/MIF25.xsd"
              target="${src.dir}"
              package="org.cytoscape.coreplugin.psi_mi.schema.mi25">
             <produces dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi25"/>
+            <arg value="-nv"/>
         </xjc>
     </target>
 
