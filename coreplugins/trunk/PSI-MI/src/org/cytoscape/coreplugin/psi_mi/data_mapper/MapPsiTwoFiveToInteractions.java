@@ -55,7 +55,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
     private HashMap experimentMap;
     private ArrayList interactions;
     private String xml;
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     /**
      * Constructor.
@@ -206,8 +206,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
     /**
      * Extracts Interaction Names.
      */
-    private void extractInteractionNamesXrefs
-            (InteractionElementType cInteraction,
+    private void extractInteractionNamesXrefs (InteractionElementType cInteraction,
                     org.cytoscape.coreplugin.psi_mi.model.Interaction interaction) {
         NamesType names = cInteraction.getNames();
         if (names != null) {
@@ -225,7 +224,9 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
             }
         }
         XrefType xref = cInteraction.getXref();
-        ExternalReference refs[] = this.extractExternalRefs(xref);
+        ExternalReference refs[] = extractExternalRefs(xref);
+
+        log ("Got refs:  " + refs.length);
         if (refs != null && refs.length > 0) {
             interaction.setExternalRefs(refs);
         }
@@ -278,14 +279,11 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
         ArrayList refList = new ArrayList();
         if (xref != null) {
             DbReferenceType primaryRef = xref.getPrimaryRef();
-            createExternalReference(primaryRef.getDb(), primaryRef.getId(),
-                    refList);
+            createExternalReference(primaryRef.getDb(), primaryRef.getId(), refList);
             for (DbReferenceType secondaryRef : xref.getSecondaryRef()) {
-                createExternalReference(secondaryRef.getDb(),
-                        secondaryRef.getId(), refList);
+                createExternalReference(secondaryRef.getDb(), secondaryRef.getId(), refList);
             }
-            ExternalReference refs [] =
-                    new ExternalReference[refList.size()];
+            ExternalReference refs [] = new ExternalReference[refList.size()];
             refs = (ExternalReference[]) refList.toArray(refs);
             return refs;
         } else {
