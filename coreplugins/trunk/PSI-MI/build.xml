@@ -21,6 +21,12 @@
     <!-- Junit Directory -->
     <property name="junit.dir" value="${build.dir}/junit"/>
 
+
+    <!-- For XJC compiler task -->
+    <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+            <classpath refid="classpath" />
+    </taskdef>
+
     <!-- Classpath with all lib JAR Files -->
     <path id="classpath">
         <pathelement path="${build.classes}"/>
@@ -29,6 +35,9 @@
         </fileset>
         <fileset dir="../../cytoscape/">
                 <include name="cytoscape.jar"/>
+        </fileset>
+        <fileset dir="../../cytoscape/lib/build-libs/">
+                <include name="*.jar" />
         </fileset>
         <fileset dir="lib">
                 <include name="*.jar"/>
@@ -51,12 +60,28 @@
     </target>
 
     <!--  Target to compile all code -->
-    <target depends="prepare" description="Compiles all source code."
+    <target depends="prepare, bind" description="Compiles all source code."
         name="compile">
         <javac debug="true" debuglevel="source,lines,var"
             destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="false">
             <classpath refid="classpath"/>
         </javac>
+    </target>
+
+    <!-- Generate package using XJC compiler            -->
+    <target name="bind" description="Run XJC to generate new packages.">
+        <mkdir dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi1"/>
+        <mkdir dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi25"/>
+        <xjc schema="schemas/MIF1.xsd"
+             target="${src.dir}"
+             package="org.cytoscape.coreplugin.psi_mi.schema.mi1">
+            <produces dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi1"/>
+        </xjc>
+        <xjc schema="schemas/MIF25.xsd"
+             target="${src.dir}"
+             package="org.cytoscape.coreplugin.psi_mi.schema.mi25">
+            <produces dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi25"/>
+        </xjc>
     </target>
 
     <!--  Target to Run Cytoscape -->
