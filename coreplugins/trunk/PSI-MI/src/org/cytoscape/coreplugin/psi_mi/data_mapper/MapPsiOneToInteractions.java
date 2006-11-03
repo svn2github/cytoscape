@@ -29,11 +29,16 @@
  **/
 package org.cytoscape.coreplugin.psi_mi.data_mapper;
 
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 import org.jdom.Text;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.types.RoleType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.BibrefType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.CvType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.DbReferenceType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.ExperimentType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.InteractionElementType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.NamesType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.XrefType;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
 import org.cytoscape.coreplugin.psi_mi.model.Interaction;
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
@@ -41,9 +46,13 @@ import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXBException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.math.BigInteger;
 
 /**
  * Maps PSI-MI Level 1 Document to Interaction Objects.
@@ -85,17 +94,18 @@ public class MapPsiOneToInteractions implements Mapper {
             interactorMap = new HashMap();
             experimentMap = new HashMap();
             StringReader reader = new StringReader(content);
-            EntrySet entrySet = EntrySet.unmarshalEntrySet(reader);
+            JAXBContext jc = JAXBContext.newInstance(
+                "org.cytoscape.coreplugin.psi_mi.schema.mi1");
+            Unmarshaller u = jc.createUnmarshaller();
+            org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet entrySet =
+                    (org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet) u.unmarshal(reader);
             ListUtil.setPsiOneEntrySet(entrySet);
-            int entryCount = entrySet.getEntryCount();
+            int entryCount = entrySet.getEntry().size();
             for (int i = 0; i < entryCount; i++) {
-                Entry entry = entrySet.getEntry(i);
+                EntrySet.Entry entry = entrySet.getEntry().get(i);
                 extractEntry(entry);
             }
-        } catch (ValidationException e) {
-            throw new MapperException (e, "PSI-MI XML File is invalid:  "
-                    + e.getMessage());
-        } catch (MarshalException e) {
+        } catch (JAXBException e) {
             throw new MapperException (e, "PSI-MI XML File is invalid:  "
                     + e.getMessage());
         }
@@ -104,23 +114,23 @@ public class MapPsiOneToInteractions implements Mapper {
     /**
      * Extracts PSI Entry Root Element.
      */
-    private void extractEntry(Entry entry) throws MapperException {
-        ExperimentList1 expList = entry.getExperimentList1();
+    private void extractEntry(EntrySet.Entry entry) throws MapperException {
+        EntrySet.Entry.ExperimentList expList = entry.getExperimentList();
         extractExperimentList(expList);
-        InteractorList interactorList = entry.getInteractorList();
+        EntrySet.Entry.InteractorList interactorList = entry.getInteractorList();
         extractInteractorList(interactorList);
-        InteractionList interactionList = entry.getInteractionList();
+        EntrySet.Entry.InteractionList interactionList = entry.getInteractionList();
         extractInteractionList(interactionList);
     }
 
     /**
      * Extracts Experiment List, and places into HashMap.
      */
-    private void extractExperimentList(ExperimentList1 expList) {
+    private void extractExperimentList(EntrySet.Entry.ExperimentList expList) {
         if (expList != null) {
-            int count = expList.getExperimentDescriptionCount();
+            int count = expList.getExperimentDescription().size();
             for (int i = 0; i < count; i++) {
-                ExperimentType expType = expList.getExperimentDescription(i);
+                ExperimentType expType = expList.getExperimentDescription().get(i);
                 String id = expType.getId();
                 experimentMap.put(id, expType);
             }
@@ -130,13 +140,13 @@ public class MapPsiOneToInteractions implements Mapper {
     /**
      * Extracts PSI InteractorList, and places into HashMap.
      */
-    private void extractInteractorList(InteractorList interactorList) {
+    private void extractInteractorList(EntrySet.Entry.InteractorList interactorList) {
         if (interactorList != null) {
-            int count = interactorList.getProteinInteractorCount();
+            int count = interactorList.getProteinInteractor().size();
             ListUtil.setInteractorCount(count);
             for (int i = 0; i < count; i++) {
                 ProteinInteractorType cProtein =
-                        interactorList.getProteinInteractor(i);
+                        interactorList.getProteinInteractor().get(i);
                 String id = cProtein.getId();
                 interactorMap.put(id, cProtein);
             }
@@ -146,26 +156,26 @@ public class MapPsiOneToInteractions implements Mapper {
     /**
      * Extracts PSI Interaction List
      */
-    private void extractInteractionList(InteractionList interactionList)
+    private void extractInteractionList(EntrySet.Entry.InteractionList interactionList)
             throws MapperException {
-        int count = interactionList.getInteractionCount();
+        int count = interactionList.getInteraction().size();
         for (int i = 0; i < count; i++) {
             Interaction interaction = new Interaction();
             InteractionElementType cInteraction =
-                    interactionList.getInteraction(i);
-            interaction.setInteractionId(cInteraction.getInteractionTypeCount());
-            ParticipantList pList = cInteraction.getParticipantList();
-            int pCount = pList.getProteinParticipantCount();
+                    interactionList.getInteraction().get(i);
+            interaction.setInteractionId(cInteraction.getInteractionType().size());
+            InteractionElementType.ParticipantList pList = cInteraction.getParticipantList();
+            int pCount = pList.getProteinParticipant().size();
             ArrayList interactorList = new ArrayList();
             HashMap interactorRoles = new HashMap();
             for (int j = 0; j < pCount; j++) {
                 Interactor interactor =
                         extractInteractorRefOrElement(pList, j);
                 interactorList.add(interactor);
-                ProteinParticipantType participant = pList.getProteinParticipant(j);
-                RoleType role = participant.getRole();
+                ProteinParticipantType participant = pList.getProteinParticipant().get(j);
+                String role = participant.getRole();
                 if (role != null) {
-                    interactorRoles.put(interactor.getName(), role.toString());
+                    interactorRoles.put(interactor.getName(), role);
                 }
             }
             interaction.setInteractors(interactorList);
@@ -214,14 +224,12 @@ public class MapPsiOneToInteractions implements Mapper {
     /**
      * Extracts Interactor From Reference or Element.
      */
-    private Interactor extractInteractorRefOrElement(ParticipantList pList,
+    private Interactor extractInteractorRefOrElement(InteractionElementType.ParticipantList pList,
             int j) throws MapperException {
         Interactor interactor = null;
         ProteinInteractorType cInteractor;
-        ProteinParticipantType participant = pList.getProteinParticipant(j);
-        ProteinParticipantTypeChoice type =
-                participant.getProteinParticipantTypeChoice();
-        RefType ref = type.getProteinInteractorRef();
+        ProteinParticipantType participant = pList.getProteinParticipant().get(j);
+        RefType ref = participant.getProteinInteractorRef();
         if (ref != null) {
             String key = ref.getRef();
             cInteractor = (ProteinInteractorType) interactorMap.get(key);
@@ -230,7 +238,7 @@ public class MapPsiOneToInteractions implements Mapper {
                         + "proteinInteractorRef:  " + key);
             }
         } else {
-            cInteractor = type.getProteinInteractor();
+            cInteractor = participant.getProteinInteractor();
         }
         if (cInteractor != null) {
             interactor = createInteractor(cInteractor);
@@ -268,9 +276,9 @@ public class MapPsiOneToInteractions implements Mapper {
             DbReferenceType primaryRef = xref.getPrimaryRef();
             createExternalReference(primaryRef.getDb(), primaryRef.getId(),
                     refList);
-            int count = xref.getSecondaryRefCount();
+            int count = xref.getSecondaryRef().size();
             for (int i = 0; i < count; i++) {
-                DbReferenceType secondaryRef = xref.getSecondaryRef(i);
+                DbReferenceType secondaryRef = xref.getSecondaryRef().get(i);
                 createExternalReference(secondaryRef.getDb(),
                         secondaryRef.getId(), refList);
             }
@@ -306,14 +314,14 @@ public class MapPsiOneToInteractions implements Mapper {
     private ArrayList extractExperimentalData(InteractionElementType
             cInteraction, Interaction interactionTemplate)
             throws MapperException {
-        ExperimentList expList = cInteraction.getExperimentList();
+        InteractionElementType.ExperimentList expList = cInteraction.getExperimentList();
         ArrayList list = new ArrayList();
         if (expList != null) {
-            int expCount = expList.getExperimentListItemCount();
+            int expCount = expList.getExperimentRefOrExperimentDescription().size();
             for (int i = 0; i < expCount; i++) {
                 Interaction interaction = cloneInteractionTemplate
                         (interactionTemplate);
-                ExperimentListItem expItem = expList.getExperimentListItem(i);
+                Object expItem = expList.getExperimentRefOrExperimentDescription().get(i);
                 ExperimentType expType =
                         extractExperimentReferenceOrElement(expItem);
                 String id = getPubMedId(expType);
@@ -346,17 +354,13 @@ public class MapPsiOneToInteractions implements Mapper {
     /**
      * Extracts an Experiment Reference or Sub-Element.
      */
-    private ExperimentType extractExperimentReferenceOrElement
-            (ExperimentListItem expItem) {
-        ExperimentType expType = null;
-        RefType ref = expItem.getExperimentRef();
-        if (ref != null) {
-            String key = ref.getRef();
-            expType = (ExperimentType) experimentMap.get(key);
+    private ExperimentType extractExperimentReferenceOrElement (Object expItem) {
+        if (expItem instanceof RefType) {
+            RefType refType = (RefType) expItem;
+            return (ExperimentType) experimentMap.get(refType.getRef());
         } else {
-            expType = expItem.getExperimentDescription();
+            return (ExperimentType) expItem;
         }
-        return expType;
     }
 
     /**
@@ -449,18 +453,18 @@ public class MapPsiOneToInteractions implements Mapper {
      */
     private void extractOrganismInfo(ProteinInteractorType cProtein,
             Interactor interactor) {
-        Organism organism = cProtein.getOrganism();
+        ProteinInteractorType.Organism organism = cProtein.getOrganism();
         if (organism != null) {
             NamesType names = organism.getNames();
             String commonName = names.getShortLabel();
             String fullName = names.getFullName();
-            int ncbiTaxID = organism.getNcbiTaxId();
+            BigInteger ncbiTaxID = organism.getNcbiTaxId();
             interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME,
                     commonName);
             interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME,
                     fullName);
             interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID,
-                    Integer.toString(ncbiTaxID));
+                    ncbiTaxID.toString());
         }
     }
 }

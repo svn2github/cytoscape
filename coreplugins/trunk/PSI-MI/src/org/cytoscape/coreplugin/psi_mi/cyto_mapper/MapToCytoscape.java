@@ -44,7 +44,6 @@ import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.CommonVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.types.RoleType;
 
 import java.util.*;
 
@@ -393,7 +392,7 @@ public class MapToCytoscape implements Mapper {
             String name = interactor.getName();
 
             String role = (String) baitMap.get(interactor.getName());
-            if (role != null && role.equalsIgnoreCase(RoleType.BAIT.toString())) {
+            if (role != null && role.equalsIgnoreCase("bait")) {
                 bait = interactor;
                 AttributeUtil.setbaitStatus(0);
                 break;

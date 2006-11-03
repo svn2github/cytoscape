@@ -61,8 +61,8 @@ public class TestMapInteractionsToPsi extends TestCase {
                 (xml, interactions);
         mapFromPsi.doMapping();
 
-        MapInteractionsToPsiOne mapToPsiOne = new MapInteractionsToPsiOne(interactions);
-        mapToPsiOne.doMapping();
+        //MapInteractionsToPsiOne mapToPsiOne = new MapInteractionsToPsiOne(interactions);
+        //mapToPsiOne.doMapping();
        /* EntrySet entrySet = mapToPsiOne.getPsiXml();
 
         validateInteractors(entrySet.getEntry(0).getInteractorList());
@@ -105,8 +105,8 @@ public class TestMapInteractionsToPsi extends TestCase {
         interaction.setInteractors(interactors);
         interactions.add(interaction);
 
-        MapInteractionsToPsiOne mapToPsiOne = new MapInteractionsToPsiOne(interactions);
-        mapToPsiOne.doMapping();
+        //MapInteractionsToPsiOne mapToPsiOne = new MapInteractionsToPsiOne(interactions);
+        //mapToPsiOne.doMapping();
     /*    EntrySet entrySet = mapToPsiOne.getPsiXml();
 
         StringWriter writer = new StringWriter();
@@ -120,7 +120,7 @@ public class TestMapInteractionsToPsi extends TestCase {
      *
      * @param interactorList Castor InteractorList Object.
      */
-    private void validateInteractors(InteractorList interactorList) {
+    private void validateInteractors(EntrySet.Entry.InteractorList interactorList) {
   /*      ProteinInteractorType interactor =
                 interactorList.getProteinInteractor(0);
         NamesType name = interactor.getNames();
@@ -153,7 +153,7 @@ public class TestMapInteractionsToPsi extends TestCase {
      *
      * @param interactionList Castor Interaction Object.
      */
-    private void validateInteractions(InteractionList interactionList) {
+    private void validateInteractions(EntrySet.Entry.InteractionList interactionList) {
       /*  InteractionElementType interaction = interactionList.getInteraction(0);
         ExperimentList expList = interaction.getExperimentList();
         ExperimentListItem expItem = expList.getExperimentListItem(0);
