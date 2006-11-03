@@ -144,5 +144,11 @@ public class TestMapPsiTwoFiveToInteractions extends TestCase {
         assertEquals ("GO:0042754", xrefs[4].getId());
         assertEquals ("intact", xrefs[5].getDatabase());
         assertEquals ("EBI-592287", xrefs[5].getId());
+
+        //  Validate Xrefs for Interaction
+        xrefs = interaction.getExternalRefs();
+        assertEquals (1, xrefs.length);
+        assertEquals ("intact", xrefs[0].getDatabase());
+        assertEquals ("EBI-781017", xrefs[0].getId());
     }
 }
