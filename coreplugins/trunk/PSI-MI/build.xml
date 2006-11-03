@@ -39,9 +39,6 @@
         <fileset dir="../../cytoscape/lib/build-libs/">
                 <include name="*.jar" />
         </fileset>
-        <fileset dir="lib">
-                <include name="*.jar"/>
-        </fileset>
     </path>
 
     <!-- Target to create the build directories prior to compilation -->
