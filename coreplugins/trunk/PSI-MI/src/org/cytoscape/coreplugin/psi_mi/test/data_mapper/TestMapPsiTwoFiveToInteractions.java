@@ -3,10 +3,7 @@ package org.cytoscape.coreplugin.psi_mi.test.data_mapper;
 import junit.framework.TestCase;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.Iterator;
-import java.util.HashMap;
+import java.util.*;
 
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
@@ -24,12 +21,42 @@ import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 public class TestMapPsiTwoFiveToInteractions extends TestCase {
 
     /**
-     * Test the PSI Mapper, Case 1.
+     * Test the PSI Mapper, Case 2.
      * Sample Data:  PSI-MI Level 2.5 File
      *
      * @throws Exception All Exceptions.
      */
     public void testPsiMapper1() throws Exception {
+        File file = new File("testData/psi_sample_2_5_1.xml");
+        ContentReader reader = new ContentReader();
+        String xml = reader.retrieveContent(file.toString());
+        ArrayList interactions = new ArrayList();
+        MapPsiTwoFiveToInteractions mapper = new MapPsiTwoFiveToInteractions
+                (xml, interactions);
+        mapper.doMapping();
+
+        //  Validate that we got all interactions
+        assertEquals (1, interactions.size());
+
+        //  Validate Interaction at index = 0.
+        Interaction interaction = (Interaction) interactions.get(0);
+        List interactorList = interaction.getInteractors();
+        Interactor interactor = (Interactor) interactorList.get(0);
+        assertEquals ("hs90b_human", interactor.getName());
+
+        //  Verify bait map
+        HashMap baitMap = (HashMap) interaction.getAttribute(InteractionVocab.BAIT_MAP);
+        String role = (String) baitMap.get(interactor.getName());
+        assertEquals ("bait", role);
+    }
+
+    /**
+     * Test the PSI Mapper, Case 2.
+     * Sample Data:  PSI-MI Level 2.5 File
+     *
+     * @throws Exception All Exceptions.
+     */
+    public void testPsiMapper2() throws Exception {
         File file = new File("testData/psi_sample_2_5_2.xml");
         ContentReader reader = new ContentReader();
         String xml = reader.retrieveContent(file.toString());
