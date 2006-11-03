@@ -31,35 +31,34 @@
 */
 package cytoscape.editor;
 
-import cern.colt.list.IntArrayList;
-
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.editor.actions.DeleteAction;
-import cytoscape.editor.actions.NewNetworkAction;
-
-import cytoscape.editor.event.NetworkEditEventAdapter;
-
-import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
-import cytoscape.editor.impl.ShapePalette;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
+import javax.swing.SwingConstants;
+import javax.swing.undo.UndoableEdit;
+
+import cern.colt.list.IntArrayList;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.CyAttributes;
+import cytoscape.editor.actions.DeleteAction;
+import cytoscape.editor.actions.NewNetworkAction;
+import cytoscape.editor.event.NetworkEditEventAdapter;
+import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
+import cytoscape.editor.impl.ShapePalette;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
+import ding.view.DGraphView.Canvas;
+
 
 import javax.swing.SwingConstants;
 import javax.swing.undo.UndoableEdit;
@@ -257,12 +256,12 @@ public abstract class CytoscapeEditorManager {
     //    /**
     //     * main data structure for all node attributes
     //     */
-    // public static cytoscape.data.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+     public static cytoscape.data.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
 
     //    /**
     //     * main data structure for all edge attributes
     //     */
-    //    public static cytoscape.data.CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
+        public static cytoscape.data.CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
     // MLC 08/06/06 END.
 
     // public static final String DEFAULT_VISUAL_STYLE =
@@ -565,6 +564,10 @@ public abstract class CytoscapeEditorManager {
         CytoscapeEditor         cyEditor = CytoscapeEditorManager.getCurrentEditor();
         ding.view.DGraphView    wiwx   = (DGraphView) newView;
         ding.view.InnerCanvas   canvas = wiwx.getCanvas();
+        
+        // AJK: 09/22/06 fix for opacity of foreground canvas
+        wiwx.getCanvas(Canvas.FOREGROUND_CANVAS).setOpaque(false);
+        
         NetworkEditEventAdapter event  = CytoscapeEditorManager.getViewNetworkEditEventAdapter(
             newView);
 
@@ -953,9 +956,9 @@ public abstract class CytoscapeEditorManager {
     //     * @param defaultEditor
     //     *            The defaultEditor to set.
     //     */
-    //    public static void setDefaultEditor(CytoscapeEditor defaultEditor) {
-    //        CytoscapeEditorManager.defaultEditor = defaultEditor;
-    //    }
+        public static void setDefaultEditor(CytoscapeEditor defaultEditor) {
+            CytoscapeEditorManager.defaultEditor = defaultEditor;
+        }
     // MLC 08/06/06 END.
 
     /**
