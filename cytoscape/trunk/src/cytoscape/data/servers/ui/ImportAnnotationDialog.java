@@ -718,32 +718,32 @@ public class ImportAnnotationDialog extends JDialog {
 		final String dataSourceString = (String) urlMap.get(this.sourceComboBox
 				.getSelectedItem());
 
-		if (advancedCheckBox.isSelected() == false) {
-			/*
-			 * Import as normal Gene Association file.
-			 */
-			reader = new GeneAssociationReader(ontologyName, new URL(
-					dataSourceString), false, TAB, ID);
-		} else {
-			/*
-			 * Check user selection.
-			 */
-			final String keyAttribute = nodeKeyComboBox.getSelectedItem()
-					.toString();
-
-			if ((!keyAttribute.equals(ID)) && primaryKey == PRIMARY_KEY
-					&& ontologyColumn == ONTOLOGY_COL && aliases.length == 1
-					&& aliases[0] == ALIAS) {
-				
-				reader = new GeneAssociationReader(ontologyName, new URL(
-						dataSourceString), false, TAB, keyAttribute);
-			}
+//		if (advancedCheckBox.isSelected() == false) {
+//			/*
+//			 * Import as normal Gene Association file.
+//			 */
+//			reader = new GeneAssociationReader(ontologyName, new URL(
+//					dataSourceString), false, TAB, ID);
+//		} else {
+//			/*
+//			 * Check user selection.
+//			 */
+//			final String keyAttribute = nodeKeyComboBox.getSelectedItem()
+//					.toString();
+//
+//			if ((!keyAttribute.equals(ID)) && primaryKey == PRIMARY_KEY
+//					&& ontologyColumn == ONTOLOGY_COL && aliases.length == 1
+//					&& aliases[0] == ALIAS) {
+//				
+//				reader = new GeneAssociationReader(ontologyName, new URL(
+//						dataSourceString), false, TAB, keyAttribute);
+//			}
 			/*
 			 * Import GA file using selected attribute
 			 */
 
-		}
-		loadAnnotation(reader, ontologyName, dataSourceString);
+//		}
+//		loadAnnotation(reader, ontologyName, dataSourceString);
 		dispose();
 	}
 
