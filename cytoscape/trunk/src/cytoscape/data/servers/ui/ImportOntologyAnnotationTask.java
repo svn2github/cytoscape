@@ -34,10 +34,8 @@ public class ImportOntologyAnnotationTask implements Task {
 	 * Executes Task.
 	 */
 	public void run() {
-
-		System.out.println("### Running table reader task...");
-
-		taskMonitor.setStatus("Importing annotation data...");
+		
+		taskMonitor.setStatus("Loading annotation for " + ontology + "...");
 		taskMonitor.setPercentCompleted(-1);
 
 		try {
@@ -89,7 +87,7 @@ public class ImportOntologyAnnotationTask implements Task {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return new String("Loading Network");
+		return new String("Loading Annotation");
 	}
 
 }
