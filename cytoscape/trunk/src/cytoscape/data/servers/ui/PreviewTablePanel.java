@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,9 @@ import org.jdesktop.layout.GroupLayout;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.readers.GeneAssociationTags;
+import cytoscape.data.readers.TextFileDelimiters;
+import cytoscape.data.servers.ui.ImportTextTableDialog.FileTypes;
 import cytoscape.util.URLUtil;
 import cytoscape.util.swing.ColumnResizer;
 
@@ -85,7 +89,7 @@ public class PreviewTablePanel extends JPanel {
 	private boolean loadFlag = false;
 
 	// Tracking attribute data type.
-	//private Byte[] dataTypes;
+	// private Byte[] dataTypes;
 	private Map<String, Byte[]> dataTypeMap;
 
 	/*
@@ -98,6 +102,8 @@ public class PreviewTablePanel extends JPanel {
 	private JTable previewTable;
 
 	// Tables for each worksheet.
+	
+	private Map<String, FileTypes> fileTypes;
 	private Map<String, JTable> previewTables;
 
 	private JTabbedPane tableTabbedPane;
@@ -124,6 +130,9 @@ public class PreviewTablePanel extends JPanel {
 		this.panelType = panelType;
 
 		dataTypeMap = new HashMap<String, Byte[]>();
+		
+		// This object will track the file types of each table.
+		fileTypes = new HashMap<String, FileTypes>();
 
 		initComponents();
 
@@ -357,6 +366,17 @@ public class PreviewTablePanel extends JPanel {
 		return dataTypeMap.get(selectedTabName);
 	}
 	
+	public FileTypes getFileType() {
+		
+		final String sheetName = getSheetName(tableTabbedPane.getSelectedIndex());
+		
+		if(sheetName.startsWith("gene_association")) {
+			return FileTypes.GENE_ASSOCIATION_FILE;
+		}
+		
+		return FileTypes.ATTRIBUTE_FILE;
+	}
+
 	/**
 	 * Get selected tab name.
 	 * 
@@ -402,15 +422,28 @@ public class PreviewTablePanel extends JPanel {
 	}
 
 	/**
-	 * Generate preview table.<br>
+	 * Load file and show preview.
 	 * 
-	 * <p>
-	 * </p>
-	 * 
+	 * @param sourceURL
+	 * @param delimiters
+	 * @param renderer renderer for this table.  Can be null.
+	 * @param size
 	 * @throws IOException
 	 */
 	public void setPreviewTable(URL sourceURL, List<String> delimiters,
 			TableCellRenderer renderer, int size) throws IOException {
+		TableCellRenderer curRenderer = renderer;
+		
+		/*
+		 * If rendrer is null, create default one.
+		 */
+		if(curRenderer == null) {
+			curRenderer = new AttributePreviewTableCellRenderer(0,
+					new ArrayList<Integer>(),
+					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+					null, TextFileDelimiters.PIPE.toString());
+		}
 
 		/*
 		 * Reset current state
@@ -436,25 +469,28 @@ public class PreviewTablePanel extends JPanel {
 			 */
 			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 				HSSFSheet sheet = wb.getSheetAt(i);
-				newModel = parseExcel(sourceURL, size, renderer, sheet);
+				newModel = parseExcel(sourceURL, size, curRenderer, sheet);
 				guessDataTypes(newModel, wb.getSheetName(i));
-				addTableTab(newModel, wb.getSheetName(i), renderer);
-				
+				addTableTab(newModel, wb.getSheetName(i), curRenderer);
 			}
 
 		} else {
 			fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
 			fileTypeLabel.setText("Text File");
 
-			newModel = parseText(sourceURL, size, renderer, delimiters);
+			newModel = parseText(sourceURL, size, curRenderer, delimiters);
 
 			String[] urlParts = sourceURL.toString().split("/");
 			final String tabName = urlParts[urlParts.length - 1];
 			guessDataTypes(newModel, tabName);
-			addTableTab(newModel, tabName, renderer);
-			
+			addTableTab(newModel, tabName, curRenderer);
 		}
 
+		if(getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
+			fileTypeLabel.setText("Gene Association");
+			fileTypeLabel.setToolTipText("This is a fixed-format Gene Association file.");
+		}
+		
 		loadFlag = true;
 	}
 
@@ -471,18 +507,15 @@ public class PreviewTablePanel extends JPanel {
 		/*
 		 * Initialize data type atrray. By default, everything is a String.
 		 */
-		//dataTypes = new Byte[newModel.getColumnCount()];
-		//dataTypeMap.put(tabName, new Byte[newModel.getColumnCount()]);
-
-//		for (int j = 0; j < newModel.getColumnCount(); j++) {
-//			dataTypes[j] = CyAttributes.TYPE_STRING;
-//		}
-
+		// dataTypes = new Byte[newModel.getColumnCount()];
+		// dataTypeMap.put(tabName, new Byte[newModel.getColumnCount()]);
+		// for (int j = 0; j < newModel.getColumnCount(); j++) {
+		// dataTypes[j] = CyAttributes.TYPE_STRING;
+		// }
 		JTableHeader hd = newTable.getTableHeader();
 		hd.setReorderingAllowed(false);
-		hd
-				.setDefaultRenderer(new HeaderRenderer(hd.getDefaultRenderer(),
-						dataTypeMap.get(tabName)));
+		hd.setDefaultRenderer(new HeaderRenderer(hd.getDefaultRenderer(),
+				dataTypeMap.get(tabName)));
 
 		/*
 		 * Setting table properties
@@ -498,16 +531,39 @@ public class PreviewTablePanel extends JPanel {
 		newTable.getTableHeader().addMouseListener(new TableHeaderListener());
 
 		ColumnResizer.adjustColumnPreferredWidths(newTable);
+
 		newTable.revalidate();
 		newTable.repaint();
+		newTable.getTableHeader().repaint();
 	}
 
-	private Vector<String> getDefaultColumnNames(final int colCount) {
+	/**
+	 * Based on the file type, setup the initial column names.
+	 * <p>
+	 * </p>
+	 * 
+	 * @param colCount
+	 * @return
+	 */
+	private Vector<String> getDefaultColumnNames(final int colCount,
+			final URL sourceURL) {
 
 		final Vector<String> colNames = new Vector<String>();
-		for (int i = 0; i < colCount; i++) {
-			colNames.add("Column " + (i + 1));
+		
+		String[] parts = sourceURL.toString().split("/");
+		final String fileName = parts[parts.length - 1];
+		
+		if (colCount == GeneAssociationTags.values().length
+				&& fileName.startsWith("gene_association")) {
+			for (Object colName : GeneAssociationTags.values()) {
+				colNames.add(colName.toString());
+			}
+		} else {
+			for (int i = 0; i < colCount; i++) {
+				colNames.add("Column " + (i + 1));
+			}
 		}
+		
 		return colNames;
 	}
 
@@ -577,7 +633,8 @@ public class PreviewTablePanel extends JPanel {
 
 		bufRd.close();
 
-		return new DefaultTableModel(data, getDefaultColumnNames(maxColumn));
+		return new DefaultTableModel(data, getDefaultColumnNames(maxColumn,
+				sourceURL));
 
 	}
 
@@ -604,13 +661,13 @@ public class PreviewTablePanel extends JPanel {
 				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 					final Double dblValue = cell.getNumericCellValue();
 					final Integer intValue = dblValue.intValue();
-					
-					if(intValue.doubleValue() == dblValue) {
+
+					if (intValue.doubleValue() == dblValue) {
 						rowVector.add(intValue.toString());
 					} else {
 						rowVector.add(dblValue.toString());
 					}
-					
+
 				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
 					rowVector.add(Boolean.toString(cell.getBooleanCellValue()));
 				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK
@@ -626,12 +683,8 @@ public class PreviewTablePanel extends JPanel {
 			rowCount++;
 		}
 
-		final Vector<String> colNames = new Vector<String>();
-		for (int j = 0; j < maxCol; j++) {
-			colNames.add("Column " + (j + 1));
-		}
-
-		return new DefaultTableModel(data, colNames);
+		return new DefaultTableModel(data, this.getDefaultColumnNames(maxCol,
+				sourceURL));
 	}
 
 	private void guessDataTypes(final TableModel model, final String tableName) {
@@ -664,7 +717,7 @@ public class PreviewTablePanel extends JPanel {
 						typeChecker[0][j]++;
 						found = true;
 					}
-				} else if(cell != null) {
+				} else if (cell != null) {
 
 					try {
 						Integer.valueOf(cell);
@@ -691,7 +744,7 @@ public class PreviewTablePanel extends JPanel {
 		}
 
 		Byte[] dataType = dataTypeMap.get(tableName);
-		if(dataType == null) {
+		if (dataType == null) {
 			dataType = new Byte[model.getColumnCount()];
 		}
 		for (int i = 0; i < dataType.length; i++) {
@@ -817,16 +870,14 @@ public class PreviewTablePanel extends JPanel {
 					changes.firePropertyChange(
 							ImportTextTableDialog.ATTRIBUTE_NAME_CHANGED, null,
 							colNamePair);
-					
-					
+
 					dataTypes[column] = newType;
-					
-					
+
 					targetTable.getTableHeader().setDefaultRenderer(
 							new HeaderRenderer(targetTable.getTableHeader()
 									.getDefaultRenderer(), dataTypes));
 					dataTypeMap.put(selectedTabName, dataTypes);
-					
+
 				}
 			} else if (SwingUtilities.isLeftMouseButton(e)
 					&& e.getClickCount() == 1) {
@@ -854,7 +905,8 @@ public class PreviewTablePanel extends JPanel {
 
 class KeyAttributeListRenderer extends JLabel implements ListCellRenderer {
 
-	private static final Font KEY_LIST_FONT = new Font("Sans-Serif", Font.BOLD, 16);
+	private static final Font KEY_LIST_FONT = new Font("Sans-Serif", Font.BOLD,
+			16);
 	private static final Color FONT_COLOR = Color.BLACK;
 
 	public KeyAttributeListRenderer() {

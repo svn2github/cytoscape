@@ -20,7 +20,7 @@ import cytoscape.data.CyAttributes;
  * @since Cytoscape 2.4
  * @version 0.9
  * @author Keiichiro Ono
- *
+ * 
  */
 public class AttributeLineParser {
 
@@ -55,13 +55,12 @@ public class AttributeLineParser {
 			 */
 			String aliasCell = null;
 			for (int aliasIndex : mapping.getAliasIndexList()) {
-				aliasCell = parts[aliasIndex];
-				// System.out.print("Aliasing: " + primaryKey + "Delimiter = " +
-				// listDelimiter);
-				if (aliasCell != null && aliasCell.trim().length() != 0) {
-					
-					aliasSet.addAll(buildList(aliasCell));
-					
+
+				if (parts.length > aliasIndex) {
+					aliasCell = parts[aliasIndex];
+					if (aliasCell != null && aliasCell.trim().length() != 0) {
+						aliasSet.addAll(buildList(aliasCell));
+					}
 				}
 			}
 		}
@@ -186,7 +185,7 @@ public class AttributeLineParser {
 			if (i != mapping.getKeyIndex()
 					&& !mapping.getAliasIndexList().contains(i)
 					&& mapping.getImportFlag()[i]) {
-				if(parts[i] == null) {
+				if (parts[i] == null) {
 					// Do nothing
 				}
 				/*
@@ -209,7 +208,7 @@ public class AttributeLineParser {
 			mapping.getAlias().add(altKey, new ArrayList<String>(aliasSet));
 		}
 	}
-	
+
 	/**
 	 * Based on the attribute types, map the entry to CyAttributes.<br>
 	 * 
@@ -217,11 +216,12 @@ public class AttributeLineParser {
 	 * @param entry
 	 * @param index
 	 */
-	private void mapAttribute(final String key, final String entry, final int index) {
-		
+	private void mapAttribute(final String key, final String entry,
+			final int index) {
+
 		Byte type = mapping.getAttributeTypes()[index];
-		
-		switch(type) {
+
+		switch (type) {
 		case CyAttributes.TYPE_BOOLEAN:
 			mapping.getAttributes().setAttribute(key,
 					mapping.getAttributeNames()[index], new Boolean(entry));
@@ -240,11 +240,12 @@ public class AttributeLineParser {
 			break;
 		case CyAttributes.TYPE_SIMPLE_LIST:
 			/*
-			 * In case of list, not overwrite the attribute.
-			 * Get the existing list, and add it to the list.
+			 * In case of list, not overwrite the attribute. Get the existing
+			 * list, and add it to the list.
 			 */
-			List curList = mapping.getAttributes().getAttributeList(key, mapping.getAttributeNames()[index]);
-			if(curList == null) {
+			List curList = mapping.getAttributes().getAttributeList(key,
+					mapping.getAttributeNames()[index]);
+			if (curList == null) {
 				curList = new ArrayList();
 			}
 			curList.addAll(buildList(entry));
@@ -256,28 +257,26 @@ public class AttributeLineParser {
 					mapping.getAttributeNames()[index], entry);
 		}
 	}
-	
+
 	/**
-	 * If an entry is a list, split the string and create 
-	 * new List Attribute.
+	 * If an entry is a list, split the string and create new List Attribute.
 	 * 
 	 * @return
 	 */
 	private List buildList(final String entry) {
-		
-		if(entry == null) {
+
+		if (entry == null) {
 			return null;
 		}
-		
+
 		final List<String> listAttr = new ArrayList<String>();
-		
-		final String[] parts = (entry.replace("\"", "")).split(mapping.getListDelimiter());
-		for(String listItem : parts) {
+
+		final String[] parts = (entry.replace("\"", "")).split(mapping
+				.getListDelimiter());
+		for (String listItem : parts) {
 			listAttr.add(listItem.trim());
 		}
 		return listAttr;
 	}
-	
-	
 
 }

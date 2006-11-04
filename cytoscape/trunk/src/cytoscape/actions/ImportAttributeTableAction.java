@@ -40,6 +40,9 @@ public class ImportAttributeTableAction extends CytoscapeAction implements
 		iad.setVisible(true);
 	}
 
+	/**
+	 * Enable this menu item only when network exists in the memory.
+	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED) || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)
 				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {

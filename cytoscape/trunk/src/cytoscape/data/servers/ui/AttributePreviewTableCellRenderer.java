@@ -206,7 +206,7 @@ class HeaderRenderer implements TableCellRenderer {
 			columnName.setForeground(UNSELECTED_COLOR.getColor());
 			columnName.setBackground(HEADER_UNSELECTED_BACKGROUND_COLOR.getColor());
 		}
-		if (dataTypes != null) {
+		if (dataTypes != null && dataTypes.length > col) {
 			columnName.setIcon(getDataTypeIcon(dataTypes[col]));
 		} else {
 			columnName.setIcon(getDataTypeIcon(CyAttributes.TYPE_STRING));

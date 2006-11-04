@@ -34,6 +34,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
@@ -43,6 +44,8 @@ import javax.swing.ToolTipManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -58,6 +61,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.readers.AttributeMappingParameters;
 import cytoscape.data.readers.DefaultAttributeTableReader;
 import cytoscape.data.readers.ExcelAttributeSheetReader;
+import cytoscape.data.readers.GeneAssociationReader;
 import cytoscape.data.readers.TextFileDelimiters;
 import cytoscape.data.readers.TextTableReader;
 import cytoscape.data.readers.TextTableReader.ObjectType;
@@ -71,7 +75,10 @@ import cytoscape.util.swing.JStatusBar;
 // Static imports for constants & resources.
 import static cytoscape.data.readers.TextFileDelimiters.*;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.*;
+import static cytoscape.data.servers.ui.enums.ImportDialogColorTheme.*;
+import static cytoscape.data.servers.ui.enums.ImportDialogFontTheme.*;
 import static cytoscape.data.readers.TextTableReader.ObjectType.*;
+import static cytoscape.data.readers.GeneAssociationTags.*;
 
 /**
  * 
@@ -93,6 +100,16 @@ public class ImportTextTableDialog extends JDialog implements
 	public static final int SIMPLE_ATTRIBUTE_IMPORT = 1;
 	public static final int ONTOLOGY_AND_ANNOTATION_IMPORT = 2;
 	public static final int NETWORK_IMPORT = 3;
+
+	/**
+	 * Enums for file types.
+	 * 
+	 * 
+	 * 
+	 */
+	public static enum FileTypes {
+		ATTRIBUTE_FILE, NETWORK_FILE, GENE_ASSOCIATION_FILE, CUSTOM_ANNOTATION_FILE;
+	}
 
 	/*
 	 * Signals used among Swing components in this dialog:
@@ -117,6 +134,8 @@ public class ImportTextTableDialog extends JDialog implements
 			+ "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\">"
 			+ "%AttributeTable%</table></p></body></html>";
 
+	private static final String DEF_ANNOTATION_ITEM = "Please select an annotation data source...";
+
 	private static final String keyTable[] = { "Alias?",
 			"Column (Attribute Name)", "Data Type" };
 
@@ -138,6 +157,7 @@ public class ImportTextTableDialog extends JDialog implements
 	private Map<String, Map<String, String>> annotationAttributesMap;
 
 	private Map<String, String> ontologyUrlMap;
+	private Map<String, String> ontologyTypeMap;
 	private Map<String, String> ontologyDescriptionMap;
 
 	private Map<String, Boolean> ontologyStatusMap;
@@ -151,6 +171,8 @@ public class ImportTextTableDialog extends JDialog implements
 	private Map<String, AliasTableModel> aliasTableModelMap;
 	private Map<String, JTable> aliasTableMap;
 	private Map<String, Integer> primaryKeyMap;
+
+	private Map<String, FileTypes> fileTypes;
 
 	private String[] columnHeaders;
 
@@ -183,12 +205,16 @@ public class ImportTextTableDialog extends JDialog implements
 		this.aliasTableMap = new HashMap<String, JTable>();
 		this.primaryKeyMap = new HashMap<String, Integer>();
 
+		this.fileTypes = new HashMap<String, FileTypes>();
+
 		annotationUrlMap = new HashMap<String, String>();
 		annotationFormatMap = new HashMap<String, String>();
 		annotationAttributesMap = new HashMap<String, Map<String, String>>();
 
 		ontologyUrlMap = new HashMap<String, String>();
 		ontologyDescriptionMap = new HashMap<String, String>();
+		ontologyTypeMap = new HashMap<String, String>();
+
 		ontologyStatusMap = new HashMap<String, Boolean>();
 		attributeNames = new HashMap<String, String[]>();
 		attributeDataTypes = new ArrayList<Byte>();
@@ -304,11 +330,10 @@ public class ImportTextTableDialog extends JDialog implements
 		nodeKeyLabel = new javax.swing.JLabel();
 		mappingAttributeComboBox = new javax.swing.JComboBox();
 		aliasScrollPane = new javax.swing.JScrollPane();
-		// aliasTable = new JTable();
 		arrowButton1 = new javax.swing.JButton();
 		ontology2annotationPanel = new javax.swing.JPanel();
 		targetOntologyLabel = new javax.swing.JLabel();
-		targetOntologyTextField = new javax.swing.JTextField();
+		ontologyTextField = new javax.swing.JTextField();
 		ontologyInAnnotationLabel = new javax.swing.JLabel();
 		ontologyInAnnotationComboBox = new javax.swing.JComboBox();
 		arrowButton2 = new javax.swing.JButton();
@@ -477,36 +502,40 @@ public class ImportTextTableDialog extends JDialog implements
 		 * This panel is necessary only when this is an ontology import dialog.
 		 */
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
-			
-			titleIconLabel1.setIcon(REMOTE_SOURCE_ICON.getIcon());
-			
-			ontologyLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
-			ontologyLabel.setForeground(new java.awt.Color(73, 127, 235));
+
+			titleIconLabel1.setIcon(REMOTE_SOURCE_ICON_LARGE.getIcon());
+
+			ontologyLabel.setFont(LABEL_FONT.getFont());
+			ontologyLabel.setForeground(ONTOLOGY_COLOR.getColor());
 			ontologyLabel.setText("Ontology");
 
-			ontologyComboBox.setFont(new java.awt.Font("SansSerif", 1, 14));
-			ontologyComboBox.setForeground(new java.awt.Color(73, 127, 235));
+			// ontologyComboBox.setFont(new java.awt.Font("SansSerif", 1, 14));
 			ontologyComboBox.setPreferredSize(new java.awt.Dimension(68, 25));
 			final ListCellRenderer ontologyLcr = ontologyComboBox.getRenderer();
-			ontologyComboBox.setFont(new java.awt.Font("SansSerif", 1, 12));
-			// ontologyComboBox.setForeground(new java.awt.Color(73, 127, 235));
+			ontologyComboBox.setFont(ITEM_FONT.getFont());
+			ontologyComboBox.setForeground(ONTOLOGY_COLOR.getColor());
 			ontologyComboBox.setRenderer(new ListCellRenderer() {
 				public Component getListCellRendererComponent(JList list,
 						Object value, int index, boolean isSelected,
 						boolean cellHasFocus) {
-					JLabel cmp = (JLabel) ontologyLcr
+					JLabel ontologyItem = (JLabel) ontologyLcr
 							.getListCellRendererComponent(list, value, index,
 									isSelected, cellHasFocus);
 					String url = ontologyUrlMap.get(value);
 
 					if (url != null && url.startsWith("http://")) {
-						cmp.setIcon(REMOTE_SOURCE_ICON.getIcon());
+						ontologyItem.setIcon(REMOTE_SOURCE_ICON.getIcon());
 					} else {
-						cmp.setIcon(LOCAL_SOURCE_ICON.getIcon());
+						ontologyItem.setIcon(LOCAL_SOURCE_ICON.getIcon());
 					}
 
-					cmp.setForeground(Color.red);
-					return cmp;
+					if (Cytoscape.getOntologyServer().getOntologyNames()
+							.contains(value)) {
+						ontologyItem.setForeground(ONTOLOGY_COLOR.getColor());
+					} else {
+						ontologyItem.setForeground(NOT_LOADED_COLOR.getColor());
+					}
+					return ontologyItem;
 				}
 			});
 
@@ -545,14 +574,13 @@ public class ImportTextTableDialog extends JDialog implements
 						}
 					});
 
-			sourceLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
+			sourceLabel.setFont(LABEL_FONT.getFont());
 			sourceLabel.setText("Annotation");
 
-			annotationComboBox.setFont(new java.awt.Font("SansSerif", 1, 14));
+			annotationComboBox.setFont(ITEM_FONT.getFont());
 			annotationComboBox.setPreferredSize(new java.awt.Dimension(68, 25));
 
 			final ListCellRenderer lcr = annotationComboBox.getRenderer();
-			annotationComboBox.setFont(new java.awt.Font("SansSerif", 1, 12));
 			annotationComboBox.setRenderer(new ListCellRenderer() {
 				public Component getListCellRendererComponent(JList list,
 						Object value, int index, boolean isSelected,
@@ -560,10 +588,10 @@ public class ImportTextTableDialog extends JDialog implements
 					JLabel cmp = (JLabel) lcr.getListCellRendererComponent(
 							list, value, index, isSelected, cellHasFocus);
 					String url = annotationUrlMap.get(value);
-					// System.out.println("############ box val = " + url + ", "
-					// +
-					// index);
-					if (url != null && url.startsWith("http://")) {
+
+					if (value.toString().equals(DEF_ANNOTATION_ITEM)) {
+						cmp.setIcon(null);
+					} else if (url != null && url.startsWith("http://")) {
 						cmp.setIcon(REMOTE_SOURCE_ICON.getIcon());
 					} else {
 						cmp.setIcon(LOCAL_SOURCE_ICON.getIcon());
@@ -674,9 +702,9 @@ public class ImportTextTableDialog extends JDialog implements
 		}
 
 		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
-			
+
 			titleIconLabel1.setIcon(SPREADSHEET_ICON_LARGE.getIcon());
-			
+
 			attributeFileLabel.setText("Input File");
 			attributeFileLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 			selectAttributeFileButton.setText("Select File");
@@ -1001,13 +1029,12 @@ public class ImportTextTableDialog extends JDialog implements
 			targetOntologyLabel.setForeground(new java.awt.Color(73, 127, 235));
 			targetOntologyLabel.setText("Ontology");
 
-			targetOntologyTextField.setFont(new java.awt.Font("SansSerif", 3,
-					14));
-			targetOntologyTextField.setForeground(new java.awt.Color(73, 127,
-					235));
-			targetOntologyTextField.setText("Gene Ontology Full");
-			targetOntologyTextField
-					.setToolTipText("Ontology name which will be used for mapping.");
+			ontologyTextField.setFont(new java.awt.Font("SansSerif", 1, 14));
+			ontologyTextField.setForeground(ONTOLOGY_COLOR.getColor());
+			ontologyTextField.setBackground(Color.WHITE);
+			ontologyTextField.setEditable(false);
+			ontologyTextField
+					.setToolTipText("This ontology will be used for mapping.");
 
 			ontologyInAnnotationLabel.setFont(new java.awt.Font("SansSerif", 1,
 					12));
@@ -1015,8 +1042,8 @@ public class ImportTextTableDialog extends JDialog implements
 					255));
 			ontologyInAnnotationLabel.setText("Key Column in Annotation File");
 
-			ontologyInAnnotationComboBox.setForeground(new java.awt.Color(0,
-					255, 255));
+			ontologyInAnnotationComboBox.setForeground(ONTOLOGY_COLOR
+					.getColor());
 			ontologyInAnnotationComboBox
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(
@@ -1065,7 +1092,7 @@ public class ImportTextTableDialog extends JDialog implements
 																	GroupLayout.LEADING,
 																	targetOntologyLabel)
 															.add(
-																	targetOntologyTextField,
+																	ontologyTextField,
 																	GroupLayout.DEFAULT_SIZE,
 																	357,
 																	Short.MAX_VALUE))
@@ -1096,7 +1123,7 @@ public class ImportTextTableDialog extends JDialog implements
 																	GroupLayout.DEFAULT_SIZE,
 																	GroupLayout.PREFERRED_SIZE)
 															.add(
-																	targetOntologyTextField,
+																	ontologyTextField,
 																	GroupLayout.PREFERRED_SIZE,
 																	GroupLayout.DEFAULT_SIZE,
 																	GroupLayout.PREFERRED_SIZE)
@@ -1426,17 +1453,18 @@ public class ImportTextTableDialog extends JDialog implements
 	private void primaryKeyComboBoxActionPerformed(ActionEvent evt) {
 		keyInFile = primaryKeyComboBox.getSelectedIndex();
 
-		previewPanel.getPreviewTable().setDefaultRenderer(
-				Object.class,
-				new AttributePreviewTableCellRenderer(keyInFile,
-						new ArrayList<Integer>(),
-						AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
-						AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
-						importFlag, listDelimiter));
+		previewPanel.getPreviewTable().setDefaultRenderer(Object.class,
+				getRenderer(previewPanel.getFileType()));
+
 		try {
-			setStatusBar(new URL(targetDataSourceTextField.getText()));
+			if (dialogType == SIMPLE_ATTRIBUTE_IMPORT
+					|| dialogType == NETWORK_IMPORT) {
+				setStatusBar(new URL(targetDataSourceTextField.getText()));
+			} else {
+				setStatusBar(new URL(annotationUrlMap.get(annotationComboBox
+						.getSelectedItem().toString())));
+			}
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1473,10 +1501,10 @@ public class ImportTextTableDialog extends JDialog implements
 
 	private void attributeRadioButtonActionPerformed(ActionEvent evt) {
 
-		if (evt.getSource() == nodeRadioButton) {
+		if (nodeRadioButton.isSelected()) {
 			selectedAttributes = Cytoscape.getNodeAttributes();
 			objType = NODE;
-		} else if (evt.getSource() == edgeRadioButton) {
+		} else if (edgeRadioButton.isSelected()) {
 			selectedAttributes = Cytoscape.getEdgeAttributes();
 			objType = EDGE;
 		} else {
@@ -1506,13 +1534,8 @@ public class ImportTextTableDialog extends JDialog implements
 	private void nodeKeyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		keyInFile = mappingAttributeComboBox.getSelectedIndex();
 
-		previewPanel.getPreviewTable().setDefaultRenderer(
-				Object.class,
-				new AttributePreviewTableCellRenderer(keyInFile,
-						getAliasList(),
-						AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
-						AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
-						importFlag, listDelimiter));
+		previewPanel.getPreviewTable().setDefaultRenderer(Object.class,
+				getRenderer(previewPanel.getFileType()));
 
 		setKeyList();
 	}
@@ -1590,6 +1613,10 @@ public class ImportTextTableDialog extends JDialog implements
 	 */
 	private void importButtonActionPerformed(ActionEvent evt) throws Exception {
 
+		if(checkDataSourceError() == false) {
+			return;
+		}
+		
 		/*
 		 * Get Attribute Names
 		 */
@@ -1607,9 +1634,11 @@ public class ImportTextTableDialog extends JDialog implements
 		final List<Integer> aliasList = new ArrayList<Integer>();
 		JTable curTable = aliasTableMap
 				.get(previewPanel.getSelectedSheetName());
-		for (int i = 0; i < curTable.getModel().getRowCount(); i++) {
-			if ((Boolean) curTable.getModel().getValueAt(i, 0) == true) {
-				aliasList.add(i);
+		if (curTable != null) {
+			for (int i = 0; i < curTable.getModel().getRowCount(); i++) {
+				if ((Boolean) curTable.getModel().getValueAt(i, 0) == true) {
+					aliasList.add(i);
+				}
 			}
 		}
 
@@ -1641,12 +1670,18 @@ public class ImportTextTableDialog extends JDialog implements
 		}
 
 		/*
-		 * Switch readers based on the type of data soueces.
+		 * Switch readers based on the dialog type.
 		 */
 		switch (dialogType) {
 		case SIMPLE_ATTRIBUTE_IMPORT:
-			URL source = new URL(targetDataSourceTextField.getText());
+			/*
+			 * Case 1: Attribute table import.
+			 */
 
+			// Extract URL from the text table.
+			final URL source = new URL(targetDataSourceTextField.getText());
+
+			// Build mapping parameter object.
 			final AttributeMappingParameters mapping = new AttributeMappingParameters(
 					NODE, checkDelimiter(), listDelimiter, keyInFile,
 					mappingAttribute, aliasList, attributeNames,
@@ -1678,8 +1713,47 @@ public class ImportTextTableDialog extends JDialog implements
 
 			break;
 		case ONTOLOGY_AND_ANNOTATION_IMPORT:
+			/*
+			 * Case 2: Import Ontology and its annotation.
+			 */
+			final String selectedOntologyName = ontologyComboBox
+					.getSelectedItem().toString();
+			final String ontologySourceLocation = ontologyUrlMap
+					.get(selectedOntologyName);
+
+			/*
+			 * If selected ontology is not loaded, load it first.
+			 */
+			if(Cytoscape.getOntologyServer().getOntologyNames().contains(selectedOntologyName) == false) {
+				loadOntology(ontologySourceLocation, selectedOntologyName);
+			}
+
+			/*
+			 * Now, load & map annotation.
+			 */
+			final String annotationSource = annotationUrlMap
+					.get(annotationComboBox.getSelectedItem());
+			
+			if(previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
+				/*
+				 * This is a Gene Association file.
+				 */
+				GeneAssociationReader gaReader = new GeneAssociationReader(
+						selectedOntologyName, new URL(annotationSource),
+						 mappingAttribute);
+				loadGeneAssociation(gaReader, selectedOntologyName, null);
+
+			} else {
+				/*
+				 * This is a custom annotation file.
+				 */
+			}
+			
 			break;
 		case NETWORK_IMPORT:
+			/*
+			 * Case 3: read as network table (Network + Edge Attributes)
+			 */
 			break;
 		default:
 			return;
@@ -1691,7 +1765,31 @@ public class ImportTextTableDialog extends JDialog implements
 
 	private void ontologyInAnnotationComboBoxActionPerformed(
 			java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		/*
+		 * Change color of the column in the preview panel.
+		 */
+		int ontologyCol = ontologyInAnnotationComboBox.getSelectedIndex();
+		List<Integer> gaAlias = new ArrayList<Integer>();
+		gaAlias.add(DB_OBJECT_SYNONYM.getPosition());
+		previewPanel.getPreviewTable().setDefaultRenderer(
+				Object.class,
+				new AttributePreviewTableCellRenderer(keyInFile, gaAlias,
+						ontologyCol, TAXON.getPosition(), importFlag,
+						listDelimiter));
+
+		try {
+			if (dialogType == SIMPLE_ATTRIBUTE_IMPORT
+					|| dialogType == NETWORK_IMPORT) {
+				setStatusBar(new URL(targetDataSourceTextField.getText()));
+			} else {
+				setStatusBar(new URL(annotationUrlMap.get(annotationComboBox
+						.getSelectedItem().toString())));
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		previewPanel.repaint();
 	}
 
 	private void browseAnnotationButtonActionPerformed(
@@ -1705,7 +1803,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 		String key = dssd.getSourceName();
 		if (key != null) {
-			annotationComboBox.insertItemAt(key, 0);
+			annotationComboBox.addItem(key);
 			annotationUrlMap.put(key, dssd.getSourceUrlString());
 			annotationComboBox.setSelectedItem(key);
 			annotationComboBox.setToolTipText(getAnnotationTooltip());
@@ -1714,6 +1812,12 @@ public class ImportTextTableDialog extends JDialog implements
 
 	private void annotationComboBoxActionPerformed(
 			java.awt.event.ActionEvent evt) {
+		if (annotationComboBox.getSelectedItem().toString().equals(
+				DEF_ANNOTATION_ITEM)) {
+
+			annotationComboBox.setToolTipText(null);
+			return;
+		}
 		annotationComboBox.setToolTipText(getAnnotationTooltip());
 		try {
 			final String selectedSourceName = annotationComboBox
@@ -1728,8 +1832,11 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private void ontologyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
+
 		ontologyComboBox.setToolTipText(getOntologyTooltip());
-		ontologyComboBox.setForeground(Color.red);
+		ontologyTextField
+				.setText(ontologyComboBox.getSelectedItem().toString());
+
 	}
 
 	private void selectAttributeFileButtonActionPerformed(
@@ -1768,8 +1875,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 	private void reloadButtonActionPerformed(java.awt.event.ActionEvent evt)
 			throws IOException {
-		final URL sourceURL = new URL(targetDataSourceTextField.getText());
-		readAnnotationForPreview(sourceURL, checkDelimiter());
+		displayPreview();
 	}
 
 	/**
@@ -1838,28 +1944,29 @@ public class ImportTextTableDialog extends JDialog implements
 			setTitle("Import Ontology Data and Annotations");
 			titleLabel.setText("Import Ontology and Annotation");
 			ontology2annotationPanel.setVisible(false);
+			/*
+			 * Add items to Ontology Combobox
+			 */
+			setOntologyComboBox();
+			/*
+			 * Setup annotation Combo Box
+			 */
+			setAnnotationComboBox();
+
+			ontologyTextField.setText(ontologyComboBox.getSelectedItem()
+					.toString());
 		} else if (dialogType == NETWORK_IMPORT) {
 			setTitle("Import Network and Edge Attributes from File");
 			titleLabel.setText("Import Network Table");
 			annotationAndOntologyImportPanel.setVisible(false);
 		}
-		
+
 		reloadButton.setEnabled(false);
 
 		previewPanel.getPreviewTable().getTableHeader().setReorderingAllowed(
 				false);
 		setRadioButtonGroup();
 		pack();
-
-		/*
-		 * Add items to Ontology Combobox
-		 */
-		setOntologyComboBox();
-
-		/*
-		 * Setup annotation Combo Box
-		 */
-		setAnnotationComboBox();
 
 		updateMappingAttributeComboBox();
 
@@ -1930,11 +2037,40 @@ public class ImportTextTableDialog extends JDialog implements
 		otherDelimiterTextField.setEnabled(false);
 	}
 
+	private void setOntologyInAnnotationComboBox() {
+		final DefaultTableModel model = (DefaultTableModel) previewPanel
+				.getPreviewTable().getModel();
+
+		if (model != null && model.getColumnCount() > 0) {
+
+			ontologyInAnnotationComboBox.removeAllItems();
+			for (int i = 0; i < model.getColumnCount(); i++) {
+				ontologyInAnnotationComboBox.addItem(previewPanel
+						.getPreviewTable().getColumnModel().getColumn(i)
+						.getHeaderValue().toString());
+			}
+		}
+		ontologyInAnnotationComboBox.setEnabled(true);
+	}
+
+	/**
+	 * Setup ontology data source combo box.<br>
+	 * Basically, this method just load informaiton from bookmark.
+	 * 
+	 */
 	private void setOntologyComboBox() {
 		Bookmarks bookmarks = Cytoscape.getOntologyServer().getBookmarks();
 		List<DataSource> annotations = BookmarksUtil.getDataSourceList(
 				"ontology", bookmarks.getCategory());
 		String key = null;
+
+		Set<String> ontologyNames = Cytoscape.getOntologyServer()
+				.getOntologyNames();
+
+		for (String name : ontologyNames) {
+			System.out.println("Ontology Name ===" + name + "===");
+
+		}
 
 		for (DataSource source : annotations) {
 			key = source.getName();
@@ -1942,6 +2078,9 @@ public class ImportTextTableDialog extends JDialog implements
 			ontologyUrlMap.put(key, source.getHref());
 			ontologyDescriptionMap.put(key, BookmarksUtil.getAttribute(source,
 					"description"));
+			ontologyTypeMap.put(key, BookmarksUtil.getAttribute(source,
+					"ontologyType"));
+
 		}
 		ontologyComboBox.setToolTipText(getOntologyTooltip());
 	}
@@ -1999,6 +2138,8 @@ public class ImportTextTableDialog extends JDialog implements
 		List<DataSource> annotations = BookmarksUtil.getDataSourceList(
 				"annotation", bookmarks.getCategory());
 		String key = null;
+
+		annotationComboBox.addItem(DEF_ANNOTATION_ITEM);
 		for (DataSource source : annotations) {
 			key = source.getName();
 			annotationComboBox.addItem(key);
@@ -2012,7 +2153,7 @@ public class ImportTextTableDialog extends JDialog implements
 			annotationAttributesMap.put(key, attrMap);
 		}
 
-		annotationComboBox.setToolTipText(getAnnotationTooltip());
+		// annotationComboBox.setToolTipText(getAnnotationTooltip());
 	}
 
 	/**
@@ -2026,6 +2167,10 @@ public class ImportTextTableDialog extends JDialog implements
 	private void readAnnotationForPreview(URL sourceURL, List<String> delimiters)
 			throws IOException {
 
+		/*
+		 * Check number of lines we should load. if -1, load everything in the
+		 * file.
+		 */
 		final int previewSize;
 		if (showAllRadioButton.isSelected()) {
 			previewSize = -1;
@@ -2034,12 +2179,10 @@ public class ImportTextTableDialog extends JDialog implements
 					.parseInt(counterSpinner.getValue().toString());
 		}
 
-		previewPanel.setPreviewTable(sourceURL, delimiters,
-				new AttributePreviewTableCellRenderer(keyInFile,
-						new ArrayList<Integer>(),
-						AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
-						AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
-						null, listDelimiter), previewSize);
+		/*
+		 * Load data from the given URL.
+		 */
+		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize);
 
 		/*
 		 * Initialize all Alias Tables
@@ -2048,20 +2191,34 @@ public class ImportTextTableDialog extends JDialog implements
 			final int columnCount = previewPanel.getPreviewTable(i)
 					.getColumnCount();
 
-			System.out.println("%%%% tab name = "
-					+ previewPanel.getSheetName(i) + ", col count = "
-					+ columnCount);
-
 			aliasTableModelMap.put(previewPanel.getSheetName(i),
 					new AliasTableModel(keyTable, columnCount));
 
-			initializeAliasTable(columnCount, null, i);
+			if (previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
+				TableModel previewModel = previewPanel.getPreviewTable(i)
+						.getModel();
+				String[] columnNames = new String[previewModel.getColumnCount()];
+				for (int j = 0; j < columnNames.length; j++) {
+					columnNames[j] = previewModel.getColumnName(j);
+				}
+				initializeAliasTable(columnCount, columnNames, i);
+				AliasTableModel curModel = aliasTableModelMap.get(previewPanel
+						.getSheetName(i));
+				curModel.setValueAt(Boolean.valueOf(true), DB_OBJECT_SYNONYM
+						.getPosition(), 0);
+				disableComponentsForGA();
+
+			} else {
+				initializeAliasTable(columnCount, null, i);
+			}
 
 			updatePrimaryKeyComboBox();
 
 		}
 
-		setKeyList();
+		
+
+		setOntologyInAnnotationComboBox();
 
 		/*
 		 * Set Status bar
@@ -2071,18 +2228,74 @@ public class ImportTextTableDialog extends JDialog implements
 		/*
 		 * If this is not an Excel file, enable delimiter checkboxes.
 		 */
-		if (!sourceURL.toString().endsWith(".xls")) {
+		
+
+		FileTypes type = checkFileType(sourceURL);
+		if (type == FileTypes.GENE_ASSOCIATION_FILE) {
+			primaryKeyComboBox.setSelectedIndex(DB_OBJECT_SYMBOL.getPosition());
+			ontologyInAnnotationComboBox.setSelectedIndex(GO_ID.getPosition());
+			disableComponentsForGA();
+			
+			
+		} else if (!sourceURL.toString().endsWith(".xls")) {
 			tabCheckBox.setEnabled(true);
 			commaCheckBox.setEnabled(true);
 			spaceCheckBox.setEnabled(true);
 			semicolonCheckBox.setEnabled(true);
 			otherCheckBox.setEnabled(true);
 			otherDelimiterTextField.setEnabled(true);
+			nodeRadioButton.setEnabled(true);
+			edgeRadioButton.setEnabled(true);
+			networkRadioButton.setEnabled(true);
 		}
+	
+		attributeRadioButtonActionPerformed(null);
+		
 		pack();
 		repaint();
-		
+
 		reloadButton.setEnabled(true);
+	}
+
+	private void disableComponentsForGA() {
+		primaryKeyComboBox.setEnabled(false);
+		aliasTableMap.get(previewPanel.getSelectedSheetName())
+				.setEnabled(false);
+		ontologyInAnnotationComboBox.setEnabled(false);
+
+		nodeRadioButton.setSelected(true);
+		nodeRadioButton.setEnabled(false);
+		edgeRadioButton.setEnabled(false);
+		networkRadioButton.setEnabled(false);
+		
+		tabCheckBox.setEnabled(false);
+		tabCheckBox.setSelected(true);
+		commaCheckBox.setEnabled(false);
+		commaCheckBox.setSelected(false);
+		spaceCheckBox.setEnabled(false);
+		spaceCheckBox.setSelected(false);
+		semicolonCheckBox.setEnabled(false);
+		semicolonCheckBox.setSelected(false);
+		otherCheckBox.setEnabled(false);
+		otherCheckBox.setSelected(false);
+		otherDelimiterTextField.setEnabled(false);
+	}
+
+	private FileTypes checkFileType(URL source) {
+
+		String[] parts = source.toString().split("/");
+		final String fileName = parts[parts.length - 1];
+
+		if (fileName.startsWith("gene_association")
+				&& dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+			return FileTypes.GENE_ASSOCIATION_FILE;
+		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+			return FileTypes.CUSTOM_ANNOTATION_FILE;
+		} else if (dialogType == NETWORK_IMPORT) {
+			return FileTypes.NETWORK_FILE;
+		}
+
+		return FileTypes.ATTRIBUTE_FILE;
 	}
 
 	private void setStatusBar(URL sourceURL) {
@@ -2116,14 +2329,6 @@ public class ImportTextTableDialog extends JDialog implements
 				.getSelectedItem().toString();
 
 		Iterator it;
-
-		// if(objType == NODE) {
-		// it = Cytoscape.getRootGraph().nodesIterator();
-		// }else if(objType == EDGE) {
-		// it = Cytoscape.getRootGraph().edgesIterator();
-		// } else {
-		// it = Cytoscape.getNetworkSet().iterator();
-		// }
 
 		Set<String> valueSet = new TreeSet<String>();
 		if (selectedKeyAttribute.equals(ID)) {
@@ -2242,7 +2447,12 @@ public class ImportTextTableDialog extends JDialog implements
 			} else {
 				keyTableData[i][1] = columnNames[i];
 			}
-			attributeDataTypes.add(dataTypeArray[i]);
+
+			if (dataTypeArray.length <= i) {
+				attributeDataTypes.add(CyAttributes.TYPE_STRING);
+			} else {
+				attributeDataTypes.add(dataTypeArray[i]);
+			}
 			keyTableData[i][2] = "String";
 		}
 
@@ -2271,7 +2481,6 @@ public class ImportTextTableDialog extends JDialog implements
 		curTable.getColumnModel().getColumn(2).setPreferredWidth(100);
 
 		aliasScrollPane.setViewportView(curTable);
-
 		repaint();
 	}
 
@@ -2300,11 +2509,96 @@ public class ImportTextTableDialog extends JDialog implements
 		}
 	}
 
+	private TableCellRenderer getRenderer(FileTypes type) {
+
+		final TableCellRenderer rend;
+
+		if (type == FileTypes.GENE_ASSOCIATION_FILE) {
+			int ontologyCol = this.ontologyInAnnotationComboBox
+					.getSelectedIndex();
+			List<Integer> gaAlias = new ArrayList<Integer>();
+
+			AliasTableModel curModel = aliasTableModelMap.get(previewPanel
+					.getSelectedSheetName());
+			for (int i = 0; i < curModel.getColumnCount(); i++) {
+				if ((Boolean) curModel.getValueAt(i, 0)) {
+					gaAlias.add(i);
+				}
+			}
+
+			gaAlias.add(DB_OBJECT_SYNONYM.getPosition());
+			rend = new AttributePreviewTableCellRenderer(keyInFile, gaAlias,
+					ontologyCol, TAXON.getPosition(), null, listDelimiter);
+		} else {
+			rend = new AttributePreviewTableCellRenderer(keyInFile,
+					new ArrayList<Integer>(),
+					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+					null, listDelimiter);
+		}
+
+		return rend;
+	}
+
+	/**
+	 * Create task for annotation reader and run it. tablechanged
+	 * 
+	 * @param reader
+	 * @param ontology
+	 * @param source
+	 */
 	private void loadAnnotation(TextTableReader reader, String ontology,
 			String source) {
 		// Create LoadNetwork Task
 		ImportAttributeTableTask task = new ImportAttributeTableTask(reader,
 				ontology, source);
+
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(true);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(false);
+
+		// Execute Task in New Thread; pops open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
+	}
+
+	/**
+	 * Create task for ontology reader and run the task.<br>
+	 * 
+	 * @param dataSource
+	 * @param ontologyName
+	 */
+	private void loadOntology(String dataSource, String ontologyName) {
+		// Create LoadNetwork Task
+		ImportOntologyTask task = new ImportOntologyTask(dataSource,
+				ontologyTypeMap.get(ontologyName), ontologyName,
+				ontologyDescriptionMap.get(ontologyName));
+
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(true);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
+
+		// Execute Task in New Thread; pops open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
+	}
+
+	/**
+	 * Create task for annotation reader and run it.
+	 * 
+	 * @param reader
+	 * @param ontology
+	 * @param source
+	 */
+	private void loadGeneAssociation(TextTableReader reader, String ontology,
+			String source) {
+		// Create LoadNetwork Task
+		ImportOntologyAnnotationTask task = new ImportOntologyAnnotationTask(
+				reader, ontology, source);
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
@@ -2365,6 +2659,35 @@ public class ImportTextTableDialog extends JDialog implements
 		}
 
 		return delList;
+	}
+	
+	
+	/**
+	 * Error checker for imput table.<br>
+	 * 
+	 * @return true if table looks OK.
+	 */
+	private boolean checkDataSourceError() {
+		/*
+		 * Number of ENABLED columns should be 2 or more.
+		 * 
+		 */
+		JTable table = previewPanel.getPreviewTable();
+		if(table == null || table.getModel() == null || table.getColumnCount() == 0) {
+			JOptionPane.showMessageDialog(
+					this , "No table selected." , "Invalid Table!" ,
+					JOptionPane.INFORMATION_MESSAGE
+				);
+			return false;
+		} else if(table.getColumnCount() < 2) {
+			JOptionPane.showMessageDialog(
+					this , "Table should contain at least 2 columns." , "Invalid Table!" ,
+					JOptionPane.INFORMATION_MESSAGE
+				);
+			return false;
+		}
+		
+		return true;
 	}
 
 	/*
@@ -2942,7 +3265,7 @@ public class ImportTextTableDialog extends JDialog implements
 	private javax.swing.JCheckBox tabCheckBox;
 	private javax.swing.JTextField targetDataSourceTextField;
 	private javax.swing.JLabel targetOntologyLabel;
-	private javax.swing.JTextField targetOntologyTextField;
+	private javax.swing.JTextField ontologyTextField;
 	private javax.swing.JCheckBox textImportCheckBox;
 	private javax.swing.JPanel textImportOptionPanel;
 	private javax.swing.JLabel titleIconLabel1;

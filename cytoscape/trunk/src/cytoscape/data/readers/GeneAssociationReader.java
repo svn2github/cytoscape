@@ -1,5 +1,7 @@
 package cytoscape.data.readers;
 
+import static cytoscape.data.readers.TextFileDelimiters.PIPE;
+import static cytoscape.data.readers.TextFileDelimiters.TAB;
 import giny.model.Node;
 
 import java.io.BufferedReader;
@@ -18,73 +20,61 @@ import java.util.TreeSet;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.ontology.GeneOntology;
+import cytoscape.data.ontology.Ontology;
 import cytoscape.data.synonyms.Aliases;
 import cytoscape.util.BioDataServerUtil;
 import cytoscape.util.URLUtil;
 
 /**
- * 
- * Gene Association file reader.<br>
- * This is a special reader only for valid GA files.<br>
  * <p>
- * Gene Association file is an annotation file for Gene Ontology. For more
- * detail, please visit the following web site:
- * 
+ * Gene Association (GA) file reader.<br>
+ * This is a special reader only for valid GA files.<br>
  * </p>
  * 
- * @version 0.6
+ * <p>
+ * Gene Association file is an annotation file for Gene Ontology. A valid GA
+ * file is:<br>
+ * <ul>
+ * <li>Should have 15 columns</li>
+ * <li>Tab delimited</li>
+ * <li>Key is column3, GO term is column5, and alias is column11.</li>
+ * </ul>
+ * <br>
+ * This reader accepts only valid GA file.<br>
+ * For more detail, please visit the following web site: <href
+ * a="http://www.geneontology.org/GO.current.annotations.shtml"/>
+ * </p>
+ * 
+ * @version 0.8
  * @since Cytoscape 2.4
- * @author kono
+ * @author Keiichiro Ono
  * 
  */
 public class GeneAssociationReader implements TextTableReader {
 
-	private String targetOntologyName;
+	private static final String GA_DELIMITER = TAB.toString();
+
+	private static final String ID = "ID";
+	private static final int EXPECTED_COL_COUNT = GeneAssociationTags.values().length;
+
+	/*
+	 * Default key columns
+	 */
+	private static final int KEY = 2;
+	private static final int SYNONYM = 10;
+	private static final int GOID = 4;
+
+	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
 
 	private final InputStream is;
-	private final TextFileDelimiters type;
 	private final String keyAttributeName;
 
 	private Aliases nodeAliases;
 	private Map<String, List<String>> attr2id;
 
 	private CyAttributes nodeAttributes;
-	private GeneOntology ontology;
+	private GeneOntology geneOntology;
 	private HashMap speciesMap;
-
-	private static final String ID = "ID";
-	private static final int EXPECTED_COL_COUNT = 15;
-	/*
-	 * Default key columns
-	 */
-	private static final int KEY = 2;
-	private static final int SYNONYM = 10;
-	private static final int ASPECT = 8;
-	private static final int GOID = 4;
-
-	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
-
-	public enum GOAspect {
-		BIOLOGICAL_PROCESS("P"), CELLULAR_COMPONENT("C"), MOLECULAR_FUNCTION(
-				"F");
-
-		private String aspect;
-
-		private GOAspect(String aspect) {
-			this.aspect = aspect;
-		}
-
-		public String toString() {
-			return aspect;
-		}
-
-	}
-
-	private static final String[] COLUMN_NAMES = { "DB", "DB_Object_ID",
-			"DB_Object_Symbol", "Qualifier", "GO ID", "DB:Reference",
-			"Evidence", "With (or) From", "Aspect", "DB_Object_Name",
-			"DB_Object_Synonym", "DB_Object_Type", "taxon", "Date",
-			"Assigned_by" };
 
 	/**
 	 * Constructor.
@@ -104,37 +94,39 @@ public class GeneAssociationReader implements TextTableReader {
 	 * @throws
 	 */
 	public GeneAssociationReader(String ontologyName, final URL url,
-			final boolean isColumnName, final TextFileDelimiters type,
 			String keyAttributeName) throws IOException {
-		this(ontologyName, URLUtil.getInputStream(url), isColumnName, type,
-				keyAttributeName);
+		this(ontologyName, URLUtil.getInputStream(url), keyAttributeName);
 	}
 
 	public GeneAssociationReader(String ontologyName, final InputStream is,
-			final boolean isColumnName, final TextFileDelimiters type,
 			final String keyAttributeName) throws IOException {
+
 		this.is = is;
-		this.type = type;
 		this.keyAttributeName = keyAttributeName;
-		this.targetOntologyName = ontologyName;
 
+		// GA file is only for nodes!
 		this.nodeAliases = Cytoscape.getOntologyServer().getNodeAliases();
+		this.nodeAttributes = Cytoscape.getNodeAttributes();
 
-		if (!Cytoscape.getOntologyServer().getOntologyNames().contains(
-				targetOntologyName)) {
-			throw new IOException("Cannot find ontology.");
+		final Ontology testOntology = Cytoscape.getOntologyServer()
+				.getOntologies().get(ontologyName);
+
+		/*
+		 * Ontology type should be GO.
+		 */
+		if (testOntology.getClass() == GeneOntology.class) {
+			this.geneOntology = (GeneOntology) testOntology;
+		} else {
+			throw new IOException("Given ontology is not GO.");
 		}
 
-		nodeAttributes = Cytoscape.getNodeAttributes();
-		this.ontology = (GeneOntology) Cytoscape.getOntologyServer()
-				.getOntologies().get(targetOntologyName);
+		final BufferedReader taxonFileReader = new BufferedReader(
+				new InputStreamReader(getClass().getResource(
+						TAXON_RESOURCE_FILE).openStream()));
+		final BioDataServerUtil bdsu = new BioDataServerUtil();
+		this.speciesMap = bdsu.getTaxonMap(taxonFileReader);
 
-		URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
-
-		BufferedReader taxonFileReader = new BufferedReader(
-				new InputStreamReader(taxURL.openStream()));
-		BioDataServerUtil bdsu = new BioDataServerUtil();
-		speciesMap = bdsu.getTaxonMap(taxonFileReader);
+		taxonFileReader.close();
 
 		if (this.keyAttributeName != null && !this.keyAttributeName.equals(ID)) {
 			buildMap();
@@ -168,10 +160,6 @@ public class GeneAssociationReader implements TextTableReader {
 				attr2id.put(attributeValue, nodeIdList);
 			}
 		}
-
-		for (String key : attr2id.keySet()) {
-			System.out.println("### Attr Key = " + key);
-		}
 	}
 
 	public void readTable() throws IOException {
@@ -182,10 +170,9 @@ public class GeneAssociationReader implements TextTableReader {
 		String[] parts;
 
 		while ((line = bufRd.readLine()) != null) {
-			parts = line.split(type.toString());
-			// If this line is valid, copy entries to CyAttributes
+			parts = line.split(GA_DELIMITER);
 			if (parts.length == EXPECTED_COL_COUNT) {
-				transfer2cyAttributes(parts);
+				parseGA(parts);
 			}
 		}
 		is.close();
@@ -198,9 +185,9 @@ public class GeneAssociationReader implements TextTableReader {
 	 * @param synoString
 	 * @return
 	 */
-	private String setSynonyms(String key, String synoString) {
+	private String setAlias(final String key, final String synoString) {
 
-		final String[] synos = synoString.split("\\|");
+		final String[] synos = synoString.split(PIPE.toString());
 		final Set<String> idSet = new TreeSet<String>();
 		idSet.add(key);
 
@@ -224,9 +211,9 @@ public class GeneAssociationReader implements TextTableReader {
 		return null;
 	}
 
-	private List<String> setMultipleSynonyms(String key, String synoString) {
+	private List<String> setMultipleAliases(String key, String synoString) {
 
-		final String[] synos = synoString.split("\\|");
+		final String[] synos = synoString.split(PIPE.toString());
 		final Set<String> idSet = new TreeSet<String>();
 		idSet.add(key);
 		for (String synonym : synos) {
@@ -243,7 +230,6 @@ public class GeneAssociationReader implements TextTableReader {
 				return nodeIDs;
 			}
 		}
-
 		return null;
 	}
 
@@ -251,105 +237,102 @@ public class GeneAssociationReader implements TextTableReader {
 	 * All fields are saved as Strings.
 	 * 
 	 */
-	private void transfer2cyAttributes(String[] entries) {
+	private void parseGA(String[] entries) {
 		/*
-		 * Create attribute name based on GO Aspect
+		 * Create attribute name based on GO Aspect (a.k.a. Name Space)
 		 */
-		final String attributeName = makeAttributeName(entries[ASPECT]);
+		final String attributeName = "GO "
+				+ geneOntology.getAspect(entries[GOID]).name();
 
 		/*
 		 * Case 1: use node ID as the key
 		 */
-		if (keyAttributeName.equals("ID")) {
-			String newKey = setSynonyms(entries[KEY], entries[SYNONYM]);
+		if (keyAttributeName.equals(ID)) {
+			String newKey = setAlias(entries[KEY], entries[SYNONYM]);
 			if (newKey != null) {
-				parseEntry(entries, newKey, attributeName);
+				mapEntry(entries, newKey, attributeName);
 			}
 		} else {
 			/*
 			 * Case 2: use an attribute as the key.
 			 */
-			List<String> keys = setMultipleSynonyms(entries[KEY],
+			List<String> keys = setMultipleAliases(entries[KEY],
 					entries[SYNONYM]);
 			if (keys != null) {
 				for (String key : keys) {
-					parseEntry(entries, key, attributeName);
+					mapEntry(entries, key, attributeName);
 				}
 			}
 		}
 	}
 
-	private void parseEntry(String[] entries, String key, String attributeName) {
-		final String dbAndId = entries[0] + ":" + entries[1];
-		nodeAttributes.setAttribute(key, "DB Name and ID", dbAndId);
+	private void mapEntry(String[] entries, String key, String attributeName) {
 
 		String fullName = null;
 
-		for (int i = 0; i < COLUMN_NAMES.length; i++) {
-			if (COLUMN_NAMES[i].equals("GO ID")) {
+		for (int i = 0; i < GeneAssociationTags.values().length; i++) {
+			GeneAssociationTags tag = GeneAssociationTags.values()[i];
 
+			switch (tag) {
+			case GO_ID:
 				Set<String> goTermSet = new TreeSet<String>();
 				if (nodeAttributes.getAttributeList(key, attributeName) != null) {
 
 					goTermSet.addAll(nodeAttributes.getAttributeList(key,
 							attributeName));
-
 				}
-				fullName = ontology.getGOTerm(entries[i]).getFullName();
-				if (fullName != null) {
+
+				if ((fullName = geneOntology.getGOTerm(entries[i])
+						.getFullName()) != null) {
 					goTermSet.add(fullName);
 				}
 
 				nodeAttributes.setAttributeList(key, attributeName,
 						new ArrayList(goTermSet));
-			} else if (COLUMN_NAMES[i].equals("DB_Object_Name")
-					|| COLUMN_NAMES[i].equals("DB_Object_Type")) {
-				nodeAttributes.setAttribute(key, COLUMN_NAMES[i], entries[i]);
-			} else if (COLUMN_NAMES[i].equals("taxon")) {
-				nodeAttributes.setAttribute(key, COLUMN_NAMES[i],
+				break;
+			case TAXON:
+				nodeAttributes.setAttribute(key, tag.toString(),
 						(String) speciesMap.get(entries[i].split(":")[1]));
-			} else if (COLUMN_NAMES[i].equals("Evidence")) {
+				break;
+			case EVIDENCE:
 				Map<String, String> evidences = nodeAttributes.getAttributeMap(
-						key, "Evidence");
+						key, tag.toString());
 				if (evidences == null) {
 					evidences = new HashMap<String, String>();
 				}
 				evidences.put(entries[GOID], entries[i]);
-				nodeAttributes.setAttributeMap(key, "Evidence", evidences);
-			} else if (COLUMN_NAMES[i].equals("DB:Reference")) {
+				nodeAttributes.setAttributeMap(key, tag.toString(), evidences);
+				break;
+			case DB_REFERENCE:
 				Map<String, String> references = nodeAttributes
-						.getAttributeMap(key, "DB:Reference");
+						.getAttributeMap(key, tag.toString());
 				if (references == null) {
 					references = new HashMap<String, String>();
 				}
 				references.put(entries[GOID], entries[i]);
-				nodeAttributes.setAttributeMap(key, "DB:Reference", references);
+				nodeAttributes.setAttributeMap(key, tag.toString(), references);
+				break;
+			case DB_OBJECT_SYMBOL:
+			case ASPECT:
+			case DB_OBJECT_SYNONYM:
+				// Ignore these lines
+				break;
+			default:
+				nodeAttributes.setAttribute(key, tag.toString(), entries[i]);
+				break;
 			}
 		}
 	}
 
-	private String makeAttributeName(String aspect) {
-		String attributeName = null;
-		if (aspect.equalsIgnoreCase(GOAspect.BIOLOGICAL_PROCESS.toString())) {
-			attributeName = "GO " + GOAspect.BIOLOGICAL_PROCESS.name();
-		} else if (aspect.equalsIgnoreCase(GOAspect.CELLULAR_COMPONENT
-				.toString())) {
-			attributeName = "GO " + GOAspect.CELLULAR_COMPONENT.name();
-		} else if (aspect.equalsIgnoreCase(GOAspect.MOLECULAR_FUNCTION
-				.toString())) {
-			attributeName = "GO " + GOAspect.MOLECULAR_FUNCTION.name();
-		}
-		return attributeName;
-	}
-
+	
 	/**
 	 * Return column names as List onject.
 	 */
 	public List getColumnNames() {
 
-		List colNames = new ArrayList();
-		for (String name : COLUMN_NAMES) {
-			colNames.add(name);
+		List<String> colNames = new ArrayList<String>();
+		for (GeneAssociationTags tag : GeneAssociationTags.values()) {
+			colNames.add(tag.toString());
 		}
 		return colNames;
 	}
