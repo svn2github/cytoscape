@@ -992,7 +992,7 @@ sub format_model_thm_td
             <img src='$data_url/${thm_img}.$img_format->{$pub}' border='0'>
          </a><br />
 	 <b class='pub-citation'></b><br>
-	 <b class='pub-citation'>$pubName->{$pub} [model: $name]</b><br>
+	 <b class='pub-citation'>$pubName->{$pub} [model:&nbsp;$name]</b><br>
 	 <a class='white-bg-link' href='$pubCitation->{$pub}' title='PubMed abstract'>[PubMed]</a>
 MODEL_HTML
       
