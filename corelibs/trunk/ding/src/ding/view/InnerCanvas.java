@@ -93,6 +93,12 @@ public class InnerCanvas extends DingCanvas
     private Rectangle m_selectionRect = null;
     final boolean[] m_printingTextAsShape = new boolean[1];
 
+	/**
+	 * String used to compare against os.name System property - 
+	 * to determine if we are running on Windows platform.
+     */
+	static final String MAC_OS_ID = "mac";
+
     //AJK: 04/02/06 BEGIN
     private DropTarget dropTarget;
     private String CANVAS_DROP = "CanvasDrop";
@@ -375,11 +381,12 @@ public class InnerCanvas extends DingCanvas
      * @param e DOCUMENT ME!
      */
     public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
+        if ((e.getButton() == MouseEvent.BUTTON1) &&
+			!(isMacPlatform() && e.isControlDown())) { // on mac, mouse button1 click and control is simulate button 3 press
             // It's too complicated to correctly handle both control and shift
             // simultaneously.
-            if (e.isShiftDown() && e.isControlDown())
-                return;
+            if (e.isShiftDown() && isAnchorKeyDown(e))
+				return;
 
             m_currMouseButton = 1;
             m_lastXMousePos = e.getX();
@@ -482,7 +489,7 @@ public class InnerCanvas extends DingCanvas
                 }
 
                 if (chosenAnchor >= 0) {
-                    if (e.isControlDown()) {
+                    if (isAnchorKeyDown(e)) {
                         final int edge = chosenAnchor >>> 6;
                         final int anchorInx = chosenAnchor & 0x0000003f;
                         ((DEdgeView) m_view.getEdgeView(~edge)).removeHandle(anchorInx);
@@ -506,9 +513,9 @@ public class InnerCanvas extends DingCanvas
                 }
 
                 if (chosenEdge != 0) {
-                    if (e.isControlDown() &&
-                            ((m_lastRenderDetail &
-                            GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
+                    if (isAnchorKeyDown(e) &&
+						((m_lastRenderDetail &
+						  GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
                         m_view.m_selectedAnchors.empty();
                         m_ptBuff[0] = m_lastXMousePos;
                         m_ptBuff[1] = m_lastYMousePos;
@@ -609,7 +616,8 @@ public class InnerCanvas extends DingCanvas
             m_currMouseButton = 2;
             m_lastXMousePos = e.getX();
             m_lastYMousePos = e.getY();
-        } else if (e.getButton() == MouseEvent.BUTTON3) {
+        } else if ((e.getButton() == MouseEvent.BUTTON3) ||
+				   (isMacPlatform() && e.isControlDown())) {
             m_currMouseButton = 3;
             m_lastXMousePos = e.getX();
             m_lastYMousePos = e.getY();
@@ -1411,5 +1419,29 @@ public class InnerCanvas extends DingCanvas
 			InnerCanvasListener client = (InnerCanvasListener)v.elementAt(i);
 			client.innerCanvasUpdate(evt);
 		}
+	}
+
+	/**
+	 * Routine which determines if anchor qualifier key has been pressed:
+	 *
+	 * on Mac -> meta key
+	 * on PC -> control key
+	 *
+	 * @param e MouseEvent
+	 * @return boolean
+	 */
+	private boolean isAnchorKeyDown(MouseEvent e) {
+		return ((!isMacPlatform() && e.isControlDown()) ||
+				(isMacPlatform() && e.isMetaDown()));
+	}
+
+	/**
+	 * Routine which determines if we are running on mac platform
+	 *
+	 * @return boolean
+	 */
+	private boolean isMacPlatform() {
+		String os = System.getProperty("os.name");
+		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
 	}
 }
