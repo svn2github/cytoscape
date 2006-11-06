@@ -17,6 +17,7 @@ import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
@@ -223,7 +224,7 @@ public class DataTable implements PropertyChangeListener {
 	// Make sort model by using given CyAttributes
 	//
 	protected SortTableModel makeModel(CyAttributes data) {
-		List attributeNames = Arrays.asList(data.getAttributeNames());
+		List attributeNames = CyAttributesUtils.getVisibleAttributeNames(data);
 		DataTableModel model = new DataTableModel();
 		List graph_objects = getSelectedGraphObjects();
 		if (tableObjectType == NETWORK) {

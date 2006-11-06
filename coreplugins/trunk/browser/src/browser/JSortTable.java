@@ -87,6 +87,7 @@ import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CyNetworkView;
 import cytoscape.visual.GlobalAppearanceCalculator;
 
 public class JSortTable extends JTable implements MouseListener,
@@ -161,6 +162,7 @@ public class JSortTable extends JTable implements MouseListener,
 		initialize();
 	}
 
+	// this is the only one that's actually used
 	public JSortTable(SortTableModel model, int objectType) {
 		super(model);
 		initSortHeader();
@@ -809,46 +811,6 @@ public class JSortTable extends JTable implements MouseListener,
 			if (listItems.length != 0) {
 				getCellContentView(CyAttributes.TYPE_SIMPLE_LIST, listItems,
 						idField, e);
-				// cellContentListPane = new JScrollPane();
-				// JList listContents = new JList(listItems);
-				// listContents.addMouseListener(new MouseListener() {
-				// public void mouseClicked(MouseEvent e) {
-				// // hide if right click
-				// if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
-				// cellMenu.setVisible(false);
-				// } else if (javax.swing.SwingUtilities
-				// .isLeftMouseButton(e)
-				// && getSelectedRows().length != 0) {
-				// }
-				//
-				// }
-				//
-				// public void mouseExited(MouseEvent event) {
-				// }
-				//
-				// public void mouseReleased(MouseEvent event) {
-				// }
-				//
-				// public void mousePressed(MouseEvent event) {
-				// }
-				//
-				// public void mouseEntered(MouseEvent event) {
-				// }
-				// });
-				// cellContentListPane.setPreferredSize(new Dimension(200,
-				// 100));
-				// cellContentListPane
-				// .setBorder(javax.swing.BorderFactory
-				// .createTitledBorder(
-				// null,
-				// idField,
-				// javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-				// javax.swing.border.TitledBorder.DEFAULT_POSITION,
-				// null, null));
-				// cellContentListPane.setViewportView(listContents);
-				//
-				// cellMenu.add(cellContentListPane);
-				// cellMenu.show(e.getComponent(), e.getX(), e.getY());
 			}
 		} else if (value != null && value.getClass() == HashMap.class
 				&& model.getValueAt(row, 0).equals(DataTable.NETWORK_METADATA)) {
@@ -1046,95 +1008,86 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 			return this;
 		}
 
-		if (coloring == false || type == DataTable.NETWORK) {
-			if (table.getColumnName(column).equals(DataTable.ID)
-					|| (table.getColumnName(column).equals(
-							"Network Attribute Name") && !value
-							.equals("Network Metadata"))) {
+		// set default colorings
+		setForeground(table.getForeground());
+		setFont(normalFont);
+		setBackground(table.getBackground());
+
+		CyAttributes data = null;
+		if ( type == DataTable.NODES )
+			data = Cytoscape.getNodeAttributes();
+		else if ( type == DataTable.EDGES )
+			data = Cytoscape.getEdgeAttributes();
+		else if ( type == DataTable.NETWORK )
+			data = Cytoscape.getNetworkAttributes();
+		else
+			return this;
+
+		String colName = table.getColumnName(column);
+
+		// check for non-editable columns
+		if ( !data.getUserEditable(colName)) {
+			setBackground(DataTable.NON_EDITIBLE_COLOR);
+		}
+
+		if (colName.equals(DataTable.ID)) { 
+			setFont(labelFont);
+			setBackground(DataTable.NON_EDITIBLE_COLOR);
+		}
+
+		// handle special NETWORK coloring
+		if ( type == DataTable.NETWORK && value != null ) {
+			if ( colName.equals("Network Attribute Name") && 
+			     !value.equals("Network Metadata") ) {
 				setFont(labelFont);
 				setBackground(DataTable.NON_EDITIBLE_COLOR);
-
-			} else if (type == DataTable.NETWORK && value != null) {
-				if (value.equals("Network Metadata")) {
-					setBackground(metadataBackground);
-					setFont(labelFont);
-				}
-			} else {
-				setFont(normalFont);
-				setBackground(table.getBackground());
-			}
-			setForeground(table.getForeground());
-			return this;
-		} else {
-
-			setForeground(table.getForeground());
-
-			if (type == DataTable.NODES) {
-				/*
-				 * Render color node cells
-				 */
-
-				if (table.getColumnName(column).equals(DataTable.ID)) {
-					if (Cytoscape.getCurrentNetworkView() != Cytoscape
-							.getNullNetworkView()) {
-						NodeView nodeView = Cytoscape.getCurrentNetworkView()
-								.getNodeView(
-										Cytoscape.getCyNode((String) table
-												.getValueAt(row, column)));
-						if (nodeView != null) {
-							Color nodeColor = (Color) nodeView
-									.getUnselectedPaint();
-							super.setBackground(nodeColor);
-						}
-					}
-					setFont(labelFont);
-				} else {
-					setFont(normalFont);
-					setBackground(table.getBackground());
-				}
-
-			} else if (type == DataTable.EDGES) {
-				/*
-				 * Render color edge cells
-				 */
-
-				if (table.getColumnName(column).equals(DataTable.ID)) {
-					setFont(labelFont);
-					String edgeName = (String) table.getValueAt(row, column);
-					String[] parts = edgeName.split(" ");
-
-					CyNode source = Cytoscape.getCyNode(parts[0].trim());
-					CyNode target = Cytoscape.getCyNode(parts[2].trim());
-					String interaction = parts[1].trim().substring(1,
-							parts[1].trim().length() - 1);
-
-					// System.out.println("Source = " + source + ", Target = " +
-					// target + ", Itr = " + interaction);
-					if (Cytoscape.getCurrentNetworkView() != Cytoscape
-							.getNullNetworkView()) {
-						EdgeView edgeView = Cytoscape.getCurrentNetworkView()
-								.getEdgeView(
-										Cytoscape.getCyEdge(source, target,
-												Semantics.INTERACTION,
-												interaction, false));
-						if (edgeView != null) {
-							Color edgeColor = (Color) edgeView
-									.getUnselectedPaint();
-							super.setBackground(edgeColor);
-						}
-					}
-				} else {
-					setFont(normalFont);
-					setBackground(table.getBackground());
-				}
-			} else {
-				/*
-				 * Render Network cells
-				 */
-
-				// for now, no special scheme available.
+			} else if ( value.equals("Network Metadata")) {
+				setBackground(metadataBackground);
+				setFont(labelFont);
 			}
 		}
+
+		// if we're not coloring the ID column we're done 
+		if ( coloring == false || !colName.equals(DataTable.ID))
+			return this;
+
+
+		// handle colors for the the ID column 
+		CyNetworkView netview = Cytoscape.getCurrentNetworkView();
+
+		if (type == DataTable.NODES) {
+			if ( netview != Cytoscape.getNullNetworkView()) {
+				NodeView nodeView = netview.getNodeView(
+							Cytoscape.getCyNode((String) table
+								  .getValueAt(row, column)));
+				if (nodeView != null) {
+					Color nodeColor = (Color) nodeView.getUnselectedPaint();
+					setBackground(nodeColor);
+				}
+			}
+
+		} else if (type == DataTable.EDGES) {
+
+			String edgeName = (String) table.getValueAt(row, column);
+			String[] parts = edgeName.split(" ");
+
+			CyNode source = Cytoscape.getCyNode(parts[0].trim());
+			CyNode target = Cytoscape.getCyNode(parts[2].trim());
+			String interaction = parts[1].trim().substring(1,
+					parts[1].trim().length() - 1);
+
+			if (netview != Cytoscape.getNullNetworkView()) {
+				EdgeView edgeView = netview.getEdgeView(
+							Cytoscape.getCyEdge(source, target,
+									Semantics.INTERACTION,
+									interaction, false));
+				if (edgeView != null) {
+					Color edgeColor = (Color)edgeView.getUnselectedPaint();
+					setBackground(edgeColor);
+				}
+			}
+		}
+
 		return this;
 	}
 

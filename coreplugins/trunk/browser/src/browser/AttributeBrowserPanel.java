@@ -47,6 +47,7 @@ import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportNodeAttributesAction;
 import cytoscape.actions.MapOntologyAction;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 
 /**
@@ -821,8 +822,7 @@ public class AttributeBrowserPanel extends JPanel implements
 				}
 			});
 			attributeList.addListSelectionListener(this);
-			attributeList
-					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		}
 		return attributeList;
@@ -831,14 +831,18 @@ public class AttributeBrowserPanel extends JPanel implements
 	private String[] getAttributeArray(String type) {
 
 		CyAttributes currentAttributes = null;
+
 		if (type.equalsIgnoreCase("node")) {
 			currentAttributes = Cytoscape.getNodeAttributes();
-		} else {
+		} else if (type.equalsIgnoreCase("edge")) {
 			currentAttributes = Cytoscape.getEdgeAttributes();
+		} else if (type.equalsIgnoreCase("network")) {
+			currentAttributes = Cytoscape.getNetworkAttributes();
+		} else {
+			return new String[0];
 		}
-
-		String[] currentAttributeNames = currentAttributes.getAttributeNames();
-		return currentAttributeNames;
+		
+		return CyAttributesUtils.getVisibleAttributeNames(currentAttributes).toArray(new String[0]);
 	}
 
 	/**
@@ -873,7 +877,7 @@ public class AttributeBrowserPanel extends JPanel implements
 	//
 	private void createNewAttribute(String type) {
 
-		String[] existingAttrs = data.getAttributeNames();
+		String[] existingAttrs = CyAttributesUtils.getVisibleAttributeNames(data).toArray(new String[0]);
 		boolean dupFlag = true;
 
 		String name = null;

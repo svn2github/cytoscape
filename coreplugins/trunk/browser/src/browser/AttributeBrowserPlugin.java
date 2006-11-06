@@ -65,10 +65,8 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 	 */
 	private void initialize() {
 
-		DataTable table_nodes = new DataTable(Cytoscape.getNodeAttributes(),
-				DataTable.NODES);
-		DataTable table_edges = new DataTable(Cytoscape.getEdgeAttributes(),
-				DataTable.EDGES);
-		DataTable table_network = new DataTable(Cytoscape.getNodeAttributes(), DataTable.NETWORK);
+		DataTable table_nodes = new DataTable(Cytoscape.getNodeAttributes(), DataTable.NODES);
+		DataTable table_edges = new DataTable(Cytoscape.getEdgeAttributes(), DataTable.EDGES);
+		DataTable table_network = new DataTable(Cytoscape.getNetworkAttributes(), DataTable.NETWORK);
 	}
 }

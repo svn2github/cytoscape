@@ -3,6 +3,7 @@ package browser;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.List;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.ListModel;
@@ -10,6 +11,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 
 public class AttributeModel implements ListModel, ComboBoxModel,
@@ -18,7 +20,7 @@ public class AttributeModel implements ListModel, ComboBoxModel,
 	Vector listeners = new Vector();
 	CyAttributes data;
 
-	Vector attributes;
+	List attributes;
 	Object selection = null;
 
 	public AttributeModel(CyAttributes data) {
@@ -28,12 +30,7 @@ public class AttributeModel implements ListModel, ComboBoxModel,
 	}
 
 	protected void sortAtttributes() {
-
-		String[] att_names = data.getAttributeNames();
-		attributes = new Vector(att_names.length);
-		for (int i = 0; i < att_names.length; ++i) {
-			attributes.add(att_names[i]);
-		}
+		attributes = CyAttributesUtils.getVisibleAttributeNames(data);
 		Collections.sort(attributes);
 		notifyListeners(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED,
 				0, attributes.size()));

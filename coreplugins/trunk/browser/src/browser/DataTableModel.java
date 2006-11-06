@@ -440,6 +440,9 @@ public class DataTableModel extends DefaultTableModel implements
 
 	public boolean isCellEditable(int rowIndex, int colIndex) {
 
+		if ( !data.getUserEditable( getColumnName( colIndex ) ) )
+			return false;
+
 		Class objectType = null;
 		Object selectedObj = this.getValueAt(rowIndex, colIndex);
 
