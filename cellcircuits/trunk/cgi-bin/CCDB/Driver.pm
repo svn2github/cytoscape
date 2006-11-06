@@ -6,29 +6,9 @@ use strict;
 use warnings;
 
 use CCDB::QueryInput;
-use CCDB::Constants qw($DEBUG $DEFAULT_ENRICHMENT_LIMIT);
-
-my $publications_hash = {
-    'Begley2002_MCR'             => 1,
-    'Bernard2005_PSB'            => 1,
-    'de_Lichtenberg2005_Science' => 1,
-    'Haugen2004_GB'              => 1,
-    'Hartemink2002_PSB'          => 1,
-    'Ideker2002_BINF'            => 1,
-    'Gandhi2006_NG'              => 1,
-    'Kelley2005_NBT'             => 1,
-    'Sharan2005_PNAS'            => 1,
-    'Suthram2005_Nature'         => 1,
-    'Yeang2005_GB'               => 1,
-};
-
-my $species_hash = {
-    'Caenorhabditis elegans'   => 1,
-    'Drosophila melanogaster'  => 1,
-    'Homo sapiens'             => 1,
-    'Plasmodium falciparum'    => 1,
-    'Saccharomyces cerevisiae' => 1,
-};
+use CCDB::Constants qw($DEBUG $DEFAULT_ENRICHMENT_LIMIT 
+		       $pubName 
+		       $species_abbrev);
 
 
 
@@ -110,10 +90,10 @@ sub search
     my $error_msg          = {};
 
     if(scalar(keys %{ $publications }) == 0) {
-	$publications = $publications_hash;
+	map { $publications->{$_} = 1 } keys %{$pubName};
     }
     if(scalar(keys %{ $species }) == 0) {
-	$species = $species_hash;
+	map { $species->{$_} = 1 } keys %{$species_abbrev};
     }
     
      #printf STDERR "Before fetching models: %s\n", localtime(time);

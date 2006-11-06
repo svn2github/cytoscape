@@ -5,9 +5,11 @@ use warnings;
 
 #use lib '/opt/www/cgi-bin/search/v1.6';
 use BM::mysql;
+use CCDB::Constants qw($DEBUG);
 
 my $VERSION = '0.1';
 use constant DSN => "DBI:mysql:cc";
+#use constant DSN => "DBI:mysql:cc";
 use constant USER => "mdaly";
 use constant PASSWORD => "mdalysql";
 
@@ -47,6 +49,12 @@ my $types = {
 # Parameters: None.
 # Returns: DBH Connection Handle.
 sub getDB {
+
+    if($DEBUG)
+    {
+	printf STDERR ("### DB::getDB(dsn=%s, user=%s, pw=%s)\n", 
+		       DSN, USER, PASSWORD);
+    }
     my $dbh = DBI->connect(DSN,USER,PASSWORD,{PrintError => 1,RaiseError => 1});
     return $dbh;
 }
