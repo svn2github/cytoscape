@@ -44,6 +44,7 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class CyAttributesUtils
@@ -150,5 +151,15 @@ public class CyAttributesUtils
               cl = null;
         }
         return cl;
+  }
+
+  public static List<String> getVisibleAttributeNames(CyAttributes attrs) {
+  	String[] allNames = attrs.getAttributeNames();
+	List<String> visibleNames = new ArrayList<String>();
+	for ( String name : allNames )
+		if ( attrs.getUserVisible(name) )
+			visibleNames.add(name);
+	
+	return visibleNames;
   }
 }
