@@ -43,7 +43,6 @@ import javax.swing.undo.UndoableEdit;
 import cern.colt.list.IntArrayList;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.editor.actions.DeleteAction;
 import cytoscape.editor.actions.NewNetworkAction;
@@ -58,10 +57,6 @@ import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
 import ding.view.DGraphView.Canvas;
-
-
-import javax.swing.SwingConstants;
-import javax.swing.undo.UndoableEdit;
 
 
 /**
@@ -256,12 +251,14 @@ public abstract class CytoscapeEditorManager {
     //    /**
     //     * main data structure for all node attributes
     //     */
-     public static cytoscape.data.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+    // MLC 11/06/06:
+    // public static cytoscape.data.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
 
     //    /**
     //     * main data structure for all edge attributes
     //     */
-        public static cytoscape.data.CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
+    // MLC 11/06/06:
+    //    public static cytoscape.data.CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
     // MLC 08/06/06 END.
 
     // public static final String DEFAULT_VISUAL_STYLE =
@@ -956,9 +953,10 @@ public abstract class CytoscapeEditorManager {
     //     * @param defaultEditor
     //     *            The defaultEditor to set.
     //     */
-        public static void setDefaultEditor(CytoscapeEditor defaultEditor) {
-            CytoscapeEditorManager.defaultEditor = defaultEditor;
-        }
+    // MLC 11/06/06:
+    //    public static void setDefaultEditor(CytoscapeEditor defaultEditor) {
+    //        CytoscapeEditorManager.defaultEditor = defaultEditor;
+    //   }
     // MLC 08/06/06 END.
 
     /**
