@@ -44,12 +44,19 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.MalformedURLException;
 import javax.swing.JOptionPane;
+import java.util.StringTokenizer;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -151,7 +158,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		if (fd.getStatus() == false) {
 			return;
 		}
-
+				
 		final File[] files = fd.getFiles();
 		boolean vsSwitch = fd.getVSFlag();
 		boolean skipMessage = false;
@@ -166,9 +173,15 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			messages.add(" ");
 
 			for (int i = 0; i < files.length; i++) {
-				messages.add(files[i].getName());
+				if (fd.isRemote() == true) {
+					messages.add(fd.getURLStr());	
+				}				
+				else {
+					messages.add(files[i].getName());	
+				}
 				loadFile(files[i], vsSwitch, skipMessage);
 			}
+
 			if(files.length != 1) {
 			JOptionPane messagePane = new JOptionPane();
 			messagePane.setLocation(Cytoscape.getDesktop().getLocationOnScreen());
@@ -178,6 +191,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			}
 		}
 	}
+	
 
 	private void loadFile(File file, boolean createVisualStyle,
 			boolean skipMessage) {
