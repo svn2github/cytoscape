@@ -3,7 +3,6 @@ package cytoscape.dialogs;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.awt.Component;
 import javax.swing.JButton;
@@ -15,9 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import java.awt.Color;
-import java.net.MalformedURLException;
 import java.net.Proxy;
-import cytoscape.Cytoscape;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
 import cytoscape.util.BookmarksUtil;
@@ -50,6 +47,226 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
         initComponents();
         loadBookmarks();
     }
+    
+
+    // Variables declaration - do not modify
+    private javax.swing.JPanel bookmarkPanel;
+    private javax.swing.JButton btnAddBookmark;
+    private javax.swing.JButton btnDeleteBookmark;
+    private javax.swing.JButton btnEditBookmark;
+    private javax.swing.JButton btnOK;
+    private javax.swing.JPanel btnPanelBookmark;
+    private javax.swing.JButton btnSetProxy;
+    private javax.swing.JComboBox cmbProxyType;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lbBookmarkTitle;
+    private javax.swing.JLabel lbHostName;
+    private javax.swing.JLabel lbPort;
+    private javax.swing.JLabel lbProxyServer;
+    private javax.swing.JLabel lbProxyTitle;
+    private javax.swing.JLabel lbType;
+    private javax.swing.JPanel proxyPanel;
+    private javax.swing.JTextField tfHost;
+    private javax.swing.JTextField tfPort;
+	private JList bookmarkList;
+    // End of variables declaration
+
+    
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        proxyPanel = new javax.swing.JPanel();
+        lbProxyTitle = new javax.swing.JLabel();
+        lbProxyServer = new javax.swing.JLabel();
+        lbType = new javax.swing.JLabel();
+        lbHostName = new javax.swing.JLabel();
+        lbPort = new javax.swing.JLabel();
+        cmbProxyType = new javax.swing.JComboBox();
+        tfHost = new javax.swing.JTextField();
+        tfPort = new javax.swing.JTextField();
+        btnSetProxy = new javax.swing.JButton();
+        bookmarkPanel = new javax.swing.JPanel();
+        lbBookmarkTitle = new javax.swing.JLabel();
+        bookmarkList = new JList();
+        jScrollPane1 = new javax.swing.JScrollPane(bookmarkList);        
+        btnPanelBookmark = new javax.swing.JPanel();
+        btnAddBookmark = new javax.swing.JButton();
+        btnEditBookmark = new javax.swing.JButton();
+        btnDeleteBookmark = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        btnOK = new javax.swing.JButton();
+        
+
+        getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        proxyPanel.setLayout(new java.awt.GridBagLayout());
+
+        proxyPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Proxy Server"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
+        proxyPanel.add(lbProxyTitle, gridBagConstraints);
+
+        lbProxyServer.setText("None");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 8, 0);
+        proxyPanel.add(lbProxyServer, gridBagConstraints);
+
+        lbType.setText("Type");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        proxyPanel.add(lbType, gridBagConstraints);
+
+        lbHostName.setText("Host name");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.weightx = 1.0;
+        proxyPanel.add(lbHostName, gridBagConstraints);
+
+        lbPort.setText("Port");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        proxyPanel.add(lbPort, gridBagConstraints);
+
+        cmbProxyType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DIRECT", "HTTP", "SOCKS" }));
+        cmbProxyType.setMinimumSize(new java.awt.Dimension(61, 18));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 5, 3, 3);
+        proxyPanel.add(cmbProxyType, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        proxyPanel.add(tfHost, gridBagConstraints);
+
+        tfPort.setMinimumSize(new java.awt.Dimension(50, 19));
+        tfPort.setPreferredSize(new java.awt.Dimension(50, 19));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 0);
+        proxyPanel.add(tfPort, gridBagConstraints);
+
+        btnSetProxy.setText("Set");
+        btnSetProxy.setMinimumSize(new java.awt.Dimension(63, 23));
+        btnSetProxy.setPreferredSize(new java.awt.Dimension(63, 23));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        proxyPanel.add(btnSetProxy, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(15, 3, 0, 3);
+        getContentPane().add(proxyPanel, gridBagConstraints);
+
+        bookmarkPanel.setLayout(new java.awt.GridBagLayout());
+
+        bookmarkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Bookmarks"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 5, 0);
+        bookmarkPanel.add(lbBookmarkTitle, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        bookmarkPanel.add(jScrollPane1, gridBagConstraints);
+
+        btnPanelBookmark.setLayout(new java.awt.GridBagLayout());
+
+        btnAddBookmark.setText("Add");
+        btnAddBookmark.setMinimumSize(new java.awt.Dimension(63, 23));
+        btnAddBookmark.setPreferredSize(new java.awt.Dimension(63, 23));
+        btnPanelBookmark.add(btnAddBookmark, new java.awt.GridBagConstraints());
+
+        btnEditBookmark.setText("Edit");
+        btnEditBookmark.setMinimumSize(new java.awt.Dimension(63, 23));
+        btnEditBookmark.setPreferredSize(new java.awt.Dimension(63, 23));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+        btnPanelBookmark.add(btnEditBookmark, gridBagConstraints);
+
+        btnDeleteBookmark.setText("Delete");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 10);
+        btnPanelBookmark.add(btnDeleteBookmark, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        bookmarkPanel.add(btnPanelBookmark, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(20, 3, 0, 3);
+        getContentPane().add(bookmarkPanel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 88, 0, 0);
+        getContentPane().add(jLabel3, gridBagConstraints);
+
+        btnOK.setText("OK");
+        jPanel2.add(btnOK);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(15, 0, 15, 0);
+        getContentPane().add(jPanel2, gridBagConstraints);
+
+        
+        btnEditBookmark.setVisible(false);
+
+        if (theProxyServer == null) {
+        	lbProxyServer.setText("None");	
+        }
+        else {
+        	lbProxyServer.setText(theProxyServer.toString());
+        }
+
+		btnEditBookmark.setEnabled(false);
+		btnDeleteBookmark.setEnabled(false);
+        
+        // add event listeners
+        btnOK.addActionListener(this);
+        btnSetProxy.addActionListener(this);
+        btnAddBookmark.addActionListener(this);
+        btnEditBookmark.addActionListener(this);
+        btnDeleteBookmark.addActionListener(this);
+        
+        bookmarkList.addListSelectionListener(this);
+        
+    	bookmarkList.setCellRenderer(new MyListCellRenderer());
+    	bookmarkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+     
+        //pack();
+    }// </editor-fold>
+
     
     public Proxy getProxyServer() {
     	return theProxyServer;
@@ -156,10 +373,10 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 				theNewDialog.setVisible(true);
 				loadBookmarks(); // reload is required to update the GUI
 			}
-			else if (_btn == btnModifyBookmark){
+			else if (_btn == btnEditBookmark){
 				System.out.println("BtnModifyBookmark is pressed!");
 			}
-			else if (_btn == btnDeleteBookmarks){
+			else if (_btn == btnDeleteBookmark){
 				DataSource theDataSource = (DataSource) bookmarkList.getSelectedValue();
 				
 				MyListModel theModel = (MyListModel) bookmarkList.getModel();
@@ -168,8 +385,8 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 				deleteBookmark(theDataSource);// delete the selected bookmark from file
 				
 				if (theModel.getSize() == 0) {
-					btnModifyBookmark.setEnabled(false);
-					btnDeleteBookmarks.setEnabled(false);
+					btnEditBookmark.setEnabled(false);
+					btnDeleteBookmark.setEnabled(false);
 				}
 			}
 			else if (_btn == btnSetProxy) {
@@ -214,180 +431,16 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 	public void valueChanged(ListSelectionEvent pListSelectionEvent)
 	{
 		if (bookmarkList.getSelectedIndex() == -1) { // nothing is selected
-			btnModifyBookmark.setEnabled(false);
-			btnDeleteBookmarks.setEnabled(false);						
+			btnEditBookmark.setEnabled(false);
+			btnDeleteBookmark.setEnabled(false);						
 		}
 		else {
 			// enable buttons
-			btnModifyBookmark.setEnabled(true);
-			btnDeleteBookmarks.setEnabled(true);			
+			btnEditBookmark.setEnabled(true);
+			btnDeleteBookmark.setEnabled(true);			
 		}
 
 	}
-
- 	
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
-    private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
-
-        lbProxyServer = new javax.swing.JLabel();
-        lbProxyTitle = new javax.swing.JLabel();
-
-        proxyPanel = new javax.swing.JPanel(new java.awt.GridBagLayout());
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        cmbProxyType = new javax.swing.JComboBox();
-        tfHost = new javax.swing.JTextField();
-        tfPort = new javax.swing.JTextField();
-        
-        btnSetProxy = new javax.swing.JButton();
-        lbBookmarks = new javax.swing.JLabel();
-        bookmarkList = new JList();
-        jScrollPane1 = new javax.swing.JScrollPane(bookmarkList);
-        
-        btnDeleteBookmarks = new javax.swing.JButton();
-        btnOK = new javax.swing.JButton();
-        btnAddBookmark =new javax.swing.JButton();
-    	btnModifyBookmark = new javax.swing.JButton();
-    	btnPanelBookmark = new javax.swing.JPanel(new java.awt.GridBagLayout());
-        	
-        getContentPane().setLayout(new java.awt.GridBagLayout());
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        
-        lbProxyTitle.setText("Proxy server");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        getContentPane().add(lbProxyTitle, gridBagConstraints);
-
-        if (theProxyServer == null) {
-        	lbProxyServer.setText("None");	
-        }
-        else {
-        	lbProxyServer.setText(theProxyServer.toString());
-        }
-        
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 10);
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.anchor = gridBagConstraints.WEST;
-        getContentPane().add(lbProxyServer, gridBagConstraints);
-        
-        //
-        jLabel1.setText("Type");
-        proxyPanel.add(jLabel1, new java.awt.GridBagConstraints());
-
-        jLabel2.setText("Host");
-        proxyPanel.add(jLabel2, new java.awt.GridBagConstraints());
-
-        jLabel3.setText("Port");
-        proxyPanel.add(jLabel3, new java.awt.GridBagConstraints());
-
-        cmbProxyType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DIRECT", "HTTP", "SOCKS" }));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 10, 5);
-        cmbProxyType.setMinimumSize(new Dimension(61,22));
-        proxyPanel.add(cmbProxyType, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 10, 5);
-        proxyPanel.add(tfHost, gridBagConstraints);
-
-        tfPort.setMinimumSize(new java.awt.Dimension(50, 19));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 10, 0);
-        proxyPanel.add(tfPort, gridBagConstraints);
-        //
-        
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        getContentPane().add(proxyPanel, gridBagConstraints);
-
-        btnSetProxy.setText("Set");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        getContentPane().add(btnSetProxy, gridBagConstraints);
-
-        lbBookmarks.setText("Bookmarks");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        getContentPane().add(lbBookmarks, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        getContentPane().add(jScrollPane1, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 4;
-        //gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        getContentPane().add(btnPanelBookmark, gridBagConstraints);
-
-
-        btnOK.setText("OK");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.insets = new java.awt.Insets(20, 10, 20, 20);
-        getContentPane().add(btnOK, gridBagConstraints);
-
-        
-        //
-        btnAddBookmark.setText("Add");
-        btnAddBookmark.setPreferredSize(new Dimension(65,23));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 5, 10);
-        btnPanelBookmark.add(btnAddBookmark, gridBagConstraints);
-
-        btnModifyBookmark.setText("Modify");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 10);
-        btnPanelBookmark.add(btnModifyBookmark, gridBagConstraints);
-        
-        btnDeleteBookmarks.setText("Delete");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 10);
-        btnPanelBookmark.add(btnDeleteBookmarks, gridBagConstraints);
-        
-        btnModifyBookmark.setVisible(false); // we may this button in the future
-        
-		btnModifyBookmark.setEnabled(false);
-		btnDeleteBookmarks.setEnabled(false);
-        
-        // add event listeners
-        btnOK.addActionListener(this);
-        btnSetProxy.addActionListener(this);
-        btnAddBookmark.addActionListener(this);
-        btnModifyBookmark.addActionListener(this);
-        btnDeleteBookmarks.addActionListener(this);
-        
-        bookmarkList.addListSelectionListener(this);
-        
-    	bookmarkList.setCellRenderer(new MyListCellRenderer());
-    	bookmarkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        //pack();
-    }// </editor-fold>
     
     
     class MyListModel extends javax.swing.AbstractListModel {
@@ -446,29 +499,6 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
         }
     }
 
-    // Variables declaration - do not modify
-    private javax.swing.JButton btnDeleteBookmarks;
-    private javax.swing.JButton btnSetProxy;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lbBookmarks;
-    private javax.swing.JLabel lbProxyTitle;
-    private javax.swing.JLabel lbProxyServer;    
-    private javax.swing.JTextField tfProxyServer;
-    private javax.swing.JButton btnOK;
-    private javax.swing.JButton btnAddBookmark;
-    private javax.swing.JButton btnModifyBookmark;
-    private javax.swing.JPanel btnPanelBookmark;
-	private JList bookmarkList;
-	
-	private javax.swing.JPanel proxyPanel;
-	private javax.swing.JComboBox cmbProxyType;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField tfHost;
-    private javax.swing.JTextField tfPort;
-
-    // End of variables declaration
 	
 	/**
 	 * @param args
@@ -624,8 +654,5 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 	    private javax.swing.JTextField tfName;
 	    private javax.swing.JTextField tfURL;
 	    // End of variables declaration
-	    
 	}
-
-	
 }
