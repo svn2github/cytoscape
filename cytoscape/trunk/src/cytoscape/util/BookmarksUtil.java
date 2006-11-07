@@ -1,11 +1,20 @@
 package cytoscape.util;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import cytoscape.bookmarks.Attribute;
+import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
+import cytoscape.data.readers.BookmarkReader;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 /**
  * Utility methods for getting entries in the bookmark object.
@@ -94,4 +103,153 @@ public abstract class BookmarksUtil {
 		return categoryList;
 	}
 
+    public static Bookmarks getBookmarks(URL bookmarkUrl) throws JAXBException, IOException
+    {
+    	BookmarkReader reader = new BookmarkReader();
+    	reader.readBookmarks(bookmarkUrl);
+    	
+    	return reader.getBookmarks();
+    }
+
+    private static String bookmarkPackageName = "cytoscape.bookmarks";	
+    
+    public static void saveBookmark(Bookmarks pBookmarks, String pCategoryName, 
+    		DataSource pDataSource, FileOutputStream pFos) throws JAXBException, IOException
+    {             	
+        List<Category> theCategoryList = pBookmarks.getCategory();
+        
+        // if the category does not exist, create it
+        if (theCategoryList.size() == 0) {
+        	Category theCategory = new Category();
+        	theCategory.setName(pCategoryName);
+        	theCategoryList.add(theCategory);
+        }        
+        
+        Category theCategory = getCategory(pCategoryName,theCategoryList);
+        
+        List<Object>  theObjList =  theCategory.getCategoryOrDataSource();            	
+
+        theObjList.add(pDataSource);
+            
+    	// Write the bookmarks objects back into a file
+    	JAXBContext jc = JAXBContext.newInstance(bookmarkPackageName);
+        Marshaller m = jc.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); 
+        
+    	m.marshal(pBookmarks, pFos);
+    }
+ 
+    
+    // Save one bookmark (DataSource object) belonged to specified category into a XML file 
+   	public static boolean saveBookmark(URL pBookmarkURL, String pCategoryName, DataSource pDataSource)
+   	{
+   		Bookmarks theBookmarks = null;
+        try {
+        	theBookmarks = BookmarksUtil.getBookmarks(pBookmarkURL); 
+        }
+        catch (Exception e)
+        {
+        	theBookmarks = new Bookmarks();
+        }
+
+    	java.io.File tmpFile = new java.io.File(pBookmarkURL.getFile());
+    	if (!tmpFile.exists()) {
+    		try {
+        		tmpFile.createNewFile();        			
+    		}
+    		catch (Exception ex) {
+    			System.out.println("Bookmark file may not exist, failed to create new one.");
+    		}
+    	}
+
+        try {        	
+            FileOutputStream fos = new FileOutputStream(pBookmarkURL.getFile());
+        	saveBookmark(theBookmarks, pCategoryName, pDataSource, fos);
+        	fos.close();
+        }
+        catch (JAXBException e)
+        {
+        	e.printStackTrace();
+        	return false;
+        }
+        catch (Exception e)
+        {
+        	e.printStackTrace();
+        	return false;
+        }
+ 
+    	return true;
+   	}
+
+    
+    
+    public static boolean deleteBookmark(String filename, Bookmarks pBookmarks, String pCategoryName, DataSource pDataSource)
+    { 
+        List<Category> theCategoryList = pBookmarks.getCategory();        
+        Category theCategory = getCategory(pCategoryName,theCategoryList);
+        
+        List<Object> theObjList =  theCategory.getCategoryOrDataSource();    
+        
+        for (int i = 0; i<theObjList.size(); i++) {
+        	Object obj = theObjList.get(i);
+           	if (obj instanceof DataSource) {
+        		DataSource theDataSource = (DataSource) obj;
+        		if (theDataSource.getName().equalsIgnoreCase(pDataSource.getName())) {
+        			theObjList.remove(i);
+        			
+        			try {
+            	    	// Write the bookmarks objects back into a file
+            	    	JAXBContext jc = JAXBContext.newInstance(bookmarkPackageName);
+            	        Marshaller m = jc.createMarshaller();
+            	        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); 
+            	        
+            	    	m.marshal(pBookmarks, new FileOutputStream(filename));
+        			}
+        			catch (Exception e) {
+        				e.printStackTrace();
+        			}
+
+        			return true;
+        		}
+        	}
+        }
+            	
+    	return false;
+    }
+
+    
+    public static boolean isInBookmarks(Bookmarks pBookmarks, String pCategoryName, DataSource pDataSource)
+    { 
+    	if (pBookmarks == null) {
+    		return false;    		
+    	}
+    	List<DataSource> theDataSources = getDataSourceList(pCategoryName, pBookmarks.getCategory());
+    	
+    	if ((theDataSources == null)||(theDataSources.size() == 0)) {
+    		return false;
+    	}
+    		
+    	for (DataSource theDataSource: theDataSources) {
+    		if (theDataSource.getName().equalsIgnoreCase(pDataSource.getName())) {
+    			return true;    			
+    		}    		
+    	}
+    	return false;
+    }
+
+    public static boolean isInBookmarks(URL pBookmarkURL, String pCategoryName, DataSource pDataSource)
+    { 
+    	Bookmarks theBookmarks = null;
+    	try {
+    		theBookmarks = getBookmarks(pBookmarkURL);
+    	}
+    	catch (Exception e) {
+    		return false;
+    	}
+
+    	return isInBookmarks(theBookmarks, pCategoryName, pDataSource);    	
+    }
+
 }
+    
+	
