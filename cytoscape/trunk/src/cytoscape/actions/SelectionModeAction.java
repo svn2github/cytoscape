@@ -51,7 +51,7 @@ public class SelectionModeAction extends JMenu {
 
 		ButtonGroup modeGroup = new ButtonGroup();
 		JCheckBoxMenuItem nodes = new JCheckBoxMenuItem(new AbstractAction(
-				"Nodes") {
+				"Nodes Only") {
 			public void actionPerformed(ActionEvent e) {
 				// Do this in the GUI Event Dispatch thread...
 				SwingUtilities.invokeLater(new Runnable() {
@@ -66,7 +66,7 @@ public class SelectionModeAction extends JMenu {
 						| ActionEvent.SHIFT_MASK));
 
 		JCheckBoxMenuItem edges = new JCheckBoxMenuItem(new AbstractAction(
-				"Edges") {
+				"Edges Only") {
 			public void actionPerformed(ActionEvent e) {
 				// Do this in the GUI Event Dispatch thread...
 				SwingUtilities.invokeLater(new Runnable() {

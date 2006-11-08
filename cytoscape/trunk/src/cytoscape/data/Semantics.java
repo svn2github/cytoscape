@@ -457,10 +457,11 @@ public class Semantics {
 					SPECIES);
 		}
 
-		species = CytoscapeInit.getProperties().getProperty(
-				"defaultSpeciesName");
+		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
 		if (species != null) {
-			returnList.addAll(Arrays.asList(Cytoscape.getBioDataServer().getAllCommonNames(species, name)));
+			BioDataServer bds = Cytoscape.getBioDataServer();
+			if ( bds != null )
+				returnList.addAll(Arrays.asList(bds.getAllCommonNames(species, name)));
 			// we assume that this list of synonyms from the bioDataServer
 			// includes
 			// any canonical and common names registered with the node

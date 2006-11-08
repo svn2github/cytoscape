@@ -182,8 +182,7 @@ public class CyNetworkUtilities {
 				matchedNodes.add(node);
 			} else {
 				// this list always includes the canonical name itself
-				List synonyms = Semantics
-						.getAllSynonyms(nodeUID, network);
+				List synonyms = Semantics.getAllSynonyms(nodeUID, network);
 				for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
 					String synonym = (String) synI.next();
 					if (Strings.isLike(synonym, key, 0, true)) {
