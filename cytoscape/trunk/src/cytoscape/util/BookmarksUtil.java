@@ -111,6 +111,26 @@ public abstract class BookmarksUtil {
     	return reader.getBookmarks();
     }
 
+    public static Bookmarks getBookmarks(java.io.File pBookmarkFile)
+    { 		
+    	Bookmarks theBookmarks = null;
+		
+    	// Load the Bookmarks object from given xml file  
+   		try {
+   			theBookmarks = BookmarksUtil.getBookmarks(pBookmarkFile.toURL());   			
+   		}
+    	catch (IOException e)
+    	{
+       		System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
+     	}
+    	catch (JAXBException e)
+    	{
+    		System.out.println("JAXBException -- bookmarkSource");    
+    	} 
+
+    	return theBookmarks;    	
+    }
+    
     private static String bookmarkPackageName = "cytoscape.bookmarks";	
     
     public static void saveBookmark(Bookmarks pBookmarks, String pCategoryName, 
@@ -181,7 +201,27 @@ public abstract class BookmarksUtil {
     	return true;
    	}
 
-    
+    public static void saveBookmark(Bookmarks pBookmarks, String pCategoryName, DataSource pDataSource) {
+        
+    	if (pBookmarks == null) {
+    		pBookmarks = new Bookmarks();
+    	}
+    	
+    	List<Category> theCategoryList = pBookmarks.getCategory();
+        
+        // if the category does not exist, create it
+        if (theCategoryList.size() == 0) {
+        	Category theCategory = new Category();
+        	theCategory.setName(pCategoryName);
+        	theCategoryList.add(theCategory);
+        }        
+        
+        Category theCategory = getCategory(pCategoryName,theCategoryList);
+        
+        List<Object>  theObjList =  theCategory.getCategoryOrDataSource();            	
+
+        theObjList.add(pDataSource);    	
+    }
     
     public static boolean deleteBookmark(String filename, Bookmarks pBookmarks, String pCategoryName, DataSource pDataSource)
     { 
@@ -217,6 +257,28 @@ public abstract class BookmarksUtil {
     	return false;
     }
 
+    public static boolean deleteBookmark(Bookmarks pBookmarks, String pCategoryName, DataSource pDataSource){
+  		if (!isInBookmarks(pBookmarks, pCategoryName, pDataSource)) {
+  			return false;
+  		}
+        
+  		List<Category> theCategoryList = pBookmarks.getCategory();        
+        Category theCategory = getCategory(pCategoryName,theCategoryList);
+        
+        List<Object> theObjList =  theCategory.getCategoryOrDataSource();    
+        
+        for (int i = 0; i<theObjList.size(); i++) {
+        	Object obj = theObjList.get(i);
+           	if (obj instanceof DataSource) {
+        		DataSource theDataSource = (DataSource) obj;
+        		if (theDataSource.getName().equalsIgnoreCase(pDataSource.getName())) {
+        			theObjList.remove(i);
+        		}
+           	}
+        }
+  			 
+    	return true;
+    }
     
     public static boolean isInBookmarks(Bookmarks pBookmarks, String pCategoryName, DataSource pDataSource)
     { 
