@@ -5,12 +5,14 @@
 package cytoscape.editor.event;
 
 import ding.view.DGraphView;
+import ding.view.DingCanvas;
 import ding.view.InnerCanvas;
 import edu.umd.cs.piccolo.nodes.PPath;
 import giny.model.Node;
 import giny.view.NodeView;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -450,22 +452,31 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		x2 = x2 + (((x1 - x2) / lineLen) * offset);
 
 		nextPoint.setLocation(x2, y2);
+		
+		Graphics g = canvas.getGraphics();
 
-		Color saveColor = canvas.getGraphics().getColor();
+		Color saveColor = g.getColor();
 		
 		if (saveX1 != Double.MIN_VALUE)
 		{
-			canvas.getGraphics().setColor(canvas.getBackground());
-			canvas.getGraphics().drawLine(((int) saveX1) - 1,
+			// AJK: 11/07/06 BEGIN
+			//    fix for fanout bug
+//			canvas.getGraphics().setColor(canvas.getBackground());
+			DGraphView dnv = (DGraphView) Cytoscape.getCurrentNetworkView();
+			DingCanvas backgroundCanvas = dnv
+					.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+			g.setColor(backgroundCanvas.getBackground());
+			// AJK: 11/04/06 END
+			g.drawLine(((int) saveX1) - 1,
 					((int) saveY1) - 1, ((int) saveX2) + 1, ((int) saveY2) + 1);
 		}
 		
 		
-		canvas.update(canvas.getGraphics());
-		canvas.getGraphics().setColor(Color.BLACK);
-		canvas.getGraphics().drawLine(((int) x1) - 1,
+		canvas.update(g);
+		g.setColor(Color.BLACK);
+		g.drawLine(((int) x1) - 1,
 				((int) y1) - 1, ((int) x2) + 1, ((int) y2) + 1);
-		canvas.getGraphics().setColor(saveColor);
+		g.setColor(saveColor);
 				
 		saveX1 = x1;
 		saveX2 = x2;
