@@ -6,7 +6,21 @@ import cytoscape.util.GMLFileFilter;
 import cytoscape.util.SIFFileFilter;
 import cytoscape.util.XGMMLFileFilter;
 
+import java.awt.Component;
+import java.awt.Cursor;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
+
+import javax.swing.JOptionPane;
 
 /**
  * Central registry for all Cytoscape import classes.
@@ -252,4 +266,83 @@ public class ImportHandler {
         String[] stringAns = (String[]) ans.toArray(new String[0]);
         return stringAns;
     }
+    
+    /**
+     * Download a temporary file from the given URL. The file will be saved in the 
+     * temporary directory and will be deleted after Cytoscape exits.
+     */
+	public static File downloadFromURL(Component pParent, String pURLstr, Proxy pProxyServer)
+	{				
+		URL theUrl;
+		try {
+			theUrl = new URL(pURLstr);			
+		}
+		catch (MalformedURLException mExp) {
+		    JOptionPane.showMessageDialog(pParent, "URL error!", "Warning", JOptionPane.INFORMATION_MESSAGE);
+			return null;
+		}
+		
+		URLConnection conn = null;;
+		
+		try {
+			if (pProxyServer == null) {
+				conn = theUrl.openConnection();							
+			}
+			else {
+				conn = theUrl.openConnection(pProxyServer);
+			}			
+		}
+		catch (IOException ioEx) {
+		    JOptionPane.showMessageDialog(pParent, "Failed to connect to the remote server!", "Warning", JOptionPane.INFORMATION_MESSAGE);
+			return null;			
+		}			
+
+		// create a tmp file, which will be deleted upon exit
+		String fileName = theUrl.getFile();
+		String baseFilename = fileName.substring(fileName.lastIndexOf("/")+1);
+		
+		java.util.Properties theProperties = System.getProperties();
+		File tmpFile = new File(theProperties.getProperty("java.io.tmpdir"), baseFilename);
+		
+	    tmpFile.deleteOnExit();
+
+	    BufferedWriter out = null;
+	    BufferedReader in = null;
+	    try {
+			// set the wait cursor
+			pParent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+		     out = new BufferedWriter(new FileWriter(tmpFile));
+			 in = new BufferedReader(new InputStreamReader(conn.getInputStream()));	    	
+	    }
+	    catch (IOException ioExp) {
+		    JOptionPane.showMessageDialog(pParent, "Failed to download the file!", "Warning", JOptionPane.INFORMATION_MESSAGE);
+			pParent.setCursor(Cursor.getDefaultCursor());
+
+		    return null;				    	
+	    }
+	    	    
+		try {
+			 String inputLine;
+
+		     // Write to temp file
+			 while ((inputLine = in.readLine()) != null) 
+			 {
+			     out.write(inputLine+"\n");
+			 }
+			 in.close();
+		     out.close();				
+		}
+		catch (IOException ioExp)
+		{
+		    JOptionPane.showMessageDialog(pParent, "Failed to write to a tmp file on local disk!", "Warning", JOptionPane.INFORMATION_MESSAGE);
+			return null;				    	
+		}		
+		finally {
+			// Always restore the cursor, even there is exception
+			pParent.setCursor(Cursor.getDefaultCursor());
+		}			
+
+		return tmpFile;
+	}//downloadFromURL()
 }
