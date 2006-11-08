@@ -1,6 +1,6 @@
 package cytoscape;
 
-import java.awt.*;
+import java.awt.Robot;
 import java.util.*;
 import javax.swing.*;
 
@@ -15,6 +15,8 @@ import junit.framework.TestCase;
 
 import cytoscape.*;
 import cytoscape.view.*;
+import giny.model.*; 
+import giny.view.*; 
 
 public class Tutorial1TestSwing extends TestCase {
 	private Scenario scenario;
@@ -34,10 +36,8 @@ public class Tutorial1TestSwing extends TestCase {
 		Runnable r = new Runnable() {
 			public void run() {
 				try {
-					String[] args = {"-p", "plugins/core/AutomaticLayout.jar"};
-					//String[] args = {};
+					String[] args = {"-p", "plugins/core"};
 					application = new CyMain(args);
-					//LayoutPlugin layoutPlugin = new LayoutPlugin();
 				} catch (Exception e) { e.printStackTrace(); }
 			}
 		};
@@ -48,7 +48,7 @@ public class Tutorial1TestSwing extends TestCase {
 		
 		// To make sure to load the scenario file. 
 		// CytoscapeTestSwing.xml is placed on the same package directory.
-		String filePath = CytoscapeTestSwing.class.getResource("Tutorial1TestSwing.xml").getFile();
+		String filePath = CytoscapeTestSwing.class.getResource("CytoscapeSwingUnitOperations.xml").getFile();
 		// Create Scenario object and create XML file.
 		scenario = new Scenario(robotEventFactory, methodSet);
 		scenario.read(filePath);
@@ -58,44 +58,58 @@ public class Tutorial1TestSwing extends TestCase {
 	 * @see TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception {
-		// Terminate application.
-		Runnable r = new Runnable() {
-			public void run() {
-			//	if(application != null) {
-			//		application.setVisible(false);
-			//	}
-			}
-		};
-		SwingUtilities.invokeAndWait(r);
-
 		application = null;
 		scenario = null;
 		robot = null;
 	}
 
-	public void testOpenNetworkFile() throws ExecuteException {
-		// Use keyword substitution.
-		scenario.setTestSetting("OPEN_NETWORK_FILE","FILE_TO_OPEN","RUAL.subset.sif");
+	public void testTutorialOne() throws ExecuteException {
 		EventPlayer player = new EventPlayer(scenario);
-		player.run(robot, "OPEN_NETWORK_FILE");
-		//scenario.setTestSetting("APPLY_SPRING_LAYOUT");
-		//scenario.setTestSetting("APPLY_SPRING_LAYOUT","FILE_TO_OPEN","RUAL.subset.sif");
-		//player = new EventPlayer(scenario);
-		//player.run(robot, "APPLY_SPRING_LAYOUT");
-		//player.run(robot, "SELECT_EDGES");
-		scenario.setTestSetting("SELECT_NODE_BY_NAME","NODE_NAME","7157");
-		player = new EventPlayer(scenario);
-		player.run(robot, "SELECT_NODE_BY_NAME");
-		player.run(robot, "SELECT_FIRST_NEIGHBORS");
 
-		// write assertion code here.
-	//	Set s = Cytoscape.getNetworkSet();
-	//	assertTrue("exected 1, got: " + s.size(), s.size() == 1 );
+		// only do this because the attr browser takes up the whole
+		// screen in this mode
+		player.run(robot, "SHOW_HIDE_ATTRIBUTE_BROWSER");
+
+		// open net
+		scenario.setTestSetting("IMPORT_NETWORK_FILE","FILE_TO_IMPORT","RUAL.subset.sif");
+		scenario.setTestSetting("IMPORT_NETWORK_FILE","IMPORT_DIR","testData");
+		player.run(robot, "IMPORT_NETWORK_FILE");
+		assertEquals("num networks (including ontology root)",2,Cytoscape.getNetworkSet().size());
+
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		assertNotNull("current network view",view);
+
+		player.run(robot, "APPLY_SPRING_LAYOUT");
+		// some test for layout?
+
+		scenario.setTestSetting("SELECT_NODE_BY_NAME","NODE_NAME","7157");
+		player.run(robot, "SELECT_NODE_BY_NAME");
+
+		List selNodes = view.getSelectedNodes();
+		assertEquals("num selected nodes",1,selNodes.size());
+		assertEquals("node id","7157",((NodeView)selNodes.get(0)).getNode().getIdentifier());
+		
+		player.run(robot, "SELECT_FIRST_NEIGHBORS");
+		selNodes = view.getSelectedNodes();
+		assertEquals("num selected neighbor nodes",64,selNodes.size());
+
+		player.run(robot, "NEW_NETWORK_FROM_SELECTED_NODES_ALL_EDGES");
+		assertEquals("num networks (including ontology root)",3,Cytoscape.getNetworkSet().size());
+
+		scenario.setTestSetting("IMPORT_NODE_ATTRIBUTES","FILE_TO_IMPORT","RUAL.na");
+		scenario.setTestSetting("IMPORT_NODE_ATTRIBUTES","IMPORT_DIR","testData");
+		player.run(robot, "IMPORT_NODE_ATTRIBUTES");
+		assertEquals("node attr","TP53",
+			Cytoscape.getNodeAttributes().getStringAttribute("7157","Official HUGO Symbol"));
+		assertEquals("node attr","GORASP2",
+			Cytoscape.getNodeAttributes().getStringAttribute("26003","Official HUGO Symbol"));
+		assertEquals("node attr","RUFY1",
+			Cytoscape.getNodeAttributes().getStringAttribute("80230","Official HUGO Symbol"));
+
+		scenario.setTestSetting("PAUSE","DURATION","2000");
+		player.run(robot, "PAUSE");
+
+		player.run(robot, "OPEN_VIZMAPPER");
 	}
 	
-/**	public void testApplySpringLayout() throws ExecuteException{
-		scenario.setTestSetting("APPLY_SPRING_LAYOUT","FILE_TO_OPEN","RUAL.subset.sif");
-		EventPlayer player = new EventPlayer(scenario);
-		player.run(robot, "APPLY_SPRING_LAYOUT");
-	}*/
 }

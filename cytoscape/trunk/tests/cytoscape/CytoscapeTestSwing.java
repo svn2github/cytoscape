@@ -35,7 +35,7 @@ public class CytoscapeTestSwing extends TestCase {
 		Runnable r = new Runnable() {
 			public void run() {
 				try {
-				String[] args = {};
+				String[] args = {"-p","plugins/core"};
 				application = new CyMain(args);
 				} catch (Exception e) { e.printStackTrace(); }
 			}
@@ -48,7 +48,7 @@ public class CytoscapeTestSwing extends TestCase {
 		
 		// To make sure to load the scenario file. 
 		// CytoscapeTestSwing.xml is placed on the same package directory.
-		String filePath = CytoscapeTestSwing.class.getResource("CytoscapeTestSwing.xml").getFile();
+		String filePath = CytoscapeTestSwing.class.getResource("CytoscapeSwingUnitOperations.xml").getFile();
 		// Create Scenario object and create XML file.
 		scenario = new Scenario(robotEventFactory, methodSet);
 		scenario.read(filePath);
@@ -58,22 +58,12 @@ public class CytoscapeTestSwing extends TestCase {
 	 * @see TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception {
-		// Terminate application.
-		Runnable r = new Runnable() {
-			public void run() {
-			//	if(application != null) {
-			//		application.setVisible(false);
-			//	}
-			}
-		};
-		SwingUtilities.invokeAndWait(r);
-
 		application = null;
 		scenario = null;
 		robot = null;
 	}
 
-	public void notestOpenCysFile() throws ExecuteException {
+	public void testOpenCysFile() throws ExecuteException {
 		// Use keyword substitution.
 		scenario.setTestSetting("OPEN_CYS_FILE","FILE_TO_OPEN","galFiltered.cys");
 		EventPlayer player = new EventPlayer(scenario);
@@ -81,7 +71,6 @@ public class CytoscapeTestSwing extends TestCase {
 
 		// write assertion code here.
 		Set s = Cytoscape.getNetworkSet();
-		assertTrue("exected 1, got: " + s.size(), s.size() == 1 );
+		assertEquals("num networks (including ontology network)", 2, s.size() );
 	}
-
 }
