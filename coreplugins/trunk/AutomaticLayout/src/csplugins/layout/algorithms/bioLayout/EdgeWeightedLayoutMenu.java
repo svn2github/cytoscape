@@ -60,7 +60,7 @@ public class EdgeWeightedLayoutMenu extends JMenu
 
 		super("Edge-weighted");
 
-		JMenu kkMenu = new JMenu("Spring Embedded");
+		JMenu kkMenu = new JMenu("Edge-weighted Spring Embedded");
 		kkMenu.addMenuListener(new WeightsMenuListener(BioLayoutActionListener.KK_ALGORITHM));
 		this.add(kkMenu);
 
