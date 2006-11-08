@@ -207,6 +207,9 @@
 		<copy todir="${build.classes}">
 			<fileset dir="${src.dir}" includes="**/*.xml" />
 		</copy>
+		<copy todir="${build.classes}">
+			<fileset dir="${tests.dir}" includes="**/*.xml" />
+		</copy>
 
 		<antcall target="splash" />
 		
@@ -582,8 +585,39 @@
 			<batchtest fork="yes" 
 			           todir="${junit.report.dir}" 
 				   failureProperty="junit.test.failure">
-				<fileset dir="${src.dir}" 
+				<fileset dir="${tests.dir}" 
 				         includes="**/*TestSwing.java" />
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${junit.report.dir}">
+			<fileset dir="${junit.report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}" />
+		</junitreport>
+
+		<fail message="JUnit Tests failed! Check ${junit.report.dir}/index.html for details." 
+		      if="junit.test.failure" />
+
+	</target>
+
+	<!-- ======================================================= -->
+	<!-- Run all of the JFC Unit Tests                         -->
+	<!-- ======================================================= -->
+	<target name="test-jfc" depends="jar">
+		<mkdir dir="${junit.report.dir}" />
+		<junit printsummary="yes" 
+		       haltonfailure="no" 
+		       maxmemory="512m">
+			<classpath refid="classpath" />
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" 
+			           todir="${junit.report.dir}" 
+				   failureProperty="junit.test.failure">
+				<fileset dir="${tests.dir}" 
+				         includes="**/*TestJFC.java" />
 			</batchtest>
 		</junit>
 
