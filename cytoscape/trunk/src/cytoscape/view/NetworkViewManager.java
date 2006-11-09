@@ -39,6 +39,7 @@
 package cytoscape.view;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
@@ -407,6 +408,17 @@ public class NetworkViewManager
 	  }
       iframe.pack();
       iframe.setSize( 400, 400 );
+
+      // maximize the frame if the specified property is set
+      try { 
+      	String max = CytoscapeInit.getProperties().getProperty("maximizeViewOnCreate");
+      	if ( max != null && Boolean.parseBoolean(max) )
+      	  iframe.setMaximum(true);
+      } catch ( PropertyVetoException pve ) {
+      	pve.printStackTrace();
+      }
+
+
       iframe.setVisible( true );
       iframe.addInternalFrameListener( this );
       

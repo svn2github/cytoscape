@@ -12,3 +12,4 @@ render.nodeBorderThreshold=200
 render.nodeLabelThreshold=100
 render.edgeArrowThreshold=300
 render.edgeLabelThreshold=120
+maximizeViewOnCreate=false

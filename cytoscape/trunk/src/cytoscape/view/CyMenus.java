@@ -279,6 +279,13 @@ public class CyMenus implements GraphViewChangeListener {
 	}
 
 	/**
+	 * Returns the File.New.Network menu.
+	 */
+	public JMenu getNewNetworkMenu() {
+		return newSubMenu2;
+	}
+
+	/**
 	 * Returns the toolbar object constructed by this class.
 	 */
 	public CytoscapeToolBar getToolBar() {

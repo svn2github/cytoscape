@@ -139,6 +139,7 @@ public class InternalFrameComponent extends JComponent implements Printable {
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         if (pageIndex == 0) {
             ((Graphics2D) graphics).translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+	    //TODO look at whether we should be clipping like this
             graphics.clipRect(0, 0, backgroundCanvas.getWidth(), backgroundCanvas.getHeight());
 			backgroundCanvas.print(graphics);
 			networkCanvas.print(graphics);
