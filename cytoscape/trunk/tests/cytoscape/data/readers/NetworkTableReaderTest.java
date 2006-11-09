@@ -28,6 +28,7 @@ public class NetworkTableReaderTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
+		Cytoscape.buildOntologyServer();
 	}
 
 	protected void tearDown() throws Exception {

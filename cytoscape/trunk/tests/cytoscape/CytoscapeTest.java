@@ -42,29 +42,18 @@ public class CytoscapeTest extends TestCase {
         assertEquals(0, edgeCount);
     }
 
-    //public void test
-    //try getting network attributes
-
     //try creating a network
-    public void testCreateNetwork() throws Exception {
+    public void testCreateNonexistentNetwork() throws Exception {
         try {
-        cytoNetwork = Cytoscape.createNetworkFromFile("testNetwork");
+        cytoNetwork = Cytoscape.createNetworkFromFile("nonexistentNetwork");
 
-        /*
-           * Network title is unpredictable!
-           */
-//		title = cytoNetwork.getTitle();
-//		assertEquals("20", title);
-
-        nodeCount = cytoNetwork.getNodeCount();
-        assertEquals(0, nodeCount);
-
-        edgeCount = cytoNetwork.getEdgeCount();
-        assertEquals(0, edgeCount);
         } catch (Exception e) {
+	    System.out.println("this is the expected exception");
             e.printStackTrace();
-            fail();
+	    assertEquals(1,1);
+	    return;
         }
+        fail("Did not catch expected exception");
     }
 
     public void testBug839() throws IOException {

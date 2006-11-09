@@ -797,7 +797,7 @@ public class GMLReader extends AbstractGraphReader {
 			}
 		}
 
-		if (label.equals("")) {
+		if (label.equals("") || label.matches("\\s+") ) {
 			label = String.valueOf(id);
 		}
 		if (root_index_pair == null) {

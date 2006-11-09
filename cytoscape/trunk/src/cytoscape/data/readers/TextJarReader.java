@@ -52,7 +52,7 @@ public class TextJarReader {
 
 	public TextJarReader(String urlString) throws IOException {
 
-	  if ( !urlString.matches("jar.+") ) 
+	  if ( !urlString.startsWith("jar") ) 
 	  	throw new IOException( "Ok, so this isn't an IOException, but it's still a problem: " +
 		                       urlString + "  This class only accepts JAR urls!!! " +  
 		                       "  See java.net.JarURLConnection for syntax");

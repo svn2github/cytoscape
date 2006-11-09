@@ -85,7 +85,6 @@ public class GMLReaderTest extends TestCase {
 
 	} // testSmallGraphRead
 
-	// -------------------------------------------------------------------------
 	public void testMediumGraphRead() throws Exception {
 		AllTests.standardOut("testMediumGraphRead");
 		GMLReader reader = new GMLReader("testData/noLabels.gml");
@@ -97,7 +96,21 @@ public class GMLReaderTest extends TestCase {
 		assertEquals("edge count",362, edgeArray.length); 
 
 	} // testMediumGraphRead
-	// -------------------------------------------------------------------------
+
+	public void testIllFormattedGML() throws Exception {
+		AllTests.standardOut("testIllFormattedGML");
+		// this file comes from http://darwin.uvigo.es/software/tcs.html
+		// their style of gml has caused problems in the past,
+		// particularly newlines within quoted words
+		GMLReader reader = new GMLReader("testData/broken_t.gml");
+		reader.read();
+		int[] nodeArray = reader.getNodeIndicesArray();	
+		int[] edgeArray = reader.getEdgeIndicesArray();	
+
+		assertEquals("node count",30, nodeArray.length); 
+		assertEquals("edge count",19, edgeArray.length); 
+
+	} 
 
 	public static void main(String[] args) {
 		if (args.length != 1) {

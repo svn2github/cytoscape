@@ -37,20 +37,11 @@ public class FileImporterTest extends TestCase {
 		assertEquals("gal.gml", title);
 		
 		nodeCount = network.getNodeCount();
-		assertEquals(11, nodeCount);
+		assertEquals("number of nodes", 11, nodeCount);
 		
 		edgeCount = network.getEdgeCount();
-		assertEquals(10, edgeCount);
+		assertEquals("number of edges", 10, edgeCount);
 		
-		//test visual style builder
-		/*vsd = new VisualStyleBuilderDialog(
-				network.getTitle(), 
-				(GraphReader)network.getClientData(Cytoscape.READER_CLIENT_KEY), 
-				Cytoscape.getDesktop(),
-				true);
-		
-		assertEquals("Visual Style Builder", vsd.getTitle());*/
-
 	}
 	
 	public void testXGMMLImport() throws Exception {
@@ -60,16 +51,11 @@ public class FileImporterTest extends TestCase {
 		title = network.getTitle();
 		assertEquals("GAL Filtered (Yeast)", title);
 		
-		/*title = Cytoscape.getDesktop().getNetworkPanel().getTreeTableModel()
-				.getValueAt(Cytoscape.getDesktop().getNetworkPanel().getTreeTable().getTree()
-				.getSelectionPath().getLastPathComponent(), 0).toString();
-		assertEquals("GAL Filtered (Yeast)", title);*/
-		
 		nodeCount = network.getNodeCount();
-		assertEquals(331, nodeCount);
+		assertEquals("num nodes", 331, nodeCount);
 		
 		edgeCount = network.getEdgeCount();
-		assertEquals(362, edgeCount);
+		assertEquals("num edges", 362, edgeCount);
 	
 
 	}
@@ -82,10 +68,10 @@ public class FileImporterTest extends TestCase {
 		assertEquals("galFiltered.sif", title);
 		
 		nodeCount = network.getNodeCount();
-		assertEquals(331, nodeCount);
+		assertEquals("num nodes", 331, nodeCount);
 		
 		edgeCount = network.getEdgeCount();
-		assertEquals(362, edgeCount);
+		assertEquals("num edge",362, edgeCount);
 	
 	}
 	

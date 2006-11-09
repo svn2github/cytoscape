@@ -42,9 +42,10 @@ import cytoscape.util.FileUtil;
 
 import java.io.StreamTokenizer;
 import java.io.IOException;
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileReader;
+import java.io.Reader;
+import java.io.FilterReader;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Vector;
@@ -101,7 +102,7 @@ public class GMLParser{
     */
    public GMLParser(String file) throws IOException, Exception{
 
-      tokenizer = new StreamTokenizer( new BufferedReader( new InputStreamReader( FileUtil.getInputStream( file ) ) ) );
+      tokenizer = new StreamTokenizer( new FilterNewlineReader( new InputStreamReader( FileUtil.getInputStream( file ) ) ) );
       
       tokenizer.resetSyntax();
       tokenizer.commentChar('#');
@@ -291,5 +292,26 @@ public class GMLParser{
       }
       return result;
    }
-  
+
+   /**
+    * This misery exists to overcome a bug in the java.io.StreamTokenizer lib. 
+    * the problem is that StreamTokenizer treats newlines as end-of-quotes, 
+    * which means you can't have quoted strings over multiple lines.  This,
+    * however, violates the GML grammar.  So, since the grammar treats newlines
+    * and spaces the same, we just turn all newlines and carriage returns
+    * into spaces.  Fortunately for us, StreamTokenizer only calls the read() method.
+    */
+   private class FilterNewlineReader extends FilterReader {
+   	public FilterNewlineReader(Reader r) {
+		super(r); 
+	} 
+
+	public int read() throws IOException {
+		int c = super.read();
+		if ( c == '\n' || c == '\r' )
+			return ' ';
+		else
+			return c;
+	}
+   } 
 }

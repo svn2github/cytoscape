@@ -1162,24 +1162,22 @@ public abstract class Cytoscape {
 	public static CyNetwork createNetwork(GraphReader reader,
 			boolean create_view, CyNetwork parent) {
 
-		if (reader == null) {
-			System.err.println("File Type not Supported, sorry");
-			return createNetwork(null);
-		}
+		if (reader == null) 
+			throw new RuntimeException ("Couldn't read specified file.");
 
 		// have the GraphReader read the given file
 		String title = "";
 
-        //  Explanation for code below:  the code below recasts an IOException
-        //  into a RuntimeException, so that the exception can still be thrown
-        //  without having to change the method signature.  This is less than
-        //  ideal, but the only sure way to ensure API stability for plugins.
-        try {
-            reader.read();
-        } catch (IOException e) {
-            throw new RuntimeException (e);
-        }
-        title = reader.getNetworkName();
+		//  Explanation for code below:  the code below recasts an IOException
+		//  into a RuntimeException, so that the exception can still be thrown
+		//  without having to change the method signature.  This is less than
+		//  ideal, but the only sure way to ensure API stability for plugins.
+		try {
+		    reader.read();
+		} catch (IOException e) {
+		    throw new RuntimeException (e);
+		}
+		title = reader.getNetworkName();
 
 		// get the RootGraph indices of the nodes and
 		// edges that were just created

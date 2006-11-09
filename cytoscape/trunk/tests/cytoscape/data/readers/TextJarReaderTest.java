@@ -74,16 +74,30 @@ public void testNewSchool () throws Exception
 { 
 	// rather than hardcoding the url, do it this way because
 	// we won't know where the jar file actually lives
-	// While this may not appear like it's testing anything it
+	// While this may not appear like it's testing anything, it
 	// is.  This only makes sure the url is constructed
 	// properly.
 	URL url = getClass().getResource("/vizmap.props");
+	System.out.println("url: " + url.toString());
 
-	TextJarReader reader = new TextJarReader (url.toString());
-	int count = reader.read ();
-	String text = reader.getText ();
-	System.out.println(text);
-	assertTrue(text.length() > 0);
+	if ( url.toString().startsWith("file") ) {
+		try {
+			TextJarReader reader = new TextJarReader (url.toString());
+		} catch (IOException e) {
+			System.out.println("We expect the following error since " + 
+			                   "TextJarReader only supports jar urls.");
+			e.printStackTrace();
+			assertTrue(1==1);
+			return;
+		}
+		fail("didn't catch expected exception");
+	} else {
+		TextJarReader reader = new TextJarReader (url.toString());
+		int count = reader.read ();
+		String text = reader.getText ();
+		System.out.println(text);
+		assertTrue(text.length() > 0);
+	}
 }
 
 public void testBadURL() throws Exception

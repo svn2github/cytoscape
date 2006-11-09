@@ -477,12 +477,14 @@
 	<!-- Runs the tests in the project jar quickly, and sets a property      -->
 	<!-- if a test fails.                                                    -->
 	<!-- =================================================================== -->
-	<target name="test-fast" depends="jar">
+	<target name="test" depends="jar">
 		<echo>
             ***********************************************
             Running all unit tests (quickly). 
             ***********************************************
 	      </echo>
+		<mkdir dir="${junit.report.dir}" />
+		<mkdir dir="${junit.report.dir}/fast" />
 		<junit printsummary="yes" 
 		       haltonfailure="no" 
 		       maxmemory="512m">
@@ -497,9 +499,23 @@
 					<include name="**/*.jar" />
 				</fileset>
 			</classpath>
-			<test name="cytoscape.AllTests" fork="yes" todir="${junit.report.dir}" failureProperty="junit.test.failure" errorProperty="junit.test.failure">
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<test name="cytoscape.AllTests" 
+			      fork="yes" 
+			      todir="${junit.report.dir}/fast" 
+			      failureProperty="junit.test.failure" 
+			      errorProperty="junit.test.failure">
 			</test>
 		</junit>
+		<junitreport todir="${junit.report.dir}/fast">
+			<fileset dir="${junit.report.dir}/fast">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}/fast" />
+		</junitreport>
+		<fail message="JUnit Tests failed! Check ${junit.report.dir}/fast/index.html for details. Run 'ant test-slow' for more useful output." 
+		      if="junit.test.failure" />
 	</target>
 
 
@@ -508,7 +524,7 @@
 	<!-- and generates an html report. This task is only run     -->
 	<!-- if the test-fast case fails.                            -->
 	<!-- ======================================================= -->
-	<target name="test" depends="test-fast" if="junit.test.failure">
+	<target name="test-slow" depends="jar">
 		<echo>
             ***********************************************
             Running all unit tests individually. 
