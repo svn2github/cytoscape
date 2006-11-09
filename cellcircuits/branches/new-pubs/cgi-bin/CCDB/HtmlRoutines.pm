@@ -17,13 +17,10 @@ use CCDB::Constants qw($cgi_version
 		       $cgi_url
 		       $data_url
 		       $chianti_url
-		       $pubCitation 
-		       $pubName 
 		       $db_link_by_species 
 		       $colors 
-		       $img_format
 		       $species_abbrev
-		       $pubSupplementURL
+		       $pubInfo
 		       );
 
 our @ISA = qw(Exporter);
@@ -312,7 +309,7 @@ sub get_publication_hidden_fields_html
         }
     }
     else {
-	foreach my $pub (keys %{ $pubName }) {
+	foreach my $pub (keys %{ $pubInfo }) {
 	    $pub_html .= "  <input type=\"hidden\" name=\"publication\" "
 		. "value=\"$pub\" checked=\"checked\">\n";
 	}
@@ -749,7 +746,7 @@ sub format_eo
 
     my $url = sprintf("$cgi_url/get_genes_by_eid.pl?eid=%s&thm=%s",
 		      $eid,
-		      "$data_url/${thm_img}.$img_format->{$pub}");
+		      "$data_url/${thm_img}.$pubInfo->{$pub}->{img_format}");
     
     foreach my $g (@{ $model->eid2genes()->{ $eid } })
     {
@@ -988,21 +985,21 @@ sub format_model_thm_td
     my $model_thm_html = <<MODEL_HTML;
       <td class='search-result' align='center' valign='top' >$score</td>
       <td class='search-result' align='center' valign='top' bgcolor='white'>
-         <a href='$data_url/${lrg_img}.$img_format->{$pub}'>
-            <img src='$data_url/${thm_img}.$img_format->{$pub}' border='0'>
+         <a href='$data_url/${lrg_img}.$pubInfo->{$pub}->{img_format}'>
+            <img src='$data_url/${thm_img}.$pubInfo->{$pub}->{img_format}' border='0'>
          </a><br />
 	 <b class='pub-citation'></b><br>
-	 <b class='pub-citation'>$pubName->{$pub} [model:&nbsp;$name]</b><br>
-	 <a class='white-bg-link' href='$pubCitation->{$pub}' title='PubMed abstract'>[PubMed]</a>
+	 <b class='pub-citation'>$pubInfo->{$pub}->{name} [model:&nbsp;$name]</b><br>
+	 <a class='white-bg-link' href='$pubInfo->{$pub}->{citation}' title='PubMed abstract'>[PubMed]</a>
 MODEL_HTML
       
-    if(exists($pubSupplementURL->{$pub})) { 
-        $model_thm_html .= "<a class='white-bg-link' href='$pubSupplementURL->{$pub}' title='Online publication supplement'>[web site]</a>\n";
+    if(exists($pubInfo->{$pub}->{supplement_URL})) { 
+        $model_thm_html .= "<a class='white-bg-link' href='$pubInfo->{$pub}->{supplement_URL}' title='Online publication supplement'>[web site]</a>\n";
     }
 
 #### WITHOUT POPUP ####
     $model_thm_html .= <<MODEL_HTML2;
-         <a class="white-bg-link" href="$data_url/$legend" title='Legend and FAQ for [$pubName->{$pub}] and its models.'>[legend]</a>
+         <a class="white-bg-link" href="$data_url/$legend" title='Legend and FAQ for [$pubInfo->{$pub}->{name}] and its models.'>[legend]</a>
          <a class="white-bg-link" href="$data_url/${sif}.sif" title='(s)imple (i)nteraction (f)ormat: a textual representation of this model.'>[sif]</a>
 	 <br>
        </td>

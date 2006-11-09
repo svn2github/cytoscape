@@ -1,3 +1,10 @@
+##
+## CM: Note added 11/9/2006
+##
+## Functionality is now in db/bin/dump-synonym-file.sh
+## cgi scripts look for synonyms.<DB_INSTANCE>.latest.tab
+##
+
 Connect to a GO database...
 Running these sql statements creates a .symbols and a .synonyms
 file foreach of the following organisms:
