@@ -103,8 +103,9 @@
     <!--  Uses the Sun Coding Conventions Configuration -->
     <target description="Checks Sun Coding Conventions" name="check">
         <checkstyle config="${config.dir}/sun_checks.xml">
-            <fileset dir="${src.dir}/org">
+            <fileset dir="${src.dir}">
                 <include name="**/*.java"/>
+                <exclude name="org/cytoscape/coreplugin/psi_mi/schema/**/*.java"/>
             </fileset>
         </checkstyle>
     </target>
