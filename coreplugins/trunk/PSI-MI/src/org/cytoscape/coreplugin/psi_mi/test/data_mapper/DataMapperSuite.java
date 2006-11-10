@@ -49,6 +49,7 @@ public class DataMapperSuite extends TestCase {
         TestSuite suite = new TestSuite();
         suite.addTestSuite(TestMapPsiOneToInteractions.class);
         suite.addTestSuite(TestMapPsiTwoFiveToInteractions.class);
+        suite.addTestSuite(TestMapInteractionsToPsiOne.class);
         suite.setName("Data Mapper Unit Tests");
         return suite;
     }

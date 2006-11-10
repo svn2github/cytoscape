@@ -30,22 +30,31 @@
 package org.cytoscape.coreplugin.psi_mi.test.data_mapper;
 
 import junit.framework.TestCase;
-import org.cytoscape.coreplugin.psi_mi.schema.mi25.*;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.math.BigInteger;
 
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiOne;
-import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
+import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
+import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
+import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.JAXBContext;
 
 /**
  * Tests MapInteractionsToPsiOne.
  *
  * @author Ethan Cerami
  */
-public class TestMapInteractionsToPsi extends TestCase {
+public class TestMapInteractionsToPsiOne extends TestCase {
 
     /**
      * Tests Mapper with Sample PSI Data File.
@@ -57,62 +66,66 @@ public class TestMapInteractionsToPsi extends TestCase {
         ContentReader reader = new ContentReader();
         String xml = reader.retrieveContent(file.toString());
         ArrayList interactions = new ArrayList();
-        MapPsiTwoFiveToInteractions mapFromPsi = new MapPsiTwoFiveToInteractions
-                (xml, interactions);
-        mapFromPsi.doMapping();
 
-        //MapInteractionsToPsiOne mapToPsiOne = new MapInteractionsToPsiOne(interactions);
-        //mapToPsiOne.doMapping();
-       /* EntrySet entrySet = mapToPsiOne.getPsiXml();
+        //  First map PSI-MI Level 1 to interaction objects
+        MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions (xml, interactions);
+        mapper1.doMapping();
+        assertEquals (6, interactions.size());
 
-        validateInteractors(entrySet.getEntry(0).getInteractorList());
-        validateInteractions(entrySet.getEntry(0).getInteractionList());
+        //  Second, map to Cytoscape objects
+        CyNetwork network = Cytoscape.createNetwork("network1");
+        MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.SPOKE_VIEW);
+        mapper2.doMapping();
+        addToCyNetwork (mapper2, network);
 
+        //  Verify Number of Nodes and Number of Edges
+        int nodeCount = network.getNodeCount();
+        int edgeCount = network.getEdgeCount();
+        assertEquals(7, nodeCount);
+        assertEquals(6, edgeCount);
+
+        //  Third, map back to interaction Objects
+        MapFromCytoscape mapper3 = new MapFromCytoscape (network);
+        mapper3.doMapping();
+        interactions = mapper3.getInteractions();
+        assertEquals (6, interactions.size());
+
+        //  Fourth, map to PSI-MI Level 1
+        MapInteractionsToPsiOne mapper4 = new MapInteractionsToPsiOne(interactions);
+        mapper4.doMapping();
+
+        EntrySet entrySet = mapper4.getPsiXml();
+        validateInteractors(entrySet.getEntry().get(0).getInteractorList());
+
+        validateInteractions(entrySet.getEntry().get(0).getInteractionList());
         StringWriter writer = new StringWriter();
-        entrySet.marshal(writer);
+        JAXBContext jc = JAXBContext.newInstance(
+                "org.cytoscape.coreplugin.psi_mi.schema.mi1");
+        Marshaller marshaller = jc.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        marshaller.marshal(entrySet, writer);
 
         //  Verify that XML indentation is turned on.
-        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<entrySet level=\"1\" version=\"1\" "
-                + "xmlns=\"net:sf:psidev:mi\">\n"
-                + "    <entry>\n"
-                + "        <interactorList>\n";
-        assertTrue("XML Indentation Test has failed.  "
-                + "This test probably failed because you updated to a new "
-                + "version of Castor.  If so, you need to unjar the castor.jar "
-                + "file, modify the castor.properties file to turn indentation "
-                + "on, and then rejar it.",
-                writer.toString().startsWith(expected));
-
-                */
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<entrySet version=\"1\" level=\"1\" xmlns=\"net:sf:psidev:mi\">\n" +
+                "    <entry>\n" +
+                "        <interactorList>";
+        assertTrue("XML Indentation Test has failed.  ",
+               writer.toString().startsWith(expected));
+        //  System.out.println(writer.toString());
     }
 
-    /**
-     * Tests Mapper with a Minimal Set of Data.
-     *
-     * @throws Exception All Exceptions.
-     */
-    public void testMapperWithBareBonesData() throws Exception {
-        ArrayList interactions = new ArrayList();
-        org.cytoscape.coreplugin.psi_mi.model.Interaction interaction = new org.cytoscape.coreplugin.psi_mi.model. Interaction();
-        Interactor interactorA = new Interactor();
-        interactorA.setName("A");
-        Interactor interactorB = new Interactor();
-        interactorB.setName("B");
-        ArrayList interactors = new ArrayList();
-        interactors.add(interactorA);
-        interactors.add(interactorB);
-        interaction.setInteractors(interactors);
-        interactions.add(interaction);
-
-        //MapInteractionsToPsiOne mapToPsiOne = new MapInteractionsToPsiOne(interactions);
-        //mapToPsiOne.doMapping();
-    /*    EntrySet entrySet = mapToPsiOne.getPsiXml();
-
-        StringWriter writer = new StringWriter();
-        entrySet.marshal(writer);
-
-        assertEquals(true, entrySet.isValid());*/
+    private void addToCyNetwork(MapToCytoscape mapper, CyNetwork cyNetwork) {
+        //  Add new nodes/edges to network
+        int nodeIndices[] = mapper.getNodeIndices();
+        int edgeIndices[] = mapper.getEdgeIndices();
+        for (int i=0; i<nodeIndices.length; i++) {
+            cyNetwork.addNode(nodeIndices[i]);
+        }
+        for (int i=0; i<edgeIndices.length; i++) {
+            cyNetwork.addEdge(edgeIndices[i]);
+        }
     }
 
     /**
@@ -121,14 +134,13 @@ public class TestMapInteractionsToPsi extends TestCase {
      * @param interactorList Castor InteractorList Object.
      */
     private void validateInteractors(EntrySet.Entry.InteractorList interactorList) {
-  /*      ProteinInteractorType interactor =
-                interactorList.getProteinInteractor(0);
+        ProteinInteractorType interactor = interactorList.getProteinInteractor().get(0);
         NamesType name = interactor.getNames();
         assertEquals("YHR119W", name.getShortLabel());
         assertTrue(name.getFullName().startsWith("Gene has a SET or TROMO"));
 
-        Organism organism = interactor.getOrganism();
-        assertEquals(4932, organism.getNcbiTaxId());
+        ProteinInteractorType.Organism organism = interactor.getOrganism();
+        assertEquals(new BigInteger("4932"), organism.getNcbiTaxId());
         assertEquals("baker's yeast", organism.getNames().getShortLabel());
         assertEquals("Saccharomyces cerevisiae",
                 organism.getNames().getFullName());
@@ -140,12 +152,12 @@ public class TestMapInteractionsToPsi extends TestCase {
         assertEquals("Entrez GI", xref.getDb());
         assertEquals("529135", xref.getId());
 
-        xref = xrefType.getSecondaryRef(0);
+        xref = xrefType.getSecondaryRef().get(0);
         assertEquals("RefSeq GI", xref.getDb());
         assertEquals("6321911", xref.getId());
 
         String sequence = interactor.getSequence();
-        assertTrue(sequence.startsWith("MNTYAQESKLRLKTKIGAD"));*/
+        assertTrue(sequence.startsWith("MNTYAQESKLRLKTKIGAD"));
     }
 
     /**
@@ -154,10 +166,10 @@ public class TestMapInteractionsToPsi extends TestCase {
      * @param interactionList Castor Interaction Object.
      */
     private void validateInteractions(EntrySet.Entry.InteractionList interactionList) {
-      /*  InteractionElementType interaction = interactionList.getInteraction(0);
-        ExperimentList expList = interaction.getExperimentList();
-        ExperimentListItem expItem = expList.getExperimentListItem(0);
-        ExperimentType expType = expItem.getExperimentDescription();
+        InteractionElementType interaction = interactionList.getInteraction().get(3);
+        InteractionElementType.ExperimentList expList = interaction.getExperimentList();
+        ExperimentType expType = (ExperimentType)
+                expList.getExperimentRefOrExperimentDescription().get(0);
         BibrefType bibRef = expType.getBibref();
         XrefType xref = bibRef.getXref();
         DbReferenceType primaryRef = xref.getPrimaryRef();
@@ -172,11 +184,9 @@ public class TestMapInteractionsToPsi extends TestCase {
         assertEquals("PSI-MI", primaryRef.getDb());
         assertEquals("MI:0018", primaryRef.getId());
 
-        ParticipantList pList = interaction.getParticipantList();
-        ProteinParticipantType participant = pList.getProteinParticipant(0);
-        ProteinParticipantTypeChoice choice =
-                participant.getProteinParticipantTypeChoice();
-        RefType ref = choice.getProteinInteractorRef();
+        InteractionElementType.ParticipantList pList = interaction.getParticipantList();
+        ProteinParticipantType participant = pList.getProteinParticipant().get(0);
+        RefType ref = participant.getProteinInteractorRef();
         String reference = ref.getRef();
         assertEquals("YCR038C", reference);
 
@@ -185,7 +195,7 @@ public class TestMapInteractionsToPsi extends TestCase {
         primaryRef = xref.getPrimaryRef();
         String db = primaryRef.getDb();
         String id = primaryRef.getId();
-        assertEquals ("CPATH", db);
-        assertEquals ("1", id);*/
+        assertEquals ("DIP", db);
+        assertEquals ("61E", id);
     }
 }
