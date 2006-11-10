@@ -102,6 +102,10 @@ public class ChimeraModel implements ChimeraStructuralObject {
 
 	public Collection getChains () { return chains.values(); }
 
+	public List getChildren () {
+		return new ArrayList(chains.values());
+	}
+
 	public Color getModelColor () { return this.modelColor; }
 
 	public void setModelColor (Color color) { 

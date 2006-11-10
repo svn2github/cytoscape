@@ -147,6 +147,7 @@ public class Chimera {
 				} else {
 					path = "chimera";
 				}
+				System.out.println("Path: "+path);
 
 				// Oops -- very platform specific, here!!
 				// XXX FIXME XXX
@@ -162,8 +163,7 @@ public class Chimera {
 			listener.start();
 
 			// Ask Chimera to give us updates
-			this.command("listen start models");
-			this.command("listen start selection");
+			this.command("listen start models; listen start selection");
 
       return true;
   }
@@ -175,9 +175,7 @@ public class Chimera {
    * @throws IOException
    */
   public void open(Structure structure) {
-		this.command("listen stop models");
-		this.command("listen stop selection");
-  	this.command("open "+structure.name());
+		this.command("listen stop models; listen stop selection; open "+structure.name());
 
 		// Now, figure out exactly what model # we got
 		ChimeraModel newModel = getModelInfo(structure);
@@ -200,8 +198,7 @@ public class Chimera {
 
 		// Add it to the hash table
 		modelHash.put(new Integer(newModel.getModelNumber()),newModel);
-		this.command("listen start models");
-		this.command("listen start selection");
+		this.command("listen start models; listen start selection");
 
 		// Update the structure model #
 		structure.setModelNumber(newModel.getModelNumber());
@@ -215,19 +212,15 @@ public class Chimera {
    * @throws IOException
 	 */
 	public void close(Structure structure) {
-		this.command("listen stop models");
-		// This model might be selected -- don't listen to it
-		this.command("listen stop select");
 		int model = structure.modelNumber();
-		this.command("close #"+model);
+		this.command("listen stop models; listen stop select; close #"+model);
 		
 		ChimeraModel chimeraModel = (ChimeraModel)modelHash.get(new Integer(model));
 		if (chimeraModel != null) {
 			models.remove(chimeraModel);
 			modelHash.remove(new Integer(model));
 		}
-		this.command("listen start models");
-		this.command("listen start select");
+		this.command("listen start models; listen start select");
 		return;
 	}
 
@@ -235,9 +228,7 @@ public class Chimera {
 	 * Select something in Chimera
 	 */
 	public void select(String command) {
-		this.command("listen stop select");
-		this.command(command);
-		this.command("listen start select");
+		this.command("listen stop select; "+command+"; listen start select");
 	}
 
 	public Iterator commandReply(String text) {
@@ -298,8 +289,7 @@ public class Chimera {
 		HashMap newHash = new HashMap();
 
 		// Stop all of our listeners while we try to handle this
-		this.command("listen stop select");
-		this.command("listen stop models");
+		this.command("listen stop select; listen stop models");
 
 		// Get all of the open models
 		List newModelList = getModelList();
@@ -309,6 +299,8 @@ public class Chimera {
 		while (modelIter.hasNext()) {
 			ChimeraModel model = (ChimeraModel)modelIter.next();
 			Integer modelNumber = new Integer(model.getModelNumber());
+			// Get the color (for our navigator)
+			model.setModelColor(getModelColor(model));
 
 			// If we already know about this model number, get the Structure,
 			// which tells us about the associated CyNode
@@ -330,8 +322,7 @@ public class Chimera {
 		modelHash = newHash;
 
 		// Restart all of our listeners
-		this.command("listen start models");
-		this.command("listen start select");
+		this.command("listen start models; listen start select");
 
 		// Done
 	}
@@ -390,7 +381,7 @@ public class Chimera {
 							selectionList.add(dataChain);
 						} else {
 							// Need to select individual residues
-							Iterator resIter = selectedChain.getResidueList().iterator();
+							Iterator resIter = selectedChain.getResidues().iterator();
 							while (resIter.hasNext()) {
 								String residueIndex = ((ChimeraResidue)resIter.next()).getIndex();
 								ChimeraResidue residue = dataChain.getResidue(residueIndex);

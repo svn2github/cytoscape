@@ -33,6 +33,7 @@
 package structureViz.model;
 
 import java.lang.String;
+import java.util.List;
 import structureViz.model.ChimeraModel;
 
 /**
@@ -93,4 +94,11 @@ public interface ChimeraStructuralObject {
 	 * @return the selected state of this object
 	 */
 	public boolean isSelected();
+
+	/**
+	 * Get the children of this object (if any)
+	 *
+	 * @return the children of the object
+	 */
+	public List getChildren();
 }

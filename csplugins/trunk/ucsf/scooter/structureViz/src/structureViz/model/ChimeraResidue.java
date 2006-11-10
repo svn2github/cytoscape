@@ -104,6 +104,12 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 
 	public boolean isSelected() { return selected; }
 
+	public List getChildren() { 
+		ArrayList v = new ArrayList();
+		v.add(this);
+		return v; 
+	}
+
 	private void initNames() {
 		// Create our residue name table
 		this.aaNames = new HashMap();

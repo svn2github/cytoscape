@@ -67,7 +67,7 @@ class ListenerThreads extends Thread
 	}
 
 	public void run() {
-		// System.out.println("ReplyLogListener running");
+		System.out.println("ReplyLogListener running");
 		while (true) {
 			try {
 				ArrayList reply = getReply();
@@ -125,7 +125,7 @@ class ListenerThreads extends Thread
 				chimeraObject.refresh();
 				chimeraObject.modelChanged();
 				// Now update our selection from Chimera
-				(new SelectionUpdater()).start();
+				// (new SelectionUpdater()).start();
 			}
 	}
 
@@ -137,7 +137,9 @@ class ListenerThreads extends Thread
 		public SelectionUpdater() { }
 
 		public void run() {
-			chimeraObject.updateSelection();
+			try {
+				chimeraObject.updateSelection();
+			} catch (Exception e) {}
 		}
 	}
 }

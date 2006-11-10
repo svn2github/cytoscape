@@ -190,7 +190,7 @@ public class ActionPopupMenu extends JPopupMenu {
 		// Clear Selection
 		addItem(null, "Clear selection", "~select", PopupActionListener.CLEAR_SELECTION);
 		add (new JSeparator());
-		addItem(null, "Delete selection", "delete %sel", PopupActionListener.DELETE);
+		addItem(null, "Delete selection", "listen stop select; delete %sel; listen start select", PopupActionListener.DELETE);
 	}
 
 	private void createModelMenu() { 

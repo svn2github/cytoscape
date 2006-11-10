@@ -77,7 +77,11 @@ public class ChimeraChain implements ChimeraStructuralObject {
 		residueList.put(index.intValue(), residue);
 	}
 
-	public Collection getResidueList() { return residueList.values(); }
+	public Collection getResidues() { return residueList.values(); }
+
+	public List getChildren() { 
+		return new ArrayList(residueList.values()); 
+	}
 
 	public ChimeraResidue getResidue(String residueIndex) {
 		Integer index = new Integer(residueIndex);

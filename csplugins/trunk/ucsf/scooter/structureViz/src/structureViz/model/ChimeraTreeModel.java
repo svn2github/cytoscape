@@ -127,7 +127,7 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 			chain = new DefaultMutableTreeNode(chimeraChain);
 			chainPath = treePath.pathByAddingChild(chain);
 			chimeraChain.setUserData(chainPath);
-			addResidues(chimeraChain.getResidueList(), chain, chainPath);
+			addResidues(chimeraChain.getResidues(), chain, chainPath);
 			treeModel.add(chain);	
 		}
 	}

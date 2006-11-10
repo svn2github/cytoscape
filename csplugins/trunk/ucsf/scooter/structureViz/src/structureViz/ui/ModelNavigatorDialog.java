@@ -70,7 +70,10 @@ import structureViz.actions.CyChimera;
 import structureViz.actions.Chimera;
 import structureViz.ui.PopupMenuListener;
 
-public class ModelNavigatorDialog extends JDialog implements TreeSelectionListener {
+public class ModelNavigatorDialog 
+			extends JDialog 
+			implements TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener {
+
 	private Chimera chimeraObject;
 	private boolean status;
 	// These must be > ChimeraResidue.FULL_NAME
@@ -81,7 +84,10 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 	private static final int ALIGN = 14;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
-	private List selectedObjects = null;
+	private boolean isCollapsing = false;
+	private TreePath collapsingPath = null;
+	private boolean isExpanding = false;
+	private ArrayList selectedObjects = null;
 
 	// Dialog components
 	private JLabel titleLabel;
@@ -99,6 +105,7 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 	public void modelChanged() {
 		// Something significant changed in the model (new open/closed structure?)
+		ignoreSelection = true;
 		treeModel.reload();
 		int modelCount = chimeraObject.getChimeraModels().size();
 		if (modelCount > 1)
@@ -106,35 +113,134 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		else
 			alignMenu.setEnabled(false);
 		// Re-select the paths
+		selectedObjects.clear();
 		chimeraObject.updateSelection();
+		ignoreSelection = false;
+	}
+
+	public void treeExpanded(TreeExpansionEvent e) {
+		TreePath ePath = e.getPath();
+		// Get the path we are expanding
+		DefaultMutableTreeNode node = 
+			(DefaultMutableTreeNode)ePath.getLastPathComponent();
+		ChimeraStructuralObject nodeInfo = 
+			(ChimeraStructuralObject)node.getUserObject();
+		// Check and see if our object is selected
+		if (!nodeInfo.isSelected()) {
+			// Its not -- deselect
+			navigationTree.removeSelectionPath(ePath);
+		}
+		// Get the selected children of that path
+		List children = nodeInfo.getChildren();
+		// Add them to our selection
+		if (children != null) {
+			Iterator iter = children.iterator();
+			while (iter.hasNext()) {
+				ChimeraStructuralObject o = (ChimeraStructuralObject)iter.next();
+				if (o.isSelected()) {
+					TreePath path = (TreePath)o.getUserData();
+					navigationTree.addSelectionPath(path);
+				}
+			}
+		}
+	}
+
+	public void treeCollapsed(TreeExpansionEvent e) {
+		// Sort of a hack.  By default when a tree is collapsed, 
+		// the selection passes to the parent.  We don't what to 
+		// do that, because it prevents us from remembering
+		// our residue selections, which may be important.  
+		// So, we need to set a flag.
+
+		// Get the path we are collapsing
+		collapsingPath = e.getPath();
+		DefaultMutableTreeNode node = 
+			(DefaultMutableTreeNode)collapsingPath.getLastPathComponent();
+		ChimeraStructuralObject nodeInfo = 
+			(ChimeraStructuralObject)node.getUserObject();
+
+		// Is the object we're collapsing already selected?
+		if (!nodeInfo.isSelected()) {
+			// No, see if it has selected children
+			if (hasSelectedChildren(nodeInfo)) {
+				// It does, we need to disable selection
+				isCollapsing = true;
+			}
+		}
+	}
+
+	public void treeWillCollapse(TreeExpansionEvent e) 
+			throws ExpandVetoException {
+		TreePath path = e.getPath();
+		DefaultMutableTreeNode node = 
+			(DefaultMutableTreeNode) path.getLastPathComponent();
+		if (!ChimeraStructuralObject.class.isInstance(node.getUserObject())) 
+			throw new ExpandVetoException(e);
+		return;
+	}
+
+	public void treeWillExpand(TreeExpansionEvent e) throws ExpandVetoException {
+		return;
 	}
 
 	public void valueChanged(TreeSelectionEvent e) {
-		// Reset the state of any selected Objects
-		clearSelectedObjects();
 
-		TreePath[] paths = navigationTree.getSelectionPaths();
-		if (paths == null) return;
+		// System.out.println("TreeSelectionEvent: "+e);
 
-		DefaultMutableTreeNode node = null;
+		// Get the paths that are changing
+		TreePath[] cPaths = e.getPaths();
+		if (cPaths == null) return;
+
+		if (isCollapsing) {
+			// System.out.println("  isCollapsing: "+cPaths[0]);
+			if (cPaths[0] == collapsingPath) {
+				isCollapsing = false;
+				navigationTree.removeSelectionPath(collapsingPath);
+			}
+			return;
+		}	
+
+		for (int i = 0; i < cPaths.length; i++) {
+			DefaultMutableTreeNode node = 
+				(DefaultMutableTreeNode) cPaths[i].getLastPathComponent();
+			if (!ChimeraStructuralObject.class.isInstance(node.getUserObject())) 
+				continue;
+			ChimeraStructuralObject nodeInfo = 
+					(ChimeraStructuralObject)node.getUserObject();
+			if (!e.isAddedPath(cPaths[i])) {
+				nodeInfo.setSelected(false);
+				selectedObjects.remove(nodeInfo);
+			} else {
+				if (!selectedObjects.contains(nodeInfo))
+					selectedObjects.add(nodeInfo);
+			}
+			// System.out.println("  Path: "+((DefaultMutableTreeNode) cPaths[i].getLastPathComponent()));
+		}
+
 		String selSpec = "sel ";
+		boolean selected = false;
 		HashMap modelsToSelect = new HashMap();
 
-		for (int i = 0; i < paths.length; i++) {
-			node = (DefaultMutableTreeNode) paths[i].getLastPathComponent();
-			ChimeraStructuralObject nodeInfo = (ChimeraStructuralObject)node.getUserObject();
+		for (int i = 0; i < selectedObjects.size(); i++) {
+			ChimeraStructuralObject nodeInfo = 
+					(ChimeraStructuralObject) selectedObjects.get(i);
 			nodeInfo.setSelected(true);
+			selected = true;
 			ChimeraModel model = nodeInfo.getChimeraModel();
 			selSpec = selSpec.concat(nodeInfo.toSpec());
 			modelsToSelect.put(model,model);
-			if (i < paths.length-1) selSpec.concat("|");
+			if (i < selectedObjects.size()-1) selSpec.concat("|");
 			// Add the model to be selected (if it's not already)
 		}
-		if (!ignoreSelection)
+		if (!ignoreSelection && selected)
 			chimeraObject.select(selSpec);
+		else if (!ignoreSelection && selectedObjects.size() == 0) {
+			chimeraObject.select("~sel");
+		}
 
-		CyChimera.selectCytoscapeNodes(chimeraObject.getNetworkView(), modelsToSelect, 
-												 chimeraObject.getChimeraModels());
+		CyChimera.selectCytoscapeNodes(chimeraObject.getNetworkView(), 
+																		modelsToSelect, 
+												 						chimeraObject.getChimeraModels());
 	}
 
 	public void updateSelection(List selectionList) {
@@ -143,7 +249,8 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		Iterator selectionIter = selectionList.iterator();
 		this.ignoreSelection = true;
 		while (selectionIter.hasNext()) {
-			ChimeraStructuralObject selectedObject = (ChimeraStructuralObject)selectionIter.next();
+			ChimeraStructuralObject selectedObject = 
+				(ChimeraStructuralObject)selectionIter.next();
 			path = (TreePath)selectedObject.getUserData();
 			navigationTree.addSelectionPath(path);
 			navigationTree.makeVisible(path);
@@ -151,6 +258,46 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		int row = navigationTree.getMaxSelectionRow();
 		navigationTree.scrollRowToVisible(row);
 		this.ignoreSelection = false;
+	}
+
+	public void clearSelectionState() {
+		List models = chimeraObject.getChimeraModels();
+		if (models == null) return;
+		Iterator mIter = models.iterator();
+		while (mIter.hasNext()) {
+			ChimeraModel m = (ChimeraModel)mIter.next();
+			m.setSelected(false);
+			Collection chains = m.getChains();
+			if (chains == null) continue;
+			Iterator cIter = chains.iterator();
+			while (cIter.hasNext()) {
+				ChimeraChain c = (ChimeraChain)cIter.next();
+				c.setSelected(false);
+				Collection residues = c.getResidues();
+				if (residues == null ) continue;
+				Iterator rIter = residues.iterator();
+				while (rIter.hasNext()) {
+					ChimeraResidue r = (ChimeraResidue)rIter.next();
+					if (r != null) r.setSelected(false);
+				}
+			}
+		}
+	}
+
+	public boolean hasSelectedChildren(ChimeraStructuralObject obj) {
+		if (obj.isSelected()) {
+			return true;
+		}
+		if (obj.getClass() == ChimeraResidue.class)
+			return false;
+		Iterator childIter = obj.getChildren().iterator();
+		while (childIter.hasNext()) {
+			ChimeraStructuralObject child = 
+				(ChimeraStructuralObject) childIter.next();
+			if (hasSelectedChildren(child))
+				return true;
+		}
+		return false;
 	}
 
 	// Private methods
@@ -178,9 +325,12 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		addMenuItem(viewMenu, "Refresh", REFRESH, null);
 
 		JMenu viewResidues = new JMenu("Residues as..");
-		addMenuItem(viewResidues, "single letter", ChimeraResidue.SINGLE_LETTER, null);
-		addMenuItem(viewResidues, "three letters", ChimeraResidue.THREE_LETTER, null);
-		addMenuItem(viewResidues, "full name", ChimeraResidue.FULL_NAME, null);
+		addMenuItem(viewResidues, "single letter", 
+								ChimeraResidue.SINGLE_LETTER, null);
+		addMenuItem(viewResidues, "three letters", 
+								ChimeraResidue.THREE_LETTER, null);
+		addMenuItem(viewResidues, "full name", 
+								ChimeraResidue.FULL_NAME, null);
 		viewMenu.add(viewResidues);
 		menuBar.add(viewMenu);
 
@@ -208,6 +358,8 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		navigationTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 
 		navigationTree.addTreeSelectionListener(this);
+		navigationTree.addTreeExpansionListener(this);
+		navigationTree.addTreeWillExpandListener(this);
 		navigationTree.setShowsRootHandles(false);
 
 		navigationTree.setCellRenderer(new ObjectRenderer());
@@ -219,7 +371,8 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		setContentPane(treeView);
 	}
 
-	private JMenuItem addMenuItem (JMenu menu, String label, int type, String command) {
+	private JMenuItem addMenuItem (JMenu menu, String label, 
+																	int type, String command) {
 		JMenuItem menuItem = new JMenuItem(label);
 		{
 			MenuActionListener va = new MenuActionListener(type, command);
@@ -227,14 +380,6 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 		}
 		menu.add(menuItem);
 		return menuItem;
-	}
-
-	private void clearSelectedObjects () {
-		Iterator iter = selectedObjects.iterator();
-		while (iter.hasNext()) {
-			((ChimeraStructuralObject)iter.next()).setSelected(false);
-		}
-		selectedObjects.clear();
 	}
 
 	// Embedded classes
@@ -253,6 +398,7 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 			} else if (type == CLEAR) {
 				chimeraObject.select("~select");
 				navigationTree.clearSelection();
+				clearSelectionState();
 			} else if (type == EXIT) {
 				chimeraObject.exit();
 				setVisible(false);
@@ -285,7 +431,8 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 				structureList.add(model.getStructure());
 			}	
 			// Bring up the dialog
-			alDialog = new AlignStructuresDialog(Cytoscape.getDesktop(), chimeraObject, structureList);
+			alDialog = new AlignStructuresDialog(Cytoscape.getDesktop(), 
+																						chimeraObject, structureList);
 			alDialog.pack();
 			alDialog.setVisible(true);
 			chimeraObject.setAlignDialog(alDialog);
@@ -299,23 +446,52 @@ public class ModelNavigatorDialog extends JDialog implements TreeSelectionListen
 
 		public Component getTreeCellRendererComponent( JTree tree, Object value,
 																									boolean sel, boolean expanded,
-																									boolean leaf, int row, boolean hasFocus) 
+																									boolean leaf, int row, 
+																									boolean hasFocus) 
 		{
+			ChimeraStructuralObject chimeraObj = null;
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+			Object object =  node.getUserObject();
+			Class objClass = object.getClass();
+			boolean selectIt = sel;
+
+			// Is this a Chimera class?
+			if (ChimeraStructuralObject.class.isInstance(object)) {
+				// Yes, get the object
+				chimeraObj = (ChimeraStructuralObject)object;
+				if (selectIt && !chimeraObj.isSelected())
+					selectIt = false;
+			} else {
+				// No, we don't want to select the root
+				selectIt = false;
+			}
+
 			// Call the DefaultTreeCellRender's method to do most of the work
-			super.getTreeCellRendererComponent(tree, value, sel,
+			super.getTreeCellRendererComponent(tree, value, selectIt,
                             						 expanded, leaf, row,
                             						 hasFocus);
 
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-			Object object = node.getUserObject();
-			// If we're a model, use the model color as a border
-			if (object.getClass() == ChimeraModel.class) {
-				Color color = ((ChimeraModel)object).getModelColor();
-				Border border = new LineBorder(color);
-				setBorder(border);
-			} else {
-				setBorder(null);
-			}
+			// Initialize our border setting
+			setBorder(null);
+			if (chimeraObj != null) {
+				// System.out.println("Sel = "+sel+", "+chimeraObj+".isSelected = "+chimeraObj.isSelected());
+				// Finally, if we're selected, but the underlying object
+				// isn't selected, change the background paint
+				if (sel == false && 
+						hasSelectedChildren(chimeraObj) && 
+						expanded == false) {
+					Color bg = Color.blue;
+					setForeground(bg);
+				}
+				// If we're a model, use the model color as a border
+				if (chimeraObj.getClass() == ChimeraModel.class) {
+					Color color = ((ChimeraModel)object).getModelColor();
+					if (color != null) {
+						Border border = new LineBorder(color);
+						setBorder(border);
+					}
+				}
+			} 
 
 			return this;
 		}
