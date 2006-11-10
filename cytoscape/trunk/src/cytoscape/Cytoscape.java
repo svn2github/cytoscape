@@ -148,6 +148,8 @@ public abstract class Cytoscape {
 	public static int FILE_SIF = 2;
 	public static int FILE_SBML = 3;
 	public static int FILE_XGMML = 4;
+    public static int FILE_BIOPAX = 5;
+    public static int FILE_PSI_MI = 6;
 
 	// constants for tracking selection mode globally
 	public static final int SELECT_NODES_ONLY = 1;
