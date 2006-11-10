@@ -353,30 +353,38 @@ public class MapToCytoscape implements Mapper {
         HashMap baitMap = (HashMap) interaction.getAttribute
                 (InteractionVocab.BAIT_MAP);
 
-        //  if (interactors.size() > 2) {
-        //  Determine bait interactor
-        Interactor bait = determineBait(interactors, baitMap);
+        if (interactors.size() > 2) {
+            //  Determine bait interactor
+            Interactor bait = determineBait(interactors, baitMap);
 
-        //  Create Edges between Bait and all other interactors.
-        for (int i = 0; i < interactors.size(); i++) {
-            Interactor interactor = (Interactor) interactors.get(i);
+            //  Create Edges between Bait and all other interactors.
+            for (int i = 0; i < interactors.size(); i++) {
+                Interactor interactor = (Interactor) interactors.get(i);
 
-            String role =  (String) baitMap.get(interactor.getName());
-            int eliminateInteractorflag = 0;
-            if (role == null || (!(role.equalsIgnoreCase("bait")))) {
-                if (role != null && !role.equalsIgnoreCase("prey")) {
-                    if (!(bait.getName().equalsIgnoreCase(interactor.getName()))) {
-                        createEdge(bait, interactor, interaction, nodeMap, edgeMap);
-                    } else {
-                        if (eliminateInteractorflag == 1) {
+                String role =  (String) baitMap.get(interactor.getName());
+                int eliminateInteractorflag = 0;
+                if (role == null || (!(role.equalsIgnoreCase("bait")))) {
+                    if (role != null && !role.equalsIgnoreCase("prey")) {
+                        if (!(bait.getName().equalsIgnoreCase(interactor.getName()))) {
                             createEdge(bait, interactor, interaction, nodeMap, edgeMap);
-                        } else if (eliminateInteractorflag == 0) {
-                            eliminateInteractorflag = 1;
+                        } else {
+                            if (eliminateInteractorflag == 1) {
+                                createEdge(bait, interactor, interaction, nodeMap, edgeMap);
+                            } else if (eliminateInteractorflag == 0) {
+                                eliminateInteractorflag = 1;
+                            }
                         }
+                    } else {
+                        createEdge(bait, interactor, interaction, nodeMap, edgeMap);
                     }
-                } else {
-                    createEdge(bait, interactor, interaction, nodeMap, edgeMap);
                 }
+            }
+        } else {
+            Interactor interactor0 = (Interactor) interactors.get(0);
+            Interactor interactor1 = (Interactor) interactors.get(1);
+            if (interactor0 != null && interactor1 != null) {
+                    createEdge(interactor0, interactor1, interaction, nodeMap,
+                            edgeMap);
             }
         }
         ListUtil.setInteractionMap(intMap);
