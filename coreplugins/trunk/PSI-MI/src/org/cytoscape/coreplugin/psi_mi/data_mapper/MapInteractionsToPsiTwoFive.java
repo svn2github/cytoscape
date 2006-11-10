@@ -1,14 +1,50 @@
+/*
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package org.cytoscape.coreplugin.psi_mi.data_mapper;
 
-import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.AttributeBag;
 import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
-import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
+import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
-
-import java.util.*;
-
+import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Converts Data Servics Object Model to the PSI-MI, Level 2.5 Format.
@@ -117,7 +153,7 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
      * Sets Sequence Data.
      */
     private void setSequence(Interactor interactor, InteractorElementType jaxbInteractor) {
-        String seqData = (String) interactor.getAttribute (InteractorVocab.SEQUENCE_DATA);
+        String seqData = (String) interactor.getAttribute(InteractorVocab.SEQUENCE_DATA);
         if (seqData != null) {
             jaxbInteractor.setSequence(seqData);
         }
@@ -126,13 +162,13 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
     /**
      * Sets Interactor Name and ID.
      *
-     * @param interactor       Data Services Interactor object.
-     * @param jaxbInteractor   JAXB Protein Interactor Object.
+     * @param interactor     Data Services Interactor object.
+     * @param jaxbInteractor JAXB Protein Interactor Object.
      */
     private void setNameId(Interactor interactor, InteractorElementType jaxbInteractor) {
         NamesType names = new NamesType();
         names.setShortLabel(interactor.getName());
-        String fullName = (String) interactor.getAttribute (InteractorVocab.FULL_NAME);
+        String fullName = (String) interactor.getAttribute(InteractorVocab.FULL_NAME);
         if (fullName != null) {
             names.setFullName(fullName);
         }
@@ -145,8 +181,8 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
     /**
      * Sets Interactor Organism.
      *
-     * @param interactor       Data Services Interactor Object.
-     * @param jaxbInteractor   JAXB Protein Interactor Object.
+     * @param interactor     Data Services Interactor Object.
+     * @param jaxbInteractor JAXB Protein Interactor Object.
      */
     private void setOrganism(Interactor interactor, InteractorElementType jaxbInteractor) {
         InteractorElementType.Organism organism = new InteractorElementType.Organism();
@@ -158,7 +194,7 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
         }
 
         NamesType orgNames = new NamesType();
-        String commonName = (String) interactor.getAttribute (InteractorVocab.ORGANISM_COMMON_NAME);
+        String commonName = (String) interactor.getAttribute(InteractorVocab.ORGANISM_COMMON_NAME);
         if (commonName != null) {
             orgNames.setShortLabel(commonName);
         }
@@ -282,7 +318,7 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
         for (int i = 0; i < interactions.size(); i++) {
 
             //  Create New Interaction
-            EntrySet.Entry.InteractionList.Interaction  jaxbInteraction =
+            EntrySet.Entry.InteractionList.Interaction jaxbInteraction =
                     new EntrySet.Entry.InteractionList.Interaction();
             jaxbInteraction.setId(interactionId++);
             org.cytoscape.coreplugin.psi_mi.model.Interaction interaction =
@@ -386,13 +422,13 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
      * @param interaction Interaction.
      * @return InteractionDetection Object.
      */
-    private CvType getInteractionDetection (org.cytoscape.coreplugin.psi_mi.model.Interaction
+    private CvType getInteractionDetection(org.cytoscape.coreplugin.psi_mi.model.Interaction
             interaction) {
         CvType interactionDetection = new CvType();
         String idStr = null;
         try {
             idStr = (String) interaction.getAttribute
-                (InteractionVocab.EXPERIMENTAL_SYSTEM_NAME);
+                    (InteractionVocab.EXPERIMENTAL_SYSTEM_NAME);
         } catch (ClassCastException e) {
             idStr = null;
         }
@@ -431,7 +467,7 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
         String dbRef = null;
         try {
             dbRef = (String) interaction.getAttribute
-                (InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB);
+                    (InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB);
         } catch (ClassCastException e) {
             dbRef = null;
         }

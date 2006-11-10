@@ -1,48 +1,53 @@
-/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center.
- **
- ** Code written by: Ethan Cerami
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander
- **
- ** This library is free software; you can redistribute it and/or modify it
- ** under the terms of the GNU Lesser General Public License as published
- ** by the Free Software Foundation; either version 2.1 of the License, or
- ** any later version.
- ** 
- ** This library is distributed in the hope that it will be useful, but
- ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center 
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
- ** incidental or consequential damages, including lost profits, arising
- ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center 
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
- ** 
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **/
+/*
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package org.cytoscape.coreplugin.psi_mi.test.cyto_mapper;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import giny.model.Edge;
 import junit.framework.TestCase;
-import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
-import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.CommonVocab;
+import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
+import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,7 +83,7 @@ public class TestMapToCytoscape extends TestCase {
         MapToCytoscape mapper2 = new MapToCytoscape
                 (interactions, MapToCytoscape.MATRIX_VIEW);
         mapper2.doMapping();
-        addToCyNetwork (mapper2, network);
+        addToCyNetwork(mapper2, network);
 
         //  Verify Number of Nodes and Number of Edges
         int nodeCount = network.getNodeCount();
@@ -185,7 +190,7 @@ public class TestMapToCytoscape extends TestCase {
         MapToCytoscape mapper2 = new MapToCytoscape
                 (interactions, MapToCytoscape.MATRIX_VIEW);
         mapper2.doMapping();
-        addToCyNetwork (mapper2, network);
+        addToCyNetwork(mapper2, network);
 
         //  Verify Number of Nodes;  it should still be 7.
         //  If the mapper failed to check for pre-existing nodes, it would be 9.
@@ -222,7 +227,7 @@ public class TestMapToCytoscape extends TestCase {
         MapToCytoscape mapper2 = new MapToCytoscape
                 (interactions, MapToCytoscape.MATRIX_VIEW);
         mapper2.doMapping();
-        addToCyNetwork (mapper2, network);
+        addToCyNetwork(mapper2, network);
 
         //  Verify Number of Nodes;  there should be 4.
         int nodeCount = network.getNodeCount();
@@ -276,9 +281,9 @@ public class TestMapToCytoscape extends TestCase {
 
         //  Now map interactions to cyNetwork.
         MapToCytoscape mapper2 = new MapToCytoscape
-                (interactions,  MapToCytoscape.SPOKE_VIEW);
+                (interactions, MapToCytoscape.SPOKE_VIEW);
         mapper2.doMapping();
-        addToCyNetwork (mapper2, network);
+        addToCyNetwork(mapper2, network);
 
         //  Verify Number of Nodes;  there should be 4.
         int nodeCount = network.getNodeCount();
@@ -305,7 +310,8 @@ public class TestMapToCytoscape extends TestCase {
     }
 
     /**
-     * Test PSI-MI Level 2.5
+     * Test PSI-MI Level 2.5.
+     * @throws Exception All Errors.
      */
     public void testMapper5() throws Exception {
         //  First, get some interactions from sample data file.
@@ -325,8 +331,8 @@ public class TestMapToCytoscape extends TestCase {
         MapToCytoscape mapper2 = new MapToCytoscape
                 (interactions, MapToCytoscape.SPOKE_VIEW);
         mapper2.doMapping();
-        addToCyNetwork (mapper2, network);
-        
+        addToCyNetwork(mapper2, network);
+
         //  Verify Number of Nodes;  there should be 3.
         int nodeCount = network.getNodeCount();
         assertEquals(3, nodeCount);
@@ -353,6 +359,7 @@ public class TestMapToCytoscape extends TestCase {
 
     /**
      * Tests BioGrid Data defined in Bug:  0001126
+     *
      * @throws Exception All Errors
      */
     public void testBioGridData() throws Exception {
@@ -362,7 +369,7 @@ public class TestMapToCytoscape extends TestCase {
         String xml = reader.retrieveContent("testData/bio_grid.xml");
 
         //  Map from PSI to DataService Interaction Objects.
-        MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions (xml, interactions);
+        MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions(xml, interactions);
         mapper1.doMapping();
 
         //  Create CyNetwork
@@ -372,15 +379,15 @@ public class TestMapToCytoscape extends TestCase {
         MapToCytoscape mapper2 = new MapToCytoscape
                 (interactions, MapToCytoscape.SPOKE_VIEW);
         mapper2.doMapping();
-        addToCyNetwork (mapper2, network);
+        addToCyNetwork(mapper2, network);
 
         CyNode node = Cytoscape.getCyNode("HGNC:7733", false);
-        assertEquals ("HGNC:7733", node.getIdentifier());
+        assertEquals("HGNC:7733", node.getIdentifier());
         int edges[] = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(),
                 true, true, true);
 
         //  validate that we have 9 edges.
-        assertEquals (9, edges.length);
+        assertEquals(9, edges.length);
     }
 
     /**
@@ -411,7 +418,7 @@ public class TestMapToCytoscape extends TestCase {
         CyNetwork network = Cytoscape.createNetwork("network1");
         MapToCytoscape mapper2 = new MapToCytoscape
                 (allInteractions, MapToCytoscape.MATRIX_VIEW);
-        addToCyNetwork (mapper2, network);
+        addToCyNetwork(mapper2, network);
         mapper2.doMapping();
         System.out.println("DONE");
     }
@@ -420,10 +427,10 @@ public class TestMapToCytoscape extends TestCase {
         //  Add new nodes/edges to network
         int nodeIndices[] = mapper.getNodeIndices();
         int edgeIndices[] = mapper.getEdgeIndices();
-        for (int i=0; i<nodeIndices.length; i++) {
+        for (int i = 0; i < nodeIndices.length; i++) {
             cyNetwork.addNode(nodeIndices[i]);
         }
-        for (int i=0; i<edgeIndices.length; i++) {
+        for (int i = 0; i < edgeIndices.length; i++) {
             cyNetwork.addEdge(edgeIndices[i]);
         }
     }
@@ -432,7 +439,7 @@ public class TestMapToCytoscape extends TestCase {
      * Main Method.  Used for JProfiler.
      *
      * @param args Command Line Arguments.
-     * @throws Exception    All Exceptions.
+     * @throws Exception All Exceptions.
      */
     public static void main(String args[]) throws Exception {
         Date start = new Date();

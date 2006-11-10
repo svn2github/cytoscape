@@ -1,58 +1,55 @@
-/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center.
- **
- ** Code written by: Ethan Cerami
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander, Nisha Vinod
- **
- ** This library is free software; you can redistribute it and/or modify it
- ** under the terms of the GNU Lesser General Public License as published
- ** by the Free Software Foundation; either version 2.1 of the License, or
- ** any later version.
- ** 
- ** This library is distributed in the hope that it will be useful, but
- ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center 
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
- ** incidental or consequential damages, including lost profits, arising
- ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center 
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
- ** 
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **/
+/*
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package org.cytoscape.coreplugin.psi_mi.data_mapper;
 
-import org.jdom.Text;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.BibrefType;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.CvType;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.DbReferenceType;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.ExperimentType;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.InteractionElementType;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.NamesType;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.XrefType;
-import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
+import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
 import org.cytoscape.coreplugin.psi_mi.model.Interaction;
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
-import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
-import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
+import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
+import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
+import org.jdom.Text;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.math.BigInteger;
 
 /**
  * Maps PSI-MI Level 1 Document to Interaction Objects.
@@ -95,7 +92,7 @@ public class MapPsiOneToInteractions implements Mapper {
             experimentMap = new HashMap();
             StringReader reader = new StringReader(content);
             JAXBContext jc = JAXBContext.newInstance(
-                "org.cytoscape.coreplugin.psi_mi.schema.mi1");
+                    "org.cytoscape.coreplugin.psi_mi.schema.mi1");
             Unmarshaller u = jc.createUnmarshaller();
             org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet entrySet =
                     (org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet) u.unmarshal(reader);
@@ -106,7 +103,7 @@ public class MapPsiOneToInteractions implements Mapper {
                 extractEntry(entry);
             }
         } catch (JAXBException e) {
-            throw new MapperException (e, "PSI-MI XML File is invalid:  "
+            throw new MapperException(e, "PSI-MI XML File is invalid:  "
                     + e.getMessage());
         }
     }
@@ -354,7 +351,7 @@ public class MapPsiOneToInteractions implements Mapper {
     /**
      * Extracts an Experiment Reference or Sub-Element.
      */
-    private ExperimentType extractExperimentReferenceOrElement (Object expItem) {
+    private ExperimentType extractExperimentReferenceOrElement(Object expItem) {
         if (expItem instanceof RefType) {
             RefType refType = (RefType) expItem;
             return (ExperimentType) experimentMap.get(refType.getRef());

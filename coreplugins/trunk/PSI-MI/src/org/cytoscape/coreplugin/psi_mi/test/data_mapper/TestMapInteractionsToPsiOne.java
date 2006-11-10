@@ -1,52 +1,55 @@
-/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center.
- **
- ** Code written by: Ethan Cerami
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander
- **
- ** This library is free software; you can redistribute it and/or modify it
- ** under the terms of the GNU Lesser General Public License as published
- ** by the Free Software Foundation; either version 2.1 of the License, or
- ** any later version.
- ** 
- ** This library is distributed in the hope that it will be useful, but
- ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center 
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
- ** incidental or consequential damages, including lost profits, arising
- ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center 
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
- ** 
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **/
+/*
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package org.cytoscape.coreplugin.psi_mi.test.data_mapper;
 
-import junit.framework.TestCase;
-
-import java.io.File;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.math.BigInteger;
-
-import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiOne;
-import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
-import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
-import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
-import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import junit.framework.TestCase;
+import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
+import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
+import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiOne;
+import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
+import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import java.io.File;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.util.ArrayList;
 
 /**
  * Tests MapInteractionsToPsiOne.
@@ -67,15 +70,15 @@ public class TestMapInteractionsToPsiOne extends TestCase {
         ArrayList interactions = new ArrayList();
 
         //  First map PSI-MI Level 1 to interaction objects
-        MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions (xml, interactions);
+        MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions(xml, interactions);
         mapper1.doMapping();
-        assertEquals (6, interactions.size());
+        assertEquals(6, interactions.size());
 
         //  Second, map to Cytoscape objects
         CyNetwork network = Cytoscape.createNetwork("network1");
         MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.SPOKE_VIEW);
         mapper2.doMapping();
-        addToCyNetwork (mapper2, network);
+        addToCyNetwork(mapper2, network);
 
         //  Verify Number of Nodes and Number of Edges
         int nodeCount = network.getNodeCount();
@@ -84,10 +87,10 @@ public class TestMapInteractionsToPsiOne extends TestCase {
         assertEquals(6, edgeCount);
 
         //  Third, map back to interaction Objects
-        MapFromCytoscape mapper3 = new MapFromCytoscape (network);
+        MapFromCytoscape mapper3 = new MapFromCytoscape(network);
         mapper3.doMapping();
         interactions = mapper3.getInteractions();
-        assertEquals (6, interactions.size());
+        assertEquals(6, interactions.size());
 
         //  Fourth, map to PSI-MI Level 1
         MapInteractionsToPsiOne mapper4 = new MapInteractionsToPsiOne(interactions);
@@ -106,12 +109,12 @@ public class TestMapInteractionsToPsiOne extends TestCase {
         marshaller.marshal(entrySet, writer);
 
         //  Verify that XML indentation is turned on.
-        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<entrySet version=\"1\" level=\"1\" xmlns=\"net:sf:psidev:mi\">\n" +
-                "    <entry>\n" +
-                "        <interactorList>";
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+                + "<entrySet version=\"1\" level=\"1\" xmlns=\"net:sf:psidev:mi\">\n"
+                + "    <entry>\n"
+                + "        <interactorList>";
         assertTrue("XML Indentation Test has failed.  ",
-               writer.toString().startsWith(expected));
+                writer.toString().startsWith(expected));
         //  System.out.println(writer.toString());
     }
 
@@ -119,10 +122,10 @@ public class TestMapInteractionsToPsiOne extends TestCase {
         //  Add new nodes/edges to network
         int nodeIndices[] = mapper.getNodeIndices();
         int edgeIndices[] = mapper.getEdgeIndices();
-        for (int i=0; i<nodeIndices.length; i++) {
+        for (int i = 0; i < nodeIndices.length; i++) {
             cyNetwork.addNode(nodeIndices[i]);
         }
-        for (int i=0; i<edgeIndices.length; i++) {
+        for (int i = 0; i < edgeIndices.length; i++) {
             cyNetwork.addEdge(edgeIndices[i]);
         }
     }
@@ -194,7 +197,7 @@ public class TestMapInteractionsToPsiOne extends TestCase {
         primaryRef = xref.getPrimaryRef();
         String db = primaryRef.getDb();
         String id = primaryRef.getId();
-        assertEquals ("DIP", db);
-        assertEquals ("61E", id);
+        assertEquals("DIP", db);
+        assertEquals("61E", id);
     }
 }

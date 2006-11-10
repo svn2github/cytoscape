@@ -1,40 +1,43 @@
-/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center.
- **
- ** Code written by: Ethan Cerami
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander, Nisha Vinod
- ** This library is free software; you can redistribute it and/or modify it
- ** under the terms of the GNU Lesser General Public License as published
- ** by the Free Software Foundation; either version 2.1 of the License, or
- ** any later version.
- ** 
- ** This library is distributed in the hope that it will be useful, but
- ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center 
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
- ** incidental or consequential damages, including lost profits, arising
- ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center 
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
- ** 
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **/
+/*
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package org.cytoscape.coreplugin.psi_mi.data_mapper;
 
-//import org.cytoscape.coreplugin.psi_mi.schema.mi1.NamesType;
-//import org.cytoscape.coreplugin.psi_mi.schema.mi1.ProteinInteractorType;
-//import org.cytoscape.coreplugin.psi_mi.schema.mi25.Interactor;
-import org.cytoscape.coreplugin.psi_mi.schema.mi25.NamesType;
-import org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractorElementType;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.ProteinInteractorType;
 import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.ProteinInteractorType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractorElementType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.NamesType;
 
 /**
  * Mapper Utility Class.
@@ -62,7 +65,7 @@ public class MapperUtil {
      * @throws MapperException Error in Mapping.
      */
     public static String extractName(InteractorElementType interactor,
-                                     ExternalReference refs[]) throws MapperException {
+            ExternalReference refs[]) throws MapperException {
         String shortLabel = null;
         String fullName = null;
         NamesType names = interactor.getNames();
@@ -87,15 +90,22 @@ public class MapperUtil {
         }
         if (fullName != null && fullName.trim().length() > 0) {
             return fullName;
-        } else if (("" + interactor.getId())!= null
+        } else if (("" + interactor.getId()) != null
                 && ("" + interactor.getId()).trim().length() > 0) {
-            return "" +interactor.getId();
+            return "" + interactor.getId();
         } else {
             throw new MapperException("Unable to determine name"
                     + "for interactor:  " + interactor.getId());
         }
     }
 
+    /**
+     * Exracts Interactor Name.
+     * @param interactor Interactor Object.
+     * @param refs Array of External References.
+     * @return Interaction name.
+     * @throws MapperException Mapper Error.
+     */
     public static String extractName(ProteinInteractorType interactor,
             ExternalReference refs[]) throws MapperException {
         String shortLabel = null;

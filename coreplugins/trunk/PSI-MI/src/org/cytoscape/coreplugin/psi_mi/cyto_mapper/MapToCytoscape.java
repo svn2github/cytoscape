@@ -1,35 +1,39 @@
-/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center.
- **
- ** Code written by: Ethan Cerami
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander
- **
- ** This library is free software; you can redistribute it and/or modify it
- ** under the terms of the GNU Lesser General Public License as published
- ** by the Free Software Foundation; either version 2.1 of the License, or
- ** any later version.
- **
- ** This library is distributed in the hope that it will be useful, but
- ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
- ** incidental or consequential damages, including lost profits, arising
- ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
- **
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **/
+/*
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package org.cytoscape.coreplugin.psi_mi.cyto_mapper;
 
-import org.cytoscape.coreplugin.psi_mi.util.AttributeUtil;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -42,6 +46,7 @@ import org.cytoscape.coreplugin.psi_mi.model.Interaction;
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.CommonVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
+import org.cytoscape.coreplugin.psi_mi.util.AttributeUtil;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
 
 import java.util.*;
@@ -229,7 +234,7 @@ public class MapToCytoscape implements Mapper {
             edgeIndices[i] = edge.getRootGraphIndex();
         }
         return edgeIndices;
-    }    
+    }
 
     /**
      * Gets Mapping Warnings.
@@ -361,7 +366,7 @@ public class MapToCytoscape implements Mapper {
             for (int i = 0; i < interactors.size(); i++) {
                 Interactor interactor = (Interactor) interactors.get(i);
 
-                String role =  (String) baitMap.get(interactor.getName());
+                String role = (String) baitMap.get(interactor.getName());
                 int eliminateInteractorflag = 0;
                 if (role == null || (!(role.equalsIgnoreCase("bait")))) {
                     if (role != null && !role.equalsIgnoreCase("prey")) {
@@ -383,8 +388,8 @@ public class MapToCytoscape implements Mapper {
             Interactor interactor0 = (Interactor) interactors.get(0);
             Interactor interactor1 = (Interactor) interactors.get(1);
             if (interactor0 != null && interactor1 != null) {
-                    createEdge(interactor0, interactor1, interaction, nodeMap,
-                            edgeMap);
+                createEdge(interactor0, interactor1, interaction, nodeMap,
+                        edgeMap);
             }
         }
         ListUtil.setInteractionMap(intMap);
@@ -630,7 +635,7 @@ public class MapToCytoscape implements Mapper {
      * @return canonical name of interaction type.
      */
     protected String getInteractionTypeId(Interaction interaction) {
-        StringBuffer key = new StringBuffer (OPEN_PAREN);
+        StringBuffer key = new StringBuffer(OPEN_PAREN);
         String expType = (String) interaction.getAttribute
                 (InteractionVocab.EXPERIMENTAL_SYSTEM_NAME);
         String shortName = (String) interaction.getAttribute
@@ -638,7 +643,7 @@ public class MapToCytoscape implements Mapper {
         String pmid = (String) interaction.getAttribute
                 (InteractionVocab.PUB_MED_ID);
         if (expType == null) {
-            key.append (" <--> ");
+            key.append(" <--> ");
         } else {
             key.append(expType);
         }
@@ -646,9 +651,9 @@ public class MapToCytoscape implements Mapper {
             key.append(":" + shortName);
         }
         if (pmid != null) {
-            key.append (":" + pmid);
+            key.append(":" + pmid);
         }
-        key.append (CLOSE_PAREN);
+        key.append(CLOSE_PAREN);
         return key.toString();
     }
 
@@ -671,7 +676,7 @@ public class MapToCytoscape implements Mapper {
                 + interactionType + node2Ident);
     }
 
-    private void log (String msg) {
+    private void log(String msg) {
         if (DEBUG) {
             System.out.println(msg);
         }

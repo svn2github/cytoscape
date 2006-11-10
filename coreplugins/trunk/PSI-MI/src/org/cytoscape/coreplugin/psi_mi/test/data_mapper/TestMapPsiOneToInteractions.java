@@ -1,48 +1,50 @@
-/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center.
- **
- ** Code written by: Ethan Cerami
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander
- **
- ** This library is free software; you can redistribute it and/or modify it
- ** under the terms of the GNU Lesser General Public License as published
- ** by the Free Software Foundation; either version 2.1 of the License, or
- ** any later version.
- ** 
- ** This library is distributed in the hope that it will be useful, but
- ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center 
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
- ** incidental or consequential damages, including lost profits, arising
- ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center 
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
- ** 
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **/
+/*
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package org.cytoscape.coreplugin.psi_mi.test.data_mapper;
 
 import junit.framework.TestCase;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
+import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
 import org.cytoscape.coreplugin.psi_mi.model.Interaction;
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
-import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Tests the MapPsiOneToInteractions Mapper.
@@ -136,9 +138,9 @@ public class TestMapPsiOneToInteractions extends TestCase {
 
         //  Verify Interaction Xrefs
         ExternalReference refs[] = interaction.getExternalRefs();
-        assertEquals (1, refs.length);
-        assertEquals ("DIP", refs[0].getDatabase());
-        assertEquals ("61E", refs[0].getId());
+        assertEquals(1, refs.length);
+        assertEquals("DIP", refs[0].getDatabase());
+        assertEquals("61E", refs[0].getId());
     }
 
     /**
@@ -180,30 +182,30 @@ public class TestMapPsiOneToInteractions extends TestCase {
                 (InteractionVocab.PUB_MED_ID));
         assertEquals("classical two hybrid", interaction.getAttribute
                 (InteractionVocab.EXPERIMENTAL_SYSTEM_NAME));
-        assertEquals ("MI:0018", interaction.getAttribute
+        assertEquals("MI:0018", interaction.getAttribute
                 (InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID));
 
         ArrayList interactors = interaction.getInteractors();
-        assertEquals (4, interactors.size());
+        assertEquals(4, interactors.size());
 
         Interactor interactor0 = (Interactor) interactors.get(0);
         Interactor interactor1 = (Interactor) interactors.get(1);
         Interactor interactor2 = (Interactor) interactors.get(2);
         Interactor interactor3 = (Interactor) interactors.get(3);
 
-        assertEquals ("A", interactor0.getName());
-        assertEquals ("B", interactor1.getName());
-        assertEquals ("C", interactor2.getName());
-        assertEquals ("D", interactor3.getName());
+        assertEquals("A", interactor0.getName());
+        assertEquals("B", interactor1.getName());
+        assertEquals("C", interactor2.getName());
+        assertEquals("D", interactor3.getName());
 
         String fullName0 = (String) interactor0.getAttribute(InteractorVocab.FULL_NAME);
         String fullName1 = (String) interactor1.getAttribute(InteractorVocab.FULL_NAME);
         String fullName2 = (String) interactor2.getAttribute(InteractorVocab.FULL_NAME);
         String fullName3 = (String) interactor3.getAttribute(InteractorVocab.FULL_NAME);
-        assertTrue (fullName0.startsWith("Gene has a SET"));
-        assertTrue (fullName1.startsWith("Kinesin-related"));
-        assertTrue (fullName2.startsWith("SH3-domain"));
-        assertTrue (fullName3.startsWith("SH3-domain"));
+        assertTrue(fullName0.startsWith("Gene has a SET"));
+        assertTrue(fullName1.startsWith("Kinesin-related"));
+        assertTrue(fullName2.startsWith("SH3-domain"));
+        assertTrue(fullName3.startsWith("SH3-domain"));
     }
 
     private void validateDipInteractions(Interaction interaction,

@@ -1,34 +1,37 @@
-// $Id: TestExternalLinkUtil.java,v 1.11 2006/06/15 22:07:49 grossb Exp $
-//------------------------------------------------------------------------------
-/** Copyright (c) 2006 Memorial Sloan-Kettering Cancer Center.
- **
- ** Code written by: Ethan Cerami, Benjamin Gross.
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander
- **
- ** This library is free software; you can redistribute it and/or modify it
- ** under the terms of the GNU Lesser General Public License as published
- ** by the Free Software Foundation; either version 2.1 of the License, or
- ** any later version.
- **
- ** This library is distributed in the hope that it will be useful, but
- ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
- ** incidental or consequential damages, including lost profits, arising
- ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
- **
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **/
+/*
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
 import cytoscape.CyNetwork;
@@ -37,15 +40,15 @@ import cytoscape.data.readers.GraphReader;
 import giny.model.RootGraph;
 import giny.view.GraphView;
 import giny.view.NodeView;
+import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 import org.cytoscape.coreplugin.psi_mi.util.XmlValidator;
-import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * GraphReader Implementation for PSI-MI Files.
@@ -90,7 +93,7 @@ public class PsiMiGraphReader implements GraphReader {
             int level2 = xml.indexOf("level=\"2\"");
             if (level2 > 0 && level2 < 500) {
                 MapPsiTwoFiveToInteractions mapper = new MapPsiTwoFiveToInteractions(xml,
-                    interactions);
+                        interactions);
                 mapper.doMapping();
             } else {
                 MapPsiOneToInteractions mapper = new MapPsiOneToInteractions(xml, interactions);
@@ -99,7 +102,7 @@ public class PsiMiGraphReader implements GraphReader {
 
             //  Now Map to Cytocape Network Objects.
             MapToCytoscape mapper2 = new MapToCytoscape
-                (interactions, MapToCytoscape.SPOKE_VIEW);
+                    (interactions, MapToCytoscape.SPOKE_VIEW);
             mapper2.doMapping();
             nodeIndices = mapper2.getNodeIndices();
             edgeIndices = mapper2.getEdgeIndices();
@@ -172,17 +175,19 @@ public class PsiMiGraphReader implements GraphReader {
 
     /**
      * Read in graph;  canonicalize all names.
-     * @deprecated Use read() instead.  Will be removed Dec 2006.
+     *
      * @param canonicalizeNodeNames flag for canonicalization.
      * @throws IOException IO Error.
+     * @deprecated Use read() instead.  Will be removed Dec 2006.
      */
     public void read(boolean canonicalizeNodeNames) throws IOException {
     }
 
     /**
      * Get root graph.
-     * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
+     *
      * @return RootGraph Object.
+     * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
      */
     public RootGraph getRootGraph() {
         return null;
@@ -190,8 +195,9 @@ public class PsiMiGraphReader implements GraphReader {
 
     /**
      * Get node attributes.
-     * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
+     *
      * @return CyAttributes object.
+     * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
      */
     public CyAttributes getNodeAttributes() {
         return null;
@@ -199,8 +205,9 @@ public class PsiMiGraphReader implements GraphReader {
 
     /**
      * Get edge attributes.
-     * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
+     *
      * @return CyAttributes object.
+     * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
      */
     public CyAttributes getEdgeAttributes() {
         return null;
