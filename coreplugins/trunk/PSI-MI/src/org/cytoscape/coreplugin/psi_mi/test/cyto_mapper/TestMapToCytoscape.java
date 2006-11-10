@@ -333,20 +333,20 @@ public class TestMapToCytoscape extends TestCase {
         int nodeCount = network.getNodeCount();
         assertEquals(3, nodeCount);
 
-        //  Verify Number of Edges; there should be 35
+        //  Verify Number of Edges; there should be 30
         int edgeCount = network.getEdgeCount();
-        assertEquals(10, edgeCount);
+        assertEquals(30, edgeCount);
 
         Iterator edgeIterator = network.edgesIterator();
         int counter = 0;
         while (edgeIterator.hasNext()) {
             Edge edge = (Edge) edgeIterator.next();
-            String id = edge.getIdentifier();
-            if (id.equals("kaib_synp7 (pull down:10064581) kaic_synp7")) {
+            String id = edge.getIdentifier().trim();
+            if (id.equals("kaib_synp7 (pull down:kaib-kaia-2:10064581) kaia_synp7")) {
                 counter++;
-            } else if (id.equals("kaib_synp7 (pull down:10064581) kaib_synp7")) {
+            } else if (id.equals("kaib_synp7 (pull down:kaib-kaic-5:10064581) kaic_synp7")) {
                 counter++;
-            } else if (id.equals("kaib_synp7 (two hybrid:10064581) kaia_synp7")) {
+            } else if (id.equals("kaic_synp7 (two hybrid:kaic-kaia-1:10064581) kaia_synp7")) {
                 counter++;
             }
         }
