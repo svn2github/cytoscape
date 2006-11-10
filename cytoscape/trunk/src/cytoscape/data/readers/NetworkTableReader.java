@@ -22,15 +22,15 @@ import cytoscape.util.URLUtil;
 public class NetworkTableReader extends AbstractGraphReader implements
 		TextTableReader {
 
-	private static final String COMMENT_CHAR = "!";
+	protected static final String COMMENT_CHAR = "!";
 
-	private final NetworkTableMappingParameters nmp;
-	private final URL sourceURL;
+	protected final NetworkTableMappingParameters nmp;
+	protected final URL sourceURL;
 
-	private final NetworkLineParser parser;
+	protected final NetworkLineParser parser;
 
-	private final List<Integer> nodeList;
-	private final List<Integer> edgeList;
+	protected final List<Integer> nodeList;
+	protected final List<Integer> edgeList;
 
 	public NetworkTableReader(final String networkName, final URL sourceURL,
 			final NetworkTableMappingParameters nmp) {
