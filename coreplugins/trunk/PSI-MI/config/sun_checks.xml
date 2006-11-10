@@ -54,7 +54,6 @@
     <module name="NoWhitespaceAfter"/>
     <module name="NoWhitespaceBefore"/>
     <module name="WhitespaceAfter"/>
-    <module name="WhitespaceAround"/>
 
 
 
@@ -120,7 +119,9 @@
     -->
 
     <!-- enforce default length limits -->
-    <module name="LineLength"/>
+    <module name="LineLength">
+	<property name="max" value="125"/>
+    </module>
     <module name="MethodLength"/>
     <module name="FileLength"/>
 
