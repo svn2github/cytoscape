@@ -48,6 +48,7 @@ public class CytoMapperSuite extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         suite.addTestSuite(TestMapToCytoscape.class);
+        suite.addTestSuite(TestMapFromCytoscape.class);
         suite.setName("CytoMapper Tests");
         return suite;
     }

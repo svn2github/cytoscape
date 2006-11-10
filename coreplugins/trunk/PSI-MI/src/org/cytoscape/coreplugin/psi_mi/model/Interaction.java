@@ -63,7 +63,7 @@ public class Interaction extends AttributeBag {
      * @return Interaction Description.
      */
     public String toString() {
-        StringBuffer buffer = new StringBuffer("Interaction:  ");
+        StringBuffer buffer = new StringBuffer("Interaction: ");
         String description = this.getDescription();
         buffer.append(description);
         return buffer.toString();
@@ -81,6 +81,16 @@ public class Interaction extends AttributeBag {
             String name = interactor.getName();
             buffer.append(" [" + name + "]");
         }
+        ExternalReference xrefs[] = getExternalRefs();
+        buffer.append (" [Interaction XREFs --> ");
+        if (xrefs == null || xrefs.length ==0) {
+            buffer.append ("None");
+        } else {
+            for (int i=0; i<xrefs.length; i++) {
+                buffer.append (xrefs[i].toString() + " ");
+            }
+        }
+        buffer.append ("]");
         return buffer.toString();
     }
 }

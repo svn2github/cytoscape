@@ -553,8 +553,6 @@ public class MapToCytoscape implements Mapper {
                 ExternalReference ref = refs[i];
                 dbsList.add(ref.getDatabase());
                 idsList.add(ref.getId());
-                //dbs[i] = ref.getDatabase();
-                //ids[i] = ref.getId();
             }
             if (dbsList != null && dbsList.size() != 0) {
                 Cytoscape.getNodeAttributes().setAttributeList

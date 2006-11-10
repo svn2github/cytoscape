@@ -37,12 +37,14 @@ import cytoscape.data.CyAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 import org.cytoscape.coreplugin.psi_mi.data_mapper.Mapper;
 import org.cytoscape.coreplugin.psi_mi.model.Interaction;
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.AttributeBag;
 import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
+import org.cytoscape.coreplugin.psi_mi.model.vocab.CommonVocab;
 
 /**
  * Maps Cytoscape Graph Objects to Data Service Interaction objects.
@@ -77,10 +79,10 @@ public class MapFromCytoscape implements Mapper {
      */
     public void doMapping() {
         interactions = new ArrayList();
-        List edgeList = cyNetwork.edgesList();
-        for (int i = 0; i < edgeList.size(); i++) {
+        Iterator edgesIterator = cyNetwork.edgesIterator();
+        while (edgesIterator.hasNext()) {
             Interaction interaction = new Interaction();
-            CyEdge edge = (CyEdge) edgeList.get(i);
+            CyEdge edge = (CyEdge) edgesIterator.next();
             if (edge != null) {
                 CyNode sourceNode = (CyNode) edge.getSource();
                 CyNode targetNode = (CyNode) edge.getTarget();
@@ -115,8 +117,7 @@ public class MapFromCytoscape implements Mapper {
      */
     private void transferEdgeAttributes(CyEdge edge, Interaction interaction) {
         String attributeNames[] = edgeAttributes.getAttributeNames();
-        transferAllAttributes(attributeNames, edgeAttributes, edge.getIdentifier(),
-                (AttributeBag) interaction);
+        transferAllAttributes(attributeNames, edgeAttributes, edge.getIdentifier(), interaction);
     }
 
     /**
@@ -128,48 +129,39 @@ public class MapFromCytoscape implements Mapper {
     private void transferNodeAttributes(CyNode node, Interactor interactor) {
         interactor.setName(node.getIdentifier());
         String attributeNames[] = nodeAttributes.getAttributeNames();
-        transferAllAttributes(attributeNames, nodeAttributes, node.getIdentifier(),
-                (AttributeBag) interactor);
+        transferAllAttributes(attributeNames, nodeAttributes, node.getIdentifier(), interactor);
     }
 
     /**
      * Transfers all Node / Edge Attributes.
      */
-    private void transferAllAttributes(String[] attributeNames,
-            CyAttributes attributes, String nodeName,
-            AttributeBag bag) {
-        String dbNames[] = null;
-        String dbIds[] = null;
+    private void transferAllAttributes(String[] attributeNames, CyAttributes attributes,
+            String nodeName, AttributeBag bag) {
+        List dbNames = null, dbIds = null;
         for (int i = 0; i < attributeNames.length; i++) {
             String attributeName = attributeNames[i];
-            /**
             if (attributeName.equals(CommonVocab.XREF_DB_NAME)) {
-                dbNames = (String[]) attributes.get
-                        (attributeName, nodeName);
+                dbNames = attributes.getAttributeList(nodeName, attributeName);
             } else if (attributeName.equals(CommonVocab.XREF_DB_ID)) {
-                dbIds = (String[]) attributes.get
-                        (attributeName, nodeName);
+                dbIds = attributes.getAttributeList(nodeName, attributeName);
             } else {
-            **/
                 String value = attributes.getStringAttribute(nodeName, attributeName);
                 bag.addAttribute(attributeName, value);
-            //}
+            }
         }
-        addExternalReferences(dbNames, dbIds, (AttributeBag) bag);
+        addExternalReferences(dbNames, dbIds, bag);
     }
 
     /**
      * Adds External References.
      */
-    private void addExternalReferences(String dbNames[], String dbIds[],
-            AttributeBag bag) {
-        if (dbNames != null & dbIds != null) {
-            ExternalReference refs[] = new ExternalReference[dbNames.length];
-            for (int i = 0; i < dbNames.length; i++) {
-                String dbName = (String) dbNames[i];
-                String dbId = (String) dbIds[i];
-                ExternalReference ref = new ExternalReference(dbName, dbId);
-                refs[i] = ref;
+    private void addExternalReferences(List dbNames, List dbIds, AttributeBag bag) {
+        if (dbNames != null && dbIds != null) {
+            ExternalReference refs[] = new ExternalReference[dbNames.size()];
+            for (int i = 0; i < dbNames.size(); i++) {
+                String dbName = (String) dbNames.get(i);
+                String dbId = (String) dbIds.get(i);
+                refs[i] = new ExternalReference(dbName, dbId);
             }
             bag.setExternalRefs(refs);
         }
