@@ -18,6 +18,7 @@ import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.FLOAT_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.INTEGER_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.LIST_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.STRING_ICON;
+import static cytoscape.data.servers.ui.enums.ImportDialogColorTheme.*;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -41,7 +42,7 @@ import cytoscape.data.CyAttributes;
  */
 public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer {
 
-	protected static final int PARAMETER_NOT_EXIST = -1;
+	public static final int PARAMETER_NOT_EXIST = -1;
 	private final static String DEF_LIST_DELIMITER = PIPE.toString();
 
 	private int keyInFile;
@@ -51,6 +52,14 @@ public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer 
 	private boolean[] importFlag;
 	private String listDelimiter;
 
+	/*
+	 * For network import
+	 */
+	private int source;
+	private int target;
+	private int interaction;
+	
+	
 	/*
 	 * Constructors.<br>
 	 * 
@@ -81,6 +90,11 @@ public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer 
 		super();
 		setOpaque(true);
 		setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+		
+		this.source = PARAMETER_NOT_EXIST;
+		this.target = PARAMETER_NOT_EXIST;
+		this.interaction = PARAMETER_NOT_EXIST;
+		
 		this.keyInFile = primaryKey;
 		this.ontologyColumn = ontologyColumn;
 
@@ -122,6 +136,22 @@ public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer 
 			aliases.add(i);
 		}
 	}
+	
+	public void setSourceIndex(int idx) {
+		source = idx;
+	}
+	
+	public void setInteractionIndex(int idx) {
+		interaction = idx;
+	}
+	
+	public void setTargetIndex(int idx) {
+		target = idx;
+	}
+	
+	
+	
+	
 
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
@@ -134,14 +164,7 @@ public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer 
 				importFlag[i] = true;
 			}
 		}
-
-		if (importFlag[column] == true) {
-			setBackground(Color.WHITE);
-			setFont(SELECTED_COL_FONT.getFont());
-		} else {
-			setBackground(NOT_SELECTED_COL_COLOR.getColor());
-			setFont(table.getFont());
-		}
+		
 
 		if (column == keyInFile) {
 			setForeground(PRIMARY_KEY_COLOR.getColor());
@@ -157,6 +180,17 @@ public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer 
 		} else if (column == species) {
 			setForeground(SPECIES_COLOR.getColor());
 			// setFont(selectedFont);
+		} else if (column == source) {
+			setForeground(SOURCE_COLOR.getColor());
+			importFlag[column] = true;
+		} else if (column == target) {
+			setForeground(TARGET_COLOR.getColor());
+			importFlag[column] = true;
+		} else if( column == interaction) {
+			setForeground(INTERACTION_COLOR.getColor());
+			importFlag[column] = true;
+		} else if(column != source && column != target && column != interaction && source != PARAMETER_NOT_EXIST ) {
+			setForeground(EDGE_ATTR_COLOR.getColor());
 		} else {
 			setForeground(Color.BLACK);
 			// super.setBackground(table.getBackground());
@@ -165,7 +199,13 @@ public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer 
 
 		setText((value == null) ? "" : value.toString());
 
-		// this.setOpaque(false);
+		if (importFlag[column] == true) {
+			setBackground(Color.WHITE);
+			setFont(SELECTED_COL_FONT.getFont());
+		} else {
+			setBackground(NOT_SELECTED_COL_COLOR.getColor());
+			setFont(table.getFont());
+		}
 		return this;
 	}
 
@@ -178,15 +218,27 @@ public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer 
  * 
  */
 class HeaderRenderer implements TableCellRenderer {
+
+	private static final int PARAMETER_NOT_EXIST = -1;
+
 	private final TableCellRenderer tcr;
-
-	private Byte[] dataTypes;
-
 	
+	private Byte[] dataTypes;
+	
+	/*
+	 * For network import
+	 */
+	private int source;
+	private int target;
+	private int interaction;
 
 	public HeaderRenderer(TableCellRenderer tcr, Byte[] dataTypes) {
 		this.tcr = tcr;
 		this.dataTypes = dataTypes;
+		
+		this.source = PARAMETER_NOT_EXIST;
+		this.target = PARAMETER_NOT_EXIST;
+		this.interaction = PARAMETER_NOT_EXIST;
 	}
 
 	public Component getTableCellRendererComponent(JTable tbl, Object val,
@@ -206,6 +258,19 @@ class HeaderRenderer implements TableCellRenderer {
 			columnName.setForeground(UNSELECTED_COLOR.getColor());
 			columnName.setBackground(HEADER_UNSELECTED_BACKGROUND_COLOR.getColor());
 		}
+		
+		if(col == source){
+			columnName.setForeground(SOURCE_COLOR.getColor());
+		} else if(col == target) {
+			columnName.setForeground(TARGET_COLOR.getColor());
+		} else if(col == interaction) {
+			columnName.setForeground(INTERACTION_COLOR.getColor());
+		} else if(col != target && col != source && col != interaction && source != PARAMETER_NOT_EXIST) {
+			columnName.setForeground(EDGE_ATTR_COLOR.getColor());
+		}
+		
+		
+		
 		if (dataTypes != null && dataTypes.length > col) {
 			columnName.setIcon(getDataTypeIcon(dataTypes[col]));
 		} else {
@@ -229,4 +294,17 @@ class HeaderRenderer implements TableCellRenderer {
 		}
 		return dataTypeIcon;
 	}
+	
+	public void setSourceIndex(int idx) {
+		source = idx;
+	}
+	
+	public void setInteractionIndex(int idx) {
+		interaction = idx;
+	}
+	
+	public void setTargetIndex(int idx) {
+		target = idx;
+	}
+	
 }

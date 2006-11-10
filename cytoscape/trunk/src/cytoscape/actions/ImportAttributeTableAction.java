@@ -19,7 +19,7 @@ import cytoscape.util.CytoscapeAction;
 public class ImportAttributeTableAction extends CytoscapeAction implements
 		PropertyChangeListener {
 	public ImportAttributeTableAction() {
-		super("Attribute Table (Excel and Text)...");
+		super("Attribute Table (Excel/Text)...");
 		setPreferredMenu("File.Import");
 
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(

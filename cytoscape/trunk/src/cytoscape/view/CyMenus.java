@@ -98,6 +98,7 @@ import cytoscape.actions.ImportBioDataServerAction;
 import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportGraphFileAction;
+import cytoscape.actions.ImportNetworkTableAction;
 import cytoscape.actions.ImportNodeAttributesAction;
 import cytoscape.actions.ImportVizmapAction;
 import cytoscape.actions.InvertSelectedEdgesAction;
@@ -729,12 +730,15 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// fill the Import submenu
 		addAction(new ImportGraphFileAction(this));
+		addAction(new ImportNetworkTableAction());
+		loadSubMenu.add(new JSeparator());
 		addAction(new ImportAttributeTableAction());
 		addAction(new ImportNodeAttributesAction());
 		addAction(new ImportEdgeAttributesAction());
-		addAction(new ImportVizmapAction());
 		addAction(new ImportExpressionMatrixAction());
 		addAction(new ImportAnnotationAndOntologyAction());
+		loadSubMenu.add(new JSeparator());
+		addAction(new ImportVizmapAction());
 		addAction(new ImportBioDataServerAction());
 
 		ImageIcon goSmallIcon = new ImageIcon(getClass().getResource(

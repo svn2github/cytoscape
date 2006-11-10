@@ -102,7 +102,7 @@ public class PreviewTablePanel extends JPanel {
 	private JTable previewTable;
 
 	// Tables for each worksheet.
-	
+
 	private Map<String, FileTypes> fileTypes;
 	private Map<String, JTable> previewTables;
 
@@ -126,11 +126,17 @@ public class PreviewTablePanel extends JPanel {
 	}
 
 	public PreviewTablePanel(String message, int panelType) {
-		this.message = message;
+
+		if (message == null) {
+			this.message = DEF_MESSAGE;
+		} else {
+			this.message = message;
+		}
+
 		this.panelType = panelType;
 
 		dataTypeMap = new HashMap<String, Byte[]>();
-		
+
 		// This object will track the file types of each table.
 		fileTypes = new HashMap<String, FileTypes>();
 
@@ -365,15 +371,16 @@ public class PreviewTablePanel extends JPanel {
 	public Byte[] getDataTypes(final String selectedTabName) {
 		return dataTypeMap.get(selectedTabName);
 	}
-	
+
 	public FileTypes getFileType() {
-		
-		final String sheetName = getSheetName(tableTabbedPane.getSelectedIndex());
-		
-		if(sheetName.startsWith("gene_association")) {
+
+		final String sheetName = getSheetName(tableTabbedPane
+				.getSelectedIndex());
+
+		if (sheetName.startsWith("gene_association")) {
 			return FileTypes.GENE_ASSOCIATION_FILE;
 		}
-		
+
 		return FileTypes.ATTRIBUTE_FILE;
 	}
 
@@ -426,7 +433,8 @@ public class PreviewTablePanel extends JPanel {
 	 * 
 	 * @param sourceURL
 	 * @param delimiters
-	 * @param renderer renderer for this table.  Can be null.
+	 * @param renderer
+	 *            renderer for this table. Can be null.
 	 * @param size
 	 * @throws IOException
 	 */
@@ -434,10 +442,11 @@ public class PreviewTablePanel extends JPanel {
 			TableCellRenderer renderer, int size) throws IOException {
 		TableCellRenderer curRenderer = renderer;
 		
+		
 		/*
 		 * If rendrer is null, create default one.
 		 */
-		if(curRenderer == null) {
+		if (curRenderer == null) {
 			curRenderer = new AttributePreviewTableCellRenderer(0,
 					new ArrayList<Integer>(),
 					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
@@ -486,11 +495,12 @@ public class PreviewTablePanel extends JPanel {
 			addTableTab(newModel, tabName, curRenderer);
 		}
 
-		if(getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
+		if (getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
 			fileTypeLabel.setText("Gene Association");
-			fileTypeLabel.setToolTipText("This is a fixed-format Gene Association file.");
+			fileTypeLabel
+					.setToolTipText("This is a fixed-format Gene Association file.");
 		}
-		
+
 		loadFlag = true;
 	}
 
@@ -512,10 +522,7 @@ public class PreviewTablePanel extends JPanel {
 		// for (int j = 0; j < newModel.getColumnCount(); j++) {
 		// dataTypes[j] = CyAttributes.TYPE_STRING;
 		// }
-		JTableHeader hd = newTable.getTableHeader();
-		hd.setReorderingAllowed(false);
-		hd.setDefaultRenderer(new HeaderRenderer(hd.getDefaultRenderer(),
-				dataTypeMap.get(tabName)));
+		
 
 		/*
 		 * Setting table properties
@@ -523,10 +530,29 @@ public class PreviewTablePanel extends JPanel {
 		newTable.setCellSelectionEnabled(false);
 		newTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		newTable.setDefaultEditor(Object.class, null);
-		newTable.setDefaultRenderer(Object.class, renderer);
-
-		newTable.getTableHeader()
-				.setForeground(ATTRIBUTE_NAME_COLOR.getColor());
+		
+		
+		if(panelType == NETWORK_PREVIEW) {
+			final int colCount = newTable.getColumnCount();
+			final boolean[] importFlag = new boolean[colCount];
+			for(int i=0; i<colCount; i++) {
+				importFlag[i] = false;
+			}
+			TableCellRenderer netRenderer = new AttributePreviewTableCellRenderer(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+					new ArrayList<Integer>(),
+					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+					importFlag, TextFileDelimiters.PIPE.toString());
+			
+			newTable.setDefaultRenderer(Object.class, netRenderer);
+		} else {
+			newTable.setDefaultRenderer(Object.class, renderer);
+		}
+		
+		JTableHeader hd = newTable.getTableHeader();
+		hd.setReorderingAllowed(false);
+		hd.setDefaultRenderer(new HeaderRenderer(hd.getDefaultRenderer(),
+				dataTypeMap.get(tabName)));
 
 		newTable.getTableHeader().addMouseListener(new TableHeaderListener());
 
@@ -549,10 +575,10 @@ public class PreviewTablePanel extends JPanel {
 			final URL sourceURL) {
 
 		final Vector<String> colNames = new Vector<String>();
-		
+
 		String[] parts = sourceURL.toString().split("/");
 		final String fileName = parts[parts.length - 1];
-		
+
 		if (colCount == GeneAssociationTags.values().length
 				&& fileName.startsWith("gene_association")) {
 			for (Object colName : GeneAssociationTags.values()) {
@@ -563,7 +589,7 @@ public class PreviewTablePanel extends JPanel {
 				colNames.add("Column " + (i + 1));
 			}
 		}
-		
+
 		return colNames;
 	}
 
@@ -744,7 +770,7 @@ public class PreviewTablePanel extends JPanel {
 		}
 
 		Byte[] dataType = dataTypeMap.get(tableName);
-		if (dataType == null) {
+		if (dataType == null || dataType.length != model.getColumnCount()) {
 			dataType = new Byte[model.getColumnCount()];
 		}
 		for (int i = 0; i < dataType.length; i++) {
