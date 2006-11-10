@@ -6,7 +6,11 @@ import cytoscape.Cytoscape;
 
 
 /**
- * Iconset for Import Dialog GUI.
+ * Iconset for Import Dialog GUI.<br>
+ * 
+ * <p>
+ *  By sharing these enums among GUIs, we can define Theme for the dialog. 
+ * </p>
  * 
  * @author kono
  *
@@ -25,7 +29,8 @@ public enum ImportDialogIconSets {
 	LOCAL_SOURCE_ICON("images/ximian/stock_data-sources-modified-16.png"),
 	SPREADSHEET_ICON("images/ximian/stock_new-spreadsheet.png"),
 	TEXT_FILE_ICON("images/ximian/stock_new-text-32.png"),
-	RIGHT_ARROW_ICON("images/ximian/stock_right-16.png");
+	RIGHT_ARROW_ICON("images/ximian/stock_right-16.png"),
+	CAUTION_ICON("images/ximian/stock_dialog-info-32.png");
 	
 	private String resourceLoc;
 	
