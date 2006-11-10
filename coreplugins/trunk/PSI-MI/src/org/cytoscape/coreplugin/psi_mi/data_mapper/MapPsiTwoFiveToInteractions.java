@@ -226,8 +226,8 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
         XrefType xref = cInteraction.getXref();
         ExternalReference refs[] = extractExternalRefs(xref);
 
-        log ("Got refs:  " + refs.length);
         if (refs != null && refs.length > 0) {
+            log ("Got refs:  " + refs.length);
             interaction.setExternalRefs(refs);
         }
     }
