@@ -45,9 +45,8 @@ import giny.view.NodeView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
-import java.io.InputStreamReader;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -60,17 +59,13 @@ import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.actions.SaveSessionAction;
-import cytoscape.actions.ImportGraphFileAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.ExpressionData;
-import cytoscape.data.Semantics;
 import cytoscape.data.ImportHandler;
+import cytoscape.data.Semantics;
 import cytoscape.data.readers.CyAttributesReader;
-import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.GraphReader;
-import cytoscape.data.readers.InteractionsReader;
-import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.data.servers.OntologyServer;
 import cytoscape.ding.CyGraphLOD;
@@ -102,8 +97,8 @@ public abstract class Cytoscape {
 	/**
 	 * Please consult CyAttributes documentation for event listening
 	 * 
-	 * @deprecated this event should not be used, it is not fired. Will be removed
-	 * June 2007.
+	 * @deprecated this event should not be used, it is not fired. Will be
+	 *             removed June 2007.
 	 * @see CyAttributes
 	 */
 	public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
@@ -126,7 +121,7 @@ public abstract class Cytoscape {
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
 	public static final String NETWORK_SAVED = "NETWORK_SAVED";
 	public static final String NETWORK_LOADED = "NETWORK_LOADED";
-	
+
 	// Root ontology network in the network panel
 	public static final String ONTOLOGY_ROOT = "ONTOLOGY_ROOT";
 
@@ -170,9 +165,9 @@ public abstract class Cytoscape {
 	private static int sessionState = SESSION_NEW;
 
 	private static BioDataServer bioDataServer;
-	
+
 	/**
-	 * New ontology server.  This will replace BioDataServer.
+	 * New ontology server. This will replace BioDataServer.
 	 */
 	private static OntologyServer ontologyServer;
 
@@ -210,8 +205,7 @@ public abstract class Cytoscape {
 	 * 
 	 */
 	private static CyAttributes ontologyAttributes = new CyAttributesImpl();
-	
-	
+
 	protected static ExpressionData expressionData;
 
 	protected static Object pcsO = new Object();
@@ -234,7 +228,7 @@ public abstract class Cytoscape {
 	protected static String currentNetworkID;
 
 	protected static String currentNetworkViewID;
-	
+
 	protected static String ontologyRootID;
 
 	/**
@@ -283,7 +277,6 @@ public abstract class Cytoscape {
 	public static CyNetwork getNullNetwork() {
 		return nullNetwork;
 	}
-
 
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
@@ -401,7 +394,6 @@ public abstract class Cytoscape {
 		// getRootGraph().ensureCapacity( nodes, edges );
 	}
 
-
 	/**
 	 * @return all CyNodes that are present in Cytoscape
 	 */
@@ -451,9 +443,10 @@ public abstract class Cytoscape {
 		}
 
 		// Now, create a new node.
-		node = (CyNode) getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
+		node = (CyNode) getRootGraph().getNode(
+				Cytoscape.getRootGraph().createNode());
 		node.setIdentifier(nodeID);
-		
+
 		/*
 		 * We do not need canonicalName anymore. If necessary, user should
 		 * create one from Attribute Browser.
@@ -464,9 +457,11 @@ public abstract class Cytoscape {
 		 * deleted until its removed from the core (Semantics.java) on April,
 		 * 2007 _DO NOT DELETE UNTIL THEN_
 		 */
-		
-		if(getNodeAttributes().getStringAttribute(nodeID, Semantics.CANONICAL_NAME) == null) {
-			getNodeAttributes().setAttribute(nodeID,Semantics.CANONICAL_NAME,nodeID);
+
+		if (getNodeAttributes().getStringAttribute(nodeID,
+				Semantics.CANONICAL_NAME) == null) {
+			getNodeAttributes().setAttribute(nodeID, Semantics.CANONICAL_NAME,
+					nodeID);
 		}
 		return node;
 	}
@@ -474,8 +469,8 @@ public abstract class Cytoscape {
 	/**
 	 * Gets the first CyEdge found between the two nodes (direction does not
 	 * matter) that has the given value for the given attribute. If the edge
-	 * doesn't exist, then it creates an undirected edge. 
-	 *
+	 * doesn't exist, then it creates an undirected edge.
+	 * 
 	 * This method MIGHT be deprecated, or even removed, because Cytoscape
 	 * shouldn't really be using undirected edges.
 	 * 
@@ -497,7 +492,8 @@ public abstract class Cytoscape {
 	 */
 	public static CyEdge getCyEdge(Node node_1, Node node_2, String attribute,
 			Object attribute_value, boolean create) {
-		return getCyEdge(node_1,node_2,attribute,attribute_value,create,false);
+		return getCyEdge(node_1, node_2, attribute, attribute_value, create,
+				false);
 	}
 
 	/**
@@ -533,28 +529,29 @@ public abstract class Cytoscape {
 							true, true, true);
 
 			for (int i = 0; i < n1Edges.length; i++) {
-				CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(n1Edges[i]);
+				CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
+						n1Edges[i]);
 				Object attValue = private_getEdgeAttributeValue(edge, attribute);
 
 				if (attValue != null && attValue.equals(attribute_value)) {
-					// Despite the fact that we know the source node 
-					// matches, the case of self edges dictates that 
+					// Despite the fact that we know the source node
+					// matches, the case of self edges dictates that
 					// we must check the source as well.
 					CyNode edgeTarget = (CyNode) edge.getTarget();
 					CyNode edgeSource = (CyNode) edge.getSource();
-					if ( ( edgeTarget.getRootGraphIndex() == 
-					       target.getRootGraphIndex() ) &&
-					     ( edgeSource.getRootGraphIndex() == 
-					       source.getRootGraphIndex() ) ) {
+					if ((edgeTarget.getRootGraphIndex() == target
+							.getRootGraphIndex())
+							&& (edgeSource.getRootGraphIndex() == source
+									.getRootGraphIndex())) {
 						return edge;
 					}
 
-					if ( !directed ) {
+					if (!directed) {
 						// note that source and target are switched
-						if ( ( edgeTarget.getRootGraphIndex() == 
-						       source.getRootGraphIndex() ) &&
-						     ( edgeSource.getRootGraphIndex() == 
-						       target.getRootGraphIndex() ) ) {
+						if ((edgeTarget.getRootGraphIndex() == source
+								.getRootGraphIndex())
+								&& (edgeSource.getRootGraphIndex() == target
+										.getRootGraphIndex())) {
 							return edge;
 						}
 					}
@@ -570,8 +567,7 @@ public abstract class Cytoscape {
 
 			// create the edge id
 			String edge_name = CyEdge.createIdentifier(source.getIdentifier(),
-			                                           (String)attribute_value,
-								   target.getIdentifier() );
+					(String) attribute_value, target.getIdentifier());
 			edge.setIdentifier(edge_name);
 
 			// store edge id as INTERACTION / CANONICAL_NAME Attributes
@@ -584,6 +580,7 @@ public abstract class Cytoscape {
 
 	/**
 	 * Returns and edge if it exists, otherwise creates a directed edge.
+	 * 
 	 * @param source_alias
 	 *            an alias of a node
 	 * @param edge_name
@@ -605,10 +602,9 @@ public abstract class Cytoscape {
 		CyNode source = getCyNode(source_alias);
 		CyNode target = getCyNode(target_alias);
 
-		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, true);
+		return getCyEdge(source, target, Semantics.INTERACTION,
+				interaction_type, true, true);
 	}
-
-
 
 	private static Object private_getEdgeAttributeValue(Edge edge,
 			String attribute) {
@@ -632,9 +628,8 @@ public abstract class Cytoscape {
 		}
 	}
 
-
 	/**
-	 * @deprecated This will be removed Feb 2007. 
+	 * @deprecated This will be removed Feb 2007.
 	 */
 	private static String canonicalizeName(String name) {
 		String canonicalName = name;
@@ -649,7 +644,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @deprecated This will be removed Feb 2007. 
+	 * @deprecated This will be removed Feb 2007.
 	 */
 	public static void setSpecies() {
 		species = CytoscapeInit.getProperties().getProperty(
@@ -923,7 +918,7 @@ public abstract class Cytoscape {
 		if (parent != null) {
 			p_id = parent.getIdentifier();
 		}
-		
+
 		firePropertyChange(NETWORK_CREATED, p_id, network.getIdentifier());
 		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit
 				.getProperties().getProperty("viewThreshold"))
@@ -955,7 +950,7 @@ public abstract class Cytoscape {
 		return createNetwork(new int[] {}, new int[] {}, title, null,
 				create_view);
 	}
-	
+
 	/**
 	 * Creates a new, empty Network.
 	 * 
@@ -965,7 +960,8 @@ public abstract class Cytoscape {
 	 *            if the size of the network is under the node limit, create a
 	 *            view
 	 */
-	public static CyNetwork createNetwork(String title, CyNetwork parent, boolean create_view) {
+	public static CyNetwork createNetwork(String title, CyNetwork parent,
+			boolean create_view) {
 		return createNetwork(new int[] {}, new int[] {}, title, parent,
 				create_view);
 	}
@@ -1159,53 +1155,51 @@ public abstract class Cytoscape {
 	 * @param create_view
 	 *            whether or not a view will be created
 	 */
-	public static CyNetwork createNetwork(GraphReader reader,
-			boolean create_view, CyNetwork parent) {
+	public static CyNetwork createNetwork(final GraphReader reader,
+			final boolean create_view, final CyNetwork parent) {
 
-		if (reader == null) 
-			throw new RuntimeException ("Couldn't read specified file.");
+		if (reader == null) {
+			throw new RuntimeException("Couldn't read specified file.");
+		}
 
 		// have the GraphReader read the given file
-		String title = "";
 
-		//  Explanation for code below:  the code below recasts an IOException
-		//  into a RuntimeException, so that the exception can still be thrown
-		//  without having to change the method signature.  This is less than
-		//  ideal, but the only sure way to ensure API stability for plugins.
+		// Explanation for code below: the code below recasts an IOException
+		// into a RuntimeException, so that the exception can still be thrown
+		// without having to change the method signature. This is less than
+		// ideal, but the only sure way to ensure API stability for plugins.
 		try {
-		    reader.read();
+			reader.read();
 		} catch (IOException e) {
-		    throw new RuntimeException (e);
+			throw new RuntimeException(e);
 		}
-		title = reader.getNetworkName();
+
+		final String title = reader.getNetworkName();
 
 		// get the RootGraph indices of the nodes and
 		// edges that were just created
-		int[] nodes = reader.getNodeIndicesArray();
-		int[] edges = reader.getEdgeIndicesArray();
+		final int[] nodes = reader.getNodeIndicesArray();
+		final int[] edges = reader.getEdgeIndicesArray();
 
 		if (nodes == null) {
 			System.err.println("reader returned null nodes");
 		}
-
 		if (edges == null) {
 			System.err.println("reader returned null edges");
 		}
 
-		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
+		final CyNetwork network = getRootGraph().createNetwork(nodes, edges);
 		network.putClientData(READER_CLIENT_KEY, reader);
 		addNetwork(network, title, parent, create_view);
 
-        //  Execute any necessary post-processing.
-        reader.doPostProcessing(network);
-        return network;
-
+		// Execute any necessary post-processing.
+		reader.doPostProcessing(network);
+		return network;
 	}
 
 	// --------------------//
 	// Network Data Methods
 	// --------------------//
-
 
 	/**
 	 * Gets Global Node Attributes.
@@ -1233,7 +1227,7 @@ public abstract class Cytoscape {
 	public static CyAttributes getNetworkAttributes() {
 		return networkAttributes;
 	}
-	
+
 	/**
 	 * Gets Global Network Attributes.
 	 * 
@@ -1283,19 +1277,24 @@ public abstract class Cytoscape {
 	 * locations. Currently, the only supported attribute types are of the type
 	 * "name = value".
 	 * 
-	 * @param nodeAttrLocations an array of node attribute file locations. May be null.
-	 * @param edgeAttrLocations an array of edge attribute file locations. May be null.
-	 * @param canonicalize convert to the preffered name on the biodataserver
-	 * @param bioDataServer provides the name conversion service
-	 * @param species the species to use with the bioDataServer's
-	 * @deprecated Use loadAttributes(nodeAttrLocations,edgeAttrLocations) instead.
-	 * BioDataServer, canonicalize, and species are no longer used.
-	 * Will be removed 10/2007.
+	 * @param nodeAttrLocations
+	 *            an array of node attribute file locations. May be null.
+	 * @param edgeAttrLocations
+	 *            an array of edge attribute file locations. May be null.
+	 * @param canonicalize
+	 *            convert to the preffered name on the biodataserver
+	 * @param bioDataServer
+	 *            provides the name conversion service
+	 * @param species
+	 *            the species to use with the bioDataServer's
+	 * @deprecated Use loadAttributes(nodeAttrLocations,edgeAttrLocations)
+	 *             instead. BioDataServer, canonicalize, and species are no
+	 *             longer used. Will be removed 10/2007.
 	 */
 	public static void loadAttributes(String[] nodeAttrLocations,
 			String[] edgeAttrLocations, boolean canonicalize,
 			BioDataServer bioDataServer, String species) {
-		loadAttributes(nodeAttrLocations,edgeAttrLocations);
+		loadAttributes(nodeAttrLocations, edgeAttrLocations);
 	}
 
 	/**
@@ -1303,11 +1302,13 @@ public abstract class Cytoscape {
 	 * locations. Currently, the only supported attribute types are of the type
 	 * "name = value".
 	 * 
-	 * @param nodeAttrLocations an array of node attribute file locations. May be null.
-	 * @param edgeAttrLocations an array of edge attribute file locations. May be null.
+	 * @param nodeAttrLocations
+	 *            an array of node attribute file locations. May be null.
+	 * @param edgeAttrLocations
+	 *            an array of edge attribute file locations. May be null.
 	 */
 	public static void loadAttributes(String[] nodeAttrLocations,
-	                                  String[] edgeAttrLocations) {
+			String[] edgeAttrLocations) {
 		// check to see if there are Node Attributes passed
 		if (nodeAttrLocations != null) {
 			for (int i = 0; i < nodeAttrLocations.length; ++i) {
@@ -1320,8 +1321,8 @@ public abstract class Cytoscape {
 					e.printStackTrace();
 					throw new IllegalArgumentException(
 							"Failure loading node attribute data: "
-									+ nodeAttrLocations[i] +
-							"  because of:" + e.getMessage());
+									+ nodeAttrLocations[i] + "  because of:"
+									+ e.getMessage());
 				}
 			}
 		}
@@ -1338,8 +1339,8 @@ public abstract class Cytoscape {
 					e.printStackTrace();
 					throw new IllegalArgumentException(
 							"Failure loading edge attribute data: "
-									+ edgeAttrLocations[j] +
-							"  because of:" + e.getMessage());
+									+ edgeAttrLocations[j] + "  because of:"
+									+ e.getMessage());
 				}
 			}
 		}
@@ -1369,7 +1370,6 @@ public abstract class Cytoscape {
 		return bioDataServer;
 	}
 
-	
 	/**
 	 * This will replace the bioDataServer.
 	 */
@@ -1377,18 +1377,17 @@ public abstract class Cytoscape {
 		try {
 			ontologyServer = new OntologyServer();
 		} catch (Exception e) {
-			System.err
-					.println("Could not build OntologyServer.");
+			System.err.println("Could not build OntologyServer.");
 			e.printStackTrace();
 			return null;
 		}
 		return ontologyServer;
 	}
+
 	public static OntologyServer getOntologyServer() {
 		return ontologyServer;
 	}
-	
-	
+
 	// ------------------------------//
 	// CyNetworkView Creation Methods
 	// ------------------------------//
@@ -1439,12 +1438,12 @@ public abstract class Cytoscape {
 			((GraphReader) network.getClientData(READER_CLIENT_KEY))
 					.layout(Cytoscape.getNetworkView(network.getIdentifier()));
 		} else {
-			// TODO 
+			// TODO
 			// This creates the default square layout.
 			// This code should not be here, rather it should
 			// be somewhere in the cytoscape.layout package.
 			// This change should be made when we add the
-			// layoutbroker code in 2.5. 
+			// layoutbroker code in 2.5.
 			// When you move this code, don't forget to update
 			// cytoscape.data.readers.AbstractGraphReader.doLayout()
 			// as well.
@@ -1483,7 +1482,6 @@ public abstract class Cytoscape {
 		getSwingPropertyChangeSupport().firePropertyChange(e);
 		getPropertyChangeSupport().firePropertyChange(e);
 	}
-
 
 	/**
 	 * Gets the selection mode value.
@@ -1612,11 +1610,11 @@ public abstract class Cytoscape {
 
 		setCurrentSessionFileName(null);
 	}
-	
+
 	public static String getOntologyRootID() {
 		return ontologyRootID;
 	}
-	
+
 	public static void setOntologyRootID(String id) {
 		ontologyRootID = id;
 	}
