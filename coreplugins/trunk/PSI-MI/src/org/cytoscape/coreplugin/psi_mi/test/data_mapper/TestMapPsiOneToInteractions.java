@@ -172,7 +172,6 @@ public class TestMapPsiOneToInteractions extends TestCase {
                 "10089390", "x-ray crystallography", "PSI", "MI:0114");
     }
 
-
     /**
      * Validates Specific Interaction.
      */

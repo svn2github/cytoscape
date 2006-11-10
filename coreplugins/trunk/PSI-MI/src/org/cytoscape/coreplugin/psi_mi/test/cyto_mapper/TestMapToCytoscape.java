@@ -354,6 +354,38 @@ public class TestMapToCytoscape extends TestCase {
     }
 
     /**
+     * Tests BioGrid Data defined in Bug:  0001126
+     * @throws Exception All Errors
+     */
+    public void testBioGridData() throws Exception {
+        //  First, get some interactions from sample data file.
+        ArrayList interactions = new ArrayList();
+        ContentReader reader = new ContentReader();
+        String xml = reader.retrieveContent("testData/bio_grid.xml");
+
+        //  Map from PSI to DataService Interaction Objects.
+        MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions (xml, interactions);
+        mapper1.doMapping();
+
+        //  Create CyNetwork
+        CyNetwork network = Cytoscape.createNetwork("network");
+
+        //  Now map interactions to cyNetwork.
+        MapToCytoscape mapper2 = new MapToCytoscape
+                (interactions, MapToCytoscape.SPOKE_VIEW);
+        mapper2.doMapping();
+        addToCyNetwork (mapper2, network);
+
+        CyNode node = Cytoscape.getCyNode("HGNC:7733", false);
+        assertEquals ("HGNC:7733", node.getIdentifier());
+        int edges[] = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(),
+                true, true, true);
+
+        //  validate that we have 9 edges.
+        assertEquals (9, edges.length);
+    }
+
+    /**
      * Profile Loading of HPRD Data.
      *
      * @throws Exception All Exceptions.
