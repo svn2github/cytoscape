@@ -44,10 +44,7 @@ import java.util.Iterator;
 import java.util.HashSet;
 
 /**
- * Converts Data Services Object Model to the PSI-MI Format.
- * <p/>
- * Official version of PSI-MI is available at:
- * http://psidev.sourceforge.net/mi/xml/src/MIF.xsd
+ * Converts Data Services Object Model to the PSI-MI, Level 1 Format.
  *
  * @author Ethan Cerami
  */
