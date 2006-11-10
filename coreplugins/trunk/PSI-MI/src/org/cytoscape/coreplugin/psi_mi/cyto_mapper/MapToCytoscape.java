@@ -31,7 +31,6 @@ package org.cytoscape.coreplugin.psi_mi.cyto_mapper;
 
 import org.cytoscape.coreplugin.psi_mi.util.AttributeUtil;
 import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
@@ -130,6 +129,7 @@ public class MapToCytoscape implements Mapper {
     protected static final String CLOSE_PAREN = ") ";
 
     private Map intMap;
+    private static final boolean DEBUG = false;
 
     /**
      * Constructor.
@@ -441,6 +441,7 @@ public class MapToCytoscape implements Mapper {
 
         //  Create node1 --> node2 edge key
         String key = this.createEdgeKey(node1, node2, interaction);
+        log("Creating edge:  " + key);
 
         //  Create Edge between node1 and node2.
         CyEdge edge = Cytoscape.getCyEdge(node1, node2,
@@ -567,7 +568,7 @@ public class MapToCytoscape implements Mapper {
     }
 
     /**
-     * Maps Edge Attributes to Cytoscape  GraphObj Attributes.
+     * Maps Edge Attributes to Cytoscape Attributes.
      * Can be subclassed.
      *
      * @param interaction Interaction object.
@@ -630,12 +631,17 @@ public class MapToCytoscape implements Mapper {
         StringBuffer key = new StringBuffer (OPEN_PAREN);
         String expType = (String) interaction.getAttribute
                 (InteractionVocab.EXPERIMENTAL_SYSTEM_NAME);
+        String shortName = (String) interaction.getAttribute
+                (InteractionVocab.INTERACTION_SHORT_NAME);
         String pmid = (String) interaction.getAttribute
                 (InteractionVocab.PUB_MED_ID);
         if (expType == null) {
             key.append (" <--> ");
         } else {
             key.append(expType);
+        }
+        if (shortName != null) {
+            key.append(":" + shortName);
         }
         if (pmid != null) {
             key.append (":" + pmid);
@@ -658,7 +664,14 @@ public class MapToCytoscape implements Mapper {
         String node2Ident = node2.getIdentifier();
         String interactionType = getInteractionTypeId(interaction);
 
+
         return new String(node1Ident
                 + interactionType + node2Ident);
+    }
+
+    private void log (String msg) {
+        if (DEBUG) {
+            System.out.println(msg);
+        }
     }
 }
