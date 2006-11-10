@@ -36,6 +36,7 @@ package org.cytoscape.coreplugin.psi_mi.plugin;
 
 import cytoscape.data.ImportHandler;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.Cytoscape;
 
 /**
  * PSI-MI PlugIn.
@@ -53,5 +54,10 @@ public class PsiMiPlugIn extends CytoscapePlugin {
         //  Register PsiMiFilter
         ImportHandler importHandler = new ImportHandler();
         importHandler.addFilter(new PsiMiFilter());
+
+        Cytoscape.getDesktop().getCyMenus().addAction (
+                new ExportNetworkAsPsiMiOne());        
+        Cytoscape.getDesktop().getCyMenus().addAction (
+                new ExportNetworkAsPsiMiTwoFive());
     }
 }
