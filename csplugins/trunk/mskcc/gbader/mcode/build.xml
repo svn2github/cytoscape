@@ -37,7 +37,7 @@
   	<target name="prepare">
     		<mkdir dir="${build.dir}"/>
     		<mkdir dir="${build.classes}"/>
-      </target>
+    </target>
 
 	<!--  Target to clean out all directories -->
   	<target name="clean" description="Removes all generated files.">

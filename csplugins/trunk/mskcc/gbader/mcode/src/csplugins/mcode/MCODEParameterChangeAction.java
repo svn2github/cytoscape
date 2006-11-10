@@ -59,11 +59,12 @@ public class MCODEParameterChangeAction implements ActionListener {
         //display parameter panel in left cytopanel
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.WEST);
-        MCODEParameterChangePanel paramChangePanel = new MCODEParameterChangePanel();
+        //MCODEParameterChangePanel paramChangePanel = new MCODEParameterChangePanel();
+        MCODEMainPanel paramChangePanel = new MCODEMainPanel();
         //Incase we choose to have an icon for the MCODE panel at some point
-        URL iconURL = MCODEPlugin.class.getResource("images/some_icon.gif");
+        URL iconURL = this.getClass().getResource("resources/icon_note_large.gif");
         if (iconURL != null) {
-            Icon icon = new ImageIcon(iconURL);
+            ImageIcon icon = new ImageIcon(iconURL);
             String tip = "MCODE Scoring/Complex-Finding Parameters";
             cytoPanel.add("MCODE PlugIn", icon, paramChangePanel, tip);
         } else {
