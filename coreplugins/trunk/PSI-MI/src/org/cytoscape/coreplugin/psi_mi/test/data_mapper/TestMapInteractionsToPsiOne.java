@@ -38,7 +38,6 @@ import java.math.BigInteger;
 
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiOne;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
-import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
