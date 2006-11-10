@@ -86,34 +86,32 @@ public class TestMapToCytoscape extends TestCase {
         assertEquals(7, nodeCount);
         assertEquals(6, edgeCount);
 
-        List nodeList = network.nodesList();
-        List edgeList = network.edgesList();
+        Iterator nodeIterator = network.nodesIterator();
+        Iterator edgeIterator = network.edgesIterator();
 
         //  Verify one of the nodes in the graph
         //  First find correct index value
-        int index = -1;
-        for (int i = 0; i < nodeList.size(); i++) {
-            CyNode node = (CyNode) nodeList.get(i);
+        CyNode node1 = null;
+        while (nodeIterator.hasNext()) {
+            CyNode node = (CyNode) nodeIterator.next();
             if (node.getIdentifier().equals("YDL065C")) {
-                index = i;
+                node1 = node;
             }
         }
 
-        CyNode node1 = (CyNode) nodeList.get(index);
         String nodeId1 = node1.getIdentifier();
         assertEquals("YDL065C", nodeId1);
 
         //  Verify edge in the graph
         //  First find correct index value
-        index = -1;
-        for (int i = 0; i < edgeList.size(); i++) {
-            CyEdge edge = (CyEdge) edgeList.get(i);
+        CyEdge edge1 = null;
+        while (edgeIterator.hasNext()) {
+            CyEdge edge = (CyEdge) edgeIterator.next();
             if (edge.getIdentifier().equals
                     ("YCR038C (classical two hybrid:11283351) YDR532C")) {
-                index = i;
+                edge1 = edge;
             }
         }
-        CyEdge edge1 = (CyEdge) edgeList.get(index);
         String edgeId1 = edge1.getIdentifier();
         assertEquals("YCR038C (classical two hybrid:11283351) YDR532C", edgeId1);
 

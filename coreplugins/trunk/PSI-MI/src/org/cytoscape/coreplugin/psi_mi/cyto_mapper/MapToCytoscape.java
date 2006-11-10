@@ -515,10 +515,6 @@ public class MapToCytoscape implements Mapper {
 
             //  Set Node Identifier, Canonical Name, and Common Name.
             node.setIdentifier(name);
-            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),
-                    Semantics.CANONICAL_NAME, name);
-            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),
-                    Semantics.COMMON_NAME, name);
 
             //  Add to CyMap
             cyMap.put(name, interactor);

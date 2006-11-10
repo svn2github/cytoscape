@@ -62,7 +62,7 @@
     <target depends="prepare, bind" description="Compiles all source code."
         name="compile">
         <javac debug="true" debuglevel="source,lines,var"
-            destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="false">
+		destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="true">
             <classpath refid="classpath"/>
         </javac>
     </target>
