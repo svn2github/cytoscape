@@ -333,9 +333,9 @@ public class TestMapToCytoscape extends TestCase {
         int nodeCount = network.getNodeCount();
         assertEquals(3, nodeCount);
 
-        //  Verify Number of Edges; there should be 30
+        //  Verify Number of Edges; there should be 35
         int edgeCount = network.getEdgeCount();
-        assertEquals(30, edgeCount);
+        assertEquals(35, edgeCount);
 
         Iterator edgeIterator = network.edgesIterator();
         int counter = 0;
