@@ -1,11 +1,11 @@
 package cytoscape.data.readers;
 
+import giny.model.Edge;
+import giny.model.Node;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import giny.model.Edge;
-import giny.model.Node;
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -14,17 +14,20 @@ import cytoscape.data.Semantics;
  * Parse one line for network text table
  * 
  * @author kono
- *
+ * 
  */
 public class NetworkLineParser {
 
 	private final NetworkTableMappingParameters nmp;
-	private final CyNetwork network;
 
-	public NetworkLineParser(CyNetwork network,
+	private final List<Integer> nodeList;
+	private final List<Integer> edgeList;
+
+	public NetworkLineParser(List<Integer> nodeList, List<Integer> edgeList,
 			final NetworkTableMappingParameters nmp) {
 		this.nmp = nmp;
-		this.network = network;
+		this.nodeList = nodeList;
+		this.edgeList = edgeList;
 	}
 
 	public void parseEntry(String[] parts) {
@@ -37,27 +40,35 @@ public class NetworkLineParser {
 				.trim(), true);
 		final Node target = Cytoscape.getCyNode(parts[nmp.getTargetIndex()]
 				.trim(), true);
-		final String interaction = parts[nmp.getInteractionIndex()].trim();
+
+		final String interaction;
+		if (nmp.getInteractionIndex() == -1) {
+			interaction = nmp.getDefaultInteraction();
+		} else {
+			interaction = parts[nmp.getInteractionIndex()].trim();
+		}
 
 		final Edge edge = Cytoscape.getCyEdge(source, target,
 				Semantics.INTERACTION, interaction, true);
 
-		network.addNode(source);
-		network.addNode(target);
-		network.addEdge(edge);
-		
+		nodeList.add(source.getRootGraphIndex());
+		nodeList.add(target.getRootGraphIndex());
+		edgeList.add(edge.getRootGraphIndex());
+
 		return edge;
 	}
 
 	private void addEdgeAttributes(final Edge edge, final String[] parts) {
-		for(int i=0; i<parts.length; i++) {
-			if(i != nmp.getSourceIndex() && i != nmp.getTargetIndex() && i != nmp.getInteractionIndex()) {
-				
+		for (int i = 0; i < parts.length; i++) {
+			if (i != nmp.getSourceIndex() && i != nmp.getTargetIndex()
+					&& i != nmp.getInteractionIndex()
+					&& nmp.getImportFlag()[i] == true) {
+
 				mapAttribute(edge.getIdentifier(), parts[i].trim(), i);
 			}
 		}
 	}
-	
+
 	/**
 	 * Based on the attribute types, map the entry to CyAttributes.<br>
 	 * 
@@ -106,7 +117,7 @@ public class NetworkLineParser {
 					nmp.getAttributeNames()[index], entry);
 		}
 	}
-	
+
 	/**
 	 * If an entry is a list, split the string and create new List Attribute.
 	 * 

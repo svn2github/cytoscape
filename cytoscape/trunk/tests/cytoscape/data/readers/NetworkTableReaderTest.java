@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
@@ -50,15 +51,18 @@ public class NetworkTableReaderTest extends TestCase {
 				CyAttributes.TYPE_FLOATING };
 		NetworkTableMappingParameters mapping = new NetworkTableMappingParameters(
 				delimiters, TextFileDelimiters.PIPE.toString(), galAttrName,
-				galAttrTypes, null, 0, 1, 2);
+				galAttrTypes, null, 0, 1, 2, null);
 
-		reader = new NetworkTableReader(network.toURL(), mapping);
-		reader.readTable();
+		reader = new NetworkTableReader(network.getName(), network.toURL(), mapping);
 
+		CyNetwork net = Cytoscape.createNetwork(reader, false, null);
+		
 		/*
 		 * test cases
 		 */
-
+		assertEquals(331, net.getNodeCount());
+		assertEquals(362, net.getEdgeCount());
+		
 		CyAttributes attr = Cytoscape.getEdgeAttributes();
 		assertTrue(attr.getBooleanAttribute("YGL122C (pp) YOL123W",
 				"edge bool attr"));
@@ -71,5 +75,7 @@ public class NetworkTableReaderTest extends TestCase {
 				"YBL026W (pp) YOR167C", "edge string attr"));
 		assertEquals("abcd12584", attr.getStringAttribute("YPL248C (pd) ?",
 				"edge string attr"));
+		
+		Cytoscape.destroyNetwork(net);
 	}
 }

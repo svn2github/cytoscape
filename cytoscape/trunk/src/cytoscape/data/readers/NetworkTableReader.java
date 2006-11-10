@@ -8,33 +8,44 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
 import cytoscape.util.URLUtil;
 
-public class NetworkTableReader implements TextTableReader {
-	
+/**
+ * Network text table reader. This implemets GraphReader just like other network
+ * file readers.<br>
+ * 
+ * @since Cytoscape 2.4
+ * @version 0.8
+ * @author Keiichiro Ono
+ * 
+ */
+public class NetworkTableReader extends AbstractGraphReader implements
+		TextTableReader {
+
 	private static final String COMMENT_CHAR = "!";
-	
-	private NetworkTableMappingParameters nmp;
-	private URL sourceURL;
-	
-	private NetworkLineParser parser;
-	
-	
-	public NetworkTableReader(URL sourceURL, NetworkTableMappingParameters nmp) {
+
+	private final NetworkTableMappingParameters nmp;
+	private final URL sourceURL;
+
+	private final NetworkLineParser parser;
+
+	private final List<Integer> nodeList;
+	private final List<Integer> edgeList;
+
+	public NetworkTableReader(final String networkName, final URL sourceURL,
+			final NetworkTableMappingParameters nmp) {
+		super(networkName);
 		this.sourceURL = sourceURL;
 		this.nmp = nmp;
-		String[] urlParts = sourceURL.toString().split("/");
-		
-		CyNetwork network = Cytoscape.createNetwork(urlParts[urlParts.length-1]);
-		parser = new NetworkLineParser(network, nmp);
+		this.nodeList = new ArrayList<Integer>();
+		this.edgeList = new ArrayList<Integer>();
+
+		parser = new NetworkLineParser(nodeList, edgeList, nmp);
 	}
-	
 
 	public List getColumnNames() {
 		List<String> colNames = new ArrayList<String>();
-		for(String name: nmp.getAttributeNames()) {
+		for (String name : nmp.getAttributeNames()) {
 			colNames.add(name);
 		}
 		return colNames;
@@ -53,7 +64,8 @@ public class NetworkTableReader implements TextTableReader {
 			/*
 			 * Ignore Empty & Commnet lines.
 			 */
-			if (line.startsWith(COMMENT_CHAR) == false && line.trim().length() > 0) {
+			if (line.startsWith(COMMENT_CHAR) == false
+					&& line.trim().length() > 0) {
 				String[] parts = line.split(nmp.getDelimiterRegEx());
 				parser.parseEntry(parts);
 			}
@@ -64,4 +76,27 @@ public class NetworkTableReader implements TextTableReader {
 
 	}
 
+	@Override
+	public int[] getNodeIndicesArray() {
+		
+		final int[] nodeArray = new int[nodeList.size()];
+		for (int i = 0; i < nodeArray.length; i++) {
+			nodeArray[i] = nodeList.get(i);
+		}
+		return nodeArray;
+	}
+
+	@Override
+	public int[] getEdgeIndicesArray() {
+		final int[] edgeArray = new int[edgeList.size()];
+		for (int i = 0; i < edgeArray.length; i++) {
+			edgeArray[i] = edgeList.get(i);
+		}
+		return edgeArray;
+	}
+
+	@Override
+	public void read() throws IOException {
+		readTable();
+	}
 }
