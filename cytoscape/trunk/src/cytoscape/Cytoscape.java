@@ -77,6 +77,7 @@ import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.bookmarks.Bookmarks;
 
 /**
  * This class, Cytoscape is <i>the</i> primary class in the API.
@@ -240,7 +241,9 @@ public abstract class Cytoscape {
 	 * KONO: 02/23/2006
 	 */
 	private static String currentSessionFileName;
-
+	
+	private static Bookmarks bookmarks = null;;
+	
 	/**
 	 * A null CyNetwork to give when there is no Current Network
 	 */
@@ -1620,4 +1623,13 @@ public abstract class Cytoscape {
 	public static void setOntologyRootID(String id) {
 		ontologyRootID = id;
 	}
+	
+	public static Bookmarks getBookmarks() {
+		return bookmarks;
+	}
+
+	public static void setBookmarks(Bookmarks pBookmarks) {
+		bookmarks = pBookmarks;
+	}
+
 }
