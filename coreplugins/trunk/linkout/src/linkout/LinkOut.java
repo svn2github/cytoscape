@@ -123,7 +123,7 @@ public class LinkOut {
     }
 
     /**
-     * TODO -  Generate URL links with edge property and places them in hierarchical JMenu list
+     * Generate URL links with edge property and places them in hierarchical JMenu list
      * @param edge edgeView object
      * @return JMenuItem
      **/
