@@ -2,6 +2,8 @@
 
 
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
@@ -12,6 +14,7 @@ import javax.swing.JOptionPane;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.plugin.CytoscapePlugin;
 
 /**
@@ -21,7 +24,10 @@ import cytoscape.plugin.CytoscapePlugin;
  * @author mrsva
  *
  */
-public class ShortestPathPlugin extends CytoscapePlugin {
+public class ShortestPathPlugin extends CytoscapePlugin 
+	implements PropertyChangeListener {
+
+	JMenu pluginMenu = null;
 	
 	/**
 	 * Constructor
@@ -30,12 +36,22 @@ public class ShortestPathPlugin extends CytoscapePlugin {
 	 *
 	 */
 	public ShortestPathPlugin() {
-		JMenu menu = new JMenu("Shortest Path...");
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins").add(menu);
-		// final SelectSetup selecter = new SelectSetup();
+		// Set ourselves up to listen for new networks
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+			.addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this );
+		pluginMenu = new JMenu("Shortest Path...");
+		createMenu(pluginMenu);
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins").add(pluginMenu);
+	}
+
+	private void createMenu(JMenu menu) {
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		String[] attributeNames = edgeAttributes.getAttributeNames();
 
+		// Clear the menu
+		menu.removeAll();
+
+		// Now add our default
 		addMenuItem(menu, "Hop Distance");
 
 		//Finds all attributes that are integers or doubles, and adds them to list
@@ -78,4 +94,11 @@ public class ShortestPathPlugin extends CytoscapePlugin {
 			});
 		}
 	}
+
+  public void propertyChange(PropertyChangeEvent evt) {
+    if ( evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED ){
+      // Recreate the menu
+			createMenu(pluginMenu);
+    }
+  }
 }

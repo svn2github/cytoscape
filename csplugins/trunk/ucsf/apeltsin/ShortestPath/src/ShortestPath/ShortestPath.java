@@ -164,6 +164,7 @@ public class ShortestPath {
 	 * @return list of nodes in the path between node1 and node2. If there is no path, returns null
 	 */
 	public List getShortestPath(int node1, int node2) {
+		boolean foundContradictory = false;
 		if (node1 == node2) return null;
 		int nnodes = root.getNodeCount();
 		CyNode cynode1 = (CyNode) network.getNode(node1);
@@ -202,7 +203,10 @@ public class ShortestPath {
 				if (dist.containsKey(w)) {
 					Double tmp2 = (Double)dist.get(w);
 					if (vwLength < tmp2.doubleValue()){
-						System.err.println("Contraditory paths found");
+						if (!foundContradictory) {
+							System.err.println("Contraditory paths found");
+							foundContradictory=true;
+						}
 					}
 				}
 					else {
