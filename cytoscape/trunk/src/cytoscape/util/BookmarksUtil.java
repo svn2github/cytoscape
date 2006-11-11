@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.io.File;
 import cytoscape.bookmarks.Attribute;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.Category;
@@ -201,6 +201,43 @@ public abstract class BookmarksUtil {
     	return true;
    	}
 
+   	
+    // Write the bookmarks object into a file
+   	public static boolean saveBookmark(Bookmarks pBookmarks, File pFile)
+   	{
+    	FileOutputStream fos = null;
+        try {        	
+            fos = new FileOutputStream(pFile);
+
+        	JAXBContext jc = JAXBContext.newInstance(bookmarkPackageName);
+            Marshaller m = jc.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); 
+            
+        	m.marshal(pBookmarks, fos);            
+        }
+        catch (JAXBException e)
+        {
+        	e.printStackTrace();
+        	return false;
+        }
+        catch (Exception e)
+        {
+        	e.printStackTrace();
+        	return false;
+        }
+        finally {
+        	if (fos != null) {
+        		try {            	
+        			fos.close();
+        		}
+        		catch (IOException e) {        			
+        		}
+        	}        	
+        } 
+    	return true;
+   	}
+
+   	
     public static void saveBookmark(Bookmarks pBookmarks, String pCategoryName, DataSource pDataSource) {
         
     	if (pBookmarks == null) {
