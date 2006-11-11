@@ -12,6 +12,7 @@ nodelinkouturl.Entrez.Structure=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?c
 nodelinkouturl.Entrez.Gene=http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene&cmd=Search&term=%ID%
 nodelinkouturl.mouse.MGI=http://www.informatics.jax.org/javawi2/servlet/WIFetch?page=searchTool&query=%ID%&selectedQuery=Genes+and+Markers
 nodelinkouturl.Biological\ resources.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=0
+nodelinkouturl.Biological\ resources.iHOP=http://www.ihop-net.org/UniPub/iHOP/in?syns_1=%ID%
 nodelinkouturl.Web\ resources.Google=http://www.google.com/search?hl=en&q=%ID%&btnG=Google+Search
 nodelinkouturl.UniProt.PIR=http://www.uniprot.org/entry/%ID%
 nodelinkouturl.UniProt.EBI=http://www.ebi.uniprot.org/uniprot-srv/uniProtView.do?proteinId=%ID%&pager.offset=0
@@ -30,5 +31,5 @@ nodelinkouturl.Reactome.RefSeq=http://www.reactome.org/cgi-bin/link?SOURCE=RefSe
 nodelinkouturl.Reactome.Wormbase=http://www.reactome.org/cgi-bin/link?SOURCE=Wormbase&ID=%ID%&FOCUS_SPECIES=Caenorhabditis+elegans
 
 #Edge Links
-edgelinkouturl.iHop.yeast=http://www.ihop-net.org/UniPub/iHOP/in?dbrefs_1=%ID1%&ncbi_tax_id_1=4932&dbrefs_2=%ID2%&ncbi_tax_id_2=4932
-edgelinkouturl.iHop.human=http://www.ihop-net.org/UniPub/iHOP/in?dbrefs_1=%ID1%&ncbi_tax_id_1=9606&dbrefs_2=%ID2%&ncbi_tax_id_2=9606
+edgelinkouturl.iHop.yeast=http://www.ihop-net.org/UniPub/iHOP/in?syns_1=%ID1%&ncbi_tax_id_1=4932&syns_2=%ID2%&ncbi_tax_id_2=4932
+edgelinkouturl.iHop.human=http://www.ihop-net.org/UniPub/iHOP/in?syns_1=%ID1%&ncbi_tax_id_1=9606&syns_2=%ID2%&ncbi_tax_id_2=9606
