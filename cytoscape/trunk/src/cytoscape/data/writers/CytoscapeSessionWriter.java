@@ -105,6 +105,10 @@ import javax.xml.bind.Marshaller;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
+import cytoscape.bookmarks.Bookmarks;
+//import cytoscape.bookmarks.DataSource;
+import cytoscape.util.BookmarksUtil;
+
 /**
  * Write session states into files.<br>
  * Basic functions of this class are:<br>
@@ -137,13 +141,14 @@ public class CytoscapeSessionWriter {
 	private static final int CYTOPANEL_COUNT = 3;
 
 	// Number of setting files in the cys file.
-	// For now, we have cysession.xml, vizmap.prop, and cytoscape.prop.
-	private static final int SETTING_FILE_COUNT = 3;
+	// For now, we have cysession.xml, vizmap.prop, cytoscape.prop, and bookmarks.
+	private static final int SETTING_FILE_COUNT = 4;
 
 	// Name of CySession file.
 	private static final String CYSESSION_FILE_NAME = "cysession.xml";
 	private static final String VIZMAP_FILE = "session_vizmap.props";
 	private static final String CYPROP_FILE = "session_cytoscape.props";
+	private static final String BOOKMARKS_FILE = "session_bookmarks.xml";
 
 	// Extension for the xgmml file
 	private static final String XGMML_EXT = ".xgmml";
@@ -168,6 +173,7 @@ public class CytoscapeSessionWriter {
 
 	String[] targetFiles;
 
+	Bookmarks bookmarks;
 	Set networks;
 
 	HashMap networkMap;
@@ -240,7 +246,7 @@ public class CytoscapeSessionWriter {
 		networkMap = new HashMap();
 
 		// Total number of files in the zip archive will be
-		// number of networks + property files
+		// number of networks + property files + bookmarks file
 		targetFiles = new String[networks.size() + SETTING_FILE_COUNT];
 
 		//
@@ -271,8 +277,13 @@ public class CytoscapeSessionWriter {
 
 		targetFiles[0] = VIZMAP_FILE;
 		targetFiles[1] = CYPROP_FILE;
-		targetFiles[2] = CYSESSION_FILE_NAME;
+		targetFiles[2] = BOOKMARKS_FILE;
+		targetFiles[3] = CYSESSION_FILE_NAME;
 
+		// Prepare bookmarks for saving
+		bookmarks = Cytoscape.getBookmarks();
+		BookmarksUtil.saveBookmark(bookmarks, new File(BOOKMARKS_FILE));
+		
 		// Prepare property files for saving
 		preparePropFiles();
 
