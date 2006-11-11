@@ -30,18 +30,17 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 
 	JDialog parent;
 	private String bookmarkCategory;
-	private URL bookmarkURL;
+	private Bookmarks theBookmarks;	
+	//private URL bookmarkURL;
 	private Proxy theProxyServer;
 		
-	private Bookmarks bookmarks;
-	
     /** Creates new form URLimportAdvancedDialog */
     public URLimportAdvancedDialog(JDialog pParent, boolean modal, String pBookmarkCategory, 
-    		URL bookmarkURL, Proxy pProxyServer) {
+    		Bookmarks pBookmarks, Proxy pProxyServer) {
         super(pParent, modal);
         this.setTitle("Advanced Setting for " + pBookmarkCategory +" import");
         this.parent = pParent;
-        this.bookmarkURL = bookmarkURL; 
+        this.theBookmarks = pBookmarks; 
         this.theProxyServer = pProxyServer;
         bookmarkCategory = pBookmarkCategory;
         initComponents();
@@ -276,82 +275,47 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
     // for test only
     public URLimportAdvancedDialog() {
     	this.setTitle("Advanced Setting for network import");
-        bookmarkCategory = "ontology";
 
-    	File bookmarkFile = new File("C:/work/cytoscape/Cytoscape-2.4/bookmarks.xml");
-    	try {
-        	bookmarkURL = bookmarkFile.toURL();    		
-    	}
-    	catch (Exception e) {
-    		e.printStackTrace();
-    	}
-        initComponents();
+    	theBookmarks = getTestBookmarks();
+    	initComponents();
         loadBookmarks();
     }
     
-    
-    private void loadBookmarks()
-    {	
+	// For test only, remove after test pass
+	private Bookmarks getTestBookmarks()
+	{
+		Bookmarks tmpBookmarks = null;
+		
+		java.io.File tmpBookmarkFile = new java.io.File("bookmarks.xml");
+		
     	// Load the Bookmarks object from given xml file  
-   		//Bookmarks theBookmarks = null;
-    	MyListModel theModel = null;
-    	List<DataSource> theDataSourceList = null;
    		try {
-   	   		bookmarks = BookmarksUtil.getBookmarks(bookmarkURL);   			
-   	    	
-   	   		// Extract the URL entries
-   	    	theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory, bookmarks.getCategory());
+   			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURL());   			
    		}
     	catch (IOException e)
     	{
     		System.out.println("IOException -- bookmarkSource");
-    		//e.printStackTrace();
-    		//return false;
-    	}
+     	}
     	catch (JAXBException e)
     	{
     		System.out.println("JAXBException -- bookmarkSource");    
-    		//return false;
-    	}
+    	} 
     	catch (Exception e) {
-    		System.out.println("Failed to read the bookmark, the bookmark file may not exist!");        		
+    		System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
     	}
+
+    	return tmpBookmarks;
+	}
+ 
+    private void loadBookmarks()
+    {	
+    	List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory, theBookmarks.getCategory());
 	    
-    	theModel = new MyListModel(theDataSourceList);
- 	
+    	MyListModel theModel = new MyListModel(theDataSourceList);
     	bookmarkList.setModel(theModel);    	
     }
     
    	
-   	
-   	private boolean deleteBookmark(DataSource pDataSource)
-   	{   		
-        try {
-        	bookmarks = BookmarksUtil.getBookmarks(bookmarkURL);   			
-        
-        	if (BookmarksUtil.isInBookmarks(bookmarks, "network", pDataSource)) {
-        		if (BookmarksUtil.deleteBookmark(bookmarkURL.getFile(), bookmarks, bookmarkCategory, pDataSource)) {
-                	System.out.println(pDataSource.getName() + " is deleted from the Bookmarks!");        			
-        		}
-        		else {
-                	System.out.println(pDataSource.getName() + " is not deleted from the Bookmarks!");        			
-        		}
-        	}
-        }
-        catch (JAXBException e)
-        {
-        	e.printStackTrace();
-        	return false;
-        }
-        catch (Exception e)
-        {
-        	e.printStackTrace();
-        	return false;
-        }
-   		
-   		return false;
-   	}
-
     
  	public void actionPerformed(ActionEvent e)
  	{
@@ -366,7 +330,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 				this.dispose();
 			}
 			else if (_btn == btnAddBookmark){
-				NewBookmarkDialog theNewDialog = new NewBookmarkDialog(this, true, bookmarkURL, bookmarkCategory);
+				NewBookmarkDialog theNewDialog = new NewBookmarkDialog(this, true, theBookmarks, bookmarkCategory);
 				theNewDialog.setSize(300, 250);
 				theNewDialog.setLocationRelativeTo(this);
 
@@ -382,7 +346,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 				MyListModel theModel = (MyListModel) bookmarkList.getModel();
 				theModel.removeElement(bookmarkList.getSelectedIndex());
 							
-				deleteBookmark(theDataSource);// delete the selected bookmark from file
+				BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
 				
 				if (theModel.getSize() == 0) {
 					btnEditBookmark.setEnabled(false);
@@ -516,15 +480,15 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 		private String name;
 		private String URLstr;
 		private JDialog parent;
-		//private Bookmarks bookmarks;
+		private Bookmarks theBookmarks;
 		private String categoryName;
 		private URL bookmarkURL;
 		
 	    /** Creates new form NewBookmarkDialog */
-	    public NewBookmarkDialog(JDialog parent, boolean modal, URL bookmarkURL, String categoryName) {
+	    public NewBookmarkDialog(JDialog parent, boolean modal, Bookmarks pBookmarks, String categoryName) {
 	        super(parent, modal);
 	        this.parent = parent;
-	        this.bookmarkURL = bookmarkURL;
+	        this.theBookmarks = pBookmarks;
 	        this.categoryName = categoryName;
 	        this.setTitle("Add new bookmark");
 	        initComponents();
@@ -561,25 +525,17 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 					    JOptionPane.showMessageDialog(parent, msg, "Warning", JOptionPane.INFORMATION_MESSAGE);
 					    return;
 					}
-					
-					System.out.println("URLimportAdvancedDialog: bookmarkURL = " + bookmarkURL.toString());
-					System.out.println("URLimportAdvancedDialog: bookmarkURL = " + bookmarkURL.getFile());
-					
-					if (BookmarksUtil.saveBookmark(bookmarkURL, categoryName,theDataSource)) {
-						System.out.println("Bookmark is saved!");
-						this.dispose();
-					}
-					else {
-						System.out.println("Failed to save the bookmark!");						
-					}
+										
+					BookmarksUtil.saveBookmark(theBookmarks, categoryName,theDataSource);
+					this.dispose();
 				}
+				
 				else if (_btn == btnCancel){
 					this.dispose();
 				}
 			}
-	 	}
+	 	} //End of actionPerformed()
 	    
-
 	 	
 	    /** This method is called from within the constructor to
 	     * initialize the form.
