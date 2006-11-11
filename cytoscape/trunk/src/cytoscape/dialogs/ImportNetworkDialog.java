@@ -6,12 +6,7 @@
 
 package cytoscape.dialogs;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import javax.swing.JDialog;
@@ -30,17 +25,11 @@ import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.data.ImportHandler;
 import cytoscape.Cytoscape;
-import cytoscape.bookmarks.Bookmarks;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.awt.event.KeyListener;
 import cytoscape.util.BookmarksUtil;
-//import cytoscape.data.readers.BookmarkReader;
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
 import java.util.List;
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
 
 
@@ -53,7 +42,7 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 	private boolean status;
 	private File[] networkFiles;
 
-    private URL bookmarkURL; // = getClass().getResource("/cytoscape/resources/bookmarks.xml");
+    private Bookmarks theBookmarks = null; // get it from session
     private String bookmarkCategory = "network";
 	private String URLstr;
 	private Proxy proxyServer= null;
@@ -72,17 +61,25 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 
 		status = false;
 		networkFiles = null;
-		
-		// for test only
-		java.io.File tmpBookmarkFile = new java.io.File("bookmarks.xml");
-		try {
-			bookmarkURL = tmpBookmarkFile.toURL();			
-		}
-		catch (Exception e) {
-			System.out.println("ImportNetworkDialog: failed to get bookmarkURL!");
-		}
-	}
 
+		theBookmarks = Cytoscape.getBookmarks();
+
+    	// if theBookmarks doesnot exist, create an empty one
+    	if (theBookmarks == null) {
+    		theBookmarks = new Bookmarks();
+    		Cytoscape.setBookmarks(theBookmarks);
+    	}
+    	
+    	// if bookmarkCategory "network" does not exist, create a "network" with empty DataSource
+    	Category theCategory = BookmarksUtil.getCategory(bookmarkCategory, theBookmarks.getCategory());
+    	if (theCategory == null) {
+    		theCategory = new Category();
+    		theCategory.setName(bookmarkCategory);
+    		List<Category> theCategoryList= theBookmarks.getCategory();
+    		theCategoryList.add(theCategory);
+    	}
+ 	}
+	
 	/**
 	 * Get first file only.
 	 * 
@@ -290,136 +287,34 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
     	}
     }
 	
-	// download the file and save as a tmp file
-	private boolean downloadFromURL()
-	{				
-		URLstr = bookmarkEditor.getURLstr().trim();
-		URL theUrl;
-		try {
-			theUrl = new URL(URLstr);			
-		}
-		catch (MalformedURLException mExp) {
-		    JOptionPane.showMessageDialog(this, "URL error!", "Warning", JOptionPane.INFORMATION_MESSAGE);
-			return false;
-		}
-		
-		URLConnection conn = null;;
-		
-		try {
-			if (proxyServer == null) {
-				conn = theUrl.openConnection();							
-			}
-			else {
-				conn = theUrl.openConnection(proxyServer);
-			}			
-		}
-		catch (IOException ioEx) {
-		    JOptionPane.showMessageDialog(this, "Failed to connect to the remote server!", "Warning", JOptionPane.INFORMATION_MESSAGE);
-			return false;			
-		}			
-
-		// create a tmp file, which will be deleted upon exit
-		String fileName = theUrl.getFile();
-		String baseFilename = fileName.substring(fileName.lastIndexOf("/")+1);
-		
-		java.util.Properties theProperties = System.getProperties();
-		File tmpFile = new File(theProperties.getProperty("java.io.tmpdir"), baseFilename);
-		
-	    tmpFile.deleteOnExit();
-
-	    BufferedWriter out = null;
-	    BufferedReader in = null;
-	    try {
-			// set the wait cursor
-			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-		     out = new BufferedWriter(new FileWriter(tmpFile));
-			 in = new BufferedReader(new InputStreamReader(conn.getInputStream()));	    	
-	    }
-	    catch (IOException ioExp) {
-		    JOptionPane.showMessageDialog(this, "Failed to download the file!", "Warning", JOptionPane.INFORMATION_MESSAGE);
-			this.setCursor(Cursor.getDefaultCursor());
-
-		    return false;				    	
-	    }
-	    	    
-		try {
-			 String inputLine;
-
-		     // Write to temp file
-			 while ((inputLine = in.readLine()) != null) 
-			 {
-			     out.write(inputLine+"\n");
-			 }
-			 in.close();
-		     out.close();
-				
-		     networkFiles = new File[1];
-		     networkFiles[0] = tmpFile;
-		}
-		catch (IOException ioExp)
-		{
-		    JOptionPane.showMessageDialog(this, "Failed to write to a tmp file on local disk!", "Warning", JOptionPane.INFORMATION_MESSAGE);
-			return false;				    	
-		}		
-		finally {
-			// Always restore the cursor, even there is exception
-			this.setCursor(Cursor.getDefaultCursor());
-		}			
-
-		return true;
-	}//downloadFromURL()
 
    	
     private void loadBookmarkCMBox()
     {
-    	// Load the Bookmarks object from given xml file  
-   		Bookmarks theBookmarks = null;
-   		try {
-   	   		theBookmarks = BookmarksUtil.getBookmarks(bookmarkURL);   			
-   		}
-    	catch (IOException e)
-    	{
-    		System.out.println("IOException -- bookmarkSource");
-    		//return false;
-    	}
-    	catch (JAXBException e)
-    	{
-    		System.out.println("JAXBException -- bookmarkSource");    
-    		//return false;
-    	} 
-    	catch (Exception e) {
-    		System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
-    	}
 
         cmbNetworkFile.removeAllItems();
-        
-    	// Extract the URL entries
-    	List<DataSource> theDataSourceList = null;
- 
-    	if (theBookmarks != null) {
-    		theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory, theBookmarks.getCategory());    		
-    	}
-    	DefaultComboBoxModel theModel = new DefaultComboBoxModel();
+
+        DefaultComboBoxModel theModel = new DefaultComboBoxModel();
 
 		DataSource firstDataSource = new DataSource(); 
 		firstDataSource.setName("");
         firstDataSource.setHref(" Please provide a URL to the network file");
 
         theModel.addElement(firstDataSource);
+        
+    	// Extract the URL entries
+    	List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory, theBookmarks.getCategory());    		
+
         if (theDataSourceList != null) {
         	for (int i =0; i<theDataSourceList.size(); i++)
         	{
         		theModel.addElement(theDataSourceList.get(i));
         	}        	
         }
-    	
-    	cmbNetworkFile.setModel(theModel);
-        //cmbNetworkFile.setName("cmbNetworkFile");
 
+        cmbNetworkFile.setModel(theModel);
     }
 
-    
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		status = false;
 		this.dispose();
@@ -433,7 +328,7 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 	private void selectNetworkFileButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {
 
-		CyFileFilter[] tempCFF = (CyFileFilter[]) Cytoscape.getImportHandler()
+		CyFileFilter[]  tempCFF = (CyFileFilter[]) Cytoscape.getImportHandler()
 				.getAllFilters(ImportHandler.GRAPH_NATURE).toArray(
 						new CyFileFilter[0]);
 
@@ -468,7 +363,8 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
     
     	String theURLstr = bookmarkEditor.getURLstr().trim();
     	theURLstr = theURLstr.toUpperCase();
-    	if (theURLstr.endsWith("SIF")||theURLstr.endsWith("GML")||theURLstr.endsWith("XGMM")) {
+    	if (theURLstr.endsWith("SIF")||theURLstr.endsWith("GML")||theURLstr.endsWith("XGMML")
+    			||theURLstr.endsWith("XML")) {
     		return true;
     	}
 		String msg = "Invalid network file extension!";
@@ -513,9 +409,9 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 			}
 			else if (_btn == btnAdvanced)
 			{
-				URLimportAdvancedDialog theAdvDialog = new URLimportAdvancedDialog(this, true, "network", bookmarkURL, proxyServer);
+				URLimportAdvancedDialog theAdvDialog = new URLimportAdvancedDialog(this, true, bookmarkCategory, theBookmarks, proxyServer);
 				theAdvDialog.setLocationRelativeTo(this);
-				theAdvDialog.setPreferredSize(new Dimension(350,350));
+				theAdvDialog.setPreferredSize(new Dimension(350,400));
 				theAdvDialog.pack();
 				theAdvDialog.setVisible(true);
 				loadBookmarkCMBox();
@@ -531,8 +427,15 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 				{
 					if (!isURLvalid())
 						return;
-					if (!downloadFromURL()) 
-						return; 
+					String theURLstr = bookmarkEditor.getURLstr().trim();
+					File tmpFile = cytoscape.data.ImportHandler.downloadFromURL(this, theURLstr, proxyServer);
+					
+					if (tmpFile == null) {
+						return;
+					}
+					networkFiles = new File[1];
+					networkFiles[0] = tmpFile;
+						 
 					importButtonActionPerformed(e);
 				}
 			}
@@ -549,8 +452,14 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 			{
 				if (!isURLvalid())
 					return;
-				if (!downloadFromURL()) 
-					return; 
+				String theURLstr = bookmarkEditor.getURLstr().trim();
+				File tmpFile = cytoscape.data.ImportHandler.downloadFromURL(this, theURLstr, proxyServer);
+				
+				if (tmpFile == null) {
+					return;
+				}
+				networkFiles = new File[1];
+				networkFiles[0] = tmpFile;
 				importButtonActionPerformed(e);
 			}			
 		}
