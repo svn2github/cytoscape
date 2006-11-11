@@ -64,6 +64,7 @@ import ding.view.DGraphView;
 import java.awt.Component;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -83,7 +84,10 @@ import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.util.BookmarksUtil;
+import cytoscape.util.FileUtil;
+import cytoscape.util.ZipUtil;
 /**
  * Reaser to load CYtoscape Session file (.cys).<br>
  * This class unzip cys file and read all files in the archive.
@@ -101,10 +105,14 @@ import javax.xml.bind.Unmarshaller;
 public class CytoscapeSessionReader {
 
 	public static final String PACKAGE_NAME = "cytoscape.generated";
+	public static final String BOOKMARK_PACKAGE_NAME = "cytoscape.bookmarks";
+	
 	public static final String CYSESSION = "cysession.xml";
 	public static final String VIZMAP_PROPS = "vizmap.props";
 	public static final String CY_PROPS = "cytoscape.props";
 	public static final String XGMML_EXT = ".xgmml";
+
+	private static final String BOOKMARKS_FILE = "session_bookmarks.xml";
 
 	private static final String NETWORK_ROOT = "Network Root";
 
@@ -131,6 +139,8 @@ public class CytoscapeSessionReader {
 	 * @uml.property name="cytoscapePropsURL"
 	 */
 	private URL cytoscapePropsURL = null;
+
+	private URL bookmarksFileURL = null;
 
 	/**
 	 * @uml.property name="netMap"
@@ -172,6 +182,8 @@ public class CytoscapeSessionReader {
 	 */
 	HashMap vsMapByName;
 
+	Bookmarks bookmarks = null;
+	
 	/**
 	 * Constructor for remote file (specified by an URL)<br>
 	 * 
@@ -186,6 +198,7 @@ public class CytoscapeSessionReader {
 		networkList = new ArrayList();
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
+		bookmarks = new Bookmarks();
 	}
 
 	/**
@@ -202,6 +215,7 @@ public class CytoscapeSessionReader {
 		networkList = new ArrayList();
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
+		bookmarks = new Bookmarks();
 	}
 
 	/**
@@ -254,6 +268,10 @@ public class CytoscapeSessionReader {
 						+ entryName);
 				networkURLs.put(entryName, networkURL);
 			}
+			else if (entryName.endsWith(BOOKMARKS_FILE)) {
+				bookmarksFileURL = new URL("jar:" + sourceURL.toString() + "!/"
+						+ entryName);
+			}
 		}
 		if (zis != null) {
 			try {
@@ -303,12 +321,43 @@ public class CytoscapeSessionReader {
 		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null,
 				vizmapFileURL);
 
+		// Restore bookmarks
+		bookmarks = getBookmarksFromZip(bookmarksFileURL);
+		Cytoscape.setBookmarks(bookmarks);
+		
 		// restore cytoscape properties
 		CytoscapeInit.getProperties().load(cytoscapePropsURL.openStream());
 
 		loadCySession(cysessionFileURL);
 	}
 
+	private Bookmarks getBookmarksFromZip(URL pBookmarksFileURL) {
+	
+		Bookmarks theBookmark = null;
+		try {
+			InputStream is = pBookmarksFileURL.openStream();
+			
+			final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE_NAME,
+					this.getClass().getClassLoader());
+			final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+			theBookmark = (Bookmarks) unmarshaller.unmarshal(is);
+
+			if ( is != null ) {
+				is.close();
+			}
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
+		catch (JAXBException e3) {
+			e3.printStackTrace();
+		}
+		
+		return theBookmark;
+	}
+	
 	private void loadCySession(final URL cysessionSource) throws JAXBException,
 			IOException {
 
