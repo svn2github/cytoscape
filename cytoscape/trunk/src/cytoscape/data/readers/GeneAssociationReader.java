@@ -111,6 +111,7 @@ public class GeneAssociationReader implements TextTableReader {
 		final Ontology testOntology = Cytoscape.getOntologyServer()
 				.getOntologies().get(ontologyName);
 
+		
 		/*
 		 * Ontology type should be GO.
 		 */
@@ -238,6 +239,10 @@ public class GeneAssociationReader implements TextTableReader {
 	 * 
 	 */
 	private void parseGA(String[] entries) {
+		
+		if(geneOntology.getAspect(entries[GOID]) == null) {
+			return;
+		}
 		/*
 		 * Create attribute name based on GO Aspect (a.k.a. Name Space)
 		 */
