@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
@@ -242,7 +243,7 @@ public abstract class Cytoscape {
 	 */
 	private static String currentSessionFileName;
 	
-	private static Bookmarks bookmarks = null;;
+	private static Bookmarks bookmarks = new Bookmarks();;
 	
 	/**
 	 * A null CyNetwork to give when there is no Current Network
@@ -1631,5 +1632,24 @@ public abstract class Cytoscape {
 	public static void setBookmarks(Bookmarks pBookmarks) {
 		bookmarks = pBookmarks;
 	}
+	
+	private static Properties[] pluginProps;
+	public static Properties[] getPluginProps(){
+		pluginProps = new Properties[2];
+		pluginProps[0] = new Properties();
+		pluginProps[0].setProperty("firstKey", "FirstValue");
+		pluginProps[0].setProperty("SecondKey", "SecondValue");
+		
+		pluginProps[1] = new Properties();
+		pluginProps[1].setProperty("firstKey2", "FirstValue2");
+		pluginProps[1].setProperty("SecondKey2", "SecondValue2");
+		
+		return pluginProps;
 
+	}
+
+	private static String[] pluginNames = {"AAA","BBB"};
+	public static String[] getPluginNames() {
+		return pluginNames;
+	}
 }
