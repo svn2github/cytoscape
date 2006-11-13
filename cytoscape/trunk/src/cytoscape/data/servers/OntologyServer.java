@@ -1,5 +1,8 @@
 package cytoscape.data.servers;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -9,6 +12,8 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.data.ontology.DBCrossReferences;
 import cytoscape.data.ontology.Ontology;
@@ -26,7 +31,7 @@ import cytoscape.data.synonyms.Aliases;
  * @author kono
  * 
  */
-public class OntologyServer {
+public class OntologyServer implements PropertyChangeListener {
 
 	public static enum OntologyType {
 		BASIC, GO;
@@ -75,6 +80,8 @@ public class OntologyServer {
 	 * @throws JAXBException
 	 */
 	public OntologyServer() throws IOException, JAXBException {
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
+		
 		factory = new OntologyFactory();
 		this.ontologies = new HashMap<String, Ontology>();
 		this.ontologySources = new HashMap<String, URL>();
@@ -171,5 +178,19 @@ public class OntologyServer {
 
 	public Aliases getNetworkAliases() {
 		return networkAliases;
+	}
+
+	public void propertyChange(PropertyChangeEvent e) {
+		
+		if(e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+			/*
+			 * Remove network name from ontology server.
+			 */
+			ontologies.remove(Cytoscape.getNetwork((String) e.getNewValue()).getTitle());
+			System.out.println("################Got signal2: " + Cytoscape.getNetwork((String) e.getNewValue()).getTitle());
+			System.out.println("################Got signal3: " + e.getNewValue());
+			
+		}
+		
 	}
 }

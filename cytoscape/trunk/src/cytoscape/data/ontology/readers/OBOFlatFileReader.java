@@ -31,7 +31,6 @@ import java.util.TreeSet;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.ontology.Ontology;
@@ -58,7 +57,7 @@ import cytoscape.data.ontology.Ontology;
  * 
  */
 public class OBOFlatFileReader implements OntologyReader {
-	
+
 	public static final String ONTOLOGY_DAG_ROOT = "Ontology DAGs";
 
 	private static final String DEF_ORIGIN = "def_origin";
@@ -133,9 +132,19 @@ public class OBOFlatFileReader implements OntologyReader {
 
 		String rootID = Cytoscape.getOntologyRootID();
 		if (rootID == null) {
-			rootID = Cytoscape.createNetwork(
-					ONTOLOGY_DAG_ROOT, false).getIdentifier();
-			Cytoscape.setOntologyRootID(rootID);
+
+			Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
+			for (CyNetwork net : networkSet) {
+				if (net.getTitle().equals(ONTOLOGY_DAG_ROOT)) {
+					rootID = net.getIdentifier();
+				}
+			}
+
+			if (rootID == null) {
+				rootID = Cytoscape.createNetwork(ONTOLOGY_DAG_ROOT, false)
+						.getIdentifier();
+				Cytoscape.setOntologyRootID(rootID);
+			}
 		}
 		ontologyDAG = Cytoscape.createNetwork(name, Cytoscape
 				.getNetwork(rootID), false);
