@@ -52,7 +52,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import javax.swing.Icon;
-import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -60,6 +59,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.ToolTipManager;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.event.TreeSelectionEvent;
@@ -68,7 +68,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import javax.swing.SwingConstants;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -81,7 +80,6 @@ import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanel;
 
 public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		TreeSelectionListener, SelectEventListener {
@@ -312,16 +310,11 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 
 		if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
 			addNetwork((String) e.getNewValue(), (String) e.getOldValue());
-		}
-
-		if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			removeNetwork((String) e.getNewValue());
-		}
-
-		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
+		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			focusNetworkNode((String) e.getNewValue());
 		}
-
 	}
 
 	/**
