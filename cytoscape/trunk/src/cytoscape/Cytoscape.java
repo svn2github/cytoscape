@@ -167,7 +167,7 @@ public abstract class Cytoscape {
 	public static final int SESSION_CHANGED = 2;
 	public static final int SESSION_CLOSED = 3;
 	private static int sessionState = SESSION_NEW;
-
+	
 	private static BioDataServer bioDataServer;
 
 	/**
@@ -917,15 +917,14 @@ public abstract class Cytoscape {
 
 	protected static void addNetwork(CyNetwork network, String title,
 			CyNetwork parent, boolean create_view) {
-
+		
 		getNetworkMap().put(network.getIdentifier(), network);
 		network.setTitle(title);
-		String p_id = null;
+		String parentID = null;
 		if (parent != null) {
-			p_id = parent.getIdentifier();
-		}
-
-		firePropertyChange(NETWORK_CREATED, p_id, network.getIdentifier());
+			parentID = parent.getIdentifier();
+		} 
+		firePropertyChange(NETWORK_CREATED, parentID, network.getIdentifier());
 		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit
 				.getProperties().getProperty("viewThreshold"))
 				&& create_view) {

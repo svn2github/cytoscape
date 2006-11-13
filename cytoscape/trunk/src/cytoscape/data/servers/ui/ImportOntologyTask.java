@@ -50,21 +50,16 @@ public class ImportOntologyTask implements Task {
 	 */
 	public void run() {
 		
-		System.out.println("****Start to create basic");
-		
-		
 		taskMonitor.setStatus("Loading Ontology Data...");
 
 		try {
 			URL targetUrl = new URL(dataSource);
-			System.out.println("****Start to create basic2.  Onto type = " + ontologyType);
 			taskMonitor.setPercentCompleted(-1);
 			
 			if (ontologyType != null && ontologyType.equals(GO.toString())) {
 				Cytoscape.getOntologyServer().addOntology(targetUrl,
 						GO, ontologyName, ontologyDescription);
 			} else {
-				System.out.println("****Trying to create basic");
 				Cytoscape.getOntologyServer().addOntology(targetUrl,
 						BASIC, ontologyName, ontologyDescription);
 			}

@@ -31,8 +31,10 @@ import java.util.TreeSet;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.ontology.Ontology;
 
 /**
  * OBO file reader.<br>
@@ -43,10 +45,11 @@ import cytoscape.data.Semantics;
  * 
  * In Cytoscape, This will be used mainly for reading gene ontology. However, it
  * is compatible with all files written in OBO format.<br>
- * OBO files are available at:
- * <p>
- * http://obo.sourceforge.net/cgi-bin/table.cgi
  * </p>
+ * 
+ * <p>
+ * OBO files are available at:<br>
+ * http://obo.sourceforge.net/cgi-bin/table.cgi
  * </p>
  * 
  * @since Cytoscape 2.4
@@ -55,9 +58,10 @@ import cytoscape.data.Semantics;
  * 
  */
 public class OBOFlatFileReader implements OntologyReader {
+	
+	public static final String ONTOLOGY_DAG_ROOT = "Ontology DAGs";
 
 	private static final String DEF_ORIGIN = "def_origin";
-	private static final String IS_ONTOLOGY = "IsOntology";
 	protected static final String TERM_TAG = "[Term]";
 	private static final String DEF_ONTOLOGY_NAME = "Ontology DAG";
 
@@ -102,7 +106,6 @@ public class OBOFlatFileReader implements OntologyReader {
 	 * 
 	 * @param oboStream
 	 * @param name
-	 *            TODO
 	 */
 	public OBOFlatFileReader(InputStream oboStream, String name) {
 		this.inputStream = oboStream;
@@ -114,23 +117,28 @@ public class OBOFlatFileReader implements OntologyReader {
 		interactionList = new ArrayList<String[]>();
 		header = new HashMap<String, String>();
 
-		if (name != null) {
-			ontologyDAG = Cytoscape.createNetwork(name, Cytoscape
-					.getNetwork(Cytoscape.getOntologyRootID()), false);
-		} else {
-			name = DEF_ONTOLOGY_NAME;
-			ontologyDAG = Cytoscape.createNetwork(DEF_ONTOLOGY_NAME, false);
-		}
-
 		networkAttributes = Cytoscape.getNetworkAttributes();
 		termAttributes = Cytoscape.getNodeAttributes();
+
+		if (name == null) {
+			name = DEF_ONTOLOGY_NAME;
+		}
 
 		/*
 		 * Ontology DAGs will be distinguished by this attribute.
 		 */
-		networkAttributes.setAttribute(name, IS_ONTOLOGY, true);
-		networkAttributes.setUserVisible(IS_ONTOLOGY, false);
-		networkAttributes.setUserEditable(IS_ONTOLOGY, false);
+		networkAttributes.setAttribute(name, Ontology.IS_ONTOLOGY, true);
+		networkAttributes.setUserVisible(Ontology.IS_ONTOLOGY, false);
+		networkAttributes.setUserEditable(Ontology.IS_ONTOLOGY, false);
+
+		String rootID = Cytoscape.getOntologyRootID();
+		if (rootID == null) {
+			rootID = Cytoscape.createNetwork(
+					ONTOLOGY_DAG_ROOT, false).getIdentifier();
+			Cytoscape.setOntologyRootID(rootID);
+		}
+		ontologyDAG = Cytoscape.createNetwork(name, Cytoscape
+				.getNetwork(rootID), false);
 	}
 
 	/**

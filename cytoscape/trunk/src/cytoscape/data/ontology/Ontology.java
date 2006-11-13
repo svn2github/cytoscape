@@ -55,7 +55,7 @@ public class Ontology extends AbstractChangeable implements
 	private static final String DATA_TYPE = "Ontology DAG";
 
 	// This network attribute indicates this is an ontology or not.
-	public static final String IS_ONTOLOGY = "isOntology";
+	public static final String IS_ONTOLOGY = "Is_Ontology";
 	
 	/**
 	 * Name of this ontorogy. This will be used as the ID of this ontology.
