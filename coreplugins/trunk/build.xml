@@ -19,6 +19,7 @@
     <ant dir="BioPAX"/>
     <ant dir="PSI-MI"/>
     <ant dir="SBMLReader"/>
+    <ant dir="cPath"/>
     <mkdir dir="${build.dir}"/>
     <copy todir="${build.dir}" file="browser/browser.jar"/>
     <copy todir="${build.dir}" file="ManualLayout/ManualLayout.jar"/>
@@ -33,6 +34,7 @@
     <copy todir="${build.dir}" file="BioPAX/build/jars/biopax.jar"/>
     <copy todir="${build.dir}" file="PSI-MI/build/jars/psi_mi.jar"/>
     <copy todir="${build.dir}" file="SBMLReader/SBMLReader.jar"/>
+    <copy todir="${build.dir}" file="cPath/cPath.jar"/>
   </target>
 
   <!-- clean all coreplugin projects  -->
@@ -48,6 +50,7 @@
     <ant dir="BioPAX" target="clean"/>
     <ant dir="PSI-MI" target="clean"/>
     <ant dir="SBMLReader" target="clean"/>
+    <ant dir="cPath" target="clean"/>
     <delete dir="${build.dir}"/>
   </target>
 

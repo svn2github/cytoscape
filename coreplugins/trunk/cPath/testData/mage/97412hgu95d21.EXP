@@ -1,0 +1,29 @@
+Affymetrix GeneChip Experiment Information
+Version	1
+
+[Sample Info]
+Chip Type	HG_U95D
+Chip Lot	
+Operator	kahn
+Sample Type	Cancer
+Description	
+Project	NCI-60U95
+Comments	
+Solution Type	
+Solution Lot	
+
+[Fluidics]
+Protocol	
+Completed
+Station	
+Module	
+Hybridize Date	May 04 2005 09:51PM
+
+[Scanner]
+Pixel Size	3
+Filter	
+Scan Temperature	
+Scan Date	May 04 2005 09:51PM
+Scanner ID	
+Number of Scans	1
+Scanner Type	HP
