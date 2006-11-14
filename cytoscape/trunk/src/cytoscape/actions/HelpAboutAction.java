@@ -58,22 +58,22 @@ public class HelpAboutAction extends AbstractAction   {
 	       // respected and thus we're unable to tokenize 
 	       // properly.
 	       //
-	       // If you've contributed, please your name in the
+	       // If you've contributed, please add your name in the
 	       // correct location.
 	       // 
                String lines = "Cytoscape is a collaboration \n" +
                               "between the Institute for \n" +
 			      "Systems Biology, University of \n" +
-			      "California, San Diego, Memorial \n" +
-			      "Sloan Kettering Cancer Center, \n" +
+			      "California San Diego, Memorial \n" +
+			      "Sloan-Kettering Cancer Center, \n" +
 			      "Institut Pasteur, and Agilent \n" +
 			      "Technologies.\n" +
                               " \n" +
                               "For more information, please see: \n" +
                               " http://www.cytoscape.org\n" +
                               " \n" +
-                              "Cytosape Developers \n"+
-                              " Past and present,\n"+
+                              "Cytosape Developers,\n"+
+                              " past and present,\n"+
                               " in alphabetical order: \n"+
                               " \n" +
                               " Annette Adler\n" +
@@ -95,6 +95,7 @@ public class HelpAboutAction extends AbstractAction   {
 		              " Brad Kohlenberg\n" +
                               " Allan Kuchinsky\n" +
 		              " Nerius Landys\n"+ 
+                              " Willem Ligtenberg\n"+  
 		              " Samad Lotia\n" +
 		              " Andrew Markiel\n"+
                               " James McIninch\n" +

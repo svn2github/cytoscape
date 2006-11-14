@@ -150,7 +150,7 @@ public class UndoManager   {
 
     protected void update() {
 
-      System.out.println( "REDO: "+undo.canRedo() );
+      //System.out.println( "REDO: "+undo.canRedo() );
 
 	    if(undo.canRedo()) {
         setEnabled(true);
