@@ -12,9 +12,14 @@ import javax.swing.table.TableColumnModel;
  * Automatically resize column based on the objects in the cell.<br>
  * 
  * <p>
- * From <i>Swing Hacks</i> by Joshua Marinacci and Chris Adamson.
+ * From <i>Swing Hacks</i> by Joshua Marinacci and Chris Adamson.<br>
+ * 2005 Oreilly & Associates Inc.  ISBN: 0-596-00907-0<br>
  * </p>
  * Customized by Keiichiro Ono
+ * 
+ * @since Cytoscape 2.4
+ * @version 1.0
+ * @author Joshua Marinacci, Chris Adamson
  * 
  */
 public class ColumnResizer {
