@@ -124,9 +124,6 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/**
 	 * Enums for file types.
-	 * 
-	 * 
-	 * 
 	 */
 	public static enum FileTypes {
 		ATTRIBUTE_FILE, NETWORK_FILE, GENE_ASSOCIATION_FILE, CUSTOM_ANNOTATION_FILE;
@@ -162,9 +159,8 @@ public class ImportTextTableDialog extends JDialog implements
 			"Column (Attribute Name)", "Data Type" };
 
 	private static final String ID = "ID";
+	private static final String EXCEL_EXT = ".xls";
 	private static final String GENE_ASSOCIATION = "gene_association";
-
-	// Default color
 
 	// Key column index
 	private int keyInFile;
@@ -182,9 +178,6 @@ public class ImportTextTableDialog extends JDialog implements
 	private Map<String, String> ontologyTypeMap;
 	private Map<String, String> ontologyDescriptionMap;
 
-	private Map<String, Boolean> ontologyStatusMap;
-
-	private Map<String, String[]> attributeNames;
 	private List<Byte> attributeDataTypes;
 
 	/*
@@ -193,8 +186,6 @@ public class ImportTextTableDialog extends JDialog implements
 	private Map<String, AliasTableModel> aliasTableModelMap;
 	private Map<String, JTable> aliasTableMap;
 	private Map<String, Integer> primaryKeyMap;
-
-	private Map<String, FileTypes> fileTypes;
 
 	private String[] columnHeaders;
 
@@ -227,7 +218,6 @@ public class ImportTextTableDialog extends JDialog implements
 		this.aliasTableMap = new HashMap<String, JTable>();
 		this.primaryKeyMap = new HashMap<String, Integer>();
 
-		this.fileTypes = new HashMap<String, FileTypes>();
 
 		annotationUrlMap = new HashMap<String, String>();
 		annotationFormatMap = new HashMap<String, String>();
@@ -237,8 +227,6 @@ public class ImportTextTableDialog extends JDialog implements
 		ontologyDescriptionMap = new HashMap<String, String>();
 		ontologyTypeMap = new HashMap<String, String>();
 
-		ontologyStatusMap = new HashMap<String, Boolean>();
-		attributeNames = new HashMap<String, String[]>();
 		attributeDataTypes = new ArrayList<Byte>();
 		initComponents();
 		updateComponents();
@@ -260,30 +248,45 @@ public class ImportTextTableDialog extends JDialog implements
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(LIST_DELIMITER_CHANGED)) {
+			/*
+			 * List delimiter has been changed by preview table GUI.
+			 */
 			listDelimiter = evt.getNewValue().toString();
+
 		} else if (evt.getPropertyName().equals(ATTR_DATA_TYPE_CHANGED)) {
+			/*
+			 * Data type of an attribute has been chabged.
+			 */
 
 			final Vector vec = (Vector) evt.getNewValue();
 			final Integer key = (Integer) vec.get(0);
 			final Byte newType = (Byte) vec.get(1);
-			attributeDataTypes.set(key, newType);
-			int i = 0;
-			for (Byte type : attributeDataTypes) {
-				System.out.println("List Vals " + i + " = " + type.toString());
-				i++;
+			if (key > attributeDataTypes.size()) {
+				attributeDataTypes = new ArrayList<Byte>();
+				for (Byte type : previewPanel.getCurrentDataTypes()) {
+					attributeDataTypes.add(type);
+				}
 			}
+			attributeDataTypes.set(key, newType);
 
-			JTable curTable = aliasTableMap.get(previewPanel
-					.getSelectedSheetName());
-			curTable.setDefaultRenderer(Object.class, new AliasTableRenderer(
-					attributeDataTypes, primaryKeyComboBox.getSelectedIndex()));
-			curTable.repaint();
-
+			if (dialogType != NETWORK_IMPORT) {
+				final JTable curTable = aliasTableMap.get(previewPanel
+						.getSelectedSheetName());
+				curTable.setDefaultRenderer(Object.class,
+						new AliasTableRenderer(attributeDataTypes,
+								primaryKeyComboBox.getSelectedIndex()));
+				curTable.repaint();
+			}
 		} else if (evt.getPropertyName().equals(ATTRIBUTE_NAME_CHANGED)) {
-			final Vector vec = (Vector) evt.getNewValue();
-			final String name = (String) vec.get(1);
-			final Integer column = (Integer) vec.get(0);
-			updateAliasTableCell(name, column);
+			/*
+			 * Update Alias Table
+			 */
+			if (dialogType != NETWORK_IMPORT) {
+				final Vector vec = (Vector) evt.getNewValue();
+				final String name = (String) vec.get(1);
+				final Integer column = (Integer) vec.get(0);
+				updateAliasTableCell(name, column);
+			}
 		} else if (evt.getPropertyName().equals(SHEET_CHANGED)) {
 			/*
 			 * Only when the file is in Excel format.
@@ -1779,6 +1782,10 @@ public class ImportTextTableDialog extends JDialog implements
 	}// </editor-fold>
 
 	private void primaryKeyComboBoxActionPerformed(ActionEvent evt) {
+		if (dialogType == NETWORK_IMPORT) {
+			return;
+		}
+
 		keyInFile = primaryKeyComboBox.getSelectedIndex();
 
 		previewPanel.getPreviewTable().setDefaultRenderer(Object.class,
@@ -2026,7 +2033,7 @@ public class ImportTextTableDialog extends JDialog implements
 					mappingAttribute, aliasList, attributeNames,
 					attributeTypes, importFlag);
 
-			if (source.toString().endsWith(".xls")) {
+			if (source.toString().endsWith(EXCEL_EXT)) {
 				/*
 				 * Read one sheet at a time
 				 */
@@ -2116,7 +2123,7 @@ public class ImportTextTableDialog extends JDialog implements
 					defaultInteraction);
 
 			final NetworkTableReader reader;
-			if (networkSource.toString().endsWith(".xls")) {
+			if (networkSource.toString().endsWith(EXCEL_EXT)) {
 				// Extract name from the sheet name.
 				final POIFSFileSystem excelIn = new POIFSFileSystem(
 						networkSource.openStream());
@@ -2575,20 +2582,17 @@ public class ImportTextTableDialog extends JDialog implements
 
 			networkImportPanel.setComboBoxes(columnNames);
 
-			tabCheckBox.setEnabled(true);
-			commaCheckBox.setEnabled(true);
-			spaceCheckBox.setEnabled(true);
-			semicolonCheckBox.setEnabled(true);
-			otherCheckBox.setEnabled(true);
-			otherDelimiterTextField.setEnabled(true);
-
+			if(sourceURL.toString().endsWith(EXCEL_EXT)) {
+				switchDelimiterCheckBoxes(false);
+			} else {
+				switchDelimiterCheckBoxes(true);
+			}
 			AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) previewPanel
 					.getPreviewTable().getCellRenderer(0, 0);
-			rend.setSourceIndex(rend.PARAMETER_NOT_EXIST);
-			rend.setTargetIndex(rend.PARAMETER_NOT_EXIST);
-			rend.setInteractionIndex(rend.PARAMETER_NOT_EXIST);
-			// previewPanel.repaint();
-
+			rend.setSourceIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
+			rend.setTargetIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
+			rend.setInteractionIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
+			
 		} else {
 			for (int i = 0; i < previewPanel.getTableCount(); i++) {
 				final int columnCount = previewPanel.getPreviewTable(i)
@@ -2639,13 +2643,8 @@ public class ImportTextTableDialog extends JDialog implements
 						.getPosition());
 				disableComponentsForGA();
 
-			} else if (!sourceURL.toString().endsWith(".xls")) {
-				tabCheckBox.setEnabled(true);
-				commaCheckBox.setEnabled(true);
-				spaceCheckBox.setEnabled(true);
-				semicolonCheckBox.setEnabled(true);
-				otherCheckBox.setEnabled(true);
-				otherDelimiterTextField.setEnabled(true);
+			} else if (sourceURL.toString().endsWith(EXCEL_EXT) == false) {
+				switchDelimiterCheckBoxes(true);
 				nodeRadioButton.setEnabled(true);
 				edgeRadioButton.setEnabled(true);
 				networkRadioButton.setEnabled(true);
@@ -2684,6 +2683,15 @@ public class ImportTextTableDialog extends JDialog implements
 		otherCheckBox.setEnabled(false);
 		otherCheckBox.setSelected(false);
 		otherDelimiterTextField.setEnabled(false);
+	}
+	
+	private void switchDelimiterCheckBoxes(Boolean state) {
+		tabCheckBox.setEnabled(state);
+		commaCheckBox.setEnabled(state);
+		spaceCheckBox.setEnabled(state);
+		semicolonCheckBox.setEnabled(state);
+		otherCheckBox.setEnabled(state);
+		otherDelimiterTextField.setEnabled(state);
 	}
 
 	private FileTypes checkFileType(URL source) {
@@ -2806,6 +2814,9 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private void updateAliasTable() {
+		if (dialogType == NETWORK_IMPORT) {
+			return;
+		}
 		JTable curTable = aliasTableMap
 				.get(previewPanel.getSelectedSheetName());
 

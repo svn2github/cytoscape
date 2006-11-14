@@ -371,6 +371,10 @@ public class PreviewTablePanel extends JPanel {
 	public Byte[] getDataTypes(final String selectedTabName) {
 		return dataTypeMap.get(selectedTabName);
 	}
+	
+	public Byte[] getCurrentDataTypes() {
+		return dataTypeMap.get(getSelectedSheetName());
+	}
 
 	public FileTypes getFileType() {
 
