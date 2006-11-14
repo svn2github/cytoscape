@@ -141,8 +141,10 @@ public class CytoscapeInit {
 	 * @return false, if we fail to initialize for some reason
 	 */
 	public boolean init(CyInitParams params) {
+		long begintime = System.currentTimeMillis();
 
 		try {
+
 			initParams = params;
 
 			// setup properties
@@ -177,14 +179,18 @@ public class CytoscapeInit {
 
 			loadPlugins();
 
+			System.out.println("loading session...");
 			if (initParams.getMode() == CyInitParams.GUI
 					|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)
 				loadSessionFile();
 
+			System.out.println("loading networks...");
 			loadNetworks();
 
+			System.out.println("loading attributes...");
 			loadAttributes();
 
+			System.out.println("loading expression files...");
 			loadExpressionFiles();
 
 		} finally {
@@ -197,9 +203,10 @@ public class CytoscapeInit {
 			}
 		}
 
-		System.out.println("Cytoscape initialized successfully.");
-		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null,
-				null);
+		long endtime = System.currentTimeMillis() - begintime;
+		System.out.println("");
+		System.out.println("Cytoscape initialized successfully in: " + endtime + " ms");
+		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 
 		return true;
 	}
@@ -592,25 +599,17 @@ public class CytoscapeInit {
 					continue;
 				}
 
-				// System.out.println("- - - - entries begin");
 				Enumeration entries = jar.entries();
 				if (entries == null) {
 					continue;
 				}
 
-				// System.out.println("entries is not null");
-
-				int totalEntries = 0;
-				int totalClasses = 0;
 				int totalPlugins = 0;
 
 				while (entries.hasMoreElements()) {
-					totalEntries++;
 
 					// get the entry
 					String entry = entries.nextElement().toString();
-
-					// System.out.println( "Entry: "+entry+ " is "+resource );
 
 					if (entry.endsWith("class")) {
 						// convert the entry to an assignable class name
@@ -626,16 +625,12 @@ public class CytoscapeInit {
 
 						totalPlugins++;
 						loadPlugin(classLoader.loadClass(entry));
+						//break; 
 					}
 				}
 				if (totalPlugins == 0)
 					System.out.println("No plugin(s) found in specified jar.");
 
-				// System.out.println("- - - - entries finis");
-				// System.out.println(".jar summary: " +
-				// " entries=" + totalEntries +
-				// " classes=" + totalClasses +
-				// " plugins=" + totalPlugins);
 			} catch (Exception e) {
 				System.out.println("Couldn't load plugin url!");
 				System.err.println("Error: " + e.getMessage());
@@ -864,25 +859,23 @@ public class CytoscapeInit {
 			url = new URL(uString);
 		} catch (MalformedURLException mue) {
 			mue.printStackTrace();
-			System.out.println("couldn't create jar url from '" + urlString
-					+ "'");
+			System.out.println("couldn't create jar url from '" + urlString + "'");
 		}
 		return url;
 	}
 
 	private boolean loadSessionFile() {
 		String sessionFile = initParams.getSessionFile();
-		CytoscapeSessionReader reader = null;
 
 		// Turn off the network panel (for loading speed)
-		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
-				false);
+		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(false);
 		try {
 			String sessionName = "";
 			if (sessionFile != null) {
 				Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
 				Cytoscape.createNewSession();
 				Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
+				CytoscapeSessionReader reader = null;
 
 				if (sessionFile.matches(FileUtil.urlPattern)) {
 					URL u = new URL(sessionFile);
@@ -895,27 +888,20 @@ public class CytoscapeInit {
 					reader = new CytoscapeSessionReader(sessionURL);
 					sessionName = shortName.getName();
 				}
-			}
 
-			if (reader != null) {
-				reader.read();
-				Cytoscape.getDesktop()
-						.setTitle(
-								"Cytoscape Desktop (Session Name: "
+				if (reader != null) {
+					reader.read();
+					Cytoscape.getDesktop().setTitle( "Cytoscape Desktop (Session Name: "
 										+ sessionName + ")");
-				return true;
-
-			} else
-				System.out.println("couldn't create session from file: '"
-						+ sessionFile + "'");
+					return true;
+				}
+			} 
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("couldn't create session from file: '"
-					+ sessionFile + "'");
+			System.out.println("couldn't create session from file: '" + sessionFile + "'");
 		} finally {
-			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
-					true);
+			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(true);
 		}
 		return false;
 	}
