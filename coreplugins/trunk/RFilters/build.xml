@@ -109,7 +109,6 @@
         dir="${filter.root.dir}/images"/>
     </jar>
     <copy todir="${filter.lib.dir}" file="filter.jar"/>
-    <copy todir="${cytoscape.plugin.dir}" file="filter.jar"/>
   </target>
 
   <!-- =================================================================== -->
