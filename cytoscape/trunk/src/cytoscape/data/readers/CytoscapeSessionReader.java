@@ -322,8 +322,10 @@ public class CytoscapeSessionReader {
 				vizmapFileURL);
 
 		// Restore bookmarks
-		bookmarks = getBookmarksFromZip(bookmarksFileURL);
-		Cytoscape.setBookmarks(bookmarks);
+		if (bookmarksFileURL != null) {
+			bookmarks = getBookmarksFromZip(bookmarksFileURL);			
+			Cytoscape.setBookmarks(bookmarks);
+		}
 		
 		// restore cytoscape properties
 		CytoscapeInit.getProperties().load(cytoscapePropsURL.openStream());
