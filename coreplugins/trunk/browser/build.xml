@@ -130,7 +130,6 @@
         includes="resources/**"/>
     </jar>
     <copy todir="${browser.lib.dir}" file="browser.jar"/>
-    <copy todir="${cytoscape.plugin.dir}/core" file="browser.jar"/>
   </target>
 
   <!-- =================================================================== -->
