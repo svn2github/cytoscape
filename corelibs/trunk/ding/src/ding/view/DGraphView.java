@@ -1874,7 +1874,7 @@ public class DGraphView
     // AJK: 04/27/06 BEGIN
     //   for context menus
     public void addNodeContextMenuListener(NodeContextMenuListener l) {
-        System.out.println("Adding NodeContextListener: " + l);
+        //System.out.println("Adding NodeContextListener: " + l);
         getCanvas()
             .addNodeContextMenuListener(l);
     }
@@ -1891,7 +1891,7 @@ public class DGraphView
 
     // AJK: 04/27/06 END
     public void addEdgeContextMenuListener(EdgeContextMenuListener l) {
-        System.out.println("Adding EdgeContextListener: " + l);
+        //System.out.println("Adding EdgeContextListener: " + l);
         getCanvas()
             .addEdgeContextMenuListener(l);
     }
