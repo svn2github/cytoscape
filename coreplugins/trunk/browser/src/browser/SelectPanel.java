@@ -17,31 +17,31 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
+import cytoscape.util.swing.ColumnResizer;
 import cytoscape.view.CytoscapeDesktop;
 import filter.model.Filter;
 import filter.model.FilterManager;
 
 /**
  * Advanced Panel.<br>
- * This section catches all selection events and property changes
- * for Attribute browser.<br>
+ * This section catches all selection events and property changes for Attribute
+ * browser.<br>
  * 
  * @author xmas
  * @author kono
- *
+ * 
  */
 public class SelectPanel extends JPanel implements PropertyChangeListener,
 		ActionListener, SelectEventListener {
 	public static final int NODES = 0;
 	public static final int EDGES = 1;
 	int graphObjectType;
-	
+
 	JComboBox networkBox;
 	JComboBox filterBox;
 	DataTableModel tableModel;
@@ -55,8 +55,10 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	 * Constructor.<br>
 	 * Initialize GUI components.
 	 * 
-	 * @param tableModel table model used in the Attribute Browser.
-	 * @param graphObjectType Graph object types - Node or Edge.
+	 * @param tableModel
+	 *            table model used in the Attribute Browser.
+	 * @param graphObjectType
+	 *            Graph object types - Node or Edge.
 	 * 
 	 */
 	public SelectPanel(final DataTable table, final int graphObjectType) {
@@ -82,31 +84,31 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 		mirrorSelection = new JCheckBox();
 		mirrorSelection.setSelected(true);
 
-		//setBorder(new TitledBorder("Object Selection"));
-        setLayout(new java.awt.GridBagLayout());
-	    
-        java.awt.GridBagConstraints gridBagConstraints;
-		
-	    gridBagConstraints = new java.awt.GridBagConstraints();
-	    gridBagConstraints.gridx = 0;
-	    gridBagConstraints.gridy = 0;
-	    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-	    gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+		// setBorder(new TitledBorder("Object Selection"));
+		setLayout(new java.awt.GridBagLayout());
+
+		java.awt.GridBagConstraints gridBagConstraints;
+
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
 
 		add(new JLabel("Select Object     Filter: "), gridBagConstraints);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
-	    gridBagConstraints.gridx = 1;
-	    gridBagConstraints.gridy = 0;
-	    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-	    gridBagConstraints.weightx = 1.0;
-	    gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
-		
-		add(filterBox,gridBagConstraints);
-		//add(new JLabel("Network: "));
-		//add(networkBox);
-		//add(new JLabel("Mirror Network Selection"));
-		//add(mirrorSelection);
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
+
+		add(filterBox, gridBagConstraints);
+		// add(new JLabel("Network: "));
+		// add(networkBox);
+		// add(new JLabel("Mirror Network Selection"));
+		// add(mirrorSelection);
 
 		filterBox.addActionListener(this);
 		networkBox.addActionListener(this);
@@ -118,7 +120,7 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	 * 
 	 */
 	public void onSelectEvent(SelectEvent event) {
-		
+
 		if (mirrorSelection.isSelected()) {
 			if (graphObjectType == NODES
 					&& (event.getTargetType() == SelectEvent.SINGLE_NODE || event
@@ -126,7 +128,7 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 				// node selection
 				tableModel.setSelectedColor(JSortTable.SELECTED_NODE);
 				tableModel.setSelectedColor(JSortTable.REV_SELECTED_NODE);
-				
+
 				tableModel.setTableDataObjects(new ArrayList(Cytoscape
 						.getCurrentNetwork().getSelectedNodes()));
 			} else if (graphObjectType == EDGES
@@ -139,6 +141,7 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 						.getCurrentNetwork().getSelectedEdges()));
 			}
 		}
+		ColumnResizer.adjustColumnPreferredWidths(table.getattributeTable());
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -203,8 +206,6 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		
-		
 
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
 				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
@@ -215,7 +216,6 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 				|| e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 				|| e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
 				|| e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
-			
 
 			if (currentNetwork != null) {
 				currentNetwork.removeSelectEventListener(this);

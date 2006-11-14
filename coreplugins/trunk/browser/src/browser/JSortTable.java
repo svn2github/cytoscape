@@ -86,6 +86,7 @@ import cytoscape.data.Semantics;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
+import cytoscape.util.swing.ColumnResizer;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.GlobalAppearanceCalculator;
@@ -925,7 +926,7 @@ public class JSortTable extends JTable implements MouseListener,
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
-
+	
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS
 				|| e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 				|| e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
@@ -956,7 +957,6 @@ public class JSortTable extends JTable implements MouseListener,
 			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		}
 	}
-
 
 	public void editingStopped(ChangeEvent e) {
 		super.editingStopped(e);
