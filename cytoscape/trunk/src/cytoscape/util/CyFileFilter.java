@@ -398,7 +398,7 @@ public class CyFileFilter
             String line = bufferedReader.readLine();
             StringBuffer header = new StringBuffer();
             int numLines = 0;
-            while (line != null && numLines < 5) {
+            while (line != null && numLines < 20) {
                 header.append(line + "\n");
                 line = bufferedReader.readLine();
                 numLines++;
