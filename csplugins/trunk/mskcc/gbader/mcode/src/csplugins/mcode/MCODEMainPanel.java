@@ -42,9 +42,6 @@ public class MCODEMainPanel extends JPanel {
     public MCODEMainPanel() {
         setLayout(new BorderLayout());
         //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        //Spring Layout Setup
-        //SpringLayout layout = new SpringLayout();
-        //setLayout(layout);
 
         //get the current parameters
         currentParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
@@ -52,19 +49,14 @@ public class MCODEMainPanel extends JPanel {
         decFormat = new DecimalFormat();
         decFormat.setParseIntegerOnly(true);
 
-        //Scope panel with option buttons
+        //create the three main panels: scope, advanced options, and bottom
         JPanel scopePanel = createScopePanel();
-
-        //Advanced Options panel
         MCODECollapsablePanel advancedOptionsPanel = createAdvancedOptionsPanel();
-
-        //Create panel with buttons for the bottom
         JPanel bottomPanel = createBottomPanel();
 
         //Add all the vertically alligned components to the main panel
         add(scopePanel, BorderLayout.NORTH);
         add(advancedOptionsPanel, BorderLayout.CENTER);
-        //add(Box.createVerticalGlue(), BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
@@ -91,7 +83,7 @@ public class MCODEMainPanel extends JPanel {
         panel.add(scopeNetwork);
         panel.add(scopeNode);
         panel.add(scopeNodeSet);
-
+        
         return panel;
     }
 
@@ -101,11 +93,9 @@ public class MCODEMainPanel extends JPanel {
      */
     private MCODECollapsablePanel createAdvancedOptionsPanel() {
         MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel("Advanced Options");
+
         JPanel panel = new JPanel();
-        //panel.setLayout(new FlowLayout());
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        //SpringLayout layout = new SpringLayout();
-        //panel.setLayout(layout);
 
         //Network scoring collapsable panel
         MCODECollapsablePanel networkScoringPanel = createNetworkScoringPanel();
@@ -116,9 +106,7 @@ public class MCODEMainPanel extends JPanel {
         panel.add(networkScoringPanel);
         panel.add(clusterFindingPanel);
 
-        //layout.putConstraint(SpringLayout.SOUTH,  networkScoringPanel, 0, SpringLayout.NORTH, clusterFindingPanel);
-
-        collapsablePanel.getContentPane().add(panel, BorderLayout.CENTER);
+        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
         return collapsablePanel;
     }
 
@@ -128,6 +116,7 @@ public class MCODEMainPanel extends JPanel {
      */
     private MCODECollapsablePanel createNetworkScoringPanel() {
         MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel("Network Scoring");
+
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1));
 
@@ -184,7 +173,7 @@ public class MCODEMainPanel extends JPanel {
         //K-core input
         //TODO:k-core
 
-        collapsablePanel.getContentPane().add(panel, BorderLayout.CENTER);
+        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
         return collapsablePanel;
     }
 
@@ -194,11 +183,12 @@ public class MCODEMainPanel extends JPanel {
      */
     private MCODECollapsablePanel createClusterFindingPanel() {
         MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel("Cluster Finding");
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
         JRadioButton customizeOption = new JRadioButton("Customize", true);
-        JRadioButton optimizeOption = new JRadioButton("Optimize using Benchmark");
+        JRadioButton optimizeOption = new JRadioButton("Optimize (Benchmark)");
         ButtonGroup clusterFindingOptions = new ButtonGroup();
         clusterFindingOptions.add(customizeOption);
         clusterFindingOptions.add(optimizeOption);
@@ -233,7 +223,7 @@ public class MCODEMainPanel extends JPanel {
         //tabbedPane.addTab("Directed Mode", null, directedModePanel, "Set parameters for directed mode");
         */
         
-        collapsablePanel.getContentPane().add(panel, BorderLayout.CENTER);
+        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
         return collapsablePanel;
     }
     /**
@@ -244,7 +234,6 @@ public class MCODEMainPanel extends JPanel {
     private MCODECollapsablePanel createCustomizeClusterFindingPanel(JComponent component) {
         MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel(component);
         JPanel panel = new JPanel();
-        //panel.setLayout(new GridLayout(0,1));
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
         //nodeScoreCutOffFormattedTextField = new JFormattedTextField(new DecimalFormat("0.000")) {
@@ -345,9 +334,9 @@ public class MCODEMainPanel extends JPanel {
         labelFieldPanel5.add(maxDepthLabel);
         labelFieldPanel5.add(maxDepthFormattedTextField);
 
-        panel.add(labelFieldPanel5, BorderLayout.SOUTH);
+        panel.add(labelFieldPanel5);
 
-        collapsablePanel.getContentPane().add(panel, BorderLayout.CENTER);
+        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
         return collapsablePanel;
     }
 
@@ -358,9 +347,11 @@ public class MCODEMainPanel extends JPanel {
      */
     private MCODECollapsablePanel createOptimizeClusterFindingPanel(JComponent component) {
         MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel(component);
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        collapsablePanel.getContentPane().add(panel);
+
+        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
         return collapsablePanel;
     }
 
@@ -370,14 +361,15 @@ public class MCODEMainPanel extends JPanel {
      */
     private JPanel createBottomPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+        panel.setLayout(new FlowLayout());
 
         JButton OKButton = new JButton("Analyze");
         OKButton.addActionListener(new MCODEMainPanel.OKAction(this));
-        panel.add(OKButton);
 
         JButton quitButton = new JButton("Quit");
         quitButton.addActionListener(new MCODEMainPanel.cancelAction(this));
+
+        panel.add(OKButton);
         panel.add(quitButton);
 
         return panel;

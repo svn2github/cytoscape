@@ -11,14 +11,17 @@ import java.net.URL;
  * The user-triggered collapsable panel containing the component (trigger) in the titled border
  */
 public class MCODECollapsablePanel extends JPanel {
-
+   
     CollapsableTitledBorder border; //includes upper left component and line type
     Border collapsedBorderLine = BorderFactory.createEmptyBorder(2, 2, 2, 2);
     Border expandedBorderLine = null; //BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-    JComponent component;
-    JPanel panel;
+    JComponent component = new JPanel(); // displayed in the titled border
+    JPanel panel; // content pane
+    JPanel empty = new JPanel(); // content pane without any content for the collapsed state
+    boolean collapsed; // stores curent state of the collapsable panel
+    String text;//temporary
 
-    //Expand/Collapse buttoN
+    //Expand/Collapse button
     final static int COLLAPSED = 0, EXPANDED = 1; //States
     ImageIcon[] iconArrow = createExpandAndCollapseIcon();
     JButton arrow = createArrowButton();
@@ -26,54 +29,40 @@ public class MCODECollapsablePanel extends JPanel {
     public MCODECollapsablePanel () {}
 
     public MCODECollapsablePanel (JComponent titleComponent) {
-        //setLayout(new GridLayout(1,1));
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        //setLayout(null);
-        JPanel titlePanel = new JPanel();
-        titlePanel.add(titleComponent);
-        titlePanel.add(arrow);
-        this.component = titlePanel;
-        panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        add(component);
-        add(panel);
-        setCollapsed(true);
+        commonConstructor(titleComponent);
     }
 
     public MCODECollapsablePanel (String text) {
-        //setLayout(new GridLayout(0,1));
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        //setLayout(null);
-        JLabel title = new JLabel(text);
-        JPanel titlePanel = new JPanel();
-        titlePanel.add(title);
-        titlePanel.add(arrow);
-        this.component = titlePanel;
-        panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        add(component);
-        add(panel);
-        setCollapsed(true);
+        this.text = text;
+        JLabel titleComponent = new JLabel(text);
+        commonConstructor(titleComponent);
     }
 
-    public void doLayout1() {
-        Insets insets = getInsets();
-        //insets = new Insets(40, 4, 4, 4);
-        //System.out.println("insets:"+insets.top+" "+insets.bottom+" "+insets.left+" "+insets.right);
-        Rectangle rect = getBounds();
-        //Rectangle rect = panel.getBounds();
-        System.out.println("get bounds: rect x:"+rect.width+" y:"+rect.height);
-        rect.x = 0;
-        rect.y = 0;
+    public void commonConstructor (JComponent titleComponent) {
+        //setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        //setLayout(null);
+        setLayout(new BorderLayout());
 
-        Rectangle componentRectangle = border.getComponentRect(rect, insets);
+        component.add(titleComponent);
+        component.add(arrow);
+
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+
+        add(component, BorderLayout.NORTH);
+        add(panel, BorderLayout.NORTH);
+        setCollapsed(true);
+
+        placeTitleComponent();
+    }
+
+    public void placeTitleComponent() {
+        Insets insets = this.getInsets();
+        Rectangle containerRectangle = this.getBounds();
+        System.out.println(text+" title " + containerRectangle.x + " " + containerRectangle.y + " " + containerRectangle.width + " " + containerRectangle.height);
+
+        Rectangle componentRectangle = border.getComponentRect(containerRectangle, insets);//might want to change the arrow button to an image to avoid button border problems
         component.setBounds(componentRectangle);
-        rect.x += insets.left;
-        rect.y += insets.top;
-        rect.width -= insets.left + insets.right;
-        rect.height -= insets.top + insets.bottom;
-        panel.setBounds(rect);
-        System.out.println("after: rect x:"+rect.width+" y:"+rect.height);
     }
 
     public void setTitleComponent(JComponent newComponent) {
@@ -87,20 +76,21 @@ public class MCODECollapsablePanel extends JPanel {
         return panel;
     }
 
-    public void setCollapsed(boolean collapsed) {
-        if (collapsed) {
+    public void setCollapsed(boolean collapse) {
+        if (collapse) {
             //collapse the panel, remove content and set border to empty border
-            getContentPane().setVisible(false);
+            remove(panel);
             arrow.setIcon(iconArrow[COLLAPSED]);
             border = new CollapsableTitledBorder(collapsedBorderLine, component);
-            setBorder(border);
         } else {
             //expand the panel, add content and set border to titled border
-            getContentPane().setVisible(true);
+            add(panel, BorderLayout.NORTH);
             arrow.setIcon(iconArrow[EXPANDED]);
             border = new CollapsableTitledBorder(expandedBorderLine, component);
-            setBorder(border);
         }
+        setBorder(border);
+        collapsed = collapse;
+        updateUI();
     }
 
     public void setEnabled(boolean enable) {
@@ -112,10 +102,10 @@ public class MCODECollapsablePanel extends JPanel {
 
     /**
      *
-     * @return Returns whether the panel is collapsed or expanded
+     * @return Returns true if the panel is collapsed and false if it is expanded
      */
     public boolean isCollapsed() {
-        return !getContentPane().isVisible();
+        return collapsed;
     }
 
     public ImageIcon[] createExpandAndCollapseIcon () {
@@ -173,8 +163,7 @@ public class MCODECollapsablePanel extends JPanel {
             }
         }
 
-        public void paintBorder1(Component c, Graphics g, int x, int y, int width,
-            int height) {
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             Rectangle borderR = new Rectangle(x + EDGE_SPACING, y + EDGE_SPACING, width - (EDGE_SPACING * 2), height - (EDGE_SPACING * 2));
             Insets borderInsets;
             if (border != null) {
@@ -219,7 +208,7 @@ public class MCODECollapsablePanel extends JPanel {
             component.repaint();
         }
 
-        public Insets getBorderInsets1(Component c, Insets insets) {
+        public Insets getBorderInsets(Component c, Insets insets) {
             Insets borderInsets;
             if (border != null) {
                 borderInsets = border.getBorderInsets(c);
@@ -235,7 +224,7 @@ public class MCODECollapsablePanel extends JPanel {
                 return insets;
             }
 
-            int compHeight = (component.getPreferredSize().height + 10)/2; //TODO: This determines how far the content is from the top
+            int compHeight = component.getPreferredSize().height /2; //TODO: This determines how far the content is from the top
 
             switch (titlePosition) {
                 case ABOVE_TOP:
@@ -243,7 +232,7 @@ public class MCODECollapsablePanel extends JPanel {
                     break;
                 case TOP:
                 case DEFAULT_POSITION:
-                    insets.top += Math.max(compHeight, borderInsets.top) - borderInsets.top;
+                    insets.top += Math.max(compHeight, borderInsets.top);// - borderInsets.top;
                     break;
                 case BELOW_TOP:
                     insets.top += compHeight + TEXT_SPACING;
