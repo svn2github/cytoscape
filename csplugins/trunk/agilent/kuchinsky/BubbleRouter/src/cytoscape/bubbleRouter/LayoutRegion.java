@@ -360,6 +360,16 @@ public class LayoutRegion extends JComponent {
 							.getInstance(AlphaComposite.SRC));
 			image2D.setPaint(fillColor);
 			image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
+			image2D.setColor(new Color(0, 0, 0, 255));
+
+			if (regionAttributeValue != null)
+
+			{
+
+				image2D.drawString(regionAttributeValue.toString(), 10, 10);			
+
+			}
+
 			image2D.setColor(drawColor);
 			// adds thickness to border
 			image2D.drawRect(1, 1, image
