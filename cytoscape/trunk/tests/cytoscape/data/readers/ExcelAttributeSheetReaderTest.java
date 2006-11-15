@@ -75,7 +75,7 @@ public class ExcelAttributeSheetReaderTest extends TestCase {
 				TextTableReader.ObjectType.NODE, null, COMMA.toString(), 0,
 				"ID", aliasList, galAttrName, galAttrTypes, null);
 
-		TextTableReader rd = new ExcelAttributeSheetReader(sheet, mapping);
+		TextTableReader rd = new ExcelAttributeSheetReader(sheet, mapping, 0);
 		rd.readTable();
 
 		assertEquals("ribosomal protein S28A (S33A) (YS27)", Cytoscape

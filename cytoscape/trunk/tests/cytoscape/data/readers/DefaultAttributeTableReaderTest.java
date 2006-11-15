@@ -71,7 +71,7 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 		AttributeMappingParameters mapping = new AttributeMappingParameters(
 				TextTableReader.ObjectType.NODE, null, COMMA.toString(), 0, "ID", aliasList,
 				galAttrName, galAttrTypes, null);
-		tableReader = new DefaultAttributeTableReader(source.toURL(), mapping);
+		tableReader = new DefaultAttributeTableReader(source.toURL(), mapping, 0);
 		tableReader.readTable();
 
 		assertEquals("ribosomal protein S28A (S33A) (YS27)", Cytoscape
@@ -97,7 +97,7 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 
 		tableReader = new DefaultAttributeTableReader(galSource.toURL(),
 				TextTableReader.ObjectType.NODE, delimiters, PIPE.toString(), 1, "ID",
-				aliases, cols, null, null);
+				aliases, cols, null, null, 0);
 		tableReader.readTable();
 
 		System.out.println("* YOL123W Object Name in SGD = "
