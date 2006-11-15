@@ -11,6 +11,7 @@ import java.awt.Color;
  *
  */
 public enum ImportDialogColorTheme {
+	LABEL_COLOR(Color.black),
 	KEY_ATTR_COLOR(Color.red), PRIMARY_KEY_COLOR(new Color(51, 51, 255)),
 	ONTOLOGY_COLOR(new Color(0, 255, 255)), ALIAS_COLOR(new Color(51, 204, 0)),
 	SPECIES_COLOR(new Color(182, 36, 212)), ATTRIBUTE_NAME_COLOR(new Color(102, 102,255)),

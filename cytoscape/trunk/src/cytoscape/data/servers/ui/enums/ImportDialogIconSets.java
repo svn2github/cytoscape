@@ -30,7 +30,9 @@ public enum ImportDialogIconSets {
 	SPREADSHEET_ICON("images/ximian/stock_new-spreadsheet.png"),
 	TEXT_FILE_ICON("images/ximian/stock_new-text-32.png"),
 	RIGHT_ARROW_ICON("images/ximian/stock_right-16.png"),
-	CAUTION_ICON("images/ximian/stock_dialog-info-32.png");
+	CAUTION_ICON("images/ximian/stock_dialog-info-32.png"),
+	CHECKED_ICON("images/ximian/stock_3d-apply-16.png"),
+	UNCHECKED_ICON("images/ximian/stock_close-16.png");
 	
 	private String resourceLoc;
 	

@@ -1,9 +1,8 @@
 package cytoscape.data.servers.ui;
 
-import static cytoscape.data.servers.ui.enums.ImportDialogColorTheme.ATTRIBUTE_NAME_COLOR;
-import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.RIGHT_ARROW_ICON;
-import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.SPREADSHEET_ICON;
-import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.TEXT_FILE_ICON;
+import static cytoscape.data.servers.ui.enums.ImportDialogColorTheme.*;
+import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.*;
+import static cytoscape.data.servers.ui.enums.ImportDialogFontTheme.*;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -38,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
@@ -77,7 +77,7 @@ public class PreviewTablePanel extends JPanel {
 	/*
 	 * Default messages
 	 */
-	private static final String DEF_MESSAGE = "Table header will be used as attribute names.  (Left click = enable/disable, Right click = edit)";
+	private static final String DEF_MESSAGE = "Right Click: ON/OFF Column";
 	private static final String DEF_TAB_MESSAGE = "Data File Preview Window";
 	private static final String EXCEL_EXT = ".xls";
 
@@ -95,7 +95,10 @@ public class PreviewTablePanel extends JPanel {
 	/*
 	 * GUI Components
 	 */
-	private JLabel messageLabel;
+	private JLabel rightClickLabel;
+	private javax.swing.JLabel offLabel;
+	private javax.swing.JLabel onLabel;
+	private javax.swing.JLabel leftClickLabel;
 	private JLabel rightArrowLabel;
 	private JLabel fileTypeLabel;
 	private JScrollPane previewScrollPane;
@@ -178,7 +181,11 @@ public class PreviewTablePanel extends JPanel {
 
 	private void initComponents() {
 
-		messageLabel = new JLabel();
+		rightClickLabel = new JLabel();
+		leftClickLabel = new javax.swing.JLabel();
+
+		onLabel = new javax.swing.JLabel();
+		offLabel = new javax.swing.JLabel();
 		previewScrollPane = new JScrollPane();
 		rightArrowLabel = new JLabel();
 		tableTabbedPane = new JTabbedPane();
@@ -255,103 +262,76 @@ public class PreviewTablePanel extends JPanel {
 								javax.swing.border.TitledBorder.DEFAULT_POSITION,
 								new java.awt.Font("Dialog", 1, 11)));
 
-		messageLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
-		messageLabel.setForeground(new java.awt.Color(102, 102, 255));
-		messageLabel.setText(message);
+		leftClickLabel
+				.setHorizontalAlignment(SwingConstants.CENTER);
+		leftClickLabel.setText("Left Click: Edit Column");
+		leftClickLabel.setFont(LABEL_FONT.getFont());
+		leftClickLabel.setForeground(Color.red);
+
+		rightClickLabel.setFont(LABEL_FONT.getFont());
+		rightClickLabel.setForeground(Color.red);
+		rightClickLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		rightClickLabel.setText(message);
+
+		onLabel.setBackground(HEADER_BACKGROUND_COLOR.getColor());
+		onLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		onLabel
+				.setIcon(CHECKED_ICON.getIcon());
+		onLabel.setText("ON");
+		onLabel.setToolTipText("Columns in this color will be imported.");
+		onLabel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
+				0, 0, 0), 1, true));
+		onLabel.setOpaque(true);
+
+		offLabel.setBackground(HEADER_UNSELECTED_BACKGROUND_COLOR.getColor());
+		offLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		offLabel
+				.setIcon(UNCHECKED_ICON.getIcon());
+		offLabel.setText("OFF");
+		offLabel.setToolTipText("Columns in this color will NOT be imported.");
+		offLabel.setBorder(new javax.swing.border.LineBorder(
+				new java.awt.Color(0, 0, 0), 1, true));
+		offLabel.setOpaque(true);
 
 		GroupLayout previewPanelLayout = new GroupLayout(this);
 		this.setLayout(previewPanelLayout);
-
-		previewPanelLayout
-				.setHorizontalGroup(previewPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								previewPanelLayout
-										.createSequentialGroup()
-										.add(
-												tableTabbedPane,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												685, Short.MAX_VALUE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(rightArrowLabel)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												previewPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING,
-																false)
-
-														.add(
-																keyPreviewScrollPane,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																194,
-																Short.MAX_VALUE)))
-						.add(
-								previewPanelLayout
-										.createSequentialGroup()
-										.add(fileTypeLabel)
-										.add(18, 18, 18)
-										.add(
-												messageLabel,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												754, Short.MAX_VALUE)
-										.addContainerGap()));
-		previewPanelLayout
-				.setVerticalGroup(previewPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								previewPanelLayout
-										.createSequentialGroup()
-										.add(
-												previewPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(fileTypeLabel)
-														.add(messageLabel))
-										.add(
-												previewPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																previewPanelLayout
-																		.createSequentialGroup()
-																		.add(
-																				97,
-																				97,
-																				97)
-																		.add(
-																				rightArrowLabel)
-																		.addContainerGap())
-														.add(
-																previewPanelLayout
-																		.createSequentialGroup()
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				previewPanelLayout
-																						.createParallelGroup(
-																								org.jdesktop.layout.GroupLayout.LEADING)
-																						.add(
-																								previewPanelLayout
-																										.createSequentialGroup()
-
-																										.addPreferredGap(
-																												org.jdesktop.layout.LayoutStyle.RELATED)
-																										.add(
-																												keyPreviewScrollPane,
-																												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																												195,
-																												Short.MAX_VALUE))
-																						.add(
-																								tableTabbedPane,
-																								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																								216,
-																								Short.MAX_VALUE))))));
-
+		
+		
+		previewPanelLayout.setHorizontalGroup(
+	            previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+	            .add(org.jdesktop.layout.GroupLayout.TRAILING, previewPanelLayout.createSequentialGroup()
+	                .add(tableTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
+	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+	                .add(rightArrowLabel)
+	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+	                .add(keyPreviewScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 208, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+	            .add(previewPanelLayout.createSequentialGroup()
+	                .add(fileTypeLabel)
+	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+	                .add(leftClickLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+	                .add(rightClickLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 280, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+	                .add(onLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+	                .add(offLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+	                .addContainerGap())
+	        );
+	        previewPanelLayout.setVerticalGroup(
+	            previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+	            .add(previewPanelLayout.createSequentialGroup()
+	                .add(previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+	                    .add(fileTypeLabel)
+	                    .add(onLabel)
+	                    .add(offLabel)
+	                    .add(rightClickLabel)
+	                    .add(leftClickLabel))
+	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+	                .add(previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+	                    .add(tableTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+	                    .add(keyPreviewScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+	                    .add(org.jdesktop.layout.GroupLayout.LEADING, rightArrowLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
+	        );
 	}
 
 	public JTable getPreviewTable() {
@@ -371,7 +351,7 @@ public class PreviewTablePanel extends JPanel {
 	public Byte[] getDataTypes(final String selectedTabName) {
 		return dataTypeMap.get(selectedTabName);
 	}
-	
+
 	public Byte[] getCurrentDataTypes() {
 		return dataTypeMap.get(getSelectedSheetName());
 	}
@@ -445,8 +425,7 @@ public class PreviewTablePanel extends JPanel {
 	public void setPreviewTable(URL sourceURL, List<String> delimiters,
 			TableCellRenderer renderer, int size) throws IOException {
 		TableCellRenderer curRenderer = renderer;
-		
-		
+
 		/*
 		 * If rendrer is null, create default one.
 		 */
@@ -526,7 +505,6 @@ public class PreviewTablePanel extends JPanel {
 		// for (int j = 0; j < newModel.getColumnCount(); j++) {
 		// dataTypes[j] = CyAttributes.TYPE_STRING;
 		// }
-		
 
 		/*
 		 * Setting table properties
@@ -534,25 +512,25 @@ public class PreviewTablePanel extends JPanel {
 		newTable.setCellSelectionEnabled(false);
 		newTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		newTable.setDefaultEditor(Object.class, null);
-		
-		
-		if(panelType == NETWORK_PREVIEW) {
+
+		if (panelType == NETWORK_PREVIEW) {
 			final int colCount = newTable.getColumnCount();
 			final boolean[] importFlag = new boolean[colCount];
-			for(int i=0; i<colCount; i++) {
+			for (int i = 0; i < colCount; i++) {
 				importFlag[i] = false;
 			}
-			TableCellRenderer netRenderer = new AttributePreviewTableCellRenderer(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+			TableCellRenderer netRenderer = new AttributePreviewTableCellRenderer(
+					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
 					new ArrayList<Integer>(),
 					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
 					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
 					importFlag, TextFileDelimiters.PIPE.toString());
-			
+
 			newTable.setDefaultRenderer(Object.class, netRenderer);
 		} else {
 			newTable.setDefaultRenderer(Object.class, renderer);
 		}
-		
+
 		JTableHeader hd = newTable.getTableHeader();
 		hd.setReorderingAllowed(false);
 		hd.setDefaultRenderer(new HeaderRenderer(hd.getDefaultRenderer(),

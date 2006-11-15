@@ -18,6 +18,7 @@ import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.FLOAT_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.INTEGER_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.LIST_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.STRING_ICON;
+import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.*;
 import static cytoscape.data.servers.ui.enums.ImportDialogColorTheme.*;
 
 import java.awt.Color;
@@ -270,12 +271,17 @@ class HeaderRenderer implements TableCellRenderer {
 		}
 		
 		
-		
-		if (dataTypes != null && dataTypes.length > col) {
-			columnName.setIcon(getDataTypeIcon(dataTypes[col]));
+		if(flag) {
+			columnName.setIcon(CHECKED_ICON.getIcon());
 		} else {
-			columnName.setIcon(getDataTypeIcon(CyAttributes.TYPE_STRING));
+			columnName.setIcon(UNCHECKED_ICON.getIcon());
 		}
+		
+//		if (dataTypes != null && dataTypes.length > col) {
+//			columnName.setIcon(getDataTypeIcon(dataTypes[col]));
+//		} else {
+//			columnName.setIcon(getDataTypeIcon(CyAttributes.TYPE_STRING));
+//		}
 		return columnName;
 	}
 

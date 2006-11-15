@@ -70,6 +70,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -2273,10 +2274,16 @@ public class ImportTextTableDialog extends JDialog implements
 		if (model != null && model.getColumnCount() > 0) {
 
 			primaryKeyComboBox.removeAllItems();
+			Object curValue = null;
 			for (int i = 0; i < model.getColumnCount(); i++) {
-				primaryKeyComboBox.addItem(previewPanel.getPreviewTable()
-						.getColumnModel().getColumn(i).getHeaderValue()
-						.toString());
+				curValue = previewPanel.getPreviewTable()
+				.getColumnModel().getColumn(i).getHeaderValue();
+				if(curValue != null) {
+					primaryKeyComboBox.addItem(curValue.toString());
+				} else {
+					primaryKeyComboBox.addItem("");
+				}
+				
 			}
 		}
 		primaryKeyComboBox.setEnabled(true);
@@ -2732,9 +2739,18 @@ public class ImportTextTableDialog extends JDialog implements
 
 		AliasTableModel curModel = aliasTableModelMap.get(previewPanel
 				.getSelectedSheetName());
+		
+		Object curValue = null;
 		for (int i = 0; i < previewPanel.getPreviewTable().getColumnCount(); i++) {
-			curModel.setValueAt(previewPanel.getPreviewTable().getColumnModel()
-					.getColumn(i).getHeaderValue().toString(), i, 1);
+			curValue = previewPanel.getPreviewTable().getColumnModel()
+			.getColumn(i).getHeaderValue();
+			if(curValue != null) {
+				curModel.setValueAt(curValue.toString(), i, 1);
+			} else {
+				previewPanel.getPreviewTable().getColumnModel().getColumn(i).setHeaderValue("");
+				curModel.setValueAt("", i, 1);
+			}
+			
 		}
 		curTable.setModel(curModel);
 		aliasScrollPane.setViewportView(curTable);
