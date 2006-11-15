@@ -35,19 +35,23 @@ public class HyperLinkOut extends JMenu {
 		if(structure == null) {
 			structure = getDefaultMenu();
 		}
-		xref = Cytoscape.getOntologyServer().getCrossReferences();
-		setText("Search " + value + " on the web...");
-		buildLinks();
+		
+		if(Cytoscape.getOntologyServer() != null) {
+			xref = Cytoscape.getOntologyServer().getCrossReferences();
+			setText("Search " + value + " on the web...");
+			buildLinks();
+		} 
+		
 	}
 	
 	private Map<String, List> getDefaultMenu() {
-		Map def = new HashMap<String, List>();
+		Map<String, List> def = new HashMap<String, List>();
 		
-		List se = new ArrayList();
+		List<String> se = new ArrayList<String>();
 		se.add("Google");
 		se.add("Ask");
 		def.put("Search Engines", se );
-		List bio = new ArrayList();
+		List<String> bio = new ArrayList<String>();
 		bio.add("SGD");
 		bio.add("GO");
 		bio.add("MGD");
@@ -93,4 +97,5 @@ public class HyperLinkOut extends JMenu {
 			e.printStackTrace();
 		}
 	}
+
 }
