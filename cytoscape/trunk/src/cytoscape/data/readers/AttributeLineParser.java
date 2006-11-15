@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.readers.TextTableReader.ObjectType;
 
 /**
  * Take a line of data, analyze it, and map to CyAttributes.
@@ -37,6 +38,9 @@ public class AttributeLineParser {
 	 * @param parts
 	 */
 	public void parseEntry(String[] parts) {
+		
+		System.out.println(mapping.getObjectType().toString() + " <--- ####### Net: ");
+		
 		/*
 		 * Split the line and extract values
 		 */
@@ -102,6 +106,7 @@ public class AttributeLineParser {
 			String[] parts) {
 
 		String altKey = null;
+		String targetNetworkID = null;
 		/*
 		 * Search the key
 		 */
@@ -148,22 +153,21 @@ public class AttributeLineParser {
 			 * This is a special case: Since network IDs are only integers and
 			 * not always the same, we need to use title instead of ID.
 			 */
-			Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
-			Map<String, String> titleMap = new TreeMap<String, String>();
-			for (CyNetwork net : networkSet) {
-				titleMap.put(net.getTitle(), net.getIdentifier());
-			}
+			
+			System.out.println("####### Net: " + primaryKey);
+			
 
-			String targetNetworkID = null;
-			if (titleMap.containsKey(primaryKey)) {
-				targetNetworkID = titleMap.get(primaryKey);
+			
+			if (mapping.getnetworkTitleMap().containsKey(primaryKey)) {
+				targetNetworkID = mapping.getnetworkTitleMap().get(primaryKey);
+				System.out.println("Found! " + targetNetworkID);
 				break;
 			}
 
 			if (targetNetworkID == null) {
 				for (String alias : aliasSet) {
-					if (titleMap.containsKey(alias)) {
-						targetNetworkID = titleMap.get(alias);
+					if (mapping.getnetworkTitleMap().containsKey(alias)) {
+						targetNetworkID = mapping.getnetworkTitleMap().get(alias);
 						break;
 					}
 				}
@@ -187,6 +191,8 @@ public class AttributeLineParser {
 					&& mapping.getImportFlag()[i]) {
 				if (parts[i] == null) {
 					// Do nothing
+				} else if(mapping.getObjectType() == ObjectType.NETWORK) {
+					mapAttribute(targetNetworkID, parts[i].trim(), i);
 				}
 				/*
 				 * Frist, check the node exists or not with the primary key

@@ -8,13 +8,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.readers.TextTableReader.ObjectType;
 import cytoscape.data.synonyms.Aliases;
 
 import static cytoscape.data.readers.TextFileDelimiters.*;
+import static cytoscape.data.readers.TextTableReader.ObjectType.*;
 
 /**
  * Parameter object for text table <---> CyAttributes mapping.<br>
@@ -49,6 +53,8 @@ public class AttributeMappingParameters implements MappingParameter {
 	
 	private CyAttributes attributes;
 	private Aliases existingAliases;
+	
+	private final Map<String, String> networkTitle2ID;
 
 	public AttributeMappingParameters(final ObjectType objectType,
 			final List<String> delimiters, final String listDelimiter,
@@ -74,6 +80,16 @@ public class AttributeMappingParameters implements MappingParameter {
 		this.objectType = objectType;
 		this.keyIndex = keyIndex;
 		this.attributeNames = attributeNames;
+		
+		if(this.objectType == NETWORK) {
+			networkTitle2ID = new HashMap<String, String>();
+			Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
+			for (CyNetwork net : networkSet) {
+				networkTitle2ID.put(net.getTitle(), net.getIdentifier());
+			}
+		} else {
+			networkTitle2ID = null;
+		}
 		
 		
 		/*
@@ -277,6 +293,10 @@ public class AttributeMappingParameters implements MappingParameter {
 	public int getColumnCount() {
 		// TODO Auto-generated method stub
 		return attributeNames.length;
+	}
+	
+	protected Map<String, String> getnetworkTitleMap() {
+		return networkTitle2ID; 
 	}
 
 }

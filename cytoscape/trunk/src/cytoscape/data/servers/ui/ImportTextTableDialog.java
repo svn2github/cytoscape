@@ -1915,10 +1915,19 @@ public class ImportTextTableDialog extends JDialog implements
 
 			// Extract URL from the text table.
 			final URL source = new URL(targetDataSourceTextField.getText());
-
+			final ObjectType objType;
+			
+			if(nodeRadioButton.isSelected()) {
+				objType = NODE;
+			} else if(edgeRadioButton.isSelected()) {
+				objType = EDGE;
+			} else {
+				objType = NETWORK;
+			}
+			
 			// Build mapping parameter object.
 			final AttributeMappingParameters mapping = new AttributeMappingParameters(
-					NODE, checkDelimiter(), listDelimiter, keyInFile,
+					objType, checkDelimiter(), listDelimiter, keyInFile,
 					mappingAttribute, aliasList, attributeNames,
 					attributeTypes, importFlag);
 
