@@ -13,16 +13,18 @@ import javax.swing.table.TableColumnModel;
  * 
  * <p>
  * From <i>Swing Hacks</i> by Joshua Marinacci and Chris Adamson.<br>
- * 2005 Oreilly & Associates Inc.  ISBN: 0-596-00907-0<br>
+ * 2005 Oreilly & Associates Inc. ISBN: 0-596-00907-0<br>
  * </p>
  * Customized by Keiichiro Ono
  * 
  * @since Cytoscape 2.4
  * @version 1.0
- * @author Joshua Marinacci, Chris Adamson
+ * @author Joshua Marinacci, Chris Adamson, Keiichiro Ono
  * 
  */
 public class ColumnResizer {
+
+	private static final int DEFLMAX_WIDTH = 250;
 
 	public static void adjustColumnPreferredWidths(JTable table) {
 		// strategy - get max width for cells in column and
@@ -51,6 +53,12 @@ public class ColumnResizer {
 					.getTableCellRendererComponent(table, headerValue, false,
 							false, 0, col);
 			maxwidth = Math.max(maxwidth, headerComp.getPreferredSize().width);
+			/*
+			 * If the value is too big, adjust to fixed maximum val.
+			 */
+			if (DEFLMAX_WIDTH < maxwidth) {
+				maxwidth = DEFLMAX_WIDTH;
+			}
 			column.setPreferredWidth(maxwidth + 20);
 
 		} // for col
