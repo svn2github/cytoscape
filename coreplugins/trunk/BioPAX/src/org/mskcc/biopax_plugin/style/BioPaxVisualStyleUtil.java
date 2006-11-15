@@ -254,12 +254,13 @@ public class BioPaxVisualStyleUtil {
         }
 
         // hack for phosphorylated proteins - make them large so label fits within node
-        discreteMappingWidth.putMapValue(BioPaxConstants.PROTEIN_PHOSPHORYLATED,
-                new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH
-                        * BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_SIZE_SCALE));
-        discreteMappingHeight.putMapValue(BioPaxConstants.PROTEIN_PHOSPHORYLATED,
-                new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT
-                        * BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_SIZE_SCALE));
+        // commented out by Ethan Cerami, November 15, 2006
+//        discreteMappingWidth.putMapValue(BioPaxConstants.PROTEIN_PHOSPHORYLATED,
+//                new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH
+//                        * BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_SIZE_SCALE));
+//        discreteMappingHeight.putMapValue(BioPaxConstants.PROTEIN_PHOSPHORYLATED,
+//                new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT
+//                        * BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_SIZE_SCALE));
 
         // create and set node height calculator in node appearance calculator
         NodeSizeCalculator nodeWidthCalculator =
