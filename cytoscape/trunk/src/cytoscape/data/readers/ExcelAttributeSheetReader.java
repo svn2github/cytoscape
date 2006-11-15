@@ -28,22 +28,32 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	private final AttributeMappingParameters mapping;
 	private final AttributeLineParser parser;
 
+	private final int startLineNumber;
+	
+	/**
+	 * Constructor.<br>
+	 * 
+	 * Takes one Excel sheet as parameter.
+	 *  
+	 * @param sheet
+	 * @param mapping
+	 */
 	public ExcelAttributeSheetReader(final HSSFSheet sheet,
-			final AttributeMappingParameters mapping) {
+			final AttributeMappingParameters mapping, final int startLineNumber) {
 		this.sheet = sheet;
 		this.mapping = mapping;
+		this.startLineNumber = startLineNumber;
 		this.parser = new AttributeLineParser(mapping);
 	}
 
 	public List getColumnNames() {
-		
 		return null;
 	}
 
 	public void readTable() throws IOException {
 
 		HSSFRow row;
-		int rowCount = 0;
+		int rowCount = startLineNumber;
 		String[] cellsInOneRow;
 
 		while ((row = sheet.getRow(rowCount)) != null) {

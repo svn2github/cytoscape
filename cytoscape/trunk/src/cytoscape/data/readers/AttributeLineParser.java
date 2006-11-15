@@ -218,7 +218,7 @@ public class AttributeLineParser {
 	 */
 	private void mapAttribute(final String key, final String entry,
 			final int index) {
-
+		
 		Byte type = mapping.getAttributeTypes()[index];
 
 		switch (type) {

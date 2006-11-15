@@ -7,6 +7,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import cytoscape.Cytoscape;
 import cytoscape.bookmarks.Bookmarks;
 
 public class BookmarkReader {
@@ -45,8 +46,13 @@ public class BookmarkReader {
 			IOException {
 		
 		// Use JAXB-generated methods to create data structure
+//		final JAXBContext jaxbContext = JAXBContext.newInstance(
+//				BOOKMARK_PACKAGE, this.getClass().getClassLoader());
+//		
 		final JAXBContext jaxbContext = JAXBContext.newInstance(
-				BOOKMARK_PACKAGE, this.getClass().getClassLoader());
+				BOOKMARK_PACKAGE, Cytoscape.class.getClassLoader());
+		
+		
 		// Unmarshall the XGMML file
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 

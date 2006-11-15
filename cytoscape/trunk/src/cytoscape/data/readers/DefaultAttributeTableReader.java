@@ -31,18 +31,31 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	private final URL source;
 	private AttributeMappingParameters mapping;
 	private final AttributeLineParser parser;
+	
+	/*
+	 * Reader will read entries from this line.
+	 */
+	private final int startLineNumber;
 
+	/**
+	 * Constructor.<br>
+	 * 
+	 * @param source
+	 * @param objectType
+	 * @param delimiters
+	 * @throws Exception
+	 */
 	public DefaultAttributeTableReader(final URL source, final ObjectType objectType,
 			final List<String> delimiters) throws Exception {
 		this(source, objectType, delimiters, null,
-				DEF_KEY_COLUMN, null, null, null, null, null);
+				DEF_KEY_COLUMN, null, null, null, null, null, 0);
 	}
 
 	public DefaultAttributeTableReader(final URL source, final ObjectType objectType,
 			final List<String> delimiters, final int key,
 			final String[] columnNames) throws Exception {
 		this(source, objectType, delimiters, null,
-				DEF_KEY_COLUMN, null, null, columnNames, null, null);
+				DEF_KEY_COLUMN, null, null, columnNames, null, null, 0);
 	}
 
 	/**
@@ -63,9 +76,10 @@ public class DefaultAttributeTableReader implements TextTableReader {
 			final List<String> delimiters, final String listDelimiter,
 			final int keyIndex, final String mappingAttribute,
 			final List<Integer> aliasIndexList, final String[] attributeNames,
-			final byte[] attributeTypes, final boolean[] importFlag) throws Exception {
+			final byte[] attributeTypes, final boolean[] importFlag, final int startLineNumber) throws Exception {
 	
 		this.source = source;
+		this.startLineNumber = startLineNumber;
 		this.mapping = new AttributeMappingParameters(objectType,
 				delimiters, listDelimiter,
 				keyIndex, mappingAttribute,
@@ -74,10 +88,10 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		this.parser = new AttributeLineParser(mapping);
 	}
 	
-	public DefaultAttributeTableReader(final URL source, AttributeMappingParameters mapping) {
+	public DefaultAttributeTableReader(final URL source, AttributeMappingParameters mapping, final int startLineNumber) {
 		this.source = source;
 		this.mapping = mapping;
-		
+		this.startLineNumber = startLineNumber;
 		this.parser = new AttributeLineParser(mapping);
 	}
 
@@ -99,6 +113,7 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(
 				is));
 		String line;
+		int lineCount = 0;
 
 		/*
 		 * Read & extract one line at a time. The line can be Tab delimited,
@@ -107,13 +122,11 @@ public class DefaultAttributeTableReader implements TextTableReader {
 			/*
 			 * Ignore Empty & Commnet lines.
 			 */
-			if (!line.startsWith(COMMENT_CHAR) && line.trim().length() > 0) {
+			if (lineCount > startLineNumber && line.startsWith(COMMENT_CHAR) == false && line.trim().length() > 0) {
 				String[] parts = line.split(mapping.getDelimiterRegEx());
 				parser.parseEntry(parts);
-				
-				//parseEntry(line);
 			}
-
+			lineCount++;
 		}
 		is.close();
 		bufRd.close();

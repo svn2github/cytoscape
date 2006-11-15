@@ -31,12 +31,15 @@ public class NetworkTableReader extends AbstractGraphReader implements
 
 	protected final List<Integer> nodeList;
 	protected final List<Integer> edgeList;
+	
+	protected final int startLineNumber;
 
 	public NetworkTableReader(final String networkName, final URL sourceURL,
-			final NetworkTableMappingParameters nmp) {
+			final NetworkTableMappingParameters nmp, final int startLineNumber) {
 		super(networkName);
 		this.sourceURL = sourceURL;
 		this.nmp = nmp;
+		this.startLineNumber = startLineNumber;
 		this.nodeList = new ArrayList<Integer>();
 		this.edgeList = new ArrayList<Integer>();
 
@@ -60,16 +63,18 @@ public class NetworkTableReader extends AbstractGraphReader implements
 		/*
 		 * Read & extract one line at a time. The line can be Tab delimited,
 		 */
+		int lineCount = 0;
 		while ((line = bufRd.readLine()) != null) {
 			/*
 			 * Ignore Empty & Commnet lines.
 			 */
 			if (line.startsWith(COMMENT_CHAR) == false
-					&& line.trim().length() > 0) {
+					&& line.trim().length() > 0 && startLineNumber <= lineCount) {
 				String[] parts = line.split(nmp.getDelimiterRegEx());
 				parser.parseEntry(parts);
+				
 			}
-
+			lineCount++;
 		}
 		is.close();
 		bufRd.close();

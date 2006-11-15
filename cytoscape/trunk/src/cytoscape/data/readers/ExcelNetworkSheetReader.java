@@ -23,18 +23,26 @@ import cytoscape.data.CyAttributes;
 public class ExcelNetworkSheetReader extends NetworkTableReader {
 
 	private final HSSFSheet sheet;
+	
+	/*
+	 * Reader will read entries from this line.
+	 */
 
 	public ExcelNetworkSheetReader(String networkName, HSSFSheet sheet,
 			NetworkTableMappingParameters nmp) {
-		super(networkName, null, nmp);
-
+		this(networkName, sheet, nmp, 0);
+	}
+	
+	public ExcelNetworkSheetReader(String networkName, HSSFSheet sheet,
+			NetworkTableMappingParameters nmp, final int startLineNumber) {
+		super(networkName, null, nmp, startLineNumber);
 		this.sheet = sheet;
 	}
 
 	@Override
 	public void readTable() throws IOException {
 		HSSFRow row;
-		int rowCount = 0;
+		int rowCount = startLineNumber;
 		String[] cellsInOneRow;
 
 		while ((row = sheet.getRow(rowCount)) != null) {

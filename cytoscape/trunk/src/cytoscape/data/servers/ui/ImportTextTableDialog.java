@@ -218,7 +218,6 @@ public class ImportTextTableDialog extends JDialog implements
 		this.aliasTableMap = new HashMap<String, JTable>();
 		this.primaryKeyMap = new HashMap<String, Integer>();
 
-
 		annotationUrlMap = new HashMap<String, String>();
 		annotationFormatMap = new HashMap<String, String>();
 		annotationAttributesMap = new HashMap<String, Map<String, String>>();
@@ -305,13 +304,12 @@ public class ImportTextTableDialog extends JDialog implements
 			 * This is a signal from network import options panel.
 			 */
 			List<Integer> columnIdx = (List<Integer>) evt.getNewValue();
-			System.out.println("Got list: " + columnIdx.size());
 
 			AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) previewPanel
 					.getPreviewTable().getCellRenderer(0, 0);
 			rend.setSourceIndex(columnIdx.get(0));
 			rend.setTargetIndex(columnIdx.get(1));
-			rend.setInteractionIndex(columnIdx.get(2) - 1);
+			rend.setInteractionIndex(columnIdx.get(2));
 
 			JTableHeader hd = previewPanel.getPreviewTable().getTableHeader();
 			((HeaderRenderer) hd.getDefaultRenderer()).setSourceIndex(columnIdx
@@ -319,7 +317,7 @@ public class ImportTextTableDialog extends JDialog implements
 			((HeaderRenderer) hd.getDefaultRenderer()).setTargetIndex(columnIdx
 					.get(1));
 			((HeaderRenderer) hd.getDefaultRenderer())
-					.setInteractionIndex(columnIdx.get(2) - 1);
+					.setInteractionIndex(columnIdx.get(2));
 
 			previewPanel.getPreviewTable().repaint();
 			previewPanel.repaint();
@@ -1590,126 +1588,6 @@ public class ImportTextTableDialog extends JDialog implements
 																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))));
 
-		//		
-		//		
-		// textImportOptionPanelLayout
-		// .setHorizontalGroup(textImportOptionPanelLayout
-		// .createParallelGroup(
-		// org.jdesktop.layout.GroupLayout.LEADING)
-		// .add(
-		// textImportOptionPanelLayout
-		// .createSequentialGroup()
-		// .add(
-		// delimiterPanel,
-		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		// org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		// .addPreferredGap(
-		// org.jdesktop.layout.LayoutStyle.RELATED)
-		// .add(
-		// textImportOptionPanelLayout
-		// .createParallelGroup(
-		// org.jdesktop.layout.GroupLayout.LEADING)
-		// .add(attrNameCheckBox)
-		// .add(
-		// textImportOptionPanelLayout
-		// .createSequentialGroup()
-		// .add(
-		// showAllRadioButton)
-		// .addPreferredGap(
-		// org.jdesktop.layout.LayoutStyle.RELATED)
-		// .add(
-		// counterRadioButton)
-		// .addPreferredGap(
-		// org.jdesktop.layout.LayoutStyle.RELATED)
-		// .add(
-		// counterSpinner,
-		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		// 58,
-		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		// .addPreferredGap(
-		// org.jdesktop.layout.LayoutStyle.RELATED)
-		// .add(
-		// counterLabel)
-		// .add(
-		// 12,
-		// 12,
-		// 12)
-		// .add(
-		// reloadButton)))
-		// .addContainerGap(82, Short.MAX_VALUE)));
-		// textImportOptionPanelLayout
-		// .setVerticalGroup(textImportOptionPanelLayout
-		// .createParallelGroup(
-		// org.jdesktop.layout.GroupLayout.LEADING)
-		// .add(
-		// textImportOptionPanelLayout
-		// .createSequentialGroup()
-		// .add(attrNameCheckBox)
-		// .addPreferredGap(
-		// org.jdesktop.layout.LayoutStyle.RELATED)
-		// .add(
-		// textImportOptionPanelLayout
-		// .createParallelGroup(
-		// org.jdesktop.layout.GroupLayout.BASELINE)
-		// .add(showAllRadioButton)
-		// .add(counterRadioButton)
-		// .add(counterLabel)
-		// .add(
-		// counterSpinner,
-		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		// org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		// .add(reloadButton)))
-		// .add(delimiterPanel,
-		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		// org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE));
-		//
-		// GroupLayout advancedPanelLayout = new GroupLayout(advancedPanel);
-		// advancedPanel.setLayout(advancedPanelLayout);
-		// advancedPanelLayout
-		// .setHorizontalGroup(advancedPanelLayout
-		// .createParallelGroup(GroupLayout.LEADING)
-		// .add(
-		// advancedPanelLayout
-		// .createSequentialGroup()
-		// .addContainerGap()
-		// .add(advancedOptionCheckBox)
-		// .addPreferredGap(
-		// org.jdesktop.layout.LayoutStyle.RELATED)
-		// .add(textImportCheckBox)
-		// .addContainerGap(330, Short.MAX_VALUE))
-		// .add(attr2annotationPanel, GroupLayout.DEFAULT_SIZE,
-		// GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).add(
-		// GroupLayout.TRAILING, ontology2annotationPanel,
-		// GroupLayout.DEFAULT_SIZE,
-		// GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).add(
-		// textImportOptionPanel,
-		// GroupLayout.DEFAULT_SIZE,
-		// GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-		// advancedPanelLayout.setVerticalGroup(advancedPanelLayout
-		// .createParallelGroup(GroupLayout.LEADING).add(
-		// advancedPanelLayout.createSequentialGroup().add(
-		// advancedPanelLayout.createParallelGroup(
-		// GroupLayout.BASELINE).add(
-		// advancedOptionCheckBox).add(
-		// textImportCheckBox)).addPreferredGap(
-		// org.jdesktop.layout.LayoutStyle.RELATED).add(
-		// attr2annotationPanel,
-		// GroupLayout.PREFERRED_SIZE,
-		// GroupLayout.DEFAULT_SIZE,
-		// GroupLayout.PREFERRED_SIZE).addPreferredGap(
-		// org.jdesktop.layout.LayoutStyle.RELATED).add(
-		// ontology2annotationPanel,
-		// GroupLayout.PREFERRED_SIZE,
-		// GroupLayout.DEFAULT_SIZE,
-		// GroupLayout.PREFERRED_SIZE).addPreferredGap(
-		// org.jdesktop.layout.LayoutStyle.RELATED).add(
-		// textImportOptionPanel,
-		// GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-		// .addContainerGap()));
-
 		org.jdesktop.layout.GroupLayout advancedPanelLayout = new org.jdesktop.layout.GroupLayout(
 				advancedPanel);
 		advancedPanel.setLayout(advancedPanelLayout);
@@ -1951,6 +1829,17 @@ public class ImportTextTableDialog extends JDialog implements
 		if (checkDataSourceError() == false) {
 			return;
 		}
+		
+		/*
+		 * Get start line number.  If "transfer" check box is true, then
+		 * start reading from the second line.
+		 */
+		final int startLineNumber; 
+		if(attrNameCheckBox.isSelected()) {
+			startLineNumber = 1;
+		} else {
+			startLineNumber = 0;
+		}
 
 		/*
 		 * Get Attribute Names
@@ -2047,13 +1936,13 @@ public class ImportTextTableDialog extends JDialog implements
 
 					HSSFSheet sheet = wb.getSheetAt(i);
 					loadAnnotation(
-							new ExcelAttributeSheetReader(sheet, mapping),
+							new ExcelAttributeSheetReader(sheet, mapping, startLineNumber),
 							null, null);
 				}
 
 			} else {
 				loadAnnotation(
-						new DefaultAttributeTableReader(source, mapping), null,
+						new DefaultAttributeTableReader(source, mapping, startLineNumber), null,
 						null);
 			}
 
@@ -2114,7 +2003,7 @@ public class ImportTextTableDialog extends JDialog implements
 					.getText();
 
 			final int interactionColumnIndex = networkImportPanel
-					.getInteractionIndex() - 1;
+					.getInteractionIndex();
 
 			final NetworkTableMappingParameters nmp = new NetworkTableMappingParameters(
 					checkDelimiter(), listDelimiter, attributeNames,
@@ -2130,12 +2019,18 @@ public class ImportTextTableDialog extends JDialog implements
 				HSSFWorkbook wb = new HSSFWorkbook(excelIn);
 				HSSFSheet sheet = wb.getSheetAt(0);
 				networkName = wb.getSheetName(0);
-				reader = new ExcelNetworkSheetReader(networkName, sheet, nmp);
+				if (attrNameCheckBox.isSelected()) {
+					reader = new ExcelNetworkSheetReader(networkName, sheet,
+							nmp, 1);
+				} else {
+					reader = new ExcelNetworkSheetReader(networkName, sheet,
+							nmp);
+				}
 			} else {
 				// Get name from URL.
 				final String[] parts = networkSource.toString().split("/");
 				networkName = parts[parts.length - 1];
-				reader = new NetworkTableReader(networkName, networkSource, nmp);
+				reader = new NetworkTableReader(networkName, networkSource, nmp, startLineNumber);
 			}
 
 			loadNetwork(networkName, reader, networkSource);
@@ -2562,7 +2457,7 @@ public class ImportTextTableDialog extends JDialog implements
 			previewSize = Integer
 					.parseInt(counterSpinner.getValue().toString());
 		}
-
+		
 		/*
 		 * Load data from the given URL.
 		 */
@@ -2582,17 +2477,20 @@ public class ImportTextTableDialog extends JDialog implements
 
 			networkImportPanel.setComboBoxes(columnNames);
 
-			if(sourceURL.toString().endsWith(EXCEL_EXT)) {
+			if (sourceURL.toString().endsWith(EXCEL_EXT)) {
 				switchDelimiterCheckBoxes(false);
 			} else {
 				switchDelimiterCheckBoxes(true);
 			}
 			AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) previewPanel
 					.getPreviewTable().getCellRenderer(0, 0);
-			rend.setSourceIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
-			rend.setTargetIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
-			rend.setInteractionIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
-			
+			rend
+					.setSourceIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
+			rend
+					.setTargetIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
+			rend
+					.setInteractionIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
+
 		} else {
 			for (int i = 0; i < previewPanel.getTableCount(); i++) {
 				final int columnCount = previewPanel.getPreviewTable(i)
@@ -2684,7 +2582,7 @@ public class ImportTextTableDialog extends JDialog implements
 		otherCheckBox.setSelected(false);
 		otherDelimiterTextField.setEnabled(false);
 	}
-	
+
 	private void switchDelimiterCheckBoxes(Boolean state) {
 		tabCheckBox.setEnabled(state);
 		commaCheckBox.setEnabled(state);
@@ -3104,6 +3002,8 @@ public class ImportTextTableDialog extends JDialog implements
 		 * 
 		 */
 		JTable table = previewPanel.getPreviewTable();
+		
+		
 		if (table == null || table.getModel() == null
 				|| table.getColumnCount() == 0) {
 			JOptionPane.showMessageDialog(this, "No table selected.",
@@ -3114,6 +3014,25 @@ public class ImportTextTableDialog extends JDialog implements
 					"Table should contain at least 2 columns.",
 					"Invalid Table!", JOptionPane.INFORMATION_MESSAGE);
 			return false;
+		}
+		
+		if(dialogType == NETWORK_IMPORT) {
+
+			final int sIdx = networkImportPanel.getSourceIndex();
+			final int tIdx = networkImportPanel.getTargetIndex();
+			final int iIdx = networkImportPanel.getInteractionIndex();
+			
+			if(sIdx == -1 || tIdx == -1 ) {
+				JOptionPane.showMessageDialog(this, "Source or Target index not selected.",
+						"Please select both source & target index.", JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			}
+			
+			if(sIdx == tIdx || ((iIdx == sIdx || iIdx == tIdx) && iIdx != -1) ) {
+				JOptionPane.showMessageDialog(this, "You should choose different columns for source and target.",
+						"Same column index!", JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			}
 		}
 
 		return true;

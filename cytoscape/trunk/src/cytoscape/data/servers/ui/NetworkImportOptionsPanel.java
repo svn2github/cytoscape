@@ -15,6 +15,8 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -26,50 +28,6 @@ import javax.swing.SwingConstants;
  * @author Keiichiro Ono
  */
 public class NetworkImportOptionsPanel extends JPanel {
-
-//	/**
-//	 * For importing network files in text table/Excel format.
-//	 */
-//	public enum NetworkImportTemplates {
-//		DEFAULT(
-//				"Network Table with Interactions (Source, Target, Interaction, Edge Attribute 1, Edge Attribute 2, ...",
-//				0, 1, 2), NO_INTERACTION(
-//				"Network Table without Interactions (Source, Target, Edge Attribute 1, Edge Attribute 2, ...",
-//				0, 1, -1), EXT_SIF(
-//				"SIF-like format (Source, Interaction, Target, Edge Attribute 1, Edge Attribute 2, ...",
-//				0, 2, 1),
-//		// IMEX("IMEx Data Submission Format", -1, -1, -1),
-//		OTHER("Other", 0, 1, 2);
-//
-//		private final String value;
-//		private final int sourceCol;
-//		private final int targetCol;
-//		private final int interactionCol;
-//
-//		private NetworkImportTemplates(String value, int source, int target,
-//				int interaction) {
-//			this.value = value;
-//			this.sourceCol = source;
-//			this.targetCol = target;
-//			this.interactionCol = interaction;
-//		}
-//
-//		public String toString() {
-//			return value;
-//		}
-//
-//		public int getSource() {
-//			return sourceCol;
-//		}
-//
-//		public int getTarget() {
-//			return targetCol;
-//		}
-//
-//		public int getInteraction() {
-//			return interactionCol;
-//		}
-//	}
 
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
@@ -102,14 +60,6 @@ public class NetworkImportOptionsPanel extends JPanel {
 		
 		setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Network Import Options"));
-
-//		formatComboBox.setModel(new javax.swing.DefaultComboBoxModel(
-//				NetworkImportTemplates.values()));
-//		formatComboBox.addActionListener(new java.awt.event.ActionListener() {
-//			public void actionPerformed(java.awt.event.ActionEvent evt) {
-//				formatComboBoxActionPerformed(evt);
-//			}
-//		});
 
 		advancedOptionPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Advanced Options"));
@@ -301,56 +251,22 @@ public class NetworkImportOptionsPanel extends JPanel {
 
 
 	private void networkColumnsComboBoxActionPerformed(
-			java.awt.event.ActionEvent evt) {
+			java.awt.event.ActionEvent e) {
+		
+		final int sIdx = sourceComboBox.getSelectedIndex()-1;
+		final int tIdx = targetComboBox.getSelectedIndex()-1;
+		final int iIdx = interactionComboBox.getSelectedIndex()-1;
 
 		List<Integer> colIdx = new ArrayList<Integer>();
 
-		colIdx.add(sourceComboBox.getSelectedIndex());
-		colIdx.add(targetComboBox.getSelectedIndex());
-		colIdx.add(interactionComboBox.getSelectedIndex());
+		colIdx.add(sIdx);
+		colIdx.add(tIdx);
+		colIdx.add(iIdx);
 
 		changes.firePropertyChange(
 				ImportTextTableDialog.NETWORK_IMPORT_TEMPLATE_CHANGED, null,
 				colIdx);
 	}
-
-	// private void interactionComboBoxActionPerformed(
-	// java.awt.event.ActionEvent evt) {
-	// // TODO add your handling code here:
-	// }
-	//
-	// private void sourceComboBoxActionPerformed(java.awt.event.ActionEvent
-	// evt) {
-	// // TODO add your handling code here:
-	// }
-
-//	private void formatComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-//		List<Integer> colIdx = new ArrayList<Integer>();
-//		NetworkImportTemplates selected = (NetworkImportTemplates) formatComboBox
-//				.getSelectedItem();
-//
-//		colIdx.add(selected.getSource());
-//		colIdx.add(selected.getTarget());
-//		colIdx.add(selected.getInteraction());
-//
-//		if (selected.getInteraction() == -1) {
-//			interactionComboBox.setSelectedIndex(0);
-//		} else {
-//			interactionComboBox.setSelectedIndex(selected.getInteraction() + 1);
-//		}
-//		sourceComboBox.setSelectedIndex(selected.getSource());
-//		targetComboBox.setSelectedIndex(selected.getTarget());
-//
-//		if (selected == NetworkImportTemplates.OTHER) {
-//			sourceComboBox.setEnabled(true);
-//			targetComboBox.setEnabled(true);
-//			interactionComboBox.setEnabled(true);
-//		} else {
-//			sourceComboBox.setEnabled(false);
-//			targetComboBox.setEnabled(false);
-//			interactionComboBox.setEnabled(false);
-//		}
-//	}
 
 	/* ============================================================================================== */
 
@@ -375,6 +291,8 @@ public class NetworkImportOptionsPanel extends JPanel {
 		}
 
 		interactionComboBox.insertItemAt("Default Interaction", 0);
+		sourceComboBox.insertItemAt("Select Source node column...", 0);
+		targetComboBox.insertItemAt("Select Target node column...", 0);
 		
 		sourceComboBox.setEnabled(true);
 		targetComboBox.setEnabled(true);
@@ -389,15 +307,15 @@ public class NetworkImportOptionsPanel extends JPanel {
 	 * Get index from combo boxes. 
 	 */
 	public int getSourceIndex() {
-		return sourceComboBox.getSelectedIndex();
+		return sourceComboBox.getSelectedIndex()-1;
 	}
 	
 	public int getTargetIndex() {
-		return targetComboBox.getSelectedIndex();
+		return targetComboBox.getSelectedIndex()-1;
 	}
 	
 	public int getInteractionIndex() {
-		return interactionComboBox.getSelectedIndex();
+		return interactionComboBox.getSelectedIndex()-1;
 	}
 
 	// Variables declaration - do not modify
