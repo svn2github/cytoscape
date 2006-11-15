@@ -2389,7 +2389,13 @@ public class ImportTextTableDialog extends JDialog implements
 		} else {
 			tooltip = tooltip.replace("%Description%", description);
 		}
-		return tooltip.replace("%SourceURL%", ontologyUrlMap.get(key));
+		
+		if(ontologyUrlMap.get(key) != null) {
+			return tooltip.replace("%SourceURL%", ontologyUrlMap.get(key));
+		} else {
+			return tooltip.replace("%SourceURL%", "N/A");
+		}
+		
 	}
 
 	private String getAnnotationTooltip() {
@@ -2652,6 +2658,10 @@ public class ImportTextTableDialog extends JDialog implements
 	 */
 	private void setKeyList() {
 
+		if(mappingAttributeComboBox
+				.getSelectedItem() == null) {
+			return;
+		}
 		String selectedKeyAttribute = mappingAttributeComboBox
 				.getSelectedItem().toString();
 

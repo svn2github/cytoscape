@@ -39,8 +39,6 @@ public class AttributeLineParser {
 	 */
 	public void parseEntry(String[] parts) {
 		
-		System.out.println(mapping.getObjectType().toString() + " <--- ####### Net: ");
-		
 		/*
 		 * Split the line and extract values
 		 */
