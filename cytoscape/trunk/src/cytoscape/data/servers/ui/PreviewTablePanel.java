@@ -77,7 +77,7 @@ public class PreviewTablePanel extends JPanel {
 	/*
 	 * Default messages
 	 */
-	private static final String DEF_MESSAGE = "Right Click: ON/OFF Column";
+	private static final String DEF_MESSAGE = "Legend:";
 	private static final String DEF_TAB_MESSAGE = "Data File Preview Window";
 	private static final String EXCEL_EXT = ".xls";
 
@@ -264,33 +264,36 @@ public class PreviewTablePanel extends JPanel {
 
 		leftClickLabel
 				.setHorizontalAlignment(SwingConstants.CENTER);
-		leftClickLabel.setText("Left Click: Edit Column");
+		leftClickLabel.setText("Left Click: Edit Column  Right Click: ON/OFF Column");
 		leftClickLabel.setFont(LABEL_FONT.getFont());
 		leftClickLabel.setForeground(Color.red);
 
 		rightClickLabel.setFont(LABEL_FONT.getFont());
-		rightClickLabel.setForeground(Color.red);
-		rightClickLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		rightClickLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		rightClickLabel.setText(message);
 
-		onLabel.setBackground(HEADER_BACKGROUND_COLOR.getColor());
+		onLabel.setFont(LABEL_FONT.getFont());
+		onLabel.setForeground(Color.WHITE);
+		onLabel.setBackground(PRIMARY_KEY_COLOR.getColor());
 		onLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		onLabel
-				.setIcon(CHECKED_ICON.getIcon());
-		onLabel.setText("ON");
+//		onLabel
+//				.setIcon(CHECKED_ICON.getIcon());
+		onLabel.setText("Key");
 		onLabel.setToolTipText("Columns in this color will be imported.");
-		onLabel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
-				0, 0, 0), 1, true));
+//		onLabel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
+//				0, 0, 0), 1, true));
 		onLabel.setOpaque(true);
 
-		offLabel.setBackground(HEADER_UNSELECTED_BACKGROUND_COLOR.getColor());
+		offLabel.setFont(LABEL_FONT.getFont());
+		offLabel.setForeground(Color.WHITE);
+		offLabel.setBackground(ALIAS_COLOR.getColor());
 		offLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		offLabel
-				.setIcon(UNCHECKED_ICON.getIcon());
-		offLabel.setText("OFF");
+//		offLabel
+//				.setIcon(UNCHECKED_ICON.getIcon());
+		offLabel.setText("Alias");
 		offLabel.setToolTipText("Columns in this color will NOT be imported.");
-		offLabel.setBorder(new javax.swing.border.LineBorder(
-				new java.awt.Color(0, 0, 0), 1, true));
+//		offLabel.setBorder(new javax.swing.border.LineBorder(
+//				new java.awt.Color(0, 0, 0), 1, true));
 		offLabel.setOpaque(true);
 
 		GroupLayout previewPanelLayout = new GroupLayout(this);

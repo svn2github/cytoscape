@@ -3,6 +3,7 @@ package cytoscape.data.servers.ui.enums;
 import java.awt.Font;
 
 public enum ImportDialogFontTheme {
+	TITLE_FONT(new Font("Sans-serif", Font.BOLD, 18)),
 	SELECTED_COL_FONT(new Font("Sans-serif", Font.BOLD, 14)),
 	SELECTED_FONT(new Font("Sans-serif", Font.BOLD, 14)),
 	UNSELECTED_FONT(new Font("Sans-serif",Font.PLAIN, 14)),

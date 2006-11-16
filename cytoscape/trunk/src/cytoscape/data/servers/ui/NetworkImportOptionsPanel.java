@@ -59,11 +59,9 @@ public class NetworkImportOptionsPanel extends JPanel {
 		edgeAttributesLabel = new javax.swing.JLabel();
 		
 		setBorder(javax.swing.BorderFactory
-				.createTitledBorder("Network Import Options"));
+				.createTitledBorder("Interaction Definition"));
 
-		advancedOptionPanel.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("Advanced Options"));
-		sourceLabel.setText("Source");
+		sourceLabel.setText("Source Interaction");
 		sourceLabel.setForeground(SOURCE_COLOR.getColor());
 		sourceLabel.setFont(LABEL_FONT.getFont());
 
@@ -75,7 +73,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 			}
 		});
 
-		interactionLabel.setText("Interaction");
+		interactionLabel.setText("Interaction Type");
 		interactionLabel.setForeground(INTERACTION_COLOR.getColor());
 		interactionLabel.setFont(LABEL_FONT.getFont());
 
@@ -88,7 +86,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 					}
 				});
 
-		targetLabel.setText("Target");
+		targetLabel.setText("Target Interaction");
 		targetLabel.setForeground(TARGET_COLOR.getColor());
 		targetLabel.setFont(LABEL_FONT.getFont());
 

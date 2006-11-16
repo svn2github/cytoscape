@@ -23,6 +23,7 @@ import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.REMOTE_SOURCE
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.RIGHT_ARROW_ICON;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.SPREADSHEET_ICON_LARGE;
 import static cytoscape.data.servers.ui.enums.ImportDialogIconSets.STRING_ICON;
+import static cytoscape.data.servers.ui.enums.ImportDialogFontTheme.*;
 import giny.model.Edge;
 import giny.model.Node;
 
@@ -403,11 +404,18 @@ public class ImportTextTableDialog extends JDialog implements
 
 		simpleAttributeImportPanel = new javax.swing.JPanel();
 		attributeFileLabel = new javax.swing.JLabel();
+		
+		titleLabel.setFont(TITLE_FONT.getFont());
+		
 
 		if (dialogType == NETWORK_IMPORT) {
+			
 			previewPanel = new PreviewTablePanel(null,
 					PreviewTablePanel.NETWORK_PREVIEW);
 		} else {
+			defaultInteractionLabel.setEnabled(false);
+			defaultInteractionTextField.setEnabled(false);
+			
 			previewPanel = new PreviewTablePanel();
 		}
 
@@ -434,11 +442,6 @@ public class ImportTextTableDialog extends JDialog implements
 		titleIconLabel3.setIcon(new ImageIcon(Cytoscape.class
 				.getResource("images/icon48.png")));
 
-		titleLabel.setFont(new java.awt.Font("Serif", 1, 18));
-		titleLabel.setText("Import and Map Annotation Table");
-
-		titleLabel.setFont(new java.awt.Font("Serif", 1, 18));
-		titleLabel.setText("Import and Map Annotation Table");
 
 		titleSeparator.setForeground(java.awt.Color.blue);
 
@@ -2227,7 +2230,7 @@ public class ImportTextTableDialog extends JDialog implements
 		 */
 		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
 			setTitle("Import Annotation File");
-			titleLabel.setText("Import Attribute File");
+			titleLabel.setText("Import Attribute from Table");
 			annotationAndOntologyImportPanel.setVisible(false);
 		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			setTitle("Import Ontology Data and Annotations");
@@ -2246,7 +2249,7 @@ public class ImportTextTableDialog extends JDialog implements
 					.toString());
 		} else if (dialogType == NETWORK_IMPORT) {
 			setTitle("Import Network and Edge Attributes from File");
-			titleLabel.setText("Import Network Table");
+			titleLabel.setText("Import Network from Table");
 			annotationAndOntologyImportPanel.setVisible(false);
 		}
 

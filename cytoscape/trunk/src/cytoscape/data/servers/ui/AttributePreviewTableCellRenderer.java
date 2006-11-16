@@ -190,7 +190,7 @@ public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer 
 		} else if( column == interaction) {
 			setForeground(INTERACTION_COLOR.getColor());
 			importFlag[column] = true;
-		} else if(column != source && column != target && column != interaction && source != PARAMETER_NOT_EXIST ) {
+		} else if(column != source && column != target && column != interaction && source != PARAMETER_NOT_EXIST && importFlag[column] == true) {
 			setForeground(EDGE_ATTR_COLOR.getColor());
 		} else {
 			setForeground(Color.BLACK);
@@ -266,7 +266,7 @@ class HeaderRenderer implements TableCellRenderer {
 			columnName.setForeground(TARGET_COLOR.getColor());
 		} else if(col == interaction) {
 			columnName.setForeground(INTERACTION_COLOR.getColor());
-		} else if(col != target && col != source && col != interaction && source != PARAMETER_NOT_EXIST) {
+		} else if(col != target && col != source && col != interaction && source != PARAMETER_NOT_EXIST && flag == true) {
 			columnName.setForeground(EDGE_ATTR_COLOR.getColor());
 		}
 		
