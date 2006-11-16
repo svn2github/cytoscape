@@ -51,7 +51,7 @@ import cytoscape.task.TaskMonitor;
  * <LI>By default, this class will automatically index node objects based on the
  * their unique node identifier, e.g. node.getIdentifier().</LI>
  * <LI>You can index by a different attribute by calling the
- * {@link QuickFind#reindexNetwork(CyNetwork, String,
+ * {@link QuickFind#reindexNetwork(CyNetwork, int, String,
  * cytoscape.task.TaskMonitor)}.
  * <LI>You can specify any attribute name you like.  However, QuickFind
  * is not yet capable of indexing attributes of type CyAttributes.TYPE_COMPLEX.
@@ -63,6 +63,16 @@ import cytoscape.task.TaskMonitor;
  * @author Ethan Cerami.
  */
 public interface QuickFind {
+    /**
+     * Index Nodes
+     */
+    int INDEX_NODES = 0;
+
+    /**
+     * Index Edges
+     */
+    int INDEX_EDGES = 1;
+
     /**
      * Node / Edge Unique Identifier.
      */
@@ -125,7 +135,7 @@ public interface QuickFind {
     /**
      * Reindexes a network with the specified controlling attribute.
      * <p/>
-     * This method will iterate through all noddes within the
+     * This method will iterate through all nodes within the
      * registered network, and add each node to the text index.
      * For each node, the attribute specified will be used to create the
      * text index.
@@ -135,13 +145,14 @@ public interface QuickFind {
      * <pre>reindexNetwork (cyNetwork, "BIOPAX_NAME", tm);</pre>
      *
      * @param cyNetwork            Cytoscape network.
+     * @param indexType            Must be INDEX_NODES or INDEX_EDGES.
      * @param controllingAttribute Attribute used to index all nodes.
      * @param taskMonitor          Task Monitor, used to monitor long-term
      *                             progress of task.
      * @return GenericIndex Object.
      */
     GenericIndex reindexNetwork(CyNetwork cyNetwork,
-            String controllingAttribute, TaskMonitor taskMonitor);
+            int indexType, String controllingAttribute, TaskMonitor taskMonitor);
 
     /**
      * Adds a new QuickFind Listener.

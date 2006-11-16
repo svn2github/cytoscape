@@ -23,12 +23,14 @@ class QuickFindImpl implements QuickFind {
     private ArrayList listenerList = new ArrayList();
     private HashMap networkMap = new HashMap();
     private CyAttributes nodeAttributes;
+    private CyAttributes edgeAttributes;
     private int maxProgress;
     private int currentProgress;
     private static final boolean OUTPUT_PERFORMANCE_STATS = false;
 
-    public QuickFindImpl(CyAttributes nodeAttributes) {
+    public QuickFindImpl(CyAttributes nodeAttributes, CyAttributes edgeAttributes) {
         this.nodeAttributes = nodeAttributes;
+        this.edgeAttributes = edgeAttributes;
     }
 
     public void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
@@ -47,7 +49,7 @@ class QuickFindImpl implements QuickFind {
 
         //  Determine maxProgress
         currentProgress = 0;
-        maxProgress = getGraphObjectCount(network);
+        maxProgress = getGraphObjectCount(network, QuickFind.INDEX_NODES);
 
         // Notify all listeners of add event
         for (int i = 0; i < listenerList.size(); i++) {
@@ -66,8 +68,8 @@ class QuickFindImpl implements QuickFind {
         //  Create Appropriate Index Type, based on attribute type.
         int attributeType = nodeAttributes.getType(controllingAttribute);
         GenericIndex index = createIndex(attributeType, controllingAttribute);
-        indexNetwork(network, attributeType, controllingAttribute, index,
-                taskMonitor);
+        indexNetwork(network, QuickFind.INDEX_NODES, nodeAttributes,
+                attributeType, controllingAttribute, index, taskMonitor);
         networkMap.put(network, index);
 
         // Notify all listeners of end index event
@@ -94,7 +96,12 @@ class QuickFindImpl implements QuickFind {
     }
 
     public GenericIndex reindexNetwork(CyNetwork cyNetwork,
-            String controllingAttribute, TaskMonitor taskMonitor) {
+            int indexType, String controllingAttribute, TaskMonitor taskMonitor) {
+
+        if (indexType != QuickFind.INDEX_NODES && indexType != QuickFind.INDEX_EDGES) {
+            throw new IllegalArgumentException ("indexType must be set to: "
+                + "QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES");
+        }
 
         // Notify all listeners of index start event
         for (int i = 0; i < listenerList.size(); i++) {
@@ -106,15 +113,23 @@ class QuickFindImpl implements QuickFind {
         //  Determine maxProgress
         currentProgress = 0;
         maxProgress = 0;
+
+        CyAttributes attributes;
+        if (indexType == QuickFind.INDEX_NODES) {
+            attributes = nodeAttributes;
+        } else {
+            attributes = edgeAttributes;
+        }
+
         if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
-            String attributeNames[] = nodeAttributes.getAttributeNames();
+            String attributeNames[] = attributes.getAttributeNames();
             for (int i = 0; i < attributeNames.length; i++) {
-                if (nodeAttributes.getUserVisible(attributeNames[i])) {
-                    maxProgress += getGraphObjectCount(cyNetwork);
+                if (attributes.getUserVisible(attributeNames[i])) {
+                    maxProgress += getGraphObjectCount(cyNetwork, indexType);
                 }
             }
         } else {
-            maxProgress = getGraphObjectCount(cyNetwork);
+            maxProgress = getGraphObjectCount(cyNetwork, indexType);
         }
 
         GenericIndex index = null;
@@ -122,20 +137,21 @@ class QuickFindImpl implements QuickFind {
         if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
             //  Option 1:  Index all attributes
             index = createIndex(CyAttributes.TYPE_STRING, controllingAttribute);
-            String attributeNames[] = nodeAttributes.getAttributeNames();
+            String attributeNames[] = attributes.getAttributeNames();
             for (int i = 0; i < attributeNames.length; i++) {
-                if (nodeAttributes.getUserVisible(attributeNames[i])) {
-                    indexNetwork(cyNetwork, CyAttributes.TYPE_STRING,
-                            attributeNames[i], index, taskMonitor);
+                if (attributes.getUserVisible(attributeNames[i])) {
+                    indexNetwork(cyNetwork, indexType, attributes,
+                            CyAttributes.TYPE_STRING, attributeNames[i], index,
+                            taskMonitor);
                 }
             }
         } else {
             //  Option 2:  Index single attribute.
             //  Create appropriate index type, based on attribute type.
-            int attributeType = nodeAttributes.getType(controllingAttribute);
+            int attributeType = attributes.getType(controllingAttribute);
             index = createIndex(attributeType, controllingAttribute);
-            indexNetwork(cyNetwork, attributeType, controllingAttribute,
-                    index, taskMonitor);
+            indexNetwork(cyNetwork, indexType, attributes, attributeType,
+                    controllingAttribute, index, taskMonitor);
         }
         networkMap.put(cyNetwork, index);
 
@@ -161,22 +177,37 @@ class QuickFindImpl implements QuickFind {
                 new QuickFindListener[listenerList.size()]);
     }
 
-    private int getGraphObjectCount(CyNetwork network) {
-        return network.getNodeCount();
+    private int getGraphObjectCount(CyNetwork network, int indexType) {
+        if (indexType == QuickFind.INDEX_NODES) {
+            return network.getNodeCount();
+        } else {
+            return network.getEdgeCount();
+        }
     }
 
-    private void indexNetwork(CyNetwork network, int attributeType,
+    private void indexNetwork(CyNetwork network, int indexType,
+            CyAttributes attributes, int attributeType,
             String controllingAttribute, GenericIndex index,
             TaskMonitor taskMonitor) {
         Date start = new Date();
-        Iterator iterator = network.nodesIterator();
-        taskMonitor.setStatus("Indexing node attributes");
+        Iterator iterator;
+        if (indexType == QuickFind.INDEX_NODES) {
+            taskMonitor.setStatus("Indexing node attributes");
+            iterator = network.nodesIterator();
+        } else if (indexType == QuickFind.INDEX_EDGES) {
+            taskMonitor.setStatus("Indexing edge attributes");
+            iterator = network.edgesIterator();
+        } else {
+            throw new IllegalArgumentException ("indexType must be set to: "
+            + "QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES");
+        }
 
         //  Iterate through all nodes or edges
         while (iterator.hasNext()) {
             currentProgress++;
             GraphObject graphObject = (GraphObject) iterator.next();
-            addToIndex(attributeType, graphObject, controllingAttribute, index);
+            addToIndex(attributeType, attributes, graphObject,
+                    controllingAttribute, index);
             //  Determine percent complete
             int percentComplete = 100 * (int) (currentProgress
                     / (double) maxProgress);
@@ -216,24 +247,25 @@ class QuickFindImpl implements QuickFind {
      * @param controllingAttribute  Controlling attribute.
      * @param index                 Index to add to.
      */
-    private void addToIndex(int attributeType, GraphObject graphObject,
-            String controllingAttribute, GenericIndex index) {
+    private void addToIndex(int attributeType, CyAttributes attributes,
+            GraphObject graphObject, String controllingAttribute,
+            GenericIndex index) {
         //  Get attribute values, and index
         if (attributeType == CyAttributes.TYPE_INTEGER) {
-            Integer value = nodeAttributes.getIntegerAttribute
+            Integer value = attributes.getIntegerAttribute
                     (graphObject.getIdentifier(), controllingAttribute);
             if (value != null) {
                 index.addToIndex(value, graphObject);
             }
         } else if (attributeType == CyAttributes.TYPE_FLOATING) {
-            Double value = nodeAttributes.getDoubleAttribute
+            Double value = attributes.getDoubleAttribute
                     (graphObject.getIdentifier(), controllingAttribute);
             if (value != null) {
                 index.addToIndex(value, graphObject);
             }
         } else {
             String values[] = CyAttributesUtil.getAttributeValues
-                (nodeAttributes, graphObject.getIdentifier(),
+                (attributes, graphObject.getIdentifier(),
                 controllingAttribute);
             if (values != null) {
                 addStringsToIndex(values, graphObject, index);
