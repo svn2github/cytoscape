@@ -50,7 +50,7 @@
     <target name="clean"
         description="Deletes all build files and starts fresh">
         <delete dir="${build.dir}"/>
-        <delete file="${dist.dir}/quick_find.jar"/>
+        <delete dir="${dist.dir}"/>
     </target>
 
     <!-- ==================== Compile Target ==============================-->
