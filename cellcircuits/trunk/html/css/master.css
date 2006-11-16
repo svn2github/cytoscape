@@ -17,6 +17,12 @@ p {
 	padding: 0;	
 }
 
+font.about-keywords {
+        font-weight: bold;
+        font-size: larger;
+        color:#69AF93;
+}
+
 div.links {
 	width: 11em;
 	font-size: 0.8em;
