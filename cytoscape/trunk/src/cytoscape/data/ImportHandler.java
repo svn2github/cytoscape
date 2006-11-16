@@ -11,6 +11,7 @@ import java.awt.Cursor;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +19,8 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.swing.JOptionPane;
@@ -125,6 +128,19 @@ public class ImportHandler {
             }
         }
         return null;
+    }
+
+    /**
+     * Gets the GraphReader that is capable of reading URL.
+     *
+     * @param pURLstr -- the URL string, pProxyServer -- the proxy server or null .
+     * @return GraphReader capable of reading the specified URL.
+     */
+    public GraphReader getReader(String pURLstr, Proxy pProxyServer)
+    	throws MalformedURLException,IOException
+    {    	
+    	File tmpFile = getNetworkFromURL(pURLstr, pProxyServer);	
+    	return getReader(tmpFile.getAbsolutePath());    	
     }
 
     /**
@@ -267,82 +283,145 @@ public class ImportHandler {
         return stringAns;
     }
     
+	
     /**
      * Download a temporary file from the given URL. The file will be saved in the 
      * temporary directory and will be deleted after Cytoscape exits.
      */
-	public static File downloadFromURL(Component pParent, String pURLstr, Proxy pProxyServer)
+	public File downloadFromURL(String pURLstr, Proxy pProxyServer) throws MalformedURLException,
+	IOException
 	{				
 		URL theUrl;
-		try {
-			theUrl = new URL(pURLstr);			
-		}
-		catch (MalformedURLException mExp) {
-		    JOptionPane.showMessageDialog(pParent, "URL error!", "Warning", JOptionPane.INFORMATION_MESSAGE);
-			return null;
-		}
+		theUrl = new URL(pURLstr);			
 		
 		URLConnection conn = null;;
 		
-		try {
-			if (pProxyServer == null) {
-				conn = theUrl.openConnection();							
-			}
-			else {
-				conn = theUrl.openConnection(pProxyServer);
-			}			
+		if (pProxyServer == null) {
+			conn = theUrl.openConnection();							
 		}
-		catch (IOException ioEx) {
-		    JOptionPane.showMessageDialog(pParent, "Failed to connect to the remote server!", "Warning", JOptionPane.INFORMATION_MESSAGE);
-			return null;			
+		else {
+			conn = theUrl.openConnection(pProxyServer);
 		}			
-
-		// create a tmp file, which will be deleted upon exit
-		String fileName = theUrl.getFile();
-		String baseFilename = fileName.substring(fileName.lastIndexOf("/")+1);
 		
+		//Create a unique filename based on the current time
+		String baseFilename = "";
+		if (baseFilename.equals("")) {
+			Date date = new Date();
+			DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
+			baseFilename = df.format(date);
+		}
+		
+		//create a tmp file, which will be deleted upon exit
 		java.util.Properties theProperties = System.getProperties();
 		File tmpFile = new File(theProperties.getProperty("java.io.tmpdir"), baseFilename);
-		
+		if (tmpFile.exists()) {
+			baseFilename = baseFilename +"a";
+			tmpFile = new File(theProperties.getProperty("java.io.tmpdir"), baseFilename);
+		}
 	    tmpFile.deleteOnExit();
 
 	    BufferedWriter out = null;
 	    BufferedReader in = null;
-	    try {
-			// set the wait cursor
-			pParent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-		     out = new BufferedWriter(new FileWriter(tmpFile));
-			 in = new BufferedReader(new InputStreamReader(conn.getInputStream()));	    	
-	    }
-	    catch (IOException ioExp) {
-		    JOptionPane.showMessageDialog(pParent, "Failed to download the file!", "Warning", JOptionPane.INFORMATION_MESSAGE);
-			pParent.setCursor(Cursor.getDefaultCursor());
-
-		    return null;				    	
-	    }
+	    out = new BufferedWriter(new FileWriter(tmpFile));
+		in = new BufferedReader(new InputStreamReader(conn.getInputStream()));	    	
 	    	    
-		try {
-			 String inputLine;
-
-		     // Write to temp file
-			 while ((inputLine = in.readLine()) != null) 
-			 {
-			     out.write(inputLine+"\n");
-			 }
-			 in.close();
-		     out.close();				
-		}
-		catch (IOException ioExp)
+	    // Write to tmp file
+		String inputLine;
+		while ((inputLine = in.readLine()) != null) 
 		{
-		    JOptionPane.showMessageDialog(pParent, "Failed to write to a tmp file on local disk!", "Warning", JOptionPane.INFORMATION_MESSAGE);
-			return null;				    	
-		}		
-		finally {
-			// Always restore the cursor, even there is exception
-			pParent.setCursor(Cursor.getDefaultCursor());
-		}			
+		    out.write(inputLine+"\n");
+		}
 
+		in.close();
+	    out.close();				
+		
 		return tmpFile;
 	}//downloadFromURL()
+	
+	
+    /**
+     * Download a network from URL
+     */
+	public File getNetworkFromURL(String pURLstr, Proxy pProxyServer)
+	throws MalformedURLException,IOException
+	{
+		//System.out.println("ImportHandler.getNetworkFromURL() ...");
+		File tmpFile = downloadFromURL(pURLstr, pProxyServer);
+		
+		if (tmpFile == null) return null;
+		
+		String baseFilename = "";
+
+		//Try if we can determine the network type from URLstr
+		//test the URL against the various file extensions,if one matches, then extract the basename
+		Collection theExts = getAllExtensions();
+		for (Iterator it = theExts.iterator(); it.hasNext();) {
+			String theExt = (String) it.next();
+			if (pURLstr.endsWith(theExt)) {
+				baseFilename = pURLstr.substring(pURLstr.lastIndexOf("/")+1);
+				break;
+			}
+		}
+		//If not, determine network type by reading first few lines of header
+		if (baseFilename.equals("")) {
+			String ext = getNetworkTypeByHeader(tmpFile);
+			baseFilename = tmpFile.getName()+ "." + ext;
+		}
+		//Rename network file with ext
+		File newFile = new File(tmpFile.getParent(), baseFilename);
+		newFile.deleteOnExit();
+		tmpFile.renameTo(newFile);
+
+		return newFile;
+	}
+	
+	
+    /**
+     * For a file without extension, check if its content is "xml" or "gml" or "unknown"
+     */	
+	public String getNetworkTypeByHeader(File pFile) throws IOException {
+		String theHeader = getHeader(pFile).trim().toUpperCase();
+		
+		if (theHeader.startsWith("<?XML")) {
+			return "xml";
+		}
+	
+		if (theHeader.contains("GRAPH")) {
+			int index = theHeader.indexOf("GRAPH");
+			String theSuffix = theHeader.substring(index+5).trim();
+
+			if (theSuffix.startsWith("[")) {
+				return "gml";
+			}
+		}
+		
+		return "unknown";
+	}
+	
+	
+    /**
+     * Gets header of specified file. 
+     * Copy from cytoscape.util.CyFileFilter.getHeader()
+     */
+    protected String getHeader(File file) throws IOException {
+        FileReader reader = null;
+        BufferedReader bufferedReader = null;
+        try {
+            reader = new FileReader (file);
+            bufferedReader = new BufferedReader (reader);
+            String line = bufferedReader.readLine();
+            StringBuffer header = new StringBuffer();
+            int numLines = 0;
+            while (line != null && numLines < 5) {
+                header.append(line + "\n");
+                line = bufferedReader.readLine();
+                numLines++;
+            }
+            return header.toString();
+        } finally {
+            bufferedReader.close();
+            reader.close();
+        }
+    }
 }
