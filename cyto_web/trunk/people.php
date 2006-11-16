@@ -55,7 +55,7 @@
      <td><a href="http://www.agilent.com/labs/research/mtl/projects/sysbio.html">Annette Adler</a></td>
     <td><a href="http://baderlab.org/">Gary Bader</a></td>
     <td><a href="http://www.genmapp.org/">Bruce Conklin</a></td>
-    <td><a href="http://www.systemsbiology.org/Scientists_and_Research/Faculty_Groups/Shmulevich_Group">Ilya Schmulevich</a></td>
+    <td><a href="http://www.systemsbiology.org/Scientists_and_Research/Faculty_Groups/Shmulevich_Group">Ilya<br/> Schmulevich</a></td>
     <td><a href="http://www.systemsbiology.org">Louis Coffman</a></td>
   </tr>
   <tr>
@@ -106,9 +106,9 @@
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td>Benjamin Gross</td>
-    <td>Richard Bonneau</td>
+    <td>Richard<br/> Bonneau</td>
     <td>Alex Pico</td>
-    <td>Kristina Hanspers</td>
+    <td>Kristina<br/> Hanspers</td>
     <td>John "Scooter"<br /> Morris</td>
     <td>Peng Wang</td>
     <td>Sarah Killcoyne</td>
