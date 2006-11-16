@@ -132,14 +132,12 @@ import cytoscape.view.cytopanels.CytoPanel;
 
 //------------------------------------------------------------------------------
 /**
- * This class creates the menu and tool bars for a Cytoscape window object. It
- * also provides access to individual menus and items.
- * 
- * Feb. 21, 2006 Refactored by kono@ucsd.edu
- * 
- * Now addAction takes one more optional argument to specify index. Plugin
+ * Creates the menu and tool bars for a Cytoscape window object. It
+ * also provides access to individual menus and items.<BR>
+ * <p>
+ * AddAction takes one more optional argument to specify index. Plugin
  * writers can use this function to specify the location of the menu item.
- * 
+ * </p>
  */
 public class CyMenus implements GraphViewChangeListener {
 
@@ -732,19 +730,20 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ImportGraphFileAction(this));
 		addAction(new ImportNetworkTableAction());
 		loadSubMenu.add(new JSeparator());
-		addAction(new ImportAttributeTableAction());
 		addAction(new ImportNodeAttributesAction());
 		addAction(new ImportEdgeAttributesAction());
 		addAction(new ImportExpressionMatrixAction());
+		addAction(new ImportAttributeTableAction());
+		loadSubMenu.add(new JSeparator());
 		addAction(new ImportAnnotationAndOntologyAction());
 		loadSubMenu.add(new JSeparator());
 		addAction(new ImportVizmapAction());
-		addAction(new ImportBioDataServerAction());
-
-		ImageIcon goSmallIcon = new ImageIcon(getClass().getResource(
-				"images/new/GOsmall.gif"));
-
-		addAction(new MapOntologyAction(true, goSmallIcon));
+//		addAction(new ImportBioDataServerAction());
+//
+//		ImageIcon goSmallIcon = new ImageIcon(getClass().getResource(
+//				"images/new/GOsmall.gif"));
+//
+//		addAction(new MapOntologyAction(true, goSmallIcon));
 
 		// fill the Save submenu
 		addAction(new ExportAsXGMMLAction());

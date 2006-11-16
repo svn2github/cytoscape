@@ -16,17 +16,10 @@ import cytoscape.util.CytoscapeAction;
  * @author kono
  * 
  */
-public class ImportAttributeTableAction extends CytoscapeAction implements
-		PropertyChangeListener {
+public class ImportAttributeTableAction extends CytoscapeAction {
 	public ImportAttributeTableAction() {
-		super("Attribute Table (Excel/Text)...");
+		super("Attribute from Table (Text/MS Excel\u2122)...");
 		setPreferredMenu("File.Import");
-
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				this);
-		
-		// By default, turn this menu off.
-		super.setEnabled(false);
 	}
 
 	@Override
@@ -38,21 +31,5 @@ public class ImportAttributeTableAction extends CytoscapeAction implements
 		iad.pack();
 		iad.setLocationRelativeTo(Cytoscape.getDesktop());
 		iad.setVisible(true);
-	}
-
-	/**
-	 * Enable this menu item only when network exists in the memory.
-	 */
-	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED) || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)
-				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
-			if (Cytoscape.getNetworkSet().size() == 0) {
-				super.setEnabled(false);
-			} else {
-				// Once network or session is loaded, turn it ON.
-				super.setEnabled(true);
-			}
-		}
-
 	}
 }

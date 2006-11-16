@@ -8,7 +8,7 @@ import cytoscape.util.CytoscapeAction;
 
 public class ImportNetworkTableAction extends CytoscapeAction {
 	public ImportNetworkTableAction() {
-		super("Network Table (Excel/Text)...");
+		super("Network from Table (Text/MS Excel\u2122)...");
 		setPreferredMenu("File.Import");
 	}
 
