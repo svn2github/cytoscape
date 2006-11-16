@@ -8,7 +8,9 @@ import csplugins.quickfind.util.QuickFindFactory;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class TestQuickFind extends TestCase {
     private static final String CYTOPLASM = "cytoplasm";
     private static final String RANK = "rank";
     private static final String SCORE = "score";
+    private static final String PMID = "pmid";
 
     /**
      * Runs basic tests to verify node indexing.
@@ -40,10 +43,21 @@ public class TestQuickFind extends TestCase {
         cyNetwork.addNode(node1);
         cyNetwork.addNode(node2);
         cyNetwork.addNode(node3);
+        CyEdge edge0 = Cytoscape.getCyEdge(node0, node1,
+                Semantics.INTERACTION, "pp", true);
+        CyEdge edge1 = Cytoscape.getCyEdge(node0, node2,
+                Semantics.INTERACTION, "pp", true);
+        CyEdge edge2 = Cytoscape.getCyEdge(node0, node3,
+                Semantics.INTERACTION, "pp", true);
+        cyNetwork.addEdge(edge0);
+        cyNetwork.addEdge(edge1);
+        cyNetwork.addEdge(edge2);
 
-        addAttributes(node0, node1, node2, node3);
+        //  Add node/edge attributes
+        addNodeAttributes(node0, node1, node2, node3);
+        addEdgeAttributes(edge0, edge1, edge2);
 
-        //  Index this network by UNIQUE_IDENTIFIER
+        //  Index this network by Node:UNIQUE_IDENTIFIER
         TaskMonitorBase monitor = new TaskMonitorBase();
         QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         quickFind.addNetwork(cyNetwork, monitor);
@@ -69,7 +83,7 @@ public class TestQuickFind extends TestCase {
         assertEquals("Indexing node attributes", monitor.getStatus());
         assertEquals(100, monitor.getPercentComplete());
 
-        //  Now, try reindexing by LOCATION
+        //  Now, try reindexing by Node:LOCATION
         textIndex = (TextIndex) quickFind.reindexNetwork
                 (cyNetwork, QuickFind.INDEX_NODES, LOCATION, monitor);
 
@@ -89,8 +103,8 @@ public class TestQuickFind extends TestCase {
         validateDoubleIndex  (quickFind, cyNetwork, monitor);
     }
 
-    private void addAttributes(CyNode node0, CyNode node1, CyNode node2,
-            CyNode node3) {
+    private void addNodeAttributes(CyNode node0, CyNode node1, CyNode node2,
+        CyNode node3) {
         //  Create Sample String Attributes
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         nodeAttributes.setAttribute(node0.getIdentifier(), LOCATION, CYTOPLASM);
@@ -109,6 +123,14 @@ public class TestQuickFind extends TestCase {
         nodeAttributes.setAttribute(node1.getIdentifier(), SCORE, 3.211);
         nodeAttributes.setAttribute(node2.getIdentifier(), SCORE, 22.2);
         nodeAttributes.setAttribute(node3.getIdentifier(), SCORE, 2.1);
+    }
+
+    private void addEdgeAttributes(CyEdge edge0, CyEdge edge1, CyEdge edge2) {
+        //  Create Sample String Attributes
+        CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+        edgeAttributes.setAttribute(edge0.getIdentifier(), PMID, "12345");
+        edgeAttributes.setAttribute(edge1.getIdentifier(), PMID, "12345");
+        edgeAttributes.setAttribute(edge2.getIdentifier(), PMID, "54321");
     }
 
     /**
