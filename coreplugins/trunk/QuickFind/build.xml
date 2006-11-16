@@ -77,6 +77,9 @@
     <!-- ==================== Run Target ============================== -->
     <target depends="jar" description="Runs Latest Version of Cytoscape with QuickFind Plugin"
         name="run">
+        <copy todir="${dist.dir}">
+            <fileset dir="../../cytoscape/plugins/core"/>
+        </copy>
         <java classname="cytoscape.CyMain" classpathref="compile.classpath"
             fork="true" maxmemory="1000M">
             <arg line="-N ../../cytoscape/testData/galFiltered.sif -m ../../cytoscape/testData/galExpData.pvals -p plugins"/>
