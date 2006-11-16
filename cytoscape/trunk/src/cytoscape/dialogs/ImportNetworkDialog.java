@@ -7,6 +7,7 @@
 package cytoscape.dialogs;
 
 import java.io.File;
+import java.io.IOException;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import javax.swing.JDialog;
@@ -20,6 +21,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
@@ -359,20 +361,6 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 	}
 
 
-    private boolean isURLvalid() {
-    
-    	String theURLstr = bookmarkEditor.getURLstr().trim();
-    	theURLstr = theURLstr.toUpperCase();
-    	if (theURLstr.endsWith("SIF")||theURLstr.endsWith("GML")||theURLstr.endsWith("XGMML")
-    			||theURLstr.endsWith("XML")) {
-    		return true;
-    	}
-		String msg = "Invalid network file extension!";
-	    // display info dialog
-	    JOptionPane.showMessageDialog(this, msg, "Warning", JOptionPane.INFORMATION_MESSAGE);
-    	return false;
-    }
-
     public void keyPressed(KeyEvent e) 
     {
     }
@@ -425,18 +413,7 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 				}
 				else // case for remote import
 				{
-					if (!isURLvalid())
-						return;
-					String theURLstr = bookmarkEditor.getURLstr().trim();
-					File tmpFile = cytoscape.data.ImportHandler.downloadFromURL(this, theURLstr, proxyServer);
-					
-					if (tmpFile == null) {
-						return;
-					}
-					networkFiles = new File[1];
-					networkFiles[0] = tmpFile;
-						 
-					importButtonActionPerformed(e);
+					doURLimport(e);
 				}
 			}
 			else if (_btn == btnCancel)
@@ -444,27 +421,36 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 				cancelButtonActionPerformed(e);
 			}
 		}
-
 		if (_actionObject instanceof JTextField) {
-			//System.out.println("Enter is pressed in the bookmarkEditor");	
-			JTextField _tf = (JTextField)_actionObject;
-			if (_tf == bookmarkEditor.tfInput)
-			{
-				if (!isURLvalid())
-					return;
-				String theURLstr = bookmarkEditor.getURLstr().trim();
-				File tmpFile = cytoscape.data.ImportHandler.downloadFromURL(this, theURLstr, proxyServer);
-				
-				if (tmpFile == null) {
-					return;
-				}
-				networkFiles = new File[1];
-				networkFiles[0] = tmpFile;
-				importButtonActionPerformed(e);
-			}			
+			doURLimport(e);
 		}
 	}
 
+ 	
+	private void doURLimport(java.awt.event.ActionEvent e) {
+		String theURLstr = bookmarkEditor.getURLstr().trim();
+		cytoscape.data.ImportHandler theHandler = Cytoscape.getImportHandler();
+		
+		File tmpFile = null;
+		try {
+			tmpFile = theHandler.getNetworkFromURL(theURLstr, proxyServer);
+		}
+		catch (MalformedURLException e1) {
+		    JOptionPane.showMessageDialog(this, "URL error!", "Warning", JOptionPane.INFORMATION_MESSAGE);
+		}		
+		catch (IOException e2) {
+		    JOptionPane.showMessageDialog(this, "Failed to connect to the remote server!", "Warning", JOptionPane.INFORMATION_MESSAGE);
+		}
+		
+		if (tmpFile == null) {
+			return;
+		}
+		networkFiles = new File[1];
+		networkFiles[0] = tmpFile;
+			 
+		importButtonActionPerformed(e);
+	}
+	
 	
     class LocalRemoteListener implements java.awt.event.ActionListener
     {
