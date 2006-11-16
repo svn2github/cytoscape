@@ -119,6 +119,10 @@ public abstract class Cytoscape {
 	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
 	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
 
+	// WANG: 11/14/2006 For plugin to save state
+	public static final String SAVE_PLUGIN_STATE = "SAVE_PLUGIN_STATE";
+	public static final String RESTORE_PLUGIN_STATE = "RESTORE_PLUGIN_STATE";
+
 	// events for network modification
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
 	public static final String NETWORK_SAVED = "NETWORK_SAVED";
@@ -1630,25 +1634,5 @@ public abstract class Cytoscape {
 
 	public static void setBookmarks(Bookmarks pBookmarks) {
 		bookmarks = pBookmarks;
-	}
-	
-	private static Properties[] pluginProps;
-	public static Properties[] getPluginProps(){
-		pluginProps = new Properties[2];
-		pluginProps[0] = new Properties();
-		pluginProps[0].setProperty("firstKey", "FirstValue");
-		pluginProps[0].setProperty("SecondKey", "SecondValue");
-		
-		pluginProps[1] = new Properties();
-		pluginProps[1].setProperty("firstKey2", "FirstValue2");
-		pluginProps[1].setProperty("SecondKey2", "SecondValue2");
-		
-		return pluginProps;
-
-	}
-
-	private static String[] pluginNames = {"AAA","BBB"};
-	public static String[] getPluginNames() {
-		return pluginNames;
-	}
+	}	
 }
