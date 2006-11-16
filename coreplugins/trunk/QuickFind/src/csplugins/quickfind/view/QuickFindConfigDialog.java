@@ -428,7 +428,8 @@ class ReindexQuickFind implements Task {
     public void run() {
         QuickFind quickFind =
                 QuickFindFactory.getGlobalQuickFindInstance();
-        quickFind.reindexNetwork(cyNetwork, newAttributeKey, taskMonitor);
+        quickFind.reindexNetwork(cyNetwork, QuickFind.INDEX_NODES,
+                newAttributeKey, taskMonitor);
     }
 
     public void halt() {
