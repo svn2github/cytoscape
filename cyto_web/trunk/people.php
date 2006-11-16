@@ -27,7 +27,7 @@
 <blockquote>
 			<P><big>
 				<b>
-					Principal Investigators:</b>
+					Board of Directors:</b>
 			</big>
 			<br>
 			<br>
@@ -39,9 +39,7 @@
     <td><a href="http://www.cbio.mskcc.org/">Chris Sander</a></td>
     <td><a href="http://www.systemsbiology.org/Default.aspx?pagename=leroyhood">Leroy Hood</a></td>
     <td><a href="http://www.gmd.de/People/Benno.Schwikowski/">Benno<br />Schwikowski<a/></td>
-    <td><a href="http://www.agilent.com/labs/research/mtl/projects/sysbio.html">Annette Adler</a></td>
-    <td><a href="http://baderlab.org/">Gary Bader</a></td>
-    <td><a href="http://www.genmapp.org/">Bruce Conklin</a></td>
+   <td><a href="http://www.unilever.com/">Guy<br />Warner<a/></td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
@@ -49,9 +47,24 @@
     <td><img src="people_photos/chris_s.jpg"></img></td>
     <td><img src="people_photos/hood.jpg"></img></td>
     <td><img src="people_photos/benno.jpg"></img></td>
-    <td><img src="people_photos/annette.jpg"></img></td>
+    <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
+  </tr>
+  <tr><td colspan=6>&nbsp;</td></tr>
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+     <td><a href="http://www.agilent.com/labs/research/mtl/projects/sysbio.html">Annette Adler</a></td>
+    <td><a href="http://baderlab.org/">Gary Bader</a></td>
+    <td><a href="http://www.genmapp.org/">Bruce Conklin</a></td>
+    <td><a href="http://www.systemsbiology.org/Scientists_and_Research/Faculty_Groups/Shmulevich_Group">Ilya Schmulevich</a></td>
+    <td><a href="http://www.systemsbiology.org">Louis Coffman</a></td>
+  </tr>
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+      <td><img src="people_photos/annette.jpg"></img></td>
     <td><img src="people_photos/gary.jpg"></img></td>
     <td><img src="people_photos/bruce.jpg"></img></td>
+    <td><img src="people_photos/ilya.jpg"></img></td>
+    <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
   </tr>
 </table>
 <blockquote>
@@ -62,7 +75,7 @@
 			<hr width="100%" size="2">
 			<big>
 				<b>
-					Software Developers:</b></big>
+					Software Core Developers:</b></big>
 			<br>
 			<br>
 </blockquote>
@@ -75,6 +88,7 @@
     <td>Chris Workman</td>
     <td>Allan<br />Kuchinsky</td>
     <td>Aditya<br />Vailaya</td>
+     <td>Melissa Cline</td>
     
   </tr>
   <tr>
@@ -86,24 +100,27 @@
   <td><img src="people_photos/chris.jpg"></img></td>
     <td><img src="people_photos/allan.jpg"></img></td>
     <td><img src="people_photos/aditya.jpg"></img></td>
+     <td><img src="people_photos/melissa.jpg"></img></td>
   </tr>
   <tr><td colspan=6>&nbsp;</td></tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td>Melissa Cline</td>
     <td>Benjamin Gross</td>
     <td>Richard<br />Bonneau</td>
     <td>Alex Pico</td>
+    <td>Kristina <br />Hanspers</td>
+    <td>John "Scooter"<br /> Morris</td>
     <td>Peng Wang</td>
     <td>Sarah<br />Killcoyne</td>
    </tr>
 
     <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-     <td><img src="people_photos/melissa.jpg"></img></td>
      <td><img src="people_photos/ben.jpg"></img></td>
         <td><img src="people_photos/rich.jpg"></img></td>
      <td><img src="people_photos/alex.jpg"></img></td>
+     <td><img src="people_photos/kristina.jpg"></img></td>
+     <td><img src="people_photos/scooter.jpg"></img></td>
         <td><img src="people_photos/peng.jpg"></img></td>
      <td><img src="people_photos/sarah.jpg"></img></td>
   </tr>
@@ -149,13 +166,6 @@
 					</tr>
 				</tbody>
 			</table>
-
-		<br>
-
-		<img src="images/2005Dec_devteam-updated.jpg">
-		<br>
-		Image created with Cytoscape
-
 
 		<br>
 </blockquote>
