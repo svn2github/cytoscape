@@ -39,7 +39,7 @@
     <td><a href="http://www.cbio.mskcc.org/">Chris Sander</a></td>
     <td><a href="http://www.systemsbiology.org/Default.aspx?pagename=leroyhood">Leroy Hood</a></td>
     <td><a href="http://www.gmd.de/People/Benno.Schwikowski/">Benno<br />Schwikowski<a/></td>
-   <td><a href="http://www.unilever.com/">Guy<br />Warner<a/></td>
+   <td><a href="http://www.unilever.com/">Guy Warner<a/></td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
@@ -63,7 +63,7 @@
       <td><img src="people_photos/annette.jpg"></img></td>
     <td><img src="people_photos/gary.jpg"></img></td>
     <td><img src="people_photos/bruce.jpg"></img></td>
-    <td><img src="people_photos/ilya.jpg"></img></td>
+    <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
     <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
   </tr>
 </table>
@@ -86,8 +86,8 @@
     <td>Mike Smoot</td>
     <td>Keiichiro Ono</td>
     <td>Chris Workman</td>
-    <td>Allan<br />Kuchinsky</td>
-    <td>Aditya<br />Vailaya</td>
+    <td>Allan Kuchinsky</td>
+    <td>Aditya Vailaya</td>
      <td>Melissa Cline</td>
     
   </tr>
@@ -106,12 +106,12 @@
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td>Benjamin Gross</td>
-    <td>Richard<br />Bonneau</td>
+    <td>Richard Bonneau</td>
     <td>Alex Pico</td>
-    <td>Kristina <br />Hanspers</td>
+    <td>Kristina Hanspers</td>
     <td>John "Scooter"<br /> Morris</td>
     <td>Peng Wang</td>
-    <td>Sarah<br />Killcoyne</td>
+    <td>Sarah Killcoyne</td>
    </tr>
 
     <tr>
