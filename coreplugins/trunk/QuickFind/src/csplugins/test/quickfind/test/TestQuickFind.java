@@ -71,7 +71,7 @@ public class TestQuickFind extends TestCase {
 
         //  Now, try reindexing by LOCATION
         textIndex = (TextIndex) quickFind.reindexNetwork
-                (cyNetwork, LOCATION, monitor);
+                (cyNetwork, QuickFind.INDEX_NODES, LOCATION, monitor);
 
         //  Verify that nodes have been indexed
         hits = textIndex.getHits("nu", Integer.MAX_VALUE);
@@ -121,11 +121,11 @@ public class TestQuickFind extends TestCase {
         //  Try indexing on a non-existent attribute key.  This should
         //  do nothing silently, and should not throw any exceptions.
         textIndex = (TextIndex) quickFind.reindexNetwork
-                (cyNetwork, "TYPE", monitor);
+                (cyNetwork, QuickFind.INDEX_NODES, "TYPE", monitor);
 
         //  Try indexing all attributes
         textIndex = (TextIndex) quickFind.reindexNetwork
-                (cyNetwork, QuickFind.INDEX_ALL_ATTRIBUTES, monitor);
+                (cyNetwork, QuickFind.INDEX_NODES, QuickFind.INDEX_ALL_ATTRIBUTES, monitor);
 
         //  First, try unique identifiers
         hits = textIndex.getHits("ra", Integer.MAX_VALUE);
@@ -143,7 +143,7 @@ public class TestQuickFind extends TestCase {
     private void validateIntegerIndex (QuickFind quickFind,
             CyNetwork cyNetwork, TaskMonitorBase monitor) {
         NumberIndex numberIndex = (NumberIndex) quickFind.reindexNetwork
-                (cyNetwork, RANK, monitor);
+                (cyNetwork, QuickFind.INDEX_NODES, RANK, monitor);
         assertEquals (1, numberIndex.getMinimumValue());
         assertEquals (4, numberIndex.getMaximumValue());
         List list = numberIndex.getRange(1, 2);
@@ -157,7 +157,7 @@ public class TestQuickFind extends TestCase {
     private void validateDoubleIndex (QuickFind quickFind,
             CyNetwork cyNetwork, TaskMonitorBase monitor) {
         NumberIndex numberIndex = (NumberIndex) quickFind.reindexNetwork
-                (cyNetwork, SCORE, monitor);
+                (cyNetwork, QuickFind.INDEX_NODES, SCORE, monitor);
         assertEquals (2.1, numberIndex.getMinimumValue());
         assertEquals (45.2, numberIndex.getMaximumValue());
         List list = numberIndex.getRange(0.0, 5.0);
