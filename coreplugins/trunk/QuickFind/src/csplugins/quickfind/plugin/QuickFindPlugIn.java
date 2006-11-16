@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
+import java.util.*;
 
 import prefuse.data.query.NumberRangeModel;
 
@@ -292,6 +292,7 @@ class RangeSelectionListener implements ChangeListener {
 
     /**
      * Constructor.
+     *
      * @param slider JRangeSliderExtended Object.
      */
     public RangeSelectionListener(JRangeSliderExtended slider) {
@@ -300,6 +301,7 @@ class RangeSelectionListener implements ChangeListener {
 
     /**
      * State Change Event.
+     *
      * @param e ChangeEvent Object.
      */
     public void stateChanged(ChangeEvent e) {
@@ -310,19 +312,36 @@ class RangeSelectionListener implements ChangeListener {
         if (slider.isVisible()) {
             if (index instanceof NumberIndex) {
                 NumberIndex numberIndex = (NumberIndex) index;
-                final java.util.List nodeList = numberIndex.getRange
-                        ((Number) model.getLowValue(),
-                        (Number) model.getHighValue());
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        cyNetwork.unselectAllNodes();
-                        cyNetwork.unselectAllEdges();
-                        cyNetwork.setSelectedNodeState(nodeList, true);
-                        Cytoscape.getCurrentNetworkView().updateView();
-                    }
-                }
-                );
+                Number lowValue = (Number) model.getLowValue();
+                Number highValue = (Number) model.getHighValue();
+                try {
+                    final java.util.List rangeList = numberIndex.getRange (lowValue, highValue);
 
+                    //  First, determine the current set of selected nodes
+                    Set selectedSet = cyNetwork.getSelectFilter().getSelectedNodes();
+
+                    //  Then, figure out which new nodes to select
+                    //  This is the set operation:  R - S
+                    final List toBeSelected = new ArrayList();
+                    toBeSelected.addAll(rangeList);
+                    toBeSelected.removeAll(selectedSet);
+
+                    //  Then, figure out which current nodes to unselect
+                    //  This is the set operation:  S - R
+                    final List toBeUnselected = new ArrayList();
+                    toBeUnselected.addAll(selectedSet);
+                    toBeUnselected.removeAll(rangeList);
+
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            cyNetwork.setSelectedNodeState(toBeSelected, true);
+                            cyNetwork.setSelectedNodeState(toBeUnselected, false);
+                            Cytoscape.getCurrentNetworkView().updateView();
+                        }
+                    }
+                    );
+                } catch (IllegalArgumentException exc) {
+                }
             }
         }
     }
