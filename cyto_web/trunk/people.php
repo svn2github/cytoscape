@@ -35,10 +35,10 @@
 <table cellpadding="8" cellspacing="0" border="0">
   <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td><a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">Trey Ideker</a></td>
-    <td><a href="http://www.cbio.mskcc.org/">Chris Sander</a></td>
-    <td><a href="http://www.systemsbiology.org/Default.aspx?pagename=leroyhood">Leroy Hood</a></td>
-    <td><a href="http://www.gmd.de/People/Benno.Schwikowski/">Benno<br />Schwikowski<a/></td>
+    <td><a href="http://chianti.ucsd.edu/idekerlab/">Trey Ideker</a></td>
+    <td><a href="http://cbio.mskcc.org/people/info/chris_sander.html">Chris Sander</a></td>
+    <td><a href="http://www.systemsbiology.org/Scientists_and_Research/Faculty_Groups/Hood_Group">Leroy Hood</a></td>
+    <td><a href="http://www.pasteur.fr/recherche/unites/Biolsys/benno/">Benno<br />Schwikowski<a/></td>
    <td><a href="http://www.unilever.com/">Guy Warner<a/></td>
   </tr>
   <tr>
