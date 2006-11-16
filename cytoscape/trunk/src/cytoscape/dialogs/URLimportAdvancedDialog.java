@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import java.net.URL;
 import java.io.File;
 import java.net.InetSocketAddress;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
-public class URLimportAdvancedDialog extends JDialog implements ActionListener, ListSelectionListener {
+
+public class URLimportAdvancedDialog extends JDialog implements ActionListener, ListSelectionListener, ItemListener {
 
 	JDialog parent;
 	private String bookmarkCategory;
@@ -238,8 +241,8 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
         gridBagConstraints.insets = new java.awt.Insets(15, 0, 15, 0);
         getContentPane().add(jPanel2, gridBagConstraints);
 
-        
         btnEditBookmark.setVisible(false);
+    	btnSetProxy.setEnabled(false);
 
         if (theProxyServer == null) {
         	lbProxyServer.setText("None");	
@@ -263,9 +266,20 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
     	bookmarkList.setCellRenderer(new MyListCellRenderer());
     	bookmarkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
      
+    	cmbProxyType.addItemListener(this);
         //pack();
     }// </editor-fold>
 
+    public void itemStateChanged(ItemEvent e) {
+    	
+    	String selectedItem = cmbProxyType.getSelectedItem().toString();
+    	if (selectedItem.equalsIgnoreCase("DIRECT")) {
+    		btnSetProxy.setEnabled(false);
+    	}
+    	else {
+    		btnSetProxy.setEnabled(true);    		
+    	}
+    }
     
     public Proxy getProxyServer() {
     	return theProxyServer;
