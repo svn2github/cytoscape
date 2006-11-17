@@ -55,7 +55,6 @@
       <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
-      <pathelement location="${ManualLayout.lib.dir}/cytoscape-graph-layout.jar"/>
       <pathelement path="${project.class.path}/"/>
     </path>
 
