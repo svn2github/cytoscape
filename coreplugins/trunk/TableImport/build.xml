@@ -29,11 +29,11 @@
 		<property name="tableImport.lib.dir" value="${tableImport.root.dir}/lib" />
 
 		<!-- You need to modify this line to point to Cytoscape directory.  -->
-		<property name="cytoscape.dir" value="${tableImport.root.dir}/../FreshSVNTest" />
+		<property name="cytoscape.dir" value="${tableImport.root.dir}/../../cytoscape" />
 
 		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
 		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
-		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.4.0" />
+		<!-- property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.4.0" /-->
 		<path id="project.class.path">
 			<pathelement path="${java.class.path}/" />
 		</path>
@@ -99,7 +99,7 @@
 		</jar>
 		<copy todir="${tableImport.lib.dir}" file="TableImport.jar" />
 		<copy todir="${cytoscape.plugin.dir}/core" file="TableImport.jar" />
-		<copy todir="${cytoscape.build.dir}/plugins" file="TableImport.jar" />
+		<!-- copy todir="${cytoscape.build.dir}/plugins" file="TableImport.jar" / -->
 	</target>
 
 	<!-- =================================================================== -->
