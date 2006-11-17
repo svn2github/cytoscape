@@ -7,7 +7,7 @@ use warnings;
 
 use CCDB::QueryInput;
 use CCDB::Constants qw($DEBUG $DEFAULT_ENRICHMENT_LIMIT 
-		       $pubName 
+		       $pubInfo
 		       $species_abbrev);
 
 
@@ -90,7 +90,7 @@ sub search
     my $error_msg          = {};
 
     if(scalar(keys %{ $publications }) == 0) {
-	map { $publications->{$_} = 1 } keys %{$pubName};
+	map { $publications->{$_} = 1 } keys %{$pubInfo};
     }
     if(scalar(keys %{ $species }) == 0) {
 	map { $species->{$_} = 1 } keys %{$species_abbrev};

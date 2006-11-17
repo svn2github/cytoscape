@@ -3,7 +3,7 @@ package CCDB::Error;
 use strict;
 use warnings;
 
-use CCDB::Constants qw($colors $pubName);
+use CCDB::Constants qw($colors $pubInfo);
 
 my $VERSION = '1.0';
 
@@ -81,9 +81,9 @@ sub pretty_print_pub
 {
     my ($pub) = @_;
 
-    if(exists($pubName->{$pub})) # =~ /(\D+)(\d+)_(\w+)/)
+    if(exists($pubInfo->{$pub})) # =~ /(\D+)(\d+)_(\w+)/)
     {
-	return $pubName->{$pub};
+	return $pubInfo->{$pub}->{name};
 	#return sprintf("%s (%d) <i>%s</i>", $1, $2, $3);
     }
 

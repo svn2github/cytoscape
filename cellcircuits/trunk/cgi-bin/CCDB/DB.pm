@@ -3,12 +3,11 @@ package CCDB::DB;
 use strict;
 use warnings;
 
-#use lib '/opt/www/cgi-bin/search/v1.6';
 use BM::mysql;
-use CCDB::Constants qw($DEBUG);
+use CCDB::Constants qw($DEBUG $DB_INSTANCE);
 
 my $VERSION = '0.1';
-use constant DSN => "DBI:mysql:cc";
+use constant DSN => "DBI:mysql:$DB_INSTANCE";
 #use constant DSN => "DBI:mysql:cc";
 use constant USER => "mdaly";
 use constant PASSWORD => "mdalysql";

@@ -19,8 +19,7 @@ use CCDB::Synonyms;
 use CCDB::HtmlRoutines qw(highlight gen_go_url $TRAILER format_header);
 
 use CCDB::Constants qw($search_url
-		       $pubCitation 
-		       $pubName 
+		       $pubInfo
 		       $db_link_by_species 
 		       );
 
@@ -74,7 +73,7 @@ if(param("eid"))
     my %hilite_hash;
     map { $hilite_hash{$_}++ } @hilite_array;
 
-    my $gene_html = "<table cellpadding=4 cellspacing=0 border=0><tr>";
+    my $gene_html = "<table cellpadding=4 cellspacing=0 border=1><tr>";
 
     my @gene_ids = split(/\s+/,$gene_ids);
 
@@ -125,7 +124,7 @@ if(param("eid"))
 
 	$gene_html .= "<td><a class='$class' href='$href' title='$syn_str'>$gene</td>";
 	
-	if( $i > 0 && ($i % 5)==0 )
+	if( $i > 0 && ($i % 3)==2 )
 	{
 	    $gene_html .= "</tr>"; 
 	    if($i != $#gene_ids)
@@ -153,7 +152,7 @@ if(param("eid"))
       <h2>Model information</h2>
       <table>
       
-         <tr><td class="bold">Publication:</td><td>$pubName->{$mpub}<br><a class='white-bg-link' href="$pubCitation->{$mpub}">[PubMed]</a></td></tr>
+         <tr><td class="bold">Publication:</td><td>$pubInfo->{$mpub}->{name}<br><a class='white-bg-link' href="$pubInfo->{$mpub}->{citation}">[PubMed]</a></td></tr>
 	 <tr><td class="bold">Model Name:</td><td>$mname</td></tr>
 	 <tr><td class="bold">Organism:</td><td><i>$org</i></td></tr>
 	 <tr><td class="bold">Enriched GO Annotation:</td><td>$tname<br>
