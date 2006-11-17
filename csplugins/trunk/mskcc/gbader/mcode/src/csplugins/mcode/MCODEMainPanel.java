@@ -14,34 +14,43 @@ import java.text.DecimalFormat;
  */
 public class MCODEMainPanel extends JPanel {
     //Parameters for MCODE
-    MCODEParameterSet currentParamsCopy;    //stores current parameters - populates dialog box fields
+    MCODEParameterSet currentParamsCopy; // stores current parameters - populates panel fields
 
-    DecimalFormat decFormat;
+    DecimalFormat decFormat; // used in the formatted text fields
 
-    JRadioButton scopeNetwork;
-    JRadioButton scopeNode;
-    JRadioButton scopeNodeSet;
+    //Scope
+    public final static String NETWORK = "network";
+    public final static String NODE = "node";
+    public final static String NODE_SET = "node set";
+    public String scope = NETWORK;
+
+    MCODECollapsablePanel clusterFindingPanel;
+    JPanel clusterFindingPanelForNetworkScope;
+    JPanel clusterFindingPanelForNodeScope;
 
     //resetable UI elements
 
-    //scoring
+    //Scoring
     JCheckBox includeLoopsCheckBox;
     JFormattedTextField degreeCutOffFormattedTextField;
+    JFormattedTextField kCoreFormattedTextField;
     //cluster finding
-    JFormattedTextField maxDepthFormattedTextField;
-    JFormattedTextField nodeScoreCutOffFormattedTextField;
+    JRadioButton optimizeOption; // only for network scope
+    JRadioButton customizeOption;
+    JCheckBox preprocessCheckBox; // only for node and node set scopes
     JCheckBox haircutCheckBox;
     JCheckBox fluffCheckBox;
     JFormattedTextField fluffNodeDensityCutOffFormattedTextField;
-    //directed mode
-    JCheckBox processCheckBox;
+    JFormattedTextField maxDepthFormattedTextField;
+    //TODO: remove the node score cutoff perameter from here
+    //JFormattedTextField nodeScoreCutOffFormattedTextField;
+
 
     /**
      * The actual parameter change dialog that builds the UI
      */
     public MCODEMainPanel() {
         setLayout(new BorderLayout());
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         //get the current parameters
         currentParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
@@ -54,14 +63,20 @@ public class MCODEMainPanel extends JPanel {
         MCODECollapsablePanel advancedOptionsPanel = createAdvancedOptionsPanel();
         JPanel bottomPanel = createBottomPanel();
 
+        //Since the advanced options panel is being added to the center of this border layout
+        //it will stretch it's height to fit the main panel.  To prevent this we create an
+        //additional border layout panel and add advanced options to it's north compartment
+        JPanel advancedOptionsContainer = new JPanel(new BorderLayout());
+        advancedOptionsContainer.add(advancedOptionsPanel, BorderLayout.NORTH);
+
         //Add all the vertically alligned components to the main panel
         add(scopePanel, BorderLayout.NORTH);
-        add(advancedOptionsPanel, BorderLayout.CENTER);
+        add(advancedOptionsContainer, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
     /**
-     * Generates a JPanel with all the scope components
+     * Creates a JPanel containing scope radio buttons
      * @return panel containing the scope option buttons
      */
     private JPanel createScopePanel() {
@@ -70,9 +85,17 @@ public class MCODEMainPanel extends JPanel {
         panel.setBorder(BorderFactory.createTitledBorder("Scope"));
 
         JLabel scopeStarter = new JLabel("Find cluster(s)...");
-        scopeNetwork = new JRadioButton("in Whole Network", true);
-        scopeNode = new JRadioButton("from Selected Node");
-        scopeNodeSet = new JRadioButton("from Selected Node Set");
+        JRadioButton scopeNetwork = new JRadioButton("in Whole Network", scope.equals(NETWORK));
+        JRadioButton scopeNode = new JRadioButton("from Selected Node", scope.equals(NODE));
+        JRadioButton scopeNodeSet = new JRadioButton("from Selected Node Set", scope.equals(NODE_SET));
+
+        scopeNetwork.setActionCommand(NETWORK);
+        scopeNode.setActionCommand(NODE);
+        scopeNodeSet.setActionCommand(NODE_SET);
+
+        scopeNetwork.addActionListener(new scopeAction());
+        scopeNode.addActionListener(new scopeAction());
+        scopeNodeSet.addActionListener(new scopeAction());
 
         ButtonGroup scopeOptions = new ButtonGroup();
         scopeOptions.add(scopeNetwork);
@@ -88,7 +111,7 @@ public class MCODEMainPanel extends JPanel {
     }
 
     /**
-     *
+     * Creates a collapsable panel that holds 2 other collapsable panels for network scoring and cluster finding parameter inputs
      * @return collapsablePanel
      */
     private MCODECollapsablePanel createAdvancedOptionsPanel() {
@@ -101,7 +124,7 @@ public class MCODEMainPanel extends JPanel {
         MCODECollapsablePanel networkScoringPanel = createNetworkScoringPanel();
 
         //Cluster finding collapsable panel
-        MCODECollapsablePanel clusterFindingPanel = createClusterFindingPanel();
+        clusterFindingPanel = createClusterFindingPanel();
 
         panel.add(networkScoringPanel);
         panel.add(clusterFindingPanel);
@@ -111,7 +134,7 @@ public class MCODEMainPanel extends JPanel {
     }
 
     /**
-     * Generates a JPanel with all the network scoring components
+     * Creates a collapsable panel that holds network scoring parameter inputs
      * @return panel containing the network scoring parameter inputs
      */
     private MCODECollapsablePanel createNetworkScoringPanel() {
@@ -121,18 +144,18 @@ public class MCODEMainPanel extends JPanel {
         panel.setLayout(new GridLayout(0, 1));
 
         //Include loops input
+        JLabel includeLoopsLabel = new JLabel("Include Loops");
         includeLoopsCheckBox = new JCheckBox() {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
             }
         };
-        includeLoopsCheckBox.setSelected(false);
         includeLoopsCheckBox.addItemListener(new MCODEMainPanel.includeLoopsCheckBoxAction());
         String includeLoopsTip = "If checked, MCODE will include loops (self-edges) in the neighborhood\n" +
                 "density calculation.  This is expected to make a small difference in the results.";
         includeLoopsCheckBox.setToolTipText(includeLoopsTip);
         includeLoopsCheckBox.setSelected(currentParamsCopy.isIncludeLoops());
-        JLabel includeLoopsLabel = new JLabel("Include Loops");
+
         JPanel includeLoopsPanel = new JPanel() {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
@@ -140,11 +163,12 @@ public class MCODEMainPanel extends JPanel {
         };
         includeLoopsPanel.setLayout(new BorderLayout());
         includeLoopsPanel.setToolTipText(includeLoopsTip);
+
         includeLoopsPanel.add(includeLoopsLabel, BorderLayout.WEST);
         includeLoopsPanel.add(includeLoopsCheckBox, BorderLayout.EAST);
-        panel.add(includeLoopsPanel);
 
         //Degree cutoff input
+        JLabel degreeCutOffLabel = new JLabel("Degree Cutoff");
         degreeCutOffFormattedTextField = new JFormattedTextField(decFormat) {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
@@ -158,7 +182,7 @@ public class MCODEMainPanel extends JPanel {
                 "from getting an artificially high node score.";
         degreeCutOffFormattedTextField.setToolTipText(degreeCutOffTip);
         degreeCutOffFormattedTextField.setText((new Integer(currentParamsCopy.getDegreeCutOff()).toString()));
-        JLabel degreeCutOffLabel = new JLabel("Degree Cutoff");
+
         JPanel degreeCutOffPanel = new JPanel() {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
@@ -166,29 +190,54 @@ public class MCODEMainPanel extends JPanel {
         };
         degreeCutOffPanel.setLayout(new BorderLayout());
         degreeCutOffPanel.setToolTipText(degreeCutOffTip);
+
         degreeCutOffPanel.add(degreeCutOffLabel, BorderLayout.WEST);
         degreeCutOffPanel.add(degreeCutOffFormattedTextField, BorderLayout.EAST);
-        panel.add(degreeCutOffPanel);
 
-        //K-core input
-        //TODO:k-core
+        //K-Core input
+        JLabel kCoreLabel = new JLabel("K-Core");
+        kCoreFormattedTextField = new JFormattedTextField(decFormat) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        kCoreFormattedTextField.setColumns(3);
+        kCoreFormattedTextField.addPropertyChangeListener("value", new MCODEMainPanel.formattedTextFieldAction());
+        String kCoreTip = "WRITE ME PLEASE!";
+        kCoreFormattedTextField.setToolTipText(kCoreTip);
+        kCoreFormattedTextField.setText((new Integer(currentParamsCopy.getKCore()).toString()));
+
+        JPanel kCorePanel = new JPanel(new BorderLayout()) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        kCorePanel.setToolTipText(kCoreTip);
+
+        kCorePanel.add(kCoreLabel, BorderLayout.WEST);
+        kCorePanel.add(kCoreFormattedTextField, BorderLayout.EAST);
+
+        //add the components to the panel
+        panel.add(includeLoopsPanel);
+        panel.add(degreeCutOffPanel);
+        panel.add(kCorePanel);
 
         collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
         return collapsablePanel;
     }
 
     /**
-     *
+     * Creates a collapsable panel that holds 2 other collapsable panels for either customizing or optimized cluster finding parameters
      * @return collapsablePanel
      */
     private MCODECollapsablePanel createClusterFindingPanel() {
         MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel("Cluster Finding");
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JRadioButton customizeOption = new JRadioButton("Customize", true);
-        JRadioButton optimizeOption = new JRadioButton("Optimize (Benchmark)");
+        customizeOption = new JRadioButton("Customize", true);
+        optimizeOption = new JRadioButton("Optimize");
         ButtonGroup clusterFindingOptions = new ButtonGroup();
         clusterFindingOptions.add(customizeOption);
         clusterFindingOptions.add(optimizeOption);
@@ -200,41 +249,20 @@ public class MCODEMainPanel extends JPanel {
 
         panel.add(customizeClusterFindingPanel);
         panel.add(optimizeClusterFindingPanel);
-
-        //directed mode panel
-        /*
-        JPanel directedModePanel = new JPanel();
-        processCheckBox = new JCheckBox("Preprocess network", false) {
-            public JToolTip createToolTip() {
-                return new JMultiLineToolTip();
-            }
-        };
-        processCheckBox.addItemListener(new MCODEMainPanel.processCheckBoxAction());
-        processCheckBox.setToolTipText("If checked, MCODE will limit cluster expansion to the\n" +
-                "direct neighborhood of the spawning node.  If unchecked, the cluster will be allowed\n" +
-                "to branch out to denser regions of the network.");
-        processCheckBox.setSelected(currentParamsCopy.isPreprocessNetwork());
-        directedModePanel.add(processCheckBox);
-
-        //JTabbedPane tabbedPane = new JTabbedPane();
-        //tabbedPane.addTab("Network Scoring", null, scorePanel, "Set parameters for scoring stage (Stage 1)");
-        //tabbedPane.addTab("Find Clusters", null, findPanel, "Set parameters for cluster finding stage (Stage 2)");
-        //TODO: uncomment below when directed mode is implemented
-        //tabbedPane.addTab("Directed Mode", null, directedModePanel, "Set parameters for directed mode");
-        */
+        this.clusterFindingPanelForNetworkScope = panel;
         
         collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
         return collapsablePanel;
     }
     /**
-     *
+     * Creates a collapsable panel that holds cluster finding parameter inputs, placed within the cluster finding collapsable panel
      * @param component Any JComponent that may appear in the titled border of the panel
      * @return collapsablePanel
      */
-    private MCODECollapsablePanel createCustomizeClusterFindingPanel(JComponent component) {
+    private MCODECollapsablePanel createCustomizeClusterFindingPanel(JRadioButton component) {
         MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel(component);
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         //nodeScoreCutOffFormattedTextField = new JFormattedTextField(new DecimalFormat("0.000")) {
         //    public JToolTip createToolTip() {
@@ -258,17 +286,82 @@ public class MCODEMainPanel extends JPanel {
         //labelFieldPanel3.add(nodeScoreCutOffLabel);
         //labelFieldPanel3.add(nodeScoreCutOffFormattedTextField);
 
-        haircutCheckBox = new JCheckBox("Haircut", false) {
+        //Preprocess (only in second (and 3rd?) scope - from seed)
+        JLabel preprocessLabel = new JLabel("Preprocess network");
+        preprocessCheckBox = new JCheckBox() {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        preprocessCheckBox.addItemListener(new MCODEMainPanel.preprocessCheckBoxAction());
+        String preprocessTip = "If checked, MCODE will limit cluster expansion to the\n" +
+                "direct neighborhood of the spawning node.  If unchecked, the cluster will be allowed\n" +
+                "to branch out to denser regions of the network.";
+        preprocessCheckBox.setToolTipText(preprocessTip);
+        preprocessCheckBox.setSelected(currentParamsCopy.isPreprocessNetwork());
+
+        JPanel preprocessPanel = new JPanel(new BorderLayout()) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        preprocessPanel.setToolTipText(preprocessTip);
+
+        preprocessPanel.add(preprocessLabel, BorderLayout.WEST);
+        preprocessPanel.add(preprocessCheckBox, BorderLayout.EAST);
+
+        preprocessPanel.setVisible(!scope.equals(NETWORK));
+
+        //Haircut Input
+        JLabel haircutLabel = new JLabel("Haircut");
+        haircutCheckBox = new JCheckBox() {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
             }
         };
         haircutCheckBox.addItemListener(new MCODEMainPanel.haircutCheckBoxAction());
-        haircutCheckBox.setToolTipText("If checked, MCODE will give clusters a haircut\n" +
-                "(remove singly connected nodes).");
+        String haircutTip = "If checked, MCODE will give clusters a haircut\n" +
+                "(remove singly connected nodes).";
+        haircutCheckBox.setToolTipText(haircutTip);
         haircutCheckBox.setSelected(currentParamsCopy.isHaircut());
-        panel.add(haircutCheckBox);
 
+        JPanel haircutPanel = new JPanel(new BorderLayout()) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        haircutPanel.setToolTipText(haircutTip);
+
+        haircutPanel.add(haircutLabel, BorderLayout.WEST);
+        haircutPanel.add(haircutCheckBox, BorderLayout.EAST);
+
+        //Fluff Input
+        JLabel fluffLabel = new JLabel("Fluff");
+        fluffCheckBox = new JCheckBox() {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        fluffCheckBox.addItemListener(new MCODEMainPanel.fluffCheckBoxAction());
+        String fluffTip = "If checked, MCODE will fluff clusters\n" +
+                "(expand core cluster one neighbour shell outwards according to fluff\n" +
+                "density cutoff). This is done after the optional haircut step.";
+        fluffCheckBox.setToolTipText(fluffTip);
+        fluffCheckBox.setSelected(currentParamsCopy.isFluff());
+
+        JPanel fluffPanel = new JPanel(new BorderLayout()) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        fluffPanel.setToolTipText(fluffTip);
+
+        fluffPanel.add(fluffLabel, BorderLayout.WEST);
+        fluffPanel.add(fluffCheckBox, BorderLayout.EAST);
+
+        //Fluff node density cutoff input
+        JLabel fluffNodeDensityCutOffLabel = new JLabel("   Node Density Cutoff");
+        //fluffNodeDensityCutOffLabel.setEnabled(currentParamsCopy.isFluff());
         fluffNodeDensityCutOffFormattedTextField = new JFormattedTextField(new DecimalFormat("0.000")) {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
@@ -276,42 +369,28 @@ public class MCODEMainPanel extends JPanel {
         };
         fluffNodeDensityCutOffFormattedTextField.setColumns(3);
         fluffNodeDensityCutOffFormattedTextField.addPropertyChangeListener("value", new MCODEMainPanel.formattedTextFieldAction());
-        String tipText4 = "Sets the fluff density cutoff for expanding a cluster according to the unadjusted\n" +
+        String fluffNodeDensityCutoffTip = "Sets the fluff density cutoff for expanding a cluster according to the unadjusted\n" +
                 "node density (clustering coefficient) after the cluster has already been defined by the algorithm.\n" +
                 "This allows clusters to slightly overlap at their edges. This parameter is only valid if fluffing\n" +
                 "is turned on. A higher value will expand the cluster more.";
-        fluffNodeDensityCutOffFormattedTextField.setToolTipText(tipText4);
+        fluffNodeDensityCutOffFormattedTextField.setToolTipText(fluffNodeDensityCutoffTip);
         fluffNodeDensityCutOffFormattedTextField.setText((new Double(currentParamsCopy.getFluffNodeDensityCutOff()).toString()));
-        fluffNodeDensityCutOffFormattedTextField.setEnabled(currentParamsCopy.isFluff());
-        JLabel fluffNodeDensityCutOffLabel = new JLabel("Fluff Node Density Cutoff");
-        JPanel labelFieldPanel4 = new JPanel(new FlowLayout(FlowLayout.LEFT)) {
+        //fluffNodeDensityCutOffFormattedTextField.setEnabled(currentParamsCopy.isFluff());
+
+        JPanel fluffNodeDensityCutOffPanel = new JPanel(new BorderLayout()) {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
             }
         };
-        labelFieldPanel4.setToolTipText(tipText4);
-        labelFieldPanel4.add(fluffNodeDensityCutOffLabel);
-        labelFieldPanel4.add(fluffNodeDensityCutOffFormattedTextField);
-        panel.add(labelFieldPanel4);
+        fluffNodeDensityCutOffPanel.setToolTipText(fluffNodeDensityCutoffTip);
 
-        fluffCheckBox = new JCheckBox("Fluff", false) {
-            public JToolTip createToolTip() {
-                return new JMultiLineToolTip();
-            }
-        };
-        fluffCheckBox.addItemListener(new MCODEMainPanel.fluffCheckBoxAction());
-        fluffCheckBox.setToolTipText("If checked, MCODE will fluff clusters\n" +
-                "(expand core cluster one neighbour shell outwards according to fluff\n" +
-                "density cutoff). This is done after the optional haircut step.");
-        fluffCheckBox.setSelected(currentParamsCopy.isFluff());
-        panel.add(fluffCheckBox);
+        fluffNodeDensityCutOffPanel.add(fluffNodeDensityCutOffLabel, BorderLayout.WEST);
+        fluffNodeDensityCutOffPanel.add(fluffNodeDensityCutOffFormattedTextField, BorderLayout.EAST);
 
-        //mainOptionsPanel.setBorder(BorderFactory.createTitledBorder("Main Options"));
-        //fluffOptionsPanel.setBorder(BorderFactory.createTitledBorder("Fluff Options"));
-        //mainOptionsPanel.add(mainOptionsSubPanel, BorderLayout.NORTH);
-        //mainOptionsPanel.add(fluffOptionsPanel, BorderLayout.SOUTH);
-        //findPanel.add(mainOptionsPanel, BorderLayout.NORTH);
+        fluffNodeDensityCutOffPanel.setVisible(currentParamsCopy.isFluff());
 
+        //Max depth input
+        JLabel maxDepthLabel = new JLabel("Max. Depth");
         maxDepthFormattedTextField = new JFormattedTextField(decFormat) {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
@@ -319,99 +398,131 @@ public class MCODEMainPanel extends JPanel {
         };
         maxDepthFormattedTextField.setColumns(3);
         maxDepthFormattedTextField.addPropertyChangeListener("value", new MCODEMainPanel.formattedTextFieldAction());
-        String tipText5 = "Sets the maximum depth from a seed node in the network to search to expand a cluster.\n" +
+        String maxDepthTip = "Sets the maximum depth from a seed node in the network to search to expand a cluster.\n" +
                 "By default this is set to an arbitrarily large number. Set this to a small number\n" +
                 "to limit cluster size.";
-        maxDepthFormattedTextField.setToolTipText(tipText5);
+        maxDepthFormattedTextField.setToolTipText(maxDepthTip);
         maxDepthFormattedTextField.setText((new Integer(currentParamsCopy.getMaxDepthFromStart()).toString()));
-        JLabel maxDepthLabel = new JLabel("Max. Depth");
-        JPanel labelFieldPanel5 = new JPanel() {
+
+        JPanel maxDepthPanel = new JPanel(new BorderLayout()) {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
             }
         };
-        labelFieldPanel5.setToolTipText(tipText5);
-        labelFieldPanel5.add(maxDepthLabel);
-        labelFieldPanel5.add(maxDepthFormattedTextField);
+        maxDepthPanel.setToolTipText(maxDepthTip);
 
-        panel.add(labelFieldPanel5);
+        maxDepthPanel.add(maxDepthLabel, BorderLayout.WEST);
+        maxDepthPanel.add(maxDepthFormattedTextField, BorderLayout.EAST);
+
+        //Add all inputs to the panel
+        panel.add(preprocessPanel);
+        panel.add(haircutPanel);
+        panel.add(fluffPanel);
+        panel.add(fluffNodeDensityCutOffPanel);
+        panel.add(maxDepthPanel);
+        this.clusterFindingPanelForNodeScope = panel;
 
         collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
         return collapsablePanel;
     }
 
     /**
-     *
-     * @param component description
+     * Creates a collapsable panel that holds a benchmark file input, placed within the cluster finding collapsable panel
+     * @param component Any JComponent that may appear in the titled border of the panel
      * @return collapsablePanel
      */
-    private MCODECollapsablePanel createOptimizeClusterFindingPanel(JComponent component) {
+    private MCODECollapsablePanel createOptimizeClusterFindingPanel(JRadioButton component) {
         MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel(component);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel benchmarkStarter = new JLabel("Benchmark file location");
+
+        JPanel benchmarkStarterPanel = new JPanel(new BorderLayout());
+        benchmarkStarterPanel.add(benchmarkStarter, BorderLayout.WEST);
+
+        JFormattedTextField benchmarkFileLocation = new JFormattedTextField();
+        JButton browseButton = new JButton("Browse...");
+
+        JPanel fileChooserPanel = new JPanel(new BorderLayout());
+        fileChooserPanel.add(benchmarkFileLocation, BorderLayout.CENTER);
+        fileChooserPanel.add(browseButton, BorderLayout.EAST);
+
+        panel.add(benchmarkStarterPanel);
+        panel.add(fileChooserPanel);
 
         collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
         return collapsablePanel;
     }
 
     /**
-     *
+     * Creates a panel that holds buttons at the bottom of the main panel (analyze, quit)
      * @return panel
      */
     private JPanel createBottomPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
 
-        JButton OKButton = new JButton("Analyze");
-        OKButton.addActionListener(new MCODEMainPanel.OKAction(this));
+        JButton analyzeButton = new JButton("Analyze");
+        analyzeButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy));
 
         JButton quitButton = new JButton("Quit");
-        quitButton.addActionListener(new MCODEMainPanel.cancelAction(this));
+        quitButton.addActionListener(new MCODEMainPanel.quitAction());
 
-        panel.add(OKButton);
+        panel.add(analyzeButton);
         panel.add(quitButton);
 
         return panel;
     }
 
     /**
-     * Saves the currently set parameters
+     * Makes sure that appropriate advanced options inputs are added and removed
+     * depending on which scope is selected
+     * TODO: the optimization panel should not simply be removed, should consider a different cluster finding panel structure alltogether
      */
-    private void saveParams() {
-        MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
+    private class scopeAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            scope = e.getActionCommand();
+            if (scope.equals(NETWORK)) {
+                //remove preprocess input
+                preprocessCheckBox.getParent().setVisible(false);
+
+                optimizeOption.getParent().getParent().setVisible(true);
+                //clusterFindingPanel.getContentPane().remove(clusterFindingPanelForNodeScope);
+                //clusterFindingPanel.getContentPane().add(clusterFindingPanelForNetworkScope, BorderLayout.NORTH);
+            } else {
+                //add preprocess input
+                preprocessCheckBox.getParent().setVisible(true);
+
+                optimizeOption.getParent().getParent().setVisible(false);
+                //clusterFindingPanel.getContentPane().remove(clusterFindingPanelForNetworkScope);
+                //clusterFindingPanel.getContentPane().add(clusterFindingPanelForNodeScope, BorderLayout.NORTH);
+                customizeOption.setSelected(true);
+            }
+        }
+    }
+
+    private void optimizeToggle (boolean show) {
+        if (show) {
+            //optimizeOption.getParent().getParent().setVisible(false);
+            clusterFindingPanel.getContentPane().remove(clusterFindingPanelForNetworkScope);
+            clusterFindingPanel.getContentPane().add(clusterFindingPanelForNodeScope, BorderLayout.NORTH);
+            customizeOption.setSelected(true);
+        } else {
+            //optimizeOption.getParent().getParent().setVisible(true);
+            clusterFindingPanel.getContentPane().remove(clusterFindingPanelForNodeScope);
+            clusterFindingPanel.getContentPane().add(clusterFindingPanelForNetworkScope, BorderLayout.NORTH);
+        }
     }
 
     /**
-     * Action for the OK button (saves parameters)
+     * Action for the quit button (does not save parameters)
      */
-    private class OKAction extends AbstractAction {
-        private JPanel dialog;
-
-        OKAction(JPanel popup) {
-            super();
-            this.dialog = popup;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            saveParams();
-            //dialog.dispose();
-        }
-    }
-
-    /**
-     * Action for the cancel button (does not save parameters)
-     */
-    private class cancelAction extends AbstractAction {
-        private JPanel dialog;
-
-        cancelAction(JPanel popup) {
-            super();
-            this.dialog = popup;
-        }
-
+    private class quitAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             //dialog.dispose();
+            //close all open panels
         }
     }
 
@@ -440,16 +551,21 @@ public class MCODEMainPanel extends JPanel {
                 if ((value != null) && (value.intValue() > 1)) {
                     currentParamsCopy.setDegreeCutOff(value.intValue());
                 }
+            } else if (source == kCoreFormattedTextField) {
+                Number value = (Number) kCoreFormattedTextField.getValue();
+                if ((value != null) && (value.intValue() > 2)) { //TODO: what should the lowest possible k-core be? -> for validation of input
+                    currentParamsCopy.setKCore(value.intValue());
+                }
             } else if (source == maxDepthFormattedTextField) {
                 Number value = (Number) maxDepthFormattedTextField.getValue();
                 if ((value != null) && (value.intValue() > 0)) {
                     currentParamsCopy.setMaxDepthFromStart(value.intValue());
-                }
+                }/* TODO: remove node score cutoff action when this perameter is editable from another panel
             } else if (source == nodeScoreCutOffFormattedTextField) {
                 Number value = (Number) nodeScoreCutOffFormattedTextField.getValue();
                 if ((value != null) && (value.doubleValue() >= 0.0)) {
                     currentParamsCopy.setNodeScoreCutOff(value.doubleValue());
-                }
+                }*/
             } else if (source == fluffNodeDensityCutOffFormattedTextField) {
                 Number value = (Number) fluffNodeDensityCutOffFormattedTextField.getValue();
                 if ((value != null) && (value.doubleValue() >= 0.0)) {
@@ -473,7 +589,7 @@ public class MCODEMainPanel extends JPanel {
     }
 
     /**
-     * Handles setting of the fluff parameter
+     * Handles setting of the fluff parameter and showing or hiding of the fluff node density cutoff input
      */
     private class fluffCheckBoxAction implements ItemListener {
         public void itemStateChanged(ItemEvent e) {
@@ -482,14 +598,16 @@ public class MCODEMainPanel extends JPanel {
             } else {
                 currentParamsCopy.setFluff(true);
             }
-            fluffNodeDensityCutOffFormattedTextField.setEnabled(currentParamsCopy.isFluff());
+            fluffNodeDensityCutOffFormattedTextField.getParent().setVisible(currentParamsCopy.isFluff());
+            //fluffNodeDensityCutOffFormattedTextField.setEnabled(currentParamsCopy.isFluff());
+            //fluffNodeDensityCutOffLabel.setEnabled(currentParamsCopy.isFluff());
         }
     }
 
     /**
      * Handles setting of the preprocess network parameter
      */
-    private class processCheckBoxAction implements ItemListener {
+    private class preprocessCheckBoxAction implements ItemListener {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 currentParamsCopy.setPreprocessNetwork(false);

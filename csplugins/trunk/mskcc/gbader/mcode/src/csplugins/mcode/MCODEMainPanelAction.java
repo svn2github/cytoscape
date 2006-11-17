@@ -47,30 +47,32 @@ import java.net.URL;
  **/
 
 /**
- * Action to change the current parameters
+ * Action to display the main panel where scope is chosen and scoring and
+ * finding parameters are modified
  */
-public class MCODEParameterChangeAction implements ActionListener {
+public class MCODEMainPanelAction implements ActionListener {
     /**
      * This method is called when the user wants to change the MCODE parameters.
      *
      * @param event Menu Item Selected.
      */
     public void actionPerformed(ActionEvent event) {
-        //display parameter panel in left cytopanel
+        //display main panel in left cytopanel
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.WEST);
-        //MCODEParameterChangePanel paramChangePanel = new MCODEParameterChangePanel();
-        MCODEMainPanel paramChangePanel = new MCODEMainPanel();
-        //Incase we choose to have an icon for the MCODE panel at some point
+
+        MCODEMainPanel mainPanel = new MCODEMainPanel();
+
         URL iconURL = this.getClass().getResource("resources/icon_note_large.gif");
         if (iconURL != null) {
             ImageIcon icon = new ImageIcon(iconURL);
             String tip = "MCODE Scoring/Complex-Finding Parameters";
-            cytoPanel.add("MCODE PlugIn", icon, paramChangePanel, tip);
+            cytoPanel.add("MCODE PlugIn", icon, mainPanel, tip);
         } else {
-            cytoPanel.add("MCODE PlugIn", paramChangePanel);
+            cytoPanel.add("MCODE PlugIn", mainPanel);
         }
-        int index = cytoPanel.indexOfComponent(paramChangePanel);
+
+        int index = cytoPanel.indexOfComponent(mainPanel);
         cytoPanel.setSelectedIndex(index);
         cytoPanel.setState(CytoPanelState.DOCK);
     }

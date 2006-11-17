@@ -61,19 +61,24 @@ public class MCODEPlugin extends CytoscapePlugin {
         item = new JMenuItem("Run MCODE on current network");
         item.addActionListener(new MCODEScoreAndFindAction());
         submenu.add(item);
-        item = new JMenuItem("Set parameters");
-        item.addActionListener(new MCODEParameterChangeAction());
+        item = new JMenuItem("Start MCODE");
+        item.addActionListener(new MCODEMainPanelAction());
         submenu.add(item);
         menu.add(submenu);
-        //Advanced sub-sub menu
+        //Advanced sub-sub menu TODO: advanced menu should be removed
         JMenu subsubmenu = new JMenu("Advanced");
         item = new JMenuItem("Step 1: Score Network");
         item.addActionListener(new MCODEScoreAction());
         subsubmenu.add(item);
-        //item = new JMenuItem("Step 2: Find Complexes");
-        //item.addActionListener(new MCODEFindAction());
-        //subsubmenu.add(item);
+        item = new JMenuItem("Step 2: Find Complexes");
+        item.addActionListener(new MCODEFindAction());
+        subsubmenu.add(item);
         submenu.add(subsubmenu);
+        //Help box
+        item = new JMenuItem("Help");
+        //TODO: item.addActionListener(new MCODEHelpAction());
+        submenu.add(item);
+        menu.add(submenu);
         //About box
         item = new JMenuItem("About MCODE");
         item.addActionListener(new MCODEAboutAction());

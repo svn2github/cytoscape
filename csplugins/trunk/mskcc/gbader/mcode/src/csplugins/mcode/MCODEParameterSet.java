@@ -45,6 +45,7 @@ public class MCODEParameterSet {
     //used in scoring stage
     private boolean includeLoops;
     private int degreeCutOff;
+    private int kCore;//TODO: complete this
     //used in complex finding stage
     private int maxDepthFromStart;
     private double nodeScoreCutOff;
@@ -66,6 +67,7 @@ public class MCODEParameterSet {
         //default parameters
         includeLoops = false;
         degreeCutOff = 2;               //don't count nodes of degree 1
+        kCore = 2;                      //TODO: what should the initial value be?
         maxDepthFromStart = 100;        //effectively unlimited
         nodeScoreCutOff = 0.2;          //user should change this as the main parameter
         fluff = false;
@@ -80,9 +82,9 @@ public class MCODEParameterSet {
      * Constructor for no default algorithm parameters.
      * Results dialog box row height is still default 80 pixels.
      */
-    public MCODEParameterSet(boolean includeLoops, int degreeCutOff, int maxDepthFromStart, double nodeScoreCutOff,
+    public MCODEParameterSet(boolean includeLoops, int degreeCutOff, int kCore, int maxDepthFromStart, double nodeScoreCutOff,
                              boolean fluff, boolean haircut, double fluffNodeDensityCutOff) {
-        this.setAllAlgorithmParams(includeLoops, degreeCutOff, maxDepthFromStart, nodeScoreCutOff, fluff, haircut,
+        this.setAllAlgorithmParams(includeLoops, degreeCutOff, kCore, maxDepthFromStart, nodeScoreCutOff, fluff, haircut,
                 fluffNodeDensityCutOff);
         this.preprocessNetwork = true;
         //results dialog box
@@ -94,16 +96,18 @@ public class MCODEParameterSet {
      *
      * @param includeLoops
      * @param degreeCutOff
+     * @param kCore
      * @param maxDepthFromStart
      * @param nodeScoreCutOff
      * @param fluff
      * @param haircut
      * @param fluffNodeDensityCutOff
      */
-    public void setAllAlgorithmParams(boolean includeLoops, int degreeCutOff, int maxDepthFromStart, double nodeScoreCutOff,
+    public void setAllAlgorithmParams(boolean includeLoops, int degreeCutOff, int kCore, int maxDepthFromStart, double nodeScoreCutOff,
                                       boolean fluff, boolean haircut, double fluffNodeDensityCutOff) {
         this.includeLoops = includeLoops;
         this.degreeCutOff = degreeCutOff;
+        this.kCore = kCore;
         this.maxDepthFromStart = maxDepthFromStart;
         this.nodeScoreCutOff = nodeScoreCutOff;
         this.fluff = fluff;
@@ -120,6 +124,7 @@ public class MCODEParameterSet {
         MCODEParameterSet newParam = new MCODEParameterSet();
         newParam.setIncludeLoops(this.includeLoops);
         newParam.setDegreeCutOff(this.degreeCutOff);
+        newParam.setKCore(this.kCore);
         newParam.setMaxDepthFromStart(this.maxDepthFromStart);
         newParam.setNodeScoreCutOff(this.nodeScoreCutOff);
         newParam.setFluff(this.fluff);
@@ -146,6 +151,13 @@ public class MCODEParameterSet {
 
     public void setDegreeCutOff(int degreeCutOff) {
         this.degreeCutOff = degreeCutOff;
+    }
+
+    public int getKCore() {
+        return kCore;
+    }
+    public void setKCore(int kCore) {
+        this.kCore = kCore;
     }
 
     public int getMaxDepthFromStart() {

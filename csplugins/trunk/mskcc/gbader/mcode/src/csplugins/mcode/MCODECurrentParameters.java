@@ -36,7 +36,7 @@
 package csplugins.mcode;
 
 /**
- * Stores the current parameters for MCODE.  Parameters are set in the MCODEParameterChangeDialog
+ * Stores the current parameters for MCODE.  Parameters are set in the MCODEMainPanel
  */
 public class MCODECurrentParameters {
     private static MCODECurrentParameters ourInstance = new MCODECurrentParameters();
@@ -66,7 +66,8 @@ public class MCODECurrentParameters {
 
     /**
      * Current parameters can only be updated using this method.
-     * This method is called by MCODEParameterChangeDialog
+     * This method is called by MCODEScoreAndFindAction after comparisons have been conducted
+     * between the last saved version of the parameters and the current user's version
      *
      * @param newParams The new current parameters to set
      */

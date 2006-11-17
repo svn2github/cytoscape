@@ -49,12 +49,24 @@ import java.net.URL;
  * * Description: simple score and find action for MCODE
  */
 
+// TODO: this action is tiggered when the user clicks analyze in the main panel we have to compare its parameter set to the stored one.
+// TODO: If current and saved parameters are different in the scoring section we must rescore and refind
+// TODO: If current and saved parameters are different in the finding section, we only refind
+// TODO: We must account for the scope and use the appropriate algorithm
+
 /**
  * Simple score and find action for MCODE. This should be the default for general users.
  */
 public class MCODEScoreAndFindAction implements ActionListener {
     private MCODEResultsPanel resultPanel;
     private boolean showResultPanel = false;
+
+    MCODEScoreAndFindAction () {}
+
+    MCODEScoreAndFindAction (MCODEParameterSet currentParamsCopy) {
+        //TODO: do some tests, determine what portion is different and then set some values as to what algorithm is to be performed
+        MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
+    }
 
     /**
      * This method is called when the user selects the menu item.
@@ -125,7 +137,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
             CytoscapeDesktop desktop = Cytoscape.getDesktop();
             CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.SOUTH);
             //Incase we choose to have an icon for the MCODE panel at some point
-            URL iconURL = MCODEPlugin.class.getResource("images/some_icon.gif");
+            URL iconURL = this.getClass().getResource("resources/icon_note_large.gif");
             if (iconURL != null){
                 Icon icon = new ImageIcon(iconURL);
                 String tip = "MCODE Complex Finder";

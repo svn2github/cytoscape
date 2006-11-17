@@ -5,109 +5,139 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.net.URL;
 
 /**
  * The user-triggered collapsable panel containing the component (trigger) in the titled border
  */
 public class MCODECollapsablePanel extends JPanel {
-   
+    //Border
     CollapsableTitledBorder border; //includes upper left component and line type
-    Border collapsedBorderLine = BorderFactory.createEmptyBorder(2, 2, 2, 2);
-    Border expandedBorderLine = null; //BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-    JComponent component = new JPanel(); // displayed in the titled border
-    JPanel panel; // content pane
-    JPanel empty = new JPanel(); // content pane without any content for the collapsed state
-    boolean collapsed; // stores curent state of the collapsable panel
-    String text;//temporary
+    Border collapsedBorderLine = BorderFactory.createEmptyBorder(2, 2, 2, 2); // no border
+    Border expandedBorderLine = null; // etched lowered border by default;
+
+    //Title
+    JPanel titleComponent = new JPanel(); // displayed in the titled border
 
     //Expand/Collapse button
-    final static int COLLAPSED = 0, EXPANDED = 1; //States
+    final static int COLLAPSED = 0, EXPANDED = 1; // image States
     ImageIcon[] iconArrow = createExpandAndCollapseIcon();
     JButton arrow = createArrowButton();
 
-    public MCODECollapsablePanel () {}
+    //Content Pane
+    JPanel panel;
 
-    public MCODECollapsablePanel (JComponent titleComponent) {
-        commonConstructor(titleComponent);
+    //Container State
+    boolean collapsed; // stores curent state of the collapsable panel
+
+    /**
+     * Special constructor for an option button controlled collapsable panel
+     * @param component Radio button that expands and collapses the panel based on if it is selected or not
+     */
+    public MCODECollapsablePanel (JRadioButton component) {
+        component.addItemListener(new MCODECollapsablePanel.ExpandAndCollapseAction());
+
+        titleComponent.add(component);
+        collapsed = !component.isSelected();
+        commonConstructor();
     }
 
+    /**
+     * Special constructor for a label/button controlled collapsable panel
+     * @param text Title of the collapsable panel in string format, used to create a button with an text and an arrow icon
+     */
     public MCODECollapsablePanel (String text) {
-        this.text = text;
-        JLabel titleComponent = new JLabel(text);
-        commonConstructor(titleComponent);
+        arrow.setText(text);
+
+        titleComponent.add(arrow);
+        collapsed = true;
+        commonConstructor();
     }
 
-    public void commonConstructor (JComponent titleComponent) {
-        //setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        //setLayout(null);
+    /**
+     * Sets layout, creates the content panel and adds it and the title component to the container
+     * All constructors have this procedure incommon
+     */
+    public void commonConstructor () {
         setLayout(new BorderLayout());
-
-        component.add(titleComponent);
-        component.add(arrow);
 
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        add(component, BorderLayout.NORTH);
+        add(titleComponent, BorderLayout.NORTH);
         add(panel, BorderLayout.NORTH);
-        setCollapsed(true);
+        setCollapsed(collapsed);
 
         placeTitleComponent();
     }
 
+    /**
+     * Sets the bounds of the border title component so that it is properly positioned
+     */
     public void placeTitleComponent() {
         Insets insets = this.getInsets();
         Rectangle containerRectangle = this.getBounds();
-        System.out.println(text+" title " + containerRectangle.x + " " + containerRectangle.y + " " + containerRectangle.width + " " + containerRectangle.height);
-
-        Rectangle componentRectangle = border.getComponentRect(containerRectangle, insets);//might want to change the arrow button to an image to avoid button border problems
-        component.setBounds(componentRectangle);
+        Rectangle componentRectangle = border.getComponentRect(containerRectangle, insets);
+        titleComponent.setBounds(componentRectangle);
     }
 
+    /**
+     * Allows for the updating/changing of the titled border component
+     * @param newComponent Any JComponent that may be placed in the titled border
+     *//*
     public void setTitleComponent(JComponent newComponent) {
-        remove(component);
+        remove(titleComponent);
         add(newComponent);
         border.setTitleComponent(newComponent);
-        component = newComponent;
-    }
+        titleComponent = newComponent;
+    }*/
 
+    /**
+     * This class requires that all content be placed within a designated panel, this method returns that panel
+     * @return panel The content panel
+     */
     public JPanel getContentPane() {
         return panel;
     }
 
+    /**
+     * Collapses or expands the panel by adding or removing the content pane,
+     * alternating between an etched and empty border, and changing the title arrow.
+     * Also, the current state is stored in the collapsed boolean
+     * @param collapse When set to true, the panel is collapsed, else it is expanded
+     */
     public void setCollapsed(boolean collapse) {
         if (collapse) {
             //collapse the panel, remove content and set border to empty border
             remove(panel);
             arrow.setIcon(iconArrow[COLLAPSED]);
-            border = new CollapsableTitledBorder(collapsedBorderLine, component);
+            border = new CollapsableTitledBorder(collapsedBorderLine, titleComponent);
         } else {
             //expand the panel, add content and set border to titled border
             add(panel, BorderLayout.NORTH);
             arrow.setIcon(iconArrow[EXPANDED]);
-            border = new CollapsableTitledBorder(expandedBorderLine, component);
+            border = new CollapsableTitledBorder(expandedBorderLine, titleComponent);
         }
         setBorder(border);
         collapsed = collapse;
         updateUI();
     }
 
-    public void setEnabled(boolean enable) {
-        super.setEnabled(enable);
-        //if (transmittingAllowed && transmitter != null) {
-        //    transmitter.setChildrenEnabled(enable);
-        //}
-    }
-
     /**
-     *
-     * @return Returns true if the panel is collapsed and false if it is expanded
+     * Returns the current state of the panel, collapsed (true) or expanded (false)
+     * @return collapsed Returns true if the panel is collapsed and false if it is expanded
      */
     public boolean isCollapsed() {
         return collapsed;
     }
 
+    /**
+     * Returns an ImageIcon array with arrow images used for the different states of the panel 
+     * @return iconArrow An ImageIcon array holding the collapse and expanded versions of the right hand side arrow
+     */
     public ImageIcon[] createExpandAndCollapseIcon () {
         ImageIcon[] iconArrow = new ImageIcon[2];
         URL iconURL;
@@ -123,22 +153,41 @@ public class MCODECollapsablePanel extends JPanel {
         return iconArrow;
     }
 
+    /**
+     * Returns a button with an arrow icon and a collapse/expand action listener
+     * @return button Button which is used in the titled border component
+     */
     public JButton createArrowButton () {
-        JButton button = new JButton(iconArrow[COLLAPSED]);
+        JButton button = new JButton("arrow", iconArrow[COLLAPSED]);
+        button.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        button.setVerticalTextPosition(AbstractButton.CENTER);
+        button.setHorizontalTextPosition(AbstractButton.LEFT);
+
+        //Temporary label to get its font
+        JLabel label = new JLabel("sample");
+        Font font = label.getFont();
+        button.setFont(font);
+
         button.addActionListener(new MCODECollapsablePanel.ExpandAndCollapseAction());
-        button.setBorderPainted(false);
+
         return button;
     }
 
     /**
-     * Handles expanding of hidden content
+     * Handles expanding and collapsing of extra content on the user's click of the titledBorder component
      */
-    private class ExpandAndCollapseAction extends AbstractAction {
+    private class ExpandAndCollapseAction extends AbstractAction implements ActionListener, ItemListener {
         public void actionPerformed(ActionEvent e) {
+            setCollapsed(!isCollapsed());
+        }
+        public void itemStateChanged(ItemEvent e) {
             setCollapsed(!isCollapsed());
         }
     }
 
+    /**
+     * Special titled border that includes a component in the title area
+     */
     private class CollapsableTitledBorder extends TitledBorder {
         JComponent component;
 
@@ -224,7 +273,7 @@ public class MCODECollapsablePanel extends JPanel {
                 return insets;
             }
 
-            int compHeight = component.getPreferredSize().height /2; //TODO: This determines how far the content is from the top
+            int compHeight = component.getPreferredSize().height;
 
             switch (titlePosition) {
                 case ABOVE_TOP:
@@ -232,7 +281,8 @@ public class MCODECollapsablePanel extends JPanel {
                     break;
                 case TOP:
                 case DEFAULT_POSITION:
-                    insets.top += Math.max(compHeight, borderInsets.top);// - borderInsets.top;
+                    //insets.top += Math.max(compHeight, borderInsets.top) - borderInsets.top;
+                    insets.top = Math.max(compHeight, borderInsets.top) - borderInsets.top;
                     break;
                 case BELOW_TOP:
                     insets.top += compHeight + TEXT_SPACING;

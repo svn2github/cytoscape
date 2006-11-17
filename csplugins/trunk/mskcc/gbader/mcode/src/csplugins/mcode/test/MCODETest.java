@@ -69,7 +69,7 @@ public class MCODETest extends TestCase {
      * Run MCODE on a small test network with some default parameters
      */
     public void testMCODEAlgorithmSmall() {
-        params.setAllAlgorithmParams(false, 2, 100, 0.2, false, true, 0.1);
+        params.setAllAlgorithmParams(false, 2, 2, 100, 0.2, false, true, 0.1);
         alg.scoreGraph(networkSmall);
         ArrayList complexes = alg.findComplexes(networkSmall);
         assertEquals(complexes.size(), 1);
