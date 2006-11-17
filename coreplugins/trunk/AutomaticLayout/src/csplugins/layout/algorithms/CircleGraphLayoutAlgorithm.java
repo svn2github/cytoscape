@@ -48,36 +48,37 @@ import csplugins.layout.AbstractLayout;
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class CircleGraphLayoutAlgorithm extends AbstractLayout {
-	
+	  
   public CircleGraphLayoutAlgorithm ( CyNetworkView networkView ) {
     super( networkView );
   }
 
 
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-	public Object construct () {
+  /* (non-Javadoc)
+  * @see java.lang.Runnable#run()
+  */
+  public Object construct () {
 
     initialize();
-		java.util.Iterator nodeIter = networkView.getNetwork().nodesIterator();
-		int nodeCount = networkView.getNetwork().getNodeCount();
+    java.util.Iterator nodeIter = networkView.getNetwork().nodesIterator();
+    int nodeCount = networkView.getNetwork().getNodeCount();
 
-		int r = (int)currentSize.getHeight();
-		// Compute angle step
-		double phi = 2 * Math.PI / nodeCount;
-		// Arrange vertices in a circle
-		for (int i = 0; i < nodeCount; i++) {
-			int node = ((CyNode)nodeIter.next()).getRootGraphIndex();
-      networkView.setNodeDoubleProperty( node, CyNetworkView.NODE_X_POSITION, 	r + r * Math.sin(i * phi) );
-      networkView.setNodeDoubleProperty( node, CyNetworkView.NODE_Y_POSITION, 	r + r * Math.cos(i * phi) );
-    }
-     
-    java.util.Iterator nod = networkView.getNodeViewsIterator();
-    while ( nod.hasNext() ) {
-      ( ( NodeView )nod.next() ).setNodePosition( true );
-    }
+    int r = (int)currentSize.getHeight();
+    // Compute angle step
+    double phi = 2 * Math.PI / nodeCount;
+    // Arrange vertices in a circle
+    for (int i = 0; i < nodeCount; i++) {
+      int node = ((CyNode)nodeIter.next()).getRootGraphIndex();
+        networkView.getNodeView(node).setXPosition( r + r * Math.sin(i * phi) );
+        networkView.getNodeView(node).setYPosition( r + r * Math.cos(i * phi) );
+      }
+    /* 
+      java.util.Iterator nod = networkView.getNodeViewsIterator();
+      while ( nod.hasNext() ) {
+        ( ( NodeView )nod.next() ).setNodePosition( true );
+      }
+      */
     return null;
-	}
-	
+  }
+  
 }
