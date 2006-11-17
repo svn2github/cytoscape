@@ -241,7 +241,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
         gridBagConstraints.insets = new java.awt.Insets(15, 0, 15, 0);
         getContentPane().add(jPanel2, gridBagConstraints);
 
-        btnEditBookmark.setVisible(false);
+        //btnEditBookmark.setVisible(false);
     	btnSetProxy.setEnabled(false);
 
         if (theProxyServer == null) {
@@ -344,7 +344,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 				this.dispose();
 			}
 			else if (_btn == btnAddBookmark){
-				NewBookmarkDialog theNewDialog = new NewBookmarkDialog(this, true, theBookmarks, bookmarkCategory);
+				BookmarkDialog theNewDialog = new BookmarkDialog(this, true, theBookmarks, bookmarkCategory, "new", null);
 				theNewDialog.setSize(300, 250);
 				theNewDialog.setLocationRelativeTo(this);
 
@@ -352,7 +352,13 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 				loadBookmarks(); // reload is required to update the GUI
 			}
 			else if (_btn == btnEditBookmark){
-				System.out.println("BtnModifyBookmark is pressed!");
+				DataSource theDataSource = (DataSource) bookmarkList.getSelectedValue();
+				BookmarkDialog theEditDialog = new BookmarkDialog(this, true, theBookmarks, bookmarkCategory, "edit", theDataSource);
+				theEditDialog.setSize(300, 250);
+				theEditDialog.setLocationRelativeTo(this);
+
+				theEditDialog.setVisible(true);
+				loadBookmarks(); // reload is required to update the GUI
 			}
 			else if (_btn == btnDeleteBookmark){
 				DataSource theDataSource = (DataSource) bookmarkList.getSelectedValue();
@@ -489,7 +495,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 	}
 
 	
-	public class NewBookmarkDialog extends JDialog implements ActionListener {
+	public class BookmarkDialog extends JDialog implements ActionListener {
 	    
 		private String name;
 		private String URLstr;
@@ -497,15 +503,29 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 		private Bookmarks theBookmarks;
 		private String categoryName;
 		private URL bookmarkURL;
+		private String mode = "new"; // new/edit
+		private DataSource dataSource = null;
 		
 	    /** Creates new form NewBookmarkDialog */
-	    public NewBookmarkDialog(JDialog parent, boolean modal, Bookmarks pBookmarks, String categoryName) {
+	    public BookmarkDialog(JDialog parent, boolean modal, Bookmarks pBookmarks, String categoryName, String pMode, DataSource pDataSource) {
 	        super(parent, modal);
 	        this.parent = parent;
 	        this.theBookmarks = pBookmarks;
 	        this.categoryName = categoryName;
-	        this.setTitle("Add new bookmark");
+	        this.mode = pMode;
+	        this.dataSource = pDataSource;
+	        
 	        initComponents();
+	        
+	        if (pMode.equalsIgnoreCase("new")) {
+		        this.setTitle("Add new bookmark");	        	
+	        }
+	        if (pMode.equalsIgnoreCase("edit")) {
+		        this.setTitle("Edit bookmark");	
+				tfName.setText(dataSource.getName());
+				tfName.setEditable(false);
+				tfURL.setText(dataSource.getHref());
+	        }
 	    }
 	    
 	 	public void actionPerformed(ActionEvent e)
@@ -517,7 +537,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 			{
 				JButton _btn = (JButton)_actionObject;
 
-				if (_btn == btnOK) {
+				if ((_btn == btnOK)&&(mode.equalsIgnoreCase("new"))) {
 						
 					name = tfName.getText();
 					URLstr = tfURL.getText();
@@ -540,6 +560,28 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 					    return;
 					}
 										
+					BookmarksUtil.saveBookmark(theBookmarks, categoryName,theDataSource);
+					this.dispose();
+				}
+				if ((_btn == btnOK)&&(mode.equalsIgnoreCase("edit"))) {
+
+					name = tfName.getText();
+					URLstr = tfURL.getText();
+
+					
+					if (URLstr.trim().equals("")) {
+						String msg = "URL is empty!";
+					    // display info dialog
+					    JOptionPane.showMessageDialog(parent, msg, "Warning", JOptionPane.INFORMATION_MESSAGE);
+					    return;
+					}					
+					
+					DataSource theDataSource = new DataSource();
+					theDataSource.setName(name);
+					theDataSource.setHref(URLstr);
+										
+					// first dellete the old one, then add (note: name is key of DataSource)
+					BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);										
 					BookmarksUtil.saveBookmark(theBookmarks, categoryName,theDataSource);
 					this.dispose();
 				}
