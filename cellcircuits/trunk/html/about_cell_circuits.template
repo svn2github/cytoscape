@@ -51,7 +51,7 @@
 <ul>
 <li><font class="about-keywords">Bridges the gap</font> between databases of individual pair-wise
 molecular interactions and databases of validated pathways.  
-<li><font class="about-keywords">Contains functional network hypothesis</font> produced by algorithms that screen molecular interaction networks based on their correspondence with expression or phenotypic data, their internal
+<li><font class="about-keywords">Contains functional network hypothesis</font> produced by algorithms that screen molecular interaction networks based on their correspondence with expression or phenotypic data, their internal structure, or their conservation across species.
 <li><font class="about-keywords">Is searchable</font> using protein/gene names and Gene Ontology terms.  Models are available either as images or in machine-readable formats.
 <li><font class="about-keywords">Serves as a clearinghouse</font> in which theorists may distribute or revise models in need of validation and experimentalists may search for models or specific hypotheses relevant to their interests.
 	  </p><br />
@@ -103,27 +103,7 @@ molecular interactions and databases of validated pathways.
     </tr>
   </table>
 
-  <input type="hidden" name="results_page" value="1" checked="checked" />
-  <input type="hidden" name="sort_method"  value="optionA_by_number_of_query_terms_matching_model" checked="checked" />
-  <input type="hidden" name="pval_thresh"  value="0.0001" checked="checked" />
-  <input type="hidden" name="publication"  value="Begley2002_MCR"             checked="checked" />
-  <input type="hidden" name="publication"  value="Bernard2005_PSB"            checked="checked" />
-  <input type="hidden" name="publication"  value="de_Lichtenberg2005_Science" checked="checked" />
-  <input type="hidden" name="publication"  value="Gandhi2006_NG"              checked="checked" />
-  <input type="hidden" name="publication"  value="Hartemink2002_PSB"          checked="checked" />
-  <input type="hidden" name="publication"  value="Haugen2004_GB"              checked="checked" />
-  <input type="hidden" name="publication"  value="Ideker2002_BINF"            checked="checked" />
-  <input type="hidden" name="publication"  value="Kelley2005_NBT"             checked="checked" />
-  <input type="hidden" name="publication"  value="Haugen2004_GB"              checked="checked" />
-  <input type="hidden" name="publication"  value="Sharan2005_PNAS"            checked="checked" />
-  <input type="hidden" name="publication"  value="Suthram2005_Nature"         checked="checked" />
-  <input type="hidden" name="publication"  value="Yeang2005_GB"               checked="checked" />
-
-  <input type="hidden" name="species" value="Saccharomyces cerevisiae" checked="checked" />
-  <input type="hidden" name="species" value="Caenorhabditis elegans"   checked="checked" />
-  <input type="hidden" name="species" value="Drosophila melanogaster"  checked="checked" />
-  <input type="hidden" name="species" value="Homo sapiens"             checked="checked" />
-  <input type="hidden" name="species" value="Plasmodium falciparum"    checked="checked" />
+<!-- HIDDEN TAGS -->
 
   </form>
 
