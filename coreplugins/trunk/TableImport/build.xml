@@ -88,7 +88,6 @@
 		<delete dir="${tableImport.testclasses.dir}" />
 		<delete file="TableImport.jar" />
 		<delete file="${tableImport.lib.dir}/TableImport.jar" />
-		<delete file="TableImportTests.jar" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -178,7 +177,7 @@
 	            ***********************************************
 	            Running all unit tests individually. 
 	            ***********************************************
-		      </echo>
+		</echo>
 		<mkdir dir="${junit.report.dir}" />
 		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
 			<classpath refid="tableImport.project.class.path" />
@@ -195,7 +194,7 @@
 			</fileset>
 			<report format="frames" todir="${junit.report.dir}" />
 		</junitreport>
-
+		<delete file="TableImportTests.jar" />
 	</target>
 
 
