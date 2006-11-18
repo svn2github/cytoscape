@@ -9,6 +9,7 @@ import ding.view.DingCanvas;
 import ding.view.InnerCanvas;
 import edu.umd.cs.piccolo.nodes.PPath;
 import giny.model.Node;
+import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -147,6 +148,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	 * PaletteNetworkEditEventHandler
 	 */
 	public boolean handlingEdgeDrop = false;
+	
+	/**
+	 * node or edge which has been highlighted for drop or edge connection
+	 * during mouseDrag
+	 */
+	private NodeView _highlightedNodeView = null;
+	private EdgeView _highlightedEdgeView = null;
 
 	public BasicNetworkEditEventHandler() {
 	}
@@ -338,6 +346,10 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		// AJK: 11/19/05 invert selection of target, which will have had its
 		// selection inverted upon mouse entry
 		target.setSelected(!target.isSelected());
+		
+		// AJK: 11/18/2005 invert selection of any nodes/edges that have been highlighted
+		invertSelections(null);
+		
 		this.getCanvas().repaint();
 		// redraw graph so that the correct arrow is shown (but only if network
 		// is small enough to see the edge...
@@ -370,13 +382,31 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		if (edgeStarted) {
 			// we need to update the latest section of the edge
 			updateEdge();
+			// if over NodeView or EdgeView, then highlight
+			NodeView nv = view.getPickedNodeView(nextPoint);
+			EdgeView ev = view.getPickedEdgeView(nextPoint);
+			if (nv != null)
+			{
+				invertSelections(nv);
+			}
+			else if (ev != null)
+			{
+				invertSelections(ev);
+			}
+			else
+			{
+				invertSelections(null);
+			}
 		}
 	}
 
 	/**
 	 * if hovering over a node, then highlight the node by temporarily
 	 * inverting its selection
+	 * 
+	 *
 	 */
+	// TODO: this doesn't work because we are entering Canvas, NOT nodeview
 	public void mouseEntered (MouseEvent e)
 	{
 		Point2D location = e.getPoint();
@@ -413,6 +443,21 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		boolean onNode = false;
 		Point2D location = e.getPoint();
 	    NodeView nv = view.getPickedNodeView (location);
+	    EdgeView ev = view.getPickedEdgeView (location);
+	    
+		// if over NodeView or EdgeView, then highlight
+		if (nv != null)
+		{
+			invertSelections(nv);
+		}
+		else if (ev != null)
+		{
+			invertSelections(ev);
+		}
+		else
+		{
+			invertSelections(null);
+		}
 		
 	    if (nv != null) {
 			onNode = true;
@@ -431,7 +476,53 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			updateEdge();
 		}
 	}
-
+    
+    private void invertSelections (Object nodeOrEdgeView)
+    {
+    	if (nodeOrEdgeView == null) // we have moved off a node or edge
+    	{
+    		if (_highlightedEdgeView != null)
+    		{
+    			_highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
+    			_highlightedEdgeView = null;
+    		}    		
+    		if (_highlightedNodeView != null)
+    		{
+    			_highlightedNodeView.setSelected(!_highlightedNodeView.isSelected());
+    			_highlightedNodeView = null;
+    		}
+    	}
+    	else if (nodeOrEdgeView instanceof NodeView)
+    	{
+    		NodeView nv = (NodeView) nodeOrEdgeView;
+    		if (_highlightedEdgeView != null)
+    		{
+    			_highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
+    			_highlightedEdgeView = null;
+    		}
+    		if (_highlightedNodeView != null)
+    		{
+    			_highlightedNodeView.setSelected(!_highlightedNodeView.isSelected()); 			
+    		}
+			_highlightedNodeView = nv;
+			nv.setSelected(!nv.isSelected());
+    	}
+    	else if (nodeOrEdgeView instanceof EdgeView)
+    	{
+    		EdgeView ev = (EdgeView) nodeOrEdgeView;
+    		if (_highlightedNodeView != null)
+    		{
+    			_highlightedNodeView.setSelected(!_highlightedNodeView.isSelected());
+    			_highlightedNodeView = null;
+    		}
+    		if (_highlightedEdgeView != null)
+    		{
+    			_highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected()); 			
+    		}
+			_highlightedEdgeView = ev;
+			ev.setSelected(!ev.isSelected());
+    	}
+    }
 
     /**
 	 * updates the rubberbanded edge line as the mouse is moved, works in Canvas coordinates
