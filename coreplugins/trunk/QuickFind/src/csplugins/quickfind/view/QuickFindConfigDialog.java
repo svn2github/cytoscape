@@ -22,7 +22,6 @@ import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.Date;
 
 /**
  * Quick Find Config Dialog Box.
@@ -94,7 +93,7 @@ public class QuickFindConfigDialog extends JDialog {
         Container container = getContentPane();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         this.setTitle("Configure Search Options for:  "
-            + currentNetwork.getTitle());
+                + currentNetwork.getTitle());
 
         //  If we are working on Linux, set always on top to true.
         //  This is a hack to deal with numerous z-ordering bugs on Linux.
@@ -141,6 +140,7 @@ public class QuickFindConfigDialog extends JDialog {
 
     /**
      * Gets Index Type.
+     *
      * @return QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
      */
     int getIndexType() {
@@ -149,9 +149,10 @@ public class QuickFindConfigDialog extends JDialog {
 
     /**
      * Enable / Disable Apply Button.
+     *
      * @param enable Enable flag;
      */
-    void enableApplyButton (boolean enable) {
+    void enableApplyButton(boolean enable) {
         if (applyButton != null) {
             applyButton.setEnabled(enable);
         }
@@ -216,7 +217,7 @@ public class QuickFindConfigDialog extends JDialog {
         JPanel panel = new JPanel();
         panel.setBorder(new TitledBorder("Attribute Description:"));
         panel.setLayout(new BorderLayout());
-        attributeDescriptionBox = new JTextArea (5, 40);
+        attributeDescriptionBox = new JTextArea(5, 40);
         attributeDescriptionBox.setEditable(false);
         attributeDescriptionBox.setLineWrap(true);
         attributeDescriptionBox.setWrapStyleWord(true);
@@ -242,7 +243,7 @@ public class QuickFindConfigDialog extends JDialog {
                 return false;
             }
         };
-        addTableModel (sampleAttributeValuesTable);
+        addTableModel(sampleAttributeValuesTable);
         this.setVisibleRowCount(sampleAttributeValuesTable, 5);
         panel.add(sampleAttributeValuesTable);
         return panel;
@@ -251,7 +252,7 @@ public class QuickFindConfigDialog extends JDialog {
     /**
      * Sets Text for Attribute Description Box.
      */
-    private void setAttributeDescription () {
+    private void setAttributeDescription() {
         Object selectedAttribute = attributeComboBox.getSelectedItem();
         CyAttributes attributes = getCyAttributes();
         String attributeKey;
@@ -264,13 +265,13 @@ public class QuickFindConfigDialog extends JDialog {
         if (attributeKey.equals(QuickFind.UNIQUE_IDENTIFIER)) {
             description = "Each node and edge in Cytoscape is assigned a "
                     + "unique identifier.  This is an alphanumeric value.";
-        } else if (attributeKey.equals (QuickFind.INDEX_ALL_ATTRIBUTES)) {
+        } else if (attributeKey.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
             description = "Index all attributes.  Use this option for the "
                     + "widest search scope possible.  Note that indexing "
                     + "all attributes on very large networks may take a few "
                     + "seconds.";
         } else {
-            description = attributes.getAttributeDescription (attributeKey);
+            description = attributes.getAttributeDescription(attributeKey);
         }
         if (description == null) {
             description = "No description available.";
@@ -317,14 +318,14 @@ public class QuickFindConfigDialog extends JDialog {
         TaskManager.executeTask(task, config);
     }
 
-    private JPanel createNodeEdgePanel () {
+    private JPanel createNodeEdgePanel() {
         JPanel nodeEdgePanel = new JPanel();
         nodeEdgePanel.setBorder(new TitledBorder("Select Index Type:"));
         nodeEdgePanel.setLayout(new BoxLayout(nodeEdgePanel,
                 BoxLayout.X_AXIS));
-        JRadioButton nodeButton = new JRadioButton ("Index Nodes");
+        JRadioButton nodeButton = new JRadioButton("Index Nodes");
         nodeButton.setActionCommand(Integer.toString(QuickFind.INDEX_NODES));
-        JRadioButton edgeButton = new JRadioButton ("Index Edges");
+        JRadioButton edgeButton = new JRadioButton("Index Edges");
         edgeButton.setActionCommand(Integer.toString(QuickFind.INDEX_EDGES));
         if (indexType == QuickFind.INDEX_NODES) {
             nodeButton.setSelected(true);
@@ -348,7 +349,7 @@ public class QuickFindConfigDialog extends JDialog {
                     addingNewAttributeList = true;
                     Vector attributeList = createAttributeList();
                     attributeComboBox.removeAllItems();
-                    for (int i=0; i<attributeList.size(); i++) {
+                    for (int i = 0; i < attributeList.size(); i++) {
                         attributeComboBox.addItem(attributeList.get(i));
                     }
                     addingNewAttributeList = false;
@@ -408,9 +409,9 @@ public class QuickFindConfigDialog extends JDialog {
 
                 //  First, set text of apply button
                 String currentAttribute =
-                    currentIndex.getControllingAttribute();
+                        currentIndex.getControllingAttribute();
                 String newAttribute = (String)
-                    attributeComboBox.getSelectedItem();
+                        attributeComboBox.getSelectedItem();
                 if (currentAttribute.equalsIgnoreCase(newAttribute)) {
                     applyButton.setText(BUTTON_REINDEX_TEXT);
                 } else {
@@ -492,6 +493,7 @@ public class QuickFindConfigDialog extends JDialog {
 
     /**
      * Main method:  used for local debugging purposes only.
+     *
      * @param args No command line arguments expected.
      */
     public static void main(String[] args) {
@@ -513,8 +515,8 @@ class ReindexQuickFind implements Task {
     /**
      * Constructor.
      *
-     * @param indexType         Index Type.
-     * @param newAttributeKey   New Attribute Key for Indexing.
+     * @param indexType       Index Type.
+     * @param newAttributeKey New Attribute Key for Indexing.
      */
     ReindexQuickFind(CyNetwork cyNetwork, int indexType, String newAttributeKey) {
         this.cyNetwork = cyNetwork;
@@ -568,8 +570,8 @@ class DetermineDistinctValuesTask implements Task {
     private QuickFindConfigDialog parentDialog;
     private TaskMonitor taskMonitor;
 
-    public DetermineDistinctValuesTask (TableModel tableModel,
-            String attributeKey, QuickFindConfigDialog parentDialog) {
+    public DetermineDistinctValuesTask(TableModel tableModel,
+                                       String attributeKey, QuickFindConfigDialog parentDialog) {
         this.tableModel = tableModel;
         if (attributeKey.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
             attributeKey = QuickFind.UNIQUE_IDENTIFIER;
