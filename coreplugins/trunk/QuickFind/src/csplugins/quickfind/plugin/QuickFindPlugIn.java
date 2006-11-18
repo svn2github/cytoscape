@@ -259,7 +259,7 @@ class UserSelectionListener implements ActionListener {
                         currentNetwork.setSelectedEdgeState(list, true);
 
                         List nodeList = new ArrayList();
-                        for (int i=0; i<list.size(); i++) {
+                        for (int i = 0; i < list.size(); i++) {
                             CyEdge edge = (CyEdge) list.get(i);
                             CyNode sourceNode = (CyNode) edge.getSource();
                             CyNode targetNode = (CyNode) edge.getTarget();
@@ -336,7 +336,7 @@ class RangeSelectionListener implements ChangeListener {
                 Number lowValue = (Number) model.getLowValue();
                 Number highValue = (Number) model.getHighValue();
                 try {
-                    final java.util.List rangeList = numberIndex.getRange (lowValue, highValue);
+                    final java.util.List rangeList = numberIndex.getRange(lowValue, highValue);
                     if (index.getIndexType() == QuickFind.INDEX_NODES) {
                         selectNodes(cyNetwork, rangeList);
                     } else {
@@ -351,7 +351,7 @@ class RangeSelectionListener implements ChangeListener {
     private void selectNodes(final CyNetwork cyNetwork, List rangeList) {
         //  First, do we have any edges selected?  If so, unselect them all
         Set selectedEdgeSet = cyNetwork.getSelectFilter().getSelectedEdges();
-        if (selectedEdgeSet.size() >0) {
+        if (selectedEdgeSet.size() > 0) {
             cyNetwork.setSelectedEdgeState(selectedEdgeSet, false);
         }
 
@@ -383,7 +383,7 @@ class RangeSelectionListener implements ChangeListener {
     private void selectEdges(final CyNetwork cyNetwork, List rangeList) {
         //  First, do we have any nodes selected?  If so, unselect them all
         Set selectedNodeSet = cyNetwork.getSelectFilter().getSelectedNodes();
-        if (selectedNodeSet.size() >0) {
+        if (selectedNodeSet.size() > 0) {
             cyNetwork.setSelectedNodeState(selectedNodeSet, false);
         }
 
