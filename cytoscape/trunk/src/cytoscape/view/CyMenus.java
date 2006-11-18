@@ -92,19 +92,14 @@ import cytoscape.actions.HelpAboutAction;
 import cytoscape.actions.HelpContactHelpDeskAction;
 import cytoscape.actions.HideSelectedEdgesAction;
 import cytoscape.actions.HideSelectedNodesAction;
-import cytoscape.actions.ImportAnnotationAndOntologyAction;
-import cytoscape.actions.ImportAttributeTableAction;
-import cytoscape.actions.ImportBioDataServerAction;
 import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportGraphFileAction;
-import cytoscape.actions.ImportNetworkTableAction;
 import cytoscape.actions.ImportNodeAttributesAction;
 import cytoscape.actions.ImportVizmapAction;
 import cytoscape.actions.InvertSelectedEdgesAction;
 import cytoscape.actions.InvertSelectedNodesAction;
 import cytoscape.actions.ListFromFileSelectionAction;
-import cytoscape.actions.MapOntologyAction;
 import cytoscape.actions.NewSessionAction;
 import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
 import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
@@ -728,22 +723,12 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// fill the Import submenu
 		addAction(new ImportGraphFileAction(this));
-		addAction(new ImportNetworkTableAction());
 		loadSubMenu.add(new JSeparator());
 		addAction(new ImportNodeAttributesAction());
 		addAction(new ImportEdgeAttributesAction());
 		addAction(new ImportExpressionMatrixAction());
-		addAction(new ImportAttributeTableAction());
-		loadSubMenu.add(new JSeparator());
-		addAction(new ImportAnnotationAndOntologyAction());
 		loadSubMenu.add(new JSeparator());
 		addAction(new ImportVizmapAction());
-//		addAction(new ImportBioDataServerAction());
-//
-//		ImageIcon goSmallIcon = new ImageIcon(getClass().getResource(
-//				"images/new/GOsmall.gif"));
-//
-//		addAction(new MapOntologyAction(true, goSmallIcon));
 
 		// fill the Save submenu
 		addAction(new ExportAsXGMMLAction());
