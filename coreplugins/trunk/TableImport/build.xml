@@ -3,19 +3,17 @@
 			11/16/2006 Written by Keiichiro Ono (kono@ucsd.edu)       -->
 <!-- =================================================================== -->
 
-<project name="tableImport" default="tableImport" basedir=".">
+<project name="tableImport" default="release" basedir=".">
 
 	<!-- =================================================================== -->
 	<!-- Initialization target                                               -->
 	<!-- =================================================================== -->
 	<target name="init-tableImport">
 		<tstamp />
-		<property name="tableImport.Name" value="tableImport" />
+		<property name="tableImport.Name" value="Table Import Plugin" />
 		<property name="tableImport.name" value="tableImport" />
 		<property name="tableImport.version" value="0.5" />
 		<property name="tableImport.year" value="200" />
-
-
 
 		<echo message="Building ${tableImport.name} version ${tableImport.version}." />
 
@@ -33,7 +31,11 @@
 
 		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
 		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
-		<!-- property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.4.0" /-->
+		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.4.0" />
+
+		<!-- JUnit report directory -->
+		<property name="junit.report.dir" value="${tableImport.root.dir}/junit-reports" />
+
 		<path id="project.class.path">
 			<pathelement path="${java.class.path}/" />
 		</path>
@@ -41,14 +43,16 @@
 		<!-- Define the directories -->
 		<property name="tableImport.root.dir" value="./" />
 		<property name="tableImport.src.dir" value="${tableImport.root.dir}/src" />
+		<property name="tableImport.lib.dir" value="${tableImport.root.dir}/lib" />
+		<property name="tableImport.tests.dir" value="${tableImport.root.dir}/tests" />
 		<property name="tableImport.classes.dir" value="${tableImport.root.dir}/classes" />
+		<property name="tableImport.testclasses.dir" value="${tableImport.root.dir}/testClasses" />
 		<property name="tableImport.javadoc.dir" value="${javadoc.dir}/tableImport" />
 		<property name="tableImport.resources.dir" value="${tableImport.root.dir}/resources" />
 		<property name="tableImport.manifest.dir" value="${tableImport.root.dir}/manifest" />
 		<property name="tableImport.packages" value="tableImport.*" />
 		<!-- Subdirectory for test reports -->
 		<property name="tableImport.tests.reports.dir" value="${tableImport.root.dir}/reports/tests" />
-		<property name="cytoscape.lib" value="${cytoscape.dir}/lib" />
 
 		<!-- Define the condition for compilation -->
 		<property name="cytoscape.jar" value="${cytoscape.dir}/cytoscape.jar" />
@@ -68,10 +72,23 @@
 			<pathelement location="${tableImport.classes.dir}" />
 			<pathelement path="${cytoscape.dir}/cytoscape.jar/" />
 			<pathelement location="${cytoscape.lib.dir}/**" />
+			<pathelement path="${tableImport.lib.dir}/poi-2.5.1-final-20040804.jar" />
 			<pathelement path="${project.class.path}/" />
+			<pathelement path="${tableImport.root.dir}/TableImportTests.jar/" />
 		</path>
 
 
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Clean up, get back to original state                                -->
+	<!-- =================================================================== -->
+	<target name="clean" depends="init-tableImport">
+		<delete dir="${tableImport.classes.dir}" />
+		<delete dir="${tableImport.testclasses.dir}" />
+		<delete file="TableImport.jar" />
+		<delete file="${tableImport.lib.dir}/TableImport.jar" />
+		<delete file="TableImportTests.jar" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -97,24 +114,30 @@
 			<fileset dir="${tableImport.classes.dir}" includes="**" />
 			<fileset dir="${tableImport.root.dir}/lib" includes="resources/**" />
 		</jar>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- release                                             -->
+	<!-- =================================================================== -->
+	<target name="release" depends="testAll">
 		<copy todir="${tableImport.lib.dir}" file="TableImport.jar" />
 		<copy todir="${cytoscape.plugin.dir}/core" file="TableImport.jar" />
-		<!-- copy todir="${cytoscape.build.dir}/plugins" file="TableImport.jar" / -->
 	</target>
 
 	<!-- =================================================================== -->
 	<!-- Compiles the tableImport tests                                             -->
 	<!-- =================================================================== -->
 	<target name="compile-tests" depends="tableImport">
-		<mkdir dir="${tableImport.classes.dir}" />
-		<javac srcdir="${tableImport.src.dir}" includes="**/test/*" excludes="${tableImport.tests.excludes}" classpathref="tableImport.project.class.path" destdir="${tableImport.classes.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+		<mkdir dir="${tableImport.testclasses.dir}" />
+		<javac srcdir="${tableImport.tests.dir}" includes="**/*" classpathref="tableImport.project.class.path" destdir="${tableImport.testclasses.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
 	</target>
 
 	<!-- =================================================================== -->
-	<!-- Creates the tableImport-tests.jar file                                     -->
+	<!-- Creates the TableImportTests.jar file                                     -->
 	<!-- =================================================================== -->
 	<target name="tests" depends="compile-tests">
-		<jar jarfile="tableImport-tests.jar" basedir="${tableImport.classes.dir}" includes="**/test/*" />
+		<jar jarfile="TableImportTests.jar" basedir="${tableImport.testclasses.dir}" includes="**/*" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -126,16 +149,13 @@
 	<!-- Run the Plugin                                                      -->
 	<!-- =================================================================== -->
 	<target name="run" depends="tableImport">
-
 		<java classname="cytoscape.cytoscape" classpathref="tableImport.project.class.path" fork="true" />
 		<arg line="-p ${tableImport.lib.dir}/TableImport.jar" />
-
-
 	</target>
 
 
 	<!-- =================================================================== -->
-	<!-- Runs the tests in tableImport-tests.jar                                    -->
+	<!-- Runs the tests in TableImportTests.jar                                    -->
 	<!-- =================================================================== -->
 	<target name="runtests" depends="tests">
 		<mkdir dir="${tableImport.tests.reports.dir}" />
@@ -149,22 +169,42 @@
 		</junit>
 	</target>
 
+
+	<!-- =================================================================== -->
+	<!-- Runs all test cases.                                    -->
+	<!-- =================================================================== -->
+	<target name="testAll" depends="tests">
+		<echo>
+	            ***********************************************
+	            Running all unit tests individually. 
+	            ***********************************************
+		      </echo>
+		<mkdir dir="${junit.report.dir}" />
+		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
+			<classpath refid="tableImport.project.class.path" />
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" todir="${junit.report.dir}" filtertrace="no">
+				<fileset dir="${tableImport.tests.dir}" includes="**/*Test.java" excludes="**/AllTests.java" />
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${junit.report.dir}">
+			<fileset dir="${junit.report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}" />
+		</junitreport>
+
+	</target>
+
+
 	<!-- =================================================================== -->
 	<!-- Creates the API documentation                                       -->
 	<!-- =================================================================== -->
 	<target name="docs" depends="init-tableImport">
 		<mkdir dir="${tableImport.javadoc.dir}" />
 		<javadoc packagenames="${tableImport.packages}" excludepackagenames="${tableImport.packages.excludes}" sourcepath="${tableImport.src.dir}" destdir="${tableImport.javadoc.dir}" classpathref="tableImport.project.class.path" author="true" version="true" use="true" splitindex="true" noindex="false" windowtitle="${tableImport.Name} API" doctitle="${tableImport.Name}" />
-	</target>
-
-	<!-- =================================================================== -->
-	<!-- Clean up, get back to original state                                -->
-	<!-- =================================================================== -->
-	<target name="clean" depends="init-tableImport">
-		<delete dir="${tableImport.classes.dir}" />
-		<delete file="TableImport.jar" />
-		<delete file="${tableImport.lib.dir}/tableImport.jar" />
-		<delete file="tableImport-tests.jar" />
 	</target>
 
 </project>
