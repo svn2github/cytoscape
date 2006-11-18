@@ -14,6 +14,7 @@ import csplugins.widgets.slider.JRangeSliderExtended;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeToolBar;
@@ -246,9 +247,29 @@ class UserSelectionListener implements ActionListener {
 
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    currentNetwork.setSelectedNodeState(list, true);
-                    ((DingNetworkView)
-                            Cytoscape.getCurrentNetworkView()).fitSelected();
+                    QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+                    final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+                    GenericIndex index = quickFind.getIndex(cyNetwork);
+
+                    if (index.getIndexType() == QuickFind.INDEX_NODES) {
+                        currentNetwork.setSelectedNodeState(list, true);
+                        ((DingNetworkView)
+                                Cytoscape.getCurrentNetworkView()).fitSelected();
+                    } else {
+                        currentNetwork.setSelectedEdgeState(list, true);
+
+                        List nodeList = new ArrayList();
+                        for (int i=0; i<list.size(); i++) {
+                            CyEdge edge = (CyEdge) list.get(i);
+                            CyNode sourceNode = (CyNode) edge.getSource();
+                            CyNode targetNode = (CyNode) edge.getTarget();
+                            nodeList.add(sourceNode);
+                            nodeList.add(targetNode);
+                        }
+                        currentNetwork.setSelectedNodeState(nodeList, true);
+                        ((DingNetworkView)
+                                Cytoscape.getCurrentNetworkView()).fitSelected();
+                    }
                     //  If only one node is selected, auto-adjust zoom factor
                     //  so that node does not take up whole screen.
                     if (graphObjects.length == 1) {
@@ -316,33 +337,78 @@ class RangeSelectionListener implements ChangeListener {
                 Number highValue = (Number) model.getHighValue();
                 try {
                     final java.util.List rangeList = numberIndex.getRange (lowValue, highValue);
-
-                    //  First, determine the current set of selected nodes
-                    Set selectedSet = cyNetwork.getSelectFilter().getSelectedNodes();
-
-                    //  Then, figure out which new nodes to select
-                    //  This is the set operation:  R - S
-                    final List toBeSelected = new ArrayList();
-                    toBeSelected.addAll(rangeList);
-                    toBeSelected.removeAll(selectedSet);
-
-                    //  Then, figure out which current nodes to unselect
-                    //  This is the set operation:  S - R
-                    final List toBeUnselected = new ArrayList();
-                    toBeUnselected.addAll(selectedSet);
-                    toBeUnselected.removeAll(rangeList);
-
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            cyNetwork.setSelectedNodeState(toBeSelected, true);
-                            cyNetwork.setSelectedNodeState(toBeUnselected, false);
-                            Cytoscape.getCurrentNetworkView().updateView();
-                        }
+                    if (index.getIndexType() == QuickFind.INDEX_NODES) {
+                        selectNodes(cyNetwork, rangeList);
+                    } else {
+                        selectEdges(cyNetwork, rangeList);
                     }
-                    );
                 } catch (IllegalArgumentException exc) {
                 }
             }
         }
+    }
+
+    private void selectNodes(final CyNetwork cyNetwork, List rangeList) {
+        //  First, do we have any edges selected?  If so, unselect them all
+        Set selectedEdgeSet = cyNetwork.getSelectFilter().getSelectedEdges();
+        if (selectedEdgeSet.size() >0) {
+            cyNetwork.setSelectedEdgeState(selectedEdgeSet, false);
+        }
+
+        //  Then, determine the current set of selected nodes
+        Set selectedNodeSet = cyNetwork.getSelectFilter().getSelectedNodes();
+
+        //  Then, figure out which new nodes to select
+        //  This is the set operation:  R - S
+        final List toBeSelected = new ArrayList();
+        toBeSelected.addAll(rangeList);
+        toBeSelected.removeAll(selectedNodeSet);
+
+        //  Then, figure out which current nodes to unselect
+        //  This is the set operation:  S - R
+        final List toBeUnselected = new ArrayList();
+        toBeUnselected.addAll(selectedNodeSet);
+        toBeUnselected.removeAll(rangeList);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                cyNetwork.setSelectedNodeState(toBeSelected, true);
+                cyNetwork.setSelectedNodeState(toBeUnselected, false);
+                Cytoscape.getCurrentNetworkView().updateView();
+            }
+        }
+        );
+    }
+
+    private void selectEdges(final CyNetwork cyNetwork, List rangeList) {
+        //  First, do we have any nodes selected?  If so, unselect them all
+        Set selectedNodeSet = cyNetwork.getSelectFilter().getSelectedNodes();
+        if (selectedNodeSet.size() >0) {
+            cyNetwork.setSelectedNodeState(selectedNodeSet, false);
+        }
+
+        //  Then, determine the current set of selected edge
+        Set selectedEdgeSet = cyNetwork.getSelectFilter().getSelectedEdges();
+
+        //  Then, figure out which new nodes to select
+        //  This is the set operation:  R - S
+        final List toBeSelected = new ArrayList();
+        toBeSelected.addAll(rangeList);
+        toBeSelected.removeAll(selectedEdgeSet);
+
+        //  Then, figure out which current nodes to unselect
+        //  This is the set operation:  S - R
+        final List toBeUnselected = new ArrayList();
+        toBeUnselected.addAll(selectedEdgeSet);
+        toBeUnselected.removeAll(rangeList);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                cyNetwork.setSelectedEdgeState(toBeSelected, true);
+                cyNetwork.setSelectedEdgeState(toBeUnselected, false);
+                Cytoscape.getCurrentNetworkView().updateView();
+            }
+        }
+        );
     }
 }
