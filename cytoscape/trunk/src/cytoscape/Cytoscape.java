@@ -55,6 +55,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.net.URL;
+import java.net.Proxy;
+import java.net.Proxy.Type;
+import java.net.InetSocketAddress;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -1105,17 +1109,37 @@ public abstract class Cytoscape {
 	 * Graph "Nature". Other files of Graph Nature include GML and XGMML. Beyond
 	 * Graph Nature there are Node, Edge, and Properties Nature.
 	 * 
-	 * @param location
+	 * @param loc
 	 *            location of importable file
 	 * @param create_view
 	 *            whether or not a view will be created
 	 * @return a network based on the specified file or null if the file type is
 	 *         supported but the file is not of Graph Nature.
 	 */
-	public static CyNetwork createNetworkFromFile(String location,
+	public static CyNetwork createNetworkFromFile(String loc,
 			boolean create_view) {
-		return createNetwork(getImportHandler().getReader(location),
-				create_view, null);
+		return createNetwork(importHandler.getReader(loc), create_view, null);
+	}
+
+	/**
+	 * Creates a CyNetwork from a URL. The file type is determined by the
+	 * suffix of the file or, if one does't exist, the contentType of the data.
+	 * Uses the new ImportHandler and thus the passed in
+	 * location should be a file of a recognized "Graph Nature". The "Nature" of
+	 * a file is a new way to tell what a file is beyond it's filetype e.g.
+	 * galFiltered.sif is, in addition to being a .sif file, the file is also of
+	 * Graph "Nature". Other files of Graph Nature include GML and XGMML. Beyond
+	 * Graph Nature there are Node, Edge, and Properties Nature.
+	 * 
+	 * @param url
+	 *            url of importable file
+	 * @param create_view
+	 *            whether or not a view will be created
+	 * @return a network based on the specified file or null if the file type is
+	 *         supported but the file is not of Graph Nature.
+	 */
+	public static CyNetwork createNetworkFromURL(URL url, boolean create_view) {
+		return createNetwork(importHandler.getReader(url), create_view, null);
 	}
 
 	/**
@@ -1635,4 +1659,5 @@ public abstract class Cytoscape {
 	public static void setBookmarks(Bookmarks pBookmarks) {
 		bookmarks = pBookmarks;
 	}	
+
 }

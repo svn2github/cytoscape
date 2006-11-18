@@ -88,6 +88,11 @@ import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 
+import cytoscape.dialogs.VisualStyleBuilderDialog;
+import cytoscape.CytoscapeInit;
+import cytoscape.init.CyInitParams;
+
+
 /**
  * This class is responsible for converting a gml object tree into cytoscape
  * objects New features to the current version: 1. Small bug fixes. 2. Translate
@@ -1375,4 +1380,19 @@ public class GMLReader extends AbstractGraphReader {
 		return new Color(Integer.parseInt(colorString.substring(1), 16));
 	}
 
+	public void doPostProcessing(CyNetwork net) {
+		CyInitParams init = CytoscapeInit.getCyInitParams();
+		if ( init == null )
+			return;
+
+		if ( init.getMode() == CyInitParams.GUI ||
+		     init.getMode() == CyInitParams.EMBEDDED_WINDOW ) {
+			VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(
+				         net.getTitle(), 
+					 (GraphReader) net.getClientData(Cytoscape.READER_CLIENT_KEY),
+				         Cytoscape.getDesktop(), 
+					 true);
+			vsd.show();
+		}
+	}
 }

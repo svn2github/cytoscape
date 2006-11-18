@@ -13,3 +13,6 @@ render.nodeLabelThreshold=100
 render.edgeArrowThreshold=300
 render.edgeLabelThreshold=120
 maximizeViewOnCreate=false
+proxy.server=
+proxy.server.port=
+proxy.server.type=

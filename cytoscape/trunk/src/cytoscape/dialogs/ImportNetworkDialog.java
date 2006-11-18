@@ -23,6 +23,7 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.net.MalformedURLException;
 import java.net.Proxy;
+import java.net.URL;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.data.ImportHandler;
@@ -47,7 +48,6 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
     private Bookmarks theBookmarks = null; // get it from session
     private String bookmarkCategory = "network";
 	private String URLstr;
-	private Proxy proxyServer= null;
     private BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
     
 	/** Creates new form NetworkImportDialog */
@@ -123,11 +123,6 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 	}
 	
 
-	public void setProxyServer(Proxy pServer)
-	{
-		proxyServer = pServer;
-	}
-	
 	
     /** This method is called from within the constructor to
      * initialize the form.
@@ -397,13 +392,12 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 			}
 			else if (_btn == btnAdvanced)
 			{
-				URLimportAdvancedDialog theAdvDialog = new URLimportAdvancedDialog(this, true, bookmarkCategory, theBookmarks, proxyServer);
+				URLimportAdvancedDialog theAdvDialog = new URLimportAdvancedDialog(this, true, bookmarkCategory, theBookmarks);
 				theAdvDialog.setLocationRelativeTo(this);
 				theAdvDialog.setPreferredSize(new Dimension(350,400));
 				theAdvDialog.pack();
 				theAdvDialog.setVisible(true);
 				loadBookmarkCMBox();
-				proxyServer = theAdvDialog.getProxyServer();
 			}
 			else if (_btn == btnImport)
 			{
@@ -433,7 +427,7 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 		
 		File tmpFile = null;
 		try {
-			tmpFile = theHandler.getNetworkFromURL(theURLstr, proxyServer);
+			tmpFile = theHandler.downloadFromURL(new URL(theURLstr));
 		}
 		catch (MalformedURLException e1) {
 		    JOptionPane.showMessageDialog(this, "URL error!", "Warning", JOptionPane.INFORMATION_MESSAGE);

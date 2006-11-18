@@ -18,6 +18,9 @@ import java.net.Proxy;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
 import cytoscape.util.BookmarksUtil;
+import cytoscape.util.ProxyHandler;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.util.List;
@@ -35,16 +38,14 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 	private String bookmarkCategory;
 	private Bookmarks theBookmarks;	
 	//private URL bookmarkURL;
-	private Proxy theProxyServer;
 		
     /** Creates new form URLimportAdvancedDialog */
     public URLimportAdvancedDialog(JDialog pParent, boolean modal, String pBookmarkCategory, 
-    		Bookmarks pBookmarks, Proxy pProxyServer) {
+    		Bookmarks pBookmarks) {
         super(pParent, modal);
         this.setTitle("Advanced Setting for " + pBookmarkCategory +" import");
         this.parent = pParent;
         this.theBookmarks = pBookmarks; 
-        this.theProxyServer = pProxyServer;
         bookmarkCategory = pBookmarkCategory;
         initComponents();
         loadBookmarks();
@@ -244,12 +245,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
         //btnEditBookmark.setVisible(false);
     	btnSetProxy.setEnabled(false);
 
-        if (theProxyServer == null) {
-        	lbProxyServer.setText("None");	
-        }
-        else {
-        	lbProxyServer.setText(theProxyServer.toString());
-        }
+	lbProxyServer.setText(getProxyServerString());
 
 		btnEditBookmark.setEnabled(false);
 		btnDeleteBookmark.setEnabled(false);
@@ -281,10 +277,6 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
     	}
     }
     
-    public Proxy getProxyServer() {
-    	return theProxyServer;
-    }
-
     
     // for test only
     public URLimportAdvancedDialog() {
@@ -377,35 +369,40 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener, 
 				java.net.Proxy.Type proxyType = java.net.Proxy.Type.valueOf(cmbProxyType.getSelectedItem().toString());
 
 				if (proxyType == java.net.Proxy.Type.DIRECT) {
-					theProxyServer = null;
 					lbProxyServer.setText("None");
 					return;
 				}
 				
 				int thePort;
+				Integer tmpInteger = new Integer(-1); 
 				try {
-					Integer tmpInteger = new Integer(tfPort.getText().trim());
+					tmpInteger = new Integer(tfPort.getText().trim());
 					thePort = tmpInteger.intValue();
 				}
 				catch (Exception exp) {
 				    JOptionPane.showMessageDialog(this, "Port error!", "Warning", JOptionPane.INFORMATION_MESSAGE);
 					return;					
 				}
-				
-				InetSocketAddress theAddress = new InetSocketAddress(tfHost.getText().trim(), thePort);
-				
-				try {
-					theProxyServer = new Proxy(proxyType, theAddress);					
-				}
-				catch (Exception expProxy) {
-				    JOptionPane.showMessageDialog(this, "Proxy server error!", "Warning", JOptionPane.INFORMATION_MESSAGE);					
-					return;
-				}
-				
-				lbProxyServer.setText(theProxyServer.toString());
+
+				CytoscapeInit.getProperties().setProperty("proxy.server",tfHost.getText().trim());
+				CytoscapeInit.getProperties().setProperty("proxy.server.port",tmpInteger.toString());
+				CytoscapeInit.getProperties().setProperty("proxy.server.type",proxyType.toString());
+
+				Cytoscape.firePropertyChange(Cytoscape.PREFERENCES_UPDATED,null,null);
+	
+				lbProxyServer.setText(getProxyServerString());
+			
 			}
 		}
  	}
+
+	private String getProxyServerString() {
+		Proxy p = ProxyHandler.getProxyServer();
+		if ( p == null )
+			return "None";
+		else
+			return p.toString();
+	}
  	
  	
 	/**

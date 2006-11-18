@@ -5,6 +5,8 @@ import cytoscape.util.CyFileFilter;
 import cytoscape.util.GMLFileFilter;
 import cytoscape.util.SIFFileFilter;
 import cytoscape.util.XGMMLFileFilter;
+import cytoscape.util.ProxyHandler;
+import cytoscape.Cytoscape;
 
 import java.awt.Component;
 import java.awt.Cursor;
@@ -22,6 +24,8 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import javax.swing.JOptionPane;
 
@@ -133,14 +137,15 @@ public class ImportHandler {
     /**
      * Gets the GraphReader that is capable of reading URL.
      *
-     * @param pURLstr -- the URL string, pProxyServer -- the proxy server or null .
+     * @param u -- the URL string
      * @return GraphReader capable of reading the specified URL.
      */
-    public GraphReader getReader(String pURLstr, Proxy pProxyServer)
-    	throws MalformedURLException,IOException
-    {    	
-    	File tmpFile = getNetworkFromURL(pURLstr, pProxyServer);	
-    	return getReader(tmpFile.getAbsolutePath());    	
+    public GraphReader getReader(URL u) {
+    	File tmpFile = downloadFromURL(u);
+	if ( tmpFile != null )
+    		return getReader( downloadFromURL(u).getName() );
+	else
+		return null;
     }
 
     /**
@@ -282,121 +287,86 @@ public class ImportHandler {
         String[] stringAns = (String[]) ans.toArray(new String[0]);
         return stringAns;
     }
-    
+   
+    private String extractExtensionFromContentType(String ct) {
+    	Pattern p = Pattern.compile("^\\w+/([\\w|-]+);*.*");
+	Matcher m = p.matcher(ct);
+	if ( m.matches() )
+		return m.group(1);
+	else
+		return "txt";
+    }
 	
-    /**
-     * Download a temporary file from the given URL. The file will be saved in the 
-     * temporary directory and will be deleted after Cytoscape exits.
-     */
-	public File downloadFromURL(String pURLstr, Proxy pProxyServer) throws MalformedURLException,
-	IOException
-	{				
-		URL theUrl;
-		theUrl = new URL(pURLstr);			
-		
-		URLConnection conn = null;;
-		
-		if (pProxyServer == null) {
-			conn = theUrl.openConnection();							
-		}
-		else {
-			conn = theUrl.openConnection(pProxyServer);
-		}			
-		
-		//Create a unique filename based on the current time
-		String baseFilename = "";
-		if (baseFilename.equals("")) {
-			Date date = new Date();
-			DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
-			baseFilename = df.format(date);
-		}
-		
-		//create a tmp file, which will be deleted upon exit
-		java.util.Properties theProperties = System.getProperties();
-		File tmpFile = new File(theProperties.getProperty("java.io.tmpdir"), baseFilename);
-		if (tmpFile.exists()) {
-			baseFilename = baseFilename +"a";
-			tmpFile = new File(theProperties.getProperty("java.io.tmpdir"), baseFilename);
-		}
-	    tmpFile.deleteOnExit();
+	/**
+	 * Download a temporary file from the given URL. The file will be saved in the 
+	 * temporary directory and will be deleted after Cytoscape exits.
+	 */
+	public File downloadFromURL(URL url) {
 
-	    BufferedWriter out = null;
-	    BufferedReader in = null;
+		try {
 
-	    out = new BufferedWriter(new FileWriter(tmpFile));
-		in = new BufferedReader(new InputStreamReader(conn.getInputStream()));	    	
-	    	    
-	    // Write to tmp file
-		String inputLine;
-		while ((inputLine = in.readLine()) != null) 
-		{
-		    out.write(inputLine+"\n");
-		}
+		URLConnection conn = null;
 
-		in.close();
-	    out.close();				
-		
-		return tmpFile;
-	}//downloadFromURL()
-	
-	
-    /**
-     * Download a network from URL
-     */
-	public File getNetworkFromURL(String pURLstr, Proxy pProxyServer)
-	throws MalformedURLException,IOException
-	{
-		//System.out.println("ImportHandler.getNetworkFromURL() ...");
-		File tmpFile = downloadFromURL(pURLstr, pProxyServer);
-		
-		if (tmpFile == null) return null;
-		
-		String baseFilename = "";
+		Proxy pProxyServer = ProxyHandler.getProxyServer();
+		if (pProxyServer == null) 
+			conn = url.openConnection();
+		else 
+			conn = url.openConnection(pProxyServer);
 
-		//Try if we can determine the network type from URLstr
-		//test the URL against the various file extensions,if one matches, then extract the basename
+
+		// create the temp file
+		File tmpFile = null; 
+		String tmpDir = System.getProperty("java.io.tmpdir"); 
+		String pURLstr = url.toString();
+		
+		// Try if we can determine the network type from URLstr
+		// test the URL against the various file extensions,
+		// if one matches, then extract the basename
 		Collection theExts = getAllExtensions();
 		for (Iterator it = theExts.iterator(); it.hasNext();) {
 			String theExt = (String) it.next();
 			if (pURLstr.endsWith(theExt)) {
-				baseFilename = pURLstr.substring(pURLstr.lastIndexOf("/")+1);
+				tmpFile = new File(tmpDir + 
+				                   System.getProperty("file.separator") + 
+						   pURLstr.substring(pURLstr.lastIndexOf("/")+1));
 				break;
 			}
 		}
-		//If not, determine network type by reading first few lines of header
-		if (baseFilename.equals("")) {
-			String ext = getNetworkTypeByHeader(tmpFile);
-			baseFilename = tmpFile.getName()+ "." + ext;
-		}
-		//Rename network file with ext
-		File newFile = new File(tmpFile.getParent(), baseFilename);
-		newFile.deleteOnExit();
-		tmpFile.renameTo(newFile);
 
-		return newFile;
-	}
-	
-	
-    /**
-     * For a file without extension, check if its content is "xml" or "gml" or "unknown"
-     */	
-	public String getNetworkTypeByHeader(File pFile) throws IOException {
-		String theHeader = getHeader(pFile).trim().toUpperCase();
-		
-		if (theHeader.startsWith("<?XML")) {
-			return "xml";
+		// if none of the extensions match, then use the the content type as
+		// a suffix and create a temp file.
+		if ( tmpFile == null ) {
+			String ct = "." + extractExtensionFromContentType( conn.getContentType() ); 
+			tmpFile = File.createTempFile("url.download.",ct,new File(tmpDir));
 		}
-	
-		if (theHeader.contains("GRAPH")) {
-			int index = theHeader.indexOf("GRAPH");
-			String theSuffix = theHeader.substring(index+5).trim();
 
-			if (theSuffix.startsWith("[")) {
-				return "gml";
-			}
+		if ( tmpFile == null )
+			return null;
+		else
+			tmpFile.deleteOnExit();
+
+		System.out.println("ImportHandler.downloadFromURL: " + tmpFile.getAbsolutePath());
+
+		// now write the temp file
+		BufferedWriter out = null;
+		BufferedReader in = null;
+
+		out = new BufferedWriter(new FileWriter(tmpFile));
+		in = new BufferedReader(new InputStreamReader(conn.getInputStream()));	    	
+
+		String inputLine = null;
+		while ((inputLine = in.readLine()) != null) 
+			out.write(inputLine+"\n");
+
+		in.close();
+		out.close();
+
+		return tmpFile;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-		
-		return "unknown";
 	}
 	
 	
