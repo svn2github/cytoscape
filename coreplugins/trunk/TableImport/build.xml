@@ -27,7 +27,7 @@
 		<property name="tableImport.lib.dir" value="${tableImport.root.dir}/lib" />
 
 		<!-- You need to modify this line to point to Cytoscape directory.  -->
-		<property name="cytoscape.dir" value="${tableImport.root.dir}/../../cytoscape" />
+		<property name="cytoscape.dir" value="${tableImport.root.dir}/../FreshSVNTest" />
 
 		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
 		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
@@ -109,6 +109,15 @@
 		<copy todir="${tableImport.classes.dir}/images">
 			<fileset dir="${tableImport.root.dir}/images" />
 		</copy>
+
+		<unjar dest="${tableImport.classes.dir}">
+			<fileset dir="${tableImport.lib.dir}">
+				<include name="*.jar" />
+
+				<exclude name="TableImport.jar" />
+				<exclude name="TableImportTest.jar" />
+			</fileset>
+		</unjar>
 		<jar destfile="TableImport.jar" manifest="${tableImport.manifest.dir}/tableImport.manifest">
 			<fileset dir="${tableImport.classes.dir}" includes="**" />
 			<fileset dir="${tableImport.root.dir}/lib" includes="resources/**" />
