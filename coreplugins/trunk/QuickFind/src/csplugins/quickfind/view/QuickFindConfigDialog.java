@@ -283,7 +283,6 @@ public class QuickFindConfigDialog extends JDialog {
      * Creates TableModel consisting of Distinct Attribute Values.
      */
     private void addTableModel(JTable table) {
-        Date start = new Date();
         Object selectedAttribute = attributeComboBox.getSelectedItem();
 
         //  Determine current attribute key
@@ -316,8 +315,6 @@ public class QuickFindConfigDialog extends JDialog {
         //  is disposed.
         table.setModel(model);
         TaskManager.executeTask(task, config);
-        Date stop = new Date();
-        System.out.println("Pop time:  "  + (stop.getTime() - start.getTime()));
     }
 
     private JPanel createNodeEdgePanel () {
@@ -355,8 +352,16 @@ public class QuickFindConfigDialog extends JDialog {
                         attributeComboBox.addItem(attributeList.get(i));
                     }
                     addingNewAttributeList = false;
+
+                    //  Simulate attribute combo box selection.
+                    //  Invoke via SwingUtilities, so that radio button
+                    //  selection is not delayed.
                     if (attributeList.size() > 0) {
-                        attributeComboBox.setSelectedIndex(0);
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                attributeComboBox.setSelectedIndex(0);
+                            }
+                        });
                     }
                 }
             }
