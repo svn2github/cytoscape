@@ -16,6 +16,8 @@ public abstract class GenericIndexImpl implements GenericIndex {
 
     /**
      * Default constructor.
+     *
+     * @param indexType QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
      */
     public GenericIndexImpl(int indexType) {
         this.indexType = indexType;
@@ -24,6 +26,8 @@ public abstract class GenericIndexImpl implements GenericIndex {
 
     /**
      * Gets Index Type:  QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
+     *
+     * @return QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
      */
     public int getIndexType() {
         return indexType;

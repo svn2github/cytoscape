@@ -8,6 +8,8 @@ package csplugins.widgets.autocomplete.index;
 public interface GenericIndex {
     /**
      * Gets Index Type:  QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
+     *
+     * @return QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
      */
     int  getIndexType();
 
