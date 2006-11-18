@@ -6,6 +6,7 @@ import csplugins.widgets.autocomplete.index.IndexFactory;
 import csplugins.widgets.autocomplete.view.AutoCompleteDocument;
 import csplugins.widgets.autocomplete.view.ComboBoxFactory;
 import csplugins.widgets.autocomplete.view.TextIndexComboBox;
+import csplugins.quickfind.util.QuickFind;
 import junit.framework.TestCase;
 
 import javax.swing.text.Document;
@@ -170,7 +171,8 @@ public class TestTextIndexComboBox extends TestCase {
      * @return TextIndex Object.
      */
     public static TextIndex createSampleTextIndex() {
-        TextIndex textIndex = IndexFactory.createDefaultTextIndex();
+        TextIndex textIndex = IndexFactory.createDefaultTextIndex
+                (QuickFind.INDEX_NODES);
         textIndex.addToIndex("Apple", new String());
         textIndex.addToIndex("Apple Long Long Long Long Long Label",
                 new String());

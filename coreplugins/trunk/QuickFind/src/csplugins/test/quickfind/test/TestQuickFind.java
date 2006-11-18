@@ -87,6 +87,9 @@ public class TestQuickFind extends TestCase {
         textIndex = (TextIndex) quickFind.reindexNetwork
                 (cyNetwork, QuickFind.INDEX_NODES, LOCATION, monitor);
 
+        //  Verify Index type
+        assertEquals (QuickFind.INDEX_NODES, textIndex.getIndexType());        
+
         //  Verify that nodes have been indexed
         hits = textIndex.getHits("nu", Integer.MAX_VALUE);
         assertEquals(1, hits.length);
@@ -101,6 +104,24 @@ public class TestQuickFind extends TestCase {
         validateIndexAllAttributes(quickFind, cyNetwork, monitor);
         validateIntegerIndex (quickFind, cyNetwork, monitor);
         validateDoubleIndex  (quickFind, cyNetwork, monitor);
+
+        //  Now, try indexing edge attributes
+        textIndex = (TextIndex) quickFind.reindexNetwork(
+                cyNetwork, QuickFind.INDEX_EDGES, PMID, monitor);
+
+        //  Verify Index type
+        assertEquals (QuickFind.INDEX_EDGES, textIndex.getIndexType());
+
+        //  Verify that edges have been indexed
+        hits = textIndex.getHits("12", Integer.MAX_VALUE);
+        assertEquals (2, hits.length);
+        assertEquals ("12345", hits[0].getKeyword());
+        assertEquals ("12666", hits[1].getKeyword());
+
+        //  Verify Embedded Edges
+        assertEquals (2, hits[0].getAssociatedObjects().length);
+        CyEdge edge = (CyEdge) hits[1].getAssociatedObjects()[0];
+        assertEquals ("rain (pp) yellow", edge.getIdentifier());
     }
 
     private void addNodeAttributes(CyNode node0, CyNode node1, CyNode node2,
@@ -130,7 +151,7 @@ public class TestQuickFind extends TestCase {
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
         edgeAttributes.setAttribute(edge0.getIdentifier(), PMID, "12345");
         edgeAttributes.setAttribute(edge1.getIdentifier(), PMID, "12345");
-        edgeAttributes.setAttribute(edge2.getIdentifier(), PMID, "54321");
+        edgeAttributes.setAttribute(edge2.getIdentifier(), PMID, "12666");
     }
 
     /**

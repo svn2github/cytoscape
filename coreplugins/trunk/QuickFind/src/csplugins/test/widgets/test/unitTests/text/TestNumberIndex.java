@@ -3,6 +3,7 @@ package csplugins.test.widgets.test.unitTests.text;
 import junit.framework.TestCase;
 import csplugins.widgets.autocomplete.index.NumberIndex;
 import csplugins.widgets.autocomplete.index.IndexFactory;
+import csplugins.quickfind.util.QuickFind;
 
 import java.util.List;
 
@@ -17,7 +18,8 @@ public class TestNumberIndex extends TestCase {
      * Test Number Index with Integer Values.
      */
     public void testNumberIndexInteger() {
-        NumberIndex numberIndex = IndexFactory.createDefaultNumberIndex();
+        NumberIndex numberIndex = IndexFactory.createDefaultNumberIndex
+                (QuickFind.INDEX_NODES);
         numberIndex.addToIndex(new Integer(5), "a");
         numberIndex.addToIndex(new Integer(2), "b");
         numberIndex.addToIndex(new Integer(50), "c");
@@ -48,7 +50,8 @@ public class TestNumberIndex extends TestCase {
      * Test Number Index with Double values.
      */
     public void testNumberIndexDouble() {
-        NumberIndex numberIndex = IndexFactory.createDefaultNumberIndex();
+        NumberIndex numberIndex = IndexFactory.createDefaultNumberIndex
+                (QuickFind.INDEX_NODES);
         numberIndex.addToIndex(new Double(0.1), "a");
         numberIndex.addToIndex(new Double(0.2), "b");
         numberIndex.addToIndex(new Double(0.8), "c");
@@ -80,7 +83,8 @@ public class TestNumberIndex extends TestCase {
      * @return NumberIndex Object.
      */
     public static NumberIndex createSampleNumberIndex() {
-        NumberIndex numberIndex = IndexFactory.createDefaultNumberIndex();
+        NumberIndex numberIndex = IndexFactory.createDefaultNumberIndex
+                (QuickFind.INDEX_NODES);
         for (double d = 0; d < 100; d += .2) {
             numberIndex.addToIndex(d, d);
         }

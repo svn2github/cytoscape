@@ -1,6 +1,7 @@
 package csplugins.quickfind.view;
 
 import csplugins.quickfind.plugin.QuickFindPlugIn;
+import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.IndexFactory;
 import csplugins.widgets.autocomplete.index.NumberIndex;
@@ -169,7 +170,7 @@ public class QuickFindPanel extends JPanel {
     private TextIndexComboBox createTextIndexComboBox() {
         TextIndexComboBox box = null;
         try {
-            TextIndex textIndex = IndexFactory.createDefaultTextIndex();
+            TextIndex textIndex = IndexFactory.createDefaultTextIndex(QuickFind.INDEX_NODES);
             box = ComboBoxFactory.createTextIndexComboBox
                     (textIndex, 2.0);
             box.setEnabled(false);

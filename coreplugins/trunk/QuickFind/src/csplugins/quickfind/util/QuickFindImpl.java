@@ -67,7 +67,8 @@ class QuickFindImpl implements QuickFind {
 
         //  Create Appropriate Index Type, based on attribute type.
         int attributeType = nodeAttributes.getType(controllingAttribute);
-        GenericIndex index = createIndex(attributeType, controllingAttribute);
+        GenericIndex index = createIndex(QuickFind.INDEX_NODES,
+                attributeType, controllingAttribute);
         indexNetwork(network, QuickFind.INDEX_NODES, nodeAttributes,
                 attributeType, controllingAttribute, index, taskMonitor);
         networkMap.put(network, index);
@@ -136,7 +137,7 @@ class QuickFindImpl implements QuickFind {
 
         if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
             //  Option 1:  Index all attributes
-            index = createIndex(CyAttributes.TYPE_STRING, controllingAttribute);
+            index = createIndex(indexType, CyAttributes.TYPE_STRING, controllingAttribute);
             String attributeNames[] = attributes.getAttributeNames();
             for (int i = 0; i < attributeNames.length; i++) {
                 if (attributes.getUserVisible(attributeNames[i])) {
@@ -149,7 +150,7 @@ class QuickFindImpl implements QuickFind {
             //  Option 2:  Index single attribute.
             //  Create appropriate index type, based on attribute type.
             int attributeType = attributes.getType(controllingAttribute);
-            index = createIndex(attributeType, controllingAttribute);
+            index = createIndex(indexType, attributeType, controllingAttribute);
             indexNetwork(cyNetwork, indexType, attributes, attributeType,
                     controllingAttribute, index, taskMonitor);
         }
@@ -223,18 +224,19 @@ class QuickFindImpl implements QuickFind {
 
     /**
      * Creates appropriate index, based on attribute type.
+     * @param indexType             QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES
      * @param attributeType         CyAttributes type.
      * @param controllingAttribute  Controlling attribute.
      * @return GenericIndex Object.
      */
-    private GenericIndex createIndex (int attributeType,
+    private GenericIndex createIndex (int indexType, int attributeType,
             String controllingAttribute) {
         GenericIndex index;
         if (attributeType == CyAttributes.TYPE_INTEGER
             || attributeType == CyAttributes.TYPE_FLOATING) {
-            index = IndexFactory.createDefaultNumberIndex();
+            index = IndexFactory.createDefaultNumberIndex(indexType);
         } else {
-            index = IndexFactory.createDefaultTextIndex();
+            index = IndexFactory.createDefaultTextIndex(indexType);
         }
         index.setControllingAttribute(controllingAttribute);
         return index;
