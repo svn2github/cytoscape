@@ -3,7 +3,7 @@
 			11/16/2006 Written by Keiichiro Ono (kono@ucsd.edu)       -->
 <!-- =================================================================== -->
 
-<project name="tableImport" default="release" basedir=".">
+<project name="tableImport" default="tableImport" basedir=".">
 
 	<!-- =================================================================== -->
 	<!-- Initialization target                                               -->
