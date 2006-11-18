@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.Date;
 
 /**
  * Quick Find Config Dialog Box.
@@ -55,6 +56,11 @@ public class QuickFindConfigDialog extends JDialog {
     private GenericIndex currentIndex;
 
     /**
+     * Index Type.
+     */
+    private int indexType;
+
+    /**
      * Apply Text.
      */
     private static final String BUTTON_INDEX_TEXT = "Index Network";
@@ -70,6 +76,11 @@ public class QuickFindConfigDialog extends JDialog {
     private JButton applyButton;
 
     /**
+     * Flag to indicate that we are currently adding new attributes.
+     */
+    private boolean addingNewAttributeList = false;
+
+    /**
      * Constructor.
      */
     public QuickFindConfigDialog() {
@@ -78,6 +89,7 @@ public class QuickFindConfigDialog extends JDialog {
         currentNetwork = Cytoscape.getCurrentNetwork();
         QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         currentIndex = quickFind.getIndex(currentNetwork);
+        indexType = currentIndex.getIndexType();
 
         Container container = getContentPane();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -97,6 +109,10 @@ public class QuickFindConfigDialog extends JDialog {
         JPanel masterPanel = new JPanel();
         masterPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
+
+        //  Add Node/Edge Selection Panel
+        JPanel nodeEdgePanel = createNodeEdgePanel();
+        masterPanel.add(nodeEdgePanel);
 
         //  Add Attribute ComboBox Panel
         JPanel attributePanel = createAttributeSelectionPanel();
@@ -121,6 +137,14 @@ public class QuickFindConfigDialog extends JDialog {
         setModal(true);
         setLocationRelativeTo(Cytoscape.getDesktop());
         setVisible(true);
+    }
+
+    /**
+     * Gets Index Type.
+     * @return QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
+     */
+    int getIndexType() {
+        return this.indexType;
     }
 
     /**
@@ -161,7 +185,7 @@ public class QuickFindConfigDialog extends JDialog {
                 String newAttribute = (String)
                         attributeComboBox.getSelectedItem();
                 ReindexQuickFind task = new ReindexQuickFind
-                        (currentNetwork, newAttribute);
+                        (currentNetwork, indexType, newAttribute);
                 JTaskConfig config = new JTaskConfig();
                 config.setAutoDispose(true);
                 config.displayStatus(true);
@@ -229,7 +253,7 @@ public class QuickFindConfigDialog extends JDialog {
      */
     private void setAttributeDescription () {
         Object selectedAttribute = attributeComboBox.getSelectedItem();
-        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        CyAttributes attributes = getCyAttributes();
         String attributeKey;
         if (selectedAttribute != null) {
             attributeKey = selectedAttribute.toString();
@@ -246,7 +270,7 @@ public class QuickFindConfigDialog extends JDialog {
                     + "all attributes on very large networks may take a few "
                     + "seconds.";
         } else {
-            description = nodeAttributes.getAttributeDescription (attributeKey);
+            description = attributes.getAttributeDescription (attributeKey);
         }
         if (description == null) {
             description = "No description available.";
@@ -259,6 +283,7 @@ public class QuickFindConfigDialog extends JDialog {
      * Creates TableModel consisting of Distinct Attribute Values.
      */
     private void addTableModel(JTable table) {
+        Date start = new Date();
         Object selectedAttribute = attributeComboBox.getSelectedItem();
 
         //  Determine current attribute key
@@ -291,8 +316,55 @@ public class QuickFindConfigDialog extends JDialog {
         //  is disposed.
         table.setModel(model);
         TaskManager.executeTask(task, config);
+        Date stop = new Date();
+        System.out.println("Pop time:  "  + (stop.getTime() - start.getTime()));
     }
 
+    private JPanel createNodeEdgePanel () {
+        JPanel nodeEdgePanel = new JPanel();
+        nodeEdgePanel.setBorder(new TitledBorder("Select Index Type:"));
+        nodeEdgePanel.setLayout(new BoxLayout(nodeEdgePanel,
+                BoxLayout.X_AXIS));
+        JRadioButton nodeButton = new JRadioButton ("Index Nodes");
+        nodeButton.setActionCommand(Integer.toString(QuickFind.INDEX_NODES));
+        JRadioButton edgeButton = new JRadioButton ("Index Edges");
+        edgeButton.setActionCommand(Integer.toString(QuickFind.INDEX_EDGES));
+        if (indexType == QuickFind.INDEX_NODES) {
+            nodeButton.setSelected(true);
+        } else {
+            edgeButton.setSelected(true);
+        }
+        ButtonGroup group = new ButtonGroup();
+        group.add(nodeButton);
+        group.add(edgeButton);
+        nodeEdgePanel.add(nodeButton);
+        nodeEdgePanel.add(edgeButton);
+        nodeEdgePanel.add(Box.createHorizontalGlue());
+
+        //  User has switched index type.
+        ActionListener indexTypeListener = new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                String actionCommand = actionEvent.getActionCommand();
+                int type = Integer.parseInt(actionCommand);
+                if (type != indexType) {
+                    indexType = type;
+                    addingNewAttributeList = true;
+                    Vector attributeList = createAttributeList();
+                    attributeComboBox.removeAllItems();
+                    for (int i=0; i<attributeList.size(); i++) {
+                        attributeComboBox.addItem(attributeList.get(i));
+                    }
+                    addingNewAttributeList = false;
+                    if (attributeList.size() > 0) {
+                        attributeComboBox.setSelectedIndex(0);
+                    }
+                }
+            }
+        };
+        nodeButton.addActionListener(indexTypeListener);
+        edgeButton.addActionListener(indexTypeListener);
+        return nodeEdgePanel;
+    }
 
     /**
      * Creates the Attribute Selection Panel.
@@ -301,24 +373,64 @@ public class QuickFindConfigDialog extends JDialog {
      */
     private JPanel createAttributeSelectionPanel() {
         JPanel attributePanel = new JPanel();
+
+        attributePanel.setBorder(new TitledBorder("Select Attribute:"));
         attributePanel.setLayout(new BoxLayout(attributePanel,
                 BoxLayout.X_AXIS));
 
-        //  Obtain Node Attributes
-        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-        String attributeNames[] = nodeAttributes.getAttributeNames();
+        JLabel label = new JLabel("Search on Attribute:  ");
+        label.setBorder(new EmptyBorder(5, 5, 5, 5));
+        attributePanel.add(label);
+
+        //  Create ComboBox
+        Vector attributeList = createAttributeList();
+        attributeComboBox = new JComboBox(attributeList);
+
+        String currentAttribute = currentIndex.getControllingAttribute();
+        if (currentAttribute != null) {
+            attributeComboBox.setSelectedItem(currentAttribute);
+        }
+        attributePanel.add(attributeComboBox);
+        attributePanel.add(Box.createHorizontalGlue());
+
+        //  Add Action Listener
+        attributeComboBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //  If we are adding new attributes to combox box, ignore the event
+                if (addingNewAttributeList) {
+                    return;
+                }
+
+                //  First, set text of apply button
+                String currentAttribute =
+                    currentIndex.getControllingAttribute();
+                String newAttribute = (String)
+                    attributeComboBox.getSelectedItem();
+                if (currentAttribute.equalsIgnoreCase(newAttribute)) {
+                    applyButton.setText(BUTTON_REINDEX_TEXT);
+                } else {
+                    applyButton.setText(BUTTON_INDEX_TEXT);
+                }
+
+                addTableModel(sampleAttributeValuesTable);
+                setAttributeDescription();
+            }
+        });
+        return attributePanel;
+    }
+
+    private Vector createAttributeList() {
+        Vector attributeList = new Vector();
+        CyAttributes attributes = getCyAttributes();
+        String attributeNames[] = attributes.getAttributeNames();
 
         if (attributeNames != null) {
-            JLabel label = new JLabel("Search on Attribute:  ");
-            label.setBorder(new EmptyBorder(5, 5, 5, 5));
-            attributePanel.add(label);
-            Vector attributeList = new Vector();
 
             //  Show all attributes, except those of TYPE_COMPLEX
             for (int i = 0; i < attributeNames.length; i++) {
-                int type = nodeAttributes.getType(attributeNames[i]);
+                int type = attributes.getType(attributeNames[i]);
                 //  only show user visible attributes
-                if (nodeAttributes.getUserVisible(attributeNames[i])) {
+                if (attributes.getUserVisible(attributeNames[i])) {
                     if (type != CyAttributes.TYPE_COMPLEX) {
                         //  Explicitly filter out CANONICAL_NAME, as it is
                         //  now deprecated.
@@ -341,38 +453,18 @@ public class QuickFindConfigDialog extends JDialog {
             //  if (attributeList.size() > 1) {
             //    attributeList.add(QuickFind.INDEX_ALL_ATTRIBUTES);
             //  }
-
-            //  Create ComboBox
-            attributeComboBox = new JComboBox(attributeList);
-            String currentAttribute =
-                    currentIndex.getControllingAttribute();
-            if (currentAttribute != null) {
-                attributeComboBox.setSelectedItem(currentAttribute);
-            }
-            attributePanel.add(attributeComboBox);
-            attributePanel.add(Box.createHorizontalGlue());
-
-            //  Add Action Listener
-            attributeComboBox.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-
-                    //  First, set text of apply button
-                    String currentAttribute =
-                        currentIndex.getControllingAttribute();
-                    String newAttribute = (String)
-                        attributeComboBox.getSelectedItem();
-                    if (currentAttribute.equalsIgnoreCase(newAttribute)) {
-                        applyButton.setText(BUTTON_REINDEX_TEXT);
-                    } else {
-                        applyButton.setText(BUTTON_INDEX_TEXT);
-                    }
-
-                    addTableModel(sampleAttributeValuesTable);
-                    setAttributeDescription();
-                }
-            });
         }
-        return attributePanel;
+        return attributeList;
+    }
+
+    CyAttributes getCyAttributes() {
+        CyAttributes attributes;
+        if (indexType == QuickFind.INDEX_NODES) {
+            attributes = Cytoscape.getNodeAttributes();
+        } else {
+            attributes = Cytoscape.getEdgeAttributes();
+        }
+        return attributes;
     }
 
     /**
@@ -410,15 +502,18 @@ public class QuickFindConfigDialog extends JDialog {
 class ReindexQuickFind implements Task {
     private String newAttributeKey;
     private CyNetwork cyNetwork;
+    private int indexType;
     private TaskMonitor taskMonitor;
 
     /**
      * Constructor.
      *
-     * @param newAttributeKey New Attribute Key for Indexing.
+     * @param indexType         Index Type.
+     * @param newAttributeKey   New Attribute Key for Indexing.
      */
-    ReindexQuickFind(CyNetwork cyNetwork, String newAttributeKey) {
+    ReindexQuickFind(CyNetwork cyNetwork, int indexType, String newAttributeKey) {
         this.cyNetwork = cyNetwork;
+        this.indexType = indexType;
         this.newAttributeKey = newAttributeKey;
     }
 
@@ -428,7 +523,7 @@ class ReindexQuickFind implements Task {
     public void run() {
         QuickFind quickFind =
                 QuickFindFactory.getGlobalQuickFindInstance();
-        quickFind.reindexNetwork(cyNetwork, QuickFind.INDEX_NODES,
+        quickFind.reindexNetwork(cyNetwork, indexType,
                 newAttributeKey, taskMonitor);
     }
 
@@ -485,11 +580,16 @@ class DetermineDistinctValuesTask implements Task {
         taskMonitor.setPercentCompleted(-1);
         //  Obtain distinct attribute values
         CyNetwork network = Cytoscape.getCurrentNetwork();
-        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        CyAttributes attributes = parentDialog.getCyAttributes();
 
-        Iterator nodeIterator = network.nodesIterator();
+        Iterator iterator;
+        if (parentDialog.getIndexType() == QuickFind.INDEX_NODES) {
+            iterator = network.nodesIterator();
+        } else {
+            iterator = network.edgesIterator();
+        }
         String values[] = CyAttributesUtil.getDistinctAttributeValues
-                (nodeIterator, nodeAttributes, attributeKey, 5);
+                (iterator, attributes, attributeKey, 5);
         if (values != null && values.length > 0) {
             for (int i = 0; i < values.length; i++) {
                 tableModel.setValueAt(values[i], i, 0);
