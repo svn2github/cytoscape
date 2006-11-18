@@ -10,7 +10,8 @@ import java.util.*;
 class NumberIndexImpl extends GenericIndexImpl implements NumberIndex {
     private TreeMap treeMap;
 
-    public NumberIndexImpl() {
+    public NumberIndexImpl(int indexType) {
+        super (indexType);
         treeMap = new TreeMap();
     }
 

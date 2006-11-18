@@ -19,8 +19,10 @@ class TextIndexImpl extends GenericIndexImpl implements TextIndex {
 
     /**
      * Constructor.
+     * @param indexType QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
      */
-    public TextIndexImpl() {
+    public TextIndexImpl(int indexType) {
+        super (indexType);
         maxKeyLength = TextIndex.DEFAULT_MAX_KEY_LENGTH;
         init();
     }

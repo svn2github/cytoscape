@@ -7,6 +7,11 @@ package csplugins.widgets.autocomplete.index;
  */
 public interface GenericIndex {
     /**
+     * Gets Index Type:  QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
+     */
+    int  getIndexType();
+
+    /**
      * Resets the index, wipes everything clean.
      */
     void resetIndex();

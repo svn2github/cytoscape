@@ -10,14 +10,23 @@ import java.util.ArrayList;
  * @author Ethan Cerami
  */
 public abstract class GenericIndexImpl implements GenericIndex {
+    private int indexType;
     private String attributeName = QuickFind.UNIQUE_IDENTIFIER;
     private ArrayList observerList;
 
     /**
      * Default constructor.
      */
-    public GenericIndexImpl() {
+    public GenericIndexImpl(int indexType) {
+        this.indexType = indexType;
         observerList = new ArrayList();
+    }
+
+    /**
+     * Gets Index Type:  QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
+     */
+    public int getIndexType() {
+        return indexType;
     }
 
     /**
