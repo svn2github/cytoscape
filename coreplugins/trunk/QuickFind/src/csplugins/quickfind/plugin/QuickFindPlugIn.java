@@ -187,7 +187,8 @@ public class QuickFindPlugIn extends CytoscapePlugin
     /**
      * Indexing started.
      */
-    public void indexingStarted() {
+    public void indexingStarted(CyNetwork cyNetwork, int indexType,
+        String controllingAttribute) {
         quickFindToolBar.indexingInProgress();
     }
 

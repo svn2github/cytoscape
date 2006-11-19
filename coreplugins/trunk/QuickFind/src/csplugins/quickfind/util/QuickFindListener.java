@@ -22,11 +22,12 @@ public interface QuickFindListener {
      * @param network CyNetwork Object.
      */
     void networkRemovedfromIndex(CyNetwork network);
-
+    
     /**
      * Indexing operation started.
      */
-    void indexingStarted();
+    void indexingStarted(CyNetwork cyNetwork,
+            int indexType, String controllingAttribute);
 
     /**
      * Indexing operation ended.

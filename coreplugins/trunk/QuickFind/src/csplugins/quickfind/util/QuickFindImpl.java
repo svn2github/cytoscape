@@ -62,7 +62,8 @@ class QuickFindImpl implements QuickFind {
         for (int i = 0; i < listenerList.size(); i++) {
             QuickFindListener listener = (QuickFindListener)
                     listenerList.get(i);
-            listener.indexingStarted();
+            listener.indexingStarted(network, QuickFind.INDEX_NODES,
+                    controllingAttribute);
         }
 
         //  Create Appropriate Index Type, based on attribute type.
@@ -108,7 +109,7 @@ class QuickFindImpl implements QuickFind {
         for (int i = 0; i < listenerList.size(); i++) {
             QuickFindListener listener = (QuickFindListener)
                     listenerList.get(i);
-            listener.indexingStarted();
+            listener.indexingStarted(cyNetwork, indexType, controllingAttribute);
         }
 
         //  Determine maxProgress
