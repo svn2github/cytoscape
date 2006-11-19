@@ -44,10 +44,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+import java.util.HashMap;
 
 /**
  * Compression-related methods mainly for Session Writer.<br>
@@ -73,6 +76,7 @@ public class ZipUtil {
 	private String[] inputFiles;
 	private int fileCount;
 	private String sessionDirName;
+	private HashMap pluginFileMap = null;
 
 	/**
 	 * For zip file, file separator is always "/" in all platforms inclding Win,
@@ -121,14 +125,13 @@ public class ZipUtil {
 	public void compressFast(final int compressionLevel, final boolean cleanFlag) throws IOException {
 		
 		//For time measurement
-		final double start = System.currentTimeMillis();
+		//final double start = System.currentTimeMillis();
 
-		FileInputStream fileIS;
+		//FileInputStream fileIS;
 		final CRC32 crc32 = new CRC32();
 		final byte[] rgb = new byte[5000];
 		final ZipOutputStream zipOS = new ZipOutputStream(
 				new BufferedOutputStream(new FileOutputStream(zipArchiveName)));
-		int numRead;
 		
 		// Tuning performance
 		zipOS.setMethod(ZipOutputStream.DEFLATED);
@@ -138,37 +141,33 @@ public class ZipUtil {
 			zipOS.setLevel(DEF_COMPRESSION_LEVEL);
 		}
 
+		String targetName = "";
 		for (int i = 0; i < fileCount; i++) {
 			final File file = new File(inputFiles[i]);
-
-			// Set CRC
-			fileIS = new FileInputStream(file);
-			while ((numRead = fileIS.read(rgb)) > -1) {
-				crc32.update(rgb, 0, numRead);
-			}
-			fileIS.close();
-
-			final ZipEntry zipEntry = new ZipEntry(sessionDirName + FS
-					+ inputFiles[i]);
-			zipEntry.setSize(file.length());
-			zipEntry.setTime(file.lastModified());
-			zipEntry.setCrc(crc32.getValue());
-			zipOS.putNextEntry(zipEntry);
-
-			// Write the file
-			fileIS = new FileInputStream(file);
-			while ((numRead = fileIS.read(rgb)) > -1) {
-				zipOS.write(rgb, 0, numRead);
-			}
-
-			fileIS.close();
-			zipOS.closeEntry();
+			targetName = sessionDirName + FS + inputFiles[i];
+			addEntryToZip(file, targetName, zipOS, crc32, rgb);
 		}
 
+		if ((pluginFileMap != null)&&(pluginFileMap.size()>0)) {
+			Set<String> pluginSet = pluginFileMap.keySet();
+			
+			for (String pluginName: pluginSet) {
+				List<File> theFileList = (List<File>) pluginFileMap.get(pluginName);
+				if ((theFileList == null)||(theFileList.size() == 0)) continue; 
+				for (File theFile: theFileList)
+				{
+					if ((theFile == null)||(!theFile.exists())) continue;
+					targetName = sessionDirName + FS + "plugins" + FS +
+								pluginName + FS + theFile.getName();
+					addEntryToZip(theFile, targetName, zipOS, crc32, rgb);
+				}
+			}
+		}
+		
 		zipOS.close();
 
-		final double stop = System.currentTimeMillis();
-		final double diff = stop - start;
+		//final double stop = System.currentTimeMillis();
+		//final double diff = stop - start;
 		//System.out.println("Compression time 3 = " + diff / 1000 + " sec.");
 		
 		if(cleanFlag) {
@@ -176,6 +175,40 @@ public class ZipUtil {
 		}
 	}
 
+	
+	public void setPluginFileMap(HashMap pMap)
+	{
+		pluginFileMap = pMap;
+	}
+	
+	private void addEntryToZip(File srcFile, String targetName, 
+			ZipOutputStream zipOS, CRC32 crc32, byte[] rgb) throws IOException
+	{
+		int numRead;
+
+		// Set CRC
+		FileInputStream fileIS = new FileInputStream(srcFile);
+		while ((numRead = fileIS.read(rgb)) > -1) {
+			crc32.update(rgb, 0, numRead);
+		}
+		fileIS.close();
+
+		final ZipEntry zipEntry = new ZipEntry(targetName);
+		zipEntry.setSize(srcFile.length());
+		zipEntry.setTime(srcFile.lastModified());
+		zipEntry.setCrc(crc32.getValue());
+		zipOS.putNextEntry(zipEntry);
+
+		// Write the file
+		fileIS = new FileInputStream(srcFile);
+		while ((numRead = fileIS.read(rgb)) > -1) {
+			zipOS.write(rgb, 0, numRead);
+		}
+
+		fileIS.close();
+		zipOS.closeEntry();		
+	}
+	
 	/**
 	 * Reads a file contained within a zip file and returns an InputStream.
 	 * 
@@ -194,8 +227,7 @@ public class ZipUtil {
 	 *         expression or null if nothing matches.
 	 */
 	public static InputStream readFile(String zipName, String fileNameRegEx)
-			throws IOException {
-
+			throws IOException {		
 		final ZipFile sessionZipFile = new ZipFile(zipName);
 		final Enumeration zipEntries = sessionZipFile.entries();
 		while (zipEntries.hasMoreElements()) {
