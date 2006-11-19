@@ -1,6 +1,7 @@
 package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.GenericIndex;
+import csplugins.widgets.autocomplete.index.Hit;
 import cytoscape.CyNetwork;
 import cytoscape.task.TaskMonitor;
 
@@ -135,17 +136,17 @@ public interface QuickFind {
     /**
      * Reindexes a network with the specified controlling attribute.
      * <p/>
-     * This method will iterate through all nodes within the
-     * registered network, and add each node to the text index.
-     * For each node, the attribute specified will be used to create the
+     * This method will iterate through all nodes/edges within the
+     * registered network, and add each node/edge to the text index.
+     * For each node/edge, the attribute specified will be used to create the
      * text index.
      * <p/>For example, if you want to index all nodes by their
      * "BIOPAX_NAME" attribute, you would use this code:
      * <br/>
-     * <pre>reindexNetwork (cyNetwork, "BIOPAX_NAME", tm);</pre>
+     * <pre>reindexNetwork (cyNetwork, QuickFind.INDEX_NODES, "BIOPAX_NAME", tm);</pre>
      *
      * @param cyNetwork            Cytoscape network.
-     * @param indexType            Must be INDEX_NODES or INDEX_EDGES.
+     * @param indexType            INDEX_NODES or INDEX_EDGES.
      * @param controllingAttribute Attribute used to index all nodes.
      * @param taskMonitor          Task Monitor, used to monitor long-term
      *                             progress of task.
@@ -153,6 +154,23 @@ public interface QuickFind {
      */
     GenericIndex reindexNetwork(CyNetwork cyNetwork,
             int indexType, String controllingAttribute, TaskMonitor taskMonitor);
+
+    /**
+     * Select a specific text item in QuickFind.
+     *
+     * @param network       the current CyNetwork.
+     * @param hit           Hit chosen by the user.
+     */
+    void selectHit (CyNetwork network, Hit hit);
+
+    /**
+     * Select a range in QuickFind.
+     *
+     * @param network       the current CyNetwork.
+     * @param low           the low value of the range.
+     * @param high          the high value of the range.
+     */
+    void selectRange (CyNetwork network, Number low, Number high);
 
     /**
      * Adds a new QuickFind Listener.
