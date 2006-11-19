@@ -2,6 +2,7 @@ package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.IndexFactory;
 import csplugins.widgets.autocomplete.index.GenericIndex;
+import csplugins.widgets.autocomplete.index.Hit;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -165,6 +166,25 @@ class QuickFindImpl implements QuickFind {
         }
         return index;
     }
+
+    public void selectHit(CyNetwork network, Hit hit) {
+        // Notify all listeners of event
+        for (int i = 0; i < listenerList.size(); i++) {
+            QuickFindListener listener = (QuickFindListener)
+                    listenerList.get(i);
+            listener.onUserSelection(network, hit);
+        }
+    }
+
+    public void selectRange(CyNetwork network, Number low, Number high) {
+        // Notify all listeners of event
+        for (int i = 0; i < listenerList.size(); i++) {
+            QuickFindListener listener = (QuickFindListener)
+                    listenerList.get(i);
+            listener.onUserRangeSelection(network, low, high);
+        }
+    }
+
 
     public void addQuickFindListener(QuickFindListener listener) {
         this.listenerList.add(listener);
