@@ -44,6 +44,7 @@ import prefuse.data.query.NumberRangeModel;
 public class QuickFindPlugIn extends CytoscapePlugin
         implements PropertyChangeListener, QuickFindListener {
     private QuickFindPanel quickFindToolBar;
+    private static final int NODE_SIZE_MULTIPLER = 10;
 
     /**
      * Constructor.
@@ -186,9 +187,13 @@ public class QuickFindPlugIn extends CytoscapePlugin
 
     /**
      * Indexing started.
+     *
+     * @param cyNetwork     CyNetwork.
+     * @param indexType     QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
+     * @param controllingAttribute Controlling Attribute.
      */
     public void indexingStarted(CyNetwork cyNetwork, int indexType,
-        String controllingAttribute) {
+                                String controllingAttribute) {
         quickFindToolBar.indexingInProgress();
     }
 
@@ -202,150 +207,102 @@ public class QuickFindPlugIn extends CytoscapePlugin
         quickFindToolBar.setIndex(index);
         quickFindToolBar.enableAllQuickFindButtons();
     }
-}
-
-/**
- * Listens for Final Selection from User.
- *
- * @author Ethan Cerami.
- */
-class UserSelectionListener implements ActionListener {
-    private TextIndexComboBox comboBox;
-    private static final int NODE_SIZE_MULTIPLER = 10;
 
     /**
-     * Constructor.
+     * Indicates that the user has selected a text item within the QuickFind
+     * Search Box.
      *
-     * @param comboBox TextIndexComboBox.
+     * @param network the current CyNetwork.
+     * @param hit     hit value chosen by the user.
      */
-    public UserSelectionListener(TextIndexComboBox comboBox) {
-        this.comboBox = comboBox;
-    }
+    public void onUserSelection(final CyNetwork network, Hit hit) {
+        network.unselectAllNodes();
+        network.unselectAllEdges();
 
-    /**
-     * User has made final selection.
-     *
-     * @param e ActionEvent Object.
-     */
-    public void actionPerformed(ActionEvent e) {
-
-        //  Get Current Network
-        final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-
-        //  Get Current User Selection
-        //  If we have a hit, select matching nodes and fit content.
-        Object o = comboBox.getSelectedItem();
-        if (o != null && o instanceof Hit) {
-            Hit hit = (Hit) comboBox.getSelectedItem();
-            currentNetwork.unselectAllNodes();
-            currentNetwork.unselectAllEdges();
-            final Object graphObjects[] = hit.getAssociatedObjects();
-
-            final ArrayList list = new ArrayList();
-            for (int i = 0; i < graphObjects.length; i++) {
-                list.add(graphObjects[i]);
-            }
-
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-                    final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-                    GenericIndex index = quickFind.getIndex(cyNetwork);
-
-                    if (index.getIndexType() == QuickFind.INDEX_NODES) {
-                        currentNetwork.setSelectedNodeState(list, true);
-                        ((DingNetworkView)
-                                Cytoscape.getCurrentNetworkView()).fitSelected();
-                    } else {
-                        currentNetwork.setSelectedEdgeState(list, true);
-
-                        List nodeList = new ArrayList();
-                        for (int i = 0; i < list.size(); i++) {
-                            CyEdge edge = (CyEdge) list.get(i);
-                            CyNode sourceNode = (CyNode) edge.getSource();
-                            CyNode targetNode = (CyNode) edge.getTarget();
-                            nodeList.add(sourceNode);
-                            nodeList.add(targetNode);
-                        }
-                        currentNetwork.setSelectedNodeState(nodeList, true);
-                        ((DingNetworkView)
-                                Cytoscape.getCurrentNetworkView()).fitSelected();
-                    }
-                    //  If only one node is selected, auto-adjust zoom factor
-                    //  so that node does not take up whole screen.
-                    if (graphObjects.length == 1) {
-                        if (graphObjects[0] instanceof CyNode) {
-                            CyNode node = (CyNode) graphObjects[0];
-
-                            //  Obtain dimensions of current InnerCanvas
-                            DGraphView graphView = (DGraphView)
-                                    Cytoscape.getCurrentNetworkView();
-                            InnerCanvas innerCanvas = graphView.getCanvas();
-
-                            NodeView nodeView = Cytoscape.
-                                    getCurrentNetworkView().getNodeView(node);
-
-                            double width = nodeView.getWidth()
-                                    * NODE_SIZE_MULTIPLER;
-                            double height = nodeView.getHeight()
-                                    * NODE_SIZE_MULTIPLER;
-                            double scaleFactor = Math.min
-                                    (innerCanvas.getWidth() / width,
-                                            (innerCanvas.getHeight() / height));
-                            Cytoscape.getCurrentNetworkView().setZoom
-                                    (scaleFactor);
-                        }
-                    }
-                    Cytoscape.getCurrentNetworkView().updateView();
-                }
-            }
-            );
+        //  Assemble Hit Objects
+        final Object graphObjects[] = hit.getAssociatedObjects();
+        final ArrayList list = new ArrayList();
+        for (int i = 0; i < graphObjects.length; i++) {
+            list.add(graphObjects[i]);
         }
-    }
-}
 
-/**
- * Action to select a range of nodes.
- *
- * @author Ethan Cerami.
- */
-class RangeSelectionListener implements ChangeListener {
-    private JRangeSliderExtended slider;
+        //  Fit Selected Content
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+                final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+                GenericIndex index = quickFind.getIndex(cyNetwork);
 
-    /**
-     * Constructor.
-     *
-     * @param slider JRangeSliderExtended Object.
-     */
-    public RangeSelectionListener(JRangeSliderExtended slider) {
-        this.slider = slider;
-    }
+                if (index.getIndexType() == QuickFind.INDEX_NODES) {
+                    network.setSelectedNodeState(list, true);
+                    ((DingNetworkView)
+                            Cytoscape.getCurrentNetworkView()).fitSelected();
+                } else {
+                    network.setSelectedEdgeState(list, true);
 
-    /**
-     * State Change Event.
-     *
-     * @param e ChangeEvent Object.
-     */
-    public void stateChanged(ChangeEvent e) {
-        QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-        final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-        GenericIndex index = quickFind.getIndex(cyNetwork);
-        NumberRangeModel model = (NumberRangeModel) slider.getModel();
-        if (slider.isVisible()) {
-            if (index instanceof NumberIndex) {
-                NumberIndex numberIndex = (NumberIndex) index;
-                Number lowValue = (Number) model.getLowValue();
-                Number highValue = (Number) model.getHighValue();
-                try {
-                    final java.util.List rangeList = numberIndex.getRange(lowValue, highValue);
-                    if (index.getIndexType() == QuickFind.INDEX_NODES) {
-                        selectNodes(cyNetwork, rangeList);
-                    } else {
-                        selectEdges(cyNetwork, rangeList);
+                    List nodeList = new ArrayList();
+                    for (int i = 0; i < list.size(); i++) {
+                        CyEdge edge = (CyEdge) list.get(i);
+                        CyNode sourceNode = (CyNode) edge.getSource();
+                        CyNode targetNode = (CyNode) edge.getTarget();
+                        nodeList.add(sourceNode);
+                        nodeList.add(targetNode);
                     }
-                } catch (IllegalArgumentException exc) {
+                    network.setSelectedNodeState(nodeList, true);
+                    ((DingNetworkView)
+                            Cytoscape.getCurrentNetworkView()).fitSelected();
                 }
+                //  If only one node is selected, auto-adjust zoom factor
+                //  so that node does not take up whole screen.
+                if (graphObjects.length == 1) {
+                    if (graphObjects[0] instanceof CyNode) {
+                        CyNode node = (CyNode) graphObjects[0];
+
+                        //  Obtain dimensions of current InnerCanvas
+                        DGraphView graphView = (DGraphView)
+                                Cytoscape.getCurrentNetworkView();
+                        InnerCanvas innerCanvas = graphView.getCanvas();
+
+                        NodeView nodeView = Cytoscape.
+                                getCurrentNetworkView().getNodeView(node);
+
+                        double width = nodeView.getWidth()
+                                * NODE_SIZE_MULTIPLER;
+                        double height = nodeView.getHeight()
+                                * NODE_SIZE_MULTIPLER;
+                        double scaleFactor = Math.min
+                                (innerCanvas.getWidth() / width,
+                                        (innerCanvas.getHeight() / height));
+                        Cytoscape.getCurrentNetworkView().setZoom
+                                (scaleFactor);
+                    }
+                }
+                Cytoscape.getCurrentNetworkView().updateView();
             }
+        }
+        );
+    }
+
+    /**
+     * Indicates that the user has selected a number range within the QuickFind
+     * Range selector.
+     *
+     * @param network   the current CyNetwork.
+     * @param lowValue  the low value of the range.
+     * @param highValue the high value of the range.
+     */
+    public void onUserRangeSelection(CyNetwork network, Number lowValue, Number highValue) {
+        try {
+            QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+            GenericIndex index = quickFind.getIndex(network);
+            NumberIndex numberIndex = (NumberIndex) index;
+            final java.util.List rangeList = numberIndex.getRange(lowValue, highValue);
+            if (index.getIndexType() == QuickFind.INDEX_NODES) {
+                selectNodes(network, rangeList);
+            } else {
+                selectEdges(network, rangeList);
+            }
+        } catch (IllegalArgumentException exc) {
         }
     }
 
@@ -411,5 +368,79 @@ class RangeSelectionListener implements ChangeListener {
             }
         }
         );
+    }
+}
+
+/**
+ * Listens for Final Selection from User.
+ *
+ * @author Ethan Cerami.
+ */
+class UserSelectionListener implements ActionListener {
+    private TextIndexComboBox comboBox;
+
+    /**
+     * Constructor.
+     *
+     * @param comboBox TextIndexComboBox.
+     */
+    public UserSelectionListener(TextIndexComboBox comboBox) {
+        this.comboBox = comboBox;
+    }
+
+    /**
+     * User has made final selection.
+     *
+     * @param e ActionEvent Object.
+     */
+    public void actionPerformed(ActionEvent e) {
+
+        //  Get Current Network
+        final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+
+        //  Get Current User Selection
+        Object o = comboBox.getSelectedItem();
+        if (o != null && o instanceof Hit) {
+            QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+            Hit hit = (Hit) comboBox.getSelectedItem();
+            quickFind.selectHit(currentNetwork, hit);
+        }
+    }
+}
+
+/**
+ * Action to select a range of nodes.
+ *
+ * @author Ethan Cerami.
+ */
+class RangeSelectionListener implements ChangeListener {
+    private JRangeSliderExtended slider;
+
+    /**
+     * Constructor.
+     *
+     * @param slider JRangeSliderExtended Object.
+     */
+    public RangeSelectionListener(JRangeSliderExtended slider) {
+        this.slider = slider;
+    }
+
+    /**
+     * State Change Event.
+     *
+     * @param e ChangeEvent Object.
+     */
+    public void stateChanged(ChangeEvent e) {
+        QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+        final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+        GenericIndex index = quickFind.getIndex(cyNetwork);
+        NumberRangeModel model = (NumberRangeModel) slider.getModel();
+        if (slider.isVisible()) {
+            if (index instanceof NumberIndex) {
+                Number lowValue = (Number) model.getLowValue();
+                Number highValue = (Number) model.getHighValue();
+                quickFind.selectRange(cyNetwork, lowValue, highValue);
+            }
+        }
     }
 }
