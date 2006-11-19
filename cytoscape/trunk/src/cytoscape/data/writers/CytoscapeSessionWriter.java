@@ -93,6 +93,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -108,6 +109,8 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import cytoscape.bookmarks.Bookmarks;
 //import cytoscape.bookmarks.DataSource;
 import cytoscape.util.BookmarksUtil;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeSupport;
 
 /**
  * Write session states into files.<br>
@@ -245,8 +248,13 @@ public class CytoscapeSessionWriter {
 		networkCount = networks.size();
 		networkMap = new HashMap();
 
-		// Total number of files in the zip archive will be
-		// number of networks + property files + bookmarks file
+		// Notify plugins to save states
+		HashMap<String, List<File>> pluginFileListMap = new HashMap<String, List<File>>();
+		
+		Cytoscape.firePropertyChange(Cytoscape.SAVE_PLUGIN_STATE, pluginFileListMap, null);
+		
+		// Total number of files (besides pluginStateFiles) in the zip archive will be
+		// number of networks + property files + bookmarks file 
 		targetFiles = new String[networks.size() + SETTING_FILE_COUNT];
 
 		//
@@ -289,7 +297,7 @@ public class CytoscapeSessionWriter {
 
 		// Zip the session into a .cys file.
 		zipUtil = new ZipUtil(sessionFileName, targetFiles, sessionDirName);
-
+		zipUtil.setPluginFileMap(pluginFileListMap);
 		/*
 		 * Compress the files. Change the compression level if necessary.
 		 */
