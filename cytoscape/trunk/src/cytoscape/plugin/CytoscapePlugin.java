@@ -40,6 +40,12 @@ package cytoscape.plugin;
 
 import cytoscape.*;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.File;
 /**
  * A CytoscapePlugin is the new "Global" plugin. A CytoscapePlugin constructor
  * does not have any arguments, since it is Network agnostic.  Instead all
@@ -50,13 +56,14 @@ import cytoscape.*;
  * {@link #describe describe} method to state what the plugin does and how it
  * should be used.
  */
-public abstract class CytoscapePlugin {
+public abstract class CytoscapePlugin implements PropertyChangeListener {
 
   /**
    * There are no arguments required or allowed in a CytoscapePlugin
    * constructor.
    */
   public CytoscapePlugin () { 
+      Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);  
   }
 
 
@@ -151,10 +158,50 @@ public abstract class CytoscapePlugin {
       if ( object == null ) {
         System.out.println( "Instantiation seems to have failed" );
       }
-    
+       
       System.out.println( "Successfully loaded: "+pluginClass );
 
       return true;
+  }
+  
+  private HashMap<String, List<File>> pluginFileListMap;
+  
+  public void propertyChange(PropertyChangeEvent e) {
+
+	  String pluginName = this.getClass().getName();
+	  int index = pluginName.lastIndexOf(".");
+	  pluginName = pluginName.substring(index+1);
+
+	  if (e.getPropertyName().equalsIgnoreCase(Cytoscape.SAVE_PLUGIN_STATE)) {
+		  		  
+		  pluginFileListMap = (HashMap<String, List<File>>) e.getOldValue();
+
+		  List<File> newfiles = new ArrayList<File>();		
+		  saveSessionStateFiles(newfiles);
+
+		  if (newfiles.size()>0) {
+			  pluginFileListMap.put(pluginName, newfiles);
+		  }
+		  
+	  }
+	  else if (e.getPropertyName().equalsIgnoreCase(Cytoscape.RESTORE_PLUGIN_STATE)) {
+		  pluginFileListMap = (HashMap<String, List<File>>) e.getOldValue();
+
+		  if (pluginFileListMap.containsKey(pluginName)) {
+			  List<File> theFileList = pluginFileListMap.get(pluginName);
+			  if ((theFileList != null)&&(theFileList.size()>0)) {
+				  restoreSessionState(theFileList);
+			  }
+		  }
+	  }
+  }
+
+  //override the following two methods to save state.
+
+  public void restoreSessionState(List<File> pStateFileList) {	  
+  }
+  
+  public void saveSessionStateFiles(List<File> pFileList) {	  
   }
 }
 
