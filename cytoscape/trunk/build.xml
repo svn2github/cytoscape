@@ -48,7 +48,7 @@
 	<property name="build.compiler" value="modern" />
 
 	<!-- Release number -->
-	<property name="version" value="2.4.0" />
+	<property name="version" value="2.4.0-b1" />
 
 	<property name="dirname.release.dir" value="cytoscape-v${version}" />
 
@@ -463,8 +463,12 @@
 		      todir="${build.dir}/temp/META-INF/services" />
 		<copy file="${basedir}/resources/props/vizmap.props" 
 		      todir="${build.classes}" />
+
+	        <filter token="version" value="${version}"/>
 		<copy file="${basedir}/resources/props/cytoscape.props" 
-		      todir="${build.classes}" />
+		      todir="${build.classes}" 
+		      filtering="true"
+		      overwrite="true"/>
 
 		<jar destfile="${basedir}/cytoscape.jar" 
 		     manifest="${manifest.file}">
