@@ -29,8 +29,6 @@
 		<copy todir="${build.dir}" file="yfiles/yLayouts.jar" />
 		<copy todir="${build.dir}" file="CytoscapeEditor2/CytoscapeEditor.jar" />
 		<copy todir="${build.dir}" file="AutomaticLayout/AutomaticLayout.jar" />
-		<copy todir="${build.dir}" file="AutomaticLayout/lib/cytoscape-graph-layout.jar" />
-		<copy todir="${build.dir}" file="AutomaticLayout/lib/cytoscape-graph-legacy.jar" />
 		<copy todir="${build.dir}" file="GraphMerge/GraphMerge.jar" />
 		<copy todir="${build.dir}" file="QuickFind/plugins/quick_find.jar" />
 		<copy todir="${build.dir}" file="BioPAX/build/jars/biopax.jar" />
