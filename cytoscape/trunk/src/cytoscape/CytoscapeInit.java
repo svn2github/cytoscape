@@ -51,9 +51,11 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 import javax.swing.ImageIcon;
 
@@ -583,8 +585,7 @@ public class CytoscapeInit {
 		classLoader = new URLClassLoader(urls, Cytoscape.class.getClassLoader());
 
 		// iterate through the given jar files and find classes that are
-		// assignable
-		// from CytoscapePlugin
+		// assignable from CytoscapePlugin
 		for (int i = 0; i < urls.length; ++i) {
 			System.out.println("");
 			System.out.println("attempting to load plugin url: ");
@@ -599,6 +600,21 @@ public class CytoscapeInit {
 					continue;
 				}
 
+				// try the new school way of loading plugins
+				Manifest m = jar.getManifest();
+				if ( m != null ) {
+					String className = m.getMainAttributes().getValue("Cytoscape-Plugin");
+					if ( className != null ) {
+						Class pc = getPluginClass(className);
+						if ( pc != null ) {
+							System.out.println("Loading from manifest");
+							loadPlugin( pc );
+							continue;
+						}
+					}
+				}
+
+				// new-school failed, so revert to old school 
 				Enumeration entries = jar.entries();
 				if (entries == null) {
 					continue;
@@ -620,12 +636,13 @@ public class CytoscapeInit {
 						// necessarily the same is the one it is running on.
 						entry = entry.replaceAll("/|\\\\", ".");
 
-						if (!(isClassPlugin(entry)))
+						Class pc = getPluginClass(entry);
+						if ( pc == null )
 							continue;
 
 						totalPlugins++;
-						loadPlugin(classLoader.loadClass(entry));
-						//break; 
+						loadPlugin(pc);
+						break; 
 					}
 				}
 				if (totalPlugins == 0)
@@ -680,19 +697,21 @@ public class CytoscapeInit {
 	 * @param name
 	 *            the name of the putative plugin class
 	 */
-	protected boolean isClassPlugin(String name) {
+	protected Class getPluginClass(String name) {
 		Class c = null;
 		try {
 			c = classLoader.loadClass(name);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		} catch (NoClassDefFoundError e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
-		Class cp = CytoscapePlugin.class;
-		return (cp.isAssignableFrom(c));
+		if ( CytoscapePlugin.class.isAssignableFrom(c) )
+			return c;
+		else
+			return null;
 	}
 
 	/**
