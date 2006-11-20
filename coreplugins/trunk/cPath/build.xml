@@ -104,6 +104,9 @@
         </unjar>
         <jar destfile="${jar.name}">
             <fileset dir="${build.classes}"/>
+            <manifest>
+              <attribute name="Cytoscape-Plugin" value="csplugins.dataviewer.plugin.CPathPlugIn"/>
+            </manifest>
         </jar>
     </target>
 

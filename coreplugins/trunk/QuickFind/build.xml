@@ -71,7 +71,12 @@
     <target name="jar" depends="compile"
             description="Creates Plugin Jar:  quick_find.jar">
         <jar destfile="${dist.dir}/quick_find.jar"
-             basedir="${build.dir}/classes"/>
+             basedir="${build.dir}/classes">
+	     <manifest>
+	     	<attribute name="Cytoscape-Plugin" 
+		           value="csplugins.quickfind.plugin.QuickFindPlugIn"/>
+	     </manifest>
+	</jar>
     </target>
 
     <!-- ==================== Run Target ============================== -->

@@ -74,6 +74,10 @@
 			<fileset dir="${lib.dir}"/>
        		</unjar>
 		<jar destfile="${plugin.jar}">
+			<manifest>
+				<attribute name="Cytoscape-Plugin" 
+				           value="cytoscape.editor.CytoscapeEditorPlugin"/>
+			</manifest>
 			<fileset dir="${build.dir}"/>
 		</jar>
 	</target>

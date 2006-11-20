@@ -165,6 +165,7 @@
     <mkdir dir="${manifest.dir}"/>
       <manifest file="${project.manifest}">
       <attribute name="Class-Path" value="${manifest.class.path.string}"/> 
+      <attribute name="Cytoscape-Plugin" value="GraphMerge.GraphMerge"/> 
     </manifest>
      <echo message="Successfully ran manifest task!"/>
   </target>

@@ -102,8 +102,10 @@
         <!--  Create BioPAX Jar -->
         <!--<jar destfile="${jars.dir}/biopax_${biopax_version}.jar">-->
         <jar destfile="${jars.dir}/biopax.jar">
-            <fileset dir="${build.classes}">
-            </fileset>
+            <fileset dir="${build.classes}"/>
+	    <manifest>
+	    	<attribute name="Cytoscape-Plugin" value="org.mskcc.biopax_plugin.plugin.BioPaxPlugIn"/>
+	    </manifest>
         </jar>
     </target>
 

@@ -107,6 +107,10 @@
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>
+      <manifest>
+        <attribute name="Cytoscape-Plugin"
+	           value="sbmlreader.SBMLReaderPlugin"/>
+      </manifest>
     </jar>
     <echo message="Successfully ran jar task!"/>
   </target>

@@ -131,8 +131,11 @@
 
         <!--  Create PSI-MI Jar -->
         <jar destfile="${jars.dir}/psi_mi.jar">
-            <fileset dir="${build.classes}">
-            </fileset>
+            <fileset dir="${build.classes}"/>
+	    <manifest>
+	    	<attribute name="Cytoscape-Plugin" 
+		           value="org.cytoscape.coreplugin.psi_mi.plugin.PsiMiPlugIn"/>
+	    </manifest>
         </jar>
     </target>
 

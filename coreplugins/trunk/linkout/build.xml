@@ -101,6 +101,9 @@
           todir="${linkout.classes.dir}"/>
     <jar destfile="linkout.jar"> 
       <fileset dir="${linkout.classes.dir}" includes="**"/>
+      <manifest>
+       <attribute name="Cytoscape-Plugin" value="linkout.LinkOutPlugin"/>
+      </manifest>
     </jar>
   </target>
 

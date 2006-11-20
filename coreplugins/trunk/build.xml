@@ -21,6 +21,7 @@
 		<ant dir="SBMLReader" />
 		<ant dir="cPath" />
 		<ant dir="TableImport" />
+		<ant dir="linkout" />
 		
 		<mkdir dir="${build.dir}" />
 		<copy todir="${build.dir}" file="browser/browser.jar" />
@@ -36,6 +37,7 @@
 		<copy todir="${build.dir}" file="SBMLReader/SBMLReader.jar" />
 		<copy todir="${build.dir}" file="cPath/cPath.jar" />
 		<copy todir="${build.dir}" file="TableImport/TableImport.jar" />
+		<copy todir="${build.dir}" file="linkout/linkout.jar" />
 	</target>
 
 	<!-- clean all coreplugin projects  -->
@@ -53,6 +55,7 @@
 		<ant dir="SBMLReader" target="clean" />
 		<ant dir="cPath" target="clean" />
 		<ant dir="TableImport" target="clean" />
+		<ant dir="linkout" target="clean" />
 		<delete dir="${build.dir}" />
 	</target>
 
