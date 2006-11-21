@@ -29,7 +29,6 @@
  **/
 package org.cytoscape.coreplugin.cpath.test;
 
-import csplugins.test.mage.MageSuite;
 import org.cytoscape.coreplugin.cpath.test.mapper.MapperSuite;
 import org.cytoscape.coreplugin.cpath.test.task.TaskSuite;
 import junit.framework.Test;
