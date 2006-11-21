@@ -2,8 +2,10 @@
 <!-- build.xml - Build file for Cytoscape Data Viewer Plug In -->
 <project name="Cytoscape Data Viewer Plug In" default="jar" basedir=".">
 
-	<property name="jar.name" value="cPath.jar"/>
-	<!--  The directory containing library jar files -->	
+    <!-- The name of the cPath JAR -->
+    <property name="jar.name" value="cPath.jar"/>
+
+    <!-- The directory containing library jar files -->
 	<property name="lib.dir" value="lib"/>
 	<property name="cytoscape.dir" value="../../cytoscape"/>
 	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
@@ -18,14 +20,11 @@
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
 
-    <!-- Release directories -->
-    <property name="release.dir" value="release"/>
+    <!-- The Plugins Dir -->
+    <property name="plugins.dir" value="plugins"/>
 
-	<!-- Global "magic" property for <javac> -->
+    <!-- Global "magic" property for <javac> -->
 	<property name="build.compiler" value="modern"/>
-
-    <!-- Version Numbers -->
-    <property name="cpath_version" value="beta3"/>
 
     <!-- Classpath with all lib JAR Files -->
 	<path id="classpath">
@@ -54,13 +53,13 @@
         <copy todir="${build.classes}/org/cytoscape/coreplugin/cpath/ui/resources">
             <fileset dir="${src.dir}/org/cytoscape/coreplugin/cpath/ui/resources"/>
         </copy>
-  	</target>
+        <mkdir dir="${plugins.dir}"/>
+      </target>
 
 	<!--  Target to clean out all directories -->
   	<target name="clean" description="Removes all generated files.">
     	<delete dir="${build.dir}"/>
-        <delete dir="${release.dir}"/>
-        <delete file="${jar.name}"/>
+        <delete dir="${plugins.dir}"/>
         <delete>
                 <fileset dir="." includes="*.log"/>
         </delete>
@@ -99,7 +98,7 @@
                 <exclude name="jdom.jar"/>
             </fileset>
         </unjar>
-        <jar destfile="${jar.name}">
+        <jar destfile="${plugins.dir}/${jar.name}">
             <fileset dir="${build.classes}"/>
             <manifest>
               <attribute name="Cytoscape-Plugin" value="org.cytoscape.coreplugin.cpath.plugin.CPathPlugIn"/>
