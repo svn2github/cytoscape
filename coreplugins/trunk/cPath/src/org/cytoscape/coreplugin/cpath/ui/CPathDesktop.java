@@ -29,13 +29,10 @@
  **/
 package org.cytoscape.coreplugin.cpath.ui;
 
-import org.cytoscape.coreplugin.cpath.action.DisplayDetails;
 import org.cytoscape.coreplugin.cpath.action.ExecuteQuery;
 import org.cytoscape.coreplugin.cpath.action.UpdateSearchRequest;
 import org.cytoscape.coreplugin.cpath.model.*;
 import org.cytoscape.coreplugin.cpath.util.CPathProperties;
-import cytoscape.CyNetwork;
-import cytoscape.data.SelectFilter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -254,6 +251,7 @@ public class CPathDesktop extends JFrame implements Observer {
      * @param arg Observable Arguments.
      */
     public void update(Observable o, Object arg) {
+        this.setVisible(true);
         int numSearches = searchList.getNumSearchBundles();
         SearchBundle bundle = searchList.getSearchBundleByIndex
                 (numSearches - 1);
