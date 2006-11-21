@@ -5,8 +5,6 @@
     <!-- The name of the cPath JAR -->
     <property name="jar.name" value="cPath.jar"/>
 
-    <!-- The directory containing library jar files -->
-	<property name="lib.dir" value="lib"/>
 	<property name="cytoscape.dir" value="../../cytoscape"/>
 	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
 
@@ -30,9 +28,6 @@
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>	
 		<pathelement path="${basedir}"/>
-		<fileset dir="${lib.dir}">
-			<include name="**/*.jar"/>
-		</fileset>
 		<fileset dir="${cytoscape.dir}">
 			<include name="*.jar"/>
 		</fileset>
@@ -41,9 +36,8 @@
 		</fileset>
 	</path>
 
-	<!--  Define Check Style Task -->
-	<taskdef resource="checkstyletask.properties" classpath="${lib.dir}/checkstyle-all-3.0.jar"/>
-	
+    <!--  Define Check Style Task -->
+    <taskdef resource="checkstyletask.properties"/>
 
   	<!-- Target to create the build directories prior to compilation -->
   	<target name="prepare">
@@ -87,17 +81,6 @@
 
     <!--  Target to Create PlugIn JARs -->
     <target name="jar" depends="compile" description="Creates PlugIn Jars">
-        <!-- Start clean -->
-
-        <unjar dest="${build.classes}">
-            <fileset dir="${lib.dir}">
-                <include name="*.jar"/>
-                <exclude name="checkstyle*.jar"/>
-                <exclude name="x*.jar"/>
-                <exclude name="junit.jar"/>
-                <exclude name="jdom.jar"/>
-            </fileset>
-        </unjar>
         <jar destfile="${plugins.dir}/${jar.name}">
             <fileset dir="${build.classes}"/>
             <manifest>
