@@ -29,8 +29,6 @@
  **/
 package org.cytoscape.coreplugin.cpath.task;
 
-import org.cytoscape.coreplugin.cpath.mapper.MapInteractionsToGraph;
-import org.cytoscape.coreplugin.cpath.mapper.MapPsiInteractionsToGraph;
 import org.cytoscape.coreplugin.cpath.model.*;
 import org.cytoscape.coreplugin.cpath.ui.Console;
 import csplugins.task.BaseTask;
@@ -242,27 +240,28 @@ public class QueryCPathTask extends BaseTask {
         //  Map Interactions to Network
         logToConsole("Mapping Data to Cytoscape Network");
         setProgressMessage("Mapping Data to Cytoscape Network.  Please wait.");
-        MapPsiInteractionsToGraph mapper =
-                new MapPsiInteractionsToGraph(interactions, cyNetwork,
-                        MapInteractionsToGraph.MATRIX_VIEW);
-        mapper.setBaseTask((BaseTask) this);
-        mapper.doMapping();
-
-        //  Log Warnings to Console.
-        ArrayList warnings = mapper.getWarnings();
-        if (warnings.size() > 0) {
-            logToConsole("------------------------------------------");
-        }
-        for (int i = 0; i < warnings.size(); i++) {
-            int counter = i + 1;
-            logToConsole("Warning # " + counter
-                    + ":  " + (String) warnings.get(i));
-            logToConsole("------------------------------------------");
-        }
-
-        //  Update CyMap
-        HashMap map = mapper.getCyMap();
-        cyMap.putAll(map);
+//   TODO:  FIX ALL CODE BELOW
+//        MapPsiInteractionsToGraph mapper =
+//                new MapPsiInteractionsToGraph(interactions, cyNetwork,
+//                        MapInteractionsToGraph.MATRIX_VIEW);
+//        mapper.setBaseTask((BaseTask) this);
+//        mapper.doMapping();
+//
+//        //  Log Warnings to Console.
+//        ArrayList warnings = mapper.getWarnings();
+//        if (warnings.size() > 0) {
+//            logToConsole("------------------------------------------");
+//        }
+//        for (int i = 0; i < warnings.size(); i++) {
+//            int counter = i + 1;
+//            logToConsole("Warning # " + counter
+//                    + ":  " + (String) warnings.get(i));
+//            logToConsole("------------------------------------------");
+//        }
+//
+//        //  Update CyMap
+//        HashMap map = mapper.getCyMap();
+//        cyMap.putAll(map);
 
         //  Conditionally Create a View, based on Number of Nodes.
         //  GetViewThreshold is settable by the End User.
