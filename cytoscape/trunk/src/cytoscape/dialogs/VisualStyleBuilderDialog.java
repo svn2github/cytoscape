@@ -9,6 +9,7 @@ package cytoscape.dialogs;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
@@ -60,6 +61,7 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 		styleNameTextField = new javax.swing.JTextField();
 		styleNameLabel = new javax.swing.JLabel();
 		generateButton = new javax.swing.JButton();
+		skipButton = new JButton();
 		mapperLabel = new javax.swing.JLabel();
 		mapperTextField = new javax.swing.JTextField();
 		messageScrollPane = new javax.swing.JScrollPane();
@@ -78,6 +80,13 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 		generateButton.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				generateButtonMouseClicked(evt);
+			}
+		});
+
+		skipButton.setText("Skip");
+		skipButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				skipButtonActionPerformed(evt);
 			}
 		});
 
@@ -109,24 +118,17 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 												layout
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																messageScrollPane,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																372,
-																Short.MAX_VALUE)
+														.add(messageScrollPane)
 														.add(
 																jSeparator1,
 																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																372,
+																377,
 																Short.MAX_VALUE)
 														.add(
 																titleLabel,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																338,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(
-																org.jdesktop.layout.GroupLayout.TRAILING,
-																generateButton)
 														.add(
 																layout
 																		.createSequentialGroup()
@@ -160,7 +162,17 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 																								styleNameTextField,
 																								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																								262,
-																								Short.MAX_VALUE))))
+																								Short.MAX_VALUE)))
+														.add(
+																org.jdesktop.layout.GroupLayout.TRAILING,
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				generateButton)
+																		.addPreferredGap(
+																				org.jdesktop.layout.LayoutStyle.RELATED)
+																		.add(
+																				skipButton)))
 										.addContainerGap()));
 		layout
 				.setVerticalGroup(layout
@@ -210,39 +222,50 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 												155, Short.MAX_VALUE)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(generateButton).addContainerGap()));
+										.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
+														.add(skipButton).add(
+																generateButton))
+										.addContainerGap()));
 		pack();
 	}// </editor-fold>
 
 	private void generateButtonMouseClicked(java.awt.event.MouseEvent evt) {
 		boolean validNames = true;
-		
+
 		VSName = styleNameTextField.getText();
 		mapperSuffix = mapperTextField.getText();
 
 		if (checkDuplicateNames() == false) {
 			try {
 				gmlReader.applyMaps(mapperSuffix, VSName);
-			} catch(cytoscape.visual.DuplicateCalculatorNameException e) {
-				
+			} catch (cytoscape.visual.DuplicateCalculatorNameException e) {
+
 				JOptionPane.showMessageDialog(this,
-						"The Calculator Name already exists.\n" +
-						"Please change the suffix.",
+						"The Calculator Name already exists.\n"
+								+ "Please change the suffix.",
 						"Duplicate Name!", JOptionPane.INFORMATION_MESSAGE);
-				
-				Cytoscape.getVisualMappingManager().getCalculatorCatalog().removeVisualStyle(VSName);
+
+				Cytoscape.getVisualMappingManager().getCalculatorCatalog()
+						.removeVisualStyle(VSName);
 				validNames = false;
 			}
-			if(validNames == true) {
+			if (validNames == true) {
 				dispose();
 			}
-			
+
 		} else {
 			// Display Error Message
 			JOptionPane.showMessageDialog(this,
 					"Error: The Visual Style Name already exists.",
 					"Duplicate Name!", JOptionPane.INFORMATION_MESSAGE);
 		}
+	}
+
+	private void skipButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		dispose();
 	}
 
 	private boolean checkDuplicateNames() {
@@ -257,7 +280,7 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 				return true;
 			}
 		}
-		
+
 		// Check calculator names
 		Cytoscape.getVisualMappingManager().getCalculatorCatalog();
 		return false;
@@ -273,6 +296,7 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 	private javax.swing.JLabel styleNameLabel;
 	private javax.swing.JTextField styleNameTextField;
 	private javax.swing.JLabel titleLabel;
+	private javax.swing.JButton skipButton;
 	// End of variables declaration
 
 }
