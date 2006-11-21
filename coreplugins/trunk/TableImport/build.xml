@@ -3,7 +3,7 @@
 			11/16/2006 Written by Keiichiro Ono (kono@ucsd.edu)       -->
 <!-- =================================================================== -->
 
-<project name="tableImport" default="tableImport" basedir=".">
+<project name="tableImport" default="release" basedir=".">
 
 	<!-- =================================================================== -->
 	<!-- Initialization target                                               -->
@@ -137,6 +137,7 @@
 	<target name="release" depends="testAll">
 		<copy todir="${tableImport.lib.dir}" file="TableImport.jar" />
 		<copy todir="${cytoscape.plugin.dir}/core" file="TableImport.jar" />
+		<!--copy todir="${cytoscape.build.dir}/plugins" file="TableImport.jar" /-->
 	</target>
 
 	<!-- =================================================================== -->
