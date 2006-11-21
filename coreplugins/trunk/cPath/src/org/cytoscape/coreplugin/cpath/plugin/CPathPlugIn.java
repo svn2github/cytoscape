@@ -30,7 +30,6 @@
 package org.cytoscape.coreplugin.cpath.plugin;
 
 import org.cytoscape.coreplugin.cpath.ui.CPathDesktop;
-import org.cytoscape.coreplugin.cpath.util.SynchronizeProperties;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CyMenus;
@@ -53,7 +52,6 @@ public class CPathPlugIn extends CytoscapePlugin implements ActionListener {
      * This method is called by the main Cytoscape Application upon startup.
      */
     public CPathPlugIn() {
-        SynchronizeProperties.synchProperties();
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         CyMenus cyMenus = desktop.getCyMenus();
         JMenu plugInMenu = cyMenus.getNewNetworkMenu();
