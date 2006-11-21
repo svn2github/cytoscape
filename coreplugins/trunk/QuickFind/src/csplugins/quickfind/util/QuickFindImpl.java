@@ -34,8 +34,7 @@ class QuickFindImpl implements QuickFind {
         this.edgeAttributes = edgeAttributes;
     }
 
-    public void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
-
+    public synchronized void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
         //  Use default index specified by network, if available.
         //  Otherwise, index by UNIQUE_IDENTIFIER.
         String controllingAttribute = null;
@@ -98,7 +97,7 @@ class QuickFindImpl implements QuickFind {
         return (GenericIndex) networkMap.get(network);
     }
 
-    public GenericIndex reindexNetwork(CyNetwork cyNetwork,
+    public synchronized GenericIndex reindexNetwork(CyNetwork cyNetwork,
             int indexType, String controllingAttribute, TaskMonitor taskMonitor) {
 
         if (indexType != QuickFind.INDEX_NODES && indexType != QuickFind.INDEX_EDGES) {
