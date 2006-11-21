@@ -105,7 +105,7 @@ public class CyAttributesWriterTest extends TestCase {
 		list.add(new String("Orange"));
 		list.add(new String("Banana"));
 
-		cyAttributes.setAttributeList("ABC_123",
+		cyAttributes.setListAttribute("ABC_123",
 				"GO_molecular_function_level_4", list);
 		StringWriter writer = new StringWriter();
 		CyAttributesWriter.writeAttributes(cyAttributes,

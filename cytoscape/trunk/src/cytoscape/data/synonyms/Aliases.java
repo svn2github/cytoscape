@@ -78,7 +78,7 @@ public class Aliases {
 	 *            New alias to be added.
 	 */
 	public void add(String key, String alias) {
-		List<String> aliasList = attributes.getAttributeList(key, ALIAS);
+		List<String> aliasList = attributes.getListAttribute(key, ALIAS);
 
 		/*
 		 * If there is no alias attributes, create new one.
@@ -86,12 +86,12 @@ public class Aliases {
 		if (aliasList != null) {
 			aliasList.add(alias);
 			Set<String> aliasSet = new TreeSet<String>(aliasList);
-			attributes.setAttributeList(key, ALIAS, new ArrayList<String>(
+			attributes.setListAttribute(key, ALIAS, new ArrayList<String>(
 					aliasSet));
 		} else {
 			aliasList = new ArrayList<String>();
 			aliasList.add(alias);
-			attributes.setAttributeList(key, ALIAS, aliasList);
+			attributes.setListAttribute(key, ALIAS, aliasList);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class Aliases {
 	 * @param aliaseList
 	 */
 	public void add(String key, List<String> aliasList) {
-		List<String> curAliasList = attributes.getAttributeList(key, ALIAS);
+		List<String> curAliasList = attributes.getListAttribute(key, ALIAS);
 
 		/*
 		 * If there is no alias attributes, add the given list as the new one.
@@ -116,7 +116,7 @@ public class Aliases {
 		 */
 		Set<String> aliasSet = new TreeSet<String>(aliasList);
 		attributes
-				.setAttributeList(key, ALIAS, new ArrayList<String>(aliasSet));
+				.setListAttribute(key, ALIAS, new ArrayList<String>(aliasSet));
 	}
 
 	/**
@@ -128,14 +128,14 @@ public class Aliases {
 	 *            Alias to be removed.
 	 */
 	public void remove(String key, String alias) {
-		List<String> curAliasList = attributes.getAttributeList(key, ALIAS);
+		List<String> curAliasList = attributes.getListAttribute(key, ALIAS);
 
 		/*
 		 * Need to remove the alias only when alias attributes exist.
 		 */
 		if (curAliasList != null) {
 			curAliasList.remove(alias);
-			attributes.setAttributeList(key, ALIAS, curAliasList);
+			attributes.setListAttribute(key, ALIAS, curAliasList);
 		}
 	}
 
@@ -145,7 +145,7 @@ public class Aliases {
 	 * @return
 	 */
 	public List<String> getAliases(String key) {
-		return attributes.getAttributeList(key, ALIAS);
+		return attributes.getListAttribute(key, ALIAS);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class Aliases {
 			it = Cytoscape.getRootGraph().nodesIterator();
 			while (it.hasNext()) {
 				id = ((Node) it.next()).getIdentifier();
-				final List aliases = attributes.getAttributeList(id, ALIAS);
+				final List aliases = attributes.getListAttribute(id, ALIAS);
 				if (aliases != null && aliases.contains(alias)) {
 					return id;
 				}
@@ -179,7 +179,7 @@ public class Aliases {
 			it = Cytoscape.getRootGraph().edgesIterator();
 			while (it.hasNext()) {
 				id = ((Edge) it.next()).getIdentifier();
-				final List aliases = attributes.getAttributeList(id, ALIAS);
+				final List aliases = attributes.getListAttribute(id, ALIAS);
 				if (aliases != null && aliases.contains(alias)) {
 					return id;
 				}
@@ -189,7 +189,7 @@ public class Aliases {
 			it = Cytoscape.getNetworkSet().iterator();
 			while (it.hasNext()) {
 				id = ((Node) it.next()).getIdentifier();
-				final List aliases = attributes.getAttributeList(id, ALIAS);
+				final List aliases = attributes.getListAttribute(id, ALIAS);
 				if (aliases != null && aliases.contains(alias)) {
 					return id;
 				}
@@ -208,7 +208,7 @@ public class Aliases {
 	 * @return
 	 */
 	public Set<String> getIdSet(String key) {
-		List<String> curAliases = attributes.getAttributeList(key, ALIAS);
+		List<String> curAliases = attributes.getListAttribute(key, ALIAS);
 		Set<String> allNames = new TreeSet<String>();
 		if (curAliases != null) {
 			allNames.addAll(curAliases);

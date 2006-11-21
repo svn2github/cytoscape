@@ -160,7 +160,7 @@ public class CyAttributesReader
           else {
             // A string; do nothing.
           } }
-        cyAttrs.setAttributeList(key, attributeName, elmsBuff); }
+        cyAttrs.setListAttribute(key, attributeName, elmsBuff); }
       else { // Not a list.
         // Do the escaping thing.
         final StringBuffer elmBuff = new StringBuffer();

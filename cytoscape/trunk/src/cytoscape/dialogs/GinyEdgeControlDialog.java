@@ -244,7 +244,7 @@ boolean pathMatchesEdge (String edgeName, TreePath treePath, CyAttributes edgeAt
     return true;
 
   if (pathLength == 3) {
-    java.util.List l = edgeAttributes.getAttributeList(edgeName, pathNames[1]);
+    java.util.List l = edgeAttributes.getListAttribute(edgeName, pathNames[1]);
     String[] values = (String[]) l.toArray(new String[0]);
     for (int i=0; i < values.length; i++)
       if (values [i].equalsIgnoreCase (pathNames [2]))

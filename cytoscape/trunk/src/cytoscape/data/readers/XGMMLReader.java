@@ -594,7 +594,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 
 		// Remember that this RootGraph node belongs to cyNetwork
-		ArrayList rootNodes = (ArrayList) networkCyAttributes.getAttributeList(
+		ArrayList rootNodes = (ArrayList) networkCyAttributes.getListAttribute(
 				cy_net.getIdentifier(), METANODE_KEY);
 		if (rootNodes == null) {
 			rootNodes = new ArrayList();
@@ -606,7 +606,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		metaNode.setIdentifier(parentId);
 
 		rootNodes.add(new Integer(metaNode.getRootGraphIndex()));
-		networkCyAttributes.setAttributeList(cy_net.getIdentifier(),
+		networkCyAttributes.setListAttribute(cy_net.getIdentifier(),
 				METANODE_KEY, rootNodes);
 		return null;
 	}
@@ -1103,7 +1103,7 @@ public class XGMMLReader extends AbstractGraphReader {
 						listAttr.add(itemClassObject);
 				}
 			}
-			attributes.setAttributeList(targetName, attrName, listAttr);
+			attributes.setListAttribute(targetName, attrName, listAttr);
 		}
 		// map
 		else if (dataType.equals(ObjectType.MAP)) {
@@ -1118,7 +1118,7 @@ public class XGMMLReader extends AbstractGraphReader {
 					}
 				}
 			}
-			attributes.setAttributeMap(targetName, attrName, mapAttr);
+			attributes.setMapAttribute(targetName, attrName, mapAttr);
 			// Skip over check for embedded content
 			return;
 		}

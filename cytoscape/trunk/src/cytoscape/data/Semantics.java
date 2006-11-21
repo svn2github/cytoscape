@@ -309,7 +309,7 @@ public class Semantics {
 			commonName = nodeID;
 		}
 
-		nodeAttributes.setAttributeList(nodeID, GO_ALIASES, new ArrayList(synoSet));
+		nodeAttributes.setListAttribute(nodeID, GO_ALIASES, new ArrayList(synoSet));
 		nodeAttributes.setAttribute(nodeID, GO_COMMON_NAME, commonName);
 
 	}

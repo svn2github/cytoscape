@@ -160,7 +160,7 @@ public class CyAttributesReaderTest extends TestCase {
         assertEquals (CyAttributes.TYPE_SIMPLE_LIST, type);
 
         //  Test the First List
-        List list = cyAttributes.getAttributeList("AP1G1",
+        List list = cyAttributes.getListAttribute("AP1G1",
                 attributeName);
         assertEquals (3, list.size());
         String value = (String) list.get(0);
@@ -171,7 +171,7 @@ public class CyAttributesReaderTest extends TestCase {
         assertEquals ("intracellular transporter", value);
 
         //  Test the Last List
-        list = cyAttributes.getAttributeList("CDH3", attributeName);
+        list = cyAttributes.getListAttribute("CDH3", attributeName);
         assertEquals (1, list.size());
         value = (String) list.get(0);
         assertEquals ("cell adhesion molecule", value);

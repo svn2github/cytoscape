@@ -121,7 +121,7 @@ public class OntologyMapperDialog extends JDialog {
 				while (it.hasNext()) {
 					CyNode node = (CyNode) it.next();
 					String nodeID = node.getIdentifier();
-					List listAttr = nodeAttributes.getAttributeList(nodeID,
+					List listAttr = nodeAttributes.getListAttribute(nodeID,
 							attributeNames[idx]);
 					if (listAttr != null && listAttr.size() != 0) {
 						allTerms.addAll(listAttr);
@@ -556,7 +556,7 @@ public class OntologyMapperDialog extends JDialog {
 				if (strVal != null)
 					values.add(strVal);
 			} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-				List vals = nodeAtts.getAttributeList(node.getIdentifier(),
+				List vals = nodeAtts.getListAttribute(node.getIdentifier(),
 						currentAnnotationCategory);
 				if (vals.size() > 0) {
 					Object val = vals.get(0);
@@ -837,7 +837,7 @@ public class OntologyMapperDialog extends JDialog {
 					}
 
 					if (annotsList.size() != 0) {
-						nodeAttributes.setAttributeList(label,
+						nodeAttributes.setListAttribute(label,
 								annotationNameAtLevel, annotsList);
 						allTerms.addAll(annotsList);
 					}
@@ -884,7 +884,7 @@ public class OntologyMapperDialog extends JDialog {
 			convertedList.addAll(uniqueTerms);
 
 			if (convertedList.size() != 0) {
-				nodeAttributes.setAttributeList(label, annotationName,
+				nodeAttributes.setListAttribute(label, annotationName,
 						convertedList);
 			}
 			allTerms.addAll(uniqueTerms);
@@ -1063,7 +1063,7 @@ public class OntologyMapperDialog extends JDialog {
 						break; // no point in checking other attributes
 					} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
 						boolean hit = false;
-						List attributeList = nodeAttributes.getAttributeList(
+						List attributeList = nodeAttributes.getListAttribute(
 								nodeLabel, name);
 						for (Iterator ali = attributeList.iterator(); ali
 								.hasNext();) {

@@ -223,7 +223,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				List<String> originList = getReferences(val
 						.substring(definitionParts[1].length() + 2));
 				if (originList != null) {
-					termAttributes.setAttributeList(id, DEF_ORIGIN, originList);
+					termAttributes.setListAttribute(id, DEF_ORIGIN, originList);
 				}
 			} else if (key.equals(EXACT_SYNONYM.toString())
 					|| key.equals(RELATED_SYNONYM.toString())
@@ -232,16 +232,16 @@ public class OBOFlatFileReader implements OntologyReader {
 					|| key.equals(SYNONYM.toString())) {
 
 				String[] synonymParts = val.split("\"");
-				Map<String, String> synoMap = termAttributes.getAttributeMap(
+				Map<String, String> synoMap = termAttributes.getMapAttribute(
 						id, OBOTags.SYNONYM.toString());
 				if (synoMap == null) {
 					synoMap = new HashMap<String, String>();
 				}
 				synoMap.put(synonymParts[1], key);
-				termAttributes.setAttributeMap(id, OBOTags.SYNONYM.toString(),
+				termAttributes.setMapAttribute(id, OBOTags.SYNONYM.toString(),
 						synoMap);
 
-				// nodeAttributes.getAttributeMap(id, SYNONYMS).put(val, "");
+				// nodeAttributes.getMapAttribute(id, SYNONYMS).put(val, "");
 			} else if (key.equals(RELATIONSHIP.toString())) {
 
 				if (source == null) {
@@ -299,7 +299,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				Boolean obsolete = new Boolean(val);
 				termAttributes.setAttribute(id, key, obsolete);
 			} else if (key.equals(XREF_ANALOG.toString())) {
-				List xrefAnalog = termAttributes.getAttributeList(id,
+				List xrefAnalog = termAttributes.getListAttribute(id,
 						XREF_ANALOG.toString());
 				if (xrefAnalog == null) {
 					xrefAnalog = new ArrayList<String>();
@@ -307,7 +307,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				if (val != null) {
 					xrefAnalog.add(val.toString());
 				}
-				termAttributes.setAttributeList(id, XREF_ANALOG.toString(),
+				termAttributes.setListAttribute(id, XREF_ANALOG.toString(),
 						xrefAnalog);
 			} else {
 				termAttributes.setAttribute(id, key, val);

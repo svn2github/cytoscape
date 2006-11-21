@@ -47,7 +47,7 @@ public class MetadataParserTest extends TestCase {
 		mdp.setMetadata(MetadataEntries.DESCRIPTION,
 				"DAG created form OBO file.");
 
-		Map metadata = Cytoscape.getNetworkAttributes().getAttributeMap(
+		Map metadata = Cytoscape.getNetworkAttributes().getMapAttribute(
 				network.getIdentifier(), mdp.DEFAULT_NETWORK_METADATA_LABEL);
 		assertNotNull(metadata);
 		assertEquals("Gene Ontology", metadata.get(MetadataEntries.SOURCE

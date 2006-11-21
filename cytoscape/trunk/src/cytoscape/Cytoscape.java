@@ -634,9 +634,9 @@ public abstract class Cytoscape {
 		} else if (cyType == CyAttributes.TYPE_STRING) {
 			return edgeAttrs.getStringAttribute(canonName, attribute);
 		} else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
-			return edgeAttrs.getAttributeList(canonName, attribute);
+			return edgeAttrs.getListAttribute(canonName, attribute);
 		} else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
-			return edgeAttrs.getAttributeMap(canonName, attribute);
+			return edgeAttrs.getMapAttribute(canonName, attribute);
 		} else {
 			return null;
 		}

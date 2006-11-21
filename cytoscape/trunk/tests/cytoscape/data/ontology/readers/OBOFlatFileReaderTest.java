@@ -80,7 +80,7 @@ public class OBOFlatFileReaderTest extends TestCase {
 		System.out.println("GO:0016049 = " + curString);
 		assertEquals(curString, "cell growth");
 		
-		Map synoMap = goTermAttr.getAttributeMap("GO:0016049", OBOTags.SYNONYM.toString());
+		Map synoMap = goTermAttr.getMapAttribute("GO:0016049", OBOTags.SYNONYM.toString());
 		assertNotNull(synoMap);
 		assertEquals(4, synoMap.size());
 		for(Object val: synoMap.keySet()) {

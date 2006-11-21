@@ -107,13 +107,13 @@ public class OntologyTerm extends AbstractChangeable implements
 	 */
 	public void addSynonym(Object synonym, SynonymType type) {
 		Map<Object, SynonymType> synoMap = Cytoscape.getNodeAttributes()
-				.getAttributeMap(name, SYNONYM);
+				.getMapAttribute(name, SYNONYM);
 		if (synoMap == null) {
 			synoMap = new HashMap();
 		}
 
 		synoMap.put(synonym, type);
-		Cytoscape.getNodeAttributes().setAttributeMap(name, SYNONYM, synoMap);
+		Cytoscape.getNodeAttributes().setMapAttribute(name, SYNONYM, synoMap);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class OntologyTerm extends AbstractChangeable implements
 	 * Return sysnonym attributes for this term.
 	 */
 	public Object[] getSynonyms() {
-		return Cytoscape.getNodeAttributes().getAttributeMap(name, SYNONYM)
+		return Cytoscape.getNodeAttributes().getMapAttribute(name, SYNONYM)
 				.keySet().toArray();
 	}
 
@@ -139,11 +139,11 @@ public class OntologyTerm extends AbstractChangeable implements
 	 * 
 	 */
 	public void removeSynonym(Object synonym) {
-		Map synoMap = Cytoscape.getNodeAttributes().getAttributeMap(name,
+		Map synoMap = Cytoscape.getNodeAttributes().getMapAttribute(name,
 				SYNONYM);
 		if (synoMap != null) {
 			synoMap.remove(synonym);
-			Cytoscape.getNodeAttributes().setAttributeMap(name, SYNONYM,
+			Cytoscape.getNodeAttributes().setMapAttribute(name, SYNONYM,
 					synoMap);
 		}
 	}

@@ -101,7 +101,7 @@ public class CyAttributesWriter
       else { // TYPE_SIMPLE_LIST
         writer.write("(");
         final Iterator listElms =
-          cyAttrs.getAttributeList(key, attributeName).iterator();
+          cyAttrs.getListAttribute(key, attributeName).iterator();
         while (listElms.hasNext()) {
           writer.write(listElms.next().toString());
           if (listElms.hasNext()) { writer.write("::"); } }

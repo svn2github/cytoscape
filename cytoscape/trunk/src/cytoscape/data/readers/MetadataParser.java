@@ -113,7 +113,7 @@ public class MetadataParser {
 		networkAttributes = Cytoscape.getNetworkAttributes();
 
 		// Extract Network Metadata from CyAttributes
-		rdfAsMap = networkAttributes.getAttributeMap(network.getIdentifier(),
+		rdfAsMap = networkAttributes.getMapAttribute(network.getIdentifier(),
 				metadataLabel);
 	}
 
@@ -208,7 +208,7 @@ public class MetadataParser {
 		metadata.getDescription().add(dc);
 
 		// Put the data in CyAttributes
-		networkAttributes.setAttributeMap(network.getIdentifier(),
+		networkAttributes.setMapAttribute(network.getIdentifier(),
 				metadataLabel, rdfAsMap);
 
 		return metadata;
@@ -286,13 +286,13 @@ public class MetadataParser {
 	}
 
 	public void setMetadata(MetadataEntries entryName, String value) {
-		Map<String, String> metadata = networkAttributes.getAttributeMap(
+		Map<String, String> metadata = networkAttributes.getMapAttribute(
 				network.getIdentifier(), metadataLabel);
 		if (metadata == null) {
 			metadata = makeNewMetadataMap();
 		}
 		metadata.put(entryName.toString(), value);
-		networkAttributes.setAttributeMap(network.getIdentifier(),
+		networkAttributes.setMapAttribute(network.getIdentifier(),
 				metadataLabel, metadata);
 		rdfAsMap = metadata;
 	}

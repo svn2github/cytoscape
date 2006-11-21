@@ -230,7 +230,7 @@ public class CyAttributesTest extends TestCase {
 
 		// Try setting the list as null; this should fail
 		try {
-			cyAttributes.setAttributeList(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, null);
+			cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, null);
 			fail("IllegalArgumentException should have been thrown.");
 		} catch (IllegalArgumentException e) {
 			assertTrue(e != null);
@@ -238,7 +238,7 @@ public class CyAttributesTest extends TestCase {
 
 		// Try setting the list; this should fail b/c we have mixed data types
 		try {
-			cyAttributes.setAttributeList(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list);
+			cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list);
 			fail("IllegalArgumentException should have been thrown.");
 		} catch (IllegalArgumentException e) {
 			assertTrue(e != null);
@@ -248,7 +248,7 @@ public class CyAttributesTest extends TestCase {
 		list = new ArrayList();
 		list.add(new Integer(5));
 		list.add(new Integer(6));
-		cyAttributes.setAttributeList(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list);
+		cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list);
 
 		// Verify type
 		byte type = cyAttributes.getType(DUMMY_LIST_ATTRIBUTE);
@@ -261,7 +261,7 @@ public class CyAttributesTest extends TestCase {
 
 		// Get Stored value as a Simple Map; this should fail
 		try {
-			Map map = cyAttributes.getAttributeMap(DUMMY_ID,
+			Map map = cyAttributes.getMapAttribute(DUMMY_ID,
 					DUMMY_LIST_ATTRIBUTE);
 			fail("ClassCastException should have been thrown.");
 		} catch (ClassCastException e) {
@@ -269,7 +269,7 @@ public class CyAttributesTest extends TestCase {
 		}
 
 		// Get the list back, and verify its contents
-		List storedList = cyAttributes.getAttributeList(DUMMY_ID,
+		List storedList = cyAttributes.getListAttribute(DUMMY_ID,
 				DUMMY_LIST_ATTRIBUTE);
 		assertEquals(2, storedList.size());
 		Integer int0 = (Integer) storedList.get(0);
@@ -280,7 +280,7 @@ public class CyAttributesTest extends TestCase {
 		// Try storing an Empty List; previously, this resulted in
 		// a NoSuchElementException.
 		list = new ArrayList();
-		cyAttributes.setAttributeList(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list);
+		cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list);
 	}
 
 	/**
@@ -296,7 +296,7 @@ public class CyAttributesTest extends TestCase {
 
 		// This should fail, b/c of invalid keys
 		try {
-			cyAttributes.setAttributeMap(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
+			cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
 			fail("IllegalArgumentException should have been thrown.");
 		} catch (IllegalArgumentException e) {
 			assertTrue(e != null);
@@ -310,7 +310,7 @@ public class CyAttributesTest extends TestCase {
 
 		// This should fail too, b/c of invalid values
 		try {
-			cyAttributes.setAttributeMap(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
+			cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
 			fail("IllegalArgumentException should have been thrown.");
 		} catch (IllegalArgumentException e) {
 			assertTrue(e != null);
@@ -320,7 +320,7 @@ public class CyAttributesTest extends TestCase {
 		map = new HashMap();
 		map.put(new String("first"), new Integer(1));
 		map.put(new String("second"), new Integer(2));
-		cyAttributes.setAttributeMap(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
+		cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
 
 		// Verify type
 		byte type = cyAttributes.getType(DUMMY_MAP_ATTRIBUTE);
@@ -328,7 +328,7 @@ public class CyAttributesTest extends TestCase {
 
 		// Get Stored value as a Simple List; this should fail
 		try {
-			List list = cyAttributes.getAttributeList(DUMMY_ID,
+			List list = cyAttributes.getListAttribute(DUMMY_ID,
 					DUMMY_MAP_ATTRIBUTE);
 			fail("ClassCastException should have been thrown.");
 		} catch (ClassCastException e) {
@@ -336,7 +336,7 @@ public class CyAttributesTest extends TestCase {
 		}
 
 		// Get map back, and verify contents
-		Map storedMap = cyAttributes.getAttributeMap(DUMMY_ID,
+		Map storedMap = cyAttributes.getMapAttribute(DUMMY_ID,
 				DUMMY_MAP_ATTRIBUTE);
 		assertEquals(2, storedMap.keySet().size());
 
@@ -350,7 +350,7 @@ public class CyAttributesTest extends TestCase {
 		// Try storing an Empty Map; previously, this resulted in
 		// a NoSuchElementException.
 		map = new HashMap();
-		cyAttributes.setAttributeMap(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, map);
+		cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, map);
 	}
 
     /**

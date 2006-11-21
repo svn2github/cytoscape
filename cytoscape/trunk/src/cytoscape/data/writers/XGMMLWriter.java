@@ -532,7 +532,7 @@ public class XGMMLWriter {
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// get the attribute list
-			final List listAttr = attributes.getAttributeList(id, attributeName);
+			final List listAttr = attributes.getListAttribute(id, attributeName);
 			// set attribute name and label
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
@@ -554,7 +554,7 @@ public class XGMMLWriter {
 		// process simple map
 		else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
 			// get the attribute map
-			final Map mapAttr = attributes.getAttributeMap(id, attributeName);
+			final Map mapAttr = attributes.getMapAttribute(id, attributeName);
 			// set our attribute name and label
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
@@ -1261,7 +1261,7 @@ public class XGMMLWriter {
                 // themselves a metanode.  If so, remove them from
                 // the list & will pick them up on recursion
 		metanodeList = (ArrayList)networkAttributes
-				.getAttributeList(network.getIdentifier(),METANODE_KEY);
+				.getListAttribute(network.getIdentifier(),METANODE_KEY);
 		if (metanodeList == null || metanodeList.isEmpty())
 			return;
 

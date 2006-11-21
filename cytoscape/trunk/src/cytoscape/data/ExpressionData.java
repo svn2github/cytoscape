@@ -476,9 +476,9 @@ public class ExpressionData implements Serializable {
 	else if (type == CyAttributes.TYPE_STRING)
 	    return Cytoscape.getNodeAttributes().getStringAttribute(id, att);
 	else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-	    return Cytoscape.getNodeAttributes().getAttributeList(id, att);
+	    return Cytoscape.getNodeAttributes().getListAttribute(id, att);
 	else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-	    return Cytoscape.getNodeAttributes().getAttributeMap(id, att);
+	    return Cytoscape.getNodeAttributes().getMapAttribute(id, att);
 	return null;
     }
 

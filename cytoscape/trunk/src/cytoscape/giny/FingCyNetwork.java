@@ -548,9 +548,9 @@ public class FingCyNetwork
     else if (cyType == CyAttributes.TYPE_STRING) {
       return attrs.getStringAttribute(canonName, attribute); }
     else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
-      return attrs.getAttributeList(canonName, attribute); }
+      return attrs.getListAttribute(canonName, attribute); }
     else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
-      return attrs.getAttributeMap(canonName, attribute); }
+      return attrs.getMapAttribute(canonName, attribute); }
     else { return null; }
   }
 
@@ -577,9 +577,9 @@ public class FingCyNetwork
     else if (cyType == CyAttributes.TYPE_STRING) {
       return attrs.getStringAttribute(canonName, attribute); }
     else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
-      return attrs.getAttributeList(canonName, attribute); }
+      return attrs.getListAttribute(canonName, attribute); }
     else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
-      return attrs.getAttributeMap(canonName, attribute); }
+      return attrs.getMapAttribute(canonName, attribute); }
     else { return null; }
   }
 
@@ -642,10 +642,10 @@ public class FingCyNetwork
       attrs.setAttribute(canonName, attribute, (String) value);
       return true; }
     else if (value instanceof List) {
-      attrs.setAttributeList(canonName, attribute, (List) value);
+      attrs.setListAttribute(canonName, attribute, (List) value);
       return true; }
     else if (value instanceof Map) {
-      attrs.setAttributeMap(canonName, attribute, (Map) value);
+      attrs.setMapAttribute(canonName, attribute, (Map) value);
       return true; }
     else {
       return false; }
@@ -677,10 +677,10 @@ public class FingCyNetwork
       attrs.setAttribute(canonName, attribute, (String) value);
       return true; }
     else if (value instanceof List) {
-      attrs.setAttributeList(canonName, attribute, (List) value);
+      attrs.setListAttribute(canonName, attribute, (List) value);
       return true; }
     else if (value instanceof Map) {
-      attrs.setAttributeMap(canonName, attribute, (Map) value);
+      attrs.setMapAttribute(canonName, attribute, (Map) value);
       return true; }
     else {
       return false; }

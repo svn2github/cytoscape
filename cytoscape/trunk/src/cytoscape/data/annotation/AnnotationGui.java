@@ -371,7 +371,7 @@ public class AnnotationGui extends CytoscapeAction {
 						} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
 							boolean hit = false;
 							List attributeList = nodeAttributes
-									.getAttributeList(nodeLabel, name);
+									.getListAttribute(nodeLabel, name);
 							for (Iterator ali = attributeList.iterator(); ali
 									.hasNext();) {
 								if (categoryList.contains(ali.next())) {
@@ -590,16 +590,16 @@ public class AnnotationGui extends CytoscapeAction {
 						// we can do this because at the begining of the method
 						// we deleted the attribute annotationNameAtLevel:
 						// annotsList =
-						// nodeAttributes.getAttributeList(canonicalNodeNames[i],
+						// nodeAttributes.getListAttribute(canonicalNodeNames[i],
 						// annotationNameAtLevel);
 
 						// annotsList =
-						// nodeAttributes.getAttributeList(canonicalNodeNames[i],
+						// nodeAttributes.getListAttribute(canonicalNodeNames[i],
 						// annotationNameAtLevel);
 						//					
 						// if(annotsList == null){
 						// annotsList = new ArrayList();
-						// //nodeAttributes.setAttributeList(canonicalNodeNames[i],
+						// //nodeAttributes.setListAttribute(canonicalNodeNames[i],
 						// annotationNameAtLevel,annotsList);
 						// annotsList.add(uniqueAnnotationsAtLevel[j]);
 						// }
@@ -609,7 +609,7 @@ public class AnnotationGui extends CytoscapeAction {
 					}// for j
 
 					if (annotsList.size() != 0) {
-						nodeAttributes.setAttributeList(nodeLabelArray[i],
+						nodeAttributes.setListAttribute(nodeLabelArray[i],
 								annotationNameAtLevel, annotsList);
 					}
 				}
@@ -723,7 +723,7 @@ public class AnnotationGui extends CytoscapeAction {
 					if (strVal != null)
 						values.add(strVal);
 				} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-					List vals = nodeAtts.getAttributeList(node.getIdentifier(),
+					List vals = nodeAtts.getListAttribute(node.getIdentifier(),
 							currentAnnotationCategory);
 					if (vals.size() > 0) {
 						Object val = vals.get(0);
