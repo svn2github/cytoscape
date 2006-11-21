@@ -269,20 +269,6 @@ public class CPathDesktop extends JFrame implements Observer {
             } else {
                 showError(exception);
             }
-        } else {
-//            CyNetwork cyNetwork = searchResponse.getCyNetwork();
-//            SelectFilter selectFilter = cyNetwork.getSelectFilter();
-//            DisplayDetails displayDetails = new DisplayDetails(cyMap,
-//                    userSelection);
-//            selectFilter.addSelectEventListener(displayDetails);
-//
-//            //  Add the cPath Display Details Listener to the Network;
-//            //  This enables other plugins to retrieve the listener, and
-//            //  possibly reattach it to subnetworks, as we do with the
-//            //  Activity Center.  This is a bit of a hack as the current
-//            //  Cytoscape API does not allow clients to access a complete
-//            //  list of SelectListeners.
-//            cyNetwork.putClientData("CPATH_LISTENER", displayDetails);
         }
 
         // Re-enable search button.
