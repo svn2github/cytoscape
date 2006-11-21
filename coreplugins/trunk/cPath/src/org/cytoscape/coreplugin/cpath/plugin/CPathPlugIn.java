@@ -58,7 +58,6 @@ public class CPathPlugIn extends CytoscapePlugin implements ActionListener {
         JMenuItem menuItem = new JMenuItem("Construct network using cPath...");
         plugInMenu.add(menuItem);
         menuItem.addActionListener(this);
-        cPathDesktop = new CPathDesktop((JFrame) desktop);
     }
 
     /**
@@ -69,7 +68,7 @@ public class CPathPlugIn extends CytoscapePlugin implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (cPathDesktop == null) {
             CytoscapeDesktop desktop = Cytoscape.getDesktop();
-            cPathDesktop = new CPathDesktop((JFrame) desktop);
+            cPathDesktop = new CPathDesktop(desktop);
         }
         cPathDesktop.setVisible(true);
     }

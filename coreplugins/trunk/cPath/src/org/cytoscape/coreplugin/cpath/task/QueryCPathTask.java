@@ -31,12 +31,10 @@ package org.cytoscape.coreplugin.cpath.task;
 
 import org.cytoscape.coreplugin.cpath.model.*;
 import org.cytoscape.coreplugin.cpath.ui.Console;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
+import org.cytoscape.coreplugin.cpath.util.CPathProperties;
+import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import cytoscape.view.CyNetworkView;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -70,12 +68,11 @@ public class QueryCPathTask implements Task {
      */
     public QueryCPathTask(HashMap cyMap, SearchRequest searchRequest,
             SearchBundleList searchList, Console console) {
-//        this.logToConsoleBold("Retrieving Data from cPath:  "
-//                + searchRequest.toString() + "...");
+        this.logToConsoleBold("Retrieving Data from cPath:  "
+                + searchRequest.toString() + "...");
 
-//        PropertyManager pManager = PropertyManager.getInstance();
-//        String url = pManager.getProperty(PropertyManager.CPATH_READ_LOCATION);
-//        logToConsole("Connecting to cPath:  " + url);
+        String url = CPathProperties.getCPathUrl();
+        logToConsole("Connecting to cPath:  " + url);
 
         this.cyMap = cyMap;
         this.searchRequest = searchRequest;
@@ -83,14 +80,26 @@ public class QueryCPathTask implements Task {
         this.console = console;
     }
 
+    /**
+     * Halts cPath Task.
+     */
     public void halt () {
         isInterrupted = true;
     }
 
+    /**
+     * Sets Task Monitor.
+     * @param taskMonitor TaskMonitor Object.
+     * @throws IllegalThreadStateException Illegal Thread State.
+     */
     public void setTaskMonitor (TaskMonitor taskMonitor) throws IllegalThreadStateException {
         this.taskMonitor = taskMonitor;
     }
 
+    /**
+     * Gets Task Title.
+     * @return task title.
+     */
     public String getTitle () {
         return "Connecting to cPath:  " + searchRequest.toString();
     }
@@ -102,12 +111,6 @@ public class QueryCPathTask implements Task {
         //  Set Initial Messages
         taskMonitor.setPercentCompleted(-1);
         taskMonitor.setStatus("Connecting to cPath...");
-
-        //  Get Property or use Default Location.
-//        PropertyManager manager = PropertyManager.getInstance();
-//        String cPathUrl = manager.getProperty
-//                (PropertyManager.CPATH_READ_LOCATION);
-//        ReadPsiFromCPath reader = new ReadPsiFromCPath(cPathUrl);
         searchResponse = new SearchResponse();
         try {
             ArrayList interactions = null;
@@ -115,10 +118,11 @@ public class QueryCPathTask implements Task {
 
             int taxonomyId = organism.getTaxonomyId();
             if (organism == OrganismOption.ALL_ORGANISMS) {
-//                taxonomyId = CPathProtocol.NOT_SPECIFIED;
+                taxonomyId = CPathProtocol.NOT_SPECIFIED;
             }
             int maxHits = searchRequest.getMaxHitsOption().getMaxHits();
-//            getAllInteractions(reader, taxonomyId, maxHits);
+            getAllInteractions(taxonomyId, maxHits);
+            taskMonitor.setPercentCompleted(100);
 //        } catch (EmptySetException e) {
 //            console.logMessage("No Matching Results Found.  Please Try Again.");
 //            searchResponse.setException(e);
@@ -145,53 +149,55 @@ public class QueryCPathTask implements Task {
     /**
      * Gets All Interactions.
      *
-     * @param reader     Reader Service.
-     * @param taxonomyId NCBI Taxonomy ID.
      */
-//    private void getAllInteractions(ReadPsiFromCPath reader, int taxonomyId,
-//            int maxHits)
-//            throws DataServiceException, MapperException, InterruptedException {
-//        searchResponse = new SearchResponse();
-//        int totalNumInteractions = reader.getInteractionsCount
-//                (searchRequest.getQuery(), taxonomyId);
-//        logToConsole("Total Number of Matching Interactions:  "
-//                + totalNumInteractions);
-//
+    private void getAllInteractions (int taxonomyId, int maxHits)
+            throws InterruptedException, CPathException, EmptySetException {
+        searchResponse = new SearchResponse();
+
+        ReadPsiFromCPath reader = new ReadPsiFromCPath();
+        int totalNumInteractions = reader.getInteractionsCount
+                (searchRequest.getQuery(), taxonomyId);
+        logToConsole("Total Number of Matching Interactions:  "
+                + totalNumInteractions);
+
 //        //  Retrieve Rest of Data
-//        ArrayList interactions = new ArrayList();
+        ArrayList interactions = new ArrayList();
+
+        int index = 0;
+        int endIndex = Math.min(maxHits, totalNumInteractions);
+
+        int increment = DEFAULT_INCREMENT;
+
+        if (maxHits > 100) {
+            increment = LARGER_INCREMENT;
+        }
+        while (index < endIndex && !isInterrupted) {
+            getInteractions(taxonomyId, interactions, index, increment,
+                    endIndex);
+            index += increment;
+        }
 //
-//        int index = 0;
-//        int endIndex = Math.min(maxHits, totalNumInteractions);
-//
-//        int increment = DEFAULT_INCREMENT;
-//
-//        if (maxHits > 100) {
-//            increment = LARGER_INCREMENT;
-//        }
-//        while (index < endIndex && !isInterrupted) {
-//            getInteractions(reader, taxonomyId, interactions, index, increment,
-//                    endIndex);
-//            index += increment;
-//        }
-//
-//        searchResponse.setInteractions(interactions);
+////        searchResponse.setInteractions(interactions);
 //        if (isInterrupted) {
 //            throw new InterruptedException();
 //        }
 //        mapToGraph();
-//    }
+    }
 
     /**
      * Iteratively Get Interactions from cPath.
      */
-//    private void getInteractions(ReadPsiFromCPath reader, int taxonomyId,
-//            ArrayList interactions, int startIndex, int increment,
-//            int totalNumInteractions) throws DataServiceException {
-//
-//        int endIndex = Math.min(startIndex + increment, totalNumInteractions);
-//        taskMonitor.setStatus("Getting Interactions:  " + startIndex
-//                + " - " + endIndex + " of "
-//                + totalNumInteractions);
+    private void getInteractions(int taxonomyId,
+            ArrayList interactions, int startIndex, int increment,
+            int totalNumInteractions) {
+
+        int endIndex = Math.min(startIndex + increment, totalNumInteractions);
+        taskMonitor.setStatus("Getting Interactions:  " + startIndex
+                + " - " + endIndex + " of "
+                + totalNumInteractions);
+        logToConsole ("Getting Interactions:  " + startIndex
+                + " - " + endIndex + " of "
+                + totalNumInteractions);
 //
 //        Date start = new Date();
 //        ArrayList currentList = reader.getInteractionsByKeyword
@@ -214,6 +220,7 @@ public class QueryCPathTask implements Task {
 //        this.setMaxProgressValue(totalNumInteractions);
 //        this.setProgressValue(startIndex + increment);
 //        taskMonitor.setEstimatedTimeRemaining(totalTimeInRemaining);
+//    }
     }
 
     /**
@@ -299,26 +306,26 @@ public class QueryCPathTask implements Task {
      *
      * @param msg Message to Log.
      */
-//    private void logToConsole(final String msg) {
-//        Runnable runnable = new Runnable() {
-//            public void run() {
-//                console.logMessage(msg);
-//            }
-//        };
-//        SwingUtilities.invokeLater(runnable);
-//    }
+    private void logToConsole(final String msg) {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                console.logMessage(msg);
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
+    }
 
     /**
      * Logs to Console by queing an event to the Event-Dispatch Thread.
      *
      * @param msg Message to Log.
      */
-//    private void logToConsoleBold(final String msg) {
-//        Runnable runnable = new Runnable() {
-//            public void run() {
-//                console.logMessageBold(msg);
-//            }
-//        };
-//        SwingUtilities.invokeLater(runnable);
-//    }
-//}
+    private void logToConsoleBold(final String msg) {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                console.logMessageBold(msg);
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
+    }
+}

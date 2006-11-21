@@ -33,6 +33,7 @@ import org.cytoscape.coreplugin.cpath.action.DisplayDetails;
 import org.cytoscape.coreplugin.cpath.action.ExecuteQuery;
 import org.cytoscape.coreplugin.cpath.action.UpdateSearchRequest;
 import org.cytoscape.coreplugin.cpath.model.*;
+import org.cytoscape.coreplugin.cpath.util.CPathProperties;
 import cytoscape.CyNetwork;
 import cytoscape.data.SelectFilter;
 
@@ -116,17 +117,10 @@ public class CPathDesktop extends JFrame implements Observer {
 
         //  Create Center Panel (Console plus Details)
         consolePanel = new ConsolePanel();
-//        PropertyManager pManager = PropertyManager.getInstance();
-//        String url = pManager.getProperty(PropertyManager.CPATH_READ_LOCATION);
-//        consolePanel.logMessage("PlugIn is currently set to retrieve data "
-//                + "from:  " + url);
-        DetailsPanel detailsPanel = new DetailsPanel(userSelection, this);
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                consolePanel, detailsPanel);
-        splitPane.setOneTouchExpandable(true);
-        splitPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        splitPane.setDividerLocation(300);
-        cPane.add(splitPane, BorderLayout.CENTER);
+        String url = CPathProperties.getCPathUrl();
+        consolePanel.logMessage("PlugIn is currently set to retrieve data "
+                + "from:  " + url);
+        cPane.add(consolePanel, BorderLayout.CENTER);
 
         //  Create Northern Panel (cPath Search)
         JPanel northPanel = createPanelNorth();
@@ -156,7 +150,7 @@ public class CPathDesktop extends JFrame implements Observer {
         searchButton = new JButton("Search");
         searchButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         ExecuteQuery queryListener = new ExecuteQuery(cyMap, searchRequest,
-                searchList, consolePanel, searchButton, (JFrame) this);
+                searchList, consolePanel, searchButton, this);
         buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
 
         //  Create Search Text Field
@@ -190,6 +184,7 @@ public class CPathDesktop extends JFrame implements Observer {
         limitCombo.setFont(new Font(font.getName(), Font.PLAIN, 11));
         limitCombo.setToolTipText("Limit Result Set or Get All");
         limitCombo.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+
         //  Used to specify a default size for pull down menu;
         //  Particularly important for Windows, see Bug #520.
         limitCombo.setPrototypeDisplayValue
@@ -265,29 +260,29 @@ public class CPathDesktop extends JFrame implements Observer {
         SearchResponse searchResponse = bundle.getResponse();
         Throwable exception = searchResponse.getException();
         if (exception != null) {
-//            if (exception instanceof EmptySetException) {
-//                String msg = "No Matching Results Found.  Please Try Again.";
-//                JOptionPane.showMessageDialog(this, msg, "cPath PlugIn",
-//                        JOptionPane.INFORMATION_MESSAGE);
-//            } else if (exception instanceof InterruptedException) {
-//                //  Do Nothing
-//            } else {
-//                showError(exception);
-//            }
+            if (exception instanceof EmptySetException) {
+                String msg = "No Matching Results Found.  Please Try Again.";
+                JOptionPane.showMessageDialog(this, msg, "cPath PlugIn",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else if (exception instanceof InterruptedException) {
+                //  Do Nothing
+            } else {
+                showError(exception);
+            }
         } else {
-            CyNetwork cyNetwork = searchResponse.getCyNetwork();
-            SelectFilter selectFilter = cyNetwork.getSelectFilter();
-            DisplayDetails displayDetails = new DisplayDetails(cyMap,
-                    userSelection);
-            selectFilter.addSelectEventListener(displayDetails);
-
-            //  Add the cPath Display Details Listener to the Network;
-            //  This enables other plugins to retrieve the listener, and
-            //  possibly reattach it to subnetworks, as we do with the
-            //  Activity Center.  This is a bit of a hack as the current
-            //  Cytoscape API does not allow clients to access a complete
-            //  list of SelectListeners.
-            cyNetwork.putClientData("CPATH_LISTENER", displayDetails);
+//            CyNetwork cyNetwork = searchResponse.getCyNetwork();
+//            SelectFilter selectFilter = cyNetwork.getSelectFilter();
+//            DisplayDetails displayDetails = new DisplayDetails(cyMap,
+//                    userSelection);
+//            selectFilter.addSelectEventListener(displayDetails);
+//
+//            //  Add the cPath Display Details Listener to the Network;
+//            //  This enables other plugins to retrieve the listener, and
+//            //  possibly reattach it to subnetworks, as we do with the
+//            //  Activity Center.  This is a bit of a hack as the current
+//            //  Cytoscape API does not allow clients to access a complete
+//            //  list of SelectListeners.
+//            cyNetwork.putClientData("CPATH_LISTENER", displayDetails);
         }
 
         // Re-enable search button.
@@ -300,7 +295,7 @@ public class CPathDesktop extends JFrame implements Observer {
      * @param exception Exception.
      */
     private void showError(Throwable exception) {
-        ErrorDisplay errorDisplay = new ErrorDisplay((JFrame) this);
+        ErrorDisplay errorDisplay = new ErrorDisplay(this);
         errorDisplay.displayError(exception, consolePanel);
     }
 }
