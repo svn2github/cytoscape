@@ -32,28 +32,48 @@ public class NetworkLineParser {
 
 	public void parseEntry(String[] parts) {
 		final Edge edge = addNodeAndEdge(parts);
+		if(edge != null) {
 		addEdgeAttributes(edge, parts);
+		}
 	}
 
 	private Edge addNodeAndEdge(final String[] parts) {
-		final Node source = Cytoscape.getCyNode(parts[nmp.getSourceIndex()]
+		final Node source;
+		if(nmp.getSourceIndex() <= parts.length-1) {
+			source = Cytoscape.getCyNode(parts[nmp.getSourceIndex()]
 				.trim(), true);
-		final Node target = Cytoscape.getCyNode(parts[nmp.getTargetIndex()]
+			nodeList.add(source.getRootGraphIndex());
+		} else {
+			source = null;
+		}
+		
+		
+		
+		final Node target;
+		if(nmp.getTargetIndex() <= parts.length-1) {
+			target = Cytoscape.getCyNode(parts[nmp.getTargetIndex()]
 				.trim(), true);
-
+			nodeList.add(target.getRootGraphIndex());
+		} else {
+			target = null;
+			
+		}
+		
 		final String interaction;
-		if (nmp.getInteractionIndex() == -1) {
+		if (nmp.getInteractionIndex() == -1 || nmp.getInteractionIndex() > parts.length-1) {
 			interaction = nmp.getDefaultInteraction();
 		} else {
 			interaction = parts[nmp.getInteractionIndex()].trim();
 		}
 
-		final Edge edge = Cytoscape.getCyEdge(source, target,
-				Semantics.INTERACTION, interaction, true);
-
-		nodeList.add(source.getRootGraphIndex());
-		nodeList.add(target.getRootGraphIndex());
-		edgeList.add(edge.getRootGraphIndex());
+		final Edge edge;
+		if(source != null && target != null) {
+			edge = Cytoscape.getCyEdge(source, target,
+					Semantics.INTERACTION, interaction, true);
+			edgeList.add(edge.getRootGraphIndex());
+		} else {
+			edge = null;
+		}
 
 		return edge;
 	}

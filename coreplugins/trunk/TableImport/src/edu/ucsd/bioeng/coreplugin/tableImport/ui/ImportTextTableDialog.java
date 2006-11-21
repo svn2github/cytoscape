@@ -63,6 +63,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.ToolTipManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -109,6 +110,7 @@ import giny.model.Node;
 public class ImportTextTableDialog extends JDialog implements
 		PropertyChangeListener, TableModelListener {
 
+	private static final String DEFAULT_INTERACTION = "pp";
 	/**
 	 * This dialog GUI will be switched based on the following parameters:
 	 * 
@@ -403,6 +405,12 @@ public class ImportTextTableDialog extends JDialog implements
 
 		simpleAttributeImportPanel = new javax.swing.JPanel();
 		attributeFileLabel = new javax.swing.JLabel();
+
+		startRowSpinner = new JSpinner();
+		startRowLabel = new JLabel();
+
+		commentLineLabel = new JLabel();
+		commentLineTextField = new JTextField();
 
 		titleLabel.setFont(TITLE_FONT.getFont());
 
@@ -1395,6 +1403,7 @@ public class ImportTextTableDialog extends JDialog implements
 		org.jdesktop.layout.GroupLayout previewOptionPanelLayout = new org.jdesktop.layout.GroupLayout(
 				previewOptionPanel);
 		previewOptionPanel.setLayout(previewOptionPanelLayout);
+
 		previewOptionPanelLayout
 				.setHorizontalGroup(previewOptionPanelLayout
 						.createParallelGroup(
@@ -1416,21 +1425,15 @@ public class ImportTextTableDialog extends JDialog implements
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(counterLabel)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(reloadButton)
-										.addContainerGap(
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										.add(counterLabel).addContainerGap(76,
 												Short.MAX_VALUE)));
-		previewOptionPanelLayout
-				.setVerticalGroup(previewOptionPanelLayout.createParallelGroup(
-						org.jdesktop.layout.GroupLayout.LEADING).add(
-						counterRadioButton).add(counterSpinner,
+		previewOptionPanelLayout.setVerticalGroup(previewOptionPanelLayout
+				.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+				.add(counterRadioButton).add(counterSpinner,
 						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).add(
-						counterLabel).add(reloadButton).add(showAllRadioButton));
+						counterLabel).add(showAllRadioButton));
 
 		attributeNamePanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Attribute Names"));
@@ -1445,31 +1448,184 @@ public class ImportTextTableDialog extends JDialog implements
 			}
 		});
 
+		startRowLabel.setText("Start Import Row: ");
+		startRowLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+
+		SpinnerNumberModel startRowSpinnerModel = new SpinnerNumberModel(1, 1,
+				10000000, 1);
+		startRowSpinner.setModel(startRowSpinnerModel);
+		startRowSpinner
+				.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+					public void mouseWheelMoved(
+							java.awt.event.MouseWheelEvent evt) {
+						startRowSpinnerMouseWheelMoved(evt);
+					}
+				});
+		startRowSpinner
+				.setToolTipText("<html>Load entries from this line. <p>"
+						+ "(Click on the <strong><i>Reload</i></strong> button to refresh preview.)</p></html>");
+
+		commentLineLabel.setText("Comment Line:");
+
+		commentLineTextField
+				.setToolTipText("<html>Lines start with this string will be ignored. <br>"
+						+ "(Click on the <strong><i>Reload</i></strong> button to refresh preview.)</html>");
+
 		GroupLayout attributeNamePanelLayout = new org.jdesktop.layout.GroupLayout(
 				attributeNamePanel);
 		attributeNamePanel.setLayout(attributeNamePanelLayout);
-		attributeNamePanelLayout.setHorizontalGroup(attributeNamePanelLayout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(
-						attributeNamePanelLayout.createSequentialGroup()
-								.addContainerGap().add(attrNameCheckBox)
-								.addContainerGap(92, Short.MAX_VALUE)));
-		attributeNamePanelLayout.setVerticalGroup(attributeNamePanelLayout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(
-						attributeNamePanelLayout.createSequentialGroup().add(
-								attrNameCheckBox,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								17, Short.MAX_VALUE).addContainerGap()));
+
+		attributeNamePanelLayout
+				.setHorizontalGroup(attributeNamePanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								attributeNamePanelLayout
+										.createSequentialGroup()
+										.add(attrNameCheckBox)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(startRowLabel)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												startRowSpinner,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												51,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(commentLineLabel)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												commentLineTextField,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												24,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addContainerGap(12, Short.MAX_VALUE)));
+		attributeNamePanelLayout
+				.setVerticalGroup(attributeNamePanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								attributeNamePanelLayout
+										.createSequentialGroup()
+										.add(
+												attributeNamePanelLayout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
+														.add(
+																attrNameCheckBox,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																21,
+																Short.MAX_VALUE)
+														.add(startRowLabel)
+														.add(
+																startRowSpinner,
+																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+														.add(commentLineLabel)
+														.add(
+																commentLineTextField,
+																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+										.addContainerGap()));
+
+		//		
+		// attributeNamePanelLayout.setHorizontalGroup(
+		// attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		// .add(attributeNamePanelLayout.createSequentialGroup()
+		// .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		// Short.MAX_VALUE)
+		// .add(attrNameCheckBox)
+		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		// .add(startRowLabel)
+		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		// .add(startRowSpinner, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		// 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		// .add(commentLineLabel)
+		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		// .add(commentLineTextField,
+		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24,
+		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+		// );
+		// attributeNamePanelLayout.setVerticalGroup(
+		// attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		// .add(attributeNamePanelLayout.createSequentialGroup()
+		// .add(attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		// .add(attrNameCheckBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		// 21, Short.MAX_VALUE)
+		// .add(startRowLabel)
+		// .add(startRowSpinner, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		// org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		// .add(commentLineLabel)
+		// .add(commentLineTextField,
+		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		// org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+		// .addContainerGap())
+		// );
+		//		
+
+		// attributeNamePanelLayout.setHorizontalGroup(
+		// attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		// .add(attributeNamePanelLayout.createSequentialGroup()
+		// .addContainerGap()
+		// .add(attrNameCheckBox)
+		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		// .add(startRowLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		// 140, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		// .add(startRowSpinner, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		// 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		// .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		// Short.MAX_VALUE))
+		// );
+		// attributeNamePanelLayout.setVerticalGroup(
+		// attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		// .add(attributeNamePanelLayout.createSequentialGroup()
+		// .add(attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		// .add(startRowLabel)
+		// .add(startRowSpinner, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		// org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		// org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		// .add(attrNameCheckBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		// 21, Short.MAX_VALUE))
+		// .addContainerGap())
+		// );
+		//		
+
+		// attributeNamePanelLayout.setHorizontalGroup(attributeNamePanelLayout
+		// .createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		// .add(
+		// attributeNamePanelLayout.createSequentialGroup()
+		// .addContainerGap().add(attrNameCheckBox)
+		// .addContainerGap(92, Short.MAX_VALUE)));
+		// attributeNamePanelLayout.setVerticalGroup(attributeNamePanelLayout
+		// .createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		// .add(
+		// attributeNamePanelLayout.createSequentialGroup().add(
+		// attrNameCheckBox,
+		// org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		// 17, Short.MAX_VALUE).addContainerGap()));
 
 		networkImportOptionPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Network Import Options"));
 		defaultInteractionLabel.setText("Default Interaction:");
-		defaultInteractionTextField.setText("pp");
+		defaultInteractionTextField.setText(DEFAULT_INTERACTION);
+		defaultInteractionTextField
+				.setToolTipText("<html>If <font color=\"red\"><i>Default Interaction</i></font>" +
+						" is selected, this value will be used for <i>Interaction Type</i>.<br></html>");
 
 		org.jdesktop.layout.GroupLayout networkImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(
 				networkImportOptionPanel);
 		networkImportOptionPanel.setLayout(networkImportOptionPanelLayout);
+
 		networkImportOptionPanelLayout
 				.setHorizontalGroup(networkImportOptionPanelLayout
 						.createParallelGroup(
@@ -1477,7 +1633,9 @@ public class ImportTextTableDialog extends JDialog implements
 						.add(
 								networkImportOptionPanelLayout
 										.createSequentialGroup()
-										.addContainerGap()
+										.addContainerGap(
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)
 										.add(defaultInteractionLabel)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
@@ -1485,72 +1643,58 @@ public class ImportTextTableDialog extends JDialog implements
 												defaultInteractionTextField,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 												58,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addContainerGap(280, Short.MAX_VALUE)));
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 		networkImportOptionPanelLayout
 				.setVerticalGroup(networkImportOptionPanelLayout
 						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								networkImportOptionPanelLayout
-										.createSequentialGroup()
-										.add(
-												networkImportOptionPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(
-																defaultInteractionLabel)
-														.add(
-																defaultInteractionTextField,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-										.addContainerGap(
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+								org.jdesktop.layout.GroupLayout.LEADING).add(
+								defaultInteractionLabel).add(
+								defaultInteractionTextField,
+								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE));
 
 		org.jdesktop.layout.GroupLayout textImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(
 				textImportOptionPanel);
 		textImportOptionPanel.setLayout(textImportOptionPanelLayout);
+
 		textImportOptionPanelLayout
 				.setHorizontalGroup(textImportOptionPanelLayout
 						.createParallelGroup(
 								org.jdesktop.layout.GroupLayout.LEADING)
 						.add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
 								textImportOptionPanelLayout
 										.createSequentialGroup()
 										.add(
-												textImportOptionPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.TRAILING)
-														.add(
-																org.jdesktop.layout.GroupLayout.LEADING,
-																attributeNamePanel,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.add(
-																org.jdesktop.layout.GroupLayout.LEADING,
-																delimiterPanel,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE))
+												attributeNamePanel,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
 										.add(
-												textImportOptionPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																networkImportOptionPanel,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.add(
-																previewOptionPanel,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE))));
+												networkImportOptionPanel,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.add(29, 29, 29).add(reloadButton))
+						.add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								textImportOptionPanelLayout
+										.createSequentialGroup()
+										.add(
+												delimiterPanel,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												previewOptionPanel,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 		textImportOptionPanelLayout
 				.setVerticalGroup(textImportOptionPanelLayout
 						.createParallelGroup(
@@ -1565,33 +1709,37 @@ public class ImportTextTableDialog extends JDialog implements
 														.add(
 																delimiterPanel,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																49,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 														.add(
 																previewOptionPanel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																62,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																50,
 																Short.MAX_VALUE))
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
 										.add(
 												textImportOptionPanelLayout
 														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.TRAILING)
+																org.jdesktop.layout.GroupLayout.LEADING)
+														.add(
+																networkImportOptionPanel,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																45,
+																Short.MAX_VALUE)
 														.add(
 																attributeNamePanel,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																45,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 														.add(
-																networkImportOptionPanel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))));
+																org.jdesktop.layout.GroupLayout.TRAILING,
+																reloadButton))));
 
 		org.jdesktop.layout.GroupLayout advancedPanelLayout = new org.jdesktop.layout.GroupLayout(
 				advancedPanel);
 		advancedPanel.setLayout(advancedPanelLayout);
+
 		advancedPanelLayout
 				.setHorizontalGroup(advancedPanelLayout
 						.createParallelGroup(
@@ -1795,6 +1943,7 @@ public class ImportTextTableDialog extends JDialog implements
 				previewPanel.getPreviewTable().getTableHeader()
 						.resizeAndRepaint();
 			}
+			startRowSpinner.setEnabled(false);
 		} else {
 			// Restore row
 			String currentName = null;
@@ -1807,6 +1956,7 @@ public class ImportTextTableDialog extends JDialog implements
 			}
 			model.insertRow(0, columnHeaders);
 			previewPanel.getPreviewTable().getTableHeader().resizeAndRepaint();
+			startRowSpinner.setEnabled(true);
 		}
 
 		updateAliasTable();
@@ -1839,8 +1989,10 @@ public class ImportTextTableDialog extends JDialog implements
 		if (attrNameCheckBox.isSelected()) {
 			startLineNumber = 1;
 		} else {
-			startLineNumber = 0;
+			startLineNumber = Integer.parseInt(startRowSpinner.getValue().toString()) - 1;
 		}
+		
+		final String commentChar = commentLineTextField.getText();
 
 		/*
 		 * Get Attribute Names
@@ -1951,7 +2103,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 			} else {
 				loadAnnotation(new DefaultAttributeTableReader(source, mapping,
-						startLineNumber), null, null);
+						startLineNumber, null), null, commentChar);
 			}
 
 			break;
@@ -2039,7 +2191,7 @@ public class ImportTextTableDialog extends JDialog implements
 				final String[] parts = networkSource.toString().split("/");
 				networkName = parts[parts.length - 1];
 				reader = new NetworkTableReader(networkName, networkSource,
-						nmp, startLineNumber);
+						nmp, startLineNumber, commentChar);
 			}
 
 			loadNetwork(networkName, reader, networkSource);
@@ -2186,6 +2338,26 @@ public class ImportTextTableDialog extends JDialog implements
 		}
 	}
 
+	/**
+	 * Actions for selecting start line.
+	 * 
+	 * @param evt
+	 */
+	private void startRowSpinnerMouseWheelMoved(
+			java.awt.event.MouseWheelEvent evt) {
+		JSpinner source = (JSpinner) evt.getSource();
+
+		SpinnerNumberModel model = (SpinnerNumberModel) source.getModel();
+		Integer oldValue = (Integer) source.getValue();
+		int intValue = oldValue.intValue() - evt.getWheelRotation()
+				* model.getStepSize().intValue();
+		Integer newValue = new Integer(intValue);
+		if (model.getMaximum().compareTo(newValue) >= 0
+				&& model.getMinimum().compareTo(newValue) <= 0) {
+			source.setValue(newValue);
+		}
+	}
+
 	/* =============================================================================================== */
 
 	private List<Integer> getAliasList() {
@@ -2244,13 +2416,14 @@ public class ImportTextTableDialog extends JDialog implements
 			ontologyTextField.setText(ontologyComboBox.getSelectedItem()
 					.toString());
 		} else if (dialogType == NETWORK_IMPORT) {
-			setTitle("Import Network and Edge Attributes from File");
+			setTitle("Import Network and Edge Attributes from Table");
 			titleLabel.setText("Import Network from Table");
 			annotationAndOntologyImportPanel.setVisible(false);
 		}
 
 		reloadButton.setEnabled(false);
-
+		startRowSpinner.setEnabled(false);
+		startRowLabel.setEnabled(false);
 		previewPanel.getPreviewTable().getTableHeader().setReorderingAllowed(
 				false);
 		setRadioButtonGroup();
@@ -2325,7 +2498,14 @@ public class ImportTextTableDialog extends JDialog implements
 		tabCheckBox.setSelected(true);
 		tabCheckBox.setEnabled(false);
 		commaCheckBox.setEnabled(false);
+
 		spaceCheckBox.setEnabled(false);
+		if (dialogType == NETWORK_IMPORT) {
+			spaceCheckBox.setSelected(true);
+		} else {
+			spaceCheckBox.setSelected(false);
+		}
+
 		semicolonCheckBox.setEnabled(false);
 		otherCheckBox.setEnabled(false);
 		otherDelimiterTextField.setEnabled(false);
@@ -2482,7 +2662,11 @@ public class ImportTextTableDialog extends JDialog implements
 		/*
 		 * Load data from the given URL.
 		 */
-		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize);
+		final String commentChar = commentLineTextField.getText();
+		final int startLine = Integer.parseInt(startRowSpinner.getValue()
+				.toString());
+		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize,
+				commentChar, startLine - 1);
 
 		/*
 		 * Initialize all Alias Tables
@@ -2578,6 +2762,8 @@ public class ImportTextTableDialog extends JDialog implements
 		previewPanel.getPreviewTable().repaint();
 		previewPanel.getPreviewTable().getTableHeader().repaint();
 		reloadButton.setEnabled(true);
+		startRowSpinner.setEnabled(true);
+		startRowLabel.setEnabled(true);
 	}
 
 	private void disableComponentsForGA() {
@@ -2694,7 +2880,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 			Iterator attrIt = selectedAttributes.getMultiHashMap()
 					.getObjectKeys(selectedKeyAttribute);
-			
+
 			String stringValue = null;
 			Double dblValue = 0.;
 			Integer intValue = 0;
@@ -3702,6 +3888,12 @@ public class ImportTextTableDialog extends JDialog implements
 
 	private JLabel defaultInteractionLabel;
 	private JTextField defaultInteractionTextField;
+
+	private JLabel startRowLabel;
+	private JSpinner startRowSpinner;
+
+	private JLabel commentLineLabel;
+	private JTextField commentLineTextField;
 
 	// End of variables declaration
 

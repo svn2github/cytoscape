@@ -37,6 +37,8 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	 */
 	private final int startLineNumber;
 
+	private String commentChar = null;
+	
 	/**
 	 * Constructor.<br>
 	 * 
@@ -88,11 +90,12 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		this.parser = new AttributeLineParser(mapping);
 	}
 	
-	public DefaultAttributeTableReader(final URL source, AttributeMappingParameters mapping, final int startLineNumber) {
+	public DefaultAttributeTableReader(final URL source, AttributeMappingParameters mapping, final int startLineNumber, final String commentChar) {
 		this.source = source;
 		this.mapping = mapping;
 		this.startLineNumber = startLineNumber;
 		this.parser = new AttributeLineParser(mapping);
+		this.commentChar = commentChar;
 	}
 
 	
@@ -114,7 +117,7 @@ public class DefaultAttributeTableReader implements TextTableReader {
 				is));
 		String line;
 		int lineCount = 0;
-
+		
 		/*
 		 * Read & extract one line at a time. The line can be Tab delimited,
 		 */
@@ -122,7 +125,10 @@ public class DefaultAttributeTableReader implements TextTableReader {
 			/*
 			 * Ignore Empty & Commnet lines.
 			 */
-			if (lineCount > startLineNumber && line.startsWith(COMMENT_CHAR) == false && line.trim().length() > 0) {
+			if(commentChar != null && line.startsWith(commentChar)) {
+				// Do nothing
+			}
+			else if (lineCount > startLineNumber && line.trim().length() > 0) {
 				String[] parts = line.split(mapping.getDelimiterRegEx());
 				parser.parseEntry(parts);
 			}

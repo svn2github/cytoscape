@@ -35,7 +35,7 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 	
 	public ExcelNetworkSheetReader(String networkName, HSSFSheet sheet,
 			NetworkTableMappingParameters nmp, final int startLineNumber) {
-		super(networkName, null, nmp, startLineNumber);
+		super(networkName, null, nmp, startLineNumber, null);
 		this.sheet = sheet;
 	}
 

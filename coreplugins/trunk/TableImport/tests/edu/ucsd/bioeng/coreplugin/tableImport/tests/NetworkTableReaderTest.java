@@ -57,7 +57,7 @@ public class NetworkTableReaderTest extends TestCase {
 				delimiters, TextFileDelimiters.PIPE.toString(), galAttrName,
 				galAttrTypes, null, 0, 1, 2, null);
 
-		reader = new NetworkTableReader(network.getName(), network.toURL(), mapping, 0);
+		reader = new NetworkTableReader(network.getName(), network.toURL(), mapping, 0, null);
 
 		CyNetwork net = Cytoscape.createNetwork(reader, false, null);
 		

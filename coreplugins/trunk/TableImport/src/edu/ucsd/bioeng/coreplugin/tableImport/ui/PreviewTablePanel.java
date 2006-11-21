@@ -1,6 +1,5 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -84,7 +83,7 @@ public class PreviewTablePanel extends JPanel {
 	private static final String EXCEL_EXT = ".xls";
 
 	// Lines start with this char will be ignored.
-	private static final String COMMENT_CHAR = "!";
+	private String commentChar;
 
 	private final String message;
 
@@ -160,7 +159,7 @@ public class PreviewTablePanel extends JPanel {
 			legendLabel.setVisible(false);
 			onLabel.setVisible(false);
 			offLabel.setVisible(false);
-			
+
 			repaint();
 		}
 	}
@@ -267,14 +266,13 @@ public class PreviewTablePanel extends JPanel {
 								javax.swing.border.TitledBorder.DEFAULT_POSITION,
 								new java.awt.Font("Dialog", 1, 11)));
 
+		instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		instructionLabel
-				.setHorizontalAlignment(SwingConstants.CENTER);
-		instructionLabel.setText("Left Click: Edit Column  Right Click: ON/OFF Column");
+				.setText("Left Click: Edit Column  Right Click: ON/OFF Column");
 		instructionLabel.setFont(LABEL_FONT.getFont());
 		instructionLabel.setForeground(Color.red);
 		instructionLabel.setOpaque(true);
 		instructionLabel.setBorder(new LineBorder(Color.red, 1, true));
-		
 
 		legendLabel.setFont(LABEL_FONT.getFont());
 		legendLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -284,65 +282,122 @@ public class PreviewTablePanel extends JPanel {
 		onLabel.setForeground(Color.WHITE);
 		onLabel.setBackground(PRIMARY_KEY_COLOR.getColor());
 		onLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-//		onLabel
-//				.setIcon(CHECKED_ICON.getIcon());
+		// onLabel
+		// .setIcon(CHECKED_ICON.getIcon());
 		onLabel.setText("Key");
 		onLabel.setToolTipText("Entries in this color will be imported.");
-//		onLabel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
-//				0, 0, 0), 1, true));
+		// onLabel.setBorder(new javax.swing.border.LineBorder(new
+		// java.awt.Color(
+		// 0, 0, 0), 1, true));
 		onLabel.setOpaque(true);
 
 		offLabel.setFont(LABEL_FONT.getFont());
 		offLabel.setForeground(Color.WHITE);
 		offLabel.setBackground(ALIAS_COLOR.getColor());
 		offLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-//		offLabel
-//				.setIcon(UNCHECKED_ICON.getIcon());
+		// offLabel
+		// .setIcon(UNCHECKED_ICON.getIcon());
 		offLabel.setText("Alias");
 		offLabel.setToolTipText("Entries in this color will NOT be imported.");
-//		offLabel.setBorder(new javax.swing.border.LineBorder(
-//				new java.awt.Color(0, 0, 0), 1, true));
+		// offLabel.setBorder(new javax.swing.border.LineBorder(
+		// new java.awt.Color(0, 0, 0), 1, true));
 		offLabel.setOpaque(true);
 
 		GroupLayout previewPanelLayout = new GroupLayout(this);
 		this.setLayout(previewPanelLayout);
-		
-		
-		previewPanelLayout.setHorizontalGroup(
-	            previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-	            .add(org.jdesktop.layout.GroupLayout.TRAILING, previewPanelLayout.createSequentialGroup()
-	                .add(tableTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
-	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-	                .add(rightArrowLabel)
-	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-	                .add(keyPreviewScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 208, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-	            .add(previewPanelLayout.createSequentialGroup()
-	                .add(fileTypeLabel)
-	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-	                .add(instructionLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-	                .add(legendLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 280, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-	                .add(onLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-	                .add(offLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-	                .addContainerGap())
-	        );
-	        previewPanelLayout.setVerticalGroup(
-	            previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-	            .add(previewPanelLayout.createSequentialGroup()
-	                .add(previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-	                    .add(fileTypeLabel)
-	                    .add(onLabel)
-	                    .add(offLabel)
-	                    .add(legendLabel)
-	                    .add(instructionLabel))
-	                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-	                .add(previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-	                    .add(tableTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-	                    .add(keyPreviewScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-	                    .add(org.jdesktop.layout.GroupLayout.LEADING, rightArrowLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
-	        );
+
+		previewPanelLayout
+				.setHorizontalGroup(previewPanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								previewPanelLayout
+										.createSequentialGroup()
+										.add(
+												tableTabbedPane,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												705, Short.MAX_VALUE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(rightArrowLabel)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												keyPreviewScrollPane,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												208,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+						.add(
+								previewPanelLayout
+										.createSequentialGroup()
+										.add(fileTypeLabel)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												instructionLabel,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												280, Short.MAX_VALUE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												legendLabel,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												280,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												onLabel,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												60,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												offLabel,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												60,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addContainerGap()));
+		previewPanelLayout
+				.setVerticalGroup(previewPanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								previewPanelLayout
+										.createSequentialGroup()
+										.add(
+												previewPanelLayout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
+														.add(fileTypeLabel)
+														.add(onLabel).add(
+																offLabel).add(
+																legendLabel)
+														.add(instructionLabel))
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												previewPanelLayout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.TRAILING)
+														.add(
+																tableTabbedPane,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																200,
+																Short.MAX_VALUE)
+														.add(
+																keyPreviewScrollPane,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																200,
+																Short.MAX_VALUE)
+														.add(
+																org.jdesktop.layout.GroupLayout.LEADING,
+																rightArrowLabel,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																200,
+																Short.MAX_VALUE))));
 	}
 
 	public JTable getPreviewTable() {
@@ -431,11 +486,20 @@ public class PreviewTablePanel extends JPanel {
 	 * @param renderer
 	 *            renderer for this table. Can be null.
 	 * @param size
+	 * @param commentLineChar
+	 *            TODO
+	 * @param startLine
+	 *            TODO
 	 * @throws IOException
 	 */
 	public void setPreviewTable(URL sourceURL, List<String> delimiters,
-			TableCellRenderer renderer, int size) throws IOException {
+			TableCellRenderer renderer, int size, final String commentLineChar,
+			final int startLine) throws IOException {
 		TableCellRenderer curRenderer = renderer;
+
+		if (commentLineChar != null && commentLineChar.trim().length() != 0) {
+			this.commentChar = commentLineChar;
+		}
 
 		/*
 		 * If rendrer is null, create default one.
@@ -472,7 +536,7 @@ public class PreviewTablePanel extends JPanel {
 			 */
 			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 				HSSFSheet sheet = wb.getSheetAt(i);
-				newModel = parseExcel(sourceURL, size, curRenderer, sheet);
+				newModel = parseExcel(sourceURL, size, curRenderer, sheet, startLine);
 				guessDataTypes(newModel, wb.getSheetName(i));
 				addTableTab(newModel, wb.getSheetName(i), curRenderer);
 			}
@@ -481,7 +545,8 @@ public class PreviewTablePanel extends JPanel {
 			fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
 			fileTypeLabel.setText("Text File");
 
-			newModel = parseText(sourceURL, size, curRenderer, delimiters);
+			newModel = parseText(sourceURL, size, curRenderer, delimiters,
+					startLine);
 
 			String[] urlParts = sourceURL.toString().split("/");
 			final String tabName = urlParts[urlParts.length - 1];
@@ -516,7 +581,6 @@ public class PreviewTablePanel extends JPanel {
 		// for (int j = 0; j < newModel.getColumnCount(); j++) {
 		// dataTypes[j] = CyAttributes.TYPE_STRING;
 		// }
-
 		/*
 		 * Setting table properties
 		 */
@@ -587,7 +651,7 @@ public class PreviewTablePanel extends JPanel {
 	}
 
 	private TableModel parseText(URL sourceURL, int size,
-			TableCellRenderer renderer, List<String> delimiters)
+			TableCellRenderer renderer, List<String> delimiters, int startLine)
 			throws IOException {
 
 		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(
@@ -624,7 +688,8 @@ public class PreviewTablePanel extends JPanel {
 
 		while ((line = bufRd.readLine()) != null) {
 
-			if (line.startsWith(COMMENT_CHAR) || line.trim().length() == 0) {
+			if ((commentChar != null && line.startsWith(commentChar))
+					|| line.trim().length() == 0 || counter < startLine) {
 				// ignore
 			} else {
 				Vector row = new Vector();
@@ -658,7 +723,8 @@ public class PreviewTablePanel extends JPanel {
 	}
 
 	private TableModel parseExcel(URL sourceURL, int size,
-			TableCellRenderer renderer, HSSFSheet sheet) throws IOException {
+			TableCellRenderer renderer, HSSFSheet sheet, int startLine)
+			throws IOException {
 
 		int maxCol = 0;
 		Vector data = new Vector();
@@ -667,38 +733,43 @@ public class PreviewTablePanel extends JPanel {
 		HSSFRow row;
 		while ((row = sheet.getRow(rowCount)) != null && rowCount < size) {
 
-			Vector<Object> rowVector = new Vector<Object>();
-			if (maxCol < row.getPhysicalNumberOfCells()) {
-				maxCol = row.getPhysicalNumberOfCells();
-			}
-			for (short j = 0; j < maxCol; j++) {
-				HSSFCell cell = row.getCell(j);
-				if (cell == null) {
-					rowVector.add(null);
-				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-					rowVector.add(cell.getStringCellValue());
-				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-					final Double dblValue = cell.getNumericCellValue();
-					final Integer intValue = dblValue.intValue();
+			if (rowCount >= startLine) {
 
-					if (intValue.doubleValue() == dblValue) {
-						rowVector.add(intValue.toString());
+				Vector<Object> rowVector = new Vector<Object>();
+
+				if (maxCol < row.getPhysicalNumberOfCells()) {
+					maxCol = row.getPhysicalNumberOfCells();
+				}
+				for (short j = 0; j < maxCol; j++) {
+					HSSFCell cell = row.getCell(j);
+					if (cell == null) {
+						rowVector.add(null);
+					} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+						rowVector.add(cell.getStringCellValue());
+					} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+						final Double dblValue = cell.getNumericCellValue();
+						final Integer intValue = dblValue.intValue();
+
+						if (intValue.doubleValue() == dblValue) {
+							rowVector.add(intValue.toString());
+						} else {
+							rowVector.add(dblValue.toString());
+						}
+
+					} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+						rowVector.add(Boolean.toString(cell
+								.getBooleanCellValue()));
+					} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK
+							|| cell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
+						rowVector.add(null);
 					} else {
-						rowVector.add(dblValue.toString());
+						rowVector.add(null);
 					}
 
-				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
-					rowVector.add(Boolean.toString(cell.getBooleanCellValue()));
-				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK
-						|| cell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
-					rowVector.add(null);
-				} else {
-					rowVector.add(null);
 				}
 
+				data.add(rowVector);
 			}
-
-			data.add(rowVector);
 			rowCount++;
 		}
 
