@@ -31,10 +31,11 @@ package org.cytoscape.coreplugin.cpath.task;
 
 import org.cytoscape.coreplugin.cpath.model.*;
 import org.cytoscape.coreplugin.cpath.ui.Console;
-import csplugins.task.BaseTask;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
 import org.mskcc.dataservices.core.DataServiceException;
 import org.mskcc.dataservices.core.EmptySetException;
@@ -53,7 +54,7 @@ import java.util.HashMap;
  *
  * @author Ethan Cerami.
  */
-public class QueryCPathTask extends BaseTask {
+public class QueryCPathTask implements Task {
     private HashMap cyMap;
     private SearchRequest searchRequest;
     private SearchResponse searchResponse;
@@ -62,6 +63,8 @@ public class QueryCPathTask extends BaseTask {
     private Console console;
     private static final int DEFAULT_INCREMENT = 10;
     private static final int LARGER_INCREMENT = 50;
+    private TaskMonitor taskMonitor;
+    private boolean isInterrupted;
 
     /**
      * Constructor.
@@ -73,8 +76,6 @@ public class QueryCPathTask extends BaseTask {
      */
     public QueryCPathTask(HashMap cyMap, SearchRequest searchRequest,
             SearchBundleList searchList, Console console) {
-        super("Retrieving Data from cPath:  "
-                + searchRequest.toString() + "...");
         this.logToConsoleBold("Retrieving Data from cPath:  "
                 + searchRequest.toString() + "...");
 
@@ -88,13 +89,25 @@ public class QueryCPathTask extends BaseTask {
         this.console = console;
     }
 
+    public void halt () {
+        isInterrupted = true;
+    }
+
+    public void setTaskMonitor (TaskMonitor taskMonitor) throws IllegalThreadStateException {
+        this.taskMonitor = taskMonitor;
+    }
+
+    public String getTitle () {
+        return "Connecting to cPath:  " + searchRequest.toString();
+    }
+
     /**
      * Executes Task
      */
-    public void executeTask() {
+    public void run () {
         //  Set Initial Messages
-        setIndeterminate(true);
-        setProgressMessage("Connecting to cPath...");
+        taskMonitor.setPercentCompleted(-1);
+        taskMonitor.setStatus("Connecting to cPath...");
 
         //  Get Property or use Default Location.
         PropertyManager manager = PropertyManager.getInstance();
@@ -129,7 +142,7 @@ public class QueryCPathTask extends BaseTask {
             searchBundle = new SearchBundle
                     ((SearchRequest) searchRequest.clone(), searchResponse);
             searchList.add(searchBundle);
-            if (this.isInterrupted()) {
+            if (isInterrupted) {
                 logToConsole("Data Retrieval Cancelled by User.");
             }
         }
@@ -162,14 +175,14 @@ public class QueryCPathTask extends BaseTask {
         if (maxHits > 100) {
             increment = LARGER_INCREMENT;
         }
-        while (index < endIndex && !isInterrupted()) {
+        while (index < endIndex && !isInterrupted) {
             getInteractions(reader, taxonomyId, interactions, index, increment,
                     endIndex);
             index += increment;
         }
 
         searchResponse.setInteractions(interactions);
-        if (isInterrupted()) {
+        if (isInterrupted) {
             throw new InterruptedException();
         }
         mapToGraph();
@@ -183,7 +196,7 @@ public class QueryCPathTask extends BaseTask {
             int totalNumInteractions) throws DataServiceException {
 
         int endIndex = Math.min(startIndex + increment, totalNumInteractions);
-        setProgressMessage("Getting Interactions:  " + startIndex
+        taskMonitor.setStatus("Getting Interactions:  " + startIndex
                 + " - " + endIndex + " of "
                 + totalNumInteractions);
 
@@ -204,9 +217,10 @@ public class QueryCPathTask extends BaseTask {
                 + " - " + endIndex + " of "
                 + totalNumInteractions + " [OK]");
 
-        this.setMaxProgressValue(totalNumInteractions);
-        this.setProgressValue(startIndex + increment);
-        this.setEstimatedTimeRemaining(totalTimeInRemaining);
+//TODO:FIX THIS
+//        this.setMaxProgressValue(totalNumInteractions);
+//        this.setProgressValue(startIndex + increment);
+        taskMonitor.setEstimatedTimeRemaining(totalTimeInRemaining);
     }
 
     /**
@@ -215,7 +229,7 @@ public class QueryCPathTask extends BaseTask {
      * @throws MapperException Error in Mapping.
      */
     private void mapToGraph() throws MapperException {
-        this.setIndeterminate(true);
+        taskMonitor.setPercentCompleted(-1);
         String title = searchRequest.toString();
         ArrayList interactions = searchResponse.getInteractions();
 
@@ -239,7 +253,7 @@ public class QueryCPathTask extends BaseTask {
 
         //  Map Interactions to Network
         logToConsole("Mapping Data to Cytoscape Network");
-        setProgressMessage("Mapping Data to Cytoscape Network.  Please wait.");
+        taskMonitor.setStatus( "Mapping Data to Cytoscape Network.  Please wait.");
 //   TODO:  FIX ALL CODE BELOW
 //        MapPsiInteractionsToGraph mapper =
 //                new MapPsiInteractionsToGraph(interactions, cyNetwork,
@@ -276,10 +290,10 @@ public class QueryCPathTask extends BaseTask {
                     + threshold
                     + " nodes --> a Cytoscape View  will be "
                     + "automatically created.");
-            setProgressMessage("Creating Network View.  Please wait.");
+            taskMonitor.setStatus("Creating Network View.  Please wait.");
             CyNetworkView view = Cytoscape.createNetworkView(cyNetwork);
             searchResponse.setCyNetworkView(view);
-            setProgressMessage("Applying Visual Styles.");
+            taskMonitor.setStatus("Applying Visual Styles.");
             Cytoscape.getVisualMappingManager().applyAppearances();
         } else {
             logToConsole("Your Network is Over " + threshold

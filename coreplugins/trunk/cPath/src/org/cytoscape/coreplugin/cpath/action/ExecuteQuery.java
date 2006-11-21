@@ -34,7 +34,6 @@ import org.cytoscape.coreplugin.cpath.model.SearchBundleList;
 import org.cytoscape.coreplugin.cpath.model.SearchRequest;
 import org.cytoscape.coreplugin.cpath.task.QueryCPathTask;
 import org.cytoscape.coreplugin.cpath.ui.Console;
-import csplugins.task.ui.TaskMonitorUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,6 +42,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
+
+import cytoscape.task.util.TaskManager;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.Cytoscape;
 
 /**
  * Executes cPath Searches.
@@ -122,9 +125,14 @@ public class ExecuteQuery extends KeyAdapter implements ActionListener {
             //  Task runs in a new thread, so that GUI remains responsive.
             task = new QueryCPathTask(cyMap, searchRequest,
                     searchBundleList, console);
-            new TaskMonitorUI(task, true,
-                    true, true, 0, (Component) parent);
-            task.start();
+            JTaskConfig config = new JTaskConfig();
+            config.setAutoDispose(true);
+            config.displayCancelButton(true);
+            config.displayTimeElapsed(true);
+            config.displayTimeRemaining(true);
+            config.displayStatus(true);
+            config.setOwner(Cytoscape.getDesktop());
+            TaskManager.executeTask(task, config);
         }
     }
 }
