@@ -21,9 +21,6 @@
     <!-- Release directories -->
     <property name="release.dir" value="release"/>
 
-    <!-- Production Directories -->
-    <property name="cbio_cpath.dir" value="/srv/www/htdocs/cytoscape/cpath/beta3"/>
-
 	<!-- Global "magic" property for <javac> -->
 	<property name="build.compiler" value="modern"/>
 
@@ -125,67 +122,4 @@
 		<javadoc destdir="${build.dir}/docs" classpathref="classpath">
 		</javadoc>
 	</target>
-
-	<!--  Target to Create cPath Release Files -->
-    <target name="release"
-        description="Creates Release Files for cPath PlugIn"
-        depends="jar">
-
-        <!-- Start clean -->
-        <delete dir="${release.dir}"/>
-        <mkdir dir="${release.dir}"/>
-
-        <!-- Copy Jar Files -->
-        <mkdir dir="${release.dir}/plugin"/>
-        <copy file="${build.dir}/${jar.name}" todir="${release.dir}/plugin"/>
-
-        <!-- Copy over README file -->
-        <copy file="docs/CPATH_README.txt" tofile="${release.dir}/README.txt"/>
-
-        <!-- Copy over All Licenses -->
-        <mkdir dir="${release.dir}/licenses"/>
-        <copy todir="${release.dir}/licenses">
-            <fileset dir="licenses"/>
-        </copy>
-
-        <!-- Create a Zip File  -->
-        <zip destfile="${release.dir}/cpath-${cpath_version}.zip"
-            basedir="${release.dir}"/>
-
-        <!-- Create a Tar/Gzip File -->
-        <tar tarfile="${release.dir}/cpath-${cpath_version}.tar"
-            basedir="${release.dir}"/>
-        <gzip src="${release.dir}/cpath-${cpath_version}.tar"
-            zipfile="${release.dir}/cpath-${cpath_version}.tar.gz"/>
-
-        <!-- Delete the Tar File -->
-        <delete file="${release.dir}/cpath-${cpath_version}.tar"/>
-    </target>
-
-
-	<!--  Target to Deploy the PlugIns to cBio -->
-    <target name="deploy" description="Deploys all PlugIns to cBio Web Site">
-        <!-- Include README.txt -->
-        <copy file="docs/CPATH_README.txt"
-            toFile="${release.dir}/README.txt"/>
-
-        <!-- Copy cPath PlugIn via SCP -->
-        <apply executable="scp">
-            <srcfile/>
-            <fileset dir="${release.dir}"/>
-            <arg line="cerami@cbio:${cbio_cpath.dir}"/>
-         </apply>
-
-    </target>
-
-    <target name="mapper_jar" 
- 	description="Creates Jar File of Data Service to/from Cytoscape 2 Mapper Classes" 
-	depends="compile">
-	<jar jarfile="${build.dir}/mapper_cyto2.jar">
-		<fileset dir="${build.classes}">
-			<include name="csplugins/dataviewer/mapper/**"/>
-			<include name="csplugins/dataviewer/util/**"/>
-		</fileset>
-	</jar>
-    </target>
 </project>
