@@ -134,7 +134,7 @@ import java.util.Map;
  * <CODE>IllegalArgumentException</CODE> will be thrown.
  * <P>
  * To get a simple list, use the
- * {@link CyAttributes#getAttributeList(String, String)} method.
+ * {@link CyAttributes#getListAttribute(String, String)} method.
  * <h3>Getting / Setting Simple Maps:</h3>
  * A 'simple' map is defined as follows:
  * <UL>
@@ -155,11 +155,11 @@ import java.util.Map;
  * map.put("url", "http://www.reactome.org");
  * map.put("description", "Reactome - a knowledgebase of "
  *     + "biological processes");
- * cyAttributes.setAttributeMap(node.getIdentifier(),
+ * cyAttributes.setMapAttribute(node.getIdentifier(),
  *     "external_db", map);
  * </PRE>
  * To get a simple map, use the
- * {@link CyAttributes#getAttributeMap(String, String)} method.
+ * {@link CyAttributes#getMapAttribute(String, String)} method.
  * <h3>Working with Fixed Attribute Types:</h3>
  * Each attribute is bound to a specific data type, and this data type
  * is set and fixed the first time the attribute is used.  For example,
@@ -212,9 +212,9 @@ import java.util.Map;
  * {@link
  * MultiHashMap#addDataListener(cytoscape.data.attr.MultiHashMapListener)}.
  * <P>Note that calls to
- * {@link CyAttributes#setAttributeList(String, String, java.util.List)}
+ * {@link CyAttributes#setListAttribute(String, String, java.util.List)}
  * and
- * {@link CyAttributes#setAttributeMap(String, String, java.util.Map)}
+ * {@link CyAttributes#setMapAttribute(String, String, java.util.Map)}
  * result in many calls to the MultiHashMap object.  For example, if you have
  * five elements in a List, the implementation code makes five calls to
  * the MultiHashMap, and you will therefore be notified of five separate
@@ -554,6 +554,12 @@ public interface CyAttributes {
     public boolean deleteAttribute(String attributeName);
 
     /**
+     * @deprecated Use {@link CyAttributes#setListAttribute setListAttribute()} instead. Will be removed 11/2007.
+     */
+    public void setAttributeList(String id, String attributeName, List list)
+            throws IllegalArgumentException;
+
+    /**
      * Sets a simple list of attributes.
      * <p/>
      * <P>A simple list is defined as follows:
@@ -582,8 +588,15 @@ public interface CyAttributes {
      *                                  data type is not of type:
      *                                  TYPE_SIMPLE_LIST.
      */
-    public void setAttributeList(String id, String attributeName, List list)
+    public void setListAttribute(String id, String attributeName, List list)
             throws IllegalArgumentException;
+
+
+    /**
+     * @deprecated Use {@link CyAttributes#getListAttribute getListAttribute()} instead. Will be removed 11/2007.
+     */
+    public List getAttributeList(String id, String attributeName)
+            throws ClassCastException;
 
     /**
      * Gets a 'simple' list of attributes for the id/attributeName pair.
@@ -597,17 +610,17 @@ public interface CyAttributes {
      * <P>
      * <B>Note:</B>  The returned List is useful for read operations only.
      * If you add, edit, or delete elements within this list, these changes
-     * will not be stored, unless you explicitly call setAttributeList() again.
+     * will not be stored, unless you explicitly call setListAttribute() again.
      * For example:
      *
      * <PRE>
-     * List list = nodeAttributes.getAttributeList(id, attributeName);
+     * List list = nodeAttributes.getListAttribute(id, attributeName);
      *
      * //  Add new item
      * list.add(new String("Hello, World");
      *
      * //  Save modified list back
-     * nodeAttributes.setAttributeList(id, attributeName, list);
+     * nodeAttributes.setListAttribute(id, attributeName, list);
      * </PRE>
      *
      * @param id            unique identifier.
@@ -616,8 +629,15 @@ public interface CyAttributes {
      * @throws ClassCastException Indicates that the specified attribute
      *                            is not of type:  TYPE_SIMPLE_LIST.
      */
-    public List getAttributeList(String id, String attributeName)
+    public List getListAttribute(String id, String attributeName)
             throws ClassCastException;
+
+
+    /**
+     * @deprecated Use {@link CyAttributes#setMapAttribute setMapAttribute()} instead. Will be removed 11/2007.
+     */
+    public void setAttributeMap(String id, String attributeName,
+            Map map) throws IllegalArgumentException;
 
     /**
      * Sets a 'simple' map of attribute values.
@@ -651,8 +671,13 @@ public interface CyAttributes {
      *                                  TYPE_SIMPLE_MAP.
      *
      */
-    public void setAttributeMap(String id, String attributeName,
+    public void setMapAttribute(String id, String attributeName,
             Map map) throws IllegalArgumentException;
+
+    /**
+     * @deprecated Use {@link CyAttributes#getMapAttribute getMapAttribute()} instead. Will be removed 11/2007.
+     */
+    public Map getAttributeMap(String id, String attributeName);
 
     /**
      * Gets a 'simple' map of attribute values.
@@ -667,17 +692,17 @@ public interface CyAttributes {
      * <P>
      * <B>Note:</B>  The returned Map is useful for read operations only.
      * If you add, edit, or delete elements within this Map, these changes
-     * will not be stored, unless you explicitly call setAttributeMap()
+     * will not be stored, unless you explicitly call setMapAttribute()
      * again.  For example:
      *
      * <PRE>
-     * Map map = nodeAttributes.getAttributeMap(id, attributeName);
+     * Map map = nodeAttributes.getMapAttribute(id, attributeName);
      *
      * //  Add new item
      * map.put(new String("Message"), new String("Hello, World"));
      *
      * //  Save modified map back
-     * nodeAttributes.setAttributeMap(id, attributeName, map);
+     * nodeAttributes.setMapAttribute(id, attributeName, map);
      * </PRE>
      *
      * @param id            unique identifier.
@@ -686,7 +711,8 @@ public interface CyAttributes {
      * @throws ClassCastException Indicates that the specified attribute
      *                            is not of type:  TYPE_HASH_MAP.
      */
-    public Map getAttributeMap(String id, String attributeName);
+
+    public Map getMapAttribute(String id, String attributeName);
 
     /**
      * Gets the MultiHashMap Object, where we store attribute values.

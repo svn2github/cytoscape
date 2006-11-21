@@ -42,8 +42,6 @@ import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.util.MultiHashMapFactory;
-import cytoscape.Cytoscape;
-
 import java.util.*;
 
 public class CyAttributesImpl implements CyAttributes
@@ -322,7 +320,14 @@ public class CyAttributesImpl implements CyAttributes
     return b;
   }
 
+    // deprecated
   public void setAttributeList(String id, String attributeName, List list)
+    {
+	setListAttribute (id, attributeName, list);
+    }
+
+
+  public void setListAttribute(String id, String attributeName, List list)
   {
     if (id == null) throw new IllegalArgumentException("id is null");
     if (attributeName == null)
@@ -374,7 +379,14 @@ public class CyAttributesImpl implements CyAttributes
       mmap.setAttributeValue(id, attributeName, itor.next(), key); }
   }
 
+    // deprecated
   public List getAttributeList(String id, String attributeName)
+    {
+	return getListAttribute (id, attributeName);
+    }
+
+
+  public List getListAttribute(String id, String attributeName)
   {
     if (mmapDef.getAttributeValueType(attributeName) < 0) { return null; }
     final byte[] keyTypes = mmapDef.getAttributeKeyspaceDimensionTypes
@@ -394,7 +406,14 @@ public class CyAttributesImpl implements CyAttributes
     return returnThis;
   }
 
+    // deprecated
   public void setAttributeMap(String id, String attributeName, Map map)
+    {
+	setMapAttribute(id, attributeName, map);
+    }
+
+
+  public void setMapAttribute(String id, String attributeName, Map map)
   {
     if (id == null) throw new IllegalArgumentException("id is null");
     if (attributeName == null)
@@ -451,7 +470,14 @@ public class CyAttributesImpl implements CyAttributes
       mmap.setAttributeValue(id, attributeName, entry.getValue(), key); }
    }
 
+    // deprecated
   public Map getAttributeMap(String id, String attributeName)
+    {
+	return getMapAttribute(id, attributeName);
+    }
+
+
+  public Map getMapAttribute(String id, String attributeName)
   {
     if (mmapDef.getAttributeValueType(attributeName) < 0) { return null; }
     final byte[] keyTypes = mmapDef.getAttributeKeyspaceDimensionTypes
