@@ -150,7 +150,7 @@ class MapOntologyTask implements Task {
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("Building mapper...");
 
-		god.show();
+		god.setVisible(true);
 	}
 
 	/**

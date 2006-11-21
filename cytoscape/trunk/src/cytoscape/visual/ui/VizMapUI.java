@@ -457,7 +457,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 					styleDefUI.visualStyleChanged();
 					styleDefNeedsUpdate = false;
 				}
-				styleDefUI.show();
+				styleDefUI.setVisible(true);
 			}
 		}
 

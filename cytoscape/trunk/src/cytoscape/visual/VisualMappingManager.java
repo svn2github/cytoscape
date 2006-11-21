@@ -127,8 +127,7 @@ public class VisualMappingManager extends SubjectBase {
 			catalog = CalculatorCatalogFactory.loadCalculatorCatalog();
 
 		} else if (vizmapLocation != null) {
-			catalog = CalculatorCatalogFactory
-					.loadCalculatorCatalog(vizmapLocation);
+			catalog = CalculatorCatalogFactory.loadCalculatorCatalog();
 		}
 	}
 

@@ -1,6 +1,6 @@
 
 /*
-  File: PropertiesTester.java 
+  File: VizMapPropertiesTest.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -46,6 +46,7 @@ package cytoscape.visual;
 
 import java.util.*;
 import java.io.*;
+import junit.framework.*;
 
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.*;
@@ -55,17 +56,13 @@ import cytoscape.visual.mappings.*;
  * properties file. Works by writing a text description of the read calculators
  * to stdout.
  */
-public class PropertiesTester {
+public class VizMapPropertiesTest extends TestCase {
     
-    public static void main(String[] args) {
-        new PropertiesTester();
-    }
-    
-    public PropertiesTester() {
+    public void testProperties() {
         CalculatorCatalog catalog = new CalculatorCatalog();
         Properties props = new Properties();
         try {
-            String propsFile = "vizmap.props";
+            String propsFile = "resources/props/vizmap.props";
             InputStream is = new FileInputStream(propsFile);
             props.load(is);
             is.close();
@@ -78,94 +75,91 @@ public class PropertiesTester {
         
         Collection nodeColorCalcs = catalog.getNodeColorCalculators();
         System.out.println("nodeColorCalcs.size() = " + nodeColorCalcs.size());
-        checkCalculator( catalog.getNodeColorCalculator("testDiscrete") );
-        checkCalculator( catalog.getNodeColorCalculator("testContinuous") );
+        checkCalculator( catalog.getNodeColorCalculator("RedGreen") );
         System.out.println();
         
         Collection nodeLineTypeCalcs = catalog.getNodeLineTypeCalculators();
         System.out.println("nodeLineTypeCalcs.size() = " + nodeLineTypeCalcs.size());
-        checkCalculator( catalog.getNodeLineTypeCalculator("testDiscrete") );
-        checkCalculator( catalog.getNodeLineTypeCalculator("testContinuous") );
+        checkCalculator( catalog.getNodeLineTypeCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getNodeLineTypeCalculator("BasicContinuous") );
         System.out.println();
         
         Collection nodeShapeCalcs = catalog.getNodeShapeCalculators();
         System.out.println("nodeShapeCalcs.size() = " + nodeShapeCalcs.size());
-        checkCalculator( catalog.getNodeShapeCalculator("testDiscrete") );
-        checkCalculator( catalog.getNodeShapeCalculator("testContinuous") );
+        checkCalculator( catalog.getNodeShapeCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getNodeShapeCalculator("BasicContinuous") );
         System.out.println();
         
         Collection nodeSizeCalcs = catalog.getNodeSizeCalculators();
         System.out.println("nodeSizeCalcs.size() = " + nodeSizeCalcs.size());
-        checkCalculator( catalog.getNodeSizeCalculator("testDiscrete") );
-        checkCalculator( catalog.getNodeSizeCalculator("testContinuous") );
+        checkCalculator( catalog.getNodeSizeCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getNodeSizeCalculator("BasicContinuous") );
         System.out.println();
         
         Collection nodeLabelCalcs = catalog.getNodeLabelCalculators();
         System.out.println("nodeLabelCalcs.size() = " + nodeLabelCalcs.size());
-        checkCalculator( catalog.getNodeLabelCalculator("testDiscrete") );
-        checkCalculator( catalog.getNodeLabelCalculator("testContinuous") );
-        checkCalculator( catalog.getNodeLabelCalculator("testPassThrough") );
+        checkCalculator( catalog.getNodeLabelCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getNodeLabelCalculator("BasicContinuous") );
         System.out.println();
         
         Collection nodeToolTipCalcs = catalog.getNodeToolTipCalculators();
         System.out.println("nodeToolTipCalcs.size() = " + nodeToolTipCalcs.size());
-        checkCalculator( catalog.getNodeToolTipCalculator("testDiscrete") );
-        checkCalculator( catalog.getNodeToolTipCalculator("testContinuous") );
+        checkCalculator( catalog.getNodeToolTipCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getNodeToolTipCalculator("BasicContinuous") );
         System.out.println();
         
         Collection nodeFontFaceCalcs = catalog.getNodeFontFaceCalculators();
         System.out.println("nodeFontFaceCalcs.size() = " + nodeFontFaceCalcs.size());
-        checkCalculator( catalog.getNodeFontFaceCalculator("testDiscrete") );
-        checkCalculator( catalog.getNodeFontFaceCalculator("testContinuous") );
+        checkCalculator( catalog.getNodeFontFaceCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getNodeFontFaceCalculator("BasicContinuous") );
         System.out.println();
         
         Collection nodeFontSizeCalcs = catalog.getNodeFontSizeCalculators();
         System.out.println("nodeFontSizeCalcs.size() = " + nodeFontSizeCalcs.size());
-        checkCalculator( catalog.getNodeFontSizeCalculator("testDiscrete") );
-        checkCalculator( catalog.getNodeFontSizeCalculator("testContinuous") );
+        checkCalculator( catalog.getNodeFontSizeCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getNodeFontSizeCalculator("BasicContinuous") );
         System.out.println();
         
         Collection edgeColorCalcs = catalog.getEdgeColorCalculators();
         System.out.println("edgeColorCalcs.size() = " + edgeColorCalcs.size());
-        checkCalculator( catalog.getEdgeColorCalculator("testDiscrete") );
-        checkCalculator( catalog.getEdgeColorCalculator("testContinuous") );
+        checkCalculator( catalog.getEdgeColorCalculator("BasicDiscrete") );
         System.out.println();
         
         Collection edgeLineTypeCalcs = catalog.getEdgeLineTypeCalculators();
         System.out.println("edgeLineTypeCalcs.size() = " + edgeLineTypeCalcs.size());
-        checkCalculator( catalog.getEdgeLineTypeCalculator("testDiscrete") );
-        checkCalculator( catalog.getEdgeLineTypeCalculator("testContinuous") );
+        checkCalculator( catalog.getEdgeLineTypeCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getEdgeLineTypeCalculator("BasicContinuous") );
         System.out.println();        
         
         Collection edgeArrowCalcs = catalog.getEdgeArrowCalculators();
         System.out.println("edgeArrowCalcs.size() = " + edgeArrowCalcs.size());
-        checkCalculator( catalog.getEdgeArrowCalculator("testDiscrete") );
-        checkCalculator( catalog.getEdgeArrowCalculator("testContinuous") );
+        checkCalculator( catalog.getEdgeArrowCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getEdgeArrowCalculator("BasicContinuous") );
         System.out.println();
         
         Collection edgeLabelCalcs = catalog.getEdgeLabelCalculators();
         System.out.println("edgeLabelCalcs.size() = " + edgeLabelCalcs.size());
-        checkCalculator( catalog.getEdgeLabelCalculator("testDiscrete") );
-        checkCalculator( catalog.getEdgeLabelCalculator("testContinuous") );
+        checkCalculator( catalog.getEdgeLabelCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getEdgeLabelCalculator("BasicContinuous") );
         checkCalculator( catalog.getEdgeLabelCalculator("testPassThrough") );
         System.out.println();
         
         Collection edgeToolTipCalcs = catalog.getEdgeToolTipCalculators();
         System.out.println("edgeToolTipCalcs.size() = " + edgeToolTipCalcs.size());
-        checkCalculator( catalog.getEdgeToolTipCalculator("testDiscrete") );
-        checkCalculator( catalog.getEdgeToolTipCalculator("testContinuous") );
+        checkCalculator( catalog.getEdgeToolTipCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getEdgeToolTipCalculator("BasicContinuous") );
         System.out.println();
         
         Collection edgeFontFaceCalcs = catalog.getEdgeFontFaceCalculators();
         System.out.println("edgeFontFaceCalcs.size() = " + edgeFontFaceCalcs.size());
-        checkCalculator( catalog.getEdgeFontFaceCalculator("testDiscrete") );
-        checkCalculator( catalog.getEdgeFontFaceCalculator("testContinuous") );
+        checkCalculator( catalog.getEdgeFontFaceCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getEdgeFontFaceCalculator("BasicContinuous") );
         System.out.println();
         
         Collection edgeFontSizeCalcs = catalog.getEdgeFontSizeCalculators();
         System.out.println("edgeFontSizeCalcs.size() = " + edgeFontSizeCalcs.size());
-        checkCalculator( catalog.getEdgeFontSizeCalculator("testDiscrete") );
-        checkCalculator( catalog.getEdgeFontSizeCalculator("testContinuous") );
+        checkCalculator( catalog.getEdgeFontSizeCalculator("BasicDiscrete") );
+        checkCalculator( catalog.getEdgeFontSizeCalculator("BasicContinuous") );
 	System.out.println();
 
 	Iterator vizStyles = catalog.getVisualStyles().iterator();
@@ -174,29 +168,11 @@ public class PropertiesTester {
 	    System.out.println(style.getName());
 	    System.out.println();
 	}
-	/*
-	Broken by new VisualStyle system
-        
-	NodeAppearanceCalculator nac1 = catalog.getNodeAppearanceCalculator("testDiscrete");
-        System.out.println(nac1.getDescription());
-        System.out.println();
-        NodeAppearanceCalculator nac2 = catalog.getNodeAppearanceCalculator("testContinuous");
-        System.out.println(nac2.getDescription());
-        System.out.println();
-	
-        EdgeAppearanceCalculator eac1 = catalog.getEdgeAppearanceCalculator("testDiscrete");
-        System.out.println(eac1.getDescription());
-        System.out.println();
-        EdgeAppearanceCalculator eac2 = catalog.getEdgeAppearanceCalculator("testContinuous");
-        System.out.println(eac2.getDescription());
-        System.out.println();
-	*/
     }
     
-    public void checkCalculator(Calculator c) {
+    private void checkCalculator(Calculator c) {
         if (c == null) {
-            System.out.println("Oops, got a null calculator");
-            return;
+		fail();
         }
         AbstractCalculator gc = (AbstractCalculator)c;
         ObjectMapping m = gc.getMapping(0);

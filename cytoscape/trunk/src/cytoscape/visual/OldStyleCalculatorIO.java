@@ -55,6 +55,7 @@ import cytoscape.util.Misc;
 import cytoscape.visual.parsers.ArrowParser;
 import cytoscape.visual.parsers.LineTypeParser;
 import cytoscape.visual.calculators.*;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 /**
  * This class provides methods to read property keys in the old vizmap format,
@@ -479,29 +480,31 @@ public class OldStyleCalculatorIO {
         LineTypeParser ltParser = new LineTypeParser();
         
         //set the node label calculator
-        nac.setNodeLabelCalculator( defNAC.getNodeLabelCalculator() );
-        
+        nac.setCalculator( defNAC.getCalculator(VizMapUI.NODE_LABEL) );
+       
+        NodeAppearance defAppr = nac.getDefaultAppearance();
+        NodeAppearance defNACAppr = defNAC.getDefaultAppearance();
         String defaultNodeFillString = props.getProperty("node.fillColor.default");
         if (defaultNodeFillString != null) {
-            nac.setDefaultNodeFillColor( Misc.parseRGBText(defaultNodeFillString) );
-            defNAC.setDefaultNodeFillColor( Misc.parseRGBText(defaultNodeFillString) );
+            defAppr.setFillColor( Misc.parseRGBText(defaultNodeFillString) );
+            defNACAppr.setFillColor( Misc.parseRGBText(defaultNodeFillString) );
         }
         String defaultBorderColorString = props.getProperty("node.borderColor.default");
         if (defaultBorderColorString != null) {
-            nac.setDefaultNodeBorderColor(Misc.parseRGBText(defaultBorderColorString));
-            defNAC.setDefaultNodeBorderColor(Misc.parseRGBText(defaultBorderColorString));
+            defAppr.setBorderColor(Misc.parseRGBText(defaultBorderColorString));
+            defNACAppr.setBorderColor(Misc.parseRGBText(defaultBorderColorString));
         }
         String defaultLineTypeString = props.getProperty("node.borderLinetype.default");
         if (defaultLineTypeString != null) {
-            nac.setDefaultNodeLineType( ltParser.parseLineType(defaultLineTypeString) );
-            defNAC.setDefaultNodeLineType( ltParser.parseLineType(defaultLineTypeString) );
+            defAppr.setBorderLineType( ltParser.parseLineType(defaultLineTypeString) );
+            defNACAppr.setBorderLineType( ltParser.parseLineType(defaultLineTypeString) );
         }
         String defaultWidthString = props.getProperty("node.width.default");
         if (defaultWidthString != null) {
             try {
                 double d = Double.parseDouble(defaultWidthString);
-                nac.setDefaultNodeWidth(d);
-                defNAC.setDefaultNodeWidth(d);
+                defAppr.setWidth(d);
+                defNACAppr.setWidth(d);
             } catch (NumberFormatException e) {
             }
         }
@@ -509,48 +512,48 @@ public class OldStyleCalculatorIO {
         if (defaultHeightString != null) {
             try {
                 double d = Double.parseDouble(defaultHeightString);
-                nac.setDefaultNodeHeight(d);
-                defNAC.setDefaultNodeHeight(d);
+                defAppr.setHeight(d);
+                defNACAppr.setHeight(d);
             } catch (NumberFormatException e) {
             }
         }
         String defaultShapeString = props.getProperty("node.shape.default");
         if (defaultShapeString != null) {
-            nac.setDefaultNodeShape( ShapeNodeRealizer.parseNodeShapeText(defaultShapeString) );
-            defNAC.setDefaultNodeShape( ShapeNodeRealizer.parseNodeShapeText(defaultShapeString) );
+            defAppr.setShape( ShapeNodeRealizer.parseNodeShapeText(defaultShapeString) );
+            defNACAppr.setShape( ShapeNodeRealizer.parseNodeShapeText(defaultShapeString) );
         }
         
         //note that null values from the catalog are acceptable for the new nac,
         //but we don't want to trample existing values in the default nac
-        NodeColorCalculator nfc = catalog.getNodeColorCalculator(calcName);
+        Calculator nfc = catalog.getCalculator(VizMapUI.NODE_COLOR,calcName);
         if (nfc != null) {
-            nac.setNodeFillColorCalculator(nfc);
-            defNAC.setNodeFillColorCalculator(nfc);
+            nac.setCalculator(nfc);
+            defNAC.setCalculator(nfc);
         }
-        NodeColorCalculator nbc = catalog.getNodeColorCalculator(calcName + "2");
+        Calculator nbc = catalog.getCalculator(VizMapUI.NODE_BORDER_COLOR,calcName + "2");
         if (nbc != null) {
-            nac.setNodeBorderColorCalculator(nbc);
-            defNAC.setNodeBorderColorCalculator(nbc);
+            nac.setCalculator(nbc);
+            defNAC.setCalculator(nbc);
         }
-        NodeLineTypeCalculator nlt = catalog.getNodeLineTypeCalculator(calcName);
+        Calculator nlt = catalog.getCalculator(VizMapUI.NODE_LINETYPE,calcName);
         if (nlt != null) {
-            nac.setNodeLineTypeCalculator(nlt);
-            defNAC.setNodeLineTypeCalculator(nlt);
+            nac.setCalculator(nlt);
+            defNAC.setCalculator(nlt);
         }
-        NodeSizeCalculator nw = catalog.getNodeSizeCalculator(calcName);
+        Calculator nw = catalog.getCalculator(VizMapUI.NODE_WIDTH,calcName);
         if (nw != null) {
-            nac.setNodeWidthCalculator(nw);
-            defNAC.setNodeWidthCalculator(nw);
+            nac.setCalculator(nw);
+            defNAC.setCalculator(nw);
         }
-        NodeSizeCalculator nh = catalog.getNodeSizeCalculator(calcName + "2");
+        Calculator nh = catalog.getCalculator(VizMapUI.NODE_HEIGHT, calcName + "2");
         if (nh != null) {
-            nac.setNodeHeightCalculator(nh);
-            defNAC.setNodeHeightCalculator(nh);
+            nac.setCalculator(nh);
+            defNAC.setCalculator(nh);
         }
-        NodeShapeCalculator nsh = catalog.getNodeShapeCalculator(calcName);
+        Calculator nsh = catalog.getCalculator(VizMapUI.NODE_SHAPE,calcName);
         if (nsh != null) {
-            nac.setNodeShapeCalculator(nsh);
-            defNAC.setNodeShapeCalculator(nsh);
+            nac.setCalculator(nsh);
+            defNAC.setCalculator(nsh);
         }
     }
     
@@ -570,47 +573,50 @@ public class OldStyleCalculatorIO {
         EdgeAppearanceCalculator defEAC = defVS.getEdgeAppearanceCalculator();
         LineTypeParser ltParser = new LineTypeParser();
         ArrowParser arrowParser = new ArrowParser();
+
+	EdgeAppearance defAppr = eac.getDefaultAppearance();
+	EdgeAppearance defEACAppr = defEAC.getDefaultAppearance();
         
         String defaultColorString = props.getProperty("edge.color.default");
         if (defaultColorString != null) {
-            eac.setDefaultEdgeColor( Misc.parseRGBText(defaultColorString) );
-            defEAC.setDefaultEdgeColor( Misc.parseRGBText(defaultColorString) );
+            defAppr.setColor( Misc.parseRGBText(defaultColorString) );
+            defEACAppr.setColor( Misc.parseRGBText(defaultColorString) );
         }
         String defaultLineTypeString = props.getProperty("edge.linetype.default");
         if (defaultLineTypeString != null) {
-            eac.setDefaultEdgeLineType(ltParser.parseLineType(defaultLineTypeString));
-            defEAC.setDefaultEdgeLineType(ltParser.parseLineType(defaultLineTypeString));
+            defAppr.setLineType(ltParser.parseLineType(defaultLineTypeString));
+            defEACAppr.setLineType(ltParser.parseLineType(defaultLineTypeString));
         }
         String defaultSourceString = props.getProperty("edge.sourceDecoration.default");
         if (defaultSourceString != null) {
-            eac.setDefaultEdgeSourceArrow( arrowParser.parseArrow(defaultSourceString) );
-            defEAC.setDefaultEdgeSourceArrow( arrowParser.parseArrow(defaultSourceString) );
+            defAppr.setSourceArrow( arrowParser.parseArrow(defaultSourceString) );
+            defEACAppr.setSourceArrow( arrowParser.parseArrow(defaultSourceString) );
         }
         String defaultTargetString = props.getProperty("edge.targetDecoration.default");
         if (defaultTargetString != null) {
-            eac.setDefaultEdgeTargetArrow( arrowParser.parseArrow(defaultTargetString) );
-            defEAC.setDefaultEdgeTargetArrow( arrowParser.parseArrow(defaultTargetString) );
+            defAppr.setTargetArrow( arrowParser.parseArrow(defaultTargetString) );
+            defEACAppr.setTargetArrow( arrowParser.parseArrow(defaultTargetString) );
         }
         
-        EdgeColorCalculator ecc = catalog.getEdgeColorCalculator(calcName);
+        Calculator ecc = catalog.getCalculator(VizMapUI.EDGE_COLOR, calcName);
         if (ecc != null) {
-            eac.setEdgeColorCalculator(ecc);
-            defEAC.setEdgeColorCalculator(ecc);
+            eac.setCalculator(ecc);
+            defEAC.setCalculator(ecc);
         }
-        EdgeLineTypeCalculator elt = catalog.getEdgeLineTypeCalculator(calcName);
+        Calculator elt = catalog.getCalculator(VizMapUI.EDGE_LINETYPE,calcName);
         if (elt != null) {
-            eac.setEdgeLineTypeCalculator(elt);
-            defEAC.setEdgeLineTypeCalculator(elt);
+            eac.setCalculator(elt);
+            defEAC.setCalculator(elt);
         }
-        EdgeArrowCalculator esa = catalog.getEdgeArrowCalculator(calcName);
+        Calculator esa = catalog.getCalculator(VizMapUI.EDGE_SRCARROW,calcName);
         if (esa != null) {
-            eac.setEdgeSourceArrowCalculator(esa);
-            defEAC.setEdgeSourceArrowCalculator(esa);
+            eac.setCalculator(esa);
+            defEAC.setCalculator(esa);
         }
-        EdgeArrowCalculator eta = catalog.getEdgeArrowCalculator(calcName + "2");
+        Calculator eta = catalog.getCalculator(VizMapUI.EDGE_TGTARROW,calcName + "2");
         if (eta != null) {
-            eac.setEdgeTargetArrowCalculator(eta);
-            defEAC.setEdgeTargetArrowCalculator(eta);
+            eac.setCalculator(eta);
+            defEAC.setCalculator(eta);
         }
     }
     

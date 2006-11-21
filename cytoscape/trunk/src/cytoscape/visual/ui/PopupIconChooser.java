@@ -178,9 +178,9 @@ public class PopupIconChooser {
 	    alreadyConstructed = true;
 	}
 
-	mainDialog.pack ();
-	mainDialog.setLocationRelativeTo (parent);
-  	mainDialog.show(); // blocks until user makes selection
+	mainDialog.pack();
+	mainDialog.setLocationRelativeTo(parent);
+  	mainDialog.setVisible(true); // blocks until user makes selection
 
 	return currentIcon;
     }

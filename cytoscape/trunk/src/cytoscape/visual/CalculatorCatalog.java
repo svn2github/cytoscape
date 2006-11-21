@@ -474,9 +474,10 @@ public class CalculatorCatalog {
 
 	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
         public Collection getNodeColorCalculators() { 
-		Collection c = getCalculators(VizMapUI.NODE_COLOR); 
-		c.addAll(getCalculators(VizMapUI.NODE_BORDER_COLOR));
-		return c;
+		ArrayList<Calculator> a = new ArrayList<Calculator>();
+		a.addAll( getCalculators(VizMapUI.NODE_COLOR) );
+		a.addAll( getCalculators(VizMapUI.NODE_BORDER_COLOR) );
+		return a;
 	}
 	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
         public void addNodeColorCalculator(NodeColorCalculator c) { addCalculator(c); }
@@ -544,10 +545,11 @@ public class CalculatorCatalog {
 
 	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
         public Collection getNodeSizeCalculators() { 
-		Collection c = getCalculators(VizMapUI.NODE_SIZE); 
-		c.addAll(getCalculators(VizMapUI.NODE_WIDTH));
-		c.addAll(getCalculators(VizMapUI.NODE_HEIGHT));
-		return c;
+		ArrayList<Calculator> a = new ArrayList<Calculator>();
+		a.addAll(getCalculators(VizMapUI.NODE_SIZE)); 
+		a.addAll(getCalculators(VizMapUI.NODE_WIDTH));
+		a.addAll(getCalculators(VizMapUI.NODE_HEIGHT));
+		return a;
 	}
 	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
         public void addNodeSizeCalculator(NodeSizeCalculator c) { addCalculator(c); }
@@ -716,9 +718,10 @@ public class CalculatorCatalog {
 
 	/** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
         public Collection getEdgeArrowCalculators() { 
-		Collection c = getCalculators(VizMapUI.EDGE_SRCARROW); 
-		c.addAll(getCalculators(VizMapUI.EDGE_TGTARROW));
-		return c;
+		ArrayList<Calculator> a = new ArrayList<Calculator>();
+		a.addAll(getCalculators(VizMapUI.EDGE_SRCARROW)); 
+		a.addAll(getCalculators(VizMapUI.EDGE_TGTARROW));
+		return a;
 	}
 	/** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
         public void addEdgeArrowCalculator(EdgeArrowCalculator c) { addCalculator(c); }

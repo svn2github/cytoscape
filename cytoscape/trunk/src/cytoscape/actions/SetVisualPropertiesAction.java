@@ -71,7 +71,7 @@ public class SetVisualPropertiesAction extends CytoscapeAction   {
   public void actionPerformed (ActionEvent e) {
     //TODO: ack! this should be using the global VizMapper
     Cytoscape.getDesktop().getVizMapUI().refreshUI();
-    Cytoscape.getDesktop().getVizMapUI().getStyleSelector().show();
+    Cytoscape.getDesktop().getVizMapUI().getStyleSelector().setVisible(true);
   }
 }
 

@@ -293,14 +293,14 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	// using default props
 	nac.setNodeSizeLocked(false);
 	na = nac.calculateNodeAppearance(a,cyNet);
-	na.applyAppearance(view,true);
+	na.applyAppearance(view);
 
 	assertEquals("height",30.0,view.getHeight());
 	assertEquals("width",70.0,view.getWidth());
 
 	nac.setNodeSizeLocked(true);
 	na = nac.calculateNodeAppearance(a,cyNet);
-	na.applyAppearance(view,true);
+	na.applyAppearance(view);
 
 	assertEquals("height",35.0,view.getHeight());
 	assertEquals("width",35.0,view.getWidth());
@@ -309,13 +309,13 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 
 	// still locked
 	na = nac.calculateNodeAppearance(a,cyNet);
-	na.applyAppearance(view,true);
+	na.applyAppearance(view);
 	assertEquals("height",35.0,view.getHeight());
 	assertEquals("width",35.0,view.getWidth());
 
 	nac.setNodeSizeLocked(false);
 	na = nac.calculateNodeAppearance(a,cyNet);
-	na.applyAppearance(view,true);
+	na.applyAppearance(view);
 	assertEquals("height",10.0,view.getHeight());
 	assertEquals("width",70.0,view.getWidth());
 
