@@ -37,7 +37,6 @@ import org.cytoscape.coreplugin.cpath.ui.ConsolePanel;
 import org.cytoscape.coreplugin.cpath.ui.ErrorDisplay;
 import cytoscape.CyNetwork;
 import cytoscape.data.SelectFilter;
-import org.mskcc.dataservices.core.EmptySetException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -282,15 +281,15 @@ public class CPathSearchPanel extends JPanel implements Observer {
         SearchResponse searchResponse = bundle.getResponse();
         Throwable exception = searchResponse.getException();
         if (exception != null) {
-            if (exception instanceof EmptySetException) {
-                String msg = "No Matching Results Found.  Please Try Again.";
-                JOptionPane.showMessageDialog(this, msg, "cPath PlugIn",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else if (exception instanceof InterruptedException) {
-                //  Do Nothing
-            } else {
-                showError(exception);
-            }
+//            if (exception instanceof EmptySetException) {
+//                String msg = "No Matching Results Found.  Please Try Again.";
+//                JOptionPane.showMessageDialog(this, msg, "cPath PlugIn",
+//                        JOptionPane.INFORMATION_MESSAGE);
+//            } else if (exception instanceof InterruptedException) {
+//                //  Do Nothing
+//            } else {
+//                showError(exception);
+//            }
         } else {
             CyNetwork cyNetwork = searchResponse.getCyNetwork();
             SelectFilter selectFilter = cyNetwork.getSelectFilter();

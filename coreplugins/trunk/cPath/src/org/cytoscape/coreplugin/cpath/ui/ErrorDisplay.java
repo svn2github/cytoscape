@@ -29,9 +29,6 @@
  **/
 package org.cytoscape.coreplugin.cpath.ui;
 
-import org.mskcc.dataservices.core.DataServiceException;
-import org.mskcc.dataservices.mapper.MapperException;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -94,21 +91,21 @@ public class ErrorDisplay {
     private String showError(Throwable e) {
         e.printStackTrace();
         String msg = null;
-        if (e instanceof DataServiceException) {
-            DataServiceException dse = (DataServiceException) e;
-            msg = new String("An Error Has Occurred:  "
-                    + dse.getHumanReadableErrorMessage());
-        } else if (e instanceof MapperException) {
-            MapperException me = (MapperException) e;
-            msg = new String("An Error Has Occurred:  "
-                    + me.getHumanReadableErrorMessage());
-        } else {
-            Throwable t = e.getCause();
-            if (t == null) {
-                t = e;
-            }
-            msg = new String("An Error Has Occurred:  " + e.toString());
-        }
+//        if (e instanceof DataServiceException) {
+//            DataServiceException dse = (DataServiceException) e;
+//            msg = new String("An Error Has Occurred:  "
+//                    + dse.getHumanReadableErrorMessage());
+//        } else if (e instanceof MapperException) {
+//            MapperException me = (MapperException) e;
+//            msg = new String("An Error Has Occurred:  "
+//                    + me.getHumanReadableErrorMessage());
+//        } else {
+//            Throwable t = e.getCause();
+//            if (t == null) {
+//                t = e;
+//            }
+//            msg = new String("An Error Has Occurred:  " + e.toString());
+//        }
         msg = wrapText(msg);
         JOptionPane.showMessageDialog(parent, msg,
                 "Error", JOptionPane.ERROR_MESSAGE);

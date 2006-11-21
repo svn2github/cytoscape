@@ -30,7 +30,6 @@
 package org.cytoscape.coreplugin.cpath.util;
 
 import cytoscape.CytoscapeInit;
-import org.mskcc.dataservices.util.PropertyManager;
 
 import java.util.Properties;
 
@@ -51,8 +50,8 @@ public class SynchronizeProperties {
     public static void synchProperties() {
         if (!synchComplete) {
             Properties properties = CytoscapeInit.getProperties();
-            PropertyManager propertyManager = PropertyManager.getInstance();
-            propertyManager.putAll(properties);
+//            PropertyManager propertyManager = PropertyManager.getInstance();
+//            propertyManager.putAll(properties);
             synchComplete = true;
         }
     }

@@ -34,8 +34,6 @@ import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
-import org.mskcc.dataservices.bio.Interaction;
-import org.mskcc.dataservices.bio.Interactor;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -87,8 +85,8 @@ public class DisplayDetails implements SelectEventListener {
                 Iterator iterator = set.iterator();
                 CyNode node = (CyNode) iterator.next();
                 String id = node.getIdentifier();
-                Interactor interactor = (Interactor) cyMap.get(id);
-                userSelection.setSelectedInteractor(id, interactor);
+//                Interactor interactor = (Interactor) cyMap.get(id);
+//                userSelection.setSelectedInteractor(id, interactor);
             }
         } else if (targetType == SelectEvent.EDGE_SET) {
             HashSet set = (HashSet) event.getTarget();
@@ -97,8 +95,8 @@ public class DisplayDetails implements SelectEventListener {
                 Iterator iterator = set.iterator();
                 CyEdge edge = (CyEdge) iterator.next();
                 String id = edge.getIdentifier();
-                Interaction interaction = (Interaction) cyMap.get(id);
-                userSelection.setSelectedInteraction(interaction);
+//                Interaction interaction = (Interaction) cyMap.get(id);
+//                userSelection.setSelectedInteraction(interaction);
             }
         }
     }

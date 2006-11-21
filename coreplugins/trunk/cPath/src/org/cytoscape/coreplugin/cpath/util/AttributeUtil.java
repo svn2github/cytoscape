@@ -29,8 +29,6 @@
  **/
 package org.cytoscape.coreplugin.cpath.util;
 
-import org.mskcc.dataservices.bio.Interaction;
-
 /**
  * Misc Utility Class for Extracting / Manipulating Attributes and Attribute
  * Values.
@@ -46,13 +44,13 @@ public class AttributeUtil {
      * @param key         Key.
      * @return Attribute Value.
      */
-    public static String getAttribute(Interaction interaction, String key) {
-        String value = (String) interaction.getAttribute(key);
-        if (value == null) {
-            value = "";
-        }
-        return value;
-    }
+//    public static String getAttribute(Interaction interaction, String key) {
+//        String value = (String) interaction.getAttribute(key);
+//        if (value == null) {
+//            value = "";
+//        }
+//        return value;
+//    }
 
     /**
      * Appends a String to the specified Object.

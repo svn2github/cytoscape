@@ -29,8 +29,6 @@
  **/
 package org.cytoscape.coreplugin.cpath.ui;
 
-import org.mskcc.dataservices.util.PropertyManager;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -111,10 +109,10 @@ public class AboutDialog extends MouseAdapter implements ActionListener {
         html.append("<BR>Release Date:  " + RELEASE_DATE);
 
 
-        PropertyManager pManager = PropertyManager.getInstance();
-        String url = pManager.getProperty(PropertyManager.CPATH_READ_LOCATION);
-        html.append("<P>Your PlugIn is currently configured to retrieve "
-                + "data from:  " + url);
+//        PropertyManager pManager = PropertyManager.getInstance();
+//        String url = pManager.getProperty(PropertyManager.CPATH_READ_LOCATION);
+//        html.append("<P>Your PlugIn is currently configured to retrieve "
+//                + "data from:  " + url);
 
         html.append("<P>The Cytoscape cPath Plugin is maintained by ");
         html.append("the Sander group at the Computational Biology Center ");

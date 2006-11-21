@@ -35,8 +35,6 @@ import org.cytoscape.coreplugin.cpath.action.UpdateSearchRequest;
 import org.cytoscape.coreplugin.cpath.model.*;
 import cytoscape.CyNetwork;
 import cytoscape.data.SelectFilter;
-import org.mskcc.dataservices.core.EmptySetException;
-import org.mskcc.dataservices.util.PropertyManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -118,10 +116,10 @@ public class CPathDesktop extends JFrame implements Observer {
 
         //  Create Center Panel (Console plus Details)
         consolePanel = new ConsolePanel();
-        PropertyManager pManager = PropertyManager.getInstance();
-        String url = pManager.getProperty(PropertyManager.CPATH_READ_LOCATION);
-        consolePanel.logMessage("PlugIn is currently set to retrieve data "
-                + "from:  " + url);
+//        PropertyManager pManager = PropertyManager.getInstance();
+//        String url = pManager.getProperty(PropertyManager.CPATH_READ_LOCATION);
+//        consolePanel.logMessage("PlugIn is currently set to retrieve data "
+//                + "from:  " + url);
         DetailsPanel detailsPanel = new DetailsPanel(userSelection, this);
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 consolePanel, detailsPanel);
@@ -267,15 +265,15 @@ public class CPathDesktop extends JFrame implements Observer {
         SearchResponse searchResponse = bundle.getResponse();
         Throwable exception = searchResponse.getException();
         if (exception != null) {
-            if (exception instanceof EmptySetException) {
-                String msg = "No Matching Results Found.  Please Try Again.";
-                JOptionPane.showMessageDialog(this, msg, "cPath PlugIn",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else if (exception instanceof InterruptedException) {
-                //  Do Nothing
-            } else {
-                showError(exception);
-            }
+//            if (exception instanceof EmptySetException) {
+//                String msg = "No Matching Results Found.  Please Try Again.";
+//                JOptionPane.showMessageDialog(this, msg, "cPath PlugIn",
+//                        JOptionPane.INFORMATION_MESSAGE);
+//            } else if (exception instanceof InterruptedException) {
+//                //  Do Nothing
+//            } else {
+//                showError(exception);
+//            }
         } else {
             CyNetwork cyNetwork = searchResponse.getCyNetwork();
             SelectFilter selectFilter = cyNetwork.getSelectFilter();
