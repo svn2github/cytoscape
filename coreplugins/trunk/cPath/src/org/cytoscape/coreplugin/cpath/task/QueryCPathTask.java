@@ -38,8 +38,8 @@ import cytoscape.task.TaskMonitor;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Date;
 
 /**
  * Task to Query cPath.
@@ -154,67 +154,60 @@ public class QueryCPathTask implements Task {
             throws InterruptedException, CPathException, EmptySetException {
         searchResponse = new SearchResponse();
 
+        //  First, determine how many interactions we have in total
         ReadPsiFromCPath reader = new ReadPsiFromCPath();
         int totalNumInteractions = reader.getInteractionsCount
                 (searchRequest.getQuery(), taxonomyId);
         logToConsole("Total Number of Matching Interactions:  "
                 + totalNumInteractions);
 
-//        //  Retrieve Rest of Data
-        ArrayList interactions = new ArrayList();
-
+        //  Retrieve the interactions
         int index = 0;
         int endIndex = Math.min(maxHits, totalNumInteractions);
-
         int increment = DEFAULT_INCREMENT;
-
         if (maxHits > 100) {
             increment = LARGER_INCREMENT;
         }
         while (index < endIndex && !isInterrupted) {
-            getInteractions(taxonomyId, interactions, index, increment,
-                    endIndex);
+            getInteractions(taxonomyId, index, increment, endIndex);
             index += increment;
         }
 //
 ////        searchResponse.setInteractions(interactions);
-//        if (isInterrupted) {
-//            throw new InterruptedException();
-//        }
+        if (isInterrupted) {
+            throw new InterruptedException();
+        }
 //        mapToGraph();
     }
 
     /**
      * Iteratively Get Interactions from cPath.
      */
-    private void getInteractions(int taxonomyId,
-            ArrayList interactions, int startIndex, int increment,
-            int totalNumInteractions) {
+    private void getInteractions(int taxonomyId, int startIndex, int increment,
+            int totalNumInteractions) throws CPathException, EmptySetException {
 
+        ReadPsiFromCPath reader = new ReadPsiFromCPath();
         int endIndex = Math.min(startIndex + increment, totalNumInteractions);
         taskMonitor.setStatus("Getting Interactions:  " + startIndex
                 + " - " + endIndex + " of "
                 + totalNumInteractions);
-        logToConsole ("Getting Interactions:  " + startIndex
+
+        Date start = new Date();
+        ArrayList currentList = reader.getInteractionsByKeyword
+                (searchRequest.getQuery(), taxonomyId,
+                        startIndex, increment);
+
+        Date stop = new Date();
+        long interval = stop.getTime() - start.getTime();
+
+        //  Estimate Remaining Time
+        long totalTimeInRemaining =
+                CPathTimeEstimator.calculateEsimatedTimeRemaining(interval,
+                        startIndex, increment, totalNumInteractions);
+
+        logToConsole("Getting Interactions:  " + startIndex
                 + " - " + endIndex + " of "
-                + totalNumInteractions);
-//
-//        Date start = new Date();
-//        ArrayList currentList = reader.getInteractionsByKeyword
-//                (searchRequest.getQuery(), taxonomyId,
-//                        startIndex, increment);
-//        interactions.addAll(currentList);
-//        Date stop = new Date();
-//        long interval = stop.getTime() - start.getTime();
-//
-//        //  Estimate Remaining Time
-//        long totalTimeInRemaining =
-//                CPathTimeEstimator.calculateEsimatedTimeRemaining(interval,
-//                        startIndex, increment, totalNumInteractions);
-//
-//        logToConsole("Getting Interactions:  " + startIndex
-//                + " - " + endIndex + " of "
-//                + totalNumInteractions + " [OK]");
+                + totalNumInteractions + " [OK]");
 
 //TODO:FIX THIS
 //        this.setMaxProgressValue(totalNumInteractions);
