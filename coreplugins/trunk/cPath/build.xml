@@ -62,7 +62,13 @@
 	<!--  Target to compile all code -->
   	<target name="compile" depends="prepare"
           description="Compiles all source code.">
-    	<javac srcdir="${src.dir}" destdir="${build.classes}"
+
+		<!-- copy over all core plugins  -->
+		<copy todir="${plugins.dir}">
+			<fileset dir="${cytoscape.dir}/plugins/core"/>
+        </copy>
+
+        <javac srcdir="${src.dir}" destdir="${build.classes}"
             nowarn="on" debug="true" deprecation="yes" 
 	    debuglevel="source,lines,var">
     		<classpath refid="classpath"/>
@@ -72,11 +78,9 @@
  	<!--  Target to Run Cytoscape with DataService PlugIns -->
   	<target name="run" depends="jar"
 		description="Runs Cytoscape with Sample Data.">
-
-		<java classname="cytoscape.CyMain"
-		classpathref="classpath" fork="true" maxmemory="1000M">
-		<arg line="-p plugins"/>
-       	</java> 
+        <java jar="../../cytoscape/cytoscape.jar" fork="true">
+            <arg line="-p plugins"/>
+        </java> 
 	</target>
 
     <!--  Target to Create PlugIn JARs -->
