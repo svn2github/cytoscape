@@ -132,6 +132,12 @@
 	<target name="prep-manual" 
                 description="Prep Manual XML"
 		depends="fetch-images">
+
+		<mkdir dir="pdf"/>
+		<mkdir dir="html"/>
+		<mkdir dir="html/images"/>
+		<mkdir dir="help"/>
+		<mkdir dir="help/images"/>
 	
 		<copy file="manual_raw.xml" 
 		      tofile="manual_tmp.xml" 
@@ -173,6 +179,7 @@
 		<echo message="pdf  up-to-date: ${pdf-up-to-date}"/>
 		<echo message="help up-to-date: ${help-up-to-date}"/>
 		<echo message="html up-to-date: ${html-up-to-date}"/>
+
 	</target> 
 
 
@@ -183,7 +190,6 @@
 		depends="prep-manual"
 		if="xep-exists" 
 		unless="pdf-up-to-date">
-		<mkdir dir="pdf"/>
 
 		<!-- transform the manual to fo -->
 		<xslt classpathref="classpath"
@@ -234,8 +240,6 @@
 
 		<!-- now clean up after ourselves and move everything into the help dir -->
 		<delete file="manual.html"/>
-		<mkdir dir="help"/>
-		<mkdir dir="help/images"/>
 		<copy todir="help/images">
 			<fileset dir="images"/>
 		</copy>
@@ -268,8 +272,6 @@
 		      style="${xsl}/xhtml/docbook.xsl"/>
 
 		<!-- now clean up after ourselves and move everything into the html dir -->
-		<mkdir dir="html"/>
-		<mkdir dir="html/images"/>
 		<copy todir="html/images">
 			<fileset dir="images"/>
 		</copy>
