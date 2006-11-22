@@ -63,7 +63,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
    * constructor.
    */
   public CytoscapePlugin () { 
-      Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);  
+      Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.SAVE_PLUGIN_STATE,this);  
+      Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.RESTORE_PLUGIN_STATE,this);  
   }
 
 
