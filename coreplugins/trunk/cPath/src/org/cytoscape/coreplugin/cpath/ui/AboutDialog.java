@@ -63,7 +63,7 @@ public class AboutDialog extends MouseAdapter implements ActionListener {
      *
      * @param parent Parent Frame.
      */
-    public AboutDialog(JFrame parent) {
+    public AboutDialog (JFrame parent) {
         this.parent = parent;
     }
 
@@ -72,7 +72,7 @@ public class AboutDialog extends MouseAdapter implements ActionListener {
      *
      * @param event ActionEvent Object.
      */
-    public void actionPerformed(ActionEvent event) {
+    public void actionPerformed (ActionEvent event) {
         dialog = new JDialog(parent, "About the cPath PlugIn", true);
         Container contentPane = dialog.getContentPane();
         contentPane.setLayout(new BorderLayout());
@@ -100,14 +100,13 @@ public class AboutDialog extends MouseAdapter implements ActionListener {
         dialog.setVisible(true);
     }
 
-    private String getAboutHtml() {
+    private String getAboutHtml () {
         StringBuffer html = new StringBuffer();
         html.append("<FONT FACE=ARIAL>");
         html.append("<IMG SRC='http://www.mskcc.org/mskcc_resources/"
                 + "images/logos/336699.gif'>");
         html.append("<BR>cPath PlugIn Version:  " + VERSION);
         html.append("<BR>Release Date:  " + RELEASE_DATE);
-
 
 //        PropertyManager pManager = PropertyManager.getInstance();
 //        String url = pManager.getProperty(PropertyManager.CPATH_READ_LOCATION);
@@ -140,7 +139,7 @@ public class AboutDialog extends MouseAdapter implements ActionListener {
      *
      * @param e MouseEvent.
      */
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked (MouseEvent e) {
         if (dialog != null) {
             dialog.dispose();
         }

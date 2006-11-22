@@ -29,21 +29,21 @@
  **/
 package org.cytoscape.coreplugin.cpath.protocol;
 
+import org.cytoscape.coreplugin.cpath.model.CPathException;
+import org.cytoscape.coreplugin.cpath.model.EmptySetException;
+import org.cytoscape.coreplugin.cpath.util.CPathProperties;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.cytoscape.coreplugin.cpath.util.CPathProperties;
-import org.cytoscape.coreplugin.cpath.model.CPathException;
-import org.cytoscape.coreplugin.cpath.model.EmptySetException;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.UnknownHostException;
-import java.net.URL;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.UnknownHostException;
 
 /**
  * Utility Class for Connecting to the cPath Web Service API.
@@ -185,9 +185,8 @@ public class CPathProtocol {
 
     /**
      * Constructor.
-     *
      */
-    public CPathProtocol() {
+    public CPathProtocol () {
         this.baseUrl = CPathProperties.getCPathUrl();
         this.maxHits = DEFAULT_MAX_HITS;
         this.taxonomyId = NOT_SPECIFIED;
@@ -198,7 +197,7 @@ public class CPathProtocol {
      *
      * @param command Command Argument.
      */
-    public void setCommand(String command) {
+    public void setCommand (String command) {
         this.command = command;
     }
 
@@ -207,7 +206,7 @@ public class CPathProtocol {
      *
      * @param query Query Argument.
      */
-    public void setQuery(String query) {
+    public void setQuery (String query) {
         this.query = query;
     }
 
@@ -216,7 +215,7 @@ public class CPathProtocol {
      *
      * @param format Format Argument.
      */
-    public void setFormat(String format) {
+    public void setFormat (String format) {
         this.format = format;
     }
 
@@ -225,7 +224,7 @@ public class CPathProtocol {
      *
      * @param taxonomyId NCBI TaxonomyID
      */
-    public void setOrganism(int taxonomyId) {
+    public void setOrganism (int taxonomyId) {
         this.taxonomyId = taxonomyId;
     }
 
@@ -234,7 +233,7 @@ public class CPathProtocol {
      *
      * @param maxHits Max Number of Hits.
      */
-    public void setMaxHits(int maxHits) {
+    public void setMaxHits (int maxHits) {
         this.maxHits = maxHits;
     }
 
@@ -243,7 +242,7 @@ public class CPathProtocol {
      *
      * @param startIndex StartIndex Argument.
      */
-    public void setStartIndex(int startIndex) {
+    public void setStartIndex (int startIndex) {
         this.startIndex = startIndex;
     }
 
@@ -251,10 +250,10 @@ public class CPathProtocol {
      * Connects to cPath Web Service API.
      *
      * @return XML Document.
-     * @throws CPathException Indicates Error connecting.
+     * @throws CPathException    Indicates Error connecting.
      * @throws EmptySetException All went all, but no results found.
      */
-    public String connect() throws CPathException, EmptySetException {
+    public String connect () throws CPathException, EmptySetException {
         try {
             NameValuePair[] nvps = createNameValuePairs();
             String liveUrl = createURI(baseUrl, nvps);
@@ -309,9 +308,10 @@ public class CPathProtocol {
 
     /**
      * Gets URI
+     *
      * @return URI.
      */
-    public String getURI() {
+    public String getURI () {
         NameValuePair[] nvps = createNameValuePairs();
         return createURI(baseUrl, nvps);
     }
@@ -321,16 +321,16 @@ public class CPathProtocol {
      *
      * @return URI for cPath Call.
      */
-    private String createURI(String url, NameValuePair[] nvps) {
-        StringBuffer buf = new StringBuffer (url);
-        buf.append ("?");
-        for (int i=0; i<nvps.length; i++) {
-            buf.append(nvps[i].getName() + "=" + nvps[i].getValue() +"&");
+    private String createURI (String url, NameValuePair[] nvps) {
+        StringBuffer buf = new StringBuffer(url);
+        buf.append("?");
+        for (int i = 0; i < nvps.length; i++) {
+            buf.append(nvps[i].getName() + "=" + nvps[i].getValue() + "&");
         }
         return buf.toString();
     }
 
-    private NameValuePair[] createNameValuePairs() {
+    private NameValuePair[] createNameValuePairs () {
         NameValuePair nvps[] = null;
         if (taxonomyId == NOT_SPECIFIED) {
             nvps = new NameValuePair[6];
@@ -349,7 +349,7 @@ public class CPathProtocol {
         return nvps;
     }
 
-    private void checkHttpStatusCode(int statusCode)
+    private void checkHttpStatusCode (int statusCode)
             throws CPathException {
         if (statusCode != 200) {
             String msg = new String("Error Connecting to cPath "
@@ -359,7 +359,7 @@ public class CPathProtocol {
         }
     }
 
-    private void checkForErrors(Document document)
+    private void checkForErrors (Document document)
             throws CPathException, EmptySetException {
         Element element = document.getRootElement();
         String name = element.getName();
@@ -379,19 +379,37 @@ public class CPathProtocol {
     }
 }
 
+/**
+ * Name Value Pair.
+ *
+ * @author Ethan Cerami.
+ */
 class NameValuePair {
     private String name;
     private String value;
 
+    /**
+     * Constructor.
+     * @param name  name.
+     * @param value value.
+     */
     public NameValuePair (String name, String value) {
         this.name = name;
         this.value = value;
     }
 
+    /**
+     * Gets name.
+     * @return name.
+     */
     public String getName () {
         return name;
     }
 
+    /**
+     * Gets value.
+     * @return value.
+     */
     public String getValue () {
         return value;
     }

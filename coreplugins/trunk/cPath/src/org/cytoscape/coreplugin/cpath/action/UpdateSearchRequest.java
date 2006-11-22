@@ -57,7 +57,7 @@ public class UpdateSearchRequest extends FocusAdapter
      *
      * @param searchRequest Search Request Object.
      */
-    public UpdateSearchRequest(SearchRequest searchRequest) {
+    public UpdateSearchRequest (SearchRequest searchRequest) {
         this.searchRequest = searchRequest;
     }
 
@@ -66,7 +66,7 @@ public class UpdateSearchRequest extends FocusAdapter
      *
      * @param e ActionEvent.
      */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed (ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
 
         Object object = cb.getSelectedItem();
@@ -84,7 +84,7 @@ public class UpdateSearchRequest extends FocusAdapter
      *
      * @param e Focus Event.
      */
-    public void focusLost(FocusEvent e) {
+    public void focusLost (FocusEvent e) {
         JTextField textField = (JTextField) e.getSource();
         searchRequest.setQuery(textField.getText());
     }

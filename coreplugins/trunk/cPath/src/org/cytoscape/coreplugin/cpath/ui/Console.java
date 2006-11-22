@@ -41,17 +41,17 @@ public interface Console {
      *
      * @param msg Message
      */
-    void logMessage(String msg);
+    void logMessage (String msg);
 
     /**
      * Logs Message in Bold.
      *
      * @param msg Message
      */
-    void logMessageBold(String msg);
+    void logMessageBold (String msg);
 
     /**
      * Clears the Console.
      */
-    void clear();
+    void clear ();
 }

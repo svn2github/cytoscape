@@ -55,7 +55,7 @@ public class SearchRequest {
      * By default, MaxHits is set to the default value,
      * and we search all organisms.
      */
-    public SearchRequest() {
+    public SearchRequest () {
         this.query = null;
         this.organism = OrganismOption.ALL_ORGANISMS;
         this.maxHits = MaxHitsOption.DEFAULT_NUM_HITS;
@@ -66,7 +66,7 @@ public class SearchRequest {
      *
      * @return Search Query Terms.
      */
-    public String getQuery() {
+    public String getQuery () {
         return query;
     }
 
@@ -75,7 +75,7 @@ public class SearchRequest {
      *
      * @param query Search Query Terms.
      */
-    public void setQuery(String query) {
+    public void setQuery (String query) {
         this.query = query;
     }
 
@@ -84,7 +84,7 @@ public class SearchRequest {
      *
      * @return Organism Option.
      */
-    public OrganismOption getOrganism() {
+    public OrganismOption getOrganism () {
         return organism;
     }
 
@@ -93,7 +93,7 @@ public class SearchRequest {
      *
      * @param organism Organism Option.
      */
-    public void setOrganism(OrganismOption organism) {
+    public void setOrganism (OrganismOption organism) {
         this.organism = organism;
     }
 
@@ -102,7 +102,7 @@ public class SearchRequest {
      *
      * @return MaxHits Option.
      */
-    public MaxHitsOption getMaxHitsOption() {
+    public MaxHitsOption getMaxHitsOption () {
         return maxHits;
     }
 
@@ -111,7 +111,7 @@ public class SearchRequest {
      *
      * @param maxHits MaxHits Option.
      */
-    public void setMaxHits(MaxHitsOption maxHits) {
+    public void setMaxHits (MaxHitsOption maxHits) {
         this.maxHits = maxHits;
     }
 
@@ -120,7 +120,7 @@ public class SearchRequest {
      *
      * @return Cloned object.
      */
-    public Object clone() {
+    public Object clone () {
         SearchRequest clone = new SearchRequest();
         clone.setMaxHits((MaxHitsOption) maxHits.clone());
         clone.setOrganism((OrganismOption) organism.clone());
@@ -133,7 +133,7 @@ public class SearchRequest {
      *
      * @return Query Description.
      */
-    public String toString() {
+    public String toString () {
         if (query != null && query.length() > 0) {
             StringBuffer text = new StringBuffer(query);
             String species = organism.getSpeciesName();

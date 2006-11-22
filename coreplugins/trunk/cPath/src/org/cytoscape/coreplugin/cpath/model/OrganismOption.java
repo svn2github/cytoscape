@@ -59,7 +59,7 @@ public class OrganismOption {
      * @param taxonomyId  NCBI Taxonomy ID.
      * @param speciesName Organism Species Name.
      */
-    public OrganismOption(int taxonomyId, String speciesName) {
+    public OrganismOption (int taxonomyId, String speciesName) {
         this.taxonomyId = taxonomyId;
         this.speciesName = speciesName;
     }
@@ -69,7 +69,7 @@ public class OrganismOption {
      *
      * @return NCBI Taxonomy ID.
      */
-    public int getTaxonomyId() {
+    public int getTaxonomyId () {
         return taxonomyId;
     }
 
@@ -78,7 +78,7 @@ public class OrganismOption {
      *
      * @return Organism Species Name.
      */
-    public String getSpeciesName() {
+    public String getSpeciesName () {
         return speciesName;
     }
 
@@ -87,7 +87,7 @@ public class OrganismOption {
      *
      * @return Option description.
      */
-    public String toString() {
+    public String toString () {
         return this.speciesName;
     }
 
@@ -96,7 +96,7 @@ public class OrganismOption {
      *
      * @return Vector of OrganismOption Objects.
      */
-    public static Vector getAllOptions() {
+    public static Vector getAllOptions () {
         Vector items = new Vector();
         items.add(ALL_ORGANISMS);
         items.add(new OrganismOption(6239, "Caenorhabditis elegans"));
@@ -115,7 +115,7 @@ public class OrganismOption {
      *
      * @return Cloned Object.
      */
-    public Object clone() {
+    public Object clone () {
         OrganismOption option = new OrganismOption(taxonomyId, speciesName);
         return option;
     }

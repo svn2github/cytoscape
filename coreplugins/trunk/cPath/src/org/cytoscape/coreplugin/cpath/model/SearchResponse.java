@@ -65,7 +65,7 @@ public class SearchResponse {
      *
      * @return ArrayList of Data Service Interaction Object.
      */
-    public ArrayList getInteractions() {
+    public ArrayList getInteractions () {
         return interactions;
     }
 
@@ -74,7 +74,7 @@ public class SearchResponse {
      *
      * @param interactions ArrayList of Data Service Interaction Object.
      */
-    public void setInteractions(ArrayList interactions) {
+    public void setInteractions (ArrayList interactions) {
         this.interactions = interactions;
     }
 
@@ -84,7 +84,7 @@ public class SearchResponse {
      *
      * @return exception or null.
      */
-    public Throwable getException() {
+    public Throwable getException () {
         return exception;
     }
 
@@ -93,7 +93,7 @@ public class SearchResponse {
      *
      * @param exception Exception Object.
      */
-    public void setException(Throwable exception) {
+    public void setException (Throwable exception) {
         this.exception = exception;
     }
 
@@ -102,7 +102,7 @@ public class SearchResponse {
      *
      * @return Cytoscape CyNetwork Object.
      */
-    public CyNetwork getCyNetwork() {
+    public CyNetwork getCyNetwork () {
         return cyNetwork;
     }
 
@@ -111,7 +111,7 @@ public class SearchResponse {
      *
      * @param cyNetwork Cytoscape CyNetwork Object.
      */
-    public void setCyNetwork(CyNetwork cyNetwork) {
+    public void setCyNetwork (CyNetwork cyNetwork) {
         this.cyNetwork = cyNetwork;
     }
 
@@ -120,7 +120,7 @@ public class SearchResponse {
      *
      * @return Cytoscape CyNetworkView Object.
      */
-    public CyNetworkView getCyNetworkView() {
+    public CyNetworkView getCyNetworkView () {
         return cyNetworkView;
     }
 
@@ -129,7 +129,7 @@ public class SearchResponse {
      *
      * @param cyNetworkView Cytoscape CyNetworkView Object.
      */
-    public void setCyNetworkView(CyNetworkView cyNetworkView) {
+    public void setCyNetworkView (CyNetworkView cyNetworkView) {
         this.cyNetworkView = cyNetworkView;
     }
 }

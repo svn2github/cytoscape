@@ -29,8 +29,8 @@
  **/
 package org.cytoscape.coreplugin.cpath.test.task;
 
-import org.cytoscape.coreplugin.cpath.task.CPathTimeEstimator;
 import junit.framework.TestCase;
+import org.cytoscape.coreplugin.cpath.task.CPathTimeEstimator;
 
 /**
  * Tests the CPathTimeEstimator.
@@ -42,7 +42,7 @@ public class TestCPathTimeEstimator extends TestCase {
     /**
      * Tests the Time Estimator.
      */
-    public void testEstimator() {
+    public void testEstimator () {
         //  Last Request took 1 sec, and we have just retrieved the firt
         //  100 of 1000 interactions, in 100 value increments.
         //  Time Remaining Should be: 9 seconds

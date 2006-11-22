@@ -29,6 +29,8 @@
  **/
 package org.cytoscape.coreplugin.cpath.action;
 
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import org.cytoscape.coreplugin.cpath.model.OrganismOption;
 import org.cytoscape.coreplugin.cpath.model.SearchBundleList;
 import org.cytoscape.coreplugin.cpath.model.SearchRequest;
@@ -41,10 +43,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
-
-import cytoscape.task.util.TaskManager;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.Cytoscape;
 
 /**
  * Executes cPath Searches.
@@ -70,7 +68,7 @@ public class ExecuteQuery extends KeyAdapter implements ActionListener {
      * @param searchButton Search Button.
      * @param parent       Parent Component.
      */
-    public ExecuteQuery(HashMap cyMap, SearchRequest request,
+    public ExecuteQuery (HashMap cyMap, SearchRequest request,
             SearchBundleList searchList,
             Console console, JButton searchButton, JFrame parent) {
         this.cyMap = cyMap;
@@ -86,7 +84,7 @@ public class ExecuteQuery extends KeyAdapter implements ActionListener {
      *
      * @param e ActionEvent Object.
      */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed (ActionEvent e) {
         executeQuery();
     }
 
@@ -95,7 +93,7 @@ public class ExecuteQuery extends KeyAdapter implements ActionListener {
      *
      * @param e Key Event.
      */
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed (KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode == 10) {
             JTextField textField = (JTextField) e.getSource();
@@ -107,7 +105,7 @@ public class ExecuteQuery extends KeyAdapter implements ActionListener {
     /**
      * Execute Query Against cPath.
      */
-    private void executeQuery() {
+    private void executeQuery () {
         if (searchRequest.getQuery().length() == 0
                 && searchRequest.getOrganism().equals
                 (OrganismOption.ALL_ORGANISMS)) {

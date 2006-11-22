@@ -29,15 +29,14 @@
  **/
 package org.cytoscape.coreplugin.cpath.task;
 
+import cytoscape.data.ImportHandler;
+import cytoscape.data.readers.GraphReader;
 import org.cytoscape.coreplugin.cpath.model.CPathException;
 import org.cytoscape.coreplugin.cpath.model.EmptySetException;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 
-import java.net.URL;
 import java.net.MalformedURLException;
-
-import cytoscape.data.ImportHandler;
-import cytoscape.data.readers.GraphReader;
+import java.net.URL;
 
 /**
  * Reads PSI Interactions from cPath.
@@ -157,11 +156,11 @@ public class ReadPsiFromCPath {
         }
         ImportHandler importHandler = new ImportHandler();
         try {
-            URL url = new URL (cpath.getURI());
+            URL url = new URL(cpath.getURI());
             GraphReader reader = importHandler.getReader(url);
             return reader;
         } catch (MalformedURLException e) {
-            throw new CPathException ("Could not parse URL", e);
+            throw new CPathException("Could not parse URL", e);
         }
     }
 }

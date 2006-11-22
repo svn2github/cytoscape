@@ -45,7 +45,7 @@ public class ConsolePanel extends JPanel implements Console {
     /**
      * No Arg Constructor.
      */
-    public ConsolePanel() {
+    public ConsolePanel () {
         this.setLayout(new BorderLayout());
         ta = new JTextPane();
         ta.setMargin(new Insets(5, 7, 5, 7));
@@ -71,7 +71,7 @@ public class ConsolePanel extends JPanel implements Console {
      *
      * @param msg Status Message.
      */
-    public void logMessage(String msg) {
+    public void logMessage (String msg) {
         logMessage(msg, "regular");
     }
 
@@ -80,14 +80,14 @@ public class ConsolePanel extends JPanel implements Console {
      *
      * @param msg Status Message.
      */
-    public void logMessageBold(String msg) {
+    public void logMessageBold (String msg) {
         logMessage(msg, "bold");
     }
 
     /**
      * Clears the Console.
      */
-    public void clear() {
+    public void clear () {
         ta.setText("");
     }
 
@@ -97,7 +97,7 @@ public class ConsolePanel extends JPanel implements Console {
      * @param msg   Status Message.
      * @param style Style, e.g. "regular", "bold".
      */
-    private void logMessage(String msg, String style) {
+    private void logMessage (String msg, String style) {
         StyledDocument doc = ta.getStyledDocument();
         try {
             doc.insertString(doc.getLength(), msg + "\n", doc.getStyle(style));
@@ -116,7 +116,7 @@ public class ConsolePanel extends JPanel implements Console {
      *
      * @param doc StyledDocument Object.
      */
-    protected void addStylesToDocument(StyledDocument doc) {
+    protected void addStylesToDocument (StyledDocument doc) {
         Style def = StyleContext.getDefaultStyleContext().
                 getStyle(StyleContext.DEFAULT_STYLE);
 
@@ -141,7 +141,7 @@ public class ConsolePanel extends JPanel implements Console {
      *
      * @return Dimension Object.CP
      */
-    public Dimension getPreferredSize() {
+    public Dimension getPreferredSize () {
         return new Dimension(2, 100);
     }
 }

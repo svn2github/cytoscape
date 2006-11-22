@@ -29,22 +29,22 @@
  **/
 package org.cytoscape.coreplugin.cpath.task;
 
-import org.cytoscape.coreplugin.cpath.model.*;
-import org.cytoscape.coreplugin.cpath.ui.Console;
-import org.cytoscape.coreplugin.cpath.util.CPathProperties;
-import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.data.readers.GraphReader;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
+import org.cytoscape.coreplugin.cpath.model.*;
+import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
+import org.cytoscape.coreplugin.cpath.ui.Console;
+import org.cytoscape.coreplugin.cpath.util.CPathProperties;
 
 import javax.swing.*;
-import java.util.HashMap;
-import java.util.Date;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Task to Query cPath.
@@ -71,7 +71,7 @@ public class QueryCPathTask implements Task {
      * @param searchList    List of Search Bundles.
      * @param console       Console Object.
      */
-    public QueryCPathTask(HashMap cyMap, SearchRequest searchRequest,
+    public QueryCPathTask (HashMap cyMap, SearchRequest searchRequest,
             SearchBundleList searchList, Console console) {
         this.logToConsoleBold("Retrieving Data from cPath:  "
                 + searchRequest.toString() + "...");
@@ -94,6 +94,7 @@ public class QueryCPathTask implements Task {
 
     /**
      * Sets Task Monitor.
+     *
      * @param taskMonitor TaskMonitor Object.
      * @throws IllegalThreadStateException Illegal Thread State.
      */
@@ -103,6 +104,7 @@ public class QueryCPathTask implements Task {
 
     /**
      * Gets Task Title.
+     *
      * @return task title.
      */
     public String getTitle () {
@@ -147,7 +149,6 @@ public class QueryCPathTask implements Task {
 
     /**
      * Gets All Interactions.
-     *
      */
     private void getAllInteractions (int taxonomyId, int maxHits)
             throws InterruptedException, CPathException, EmptySetException, IOException {
@@ -202,7 +203,7 @@ public class QueryCPathTask implements Task {
     /**
      * Iteratively Get Interactions from cPath.
      */
-    private GraphReader getInteractions(int taxonomyId, int startIndex, int increment,
+    private GraphReader getInteractions (int taxonomyId, int startIndex, int increment,
             int totalNumInteractions) throws CPathException, EmptySetException {
 
         ReadPsiFromCPath reader = new ReadPsiFromCPath();
@@ -237,7 +238,7 @@ public class QueryCPathTask implements Task {
         return graphReader;
     }
 
-    private void addToCyNetwork(GraphReader reader, CyNetwork cyNetwork) {
+    private void addToCyNetwork (GraphReader reader, CyNetwork cyNetwork) {
         //  Add new nodes/edges to network
         int nodeIndices[] = reader.getNodeIndicesArray();
         int edgeIndices[] = reader.getEdgeIndicesArray();
@@ -264,10 +265,10 @@ public class QueryCPathTask implements Task {
                     + threshold
                     + " nodes --> a Cytoscape View  will be "
                     + "automatically created.");
-            taskMonitor.setStatus ("Creating Network View.  Please wait.");
+            taskMonitor.setStatus("Creating Network View.  Please wait.");
             view = Cytoscape.createNetworkView(cyNetwork);
             searchResponse.setCyNetworkView(view);
-            taskMonitor.setStatus ("Applying Visual Styles.");
+            taskMonitor.setStatus("Applying Visual Styles.");
             Cytoscape.getVisualMappingManager().applyAppearances();
         } else {
             logToConsole("Your Network is Over " + threshold
@@ -282,9 +283,9 @@ public class QueryCPathTask implements Task {
      *
      * @param msg Message to Log.
      */
-    private void logToConsole(final String msg) {
+    private void logToConsole (final String msg) {
         Runnable runnable = new Runnable() {
-            public void run() {
+            public void run () {
                 console.logMessage(msg);
             }
         };
@@ -296,9 +297,9 @@ public class QueryCPathTask implements Task {
      *
      * @param msg Message to Log.
      */
-    private void logToConsoleBold(final String msg) {
+    private void logToConsoleBold (final String msg) {
         Runnable runnable = new Runnable() {
-            public void run() {
+            public void run () {
                 console.logMessageBold(msg);
             }
         };

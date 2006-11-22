@@ -63,7 +63,7 @@ public class MaxHitsOption {
      *
      * @param maxHits MaxHits int value.
      */
-    public MaxHitsOption(int maxHits) {
+    public MaxHitsOption (int maxHits) {
         this.maxHits = maxHits;
         if (maxHits == Integer.MAX_VALUE) {
             this.description = GET_ALL_DESCRIPTION;
@@ -77,7 +77,7 @@ public class MaxHitsOption {
      *
      * @return max hits integer value.
      */
-    public int getMaxHits() {
+    public int getMaxHits () {
         return maxHits;
     }
 
@@ -86,7 +86,7 @@ public class MaxHitsOption {
      *
      * @return Option description.
      */
-    public String getDescription() {
+    public String getDescription () {
         return description;
     }
 
@@ -95,7 +95,7 @@ public class MaxHitsOption {
      *
      * @return Option description.
      */
-    public String toString() {
+    public String toString () {
         return this.description;
     }
 
@@ -104,7 +104,7 @@ public class MaxHitsOption {
      *
      * @return Vector of MaxHitsOption Objects.
      */
-    public static Vector getAllOptions() {
+    public static Vector getAllOptions () {
         Vector allOptions = new Vector();
         allOptions.add(MaxHitsOption.DEFAULT_NUM_HITS);
         allOptions.add(new MaxHitsOption(20));
@@ -122,7 +122,7 @@ public class MaxHitsOption {
      *
      * @return Cloned Object.
      */
-    public Object clone() {
+    public Object clone () {
         MaxHitsOption option = new MaxHitsOption(maxHits);
         return option;
     }

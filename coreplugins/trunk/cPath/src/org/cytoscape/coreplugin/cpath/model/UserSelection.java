@@ -83,7 +83,7 @@ public class UserSelection extends Observable {
      *
      * @return Node ID.
      */
-    public String getSelectedNodeId() {
+    public String getSelectedNodeId () {
         return this.selectedNodeId;
     }
 

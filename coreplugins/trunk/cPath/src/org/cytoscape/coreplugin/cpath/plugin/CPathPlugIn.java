@@ -29,11 +29,11 @@
  **/
 package org.cytoscape.coreplugin.cpath.plugin;
 
-import org.cytoscape.coreplugin.cpath.ui.CPathDesktop;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.coreplugin.cpath.ui.CPathDesktop;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -51,7 +51,7 @@ public class CPathPlugIn extends CytoscapePlugin implements ActionListener {
      * Constructor.
      * This method is called by the main Cytoscape Application upon startup.
      */
-    public CPathPlugIn() {
+    public CPathPlugIn () {
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         CyMenus cyMenus = desktop.getCyMenus();
         JMenu plugInMenu = cyMenus.getNewNetworkMenu();
@@ -65,7 +65,7 @@ public class CPathPlugIn extends CytoscapePlugin implements ActionListener {
      *
      * @param e ActionEvent Object.
      */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed (ActionEvent e) {
         if (cPathDesktop == null) {
             CytoscapeDesktop desktop = Cytoscape.getDesktop();
             cPathDesktop = new CPathDesktop(desktop);

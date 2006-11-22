@@ -45,7 +45,7 @@ public class CPathTimeEstimator {
      * @param totalNumInteractions Total Number of Interactions to Retrieve.
      * @return estimated time, in milliseconds.
      */
-    public static long calculateEsimatedTimeRemaining(long lastRequestTime,
+    public static long calculateEsimatedTimeRemaining (long lastRequestTime,
             int startIndex, int increment, int totalNumInteractions) {
 
         //  How Many more interactions do we need to donwload?

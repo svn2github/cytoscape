@@ -1,9 +1,8 @@
 package org.cytoscape.coreplugin.cpath.test.protocol;
 
-import junit.framework.TestCase;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.cytoscape.coreplugin.cpath.test.task.TestCPathTimeEstimator;
 
 /**
  * Suite of Mapper JUnit Tests.
@@ -17,7 +16,7 @@ public class ProtocolSuite extends TestCase {
      *
      * @return Suite of JUnit tests.
      */
-    public static Test suite() {
+    public static Test suite () {
         TestSuite suite = new TestSuite();
         suite.addTestSuite(TestCPathProtocol.class);
         suite.setName("Test cPath Protocol");

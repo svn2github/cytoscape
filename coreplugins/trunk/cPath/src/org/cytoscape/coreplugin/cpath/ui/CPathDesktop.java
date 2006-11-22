@@ -95,7 +95,7 @@ public class CPathDesktop extends JFrame implements Observer {
      *
      * @param parent Parent Frame.3
      */
-    public CPathDesktop(JFrame parent) {
+    public CPathDesktop (JFrame parent) {
         super("cPath PlugIn");
 
         //  Initialize User Selection Object and CyMap
@@ -131,7 +131,7 @@ public class CPathDesktop extends JFrame implements Observer {
     /**
      * Creates Nothern Panel with cPath Search Box.
      */
-    private JPanel createPanelNorth() {
+    private JPanel createPanelNorth () {
         int hspace = 5;
         JPanel northPanel = new JPanel();
         northPanel.setLayout(new GridLayout(2, 1));
@@ -222,7 +222,7 @@ public class CPathDesktop extends JFrame implements Observer {
     /**
      * Creates Result Set Limit Pull-Down Menu.
      */
-    private JComboBox createResultLimitComboBox() {
+    private JComboBox createResultLimitComboBox () {
         Vector options = MaxHitsOption.getAllOptions();
         JComboBox limitCombo = new JComboBox(options);
         UpdateSearchRequest maxHitsListener =
@@ -235,7 +235,7 @@ public class CPathDesktop extends JFrame implements Observer {
     /**
      * Creates Organism Pull-Down Menu.
      */
-    private JComboBox createOrganismComboBox() {
+    private JComboBox createOrganismComboBox () {
         Vector options = OrganismOption.getAllOptions();
         JComboBox orgCombo = new JComboBox(options);
         UpdateSearchRequest organismListener =
@@ -250,7 +250,7 @@ public class CPathDesktop extends JFrame implements Observer {
      * @param o   Observable Object.
      * @param arg Observable Arguments.
      */
-    public void update(Observable o, Object arg) {
+    public void update (Observable o, Object arg) {
         this.setVisible(true);
         int numSearches = searchList.getNumSearchBundles();
         SearchBundle bundle = searchList.getSearchBundleByIndex
@@ -278,7 +278,7 @@ public class CPathDesktop extends JFrame implements Observer {
      *
      * @param exception Exception.
      */
-    private void showError(Throwable exception) {
+    private void showError (Throwable exception) {
         ErrorDisplay errorDisplay = new ErrorDisplay(this);
         errorDisplay.displayError(exception, consolePanel);
     }

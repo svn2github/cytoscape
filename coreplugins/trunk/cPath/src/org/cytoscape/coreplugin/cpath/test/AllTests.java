@@ -29,11 +29,11 @@
  **/
 package org.cytoscape.coreplugin.cpath.test;
 
-import org.cytoscape.coreplugin.cpath.test.task.TaskSuite;
-import org.cytoscape.coreplugin.cpath.test.protocol.ProtocolSuite;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.cytoscape.coreplugin.cpath.test.protocol.ProtocolSuite;
+import org.cytoscape.coreplugin.cpath.test.task.TaskSuite;
 
 /**
  * Runs All JUnit Tests.
@@ -47,7 +47,7 @@ public class AllTests extends TestCase {
      *
      * @return junit.framework.Test
      */
-    public static Test suite() {
+    public static Test suite () {
         //  Organize all suites into one master suite.
         TestSuite suite = new TestSuite();
         suite.addTest(TaskSuite.suite());
@@ -62,7 +62,7 @@ public class AllTests extends TestCase {
      * @param args Command Line Arguments. use -ui to run the JUnit Graphical
      *             interface.
      */
-    public static void main(String[] args) {
+    public static void main (String[] args) {
         if (args.length > 0 && args[0] != null && args[0].equals("-ui")) {
             String newargs[] = {"org.cytoscape.coreplugin.cpath.test.AllTests", "-noloading"};
             junit.swingui.TestRunner.main(newargs);

@@ -48,7 +48,7 @@ public class ErrorDisplay {
      *
      * @param frame Frame object.
      */
-    public ErrorDisplay(Frame frame) {
+    public ErrorDisplay (Frame frame) {
         this.parent = frame;
     }
 
@@ -57,7 +57,7 @@ public class ErrorDisplay {
      *
      * @param e Exception.
      */
-    public void displayError(Throwable e) {
+    public void displayError (Throwable e) {
         showError(e);
     }
 
@@ -67,7 +67,7 @@ public class ErrorDisplay {
      * @param e      Exception.
      * @param cPanel ConsolePanel Object.
      */
-    public void displayError(Throwable e, ConsolePanel cPanel) {
+    public void displayError (Throwable e, ConsolePanel cPanel) {
         String msg = showError(e);
         cPanel.logMessage(msg);
     }
@@ -77,7 +77,7 @@ public class ErrorDisplay {
      *
      * @param errorMsg Error Message String.
      */
-    public void displayError(String errorMsg) {
+    public void displayError (String errorMsg) {
         String msg = wrapText(errorMsg);
         JOptionPane.showMessageDialog(parent, msg,
                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -88,7 +88,7 @@ public class ErrorDisplay {
      *
      * @param e Exception.
      */
-    private String showError(Throwable e) {
+    private String showError (Throwable e) {
         e.printStackTrace();
         String msg = null;
 //        if (e instanceof DataServiceException) {
@@ -118,7 +118,7 @@ public class ErrorDisplay {
      * @param msg Message.
      * @return Wrapped Text message.
      */
-    public String wrapText(String msg) {
+    public String wrapText (String msg) {
         StringBuffer newMessage = new StringBuffer();
         String strs[] = msg.split("\\s+");
         int lineIndex = 0;

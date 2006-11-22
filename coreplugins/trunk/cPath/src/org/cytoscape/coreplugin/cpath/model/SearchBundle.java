@@ -62,7 +62,7 @@ public class SearchBundle {
      * @param request  SearchRequest.
      * @param response SearchResponse.
      */
-    public SearchBundle(SearchRequest request, SearchResponse response) {
+    public SearchBundle (SearchRequest request, SearchResponse response) {
         this.id = generateId();
         this.request = request;
         this.response = response;
@@ -73,7 +73,7 @@ public class SearchBundle {
      *
      * @return Unique Identifier.
      */
-    public int getId() {
+    public int getId () {
         return id;
     }
 
@@ -82,7 +82,7 @@ public class SearchBundle {
      *
      * @return Search Request.
      */
-    public SearchRequest getRequest() {
+    public SearchRequest getRequest () {
         return request;
     }
 
@@ -91,7 +91,7 @@ public class SearchBundle {
      *
      * @return Search Response.
      */
-    public SearchResponse getResponse() {
+    public SearchResponse getResponse () {
         return response;
     }
 
@@ -100,7 +100,7 @@ public class SearchBundle {
      *
      * @return
      */
-    private synchronized int generateId() {
+    private synchronized int generateId () {
         return nextId++;
     }
 }

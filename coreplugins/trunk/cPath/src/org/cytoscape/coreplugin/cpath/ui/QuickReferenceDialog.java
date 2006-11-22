@@ -51,7 +51,7 @@ public class QuickReferenceDialog implements ActionListener {
      *
      * @param parent Parent Frame.
      */
-    public QuickReferenceDialog(JFrame parent) {
+    public QuickReferenceDialog (JFrame parent) {
         this.parent = parent;
         init();
     }
@@ -61,7 +61,7 @@ public class QuickReferenceDialog implements ActionListener {
      *
      * @param e ActionEvent Object.
      */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed (ActionEvent e) {
         if (parent != null) {
             Point point = parent.getLocation();
             Dimension size = parent.getSize();
@@ -72,7 +72,7 @@ public class QuickReferenceDialog implements ActionListener {
         helpFrame.setVisible(true);
     }
 
-    private void init() {
+    private void init () {
         helpFrame = new JFrame("Quick Reference Manual");
         Container contentPane = helpFrame.getContentPane();
         contentPane.setLayout(new BorderLayout());
@@ -95,7 +95,7 @@ public class QuickReferenceDialog implements ActionListener {
         helpFrame.pack();
     }
 
-    private String getAboutHtml() {
+    private String getAboutHtml () {
         StringBuffer html = new StringBuffer();
         html.append("<TABLE WIDTH=100%><TR BGCOLOR=#DDDDDD><TD>");
         html.append("<FONT FACE=ARIAL SIZE=+1>");
@@ -174,7 +174,7 @@ public class QuickReferenceDialog implements ActionListener {
      *
      * @param args Command Line Arguments.
      */
-    public static void main(String args[]) {
+    public static void main (String args[]) {
         QuickReferenceDialog frame = new QuickReferenceDialog(null);
     }
 }

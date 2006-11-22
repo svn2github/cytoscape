@@ -51,7 +51,7 @@ public class SearchBundleList extends Observable {
      *
      * @param bundle SearchBundle Object.
      */
-    public void add(SearchBundle bundle) {
+    public void add (SearchBundle bundle) {
         searchBundles.add(bundle);
         this.setChanged();
         this.notifyObservers();
@@ -62,7 +62,7 @@ public class SearchBundleList extends Observable {
      *
      * @return Number of Search Bundles.
      */
-    public int getNumSearchBundles() {
+    public int getNumSearchBundles () {
         return searchBundles.size();
     }
 
@@ -72,7 +72,7 @@ public class SearchBundleList extends Observable {
      * @param index Index Value.
      * @return SearchBundle Object.
      */
-    public SearchBundle getSearchBundleByIndex(int index) {
+    public SearchBundle getSearchBundleByIndex (int index) {
         return (SearchBundle) searchBundles.get(index);
     }
 
@@ -82,7 +82,7 @@ public class SearchBundleList extends Observable {
      * @param bundleId Unique Bundle Identifier.
      * @return SearchBundle Object.
      */
-    public SearchBundle getSearchBundleByBundleId(int bundleId) {
+    public SearchBundle getSearchBundleByBundleId (int bundleId) {
         for (int i = 0; i < searchBundles.size(); i++) {
             SearchBundle bundle = (SearchBundle) searchBundles.get(i);
             int id = bundle.getId();
@@ -99,7 +99,7 @@ public class SearchBundleList extends Observable {
      * @param networkId Unique CyNetwork Identifier.
      * @return SearchBundle Object.
      */
-    public SearchBundle getSearchBundleByCynetworkId(int networkId) {
+    public SearchBundle getSearchBundleByCynetworkId (int networkId) {
         for (int i = 0; i < searchBundles.size(); i++) {
             SearchBundle bundle = (SearchBundle) searchBundles.get(i);
             SearchResponse response = bundle.getResponse();

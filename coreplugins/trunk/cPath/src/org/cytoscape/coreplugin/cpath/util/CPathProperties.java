@@ -11,16 +11,17 @@ import java.util.Properties;
  */
 public class CPathProperties {
 
-     /**
+    /**
      * Property:  CPath Read Location.
      */
     private static final String CPATH_URL = new String("cpath.url");
 
     /**
      * Gets URL for cPath Web Service API.
+     *
      * @return cPath URL.
      */
-    public static String getCPathUrl() {
+    public static String getCPathUrl () {
         Properties properties = CytoscapeInit.getProperties();
         String url = properties.getProperty(CPATH_URL);
         if (url != null) {
