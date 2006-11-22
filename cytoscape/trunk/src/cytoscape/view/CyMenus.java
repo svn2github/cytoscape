@@ -1010,7 +1010,7 @@ public class CyMenus implements GraphViewChangeListener {
 	 * Register the help set and help broker with the various components
 	 */
 	void initializeHelp(HelpBroker hb) {
-		hb.enableHelp(helpContentsMenuItem, "index", null);
+		hb.enableHelp(helpContentsMenuItem, "d0e1", null); // comes from jhelptoc.xml
 		helpContentsMenuItem
 				.addActionListener(new CSH.DisplayHelpFromSource(hb));
 
