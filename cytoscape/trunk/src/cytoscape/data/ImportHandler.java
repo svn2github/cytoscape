@@ -142,10 +142,11 @@ public class ImportHandler {
      */
     public GraphReader getReader(URL u) {
     	File tmpFile = downloadFromURL(u);
-	if ( tmpFile != null )
-    		return getReader( downloadFromURL(u).getName() );
-	else
-		return null;
+	    if (tmpFile != null) {
+            return getReader(tmpFile.getAbsolutePath());
+        } else {
+		    return null;
+        }
     }
 
     /**
