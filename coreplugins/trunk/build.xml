@@ -35,7 +35,7 @@
 		<copy todir="${build.dir}" file="BioPAX/build/jars/biopax.jar" />
 		<copy todir="${build.dir}" file="PSI-MI/build/jars/psi_mi.jar" />
 		<copy todir="${build.dir}" file="SBMLReader/SBMLReader.jar" />
-		<copy todir="${build.dir}" file="cPath/cPath.jar" />
+		<copy todir="${build.dir}" file="cPath/plugins/cPath.jar" />
 		<copy todir="${build.dir}" file="TableImport/TableImport.jar" />
 		<copy todir="${build.dir}" file="linkout/linkout.jar" />
 	</target>
