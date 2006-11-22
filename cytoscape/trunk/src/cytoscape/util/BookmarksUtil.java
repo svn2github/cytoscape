@@ -254,6 +254,12 @@ public abstract class BookmarksUtil {
         }        
         
         Category theCategory = getCategory(pCategoryName,theCategoryList);
+        if (theCategory == null) {
+        	Category newCategory = new Category();
+        	newCategory.setName(pCategoryName);
+        	theCategoryList.add(newCategory);
+        	theCategory = newCategory;
+        }        
         
         List<Object>  theObjList =  theCategory.getCategoryOrDataSource();            	
 
