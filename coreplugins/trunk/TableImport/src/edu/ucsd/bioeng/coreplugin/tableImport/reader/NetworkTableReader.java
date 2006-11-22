@@ -73,10 +73,8 @@ public class NetworkTableReader extends AbstractGraphReader implements
 			 * Ignore Empty & Commnet lines.
 			 */
 			if(commentChar != null && commentChar.trim().length() != 0 && line.startsWith(commentChar)) {
-				System.out.println("@@@ " + commentChar);
 			}
 			else if (line.trim().length() > 0 && startLineNumber <= lineCount) {
-				System.out.println("### " + line);
 				String[] parts = line.split(nmp.getDelimiterRegEx());
 				parser.parseEntry(parts);
 				
@@ -85,7 +83,6 @@ public class NetworkTableReader extends AbstractGraphReader implements
 		}
 		is.close();
 		bufRd.close();
-
 	}
 
 	@Override

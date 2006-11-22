@@ -25,10 +25,10 @@ public class NetworkTableMappingParameters extends AttributeMappingParameters {
 
 	public NetworkTableMappingParameters(List<String> delimiters,
 			String listDelimiter, String[] attributeNames,
-			byte[] attributeTypes, boolean[] importFlag, int source,
-			int target, int interaction, final String defInteraction) throws Exception {
+			Byte[] attributeTypes, Byte[] listAttributeTypes, boolean[] importFlag,
+			int source, int target, int interaction, final String defInteraction) throws Exception {
 		super(EDGE, delimiters, listDelimiter, -1, null, null, attributeNames,
-				attributeTypes, importFlag);
+				attributeTypes, listAttributeTypes, importFlag);
 
 		this.source = source;
 		this.target = target;

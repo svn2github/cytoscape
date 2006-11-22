@@ -15,7 +15,7 @@ import giny.model.Node;
  * Take a line of data, analyze it, and map to CyAttributes.
  * 
  * @since Cytoscape 2.4
- * @version 0.9
+ * @version 0.8
  * @author Keiichiro Ono
  * 
  */
@@ -34,7 +34,7 @@ public class AttributeLineParser {
 	 * @param parts
 	 */
 	public void parseEntry(String[] parts) {
-		
+
 		/*
 		 * Split the line and extract values
 		 */
@@ -57,7 +57,8 @@ public class AttributeLineParser {
 				if (parts.length > aliasIndex) {
 					aliasCell = parts[aliasIndex];
 					if (aliasCell != null && aliasCell.trim().length() != 0) {
-						aliasSet.addAll(buildList(aliasCell));
+						aliasSet.addAll(buildList(aliasCell,
+								CyAttributes.TYPE_STRING));
 					}
 				}
 			}
@@ -147,11 +148,7 @@ public class AttributeLineParser {
 			 * This is a special case: Since network IDs are only integers and
 			 * not always the same, we need to use title instead of ID.
 			 */
-			
-			System.out.println("####### Net: " + primaryKey);
-			
 
-			
 			if (mapping.getnetworkTitleMap().containsKey(primaryKey)) {
 				targetNetworkID = mapping.getnetworkTitleMap().get(primaryKey);
 				System.out.println("Found! " + targetNetworkID);
@@ -161,7 +158,8 @@ public class AttributeLineParser {
 			if (targetNetworkID == null) {
 				for (String alias : aliasSet) {
 					if (mapping.getnetworkTitleMap().containsKey(alias)) {
-						targetNetworkID = mapping.getnetworkTitleMap().get(alias);
+						targetNetworkID = mapping.getnetworkTitleMap().get(
+								alias);
 						break;
 					}
 				}
@@ -185,7 +183,7 @@ public class AttributeLineParser {
 					&& mapping.getImportFlag()[i]) {
 				if (parts[i] == null) {
 					// Do nothing
-				} else if(mapping.getObjectType() == ObjectType.NETWORK) {
+				} else if (mapping.getObjectType() == ObjectType.NETWORK) {
 					mapAttribute(targetNetworkID, parts[i].trim(), i);
 				}
 				/*
@@ -218,7 +216,7 @@ public class AttributeLineParser {
 	 */
 	private void mapAttribute(final String key, final String entry,
 			final int index) {
-		
+
 		Byte type = mapping.getAttributeTypes()[index];
 
 		switch (type) {
@@ -242,13 +240,25 @@ public class AttributeLineParser {
 			/*
 			 * In case of list, not overwrite the attribute. Get the existing
 			 * list, and add it to the list.
+			 * 
+			 * Since list has data types for their data types, so we need to
+			 * extract it first.
+			 * 
 			 */
+			final Byte[] listTypes = mapping.getListAttributeTypes();
+			final Byte listType;
+			if (listTypes != null) {
+				listType = listTypes[index];
+			} else {
+				listType = CyAttributes.TYPE_STRING;
+			}
+
 			List curList = mapping.getAttributes().getAttributeList(key,
 					mapping.getAttributeNames()[index]);
 			if (curList == null) {
 				curList = new ArrayList();
 			}
-			curList.addAll(buildList(entry));
+			curList.addAll(buildList(entry, listType));
 			mapping.getAttributes().setAttributeList(key,
 					mapping.getAttributeNames()[index], curList);
 			break;
@@ -263,18 +273,34 @@ public class AttributeLineParser {
 	 * 
 	 * @return
 	 */
-	private List buildList(final String entry) {
+	private List buildList(final String entry, final Byte dataType) {
 
 		if (entry == null) {
 			return null;
 		}
 
-		final List<String> listAttr = new ArrayList<String>();
-
 		final String[] parts = (entry.replace("\"", "")).split(mapping
 				.getListDelimiter());
+
+		final List listAttr = new ArrayList();
+
 		for (String listItem : parts) {
-			listAttr.add(listItem.trim());
+			switch (dataType) {
+			case CyAttributes.TYPE_BOOLEAN:
+				listAttr.add(Boolean.parseBoolean(listItem.trim()));
+				break;
+			case CyAttributes.TYPE_INTEGER:
+				listAttr.add(Integer.parseInt(listItem.trim()));
+				break;
+			case CyAttributes.TYPE_FLOATING:
+				listAttr.add(Double.parseDouble(listItem.trim()));
+				break;
+			case CyAttributes.TYPE_STRING:
+				listAttr.add(listItem.trim());
+				break;
+			default:
+				break;
+			}
 		}
 		return listAttr;
 	}

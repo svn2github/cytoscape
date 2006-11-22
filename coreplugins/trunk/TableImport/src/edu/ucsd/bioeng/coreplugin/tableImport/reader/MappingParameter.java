@@ -20,7 +20,7 @@ public interface MappingParameter {
 
 	public String[] getAttributeNames();
 
-	public byte[] getAttributeTypes();
+	public Byte[] getAttributeTypes();
 
 	public String getListDelimiter();
 

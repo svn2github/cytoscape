@@ -64,7 +64,7 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 		String[] galAttrName = { "ID", "ID in SGD", "Synonyms",
 				"Description of Genes", "Date", "Sample Boolean Attr2",
 				"gal1RGexp", "gal1RGsig", "String List"};
-		byte[] galAttrTypes = { CyAttributes.TYPE_STRING,
+		Byte[] galAttrTypes = { CyAttributes.TYPE_STRING,
 				CyAttributes.TYPE_STRING, CyAttributes.TYPE_STRING,
 				CyAttributes.TYPE_STRING, CyAttributes.TYPE_INTEGER,
 				CyAttributes.TYPE_BOOLEAN, CyAttributes.TYPE_FLOATING,
@@ -76,7 +76,7 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 
 		AttributeMappingParameters mapping = new AttributeMappingParameters(
 				TextTableReader.ObjectType.NODE, null, COMMA.toString(), 0, "ID", aliasList,
-				galAttrName, galAttrTypes, null);
+				galAttrName, galAttrTypes, null, null);
 		tableReader = new DefaultAttributeTableReader(source.toURL(), mapping, 0, null);
 		tableReader.readTable();
 

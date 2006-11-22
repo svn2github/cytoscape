@@ -50,8 +50,8 @@ public class ImportNetworkTask implements Task {
 		StringBuffer sb = new StringBuffer();
 
 		// Give the user some confirmation
-		sb.append("Succesfully loaded network and edge attributes.");
-
+		sb.append("Succesfully loaded network and edge attributes from:\n");
+		sb.append(source.toString());
 		taskMonitor.setStatus(sb.toString());
 	}
 

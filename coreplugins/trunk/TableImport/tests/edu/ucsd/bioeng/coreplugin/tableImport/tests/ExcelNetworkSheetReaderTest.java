@@ -61,13 +61,13 @@ public class ExcelNetworkSheetReaderTest extends TestCase {
 
 		String[] galAttrName = { "Source", "Target", "Interaction",
 				"edge bool attr", "edge string attr", "edge float attr" };
-		byte[] galAttrTypes = { CyAttributes.TYPE_STRING,
+		Byte[] galAttrTypes = { CyAttributes.TYPE_STRING,
 				CyAttributes.TYPE_STRING, CyAttributes.TYPE_STRING,
 				CyAttributes.TYPE_BOOLEAN, CyAttributes.TYPE_STRING,
 				CyAttributes.TYPE_FLOATING };
 		NetworkTableMappingParameters mapping = new NetworkTableMappingParameters(
 				delimiters, TextFileDelimiters.PIPE.toString(), galAttrName,
-				galAttrTypes, null, 0, 1, 2, null);
+				galAttrTypes, null, null, 0, 1, 2, null);
 
 		reader = new ExcelNetworkSheetReader(wb.getSheetName(0), sheet, mapping);
 

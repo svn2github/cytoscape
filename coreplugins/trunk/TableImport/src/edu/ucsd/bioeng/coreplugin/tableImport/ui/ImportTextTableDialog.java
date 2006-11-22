@@ -37,7 +37,9 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -110,7 +112,6 @@ import giny.model.Node;
 public class ImportTextTableDialog extends JDialog implements
 		PropertyChangeListener, TableModelListener {
 
-	private static final String DEFAULT_INTERACTION = "pp";
 	/**
 	 * This dialog GUI will be switched based on the following parameters:
 	 * 
@@ -131,11 +132,17 @@ public class ImportTextTableDialog extends JDialog implements
 	public static enum FileTypes {
 		ATTRIBUTE_FILE, NETWORK_FILE, GENE_ASSOCIATION_FILE, CUSTOM_ANNOTATION_FILE;
 	}
+	
+	/*
+	 * Default value for Interaction edge attribute.
+	 */
+	private static final String DEFAULT_INTERACTION = "pp";
 
 	/*
 	 * Signals used among Swing components in this dialog:
 	 */
 	public static final String LIST_DELIMITER_CHANGED = "listDelimiterChanged";
+	public static final String LIST_DATA_TYPE_CHANGED = "listDataTypeChanged";
 	public static final String ATTR_DATA_TYPE_CHANGED = "attrDataTypeChanged";
 	public static final String ATTRIBUTE_NAME_CHANGED = "aliasTableChanged";
 	public static final String SHEET_CHANGED = "sheetChanged";
@@ -182,6 +189,11 @@ public class ImportTextTableDialog extends JDialog implements
 	private Map<String, String> ontologyDescriptionMap;
 
 	private List<Byte> attributeDataTypes;
+	
+	/*
+	 * This is for storing data type in the list object.
+	 */
+	private Byte[] listDataTypes;
 
 	/*
 	 * Tracking multiple sheets.
@@ -255,6 +267,8 @@ public class ImportTextTableDialog extends JDialog implements
 			 */
 			listDelimiter = evt.getNewValue().toString();
 
+		} else if(evt.getPropertyName().equals(LIST_DATA_TYPE_CHANGED)) {
+			listDataTypes = (Byte[]) evt.getNewValue();
 		} else if (evt.getPropertyName().equals(ATTR_DATA_TYPE_CHANGED)) {
 			/*
 			 * Data type of an attribute has been chabged.
@@ -415,9 +429,13 @@ public class ImportTextTableDialog extends JDialog implements
 		titleLabel.setFont(TITLE_FONT.getFont());
 
 		if (dialogType == NETWORK_IMPORT) {
-
 			previewPanel = new PreviewTablePanel(null,
 					PreviewTablePanel.NETWORK_PREVIEW);
+		} else if(dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+			defaultInteractionLabel.setEnabled(false);
+			defaultInteractionTextField.setEnabled(false);
+			commentLineTextField.setText("!");
+			previewPanel = new PreviewTablePanel(null, PreviewTablePanel.ONTOLOGY_PREVIEW);
 		} else {
 			defaultInteractionLabel.setEnabled(false);
 			defaultInteractionTextField.setEnabled(false);
@@ -2022,7 +2040,7 @@ public class ImportTextTableDialog extends JDialog implements
 		// .getColumnCount()];
 		final Byte[] test = previewPanel.getDataTypes(previewPanel
 				.getSelectedSheetName());
-		final byte[] attributeTypes = new byte[test.length];
+		final Byte[] attributeTypes = new Byte[test.length];
 
 		for (int i = 0; i < test.length; i++) {
 			attributeTypes[i] = test[i];
@@ -2082,7 +2100,7 @@ public class ImportTextTableDialog extends JDialog implements
 			final AttributeMappingParameters mapping = new AttributeMappingParameters(
 					objType, checkDelimiter(), listDelimiter, keyInFile,
 					mappingAttribute, aliasList, attributeNames,
-					attributeTypes, importFlag);
+					attributeTypes, listDataTypes, importFlag);
 
 			if (source.toString().endsWith(EXCEL_EXT)) {
 				/*
@@ -2098,12 +2116,12 @@ public class ImportTextTableDialog extends JDialog implements
 
 					HSSFSheet sheet = wb.getSheetAt(i);
 					loadAnnotation(new ExcelAttributeSheetReader(sheet,
-							mapping, startLineNumber), null, null);
+							mapping, startLineNumber), source.toString());
 				}
 
 			} else {
 				loadAnnotation(new DefaultAttributeTableReader(source, mapping,
-						startLineNumber, null), null, commentChar);
+						startLineNumber, null), source.toString());
 			}
 
 			break;
@@ -2137,7 +2155,7 @@ public class ImportTextTableDialog extends JDialog implements
 				GeneAssociationReader gaReader = new GeneAssociationReader(
 						selectedOntologyName, new URL(annotationSource),
 						mappingAttribute);
-				loadGeneAssociation(gaReader, selectedOntologyName, null);
+				loadGeneAssociation(gaReader, selectedOntologyName, annotationSource);
 
 			} else {
 				/*
@@ -2167,9 +2185,9 @@ public class ImportTextTableDialog extends JDialog implements
 
 			final NetworkTableMappingParameters nmp = new NetworkTableMappingParameters(
 					checkDelimiter(), listDelimiter, attributeNames,
-					attributeTypes, importFlag, sourceColumnIndex,
-					targetColumnIndex, interactionColumnIndex,
-					defaultInteraction);
+					attributeTypes, null, importFlag,
+					sourceColumnIndex, targetColumnIndex,
+					interactionColumnIndex, defaultInteraction);
 
 			final NetworkTableReader reader;
 			if (networkSource.toString().endsWith(EXCEL_EXT)) {
@@ -2431,10 +2449,8 @@ public class ImportTextTableDialog extends JDialog implements
 
 		updateMappingAttributeComboBox();
 
-		setStatusBar(" - ", " No Entries Loaded for Preview.",
+		setStatusBar("-", "-",
 				"File Size: Unknown");
-
-		// setKeyList();
 	}
 
 	private void updatePrimaryKeyComboBox() {
@@ -2668,6 +2684,8 @@ public class ImportTextTableDialog extends JDialog implements
 		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize,
 				commentChar, startLine - 1);
 
+		listDataTypes = previewPanel.getCurrentListDataTypes();
+		
 		/*
 		 * Initialize all Alias Tables
 		 */
@@ -2822,17 +2840,29 @@ public class ImportTextTableDialog extends JDialog implements
 		if (showAllRadioButton.isSelected()) {
 			centerMessage = "All entries are loaded for preview.";
 		} else {
-			centerMessage = counterSpinner.getValue().toString()
-					+ " Entries are loaded for preview.";
+			centerMessage = "First " + counterSpinner.getValue().toString()
+					+ " entries are loaded for preview.";
 		}
 
 		if (sourceURL.toString().startsWith("file:")) {
-			rightMessage = "File Size: ";
+			int fileSize = 0;
+			try {
+				BufferedInputStream fis = (BufferedInputStream) sourceURL.openStream();
+				fileSize = fis.available();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if((fileSize/1000) == 0) {
+				rightMessage = "File Size: " + fileSize + " Bytes";
+			} else {
+				rightMessage = "File Size: " + fileSize/1000 + " KBytes";
+			}
+			
 		} else {
 			rightMessage = "File Size Unknown (Remote Data Source)";
 		}
 
-		setStatusBar("Nuber of matched primary key & attribute pair: "
+		setStatusBar("Nuber of matched Primary Key and Key Attribute pair: "
 				+ previewPanel.checkKeyMatch(primaryKeyComboBox
 						.getSelectedIndex()), centerMessage, rightMessage);
 	}
@@ -3109,11 +3139,10 @@ public class ImportTextTableDialog extends JDialog implements
 	 * @param ontology
 	 * @param source
 	 */
-	private void loadAnnotation(TextTableReader reader, String ontology,
+	private void loadAnnotation(TextTableReader reader,
 			String source) {
 		// Create LoadNetwork Task
-		ImportAttributeTableTask task = new ImportAttributeTableTask(reader,
-				ontology, source);
+		ImportAttributeTableTask task = new ImportAttributeTableTask(reader, source);
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();

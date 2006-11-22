@@ -40,7 +40,8 @@ public class AttributeMappingParameters implements MappingParameter {
 	private final int keyIndex;
 	private final List<Integer> aliasIndex;
 	private String[] attributeNames;
-	private byte[] attributeTypes;
+	private Byte[] attributeTypes;
+	private Byte[] listAttributeTypes;
 	private final String mappingAttribute;
 
 	private List<String> delimiters;
@@ -59,8 +60,10 @@ public class AttributeMappingParameters implements MappingParameter {
 			final List<String> delimiters, final String listDelimiter,
 			final int keyIndex, final String mappingAttribute,
 			final List<Integer> aliasIndex, final String[] attributeNames,
-			byte[] attributeTypes, boolean[] importFlag) throws Exception {
+			Byte[] attributeTypes, Byte[] listAttributeTypes, boolean[] importFlag) throws Exception {
 
+		this.listAttributeTypes = listAttributeTypes;
+		
 		if(attributeNames == null) {
 			throw new Exception("attributeNames should not be null.");
 		}
@@ -130,7 +133,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		 * If not specified, import everything as String attributes.
 		 */
 		if (attributeTypes == null) {
-			this.attributeTypes = new byte[attributeNames.length];
+			this.attributeTypes = new Byte[attributeNames.length];
 			for (int i = 0; i < attributeNames.length; i++) {
 				this.attributeTypes[i] = CyAttributes.TYPE_STRING;
 			}
@@ -197,9 +200,12 @@ public class AttributeMappingParameters implements MappingParameter {
 		return attributeNames;
 	}
 
-	public byte[] getAttributeTypes() {
-		// TODO Auto-generated method stub
+	public Byte[] getAttributeTypes() {
 		return attributeTypes;
+	}
+	
+	public Byte[] getListAttributeTypes() {
+		return listAttributeTypes;
 	}
 
 	public boolean[] getImportFlag() {

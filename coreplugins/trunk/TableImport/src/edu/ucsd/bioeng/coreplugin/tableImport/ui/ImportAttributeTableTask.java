@@ -8,8 +8,7 @@ import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
 
 public class ImportAttributeTableTask implements Task {
 	private TextTableReader reader;
-
-	private String ontology;
+	
 	private String source;
 
 	private TaskMonitor taskMonitor;
@@ -23,10 +22,9 @@ public class ImportAttributeTableTask implements Task {
 	 *            FileType, e.g. Cytoscape.FILE_SIF or Cytoscape.FILE_GML.
 	 */
 
-	public ImportAttributeTableTask(TextTableReader reader, String ontology,
+	public ImportAttributeTableTask(TextTableReader reader,
 			String source) {
 		this.reader = reader;
-		this.ontology = ontology;
 		this.source = source;
 	}
 
@@ -35,9 +33,7 @@ public class ImportAttributeTableTask implements Task {
 	 */
 	public void run() {
 
-		System.out.println("### Running table reader task...");
-
-		taskMonitor.setStatus("Importing annotation data...");
+		taskMonitor.setStatus("Loading attribute data file...");
 		taskMonitor.setPercentCompleted(-1);
 
 		try {
@@ -58,9 +54,8 @@ public class ImportAttributeTableTask implements Task {
 		StringBuffer sb = new StringBuffer();
 
 		// Give the user some confirmation
-		sb.append("Succesfully loaded annotation data for " + ontology);
-		sb.append(" from: \n" + source + "\n");
-		sb.append("\n\nAnnotation data source contains ");
+		sb.append("Succesfully loaded attribute data from:\n\n");
+		sb.append(source + "\n");
 
 		taskMonitor.setStatus(sb.toString());
 	}
@@ -89,7 +84,7 @@ public class ImportAttributeTableTask implements Task {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return new String("Loading Network");
+		return new String("Loading Attributes");
 	}
 
 }

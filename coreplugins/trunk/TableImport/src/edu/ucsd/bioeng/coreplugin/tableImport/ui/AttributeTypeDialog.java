@@ -20,20 +20,20 @@ public class AttributeTypeDialog extends javax.swing.JDialog {
 
 	private byte dataType;
 	private String name;
-
 	private static final String[] LIST_DATA_TYPES = { STRING, INTEGER, FLOAT,
 			BOOLEAN };
 
-	/** Creates new form AttributeTypeDialog */
+	/** Creates new form AttributeTypeDialog 
+	 * @param delimiter TODO*/
 	public AttributeTypeDialog(Frame parent, boolean modal, final String name,
-			final byte dataType, int index) {
+			final byte dataType, int index, String delimiter) {
 		super(parent, true);
 
 		this.name = name;
 		this.dataType = dataType;
 
 		initComponents(index);
-		updateComponents();
+		updateComponents(delimiter);
 	}
 
 	/**
@@ -499,9 +499,19 @@ public class AttributeTypeDialog extends javax.swing.JDialog {
 
 	/* =========================================================================================== */
 
-	private void updateComponents() {
+	private void updateComponents(String delimiter) {
 		attributeNameTextField.setText(name);
 		listDelimiterComboBox.setEnabled(false);
+		if(delimiter == null) {
+			listDelimiterComboBox.setSelectedIndex(0);
+		} else {
+			for(int i=0; i<listDelimiterComboBox.getItemCount(); i++) {
+				if(delimiter.equals(listDelimiterComboBox.getItemAt(i))) {
+					listDelimiterComboBox.setSelectedIndex(i);
+					break;
+				}
+			}
+		}
 		listTypeComboBox.setEnabled(false);
 		otherTextField.setEnabled(false);
 		setButtonGroup();

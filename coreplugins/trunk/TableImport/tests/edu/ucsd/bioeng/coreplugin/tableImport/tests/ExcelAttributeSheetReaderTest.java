@@ -62,7 +62,7 @@ public class ExcelAttributeSheetReaderTest extends TestCase {
 		String[] galAttrName = { "ID", "ID in SGD", "Synonyms",
 				"Description of Genes", "Date", "Sample Boolean Attr2",
 				"gal1RGexp", "gal1RGsig", "String List" };
-		byte[] galAttrTypes = { CyAttributes.TYPE_STRING,
+		Byte[] galAttrTypes = { CyAttributes.TYPE_STRING,
 				CyAttributes.TYPE_STRING, CyAttributes.TYPE_STRING,
 				CyAttributes.TYPE_STRING, CyAttributes.TYPE_INTEGER,
 				CyAttributes.TYPE_BOOLEAN, CyAttributes.TYPE_FLOATING,
@@ -74,7 +74,7 @@ public class ExcelAttributeSheetReaderTest extends TestCase {
 
 		AttributeMappingParameters mapping = new AttributeMappingParameters(
 				TextTableReader.ObjectType.NODE, null, COMMA.toString(), 0,
-				"ID", aliasList, galAttrName, galAttrTypes, null);
+				"ID", aliasList, galAttrName, galAttrTypes, null, null);
 
 		TextTableReader rd = new ExcelAttributeSheetReader(sheet, mapping, 0);
 		rd.readTable();

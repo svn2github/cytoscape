@@ -56,9 +56,8 @@ public class ImportOntologyAnnotationTask implements Task {
 		StringBuffer sb = new StringBuffer();
 
 		// Give the user some confirmation
-		sb.append("Succesfully loaded annotation data for " + ontology);
-		sb.append(" from: \n" + source + "\n");
-		sb.append("\n\nAnnotation data source contains ");
+		sb.append("Succesfully loaded annotation file for " + ontology);
+		sb.append(" from: \n\n" + source);
 
 		taskMonitor.setStatus(sb.toString());
 	}
