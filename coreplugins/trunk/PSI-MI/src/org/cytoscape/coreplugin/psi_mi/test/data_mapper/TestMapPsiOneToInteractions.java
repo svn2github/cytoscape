@@ -174,6 +174,17 @@ public class TestMapPsiOneToInteractions extends TestCase {
                 "10089390", "x-ray crystallography", "PSI", "MI:0114");
     }
 
+    public void testcPathData() throws Exception {
+        File file = new File("testData/cpath_p53.xml");
+        ContentReader reader = new ContentReader();
+        String xml = reader.retrieveContent(file.toString());
+        ArrayList interactions = new ArrayList();
+        MapPsiOneToInteractions mapper = new MapPsiOneToInteractions
+                (xml, interactions);
+        mapper.doMapping();
+        assertEquals(10, interactions.size());
+    }
+
     /**
      * Validates Specific Interaction.
      */
