@@ -42,7 +42,7 @@ import cytoscape.util.FileUtil;
  * @author kono
  */
 public class ImportNetworkDialog extends JDialog implements
-		java.awt.event.ActionListener, KeyListener {
+		java.awt.event.ActionListener {
 
 	private boolean status;
 	private File[] networkFiles;
@@ -385,7 +385,6 @@ public class ImportNetworkDialog extends JDialog implements
 		importButton.addActionListener(this);
 
 		bookmarkEditor.addActionListener(this);
-		bookmarkEditor.addKeyListener(this);
 	}
 
 	private void switchImportView(String pLocation) {
@@ -472,17 +471,6 @@ public class ImportNetworkDialog extends JDialog implements
 		}
 	}
 
-	public void keyPressed(KeyEvent e) {
-	}
-
-	public void keyReleased(KeyEvent e) {
-		String tmpStr = bookmarkEditor.getURLstr().trim();
-		tmpStr = tmpStr.toUpperCase();
-	}
-
-	public void keyTyped(KeyEvent e) {
-	}
-
 	public void actionPerformed(java.awt.event.ActionEvent e) {
 		Object _actionObject = e.getSource();
 
@@ -521,13 +509,12 @@ public class ImportNetworkDialog extends JDialog implements
 		} catch (MalformedURLException e1) {
 			JOptionPane.showMessageDialog(this, "URL error!", "Warning",
 					JOptionPane.INFORMATION_MESSAGE);
-		} catch (IOException e2) {
-			JOptionPane.showMessageDialog(this,
-					"Failed to connect to the remote server!", "Warning",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
-
+		} 
+		
 		if (tmpFile == null) {
+			JOptionPane.showMessageDialog(this,
+					"Failed! Please make sure the URL is correct!", "Warning",
+					JOptionPane.INFORMATION_MESSAGE);			
 			return;
 		}
 		networkFiles = new File[1];
