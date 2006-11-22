@@ -83,9 +83,6 @@ public class PsiMiGraphReader implements GraphReader {
             ContentReader reader = new ContentReader();
             String xml = reader.retrieveContent(fileName);
 
-            //  Before doing anything, validate
-            XmlValidator.validate(xml);
-
             //  Map BioPAX Data to Cytoscape Nodes/Edges
             ArrayList interactions = new ArrayList();
 
