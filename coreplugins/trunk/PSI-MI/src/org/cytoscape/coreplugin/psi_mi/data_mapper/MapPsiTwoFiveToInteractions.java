@@ -59,8 +59,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import cytoscape.Cytoscape;
-
 /**
  * Maps PSI-MI Level 2.5 to Interaction Objects.
  *

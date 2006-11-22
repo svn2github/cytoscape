@@ -44,7 +44,6 @@ import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
-import org.cytoscape.coreplugin.psi_mi.util.XmlValidator;
 
 import java.io.IOException;
 import java.util.ArrayList;

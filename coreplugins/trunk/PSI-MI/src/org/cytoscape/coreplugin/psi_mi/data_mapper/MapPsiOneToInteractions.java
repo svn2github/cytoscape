@@ -51,8 +51,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cytoscape.Cytoscape;
-
 /**
  * Maps PSI-MI Level 1 Document to Interaction Objects.
  *
