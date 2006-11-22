@@ -93,8 +93,7 @@
         <copy todir="${plugins.dir}">
             <fileset dir="../../cytoscape/plugins/core"/>
         </copy>
-        <java classname="cytoscape.CyMain" classpathref="classpath"
-            fork="true" maxmemory="1000M">
+    	<java jar="../../cytoscape/cytoscape.jar" fork="true">
             <arg line="-p plugins"/>
         </java>
     </target>
