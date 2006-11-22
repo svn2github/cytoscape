@@ -39,6 +39,15 @@ import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.*;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.BibrefType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.CvType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.DbReferenceType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.ExperimentType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractionElementType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.NamesType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.XrefType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
 import org.jdom.Text;
 
@@ -49,6 +58,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import cytoscape.Cytoscape;
 
 /**
  * Maps PSI-MI Level 2.5 to Interaction Objects.
@@ -91,8 +102,21 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
             interactorMap = new HashMap ();
             experimentMap = new HashMap ();
             StringReader reader = new StringReader (content);
-            JAXBContext jc = JAXBContext.newInstance (
-                    "org.cytoscape.coreplugin.psi_mi.schema.mi25");
+
+            //  Note to self.  The following method will not work
+            //  JAXBContext jc = JAXBContext.newInstance(
+            //       "org.cytoscape.coreplugin.psi_mi.schema.mi25");
+            //  Using the line above results in the following exception:
+            //  javax.xml.bind.JAXBException: "org.cytoscape.coreplugin.psi_mi.schema.mi1"
+            //  doesnt contain ObjectFactory.class or jaxb.index
+
+            //  The alternative is to use the syntax below.  I don't know why this works,
+            //  but the tip is described online here:
+            //  http://forums.java.net/jive/thread.jspa?forumID=46&threadID=20124&messageID=174472
+            Class classes[] = new Class[2];
+            classes[0] = org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet.class;
+            classes[1] = org.cytoscape.coreplugin.psi_mi.schema.mi25.ObjectFactory.class;
+            JAXBContext jc = JAXBContext.newInstance(classes);
             Unmarshaller u = jc.createUnmarshaller ();
 
             EntrySet entrySet = (EntrySet) u.unmarshal (reader);

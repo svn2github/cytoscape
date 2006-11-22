@@ -51,6 +51,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cytoscape.Cytoscape;
+
 /**
  * Maps PSI-MI Level 1 Document to Interaction Objects.
  *
@@ -91,8 +93,21 @@ public class MapPsiOneToInteractions implements Mapper {
             interactorMap = new HashMap();
             experimentMap = new HashMap();
             StringReader reader = new StringReader(content);
-            JAXBContext jc = JAXBContext.newInstance(
-                    "org.cytoscape.coreplugin.psi_mi.schema.mi1");
+
+            //  Note to self.  The following method will not work
+            //  JAXBContext jc = JAXBContext.newInstance(
+            //       "org.cytoscape.coreplugin.psi_mi.schema.mi1");
+            //  Using the line above results in the following exception:
+            //  javax.xml.bind.JAXBException: "org.cytoscape.coreplugin.psi_mi.schema.mi1"
+            //  doesnt contain ObjectFactory.class or jaxb.index
+
+            //  The alternative is to use the syntax below.  I don't know why this works,
+            //  but the tip is described online here:
+            //  http://forums.java.net/jive/thread.jspa?forumID=46&threadID=20124&messageID=174472
+            Class classes[] = new Class[2];
+            classes[0] = org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet.class;
+            classes[1] = ObjectFactory.class;
+            JAXBContext jc = JAXBContext.newInstance(classes);
             Unmarshaller u = jc.createUnmarshaller();
             org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet entrySet =
                     (org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet) u.unmarshal(reader);
