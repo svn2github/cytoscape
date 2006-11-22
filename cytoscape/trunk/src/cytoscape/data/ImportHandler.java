@@ -346,8 +346,6 @@ public class ImportHandler {
 		else
 			tmpFile.deleteOnExit();
 
-		System.out.println("ImportHandler.downloadFromURL: " + tmpFile.getAbsolutePath());
-
 		// now write the temp file
 		BufferedWriter out = null;
 		BufferedReader in = null;
@@ -356,8 +354,10 @@ public class ImportHandler {
 		in = new BufferedReader(new InputStreamReader(conn.getInputStream()));	    	
 
 		String inputLine = null;
-		while ((inputLine = in.readLine()) != null) 
-			out.write(inputLine+"\n");
+		while ((inputLine = in.readLine()) != null) {
+			out.write(inputLine);
+			out.newLine();
+		}
 
 		in.close();
 		out.close();
@@ -369,30 +369,4 @@ public class ImportHandler {
 			return null;
 		}
 	}
-	
-	
-    /**
-     * Gets header of specified file. 
-     * Copy from cytoscape.util.CyFileFilter.getHeader()
-     */
-    protected String getHeader(File file) throws IOException {
-        FileReader reader = null;
-        BufferedReader bufferedReader = null;
-        try {
-            reader = new FileReader (file);
-            bufferedReader = new BufferedReader (reader);
-            String line = bufferedReader.readLine();
-            StringBuffer header = new StringBuffer();
-            int numLines = 0;
-            while (line != null && numLines < 5) {
-                header.append(line + "\n");
-                line = bufferedReader.readLine();
-                numLines++;
-            }
-            return header.toString();
-        } finally {
-            bufferedReader.close();
-            reader.close();
-        }
-    }
 }
