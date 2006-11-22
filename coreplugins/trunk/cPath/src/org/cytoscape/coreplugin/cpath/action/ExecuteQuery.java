@@ -130,7 +130,7 @@ public class ExecuteQuery extends KeyAdapter implements ActionListener {
             config.displayTimeElapsed(true);
             config.displayTimeRemaining(true);
             config.displayStatus(true);
-            config.setOwner(Cytoscape.getDesktop());
+            config.setOwner(parent);
             TaskManager.executeTask(task, config);
         }
     }

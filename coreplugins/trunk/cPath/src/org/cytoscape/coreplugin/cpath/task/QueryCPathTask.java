@@ -35,11 +35,16 @@ import org.cytoscape.coreplugin.cpath.util.CPathProperties;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.view.CyNetworkView;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Date;
+import java.io.IOException;
 
 /**
  * Task to Query cPath.
@@ -113,9 +118,7 @@ public class QueryCPathTask implements Task {
         taskMonitor.setStatus("Connecting to cPath...");
         searchResponse = new SearchResponse();
         try {
-            ArrayList interactions = null;
             OrganismOption organism = searchRequest.getOrganism();
-
             int taxonomyId = organism.getTaxonomyId();
             if (organism == OrganismOption.ALL_ORGANISMS) {
                 taxonomyId = CPathProtocol.NOT_SPECIFIED;
@@ -123,13 +126,9 @@ public class QueryCPathTask implements Task {
             int maxHits = searchRequest.getMaxHitsOption().getMaxHits();
             getAllInteractions(taxonomyId, maxHits);
             taskMonitor.setPercentCompleted(100);
-//        } catch (EmptySetException e) {
-//            console.logMessage("No Matching Results Found.  Please Try Again.");
-//            searchResponse.setException(e);
-//        } catch (DataServiceException e) {
-//            searchResponse.setException(e);
-//        } catch (MapperException e) {
-//            searchResponse.setException(e);
+        } catch (EmptySetException e) {
+            console.logMessage("No Matching Results Found.  Please Try Again.");
+            searchResponse.setException(e);
         } catch (RuntimeException e) {
             searchResponse.setException(e);
         } catch (Exception e) {
@@ -141,7 +140,7 @@ public class QueryCPathTask implements Task {
                     ((SearchRequest) searchRequest.clone(), searchResponse);
             searchList.add(searchBundle);
             if (isInterrupted) {
-//                logToConsole("Data Retrieval Cancelled by User.");
+                logToConsole("Data Retrieval Cancelled by User.");
             }
         }
     }
@@ -151,7 +150,7 @@ public class QueryCPathTask implements Task {
      *
      */
     private void getAllInteractions (int taxonomyId, int maxHits)
-            throws InterruptedException, CPathException, EmptySetException {
+            throws InterruptedException, CPathException, EmptySetException, IOException {
         searchResponse = new SearchResponse();
 
         //  First, determine how many interactions we have in total
@@ -161,6 +160,9 @@ public class QueryCPathTask implements Task {
         logToConsole("Total Number of Matching Interactions:  "
                 + totalNumInteractions);
 
+        //  0% Complete
+        taskMonitor.setPercentCompleted(0);
+
         //  Retrieve the interactions
         int index = 0;
         int endIndex = Math.min(maxHits, totalNumInteractions);
@@ -168,22 +170,39 @@ public class QueryCPathTask implements Task {
         if (maxHits > 100) {
             increment = LARGER_INCREMENT;
         }
+
+        //  Create CyNetwork
+        String title = searchRequest.toString();
+
+        if (title.length() > 25) {
+            title = new String(title + "...");
+        }
+
+        //  Create Network w/o view
+        CyNetwork cyNetwork = Cytoscape.createNetwork(title, false);
+
+        GraphReader graphReader = null;
         while (index < endIndex && !isInterrupted) {
-            getInteractions(taxonomyId, index, increment, endIndex);
+            graphReader = getInteractions(taxonomyId, index, increment, endIndex);
+            graphReader.read();
+            addToCyNetwork(graphReader, cyNetwork);
             index += increment;
+            if (isInterrupted) {
+                throw new InterruptedException();
+            }
+
         }
-//
-////        searchResponse.setInteractions(interactions);
-        if (isInterrupted) {
-            throw new InterruptedException();
+
+        CyNetworkView networkView = createNetworkView(cyNetwork);
+        if (networkView != null) {
+            graphReader.layout(networkView);
         }
-//        mapToGraph();
     }
 
     /**
      * Iteratively Get Interactions from cPath.
      */
-    private void getInteractions(int taxonomyId, int startIndex, int increment,
+    private GraphReader getInteractions(int taxonomyId, int startIndex, int increment,
             int totalNumInteractions) throws CPathException, EmptySetException {
 
         ReadPsiFromCPath reader = new ReadPsiFromCPath();
@@ -193,10 +212,9 @@ public class QueryCPathTask implements Task {
                 + totalNumInteractions);
 
         Date start = new Date();
-        ArrayList currentList = reader.getInteractionsByKeyword
+        GraphReader graphReader = reader.getInteractionsByKeyword
                 (searchRequest.getQuery(), taxonomyId,
                         startIndex, increment);
-
         Date stop = new Date();
         long interval = stop.getTime() - start.getTime();
 
@@ -209,90 +227,55 @@ public class QueryCPathTask implements Task {
                 + " - " + endIndex + " of "
                 + totalNumInteractions + " [OK]");
 
-//TODO:FIX THIS
-//        this.setMaxProgressValue(totalNumInteractions);
-//        this.setProgressValue(startIndex + increment);
-//        taskMonitor.setEstimatedTimeRemaining(totalTimeInRemaining);
-//    }
+        double percentCompleted = (startIndex + increment) / (double) totalNumInteractions;
+        int percent = (int) (percentCompleted * 100.0);
+        if (percent > 100) {
+            percent = 100;
+        }
+        taskMonitor.setPercentCompleted(percent);
+        taskMonitor.setEstimatedTimeRemaining(totalTimeInRemaining);
+        return graphReader;
     }
 
-    /**
-     * Maps New Interactions to Cytoscape Graph.
-     *
-     */
-//    private void mapToGraph() throws MapperException {
-//        taskMonitor.setPercentCompleted(-1);
-//        String title = searchRequest.toString();
-//        ArrayList interactions = searchResponse.getInteractions();
-//
-//        if (title.length() > 25) {
-//            title = new String(title + "...");
-//        }
-//        CyNetwork cyNetwork = Cytoscape.createNetwork(title);
-//        cyNetwork.setTitle(title);
-//        searchResponse.setCyNetwork(cyNetwork);
-//
-//        //  The two lines below are a hack, and require some explanation.
-//        //  When you create an empty CyNetwork object via:
-//        //  Cytoscape.createNetwork (String title) method, a CyNetworkView
-//        //  is automatically created.  That's because the code conditionally
-//        //  creates a network based on the number of nodes in the network.
-//        //  But, since this is an empty network with 0 nodes, a view is
-//        //  always created.  The trick to preventing a network view
-//        //  is to programmatically create a view directly, and then destroy it.
-//        CyNetworkView networkView = Cytoscape.createNetworkView(cyNetwork);
-//        Cytoscape.destroyNetworkView(networkView);
-//
-//        //  Map Interactions to Network
-//        logToConsole("Mapping Data to Cytoscape Network");
-//        taskMonitor.setStatus( "Mapping Data to Cytoscape Network.  Please wait.");
-//   TODO:  FIX ALL CODE BELOW
-//        MapPsiInteractionsToGraph mapper =
-//                new MapPsiInteractionsToGraph(interactions, cyNetwork,
-//                        MapInteractionsToGraph.MATRIX_VIEW);
-//        mapper.setBaseTask((BaseTask) this);
-//        mapper.doMapping();
-//
-//        //  Log Warnings to Console.
-//        ArrayList warnings = mapper.getWarnings();
-//        if (warnings.size() > 0) {
-//            logToConsole("------------------------------------------");
-//        }
-//        for (int i = 0; i < warnings.size(); i++) {
-//            int counter = i + 1;
-//            logToConsole("Warning # " + counter
-//                    + ":  " + (String) warnings.get(i));
-//            logToConsole("------------------------------------------");
-//        }
-//
-//        //  Update CyMap
-//        HashMap map = mapper.getCyMap();
-//        cyMap.putAll(map);
+    private void addToCyNetwork(GraphReader reader, CyNetwork cyNetwork) {
+        //  Add new nodes/edges to network
+        int nodeIndices[] = reader.getNodeIndicesArray();
+        int edgeIndices[] = reader.getEdgeIndicesArray();
+        for (int i = 0; i < nodeIndices.length; i++) {
+            cyNetwork.addNode(nodeIndices[i]);
+        }
+        for (int i = 0; i < edgeIndices.length; i++) {
+            cyNetwork.addEdge(edgeIndices[i]);
+        }
+    }
 
+    private CyNetworkView createNetworkView (CyNetwork cyNetwork) {
         //  Conditionally Create a View, based on Number of Nodes.
         //  GetViewThreshold is settable by the End User.
-//        logToConsole("Total Number of Nodes in Network:  "
-//                + cyNetwork.getNodeCount());
-//        logToConsole("Total Number of Edges in Network:  "
-//                + cyNetwork.getEdgeCount());
-//        int threshold = Integer.parseInt(CytoscapeInit.getProperties().getProperty
-//                ("viewThreshold", "5000"));
-//        if (cyNetwork.getNodeCount() < threshold) {
-//            logToConsole("Your Network is Under "
-//                    + threshold
-//                    + " nodes --> a Cytoscape View  will be "
-//                    + "automatically created.");
-//            taskMonitor.setStatus("Creating Network View.  Please wait.");
-//            CyNetworkView view = Cytoscape.createNetworkView(cyNetwork);
-//            searchResponse.setCyNetworkView(view);
-//            taskMonitor.setStatus("Applying Visual Styles.");
-//            Cytoscape.getVisualMappingManager().applyAppearances();
-//        } else {
-//            logToConsole("Your Network is Over " + threshold
-//                    + " nodes --> a Cytoscape View  will not be "
-//                    + "automatically created.");
-//        }
-//}
+        logToConsole("Total Number of Nodes in Network:  "
+                + cyNetwork.getNodeCount());
+        logToConsole("Total Number of Edges in Network:  "
+                + cyNetwork.getEdgeCount());
+        int threshold = Integer.parseInt(CytoscapeInit.getProperties().getProperty
+                ("viewThreshold", "5000"));
+        CyNetworkView view = null;
+        if (cyNetwork.getNodeCount() < threshold) {
+            logToConsole("Your Network is Under "
+                    + threshold
+                    + " nodes --> a Cytoscape View  will be "
+                    + "automatically created.");
+            taskMonitor.setStatus ("Creating Network View.  Please wait.");
+            view = Cytoscape.createNetworkView(cyNetwork);
+            searchResponse.setCyNetworkView(view);
+            taskMonitor.setStatus ("Applying Visual Styles.");
+            Cytoscape.getVisualMappingManager().applyAppearances();
+        } else {
+            logToConsole("Your Network is Over " + threshold
+                    + " nodes --> a Cytoscape View  will not be "
+                    + "automatically created.");
+        }
+        return view;
+    }
 
     /**
      * Logs to Console by queing an event to the Event-Dispatch Thread.

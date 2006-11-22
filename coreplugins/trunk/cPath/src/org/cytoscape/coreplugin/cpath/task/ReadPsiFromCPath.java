@@ -33,7 +33,6 @@ import org.cytoscape.coreplugin.cpath.model.CPathException;
 import org.cytoscape.coreplugin.cpath.model.EmptySetException;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 
-import java.util.ArrayList;
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -62,14 +61,11 @@ public class ReadPsiFromCPath {
      * @throws CPathException    cPath Connection Error.
      * @throws EmptySetException No Matching Interactions Found.
      */
-    public ArrayList getInteractionsByKeyword (String keyword, int taxonomyId,
+    public GraphReader getInteractionsByKeyword (String keyword, int taxonomyId,
             int maxHits) throws CPathException, EmptySetException {
-        process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword, taxonomyId,
+        return process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword, taxonomyId,
                 0, maxHits);
-        //return interactions;
-        return null;
     }
-
 
     /**
      * Gets ArrayList of Interactions by Keyword
@@ -78,16 +74,15 @@ public class ReadPsiFromCPath {
      * @param taxonomyId TaxonomyID.
      * @param startIndex StartIndex.
      * @param maxHits    MaxHits.
-     * @return ArrayList of Interactions.
+     * @return GraphReader Object.
      * @throws CPathException    cPath Connection Error.
      * @throws EmptySetException No Matching Interactions Found.
      */
-    public ArrayList getInteractionsByKeyword (String keyword, int taxonomyId,
+    public GraphReader getInteractionsByKeyword (String keyword, int taxonomyId,
             int startIndex, int maxHits) throws CPathException,
             EmptySetException {
-        process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword, taxonomyId,
+        return process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword, taxonomyId,
                 startIndex, maxHits);
-        return null;
     }
 
     /**
@@ -131,11 +126,10 @@ public class ReadPsiFromCPath {
      * @throws CPathException    Indicates error connecting to data service.
      * @throws EmptySetException No Matching Interactions Found.
      */
-    public ArrayList getInteractionsByKeyword (String keyword, int maxHits)
+    public GraphReader getInteractionsByKeyword (String keyword, int maxHits)
             throws CPathException, EmptySetException {
-        process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword,
+        return process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword,
                 NOT_SPECIFIED, 0, maxHits);
-        return null;
     }
 
     /**
@@ -150,8 +144,8 @@ public class ReadPsiFromCPath {
     /**
      * Process Service.
      */
-    private void process (String command, String query, int taxonomyId,
-            int startIndex, int maxHits) throws CPathException, EmptySetException {
+    private GraphReader process (String command, String query, int taxonomyId,
+            int startIndex, int maxHits) throws CPathException {
         CPathProtocol cpath = new CPathProtocol();
         cpath.setCommand(command);
         cpath.setFormat(CPathProtocol.FORMAT_XML);
@@ -165,6 +159,7 @@ public class ReadPsiFromCPath {
         try {
             URL url = new URL (cpath.getURI());
             GraphReader reader = importHandler.getReader(url);
+            return reader;
         } catch (MalformedURLException e) {
             throw new CPathException ("Could not parse URL", e);
         }
