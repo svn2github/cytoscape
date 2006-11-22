@@ -26,8 +26,8 @@
 <module name="Checker">
 
   <module name="TreeWalker">
-     <module name="RegexpHeader">
-        <property name="headerFile" value="config/license.txt"/>
+     <module name="Header">
+	     <property name="headerFile" value="config/license.txt"/>
      </module>
 
     <!--                         code conventions -->
@@ -54,7 +54,6 @@
     <module name="NoWhitespaceAfter"/>
     <module name="NoWhitespaceBefore"/>
     <module name="WhitespaceAfter"/>
-    <module name="WhitespaceAround"/>
 
 
 
@@ -94,6 +93,11 @@
 
     <!--                             best practices -->
 
+    <!-- don't allow empty blocks (in particular catch blocks) -->
+    <!--
+    <module name="EmptyBlock"/>
+    -->
+
     <!-- avoid inner assignments -->
     <module name="InnerAssignment"/>
 
@@ -118,7 +122,7 @@
 
     <!-- enforce default length limits -->
     <module name="LineLength">
-	    <property name="max" value="100"/>
+	<property name="max" value="125"/>
     </module>
     <module name="MethodLength"/>
     <module name="FileLength"/>
