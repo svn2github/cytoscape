@@ -4,8 +4,19 @@ import junit.framework.TestCase;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 import org.cytoscape.coreplugin.cpath.model.EmptySetException;
 
+/**
+ * Tests the CPath Protocol.
+ *
+ * Requires network access to cPath Web Service API.
+ *
+ * @author Ethan Cerami
+ */
 public class TestCPathProtocol extends TestCase {
 
+    /**
+     * Tests the Get Counter Query.
+     * @throws Exception All Errors.
+     */
     public void testGetCounter() throws Exception {
         CPathProtocol cpath = new CPathProtocol();
 

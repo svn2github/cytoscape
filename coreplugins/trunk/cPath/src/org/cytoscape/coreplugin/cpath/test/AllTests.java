@@ -30,6 +30,7 @@
 package org.cytoscape.coreplugin.cpath.test;
 
 import org.cytoscape.coreplugin.cpath.test.task.TaskSuite;
+import org.cytoscape.coreplugin.cpath.test.protocol.ProtocolSuite;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -50,7 +51,8 @@ public class AllTests extends TestCase {
         //  Organize all suites into one master suite.
         TestSuite suite = new TestSuite();
         suite.addTest(TaskSuite.suite());
-        suite.setName("Cytoscape DataServices Plugin Tests");
+        suite.addTest(ProtocolSuite.suite());
+        suite.setName("Cytoscape cPath Plugin Tests");
         return suite;
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build.xml - Build file for Cytoscape Data Viewer Plug In -->
-<project name="Cytoscape Data Viewer Plug In" default="jar" basedir=".">
+<project name="Cytoscape Data Viewer Plug In" default="all" basedir=".">
 
     <!-- The name of the cPath JAR -->
     <property name="jar.name" value="cPath.jar"/>
@@ -23,6 +23,9 @@
 
     <!-- Global "magic" property for <javac> -->
 	<property name="build.compiler" value="modern"/>
+
+    <!-- Junit Directory -->
+    <property name="junit.dir" value="${build.dir}/junit"/>
 
     <!-- Classpath with all lib JAR Files -->
 	<path id="classpath">
@@ -80,7 +83,7 @@
 		description="Runs Cytoscape with Sample Data.">
         <java jar="../../cytoscape/cytoscape.jar" fork="true">
             <arg line="-p plugins"/>
-        </java> 
+        </java>
 	</target>
 
     <!--  Target to Create PlugIn JARs -->
@@ -108,4 +111,19 @@
 		<javadoc destdir="${build.dir}/docs" classpathref="classpath">
 		</javadoc>
 	</target>
+
+    <!--  Target to Run All JUnit Tests -->
+    <target depends="compile" description="Runs all JUnit Tests" name="test">
+        <delete dir="${junit.dir}"/>
+        <mkdir dir="${junit.dir}"/>
+        <mkdir dir="${junit.dir}/reports"/>
+        <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
+            <formatter type="plain" usefile="false"/>
+            <test name="org.cytoscape.coreplugin.cpath.test.AllTests"/>
+            <classpath refid="classpath"/>
+        </junit>
+    </target>
+
+    <!--  Builds and tests everything -->
+    <target depends="jar,test" description="Builds and tests everything" name="all"/>
 </project>

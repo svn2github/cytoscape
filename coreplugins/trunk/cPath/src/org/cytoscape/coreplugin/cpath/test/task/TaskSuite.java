@@ -48,7 +48,7 @@ public class TaskSuite extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         suite.addTestSuite(TestCPathTimeEstimator.class);
-        suite.setName("Task Tests");
+        suite.setName("Test cPath Tasks");
         return suite;
     }
 }
