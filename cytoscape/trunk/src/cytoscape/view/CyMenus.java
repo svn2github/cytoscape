@@ -105,6 +105,8 @@ import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
 import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
 import cytoscape.actions.OpenSessionAction;
 import cytoscape.actions.PreferenceAction;
+import cytoscape.actions.BookmarkAction;
+import cytoscape.actions.ProxyServerAction;
 import cytoscape.actions.PrintAction;
 import cytoscape.actions.SaveSessionAction;
 import cytoscape.actions.SaveSessionAsAction;
@@ -771,6 +773,8 @@ public class CyMenus implements GraphViewChangeListener {
 		// add Preferences...
 		editMenu.add(new JSeparator());
 		addAction(new PreferenceAction());
+		addAction(new BookmarkAction());
+		addAction(new ProxyServerAction());
 
 		// fill the Data menu --> moved to the browser plugin.
 		// addAction(new DisplayBrowserAction());
