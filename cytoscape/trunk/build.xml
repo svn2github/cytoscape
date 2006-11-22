@@ -254,6 +254,7 @@
 	<target name="clean" depends="clean-generated" description="Removes all generated files.">
 		<delete dir="${build.dir}" />
 		<delete file="${basedir}/cytoscape.jar" />
+		<ant dir="docs" target="clean"/>
 	</target>
 
 	<!-- ======================================================= -->
@@ -296,24 +297,34 @@
 
 	</target>
 
+	<!-- ======================================================= -->
+	<!-- Generates cytoscape manual - see build file in docs     -->
+	<!-- dir for details.                                        -->
+	<!-- ======================================================= -->
+	<target name="manual"> 
+		<ant dir="docs" target="all"/>	
+	</target>
 
 	<!-- ======================================================= -->
 	<!-- Build Cytoscape Help - Index html source files etc.     -->
 	<!-- ======================================================= -->
-	<target name="help" description="Builds Help system files (full text search db, etc).">
+	<target name="help" 
+	        description="Builds Help system files (full text search db, etc)."
+		depends="manual">
 		<!-- Check to see if the help files need to be indexed... -->
 		<uptodate property="helpIsUpToDate" 
 		          targetfile="${build.classes}/cytoscape/help/JavaHelpSearch/SCHEMA">
-			<srcfiles dir="${basedir}/help" includes="**/*" />
+			<srcfiles dir="${basedir}/docs/help" includes="**/*" />
 		</uptodate>
 		<antcall target="buildHelp" />
 	</target>
 
-	<target name="buildHelp" unless="helpIsUpToDate">
+	<target name="buildHelp" 
+	        unless="helpIsUpToDate">
 		<!-- Copy the JavaHelp system files and html source over to build area -->
 		<echo>Copying javahelp files: helpset, html files, images</echo>
 		<copy todir="${build.classes}/cytoscape/help">
-			<fileset dir="${basedir}/help" />
+			<fileset dir="${basedir}/docs/help" />
 		</copy>
 
 		<!-- then index the help files in the build area -->
@@ -704,12 +715,25 @@
             ---------------------------------------
         	</echo>
 
-	        <filter token="version" value="${version}"/>
-		<copy file="docs/INSTALL.txt" todir="${release.dir}" filtering="true"/>
-
 		<copy file="docs/LICENSE.txt" todir="${release.dir}" />
 		<copy file="docs/LICENSE.html" todir="${release.dir}" />
-		<copy file="docs/manual.pdf" todir="${release.dir}" />
+
+
+		<mkdir dir="${release.dir}/docs"/>
+	        <filter token="version" value="${version}"/>
+		<copy file="docs/INSTALL.txt" todir="${release.dir}/docs" filtering="true"/>
+		<copy todir="${release.dir}/docs">
+			<fileset dir="docs/pdf">
+				<include name="*.pdf"/>
+			</fileset>
+			<fileset dir="docs/html">
+				<include name="*.html"/>
+			</fileset>
+		</copy>
+		<mkdir dir="${release.dir}/docs/images"/>
+		<copy todir="${release.dir}/docs/images">
+			<fileset dir="docs/images"/>
+		</copy>
 
 		<!-- Copy over Sample Data Files -->
 		<echo>
