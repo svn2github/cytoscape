@@ -405,8 +405,12 @@ public class CyFileFilter
             }
             return header.toString();
         } finally {
-            bufferedReader.close();
-            reader.close();
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+            if (reader != null) {
+                reader.close();
+            }
         }
     }
 }
