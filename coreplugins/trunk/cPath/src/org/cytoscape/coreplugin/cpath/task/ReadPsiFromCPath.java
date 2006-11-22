@@ -34,6 +34,7 @@
 */
 package org.cytoscape.coreplugin.cpath.task;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GraphReader;
 import org.cytoscape.coreplugin.cpath.model.CPathException;
@@ -159,10 +160,9 @@ public class ReadPsiFromCPath {
         if (taxonomyId != NOT_SPECIFIED) {
             cpath.setOrganism(taxonomyId);
         }
-        ImportHandler importHandler = new ImportHandler();
         try {
             URL url = new URL(cpath.getURI());
-            GraphReader reader = importHandler.getReader(url);
+            GraphReader reader = Cytoscape.getImportHandler().getReader(url);
             return reader;
         } catch (MalformedURLException e) {
             throw new CPathException("Could not parse URL", e);
