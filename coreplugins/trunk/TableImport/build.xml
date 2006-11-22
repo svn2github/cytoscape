@@ -136,8 +136,6 @@
 	<!-- =================================================================== -->
 	<target name="release" depends="testAll">
 		<copy todir="${tableImport.lib.dir}" file="TableImport.jar" />
-		<copy todir="${cytoscape.plugin.dir}/core" file="TableImport.jar" />
-		<!--copy todir="${cytoscape.build.dir}/plugins" file="TableImport.jar" /-->
 	</target>
 
 	<!-- =================================================================== -->
