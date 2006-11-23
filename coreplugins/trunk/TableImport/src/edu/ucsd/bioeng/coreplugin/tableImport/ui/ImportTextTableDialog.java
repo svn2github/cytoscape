@@ -92,6 +92,7 @@ import cytoscape.util.BookmarksUtil;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.util.swing.JStatusBar;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeAndOntologyMappingParameters;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeMappingParameters;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.DefaultAttributeTableReader;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelAttributeSheetReader;
@@ -99,6 +100,7 @@ import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelNetworkSheetReader;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationReader;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableMappingParameters;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.OntologyAnnotationReader;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
@@ -132,7 +134,7 @@ public class ImportTextTableDialog extends JDialog implements
 	public static enum FileTypes {
 		ATTRIBUTE_FILE, NETWORK_FILE, GENE_ASSOCIATION_FILE, CUSTOM_ANNOTATION_FILE;
 	}
-	
+
 	/*
 	 * Default value for Interaction edge attribute.
 	 */
@@ -189,7 +191,7 @@ public class ImportTextTableDialog extends JDialog implements
 	private Map<String, String> ontologyDescriptionMap;
 
 	private List<Byte> attributeDataTypes;
-	
+
 	/*
 	 * This is for storing data type in the list object.
 	 */
@@ -267,7 +269,7 @@ public class ImportTextTableDialog extends JDialog implements
 			 */
 			listDelimiter = evt.getNewValue().toString();
 
-		} else if(evt.getPropertyName().equals(LIST_DATA_TYPE_CHANGED)) {
+		} else if (evt.getPropertyName().equals(LIST_DATA_TYPE_CHANGED)) {
 			listDataTypes = (Byte[]) evt.getNewValue();
 		} else if (evt.getPropertyName().equals(ATTR_DATA_TYPE_CHANGED)) {
 			/*
@@ -431,11 +433,12 @@ public class ImportTextTableDialog extends JDialog implements
 		if (dialogType == NETWORK_IMPORT) {
 			previewPanel = new PreviewTablePanel(null,
 					PreviewTablePanel.NETWORK_PREVIEW);
-		} else if(dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			defaultInteractionLabel.setEnabled(false);
 			defaultInteractionTextField.setEnabled(false);
 			commentLineTextField.setText("!");
-			previewPanel = new PreviewTablePanel(null, PreviewTablePanel.ONTOLOGY_PREVIEW);
+			previewPanel = new PreviewTablePanel(null,
+					PreviewTablePanel.ONTOLOGY_PREVIEW);
 		} else {
 			defaultInteractionLabel.setEnabled(false);
 			defaultInteractionTextField.setEnabled(false);
@@ -1637,8 +1640,8 @@ public class ImportTextTableDialog extends JDialog implements
 		defaultInteractionLabel.setText("Default Interaction:");
 		defaultInteractionTextField.setText(DEFAULT_INTERACTION);
 		defaultInteractionTextField
-				.setToolTipText("<html>If <font color=\"red\"><i>Default Interaction</i></font>" +
-						" is selected, this value will be used for <i>Interaction Type</i>.<br></html>");
+				.setToolTipText("<html>If <font color=\"red\"><i>Default Interaction</i></font>"
+						+ " is selected, this value will be used for <i>Interaction Type</i>.<br></html>");
 
 		org.jdesktop.layout.GroupLayout networkImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(
 				networkImportOptionPanel);
@@ -2007,9 +2010,10 @@ public class ImportTextTableDialog extends JDialog implements
 		if (attrNameCheckBox.isSelected()) {
 			startLineNumber = 1;
 		} else {
-			startLineNumber = Integer.parseInt(startRowSpinner.getValue().toString()) - 1;
+			startLineNumber = Integer.parseInt(startRowSpinner.getValue()
+					.toString()) - 1;
 		}
-		
+
 		final String commentChar = commentLineTextField.getText();
 
 		/*
@@ -2075,6 +2079,18 @@ public class ImportTextTableDialog extends JDialog implements
 
 		}
 
+		ObjectType objType = null;
+		if (dialogType != NETWORK_IMPORT) {
+
+			if (nodeRadioButton.isSelected()) {
+				objType = NODE;
+			} else if (edgeRadioButton.isSelected()) {
+				objType = EDGE;
+			} else {
+				objType = NETWORK;
+			}
+		}
+
 		/*
 		 * Switch readers based on the dialog type.
 		 */
@@ -2086,15 +2102,6 @@ public class ImportTextTableDialog extends JDialog implements
 
 			// Extract URL from the text table.
 			final URL source = new URL(targetDataSourceTextField.getText());
-			final ObjectType objType;
-
-			if (nodeRadioButton.isSelected()) {
-				objType = NODE;
-			} else if (edgeRadioButton.isSelected()) {
-				objType = EDGE;
-			} else {
-				objType = NETWORK;
-			}
 
 			// Build mapping parameter object.
 			final AttributeMappingParameters mapping = new AttributeMappingParameters(
@@ -2155,12 +2162,25 @@ public class ImportTextTableDialog extends JDialog implements
 				GeneAssociationReader gaReader = new GeneAssociationReader(
 						selectedOntologyName, new URL(annotationSource),
 						mappingAttribute);
-				loadGeneAssociation(gaReader, selectedOntologyName, annotationSource);
+				loadGeneAssociation(gaReader, selectedOntologyName,
+						annotationSource);
 
 			} else {
 				/*
 				 * This is a custom annotation file.
 				 */
+				final int ontologyIndex = ontologyInAnnotationComboBox
+						.getSelectedIndex();
+
+				final AttributeAndOntologyMappingParameters aoMapping = new AttributeAndOntologyMappingParameters(
+						objType, checkDelimiter(), listDelimiter, keyInFile,
+						mappingAttribute, aliasList, attributeNames,
+						attributeTypes, listDataTypes, importFlag,
+						ontologyIndex, selectedOntologyName);
+				final OntologyAnnotationReader oaReader = new OntologyAnnotationReader(new URL(annotationSource), aoMapping, commentChar, startLineNumber);
+			
+				loadAnnotation(oaReader, annotationSource);
+			
 			}
 
 			break;
@@ -2185,9 +2205,9 @@ public class ImportTextTableDialog extends JDialog implements
 
 			final NetworkTableMappingParameters nmp = new NetworkTableMappingParameters(
 					checkDelimiter(), listDelimiter, attributeNames,
-					attributeTypes, null, importFlag,
-					sourceColumnIndex, targetColumnIndex,
-					interactionColumnIndex, defaultInteraction);
+					attributeTypes, null, importFlag, sourceColumnIndex,
+					targetColumnIndex, interactionColumnIndex,
+					defaultInteraction);
 
 			final NetworkTableReader reader;
 			if (networkSource.toString().endsWith(EXCEL_EXT)) {
@@ -2449,8 +2469,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 		updateMappingAttributeComboBox();
 
-		setStatusBar("-", "-",
-				"File Size: Unknown");
+		setStatusBar("-", "-", "File Size: Unknown");
 	}
 
 	private void updatePrimaryKeyComboBox() {
@@ -2685,7 +2704,7 @@ public class ImportTextTableDialog extends JDialog implements
 				commentChar, startLine - 1);
 
 		listDataTypes = previewPanel.getCurrentListDataTypes();
-		
+
 		/*
 		 * Initialize all Alias Tables
 		 */
@@ -2847,17 +2866,18 @@ public class ImportTextTableDialog extends JDialog implements
 		if (sourceURL.toString().startsWith("file:")) {
 			int fileSize = 0;
 			try {
-				BufferedInputStream fis = (BufferedInputStream) sourceURL.openStream();
+				BufferedInputStream fis = (BufferedInputStream) sourceURL
+						.openStream();
 				fileSize = fis.available();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if((fileSize/1000) == 0) {
+			if ((fileSize / 1000) == 0) {
 				rightMessage = "File Size: " + fileSize + " Bytes";
 			} else {
-				rightMessage = "File Size: " + fileSize/1000 + " KBytes";
+				rightMessage = "File Size: " + fileSize / 1000 + " KBytes";
 			}
-			
+
 		} else {
 			rightMessage = "File Size Unknown (Remote Data Source)";
 		}
@@ -3139,10 +3159,10 @@ public class ImportTextTableDialog extends JDialog implements
 	 * @param ontology
 	 * @param source
 	 */
-	private void loadAnnotation(TextTableReader reader,
-			String source) {
+	private void loadAnnotation(TextTableReader reader, String source) {
 		// Create LoadNetwork Task
-		ImportAttributeTableTask task = new ImportAttributeTableTask(reader, source);
+		ImportAttributeTableTask task = new ImportAttributeTableTask(reader,
+				source);
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
