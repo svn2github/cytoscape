@@ -254,7 +254,6 @@
 	<target name="clean" depends="clean-generated" description="Removes all generated files.">
 		<delete dir="${build.dir}" />
 		<delete file="${basedir}/cytoscape.jar" />
-		<ant dir="docs" target="clean"/>
 	</target>
 
 	<!-- ======================================================= -->
@@ -309,8 +308,7 @@
 	<!-- Build Cytoscape Help - Index html source files etc.     -->
 	<!-- ======================================================= -->
 	<target name="help" 
-	        description="Builds Help system files (full text search db, etc)."
-		depends="manual">
+	        description="Builds Help system files (full text search db, etc).">
 		<!-- Check to see if the help files need to be indexed... -->
 		<uptodate property="helpIsUpToDate" 
 		          targetfile="${build.classes}/cytoscape/help/JavaHelpSearch/SCHEMA">
