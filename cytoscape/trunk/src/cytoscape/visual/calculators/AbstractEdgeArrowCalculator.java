@@ -78,7 +78,11 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
     }
 
 	protected static final byte SOURCE=0;
-	protected static final byte TARGET=0;
+	
+	// AJK: 11/27/2006 BEGIN
+	//   fix this bug;  Target should NOT be the same as source, right?
+//	protected static final byte TARGET=0;
+	protected static final byte TARGET=1;
 
 
 	public abstract byte getType(); 
