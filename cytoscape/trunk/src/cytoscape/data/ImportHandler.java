@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.Proxy;
@@ -141,12 +142,18 @@ public class ImportHandler {
      * @return GraphReader capable of reading the specified URL.
      */
     public GraphReader getReader(URL u) {
-    	File tmpFile = downloadFromURL(u);
+    	File tmpFile = null;
+    	try {
+    		tmpFile = downloadFromURL(u);    		
+    	}
+    	catch (Exception e)
+    	{
+    		System.out.println("Failed to downloadFromURL");
+    	}
 	    if (tmpFile != null) {
             return getReader(tmpFile.getAbsolutePath());
-        } else {
-		    return null;
-        }
+        } 		    
+	    return null;
     }
 
     /**
@@ -302,9 +309,7 @@ public class ImportHandler {
 	 * Download a temporary file from the given URL. The file will be saved in the 
 	 * temporary directory and will be deleted after Cytoscape exits.
 	 */
-	public File downloadFromURL(URL url) {
-
-		try {
+	public File downloadFromURL(URL url) throws IOException, FileNotFoundException{
 
 		URLConnection conn = null;
 
@@ -364,9 +369,5 @@ public class ImportHandler {
 
 		return tmpFile;
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 }
