@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -506,15 +507,28 @@ public class ImportNetworkDialog extends JDialog implements
 		File tmpFile = null;
 		try {
 			tmpFile = theHandler.downloadFromURL(new URL(theURLstr));
-		} catch (MalformedURLException e1) {
+		} 
+		catch (MalformedURLException e1) {
 			JOptionPane.showMessageDialog(this, "URL error!", "Warning",
 					JOptionPane.INFORMATION_MESSAGE);
 		} 
-		
-		if (tmpFile == null) {
+		catch (FileNotFoundException e2) {
 			JOptionPane.showMessageDialog(this,
-					"Failed! Please make sure the URL is correct!", "Warning",
+					"File was not found! Please make sure the URL is correct!", "Warning",
 					JOptionPane.INFORMATION_MESSAGE);			
+		}
+		catch (IOException e3) {
+			JOptionPane.showMessageDialog(this,
+					"IO error! May caused by server-name, proxy, write-permission.", "Warning",
+					JOptionPane.INFORMATION_MESSAGE);			
+		}
+		catch (Exception e4) {
+			JOptionPane.showMessageDialog(this,
+					"Failed to download from URL!", "Warning",
+					JOptionPane.INFORMATION_MESSAGE);			
+		}
+
+		if (tmpFile == null) {
 			return;
 		}
 		networkFiles = new File[1];
