@@ -62,6 +62,7 @@ import java.net.InetSocketAddress;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
+import javax.xml.bind.JAXBException;
 
 import cytoscape.actions.SaveSessionAction;
 import cytoscape.data.CyAttributes;
@@ -69,6 +70,7 @@ import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.ImportHandler;
 import cytoscape.data.Semantics;
+import cytoscape.data.readers.BookmarkReader;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.servers.BioDataServer;
@@ -251,7 +253,7 @@ public abstract class Cytoscape {
 	 */
 	private static String currentSessionFileName;
 	
-	private static Bookmarks bookmarks = new Bookmarks();;
+	private static Bookmarks bookmarks;
 	
 	/**
 	 * A null CyNetwork to give when there is no Current Network
@@ -1652,7 +1654,12 @@ public abstract class Cytoscape {
 		ontologyRootID = id;
 	}
 	
-	public static Bookmarks getBookmarks() {
+	public static Bookmarks getBookmarks() throws JAXBException, IOException {
+		if(bookmarks == null) {
+			BookmarkReader reader = new BookmarkReader();
+			reader.readBookmarks();
+			bookmarks = reader.getBookmarks();
+		}
 		return bookmarks;
 	}
 
