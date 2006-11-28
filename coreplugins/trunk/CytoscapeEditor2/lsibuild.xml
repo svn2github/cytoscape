@@ -89,6 +89,10 @@
 		</unjar>
 
 		<jar destfile="${plugin.loc}">
+			<manifest>
+				<attribute name="Cytoscape-Plugin" 
+				           value="cytoscape.editor.CytoscapeEditorPlugin"/>
+			</manifest>
 			<fileset dir="${build.classes.dir}">
 				<!-- skip items from the test directory: -->
 				<exclude name="${test.subdir}/" />
