@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:bp="http://www.biopax.org/release/biopax-level2.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns="http://www.owl-ontologies.com/unnamed.owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xml:base="http://www.owl-ontologies.com/unnamed.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level2.owl"/>
+  </owl:Ontology>
+  <bp:experimentalForm rdf:ID="Immunoprecipitation"/>
+  <bp:sequenceParticipant rdf:ID="sequenceParticipant2">
+    <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype="http://www.w3.org/2001/XMLSchema#double"
+    >1</bp:STOICHIOMETRIC-COEFFICIENT>
+    <bp:PHYSICAL-ENTITY>
+      <bp:protein rdf:ID="protein2">
+        <bp:NAME rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Serine-protein kinase ATM</bp:NAME>
+        <bp:XREF>
+          <bp:unificationXref rdf:ID="unificationXref_9">
+            <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >swiss-prot</bp:DB>
+            <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Q13315</bp:ID>
+          </bp:unificationXref>
+        </bp:XREF>
+        <bp:XREF>
+          <bp:unificationXref rdf:ID="unificationXref3">
+            <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >24193N</bp:ID>
+            <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >dip</bp:DB>
+          </bp:unificationXref>
+        </bp:XREF>
+      </bp:protein>
+    </bp:PHYSICAL-ENTITY>
+  </bp:sequenceParticipant>
+  <bp:unificationXref rdf:ID="unificationXref2">
+    <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >dip</bp:DB>
+    <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >24187N</bp:ID>
+  </bp:unificationXref>
+  <bp:evidence rdf:ID="evidence1">
+    <bp:XREF>
+      <bp:publicationXref rdf:ID="publicationXref1">
+        <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >9725899</bp:ID>
+        <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >pubmed</bp:DB>
+      </bp:publicationXref>
+    </bp:XREF>
+    <bp:EVIDENCE-CODE>
+      <bp:openControlledVocabulary rdf:ID="openControlledVocabulary1">
+        <bp:TERM rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Immunoprecipitation</bp:TERM>
+      </bp:openControlledVocabulary>
+    </bp:EVIDENCE-CODE>
+  </bp:evidence>
+  <bp:openControlledVocabulary rdf:ID="openControlledVocabulary2">
+    <bp:TERM rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >In vitro binding</bp:TERM>
+  </bp:openControlledVocabulary>
+  <bp:experimentalForm rdf:ID="experimentalForm_4"/>
+  <bp:dataSource rdf:ID="dataSource1">
+    <bp:NAME rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >dip</bp:NAME>
+  </bp:dataSource>
+  <bp:unificationXref rdf:ID="unificationXref1">
+    <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >40070E</bp:ID>
+    <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >dip</bp:DB>
+  </bp:unificationXref>
+  <bp:evidence rdf:ID="evidence2">
+    <bp:XREF rdf:resource="#publicationXref1"/>
+    <bp:EVIDENCE-CODE rdf:resource="#openControlledVocabulary2"/>
+  </bp:evidence>
+  <bp:unificationXref rdf:ID="unificationXref4">
+    <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P15927</bp:ID>
+    <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >swiss-prot</bp:DB>
+  </bp:unificationXref>
+  <bp:sequenceParticipant rdf:ID="sequenceParticipant1">
+    <bp:STOICHIOMETRIC-COEFFICIENT rdf:datatype="http://www.w3.org/2001/XMLSchema#double"
+    >1</bp:STOICHIOMETRIC-COEFFICIENT>
+    <bp:PHYSICAL-ENTITY>
+      <bp:protein rdf:ID="protein1">
+        <bp:NAME rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >replication protein repA 32K chain</bp:NAME>
+        <bp:XREF rdf:resource="#unificationXref4"/>
+        <bp:XREF rdf:resource="#unificationXref2"/>
+      </bp:protein>
+    </bp:PHYSICAL-ENTITY>
+  </bp:sequenceParticipant>
+  <bp:physicalInteraction rdf:ID="physicalInteraction1">
+    <bp:EVIDENCE rdf:resource="#evidence1"/>
+    <bp:PARTICIPANTS rdf:resource="#sequenceParticipant1"/>
+    <bp:EVIDENCE rdf:resource="#evidence2"/>
+    <bp:PARTICIPANTS rdf:resource="#sequenceParticipant2"/>
+    <bp:NAME rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >ATM phosphorylates p53 at serine 15</bp:NAME>
+    <bp:XREF rdf:resource="#unificationXref1"/>
+    <bp:COMMENT rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Division: BIND Metazoa</bp:COMMENT>
+    <bp:DATA-SOURCE rdf:resource="#dataSource1"/>
+  </bp:physicalInteraction>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 2.1, Build 284)  http://protege.stanford.edu -->
