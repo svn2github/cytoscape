@@ -60,7 +60,7 @@ public class BookmarksUtilTest extends TestCase {
 		
 		List<DataSource> sources3 = BookmarksUtil.getDataSourceList("network", bk.getCategory());
 		assertNotNull(sources3);
-		assertEquals(1, sources3.size());
+		assertEquals(5, sources3.size());
 	}
 
 }
