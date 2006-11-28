@@ -73,6 +73,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+import javax.xml.bind.JAXBException;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -216,12 +217,14 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/**
 	 * Creates new form ImportAttributesDialog
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 */
-	public ImportTextTableDialog(Frame parent, boolean modal) {
+	public ImportTextTableDialog(Frame parent, boolean modal) throws JAXBException, IOException {
 		this(parent, modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
 	}
 
-	public ImportTextTableDialog(Frame parent, boolean modal, int dialogType) {
+	public ImportTextTableDialog(Frame parent, boolean modal, int dialogType) throws JAXBException, IOException {
 		super(parent, modal);
 
 		// Default Attribute is node attr.
@@ -2430,7 +2433,7 @@ public class ImportTextTableDialog extends JDialog implements
 		previewPanel.repaint();
 	}
 
-	private void updateComponents() {
+	private void updateComponents() throws JAXBException, IOException {
 		/*
 		 * Do misc. GUI setups
 		 */
@@ -2565,21 +2568,18 @@ public class ImportTextTableDialog extends JDialog implements
 	/**
 	 * Setup ontology data source combo box.<br>
 	 * Basically, this method just load informaiton from bookmark.
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 * 
 	 */
-	private void setOntologyComboBox() {
-		Bookmarks bookmarks = Cytoscape.getOntologyServer().getBookmarks();
+	private void setOntologyComboBox() throws JAXBException, IOException {
+		Bookmarks bookmarks = Cytoscape.getBookmarks();
 		List<DataSource> annotations = BookmarksUtil.getDataSourceList(
 				"ontology", bookmarks.getCategory());
 		String key = null;
 
 		Set<String> ontologyNames = Cytoscape.getOntologyServer()
 				.getOntologyNames();
-
-		for (String name : ontologyNames) {
-			System.out.println("Ontology Name ===" + name + "===");
-
-		}
 
 		for (DataSource source : annotations) {
 			key = source.getName();
@@ -2647,9 +2647,9 @@ public class ImportTextTableDialog extends JDialog implements
 		return tooltip.replace("%AttributeTable%", "");
 	}
 
-	private void setAnnotationComboBox() {
+	private void setAnnotationComboBox() throws JAXBException, IOException {
 
-		Bookmarks bookmarks = Cytoscape.getOntologyServer().getBookmarks();
+		Bookmarks bookmarks = Cytoscape.getBookmarks();
 		List<DataSource> annotations = BookmarksUtil.getDataSourceList(
 				"annotation", bookmarks.getCategory());
 		String key = null;
