@@ -7,7 +7,9 @@
       <envVar name="JAVA_HOME" />
       <envVar name="JDK_HOME" />
     </searchSequence>
-    <variables />
+    <variables>
+      <variable name="WINDOWS_VERSION" value="@windows_version@" />
+    </variables>
   </application>
   <files>
     <mountPoints>
@@ -23,7 +25,7 @@
   <launchers>
     <launcher name="Cytoscape" id="3" external="false" excludeFromMenu="false" menuName="" icnsFile="../images/cytoscape.icns" pngIcon16File="../images/icon16x16.png" pngIcon32File="../images/icon32x32.png" macServiceDependencies="" allowUserChangeServiceStartType="true">
       <executable name="Cytoscape" type="1" iconSet="true" iconFile="" executableDir="." redirectStderr="true" stderrFile="output.log" redirectStdout="true" stdoutFile="output.log" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="">
-        <versionInfo include="true" fileVersion="" companyName="" fileDescription="Cytoscape" legalCopyright="Cytoscape Consortium" productVersion="" internalName="%SHORT_NAME%" />
+        <versionInfo include="false" fileVersion="%WINDOWS_VERSION%" companyName="" fileDescription="Cytoscape" legalCopyright="Cytoscape Consortium" productVersion="" internalName="%SHORT_NAME%" />
       </executable>
       <splashScreen show="false" autoOff="true" alwaysOnTop="true" width="0" height="0" bitmapFile="">
         <text>
@@ -105,8 +107,8 @@
       <customScriptLines />
     </unixInstaller>
   </mediaSets>
-  <buildIds buildAll="true">
-    <mediaSet refId="9" />
+  <buildIds buildAll="false">
+    <mediaSet refId="11" />
   </buildIds>
 </install4j>
 
