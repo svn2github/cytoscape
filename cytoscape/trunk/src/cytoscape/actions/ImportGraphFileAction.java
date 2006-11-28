@@ -56,6 +56,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.MalformedURLException;
 import javax.swing.JOptionPane;
+import javax.xml.bind.JAXBException;
+
 import java.util.StringTokenizer;
 
 import cytoscape.CyNetwork;
@@ -134,7 +136,16 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 
 		// open new dialog
-		ImportNetworkDialog fd = new ImportNetworkDialog( Cytoscape.getDesktop(), true);
+		ImportNetworkDialog fd = null;
+		try {
+			fd = new ImportNetworkDialog( Cytoscape.getDesktop(), true);
+		} catch (JAXBException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		fd.pack();
 		fd.setLocationRelativeTo(Cytoscape.getDesktop());
 		fd.setVisible(true);

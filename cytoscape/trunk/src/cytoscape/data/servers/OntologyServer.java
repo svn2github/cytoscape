@@ -58,7 +58,7 @@ public class OntologyServer implements PropertyChangeListener {
 	 * Bookmarks. This can be used not only for ontology stuff, but also network
 	 * file locations, attributes, etc.
 	 */
-	private Bookmarks bookmarks;
+	//private Bookmarks bookmarks;
 
 	/*
 	 * URLs of ontology data in memory
@@ -89,22 +89,22 @@ public class OntologyServer implements PropertyChangeListener {
 		xref = new DBCrossReferences();
 		xref.load();
 
-		loadBookmarks();
+		//loadBookmarks();
 
 		nodeAliases = new Aliases(AliasType.NODE);
 		edgeAliases = new Aliases(AliasType.EDGE);
 		networkAliases = new Aliases(AliasType.NETWORK);
 	}
 
-	public Bookmarks getBookmarks() {
-		return bookmarks;
-	}
-
-	public void loadBookmarks() throws JAXBException, IOException {
-		BookmarkReader reader = new BookmarkReader();
-		reader.readBookmarks();
-		bookmarks = reader.getBookmarks();
-	}
+//	public Bookmarks getBookmarks() {
+//		return bookmarks;
+//	}
+//
+//	public void loadBookmarks() throws JAXBException, IOException {
+//		BookmarkReader reader = new BookmarkReader();
+//		reader.readBookmarks();
+//		bookmarks = reader.getBookmarks();
+//	}
 
 	public DBCrossReferences getCrossReferences() {
 		return xref;

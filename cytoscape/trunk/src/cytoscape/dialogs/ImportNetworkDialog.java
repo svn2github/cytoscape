@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.xml.bind.JAXBException;
 
 import cytoscape.Cytoscape;
 import cytoscape.bookmarks.Bookmarks;
@@ -53,8 +54,10 @@ public class ImportNetworkDialog extends JDialog implements
 	private String URLstr;
 	private BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
 
-	/** Creates new form NetworkImportDialog */
-	public ImportNetworkDialog(java.awt.Frame parent, boolean modal) {
+	/** Creates new form NetworkImportDialog 
+	 * @throws IOException 
+	 * @throws JAXBException */
+	public ImportNetworkDialog(java.awt.Frame parent, boolean modal) throws JAXBException, IOException {
 		super(parent, modal);
 
 		setTitle("Import Network");
