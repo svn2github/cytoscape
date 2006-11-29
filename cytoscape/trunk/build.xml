@@ -48,7 +48,13 @@
 	<property name="build.compiler" value="modern" />
 
 	<!-- Release number -->
-	<property name="version" value="2.4.0-b1" />
+	<!-- You should use version wherever you need to reference the
+	     version for something.  Note that version.num is ONLY a number. 
+	     This is primarily to support windows versioning.  Do NOT add 
+	     letters, "beta", etc.  to version.num.  
+	     Extra information can, however, be added to version. -->
+	<property name="version.num" value="2.4.0" />
+	<property name="version" value="${version.num}-b1" />
 
 	<property name="dirname.release.dir" value="cytoscape-v${version}" />
 
@@ -926,6 +932,7 @@
             ---------------------------------------
         	</echo>
 		<filter token="version" value="${version}"/>
+		<filter token="windows_version" value="${version.num}"/>
 		<copy file="tools/Cytoscape.install4j"
 		      tofile="build/Cytoscape.install4j" 
 		      filtering="true"
