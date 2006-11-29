@@ -51,10 +51,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.task.TaskMonitor;
 import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyNetworkView;
@@ -180,7 +182,18 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 		List selectedNodes = networkView.getSelectedNodes();
 		final int numSelectedNodes = selectedNodes.size();
 		final int numNodes = networkView.getNodeViewCount();
+		// AJK: 11/28/06 BEGIN
+		//    correct for edge case where there is only one node
+		if (numSelectedNodes == 1)
+		{
+			System.out.println ("Sorry, you need two or more notes to route a region.");
+			return;
+		}
+		
+		// AJK: 11/28/06 END
+		
 		final int numLayoutNodes = (numSelectedNodes <= 1) ? numNodes : numSelectedNodes;
+
 		NodeView nodeView[] = new NodeView[numNodes];
 		int nextNode = 0;
 		HashMap ginyIndex2Index = new HashMap(numNodes*2);
@@ -430,6 +443,7 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 				nodeView[x].setYPosition(nodeView[x].getYPosition() + shiftY,true);
 			}
 		}
+		
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("hierarchical layout complete");
 	} catch (Throwable e) {
