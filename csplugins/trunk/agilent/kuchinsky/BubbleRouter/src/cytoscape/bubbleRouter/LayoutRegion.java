@@ -92,8 +92,9 @@ public class LayoutRegion extends JComponent {
 	/**
 	 * particular value associated with a layout region
 	 */
-	public static Object regionAttributeValue = null;
-
+	public  Object regionAttributeValue = null;
+// AJK: 11/15/06 END
+	
 	/**
 	 * list of nodes associated with a layout region based on
 	 * regionAttributeValue
@@ -125,6 +126,11 @@ public class LayoutRegion extends JComponent {
 
 		// init member vars
 		selectRegionAttributeValue();
+		
+		if (this.getRegionAttributeValue() == null)
+		{
+			return;
+		}
 		
 		// setbounds must come before populate nodeviews
 		setBounds((int) x, (int) y, (int) width, (int) height);
