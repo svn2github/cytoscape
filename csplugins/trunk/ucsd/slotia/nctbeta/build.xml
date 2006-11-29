@@ -1,0 +1,217 @@
+
+<!--
+  **
+  **  build.xml - ant build file
+  **  Written by Samad Lotia
+  **
+  -->
+
+
+<project name="nct" default="all" basedir=".">
+
+  <!-- ===================================================================	-->
+  <!-- Properties								-->
+  <!-- ===================================================================	-->
+
+  <property name="root.dir"			location="."/>
+  <property name="manifest.dir"			location="${root.dir}/manifest"/>
+  <property name="build.dir"			location="${root.dir}/build"/>
+  <property name="docs.dir"			location="${root.dir}/docs"/>
+
+  <!-- Project directories and files -->
+  <property name="project.src.dir"		location="${root.dir}/src"/>
+  <property name="project.jar"			location="${root.dir}/nct.jar"/>
+  <property name="project.jar.manifest"		location="${manifest.dir}/project.manifest"/>
+
+  <!-- Test directories and files -->
+  <property name="tests.src.dir"		location="${root.dir}/tests"/>
+  <property name="tests.jar"			location="${root.dir}/nct-tests.jar"/>
+  <property name="tests.jar.manifest"		location="${manifest.dir}/test.manifest"/>
+  <property name="tests.junit-out.dir"		location="${root.dir}/junit-out"/>
+
+  <!-- Project jar properties -->
+  <property name="project.jar.main.class"	value="Main"/>
+  <path id="project.jar.class.path">
+  </path>
+  
+  <!-- Tests jar properties -->
+  <property name="tests.jar.main.class"		value="AllTests"/>
+  <path id="tests.jar.class.path">
+    <pathelement path="${tests.jar}"/>
+    <pathelement path="/cellar/users/slotia/nct/lib/junit-3.8.1.jar"/>
+  </path>
+  
+  <!-- ===================================================================	-->
+  <!-- Compile									-->
+  <!-- ===================================================================	-->
+
+  <!-- Project class files -->
+  <target	name="compile"
+  		description="compile project's class files">
+
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${project.src.dir}" destdir="${build.dir}" debug="yes"/>
+    
+  </target>
+
+  <!-- Tests class files -->
+  <target	name="compile-tests"
+  		depends="compile"
+		description="compile all class files">
+
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${tests.src.dir}" destdir="${build.dir}" debug="yes"/>
+    
+  </target>
+  
+  <!-- ===================================================================	-->
+  <!-- Generate manifest files							-->
+  <!-- ===================================================================	-->
+
+  <!-- Project manifest file -->
+  <target	name="manifest"
+  		description="generate project jar's manifest file">
+		
+    <mkdir dir="${manifest.dir}"/>
+    <manifest file="${project.jar.manifest}">
+      <attribute name="Main-Class" value="${project.jar.main.class}"/>
+    </manifest>
+    
+  </target>
+
+  <!-- Test manifest file -->
+  <target	name="manifest-tests"
+  		description="generate test jar's manifest file">
+
+    <mkdir dir="${manifest.dir}"/>
+    <manifest file="${tests.jar.manifest}">
+      <attribute name="Main-Class" value="${tests.jar.main.class}"/>
+    </manifest>
+    
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- Packages jars								-->
+  <!-- ===================================================================	-->
+
+  <!-- Project jar -->
+  <target	name="jar"
+  		depends="compile,manifest"
+		description="package all class files into a jar">
+
+    <jar	jarfile="${project.jar}"
+    		basedir="${build.dir}"
+    		manifest="${project.jar.manifest}"/>
+  </target>
+  
+  <!-- Tests jar -->
+  <target	name="jar-tests" 
+  		depends="compile-tests,manifest-tests"
+		description="package all class files into a tests jar">
+
+    <jar	jarfile="${tests.jar}"
+    		basedir="${build.dir}"
+    		manifest="${tests.jar.manifest}"/>
+  </target>
+  
+  <!-- ===================================================================	-->
+  <!-- Build the entire distribution                                      	-->
+  <!-- ===================================================================	-->
+  <target name="all" depends="jar"/>
+
+  <!-- ===================================================================	-->
+  <!-- Clean the directory of any compiled objects and generated files		-->
+  <!-- ===================================================================	-->
+  <target name="clean">
+  
+    <delete dir="${build.dir}"/>
+    <delete dir="${docs.dir}"/>
+    <delete dir="${manifest.dir}"/>
+    <delete dir="${tests.junit-out.dir}"/>
+    <delete file="${project.jar}"/>
+    <delete file="${tests.jar}"/>
+    
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- Execute jar files							-->
+  <!-- ===================================================================	-->
+
+  <!-- Project's jar file -->
+  <target	name="run"
+  		depends="jar">
+  
+    <java jar="${project.jar}" fork="true"/>
+    
+  </target>
+
+  <!-- Tests jar file -->
+  <target	name="run-tests-fast"
+		depends="jar-tests">
+  
+    <mkdir dir="${tests.junit-out.dir}"/>
+    <junit	printsummary="yes"
+    		haltonfailure="no">
+		
+      <classpath refid="tests.jar.class.path"/>
+      <test	name="${tests.jar.main.class}"
+      		fork="yes"
+		todir="${tests.junit-out.dir}"
+		failureProperty="junit.test.failure"
+		errorProperty="junit.test.falue">
+      </test>
+    </junit>
+    
+  </target>
+
+  <target	name="run-tests"
+  		depends="run-tests-fast"
+		if="junit.test.failure">
+
+    <junit	printsummary="yes"
+    		haltonfailure="no">
+
+      <classpath refid="tests.jar.class.path"/>
+      <formatter	type="plain"
+      			usefile="true"/>
+			
+      <formatter	type="xml"
+      			usefile="true"/>
+			
+      <batchtest	fork="yes"
+      			todir="${tests.junit-out.dir}"
+			failureProperty="junit.test.failure"
+			errorProperty="junit.test.failure">
+			
+        <fileset	dir="${tests.src.dir}"
+			includes="**/*Test.java"
+			excludes="**/AllTests.java"/>
+      </batchtest>
+    
+    </junit>
+
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- Build Javadocs								-->
+  <!-- ===================================================================	-->
+
+  <target name="docs">
+		
+    <mkdir dir="${docs.dir}"/>
+
+    <javadoc sourcepath="${project.src.dir}"
+             destdir="${docs.dir}"
+             packagenames="nct.*"
+	     classpathref="project.jar.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="nct API"
+             doctitle="nct"/>
+
+  </target>
+  
+</project>
