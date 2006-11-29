@@ -25,7 +25,7 @@ public class WeightedEdgeSearch {
 	Map<Integer, Double> idx2Expression;
 
 	public static void main(String[] args) {
-		System.err.println("Version 0.31");
+		System.err.println("Version 0.33");
 		System.err.println("Building graph");
 		readData(args[0]);
 		createGraph();
