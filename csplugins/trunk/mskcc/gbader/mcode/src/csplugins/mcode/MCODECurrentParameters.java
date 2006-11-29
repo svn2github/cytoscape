@@ -40,10 +40,12 @@ package csplugins.mcode;
  */
 public class MCODECurrentParameters {
     private static MCODECurrentParameters ourInstance = new MCODECurrentParameters();
+    //private static MCODEParameterSet currentParams = new MCODEParameterSet();
     private static MCODEParameterSet params = new MCODEParameterSet();
 
     /**
      * Get the one instance of this singleton class that stores the current parameters internally.
+     * @return ourInstance
      */
     public static MCODECurrentParameters getInstance() {
         return ourInstance;
@@ -56,7 +58,7 @@ public class MCODECurrentParameters {
      * MCODECurrentParameters.getInstance().getParamsCopy();
      * <p/>
      * Note: parameters can be changed by the user after you have your own copy,
-     * so if you always need the latest, you should get the updated parameters again.
+     * so if you always need the latest, you should get the updated parameters again.                                                    
      *
      * @return A copy of the parameters
      */
@@ -72,6 +74,21 @@ public class MCODECurrentParameters {
      * @param newParams The new current parameters to set
      */
     public void setParams(MCODEParameterSet newParams) {
-        params = newParams;
+        //cannot simply equate the params and newParams classes since that creates a permanent reference
+        //and prevents us from keeping 2 sets of the class such that the saved version is not altered
+        //until this method is called
+        params = new MCODEParameterSet(
+                newParams.getScope(),
+                newParams.isIncludeLoops(),
+                newParams.getDegreeCutOff(),
+                newParams.getKCore(),
+                newParams.isOptimize(),
+                newParams.getMaxDepthFromStart(),
+                newParams.getNodeScoreCutOff(),
+                newParams.isFluff(),
+                newParams.isHaircut(),
+                newParams.getFluffNodeDensityCutOff(),
+                newParams.isPreprocessNetwork()
+        );
     }
 }

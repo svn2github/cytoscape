@@ -42,18 +42,29 @@ package csplugins.mcode;
  */
 public class MCODEParameterSet {
     //parameters
+
+    //scope
+    public static String NETWORK = "network";
+    public static String NODE = "node";
+    public static String NODE_SET = "node set";
+    public String scope;
+
     //used in scoring stage
     private boolean includeLoops;
     private int degreeCutOff;
-    private int kCore;//TODO: complete this
-    //used in complex finding stage
+    private int kCore;
+
+    //used in cluster finding stage
+    private boolean optimize;
     private int maxDepthFromStart;
     private double nodeScoreCutOff;
     private boolean fluff;
     private boolean haircut;
     private double fluffNodeDensityCutOff;
+
     //used in directed mode
-    private boolean preprocessNetwork;    //TODO: use when directed mode implemented
+    private boolean preprocessNetwork;
+
     //result viewing parameters (only used for dialog box of results)
     private int defaultRowHeight;
 
@@ -65,15 +76,8 @@ public class MCODEParameterSet {
      */
     public MCODEParameterSet() {
         //default parameters
-        includeLoops = false;
-        degreeCutOff = 2;               //don't count nodes of degree 1
-        kCore = 2;                      //TODO: what should the initial value be?
-        maxDepthFromStart = 100;        //effectively unlimited
-        nodeScoreCutOff = 0.2;          //user should change this as the main parameter
-        fluff = false;
-        haircut = true;
-        fluffNodeDensityCutOff = 0.1;   //user should change this if fluffing
-        preprocessNetwork = true;       //change in directed mode if inter complex connectivity desired
+        setDefaultParams();
+
         //results dialog box
         defaultRowHeight = 80;
     }
@@ -82,37 +86,94 @@ public class MCODEParameterSet {
      * Constructor for no default algorithm parameters.
      * Results dialog box row height is still default 80 pixels.
      */
-    public MCODEParameterSet(boolean includeLoops, int degreeCutOff, int kCore, int maxDepthFromStart, double nodeScoreCutOff,
-                             boolean fluff, boolean haircut, double fluffNodeDensityCutOff) {
-        this.setAllAlgorithmParams(includeLoops, degreeCutOff, kCore, maxDepthFromStart, nodeScoreCutOff, fluff, haircut,
-                fluffNodeDensityCutOff);
-        this.preprocessNetwork = true;
+    public MCODEParameterSet(
+            String scope,
+            boolean includeLoops,
+            int degreeCutOff,
+            int kCore,
+            boolean optimize,
+            int maxDepthFromStart,
+            double nodeScoreCutOff,
+            boolean fluff,
+            boolean haircut,
+            double fluffNodeDensityCutOff,
+            boolean preprocessNetwork) {
+
+        this.setAllAlgorithmParams(
+                scope,
+                includeLoops,
+                degreeCutOff,
+                kCore,
+                optimize,
+                maxDepthFromStart, 
+                nodeScoreCutOff,
+                fluff,
+                haircut,
+                fluffNodeDensityCutOff,
+                preprocessNetwork);
+
         //results dialog box
         defaultRowHeight = 80;
     }
 
     /**
+     * Method for setting all parameters to their default values
+     */
+    public void setDefaultParams() {
+        setAllAlgorithmParams(NETWORK, false, 2, 2, false, 100, 0.2, false, true, 0.1, true);
+        /*
+        scope = NETWORK;
+        includeLoops = false;
+        degreeCutOff = 2;               //don't count nodes of degree 1
+        kCore = 2;                      //only count clusters with a maximally connected core of at least 2 edges (3 nodes)
+        optimize = false;               //unless if otherwise specified, the default parameters should be used
+        maxDepthFromStart = 100;        //effectively unlimited
+        nodeScoreCutOff = 0.2;          //user should change this as the main parameter
+        fluff = false;
+        haircut = true;
+        fluffNodeDensityCutOff = 0.1;   //user should change this if fluffing
+        preprocessNetwork = true;       //change in directed mode if inter cluster connectivity desired
+        */
+    }
+
+    /**
      * Convenience method to set all the main algorithm parameters
-     *
+     * @param scope
      * @param includeLoops
      * @param degreeCutOff
      * @param kCore
+     * @param optimize
      * @param maxDepthFromStart
      * @param nodeScoreCutOff
      * @param fluff
      * @param haircut
      * @param fluffNodeDensityCutOff
+     * @param preprocessNetwork
      */
-    public void setAllAlgorithmParams(boolean includeLoops, int degreeCutOff, int kCore, int maxDepthFromStart, double nodeScoreCutOff,
-                                      boolean fluff, boolean haircut, double fluffNodeDensityCutOff) {
+    public void setAllAlgorithmParams(
+            String scope,
+            boolean includeLoops,
+            int degreeCutOff,
+            int kCore,
+            boolean optimize,
+            int maxDepthFromStart,
+            double nodeScoreCutOff,
+            boolean fluff,
+            boolean haircut,
+            double fluffNodeDensityCutOff,
+            boolean preprocessNetwork) {
+
+        this.scope = scope;
         this.includeLoops = includeLoops;
         this.degreeCutOff = degreeCutOff;
         this.kCore = kCore;
+        this.optimize = optimize;
         this.maxDepthFromStart = maxDepthFromStart;
         this.nodeScoreCutOff = nodeScoreCutOff;
         this.fluff = fluff;
         this.haircut = haircut;
         this.fluffNodeDensityCutOff = fluffNodeDensityCutOff;
+        this.preprocessNetwork = preprocessNetwork;
     }
 
     /**
@@ -122,9 +183,11 @@ public class MCODEParameterSet {
      */
     public MCODEParameterSet copy() {
         MCODEParameterSet newParam = new MCODEParameterSet();
+        newParam.setScope(this.scope);
         newParam.setIncludeLoops(this.includeLoops);
         newParam.setDegreeCutOff(this.degreeCutOff);
         newParam.setKCore(this.kCore);
+        newParam.setOptimize(this.optimize);
         newParam.setMaxDepthFromStart(this.maxDepthFromStart);
         newParam.setNodeScoreCutOff(this.nodeScoreCutOff);
         newParam.setFluff(this.fluff);
@@ -137,6 +200,14 @@ public class MCODEParameterSet {
     }
 
     //parameter getting and setting
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
     public boolean isIncludeLoops() {
         return includeLoops;
     }
@@ -156,8 +227,17 @@ public class MCODEParameterSet {
     public int getKCore() {
         return kCore;
     }
+
     public void setKCore(int kCore) {
         this.kCore = kCore;
+    }
+
+    public void setOptimize(boolean optimize) {
+        this.optimize = optimize;
+    }
+
+    public boolean isOptimize() {
+        return optimize;
     }
 
     public int getMaxDepthFromStart() {
@@ -215,14 +295,15 @@ public class MCODEParameterSet {
     public void setDefaultRowHeight(int defaultRowHeight) {
         this.defaultRowHeight = defaultRowHeight;
     }
-
+    //TODO: where does this get used? add scope into it aswell...
     public String toString() {
         String lineSep = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();
-        sb.append("Scoring Step: Include Loops: " + includeLoops + " Degree Cutoff: " + degreeCutOff + lineSep);
-        sb.append("Cluster Finding Step: Node Score Cutoff: " + nodeScoreCutOff + " Haircut: " + haircut + " Fluff: " + fluff
-                + ((fluff) ? (" Fluff Density Cutoff " + fluffNodeDensityCutOff) : "") + " Max. Depth from Seed: " +
-                maxDepthFromStart + lineSep);
+        sb.append("Scoring Step: Include Loops: " + includeLoops + " Degree Cutoff: " + degreeCutOff + " K-Core: " + kCore + lineSep);
+        sb.append("Cluster Finding Step: Optimize: " + optimize
+                + ((optimize) ? "" : (" Node Score Cutoff: " + nodeScoreCutOff + " Haircut: " + haircut + " Fluff: " + fluff
+                + ((fluff) ? (" Fluff Density Cutoff " + fluffNodeDensityCutOff) : "")
+                + " Max. Depth from Seed: " + maxDepthFromStart)) + lineSep);
         return sb.toString();
     }
 }

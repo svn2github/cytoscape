@@ -69,11 +69,11 @@ public class MCODETest extends TestCase {
      * Run MCODE on a small test network with some default parameters
      */
     public void testMCODEAlgorithmSmall() {
-        params.setAllAlgorithmParams(false, 2, 2, 100, 0.2, false, true, 0.1);
+        params.setAllAlgorithmParams(MCODEParameterSet.NETWORK, false, 2, 2, false, 100, 0.2, false, true, 0.1, true);
         alg.scoreGraph(networkSmall);
-        ArrayList complexes = alg.findComplexes(networkSmall);
-        assertEquals(complexes.size(), 1);
-        double score = alg.scoreComplex(MCODEUtil.convertComplexToNetwork((ArrayList) complexes.get(0), networkSmall));
+        ArrayList clusters = alg.findClusters(networkSmall);
+        assertEquals(clusters.size(), 1);
+        double score = alg.scoreCluster(MCODEUtil.convertClusterToNetwork((ArrayList) clusters.get(0), networkSmall));
         assertEquals(score, (double) 1.5, 0);
     }
 }

@@ -49,32 +49,74 @@ import java.net.URL;
  * * Description: simple score and find action for MCODE
  */
 
-// TODO: this action is tiggered when the user clicks analyze in the main panel we have to compare its parameter set to the stored one.
-// TODO: If current and saved parameters are different in the scoring section we must rescore and refind
-// TODO: If current and saved parameters are different in the finding section, we only refind
-// TODO: We must account for the scope and use the appropriate algorithm
+// TODO: We must account for scope and optimization and use the appropriate algorithm
 
 /**
  * Simple score and find action for MCODE. This should be the default for general users.
  */
 public class MCODEScoreAndFindAction implements ActionListener {
-    private MCODEResultsPanel resultPanel;
+
     private boolean showResultPanel = false;
+
+    final static int FIRST_TIME = 0;
+    final static int RESCORE = 1;
+    final static int REFIND = 2;
+    final static int NO_CHANGE = 3;
+    int analyze = FIRST_TIME;
+
+    int resultsCounter = 0;
+
+    MCODEParameterSet currentParamsCopy;
 
     MCODEScoreAndFindAction () {}
 
     MCODEScoreAndFindAction (MCODEParameterSet currentParamsCopy) {
-        //TODO: do some tests, determine what portion is different and then set some values as to what algorithm is to be performed
-        MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
+        this.currentParamsCopy = currentParamsCopy;
     }
 
     /**
-     * This method is called when the user selects the menu item.
+     * This method is called when the user clicks Analyze.
      *
-     * @param event Menu Item Selected.
+     * @param event Click of the analyzeButton on the MCODEMainPanel.
      */
     public void actionPerformed(ActionEvent event) {
-        String callerID = "MCODEScoreAction.actionPerformed";
+        MCODEResultsPanel resultPanel;
+        //get a copy of the last saved parameters for comparison with the current ones
+        MCODEParameterSet savedParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
+
+        //these statements determine which portion of the algorithm needs to be conducted by
+        //testing which parameters have been modified compared to the last saved parameters.
+        //Here we ensure that only relavant parameters are looked at.  For example, fluff density
+        //parameter is irrelevant if fluff is not used in the current parameters.  Also, none of
+        //the clustering parameters are relevant if the optimization is used
+        if (currentParamsCopy.getKCore() != savedParamsCopy.getKCore() ||
+                currentParamsCopy.isIncludeLoops() != savedParamsCopy.isIncludeLoops() ||
+                currentParamsCopy.getDegreeCutOff() != savedParamsCopy.getDegreeCutOff() ||
+                analyze == FIRST_TIME) {
+            analyze = RESCORE;
+            resultsCounter++;
+            System.out.println("Analysis: network scoring, cluster finding");
+        } else if (!currentParamsCopy.getScope().equals(savedParamsCopy.getScope()) ||
+                currentParamsCopy.isOptimize() != savedParamsCopy.isOptimize() ||
+                (!currentParamsCopy.isOptimize() &&
+                        (currentParamsCopy.getMaxDepthFromStart() != savedParamsCopy.getMaxDepthFromStart() ||
+                                currentParamsCopy.isHaircut() != savedParamsCopy.isHaircut() ||
+                                currentParamsCopy.isFluff() != savedParamsCopy.isFluff() ||
+                                (currentParamsCopy.isFluff() &&
+                                        currentParamsCopy.getFluffNodeDensityCutOff() != savedParamsCopy.getFluffNodeDensityCutOff()) ||
+                                (currentParamsCopy.getScope().equals(MCODEParameterSet.NETWORK) &&
+                                        currentParamsCopy.isPreprocessNetwork() != savedParamsCopy.isPreprocessNetwork())))) {
+            analyze = REFIND;
+            resultsCounter++;
+            System.out.println("Analysis: cluster finding");
+        } else {
+            analyze = NO_CHANGE;
+            System.out.println("Analysis: parameters unchanged");
+        }
+        //finally we save the current parameters
+        MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
+
+        String callerID = "MCODEScoreAndFindAction.actionPerformed";
         //get the network object; this contains the graph
         final CyNetwork network = Cytoscape.getCurrentNetwork();
         if (network == null) {
@@ -104,13 +146,14 @@ public class MCODEScoreAndFindAction implements ActionListener {
 
         //check if MCODE has already been run on this network
         resultPanel = (MCODEResultsPanel) network.getClientData("MCODE_panel");
-        if (resultPanel != null) {
+        if (analyze == NO_CHANGE) {
             //resultPanel.setVisible(true);
             network.putClientData("MCODE_running", new Boolean(false));
             showResultPanel = true;
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The parameters you specified have not changed.");
         } else {
             //run MCODE
-            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network);
+            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network, analyze);
             //Configure JTask
             JTaskConfig config = new JTaskConfig();
 
@@ -123,9 +166,8 @@ public class MCODEScoreAndFindAction implements ActionListener {
             TaskManager.executeTask(MCODEScoreAndFindTask, config);
             //display clusters in a new non modal dialog box
             if (MCODEScoreAndFindTask.isCompletedSuccessfully()) {
-                resultPanel = new MCODEResultsPanel(Cytoscape.getDesktop(), MCODEScoreAndFindTask.getClusters(),
-                        network, MCODEScoreAndFindTask.getImageList());
-                //resultDialog.pack();
+                resultPanel = new MCODEResultsPanel(MCODEScoreAndFindTask.getClusters(), network, MCODEScoreAndFindTask.getImageList());
+
                 //store the results dialog box if the user wants to see it later
                 network.putClientData("MCODE_panel", resultPanel);
                 network.putClientData("MCODE_running", new Boolean(false));
@@ -133,18 +175,23 @@ public class MCODEScoreAndFindAction implements ActionListener {
                 showResultPanel = true;
             }
         }
-        if (showResultPanel == true) {
+        if (showResultPanel) {
+            //display MCODEResultsPanel in right cytopanel
             CytoscapeDesktop desktop = Cytoscape.getDesktop();
-            CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.SOUTH);
-            //Incase we choose to have an icon for the MCODE panel at some point
-            URL iconURL = this.getClass().getResource("resources/icon_note_large.gif");
+            CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
+
+            String componentTitle = "Results " + resultsCounter;
+            resultPanel.setComponentTitle(componentTitle);
+
+            URL iconURL = this.getClass().getResource("resources/logo2.png");
             if (iconURL != null){
                 Icon icon = new ImageIcon(iconURL);
-                String tip = "MCODE Complex Finder";
-                cytoPanel.add("MCODE Results", icon, resultPanel, tip);
+                String tip = "MCODE Cluster Finder";
+                cytoPanel.add(componentTitle, icon, resultPanel, tip);
             } else {
-                cytoPanel.add("MCODE Results", resultPanel);
+                cytoPanel.add(componentTitle, resultPanel);
             }
+
             int index = cytoPanel.indexOfComponent(resultPanel);
             cytoPanel.setSelectedIndex(index);
             cytoPanel.setState(CytoPanelState.DOCK);

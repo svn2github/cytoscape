@@ -51,14 +51,16 @@ public class MCODEScoreAndFindTask implements Task {
     private ArrayList clusters = null;
     private Image imageList[] = null;
     private boolean completedSuccessfully = false;
+    private int analyze;
 
     /**
      * Scores and finds clusters in a given network
      *
      * @param network The network to cluster
      */
-    public MCODEScoreAndFindTask(CyNetwork network) {
+    public MCODEScoreAndFindTask(CyNetwork network, int analyze) {
         this.network = network;
+        this.analyze = analyze;
     }
 
     /**
@@ -71,27 +73,33 @@ public class MCODEScoreAndFindTask implements Task {
         try {
             //run MCODE scoring algorithm - node scores are saved as node attributes
             alg = new MCODEAlgorithm(taskMonitor);
-            taskMonitor.setPercentCompleted(0);
-            taskMonitor.setStatus("Scoring Network (Step 1 of 3)");
-            alg.scoreGraph(network);
-            if (interrupted) {
-                network.putClientData("MCODE_running", new Boolean(false));
-                return;
+            //only (re)score the graph if the scoring parameters have been changed
+            if (analyze == MCODEScoreAndFindAction.RESCORE) {
+                taskMonitor.setPercentCompleted(0);
+                taskMonitor.setStatus("Scoring Network (Step 1 of 3)");
+                alg.scoreGraph(network);
+                if (interrupted) {
+                    network.putClientData("MCODE_running", new Boolean(false));
+                    return;
+                }
+                //store this MCODE instance with the network to avoid duplicating the calculation
+                network.putClientData("MCODE_alg", alg);
+                System.err.println("Network was scored in " + alg.getLastScoreTime() + " ms.");
             }
-            System.err.println("Network was scored in " + alg.getLastScoreTime() + " ms.");
+
+            alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");
             taskMonitor.setPercentCompleted(0);
             taskMonitor.setStatus("Finding Clusters (Step 2 of 3)");
-            clusters = alg.findComplexes(network);
+            clusters = alg.findClusters(network);
             if (interrupted) {
                 network.putClientData("MCODE_running", new Boolean(false));
                 return;
             }
-            //store this MCODE instance with the network to avoid duplicating the calculation
-            network.putClientData("MCODE_alg", alg);
-            taskMonitor.setPercentCompleted(0);
+
+            taskMonitor.setPercentCompleted(0);//TODO: this is how to make images (for node score cutoff)
             taskMonitor.setStatus("Drawing Results (Step 3 of 3)");
             //also create all the images here for the clusters, since it can be a time consuming operation
-            GraphPerspective gpComplexArray[] = MCODEUtil.convertComplexListToSortedNetworkList(clusters, network, alg);
+            GraphPerspective gpComplexArray[] = MCODEUtil.convertClusterListToSortedNetworkList(clusters, network, alg);
             imageList = new Image[clusters.size()];
             int imageSize = MCODECurrentParameters.getInstance().getParamsCopy().getDefaultRowHeight();
             for (int i = 0; i < gpComplexArray.length; i++) {

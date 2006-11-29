@@ -20,7 +20,7 @@ public class MCODECollapsablePanel extends JPanel {
     Border expandedBorderLine = null; // etched lowered border by default;
 
     //Title
-    JPanel titleComponent = new JPanel(); // displayed in the titled border
+    AbstractButton titleComponent; // displayed in the titled border
 
     //Expand/Collapse button
     final static int COLLAPSED = 0, EXPANDED = 1; // image States
@@ -39,20 +39,18 @@ public class MCODECollapsablePanel extends JPanel {
      */
     public MCODECollapsablePanel (JRadioButton component) {
         component.addItemListener(new MCODECollapsablePanel.ExpandAndCollapseAction());
-
-        titleComponent.add(component);
+        titleComponent = component;
         collapsed = !component.isSelected();
         commonConstructor();
     }
 
     /**
      * Special constructor for a label/button controlled collapsable panel
-     * @param text Title of the collapsable panel in string format, used to create a button with an text and an arrow icon
+     * @param text Title of the collapsable panel in string format, used to create a button with text and an arrow icon
      */
     public MCODECollapsablePanel (String text) {
         arrow.setText(text);
-
-        titleComponent.add(arrow);
+        titleComponent = arrow;
         collapsed = true;
         commonConstructor();
     }
@@ -67,8 +65,8 @@ public class MCODECollapsablePanel extends JPanel {
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        add(titleComponent, BorderLayout.NORTH);
-        add(panel, BorderLayout.NORTH);
+        add(titleComponent, BorderLayout.CENTER);
+        add(panel, BorderLayout.CENTER);
         setCollapsed(collapsed);
 
         placeTitleComponent();
@@ -84,16 +82,12 @@ public class MCODECollapsablePanel extends JPanel {
         titleComponent.setBounds(componentRectangle);
     }
 
-    /**
-     * Allows for the updating/changing of the titled border component
-     * @param newComponent Any JComponent that may be placed in the titled border
-     *//*
-    public void setTitleComponent(JComponent newComponent) {
-        remove(titleComponent);
-        add(newComponent);
-        border.setTitleComponent(newComponent);
-        titleComponent = newComponent;
-    }*/
+    public void setTitleComponentText(String text) {
+        if (titleComponent instanceof JButton) {
+            titleComponent.setText(text);
+        }
+        placeTitleComponent();
+    }
 
     /**
      * This class requires that all content be placed within a designated panel, this method returns that panel
@@ -159,7 +153,7 @@ public class MCODECollapsablePanel extends JPanel {
      */
     public JButton createArrowButton () {
         JButton button = new JButton("arrow", iconArrow[COLLAPSED]);
-        button.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        button.setBorder(BorderFactory.createEmptyBorder(0,1,5,1));
         button.setVerticalTextPosition(AbstractButton.CENTER);
         button.setHorizontalTextPosition(AbstractButton.LEFT);
 
@@ -281,8 +275,7 @@ public class MCODECollapsablePanel extends JPanel {
                     break;
                 case TOP:
                 case DEFAULT_POSITION:
-                    //insets.top += Math.max(compHeight, borderInsets.top) - borderInsets.top;
-                    insets.top = Math.max(compHeight, borderInsets.top) - borderInsets.top;
+                    insets.top += Math.max(compHeight, borderInsets.top) - borderInsets.top;
                     break;
                 case BELOW_TOP:
                     insets.top += compHeight + TEXT_SPACING;
@@ -317,7 +310,11 @@ public class MCODECollapsablePanel extends JPanel {
                     break;
                 case TOP:
                 case DEFAULT_POSITION:
-                    compR.y = EDGE_SPACING + (borderInsets.top - EDGE_SPACING - TEXT_SPACING - compD.height) / 2;
+                    if (titleComponent instanceof JButton) {
+                        compR.y = EDGE_SPACING + (borderInsets.top - EDGE_SPACING - TEXT_SPACING - compD.height) / 2;
+                    } else if (titleComponent instanceof JRadioButton) {
+                        compR.y = (borderInsets.top - EDGE_SPACING - TEXT_SPACING - compD.height) / 2;
+                    }
                     break;
                 case BELOW_TOP:
                     compR.y = borderInsets.top - compD.height - TEXT_SPACING;
@@ -335,7 +332,8 @@ public class MCODECollapsablePanel extends JPanel {
             switch (titleJustification) {
                 case LEFT:
                 case DEFAULT_JUSTIFICATION:
-                    compR.x = TEXT_INSET_H + borderInsets.left;
+                    //compR.x = TEXT_INSET_H + borderInsets.left;
+                    compR.x = TEXT_INSET_H + borderInsets.left - EDGE_SPACING;
                     break;
                 case RIGHT:
                     compR.x = rect.width - borderInsets.right - TEXT_INSET_H - compR.width;

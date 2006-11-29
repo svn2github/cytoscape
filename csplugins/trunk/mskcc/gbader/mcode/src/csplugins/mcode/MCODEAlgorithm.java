@@ -67,7 +67,7 @@ public class MCODEAlgorithm {
         }
     }
 
-    //data structures useful to have around for more than one complex finding iteration
+    //data structures useful to have around for more than one cluster finding iteration
     private HashMap nodeInfoHashMap; //key is the node index, value is a NodeInfo instance
     private TreeMap nodeScoreSortedMap; //key is node score, value is nodeIndex
 
@@ -189,15 +189,15 @@ public class MCODEAlgorithm {
     }
 
     /**
-     * Step 2: Find all complexes given a scored graph.  If the input network has not been scored,
+     * Step 2: Find all clusters given a scored graph.  If the input network has not been scored,
      * this method will return null.
      *
-     * @param inputNetwork - The scored network to find complexes in.
-     * @return An ArrayList containing an ArrayList for each complex. Each complex is stored as a simple list
-     *         of node IDs of the nodes in the input network that are part of the complex.
+     * @param inputNetwork - The scored network to find clusters in.
+     * @return An ArrayList containing an ArrayList for each cluster. Each cluster is stored as a simple list
+     *         of node IDs of the nodes in the input network that are part of the cluster.
      */
-    public ArrayList findComplexes(CyNetwork inputNetwork) {
-        String callerID = "MCODEAlgorithm.findComplexes";
+    public ArrayList findClusters(CyNetwork inputNetwork) {
+        String callerID = "MCODEAlgorithm.findClusters";
         if (inputNetwork == null) {
             System.err.println("In " + callerID + ": inputNetwork was null.");
             return (null);
@@ -213,39 +213,39 @@ public class MCODEAlgorithm {
         Integer currentNode;
         int k = 0;
         Collection values = nodeScoreSortedMap.values(); //returns a Collection sorted by key order (descending)
-        //stores the list of complexes as ArrayLists of node indices in the input Network
-        ArrayList alComplexes = new ArrayList();
+        //stores the list of clusters as ArrayLists of node indices in the input Network
+        ArrayList alClusters = new ArrayList();
         //iterate over node indices sorted descending by their score
-        ArrayList alNodesWithSameScore;
+        ArrayList alNodesWithSameScore;                                                                                                                            
         for (Iterator iterator = values.iterator(); iterator.hasNext();) {
             //each score may be associated with multiple nodes, iterate over these lists
             alNodesWithSameScore = (ArrayList) iterator.next();
             for (int j = 0; j < alNodesWithSameScore.size(); j++) {
                 currentNode = (Integer) alNodesWithSameScore.get(j);
                 if (!nodeSeenHashMap.containsKey(currentNode)) {
-                    ArrayList complex = getComplexCore(currentNode, nodeSeenHashMap);
-                    if (complex.size() > 0) {
-                        //make sure spawning node is part of complex, if not already in there
-                        if (!complex.contains(currentNode)) {
-                            complex.add(currentNode);
+                    ArrayList cluster = getClusterCore(currentNode, nodeSeenHashMap, params.getNodeScoreCutOff());//TODO:here we use the original node score cutoff
+                    if (cluster.size() > 0) {
+                        //make sure spawning node is part of cluster, if not already in there
+                        if (!cluster.contains(currentNode)) {
+                            cluster.add(currentNode);
                         }
                         //create an input graph for the filter and haircut methods
-                        //comvert Integer array to int array
-                        int[] complexArray = new int[complex.size()];
-                        for (int i = 0; i < complex.size(); i++) {
-                            int nodeIndex = ((Integer) complex.get(i)).intValue();
-                            complexArray[i] = nodeIndex;
+                        //convert Integer array to int array
+                        int[] clusterArray = new int[cluster.size()];
+                        for (int i = 0; i < cluster.size(); i++) {
+                            int nodeIndex = ((Integer) cluster.get(i)).intValue();
+                            clusterArray[i] = nodeIndex;
                         }
-                        GraphPerspective gpComplexGraph = inputNetwork.createGraphPerspective(complexArray);
-                        if (!filterComplex(gpComplexGraph)) {
+                        GraphPerspective gpClusterGraph = inputNetwork.createGraphPerspective(clusterArray);
+                        if (!filterCluster(gpClusterGraph)) {
                             if (params.isHaircut()) {
-                                haircutComplex(gpComplexGraph, complex, inputNetwork);
+                                haircutCluster(gpClusterGraph, cluster, inputNetwork);
                             }
                             if (params.isFluff()) {
-                                fluffComplexBoundary(complex, nodeSeenHashMap);
+                                fluffClusterBoundary(cluster, nodeSeenHashMap);
                             }
-                            //store detected complex for later
-                            alComplexes.add(complex);
+                            //store detected cluster for later
+                            alClusters.add(cluster);
                         }
                     }
                 }
@@ -261,7 +261,44 @@ public class MCODEAlgorithm {
         long msTimeAfter = System.currentTimeMillis();
         lastFindTime = msTimeAfter - msTimeBefore;
 
-        return (alComplexes);
+        return (alClusters);
+    }
+
+    public GraphPerspective exploreCluster(GraphPerspective cluster, double nodeScoreCutoff) {
+        //HashMap nodeSeenHashMap = new HashMap();
+        Node seedNode = cluster.getNode(0);
+        System.out.println("cluster size before: "+cluster.getNodeCount() + ", includes: ");
+        for (int c = 0; c < cluster.getNodeCount(); c++) {
+            System.out.println(cluster.getNode(c));
+        }
+        //GraphPerspective newCluster = getClusterCore(seedNode, nodeSeenHashMap, nodeScoreCutoff);
+
+                    //if (newCluster.size() > 0) {
+                        //make sure spawning node is part of cluster, if not already in there
+                    //    if (!newCluster.contains(seedNode)) {
+                    //        newCluster.add(seedNode);
+                    //    }
+                        //create an input graph for the filter and haircut methods
+                        //convert Integer array to int array
+                    /*    int[] clusterArray = new int[newCluster.size()];
+                        for (int i = 0; i < newCluster.size(); i++) {
+                            int nodeIndex = ((Integer) newCluster.get(i)).intValue();
+                            clusterArray[i] = nodeIndex;
+                        }
+                        GraphPerspective gpClusterGraph = inputNetwork.createGraphPerspective(clusterArray);
+                        if (!filterCluster(gpClusterGraph)) {
+                            if (params.isHaircut()) {
+                                haircutCluster(gpClusterGraph, newCluster, inputNetwork);
+                            }
+                            if (params.isFluff()) {
+                                fluffClusterBoundary(newCluster, nodeSeenHashMap);
+                            }
+                        }*/
+                    //}
+
+        //System.out.println("cluster size after: "+newCluster.getNodeCount());
+
+        return cluster;
     }
 
     /**
@@ -282,18 +319,18 @@ public class MCODEAlgorithm {
     }
 
     /**
-     * Score a complex.  Currently this ranks larger, denser complexes higher, although
+     * Score a cluster.  Currently this ranks larger, denser clusters higher, although
      * in the future other scoring functions could be created
      *
-     * @param gpComplex - The GINY GraphPerspective version of the complex
-     * @return The score of the complex
+     * @param gpCluster - The GINY GraphPerspective version of the cluster
+     * @return The score of the cluster
      */
-    public double scoreComplex(GraphPerspective gpComplex) {
+    public double scoreCluster(GraphPerspective gpCluster) {
         int numNodes = 0;
         double density = 0.0, score = 0.0;
 
-        numNodes = gpComplex.getNodeCount();
-        density = calcDensity(gpComplex, true);
+        numNodes = gpCluster.getNodeCount();
+        density = calcDensity(gpCluster, true);
         score = density * numNodes;
 
         return (score);
@@ -366,37 +403,37 @@ public class MCODEAlgorithm {
         if (gpCore != null) {
             nodeInfo.coreDensity = calcDensity(gpCore, params.isIncludeLoops());
         }
-        //record neighbor array for later use in comkplex detection step
+        //record neighbor array for later use in cluster detection step
         nodeInfo.nodeNeighbors = neighborhood;
 
         return (nodeInfo);
     }
 
     /**
-     * Find the high-scoring central region of the complex.
+     * Find the high-scoring central region of the cluster.
      * This is a utility function for the algorithm.
      *
-     * @param startNode       The node that is the seed of the complex
+     * @param startNode       The node that is the seed of the cluster
      * @param nodeSeenHashMap The list of nodes seen already
-     * @return A list of node IDs representing the core of the complex
+     * @return A list of node IDs representing the core of the cluster
      */
-    private ArrayList getComplexCore(Integer startNode, HashMap nodeSeenHashMap) {
-        ArrayList complex = new ArrayList(); //stores Integer nodeIndices
-        getComplexCoreInternal(startNode, nodeSeenHashMap, ((NodeInfo) nodeInfoHashMap.get(startNode)).score, 1, complex);
-        return (complex);
+    private ArrayList getClusterCore(Integer startNode, HashMap nodeSeenHashMap, double nodeScoreCutOff) {
+        ArrayList cluster = new ArrayList(); //stores Integer nodeIndices
+        getClusterCoreInternal(startNode, nodeSeenHashMap, ((NodeInfo) nodeInfoHashMap.get(startNode)).score, 1, cluster, nodeScoreCutOff);
+        return (cluster);
     }
 
     /**
-     * An internal function that does the real work of getComplexCore, implemented to enable recursion.
+     * An internal function that does the real work of getClusterCore, implemented to enable recursion.
      *
-     * @param startNode       The node that is the seed of the complex
+     * @param startNode       The node that is the seed of the cluster
      * @param nodeSeenHashMap The list of nodes seen already
      * @param startNodeScore  The score of the seed node
      * @param currentDepth    The depth away from the seed node that we are currently at
-     * @param complex         The complex to add to if we find a complex node in this method
+     * @param cluster         The cluster to add to if we find a cluster node in this method
      * @return true
      */
-    private boolean getComplexCoreInternal(Integer startNode, HashMap nodeSeenHashMap, double startNodeScore, int currentDepth, ArrayList complex) {
+    private boolean getClusterCoreInternal(Integer startNode, HashMap nodeSeenHashMap, double startNodeScore, int currentDepth, ArrayList cluster, double nodeScoreCutOff) {
         //base cases for recursion
         if (nodeSeenHashMap.containsKey(startNode)) {
             return (true);  //don't recheck a node
@@ -411,17 +448,17 @@ public class MCODEAlgorithm {
 
         nodeSeenHashMap.put(startNode, new Boolean(true));
         for (i = 0; i < (((NodeInfo) nodeInfoHashMap.get(startNode)).numNodeNeighbors); i++) {
-            //go through all currentNode neighbors to check their core density for complex inclusion
+            //go through all currentNode neighbors to check their core density for cluster inclusion
             currentNeighbor = new Integer(((NodeInfo) nodeInfoHashMap.get(startNode)).nodeNeighbors[i]);
             if ((!nodeSeenHashMap.containsKey(currentNeighbor)) &&
                     (((NodeInfo) nodeInfoHashMap.get(currentNeighbor)).score >=
-                    (startNodeScore - startNodeScore * params.getNodeScoreCutOff()))) {
+                    (startNodeScore - startNodeScore * nodeScoreCutOff))) { //TODO: this is where node score cutoff gets used
                 //add current neighbor
-                if (!complex.contains(currentNeighbor)) {
-                    complex.add(currentNeighbor);
+                if (!cluster.contains(currentNeighbor)) {
+                    cluster.add(currentNeighbor);
                 }
-                //try to extend complex at this node
-                getComplexCoreInternal(currentNeighbor, nodeSeenHashMap, startNodeScore, currentDepth + 1, complex);
+                //try to extend cluster at this node
+                getClusterCoreInternal(currentNeighbor, nodeSeenHashMap, startNodeScore, currentDepth + 1, cluster, nodeScoreCutOff);
             }
         }
 
@@ -429,25 +466,25 @@ public class MCODEAlgorithm {
     }
 
     /**
-     * Fluff up the complex at the boundary by adding lower scoring, non complex-core neighbors
-     * This implements the complex fluff feature.
+     * Fluff up the cluster at the boundary by adding lower scoring, non cluster-core neighbors
+     * This implements the cluster fluff feature.
      *
-     * @param complex         The complex to fluff
+     * @param cluster         The cluster to fluff
      * @param nodeSeenHashMap The list of nodes seen already
      * @return true
      */
-    private boolean fluffComplexBoundary(ArrayList complex, HashMap nodeSeenHashMap) {
+    private boolean fluffClusterBoundary(ArrayList cluster, HashMap nodeSeenHashMap) {
         int currentNode = 0, nodeNeighbor = 0;
-        //create a temp list of nodes to add to avoid concurrently modifying 'complex'
+        //create a temp list of nodes to add to avoid concurrently modifying 'cluster'
         ArrayList nodesToAdd = new ArrayList();
 
         //Keep a separate internal nodeSeenHashMap because nodes seen during a fluffing should not be marked as permanently seen,
-        //they can be included in another complex's fluffing step.
+        //they can be included in another cluster's fluffing step.
         HashMap nodeSeenHashMapInternal = new HashMap();
 
-        //add all current neighbour's neighbours into complex (if they have high enough clustering coefficients) and mark them all as seen
-        for (int i = 0; i < complex.size(); i++) {
-            currentNode = ((Integer) complex.get(i)).intValue();
+        //add all current neighbour's neighbours into cluster (if they have high enough clustering coefficients) and mark them all as seen
+        for (int i = 0; i < cluster.size(); i++) {
+            currentNode = ((Integer) cluster.get(i)).intValue();
             for (int j = 0; j < ((NodeInfo) nodeInfoHashMap.get(new Integer(currentNode))).numNodeNeighbors; j++) {
                 nodeNeighbor = ((NodeInfo) nodeInfoHashMap.get(new Integer(currentNode))).nodeNeighbors[j];
                 if ((!nodeSeenHashMap.containsKey(new Integer(nodeNeighbor))) && (!nodeSeenHashMapInternal.containsKey(new Integer(nodeNeighbor))) &&
@@ -458,27 +495,27 @@ public class MCODEAlgorithm {
             }
         }
 
-        //Add fluffed nodes to complex
+        //Add fluffed nodes to cluster
         if (nodesToAdd.size() > 0) {
-            complex.addAll(nodesToAdd.subList(0, nodesToAdd.size()));
+            cluster.addAll(nodesToAdd.subList(0, nodesToAdd.size()));
         }
 
         return (true);
     }
 
     /**
-     * Checks if the complex needs to be filtered according to heuristics in this method
+     * Checks if the cluster needs to be filtered according to heuristics in this method
      *
-     * @param gpComplexGraph The complex to check if it passes the filter
-     * @return true if complex should be filtered, false otherwise
+     * @param gpClusterGraph The cluster to check if it passes the filter
+     * @return true if cluster should be filtered, false otherwise
      */
-    private boolean filterComplex(GraphPerspective gpComplexGraph) {
-        if (gpComplexGraph == null) {
+    private boolean filterCluster(GraphPerspective gpClusterGraph) {
+        if (gpClusterGraph == null) {
             return (true);
         }
 
-        //filter if not a 2-core
-        GraphPerspective gpCore = getKCore(gpComplexGraph, 2);
+        //filter if the cluster does not satisfy the user specified k-core
+        GraphPerspective gpCore = getKCore(gpClusterGraph, params.getKCore());
         if (gpCore == null) {
             return (true);
         }
@@ -487,23 +524,23 @@ public class MCODEAlgorithm {
     }
 
     /**
-     * Gives the complex a haircut (removed singly connected nodes by taking a 2-core)
+     * Gives the cluster a haircut (removed singly connected nodes by taking a 2-core)
      *
-     * @param gpComplexGraph The complex graph
-     * @param complex        The complex node ID list (in the original graph)
+     * @param gpClusterGraph The cluster graph
+     * @param cluster        The cluster node ID list (in the original graph)
      * @param gpInputGraph   The original input graph
      * @return true
      */
-    private boolean haircutComplex(GraphPerspective gpComplexGraph, ArrayList complex, GraphPerspective gpInputGraph) {
+    private boolean haircutCluster(GraphPerspective gpClusterGraph, ArrayList cluster, GraphPerspective gpInputGraph) {
         //get 2-core
-        GraphPerspective gpCore = getKCore(gpComplexGraph, 2);
+        GraphPerspective gpCore = getKCore(gpClusterGraph, 2);
         if (gpCore != null) {
-            //clear the complex and add all 2-core nodes back into it
-            complex.clear();
+            //clear the cluster and add all 2-core nodes back into it
+            cluster.clear();
             //must add back the nodes in a way that preserves gpInputGraph node indices
             int[] rootGraphIndices = gpCore.getNodeIndicesArray();
             for (int i = 0; i < rootGraphIndices.length; i++) {
-                complex.add(new Integer(gpInputGraph.getRootGraphNodeIndex(rootGraphIndices[i])));
+                cluster.add(new Integer(gpInputGraph.getRootGraphNodeIndex(rootGraphIndices[i])));
             }
         }
         return (true);

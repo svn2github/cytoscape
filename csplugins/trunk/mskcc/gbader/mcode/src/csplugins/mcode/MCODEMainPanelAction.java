@@ -51,29 +51,46 @@ import java.net.URL;
  * finding parameters are modified
  */
 public class MCODEMainPanelAction implements ActionListener {
+    boolean opened = false;
+    //MCODEMainPanel mainPanel;
     /**
-     * This method is called when the user wants to change the MCODE parameters.
+     * This method is called when the user wants to start MCODE.
      *
      * @param event Menu Item Selected.
      */
     public void actionPerformed(ActionEvent event) {
-        //display main panel in left cytopanel
+        //display MCODEMainPanel in left cytopanel
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.WEST);
+        CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.WEST);
 
-        MCODEMainPanel mainPanel = new MCODEMainPanel();
+        MCODEMainPanel mainPanel = new MCODEMainPanel(this);
 
-        URL iconURL = this.getClass().getResource("resources/icon_note_large.gif");
-        if (iconURL != null) {
-            ImageIcon icon = new ImageIcon(iconURL);
-            String tip = "MCODE Scoring/Complex-Finding Parameters";
-            cytoPanel.add("MCODE PlugIn", icon, mainPanel, tip);
+        //First we must make sure that the plugin is not already open
+        if (!opened) {
+            //mainPanel = new MCODEMainPanel(this);
+            URL iconURL = this.getClass().getResource("resources/logo2.png");
+            if (iconURL != null) {
+                ImageIcon icon = new ImageIcon(iconURL);
+                String tip = "MCODE Network Scoring/Cluster Finding Parameters";
+                cytoPanel.add("", icon, mainPanel, tip);
+            } else {
+                cytoPanel.add("MCODE PlugIn", mainPanel);
+            }
         } else {
-            cytoPanel.add("MCODE PlugIn", mainPanel);
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The MCODE PlugIn is already running.");
         }
-
+    
         int index = cytoPanel.indexOfComponent(mainPanel);
         cytoPanel.setSelectedIndex(index);
         cytoPanel.setState(CytoPanelState.DOCK);
+        setOpened(true);
+    }
+
+    public void setOpened(boolean opened) {
+        this.opened = opened;
+    }
+
+    public boolean isOpened() {
+        return opened;
     }
 }
