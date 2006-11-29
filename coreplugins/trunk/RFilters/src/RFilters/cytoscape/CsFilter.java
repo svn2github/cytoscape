@@ -95,7 +95,7 @@ public class CsFilter
     CytoscapeToolBar toolBar = cyMenus.getToolBar();
     JButton button = new JButton (icon);
     button.addActionListener(action);
-    button.setToolTipText("Use Filters");
+    button.setToolTipText("Create and Apply Filters");
     button.setBorderPainted(false);
     toolBar.add(button);
 
