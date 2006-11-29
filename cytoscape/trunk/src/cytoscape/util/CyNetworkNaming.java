@@ -88,14 +88,18 @@ public class CyNetworkNaming
 		String sname = "";
 		Object[] options = {"Try Again", "Cancel", "Use Suggestion"};
 		int value = JOptionPane.NO_OPTION;
-		
+		cytoscape.dialogs.EditNetworkTitleDialog theDialog;
 		while (true) {
-			name = JOptionPane.showInputDialog(parent,
-					"Please enter new network title: ", "Edit Network Title",
-							JOptionPane.QUESTION_MESSAGE);
+			theDialog = new cytoscape.dialogs.EditNetworkTitleDialog(parent, true, pname);
+			theDialog.setLocationRelativeTo(parent);
+			theDialog.setVisible(true);
+			name = theDialog.getNewNetworkTitle();
+			//name = JOptionPane.showInputDialog(parent,
+			//		"Please enter new network title: ", "Edit Network Title",
+			//				JOptionPane.QUESTION_MESSAGE);
 			if (name == pname)
 				break;
-			else if (name == null)
+			else if (name == null||name.trim().equals(""))
 			{
 				name = pname;
 				break;
