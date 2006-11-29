@@ -160,7 +160,7 @@
 	</target>
 
 	<target name="doc" depends="compile,clean-docs" description="JavaDoc ${ant.project.name}.">
-		<javadoc destdir="${apidocs.dir}" source="1.4" breakiterator="true" Windowtitle="${ant.project.name} API Docs" header="${ant.project.name}" classpathref="compile.classpath">
+		<javadoc destdir="${apidocs.dir}" source="1.5" breakiterator="true" Windowtitle="${ant.project.name} API Docs" header="${ant.project.name}" classpathref="compile.classpath">
 			<fileset dir="${src.dir}" defaultexcludes="yes">
 				<exclude name="${test.subdir}/**" />
 				<include name="**/*.java" />
