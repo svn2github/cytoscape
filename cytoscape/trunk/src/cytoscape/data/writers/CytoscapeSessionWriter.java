@@ -212,6 +212,7 @@ public class CytoscapeSessionWriter {
 	File sessionFolder;
 	
 	String sessionDirName;
+	String tmpDirName;
 
 	HashMap viewMap = (HashMap) Cytoscape.getNetworkViewMap();
 	HashMap visualStyleMap;
@@ -224,14 +225,15 @@ public class CytoscapeSessionWriter {
 	 */
 	public CytoscapeSessionWriter(String sessionName) {
 		this.sessionFileName = sessionName;
-		this.sessionDirName = null;
+		this.tmpDirName = System.getProperty("java.io.tmpdir") + 
+		                  System.getProperty("file.separator");
 
 		// For now, session ID is time and date
 		Date date = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
 
 		// Create CySession file
-		sessionDirName = "CytoscapeSession-" + df.format(date);
+		sessionDirName = tmpDirName + "CytoscapeSession-" + df.format(date);
 	}
 
 	/**
@@ -272,7 +274,7 @@ public class CytoscapeSessionWriter {
 			String xgmmlFileName = curNetworkName + XGMML_EXT;
 
 			xgmmlFileName = getValidFileName(xgmmlFileName);
-			targetFiles[fileCounter] = xgmmlFileName;
+			targetFiles[fileCounter] = tmpDirName + xgmmlFileName;
 			fileCounter++;
 
 			makeXGMML(xgmmlFileName, network, view);
@@ -283,14 +285,14 @@ public class CytoscapeSessionWriter {
 		//
 		createCySession(sessionDirName);
 
-		targetFiles[0] = VIZMAP_FILE;
-		targetFiles[1] = CYPROP_FILE;
-		targetFiles[2] = BOOKMARKS_FILE;
-		targetFiles[3] = CYSESSION_FILE_NAME;
+		targetFiles[0] = tmpDirName + VIZMAP_FILE;
+		targetFiles[1] = tmpDirName + CYPROP_FILE;
+		targetFiles[2] = tmpDirName + BOOKMARKS_FILE;
+		targetFiles[3] = tmpDirName + CYSESSION_FILE_NAME;
 
 		// Prepare bookmarks for saving
 		bookmarks = Cytoscape.getBookmarks();
-		BookmarksUtil.saveBookmark(bookmarks, new File(BOOKMARKS_FILE));
+		BookmarksUtil.saveBookmark(bookmarks, new File(tmpDirName + BOOKMARKS_FILE));
 		
 		// Prepare property files for saving
 		preparePropFiles();
@@ -377,13 +379,13 @@ public class CytoscapeSessionWriter {
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
-		vizProp = new File(VIZMAP_FILE);
+		vizProp = new File(tmpDirName + VIZMAP_FILE);
 		CalculatorIO.storeCatalog(catalog, vizProp);
 
 		// Prepare cytoscape properties file
 		FileOutputStream output = null;
 		try {
-			cyProp = new File(CYPROP_FILE);
+			cyProp = new File(tmpDirName + CYPROP_FILE);
 			output = new FileOutputStream(cyProp);
 			prop = CytoscapeInit.getProperties();
 			prop.store(output, "Cytoscape Property File");
@@ -413,7 +415,7 @@ public class CytoscapeSessionWriter {
 		XGMMLWriter wt = new XGMMLWriter(network, view);
 		FileWriter fileWriter2 = null;
 		try {
-			fileWriter2 = new FileWriter(xgmmlFile);
+			fileWriter2 = new FileWriter(tmpDirName + xgmmlFile);
 			wt.write(fileWriter2);
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -455,7 +457,7 @@ public class CytoscapeSessionWriter {
 
 		FileOutputStream fos = null;
 		try {
-			fos = new FileOutputStream(CYSESSION_FILE_NAME);
+			fos = new FileOutputStream(tmpDirName + CYSESSION_FILE_NAME);
 			// Write session file
 			m.marshal(session, fos);
 		} finally {

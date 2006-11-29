@@ -78,6 +78,8 @@ public class ZipUtil {
 	private String sessionDirName;
 	private HashMap pluginFileMap = null;
 
+	protected String tmpDirName;
+
 	/**
 	 * For zip file, file separator is always "/" in all platforms inclding Win,
 	 * Mac, and Unix.
@@ -97,6 +99,8 @@ public class ZipUtil {
 		this.fileCount = fileList.length;
 		this.inputFiles = new String[fileCount];
 		this.sessionDirName = sessionDir;
+		this.tmpDirName = System.getProperty("java.io.tmpdir") +  
+		                  System.getProperty("file.separator");
 
 		System.arraycopy(fileList, 0, inputFiles, 0, fileCount);
 	}
