@@ -97,6 +97,14 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
     public Collection getEditorTypes() {
         return this.editorTypes;
     }
+    /**
+     * TODO: document me!
+     * @return
+     */
+    public Iterator<String> getEditorNames ()
+    {
+    	return Collections.unmodifiableCollection(this.editorTypes).iterator();
+    }
 
     /**
      * adds a new editorType to the collection of editor types
