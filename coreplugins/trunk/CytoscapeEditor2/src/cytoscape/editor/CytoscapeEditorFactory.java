@@ -6,6 +6,7 @@
 package cytoscape.editor;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorFactoryImpl;
@@ -47,6 +48,12 @@ public interface CytoscapeEditorFactory {
 	 */
 	public Collection getEditorTypes();
 	
+	
+    /**
+     * Returns a non-null, read-only Iterator (doesn't allow modification) over
+     * all the fully qualified names of Editors.
+     */
+	public Iterator<String> getEditorNames ();
 	
 	/**
 	 * adds an editor type to the collection of editor types

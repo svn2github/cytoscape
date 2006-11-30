@@ -13,7 +13,9 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -97,10 +99,8 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
     public Collection getEditorTypes() {
         return this.editorTypes;
     }
-    /**
-     * TODO: document me!
-     * @return
-     */
+
+    // implements CytoscapeEditorFactory interface:
     public Iterator<String> getEditorNames ()
     {
     	return Collections.unmodifiableCollection(this.editorTypes).iterator();
