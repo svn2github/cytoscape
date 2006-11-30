@@ -13,11 +13,14 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+
+import javax.swing.JOptionPane;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
@@ -155,6 +158,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	 */
 	private NodeView _highlightedNodeView = null;
 	private EdgeView _highlightedEdgeView = null;
+	private float _savedStrokeWidth = Float.NaN;
+	Cursor _savedCursor = null;
 
 	public BasicNetworkEditEventHandler() {
 	}
@@ -208,6 +213,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	public void mousePressed(MouseEvent e) {
 		nextPoint = e.getPoint();
 		NodeView nv = null;
+		
 
 //		System.out
 //				.println("Mouse pressed at viewport coordinate: " + nextPoint);
@@ -216,6 +222,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		// AJK: 04/15/06 for Cytoscape 2.3 renderer
 		// if (e.getPickedNode() instanceof NodeView) {
 		nv = view.getPickedNodeView(nextPoint);
+		
+		if (e.getClickCount() > 1)
+		{
+			System.out.println ("Got " + e.getClickCount() + " clicks for node " + 
+					nv.getNode().getIdentifier());
+			String s = JOptionPane.showInputDialog("give me a name");
+			System.out.println("Got name = " + s);
+		}
 //		System.out.println("Picked NodeView = " + nv);
 //		System.out.println("Edge started = " + edgeStarted);
 //		System.out.println("node = " + node);
@@ -484,21 +498,35 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
     		if (_highlightedEdgeView != null)
     		{
     			_highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
-    			_highlightedEdgeView = null;
+//       			if (_savedStrokeWidth != Float.NaN)
+//    			{
+//    				_highlightedEdgeView.setStrokeWidth(_savedStrokeWidth);
+//    			}
+ 
+       			_highlightedEdgeView = null;
     		}    		
     		if (_highlightedNodeView != null)
     		{
     			_highlightedNodeView.setSelected(!_highlightedNodeView.isSelected());
     			_highlightedNodeView = null;
     		}
-    	}
+   			if (_savedCursor != null)
+			{
+				Cytoscape.getDesktop().setCursor(_savedCursor);
+			}
+   		}
     	else if (nodeOrEdgeView instanceof NodeView)
     	{
     		NodeView nv = (NodeView) nodeOrEdgeView;
     		if (_highlightedEdgeView != null)
     		{
     			_highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
-    			_highlightedEdgeView = null;
+//       			if (_savedStrokeWidth != Float.NaN)
+//    			{
+//    				_highlightedEdgeView.setStrokeWidth(_savedStrokeWidth);
+//    				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+//    			}    			
+//       			_highlightedEdgeView = null;
     		}
     		if (_highlightedNodeView != null)
     		{
@@ -506,6 +534,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
     		}
 			_highlightedNodeView = nv;
 			nv.setSelected(!nv.isSelected());
+			System.out.println ("Hovering near: " + nv + " setting cursor to " + Cursor.HAND_CURSOR);
+			_savedCursor = Cytoscape.getDesktop().getCursor();
+			Cytoscape.getDesktop().setCursor(Cursor.HAND_CURSOR);
     	}
     	else if (nodeOrEdgeView instanceof EdgeView)
     	{
@@ -517,11 +548,21 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
     		}
     		if (_highlightedEdgeView != null)
     		{
-    			_highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected()); 			
+    			_highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected()); 
+//     			if (_savedStrokeWidth != Float.NaN)
+//    			{
+//    				_highlightedEdgeView.setStrokeWidth(_savedStrokeWidth);
+//    				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+//    			}   
     		}
 			_highlightedEdgeView = ev;
 			ev.setSelected(!ev.isSelected());
-    	}
+//			_savedStrokeWidth = ev.getStrokeWidth();
+//			ev.setStrokeWidth(4.0f);
+			_savedCursor = Cytoscape.getDesktop().getCursor();
+			System.out.println ("Hovering near: " + ev + " setting cursor to " + Cursor.HAND_CURSOR);
+			Cytoscape.getDesktop().setCursor(Cursor.HAND_CURSOR);
+      	}  	
     }
 
     /**
@@ -736,6 +777,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			canvas.removeKeyListener(this);
 			this.view = null;
 			this.canvas = null;
+			
 		}
 	}
 
