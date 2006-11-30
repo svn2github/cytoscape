@@ -132,9 +132,12 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
     // implements CytoPanelListener interface:
     public void onComponentSelected(int componentIndex) {
-        if (componentIndex == Cytoscape.getDesktop()
-                                       .getCytoPanel(SwingConstants.WEST)
-                                       .getSelectedIndex()) {
+        int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent(
+        "Editor");
+//        if (componentIndex == Cytoscape.getDesktop()
+//                                       .getCytoPanel(SwingConstants.WEST)
+//                                       .getSelectedIndex()) {
+        if (componentIndex == idx) {
             updateEditorPalette(
                 Cytoscape.getVisualMappingManager().getVisualStyle());
         }
