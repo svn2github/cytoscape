@@ -28,6 +28,7 @@ public class WeightedEdgeSearch {
 
 	protected static final int RANDOM_TRIALS = 100;
 
+	protected static final double CUTOFF_PERCENT = 0.95;
 
 	// protected static final double DEFAULT_FILL = -10;
 
@@ -35,23 +36,32 @@ public class WeightedEdgeSearch {
 
 	public static void main(String[] args) {
 
-		System.err.println("Version 0.41");
+		System.err.println("Version 0.47");
 		Vector<SearchResult> searchResults = new Vector<SearchResult>();
+		System.err.println("Reading edges scores");
 		readEdgeScores();
+		System.err.println("Reading initial node scores");
 		readNodeScores(args[0]);
+		System.err.println("Setting up graph data structures");
 		setupGraph();
+		System.err.println("Scoring original graph");
 		scoreGraph();
 		double lastScore = 9999999;
 		double cutoff = lastScore - 1;
 		int searchIteration = 0;
 		while (lastScore > cutoff) {
+			System.err.println("Starting real search " + searchIteration);
 			SearchResult bestResult = search();
 			searchResults.add(bestResult);
 			outputResult(searchIteration, bestResult);
 			lastScore = bestResult.score;
 			if (bestResult.score < cutoff) {
 				DoubleArrayList scores = new DoubleArrayList(RANDOM_TRIALS);
+				System.err
+						.println("Failed cutoff check, running randomization trials (total = "
+								+ RANDOM_TRIALS + ")");
 				for (int idx = 0; idx < RANDOM_TRIALS; idx += 1) {
+					System.err.print("" + idx + " ");
 					/*
 					 * read in the node scores
 					 */
@@ -67,7 +77,7 @@ public class WeightedEdgeSearch {
 					 * randomize the expression
 					 */
 					shuffleExpression();
-					
+
 					/*
 					 * regenerat the scoring matrix
 					 */
@@ -78,12 +88,17 @@ public class WeightedEdgeSearch {
 					SearchResult randomResult = search();
 					scores.add(randomResult.score);
 				}
+				System.err.println();
 				/*
 				 * Figure out hte cutoff value
 				 */
 				scores.sort();
 				outputRandomTrials(searchIteration, scores);
-				cutoff = scores.get((int)(scores.size()*0.95));
+				double prev_cutoff = cutoff;
+				cutoff = scores.get((int) (scores.size() * CUTOFF_PERCENT - 1));
+				if(cutoff > prev_cutoff){
+					cutoff = prev_cutoff;
+				}
 				/*
 				 * read hte node scores again and remove hte last n-1 node
 				 * scores
@@ -101,31 +116,8 @@ public class WeightedEdgeSearch {
 			scoreGraph();
 			searchIteration += 1;
 		}
-
-//		for (int idx = 0; idx < trials; idx += 1) {
-//			System.err.println("Starting iteration " + idx);
-//			SearchResult bestResult = search();
-//			outputResult(idx, bestResult);
-//
-//			System.err.println("Resetting edge scores");
-//			resetScores(bestResult);
-//			System.err.println("Finished resetting edge scores");
-//		}
-//		if (random) {
-//			initializeOutput();
-//			shuffleExpression();
-//			createGraph();
-//			for (int idx = 0; idx < RANDOM_TRIALS; idx += 1) {
-//				System.err.println("Trial " + idx);
-//				SearchResult bestResult = search();
-//				outputScore(bestResult.score);
-//				shuffleExpression();
-//				createGraph();
-//			}
-//
-//		} else {
-//
-//		}
+		System.err
+				.println("Last result failed cutoff, even after new randomization trial");
 
 	}
 
@@ -155,7 +147,6 @@ public class WeightedEdgeSearch {
 		 * Read in the llr scores for the nodes
 		 */
 		idx2NodeLLR = new double[name2Idx.size()];
-		System.err.println("Reading in node scores");
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(
 					nodeAttributeFile));
@@ -165,10 +156,15 @@ public class WeightedEdgeSearch {
 			double LLRsum = 0;
 			while (line != null) {
 				String[] splat = line.split("\t");
-				names.add(splat[0]);
-				Double LLR = new Double(splat[1]);
-				LLRs.add(LLR);
-				LLRsum += LLR.doubleValue();
+				/*
+				 * Only consider genes that are present in the network
+				 */
+				if (name2Idx.containsKey(splat[0])) {
+					names.add(splat[0]);
+					Double LLR = new Double(splat[1]);
+					LLRs.add(LLR);
+					LLRsum += LLR.doubleValue();
+				}
 				line = reader.readLine();
 			}
 			reader.close();
@@ -182,23 +178,20 @@ public class WeightedEdgeSearch {
 			for (int idx = 0; idx < names.size(); idx += 1) {
 				String name = names.get(idx);
 				Double LLR = LLRs.get(idx);
-				if (name2Idx.containsKey(name)) {
-					int nodeIndex = name2Idx.get(name);
-					idx2NodeLLR[nodeIndex] = LLR.doubleValue();
-				}
+				int nodeIndex = name2Idx.get(name);
+				idx2NodeLLR[nodeIndex] = LLR.doubleValue();
 			}
 		} catch (Exception e) {
 			System.err.println("Error when reading in node scores");
 			System.err.println(e);
 			System.exit(-1);
 		}
-		System.err.println("Finished reading in node scores");
 	}
 
 	protected static void readEdgeScores() {
-	idx2Name = new Vector<String>();
+		idx2Name = new Vector<String>();
 		name2Idx = new HashMap<String, Integer>();
-sources = new Vector<String>();
+		sources = new Vector<String>();
 		targets = new Vector<String>();
 		scores = new Vector<Double>();
 
@@ -246,7 +239,7 @@ sources = new Vector<String>();
 		}
 	}
 
-public static void setupGraph(){
+	public static void setupGraph() {
 		System.err.println("Min edge score is " + minEdgeScore);
 		/*
 		 * Build the edge scores data structure
@@ -265,10 +258,8 @@ public static void setupGraph(){
 		System.err.println("Finished building edge array data structure");
 	}
 
-
 	protected static void scoreGraph() {
-		System.err.println("Writing scores into data structure");
-		System.err.println("Filling background scores");
+
 		try {
 			for (int idx = 0; idx < edgeScores.length; idx += 1) {
 				/*
@@ -304,8 +295,6 @@ public static void setupGraph(){
 						- SIZE_FACTOR;
 			}
 		}
-		System.err.println("Finished writing scores into data structure");
-
 	}
 
 	protected static void removeScores(SearchResult result) {
@@ -331,12 +320,11 @@ public static void setupGraph(){
 		}
 	}
 
-
 	protected static void outputRandomTrials(int id, DoubleArrayList scores) {
 		try {
-			FileWriter fw = new FileWriter(""+id+".random");
-			for(int idx = 0;idx < scores.size(); idx += 1){
-				fw.write(""+scores.get(idx)+"\n");
+			FileWriter fw = new FileWriter("" + id + ".random");
+			for (int idx = 0; idx < scores.size(); idx += 1) {
+				fw.write("" + scores.get(idx) + "\n");
 			}
 			fw.close();
 		} catch (Exception e) {
