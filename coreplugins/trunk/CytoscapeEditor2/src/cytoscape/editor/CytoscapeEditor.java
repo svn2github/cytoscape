@@ -24,18 +24,15 @@
 */
 package cytoscape.editor;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
-
-import cytoscape.data.SelectEventListener;
-
-import cytoscape.editor.event.NetworkEditEventAdapter;
-
 import giny.model.Node;
 
 import java.awt.geom.Point2D;
-
 import java.util.List;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
+import cytoscape.data.SelectEventListener;
+import cytoscape.editor.event.NetworkEditEventAdapter;
 
 
 /**
