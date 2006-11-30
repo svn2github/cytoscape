@@ -19,7 +19,7 @@ import edu.ucsd.bioeng.coreplugin.tableImport.ui.ImportTextTableDialog;
  */
 public class ImportAttributeTableAction extends CytoscapeAction {
 	public ImportAttributeTableAction() {
-		super("Attribute from Table (Text/MS Excel\u2122)...");
+		super("Attribute from Table (Text/MS Excel)...");
 		setPreferredMenu("File.Import");
 	}
 
