@@ -68,13 +68,14 @@ public class NetworkTableReader extends AbstractGraphReader implements
 		 * Read & extract one line at a time. The line can be Tab delimited,
 		 */
 		int lineCount = 0;
+		int skipped = 0;
 		while ((line = bufRd.readLine()) != null) {
 			/*
 			 * Ignore Empty & Commnet lines.
 			 */
 			if(commentChar != null && commentChar.trim().length() != 0 && line.startsWith(commentChar)) {
-			}
-			else if (line.trim().length() > 0 && startLineNumber <= lineCount) {
+				skipped++;
+			} else if (line.trim().length() > 0 && (startLineNumber+skipped) <= lineCount) {
 				String[] parts = line.split(nmp.getDelimiterRegEx());
 				parser.parseEntry(parts);
 				

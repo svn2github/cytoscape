@@ -27,18 +27,12 @@ public class ImportNetworkTask implements Task {
 		taskMonitor.setStatus("Loading network and edge attributes...");
 		taskMonitor.setPercentCompleted(-1);
 
-		try {
-			reader.read();
-			Cytoscape.createNetwork(reader, true, null);
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null,
-					source);
-			
-			
-			taskMonitor.setPercentCompleted(100);
-		} catch (IOException e) {
-			e.printStackTrace();
-			taskMonitor.setException(e, "Unable to import network.");
-		}
+		//reader.read();
+		Cytoscape.createNetwork(reader, true, null);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null,
+				source);
+		
+		taskMonitor.setPercentCompleted(100);
 
 		informUserOfAnnotationStats();
 	}

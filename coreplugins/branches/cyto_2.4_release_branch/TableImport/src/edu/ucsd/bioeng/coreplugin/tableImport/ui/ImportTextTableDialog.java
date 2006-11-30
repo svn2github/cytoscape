@@ -217,14 +217,17 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/**
 	 * Creates new form ImportAttributesDialog
-	 * @throws IOException 
-	 * @throws JAXBException 
+	 * 
+	 * @throws IOException
+	 * @throws JAXBException
 	 */
-	public ImportTextTableDialog(Frame parent, boolean modal) throws JAXBException, IOException {
+	public ImportTextTableDialog(Frame parent, boolean modal)
+			throws JAXBException, IOException {
 		this(parent, modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
 	}
 
-	public ImportTextTableDialog(Frame parent, boolean modal, int dialogType) throws JAXBException, IOException {
+	public ImportTextTableDialog(Frame parent, boolean modal, int dialogType)
+			throws JAXBException, IOException {
 		super(parent, modal);
 
 		// Default Attribute is node attr.
@@ -430,6 +433,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 		commentLineLabel = new JLabel();
 		commentLineTextField = new JTextField();
+		commentLineTextField.setName("commentLineTextField");
 
 		titleLabel.setFont(TITLE_FONT.getFont());
 
@@ -669,6 +673,7 @@ public class ImportTextTableDialog extends JDialog implements
 			sourceLabel.setFont(LABEL_FONT.getFont());
 			sourceLabel.setText("Annotation");
 
+			annotationComboBox.setName("annotationComboBox");
 			annotationComboBox.setFont(ITEM_FONT.getFont());
 			annotationComboBox.setPreferredSize(new java.awt.Dimension(68, 25));
 
@@ -1475,6 +1480,7 @@ public class ImportTextTableDialog extends JDialog implements
 		startRowLabel.setText("Start Import Row: ");
 		startRowLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
+		startRowSpinner.setName("startRowSpinner");
 		SpinnerNumberModel startRowSpinnerModel = new SpinnerNumberModel(1, 1,
 				10000000, 1);
 		startRowSpinner.setModel(startRowSpinnerModel);
@@ -2009,12 +2015,13 @@ public class ImportTextTableDialog extends JDialog implements
 		 * Get start line number. If "transfer" check box is true, then start
 		 * reading from the second line.
 		 */
-		final int startLineNumber;
+		int startLineNumber;
+		final int spinnerNumber = Integer.parseInt(startRowSpinner.getValue()
+				.toString());
 		if (attrNameCheckBox.isSelected()) {
-			startLineNumber = 1;
+			startLineNumber = spinnerNumber;
 		} else {
-			startLineNumber = Integer.parseInt(startRowSpinner.getValue()
-					.toString()) - 1;
+			startLineNumber = spinnerNumber - 1;
 		}
 
 		final String commentChar = commentLineTextField.getText();
@@ -2180,10 +2187,12 @@ public class ImportTextTableDialog extends JDialog implements
 						mappingAttribute, aliasList, attributeNames,
 						attributeTypes, listDataTypes, importFlag,
 						ontologyIndex, selectedOntologyName);
-				final OntologyAnnotationReader oaReader = new OntologyAnnotationReader(new URL(annotationSource), aoMapping, commentChar, startLineNumber);
-			
+				final OntologyAnnotationReader oaReader = new OntologyAnnotationReader(
+						new URL(annotationSource), aoMapping, commentChar,
+						startLineNumber);
+
 				loadAnnotation(oaReader, annotationSource);
-			
+
 			}
 
 			break;
@@ -2220,15 +2229,15 @@ public class ImportTextTableDialog extends JDialog implements
 				HSSFWorkbook wb = new HSSFWorkbook(excelIn);
 				HSSFSheet sheet = wb.getSheetAt(0);
 				networkName = wb.getSheetName(0);
-				if (attrNameCheckBox.isSelected()) {
-					reader = new ExcelNetworkSheetReader(networkName, sheet,
-							nmp, 1);
-				} else {
-					reader = new ExcelNetworkSheetReader(networkName, sheet,
-							nmp);
-				}
+
+				reader = new ExcelNetworkSheetReader(networkName, sheet, nmp,
+						startLineNumber);
+
 			} else {
 				// Get name from URL.
+				if(commentChar != null && commentChar.length() != 0 && attrNameCheckBox.isSelected()) {
+					startLineNumber++;
+				}
 				final String[] parts = networkSource.toString().split("/");
 				networkName = parts[parts.length - 1];
 				reader = new NetworkTableReader(networkName, networkSource,
@@ -2568,8 +2577,9 @@ public class ImportTextTableDialog extends JDialog implements
 	/**
 	 * Setup ontology data source combo box.<br>
 	 * Basically, this method just load informaiton from bookmark.
-	 * @throws IOException 
-	 * @throws JAXBException 
+	 * 
+	 * @throws IOException
+	 * @throws JAXBException
 	 * 
 	 */
 	private void setOntologyComboBox() throws JAXBException, IOException {
@@ -3258,8 +3268,7 @@ public class ImportTextTableDialog extends JDialog implements
 			previewPanel.setAliasColumn(row, (Boolean) curModel.getValueAt(row,
 					col));
 		}
-		System.out.println("Value changed: " + evt.getFirstRow() + ", "
-				+ evt.getColumn() + " = " + curModel.getValueAt(row, col));
+		
 		aliasScrollPane.repaint();
 	}
 

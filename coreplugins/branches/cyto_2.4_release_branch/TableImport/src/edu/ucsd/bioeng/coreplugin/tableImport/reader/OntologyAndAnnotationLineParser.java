@@ -137,7 +137,6 @@ public class OntologyAndAnnotationLineParser {
 
 			if (mapping.getnetworkTitleMap().containsKey(primaryKey)) {
 				targetNetworkID = mapping.getnetworkTitleMap().get(primaryKey);
-				System.out.println("Found! " + targetNetworkID);
 				break;
 			}
 

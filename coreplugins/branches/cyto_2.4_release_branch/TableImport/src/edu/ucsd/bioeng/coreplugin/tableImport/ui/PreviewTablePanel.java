@@ -220,6 +220,7 @@ public class PreviewTablePanel extends JPanel {
 
 		previewTables = new HashMap<String, JTable>();
 		previewTable = new JTable();
+		previewTable.setName("previewTable");
 		previewTable.setOpaque(false);
 		previewTable.setBackground(Color.white);
 
@@ -509,7 +510,6 @@ public class PreviewTablePanel extends JPanel {
 	}
 
 	private void tableTabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {
-		System.out.println("tab cnahged!");
 		if (tableTabbedPane.getSelectedComponent() != null
 				&& ((JScrollPane) tableTabbedPane.getSelectedComponent())
 						.getViewport().getComponent(0) != null
@@ -1016,8 +1016,7 @@ public class PreviewTablePanel extends JPanel {
 					if (newType == CyAttributes.TYPE_SIMPLE_LIST) {
 						// listDelimiter = atd.getListDelimiterType();
 						listDelimiter = atd.getListDelimiterType();
-						System.out.println("Fireing: "
-								+ ImportTextTableDialog.LIST_DELIMITER_CHANGED);
+						
 						changes.firePropertyChange(
 								ImportTextTableDialog.LIST_DELIMITER_CHANGED,
 								null, atd.getListDelimiterType());
