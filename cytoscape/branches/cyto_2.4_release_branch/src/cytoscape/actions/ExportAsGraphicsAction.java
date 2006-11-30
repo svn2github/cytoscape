@@ -45,6 +45,7 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
@@ -67,16 +68,21 @@ public class ExportAsGraphicsAction extends CytoscapeAction  {
         super (MENU_LABEL);
         setPreferredMenu( "File.Export" );
         setAcceleratorCombo( java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK) ;
+
     }
 
     public void actionPerformed(ActionEvent e) {
+    	System.out.println("netwok as graphics");
 	
-//       ( (Phoeb*NetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, "true");
-
-      ExportDialog export = new ExportDialog();
-      export.showExportDialog( ( (DingNetworkView)Cytoscape.getCurrentNetworkView() ).getComponent(), "Export view as ...", ( (DingNetworkView)Cytoscape.getCurrentNetworkView() ).getComponent(), "export" );
+      CyNetworkView curr = Cytoscape.getCurrentNetworkView();
+      if ( curr != Cytoscape.getNullNetworkView() ) {
+      	ExportDialog export = new ExportDialog();
+      	export.showExportDialog( curr.getComponent(), "Export view as ...", curr.getComponent(), "export" );
+      } else {
+      	JOptionPane.showMessageDialog(null, "No network view selected! Please select a view to export.", 
+	                              "No network view selected!", JOptionPane.ERROR_MESSAGE);
+      }
       
-//       ( (Phoeb*NetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
 	
     } // actionPerformed
 }
