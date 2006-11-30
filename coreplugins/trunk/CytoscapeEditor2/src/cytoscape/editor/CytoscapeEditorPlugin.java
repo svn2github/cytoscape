@@ -30,9 +30,7 @@ package cytoscape.editor;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.editor.editors.MapBioMoleculeEditorToVisualStyle;
-
 import cytoscape.plugin.CytoscapePlugin;
 
 
