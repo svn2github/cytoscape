@@ -28,7 +28,7 @@ public class WeightedEdgeSearch {
 
 	public static void main(String[] args) {
 		boolean random = true;
-		System.err.println("Version 0.35");
+		System.err.println("Version 0.36");
 		System.err.println("Building graph");
 		readData(args[0]);
 		if (random) {
