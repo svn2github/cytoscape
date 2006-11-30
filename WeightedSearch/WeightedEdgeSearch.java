@@ -3,12 +3,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import cern.colt.list.DoubleArrayList;
 
 public class WeightedEdgeSearch {
 	/*
@@ -21,28 +21,27 @@ public class WeightedEdgeSearch {
 	protected static double SIZE_FACTOR = Math.log(0.6);
 	protected static final int MAX_SIZE = 15;
 	protected static final int MIN_SIZE = 10;
-	protected static final int TRIALS = 2;
+	protected static final int TRIALS = 100;
 	//protected static final double DEFAULT_FILL = -10;
 	
 	Map<Integer, Double> idx2Expression;
 
 	public static void main(String[] args) {
 		boolean random = true;
-		System.err.println("Version 0.36");
+		System.err.println("Version 0.39");
 		System.err.println("Building graph");
 		readData(args[0]);
 		if (random) {
-			double [] scores = new double[TRIALS];
+			initializeOutput();
 			shuffleExpression();
 			createGraph();
 			for(int idx = 0;idx < TRIALS; idx += 1){
 				System.err.println("Trial "+idx);
 				SearchResult bestResult = search();
-				scores[idx] = bestResult.score;
+				outputScore(bestResult.score);
 				shuffleExpression();
 				createGraph();
 			}
-			outputTrials(scores);
 			
 		} else {
 			createGraph();
@@ -65,7 +64,7 @@ public class WeightedEdgeSearch {
 	}
 	
 	protected static void shuffleExpression(){
-		Collections.shuffle(Arrays.asList(idx2NodeLLR));
+		(new DoubleArrayList(idx2NodeLLR)).shuffle();
 	}
 	
 	protected static double harmonicMean(double x1, double x2){
@@ -250,12 +249,19 @@ public class WeightedEdgeSearch {
 		}
 	}
 	
-	protected static void outputTrials(double [] scores){
+	protected static void initializeOutput(){
 		try {
 			FileWriter fw = new FileWriter("random.scores");
-			for(int idx = 0;idx<scores.length;idx += 1){
-				fw.write(""+scores[idx]+"\n");
-			}
+			fw.close();
+		}catch(Exception e){
+			e.printStackTrace();
+			System.exit(-1);
+		}
+	}
+	protected static void outputScore(double score){
+		try {
+			FileWriter fw = new FileWriter("random.scores",true);
+			fw.write(""+score+"\n");
 			fw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
