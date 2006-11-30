@@ -27,7 +27,7 @@ public class SBMLReaderPlugin extends CytoscapePlugin {
      */
     public String describe() {
         StringBuffer sb = new StringBuffer();
-        sb.append("Loads an SBML file");
+        sb.append("Loads an SBML Level 2 file");
         return sb.toString();
     }
 
