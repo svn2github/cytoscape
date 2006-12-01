@@ -67,6 +67,7 @@ public abstract class CreditScreen  {
                 window.setPreferredSize( panel.getPreferredSize() );
                 window.requestFocusInWindow();
 		WindowUtilities.centerWindowLocation( window );
+		window.setAlwaysOnTop(true);
 		window.setVisible( true );
 
 		Action scrollText = new AbstractAction() {
