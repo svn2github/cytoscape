@@ -74,6 +74,7 @@ public class ZipUtil {
 
 	private String zipArchiveName;
 	private String[] inputFiles;
+	private String inputFileDir;
 	private int fileCount;
 	private String sessionDirName;
 	private HashMap pluginFileMap = null;
@@ -92,11 +93,25 @@ public class ZipUtil {
 	 * @param sessionDir Root dir created in the zip archive.
 	 * 
 	 */
-	public ZipUtil(final String zipFile, final String[] fileList, final String sessionDir) {
+	public ZipUtil(final String zipFile, final String[] fileList, final String sessionDir ) {
+		this ( zipFile, fileList, sessionDir, "" );
+	}
+
+	/**
+	 * Constructor.<br>
+	 * 
+	 * @param zipFile Output zip file name.
+	 * @param fileList List of file names to be compressed.
+	 * @param sessionDir Root dir created in the zip archive.
+	 * @param fileDir root directory of files in fileList. 
+	 * 
+	 */
+	public ZipUtil(final String zipFile, final String[] fileList, final String sessionDir, final String fileDir ) {
 		this.zipArchiveName = zipFile;
 		this.fileCount = fileList.length;
 		this.inputFiles = new String[fileCount];
 		this.sessionDirName = sessionDir;
+		this.inputFileDir = fileDir;
 
 		System.arraycopy(fileList, 0, inputFiles, 0, fileCount);
 	}
@@ -107,7 +122,7 @@ public class ZipUtil {
 	 */
 	private void clean() {
 		for (int i = 0; i < fileCount; i++) {
-			final File tempFile = new File(inputFiles[i]);
+			final File tempFile = new File( inputFileDir + inputFiles[i]);
 			tempFile.delete();
 		}
 	}
@@ -143,7 +158,7 @@ public class ZipUtil {
 
 		String targetName = "";
 		for (int i = 0; i < fileCount; i++) {
-			final File file = new File(inputFiles[i]);
+			final File file = new File( inputFileDir + inputFiles[i]);
 			targetName = sessionDirName + FS + inputFiles[i];
 			addEntryToZip(file, targetName, zipOS, crc32, rgb);
 		}

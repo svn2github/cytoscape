@@ -298,7 +298,7 @@ public class CytoscapeSessionWriter {
 		preparePropFiles();
 
 		// Zip the session into a .cys file.
-		zipUtil = new ZipUtil(sessionFileName, targetFiles, sessionDirName);
+		zipUtil = new ZipUtil(sessionFileName, targetFiles, sessionDirName, tmpDirName);
 		zipUtil.setPluginFileMap(pluginFileListMap);
 		/*
 		 * Compress the files. Change the compression level if necessary.
