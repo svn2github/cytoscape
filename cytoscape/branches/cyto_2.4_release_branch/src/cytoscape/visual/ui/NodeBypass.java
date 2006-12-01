@@ -77,7 +77,6 @@ class NodeBypass extends VizMapBypass {
 	}
 
 	menu.add( getMenuItem("Shape", "node.shape",Byte.class) ); 
-	menu.add( getMenuItem("ToolTip", "node.toolTip",String.class) ); 
 	menu.add( getMenuItem("Label", "node.label",String.class) ); 
 	menu.add( getMenuItem("Label Color", "node.labelColor",Color.class) ); 
 	menu.add( getMenuItem("Label Position", "node.labelPosition", LabelPosition.class) ); 
