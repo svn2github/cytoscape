@@ -73,8 +73,22 @@ class EdgeBypass extends VizMapBypass {
 	menu.add( getMenuItem("Label Color", "edge.labelColor", Color.class) ); 
 	menu.add( getMenuItem("Font", "edge.font", Font.class) ); 
 	menu.add( getMenuItem("Font Size", "edge.fontSize", Font.class) ); 
-	menu.add( getMenuItem("ToolTip", "edge.toolTip", String.class) ); 
+        menu.addSeparator();
+        menu.add( getResetMenuItem() );
 
         return menu;
+    }
+
+    protected String[] getBypassNames() {
+    	String[] names = {
+	"edge.color",
+    	"edge.lineType",
+    	"edge.sourceArrow",
+    	"edge.targetArrow",
+    	"edge.label",
+    	"edge.labelColor",
+    	"edge.font",
+    	"edge.fontSize"};
+	return names;
     }
 }

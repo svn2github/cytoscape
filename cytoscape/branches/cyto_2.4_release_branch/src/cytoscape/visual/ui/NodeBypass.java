@@ -82,7 +82,26 @@ class NodeBypass extends VizMapBypass {
 	menu.add( getMenuItem("Label Position", "node.labelPosition", LabelPosition.class) ); 
 	menu.add( getMenuItem("Font", "node.font",Font.class) ); 
 	menu.add( getMenuItem("Font Size", "node.fontSize",Double.class) ); 
+	menu.addSeparator();
+	menu.add( getResetMenuItem() ); 
 	
         return menu;
+    }
+
+    protected String[] getBypassNames() {
+    	String[] names = { 
+	"node.fillColor"
+	,"node.borderColor"
+	,"node.lineType"
+	,"node.size"
+	,"node.width"
+	,"node.height"
+	,"node.shape"
+	,"node.label"
+	,"node.labelColor"
+	,"node.labelPosition"
+	,"node.font"
+	,"node.fontSize" };
+	return names;
     }
 }
