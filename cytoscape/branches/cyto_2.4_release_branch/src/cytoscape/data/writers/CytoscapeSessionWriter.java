@@ -233,7 +233,7 @@ public class CytoscapeSessionWriter {
 		DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
 
 		// Create CySession file
-		sessionDirName = tmpDirName + "CytoscapeSession-" + df.format(date);
+		sessionDirName = "CytoscapeSession-" + df.format(date);
 	}
 
 	/**
@@ -274,7 +274,7 @@ public class CytoscapeSessionWriter {
 			String xgmmlFileName = curNetworkName + XGMML_EXT;
 
 			xgmmlFileName = getValidFileName(xgmmlFileName);
-			targetFiles[fileCounter] = tmpDirName + xgmmlFileName;
+			targetFiles[fileCounter] = xgmmlFileName;
 			fileCounter++;
 
 			makeXGMML(xgmmlFileName, network, view);
@@ -285,10 +285,10 @@ public class CytoscapeSessionWriter {
 		//
 		createCySession(sessionDirName);
 
-		targetFiles[0] = tmpDirName + VIZMAP_FILE;
-		targetFiles[1] = tmpDirName + CYPROP_FILE;
-		targetFiles[2] = tmpDirName + BOOKMARKS_FILE;
-		targetFiles[3] = tmpDirName + CYSESSION_FILE_NAME;
+		targetFiles[0] = VIZMAP_FILE;
+		targetFiles[1] = CYPROP_FILE;
+		targetFiles[2] = BOOKMARKS_FILE;
+		targetFiles[3] = CYSESSION_FILE_NAME;
 
 		// Prepare bookmarks for saving
 		bookmarks = Cytoscape.getBookmarks();
@@ -298,7 +298,7 @@ public class CytoscapeSessionWriter {
 		preparePropFiles();
 
 		// Zip the session into a .cys file.
-		zipUtil = new ZipUtil(sessionFileName, targetFiles, sessionDirName);
+		zipUtil = new ZipUtil(sessionFileName, targetFiles, sessionDirName, tmpDirName);
 		zipUtil.setPluginFileMap(pluginFileListMap);
 		/*
 		 * Compress the files. Change the compression level if necessary.
