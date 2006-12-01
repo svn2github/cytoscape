@@ -73,6 +73,22 @@ abstract class VizMapBypass {
 
 	protected GraphObject graphObj = null;
 
+	abstract protected String[] getBypassNames(); 
+
+	protected JMenuItem getResetMenuItem() {
+		JMenuItem jmi = new JMenuItem (new AbstractAction("Reset") {
+			public void actionPerformed (ActionEvent e) {
+				String[] names = getBypassNames();
+				String id = graphObj.getIdentifier();
+				for (String attrName : names)
+					if ( attrs.hasAttribute(id,attrName) )
+						attrs.deleteAttribute(id,attrName);
+				vmm.getNetworkView().redrawGraph(false, true);
+			}
+		});
+		return jmi;
+	}
+
 	protected JMenuItem getMenuItem(final String title, final String attrName, final Class c) {
 
 		JMenuItem jmi = new JMenuItem (new AbstractAction(title) {
