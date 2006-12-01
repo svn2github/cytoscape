@@ -162,31 +162,31 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
     }
     /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
     public EdgeLineTypeCalculator getEdgeLineTypeCalculator() {
-    	return (EdgeLineTypeCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    	return (EdgeLineTypeCalculator)getCalculator(VizMapUI.EDGE_LINETYPE);
     }
     /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
     public EdgeArrowCalculator getEdgeSourceArrowCalculator() {
-    	return (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    	return (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_SRCARROW);
     }
     /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
     public EdgeArrowCalculator getEdgeTargetArrowCalculator() {
-    	return (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    	return (EdgeArrowCalculator)getCalculator(VizMapUI.EDGE_TGTARROW);
     }
     /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
     public EdgeLabelCalculator getEdgeLabelCalculator() {
-    	return (EdgeLabelCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    	return (EdgeLabelCalculator)getCalculator(VizMapUI.EDGE_LABEL);
     }
     /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
     public EdgeFontFaceCalculator getEdgeFontFaceCalculator() {
-    	return (EdgeFontFaceCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    	return (EdgeFontFaceCalculator)getCalculator(VizMapUI.EDGE_FONT_FACE);
     }
     /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
     public EdgeFontSizeCalculator getEdgeFontSizeCalculator() {
-    	return (EdgeFontSizeCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    	return (EdgeFontSizeCalculator)getCalculator(VizMapUI.EDGE_FONT_SIZE);
     }
     /** @deprecated Use getCalculator(type) instead. This method will be removed Sept. 2007. */
     public EdgeToolTipCalculator getEdgeToolTipCalculator() {
-    	return (EdgeToolTipCalculator)getCalculator(VizMapUI.EDGE_COLOR);
+    	return (EdgeToolTipCalculator)getCalculator(VizMapUI.EDGE_TOOLTIP);
     }
 
     /** @deprecated Use setDefaultAppearance() instead. This method will be removed Sept. 2007. */
