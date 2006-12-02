@@ -1,6 +1,7 @@
 package cytoscape.bubbleRouter;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -9,7 +10,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
@@ -48,6 +51,16 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	protected Point2D nextPoint;
 
+	// AJK: 12/01/06
+	/**
+	 * for popup menu
+	 */
+	public static String DELETE_REGION = "Delete Region";
+
+	JPopupMenu menu = new JPopupMenu("Layout Region");
+
+	LayoutRegion pickedRegion = null;
+
 	/**
 	 * 
 	 */
@@ -60,6 +73,17 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener(
 						CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
+		// AJK: 12/01/06 BEGIN
+		// addMouseListener to canvas; add popup menu
+		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
+				.addMouseListener(this);
+
+		JMenuItem deleteRegionItem = new JMenuItem(this.DELETE_REGION);
+		RegionPopupActionListener popupActionListener = new RegionPopupActionListener();
+		deleteRegionItem.addActionListener(popupActionListener);
+		menu.add(deleteRegionItem);
+		menu.setVisible(false);
+		// AJK: 12/01/06 END
 
 		MainPluginAction mpa = new MainPluginAction();
 		mpa.initializeBubbleRouter();
@@ -106,6 +130,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	}
 
 	public void mousePressed(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			processRegionMousePressEvent(e);
+		}
+		else 
+		{
+			menu.setVisible(false);
+		}
 	}
 
 	public void mouseMoved(MouseEvent e) {
@@ -123,6 +154,44 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					.addMouseMotionListener(this);
 		}
 	}
+
+	// AJK: 12/01/06 BEGIN
+
+	protected void processRegionMousePressEvent(MouseEvent event) {
+
+		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(event
+				.getPoint());
+		if (pickedRegion == null) {
+			menu.setVisible(false);
+			return;
+		}
+		
+		if (pickedRegion.getRegionAttributeValue() != null)
+		{
+			System.out.println("clicked on region: "
+					+ pickedRegion.getRegionAttributeValue());
+			
+			menu.setLabel(pickedRegion.getRegionAttributeValue().toString());
+			
+		}
+
+
+		menu.setLocation(event.getX()
+				+ Cytoscape.getDesktop().getNetworkPanel().getWidth(), event
+				.getY()
+				+ Cytoscape.getDesktop().getCyMenus().getMenuBar().getHeight()
+				+ Cytoscape.getDesktop().getCyMenus().getToolBar().getHeight());
+
+		// ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas().getY());
+		// Display PopupMenu
+		 menu.show(
+	                ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(),
+	                event.getX(),
+	                event.getY());
+//		menu.setVisible(true);
+	}
+
+	// AJK: 12/01/06 END
 
 	// Upon mouse release, calculate rectangular dimensions, create LayoutRegion
 	// object, and send region to LayoutRegionManager, add to a prefab canvas
@@ -153,21 +222,29 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			// if value is selected by user, i.e., not cancelled
 			if (region.getRegionAttributeValue() != null) {
 
-				// Add region to list of regions for this view
-				LayoutRegionManager.addRegionForView(Cytoscape
+				// AJK: 12/02/06 BEGIN
+				// consolidate adding to region list and adding to canvas
+				LayoutRegionManager.addRegion(Cytoscape
 						.getCurrentNetworkView(), region);
 
-				// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
-				// layout region
-				DGraphView view = (DGraphView) Cytoscape
-						.getCurrentNetworkView();
-				DingCanvas backgroundLayer = view
-						.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-				backgroundLayer.add(region);
+				// // Add region to list of regions for this view
+				// LayoutRegionManager.addRegionForView(Cytoscape
+				// .getCurrentNetworkView(), region);
+				//
+				// // Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
+				// // layout region
+				// DGraphView view = (DGraphView) Cytoscape
+				// .getCurrentNetworkView();
+				// DingCanvas backgroundLayer = view
+				// .getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+				// backgroundLayer.add(region);
+				//				
+				// AJK 12/02/06 END
+
 			}
 		}
 
-	} 
+	}
 
 	/**
 	 * This class gets attached to the menu item.
@@ -192,5 +269,36 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 
 	}
+
+	// AJK: 12/01/06 BEGIN
+	// popup action listener and, for context menu added to region
+
+	/**
+	 * This class listens for actions from the popup menu, it is responsible for
+	 * performing actions related to destroying and creating views, and
+	 * destroying the network.
+	 */
+	class RegionPopupActionListener implements ActionListener {
+
+		/**
+		 * Based on the action event, destroy or create a view, or destroy a
+		 * network
+		 */
+		public void actionPerformed(ActionEvent ae) {
+			String label = ((JMenuItem) ae.getSource()).getText();
+			// Figure out the appropriate action
+			if ((label == DELETE_REGION) || (pickedRegion != null)) {
+				System.out.println ("delete region: " + pickedRegion.getAttributeName());
+				LayoutRegionManager.removeRegion(Cytoscape
+						.getCurrentNetworkView(), pickedRegion);
+
+			} // end of if ()
+			else {
+				// throw an exception here?
+				System.err.println("Unexpected Region popup option");
+			} // end of else
+		}
+	}
+	// AJK: 12/01/06 END
 
 }

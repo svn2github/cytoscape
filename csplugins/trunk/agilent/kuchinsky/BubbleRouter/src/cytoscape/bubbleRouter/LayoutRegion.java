@@ -9,6 +9,10 @@ import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -17,6 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.undo.AbstractUndoableEdit;
 
 import cytoscape.Cytoscape;
@@ -25,7 +31,7 @@ import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
-public class LayoutRegion extends JComponent {
+ public class LayoutRegion extends JComponent {
 
 	/**
 	 * Translucency level of region
@@ -59,42 +65,43 @@ public class LayoutRegion extends JComponent {
 	private BufferedImage image;
 
 	// variables for attribute and value selection
-	
-	// AJK: 11/15/06 BEGIN
-	// make non-static so that we can have different attribute values and names across regions
-//	
-//	/**
-//	 * name of the selected attribute field
-//	 */
-//	private static String attributeName = null;
-//
-//	/**
-//	 * unique list of values for attributeName
-//	 */
-//	private static Object[] attributeValues = null;
-//
-//	/**
-//	 * particular value associated with a layout region
-//	 */
-//	public static Object regionAttributeValue = null;
 
-	
+	// AJK: 11/15/06 BEGIN
+	// make non-static so that we can have different attribute values and names
+	// across regions
+	//	
+	// /**
+	// * name of the selected attribute field
+	// */
+	// private static String attributeName = null;
+	//
+	// /**
+	// * unique list of values for attributeName
+	// */
+	// private static Object[] attributeValues = null;
+	//
+	// /**
+	// * particular value associated with a layout region
+	// */
+	// public static Object regionAttributeValue = null;
+
 	/**
 	 * name of the selected attribute field
 	 */
-	private  String attributeName = null;
+	private String attributeName = null;
 
 	/**
 	 * unique list of values for attributeName
 	 */
-	private  Object[] attributeValues = null;
+	private Object[] attributeValues = null;
 
 	/**
 	 * particular value associated with a layout region
 	 */
-	public  Object regionAttributeValue = null;
-// AJK: 11/15/06 END
-	
+	public Object regionAttributeValue = null;
+
+	// AJK: 11/15/06 END
+
 	/**
 	 * list of nodes associated with a layout region based on
 	 * regionAttributeValue
@@ -105,15 +112,17 @@ public class LayoutRegion extends JComponent {
 	/**
 	 * for undo/redo
 	 */
-	private  Point2D[] _undoOffsets;
+	private Point2D[] _undoOffsets;
 
-	private  Point2D[] _redoOffsets;
+	private Point2D[] _redoOffsets;
 
-	private  NodeView[] _selectedNodeViews;
-	
-	private  LayoutRegion _thisRegion;
+	private NodeView[] _selectedNodeViews;
+
+	private LayoutRegion _thisRegion;
 
 	// AJK: 11/15/06 END
+
+
 
 	/**
 	 * @param x
@@ -126,13 +135,14 @@ public class LayoutRegion extends JComponent {
 
 		// init member vars
 		selectRegionAttributeValue();
-		
-		if (this.getRegionAttributeValue() == null)
-		{
+
+		if (this.getRegionAttributeValue() == null) {
 			return;
 		}
-		
+
 		// setbounds must come before populate nodeviews
+		
+		// note that coordinates are in terms of screen coordinates, not node coordinates
 		setBounds((int) x, (int) y, (int) width, (int) height);
 		nodeViews = populateNodeViews();
 
@@ -248,23 +258,23 @@ public class LayoutRegion extends JComponent {
 	 * 
 	 * @return
 	 */
-	
+
 	// AJK: 11/15/06 BEGIN
-	//    make non-static so that we can have different attribute names/values across different regions
-	
-//	public static void selectRegionAttributeValue() {
-	public  void selectRegionAttributeValue() {
+	// make non-static so that we can have different attribute names/values
+	// across different regions
+	// public static void selectRegionAttributeValue() {
+	public void selectRegionAttributeValue() {
 
 		// Use Ethan's QuickFind dialog for attribute selection
 		// TODO: modify dialog to provide value selection as well
 		// and perhaps an all-value "brick" layout too
 		// if (attributeName == null) {
-//		new QuickFindConfigDialog();
+		// new QuickFindConfigDialog();
 		new QuickFindConfigDialog(this);
 
 		System.out.println("Got attribute name: " + attributeName);
 		// AJK: 11/15/06 END
-		
+
 		// }
 
 		// Object s = JOptionPane.showInputDialog(Cytoscape.getDesktop(),
@@ -280,8 +290,8 @@ public class LayoutRegion extends JComponent {
 	 * @param newAttributeKey
 	 */
 	// AJK: 11/15/06 make non-static
-//	public static void setAttributeName(String newAttributeKey) {
-		public  void setAttributeName(String newAttributeKey) {
+	// public static void setAttributeName(String newAttributeKey) {
+	public void setAttributeName(String newAttributeKey) {
 		attributeName = newAttributeKey;
 		System.out.println("Attribute name selected: " + attributeName);
 	}
@@ -300,8 +310,8 @@ public class LayoutRegion extends JComponent {
 	 * @param objects
 	 */
 	// AJK: 11/15/06 make non-static
-	//	public static void setAttributeValues(Object[] objects) {
-	public void setAttributeValues(Object[] objects) { 
+	// public static void setAttributeValues(Object[] objects) {
+	public void setAttributeValues(Object[] objects) {
 		attributeValues = objects;
 	}
 
@@ -322,9 +332,9 @@ public class LayoutRegion extends JComponent {
 	 * @param regionAttributeValue
 	 */
 	// AJK: 11/15/06 make non-static
-//	public static void setRegionAttributeValue(Object object) {
-	public  void setRegionAttributeValue(Object object) {
-				regionAttributeValue = object;
+	// public static void setRegionAttributeValue(Object object) {
+	public void setRegionAttributeValue(Object object) {
+		regionAttributeValue = object;
 		System.out.println("Attribute value selected: " + regionAttributeValue);
 
 	}
@@ -340,7 +350,8 @@ public class LayoutRegion extends JComponent {
 			String val = attribs.getStringAttribute(node.getIdentifier(),
 					attributeName);
 			if (val != null) {
-				System.out.println("this.regionAttributeValue = " + this.regionAttributeValue);
+				System.out.println("this.regionAttributeValue = "
+						+ this.regionAttributeValue);
 				if (val.equalsIgnoreCase(this.regionAttributeValue.toString())) {
 					selectedNodes.add(node);
 				}
@@ -366,7 +377,8 @@ public class LayoutRegion extends JComponent {
 			int j = 0;
 			while (itx.hasNext()) {
 				Node n = (Node) itx.next();
-				_selectedNodeViews[j] = Cytoscape.getCurrentNetworkView().getNodeView(n);
+				_selectedNodeViews[j] = Cytoscape.getCurrentNetworkView()
+						.getNodeView(n);
 				_undoOffsets[j] = _selectedNodeViews[j].getOffset();
 				j++;
 			}
@@ -383,11 +395,9 @@ public class LayoutRegion extends JComponent {
 
 			// AJK: 11/15/06 BEGIN
 			// undo/redo facility
-			for (int k = 0; k < _selectedNodeViews.length; k++)
-			{
+			for (int k = 0; k < _selectedNodeViews.length; k++) {
 				_redoOffsets[k] = _selectedNodeViews[k].getOffset();
 			}
-			
 
 			CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
 
@@ -471,6 +481,7 @@ public class LayoutRegion extends JComponent {
 		}
 	}
 
+
 	public void paint(Graphics g) {
 
 		// only paint if we have an image to paint onto
@@ -523,5 +534,6 @@ public class LayoutRegion extends JComponent {
 			((Graphics2D) g).drawImage(image, null, 0, 0);
 		}
 	}
+
 
 }
