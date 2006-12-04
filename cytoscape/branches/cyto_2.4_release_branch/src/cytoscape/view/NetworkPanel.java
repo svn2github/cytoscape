@@ -133,9 +133,9 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		navigatorPanel.setPreferredSize(new Dimension(180, 180));
 
 		CytoPanelImp manualLayoutPanel = (CytoPanelImp)cytoscapeDesktop.getCytoPanel(SwingConstants.SOUTH_WEST);
-		manualLayoutPanel.setMinimumSize(new Dimension(180, 180));
-		manualLayoutPanel.setMaximumSize(new Dimension(180, 180));
-		manualLayoutPanel.setPreferredSize(new Dimension(180, 180));
+		manualLayoutPanel.setMinimumSize(new Dimension(180, 185));
+		manualLayoutPanel.setMaximumSize(new Dimension(180, 185));
+		manualLayoutPanel.setPreferredSize(new Dimension(180, 185));
 		
 		JScrollPane scroll = new JScrollPane(treeTable);
 
