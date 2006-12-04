@@ -889,9 +889,6 @@ public abstract class Cytoscape {
 	 */
 	public static void destroyNetworkView(CyNetworkView view) {
 
-		// System.out.println( "destroying: "+view.getIdentifier()+" :
-		// "+getNetworkViewMap().get( view.getIdentifier() ) );
-
 		getNetworkViewMap().remove(view.getIdentifier());
 
 		if (getNetworkViewMap().size() <= 0)
@@ -906,7 +903,6 @@ public abstract class Cytoscape {
 		view = null;
 		// TODO: do we want here?
 		System.gc();
-
 	}
 
 	/**
