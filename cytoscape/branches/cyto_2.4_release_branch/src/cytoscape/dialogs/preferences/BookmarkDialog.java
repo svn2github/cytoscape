@@ -35,7 +35,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 	private String bookmarkCategory;
 	private Bookmarks theBookmarks = null;
 	// private Category theCategory = new Category();;
-	private String[] bookmarkCategories = { "network", "annonation" };
+	private String[] bookmarkCategories = { "network", "annotation" };
 
 	// private URL bookmarkURL;
 
