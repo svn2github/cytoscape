@@ -1,14 +1,13 @@
 package csplugins.mcode.test;
 
 import csplugins.mcode.MCODEAlgorithm;
+import csplugins.mcode.MCODECluster;
 import csplugins.mcode.MCODEParameterSet;
-import csplugins.mcode.MCODEUtil;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import junit.framework.TestCase;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -71,9 +70,9 @@ public class MCODETest extends TestCase {
     public void testMCODEAlgorithmSmall() {
         params.setAllAlgorithmParams(MCODEParameterSet.NETWORK, false, 2, 2, false, 100, 0.2, false, true, 0.1, true);
         alg.scoreGraph(networkSmall);
-        ArrayList clusters = alg.findClusters(networkSmall);
-        assertEquals(clusters.size(), 1);
-        double score = alg.scoreCluster(MCODEUtil.convertClusterToNetwork((ArrayList) clusters.get(0), networkSmall));
+        MCODECluster[] clusters = alg.findClusters(networkSmall);
+        assertEquals(clusters.length, 1);
+        double score = alg.scoreCluster(clusters[0]);
         assertEquals(score, (double) 1.5, 0);
     }
 }

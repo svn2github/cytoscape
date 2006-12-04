@@ -121,21 +121,15 @@ public class MCODEUtil {
     /**
      * Converts a list of MCODE generated clusters to a list of networks that is sorted by the score of the cluster
      *
-     * @param clusterList   List of MCODE generated clusters
-     * @param sourceNetwork Original network that clusters were generated from
-     * @param alg           The MCODE algorithm object used to generate this cluster list
-     * @return An array of converted networks.
+     * @param clusters   List of MCODE generated clusters
+     * @return A sorted array of cluster objects based on cluster score.
      */
-    public static GraphPerspective[] convertClusterListToSortedNetworkList(ArrayList clusterList, CyNetwork sourceNetwork, final MCODEAlgorithm alg) {          
-        GraphPerspective gpClusterArray[] = new GraphPerspective[clusterList.size()];
-        for (int i = 0; i < clusterList.size(); i++) {
-            gpClusterArray[i] = convertClusterToNetwork((ArrayList) clusterList.get(i), sourceNetwork);
-        }
-        Arrays.sort(gpClusterArray, new Comparator() {
-            //sorting GraphPerpectives by decreasing score
+    public static MCODECluster[] sortClusters(MCODECluster[] clusters) {
+        Arrays.sort(clusters, new Comparator() {
+            //sorting clusters by decreasing score
             public int compare(Object o1, Object o2) {
-                double d1 = alg.scoreCluster((GraphPerspective) o1);
-                double d2 = alg.scoreCluster((GraphPerspective) o2);
+                double d1 = ((MCODECluster) o1).getClusterScore();
+                double d2 = ((MCODECluster) o2).getClusterScore();
                 if (d1 == d2) {
                     return 0;
                 } else if (d1 < d2) {
@@ -145,7 +139,7 @@ public class MCODEUtil {
                 }
             }
         });
-        return (gpClusterArray);
+        return clusters;
     }
 
     /**
@@ -191,7 +185,7 @@ public class MCODEUtil {
      * @param fileName  The file name to write to
      * @return True if the file was written, false otherwise
      */
-    public static boolean saveMCODEResults(MCODEAlgorithm alg, ArrayList clusters, CyNetwork network, String fileName) {
+    public static boolean saveMCODEResults(MCODEAlgorithm alg, MCODECluster[] clusters, CyNetwork network, String fileName) {
         if (alg == null || clusters == null || network == null || fileName == null) {
             return false;
         }
@@ -207,13 +201,13 @@ public class MCODEUtil {
             fout.write("Cluster	Score (Density*#Proteins)\tProteins\tInteractions\tProtein names" + lineSep);
             //get GraphPerspectives for all clusters, score and rank them
             //convert the ArrayList to an array of GraphPerspectives and sort it by cluster score
-            GraphPerspective[] gpClusterArray = MCODEUtil.convertClusterListToSortedNetworkList(clusters, network, alg);
-            for (int i = 0; i < gpClusterArray.length; i++) {
-                GraphPerspective gpCluster = gpClusterArray[i];
+            //GraphPerspective[] gpClusterArray = MCODEUtil.convertClusterListToSortedNetworkList(clusters, network, alg);
+            for (int i = 0; i < clusters.length; i++) {
+                GraphPerspective gpCluster = clusters[i].getGPCluster();
                 fout.write((i + 1) + "\t"); //rank
                 NumberFormat nf = NumberFormat.getInstance();
                 nf.setMaximumFractionDigits(3);
-                fout.write(nf.format(alg.scoreCluster(gpCluster)) + "\t");
+                fout.write(nf.format(clusters[i].getClusterScore()) + "\t");
                 //cluster size - format: (# prot, # intx)
                 fout.write(gpCluster.getNodeCount() + "\t");
                 fout.write(gpCluster.getEdgeCount() + "\t");

@@ -49,6 +49,7 @@ import java.util.*;
 public class MCODEAlgorithm {
     private boolean cancelled = false;
     private TaskMonitor taskMonitor = null;
+    private MCODECluster[] clusters;
 
     //data structure for storing information required for each node
     private class NodeInfo {
@@ -85,6 +86,7 @@ public class MCODEAlgorithm {
         nodeScoreSortedMap = null;
         //get current parameters
         params = MCODECurrentParameters.getInstance().getParamsCopy();
+        clusters = new MCODECluster[0];
     }
 
     public MCODEAlgorithm(TaskMonitor taskMonitor) {
@@ -196,7 +198,8 @@ public class MCODEAlgorithm {
      * @return An ArrayList containing an ArrayList for each cluster. Each cluster is stored as a simple list
      *         of node IDs of the nodes in the input network that are part of the cluster.
      */
-    public ArrayList findClusters(CyNetwork inputNetwork) {
+    public MCODECluster[] findClusters(CyNetwork inputNetwork) {
+        MCODECluster currentCluster;
         String callerID = "MCODEAlgorithm.findClusters";
         if (inputNetwork == null) {
             System.err.println("In " + callerID + ": inputNetwork was null.");
@@ -223,7 +226,12 @@ public class MCODEAlgorithm {
             for (int j = 0; j < alNodesWithSameScore.size(); j++) {
                 currentNode = (Integer) alNodesWithSameScore.get(j);
                 if (!nodeSeenHashMap.containsKey(currentNode)) {
-                    ArrayList cluster = getClusterCore(currentNode, nodeSeenHashMap, params.getNodeScoreCutOff());//TODO:here we use the original node score cutoff
+                    currentCluster = new MCODECluster();
+                    currentCluster.setSeedNode(currentNode);//store the current node as the seed node
+                    HashMap nodeSeenHashMapSnapShot = new HashMap((HashMap)nodeSeenHashMap.clone());
+                    //nodeSeenHashMapSnapShot = (HashMap) nodeSeenHashMap.clone();
+                    currentCluster.setNodeSeenHashMap(nodeSeenHashMapSnapShot);//store the list of all the nodes that have already been seen and incorporated in other clusters
+                    ArrayList cluster = getClusterCore(currentNode, nodeSeenHashMap, params.getNodeScoreCutOff());//here we use the original node score cutoff
                     if (cluster.size() > 0) {
                         //make sure spawning node is part of cluster, if not already in there
                         if (!cluster.contains(currentNode)) {
@@ -244,8 +252,13 @@ public class MCODEAlgorithm {
                             if (params.isFluff()) {
                                 fluffClusterBoundary(cluster, nodeSeenHashMap);
                             }
+
+                            currentCluster.setALCluster(cluster);
+                            currentCluster.setGPCluster(gpClusterGraph);
+                            currentCluster.setClusterScore(scoreCluster(currentCluster));
+
                             //store detected cluster for later
-                            alClusters.add(cluster);
+                            alClusters.add(currentCluster);
                         }
                     }
                 }
@@ -261,42 +274,41 @@ public class MCODEAlgorithm {
         long msTimeAfter = System.currentTimeMillis();
         lastFindTime = msTimeAfter - msTimeBefore;
 
-        return (alClusters);
+        clusters = new MCODECluster[alClusters.size()];
+        for (int c = 0; c < clusters.length; c++) {
+            clusters[c] = (MCODECluster) alClusters.get(c);
+        }
+
+        return (clusters);
     }
 
-    public GraphPerspective exploreCluster(GraphPerspective cluster, double nodeScoreCutoff) {
-        //HashMap nodeSeenHashMap = new HashMap();
-        Node seedNode = cluster.getNode(0);
-        System.out.println("cluster size before: "+cluster.getNodeCount() + ", includes: ");
-        for (int c = 0; c < cluster.getNodeCount(); c++) {
-            System.out.println(cluster.getNode(c));
+    public MCODECluster exploreCluster(MCODECluster cluster, double nodeScoreCutoff, CyNetwork inputNetwork) {
+        //HashMap nodeSeenHashMap = cluster.getNodeSeenHashMap();
+        //System.out.println("hash map size: " + nodeSeenHashMap.size());
+        HashMap nodeSeenHashMap = new HashMap(); //TODO: the saved hash map is not really a snap shot!
+        Integer seedNode = cluster.getSeedNode();
+
+        ArrayList alCluster = getClusterCore(seedNode, nodeSeenHashMap, nodeScoreCutoff);
+        //make sure spawning node is part of cluster, if not already in there
+        if (!alCluster.contains(seedNode)) {
+            alCluster.add(seedNode);
         }
-        //GraphPerspective newCluster = getClusterCore(seedNode, nodeSeenHashMap, nodeScoreCutoff);
-
-                    //if (newCluster.size() > 0) {
-                        //make sure spawning node is part of cluster, if not already in there
-                    //    if (!newCluster.contains(seedNode)) {
-                    //        newCluster.add(seedNode);
-                    //    }
-                        //create an input graph for the filter and haircut methods
-                        //convert Integer array to int array
-                    /*    int[] clusterArray = new int[newCluster.size()];
-                        for (int i = 0; i < newCluster.size(); i++) {
-                            int nodeIndex = ((Integer) newCluster.get(i)).intValue();
-                            clusterArray[i] = nodeIndex;
-                        }
-                        GraphPerspective gpClusterGraph = inputNetwork.createGraphPerspective(clusterArray);
-                        if (!filterCluster(gpClusterGraph)) {
-                            if (params.isHaircut()) {
-                                haircutCluster(gpClusterGraph, newCluster, inputNetwork);
-                            }
-                            if (params.isFluff()) {
-                                fluffClusterBoundary(newCluster, nodeSeenHashMap);
-                            }
-                        }*/
-                    //}
-
-        //System.out.println("cluster size after: "+newCluster.getNodeCount());
+        //create an input graph for the filter and haircut methods
+        //convert Integer array to int array
+        int[] clusterArray = new int[alCluster.size()];
+        for (int i = 0; i < alCluster.size(); i++) {
+            int nodeIndex = ((Integer) alCluster.get(i)).intValue();
+            clusterArray[i] = nodeIndex;
+        }
+        GraphPerspective gpClusterGraph = inputNetwork.createGraphPerspective(clusterArray);
+        if (params.isHaircut()) {
+            haircutCluster(gpClusterGraph, alCluster, inputNetwork);
+        }
+        if (params.isFluff()) {
+            fluffClusterBoundary(alCluster, nodeSeenHashMap);
+        }
+        cluster.setALCluster(alCluster);
+        cluster.setGPCluster(gpClusterGraph);
 
         return cluster;
     }
@@ -322,15 +334,15 @@ public class MCODEAlgorithm {
      * Score a cluster.  Currently this ranks larger, denser clusters higher, although
      * in the future other scoring functions could be created
      *
-     * @param gpCluster - The GINY GraphPerspective version of the cluster
+     * @param cluster - The GINY GraphPerspective version of the cluster
      * @return The score of the cluster
      */
-    public double scoreCluster(GraphPerspective gpCluster) {
+    public double scoreCluster(MCODECluster cluster) {
         int numNodes = 0;
         double density = 0.0, score = 0.0;
 
-        numNodes = gpCluster.getNodeCount();
-        density = calcDensity(gpCluster, true);
+        numNodes = cluster.getGPCluster().getNodeCount();
+        density = calcDensity(cluster.getGPCluster(), true);
         score = density * numNodes;
 
         return (score);
@@ -452,7 +464,7 @@ public class MCODEAlgorithm {
             currentNeighbor = new Integer(((NodeInfo) nodeInfoHashMap.get(startNode)).nodeNeighbors[i]);
             if ((!nodeSeenHashMap.containsKey(currentNeighbor)) &&
                     (((NodeInfo) nodeInfoHashMap.get(currentNeighbor)).score >=
-                    (startNodeScore - startNodeScore * nodeScoreCutOff))) { //TODO: this is where node score cutoff gets used
+                    (startNodeScore - startNodeScore * nodeScoreCutOff))) {
                 //add current neighbor
                 if (!cluster.contains(currentNeighbor)) {
                     cluster.add(currentNeighbor);

@@ -3,10 +3,8 @@ package csplugins.mcode;
 import cytoscape.CyNetwork;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import giny.model.GraphPerspective;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -48,7 +46,7 @@ public class MCODEScoreAndFindTask implements Task {
     private boolean interrupted = false;
     private CyNetwork network = null;
     private MCODEAlgorithm alg = null;
-    private ArrayList clusters = null;
+    private MCODECluster[] clusters = null;
     private Image imageList[] = null;
     private boolean completedSuccessfully = false;
     private int analyze;
@@ -96,19 +94,20 @@ public class MCODEScoreAndFindTask implements Task {
                 return;
             }
 
-            taskMonitor.setPercentCompleted(0);//TODO: this is how to make images (for node score cutoff)
+            taskMonitor.setPercentCompleted(0);
             taskMonitor.setStatus("Drawing Results (Step 3 of 3)");
             //also create all the images here for the clusters, since it can be a time consuming operation
-            GraphPerspective gpComplexArray[] = MCODEUtil.convertClusterListToSortedNetworkList(clusters, network, alg);
-            imageList = new Image[clusters.size()];
+            //GraphPerspective[] gpComplexArray = MCODEUtil.convertClusterListToSortedNetworkList(clusters, network, alg);
+            clusters = MCODEUtil.sortClusters(clusters);
+            imageList = new Image[clusters.length];
             int imageSize = MCODECurrentParameters.getInstance().getParamsCopy().getDefaultRowHeight();
-            for (int i = 0; i < gpComplexArray.length; i++) {
+            for (int i = 0; i < clusters.length; i++) {
                 if (interrupted) {
                     network.putClientData("MCODE_running", new Boolean(false));
                     return;
                 }
-                imageList[i] = MCODEUtil.convertNetworkToImage(gpComplexArray[i], imageSize, imageSize);
-                taskMonitor.setPercentCompleted((i * 100) / gpComplexArray.length);
+                imageList[i] = MCODEUtil.convertNetworkToImage(clusters[i].getGPCluster(), imageSize, imageSize);
+                taskMonitor.setPercentCompleted((i * 100) / clusters.length);
             }
             completedSuccessfully = true;
         } catch (Exception e) {
@@ -130,7 +129,7 @@ public class MCODEScoreAndFindTask implements Task {
      *
      * @return ArrayList of computed clusters
      */
-    public ArrayList getClusters() {
+    public MCODECluster[] getClusters() {
         return clusters;
     }
 

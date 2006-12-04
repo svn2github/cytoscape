@@ -295,7 +295,7 @@ public class MCODEParameterSet {
     public void setDefaultRowHeight(int defaultRowHeight) {
         this.defaultRowHeight = defaultRowHeight;
     }
-    //TODO: where does this get used? add scope into it aswell...
+    //TODO: add scope into this aswell
     public String toString() {
         String lineSep = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();

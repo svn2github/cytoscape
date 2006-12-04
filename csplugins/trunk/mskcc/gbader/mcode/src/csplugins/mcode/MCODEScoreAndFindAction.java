@@ -147,7 +147,6 @@ public class MCODEScoreAndFindAction implements ActionListener {
         //check if MCODE has already been run on this network
         resultPanel = (MCODEResultsPanel) network.getClientData("MCODE_panel");
         if (analyze == NO_CHANGE) {
-            //resultPanel.setVisible(true);
             network.putClientData("MCODE_running", new Boolean(false));
             showResultPanel = true;
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The parameters you specified have not changed.");
