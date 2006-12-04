@@ -25,15 +25,19 @@ public class DistPanel extends JPanel {
     VDistCenter vac = new VDistCenter( vaci );
     VDistBottom vab = new VDistBottom( vabi );
 
-    setLayout(new FlowLayout());
+    setLayout(new java.awt.GridBagLayout());
     //JPanel h_panel = new JPanel();
-    add( createJButton( hal, "Horizontal Left") );
-    add( createJButton( hac, "Horizontal Center") );
-    add( createJButton( har, "Horizontal Right") );
+    java.awt.GridBagConstraints gridBagConstraints;
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+
+    add( createJButton( hal, "Horizontal Left"), gridBagConstraints);
+    add( createJButton( hac, "Horizontal Center"), gridBagConstraints);
+    add( createJButton( har, "Horizontal Right"), gridBagConstraints);
     //JPanel v_panel = new JPanel();
-    add( createJButton( vat, "Vertical Top") );
-    add( createJButton( vac, "Vertical Center") );
-    add( createJButton( vab, "Vertical Bottom") );
+    add( createJButton( vat, "Vertical Top"), gridBagConstraints);
+    add( createJButton( vac, "Vertical Center"), gridBagConstraints);
+    add( createJButton( vab, "Vertical Bottom"), gridBagConstraints);
 
     //setLayout( new BorderLayout() );
     //add( h_panel, BorderLayout.EAST );
