@@ -61,6 +61,7 @@ import java.net.Proxy.Type;
 import java.net.InetSocketAddress;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.xml.bind.JAXBException;
 
@@ -349,14 +350,13 @@ public abstract class Cytoscape {
 		//
 		// Confirm user to save current session or not.
 		//
-
 		Object[] options = { "Yes, save and quit", "No, just quit", "Cancel" };
 		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), msg,
-				"Save Networks Before Quitting?", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-		if (n == JOptionPane.NO_OPTION) {
+				"Save Networks Before Quitting?", JOptionPane.DEFAULT_OPTION,
+	            JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		if (n == 1) {
 			return true;
-		} else if (n == JOptionPane.YES_OPTION) {
+		} else if (n == 0) {
 			SaveSessionAction saveAction = new SaveSessionAction();
 			saveAction.actionPerformed(null);
 			if (Cytoscape.getCurrentSessionFileName() == null) {

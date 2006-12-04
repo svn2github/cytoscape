@@ -233,7 +233,8 @@ public class CyMain implements CyInitParams {
 	}
 
 	protected void setupLookAndFeel() {
-
+		
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
 		Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
 		Options.setDefaultIconSize(new Dimension(18, 18));
