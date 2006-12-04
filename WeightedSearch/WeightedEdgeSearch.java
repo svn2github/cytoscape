@@ -22,7 +22,7 @@ public class WeightedEdgeSearch {
 
 	protected static double SIZE_FACTOR = Math.log(0.6);
 
-	protected static final int MAX_SIZE = 15;
+	protected static final int MAX_SIZE = 30;
 
 	protected static final int MIN_SIZE = 10;
 
@@ -36,7 +36,7 @@ public class WeightedEdgeSearch {
 
 	public static void main(String[] args) {
 
-		System.err.println("Version 0.47");
+		System.err.println("Version 0.49");
 		Vector<SearchResult> searchResults = new Vector<SearchResult>();
 		System.err.println("Reading edges scores");
 		readEdgeScores();
@@ -126,8 +126,8 @@ public class WeightedEdgeSearch {
 	}
 
 	protected static double harmonicMean(double x1, double x2) {
-		return 2 * x1 * x2 / (x1 + x2);
-		// return (x1+x2)/2;
+		//return 2 * x1 * x2 / (x1 + x2);
+		return (x1+x2)/2;
 	}
 
 	static Map<String, Integer> name2Idx = new HashMap<String, Integer>();
@@ -350,6 +350,61 @@ public class WeightedEdgeSearch {
 		}
 	}
 
+	
+	protected static Vector<SearchResult> modularSearch() {
+		Vector<SearchResult> results = new Vector<SearchResult>();
+		for (int seed = 0; seed < edgeScores.length; seed += 1) {
+			// System.err.println("Searching from seed "+seed+", best so far:
+			// size ="+bestResult.members.size());
+			SearchResult currentResult = new SearchResult();
+			currentResult.score = 0;
+			double sumDegrees = 0;
+			double sumEdges = 0;
+			double[] neighbors = new double[edgeScores.length];
+			int bestNeighbor = seed;
+			double newScore = 0;
+			do {
+				currentResult.score = newScore;
+				currentResult.sum += neighbors[bestNeighbor];
+				/*
+				 * Add the current neighbor to result
+				 */
+				currentResult.members.add(bestNeighbor);
+				neighbors[bestNeighbor] = Double.NEGATIVE_INFINITY;
+
+				/*
+				 * Update the neighbors array
+				 */
+				for (int neighbor = 0; neighbor < neighbors.length; neighbor += 1) {
+					if (neighbor == bestNeighbor) {
+						continue;
+					}
+					if (neighbor > bestNeighbor) {
+						neighbors[neighbor] += edgeScores[neighbor][bestNeighbor];
+					} else {
+						neighbors[neighbor] += edgeScores[bestNeighbor][neighbor];
+					}
+				}
+
+				bestNeighbor = maxEntry(neighbors);
+				// int size = currentResult.members.size()+1;
+				// newScore = (currentResult.sum +
+				// neighbors[bestNeighbor])/Math.pow(size*(size-1)/2,0.75);
+				// newScore = currentResult.sum + neighbors[bestNeighbor];
+				newScore = (currentResult.sum + neighbors[bestNeighbor]);
+				// }while(currentResult.members.size() < MIN_SIZE || (
+				// currentResult.members.size() < MAX_SIZE && newScore >
+				// currentResult.score));
+			} while (currentResult.members.size() < MAX_SIZE
+					&& newScore > currentResult.score);
+
+			if (bestResult == null || currentResult.score > bestResult.score) {
+				bestResult = currentResult;
+			}
+		}
+		return results;
+	}
+	
 	protected static SearchResult search() {
 		SearchResult bestResult = null;
 		for (int seed = 0; seed < edgeScores.length; seed += 1) {
