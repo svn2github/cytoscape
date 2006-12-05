@@ -35,7 +35,10 @@ public class FilterListPanel
     initialize();
   }
 
-
+  public JList getFilterList()
+  {
+	 return filterList; 
+  }
 
   protected void initialize () {
     FilterManager.defaultManager().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
