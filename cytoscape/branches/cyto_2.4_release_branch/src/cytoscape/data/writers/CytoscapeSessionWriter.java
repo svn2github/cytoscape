@@ -107,7 +107,7 @@ import javax.xml.bind.Marshaller;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 import cytoscape.bookmarks.Bookmarks;
-//import cytoscape.bookmarks.DataSource;
+// import cytoscape.bookmarks.DataSource;
 import cytoscape.util.BookmarksUtil;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
@@ -133,7 +133,7 @@ public class CytoscapeSessionWriter {
 
 	// cysession.xml document version
 	private static final String cysessionVersion = "0.9";
-	
+
 	// Enumerate types (node & edge)
 	public static final int NODE = 1;
 	public static final int EDGE = 2;
@@ -144,7 +144,8 @@ public class CytoscapeSessionWriter {
 	private static final int CYTOPANEL_COUNT = 3;
 
 	// Number of setting files in the cys file.
-	// For now, we have cysession.xml, vizmap.prop, cytoscape.prop, and bookmarks.
+	// For now, we have cysession.xml, vizmap.prop, cytoscape.prop, and
+	// bookmarks.
 	private static final int SETTING_FILE_COUNT = 4;
 
 	// Name of CySession file.
@@ -180,37 +181,37 @@ public class CytoscapeSessionWriter {
 	Set networks;
 
 	HashMap networkMap;
-	
+
 	int networkCount;
-	
+
 	private String sessionNote = "You can add note for this session here.";
 
 	//
 	// The following JAXB-generated objects are for CySession.xml file.
 	//
 	ObjectFactory factory;
-	
+
 	Cysession session;
-	
+
 	NetworkTree tree;
-	
+
 	SessionState sState;
-	//SessionNote sNote;
+	// SessionNote sNote;
 	// Networks in the tree
-	
+
 	List netList;
-	
+
 	Cytopanels cps;
-	
+
 	List cytopanel;
-	
+
 	Plugins plugins;
 	List plugin;
 
 	// Cysession elements
 	NetworkTree netTree;
 	File sessionFolder;
-	
+
 	String sessionDirName;
 	String tmpDirName;
 
@@ -225,8 +226,8 @@ public class CytoscapeSessionWriter {
 	 */
 	public CytoscapeSessionWriter(String sessionName) {
 		this.sessionFileName = sessionName;
-		this.tmpDirName = System.getProperty("java.io.tmpdir") + 
-		                  System.getProperty("file.separator");
+		this.tmpDirName = System.getProperty("java.io.tmpdir")
+				+ System.getProperty("file.separator");
 
 		// For now, session ID is time and date
 		Date date = new Date();
@@ -252,11 +253,13 @@ public class CytoscapeSessionWriter {
 
 		// Notify plugins to save states
 		HashMap<String, List<File>> pluginFileListMap = new HashMap<String, List<File>>();
-		
-		Cytoscape.firePropertyChange(Cytoscape.SAVE_PLUGIN_STATE, pluginFileListMap, null);
-		
-		// Total number of files (besides pluginStateFiles) in the zip archive will be
-		// number of networks + property files + bookmarks file 
+
+		Cytoscape.firePropertyChange(Cytoscape.SAVE_PLUGIN_STATE,
+				pluginFileListMap, null);
+
+		// Total number of files (besides pluginStateFiles) in the zip archive
+		// will be
+		// number of networks + property files + bookmarks file
 		targetFiles = new String[networks.size() + SETTING_FILE_COUNT];
 
 		//
@@ -292,19 +295,21 @@ public class CytoscapeSessionWriter {
 
 		// Prepare bookmarks for saving
 		bookmarks = Cytoscape.getBookmarks();
-		BookmarksUtil.saveBookmark(bookmarks, new File(tmpDirName + BOOKMARKS_FILE));
-		
+		BookmarksUtil.saveBookmark(bookmarks, new File(tmpDirName
+				+ BOOKMARKS_FILE));
+
 		// Prepare property files for saving
 		preparePropFiles();
 
 		// Zip the session into a .cys file.
-		zipUtil = new ZipUtil(sessionFileName, targetFiles, sessionDirName, tmpDirName);
+		zipUtil = new ZipUtil(sessionFileName, targetFiles, sessionDirName,
+				tmpDirName);
 		zipUtil.setPluginFileMap(pluginFileListMap);
 		/*
 		 * Compress the files. Change the compression level if necessary.
 		 */
 		zipUtil.compressFast(1, true);
-		
+
 		/*
 		 * Fire signal
 		 */
@@ -343,14 +348,15 @@ public class CytoscapeSessionWriter {
 		sState.setPlugins(plugins);
 		sState.setCytopanels(cps);
 		sState.setServer(getServerState());
-		
+
 	}
-	
+
 	private void setDesktopStates() throws JAXBException {
 		DesktopSize dSize = factory.createDesktopSize();
 		NetworkFrames frames = factory.createNetworkFrames();
-		Component[] networkFrames = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().getComponents();
-		for(int i=0; i<networkFrames.length; i++) {
+		Component[] networkFrames = Cytoscape.getDesktop()
+				.getNetworkViewManager().getDesktopPane().getComponents();
+		for (int i = 0; i < networkFrames.length; i++) {
 			JInternalFrame networkFrame = (JInternalFrame) networkFrames[i];
 			NetworkFrame frame = factory.createNetworkFrame();
 			frame.setFrameID(networkFrame.getTitle());
@@ -360,14 +366,16 @@ public class CytoscapeSessionWriter {
 			frame.setY(BigInteger.valueOf(networkFrame.getY()));
 			frames.getNetworkFrame().add(frame);
 		}
-		
-		dSize.setHeight(BigInteger.valueOf(Cytoscape.getDesktop().getSize().height));
-		dSize.setWidth(BigInteger.valueOf(Cytoscape.getDesktop().getSize().width));
+
+		dSize.setHeight(BigInteger
+				.valueOf(Cytoscape.getDesktop().getSize().height));
+		dSize.setWidth(BigInteger
+				.valueOf(Cytoscape.getDesktop().getSize().width));
 		Desktop desktop = factory.createDesktop();
 		desktop.setDesktopSize(dSize);
 		desktop.setNetworkFrames(frames);
 		sState.setDesktop(desktop);
-		
+
 	}
 
 	/**
@@ -412,23 +420,17 @@ public class CytoscapeSessionWriter {
 			final CyNetworkView view) throws IOException, JAXBException,
 			URISyntaxException {
 
-		XGMMLWriter wt = new XGMMLWriter(network, view);
-		FileWriter fileWriter2 = null;
+		final XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view);
+		FileWriter fileWriter = new FileWriter(tmpDirName + xgmmlFile);
+
 		try {
-			fileWriter2 = new FileWriter(tmpDirName + xgmmlFile);
-			wt.write(fileWriter2);
-		} catch (JAXBException e) {
-			e.printStackTrace();
+			xgmmlWriter.write(fileWriter);
 		} finally {
-			if (fileWriter2 != null) {
-				try {
-					fileWriter2.close();
-				} catch (IOException ioe) {
-				}
+			if (fileWriter != null) {
+				fileWriter.close();
+				fileWriter = null;
 			}
-
 		}
-
 	}
 
 	/**
@@ -444,9 +446,9 @@ public class CytoscapeSessionWriter {
 
 		initObjectsForDataBinding();
 		session.setId(sessionName);
-		// Document version.  Maybe used in the future.
+		// Document version. Maybe used in the future.
 		session.setDocumentVersion(cysessionVersion);
-		
+
 		getNetworkTree();
 		session.setNetworkTree(tree);
 
@@ -917,35 +919,41 @@ public class CytoscapeSessionWriter {
 
 		return cps;
 	}
-	
+
 	/**
-	 * Set session note.<br> Session note can be anything, it is just like a memo pad for the session. NOTE: session note should be set before calling writeSessionToDisk().
-	 * @param note  Session note string.
-	 * @uml.property  name="sessionNote"
+	 * Set session note.<br>
+	 * Session note can be anything, it is just like a memo pad for the session.
+	 * NOTE: session note should be set before calling writeSessionToDisk().
+	 * 
+	 * @param note
+	 *            Session note string.
+	 * @uml.property name="sessionNote"
 	 */
 	public void setSessionNote(String note) {
 		this.sessionNote = note;
 	}
-	
+
 	/**
 	 * Check loaded ontologies and save those states in cysession.xml.
 	 * 
-	 * @return Server object 
+	 * @return Server object
 	 */
 	private Server getServerState() {
 		Server server = factory.createServer();
 		OntologyServer os = factory.createOntologyServer();
-		
-		Set<String> ontoNames = Cytoscape.getOntologyServer().getOntologyNames();
-		Map<String, URL> sources = Cytoscape.getOntologyServer().getOntologySources();
-		
-		for(String name: ontoNames) {
+
+		Set<String> ontoNames = Cytoscape.getOntologyServer()
+				.getOntologyNames();
+		Map<String, URL> sources = Cytoscape.getOntologyServer()
+				.getOntologySources();
+
+		for (String name : ontoNames) {
 			Ontology onto = factory.createOntology();
 			onto.setName(name);
 			onto.setHref(sources.get(name).toString());
 			os.getOntology().add(onto);
 		}
-		
+
 		server.setOntologyServer(os);
 		return server;
 	}
@@ -985,14 +993,14 @@ class NamespacePrefixMapperForCysession extends NamespacePrefixMapper {
 	 * If this method returns "" when requirePrefix=true, the return value will
 	 * be ignored and the system will generate one.
 	 */
-	public String getPreferredPrefix(final String namespaceUri, final String suggestion,
-			boolean requirePrefix) {
+	public String getPreferredPrefix(final String namespaceUri,
+			final String suggestion, boolean requirePrefix) {
 		// I want this namespace to be mapped to "xsi"
 		if ("http://www.w3.org/2001/XMLSchema-instance".equals(namespaceUri))
 			return "xsi";
-		
+
 		// Xlink
-		if("http://www.w3.org/1999/xlink".equals(namespaceUri)) {
+		if ("http://www.w3.org/1999/xlink".equals(namespaceUri)) {
 			return "xlink";
 		}
 
@@ -1002,9 +1010,7 @@ class NamespacePrefixMapperForCysession extends NamespacePrefixMapper {
 	}
 
 	public String[] getPreDeclaredNamespaceUris() {
-		return new String[] {
-				"http://www.w3.org/2001/XMLSchema-instance",
-				"http://www.w3.org/1999/xlink",
-		};
+		return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
+				"http://www.w3.org/1999/xlink", };
 	}
 }

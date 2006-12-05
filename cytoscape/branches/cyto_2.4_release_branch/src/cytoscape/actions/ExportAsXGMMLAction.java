@@ -125,14 +125,14 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 			name = name + ".xgmml";
 
 		// Get Current Network and View
-		CyNetwork network = Cytoscape.getCurrentNetwork();
-		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+		final CyNetwork network = Cytoscape.getCurrentNetwork();
+		final CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		// Create Task
-		ExportAsXGMMLTask task = new ExportAsXGMMLTask(name, network, view);
+		final ExportAsXGMMLTask task = new ExportAsXGMMLTask(name, network, view);
 
 		// Configure JTask Dialog Pop-Up Box
-		JTaskConfig jTaskConfig = new JTaskConfig();
+		final JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
 		jTaskConfig.displayStatus(true);
@@ -233,20 +233,20 @@ class ExportAsXGMMLTask implements Task {
 	 */
 	private void saveGraph() throws IOException, JAXBException, URISyntaxException {
 
-		FileWriter fileWriter = new FileWriter(fileName);
-		XGMMLWriter writer = new XGMMLWriter(network, view);
+		final FileWriter fileWriter = new FileWriter(fileName);
+		final XGMMLWriter writer = new XGMMLWriter(network, view);
 
-		writer.write(fileWriter);
-		fileWriter.close();
-		// MLC: 09/19/05 BEGIN:
-		// // AJK: 09/14/05 BEGIN
-		// Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
-		// // AJK: 09/14/05 END
-		Object[] ret_val = new Object[3];
+		try {
+			writer.write(fileWriter);
+		} finally {
+			fileWriter.close();
+		}
+		
+		final Object[] ret_val = new Object[3];
 		ret_val[0] = network;
 		ret_val[1] = new File(fileName).toURI();
 		ret_val[2] = new Integer(Cytoscape.FILE_XGMML);
+		
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
-		// MLC: 09/19/05 END.
 	}
 }

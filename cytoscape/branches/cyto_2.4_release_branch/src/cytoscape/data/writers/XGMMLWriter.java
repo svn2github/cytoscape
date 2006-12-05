@@ -97,11 +97,11 @@ public class XGMMLWriter {
 
 	// Package to be used for data binding.
 	private static final String PACKAGE_NAME = "cytoscape.generated2";
-	
-	// File format version.  For compatibility.
+
+	// File format version. For compatibility.
 	private static final String FORMAT_VERSION = "documentVersion";
 	private static final float VERSION = (float) 1.0;
-	
+
 	private static final String METADATA_NAME = "networkMetadata";
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
 
@@ -123,83 +123,6 @@ public class XGMMLWriter {
 	public static final String GRAPH_VIEW_CENTER_X = "GRAPH_VIEW_CENTER_X";
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
-	/**
-	 * @uml.property  name="nodeAttributes"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
-	private CyAttributes nodeAttributes;
-	/**
-	 * @uml.property  name="edgeAttributes"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
-	private CyAttributes edgeAttributes;
-	/**
-	 * @uml.property  name="networkAttributes"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
-	private CyAttributes networkAttributes;
-	/**
-	 * @uml.property  name="nodeAttNames" multiplicity="(0 -1)" dimension="1"
-	 */
-	private String[] nodeAttNames = null;
-	/**
-	 * @uml.property  name="edgeAttNames" multiplicity="(0 -1)" dimension="1"
-	 */
-	private String[] edgeAttNames = null;
-	/**
-	 * @uml.property  name="networkAttNames" multiplicity="(0 -1)" dimension="1"
-	 */
-	private String[] networkAttNames = null;
-
-	/**
-	 * @uml.property  name="network"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
-	private CyNetwork network;
-	/**
-	 * @uml.property  name="networkView"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
-	private CyNetworkView networkView;
-
-	/**
-	 * @uml.property  name="nodeList"
-	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="cytoscape.CyNode"
-	 */
-	private ArrayList nodeList;
-	/**
-	 * @uml.property  name="metanodeList"
-	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.Integer"
-	 */
-	private ArrayList metanodeList;
-	/**
-	 * @uml.property  name="edgeMap"
-	 * @uml.associationEnd  qualifier="getIdentifier:java.lang.String cytoscape.CyEdge"
-	 */
-	private HashMap edgeMap;
-
-	/**
-	 * @uml.property  name="jc"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
-	JAXBContext jc;
-	/**
-	 * @uml.property  name="objFactory"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
-	ObjectFactory objFactory;
-
-	/**
-	 * @uml.property  name="mdp"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
-	MetadataParser mdp;
-	/**
-	 * @uml.property  name="graph"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
-	GraphicGraph graph = null;
-
 	// Default CSS file name. Maybe used in the future.
 	private static final String CSS_FILE = "base.css";
 
@@ -214,6 +137,30 @@ public class XGMMLWriter {
 	protected static final String MAP_TYPE = "map";
 	protected static final String COMPLEX_TYPE = "complex";
 
+	private CyAttributes nodeAttributes;
+	private CyAttributes edgeAttributes;
+	private CyAttributes networkAttributes;
+
+	private String[] nodeAttNames = null;
+	private String[] edgeAttNames = null;
+	private String[] networkAttNames = null;
+
+	private CyNetwork network;
+	private CyNetworkView networkView;
+
+	private ArrayList nodeList;
+	private ArrayList metanodeList;
+
+	private HashMap edgeMap;
+
+	private JAXBContext jc;
+
+	private ObjectFactory objFactory;
+
+	private MetadataParser mdp;
+
+	private GraphicGraph graph = null;
+
 	/**
 	 * Constructor.<br>
 	 * Initialize data objects to be saved in XGMML file.<br>
@@ -225,7 +172,7 @@ public class XGMMLWriter {
 	 * @throws URISyntaxException
 	 * @throws JAXBException
 	 */
-	public XGMMLWriter(CyNetwork network, CyNetworkView view)
+	public XGMMLWriter(final CyNetwork network, final CyNetworkView view)
 			throws JAXBException, URISyntaxException {
 		this.network = network;
 		this.networkView = view;
@@ -242,7 +189,7 @@ public class XGMMLWriter {
 		edgeAttNames = edgeAttributes.getAttributeNames();
 		networkAttNames = networkAttributes.getAttributeNames();
 
-		initialize();
+		initializeJaxbObjects();
 	}
 
 	/**
@@ -251,26 +198,28 @@ public class XGMMLWriter {
 	 * @throws JAXBException
 	 * @throws URISyntaxException
 	 */
-	private void initialize() throws JAXBException, URISyntaxException {
+	private void initializeJaxbObjects() throws JAXBException,
+			URISyntaxException {
 		objFactory = new ObjectFactory();
-		RdfRDF metadata = null;
-		Att graphAtt = null;
-		Att formatVersion = null;
-		Att globalGraphics = null;
+		final RdfRDF metadata;
+		final Att graphAtt;
+		final Att formatVersion;
+		final Att globalGraphics;
 
-		jc = JAXBContext.newInstance(PACKAGE_NAME, this.getClass().getClassLoader());
+		jc = JAXBContext.newInstance(PACKAGE_NAME, this.getClass()
+				.getClassLoader());
 		graph = objFactory.createGraphicGraph();
-		
+
 		graphAtt = objFactory.createAtt();
-		
-		// Document version.  This maybe used in the later versions.
+
+		// Document version. This maybe used in the later versions.
 		formatVersion = objFactory.createAtt();
 		formatVersion.setName(FORMAT_VERSION);
 		formatVersion.setValue(Float.toString(VERSION));
 		graph.getAtt().add(formatVersion);
-		
+
 		graph.setId(network.getTitle()); // This is the name of network, NOT
-											// rootgraph index!!
+		// rootgraph index!!
 		graph.setLabel(network.getTitle());
 
 		// Metadata
@@ -313,12 +262,15 @@ public class XGMMLWriter {
 		// Create edge objects
 		writeEdges();
 
-		// This creates the header of the XML document.
-		//writer.write("<?xml version='1.0'?>\n");
-
-		// Will be restored when CSS is ready.
-		// writer.write("<?xml-stylesheet type='text/css' href='" + CSS_FILE
-		// + "' ?>\n");
+		/*
+		 * This creates the header of the XML document.
+		 * Maybe used in the future... 
+		 * 
+		 * writer.write("<?xml version='1.0'?>\n");
+		 * 
+		 * Will be restored when CSS is ready. 
+		 * writer.write("<?xml-stylesheet type='text/css' href='" + CSS_FILE + "' ?>\n");
+		 */
 
 		final Marshaller m = jc.createMarshaller();
 
@@ -337,8 +289,13 @@ public class XGMMLWriter {
 
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		m.setProperty("com.sun.xml.bind.xmlDeclaration", true);
-		JAXBElement<GraphicGraph> graphicGraphElement = objFactory.createGraph(graph);
-		m.marshal(graphicGraphElement, writer);
+		final JAXBElement<GraphicGraph> graphicGraphElement = objFactory
+				.createGraph(graph);
+		try {
+			m.marshal(graphicGraphElement, writer);
+		} finally {
+			writer.close();
+		}
 	}
 
 	/**
@@ -364,7 +321,7 @@ public class XGMMLWriter {
 		// The edges left should all be from collapsed metaNodes
 		it = edgeMap.keySet().iterator();
 		while (it.hasNext()) {
-			curEdge = (CyEdge)edgeMap.get(it.next());
+			curEdge = (CyEdge) edgeMap.get(it.next());
 			writeEdge(curEdge);
 		}
 	}
@@ -382,13 +339,15 @@ public class XGMMLWriter {
 				.getRootGraphIndex()));
 
 		if (networkView != Cytoscape.getNullNetworkView()) {
-			final Graphics edgeGraphics = getGraphics(EDGE, networkView.getEdgeView(curEdge));
+			final Graphics edgeGraphics = getGraphics(EDGE, networkView
+					.getEdgeView(curEdge));
 			if (edgeGraphics != null) {
 				jxbEdge.setGraphics(edgeGraphics);
 			}
 		}
 		attributeWriter(EDGE, curEdge.getIdentifier(), jxbEdge);
-		//JAXBElement<GraphicEdge> gEdgeElement = objFactory.createEdge(jxbEdge);
+		// JAXBElement<GraphicEdge> gEdgeElement =
+		// objFactory.createEdge(jxbEdge);
 		graph.getNodeOrEdge().add(jxbEdge);
 	}
 
@@ -423,8 +382,8 @@ public class XGMMLWriter {
 	 * 
 	 * @throws JAXBException
 	 */
-	protected void attributeWriter(final int type, final String id, final Object target)
-			throws JAXBException {
+	protected void attributeWriter(final int type, final String id,
+			final Object target) throws JAXBException {
 
 		// process type node
 		if (type == NODE) {
@@ -443,8 +402,10 @@ public class XGMMLWriter {
 						targetNode.setName("base");
 					}
 				} else {
-					Att att = createAttribute(id, nodeAttributes, nodeAttNames[i]);
-					if (att != null) targetNode.getAtt().add(att);
+					Att att = createAttribute(id, nodeAttributes,
+							nodeAttNames[i]);
+					if (att != null)
+						targetNode.getAtt().add(att);
 				}
 			}
 		}
@@ -453,7 +414,8 @@ public class XGMMLWriter {
 			// process each attribute type
 			for (int i = 0; i < edgeAttNames.length; i++) {
 				Att att = createAttribute(id, edgeAttributes, edgeAttNames[i]);
-				if (att != null) ((GraphicEdge) target).getAtt().add(att);
+				if (att != null)
+					((GraphicEdge) target).getAtt().add(att);
 			}
 		}
 		// process type network
@@ -461,10 +423,12 @@ public class XGMMLWriter {
 			// process each attribute type
 			for (int i = 0; i < networkAttNames.length; i++) {
 				// ignore Metadata object.
-				if (!networkAttNames[i].equals(METADATA_ATTR_NAME) &&
-				    !networkAttNames[i].equals(METANODE_KEY)) {
-					Att att = createAttribute(id, networkAttributes, networkAttNames[i]);
-					if (att != null) graph.getAtt().add(att);
+				if (!networkAttNames[i].equals(METADATA_ATTR_NAME)
+						&& !networkAttNames[i].equals(METANODE_KEY)) {
+					Att att = createAttribute(id, networkAttributes,
+							networkAttNames[i]);
+					if (att != null)
+						graph.getAtt().add(att);
 				}
 			}
 		}
@@ -532,7 +496,8 @@ public class XGMMLWriter {
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// get the attribute list
-			final List listAttr = attributes.getListAttribute(id, attributeName);
+			final List listAttr = attributes
+					.getListAttribute(id, attributeName);
 			// set attribute name and label
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
@@ -569,7 +534,8 @@ public class XGMMLWriter {
 				Att memberAttr = objFactory.createAtt();
 				// set child attribute name, label, and value
 				memberAttr.setName(key);
-				memberAttr.setType(ObjectType.fromValue(checkType(mapAttr.get(key))));
+				memberAttr.setType(ObjectType.fromValue(checkType(mapAttr
+						.get(key))));
 				memberAttr.setValue(mapAttr.get(key).toString());
 				// add child attribute to parent
 				attr.getContent().add(memberAttr);
@@ -610,7 +576,8 @@ public class XGMMLWriter {
 				.getAttributeKeyspaceDimensionTypes(attributeName);
 
 		// check to see if id has value assigned to attribute
-		if (!objectHasKey(id, attributes, attributeName)) return null;
+		if (!objectHasKey(id, attributes, attributeName))
+			return null;
 
 		// the attribute to return
 		Att attrToReturn = objFactory.createAtt();
@@ -646,8 +613,8 @@ public class XGMMLWriter {
 			// now lets walk the keys structure and add to its attributes
 			// content
 			thisKeyAttr.getContent().add(
-					walkComplexAttributeStructure(thisKeyAttr, thisKeyMap, valTypeStr,
-												  dimTypes, 1));
+					walkComplexAttributeStructure(thisKeyAttr, thisKeyMap,
+							valTypeStr, dimTypes, 1));
 			// this keys attribute should get added to the attribute we wil
 			// return
 			attrToReturn.getContent().add(thisKeyAttr);
@@ -659,21 +626,23 @@ public class XGMMLWriter {
 
 	/**
 	 * Determines if object has key in multihashmap
-	 *
+	 * 
 	 * @param id -
 	 *            node, edge, network id
 	 * @param attributes -
 	 *            CyAttributes ref
 	 * @param attributeName -
 	 *            attribute name
-	 *
+	 * 
 	 * @return boolean
 	 */
-	private boolean objectHasKey(String id, CyAttributes attributes, String attributeName) {
+	private boolean objectHasKey(String id, CyAttributes attributes,
+			String attributeName) {
 
 		MultiHashMap mmap = attributes.getMultiHashMap();
-		for (Iterator keysIt = mmap.getObjectKeys(attributeName); keysIt.hasNext();){
-			String thisKey = (String)keysIt.next();
+		for (Iterator keysIt = mmap.getObjectKeys(attributeName); keysIt
+				.hasNext();) {
+			String thisKey = (String) keysIt.next();
 			if (thisKey != null && thisKey.equals(id)) {
 				return true;
 			}
@@ -811,10 +780,12 @@ public class XGMMLWriter {
 			Object possibleAttributeValue = complexAttributeStructure.get(key);
 			if (possibleAttributeValue instanceof Map) {
 				// we need to create an instance of Att to return
-				if (attrToReturn != null) parentAttr.getContent().add(attrToReturn);
+				if (attrToReturn != null)
+					parentAttr.getContent().add(attrToReturn);
 				attrToReturn = objFactory.createAtt();
 				// we have a another map
-				attrToReturn.setType(ObjectType.fromValue(getType(dimTypes[dimTypesIndex])));
+				attrToReturn.setType(ObjectType
+						.fromValue(getType(dimTypes[dimTypesIndex])));
 				attrToReturn.setLabel(key.toString());
 				attrToReturn.setName(key.toString());
 				attrToReturn.setValue(String
@@ -840,7 +811,8 @@ public class XGMMLWriter {
 				attrToReturn = parentAttr;
 				// create our key attribute
 				Att keyAttr = objFactory.createAtt();
-				keyAttr.setType(ObjectType.fromValue(getType(dimTypes[dimTypesIndex])));
+				keyAttr.setType(ObjectType
+						.fromValue(getType(dimTypes[dimTypesIndex])));
 				keyAttr.setLabel(key.toString());
 				keyAttr.setName(key.toString());
 				keyAttr.setValue(String.valueOf(1));
@@ -867,7 +839,8 @@ public class XGMMLWriter {
 	 * @return JAXB-generated Graphics object.
 	 * @throws JAXBException
 	 */
-	private Graphics getGraphics(final int type, final Object target) throws JAXBException {
+	private Graphics getGraphics(final int type, final Object target)
+			throws JAXBException {
 
 		if (target == null) {
 			return null;
@@ -880,23 +853,23 @@ public class XGMMLWriter {
 		 */
 		if (type == NODE) {
 			final NodeView curNodeView = (NodeView) target;
-			
+
 			/*
-			 * In case node is hidden, we cannot get the show and extract node view.
+			 * In case node is hidden, we cannot get the show and extract node
+			 * view.
 			 */
 			boolean hiddenNodeFlag = false;
-			
-			if(curNodeView.getWidth() == -1) {
+
+			if (curNodeView.getWidth() == -1) {
 				networkView.showGraphObject(curNodeView);
 				hiddenNodeFlag = true;
 			}
-			
+
 			/**
 			 * GML compatible attributes
 			 */
 			// Node shape
 			graphics.setType(number2shape(curNodeView.getShape()));
-			
 
 			// Node size and position
 			graphics.setH(curNodeView.getHeight());
@@ -908,8 +881,10 @@ public class XGMMLWriter {
 			graphics.setFill(paint2string(curNodeView.getUnselectedPaint()));
 
 			// Node border basic info.
-			final BasicStroke borderType = (BasicStroke) curNodeView.getBorder();
-			graphics.setWidth(BigInteger.valueOf((long) borderType.getLineWidth()));
+			final BasicStroke borderType = (BasicStroke) curNodeView
+					.getBorder();
+			graphics.setWidth(BigInteger.valueOf((long) borderType
+					.getLineWidth()));
 			graphics.setOutline(paint2string(curNodeView.getBorderPaint()));
 
 			/**
@@ -959,13 +934,13 @@ public class XGMMLWriter {
 			/*
 			 * Hide the node if necessary
 			 */
-			if(hiddenNodeFlag) {
+			if (hiddenNodeFlag) {
 				networkView.hideGraphObject(curNodeView);
 			}
 			return graphics;
 		} else if (type == EDGE) {
 			final EdgeView curEdgeView = (EdgeView) target;
-			
+
 			/**
 			 * GML compatible attributes
 			 */
@@ -1117,23 +1092,23 @@ public class XGMMLWriter {
 	 * @return Shape in string.
 	 */
 	private TypeGraphicsType number2shape(final int type) {
-		switch(type) {
-			case NodeView.ELLIPSE:
-				return TypeGraphicsType.ELLIPSE;
-			case NodeView.RECTANGLE:
-				return TypeGraphicsType.RECTANGLE;
-			case NodeView.DIAMOND:
-				return TypeGraphicsType.DIAMOND;
-			case NodeView.HEXAGON:
-				return TypeGraphicsType.HEXAGON;
-			case NodeView.OCTAGON:
-				return TypeGraphicsType.OCTAGON;
-			case NodeView.PARALELLOGRAM:
-				return TypeGraphicsType.PARALELLOGRAM;
-			case NodeView.TRIANGLE:
-				return TypeGraphicsType.TRIANGLE;
-			default:
-				return null;
+		switch (type) {
+		case NodeView.ELLIPSE:
+			return TypeGraphicsType.ELLIPSE;
+		case NodeView.RECTANGLE:
+			return TypeGraphicsType.RECTANGLE;
+		case NodeView.DIAMOND:
+			return TypeGraphicsType.DIAMOND;
+		case NodeView.HEXAGON:
+			return TypeGraphicsType.HEXAGON;
+		case NodeView.OCTAGON:
+			return TypeGraphicsType.OCTAGON;
+		case NodeView.PARALELLOGRAM:
+			return TypeGraphicsType.PARALELLOGRAM;
+		case NodeView.TRIANGLE:
+			return TypeGraphicsType.TRIANGLE;
+		default:
+			return null;
 		}
 	}
 
@@ -1186,7 +1161,8 @@ public class XGMMLWriter {
 				expandChildren(curNode);
 			} else {
 				nodeList.add(curNode);
-				//JAXBElement<GraphicNode> gNode = objFactory.createNode(jxbNode);
+				// JAXBElement<GraphicNode> gNode =
+				// objFactory.createNode(jxbNode);
 				graph.getNodeOrEdge().add(jxbNode);
 			}
 
@@ -1209,7 +1185,9 @@ public class XGMMLWriter {
 		jxbNode.setLabel(node.getIdentifier());
 
 		if (networkView != Cytoscape.getNullNetworkView()) {
-			jxbNode.setGraphics(getGraphics(NODE, networkView.getNodeView(node)));
+			jxbNode
+					.setGraphics(getGraphics(NODE, networkView
+							.getNodeView(node)));
 		}
 		attributeWriter(NODE, node.getIdentifier(), jxbNode);
 		return jxbNode;
@@ -1256,28 +1234,28 @@ public class XGMMLWriter {
 		Iterator it;
 		RootGraph rootGraph = Cytoscape.getRootGraph();
 
-                // Two pass approach. First, walk through the list
-                // and see if any of the children of a metanode are
-                // themselves a metanode.  If so, remove them from
-                // the list & will pick them up on recursion
-		metanodeList = (ArrayList)networkAttributes
-				.getListAttribute(network.getIdentifier(),METANODE_KEY);
+		// Two pass approach. First, walk through the list
+		// and see if any of the children of a metanode are
+		// themselves a metanode. If so, remove them from
+		// the list & will pick them up on recursion
+		metanodeList = (ArrayList) networkAttributes.getListAttribute(network
+				.getIdentifier(), METANODE_KEY);
 		if (metanodeList == null || metanodeList.isEmpty())
 			return;
 
 		it = metanodeList.iterator();
 		HashMap embeddedMetaList = new HashMap();
 		while (it.hasNext()) {
-			int curNodeID = ((Integer)it.next()).intValue();
+			int curNodeID = ((Integer) it.next()).intValue();
 			int[] childrenIndices = rootGraph
 					.getNodeMetaChildIndicesArray(curNodeID);
-			if (childrenIndices == null) continue;
+			if (childrenIndices == null)
+				continue;
 			for (int i = 0; i < childrenIndices.length; i++) {
 				CyNode childNode = (CyNode) Cytoscape.getRootGraph().getNode(
 						childrenIndices[i]);
 				if (isMetanode(childNode)) {
-					embeddedMetaList.put(childNode.getIdentifier(), 
-							     childNode);
+					embeddedMetaList.put(childNode.getIdentifier(), childNode);
 				}
 			}
 		}
@@ -1285,12 +1263,12 @@ public class XGMMLWriter {
 		// Reset the iterator
 		it = metanodeList.iterator();
 		while (it.hasNext()) {
-			CyNode curNode = (CyNode) rootGraph.getNode(
-							((Integer)it.next()).intValue());
+			CyNode curNode = (CyNode) rootGraph.getNode(((Integer) it.next())
+					.intValue());
 			// Is this an embedded metaNode?
 			if (embeddedMetaList.containsKey(curNode.getIdentifier()))
-				continue;  // Yes, skip it
-			
+				continue; // Yes, skip it
+
 			GraphicNode mNode = writeMetanode(curNode);
 			if (mNode != null) {
 				Att metanodeAtt = objFactory.createAtt();
@@ -1316,11 +1294,12 @@ public class XGMMLWriter {
 
 			childNode = (CyNode) Cytoscape.getRootGraph().getNode(
 					childrenIndices[i]);
-			childMap.put(childNode.getIdentifier(),childNode);
-			String targetnodeID = Integer.toString(childNode.getRootGraphIndex());
+			childMap.put(childNode.getIdentifier(), childNode);
+			String targetnodeID = Integer.toString(childNode
+					.getRootGraphIndex());
 			if (!isMetanode(childNode)) {
 				childJxbNode = objFactory.createGraphicNode();
-				childJxbNode.setHref("#"+targetnodeID);
+				childJxbNode.setHref("#" + targetnodeID);
 			} else {
 				// We have an embedded metanode -- recurse
 				childJxbNode = writeMetanode(childNode);
@@ -1337,16 +1316,16 @@ public class XGMMLWriter {
 		// the metanode children and the other nodes in the network
 		Iterator it = Cytoscape.getRootGraph().edgesIterator();
 		while (it.hasNext()) {
-			CyEdge curEdge = (CyEdge)it.next();
-			if (childMap.containsKey(curEdge.getTarget().getIdentifier()) 
-			    || childMap.containsKey(curEdge.getSource().getIdentifier())) {
-				edgeMap.put(curEdge.getIdentifier(),curEdge);
+			CyEdge curEdge = (CyEdge) it.next();
+			if (childMap.containsKey(curEdge.getTarget().getIdentifier())
+					|| childMap
+							.containsKey(curEdge.getSource().getIdentifier())) {
+				edgeMap.put(curEdge.getIdentifier(), curEdge);
 			}
 		}
 
 		return jxbNode;
 	}
-
 
 	/**
 	 * Returns true if the node is a metanode.
@@ -1374,8 +1353,7 @@ public class XGMMLWriter {
 	 */
 	private String encodeFont(final Font font) {
 		// Encode font into "fontname-style-pointsize" string
-		return font.getName() + "-" + font.getStyle() + "-"
-		+ font.getSize();
+		return font.getName() + "-" + font.getStyle() + "-" + font.getSize();
 	}
 
 	/**
@@ -1437,7 +1415,7 @@ public class XGMMLWriter {
 		final BasicStroke stroke = (BasicStroke) view.getStroke();
 		final float[] dash = stroke.getDashArray();
 		final float width = stroke.getLineWidth();
-		
+
 		if (dash == null) {
 			// Normal line. check width
 			if (width == 1.0) {
@@ -1556,8 +1534,8 @@ class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 	 * If this method returns "" when requirePrefix=true, the return value will
 	 * be ignored and the system will generate one.
 	 */
-	public String getPreferredPrefix(final String namespaceUri, final String suggestion,
-			boolean requirePrefix) {
+	public String getPreferredPrefix(final String namespaceUri,
+			final String suggestion, boolean requirePrefix) {
 		// I want this namespace to be mapped to "xsi"
 		if ("http://www.w3.org/2001/XMLSchema-instance".equals(namespaceUri))
 			return "xsi";
@@ -1569,13 +1547,13 @@ class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 		// Dublin core semantics.
 		if ("http://purl.org/dc/elements/1.1/".equals(namespaceUri))
 			return "dc";
-		
+
 		// Xlink
-		if("http://www.w3.org/1999/xlink".equals(namespaceUri)) {
+		if ("http://www.w3.org/1999/xlink".equals(namespaceUri)) {
 			return "xlink";
 		}
 
-		if("http://www.cs.rpi.edu/XGMML".equals(namespaceUri)) {
+		if ("http://www.cs.rpi.edu/XGMML".equals(namespaceUri)) {
 			return "";
 		}
 		// otherwise I don't care. Just use the default suggestion, whatever it
@@ -1585,10 +1563,9 @@ class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 
 	public String[] getPreDeclaredNamespaceUris() {
 		return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
-					"http://www.w3.org/1999/xlink",
-					"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-					"http://purl.org/dc/elements/1.1/",
-					"http://www.cs.rpi.edu/XGMML"
-				};
+				"http://www.w3.org/1999/xlink",
+				"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+				"http://purl.org/dc/elements/1.1/",
+				"http://www.cs.rpi.edu/XGMML" };
 	}
 }
