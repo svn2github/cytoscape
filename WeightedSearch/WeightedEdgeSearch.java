@@ -21,9 +21,13 @@ public class WeightedEdgeSearch {
 
 	protected static Vector<String> idx2Name = new Vector<String>();
 
-	protected static final int MAX_SIZE = 100;
+	protected static final int MAX_SIZE = 30;
 
 	protected static final int MIN_SIZE = 15;
+	
+	protected static double INFLATE = 10;
+	
+	protected static double BACKGROUND = 0;
 
 
 	Map<Integer, Double> idx2Expression;
@@ -40,6 +44,7 @@ public class WeightedEdgeSearch {
 		scoreGraph();
 		searchResults = modularSearch();
 		Collections.sort(searchResults);
+		pruneResults(searchResults);
 		/*
 		 * Sort the results
 		 */
@@ -179,6 +184,7 @@ public class WeightedEdgeSearch {
 			edgeScores = new double[name2Idx.size()][];
 			for (int idx = 0; idx < edgeScores.length; idx += 1) {
 				edgeScores[idx] = new double[idx];
+				Arrays.fill(edgeScores[idx],BACKGROUND);
 
 			}
 		} catch (OutOfMemoryError e) {
@@ -261,7 +267,9 @@ public class WeightedEdgeSearch {
 		if(nodeSum < 0 && modularity < 0){
 			modifier = -1;
 		}
-		return modifier*(nodeSum/Math.sqrt(size))*modularity;
+		double densityWithin = withinEdges/(size*(size-1)/2);
+		double densityWithout = (totalEdges-withinEdges)/(size*edgeScores.length-size);
+		return INFLATE*densityWithin - densityWithout;
 		/**/
 		//return withinEdges;
 		/* 
@@ -387,7 +395,6 @@ public class WeightedEdgeSearch {
 		}
 		return results;
 	}
-	
 
 	protected static int maxEntry(double[] array) {
 		int result = 0;
@@ -397,6 +404,34 @@ public class WeightedEdgeSearch {
 			}
 		}
 		return result;
+	}
+	
+	protected static <Type> double calculateOverlap(Set<Type> one, Set<Type> two){
+		double overlap = 0;
+		for(Type element: one){
+			if(two.contains(element)){
+				overlap += 1;
+			}
+		}
+		return overlap/(one.size()-two.size()-overlap);
+		
+	}
+    
+	protected static void pruneResults(Vector<SearchResult > results){
+		double OVERLAP = 0.6;
+		boolean [] repeatResults = new boolean[results.size()];
+		for(int idx = 0;idx < results.size()-1;idx += 1){
+			for(int idy = 0; idy < results.size(); idy += 1){
+				if(calculateOverlap(results.get(idx).members,results.get(idy).members) > OVERLAP){
+					repeatResults[idy] = true;
+				}
+			}
+		}
+		for(int idx = repeatResults.length - 1 ; idx >= 0; idx -= 1){
+			if(repeatResults[idx]){
+				results.remove(idx);
+			}
+		}
 	}
 }
 
@@ -424,11 +459,11 @@ class SearchResult implements Comparable{
 	
 	public String toString(){
 		String result = "";
-		result += "Score:\t" + score + "\n"
-		+ "Size:\t" + members.size() + "\n"
-		+ "Within Edges:\t" + withinEdges + "\n"
-		+ "Total Edges:\t" + totalEdges + "\n"
-		+ "Node Sum:\t" + nodeSum + "\n";
+		result += "#Score:\t" + score + "\n"
+		+ "#Size:\t" + members.size() + "\n"
+		+ "#Within Edges:\t" + withinEdges + "\n"
+		+ "#Total Edges:\t" + totalEdges + "\n"
+		+ "#Node Sum:\t" + nodeSum + "\n";
 		for (Integer member : members) {
 			result += idx2Name.get(member) + "\n";
 		}
