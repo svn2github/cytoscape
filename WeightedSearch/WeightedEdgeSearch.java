@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,104 +21,33 @@ public class WeightedEdgeSearch {
 
 	protected static Vector<String> idx2Name = new Vector<String>();
 
-	protected static double SIZE_FACTOR = Math.log(0.6);
-
 	protected static final int MAX_SIZE = 30;
 
-	protected static final int MIN_SIZE = 10;
+	protected static final int MIN_SIZE = 2;
 
-	protected static final int RANDOM_TRIALS = 100;
-
-	protected static final double CUTOFF_PERCENT = 0.95;
-
-	// protected static final double DEFAULT_FILL = -10;
 
 	Map<Integer, Double> idx2Expression;
 
 	public static void main(String[] args) {
 
-		System.err.println("Version 0.49");
+		System.err.println("Version 0.51");
 		Vector<SearchResult> searchResults = new Vector<SearchResult>();
 		System.err.println("Reading edges scores");
 		readEdgeScores();
-		System.err.println("Reading initial node scores");
+		System.err.println("Finished reading edges scores.\nReading node scores");
 		readNodeScores(args[0]);
-		System.err.println("Setting up graph data structures");
 		setupGraph();
-		System.err.println("Scoring original graph");
 		scoreGraph();
-		double lastScore = 9999999;
-		double cutoff = lastScore - 1;
-		int searchIteration = 0;
-		while (lastScore > cutoff) {
-			System.err.println("Starting real search " + searchIteration);
-			SearchResult bestResult = search();
-			searchResults.add(bestResult);
-			outputResult(searchIteration, bestResult);
-			lastScore = bestResult.score;
-			if (bestResult.score < cutoff) {
-				DoubleArrayList scores = new DoubleArrayList(RANDOM_TRIALS);
-				System.err
-						.println("Failed cutoff check, running randomization trials (total = "
-								+ RANDOM_TRIALS + ")");
-				for (int idx = 0; idx < RANDOM_TRIALS; idx += 1) {
-					System.err.print("" + idx + " ");
-					/*
-					 * read in the node scores
-					 */
-					readNodeScores(args[0]);
-					/*
-					 * eliminate the scores correspond to the previous best
-					 * reslts
-					 */
-					for (int idy = 0; idy < searchResults.size() - 1; idy += 1) {
-						removeScores(searchResults.get(idy));
-					}
-					/*
-					 * randomize the expression
-					 */
-					shuffleExpression();
-
-					/*
-					 * regenerat the scoring matrix
-					 */
-					scoreGraph();
-					/*
-					 * find the best result and record the score
-					 */
-					SearchResult randomResult = search();
-					scores.add(randomResult.score);
-				}
-				System.err.println();
-				/*
-				 * Figure out hte cutoff value
-				 */
-				scores.sort();
-				outputRandomTrials(searchIteration, scores);
-				double prev_cutoff = cutoff;
-				cutoff = scores.get((int) (scores.size() * CUTOFF_PERCENT - 1));
-				if(cutoff > prev_cutoff){
-					cutoff = prev_cutoff;
-				}
-				/*
-				 * read hte node scores again and remove hte last n-1 node
-				 * scores
-				 */
-				readNodeScores(args[0]);
-				for (int idy = 0; idy < searchResults.size() - 1; idy += 1) {
-					removeScores(searchResults.get(idy));
-				}
-			}
-			/*
-			 * remove the node scores for the previous result and regenerate hte
-			 * edge score matrix
-			 */
-			removeScores(searchResults.get(searchResults.size() - 1));
-			scoreGraph();
-			searchIteration += 1;
+		searchResults = modularSearch();
+		Collections.sort(searchResults);
+		/*
+		 * Sort the results
+		 */
+		for(int idx = 0;idx < 20; idx += 1){
+			outputResult(idx, searchResults.get(idx));
 		}
-		System.err
-				.println("Last result failed cutoff, even after new randomization trial");
+		
+		
 
 	}
 
@@ -260,39 +190,16 @@ public class WeightedEdgeSearch {
 
 	protected static void scoreGraph() {
 
-		try {
-			for (int idx = 0; idx < edgeScores.length; idx += 1) {
-				/*
-				 * Fill in a default value for all edges based on the min score,
-				 * this may be overwritten later with a higher score
-				 */
-				double sourceScore = idx2NodeLLR[idx];
-				for (int idy = 0; idy < edgeScores[idx].length; idy += 1) {
-					double targetScore = idx2NodeLLR[idy];
-					double averageNodeScore = harmonicMean(sourceScore,
-							targetScore);
-					edgeScores[idx][idy] = Math.log(harmonicMean(minEdgeScore,
-							averageNodeScore))
-							- SIZE_FACTOR;
-				}
-			}
-		} catch (OutOfMemoryError e) {
-			System.err.println("Need more memory to create edges scores array");
-			System.exit(-1);
-		}
+
 		for (int idx = 0; idx < sources.size(); idx += 1) {
 			int sourceID = name2Idx.get(sources.get(idx));
 			int targetID = name2Idx.get(targets.get(idx));
-			double averageNodeScore = harmonicMean(idx2NodeLLR[sourceID],
-					idx2NodeLLR[targetID]);
 			if (sourceID > targetID) {
-				edgeScores[sourceID][targetID] = Math.log(harmonicMean(
-						averageNodeScore, scores.get(idx)))
-						- SIZE_FACTOR;
+				edgeScores[sourceID][targetID] = scores.get(idx);
+						
 			} else {
-				edgeScores[targetID][sourceID] = Math.log(harmonicMean(
-						averageNodeScore, scores.get(idx)))
-						- SIZE_FACTOR;
+				edgeScores[targetID][sourceID] = scores.get(idx);
+		
 			}
 		}
 	}
@@ -338,8 +245,9 @@ public class WeightedEdgeSearch {
 		try {
 			FileWriter fw = new FileWriter("" + id + ".out");
 			fw.write("Score:\t" + result.score + "\n");
-			fw.write("Size Factor:\t" + SIZE_FACTOR + "\n");
 			fw.write("Size:\t" + result.members.size() + "\n");
+			fw.write("Within Edges:\t"+result.withinEdges + "\n");
+			fw.write("Total Edges:\t"+result.totalEdges + "\n");
 			for (Integer member : result.members) {
 				fw.write(idx2Name.get(member) + "\n");
 			}
@@ -350,113 +258,134 @@ public class WeightedEdgeSearch {
 		}
 	}
 
-	
+	protected static double modularScore(double withinEdges, double totalEdges, double edgeSum, double nodeSum){
+		/**/
+		return nodeSum*(withinEdges/edgeSum
+				- (totalEdges / edgeSum)
+				* (totalEdges / edgeSum));
+		/**/
+		//return withinEdges;
+		/* 
+		return withinEdges/totalEdges;
+		*/
+	}
 	protected static Vector<SearchResult> modularSearch() {
 		Vector<SearchResult> results = new Vector<SearchResult>();
-		for (int seed = 0; seed < edgeScores.length; seed += 1) {
-			// System.err.println("Searching from seed "+seed+", best so far:
-			// size ="+bestResult.members.size());
-			SearchResult currentResult = new SearchResult();
-			currentResult.score = 0;
-			double sumDegrees = 0;
-			double sumEdges = 0;
-			double[] neighbors = new double[edgeScores.length];
-			int bestNeighbor = seed;
-			double newScore = 0;
-			do {
-				currentResult.score = newScore;
-				currentResult.sum += neighbors[bestNeighbor];
-				/*
-				 * Add the current neighbor to result
-				 */
-				currentResult.members.add(bestNeighbor);
-				neighbors[bestNeighbor] = Double.NEGATIVE_INFINITY;
+		
+		/*
+		 * Figure out the degree of each edge in the graph
+		 */
+		double [] degree = new double[edgeScores.length];
+		for(int idx = 0;idx < degree.length; idx += 1){
+			for(int idy = 0; idy < degree.length; idy += 1){
+				if(idx > idy){
+					degree[idx] += edgeScores[idx][idy];
+				}
+				if(idx < idy){
+					degree[idx] += edgeScores[idy][idx];
+				}
+			}
+		}
+		
+		/*
+		 * Figure out the total weight of all edges in the network
+		 */
+		double edgeSum = 0;
+		for(int idx = 0;idx < degree.length; idx += 1){
+			edgeSum += degree[idx];
+		}
+		edgeSum /= 2;
+		System.err.println("Edge sum: "+edgeSum);
 
+		/*
+		 * Search for modular structures from each seed in the network
+		 */
+		for (int seed = 0; seed < edgeScores.length; seed += 1) {
+			SearchResult currentResult = new SearchResult();
+			currentResult.members.add(seed);
+			boolean [] members = new boolean[edgeScores.length];
+			members[seed] = true;
+			/*
+			 * Initialize scoring values
+			 * withinEdgeCount
+			 * totalEdgeCount
+			 */
+			double totalEdgeCount = degree[seed];
+			double withinEdgeCount = 0;
+			double nodeSum = 0;
+			
+			double[] clusterEdges = new double[edgeScores.length];
+			for(int idx = 0; idx < edgeScores.length; idx += 1){
+				if(seed > idx){
+					clusterEdges[idx] = edgeScores[seed][idx];
+				}
+				if(seed < idx){
+					clusterEdges[idx] = edgeScores[idx][seed];
+				}
+			}
+			nodeSum = idx2NodeLLR[seed];
+			double newScore = Double.NEGATIVE_INFINITY;
+			do{
 				/*
-				 * Update the neighbors array
+				 * Figure out the best neighbor
 				 */
-				for (int neighbor = 0; neighbor < neighbors.length; neighbor += 1) {
-					if (neighbor == bestNeighbor) {
-						continue;
-					}
-					if (neighbor > bestNeighbor) {
-						neighbors[neighbor] += edgeScores[neighbor][bestNeighbor];
-					} else {
-						neighbors[neighbor] += edgeScores[bestNeighbor][neighbor];
+				currentResult.withinEdges = withinEdgeCount;
+				currentResult.totalEdges = totalEdgeCount;
+				currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, edgeSum, nodeSum);
+
+				newScore = Double.NEGATIVE_INFINITY;
+				int newNeighbor = -1;
+				for (int idx = 0; idx < edgeScores.length; idx += 1) {
+					if (!members[idx]) {
+						double newWithinEdges = withinEdgeCount + clusterEdges[idx];
+						double newTotalEdges = totalEdgeCount + degree[idx] - newWithinEdges;
+						double newNodeSum = nodeSum + idx2NodeLLR[idx];
+
+						double tempScore = modularScore(newWithinEdges,newTotalEdges,edgeSum, newNodeSum);
+						if (tempScore > newScore) {
+							newScore = tempScore;
+							newNeighbor = idx;
+						}
 					}
 				}
-
-				bestNeighbor = maxEntry(neighbors);
-				// int size = currentResult.members.size()+1;
-				// newScore = (currentResult.sum +
-				// neighbors[bestNeighbor])/Math.pow(size*(size-1)/2,0.75);
-				// newScore = currentResult.sum + neighbors[bestNeighbor];
-				newScore = (currentResult.sum + neighbors[bestNeighbor]);
-				// }while(currentResult.members.size() < MIN_SIZE || (
-				// currentResult.members.size() < MAX_SIZE && newScore >
-				// currentResult.score));
-			} while (currentResult.members.size() < MAX_SIZE
-					&& newScore > currentResult.score);
-
-			if (bestResult == null || currentResult.score > bestResult.score) {
-				bestResult = currentResult;
-			}
+				
+				/*
+				 * If score increase is positive, add the best neighbor
+				 */
+				if(newScore > currentResult.score || currentResult.members.size() < MIN_SIZE){
+					/*
+					 * Add to the result set
+					 */
+					currentResult.members.add(newNeighbor);
+					members[newNeighbor] = true;
+					withinEdgeCount += clusterEdges[newNeighbor];
+					totalEdgeCount  += degree[newNeighbor]-clusterEdges[newNeighbor];
+					/*
+					 * Update within edge count for neighbors
+					 */
+					for(int idx = 0;idx < clusterEdges.length; idx += 1){
+						if(idx != newNeighbor){
+							if(idx > newNeighbor){
+								clusterEdges[idx] += edgeScores[idx][newNeighbor];
+							}
+							if(idx < newNeighbor){
+								clusterEdges[idx] += edgeScores[newNeighbor][idx];
+							}
+						}
+					}
+				}
+			/*
+			 * Do this while score increase is still positive
+			 */
+			}while((newScore > currentResult.score || currentResult.members.size() < MIN_SIZE) && currentResult.members.size() < MAX_SIZE);
+			currentResult.withinEdges = withinEdgeCount;
+			currentResult.totalEdges = totalEdgeCount;
+			currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, edgeSum, nodeSum);
+			results.add(currentResult);
 		}
 		return results;
 	}
 	
-	protected static SearchResult search() {
-		SearchResult bestResult = null;
-		for (int seed = 0; seed < edgeScores.length; seed += 1) {
-			// System.err.println("Searching from seed "+seed+", best so far:
-			// size ="+bestResult.members.size());
-			SearchResult currentResult = new SearchResult();
-			currentResult.score = 0;
-			currentResult.sum = 0;
-			double[] neighbors = new double[edgeScores.length];
-			int bestNeighbor = seed;
-			double newScore = 0;
-			do {
-				currentResult.score = newScore;
-				currentResult.sum += neighbors[bestNeighbor];
-				/*
-				 * Add the current neighbor to result
-				 */
-				currentResult.members.add(bestNeighbor);
-				neighbors[bestNeighbor] = Double.NEGATIVE_INFINITY;
-
-				/*
-				 * Update the neighbors array
-				 */
-				for (int neighbor = 0; neighbor < neighbors.length; neighbor += 1) {
-					if (neighbor == bestNeighbor) {
-						continue;
-					}
-					if (neighbor > bestNeighbor) {
-						neighbors[neighbor] += edgeScores[neighbor][bestNeighbor];
-					} else {
-						neighbors[neighbor] += edgeScores[bestNeighbor][neighbor];
-					}
-				}
-
-				bestNeighbor = maxEntry(neighbors);
-				// int size = currentResult.members.size()+1;
-				// newScore = (currentResult.sum +
-				// neighbors[bestNeighbor])/Math.pow(size*(size-1)/2,0.75);
-				// newScore = currentResult.sum + neighbors[bestNeighbor];
-				newScore = (currentResult.sum + neighbors[bestNeighbor]);
-				// }while(currentResult.members.size() < MIN_SIZE || (
-				// currentResult.members.size() < MAX_SIZE && newScore >
-				// currentResult.score));
-			} while (currentResult.members.size() < MAX_SIZE
-					&& newScore > currentResult.score);
-
-			if (bestResult == null || currentResult.score > bestResult.score) {
-				bestResult = currentResult;
-			}
-		}
-		return bestResult;
-	}
 
 	protected static int maxEntry(double[] array) {
 		int result = 0;
@@ -469,17 +398,29 @@ public class WeightedEdgeSearch {
 	}
 }
 
-class SearchResult {
+class SearchResult implements Comparable{
 	public SearchResult() {
 		score = 0;
-		sum = 0;
-
+		withinEdges = 0;
+		totalEdges = 0;
+		
 		members = new HashSet<Integer>();
+	}
+	
+	public int compareTo(Object other){
+		if(((SearchResult)other).score - score < 0){
+			return -1;
+		}
+		if(((SearchResult)other).score - score > 0){
+			return 1;
+		}
+		return 0;
 	}
 
 	public double score;
 
-	public double sum;
+	public double withinEdges;
+	public double totalEdges;
 
 	public Set<Integer> members;
 }
