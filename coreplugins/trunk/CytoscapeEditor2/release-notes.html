@@ -1,16 +1,43 @@
 <HTML>
 <HEAD>
-<TITLE>CytoscapeEditor Release Notes (version 2.3.02)</TITLE>
+<TITLE>CytoscapeEditor Release Notes (version 2.3.03)</TITLE>
 </HEAD>
 <BODY>
 
-<H1>CytoscapeEditor Release Notes (version 2.3.02)</H1>
+<H1>CytoscapeEditor Release Notes (version 2.3.03)</H1>
+<OL>
+
+<LI>Created a new way to easily produce ShapePalette entries for
+editors.
+
+<P>This involves the use of new interfaces ShapePaletteInfo and
+ShapePaletteInfoGenerator and their supporting classes. Refactored
+DefaultCytoscapeEditor to use this new ShapePaletteInfoGenerator.
+
+
+<P><LI>Added ability of ShapePalette entries to handle visual style
+size information.
+
+<P>Changed computation of BasicCytoShapeEntity size to allow for
+ larger CytoShapeIcons. Added CytoShapeIcon constructor for handling
+ size information. Changed getIconWidth/Height() to return real width
+ and height of icon. Changed the ShapePalette JList to no longer use
+ setFixedCellHeight() since BasicCytoShapeEntitys can now have
+ different sizes.
+
+<P><LI>Added CytoShapeIcon.DEFAULT_WIDTH and DEFAULT_HEIGHT and deprecated
+  CytoShapeIcon.WIDTH & HEIGHT.
+<P><LI>Removed SimpleBioPAX_Editor.
+</OL>
+
+
+<H1>Prior Notes</H1>
+
+<H2>CytoscapeEditor Release Notes (version 2.3.02)</H2>
 <OL>
 <LI>Fixed compilation problem caused by accidental release of changes
 to CytoscapeEditorManager.java.
 </OL>
-
-<H1>Prior Notes</H1>
 
 <H2>CytoscapeEditor Release Notes (version 2.3.01)</H2>
 
@@ -50,7 +77,7 @@ CytoscapeEditor: Updated to remove deprecated use of FlagEventListener
 </OL>
 
 <HR>
-<SMALL><EM>This page was last updated: 11/06/06</EM></SMALL>
+<SMALL><EM>This page was last updated: 12/05/06</EM></SMALL>
 
 </BODY>
 </HTML>

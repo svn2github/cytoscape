@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sun May 29 11:18:17 2005
-* Modified:     Thu Sep 14 06:59:52 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Tue Dec 05 04:50:06 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,10 @@
 *
 * Revisions:
 *
+* Mon Dec 04 11:57:11 2006 (Michael L. Creech) creech@w235krbza760
+*  Changed the JList to no longer use
+*  setFixedCellHeight() since BasicCytoShapeEntitys can now have
+*  different sizes.
 * Sun Aug 06 11:19:38 2006 (Michael L. Creech) creech@w235krbza760
 *  Added generated serial version UUID for serializable classes.
 ********************************************************************************
@@ -96,7 +100,8 @@ public class ShapePalette extends JPanel {
         dataList.setTransferHandler(new PaletteListTransferHandler());
         // AJK: 09/16/05 BEGIN
         //     set internal spacing via fixed cell height and width
-        dataList.setFixedCellHeight(CytoShapeIcon.HEIGHT + 5);
+	// MLC 12/04/06:
+        // dataList.setFixedCellHeight(CytoShapeIcon.HEIGHT + 5);
         // AJK: 09/16/05 END
         _shapePane = new JPanel();
         _shapePane.setLayout(new BoxLayout(_shapePane, BoxLayout.Y_AXIS));

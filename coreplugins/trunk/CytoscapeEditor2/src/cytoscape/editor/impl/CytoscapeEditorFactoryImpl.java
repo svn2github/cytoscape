@@ -1,3 +1,27 @@
+/* -*-Java-*-
+********************************************************************************
+*
+* File:         CytoscapeEditorFactoryImpl.java
+* RCS:          $Header: $
+* Description:
+* Author:       Allan Kuchinsky
+* Created:      Mon Jul 05 18:56:28 2006
+* Modified:     Mon Dec 04 18:58:34 2006 (Michael L. Creech) creech@w235krbza760
+* Language:     Java
+* Package:
+* Status:       Experimental (Do Not Distribute)
+*
+* (c) Copyright 2006, Agilent Technologies, all rights reserved.
+*
+********************************************************************************
+*
+* Revisions:
+*
+* Mon Dec 04 18:56:57 2006 (Michael L. Creech) creech@w235krbza760
+*  Added createShapePaletteInfoGenerator() and createShapePaletteInfo().
+********************************************************************************
+*/
+
 /*
  * Created on Jul 5, 2005
  *
@@ -8,6 +32,8 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
+import cytoscape.editor.ShapePaletteInfo;
+import cytoscape.editor.ShapePaletteInfoGenerator;
 
 import cytoscape.editor.event.NetworkEditEventAdapter;
 
@@ -70,8 +96,7 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
             String                 msg = "Cannot create editor of type: " +
                                          editorType;
             InvalidEditorException ex = new InvalidEditorException(msg,
-                                                                   new Throwable(
-                "type not found"));
+                                                                   new Throwable("type not found"));
 
             //			ex.printStackTrace();
             throw ex;
@@ -101,9 +126,8 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
     }
 
     // implements CytoscapeEditorFactory interface:
-    public Iterator<String> getEditorNames ()
-    {
-    	return Collections.unmodifiableCollection(this.editorTypes).iterator();
+    public Iterator<String> getEditorNames() {
+        return Collections.unmodifiableCollection(this.editorTypes).iterator();
     }
 
     /**
@@ -127,5 +151,15 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
      */
     public NetworkEditEventAdapter getNetworkEditEventAdapter(CytoscapeEditor editor) {
         return editor.getNetworkEditEventAdapter();
+    }
+
+    public ShapePaletteInfoGenerator createShapePaletteInfoGenerator() {
+        return new ShapePaletteInfoGeneratorImpl();
+    }
+
+    public ShapePaletteInfo createShapePaletteInfo(String controllingAttributeName,
+                                                   String controllingAttributeValue) {
+        return new ShapePaletteInfoImpl(controllingAttributeName,
+                                        controllingAttributeValue);
     }
 }

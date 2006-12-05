@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Mon Aug 01 08:42:41 2005
-* Modified:     Wed Sep 13 13:22:58 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Tue Dec 05 10:57:27 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -82,11 +82,10 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
         CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE,
             CytoscapeEditorManager.ANY_VISUAL_STYLE);
 
-        CytoscapeEditorManager.register("SimpleBioMoleculeEditor",
-            "cytoscape.editor.event.PaletteNetworkEditEventHandler",
-            CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE,
-            MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
-
+	CytoscapeEditorManager.register("SimpleBioMoleculeEditor",
+	            "cytoscape.editor.event.PaletteNetworkEditEventHandler",
+	            CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE,
+	            MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
         String editorName = CytoscapeEditorManager.DEFAULT_EDITOR_TYPE;
 
         try {

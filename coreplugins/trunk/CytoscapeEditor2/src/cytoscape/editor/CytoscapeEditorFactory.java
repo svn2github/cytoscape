@@ -1,8 +1,27 @@
-/*
- * Created on Jul 5, 2005
- *
- * 
- */
+/* -*-Java-*-
+********************************************************************************
+*
+* File:         CytoscapeEditorFactory.java
+* RCS:          $Header: $
+* Description:  
+* Author:       Allan Kuchinsky
+* Created:      Mon July 05 18:41:21 2005
+* Modified:     Mon Dec 04 18:42:31 2006 (Michael L. Creech) creech@w235krbza760
+* Language:     Java
+* Package:      
+* Status:       Experimental (Do Not Distribute)
+*
+* (c) Copyright 2006, Agilent Technologies, all rights reserved.
+*
+********************************************************************************
+*
+* Revisions:
+*
+* Mon Dec 04 18:41:50 2006 (Michael L. Creech) creech@w235krbza760
+*  Added createShapePaletteInfoGenerator() and createShapePaletteInfo().
+********************************************************************************
+*/
+
 package cytoscape.editor;
 
 import java.util.Collection;
@@ -73,5 +92,18 @@ public interface CytoscapeEditorFactory {
 	 */
 	public NetworkEditEventAdapter getNetworkEditEventAdapter(
 			CytoscapeEditor editor) ;
-	
+
+    // MLC 12/04/06 BEGIN:
+    /**
+     * Create a ShapePaletteInfoGenerator for easily creating ShapePalette
+     * entries.
+     */
+    public ShapePaletteInfoGenerator createShapePaletteInfoGenerator ();
+    /**
+     * Create a new ShapePaletteInfo object based on the given
+     * controlling Attribute name and controlling attribute value.
+     */
+    public ShapePaletteInfo createShapePaletteInfo (String controllingAttributeName,
+						    String controllingAttributeValue);
+    // MLC 12/04/06 END.	
 }
