@@ -21,9 +21,9 @@ public class WeightedEdgeSearch {
 
 	protected static Vector<String> idx2Name = new Vector<String>();
 
-	protected static final int MAX_SIZE = 30;
+	protected static final int MAX_SIZE = 100;
 
-	protected static final int MIN_SIZE = 2;
+	protected static final int MIN_SIZE = 15;
 
 
 	Map<Integer, Double> idx2Expression;
@@ -244,13 +244,7 @@ public class WeightedEdgeSearch {
 	protected static void outputResult(int id, SearchResult result) {
 		try {
 			FileWriter fw = new FileWriter("" + id + ".out");
-			fw.write("Score:\t" + result.score + "\n");
-			fw.write("Size:\t" + result.members.size() + "\n");
-			fw.write("Within Edges:\t"+result.withinEdges + "\n");
-			fw.write("Total Edges:\t"+result.totalEdges + "\n");
-			for (Integer member : result.members) {
-				fw.write(idx2Name.get(member) + "\n");
-			}
+			fw.write(result.toString());
 			fw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -258,11 +252,16 @@ public class WeightedEdgeSearch {
 		}
 	}
 
-	protected static double modularScore(double withinEdges, double totalEdges, double edgeSum, double nodeSum){
+	protected static double modularScore(double withinEdges, double totalEdges, double edgeSum, double nodeSum, int size){
 		/**/
-		return nodeSum*(withinEdges/edgeSum
+		double modifier = 1;
+		double modularity = (withinEdges/edgeSum
 				- (totalEdges / edgeSum)
 				* (totalEdges / edgeSum));
+		if(nodeSum < 0 && modularity < 0){
+			modifier = -1;
+		}
+		return modifier*(nodeSum/Math.sqrt(size))*modularity;
 		/**/
 		//return withinEdges;
 		/* 
@@ -301,7 +300,7 @@ public class WeightedEdgeSearch {
 		 * Search for modular structures from each seed in the network
 		 */
 		for (int seed = 0; seed < edgeScores.length; seed += 1) {
-			SearchResult currentResult = new SearchResult();
+			SearchResult currentResult = new SearchResult(idx2Name);
 			currentResult.members.add(seed);
 			boolean [] members = new boolean[edgeScores.length];
 			members[seed] = true;
@@ -331,7 +330,8 @@ public class WeightedEdgeSearch {
 				 */
 				currentResult.withinEdges = withinEdgeCount;
 				currentResult.totalEdges = totalEdgeCount;
-				currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, edgeSum, nodeSum);
+				currentResult.nodeSum = nodeSum;
+				currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, edgeSum, nodeSum,currentResult.members.size());
 
 				newScore = Double.NEGATIVE_INFINITY;
 				int newNeighbor = -1;
@@ -340,8 +340,9 @@ public class WeightedEdgeSearch {
 						double newWithinEdges = withinEdgeCount + clusterEdges[idx];
 						double newTotalEdges = totalEdgeCount + degree[idx] - newWithinEdges;
 						double newNodeSum = nodeSum + idx2NodeLLR[idx];
-
-						double tempScore = modularScore(newWithinEdges,newTotalEdges,edgeSum, newNodeSum);
+						int newSize = currentResult.members.size() + 1;
+						
+						double tempScore = modularScore(newWithinEdges,newTotalEdges,edgeSum, newNodeSum,newSize);
 						if (tempScore > newScore) {
 							newScore = tempScore;
 							newNeighbor = idx;
@@ -380,7 +381,8 @@ public class WeightedEdgeSearch {
 			}while((newScore > currentResult.score || currentResult.members.size() < MIN_SIZE) && currentResult.members.size() < MAX_SIZE);
 			currentResult.withinEdges = withinEdgeCount;
 			currentResult.totalEdges = totalEdgeCount;
-			currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, edgeSum, nodeSum);
+			currentResult.nodeSum = nodeSum;
+			currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, edgeSum, nodeSum,currentResult.members.size());
 			results.add(currentResult);
 		}
 		return results;
@@ -399,10 +401,13 @@ public class WeightedEdgeSearch {
 }
 
 class SearchResult implements Comparable{
-	public SearchResult() {
+	Vector<String> idx2Name;
+	public SearchResult(Vector<String> idx2Name) {
 		score = 0;
 		withinEdges = 0;
 		totalEdges = 0;
+		nodeSum = 0;
+		this.idx2Name = idx2Name;
 		
 		members = new HashSet<Integer>();
 	}
@@ -416,11 +421,25 @@ class SearchResult implements Comparable{
 		}
 		return 0;
 	}
+	
+	public String toString(){
+		String result = "";
+		result += "Score:\t" + score + "\n"
+		+ "Size:\t" + members.size() + "\n"
+		+ "Within Edges:\t" + withinEdges + "\n"
+		+ "Total Edges:\t" + totalEdges + "\n"
+		+ "Node Sum:\t" + nodeSum + "\n";
+		for (Integer member : members) {
+			result += idx2Name.get(member) + "\n";
+		}
+		return result;
+	}
 
 	public double score;
 
 	public double withinEdges;
 	public double totalEdges;
+	public double nodeSum;
 
 	public Set<Integer> members;
 }
