@@ -37,6 +37,7 @@ public class FilterUsePanel extends JPanel
   JCheckBox select, gray, hide,  overwrite;
   JRadioButton pulsate, spiral;
   JFrame frame;
+  public static String NEW_FILTER_ADDED = "NEW_FILTER_ADDED";
 
   public FilterUsePanel ( JFrame frame ) {
     super();
@@ -61,7 +62,6 @@ public class FilterUsePanel extends JPanel
     add(pane0);
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( filterEditorPanel );
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
-
   }
   
   public FilterListPanel getFilterListPanel () {
@@ -81,7 +81,13 @@ public class FilterUsePanel extends JPanel
     else if ( e.getPropertyName() == FilterEditorPanel.ACTIVE_PANEL_CHANGED ){
       frame.pack();
     }
-  }
+    else if ( e.getPropertyName() == NEW_FILTER_ADDED){
+    	//Select the new filter just created
+    	//New filter created is always added at the end of a vector
+    	int lastIndex = filterListPanel.getFilterList().getModel().getSize()-1;
+        filterListPanel.getFilterList().setSelectedIndex(lastIndex);    	
+    }    
+   }
     
   public JPanel createManagePanel(){
     JPanel result = new JPanel();
@@ -102,7 +108,16 @@ public class FilterUsePanel extends JPanel
       if (createFilterDialog == null){
         createFilterDialog = new CreateFilterDialog(FilterEditorManager.defaultManager());
       }
+
+      int pre_filterCount = filterListPanel.getFilterList().getModel().getSize();
       createFilterDialog.setVisible(true);
+      int post_filterCount = filterListPanel.getFilterList().getModel().getSize();
+      
+      //Fire an event to notify the JList to select it, if new filter is added
+      if (post_filterCount - pre_filterCount >0) {
+          java.beans.PropertyChangeEvent evt = new java.beans.PropertyChangeEvent(this, NEW_FILTER_ADDED,null,null);
+          filterListPanel.getSwingPropertyChangeSupport().firePropertyChange(evt);    	  
+      }
     }
     if ( e.getSource() == removeButton ) {
       Filter filter = filterListPanel.getSelectedFilter();
