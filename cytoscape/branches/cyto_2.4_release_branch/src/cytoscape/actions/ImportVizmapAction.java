@@ -11,7 +11,6 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-import cytoscape.view.CyNetworkView;
 
 public class ImportVizmapAction extends CytoscapeAction {
 	public ImportVizmapAction() {
@@ -20,13 +19,13 @@ public class ImportVizmapAction extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		CyFileFilter propsFilter = new CyFileFilter();
+
+		final CyFileFilter propsFilter = new CyFileFilter();
 		propsFilter.addExtension("props");
 		propsFilter.setDescription("Property files");
 
 		// Get the file name
-		File file = FileUtil.getFile("Import Vizmap Property File",
+		final File file = FileUtil.getFile("Import Vizmap Property File",
 				FileUtil.LOAD, new CyFileFilter[] { propsFilter });
 
 		// if the name is not null, then load
@@ -36,7 +35,7 @@ public class ImportVizmapAction extends CytoscapeAction {
 			LoadVizmapTask task = new LoadVizmapTask(file);
 
 			// Configure JTask Dialog Pop-Up Box
-			JTaskConfig jTaskConfig = new JTaskConfig();
+			final JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
 			jTaskConfig.displayCloseButton(true);
 			jTaskConfig.displayStatus(true);
@@ -44,7 +43,6 @@ public class ImportVizmapAction extends CytoscapeAction {
 
 			// Execute Task in New Thread; pops open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
-
 		}
 	}
 }
@@ -73,8 +71,9 @@ class LoadVizmapTask implements Task {
 		taskMonitor.setStatus("Vizmapper updated by the file: "
 				+ file.getName());
 		taskMonitor.setPercentCompleted(100);
-		
-		Cytoscape.getVisualMappingManager().setVisualStyle(Cytoscape.getCurrentNetworkView().getVisualStyle().getName());
+
+		Cytoscape.getVisualMappingManager().setVisualStyle(
+				Cytoscape.getCurrentNetworkView().getVisualStyle().getName());
 		Cytoscape.getDesktop().getVizMapUI().visualStyleChanged();
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
