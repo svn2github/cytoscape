@@ -70,7 +70,9 @@ public class BooleanMetaFilterEditor
     JLabel lb_Select_objects_that_pass = new JLabel("Select objects that pass ");
 
     comparisonBox = new JComboBox();
-    comparisonBox.setMinimumSize(new Dimension(100,19));
+    comparisonBox.setMinimumSize(new Dimension(105,19));
+    comparisonBox.setPreferredSize(new Dimension(105,19));
+    
     comparisonBox.addItem(BooleanMetaFilter.AND);
     comparisonBox.addItem(BooleanMetaFilter.OR);
     comparisonBox.addItem(BooleanMetaFilter.XOR);
