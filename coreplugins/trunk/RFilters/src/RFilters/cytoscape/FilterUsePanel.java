@@ -42,6 +42,7 @@ public class FilterUsePanel extends JPanel
   public FilterUsePanel ( JFrame frame ) {
     super();
     this.frame = frame;
+	frame.setPreferredSize(new Dimension(700,300));
 
     setLayout(new BorderLayout());
     //--------------------//
@@ -79,6 +80,7 @@ public class FilterUsePanel extends JPanel
       apply.setEnabled(false);
     } // end of if ()
     else if ( e.getPropertyName() == FilterEditorPanel.ACTIVE_PANEL_CHANGED ){
+    	frame.setPreferredSize(new Dimension(700,300));
       frame.pack();
     }
     else if ( e.getPropertyName() == NEW_FILTER_ADDED){
