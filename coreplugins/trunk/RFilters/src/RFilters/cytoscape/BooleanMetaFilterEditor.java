@@ -57,43 +57,84 @@ public class BooleanMetaFilterEditor
     this.filters = filters;
     identifier = "Boolean Meta-Filter";
     setBorder( new TitledBorder( "Boolean Meta-Filter") );
-    setLayout(new BorderLayout());
-    JPanel namePanel = new JPanel();
+
+    setLayout(new java.awt.GridBagLayout());
+
+    JLabel lbFilterName = new JLabel("Filter Name");
     nameField = new JTextField(15);
+    nameField.setMaximumSize(new Dimension(131,19));
     nameField.setText(identifier);
     nameField.addActionListener(this);
     nameField.addFocusListener(this);
-    namePanel.add( new JLabel( "Filter Name" ) );
-    namePanel.add( nameField );
-    add( namePanel,BorderLayout.NORTH );
 
-    JPanel all_panel = new JPanel();
-    all_panel.setLayout(new BorderLayout());
-    
-				
-    filterList = new JList(FilterManager.defaultManager());
-    filterList.addListSelectionListener(this);
-    JScrollPane scrollPane = new JScrollPane(filterList);
-    all_panel.add(scrollPane,BorderLayout.CENTER);
-				
-    JPanel comparisonPanel = new JPanel();
-    comparisonPanel.add(new JLabel("Select objects that pass "));
+    JLabel lb_Select_objects_that_pass = new JLabel("Select objects that pass ");
+
     comparisonBox = new JComboBox();
+    comparisonBox.setMinimumSize(new Dimension(100,19));
     comparisonBox.addItem(BooleanMetaFilter.AND);
     comparisonBox.addItem(BooleanMetaFilter.OR);
     comparisonBox.addItem(BooleanMetaFilter.XOR);
     comparisonBox.setSelectedIndex(0);
     comparisonBox.setEditable(false);
     comparisonBox.addItemListener(this);
-    comparisonPanel.add(comparisonBox);
-    comparisonPanel.add(new JLabel(" of the selected filters"));
-				
-    all_panel.add(comparisonPanel,BorderLayout.NORTH);
-    add(all_panel,BorderLayout.CENTER);
-    
+
+    JLabel lb_of_the_selected_filters = new JLabel(" of the selected filters");
+
+    filterList = new JList(FilterManager.defaultManager());
+    filterList.addListSelectionListener(this);
+    JScrollPane scrollPane = new JScrollPane(filterList);
+
     negationBox = new JCheckBox("Negate?");
-    add(negationBox,BorderLayout.SOUTH);
-    
+
+    java.awt.GridBagConstraints gridBagConstraints;
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 5);
+    add(lbFilterName, gridBagConstraints);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 5);
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    add(nameField, gridBagConstraints);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+    gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 5);
+    add(lb_Select_objects_that_pass, gridBagConstraints);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 5);
+    add(comparisonBox, gridBagConstraints);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    add(lb_of_the_selected_filters, gridBagConstraints);
+
+    scrollPane.setViewportView(filterList);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.gridwidth = 3;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.weighty = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+    add(scrollPane, gridBagConstraints);
+
+    negationBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    negationBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 0);
+    add(negationBox, gridBagConstraints);
   }
 
   public String toString () {
