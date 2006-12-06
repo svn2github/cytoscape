@@ -71,6 +71,7 @@ import cytoscape.Cytoscape;
 import cytoscape.actions.AlphabeticalSelectionAction;
 import cytoscape.actions.BendSelectedEdgesAction;
 import cytoscape.actions.BirdsEyeViewAction;
+import cytoscape.actions.BookmarkAction;
 import cytoscape.actions.CloneGraphInNewWindowAction;
 import cytoscape.actions.CreateNetworkViewAction;
 import cytoscape.actions.CytoPanelAction;
@@ -105,9 +106,8 @@ import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
 import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
 import cytoscape.actions.OpenSessionAction;
 import cytoscape.actions.PreferenceAction;
-import cytoscape.actions.BookmarkAction;
-import cytoscape.actions.ProxyServerAction;
 import cytoscape.actions.PrintAction;
+import cytoscape.actions.ProxyServerAction;
 import cytoscape.actions.SaveSessionAction;
 import cytoscape.actions.SaveSessionAsAction;
 import cytoscape.actions.SelectAllAction;
@@ -533,12 +533,12 @@ public class CyMenus implements GraphViewChangeListener {
 				CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
 				boolean inactive = false;
 
-				System.out.println("GraphView = " + graphView);
-				System.out.println("graphView.nodeCount() == "
-						+ graphView.nodeCount());
+//				System.out.println("GraphView = " + graphView);
+//				System.out.println("graphView.nodeCount() == "
+//						+ graphView.nodeCount());
 				if (graphView == null || graphView.nodeCount() == 0)
 					inactive = true;
-				System.out.println(" inactive = " + inactive);
+//				System.out.println(" inactive = " + inactive);
 				MenuElement[] popup = f_editMenu.getSubElements();
 				if (popup[0] instanceof JPopupMenu) {
 					MenuElement[] submenus = ((JPopupMenu) popup[0])
