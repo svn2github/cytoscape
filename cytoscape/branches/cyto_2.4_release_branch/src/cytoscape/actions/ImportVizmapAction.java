@@ -11,6 +11,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
+import cytoscape.view.CyNetworkView;
 
 public class ImportVizmapAction extends CytoscapeAction {
 	public ImportVizmapAction() {
@@ -67,11 +68,15 @@ class LoadVizmapTask implements Task {
 		taskMonitor.setStatus("Reading Vizmap File...");
 		taskMonitor.setPercentCompleted(-1);
 
-		
-		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, file.getAbsolutePath());
-		taskMonitor.setStatus("Vizmapper updated by the file: " + file.getName());
+		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, file
+				.getAbsolutePath());
+		taskMonitor.setStatus("Vizmapper updated by the file: "
+				+ file.getName());
 		taskMonitor.setPercentCompleted(100);
-
+		
+		Cytoscape.getVisualMappingManager().setVisualStyle(Cytoscape.getCurrentNetworkView().getVisualStyle().getName());
+		Cytoscape.getDesktop().getVizMapUI().visualStyleChanged();
+		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 
 	/**

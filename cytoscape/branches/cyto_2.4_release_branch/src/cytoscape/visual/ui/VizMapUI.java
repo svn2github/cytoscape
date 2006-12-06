@@ -125,18 +125,18 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	// for creating VizMapTabs with locked node height/width
 	public static final byte NODE_HEIGHT = 126;
 	public static final byte NODE_WIDTH = 127;
-	
+
 	// VisualMappingManager for the graph.
 	protected VisualMappingManager VMM;
 	/** The content pane for the dialog */
 	private JPanel mainPane;
-	//private GridBagGroup mainGBG;
+	// private GridBagGroup mainGBG;
 	private JPanel actionButtonsPanel, attrSelectorPanel;
 	/** The content pane for the JTabbedPanes */
 	private JPanel tabPaneContainer;
 	/** Keeps track of contained tabs */
-	//private VizMapTab[] tabs;
-	private List<VizMapTab> tabs; 
+	// private VizMapTab[] tabs;
+	private List<VizMapTab> tabs;
 	/**
 	 * All known VisualStyles
 	 */
@@ -163,36 +163,52 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		CyNetwork cyNetwork = VMM.getNetwork();
 		cyNetwork.addCyNetworkListener(this);
 
-		//this.mainGBG = new GridBagGroup();
-		//this.mainPane = mainGBG.panel;
+		// this.mainGBG = new GridBagGroup();
+		// this.mainPane = mainGBG.panel;
 		mainPane = new JPanel(new GridBagLayout());
 		// MiscGB.pad(mainGBG.constraints, 2, 2);
 		// MiscGB.inset(mainGBG.constraints, 3);
 		this.tabs = new ArrayList<VizMapTab>();
-		//this.tabs = new VizMapTab[EDGE_LABEL_FONT + 1];
-		this.tabPaneContainer = new JPanel(new java.awt.GridLayout(),false);
+		// this.tabs = new VizMapTab[EDGE_LABEL_FONT + 1];
+		this.tabPaneContainer = new JPanel(new java.awt.GridLayout(), false);
 
 		JTabbedPane nodePane = new JTabbedPane();
 		JTabbedPane edgePane = new JTabbedPane();
 
 		// add panels to tabbed panes
-		addTab(tabs,nodePane,new VizMapAttrTab(this,nodePane,0,VMM,NODE_COLOR));
-		addTab(tabs,nodePane,new VizMapAttrTab(this,nodePane,1,VMM,NODE_BORDER_COLOR));
-		addTab(tabs,nodePane,new VizMapAttrTab(this,nodePane,2,VMM,NODE_LINETYPE));
-		addTab(tabs,nodePane,new VizMapAttrTab(this,nodePane,3,VMM,NODE_SHAPE));
-		addTab(tabs,nodePane,new VizMapSizeTab(this,nodePane,4,VMM,NODE_SIZE));
-		addTab(tabs,nodePane,new VizMapAttrTab(this,nodePane,5,VMM,NODE_LABEL));
-		addTab(tabs,nodePane,new VizMapFontTab(this,nodePane,6,VMM,NODE_LABEL_FONT));
-		addTab(tabs,nodePane,new VizMapAttrTab(this,nodePane,7,VMM,NODE_LABEL_COLOR));
-		addTab(tabs,nodePane,new VizMapAttrTab(this,nodePane,8,VMM,NODE_LABEL_POSITION));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 0, VMM,
+				NODE_COLOR));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 1, VMM,
+				NODE_BORDER_COLOR));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 2, VMM,
+				NODE_LINETYPE));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 3, VMM,
+				NODE_SHAPE));
+		addTab(tabs, nodePane, new VizMapSizeTab(this, nodePane, 4, VMM,
+				NODE_SIZE));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 5, VMM,
+				NODE_LABEL));
+		addTab(tabs, nodePane, new VizMapFontTab(this, nodePane, 6, VMM,
+				NODE_LABEL_FONT));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 7, VMM,
+				NODE_LABEL_COLOR));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 8, VMM,
+				NODE_LABEL_POSITION));
 
-		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,0,VMM,EDGE_COLOR));
-		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,1,VMM,EDGE_LINETYPE));
-		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,2,VMM,EDGE_SRCARROW));
-		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,3,VMM,EDGE_TGTARROW));
-		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,4,VMM,EDGE_LABEL));
-		addTab(tabs,edgePane,new VizMapFontTab(this,edgePane,5,VMM,EDGE_LABEL_FONT));
-		addTab(tabs,edgePane,new VizMapAttrTab(this,edgePane,6,VMM,EDGE_LABEL_COLOR));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 0, VMM,
+				EDGE_COLOR));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 1, VMM,
+				EDGE_LINETYPE));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 2, VMM,
+				EDGE_SRCARROW));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 3, VMM,
+				EDGE_TGTARROW));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 4, VMM,
+				EDGE_LABEL));
+		addTab(tabs, edgePane, new VizMapFontTab(this, edgePane, 5, VMM,
+				EDGE_LABEL_FONT));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 6, VMM,
+				EDGE_LABEL_COLOR));
 
 		// global default pane
 		JPanel defaultPane = new DefaultPanel(this, VMM);
@@ -221,10 +237,10 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 		// MiscGB.insert(mainGBG, vizStylePanel, 0, 0, 1, 1, 1, 0,
 		// GridBagConstraints.HORIZONTAL);
-		//MiscGB.insert(mainGBG, attrSelectorPanel, 0, 0, 1, 1, 1, 0,
-		//		GridBagConstraints.HORIZONTAL);
-		//MiscGB.insert(mainGBG, tabPaneContainer, 0, 1, 1, 1, 1, 1,
-		//		GridBagConstraints.BOTH);
+		// MiscGB.insert(mainGBG, attrSelectorPanel, 0, 0, 1, 1, 1, 0,
+		// GridBagConstraints.HORIZONTAL);
+		// MiscGB.insert(mainGBG, tabPaneContainer, 0, 1, 1, 1, 1, 1,
+		// GridBagConstraints.BOTH);
 
 		// add apply & cancel button
 		this.actionButtonsPanel = new JPanel();
@@ -237,29 +253,29 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		actionButtonsPanel.add(applyButton);
 		actionButtonsPanel.add(closeButton);
 
-		//MiscGB.insert(mainGBG, actionButtonsPanel, 0, 3, 1, 1, 1, 0,
-		//		GridBagConstraints.HORIZONTAL);
+		// MiscGB.insert(mainGBG, actionButtonsPanel, 0, 3, 1, 1, 1, 0,
+		// GridBagConstraints.HORIZONTAL);
 
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.weightx = 1.0;
-        mainPane.add(attrSelectorPanel, gridBagConstraints);
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+		gridBagConstraints.weightx = 1.0;
+		mainPane.add(attrSelectorPanel, gridBagConstraints);
 
-        gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        mainPane.add(tabPaneContainer, gridBagConstraints);
-		
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        mainPane.add(actionButtonsPanel, gridBagConstraints);
-		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.fill = GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 1.0;
+		mainPane.add(tabPaneContainer, gridBagConstraints);
+
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		mainPane.add(actionButtonsPanel, gridBagConstraints);
+
 		setContentPane(mainPane);
 		pack();
 		nodeSelect.doClick();
@@ -386,14 +402,15 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 					GridBagConstraints.HORIZONTAL);
 			rmStyle.setToolTipText("Delete the current style");
 
-                        // create legend button
-			
-                        JButton createLegend = new JButton("Create Legend");
-                        createLegend.addActionListener(new LegendListener(this));
-                        MiscGB.insert(styleGBG, createLegend, 4, 1, 1, 1, 1, 0,
-                                        GridBagConstraints.HORIZONTAL);
-                        createLegend.setToolTipText("Create a figure legend for the selected visual style");
-		
+			// create legend button
+
+			JButton createLegend = new JButton("Create Legend");
+			createLegend.addActionListener(new LegendListener(this));
+			MiscGB.insert(styleGBG, createLegend, 4, 1, 1, 1, 1, 0,
+					GridBagConstraints.HORIZONTAL);
+			createLegend
+					.setToolTipText("Create a figure legend for the selected visual style");
+
 			// close button
 			JButton closeBut = new JButton("Close");
 			closeBut.addActionListener(new AbstractAction() {
@@ -411,8 +428,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			MiscGB.insert(styleGBG, defStyle, 5, 0, 1, 1, 1, 0,
 					GridBagConstraints.HORIZONTAL);
 			defStyle.setToolTipText("Change the current style's settings");
-
-
 
 			MiscGB.insert(this.styleGBG, this.styleComboBox, 0, 0, 5, 1, 1, 0,
 					GridBagConstraints.HORIZONTAL);
@@ -461,21 +476,24 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			}
 		}
 
-
-                protected class LegendListener extends AbstractAction {
+		protected class LegendListener extends AbstractAction {
 			JDialog parent;
-			public LegendListener(JDialog p) { parent = p; }
-                        public void actionPerformed(ActionEvent e) {
+
+			public LegendListener(JDialog p) {
+				parent = p;
+			}
+
+			public void actionPerformed(ActionEvent e) {
 				final SwingWorker worker = new SwingWorker() {
-				        public Object construct() {
-                                		LegendDialog ld = new LegendDialog(parent, currentStyle);
+					public Object construct() {
+						LegendDialog ld = new LegendDialog(parent, currentStyle);
 						ld.setVisible(true);
 						return null;
-				        }
-			        };
-			        worker.start();
-                        }
-                }
+					}
+				};
+				worker.start();
+			}
+		}
 
 		protected class NewStyleListener extends AbstractAction {
 			public void actionPerformed(ActionEvent e) {
@@ -506,27 +524,29 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 		/**
 		 * Rename a Visual Style<br>
-		 *
+		 * 
 		 */
 		protected class RenameStyleListener extends AbstractAction {
 			public void actionPerformed(ActionEvent e) {
 				String oldName = currentStyle.getName();
 				String name = getStyleName(currentStyle);
-				
-				//System.out.println("******** Old VS name = " + oldName + ", New VS name = " + name);
-				
+
+				// System.out.println("******** Old VS name = " + oldName + ",
+				// New VS name = " + name);
+
 				if (name == null) {
 					return;
 				}
-				
-				// no need to inform the VMM, since only the name changed <-- This is VERY wrong!
+
+				// no need to inform the VMM, since only the name changed <--
+				// This is VERY wrong!
 				// We need to update calatog AND VMM.
 				currentStyle.setName(name);
-				
+
 				catalog.removeVisualStyle(oldName);
 				catalog.addVisualStyle(currentStyle);
 				resetStyles(); // rebuild the combo box
-				
+
 				VMM.setVisualStyle(currentStyle);
 			}
 		}
@@ -669,7 +689,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			for (Iterator styleIter = styles.iterator(); styleIter.hasNext();) {
 				this.styleComboModel.addElement(styleIter.next());
 			}
-			if ( selectedStyle != null )
+			if (selectedStyle != null)
 				this.styleComboModel.setSelectedItem(selectedStyle);
 			else
 				this.styleComboModel.setSelectedItem(currentStyle);
