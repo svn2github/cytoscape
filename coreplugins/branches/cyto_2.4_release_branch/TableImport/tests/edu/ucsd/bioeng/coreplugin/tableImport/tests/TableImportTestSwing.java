@@ -46,7 +46,7 @@ public class TableImportTestSwing extends TestCase {
 		Runnable r = new Runnable() {
 			public void run() {
 				try {
-					String[] args = { "-p", "./TableImport.jar" };
+					String[] args = { "-p", "./TableImport.jar ./browser.jar" };
 					application = new CyMain(args);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -89,7 +89,10 @@ public class TableImportTestSwing extends TestCase {
 		EventPlayer player = new EventPlayer(scenario);
 		player.run(robot, "IMPORT_NETWORK_EXCEL_FILE");
 		player.run(robot, "IMPORT_NETWORK_TEXT_TABLE");
-
+		player.run(robot, "IMPORT_EDGE_ATTRIBUTE_TEXT_FILE");
+		player.run(robot, "IMPORT_GO_AND_GA");
+		player.run(robot, "WRITE_SESSION");
+		
 		// write assertion code here.
 		Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
 		Set<String> networkTitles = new TreeSet<String>();

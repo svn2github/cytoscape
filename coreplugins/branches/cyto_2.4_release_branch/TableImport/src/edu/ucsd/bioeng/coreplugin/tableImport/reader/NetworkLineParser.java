@@ -1,16 +1,13 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
-import giny.model.Edge;
-import giny.model.Node;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import giny.model.Edge;
+import giny.model.Node;
 
 /**
  * Parse one line for network text table
@@ -24,8 +21,6 @@ public class NetworkLineParser {
 
 	private final List<Integer> nodeList;
 	private final List<Integer> edgeList;
-	
-	private final Set test = new TreeSet();
 
 	public NetworkLineParser(List<Integer> nodeList, List<Integer> edgeList,
 			final NetworkTableMappingParameters nmp) {
@@ -88,10 +83,11 @@ public class NetworkLineParser {
 
 		for (int i = 0; i < parts.length; i++) {
 			if (i != nmp.getSourceIndex() && i != nmp.getTargetIndex()
-					&& i != nmp.getInteractionIndex()
-					&& nmp.getImportFlag()[i] == true) {
-
-				mapAttribute(edge.getIdentifier(), parts[i].trim(), i);
+					&& i != nmp.getInteractionIndex()) {
+				if (nmp.getImportFlag().length > i
+						&& nmp.getImportFlag()[i] == true) {
+					mapAttribute(edge.getIdentifier(), parts[i].trim(), i);
+				}
 			}
 		}
 	}
@@ -129,14 +125,14 @@ public class NetworkLineParser {
 			 * In case of list, not overwrite the attribute. Get the existing
 			 * list, and add it to the list.
 			 */
-			
+
 			List curList = nmp.getAttributes().getListAttribute(key,
 					nmp.getAttributeNames()[index]);
 			if (curList == null) {
 				curList = new ArrayList();
 			}
-			curList.addAll(buildList(entry));	
-			
+			curList.addAll(buildList(entry));
+
 			nmp.getAttributes().setListAttribute(key,
 					nmp.getAttributeNames()[index], curList);
 			break;
