@@ -29,7 +29,7 @@ BINDyeast.sif
 
 
 This is a Cytoscape network containing all of the yeast interactions known
-to the BIND database (http://www.bind.ca) circa July 2004.
+to the BIND database (http://www.bind.ca) circa 10/10/2006.
 
 ----------------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ BINDhuman.sif
 
 
 This is a Cytoscape network containing all of the human interactions known
-to the BIND database (http://www.bind.ca) circa July 2004.
+to the BIND database (http://www.bind.ca) circa 10/10/2006.
 
 ----------------------------------------------------------------------------
 
