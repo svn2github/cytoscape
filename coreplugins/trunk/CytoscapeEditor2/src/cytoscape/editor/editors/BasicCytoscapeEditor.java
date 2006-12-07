@@ -209,7 +209,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
      */
     public CyNode addNode(String nodeName, String attribute, String value,
         Point2D location) {
-        System.out.println("Adding node " + nodeName + " at position " +
+        CytoscapeEditorManager.log("Adding node " + nodeName + " at position " +
             location);
 
         CyNode cn = Cytoscape.getCyNode(nodeName, false); // first see if
@@ -265,7 +265,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
             // String canonicalName =
             // nodeAttribs.getStringAttribute(cn.getIdentifier(),
             // Semantics.CANONICAL_NAME);
-            // System.out.println ("Got canonical name: " + canonicalName);
+            // CytoscapeEditorManager.log ("Got canonical name: " + canonicalName);
             // MLC 07/27/06 BEGIN:
             // hack for BioPAX visual style
             // CytoscapeEditorManager.nodeAttribs.setAttribute(cn.getIdentifier(),
@@ -306,7 +306,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
             nextLocn[1] = location.getY();
             ((DGraphView) Cytoscape.getCurrentNetworkView()).xformComponentToNodeCoords(nextLocn);
             nv.setOffset(nextLocn[0], nextLocn[1]);
-            System.out.println("Offset for node " + cn + "set to " +
+            CytoscapeEditorManager.log("Offset for node " + cn + "set to " +
                 nv.getOffset());
         }
 
@@ -337,7 +337,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
     //            // String canonicalName =
     //            // attribs.getStringAttribute(myNode.getIdentifier(),
     //            // Semantics.CANONICAL_NAME);
-    //            // System.out.println("Got target: " + canonicalName);
+    //            // CytoscapeEditorManager.log("Got target: " + canonicalName);
     //        }
     //    }
 
@@ -671,8 +671,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
         // should be such a utility
         JMenu editMenu = Cytoscape.getDesktop().getCyMenus().getEditMenu();
         boolean foundConnectSelected = false;
-        // System.out.println("checking against edit menu: " + editMenu);
-        System.out.println("item count = " + editMenu.getItemCount());
+        // CytoscapeEditorManager.log("checking against edit menu: " + editMenu);
+        CytoscapeEditorManager.log("item count = " + editMenu.getItemCount());
 
         for (int i = 0; i < editMenu.getItemCount(); i++) {
             JMenuItem jIt = editMenu.getItem(i);
