@@ -10,6 +10,8 @@ import javax.swing.AbstractAction;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.UndoManager;
 
+import cytoscape.editor.CytoscapeEditorManager;
+
 
 /**
  * redo an operation that has been undone
@@ -41,7 +43,7 @@ public class RedoAction extends AbstractAction {
         try {
             undo.redo();
         } catch (CannotRedoException ex) {
-            System.out.println("Unable to redo: " + ex);
+            CytoscapeEditorManager.log("Unable to redo: " + ex);
         }
 
         update();
