@@ -109,10 +109,10 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
             return;
         }
 
-        // System.out.println("Got edgeAppearanceCalculator: " + eac);		
+        // CytoscapeEditorManager.log("Got edgeAppearanceCalculator: " + eac);		
         ShapePaletteInfoGenerator palGen = CytoscapeEditorFactory.INSTANCE.createShapePaletteInfoGenerator();
 
-        // System.out.println("Got edge target arrow calculator: " + edgeCalc);
+        // CytoscapeEditorManager.log("Got edge target arrow calculator: " + edgeCalc);
         byte[] calcsToUse = new byte[] { VizMapUI.EDGE_TGTARROW };
 
         Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(eac,
@@ -129,7 +129,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
         } else {
             while (spEntries.hasNext()) {
                 ShapePaletteInfo spi = spEntries.next();
-                // System.out.println("   edge palette info = " + spi);
+                // CytoscapeEditorManager.log("   edge palette info = " + spi);
                 shapePalette.addShape(spi.getControllingAttributeName(),
                                       spi.getKey(),
                                       new CytoShapeIcon((Arrow) spi.getValue(VizMapUI.EDGE_TGTARROW)),
@@ -171,7 +171,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
             while (spEntries.hasNext()) {
                 ShapePaletteInfo spi = spEntries.next();
 
-                // System.out.println("   node palette entry = " + spi);
+                // CytoscapeEditorManager.log("   node palette entry = " + spi);
                 Color nodeColor = (Color) spi.getValue(VizMapUI.NODE_COLOR);
                 byte  nodeShape = (Byte) spi.getValue(VizMapUI.NODE_SHAPE);
                 int   nodeSize  = (int) ((Double) spi.getValue(VizMapUI.NODE_SIZE)).longValue();
@@ -207,18 +207,18 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
     //        VisualMappingManager manager = Cytoscape.getVisualMappingManager();
     //
     //        VisualStyle          vizStyle = manager.getVisualStyle();
-    //        System.out.println("Got visual style: " + vizStyle);
+    //        CytoscapeEditorManager.log("Got visual style: " + vizStyle);
     //
     //        // first do edges
     //        EdgeAppearanceCalculator eac = vizStyle.getEdgeAppearanceCalculator();
-    //        System.out.println("Got edgeAppearanceCalculator: " + eac);
+    //        CytoscapeEditorManager.log("Got edgeAppearanceCalculator: " + eac);
     //
     //        // TODO: MLC: Place in a method for handling edge arrows:
     //        GenericEdgeArrowCalculator edgeCalc = null;
     //
     //        if (eac != null) {
     //            edgeCalc = (GenericEdgeArrowCalculator) eac.getEdgeTargetArrowCalculator();
-    //            System.out.println("Got edge target arrow calculator: " + edgeCalc);
+    //            CytoscapeEditorManager.log("Got edge target arrow calculator: " + edgeCalc);
     //
     //            // TODO: MLC: Remove this?:
     //            if (edgeCalc == null) {
@@ -284,7 +284,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
     //
     //        NodeAppearanceCalculator nac = vizStyle.getNodeAppearanceCalculator();
     //
-    //        //		System.out.println("Got NodeAppearanceCalculator: " + nac);
+    //        //		CytoscapeEditorManager.log("Got NodeAppearanceCalculator: " + nac);
     //        GenericNodeColorCalculator nfill = null;
     //
     //        if (nac != null) {
@@ -318,7 +318,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
     //                // add this as a change listener. Make sure it's unique by
     //                // removing
     //                // any past listeners
-    //                System.out.println("NODE COLOR: real controlling attribute = " +
+    //                CytoscapeEditorManager.log("NODE COLOR: real controlling attribute = " +
     //                                   getControllingNodeAttribute() +
     //                                   " color mapping controlling attribute = " +
     //                                   dfill.getControllingAttributeName());
@@ -357,7 +357,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
     //            if (dshape == null) {
     //                nodeShape = nac.getDefaultNodeShape();
     //            } else {
-    //                System.out.println("NODE SHAPE: real controlling attribute = " +
+    //                CytoscapeEditorManager.log("NODE SHAPE: real controlling attribute = " +
     //                                   getControllingNodeAttribute() +
     //                                   " shape mapping controlling attribute = " +
     //                                   dshape.getControllingAttributeName());
