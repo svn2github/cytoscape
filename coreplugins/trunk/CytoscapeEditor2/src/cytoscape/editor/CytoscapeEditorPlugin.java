@@ -44,10 +44,10 @@ import cytoscape.plugin.CytoscapePlugin;
 public class CytoscapeEditorPlugin extends CytoscapePlugin {
     public CytoscapeEditorPlugin() {
         // MLC 07/24/06 BEGIN:
-        // System.out.println("CytoscapeEditor loaded ");
+        // CytoscapeEditorManager.log("CytoscapeEditor loaded ");
         // MainPluginAction mpa = new MainPluginAction();
         // CytoscapeEditorManager.setRunningEditorFramework(true);
-        // System.out.println("Setting up CytoscapeEditor");
+        // CytoscapeEditorManager.log("Setting up CytoscapeEditor");
         // mpa.initializeCytoscapeEditor();
         initializeCytoscapeEditor();
 
@@ -94,7 +94,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
             // MLC 08/06/06:
             // CytoscapeEditorManager.setDefaultEditor(cyEditor);
         } catch (InvalidEditorException ex) {
-            System.out.println("Error: cannot set up Cytoscape Editor: " +
+            CytoscapeEditorManager.log("Error: cannot set up Cytoscape Editor: " +
                 editorName);
         }
 
@@ -162,7 +162,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
     //				CytoscapeEditorManager.setCurrentEditor(cyEditor);
     //				CytoscapeEditorManager.setDefaultEditor(cyEditor);
     //			} catch (InvalidEditorException ex) {
-    //				System.out.println("Error: cannot set up Cytoscape Editor: "
+    //				CytoscapeEditorManager.log("Error: cannot set up Cytoscape Editor: "
     //						+ editorName);
     //			}
     //
