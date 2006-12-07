@@ -246,6 +246,9 @@ public abstract class CytoscapeEditorManager {
 
     // MLC 07/24/06:
     private static boolean _initialized = false;
+    
+    // AJK: 12/06/06: flag for "logging" diagnostic output
+    private static boolean loggingEnabled = false;
 
     // MLC 08/06/06 BEGIN:
     //    /**
@@ -515,7 +518,7 @@ public abstract class CytoscapeEditorManager {
             initialize();
         }
 
-        System.out.println("Putting " + visualStyleName + " --> " + editorName);
+        CytoscapeEditorManager.log("Putting " + visualStyleName + " --> " + editorName);
         visualStyleNameToEditorNameMap.put(visualStyleName, editorName);
 
         CytoscapeEditor cyEditor = CytoscapeEditorManager.initializeEditor(
@@ -559,6 +562,13 @@ public abstract class CytoscapeEditorManager {
      */
     public static void setupNewNetworkView(CyNetworkView newView) {
         CytoscapeEditor         cyEditor = CytoscapeEditorManager.getCurrentEditor();
+        
+        if (cyEditor != null)
+        {
+        	CytoscapeEditorManager.setEditorForView(newView, cyEditor);
+        }
+        
+        
         ding.view.DGraphView    wiwx   = (DGraphView) newView;
         ding.view.InnerCanvas   canvas = wiwx.getCanvas();
         
@@ -1073,4 +1083,24 @@ public abstract class CytoscapeEditorManager {
             }
         }
     }
+
+    // AJK: 12/06/06: BEGIN
+    //    "logging" diagnostic output
+	public static boolean isLoggingEnabled() {
+		return loggingEnabled;
+	}
+
+	public static void setLoggingEnabled(boolean loggingEnabled) {
+		CytoscapeEditorManager.loggingEnabled = loggingEnabled;
+	}
+	
+	public static void log (String msg)
+	{
+		if (isLoggingEnabled())
+		{
+			System.out.println(msg);
+		}
+	}
+	
+	// AJK: 12/06/06
 }
