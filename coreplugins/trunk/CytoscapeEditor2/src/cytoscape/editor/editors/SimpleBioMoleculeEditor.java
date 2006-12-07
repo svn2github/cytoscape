@@ -95,7 +95,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		CalculatorCatalog catalog = manager.getCalculatorCatalog();
 
 		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
-//		System.out.println ("Got visual Style from catalog: " + catalog 
+//		CytoscapeEditorManager.log ("Got visual Style from catalog: " + catalog 
 //				+ " = " + vizStyle);
 		if (mpbv == null) {
 			mpbv = new MapBioMoleculeEditorToVisualStyle();
@@ -106,7 +106,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 		else {
 
-//			System.out.println("Calling defineVisualStyle for: " + vizStyle);
+//			CytoscapeEditorManager.log("Calling defineVisualStyle for: " + vizStyle);
 			mpbv.defineVisualStyle(vizStyle, manager, catalog);
 		}		
 	}
@@ -134,7 +134,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 		// VisualStyle vizStyle = manager.getVisualStyle();
 		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
-//		System.out.println ("Got visual Style from catalog: " + catalog 
+//		CytoscapeEditorManager.log ("Got visual Style from catalog: " + catalog 
 //				+ " = " + vizStyle);
 		if (vizStyle == null) {
 			if (mpbv == null) {
@@ -145,7 +145,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 		else {
 
-			System.out.println("Calling defineVisualStyle for: " + vizStyle);
+			CytoscapeEditorManager.log("Calling defineVisualStyle for: " + vizStyle);
 			mpbv.defineVisualStyle(vizStyle, manager, catalog);
 		}
 
@@ -175,7 +175,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 		NodeAppearanceCalculator nac = vizStyle.getNodeAppearanceCalculator();
 
-//		System.out.println("NodeAppearanceCalculator for visual style: "
+//		CytoscapeEditorManager.log("NodeAppearanceCalculator for visual style: "
 //				+ vizStyle + " is " + nac);
 		if (nac == null) {
 			String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to NODE_TYPE attribute.";
@@ -186,7 +186,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		}
 		GenericNodeColorCalculator nfill = (GenericNodeColorCalculator) nac
 				.getNodeFillColorCalculator();
-		System.out.println("NodeColorCalculator for visual style: " + vizStyle
+		CytoscapeEditorManager.log("NodeColorCalculator for visual style: " + vizStyle
 				+ " is " + nfill);
 		if (nfill == null) {
 			String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to NODE_TYPE attribute.";
@@ -205,7 +205,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 				break;
 			}
 		}
-		System.out.println("DiscreteMapping for visual style: " + vizStyle
+		CytoscapeEditorManager.log("DiscreteMapping for visual style: " + vizStyle
 				+ " is " + dfill);
 		if (dfill == null) {
 			String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Shape to NODE_TYPE attribute.";
@@ -246,7 +246,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		byte nodeShape;
 
 		EdgeAppearanceCalculator eac = vizStyle.getEdgeAppearanceCalculator();
-		System.out.println("Got edgeAppearanceCalculator: " + eac);
+		CytoscapeEditorManager.log("Got edgeAppearanceCalculator: " + eac);
 		if (eac == null) {
 			String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Edge Target Arrow to an attribute.";
 			String title = "Cannot build palette for SimpleBioMoleculeEditor: no edge appearance calculator";
@@ -256,7 +256,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		}
 		GenericEdgeArrowCalculator edgeCalc = (GenericEdgeArrowCalculator) eac
 				.getEdgeTargetArrowCalculator();
-		System.out.println("Got edge target arrow calculator: " + edgeCalc);
+		CytoscapeEditorManager.log("Got edge target arrow calculator: " + edgeCalc);
 		if (edgeCalc == null) {
 			String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Edge Target Arrow to an attribute.";
 			String title = "Cannot build palette for SimpleBioMoleculeEditor: no edge arrow calculator";
@@ -271,12 +271,12 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 			DiscreteMapping dArrowCandidate = (DiscreteMapping) edgeMappings
 					.get(i);
 			String attr = dArrowCandidate.getControllingAttributeName();
-//			System.out.println("checking attribute: " + attr
+//			CytoscapeEditorManager.log("checking attribute: " + attr
 //					+ " against controlling attribute: "
 //					+ controllingEdgeAttribute);
 			if (attr.equals(controllingEdgeAttribute)) {
 				dArrow = dArrowCandidate;
-				System.out.println("Got edge mapping: " + dArrow);
+				CytoscapeEditorManager.log("Got edge mapping: " + dArrow);
 				break;
 			}
 		}
@@ -287,18 +287,18 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 					title, JOptionPane.PLAIN_MESSAGE);
 			return;
 		}
-//		System.out.println("adding edge arrows to palette");
+//		CytoscapeEditorManager.log("adding edge arrows to palette");
 		Arrow edgeTargetArrow;
 		String[] EdgeTypes = new String[] { ACTIVATION, INHIBITION, CATALYSIS };
 		for (int i = 0; i < EdgeTypes.length; i++) {
-//			System.out.println("getting map value for edge type: "
+//			CytoscapeEditorManager.log("getting map value for edge type: "
 //					+ EdgeTypes[i]);
 			if (dArrow.getMapValue(EdgeTypes[i]) != null) {
 				edgeTargetArrow = (Arrow) dArrow.getMapValue(EdgeTypes[i]);
 			} else {
 				edgeTargetArrow = eac.getDefaultEdgeTargetArrow();
 			}
-//			System.out.println("Addng shape for EdgeType " + EdgeTypes[i]
+//			CytoscapeEditorManager.log("Addng shape for EdgeType " + EdgeTypes[i]
 //					+ " = " + edgeTargetArrow);
 
 			shapePalette.addShape(EDGE_TYPE, EdgeTypes[i], new CytoShapeIcon(
