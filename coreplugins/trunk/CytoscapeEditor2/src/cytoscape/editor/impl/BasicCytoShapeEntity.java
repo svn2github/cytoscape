@@ -280,18 +280,18 @@ public class BasicCytoShapeEntity extends JComponent
         public void dragEnter(DragSourceDragEvent dsde) {
             dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
 
-            // System.out.println("dragEnter = " + comp);
+            // CytoscapeEditorManager.log("dragEnter = " + comp);
         }
 
         // public void dragOver(DragSourceDragEvent dsde) {
         //    DragSourceContext dsc = (DragSourceContext) dsde.getSource();
         //   Component comp = dsc.getComponent();
-        //   System.out.println("dragOver = " + comp);
+        //   CytoscapeEditorManager.log("dragOver = " + comp);
         //}
         public void dragExit(DragSourceEvent dse) {
             dse.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
 
-            // System.out.println("dragExit");
+            // CytoscapeEditorManager.log("dragExit");
         }
 
         // MLC 07/27/06 END.
