@@ -86,7 +86,7 @@ public class PaletteNetworkEditEventHandler extends
 //		DGraphView view = (DGraphView) Cytoscape.getCurrentNetworkView();
 //		JLabel button = new JLabel ("test 1");
 //		view.getBackgroundCanvas().add(button);
-//		System.out.println("added component to background canvas: " + view.getBackgroundCanvas());
+//		CytoscapeEditorManager.log("added component to background canvas: " + view.getBackgroundCanvas());
 //		
 //		button.setLocation(e.getLocation());
 //		button.setPreferredSize(new Dimension (70, 20));
@@ -143,7 +143,7 @@ public class PaletteNetworkEditEventHandler extends
 			String attributeName = myShape.getAttributeName();
 			String attributeValue = myShape.getAttributeValue();
 			
-//			System.out.println("Item dropped of type: " + attributeName);
+//			CytoscapeEditorManager.log("Item dropped of type: " + attributeName);
 
 			if (attributeName.equals(PaletteNetworkEditEventHandler.NODE_TYPE))
 			{
@@ -188,7 +188,7 @@ public class PaletteNetworkEditEventHandler extends
 		}
 		// NB: targetNode is *drop* target
 		NodeView targetNode = findEdgeDropTarget (locn);
-//		System.out.println ("drop target = " + targetNode);
+//		CytoscapeEditorManager.log ("drop target = " + targetNode);
 		if (targetNode == null)
 		{
 			return;
@@ -271,7 +271,7 @@ public class PaletteNetworkEditEventHandler extends
 		    URL = t.getTransferData(d);
 			if (URL != null)
 		    {
-		    	//			    System.out.println ("Handling dropped URL = " + URLString);
+		    	//			    CytoscapeEditorManager.log ("Handling dropped URL = " + URLString);
 		    	CyNode cn = _caller.addNode("node" + counter, 
 						"URL");
 			    counter++;				
