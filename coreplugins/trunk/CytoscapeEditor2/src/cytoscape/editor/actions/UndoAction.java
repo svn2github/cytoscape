@@ -10,6 +10,8 @@ import javax.swing.AbstractAction;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
+import cytoscape.editor.CytoscapeEditorManager;
+
 /**
  * action called when user invokes "undo" operation
  * 
@@ -46,7 +48,7 @@ public class UndoAction extends AbstractAction {
 		try {
 			undo.undo();
 		} catch (CannotUndoException ex) {
-			System.out.println("Unable to undo: " + ex);
+			CytoscapeEditorManager.log("Unable to undo: " + ex);
 		}
 		
 		update();
