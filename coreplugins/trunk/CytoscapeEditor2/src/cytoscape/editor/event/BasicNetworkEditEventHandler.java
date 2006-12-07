@@ -26,6 +26,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
 import cytoscape.view.CyNetworkView;
 
@@ -223,16 +224,16 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		// if (e.getPickedNode() instanceof NodeView) {
 		nv = view.getPickedNodeView(nextPoint);
 		
-		if (e.getClickCount() > 1)
-		{
-			System.out.println ("Got " + e.getClickCount() + " clicks for node " + 
-					nv.getNode().getIdentifier());
-			String s = JOptionPane.showInputDialog("give me a name");
-			System.out.println("Got name = " + s);
-		}
-//		System.out.println("Picked NodeView = " + nv);
-//		System.out.println("Edge started = " + edgeStarted);
-//		System.out.println("node = " + node);
+//		if (e.getClickCount() > 1)
+//		{
+//			CytoscapeEditorManager.log ("Got " + e.getClickCount() + " clicks for node " + 
+//					nv.getNode().getIdentifier());
+//			String s = JOptionPane.showInputDialog("give me a name");
+//			CytoscapeEditorManager.log("Got name = " + s);
+//		}
+//		CytoscapeEditorManager.log("Picked NodeView = " + nv);
+//		CytoscapeEditorManager.log("Edge started = " + edgeStarted);
+//		CytoscapeEditorManager.log("node = " + node);
 		if (nv != null) {
 			onNode = true;
 		}
@@ -254,7 +255,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			// so that we can have self-connecting edge
 //		} else if (onNode && edgeStarted && (nv != node)) {
 		} else if (onNode && edgeStarted) {
-			System.out.println ("calling finishEdge for NodeView " + nv);
+			CytoscapeEditorManager.log ("calling finishEdge for NodeView " + nv);
 			// Finish Edge Creation
 			finishEdge(nextPoint, nv);
 			edgeStarted = false;
@@ -273,7 +274,19 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 		else if (!onNode && !edgeStarted && (e.isControlDown())) {
 			createNode(nextPoint);
-		} else // clicking anywhere on screen will turn off node Labeling
+		} 
+		// AJK: 12/06/06 BEGIN
+		//    toggle diagnostic logging with alt_triple-click
+		else if ((e.getClickCount() > 2) && (e.isAltDown()))
+		{
+			CytoscapeEditorManager.setLoggingEnabled
+			(!CytoscapeEditorManager.isLoggingEnabled());
+			CytoscapeEditorManager.log("Cytoscape editor logging = "
+					+ CytoscapeEditorManager.isLoggingEnabled());
+		}
+		// AJK: 12/06/06 END
+		
+		else // clicking anywhere on screen will turn off node Labeling
 		{
 //			super.mousePressed(e);
 
@@ -287,8 +300,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	// TODO: keyPressed does not seem to be working
 	{
 		int keyVal = e.getKeyCode();
-		System.out.println("Key code for typed key = " + keyVal);
-		System.out.println("VK_ESCAPE = " + KeyEvent.VK_ESCAPE);
+		CytoscapeEditorManager.log("Key code for typed key = " + keyVal);
+		CytoscapeEditorManager.log("VK_ESCAPE = " + KeyEvent.VK_ESCAPE);
 		
 		if (keyVal == KeyEvent.VK_ESCAPE)
 		{
@@ -330,7 +343,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	 * @param location works in Canvas coordinates
 	 */
 	public CyEdge finishEdge(Point2D location, NodeView target) {
-		// System.out.println("finishEdge in BasicNetworkEventHandler");
+		// CytoscapeEditorManager.log("finishEdge in BasicNetworkEventHandler");
 		edgeStarted = false;
 		updateEdge();
 		
@@ -534,7 +547,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
     		}
 			_highlightedNodeView = nv;
 			nv.setSelected(!nv.isSelected());
-			System.out.println ("Hovering near: " + nv + " setting cursor to " + Cursor.HAND_CURSOR);
+			CytoscapeEditorManager.log ("Hovering near: " + nv + " setting cursor to " + Cursor.HAND_CURSOR);
 			_savedCursor = Cytoscape.getDesktop().getCursor();
 			Cytoscape.getDesktop().setCursor(Cursor.HAND_CURSOR);
     	}
@@ -560,7 +573,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 //			_savedStrokeWidth = ev.getStrokeWidth();
 //			ev.setStrokeWidth(4.0f);
 			_savedCursor = Cytoscape.getDesktop().getCursor();
-			System.out.println ("Hovering near: " + ev + " setting cursor to " + Cursor.HAND_CURSOR);
+			CytoscapeEditorManager.log ("Hovering near: " + ev + " setting cursor to " + Cursor.HAND_CURSOR);
 			Cytoscape.getDesktop().setCursor(Cursor.HAND_CURSOR);
       	}  	
     }
@@ -756,7 +769,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		this.view = view;
 		this.canvas = view.getCanvas();
 		// canvas.addInputEventListener(this);
-		System.out.println("Started event listener: " + this);
+		CytoscapeEditorManager.log("Started event listener: " + this);
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addKeyListener(this);
@@ -771,7 +784,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		if (canvas != null) {
 			// AJK: 04/15/06 for Cytoscape 2.3 renderer
 			// canvas.removeInputEventListener(this);
-//			System.out.println("stopped event listener: " + this);
+//			CytoscapeEditorManager.log("stopped event listener: " + this);
 			canvas.removeMouseListener(this);
 			canvas.removeMouseMotionListener(this);
 			canvas.removeKeyListener(this);
