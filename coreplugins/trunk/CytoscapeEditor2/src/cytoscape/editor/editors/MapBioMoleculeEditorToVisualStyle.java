@@ -10,6 +10,7 @@ import java.awt.Color;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
+import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
@@ -68,29 +69,29 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        VisualStyle existingStyle = catalog.getVisualStyle
 	                (BIOMOLECULE_VISUAL_STYLE);
 	        
-	        System.out.println(
+	        CytoscapeEditorManager.log(
 	        		"Got visual style for " + BIOMOLECULE_VISUAL_STYLE + " = " + 
 	        		existingStyle);
 
 	        if (existingStyle != null) {
-//                System.out.println("Got existing visual style: " + existingStyle);
+//                CytoscapeEditorManager.log("Got existing visual style: " + existingStyle);
                 return null;
 	        } else {
 	            VisualStyle bpVisualStyle = new VisualStyle(BIOMOLECULE_VISUAL_STYLE);
 	            // AJK: 03/29/06 define fields of visual style 
-	            System.out.println("defining visual style: " + bpVisualStyle);
+	            CytoscapeEditorManager.log("defining visual style: " + bpVisualStyle);
 	            defineVisualStyle (bpVisualStyle, manager, catalog);
 	            manager.setVisualStyle(bpVisualStyle);
 
 	            //  The visual style must be added to the Global Catalog
 	            //  in order for it to be written out to vizmap.props upon user exit
-	            System.out.println("Adding visual style " + bpVisualStyle 
+	            CytoscapeEditorManager.log("Adding visual style " + bpVisualStyle 
 	            		+ " to catalog " + catalog);
 	            catalog.addVisualStyle(bpVisualStyle);
 	            
 	            // for debugging
 //	    		VisualStyle vizStyle = catalog.getVisualStyle(BIOMOLECULE_VISUAL_STYLE);
-//	    		System.out.println ("Got visual Style from catalog: " + catalog 
+//	    		CytoscapeEditorManager.log ("Got visual Style from catalog: " + catalog 
 //	    				+ " = " + vizStyle);
 	    		
 	            // try setting the visual style to BioMolecule
@@ -145,7 +146,7 @@ public class MapBioMoleculeEditorToVisualStyle {
                 new GenericEdgeArrowCalculator("SimpleBioMoleculeEditor target arrows",
                 discreteMapping);
         eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
-        System.out.println ("Set edge target arrow calculator to " + edgeTargetArrowCalculator);
+        CytoscapeEditorManager.log ("Set edge target arrow calculator to " + edgeTargetArrowCalculator);
 
 	    }
 
