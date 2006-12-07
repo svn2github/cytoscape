@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import cern.colt.list.DoubleArrayList;
+import cern.jet.stat.Probability;
+
 
 public class WeightedEdgeSearch {
 	/*
@@ -21,20 +23,24 @@ public class WeightedEdgeSearch {
 
 	protected static Vector<String> idx2Name = new Vector<String>();
 
-	protected static final int MAX_SIZE = 30;
+	protected static final int MAX_SIZE = 20;
 
-	protected static final int MIN_SIZE = 15;
+	protected static final int MIN_SIZE = 10;
 	
-	protected static double INFLATE = 10;
+	protected static double INFLATE = 0.1;
 	
 	protected static double BACKGROUND = 0;
-
+	
+	protected static double OUT_FACTOR = 25;
+	
+	protected static double RANDOM_TRIALS = 2;
 
 	Map<Integer, Double> idx2Expression;
 
 	public static void main(String[] args) {
 
-		System.err.println("Version 0.51");
+		System.err.println("Version 0.62");
+		System.err.println("INFLATE = "+INFLATE);
 		Vector<SearchResult> searchResults = new Vector<SearchResult>();
 		System.err.println("Reading edges scores");
 		readEdgeScores();
@@ -48,21 +54,26 @@ public class WeightedEdgeSearch {
 		/*
 		 * Sort the results
 		 */
-		for(int idx = 0;idx < 20; idx += 1){
+		for(int idx = 0;idx < 10; idx += 1){
 			outputResult(idx, searchResults.get(idx));
 		}
 		
-		
-
+		DoubleArrayList randomScores = new DoubleArrayList();
+		for(int idx = 0; idx < RANDOM_TRIALS; idx += 1){
+			shuffleExpression();
+			searchResults = modularSearch();
+			double maxRandom = Double.NEGATIVE_INFINITY;
+			for(int idy = 0; idy < searchResults.size(); idy += 1){
+				maxRandom = Math.max(maxRandom,searchResults.get(idy).score);
+			}
+			randomScores.add(maxRandom);
+		}
+		randomScores.sort();
+		outputRandomTrials(0, randomScores);
 	}
 
 	protected static void shuffleExpression() {
 		(new DoubleArrayList(idx2NodeLLR)).shuffle();
-	}
-
-	protected static double harmonicMean(double x1, double x2) {
-		//return 2 * x1 * x2 / (x1 + x2);
-		return (x1+x2)/2;
 	}
 
 	static Map<String, Integer> name2Idx = new HashMap<String, Integer>();
@@ -76,6 +87,10 @@ public class WeightedEdgeSearch {
 	static double minEdgeScore = Double.POSITIVE_INFINITY;
 
 	static double[] idx2NodeLLR;
+	
+	static double averageNodeScore = Double.NEGATIVE_INFINITY;
+	
+	static double edgeSum = Double.NEGATIVE_INFINITY;
 
 	protected static void readNodeScores(String nodeAttributeFile) {
 		/*
@@ -103,12 +118,12 @@ public class WeightedEdgeSearch {
 				line = reader.readLine();
 			}
 			reader.close();
-			double LLRaverage = LLRsum / names.size();
+			averageNodeScore = LLRsum / names.size();
 			/*
 			 * For those nodes in the graph that we don't have expression data
 			 * for, just use the expected value
 			 */
-			Arrays.fill(idx2NodeLLR, LLRaverage);
+			Arrays.fill(idx2NodeLLR, averageNodeScore);
 
 			for (int idx = 0; idx < names.size(); idx += 1) {
 				String name = names.get(idx);
@@ -210,7 +225,7 @@ public class WeightedEdgeSearch {
 		}
 	}
 
-	protected static void removeScores(SearchResult result) {
+	protected static void removeNodeScores(SearchResult result) {
 		Vector<Integer> members = new Vector<Integer>(result.members);
 		for (int idx = 0; idx < members.size(); idx += 1) {
 			int member = members.get(idx);
@@ -218,7 +233,7 @@ public class WeightedEdgeSearch {
 		}
 	}
 
-	protected static void resetScores(SearchResult result) {
+	protected static void removeEdgeScores(SearchResult result) {
 		Vector<Integer> members = new Vector<Integer>(result.members);
 		for (int idx = 0; idx < members.size() - 1; idx += 1) {
 			int source = members.get(idx);
@@ -248,6 +263,7 @@ public class WeightedEdgeSearch {
 	}
 
 	protected static void outputResult(int id, SearchResult result) {
+		modularScore(result.withinEdges,result.totalEdges,result.nodeSum,result.members.size(),true);
 		try {
 			FileWriter fw = new FileWriter("" + id + ".out");
 			fw.write(result.toString());
@@ -258,23 +274,28 @@ public class WeightedEdgeSearch {
 		}
 	}
 
-	protected static double modularScore(double withinEdges, double totalEdges, double edgeSum, double nodeSum, int size){
-		/**/
-		double modifier = 1;
-		double modularity = (withinEdges/edgeSum
-				- (totalEdges / edgeSum)
-				* (totalEdges / edgeSum));
-		if(nodeSum < 0 && modularity < 0){
-			modifier = -1;
+	protected static double modularScore(double withinEdges, double totalEdges, double nodeSum, int size,boolean debug){
+		//double modifier = 1;
+		//double modularity = (withinEdges/edgeSum
+		//		- (totalEdges / edgeSum)
+		//		* (totalEdges / edgeSum));
+		//double expression = (nodeSum-size*0.5);
+		//if(nodeSum < 0 && modularity < 0){
+		//	modifier = -1;
+		//}
+		//double P = (size*(size-1)/2)/(edgeScores.length*(edgeScores.length-1)/2);
+		//return Probability.normal(P*totalEdges, P*totalEdges*(1-P), withinEdges); 
+		double outEdges = totalEdges-withinEdges;
+		withinEdges = withinEdges - OUT_FACTOR*outEdges*(size-1)/(2*(edgeScores.length-1));
+		double withinDensity = withinEdges/(size*(size-1)/2);
+		double nodeDensity = nodeSum/(size);
+		if(debug){
+			System.err.println("=============");
+			System.err.println("Within Density "+withinDensity);
+			System.err.println("node Density "+nodeDensity);
+			System.err.println("=============\n");
 		}
-		double densityWithin = withinEdges/(size*(size-1)/2);
-		double densityWithout = (totalEdges-withinEdges)/(size*edgeScores.length-size);
-		return INFLATE*densityWithin - densityWithout;
-		/**/
-		//return withinEdges;
-		/* 
-		return withinEdges/totalEdges;
-		*/
+		return (withinDensity + nodeDensity)*Math.pow(size, INFLATE);
 	}
 	protected static Vector<SearchResult> modularSearch() {
 		Vector<SearchResult> results = new Vector<SearchResult>();
@@ -297,7 +318,7 @@ public class WeightedEdgeSearch {
 		/*
 		 * Figure out the total weight of all edges in the network
 		 */
-		double edgeSum = 0;
+		edgeSum = 0;
 		for(int idx = 0;idx < degree.length; idx += 1){
 			edgeSum += degree[idx];
 		}
@@ -339,7 +360,7 @@ public class WeightedEdgeSearch {
 				currentResult.withinEdges = withinEdgeCount;
 				currentResult.totalEdges = totalEdgeCount;
 				currentResult.nodeSum = nodeSum;
-				currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, edgeSum, nodeSum,currentResult.members.size());
+				currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, nodeSum,currentResult.members.size(),false);
 
 				newScore = Double.NEGATIVE_INFINITY;
 				int newNeighbor = -1;
@@ -350,7 +371,7 @@ public class WeightedEdgeSearch {
 						double newNodeSum = nodeSum + idx2NodeLLR[idx];
 						int newSize = currentResult.members.size() + 1;
 						
-						double tempScore = modularScore(newWithinEdges,newTotalEdges,edgeSum, newNodeSum,newSize);
+						double tempScore = modularScore(newWithinEdges,newTotalEdges,newNodeSum,newSize,false);
 						if (tempScore > newScore) {
 							newScore = tempScore;
 							newNeighbor = idx;
@@ -369,6 +390,7 @@ public class WeightedEdgeSearch {
 					members[newNeighbor] = true;
 					withinEdgeCount += clusterEdges[newNeighbor];
 					totalEdgeCount  += degree[newNeighbor]-clusterEdges[newNeighbor];
+					nodeSum += idx2NodeLLR[newNeighbor];
 					/*
 					 * Update within edge count for neighbors
 					 */
@@ -390,8 +412,9 @@ public class WeightedEdgeSearch {
 			currentResult.withinEdges = withinEdgeCount;
 			currentResult.totalEdges = totalEdgeCount;
 			currentResult.nodeSum = nodeSum;
-			currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, edgeSum, nodeSum,currentResult.members.size());
+			currentResult.score = modularScore(withinEdgeCount, totalEdgeCount, nodeSum,currentResult.members.size(),false);
 			results.add(currentResult);
+			System.err.println(""+seed+" "+currentResult.members.size());
 		}
 		return results;
 	}
@@ -413,22 +436,23 @@ public class WeightedEdgeSearch {
 				overlap += 1;
 			}
 		}
-		return overlap/(one.size()-two.size()-overlap);
+		return overlap/(one.size()+two.size()-overlap);
 		
 	}
     
 	protected static void pruneResults(Vector<SearchResult > results){
-		double OVERLAP = 0.6;
+		double OVERLAP = 0.33;
 		boolean [] repeatResults = new boolean[results.size()];
 		for(int idx = 0;idx < results.size()-1;idx += 1){
-			for(int idy = 0; idy < results.size(); idy += 1){
-				if(calculateOverlap(results.get(idx).members,results.get(idy).members) > OVERLAP){
+			for(int idy = idx + 1; idy < results.size(); idy += 1){
+				if(!repeatResults[idy] && calculateOverlap(results.get(idx).members,results.get(idy).members) > OVERLAP){
 					repeatResults[idy] = true;
 				}
 			}
 		}
 		for(int idx = repeatResults.length - 1 ; idx >= 0; idx -= 1){
 			if(repeatResults[idx]){
+				System.err.println("Pruning result "+idx);
 				results.remove(idx);
 			}
 		}
