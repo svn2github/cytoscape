@@ -29,12 +29,12 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	private final AttributeLineParser parser;
 
 	private final int startLineNumber;
-	
+
 	/**
 	 * Constructor.<br>
 	 * 
 	 * Takes one Excel sheet as parameter.
-	 *  
+	 * 
 	 * @param sheet
 	 * @param mapping
 	 */
@@ -99,5 +99,12 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 			}
 		}
 		return cells;
+	}
+
+	public String getReport() {
+		// TODO Auto-generated method stub
+		final StringBuffer sb = new StringBuffer();
+
+		return sb.toString();
 	}
 }

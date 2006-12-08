@@ -8,7 +8,7 @@ import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
 
 public class ImportAttributeTableTask implements Task {
 	private TextTableReader reader;
-	
+
 	private String source;
 
 	private TaskMonitor taskMonitor;
@@ -22,8 +22,7 @@ public class ImportAttributeTableTask implements Task {
 	 *            FileType, e.g. Cytoscape.FILE_SIF or Cytoscape.FILE_GML.
 	 */
 
-	public ImportAttributeTableTask(TextTableReader reader,
-			String source) {
+	public ImportAttributeTableTask(TextTableReader reader, String source) {
 		this.reader = reader;
 		this.source = source;
 	}
@@ -39,12 +38,12 @@ public class ImportAttributeTableTask implements Task {
 		try {
 			reader.readTable();
 			taskMonitor.setPercentCompleted(100);
+			informUserOfAnnotationStats();
 		} catch (IOException e) {
 			e.printStackTrace();
 			taskMonitor.setException(e, "Unable to import annotation data.");
 		}
 
-		informUserOfAnnotationStats();
 	}
 
 	/**

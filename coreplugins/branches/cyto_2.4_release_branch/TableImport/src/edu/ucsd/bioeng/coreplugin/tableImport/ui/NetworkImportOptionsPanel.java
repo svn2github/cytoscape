@@ -124,7 +124,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				sourceComboBox,
 																				0,
-																				200,
+																				100,
 																				Short.MAX_VALUE)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
@@ -138,9 +138,9 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				sourceLabel)
 																		.add(
-																				206,
-																				206,
-																				206)))
+																				100,
+																				100,
+																				100)))
 										.add(
 												layout
 														.createParallelGroup(
@@ -151,7 +151,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				interactionComboBox,
 																				0,
-																				151,
+																				100,
 																				Short.MAX_VALUE)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
@@ -165,9 +165,9 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				interactionLabel)
 																		.add(
-																				130,
-																				130,
-																				130)))
+																				100,
+																				100,
+																				100)))
 										.add(
 												layout
 														.createParallelGroup(
@@ -178,7 +178,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				targetLabel)
 																		.addContainerGap(
-																				182,
+																				100,
 																				Short.MAX_VALUE))
 														.add(
 																layout
@@ -186,7 +186,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				targetComboBox,
 																				0,
-																				200,
+																				100,
 																				Short.MAX_VALUE)
 																		.add(
 																				22,
@@ -195,7 +195,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 						.add(org.jdesktop.layout.GroupLayout.TRAILING,
 								edgeAttributesLabel,
 								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								679, Short.MAX_VALUE));
+								100, Short.MAX_VALUE));
 		layout
 				.setVerticalGroup(layout
 						.createParallelGroup(
