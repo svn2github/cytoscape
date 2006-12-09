@@ -25,29 +25,24 @@
 
 package cytoscape.editor.event;
 
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.editor.CytoscapeEditor;
-
-
-// MLC 12/04/06:
-// import cytoscape.editor.editors.SimpleBioMoleculeEditor;
-import cytoscape.editor.impl.BasicCytoShapeEntity;
-import cytoscape.editor.impl.ShapePalette;
-
-import cytoscape.view.CyNetworkView;
-
 import giny.view.NodeView;
-
-import phoebe.PhoebeCanvasDropEvent;
 
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-
 import java.io.IOException;
+
+import javax.swing.TransferHandler;
+
+import phoebe.PhoebeCanvasDropEvent;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.editors.SimpleBioMoleculeEditor;
+import cytoscape.editor.impl.BasicCytoShapeEntity;
+import cytoscape.editor.impl.ShapePalette;
+import cytoscape.view.CyNetworkView;
 
 
 /**
@@ -134,10 +129,13 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
     // MLC 12/07/06 BEGIN:
     // implements PhoebeCanvasDropListener interface:
     public void itemDropped(PhoebeCanvasDropEvent e) {
+        
         Point                location = e.getLocation();
         BasicCytoShapeEntity myShape = getShapeEntityForLocation(location,
                                                                  e.getTransferable());
 
+ 
+        
         if (myShape != null) {
             // need to handle nodes and edges differently 
             String attributeName  = myShape.getAttributeName();
@@ -154,7 +152,7 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
                 handleDroppedEdge(attributeName, attributeValue, location);
             }
         }
-    }
+     }
 
 
     // overwridden by subclasses:
@@ -384,7 +382,17 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
      */
     public void handleDroppedURL(Transferable t, DataFlavor d, Point location) {
         Object URL;
-
+        // AJK: 12/08/06 oy, what a hack.  try to send transferable to transferhandler
+        //               of cytoscapeDesktopPane
+        // AJK: 12/08/06 always dispatch event to next listener
+        TransferHandler th = Cytoscape.getDesktop().getNetworkViewManager().
+        getDesktopPane().getTransferHandler();
+        if (th != null)
+        {
+        	th.importData(Cytoscape.getDesktop().getNetworkViewManager().
+        getDesktopPane(), t);
+        }
+        // AJK: 12/08/06 END       
         try {
             URL = t.getTransferData(d);
 
