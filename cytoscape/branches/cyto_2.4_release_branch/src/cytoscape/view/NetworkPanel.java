@@ -1,40 +1,39 @@
-
 /*
-  File: NetworkPanel.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: NetworkPanel.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.view;
 
@@ -50,8 +49,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
-import javax.swing.Icon;
+import javax.swing.InputMap;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -59,6 +59,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.ToolTipManager;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -87,68 +88,83 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(
 			this);
 
-	JTreeTable treeTable;
-	NetworkTreeNode root;
-	JPanel navigatorPanel;
-	JPopupMenu popup;
-	PopupActionListener popupActionListener;
-	JMenuItem createViewItem;
-	JMenuItem destroyViewItem;
-	JMenuItem destroyNetworkItem;
-	JMenuItem editNetworkTitle;
-	JSplitPane split;
-	BiModalJSplitPane split_top;
-	NetworkTreeTableModel treeTableModel;
+	private final JTreeTable treeTable;
+	private final NetworkTreeNode root;
+	private JPanel navigatorPanel;
 
-	private CytoscapeDesktop cytoscapeDesktop;
+	private JPopupMenu popup;
+	private PopupActionListener popupActionListener;
+	private JMenuItem createViewItem;
+	private JMenuItem destroyViewItem;
+	private JMenuItem destroyNetworkItem;
+	private JMenuItem editNetworkTitle;
 
-	public NetworkPanel(CytoscapeDesktop desktop) {
+	private JSplitPane split;
+	private BiModalJSplitPane split_top;
+
+	private final NetworkTreeTableModel treeTableModel;
+	private final CytoscapeDesktop cytoscapeDesktop;
+
+	public NetworkPanel(final CytoscapeDesktop desktop) {
 		super();
 		this.cytoscapeDesktop = desktop;
+
+		root = new NetworkTreeNode("Network Root", "root");
+		treeTableModel = new NetworkTreeTableModel(root);
+		treeTable = new JTreeTable(treeTableModel);
 		initialize();
+
+		/*
+		 * Remove CTR-A for enabling select all function in the main window.
+		 */
+		for (KeyStroke listener : treeTable.getRegisteredKeyStrokes()) {
+			if (listener.toString().equals("ctrl pressed A")) {
+				final InputMap map = treeTable.getInputMap();
+				map.remove(listener);
+				treeTable.setInputMap(WHEN_FOCUSED, map);
+				treeTable.setInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, map);
+			}
+		}
 	}
 
 	protected void initialize() {
 		setLayout(new BorderLayout());
-		setPreferredSize(new Dimension(181, 700));
-		root = new NetworkTreeNode("Network Root", "root");
-		treeTableModel = new NetworkTreeTableModel(root);
-		treeTable = new JTreeTable(treeTableModel);
+		setPreferredSize(new Dimension(180, 700));
+
 		treeTable.getTree().addTreeSelectionListener(this);
 		treeTable.getTree().setRootVisible(false);
 
-		// ToolTipManager.sharedInstance().registerComponent(treeTable.getTree());
 		ToolTipManager.sharedInstance().registerComponent(treeTable);
 
-		treeTable.getTree().setCellRenderer(new MyRenderer());
+		treeTable.getTree().setCellRenderer(new TreeCellRenderer());
 
 		treeTable.getColumn("Network").setPreferredWidth(100);
 		treeTable.getColumn("Nodes").setPreferredWidth(45);
 		treeTable.getColumn("Edges").setPreferredWidth(45);
 
-		// treeTable.setMaximumSize( new Dimension( 150, ) );
 		navigatorPanel = new JPanel();
 		navigatorPanel.setMinimumSize(new Dimension(180, 180));
 		navigatorPanel.setMaximumSize(new Dimension(180, 180));
 		navigatorPanel.setPreferredSize(new Dimension(180, 180));
 
-		CytoPanelImp manualLayoutPanel = (CytoPanelImp)cytoscapeDesktop.getCytoPanel(SwingConstants.SOUTH_WEST);
+		final CytoPanelImp manualLayoutPanel = (CytoPanelImp) cytoscapeDesktop
+				.getCytoPanel(SwingConstants.SOUTH_WEST);
 		manualLayoutPanel.setMinimumSize(new Dimension(180, 185));
 		manualLayoutPanel.setMaximumSize(new Dimension(180, 185));
 		manualLayoutPanel.setPreferredSize(new Dimension(180, 185));
-		
+
 		JScrollPane scroll = new JScrollPane(treeTable);
 
-		split_top = new BiModalJSplitPane(cytoscapeDesktop, 
-				JSplitPane.VERTICAL_SPLIT, BiModalJSplitPane.MODE_HIDE_SPLIT, scroll, 
-				manualLayoutPanel);
+		split_top = new BiModalJSplitPane(cytoscapeDesktop,
+				JSplitPane.VERTICAL_SPLIT, BiModalJSplitPane.MODE_HIDE_SPLIT,
+				scroll, manualLayoutPanel);
 		split_top.setResizeWeight(1);
 		manualLayoutPanel.setCytoPanelContainer(split_top);
 
-		
-		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, split_top,navigatorPanel);
+		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, split_top,
+				navigatorPanel);
 		split.setResizeWeight(1);
-		
+
 		add(split);
 
 		// this mouse listener listens for the right-click event and will show
@@ -174,18 +190,17 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		popup.add(createViewItem);
 		popup.add(destroyViewItem);
 		popup.add(destroyNetworkItem);
-
 	}
 
-	public void setNavigator(java.awt.Component comp) {
+	public void setNavigator(final Component comp) {
 		split.setRightComponent(comp);
 		split.validate();
 	}
-	
+
 	/**
 	 * This is used by Session writer.
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public JTreeTable getTreeTable() {
 		return treeTable;
@@ -199,12 +214,12 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		return pcs;
 	}
 
-	public void removeNetwork(String network_id) {
+	public void removeNetwork(final String network_id) {
 
-		NetworkTreeNode node = getNetworkNode(network_id);
-		Enumeration children = node.children();
+		final NetworkTreeNode node = getNetworkNode(network_id);
+		final Enumeration children = node.children();
 		NetworkTreeNode child = null;
-		ArrayList removed_children = new ArrayList();
+		final List removed_children = new ArrayList();
 		while (children.hasMoreElements()) {
 			removed_children.add(children.nextElement());
 		}
@@ -219,7 +234,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		treeTable.getTree().collapsePath(new TreePath(new TreeNode[] { root }));
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
-
 	}
 
 	// JBK added updateTitle
@@ -227,16 +241,15 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 	/**
 	 * update a network title
 	 */
-	public void updateTitle(CyNetwork network) {
+	public void updateTitle(final CyNetwork network) {
 		// updates the title in the network panel
 		treeTableModel.setValueAt(network.getTitle(), treeTable.getTree()
 				.getSelectionPath().getLastPathComponent(), 0);
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
 		// updates the title in the networkViewMap
-		NetworkViewManager netViewManager = Cytoscape.getDesktop()
-				.getNetworkViewManager();
-		netViewManager.updateNetworkTitle(network);
+		Cytoscape.getDesktop().getNetworkViewManager().updateNetworkTitle(
+				network);
 	}
 
 	public void onSelectEvent(SelectEvent event) {
@@ -373,8 +386,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 			if (column == 0)
 				return ((DefaultMutableTreeNode) node).getUserObject();
 			else if (column == 1) {
-				// return new Integer( Cytoscape.getNetwork( ( ( NetworkTreeNode
-				// )node).getNetworkID() ).getNodeCount() );
+
 				CyNetwork cyNetwork = Cytoscape
 						.getNetwork(((NetworkTreeNode) node).getNetworkID());
 				return "" + cyNetwork.getNodeCount() + "("
@@ -399,7 +411,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 			// This function is not used to set node and edge values.
 		}
 
-	} // NetworkTreeTableModel
+	}
 
 	public class NetworkTreeNode extends DefaultMutableTreeNode {
 
@@ -419,12 +431,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		}
 	}
 
-	private class MyRenderer extends DefaultTreeCellRenderer {
-		Icon tutorialIcon;
-
-		public MyRenderer() {
-
-		}
+	private class TreeCellRenderer extends DefaultTreeCellRenderer {
 
 		public Component getTreeCellRendererComponent(JTree tree, Object value,
 				boolean sel, boolean expanded, boolean leaf, int row,
@@ -434,7 +441,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 					leaf, row, hasFocus);
 
 			if (hasView(value)) {
-				// setIcon(tutorialIcon);
 				setBackgroundNonSelectionColor(java.awt.Color.green.brighter());
 				setBackgroundSelectionColor(java.awt.Color.green.darker());
 			} else {
@@ -532,10 +538,10 @@ class PopupActionListener implements ActionListener {
 	/**
 	 * Constants for JMenuItem labels
 	 */
-	public static String DESTROY_VIEW = "Destroy View";
-	public static String CREATE_VIEW = "Create View";
-	public static String DESTROY_NETWORK = "Destroy Network";
-	public static String EDIT_TITLE = "Edit Network Title";
+	public static final String DESTROY_VIEW = "Destroy View";
+	public static final String CREATE_VIEW = "Create View";
+	public static final String DESTROY_NETWORK = "Destroy Network";
+	public static final String EDIT_TITLE = "Edit Network Title";
 
 	/**
 	 * This is the network which originated the mouse-click event (more
@@ -548,7 +554,8 @@ class PopupActionListener implements ActionListener {
 	 * Based on the action event, destroy or create a view, or destroy a network
 	 */
 	public void actionPerformed(ActionEvent ae) {
-		String label = ((JMenuItem) ae.getSource()).getText();
+
+		final String label = ((JMenuItem) ae.getSource()).getText();
 		// Figure out the appropriate action
 		if (label == DESTROY_VIEW) {
 			Cytoscape.destroyNetworkView(cyNetwork);
@@ -573,7 +580,7 @@ class PopupActionListener implements ActionListener {
 	 * Right before the popup menu is displayed, this function is called so we
 	 * know which network the user is clicking on to call for the popup menu
 	 */
-	public void setActiveNetwork(CyNetwork cyNetwork) {
+	public void setActiveNetwork(final CyNetwork cyNetwork) {
 		this.cyNetwork = cyNetwork;
 	}
 }
