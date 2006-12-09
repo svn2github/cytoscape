@@ -209,7 +209,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
     private EdgeView _highlightedEdgeView = null;
 
     // private float _savedStrokeWidth = Float.NaN;
-    Cursor _savedCursor = null;
+    private Cursor _savedCursor = null;
 
     public BasicNetworkEditEventHandler() {
     }
@@ -397,7 +397,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
         // MLC 12/07/06 BEGIN:
         // AJK: 11/19/05 invert selection of target, which will have had its
         // selection inverted upon mouse entry
-        target.setSelected(!target.isSelected());
+        // AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+//        target.setSelected(!target.isSelected());
         completeFinishEdge();
 
         //        edge = null;
@@ -448,7 +449,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
         }
 
         // AJK: 11/18/2005 invert selection of any nodes/edges that have been highlighted
-        invertSelections(null);
+        // AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+        //        invertSelections(null);
 
         this.getCanvas().repaint();
 
@@ -488,15 +490,17 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
             updateEdge();
 
             // if over NodeView or EdgeView, then highlight
-            NodeView nv = view.getPickedNodeView(nextPoint);
+            // AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+                        NodeView nv = view.getPickedNodeView(nextPoint);
             EdgeView ev = view.getPickedEdgeView(nextPoint);
 
-            if (nv != null) {
-                invertSelections(nv);
-            } else if (ev != null) {
-                invertSelections(ev);
+            if ((nv != null) || (ev != null)) {
+//                invertSelections(nv);
+//                } else if (ev != null) {
+//                invertSelections(ev);
+ 
             } else {
-                invertSelections(null);
+//                invertSelections(null);
             }
         }
     }
@@ -510,32 +514,34 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
     // TODO: this doesn't work because we are entering Canvas, NOT nodeview
     public void mouseEntered(MouseEvent e) {
-        Point2D  location = e.getPoint();
-        NodeView nv = view.getPickedNodeView(location);
-
-        if (nv != null) {
-            if (edgeStarted) {
-                nv.setSelected(!nv.isSelected());
-            }
-
-            this.getCanvas().repaint();
-        }
+        // AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+    	//        Point2D  location = e.getPoint();
+//        NodeView nv = view.getPickedNodeView(location);
+//
+//        if (nv != null) {
+//            if (edgeStarted) {
+//                nv.setSelected(!nv.isSelected());
+//            }
+//
+//            this.getCanvas().repaint();
+//        }
     }
 
     /**
      * revert temporary node highlighting that was done upon MouseEnter
      */
     public void mouseExited(MouseEvent e) {
-        Point2D  location = e.getPoint();
-        NodeView nv = view.getPickedNodeView(location);
-
-        if (nv != null) {
-            if (edgeStarted) {
-                nv.setSelected(!nv.isSelected());
-            }
-
-            this.getCanvas().repaint();
-        }
+        // AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+    	//        Point2D  location = e.getPoint();
+//        NodeView nv = view.getPickedNodeView(location);
+//
+//        if (nv != null) {
+//            if (edgeStarted) {
+//                nv.setSelected(!nv.isSelected());
+//            }
+//
+//            this.getCanvas().repaint();
+//        }
     }
 
     /**
@@ -550,13 +556,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
         EdgeView ev       = view.getPickedEdgeView(location);
 
         // if over NodeView or EdgeView, then highlight
-        if (nv != null) {
-            invertSelections(nv);
-        } else if (ev != null) {
-            invertSelections(ev);
-        } else {
-            invertSelections(null);
-        }
+        // AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+        //       if (nv != null) {
+//            invertSelections(nv);
+//        } else if (ev != null) {
+//            invertSelections(ev);
+//        } else {
+//            invertSelections(null);
+//        }
 
         if (nv != null) {
             onNode = true;
@@ -577,7 +584,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
         }
     }
 
-    private void invertSelections(Object nodeOrEdgeView) {
+    // AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+    /*   private void invertSelections(Object nodeOrEdgeView) {
         if (nodeOrEdgeView == null) // we have moved off a node or edge
          {
             if (_highlightedEdgeView != null) {
@@ -651,6 +659,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
                      .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
     }
+    */
 
     /**
          * updates the rubberbanded edge line as the mouse is moved, works in Canvas coordinates
@@ -848,6 +857,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
         canvas.addMouseListener(this);
         canvas.addMouseMotionListener(this);
         canvas.addKeyListener(this);
+        
     }
 
     /**
@@ -865,7 +875,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
             canvas.removeKeyListener(this);
             this.view   = null;
             this.canvas = null;
-        }
+            
+         }
     }
 
     /**
