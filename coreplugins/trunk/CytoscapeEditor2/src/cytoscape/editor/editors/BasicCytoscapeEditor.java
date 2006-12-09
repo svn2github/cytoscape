@@ -534,6 +534,15 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
             }
         }
 
+        // AJK: 12/09/06 BEGIN
+        //    set tooltip
+        if (edge != null)      
+        {
+            EdgeView ev = Cytoscape.getCurrentNetworkView().getEdgeView(edge);
+           	ev.setToolTip(edge.getIdentifier());
+        }
+        // AJK: 12/09/06 END
+        
         return edge;
     }
 
