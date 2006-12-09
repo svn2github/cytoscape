@@ -179,6 +179,18 @@ public class DeleteAction extends CytoscapeAction {
             int    nodeIdx = cyNode.getRootGraphIndex();
             nodes[nodeViews.size()] = nodeIdx;
 
+            // AJK 12/09/06: BEGIN
+            //     for saving and restoring node coordinates
+            NodeView nview = Cytoscape.getCurrentNetworkView().getNodeView(cyNode);
+            if (nview  != null)
+            {
+                xPos [nodeViews.size()] = nview.getXPosition();
+                yPos [nodeViews.size()] = nview.getYPosition();
+            }
+            // AJK: 12/09/06 END
+
+           
+
             int[] edgesList = cyNet.getAdjacentEdgeIndicesArray(nodeIdx,
                                                                 true,
                                                                 true,
@@ -296,7 +308,7 @@ public class DeleteAction extends CytoscapeAction {
 							CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
 							NodeView nv = 
 								Cytoscape.getCurrentNetworkView().getNodeView(nodes[i]);
-							if (i < nodes.length - 1)
+							if ((xPos[i] != Double.NaN) && (yPos[i] != Double.NaN))
 							{
 								nv.setOffset(xPos[i], yPos[i]);
 							}
