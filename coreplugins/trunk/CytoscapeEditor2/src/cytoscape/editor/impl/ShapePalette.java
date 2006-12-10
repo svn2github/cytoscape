@@ -27,17 +27,9 @@
 */
 package cytoscape.editor.impl;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.editor.CytoscapeEditorManager;
-
-import cytoscape.editor.event.BasicCytoShapeTransferHandler;
-
-import cytoscape.view.CyNetworkView;
-
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +43,14 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
+import cytoscape.Cytoscape;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.event.BasicCytoShapeTransferHandler;
+import cytoscape.view.CyNetworkView;
 
 
 /**
@@ -111,22 +110,41 @@ public class ShapePalette extends JPanel {
         scrollPane.setBorder(BorderFactory.createEtchedBorder());
         dataList.setBackground(Cytoscape.getDesktop().getBackground());
         scrollPane.setBackground(Cytoscape.getDesktop().getBackground());
-        scrollPane.setPreferredSize(
-            new Dimension(
-                ((JPanel) Cytoscape.getDesktop()
-                                   .getCytoPanel(SwingConstants.WEST)).getSize().width -
-                5,
-                ((JPanel) Cytoscape.getDesktop()
-                                   .getCytoPanel(SwingConstants.WEST)).getSize().height -
-                5));
-
+        
+        // AJK: 12/10/06 BEGIN
+        //     get scrollpane working so that it is always visible at both ends
+//        scrollPane.setHorizontalScrollBarPolicy
+//        (ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        
+//        scrollPane.setPreferredSize(
+//            new Dimension(
+//                ((JPanel) Cytoscape.getDesktop()
+//                        // AJK: 12/09/06 set size smaller to enable scrolling to bottom?
+//                                  .getCytoPanel(SwingConstants.WEST)).getSize().width -
+//                                   5,  
+//                                   ((JPanel) Cytoscape.getDesktop()
+//                                   .getCytoPanel(SwingConstants.WEST)).getSize().height
+//                                   - 5
+//                                 ));
+        scrollPane.setVerticalScrollBarPolicy
+                (JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy
+                (JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.setLayout(new BorderLayout());
+        this.add(scrollPane, BorderLayout.CENTER);
+        this.setPreferredSize(new Dimension(300, 300));
+        this.setMaximumSize(new Dimension(300, 300));
+        // AJK: 12/10/06 END
+        
         CytoscapeEditorManager.setCurrentShapePalette(this);
 
         CyNetworkView view = Cytoscape.getCurrentNetworkView();
         CytoscapeEditorManager.setShapePaletteForView(view, this);
 
-        _controlPane.add(scrollPane);
-        this.add(_controlPane);
+        // AJK: 12/10/06 fix so that scrolling to bottom of pane works
+//        _controlPane.add(scrollPane);
+//        this.add(_controlPane);
+//        this.add(scrollPane);
         this.setBackground(Cytoscape.getDesktop().getBackground());
         this.setVisible(true);
     }

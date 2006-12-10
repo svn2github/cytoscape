@@ -30,7 +30,7 @@ package cytoscape.editor;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.editor.editors.MapBioMoleculeEditorToVisualStyle;
+
 import cytoscape.plugin.CytoscapePlugin;
 
 
@@ -82,10 +82,29 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
         CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE,
             CytoscapeEditorManager.ANY_VISUAL_STYLE);
 
+        // AJK: 12/09/06 SimpleBioMoleculeEditor deleted 
+       /* 
 	CytoscapeEditorManager.register("SimpleBioMoleculeEditor",
 	            "cytoscape.editor.event.PaletteNetworkEditEventHandler",
 	            CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE,
 	            MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
+	
+	*/
+        
+        // AJK: 12/09/06 BEGIN
+        //    register an editor to handle BioPAX visual style
+        //    TODO: this is a short-term contingency, to be overhauled
+        //          when vizmapper is overhauled for Cytoscape 2.5
+    	CytoscapeEditorManager.register("cytoscape.editor.editors.SimpleBioPAXEditor",
+	            "cytoscape.editor.event.PaletteNetworkEditEventHandler",
+	            "biopax.entity_type",   // controlling node attribute
+	            "BIOPAX_EDGE_TYPE",          // controlling edge type
+	            "BioPAX v 0_5");
+       
+        
+        // AJK: 12/09/06 END
+        
+        
         String editorName = CytoscapeEditorManager.DEFAULT_EDITOR_TYPE;
 
         try {

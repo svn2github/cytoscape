@@ -96,6 +96,11 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
     }
 
     protected void generatePaletteEntries() {
+    	CytoscapeEditorManager.log
+    	("generating palette entries for controlling attributes "
+    			+ getControllingNodeAttribute() + " and " +
+    					getControllingEdgeAttribute());
+    	CytoscapeEditorManager.log("for editor " + this);
         generateEdgePaletteEntries(getControllingEdgeAttribute());
         generateNodePaletteEntries(getControllingNodeAttribute());
     }
@@ -146,6 +151,8 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
         if (nac == null) {
             return;
         }
+        
+    
 
         ShapePaletteInfoGenerator  palGen     = CytoscapeEditorFactory.INSTANCE.createShapePaletteInfoGenerator();
         byte[]                     calcsToUse = new byte[] {

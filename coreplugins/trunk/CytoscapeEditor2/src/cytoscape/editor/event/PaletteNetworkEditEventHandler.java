@@ -39,7 +39,6 @@ import phoebe.PhoebeCanvasDropEvent;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.editors.SimpleBioMoleculeEditor;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;

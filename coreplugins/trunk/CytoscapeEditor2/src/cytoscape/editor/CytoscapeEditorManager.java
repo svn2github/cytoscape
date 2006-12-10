@@ -237,7 +237,8 @@ public abstract class CytoscapeEditorManager {
      */
     public static final String EDGE_TYPE = "EDGE_TYPE";
     public static final String ANY_VISUAL_STYLE    = "ANY_VISUAL_STYLE";
-    public static final String DEFAULT_EDITOR_TYPE = "DefaultCytoscapeEditor";
+    public static final String DEFAULT_EDITOR_TYPE = 
+    	"cytoscape.editor.editors.DefaultCytoscapeEditor";
 
     /**
      * AJK: 06/19/06 CytoscapeEditor class descriptor -- for checking against NETWORK_MODIFIED events
@@ -248,7 +249,7 @@ public abstract class CytoscapeEditorManager {
     private static boolean _initialized = false;
     
     // AJK: 12/06/06: flag for "logging" diagnostic output
-    private static boolean loggingEnabled = false;
+    private static boolean loggingEnabled = true;
 
     // MLC 08/06/06 BEGIN:
     //    /**
@@ -313,8 +314,12 @@ public abstract class CytoscapeEditorManager {
             CytoscapeEditorManager.setSettingUpEditor(true);
 
             // setup a new editor
+            
+            // AJK: 12/09/06
+            System.out.println("initializing Cytoscape editor: " + editorName);
             CytoscapeEditor cyEditor = CytoscapeEditorFactory.INSTANCE.getEditor(
                 editorName);
+            System.out.println("got CytoscapeEditor: " + cyEditor);
 
             NetworkEditEventAdapter event = initializeEditEventAdapter(cyEditor,
                                                                        networkEditAdapterName);
@@ -530,9 +535,17 @@ public abstract class CytoscapeEditorManager {
         //                networkEditAdapterName);
         // MLC 07/24/06 END.
         if (cyEditor != null) {
+        	CytoscapeEditorManager.log("setting controlling attributes for editor " 
+        			+ cyEditor);
+        	CytoscapeEditorManager.log("to " + controllingNodeAttribute 
+        		+ " and " + controllingEdgeAttribute);
             cyEditor.setControllingNodeAttribute(controllingNodeAttribute);
             cyEditor.setControllingEdgeAttribute(controllingEdgeAttribute);
         }
+    	CytoscapeEditorManager.log("now controlling attributes for editor " 
+    			+ cyEditor);
+    	CytoscapeEditorManager.log("are " + cyEditor.getControllingNodeAttribute()
+    		+ " and " + cyEditor.getControllingEdgeAttribute());
     }
 
     // MLC 08/06/06 BEGIN:
@@ -543,6 +556,8 @@ public abstract class CytoscapeEditorManager {
      * one.
      */
     public static String getEditorNameForVisualStyleName(String visualStyleName) {
+    	
+    	// AJK: 12/09/06: bug fix.  return editor for ANY_VISUAL_STYLE if no style is found
         return (String) visualStyleNameToEditorNameMap.get(visualStyleName);
     }
 
