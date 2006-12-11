@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import cytoscape.editor.CytoscapeEditorManager;
+
 public class TextAnnotation extends JComponent {
 	private BufferedImage img; // image for figure we are drawing
 
@@ -84,7 +86,7 @@ public class TextAnnotation extends JComponent {
 				.setComposite(AlphaComposite
 						.getInstance(AlphaComposite.SRC));
 ////		image2D.drawString(this.text, this.x1, this.y1);
-		System.out.println ("drawing " + text + " to " + image);
+		CytoscapeEditorManager.log ("drawing " + text + " to " + image);
 		
 		image2D.setColor(Color.red);
 //		image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
