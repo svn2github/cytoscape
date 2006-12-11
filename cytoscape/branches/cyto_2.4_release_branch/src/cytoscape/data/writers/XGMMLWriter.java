@@ -479,6 +479,7 @@ public class XGMMLWriter {
 			attr.setLabel(attributeName);
 			attr.setType(ObjectType.fromValue(STRING_TYPE));
 			if (sAttr != null) {
+				sAttr = sAttr.replace("\n", "\\n");
 				attr.setValue(sAttr);
 			} else if (attributeName == "nodeType") {
 				attr.setValue(NORMAL);

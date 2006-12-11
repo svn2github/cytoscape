@@ -1087,8 +1087,9 @@ public class XGMMLReader extends AbstractGraphReader {
 		// string (string is the default data type)
 		if (dataType == null || dataType.equals(ObjectType.STRING)) {
 			if (curAtt.getValue() != null) {
-				attributes
-						.setAttribute(targetName, attrName, curAtt.getValue());
+
+				attributes.setAttribute(targetName, attrName, curAtt.getValue()
+						.replace("\\n", "\n"));
 			}
 		}
 		// integer
