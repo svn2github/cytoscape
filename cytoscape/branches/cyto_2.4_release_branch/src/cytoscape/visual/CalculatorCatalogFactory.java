@@ -196,10 +196,10 @@ public abstract class CalculatorCatalogFactory {
 
 				System.out.println("Restoring saved visual styles from: "
 						+ vizmapSource.toString());
-				// Only create a new VizMapper is we don't already have one
-				if (Cytoscape.getDesktop().getVizMapUI() == null) {
-					Cytoscape.getDesktop().setupVizMapper();
-				}
+				// Always re-create the vizmapper, otherwise things won't
+				// initialize correctly...  or figure out how to reinitialize
+				// things, in particular the various VizMapAttrTabs.
+				Cytoscape.getDesktop().setupVizMapper();
 				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
 						.resetStyles();
 				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
