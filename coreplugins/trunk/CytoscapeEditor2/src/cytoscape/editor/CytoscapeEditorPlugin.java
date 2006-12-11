@@ -95,12 +95,12 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
         //    register an editor to handle BioPAX visual style
         //    TODO: this is a short-term contingency, to be overhauled
         //          when vizmapper is overhauled for Cytoscape 2.5
-    	CytoscapeEditorManager.register("cytoscape.editor.editors.SimpleBioPAXEditor",
-	            "cytoscape.editor.event.PaletteNetworkEditEventHandler",
-	            "biopax.entity_type",   // controlling node attribute
-	            "BIOPAX_EDGE_TYPE",          // controlling edge type
-	            "BioPAX v 0_5");
-       
+//    	CytoscapeEditorManager.register("cytoscape.editor.editors.SimpleBioPAXEditor",
+//	            "cytoscape.editor.event.PaletteNetworkEditEventHandler",
+//	            "biopax.entity_type",   // controlling node attribute
+//	            "BIOPAX_EDGE_TYPE",          // controlling edge type
+//	            "BioPAX v 0_5");
+//       
         
         // AJK: 12/09/06 END
         
