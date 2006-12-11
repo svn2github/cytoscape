@@ -37,21 +37,15 @@
 
 package cytoscape.data;
 
-import giny.model.GraphObject;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -66,10 +60,9 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.writers.CyAttributesWriter2;
 
 /**
  * Dialog box to save various attributes.<br>
@@ -96,14 +89,13 @@ public class AttributeSaverDialog extends JDialog {
 	/**
 	 * Constant ot specify nodes
 	 */
-	protected static final int NODES = 0;
+	public static final int NODES = 0;
 
 	/**
 	 * Constant to specify edges
 	 */
-	protected static final int EDGES = 1;
-	
-	
+	public static final int EDGES = 1;
+
 	/**
 	 * The state associated with the attribute table, keeps track of the
 	 * attribute, filename and booleans. Edited through the jtable
@@ -114,7 +106,6 @@ public class AttributeSaverDialog extends JDialog {
 	 * JTable for displaying boolean, attribute and filename
 	 */
 	private JTable attributeTable;
-	
 
 	/**
 	 * Show a dialog of hte specified type, see above constants
@@ -144,7 +135,7 @@ public class AttributeSaverDialog extends JDialog {
 	 */
 	public AttributeSaverDialog(final int type) {
 		super(Cytoscape.getDesktop(), "Save Attributes", true);
-		
+
 		final Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
@@ -160,13 +151,13 @@ public class AttributeSaverDialog extends JDialog {
 			attributes = Cytoscape.getEdgeAttributes().getAttributeNames();
 		} // end of else
 
-		state = new AttributeSaverState(attributes, suffix, type, Cytoscape
-				.getCurrentNetwork());
+		state = new AttributeSaverState(attributes, suffix, type);
 
 		attributeTable = new JTable(state);
-		attributeTable.setToolTipText("Select multiple attributes to save. Modify \"Filename\" field to specify filename");
+		attributeTable
+				.setToolTipText("Select multiple attributes to save. Modify \"Filename\" field to specify filename");
 		attributeTable.setCellSelectionEnabled(false);
-		
+
 		// initialize the directory browser component
 		JButton saveButton = new JButton("Choose Directory and Save");
 		saveButton.addActionListener(new ActionListener() {
@@ -179,8 +170,7 @@ public class AttributeSaverDialog extends JDialog {
 					CytoscapeInit.setMRUD(myChooser.getSelectedFile());
 					int count = 0;
 					try {
-						count = state.writeState(attributeTable
-								.getSelectedRows());
+						count = state.writeState();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -219,7 +209,7 @@ class AttributeSaverState implements TableModel {
 	/**
 	 * The default string to append for an attribute filename
 	 */
-	protected String suffix;
+	protected final String suffix;
 
 	/**
 	 * The directory in which to save the files
@@ -234,17 +224,17 @@ class AttributeSaverState implements TableModel {
 	/**
 	 * List of all attributes
 	 */
-	private Vector attributes;
+	private Vector<String> attributeNames;
 
 	/**
 	 * List of all filenames
 	 */
-	private Vector filenames;
+	private Vector<String> filenames;
 
 	/**
 	 * List of all booleans, tells whether to save
 	 */
-	private Vector booleans;
+	private Vector<Boolean> booleans;
 
 	/**
 	 * A vector of all the objects that are listening to this TableModel
@@ -253,8 +243,7 @@ class AttributeSaverState implements TableModel {
 	/**
 	 * Network to from which to read graph objects
 	 */
-	//private CyNetwork cyNetwork;
-
+	// private CyNetwork cyNetwork;
 	// colum identities
 	protected static final int FILE_COLUMN = 2;
 	protected static final int ATTRIBUTE_COLUMN = 1;
@@ -270,20 +259,20 @@ class AttributeSaverState implements TableModel {
 	 * @param cyNetwork
 	 *            the network to save
 	 */
-	public AttributeSaverState(String[] nodeAttributes, String suffix,
-			int type, CyNetwork cyNetwork) {
+	public AttributeSaverState(final String[] nodeAttributes, final String suffix,
+			int type) {
 		this.type = type;
-		//this.cyNetwork = cyNetwork;
+		this.suffix = suffix;
 		this.listeners = new Vector();
-		this.attributes = new Vector();
-		this.filenames = new Vector();
-		this.booleans = new Vector();
+		this.attributeNames = new Vector<String>();
+		this.filenames = new Vector<String>();
+		this.booleans = new Vector<Boolean>();
 		for (int idx = 0; idx < nodeAttributes.length; idx++) {
-			attributes.add(nodeAttributes[idx]);
+			attributeNames.add(nodeAttributes[idx]);
 		} // end of for ()
-		Collections.sort(attributes);
+		Collections.sort(attributeNames);
 
-		for (Iterator stringIt = attributes.iterator(); stringIt.hasNext();) {
+		for (Iterator stringIt = attributeNames.iterator(); stringIt.hasNext();) {
 			String attribute = (String) stringIt.next();
 			filenames.add(attribute + suffix);
 			booleans.add(new Boolean(false));
@@ -297,84 +286,10 @@ class AttributeSaverState implements TableModel {
 		this.saveDirectory = saveDirectory;
 	}
 
-	/**
-	 * Write out the state for the given attributes
-	 * 
-	 * @param selectedRows
-	 * 
-	 * @return number of files successfully saved, the better way to do this
-	 *         would just be to throw the error and display a specific message
-	 *         for each failure, but oh well.
-	 * @throws IOException
-	 * 
-	 */
-	public int writeState(final int[] selectedRows) throws IOException {
-		
-		final List graphObjects ;
-		final CyAttributes cyAttributes;
-		if (type == AttributeSaverDialog.NODES) {
-			cyAttributes = Cytoscape.getNodeAttributes();
-			graphObjects = Cytoscape.getCyNodesList();
-		} else {
-			cyAttributes = Cytoscape.getEdgeAttributes();
-			graphObjects = Cytoscape.getCyEdgesList();
-		}
-
-		final List<String> objectIDs = new ArrayList<String>();
-		String objectID = null;
-		List<GraphObject> objects = graphObjects;
-		for(GraphObject obj : objects) {	
-			objectID = obj.getIdentifier();
-			if (objectID != null) {
-				objectIDs.add(objectID);
-			}
-		}
-
-		int count = 0;
-		for (int idx = 0; idx < attributes.size(); idx++) {
-			if (((Boolean) booleans.get(idx)).booleanValue()) {
-
-				final String attribute = (String) attributes.get(idx);
-
-				File attributeFile = new File(saveDirectory, (String) filenames
-						.get(idx));
-				FileWriter fileWriter = new FileWriter(attributeFile);
-				fileWriter.write(attribute + newline);
-				MultiHashMap attributeMap = cyAttributes.getMultiHashMap();
-				if (attributeMap != null) {
-					for (Iterator canonicalIt = objectIDs.iterator(); canonicalIt
-							.hasNext();) {
-						String name = (String) canonicalIt.next();
-						// Object value = attributeMap..get(name);
-						Object value = attributeMap.getAttributeValue(name,
-								attribute, null);
-
-						if (value != null) {
-							if (value instanceof Collection) {
-								String result = name + " = ";
-								Collection collection = (Collection) value;
-								if (collection.size() > 0) {
-									Iterator objIt = collection.iterator();
-									result += "(" + objIt.next();
-									while (objIt.hasNext()) {
-										result += "::" + objIt.next();
-									}
-									result += ")" + newline;
-									fileWriter.write(result);
-								}
-							} else {
-								fileWriter
-										.write(name + " = " + value + newline);
-							}
-						}
-					}
-				}
-				fileWriter.close();
-				count++;
-
-			}
-		} // end of for ()
-		return count;
+	public int writeState() throws IOException {
+		final CyAttributesWriter2 writer = new CyAttributesWriter2(type,
+				saveDirectory, booleans, filenames, attributeNames);
+		return writer.writeAttributesToFiles();
 	}
 
 	// below here is implementing the tableModel
@@ -403,7 +318,7 @@ class AttributeSaverState implements TableModel {
 	}
 
 	public int getRowCount() {
-		return attributes.size();
+		return attributeNames.size();
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -411,7 +326,7 @@ class AttributeSaverState implements TableModel {
 		case SAVE_COLUMN:
 			return booleans.get(rowIndex);
 		case ATTRIBUTE_COLUMN:
-			return attributes.get(rowIndex);
+			return attributeNames.get(rowIndex);
 		case FILE_COLUMN:
 			return filenames.get(rowIndex);
 		default:
@@ -445,10 +360,10 @@ class AttributeSaverState implements TableModel {
 		case ATTRIBUTE_COLUMN:
 			throw new RuntimeException("Cell is not editable");
 		case SAVE_COLUMN:
-			booleans.set(rowIndex, aValue);
+			booleans.set(rowIndex, (Boolean) aValue);
 			break;
 		case FILE_COLUMN:
-			filenames.set(rowIndex, aValue);
+			filenames.set(rowIndex, (String) aValue);
 			break;
 		default:
 			break;
