@@ -493,6 +493,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// create the VizMapUI
 		vizMapUI = new VizMapUI(vizMapper, this);
+		vizMapUI.setName("vizMapUI");
 
 		// In order for the VizMapper to run when the StyleSelector is
 		// run, it needs to listen to the selector.

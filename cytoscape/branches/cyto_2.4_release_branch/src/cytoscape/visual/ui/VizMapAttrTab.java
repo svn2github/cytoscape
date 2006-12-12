@@ -348,6 +348,7 @@ public class VizMapAttrTab extends VizMapTab {
     //add an extra entry at the beginning for no calculator
     comboCalcs.add( 0, new String("None") );
     this.calcComboBox = new JComboBox(comboCalcs);
+    calcComboBox.setName("calcComboBox");
 
     // set the currently selected calculator
     if (this.currentCalculator == null) {

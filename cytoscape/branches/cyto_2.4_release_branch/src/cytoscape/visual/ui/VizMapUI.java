@@ -175,6 +175,9 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		JTabbedPane nodePane = new JTabbedPane();
 		JTabbedPane edgePane = new JTabbedPane();
 
+		nodePane.setName("nodePane");
+		edgePane.setName("edgePane");
+		
 		// add panels to tabbed panes
 		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 0, VMM,
 				NODE_COLOR));
