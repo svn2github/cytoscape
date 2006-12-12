@@ -2511,7 +2511,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
                 return 0;
             }
 
-	    return rootGraphNodeInx
+	    return rootGraphNodeInx;
       	} 
 
 	//
