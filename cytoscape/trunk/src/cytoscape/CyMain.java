@@ -93,6 +93,9 @@ public class CyMain implements CyInitParams {
 		mode = CyInitParams.ERROR;
 		options = new org.apache.commons.cli.Options();
 
+		//for (String asdf: args)
+		//	System.out.println("arg: '" + asdf + "'");
+
 		parseCommandLine(args);
 		CytoscapeInit initializer = new CytoscapeInit();
 
@@ -160,7 +163,8 @@ public class CyMain implements CyInitParams {
 		options.addOption(OptionBuilder
 	                                .withLongOpt("props")
 	                                .withDescription( "Load cytoscape properties file (Java properties format) or individual property: -P name=value.")
-	                                .withValueSeparator(' ')
+					// the null value here is so that properties can have spaces in them
+	                                .withValueSeparator('\0') 
 	                                .withArgName("file")
 	                                .hasArgs()
 					.create("P"));
@@ -191,8 +195,8 @@ public class CyMain implements CyInitParams {
 		}
 
 		if ( line.hasOption("v") ) {
-            CytoscapeVersion version = new CytoscapeVersion();
-            System.out.println(version.getVersion());
+			CytoscapeVersion version = new CytoscapeVersion();
+			System.out.println(version.getVersion());
 			System.exit(0); 
 		}
 
@@ -233,7 +237,8 @@ public class CyMain implements CyInitParams {
 	}
 
 	protected void setupLookAndFeel() {
-
+		
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
 		Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
 		Options.setDefaultIconSize(new Dimension(18, 18));
@@ -274,6 +279,9 @@ public class CyMain implements CyInitParams {
 	}
 
 	private Properties createProperties(String[] potentialProps) {
+
+		//for ( String asdf: potentialProps)
+		//	System.out.println("prop: '" + asdf + "'");
 
 		Properties props = new Properties();
 		Properties argProps = new Properties();
