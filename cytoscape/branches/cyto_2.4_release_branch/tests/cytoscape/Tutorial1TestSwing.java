@@ -88,15 +88,17 @@ public class Tutorial1TestSwing extends TestCase {
 		 */
 		player.run(robot, "IMPORT_REMOTE_SIF_FILE");
 
-		assertEquals("num networks (including ontology root)", 2, Cytoscape
-				.getNetworkSet().size());
+		// Check some values
+		assertEquals(1, Cytoscape.getNetworkSet().size());
 
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		assertNotNull("current network view", view);
+		final CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		assertNotNull(view);
 
+		/*
+		 * Do Layout
+		 */
 		player.run(robot, "APPLY_SPRING_LAYOUT");
-		// some test for layout?
-
+		
 		scenario.setTestSetting("SELECT_NODE_BY_NAME", "NODE_NAME", "7157");
 		player.run(robot, "SELECT_NODE_BY_NAME");
 
@@ -110,7 +112,7 @@ public class Tutorial1TestSwing extends TestCase {
 		assertEquals("num selected neighbor nodes", 64, selNodes.size());
 
 		player.run(robot, "NEW_NETWORK_FROM_SELECTED_NODES_ALL_EDGES");
-		assertEquals("num networks (including ontology root)", 3, Cytoscape
+		assertEquals("Number of networks in this session", 2, Cytoscape
 				.getNetworkSet().size());
 
 		scenario.setTestSetting("IMPORT_NODE_ATTRIBUTES", "FILE_TO_IMPORT",
