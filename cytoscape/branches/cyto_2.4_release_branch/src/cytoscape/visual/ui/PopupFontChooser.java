@@ -67,7 +67,6 @@ import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.LabelPosition;
-import cytoscape.util.CyColorChooser;
 
  
 public class PopupFontChooser extends JDialog {
