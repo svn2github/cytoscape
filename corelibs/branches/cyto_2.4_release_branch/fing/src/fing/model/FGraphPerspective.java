@@ -2673,7 +2673,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
             final int nativeEdgeIndex = m_rootToNativeEdgeInxMap.get(~rootGraphEdgeInx);
 
-            if (nativeEdgeIndex < 0) {
+            if (nativeEdgeIndex < 0 || nativeEdgeIndex == Integer.MAX_VALUE) {
                 return 0;
             }
 
@@ -2692,7 +2692,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
                 m_rootToNativeEdgeInxMap.put(~rootGraphEdgeInx, Integer.MAX_VALUE);
                 m_nativeToRootEdgeInxMap.setIntAtIndex(0, nativeEdgeIndex);
             } else {
-                throw new IllegalStateException("internal error - couldn't remove edge");
+                throw new IllegalStateException("internal error - couldn't hide edge: " + rootGraphEdgeInx);
             }
         }
 
@@ -2746,10 +2746,13 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
             final MinIntHeap successes = m_heap;
 
 	    // check to see if we can hide edges
-            for (int i = 0; i < edges.length; i++)
-                if (canHideEdge(edges[i].getRootGraphIndex()) != 0) {
+            for (int i = 0; i < edges.length; i++) {
+	    	if ( edges[i] == null ) 
+			continue;
+		
+                if (canHideEdge(edges[i].getRootGraphIndex()) != 0) 
                     successes.toss(i);
-                }
+	    }
 
             if (successes.size() > 0) {
                 final GraphPerspectiveChangeListener listener = m_lis[0];
@@ -2763,14 +2766,14 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
                     while (enumx.numRemaining() > 0)
                         successArr[++index] = edges[enumx.nextInt()];
 
-                    listener.graphPerspectiveChanged(new GraphPerspectiveEdgesHiddenEvent(source,
-                            successArr));
+                    listener.graphPerspectiveChanged(new GraphPerspectiveEdgesHiddenEvent(source,successArr));
                 }
 
 	        // now actually hide edges
                 final IntEnumerator successEnum = successes.elements();
-                while (successEnum.numRemaining() > 0)
+                while (successEnum.numRemaining() > 0) 
                     actuallyHideEdge(edges[successEnum.nextInt()].getRootGraphIndex());
+		
             }
         }
     }
