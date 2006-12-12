@@ -117,11 +117,17 @@ public class CytoscapeFingRootGraph
   }
 
   public cytoscape.CyNode getNode ( String identifier ) {
-    return ( cytoscape.CyNode )getNode( node_name_index_map.get( identifier ) );
+  	if ( node_name_index_map.containsKey( identifier ) )
+    		return ( cytoscape.CyNode )getNode( node_name_index_map.get( identifier ) );
+	else	
+		return null;
   }
 
   public cytoscape.CyEdge getEdge ( String identifier ) {
-    return ( cytoscape.CyEdge )getEdge( edge_name_index_map.get( identifier ) );
+  	if ( edge_name_index_map.containsKey( identifier ) )
+    		return ( cytoscape.CyEdge )getEdge( edge_name_index_map.get( identifier ) );
+	else
+		return null;
   }
 
   public void setNodeIdentifier ( String identifier, int index ) {
