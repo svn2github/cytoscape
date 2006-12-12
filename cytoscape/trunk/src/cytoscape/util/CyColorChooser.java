@@ -57,6 +57,8 @@ public class CyColorChooser {
 	protected static Color color;
 
 	public static Color showDialog(Component component, String title, Color initialColor) { 
+		if ( initialColor != null )
+			chooser.setColor(initialColor);
 		JDialog dialog = JColorChooser.createDialog(component, title, true, chooser, listener, null);
 		dialog.setVisible(true); 
 		return color;
