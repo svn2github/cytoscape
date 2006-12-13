@@ -202,6 +202,9 @@ public class CytoscapeInit {
 					|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
 				WindowUtilities.hideSplash();
 				Cytoscape.getDesktop().setCursor(Cursor.getDefaultCursor());
+
+				// to clean up anything that the plugins have messed up
+				Cytoscape.getDesktop().repaint();
 			}
 		}
 
