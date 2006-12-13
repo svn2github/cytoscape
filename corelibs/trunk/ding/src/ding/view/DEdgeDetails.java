@@ -596,4 +596,18 @@ class DEdgeDetails extends IntermediateEdgeDetails {
                 new Long(key),
                 paint);
     }
+
+    /**
+     * The arrow size will scale with the edge width.
+     */
+    public float sourceArrowSize(int edge) {
+	return (segmentThickness(edge) + DEdgeView.DEFAULT_ARROW_SIZE);
+    }
+
+    /**
+     * The arrow size will scale with the edge width.
+     */
+    public float targetArrowSize(int edge) {
+	return (segmentThickness(edge) + DEdgeView.DEFAULT_ARROW_SIZE);
+    }
 }
