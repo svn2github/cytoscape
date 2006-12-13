@@ -61,7 +61,6 @@ import java.net.Proxy.Type;
 import java.net.InetSocketAddress;
 
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.xml.bind.JAXBException;
 
@@ -350,13 +349,14 @@ public abstract class Cytoscape {
 		//
 		// Confirm user to save current session or not.
 		//
+
 		Object[] options = { "Yes, save and quit", "No, just quit", "Cancel" };
 		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), msg,
-				"Save Networks Before Quitting?", JOptionPane.DEFAULT_OPTION,
-	            JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-		if (n == 1) {
+				"Save Networks Before Quitting?", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		if (n == JOptionPane.NO_OPTION) {
 			return true;
-		} else if (n == 0) {
+		} else if (n == JOptionPane.YES_OPTION) {
 			SaveSessionAction saveAction = new SaveSessionAction();
 			saveAction.actionPerformed(null);
 			if (Cytoscape.getCurrentSessionFileName() == null) {
@@ -816,7 +816,7 @@ public abstract class Cytoscape {
 	 * destroys the given network
 	 * 
 	 * @param network
-	 *            the network tobe destroyed
+	 *            the network to be destroyed
 	 * @param destroy_unique
 	 *            if this is true, then all Nodes and Edges that are in this
 	 *            network, but no other are also destroyed.
@@ -827,9 +827,19 @@ public abstract class Cytoscape {
 
 		firePropertyChange(NETWORK_DESTROYED, null, networkId);
 
-		getNetworkMap().remove(networkId);
-		if (getNetworkMap().size() <= 0)
-			currentNetworkID = null;
+		Map nmap = getNetworkMap();
+		nmap.remove(networkId);
+		if ( networkId.equals( currentNetworkID ) ) {
+			if (nmap.size() <= 0) { 
+				currentNetworkID = null;
+			} else {
+				// randomly pick a network to become the current network
+				for ( Iterator it = nmap.keySet().iterator(); it.hasNext(); ) {
+					currentNetworkID = (String) it.next();
+					break;
+				}
+			}
+		}
 
 		if (viewExists(networkId))
 			destroyNetworkView(network);
@@ -882,6 +892,10 @@ public abstract class Cytoscape {
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		network = null;
+
+		// updates the desktop
+		if ( currentNetworkID != null )
+			getDesktop().setFocus(currentNetworkID);
 	}
 
 	/**
@@ -889,10 +903,19 @@ public abstract class Cytoscape {
 	 */
 	public static void destroyNetworkView(CyNetworkView view) {
 
-		getNetworkViewMap().remove(view.getIdentifier());
+		// System.out.println( "destroying: "+view.getIdentifier()+" :
+		// "+getNetworkViewMap().get( view.getIdentifier() ) );
 
-		if (getNetworkViewMap().size() <= 0)
-			currentNetworkViewID = null;
+		String viewID = view.getIdentifier();
+
+		getNetworkViewMap().remove(viewID);
+
+		if ( viewID.equals( currentNetworkViewID ) ) { 
+			if (getNetworkViewMap().size() <= 0)
+				currentNetworkViewID = null;
+			else
+				currentNetworkViewID = ((GraphView)(getNetworkViewMap().get( currentNetworkID ))).getIdentifier();
+		}
 
 		// System.out.println( "gone from hash: "+view.getIdentifier()+" :
 		// "+getNetworkViewMap().get( view.getIdentifier() ) );
@@ -901,8 +924,6 @@ public abstract class Cytoscape {
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		view = null;
-		// TODO: do we want here?
-		System.gc();
 	}
 
 	/**
