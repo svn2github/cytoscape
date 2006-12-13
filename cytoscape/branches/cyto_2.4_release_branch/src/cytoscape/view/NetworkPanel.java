@@ -276,6 +276,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 			treeTable.getTree().expandPath(path);
 			treeTable.getTree().scrollPathToVisible(path);
 			treeTable.doLayout();
+
+			focusNetworkNode( network_id );
 		}
 	}
 

@@ -267,6 +267,7 @@ public class NetworkViewManager
     if ( e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ) {
       String network_id = ( String )e.getNewValue();
       e = null;
+      unsetFocus(); // in case the newly focused network doesn't have a view
       setFocus( network_id );
     } 
 
@@ -301,6 +302,31 @@ public class NetworkViewManager
                                                      new_value ) );
   }
 
+  /**
+   * Used to unset the focus of all the views. This is for the situation
+   * when a network is focused but the network doesn't have a view. 
+   */
+  protected void unsetFocus ( ) {
+  	for ( Iterator i = networkViewMap.values().iterator(); i.hasNext(); ) {
+		
+		if ( VIEW_TYPE == CytoscapeDesktop.TABBED_VIEW ) {
+			// do nothing - one tab always needs to be shown,
+			// so it may as well be the old one.
+		} else if ( VIEW_TYPE == CytoscapeDesktop.INTERNAL_VIEW ) {
+			try {
+			JInternalFrame f = (JInternalFrame)i.next();
+			f.setSelected(false);
+			} catch (PropertyVetoException pve) {
+				System.out.println("Couldn't unset focus for internal frame.");
+			}
+		}  else if ( VIEW_TYPE == CytoscapeDesktop.EXTERNAL_VIEW ) {
+			// can't really do anything here either
+			// While we can transfer focus, we can't just remove it
+			// (as far as I can tell) and we don't necessarily know
+			// where to transfer it to.
+		}
+	}
+  }
   /**
    * Sets the focus of the passed network, if possible
    * The Network ID corresponds to the CyNetworkView.getNetwork().getIdentifier()
