@@ -893,8 +893,10 @@ public abstract class Cytoscape {
 		// firing is done
 		network = null;
 
-		// updates the desktop
-		if ( currentNetworkID != null )
+		// updates the desktop - but only if the view is null
+		// if a view exists, then the focus will have already been updated
+		// in destroyNetworkView
+		if ( currentNetworkID != null && currentNetworkViewID == null )
 			getDesktop().setFocus(currentNetworkID);
 	}
 
@@ -913,8 +915,16 @@ public abstract class Cytoscape {
 		if ( viewID.equals( currentNetworkViewID ) ) { 
 			if (getNetworkViewMap().size() <= 0)
 				currentNetworkViewID = null;
-			else
-				currentNetworkViewID = ((GraphView)(getNetworkViewMap().get( currentNetworkID ))).getIdentifier();
+			else {
+				// depending on which randomly chosen currentNetworkID we get, 
+				// we may or may not have a view for it.
+				CyNetworkView newCurr = (CyNetworkView)(getNetworkViewMap().get( currentNetworkID));
+				if ( newCurr != null )
+					currentNetworkViewID = newCurr.getIdentifier();
+				else
+					currentNetworkViewID = null;
+					
+			}
 		}
 
 		// System.out.println( "gone from hash: "+view.getIdentifier()+" :
@@ -924,6 +934,10 @@ public abstract class Cytoscape {
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		view = null;
+
+		// so that a network will be selected.
+		if ( currentNetworkID != null )
+			getDesktop().setFocus(currentNetworkID);
 	}
 
 	/**
