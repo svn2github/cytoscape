@@ -331,8 +331,8 @@ class DEdgeDetails extends IntermediateEdgeDetails {
             if (((float) len) == 0.0f)
                 break;
 
-            final double normX = dx / len;
-            final double normY = dy / len;
+            final double normX = Math.abs(dx / len);
+            final double normY = Math.abs(dy / len);
             final double factor = ((inx + 1) / 2) * (((inx % 2) == 0) ? 1 : (-1)) * nodeSize;
             final double anchorX = midX + (factor * normY);
             final double anchorY = midY - (factor * normX);
