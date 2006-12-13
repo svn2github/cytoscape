@@ -194,17 +194,26 @@ public abstract class CalculatorCatalogFactory {
 
 				initCatalog();
 
-				System.out.println("Restoring saved visual styles from: "
-						+ vizmapSource.toString());
+				System.out.println("Applying visual styles from: " + vizmapSource.toString());
 				// Always re-create the vizmapper, otherwise things won't
 				// initialize correctly...  or figure out how to reinitialize
 				// things, in particular the various VizMapAttrTabs.
 				Cytoscape.getDesktop().setupVizMapper();
-				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
-						.resetStyles();
-				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
-						.repaint();
+				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().resetStyles();
+				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().repaint();
 				Cytoscape.getDesktop().getVizMapUI().refreshUI();
+
+				// In the situation where the old visual style has been overwritten
+				// with a new visual style of the same name, then make sure it is 
+				// reapplied.
+				VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+				vmm.setVisualStyle( vmm.getVisualStyle().getName() );
+				Cytoscape.getCurrentNetworkView().setVisualStyle( vmm.getVisualStyle().getName());
+				Cytoscape.getCurrentNetworkView().redrawGraph(false,true);
+
+				// Since the toolbar tends to get messed up, repaint it.
+				Cytoscape.getDesktop().repaint();
+
 			}
 		}
 	}

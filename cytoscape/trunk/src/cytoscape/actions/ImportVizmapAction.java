@@ -19,13 +19,13 @@ public class ImportVizmapAction extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		CyFileFilter propsFilter = new CyFileFilter();
+
+		final CyFileFilter propsFilter = new CyFileFilter();
 		propsFilter.addExtension("props");
 		propsFilter.setDescription("Property files");
 
 		// Get the file name
-		File file = FileUtil.getFile("Import Vizmap Property File",
+		final File file = FileUtil.getFile("Import Vizmap Property File",
 				FileUtil.LOAD, new CyFileFilter[] { propsFilter });
 
 		// if the name is not null, then load
@@ -35,7 +35,7 @@ public class ImportVizmapAction extends CytoscapeAction {
 			LoadVizmapTask task = new LoadVizmapTask(file);
 
 			// Configure JTask Dialog Pop-Up Box
-			JTaskConfig jTaskConfig = new JTaskConfig();
+			final JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
 			jTaskConfig.displayCloseButton(true);
 			jTaskConfig.displayStatus(true);
@@ -43,7 +43,6 @@ public class ImportVizmapAction extends CytoscapeAction {
 
 			// Execute Task in New Thread; pops open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
-
 		}
 	}
 }
@@ -66,12 +65,10 @@ class LoadVizmapTask implements Task {
 	public void run() {
 		taskMonitor.setStatus("Reading Vizmap File...");
 		taskMonitor.setPercentCompleted(-1);
-
-		
+		// this even will load the file
 		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, file.getAbsolutePath());
 		taskMonitor.setStatus("Vizmapper updated by the file: " + file.getName());
 		taskMonitor.setPercentCompleted(100);
-
 	}
 
 	/**
