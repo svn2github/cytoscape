@@ -19,7 +19,7 @@ public final class SynonymReader extends Reader
 {
 
   private final String NL = System.getProperty("line.separator");
-  private final HashMap<String,String> m_dupsFilter = new HashMap<String,String>();
+  private final HashMap m_dupsFilter = new HashMap();
   private BufferedReader m_file;
   private String m_readString;
   private int m_readInx; // Index into a m_readString character.
@@ -84,6 +84,11 @@ public final class SynonymReader extends Reader
           line.substring(fromIndex, line.indexOf('\t', fromIndex));
         if (delimitedList.length() > 0) {
           m_readString = canon + " " + delimitedList.replace('|', ' ') + NL;
+          
+          
+          System.out.println("Syno: " + m_readString);
+          
+          
           m_readInx = 0;
           m_dupsFilter.put(canon, canon);
           break; } }
