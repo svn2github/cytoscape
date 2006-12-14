@@ -328,6 +328,9 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 		Set<NodeType> nodeSet = graph.getNodes();
 
 		for ( int x = 0; x < numTrials; x++ ) {
+			if(x % 1000 == 0){
+				log.info("Iteration "+x);
+			}
 			if (monitor != null)
 			{
 				if (monitor.needToHalt()) return null;
@@ -338,7 +341,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 			//System.out.println("trial " + x);
 
 			// re-initialize storage
-			for ( int i = 0; i < numNodes; i++ )	{
+			for ( int i = 0; i < numNodes; i++){
 				for ( int j = 0; j <= colorSet; j++ ) {
 					W[i][j] = Double.NEGATIVE_INFINITY; 
 					path.get(i).set(j,null); 
@@ -366,7 +369,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 					// and skip the rest of the processing
 					if ( prevCombo == 0 ) {
 						if ( beginSet == null || beginSet.contains(node) ) 
-							W[nodeIndex(node)][nodeColor] = 0;
+							W[nodeIndex(node)][nodeColor] = this.scoreObj.scoreNode(node,graph);
 						continue;
 					}
 
@@ -377,7 +380,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 						//System.out.println("neigh " + neighborColor);
 
 						if ( (neighborColor & prevCombo) == neighborColor ) {
-							double score = scoreObj.scoreEdge(node,neighbor,graph) + W[nodeIndex(neighbor)][prevCombo];	
+							double score = scoreObj.scoreNode(neighbor,graph)+scoreObj.scoreEdge(node,neighbor,graph) + W[nodeIndex(neighbor)][prevCombo];	
 							int nodeInd = nodeIndex(node);
 
 							//System.out.println("score " + score);
