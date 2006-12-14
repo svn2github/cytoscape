@@ -1,6 +1,5 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.tests;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -9,7 +8,7 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
+import cytoscape.data.CyAttributes;
 import cytoscape.data.ontology.GeneOntology;
 import cytoscape.data.servers.OntologyServer.OntologyType;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationReader;
@@ -30,6 +29,8 @@ public class GeneAssociationReaderTest extends TestCase {
 	private static final String GENE_ASSOCIATION = "testData/annotation/gene_association.sgd";
 
 	private CyNetwork gal;
+	
+	private CyAttributes nodeAttr;
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -39,7 +40,7 @@ public class GeneAssociationReaderTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		Cytoscape.destroyNetwork(gal);
+		Cytoscape.destroyNetwork(gal);	
 	}
 
 	public void testBuildMap() throws IOException, URISyntaxException {
@@ -63,6 +64,20 @@ public class GeneAssociationReaderTest extends TestCase {
 		GeneAssociationReader gar = new GeneAssociationReader("GO Slim Test",
 				sampleSourceFile.toURL(), "ID");
 
+		gar.readTable();
+		nodeAttr = Cytoscape.getNodeAttributes();
+		
+		for(String attrName: nodeAttr.getAttributeNames()) {
+			System.out.println("Deleting: " + attrName);
+			nodeAttr.deleteAttribute(attrName);
+		}
+		
+		/*
+		 * Delete all attributes
+		 */
+		
+		
+		
 	}
 
 }

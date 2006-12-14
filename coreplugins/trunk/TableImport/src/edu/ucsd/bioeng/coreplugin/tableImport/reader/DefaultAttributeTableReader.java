@@ -138,4 +138,12 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		bufRd.close();
 	}
 
+	public String getReport() {
+		// TODO Auto-generated method stub
+		final StringBuffer sb = new StringBuffer();
+		
+		
+		return sb.toString();
+	}
+
 }

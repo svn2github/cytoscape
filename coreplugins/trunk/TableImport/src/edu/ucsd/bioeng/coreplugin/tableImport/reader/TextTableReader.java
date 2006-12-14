@@ -21,6 +21,12 @@ public interface TextTableReader {
 	
 	public List getColumnNames();
 	
+	/**
+	 * Report the result of import as a string.
+	 * @return Description of
+	 */
+	public String getReport();
+	
 	//public void setColumnNames(String[] columnNames);
 	//public void setColumnNames(List<String> columnNames);
 }

@@ -101,13 +101,12 @@ public class PreviewTablePanel extends JPanel {
 	 * GUI Components
 	 */
 	private JLabel legendLabel;
-	
+
 	private javax.swing.JLabel aliasLabel;
 	private javax.swing.JLabel primaryKeyLabel;
 	private JLabel ontologyTermLabel;
 	private JLabel taxonomyLabel;
-	
-	
+
 	private javax.swing.JLabel instructionLabel;
 	private JLabel rightArrowLabel;
 	private JLabel fileTypeLabel;
@@ -173,11 +172,11 @@ public class PreviewTablePanel extends JPanel {
 			aliasLabel.setVisible(false);
 			ontologyTermLabel.setVisible(false);
 			taxonomyLabel.setVisible(false);
-		} else if(panelType == ATTRIBUTE_PREVIEW) {
+		} else if (panelType == ATTRIBUTE_PREVIEW) {
 			ontologyTermLabel.setVisible(false);
 			taxonomyLabel.setVisible(false);
 		}
-		
+
 		repaint();
 	}
 
@@ -220,6 +219,7 @@ public class PreviewTablePanel extends JPanel {
 
 		previewTables = new HashMap<String, JTable>();
 		previewTable = new JTable();
+		previewTable.setName("previewTable");
 		previewTable.setOpaque(false);
 		previewTable.setBackground(Color.white);
 
@@ -300,11 +300,13 @@ public class PreviewTablePanel extends JPanel {
 		primaryKeyLabel.setFont(LABEL_FONT.getFont());
 		primaryKeyLabel.setForeground(Color.WHITE);
 		primaryKeyLabel.setBackground(PRIMARY_KEY_COLOR.getColor());
-		primaryKeyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		primaryKeyLabel
+				.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		// onLabel
 		// .setIcon(CHECKED_ICON.getIcon());
 		primaryKeyLabel.setText("Key");
-		primaryKeyLabel.setToolTipText("Column in this color is the Primary Key.");
+		primaryKeyLabel
+				.setToolTipText("Column in this color is the Primary Key.");
 		// onLabel.setBorder(new javax.swing.border.LineBorder(new
 		// java.awt.Color(
 		// 0, 0, 0), 1, true));
@@ -325,23 +327,22 @@ public class PreviewTablePanel extends JPanel {
 		ontologyTermLabel.setFont(LABEL_FONT.getFont());
 		ontologyTermLabel.setForeground(Color.WHITE);
 		ontologyTermLabel.setBackground(ONTOLOGY_COLOR.getColor());
-		ontologyTermLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		ontologyTermLabel
+				.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		ontologyTermLabel.setText("Ontology");
-		ontologyTermLabel.setToolTipText("Column in this color is Ontology Term.");
+		ontologyTermLabel
+				.setToolTipText("Column in this color is Ontology Term.");
 		ontologyTermLabel.setOpaque(true);
-		
+
 		taxonomyLabel.setFont(LABEL_FONT.getFont());
 		taxonomyLabel.setForeground(Color.WHITE);
 		taxonomyLabel.setBackground(SPECIES_COLOR.getColor());
 		taxonomyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		taxonomyLabel.setText("Taxon");
-		taxonomyLabel.setToolTipText("Columns in this color is Taxon (for Gene Association files only).");
+		taxonomyLabel
+				.setToolTipText("Columns in this color is Taxon (for Gene Association files only).");
 		taxonomyLabel.setOpaque(true);
-		
-		
-		
-		
-		
+
 		GroupLayout previewPanelLayout = new GroupLayout(this);
 		this.setLayout(previewPanelLayout);
 
@@ -356,7 +357,7 @@ public class PreviewTablePanel extends JPanel {
 										.add(
 												tableTabbedPane,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												705, Short.MAX_VALUE)
+												250, Short.MAX_VALUE)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
 										.add(rightArrowLabel)
@@ -365,7 +366,7 @@ public class PreviewTablePanel extends JPanel {
 										.add(
 												keyPreviewScrollPane,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												208,
+												180,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
 						.add(
 								previewPanelLayout
@@ -376,13 +377,13 @@ public class PreviewTablePanel extends JPanel {
 										.add(
 												instructionLabel,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												280, Short.MAX_VALUE)
+												60, Short.MAX_VALUE)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
 										.add(
 												legendLabel,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												280,
+												60,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
@@ -509,7 +510,6 @@ public class PreviewTablePanel extends JPanel {
 	}
 
 	private void tableTabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {
-		System.out.println("tab cnahged!");
 		if (tableTabbedPane.getSelectedComponent() != null
 				&& ((JScrollPane) tableTabbedPane.getSelectedComponent())
 						.getViewport().getComponent(0) != null
@@ -951,22 +951,23 @@ public class PreviewTablePanel extends JPanel {
 	 * @return
 	 */
 	public int checkKeyMatch(int targetColumn) {
-		final List fileKeyList = Arrays.asList(((DefaultListModel)keyPreviewList.getModel()).toArray());
+		final List fileKeyList = Arrays
+				.asList(((DefaultListModel) keyPreviewList.getModel())
+						.toArray());
 		int matched = 0;
 
 		TableModel curModel = getPreviewTable().getModel();
+		try {
+			curModel.getValueAt(0, targetColumn);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return 0;
+		}
+
 		for (int i = 0; i < curModel.getRowCount(); i++) {
-			if(fileKeyList.contains(curModel.getValueAt(i, targetColumn))) {
+			if (fileKeyList.contains(curModel.getValueAt(i, targetColumn))) {
 				matched++;
 			}
 		}
-
-//		for (int i = 0; i < keyPreviewList.getModel().getSize(); i++) {
-//			if (fileKeyList.contains(keyPreviewList.getModel().getElementAt(i))) {
-//				matched++;
-//			}
-//		}
-
 		return matched;
 	}
 
@@ -1016,8 +1017,7 @@ public class PreviewTablePanel extends JPanel {
 					if (newType == CyAttributes.TYPE_SIMPLE_LIST) {
 						// listDelimiter = atd.getListDelimiterType();
 						listDelimiter = atd.getListDelimiterType();
-						System.out.println("Fireing: "
-								+ ImportTextTableDialog.LIST_DELIMITER_CHANGED);
+
 						changes.firePropertyChange(
 								ImportTextTableDialog.LIST_DELIMITER_CHANGED,
 								null, atd.getListDelimiterType());

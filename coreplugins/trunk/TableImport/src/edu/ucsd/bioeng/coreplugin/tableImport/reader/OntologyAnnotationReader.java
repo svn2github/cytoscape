@@ -10,19 +10,21 @@ import java.util.List;
 import cytoscape.util.URLUtil;
 
 public class OntologyAnnotationReader implements TextTableReader {
-	
+
 	private final AttributeAndOntologyMappingParameters mapping;
 	private final URL source;
 	private final String commentChar;
 	private final int startLineNumber;
 	private final OntologyAndAnnotationLineParser parser;
-	
-	public OntologyAnnotationReader(URL source, AttributeAndOntologyMappingParameters mapping, final String commentChar, final int startLineNumber) {
+
+	public OntologyAnnotationReader(URL source,
+			AttributeAndOntologyMappingParameters mapping,
+			final String commentChar, final int startLineNumber) {
 		this.source = source;
 		this.mapping = mapping;
 		this.commentChar = commentChar;
 		this.startLineNumber = startLineNumber;
-		
+
 		parser = new OntologyAndAnnotationLineParser(mapping);
 	}
 
@@ -37,7 +39,7 @@ public class OntologyAnnotationReader implements TextTableReader {
 				is));
 		String line;
 		int lineCount = 0;
-		
+
 		/*
 		 * Read & extract one line at a time. The line can be Tab delimited,
 		 */
@@ -45,10 +47,9 @@ public class OntologyAnnotationReader implements TextTableReader {
 			/*
 			 * Ignore Empty & Commnet lines.
 			 */
-			if(commentChar != null && line.startsWith(commentChar)) {
+			if (commentChar != null && line.startsWith(commentChar)) {
 				// Do nothing
-			}
-			else if (lineCount > startLineNumber && line.trim().length() > 0) {
+			} else if (lineCount > startLineNumber && line.trim().length() > 0) {
 				String[] parts = line.split(mapping.getDelimiterRegEx());
 				parser.parseEntry(parts);
 			}
@@ -57,6 +58,13 @@ public class OntologyAnnotationReader implements TextTableReader {
 		is.close();
 		bufRd.close();
 
+	}
+
+	public String getReport() {
+		// TODO Auto-generated method stub
+		final StringBuffer sb = new StringBuffer();
+
+		return sb.toString();
 	}
 
 }

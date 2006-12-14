@@ -11,7 +11,7 @@ import edu.ucsd.bioeng.coreplugin.tableImport.ui.ImportTextTableDialog;
 
 public class ImportNetworkTableAction extends CytoscapeAction {
 	public ImportNetworkTableAction() {
-		super("Network from Table (Text/MS Excel\u2122)...");
+		super("Network from Table (Text/MS Excel)...");
 		setPreferredMenu("File.Import");
 	}
 

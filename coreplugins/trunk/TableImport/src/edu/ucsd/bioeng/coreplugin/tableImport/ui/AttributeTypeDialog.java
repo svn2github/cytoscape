@@ -154,7 +154,8 @@ public class AttributeTypeDialog extends javax.swing.JDialog {
 
 		listDelimiterComboBox.setModel(new javax.swing.DefaultComboBoxModel(
 				new String[] { PIPE.toString(), COLON.toString(), SLASH.toString(), BACKSLASH.toString(), COMMA.toString()}));
-
+		listDelimiterComboBox.setName("listDelimiterComboBox");
+		
 		otherRadioButton.setText("Other");
 		otherRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(
 				0, 0, 0, 0));

@@ -32,13 +32,14 @@ public class NetworkTableReader extends AbstractGraphReader implements
 
 	protected final List<Integer> nodeList;
 	protected final List<Integer> edgeList;
-	
+
 	protected final int startLineNumber;
-	
+
 	protected final String commentChar;
 
 	public NetworkTableReader(final String networkName, final URL sourceURL,
-			final NetworkTableMappingParameters nmp, final int startLineNumber, final String commentChar) {
+			final NetworkTableMappingParameters nmp, final int startLineNumber,
+			final String commentChar) {
 		super(networkName);
 		this.sourceURL = sourceURL;
 		this.nmp = nmp;
@@ -46,7 +47,7 @@ public class NetworkTableReader extends AbstractGraphReader implements
 		this.nodeList = new ArrayList<Integer>();
 		this.edgeList = new ArrayList<Integer>();
 		this.commentChar = commentChar;
-		
+
 		parser = new NetworkLineParser(nodeList, edgeList, nmp);
 	}
 
@@ -68,16 +69,19 @@ public class NetworkTableReader extends AbstractGraphReader implements
 		 * Read & extract one line at a time. The line can be Tab delimited,
 		 */
 		int lineCount = 0;
+		int skipped = 0;
 		while ((line = bufRd.readLine()) != null) {
 			/*
 			 * Ignore Empty & Commnet lines.
 			 */
-			if(commentChar != null && commentChar.trim().length() != 0 && line.startsWith(commentChar)) {
-			}
-			else if (line.trim().length() > 0 && startLineNumber <= lineCount) {
+			if (commentChar != null && commentChar.trim().length() != 0
+					&& line.startsWith(commentChar)) {
+				skipped++;
+			} else if (line.trim().length() > 0
+					&& (startLineNumber + skipped) <= lineCount) {
 				String[] parts = line.split(nmp.getDelimiterRegEx());
 				parser.parseEntry(parts);
-				
+
 			}
 			lineCount++;
 		}
@@ -87,7 +91,7 @@ public class NetworkTableReader extends AbstractGraphReader implements
 
 	@Override
 	public int[] getNodeIndicesArray() {
-		
+
 		final int[] nodeArray = new int[nodeList.size()];
 		for (int i = 0; i < nodeArray.length; i++) {
 			nodeArray[i] = nodeList.get(i);
@@ -107,5 +111,12 @@ public class NetworkTableReader extends AbstractGraphReader implements
 	@Override
 	public void read() throws IOException {
 		readTable();
+	}
+
+	public String getReport() {
+		// TODO Auto-generated method stub
+		final StringBuffer sb = new StringBuffer();
+
+		return sb.toString();
 	}
 }

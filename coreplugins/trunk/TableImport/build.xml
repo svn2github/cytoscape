@@ -31,7 +31,7 @@
 
 		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
 		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
-		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.4.0" />
+		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.4.0-b1" />
 
 		<!-- JUnit report directory -->
 		<property name="junit.report.dir" value="${tableImport.root.dir}/junit-reports" />
@@ -73,12 +73,14 @@
 			<!--pathelement path="${cytoscape.dir}/cytoscape.jar/" />
 			<pathelement location="${cytoscape.lib.dir}/**" /-->
 			<pathelement path="${tableImport.lib.dir}/poi-2.5.1-final-20040804.jar" />
-			<pathelement path="${project.class.path}/" />
 			<pathelement path="${tableImport.root.dir}/TableImportTests.jar/" />
 			<fileset dir="${cytoscape.dir}">
 				<include name="*.jar" />
 			</fileset>
 			<fileset dir="${cytoscape.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${cytoscape.lib.dir}/build-libs">
 				<include name="*.jar" />
 			</fileset>
 		</path>
@@ -92,6 +94,7 @@
 	<target name="clean" depends="init-tableImport">
 		<delete dir="${tableImport.classes.dir}" />
 		<delete dir="${tableImport.testclasses.dir}" />
+		<delete dir="${tableImport.tests.reports.dir}"/>
 		<delete file="TableImport.jar" />
 		<delete file="${tableImport.lib.dir}/TableImport.jar" />
 	</target>
@@ -180,6 +183,52 @@
 				<fileset dir="${tableImport.classes.dir}" includes="**/test/*" excludes="${tableImport.tests.excludes}" />
 			</batchtest>
 		</junit>
+	</target>
+
+	<!-- ======================================================= -->
+	<!-- Run all of the Swing Unit Tests                       -->
+	<!-- ======================================================= -->
+	<target name="test-swing" depends="tableImport" >
+		<mkdir dir="${tableImport.tests.reports.dir}" />
+		<junit printsummary="yes" haltonfailure="no" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
+			
+			<classpath>
+				<fileset dir="${tableImport.root.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${tableImport.root.dir}/lib">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.lib.dir}/build-libs">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${tableImport.root.dir}/testClasses">
+									<include name="**/*" />
+				</fileset>
+			</classpath>
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" todir="${tableImport.tests.reports.dir}"  >
+				<fileset dir="${tableImport.tests.dir}" includes="**/*TestSwing.java" />
+			</batchtest>
+
+		</junit>
+		<junitreport todir="${tableImport.tests.reports.dir}">
+			<fileset dir="${tableImport.tests.reports.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${tableImport.tests.reports.dir}" />
+		</junitreport>
+
+
+		<fail message="JUnit Tests failed! Check ${tableImport.tests.reports.dir}/index.html for details." if="junit.test.failure" />
+
 	</target>
 
 

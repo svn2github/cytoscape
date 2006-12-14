@@ -56,7 +56,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 		sourceLabel.setText("Source Interaction");
 		sourceLabel.setForeground(SOURCE_COLOR.getColor());
 		sourceLabel.setFont(LABEL_FONT.getFont());
-
+		sourceComboBox.setName("sourceComboBox");
 		sourceComboBox.setForeground(SOURCE_COLOR.getColor());
 		sourceComboBox.setFont(ITEM_FONT_LARGE.getFont());
 		sourceComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -69,6 +69,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 		interactionLabel.setForeground(INTERACTION_COLOR.getColor());
 		interactionLabel.setFont(LABEL_FONT.getFont());
 
+		interactionComboBox.setName("interactionComboBox");
 		interactionComboBox.setForeground(INTERACTION_COLOR.getColor());
 		interactionComboBox.setFont(ITEM_FONT_LARGE.getFont());
 		interactionComboBox
@@ -82,6 +83,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 		targetLabel.setForeground(TARGET_COLOR.getColor());
 		targetLabel.setFont(LABEL_FONT.getFont());
 
+		targetComboBox.setName("targetComboBox");
 		targetComboBox.setForeground(TARGET_COLOR.getColor());
 		targetComboBox.setFont(ITEM_FONT_LARGE.getFont());
 		targetComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -122,7 +124,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				sourceComboBox,
 																				0,
-																				200,
+																				100,
 																				Short.MAX_VALUE)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
@@ -136,9 +138,9 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				sourceLabel)
 																		.add(
-																				206,
-																				206,
-																				206)))
+																				100,
+																				100,
+																				100)))
 										.add(
 												layout
 														.createParallelGroup(
@@ -149,7 +151,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				interactionComboBox,
 																				0,
-																				151,
+																				100,
 																				Short.MAX_VALUE)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
@@ -163,9 +165,9 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				interactionLabel)
 																		.add(
-																				130,
-																				130,
-																				130)))
+																				100,
+																				100,
+																				100)))
 										.add(
 												layout
 														.createParallelGroup(
@@ -176,7 +178,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				targetLabel)
 																		.addContainerGap(
-																				182,
+																				100,
 																				Short.MAX_VALUE))
 														.add(
 																layout
@@ -184,7 +186,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 																		.add(
 																				targetComboBox,
 																				0,
-																				200,
+																				100,
 																				Short.MAX_VALUE)
 																		.add(
 																				22,
@@ -193,7 +195,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 						.add(org.jdesktop.layout.GroupLayout.TRAILING,
 								edgeAttributesLabel,
 								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								679, Short.MAX_VALUE));
+								100, Short.MAX_VALUE));
 		layout
 				.setVerticalGroup(layout
 						.createParallelGroup(

@@ -1,14 +1,13 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
-import giny.model.Edge;
-import giny.model.Node;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import giny.model.Edge;
+import giny.model.Node;
 
 /**
  * Parse one line for network text table
@@ -32,44 +31,46 @@ public class NetworkLineParser {
 
 	public void parseEntry(String[] parts) {
 		final Edge edge = addNodeAndEdge(parts);
-		if(edge != null) {
-		addEdgeAttributes(edge, parts);
+		if (edge != null) {
+			addEdgeAttributes(edge, parts);
 		}
 	}
 
 	private Edge addNodeAndEdge(final String[] parts) {
 		final Node source;
-		if(nmp.getSourceIndex() <= parts.length-1) {
-			source = Cytoscape.getCyNode(parts[nmp.getSourceIndex()]
-				.trim(), true);
+		if (nmp.getSourceIndex() <= parts.length - 1
+				&& parts[nmp.getSourceIndex()] != null) {
+			source = Cytoscape.getCyNode(parts[nmp.getSourceIndex()].trim(),
+					true);
 			nodeList.add(source.getRootGraphIndex());
 		} else {
 			source = null;
 		}
-		
-		
-		
+
 		final Node target;
-		if(nmp.getTargetIndex() <= parts.length-1) {
-			target = Cytoscape.getCyNode(parts[nmp.getTargetIndex()]
-				.trim(), true);
+		if (nmp.getTargetIndex() <= parts.length - 1
+				&& parts[nmp.getTargetIndex()] != null) {
+			target = Cytoscape.getCyNode(parts[nmp.getTargetIndex()].trim(),
+					true);
 			nodeList.add(target.getRootGraphIndex());
 		} else {
 			target = null;
-			
+
 		}
-		
+
 		final String interaction;
-		if (nmp.getInteractionIndex() == -1 || nmp.getInteractionIndex() > parts.length-1) {
+		if (nmp.getInteractionIndex() == -1
+				|| nmp.getInteractionIndex() > parts.length - 1
+				|| parts[nmp.getInteractionIndex()] == null) {
 			interaction = nmp.getDefaultInteraction();
 		} else {
 			interaction = parts[nmp.getInteractionIndex()].trim();
 		}
 
 		final Edge edge;
-		if(source != null && target != null) {
-			edge = Cytoscape.getCyEdge(source, target,
-					Semantics.INTERACTION, interaction, true);
+		if (source != null && target != null) {
+			edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION,
+					interaction, true);
 			edgeList.add(edge.getRootGraphIndex());
 		} else {
 			edge = null;
@@ -79,12 +80,14 @@ public class NetworkLineParser {
 	}
 
 	private void addEdgeAttributes(final Edge edge, final String[] parts) {
+
 		for (int i = 0; i < parts.length; i++) {
 			if (i != nmp.getSourceIndex() && i != nmp.getTargetIndex()
-					&& i != nmp.getInteractionIndex()
-					&& nmp.getImportFlag()[i] == true) {
-
-				mapAttribute(edge.getIdentifier(), parts[i].trim(), i);
+					&& i != nmp.getInteractionIndex()) {
+				if (nmp.getImportFlag().length > i
+						&& nmp.getImportFlag()[i] == true) {
+					mapAttribute(edge.getIdentifier(), parts[i].trim(), i);
+				}
 			}
 		}
 	}
@@ -98,7 +101,6 @@ public class NetworkLineParser {
 	 */
 	private void mapAttribute(final String key, final String entry,
 			final int index) {
-
 		Byte type = nmp.getAttributeTypes()[index];
 
 		switch (type) {
@@ -123,13 +125,15 @@ public class NetworkLineParser {
 			 * In case of list, not overwrite the attribute. Get the existing
 			 * list, and add it to the list.
 			 */
-			List curList = nmp.getAttributes().getAttributeList(key,
+
+			List curList = nmp.getAttributes().getListAttribute(key,
 					nmp.getAttributeNames()[index]);
 			if (curList == null) {
 				curList = new ArrayList();
 			}
 			curList.addAll(buildList(entry));
-			nmp.getAttributes().setAttributeList(key,
+
+			nmp.getAttributes().setListAttribute(key,
 					nmp.getAttributeNames()[index], curList);
 			break;
 		default:

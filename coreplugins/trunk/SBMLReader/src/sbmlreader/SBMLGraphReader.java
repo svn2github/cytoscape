@@ -71,8 +71,17 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 	nodeIds = new ArrayList<Integer>();
 	edgeIds = new ArrayList<Integer>();
 
-            SBMLLevel2Document document = SBMLLevel2Document.readDocument(instream);
+        SBMLLevel2Document document; 
+	try {
+            document = SBMLLevel2Document.readDocument(instream);
+	} catch (IOException ioe) {
+		if ( ioe.getMessage().equals("Unable to parse input.") ) 
+			throw new IOException("Unable to parse input: Document must be level 2 SBML");
+		else
+			throw (ioe);
+	}
             Model model = document.getModel();
+
 
             // Get all the species in the network
             List listOfSpecies = model.getSpecies();
