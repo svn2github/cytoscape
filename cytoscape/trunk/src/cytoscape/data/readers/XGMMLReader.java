@@ -62,7 +62,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import cern.colt.list.IntArrayList;
-import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -126,10 +125,8 @@ public class XGMMLReader extends AbstractGraphReader {
 	// XGMML shapes (these should be mapped to Cytoscape shapes
 	protected static final String BOX = "box"; // Map to rectangle
 	protected static final String CIRCLE = "circle"; // Map to ellipse
-	protected static final String VELLIPSIS = "ver_ellipsis"; // Map to
-	// ellipse
-	protected static final String HELLIPSIS = "hor_ellipsis"; // Map to
-	// ellipse
+	protected static final String VELLIPSIS = "ver_ellipsis";
+	protected static final String HELLIPSIS = "hor_ellipsis";
 	protected static final String RHOMBUS = "rhombus"; // Map to parallelogram
 	protected static final String PENTAGON = "pentagon"; // Map to hexagon
 
@@ -137,10 +134,10 @@ public class XGMMLReader extends AbstractGraphReader {
 	private static final String XGMML_PACKAGE = "cytoscape.generated2";
 
 	// XGMML file name to be loaded.
-	private String networkName;
+	private String networkName = null;
 
-	private List nodes;
-	private List edges;
+	private List<GraphicNode> nodes;
+	private List<GraphicEdge> edges;
 
 	private RdfRDF metadata;
 	private String backgroundColor;
@@ -150,26 +147,25 @@ public class XGMMLReader extends AbstractGraphReader {
 
 	private InputStream networkStream;
 
-	OpenIntIntHashMap nodeIDMap;
-	IntArrayList giny_nodes;
-	IntArrayList giny_edges;
+	/*
+	 * Array of rootgraph IDs
+	 */
+	private IntArrayList giny_nodes;
+	private IntArrayList giny_edges;
 
-	ArrayList nodeIndex;
-	ArrayList edgeIndex;
+	// private GraphicGraph network;
 
-	GraphicGraph network;
+	private ArrayList rootNodes;
+	private ArrayList metaTree;
 
-	ArrayList rootNodes;
-	ArrayList metaTree;
+	private CyAttributes networkCyAttributes = Cytoscape.getNetworkAttributes();
 
-	CyAttributes nodeAttributes;
-	CyAttributes edgeAttributes;
-	CyAttributes networkCyAttributes;
-
-	HashMap nodeGraphicsMap;
-	HashMap edgeGraphicsMap;
+	private HashMap<String, Graphics> nodeGraphicsMap;
+	private HashMap<String, Graphics> edgeGraphicsMap;
 
 	private HashMap nodeMap;
+
+	private List<Att> networkAtt;
 
 	private Properties prop = CytoscapeInit.getProperties();
 
@@ -209,6 +205,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		super("InputStream");
 		this.networkStream = is;
 		initialize();
+
 	}
 
 	public XGMMLReader(String fileName, TaskMonitor monitor) {
@@ -220,10 +217,11 @@ public class XGMMLReader extends AbstractGraphReader {
 	}
 
 	private void initialize() {
-		this.networkName = null;
-		this.metaTree = new ArrayList();
-		this.nodeGraphicsMap = new HashMap();
-		this.edgeGraphicsMap = new HashMap();
+		nodes = new ArrayList<GraphicNode>();
+		edges = new ArrayList<GraphicEdge>();
+		nodeGraphicsMap = new HashMap<String, Graphics>();
+		edgeGraphicsMap = new HashMap<String, Graphics>();
+		metaTree = new ArrayList();
 	}
 
 	/**
@@ -248,10 +246,9 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @throws IOException
 	 */
 	private void readXGMML() throws JAXBException, IOException {
+		JAXBElement<GraphicGraph> graphicGraphElement;
+
 		try {
-			nodeAttributes = Cytoscape.getNodeAttributes();
-			edgeAttributes = Cytoscape.getEdgeAttributes();
-			networkCyAttributes = Cytoscape.getNetworkAttributes();
 
 			// Use JAXB-generated methods to create data structure
 			final JAXBContext jaxbContext = JAXBContext.newInstance(
@@ -272,53 +269,54 @@ public class XGMMLReader extends AbstractGraphReader {
 			 * New in JAXB 2.0: Unmashaller returns JAXBElement, instead of
 			 * actual Graph object.
 			 */
-			JAXBElement<GraphicGraph> graphicGraphElement = (JAXBElement<GraphicGraph>) unmarshaller
+			graphicGraphElement = (JAXBElement<GraphicGraph>) unmarshaller
 					.unmarshal(networkStream);
-			network = graphicGraphElement.getValue();
+
+			networkName = graphicGraphElement.getValue().getLabel();
+			networkAtt = graphicGraphElement.getValue().getAtt();
 
 			// Report Status Value
 			if (taskMonitor != null) {
-				// taskMonitor.setPercentCompleted(50);
 				taskMonitor
 						.setStatus("XGMML file is valid.  Next, create network...");
 			}
-			networkName = network.getLabel();
 
 			rootNodes = new ArrayList();
 
-			// Two passes:
-			// Pass 1: recursive descent to get all nodes
-			// and edges. We build the complete list
-			// of nodes and the list of edges. Along
-			// the way, we also build a list of
-			// metaNodes, and handle all node
-			// attributes.
-			// Pass 2: walk the node and edge list and
-			// add them to the network.
+			/*
+			 * Two passes: Pass 1: recursive descent to get all nodes and edges.
+			 * We build the complete list of nodes and the list of edges. Along
+			 * the way, we also build a list of metaNodes, and handle all node
+			 * attributes. Pass 2: walk the node and edge list and add them to
+			 * the network.
+			 * 
+			 */
+			getNodesAndEdges(graphicGraphElement.getValue(), null);
 
-			// Pass 1
-			// Split the list into two: node and edge list
-			nodes = new ArrayList();
-			edges = new ArrayList();
-			getNodesAndEdges(network, null);
-
-			// Pass 2
-			// Build the network
+			/*
+			 * Pass 2: Build the network
+			 */
 			createGraph();
 
-			// It's not generally a good idea to catch OutOfMemoryErrors, but
-			// in this case, where we know the culprit (a file that is too
-			// large),
-			// we can at least try to degrade gracefully.
 		} catch (OutOfMemoryError oe) {
-			network = null;
-			edges = null;
+			/*
+			 * It's not generally a good idea to catch OutOfMemoryErrors, but in
+			 * this case, where we know the culprit (a file that is too large),
+			 * we can at least try to degrade gracefully.
+			 */
 			nodes = null;
-			nodeIDMap = null;
+			edges = null;
 			nodeMap = null;
 			System.gc();
 			throw new XGMMLException(
 					"Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
+		} finally {
+			graphicGraphElement = null;
+
+			if (networkStream != null) {
+				networkStream.close();
+				networkStream = null;
+			}
 		}
 	}
 
@@ -328,15 +326,14 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param network
 	 * @param metanodes
 	 */
-	protected void getNodesAndEdges(GraphicGraph network, GraphicNode parent) {
+	protected void getNodesAndEdges(final GraphicGraph network,
+			final GraphicNode parent) {
 		// Get all nodes and edges as one List object.
-		List nodesAndEdges = network.getNodeOrEdge();
+		final List nodesAndEdges = network.getNodeOrEdge();
+		final List metaChildren = new ArrayList();
 
-		List metaChildren = new ArrayList();
+		for (Object curObj : nodesAndEdges) {
 
-		Iterator it = nodesAndEdges.iterator();
-		while (it.hasNext()) {
-			Object curObj = it.next();
 			if (curObj.getClass() == GraphicNode.class) {
 				// Add the node to the list. Note that this could be
 				// recursive if this node contains a <graph>
@@ -346,7 +343,7 @@ public class XGMMLReader extends AbstractGraphReader {
 				// later
 				metaChildren.add(curObj);
 			} else if (curObj.getClass() == GraphicEdge.class) {
-				edges.add(curObj);
+				edges.add((GraphicEdge) curObj);
 			}
 		}
 		if (parent != null) {
@@ -355,9 +352,9 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
-	protected void addNode(GraphicNode curNode) {
-		String label = (String) curNode.getLabel();
-		String nodeId = (String) curNode.getId();
+	protected void addNode(final GraphicNode curNode) {
+		final String label = curNode.getLabel();
+		final String nodeId = curNode.getId();
 
 		// Sanity check the node
 		if (nodeId == null && curNode.getHref() == null) {
@@ -383,7 +380,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		nodes.add(curNode);
 
 		// Read our attributes. We might recurse from here!
-		readAttributes(curNode.getLabel(), curNode.getAtt(), NODE, curNode);
+		readNodeAttributes(curNode.getLabel(), curNode.getAtt(), curNode);
 	}
 
 	/**
@@ -395,22 +392,26 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	private void createGraph() {
 
+		final int nodeCount = nodes.size();
+		final int edgeCount = edges.size();
+
 		// Check capacity
-		Cytoscape.ensureCapacity(nodes.size(), edges.size());
+		Cytoscape.ensureCapacity(nodeCount, edgeCount);
 
 		// Extract nodes
-		nodeIDMap = new OpenIntIntHashMap(nodes.size());
-		giny_nodes = new IntArrayList(nodes.size());
-		// OpenIntIntHashMap gml_id2order = new OpenIntIntHashMap(nodes.size());
+		giny_nodes = new IntArrayList(nodeCount);
 
-		final HashMap gml_id2order = new HashMap(nodes.size());
+		final HashMap gml_id2order = new HashMap(nodeCount);
+		final Set<String> nodeNameSet = new HashSet<String>(nodeCount);
 
-		Set nodeNameSet = new HashSet(nodes.size());
-
-		nodeMap = new HashMap(nodes.size());
+		nodeMap = new HashMap(nodeCount);
 
 		// Add All Nodes to Network
-		for (int idx = 0; idx < nodes.size(); idx++) {
+
+		GraphicNode curNode = null;
+		String label = null;
+
+		for (int idx = nodeCount - 1; idx >= 0; idx--) {
 
 			if (taskMonitor != null) {
 				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(1,
@@ -418,70 +419,68 @@ public class XGMMLReader extends AbstractGraphReader {
 			}
 
 			// Get a node object (NOT a giny node. XGMML node!)
-			final GraphicNode curNode = (GraphicNode) nodes.get(idx);
-
-			final String label = (String) curNode.getLabel();
+			curNode = nodes.get(idx);
+			label = curNode.getLabel();
 
 			nodeMap.put(curNode.getId(), label);
 
 			if (nodeNameSet.add(curNode.getId())) {
-				final Node node = (Node) Cytoscape.getCyNode(label, true);
+				giny_nodes.add(Cytoscape.getCyNode(label, true)
+						.getRootGraphIndex());
+				gml_id2order.put(curNode.getId(), idx);
 
-				giny_nodes.add(node.getRootGraphIndex());
-				nodeIDMap.put(idx, node.getRootGraphIndex());
-
-				// gml_id2order.put(Integer.parseInt(curNode.getId()), idx);
-
-				gml_id2order.put(curNode.getId(), Integer.toString(idx));
-
-				// ((KeyValue) node_root_index_pairs.get(idx)).value = (new
-				// Integer(
-				// node.getRootGraphIndex()));
 			} else {
 				throw new XGMMLException("XGMML id " + nodes.get(idx)
 						+ " has a duplicated label: " + label);
-				// ((KeyValue)node_root_index_pairs.get(idx)).value = null;
 			}
 		}
-		nodeNameSet = null;
 
-		// Extract edges
-		giny_edges = new IntArrayList(edges.size());
+		/*
+		 * The section below is for extracting edges.
+		 */
+		giny_edges = new IntArrayList(edgeCount);
 
 		final CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
 		// Add All Edges to Network
-		for (int idx = 0; idx < edges.size(); idx++) {
+		GraphicEdge curEdge;
+		String edgeName;
+		String edgeLabel;
+		String sourceName;
+		String targetName;
+		String interaction;
+		Node node_1;
+		Node node_2;
+
+		Edge edge;
+
+		for (int idx = edgeCount - 1; idx >= 0; idx--) {
 
 			if (taskMonitor != null) {
 				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(2,
 						idx, edges.size()));
 			}
 
-			final GraphicEdge curEdge = (GraphicEdge) edges.get(idx);
+			curEdge = edges.get(idx);
 
 			if (gml_id2order.containsKey(curEdge.getSource())
 					&& gml_id2order.containsKey(curEdge.getTarget())) {
 
-				String edgeName = curEdge.getId();
-				String edgeLabel = curEdge.getLabel();
-				final String sourceName = (String) nodeMap.get(curEdge
-						.getSource());
-				final String targetName = (String) nodeMap.get(curEdge
-						.getTarget());
-				final String interaction = getInteraction(curEdge);
+				edgeName = curEdge.getId();
+				edgeLabel = curEdge.getLabel();
+				sourceName = (String) nodeMap.get(curEdge.getSource());
+				targetName = (String) nodeMap.get(curEdge.getTarget());
+				interaction = getInteraction(curEdge);
 
-				final Node node_1 = Cytoscape.getRootGraph()
-						.getNode(sourceName);
-				final Node node_2 = Cytoscape.getRootGraph()
-						.getNode(targetName);
+				node_1 = Cytoscape.getRootGraph().getNode(sourceName);
+				node_2 = Cytoscape.getRootGraph().getNode(targetName);
 
 				if (edgeName == null) {
 					edgeName = CyEdge.createIdentifier(sourceName, interaction,
 							targetName);
 				}
 
-				Edge edge = Cytoscape.getCyEdge(node_1, node_2,
+				edge = Cytoscape.getCyEdge(node_1, node_2,
 						Semantics.INTERACTION, interaction, true, true);
 
 				// Add interaction & label to CyAttributes
@@ -493,9 +492,8 @@ public class XGMMLReader extends AbstractGraphReader {
 				}
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
-				// curEdge.setId(edgeName);
 
-				readAttributes(edgeName, curEdge.getAtt(), EDGE, null);
+				readEdgeAttributes(edgeName, curEdge.getAtt(), null);
 
 				giny_edges.add(edge.getRootGraphIndex());
 
@@ -516,13 +514,11 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param edge
 	 * @return
 	 */
-	private String getInteraction(GraphicEdge edge) {
+	private String getInteraction(final GraphicEdge edge) {
 
-		final Iterator it = edge.getAtt().iterator();
-		Att interaction = null;
 		String itrValue = "unknown";
-		while (it.hasNext()) {
-			interaction = (Att) it.next();
+
+		for (Att interaction : edge.getAtt()) {
 			if (interaction.getName().equals("interaction")) {
 				itrValue = interaction.getValue();
 				if (itrValue == null) {
@@ -652,9 +648,10 @@ public class XGMMLReader extends AbstractGraphReader {
 			return;
 		}
 
-		// Now that we have a network (and a view), handle
-		// the metanodes. Note that this must be done in
-		// depth-first order!
+		/*
+		 * Now that we have a network (and a view), handle the metanodes. Note
+		 * that this must be done in depth-first order!
+		 */
 		for (int i = 0; i < metaTree.size(); i++) {
 			String name = (String) metaTree.get(i++);
 			List children = (List) metaTree.get(i);
@@ -1023,6 +1020,24 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
+	private void readNodeAttributes(final String targetName,
+			final List<Att> attrList, final GraphicNode parent) {
+
+		for (Att curAtt : attrList) {
+			readAttribute(Cytoscape.getNodeAttributes(), targetName, curAtt,
+					NODE, parent);
+		}
+	}
+
+	private void readEdgeAttributes(final String targetName,
+			final List<Att> attrList, final GraphicNode parent) {
+		for (Att curAtt : attrList) {
+			readAttribute(Cytoscape.getEdgeAttributes(), targetName, curAtt,
+					EDGE, parent);
+		}
+
+	}
+
 	/**
 	 * Reads an attribute from the xggml file and sets it within CyAttributes.
 	 * 
@@ -1072,8 +1087,9 @@ public class XGMMLReader extends AbstractGraphReader {
 		// string (string is the default data type)
 		if (dataType == null || dataType.equals(ObjectType.STRING)) {
 			if (curAtt.getValue() != null) {
-				attributes
-						.setAttribute(targetName, attrName, curAtt.getValue());
+
+				attributes.setAttribute(targetName, attrName, curAtt.getValue()
+						.replace("\\n", "\n"));
 			}
 		}
 		// integer
@@ -1368,10 +1384,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	public void setNetworkAttributes(final CyNetwork cyNetwork) {
 
-		final List networkAttributes = network.getAtt();
-
-		for (int i = 0; i < networkAttributes.size(); i++) {
-			final Att curAtt = (Att) networkAttributes.get(i);
+		for (Att curAtt : networkAtt) {
 
 			if (curAtt.getName().equals("networkMetadata")) {
 				metadata = (RdfRDF) (curAtt.getContent().get(0));

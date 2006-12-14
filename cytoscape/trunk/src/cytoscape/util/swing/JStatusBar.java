@@ -50,7 +50,7 @@ public class JStatusBar extends JPanel {
 				org.jdesktop.layout.GroupLayout.TRAILING,
 				jPanel1Layout.createSequentialGroup().addContainerGap().add(
 						leftLabel,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 458,
+						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 300,
 						Short.MAX_VALUE).addContainerGap()));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
 				org.jdesktop.layout.GroupLayout.LEADING).add(
@@ -67,7 +67,7 @@ public class JStatusBar extends JPanel {
 				org.jdesktop.layout.GroupLayout.LEADING).add(
 				jPanel2Layout.createSequentialGroup().addContainerGap().add(
 						centerLabel,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 123,
+						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 100,
 						Short.MAX_VALUE).addContainerGap()));
 		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(
 				org.jdesktop.layout.GroupLayout.LEADING).add(centerLabel,
@@ -84,7 +84,7 @@ public class JStatusBar extends JPanel {
 				org.jdesktop.layout.GroupLayout.LEADING).add(
 				jPanel3Layout.createSequentialGroup().addContainerGap().add(
 						rightLabel,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 146,
+						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 130,
 						Short.MAX_VALUE).addContainerGap()));
 		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(
 				org.jdesktop.layout.GroupLayout.LEADING).add(

@@ -346,7 +346,7 @@ public class CalculatorCatalog {
 			return;
 		}
 		String name = vs.toString();
-		System.out.println("visual style name " + name);
+		//System.out.println("visual style name " + name);
 		// check for duplicate names
 		if (visualStyles.keySet().contains(name)) {
 			String s = "Duplicate visual style name " + name;

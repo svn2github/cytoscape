@@ -88,9 +88,9 @@ public class CyNetworkNaming
 		String sname = "";
 		Object[] options = {"Try Again", "Cancel", "Use Suggestion"};
 		int value = JOptionPane.NO_OPTION;
-		cytoscape.dialogs.EditNetworkTitleDialog theDialog;
+		
 		while (true) {
-			theDialog = new cytoscape.dialogs.EditNetworkTitleDialog(parent, true, pname);
+			cytoscape.dialogs.EditNetworkTitleDialog theDialog = new cytoscape.dialogs.EditNetworkTitleDialog(parent, true, pname);
 			theDialog.setLocationRelativeTo(parent);
 			theDialog.setVisible(true);
 			name = theDialog.getNewNetworkTitle();

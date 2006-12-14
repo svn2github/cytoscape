@@ -37,30 +37,6 @@
 
 package cytoscape.data.readers;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.data.Semantics;
-import cytoscape.ding.CyGraphLOD;
-import cytoscape.ding.DingNetworkView;
-import cytoscape.generated.Child;
-import cytoscape.generated.Cysession;
-import cytoscape.generated.Edge;
-import cytoscape.generated.HiddenEdges;
-import cytoscape.generated.HiddenNodes;
-import cytoscape.generated.Network;
-import cytoscape.generated.NetworkFrame;
-import cytoscape.generated.NetworkTree;
-import cytoscape.generated.Node;
-import cytoscape.generated.Ontology;
-import cytoscape.generated.OntologyServer;
-import cytoscape.generated.SelectedEdges;
-import cytoscape.generated.SelectedNodes;
-import cytoscape.generated.Server;
-import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
 import java.awt.Component;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
@@ -83,15 +59,36 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.bookmarks.Bookmarks;
-import cytoscape.util.BookmarksUtil;
-import cytoscape.util.FileUtil;
-import cytoscape.util.ZipUtil;
+import cytoscape.data.Semantics;
+import cytoscape.ding.CyGraphLOD;
+import cytoscape.ding.DingNetworkView;
+import cytoscape.generated.Child;
+import cytoscape.generated.Cysession;
+import cytoscape.generated.Edge;
+import cytoscape.generated.HiddenEdges;
+import cytoscape.generated.HiddenNodes;
+import cytoscape.generated.Network;
+import cytoscape.generated.NetworkFrame;
+import cytoscape.generated.Node;
+import cytoscape.generated.Ontology;
+import cytoscape.generated.SelectedEdges;
+import cytoscape.generated.SelectedNodes;
+import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
+
 /**
  * Reaser to load CYtoscape Session file (.cys).<br>
  * This class unzip cys file and read all files in the archive.
@@ -110,7 +107,7 @@ public class CytoscapeSessionReader {
 
 	public static final String PACKAGE_NAME = "cytoscape.generated";
 	public static final String BOOKMARK_PACKAGE_NAME = "cytoscape.bookmarks";
-	
+
 	public static final String CYSESSION = "cysession.xml";
 	public static final String VIZMAP_PROPS = "vizmap.props";
 	public static final String CY_PROPS = "cytoscape.props";
@@ -120,77 +117,31 @@ public class CytoscapeSessionReader {
 
 	private static final String NETWORK_ROOT = "Network Root";
 
-	/**
-	 * @uml.property name="sourceURL"
-	 */
 	private URL sourceURL;
-
-	/**
-	 * @uml.property name="networkURLs"
-	 * @uml.associationEnd qualifier="entryName:java.lang.String java.net.URL"
-	 */
 	private HashMap networkURLs = null;
-
-	/**
-	 * @uml.property name="cysessionFileURL"
-	 */
 	private URL cysessionFileURL = null;
-	/**
-	 * @uml.property name="vizmapFileURL"
-	 */
 	private URL vizmapFileURL = null;
-	/**
-	 * @uml.property name="cytoscapePropsURL"
-	 */
 	private URL cytoscapePropsURL = null;
-
 	private URL bookmarksFileURL = null;
 
-	/**
-	 * @uml.property name="netMap"
-	 * @uml.associationEnd qualifier="constant:java.lang.String
-	 *                     cytoscape.generated.Network"
-	 */
-	private HashMap netMap;
-	/**
-	 * @uml.property name="sessionID"
-	 */
+	private HashMap<String, Network> netMap;
 	private String sessionID;
 
-	/**
-	 * @uml.property name="session"
-	 * @uml.associationEnd
-	 */
 	private Cysession session;
 
-	/**
-	 * @uml.property name="networkList"
-	 * @uml.associationEnd multiplicity="(0 -1)" elementType="java.lang.String"
-	 */
 	private List networkList;
 
 	/*
 	 * Stores networkName as the key and value is visualStyleName associated
 	 * with it.
 	 */
-	/**
-	 * @uml.property name="vsMap"
-	 * @uml.associationEnd qualifier="currentNetworkID:java.lang.String
-	 *                     java.lang.String"
-	 */
 	HashMap vsMap;
-	/**
-	 * @uml.property name="vsMapByName"
-	 * @uml.associationEnd qualifier="getTitle:java.lang.String
-	 *                     java.lang.String"
-	 */
 	HashMap vsMapByName;
 
 	private Bookmarks bookmarks = null;
-	
-	private HashMap<String, List<File>> pluginFileListMap;
-	private HashMap<String, List<String>> theURLstrMap = new HashMap<String, List<String>>() ;
 
+	private HashMap<String, List<File>> pluginFileListMap;
+	private HashMap<String, List<String>> theURLstrMap = new HashMap<String, List<String>>();
 
 	/**
 	 * Constructor for remote file (specified by an URL)<br>
@@ -202,7 +153,11 @@ public class CytoscapeSessionReader {
 	 */
 	public CytoscapeSessionReader(final URL sourceName) throws IOException {
 		this.sourceURL = sourceName;
-		init();
+		networkList = new ArrayList();
+		vsMap = new HashMap();
+		vsMapByName = new HashMap();
+		bookmarks = new Bookmarks();
+		pluginFileListMap = new HashMap<String, List<File>>();
 	}
 
 	/**
@@ -213,19 +168,9 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 */
 	public CytoscapeSessionReader(final String fileName) throws IOException {
-		final File sourceFile = new File(fileName);
-		this.sourceURL = sourceFile.toURL();
-		init();
+		this(new File(fileName).toURL());
 	}
 
-	private void init() {
-		networkList = new ArrayList();
-		vsMap = new HashMap();
-		vsMapByName = new HashMap();
-		bookmarks = new Bookmarks();
-		pluginFileListMap = new HashMap<String, List<File>>();
-	}
-	
 	/**
 	 * Extract Zip entries in the remote file
 	 * 
@@ -251,7 +196,7 @@ public class CytoscapeSessionReader {
 		 * set this only once.
 		 * 
 		 */
-		URLConnection juc = sourceURL.openConnection();
+		final URLConnection juc = sourceURL.openConnection();
 		juc.setDefaultUseCaches(false);
 		ZipInputStream zis = new ZipInputStream(juc.getInputStream());
 
@@ -264,8 +209,7 @@ public class CytoscapeSessionReader {
 			entryName = zen.getName();
 			if (entryName.contains("/plugins/")) {
 				extractPluginEntry(entryName);
-			}
-			else if (entryName.endsWith(CYSESSION)) {
+			} else if (entryName.endsWith(CYSESSION)) {
 				cysessionFileURL = new URL("jar:" + sourceURL.toString() + "!/"
 						+ entryName);
 			} else if (entryName.endsWith(VIZMAP_PROPS)) {
@@ -278,15 +222,15 @@ public class CytoscapeSessionReader {
 				URL networkURL = new URL("jar:" + sourceURL.toString() + "!/"
 						+ entryName);
 				networkURLs.put(entryName, networkURL);
-			}
-			else if (entryName.endsWith(BOOKMARKS_FILE)) {
+			} else if (entryName.endsWith(BOOKMARKS_FILE)) {
 				bookmarksFileURL = new URL("jar:" + sourceURL.toString() + "!/"
 						+ entryName);
+			} else {
+				System.out.println("Unknown entry found in session zip file!\n"
+						+ entryName);
 			}
-			else {
-				System.out.println("Unknown entry found in session zip file!\n" + entryName);
-			}						
-		}//while loop
+		}// while loop
+
 		if (zis != null) {
 			try {
 				zis.close();
@@ -301,19 +245,17 @@ public class CytoscapeSessionReader {
 		String[] items = entryName.split("/");
 		String pluginName = items[2];
 		String URLstr = "jar:" + sourceURL.toString() + "!/" + entryName;
-		
+
 		if (theURLstrMap.containsKey(pluginName)) {
-			List<String> theURLstrList= theURLstrMap.get(pluginName);
+			List<String> theURLstrList = theURLstrMap.get(pluginName);
 			theURLstrList.add(URLstr);
-		}
-		else {
-			List<String> theURLstrList= new ArrayList<String>();
+		} else {
+			List<String> theURLstrList = new ArrayList<String>();
 			theURLstrList.add(URLstr);
 			theURLstrMap.put(pluginName, theURLstrList);
-		}		
+		}
 	}
 
-		
 	/**
 	 * Read a session file.
 	 * 
@@ -323,6 +265,7 @@ public class CytoscapeSessionReader {
 	public void read() throws IOException, JAXBException {
 
 		unzipSessionFromURL();
+
 		if (session.getSessionState().getDesktop() != null) {
 			restoreDesktopState();
 		}
@@ -337,31 +280,31 @@ public class CytoscapeSessionReader {
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
-		
+
 		// Send signal to plugins
-		Cytoscape.firePropertyChange(Cytoscape.RESTORE_PLUGIN_STATE, pluginFileListMap, null);	
+		Cytoscape.firePropertyChange(Cytoscape.RESTORE_PLUGIN_STATE,
+				pluginFileListMap, null);
 		deleteTmpPluginFiles();
 	}
 
 	// Delete tmp files (the plugin state files) to cleanup
-	private void deleteTmpPluginFiles()
-	{
-		
-		if ((pluginFileListMap == null)||(pluginFileListMap.size()==0)) return;
-		
+	private void deleteTmpPluginFiles() {
+
+		if ((pluginFileListMap == null) || (pluginFileListMap.size() == 0))
+			return;
+
 		Set<String> pluginSet = pluginFileListMap.keySet();
-		
-		for (String plugin:pluginSet) {
+
+		for (String plugin : pluginSet) {
 			List<File> theFileList = pluginFileListMap.get(plugin);
-			for (File theFile:theFileList) {
+			for (File theFile : theFileList) {
 				if (theFile != null) {
 					theFile.delete();
 				}
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * Decompress session file
 	 * 
@@ -378,116 +321,112 @@ public class CytoscapeSessionReader {
 
 		// Restore bookmarks
 		if (bookmarksFileURL != null) {
-			bookmarks = getBookmarksFromZip(bookmarksFileURL);			
+			bookmarks = getBookmarksFromZip(bookmarksFileURL);
 			Cytoscape.setBookmarks(bookmarks);
 		}
-		
+
 		// restore cytoscape properties
 		CytoscapeInit.getProperties().load(cytoscapePropsURL.openStream());
 
-		loadCySession(cysessionFileURL);
-		
-		//restore plugin state files
+		loadCySession();
+
+		// restore plugin state files
 		restorePlugnStateFilesFromZip();
 	}
-	
-	
+
 	private void restorePlugnStateFilesFromZip() {
-		
-		if ((theURLstrMap == null)||(theURLstrMap.size()==0)) {
+
+		if ((theURLstrMap == null) || (theURLstrMap.size() == 0)) {
 			return;
 		}
 		Set<String> pluginSet = theURLstrMap.keySet();
-		
-		for (String pluginName: pluginSet) {
+
+		for (String pluginName : pluginSet) {
 			List<String> URLstrList = theURLstrMap.get(pluginName);
-			if ((URLstrList == null)||(URLstrList.size()==0)) {
+			if ((URLstrList == null) || (URLstrList.size() == 0)) {
 				continue;
 			}
-	
+
 			File theFile = null;
 
-			for (String URLstr:URLstrList) {
+			for (String URLstr : URLstrList) {
 				int index = URLstr.lastIndexOf("/");
-				String fileName = pluginName + "_" + URLstr.substring(index+1);
-				
+				String fileName = pluginName + "_"
+						+ URLstr.substring(index + 1);
+
 				theFile = new File(fileName);
 
-				try {		
+				try {
 					// get inputstream from ZIP
 					URL theURL = new URL(URLstr);
 					InputStream is = theURL.openStream();
-										
-					//Write input stream into tmp file
-				    BufferedWriter out = null;
-				    BufferedReader in = null;
-										
-					in = new BufferedReader(new InputStreamReader(is));	    	
-				    out = new BufferedWriter(new FileWriter(theFile));
-				    	    
-				    // Write to tmp file
+
+					// Write input stream into tmp file
+					BufferedWriter out = null;
+					BufferedReader in = null;
+
+					in = new BufferedReader(new InputStreamReader(is));
+					out = new BufferedWriter(new FileWriter(theFile));
+
+					// Write to tmp file
 					String inputLine;
-					while ((inputLine = in.readLine()) != null) 
-					{
-					    out.write(inputLine);
-					    out.newLine();
+					while ((inputLine = in.readLine()) != null) {
+						out.write(inputLine);
+						out.newLine();
 					}
 
 					in.close();
-				    out.close();									
-				}
-				catch (IOException e) {
+					out.close();
+				} catch (IOException e) {
 					theFile = null;
-					System.out.println("\nError: read from zip: "+ URLstr);
+					System.out.println("\nError: read from zip: " + URLstr);
 				}
 
-				if (theFile == null) continue;
-				
-				//Put the file into pluginFileListMap
+				if (theFile == null)
+					continue;
+
+				// Put the file into pluginFileListMap
 				if (!pluginFileListMap.containsKey(pluginName)) {
 					List<File> fileList = new ArrayList<File>();
-					fileList.add(theFile);						
-					pluginFileListMap.put(pluginName, fileList);						
-				}
-				else {
+					fileList.add(theFile);
+					pluginFileListMap.put(pluginName, fileList);
+				} else {
 					List<File> fileList = pluginFileListMap.get(pluginName);
-					fileList.add(theFile);						
+					fileList.add(theFile);
 				}
-			}			
+			}
 		}
 	}
 
 	private Bookmarks getBookmarksFromZip(URL pBookmarksFileURL) {
-	
+
 		Bookmarks theBookmark = null;
 		try {
 			InputStream is = pBookmarksFileURL.openStream();
-			
-			final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE_NAME,
-					this.getClass().getClassLoader());
+
+			final JAXBContext jaxbContext = JAXBContext.newInstance(
+					BOOKMARK_PACKAGE_NAME, this.getClass().getClassLoader());
 			final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 			theBookmark = (Bookmarks) unmarshaller.unmarshal(is);
 
-			if ( is != null ) {
+			if (is != null) {
 				is.close();
 			}
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (IOException e2) {
 			e2.printStackTrace();
-		}
-		catch (JAXBException e3) {
+		} catch (JAXBException e3) {
 			e3.printStackTrace();
 		}
-		
+
 		return theBookmark;
 	}
-	
-	private void loadCySession(final URL cysessionSource) throws JAXBException,
-			IOException {
 
-		InputStream is = cysessionSource.openStream();
+	private void loadCySession() throws JAXBException, IOException {
+
+		InputStream is = cysessionFileURL.openStream();
 		final JAXBContext jaxbContext = JAXBContext.newInstance(PACKAGE_NAME,
 				this.getClass().getClassLoader());
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -507,16 +446,13 @@ public class CytoscapeSessionReader {
 		 * session.
 		 */
 		sessionID = session.getId();
-		// Convert it to map
-		final Iterator it = ((NetworkTree) session.getNetworkTree())
-				.getNetwork().iterator();
-		netMap = new HashMap();
-		while (it.hasNext()) {
-			final Network curNet = (Network) it.next();
+		netMap = new HashMap<String, Network>();
+
+		for (Network curNet : session.getNetworkTree().getNetwork()) {
 			netMap.put(curNet.getId(), curNet);
 		}
 
-		walkTree((Network) netMap.get(NETWORK_ROOT), null, cysessionSource);
+		walkTree(netMap.get(NETWORK_ROOT), null, cysessionFileURL);
 
 		/*
 		 * Set VS for each network view
@@ -533,7 +469,6 @@ public class CytoscapeSessionReader {
 				((DingNetworkView) targetView).getCanvas().setVisible(true);
 			}
 		}
-
 	}
 
 	private void restoreDesktopState() {
@@ -829,9 +764,9 @@ public class CytoscapeSessionReader {
 				((DGraphView) curView).setCenter(center.getX(), center.getY());
 			}
 		}
-        //  Execute any necessary post-processing.
-        reader.doPostProcessing(network);
-        return network;
+		// Execute any necessary post-processing.
+		reader.doPostProcessing(network);
+		return network;
 	}
 
 	// same as other loaders

@@ -386,6 +386,7 @@ public abstract class AbstractCalculator implements Calculator {
 
 		// create the JComboBox
 		JComboBox attrBox = new JComboBox(validAttr);
+		attrBox.setName("attrBox");
 		// set the attrBox to the currently selected attribute
 		String selectedAttr = m.getControllingAttributeName();
 		// make no selection first, in case the selectedAttr doesn't exist

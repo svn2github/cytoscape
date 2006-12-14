@@ -38,6 +38,7 @@
 package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import cytoscape.Cytoscape;
@@ -74,7 +75,7 @@ public class SaveSessionAction extends CytoscapeAction {
 	public SaveSessionAction(String label) {
 		super(label);
 		setPreferredMenu("File");
-		setAcceleratorCombo(java.awt.event.KeyEvent.VK_S, ActionEvent.CTRL_MASK);
+		setAcceleratorCombo(KeyEvent.VK_S, ActionEvent.CTRL_MASK);
 	}
 
 	/**

@@ -187,9 +187,6 @@ public class OntologyServer implements PropertyChangeListener {
 			 * Remove network name from ontology server.
 			 */
 			ontologies.remove(Cytoscape.getNetwork((String) e.getNewValue()).getTitle());
-			System.out.println("################Got signal2: " + Cytoscape.getNetwork((String) e.getNewValue()).getTitle());
-			System.out.println("################Got signal3: " + e.getNewValue());
-			
 		}
 		
 	}

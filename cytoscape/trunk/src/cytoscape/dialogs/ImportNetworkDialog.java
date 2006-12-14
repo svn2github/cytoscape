@@ -182,30 +182,8 @@ public class ImportNetworkDialog extends JDialog implements
 		// getContentPane().add(remoteRadioButton, gridBagConstraints);
 
 		networkFileTextField.setText("Please select a network file...");
-		// gridBagConstraints = new java.awt.GridBagConstraints();
-		// gridBagConstraints.gridx = 0;
-		// gridBagConstraints.gridy = 2;
-		// gridBagConstraints.gridwidth = 2;
-		// gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		// gridBagConstraints.weightx = 1.0;
-		// gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-		// getContentPane().add(networkFileTextField, gridBagConstraints);
-		//
-		// gridBagConstraints = new java.awt.GridBagConstraints();
-		// gridBagConstraints.gridx = 0;
-		// gridBagConstraints.gridy = 2;
-		// gridBagConstraints.gridwidth = 3;
-		// gridBagConstraints.weightx = 1.0;
-		// gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		// gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-		// getContentPane().add(networkFileComboBox, gridBagConstraints);
-		//
-		// gridBagConstraints = new java.awt.GridBagConstraints();
-		// gridBagConstraints.gridy = 3;
-		// gridBagConstraints.gridwidth = 2;
-		// gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		// gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
-
+		networkFileTextField.setName("networkFileTextField");
+		
 		selectButton.setText("Select");
 		// gridBagConstraints = new java.awt.GridBagConstraints();
 		// gridBagConstraints.gridx = 2;
@@ -239,6 +217,7 @@ public class ImportNetworkDialog extends JDialog implements
 		networkFileComboBox.setRenderer(new MyCellRenderer());
 		networkFileComboBox.setEditor(bookmarkEditor);
 		networkFileComboBox.setEditable(true);
+		networkFileComboBox.setName("networkFileComboBox");
 
 		org.jdesktop.layout.GroupLayout radioButtonPanelLayout = new org.jdesktop.layout.GroupLayout(
 				radioButtonPanel);

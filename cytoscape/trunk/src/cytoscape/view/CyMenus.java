@@ -554,8 +554,7 @@ public class CyMenus implements GraphViewChangeListener {
 											|| (item.getText()
 													.equals("Destroy Network"))
 											|| (item.getText()
-													.equals("Destroy View")) || (item
-											.getText().equals("Create View")))) {
+													.equals("Destroy View")))) {
 								item.setEnabled(false);
 							} else {
 								item.setEnabled(true);
