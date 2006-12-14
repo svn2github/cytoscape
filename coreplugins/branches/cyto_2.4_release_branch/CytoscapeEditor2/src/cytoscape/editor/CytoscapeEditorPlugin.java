@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Mon Aug 01 08:42:41 2005
-* Modified:     Wed Sep 13 13:22:58 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Tue Dec 05 10:57:27 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -31,8 +31,6 @@ package cytoscape.editor;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.editor.editors.MapBioMoleculeEditorToVisualStyle;
-
 import cytoscape.plugin.CytoscapePlugin;
 
 
@@ -46,10 +44,10 @@ import cytoscape.plugin.CytoscapePlugin;
 public class CytoscapeEditorPlugin extends CytoscapePlugin {
     public CytoscapeEditorPlugin() {
         // MLC 07/24/06 BEGIN:
-        // System.out.println("CytoscapeEditor loaded ");
+        // CytoscapeEditorManager.log("CytoscapeEditor loaded ");
         // MainPluginAction mpa = new MainPluginAction();
         // CytoscapeEditorManager.setRunningEditorFramework(true);
-        // System.out.println("Setting up CytoscapeEditor");
+        // CytoscapeEditorManager.log("Setting up CytoscapeEditor");
         // mpa.initializeCytoscapeEditor();
         initializeCytoscapeEditor();
 
@@ -84,11 +82,29 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
         CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE,
             CytoscapeEditorManager.ANY_VISUAL_STYLE);
 
-        CytoscapeEditorManager.register("SimpleBioMoleculeEditor",
-            "cytoscape.editor.event.PaletteNetworkEditEventHandler",
-            CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE,
-            MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
-
+        // AJK: 12/09/06 SimpleBioMoleculeEditor deleted 
+       /* 
+	CytoscapeEditorManager.register("SimpleBioMoleculeEditor",
+	            "cytoscape.editor.event.PaletteNetworkEditEventHandler",
+	            CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE,
+	            MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
+	
+	*/
+        
+        // AJK: 12/09/06 BEGIN
+        //    register an editor to handle BioPAX visual style
+        //    TODO: this is a short-term contingency, to be overhauled
+        //          when vizmapper is overhauled for Cytoscape 2.5
+//    	CytoscapeEditorManager.register("cytoscape.editor.editors.SimpleBioPAXEditor",
+//	            "cytoscape.editor.event.PaletteNetworkEditEventHandler",
+//	            "biopax.entity_type",   // controlling node attribute
+//	            "BIOPAX_EDGE_TYPE",          // controlling edge type
+//	            "BioPAX v 0_5");
+//       
+        
+        // AJK: 12/09/06 END
+        
+        
         String editorName = CytoscapeEditorManager.DEFAULT_EDITOR_TYPE;
 
         try {
@@ -97,7 +113,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
             // MLC 08/06/06:
             // CytoscapeEditorManager.setDefaultEditor(cyEditor);
         } catch (InvalidEditorException ex) {
-            System.out.println("Error: cannot set up Cytoscape Editor: " +
+            CytoscapeEditorManager.log("Error: cannot set up Cytoscape Editor: " +
                 editorName);
         }
 
@@ -165,7 +181,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
     //				CytoscapeEditorManager.setCurrentEditor(cyEditor);
     //				CytoscapeEditorManager.setDefaultEditor(cyEditor);
     //			} catch (InvalidEditorException ex) {
-    //				System.out.println("Error: cannot set up Cytoscape Editor: "
+    //				CytoscapeEditorManager.log("Error: cannot set up Cytoscape Editor: "
     //						+ editorName);
     //			}
     //

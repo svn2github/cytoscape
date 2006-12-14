@@ -118,6 +118,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
             return;
         }
 
+        
         VisualMappingManager VMM = (VisualMappingManager) e.getSource();
 
         if (VMM != null) {
@@ -132,9 +133,12 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
     // implements CytoPanelListener interface:
     public void onComponentSelected(int componentIndex) {
-        if (componentIndex == Cytoscape.getDesktop()
-                                       .getCytoPanel(SwingConstants.WEST)
-                                       .getSelectedIndex()) {
+        int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent(
+        "Editor");
+//        if (componentIndex == Cytoscape.getDesktop()
+//                                       .getCytoPanel(SwingConstants.WEST)
+//                                       .getSelectedIndex()) {
+        if (componentIndex == idx) {
             updateEditorPalette(
                 Cytoscape.getVisualMappingManager().getVisualStyle());
         }
@@ -179,6 +183,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
      */
     public void updateEditorPalette(VisualStyle style) {
         // AJK: 06/16/06 only update palette after CYTOSCAPE_INITIALIZED
+    	
+    	CytoscapeEditorManager.log("setting up editor for visual style: " + style);
         if (!CytoscapeEditorManager.isEditingEnabled()) {
             return;
         }
@@ -188,20 +194,27 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
         // String editorType = style.getName();
         String editorType = CytoscapeEditorManager.getEditorNameForVisualStyleName(
             style.getName());
+       	CytoscapeEditorManager.log("got editor name for visual style: " + editorType);
+        
 
         // MLC 08/06/06 END.
         CytoscapeEditor editorForStyle = null;
 
         try {
             editorForStyle = CytoscapeEditorFactory.INSTANCE.getEditor(editorType);
+            CytoscapeEditorManager.log("got editor for style: " + style.getName() 
+            		+ " = " + editorForStyle);
+
         } catch (InvalidEditorException ex) {
+        	CytoscapeEditorManager.log
+        	("Could not find editor for editor type: " + editorType);
             editorType = CytoscapeEditorManager.DEFAULT_EDITOR_TYPE;
 
             try {
                 editorForStyle = CytoscapeEditorFactory.INSTANCE.getEditor(
                     editorType);
             } catch (InvalidEditorException exe) {
-                System.out.println(
+                CytoscapeEditorManager.log(
                     "Error building editor for editor type = " + editorType +
                     ", error = " + ex);
                 exe.printStackTrace();
@@ -213,15 +226,16 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
             CytoscapeEditor editorForView = CytoscapeEditorManager.getEditorForView(
                 Cytoscape.getCurrentNetworkView());
 
-            //			System.out.println("Got editor for view: " + editorForView);
+            			CytoscapeEditorManager.log("Got editor for view: " + editorForView);
             if ((editorForView != null) &&
                 (!CytoscapeEditorManager.isSettingUpEditor())) {
-                System.out.println(
+                CytoscapeEditorManager.log(
                     "Disabling controls for editor: " + editorForView);
                 editorForView.disableControls(null);
             }
 
-            //			System.out.println("Initializing controls for " + editorForStyle);
+            			
+            CytoscapeEditorManager.log("Initializing controls for " + editorForStyle);
             editorForStyle.initializeControls(null);
             CytoscapeEditorManager.setEditorForView(view, editorForStyle);
             CytoscapeEditorManager.setupNewNetworkView(view);
@@ -239,7 +253,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
     // implements PropertyChangeListener interface:
     public void propertyChange(PropertyChangeEvent e) {
-        //System.out.println("Got property change: " + e.getPropertyName());
+        //CytoscapeEditorManager.log("Got property change: " + e.getPropertyName());
         if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)) {
             String    netId = e.getNewValue().toString();
             CyNetwork net = Cytoscape.getNetwork(netId);
@@ -272,6 +286,14 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
         else if (e.getPropertyName()
                   .equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
             CyNetworkView   view     = Cytoscape.getCurrentNetworkView();
+            
+            // AJK: 12/09/06 BEGIN
+            //   try to get editor for visual style
+            VisualStyle vs = view.getVisualStyle();
+            
+            
+            
+            
             CytoscapeEditor cyEditor = CytoscapeEditorManager.getEditorForView(
                 view);
 
@@ -282,8 +304,10 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
             if (cyEditor == null) {
                 try {
+                	CytoscapeEditorManager.log("looking for default editor");
                     cyEditor = CytoscapeEditorFactory.INSTANCE.getEditor(
                         CytoscapeEditorManager.DEFAULT_EDITOR_TYPE);
+                    CytoscapeEditorManager.log("got default editor: " + cyEditor);
                 } catch (InvalidEditorException ex) {
                 }
             }
@@ -305,6 +329,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
                     // in this case, we need to setup the network view, which
                     // sets all
                     // the event handler, etc.
+                	CytoscapeEditorManager.log("Building network view for: " 
+                			+ view + " using editor " + cyEditor);
                     CytoscapeEditorManager.setupNewNetworkView(view);
                 }
             }
@@ -342,7 +368,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
         NodeView      nview  = networkView.getNodeView(node);
         final Point2D offset = nview.getOffset();
 
-        //		System.out.println("added node: " + node + " at coordinates "
+        //		CytoscapeEditorManager.log("added node: " + node + " at coordinates "
         //				+ nview.getOffset());
 
         // AJK: 06/21/06 gevalt, what a hack!  store coordinate position on node attributes so
@@ -424,7 +450,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
         // setup the clipboard and undo manager to be able to undo the deletion
         CytoscapeEditorManager.getEdgeClipBoard().elements(edges);
 
-        System.out.println("Adding an ADD edit to " + cyNet);
+        CytoscapeEditorManager.log("Adding an ADD edit to " + cyNet);
         CytoscapeEditorManager.addEdit(
             new AbstractUndoableEdit() {
                     // MLC 08/06/06:
@@ -478,11 +504,11 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
         // if a hide node operation implicitly hid its incident edges
         CyNetwork net = Cytoscape.getCurrentNetwork();
 
-        // System.out.println ("GraphPerspectiveChanged for network: " + net);
+        // CytoscapeEditorManager.log ("GraphPerspectiveChanged for network: " + net);
         boolean nodeChanges = false; // only create the
                                      // set if we need it
 
-        // System.out.println ("GraphPerspectiveChanged for network: " + net);
+        // CytoscapeEditorManager.log ("GraphPerspectiveChanged for network: " + net);
         boolean edgeChanges = false; // only create the
                                      // set if we need it
 

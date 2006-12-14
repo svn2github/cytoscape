@@ -237,7 +237,8 @@ public abstract class CytoscapeEditorManager {
      */
     public static final String EDGE_TYPE = "EDGE_TYPE";
     public static final String ANY_VISUAL_STYLE    = "ANY_VISUAL_STYLE";
-    public static final String DEFAULT_EDITOR_TYPE = "DefaultCytoscapeEditor";
+    public static final String DEFAULT_EDITOR_TYPE = 
+    	"cytoscape.editor.editors.DefaultCytoscapeEditor";
 
     /**
      * AJK: 06/19/06 CytoscapeEditor class descriptor -- for checking against NETWORK_MODIFIED events
@@ -246,6 +247,9 @@ public abstract class CytoscapeEditorManager {
 
     // MLC 07/24/06:
     private static boolean _initialized = false;
+    
+    // AJK: 12/06/06: flag for "logging" diagnostic output
+    private static boolean loggingEnabled = true;
 
     // MLC 08/06/06 BEGIN:
     //    /**
@@ -310,8 +314,12 @@ public abstract class CytoscapeEditorManager {
             CytoscapeEditorManager.setSettingUpEditor(true);
 
             // setup a new editor
+            
+            // AJK: 12/09/06
+            System.out.println("initializing Cytoscape editor: " + editorName);
             CytoscapeEditor cyEditor = CytoscapeEditorFactory.INSTANCE.getEditor(
                 editorName);
+            System.out.println("got CytoscapeEditor: " + cyEditor);
 
             NetworkEditEventAdapter event = initializeEditEventAdapter(cyEditor,
                                                                        networkEditAdapterName);
@@ -515,7 +523,7 @@ public abstract class CytoscapeEditorManager {
             initialize();
         }
 
-        System.out.println("Putting " + visualStyleName + " --> " + editorName);
+        CytoscapeEditorManager.log("Putting " + visualStyleName + " --> " + editorName);
         visualStyleNameToEditorNameMap.put(visualStyleName, editorName);
 
         CytoscapeEditor cyEditor = CytoscapeEditorManager.initializeEditor(
@@ -527,9 +535,17 @@ public abstract class CytoscapeEditorManager {
         //                networkEditAdapterName);
         // MLC 07/24/06 END.
         if (cyEditor != null) {
+        	CytoscapeEditorManager.log("setting controlling attributes for editor " 
+        			+ cyEditor);
+        	CytoscapeEditorManager.log("to " + controllingNodeAttribute 
+        		+ " and " + controllingEdgeAttribute);
             cyEditor.setControllingNodeAttribute(controllingNodeAttribute);
             cyEditor.setControllingEdgeAttribute(controllingEdgeAttribute);
         }
+    	CytoscapeEditorManager.log("now controlling attributes for editor " 
+    			+ cyEditor);
+    	CytoscapeEditorManager.log("are " + cyEditor.getControllingNodeAttribute()
+    		+ " and " + cyEditor.getControllingEdgeAttribute());
     }
 
     // MLC 08/06/06 BEGIN:
@@ -540,6 +556,8 @@ public abstract class CytoscapeEditorManager {
      * one.
      */
     public static String getEditorNameForVisualStyleName(String visualStyleName) {
+    	
+    	// AJK: 12/09/06: bug fix.  return editor for ANY_VISUAL_STYLE if no style is found
         return (String) visualStyleNameToEditorNameMap.get(visualStyleName);
     }
 
@@ -559,6 +577,13 @@ public abstract class CytoscapeEditorManager {
      */
     public static void setupNewNetworkView(CyNetworkView newView) {
         CytoscapeEditor         cyEditor = CytoscapeEditorManager.getCurrentEditor();
+        
+        if (cyEditor != null)
+        {
+        	CytoscapeEditorManager.setEditorForView(newView, cyEditor);
+        }
+        
+        
         ding.view.DGraphView    wiwx   = (DGraphView) newView;
         ding.view.InnerCanvas   canvas = wiwx.getCanvas();
         
@@ -1073,4 +1098,24 @@ public abstract class CytoscapeEditorManager {
             }
         }
     }
+
+    // AJK: 12/06/06: BEGIN
+    //    "logging" diagnostic output
+	public static boolean isLoggingEnabled() {
+		return loggingEnabled;
+	}
+
+	public static void setLoggingEnabled(boolean loggingEnabled) {
+		CytoscapeEditorManager.loggingEnabled = loggingEnabled;
+	}
+	
+	public static void log (String msg)
+	{
+		if (isLoggingEnabled())
+		{
+			System.out.println(msg);
+		}
+	}
+	
+	// AJK: 12/06/06
 }

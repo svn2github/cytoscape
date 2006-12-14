@@ -12,6 +12,7 @@ import java.awt.dnd.DragGestureListener;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
+import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 
 /**
@@ -101,7 +102,7 @@ public class BasicCytoShapeTransferHandler extends TransferHandler {
 
 	
     public boolean importData(JComponent c, Transferable t) {
-    	System.out.println("importing data from transferable " + t);
+    	CytoscapeEditorManager.log("importing data from transferable " + t);
         if (canImport(c, t.getTransferDataFlavors())) {   
         }
         return false;

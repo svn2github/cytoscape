@@ -6,6 +6,30 @@
 
 <UL>
 
+<LI><STRONG>CytoscapeEditor, Version 2.4 alfa 1 (12/08/06)</STRONG>
+<OL>
+
+<LI>Refactored BasicNetworkEditEventHandler.finishEdge() into smaller
+pieces for subclass usage. Cleaned up
+BasicNetworkEditEventHandler.mousePressed() and a few protected
+instance variables that should be private.
+<LI>Cleaned up code and refactored
+PaletteNetworkEditEventHandler.itemDropped() and associated methods
+for easier use by subclasses and code cleanup.
+<LI>Removed BioPAXNetworkEditEventHandler.
+</OL>
+
+<LI><STRONG>CytoscapeEditor, Version 2.3.03 (12/05/06)</STRONG>
+<OL>
+<LI>Created a new way to easily produce ShapePalette entries for
+editors.
+<LI>Added ability of ShapePalette entries to handle visual style
+size information.
+<LI>Added CytoShapeIcon.DEFAULT_WIDTH and DEFAULT_HEIGHT and deprecated
+  CytoShapeIcon.WIDTH & HEIGHT.
+<LI>Removed SimpleBioPAX_Editor.
+</OL>
+
 <LI><STRONG>CytoscapeEditor, Version 2.3.02 (11/06/06)</STRONG>
 <OL>
 <LI>Fixed compilation problem caused by accidental release of changes
@@ -47,4 +71,4 @@ CytoscapeEditor: Updated to remove deprecated use of FlagEventListener
 
 </UL>
 <HR>
-<SMALL><EM>This page was last updated: 11/06/06</EM></SMALL>
+<SMALL><EM>This page was last updated: 12/08/06</EM></SMALL>

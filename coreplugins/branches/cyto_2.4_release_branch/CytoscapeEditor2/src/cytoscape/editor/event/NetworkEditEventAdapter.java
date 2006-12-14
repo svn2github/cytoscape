@@ -68,8 +68,8 @@ public class NetworkEditEventAdapter
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addKeyListener(this);
-		// System.out.println("Mouse and MotionListeners added to " + canvas);
-		// System.out.println("Canvas has total number of Listeners = " +
+		// CytoscapeEditorManager.log("Mouse and MotionListeners added to " + canvas);
+		// CytoscapeEditorManager.log("Canvas has total number of Listeners = " +
 		// canvas.getMouseListeners().length);
 	}
 

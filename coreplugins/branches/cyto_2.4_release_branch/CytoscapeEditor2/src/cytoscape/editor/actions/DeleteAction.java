@@ -4,27 +4,25 @@
  */
 package cytoscape.editor.actions;
 
+import java.awt.event.ActionEvent;
+import java.awt.geom.Point2D;
+
+import javax.swing.undo.AbstractUndoableEdit;
+
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-
 import cytoscape.actions.GinyUtils;
-
+import cytoscape.data.CyAttributes;
 import cytoscape.editor.CytoscapeEditorManager;
-
 import cytoscape.util.CytoscapeAction;
-
 import cytoscape.view.CyNetworkView;
-
+import ding.view.DGraphView;
 import edu.umd.cs.piccolo.PNode;
-
+import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
-
-import java.awt.event.ActionEvent;
-
-import javax.swing.undo.AbstractUndoableEdit;
 
 
 /**
@@ -106,11 +104,37 @@ public class DeleteAction extends CytoscapeAction {
 
         final int[] nodes    = new int[nodeViews.size() + 1];
         int[]       allEdges = new int[0];
-
+        
+        // AJK: for saving and restoring coordinates
+        final double [] xPos = new double [nodeViews.size() + 1];
+        final double [] yPos = new double [nodeViews.size() + 1];
+ 
         // first collect the selected nodes and their adjacent edges
         for (int i = 0; i < nodeViews.size(); i++) {
             NodeView nview     = (NodeView) nodeViews.get(i);
             CyNode   cyNode    = (CyNode) nview.getNode();
+            
+            // AJK: for saving and restoring node coordinates
+            xPos [i] = nview.getXPosition();
+            yPos [i] = nview.getYPosition();
+
+            // AJK: 06/21/06 gevalt, what a hack!  store coordinate position on node attributes so
+			//    that a subsequent undo will restore node to its coordinate position
+//			Point2D offset = nview.getOffset();
+//			if (offset != null) {
+//				double[] nextLocn = new double[2];
+//				nextLocn[0] = offset.getX();
+//				nextLocn[1] = offset.getY();
+//				((DGraphView) Cytoscape.getCurrentNetworkView())
+//						.xformComponentToNodeCoords(nextLocn);
+//				CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+//				nodeAttribs.setAttribute(cyNode.getIdentifier(), "X_pos", 
+//						new Double(nextLocn[0]));
+//				nodeAttribs.setAttribute(cyNode.getIdentifier(), "Y_pos", 
+//						new Double(nextLocn[1]));
+//			}
+//		  
+            
             int      nodeIdx   = cyNode.getRootGraphIndex();
             nodes[i] = nodeIdx;
 
@@ -154,6 +178,18 @@ public class DeleteAction extends CytoscapeAction {
             CyNode cyNode           = (CyNode) _cyObj;
             int    nodeIdx = cyNode.getRootGraphIndex();
             nodes[nodeViews.size()] = nodeIdx;
+
+            // AJK 12/09/06: BEGIN
+            //     for saving and restoring node coordinates
+            NodeView nview = Cytoscape.getCurrentNetworkView().getNodeView(cyNode);
+            if (nview  != null)
+            {
+                xPos [nodeViews.size()] = nview.getXPosition();
+                yPos [nodeViews.size()] = nview.getYPosition();
+            }
+            // AJK: 12/09/06 END
+
+           
 
             int[] edgesList = cyNet.getAdjacentEdgeIndicesArray(nodeIdx,
                                                                 true,
@@ -264,8 +300,38 @@ public class DeleteAction extends CytoscapeAction {
                             GinyUtils.unHideAll(
                                 cytoscape.Cytoscape.getCurrentNetworkView());
                         }
+                        
+    					// restore positions of nodes
+						for (int i = 0; i < nodes.length; i++)
+						{
+							Node n = network.getNode(nodes[i]);
+							CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+							NodeView nv = 
+								Cytoscape.getCurrentNetworkView().getNodeView(nodes[i]);
+							if ((xPos[i] != Double.NaN) && (yPos[i] != Double.NaN))
+							{
+								nv.setOffset(xPos[i], yPos[i]);
+							}
+							
+						}
                     }
-                });
+            });
+							
+
+//							Double xPos = nodeAttribs.getDoubleAttribute
+//							  (n.getIdentifier(), "X_pos");
+//							Double yPos = nodeAttribs.getDoubleAttribute
+//							  (n.getIdentifier(), "Y_pos");
+//							if ((xPos != null) && (yPos != null))
+//							{
+//								NodeView nv = 
+//									Cytoscape.getCurrentNetworkView().getNodeView(nodes[i]);
+//								nv.setOffset(xPos.doubleValue(), yPos.doubleValue());
+//								
+//							}
+//						}                    }
+//                }
+						
 
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
                                      CytoscapeEditorManager.CYTOSCAPE_EDITOR,

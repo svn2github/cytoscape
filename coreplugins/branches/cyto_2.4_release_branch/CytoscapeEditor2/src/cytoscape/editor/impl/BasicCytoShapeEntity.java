@@ -3,12 +3,12 @@
 *
 * File:         BasicCytoShapeEntity.java
 * RCS:          $Header: $
-* Description:  
+* Description:
 * Author:       Allan Kuchinsky
 * Created:      Sun May 29 11:22:33 2005
-* Modified:     Thu Sep 14 09:33:15 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Tue Dec 05 04:40:28 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
-* Package:      
+* Package:
 * Status:       Experimental (Do Not Distribute)
 *
 * (c) Copyright 2006, Agilent Technologies, all rights reserved.
@@ -17,12 +17,13 @@
 *
 * Revisions:
 *
+* Tue Dec 05 04:39:09 2006 (Michael L. Creech) creech@w235krbza760
+*  Changed computation of BasicCytoShapeEntity size to allow for
+*  larger CytoShapeIcons.
 * Sun Aug 06 11:22:50 2006 (Michael L. Creech) creech@w235krbza760
 *  Added generated serial version UUID for serializable classes.
 ********************************************************************************
 */
-
-
 package cytoscape.editor.impl;
 
 import cytoscape.Cytoscape;
@@ -100,7 +101,7 @@ public class BasicCytoShapeEntity extends JComponent
      * the source of a drag event
      */
     DragSource myDragSource;
-    DragGestureRecognizer myDragGestureRecognizer;
+    DragGestureRecognizer         myDragGestureRecognizer;
     BasicCytoShapeTransferHandler handler;
 
     /**
@@ -116,11 +117,11 @@ public class BasicCytoShapeEntity extends JComponent
      * @param title the title of the shape
      */
     public BasicCytoShapeEntity(String attributeName, String attributeValue,
-        Icon image, String title) {
+                                Icon image, String title) {
         super();
         this.setTitle(title);
-        _image = image;
-        this.attributeName = attributeName;
+        _image              = image;
+        this.attributeName  = attributeName;
         this.attributeValue = attributeValue;
 
         if (image instanceof ImageIcon) {
@@ -131,14 +132,12 @@ public class BasicCytoShapeEntity extends JComponent
 
         if (this.attributeName != null) {
             if (this.attributeName.equals("NODE_TYPE")) {
-                _cytoShape.setToolTipText(
-                    "<html>To add a node to a network,<br>" +
-                    "drag and drop a shape<br>from the palette onto the canvas.</html>");
+                _cytoShape.setToolTipText("<html>To add a node to a network,<br>" +
+                                          "drag and drop a shape<br>from the palette onto the canvas.</html>");
             } else if (this.attributeName.equals("EDGE_TYPE")) {
-                _cytoShape.setToolTipText(
-                    "<html>To connect two nodes with an edge<br>" +
-                    "drag and drop the arrow onto a node<br>on the canvas, " +
-                    "then move the cursor<br>over a second node and click the mouse.</html>");
+                _cytoShape.setToolTipText("<html>To connect two nodes with an edge<br>" +
+                                          "drag and drop the arrow onto a node<br>on the canvas, " +
+                                          "then move the cursor<br>over a second node and click the mouse.</html>");
             }
         }
 
@@ -152,21 +151,37 @@ public class BasicCytoShapeEntity extends JComponent
         // MLC 07/27/06:
         myDragSource.addDragSourceListener(new TestDragSourceListener());
         myDragGestureRecognizer = myDragSource.createDefaultDragGestureRecognizer(_cytoShape,
-                DnDConstants.ACTION_COPY, this);
-        handler = (new BasicCytoShapeTransferHandler(this, null));
+                                                                                  DnDConstants.ACTION_COPY,
+                                                                                  this);
+        handler                 = (new BasicCytoShapeTransferHandler(this, null));
         this.setTransferHandler(handler);
 
-        this.setMaximumSize(new Dimension(((JPanel) Cytoscape.getDesktop()
-                                                             .getCytoPanel(SwingConstants.WEST)).getSize().width -
-                5, 2 * CytoShapeIcon.HEIGHT));
+        // MLC 12/04/06 BEGIN:
+        // force height to be at least
+        // CytoscapeShapeIcon.DEFAULT_HEIGHT but larger if needed:
+        Dimension mySize = new Dimension(((JPanel) Cytoscape.getDesktop()
+                                                            .getCytoPanel(SwingConstants.WEST)).getSize().width -
+                                         5,
+                                         Math.max(_image.getIconHeight(),
+                                                  CytoShapeIcon.DEFAULT_HEIGHT) +
+                                         CytoShapeIcon.DEFAULT_HEIGHT);
 
-        this.setMinimumSize(new Dimension(((JPanel) Cytoscape.getDesktop()
-                                                             .getCytoPanel(SwingConstants.WEST)).getSize().width -
-                5, 2 * CytoShapeIcon.HEIGHT));
+        this.setMaximumSize(mySize);
+        this.setMinimumSize(mySize);
+        this.setPreferredSize(mySize);
 
-        this.setPreferredSize(new Dimension(((JPanel) Cytoscape.getDesktop()
-                                                               .getCytoPanel(SwingConstants.WEST)).getSize().width -
-                5, 2 * CytoShapeIcon.HEIGHT));
+        //        this.setMaximumSize(new Dimension(((JPanel) Cytoscape.getDesktop()
+        //                                                             .getCytoPanel(SwingConstants.WEST)).getSize().width -
+        //                5, 2 * CytoShapeIcon.HEIGHT));
+        //
+        //        this.setMinimumSize(new Dimension(((JPanel) Cytoscape.getDesktop()
+        //                                                             .getCytoPanel(SwingConstants.WEST)).getSize().width -
+        //                5, 2 * CytoShapeIcon.HEIGHT));
+        //
+        //        this.setPreferredSize(new Dimension(((JPanel) Cytoscape.getDesktop()
+        //                                                               .getCytoPanel(SwingConstants.WEST)).getSize().width -
+        //                5, 2 * CytoShapeIcon.HEIGHT));
+        // MLC 12/04/06 END.
     }
 
     /**
@@ -256,7 +271,8 @@ public class BasicCytoShapeEntity extends JComponent
     }
 
     public void dragGestureRecognized(DragGestureEvent e) {
-        e.startDrag(DragSource.DefaultCopyDrop, handler.createTransferable(this));
+        e.startDrag(DragSource.DefaultCopyDrop,
+                    handler.createTransferable(this));
     }
 
     // MLC 07/27/06 BEGIN:
@@ -264,18 +280,18 @@ public class BasicCytoShapeEntity extends JComponent
         public void dragEnter(DragSourceDragEvent dsde) {
             dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
 
-            // System.out.println("dragEnter = " + comp);
+            // CytoscapeEditorManager.log("dragEnter = " + comp);
         }
 
         // public void dragOver(DragSourceDragEvent dsde) {
         //    DragSourceContext dsc = (DragSourceContext) dsde.getSource();
         //   Component comp = dsc.getComponent();
-        //   System.out.println("dragOver = " + comp);
+        //   CytoscapeEditorManager.log("dragOver = " + comp);
         //}
         public void dragExit(DragSourceEvent dse) {
             dse.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
 
-            // System.out.println("dragExit");
+            // CytoscapeEditorManager.log("dragExit");
         }
 
         // MLC 07/27/06 END.
