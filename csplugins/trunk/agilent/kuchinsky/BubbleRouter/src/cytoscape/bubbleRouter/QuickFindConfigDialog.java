@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.regex.*;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -39,6 +40,7 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.util.CytoscapeAction;
 
 /**
  * Quick Find Config Dialog Box.
@@ -88,6 +90,8 @@ public class QuickFindConfigDialog extends JDialog {
 	 * Apply Text.
 	 */
 	private static final String BUTTON_TEXT = "Select";
+	
+	//private static final String FILE_SELECT = "Load attributes from file";
 
 	/**
 	 * Apply Button.
@@ -316,7 +320,7 @@ public class QuickFindConfigDialog extends JDialog {
 	 */
 	private void addTableModel(JTable table) {
 		Object selectedAttribute = attributeComboBox.getSelectedItem();
-
+		
 		// Determine current attribute key
 		String attributeKey;
 		if (selectedAttribute != null) {
@@ -332,18 +336,49 @@ public class QuickFindConfigDialog extends JDialog {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		Iterator nodeIterator = network.nodesIterator();
+		
 		String values[] = CyAttributesUtil.getDistinctAttributeValues(
 				nodeIterator, nodeAttributes, attributeKey, 50);
+		
+		//INSERT PATTERN split here (12/5/06 meeting)
+		
+		//Kristina Hanspers and others 12/11/06
+		
+		Vector valueList = new Vector();
+		String splitValues[] = null;
+	
+		for (int i = 0; i < (values.length); i++) {
+				splitValues = values[i].split("[|]");
+				for (int j = 0; j < (splitValues.length); j++){
+					if (!valueList.contains(splitValues[j])){
+					valueList.add(splitValues[j]);
+					}
+					}
+				}
+		System.out.println("valueList after parsing: "+valueList);
+		
+	    String[] finalValues = new String[valueList.size()+1];
+	    Iterator it = valueList.iterator();
+	    finalValues[0] = "unassigned";
+	    int index = 1;
+	    while (it.hasNext()){
+	    	finalValues[index] = (String) it.next();
+	    	index++;
+	    }
+	    System.out.println("finalValues: "+finalValues);
+	    
 		// AP 10.8.06
-		TableModel model = new DefaultTableModel(columnNames, values.length+1);
+		TableModel model = new DefaultTableModel(columnNames, finalValues.length);
+		
 		// DetermineDistinctValuesTask task = new DetermineDistinctValuesTask(
 		// model, attributeKey, this);
-		if (values != null && values.length > 0) {
+		
+		if (finalValues != null && finalValues.length > 0) {
 			// APico 9.17.06 / 10.7.06
 			// Insert "unassigned" value at top of list for bubble router
-			model.setValueAt("unassigned", 0, 0);
-			for (int i = 0; i < ((values.length >= 50) ? 50 : values.length); i++) {
-				model.setValueAt(values[i], i+1, 0);
+			//model.setValueAt("unassigned", 0, 0);
+			for (int i = 0; i < ((finalValues.length >= 50) ? 50 : finalValues.length); i++) {
+			model.setValueAt(finalValues[i], i, 0);
 			}
 		}
 
@@ -372,8 +407,8 @@ public class QuickFindConfigDialog extends JDialog {
 						.getValueAt(selectedRow, 0);
 			}
 
-		});
-	}
+		});}
+	
 
 	/**
 	 * Creates the Attribute Selection Panel.
@@ -388,7 +423,7 @@ public class QuickFindConfigDialog extends JDialog {
 		// Obtain Node Attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		String attributeNames[] = nodeAttributes.getAttributeNames();
-
+		
 		if (attributeNames != null) {
 			JLabel label = new JLabel("Layout by Attribute:  ");
 			label.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -409,10 +444,10 @@ public class QuickFindConfigDialog extends JDialog {
 					}
 				}
 			}
-
+			
 			// Alphabetical sort
 			Collections.sort(attributeList);
-
+			
 			// Add default: Unique Identifier
 			attributeList.insertElementAt(QuickFind.UNIQUE_IDENTIFIER, 0);
 
@@ -485,7 +520,7 @@ public class QuickFindConfigDialog extends JDialog {
 	public static void main(String[] args) {
 		new QuickFindConfigDialog();
 	}
-}
+	}
 
 /**
  * Long-term task to Reindex QuickFind.
@@ -522,7 +557,7 @@ class ReindexQuickFind implements Task {
 	 */
 	public void run() {
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-		quickFind.reindexNetwork(cyNetwork, newAttributeKey, taskMonitor);
+		//quickFind.reindexNetwork(cyNetwork, newAttributeKey, taskMonitor);
 
 		// APico 9.17.06
 		// Send user-selected attribute name to bubble router

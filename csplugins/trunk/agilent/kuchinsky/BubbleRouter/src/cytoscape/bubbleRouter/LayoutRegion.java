@@ -349,10 +349,13 @@ import ding.view.DingCanvas;
 			Node node = (Node) it.next();
 			String val = attribs.getStringAttribute(node.getIdentifier(),
 					attributeName);
+			//val is a string with pipes, needs to get split into array, loop through elements in array
+			//below and match 
 			if (val != null) {
 				System.out.println("this.regionAttributeValue = "
 						+ this.regionAttributeValue);
-				if (val.equalsIgnoreCase(this.regionAttributeValue.toString())) {
+				//if (val.equalsIgnoreCase(this.regionAttributeValue.toString())) {
+				  if (val.indexOf(this.regionAttributeValue.toString()) >= 0){
 					selectedNodes.add(node);
 				}
 			} else if (regionAttributeValue.equals("unassigned")) {
