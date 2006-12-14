@@ -25,20 +25,22 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	/**
 	 * Lines begin with this charactor will be considered as comment lines.
 	 */
-	private static final String COMMENT_CHAR = "!";
 	private static final int DEF_KEY_COLUMN = 0;
 
 	private final URL source;
 	private AttributeMappingParameters mapping;
 	private final AttributeLineParser parser;
-	
+
+	// Number of mapped attributes.
+	private int globalCounter = 0;
+
 	/*
 	 * Reader will read entries from this line.
 	 */
 	private final int startLineNumber;
 
 	private String commentChar = null;
-	
+
 	/**
 	 * Constructor.<br>
 	 * 
@@ -47,17 +49,18 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	 * @param delimiters
 	 * @throws Exception
 	 */
-	public DefaultAttributeTableReader(final URL source, final ObjectType objectType,
-			final List<String> delimiters) throws Exception {
-		this(source, objectType, delimiters, null,
-				DEF_KEY_COLUMN, null, null, null, null, null, 0);
+	public DefaultAttributeTableReader(final URL source,
+			final ObjectType objectType, final List<String> delimiters)
+			throws Exception {
+		this(source, objectType, delimiters, null, DEF_KEY_COLUMN, null, null,
+				null, null, null, 0);
 	}
 
-	public DefaultAttributeTableReader(final URL source, final ObjectType objectType,
-			final List<String> delimiters, final int key,
-			final String[] columnNames) throws Exception {
-		this(source, objectType, delimiters, null,
-				DEF_KEY_COLUMN, null, null, columnNames, null, null, 0);
+	public DefaultAttributeTableReader(final URL source,
+			final ObjectType objectType, final List<String> delimiters,
+			final int key, final String[] columnNames) throws Exception {
+		this(source, objectType, delimiters, null, DEF_KEY_COLUMN, null, null,
+				columnNames, null, null, 0);
 	}
 
 	/**
@@ -72,25 +75,27 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	 * @param aliases
 	 * @param columnNames
 	 * @param toBeImported
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public DefaultAttributeTableReader(final URL source, final ObjectType objectType,
-			final List<String> delimiters, final String listDelimiter,
-			final int keyIndex, final String mappingAttribute,
-			final List<Integer> aliasIndexList, final String[] attributeNames,
-			final Byte[] attributeTypes, final boolean[] importFlag, final int startLineNumber) throws Exception {
-	
+	public DefaultAttributeTableReader(final URL source,
+			final ObjectType objectType, final List<String> delimiters,
+			final String listDelimiter, final int keyIndex,
+			final String mappingAttribute, final List<Integer> aliasIndexList,
+			final String[] attributeNames, final Byte[] attributeTypes,
+			final boolean[] importFlag, final int startLineNumber)
+			throws Exception {
+
 		this.source = source;
 		this.startLineNumber = startLineNumber;
-		this.mapping = new AttributeMappingParameters(objectType,
-				delimiters, listDelimiter,
-				keyIndex, mappingAttribute,
-				aliasIndexList, attributeNames,
-				attributeTypes, null, importFlag); 
+		this.mapping = new AttributeMappingParameters(objectType, delimiters,
+				listDelimiter, keyIndex, mappingAttribute, aliasIndexList,
+				attributeNames, attributeTypes, null, importFlag);
 		this.parser = new AttributeLineParser(mapping);
 	}
-	
-	public DefaultAttributeTableReader(final URL source, AttributeMappingParameters mapping, final int startLineNumber, final String commentChar) {
+
+	public DefaultAttributeTableReader(final URL source,
+			AttributeMappingParameters mapping, final int startLineNumber,
+			final String commentChar) {
 		this.source = source;
 		this.mapping = mapping;
 		this.startLineNumber = startLineNumber;
@@ -98,7 +103,6 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		this.commentChar = commentChar;
 	}
 
-	
 	public List getColumnNames() {
 		List<String> colNamesList = new ArrayList<String>();
 		for (String name : mapping.getAttributeNames()) {
@@ -117,7 +121,7 @@ public class DefaultAttributeTableReader implements TextTableReader {
 				is));
 		String line;
 		int lineCount = 0;
-		
+
 		/*
 		 * Read & extract one line at a time. The line can be Tab delimited,
 		 */
@@ -125,12 +129,12 @@ public class DefaultAttributeTableReader implements TextTableReader {
 			/*
 			 * Ignore Empty & Commnet lines.
 			 */
-			if(commentChar != null && line.startsWith(commentChar)) {
+			if (commentChar != null && line.startsWith(commentChar)) {
 				// Do nothing
-			}
-			else if (lineCount > startLineNumber && line.trim().length() > 0) {
+			} else if (lineCount > startLineNumber && line.trim().length() > 0) {
 				String[] parts = line.split(mapping.getDelimiterRegEx());
 				parser.parseEntry(parts);
+				globalCounter++;
 			}
 			lineCount++;
 		}
@@ -139,10 +143,10 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	}
 
 	public String getReport() {
-		// TODO Auto-generated method stub
+
 		final StringBuffer sb = new StringBuffer();
-		
-		
+		sb.append(globalCounter + " entries are loaded and mapped onto\n");
+		sb.append(mapping.getObjectType().toString() + " attributes");
 		return sb.toString();
 	}
 

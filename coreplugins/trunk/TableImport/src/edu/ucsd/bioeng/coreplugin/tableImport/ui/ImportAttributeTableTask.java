@@ -54,7 +54,9 @@ public class ImportAttributeTableTask implements Task {
 
 		// Give the user some confirmation
 		sb.append("Succesfully loaded attribute data from:\n\n");
-		sb.append(source + "\n");
+		sb.append(source + "\n\n");
+		
+		sb.append(reader.getReport());
 
 		taskMonitor.setStatus(sb.toString());
 	}

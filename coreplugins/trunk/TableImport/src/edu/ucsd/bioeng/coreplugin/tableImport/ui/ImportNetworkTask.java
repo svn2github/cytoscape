@@ -7,6 +7,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
 
 public class ImportNetworkTask implements Task {
 	private final GraphReader reader;
@@ -45,7 +46,8 @@ public class ImportNetworkTask implements Task {
 
 		// Give the user some confirmation
 		sb.append("Succesfully loaded network and edge attributes from:\n");
-		sb.append(source.toString());
+		sb.append(source.toString() + "\n");
+		sb.append(((TextTableReader)reader).getReport());
 		taskMonitor.setStatus(sb.toString());
 	}
 

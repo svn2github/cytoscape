@@ -317,7 +317,7 @@
 					windowClass="cytoscape.task.ui.JTask" />
 			</if>
 		</retriever>
-		<Delay ms="1000" />
+		<Delay ms="10000" />
 	</scenario>
 
 </document>

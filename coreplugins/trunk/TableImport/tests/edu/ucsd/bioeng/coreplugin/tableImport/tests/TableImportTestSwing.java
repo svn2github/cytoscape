@@ -46,7 +46,7 @@ public class TableImportTestSwing extends TestCase {
 		Runnable r = new Runnable() {
 			public void run() {
 				try {
-					String[] args = { "-p", "./TableImport.jar ./browser.jar" };
+					String[] args = { "-p", "./TableImport.jar" };
 					application = new CyMain(args);
 				} catch (Exception e) {
 					e.printStackTrace();

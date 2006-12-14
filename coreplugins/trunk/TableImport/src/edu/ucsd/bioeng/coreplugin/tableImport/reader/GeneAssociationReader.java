@@ -70,10 +70,12 @@ public class GeneAssociationReader implements TextTableReader {
 	/*
 	 * Default key columns
 	 */
+	private static final int DB_OBJ_ID = 1;
 	private static final int KEY = 2;
 	private static final int OBJ_NAME = 9;
 	private static final int SYNONYM = 10;
 	private static final int GOID = 4;
+	
 
 	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
 
@@ -217,7 +219,7 @@ public class GeneAssociationReader implements TextTableReader {
 	 * @return
 	 */
 	private String setAlias(final String key, final String objName,
-			final String synoString) {
+			final String synoString, final String dbSpecificId) {
 
 		final String[] synos = synoString.split(PIPE.toString());
 		final String[] objNames;
@@ -234,6 +236,10 @@ public class GeneAssociationReader implements TextTableReader {
 		}
 
 		idSet.add(key);
+		
+		if(dbSpecificId != null && dbSpecificId.length() != 0) {
+			idSet.add(dbSpecificId);
+		}
 
 		/*
 		 * Build a Set of node names which includes all aliases and id.
@@ -311,7 +317,7 @@ public class GeneAssociationReader implements TextTableReader {
 			 */
 			if (keyAttributeName.equals(ID)) {
 				String newKey = setAlias(entries[KEY], entries[OBJ_NAME],
-						entries[SYNONYM]);
+						entries[SYNONYM], entries[DB_OBJ_ID]);
 				if (newKey != null) {
 					mapEntry(entries, newKey, attributeName);
 				}
