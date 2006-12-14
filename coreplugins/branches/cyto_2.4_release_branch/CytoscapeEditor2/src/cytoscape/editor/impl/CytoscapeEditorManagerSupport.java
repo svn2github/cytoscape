@@ -541,9 +541,9 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
         }
 
         if (nodeChanges || edgeChanges) {
-            Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
-                                         CytoscapeEditorManager.CYTOSCAPE_EDITOR, // for distinguishing from batch firing of event
-                                         Cytoscape.getCurrentNetwork());
+//            Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
+//                                         CytoscapeEditorManager.CYTOSCAPE_EDITOR, // for distinguishing from batch firing of event
+//                                         Cytoscape.getCurrentNetwork());
         }
     }
 }
