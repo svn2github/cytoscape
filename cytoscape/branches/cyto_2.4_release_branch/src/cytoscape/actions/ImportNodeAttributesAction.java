@@ -130,10 +130,6 @@ class ImportAttributesTask implements Task {
         try {
             taskMonitor.setPercentCompleted(-1);
             taskMonitor.setStatus("Reading in Attributes");
-            //  Get Defaults.
-            BioDataServer bioDataServer = Cytoscape.getBioDataServer();
-            String speciesName = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-            boolean canonicalize = CytoscapeInit.getProperties().getProperty("canonicalizeNames").equals("true");
 
             //  Read in Data
             
@@ -146,16 +142,10 @@ class ImportAttributesTask implements Task {
 	            taskMonitor.setPercentCompleted(100*i/files.length);
 	            if ( type == NODE_ATTRIBUTES ) 
 	                Cytoscape.loadAttributes( new String[] { files[i].getAbsolutePath() },
-	                                          new String[] {},
-	                                          canonicalize,
-	                                          bioDataServer,
-	                                          speciesName );
+	                                          new String[] {});
 	            else if ( type == EDGE_ATTRIBUTES ) 
 	                Cytoscape.loadAttributes( new String[] {},
-		                                      new String[] { files[i].getAbsolutePath() },
-	                                          canonicalize,
-	                                          bioDataServer,
-	                                          speciesName );
+		                                      new String[] { files[i].getAbsolutePath() });
 	            else
 	                throw new Exception("Unknown attribute type: " + Integer.toString(type) );
 	        }
