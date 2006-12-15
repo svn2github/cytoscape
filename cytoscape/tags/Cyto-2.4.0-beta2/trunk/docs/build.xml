@@ -1,0 +1,318 @@
+<?xml version="1.0"?>
+<project name="Cytoscape" default="all">
+
+	<property name="basedir" value="."/>
+	<property name="docbook-xsl" value="docbook-xsl-1.70.1"/>
+	<property name="xsl" value="${basedir}/xsl/${docbook-xsl}"/>
+	<property name="xep.home" value="/cellar/users/mes/XEP"/>
+
+        <!-- ick -->
+	<available file="images/cyto-logo-smaller.gif" type="file" property="images-exist"/>
+
+	<available file="manual_raw.xml" property="raw-manual-exists"/>
+	<available file="${xep.home}" property="xep-exists"/>
+	<available file="${basedir}/xsl/${docbook-xsl}" property="no-unzip"/>
+
+
+        <!--==============================================================-->
+        <!-- Init conditionally -->
+	<target name="init"
+	        depends="xep-init,non-xep-init,unzip-xsl"/>
+
+
+
+        <!--==============================================================-->
+        <!-- Init if XEP does not exist -->
+	<target name="non-xep-init"
+	        unless="xep-exists">
+		<echo message="XEP does not exist - No PDF for you!"/>
+		<path id="classpath">
+			<fileset dir="lib">
+				<include name="saxon.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+        <!--==============================================================-->
+        <!-- Init if XEP does exist -->
+	<target name="xep-init"
+	        if="xep-exists">
+		<echo message="XEP exists - You get a PDF!"/>
+		<property name="xep.lib" value="${xep.home}/lib"/>
+		<taskdef name="xep" classname="com.renderx.xepx.ant.XEPTask"
+			 classpath="${xep.lib}/XEPTask.jar"/>
+
+		<path id="classpath">
+			<fileset dir="lib">
+				<include name="saxon.jar"/>
+			</fileset>
+			<fileset dir="${xep.lib}">
+				<include name="xep*.jar"/>
+				<include name="xt.jar"/>
+			</fileset>
+			<pathelement path="${xep.lib}/XEPTask.jar"/>
+		</path>
+	</target>
+
+
+        <!--==============================================================-->
+        <!-- unzip the xsl only if it hasn't been already -->
+	<target name="unzip-xsl"
+	        unless="no-unzip">
+		<unzip src="${basedir}/xsl/${docbook-xsl}.zip" 
+		       dest="${basedir}/xsl" />
+	</target>
+
+
+        <!--==============================================================-->
+	<!-- Fetch the DocBook XML from the wiki page. --> 
+	<target name="fetch-manual" 
+                description="fetches the raw manual file"
+                depends="init"
+		unless="raw-manual-exists">
+		<get src="http://cytoscape.org/cgi-bin/moin.cgi/Cytoscape_User_Manual?action=format&amp;mimetype=xml/docbook" 
+		     dest="manual_raw.xml"/>
+	</target>
+
+
+        <!--==============================================================-->
+	<!-- Fetch the images from the wiki page. --> 
+	<target name="fetch-images" 
+                description="Fetches the images from the manual"
+		depends="fetch-manual"
+		unless="images-exist">
+
+		<!-- Correct the urls in the raw manual.  -->
+		<copy file="manual_raw.xml" 
+		      tofile="manual_tmp.xml" 
+		      overwrite="yes">
+       		 	<filterchain>
+				<tokenfilter>
+					<replacestring from="/cgi-bin/moin.cgi" 
+					               to="http://cytoscape.org/cgi-bin/moin.cgi"/>
+					<replacestring from="&amp;amp;#8594;" to="&amp;#8594;" />
+				</tokenfilter>
+       		 	</filterchain>
+		</copy>
+	
+		<!-- Strip out the image file names from the manual and create a new ant
+		build file that will fetch them.  -->
+		<xslt in="manual_tmp.xml" 
+		      out="tmp.xml" 
+		      classpathref="classpath"
+		      style="xsl/strip_images.xsl"/>
+
+		<!-- Change the file destination in the build file. -->
+		<copy file="tmp.xml" 
+		      tofile="fetch_image_files.xml" 
+		      overwrite="yes">
+       		 	<filterchain>
+				<tokenfilter>
+					<replaceregex pattern='dest=\S+target=' 
+					              replace='dest="images/' 
+						      flags="g"/>
+					<replacestring from='&amp;' to='&amp;amp;'/>
+				</tokenfilter>
+       		 	</filterchain>
+		</copy>
+
+		<!-- Make the directory to hold the images. -->
+		<mkdir dir="images"/>
+
+		<!-- Run the new build file fetching all of the image files.  -->
+		<ant antfile="fetch_image_files.xml" target="strip"/>
+
+		<delete file="tmp.xml"/>
+		<delete file="manual_tmp.xml"/>
+	</target>
+
+
+        <!--==============================================================-->
+    	<!-- Substitute file locations and other XML problems -->
+	<target name="prep-manual" 
+                description="Prep Manual XML"
+		depends="fetch-images">
+
+		<mkdir dir="pdf"/>
+		<mkdir dir="html"/>
+		<mkdir dir="html/images"/>
+		<mkdir dir="help"/>
+		<mkdir dir="help/images"/>
+	
+		<copy file="manual_raw.xml" 
+		      tofile="manual_tmp.xml" 
+		      overwrite="yes">
+       		 	<filterchain>
+				<tokenfilter>
+					<!-- this gets the images -->
+					<replaceregex pattern='/cgi-bin/moin.cgi/Cytoscape_User_Manual\S+target=' 
+					              replace='images/' 
+						      flags="g"/>
+					<replacestring from="&amp;amp;#8594;" to="&amp;#8594;" />
+					<replacestring from="@version@" to="${version}" />
+					<!-- this gets links -->
+					<replacestring from="/cgi-bin/moin.cgi" 
+					               to="http://cytoscape.org/cgi-bin/moin.cgi"/>
+				</tokenfilter>
+       		 	</filterchain>
+		</copy>
+
+		<!-- Add id to section elements -->
+		<xslt classpathref="classpath"
+		      in="manual_tmp.xml"
+		      out="manual.xml"
+		      style="xsl/add_id_to_section.xsl"/>
+
+		<delete file="manual_tmp.xml"/>
+
+		<!-- check if everything is up to date -->
+		<uptodate property="pdf-up-to-date"
+		          targetfile="pdf/manual.pdf"
+			  srcfile="manual_raw.xml"/>
+		<uptodate property="help-up-to-date"
+		          targetfile="help/index.html"
+			  srcfile="manual_raw.xml"/>
+		<uptodate property="html-up-to-date"
+		          targetfile="html/manual.html"
+			  srcfile="manual_raw.xml"/>
+
+		<echo message="pdf  up-to-date: ${pdf-up-to-date}"/>
+		<echo message="help up-to-date: ${help-up-to-date}"/>
+		<echo message="html up-to-date: ${html-up-to-date}"/>
+
+	</target> 
+
+
+        <!--==============================================================-->
+	<!-- Create the manual PDF file.  -->
+	<target name="create-pdf" 
+                description="Create Cytoscape Manual PDF"
+		depends="prep-manual"
+		if="xep-exists" 
+		unless="pdf-up-to-date">
+
+		<!-- transform the manual to fo -->
+		<xslt classpathref="classpath"
+		      in="manual.xml"
+		      out="manual.fo"
+		      style="${xsl}/fo/docbook.xsl"/>
+
+
+		<!-- convert to pdf -->
+		<xep in="manual.fo" 
+		     out="pdf/manual.pdf" 
+		     format="PDF">
+			<classpath refid="classpath"/>
+			<sysproperty key="com.renderx.xep.CONFIG" 
+		                     value="${xep.home}/xep.xml"/>
+		</xep>
+
+		<!-- clean up -->
+		<delete file="manual.fo"/>
+	</target>
+
+        <!--==============================================================-->
+	<!-- Create the java help.  -->
+	<target name="create-help"
+                description="Create Cytoscape Java Help"
+		depends="prep-manual"
+		unless="help-up-to-date">
+
+		<!-- transform the manual -->
+		<xslt scanincludeddirectories="no"
+		      classpathref="classpath"
+		      includes="manual.xml"
+		      destdir="."
+		      style="${xsl}/javahelp/javahelp.xsl">
+		      <param name="base.dir" expression="docs/"/>
+		</xslt>
+
+		<!-- Repair the jhelpset so that it doesn't include the index. 
+		     We do this because we don't generate index information in 
+		     our docbook. 
+		  -->
+		<xslt in="jhelpset.hs"
+		      out="jhelpset.hs.new"
+		      classpathref="classpath"
+		      style="xsl/filter_index.xsl"/>
+		<move file="jhelpset.hs" tofile="jhelpset.hs.orig"/>
+		<move file="jhelpset.hs.new" tofile="jhelpset.hs"/>
+
+		<!-- now clean up after ourselves and move everything into the help dir -->
+		<delete file="manual.html"/>
+		<copy todir="help/images">
+			<fileset dir="images"/>
+		</copy>
+		<move todir="help">
+			<fileset dir=".">
+				<include name="jhelp*"/>
+			</fileset>
+		</move>
+		<move todir="help">
+			<fileset dir=".">
+				<include name="ar*"/>
+			</fileset>
+		</move>
+		<move file="index.html" todir="help"/>
+
+	</target>
+
+        <!--==============================================================-->
+	<!-- Create an html version of the manual.  -->
+	<target name="create-html"
+                description="Create Cytoscape Manual HTML"
+		depends="prep-manual"
+		unless="html-up-to-date">
+
+		<!-- transform the manual -->
+		<xslt scanincludeddirectories="no"
+		      classpathref="classpath"
+		      includes="manual.xml"
+		      destdir="."
+		      style="${xsl}/xhtml/docbook.xsl"/>
+
+		<!-- now clean up after ourselves and move everything into the html dir -->
+		<copy todir="html/images">
+			<fileset dir="images"/>
+		</copy>
+		<move file="manual.html" todir="html"/>
+	</target>
+
+        <!--==============================================================-->
+	<!-- Creates everything.  -->
+	<target name="all"
+                description="Creates PDF, html, javahelp from the Manual."
+		depends="create-pdf,create-help,create-html"/>
+
+        <!--==============================================================-->
+	<!-- Creates everything from scratch.  -->
+	<target name="regenerate"
+                description="Re-downloads everything and then Creates PDF, html, javahelp from the Manual."
+		depends="clean-all,all"/>
+
+        <!--==============================================================-->
+	<!-- Deletes all generated files - but not downloaded files.  -->
+	<target name="clean"
+                description="Deletes all generated files - but not downloaded files.">
+		<delete file="manual.xml"/>
+		<delete file="fetch_image_files.xml"/>
+		<delete dir="help"/>
+		<delete dir="pdf"/>
+		<delete dir="html"/>
+		<delete dir="xsl/${docbook-xsl}"/>
+	</target>
+
+        <!--==============================================================-->
+	<!-- Deletes all generated files - including downloaded files.  -->
+	<target name="clean-all"
+		depends="clean"
+                description="Deletes all generated files - including downloaded files.">
+		<delete>
+			<fileset dir="images">
+				<exclude name=".svn"/>
+			</fileset>
+		</delete>
+		<delete file="manual_raw.xml"/>
+	</target>
+
+</project>
