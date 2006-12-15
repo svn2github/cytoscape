@@ -63,14 +63,13 @@ import java.util.HashMap;
  * 
  */
 public class ZipUtil {
-	
+
 	/*
-	 * Default Compression Level.
-	 * Range is 0-9.
-	 * Basically, 0 is no compression, and 9 will make the most 
-	 * space-efficeint zip file.  However, it takes long!
+	 * Default Compression Level. Range is 0-9. Basically, 0 is no compression,
+	 * and 9 will make the most space-efficeint zip file. However, it takes
+	 * long!
 	 */
-	public static final int DEF_COMPRESSION_LEVEL = 1; 
+	public static final int DEF_COMPRESSION_LEVEL = 1;
 
 	private String zipArchiveName;
 	private String[] inputFiles;
@@ -88,69 +87,79 @@ public class ZipUtil {
 	/**
 	 * Constructor.<br>
 	 * 
-	 * @param zipFile Output zip file name.
-	 * @param fileList List of file names to be compressed.
-	 * @param sessionDir Root dir created in the zip archive.
+	 * @param zipFile
+	 *            Output zip file name.
+	 * @param fileNameList
+	 *            List of file names to be compressed.
+	 * @param sessionDir
+	 *            Root dir created in the zip archive.
 	 * 
 	 */
-	public ZipUtil(final String zipFile, final String[] fileList, final String sessionDir ) {
-		this ( zipFile, fileList, sessionDir, "" );
+	public ZipUtil(final String zipFile, final String[] fileNameList,
+			final String sessionDir) {
+		this(zipFile, fileNameList, sessionDir, "");
 	}
 
 	/**
 	 * Constructor.<br>
 	 * 
-	 * @param zipFile Output zip file name.
-	 * @param fileList List of file names to be compressed.
-	 * @param sessionDir Root dir created in the zip archive.
-	 * @param fileDir root directory of files in fileList. 
+	 * @param zipFile
+	 *            Output zip file name.
+	 * @param fileNameList
+	 *            List of file names to be compressed.
+	 * @param sessionDir
+	 *            Root dir created in the zip archive.
+	 * @param fileDir
+	 *            root directory of files in fileList.
 	 * 
 	 */
-	public ZipUtil(final String zipFile, final String[] fileList, final String sessionDir, final String fileDir ) {
+	public ZipUtil(final String zipFile, final String[] fileNameList,
+			final String sessionDir, final String fileDir) {
 		this.zipArchiveName = zipFile;
-		this.fileCount = fileList.length;
+		this.fileCount = fileNameList.length;
 		this.inputFiles = new String[fileCount];
 		this.sessionDirName = sessionDir;
 		this.inputFileDir = fileDir;
 
-		System.arraycopy(fileList, 0, inputFiles, 0, fileCount);
+		System.arraycopy(fileNameList, 0, inputFiles, 0, fileCount);
 	}
 
 	/**
 	 * Delete input files.
-	 *
+	 * 
 	 */
 	private void clean() {
 		for (int i = 0; i < fileCount; i++) {
-			final File tempFile = new File( inputFileDir + inputFiles[i]);
+			final File tempFile = new File(inputFileDir + inputFiles[i]);
 			tempFile.delete();
 		}
 	}
 
-	
 	/**
 	 * Faster version of compression method.<br>
 	 * 
-	 * @param compressionLevel Level of compression.  Range = 0-9.  
-	 * 								0 is no-compression, and 9 is most space-efficeint.
-	 * 								However, 9 is slow. 
-	 * @param cleanFlag If true, remove all imput files.
+	 * @param compressionLevel
+	 *            Level of compression. Range = 0-9. 0 is no-compression, and 9
+	 *            is most space-efficeint. However, 9 is slow.
+	 * @param cleanFlag
+	 *            If true, remove all imput files.
 	 * @throws IOException
 	 */
-	public void compressFast(final int compressionLevel, final boolean cleanFlag) throws IOException {
-		
-		//For time measurement
-		//final double start = System.currentTimeMillis();
+	public void compressFast(final int compressionLevel, final boolean cleanFlag)
+			throws IOException {
 
-		//FileInputStream fileIS;
+		// For time measurement
+		// final double start = System.currentTimeMillis();
+
+		// FileInputStream fileIS;
 		final CRC32 crc32 = new CRC32();
 		final byte[] rgb = new byte[5000];
 		final ZipOutputStream zipOS = new ZipOutputStream(
 				new BufferedOutputStream(new FileOutputStream(zipArchiveName)));
-		
+
 		// Tuning performance
 		zipOS.setMethod(ZipOutputStream.DEFLATED);
-		if(compressionLevel >= 0 && compressionLevel <= 9) {
+		if (compressionLevel >= 0 && compressionLevel <= 9) {
 			zipOS.setLevel(compressionLevel);
 		} else {
 			zipOS.setLevel(DEF_COMPRESSION_LEVEL);
@@ -158,47 +167,46 @@ public class ZipUtil {
 
 		String targetName = "";
 		for (int i = 0; i < fileCount; i++) {
-			final File file = new File( inputFileDir + inputFiles[i]);
+			final File file = new File(inputFileDir + inputFiles[i]);
 			targetName = sessionDirName + FS + inputFiles[i];
 			addEntryToZip(file, targetName, zipOS, crc32, rgb);
 		}
 
-		if ((pluginFileMap != null)&&(pluginFileMap.size()>0)) {
+		if ((pluginFileMap != null) && (pluginFileMap.size() > 0)) {
 			Set<String> pluginSet = pluginFileMap.keySet();
-			
-			for (String pluginName: pluginSet) {
-				List<File> theFileList = (List<File>) pluginFileMap.get(pluginName);
-				if ((theFileList == null)||(theFileList.size() == 0)) continue; 
-				for (File theFile: theFileList)
-				{
-					if ((theFile == null)||(!theFile.exists())) continue;
-					targetName = sessionDirName + FS + "plugins" + FS +
-								pluginName + FS + theFile.getName();
+
+			for (String pluginName : pluginSet) {
+				List<File> theFileList = (List<File>) pluginFileMap
+						.get(pluginName);
+				if ((theFileList == null) || (theFileList.size() == 0))
+					continue;
+				for (File theFile : theFileList) {
+					if ((theFile == null) || (!theFile.exists()))
+						continue;
+					targetName = sessionDirName + FS + "plugins" + FS
+							+ pluginName + FS + theFile.getName();
 					addEntryToZip(theFile, targetName, zipOS, crc32, rgb);
 				}
 			}
 		}
-		
+
 		zipOS.close();
 
-		//final double stop = System.currentTimeMillis();
-		//final double diff = stop - start;
-		//System.out.println("Compression time 3 = " + diff / 1000 + " sec.");
-		
-		if(cleanFlag) {
+		// final double stop = System.currentTimeMillis();
+		// final double diff = stop - start;
+		// System.out.println("Compression time 3 = " + diff / 1000 + " sec.");
+
+		if (cleanFlag) {
 			clean();
 		}
 	}
 
-	
-	public void setPluginFileMap(HashMap pMap)
-	{
+	public void setPluginFileMap(HashMap pMap) {
 		pluginFileMap = pMap;
 	}
-	
-	private void addEntryToZip(File srcFile, String targetName, 
-			ZipOutputStream zipOS, CRC32 crc32, byte[] rgb) throws IOException
-	{
+
+	private void addEntryToZip(File srcFile, String targetName,
+			ZipOutputStream zipOS, CRC32 crc32, byte[] rgb) throws IOException {
 		int numRead;
 
 		// Set CRC
@@ -221,9 +229,9 @@ public class ZipUtil {
 		}
 
 		fileIS.close();
-		zipOS.closeEntry();		
+		zipOS.closeEntry();
 	}
-	
+
 	/**
 	 * Reads a file contained within a zip file and returns an InputStream.
 	 * 
@@ -242,7 +250,7 @@ public class ZipUtil {
 	 *         expression or null if nothing matches.
 	 */
 	public static InputStream readFile(String zipName, String fileNameRegEx)
-			throws IOException {		
+			throws IOException {
 		final ZipFile sessionZipFile = new ZipFile(zipName);
 		final Enumeration zipEntries = sessionZipFile.entries();
 		while (zipEntries.hasMoreElements()) {

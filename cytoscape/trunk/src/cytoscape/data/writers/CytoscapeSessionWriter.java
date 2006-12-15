@@ -37,11 +37,43 @@
 
 package cytoscape.data.writers;
 
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
+import java.awt.Component;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.swing.JInternalFrame;
+import javax.swing.SwingConstants;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.bookmarks.Bookmarks;
 import cytoscape.data.Semantics;
 import cytoscape.generated.Child;
 import cytoscape.generated.Cysession;
@@ -67,6 +99,7 @@ import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.generated.Server;
 import cytoscape.generated.SessionState;
+import cytoscape.util.BookmarksUtil;
 import cytoscape.util.ZipUtil;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.view.CyNetworkView;
@@ -76,41 +109,6 @@ import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
-import giny.view.EdgeView;
-import giny.view.NodeView;
-import java.awt.Component;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import javax.swing.JInternalFrame;
-import javax.swing.SwingConstants;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
-import cytoscape.bookmarks.Bookmarks;
-// import cytoscape.bookmarks.DataSource;
-import cytoscape.util.BookmarksUtil;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeSupport;
 
 /**
  * Write session states into files.<br>
@@ -170,53 +168,41 @@ public class CytoscapeSessionWriter {
 	Properties prop;
 
 	// Root of the network tree
-	static final String TREE_ROOT = "root";
+	private static final String TREE_ROOT = "root";
 
 	// File name for the session
-	String sessionFileName = null;
+	private String sessionFileName = null;
 
-	String[] targetFiles;
+	private String[] targetFileNames;
 
-	Bookmarks bookmarks;
-	Set networks;
+	private Bookmarks bookmarks;
+	private Set<CyNetwork> networks;
 
-	HashMap networkMap;
-
-	int networkCount;
+	private HashMap networkMap;
 
 	private String sessionNote = "You can add note for this session here.";
 
 	//
 	// The following JAXB-generated objects are for CySession.xml file.
 	//
-	ObjectFactory factory;
+	private ObjectFactory factory;
 
-	Cysession session;
+	private Cysession session;
 
-	NetworkTree tree;
+	private NetworkTree tree;
 
-	SessionState sState;
-	// SessionNote sNote;
-	// Networks in the tree
+	private SessionState sState;
 
-	List netList;
+	private List netList;
 
-	Cytopanels cps;
+	private Cytopanels cps;
 
-	List cytopanel;
+	private Plugins plugins;
 
-	Plugins plugins;
-	List plugin;
+	private String sessionDirName;
+	private String tmpDirName;
 
-	// Cysession elements
-	NetworkTree netTree;
-	File sessionFolder;
-
-	String sessionDirName;
-	String tmpDirName;
-
-	HashMap viewMap = (HashMap) Cytoscape.getNetworkViewMap();
-	HashMap visualStyleMap;
+	private Map viewMap = Cytoscape.getNetworkViewMap();
 
 	/**
 	 * Constructor.
@@ -226,15 +212,16 @@ public class CytoscapeSessionWriter {
 	 */
 	public CytoscapeSessionWriter(String sessionName) {
 		this.sessionFileName = sessionName;
-		this.tmpDirName = System.getProperty("java.io.tmpdir") + 
-		                  System.getProperty("file.separator");
+		this.tmpDirName = System.getProperty("java.io.tmpdir")
+				+ System.getProperty("file.separator");
 
 		// For now, session ID is time and date
-		Date date = new Date();
-		DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
-
-		// Create CySession file
-		sessionDirName = tmpDirName + "CytoscapeSession-" + df.format(date);
+		final DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
+		sessionDirName = "CytoscapeSession-" + df.format(new Date());
+		
+//		 Get all networks in the session
+		networks = Cytoscape.getNetworkSet();
+		networkMap = new HashMap();
 	}
 
 	/**
@@ -245,39 +232,32 @@ public class CytoscapeSessionWriter {
 	 */
 	public void writeSessionToDisk() throws Exception {
 
-		// Get all networks in the session
-		networks = new HashSet();
-		networks = Cytoscape.getNetworkSet();
-		networkCount = networks.size();
-		networkMap = new HashMap();
-
 		// Notify plugins to save states
 		HashMap<String, List<File>> pluginFileListMap = new HashMap<String, List<File>>();
 
 		Cytoscape.firePropertyChange(Cytoscape.SAVE_PLUGIN_STATE,
 				pluginFileListMap, null);
 
-		// Total number of files (besides pluginStateFiles) in the zip archive
-		// will be
-		// number of networks + property files + bookmarks file
-		targetFiles = new String[networks.size() + SETTING_FILE_COUNT];
+		/*
+		 * Total number of files (besides pluginStateFiles) in the zip archive
+		 * will be number of networks + property files + bookmarks file
+		 */
+		targetFileNames = new String[networks.size() + SETTING_FILE_COUNT];
 
-		//
-		// First, write all network files as XGMML
-		//
-		Iterator netIterator = networks.iterator();
+		/*
+		 * First, write all network files as XGMML
+		 */
 		int fileCounter = SETTING_FILE_COUNT;
-		while (netIterator.hasNext()) {
+		String xgmmlFileName = null;
+		CyNetworkView view = null;
+		for (CyNetwork network : networks) {
 			// Get Current Network and View
-			CyNetwork network = (CyNetwork) netIterator.next();
-			CyNetworkView view = Cytoscape.getNetworkView(network
-					.getIdentifier());
+			view = Cytoscape.getNetworkView(network.getIdentifier());
 
-			String curNetworkName = network.getTitle();
-			String xgmmlFileName = curNetworkName + XGMML_EXT;
+			xgmmlFileName = network.getTitle() + XGMML_EXT;
 
 			xgmmlFileName = getValidFileName(xgmmlFileName);
-			targetFiles[fileCounter] = tmpDirName + xgmmlFileName;
+			targetFileNames[fileCounter] = xgmmlFileName;
 			fileCounter++;
 
 			makeXGMML(xgmmlFileName, network, view);
@@ -288,20 +268,21 @@ public class CytoscapeSessionWriter {
 		//
 		createCySession(sessionDirName);
 
-		targetFiles[0] = tmpDirName + VIZMAP_FILE;
-		targetFiles[1] = tmpDirName + CYPROP_FILE;
-		targetFiles[2] = tmpDirName + BOOKMARKS_FILE;
-		targetFiles[3] = tmpDirName + CYSESSION_FILE_NAME;
-
 		// Prepare bookmarks for saving
 		bookmarks = Cytoscape.getBookmarks();
 		BookmarksUtil.saveBookmark(bookmarks, new File(tmpDirName + BOOKMARKS_FILE));
-		
+
 		// Prepare property files for saving
 		preparePropFiles();
-
+		
+		targetFileNames[0] = VIZMAP_FILE;
+		targetFileNames[1] = CYPROP_FILE;
+		targetFileNames[2] = BOOKMARKS_FILE;
+		targetFileNames[3] = CYSESSION_FILE_NAME;
+		
 		// Zip the session into a .cys file.
-		zipUtil = new ZipUtil(sessionFileName, targetFiles, sessionDirName, tmpDirName);
+		zipUtil = new ZipUtil(sessionFileName, targetFileNames, sessionDirName,
+				tmpDirName);
 		zipUtil.setPluginFileMap(pluginFileListMap);
 		/*
 		 * Compress the files. Change the compression level if necessary.
@@ -402,6 +383,7 @@ public class CytoscapeSessionWriter {
 			if (output != null) {
 				try {
 					output.close();
+					output = null;
 				} catch (IOException ioe) {
 				}
 			}
