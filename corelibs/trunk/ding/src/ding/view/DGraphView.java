@@ -1787,17 +1787,26 @@ public class DGraphView
      */
     public int print(Graphics g, PageFormat pageFormat, int page) {
         if (page == 0) {
-            ((Graphics2D) g).translate(
+        	((Graphics2D) g).translate(
                 pageFormat.getImageableX(),
                 pageFormat.getImageableY());
-            g.clipRect(
+
+        	// make sure the whole image on the screen will fit to the printable area of the paper
+            double image_scale = Math.min(pageFormat.getImageableWidth()/getComponent().getWidth(),
+            		pageFormat.getImageableHeight()/getComponent().getHeight());            
+            if (image_scale < 1.0d) {
+                ((Graphics2D) g).scale(image_scale, image_scale);
+            }
+
+        	g.clipRect(
                 0,
                 0,
                 getComponent().getWidth(),
                 getComponent().getHeight());
+            
             getComponent()
                 .print(g);
-
+            
             return PAGE_EXISTS;
         } else
             return NO_SUCH_PAGE;
