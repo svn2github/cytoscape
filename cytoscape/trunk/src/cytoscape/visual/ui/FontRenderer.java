@@ -73,9 +73,9 @@ public class FontRenderer extends DefaultListCellRenderer {
 	// just allow a ClassCastException to be thrown if the renderer is not
 	// called correctly. Always display in 12 pt.
 	if (value instanceof Font) {
-	    Font fontValue = ((Font) value).deriveFont(12F);
-	    setFont(fontValue);
-	    setText(fontValue.getFontName());
+	    //Font fontValue = ((Font) value).deriveFont(12F);
+	    setFont((Font)value);
+	    setText(((Font)value).getFontName());
 	}
 	else {
 	    setFont(list.getFont());

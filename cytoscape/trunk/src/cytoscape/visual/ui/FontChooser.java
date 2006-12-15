@@ -57,9 +57,13 @@ public class FontChooser extends JPanel {
 
     private Font selectedFont;
 
-    protected Font[] displayFonts;
     protected DefaultComboBoxModel fontFaceModel;
     protected JComboBox face;
+
+    protected static float displaySize = 12F;
+    protected static Font[] displayFonts;
+    protected static Font[] allFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+    static { displayFonts = scaleFonts(allFonts,displaySize); }
 
     /**
      * Create a FontChooser to choose between all fonts available on the system.
@@ -69,15 +73,19 @@ public class FontChooser extends JPanel {
     }
     
     public FontChooser(Font def) {
-	this(GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts(),
-	     def);
+	this(allFonts, def);
     }
     
     /**
      * Create a FontChooser to choose between the given array of fonts.
      */
     public FontChooser(Font[] srcFonts, Font def) {
-	this.displayFonts = srcFonts;
+
+    	if ( srcFonts != allFonts ) {
+		System.out.println("scaling fonts");
+		displayFonts = scaleFonts(srcFonts,displaySize);
+	}
+
 	this.fontFaceModel = new DefaultComboBoxModel(displayFonts);
 	
 	this.face = new JComboBox(fontFaceModel);
@@ -112,5 +120,13 @@ public class FontChooser extends JPanel {
 		selectedFont = (Font) source.getSelectedItem();
 	    }
 	}
+    }
+
+    private static Font[] scaleFonts(Font[] inFonts, float size) {
+    	Font[] outFonts = new Font[inFonts.length];
+	int i = 0;
+	for (Font f : inFonts)
+		outFonts[i++] = f.deriveFont(size);
+	return outFonts;
     }
 }
