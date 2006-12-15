@@ -139,16 +139,21 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 
    public void doPostProcessing(CyNetwork network) {
 
-            //Create a specific visual style
+            // Set SBML specific visual style
 
             VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-            VisualStyle vsNow = manager.getVisualStyle();
-            String vsName = vsNow.getName();
-            if(vsName.equals("SBMLReader Style") == false){
-                VisualStyle vs = SBMLVisualStyleFactory.createVisualStyle(network);
-                manager.setVisualStyle(vs);
-                Cytoscape.getCurrentNetworkView().applyVizmapper(vs);
+            CalculatorCatalog catalog = manager.getCalculatorCatalog();
+
+            VisualStyle vs = catalog.getVisualStyle(SBMLVisualStyleFactory.SBMLReader_VS); 
+
+            if(vs == null){
+                vs = SBMLVisualStyleFactory.createVisualStyle(network);
+                catalog.addVisualStyle(vs);
             }
+
+            manager.setVisualStyle(vs);
+            Cytoscape.getCurrentNetworkView().setVisualStyle(vs.getName());
+            Cytoscape.getCurrentNetworkView().applyVizmapper(vs);
     }
 
     public int[] getNodeIndicesArray() {
