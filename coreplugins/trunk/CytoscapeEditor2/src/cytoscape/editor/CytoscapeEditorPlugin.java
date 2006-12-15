@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Mon Aug 01 08:42:41 2005
-* Modified:     Tue Dec 05 10:57:27 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Fri Dec 15 10:09:08 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Fri Dec 15 10:08:07 2006 (Michael L. Creech) creech@w235krbza760
+*  Hacked a fix for not reinitializing the plugin if it is loaded
+*  first by another plugin.
 * Sat Aug 05 08:14:51 2006 (Michael L. Creech) creech@w235krbza760
 *  Removed deprecated call to CytoscapeInit.getDefaultVisualStyle() in
 *  initializeCytoscapeEditor().
@@ -42,6 +45,8 @@ import cytoscape.plugin.CytoscapePlugin;
  *
  */
 public class CytoscapeEditorPlugin extends CytoscapePlugin {
+    // MLC 12/11/06:
+    private static boolean _initialized = false;
     public CytoscapeEditorPlugin() {
         // MLC 07/24/06 BEGIN:
         // CytoscapeEditorManager.log("CytoscapeEditor loaded ");
@@ -66,7 +71,13 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
      * sets various flags and registers various editors with the CytoscapeEditorManager
      *
      */
-    private void initializeCytoscapeEditor() {
+    // MLC 12/11/06 BEGIN:
+    // private void initializeCytoscapeEditor() {
+    public static void initializeCytoscapeEditor() {
+	if (_initialized) {
+	    return;
+	}
+	// MLC 12/11/06 END.
         // MLC 07/24/06:
         CytoscapeEditorManager.setRunningEditorFramework(true);
 
@@ -124,6 +135,8 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
         // CytoscapeInit.getDefaultVisualStyle()));
         // MLC 08/06/06:
         CytoscapeInit.getProperties().getProperty("defaultVisualStyle")));
+	// MLC 12/11/06:
+	_initialized = true;
     }
     // MLC 07/24/06 BEGIN:
     //	public class MainPluginAction extends AbstractAction {
