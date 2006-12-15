@@ -135,8 +135,8 @@ public class CytoscapeSessionReader {
 	 * Stores networkName as the key and value is visualStyleName associated
 	 * with it.
 	 */
-	HashMap vsMap;
-	HashMap vsMapByName;
+	private HashMap vsMap;
+	private HashMap vsMapByName;
 
 	private Bookmarks bookmarks = null;
 
@@ -685,9 +685,9 @@ public class CytoscapeSessionReader {
 			throws IOException, JAXBException {
 
 		// Read an XGMML file
-		final XGMMLReader reader = new XGMMLReader(is);
+		XGMMLReader reader = new XGMMLReader(is);
 		reader.read();
-
+		
 		/*
 		 * Create the CyNetwork. First, set the view threshold to 0. By doing
 		 * so, we can disable the auto-creating of the CyNetworkView.
@@ -698,7 +698,7 @@ public class CytoscapeSessionReader {
 		CytoscapeInit.getProperties().setProperty("viewThreshold",
 				Integer.toString(0));
 
-		CyNetwork network = null;
+		final CyNetwork network;
 		if (parent == null) {
 			network = Cytoscape.createNetwork(reader.getNodeIndicesArray(),
 					reader.getEdgeIndicesArray(), reader.getNetworkID());
@@ -764,8 +764,10 @@ public class CytoscapeSessionReader {
 				((DGraphView) curView).setCenter(center.getX(), center.getY());
 			}
 		}
+		
 		// Execute any necessary post-processing.
 		reader.doPostProcessing(network);
+		reader = null;
 		return network;
 	}
 

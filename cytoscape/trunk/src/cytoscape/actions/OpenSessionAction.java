@@ -40,7 +40,6 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
@@ -197,12 +196,12 @@ class OpenSessionTask implements Task {
 		taskMonitor
 				.setStatus("Opening Session File.\n\nIt may take a while.\nPlease wait...");
 		taskMonitor.setPercentCompleted(-1);
-		final CytoscapeSessionReader sr;
+		CytoscapeSessionReader sr;
 
 		// Turn off the network panel & bird's eye view
 		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
 				false);
-		
+
 		try {
 			sr = new CytoscapeSessionReader(fileName);
 			sr.read();
@@ -216,8 +215,10 @@ class OpenSessionTask implements Task {
 			e.printStackTrace();
 			taskMonitor.setException(e, e.getMessage());
 		} finally {
+			sr = null;
 			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
 					true);
+			System.gc();
 		}
 
 		taskMonitor.setPercentCompleted(100);

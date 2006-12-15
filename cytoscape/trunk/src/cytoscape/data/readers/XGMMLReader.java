@@ -176,9 +176,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	private TaskMonitor taskMonitor;
 	private PercentUtil percentUtil;
 
-	private int nextID = 0; // Used to assign ID's to nodes that didn't have
-
-	// them
+	private int nextID = 0; // Used to assign ID's to nodes that didn't have them
 
 	/**
 	 * Constructor.<br>
@@ -208,7 +206,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 	}
 
-	public XGMMLReader(String fileName, TaskMonitor monitor) {
+	public XGMMLReader(final String fileName, final TaskMonitor monitor) {
 		super(fileName);
 		this.taskMonitor = monitor;
 		percentUtil = new PercentUtil(3);
@@ -271,7 +269,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			 */
 			graphicGraphElement = (JAXBElement<GraphicGraph>) unmarshaller
 					.unmarshal(networkStream);
-
+			
 			networkName = graphicGraphElement.getValue().getLabel();
 			networkAtt = graphicGraphElement.getValue().getAtt();
 
@@ -292,7 +290,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			 * 
 			 */
 			getNodesAndEdges(graphicGraphElement.getValue(), null);
-
+			
 			/*
 			 * Pass 2: Build the network
 			 */
