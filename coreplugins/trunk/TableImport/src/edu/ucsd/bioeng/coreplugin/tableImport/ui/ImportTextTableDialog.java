@@ -3272,7 +3272,7 @@ public class ImportTextTableDialog extends JDialog implements
 				JOptionPane
 						.showMessageDialog(
 								this,
-								"You should choose different columns for source and target.",
+								"Columns for source, target, and tinteraction type must be distinct.",
 								"Same column index!",
 								JOptionPane.INFORMATION_MESSAGE);
 				return false;
