@@ -19,6 +19,15 @@ import swingunit.framework.Scenario;
 import swingunit.framework.TestUtility;
 import cytoscape.view.CyNetworkView;
 
+/**
+ * 
+ * Swing Unite Tests based on Cytoscape tutorial section 1 and 2
+ * 
+ * @since Cytoscape 2.4
+ * @version 0.5
+ * @author kono, pwang
+ *
+ */
 public class Tutorial1TestSwing extends TestCase {
 	private Scenario scenario;
 	private RobotEventFactory robotEventFactory = new ExtendedRobotEventFactory();
@@ -98,7 +107,7 @@ public class Tutorial1TestSwing extends TestCase {
 		 * Do Layout
 		 */
 		player.run(robot, "APPLY_SPRING_LAYOUT");
-		
+
 		scenario.setTestSetting("SELECT_NODE_BY_NAME", "NODE_NAME", "7157");
 		player.run(robot, "SELECT_NODE_BY_NAME");
 
@@ -127,10 +136,24 @@ public class Tutorial1TestSwing extends TestCase {
 		assertEquals("node attr", "RUFY1", Cytoscape.getNodeAttributes()
 				.getStringAttribute("80230", "Official HUGO Symbol"));
 
-		scenario.setTestSetting("PAUSE", "DURATION", "2000");
-		player.run(robot, "PAUSE");
+		player.run(robot, "SET_VIZMAPPER");
 
-		player.run(robot, "OPEN_VIZMAPPER");
+		/*
+		 * Do Layout for child network
+		 */
+		player.run(robot, "APPLY_SPRING_LAYOUT");
+
+		player.run(robot, "ZOOM_IN_AND_OUT");
+
+		player.run(robot, "TEST_FILTER_1");
+
+		assertEquals("Number of Selected Edges", 660, Cytoscape
+				.getCurrentNetwork().getSelectedEdges().size());
+
+		player.run(robot, "DELETE_SELECTED_EDGES");
+
+		player.run(robot, "TEST_FILTER_2");
+
 	}
 
 }
