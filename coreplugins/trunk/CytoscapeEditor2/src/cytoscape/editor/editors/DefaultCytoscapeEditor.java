@@ -1,6 +1,29 @@
+/* -*-Java-*-
+********************************************************************************
+*
+* File:         DefaultCytoscapeEditor.java
+* RCS:          $Header: $
+* Description:  
+* Author:       Allan Kuchinsky
+* Created:      Sun Oct 04 05:35:56 2005
+* Modified:     Sun Dec 17 05:37:53 2006 (Michael L. Creech) creech@w235krbza760
+* Language:     Java
+* Package:      
+* Status:       Experimental (Do Not Distribute)
+*
+* (c) Copyright 2006, Agilent Technologies, all rights reserved.
+*
+********************************************************************************
+*
+* Revisions:
+*
+* Sun Dec 17 05:36:01 2006 (Michael L. Creech) creech@w235krbza760
+*  Added creation of EdgePaletteItemDragCursorSetter and passing it into
+*  ShapePalette.addShape() calls.
+********************************************************************************
+*/
+
 /*
- * Created on Oct 4, 2005
- *
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
@@ -10,6 +33,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.DragSourceContextCursorSetter;
 import cytoscape.editor.ShapePaletteInfo;
 import cytoscape.editor.ShapePaletteInfoGenerator;
 
@@ -18,14 +42,24 @@ import cytoscape.editor.event.PaletteNetworkEditEventHandler;
 import cytoscape.editor.impl.CytoShapeIcon;
 import cytoscape.editor.impl.ShapePalette;
 
+import cytoscape.view.CyNetworkView;
+
 import cytoscape.visual.Arrow;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 
 import cytoscape.visual.ui.VizMapUI;
 
+import ding.view.DGraphView;
+
+import giny.view.NodeView;
+
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
 
 import java.util.Iterator;
 import java.util.List;
@@ -70,6 +104,11 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
     public static cytoscape.data.CyAttributes edgeAttribs  = Cytoscape.getEdgeAttributes();
     private ShapePalette                      shapePalette;
 
+    // MLC 12/16/06 BEGIN:
+    // Determine how edge palette items show up during a drag op:
+    private DragSourceContextCursorSetter _edgeCursorSetter = new EdgePaletteItemDragCursorSetter();
+
+    // MLC 12/16/06 END.
     /**
      *
      */
@@ -96,11 +135,10 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
     }
 
     protected void generatePaletteEntries() {
-    	CytoscapeEditorManager.log
-    	("generating palette entries for controlling attributes "
-    			+ getControllingNodeAttribute() + " and " +
-    					getControllingEdgeAttribute());
-    	CytoscapeEditorManager.log("for editor " + this);
+        CytoscapeEditorManager.log("generating palette entries for controlling attributes " +
+                                   getControllingNodeAttribute() + " and " +
+                                   getControllingEdgeAttribute());
+        CytoscapeEditorManager.log("for editor " + this);
         generateEdgePaletteEntries(getControllingEdgeAttribute());
         generateNodePaletteEntries(getControllingNodeAttribute());
     }
@@ -121,16 +159,18 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
         byte[] calcsToUse = new byte[] { VizMapUI.EDGE_TGTARROW };
 
         Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(eac,
-                                                                                 calcsToUse,
-                                                                                 controllingAttribute,
-                                                                                 this,
-                                                                                 null);
+                                                                            calcsToUse,
+                                                                            controllingAttribute,
+                                                                            this,
+                                                                            null);
 
         if (!spEntries.hasNext()) {
             shapePalette.addShape(controllingAttribute,
                                   "DirectedEdge",
                                   new CytoShapeIcon(Arrow.BLACK_DELTA),
-                                  "Directed Edge");
+                                  "Directed Edge",
+                                  // MLC 12/16/06:
+            _edgeCursorSetter);
         } else {
             while (spEntries.hasNext()) {
                 ShapePaletteInfo spi = spEntries.next();
@@ -138,7 +178,9 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
                 shapePalette.addShape(spi.getControllingAttributeName(),
                                       spi.getKey(),
                                       new CytoShapeIcon((Arrow) spi.getValue(VizMapUI.EDGE_TGTARROW)),
-                                      spi.getKey());
+                                      spi.getKey(),
+                                      // MLC 12/16/06:
+                _edgeCursorSetter);
             }
         }
     }
@@ -151,8 +193,6 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
         if (nac == null) {
             return;
         }
-        
-    
 
         ShapePaletteInfoGenerator  palGen     = CytoscapeEditorFactory.INSTANCE.createShapePaletteInfoGenerator();
         byte[]                     calcsToUse = new byte[] {
@@ -161,10 +201,10 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
                                                     VizMapUI.NODE_SIZE
                                                 };
         Iterator<ShapePaletteInfo> spEntries  = palGen.buildShapePaletteInfo(nac,
-                                                                                  calcsToUse,
-                                                                                  controllingAttribute,
-                                                                                  this,
-                                                                                  null);
+                                                                             calcsToUse,
+                                                                             controllingAttribute,
+                                                                             this,
+                                                                             null);
 
         if (!spEntries.hasNext()) {
             shapePalette.addShape(controllingAttribute,
@@ -173,7 +213,9 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
                                                        .getShape(),
                                                     nac.getDefaultAppearance()
                                                        .getFillColor()),
-                                  "Add a Node");
+                                  "Add a Node",
+                                  // MLC 12/16/06:
+            null);
         } else {
             while (spEntries.hasNext()) {
                 ShapePaletteInfo spi = spEntries.next();
@@ -189,7 +231,9 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
                                                         nodeColor,
                                                         new Dimension(nodeSize,
                                                                       nodeSize)),
-                                      spi.getKey());
+                                      spi.getKey(),
+                                      // MLC 12/16/06:
+                null);
             }
         }
     }
@@ -493,4 +537,28 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor
     public void stateChanged(ChangeEvent e) {
         initializeControls(null);
     }
+
+    // MLC 12/16/06 BEGIN:
+    // give sublcasses access to the default setter for edge palette entries:
+    protected DragSourceContextCursorSetter getDefaultEdgePaletteItemDragCursorSetter() {
+        return _edgeCursorSetter;
+    }
+
+    // A CursorSetter that says it's only ok to drop when we are on a Node:
+    private class EdgePaletteItemDragCursorSetter
+        implements DragSourceContextCursorSetter {
+        public Cursor computeCursor(CyNetworkView netView, Point netViewLoc,
+                                    DragSourceDragEvent dsde) {
+            // Now check if we are on a NodeView?
+            NodeView nv = ((DGraphView) netView).getPickedNodeView(netViewLoc);
+
+            if (nv != null) {
+                return DragSource.DefaultCopyDrop;
+            }
+
+            return DragSource.DefaultCopyNoDrop;
+        }
+    }
+
+    // MLC 12/16/06 END.
 }

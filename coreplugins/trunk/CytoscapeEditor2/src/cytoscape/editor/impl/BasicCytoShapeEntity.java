@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sun May 29 11:22:33 2005
-* Modified:     Tue Dec 05 04:40:28 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Sun Dec 17 05:29:24 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,11 @@
 *
 * Revisions:
 *
+* Sat Dec 16 14:50:40 2006 (Michael L. Creech) creech@w235krbza760
+*  Completely rewrote TestDragSourceListener (now is EntityDragSourceListener) to
+*  allow for intelligent setting of the drag cursor. Changed constructor to
+*  take a DragSourceContextCursorSetter.
+*  Changed all instance variables to be private.
 * Tue Dec 05 04:39:09 2006 (Michael L. Creech) creech@w235krbza760
 *  Changed computation of BasicCytoShapeEntity size to allow for
 *  larger CytoShapeIcons.
@@ -28,19 +33,25 @@ package cytoscape.editor.impl;
 
 import cytoscape.Cytoscape;
 
+import cytoscape.editor.DragSourceContextCursorSetter;
 import cytoscape.editor.GraphicalEntity;
 
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
 
+import cytoscape.view.CyNetworkView;
+
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragGestureRecognizer;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceAdapter;
+import java.awt.dnd.DragSourceContext;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceEvent;
 
@@ -51,6 +62,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 
@@ -70,57 +82,120 @@ public class BasicCytoShapeEntity extends JComponent
     // MLC 07/27/06:
     private static final long serialVersionUID = -5229827235046946347L;
 
+    // MLC 12/16/06 BEGIN:
+    private static DragSourceContextCursorSetter _defaultCursorSetter = new DragSourceContextCursorSetter() {
+        // The default shows that a drop is possible anywhere on the netView:
+        public Cursor computeCursor(CyNetworkView netView, Point netViewLoc,
+                                    DragSourceDragEvent dsde) {
+            return DragSource.DefaultCopyDrop;
+        }
+    };
+
     /**
     * used for setting tooltip text
     */
-    JLabel _cytoShape;
+
+    // MLC 12/16/06:
+    //    JLabel _cytoShape;
+    // MLC 12/16/06:
+    private JLabel _cytoShape;
 
     /**
      * the title of the shape
      */
-    String title;
+
+    // MLC 12/16/06:
+    // String title;
+    // MLC 12/16/06:
+    private String title;
 
     /**
      * attribute name for the shape
      * should be one of "NodeType" or "EdgeType"
      */
-    String attributeName;
+
+    // MLC 12/16/06:
+    // String attributeName;
+    // MLC 12/16/06:
+    private String attributeName;
 
     /**
      * value for the attribute assigned to the shape
      * for example a "NodeType" of "protein"
      */
-    String attributeValue;
+
+    // MLC 12/16/06:
+    // String attributeValue;
+    // MLC 12/16/06:
+    private String attributeValue;
 
     /**
      * the icon associated with the shape
      */
-    Icon _image;
+
+    // MLC 12/16/06:
+    // Icon _image;
+    // MLC 12/16/06:
+    private Icon _image;
 
     /**
      * the source of a drag event
      */
-    DragSource myDragSource;
-    DragGestureRecognizer         myDragGestureRecognizer;
-    BasicCytoShapeTransferHandler handler;
+
+    // MLC 12/16/06 BEGIN:
+    // DragSource myDragSource;
+    private DragSource myDragSource;
+
+    // DragGestureRecognizer         myDragGestureRecognizer;
+    // BasicCytoShapeTransferHandler handler;
+    private BasicCytoShapeTransferHandler handler;
+
+    // MLC 12/16/06 END.    
 
     /**
      * the image associated with the Icon for the shape
      */
-    Image _img;
 
+    // MLC 12/16/06:
+    // Image _img;
+    // MLC 12/16/06:
+    private Image _img;
+
+    // A possibly null method to determine the dragSourceContext cursor to show
+    // users what can and cannot be dropped on.
+    private DragSourceContextCursorSetter _cursorSetter = _defaultCursorSetter;
+
+    // MLC 12/16/06 END.
     /**
      *
      * @param attributeName attribute name for the shape, should be one of "NodeType" or "EdgeType"
      * @param attributeValue value for the attribute assigned to the shape, for example a "NodeType" of "protein"
      * @param image the icon for the shape
      * @param title the title of the shape
+     * @param cursorSetter a possibly null DragSourceContextCursorSetter used to specify
+     *                     the cursor so show when dragging over the current network view.
+     *                     If null, a default cursor setter is used shows its ok
+     *                     to drop anywhere on the network view.
      */
+
+    // MLC 12/16/06 BEGIN:
+    //    public BasicCytoShapeEntity(String attributeName, String attributeValue,
+    //                                Icon image, String title) {
     public BasicCytoShapeEntity(String attributeName, String attributeValue,
-                                Icon image, String title) {
+                                Icon image, String title,
+                                DragSourceContextCursorSetter cursorSetter) {
+        // MLC 12/16/06 END.
         super();
         this.setTitle(title);
-        _image              = image;
+        _image = image;
+
+        // MLC 12/16/06 BEGIN:
+        if (cursorSetter != null) {
+            // use the default:
+            _cursorSetter = cursorSetter;
+        }
+
+        // MLC 12/16/06 END.
         this.attributeName  = attributeName;
         this.attributeValue = attributeValue;
 
@@ -148,12 +223,17 @@ public class BasicCytoShapeEntity extends JComponent
         this.setBorder(t2);
 
         myDragSource = new DragSource();
-        // MLC 07/27/06:
-        myDragSource.addDragSourceListener(new TestDragSourceListener());
-        myDragGestureRecognizer = myDragSource.createDefaultDragGestureRecognizer(_cytoShape,
-                                                                                  DnDConstants.ACTION_COPY,
-                                                                                  this);
-        handler                 = (new BasicCytoShapeTransferHandler(this, null));
+        // MLC 12/16/06 BEGIN:
+        // myDragSource.addDragSourceListener(new TestDragSourceListener());
+        myDragSource.addDragSourceListener(new EntityDragSourceListener());
+        //        myDragGestureRecognizer = myDragSource.createDefaultDragGestureRecognizer(_cytoShape,
+        //                                                                                  DnDConstants.ACTION_COPY,
+        //                                                                                  this);
+        myDragSource.createDefaultDragGestureRecognizer(_cytoShape,
+                                                        DnDConstants.ACTION_COPY,
+                                                        this);
+        // MLC 12/16/06 END.
+        handler = (new BasicCytoShapeTransferHandler(this, null));
         this.setTransferHandler(handler);
 
         // MLC 12/04/06 BEGIN:
@@ -275,25 +355,73 @@ public class BasicCytoShapeEntity extends JComponent
                     handler.createTransferable(this));
     }
 
-    // MLC 07/27/06 BEGIN:
-    private class TestDragSourceListener extends DragSourceAdapter {
+    // MLC 12/16/06 BEGIN:
+    // private class TestDragSourceListener extends DragSourceAdapter {
+    private class EntityDragSourceListener extends DragSourceAdapter {
         public void dragEnter(DragSourceDragEvent dsde) {
-            dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
-
-            // CytoscapeEditorManager.log("dragEnter = " + comp);
+	    determineCursor (dsde);
+            // dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
         }
 
-        // public void dragOver(DragSourceDragEvent dsde) {
-        //    DragSourceContext dsc = (DragSourceContext) dsde.getSource();
-        //   Component comp = dsc.getComponent();
-        //   CytoscapeEditorManager.log("dragOver = " + comp);
-        //}
+        public void dragOver(DragSourceDragEvent dsde) {
+	    determineCursor (dsde);
+            //	    DragSourceContext dsc  = (DragSourceContext) dsde.getSource();
+            //	    Component         comp = dsc.getComponent();
+            //	    CytoscapeEditorManager.log("dragOver = " + comp);
+        }
+
+	private void determineCursor (DragSourceDragEvent dsde) {
+            DragSourceContext dsc     = dsde.getDragSourceContext();
+            Point             compLoc = getLocationInsideComponent(Cytoscape.getCurrentNetworkView()
+                                                                            .getComponent(),
+                                                                   dsde.getLocation());
+
+            if (compLoc != null) {
+                Cursor newCursor = _cursorSetter.computeCursor(Cytoscape.getCurrentNetworkView(),
+                                                               compLoc,
+                                                               dsde);
+
+                if (newCursor == null) {
+                    newCursor = DragSource.DefaultCopyNoDrop;
+                }
+
+                dsc.setCursor(newCursor);
+            } else {
+                // check if on the drag source. We want to show ok cursor
+                // for it:
+
+                // sourceLoc now now in source component coordinates:
+                Point paletteLoc = getLocationInsideComponent(dsc.getComponent(),
+                                                              dsde.getLocation());
+
+                if (paletteLoc != null) {
+                    dsc.setCursor(DragSource.DefaultCopyDrop);
+                } else {
+                    dsc.setCursor(DragSource.DefaultCopyNoDrop);
+                }
+            }
+	}
+
+	// return the point in component coordinates of a given point
+	// in screen ccordinates only if the point is within the component.
+	// Otherwise return null;
+        private Point getLocationInsideComponent(Component desiredComp,
+                                                 Point screenLoc) {
+            // loc now component location
+            Point compLoc = new Point(screenLoc);
+            SwingUtilities.convertPointFromScreen(compLoc, desiredComp);
+
+            if (desiredComp.contains(compLoc)) {
+                // the point is in desiredComp:
+                return compLoc;
+            }
+
+            return null;
+        }
+
+        // MLC 12/16/06 END.
         public void dragExit(DragSourceEvent dse) {
             dse.getDragSourceContext().setCursor(DragSource.DefaultCopyNoDrop);
-
-            // CytoscapeEditorManager.log("dragExit");
         }
-
-        // MLC 07/27/06 END.
     }
 }

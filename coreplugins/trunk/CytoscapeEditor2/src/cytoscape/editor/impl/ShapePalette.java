@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sun May 29 11:18:17 2005
-* Modified:     Tue Dec 05 04:50:06 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Sun Dec 17 05:33:30 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Sun Dec 17 05:30:11 2006 (Michael L. Creech) creech@w235krbza760
+*  Added DragSourceContextCursorSetter parameter to addShape().
 * Mon Dec 04 11:57:11 2006 (Michael L. Creech) creech@w235krbza760
 *  Changed the JList to no longer use
 *  setFixedCellHeight() since BasicCytoShapeEntitys can now have
@@ -27,9 +29,19 @@
 */
 package cytoscape.editor.impl;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.DragSourceContextCursorSetter;
+
+import cytoscape.editor.event.BasicCytoShapeTransferHandler;
+
+import cytoscape.view.CyNetworkView;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,14 +55,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-
-import cytoscape.Cytoscape;
-import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.editor.event.BasicCytoShapeTransferHandler;
-import cytoscape.view.CyNetworkView;
 
 
 /**
@@ -99,7 +103,7 @@ public class ShapePalette extends JPanel {
         dataList.setTransferHandler(new PaletteListTransferHandler());
         // AJK: 09/16/05 BEGIN
         //     set internal spacing via fixed cell height and width
-	// MLC 12/04/06:
+        // MLC 12/04/06:
         // dataList.setFixedCellHeight(CytoShapeIcon.HEIGHT + 5);
         // AJK: 09/16/05 END
         _shapePane = new JPanel();
@@ -110,41 +114,38 @@ public class ShapePalette extends JPanel {
         scrollPane.setBorder(BorderFactory.createEtchedBorder());
         dataList.setBackground(Cytoscape.getDesktop().getBackground());
         scrollPane.setBackground(Cytoscape.getDesktop().getBackground());
-        
+
         // AJK: 12/10/06 BEGIN
         //     get scrollpane working so that it is always visible at both ends
-//        scrollPane.setHorizontalScrollBarPolicy
-//        (ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        
-//        scrollPane.setPreferredSize(
-//            new Dimension(
-//                ((JPanel) Cytoscape.getDesktop()
-//                        // AJK: 12/09/06 set size smaller to enable scrolling to bottom?
-//                                  .getCytoPanel(SwingConstants.WEST)).getSize().width -
-//                                   5,  
-//                                   ((JPanel) Cytoscape.getDesktop()
-//                                   .getCytoPanel(SwingConstants.WEST)).getSize().height
-//                                   - 5
-//                                 ));
-        scrollPane.setVerticalScrollBarPolicy
-                (JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy
-                (JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        //        scrollPane.setHorizontalScrollBarPolicy
+        //        (ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        //        scrollPane.setPreferredSize(
+        //            new Dimension(
+        //                ((JPanel) Cytoscape.getDesktop()
+        //                        // AJK: 12/09/06 set size smaller to enable scrolling to bottom?
+        //                                  .getCytoPanel(SwingConstants.WEST)).getSize().width -
+        //                                   5,  
+        //                                   ((JPanel) Cytoscape.getDesktop()
+        //                                   .getCytoPanel(SwingConstants.WEST)).getSize().height
+        //                                   - 5
+        //                                 ));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.setLayout(new BorderLayout());
         this.add(scrollPane, BorderLayout.CENTER);
         this.setPreferredSize(new Dimension(300, 300));
         this.setMaximumSize(new Dimension(300, 300));
         // AJK: 12/10/06 END
-        
         CytoscapeEditorManager.setCurrentShapePalette(this);
 
         CyNetworkView view = Cytoscape.getCurrentNetworkView();
         CytoscapeEditorManager.setShapePaletteForView(view, this);
 
         // AJK: 12/10/06 fix so that scrolling to bottom of pane works
-//        _controlPane.add(scrollPane);
-//        this.add(_controlPane);
-//        this.add(scrollPane);
+        //        _controlPane.add(scrollPane);
+        //        this.add(_controlPane);
+        //        this.add(scrollPane);
         this.setBackground(Cytoscape.getDesktop().getBackground());
         this.setVisible(true);
     }
@@ -163,23 +164,32 @@ public class ShapePalette extends JPanel {
     * @param attributeValue value for the attribute assigned to the shape, for example a "NodeType" of "protein"
     * @param img the icon for the shape
     * @param name the title of the shape
+     * @param cursorSetter a possibly null DragSourceContextCursorSetter used to specify
+     *                     the cursor so show when dragging over the current network view.
     */
+    // MLC 12/16/06 BEGIN:
     public void addShape(String attributeName, String attributeValue, Icon img,
-                         String name) {
+                         String name,
+			 DragSourceContextCursorSetter cursorSetter) {
         BasicCytoShapeEntity cytoShape = new BasicCytoShapeEntity(attributeName,
                                                                   attributeValue,
-                                                                  img,
-                                                                  name);
-
-        cytoShape.setTransferHandler(new BasicCytoShapeTransferHandler(
-                                                                       cytoShape,
+                                                                  img, name,
+								  cursorSetter);
+	//    public void addShape(String attributeName, String attributeValue, Icon img,
+	//			 String name) {
+	//        BasicCytoShapeEntity cytoShape = new BasicCytoShapeEntity(attributeName,
+	//                                                                  attributeValue,
+	//                                                                  img, name);
+    // MLC 12/16/06 END.
+        cytoShape.setTransferHandler(new BasicCytoShapeTransferHandler(cytoShape,
                                                                        null));
-        _shapeMap.put(cytoShape.getTitle(), cytoShape);
+        _shapeMap.put(cytoShape.getTitle(),
+                      cytoShape);
 
         if (attributeName.equals(CytoscapeEditorManager.EDGE_TYPE)) {
-            CytoscapeEditorManager.addEdgeTypeForVisualStyle(
-                Cytoscape.getCurrentNetworkView().getVisualStyle(),
-                attributeValue);
+            CytoscapeEditorManager.addEdgeTypeForVisualStyle(Cytoscape.getCurrentNetworkView()
+                                                                      .getVisualStyle(),
+                                                             attributeValue);
         }
 
         _shapePane.add(cytoShape);
