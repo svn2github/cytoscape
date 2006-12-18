@@ -22,6 +22,8 @@ import giny.view.EdgeView;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 
+import cytoscape.CytoscapeInit;
+
 // AJK: 04/02/06 BEGIN
 import phoebe.*;
 
@@ -332,7 +334,12 @@ public class InnerCanvas extends DingCanvas
 
                     public boolean textAsShape(int renderNodeCount,
                         int renderEdgeCount) {
-                        return m_printingTextAsShape[0];
+                    	// This is a work-around, in the future version, we will provide a check box
+                    	// "ExportTextAsShape" as an option in the print/export dialog
+                		return (new Boolean(CytoscapeInit.getProperties().
+                				getProperty("exportTextAsShape"))).booleanValue();
+
+                        //return m_printingTextAsShape[0];
                     }
                 },
                 m_view.m_nodeDetails,
