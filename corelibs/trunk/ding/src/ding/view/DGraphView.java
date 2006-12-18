@@ -74,6 +74,7 @@ public class DGraphView
     MutableSpacialIndex2D m_spacialA;
     DNodeDetails m_nodeDetails;
     DEdgeDetails m_edgeDetails;
+    PrintLOD m_printLOD;
     HashMap m_nodeViewMap;
     HashMap m_edgeViewMap;
     String m_identifier;
@@ -113,6 +114,7 @@ public class DGraphView
         m_edgeDetails = new DEdgeDetails(this);
         m_nodeViewMap = new HashMap();
         m_edgeViewMap = new HashMap();
+        m_printLOD = new PrintLOD(); 
         m_defaultNodeXMin = 0.0f;
         m_defaultNodeYMin = 0.0f;
         m_defaultNodeXMax = m_defaultNodeXMin + DNodeView.DEFAULT_WIDTH;
@@ -1568,18 +1570,10 @@ public class DGraphView
      */
     public void setPrintingTextAsShape(boolean textAsShape) {
         synchronized (m_lock) {
-            m_networkCanvas.m_printingTextAsShape[0] = textAsShape;
+        	m_printLOD.setPrintingTextAsShape(textAsShape);
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean getPrintingTextAsShape() {
-        return m_networkCanvas.m_printingTextAsShape[0];
-    }
 
     /**
      * Efficiently computes the set of nodes intersecting an axis-aligned
@@ -1806,7 +1800,6 @@ public class DGraphView
             
             getComponent()
                 .print(g);
-            
             return PAGE_EXISTS;
         } else
             return NO_SUCH_PAGE;
