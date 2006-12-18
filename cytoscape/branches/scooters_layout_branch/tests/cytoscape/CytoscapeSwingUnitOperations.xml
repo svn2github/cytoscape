@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document componentFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+	windowFinder="CLASS_IS_EQUAL_STRICTLY"
+	windowClass="cytoscape.view.CytoscapeDesktop">
+
+
+	<scenario name="IMPORT_NETWORK_FILE">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Import" />
+		<Click componentClass="JMenuItem" label="Network..." />
+		<retriever retryTime="2000">
+			<Click componentClass="JButton" dialogTitle="Import Network"
+				label="Select" windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+		</retriever>
+		<retriever retryTime="2000">
+			<FileChooser dialogTitle="Import Network Files"
+				directory="testData" fileName="$(FILE_TO_IMPORT)" />
+		</retriever>
+		<retriever retryTime="2000">
+			<Click componentClass="JButton" dialogTitle="Import Network"
+				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+		</retriever>
+		<Delay ms="3000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+
+	<scenario name="SHOW_HIDE_ATTRIBUTE_BROWSER">
+		<Click componentClass="JMenu" label="View" />
+		<Click componentClass="JMenuItem"
+			label="Show/Hide attribute browser" />
+	</scenario>
+
+
+	<scenario name="APPLY_SPRING_LAYOUT">
+		<Click componentClass="JMenu" label="Layout" />
+		<Click componentClass="JMenuItem" label="Cytoscape Layouts" />
+		<Click componentClass="JMenuItem" label="Spring Embedded" />
+		<Click componentClass="JMenuItem" label="All Nodes" />
+		<Delay ms="10000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<scenario name="DO_LAYOUT">
+		<Click componentClass="JMenu" label="Layout" />
+		<Click componentClass="JMenuItem" label="$(LAUOUT_CATEGORY)" />
+		<Click componentClass="JMenuItem" label="$(LAYOUT_ALGORITHM)" />
+
+		<Delay ms="10000" />
+
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<scenario name="SELECT_ALL_EDGES">
+		<Click componentClass="JMenu" label="Select" />
+		<Click componentClass="JMenuItem" label="Edges" />
+		<Click componentClass="JMenuItem" label="Select all edges" />
+	</scenario>
+
+
+	<scenario name="SELECT_NODE_BY_NAME">
+		<Click componentClass="JMenu" label="Select" />
+		<Click componentClass="JMenuItem" label="Nodes" />
+		<Click componentClass="JMenuItem" label="By Name..." />
+		<retriever retryTime="2000">
+			<TypeText text="$(NODE_NAME)"
+				windowFinder="CLASS_IS_ACCESSIBLE" windowClass="JDialog" />
+			<Click componentClass="JButton" label="Search"
+				windowFinder="CLASS_IS_ACCESSIBLE" windowClass="JDialog" />
+			<Click componentClass="JButton" label="Cancel"
+				windowFinder="CLASS_IS_ACCESSIBLE" windowClass="JDialog" />
+		</retriever>
+	</scenario>
+
+
+	<scenario name="SELECT_FIRST_NEIGHBORS">
+		<Click componentClass="JMenu" label="Select" />
+		<Click componentClass="JMenuItem" label="Nodes" />
+		<Click componentClass="JMenuItem"
+			label="First neighbors of selected nodes" />
+	</scenario>
+
+
+	<scenario name="NEW_NETWORK_FROM_SELECTED_NODES_ALL_EDGES">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="New" />
+		<Click componentClass="JMenuItem" label="Network" />
+		<Click componentClass="JMenuItem"
+			label="From selected nodes, all edges" />
+	</scenario>
+
+
+	<scenario name="NEW_NETWORK_FROM_SELECTED_NODES_SELECTED_EDGES">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="New" />
+		<Click componentClass="JMenuItem" label="Network" />
+		<Click componentClass="JMenuItem"
+			label="From selected nodes, selected edges" />
+	</scenario>
+
+	<scenario name="IMPORT_NODE_ATTRIBUTES">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Import" />
+		<Click componentClass="JMenuItem" label="Node Attributes..." />
+		<retriever retryTime="2000">
+			<FileChooser dialogTitle="Import Node Attributes"
+				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
+		</retriever>
+		<Delay ms="1000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<scenario name="IMPORT_EDGE_ATTRIBUTES">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Import" />
+		<Click componentClass="JMenuItem" label="Edge Attributes..." />
+		<retriever retryTime="2000">
+			<FileChooser dialogTitle="Import Edge Attributes"
+				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
+		</retriever>
+		<Delay ms="1000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<scenario name="IMPORT_VIZMAP">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Import" />
+		<Click componentClass="JMenuItem" label="Vizmap Property File..." />
+		<retriever retryTime="2000">
+			<FileChooser dialogTitle="Import Vizmap Property File"
+				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
+		</retriever>
+		<Delay ms="2000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+
+	<scenario name="PAUSE">
+		<Delay ms="$(DURATION)" />
+	</scenario>
+
+
+	<scenario name="SET_VIZMAPPER">
+		<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
+			componentNumber="7" componentClass="JButton"
+			containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
+
+		<Click componentClass="JButton" label="Define"
+			windowFinder="CLASS_IS_ACCESSIBLE" windowClass="JDialog" />
+
+		<Delay ms="500" />
+
+		<Tab componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
+			name="nodePane" tabTitle="Node Label"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.visual.ui.VizMapUI" />
+
+		<ComboBox componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
+			name="calcComboBox" targetIndex="3"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.visual.ui.VizMapUI" />
+
+		<ComboBox componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
+			name="attrBox" targetIndex="1" windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.visual.ui.VizMapUI" />
+
+		<Delay ms="1000" />
+
+		<Click componentClass="JButton" label="Apply to Network"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.visual.ui.VizMapUI" />
+
+		<Click componentClass="JToggleButton" label="Edge Attributes"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.visual.ui.VizMapUI" />
+
+		<ComboBox componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
+			name="calcComboBox" targetIndex="1"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.visual.ui.VizMapUI" />
+
+		<Click componentClass="JButton"
+			label="Seed Mapping with Random Colors"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.visual.ui.VizMapUI" />
+
+		<Click componentClass="JButton" label="Apply to Network"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.visual.ui.VizMapUI" />
+
+		<Click componentClass="JButton" label="Close"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.visual.ui.VizMapUI" />
+
+		<Click componentClass="JButton" label="Close"
+			windowFinder="CLASS_IS_ACCESSIBLE" windowClass="JDialog" />
+
+	</scenario>
+
+	<scenario name="IMPORT_REMOTE_SIF_FILE">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Import" />
+		<Click componentClass="JMenuItem" label="Network..." />
+
+		<Click componentClass="JRadioButton" label="Remote"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+
+		<Delay ms="500" />
+		<Click componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
+			componentClass="JComboBox" name="networkFileComboBox"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+
+		<SelectAll />
+
+		<TypeText
+			text="http://www.cytoscape.org/tut/getting.started/RUAL.subset.sif"
+			waitTime="20" />
+
+		<retriever retryTime="2000">
+			<Click componentClass="JButton" dialogTitle="Import Network"
+				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+		</retriever>
+		<Delay ms="3000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+
+	<!-- Test zoom in/out functions -->
+	<scenario name="ZOOM_IN_AND_OUT">
+		<WindowStatus status="MAXIMIZED_BOTH"
+			windowFinder="ROOT_CONTAINER" />
+
+		<WindowStatus status="MAXIMIZED_BOTH"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="RUAL.subset.sif--child" windowClass="JInternalFrame" />
+
+		<!-- Fit to Window -->
+
+		<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
+			componentNumber="5" componentClass="JButton"
+			containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
+
+		<Delay ms="500" />
+
+		<repeat from="0" shortOf="10" propertyKey="FOO">
+			<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
+				componentNumber="3" componentClass="JButton"
+				containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
+		</repeat>
+
+		<repeat from="0" shortOf="10" propertyKey="FOO">
+			<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
+				componentNumber="2" componentClass="JButton"
+				containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
+		</repeat>
+
+		<Delay ms="1000" />
+	</scenario>
+
+	<!-- Test Filter -->
+	<scenario name="TEST_FILTER_1">
+
+		<WindowStatus status="MAXIMIZED_BOTH"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="RUAL.subset.sif" windowClass="JInternalFrame" />
+
+		<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
+			componentNumber="5" componentClass="JButton"
+			containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
+
+		<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
+			componentNumber="8" componentClass="JButton"
+			containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
+
+		<Click componentClass="JButton" label="Create new filter"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<List componentFinder="CLASS_IS_ACCESSIBLE" targetIndex="1"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Filter Creation Dialog" windowClass="JDialog" />
+
+		<Click componentClass="JButton" label="OK"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Filter Creation Dialog" windowClass="JDialog" />
+
+		<ComboBox componentFinder="COMPONENT_NUMBER" from="RIGHT"
+			componentNumber="0" targetIndex="1" containerClass="JPanel"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<ComboBox componentFinder="COMPONENT_NUMBER" from="RIGHT"
+			componentNumber="1" targetIndex="0" containerClass="JPanel"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<Click componentFinder="COMPONENT_NUMBER" from="RIGHT"
+			componentNumber="1" componentClass="JTextField"
+			containerClass="JPanel"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<TypeText text="non_core" waitTime="10" />
+
+		<Click componentClass="JButton" label="Apply selected filter"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<Delay ms="5000" />
+
+		<WindowClosing
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+	</scenario>
+
+
+	<!-- Test Filter -->
+	<scenario name="TEST_FILTER_2">
+
+		<Click componentClass="JButton" label="Create new filter"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<List componentFinder="CLASS_IS_ACCESSIBLE" targetIndex="1"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Filter Creation Dialog" windowClass="JDialog" />
+
+		<Click componentClass="JButton" label="OK"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Filter Creation Dialog" windowClass="JDialog" />
+
+		<ComboBox componentFinder="COMPONENT_NUMBER" from="RIGHT"
+			componentNumber="0" targetIndex="1" containerClass="JPanel"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<ComboBox componentFinder="COMPONENT_NUMBER" from="RIGHT"
+			componentNumber="1" targetIndex="0" containerClass="JPanel"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<Click componentFinder="COMPONENT_NUMBER" from="RIGHT"
+			componentNumber="1" componentClass="JTextField"
+			containerClass="JPanel"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<TypeText text="*" waitTime="10" />
+
+		<Click componentClass="JButton" label="Apply selected filter"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<Delay ms="5000" />
+
+		<WindowClosing
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="New" />
+		<Click componentClass="JMenuItem"
+			label="From selected nodes, selected edges" />
+
+		<Delay ms="3500" />
+
+	</scenario>
+
+
+	<scenario name="DELETE_SELECTED_EDGES">
+		<Click componentClass="JMenu" label="Edit"
+			windowFinder="ROOT_CONTAINER" />
+
+		<Click componentClass="JMenuItem"
+			label="Delete Selected Nodes and Edges" />
+		<Delay ms="2500" />
+	</scenario>
+
+
+	<!-- For Test Slow -->
+	<scenario name="IMPORT_REMOTE_NETWORK_FILE">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Import" />
+		<Click componentClass="JMenuItem" label="Network..." />
+
+		<Click componentClass="JRadioButton" label="Remote"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+
+		<Delay ms="500" />
+		<Click componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
+			componentClass="JComboBox" name="networkFileComboBox"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+
+		<SelectAll />
+
+		<TypeText text="$(REMORE_NETWORK_FILE)" waitTime="10" />
+
+		<retriever retryTime="2000">
+			<Click componentClass="JButton" dialogTitle="Import Network"
+				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+		</retriever>
+		<Delay ms="8000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<scenario name="IMPORT_REMOTE_NETWORK_FILE_FROM_BOOKMARK">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Import" />
+		<Click componentClass="JMenuItem" label="Network..." />
+
+		<Click componentClass="JRadioButton" label="Remote"
+			windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+
+		<Delay ms="500" />
+		<ComboBox componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
+			componentClass="JComboBox" name="networkFileComboBox"
+			targetIndex="$(BOOKMARK_INDEX)" windowFinder="CLASS_IS_ACCESSIBLE"
+			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+
+		<retriever retryTime="2000">
+			<Click componentClass="JButton" dialogTitle="Import Network"
+				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+		</retriever>
+		<Delay ms="8000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<scenario name="IMPORT_GML_FILE">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Import" />
+		<Click componentClass="JMenuItem" label="Network..." />
+		<retriever retryTime="2000">
+			<Click componentClass="JButton" dialogTitle="Import Network"
+				label="Select" windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+		</retriever>
+		<retriever retryTime="2000">
+			<FileChooser dialogTitle="Import Network Files"
+				directory="testData" fileName="$(FILE_TO_IMPORT)" />
+		</retriever>
+		<retriever retryTime="2000">
+			<Click componentClass="JButton" dialogTitle="Import Network"
+				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
+		</retriever>
+
+		<Delay ms="3000" />
+
+		<retriever retryTime="5000">
+			<Click componentClass="JButton"
+				dialogTitle="Visual Style Builder" label="Generate VS"
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.dialogs.VisualStyleBuilderDialog" />
+		</retriever>
+
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+
+	<scenario name="SAVE_SESSION">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Save As..." />
+
+		<Delay ms="1000" />
+
+		<TypeText text="$(SESSION_FILE_NAME)" />
+		<KeyPress keyCodeString="TAB" />
+		<KeyRelease keyCodeString="TAB" />
+		<Delay ms="100" />
+		<KeyPress keyCodeString="TAB" />
+		<KeyRelease keyCodeString="TAB" />
+		<Delay ms="100" />
+		<KeyPress keyCodeString="SPACE" />
+		<KeyRelease keyCodeString="SPACE" />
+
+		<Delay ms="10000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+		<Delay ms="1000" />
+	</scenario>
+
+	<scenario name="OPEN_SESSION">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Open" />
+
+		<OptionPane title="Caution!" label="Yes" />
+
+
+		<FileChooser dialogTitle="Open a Session File"
+			directory="$(SESSION_DIR)" fileName="$(SESSION_FILE_NAME)" />
+
+		<Delay ms="20000" />
+		<retriever retryTime="15000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+		<Delay ms="3000" />
+	</scenario>
+
+
+	<scenario name="IMPORT_EXPRESSION_MATRIX">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Import" />
+		<Click componentClass="JMenuItem"
+			label="Attribute/Expression Matrix..." />
+
+		<Click componentClass="JButton" label="Select"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Import an Attribute/Expression Matrix"
+			windowClass="JDialog" />
+
+		<FileChooser dialogTitle="Import AttributeMatrix File"
+			directory="$(IMPORT_DIR)" fileName="$(MATRIX_FILE_NAME)" />
+
+		<Click componentClass="JButton" label="Import"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Import an Attribute/Expression Matrix"
+			windowClass="JDialog" />
+
+		<Delay ms="2000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+
+	</scenario>
+
+	<scenario name="DESTROY_NETWORK">
+
+	</scenario>
+
+	<scenario name="QUIT_CYTOSCAPE">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Quit" />
+	</scenario>
+
+
+</document>
