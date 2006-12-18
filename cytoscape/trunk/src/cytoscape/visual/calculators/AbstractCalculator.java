@@ -66,9 +66,8 @@ import giny.model.GraphObject;
 /**
  * AbstractCalculator is the top of the tree for the Calculator classes. <b>DO NOT</b>
  * extend this class directly! All calculators should extend one of {@link NodeCalculator}
- * or {@link EdgeCalculator} <b>AND</b> implement one of the 11 attribute calculator
- * interfaces.
- * TODOOOO this shouldn't be public
+ * or {@link EdgeCalculator} 
+ * TODO this shouldn't be public
  */
 public abstract class AbstractCalculator implements Calculator {
 

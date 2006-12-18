@@ -154,6 +154,11 @@ public class ValueDisplayer extends JButton {
 	private boolean enabled;
 
 	/**
+	 * Default font used to initialize things.
+	 */
+	private static Font defaultDisplayFont = new Font(null, Font.PLAIN, 1);
+
+	/**
 	 * Provided for convenience.
 	 * 
 	 * @see #getValue
@@ -513,7 +518,7 @@ public class ValueDisplayer extends JButton {
 		case INT:
 			return getDisplayForInt(parent, title, 0);
 		case FONT:
-			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN, 1));
+			return getDisplayForFont(parent, title, defaultDisplayFont);
 		case LABEL_POSITION:
 			return getDisplayForLabelPosition(parent, title, new LabelPosition());
 		default:
@@ -556,7 +561,7 @@ public class ValueDisplayer extends JButton {
 				return getDisplayForInt(parent, title, 0);
 			}
 		} else if (sampleObj instanceof Font) {
-			return getDisplayForFont(parent, title, new Font(null, Font.PLAIN, 1));
+			return getDisplayForFont(parent, title, defaultDisplayFont);
 		} else if (sampleObj instanceof LabelPosition) {
 			return getDisplayForLabelPosition(parent, title, new LabelPosition());
 		} else {// don't know what to do this this

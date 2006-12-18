@@ -72,13 +72,15 @@ import java.util.Properties;
  */
 public class EdgeAppearance implements Appearance, Cloneable {
     
+    static Font defaultFont = new Font(null, Font.PLAIN, 10);
+
     Color color = Color.BLACK;
     LineType lineType = LineType.LINE_1;
     Arrow sourceArrow = Arrow.NONE;
     Arrow targetArrow = Arrow.NONE;
     String label = "";
     String toolTip = "";
-    Font font = new Font(null, Font.PLAIN, 10);
+    Font font = defaultFont; 
     Color labelColor = Color.BLACK;
 
     public EdgeAppearance() {}

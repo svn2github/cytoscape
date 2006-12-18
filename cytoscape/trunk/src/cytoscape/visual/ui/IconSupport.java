@@ -67,6 +67,7 @@ public class IconSupport {
 	private ImageIcon currentIcon;
 	private ImageIcon[] icons;
 	private HashMap sToI; 
+	private static Font defaultFont = new Font("SansSerif",Font.PLAIN,8);
 
 	public IconSupport( ) {
 	}
@@ -400,13 +401,12 @@ public class IconSupport {
 		int height = 30;
 
 		String s = Integer.toString(w);
-		Font f = new Font("SansSerif",Font.PLAIN,8);
 
 		BufferedImage bi = new BufferedImage(w+bound+bound,height,BufferedImage.TYPE_INT_RGB );
 
 		Graphics2D g2 = bi.createGraphics(); 
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setFont(f);
+		g2.setFont(defaultFont);
 
 		int stringWidth = g2.getFontMetrics().stringWidth(s);
 
@@ -431,13 +431,12 @@ public class IconSupport {
 		int width = 40;
 
 		String s = Integer.toString(h);
-		Font f = new Font("SansSerif",Font.PLAIN,8);
 
 		BufferedImage bi = new BufferedImage(width, h+bound+bound,BufferedImage.TYPE_INT_RGB );
 
 		Graphics2D g2 = bi.createGraphics(); 
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setFont(f);
+		g2.setFont(defaultFont);
 		int stringHeight = g2.getFontMetrics().getMaxAscent();
 
 		g2.setBackground(Color.white);
@@ -460,12 +459,11 @@ public class IconSupport {
 		int bound = 4;
 
 		String s = Integer.toString(size);
-		Font f = new Font("SansSerif",Font.PLAIN,8);
 
 		BufferedImage bi = new BufferedImage(size+bound+bound, size+bound+bound,BufferedImage.TYPE_INT_RGB );
 		Graphics2D g2 = bi.createGraphics(); 
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setFont(f);
+		g2.setFont(defaultFont);
 
 		g2.setBackground(Color.white);
 		g2.setPaint(Color.white);

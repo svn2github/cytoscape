@@ -74,6 +74,7 @@ import cytoscape.data.CyAttributes;
  */
 public class NodeAppearance implements Appearance, Cloneable {
     
+    static Font defaultFont = new Font(null, Font.PLAIN, 12);
     // defaults 
     Color fillColor = Color.WHITE;
     Color borderColor = Color.BLACK;
@@ -84,7 +85,7 @@ public class NodeAppearance implements Appearance, Cloneable {
     double size = 35.0;
     String label = "";
     String toolTip = "";
-    Font font = new Font(null, Font.PLAIN, 12);
+    Font font = defaultFont; 
     Color labelColor = Color.black;
     boolean nodeSizeLocked = true;
     LabelPosition labelPosition = new LabelPosition();

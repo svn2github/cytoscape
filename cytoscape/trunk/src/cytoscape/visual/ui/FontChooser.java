@@ -61,9 +61,12 @@ public class FontChooser extends JPanel {
     protected JComboBox face;
 
     protected static float displaySize = 12F;
-    protected static Font[] displayFonts;
-    protected static Font[] allFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-    static { displayFonts = scaleFonts(allFonts,displaySize); }
+    protected static Font[] scaledFonts;
+    protected static Font defFont = new Font("dialog", Font.PLAIN, 1);
+    static { 
+        scaledFonts = scaleFonts(GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts(),
+                                  displaySize); 
+    }
 
     /**
      * Create a FontChooser to choose between all fonts available on the system.
@@ -73,7 +76,7 @@ public class FontChooser extends JPanel {
     }
     
     public FontChooser(Font def) {
-	this(allFonts, def);
+	this(scaledFonts, def);
     }
     
     /**
@@ -81,7 +84,8 @@ public class FontChooser extends JPanel {
      */
     public FontChooser(Font[] srcFonts, Font def) {
 
-    	if ( srcFonts != allFonts ) {
+	Font[] displayFonts = scaledFonts;
+    	if ( srcFonts != scaledFonts ) {
 		System.out.println("scaling fonts");
 		displayFonts = scaleFonts(srcFonts,displaySize);
 	}
@@ -97,7 +101,7 @@ public class FontChooser extends JPanel {
 
 	// set the currently selected face, default if null
 	if (def == null)
-	    this.selectedFont = new Font("dialog", Font.PLAIN, 1);
+	    this.selectedFont = defFont; 
 	else
 	    this.selectedFont = def.deriveFont(1F);
 	face.setSelectedItem(this.selectedFont);
