@@ -54,9 +54,11 @@ import javax.swing.AbstractAction;
 import java.awt.print.PrinterJob;
 
 import cytoscape.giny.*;
-
+import cytoscape.CytoscapeInit;
 import cytoscape.Cytoscape;
 import cytoscape.ding.DingNetworkView;
+import ding.view.DGraphView;
+
 import cytoscape.view.CyNetworkView;
 import cytoscape.util.*;
 import cytoscape.util.CytoscapeAction;
@@ -73,7 +75,14 @@ public class PrintAction extends CytoscapeAction  {
 
     public void actionPerformed(ActionEvent e) {
       PrinterJob printJob = PrinterJob.getPrinterJob();
-      printJob.setPrintable((DingNetworkView) Cytoscape.getCurrentNetworkView());
+      
+	  // Export text as shape/font based on user's setting
+      DGraphView theViewToPrint = (DingNetworkView) Cytoscape.getCurrentNetworkView();
+      boolean exportTextAsShape = new Boolean(CytoscapeInit.getProperties().
+				getProperty("exportTextAsShape")).booleanValue();
+      theViewToPrint.setPrintingTextAsShape(exportTextAsShape);
+      
+      printJob.setPrintable(theViewToPrint);
       if (printJob.printDialog()) {
         try { printJob.print(); }
         catch (Exception exc) { exc.printStackTrace(); } }
