@@ -2,6 +2,9 @@ package csplugins.layout.algorithms.graphPartition;
 
 import giny.model.*;
 
+import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
 import cytoscape.task.*;
 
 import cern.colt.list.*;
@@ -11,37 +14,41 @@ import java.util.*;
 import javax.swing.JOptionPane;
 import java.lang.Throwable;
 
-/* NOTE: The AbstractLayout class uses SGraphPartition to generate
+import cytoscape.layout.AbstractLayout;
+
+/* NOTE: The AbstractGraphPartition class uses SGraphPartition to generate
    the partitions in the graph. Originally this class used GraphPartition,
    but it is broken. */
 
-import csplugins.layout.algorithms.SGraphPartition;
+import csplugins.layout.algorithms.graphPartition.SGraphPartition;
 
-public abstract class AbstractLayout implements Task {
-
-  private TaskMonitor taskMonitor = null;
-  private boolean interrupted = false;
-
-  private GraphPerspective gp;
-  Layout layout;
+public abstract class AbstractGraphPartition extends AbstractLayout {
+  protected TaskMonitor taskMonitor = null;
+	protected Layout layout;
+	protected boolean selectedOnly = false;
     
   double incr = 100;
 
-  public AbstractLayout ( GraphPerspective gp ) {
-    this.gp = gp;
-    layout = new Layout( gp );
+  public AbstractGraphPartition ( ) {
+		super();
   }
    
   public abstract void layoutPartion ( GraphPerspective net ) ;
 
+	public boolean supportsSelectedOnly() { return true; }
 
-  public Layout getLayout () {
-    return layout;
-  }
+	public void setSelectedOnly (boolean v) {
+		this.selectedOnly = v;
+	}
 
-  public void layout () {
 
-    List partitions = SGraphPartition.partition( gp );
+	/* AbstractGraphPartitionLayout implements the constuct method
+	 * and calls layoutPartion for each partition.
+	 */
+  public void construct () {
+		layout = new Layout(networkView, true);
+		initialize();
+    List partitions = SGraphPartition.partition( networkView, selectedOnly );
     Iterator p = partitions.iterator();
 
     // monitor
@@ -55,7 +62,7 @@ public abstract class AbstractLayout implements Task {
     double current_max_y = 0;
 
     
-    double max_dimensions = Math.sqrt( ( double )gp.getNodeCount() );
+    double max_dimensions = Math.sqrt( ( double )network.getNodeCount() );
     // give each node room
     max_dimensions *= incr;
 
@@ -72,13 +79,13 @@ public abstract class AbstractLayout implements Task {
 
     //System.out.println( "AbstractLayout::There are "+partitions.size()+" Partitions!!");
 
-    while ( p.hasNext() ) {
+    while ( p.hasNext() && !canceled ) {
       // get the array of node
       int[] nodes = ( int[] )p.next();
       if ( nodes.length == 0 ) {
         continue;
       }
-      current_gp = gp.getRootGraph().createGraphPerspective( nodes, gp.getConnectingEdgeIndicesArray( nodes ) );
+      current_gp = network.getRootGraph().createGraphPerspective ( nodes, network.getConnectingEdgeIndicesArray( nodes ));;
       // Partitions Requiring Layout
       if ( nodes.length != 1 ) {
         try
@@ -87,15 +94,7 @@ public abstract class AbstractLayout implements Task {
         }
         catch(Throwable _e)
         {
-          Object buttons[] = { "Print Stack Trace", "OK" };
-          if(JOptionPane.showOptionDialog(null, "Failed to layout graph.\n\n", 
-                                          "Failed to Layout Graph",
-                                          JOptionPane.YES_NO_OPTION,
-                                          JOptionPane.ERROR_MESSAGE,
-                                          null, buttons, buttons[1]) == 0)
-          {
-            _e.printStackTrace();
-          }
+          _e.printStackTrace();
           return;
         }
         // offset GP
@@ -131,11 +130,7 @@ public abstract class AbstractLayout implements Task {
       }
 
     } // end iterate through partitions
-
-
-    layout.applyLayout( cytoscape.Cytoscape.getCurrentNetworkView() );
-    interrupted = true;
-    cytoscape.Cytoscape.getCurrentNetworkView().fitContent();
+		layout.applyLayout(networkView);
   }
   
   protected double[] maxXmaxY ( int[] nodes ) {
@@ -199,38 +194,5 @@ public abstract class AbstractLayout implements Task {
       layout.setY( nodes[i], layout.getY( nodes[i] ) - min_y + y_offset );
     }
   }
-
-  //////////////////////////////
-  // implements Task
-  
-  public String getTitle () {
-    return "Layout";
-  }
-
-  public void halt () {
-    interrupted = true;
-  }
-
-  public void run () {
-    //if (taskMonitor == null) {
-    //  throw new IllegalStateException("Task Monitor is not set.");
-    //}
-    
-    try {
-      while ( !interrupted ) {
-        layout();
-      }
-    } catch ( Exception e ) {}
-
-  }
-
-  public void setTaskMonitor ( TaskMonitor monitor ) {
-    if (this.taskMonitor != null) {
-      throw new IllegalStateException("Task Monitor is already set.");
-    }
-    this.taskMonitor = taskMonitor;
-
-  }
-   
 }
 

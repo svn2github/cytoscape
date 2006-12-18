@@ -1,9 +1,12 @@
-package csplugins.layout.algorithms;
+package csplugins.layout.algorithms.graphPartition;
 
 import giny.model.*;
 import cern.colt.list.*;
 import cern.colt.map.*;
 import java.util.*;
+
+import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
 
 public abstract class SGraphPartition
 {
@@ -30,13 +33,18 @@ public abstract class SGraphPartition
     *                     the List are Root Graph's indicies of the nodes
     *                     in the partition.
     */
-  public static List partition(GraphPerspective _perspective)
+  public static List partition(CyNetworkView _perspectiveView, boolean selectedOnly)
   {
+		CyNetwork _perspective = _perspectiveView.getNetwork();
+		List selectedNodes = _perspectiveView.getSelectedNodes();
     // partitions stores the list of partitions
     ArrayList partitions = new ArrayList();
 
-    // define an iterator over all nodes in the graph
-    Iterator nodeIter = _perspective.nodesIterator();
+		Iterator nodeIter;
+		if (selectedOnly)
+			nodeIter = selectedNodes.iterator();
+		else
+    	nodeIter = _perspective.nodesIterator();
 
     // nodesSeenMap is a hash map where each key in the map is a node index.
     // Each value specifies whether the node has been seen or not.
@@ -49,7 +57,11 @@ public abstract class SGraphPartition
       nodesSeenMap.put(node, m_NODE_HAS_NOT_BEEN_SEEN);
     }
 
-    nodeIter = _perspective.nodesIterator();
+		if (selectedOnly)
+			nodeIter = selectedNodes.iterator();
+		else
+    	nodeIter = _perspective.nodesIterator();
+
     while (nodeIter.hasNext())
     {
       // Get this nodes index from the root graph
@@ -104,13 +116,13 @@ public abstract class SGraphPartition
 
   /**
     * This method traverses nodes connected to the specified node.
-    * @param _perspective   The GraphPerspective that holds all the nodes.
+    * @param _perspective   The CyNetwork that holds all the nodes.
     * @param _nodesSeenMap  A map that specifies which nodes have been seen.
     * @param _nodeIndex     Index of the node to search for connected nodes.
     * @param _partitionList The int array list that holds all the node indicies
     *                       in the partition.
     */
-  private static void traverse(GraphPerspective  _perspective,
+  private static void traverse(CyNetwork  _perspective,
                                OpenIntIntHashMap _nodesSeenMap,
                                int _nodeIndex, IntArrayList _partitionList)
   {
@@ -146,7 +158,8 @@ public abstract class SGraphPartition
       }
 
       // If we haven't seen the connected note yet...
-      if (_nodesSeenMap.get(incidentNodeIndex) == m_NODE_HAS_NOT_BEEN_SEEN)
+      if (_nodesSeenMap.containsKey(incidentNodeIndex) && 
+				  _nodesSeenMap.get(incidentNodeIndex) == m_NODE_HAS_NOT_BEEN_SEEN)
       {
         // Mark the connected node as having been seen
         _nodesSeenMap.put(incidentNodeIndex, m_NODE_HAS_BEEN_SEEN);

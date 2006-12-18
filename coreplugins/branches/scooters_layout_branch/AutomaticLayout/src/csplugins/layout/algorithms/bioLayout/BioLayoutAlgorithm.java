@@ -42,16 +42,19 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
 import java.awt.Dimension;
+import java.awt.GridLayout;
+import javax.swing.JPanel;
 
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import cytoscape.data.*;
-import cytoscape.task.TaskMonitor;
 import giny.view.*;
 
-import csplugins.layout.AbstractLayout;
+import cytoscape.layout.AbstractLayout;
 
+import csplugins.layout.LayoutProperties;
+import csplugins.layout.Tunable;
 import csplugins.layout.algorithms.bioLayout.LayoutNode;
 import csplugins.layout.algorithms.bioLayout.LayoutEdge;
 import csplugins.layout.algorithms.bioLayout.Profile;
@@ -68,37 +71,30 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	/**
 	 * Properties
 	 */
-	private static final String debugProp = "debug";
-	private static final String randomizeProp = "randomize";
-	private static final String minWeightProp = "min_weight";
-	private static final String maxWeightProp = "max_weight";
+	private static final int DEBUGPROP = 0;
+	private static final int RANDOMIZE = 1;
+	private static final int MINWEIGHT = 2;
+	private static final int MAXWEIGHT = 3;
+	private static final int SELECTEDONLY = 4;
+	private static final int LAYOUTATTRIBUTE = 5;
+
+	LayoutProperties layoutProperties;
 
   /**
    * A small value used to avoid division by zero
 	 */
 	protected double EPSILON = 0.0000001D;
 
+	/**
+	 * Value to set for doing unweighted layouts
+	 */
+	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
+
   /**
    * Enables/disables debugging messages
    */
 	private final static boolean DEBUG = false;
 	protected static boolean debug = DEBUG; // so we can overload it with a property
-
-  /** 
-   * Default attribute to use for edge weighting
-   */
-	protected String eValueAttribute = "eValue";
-
-	/**
-	 * The task monitor that we report to
-	 */
-	protected TaskMonitor taskMonitor;
-
-	/**
-	 * This flag tells us if the user has
-	 * has requested a cancel.
-	 */
-	protected boolean cancel = false;
 
 	/**
 	 * The LayoutNode (CyNode) and Edge (CyEdge) arrays.
@@ -131,6 +127,11 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	protected boolean selectedOnly = false;
 
 	/**
+	 * Whether or not to use edge weights for layout
+	 */
+	protected boolean supportWeights = true;
+
+	/**
 	 * This hashmap provides a quick way to get an index into
 	 * the LayoutNode array given a graph index.
 	 */
@@ -138,25 +139,52 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 
 	/**
 	 * This is the constructor for the bioLayout algorithm.
-	 * @param networkView the CyNetworkView of the network 
-	 *                    are going to lay out.
 	 */
-	public BioLayoutAlgorithm (CyNetworkView networkView, String prefix) {
-		super (networkView);
+	public BioLayoutAlgorithm () {
+		super ();
 		LayoutEdge e = new LayoutEdge();
 		e.reset(); // This allows us to reset the static variables
 		LayoutNode v = new LayoutNode();
 		v.reset(); // This allows us to reset the static variables
-		initializeProperties(prefix);
+		layoutProperties = new LayoutProperties(getName());
 	}
 
+	// We do support selected only
+	public boolean supportsSelectedOnly () {return true;}
+	// We don't support node attribute-based layouts
+	public byte[] supportsNodeAttributes () {return null;}
+	// We do support edge attribute-based layouts
+	public byte[] supportsEdgeAttributes () {
+		if (!supportWeights)
+			return null;
+
+		byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
+		return attrs;
+	}
+		
 	/**
 	 * Sets the attribute to use for the weights
 	 *
 	 * @param value the name of the attribute
 	 */
-	public void setEvalueAttribute(String value) {
-		this.eValueAttribute = value;
+	public void setLayoutAttribute(String value) {
+		if (value == null || value.equals(UNWEIGHTEDATTRIBUTE)) {
+			edgeAttribute = null;
+		} else {
+			edgeAttribute = value;
+		}
+	}
+
+	/**
+	 * Returns "(unweighted)", which is the "attribute" we
+	 * use to tell the algorithm not to use weights
+	 *
+	 * @returns List of our "special" weights
+	 */
+	public List getInitialAttributeList() {
+		ArrayList list = new ArrayList();
+		list.add(UNWEIGHTEDATTRIBUTE);
+		return list;
 	}
 
 	/**
@@ -231,49 +259,75 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	}
 
 	/**
-	 * Set the task monitor we're going to use
-	 */
-	public void setTaskMonitor(TaskMonitor t) {
-		this.taskMonitor = t;
-	}
-
-	/**
 	 * Reads all of our properties from the cytoscape properties map and sets
 	 * the values as appropriates.
 	 */
-	private void initializeProperties(String propPrefix) {
-		// Initialize our tunables from the properties
-		Properties properties = CytoscapeInit.getProperties();
-		String pValue = null;
+	protected void initializeProperties() {
 
-		// debug
-		if ( (pValue = properties.getProperty(propPrefix+debugProp) ) != null ) {
-			setDebug(pValue);
+		layoutProperties.add(new Tunable("debug", "Enable debugging", Tunable.BOOLEAN, 
+																		new Boolean(false),Tunable.NOINPUT));
+		layoutProperties.add(new Tunable("randomize", "Randomize graph before layout", Tunable.BOOLEAN, 
+																		new Boolean(true)));
+		layoutProperties.add(new Tunable("min_weight", "The minimum edge weight to consider", Tunable.DOUBLE, 
+																		new Double(0)));
+		layoutProperties.add(new Tunable("max_weight", "The maximum edge weight to consider", Tunable.DOUBLE, 
+																		new Double(Double.MAX_VALUE)));
+		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes", Tunable.BOOLEAN, 
+																		new Boolean(false)));
+		layoutProperties.add(new Tunable("edge_attribute", "The edge attribute that contains the weights", 
+																		Tunable.EDGEATTRIBUTE, "weight",(Object)getInitialAttributeList(),
+																		(Object)null,Tunable.NUMERICATTRIBUTE));
+	}
+
+	/**
+	 * Get the settings panel for this layout
+	 */
+	public JPanel getSettingsPanel() {
+		JPanel panel = new JPanel(new GridLayout(0,1));
+		panel.add(layoutProperties.getTunablePanel());
+		return panel;
+	}
+
+	public void updateSettings() {
+		updateSettings(false);
+	}
+
+	public void updateSettings(boolean force) {
+		layoutProperties.updateValues();
+		Tunable t = layoutProperties.get("debug");
+		if (t != null && (t.valueChanged() || force))
+			setDebug(t.getValue().toString());
+		t = layoutProperties.get("randomize");
+		if (t != null && (t.valueChanged() || force))
+			setRandomize(t.getValue().toString());
+		t = layoutProperties.get("min_weight");
+		if (t != null && (t.valueChanged() || force))
+			setMinWeight(t.getValue().toString());
+		t = layoutProperties.get("max_weight");
+		if (t != null && (t.valueChanged() || force))
+			setMaxWeight(t.getValue().toString());
+		t = layoutProperties.get("selected_only");
+		if (t != null && (t.valueChanged() || force))
+			setSelectedOnly(t.getValue().toString());
+		t = layoutProperties.get("edge_attribute");
+		if (t != null && (t.valueChanged() || force)) {
+			setLayoutAttribute(t.getValue().toString());
 		}
-		// randomize
-		if ( (pValue = properties.getProperty(propPrefix+randomizeProp) ) != null ) {
-			setRandomize(pValue);
-		}
-		// max_weight
-		if ( (pValue = properties.getProperty(propPrefix+maxWeightProp) ) != null ) {
-			setMaxWeight(pValue);
-		}
-		// min_weight
-		if ( (pValue = properties.getProperty(propPrefix+minWeightProp) ) != null ) {
-			setMinWeight(pValue);
-		}
+	}
+
+	public void revertSettings() {
+		layoutProperties.revertProperties();
 	}
 
 	/**
 	 * Main entry point for AbstractLayout classes
 	 */
-	public Object construct() {
+	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize();  // Calls initialize_local
 		layout(); 		 // Abstract -- must be overloaded
 		networkView.fitContent();
 		networkView.updateView();
-		return null;
 	}
 
 	/**
@@ -322,7 +376,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 			if (v1.isLocked() && v2.isLocked())
 				continue; // no, ignore it
 			LayoutEdge newEdge = new LayoutEdge(edge, v1, v2);
-			newEdge.setWeight(eValueAttribute);
+			newEdge.setWeight(edgeAttribute);
 			edgeList.add(newEdge);
 		}
 	}
@@ -438,6 +492,6 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	}
 
 	public void setCancel() {
-		this.cancel = true;
+		canceled = true;
 	}
 }

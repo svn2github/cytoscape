@@ -10,31 +10,39 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.map.PrimeFinder;
 
+import csplugins.layout.LayoutProperties;
+import csplugins.layout.Tunable;
+
+import javax.swing.JPanel;
+import java.awt.GridLayout;
+
 import cytoscape.CyNetwork;
 import giny.model.*;
 
 import java.util.Iterator;
 
 
-public class ISOMLayout extends AbstractLayout {
-
+public class ISOMLayout extends AbstractGraphPartition {
   
-	private int maxEpoch;
+	private int maxEpoch = 5000;
 	private int epoch;
 
-	private int radiusConstantTime;
-	private int radius;
-	private int minRadius;
+	private int radiusConstantTime = 100;
+	private int radius = 5;
+	private int minRadius = 1;
 
 	private double adaption;
-	private double initialAdaption;
-	private double minAdaption;
+	private double initialAdaptation = 90.0D/100.0D;
+	private double minAdaptation = 0;
+	private double sizeFactor = 100;
 
 	private double factor;
-	private double coolingFactor;
+	private double coolingFactor = 2;
 
   private boolean trace;
 	private boolean done;
+
+	private LayoutProperties layoutProperties;
 
   //Queue, First In First Out, use add() and get(0)/remove(0)
   private IntArrayList q;
@@ -45,13 +53,90 @@ public class ISOMLayout extends AbstractLayout {
   GraphPerspective net;
   double squared_size;
   
-  public ISOMLayout ( CyNetwork network ) {
-    super( network );
+  public ISOMLayout ( ) {
+    super( );
   
     q = new IntArrayList();
 		trace = false;
+		layoutProperties = new LayoutProperties(getName());
+		initialize_properties();
  
   }
+
+	public String toString () { return "Inverted Self-Organizing Map Layout"; }
+	public String getName () { return "isom"; }
+
+	/**
+	 * Get the settings panel for this layout
+	 */
+	public JPanel getSettingsPanel() {
+		JPanel panel = new JPanel(new GridLayout(0,1));
+		panel.add(layoutProperties.getTunablePanel());
+		return panel;
+	}
+
+	protected void initialize_properties() {
+		layoutProperties.add(new Tunable("maxEpoch", "Number of iterations",
+																		Tunable.INTEGER, new Integer(5000)));
+		layoutProperties.add(new Tunable("sizeFactor", "Size factor",
+																		Tunable.INTEGER, new Integer(100)));
+		layoutProperties.add(new Tunable("radiusConstantTime", "Radius constant",
+																		Tunable.INTEGER, new Integer(100)));
+		layoutProperties.add(new Tunable("radius", "Radius",
+																		Tunable.INTEGER, new Integer(5)));
+		layoutProperties.add(new Tunable("minRadius", "Minimum radius",
+																		Tunable.INTEGER, new Integer(1)));
+		layoutProperties.add(new Tunable("initialAdaptation", "Initial adaptation",
+																		Tunable.DOUBLE, new Double(0.9)));
+		layoutProperties.add(new Tunable("minAdaptation", "Minimum adaptation value",
+																		Tunable.DOUBLE, new Double(0)));
+		layoutProperties.add(new Tunable("coolingFactor", "Cooling factor",
+																		Tunable.DOUBLE, new Double(2)));
+
+		// We've now set all of our tunables, so we can read the property 
+		// file now and adjust as appropriate
+		layoutProperties.initializeProperties();
+
+		// Finally, update everything.  We need to do this to update
+		// any of our values based on what we read from the property file
+		updateSettings(true);
+	}
+
+	public void updateSettings() {
+		updateSettings(false);
+	}
+
+	public void updateSettings(boolean force) {
+		layoutProperties.updateValues();
+		Tunable t = layoutProperties.get("maxEpoch");
+		if (t != null && (t.valueChanged() || force))
+			maxEpoch = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("sizeFactor");
+		if (t != null && (t.valueChanged() || force))
+			sizeFactor = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("radiusConstantTime");
+		if (t != null && (t.valueChanged() || force))
+			radiusConstantTime = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("radius");
+		if (t != null && (t.valueChanged() || force))
+			radius = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("minRadius");
+		if (t != null && (t.valueChanged() || force))
+			minRadius = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("initialAdaptation");
+		if (t != null && (t.valueChanged() || force))
+			initialAdaptation = ((Double)t.getValue()).doubleValue();
+		t = layoutProperties.get("minAdaptation");
+		if (t != null && (t.valueChanged() || force))
+			minAdaptation = ((Double)t.getValue()).doubleValue();
+		t = layoutProperties.get("coolingFactor");
+		if (t != null && (t.valueChanged() || force))
+			coolingFactor = ((Double)t.getValue()).doubleValue();
+	}
+
+	public void revertSettings() {
+		layoutProperties.revertProperties();
+	}
 
   public void layoutPartion ( GraphPerspective net) {
     
@@ -59,25 +144,17 @@ public class ISOMLayout extends AbstractLayout {
 
 		int nodeCount = net.getNodeCount();
     nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( nodeCount ) );
-    squared_size = nodeCount*50;
+    squared_size = nodeCount*sizeFactor;
    
 		epoch = 1;
-    maxEpoch = 5000;
    
-		radiusConstantTime = 100;
-		radius = 5;
-		minRadius = 1;
-
-		initialAdaption = 90.0D / 100.0D;
-		adaption = initialAdaption;
-		minAdaption = 0;
-
-    coolingFactor = 2;
+		adaption = initialAdaptation;
 
     System.out.println ( "Epoch: "+epoch+" maxEpoch: "+maxEpoch );
     while ( epoch < maxEpoch ) {
       adjust();
 			updateParameters();
+			if (canceled) break;
     }
    
   }
@@ -130,7 +207,7 @@ public class ISOMLayout extends AbstractLayout {
   public  void updateParameters() {
 		epoch++;
 		double factor = Math.exp(-1 * coolingFactor * (1.0 * epoch / maxEpoch));
-		adaption = Math.max(minAdaption, factor * initialAdaption);
+		adaption = Math.max(minAdaptation, factor * initialAdaptation);
     if ((radius > minRadius) && (epoch % radiusConstantTime == 0)) {
 			radius--;
 		}
@@ -178,6 +255,7 @@ public class ISOMLayout extends AbstractLayout {
 				}
 			}
 		}
+		// Add check to make sure we don't put nodes on top of each other
 	}
 
   public ISOMVertexData getISOMVertexData (  int v ) {
@@ -238,12 +316,13 @@ public class ISOMLayout extends AbstractLayout {
 		int[] neighbors = new int[edges.length];
 		int offset = 0;
 		for (int edge = 0; edge < edges.length; edge++) {
-			int source = network.getEdgeSourceIndex(edge);
-			int target = network.getEdgeTargetIndex(edge);
-			if (source != nodeIndex)
+			int source = network.getEdgeSourceIndex(edges[edge]);
+			int target = network.getEdgeTargetIndex(edges[edge]);
+			if (source != nodeIndex) {
 				neighbors[offset++] = source;
-			else
+			} else {
 				neighbors[offset++] = target;
+			}
 		}
 		return neighbors;
 	}

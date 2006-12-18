@@ -150,9 +150,9 @@ public class Graph {
 	/** All of the edges in the graph */
 	private Edge edge[];
 	/** For each node, a linked list storing the destination of each outgoing edge */
-	private LinkedList edgesFrom[];
+	private LinkedList<Integer> edgesFrom[];
 	/** For each node, a linked list storing the origin of each incoming edge */
-	private LinkedList edgesTo[];
+	private LinkedList<Integer> edgesTo[];
 	/** True if graph has been cycle removal routine has generated this graph */
 	private boolean acyclic;
 	/** True if transitive reduction routine has generated this graph */
@@ -212,7 +212,7 @@ public class Graph {
 		BufferedReader br = new BufferedReader(r);
 		String linebuf = br.readLine();
 		nodecount = Integer.parseInt(linebuf);
-		LinkedList edges = new LinkedList();
+		LinkedList<Edge> edges = new LinkedList();
 		edgesFrom = new LinkedList[nodecount];
 		edgesTo = new LinkedList[nodecount];
 		int x;
@@ -288,7 +288,7 @@ public class Graph {
 	 * be part of a cycle of length two.
 	*/
 	public Graph getGraphWithoutOneOrTwoCycles() {
-		LinkedList newEdges = new LinkedList();
+		LinkedList<Edge> newEdges = new LinkedList();
 		int x;
 		for (x=0; x<edge.length; x++) {
 			int edgeFrom = edge[x].getFrom();
@@ -310,7 +310,7 @@ public class Graph {
 	 * @return a graph without duplicate edges
 	*/
 	public Graph getGraphWithoutMultipleEdges() {
-		LinkedList newEdges = new LinkedList();
+		LinkedList<Edge> newEdges = new LinkedList();
 		int edgeFrom;
 		for (edgeFrom=0; edgeFrom<nodecount; edgeFrom++) {
 			HashSet seenEdgeTo = new HashSet();
