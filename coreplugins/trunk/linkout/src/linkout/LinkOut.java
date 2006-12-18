@@ -25,7 +25,9 @@ import java.io.*;
 * The format for a weblink is in the form of a <key> = <value> pair where <key> is the name of the
 * website (e.g. NCBI, E!, PubMed, SGD,etc) and <value> is the URL. The key name must be preceded by the keyword "url." to distinguish
 * this property from other properties.
-* In the URL string the placeholder %ID% will be replaced with the node identifier. It is the users responsibility
+* In the URL string the placeholder %ID% will be replaced with the node label that is visible on the node.
+* If no label is visible, the node identifier (far left of attribute browser) will be used. 
+* It is the users responsibility
 * to ensure that the URL is correct and the node's name will match the required query value.
 * Examples:
 *	url.NCBI=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=Protein&term\=%ID%&doptcmdl\=GenPept
