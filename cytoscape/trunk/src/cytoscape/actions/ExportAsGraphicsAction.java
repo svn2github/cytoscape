@@ -57,7 +57,11 @@ import cytoscape.giny.*;
 import cytoscape.view.CyNetworkView;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+
 import org.freehep.util.export.ExportDialog;
+
+import ding.view.DGraphView;
 
 //-------------------------------------------------------------------------
 public class ExportAsGraphicsAction extends CytoscapeAction  {
@@ -76,6 +80,13 @@ public class ExportAsGraphicsAction extends CytoscapeAction  {
 	
       CyNetworkView curr = Cytoscape.getCurrentNetworkView();
       if ( curr != Cytoscape.getNullNetworkView() ) {
+    	  
+    	  // Export text as shape/font based on user's setting
+          DGraphView theViewToPrint = (DingNetworkView) Cytoscape.getCurrentNetworkView();
+          boolean exportTextAsShape = new Boolean(CytoscapeInit.getProperties().
+    				getProperty("exportTextAsShape")).booleanValue();
+          theViewToPrint.setPrintingTextAsShape(exportTextAsShape);
+    	  
       	ExportDialog export = new ExportDialog();
       	export.showExportDialog( curr.getComponent(), "Export view as ...", curr.getComponent(), "export" );
       } else {
