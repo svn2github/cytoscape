@@ -17,3 +17,4 @@ proxy.server=
 proxy.server.port=
 proxy.server.type=
 cytoscape.version.number=@version@
+exportTextAsShape=true
