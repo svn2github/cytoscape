@@ -22,8 +22,6 @@ import giny.view.EdgeView;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 
-import cytoscape.CytoscapeInit;
-
 // AJK: 04/02/06 BEGIN
 import phoebe.*;
 
@@ -93,7 +91,7 @@ public class InnerCanvas extends DingCanvas
     double m_scaleFactor;
     private int m_lastRenderDetail = 0;
     private Rectangle m_selectionRect = null;
-    final boolean[] m_printingTextAsShape = new boolean[1];
+    //final boolean[] m_printingTextAsShape = new boolean[1];
 
 	/**
 	 * String used to compare against os.name System property - 
@@ -144,7 +142,7 @@ public class InnerCanvas extends DingCanvas
         m_xCenter = 0.0d;
         m_yCenter = 0.0d;
         m_scaleFactor = 1.0d;
-        m_printingTextAsShape[0] = true;
+        //m_printingTextAsShape[0] = true;
         addMouseListener(this);
         addMouseMotionListener(this);
         addKeyListener(this);
@@ -285,63 +283,7 @@ public class InnerCanvas extends DingCanvas
             GraphRenderer.renderGraph(
                 (FixedGraph) m_view.m_drawPersp,
                 m_view.m_spacial,
-                new GraphLOD() {
-                    public byte renderEdges(int visibleNodeCount,
-                        int totalNodeCount, int totalEdgeCount) {
-                        return m_lod[0].renderEdges(visibleNodeCount,
-                            totalNodeCount, totalEdgeCount);
-                    }
-
-                    public boolean detail(int renderNodeCount,
-                        int renderEdgeCount) {
-                        return true;
-                    }
-
-                    public boolean nodeBorders(int renderNodeCount,
-                        int renderEdgeCount) {
-                        return true;
-                    }
-
-                    public boolean nodeLabels(int renderNodeCount,
-                        int renderEdgeCount) {
-                        return true;
-                    }
-
-                    public boolean customGraphics(int renderNodeCount,
-                        int renderEdgeCount) {
-                        return true;
-                    }
-
-                    public boolean edgeArrows(int renderNodeCount,
-                        int renderEdgeCount) {
-                        return true;
-                    }
-
-                    public boolean dashedEdges(int renderNodeCount,
-                        int renderEdgeCount) {
-                        return true;
-                    }
-
-                    public boolean edgeAnchors(int renderNodeCount,
-                        int renderEdgeCount) {
-                        return true;
-                    }
-
-                    public boolean edgeLabels(int renderNodeCount,
-                        int renderEdgeCount) {
-                        return true;
-                    }
-
-                    public boolean textAsShape(int renderNodeCount,
-                        int renderEdgeCount) {
-                    	// This is a work-around, in the future version, we will provide a check box
-                    	// "ExportTextAsShape" as an option in the print/export dialog
-                		return (new Boolean(CytoscapeInit.getProperties().
-                				getProperty("exportTextAsShape"))).booleanValue();
-
-                        //return m_printingTextAsShape[0];
-                    }
-                },
+                m_view.m_printLOD,
                 m_view.m_nodeDetails,
                 m_view.m_edgeDetails,
                 m_hash,
@@ -352,7 +294,7 @@ public class InnerCanvas extends DingCanvas
                 m_scaleFactor);
         }
     }
-
+    
     private int m_currMouseButton = 0;
     private int m_lastXMousePos = 0;
     private int m_lastYMousePos = 0;
