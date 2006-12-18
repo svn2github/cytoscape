@@ -69,10 +69,10 @@ public class MCODEAlgorithm {
     }
 
     //data structures useful to have around for more than one cluster finding iteration
-    private HashMap nodeInfoHashMap; //key is the node index, value is a NodeInfo instance
+    private HashMap nodeInfoHashMap;    //key is the node index, value is a NodeInfo instance
     private TreeMap nodeScoreSortedMap; //key is node score, value is nodeIndex
 
-    private MCODEParameterSet params;   //the parameters used for this instance of the algorithm
+    private MCODEParameterSet params;   //the parameters used for this instance of the algorithm  TODO: should use cluster's params instead everywhere
     //stats
     private long lastScoreTime;
     private long lastFindTime;
@@ -229,34 +229,33 @@ public class MCODEAlgorithm {
                     currentCluster = new MCODECluster();
                     currentCluster.setSeedNode(currentNode);//store the current node as the seed node
                     HashMap nodeSeenHashMapSnapShot = new HashMap((HashMap)nodeSeenHashMap.clone());
-                    //nodeSeenHashMapSnapShot = (HashMap) nodeSeenHashMap.clone();
-                    currentCluster.setNodeSeenHashMap(nodeSeenHashMapSnapShot);//store the list of all the nodes that have already been seen and incorporated in other clusters
-                    ArrayList cluster = getClusterCore(currentNode, nodeSeenHashMap, params.getNodeScoreCutOff());//here we use the original node score cutoff
-                    if (cluster.size() > 0) {
-                        //make sure spawning node is part of cluster, if not already in there
-                        if (!cluster.contains(currentNode)) {
-                            cluster.add(currentNode);
+
+                    ArrayList alCluster = getClusterCore(currentNode, nodeSeenHashMap, params.getNodeScoreCutoff());//here we use the original node score cutoff
+                    if (alCluster.size() > 0) {
+                        //make sure seed node is part of cluster, if not already in there
+                        if (!alCluster.contains(currentNode)) {
+                            alCluster.add(currentNode);
                         }
                         //create an input graph for the filter and haircut methods
                         //convert Integer array to int array
-                        int[] clusterArray = new int[cluster.size()];
-                        for (int i = 0; i < cluster.size(); i++) {
-                            int nodeIndex = ((Integer) cluster.get(i)).intValue();
+                        int[] clusterArray = new int[alCluster.size()];
+                        for (int i = 0; i < alCluster.size(); i++) {
+                            int nodeIndex = ((Integer) alCluster.get(i)).intValue();
                             clusterArray[i] = nodeIndex;
                         }
-                        GraphPerspective gpClusterGraph = inputNetwork.createGraphPerspective(clusterArray);
-                        if (!filterCluster(gpClusterGraph)) {
+                        GraphPerspective gpCluster = inputNetwork.createGraphPerspective(clusterArray);
+                        if (!filterCluster(gpCluster)) {
                             if (params.isHaircut()) {
-                                haircutCluster(gpClusterGraph, cluster, inputNetwork);
+                                haircutCluster(gpCluster, alCluster, inputNetwork);
                             }
                             if (params.isFluff()) {
-                                fluffClusterBoundary(cluster, nodeSeenHashMap);
+                                fluffClusterBoundary(alCluster, nodeSeenHashMap);
                             }
 
-                            currentCluster.setALCluster(cluster);
-                            currentCluster.setGPCluster(gpClusterGraph);
+                            currentCluster.setALCluster(alCluster);
+                            currentCluster.setGPCluster(gpCluster);
                             currentCluster.setClusterScore(scoreCluster(currentCluster));
-
+                            currentCluster.setNodeSeenHashMap(nodeSeenHashMapSnapShot);//store the list of all the nodes that have already been seen and incorporated in other clusters
                             //store detected cluster for later
                             alClusters.add(currentCluster);
                         }
@@ -282,14 +281,25 @@ public class MCODEAlgorithm {
         return (clusters);
     }
 
+    /**
+     * Finds the cluster based on user's input via size slider.
+     *
+     * @param cluster cluster being explored
+     * @param nodeScoreCutoff slider source value
+     * @param inputNetwork network
+     * @return explored cluster
+     */
     public MCODECluster exploreCluster(MCODECluster cluster, double nodeScoreCutoff, CyNetwork inputNetwork) {
-        //HashMap nodeSeenHashMap = cluster.getNodeSeenHashMap();
-        //System.out.println("hash map size: " + nodeSeenHashMap.size());
-        HashMap nodeSeenHashMap = new HashMap(); //TODO: the saved hash map is not really a snap shot!
+        HashMap nodeSeenHashMap;
+        if (nodeScoreCutoff <= params.getNodeScoreCutoff()) {
+            nodeSeenHashMap = new HashMap(cluster.getNodeSeenHashMap());
+        } else {
+            nodeSeenHashMap = new HashMap();
+        }
         Integer seedNode = cluster.getSeedNode();
 
         ArrayList alCluster = getClusterCore(seedNode, nodeSeenHashMap, nodeScoreCutoff);
-        //make sure spawning node is part of cluster, if not already in there
+        //make sure seed node is part of cluster, if not already in there
         if (!alCluster.contains(seedNode)) {
             alCluster.add(seedNode);
         }
@@ -309,6 +319,7 @@ public class MCODEAlgorithm {
         }
         cluster.setALCluster(alCluster);
         cluster.setGPCluster(gpClusterGraph);
+        cluster.setClusterScore(scoreCluster(cluster));
 
         return cluster;
     }
@@ -322,7 +333,7 @@ public class MCODEAlgorithm {
      * @return The score of this node.
      */
     private double scoreNode(NodeInfo nodeInfo) {
-        if (nodeInfo.numNodeNeighbors > params.getDegreeCutOff()) {
+        if (nodeInfo.numNodeNeighbors > params.getDegreeCutoff()) { //TODO: should look at the clusters cutoff not params!
             nodeInfo.score = nodeInfo.coreDensity * (double) nodeInfo.coreLevel;
         } else {
             nodeInfo.score = 0.0;
@@ -429,9 +440,9 @@ public class MCODEAlgorithm {
      * @param nodeSeenHashMap The list of nodes seen already
      * @return A list of node IDs representing the core of the cluster
      */
-    private ArrayList getClusterCore(Integer startNode, HashMap nodeSeenHashMap, double nodeScoreCutOff) {
+    private ArrayList getClusterCore(Integer startNode, HashMap nodeSeenHashMap, double nodeScoreCutoff) {
         ArrayList cluster = new ArrayList(); //stores Integer nodeIndices
-        getClusterCoreInternal(startNode, nodeSeenHashMap, ((NodeInfo) nodeInfoHashMap.get(startNode)).score, 1, cluster, nodeScoreCutOff);
+        getClusterCoreInternal(startNode, nodeSeenHashMap, ((NodeInfo) nodeInfoHashMap.get(startNode)).score, 1, cluster, nodeScoreCutoff);
         return (cluster);
     }
 
@@ -445,7 +456,7 @@ public class MCODEAlgorithm {
      * @param cluster         The cluster to add to if we find a cluster node in this method
      * @return true
      */
-    private boolean getClusterCoreInternal(Integer startNode, HashMap nodeSeenHashMap, double startNodeScore, int currentDepth, ArrayList cluster, double nodeScoreCutOff) {
+    private boolean getClusterCoreInternal(Integer startNode, HashMap nodeSeenHashMap, double startNodeScore, int currentDepth, ArrayList cluster, double nodeScoreCutoff) {
         //base cases for recursion
         if (nodeSeenHashMap.containsKey(startNode)) {
             return (true);  //don't recheck a node
@@ -464,13 +475,13 @@ public class MCODEAlgorithm {
             currentNeighbor = new Integer(((NodeInfo) nodeInfoHashMap.get(startNode)).nodeNeighbors[i]);
             if ((!nodeSeenHashMap.containsKey(currentNeighbor)) &&
                     (((NodeInfo) nodeInfoHashMap.get(currentNeighbor)).score >=
-                    (startNodeScore - startNodeScore * nodeScoreCutOff))) {
+                    (startNodeScore - startNodeScore * nodeScoreCutoff))) {
                 //add current neighbor
                 if (!cluster.contains(currentNeighbor)) {
                     cluster.add(currentNeighbor);
                 }
                 //try to extend cluster at this node
-                getClusterCoreInternal(currentNeighbor, nodeSeenHashMap, startNodeScore, currentDepth + 1, cluster, nodeScoreCutOff);
+                getClusterCoreInternal(currentNeighbor, nodeSeenHashMap, startNodeScore, currentDepth + 1, cluster, nodeScoreCutoff);
             }
         }
 
@@ -500,7 +511,7 @@ public class MCODEAlgorithm {
             for (int j = 0; j < ((NodeInfo) nodeInfoHashMap.get(new Integer(currentNode))).numNodeNeighbors; j++) {
                 nodeNeighbor = ((NodeInfo) nodeInfoHashMap.get(new Integer(currentNode))).nodeNeighbors[j];
                 if ((!nodeSeenHashMap.containsKey(new Integer(nodeNeighbor))) && (!nodeSeenHashMapInternal.containsKey(new Integer(nodeNeighbor))) &&
-                        ((((NodeInfo) nodeInfoHashMap.get(new Integer(nodeNeighbor))).density) > params.getFluffNodeDensityCutOff())) {
+                        ((((NodeInfo) nodeInfoHashMap.get(new Integer(nodeNeighbor))).density) > params.getFluffNodeDensityCutoff())) {
                     nodesToAdd.add(new Integer(nodeNeighbor));
                     nodeSeenHashMapInternal.put(new Integer(nodeNeighbor), new Boolean(true));
                 }

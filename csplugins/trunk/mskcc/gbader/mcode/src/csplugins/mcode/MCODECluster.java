@@ -1,6 +1,7 @@
 package csplugins.mcode;
 
 import giny.model.GraphPerspective;
+import phoebe.PGraphView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,16 +39,18 @@ import java.util.HashMap;
  * User: Vuk Pavlovic
  * Date: Nov 29, 2006
  * Time: 5:34:46 PM
- * Description: Stors various cluster information for simple get/set purposes
+ * Description: Stores various cluster information for simple get/set purposes
  */
 
 public class MCODECluster {
-    private ArrayList alCluster;
-    private GraphPerspective gpCluster;
+    private ArrayList alCluster = null;
+    private GraphPerspective gpCluster = null;
+    private PGraphView pgView = null;
     private Integer seedNode;
     private HashMap nodeSeenHashMap; //stores the nodes that have already been included in higher ranking clusters
     private double clusterScore;
     private String clusterName;
+    private int rank;
 
     public MCODECluster() {}
 
@@ -57,6 +60,14 @@ public class MCODECluster {
 
     public void setClusterName(String clusterName) {
         this.clusterName = clusterName;
+    }
+
+    public PGraphView getPGView() {
+        return pgView;
+    }
+
+    public void setPGView(PGraphView pgView) {
+        this.pgView = pgView;
     }
 
     public double getClusterScore() {
@@ -97,5 +108,14 @@ public class MCODECluster {
 
     public void setNodeSeenHashMap(HashMap nodeSeenHashMap) {
         this.nodeSeenHashMap = nodeSeenHashMap;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+        this.clusterName = "Cluster " + (rank + 1);
     }
 }

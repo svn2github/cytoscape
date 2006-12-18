@@ -40,7 +40,6 @@ package csplugins.mcode;
  */
 public class MCODECurrentParameters {
     private static MCODECurrentParameters ourInstance = new MCODECurrentParameters();
-    //private static MCODEParameterSet currentParams = new MCODEParameterSet();
     private static MCODEParameterSet params = new MCODEParameterSet();
 
     /**
@@ -80,14 +79,14 @@ public class MCODECurrentParameters {
         params = new MCODEParameterSet(
                 newParams.getScope(),
                 newParams.isIncludeLoops(),
-                newParams.getDegreeCutOff(),
+                newParams.getDegreeCutoff(),
                 newParams.getKCore(),
                 newParams.isOptimize(),
                 newParams.getMaxDepthFromStart(),
-                newParams.getNodeScoreCutOff(),
+                newParams.getNodeScoreCutoff(),
                 newParams.isFluff(),
                 newParams.isHaircut(),
-                newParams.getFluffNodeDensityCutOff(),
+                newParams.getFluffNodeDensityCutoff(),
                 newParams.isPreprocessNetwork()
         );
     }

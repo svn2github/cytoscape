@@ -49,14 +49,15 @@ import java.net.URL;
  * * Description: simple score and find action for MCODE
  */
 
-// TODO: We must account for scope and optimization and use the appropriate algorithm
+// TODO: We must account differences in algorithms for scopes and optimization/customization
 
 /**
  * Simple score and find action for MCODE. This should be the default for general users.
  */
 public class MCODEScoreAndFindAction implements ActionListener {
 
-    private boolean showResultPanel = false;
+    //private boolean showResultPanel = false;
+    private boolean resultFound = false;
 
     final static int FIRST_TIME = 0;
     final static int RESCORE = 1;
@@ -91,23 +92,22 @@ public class MCODEScoreAndFindAction implements ActionListener {
         //the clustering parameters are relevant if the optimization is used
         if (currentParamsCopy.getKCore() != savedParamsCopy.getKCore() ||
                 currentParamsCopy.isIncludeLoops() != savedParamsCopy.isIncludeLoops() ||
-                currentParamsCopy.getDegreeCutOff() != savedParamsCopy.getDegreeCutOff() ||
+                currentParamsCopy.getDegreeCutoff() != savedParamsCopy.getDegreeCutoff() ||
                 analyze == FIRST_TIME) {
             analyze = RESCORE;
-            resultsCounter++;
             System.out.println("Analysis: network scoring, cluster finding");
         } else if (!currentParamsCopy.getScope().equals(savedParamsCopy.getScope()) ||
                 currentParamsCopy.isOptimize() != savedParamsCopy.isOptimize() ||
                 (!currentParamsCopy.isOptimize() &&
                         (currentParamsCopy.getMaxDepthFromStart() != savedParamsCopy.getMaxDepthFromStart() ||
                                 currentParamsCopy.isHaircut() != savedParamsCopy.isHaircut() ||
+                                currentParamsCopy.getNodeScoreCutoff() != savedParamsCopy.getNodeScoreCutoff() ||
                                 currentParamsCopy.isFluff() != savedParamsCopy.isFluff() ||
                                 (currentParamsCopy.isFluff() &&
-                                        currentParamsCopy.getFluffNodeDensityCutOff() != savedParamsCopy.getFluffNodeDensityCutOff()) ||
+                                        currentParamsCopy.getFluffNodeDensityCutoff() != savedParamsCopy.getFluffNodeDensityCutoff()) ||
                                 (currentParamsCopy.getScope().equals(MCODEParameterSet.NETWORK) &&
                                         currentParamsCopy.isPreprocessNetwork() != savedParamsCopy.isPreprocessNetwork())))) {
             analyze = REFIND;
-            resultsCounter++;
             System.out.println("Analysis: cluster finding");
         } else {
             analyze = NO_CHANGE;
@@ -148,7 +148,6 @@ public class MCODEScoreAndFindAction implements ActionListener {
         resultPanel = (MCODEResultsPanel) network.getClientData("MCODE_panel");
         if (analyze == NO_CHANGE) {
             network.putClientData("MCODE_running", new Boolean(false));
-            showResultPanel = true;
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The parameters you specified have not changed.");
         } else {
             //run MCODE
@@ -165,32 +164,41 @@ public class MCODEScoreAndFindAction implements ActionListener {
             TaskManager.executeTask(MCODEScoreAndFindTask, config);
             //display clusters in a new non modal dialog box
             if (MCODEScoreAndFindTask.isCompletedSuccessfully()) {
-                resultPanel = new MCODEResultsPanel(MCODEScoreAndFindTask.getClusters(), network, MCODEScoreAndFindTask.getImageList());
+                if (MCODEScoreAndFindTask.getClusters().length > 0) {
+                    resultFound = true;
+                    resultsCounter++;
+                    resultPanel = new MCODEResultsPanel(MCODEScoreAndFindTask.getClusters(), network, MCODEScoreAndFindTask.getImageList());
 
-                //store the results dialog box if the user wants to see it later
-                network.putClientData("MCODE_panel", resultPanel);
+                    //store the results dialog box if the user wants to see it later
+                    network.putClientData("MCODE_panel", resultPanel);
+                } else {
+                    resultFound = false;
+                    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "No clusters were found.\nTry changing the MCODE parameters.");
+                }
                 network.putClientData("MCODE_running", new Boolean(false));
-                //resultDialog.setVisible(true);
-                showResultPanel = true;
             }
         }
-        if (showResultPanel) {
-            //display MCODEResultsPanel in right cytopanel
-            CytoscapeDesktop desktop = Cytoscape.getDesktop();
-            CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
-
-            String componentTitle = "Results " + resultsCounter;
-            resultPanel.setComponentTitle(componentTitle);
+        //display MCODEResultsPanel in right cytopanel
+        CytoscapeDesktop desktop = Cytoscape.getDesktop();
+        CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
+        //if there is no change, then we simply focus the last produced results (below), otherwise we
+        //load the new results panel
+        if (resultFound) {
+            String resultTitle = "Results " + resultsCounter;
+            resultPanel.setResultsTitle(resultTitle);
 
             URL iconURL = this.getClass().getResource("resources/logo2.png");
-            if (iconURL != null){
+            if (iconURL != null) {
                 Icon icon = new ImageIcon(iconURL);
                 String tip = "MCODE Cluster Finder";
-                cytoPanel.add(componentTitle, icon, resultPanel, tip);
+                cytoPanel.add(resultTitle, icon, resultPanel, tip);
             } else {
-                cytoPanel.add(componentTitle, resultPanel);
+                cytoPanel.add(resultTitle, resultPanel);
             }
-
+        }
+        //this makes sure that the east cytopanel is not loaded if there are no results in it
+        if (resultFound || (analyze == NO_CHANGE && cytoPanel.indexOfComponent(resultPanel) >= 0)) {
+            //focus the result panel
             int index = cytoPanel.indexOfComponent(resultPanel);
             cytoPanel.setSelectedIndex(index);
             cytoPanel.setState(CytoPanelState.DOCK);

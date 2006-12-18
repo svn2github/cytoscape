@@ -52,7 +52,7 @@ import java.net.URL;
  */
 public class MCODEMainPanelAction implements ActionListener {
     boolean opened = false;
-    //MCODEMainPanel mainPanel;
+    MCODEMainPanel mainPanel;
     /**
      * This method is called when the user wants to start MCODE.
      *
@@ -63,11 +63,9 @@ public class MCODEMainPanelAction implements ActionListener {
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.WEST);
 
-        MCODEMainPanel mainPanel = new MCODEMainPanel(this);
-
         //First we must make sure that the plugin is not already open
         if (!opened) {
-            //mainPanel = new MCODEMainPanel(this);
+            mainPanel = new MCODEMainPanel(this);
             URL iconURL = this.getClass().getResource("resources/logo2.png");
             if (iconURL != null) {
                 ImageIcon icon = new ImageIcon(iconURL);

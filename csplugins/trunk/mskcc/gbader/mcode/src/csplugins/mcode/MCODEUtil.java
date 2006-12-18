@@ -59,48 +59,101 @@ public class MCODEUtil {
     /**
      * Convert a network to an image.  This is used by the result dialog code.
      *
-     * @param gpInput Input network to convert to an image
+     * @param loader results panel
+     * @param cluster Input network to convert to an image
      * @param height  Height that the resulting image should be
      * @param width   Width that the resulting image should be
      * @return The resulting image
      */
-    public static Image convertNetworkToImage(GraphPerspective gpInput, int height, int width) {
+    public static Image convertNetworkToImage(MCODELoader loader, MCODECluster cluster, int height, int width) {
         PGraphView view;
         SpringEmbeddedLayouter lay;
+        int progress = 0;
+        int counter = 0;
+        int goal = 0;
         Image image;
-        view = new PGraphView(gpInput);
+
+        view = new PGraphView(cluster.getGPCluster());
+        goal = (view.nodeCount() + view.edgeCount()) * 3;
+
         //TODO optionally apply a visual style here instead of doing this manually - visual style calls init code that might not be called manually
         for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
             NodeView nv = (NodeView) in.next();
+
+            //Otherwise we give it new generic data
             String label = nv.getNode().getIdentifier();
             nv.getLabel().setText(label);
             nv.setWidth(40);
             nv.setHeight(40);
             nv.setShape(NodeView.ELLIPSE);
-            nv.setUnselectedPaint(Color.red);
-            nv.setBorderPaint(Color.black);
-            //randomize node positions before layout so that they don't all layout in a line
-            //(so they don't fall into a local minimum for the SpringEmbedder)
-            //If the SpringEmbedder implementation changes, this code may need to be removed
-            nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
-            //height is small for many default drawn graphs, thus +100
-            nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
+            nv.setUnselectedPaint(Color.RED);
+            nv.setBorderPaint(Color.BLACK);
+
+            //First we check if the MCODECluster already has a node view of this node
+            if (cluster.getPGView() != null) {
+                if (cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
+                    //If it does, then we take the layout position that was already generated for it
+                    nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
+                    nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
+                }
+            } else {
+                //Otherwise, randomize node positions before layout so that they don't all layout in a line
+                //(so they don't fall into a local minimum for the SpringEmbedder)
+                //If the SpringEmbedder implementation changes, this code may need to be removed
+                nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
+                //height is small for many default drawn graphs, thus +100
+                nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
+            }
+            counter++;
+            progress = (int) ((double) (100 * (double) counter / (double) goal));
+
+            if (loader != null) {
+                loader.setProgress(progress, "Setup: nodes");
+            }
+
         }
+
         for (Iterator ie = view.getEdgeViewsIterator(); ie.hasNext();) {
             EdgeView ev = (EdgeView) ie.next();
-            ev.setUnselectedPaint(Color.blue);
+            ev.setUnselectedPaint(Color.BLUE);
             ev.setTargetEdgeEnd(EdgeView.BLACK_ARROW);
             ev.setTargetEdgeEndPaint(Color.CYAN);
             ev.setSourceEdgeEndPaint(Color.CYAN);
             ev.setStroke(new BasicStroke(5f));
+
+            counter++;
+            progress = (int) ((double) (100 * (double) counter / (double) goal));
+
+            if (loader != null) {
+                loader.setProgress(progress, "Setup: edges");
+            }
+        }
+
+        if (loader != null) {
+            loader.setProgress(51, "Laying out");
         }
         lay = new SpringEmbeddedLayouter(view);
         lay.doLayout();
+
+        if (loader != null) {
+            loader.setProgress(96, "Drawing");
+        }
         image = view.getCanvas().getLayer().toImage(width, height, null);
+        
         double largestSide = view.getCanvas().getLayer().getFullBounds().width;
         if (view.getCanvas().getLayer().getFullBounds().height > largestSide) {
             largestSide = view.getCanvas().getLayer().getFullBounds().height;
         }
+        if (view.getNodeViewCount() > 1) {
+            cluster.setPGView(view);
+        } else {
+            cluster.setPGView(null);
+        }
+
+        if (loader != null) {
+            loader.loaded();
+        }
+
         return (image);
     }
 
@@ -159,7 +212,7 @@ public class MCODEUtil {
 
     /**
      * Utility method to get the names of all the nodes in a GraphPerspective
-     *
+     * //TODO: remove this
      * @param gpInput The input graph perspective to get the names from
      * @return A concatenated set of all node names (separated by a comma)
      */
@@ -180,7 +233,7 @@ public class MCODEUtil {
      * Save MCODE results to a file
      *
      * @param alg       The algorithm instance containing parameters, etc.
-     * @param clusters The list of clusters
+     * @param clusters  The list of clusters
      * @param network   The network source of the clusters
      * @param fileName  The file name to write to
      * @return True if the file was written, false otherwise
