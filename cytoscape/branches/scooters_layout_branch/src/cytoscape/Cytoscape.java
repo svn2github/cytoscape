@@ -69,6 +69,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.ImportHandler;
+import cytoscape.layout.LayoutManager;
+import cytoscape.layout.LayoutAlgorithm;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.BookmarkReader;
 import cytoscape.data.readers.CyAttributesReader;
@@ -265,6 +267,20 @@ public abstract class Cytoscape {
 
 	public static ImportHandler getImportHandler() {
 		return importHandler;
+	}
+
+	private static LayoutManager layoutManager = null;
+
+	/**
+	 * Return the layout manager.
+	 *
+	 * @return LayoutManager
+	 */
+	public static LayoutManager getLayoutManager() {
+		// Lazily evalute this so we can make the menu bar first
+		if (layoutManager == null)
+			layoutManager = new LayoutManager();
+		return layoutManager;
 	}
 
 	/**
@@ -816,7 +832,7 @@ public abstract class Cytoscape {
 	 * destroys the given network
 	 * 
 	 * @param network
-	 *            the network to be destroyed
+	 *            the network tobe destroyed
 	 * @param destroy_unique
 	 *            if this is true, then all Nodes and Edges that are in this
 	 *            network, but no other are also destroyed.
@@ -827,19 +843,9 @@ public abstract class Cytoscape {
 
 		firePropertyChange(NETWORK_DESTROYED, null, networkId);
 
-		Map nmap = getNetworkMap();
-		nmap.remove(networkId);
-		if ( networkId.equals( currentNetworkID ) ) {
-			if (nmap.size() <= 0) { 
-				currentNetworkID = null;
-			} else {
-				// randomly pick a network to become the current network
-				for ( Iterator it = nmap.keySet().iterator(); it.hasNext(); ) {
-					currentNetworkID = (String) it.next();
-					break;
-				}
-			}
-		}
+		getNetworkMap().remove(networkId);
+		if (getNetworkMap().size() <= 0)
+			currentNetworkID = null;
 
 		if (viewExists(networkId))
 			destroyNetworkView(network);
@@ -892,12 +898,6 @@ public abstract class Cytoscape {
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		network = null;
-
-		// updates the desktop - but only if the view is null
-		// if a view exists, then the focus will have already been updated
-		// in destroyNetworkView
-		if ( currentNetworkID != null && currentNetworkViewID == null )
-			getDesktop().setFocus(currentNetworkID);
 	}
 
 	/**
@@ -908,24 +908,10 @@ public abstract class Cytoscape {
 		// System.out.println( "destroying: "+view.getIdentifier()+" :
 		// "+getNetworkViewMap().get( view.getIdentifier() ) );
 
-		String viewID = view.getIdentifier();
+		getNetworkViewMap().remove(view.getIdentifier());
 
-		getNetworkViewMap().remove(viewID);
-
-		if ( viewID.equals( currentNetworkViewID ) ) { 
-			if (getNetworkViewMap().size() <= 0)
-				currentNetworkViewID = null;
-			else {
-				// depending on which randomly chosen currentNetworkID we get, 
-				// we may or may not have a view for it.
-				CyNetworkView newCurr = (CyNetworkView)(getNetworkViewMap().get( currentNetworkID));
-				if ( newCurr != null )
-					currentNetworkViewID = newCurr.getIdentifier();
-				else
-					currentNetworkViewID = null;
-					
-			}
-		}
+		if (getNetworkViewMap().size() <= 0)
+			currentNetworkViewID = null;
 
 		// System.out.println( "gone from hash: "+view.getIdentifier()+" :
 		// "+getNetworkViewMap().get( view.getIdentifier() ) );
@@ -934,10 +920,9 @@ public abstract class Cytoscape {
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		view = null;
+		// TODO: do we want here?
+		System.gc();
 
-		// so that a network will be selected.
-		if ( currentNetworkID != null )
-			getDesktop().setFocus(currentNetworkID);
 	}
 
 	/**
