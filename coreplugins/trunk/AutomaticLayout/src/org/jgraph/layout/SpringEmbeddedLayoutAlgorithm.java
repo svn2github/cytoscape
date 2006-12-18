@@ -235,8 +235,6 @@ public class SpringEmbeddedLayoutAlgorithm extends JGraphLayoutAlgorithm {
         verticesWithOutEdges = findVertexWithoutEdges(edges, vertices);
 
         for (int loop = 0; loop < myMaxIterations; loop++) {
-						if (canceled) return;
-
             calculateRepulsiveForces(vertices, AreaFieldLength);
 
             calculateAttractiveForces(edges, verticesWithOutEdges,
@@ -341,7 +339,6 @@ public class SpringEmbeddedLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
         // calculate the repulsive forces
         for (int vCount = 0; vCount < vertices.size(); vCount++) {
-						if (canceled) return;
             VertexView v = (VertexView) vertices.get(vCount);
 
             Rectangle2D vPos = getVertexPosition(v, SPRING_EMBEDDED_POS);
@@ -401,7 +398,6 @@ public class SpringEmbeddedLayoutAlgorithm extends JGraphLayoutAlgorithm {
         }
 
         for (int cellCount = 0; cellCount < edges.size(); cellCount++) {
-						if (canceled) return;
             e = (EdgeView) edges.get(cellCount);
 
             if (e.getSource() != null && e.getTarget() != null
@@ -474,7 +470,6 @@ public class SpringEmbeddedLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
         //vertices without edges
         for (int cellCount = 0; cellCount < verticesWithoutEdges.size(); cellCount++) {
-						if (canceled) return;
             VertexView vertex = (VertexView) verticesWithoutEdges
 
                     .get(cellCount);
@@ -548,7 +543,6 @@ public class SpringEmbeddedLayoutAlgorithm extends JGraphLayoutAlgorithm {
                 * ((((double) myMaxIterations) / ((curIteration + 1))) / (myMaxIterations));
 
         for (int vCount = 0; vCount < vertices.size(); vCount++) {
-						if (canceled) return;
             VertexView v = (VertexView) vertices.get(vCount);
             Rectangle2D vDisp = getVertexPosition(v, SPRING_EMBEDDED_DISP);
             Rectangle2D vPos = getVertexPosition(v, SPRING_EMBEDDED_POS);

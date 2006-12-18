@@ -50,8 +50,8 @@ import cytoscape.data.*;
 import cytoscape.task.TaskMonitor;
 import giny.view.*;
 
-import csplugins.layout.LayoutProperties;
-import csplugins.layout.Tunable;
+import csplugins.layout.AbstractLayout;
+
 import csplugins.layout.algorithms.bioLayout.LayoutNode;
 import csplugins.layout.algorithms.bioLayout.LayoutEdge;
 import csplugins.layout.algorithms.bioLayout.Profile;
@@ -73,6 +73,21 @@ import csplugins.layout.algorithms.bioLayout.Profile;
  */
 
 public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
+	/**
+	 * Property key for getting various tuning values
+	 */
+	private static final String propPrefix = "bioLayout.kk.";
+
+	/**
+	 * Tuning values
+	 */
+	private static final String iterationsProp = "iterations_pernode";
+	private static final String passcountProp = "layout_passes";
+	private static final String distanceStrengthProp = "distance_strength";
+	private static final String restLengthProp = "rest_length";
+	private static final String disconnectedStrengthProp = "disconnected_strength";
+	private static final String disconnectedRestProp = "disconnected_rest_length";
+	private static final String anticollissionProp = "anticollisionStrength";
 
   /**
    * A small value used to avoid division by zero
@@ -80,9 +95,23 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	protected double EPSILON = 0.0000001D;
 
   private static final
+    int DEFAULT_NUM_LAYOUT_PASSES = 2;
+  private static final
+    double DEFAULT_AVERAGE_ITERATIONS_PER_NODE = 40.0;
+  private static final
     double[] DEFAULT_NODE_DISTANCE_SPRING_SCALARS = new double[] { 1.0, 1.0, 1.0, 1.0 };
   private static final
+    double DEFAULT_NODE_DISTANCE_STRENGTH_CONSTANT = 15.0;
+  private static final
+    double DEFAULT_NODE_DISTANCE_REST_LENGTH_CONSTANT = 200.0;
+  private static final
+    double DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_STRENGTH = 0.05;
+  private static final
+    double DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_REST_LENGTH = 2500.0;
+  private static final
     double[] DEFAULT_ANTICOLLISION_SPRING_SCALARS = new double[] { 0.0, 1.0, 1.0, 1.0 };
+  private static final
+    double DEFAULT_ANTICOLLISION_SPRING_STRENGTH = 100.0;
 
 	/**
 	 * The total number of layout passes
@@ -122,39 +151,29 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
 	/**
 	 * This is the constructor for the bioLayout algorithm.
-	 * @param supportEdgeWeights a boolean to indicate whether we should
-	 *									     		 behave as if we support weights
+	 * @param networkView the CyNetworkView of the network 
+	 *                    are going to lay out.
 	 */
-	public BioLayoutKKAlgorithm (boolean supportEdgeWeights) {
-		super ();
-
-		supportWeights = supportEdgeWeights;
-
-		// Set and (Possibly) override defaults
-		this.initializeProperties();
+	public BioLayoutKKAlgorithm (CyNetworkView networkView) {
+		super (networkView, propPrefix);
 
 		// Set defaults
-    m_nodeDistanceSpringScalars = new double[m_numLayoutPasses];
-		for (int i = 0; i < m_numLayoutPasses; i++) 
-			m_nodeDistanceSpringScalars[i] = 1.0;
-    m_anticollisionSpringScalars = new double[m_numLayoutPasses];
-		m_anticollisionSpringScalars[0] = 0.0;
-		for (int i = 1; i < m_numLayoutPasses; i++) 
-			m_anticollisionSpringScalars[i] = 1.0;
+		m_numLayoutPasses = DEFAULT_NUM_LAYOUT_PASSES;
+    m_averageIterationsPerNode = DEFAULT_AVERAGE_ITERATIONS_PER_NODE;
+    m_nodeDistanceSpringScalars = DEFAULT_NODE_DISTANCE_SPRING_SCALARS;
+    m_nodeDistanceStrengthConstant = DEFAULT_NODE_DISTANCE_STRENGTH_CONSTANT;
+    m_nodeDistanceRestLengthConstant =
+      DEFAULT_NODE_DISTANCE_REST_LENGTH_CONSTANT;
+    m_disconnectedNodeDistanceSpringStrength =
+      DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_STRENGTH;
+    m_disconnectedNodeDistanceSpringRestLength =
+      DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_REST_LENGTH;
+    m_anticollisionSpringScalars = DEFAULT_ANTICOLLISION_SPRING_SCALARS;
+    m_anticollisionSpringStrength = DEFAULT_ANTICOLLISION_SPRING_STRENGTH;
 
-	}
+		// (Possibly) override defaults
+		initializeProperties();
 
-	/**
-	 * Overrides for LayoutAlgorithm support
-	 */
-
-	public String getName () { return "kamada-kawai"; }
-
-	public String toString () { 
-		if (supportWeights)
-			return "Edge-weighted Spring Embedded";
-		else
-			return "Spring Embedded";
 	}
 
 	/**
@@ -257,67 +276,34 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
 	/**
 	 * Reads all of our properties from the cytoscape properties map and sets
-	 * the values as appropriate.
+	 * the values as appropriates.
 	 */
 	public void initializeProperties() {
-		super.initializeProperties();
-		/**
-		 * Tuning values
-		 */
-		if (supportWeights)
-			layoutProperties.add(new Tunable("iterations_pernode", "Number of iteratations for each node", 
-																			Tunable.INTEGER, new Integer(40)));
-		else
-			layoutProperties.add(new Tunable("iterations_pernode", "Number of iteratations for each node", 
-																			Tunable.INTEGER, new Integer(20)));
-		layoutProperties.add(new Tunable("layout_passes", "Number of layout passes", 
-																		Tunable.INTEGER, new Integer(2)));
-		layoutProperties.add(new Tunable("distance_strength", "Spring strength", 
-																		Tunable.DOUBLE, new Double(15.0)));
-		layoutProperties.add(new Tunable("rest_length", "Spring rest length",
-																		Tunable.DOUBLE, new Double(200.0)));
-		layoutProperties.add(new Tunable("disconnected_strength", "Strength of a 'disconnected' spring",
-																		Tunable.DOUBLE, new Double(0.05)));
-		layoutProperties.add(new Tunable("disconnected_rest_length", "Rest length of a 'disconnected' spring",
-																		Tunable.DOUBLE, new Double(2500.0)));
-		layoutProperties.add(new Tunable("anticollisionStrength", "Strength to apply to avoid collisions",
-																		Tunable.DOUBLE, new Double(100.0)));
-		// We've now set all of our tunables, so we can read the property 
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
+		// Initialize our tunables from the properties
+		Properties properties = CytoscapeInit.getProperties();
+		String pValue = null;
 
-		// Finally, update everything.  We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-	}
-
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
-	public void updateSettings(boolean force) {
-		super.updateSettings(force);
-		Tunable t = layoutProperties.get("iterations_pernode");
-		if (t != null && (t.valueChanged() || force))
-			setNumberOfIterationsPerNode(t.getValue().toString());
-		t = layoutProperties.get("layout_passes");
-		if (t != null && (t.valueChanged() || force))
-			setNumberOfLayoutPasses(t.getValue().toString());
-		t = layoutProperties.get("distance_strength");
-		if (t != null && (t.valueChanged() || force))
-			setDistanceSpringStrength(t.getValue().toString());
-		t = layoutProperties.get("rest_length");
-		if (t != null && (t.valueChanged() || force))
-			setDistanceRestLength(t.getValue().toString());
-		t = layoutProperties.get("disconnected_strength");
-		if (t != null && (t.valueChanged() || force))
-			setDisconnectedSpringStrength(t.getValue().toString());
-		t = layoutProperties.get("disconnected_rest_length");
-		if (t != null && (t.valueChanged() || force))
-			setDisconnectedRestLength(t.getValue().toString());
-		t = layoutProperties.get("anticollisionStrength");
-		if (t != null && (t.valueChanged() || force))
-			setAnticollisionSpringStrength(t.getValue().toString());
+		if ( (pValue = properties.getProperty(propPrefix+iterationsProp)) != null ) {
+			setNumberOfIterationsPerNode(pValue);
+		}
+		if ( (pValue = properties.getProperty(propPrefix+passcountProp)) != null ) {
+			setNumberOfLayoutPasses(pValue);
+		}
+		if ( (pValue = properties.getProperty(propPrefix+distanceStrengthProp)) != null ) {
+			setDistanceSpringStrength(pValue);
+		}
+		if ( (pValue = properties.getProperty(propPrefix+restLengthProp)) != null ) {
+			setDistanceRestLength(pValue);
+		}
+		if ( (pValue = properties.getProperty(propPrefix+disconnectedStrengthProp)) != null ) {
+			setDisconnectedSpringStrength(pValue);
+		}
+		if ( (pValue = properties.getProperty(propPrefix+disconnectedRestProp)) != null ) {
+			setDisconnectedRestLength(pValue);
+		}
+		if ( (pValue = properties.getProperty(propPrefix+anticollissionProp)) != null ) {
+			setAnticollisionSpringStrength(pValue);
+		}
 	}
 
 	/**
@@ -358,13 +344,13 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		calculateEdgeWeights();
 
 		// Compute our distances
-    if (canceled) return;
+    if (this.cancel) return;
     taskMonitor.setPercentCompleted(2);
     taskMonitor.setStatus("Calculating node distances");
 
     int[][] nodeDistances = calculateNodeDistances();
 
-    if (canceled) return;
+    if (this.cancel) return;
     taskMonitor.setPercentCompleted(4);
     taskMonitor.setStatus("Calculating spring constants");
 
@@ -400,7 +386,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			{
 				LayoutNode v = (LayoutNode)nodeIter.next();
 
-        if (canceled) return;
+        if (this.cancel) return;
 
         if (m_layoutPass == 0) {
           taskMonitor.setStatus("Calculating partial derivatives"); 
@@ -426,7 +412,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
               euclideanDistanceThreshold);
            iterations_i++)
       {
-        if (canceled) return;
+        if (this.cancel) return;
         if (m_layoutPass == 0) {
           taskMonitor.setStatus("Executing spring logic"); 
 				}

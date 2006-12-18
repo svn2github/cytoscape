@@ -1,8 +1,6 @@
 package csplugins.layout.algorithms.graphPartition;
 
 import java.util.*;
-import javax.swing.JPanel;
-import java.awt.GridLayout;
 
 import cytoscape.*;
 import cytoscape.view.*;
@@ -11,143 +9,40 @@ import giny.view.*;
 import giny.model.*;
 
 import filter.cytoscape.*;
-import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
-import csplugins.layout.Tunable;
-import csplugins.layout.LayoutProperties;
 
 
-public class AttributeCircleLayout extends AbstractGraphPartition {
+public class AttributeCircleLayout extends AbstractLayout {
+  
+  CyNetwork network;
   CyAttributes data;
-  String attribute = null;
-  private double spacing = 50.0;
-	boolean supportNodeAttributes = true;
-	LayoutProperties layoutProperties = null;
+  String attribute;
 
-  public AttributeCircleLayout ( boolean supportAttributes ) {
-    super( );
-		initialize(supportAttributes);
+  public AttributeCircleLayout ( CyNetwork network, 
+                                 CyAttributes data, 
+                                 String attribute ) {
+    super( network );
+    this.network = network;
+    this.attribute = attribute;
+    this.data = data;
+    initialize();
   }
 
-  public AttributeCircleLayout ( ) {
-    super( );
-		initialize(true);
+  protected void initialize () {
+      
   }
-
-	public void initialize( boolean supportAttributes ) {
-		supportNodeAttributes = supportAttributes;
-		layoutProperties = new LayoutProperties(getName());
-		initialize_properties();
-	}
-	
-	// Required methods for AbstactLayout
-	public byte [] supportsNodeAttributes() {
-		if (!supportNodeAttributes)
-			return null;
-
-		byte[] all = {-1};
-		return all;
-	}
-
-	/**
-	 * Sets the attribute to use for the weights
-	 *
-	 * @param value the name of the attribute
-	 */
-	public void setLayoutAttribute(String value) {
-		if (value.equals("(none)"))
-			this.attribute = null;
-		else
-			this.attribute = value;
-	}
-
-	/**
-	 * Get the settings panel for this layout
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0,1));
-		panel.add(layoutProperties.getTunablePanel());
-		return panel;
-	}
-
-	protected void initialize_properties() {
-		layoutProperties.add(new Tunable("spacing", "Circle size",
-																		Tunable.DOUBLE, new Double(100.0)));
-		layoutProperties.add(new Tunable("attribute", "The attribute to use for the layout", 
-																		Tunable.NODEATTRIBUTE, "(none)", (Object)getInitialAttributeList(),
-																		(Object)null, 0));
-		// We've now set all of our tunables, so we can read the property 
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
-
-		// Finally, update everything.  We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-	}
-
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
-	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-		Tunable t = layoutProperties.get("spacing");
-		if (t != null && (t.valueChanged() || force))
-			spacing = ((Double)t.getValue()).doubleValue();
-		t = layoutProperties.get("attribute");
-		if (t != null && (t.valueChanged() || force)) {
-			String newValue = (String)t.getValue();
-			if (newValue.equals("(none)")) {
-				attribute = null;
-			} else {
-				attribute = newValue;;
-			}
-		}
-	}
-
-	public void revertSettings() {
-		layoutProperties.revertProperties();
-	}
-
-	/**
-	 *
-	 * We don't have any special widgets
-	 *
-	 * @returns List of our "special" weights
-	 */
-	public List getInitialAttributeList() {
-		ArrayList<String>attList = new ArrayList<String>();
-		attList.add("(none)");
-		return attList;
-	}
-
-	public String toString () { 
-		if (!supportNodeAttributes) {
-			return "Circle Layout"; 
-		} else {
-			return "Attribute Circle Layout"; 
-		}
-	}
-
-	public String getName () { 
-		if (!supportNodeAttributes)
-			return "circle";
-		else
-			return "attribute-circle"; 
-	}
 
   public void layoutPartion ( GraphPerspective net ) {
-		data = Cytoscape.getNodeAttributes();
 
     int count = net.getNodeCount();
     int r = (int)Math.sqrt(count);
-    r*=spacing;
+    r*=100;
 
     // nodesList is deprecated, so we need to create our own so
     // that we can hand it off to the sort routine
     List nodes = net.nodesList();
 
-		if (this.attribute != null)
-    	Collections.sort( nodes, new AttributeComparator() );
+    Collections.sort( nodes, new AttributeComparator() );
+
 
     // Compute angle step
     double phi = 2 * Math.PI / nodes.size();

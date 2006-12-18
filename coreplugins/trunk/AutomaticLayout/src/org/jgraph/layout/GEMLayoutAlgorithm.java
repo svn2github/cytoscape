@@ -440,26 +440,26 @@ public class GEMLayoutAlgorithm extends JGraphLayoutAlgorithm implements GraphMo
 
 //        long starttime = System.currentTimeMillis();
         //ALGORITHM START
-        canceled = initialize();  // initializes algorithm
+        boolean isCanceled = initialize();  // initializes algorithm
         									// sets the startvalues in cells
                 
-        if( !canceled )
-             canceled = calculate();//performs the algorithm on the cells
+        if( !isCanceled )
+             isCanceled = calculate();//performs the algorithm on the cells
         //ALGORITHM END
 
-        if( !canceled && useOptimizeAlgorithm )
+        if( !isCanceled && useOptimizeAlgorithm )
             optimizationAlgorithm.performOptimization
             			(	applyCellList,
             				cellList,
             				edgeList,
             				optimizationAlgorithmConfig);
 
-        if( !canceled )
+        if( !isCanceled )
             correctCoordinates();
                                 
         //sets the calculated data into cellView's bounds if not canceled
-        if( !canceled ) 
-            canceled = setNewCoordinates(jgraph);
+        if( !isCanceled ) 
+            isCanceled = setNewCoordinates(jgraph);
                     
         //removes the temporary data, stored by the algorithm, from the nodes
         removeTemporaryLayoutDataFromCells();
@@ -709,7 +709,7 @@ public class GEMLayoutAlgorithm extends JGraphLayoutAlgorithm implements GraphMo
         
         int length = applyCellList.size();
         int[] sequence = new int[length];
-        canceled = false;
+        boolean isCanceled = false;
         
         
         //case no permutation is desired, the series is computed one time only        
@@ -717,7 +717,7 @@ public class GEMLayoutAlgorithm extends JGraphLayoutAlgorithm implements GraphMo
             for( int i = 0; i < length; i++ )
                 sequence[i] = i;
         
-        while( !isFrozen() && countRounds <= maxRounds && (!canceled) ){
+        while( !isFrozen() && countRounds <= maxRounds && (!isCanceled) ){
 
             //case permutation is desired, it's calculated every round
             if( shouldComputePermutation ) 
@@ -733,7 +733,7 @@ public class GEMLayoutAlgorithm extends JGraphLayoutAlgorithm implements GraphMo
             countRounds++;
         
         }
-				return canceled;
+        return false;
     }
     
 /******************************************************************************/

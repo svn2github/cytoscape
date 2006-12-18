@@ -42,8 +42,6 @@ import org.jgraph.graph.GraphConstants;
 import org.jgraph.graph.GraphLayoutCache;
 import org.jgraph.graph.VertexView;
 
-import cytoscape.task.TaskMonitor;
-
 /**
  *
  */
@@ -67,12 +65,6 @@ public abstract class JGraphLayoutAlgorithm {
 	 * Set to non zero if you want to indicate progress
 	 */
 	int progress = 0, maximumProgress = 0;
-
-	/**
-	 * Added for Cytoscape support
-	 */
-	public TaskMonitor taskMonitor = null;
-	public boolean canceled = false;
 
 	/**
 	 * Subclassers may return a new JComponent that
@@ -152,8 +144,6 @@ public abstract class JGraphLayoutAlgorithm {
 	 */
 	public void setProgress(int progress) {
 		this.progress = progress;
-		if (taskMonitor != null) 
-			taskMonitor.setPercentCompleted((int)progress);
 	}
 
 	/**
@@ -280,17 +270,6 @@ public abstract class JGraphLayoutAlgorithm {
 			if (!nested.isEmpty())
 				sourceGraph.getGraphLayoutCache().edit(nested, null, null, null);
 		}
-	}
-
-	/**
-	 * Added for Cytoscape support
-	 */
-	public void setTaskMonitor (TaskMonitor taskMonitor) {
-		this.taskMonitor = taskMonitor;
-	}
-
-	public void setCanceled() {
-		this.canceled = true;
 	}
 	
 	

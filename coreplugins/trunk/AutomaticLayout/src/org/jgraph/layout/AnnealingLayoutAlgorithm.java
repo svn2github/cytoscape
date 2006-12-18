@@ -581,8 +581,8 @@ public class AnnealingLayoutAlgorithm extends JGraphLayoutAlgorithm implements G
             
         
         temperature = initTemperature;
-        maxRounds   = Math.min(maxRounds, Math.min(100 * applyCellList.size(),
-                               getMaxRoundsByTemperature(temperature)));
+        maxRounds   = Math.min(100 * applyCellList.size(),
+                               getMaxRoundsByTemperature(temperature));
         round = 0;
     }
 
@@ -592,7 +592,7 @@ public class AnnealingLayoutAlgorithm extends JGraphLayoutAlgorithm implements G
  * {@link #minTemperature}.
  */
     private void run(){
-        while( round <= maxRounds  && isAllowedToRun() && !canceled)
+        while( round <= maxRounds  && isAllowedToRun())
             performRound();
     }
 
@@ -613,6 +613,7 @@ public class AnnealingLayoutAlgorithm extends JGraphLayoutAlgorithm implements G
  * with or without them.
  */
     private void performRound(){
+        
         Point2D.Double[] config = getConfig();
         
         double startEnergy      = getGlobalCosts(lambdaList);
@@ -637,7 +638,6 @@ public class AnnealingLayoutAlgorithm extends JGraphLayoutAlgorithm implements G
             double offset = Math.random() * 2.0 * Math.PI;
             
             for( int j = 0; j < triesPerCell; j++ ){
-								if (canceled) return;
                 
                 double angle = (double)j * ((2.0 * Math.PI)/(double)triesPerCell);
                 angle += offset;
@@ -1684,7 +1684,7 @@ public class AnnealingLayoutAlgorithm extends JGraphLayoutAlgorithm implements G
                 if( isClusteringEnabled )
                     declusterGraph();
                     
-				applyChanges();
+		applyChanges();
                 removeTemporaryData();
                 
             }

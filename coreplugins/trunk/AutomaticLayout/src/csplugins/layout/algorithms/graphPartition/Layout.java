@@ -3,13 +3,12 @@ package csplugins.layout.algorithms.graphPartition;
 import giny.model.*;
 import giny.view.*;
 
-import cytoscape.CyNetwork;
-import cytoscape.view.CyNetworkView;
-
 import cern.colt.list.*;
 import cern.colt.map.*;
 
 import java.util.*;
+
+import csplugins.layout.algorithms.GraphPartition;
 
 /**
  * Class that represents the Layout of a given graph.
@@ -19,16 +18,16 @@ public class Layout {
   OpenIntDoubleHashMap nodeXMap;
   OpenIntDoubleHashMap nodeYMap;
 
-  CyNetwork gp;
+  GraphPerspective gp;
 
-  public Layout ( CyNetwork gp ) {
+  public Layout ( GraphPerspective gp ) {
     this.gp = gp;
     nodeXMap = new OpenIntDoubleHashMap(  PrimeFinder.nextPrime( gp.getNodeCount() ) );
     nodeYMap = new OpenIntDoubleHashMap(  PrimeFinder.nextPrime( gp.getNodeCount() ) );
   }
 
-  public Layout ( CyNetworkView view, boolean load_current_values ) {
-    this( view.getNetwork() );
+  public Layout ( GraphView view, boolean load_current_values ) {
+    this( view.getGraphPerspective() );
     
     // initialize current values
     if ( load_current_values ) {
@@ -44,15 +43,28 @@ public class Layout {
   /**
    * Apply the layout to a given GraphView
    */
-  public void applyLayout ( CyNetworkView view ) {
+  public void applyLayout ( GraphView view ) {
     
-   Iterator i = view.getNodeViewsIterator();
-   while ( i.hasNext() ) {
-     NodeView nv = ( NodeView )i.next();
-     nv.setXPosition( getX( nv ), false );
-     nv.setYPosition( getY( nv ), false );
-     nv.setNodePosition( true );
-   }
+   
+    List partitions = GraphPartition.partition( view.getGraphPerspective() );
+    Iterator p = partitions.iterator();
+   //  while ( p.hasNext() ) {
+//       java.awt.Color c = new java.awt.Color( (float)Math.random(), (float)Math.random(), (float)Math.random() );
+//       int[] nodes = ( int[] )p.next();
+//       for ( int i = 0; i < nodes.length; ++i ) {
+//         view.getNodeView( nodes[i] ).setUnselectedPaint( c );
+//       }      
+//     }
+
+
+     Iterator i = view.getNodeViewsIterator();
+     while ( i.hasNext() ) {
+       NodeView nv = ( NodeView )i.next();
+       nv.setXPosition( getX( nv ), false );
+       nv.setYPosition( getY( nv ), false );
+       nv.setNodePosition( true );
+       
+     }
   }
 
   // set

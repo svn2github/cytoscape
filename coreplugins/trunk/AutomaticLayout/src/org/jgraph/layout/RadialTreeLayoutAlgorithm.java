@@ -175,7 +175,6 @@ public class RadialTreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
         // search all roots
         List roots = getRoots(jgraph, selectedCellViews);
-				if (roots == null) return;
 
         TreeNode tree = getSpanningTree(selectedCellViews, roots);
         
@@ -269,7 +268,7 @@ public class RadialTreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
         List parentNodes = new ArrayList();
 
         Iterator nitr = nodes.iterator();
-        while (nitr.hasNext() && !canceled) {
+        while (nitr.hasNext()) {
             parent = (TreeNode) nitr.next();
 
             List children = parent.getChildren();
@@ -313,7 +312,6 @@ public class RadialTreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
                 }
             }
         }
-				if (canceled) return;
 
         if (null != firstParent) {
             double remaningAngle = TWO_PI - prevParent.angle;
@@ -325,7 +323,7 @@ public class RadialTreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
             }
         }
 
-        if (parentNodes.size() > 0 && !canceled) {
+        if (parentNodes.size() > 0) {
             layoutTreeN(viewMap, level + 1, parentNodes);
         }
     }
@@ -380,7 +378,6 @@ public class RadialTreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
         GraphModel model = jgraph.getModel();
 
         for (int i = 0; i < cellViews.length; i++) {
-						if (canceled) return null;
             if (cellViews[i] instanceof VertexView) {
                 VertexView vertexView = (VertexView) cellViews[i];
                 boolean isRoot = true;
@@ -417,7 +414,6 @@ public class RadialTreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
         // first: mark all as not visited
         for (int i = 0; i < cellViews.length; i++) {
-						if (canceled) return null;
             if (cellViews[i] instanceof VertexView) {
                 VertexView vertexView = (VertexView) cellViews[i];
                 vertexView.getAttributes().remove(RADIAL_TREE_VISITED);
@@ -453,7 +449,7 @@ public class RadialTreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
      */
     private void buildSpanningTree(List vertexViews, TreeNode node, List children) {
         Iterator itr = children.iterator();
-        while (itr.hasNext() && !canceled) {
+        while (itr.hasNext()) {
             VertexView vertexView = (VertexView) itr.next();
             if (null == vertexView.getAttributes().get(RADIAL_TREE_VISITED)) {
                 vertexView.getAttributes().put(RADIAL_TREE_VISITED, Boolean.TRUE);
@@ -463,7 +459,7 @@ public class RadialTreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
         }
 
         itr = node.getChildren().iterator();
-        while (itr.hasNext() && !canceled) {
+        while (itr.hasNext()) {
             TreeNode childNode = (TreeNode) itr.next();
             VertexView vertexView = childNode.getView();
             buildSpanningTree(vertexViews, childNode, getChildren(vertexView, vertexViews));
