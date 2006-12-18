@@ -27,7 +27,7 @@ public class SelectAllFilter
   //----------------------------------------//
   // Filter specific properties 
   //----------------------------------------//
-  public static String FILTER_ID = "[ Select All Filter ]";
+  public static String FILTER_ID = "[ No Filter ]";
   public static String FILTER_DESCRIPTION = "Selects all nodes and edges";
   //----------------------------------------//
   // Needed Variables
