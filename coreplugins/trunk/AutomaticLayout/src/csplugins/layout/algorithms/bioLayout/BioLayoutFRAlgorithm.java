@@ -43,9 +43,10 @@ import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import cytoscape.data.*;
-import cytoscape.task.TaskMonitor;
 import giny.view.*;
 
+import csplugins.layout.LayoutProperties;
+import csplugins.layout.Tunable;
 import csplugins.layout.algorithms.bioLayout.LayoutNode;
 import csplugins.layout.algorithms.bioLayout.LayoutEdge;
 import csplugins.layout.algorithms.bioLayout.Profile;
@@ -69,23 +70,6 @@ import csplugins.layout.algorithms.bioLayout.Profile;
 
 public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	/**
-	 * Property key for getting various tuning values
-	 */
-	private static final String propPrefix = "bioLayout.fr.";
-
-	/**
-	 * Tuning values
-	 */
-	private static final String rMultProp = "repulsion_multiplier";
-	private static final String aMultProp = "attraction_multiplier";
-	private static final String iterationsProp = "iterations";
-	private static final String temperatureProp = "temperature";
-	private static final String spreadFactorProp = "spread_factor";
-	private static final String updateIterationsProp = "update_iterations";
-	private static final String conflictProp = "conflict_avoidance";
-	private static final String maxDistanceProp = "max_distance_factor";
-
-	/**
 	 * Sets the number of iterations for each update
 	 */
 	private static int update_iterations = -1; // 0 means we only update at the end
@@ -108,15 +92,15 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	private double conflict_avoidance = 20;
 
 	/**
-	 * maxDistanceFactor is the portion of the graph
+	 * max_distance_factor is the portion of the graph
 	 * beyond which repulsive forces will not operate.
 	 */
-	private double maxDistanceFactor = 10;
+	private double max_distance_factor = 10;
 
 	/**
 	 * maxDistance is the actual calculated distance
 	 * beyond which repulsive forces will not operate.
-	 * This value takes into account maxDistanceFactor,
+	 * This value takes into account max_distance_factor,
 	 * but also the size of the nodes in comparison to
 	 * the size of the graph.
 	 */
@@ -163,15 +147,27 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 	/**
 	 * This is the constructor for the bioLayout algorithm.
-	 * @param networkView the CyNetworkView of the network 
-	 *                    are going to lay out.
 	 */
-	public BioLayoutFRAlgorithm (CyNetworkView networkView) {
-		super (networkView, propPrefix);
+	public BioLayoutFRAlgorithm (boolean supportEdgeWeights) {
+		super ();
+
+		supportWeights = supportEdgeWeights;
 
 		displacementArray = new ArrayList(100);
-		initializeProperties();
+		this.initializeProperties();
 	}
+
+	/**
+	 * Required methods (and overrides) for AbstractLayout
+	 */
+	public String getName () { return "fruchterman-rheingold"; }
+
+	public String toString () { 
+		if (supportWeights)
+			return "Edge-weighted Force directed (BioLayout)";
+		else
+			return "Force directed (BioLayout)";
+	 }
 
 	/**
 	 * Sets the number of iterations
@@ -197,8 +193,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	}
 
 	public void setTemperature(String value) {
-		Integer val = new Integer(value);
-		temperature = val.intValue();
+		Double val = new Double(value);
+		temperature = val.doubleValue();
 	}
 
 	/**
@@ -263,37 +259,100 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		update_iterations = value;
 	}
 
-	public void setTaskMonitor(TaskMonitor t) {
-		this.taskMonitor = t;
+	/**
+	 * Sets an additional repulsive force to nodes
+	 * when they overlap
+	 *
+	 * @param value the additional repulsive force
+	 */
+	public void setConflictAvoidanceForce(String value) {
+		Double val = new Double(value);
+		conflict_avoidance = val.doubleValue();
+	}
+
+	public void setConflictAvoidanceForce(double value) {
+		conflict_avoidance = value;
+	}
+	/**
+	 * Sets the percentage of the graph beyond which we
+	 * don't calculate repulsive forces.
+	 *
+	 * @param value the maximum distance factor
+	 */
+	public void setMaxDistanceFactor(String value) {
+		Double val = new Double(value);
+		max_distance_factor = val.doubleValue();
+	}
+
+	public void setMaxDistanceFactor(double value) {
+		max_distance_factor = value;
 	}
 
 	/**
 	 * Reads all of our properties from the cytoscape properties map and sets
 	 * the values as appropriates.
 	 */
-	private void initializeProperties() {
-		// Initialize our tunables from the properties
-		Properties properties = CytoscapeInit.getProperties();
-		String pValue = null;
+	public void initializeProperties() {
+		super.initializeProperties();
 
-		if ( (pValue = properties.getProperty(propPrefix+rMultProp)) != null ) {
-			setRepulsionMultiplier(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+aMultProp)) != null ) {
-			setAttractionMultiplier(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+iterationsProp)) != null ) {
-			setNumberOfIterations(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+temperatureProp)) != null ) {
-			setTemperature(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+spreadFactorProp)) != null ) {
-			setSpreadFactor(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+updateIterationsProp)) != null ) {
-			setUpdateIterations(pValue);
-		}
+		/**
+		 * Tuning values
+		 */
+		layoutProperties.add(new Tunable("repulsion_multiplier", "Multiplier to calculate the repulsion force", 
+																		Tunable.DOUBLE,new Double(0.04)));
+		layoutProperties.add(new Tunable("attraction_multiplier", "Multiplier to calculate the attraction force", 
+																		Tunable.DOUBLE, new Double(0.15)));
+		layoutProperties.add(new Tunable("iterations", "Number of iterations", 
+																		Tunable.INTEGER, new Integer(1000)));
+		layoutProperties.add(new Tunable("temperature", "Initial temperature", 
+																		Tunable.DOUBLE, new Double(100)));
+		layoutProperties.add(new Tunable("spread_factor", "Amount of extra room for layout", 
+																		Tunable.DOUBLE, new Double(2)));
+		layoutProperties.add(new Tunable("update_iterations", "Number of iterations before updating display", 
+																		Tunable.INTEGER, new Integer(0)));
+		layoutProperties.add(new Tunable("conflict_avoidance", "Constant force applied to avoid conflicts", 
+																		Tunable.DOUBLE, new Double(20.0)));
+		layoutProperties.add(new Tunable("max_distance_factor", "Percent of graph used for node repulsion calculations", 
+																		Tunable.DOUBLE, new Double(10.0)));
+		// We've now set all of our tunables, so we can read the property 
+		// file now and adjust as appropriate
+		layoutProperties.initializeProperties();
+
+		// Finally, update everything.  We need to do this to update
+		// any of our values based on what we read from the property file
+		updateSettings(true);
+	}
+
+	public void updateSettings() {
+		updateSettings(false);
+	}
+
+	public void updateSettings(boolean force) {
+		super.updateSettings(force);
+		Tunable t = layoutProperties.get("repulsion_multiplier");
+		if (t != null && (t.valueChanged() || force))
+			setRepulsionMultiplier(t.getValue().toString());
+		t = layoutProperties.get("attraction_multiplier");
+		if (t != null && (t.valueChanged() || force))
+			setAttractionMultiplier(t.getValue().toString());
+		t = layoutProperties.get("iterations");
+		if (t != null && (t.valueChanged() || force))
+			setNumberOfIterations(t.getValue().toString());
+		t = layoutProperties.get("temperature");
+		if (t != null && (t.valueChanged() || force))
+			setTemperature(t.getValue().toString());
+		t = layoutProperties.get("spread_factor");
+		if (t != null && (t.valueChanged() || force))
+			setSpreadFactor(t.getValue().toString());
+		t = layoutProperties.get("update_iterations");
+		if (t != null && (t.valueChanged() || force))
+			setUpdateIterations(t.getValue().toString());
+		t = layoutProperties.get("conflict_avoidance");
+		if (t != null && (t.valueChanged() || force))
+			setConflictAvoidanceForce(t.getValue().toString());
+		t = layoutProperties.get("max_distance_factor");
+		if (t != null && (t.valueChanged() || force))
+			setMaxDistanceFactor(t.getValue().toString());
 	}
 
 	/**
@@ -337,7 +396,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		taskMonitor.setPercentCompleted(1);
 		// Main algorithm
 		int iteration = 0;
-		for (iteration = 0; (iteration < nIterations) && !cancel; iteration++) {
+		for (iteration = 0; (iteration < nIterations) && !canceled; iteration++) {
 			if ((temp = doOneIteration(iteration, temp)) == 0) break;
 			
 			if (debug || (update_iterations > 0 && (iteration % update_iterations == 0))) {
@@ -661,7 +720,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		this.maxVelocity = Math.max(Math.max(averageWidth*2,averageHeight*2),
 																Math.max(width,height)/maxVelocity_divisor);
 		this.maxDistance = Math.max(Math.max(averageWidth*10,averageHeight*10),
-															 	Math.max(width,height)/maxDistanceFactor);
+															 	Math.max(width,height)/max_distance_factor);
 		debugln("Size: "+width+" x "+height);
 		debugln("maxDistance = "+maxDistance);
 		debugln("maxVelocity = "+maxVelocity);

@@ -12,12 +12,15 @@ import giny.model.*;
 
 import filter.cytoscape.*;
 
-public class DegreeSortedCircleLayout extends AbstractLayout
+public class DegreeSortedCircleLayout extends AbstractGraphPartition
 {
-  public DegreeSortedCircleLayout(CyNetwork _network)
+  public DegreeSortedCircleLayout()
   {
-    super(_network);
+    super();
   }
+
+	public String toString () { return "Degree Sorted Circle Layout"; }
+	public String getName () { return "degree-circle"; }
 
   public void layoutPartion(GraphPerspective _graph)
   {
@@ -32,6 +35,7 @@ public class DegreeSortedCircleLayout extends AbstractLayout
       int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
       sortedNodes[i++] = _graph.getNode(nodeIndex);
     }
+		if (canceled) return;
 
     // sort the Nodes based on the degree
     Arrays.sort(sortedNodes, new Comparator()
@@ -53,6 +57,7 @@ public class DegreeSortedCircleLayout extends AbstractLayout
         }
       }
     );
+		if (canceled) return;
 
     // place each Node in a circle
     int r = 100 * (int) Math.sqrt(sortedNodes.length);
