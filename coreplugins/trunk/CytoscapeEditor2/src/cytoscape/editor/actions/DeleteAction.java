@@ -102,13 +102,27 @@ public class DeleteAction extends CytoscapeAction {
         java.util.List  nodeViews = myView.getSelectedNodes();
         final CyNetwork cyNet     = myView.getNetwork();
 
-        final int[] nodes    = new int[nodeViews.size() + 1];
+        // AJK: 12/19/06 BEGIN
+        //    fix for bug 1905, set size of array larger only if there is an input argument
+        int arrayLength = nodeViews.size();
+        if ((_cyObj != null) && (_cyObj instanceof giny.model.Node)) arrayLength++;
+        
+//        final int[] nodes    = new int[nodeViews.size() + 1];
+//        int[]       allEdges = new int[0];
+//        
+//        // AJK: for saving and restoring coordinates
+//        final double [] xPos = new double [nodeViews.size() + 1];
+//        final double [] yPos = new double [nodeViews.size() + 1];
+
+        final int[] nodes    = new int[arrayLength];
         int[]       allEdges = new int[0];
         
         // AJK: for saving and restoring coordinates
-        final double [] xPos = new double [nodeViews.size() + 1];
-        final double [] yPos = new double [nodeViews.size() + 1];
- 
+        final double [] xPos = new double [arrayLength];
+        final double [] yPos = new double [arrayLength];
+
+        // AJK: 12/19/06 END
+        
         // first collect the selected nodes and their adjacent edges
         for (int i = 0; i < nodeViews.size(); i++) {
             NodeView nview     = (NodeView) nodeViews.get(i);
