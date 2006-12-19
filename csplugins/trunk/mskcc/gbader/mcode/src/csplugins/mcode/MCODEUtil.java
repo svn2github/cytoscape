@@ -68,12 +68,15 @@ public class MCODEUtil {
     public static Image convertNetworkToImage(MCODELoader loader, MCODECluster cluster, int height, int width) {
         PGraphView view;
         SpringEmbeddedLayouter lay;
-        int progress = 0;
-        int counter = 0;
-        int goal = 0;
         Image image;
 
+        //Progress reporters
+        int progress = 0;
+        int achievement = 0;
+        int goal = 0;
+
         view = new PGraphView(cluster.getGPCluster());
+        //Arbitrarily, the randomizing of the nodes and edges accounts for only a 3rd of the task
         goal = (view.nodeCount() + view.edgeCount()) * 3;
 
         //TODO optionally apply a visual style here instead of doing this manually - visual style calls init code that might not be called manually
@@ -104,8 +107,8 @@ public class MCODEUtil {
                 //height is small for many default drawn graphs, thus +100
                 nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
             }
-            counter++;
-            progress = (int) ((double) (100 * (double) counter / (double) goal));
+            achievement++;
+            progress = (int) ((double) (100 * (double) achievement / (double) goal));
 
             if (loader != null) {
                 loader.setProgress(progress, "Setup: nodes");
@@ -121,8 +124,8 @@ public class MCODEUtil {
             ev.setSourceEdgeEndPaint(Color.CYAN);
             ev.setStroke(new BasicStroke(5f));
 
-            counter++;
-            progress = (int) ((double) (100 * (double) counter / (double) goal));
+            achievement++;
+            progress = (int) ((double) (100 * (double) achievement / (double) goal));
 
             if (loader != null) {
                 loader.setProgress(progress, "Setup: edges");
@@ -242,7 +245,7 @@ public class MCODEUtil {
         if (alg == null || clusters == null || network == null || fileName == null) {
             return false;
         }
-
+        //TODO:Cytoscape.getNetworkAttributes().
         String lineSep = System.getProperty("line.separator");
         try {
             File file = new File(fileName);

@@ -607,6 +607,7 @@ public class MCODEMainPanel extends JPanel {
                     int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[] {message}, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
                     if (result == JOptionPane.YES_OPTION){
                         cytoPanel.remove(component);
+                        MCODECurrentParameters.removeResultParams(componentTitle);
                     } else {
                         resultsClosed = false;
                     }

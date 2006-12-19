@@ -51,8 +51,17 @@ public class MCODECluster {
     private double clusterScore;
     private String clusterName;
     private int rank;
+    private String resultSet;
 
     public MCODECluster() {}
+
+    public String getResultSet() {
+        return resultSet;
+    }
+
+    public void setResultSet(String resultSet) {
+        this.resultSet = resultSet;
+    }
 
     public String getClusterName() {
         return clusterName;

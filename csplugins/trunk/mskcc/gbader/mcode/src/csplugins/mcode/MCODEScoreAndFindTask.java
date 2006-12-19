@@ -50,15 +50,19 @@ public class MCODEScoreAndFindTask implements Task {
     private Image imageList[] = null;
     private boolean completedSuccessfully = false;
     private int analyze;
+    private String resultSet;
 
     /**
      * Scores and finds clusters in a given network
      *
      * @param network The network to cluster
+     * @param analyze
+     * @param resultSet
      */
-    public MCODEScoreAndFindTask(CyNetwork network, int analyze) {
+    public MCODEScoreAndFindTask(CyNetwork network, int analyze, String resultSet) {
         this.network = network;
         this.analyze = analyze;
+        this.resultSet = resultSet;
     }
 
     /**
@@ -77,20 +81,20 @@ public class MCODEScoreAndFindTask implements Task {
                 taskMonitor.setStatus("Scoring Network (Step 1 of 3)");
                 alg.scoreGraph(network);
                 if (interrupted) {
-                    network.putClientData("MCODE_running", new Boolean(false));
+                    //network.putClientData("MCODE_running", new Boolean(false));
                     return;
                 }
                 //store this MCODE instance with the network to avoid duplicating the calculation
-                network.putClientData("MCODE_alg", alg);
+                //network.putClientData("MCODE_alg", alg);//TODO: what does this do....
                 System.err.println("Network was scored in " + alg.getLastScoreTime() + " ms.");
             }
 
-            alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");
+            //alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");//TODO: AND THIS?
             taskMonitor.setPercentCompleted(0);
             taskMonitor.setStatus("Finding Clusters (Step 2 of 3)");
-            clusters = alg.findClusters(network);
+            clusters = alg.findClusters(network, resultSet);
             if (interrupted) {
-                network.putClientData("MCODE_running", new Boolean(false));
+                //network.putClientData("MCODE_running", new Boolean(false));
                 return;
             }
 
@@ -102,7 +106,7 @@ public class MCODEScoreAndFindTask implements Task {
             int imageSize = MCODECurrentParameters.getInstance().getParamsCopy().getDefaultRowHeight();
             for (int i = 0; i < clusters.length; i++) {
                 if (interrupted) {
-                    network.putClientData("MCODE_running", new Boolean(false));
+                    //network.putClientData("MCODE_running", new Boolean(false));
                     return;
                 }
                 imageList[i] = MCODEUtil.convertNetworkToImage(null, clusters[i], imageSize, imageSize);
@@ -111,7 +115,7 @@ public class MCODEScoreAndFindTask implements Task {
             completedSuccessfully = true;
         } catch (Exception e) {
             //TODO: ask Ethan if interrupt exception should be thrown from within code or should 'return' just be used?
-            network.putClientData("MCODE_running", new Boolean(false));
+            //network.putClientData("MCODE_running", new Boolean(false));
             taskMonitor.setException(e, "MCODE cancelled");
         }
     }
@@ -168,5 +172,9 @@ public class MCODEScoreAndFindTask implements Task {
      */
     public String getTitle() {
         return new String("MCODE Network Cluster Detection");
+    }
+
+    public MCODEAlgorithm getAlg() {
+        return alg;
     }
 }

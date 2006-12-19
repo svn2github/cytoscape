@@ -70,7 +70,7 @@ public class MCODETest extends TestCase {
     public void testMCODEAlgorithmSmall() {
         params.setAllAlgorithmParams(MCODEParameterSet.NETWORK, false, 2, 2, false, 100, 0.2, false, true, 0.1, true);
         alg.scoreGraph(networkSmall);
-        MCODECluster[] clusters = alg.findClusters(networkSmall);
+        MCODECluster[] clusters = alg.findClusters(networkSmall, "Results 1");
         assertEquals(clusters.length, 1);
         double score = alg.scoreCluster(clusters[0]);
         assertEquals(score, (double) 1.5, 0);

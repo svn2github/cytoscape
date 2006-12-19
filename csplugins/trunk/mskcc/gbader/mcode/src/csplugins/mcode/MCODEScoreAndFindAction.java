@@ -55,9 +55,9 @@ import java.net.URL;
  * Simple score and find action for MCODE. This should be the default for general users.
  */
 public class MCODEScoreAndFindAction implements ActionListener {
-
     //private boolean showResultPanel = false;
     private boolean resultFound = false;
+    private MCODEResultsPanel resultPanel; 
 
     final static int FIRST_TIME = 0;
     final static int RESCORE = 1;
@@ -81,7 +81,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
      * @param event Click of the analyzeButton on the MCODEMainPanel.
      */
     public void actionPerformed(ActionEvent event) {
-        MCODEResultsPanel resultPanel;
+        //MCODEResultsPanel resultPanel;
         //get a copy of the last saved parameters for comparison with the current ones
         MCODEParameterSet savedParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
 
@@ -114,7 +114,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
             System.out.println("Analysis: parameters unchanged");
         }
         //finally we save the current parameters
-        MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
+        MCODECurrentParameters.getInstance().setParams(currentParamsCopy, "Results " + (resultsCounter + 1));
 
         String callerID = "MCODEScoreAndFindAction.actionPerformed";
         //get the network object; this contains the graph
@@ -133,7 +133,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
         }
 
         //check if MCODE is already running on this network
-        Boolean isRunning = (Boolean) network.getClientData("MCODE_running");
+        /*Boolean isRunning = (Boolean) network.getClientData("MCODE_running");
         if ((isRunning != null) && (isRunning.booleanValue())) {
             //MCODE is already running - tell user and exit
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
@@ -142,16 +142,16 @@ public class MCODEScoreAndFindAction implements ActionListener {
         } else {
             //MCODE is about to run - mark network that we are using it
             network.putClientData("MCODE_running", new Boolean(true));
-        }
+        }*/
 
         //check if MCODE has already been run on this network
-        resultPanel = (MCODEResultsPanel) network.getClientData("MCODE_panel");
+        //resultPanel = (MCODEResultsPanel) network.getClientData("MCODE_panel");
         if (analyze == NO_CHANGE) {
-            network.putClientData("MCODE_running", new Boolean(false));
+            //network.putClientData("MCODE_running", new Boolean(false));
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The parameters you specified have not changed.");
         } else {
             //run MCODE
-            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network, analyze);
+            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network, analyze, "Results " + (resultsCounter + 1));
             //Configure JTask
             JTaskConfig config = new JTaskConfig();
 
@@ -167,15 +167,16 @@ public class MCODEScoreAndFindAction implements ActionListener {
                 if (MCODEScoreAndFindTask.getClusters().length > 0) {
                     resultFound = true;
                     resultsCounter++;
-                    resultPanel = new MCODEResultsPanel(MCODEScoreAndFindTask.getClusters(), network, MCODEScoreAndFindTask.getImageList());
+
+                    resultPanel = new MCODEResultsPanel(MCODEScoreAndFindTask.getClusters(), MCODEScoreAndFindTask.getAlg(), network, MCODEScoreAndFindTask.getImageList());
 
                     //store the results dialog box if the user wants to see it later
-                    network.putClientData("MCODE_panel", resultPanel);
+                    //network.putClientData("MCODE_panel", resultPanel);
                 } else {
                     resultFound = false;
                     JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "No clusters were found.\nTry changing the MCODE parameters.");
                 }
-                network.putClientData("MCODE_running", new Boolean(false));
+                //network.putClientData("MCODE_running", new Boolean(false));
             }
         }
         //display MCODEResultsPanel in right cytopanel

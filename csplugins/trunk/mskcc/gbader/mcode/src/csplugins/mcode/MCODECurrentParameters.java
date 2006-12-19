@@ -1,3 +1,7 @@
+package csplugins.mcode;
+
+import java.util.HashMap;
+
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
@@ -33,17 +37,18 @@
  ** Time: 2:15:10 PM
  ** Description: Singleton class to store the current parameters
  **/
-package csplugins.mcode;
 
 /**
  * Stores the current parameters for MCODE.  Parameters are set in the MCODEMainPanel
  */
 public class MCODECurrentParameters {
     private static MCODECurrentParameters ourInstance = new MCODECurrentParameters();
-    private static MCODEParameterSet params = new MCODEParameterSet();
+    private static MCODEParameterSet currentParams = new MCODEParameterSet();
+    private static HashMap resultParams = new HashMap();
 
     /**
      * Get the one instance of this singleton class that stores the current parameters internally.
+     * 
      * @return ourInstance
      */
     public static MCODECurrentParameters getInstance() {
@@ -62,7 +67,7 @@ public class MCODECurrentParameters {
      * @return A copy of the parameters
      */
     public MCODEParameterSet getParamsCopy() {
-        return params.copy();
+        return currentParams.copy();
     }
 
     /**
@@ -71,12 +76,13 @@ public class MCODECurrentParameters {
      * between the last saved version of the parameters and the current user's version
      *
      * @param newParams The new current parameters to set
+     * @param resultSet
      */
-    public void setParams(MCODEParameterSet newParams) {
+    public void setParams(MCODEParameterSet newParams, String resultSet) {
         //cannot simply equate the params and newParams classes since that creates a permanent reference
         //and prevents us from keeping 2 sets of the class such that the saved version is not altered
         //until this method is called
-        params = new MCODEParameterSet(
+        currentParams = new MCODEParameterSet(
                 newParams.getScope(),
                 newParams.isIncludeLoops(),
                 newParams.getDegreeCutoff(),
@@ -89,5 +95,14 @@ public class MCODECurrentParameters {
                 newParams.getFluffNodeDensityCutoff(),
                 newParams.isPreprocessNetwork()
         );
+        resultParams.put(resultSet, newParams);
+    }
+
+    public static MCODEParameterSet getResultParams(String resultSet) {
+        return ((MCODEParameterSet) resultParams.get(resultSet)).copy(); //TODO: PRINT OUT THESE VALUES TO MAKE SURE THIS IS WORKING
+    }
+
+    public static void removeResultParams(String resultSet) {
+        resultParams.remove(resultSet);
     }
 }

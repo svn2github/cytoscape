@@ -50,7 +50,7 @@ public class MCODEResultsPanel extends JPanel {
     CyNetworkView originalInputNetworkView;         //Keep a record of this too, if it exists
     HashMap hmNetworkNames;                         //Keep a record of network names we create from the table
     //algorithm object for access to the cluster scoring function
-    MCODEAlgorithm alg;
+    //MCODEAlgorithm alg;
     MCODECollapsablePanel explorePanel;
     JPanel[] exploreContent;
     MCODEParameterSet currentParamsCopy;
@@ -64,12 +64,12 @@ public class MCODEResultsPanel extends JPanel {
      * @param network
      * @param imageList
      */
-    public MCODEResultsPanel(MCODECluster[] clusters, CyNetwork network, Image[] imageList) {
+    public MCODEResultsPanel(MCODECluster[] clusters, MCODEAlgorithm alg, CyNetwork network, Image[] imageList) {
         setLayout(new BorderLayout());
 
         currentParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
 
-        JPanel clusterBrowserPanel = createClusterBrowserPanel(clusters, network, imageList);
+        JPanel clusterBrowserPanel = createClusterBrowserPanel(clusters, network, alg, imageList);
         JPanel bottomPanel = createBottomPanel();
 
         add(clusterBrowserPanel, BorderLayout.CENTER);
@@ -85,7 +85,7 @@ public class MCODEResultsPanel extends JPanel {
      * @param imageList images of cluster graphs
      * @return panel
      */
-    private JPanel createClusterBrowserPanel(MCODECluster[] clusters, CyNetwork network, Image imageList[]) {
+    private JPanel createClusterBrowserPanel(MCODECluster[] clusters, CyNetwork network, MCODEAlgorithm alg, Image imageList[]) {
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -93,7 +93,8 @@ public class MCODEResultsPanel extends JPanel {
 
         //network data (currently focused network)
         originalInputNetwork = network;
-        alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");
+        //alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");
+        
         //the view may not exist, but we only test for that when we need to (in the
         //TableRowSelectionHandler below)
         originalInputNetworkView = Cytoscape.getNetworkView(network.getIdentifier());
@@ -112,7 +113,7 @@ public class MCODEResultsPanel extends JPanel {
 
         //Ask to be notified of selection changes.
         ListSelectionModel rowSM = table.getSelectionModel();
-        rowSM.addListSelectionListener(new MCODEResultsPanel.TableRowSelectionHandler(clusters, network));
+        rowSM.addListSelectionListener(new MCODEResultsPanel.TableRowSelectionHandler(clusters, network, alg));
 
         JScrollPane tableScrollPane = new JScrollPane(table);
         tableScrollPane.getViewport().setBackground(Color.WHITE);
@@ -165,7 +166,7 @@ public class MCODEResultsPanel extends JPanel {
      * @param inputNetwork Network
      * @return panel A JPanel with the contents of the explore panel, get's added to the explore collapsable panel's content pane
      */
-    private JPanel createExploreContent(MCODECluster[] clusters, int selectedRow, CyNetwork inputNetwork) {
+    private JPanel createExploreContent(MCODECluster[] clusters, int selectedRow, CyNetwork inputNetwork, MCODEAlgorithm alg) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -185,16 +186,17 @@ public class MCODEResultsPanel extends JPanel {
         sizeSlider.setPaintLabels(true);
         //Set labels ranging from 0 to 100
         Hashtable labelTable = new Hashtable();
-        labelTable.put(new Integer(0), new JLabel("Seed"));
-        labelTable.put(new Integer(200), new JLabel("20"));
-        labelTable.put(new Integer(400), new JLabel("40"));
-        labelTable.put(new Integer(600), new JLabel("60"));
-        labelTable.put(new Integer(800), new JLabel("80"));
-        labelTable.put(new Integer(1000), new JLabel("100%"));
+        labelTable.put(new Integer(0), new JLabel("Min"));
+        //labelTable.put(new Integer(200), new JLabel("20"));
+        //labelTable.put(new Integer(400), new JLabel("40"));
+        //labelTable.put(new Integer(600), new JLabel("60"));
+        //labelTable.put(new Integer(800), new JLabel("80"));
+        labelTable.put(new Integer(1000), new JLabel("Max"));
         //Make a special label for the initial position
-        //labelTable.put(new Integer((int) (currentParamsCopy.getNodeScoreCutoff() * 1000)), new JLabel("^"));
+        labelTable.put(new Integer((int) (currentParamsCopy.getNodeScoreCutoff() * 1000)), new JLabel("^"));
 
         sizeSlider.setLabelTable(labelTable);
+        sizeSlider.setFont(new Font("Arial", Font.PLAIN, 8));
 
         String sizeTip = "WRITE ME PLEASE!";//TODO: Write size slider tooltip
         sizeSlider.setToolTipText(sizeTip);
@@ -600,6 +602,7 @@ public class MCODEResultsPanel extends JPanel {
             int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[]{message}, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
             if (result == JOptionPane.YES_OPTION) {
                 cytoPanel.remove(trigger);
+                MCODECurrentParameters.removeResultParams(getResultsTitle());
             }
             
             if (cytoPanel.getCytoPanelComponentCount() == 0) {
@@ -616,6 +619,7 @@ public class MCODEResultsPanel extends JPanel {
         private JPanel popup;
         private MCODECluster[] clusters;
         private CyNetwork network;
+        private MCODEAlgorithm alg;
 
         /**
          * Export action constructor
@@ -624,11 +628,12 @@ public class MCODEResultsPanel extends JPanel {
          * @param clusters Clusters to save
          * @param network   Network clusters are from for information about cluster components
          */
-        ExportAction(JPanel popup, MCODECluster[] clusters, CyNetwork network) {
+        ExportAction(JPanel popup, MCODECluster[] clusters, CyNetwork network, MCODEAlgorithm alg) {
             super("");
             this.popup = popup;
             this.clusters = clusters;
             this.network = network;
+            this.alg = alg;
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -652,15 +657,17 @@ public class MCODEResultsPanel extends JPanel {
     private class TableRowSelectionHandler implements ListSelectionListener {
         MCODECluster[] clusters;
         CyNetwork inputNetwork;
+        MCODEAlgorithm alg;
 
         /**
          *
          * @param clusters
          * @param inputNetwork
          */
-        TableRowSelectionHandler(MCODECluster[] clusters, CyNetwork inputNetwork) {
+        TableRowSelectionHandler(MCODECluster[] clusters, CyNetwork inputNetwork, MCODEAlgorithm alg) {
             this.clusters = clusters;
             this.inputNetwork = inputNetwork;
+            this.alg = alg;
             inputNetwork.addSelectEventListener(new MCODEResultsPanel.networkSelectionAction(clusters));
         }
 
@@ -679,7 +686,7 @@ public class MCODEResultsPanel extends JPanel {
                 //First we test if this cluster has been selected yet and if its content exists
                 //If it does not, we create it
                 if (exploreContent[selectedRow] == null) {
-                    exploreContent[selectedRow] = createExploreContent(clusters, selectedRow, inputNetwork);
+                    exploreContent[selectedRow] = createExploreContent(clusters, selectedRow, inputNetwork, alg);
                 }
                 //Next, if this is the first time explore panel content is being displayed, then the
                 //explore panel is not visible yet, and there is no content in it yet, so we do not
@@ -709,6 +716,10 @@ public class MCODEResultsPanel extends JPanel {
         }
     }
 
+    /**
+     *
+     * @param gpCluster
+     */
     private void selectCluster(GraphPerspective gpCluster) {
         NodeView nv;
         //only do this if a view has been created on this network
@@ -716,7 +727,7 @@ public class MCODEResultsPanel extends JPanel {
             //start with no selected nodes
             GinyUtils.deselectAllNodes(originalInputNetworkView);
             //go through graph and select nodes in the cluster
-            java.util.List nodeList = gpCluster.nodesList();
+            java.util.List nodeList = gpCluster.nodesList();//TODO: DEPRECATED
             for (int i = 0; i < nodeList.size(); i++) {
                 Node n = (Node) nodeList.get(i);
                 if (originalInputNetwork.containsNode(n)) {
@@ -832,6 +843,7 @@ public class MCODEResultsPanel extends JPanel {
                     //System.out.println("Should select " + clusters[c].getClusterName());
                     if (table.getSelectedRow() != c) {
                         //table.setRowSelectionInterval(c, c);
+                        //TODO: there must be some discriminator between user and computer actions!
                     }
                     break;
                 } else if (alSelection.size() > 0 && alCluster.containsAll(alSelection)) {
@@ -886,7 +898,8 @@ public class MCODEResultsPanel extends JPanel {
             //So we store get the new cluster content
             ArrayList newCluster = cluster.getALCluster();
             //And compare the old and new
-            if (!newCluster.containsAll(oldCluster) || !oldCluster.containsAll(newCluster)) {
+            if (!newCluster.equals(oldCluster)) {//!newCluster.containsAll(oldCluster) || !oldCluster.containsAll(newCluster)) {
+
                 //If either cluster has any node that the other doesn't have, then we:
                 //Ensure that drawing occurs
                 graphDrawn = false;
