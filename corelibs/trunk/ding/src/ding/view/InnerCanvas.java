@@ -66,6 +66,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.JToolTip;
+import javax.swing.TransferHandler;
 
 
 // AJK: 04/26/06 END
@@ -1201,6 +1202,18 @@ public class InnerCanvas extends DingCanvas
     protected synchronized void processPhoebeCanvasDropEvent(
         PhoebeCanvasDropEvent event) {
         Enumeration e = listeners.elements();
+
+        // AJK: 12/08/06 oy, what a hack.  try to send transferable to transferhandler
+        //               of cytoscapeDesktopPane
+        Transferable t = event.getTransferable();
+        TransferHandler th = Cytoscape.getDesktop().getNetworkViewManager().
+        getDesktopPane().getTransferHandler();
+        if (th != null)
+        {
+        	th.importData(Cytoscape.getDesktop().getNetworkViewManager().
+        getDesktopPane(), t);
+        }
+        // AJK: 12/08/06 END       
 
         while (e.hasMoreElements()) {
             PhoebeCanvasDropListener l = (PhoebeCanvasDropListener) e.nextElement();
