@@ -92,7 +92,7 @@ public class NodeTopologyFilterEditor
     nameField.addActionListener(this);
     nameField.addFocusListener(this);
    
-    JLabel lbSelectWith = new JLabel("Select nodes with ");
+    JLabel lbSelectWith = new JLabel("Select nodes with at least");
     lbSelectWith.setFocusable(false);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
