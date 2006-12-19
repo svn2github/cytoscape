@@ -16,6 +16,8 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
 
+import cytoscape.Cytoscape;
+
 import giny.model.Node;
 
 import giny.view.EdgeView;
