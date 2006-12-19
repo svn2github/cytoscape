@@ -61,6 +61,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.swing.JInternalFrame;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -87,6 +88,7 @@ import cytoscape.generated.Ontology;
 import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.cytopanels.CytoPanelState;
 import ding.view.DGraphView;
 
 /**
@@ -263,6 +265,8 @@ public class CytoscapeSessionReader {
 	 * @throws JAXBException
 	 */
 	public void read() throws IOException, JAXBException {
+		
+		final long start = System.currentTimeMillis();
 
 		unzipSessionFromURL();
 
@@ -285,6 +289,8 @@ public class CytoscapeSessionReader {
 		Cytoscape.firePropertyChange(Cytoscape.RESTORE_PLUGIN_STATE,
 				pluginFileListMap, null);
 		deleteTmpPluginFiles();
+		
+		System.out.println("Session loaded in " + (System.currentTimeMillis()-start) + " msec.");
 	}
 
 	// Delete tmp files (the plugin state files) to cleanup
@@ -687,7 +693,7 @@ public class CytoscapeSessionReader {
 		// Read an XGMML file
 		XGMMLReader reader = new XGMMLReader(is);
 		reader.read();
-		
+
 		/*
 		 * Create the CyNetwork. First, set the view threshold to 0. By doing
 		 * so, we can disable the auto-creating of the CyNetworkView.
@@ -721,26 +727,23 @@ public class CytoscapeSessionReader {
 		// Conditionally, Create the CyNetworkView
 		if (viewAvailable) {
 			createCyNetworkView(network);
+			final CyNetworkView curView = Cytoscape.getNetworkView(network
+					.getIdentifier());
 
-			if (Cytoscape.getNetworkView(network.getIdentifier()) != Cytoscape
-					.getNullNetworkView()) {
-				reader
-						.layout(Cytoscape.getNetworkView(network
-								.getIdentifier()));
+			if (curView != Cytoscape.getNullNetworkView()) {
+				((DingNetworkView) curView).getCanvas().setVisible(false);
+				reader.layout(curView);
 			}
 
 			// Lastly, make the GraphView Canvas Visible.
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					final DingNetworkView view = (DingNetworkView) Cytoscape
-							.getCurrentNetworkView();
-					view.setGraphLOD(new CyGraphLOD());
+					((DingNetworkView) curView).setGraphLOD(new CyGraphLOD());
 				}
 			});
 
 			final String curVS = (String) vsMapByName.get(network.getTitle());
-			final CyNetworkView curView = Cytoscape.getNetworkView(network
-					.getIdentifier());
+
 			if (curVS != null) {
 				curView.setVisualStyle(curVS);
 				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
@@ -764,10 +767,11 @@ public class CytoscapeSessionReader {
 				((DGraphView) curView).setCenter(center.getX(), center.getY());
 			}
 		}
-		
+
 		// Execute any necessary post-processing.
 		reader.doPostProcessing(network);
 		reader = null;
+
 		return network;
 	}
 
@@ -776,9 +780,6 @@ public class CytoscapeSessionReader {
 	private void createCyNetworkView(final CyNetwork cyNetwork) {
 		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork
 				.getTitle());
-
-		// For performance, hide canvas.
-		view.getCanvas().setVisible(false);
 
 		view.setIdentifier(cyNetwork.getIdentifier());
 		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
