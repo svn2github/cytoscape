@@ -81,6 +81,7 @@ public class StringPatternFilterEditor
     add(lbFilterName, gridBagConstraints);
     
     nameField = new JTextField(15);
+    nameField.setEditable(false);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
