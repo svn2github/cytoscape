@@ -37,7 +37,7 @@ public enum OBOTags {
 	EXACT_SYNONYM("This tag gives a synonym for the term of the specified type."), 
 	BROAD_SYNONYM("This tag gives a synonym for the term of the specified type."), 
 	NARROW_SYNONYM("This tag gives a synonym for the term of the specified type."), 
-	XREF_ANALOG("A dbxref that describes an analogous object in another vocabulary (see Dbxref Formatting for information " +
+	XREF("A dbxref that describes an analogous object in another vocabulary (see Dbxref Formatting for information " +
 			"about how the value of this tag must be formatted). A term may have any number of analogous xrefs. "), 
 	XREF_UNKNOWN("A dbxref with an unknown type."), 
 	IS_A("This tag describes a subclassing relationship between one term and another. A term may have any number of is_a " +

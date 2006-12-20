@@ -10,7 +10,7 @@ import static cytoscape.data.ontology.readers.OBOTags.NARROW_SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.RELATED_SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.RELATIONSHIP;
 import static cytoscape.data.ontology.readers.OBOTags.SYNONYM;
-import static cytoscape.data.ontology.readers.OBOTags.XREF_ANALOG;
+import static cytoscape.data.ontology.readers.OBOTags.XREF;
 import giny.model.Edge;
 import giny.model.Node;
 
@@ -285,16 +285,16 @@ public class OBOFlatFileReader implements OntologyReader {
 
 			} else if (key.equals(IS_OBSOLETE.toString())) {
 				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, Boolean.parseBoolean(val));
-			} else if (key.equals(XREF_ANALOG.toString())) {
+			} else if (key.equals(XREF.toString())) {
 				List xrefAnalog = termAttributes.getListAttribute(id,
-						OBO_PREFIX + "." + XREF_ANALOG.toString());
+						OBO_PREFIX + "." + XREF.toString());
 				if (xrefAnalog == null) {
 					xrefAnalog = new ArrayList<String>();
 				}
 				if (val != null) {
 					xrefAnalog.add(val.toString());
 				}
-				termAttributes.setListAttribute(id, OBO_PREFIX + "." + XREF_ANALOG.toString(),
+				termAttributes.setListAttribute(id, OBO_PREFIX + "." + XREF.toString(),
 						xrefAnalog);
 			} else {
 				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, val);
