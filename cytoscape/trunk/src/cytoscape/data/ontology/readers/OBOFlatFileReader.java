@@ -11,6 +11,7 @@ import static cytoscape.data.ontology.readers.OBOTags.RELATED_SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.RELATIONSHIP;
 import static cytoscape.data.ontology.readers.OBOTags.SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.XREF;
+import static cytoscape.data.ontology.readers.OBOTags.XREF_ANALOG;
 import giny.model.Edge;
 import giny.model.Node;
 
@@ -59,7 +60,7 @@ import cytoscape.data.ontology.Ontology;
 public class OBOFlatFileReader implements OntologyReader {
 
 	public static final String ONTOLOGY_DAG_ROOT = "Ontology DAGs";
-	
+
 	public static final String OBO_PREFIX = "ontology";
 
 	private static final String DEF_ORIGIN = "def_origin";
@@ -203,7 +204,7 @@ public class OBOFlatFileReader implements OntologyReader {
 	private void readEntry(final BufferedReader rd) throws IOException {
 		String id = "";
 		String line = null;
-		
+
 		while (true) {
 
 			line = rd.readLine().trim();
@@ -220,11 +221,13 @@ public class OBOFlatFileReader implements OntologyReader {
 			} else if (key.equals(DEF.toString())) {
 				// System.out.println("DEF: " + id + " = " + val);
 				String[] definitionParts = val.split("\"");
-				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, definitionParts[1]);
+				termAttributes.setAttribute(id, OBO_PREFIX + "." + key,
+						definitionParts[1]);
 				List<String> originList = getReferences(val
 						.substring(definitionParts[1].length() + 2));
 				if (originList != null) {
-					termAttributes.setListAttribute(id, OBO_PREFIX + "." + DEF_ORIGIN, originList);
+					termAttributes.setListAttribute(id, OBO_PREFIX + "."
+							+ DEF_ORIGIN, originList);
 				}
 			} else if (key.equals(EXACT_SYNONYM.toString())
 					|| key.equals(RELATED_SYNONYM.toString())
@@ -235,12 +238,19 @@ public class OBOFlatFileReader implements OntologyReader {
 				String[] synonymParts = val.split("\"");
 				Map<String, String> synoMap = termAttributes.getMapAttribute(
 						id, OBO_PREFIX + "." + OBOTags.SYNONYM.toString());
+
 				if (synoMap == null) {
 					synoMap = new HashMap<String, String>();
 				}
-				synoMap.put(synonymParts[1], synonymParts[2].trim());
-				termAttributes.setMapAttribute(id, OBO_PREFIX + "." + OBOTags.SYNONYM.toString(),
-						synoMap);
+
+				if (key.equals(SYNONYM.toString())) {
+					synoMap.put(synonymParts[1], synonymParts[2].trim());
+				} else {
+					synoMap.put(synonymParts[1], key);
+				}
+
+				termAttributes.setMapAttribute(id, OBO_PREFIX + "."
+						+ OBOTags.SYNONYM.toString(), synoMap);
 
 			} else if (key.equals(RELATIONSHIP.toString())) {
 
@@ -284,8 +294,10 @@ public class OBOFlatFileReader implements OntologyReader {
 				interactionList.add(itr);
 
 			} else if (key.equals(IS_OBSOLETE.toString())) {
-				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, Boolean.parseBoolean(val));
-			} else if (key.equals(XREF.toString())) {
+				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, Boolean
+						.parseBoolean(val));
+			} else if (key.equals(XREF.toString())
+					|| key.equals(XREF_ANALOG.toString())) {
 				List xrefAnalog = termAttributes.getListAttribute(id,
 						OBO_PREFIX + "." + XREF.toString());
 				if (xrefAnalog == null) {
@@ -294,8 +306,8 @@ public class OBOFlatFileReader implements OntologyReader {
 				if (val != null) {
 					xrefAnalog.add(val.toString());
 				}
-				termAttributes.setListAttribute(id, OBO_PREFIX + "." + XREF.toString(),
-						xrefAnalog);
+				termAttributes.setListAttribute(id, OBO_PREFIX + "."
+						+ XREF.toString(), xrefAnalog);
 			} else {
 				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, val);
 			}
@@ -348,9 +360,10 @@ public class OBOFlatFileReader implements OntologyReader {
 		}
 
 		for (OBOTags tags : OBOTags.values()) {
-			if (attrNameSet.contains(tags.toString())) {
-				termAttributes.setAttributeDescription(tags.toString(), tags
-						.getDescription());
+			if (attrNameSet.contains(OBOTags.getPrefix() + "."
+					+ tags.toString())) {
+				termAttributes.setAttributeDescription(OBOTags.getPrefix()
+						+ "." + tags.toString(), tags.getDescription());
 			}
 		}
 	}
