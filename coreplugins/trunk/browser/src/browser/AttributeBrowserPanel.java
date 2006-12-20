@@ -689,7 +689,7 @@ public class AttributeBrowserPanel extends JPanel implements
 
 		final JDialog attModDialog = new JDialog();
 
-		attModDialog.setTitle(tableObjectType + " Attritube Modification");
+		attModDialog.setTitle(tableObjectType + " Attribute Modification");
 		attModDialog.setModal(true);
 				
 		attModDialog.getContentPane().add(attrModPanel);				
