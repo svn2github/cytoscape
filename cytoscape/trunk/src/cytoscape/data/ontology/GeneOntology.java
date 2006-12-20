@@ -14,6 +14,7 @@ import org.biojava.ontology.Term;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.ontology.readers.OBOTags;
 
 /**
  * Gene Ontology object based on general Ontology.<br>
@@ -64,8 +65,8 @@ public class GeneOntology extends Ontology {
 
 	public GOTerm getGOTerm(String goID) {
 		return new GOTerm(goID, Cytoscape.getNodeAttributes()
-				.getStringAttribute(goID, NAME.toString()), name,
-				goTermAttributes.getStringAttribute(goID, DEF.toString()));
+				.getStringAttribute(goID, OBOTags.getPrefix() + "." + NAME.toString()), name,
+				goTermAttributes.getStringAttribute(goID, OBOTags.getPrefix() + "." + DEF.toString()));
 	}
 
 	/**
@@ -77,7 +78,7 @@ public class GeneOntology extends Ontology {
 	 * @return GOAspect of the given ID
 	 */
 	public GOAspect getAspect(String goID) {
-		final String nameSpace = goTermAttributes.getStringAttribute(goID, NAMESPACE.toString());
+		final String nameSpace = goTermAttributes.getStringAttribute(goID, OBOTags.getPrefix() + "." + NAMESPACE.toString());
 
 		if(nameSpace == null) {
 			return null;

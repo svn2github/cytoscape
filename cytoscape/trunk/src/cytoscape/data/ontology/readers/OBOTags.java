@@ -90,4 +90,7 @@ public enum OBOTags {
 		return name().toLowerCase();
 	}
 
+	public static String getPrefix() {
+		return "ontology";
+	}
 }
