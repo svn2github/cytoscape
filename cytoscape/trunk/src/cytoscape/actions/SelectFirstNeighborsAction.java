@@ -67,7 +67,7 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	public SelectFirstNeighborsAction() {
 		super("First neighbors of selected nodes");
 		setPreferredMenu("Select.Nodes");
-		setAcceleratorCombo(KeyEvent.VK_F6, 0);
+		setAcceleratorCombo(KeyEvent.VK_6, 0);
 	}
 
 	public void actionPerformed(ActionEvent e) {
