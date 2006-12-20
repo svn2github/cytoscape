@@ -59,6 +59,8 @@ import cytoscape.data.ontology.Ontology;
 public class OBOFlatFileReader implements OntologyReader {
 
 	public static final String ONTOLOGY_DAG_ROOT = "Ontology DAGs";
+	
+	public static final String OBO_PREFIX = "ontology";
 
 	private static final String DEF_ORIGIN = "def_origin";
 	protected static final String TERM_TAG = "[Term]";
@@ -200,12 +202,11 @@ public class OBOFlatFileReader implements OntologyReader {
 	 */
 	private void readEntry(final BufferedReader rd) throws IOException {
 		String id = "";
-
+		String line = null;
+		
 		while (true) {
 
-			boolean isObsolete = false;
-
-			final String line = rd.readLine().trim();
+			line = rd.readLine().trim();
 			if (line.length() == 0)
 				break;
 			final int colonInx = line.indexOf(':');
@@ -219,11 +220,11 @@ public class OBOFlatFileReader implements OntologyReader {
 			} else if (key.equals(DEF.toString())) {
 				// System.out.println("DEF: " + id + " = " + val);
 				String[] definitionParts = val.split("\"");
-				termAttributes.setAttribute(id, key, definitionParts[1]);
+				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, definitionParts[1]);
 				List<String> originList = getReferences(val
 						.substring(definitionParts[1].length() + 2));
 				if (originList != null) {
-					termAttributes.setListAttribute(id, DEF_ORIGIN, originList);
+					termAttributes.setListAttribute(id, OBO_PREFIX + "." + DEF_ORIGIN, originList);
 				}
 			} else if (key.equals(EXACT_SYNONYM.toString())
 					|| key.equals(RELATED_SYNONYM.toString())
@@ -233,12 +234,12 @@ public class OBOFlatFileReader implements OntologyReader {
 
 				String[] synonymParts = val.split("\"");
 				Map<String, String> synoMap = termAttributes.getMapAttribute(
-						id, OBOTags.SYNONYM.toString());
+						id, OBO_PREFIX + "." + OBOTags.SYNONYM.toString());
 				if (synoMap == null) {
 					synoMap = new HashMap<String, String>();
 				}
 				synoMap.put(synonymParts[1], key);
-				termAttributes.setMapAttribute(id, OBOTags.SYNONYM.toString(),
+				termAttributes.setMapAttribute(id, OBO_PREFIX + "." + OBOTags.SYNONYM.toString(),
 						synoMap);
 
 				// nodeAttributes.getMapAttribute(id, SYNONYMS).put(val, "");
@@ -277,18 +278,6 @@ public class OBOFlatFileReader implements OntologyReader {
 				target = Cytoscape.getCyNode(targetId, true);
 				ontologyDAG.addNode(target);
 
-				// final Interaction interaction = new Interaction(id,
-				// targetId);
-				// dagBuilder.addInteraction(interaction);
-
-				// isA = Cytoscape.getCyEdge(source, target,
-				// Semantics.INTERACTION, IS_A.name(), true, true);
-
-				/*
-				 * Add node and edge
-				 */
-				// ontologyDAG.addNode(target);
-				// ontologyDAG.addEdge(isA);
 				final String[] itr = new String[3];
 				itr[0] = id;
 				itr[1] = targetId;
@@ -297,20 +286,20 @@ public class OBOFlatFileReader implements OntologyReader {
 
 			} else if (key.equals(IS_OBSOLETE.toString())) {
 				Boolean obsolete = new Boolean(val);
-				termAttributes.setAttribute(id, key, obsolete);
+				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, obsolete);
 			} else if (key.equals(XREF_ANALOG.toString())) {
 				List xrefAnalog = termAttributes.getListAttribute(id,
-						XREF_ANALOG.toString());
+						OBO_PREFIX + "." + XREF_ANALOG.toString());
 				if (xrefAnalog == null) {
 					xrefAnalog = new ArrayList<String>();
 				}
 				if (val != null) {
 					xrefAnalog.add(val.toString());
 				}
-				termAttributes.setListAttribute(id, XREF_ANALOG.toString(),
+				termAttributes.setListAttribute(id, OBO_PREFIX + "." + XREF_ANALOG.toString(),
 						xrefAnalog);
 			} else {
-				termAttributes.setAttribute(id, key, val);
+				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, val);
 			}
 		}
 	}

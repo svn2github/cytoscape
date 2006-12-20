@@ -72,15 +72,15 @@ public class OBOFlatFileReaderTest extends TestCase {
 			System.out.println("Name = " + names[i]);
 		}
 		
-		String curString = goTermAttr.getStringAttribute("GO:0000004", "name");
+		String curString = goTermAttr.getStringAttribute("GO:0000004", "ontology.name");
 		System.out.println("GO:0000004 = " + curString);
 		assertEquals(curString, "biological process unknown");
 		
-		curString = goTermAttr.getStringAttribute("GO:0016049", "name");
+		curString = goTermAttr.getStringAttribute("GO:0016049", "ontology.name");
 		System.out.println("GO:0016049 = " + curString);
 		assertEquals(curString, "cell growth");
 		
-		Map synoMap = goTermAttr.getMapAttribute("GO:0016049", OBOTags.SYNONYM.toString());
+		Map synoMap = goTermAttr.getMapAttribute("GO:0016049", "ontology." +OBOTags.SYNONYM.toString());
 		assertNotNull(synoMap);
 		assertEquals(4, synoMap.size());
 		for(Object val: synoMap.keySet()) {
