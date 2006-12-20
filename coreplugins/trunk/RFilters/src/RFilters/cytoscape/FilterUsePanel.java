@@ -38,6 +38,12 @@ public class FilterUsePanel extends JPanel
   JRadioButton pulsate, spiral;
   JFrame frame;
   public static String NEW_FILTER_ADDED = "NEW_FILTER_ADDED";
+  
+  private Runnable updateProgMon, closeProgMon, setMinAndMax;
+  private int progressCount = 0, minCount=0, maxCount=100;
+  private String progressNote = "";
+  private String progressTitle = "Applying filter";
+  private boolean applyFilterCanceled = false;
 
   public FilterUsePanel ( JFrame frame ) {
     super();
@@ -63,7 +69,8 @@ public class FilterUsePanel extends JPanel
     add(pane0);
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( filterEditorPanel );
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
-  }
+    initProgressMonitor();
+    }
   
   public FilterListPanel getFilterListPanel () {
     return filterListPanel;
@@ -129,7 +136,54 @@ public class FilterUsePanel extends JPanel
     }
   }
 
+  private void initProgressMonitor()
+  {
+          progressTitle = "Applying filter";
+          progressNote = "";
+          final ProgressMonitor pm = new ProgressMonitor(frame, progressTitle,progressNote,0,100);
+          pm.setMillisToDecideToPopup(500);
+          pm.setMillisToPopup(2000);
 
+          // Create these as inner classes to minimize the amount of thread creation (expensive!)...
+          updateProgMon = new Runnable()
+          {
+              double dCount = 0;
+              public void run()
+              {
+                  if (pm.isCanceled())
+                  {
+                	  applyFilterCanceled = true;
+                      pm.close();
+                  }
+                  else
+                  {
+                      dCount = ((double)progressCount/(double)pm.getMaximum());
+                      progressNote = ((int)(dCount * 100.0) +"% complete");
+                      pm.setProgress(progressCount);
+                      pm.setNote(progressNote);
+                  }
+              }
+          };
+
+          closeProgMon = new Runnable()
+          {
+              public void run()
+              {
+                  pm.close();
+              }
+          };
+
+          setMinAndMax = new Runnable()
+          {
+              public void run()
+              {
+                  pm.setMinimum(minCount);
+                  pm.setMaximum(maxCount);
+              }
+          };      
+  }
+
+  
   /**
    * This method will take an object and do whatever it is supposed to 
    * according to what the available actions are.
@@ -162,51 +216,125 @@ public class FilterUsePanel extends JPanel
     boolean passes;
     if(filter != null){
       Class [] passingTypes = filter.getPassingTypes();
+      
+      minCount = 0;
+      maxCount = getTaskEstimation(passingTypes, nodes_list, edges_list);
+      progressCount = 0;
+      applyFilterCanceled = false;
+
+      try
+      {
+          SwingUtilities.invokeAndWait(setMinAndMax);
+      }
+      catch (Exception _e) {}
+      
       for(int idx = 0;idx < passingTypes.length;idx++){
         if(passingTypes[idx].equals(Node.class)){
           nodes = nodes_list.iterator();
           while ( nodes.hasNext() ) {
             node = ( Node )nodes.next();
+ 
             try{
-              passObject(node,filter.passesFilter(node));
+            	passObject(node,filter.passesFilter(node));
             }catch(StackOverflowError soe){
               return;
             }
+            
+        	progressCount ++;
+        	try
+            {
+                SwingUtilities.invokeAndWait(updateProgMon);
+            }
+            catch (Exception _e) {}
+            
+            if (applyFilterCanceled)
+            {
+                progressNote = "Please wait...";
+                try
+                {
+                    SwingUtilities.invokeAndWait(updateProgMon);
+                }
+                catch (Exception _e) {}
+                break;
+            }            
           }
         }else if(passingTypes[idx].equals(Edge.class)){
           edges = edges_list.iterator();
           while ( edges.hasNext() ) {
             edge = ( Edge )edges.next();
             try{
-              passObject(edge,filter.passesFilter(edge));
+            	passObject(edge,filter.passesFilter(edge));
             }catch(StackOverflowError soe){
               return;
             }
+            
+           	progressCount++;
+        	try
+            {
+                SwingUtilities.invokeAndWait(updateProgMon);
+            }
+            catch (Exception _e) {}
+            if (applyFilterCanceled)
+            {
+                progressNote = "Please wait...";
+                try
+                {
+                    SwingUtilities.invokeAndWait(updateProgMon);
+                }
+                catch (Exception _e) {}
+                break;
+            }
           }
         }
+      }// for loop
+      try
+      {
+          SwingUtilities.invokeAndWait(closeProgMon);
       }
+      catch (Exception _e) {}
     }
   }
-
-  public JPanel createActionPanel () {
-    JPanel actionPanel = new JPanel();
-    //actionPanel.setBorder( new TitledBorder( "Available Actions" ) );
-
-    //select = new JCheckBox( "Select Passed" );
-    //hide = new JCheckBox( "Hide Failed" );
-    apply = new JButton ( new AbstractAction( "Apply selected filter" ){
-        public void actionPerformed(ActionEvent e){
-          SwingUtilities.invokeLater(new Runnable(){
-              public void run(){
-                testObjects();
-                Cytoscape.getCurrentNetworkView().updateView();
-              }
-            });}});
-    apply.setEnabled(false);
-    //actionPanel.add(select);
-    //actionPanel.add(hide);
-    actionPanel.add(apply);
-    return actionPanel;
+  
+  // Calculate the total tasks for the progress monitor
+  private int getTaskEstimation(Class[] pClassTypes, List pNodeList, List pEdgeList)
+  {
+	  int taskCount = 0;
+      for(int idx = 0;idx < pClassTypes.length;idx++){
+          if(pClassTypes[idx].equals(Node.class)){
+        	  taskCount += pNodeList.size();  
+          }else if(pClassTypes[idx].equals(Edge.class)){
+        	  taskCount += pEdgeList.size();        	 
+          }
+      }
+	  return taskCount;
   }
   
+
+  public JPanel createActionPanel () {
+	    JPanel actionPanel = new JPanel();
+	    //actionPanel.setBorder( new TitledBorder( "Available Actions" ) );
+
+	    //select = new JCheckBox( "Select Passed" );
+	    //hide = new JCheckBox( "Hide Failed" );
+	    apply = new JButton ( new AbstractAction( "Apply selected filter" ){
+	        public void actionPerformed(ActionEvent e){
+	        	// We have to run "Apply filter" in a seperate thread, becasue we want to monitor the progress
+	        	ApplyFilterThread applyFilterThread = new ApplyFilterThread();
+	        	applyFilterThread.start();
+	        }});
+
+	    apply.setEnabled(false);
+	    //actionPanel.add(select);
+	    //actionPanel.add(hide);
+	    actionPanel.add(apply);
+	    return actionPanel;
+	  }  
+
+  
+  private class ApplyFilterThread extends Thread {
+      public void run(){    	  
+          testObjects();
+          Cytoscape.getCurrentNetworkView().updateView();
+    }	  
+  }
 }
