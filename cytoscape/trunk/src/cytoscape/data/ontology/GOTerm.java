@@ -13,12 +13,12 @@ import cytoscape.data.ontology.readers.OBOTags;
  */
 public class GOTerm extends OntologyTerm {
 
-	public GOTerm(String id, String termName, String ontologyName,
-			String description) {
+	public GOTerm(final String id, final String termName, final String ontologyName,
+			final String description) {
 		super(id, ontologyName, description);
 		if (termName != null) {
 			Cytoscape.getNodeAttributes().setAttribute(id,
-					OBOTags.NAME.toString(), termName);
+					OBOTags.getPrefix() + "." + OBOTags.NAME.toString(), termName);
 		}
 	}
 
@@ -32,17 +32,17 @@ public class GOTerm extends OntologyTerm {
 
 	public String getFullName() {
 		return Cytoscape.getNodeAttributes().getStringAttribute(
-				super.getName(), OBOTags.NAME.toString());
+				super.getName(), OBOTags.getPrefix() + "." + OBOTags.NAME.toString());
 	}
 
 	public String getDescription() {
 		return Cytoscape.getNodeAttributes().getStringAttribute(
-				super.getName(), OBOTags.DEF.toString());
+				super.getName(), OBOTags.getPrefix() + "." + OBOTags.DEF.toString());
 	}
 
 	public String getType() {
 		return Cytoscape.getNodeAttributes().getStringAttribute(
-				super.getName(), OBOTags.NAMESPACE.toString());
+				super.getName(), OBOTags.getPrefix() + "." + OBOTags.NAMESPACE.toString());
 	}
 
 }

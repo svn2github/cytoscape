@@ -238,11 +238,10 @@ public class OBOFlatFileReader implements OntologyReader {
 				if (synoMap == null) {
 					synoMap = new HashMap<String, String>();
 				}
-				synoMap.put(synonymParts[1], key);
+				synoMap.put(synonymParts[1], synonymParts[2].trim());
 				termAttributes.setMapAttribute(id, OBO_PREFIX + "." + OBOTags.SYNONYM.toString(),
 						synoMap);
 
-				// nodeAttributes.getMapAttribute(id, SYNONYMS).put(val, "");
 			} else if (key.equals(RELATIONSHIP.toString())) {
 
 				if (source == null) {
@@ -285,8 +284,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				interactionList.add(itr);
 
 			} else if (key.equals(IS_OBSOLETE.toString())) {
-				Boolean obsolete = new Boolean(val);
-				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, obsolete);
+				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, Boolean.parseBoolean(val));
 			} else if (key.equals(XREF_ANALOG.toString())) {
 				List xrefAnalog = termAttributes.getListAttribute(id,
 						OBO_PREFIX + "." + XREF_ANALOG.toString());

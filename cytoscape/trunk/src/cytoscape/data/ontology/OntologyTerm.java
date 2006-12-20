@@ -8,6 +8,7 @@ import org.biojava.ontology.Ontology;
 import org.biojava.utils.AbstractChangeable;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.ontology.readers.OBOTags;
 
 /**
  * Simple in-memory implementation of an ontology term based on BioJava's
@@ -31,7 +32,7 @@ public class OntologyTerm extends AbstractChangeable implements
 	/*
 	 * These constants will be used as the attribute names in CyAttributes.
 	 */
-	protected static final String DESCRIPTION = "description";
+	//protected static final String DESCRIPTION = "description";
 	protected static final String SYNONYM = "synonym";
 
 	/*
@@ -74,7 +75,7 @@ public class OntologyTerm extends AbstractChangeable implements
 		this.name = name;
 		this.ontologyName = ontologyName;
 		if (description != null) {
-			Cytoscape.getNodeAttributes().setAttribute(name, DESCRIPTION,
+			Cytoscape.getNodeAttributes().setAttribute(name, OBOTags.getPrefix() + "." + OBOTags.DEF.toString(),
 					description);
 		}
 	}
@@ -107,13 +108,13 @@ public class OntologyTerm extends AbstractChangeable implements
 	 */
 	public void addSynonym(Object synonym, SynonymType type) {
 		Map<Object, SynonymType> synoMap = Cytoscape.getNodeAttributes()
-				.getMapAttribute(name, SYNONYM);
+				.getMapAttribute(name, OBOTags.getPrefix() + "." + SYNONYM);
 		if (synoMap == null) {
 			synoMap = new HashMap();
 		}
 
 		synoMap.put(synonym, type);
-		Cytoscape.getNodeAttributes().setMapAttribute(name, SYNONYM, synoMap);
+		Cytoscape.getNodeAttributes().setMapAttribute(name, OBOTags.getPrefix() + "." + SYNONYM, synoMap);
 	}
 
 	/**
@@ -123,14 +124,14 @@ public class OntologyTerm extends AbstractChangeable implements
 	 */
 	public String getDescription() {
 		return Cytoscape.getNodeAttributes().getStringAttribute(name,
-				DESCRIPTION);
+				OBOTags.getPrefix() + "." + OBOTags.DEF.toString());
 	}
 
 	/**
 	 * Return sysnonym attributes for this term.
 	 */
 	public Object[] getSynonyms() {
-		return Cytoscape.getNodeAttributes().getMapAttribute(name, SYNONYM)
+		return Cytoscape.getNodeAttributes().getMapAttribute(name, OBOTags.getPrefix() + "." + SYNONYM)
 				.keySet().toArray();
 	}
 
@@ -143,7 +144,7 @@ public class OntologyTerm extends AbstractChangeable implements
 				SYNONYM);
 		if (synoMap != null) {
 			synoMap.remove(synonym);
-			Cytoscape.getNodeAttributes().setMapAttribute(name, SYNONYM,
+			Cytoscape.getNodeAttributes().setMapAttribute(name, OBOTags.getPrefix() + "." + SYNONYM,
 					synoMap);
 		}
 	}
