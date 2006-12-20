@@ -51,7 +51,7 @@ import cytoscape.Cytoscape;
 public class UnHideSelectedNodesAction extends CytoscapeAction  {
 
     public UnHideSelectedNodesAction () {
-        super ("Show All");
+        super ("Show all nodes");
         setPreferredMenu( "Select.Nodes" );
         setAcceleratorCombo( java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
     }

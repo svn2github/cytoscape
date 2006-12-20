@@ -52,7 +52,7 @@ import cytoscape.Cytoscape;
 public class UnHideSelectedEdgesAction extends CytoscapeAction  {
 
     public UnHideSelectedEdgesAction () {
-        super ("Show All");
+        super ("Show all edges");
         setPreferredMenu( "Select.Edges" );
         setAcceleratorCombo( java.awt.event.KeyEvent.VK_H, ActionEvent.ALT_MASK| ActionEvent.SHIFT_MASK) ;
     }

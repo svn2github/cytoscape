@@ -52,7 +52,7 @@ import cytoscape.util.CytoscapeAction;
 public class HideSelectedNodesAction extends CytoscapeAction   {
     
     public HideSelectedNodesAction () {
-        super("Hide selection");
+        super("Hide node selection");
         setPreferredMenu( "Select.Nodes" );
         setAcceleratorCombo( java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK );
     }
