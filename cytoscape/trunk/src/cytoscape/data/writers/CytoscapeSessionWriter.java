@@ -41,6 +41,8 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.Component;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -65,6 +67,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
@@ -218,8 +224,8 @@ public class CytoscapeSessionWriter {
 		// For now, session ID is time and date
 		final DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
 		sessionDirName = "CytoscapeSession-" + df.format(new Date());
-		
-//		 Get all networks in the session
+
+		// Get all networks in the session
 		networks = Cytoscape.getNetworkSet();
 		networkMap = new HashMap();
 	}
@@ -270,16 +276,17 @@ public class CytoscapeSessionWriter {
 
 		// Prepare bookmarks for saving
 		bookmarks = Cytoscape.getBookmarks();
-		BookmarksUtil.saveBookmark(bookmarks, new File(tmpDirName + BOOKMARKS_FILE));
+		BookmarksUtil.saveBookmark(bookmarks, new File(tmpDirName
+				+ BOOKMARKS_FILE));
 
 		// Prepare property files for saving
 		preparePropFiles();
-		
+
 		targetFileNames[0] = VIZMAP_FILE;
 		targetFileNames[1] = CYPROP_FILE;
 		targetFileNames[2] = BOOKMARKS_FILE;
 		targetFileNames[3] = CYSESSION_FILE_NAME;
-		
+
 		// Zip the session into a .cys file.
 		zipUtil = new ZipUtil(sessionFileName, targetFileNames, sessionDirName,
 				tmpDirName);
@@ -395,13 +402,16 @@ public class CytoscapeSessionWriter {
 	 * 
 	 * @throws URISyntaxException
 	 * @throws JAXBException
+	 * @throws FactoryConfigurationError 
+	 * @throws XMLStreamException 
 	 */
 	private void makeXGMML(final String xgmmlFile, final CyNetwork network,
 			final CyNetworkView view) throws IOException, JAXBException,
-			URISyntaxException {
+			URISyntaxException, XMLStreamException, FactoryConfigurationError {
 
-		final XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view);
-		FileWriter fileWriter = new FileWriter(tmpDirName + xgmmlFile);
+		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view);
+		XMLStreamWriter fileWriter = XMLOutputFactory.newInstance()
+		.createXMLStreamWriter(new FileOutputStream(tmpDirName + xgmmlFile));
 
 		try {
 			xgmmlWriter.write(fileWriter);
@@ -409,6 +419,7 @@ public class CytoscapeSessionWriter {
 			if (fileWriter != null) {
 				fileWriter.close();
 				fileWriter = null;
+				xgmmlWriter = null;
 			}
 		}
 	}
@@ -421,8 +432,8 @@ public class CytoscapeSessionWriter {
 	 */
 	private void createCySession(String sessionName) throws Exception {
 
-		JAXBContext jc = JAXBContext.newInstance(packageName, this.getClass()
-				.getClassLoader());
+		final JAXBContext jc = JAXBContext.newInstance(packageName, this
+				.getClass().getClassLoader());
 
 		initObjectsForDataBinding();
 		session.setId(sessionName);
@@ -437,13 +448,20 @@ public class CytoscapeSessionWriter {
 		m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
 				new NamespacePrefixMapperForCysession());
 
-		FileOutputStream fos = null;
+		// FileOutputStream fos = null;
+
+		XMLStreamWriter writer = XMLOutputFactory.newInstance()
+				.createXMLStreamWriter(new BufferedOutputStream(
+						new FileOutputStream(tmpDirName + CYSESSION_FILE_NAME)));
 		try {
-			fos = new FileOutputStream(tmpDirName + CYSESSION_FILE_NAME);
+			// fos = new FileOutputStream(tmpDirName + CYSESSION_FILE_NAME);
 			// Write session file
-			m.marshal(session, fos);
+			m.marshal(session, writer);
 		} finally {
-			fos.close();
+			writer.close();
+			writer = null;
+			m = null;
+			session = null;
 		}
 	}
 

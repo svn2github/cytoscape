@@ -472,7 +472,6 @@ public class CytoscapeSessionReader {
 			if (targetView != Cytoscape.getNullNetworkView()) {
 				targetView.setVisualStyle((String) vsMap.get(currentNetworkID));
 				targetView.applyVizmapper(targetView.getVisualStyle());
-				((DingNetworkView) targetView).getCanvas().setVisible(true);
 			}
 		}
 	}
@@ -766,12 +765,13 @@ public class CytoscapeSessionReader {
 			if (center != null) {
 				((DGraphView) curView).setCenter(center.getX(), center.getY());
 			}
+			
+			((DingNetworkView) curView).getCanvas().setVisible(true);
 		}
 
 		// Execute any necessary post-processing.
 		reader.doPostProcessing(network);
 		reader = null;
-
 		return network;
 	}
 
@@ -780,7 +780,7 @@ public class CytoscapeSessionReader {
 	private void createCyNetworkView(final CyNetwork cyNetwork) {
 		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork
 				.getTitle());
-
+		view.getCanvas().setVisible(false);
 		view.setIdentifier(cyNetwork.getIdentifier());
 		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
 		view.setTitle(cyNetwork.getTitle());

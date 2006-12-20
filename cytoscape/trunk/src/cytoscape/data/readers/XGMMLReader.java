@@ -45,6 +45,8 @@ import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +62,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.EventFilter;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.events.XMLEvent;
+
+import org.xml.sax.SAXException;
 
 import cern.colt.list.IntArrayList;
 import cytoscape.CyEdge;
@@ -176,7 +188,9 @@ public class XGMMLReader extends AbstractGraphReader {
 	private TaskMonitor taskMonitor;
 	private PercentUtil percentUtil;
 
-	private int nextID = 0; // Used to assign ID's to nodes that didn't have them
+	private int nextID = 0; // Used to assign ID's to nodes that didn't have
+
+	// them
 
 	/**
 	 * Constructor.<br>
@@ -234,6 +248,18 @@ public class XGMMLReader extends AbstractGraphReader {
 			if (taskMonitor != null) {
 				taskMonitor.setException(e, e.getMessage());
 			}
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FactoryConfigurationError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -242,17 +268,26 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * 
 	 * @throws JAXBException
 	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws FactoryConfigurationError
+	 * @throws XMLStreamException
 	 */
-	private void readXGMML() throws JAXBException, IOException {
+	private void readXGMML() throws JAXBException, IOException,
+			ParserConfigurationException, SAXException, XMLStreamException,
+			FactoryConfigurationError {
 		JAXBElement<GraphicGraph> graphicGraphElement;
 
-		try {
+//		XMLInputFactory factory = XMLInputFactory.newInstance();
+//		XMLStreamReader xmlStreamReader = factory
+//				.createXMLStreamReader(new BufferedReader(networkStream));
+		// Use JAXB-generated methods to create data structure
+		final JAXBContext jaxbContext = JAXBContext.newInstance(XGMML_PACKAGE,
+				this.getClass().getClassLoader());
+		// Unmarshall the XGMML file
+		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-			// Use JAXB-generated methods to create data structure
-			final JAXBContext jaxbContext = JAXBContext.newInstance(
-					XGMML_PACKAGE, this.getClass().getClassLoader());
-			// Unmarshall the XGMML file
-			final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		try {
 
 			/*
 			 * Read the file and map the entire XML document into data
@@ -268,8 +303,10 @@ public class XGMMLReader extends AbstractGraphReader {
 			 * actual Graph object.
 			 */
 			graphicGraphElement = (JAXBElement<GraphicGraph>) unmarshaller
-					.unmarshal(networkStream);
+					.unmarshal(new BufferedInputStream(networkStream));
+
 			
+
 			networkName = graphicGraphElement.getValue().getLabel();
 			networkAtt = graphicGraphElement.getValue().getAtt();
 
@@ -290,7 +327,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			 * 
 			 */
 			getNodesAndEdges(graphicGraphElement.getValue(), null);
-			
+
 			/*
 			 * Pass 2: Build the network
 			 */
@@ -959,6 +996,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * Part of interace contract
 	 */
 	public int[] getNodeIndicesArray() {
+		System.out.println("Size = " + giny_nodes.size());
 		giny_nodes.trimToSize();
 		return giny_nodes.elements();
 	}

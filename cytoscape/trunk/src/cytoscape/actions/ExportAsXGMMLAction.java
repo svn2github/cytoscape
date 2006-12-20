@@ -47,6 +47,8 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -230,8 +232,10 @@ class ExportAsXGMMLTask implements Task {
 	 * @throws IOException
 	 * @throws JAXBException
 	 * @throws URISyntaxException 
+	 * @throws FactoryConfigurationError 
+	 * @throws XMLStreamException 
 	 */
-	private void saveGraph() throws IOException, JAXBException, URISyntaxException {
+	private void saveGraph() throws IOException, JAXBException, URISyntaxException, XMLStreamException, FactoryConfigurationError {
 
 		final FileWriter fileWriter = new FileWriter(fileName);
 		final XGMMLWriter writer = new XGMMLWriter(network, view);

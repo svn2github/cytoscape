@@ -67,6 +67,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.geom.Point2D;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigInteger;
@@ -81,6 +83,10 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 /**
  * 
@@ -250,8 +256,20 @@ public class XGMMLWriter {
 	 *            Witer to create XGMML file
 	 * @throws JAXBException
 	 * @throws IOException
+	 * @throws FactoryConfigurationError
+	 * @throws XMLStreamException
+	 * @throws FactoryConfigurationError
+	 * @throws XMLStreamException
 	 */
-	public void write(final Writer writer) throws JAXBException, IOException {
+	public void write(final Writer writer) throws JAXBException, IOException,
+			XMLStreamException, FactoryConfigurationError {
+
+		write(XMLOutputFactory.newInstance().createXMLStreamWriter(writer));
+
+	}
+
+	public void write(final XMLStreamWriter streamWriter) throws JAXBException,
+			IOException, XMLStreamException {
 
 		// write out network attributes
 		writeNetworkAttributes();
@@ -263,13 +281,13 @@ public class XGMMLWriter {
 		writeEdges();
 
 		/*
-		 * This creates the header of the XML document.
-		 * Maybe used in the future... 
+		 * This creates the header of the XML document. Maybe used in the
+		 * future...
 		 * 
 		 * writer.write("<?xml version='1.0'?>\n");
 		 * 
-		 * Will be restored when CSS is ready. 
-		 * writer.write("<?xml-stylesheet type='text/css' href='" + CSS_FILE + "' ?>\n");
+		 * Will be restored when CSS is ready. writer.write("<?xml-stylesheet
+		 * type='text/css' href='" + CSS_FILE + "' ?>\n");
 		 */
 
 		final Marshaller m = jc.createMarshaller();
@@ -291,10 +309,10 @@ public class XGMMLWriter {
 		m.setProperty("com.sun.xml.bind.xmlDeclaration", true);
 		final JAXBElement<GraphicGraph> graphicGraphElement = objFactory
 				.createGraph(graph);
-		try {
-			m.marshal(graphicGraphElement, writer);
-		} finally {
-			writer.close();
+
+		m.marshal(graphicGraphElement, streamWriter);
+		if (streamWriter != null) {
+			streamWriter.close();
 		}
 	}
 
