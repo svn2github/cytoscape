@@ -41,8 +41,8 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.Component;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -54,7 +54,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -407,11 +406,10 @@ public class CytoscapeSessionWriter {
 	 */
 	private void makeXGMML(final String xgmmlFile, final CyNetwork network,
 			final CyNetworkView view) throws IOException, JAXBException,
-			URISyntaxException, XMLStreamException, FactoryConfigurationError {
+			URISyntaxException {
 
 		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view);
-		XMLStreamWriter fileWriter = XMLOutputFactory.newInstance()
-		.createXMLStreamWriter(new FileOutputStream(tmpDirName + xgmmlFile));
+		BufferedWriter fileWriter = new BufferedWriter(new FileWriter(tmpDirName + xgmmlFile));
 
 		try {
 			xgmmlWriter.write(fileWriter);

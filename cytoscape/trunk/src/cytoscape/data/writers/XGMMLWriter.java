@@ -37,7 +37,36 @@
 
 package cytoscape.data.writers;
 
+import giny.model.RootGraph;
+import giny.view.Bend;
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.io.Writer;
+import java.math.BigInteger;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -58,35 +87,6 @@ import cytoscape.generated2.TypeGraphicsType;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.LineType;
 import ding.view.DGraphView;
-import giny.model.RootGraph;
-import giny.view.Bend;
-import giny.view.EdgeView;
-import giny.view.NodeView;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.geom.Point2D;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Writer;
-import java.math.BigInteger;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 /**
  * 
@@ -256,20 +256,9 @@ public class XGMMLWriter {
 	 *            Witer to create XGMML file
 	 * @throws JAXBException
 	 * @throws IOException
-	 * @throws FactoryConfigurationError
-	 * @throws XMLStreamException
-	 * @throws FactoryConfigurationError
-	 * @throws XMLStreamException
 	 */
-	public void write(final Writer writer) throws JAXBException, IOException,
-			XMLStreamException, FactoryConfigurationError {
+	public void write(final Writer writer) throws JAXBException, IOException {
 
-		write(XMLOutputFactory.newInstance().createXMLStreamWriter(writer));
-
-	}
-
-	public void write(final XMLStreamWriter streamWriter) throws JAXBException,
-			IOException, XMLStreamException {
 
 		// write out network attributes
 		writeNetworkAttributes();
@@ -310,9 +299,9 @@ public class XGMMLWriter {
 		final JAXBElement<GraphicGraph> graphicGraphElement = objFactory
 				.createGraph(graph);
 
-		m.marshal(graphicGraphElement, streamWriter);
-		if (streamWriter != null) {
-			streamWriter.close();
+		m.marshal(graphicGraphElement, writer);
+		if (writer != null) {
+			writer.close();
 		}
 	}
 

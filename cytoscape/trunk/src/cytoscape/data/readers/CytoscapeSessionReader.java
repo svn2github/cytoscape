@@ -61,7 +61,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.swing.JInternalFrame;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -88,7 +87,6 @@ import cytoscape.generated.Ontology;
 import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.cytopanels.CytoPanelState;
 import ding.view.DGraphView;
 
 /**
