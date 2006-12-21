@@ -82,6 +82,7 @@ public class NumericAttributeFilterEditor
     add(lbFilterName, gridBagConstraints);
 
     nameField = new JTextField(15);
+    nameField.setEditable(false);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = 2;
     gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
