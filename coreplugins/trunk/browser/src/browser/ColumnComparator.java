@@ -1,13 +1,15 @@
 /*
-=====================================================================
+ =====================================================================
 
-  ColumnComparator.java
+ ColumnComparator.java
 
-  Created by Claude Duguay
-  Copyright (c) 2002
+ Created by Claude Duguay
+ Copyright (c) 2002
+ 
+ Rewrote by Keiichiro Ono 2006
 
-=====================================================================
-*/
+ =====================================================================
+ */
 package browser;
 
 import java.util.Comparator;
@@ -17,45 +19,56 @@ public class ColumnComparator implements Comparator {
 	protected int index;
 	protected boolean ascending;
 
-	public ColumnComparator(int index, boolean ascending) {
+	public ColumnComparator(final int index, final boolean ascending) {
 		this.index = index;
 		this.ascending = ascending;
 	}
 
-	public int compare(Object one, Object two) {
+	public int compare(final Object obj1, final Object obj2) {
 
-    
+		if (obj1 instanceof Vector && obj2 instanceof Vector) {
 
-		if (one instanceof Vector && two instanceof Vector) {
-			Vector vOne = (Vector) one;
-			Vector vTwo = (Vector) two;
-			Object oOne = vOne.elementAt(index);
-			Object oTwo = vTwo.elementAt(index);
-		
-      if (oOne instanceof Comparable && oTwo instanceof Comparable) {
+			final Object firstObj = ((Vector) obj1).elementAt(index);
+			final Object secondObj = ((Vector) obj2).elementAt(index);
 
-				if (oOne instanceof String && oTwo instanceof String) {
-					String sOne = (String) oOne;
-					String sTwo = (String) oTwo;
-					if (StringUtil.firstStringSortsBeforeSecond(sOne, sTwo, ascending)) {
-						return -1;
-					}
-					else {
-						return 1;
-					}
-				}
-				else {
-					Comparable cOne = (Comparable) oOne;
-					Comparable cTwo = (Comparable) oTwo;
-					if (ascending) {
-						return cTwo.compareTo(cOne);
-					}
-					else {
-						return cOne.compareTo(cTwo);
-					}
-				}
+			if (firstObj == null && secondObj == null) {
+				return 0;
+			} else if (firstObj == null) {
+				return ascending ? -1 : 1;
+			} else if (secondObj == null) {
+				return ascending ? 1 : -1;
+			} else if (firstObj instanceof Comparable
+					&& secondObj instanceof Comparable) {
+
+				final Comparable firstComparableObj = (Comparable) firstObj;
+				final Comparable secondComparableObj = (Comparable) secondObj;
+
+				return ascending ? firstComparableObj
+						.compareTo(secondComparableObj) : secondComparableObj
+						.compareTo(firstComparableObj);
 			}
 		}
 		return 1;
+	}
+
+	/**
+	 * Comparing numbers.
+	 * 
+	 * @param number1
+	 * @param number2
+	 * @return
+	 */
+	public int compare(final Number number1, final Number number2) {
+		
+		final double firstNumber = number1.doubleValue();
+		final double secondNumber = number2.doubleValue();
+		
+		if (firstNumber < secondNumber) {
+			return -1;
+		} else if (firstNumber > secondNumber) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 }
