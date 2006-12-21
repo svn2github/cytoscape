@@ -126,6 +126,7 @@ public class CytoscapeConverter {
 	    {
 	      int ginyNode = rootGraph.createNode();
 	      rootGraph.getNode(ginyNode).setIdentifier(nctNode);
+	      nodeAttrs.setAttribute(nctNode,"name",nctNode);
 	      nctToGinyNodeMap.put(nctNode, new Integer(ginyNode));
 
 	      ginyNodes[i++] = ginyNode;
@@ -149,6 +150,7 @@ public class CytoscapeConverter {
             int ginyEdge = rootGraph.createEdge(ginySourceNode, ginyTargetNode, false);
 	    edgeAttrs.setAttribute(Integer.toString(ginyEdge), "interaction", nctEdge.getWeight().toString());
 	    edgeAttrs.setAttribute(Integer.toString(ginyEdge), "description", nctEdge.getDescription());
+	    edgeAttrs.setAttribute(Integer.toString(ginyEdge), "name", nctEdge.getDescription());
 
 	    ginyEdges[i++] = ginyEdge;
 	  }
