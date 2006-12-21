@@ -57,6 +57,13 @@ public class CreateFilterDialog extends JDialog{
 		    Filter newFilter = selectedEditor.createDefaultFilter();
 		    FilterManager.defaultManager().addFilter(newFilter);
 		    CreateFilterDialog.this.setVisible(false);
+		    
+		    //NodeTopologyFilterEditor is a special case, since there is only one instance for each editor,
+		    //and the model for the combobox in NodeTopologyFilterEditor must keep update if more than one filter
+		    //is created
+		    if (selectedEditor.getClass().getName().equals("filter.cytoscape.NodeTopologyFilterEditor")) {
+		    	((filter.cytoscape.NodeTopologyFilterEditor)filterEditorList.getSelectedValue()).resetFilterBoxModel();
+		    }
 		}
 	    });
 	southPanel.add(goButton);
