@@ -99,7 +99,7 @@ public class CytoscapeConverter {
 
 	/**
 	 * Converts an NCT graph into a CyNetwork.
-	 * @param graph The NCT graph to be converted.
+	 * @param nctGraph The NCT graph to be converted.
 	 * @param title The title of the new Cytoscape graph
 	 * @param monitor Monitor that will tell if convert() needs to
 	 * terminate prematurely. Monitor will not be informed of any progress.

@@ -294,18 +294,21 @@ public class LocalBlast implements HomologyModel {
 
 			if ( qName.equals("BlastOutput_query-def") ) {
 				getValue = false;	
+				queryId = null;
 				if ( synonyms != null )
 					queryId = synonyms.getSynonym(value.toString(),"name");
-				else
+				if ( queryId == null )
 					queryId = value.toString();
 				if ( value.length() > 0 )
 					value.delete(0,value.length());
 			} else if ( qName.equals("Hit_def") ) {
 				getValue = false;	
+				subjectId = null;
 				if ( synonyms != null ) {
 					String[] syns = value.toString().split("\\|");	
 					subjectId = synonyms.getSynonym(syns[0],"name");
-				} else 
+				}
+			 	if ( subjectId == null )	
 					subjectId = value.toString();
 				if ( value.length() > 0 )
 					value.delete(0,value.length());
@@ -338,6 +341,7 @@ public class LocalBlast implements HomologyModel {
 			// pick the best one.
 			Double currentEvalue = evals.get( subjectId );
 			if ( currentEvalue == null || currentEvalue.doubleValue() > evalue ) {
+				//System.out.println("put " + queryId + " -> " + subjectId + " = " + evalue);
 				evals.put(subjectId,evalue);
 			}
 		}

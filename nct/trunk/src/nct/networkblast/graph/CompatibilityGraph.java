@@ -60,6 +60,20 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 	 * @param interactionGraphs 
 	 * @param compatCalc The CompatibilityCalculator used to determine whether two possible compatibility 
 	 * nodes should be added to the compatibility graph and if so, adds the nodes and edge.
+	 */
+	public CompatibilityGraph(KPartiteGraph<String,Double,? extends DistanceGraph<String,Double>> homologyGraph, 
+				  List<? extends DistanceGraph<String,Double>> interactionGraphs, 
+				  CompatibilityCalculator compatCalc) {
+		this(homologyGraph,interactionGraphs,compatCalc,null);
+	}
+
+	/**
+	 * Constructor.
+	 * @param homologyGraph A k-partite graph where edges represent homology relations between
+	 * proteins and partitions represent species/organisms.
+	 * @param interactionGraphs 
+	 * @param compatCalc The CompatibilityCalculator used to determine whether two possible compatibility 
+	 * nodes should be added to the compatibility graph and if so, adds the nodes and edge.
 	 * @param monitor The Monitor that will be updated as the compatibility graph is created. Pass NULL if
 	 * monitoring is not needed.
 	 */
