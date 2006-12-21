@@ -167,6 +167,11 @@ public class NodeTopologyFilterEditor
 
   }
 
+  public void resetFilterBoxModel()
+  {
+	    filterBox.setModel(FilterManager.defaultManager().getComboBoxModel());	  
+  }
+  
   //----------------------------------------//
   // Implements Filter Editor
   //----------------------------------------//
