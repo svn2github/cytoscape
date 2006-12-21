@@ -7,8 +7,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -16,26 +15,19 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JDialog;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.SwingPropertyChangeSupport;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
@@ -49,6 +41,7 @@ import cytoscape.actions.MapOntologyAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.view.cytopanels.CytoPanel;
 
 /**
  * Define toolbar for Attribute Browser.
@@ -59,32 +52,13 @@ import cytoscape.dialogs.NetworkMetaDataDialog;
  * 
  */
 public class AttributeBrowserPanel extends JPanel implements
-		PropertyChangeListener, ListSelectionListener, ListDataListener,
-		ActionListener {
+		ListSelectionListener, ListDataListener, ActionListener {
 
-	// Global Variables
-	CyAttributes data;
-	DataTableModel tableModel;
-
-	// create new attribute
-	JTextField newAttField;
-	JButton newAttButton;
-	JComboBox newAttType;
-
-	// tags
-	JList tagList;
-	JButton addToTag;
-	JButton removeFromTag;
-	JTextField newTag;
-	JButton newTagButton;
-
-	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(
-			this);
+	private CyAttributes attributes;
+	private DataTableModel tableModel;
 
 	private JPopupMenu attributeSelectionPopupMenu = null;
-
 	private JScrollPane jScrollPane = null;
-
 	private JPopupMenu jPopupMenu1 = null;
 	private JMenuItem jMenuItem = null;
 	private JMenuItem jMenuItem1 = null;
@@ -96,10 +70,9 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JList attributeList = null;
 	private JList attrDeletionList = null;
 
-	private JButton createNewButton = null;
-	private JButton deleteButton = null;
+	private JButton createNewAttributeButton = null;
+	private JButton deleteAttributeButton = null;
 
-	private JButton goButton = null;
 	private JButton matrixButton = null;
 	private JButton importButton = null;
 
@@ -108,19 +81,23 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	private String attributeType = null;
 
-	private JCheckBox networkAttrView = null;
+	private List<String> selectedAttributeNames;
 
+	/**
+	 * Constructor
+	 * 
+	 */
 	public AttributeBrowserPanel() {
 		super();
 
-		// TODO Auto-generated constructor stub
 		initialize(null);
 	}
 
-	public AttributeBrowserPanel(CyAttributes data, AttributeModel a_model,
-			LabelModel l_model, int got) {
-		this.data = data;
-		this.objectType = got;
+	public AttributeBrowserPanel(final CyAttributes data,
+			final AttributeModel a_model, final LabelModel l_model,
+			final int graphObjectType) {
+		this.attributes = data;
+		this.objectType = graphObjectType;
 		this.model = a_model;
 
 		initialize(a_model);
@@ -131,21 +108,16 @@ public class AttributeBrowserPanel extends JPanel implements
 	 * 
 	 * @return void
 	 */
-	private void initialize(AttributeModel a_model) {
+	private void initialize(final AttributeModel a_model) {
+		selectedAttributeNames = new ArrayList<String>();
 
-		BorderLayout layout = new BorderLayout();
-		this.setLayout(layout);
+		this.setLayout(new BorderLayout());
 
-		this.setPreferredSize(new java.awt.Dimension(210, 46));
-		this.setBorder(new javax.swing.border.SoftBevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
+		this.setPreferredSize(new java.awt.Dimension(210, 29));
 		this.add(getJToolBar(), java.awt.BorderLayout.CENTER);
 
 		getAttributeSelectionPopupMenu(a_model);
 		getJPopupMenu1();
-
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				this);
 	}
 
 	public String getSelectedAttribute() {
@@ -165,7 +137,6 @@ public class AttributeBrowserPanel extends JPanel implements
 		try {
 			Object[] atts = attributeList.getSelectedValues();
 			tableModel.setTableDataAttributes(Arrays.asList(atts));
-
 		} catch (Exception ex) {
 			attributeList.clearSelection();
 		}
@@ -185,28 +156,8 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	}
 
-	public void propertyChange(PropertyChangeEvent e) {
-		// updateLists();
-
-		if ((e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)
-				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED) || e
-				.getPropertyName().equals(Cytoscape.DATASERVER_CHANGED))
-				&& objectType == DataTable.NODES) {
-			if (Cytoscape.getBioDataServer() == null) {
-				goButton.setEnabled(false);
-			} else if (Cytoscape.getBioDataServer().getAnnotationCount() == 0
-					|| Cytoscape.getNetworkSet().size() == 0) {
-				goButton.setEnabled(false);
-			} else {
-				goButton.setEnabled(true);
-			}
-		}
-
-	}
-
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -231,7 +182,7 @@ public class AttributeBrowserPanel extends JPanel implements
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
 			jScrollPane.setPreferredSize(new Dimension(220, 200));
-			jScrollPane.setViewportView(getJList1(model));
+			jScrollPane.setViewportView(getSelectedAttributeList(model));
 		}
 		return jScrollPane;
 	}
@@ -263,12 +214,7 @@ public class AttributeBrowserPanel extends JPanel implements
 			jMenuItem.setText("String Attribute");
 			jMenuItem.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-
-					// Auto-generated
-					// Event stub
-					// actionPerformed()
 					createNewAttribute("String");
-
 				}
 			});
 		}
@@ -286,8 +232,6 @@ public class AttributeBrowserPanel extends JPanel implements
 			jMenuItem1.setText("Integer Attribute");
 			jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					// TODO Auto-generated Event stub actionPerformed()
-
 					createNewAttribute("Integer");
 				}
 			});
@@ -306,10 +250,6 @@ public class AttributeBrowserPanel extends JPanel implements
 			jMenuItem2.setText("Floating Point Attribute");
 			jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-
-					// Auto-generated
-					// Event stub
-					// actionPerformed()
 					createNewAttribute("Floating Point");
 				}
 			});
@@ -328,10 +268,6 @@ public class AttributeBrowserPanel extends JPanel implements
 			jMenuItem3.setText("Boolean Attribute");
 			jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-
-					// Auto-generated
-					// Event stub
-					// actionPerformed()
 					createNewAttribute("Boolean");
 				}
 			});
@@ -348,41 +284,40 @@ public class AttributeBrowserPanel extends JPanel implements
 		if (jToolBar == null) {
 
 			jToolBar = new JToolBar();
-			jToolBar.setPreferredSize(new java.awt.Dimension(200, 55));
+			jToolBar.setMargin(new java.awt.Insets(0, 0, 0, 0));
+			jToolBar.setPreferredSize(new java.awt.Dimension(200, 28));
 			jToolBar.setFloatable(false);
 			jToolBar.setOrientation(JToolBar.HORIZONTAL);
 
-			GroupLayout buttonBarLayout = new GroupLayout(jToolBar);
+			final GroupLayout buttonBarLayout = new GroupLayout(jToolBar);
 			jToolBar.setLayout(buttonBarLayout);
 
 			// Layout information.
 			if (objectType == DataTable.NODES) {
 				buttonBarLayout.setHorizontalGroup(buttonBarLayout
 						.createParallelGroup(GroupLayout.LEADING).add(
-								buttonBarLayout.createSequentialGroup().add(
-										getSelectButton(),
-										GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
+								buttonBarLayout.createSequentialGroup()
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getSelectButton(),
+												GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)
 										.add(getNewButton()).addPreferredGap(
 												LayoutStyle.RELATED).add(
 												getDeleteButton())
 										.addPreferredGap(LayoutStyle.RELATED,
-												350, Short.MAX_VALUE).add(
-														getAttrModButton(),
-														GroupLayout.PREFERRED_SIZE, 40,
-														GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(LayoutStyle.RELATED).add(
-												getImportButton(),
-												GroupLayout.PREFERRED_SIZE, 40,
+												150, Short.MAX_VALUE).add(
+												getAttrModButton(),
+												GroupLayout.PREFERRED_SIZE, 28,
 												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)
-										.add(getGOButton(),
-												GroupLayout.PREFERRED_SIZE, 40,
+										.add(getImportButton(),
+												GroupLayout.PREFERRED_SIZE, 28,
 												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)
-										.add(getMatrixButton())));
+										.add(getMatrixButton())
+										.addPreferredGap(LayoutStyle.RELATED)));
 				buttonBarLayout
 						.setVerticalGroup(buttonBarLayout
 								.createParallelGroup(
@@ -391,18 +326,18 @@ public class AttributeBrowserPanel extends JPanel implements
 										org.jdesktop.layout.GroupLayout.CENTER,
 										selectButton,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-										37,
+										27,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 								.add(
 										org.jdesktop.layout.GroupLayout.CENTER,
-										createNewButton,
+										createNewAttributeButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-										37, Short.MAX_VALUE)
+										27, Short.MAX_VALUE)
 								.add(
 										org.jdesktop.layout.GroupLayout.CENTER,
-										deleteButton,
+										deleteAttributeButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-										37, Short.MAX_VALUE)
+										27, Short.MAX_VALUE)
 
 								.add(
 										buttonBarLayout
@@ -411,22 +346,17 @@ public class AttributeBrowserPanel extends JPanel implements
 												.add(
 														matrixButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
+														27,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 												.add(
 														importButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
+														27,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 												.add(
 														attrModButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-												.add(
-														goButton,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
+														27,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
 			} else if (objectType == DataTable.NETWORK) {
@@ -445,12 +375,9 @@ public class AttributeBrowserPanel extends JPanel implements
 												320, Short.MAX_VALUE)
 										.addPreferredGap(LayoutStyle.RELATED)
 										.add(getAttrModButton(),
-												GroupLayout.PREFERRED_SIZE, 40,
+												GroupLayout.PREFERRED_SIZE, 28,
 												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(LayoutStyle.RELATED)
-										.add(getImportButton(),
-												GroupLayout.PREFERRED_SIZE, 40,
-												GroupLayout.PREFERRED_SIZE)
+
 										.addPreferredGap(LayoutStyle.RELATED)));
 
 				buttonBarLayout
@@ -461,18 +388,18 @@ public class AttributeBrowserPanel extends JPanel implements
 										org.jdesktop.layout.GroupLayout.CENTER,
 										selectButton,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-										37,
+										27,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 								.add(
 										org.jdesktop.layout.GroupLayout.CENTER,
-										createNewButton,
+										createNewAttributeButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-										37, Short.MAX_VALUE)
+										27, Short.MAX_VALUE)
 								.add(
 										org.jdesktop.layout.GroupLayout.CENTER,
-										deleteButton,
+										deleteAttributeButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-										37, Short.MAX_VALUE)
+										27, Short.MAX_VALUE)
 
 								.add(
 										buttonBarLayout
@@ -481,35 +408,30 @@ public class AttributeBrowserPanel extends JPanel implements
 												.add(
 														attrModButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-												.add(
-														importButton,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
+														27,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 			} else {
-				// Layout for edges
+
 				buttonBarLayout.setHorizontalGroup(buttonBarLayout
 						.createParallelGroup(GroupLayout.LEADING).add(
-								buttonBarLayout.createSequentialGroup().add(
-										getSelectButton(),
-										GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
+								buttonBarLayout.createSequentialGroup()
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getSelectButton(),
+												GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)
 										.add(getNewButton()).addPreferredGap(
 												LayoutStyle.RELATED).add(
 												getDeleteButton())
 										.addPreferredGap(LayoutStyle.RELATED,
-												350, Short.MAX_VALUE).add(
+												150, Short.MAX_VALUE).add(
 												getAttrModButton(),
-												GroupLayout.PREFERRED_SIZE, 40,
+												GroupLayout.PREFERRED_SIZE, 28,
 												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)
-										.add(
-												getImportButton(),
-												GroupLayout.PREFERRED_SIZE, 40,
+										.add(getImportButton(),
+												GroupLayout.PREFERRED_SIZE, 28,
 												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)));
 				buttonBarLayout
@@ -520,32 +442,33 @@ public class AttributeBrowserPanel extends JPanel implements
 										org.jdesktop.layout.GroupLayout.CENTER,
 										selectButton,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-										37,
+										27,
 										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 								.add(
 										org.jdesktop.layout.GroupLayout.CENTER,
-										createNewButton,
+										createNewAttributeButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-										37, Short.MAX_VALUE)
+										27, Short.MAX_VALUE)
 								.add(
 										org.jdesktop.layout.GroupLayout.CENTER,
-										deleteButton,
+										deleteAttributeButton,
 										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-										37, Short.MAX_VALUE)
+										27, Short.MAX_VALUE)
 
 								.add(
 										buttonBarLayout
 												.createParallelGroup(
 														org.jdesktop.layout.GroupLayout.CENTER)
-												.add(
-														attrModButton,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+
 												.add(
 														importButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
+														27,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												.add(
+														attrModButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														27,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 			}
 
@@ -561,16 +484,13 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getSelectButton() {
 		if (selectButton == null) {
 			selectButton = new JButton();
-
-			selectButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-
+			selectButton.setBorder(null);
+			selectButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			selectButton.setIcon(new javax.swing.ImageIcon(getClass()
 					.getResource("images/stock_select-row.png")));
 			selectButton.setToolTipText("Select Attributes");
 			selectButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					// TODO Auto-generated Event stub mouseClicked()
-
 					attributeSelectionPopupMenu.show(e.getComponent(),
 							e.getX(), e.getY());
 				}
@@ -582,10 +502,11 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getImportButton() {
 		if (importButton == null) {
 			importButton = new JButton();
+			importButton.setBorder(null);
 			importButton.setIcon(new javax.swing.ImageIcon(getClass()
 					.getResource("images/stock_open.png")));
 			importButton.setToolTipText("Import attributes from file...");
-			importButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
+			importButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			importButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					// TODO Auto-generated Event stub mouseClicked()
@@ -598,71 +519,28 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	}
 
-	private JCheckBox getnetworkAttrView() {
-		if (networkAttrView == null) {
-			networkAttrView = new JCheckBox();
-			networkAttrView.setText("All Networks");
-			networkAttrView
-					.setToolTipText("Switch the table format: single network or all");
-			networkAttrView.setEnabled(false);
-			networkAttrView.addMouseListener(new java.awt.event.MouseAdapter() {
-				public void mouseClicked(java.awt.event.MouseEvent e) {
-					// changeNetworkAttrView();
-				}
-			});
-		}
-		return networkAttrView;
-
-	}
-	
-	private JButton getGOButton() {
-		if (goButton == null) {
-			goButton = new JButton();
-			goButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-					"images/stock_data-linked-table.png")));
-			goButton.setToolTipText("Map Ontology...");
-			goButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-			goButton.setMaximumSize(new java.awt.Dimension(40, 40));
-			goButton.setMinimumSize(new java.awt.Dimension(40, 40));
-			goButton.setEnabled(false);
-			goButton.addMouseListener(new java.awt.event.MouseAdapter() {
-				public void mouseClicked(java.awt.event.MouseEvent e) {
-					// TODO Auto-generated Event stub mouseClicked()
-					if (goButton.isEnabled() == true) {
-						mapOntology();
-					}
-
-					// jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-				}
-			});
-		}
-		return goButton;
-	}
-
 	private JButton getMatrixButton() {
 		if (matrixButton == null) {
 			matrixButton = new JButton();
+			matrixButton.setBorder(null);
+			matrixButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			matrixButton.setIcon(new javax.swing.ImageIcon(getClass()
 					.getResource("images/microarray_24.png")));
 			matrixButton.setToolTipText("Import Expression Matrix Data...");
-			matrixButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 
 			matrixButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					// TODO Auto-generated Event stub mouseClicked()
 					importMatrix();
-					// jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 				}
 			});
 		}
 		return matrixButton;
-
 	}
 
-	private JButton attrModButton= null;
+	private JButton attrModButton = null;
 	private AttrSelectModPanel attrModPanel = null;
 	private String tableObjectType = "";
-	
+
 	public void setAttrModPane(AttrSelectModPanel pPanel, String pTableObjetType) {
 		attrModPanel = pPanel;
 		tableObjectType = pTableObjetType;
@@ -671,10 +549,11 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getAttrModButton() {
 		if (attrModButton == null) {
 			attrModButton = new JButton();
+			attrModButton.setBorder(null);
 			attrModButton.setIcon(new javax.swing.ImageIcon(getClass()
 					.getResource("images/stock_insert-columns.png")));
 			attrModButton.setToolTipText("Attribute Modification");
-			attrModButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
+			attrModButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
 			attrModButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -684,20 +563,19 @@ public class AttributeBrowserPanel extends JPanel implements
 		}
 		return attrModButton;
 	}
-	
+
 	private void showAttrModDialog() {
 
 		final JDialog attModDialog = new JDialog();
 
 		attModDialog.setTitle(tableObjectType + " Attribute Modification");
 		attModDialog.setModal(true);
-				
-		attModDialog.getContentPane().add(attrModPanel);				
+
+		attModDialog.getContentPane().add(attrModPanel);
 		attModDialog.pack();
 		attModDialog.setVisible(true);
 	} // showAttrModDialog()
-	
-	
+
 	protected void editMetadata() {
 		NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape
 				.getDesktop(), false, Cytoscape.getCurrentNetwork());
@@ -706,21 +584,13 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	protected void importAttributes() {
 
-		Object cytoPanelObject = Cytoscape.getDesktop().getCytoPanel(
-				SwingConstants.SOUTH).getSelectedComponent();
-		TitledBorder tb = (TitledBorder) ((JPanel) cytoPanelObject).getBorder();
-		attributeType = tb.getTitle();
-		String[] titleArray = attributeType.split(" ");
-		attributeType = titleArray[0];
-
-		if (attributeType.equalsIgnoreCase("node")) {
+		if (objectType == DataTable.NODES) {
 			ImportNodeAttributesAction nodeAction = new ImportNodeAttributesAction();
 			nodeAction.actionPerformed(null);
-		} else if (attributeType.equalsIgnoreCase("Edge")){
+		} else if (objectType == DataTable.EDGES) {
 			ImportEdgeAttributesAction edgeAction = new ImportEdgeAttributesAction();
 			edgeAction.actionPerformed(null);
-		}
-		else { // case for Network
+		} else { // case for Network
 			System.out.println("Network Attribute import not implemented yet");
 		}
 
@@ -742,40 +612,34 @@ public class AttributeBrowserPanel extends JPanel implements
 	 * @return javax.swing.JButton
 	 */
 	private JButton getDeleteButton() {
-		if (deleteButton == null) {
-			deleteButton = new JButton();
-			deleteButton.setIcon(new javax.swing.ImageIcon(getClass()
+		if (deleteAttributeButton == null) {
+			deleteAttributeButton = new JButton();
+			deleteAttributeButton.setBorder(null);
+			deleteAttributeButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+			deleteAttributeButton.setIcon(new javax.swing.ImageIcon(getClass()
 					.getResource("images/stock_delete.png")));
-			deleteButton.setToolTipText("Delete Attributes...");
+			deleteAttributeButton.setToolTipText("Delete Attributes...");
+
 			// Create pop-up window for deletion
-			deleteButton.addMouseListener(new java.awt.event.MouseAdapter() {
-				public void mouseClicked(java.awt.event.MouseEvent e) {
-					// TODO Auto-generated Event stub mouseClicked()
+			deleteAttributeButton
+					.addMouseListener(new java.awt.event.MouseAdapter() {
+						public void mouseClicked(java.awt.event.MouseEvent e) {
 
-					Object cytoPanelObject = Cytoscape.getDesktop()
-							.getCytoPanel(SwingConstants.SOUTH)
-							.getSelectedComponent();
-					TitledBorder tb = (TitledBorder) ((JPanel) cytoPanelObject)
-							.getBorder();
-					attributeType = tb.getTitle();
-					String[] titleArray = attributeType.split(" ");
-					attributeType = titleArray[0];
+							final String[] attrArray = getAttributeArray();
+							Arrays.sort(attrArray);
+							final DeletionDialog dDialog = new DeletionDialog(
+									Cytoscape.getDesktop(), true, attrArray,
+									attributeType);
 
-					DeletionDialog dDialog = new DeletionDialog(Cytoscape
-							.getDesktop(), true,
-							getAttributeArray(attributeType), attributeType);
-
-					dDialog.pack();
-					dDialog.setLocationRelativeTo(Cytoscape.getDesktop());
-					dDialog.setVisible(true);
-					model.sortAtttributes();
-					valueChanged(null);
-					// getAttributeSelectionPopupMenu(model);
-
-				}
-			});
+							dDialog.pack();
+							dDialog.setLocationRelativeTo(jToolBar);
+							dDialog.setVisible(true);
+							model.sortAtttributes();
+							valueChanged(null);
+						}
+					});
 		}
-		return deleteButton;
+		return deleteAttributeButton;
 	}
 
 	/**
@@ -783,66 +647,73 @@ public class AttributeBrowserPanel extends JPanel implements
 	 * 
 	 * @return javax.swing.JList
 	 */
-	private JList getJList1(AttributeModel a_model) {
+	private JList getSelectedAttributeList(final AttributeModel a_model) {
 		if (attributeList == null) {
 			attributeList = new JList(model);
-			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			attributeList
+					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			attributeList.addMouseListener(new MouseAdapter() {
 
-				ArrayList indices = new ArrayList();
-				public void mouseClicked(java.awt.event.MouseEvent e) {
+				List<String> selected = new ArrayList<String>();
+				int[] idx;
+
+				public void mouseClicked(MouseEvent e) {
 
 					if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
 						// Right click
 						attributeSelectionPopupMenu.setVisible(false);
 					} else {
-
 						// Left click
-						model.sortAtttributes();
+						final String selectedItem = attributeList
+								.getSelectedValue().toString();
 
-						// Get current selected node
-						Integer indexObj = new Integer(attributeList.locationToIndex(e.getPoint()));
-
-						// is this selected? if so remove it.
-						if (indices.contains(indexObj)) {
-							indices.remove(indexObj);
+						if (selected.contains(selectedItem)) {
+							selected.remove(selectedItem);
 						} else {
-							indices.add(indexObj);
+							selected.add(selectedItem);
 						}
-						
-						// copy to an int array
-						int[] arr = new int[indices.size()];
-						for (int i = 0; i < indices.size(); i++) {
-							arr[i] = ((Integer) indices.get(i)).intValue();
+
+						idx = new int[selected.size()];
+						int count = 0;
+						for (int i = 0; i < attributeList.getModel().getSize(); i++) {
+							if (selected.contains(attributeList.getModel()
+									.getElementAt(i))) {
+								idx[count] = i;
+								count++;
+							}
 						}
 						// set selected indices
-						attributeList.setSelectedIndices(arr);
+						attributeList.setSelectedIndices(idx);
 					}
-
 				}
 			});
 			attributeList.addListSelectionListener(this);
-			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			attributeList
+					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		}
 		return attributeList;
 	}
 
-	private String[] getAttributeArray(String type) {
+	private String[] getAttributeArray() {
 
-		CyAttributes currentAttributes = null;
+		final CyAttributes currentAttributes;
 
-		if (type.equalsIgnoreCase("node")) {
+		if (objectType == DataTable.NODES) {
+			attributeType = "Node";
 			currentAttributes = Cytoscape.getNodeAttributes();
-		} else if (type.equalsIgnoreCase("edge")) {
+		} else if (objectType == DataTable.EDGES) {
+			attributeType = "Edge";
 			currentAttributes = Cytoscape.getEdgeAttributes();
-		} else if (type.equalsIgnoreCase("network")) {
+		} else if (objectType == DataTable.NETWORK) {
+			attributeType = "Network";
 			currentAttributes = Cytoscape.getNetworkAttributes();
 		} else {
 			return new String[0];
 		}
-		
-		return CyAttributesUtils.getVisibleAttributeNames(currentAttributes).toArray(new String[0]);
+
+		return CyAttributesUtils.getVisibleAttributeNames(currentAttributes)
+				.toArray(new String[0]);
 	}
 
 	/**
@@ -851,33 +722,35 @@ public class AttributeBrowserPanel extends JPanel implements
 	 * @return javax.swing.JButton
 	 */
 	private JButton getNewButton() {
-		if (createNewButton == null) {
-			createNewButton = new JButton();
-			// createNewButton.setText("New");
-			createNewButton.setFont(new java.awt.Font("Dialog",
+		if (createNewAttributeButton == null) {
+			createNewAttributeButton = new JButton();
+			createNewAttributeButton.setBorder(null);
+
+			createNewAttributeButton.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
-			createNewButton
+			createNewAttributeButton
 					.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-			createNewButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-			createNewButton.setToolTipText("Create New Attribute");
-			// createNewButton.setSize(new java.awt.Dimension(100, 27));
-			createNewButton.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("images/stock_new.png")));
-			createNewButton.addMouseListener(new java.awt.event.MouseAdapter() {
-				public void mouseClicked(java.awt.event.MouseEvent e) {
-					// TODO Auto-generated Event stub mouseClicked()
-					jPopupMenu1.show(e.getComponent(), e.getX(), e.getY());
-				}
-			});
+			createNewAttributeButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+			createNewAttributeButton.setToolTipText("Create New Attribute");
+			createNewAttributeButton.setIcon(new javax.swing.ImageIcon(
+					getClass().getResource("images/stock_new.png")));
+			createNewAttributeButton
+					.addMouseListener(new java.awt.event.MouseAdapter() {
+						public void mouseClicked(java.awt.event.MouseEvent e) {
+							jPopupMenu1.show(e.getComponent(), e.getX(), e
+									.getY());
+						}
+					});
 		}
-		return createNewButton;
+		return createNewAttributeButton;
 	}
 
 	// Create a whole new attribute and set a default value.
 	//
-	private void createNewAttribute(String type) {
+	private void createNewAttribute(final String type) {
 
-		String[] existingAttrs = CyAttributesUtils.getVisibleAttributeNames(data).toArray(new String[0]);
+		final String[] existingAttrs = CyAttributesUtils
+				.getVisibleAttributeNames(attributes).toArray(new String[0]);
 		boolean dupFlag = true;
 
 		String name = null;
@@ -892,14 +765,12 @@ public class AttributeBrowserPanel extends JPanel implements
 				break;
 			} else {
 				for (int i = 0; i < existingAttrs.length; i++) {
-					System.out.println("Checking duplication: "
-							+ existingAttrs[i]);
 					if (existingAttrs[i].equals(name) == false) {
 						dupFlag = false;
 					} else if (existingAttrs[i].equals(name)) {
-						JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Attribute " + name
-								+ " already exists.", "Error!",
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+								"Attribute " + name + " already exists.",
+								"Error!", JOptionPane.ERROR_MESSAGE);
 						dupFlag = true;
 						break;
 					}
@@ -909,74 +780,41 @@ public class AttributeBrowserPanel extends JPanel implements
 		}
 
 		if (name != null) {
-			Object objects = null;
+			Object[] selectedVals = attributeList.getSelectedValues();
 
-			Iterator i;
-
-			if (objectType == DataTable.NODES) {
-				objects = Cytoscape.getCyNodesList();
-				i = ((List) objects).iterator();
-			} else if (objectType == DataTable.EDGES) {
-				objects = Cytoscape.getCyEdgesList();
-				i = ((List) objects).iterator();
+			final String testVal = "test";
+			if (type.equals("String")) {
+				attributes.setAttribute(testVal, name, new String());
+			} else if (type.equals("Floating Point")) {
+				attributes.setAttribute(testVal, name, new Double(0));
+			} else if (type.equals("Integer")) {
+				attributes.setAttribute(testVal, name, new Integer(0));
+			} else if (type.equals("Boolean")) {
+				attributes.setAttribute(testVal, name, new Boolean(false));
 			} else {
-				objects = Cytoscape.getNetworkSet();
-				i = ((Set) objects).iterator();
+				attributes.setAttribute(testVal, name, new String());
 			}
+			attributes.deleteAttribute(testVal, name);
 
-			if (objectType == DataTable.NETWORK) {
-				CyNetwork network = (CyNetwork) i.next();
-				if (type.equals("String")) {
-					data.setAttribute(network.getIdentifier(), name,
-							new String());
-				} else if (type.equals("Floating Point")) {
-					data.setAttribute(network.getIdentifier(), name,
-							new Double(0));
-				} else if (type.equals("Integer")) {
-					data.setAttribute(network.getIdentifier(), name,
-							new Integer(0));
-				} else if (type.equals("Boolean")) {
-					data.setAttribute(network.getIdentifier(), name,
-							new Boolean(false));
-				} else {
-					data.setAttribute(network.getIdentifier(), name,
-							new String());
-				}
-				data.deleteAttribute(network.getIdentifier(), name);
-			} else {
-				GraphObject go = (GraphObject) i.next();
-				if (type.equals("String")) {
-					data.setAttribute(go.getIdentifier(), name, new String());
-				} else if (type.equals("Floating Point")) {
-					data.setAttribute(go.getIdentifier(), name, new Double(0));
-				} else if (type.equals("Integer")) {
-					data.setAttribute(go.getIdentifier(), name, new Integer(0));
-				} else if (type.equals("Boolean")) {
-					data.setAttribute(go.getIdentifier(), name, new Boolean(
-							false));
-				} else {
-					data.setAttribute(go.getIdentifier(), name, new String());
-				}
-				// This is a hack --- Remove the attribute right after its
-				// creation.
-				data.deleteAttribute(go.getIdentifier(), name);
-			}
-			updateSelectedListItems(name);
-			
+			updateSelectedListItems(name, selectedVals);
 		}
 	}
-	
-	private void updateSelectedListItems(Object newEntry) {
-		int[] selected = attributeList.getSelectedIndices();
-		
-		//debug
-		
-		model.setSelectedItem(newEntry);
-		int[] newSelected = new int[selected.length+1];
-		System.arraycopy(selected, 0, newSelected, 0, selected.length);
-		newSelected[selected.length] = attributeList.getSelectedIndex();
-		attributeList.setSelectedIndices(newSelected);
-		
+
+	private void updateSelectedListItems(final Object newEntry,
+			final Object[] selectedVals) {
+		List<Object> selectedList = Arrays.asList(selectedVals);
+		int[] selectedIndecies = new int[selectedVals.length + 1];
+
+		Object listItem = null;
+		int count = 0;
+		for (int i = 0; i < attributeList.getModel().getSize(); i++) {
+			listItem = attributeList.getModel().getElementAt(i);
+			if (selectedList.contains(listItem) || listItem.equals(newEntry)) {
+				selectedIndecies[count] = i;
+				count++;
+			}
+		}
+		attributeList.setSelectedIndices(selectedIndecies);
 	}
 
 }

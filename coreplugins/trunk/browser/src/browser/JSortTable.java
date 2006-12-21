@@ -31,7 +31,6 @@ import giny.view.NodeView;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -57,22 +56,18 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
 import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicComboPopup;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -86,9 +81,8 @@ import cytoscape.data.Semantics;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
-import cytoscape.util.swing.ColumnResizer;
-import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.GlobalAppearanceCalculator;
 
 public class JSortTable extends JTable implements MouseListener,
@@ -108,9 +102,7 @@ public class JSortTable extends JTable implements MouseListener,
 
 	// For right-click menu
 	private JPopupMenu rightClickPopupMenu;
-
 	private JPopupMenu cellMenu;
-	private JScrollPane cellContentListPane;
 
 	private JMenuItem copyMenuItem = null;
 	private JMenu exportMenu = null;
@@ -123,14 +115,10 @@ public class JSortTable extends JTable implements MouseListener,
 
 	private Clipboard systemClipboard;
 
-	StringSelection stsel;
+	private StringSelection stsel;
 
-	MultiDataEditAction edit;
-
-	SortTableModel tableModel;
+	private SortTableModel tableModel;
 	private int objectType;
-
-	private HyperLinkOut link;
 
 	public static final String LS = System.getProperty("line.separator");
 
@@ -291,7 +279,6 @@ public class JSortTable extends JTable implements MouseListener,
 			rightClickPopupMenu = new JPopupMenu();
 
 			copyMenuItem = new JMenuItem("Copy");
-			// jMenuItem1 = new JMenuItem("Clear This Row");
 			newSelectionMenuItem = new JMenuItem("Select from table");
 			exportMenu = new JMenu("Export...");
 			exportCellsMenuItem = new JMenuItem("Selected Cells");
@@ -469,7 +456,7 @@ public class JSortTable extends JTable implements MouseListener,
 			rightClickPopupMenu.add(copyMenuItem);
 			rightClickPopupMenu.add(selectAllMenuItem);
 			rightClickPopupMenu.add(exportMenu);
-			
+
 			if (objectType != DataTable.NETWORK) {
 				rightClickPopupMenu.addSeparator();
 				rightClickPopupMenu.add(coloringMenuItem);
@@ -554,41 +541,41 @@ public class JSortTable extends JTable implements MouseListener,
 
 			public void mouseClicked(MouseEvent e) {
 
+				final int column = getColumnModel().getColumnIndexAtX(e.getX());
+				final int row = e.getY() / getRowHeight();
+				final Object value = getValueAt(row, column);
+
 				// If action is right click, then show edit pop-up menu
 				if (SwingUtilities.isRightMouseButton(e)) {
-					
-					rightClickPopupMenu.remove(rightClickPopupMenu.getComponentCount()-1);
-					rightClickPopupMenu.add(new HyperLinkOut(getValueAt(e.getY() / getRowHeight(), getColumnModel().getColumnIndexAtX(e.getX())).toString()));
-					rightClickPopupMenu.show(e.getComponent(), e.getX(), e
-							.getY());
+					if (value != null) {
+						rightClickPopupMenu.remove(rightClickPopupMenu
+								.getComponentCount() - 1);
+						rightClickPopupMenu.add(new HyperLinkOut(value
+								.toString()));
+						rightClickPopupMenu.show(e.getComponent(), e.getX(), e
+								.getY());
+					}
 				} else if (SwingUtilities.isLeftMouseButton(e)
 						&& getSelectedRows().length != 0) {
 
 					showListContents(e);
-					// Otherwise, do cell editing.
 
-					TableColumnModel columnModel = getColumnModel();
-					int column = columnModel.getColumnIndexAtX(e.getX());
-					int row = e.getY() / getRowHeight();
 					if (row >= getRowCount() || row < 0
 							|| column >= getColumnCount() || column < 0)
 						return;
 
-					Object cellValue = getValueAt(row, column);
-					if (cellValue != null
-							&& cellValue.getClass() == String.class) {
+					// Object cellValue = getValueAt(row, column);
+					if (value != null && value.getClass() == String.class) {
 						URL url = null;
 						try {
-							url = new URL((String) cellValue);
+							url = new URL((String) value);
 						} catch (MalformedURLException e1) {
 						}
 						if (url != null) {
 							cytoscape.util.OpenBrowser.openURL(url.toString());
 						}
 					}
-
 				}
-
 			} // mouseClicked
 
 			public void mouseExited(MouseEvent e) {
@@ -746,19 +733,23 @@ public class JSortTable extends JTable implements MouseListener,
 		if (event.getButton() == MouseEvent.BUTTON1
 				&& cursorType != Cursor.E_RESIZE_CURSOR
 				&& cursorType != Cursor.W_RESIZE_CURSOR) {
-			TableColumnModel colModel = getColumnModel();
-			int index = colModel.getColumnIndexAtX(event.getX());
-			int modelIndex = colModel.getColumn(index).getModelIndex();
 
-			SortTableModel model = (SortTableModel) getModel();
-			if (model.isSortable(modelIndex)) {
-				// toggle ascension, if already sorted
-				if (sortedColumnIndex == index) {
-					sortedColumnAscending = !sortedColumnAscending;
+			final int index = getColumnModel().getColumnIndexAtX(event.getX());
+			if (index >= 0) {
+				
+				final int modelIndex = getColumnModel().getColumn(index)
+						.getModelIndex();
+
+				final SortTableModel model = (SortTableModel) getModel();
+				if (model.isSortable(modelIndex)) {
+					// toggle ascension, if already sorted
+					if (sortedColumnIndex == index) {
+						sortedColumnAscending = !sortedColumnAscending;
+					}
+					sortedColumnIndex = index;
+
+					model.sortColumn(modelIndex, sortedColumnAscending);
 				}
-				sortedColumnIndex = index;
-
-				model.sortColumn(modelIndex, sortedColumnAscending);
 			}
 		}
 
@@ -864,7 +855,7 @@ public class JSortTable extends JTable implements MouseListener,
 			// Not yet implemented.
 			curItem.getMenuComponent(1).setEnabled(false);
 			curItem.getMenuComponent(2).setEnabled(false);
-			
+
 			if (type == CyAttributes.TYPE_SIMPLE_LIST) {
 				curItem.add(new HyperLinkOut(item.toString()));
 			} else {
@@ -926,7 +917,7 @@ public class JSortTable extends JTable implements MouseListener,
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
-	
+
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS
 				|| e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 				|| e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
@@ -960,7 +951,8 @@ public class JSortTable extends JTable implements MouseListener,
 
 	public void editingStopped(ChangeEvent e) {
 		super.editingStopped(e);
-		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false,true);
+		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false,
+				true);
 	}
 }
 
@@ -1014,11 +1006,11 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		setBackground(table.getBackground());
 
 		CyAttributes data = null;
-		if ( type == DataTable.NODES )
+		if (type == DataTable.NODES)
 			data = Cytoscape.getNodeAttributes();
-		else if ( type == DataTable.EDGES )
+		else if (type == DataTable.EDGES)
 			data = Cytoscape.getEdgeAttributes();
-		else if ( type == DataTable.NETWORK )
+		else if (type == DataTable.NETWORK)
 			data = Cytoscape.getNetworkAttributes();
 		else
 			return this;
@@ -1026,40 +1018,38 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		String colName = table.getColumnName(column);
 
 		// check for non-editable columns
-		if ( !data.getUserEditable(colName)) {
+		if (!data.getUserEditable(colName)) {
 			setBackground(DataTable.NON_EDITIBLE_COLOR);
 		}
 
-		if (colName.equals(DataTable.ID)) { 
+		if (colName.equals(DataTable.ID)) {
 			setFont(labelFont);
 			setBackground(DataTable.NON_EDITIBLE_COLOR);
 		}
 
 		// handle special NETWORK coloring
-		if ( type == DataTable.NETWORK && value != null ) {
-			if ( colName.equals("Network Attribute Name") && 
-			     !value.equals("Network Metadata") ) {
+		if (type == DataTable.NETWORK && value != null) {
+			if (colName.equals("Network Attribute Name")
+					&& !value.equals("Network Metadata")) {
 				setFont(labelFont);
 				setBackground(DataTable.NON_EDITIBLE_COLOR);
-			} else if ( value.equals("Network Metadata")) {
+			} else if (value.equals("Network Metadata")) {
 				setBackground(metadataBackground);
 				setFont(labelFont);
 			}
 		}
 
-		// if we're not coloring the ID column we're done 
-		if ( coloring == false || !colName.equals(DataTable.ID))
+		// if we're not coloring the ID column we're done
+		if (coloring == false || !colName.equals(DataTable.ID))
 			return this;
 
-
-		// handle colors for the the ID column 
+		// handle colors for the the ID column
 		CyNetworkView netview = Cytoscape.getCurrentNetworkView();
 
 		if (type == DataTable.NODES) {
-			if ( netview != Cytoscape.getNullNetworkView()) {
-				NodeView nodeView = netview.getNodeView(
-							Cytoscape.getCyNode((String) table
-								  .getValueAt(row, column)));
+			if (netview != Cytoscape.getNullNetworkView()) {
+				NodeView nodeView = netview.getNodeView(Cytoscape
+						.getCyNode((String) table.getValueAt(row, column)));
 				if (nodeView != null) {
 					Color nodeColor = (Color) nodeView.getUnselectedPaint();
 					setBackground(nodeColor);
@@ -1077,12 +1067,11 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 					parts[1].trim().length() - 1);
 
 			if (netview != Cytoscape.getNullNetworkView()) {
-				EdgeView edgeView = netview.getEdgeView(
-							Cytoscape.getCyEdge(source, target,
-									Semantics.INTERACTION,
-									interaction, false));
+				EdgeView edgeView = netview.getEdgeView(Cytoscape.getCyEdge(
+						source, target, Semantics.INTERACTION, interaction,
+						false));
 				if (edgeView != null) {
-					Color edgeColor = (Color)edgeView.getUnselectedPaint();
+					Color edgeColor = (Color) edgeView.getUnselectedPaint();
 					setBackground(edgeColor);
 				}
 			}

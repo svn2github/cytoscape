@@ -41,7 +41,7 @@ public class DataTable implements PropertyChangeListener {
 	public static final String NETWORK_METADATA = "Network Metadata";
 
 	// Panel to be added to JDialog for attribute modification
-	AttrSelectModPanel modPanel;
+	private AttrSelectModPanel modPanel;
 	// protected SelectPanel selectionPanel; selectPanel is now part of modPanel
 
 	// Panels to be added on the CytoPanels
@@ -49,12 +49,10 @@ public class DataTable implements PropertyChangeListener {
 	private DataTableModel tableModel;
 	private JSortTable attributeTable;
 
-	boolean coloring;
-
 	// Small toolbar panel on the top of browser
-	AttributeBrowserPanel attributeBrowserPanel;
+	private AttributeBrowserPanel attributeBrowserPanel;
 
-	JPanel mainPanel;
+	private JPanel mainPanel;
 
 	// Index number for the panels
 	int attributePanelIndex;
@@ -65,7 +63,7 @@ public class DataTable implements PropertyChangeListener {
 
 	// Each Attribute Browser operates on one CytoscapeData object, and on
 	// either Nodes or Edges.
-	CyAttributes data;
+	private CyAttributes data;
 
 	// Object types
 	public static final int NODES = 0;
@@ -76,7 +74,7 @@ public class DataTable implements PropertyChangeListener {
 
 	public int tableObjectType;
 
-	public DataTable(CyAttributes data, int tableObjectType) {
+	public DataTable(final CyAttributes data, final int tableObjectType) {
 
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
@@ -110,36 +108,40 @@ public class DataTable implements PropertyChangeListener {
 		mainPanel = new JPanel(); // Container for table and toolbar.
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.setPreferredSize(new java.awt.Dimension(400, 180));
-		if (tableObjectType == NETWORK && Cytoscape.getCurrentNetwork() != null) {
-			if (Cytoscape.getCurrentNetwork().getTitle().equals("0")) {
-				mainPanel
-						.setBorder(javax.swing.BorderFactory
-								.createTitledBorder(
-										null,
-										type + " Attribute Browser",
-										javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-										javax.swing.border.TitledBorder.DEFAULT_POSITION,
-										null, null));
-			} else {
-				mainPanel
-						.setBorder(javax.swing.BorderFactory
-								.createTitledBorder(
-										null,
-										type
-												+ " Attribute Browser ( "
-												+ Cytoscape.getCurrentNetwork()
-														.getTitle() + " )",
-										javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-										javax.swing.border.TitledBorder.DEFAULT_POSITION,
-										null, null));
-			}
-		} else {
-			mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
-					null, type + " Attribute Browser",
-					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
-					null));
-		}
+		
+		
+		
+		mainPanel.setBorder(null);
+//		if (tableObjectType == NETWORK && Cytoscape.getCurrentNetwork() != null) {
+//			if (Cytoscape.getCurrentNetwork().getTitle().equals("0")) {
+//				mainPanel
+//						.setBorder(javax.swing.BorderFactory
+//								.createTitledBorder(
+//										null,
+//										type + " Attribute Browser",
+//										javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+//										javax.swing.border.TitledBorder.DEFAULT_POSITION,
+//										null, null));
+//			} else {
+//				mainPanel
+//						.setBorder(javax.swing.BorderFactory
+//								.createTitledBorder(
+//										null,
+//										type
+//												+ " Attribute Browser ( "
+//												+ Cytoscape.getCurrentNetwork()
+//														.getTitle() + " )",
+//										javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+//										javax.swing.border.TitledBorder.DEFAULT_POSITION,
+//										null, null));
+//			}
+//		} else {
+//			mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
+//					null, type + " Attribute Browser",
+//					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+//					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
+//					null));
+//		}
 		attributeTable = new JSortTable(tableModel, tableObjectType);
 		attributeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
@@ -267,16 +269,15 @@ public class DataTable implements PropertyChangeListener {
 	 * 
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		// System.out.println("================Signal DT = " +
-		// e.getPropertyName());
-		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
-			mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
-					null, type + " Attribute Browser ( "
-							+ Cytoscape.getCurrentNetwork().getTitle() + " )",
-					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
-					null));
-		}
+		
+//		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
+//			mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
+//					null, type + " Attribute Browser ( "
+//							+ Cytoscape.getCurrentNetwork().getTitle() + " )",
+//					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+//					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
+//					null));
+//		}
 
 	}
 

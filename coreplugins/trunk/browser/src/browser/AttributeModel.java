@@ -2,8 +2,8 @@ package browser;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Vector;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.ListModel;
@@ -17,36 +17,36 @@ import cytoscape.data.attr.MultiHashMapDefinitionListener;
 public class AttributeModel implements ListModel, ComboBoxModel,
 		MultiHashMapDefinitionListener {
 
-	Vector listeners = new Vector();
-	CyAttributes data;
+	private Vector listeners = new Vector();
+	private CyAttributes attributes;
 
-	List attributes;
-	Object selection = null;
+	private List<String> attributeNames;
+	private Object selection = null;
 
-	public AttributeModel(CyAttributes data) {
-		this.data = data;
+	public AttributeModel(final CyAttributes data) {
+		this.attributes = data;
 		data.getMultiHashMapDefinition().addDataDefinitionListener(this);
 		sortAtttributes();
 	}
 
 	protected void sortAtttributes() {
-		attributes = CyAttributesUtils.getVisibleAttributeNames(data);
-		Collections.sort(attributes);
+		attributeNames = CyAttributesUtils.getVisibleAttributeNames(attributes);
+		Collections.sort(attributeNames);
 		notifyListeners(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED,
-				0, attributes.size()));
+				0, attributeNames.size()));
 	}
 
 	// implements ListModel
 
 	public Object getElementAt(int i) {
-		if (i > attributes.size())
+		if (i > attributeNames.size())
 			return null;
 
-		return attributes.get(i);
+		return attributeNames.get(i);
 	}
 
 	public int getSize() {
-		return attributes.size();
+		return attributeNames.size();
 	}
 
 	// implements ComboBoxModel
