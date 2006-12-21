@@ -134,13 +134,14 @@ public class PathBlast implements Runnable {
 		ScoreModel<String,Double> edgeScore = new SimpleEdgeScoreModel<String>();
 		List<Graph<String,Double>> resultPaths = colorCoding.searchGraph(compatGraph, edgeScore);
 
-		System.out.println("begin filtering");
+		System.out.println("begin filtering: " + resultPaths.size());
 		if ( !useZero ) {
 			Filter<String,Double> noZeros = new UniqueCompatNodeFilter();
 			resultPaths = noZeros.filter(resultPaths);
 		}
 		Filter<String,Double> noDupes = new DuplicateThresholdFilter<String,Double>(1.0);
 		resultPaths = noDupes.filter( resultPaths );
+		System.out.println("end filtering: " + resultPaths.size());
 
 		Collections.reverse(resultPaths);
 
