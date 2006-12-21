@@ -59,10 +59,11 @@ public class MCODEScoreAndFindTask implements Task {
      * @param analyze
      * @param resultSet
      */
-    public MCODEScoreAndFindTask(CyNetwork network, int analyze, String resultSet) {
+    public MCODEScoreAndFindTask(CyNetwork network, int analyze, String resultSet, MCODEAlgorithm alg) {
         this.network = network;
         this.analyze = analyze;
         this.resultSet = resultSet;
+        this.alg = alg;
     }
 
     /**
@@ -74,25 +75,25 @@ public class MCODEScoreAndFindTask implements Task {
         }
         try {
             //run MCODE scoring algorithm - node scores are saved as node attributes
-            alg = new MCODEAlgorithm(taskMonitor);
+            alg.setTaskMonitor(taskMonitor, network.getIdentifier());
             //only (re)score the graph if the scoring parameters have been changed
             if (analyze == MCODEScoreAndFindAction.RESCORE) {
                 taskMonitor.setPercentCompleted(0);
                 taskMonitor.setStatus("Scoring Network (Step 1 of 3)");
                 alg.scoreGraph(network);
+                //TODO: this is where different scoring algorithms could be called based on parameters
                 if (interrupted) {
                     //network.putClientData("MCODE_running", new Boolean(false));
                     return;
                 }
                 //store this MCODE instance with the network to avoid duplicating the calculation
-                //network.putClientData("MCODE_alg", alg);//TODO: what does this do....
                 System.err.println("Network was scored in " + alg.getLastScoreTime() + " ms.");
             }
 
-            //alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");//TODO: AND THIS?
             taskMonitor.setPercentCompleted(0);
             taskMonitor.setStatus("Finding Clusters (Step 2 of 3)");
             clusters = alg.findClusters(network, resultSet);
+            //TODO: this is where different finding algorithms could be called based on parameters (optimized or custom) and scope
             if (interrupted) {
                 //network.putClientData("MCODE_running", new Boolean(false));
                 return;
@@ -103,7 +104,7 @@ public class MCODEScoreAndFindTask implements Task {
             //also create all the images here for the clusters, since it can be a time consuming operation
             clusters = MCODEUtil.sortClusters(clusters);
             imageList = new Image[clusters.length];
-            int imageSize = MCODECurrentParameters.getInstance().getParamsCopy().getDefaultRowHeight();
+            int imageSize = MCODECurrentParameters.getInstance().getResultParams(resultSet).getDefaultRowHeight();
             for (int i = 0; i < clusters.length; i++) {
                 if (interrupted) {
                     //network.putClientData("MCODE_running", new Boolean(false));
@@ -173,7 +174,7 @@ public class MCODEScoreAndFindTask implements Task {
     public String getTitle() {
         return new String("MCODE Network Cluster Detection");
     }
-
+    
     public MCODEAlgorithm getAlg() {
         return alg;
     }

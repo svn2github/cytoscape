@@ -70,8 +70,8 @@ public class MCODEAlgorithm {
     }
 
     //data structures useful to have around for more than one cluster finding iteration
-    private HashMap nodeInfoHashMap;    //key is the node index, value is a NodeInfo instance
-    private TreeMap nodeScoreSortedMap; //key is node score, value is nodeIndex
+    private HashMap nodeInfoHashMap = null;    //key is the node index, value is a NodeInfo instance
+    private TreeMap nodeScoreSortedMap = null; //key is node score, value is nodeIndex
 
     private MCODEParameterSet params;   //the parameters used for this instance of the algorithm
     //stats
@@ -81,17 +81,23 @@ public class MCODEAlgorithm {
     /**
      * The constructor.  Use this to get an instance of MCODE to run.
      */
-    public MCODEAlgorithm() {
+    public MCODEAlgorithm(String networkID) {
         //init class members
-        nodeInfoHashMap = null;
-        nodeScoreSortedMap = null;
+        //nodeInfoHashMap = null;
+        //nodeScoreSortedMap = null;
         //get current parameters
-        params = MCODECurrentParameters.getInstance().getParamsCopy();
+        params = MCODECurrentParameters.getInstance().getParamsCopy(networkID);
         clusters = new MCODECluster[0];
     }
 
-    public MCODEAlgorithm(TaskMonitor taskMonitor) {
-        this();
+    public MCODEAlgorithm(TaskMonitor taskMonitor, String networkID) {
+        this(networkID);
+        this.taskMonitor = taskMonitor;
+    }
+
+    public void setTaskMonitor(TaskMonitor taskMonitor, String networkID) {
+        params = MCODECurrentParameters.getInstance().getParamsCopy(networkID);
+        clusters = new MCODECluster[0];
         this.taskMonitor = taskMonitor;
     }
 
@@ -241,13 +247,7 @@ public class MCODEAlgorithm {
                             alCluster.add(currentNode);
                         }
                         //create an input graph for the filter and haircut methods
-                        //convert Integer array to int array
-                        int[] clusterArray = new int[alCluster.size()];
-                        for (int i = 0; i < alCluster.size(); i++) {
-                            int nodeIndex = ((Integer) alCluster.get(i)).intValue();
-                            clusterArray[i] = nodeIndex;
-                        }
-                        GraphPerspective gpCluster = inputNetwork.createGraphPerspective(clusterArray);
+                        GraphPerspective gpCluster = createGraphPerspective(alCluster, inputNetwork);
                         if (!filterCluster(gpCluster)) {
                             if (params.isHaircut()) {
                                 haircutCluster(gpCluster, alCluster, inputNetwork);
@@ -257,6 +257,7 @@ public class MCODEAlgorithm {
                             }
 
                             currentCluster.setALCluster(alCluster);
+                            gpCluster = createGraphPerspective(alCluster, inputNetwork);
                             currentCluster.setGPCluster(gpCluster);
                             currentCluster.setClusterScore(scoreCluster(currentCluster));
                             currentCluster.setNodeSeenHashMap(nodeSeenHashMapSnapShot);//store the list of all the nodes that have already been seen and incorporated in other clusters
@@ -310,24 +311,32 @@ public class MCODEAlgorithm {
             alCluster.add(seedNode);
         }
         //create an input graph for the filter and haircut methods
+        GraphPerspective gpCluster = createGraphPerspective(alCluster, inputNetwork);
+        if (params.isHaircut()) {
+            haircutCluster(gpCluster, alCluster, inputNetwork);
+        }
+        if (params.isFluff()) {
+            fluffClusterBoundary(alCluster, nodeSeenHashMap);
+        }
+        cluster.setALCluster(alCluster);
+        gpCluster = createGraphPerspective(alCluster, inputNetwork);
+        cluster.setGPCluster(gpCluster);
+        cluster.setClusterScore(scoreCluster(cluster));
+
+        return cluster;
+    }
+
+    private GraphPerspective createGraphPerspective(ArrayList alCluster, CyNetwork inputNetwork) {
         //convert Integer array to int array
         int[] clusterArray = new int[alCluster.size()];
         for (int i = 0; i < alCluster.size(); i++) {
             int nodeIndex = ((Integer) alCluster.get(i)).intValue();
             clusterArray[i] = nodeIndex;
         }
-        GraphPerspective gpClusterGraph = inputNetwork.createGraphPerspective(clusterArray);
-        if (params.isHaircut()) {
-            haircutCluster(gpClusterGraph, alCluster, inputNetwork);
-        }
-        if (params.isFluff()) {
-            fluffClusterBoundary(alCluster, nodeSeenHashMap);
-        }
-        cluster.setALCluster(alCluster);
-        cluster.setGPCluster(gpClusterGraph);
-        cluster.setClusterScore(scoreCluster(cluster));
 
-        return cluster;
+        GraphPerspective gpCluster = inputNetwork.createGraphPerspective(clusterArray);
+
+        return gpCluster;
     }
 
     /**

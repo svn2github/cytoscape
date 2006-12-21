@@ -83,7 +83,7 @@ public class SpringEmbeddedLayouter {
         // TODO: Something?
     } // initializeSpringEmbeddedLayouter()
 
-    public void doLayout() {
+    public void doLayout(int weightLayout, int goalTotal, double progress, MCODELoader loader) {
         // initialize the layouting.
         nodeCount = graphView.getNodeViewCount();
         edgeCount = graphView.getEdgeViewCount();
@@ -107,7 +107,6 @@ public class SpringEmbeddedLayouter {
 
         // Stop if the potential energy doesn't go down anymore.
         double potential_energy_percent_change_threshold = .001;
-
         int num_iterations = (int)
                 ((nodeCount * averageIterationsPerNode) / numLayoutPasses);
 
@@ -120,6 +119,8 @@ public class SpringEmbeddedLayouter {
         double current_progress_temp;
         double setup_progress = 0.0;
         for (layoutPass = 0; layoutPass < numLayoutPasses; layoutPass++) {
+
+            
 
             setupForLayoutPass();
 
@@ -149,7 +150,7 @@ public class SpringEmbeddedLayouter {
                 }
             }
 
-            // Until num_iterations, or the furthest node is not-so-fur, move the
+            // Until num_iterations, or the furthest node is not-so-far, move the
             // furthest node towards where it wants to be.
             for (int iterations_i = 0;
                  ((iterations_i < num_iterations) &&
@@ -161,6 +162,13 @@ public class SpringEmbeddedLayouter {
                 //System.out.println( "At iteration " + layoutPass + ":" + iterations_i + ", furthest_node_partials is " + furthest_node_partials + "." );
                 furthest_node_partials =
                         moveNode(furthest_node_partials, partials_list, potential_energy);
+
+                progress += (double) goalTotal * (((double) 1 / (double) (num_iterations * numLayoutPasses))) * ((double) weightLayout / (double) goalTotal);
+
+                if (loader != null) {
+                    loader.setProgress((int) progress, "Laying out");
+                }
+
             } // End for each iteration, attempt to minimize the total potential
             // energy by moving the node that is furthest from where it should be.
         } // End for each layout pass

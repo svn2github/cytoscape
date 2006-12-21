@@ -199,15 +199,6 @@ public class MCODELoader extends ImageIcon implements Runnable {
 
         //Draw progress bar
         if (!process.equals("Waiting")) {
-            //For portions of the task that we have no progress reporters for, we compensate with a simple counter
-            if (progress > 50 && progress <= 94) {
-                //layout takes a long time
-                progress++;
-            } else if (progress > 95) {
-                //drawing is pretty quick
-                progress++;
-            }
-
             //Process
             g2.setColor(Color.BLACK);
             g2.drawString(process, 10, loader.getHeight()-2);

@@ -59,7 +59,7 @@ public class MCODETest extends TestCase {
      * @throws Exception
      */
     public void setUp() throws Exception {
-        alg = new MCODEAlgorithm();
+        alg = new MCODEAlgorithm(null);
         params = new MCODEParameterSet();
         networkSmall = Cytoscape.createNetworkFromFile("testData" + File.separator + "smallTest.sif");
     }

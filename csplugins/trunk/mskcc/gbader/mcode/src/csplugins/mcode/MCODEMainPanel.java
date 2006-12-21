@@ -60,7 +60,7 @@ public class MCODEMainPanel extends JPanel {
         setLayout(new BorderLayout());
 
         //get the current parameters
-        currentParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
+        currentParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy(null);
         currentParamsCopy.setDefaultParams();
 
         decFormat = new DecimalFormat();

@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.HashMap;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -49,13 +50,14 @@ import java.net.URL;
  * * Description: simple score and find action for MCODE
  */
 
-// TODO: We must account differences in algorithms for scopes and optimization/customization
+// TODO: We must account for scope
 
 /**
  * Simple score and find action for MCODE. This should be the default for general users.
  */
 public class MCODEScoreAndFindAction implements ActionListener {
-    //private boolean showResultPanel = false;
+    //private MCODEAlgorithm alg;
+    private HashMap networkManager;
     private boolean resultFound = false;
     private MCODEResultsPanel resultPanel; 
 
@@ -73,6 +75,8 @@ public class MCODEScoreAndFindAction implements ActionListener {
 
     MCODEScoreAndFindAction (MCODEParameterSet currentParamsCopy) {
         this.currentParamsCopy = currentParamsCopy;
+        networkManager = new HashMap();
+        //alg = new MCODEAlgorithm();
     }
 
     /**
@@ -81,9 +85,32 @@ public class MCODEScoreAndFindAction implements ActionListener {
      * @param event Click of the analyzeButton on the MCODEMainPanel.
      */
     public void actionPerformed(ActionEvent event) {
-        //MCODEResultsPanel resultPanel;
-        //get a copy of the last saved parameters for comparison with the current ones
-        MCODEParameterSet savedParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
+        String callerID = "MCODEScoreAndFindAction.actionPerformed";
+        //get the network object; this contains the graph
+        final CyNetwork network = Cytoscape.getCurrentNetwork();
+        if (network == null) {
+            System.err.println("In " + callerID + ":");
+            System.err.println("Can't get current network.");
+            return;
+        }
+        //MCODE needs a network of at least 1 node
+        if (network.getNodeCount() < 1) {
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                    "You must have a network loaded to run this plugin.");
+            return;
+        }
+        MCODEAlgorithm alg;
+        MCODEParameterSet savedParamsCopy;
+        if (networkManager.containsKey(network.getIdentifier())) {
+            alg = (MCODEAlgorithm) networkManager.get(network.getIdentifier());
+            //get a copy of the last saved parameters for comparison with the current ones
+            savedParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy(network.getIdentifier());
+        } else {
+            alg = new MCODEAlgorithm(null);
+            savedParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy(null);
+            networkManager.put(network.getIdentifier(), alg);
+            analyze = FIRST_TIME;
+        }
 
         //these statements determine which portion of the algorithm needs to be conducted by
         //testing which parameters have been modified compared to the last saved parameters.
@@ -114,44 +141,14 @@ public class MCODEScoreAndFindAction implements ActionListener {
             System.out.println("Analysis: parameters unchanged");
         }
         //finally we save the current parameters
-        MCODECurrentParameters.getInstance().setParams(currentParamsCopy, "Results " + (resultsCounter + 1));
+        MCODECurrentParameters.getInstance().setParams(currentParamsCopy, "Results " + (resultsCounter + 1), network.getIdentifier());
 
-        String callerID = "MCODEScoreAndFindAction.actionPerformed";
-        //get the network object; this contains the graph
-        final CyNetwork network = Cytoscape.getCurrentNetwork();
-        if (network == null) {
-            System.err.println("In " + callerID + ":");
-            System.err.println("Can't get current network.");
-            return;
-        }
-
-        //MCODE needs a network of at least 1 node
-        if (network.getNodeCount() < 1) {
-            JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                    "You must have a network loaded to run this plugin.");
-            return;
-        }
-
-        //check if MCODE is already running on this network
-        /*Boolean isRunning = (Boolean) network.getClientData("MCODE_running");
-        if ((isRunning != null) && (isRunning.booleanValue())) {
-            //MCODE is already running - tell user and exit
-            JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                    "MCODE is already running on this network. Please wait for it to complete.");
-            return;
-        } else {
-            //MCODE is about to run - mark network that we are using it
-            network.putClientData("MCODE_running", new Boolean(true));
-        }*/
-
-        //check if MCODE has already been run on this network
-        //resultPanel = (MCODEResultsPanel) network.getClientData("MCODE_panel");
         if (analyze == NO_CHANGE) {
             //network.putClientData("MCODE_running", new Boolean(false));
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The parameters you specified have not changed.");
         } else {
             //run MCODE
-            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network, analyze, "Results " + (resultsCounter + 1));
+            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network, analyze, "Results " + (resultsCounter + 1), alg);
             //Configure JTask
             JTaskConfig config = new JTaskConfig();
 
@@ -168,7 +165,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
                     resultFound = true;
                     resultsCounter++;
 
-                    resultPanel = new MCODEResultsPanel(MCODEScoreAndFindTask.getClusters(), MCODEScoreAndFindTask.getAlg(), network, MCODEScoreAndFindTask.getImageList());
+                    resultPanel = new MCODEResultsPanel(MCODEScoreAndFindTask.getClusters(), MCODEScoreAndFindTask.getAlg(), network, MCODEScoreAndFindTask.getImageList(), "Results " + resultsCounter);
 
                     //store the results dialog box if the user wants to see it later
                     //network.putClientData("MCODE_panel", resultPanel);

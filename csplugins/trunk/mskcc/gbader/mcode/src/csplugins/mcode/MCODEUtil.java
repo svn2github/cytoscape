@@ -70,14 +70,16 @@ public class MCODEUtil {
         SpringEmbeddedLayouter lay;
         Image image;
 
-        //Progress reporters
-        int progress = 0;
-        int achievement = 0;
-        int goal = 0;
+        //Progress reporters.  There are three basic tasks, the progress of each is calculated and then combined
+        //using the respective weighting to get an overall progress
+        //global progress
+        int weightSetupNodes = 20;  // setting up the nodes and edges is deemed as 25% of the whole task
+        int weightSetupEdges = 5;
+        int weightLayout = 75;      // layout it is 70%
+        int goalTotal = weightSetupNodes + weightSetupEdges + weightLayout;
+        double progress = 0;        // keeps track of progress as a percent of the totalGoal
 
         view = new PGraphView(cluster.getGPCluster());
-        //Arbitrarily, the randomizing of the nodes and edges accounts for only a 3rd of the task
-        goal = (view.nodeCount() + view.edgeCount()) * 3;
 
         //TODO optionally apply a visual style here instead of doing this manually - visual style calls init code that might not be called manually
         for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
@@ -107,13 +109,10 @@ public class MCODEUtil {
                 //height is small for many default drawn graphs, thus +100
                 nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
             }
-            achievement++;
-            progress = (int) ((double) (100 * (double) achievement / (double) goal));
-
             if (loader != null) {
-                loader.setProgress(progress, "Setup: nodes");
+                progress += (double) goalTotal * ((double) 1 / (double) view.nodeCount()) * ((double) weightSetupNodes / (double) goalTotal);
+                loader.setProgress((int) progress, "Setup: nodes");
             }
-
         }
 
         for (Iterator ie = view.getEdgeViewsIterator(); ie.hasNext();) {
@@ -124,23 +123,15 @@ public class MCODEUtil {
             ev.setSourceEdgeEndPaint(Color.CYAN);
             ev.setStroke(new BasicStroke(5f));
 
-            achievement++;
-            progress = (int) ((double) (100 * (double) achievement / (double) goal));
-
             if (loader != null) {
-                loader.setProgress(progress, "Setup: edges");
+                progress += (double) goalTotal * ((double) 1 / (double) view.edgeCount()) * ((double) weightSetupEdges / (double) goalTotal);
+                loader.setProgress((int) progress, "Setup: edges");
             }
         }
 
-        if (loader != null) {
-            loader.setProgress(51, "Laying out");
-        }
         lay = new SpringEmbeddedLayouter(view);
-        lay.doLayout();
+        lay.doLayout(weightLayout, goalTotal, progress, loader);
 
-        if (loader != null) {
-            loader.setProgress(96, "Drawing");
-        }
         image = view.getCanvas().getLayer().toImage(width, height, null);
         
         double largestSide = view.getCanvas().getLayer().getFullBounds().width;
@@ -245,7 +236,6 @@ public class MCODEUtil {
         if (alg == null || clusters == null || network == null || fileName == null) {
             return false;
         }
-        //TODO:Cytoscape.getNetworkAttributes().
         String lineSep = System.getProperty("line.separator");
         try {
             File file = new File(fileName);

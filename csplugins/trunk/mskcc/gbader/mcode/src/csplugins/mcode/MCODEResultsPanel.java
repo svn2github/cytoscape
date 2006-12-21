@@ -64,10 +64,10 @@ public class MCODEResultsPanel extends JPanel {
      * @param network
      * @param imageList
      */
-    public MCODEResultsPanel(MCODECluster[] clusters, MCODEAlgorithm alg, CyNetwork network, Image[] imageList) {
+    public MCODEResultsPanel(MCODECluster[] clusters, MCODEAlgorithm alg, CyNetwork network, Image[] imageList, String resultsTitle) {
         setLayout(new BorderLayout());
 
-        currentParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
+        currentParamsCopy = MCODECurrentParameters.getInstance().getResultParams(resultsTitle);
 
         JPanel clusterBrowserPanel = createClusterBrowserPanel(clusters, network, alg, imageList);
         JPanel bottomPanel = createBottomPanel();
@@ -278,8 +278,9 @@ public class MCODEResultsPanel extends JPanel {
         public void actionPerformed(ActionEvent actionEvent) {
             NumberFormat nf = NumberFormat.getInstance();
             nf.setMaximumFractionDigits(3);
-            final GraphPerspective gpCluster = clusters[selectedRow].getGPCluster();
-            final String title = trigger.getResultsTitle() + ": " + clusters[selectedRow].getClusterName() + " (Score: "+ nf.format(clusters[selectedRow].getClusterScore()) + ")";
+            final MCODECluster cluster = clusters[selectedRow];
+            final GraphPerspective gpCluster = cluster.getGPCluster();
+            final String title = trigger.getResultsTitle() + ": " + cluster.getClusterName() + " (Score: "+ nf.format(cluster.getClusterScore()) + ")";
             //check if a network has already been created
             String id = (String) hmNetworkNames.get(new Integer(selectedRow + 1));
             if (id != null) {
@@ -292,7 +293,7 @@ public class MCODEResultsPanel extends JPanel {
                         CyNetwork newNetwork = Cytoscape.createNetwork(gpCluster.getNodeIndicesArray(),
                                 gpCluster.getEdgeIndicesArray(), title, originalInputNetwork);
                         hmNetworkNames.put(new Integer(selectedRow + 1), newNetwork.getIdentifier());
-                        PGraphView view = (PGraphView) Cytoscape.createNetworkView(newNetwork);
+                        PGraphView view = (PGraphView) Cytoscape.createNetworkView(newNetwork);//TODO: can't cast the resulting CyNetworkView into PGraphView
                         //layout new cluster and fit it to window
                         //randomize node positions before layout so that they don't all layout in a line
                         //(so they don't fall into a local minimum for the SpringEmbedder)
@@ -300,12 +301,23 @@ public class MCODEResultsPanel extends JPanel {
                         NodeView nv;
                         for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
                             nv = (NodeView) in.next();
-                            nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
-                            //height is small for many default drawn graphs, thus +100
-                            nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
+                            if (cluster.getPGView() != null) {
+                                if (cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
+                                    //If it does, then we take the layout position that was already generated for it
+                                    nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
+                                    nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
+                                }
+                            } else {
+                                //Otherwise, randomize node positions before layout so that they don't all layout in a line
+                                //(so they don't fall into a local minimum for the SpringEmbedder)
+                                //If the SpringEmbedder implementation changes, this code may need to be removed
+                                nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
+                                //height is small for many default drawn graphs, thus +100
+                                nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
+                            }
                         }
-                        SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
-                        lay.doLayout();
+                        //SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
+                        //lay.doLayout(null, null, null, null);
                         view.fitContent();
                         return null;
                     }
@@ -913,7 +925,7 @@ public class MCODEResultsPanel extends JPanel {
                 nodeAttributesComboBox.setSelectedIndex(nodeAttributesComboBox.getSelectedIndex());
                 //Update the graph if the cluster is manageable
                 //Otherwise draw a loader
-                if (cluster.getGPCluster().getNodeCount() < 20) { //TODO: this is an arbitrary number, maybe there is a better way to set it?
+                if (cluster.getGPCluster().getNodeCount() < 20) {
                     drawGraph(cluster, null);
                     graphDrawn = true;
                     loaderDrawn = false;
