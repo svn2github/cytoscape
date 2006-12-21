@@ -14,6 +14,9 @@
 	<!-- Define Directories and other environment variables  -->
 	<!-- =========================================================== -->
 
+	<!-- Property file for any local build variables like the local webhost -->
+	<property file="build.properties" />
+	
 	<!-- The directory containing library jar files -->
 	<property name="lib.dir" value="${basedir}/lib" />
 
@@ -55,7 +58,6 @@
 	     Extra information can, however, be added to version. -->
 	<property name="version.num" value="2.4.0" />
 	<property name="version" value="${version.num}-b2" />
-
 	<property name="dirname.release.dir" value="cytoscape-v${version}" />
 
 	<!-- Web Start Directory -->
@@ -103,6 +105,8 @@
 		<fileset dir="${buildlib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
+		<fileset dir="${basedir}/extra-jars"/>
+
 	</path>
 
 	<!-- ======================================================= -->
@@ -173,7 +177,6 @@
 		</copy>
 
 	</target>
-
 
 
 	<!-- ======================================================= -->
@@ -954,7 +957,47 @@
 	<!-- Create Cytoscape WebStart Distribution                           -->
 	<!-- Questions?  email:  cerami@cbio.mskcc.org	         -->
 	<!-- ======================================================= -->
-	<target name="webstart" depends="jar" description="Creates Cytoscape Webstart Release">
+
+	<target name="jnlp.jar" depends="compile">
+		<jar destfile="${basedir}/resources/JnlpWriter.jar"> 
+			<fileset dir="${build.dir}/classes">
+				<include name="cytoscape/util/JnlpWriterUtil.class"/>
+			</fileset>
+				<manifest>
+					<attribute name="Main-Class" value="cytoscape.util.JnlpWriterUtil"/>
+					<attribute name="Class-Path" value="../lib/jdom.jar"/>
+			</manifest>
+		</jar>
+	</target>
+
+
+	<target name="jnlp" depends="compile, jnlp.jar" description="Creates jnlp for webstart">
+		<fail message="Missing build.properties file. Please copy build.properties.example and update to reflect your webstart URL.">
+			<condition>
+				<not> <available file="build.properties"/> </not>
+			</condition>
+		</fail>
+		<fail message="Missing 'webstartURL' key in properties file">
+			<condition>
+				<not> <isset property="webstartURL" /> </not>
+			</condition>
+		</fail>
+
+		<java jar="${basedir}/resources/JnlpWriter.jar" fork="true" failonerror="true">
+			<arg value="-filename"/>
+			<arg value="cy1.jnlp" />
+			<arg value="-cyto_dir" />
+			<arg value="${release.dir}" />
+			<arg value="-url" />
+			<arg value="${webstartURL}" />
+			<arg value="-save_dir" /> 
+			<arg value="${basedir}/resources/webstart" />
+		</java>
+	</target>
+
+	
+	
+	<target name="webstart" depends="jar, jnlp" description="Creates Cytoscape Webstart Release">
 
 		<echo>
             ***********************************************
@@ -1007,7 +1050,7 @@
             ---------------------------------------
             Copying over PlugIns.
             ---------------------------------------
-        	</echo>
+   	</echo>
 		<copy todir="${webstart.dir}/plugins">
 			<fileset dir="plugins/core">
 				<include name="*.jar" />
@@ -1038,5 +1081,17 @@
 			</fileset>
 		</copy>
 	</target>
+
+  <!-- ======================================================= -->
+  <!-- Create Cytoscape WebStart WAR file Distribution         -->
+  <!-- ======================================================= -->
+	<target name="war" depends="webstart" description="Create war package for webstart distribution">
+		<!-- Using jar rather that war task because we don't have a webxml file and not sure we need one -->
+ 		<jar destfile="Cytoscape.war">
+			<fileset dir="${webstart.dir}"/>
+			<fileset dir="${basedir}/resources/webstart"/>
+		</jar>
+	</target>
+
 
 </project>
