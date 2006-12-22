@@ -34,7 +34,7 @@ $chianti_base = "http://chianti.ucsd.edu/";
 # to update all refereces to the "latest" version,
 # including release notes and download links
 #################################################
-$latest_version = "2.4";
+$latest_version = "2.3.2";
 $latest_release_notes_link = "cyto_2_3_features.php";
 $latest_download_link = "download.php?file=cyto2_3_2"
 
