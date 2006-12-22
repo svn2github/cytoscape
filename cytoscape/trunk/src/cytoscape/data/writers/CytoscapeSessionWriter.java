@@ -41,7 +41,6 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.Component;
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -67,9 +66,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
@@ -448,9 +445,8 @@ public class CytoscapeSessionWriter {
 
 		// FileOutputStream fos = null;
 
-		XMLStreamWriter writer = XMLOutputFactory.newInstance()
-				.createXMLStreamWriter(new BufferedOutputStream(
-						new FileOutputStream(tmpDirName + CYSESSION_FILE_NAME)));
+		BufferedWriter writer = new BufferedWriter(
+						new FileWriter(tmpDirName + CYSESSION_FILE_NAME));
 		try {
 			// fos = new FileOutputStream(tmpDirName + CYSESSION_FILE_NAME);
 			// Write session file
