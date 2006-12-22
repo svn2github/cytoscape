@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
@@ -34,13 +35,18 @@ import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.actions.ImportNodeAttributesAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.servers.BioDataServer;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
 
 /**
  * Quick Find Config Dialog Box.
@@ -90,31 +96,35 @@ public class QuickFindConfigDialog extends JDialog {
 	 * Apply Text.
 	 */
 	private static final String BUTTON_TEXT = "Select";
-	
-	//private static final String FILE_SELECT = "Load attributes from file";
+
+	private static final String FILE_SELECT_BUTTON_TEXT = "Load attributes from file";
 
 	/**
 	 * Apply Button.
 	 */
 	private JButton applyButton;
-	
+
+	private JButton fileBrowserButton;
+
 	// AJK: 11/15/06 BEGIN
-	//    make LayoutRegion non-static so that we can label different regions differently
+	// make LayoutRegion non-static so that we can label different regions
+	// differently
 	private LayoutRegion _region;
+
 	//
 
 	/**
 	 * Constructor.
 	 */
 	public QuickFindConfigDialog() {
-		this (null);
-		
+		this(null);
+
 	}
-	
+
 	public QuickFindConfigDialog(LayoutRegion region) {
-		
+
 		this._region = region;
-		
+
 		// AJK: 11/15/06 END
 
 		// // Initialize, based on currently selected network
@@ -208,8 +218,8 @@ public class QuickFindConfigDialog extends JDialog {
 				String newAttribute = (String) attributeComboBox
 						.getSelectedItem();
 				ReindexQuickFind task = new ReindexQuickFind(currentNetwork,
-						// AJK: 11/15/06 make non-static
-//						newAttribute);
+				// AJK: 11/15/06 make non-static
+						// newAttribute);
 						newAttribute, _region);
 				JTaskConfig config = new JTaskConfig();
 				config.setAutoDispose(true);
@@ -226,10 +236,11 @@ public class QuickFindConfigDialog extends JDialog {
 				TaskManager.executeTask(task, config);
 
 				// APico 10.7.06
-				// AJK: 11/15/06 make LayoutRegion non-static so name can vary across regions
-//				LayoutRegion.setRegionAttributeValue(selectedValue);
+				// AJK: 11/15/06 make LayoutRegion non-static so name can vary
+				// across regions
+				// LayoutRegion.setRegionAttributeValue(selectedValue);
 				_region.setRegionAttributeValue(selectedValue);
-							}
+			}
 		});
 		buttonPanel.add(Box.createHorizontalGlue());
 		buttonPanel.add(cancelButton);
@@ -264,7 +275,7 @@ public class QuickFindConfigDialog extends JDialog {
 	private JPanel createAttributeValuePanel() {
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder("Attribute Values:"));
-		panel.setLayout(new GridLayout(1,0));
+		panel.setLayout(new GridLayout(1, 0));
 
 		// Table Cells are not editable
 		sampleAttributeValuesTable = new JTable() {
@@ -320,7 +331,7 @@ public class QuickFindConfigDialog extends JDialog {
 	 */
 	private void addTableModel(JTable table) {
 		Object selectedAttribute = attributeComboBox.getSelectedItem();
-		
+
 		// Determine current attribute key
 		String attributeKey;
 		if (selectedAttribute != null) {
@@ -336,49 +347,50 @@ public class QuickFindConfigDialog extends JDialog {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		Iterator nodeIterator = network.nodesIterator();
-		
+
 		String values[] = CyAttributesUtil.getDistinctAttributeValues(
 				nodeIterator, nodeAttributes, attributeKey, 50);
-		
-		//INSERT PATTERN split here (12/5/06 meeting)
-		
-		//Kristina Hanspers and others 12/11/06
-		
+
+		// INSERT PATTERN split here (12/5/06 meeting)
+
+		// Kristina Hanspers and others 12/11/06
+		// Parsing of attributes that are separated by the pipe character 
+
 		Vector valueList = new Vector();
 		String splitValues[] = null;
-	
+
 		for (int i = 0; i < (values.length); i++) {
-				splitValues = values[i].split("[|]");
-				for (int j = 0; j < (splitValues.length); j++){
-					if (!valueList.contains(splitValues[j])){
+			splitValues = values[i].split("[|]");
+			for (int j = 0; j < (splitValues.length); j++) {
+				if (!valueList.contains(splitValues[j])) {
 					valueList.add(splitValues[j]);
-					}
-					}
 				}
-		System.out.println("valueList after parsing: "+valueList);
-		
-	    String[] finalValues = new String[valueList.size()+1];
-	    Iterator it = valueList.iterator();
-	    finalValues[0] = "unassigned";
-	    int index = 1;
-	    while (it.hasNext()){
-	    	finalValues[index] = (String) it.next();
-	    	index++;
-	    }
-	    System.out.println("finalValues: "+finalValues);
-	    
+			}
+		}
+
+		String[] finalValues = new String[valueList.size() + 1];
+		Iterator it = valueList.iterator();
+		finalValues[0] = "unassigned";
+		int index = 1;
+		while (it.hasNext()) {
+			finalValues[index] = (String) it.next();
+			index++;
+		}
+
 		// AP 10.8.06
-		TableModel model = new DefaultTableModel(columnNames, finalValues.length);
-		
+		TableModel model = new DefaultTableModel(columnNames,
+				finalValues.length);
+
 		// DetermineDistinctValuesTask task = new DetermineDistinctValuesTask(
 		// model, attributeKey, this);
-		
+
 		if (finalValues != null && finalValues.length > 0) {
 			// APico 9.17.06 / 10.7.06
 			// Insert "unassigned" value at top of list for bubble router
-			//model.setValueAt("unassigned", 0, 0);
-			for (int i = 0; i < ((finalValues.length >= 50) ? 50 : finalValues.length); i++) {
-			model.setValueAt(finalValues[i], i, 0);
+			// model.setValueAt("unassigned", 0, 0);
+			for (int i = 0; i < ((finalValues.length >= 50) ? 50
+					: finalValues.length); i++) {
+				model.setValueAt(finalValues[i], i, 0);
 			}
 		}
 
@@ -387,8 +399,8 @@ public class QuickFindConfigDialog extends JDialog {
 		// This method will block until the JTask Dialog Box
 		// is disposed.
 		table.setModel(model);
-//		JScrollPane scrollPane = new JScrollPane(table);
-//		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+		// JScrollPane scrollPane = new JScrollPane(table);
+		// table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setAutoscrolls(true);
 
 		// APico 10.7.06
@@ -407,8 +419,8 @@ public class QuickFindConfigDialog extends JDialog {
 						.getValueAt(selectedRow, 0);
 			}
 
-		});}
-	
+		});
+	}
 
 	/**
 	 * Creates the Attribute Selection Panel.
@@ -420,53 +432,104 @@ public class QuickFindConfigDialog extends JDialog {
 		attributePanel
 				.setLayout(new BoxLayout(attributePanel, BoxLayout.X_AXIS));
 
+		// 12/20/06 KH: Add shortcut button in Bubblerouter window for loading 
+		// node attribute file
+		
+		fileBrowserButton = new JButton(FILE_SELECT_BUTTON_TEXT);
+
+		// Code copied from ImportNodeAttributesAction
+		
+		fileBrowserButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("fileBrowserButton pressed");
+
+//			  Use a Default CyFileFilter:  enables user to select any file type.
+		        CyFileFilter nf = new CyFileFilter();
+
+		        // get the file name
+		        File[] files = FileUtil.getFiles("Import Node Attributes",
+		                    FileUtil.LOAD, new CyFileFilter[]{nf});
+
+		        if (files != null) {
+		            //  Create Load Attributes Task
+		            ImportAttributesTask task = 
+		            	new ImportAttributesTask (files, ImportAttributesTask.NODE_ATTRIBUTES);
+
+		            //  Configure JTask Dialog Pop-Up Box
+		            JTaskConfig jTaskConfig = new JTaskConfig();
+		            jTaskConfig.setOwner(Cytoscape.getDesktop());
+		            jTaskConfig.displayCloseButton(true);
+		            jTaskConfig.displayStatus(true);
+		            jTaskConfig.setAutoDispose(false);
+
+		            //  Execute Task in New Thread;  pop open JTask Dialog Box.
+		            TaskManager.executeTask(task, jTaskConfig);
+		            
+		            // Get the list of attribute names and transform from vector to array
+		            String [] forms = new String[getBubbleAttributes().size()];
+		            getBubbleAttributes().toArray(forms);
+
+		            // Add latest attribute to already existing attributecombobox
+		            String newItem = forms[forms.length-1];
+		            attributeComboBox.addItem(newItem);
+		            
+		        }
+
+			}
+
+		});
+
 		// Obtain Node Attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		String attributeNames[] = nodeAttributes.getAttributeNames();
-		
-		if (attributeNames != null) {
+		//String attributeNames[] = nodeAttributes.getAttributeNames();
+
+		if (nodeAttributes.getAttributeNames() != null) {
 			JLabel label = new JLabel("Layout by Attribute:  ");
 			label.setBorder(new EmptyBorder(5, 5, 5, 5));
 			attributePanel.add(label);
-			Vector attributeList = new Vector();
+			
+			// 12/20/06 KH: The following code has been separated out as a method, getBubbleAttributes
+			
+			//Vector attributeList = new Vector();
 
 			// Show all attributes, except those of TYPE_COMPLEX
-			for (int i = 0; i < attributeNames.length; i++) {
-				int type = nodeAttributes.getType(attributeNames[i]);
-				// only show user visible attributes
-				if (nodeAttributes.getUserVisible(attributeNames[i])) {
-					if (type != CyAttributes.TYPE_COMPLEX) {
-						// Explicitly filter out CANONICAL_NAME, as it is
-						// now deprecated.
-						if (!attributeNames[i].equals(Semantics.CANONICAL_NAME)) {
-							attributeList.add(attributeNames[i]);
-						}
-					}
-				}
-			}
-			
-			// Alphabetical sort
-			Collections.sort(attributeList);
-			
-			// Add default: Unique Identifier
-			attributeList.insertElementAt(QuickFind.UNIQUE_IDENTIFIER, 0);
-
-			// Add option to index by all attributes
-			// Not yet sure if I want to add this yet. Keep code below.
-			// if (attributeList.size() > 1) {
-			// attributeList.add(QuickFind.INDEX_ALL_ATTRIBUTES);
-			// }
+//			for (int i = 0; i < attributeNames.length; i++) {
+//				int type = nodeAttributes.getType(attributeNames[i]);
+//				// only show user visible attributes
+//				if (nodeAttributes.getUserVisible(attributeNames[i])) {
+//					if (type != CyAttributes.TYPE_COMPLEX) {
+//						// Explicitly filter out CANONICAL_NAME, as it is
+//						// now deprecated.
+//						if (!attributeNames[i].equals(Semantics.CANONICAL_NAME)) {
+//							attributeList.add(attributeNames[i]);
+//						}
+//					}
+//				}
+//			}
+//
+//			// Alphabetical sort
+//			Collections.sort(attributeList);
+//
+//			// Add default: Unique Identifier
+//			attributeList.insertElementAt(QuickFind.UNIQUE_IDENTIFIER, 0);
+//
+//			// Add option to index by all attributes
+//			// Not yet sure if I want to add this yet. Keep code below.
+//			// if (attributeList.size() > 1) {
+//			// attributeList.add(QuickFind.INDEX_ALL_ATTRIBUTES);
+//			// }
 
 			// Create ComboBox
-			attributeComboBox = new JComboBox(attributeList);
+			attributeComboBox = new JComboBox(getBubbleAttributes());
 			// APico 10.7.06 simply set to first in list for now; later set to
 			// current attribute for regions that have been previously assigned.
-			String currentAttribute = attributeNames[0];
+			String currentAttribute = nodeAttributes.getAttributeNames()[0];
 			if (currentAttribute != null) {
 				attributeComboBox.setSelectedItem(currentAttribute);
 			}
 			attributePanel.add(attributeComboBox);
 			attributePanel.add(Box.createHorizontalGlue());
+			attributePanel.add(fileBrowserButton);
 
 			// Add Action Listener
 			attributeComboBox.addActionListener(new ActionListener() {
@@ -501,6 +564,36 @@ public class QuickFindConfigDialog extends JDialog {
 	 * @param rows
 	 *            Number of Visible Rows.
 	 */
+	
+	// 12/20/06 KH: Following code previously under creatAttributeSelectionPanel
+	// Gets list of currnetly loaded attribute names
+	
+	private Vector getBubbleAttributes(){
+//		 Obtain Node Attributes
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		String attributeNames[] = nodeAttributes.getAttributeNames();
+		Vector attributeList = new Vector();
+		
+//		 Show all attributes, except those of TYPE_COMPLEX
+		for (int i = 0; i < attributeNames.length; i++) {
+			int type = nodeAttributes.getType(attributeNames[i]);
+			// only show user visible attributes
+			if (nodeAttributes.getUserVisible(attributeNames[i])) {
+				if (type != CyAttributes.TYPE_COMPLEX) {
+					// Explicitly filter out CANONICAL_NAME, as it is
+					// now deprecated.
+					if (!attributeNames[i].equals(Semantics.CANONICAL_NAME)) {
+						attributeList.add(attributeNames[i]);
+					}
+				}
+			}
+		}
+		Collections.sort(attributeList);
+
+		// Add default: Unique Identifier
+		attributeList.insertElementAt(QuickFind.UNIQUE_IDENTIFIER, 0);
+		return attributeList;
+	}
 	private void setVisibleRowCount(JTable table, int rows) {
 		int height = 0;
 		for (int row = 0; row < rows; row++) {
@@ -520,20 +613,21 @@ public class QuickFindConfigDialog extends JDialog {
 	public static void main(String[] args) {
 		new QuickFindConfigDialog();
 	}
-	}
+}
 
 /**
  * Long-term task to Reindex QuickFind.
  * 
  * @author Ethan Cerami.
  */
+
 class ReindexQuickFind implements Task {
 	private String newAttributeKey;
 
 	private CyNetwork cyNetwork;
 
 	private TaskMonitor taskMonitor;
-	
+
 	// AJK: 11/15/06 for non-static method
 	private LayoutRegion _region;
 
@@ -544,11 +638,12 @@ class ReindexQuickFind implements Task {
 	 *            New Attribute Key for Indexing.
 	 */
 	// AJK: 11/15/06 for non-static method
-//	ReindexQuickFind(CyNetwork cyNetwork, String newAttributeKey) {
-	ReindexQuickFind(CyNetwork cyNetwork, String newAttributeKey, LayoutRegion region) {
+	// ReindexQuickFind(CyNetwork cyNetwork, String newAttributeKey) {
+	ReindexQuickFind(CyNetwork cyNetwork, String newAttributeKey,
+			LayoutRegion region) {
 		this.cyNetwork = cyNetwork;
 		this.newAttributeKey = newAttributeKey;
-//		 AJK: 11/15/06 for non-static method
+		// AJK: 11/15/06 for non-static method
 		this._region = region;
 	}
 
@@ -557,7 +652,7 @@ class ReindexQuickFind implements Task {
 	 */
 	public void run() {
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-		//quickFind.reindexNetwork(cyNetwork, newAttributeKey, taskMonitor);
+		// quickFind.reindexNetwork(cyNetwork, newAttributeKey, taskMonitor);
 
 		// APico 9.17.06
 		// Send user-selected attribute name to bubble router
@@ -589,87 +684,192 @@ class ReindexQuickFind implements Task {
 	public String getTitle() {
 		return "ReIndexing";
 	}
+
 }
 
+// 12/20/06 KH: Copied from ImportNodeAttributesAction
+
+class ImportAttributesTask implements Task {
+	private TaskMonitor taskMonitor;
+
+	private File[] files;
+
+	private int type;
+
+	static final int NODE_ATTRIBUTES = 0;
+
+	static final int EDGE_ATTRIBUTES = 1;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param file
+	 *            File Object.
+	 * @param type
+	 *            NODE_ATTRIBUTES or EDGE_ATTRIBUTES
+	 */
+	ImportAttributesTask(File[] files, int type) {
+		this.files = files;
+		this.type = type;
+	}
+
+	/**
+	 * Executes Task.
+	 */
+	public void run() {
+		try {
+			taskMonitor.setPercentCompleted(-1);
+			taskMonitor.setStatus("Reading in Attributes");
+			// Get Defaults.
+			BioDataServer bioDataServer = Cytoscape.getBioDataServer();
+			String speciesName = CytoscapeInit.getProperties().getProperty(
+					"defaultSpeciesName");
+			boolean canonicalize = CytoscapeInit.getProperties().getProperty(
+					"canonicalizeNames").equals("true");
+
+			// Read in Data
+
+			// track progress. CyAttributes has separation between
+			// reading attributes and storing them
+			// so we need to find a different way of monitoring this task:
+			// attributes.setTaskMonitor(taskMonitor);
+
+			for (int i = 0; i < files.length; ++i) {
+				taskMonitor.setPercentCompleted(100 * i / files.length);
+				if (type == NODE_ATTRIBUTES)
+					Cytoscape.loadAttributes(new String[] { files[i]
+							.getAbsolutePath() }, new String[] {},
+							canonicalize, bioDataServer, speciesName);
+				else if (type == EDGE_ATTRIBUTES)
+					Cytoscape.loadAttributes(new String[] {},
+							new String[] { files[i].getAbsolutePath() },
+							canonicalize, bioDataServer, speciesName);
+				else
+					throw new Exception("Unknown attribute type: "
+							+ Integer.toString(type));
+			}
+
+			// Inform others via property change event.
+			taskMonitor.setPercentCompleted(100);
+			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null,
+					null);
+			taskMonitor.setStatus("Done");
+		} catch (Exception e) {
+			taskMonitor.setException(e, e.getMessage());
+		}
+	}
+
+	/**
+	 * Halts the Task: Not Currently Implemented.
+	 */
+	public void halt() {
+		// Task can not currently be halted.
+	}
+
+	/**
+	 * Sets the Task Monitor Object.
+	 * 
+	 * @param taskMonitor
+	 * @throws IllegalThreadStateException
+	 */
+	public void setTaskMonitor(TaskMonitor taskMonitor)
+			throws IllegalThreadStateException {
+		this.taskMonitor = taskMonitor;
+	}
+
+	/**
+	 * Gets the Task Title.
+	 * 
+	 * @return Task Title.
+	 */
+	public String getTitle() {
+		if (type == NODE_ATTRIBUTES) {
+			return new String("Loading Node Attributes");
+		} else {
+			return new String("Loading Edge Attributes");
+		}
+	}
+}
 /**
  * Long-term task to determine distinct attribute values.
  * 
  * @author Ethan Cerami.
  */
-//class DetermineDistinctValuesTask implements Task {
-//	private TableModel tableModel;
+// class DetermineDistinctValuesTask implements Task {
+// private TableModel tableModel;
 //
-//	private String attributeKey;
+// private String attributeKey;
 //
-//	// APico 10.7.06
-//	private Object[] valueObjects;
+// // APico 10.7.06
+// private Object[] valueObjects;
 //
-//	private QuickFindConfigDialog parentDialog;
+// private QuickFindConfigDialog parentDialog;
 //
-//	private TaskMonitor taskMonitor;
+// private TaskMonitor taskMonitor;
 //
-//	public DetermineDistinctValuesTask(TableModel tableModel,
-//			String attributeKey, QuickFindConfigDialog parentDialog) {
-//		this.tableModel = tableModel;
-//		// if (attributeKey.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
-//		// attributeKey = QuickFind.UNIQUE_IDENTIFIER;
-//		// }
-//		this.attributeKey = attributeKey;
+// public DetermineDistinctValuesTask(TableModel tableModel,
+// String attributeKey, QuickFindConfigDialog parentDialog) {
+// this.tableModel = tableModel;
+// // if (attributeKey.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
+// // attributeKey = QuickFind.UNIQUE_IDENTIFIER;
+// // }
+// this.attributeKey = attributeKey;
 //
-//		// Disable apply button, while task is in progress.
-//		parentDialog.enableApplyButton(false);
-//		this.parentDialog = parentDialog;
-//	}
+// // Disable apply button, while task is in progress.
+// parentDialog.enableApplyButton(false);
+// this.parentDialog = parentDialog;
+// }
 //
-//	public void run() {
-//		taskMonitor.setPercentCompleted(-1);
-//		// Obtain distinct attribute values
-//		CyNetwork network = Cytoscape.getCurrentNetwork();
-//		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+// public void run() {
+// taskMonitor.setPercentCompleted(-1);
+// // Obtain distinct attribute values
+// CyNetwork network = Cytoscape.getCurrentNetwork();
+// CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 //
-//		Iterator nodeIterator = network.nodesIterator();
-//		String values[] = CyAttributesUtil.getDistinctAttributeValues(
-//				nodeIterator, nodeAttributes, attributeKey, 50); // allows
-//		// for 50
-//		// values to
-//		// be sent
-//		// to bubble
-//		// router
-//		if (values != null && values.length > 0) {
-//			tableModel.setValueAt("Unassigned", 0, 0);
-//			for (int i = 0; i < ((values.length >= 50) ? 50 : values.length); i++) { // modified
-//				// to
-//				// only
-//				// display
-//				// 50
-//				tableModel.setValueAt(values[i], i + 1, 0);
-//			}
-//			parentDialog.enableApplyButton(true);
+// Iterator nodeIterator = network.nodesIterator();
+// String values[] = CyAttributesUtil.getDistinctAttributeValues(
+// nodeIterator, nodeAttributes, attributeKey, 50); // allows
+// // for 50
+// // values to
+// // be sent
+// // to bubble
+// // router
+// if (values != null && values.length > 0) {
+// tableModel.setValueAt("Unassigned", 0, 0);
+// for (int i = 0; i < ((values.length >= 50) ? 50 : values.length); i++) { //
+// modified
+// // to
+// // only
+// // display
+// // 50
+// tableModel.setValueAt(values[i], i + 1, 0);
+// }
+// parentDialog.enableApplyButton(true);
 //
-//			// // APico 9.17.06 / 10.7.06
-//			// // Insert "unassigned" value at top of list for bubble router
-//			// valueObjects = new Object[values.length + 1];
-//			// valueObjects[0] = "unassigned";
-//			// for (int i = 0; i < values.length; i++) {
-//			// Object o = values[i];
-//			// valueObjects[i + 1] = o;
-//			// }
-//		} else {
-//			tableModel.setValueAt("No values found in network:  "
-//					+ network.getTitle() + ".  Cannot create index.", 0, 0);
-//		}
-//	}
+// // // APico 9.17.06 / 10.7.06
+// // // Insert "unassigned" value at top of list for bubble router
+// // valueObjects = new Object[values.length + 1];
+// // valueObjects[0] = "unassigned";
+// // for (int i = 0; i < values.length; i++) {
+// // Object o = values[i];
+// // valueObjects[i + 1] = o;
+// // }
+// } else {
+// tableModel.setValueAt("No values found in network: "
+// + network.getTitle() + ". Cannot create index.", 0, 0);
+// }
+// }
 //
-//	public void halt() {
-//		// No-op
-//	}
+// public void halt() {
+// // No-op
+// }
 //
-//	public void setTaskMonitor(TaskMonitor taskMonitor)
-//			throws IllegalThreadStateException {
-//		this.taskMonitor = taskMonitor;
-//	}
+// public void setTaskMonitor(TaskMonitor taskMonitor)
+// throws IllegalThreadStateException {
+// this.taskMonitor = taskMonitor;
+// }
 //
-//	public String getTitle() {
-//		return "Accessing sample attribute data";
-//	}
-//}
+// public String getTitle() {
+// return "Accessing sample attribute data";
+// }
+// }
