@@ -61,7 +61,7 @@
 								<br>
 								<br>
 									<a href='<?= $latest_release_notes_link ?>'>
-									2.3.2 Release Notes &raquo;
+									<?= $latest_version ?> Release Notes &raquo;
 									</a>
 								<br>
 									<a href='<?= $latest_download_link ?>'>
