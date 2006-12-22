@@ -1,4 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<? include "config.php"; ?>
 <! Updated by kono for 2.3 release>
 <html>
 <head>
@@ -100,7 +101,7 @@
 		</li>
 	</ul>
 	<p>
-		Cytoscape was initially made public in July, 2002 (v0.8); the second release (v0.9) was in November, 2002. and v1.0 was released in March 2002.&nbsp; Version 1.1.1 is the last stable release for the 1.0 series.&nbsp; Latest version of Cytoscape is <a href="cyto_2_3_features.php">2.3</a>.&nbsp;
+		Cytoscape was initially made public in July, 2002 (v0.8); the second release (v0.9) was in November, 2002. and v1.0 was released in March 2002.&nbsp; Version 1.1.1 is the last stable release for the 1.0 series.&nbsp; Latest version of Cytoscape is <?= $latest_version ?>: <a href='<?= $latest_download_link ?>'>download</a>(<a href='<?= $latest_release_notes_link ?>'>release notes</a>).&nbsp;
 	</p>
 	</div>
 <? include "footer.php"; ?>
