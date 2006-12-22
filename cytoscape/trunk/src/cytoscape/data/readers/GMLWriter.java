@@ -1,40 +1,39 @@
-
 /*
-  File: GMLWriter.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: GMLWriter.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.data.readers;
 
@@ -69,7 +68,7 @@ public class GMLWriter {
 	 * the perspective that have no corresponding entry in the object tree that
 	 * was loaded with the netowrk
 	 */
-	Set newNodes, newEdges;
+	private Set<Integer> newNodes, newEdges;
 
 	/**
 	 * Given an object tree given in oldList, update it with the information
@@ -81,17 +80,19 @@ public class GMLWriter {
 	 * list is empty in that case. Those same update functions must be able to
 	 * create all relevant key-value pairs as well then.
 	 */
-	public void writeGML(CyNetwork network, CyNetworkView view, List oldList) {
+	public void writeGML(final CyNetwork network, final CyNetworkView view,
+			final List oldList) {
 		/*
 		 * Initially all the nodes and edges have not been seen
 		 */
-		newNodes = new HashSet(network.getNodeCount());
-		newEdges = new HashSet(network.getEdgeCount());
-		for (Iterator it = network.nodesIterator(); it.hasNext();) {
-			newNodes.add(new Integer(((Node) it.next()).getRootGraphIndex()));
+		newNodes = new HashSet<Integer>(network.getNodeCount());
+		newEdges = new HashSet<Integer>(network.getEdgeCount());
+
+		for (Iterator<Node> it = network.nodesIterator(); it.hasNext();) {
+			newNodes.add(new Integer((it.next()).getRootGraphIndex()));
 		}
-		for (Iterator it = network.edgesIterator(); it.hasNext();) {
-			newEdges.add(new Integer(((Edge) it.next()).getRootGraphIndex()));
+		for (Iterator<Edge> it = network.edgesIterator(); it.hasNext();) {
+			newEdges.add(new Integer((it.next()).getRootGraphIndex()));
 		}
 
 		/*
@@ -99,8 +100,9 @@ public class GMLWriter {
 		 * present and update them fi they are already present
 		 */
 		KeyValue graph = null, creator = null, version = null;
-		for (Iterator it = oldList.iterator(); it.hasNext();) {
-			KeyValue keyVal = (KeyValue) it.next();
+		KeyValue keyVal = null;
+		for (Iterator<KeyValue> it = oldList.iterator(); it.hasNext();) {
+			keyVal = it.next();
 			if (keyVal.key.equals(GMLReader.GRAPH)) {
 				graph = keyVal;
 			} else if (keyVal.key.equals(GMLReader.CREATOR)) {
@@ -155,10 +157,11 @@ public class GMLWriter {
 	/**
 	 * Update the list associated with a graph key
 	 */
-	private void writeGraph(CyNetwork network, CyNetworkView view, List oldList) {
+	private void writeGraph(final CyNetwork network, final CyNetworkView view,
+			final List oldList) {
 
-		for (Iterator it = oldList.iterator(); it.hasNext();) {
-			KeyValue keyVal = (KeyValue) it.next();
+		for (Iterator<KeyValue> it = oldList.iterator(); it.hasNext();) {
+			KeyValue keyVal = it.next();
 			/*
 			 * For all nodes in the object tree, update the list that is
 			 * associated with that key. If this node is no longer present in
@@ -181,8 +184,8 @@ public class GMLWriter {
 	/**
 	 * Update the list associated with a node key
 	 */
-	private boolean writeGraphNode(CyNetwork network, CyNetworkView view,
-			List oldList) {
+	private boolean writeGraphNode(final CyNetwork network,
+			final CyNetworkView view, final List oldList) {
 		/*
 		 * We expect a list associated with node key to potentially have a
 		 * graphic key, id key, and root_index key
@@ -234,7 +237,7 @@ public class GMLWriter {
 		 * there is currently defined. NOte that if no view is defined, the
 		 * previously loaded view information will remain intact
 		 */
-		if (view != null) {
+		if (view != Cytoscape.getNullNetworkView()) {
 			if (graphicsPair == null) {
 				graphicsPair = new KeyValue(GMLReader.GRAPHICS, new Vector());
 				oldList.add(graphicsPair);
@@ -252,17 +255,15 @@ public class GMLWriter {
 			oldList.add(labelPair);
 		}
 		labelPair.value = node.getIdentifier();
-		// labelPair.value =
-		// network.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
+	
 		return true;
-
 	}
 
 	/**
 	 * Update the list associated with an edge key
 	 */
-	private boolean writeGraphEdge(CyNetwork network, CyNetworkView view,
-			List oldList) {
+	private boolean writeGraphEdge(final CyNetwork network, final CyNetworkView view,
+			final List oldList) {
 		/*
 		 * An edge key will definitely have a root_index, labelPair (we enforce
 		 * this on loading), source key, and a target key
@@ -312,7 +313,7 @@ public class GMLWriter {
 		}
 		sourcePair.value = new Integer(edge.getSource().getRootGraphIndex());
 
-		if (view != null) {
+		if (view != Cytoscape.getNullNetworkView()) {
 			if (graphicsPair == null) {
 				graphicsPair = new KeyValue(GMLReader.GRAPHICS, new Vector());
 				// will eventually make a new graphics pair here
@@ -325,11 +326,9 @@ public class GMLWriter {
 			oldList.add(labelPair);
 		}
 		
-		//System.out.println("##Saving edge: " + edge.getIdentifier());
+		labelPair.value = Cytoscape.getEdgeAttributes().getStringAttribute(
+				edge.getIdentifier(), Semantics.INTERACTION);
 		
-		//labelPair.value = edge.getIdentifier();
-		labelPair.value = Cytoscape.getEdgeAttributes().getStringAttribute(edge.getIdentifier(),Semantics.INTERACTION);
-		//labelPair.value = network.getEdgeAttributeValue(edge,Semantics.INTERACTION);
 		return true;
 
 	}
@@ -338,8 +337,8 @@ public class GMLWriter {
 	 * This writes all the graphical information for a particular node into an
 	 * object tree
 	 */
-	private void writeGraphNodeGraphics(CyNetwork network, NodeView nodeView,
-			List oldList) {
+	private void writeGraphNodeGraphics(final CyNetwork network,
+			final NodeView nodeView, final List oldList) {
 		KeyValue x = null, y = null, w = null, h = null, type = null, fill = null, outline = null, outline_width = null;
 		for (Iterator it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
@@ -427,8 +426,8 @@ public class GMLWriter {
 		}
 	}
 
-	private void writeGraphEdgeGraphics(CyNetwork network, EdgeView edgeView,
-			List oldList) {
+	private void writeGraphEdgeGraphics(final CyNetwork network, final EdgeView edgeView,
+			final List oldList) {
 		KeyValue width = null, fill = null, line = null, type = null, source_arrow = null, target_arrow = null;
 		for (Iterator it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
@@ -512,7 +511,7 @@ public class GMLWriter {
 	 * @param Color
 	 *            The color to be converted
 	 */
-	private static String getColorHexString(Color c) {
+	private static String getColorHexString(final Color c) {
 		return ("#"// +Integer.toHexString(c.getRGB());
 				+ Integer.toHexString(256 + c.getRed()).substring(1)
 				+ Integer.toHexString(256 + c.getGreen()).substring(1) + Integer
