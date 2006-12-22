@@ -1,12 +1,16 @@
-This directory contains sample data for Cytoscape. It includes the
-following data sets:
+README.txt:
+	
+	This directory contains sample data for Cytoscape. It includes the
+	following data sets:
 
 ----------------------------------------------------------------------------
 
 galFiltered.sif
 galFiltered.gml
+galFiltered.xgmml
 galExpData.pvals
 
+galFiltered.cys
 
 These files contain an interaction network and expression data from
 the paper:
@@ -20,13 +24,15 @@ systematic perturbations of the galactose utilization pathway in yeast.
 The 'galFiltered.*' files contain an interaction network of 331 genes that
 were significantly differentially expressed in at least one of the 20
 experimental conditions. The two network files are identical networks in
-different formats; the '.sif' is in the simple interactions format and
-the '.gml' is in GML format,
+different formats; the '.sif' is in the simple interactions format,
+the '.gml' is in GML format, and '.xgmml' is in XGMML format.
+
+The 'galFiltered.cys' is a CYtoscape Session file contains network data, 
+attributes, and desktop states.
 
 ----------------------------------------------------------------------------
 
 BINDyeast.sif
-
 
 This is a Cytoscape network containing all of the yeast interactions known
 to the BIND database (http://www.bind.ca) circa 10/10/2006.
@@ -35,14 +41,12 @@ to the BIND database (http://www.bind.ca) circa 10/10/2006.
 
 BINDhuman.sif
 
-
 This is a Cytoscape network containing all of the human interactions known
 to the BIND database (http://www.bind.ca) circa 10/10/2006.
 
 ----------------------------------------------------------------------------
 
 yeastHighQuality.sif
-
 
 This is a Cytoscape network combining two public data sets of high quality
 interactions in yeast. It includes:

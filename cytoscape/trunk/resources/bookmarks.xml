@@ -337,7 +337,7 @@
 		</category>
 	</category>
 	<category name="network">
-		<dataSource name="Sample yeast network"
+		<dataSource name="Yeast Protein-Protein: Ideker, T. et al. (galFiltered.sif)"
 			xlink:href="http://chianti.ucsd.edu/kono/data/galFiltered.sif"
 			format="sif" />
 		<dataSource name="Human Protein-Protein: HPRD Literature Curated Interactions"
@@ -345,6 +345,9 @@
 			format="sif" />
 		<dataSource name="Human Protein-Protein: Rual et al. Toward a proteome-scale map of the human protein-protein interaction network. Nature 2005."
 			xlink:href="http://cytoscape.org/datasets/rual.sif"
+			format="sif" />
+		<dataSource name="Human Protein-Protein: Rual et al. (Subnetwork for tutorial)"
+			xlink:href="http://www.cytoscape.org/tut/getting.started/RUAL.subset.sif"
 			format="sif" />
 		<dataSource name="Human Protein-Protein: Stelzl et al. A human protein-protein interaction network: a resource for annotating the proteome. Cell 2005."
 			xlink:href="http://cytoscape.org/datasets/stelzl.sif"

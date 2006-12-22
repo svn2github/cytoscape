@@ -690,7 +690,6 @@
 		<!-- Create Release Directory -->
 		<mkdir dir="${release.dir}" />
 		<mkdir dir="${release.dir}/plugins" />
-		<mkdir dir="${release.dir}/annotation" />
 		<mkdir dir="${release.dir}/sampleData" />
 
 		<echo>
@@ -720,7 +719,7 @@
             ---------------------------------------
             Copying over user documentation and Cytoscape License.
             ---------------------------------------
-        	</echo>
+    </echo>
 
 		<copy file="docs/LICENSE.txt" todir="${release.dir}" />
 		<copy file="docs/LICENSE.html" todir="${release.dir}" />
@@ -749,7 +748,7 @@
             ---------------------------------------
 		</echo>
 
-		<copy file="testData/sampleDataContents.txt" todir="${release.dir}/sampleData" />
+		<copy file="testData/README_SAMPLE_DATA.txt" todir="${release.dir}/sampleData" />
 		<copy file="testData/BINDyeast.sif" todir="${release.dir}/sampleData" />
 		<copy file="testData/BINDhuman.sif" todir="${release.dir}/sampleData" />
 		<copy file="testData/galExpData.pvals" todir="${release.dir}/sampleData" />
@@ -766,24 +765,6 @@
 		<copy file="testData/galExpData.probeset.pvals" todir="${release.dir}/sampleData" />
 		<copy file="testData/gal.probeset.na" todir="${release.dir}/sampleData" />
 
-		<!-- Copy over annotation Data Files -->
-		<copy todir="${release.dir}/annotation">
-			<fileset dir="testData/annotation">
-				<include name="manifest" />
-				<include name="go.onto" />
-				<include name="kegg.onto" />
-				<include name="bioproc.anno" />
-				<include name="molfunc.anno" />
-				<include name="cellcomp.anno" />
-				<include name="kegg.anno" />
-				<include name="yeast.syno" />
-				<include name="manifest2" />
-				<include name="gene_ontology.obo" />
-				<include name="gene_association.sgd" />
-				<include name="gene_association.goa_human" />
-			</fileset>
-		</copy>
-		<copy file="${basedir}/resources/props/tax_report.txt" tofile="${release.dir}/annotation/tax_report.txt" />
 
 		<!-- Copy over Third Party Licenses -->
 		<echo>
