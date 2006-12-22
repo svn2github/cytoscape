@@ -36,7 +36,7 @@ $chianti_base = "http://chianti.ucsd.edu/";
 #################################################
 $latest_version = "2.3.2";
 $latest_release_notes_link = "cyto_2_3_features.php";
-$latest_download_link = "download.php?file=cyto2_3_2"
+$latest_download_link = "download.php?file=cyto2_3_2";
 
 #################################################
 # Cytoscape 1.1 Release File Names
