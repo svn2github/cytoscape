@@ -207,10 +207,10 @@ class OpenSessionTask implements Task {
 			sr.read();
 		} catch (IOException e) {
 			e.printStackTrace();
-			taskMonitor.setException(e, "Cannot open the session file.");
+			taskMonitor.setException(e, "Cannot open the session file: " + e.getMessage());
 		} catch (JAXBException e) {
 			e.printStackTrace();
-			taskMonitor.setException(e, "Cannot unmarshall document.");
+			taskMonitor.setException(e, "Cannot unmarshall document: " + e.getMessage());
 		} catch (XGMMLException e) {
 			e.printStackTrace();
 			taskMonitor.setException(e, e.getMessage());

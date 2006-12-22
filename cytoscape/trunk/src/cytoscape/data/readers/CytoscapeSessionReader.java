@@ -318,6 +318,13 @@ public class CytoscapeSessionReader {
 	private void unzipSessionFromURL() throws IOException, JAXBException {
 
 		extractEntry();
+		/*
+		 * Check the contents.  If broken/invalid, throw exception.
+		 */
+		if(cysessionFileURL == null || vizmapFileURL == null || cytoscapePropsURL == null) {
+			IOException e = new IOException("Session file is broken or this is not a session file.");
+			throw e;
+		}
 
 		// restore vizmap.props
 		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null,
