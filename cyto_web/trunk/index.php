@@ -2,6 +2,7 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <? include "config.php"; ?>
 <! Updated by kono for 2.3 release on 06_21_2006 >
+<! Updated by apico with "latest release" variables for future updates (see config.php). 12_21_2006 >
 <html>
 	<head>
 		<title>
@@ -51,19 +52,19 @@
 					<td width="440" valign="bottom" align="right">
 						<div id="article">
 							<h2>
-								<a href="download.php?file=cyto2_3_2">
-									Download Cytoscape 2.3.2!
+								<a href='<?= $latest_download_link ?>'>
+									Download Cytoscape <?= $latest_version ?>!
 								</a>
 							</h2>
 							<p>
-								New!&nbsp; Cytoscape 2.3.2 is now available.
+								New!&nbsp; Cytoscape <?= $latest_version ?> is now available.
 								<br>
 								<br>
-									<a href="cyto_2_3_features.php">
+									<a href='<?= $latest_release_notes_link ?>'>
 									2.3.2 Release Notes &raquo;
 									</a>
 								<br>
-									<a href="download.php?file=cyto2_3_2">
+									<a href='<?= $latest_download_link ?>'>
 									Download &raquo;
 								</a>
 								<br>
