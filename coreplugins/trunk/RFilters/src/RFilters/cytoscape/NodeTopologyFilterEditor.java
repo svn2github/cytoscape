@@ -79,6 +79,7 @@ public class NodeTopologyFilterEditor
     add(lbFilterName, gridBagConstraints);
 
     nameField = new JTextField(15);
+    nameField.setEditable(false);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
@@ -204,11 +205,13 @@ public class NodeTopologyFilterEditor
   public void editFilter ( Filter filter ) {
     if ( filter instanceof NodeTopologyFilter ) {
       // good, this Filter is of the right type
+      resetFilterBoxModel();
       this.filter = (NodeTopologyFilter)filter;
       setFilterName(this.filter.toString());
       setSelectedFilter(this.filter.getFilter());
       setDistance(this.filter.getDistance());
       setCount(this.filter.getCount());
+      updateName();
     }
   }
 
@@ -302,5 +305,11 @@ public class NodeTopologyFilterEditor
       }
       setDistance(distance);
     }
+    updateName();
+  }
+  
+  public void updateName() {
+	  String newName = "NodeTopology:>=" + countField.getText().trim()+ "~"+distanceField.getText().trim();
+	  setFilterName(newName);
   }
 }
