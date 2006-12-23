@@ -209,6 +209,7 @@ public class VizMapAttrTab extends VizMapTab {
     }    
     validate();
     repaint();
+    mainUIDialog.pack();
   }
 
   /**
@@ -377,6 +378,7 @@ public class VizMapAttrTab extends VizMapTab {
         else {
           Object selected = calcComboBox.getSelectedItem();
           switchCalculator((Calculator) selected);
+          refreshUI();
         }
 	    }
     }
