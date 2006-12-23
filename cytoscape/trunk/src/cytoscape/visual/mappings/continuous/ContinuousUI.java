@@ -160,6 +160,10 @@ public class ContinuousUI extends JPanel implements ActionListener {
             String textValue = numberFormat.format(point.getValue());
             JTextField text = new JTextField(textValue);
             text.setColumns(6);
+            
+            text.setMinimumSize(new Dimension(20,20));
+            text.setPreferredSize(new Dimension(30,20));
+                        
             PointTextListener ptl = new PointTextListener(text, cm,
                     parentDialog, i);
             text.addFocusListener(ptl);
