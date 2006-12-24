@@ -29,6 +29,14 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	protected JPanel cyAnnPanel;
 
 	boolean dragging; // This is set to true when a drag begins, and to false
+	
+	// AJK: 12/24/06 BEGIN
+	//     flags for moving and stretching of region
+	private boolean moving = false;
+	private boolean stretching = false;
+	private boolean onEdge = false;
+	private boolean onCorner = false;
+	// AJK: 12/24/06 END
 
 	// when released
 
@@ -106,6 +114,48 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			mousey = e.getY();
 			nextPoint = e.getPoint();
 		}
+		// AJK: 12/24/06 BEGIN
+		//    moving and stretching
+		// TODO: refactor to remove redundancies
+		else if ((!onEdge) && (!onCorner) && (!moving) && (pickedRegion != null))
+		{
+			moving = true;
+			startx = e.getX();
+			starty = e.getY();
+			startPoint = e.getPoint();
+			System.out.println ("Region start point = " + 
+					pickedRegion.getX1() + "," + pickedRegion.getY1());
+			e.consume(); // don't have canvas draw drag rect
+			return; // don't have canvas draw drag rect
+		}
+		else if (moving)
+		{
+			mousex = e.getX();
+			mousey = e.getY();
+			nextPoint = e.getPoint();
+			if (pickedRegion != null)
+			{
+				pickedRegion.setX1(pickedRegion.getX1() + mousex - startx);
+				pickedRegion.setY1(pickedRegion.getY1() + mousey - starty);
+				pickedRegion.setBounds((int) pickedRegion.getX1(),
+						(int) pickedRegion.getY1(), 
+						(int) pickedRegion.getW1(), 
+						(int) pickedRegion.getH1()); 
+				NodeViewsTransformer.transform(
+						pickedRegion.getNodeViews(), pickedRegion.getBounds());
+//				System.out.println ("Region start point set to = " + 
+//						pickedRegion.getX1() + "," + pickedRegion.getY1());
+				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+				pickedRegion.repaint();
+			}
+			startx = mousex;  // reset mouse point for continuing drag
+			starty = mousey;
+			e.consume(); // don't have canvas draw drag rect
+			return; 
+			
+		}
+		// AJK: 12/26/06 END
+		
 		// just rely on canvas to draw drag rect
 		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 				.mouseDragged(e);
@@ -121,6 +171,14 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			drawRectRegion();
 		} else {
 		}
+		// AJK: 12/24/06 BEGIN
+		//    reset all flags
+		moving = false;
+		dragging = false;
+		onEdge = false;
+		onCorner = false;
+		stretching = false;
+		// AJK: 12/24/06 END
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -136,6 +194,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		else 
 		{
 			menu.setVisible(false);
+			// AJK: 12/24/06 BEGIN
+			//    set picked region
+			pickedRegion = LayoutRegionManager.getPickedLayoutRegion(e.getPoint());
+			// TODO: refactor processRegionMousePressEvent
 		}
 	}
 

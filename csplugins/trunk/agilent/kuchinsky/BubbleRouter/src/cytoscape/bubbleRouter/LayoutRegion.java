@@ -462,7 +462,17 @@ import ding.view.DingCanvas;
 			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 
 			// Associate selected nodes with region
-			return selectedNodes;
+			
+			// AJK: 12/24/06 BEGIN
+			//   bug fix: need to return selectedNodeViews, not selectedNodes
+//			return selectedNodes;
+			List selectedNodeViewsList = new ArrayList();
+			for (int i = 0; i < _selectedNodeViews.length; i++)
+			{
+				selectedNodeViewsList.add(_selectedNodeViews[i]);
+			}
+			return selectedNodeViewsList;
+			// AJK: 12/24/06 END
 		} else {
 			return null;
 		}
