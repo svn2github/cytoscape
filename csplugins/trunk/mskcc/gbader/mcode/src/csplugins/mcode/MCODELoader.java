@@ -12,23 +12,25 @@ import java.awt.image.BufferedImage;
  * User: vukpavlovic
  * Date: Dec 17, 2006
  * Time: 12:33:12 PM
- * TODO: MAKE MORE GENERAL FOR REUSABILITY
+ * TODO: Make the loader more general so that it can be used in different situations as well
  */
 public class MCODELoader extends ImageIcon implements Runnable {
     JTable table;
+    Rectangle bounds;
     int selectedRow;
     ImageIcon graphImage;
     BufferedImage loader;
     Graphics2D g2;
     Color bg;
-    int bgAlpha;
-    int degrees;
+    double fadeInAlpha;
+    int degreesForDisk;
 
     int progress;
     String process;
 
     Thread t;
-    boolean run;
+    boolean loading;
+    boolean loaderDisplayed;
 
     MCODELoader (JTable table, int width, int height) {
         this.table = table;
@@ -46,32 +48,50 @@ public class MCODELoader extends ImageIcon implements Runnable {
     }
 
     /**
-     * TODO: write this
-     * @param selectedRow
+     * Sets the row and image on top of which the loader will be drawn.
+     * Sets progress to 0 and process to "Waiting" so that the progress bar is not drawn until
+     * actual processes are conducted.
+     *
+     * @param selectedRow the row in a table where the loader is to be drawn
+     * @param table an image of the cluster before the loader is drawn on top
      */
-    public void setLoader(int selectedRow) {
+    public void setLoader(int selectedRow, JTable table) {
         this.selectedRow = selectedRow;
         graphImage = (ImageIcon) table.getValueAt(selectedRow, 0);
-        bgAlpha = 0;
-        degrees = 0;
+        //In order to make the loader efficient, only the one cell is updated
+        bounds = table.getCellRect(selectedRow, 0, false);
+        fadeInAlpha = 0.0;
+        degreesForDisk = 0;
         progress = 0;
+        //To ensure that the progress bar is only drawn when actual processes are being conducted we use
+        //this state to keep it from being drawn
         process = "Waiting";
 
-        drawLoader();
-        
-        run = true;
+        loaderDisplayed = false;
+        loading = true;
     }
 
     public void run() {
         try {
             while (true) {
-                if (run) {
-                    drawLoader();
-                    //In order to make the loader efficient, only the one cell is updated
-                    Rectangle bounds = table.getCellRect(selectedRow, 0, false);
+                if (loading) {
+
+                    if (loading && !loaderDisplayed) {
+                        Thread.sleep(500);
+                    }
+                    if (loading) {
+                        drawLoader();
+                    }
+                    if (loading && !loaderDisplayed) {
+                        table.setValueAt(this, selectedRow, 0);
+                        loaderDisplayed = true;
+                    }
+
                     //Since the table consolidates paint updates, the animation would not show up unless
                     //we implicitly force it to repaint
-                    table.paintImmediately(bounds);
+                    if (loading && loaderDisplayed) {
+                        table.paintImmediately(bounds);
+                    }
                 }
                 //This sleep time generates a ~30 fps animation
                 Thread.sleep(30);
@@ -83,7 +103,7 @@ public class MCODELoader extends ImageIcon implements Runnable {
      * Sets the pivital boolean to false to stop the drawing process
      */
     public void loaded() {
-        run = false;
+        loading = false;
     }
 
     /**
@@ -105,12 +125,19 @@ public class MCODELoader extends ImageIcon implements Runnable {
 
         g2.drawImage(graphImage.getImage(), graphX, graphY, this.getImageObserver());
 
-        //Fade background on top
-        if (bgAlpha < 220) {
-            bgAlpha += ((220 - bgAlpha) / 4);
+        //Fade background on top to make it look like the graph is fading away while the loading text fades in
+        if ((int) (100.0 * fadeInAlpha) < 100) {
+            fadeInAlpha += ((1.0 - fadeInAlpha) / 10.0);
+        } else {
+            fadeInAlpha = 1.0;
         }
-        Color bg2 = new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), bgAlpha);
-        g2.setColor(bg2);
+        g2.setColor(bg);
+        g2.setColor(new Color(
+                g2.getColor().getRed(),
+                g2.getColor().getGreen(),
+                g2.getColor().getBlue(),
+                (int) (200.0 * fadeInAlpha)
+        ));
         g2.fillRect(0, 0, loader.getWidth(), loader.getHeight());
 
         //Loading animation
@@ -118,21 +145,21 @@ public class MCODELoader extends ImageIcon implements Runnable {
         //To draw the animated rotating disk, we must create the Mask, or drawable area, in which we will
         //rotate a triangular polygon around a common center
         //the inner circle is subracted from the outter to create the disk area
-        Ellipse2D circOutter = new Ellipse2D.Double((loader.getWidth() / 2) - r, (loader.getHeight() / 2) - r, 2*r, 2*r);
-        Ellipse2D circInner = new Ellipse2D.Double((loader.getWidth() / 2) - r/2, (loader.getHeight() / 2) - r/2, r, r);
+        Ellipse2D circOutter = new Ellipse2D.Double((loader.getWidth() / 2) - r, (loader.getHeight() / 2) - r, 2 * r, 2 * r);
+        Ellipse2D circInner = new Ellipse2D.Double((loader.getWidth() / 2) - (r / 2), (loader.getHeight() / 2) - (r / 2), r, r);
 
-        Area circI = new Area(circInner);
-        Area circMask = new Area(circOutter);
-        circMask.subtract(circI);
+        Area circInnerArea = new Area(circInner);
+        Area diskMask = new Area(circOutter);
+        diskMask.subtract(circInnerArea);
         //with consecutive frames the disk must move around the circle
         //this variable keeps track of the overall disk
-        if(degrees >= 360) {
-            degrees = 0;
+        if(degreesForDisk >= 360) {
+            degreesForDisk = 0;
         }
         //To produce the fading effect we must draw consecutively more transparent polygons around the disk
-        //this vriable keeps track of the fading poligons
+        //this vriable keeps track of the fading polygons
         //at the start of each frame we want to first draw the least transparent polygon in the same position on the rotating kisk
-        double degreesLocal = degrees;
+        double degreesForTrail = degreesForDisk;
         //Here we find the center of the table cell
         Point2D center = new Point2D.Double(loader.getWidth() / 2, loader.getHeight() / 2);
         //these two points will represent the outer ends of the polygon, spinning around the center
@@ -140,33 +167,34 @@ public class MCODELoader extends ImageIcon implements Runnable {
         Point2D pointOnCircumference2 = new Point2D.Double();
 
         //these are the colors of the spinning disk
-        Color lead = Color.WHITE;
-        Color trail = Color.CYAN;
+        Color markerLeadColor = Color.WHITE;
+        Color markerTrailColor = Color.CYAN;
         //In order for the leading portion of the rotating disk to be one color and the trailing portion another we use
         //this weighting variable to slowly change the weighting of the two colors in finding the average between the two
-        double progression = 1.0;
+        double markerLeadColorWeighting = 1.0;
         //this is the transparency of the initial polygon which is exponantially decremented to fade away the polygons
-        double fader = 255;
+        double markerAlpha = 255 * fadeInAlpha;
 
         //In order for the polygons to cover the disk entirely, the outter polygon points must circle in an orbit that is further
         //than the disk itself, otherwise we would get a flat line between the two points and the resulting circle would not be smooth
         r = r + 10;
         //We will only draw the polygons as long as they are visible
-        while (((int) fader) > 0) {
+        while (((int) markerAlpha) > 0) {
             //these are the radians of rotation of each of the polygon edges
-            double theta1 = 2 * Math.PI * (degreesLocal/360);
-            double theta2 = 2 * Math.PI * ((degreesLocal - 6.0) / 360);//offset by 5 degrees
+            double theta1 = 2 * Math.PI * (degreesForTrail / 360);
+            double theta2 = 2 * Math.PI * ((degreesForTrail - 6.0) / 360);//offset by 5 degrees
             //the outter spinning point locations can be determined by the circle equations here
             pointOnCircumference1.setLocation(((r * Math.cos(theta1))) + center.getX(), ((r * Math.sin(theta1))) + center.getY());
             pointOnCircumference2.setLocation(((r * Math.cos(theta2))) + center.getX(), ((r * Math.sin(theta2))) + center.getY());
             //this is the color with the decrementing alpha
             g2.setColor(new Color(
-                    (int) ((lead.getRed() * progression) + (trail.getRed() * (1.0 - progression))), 
-                    (int) ((lead.getGreen() * progression) + (trail.getGreen() * (1.0 - progression))),
-                    (int) ((lead.getBlue() * progression) + (trail.getBlue() * (1.0 - progression))),
-                    (int) Math.rint(fader)));
-            if ((int) (progression*100) > 0) {
-                progression = progression - (progression / 40);
+                    (int) ((markerLeadColor.getRed() * markerLeadColorWeighting) + (markerTrailColor.getRed() * (1.0 - markerLeadColorWeighting))),
+                    (int) ((markerLeadColor.getGreen() * markerLeadColorWeighting) + (markerTrailColor.getGreen() * (1.0 - markerLeadColorWeighting))),
+                    (int) ((markerLeadColor.getBlue() * markerLeadColorWeighting) + (markerTrailColor.getBlue() * (1.0 - markerLeadColorWeighting))),
+                    (int) Math.rint(markerAlpha)
+            ));
+            if ((int) (markerLeadColorWeighting * 100) > 0) {
+                markerLeadColorWeighting = markerLeadColorWeighting - (markerLeadColorWeighting / 40);
             }
             //polygons need arrays of x and y values to be drawn, so these are triangles consisting of a center point and two outter points
             int[] xs = {(int) center.getX(), (int) pointOnCircumference1.getX(), (int) pointOnCircumference2.getX()};
@@ -174,50 +202,72 @@ public class MCODELoader extends ImageIcon implements Runnable {
             //the triangle is intersected with the disk first
             Polygon marker = new Polygon(xs, ys, 3);
             Area markerMask = new Area(marker);
-            markerMask.intersect(circMask);
+            markerMask.intersect(diskMask);
             //and drawn
             g2.fill(markerMask);
             //the alpha of the marker polygon is exponentially decreased
-            fader = fader - (fader / 20);
+            markerAlpha = markerAlpha - (markerAlpha / 20);
             //the successive, more transparent marker is offset by 2 degrees backward to give the appearance of motion blur
-            degreesLocal -= 2;
+            degreesForTrail -= 2;
         }
         //The successive disk is rotated 15 degrees for an optimal speed given the fps
-        degrees += 15;
+        degreesForDisk += 15;
 
         //Loading text
-        String loading = "LOADING";
+        String loadingText = "LOADING";
         //White outline
         g2.setColor(Color.WHITE);
-        g2.drawString(loading, (loader.getWidth() / 2) - (fm.stringWidth(loading) / 2) - 1, (loader.getHeight() / 2) + (8 / 2) - 1);
-        g2.drawString(loading, (loader.getWidth() / 2) - (fm.stringWidth(loading) / 2) - 1, (loader.getHeight() / 2) + (8 / 2) + 1);
-        g2.drawString(loading, (loader.getWidth() / 2) - (fm.stringWidth(loading) / 2) + 1, (loader.getHeight() / 2) + (8 / 2) - 1);
-        g2.drawString(loading, (loader.getWidth() / 2) - (fm.stringWidth(loading) / 2) + 1, (loader.getHeight() / 2) + (8 / 2) + 1);
+        g2.setColor(new Color(
+                g2.getColor().getRed(),
+                g2.getColor().getGreen(),
+                g2.getColor().getBlue(),
+                (int) (255.0 * fadeInAlpha)
+        ));
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) - 1, (loader.getHeight() / 2) + (8 / 2) - 1);
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) - 1, (loader.getHeight() / 2) + (8 / 2) + 1);
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) + 1, (loader.getHeight() / 2) + (8 / 2) - 1);
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) + 1, (loader.getHeight() / 2) + (8 / 2) + 1);
         //Red text
         g2.setColor(Color.RED);
-        g2.drawString(loading, (loader.getWidth() / 2) - (fm.stringWidth(loading) / 2), (loader.getHeight() / 2) + (8 / 2));
+        g2.setColor(new Color(
+                g2.getColor().getRed(),
+                g2.getColor().getGreen(),
+                g2.getColor().getBlue(),
+                (int) (255.0 * fadeInAlpha)
+        ));
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2), (loader.getHeight() / 2) + (8 / 2));
 
-        //Draw progress bar
+        //Draw process text and progress bar and text
         if (!process.equals("Waiting")) {
             //Process
             g2.setColor(Color.BLACK);
             g2.drawString(process, 10, loader.getHeight()-2);
 
+            //Progress Bar Fill
             g2.setColor(Color.BLUE);
-            g2.fillRect(10, loader.getHeight()-20, (int) ((((double) progress) / 100)*(loader.getWidth()-20)), 10);//progress fill
+            //The transparency of the bar occilates between 100 and 150 using the sin function and the degrees of the rotating disk
+            //completing one period with every turn of the disk
+            int progressBarAlpha = 150 - (int) (50.0 * Math.abs(Math.sin(2.0 * Math.PI * (((double) degreesForDisk / 2) / 360.0))));
+            g2.setColor(new Color(
+                    g2.getColor().getRed(),
+                    g2.getColor().getGreen(),
+                    g2.getColor().getBlue(),
+                    progressBarAlpha
+            ));
+            g2.fillRect(10, loader.getHeight()-20, (int) ((((double) progress) / 100)*(loader.getWidth()-20)), 10);
 
-            g2.setColor(new Color(0,0,0,50));
-            g2.drawRect(10, loader.getHeight()-20, loader.getWidth()-20, 10);//outline
+            //Progress Bar Outline
+            g2.setColor(new Color(0,0,0,100));
+            g2.drawRect(10, loader.getHeight()-20, loader.getWidth()-20, 10);
 
-            //Progress
-            g2.drawString(process, 10, loader.getHeight()-2);
-            String progressDisplay = progress + "%";
-
+            //Progress Text
+            String progressText = progress + "%";
+            //We add a black shadow to make it easier to read on top of any background
             g2.setColor(Color.BLACK);
-            g2.drawString(progressDisplay, (loader.getWidth() / 2) - (fm.stringWidth(progressDisplay) / 2) + 1, loader.getHeight() - 11);
+            g2.drawString(progressText, (loader.getWidth() / 2) - (fm.stringWidth(progressText) / 2) + 1, loader.getHeight() - 11);
 
             g2.setColor(Color.WHITE);
-            g2.drawString(progressDisplay, (loader.getWidth() / 2) - (fm.stringWidth(progressDisplay) / 2), loader.getHeight() - 12);
+            g2.drawString(progressText, (loader.getWidth() / 2) - (fm.stringWidth(progressText) / 2), loader.getHeight() - 12);
         }
     }
 

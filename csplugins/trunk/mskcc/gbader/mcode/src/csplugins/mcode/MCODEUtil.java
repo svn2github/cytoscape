@@ -56,6 +56,8 @@ import java.util.*;
  * Utilities for MCODE
  */
 public class MCODEUtil {
+
+    private static boolean INTERRUPTED = false;
     /**
      * Convert a network to an image.  This is used by the result dialog code.
      *
@@ -65,10 +67,10 @@ public class MCODEUtil {
      * @param width   Width that the resulting image should be
      * @return The resulting image
      */
-    public static Image convertNetworkToImage(MCODELoader loader, MCODECluster cluster, int height, int width) {
+    public static Image convertNetworkToImage(MCODELoader loader, MCODECluster cluster, int height, int width, SpringEmbeddedLayouter layouter, boolean layoutNecessary) {
         PGraphView view;
-        SpringEmbeddedLayouter lay;
         Image image;
+        //boolean completedSuccessfully = true;
 
         //Progress reporters.  There are three basic tasks, the progress of each is calculated and then combined
         //using the respective weighting to get an overall progress
@@ -76,13 +78,20 @@ public class MCODEUtil {
         int weightSetupNodes = 20;  // setting up the nodes and edges is deemed as 25% of the whole task
         int weightSetupEdges = 5;
         int weightLayout = 75;      // layout it is 70%
-        int goalTotal = weightSetupNodes + weightSetupEdges + weightLayout;
+        int goalTotal = weightSetupNodes + weightSetupEdges;
+        if (layoutNecessary) {
+            goalTotal += weightLayout;
+        }
         double progress = 0;        // keeps track of progress as a percent of the totalGoal
 
         view = new PGraphView(cluster.getGPCluster());
 
         //TODO optionally apply a visual style here instead of doing this manually - visual style calls init code that might not be called manually
         for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
+            if (INTERRUPTED) {
+                resetLoading();
+                return null;
+            }
             NodeView nv = (NodeView) in.next();
 
             //Otherwise we give it new generic data
@@ -90,17 +99,19 @@ public class MCODEUtil {
             nv.getLabel().setText(label);
             nv.setWidth(40);
             nv.setHeight(40);
-            nv.setShape(NodeView.ELLIPSE);
+            if (cluster.getSeedNode().intValue() == nv.getRootGraphIndex()) {
+                nv.setShape(NodeView.RECTANGLE);
+            } else {
+                nv.setShape(NodeView.ELLIPSE);
+            }
             nv.setUnselectedPaint(Color.RED);
             nv.setBorderPaint(Color.BLACK);
 
             //First we check if the MCODECluster already has a node view of this node
-            if (cluster.getPGView() != null) {
-                if (cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
-                    //If it does, then we take the layout position that was already generated for it
-                    nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
-                    nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
-                }
+            if (cluster.getPGView() != null && cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
+                //If it does, then we take the layout position that was already generated for it
+                nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
+                nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
             } else {
                 //Otherwise, randomize node positions before layout so that they don't all layout in a line
                 //(so they don't fall into a local minimum for the SpringEmbedder)
@@ -108,14 +119,23 @@ public class MCODEUtil {
                 nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
                 //height is small for many default drawn graphs, thus +100
                 nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
+                if (!layoutNecessary) {
+                    goalTotal += weightLayout;
+                    progress /= (goalTotal / (goalTotal - weightLayout));
+                    layoutNecessary = true;
+                }
             }
             if (loader != null) {
-                progress += (double) goalTotal * ((double) 1 / (double) view.nodeCount()) * ((double) weightSetupNodes / (double) goalTotal);
+                progress += 100.0 * (1.0 / (double) view.nodeCount()) * ((double) weightSetupNodes / (double) goalTotal);
                 loader.setProgress((int) progress, "Setup: nodes");
             }
         }
 
         for (Iterator ie = view.getEdgeViewsIterator(); ie.hasNext();) {
+            if (INTERRUPTED) {
+                resetLoading();
+                return null;
+            }
             EdgeView ev = (EdgeView) ie.next();
             ev.setUnselectedPaint(Color.BLUE);
             ev.setTargetEdgeEnd(EdgeView.BLACK_ARROW);
@@ -124,31 +144,43 @@ public class MCODEUtil {
             ev.setStroke(new BasicStroke(5f));
 
             if (loader != null) {
-                progress += (double) goalTotal * ((double) 1 / (double) view.edgeCount()) * ((double) weightSetupEdges / (double) goalTotal);
+                progress += 100.0 * (1.0 / (double) view.edgeCount()) * ((double) weightSetupEdges / (double) goalTotal);
                 loader.setProgress((int) progress, "Setup: edges");
             }
         }
-
-        lay = new SpringEmbeddedLayouter(view);
-        lay.doLayout(weightLayout, goalTotal, progress, loader);
+        if (layoutNecessary) {
+            if (layouter == null) {
+                layouter = new SpringEmbeddedLayouter();
+            }
+            layouter.setGraphView(view);
+            if (!layouter.doLayout(weightLayout, goalTotal, progress, loader)) {
+                resetLoading();
+                return null;
+            }
+        }
 
         image = view.getCanvas().getLayer().toImage(width, height, null);
-        
+
         double largestSide = view.getCanvas().getLayer().getFullBounds().width;
         if (view.getCanvas().getLayer().getFullBounds().height > largestSide) {
             largestSide = view.getCanvas().getLayer().getFullBounds().height;
         }
-        if (view.getNodeViewCount() > 1) {
+        if (view.getNodeViewCount() >= 1) {
             cluster.setPGView(view);
-        } else {
-            cluster.setPGView(null);
         }
-
         if (loader != null) {
             loader.loaded();
         }
 
         return (image);
+    }
+
+    public static void interruptLoading() {
+        INTERRUPTED = true;
+    }
+
+    public static void resetLoading() {
+        INTERRUPTED = false;
     }
 
     /**
@@ -206,7 +238,7 @@ public class MCODEUtil {
 
     /**
      * Utility method to get the names of all the nodes in a GraphPerspective
-     * //TODO: remove this
+     *
      * @param gpInput The input graph perspective to get the names from
      * @return A concatenated set of all node names (separated by a comma)
      */

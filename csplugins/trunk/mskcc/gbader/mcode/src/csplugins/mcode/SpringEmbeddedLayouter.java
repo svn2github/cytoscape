@@ -65,6 +65,10 @@ public class SpringEmbeddedLayouter {
     protected HashMap nodeIndexToMatrixIndexMap; //maps a root graph index to a distance matrix index
     protected TreeMap matrixIndexToNodeIndexMap; //maps a distance matrix index to a root graph instance
 
+    private boolean interrupted;
+
+    public SpringEmbeddedLayouter() {}
+
     public SpringEmbeddedLayouter(GraphView graph_view) {
         setGraphView(graph_view);
         initializeSpringEmbeddedLayouter();
@@ -83,7 +87,15 @@ public class SpringEmbeddedLayouter {
         // TODO: Something?
     } // initializeSpringEmbeddedLayouter()
 
-    public void doLayout(int weightLayout, int goalTotal, double progress, MCODELoader loader) {
+    public void interruptDoLayout() {
+        this.interrupted = true;
+    }
+
+    public void resetDoLayout() {
+        this.interrupted = false;
+    }
+
+    public boolean doLayout(int weightLayout, int goalTotal, double progress, MCODELoader loader) {
         // initialize the layouting.
         nodeCount = graphView.getNodeViewCount();
         edgeCount = graphView.getEdgeViewCount();
@@ -119,8 +131,6 @@ public class SpringEmbeddedLayouter {
         double current_progress_temp;
         double setup_progress = 0.0;
         for (layoutPass = 0; layoutPass < numLayoutPasses; layoutPass++) {
-
-            
 
             setupForLayoutPass();
 
@@ -158,12 +168,17 @@ public class SpringEmbeddedLayouter {
                     euclidean_distance_threshold));
                  iterations_i++
                     ) {
+                if (interrupted) {
+                    System.out.println("Interrupted: Layouter");
+                    resetDoLayout();
+                    return false;
+                }
                 // TODO: REMOVE
                 //System.out.println( "At iteration " + layoutPass + ":" + iterations_i + ", furthest_node_partials is " + furthest_node_partials + "." );
                 furthest_node_partials =
                         moveNode(furthest_node_partials, partials_list, potential_energy);
 
-                progress += (double) goalTotal * (((double) 1 / (double) (num_iterations * numLayoutPasses))) * ((double) weightLayout / (double) goalTotal);
+                progress += 100.0 * (((double) 1 / (double) (num_iterations * numLayoutPasses))) * ((double) weightLayout / (double) goalTotal);
 
                 if (loader != null) {
                     loader.setProgress((int) progress, "Laying out");
@@ -172,7 +187,8 @@ public class SpringEmbeddedLayouter {
             } // End for each iteration, attempt to minimize the total potential
             // energy by moving the node that is furthest from where it should be.
         } // End for each layout pass
-    } // doLayout()
+        return true;
+    } // End for doLayout()
 
     /**
      * Called at the beginning of each layoutPass iteration.

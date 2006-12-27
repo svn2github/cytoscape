@@ -82,12 +82,13 @@ public class MCODEMainPanel extends JPanel {
         add(advancedOptionsContainer, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        //TODO: REMOVE THIS WHEN BENCHMARKING IS IMPLEMENTED {
+        //TODO: Remove this ({...}) when benchmarking is implemented
+        // {
         //remove content with 2 options
         clusterFindingPanel.getContentPane().remove(clusterFindingContent);
         //add customize content
         clusterFindingPanel.getContentPane().add(customizeClusterFindingContent, BorderLayout.NORTH);
-        //TODO: }
+        // }
     }
 
     /**
@@ -121,7 +122,8 @@ public class MCODEMainPanel extends JPanel {
         panel.add(scopeStarter);
         panel.add(scopeNetwork);
         panel.add(scopeNode);
-        //panel.add(scopeNodeSet);//TODO: uncomment here when node set algorithm is complete
+        //TODO: uncomment this when node set algorithm is complete
+        //panel.add(scopeNodeSet);
         
         return panel;
     }
@@ -513,7 +515,7 @@ public class MCODEMainPanel extends JPanel {
      */
     private class ScopeAction extends AbstractAction {
         /*
-        //TODO: UNCOMMENT THIS ACTION EVENT HANDLER WHEN BENCHMARKING IS IMPLEMENTED, and delete the one below
+        //TODO: Uncomment this action event handler when benchmarking is implemented, and delete the one below
         public void actionPerformed(ActionEvent e) {
             String scope = e.getActionCommand();
             if (scope.equals(MCODEParameterSet.NETWORK)) {
@@ -544,8 +546,9 @@ public class MCODEMainPanel extends JPanel {
             currentParamsCopy.setScope(scope);
         }
         */
-        //TODO: DELETE THIS WHEN BENCHMARKING IS IMPLEMENTED {
-        //TEMPORARY ACTION EVENT HANDLER
+
+        //TODO: Delete this ({...}) when benchmarking is implemented
+        // TEMPORARY ACTION EVENT HANDLER {
         public void actionPerformed(ActionEvent e) {
             String scope = e.getActionCommand();
             if (scope.equals(MCODEParameterSet.NETWORK)) {
@@ -557,6 +560,7 @@ public class MCODEMainPanel extends JPanel {
             }
             currentParamsCopy.setScope(scope);
         }
+        // }
     }
 
     /**

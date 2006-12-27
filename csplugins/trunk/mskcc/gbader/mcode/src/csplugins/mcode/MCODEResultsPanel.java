@@ -13,10 +13,10 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
+import ding.view.DGraphView;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.view.NodeView;
-import phoebe.PGraphView;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -48,13 +48,12 @@ public class MCODEResultsPanel extends JPanel {
     CyNetwork originalInputNetwork;                 //Keep a record of the original input record for use in the
     //table row selection listener
     CyNetworkView originalInputNetworkView;         //Keep a record of this too, if it exists
-    HashMap hmNetworkNames;                         //Keep a record of network names we create from the table
-    //algorithm object for access to the cluster scoring function
-    //MCODEAlgorithm alg;
+    //HashMap hmNetworkNames;                         //Keep a record of network names we create from the table
     MCODECollapsablePanel explorePanel;
     JPanel[] exploreContent;
     MCODEParameterSet currentParamsCopy;
 
+    GraphDrawer drawer;
     MCODELoader loader;
 
     //If imageList is present, will use those images for the cluster display
@@ -75,6 +74,7 @@ public class MCODEResultsPanel extends JPanel {
         add(clusterBrowserPanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
+        drawer = new GraphDrawer();
         loader = new MCODELoader(table, graphPicSize, graphPicSize);
     }
 
@@ -93,18 +93,16 @@ public class MCODEResultsPanel extends JPanel {
 
         //network data (currently focused network)
         originalInputNetwork = network;
-        //alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");
         
         //the view may not exist, but we only test for that when we need to (in the
         //TableRowSelectionHandler below)
         originalInputNetworkView = Cytoscape.getNetworkView(network.getIdentifier());
-        hmNetworkNames = new HashMap();
+        //hmNetworkNames = new HashMap();
 
         //main data table
         modelBrowser = new MCODEResultsPanel.MCODEResultsBrowserTableModel(clusters, imageList);
 
         table = new JTable(modelBrowser);
-        //table.setRowHeight(defaultRowHeight);
 
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setDefaultRenderer(StringBuffer.class, new MCODEResultsPanel.JTextAreaRenderer(defaultRowHeight));
@@ -262,8 +260,6 @@ public class MCODEResultsPanel extends JPanel {
         int selectedRow;
         MCODECluster[] clusters;
         MCODEResultsPanel trigger;
-        //TODO: Make sure that a new child is created everytime the cluster selection is different
-        //TODO: or update the child with the new memebers
         /**
          *
          * @param clusters Reference to all clusters in this result set
@@ -282,48 +278,51 @@ public class MCODEResultsPanel extends JPanel {
             final GraphPerspective gpCluster = cluster.getGPCluster();
             final String title = trigger.getResultsTitle() + ": " + cluster.getClusterName() + " (Score: "+ nf.format(cluster.getClusterScore()) + ")";
             //check if a network has already been created
-            String id = (String) hmNetworkNames.get(new Integer(selectedRow + 1));
-            if (id != null) {
+            //String id = (String) hmNetworkNames.get(new Integer(selectedRow + 1));
+            //if (id != null) {
                 //just switch focus to the already created network
-                Cytoscape.getDesktop().setFocus(id);
-            } else {
+            //    Cytoscape.getDesktop().setFocus(id);
+            //} else {
                 //create the child network and view
                 final SwingWorker worker = new SwingWorker() {
                     public Object construct() {
                         CyNetwork newNetwork = Cytoscape.createNetwork(gpCluster.getNodeIndicesArray(),
                                 gpCluster.getEdgeIndicesArray(), title, originalInputNetwork);
-                        hmNetworkNames.put(new Integer(selectedRow + 1), newNetwork.getIdentifier());
-                        PGraphView view = (PGraphView) Cytoscape.createNetworkView(newNetwork);//TODO: can't cast the resulting CyNetworkView into PGraphView
+                        //hmNetworkNames.put(new Integer(selectedRow + 1), newNetwork.getIdentifier());
+                        DGraphView view = (DGraphView) Cytoscape.createNetworkView(newNetwork);
                         //layout new cluster and fit it to window
                         //randomize node positions before layout so that they don't all layout in a line
                         //(so they don't fall into a local minimum for the SpringEmbedder)
                         //If the SpringEmbedder implementation changes, this code may need to be removed
                         NodeView nv;
+                        boolean layoutNecessary = false;
                         for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
                             nv = (NodeView) in.next();
-                            if (cluster.getPGView() != null) {
-                                if (cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
-                                    //If it does, then we take the layout position that was already generated for it
-                                    nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
-                                    nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
-                                }
+                            if (cluster.getPGView() != null && cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
+                                //If it does, then we take the layout position that was already generated for it
+                                nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
+                                nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
                             } else {
+                                //this will likely never occur
                                 //Otherwise, randomize node positions before layout so that they don't all layout in a line
                                 //(so they don't fall into a local minimum for the SpringEmbedder)
                                 //If the SpringEmbedder implementation changes, this code may need to be removed
-                                nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
+                                nv.setXPosition(view.getCanvas().getWidth() * Math.random());
                                 //height is small for many default drawn graphs, thus +100
-                                nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
+                                nv.setYPosition((view.getCanvas().getHeight() + 100) * Math.random());
+                                layoutNecessary = true;
                             }
                         }
-                        //SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
-                        //lay.doLayout(null, null, null, null);
+                        if (layoutNecessary) {
+                            SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
+                            lay.doLayout(0, 0, 0, null);
+                        }
                         view.fitContent();
                         return null;
                     }
                 };
                 worker.start();
-            }
+            //}
 
         }
     }
@@ -350,7 +349,7 @@ public class MCODEResultsPanel extends JPanel {
                 if (imageList != null) {
                     image = imageList[i];
                 } else {
-                    image = MCODEUtil.convertNetworkToImage(null, clusters[i], graphPicSize, graphPicSize);
+                    image = MCODEUtil.convertNetworkToImage(null, clusters[i], graphPicSize, graphPicSize, null, true);
                 }
                 data[i][0] = new ImageIcon(image);
             }
@@ -738,16 +737,8 @@ public class MCODEResultsPanel extends JPanel {
         if (originalInputNetworkView != null) {
             //start with no selected nodes
             GinyUtils.deselectAllNodes(originalInputNetworkView);
-            //go through graph and select nodes in the cluster
-            java.util.List nodeList = gpCluster.nodesList();//TODO: DEPRECATED
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node n = (Node) nodeList.get(i);
-                if (originalInputNetwork.containsNode(n)) {
-                    nv = originalInputNetworkView.getNodeView(n);
-                    nv.setSelected(true);
-                    //TODO: get error here when there is no view...
-                }
-            }
+            originalInputNetwork.setSelectedNodeState(gpCluster.nodesList(), true);
+
             Cytoscape.getDesktop().setFocus(originalInputNetworkView.getIdentifier());
         } else {
             //Warn user that nothing will happen in this case because there is no view to select nodes with
@@ -875,9 +866,10 @@ public class MCODEResultsPanel extends JPanel {
         private MCODECluster[] clusters;
         private int selectedRow;
         private CyNetwork inputNetwork;
-        private boolean graphDrawn = true;
-        private boolean loaderDrawn = false;
+        public boolean loaderSet = false;
         private JComboBox nodeAttributesComboBox;
+        private SpringEmbeddedLayouter layouter;
+        private GraphDrawer drawer;
 
         /**
          * Constructor
@@ -894,6 +886,9 @@ public class MCODEResultsPanel extends JPanel {
             this.clusters = clusters;
             this.inputNetwork = inputNetwork;
             this.nodeAttributesComboBox = nodeAttributesComboBox;
+            layouter = new SpringEmbeddedLayouter();
+            drawer = new GraphDrawer();
+            loaderSet = false;
         }
 
         public void stateChanged(ChangeEvent e) {
@@ -904,76 +899,106 @@ public class MCODEResultsPanel extends JPanel {
             ArrayList oldCluster = clusters[selectedRow].getALCluster();
 
             //Find the new cluster given the node score cutoff
-            MCODECluster cluster = alg.exploreCluster(clusters[selectedRow], nodeScoreCutoff, inputNetwork);
+            MCODECluster cluster = alg.exploreCluster(clusters[selectedRow], nodeScoreCutoff, inputNetwork, resultsTitle);
 
             //We only want to do the following work if the newly found cluster is actually different
-            //So we store get the new cluster content
+            //So we get the new cluster content
             ArrayList newCluster = cluster.getALCluster();
-            //And compare the old and new
-            if (!newCluster.equals(oldCluster)) {//!newCluster.containsAll(oldCluster) || !oldCluster.containsAll(newCluster)) {
 
-                //If either cluster has any node that the other doesn't have, then we:
-                //Ensure that drawing occurs
-                graphDrawn = false;
+            //And compare the old and new
+            if (!newCluster.equals(oldCluster)) {
+                //There is a small difference between expanding and retracting the cluster size
+                //When expanding, new nodes need random position and thus must go through the layout
+                //When retracting, we simply use the layout that was generated and stored
+                //This speeds up the drawing process greatly
+                boolean layoutNecessary = false;
+                if (newCluster.size() - oldCluster.size() > 0) {
+                    layoutNecessary = true;
+                }
+                //If the cluster has changed, then we:
+                //Interrupt the drawing
+                layouter.interruptDoLayout();
+                MCODEUtil.interruptLoading();
                 //Update the cluster array
                 clusters[selectedRow] = cluster;
                 //Select the new cluster
                 selectCluster(cluster.getGPCluster());
                 //Update the details
-                drawDetails(cluster);
+                StringBuffer details = getClusterDetails(cluster);
+                table.setValueAt(details, selectedRow, 1);
                 //Fire the enumeration action
                 nodeAttributesComboBox.setSelectedIndex(nodeAttributesComboBox.getSelectedIndex());
-                //Update the graph if the cluster is manageable
-                //Otherwise draw a loader
-                if (cluster.getGPCluster().getNodeCount() < 20) {
-                    drawGraph(cluster, null);
-                    graphDrawn = true;
-                    loaderDrawn = false;
-                } else if (!loaderDrawn) {
-                    drawLoader();
-                    graphDrawn = false;
-                    loaderDrawn = true;
+
+                //Ensure that a loader is set with the selected row and table object
+                //Also, we want to set the loader only once during continuous exploration
+                //It is only set again when a graph is fully loaded and placed in the table
+                if (!loaderSet) { //cluster.getGPCluster().getNodeCount() > 15
+                    //internally, the loader is only drawn into the appropriate cell after a short sleep period
+                    //to ensure that quick loads are not displayed unecessarily
+                    loader.setLoader(selectedRow, table);
+                    loaderSet = true;
                 }
-            }
-            //Once the user settles on a value, the cluster can be drawn if it wasn't already
-            if (!source.getValueIsAdjusting() && !graphDrawn) {
-                if (!loaderDrawn) {
-                    drawLoader();
-                    loaderDrawn = true;
-                }
-                drawGraph(cluster, loader);
-                graphDrawn = true;
-                loaderDrawn = false;
+                //Draw Graph in a separate thread so that it can be interrupted by the slider movement
+                drawer.drawGraph(cluster, layouter, layoutNecessary, this);
             }
         }
+    }
 
-        /**
-         * Method for updating the table with the newly explored cluster details
-         *
-         * @param cluster Explored cluster
-         */
-        private void drawDetails(MCODECluster cluster) {
-            StringBuffer details = getClusterDetails(cluster);
-            table.setValueAt(details, selectedRow, 1);
+    /**
+     *
+     */
+    private class GraphDrawer implements Runnable {
+        private Thread t;
+        private boolean drawGraph;
+        MCODECluster cluster;
+        SpringEmbeddedLayouter layouter;
+        MCODEResultsPanel.SizeAction slider;
+        boolean layoutNecessary;
+
+        GraphDrawer () {
+            drawGraph = false;
+            t = new Thread(this);
+            t.start();
         }
 
         /**
-         * Method for updating the table with the newly explored cluster graph
          *
-         * @param cluster Explored cluster
-         * @param loader Reference to loading animation
+         * @param cluster
+         * @param layouter
+         * @param layoutNecessary
+         * @param slider
          */
-        private void drawGraph(MCODECluster cluster, MCODELoader loader) {
-            Image image = MCODEUtil.convertNetworkToImage(loader, cluster, graphPicSize, graphPicSize);
-            table.setValueAt(new ImageIcon(image), selectedRow, 0);
+        public void drawGraph(MCODECluster cluster, SpringEmbeddedLayouter layouter, boolean layoutNecessary, MCODEResultsPanel.SizeAction slider) {
+            this.cluster = cluster;
+            this.layouter = layouter;
+            this.slider = slider;
+            this.layoutNecessary = layoutNecessary;
+
+            layouter.resetDoLayout();
+            MCODEUtil.resetLoading();
+
+            drawGraph = true;
         }
 
-        /**
-         * Method for drawing a loader ontop the graph for clusters that take longer to draw dynamically
-         */
-        private void drawLoader() {
-            loader.setLoader(selectedRow);
-            table.setValueAt(loader, selectedRow, 0);
+        public void run () {
+            try {
+            while (true) {
+                //This ensures that the drawing of this cluster is only attempted once
+                //if it is unsuccessful it is because the setup or layout process was interrupted by the slider movement
+                //In that case the drawing must occur for a new cluster using the drawGraph method
+                if (drawGraph) {
+                    Image image = MCODEUtil.convertNetworkToImage(loader, cluster, graphPicSize, graphPicSize, layouter, layoutNecessary);
+                    if (image != null) {
+                        table.setValueAt(new ImageIcon(image), cluster.getRank(), 0);
+                        slider.loaderSet = false;
+                    }
+                    //If the process was interrupted then the image will return null and the drawing will have to be recalled (with the new cluster)
+                    drawGraph = false;
+                }
+                //This sleep time produces the drawing response time of 1 20th of a second
+                Thread.sleep(100);
+            }
+        } catch (Exception e) {}
         }
     }
 }

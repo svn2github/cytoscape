@@ -80,10 +80,9 @@ public class MCODEScoreAndFindTask implements Task {
             if (analyze == MCODEScoreAndFindAction.RESCORE) {
                 taskMonitor.setPercentCompleted(0);
                 taskMonitor.setStatus("Scoring Network (Step 1 of 3)");
-                alg.scoreGraph(network);
+                alg.scoreGraph(network, resultSet);
                 //TODO: this is where different scoring algorithms could be called based on parameters
                 if (interrupted) {
-                    //network.putClientData("MCODE_running", new Boolean(false));
                     return;
                 }
                 //store this MCODE instance with the network to avoid duplicating the calculation
@@ -95,7 +94,6 @@ public class MCODEScoreAndFindTask implements Task {
             clusters = alg.findClusters(network, resultSet);
             //TODO: this is where different finding algorithms could be called based on parameters (optimized or custom) and scope
             if (interrupted) {
-                //network.putClientData("MCODE_running", new Boolean(false));
                 return;
             }
 
@@ -107,10 +105,9 @@ public class MCODEScoreAndFindTask implements Task {
             int imageSize = MCODECurrentParameters.getInstance().getResultParams(resultSet).getDefaultRowHeight();
             for (int i = 0; i < clusters.length; i++) {
                 if (interrupted) {
-                    //network.putClientData("MCODE_running", new Boolean(false));
                     return;
                 }
-                imageList[i] = MCODEUtil.convertNetworkToImage(null, clusters[i], imageSize, imageSize);
+                imageList[i] = MCODEUtil.convertNetworkToImage(null, clusters[i], imageSize, imageSize, null, true);
                 taskMonitor.setPercentCompleted((i * 100) / clusters.length);
             }
             completedSuccessfully = true;
