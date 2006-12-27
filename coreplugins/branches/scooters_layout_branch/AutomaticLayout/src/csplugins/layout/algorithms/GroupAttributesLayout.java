@@ -21,8 +21,8 @@ import giny.model.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.AbstractLayout;
-import csplugins.layout.Tunable;
-import csplugins.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
+import cytoscape.layout.LayoutProperties;
 
 /*
   This layout partitions the graph according to the selected node attribute's values.

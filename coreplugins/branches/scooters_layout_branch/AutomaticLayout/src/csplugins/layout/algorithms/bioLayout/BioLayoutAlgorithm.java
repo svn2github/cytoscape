@@ -52,9 +52,9 @@ import cytoscape.data.*;
 import giny.view.*;
 
 import cytoscape.layout.AbstractLayout;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
 
-import csplugins.layout.LayoutProperties;
-import csplugins.layout.Tunable;
 import csplugins.layout.algorithms.bioLayout.LayoutNode;
 import csplugins.layout.algorithms.bioLayout.LayoutEdge;
 import csplugins.layout.algorithms.bioLayout.Profile;

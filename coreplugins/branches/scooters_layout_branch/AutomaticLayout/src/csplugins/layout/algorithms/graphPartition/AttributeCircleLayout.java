@@ -10,10 +10,11 @@ import cytoscape.data.*;
 import giny.view.*;
 import giny.model.*;
 
+import cytoscape.layout.Tunable;
+import cytoscape.layout.LayoutProperties;
+
 import filter.cytoscape.*;
 import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
-import csplugins.layout.Tunable;
-import csplugins.layout.LayoutProperties;
 
 
 public class AttributeCircleLayout extends AbstractGraphPartition {

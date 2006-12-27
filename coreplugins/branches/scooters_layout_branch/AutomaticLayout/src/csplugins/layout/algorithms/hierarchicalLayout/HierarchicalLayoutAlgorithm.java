@@ -43,14 +43,14 @@ package csplugins.layout.algorithms.hierarchicalLayout;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
-import cytoscape.layout.AbstractLayout;
 import cytoscape.task.TaskMonitor;
 
 import giny.view.NodeView;
 import giny.view.EdgeView;
 
-import csplugins.layout.LayoutProperties;
-import csplugins.layout.Tunable;
+import cytoscape.layout.AbstractLayout;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
 
 import java.util.*;
 import java.awt.GridLayout;

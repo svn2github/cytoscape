@@ -9,7 +9,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 
-import cytoscape.layout.LayoutManager;
+import cytoscape.layout.CyLayouts;
 import csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutAlgorithm;
 import csplugins.layout.algorithms.graphPartition.AttributeCircleLayout;
 import csplugins.layout.algorithms.graphPartition.DegreeSortedCircleLayout;
@@ -24,26 +24,25 @@ public class LayoutPlugin extends CytoscapePlugin
 {
   public LayoutPlugin()
   { 
-    LayoutManager layoutManager = Cytoscape.getLayoutManager();
 
 		// Add the Cytoscape layouts
-		layoutManager.addLayout(new HierarchicalLayoutAlgorithm(), "Cytoscape Layouts");
-		layoutManager.addLayout(new AttributeCircleLayout(), "Cytoscape Layouts");
-		layoutManager.addLayout(new DegreeSortedCircleLayout(), "Cytoscape Layouts");
-		layoutManager.addLayout(new ISOMLayout(), "Cytoscape Layouts");
-		layoutManager.addLayout(new GroupAttributesLayout(), "Cytoscape Layouts");
-		layoutManager.addLayout(new BioLayoutKKAlgorithm(false), "Cytoscape Layouts");
-		layoutManager.addLayout(new BioLayoutKKAlgorithm(true), "Cytoscape Layouts");
-		layoutManager.addLayout(new BioLayoutFRAlgorithm(true), "Cytoscape Layouts");
+		CyLayouts.addLayout(new HierarchicalLayoutAlgorithm(), "Cytoscape Layouts");
+		CyLayouts.addLayout(new AttributeCircleLayout(), "Cytoscape Layouts");
+		CyLayouts.addLayout(new DegreeSortedCircleLayout(), "Cytoscape Layouts");
+		CyLayouts.addLayout(new ISOMLayout(), "Cytoscape Layouts");
+		CyLayouts.addLayout(new GroupAttributesLayout(), "Cytoscape Layouts");
+		CyLayouts.addLayout(new BioLayoutKKAlgorithm(false), "Cytoscape Layouts");
+		CyLayouts.addLayout(new BioLayoutKKAlgorithm(true), "Cytoscape Layouts");
+		CyLayouts.addLayout(new BioLayoutFRAlgorithm(true), "Cytoscape Layouts");
 
 		// Add the JGraph layouts
-		layoutManager.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.ANNEALING), "JGraph Layouts");
-		layoutManager.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.MOEN), "JGraph Layouts");
-		layoutManager.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.CIRCLE_GRAPH), "JGraph Layouts");
-		layoutManager.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.RADIAL_TREE), "JGraph Layouts");
-		layoutManager.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.GEM), "JGraph Layouts");
-		layoutManager.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.SPRING_EMBEDDED), "JGraph Layouts");
-		layoutManager.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.SUGIYAMA), "JGraph Layouts");
-		layoutManager.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.TREE), "JGraph Layouts");
+		CyLayouts.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.ANNEALING), "JGraph Layouts");
+		CyLayouts.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.MOEN), "JGraph Layouts");
+		CyLayouts.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.CIRCLE_GRAPH), "JGraph Layouts");
+		CyLayouts.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.RADIAL_TREE), "JGraph Layouts");
+		CyLayouts.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.GEM), "JGraph Layouts");
+		CyLayouts.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.SPRING_EMBEDDED), "JGraph Layouts");
+		CyLayouts.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.SUGIYAMA), "JGraph Layouts");
+		CyLayouts.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.TREE), "JGraph Layouts");
   }
 }

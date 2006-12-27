@@ -10,8 +10,8 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.map.PrimeFinder;
 
-import csplugins.layout.LayoutProperties;
-import csplugins.layout.Tunable;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
 
 import javax.swing.JPanel;
 import java.awt.GridLayout;
