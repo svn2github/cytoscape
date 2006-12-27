@@ -43,6 +43,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 import cytoscape.view.CyNetworkView;
 
 import giny.model.RootGraph;
@@ -93,12 +94,12 @@ public abstract class AbstractGraphReader implements GraphReader {
 	}
 
 	public void layout(GraphView view) {
-		LayoutAlgorithm layout = Cytoscape.getLayoutManager().getDefaultLayout();
+		LayoutAlgorithm layout = CyLayouts.getDefaultLayout();
 		layout.doLayout((CyNetworkView)view);	
 	}
 
 	public void layout() {
-		LayoutAlgorithm layout = Cytoscape.getLayoutManager().getDefaultLayout();
+		LayoutAlgorithm layout = CyLayouts.getDefaultLayout();
 		layout.doLayout();	
 	}
 

@@ -68,6 +68,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
 import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 import cytoscape.view.CyNetworkView;
 
 /**
@@ -148,7 +149,7 @@ public class InteractionsReader extends AbstractGraphReader {
 	}
 
 	public void layout(GraphView view) {
-		LayoutAlgorithm layout = Cytoscape.getLayoutManager().getDefaultLayout();
+		LayoutAlgorithm layout = CyLayouts.getDefaultLayout();
 		layout.doLayout((CyNetworkView)view, taskMonitor);
 	}
 

@@ -1,5 +1,5 @@
 /*
-  File: LayoutAlgorithm.java 
+  File: CyLayouts.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -51,29 +51,33 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import cytoscape.layout.LayoutAlgorithm;
-import cytoscape.layout.algorithms.GridLayout;
+import cytoscape.layout.algorithms.GridNodeLayout;
 import cytoscape.CytoscapeInit;
 import cytoscape.Cytoscape;
 import cytoscape.layout.ui.LayoutMenu;
 import cytoscape.layout.ui.LayoutSettingsDialog;
 
 /**
- * The LayoutManager is a singleton class that is used to register all available
+ * CyLayouts is a singleton class that is used to register all available
  * layout algorithms.  The contents of this list are used to build the Layout
  * menu, display the advanced settings dialog, and interface with the current
  * cytoscape properties.
  *
  */
-public class LayoutManager {
-	private HashMap<String,LayoutAlgorithm> layoutMap;
-	private HashMap<String,List> menuNameMap;
-	private HashMap<String,LayoutMenu> menuMap;
-	private JMenu layoutMenu;
-	private JMenuItem settingsMenu;
-	private LayoutSettingsDialog settingsDialog;
+public class CyLayouts {
+	private static HashMap<String,LayoutAlgorithm> layoutMap;
+	private static HashMap<String,List> menuNameMap;
+	private static HashMap<String,LayoutMenu> menuMap;
+	private static JMenu layoutMenu;
+	private static JMenuItem settingsMenu;
+	private static LayoutSettingsDialog settingsDialog;
 	private static final String layoutProperty = "layout.";
 
-	public LayoutManager() {
+	static {
+		new CyLayouts();
+	}
+
+	private CyLayouts() {
 		layoutMap = new HashMap();
 		menuNameMap = new HashMap();
 		menuMap = new HashMap();
@@ -83,7 +87,7 @@ public class LayoutManager {
 		// Add the Settings menu
 		addSettingsMenu(layoutMenu);
 		// Add Cytoscape layouts by default
-		addLayout(new GridLayout(), "Cytoscape Layouts");
+		addLayout(new GridNodeLayout(), "Cytoscape Layouts");
 		//addLayout(new xxyy, "Cytoscape layouts");
 	}
 
@@ -97,7 +101,7 @@ public class LayoutManager {
 	 * @param layout The layout to be added
 	 * @param menu The menu that this should appear under
 	 */
-	public void addLayout(LayoutAlgorithm layout, String menu)
+	public static void addLayout(LayoutAlgorithm layout, String menu)
 	{
 		ArrayList<LayoutAlgorithm> menuList;
 		layoutMap.put(layout.getName(), layout);
@@ -122,7 +126,7 @@ public class LayoutManager {
 	 *
 	 * @param layout The layout to remove
 	 */
-	public void removeLayout(LayoutAlgorithm layout)
+	public static void removeLayout(LayoutAlgorithm layout)
 	{
 		// Remove it from the layout map
 		layoutMap.remove(layout.getName());
@@ -150,7 +154,7 @@ public class LayoutManager {
 	 * @param name String representing the name of the layout
 	 * @return the layout of that name or null if it is not reigstered
 	 */
-	public LayoutAlgorithm getLayout(String name)
+	public static LayoutAlgorithm getLayout(String name)
 	{
 		if (layoutMap.containsKey(name))
 			return (LayoutAlgorithm)layoutMap.get(name);
@@ -162,7 +166,7 @@ public class LayoutManager {
 	 *
 	 * @return a Collection of all the available layouts
 	 */
-	public Collection<LayoutAlgorithm> getAllLayouts()
+	public static Collection<LayoutAlgorithm> getAllLayouts()
 	{
 		return layoutMap.values();
 	}
@@ -174,7 +178,7 @@ public class LayoutManager {
 	 * @param menu The name of the menu
 	 * @return a List of all layouts associated with this menu (could be null)
 	 */
-	public List<LayoutAlgorithm> getLayoutMenuList(String menu)
+	public static List<LayoutAlgorithm> getLayoutMenuList(String menu)
 	{
 		if (menuNameMap.containsKey(menu))
 			return (List<LayoutAlgorithm>)menuNameMap.get(menu);
@@ -186,7 +190,7 @@ public class LayoutManager {
 	 *
 	 * @return a Collection of Strings representing each of the menus
 	 */
-	public Set<String> getLayoutMenus()
+	public static Set<String> getLayoutMenus()
 	{
 		return menuNameMap.keySet();
 	}
@@ -197,7 +201,7 @@ public class LayoutManager {
 	 *
 	 * @return LayoutAlgorithm to use as the default layout algorithm
 	 */
-	public LayoutAlgorithm getDefaultLayout()
+	public static LayoutAlgorithm getDefaultLayout()
 	{
 		// See if the user has set the layout.default property
 		String defaultLayout = CytoscapeInit.getProperties().getProperty(layoutProperty+"default");
@@ -213,7 +217,7 @@ public class LayoutManager {
 	/**
 	 * Menu interfaces
 	 */
-	private void addLayoutToMenu(String menuName, LayoutAlgorithm layout)
+	private static void addLayoutToMenu(String menuName, LayoutAlgorithm layout)
 	{
 		if (menuName.equals("none")) return;
 
@@ -226,7 +230,7 @@ public class LayoutManager {
 		topMenu.add(layout);
 	}
 
-	private void createMenu(String menuName)
+	private static void createMenu(String menuName)
 	{
 		if (menuName.equals("none")) return;
 
@@ -237,7 +241,7 @@ public class LayoutManager {
 		layoutMenu.add(menu);
 	}
 
-	private void removeLayoutFromMenu(String menuName, LayoutAlgorithm layout)
+	private static void removeLayoutFromMenu(String menuName, LayoutAlgorithm layout)
 	{
 		if (menuName.equals("none")) return;
 
@@ -255,11 +259,11 @@ public class LayoutManager {
 		}
 	}
 
-	private void addSettingsMenu(JMenu topMenu) {
+	private static void addSettingsMenu(JMenu topMenu) {
 		settingsMenu = new JMenuItem("Settings...");
 		settingsMenu.setEnabled(false);
 		settingsMenu.setArmed(false);
-		settingsDialog = new LayoutSettingsDialog(this);
+		settingsDialog = new LayoutSettingsDialog();
 		settingsMenu.addActionListener(settingsDialog);
 		topMenu.add(settingsMenu);
 		topMenu.addSeparator();

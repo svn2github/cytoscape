@@ -69,8 +69,6 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.ImportHandler;
-import cytoscape.layout.LayoutManager;
-import cytoscape.layout.LayoutAlgorithm;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.BookmarkReader;
 import cytoscape.data.readers.CyAttributesReader;
@@ -267,20 +265,6 @@ public abstract class Cytoscape {
 
 	public static ImportHandler getImportHandler() {
 		return importHandler;
-	}
-
-	private static LayoutManager layoutManager = null;
-
-	/**
-	 * Return the layout manager.
-	 *
-	 * @return LayoutManager
-	 */
-	public static LayoutManager getLayoutManager() {
-		// Lazily evalute this so we can make the menu bar first
-		if (layoutManager == null)
-			layoutManager = new LayoutManager();
-		return layoutManager;
 	}
 
 	/**

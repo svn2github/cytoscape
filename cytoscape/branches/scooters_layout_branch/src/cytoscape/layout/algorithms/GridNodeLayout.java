@@ -1,5 +1,5 @@
 /*
-  File: GridLayout.java 
+  File: GridNodeLayout.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -57,12 +57,12 @@ import javax.swing.JPanel;
 
 
 /**
- * The GridLayout provides a very simple layout, suitable as
+ * The GridNodeLayout provides a very simple layout, suitable as
  * the default layout for Cytoscape data readers.
  */
-public class GridLayout extends AbstractLayout { 
+public class GridNodeLayout extends AbstractLayout { 
 
-	public GridLayout ( ) { }
+	public GridNodeLayout ( ) { }
 
   public String getName () { return "grid"; } 
   public String toString () { return "Grid Layout"; }

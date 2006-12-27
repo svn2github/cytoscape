@@ -65,7 +65,7 @@ import javax.swing.WindowConstants.*;
 
 import cytoscape.Cytoscape;
 import cytoscape.layout.LayoutAlgorithm;
-import cytoscape.layout.LayoutManager;
+import cytoscape.layout.CyLayouts;
 
 /**
  * 
@@ -75,8 +75,6 @@ import cytoscape.layout.LayoutManager;
  */
 
 public class LayoutSettingsDialog extends JDialog implements ActionListener {
-	// Save a pointer back to the LayoutManager
-	private LayoutManager layoutManager = null;
 	private LayoutAlgorithm currentLayout = null;
 
 	// Dialog components
@@ -87,9 +85,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private JPanel algorithmPanel;    // The panel this algorithm uses
 	
 	
-	public LayoutSettingsDialog (LayoutManager lm) {
+	public LayoutSettingsDialog () {
 		super(Cytoscape.getDesktop(), "Layout Settings", false);
-		this.layoutManager = lm;
 		initializeOnce(); // Initialize the components we only do once
 	}
 
@@ -174,12 +171,12 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		algorithmSelector.setRenderer(new MyItemRenderer());
 		algorithmSelector.addItem("Select algorithm to view settings");
 		// Get the list of known layout menus
-		Set<String> menus = layoutManager.getLayoutMenus();
+		Set<String> menus = CyLayouts.getLayoutMenus();
 		Iterator menuIter = menus.iterator();
 		while (menuIter.hasNext()) {
 			String menu = (String)menuIter.next();
 			if (menus.size() > 1) algorithmSelector.addItem(menu);
-			List<LayoutAlgorithm> layouts = layoutManager.getLayoutMenuList(menu);
+			List<LayoutAlgorithm> layouts = CyLayouts.getLayoutMenuList(menu);
 			for (Iterator iter = layouts.iterator(); iter.hasNext();) {
 				LayoutAlgorithm algo = (LayoutAlgorithm)iter.next();
 				if (algo.getSettingsPanel() != null) {
@@ -190,7 +187,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	}
 
 	private void updateAllSettings() {
-		Collection<LayoutAlgorithm> layouts = layoutManager.getAllLayouts();
+		Collection<LayoutAlgorithm> layouts = CyLayouts.getAllLayouts();
 		for (Iterator iter = layouts.iterator(); iter.hasNext();) {
 			LayoutAlgorithm algo = (LayoutAlgorithm)iter.next();
 			algo.updateSettings();
@@ -198,7 +195,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	}
 
 	private void revertAllSettings() {
-		Collection<LayoutAlgorithm> layouts = layoutManager.getAllLayouts();
+		Collection<LayoutAlgorithm> layouts = CyLayouts.getAllLayouts();
 		for (Iterator iter = layouts.iterator(); iter.hasNext();) {
 			LayoutAlgorithm algo = (LayoutAlgorithm)iter.next();
 			algo.revertSettings();
