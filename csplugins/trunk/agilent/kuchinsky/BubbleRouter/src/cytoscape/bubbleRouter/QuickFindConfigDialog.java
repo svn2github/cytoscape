@@ -61,6 +61,7 @@ public class QuickFindConfigDialog extends JDialog {
 
 	// APico 10.7.06
 	private static Object selectedValue;
+	private static String currentAttribute;
 
 	/**
 	 * Table of Sample Attribute Values
@@ -523,10 +524,11 @@ public class QuickFindConfigDialog extends JDialog {
 			attributeComboBox = new JComboBox(getBubbleAttributes());
 			// APico 10.7.06 simply set to first in list for now; later set to
 			// current attribute for regions that have been previously assigned.
-			String currentAttribute = nodeAttributes.getAttributeNames()[0];
-			if (currentAttribute != null) {
-				attributeComboBox.setSelectedItem(currentAttribute);
+			if (currentAttribute == null) {
+				currentAttribute = nodeAttributes.getAttributeNames()[0];				
 			}
+			attributeComboBox.setSelectedItem(currentAttribute);
+
 			attributePanel.add(attributeComboBox);
 			attributePanel.add(Box.createHorizontalGlue());
 			attributePanel.add(fileBrowserButton);
@@ -550,6 +552,7 @@ public class QuickFindConfigDialog extends JDialog {
 
 					addTableModel(sampleAttributeValuesTable);
 					setAttributeDescription();
+					currentAttribute = attributeComboBox.getSelectedItem().toString();
 				}
 			});
 		}
