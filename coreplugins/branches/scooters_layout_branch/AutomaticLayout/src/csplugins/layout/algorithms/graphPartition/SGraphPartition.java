@@ -1,6 +1,7 @@
 package csplugins.layout.algorithms.graphPartition;
 
 import giny.model.*;
+import giny.view.NodeView;
 import cern.colt.list.*;
 import cern.colt.map.*;
 import java.util.*;
@@ -44,7 +45,7 @@ public abstract class SGraphPartition
 		if (selectedOnly)
 			nodeIter = selectedNodes.iterator();
 		else
-    	nodeIter = _perspective.nodesIterator();
+    	nodeIter = _perspectiveView.getNodeViewsIterator();
 
     // nodesSeenMap is a hash map where each key in the map is a node index.
     // Each value specifies whether the node has been seen or not.
@@ -53,19 +54,21 @@ public abstract class SGraphPartition
     // Initialize the nodesSeenMap so each node has not been seen.
     while (nodeIter.hasNext())
     {
-      int node = ((Node)nodeIter.next()).getRootGraphIndex();
+			NodeView nv = (NodeView)nodeIter.next();
+      int node = nv.getNode().getRootGraphIndex();
       nodesSeenMap.put(node, m_NODE_HAS_NOT_BEEN_SEEN);
     }
 
 		if (selectedOnly)
 			nodeIter = selectedNodes.iterator();
 		else
-    	nodeIter = _perspective.nodesIterator();
+    	nodeIter = _perspectiveView.getNodeViewsIterator();
 
     while (nodeIter.hasNext())
     {
+			NodeView nv = (NodeView)nodeIter.next();
       // Get this nodes index from the root graph
-      int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
+      int nodeIndex = nv.getNode().getRootGraphIndex();
 
       // If we've seen this node, skip it
       if (nodesSeenMap.get(nodeIndex) == m_NODE_HAS_BEEN_SEEN) continue;

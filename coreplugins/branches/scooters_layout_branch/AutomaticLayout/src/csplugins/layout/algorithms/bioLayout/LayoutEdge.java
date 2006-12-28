@@ -45,7 +45,6 @@ import csplugins.layout.algorithms.bioLayout.LayoutNode;
 class LayoutEdge {
 	// static variables
 	static double logWeightCeiling;
-	static int edgeCount = 0;
 	static double maxWeight = 0.0;
 	static double minWeight = 1.0;
 	static double maxLogWeight = 0.0;
@@ -67,7 +66,6 @@ class LayoutEdge {
 
 	public LayoutEdge(CyEdge edge) { 
 		this.edge = edge;
-		edgeCount++; 
 		if (edgeAttributes == null)
 			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
@@ -80,17 +78,24 @@ class LayoutEdge {
 			v1.addNeighbor(v2);
 			v2.addNeighbor(v1);
 		}
-		edgeCount++;
 		if (edgeAttributes == null)
 			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
 
-	public void reset() {
-		this.edgeCount = 0;
-		this.maxWeight = 0;
-		this.minWeight = 1;
-		this.maxLogWeight = 0.0;
-		this.minLogWeight = 0.0;
+	public void addNodes(LayoutNode v1, LayoutNode v2) {
+		this.v1 = v1;
+		this.v2 = v2;
+		if (v1 != v2) {
+			v1.addNeighbor(v2);
+			v2.addNeighbor(v1);
+		}
+	}
+
+	public static void reset() {
+		maxWeight = 0;
+		minWeight = 1;
+		maxLogWeight = 0.0;
+		minLogWeight = 0.0;
 	}
 
 	public static void setLogWeightCeiling(double ceiling) {

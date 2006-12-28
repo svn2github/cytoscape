@@ -33,6 +33,7 @@
 package csplugins.layout.algorithms.bioLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -40,6 +41,7 @@ import java.util.Set;
 import java.util.Random;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Comparator;
 import java.util.Properties;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -57,7 +59,11 @@ import cytoscape.layout.Tunable;
 
 import csplugins.layout.algorithms.bioLayout.LayoutNode;
 import csplugins.layout.algorithms.bioLayout.LayoutEdge;
+import csplugins.layout.algorithms.bioLayout.LayoutPartition;
 import csplugins.layout.algorithms.bioLayout.Profile;
+
+import cern.colt.map.OpenIntIntHashMap;
+import cern.colt.map.OpenIntObjectHashMap;
 
 
 /**
@@ -99,8 +105,8 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	/**
 	 * The LayoutNode (CyNode) and Edge (CyEdge) arrays.
 	 */
-	protected static ArrayList nodeList;
- 	protected static ArrayList edgeList;
+	protected List<LayoutNode> nodeList;
+ 	protected List<LayoutEdge> edgeList;
 
 	/**
 	 * Minimum and maximum weights.  This is used to
@@ -132,20 +138,28 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	protected boolean supportWeights = true;
 
 	/**
+	 * Whether or not to partition the graph before layout
+	 */
+	protected boolean partitionGraph = true;
+
+	/**
 	 * This hashmap provides a quick way to get an index into
 	 * the LayoutNode array given a graph index.
 	 */
 	protected HashMap nodeToLayoutNode;
 
 	/**
+	 * The list of partitions in this graph
+	 */
+	protected List<LayoutPartition> partitionList;
+
+	/**
 	 * This is the constructor for the bioLayout algorithm.
 	 */
 	public BioLayoutAlgorithm () {
 		super ();
-		LayoutEdge e = new LayoutEdge();
-		e.reset(); // This allows us to reset the static variables
-		LayoutNode v = new LayoutNode();
-		v.reset(); // This allows us to reset the static variables
+		LayoutEdge.reset(); // Reset the static variables
+		LayoutNode.reset(); // Reset the static variables
 		layoutProperties = new LayoutProperties(getName());
 	}
 
@@ -217,6 +231,20 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	}
 
 	/**
+	 * Sets the partition flag
+	 *
+	 * @param flag boolean value that turns initial randomization on or off
+	 */
+	public void setPartition(boolean flag) {
+		partitionGraph = flag;
+	}
+
+	public void setPartition(String value) {
+		Boolean val = new Boolean(value);
+		partitionGraph = val.booleanValue();
+	}
+
+	/**
 	 * Sets the randomize flag
 	 *
 	 * @param flag boolean value that turns initial randomization on or off
@@ -266,6 +294,8 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 
 		layoutProperties.add(new Tunable("debug", "Enable debugging", Tunable.BOOLEAN, 
 																		new Boolean(false),Tunable.NOINPUT));
+		layoutProperties.add(new Tunable("partition", "Partition graph before layout", Tunable.BOOLEAN, 
+																		new Boolean(true)));
 		layoutProperties.add(new Tunable("randomize", "Randomize graph before layout", Tunable.BOOLEAN, 
 																		new Boolean(true)));
 		layoutProperties.add(new Tunable("min_weight", "The minimum edge weight to consider", Tunable.DOUBLE, 
@@ -297,6 +327,9 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		Tunable t = layoutProperties.get("debug");
 		if (t != null && (t.valueChanged() || force))
 			setDebug(t.getValue().toString());
+		t = layoutProperties.get("partition");
+		if (t != null && (t.valueChanged() || force))
+			setPartition(t.getValue().toString());
 		t = layoutProperties.get("randomize");
 		if (t != null && (t.valueChanged() || force))
 			setRandomize(t.getValue().toString());
@@ -325,9 +358,97 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize();  // Calls initialize_local
-		layout(); 		 // Abstract -- must be overloaded
+		if (!partitionGraph) {
+			System.out.println("Laying out unpartitioned");
+			layout(); 		 // Abstract -- must be overloaded
+		} else if (partitionList == null) {
+			System.out.println("Nothing to layout!");
+			return;
+		} else {
+			// Set up offsets
+	    double next_x_start = 0;
+			double next_y_start = 0;
+			double current_max_y = 0;
+			double incr = 100;
+
+			double max_dimensions = Math.sqrt( ( double )network.getNodeCount() );
+			// give each node room
+			max_dimensions *= incr;
+
+			System.out.println("Laying out with "+partitionList.size()+" partitions");
+			System.out.println("max_dimensions = "+max_dimensions);
+			int partCount = 1;
+
+			// For each partition, layout the graph
+			Iterator partIter = partitionList.iterator();
+			while (partIter.hasNext()) {
+				LayoutPartition partition = (LayoutPartition)partIter.next();
+
+				// Set the min and max to the saved values
+				LayoutNode.setMinValues(partition.getMinX(), partition.getMinY());
+				LayoutNode.setMaxValues(partition.getMaxX(), partition.getMaxY());
+				LayoutNode.setDimension(partition.getWidth(), partition.getHeight());
+
+				// Get the node and edge lists
+				nodeList = partition.getNodeList();
+				edgeList = partition.getEdgeList();
+
+				System.out.println("Partition "+partCount+" dimensions are ("+
+														LayoutNode.getMinX()+","+LayoutNode.getMinY()+") to ("+
+														LayoutNode.getMaxX()+","+LayoutNode.getMaxY()+")");
+				System.out.println("Partition "+partCount+" width, height is ("+
+														partition.getWidth()+","+partition.getHeight()+")");
+				System.out.print("Laying out partition "+partCount+"....");
+
+				if (nodeList.size() > 1) {
+					layout();
+					System.out.println(" done");
+					System.out.println("Offsetting by ("+next_x_start+", "+next_y_start+")");
+					// Offset
+					offset (next_x_start, next_y_start);
+				} else {
+					System.out.println(" done");
+
+					// NodeList is either empty or contains a single node
+					if (nodeList.size() == 0) continue;
+					// Single node -- get it
+					LayoutNode node = (LayoutNode)nodeList.get(0);
+					node.setX (next_x_start);
+					node.setY (next_y_start);
+					node.moveToLocation();
+				}
+
+				System.out.println("Partition "+partCount+" updated dimensions are ("+
+														LayoutNode.getMinX()+","+LayoutNode.getMinY()+") to ("+
+														LayoutNode.getMaxX()+","+LayoutNode.getMaxY()+")");
+
+				double last_max_x = LayoutNode.getMaxX();
+				double last_max_y = LayoutNode.getMaxY();
+				if (last_max_y > current_max_y) {current_max_y = last_max_y;}
+				if (last_max_x > max_dimensions) {
+					next_x_start = 0;
+					next_y_start = current_max_y;
+					next_y_start += incr;
+				} else {
+					next_x_start = last_max_x;
+					next_x_start += incr;
+				}
+				partCount++;
+			}
+		}
 		networkView.fitContent();
 		networkView.updateView();
+	}
+
+	private void offset (double next_x_start, double next_y_start) {
+		Iterator nodeIter = nodeList.iterator();
+		double minX = LayoutNode.getMinX();
+		double minY = LayoutNode.getMinY();
+		while (nodeIter.hasNext()) {
+			LayoutNode node = (LayoutNode)nodeIter.next();
+			node.increment(next_x_start-minX, next_y_start-minY);
+			node.moveToLocation();
+		}
 	}
 
 	/**
@@ -340,13 +461,20 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 * AbstractLayout.initialize().
 	 */
 	protected void initialize_local() {
-		this.nodeToLayoutNode = new HashMap();
+		// Depending on whether we are partitioned or not,
+		// we use different initialization
+		if (!partitionGraph) {
+			this.nodeToLayoutNode = new HashMap();
 
-		// Get our vertices
-		vertexInitialize();
+			// Get our vertices
+			vertexInitialize();
 
-		// Get our edges
-		edgeInitialize();
+			// Get our edges
+			edgeInitialize();
+		} else {
+			partitionList = LayoutPartition.partition(network, networkView, 
+			                                          selectedOnly, edgeAttribute);
+		}
 	}
 
 	/**
@@ -415,6 +543,9 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		// Get a seeded pseudo random-number generator
 		Date today = new Date();
 		Random random = new Random(today.getTime());
+		// Reset our min and max values
+		LayoutNode.setMinValues(1000000,100000);
+		LayoutNode.setMaxValues(-1000000,-100000);
 		Iterator iter = nodeList.iterator();
 		while (iter.hasNext()) { 
 			LayoutNode node = (LayoutNode)iter.next();
@@ -494,4 +625,5 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	public void setCancel() {
 		canceled = true;
 	}
+
 }

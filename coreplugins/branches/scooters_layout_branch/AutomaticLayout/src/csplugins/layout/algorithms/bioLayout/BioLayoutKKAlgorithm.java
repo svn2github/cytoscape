@@ -149,7 +149,12 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 * Overrides for LayoutAlgorithm support
 	 */
 
-	public String getName () { return "kamada-kawai"; }
+	public String getName () { 
+		if (supportWeights)
+			return "kamada-kawai-noweight"; 
+		else
+			return "kamada-kawai";
+		}
 
 	public String toString () { 
 		if (supportWeights)
@@ -465,7 +470,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		}
 	}
 
-  private static int[][] calculateNodeDistances()
+  private int[][] calculateNodeDistances()
   {
     int[][] distances = new int[nodeList.size()][];
     LinkedList queue = new LinkedList();
@@ -796,7 +801,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 * The PartialDerivatives class maintains the values for the partial derivatives
 	 * as they are computed.
 	 */
-  private static class PartialDerivatives
+  private class PartialDerivatives
   {
 
     final LayoutNode node;
@@ -857,7 +862,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     return calculatePartials(partials, partialsList, potentialEnergy, false);
   }
 
-  private static void simpleMoveNode(PartialDerivatives partials)
+  private void simpleMoveNode(PartialDerivatives partials)
   {
     LayoutNode node = partials.node;
 		if (node.isLocked()) {

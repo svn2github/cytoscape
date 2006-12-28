@@ -698,17 +698,18 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 */
 	private void calculateSize() {
 		// double spreadFactor = Math.max(spread_factor, edgeList.length/nodeList.length);
-		LayoutNode v0 = (LayoutNode)nodeList.get(0); // Get the first vertex to get to the class variables
+		// LayoutNode v0 = (LayoutNode)nodeList.get(0); // Get the first vertex to get to the class variables
 		int nodeCount = nodeList.size();
-		int unLockedNodes = nodeCount-v0.lockedNodeCount();
+		int unLockedNodes = nodeCount-LayoutNode.lockedNodeCount();
 		double spreadFactor = spread_factor;
-		double averageWidth = v0.getTotalWidth()/nodeList.size();
-		double averageHeight = v0.getTotalHeight()/nodeList.size();
-		double current_area = (v0.getMaxX()-v0.getMinX()) * (v0.getMaxY()-v0.getMinY());
-		double node_area = v0.getTotalWidth()*v0.getTotalHeight();
+		double averageWidth = LayoutNode.getTotalWidth()/nodeList.size();
+		double averageHeight = LayoutNode.getTotalHeight()/nodeList.size();
+		double current_area = (LayoutNode.getMaxX()-LayoutNode.getMinX()) * 
+		                      (LayoutNode.getMaxY()-LayoutNode.getMinY());
+		double node_area = LayoutNode.getTotalWidth()*LayoutNode.getTotalHeight();
 		if (selectedOnly || (current_area > node_area)) {
-			this.width = (v0.getMaxX() - v0.getMinX())*spreadFactor;
-			this.height = (v0.getMaxY() - v0.getMinY())*spreadFactor;
+			this.width = (LayoutNode.getMaxX() - LayoutNode.getMinX())*spreadFactor;
+			this.height = (LayoutNode.getMaxY() - LayoutNode.getMinY())*spreadFactor;
 			// make it square
 			this.width = Math.max(this.width,this.height);
 			this.height = this.width;
