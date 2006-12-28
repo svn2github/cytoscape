@@ -63,6 +63,8 @@ public class LayoutPartition {
 	private ArrayList<LayoutNode> nodeList;
 	private ArrayList<LayoutEdge> edgeList;
 	private static HashMap<CyNode,LayoutNode> nodeToLayoutNode = null;
+	private static OpenIntIntHashMap nodesSeenMap = null;
+	private static OpenIntIntHashMap edgesSeenMap = null;
 	private int nodeIndex = 0;
 	// Keep track of the node min and max values
 	private double maxX = 0;
@@ -163,18 +165,24 @@ public class LayoutPartition {
 	                             boolean selectedOnly, String edgeAttribute) {
 		ArrayList partitions = new ArrayList();
 		
-		Iterator nodeViewIter = networkView.getNodeViewsIterator();
-
-		OpenIntIntHashMap nodesSeenMap = new OpenIntIntHashMap(network.getNodeCount());
+		nodesSeenMap = new OpenIntIntHashMap(network.getNodeCount());
+		edgesSeenMap = new OpenIntIntHashMap(network.getEdgeCount());
 		OpenIntObjectHashMap nodesToViews = new 
 						OpenIntObjectHashMap(network.getNodeCount());
 
-		// Initialize the map
+		// Initialize the maps
+		Iterator nodeViewIter = networkView.getNodeViewsIterator();
 		while (nodeViewIter.hasNext()) {
 			NodeView nv = (NodeView)nodeViewIter.next();
 			int node = nv.getNode().getRootGraphIndex();
 			nodesSeenMap.put(node, m_NODE_HAS_NOT_BEEN_SEEN);
 			nodesToViews.put(node, nv);
+		}
+
+		Iterator edgeIter = network.edgesIterator();
+		while (edgeIter.hasNext()) {
+			int edge = ((CyEdge)edgeIter.next()).getRootGraphIndex();
+			edgesSeenMap.put(edge, m_NODE_HAS_NOT_BEEN_SEEN);
 		}
 
 		// OK, now get new iterators and traverse the graph
@@ -198,8 +206,8 @@ public class LayoutPartition {
 			nodesSeenMap.put(nodeIndex, m_NODE_HAS_BEEN_SEEN);
 
 			// Traverse through all connected nodes
-			traverse(network, networkView, nodesSeenMap, 
-			         nodesToViews, node, part, edgeAttribute);
+			traverse(network, networkView, nodesToViews, 
+			         node, part, edgeAttribute);
 
 			// Done -- finalize the parition
 			part.trimToSize();
@@ -233,7 +241,6 @@ public class LayoutPartition {
     * This method traverses nodes connected to the specified node.
     * @param network				The CyNetwork we are laying out
     * @param networkView		The CyNetworkView we are laying out
-    * @param nodesSeenMap		A map that specifies which nodes have been seen.
     * @param nodesToViews		A map that maps between nodes and views
     * @param node						The node to search for connected nodes.
     * @param partition			The partition that holds all of the nodes and edges.
@@ -242,7 +249,6 @@ public class LayoutPartition {
     */
   private static void traverse(CyNetwork network,
 	                             CyNetworkView networkView,
-	                             OpenIntIntHashMap nodesSeenMap,
                                OpenIntObjectHashMap nodesToViews,
                                CyNode node, LayoutPartition partition,
 	                             String edgeAttribute)
@@ -264,12 +270,23 @@ public class LayoutPartition {
     {
 			// Get the actual edge
 			CyEdge incidentEdge = (CyEdge)network.getEdge(incidentEdges[i]);
+
+			int edgeIndex = incidentEdge.getRootGraphIndex();
+			// Have we already seen this edge?
+			if (!edgesSeenMap.containsKey(edgeIndex) ||
+			    edgesSeenMap.get(edgeIndex) == m_NODE_HAS_BEEN_SEEN) {
+				// Yes, continue since it means we *must* have seen both sides
+				continue;
+			}
+
+			edgesSeenMap.put(edgeIndex, m_NODE_HAS_BEEN_SEEN);
+
 			// Make sure we clean up after any previous layouts
 			EdgeView ev = networkView.getEdgeView(incidentEdge);
 			ev.clearBends();
 
 			// Add the edge to the partition
-			partition.addEdge(incidentEdge);
+			partition.addEdge(incidentEdge, edgeAttribute);
 
 			// Determine the node's index that is on the other side of the edge
 			CyNode otherNode;
@@ -288,8 +305,8 @@ public class LayoutPartition {
 				nodesSeenMap.put(incidentNodeIndex, m_NODE_HAS_BEEN_SEEN);
 
 				// Traverse through this one
-				traverse(network, networkView, nodesSeenMap, 
-				         nodesToViews, otherNode, partition, edgeAttribute);
+				traverse(network, networkView, nodesToViews, 
+				         otherNode, partition, edgeAttribute);
 			}
 		}
 	}

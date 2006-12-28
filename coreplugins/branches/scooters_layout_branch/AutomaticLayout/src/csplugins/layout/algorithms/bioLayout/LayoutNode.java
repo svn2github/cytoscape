@@ -242,6 +242,10 @@ class LayoutNode {
 		return node.getIdentifier();
 	}
 
+	public String toString() {
+		return "Node "+getIdentifier()+" at "+printLocation();
+	}
+
 	public String printDisp() {
 		String ret = new String(""+dispX+", "+dispY);
 		return ret;

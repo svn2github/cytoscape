@@ -359,7 +359,12 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		taskMonitor.setStatus("Initializing");
 		initialize();  // Calls initialize_local
 		if (!partitionGraph) {
-			System.out.println("Laying out unpartitioned");
+			System.out.println("Laying out unpartitioned ("+nodeList.size()+" nodes and "+edgeList.size()+" edges)");
+			System.out.println("Node list dimensions are ("+
+													LayoutNode.getMinX()+","+LayoutNode.getMinY()+") to ("+
+													LayoutNode.getMaxX()+","+LayoutNode.getMaxY()+")");
+			System.out.println("Node list width, height is ("+
+													LayoutNode.getTotalWidth()+","+LayoutNode.getTotalHeight()+")");
 			layout(); 		 // Abstract -- must be overloaded
 		} else if (partitionList == null) {
 			System.out.println("Nothing to layout!");
@@ -393,6 +398,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 				nodeList = partition.getNodeList();
 				edgeList = partition.getEdgeList();
 
+				System.out.println("Partition "+partCount+" ("+nodeList.size()+" nodes and "+edgeList.size()+" edges)");
 				System.out.println("Partition "+partCount+" dimensions are ("+
 														LayoutNode.getMinX()+","+LayoutNode.getMinY()+") to ("+
 														LayoutNode.getMaxX()+","+LayoutNode.getMaxY()+")");
@@ -481,8 +487,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 * Initialize the edge array.
 	 */
 	protected void edgeInitialize() {
-		LayoutEdge firstEdge = new LayoutEdge();
-		firstEdge.setLogWeightCeiling(logWeightCeiling);
+		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
 
 		this.edgeList = new ArrayList(network.getEdgeCount());
 		Iterator iter = network.edgesIterator();

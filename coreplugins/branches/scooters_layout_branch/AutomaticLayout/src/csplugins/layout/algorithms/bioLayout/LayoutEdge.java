@@ -130,6 +130,7 @@ class LayoutEdge {
 			this.logWeight = Math.min(-Math.log10(eValue),logWeightCeiling); 
 		}
 
+		// System.out.println("Setting weight to "+eValue+" logWeight to "+logWeight);
 		this.weight = eValue; 
 		maxWeight = Math.max(maxWeight, weight);
 		minWeight = Math.min(minWeight, weight);
@@ -162,5 +163,9 @@ class LayoutEdge {
 	public LayoutNode getTarget() { return this.v2; }
 
 	public CyEdge getEdge() { return this.edge; }
+
+	public String toString() {
+		return "Edge "+edge.getIdentifier()+" connting "+v1.getIdentifier()+" and "+v2.getIdentifier()+" with weight "+weight;
+	}
 
 }

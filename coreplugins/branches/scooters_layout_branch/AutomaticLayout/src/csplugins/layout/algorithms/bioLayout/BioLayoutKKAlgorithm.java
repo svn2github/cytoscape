@@ -336,6 +336,17 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		// our internal objects and initialize them
 		// local_initialize();
 
+		/*
+		System.out.println("BioLayoutKK Algorithm.  Laying out "+nodeList.size()+" nodes and "+edgeList.size()+" edges: ");
+		for (Iterator diter = nodeList.iterator(); diter.hasNext(); ) {
+			System.out.println("\t"+(LayoutNode)diter.next());
+		}
+		for (Iterator diter = edgeList.iterator(); diter.hasNext(); ) {
+			System.out.println("\t"+(LayoutEdge)diter.next());
+		}
+		*/
+		
+
 		// Calculate a distance threshold
 		double euclideanDistanceThreshold =  (nodeList.size()+edgeList.size())/2;
 
