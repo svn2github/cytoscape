@@ -17,6 +17,11 @@
  *
  * Revisions:
  *
+ * Wed Dec 27 06:51:00 2006 (Michael L. Creech) creech@w235krbza760
+ *  Cleanup and changed addNodeContextMenuItems(),
+ *  addEdgeContextMenuItems(), and
+ *  removeExistingDeleteMenuItemIfNecessary() to handle changes to
+ *  DeleteAction.
  * Thu Jul 27 14:27:55 2006 (Michael L. Creech) creech@w235krbza760
  *  Removed setting of BIO_PAX attributes from addNode().
  *  Fixed deprecated method usage in addNode().
@@ -360,18 +365,29 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
     }
 
     // MLC 07/27/06 END.
+    // MLC 12/27/06 BEGIN:
+    // implements NodeContextMenuListener
     public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-        if (nodeView instanceof NodeView) {
-            // AJK: 12/09/06 fix for multiple entries
-            // if (!menuItemExists(menu, "Delete Selected Nodes and Edges")) {
             removeExistingDeleteMenuItemIfNecessary(menu);
-            menu.add(new DeleteAction(nodeView.getNode(),
-                                      "Delete Selected Nodes and Edges"));
-        }
+            menu.add(new DeleteAction(nodeView.getNode()));
     }
+    //    public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
+    //        if (nodeView instanceof NodeView) {
+    //            // AJK: 12/09/06 fix for multiple entries
+    //            // if (!menuItemExists(menu, "Delete Selected Nodes and Edges")) {
+    //            removeExistingDeleteMenuItemIfNecessary(menu);
+    //            menu.add(new DeleteAction(nodeView.getNode(),
+    //                                      "Delete Selected Nodes and Edges"));
+    //        }
+    //    }
+    // MLC 12/27/06 END.
 
-    public void removeExistingDeleteMenuItemIfNecessary(JPopupMenu menu) {
-        String        label    = "Delete Selected Nodes and Edges";
+    // MLC 12/27/06 BEGIN:
+    // public void removeExistingDeleteMenuItemIfNecessary(JPopupMenu menu) {
+    protected void removeExistingDeleteMenuItemIfNecessary(JPopupMenu menu) {
+        // String        label    = "Delete Selected Nodes and Edges";
+	// MLC 12/27/06 END.
+
         MenuElement[] elements = menu.getSubElements();
 
         for (int i = 0; i < elements.length; i++) {
@@ -380,7 +396,10 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
             if (elem instanceof JMenuItem) {
                 JMenuItem item = (JMenuItem) elem;
 
-                if (item.getText().equals(label)) {
+		// MLC 12/27/06 BEGIN:
+                // if (item.getText().equals(label)) {
+                if (item.getText().equals(DeleteAction.ACTION_TITLE)) {
+		// MLC 12/27/06 END.
                     menu.remove(item);
                 }
             }
@@ -409,17 +428,25 @@ public class BasicCytoscapeEditor implements CytoscapeEditor,
         return itemExists;
     }
 
+    // MLC 12/27/06 BEGIN:
+    // implements EdgeContextMenuListener
     public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
-        if (edgeView instanceof EdgeView) {
-            // MLC 07/27/06:
-            // final EdgeView ev = (EdgeView) edgeView;
-            // AJK: 12/09/06 fix for multiple entries
-            // if (!menuItemExists(menu, "Delete Selected Nodes and Edges")) {
             removeExistingDeleteMenuItemIfNecessary(menu);
-            menu.add(new DeleteAction(edgeView.getEdge(),
-                                      "Delete Selected Nodes and Edges"));
-        }
+            menu.add(new DeleteAction(edgeView.getEdge()));
     }
+
+//    public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
+//        if (edgeView instanceof EdgeView) {
+//            // MLC 07/27/06:
+//            // final EdgeView ev = (EdgeView) edgeView;
+//            // AJK: 12/09/06 fix for multiple entries
+//            // if (!menuItemExists(menu, "Delete Selected Nodes and Edges")) {
+//            removeExistingDeleteMenuItemIfNecessary(menu);
+//            menu.add(new DeleteAction(edgeView.getEdge(),
+//                                      "Delete Selected Nodes and Edges"));
+//        }
+//    }
+    // MLC 12/27/06 END.
 
     // AJK: 12/09/06 END
 

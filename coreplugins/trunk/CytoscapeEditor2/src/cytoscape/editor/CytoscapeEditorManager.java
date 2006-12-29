@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Tue Jul 05 11:44:41 2005
-* Modified:     Thu Sep 14 08:58:04 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Dec 27 09:04:09 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Wed Dec 27 09:03:24 2006 (Michael L. Creech) creech@w235krbza760
+*  Changed initialize() to send CytoscapeEditorManagerSupport the
+*  DeleteAction created for use by subclasses.
 * Thu Sep 14 08:57:24 2006 (Michael L. Creech) creech@w235krbza760
 *  Removed all casting warnings for Java 1.5 & strongly types collections.
 * Sun Aug 06 05:50:30 2006 (Michael L. Creech) creech@w235krbza760
@@ -102,6 +105,7 @@ public abstract class CytoscapeEditorManager {
      * subsidiary class which implements methods that require non-static
      * references, e.g. a Swing PropertyChangeListener
      */
+    // MLC 12/27/06 - This should NOT be public--make a get method for it:
     public static CytoscapeEditorManagerSupport manager;
 
     /**
@@ -274,7 +278,10 @@ public abstract class CytoscapeEditorManager {
      *
      */
     public static void initialize() {
-        manager = new CytoscapeEditorManagerSupport();
+	// MLC 12/27/06 BEGIN:
+        DeleteAction delete = new DeleteAction();
+        manager = new CytoscapeEditorManagerSupport(delete);
+	// MLC 12/27/06 END.
 
         NewNetworkAction newNetwork = new NewNetworkAction("Empty Network",
                                                            CytoscapeEditorFactory.INSTANCE);
@@ -284,7 +291,8 @@ public abstract class CytoscapeEditorManager {
         Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New")
                  .setEnabled(true);
 
-        DeleteAction delete = new DeleteAction();
+	// MLC 12/27/06:
+        // DeleteAction delete = new DeleteAction();
         Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Edit");
         Cytoscape.getDesktop().getCyMenus().addAction(delete);
 
@@ -332,8 +340,8 @@ public abstract class CytoscapeEditorManager {
             //			System.out.println("getting visual style for: " + visualStyleName);
             if ((visualStyleName != null) &&
                 (!(visualStyleName.equals(CytoscapeEditorManager.ANY_VISUAL_STYLE)))) {
-                VisualMappingManager manager       = Cytoscape.getVisualMappingManager();
-                CalculatorCatalog    catalog       = manager.getCalculatorCatalog();
+		VisualMappingManager manager       = Cytoscape.getVisualMappingManager();
+		CalculatorCatalog    catalog       = manager.getCalculatorCatalog();
                 VisualStyle          existingStyle = catalog.getVisualStyle(
                     visualStyleName);
 

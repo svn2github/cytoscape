@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sat Jul 30 17:00:27 2005
-* Modified:     Sun Aug 06 11:15:18 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Dec 27 09:43:05 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Dec 27 09:04:18 2006 (Michael L. Creech) creech@w235krbza760
+*  Added getDeleteAction() and parameter to constructor.
 * Sun Aug 06 11:14:28 2006 (Michael L. Creech) creech@w235krbza760
 *  Fixed updateEditorPalette() to not assume visualStyleName is the
 *  same as Editor name.
@@ -37,6 +39,7 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
+import cytoscape.editor.actions.DeleteAction;
 
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -81,9 +84,17 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
      * register interest in NETWORK_VIEW_FOCUSED and NETWORK_VIEW_CREATED events
      *
      */
-    public CytoscapeEditorManagerSupport() {
-        super();
 
+    // MLC 12/27/06:
+    private DeleteAction _deleteAction;
+
+    // MLC 12/27/06:
+    //    public CytoscapeEditorManagerSupport() {
+    // MLC 12/27/06:
+    public CytoscapeEditorManagerSupport(DeleteAction dAction) {
+        super();
+	// MLC 12/27/06:
+	_deleteAction = dAction;
         Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(
             CytoscapeDesktop.NETWORK_VIEW_FOCUSED,
             this);
@@ -97,10 +108,17 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
                  .addCytoPanelListener(this);
     }
 
-    /**
-     * respond to a ChangeEvent, typically this is caused by switching visual styles
-     */
+    // MLC 12/27/06 BEGIN:
+    // Needed by some CytoscapeEditor subclasses (e.g., HyperEdgeEditor).
+    public DeleteAction getDeleteAction () {
+	return _deleteAction;
+    }
+    // MLC 12/27/06 END.
 
+    /**
+     * respond to a ChangeEvent, typically this is caused by switching
+     * visual styles
+     */
     // implements ChangeListener interface:
     public void stateChanged(ChangeEvent e) {
         if (!CytoscapeEditorManager.isEditingEnabled()) {
@@ -289,11 +307,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
             
             // AJK: 12/09/06 BEGIN
             //   try to get editor for visual style
-            VisualStyle vs = view.getVisualStyle();
-            
-            
-            
-            
+            // MLC 12/27/06:
+            // VisualStyle vs = view.getVisualStyle();           
             CytoscapeEditor cyEditor = CytoscapeEditorManager.getEditorForView(
                 view);
 
