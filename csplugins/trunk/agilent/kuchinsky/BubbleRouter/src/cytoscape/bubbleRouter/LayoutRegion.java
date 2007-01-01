@@ -6,13 +6,10 @@ import giny.view.NodeView;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -21,17 +18,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.undo.AbstractUndoableEdit;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
- public class LayoutRegion extends JComponent {
+public class LayoutRegion extends JComponent {
 
 	/**
 	 * Translucency level of region
@@ -122,7 +119,12 @@ import ding.view.DingCanvas;
 
 	// AJK: 11/15/06 END
 
+	// AJK: 12/25/06 for stretching
+	private Cursor savedCursor;
 
+	private static final int HANDLE_SIZE = 8;
+
+	private boolean selected = false;
 
 	/**
 	 * @param x
@@ -140,15 +142,21 @@ import ding.view.DingCanvas;
 			return;
 		}
 
+		// AJK: 12/25/06 for stretching
+		savedCursor = this.getCursor();
+
+
 		// setbounds must come before populate nodeviews
-		
-		// note that coordinates are in terms of screen coordinates, not node coordinates
+
+		// note that coordinates are in terms of screen coordinates, not node
+		// coordinates
 		setBounds((int) x, (int) y, (int) width, (int) height);
 		nodeViews = populateNodeViews();
 
 		// determine color of layout region
 		colorIndex = (++colorIndex % colors.length == 0) ? 0 : colorIndex;
 		this.paint = colors[colorIndex];
+
 
 	}
 
@@ -349,13 +357,16 @@ import ding.view.DingCanvas;
 			Node node = (Node) it.next();
 			String val = attribs.getStringAttribute(node.getIdentifier(),
 					attributeName);
-			//val is a string with pipes, needs to get split into array, loop through elements in array
-			//below and match 
+			// val is a string with pipes, needs to get split into array, loop
+			// through elements in array
+			// below and match
 			if (val != null) {
 				System.out.println("this.regionAttributeValue = "
 						+ this.regionAttributeValue);
-				//if (val.equalsIgnoreCase(this.regionAttributeValue.toString())) {
-				  if (val.indexOf(this.regionAttributeValue.toString()) >= 0){
+				// if
+				// (val.equalsIgnoreCase(this.regionAttributeValue.toString()))
+				// {
+				if (val.indexOf(this.regionAttributeValue.toString()) >= 0) {
 					selectedNodes.add(node);
 				}
 			} else if (regionAttributeValue.equals("unassigned")) {
@@ -393,8 +404,11 @@ import ding.view.DingCanvas;
 
 			NodeViewsTransformer
 					.transform(Cytoscape.getCurrentNetworkView()
-							.getSelectedNodes(), new Rectangle2D.Double(x1, y1,
-							w1, h1));
+							// AJK: 1/1/06 accommodate space for handles
+//							.getSelectedNodes(), new Rectangle2D.Double(x1, y1,
+							.getSelectedNodes(), new Rectangle2D.Double
+							(x1 + (HANDLE_SIZE / 2), y1 + (HANDLE_SIZE / 2),
+																w1, h1));
 
 			// AJK: 11/15/06 BEGIN
 			// undo/redo facility
@@ -462,13 +476,12 @@ import ding.view.DingCanvas;
 			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 
 			// Associate selected nodes with region
-			
+
 			// AJK: 12/24/06 BEGIN
-			//   bug fix: need to return selectedNodeViews, not selectedNodes
-//			return selectedNodes;
+			// bug fix: need to return selectedNodeViews, not selectedNodes
+			// return selectedNodes;
 			List selectedNodeViewsList = new ArrayList();
-			for (int i = 0; i < _selectedNodeViews.length; i++)
-			{
+			for (int i = 0; i < _selectedNodeViews.length; i++) {
 				selectedNodeViewsList.add(_selectedNodeViews[i]);
 			}
 			return selectedNodeViewsList;
@@ -479,7 +492,11 @@ import ding.view.DingCanvas;
 	}
 
 	public void setBounds(int x, int y, int width, int height) {
-		super.setBounds(x, y, width, height);
+		// AJK: 1/1/06 BEGIN
+//		make room for handles
+//		super.setBounds(x, y, width, height);
+		super.setBounds(x - (HANDLE_SIZE / 2), y - (HANDLE_SIZE / 2), 
+				width + HANDLE_SIZE, height + HANDLE_SIZE);
 
 		// set member vars
 		this.x1 = x;
@@ -489,11 +506,12 @@ import ding.view.DingCanvas;
 
 		// our bounds have changed, create a new image with new size
 		if ((width > 0) && (height > 0)) {
-			image = new BufferedImage(width, height,
-					BufferedImage.TYPE_INT_ARGB);
+			// AJK: 1/1/06 make room for handles
+//			image = new BufferedImage(width, height,
+			image = new BufferedImage(width + HANDLE_SIZE, height + HANDLE_SIZE,
+										BufferedImage.TYPE_INT_ARGB);
 		}
 	}
-
 
 	public void paint(Graphics g) {
 
@@ -528,25 +546,168 @@ import ding.view.DingCanvas;
 			image2D
 					.setComposite(AlphaComposite
 							.getInstance(AlphaComposite.SRC));
+			
+//			 AJK: 1/1/06 BEGIN 
+			// leave space for handles
+			
+//			// first clear background in case region has been deselected
+//			image2D.setPaint(Cytoscape.getCurrentNetworkView()
+//					.getVisualStyle().getGlobalAppearanceCalculator()
+//					.calculateBackgroundColor(Cytoscape.getCurrentNetwork()));
+//			image2D.fillRect(0, 0, image.getWidth(), image.getHeight());
+
+			VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
+			GlobalAppearanceCalculator gCalc = vs.getGlobalAppearanceCalculator();
+			Color backgroundColor = gCalc.getDefaultBackgroundColor();
+			image2D.setPaint(backgroundColor);			
+			image2D.fillRect(0, 0, image.getWidth(), image.getHeight());
+			
 			image2D.setPaint(fillColor);
-			image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
+			
+			
+//			image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
+			image2D.fillRect(HANDLE_SIZE / 2, HANDLE_SIZE / 2, 
+					image.getWidth(null) - HANDLE_SIZE, 
+					image.getHeight(null) - HANDLE_SIZE);
 
 			image2D.setColor(new Color(0, 0, 0, 255));
 			if (regionAttributeValue != null) {
-				image2D.drawString(regionAttributeValue.toString(), 10, 10);
+				image2D.drawString(regionAttributeValue.toString(), 20, 20);
 			}
+			// AJK: 01/01/06 END
 
 			image2D.setColor(drawColor);
 			// adds thickness to border
-			image2D.drawRect(1, 1, image.getWidth(null) - 3, image
-					.getHeight(null) - 3);
+			
+			// AJK: 1/1/06 BEGIN
+			// leave space for handles
+//			image2D.drawRect(1, 1, image.getWidth(null) - 3, image
+//					.getHeight(null) - 3);
+//			// give border dimensionality
+//			image2D.draw3DRect(0, 0, image.getWidth(null) - 1, image
+//					.getHeight(null) - 1, true);
+			image2D.drawRect(1 + (HANDLE_SIZE / 2), 
+					1 + (HANDLE_SIZE / 2), 
+					image.getWidth(null) - 3 - HANDLE_SIZE, 
+					image.getHeight(null) - 3 - HANDLE_SIZE );
 			// give border dimensionality
-			image2D.draw3DRect(0, 0, image.getWidth(null) - 1, image
-					.getHeight(null) - 1, true);
+			image2D.draw3DRect(HANDLE_SIZE / 2, HANDLE_SIZE / 2, 
+					image.getWidth(null) - 1 - HANDLE_SIZE, 
+					image.getHeight(null) - 1 - HANDLE_SIZE, true);
+			// AJK: 1/1/06 END
+
+			
+			// AJK: 12/29/06 BEGIN
+			// draw handles for stretching if selected
+			if (this.isSelected())
+			{
+				drawHandles(image2D);
+			}
+			
 			image2D.setComposite(origComposite);
 			((Graphics2D) g).drawImage(image, null, 0, 0);
+
+
+			
 		}
 	}
 
+	// AJK: 12/29/06 BEGIN
+	/**
+	 * add handles on the corners and edges of the region -- affordances for
+	 * stretching
+	 * 
+	 */
+	private void drawHandles(Graphics2D image2D) {
+
+		// first fill in handles
+		image2D.setColor(Color.white);
+
+		// top left
+		image2D.fillOval(0, 0, HANDLE_SIZE, HANDLE_SIZE);
+		
+		// top center
+		image2D.fillOval(((int)(this.w1 / 2)),
+				0, HANDLE_SIZE, HANDLE_SIZE);
+		// top right
+		image2D.fillOval((int) this.w1,
+				0, HANDLE_SIZE, HANDLE_SIZE);
+
+		// center left
+		image2D.fillOval(0, ((int) (this.h1 / 2)),
+				HANDLE_SIZE, HANDLE_SIZE);
+
+		// center right
+		image2D.fillOval((int) this.w1, ((int) (this.h1 / 2)),
+				HANDLE_SIZE, HANDLE_SIZE);
+
+		// bottom left
+		image2D.fillOval(0, (int) this.h1, 
+				HANDLE_SIZE,
+				HANDLE_SIZE);
+
+		// bottom center
+		image2D.fillOval(((int)(this.w1 / 2)),
+				(int) this.h1, HANDLE_SIZE,
+				HANDLE_SIZE);
+
+		// bottom right
+		image2D.fillOval((int) this.w1, (int) this.h1, HANDLE_SIZE,
+				HANDLE_SIZE); // bottom right
+		
+		// now draw outline of handle
+		image2D.setColor(Color.black);
+		// top left
+		image2D.drawOval(0, 0, HANDLE_SIZE, HANDLE_SIZE);
+		
+		// top center
+		image2D.drawOval(((int)(this.w1 / 2)),
+				0, HANDLE_SIZE, HANDLE_SIZE);
+		// top right
+		image2D.drawOval((int) this.w1,
+				0, HANDLE_SIZE, HANDLE_SIZE);
+
+		// center left
+		image2D.drawOval(0, ((int) (this.h1 / 2)),
+				HANDLE_SIZE, HANDLE_SIZE);
+
+		// center right
+		image2D.drawOval((int) this.w1, ((int) (this.h1 / 2)),
+				HANDLE_SIZE, HANDLE_SIZE);
+
+		// bottom left
+		image2D.drawOval(0, (int) this.h1, 
+				HANDLE_SIZE,
+				HANDLE_SIZE);
+
+		// bottom center
+		image2D.drawOval(((int)(this.w1 / 2)),
+				(int) this.h1, HANDLE_SIZE,
+				HANDLE_SIZE);
+
+		// bottom right
+		image2D.drawOval((int) this.w1, (int) this.h1, HANDLE_SIZE,
+				HANDLE_SIZE); // bottom right
+		
+
+	}
+
+	// AJK: 12/29/06 END
+
+	// AJK: 12/25/06 BEGIN
+	// for stretching
+	public Cursor getSavedCursor() {
+		return savedCursor;
+	}
+
+	// AJK: 12/25/06 END
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 
 }

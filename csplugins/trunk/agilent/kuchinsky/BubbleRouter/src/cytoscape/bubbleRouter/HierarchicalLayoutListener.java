@@ -51,8 +51,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.task.Task;
