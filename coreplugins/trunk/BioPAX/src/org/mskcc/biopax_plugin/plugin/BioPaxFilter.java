@@ -54,12 +54,12 @@ public class BioPaxFilter extends CyFileFilter {
     /**
      * File Extensions.
      */
-    private static String[] fileExtensions = {"xml", "owl"};
+    private static String[] fileExtensions = {"xml", "owl", "rdf"};
 
     /**
      * Filter Description.
      */
-    private static String description = "XML files";
+    private static String description = "BioPAX files";
 
     /**
      * Constructor.
