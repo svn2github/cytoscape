@@ -1,5 +1,7 @@
 package cytoscape.bubbleRouter;
 
+import giny.view.NodeView;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -11,6 +13,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
@@ -132,6 +135,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		
 		// AJK: 12/28/06 save cursor for restoration after move/stretch
 		savedCursor = Cytoscape.getDesktop().getCursor();
+		
+		// AJK: 1/2/07 add edge cross minimization functionality
+		UnCrossAction uncross = new UnCrossAction();
+		Cytoscape.getDesktop().getCyMenus().addAction(uncross);
 
 		MainPluginAction mpa = new MainPluginAction();
 		mpa.initializeBubbleRouter();
@@ -308,11 +315,26 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		if ((oldPickedRegion != null) && (oldPickedRegion != pickedRegion))
 		{
 			oldPickedRegion.setSelected(false);
+			// unselect nodes in oldPickedRegion
+			Iterator itx = oldPickedRegion.getNodeViews().iterator();
+			while (itx.hasNext())
+			{
+				NodeView nv = (NodeView) itx.next();
+				nv.setSelected(false);
+			}
 			oldPickedRegion.repaint();
 		}
 		if (pickedRegion != null)
 		{
 			pickedRegion.setSelected(true);
+			// select nodes in this region 
+			// TODO: should *all* other nodes be unselected?
+			Iterator itx = pickedRegion.getNodeViews().iterator();
+			while (itx.hasNext())
+			{
+				NodeView nv = (NodeView) itx.next();
+				nv.setSelected(true);
+			}			
 			pickedRegion.repaint();
 		}
 	}
