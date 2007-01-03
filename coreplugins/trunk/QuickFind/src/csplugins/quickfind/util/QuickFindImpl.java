@@ -82,7 +82,7 @@ class QuickFindImpl implements QuickFind {
         }
     }
 
-    public void removeNetwork(CyNetwork network) {
+    public synchronized void removeNetwork(CyNetwork network) {
         networkMap.remove(networkMap);
 
         // Notify all listeners of remove event
@@ -93,7 +93,7 @@ class QuickFindImpl implements QuickFind {
         }
     }
 
-    public GenericIndex getIndex(CyNetwork network) {
+    public synchronized GenericIndex getIndex(CyNetwork network) {
         return (GenericIndex) networkMap.get(network);
     }
 
@@ -166,7 +166,7 @@ class QuickFindImpl implements QuickFind {
         return index;
     }
 
-    public void selectHit(CyNetwork network, Hit hit) {
+    public synchronized void selectHit(CyNetwork network, Hit hit) {
         // Notify all listeners of event
         for (int i = 0; i < listenerList.size(); i++) {
             QuickFindListener listener = (QuickFindListener)
@@ -175,7 +175,7 @@ class QuickFindImpl implements QuickFind {
         }
     }
 
-    public void selectRange(CyNetwork network, Number low, Number high) {
+    public synchronized void selectRange(CyNetwork network, Number low, Number high) {
         // Notify all listeners of event
         for (int i = 0; i < listenerList.size(); i++) {
             QuickFindListener listener = (QuickFindListener)
@@ -185,20 +185,20 @@ class QuickFindImpl implements QuickFind {
     }
 
 
-    public void addQuickFindListener(QuickFindListener listener) {
+    public synchronized void addQuickFindListener(QuickFindListener listener) {
         this.listenerList.add(listener);
     }
 
-    public void removeQuickFindListener(QuickFindListener listener) {
+    public synchronized void removeQuickFindListener(QuickFindListener listener) {
         this.listenerList.remove(listener);
     }
 
-    public QuickFindListener[] getQuickFindListeners() {
+    public synchronized QuickFindListener[] getQuickFindListeners() {
         return (QuickFindListener[]) listenerList.toArray(
                 new QuickFindListener[listenerList.size()]);
     }
 
-    private int getGraphObjectCount(CyNetwork network, int indexType) {
+    private synchronized int getGraphObjectCount(CyNetwork network, int indexType) {
         if (indexType == QuickFind.INDEX_NODES) {
             return network.getNodeCount();
         } else {
