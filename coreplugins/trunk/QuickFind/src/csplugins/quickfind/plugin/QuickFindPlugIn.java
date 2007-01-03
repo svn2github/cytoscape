@@ -59,13 +59,9 @@ public class QuickFindPlugIn extends CytoscapePlugin
      * Initializes All Cytoscape Listeners.
      */
     private void initListeners() {
-        // to catch network creation / destruction events
-        Cytoscape.getSwingPropertyChangeSupport().
+        // to catch network create/destroy/focus events
+        Cytoscape.getDesktop().getSwingPropertyChangeSupport().
                 addPropertyChangeListener(this);
-
-        // to catch network selection / focus events
-        Cytoscape.getDesktop().getNetworkViewManager().
-                getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
         QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         quickFind.addQuickFindListener(this);
@@ -118,6 +114,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
      * @param event PropertyChangeEvent
      */
     public void propertyChange(PropertyChangeEvent event) {
+        System.out.println("Event:  " + event.getPropertyName());
         final QuickFind quickFind =
                 QuickFindFactory.getGlobalQuickFindInstance();
         if (event.getPropertyName() != null) {
@@ -138,7 +135,7 @@ public class QuickFindPlugIn extends CytoscapePlugin
                 quickFind.removeNetwork(cyNetwork);
                 swapCurrentNetwork(quickFind);
             } else if (event.getPropertyName().equals
-                    (CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+                    (CytoscapeDesktop.NETWORK_VIEW_FOCUS)) {
                 swapCurrentNetwork(quickFind);
             }
         }
@@ -149,13 +146,12 @@ public class QuickFindPlugIn extends CytoscapePlugin
      * If no network view has focus, disable quick find.
      */
     private void swapCurrentNetwork(QuickFind quickFind) {
-        CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-        CyNetwork cyNetwork;
+        CyNetwork network = Cytoscape.getCurrentNetwork();
         boolean networkHasFocus = false;
-        if (networkView != null) {
-            if (networkView.getNetwork() != null) {
-                cyNetwork = networkView.getNetwork();
-                TextIndex textIndex = (TextIndex) quickFind.getIndex(cyNetwork);
+        if (network != null) {
+            CyNetworkView networkView = Cytoscape.getNetworkView(network.getIdentifier());
+            if (networkView != Cytoscape.getNullNetworkView()) {
+                TextIndex textIndex = (TextIndex) quickFind.getIndex(network);
                 if (textIndex != null) {
                     quickFindToolBar.setIndex(textIndex);
                     networkHasFocus = true;
