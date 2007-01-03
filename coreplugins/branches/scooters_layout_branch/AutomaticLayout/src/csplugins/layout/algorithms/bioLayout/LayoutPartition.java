@@ -77,6 +77,7 @@ public class LayoutPartition {
   // private constants
   private static final int m_NODE_HAS_NOT_BEEN_SEEN = 0;
   private static final int m_NODE_HAS_BEEN_SEEN     = 1;
+	private static double logWeightCeiling = 1074;  // Maximum log value (-Math.log(Double.MIN_VALU))
 
 	public LayoutPartition() {
 		nodeList = new ArrayList();
@@ -178,6 +179,13 @@ public class LayoutPartition {
 			nodesSeenMap.put(node, m_NODE_HAS_NOT_BEEN_SEEN);
 			nodesToViews.put(node, nv);
 		}
+
+		// Initialize/reset edge weighting
+		// NOTE: unlike nodes, we don't want to reset the LayoutEdge
+		// statics each pass because in general, we want edge weights
+		// to be normalized across all partitions
+		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
+		LayoutEdge.reset();
 
 		Iterator edgeIter = network.edgesIterator();
 		while (edgeIter.hasNext()) {
