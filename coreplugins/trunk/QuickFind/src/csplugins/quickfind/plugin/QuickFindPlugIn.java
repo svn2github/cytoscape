@@ -114,7 +114,6 @@ public class QuickFindPlugIn extends CytoscapePlugin
      * @param event PropertyChangeEvent
      */
     public void propertyChange(PropertyChangeEvent event) {
-        System.out.println("Event:  " + event.getPropertyName());
         final QuickFind quickFind =
                 QuickFindFactory.getGlobalQuickFindInstance();
         if (event.getPropertyName() != null) {
