@@ -79,6 +79,7 @@ public class QuickFindPanel extends JPanel {
             rangeSlider.setVisible(true);
             label.setText(SELECT_STRING);
         }
+        enableAllQuickFindButtons();
     }
 
     /**
