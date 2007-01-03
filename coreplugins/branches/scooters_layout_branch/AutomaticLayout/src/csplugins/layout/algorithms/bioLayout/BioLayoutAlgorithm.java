@@ -358,6 +358,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize();  // Calls initialize_local
+
 		if (!partitionGraph) {
 			System.out.println("Laying out unpartitioned ("+nodeList.size()+" nodes and "+edgeList.size()+" edges)");
 			System.out.println("Node list dimensions are ("+
@@ -374,7 +375,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	    double next_x_start = 0;
 			double next_y_start = 0;
 			double current_max_y = 0;
-			double incr = 100;
+			double incr = 50;
 
 			double max_dimensions = Math.sqrt( ( double )network.getNodeCount() );
 			// give each node room
@@ -418,6 +419,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 					// NodeList is either empty or contains a single node
 					if (nodeList.size() == 0) continue;
 					// Single node -- get it
+					LayoutNode.reset();
 					LayoutNode node = (LayoutNode)nodeList.get(0);
 					node.setX (next_x_start);
 					node.setY (next_y_start);
@@ -432,12 +434,13 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 				double last_max_y = LayoutNode.getMaxY();
 				if (last_max_y > current_max_y) {current_max_y = last_max_y;}
 				if (last_max_x > max_dimensions) {
+					max_dimensions = last_max_x;
 					next_x_start = 0;
 					next_y_start = current_max_y;
-					next_y_start += incr;
+					next_y_start += incr*2;
 				} else {
 					next_x_start = last_max_x;
-					next_x_start += incr;
+					next_x_start += incr*2;
 				}
 				partCount++;
 			}
@@ -450,6 +453,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		Iterator nodeIter = nodeList.iterator();
 		double minX = LayoutNode.getMinX();
 		double minY = LayoutNode.getMinY();
+		LayoutNode.reset();
 		while (nodeIter.hasNext()) {
 			LayoutNode node = (LayoutNode)nodeIter.next();
 			node.increment(next_x_start-minX, next_y_start-minY);

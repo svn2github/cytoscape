@@ -433,6 +433,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		}
 
 		// Actually move the pieces around
+		// Note that we reset our min/max values before we start this
+		// so we can get an accurate min/max for paritioning
+		LayoutNode.reset();
 		iter = nodeList.iterator();
 		while (iter.hasNext()) {
 			LayoutNode v = (LayoutNode) iter.next();
