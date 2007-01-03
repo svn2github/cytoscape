@@ -39,6 +39,11 @@ import java.util.ListIterator;
 import java.util.Iterator;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.Random;
+import java.util.Date;
+
+import java.awt.Dimension;
 
 import cytoscape.*;
 import cytoscape.view.*;
@@ -66,48 +71,128 @@ public class LayoutPartition {
 	private static OpenIntIntHashMap nodesSeenMap = null;
 	private static OpenIntIntHashMap edgesSeenMap = null;
 	private int nodeIndex = 0;
+
 	// Keep track of the node min and max values
-	private double maxX = 0;
-	private double maxY = 0;
-	private double minX = 0;
-	private double minY = 0;
+	private double maxX = -100000;
+	private double maxY = -100000;
+	private double minX = 100000;
+	private double minY = 100000;
 	private double width = 0;
 	private double height = 0;
+
+	// Keep track of average location
+	private double averageX = 0;
+	private double averageY = 0;
+
+	// Keep track of the number of locked nodes we have in
+	// this partition
+	private int lockedNodes = 0;
+
+	// Keep track of the edge weight min/max values.  Note that these are intentionally
+	// static because we want to normalize weights across all partitions
+	private static double minWeight = 100000;
+	private static double maxWeight = -100000;
+	private static double maxLogWeight = 0.0;
+	private static double minLogWeight = 0.0;
 
   // private constants
   private static final int m_NODE_HAS_NOT_BEEN_SEEN = 0;
   private static final int m_NODE_HAS_BEEN_SEEN     = 1;
 	private static double logWeightCeiling = 1074;  // Maximum log value (-Math.log(Double.MIN_VALU))
 
-	public LayoutPartition() {
-		nodeList = new ArrayList();
-		edgeList = new ArrayList();
-		LayoutNode.reset();
+	// Some static values -- these will be the same for all partitions
+	private static double minWeightCutoff = 0;
+	private static double maxWeightCutoff = Double.MAX_VALUE;
+
+	/**
+	 * LayoutPartition: use this constructor to create an empty LayoutPartition.
+	 */
+	public LayoutPartition(int nodeCount, int edgeCount) {
+		nodeList = new ArrayList(nodeCount);
+		edgeList = new ArrayList(edgeCount);
 		if (nodeToLayoutNode == null)
-			nodeToLayoutNode = new HashMap();
+			nodeToLayoutNode = new HashMap(nodeCount);
 	}
 
-	public void addEdge(LayoutEdge edge) {
-		edgeList.add(edge);
+	/**
+	 * LayoutPartition: use this constructor to create a LayoutPartition that
+	 * includes the entire network.
+	 *
+	 * @param network the CyNetwork to include
+	 * @param networkView the CyNetworkView to use
+	 * @param selectedOnly if true, only include selected nodes in the partition
+	 * @param edgeAttribute a String that contains the name of the attribute to use
+	 *                      for edge weighting
+	 */
+	public LayoutPartition(CyNetwork network, CyNetworkView networkView, 
+	                       boolean selectedOnly, String edgeAttribute) {
+		// Initialize
+		nodeList = new ArrayList(network.getNodeCount());
+		edgeList = new ArrayList(network.getEdgeCount());
+		if (nodeToLayoutNode == null)
+			nodeToLayoutNode = new HashMap(network.getNodeCount());
+
+		// Now, walk the iterators and fill in the values
+		nodeListInitialize(network, networkView, selectedOnly);
+		edgeListInitialize(network, networkView, edgeAttribute);
+		trimToSize();
 	}
 
-	public void addEdge(CyEdge edge) {
-		LayoutEdge newEdge = new LayoutEdge(edge);
-		edgeList.add(newEdge);
+	public void addNode(NodeView nv, boolean locked) {
+		CyNode node = (CyNode)nv.getNode();
+		LayoutNode v = new LayoutNode(nv, nodeIndex++);
+		nodeList.add(v);
+		nodeToLayoutNode.put(node,v);
+
+		if (locked) {
+			v.lock();
+			lockedNodes++;
+		} else {
+			updateMinMax(nv.getXPosition(), nv.getYPosition());
+			this.width += Math.sqrt(nv.getWidth());
+			this.height += Math.sqrt(nv.getHeight());
+		}
+	}
+
+	/**
+	 * Randomize the graph locations.
+	 */
+	protected void randomizeLocations() {
+		// Get a seeded pseudo random-number generator
+		Date today = new Date();
+		Random random = new Random(today.getTime());
+		// Reset our min and max values
+		resetNodes();
+		Iterator iter = nodeList.iterator();
+		while (iter.hasNext()) { 
+			LayoutNode node = (LayoutNode)iter.next();
+			if (!node.isLocked()) {
+				double x = random.nextDouble()*width;
+				double y = random.nextDouble()*height;
+				node.setLocation(x, y);
+				updateMinMax(x, y);
+			}
+		}
+	}
+
+	public void moveNodeToLocation(LayoutNode node) {
+		// We provide this routine so that we can keep our
+		// min/max values updated
+		node.moveToLocation();
+		updateMinMax(node.getX(), node.getY());
 	}
 
 	public void addEdge(CyEdge edge, String edgeAttribute) {
 		LayoutEdge newEdge = new LayoutEdge(edge);
-		newEdge.setWeight(edgeAttribute);
+		updateWeights(newEdge, edgeAttribute);
 		edgeList.add(newEdge);
 	}
 
-	public double getMaxX() { return maxX; }
-	public double getMaxY() { return maxY; }
-	public double getMinX() { return minX; }
-	public double getMinY() { return minY; }
-	public double getWidth() { return width; }
-	public double getHeight() { return height; }
+	public void addEdge(CyEdge edge, LayoutNode v1, LayoutNode v2, String edgeAttribute) {
+		LayoutEdge newEdge = new LayoutEdge(edge,v1,v2);
+		updateWeights(newEdge, edgeAttribute);
+		edgeList.add(newEdge);
+	}
 
 	public void fixEdges() {
 		Iterator edgeIter = edgeList.iterator();
@@ -127,21 +212,30 @@ public class LayoutPartition {
 		}
 	}
 
-	public void addNode(LayoutNode node) {
-		nodeList.add(node);
-	}
-
-	public void addNode(NodeView nv) {
-		CyNode node = (CyNode)nv.getNode();
-		LayoutNode v = new LayoutNode(nv, nodeIndex++, true);
-		nodeList.add(v);
-		nodeToLayoutNode.put(node,v);
-		this.minX = v.getMinX();
-		this.minY = v.getMinY();
-		this.maxX = v.getMaxX();
-		this.maxY = v.getMaxY();
-		this.width = v.getTotalWidth();
-		this.height = v.getTotalHeight();
+	/**
+	 * Calculate and set the edge weights.  Note that this will delete
+	 * edges from the calculation (not the graph) when certain conditions
+	 * are met.
+	 */
+	protected void calculateEdgeWeights() {
+		// Normalize the weights to between 0 and 1
+		ListIterator iter = edgeList.listIterator();
+		while (iter.hasNext()) { 
+			LayoutEdge edge = (LayoutEdge)iter.next();
+			// If we're only dealing with selected nodes, drop any edges
+			// that don't have any selected nodes
+			if (edge.getSource().isLocked() && edge.getTarget().isLocked()) {
+				iter.remove();
+			} else if (edge.getWeight() <= minWeightCutoff || edge.getWeight() > maxWeightCutoff) {
+			// Drop any edges that are outside of our bounds
+				iter.remove();
+			} else {
+				edge.normalizeWeight(minWeight,maxWeight,minLogWeight,maxLogWeight);
+				// Drop any edges where the normalized weight is small
+				if (edge.getWeight() < .001)
+					iter.remove();
+			}
+		}
 	}
 
 	public void trimToSize() {
@@ -154,14 +248,129 @@ public class LayoutPartition {
 	public List<LayoutNode> getNodeList() { return nodeList; }
 	public List<LayoutEdge> getEdgeList() { return edgeList; }
 
+	public Iterator nodeIterator() { return nodeList.iterator(); }
+	public Iterator edgeIterator() { return edgeList.iterator(); }
+
+	public int nodeCount() { return nodeList.size(); }
+	public int edgeCount() { return edgeList.size(); }
+
+	public double getMaxX() { return maxX; }
+	public double getMaxY() { return maxY; }
+	public double getMinX() { return minX; }
+	public double getMinY() { return minY; }
+	public double getWidth() { return width; }
+	public double getHeight() { return height; }
+		
+	public int lockedNodeCount() { return lockedNodes; }
+
+	public Dimension getAverageLocation() {
+		int nodes = nodeCount()-lockedNodes;
+		Dimension result = new Dimension();
+		result.setSize(averageX/nodes, averageY/nodes);
+		return result;
+	}
+
+
+	/**
+	 * Reset routines
+	 */
+	public void resetNodes() { 
+		maxX = -100000;	 
+		maxY = -100000;	 
+		minX = 100000;	 
+		minY = 100000;	 
+		averageX = 0;
+		averageY = 0;
+	}
+
+	public void resetEdges() { 
+		maxWeight = -100000;
+		minWeight = 100000;
+		maxLogWeight = -100000;
+		minLogWeight = 100000;
+	}
+
+	/**
+	 * Private routines
+	 */
+	private void nodeListInitialize(CyNetwork network, CyNetworkView networkView,
+                                  boolean selectedOnly)
+	{
+		int nodeIndex = 0;
+		this.nodeList = new ArrayList(network.getNodeCount());
+		Set selectedNodes = null;
+		Iterator iter = networkView.getNodeViewsIterator();
+		if (selectedOnly) {
+			selectedNodes = ((CyNetwork)network).getSelectedNodes();
+		}
+		while (iter.hasNext()) {
+			NodeView nv = (NodeView)iter.next();
+			CyNode node = (CyNode)nv.getNode();
+			if (selectedNodes != null && !selectedNodes.contains(node)) {
+				addNode(nv, true);
+			} else {
+				addNode(nv, false);
+			}
+		}
+	}
+
+	private void edgeListInitialize(CyNetwork network, CyNetworkView networkView,
+                                  String edgeAttribute)
+	{
+		Iterator iter = network.edgesIterator();
+		while (iter.hasNext()) {
+			CyEdge edge = (CyEdge)iter.next();
+
+			// Make sure we clean up after any previous layouts
+			EdgeView ev = networkView.getEdgeView(edge);
+			ev.clearBends();
+
+			CyNode source = (CyNode)edge.getSource();
+			CyNode target = (CyNode)edge.getTarget();
+			if (source == target) 
+				continue;
+
+			LayoutNode v1 = (LayoutNode)nodeToLayoutNode.get(source);
+			LayoutNode v2 = (LayoutNode)nodeToLayoutNode.get(target);
+			// Do we care about this edge?
+			if (v1.isLocked() && v2.isLocked())
+				continue; // no, ignore it
+			addEdge(edge, v1, v2, edgeAttribute);
+		}
+	}
+
+	private void updateMinMax(double x, double y) {
+		minX = Math.min(minX,x);
+		minY = Math.min(minY,y);
+		maxX = Math.max(maxX,x);
+		maxY = Math.max(maxY,y);
+		averageX += x;
+		averageY += y;
+	}
+
+	private void updateWeights(LayoutEdge newEdge, String edgeAttribute) {
+		newEdge.setWeight(edgeAttribute);
+		maxWeight = Math.max(maxWeight,newEdge.getWeight());
+		minWeight = Math.min(minWeight,newEdge.getWeight());
+		maxLogWeight = Math.max(maxLogWeight,newEdge.getLogWeight());
+		minLogWeight = Math.min(minLogWeight,newEdge.getLogWeight());
+	}
+
 	// Static routines
+
+	/**
+	 * Set the edge weight cutoffs
+	 */
+	public static void setWeightCutoffs(double minCutoff, double maxCutoff) {
+		minWeightCutoff = minCutoff;
+		maxWeightCutoff = maxCutoff;
+	}
 
 	/**
 	 * Partition the graph -- this builds the LayoutEdge and LayoutNode
 	 * arrays as a byproduct.  The algorithm for this was taken from
 	 * algorithms/graphPartition/SGraphPartition.java.
 	 */
-
 	public static List partition(CyNetwork network, CyNetworkView networkView, 
 	                             boolean selectedOnly, String edgeAttribute) {
 		ArrayList partitions = new ArrayList();
@@ -185,7 +394,6 @@ public class LayoutPartition {
 		// statics each pass because in general, we want edge weights
 		// to be normalized across all partitions
 		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
-		LayoutEdge.reset();
 
 		Iterator edgeIter = network.edgesIterator();
 		while (edgeIter.hasNext()) {
@@ -209,7 +417,7 @@ public class LayoutPartition {
 			if (nodesSeenMap.get(nodeIndex) == m_NODE_HAS_BEEN_SEEN) continue;
 
 			// Nope, first time
-			LayoutPartition part = new LayoutPartition();
+			LayoutPartition part = new LayoutPartition(network.getNodeCount(), network.getEdgeCount());
 
 			nodesSeenMap.put(nodeIndex, m_NODE_HAS_BEEN_SEEN);
 
@@ -267,7 +475,7 @@ public class LayoutPartition {
 		NodeView nv = (NodeView)nodesToViews.get(nodeIndex);
 
 		// Add this node to the partition
-		partition.addNode(nv);
+		partition.addNode(nv, false);
 
 		// Get the list of edges connected to this node
 		int incidentEdges[] = network.getAdjacentEdgeIndicesArray(nodeIndex,
@@ -318,5 +526,4 @@ public class LayoutPartition {
 			}
 		}
 	}
-
 }

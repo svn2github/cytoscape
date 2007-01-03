@@ -45,10 +45,6 @@ import csplugins.layout.algorithms.bioLayout.LayoutNode;
 class LayoutEdge {
 	// static variables
 	static double logWeightCeiling;
-	static double maxWeight = 0.0;
-	static double minWeight = 1.0;
-	static double maxLogWeight = 0.0;
-	static double minLogWeight = 0.0;
 	static final double EPSILON = 0.0000001D;
 	static CyAttributes edgeAttributes = null;
 
@@ -91,13 +87,6 @@ class LayoutEdge {
 		}
 	}
 
-	public static void reset() {
-		maxWeight = 0;
-		minWeight = 1;
-		maxLogWeight = 0.0;
-		minLogWeight = 0.0;
-	}
-
 	public static void setLogWeightCeiling(double ceiling) {
 		logWeightCeiling = ceiling;
 	}
@@ -132,10 +121,6 @@ class LayoutEdge {
 
 		// System.out.println("Setting weight to "+eValue+" logWeight to "+logWeight);
 		this.weight = eValue; 
-		maxWeight = Math.max(maxWeight, weight);
-		minWeight = Math.min(minWeight, weight);
-		maxLogWeight = Math.max(maxLogWeight, logWeight);
-		minLogWeight = Math.min(minLogWeight, logWeight);
 	}
 
 	/**
@@ -143,9 +128,13 @@ class LayoutEdge {
 	 * also determines whether to use the log of the weight or
 	 * the weight itself.
 	 */
-	public void normalizeWeight() {
+	public void normalizeWeight(double minWeight, double maxWeight,
+	                            double minLogWeight, double maxLogWeight) {
 		// Normalize the weights to fall between 0 and 1
 
+		// System.out.println("Normalizing weight -- from "+weight+" and "+logWeight);
+		// System.out.println(" minWeight = "+minWeight+" maxWeight = "+maxWeight);
+		// System.out.println(" minLogWeight = "+minLogWeight+" maxLogWeight = "+maxLogWeight);
 		if ((maxWeight-minWeight) == 0) {
 			weight = .5; // all weights are the same -- go unweighted
 		} else if (Math.abs(maxLogWeight - minLogWeight) > 3) {
@@ -154,9 +143,11 @@ class LayoutEdge {
 		} else {
 			weight = (weight - minWeight) / (maxWeight-minWeight);
 		}
+		// System.out.println("                   -- to "+weight);
 	}
 
 	public double getWeight() { return this.weight; }
+	public double getLogWeight() { return this.logWeight; }
 
 	public LayoutNode getSource() { return this.v1; }
 

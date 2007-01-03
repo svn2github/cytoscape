@@ -34,16 +34,9 @@ package csplugins.layout.algorithms.bioLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.Random;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.Comparator;
 import java.util.Properties;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 
@@ -58,13 +51,8 @@ import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
 import csplugins.layout.algorithms.bioLayout.LayoutNode;
-import csplugins.layout.algorithms.bioLayout.LayoutEdge;
 import csplugins.layout.algorithms.bioLayout.LayoutPartition;
 import csplugins.layout.algorithms.bioLayout.Profile;
-
-import cern.colt.map.OpenIntIntHashMap;
-import cern.colt.map.OpenIntObjectHashMap;
-
 
 /**
  * Superclass for the two bioLayout algorithms (KK and FR).
@@ -103,18 +91,11 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	protected static boolean debug = DEBUG; // so we can overload it with a property
 
 	/**
-	 * The LayoutNode (CyNode) and Edge (CyEdge) arrays.
-	 */
-	protected List<LayoutNode> nodeList;
- 	protected List<LayoutEdge> edgeList;
-
-	/**
 	 * Minimum and maximum weights.  This is used to
 	 * provide a bounds on the weights.
 	 */
 	protected double minWeightCutoff = 0;
 	protected double maxWeightCutoff = Double.MAX_VALUE;
-	protected static double logWeightCeiling = 1074;  // Maximum log value (-Math.log(Double.MIN_VALU))
 
 	/**
 	 * The computed width and height of the resulting layout
@@ -143,12 +124,6 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	protected boolean partitionGraph = true;
 
 	/**
-	 * This hashmap provides a quick way to get an index into
-	 * the LayoutNode array given a graph index.
-	 */
-	protected HashMap nodeToLayoutNode;
-
-	/**
 	 * The list of partitions in this graph
 	 */
 	protected List<LayoutPartition> partitionList;
@@ -158,8 +133,6 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 */
 	public BioLayoutAlgorithm () {
 		super ();
-		LayoutEdge.reset(); // Reset the static variables
-		LayoutNode.reset(); // Reset the static variables
 		layoutProperties = new LayoutProperties(getName());
 	}
 
@@ -359,83 +332,84 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		taskMonitor.setStatus("Initializing");
 		initialize();  // Calls initialize_local
 
-		if (!partitionGraph) {
-			System.out.println("Laying out unpartitioned ("+nodeList.size()+" nodes and "+edgeList.size()+" edges)");
-			System.out.println("Node list dimensions are ("+
-													LayoutNode.getMinX()+","+LayoutNode.getMinY()+") to ("+
-													LayoutNode.getMaxX()+","+LayoutNode.getMaxY()+")");
-			System.out.println("Node list width, height is ("+
-													LayoutNode.getTotalWidth()+","+LayoutNode.getTotalHeight()+")");
-			layout(); 		 // Abstract -- must be overloaded
-		} else if (partitionList == null) {
+		if (partitionList == null) {
 			System.out.println("Nothing to layout!");
 			return;
 		} else {
-			// Set up offsets
-	    double next_x_start = 0;
-			double next_y_start = 0;
+			// Set up offsets -- we start with the overall min and max
+			double xStart = partitionList.get(0).getMinX();
+			double yStart = partitionList.get(0).getMinY();
+			Iterator partIter = partitionList.iterator();
+			while (partIter.hasNext()) {
+				LayoutPartition part = (LayoutPartition)partIter.next();
+				xStart = Math.min(xStart, part.getMinX());
+				yStart = Math.min(yStart, part.getMinY());
+			}
+
+	    double next_x_start = xStart;
+			double next_y_start = yStart;
 			double current_max_y = 0;
 			double incr = 50;
 
 			double max_dimensions = Math.sqrt( ( double )network.getNodeCount() );
 			// give each node room
 			max_dimensions *= incr;
+			max_dimensions += xStart;
 
-			System.out.println("Laying out with "+partitionList.size()+" partitions");
-			System.out.println("max_dimensions = "+max_dimensions);
+			// System.out.println("Laying out with "+partitionList.size()+" partitions");
+			// System.out.println("max_dimensions = "+max_dimensions);
 			int partCount = 1;
 
 			// For each partition, layout the graph
-			Iterator partIter = partitionList.iterator();
+			partIter = partitionList.iterator();
 			while (partIter.hasNext()) {
 				LayoutPartition partition = (LayoutPartition)partIter.next();
 
-				// Set the min and max to the saved values
-				LayoutNode.setMinValues(partition.getMinX(), partition.getMinY());
-				LayoutNode.setMaxValues(partition.getMaxX(), partition.getMaxY());
-				LayoutNode.setDimension(partition.getWidth(), partition.getHeight());
-
-				// Get the node and edge lists
-				nodeList = partition.getNodeList();
-				edgeList = partition.getEdgeList();
-
-				System.out.println("Partition "+partCount+" ("+nodeList.size()+" nodes and "+edgeList.size()+" edges)");
+				/*
+				System.out.println("Partition "+partCount+" ("+partition.nodeCount()+" nodes and "+partition.edgeCount()+" edges)");
 				System.out.println("Partition "+partCount+" dimensions are ("+
-														LayoutNode.getMinX()+","+LayoutNode.getMinY()+") to ("+
-														LayoutNode.getMaxX()+","+LayoutNode.getMaxY()+")");
+														partition.getMinX()+","+partition.getMinY()+") to ("+
+														partition.getMaxX()+","+partition.getMaxY()+")");
 				System.out.println("Partition "+partCount+" width, height is ("+
 														partition.getWidth()+","+partition.getHeight()+")");
 				System.out.print("Laying out partition "+partCount+"....");
+				*/
 
-				if (nodeList.size() > 1) {
-					layout();
+				if (partition.nodeCount() > 1) {
+					layout(partition);
+					/*
 					System.out.println(" done");
 					System.out.println("Offsetting by ("+next_x_start+", "+next_y_start+")");
-					// Offset
-					offset (next_x_start, next_y_start);
+					*/
+					// Offset if we have more than one partition
+					if (partitionList.size() > 1)
+						offset (partition, next_x_start, next_y_start);
 				} else {
-					System.out.println(" done");
+					// System.out.println(" done");
 
 					// NodeList is either empty or contains a single node
-					if (nodeList.size() == 0) continue;
+					if (partition.nodeCount() == 0) continue;
+					// Reset our bounds
+					partition.resetNodes();
 					// Single node -- get it
-					LayoutNode.reset();
-					LayoutNode node = (LayoutNode)nodeList.get(0);
+					LayoutNode node = (LayoutNode)partition.getNodeList().get(0);
 					node.setX (next_x_start);
 					node.setY (next_y_start);
-					node.moveToLocation();
+					partition.moveNodeToLocation(node);
 				}
 
+				/*
 				System.out.println("Partition "+partCount+" updated dimensions are ("+
-														LayoutNode.getMinX()+","+LayoutNode.getMinY()+") to ("+
-														LayoutNode.getMaxX()+","+LayoutNode.getMaxY()+")");
+														partition.getMinX()+","+partition.getMinY()+") to ("+
+														partition.getMaxX()+","+partition.getMaxY()+")");
+				*/
 
-				double last_max_x = LayoutNode.getMaxX();
-				double last_max_y = LayoutNode.getMaxY();
+				double last_max_x = partition.getMaxX();
+				double last_max_y = partition.getMaxY();
 				if (last_max_y > current_max_y) {current_max_y = last_max_y;}
 				if (last_max_x > max_dimensions) {
 					max_dimensions = last_max_x;
-					next_x_start = 0;
+					next_x_start = xStart;
 					next_y_start = current_max_y;
 					next_y_start += incr*2;
 				} else {
@@ -449,177 +423,42 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		networkView.updateView();
 	}
 
-	private void offset (double next_x_start, double next_y_start) {
-		Iterator nodeIter = nodeList.iterator();
-		double minX = LayoutNode.getMinX();
-		double minY = LayoutNode.getMinY();
-		LayoutNode.reset();
+	private void offset (LayoutPartition partition, double next_x_start, double next_y_start) {
+		Iterator nodeIter = partition.nodeIterator();
+		double minX = partition.getMinX();
+		double minY = partition.getMinY();
+		partition.resetNodes();
 		while (nodeIter.hasNext()) {
 			LayoutNode node = (LayoutNode)nodeIter.next();
 			node.increment(next_x_start-minX, next_y_start-minY);
-			node.moveToLocation();
+			partition.moveNodeToLocation(node);
 		}
 	}
 
 	/**
 	 * Main function that must be implemented by the child class.
 	 */
-	public abstract void layout();
+	public abstract void layout(LayoutPartition partition);
 
 	/**
 	 * Call all of the initializtion code.  Called from
 	 * AbstractLayout.initialize().
 	 */
 	protected void initialize_local() {
+		LayoutPartition.setWeightCutoffs(minWeightCutoff, maxWeightCutoff);
 		// Depending on whether we are partitioned or not,
 		// we use different initialization
 		if (!partitionGraph) {
-			this.nodeToLayoutNode = new HashMap();
-
-			// Get our vertices
-			vertexInitialize();
-
-			// Get our edges
-			edgeInitialize();
+			// We still use the partition abstraction, even if we're
+			// not partitioning.  This makes the code further down
+			// much cleaner
+			LayoutPartition partition = new LayoutPartition(network, networkView,
+			                                                selectedOnly, edgeAttribute);
+			partitionList = new ArrayList(1);
+			partitionList.add(partition);
 		} else {
 			partitionList = LayoutPartition.partition(network, networkView, 
 			                                          selectedOnly, edgeAttribute);
-		}
-	}
-
-	/**
-	 * Initialize the edge array.
-	 */
-	protected void edgeInitialize() {
-		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
-
-		this.edgeList = new ArrayList(network.getEdgeCount());
-		Iterator iter = network.edgesIterator();
-		while (iter.hasNext()) {
-			CyEdge edge = (CyEdge)iter.next();
-
-			// Make sure we clean up after any previous layouts
-			EdgeView ev = networkView.getEdgeView(edge);
-			ev.clearBends();
-
-			CyNode source = (CyNode)edge.getSource();
-			CyNode target = (CyNode)edge.getTarget();
-			if (source == target) 
-				continue;
-
-			LayoutNode v1 = (LayoutNode)nodeToLayoutNode.get(source);
-			LayoutNode v2 = (LayoutNode)nodeToLayoutNode.get(target);
-			// Do we care about this edge?
-			if (v1.isLocked() && v2.isLocked())
-				continue; // no, ignore it
-			LayoutEdge newEdge = new LayoutEdge(edge, v1, v2);
-			newEdge.setWeight(edgeAttribute);
-			edgeList.add(newEdge);
-		}
-	}
-
-	/**
-	 * Initialize the vertex array.
-	 */
-	protected void vertexInitialize() {
-		int nodeIndex = 0;
-		this.nodeList = new ArrayList(network.getNodeCount());
-		Set selectedNodes = null;
-		Iterator iter = networkView.getNodeViewsIterator();
-		if (selectedOnly) {
-			selectedNodes = ((CyNetwork)network).getSelectedNodes();
-		}
-		while (iter.hasNext()) {
-			NodeView nv = (NodeView)iter.next();
-			CyNode node = (CyNode)nv.getNode();
-			LayoutNode v;
-			if (selectedNodes != null && !selectedNodes.contains(node)) {
-				v = new LayoutNode(nv, nodeIndex, false);
-				v.lock();
-			} else {
-				v = new LayoutNode(nv, nodeIndex, true);
-			}
-			nodeList.add(v);
-			nodeToLayoutNode.put(node,v);
-			nodeIndex++;
-		}
-	}
-
-	/**
-	 * Randomize the graph locations.
-	 */
-	protected void randomizeLocations() {
-		// Get a seeded pseudo random-number generator
-		Date today = new Date();
-		Random random = new Random(today.getTime());
-		// Reset our min and max values
-		LayoutNode.setMinValues(1000000,100000);
-		LayoutNode.setMaxValues(-1000000,-100000);
-		Iterator iter = nodeList.iterator();
-		while (iter.hasNext()) { 
-			LayoutNode node = (LayoutNode)iter.next();
-			if (!node.isLocked())
-				node.setRandomLocation(random); 
-		}
-		return;
-	}
-
-	/**
-	 * Calculate and set the edge weights.  Note that this will delete
-	 * edges from the calculation (not the graph) when certain conditions
-	 * are met.
-	 */
-	protected void calculateEdgeWeights() {
-		// Normalize the weights to between 0 and 1
-		ListIterator iter = edgeList.listIterator();
-		while (iter.hasNext()) { 
-			LayoutEdge edge = (LayoutEdge)iter.next();
-			// If we're only dealing with selected nodes, drop any edges
-			// that don't have any selected nodes
-			if (edge.getSource().isLocked() && edge.getTarget().isLocked()) {
-				iter.remove();
-			} else if (edge.getWeight() <= minWeightCutoff || edge.getWeight() > maxWeightCutoff) {
-			// Drop any edges that are outside of our bounds
-				iter.remove();
-			} else {
-				edge.normalizeWeight();
-				// Drop any edges where the normalized weight is small
-				if (edge.getWeight() < .001)
-					iter.remove();
-			}
-		}
-	}
-
-	/**
-	 * Calculate and set the average location of this group of nodes.  This
-	 * is used when we are only laying out selected nodes to move the group
-	 * back to a starting location.
-	 */
-	protected Dimension calculateAverageLocation() {
-		Dimension result = new Dimension();
-
-		double xAverage = 0;
-		double yAverage = 0;
-		// Calculate the totals
-		int nodeCount = 0;
-		Iterator iter = nodeList.iterator();
-		while (iter.hasNext()) {
-			LayoutNode v = (LayoutNode)iter.next();
-			if (v.isLocked()) continue;
-			xAverage += v.getX();
-			yAverage += v.getY();
-			nodeCount++;
-		}
-		result.setSize(xAverage/nodeCount, yAverage/nodeCount);
-		return result;
-	}
-
-	protected void print_disp() {
-		Iterator iter = nodeList.iterator();
-		while (iter.hasNext()) {
-			LayoutNode v = (LayoutNode)iter.next();
-			debugln("Node "+v.getIdentifier()
-								+ " displacement="+v.printDisp());
 		}
 	}
 

@@ -108,7 +108,21 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 */
 	private double[][] m_nodeDistanceSpringRestLengths;
 	private double[][] m_nodeDistanceSpringStrengths;
+
+	/**
+	 * Current layout pass
+	 */
 	private int m_layoutPass;
+
+	/**
+	 * The number of nodes
+	 */
+	private int m_nodeCount;
+
+	/**
+	 * The Partition
+	 */
+	private LayoutPartition partition;
 
 	/**
 	 * Whether or not to initialize by randomizing all points
@@ -329,50 +343,50 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Perform a layout
 	 */
-	public void layout() {
+	public void layout(LayoutPartition partition) {
 		Iterator iter = null;
 		Dimension initialLocation = null;
+		this.partition = partition;
 		// Initialize all of our values.  This will create
 		// our internal objects and initialize them
 		// local_initialize();
+		m_nodeCount = partition.nodeCount();
 
 		/*
-		System.out.println("BioLayoutKK Algorithm.  Laying out "+nodeList.size()+" nodes and "+edgeList.size()+" edges: ");
-		for (Iterator diter = nodeList.iterator(); diter.hasNext(); ) {
+		System.out.println("BioLayoutKK Algorithm.  Laying out "+m_nodeCount+" nodes and "+partition.edgeCount()+" edges: ");
+		for (Iterator diter = partition.nodeIterator(); diter.hasNext(); ) {
 			System.out.println("\t"+(LayoutNode)diter.next());
 		}
-		for (Iterator diter = edgeList.iterator(); diter.hasNext(); ) {
+		for (Iterator diter = partition.edgeIterator(); diter.hasNext(); ) {
 			System.out.println("\t"+(LayoutEdge)diter.next());
 		}
 		*/
 		
-
 		// Calculate a distance threshold
-		double euclideanDistanceThreshold =  (nodeList.size()+edgeList.size())/2;
+		double euclideanDistanceThreshold =  (m_nodeCount+partition.edgeCount())/2;
 
-		int numIterations = (int) ((nodeList.size() * m_averageIterationsPerNode) / m_numLayoutPasses);
+		int numIterations = (int) ((m_nodeCount * m_averageIterationsPerNode) / m_numLayoutPasses);
 
 		List partialsList = new ArrayList();
 		double[] potentialEnergy = new double[1];
 		if (potentialEnergy[0] != 0.0) throw new RuntimeException();
 	  PartialDerivatives partials;
     PartialDerivatives furthestNodePartials = null;
-		int m_nodeCount = nodeList.size();
 
     m_nodeDistanceSpringRestLengths = new double[m_nodeCount][m_nodeCount];
     m_nodeDistanceSpringStrengths = new double[m_nodeCount][m_nodeCount];
 
 		// Figure out our starting point
 		if (selectedOnly) {
-			initialLocation = calculateAverageLocation();
+			initialLocation = partition.getAverageLocation();
 		}
 
 		// Randomize our points, if any points lie
 		// outside of our bounds
-		if (randomize) randomizeLocations();
+		if (randomize) partition.randomizeLocations();
 
 		// Calculate our edge weights
-		calculateEdgeWeights();
+		partition.calculateEdgeWeights();
 
 		// Compute our distances
     if (canceled) return;
@@ -411,17 +425,16 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
       partialsList.clear();
       furthestNodePartials = null;
 
+			taskMonitor.setStatus("Calculating partial derivatives -- pass "+(m_layoutPass+1)+" of "+m_numLayoutPasses); 
+
       // Calculate all node distances.  Keep track of the furthest.
-			Iterator nodeIter = nodeList.iterator();
+			Iterator nodeIter = partition.nodeIterator();
 			while (nodeIter.hasNext()) 
 			{
 				LayoutNode v = (LayoutNode)nodeIter.next();
 
         if (canceled) return;
 
-        if (m_layoutPass == 0) {
-          taskMonitor.setStatus("Calculating partial derivatives"); 
-				}
         taskMonitor.setPercentCompleted((int) currentProgress);
 				if (v.isLocked()) continue;
 
@@ -437,6 +450,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 				currentProgress += percentProgressPerIter;
       }
 
+			taskMonitor.setStatus("Executing spring logic -- pass "+(m_layoutPass+1)+" of "+m_numLayoutPasses); 
       for (int iterations_i = 0;
            (iterations_i < numIterations) &&
              (furthestNodePartials.euclideanDistance >=
@@ -444,9 +458,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
            iterations_i++)
       {
         if (canceled) return;
-        if (m_layoutPass == 0) {
-          taskMonitor.setStatus("Executing spring logic"); 
-				}
         taskMonitor.setPercentCompleted((int) currentProgress);
 
         furthestNodePartials = moveNode(furthestNodePartials, partialsList,
@@ -463,7 +474,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		double xDelta = 0.0;
 		double yDelta = 0.0;
 		if (selectedOnly) {
-			Dimension finalLocation = calculateAverageLocation();
+			Dimension finalLocation = partition.getAverageLocation();
 			xDelta = finalLocation.getWidth()-initialLocation.getWidth();
 			yDelta = finalLocation.getHeight()-initialLocation.getHeight();
 		}
@@ -471,36 +482,36 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		// Actually move the pieces around
 		// Note that we reset our min/max values before we start this
 		// so we can get an accurate min/max for paritioning
-		LayoutNode.reset();
-		iter = nodeList.iterator();
+		partition.resetNodes();
+		iter = partition.nodeIterator();
 		while (iter.hasNext()) {
 			LayoutNode v = (LayoutNode)iter.next();
 			if (!v.isLocked()) {
 				if (selectedOnly) {
 					v.decrement(xDelta, yDelta);
 				}
-				v.moveToLocation();
+				partition.moveNodeToLocation(v);
 			}
 		}
 	}
 
   private int[][] calculateNodeDistances()
   {
-    int[][] distances = new int[nodeList.size()][];
+    int[][] distances = new int[m_nodeCount][];
     LinkedList queue = new LinkedList();
-    boolean[] completedNodes = new boolean[nodeList.size()];
+    boolean[] completedNodes = new boolean[m_nodeCount];
     int toNode;
     int fromNode;
     int neighbor;
     int toNodeDistance;
     int neighborDistance;
-		Iterator nodeIter = nodeList.iterator();
+		Iterator nodeIter = partition.nodeIterator();
 		while (nodeIter.hasNext()) {
 			LayoutNode v = (LayoutNode) nodeIter.next();
 			fromNode = v.getIndex();
 
       if (distances[fromNode] == null)
-        distances[fromNode] = new int[nodeList.size()];
+        distances[fromNode] = new int[m_nodeCount];
       Arrays.fill(distances[fromNode], Integer.MAX_VALUE);
       distances[fromNode][fromNode] = 0;
       Arrays.fill(completedNodes, false);
@@ -516,7 +527,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
         {
           // Oh boy.  We've already got every distance from/to this node.
           int distanceThroughToNode;
-          for (int i = 0; i < nodeList.size(); i++)
+          for (int i = 0; i < m_nodeCount; i++)
           {
             if (distances[index][i] == Integer.MAX_VALUE) continue;
             distanceThroughToNode = toNodeDistance  + distances[index][i];
@@ -559,7 +570,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	private void calculateSpringData(int[][] nodeDistances) {
 
 		// Set all springs to the default
-    for (int node_i = 0; node_i < nodeList.size(); node_i++)
+    for (int node_i = 0; node_i < m_nodeCount; node_i++)
     {
 			Arrays.fill(m_nodeDistanceSpringRestLengths[node_i], 
 									m_disconnectedNodeDistanceSpringRestLength);
@@ -568,7 +579,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		}
 
     // Calculate rest lengths and strengths based on node distance data.
-		Iterator edgeIter = edgeList.iterator();
+		Iterator edgeIter = partition.edgeIterator();
 		while(edgeIter.hasNext()) {
 			LayoutEdge edge = (LayoutEdge)edgeIter.next();
 			int node_i = edge.getSource().getIndex();
@@ -700,7 +711,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     PartialDerivatives furthestPartials = null;
     Iterator iterator;
     if (partialsList == null) 
-			iterator = nodeList.iterator();
+			iterator = partition.nodeIterator();
     else
       iterator = partialsList.iterator();
     double deltaX;

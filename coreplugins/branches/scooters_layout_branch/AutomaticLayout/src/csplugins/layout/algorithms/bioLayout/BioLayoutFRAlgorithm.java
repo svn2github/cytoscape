@@ -138,6 +138,11 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	private ArrayList displacementArray;
 
 	/**
+	 * The partition we're laying out
+	 */
+	private LayoutPartition partition;
+
+	/**
 	 * Profile data
 	 */
 	Profile initProfile;
@@ -359,7 +364,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Perform a layout
 	 */
-	public void layout() {
+	public void layout(LayoutPartition partition) {
 		Iterator iter = null;
 		Dimension initialLocation = null;
 		// Initialize all of our values.  This will create
@@ -381,17 +386,17 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 		// Figure out our starting point
 		if (selectedOnly)
-			initialLocation = calculateAverageLocation();
+			initialLocation = partition.getAverageLocation();
 
 		// Randomize our points, if any points lie
 		// outside of our bounds
-		if (randomize) randomizeLocations();
+		if (randomize) partition.randomizeLocations();
 
 		// Calculate our force constant
 		calculateForces();
 
 		// Calculate our edge weights
-		calculateEdgeWeights();
+		partition.calculateEdgeWeights();
 
 		taskMonitor.setStatus("Calculating new node positions");
 		taskMonitor.setPercentCompleted(1);
@@ -403,7 +408,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			if (debug || (update_iterations > 0 && (iteration % update_iterations == 0))) {
 				if (iteration > 0) {
 					// Actually move the pieces around
-					iter = nodeList.iterator();
+					iter = partition.nodeIterator();
 					while (iter.hasNext()) {
 						LayoutNode v = (LayoutNode) iter.next();
 						// if this is locked, the move just resets X and Y
@@ -427,7 +432,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		double xDelta = 0.0;
 		double yDelta = 0.0;
 		if (selectedOnly) {
-			Dimension finalLocation = calculateAverageLocation();
+			Dimension finalLocation = partition.getAverageLocation();
 			xDelta = finalLocation.getWidth()-initialLocation.getWidth();
 			yDelta = finalLocation.getHeight()-initialLocation.getHeight();
 		}
@@ -435,14 +440,14 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		// Actually move the pieces around
 		// Note that we reset our min/max values before we start this
 		// so we can get an accurate min/max for paritioning
-		LayoutNode.reset();
-		iter = nodeList.iterator();
+		partition.resetNodes();
+		iter = partition.nodeIterator();
 		while (iter.hasNext()) {
 			LayoutNode v = (LayoutNode) iter.next();
 			if (selectedOnly && !v.isLocked()) {
 				v.decrement(xDelta, yDelta);
 			}
-			v.moveToLocation();
+			partition.moveNodeToLocation(v);
 		}
 		// System.out.println("Layout complete after "+iteration+" iterations");
 	}
@@ -456,7 +461,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public double doOneIteration(int iteration, double temp)
 	{
-		Iterator iter = nodeList.iterator();
+		Iterator iter = partition.nodeIterator();
 
 		// Calculate repulsive forces
 		while (iter.hasNext()) {
@@ -470,7 +475,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		// print_disp();
 
 		// Calculate attractive forces
-		ListIterator lIter = edgeList.listIterator();
+		Iterator lIter = partition.edgeIterator();
 		while (lIter.hasNext()) {
 			LayoutEdge e = (LayoutEdge)lIter.next();
 			calculateAttraction(e);
@@ -484,14 +489,14 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		double yAverage = 0;
 		double xDispTotal = 0;
 		double yDispTotal = 0;
-		iter = nodeList.iterator();
+		iter = partition.nodeIterator();
 		while (iter.hasNext()) {
 			LayoutNode v = (LayoutNode)iter.next();
 			if (v.isLocked()) continue;
 			calculatePosition(v, temp);
 				
-			xAverage += v.getX()/nodeList.size();
-			yAverage += v.getY()/nodeList.size();
+			xAverage += v.getX()/partition.nodeCount();
+			yAverage += v.getY()/partition.nodeCount();
 			xDispTotal += Math.abs(v.getXDisp());
 			yDispTotal += Math.abs(v.getYDisp());
 		}
@@ -499,7 +504,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		// Translate back to the middle (or to the starting point,
 		// if we're dealing with a selected group
 		if (!selectedOnly) {
-			iter = nodeList.iterator();
+			iter = partition.nodeIterator();
 			while (iter.hasNext()) {
 				LayoutNode v = (LayoutNode)iter.next();
 				v.decrement(xAverage-width/2,yAverage-height/2);
@@ -552,7 +557,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	private void calculateRepulsion(LayoutNode v1) {
 		// Initialize
 		v1.setDisp(0,0);
-		Iterator iter = nodeList.iterator();
+		Iterator iter = partition.nodeIterator();
 		while (iter.hasNext()) {
 			LayoutNode v2 = (LayoutNode)iter.next();
 			if (v1 == v2) continue;
@@ -702,17 +707,17 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	private void calculateSize() {
 		// double spreadFactor = Math.max(spread_factor, edgeList.length/nodeList.length);
 		// LayoutNode v0 = (LayoutNode)nodeList.get(0); // Get the first vertex to get to the class variables
-		int nodeCount = nodeList.size();
-		int unLockedNodes = nodeCount-LayoutNode.lockedNodeCount();
+		int nodeCount = partition.nodeCount();
+		int unLockedNodes = nodeCount-partition.lockedNodeCount();
 		double spreadFactor = spread_factor;
-		double averageWidth = LayoutNode.getTotalWidth()/nodeList.size();
-		double averageHeight = LayoutNode.getTotalHeight()/nodeList.size();
-		double current_area = (LayoutNode.getMaxX()-LayoutNode.getMinX()) * 
-		                      (LayoutNode.getMaxY()-LayoutNode.getMinY());
-		double node_area = LayoutNode.getTotalWidth()*LayoutNode.getTotalHeight();
+		double averageWidth = partition.getWidth()/partition.nodeCount();
+		double averageHeight = partition.getHeight()/partition.nodeCount();
+		double current_area = (partition.getMaxX()-partition.getMinX()) * 
+		                      (partition.getMaxY()-partition.getMinY());
+		double node_area = partition.getWidth()*partition.getHeight();
 		if (selectedOnly || (current_area > node_area)) {
-			this.width = (LayoutNode.getMaxX() - LayoutNode.getMinX())*spreadFactor;
-			this.height = (LayoutNode.getMaxY() - LayoutNode.getMinY())*spreadFactor;
+			this.width = (partition.getMaxX() - partition.getMinX())*spreadFactor;
+			this.height = (partition.getMaxY() - partition.getMinY())*spreadFactor;
 			// make it square
 			this.width = Math.max(this.width,this.height);
 			this.height = this.width;
@@ -735,7 +740,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * Calculate the attraction and repulsion constants.
 	 */
 	private void calculateForces() {
-		double force = Math.sqrt(this.height*this.width/nodeList.size());
+		double force = Math.sqrt(this.height*this.width/partition.nodeCount());
 		attraction_constant = force*attraction_multiplier;
 		repulsion_constant = force*repulsion_multiplier;
 		debugln("attraction_constant = "+attraction_constant

@@ -46,12 +46,6 @@ import giny.view.*;
  */
 class LayoutNode {
 	// static (class) variables
-	private static double totalWidth = 0;
-	private static double totalHeight = 0;
-	private static double minX = 100000;
-	private static double minY = 100000;
- 	private static double maxX = -100000;
- 	private static double maxY = -100000;
 	private static int lockedNodes = 0;
 	static final double EPSILON = 0.0000001D;
 
@@ -66,37 +60,14 @@ class LayoutNode {
 
 	public LayoutNode() { }
 
-	public LayoutNode(NodeView nodeView, int index, boolean accumulate) { 
+	public LayoutNode(NodeView nodeView, int index) { 
 		this.nodeView = nodeView;
 		this.node = (CyNode)nodeView.getNode();
 		this.index = index;
 		this.x = nodeView.getXPosition();
 		this.y = nodeView.getYPosition();
 		this.neighbors = new ArrayList();
-		if (accumulate) {
-			updateMinMax(this.x,this.y);
-			totalWidth += Math.sqrt(nodeView.getWidth());
-			totalHeight += Math.sqrt(nodeView.getHeight());
-		}
 	}
-
-	public static void reset() {
-		totalWidth = 0;
-		totalHeight = 0;
-		minX = 100000;
-		minY = 100000;
-		maxX = -100000;
-		maxY = -100000;
-		lockedNodes = 0;
-	}
-
-	private void updateMinMax(double x, double y) {
-		minX = Math.min(minX,x);
-		minY = Math.min(minY,y);
-		maxX = Math.max(maxX,x);
-		maxY = Math.max(maxY,y);
-	}
-		
 
 	public void setLocation(double x, double y) {
 		this.x = x;
@@ -186,46 +157,9 @@ class LayoutNode {
 		return Math.max(EPSILON,Math.sqrt(deltaX*deltaX + deltaY*deltaY));
 	}
 
-	public double getArea() {
-		return totalWidth*totalHeight;
-	}
-
-	public static double getTotalWidth() { return totalWidth; }
-
-	public static double getTotalHeight() { return totalHeight; }
-
-	public static double getMinX() { return minX; }
-
-	public static double getMinY() { return minY; }
-
-	public static double getMaxX() { return maxX; }
-
-	public static double getMaxY() { return maxY; }
-
-	public static void setMinValues (double x, double y) {
-		minX = x;
-		minY = y;
-	}
-
-	public static void setMaxValues (double x, double y) {
-		maxX = x;
-		maxY = y;
-	}
-
-	public static void setDimension(double width, double height) {
-		totalWidth = width;
-		totalHeight = height;
-	}
-
 	public double getWidth() { return this.nodeView.getWidth(); }
 
 	public double getHeight() { return this.nodeView.getHeight(); }
-
-	public void setRandomLocation(Random r) {
-		this.x = r.nextDouble()*this.totalWidth;
-		this.y = r.nextDouble()*this.totalHeight;
-		updateMinMax(this.x,this.y);
-	}
 
 	public void moveToLocation() {
 		if (isLocked) {
@@ -235,7 +169,6 @@ class LayoutNode {
 			nodeView.setXPosition(this.x);
 			nodeView.setYPosition(this.y);
 		}
-		updateMinMax(this.x,this.y);
 	}
 
 	public String getIdentifier() {
