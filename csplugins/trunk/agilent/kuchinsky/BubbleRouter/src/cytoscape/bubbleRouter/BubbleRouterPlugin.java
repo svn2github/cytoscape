@@ -14,6 +14,7 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
@@ -103,10 +104,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 * for popup menu
 	 */
 	public static String DELETE_REGION = "Delete Region";
+	public static String REROUTE_REGION = "Reroute Region";
 
 	JPopupMenu menu = new JPopupMenu("Layout Region");
 
 	LayoutRegion pickedRegion = null;
+	private List boundedNodeViews;
 
 	/**
 	 * 
@@ -127,9 +130,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				.addMouseListener(this);
 
 		JMenuItem deleteRegionItem = new JMenuItem(this.DELETE_REGION);
+		JMenuItem rerouteRegionItem = new JMenuItem(this.REROUTE_REGION);
 		RegionPopupActionListener popupActionListener = new RegionPopupActionListener();
 		deleteRegionItem.addActionListener(popupActionListener);
+		rerouteRegionItem.addActionListener(popupActionListener);
 		menu.add(deleteRegionItem);
+		menu.add(rerouteRegionItem);
 		menu.setVisible(false);
 		// AJK: 12/01/06 END
 		
@@ -199,7 +205,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				pickedRegion.setBounds((int) pickedRegion.getX1(),
 						(int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
 						(int) pickedRegion.getH1());
-				NodeViewsTransformer.transform(pickedRegion.getNodeViews(),
+				NodeViewsTransformer.transform(boundedNodeViews,
 						pickedRegion.getBounds());
 				// System.out.println ("Region start point set to = " +
 				// pickedRegion.getX1() + "," + pickedRegion.getY1());
@@ -336,6 +342,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				nv.setSelected(true);
 			}			
 			pickedRegion.repaint();
+			
+			//AP 1.2.07
+			//collect NodeViews bounded by current region
+			boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion.getNodeViews(), pickedRegion.getBounds());
 		}
 	}
 
@@ -543,12 +553,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				regionToStretch.setW1(regionToStretch.getW1() + mousex - startx);
 			}			
 		}			
-
-		
 		regionToStretch.setBounds((int) regionToStretch.getX1(), (int) regionToStretch
 				.getY1(), (int) regionToStretch.getW1(), (int) regionToStretch
 				.getH1());
-		NodeViewsTransformer.transform(regionToStretch.getNodeViews(),
+		NodeViewsTransformer.transform(boundedNodeViews,
 				regionToStretch.getBounds());
 		// System.out.println ("Region start point set to = " +
 		// regionToStretch.getX1() + "," + regionToStretch.getY1());
@@ -655,13 +663,26 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		public void actionPerformed(ActionEvent ae) {
 			String label = ((JMenuItem) ae.getSource()).getText();
 			// Figure out the appropriate action
-			if ((label == DELETE_REGION) || (pickedRegion != null)) {
+			if ((label == DELETE_REGION) && (pickedRegion != null)) {
 //				System.out.println("delete region: "
 //						+ pickedRegion.getAttributeName());
 				LayoutRegionManager.removeRegion(Cytoscape
 						.getCurrentNetworkView(), pickedRegion);
 
 			} // end of if ()
+			else if ((label == REROUTE_REGION) && (pickedRegion != null)) {
+				pickedRegion.setBounds((int) pickedRegion.getX1(),
+						(int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
+						(int) pickedRegion.getH1());
+				NodeViewsTransformer.transform(pickedRegion.getNodeViews(),
+						pickedRegion.getBounds());
+				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+				pickedRegion.repaint();
+				System.out.println("Region rerouted");
+				//AP 1.2.07
+				//collect NodeViews bounded by current region
+				boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion.getNodeViews(), pickedRegion.getBounds());
+			}
 			else {
 				// throw an exception here?
 				System.err.println("Unexpected Region popup option");
