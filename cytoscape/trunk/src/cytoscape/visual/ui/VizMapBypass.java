@@ -55,7 +55,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.ImageIcon;
 import javax.swing.AbstractAction;
 
@@ -75,8 +77,8 @@ abstract class VizMapBypass {
 
 	abstract protected String[] getBypassNames(); 
 
-	protected JMenuItem getResetMenuItem() {
-		JMenuItem jmi = new JMenuItem (new AbstractAction("Reset") {
+	protected void addResetAllMenuItem(JMenu menu) {
+		JMenuItem jmi = new JMenuItem (new AbstractAction("Reset All") {
 			public void actionPerformed (ActionEvent e) {
 				String[] names = getBypassNames();
 				String id = graphObj.getIdentifier();
@@ -86,12 +88,25 @@ abstract class VizMapBypass {
 				vmm.getNetworkView().redrawGraph(false, true);
 			}
 		});
-		return jmi;
+		menu.add( jmi );
 	}
 
-	protected JMenuItem getMenuItem(final String title, final String attrName, final Class c) {
+	protected void addResetMenuItem(JMenu menu, final String title, final String attrName) {
+		JMenuItem jmi = new JMenuItem (new AbstractAction("[ Reset " + title + " ]") {
+			public void actionPerformed (ActionEvent e) {
+				String id = graphObj.getIdentifier();
+				if ( attrs.hasAttribute(id,attrName) )
+					attrs.deleteAttribute(id,attrName);
+				vmm.getNetworkView().redrawGraph(false, true);
+			}
+		});
+		menu.add( jmi );
+	}
 
-		JMenuItem jmi = new JMenuItem (new AbstractAction(title) {
+
+	protected void addMenuItem(JMenu menu, final String title, final String attrName, final Class c) {
+
+		JMenuItem jmi = new JCheckBoxMenuItem (new AbstractAction(title) {
 			public void actionPerformed (ActionEvent e) {
 				Object obj = getBypassValue(title,c);
 				if ( obj == null )
@@ -137,6 +152,16 @@ abstract class VizMapBypass {
 				return null;
 			}
 		}); 
-		return jmi;
+
+		menu.add(jmi);
+
+		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(),attrName);
+		if ( attrString == null || attrString.length() == 0 )
+			jmi.setSelected(false);
+		else {
+			jmi.setSelected(true);
+			addResetMenuItem(menu, title, attrName);
+		}
+
 	}
 }

@@ -65,16 +65,17 @@ class EdgeBypass extends VizMapBypass {
         menu.add( new JMenuItem("Change Edge Visualization") );
         menu.addSeparator();
 	
-	menu.add( getMenuItem("Color", "edge.color", Color.class) ); 
-	menu.add( getMenuItem("Line Type", "edge.lineType", LineType.class) ); 
-	menu.add( getMenuItem("Source Arrow", "edge.sourceArrow", Arrow.class) ); 
-	menu.add( getMenuItem("Target Arrow", "edge.targetArrow", Arrow.class) ); 
-	menu.add( getMenuItem("Label", "edge.label", String.class) ); 
-	menu.add( getMenuItem("Label Color", "edge.labelColor", Color.class) ); 
-	menu.add( getMenuItem("Font", "edge.font", Font.class) ); 
-	menu.add( getMenuItem("Font Size", "edge.fontSize", Font.class) ); 
+	addMenuItem(menu,"Color", "edge.color", Color.class); 
+	addMenuItem(menu,"Line Type", "edge.lineType", LineType.class); 
+	addMenuItem(menu,"Source Arrow", "edge.sourceArrow", Arrow.class); 
+	addMenuItem(menu,"Target Arrow", "edge.targetArrow", Arrow.class); 
+	addMenuItem(menu,"Label", "edge.label", String.class); 
+	addMenuItem(menu,"Label Color", "edge.labelColor", Color.class); 
+	addMenuItem(menu,"Font", "edge.font", Font.class); 
+	addMenuItem(menu,"Font Size", "edge.fontSize", Font.class); 
         menu.addSeparator();
-        menu.add( getResetMenuItem() );
+
+        addResetAllMenuItem( menu );
 
         return menu;
     }

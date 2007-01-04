@@ -65,25 +65,27 @@ class NodeBypass extends VizMapBypass {
 	menu.add( new JMenuItem("Change Node Visualization") );
 	menu.addSeparator();
 	
-	menu.add( getMenuItem("Fill Color", "node.fillColor", Color.class) ); 
-	menu.add( getMenuItem("Border Color", "node.borderColor", Color.class) ); 
-	menu.add( getMenuItem("Border Line Type", "node.lineType", LineType.class) ); 
+	addMenuItem(menu, "Fill Color", "node.fillColor", Color.class); 
+	addMenuItem(menu, "Border Color", "node.borderColor", Color.class); 
+	addMenuItem(menu, "Border Line Type", "node.lineType", LineType.class); 
 
 	if ( vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() ) {
-		menu.add( getMenuItem("Size", "node.size",Double.class) ); 
+		addMenuItem(menu, "Size", "node.size",Double.class); 
 	} else {
-		menu.add( getMenuItem("Width", "node.width",Double.class) ); 
-		menu.add( getMenuItem("Height", "node.height",Double.class) ); 
+		addMenuItem(menu,"Width", "node.width",Double.class); 
+		addMenuItem(menu,"Height", "node.height",Double.class); 
 	}
 
-	menu.add( getMenuItem("Shape", "node.shape",Byte.class) ); 
-	menu.add( getMenuItem("Label", "node.label",String.class) ); 
-	menu.add( getMenuItem("Label Color", "node.labelColor",Color.class) ); 
-	menu.add( getMenuItem("Label Position", "node.labelPosition", LabelPosition.class) ); 
-	menu.add( getMenuItem("Font", "node.font",Font.class) ); 
-	menu.add( getMenuItem("Font Size", "node.fontSize",Double.class) ); 
+	addMenuItem(menu,"Shape", "node.shape",Byte.class); 
+	addMenuItem(menu,"Label", "node.label",String.class); 
+	addMenuItem(menu,"Label Color", "node.labelColor",Color.class); 
+	addMenuItem(menu,"Label Position", "node.labelPosition", LabelPosition.class); 
+	addMenuItem(menu,"Font", "node.font",Font.class); 
+	addMenuItem(menu,"Font Size", "node.fontSize",Double.class); 
+
 	menu.addSeparator();
-	menu.add( getResetMenuItem() ); 
+
+	addResetAllMenuItem(menu); 
 	
         return menu;
     }
