@@ -51,6 +51,7 @@ import giny.model.Edge;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JLabel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -62,7 +63,7 @@ class EdgeBypass extends VizMapBypass {
 	attrs = Cytoscape.getEdgeAttributes();
 
         JMenu menu =new JMenu("Visual Mapping Bypass");
-        menu.add( new JMenuItem("Change Edge Visualization") );
+        menu.add( new JLabel("Change Edge Visualization") ); 
         menu.addSeparator();
 	
 	addMenuItem(menu,"Color", "edge.color", Color.class); 

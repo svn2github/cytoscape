@@ -51,6 +51,7 @@ import giny.model.Node;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JLabel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -62,7 +63,7 @@ class NodeBypass extends VizMapBypass {
 	attrs = Cytoscape.getNodeAttributes();
 
         JMenu menu =new JMenu("Visual Mapping Bypass");
-	menu.add( new JMenuItem("Change Node Visualization") );
+	menu.add( new JLabel("Change Node Visualization") ); 
 	menu.addSeparator();
 	
 	addMenuItem(menu, "Fill Color", "node.fillColor", Color.class); 
