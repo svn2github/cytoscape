@@ -22,10 +22,10 @@ public class NodeViewsTransformer {
 	public static void transform(List nodeViews, Rectangle2D to) {
 		double scaleX = 1.0d;
 		double scaleY = 1.0d;
-		double minX = Double.MAX_VALUE;
-		double minY = Double.MAX_VALUE;
-		double maxY = Double.MIN_VALUE;
-		double maxX = Double.MIN_VALUE;
+		double minX = Double.POSITIVE_INFINITY;
+		double minY = Double.POSITIVE_INFINITY;
+		double maxY = Double.NEGATIVE_INFINITY;
+		double maxX = Double.NEGATIVE_INFINITY;
 
 		double offsetX;
 		double offsetY;
@@ -35,8 +35,8 @@ public class NodeViewsTransformer {
 		topLeft[1] = to.getMinY();
 		((DGraphView) Cytoscape.getCurrentNetworkView())
 				.xformComponentToNodeCoords(topLeft);
-		double toMinX = (topLeft[0] + 15); // adds buffer to layout region
-		double toMinY = (topLeft[1] + 15);
+		double toMinX = (topLeft[0] + 15); // adds buffer to layout region 
+		double toMinY = (topLeft[1] + 30); // extra room for label
 
 		double[] bottomRight = new double[2];
 		bottomRight[0] = to.getMaxX();
@@ -70,6 +70,7 @@ public class NodeViewsTransformer {
 			if ((currentY + (nv.getHeight() * 0.5)) > maxY) {
 				maxY = currentY + (nv.getHeight() * 0.5);
 			}
+
 		}
 
 		// scaleX = (maxX - minX) / to.getWidth();
