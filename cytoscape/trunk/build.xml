@@ -952,7 +952,7 @@
 	</target>
 
 
-	<target name="jnlp" depends="compile, jnlp.jar" description="Creates jnlp for webstart">
+	<target name="jnlp" depends="release, jnlp.jar" description="Creates jnlp for webstart">
 		<fail message="Missing build.properties file. Please copy build.properties.example and update to reflect your webstart URL.">
 			<condition>
 				<not> <available file="build.properties"/> </not>
@@ -978,7 +978,7 @@
 
 	
 	
-	<target name="webstart" depends="jar, jnlp" description="Creates Cytoscape Webstart Release">
+	<target name="webstart" depends="jnlp" description="Creates Cytoscape Webstart Release">
 
 		<echo>
             ***********************************************
