@@ -649,7 +649,7 @@ public class CytoscapeInit {
 					}
 				}
 				if (totalPlugins == 0)
-					System.out.println("No plugin(s) found in specified jar.");
+					System.out.println("No plugin found in specified jar - assuming it's a library.");
 
 			} catch (Exception e) {
 				System.out.println("Couldn't load plugin url!");
