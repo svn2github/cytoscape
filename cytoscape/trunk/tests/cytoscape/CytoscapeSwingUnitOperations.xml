@@ -63,8 +63,49 @@
 
 	<scenario name="DO_LAYOUT">
 		<Click componentClass="JMenu" label="Layout" />
-		<Click componentClass="JMenuItem" label="$(LAUOUT_CATEGORY)" />
+		<Click componentClass="JMenuItem" label="$(LAYOUT_CATEGORY)" />
 		<Click componentClass="JMenuItem" label="$(LAYOUT_ALGORITHM)" />
+
+		<Delay ms="10000" />
+
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<scenario name="DO_LAYOUT_WITH_OPTION">
+		<Click componentClass="JMenu" label="Layout" />
+		<Click componentClass="JMenuItem" label="$(LAYOUT_CATEGORY)" />
+		<Click componentClass="JMenuItem" label="$(LAYOUT_ALGORITHM)" />
+		<Click componentClass="JMenuItem" label="$(LAYOUT_OPTION)" />
+
+		<Delay ms="10000" />
+
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<scenario name="DO_LAYOUT_WITH_OPTION2">
+		<Click componentClass="JMenu" label="Layout" />
+		<Click componentClass="JMenuItem" label="$(LAYOUT_CATEGORY)" />
+		<Click componentClass="JMenuItem" label="$(LAYOUT_ALGORITHM)" />
+		<Click componentClass="JMenuItem" label="$(LAYOUT_OPTION1)" />
+		<Click componentClass="JMenuItem" label="$(LAYOUT_OPTION2)" />
 
 		<Delay ms="10000" />
 
