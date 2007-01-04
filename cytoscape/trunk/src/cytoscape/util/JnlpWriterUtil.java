@@ -52,6 +52,8 @@ public class JnlpWriterUtil
 		
 		this.LibDir = this.CytoDir + "/lib";
 		this.PluginDir = this.CytoDir + "/plugins";
+		
+		
 		setupDoc();
 		}
 	
@@ -182,6 +184,11 @@ public class JnlpWriterUtil
 	private ArrayList<String> getJarList(String Dir)
 		{
 		File JarDir = new File(Dir);
+		if (!JarDir.exists()) 
+			{
+			System.err.println("Required directory '"+JarDir.getAbsolutePath()+"' does not exist");
+			System.exit(-1);
+			}
 		
 		ArrayList<String> JarFiles = new ArrayList<String>();
 		for(File Current: JarDir.listFiles())
