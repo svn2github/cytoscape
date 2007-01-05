@@ -58,12 +58,14 @@ import cern.colt.map.OpenIntObjectHashMap;
 
 
 /**
- * 
+ * The LayoutPartition class contains all of the information about a
+ * single graph partition, where a partition is defined as all nodes
+ * in a graph that connect only to each other.  This class also provides
+ * static methods that are used to partition an existing graph.
  *
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-
 public class LayoutPartition {
 	private ArrayList<LayoutNode> nodeList;
 	private ArrayList<LayoutEdge> edgeList;
@@ -106,6 +108,9 @@ public class LayoutPartition {
 
 	/**
 	 * LayoutPartition: use this constructor to create an empty LayoutPartition.
+	 *
+	 * @param nodeCount	The number of nodes in the new partition.
+	 * @param edgeCount	The number of edges in the new partition.
 	 */
 	public LayoutPartition(int nodeCount, int edgeCount) {
 		nodeList = new ArrayList(nodeCount);
@@ -138,6 +143,12 @@ public class LayoutPartition {
 		trimToSize();
 	}
 
+	/**
+	 * Add a node to this partition.
+	 *
+	 * @param nv the NodeView of the node to add
+	 * @param locked a boolean value to determine if this node is locked or not
+	 */
 	public void addNode(NodeView nv, boolean locked) {
 		CyNode node = (CyNode)nv.getNode();
 		LayoutNode v = new LayoutNode(nv, nodeIndex++);
@@ -152,6 +163,36 @@ public class LayoutPartition {
 			this.width += Math.sqrt(nv.getWidth());
 			this.height += Math.sqrt(nv.getHeight());
 		}
+	}
+
+	/**
+	 * Add an edge to this partition assuming that the source and target
+	 * nodes are not yet known.
+	 *
+	 * @param edge	the CyEdge to add to the partition
+	 * @param edgeAttribute	the attribute name (if any) that contains the 
+	 *                      weights to use for this edge
+	 */
+	public void addEdge(CyEdge edge, String edgeAttribute) {
+		LayoutEdge newEdge = new LayoutEdge(edge);
+		updateWeights(newEdge, edgeAttribute);
+		edgeList.add(newEdge);
+	}
+
+	/**
+	 * Add an edge to this partition assuming that the source and target
+	 * nodes <em>are</em> known.
+	 *
+	 * @param edge	the CyEdge to add to the partition
+	 * @param v1	the LayoutNode of the edge source
+	 * @param v2	the LayoutNode of the edge target
+	 * @param edgeAttribute	the attribute name (if any) that contains the 
+	 *                      weights to use for this edge
+	 */
+	public void addEdge(CyEdge edge, LayoutNode v1, LayoutNode v2, String edgeAttribute) {
+		LayoutEdge newEdge = new LayoutEdge(edge,v1,v2);
+		updateWeights(newEdge, edgeAttribute);
+		edgeList.add(newEdge);
 	}
 
 	/**
@@ -175,6 +216,13 @@ public class LayoutPartition {
 		}
 	}
 
+	/**
+	 * Move the node to its current X and Y values.  This is a wrapper
+	 * to LayoutNode's moveToLocation, but has the property of updating
+	 * the current min and max values for this partition.
+	 *
+	 * @param node the LayoutNode to move
+	 */
 	public void moveNodeToLocation(LayoutNode node) {
 		// We provide this routine so that we can keep our
 		// min/max values updated
@@ -182,18 +230,11 @@ public class LayoutPartition {
 		updateMinMax(node.getX(), node.getY());
 	}
 
-	public void addEdge(CyEdge edge, String edgeAttribute) {
-		LayoutEdge newEdge = new LayoutEdge(edge);
-		updateWeights(newEdge, edgeAttribute);
-		edgeList.add(newEdge);
-	}
-
-	public void addEdge(CyEdge edge, LayoutNode v1, LayoutNode v2, String edgeAttribute) {
-		LayoutEdge newEdge = new LayoutEdge(edge,v1,v2);
-		updateWeights(newEdge, edgeAttribute);
-		edgeList.add(newEdge);
-	}
-
+	/**
+	 * Convenience routine to update the source and target for all of the
+	 * edges in a partition.  This is useful when the algorithm used makes it
+	 * difficult to record source and target until it has completed.
+	 */
 	public void fixEdges() {
 		Iterator edgeIter = edgeList.iterator();
 		while (edgeIter.hasNext()) {
@@ -248,31 +289,115 @@ public class LayoutPartition {
 		}
 	}
 
-	public void trimToSize() {
-		nodeList.trimToSize();
-		edgeList.trimToSize();
-	}
-
+	/**
+	 * Return the size of this partition, which is defined as the number of
+	 * nodes that it contains.
+	 *
+	 * @return	partition size
+	 */
 	public int size() { return nodeList.size(); }
 
+	/**
+	 * Return the list of LayoutNodes within this partition.
+	 *
+	 * @return	List of LayoutNodes
+	 * @see LayoutNode
+	 */
 	public List<LayoutNode> getNodeList() { return nodeList; }
+
+	/**
+	 * Return the list of LayoutEdges within this partition.
+	 *
+	 * @return	List of LayoutEdges
+	 * @see LayoutEdge
+	 */
 	public List<LayoutEdge> getEdgeList() { return edgeList; }
 
+	/**
+	 * Return an iterator over all of the LayoutNodes in this parition
+	 *
+	 * @return Iterator over the list of LayoutNodes
+	 * @see LayoutNode
+	 */
 	public Iterator nodeIterator() { return nodeList.iterator(); }
+
+	/**
+	 * Return an iterator over all of the LayoutEdges in this parition
+	 *
+	 * @return Iterator over the list of LayoutEdges
+	 * @see LayoutEdge
+	 */
 	public Iterator edgeIterator() { return edgeList.iterator(); }
 
+	/**
+	 * Return the number of nodes in this partition
+	 *
+	 * @return number of nodes in the partition
+	 */
 	public int nodeCount() { return nodeList.size(); }
+
+	/**
+	 * Return the number of edges in this partition
+	 *
+	 * @return number of edges in the partition
+	 */
 	public int edgeCount() { return edgeList.size(); }
 
+	/**
+	 * Return the maximum X location of all of the LayoutNodes
+	 *
+	 * @return maximum X location
+	 */
 	public double getMaxX() { return maxX; }
+
+	/**
+	 * Return the maximum Y location of all of the LayoutNodes
+	 *
+	 * @return maximum Y location
+	 */
 	public double getMaxY() { return maxY; }
+
+	/**
+	 * Return the minimum X location of all of the LayoutNodes
+	 *
+	 * @return minimum X location
+	 */
 	public double getMinX() { return minX; }
+
+	/**
+	 * Return the minimum Y location of all of the LayoutNodes
+	 *
+	 * @return minimum Y location
+	 */
 	public double getMinY() { return minY; }
+
+	/**
+	 * Return the total width of all of the LayoutNodes
+	 *
+	 * @return total width of all of the LayoutNodes
+	 */
 	public double getWidth() { return width; }
+
+	/**
+	 * Return the total height of all of the LayoutNodes
+	 *
+	 * @return total height of all of the LayoutNodes
+	 */
 	public double getHeight() { return height; }
 		
+	/**
+	 * Return the number of locked nodes within this parititon
+	 *
+	 * @return number of locked nodes in partition
+	 */
 	public int lockedNodeCount() { return lockedNodes; }
 
+	/**
+	 * Return the average location of the nodes in this partition
+	 *
+	 * @return average location of the nodes as a Dimension
+	 * @see Dimension
+	 */
 	public Dimension getAverageLocation() {
 		int nodes = nodeCount()-lockedNodes;
 		Dimension result = new Dimension();
@@ -280,6 +405,14 @@ public class LayoutPartition {
 		return result;
 	}
 
+	/**
+	 * Offset all of the nodes in the partition by a fixed
+	 * amount.  This is used by algorithms of offset each
+	 * partition after laying it out.
+	 *
+	 * @param xoffset the amount to offset in the X direction
+	 * @param yoffset the amount to offset in the Y direction
+	 */
 	public void offset(double xoffset, double yoffset) {
 		Iterator nodeIter = nodeIterator();
 		double myMinX = this.minX;
@@ -296,6 +429,12 @@ public class LayoutPartition {
 	/**
 	 * Reset routines
 	 */
+
+	/**
+	 * Reset all of the data maintained for the LayoutNodes
+	 * contained within this partition, including the min, max
+	 * and average x and y values.
+	 */
 	public void resetNodes() { 
 		maxX = -100000;	 
 		maxY = -100000;	 
@@ -305,6 +444,11 @@ public class LayoutPartition {
 		averageY = 0;
 	}
 
+	/**
+	 * Reset all of the data maintained for the LayoutEdges
+	 * contained within this partition, including the min
+	 * and max weight and logWeight data.
+	 */
 	public static void resetEdges() { 
 		maxWeight = -100000;
 		minWeight = 100000;
@@ -361,6 +505,17 @@ public class LayoutPartition {
 		}
 	}
 
+	/**
+	 * Space saving convenience function to trim the internal arrays to fit the
+	 * contained data.  Useful to call this after a partition has been created
+	 * and filled.  This is used by the static method LayoutPartition.partition
+	 */
+	private void trimToSize() {
+		nodeList.trimToSize();
+		edgeList.trimToSize();
+	}
+
+
 	private void updateMinMax(double x, double y) {
 		minX = Math.min(minX,x);
 		minY = Math.min(minY,y);
@@ -381,7 +536,10 @@ public class LayoutPartition {
 	// Static routines
 
 	/**
-	 * Set the edge weight cutoffs
+	 * Set the edge weight cutoffs for all LayoutEdges.
+	 *
+	 * @param minCutoff the minimum value to accept
+	 * @param maxCutoff the maximum value to accept
 	 */
 	public static void setWeightCutoffs(double minCutoff, double maxCutoff) {
 		minWeightCutoff = minCutoff;
@@ -392,6 +550,12 @@ public class LayoutPartition {
 	 * Partition the graph -- this builds the LayoutEdge and LayoutNode
 	 * arrays as a byproduct.  The algorithm for this was taken from
 	 * algorithms/graphPartition/SGraphPartition.java.
+	 *
+	 * @param network the CyNetwork containing the graph
+	 * @param networkView the CyNetworkView representing the graph
+	 * @param selectedOnly should we consider only selected nodes?
+	 * @param edgeAttribute the attribute to use for edge weighting
+	 * @return a List of LayoutPartitions
 	 */
 	public static List partition(CyNetwork network, CyNetworkView networkView, 
 	                             boolean selectedOnly, String edgeAttribute) {

@@ -40,7 +40,10 @@ import cytoscape.util.*;
 import csplugins.layout.LayoutNode;
 
 /**
- * The LayoutEdge class
+ * The LayoutEdge class.  This class is used as a container for information
+ * about the edges in a layout.  In particular, it provides a convenient handle
+ * to information about the weights associated with edges, and pointers to the
+ * LayoutNodes that are joined by this edge.
  */
 public class LayoutEdge {
 	// static variables
@@ -55,17 +58,34 @@ public class LayoutEdge {
 	private double logWeight;
 	private CyEdge edge;
 
+	/**
+	 * An empty constructor
+	 */
 	public LayoutEdge() { 
 		if (edgeAttributes == null)
 			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
 
+	/**
+	 * Create a LayoutEdge that will contain information about this edge.
+	 * Additional information must be filled in later.
+	 *
+	 * @param	edge	CyEdge that this LayoutEdge represents
+	 */
 	public LayoutEdge(CyEdge edge) { 
 		this.edge = edge;
 		if (edgeAttributes == null)
 			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
 
+	/**
+	 * Create a LayoutEdge that will contains information about this edge,
+	 * and that record that it connects LayoutNodes v1 and v2.
+	 *
+	 * @param	edge	CyEdge that this LayoutEdge represents
+	 * @param	v1	The LayoutNode that represents the source of the edge
+	 * @param	v2	The LayoutNode that represents the target of the edge
+	 */
 	public LayoutEdge(CyEdge edge, LayoutNode v1, LayoutNode v2) {
 		this.edge = edge;
 		this.v1 = v1;
@@ -78,6 +98,15 @@ public class LayoutEdge {
 			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
 
+	/**
+	 * Set the nodes associated with this edge.  This is used subsequent
+	 * to a call to the LayoutEdge(CyEdge) constructor to associate the
+	 * source and target nodes since we don't always know that information
+	 * at the time the edge is encountered.
+	 *
+	 * @param	v1	The LayoutNode that represents the source of the edge
+	 * @param	v2	The LayoutNode that represents the target of the edge
+	 */
 	public void addNodes(LayoutNode v1, LayoutNode v2) {
 		this.v1 = v1;
 		this.v2 = v2;
@@ -85,10 +114,6 @@ public class LayoutEdge {
 			v1.addNeighbor(v2);
 			v2.addNeighbor(v1);
 		}
-	}
-
-	public static void setLogWeightCeiling(double ceiling) {
-		logWeightCeiling = ceiling;
 	}
 
 	/**
@@ -124,9 +149,12 @@ public class LayoutEdge {
 	}
 
 	/**
-	 * Normalize the weights to fall between 0 and 1.  This method
-	 * also determines whether to use the log of the weight or
-	 * the weight itself.
+	 * Normalize the weights to fall between 0 and 1.
+	 *
+	 * @param minWeight	The minimum weight value
+	 * @param maxWeight	The maximum weight value
+	 * @param useLogWeights If "true", set the weight to be the logWeight.  minWeight
+	 *                      and maxWeight values are already in log format.
 	 */
 	public void normalizeWeight(double minWeight, double maxWeight, 
 	                            boolean useLogWeights) {
@@ -141,17 +169,59 @@ public class LayoutEdge {
 		weight = (weight - minWeight) / (maxWeight-minWeight);
 	}
 
+	/**
+	 * Return the current value for this edge's weight.
+	 *
+	 * @return 	This edge's weight as a double
+	 */
 	public double getWeight() { return this.weight; }
+
+	/**
+	 * Return the current value for this edge's logWeight (-log(weight)).
+	 *
+	 * @return 	This edge's logWeight as a double
+	 */
 	public double getLogWeight() { return this.logWeight; }
 
+	/**
+	 * Return the source of this edge
+	 *
+	 * @return 	This edge's source
+	 */
 	public LayoutNode getSource() { return this.v1; }
 
+	/**
+	 * Return the target of this edge
+	 *
+	 * @return 	This edge's target
+	 */
 	public LayoutNode getTarget() { return this.v2; }
 
+	/**
+	 * Return the CyEdge this LayoutEdge represents
+	 *
+	 * @return 	The CyEdge for this LayoutEdge
+	 */
 	public CyEdge getEdge() { return this.edge; }
 
+	/**
+	 * Return a string representation for this LayoutEdge.
+	 *
+	 * @return	A String containting the name of the CyEdge, the connecting LayoutNodes
+	 *          and the current weight.
+	 */
 	public String toString() {
 		return "Edge "+edge.getIdentifier()+" connecting "+v1.getIdentifier()+" and "+v2.getIdentifier()+" with weight "+weight;
 	}
 
+	/**
+	 * Set the maximum log weight that we will consider.  This is a static and only needs to be
+	 * set once for all LayoutEdges.
+	 *
+	 * @param ceiling	the maximum log weight to consider.  Edges with weights above this
+	 *                value will be dropped.
+	 */
+	public static void setLogWeightCeiling(double ceiling) {
+		logWeightCeiling = ceiling;
+	}
 }
