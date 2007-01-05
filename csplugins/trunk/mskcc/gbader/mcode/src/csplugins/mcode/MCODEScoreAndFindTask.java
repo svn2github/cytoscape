@@ -58,6 +58,7 @@ public class MCODEScoreAndFindTask implements Task {
      * @param network The network to cluster
      * @param analyze
      * @param resultSet
+     * @param alg
      */
     public MCODEScoreAndFindTask(CyNetwork network, int analyze, String resultSet, MCODEAlgorithm alg) {
         this.network = network;
@@ -74,7 +75,7 @@ public class MCODEScoreAndFindTask implements Task {
             throw new IllegalStateException("Task Monitor is not set.");
         }
         try {
-            //run MCODE scoring algorithm - node scores are saved as node attributes
+            //run MCODE scoring algorithm - node scores are saved in the alg object
             alg.setTaskMonitor(taskMonitor, network.getIdentifier());
             //only (re)score the graph if the scoring parameters have been changed
             if (analyze == MCODEScoreAndFindAction.RESCORE) {
@@ -85,14 +86,14 @@ public class MCODEScoreAndFindTask implements Task {
                 if (interrupted) {
                     return;
                 }
-                //store this MCODE instance with the network to avoid duplicating the calculation
                 System.err.println("Network was scored in " + alg.getLastScoreTime() + " ms.");
             }
 
             taskMonitor.setPercentCompleted(0);
             taskMonitor.setStatus("Finding Clusters (Step 2 of 3)");
+
             clusters = alg.findClusters(network, resultSet);
-            //TODO: this is where different finding algorithms could be called based on parameters (optimized or custom) and scope
+
             if (interrupted) {
                 return;
             }
@@ -113,7 +114,6 @@ public class MCODEScoreAndFindTask implements Task {
             completedSuccessfully = true;
         } catch (Exception e) {
             //TODO: ask Ethan if interrupt exception should be thrown from within code or should 'return' just be used?
-            //network.putClientData("MCODE_running", new Boolean(false));
             taskMonitor.setException(e, "MCODE cancelled");
         }
     }

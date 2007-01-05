@@ -49,7 +49,6 @@ import java.util.*;
 public class MCODEAlgorithm {
     private boolean cancelled = false;
     private TaskMonitor taskMonitor = null;
-    private MCODECluster[] clusters;
 
     //data structure for storing information required for each node
     private class NodeInfo {
@@ -85,7 +84,6 @@ public class MCODEAlgorithm {
     public MCODEAlgorithm(String networkID) {
         //get current parameters
         params = MCODECurrentParameters.getInstance().getParamsCopy(networkID);
-        clusters = new MCODECluster[0];
     }
 
     public MCODEAlgorithm(TaskMonitor taskMonitor, String networkID) {
@@ -95,7 +93,6 @@ public class MCODEAlgorithm {
 
     public void setTaskMonitor(TaskMonitor taskMonitor, String networkID) {
         params = MCODECurrentParameters.getInstance().getParamsCopy(networkID);
-        clusters = new MCODECluster[0];
         this.taskMonitor = taskMonitor;
     }
 
@@ -129,6 +126,37 @@ public class MCODEAlgorithm {
      */
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
+    }
+
+    /**
+     *
+     * @param rootGraphIndex
+     * @param resultSet
+     * @return
+     */
+    public Double getNodeScore(int rootGraphIndex, String resultSet) {
+        Double nodeScore = new Double(0.0);
+        TreeMap nodeScoreSortedMap = (TreeMap) nodeScoreResultsMap.get(resultSet);
+
+        for (Iterator score = nodeScoreSortedMap.keySet().iterator(); score.hasNext();) {
+            nodeScore = (Double) score.next();
+            ArrayList nodes = (ArrayList) nodeScoreSortedMap.get(nodeScore);
+            if (nodes.contains(new Integer(rootGraphIndex))) {
+                return nodeScore;
+            }
+        }
+        return nodeScore;
+    }
+
+    /**
+     * 
+     * @param resultSet
+     * @return
+     */
+    public double getMaxScore(String resultSet) {
+        TreeMap nodeScoreSortedMap = (TreeMap) nodeScoreResultsMap.get(resultSet);
+        Double nodeScore = (Double) nodeScoreSortedMap.firstKey();
+        return nodeScore.doubleValue();
     }
 
     /**
@@ -204,18 +232,19 @@ public class MCODEAlgorithm {
 
     /**
      * Step 2: Find all clusters given a scored graph.  If the input network has not been scored,
-     * this method will return null.
+     * this method will return null.  This method is called when the user selects network scope or
+     * single node scope.
      *
      * @param inputNetwork - The scored network to find clusters in.
-     * @return An ArrayList containing an ArrayList for each cluster. Each cluster is stored as a simple list
-     *         of node IDs of the nodes in the input network that are part of the cluster.
+     * @param resultSet
+     * @return An array containing an MCODECluster object for each cluster.
      */
     public MCODECluster[] findClusters(CyNetwork inputNetwork, String resultSet) {
-        TreeMap nodeScoreSortedMap = new TreeMap();
-        HashMap nodeInfoHashMap = new HashMap();
+        TreeMap nodeScoreSortedMap;
+        HashMap nodeInfoHashMap;
         if (!nodeScoreResultsMap.containsKey(resultSet)) {
-            nodeScoreSortedMap.putAll(currentNodeScoreSortedMap);
-            nodeInfoHashMap.putAll(currentNodeInfoHashMap);
+            nodeScoreSortedMap = currentNodeScoreSortedMap;
+            nodeInfoHashMap = currentNodeInfoHashMap;
             
             nodeScoreResultsMap.put(resultSet, nodeScoreSortedMap);
             nodeInfoResultsMap.put(resultSet, nodeInfoHashMap);
@@ -291,15 +320,33 @@ public class MCODEAlgorithm {
                 break;
             }
         }
-        long msTimeAfter = System.currentTimeMillis();
-        lastFindTime = msTimeAfter - msTimeBefore;
-
-        clusters = new MCODECluster[alClusters.size()];
+        //Once the clusters have been found we either return them or in the case of single node scope, we select only
+        //the ones that contain the selected node and return those
+        ArrayList selectedALClusters = new ArrayList();
+        if (!params.getScope().equals(MCODEParameterSet.NETWORK)) {
+            for (Iterator i = alClusters.iterator(); i.hasNext();){
+                MCODECluster cluster = (MCODECluster) i.next();
+                ArrayList alCluster = cluster.getALCluster();
+                ArrayList alSelectedNodes = new ArrayList();
+                for (int c = 0; c < params.getSelectedNodes().length; c++) {
+                    alSelectedNodes.add(params.getSelectedNodes()[c]);
+                }
+                if (alCluster.containsAll(alSelectedNodes)) {
+                    selectedALClusters.add(cluster);
+                }
+            }
+            alClusters = selectedALClusters;
+        }
+        //Finally convert the arraylist into a fixed array
+        MCODECluster[] clusters = new MCODECluster[alClusters.size()];
         for (int c = 0; c < clusters.length; c++) {
             clusters[c] = (MCODECluster) alClusters.get(c);
         }
 
-        return (clusters);
+        long msTimeAfter = System.currentTimeMillis();
+        lastFindTime = msTimeAfter - msTimeBefore;
+
+        return clusters;
     }
 
     /**
@@ -489,17 +536,20 @@ public class MCODEAlgorithm {
      */
     private boolean getClusterCoreInternal(Integer startNode, HashMap nodeSeenHashMap, double startNodeScore, int currentDepth, ArrayList cluster, double nodeScoreCutoff, int maxDepthFromStart,  HashMap nodeInfoHashMap) {
         //base cases for recursion
+        System.out.println("checking: " + startNode);
         if (nodeSeenHashMap.containsKey(startNode)) {
+            System.out.println(startNode + "already added, returning true");
             return (true);  //don't recheck a node
         }
         if (currentDepth > maxDepthFromStart) {
+            System.out.println("max depth achieved, returning true");
             return (true);  //don't exceed given depth from start node
         }
 
         //Initialization
         Integer currentNeighbor;
         int i = 0;
-
+        System.out.println("adding: " + startNode);
         nodeSeenHashMap.put(startNode, new Boolean(true));
         for (i = 0; i < (((NodeInfo) nodeInfoHashMap.get(startNode)).numNodeNeighbors); i++) {
             //go through all currentNode neighbors to check their core density for cluster inclusion

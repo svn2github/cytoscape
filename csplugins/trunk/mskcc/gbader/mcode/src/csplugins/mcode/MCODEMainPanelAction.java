@@ -4,6 +4,7 @@ import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.visual.VisualMappingManager;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -53,6 +54,14 @@ import java.net.URL;
 public class MCODEMainPanelAction implements ActionListener {
     boolean opened = false;
     MCODEMainPanel mainPanel;
+    VisualMappingManager vmm;
+    MCODEVisualStyle MCODEVS;
+
+    public MCODEMainPanelAction() {
+        MCODEVS = new MCODEVisualStyle("MCODE");
+        vmm = Cytoscape.getVisualMappingManager();
+    }
+
     /**
      * This method is called when the user wants to start MCODE.
      *
@@ -65,7 +74,12 @@ public class MCODEMainPanelAction implements ActionListener {
 
         //First we must make sure that the plugin is not already open
         if (!opened) {
-            mainPanel = new MCODEMainPanel(this);
+            if (!vmm.getCalculatorCatalog().getVisualStyleNames().contains("MCODE")) {
+                vmm.getCalculatorCatalog().addVisualStyle(MCODEVS);
+            }
+            vmm.setVisualStyle(MCODEVS);
+
+            mainPanel = new MCODEMainPanel(this, MCODEVS);
             URL iconURL = this.getClass().getResource("resources/logo2.png");
             if (iconURL != null) {
                 ImageIcon icon = new ImageIcon(iconURL);
@@ -86,6 +100,11 @@ public class MCODEMainPanelAction implements ActionListener {
 
     public void setOpened(boolean opened) {
         this.opened = opened;
+        if (!isOpened()) {
+            vmm.setVisualStyle("default");
+            //TODO: non functonal code for removing a visual style...vmm.getCalculatorCatalog().removeVisualStyle("MCODE");
+            vmm.applyAppearances();
+        }
     }
 
     public boolean isOpened() {

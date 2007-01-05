@@ -68,7 +68,7 @@ public class MCODETest extends TestCase {
      * Run MCODE on a small test network with some default parameters
      */
     public void testMCODEAlgorithmSmall() {
-        params.setAllAlgorithmParams(MCODEParameterSet.NETWORK, false, 2, 2, false, 100, 0.2, false, true, 0.1, true);
+        params.setAllAlgorithmParams(MCODEParameterSet.NETWORK, null, false, 2, 2, false, 100, 0.2, false, true, 0.1);
         alg.scoreGraph(networkSmall, "Results 1");
         MCODECluster[] clusters = alg.findClusters(networkSmall, "Results 1");
         assertEquals(clusters.length, 1);

@@ -90,6 +90,7 @@ public class MCODECurrentParameters {
         //until this method is called
         MCODEParameterSet currentParamSet = new MCODEParameterSet(
                 newParams.getScope(),
+                newParams.getSelectedNodes(),
                 newParams.isIncludeLoops(),
                 newParams.getDegreeCutoff(),
                 newParams.getKCore(),
@@ -98,14 +99,14 @@ public class MCODECurrentParameters {
                 newParams.getNodeScoreCutoff(),
                 newParams.isFluff(),
                 newParams.isHaircut(),
-                newParams.getFluffNodeDensityCutoff(),
-                newParams.isPreprocessNetwork()
+                newParams.getFluffNodeDensityCutoff()
         );
 
         currentParams.put(networkID, currentParamSet);
 
         MCODEParameterSet resultParamSet = new MCODEParameterSet(
                 newParams.getScope(),
+                newParams.getSelectedNodes(),
                 newParams.isIncludeLoops(),
                 newParams.getDegreeCutoff(),
                 newParams.getKCore(),
@@ -114,8 +115,7 @@ public class MCODECurrentParameters {
                 newParams.getNodeScoreCutoff(),
                 newParams.isFluff(),
                 newParams.isHaircut(),
-                newParams.getFluffNodeDensityCutoff(),
-                newParams.isPreprocessNetwork()
+                newParams.getFluffNodeDensityCutoff()
         );
 
         resultParams.put(resultSet, resultParamSet);

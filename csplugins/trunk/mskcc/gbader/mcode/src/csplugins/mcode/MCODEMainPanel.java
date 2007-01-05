@@ -22,6 +22,7 @@ public class MCODEMainPanel extends JPanel {
     MCODEParameterSet currentParamsCopy; // stores current parameters - populates panel fields
 
     MCODEMainPanelAction trigger;
+    MCODEVisualStyle MCODEVS;
 
     DecimalFormat decFormat; // used in the formatted text fields
 
@@ -54,9 +55,11 @@ public class MCODEMainPanel extends JPanel {
      * The actual parameter change dialog that builds the UI
      *
      * @param trigger A reference to the action that triggered the initiation of this class
+     * @param MCODEVS
      */
-    public MCODEMainPanel(MCODEMainPanelAction trigger) {
+    public MCODEMainPanel(MCODEMainPanelAction trigger, MCODEVisualStyle MCODEVS) {
         this.trigger = trigger;
+        this.MCODEVS = MCODEVS;
         setLayout(new BorderLayout());
 
         //get the current parameters
@@ -65,6 +68,10 @@ public class MCODEMainPanel extends JPanel {
 
         decFormat = new DecimalFormat();
         decFormat.setParseIntegerOnly(true);
+
+        CytoscapeDesktop desktop = Cytoscape.getDesktop();
+        CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
+        cytoPanel.addCytoPanelListener(new MCODEVisualStyleAction(cytoPanel, MCODEVS));
 
         //create the three main panels: scope, advanced options, and bottom
         JPanel scopePanel = createScopePanel();
@@ -122,8 +129,7 @@ public class MCODEMainPanel extends JPanel {
         panel.add(scopeStarter);
         panel.add(scopeNetwork);
         panel.add(scopeNode);
-        //TODO: uncomment this when node set algorithm is complete
-        //panel.add(scopeNodeSet);
+        panel.add(scopeNodeSet);
         
         return panel;
     }
@@ -266,32 +272,6 @@ public class MCODEMainPanel extends JPanel {
         MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel(component);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        //Preprocess (only in second (and 3rd?) scope - from seed)
-        JLabel preprocessLabel = new JLabel("Preprocess network");
-        preprocessCheckBox = new JCheckBox() {
-            public JToolTip createToolTip() {
-                return new JMultiLineToolTip();
-            }
-        };
-        preprocessCheckBox.addItemListener(new MCODEMainPanel.PreprocessCheckBoxAction());
-        String preprocessTip = "If checked, MCODE will limit cluster expansion to the\n" +
-                "direct neighborhood of the spawning node.  If unchecked, the cluster will be allowed\n" +
-                "to branch out to denser regions of the network.";
-        preprocessCheckBox.setToolTipText(preprocessTip);
-        preprocessCheckBox.setSelected(currentParamsCopy.isPreprocessNetwork());
-
-        JPanel preprocessPanel = new JPanel(new BorderLayout()) {
-            public JToolTip createToolTip() {
-                return new JMultiLineToolTip();
-            }
-        };
-        preprocessPanel.setToolTipText(preprocessTip);
-
-        preprocessPanel.add(preprocessLabel, BorderLayout.WEST);
-        preprocessPanel.add(preprocessCheckBox, BorderLayout.EAST);
-
-        preprocessPanel.setVisible(!currentParamsCopy.getScope().equals(MCODEParameterSet.NETWORK));
 
         //Node Score Cutoff
         JLabel nodeScoreCutoffLabel = new JLabel("Node Score Cutoff");
@@ -442,7 +422,6 @@ public class MCODEMainPanel extends JPanel {
         maxDepthPanel.add(maxDepthFormattedTextField, BorderLayout.EAST);
 
         //Add all inputs to the panel
-        panel.add(preprocessPanel);
         panel.add(haircutPanel);
         panel.add(fluffPanel);
         panel.add(fluffNodeDensityCutOffPanel);
@@ -498,7 +477,7 @@ public class MCODEMainPanel extends JPanel {
         panel.setLayout(new FlowLayout());
 
         JButton analyzeButton = new JButton("Analyze");
-        analyzeButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy));
+        analyzeButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy, MCODEVS));
 
         JButton quitButton = new JButton("Quit");
         quitButton.addActionListener(new MCODEMainPanel.QuitAction(this));
@@ -519,9 +498,6 @@ public class MCODEMainPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             String scope = e.getActionCommand();
             if (scope.equals(MCODEParameterSet.NETWORK)) {
-                //remove preprocess input
-                preprocessCheckBox.getParent().setVisible(false);
-
                 //We want to have a layered structure such that when network scope is selected, the cluster finding
                 //content allows the user to choose between optimize and customize.  When the other scopes are selected
                 //the user should only see the customize cluster parameters content.
@@ -532,8 +508,6 @@ public class MCODEMainPanel extends JPanel {
                 //need to re-add the customize content to its original container
                 customizeClusterFindingPanel.getContentPane().add(customizeClusterFindingContent, BorderLayout.NORTH);
             } else {
-                //add preprocess input
-                preprocessCheckBox.getParent().setVisible(true);
                 //since only one option will be left, it must be selected so that its content is visible
                 customizeOption.setSelected(true);
                 //remove content with 2 options
@@ -551,13 +525,6 @@ public class MCODEMainPanel extends JPanel {
         // TEMPORARY ACTION EVENT HANDLER {
         public void actionPerformed(ActionEvent e) {
             String scope = e.getActionCommand();
-            if (scope.equals(MCODEParameterSet.NETWORK)) {
-                //remove preprocess input
-                preprocessCheckBox.getParent().setVisible(false);
-            } else {
-                //add preprocess input
-                preprocessCheckBox.getParent().setVisible(true);
-            }
             currentParamsCopy.setScope(scope);
         }
         // }
@@ -728,19 +695,6 @@ public class MCODEMainPanel extends JPanel {
                 currentParamsCopy.setFluff(true);
             }
             fluffNodeDensityCutOffFormattedTextField.getParent().setVisible(currentParamsCopy.isFluff());
-        }
-    }
-
-    /**
-     * Handles setting of the preprocess network parameter
-     */
-    private class PreprocessCheckBoxAction implements ItemListener {
-        public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.DESELECTED) {
-                currentParamsCopy.setPreprocessNetwork(false);
-            } else {
-                currentParamsCopy.setPreprocessNetwork(true);
-            }
         }
     }
 }

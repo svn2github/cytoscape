@@ -1,6 +1,5 @@
 package csplugins.mcode;
 
-
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
@@ -47,7 +46,8 @@ public class MCODEParameterSet {
     public static String NETWORK = "network";
     public static String NODE = "node";
     public static String NODE_SET = "node set";
-    public String scope;
+    private String scope;
+    private Integer[] selectedNodes;
 
     //used in scoring stage
     private boolean includeLoops;
@@ -61,9 +61,6 @@ public class MCODEParameterSet {
     private boolean fluff;
     private boolean haircut;
     private double fluffNodeDensityCutoff;
-
-    //used in directed mode
-    private boolean preprocessNetwork;
 
     //result viewing parameters (only used for dialog box of results)
     private int defaultRowHeight;
@@ -96,10 +93,10 @@ public class MCODEParameterSet {
      * @param fluff fluff
      * @param haircut haircut
      * @param fluffNodeDensityCutoff fluff node density cutoff
-     * @param preprocessNetwork preprocess network
      */
     public MCODEParameterSet(
             String scope,
+            Integer[] selectedNodes,
             boolean includeLoops,
             int degreeCutoff,
             int kCore,
@@ -108,11 +105,11 @@ public class MCODEParameterSet {
             double nodeScoreCutoff,
             boolean fluff,
             boolean haircut,
-            double fluffNodeDensityCutoff,
-            boolean preprocessNetwork) {
+            double fluffNodeDensityCutoff) {
 
         setAllAlgorithmParams(
                 scope,
+                selectedNodes,
                 includeLoops,
                 degreeCutoff,
                 kCore,
@@ -121,8 +118,8 @@ public class MCODEParameterSet {
                 nodeScoreCutoff,
                 fluff,
                 haircut,
-                fluffNodeDensityCutoff,
-                preprocessNetwork);
+                fluffNodeDensityCutoff
+        );
 
         //results dialog box
         defaultRowHeight = 80;
@@ -132,7 +129,7 @@ public class MCODEParameterSet {
      * Method for setting all parameters to their default values
      */
     public void setDefaultParams() {
-        setAllAlgorithmParams(NETWORK, false, 2, 2, false, 100, 0.2, false, true, 0.1, true);
+        setAllAlgorithmParams(NETWORK, new Integer[0], false, 2, 2, false, 100, 0.2, false, true, 0.1);
         /*
         scope = NETWORK;
         includeLoops = false;
@@ -144,7 +141,6 @@ public class MCODEParameterSet {
         fluff = false;
         haircut = true;
         fluffNodeDensityCutOff = 0.1;   //user should change this if fluffing
-        preprocessNetwork = true;       //change in directed mode if inter cluster connectivity desired
         */
     }
 
@@ -161,10 +157,10 @@ public class MCODEParameterSet {
      * @param fluff fluff
      * @param haircut haircut
      * @param fluffNodeDensityCutoff fluff node density cutoff
-     * @param preprocessNetwork preprocess network
      */
     public void setAllAlgorithmParams(
             String scope,
+            Integer[] selectedNodes,
             boolean includeLoops,
             int degreeCutoff,
             int kCore,
@@ -173,10 +169,10 @@ public class MCODEParameterSet {
             double nodeScoreCutoff,
             boolean fluff,
             boolean haircut,
-            double fluffNodeDensityCutoff,
-            boolean preprocessNetwork) {
+            double fluffNodeDensityCutoff) {
 
         this.scope = scope;
+        this.selectedNodes = selectedNodes;
         this.includeLoops = includeLoops;
         this.degreeCutoff = degreeCutoff;
         this.kCore = kCore;
@@ -186,7 +182,6 @@ public class MCODEParameterSet {
         this.fluff = fluff;
         this.haircut = haircut;
         this.fluffNodeDensityCutoff = fluffNodeDensityCutoff;
-        this.preprocessNetwork = preprocessNetwork;
     }
 
     /**
@@ -197,6 +192,7 @@ public class MCODEParameterSet {
     public MCODEParameterSet copy() {
         MCODEParameterSet newParam = new MCODEParameterSet();
         newParam.setScope(this.scope);
+        newParam.setSelectedNodes(this.selectedNodes);
         newParam.setIncludeLoops(this.includeLoops);
         newParam.setDegreeCutoff(this.degreeCutoff);
         newParam.setKCore(this.kCore);
@@ -206,7 +202,6 @@ public class MCODEParameterSet {
         newParam.setFluff(this.fluff);
         newParam.setHaircut(this.haircut);
         newParam.setFluffNodeDensityCutoff(this.fluffNodeDensityCutoff);
-        newParam.setPreprocessNetwork(this.preprocessNetwork);
         //results dialog box
         newParam.setDefaultRowHeight(this.defaultRowHeight);
         return newParam;
@@ -219,6 +214,14 @@ public class MCODEParameterSet {
 
     public void setScope(String scope) {
         this.scope = scope;
+    }
+
+    public Integer[] getSelectedNodes() {
+        return selectedNodes;
+    }
+
+    public void setSelectedNodes(Integer[] selectedNodes) {
+        this.selectedNodes = selectedNodes;
     }
 
     public boolean isIncludeLoops() {
@@ -291,14 +294,6 @@ public class MCODEParameterSet {
 
     public void setFluffNodeDensityCutoff(double fluffNodeDensityCutoff) {
         this.fluffNodeDensityCutoff = fluffNodeDensityCutoff;
-    }
-
-    public boolean isPreprocessNetwork() {
-        return preprocessNetwork;
-    }
-
-    public void setPreprocessNetwork(boolean preprocessNetwork) {
-        this.preprocessNetwork = preprocessNetwork;
     }
 
     public int getDefaultRowHeight() {
