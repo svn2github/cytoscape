@@ -510,8 +510,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			if (Double.isNaN(force)) {
 				force = EPSILON;
 			}
-			debugln("Repulsive force between "+v1.getIdentifier()
-							 +" and "+v2.getIdentifier()+" is "+force);
+			/* debugln("Repulsive force between "+v1.getIdentifier()
+							 +" and "+v2.getIdentifier()+" is "+force); */
 			v1.incrementDisp( (xDelta/deltaDistance) * force,
 										    (yDelta/deltaDistance) * force);
 		}
@@ -535,11 +535,13 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		if (Double.isNaN(force)) {
 			force = EPSILON;
 		}
+		/*
 		debugln("Attractive force between "+v1.getIdentifier()
 						 +" and "+v2.getIdentifier()+" is "+force);
 		debugln("   distance = "+deltaDistance);
 		debugln("   constant = "+attraction_constant);
 		debugln("   weight = "+e.getWeight());
+		*/
 
 		// Adjust the displacement.  In the case of doing selectedOnly,
 		// we increase the force to enhance the discrimination power.
@@ -586,12 +588,14 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 		// v.setDisp(newXDisp, newYDisp);
 
+		/*
 		debugln("calculatePosition: Node "+v.getIdentifier()
 						+ " will move by "+newXDisp+", "+newYDisp);
 
 		debug("Node "+v.getIdentifier()+" will move from "+v.printLocation());
+		*/
 		v.increment(newXDisp, newYDisp);
-		debugln(" to "+v.printLocation());
+		// debugln(" to "+v.printLocation());
 
 /*
 		boolean bound = false;
@@ -613,10 +617,10 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			}
 			v.setLocation(newXPosition, newYPosition);
 		}
-*/
 
 		debugln("Node "+v.getIdentifier()
 							+ " moved to "+v.printLocation()+" after bounding");
+*/
 	}
 
 	/**
@@ -662,9 +666,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 																Math.max(width,height)/maxVelocity_divisor);
 		this.maxDistance = Math.max(Math.max(averageWidth*10,averageHeight*10),
 															 	Math.max(width,height)/maxDistanceFactor);
-		debugln("Size: "+width+" x "+height);
-		debugln("maxDistance = "+maxDistance);
-		debugln("maxVelocity = "+maxVelocity);
+		// debugln("Size: "+width+" x "+height);
+		// debugln("maxDistance = "+maxDistance);
+		// debugln("maxVelocity = "+maxVelocity);
 	}
 
 	/**
@@ -674,8 +678,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		double force = Math.sqrt(this.height*this.width/nodeList.size());
 		attraction_constant = force*attraction_multiplier;
 		repulsion_constant = force*repulsion_multiplier;
-		debugln("attraction_constant = "+attraction_constant
-						+", repulsion_constant = "+repulsion_constant);
+		/* debugln("attraction_constant = "+attraction_constant
+						+", repulsion_constant = "+repulsion_constant); */
 	}
 
 	/**
