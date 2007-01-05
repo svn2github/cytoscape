@@ -761,6 +761,7 @@
 		<copy file="testData/galFiltered.edgeAttrs2" todir="${release.dir}/sampleData" />
 		<copy file="testData/galFiltered.nodeAttrs1" todir="${release.dir}/sampleData" />
 		<copy file="testData/galFiltered.nodeAttrs2" todir="${release.dir}/sampleData" />
+		<copy file="testData/galFiltered.nodeAttrTable.xls" todir="${release.dir}/sampleData" />
 		<copy file="testData/galExpData.pvals" todir="${release.dir}/sampleData" />
 		<copy file="testData/galExpData.probeset.pvals" todir="${release.dir}/sampleData" />
 		<copy file="testData/gal.probeset.na" todir="${release.dir}/sampleData" />
