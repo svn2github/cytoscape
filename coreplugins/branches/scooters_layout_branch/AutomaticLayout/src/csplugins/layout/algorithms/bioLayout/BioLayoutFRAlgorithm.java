@@ -48,9 +48,10 @@ import giny.view.*;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import csplugins.layout.algorithms.bioLayout.LayoutNode;
-import csplugins.layout.algorithms.bioLayout.LayoutEdge;
-import csplugins.layout.algorithms.bioLayout.Profile;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutEdge;
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.Profile;
 
 /**
  * Lays out the nodes in a graph using a modification of the Fruchterman-Rheingold

@@ -16,15 +16,15 @@ import java.lang.Throwable;
 
 import cytoscape.layout.AbstractLayout;
 
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.LayoutNode;
+
 /* NOTE: The AbstractGraphPartition class uses SGraphPartition to generate
    the partitions in the graph. Originally this class used GraphPartition,
    but it is broken. */
 
-import csplugins.layout.algorithms.graphPartition.SGraphPartition;
-
 public abstract class AbstractGraphPartition extends AbstractLayout {
   protected TaskMonitor taskMonitor = null;
-	protected Layout layout;
 	protected boolean selectedOnly = false;
     
   double incr = 100;
@@ -33,7 +33,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		super();
   }
    
-  public abstract void layoutPartion ( GraphPerspective net ) ;
+  public abstract void layoutPartion ( LayoutPartition partition ) ;
 
 	public boolean supportsSelectedOnly() { return true; }
 
@@ -46,10 +46,9 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	 * and calls layoutPartion for each partition.
 	 */
   public void construct () {
-		layout = new Layout(networkView, true);
 		initialize();
-    List partitions = SGraphPartition.partition( networkView, selectedOnly );
-    Iterator p = partitions.iterator();
+		List partitions = LayoutPartition.partition(network, networkView, 
+		                                            selectedOnly, null);
 
     // monitor
     int percent = 0;
@@ -57,16 +56,25 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
     double lengthOfTask = partitions.size();
     String statMessage = "Layout";
     
-    double next_x_start = 0;
-    double next_y_start = 0;
+		// Set up offsets -- we start with the overall min and max
+		double xStart = ((LayoutPartition)partitions.get(0)).getMinX();
+		double yStart = ((LayoutPartition)partitions.get(0)).getMinY();
+		Iterator partIter = partitions.iterator();
+		while (partIter.hasNext()) {
+			LayoutPartition part = (LayoutPartition)partIter.next();
+			xStart = Math.min(xStart, part.getMinX());
+			yStart = Math.min(yStart, part.getMinY());
+		}
+
+    double next_x_start = xStart;
+    double next_y_start = yStart;
     double current_max_y = 0;
 
     
     double max_dimensions = Math.sqrt( ( double )network.getNodeCount() );
     // give each node room
     max_dimensions *= incr;
-
-    GraphPerspective current_gp = null;
+		max_dimensions += xStart;
 
     currentProgress++;
     percent = (int)( (currentProgress * 100 )/lengthOfTask );
@@ -79,49 +87,49 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
     //System.out.println( "AbstractLayout::There are "+partitions.size()+" Partitions!!");
 
+    Iterator p = partitions.iterator();
     while ( p.hasNext() && !canceled ) {
-      // get the array of node
-      int[] nodes = ( int[] )p.next();
-      if ( nodes.length == 0 ) {
+      // get the partition
+			LayoutPartition partition = (LayoutPartition)p.next();
+      if ( partition.nodeCount() == 0 ) {
         continue;
       }
-      current_gp = network.getRootGraph().createGraphPerspective ( nodes, network.getConnectingEdgeIndicesArray( nodes ));;
       // Partitions Requiring Layout
-      if ( nodes.length != 1 ) {
+      if ( partition.nodeCount() != 1 ) {
         try
         {
-          layoutPartion( current_gp );
+          layoutPartion( partition );
         }
         catch(Throwable _e)
         {
           _e.printStackTrace();
           return;
         }
-        // offset GP
-        double max_width = 0;
-
         // OFFSET
-        offset( nodes, next_x_start, next_y_start );
+        partition.offset( next_x_start, next_y_start );
                                                    
       } // end >1 node partitions  
 
       // Single Nodes
       else {
-        layout.setX( nodes[0], next_x_start );
-        layout.setY( nodes[0], next_y_start );
+				// Reset our bounds
+				partition.resetNodes();
+				// Single node -- get it
+				LayoutNode node = (LayoutNode)partition.getNodeList().get(0);
+				node.setLocation (next_x_start, next_y_start);
+				partition.moveNodeToLocation(node);
       }
 
 
-      double[] last_max = maxXmaxY( nodes );
-      double last_max_x = last_max[0];
-      double last_max_y = last_max[1];
+			double last_max_x = partition.getMaxX();
+			double last_max_y = partition.getMaxY();
       
       if ( last_max_y > current_max_y ) {
         current_max_y = last_max_y;
       }
 
       if ( last_max_x > max_dimensions ) {
-        next_x_start = 0;
+        next_x_start = xStart;
         next_y_start = current_max_y;
         next_y_start += incr;
       } else {
@@ -130,69 +138,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
       }
 
     } // end iterate through partitions
-		layout.applyLayout(networkView);
-  }
-  
-  protected double[] maxXmaxY ( int[] nodes ) {
-    double max_x = Double.MIN_VALUE;
-    double max_y = Double.MIN_VALUE;
-
-    for ( int i = 0; i < nodes.length; ++i ) {
-      double x = layout.getX( nodes[i] );
-      double y = layout.getY( nodes[i] );
-      
-      if ( x > max_x )
-        max_x = x;
-      
-      if ( y > max_y )
-        max_y = y;
-
-
-    }
-      
-    double[] r = new double[2];
-    r[0] = max_x;
-    r[1] = max_y;
-    return r;
-    
-  }
-
-  protected double[] minXminY ( int[] nodes ) {
-    double min_x = Double.MAX_VALUE;
-    double min_y = Double.MAX_VALUE;
-
-    for ( int i = 0; i < nodes.length; ++i ) {
-      double x = layout.getX( nodes[i] );
-      double y = layout.getY( nodes[i] );
-      
-      if ( x < min_x )
-        min_x = x;
-      
-      if ( y < min_y )
-        min_y = y;
-    }
-    //return new double[] {min_x, min_y };
-    double[] r = new double[2];
-    r[0] = min_x;
-    r[1] = min_y;
-    return r;
-  }
-
-
-  /**
-   * Subtact the Min, add the offset
-   */
-  public void offset ( int[] nodes, double x_offset, double y_offset ) {
-    double[] mins = minXminY( nodes );
-    double min_x = mins[0];
-    double min_y = mins[1];
-
-      //System.out.println( "AbstractLayout::Offset: "+nodes.length+" nodes. MinX/Offset:" +min_x+"/"+x_offset+" MinY/Offset:" +min_y+"/"+y_offset );
-
-    for ( int i = 0; i < nodes.length; ++i ) {
-      layout.setX( nodes[i], layout.getX( nodes[i] ) - min_x + x_offset );
-      layout.setY( nodes[i], layout.getY( nodes[i] ) - min_y + y_offset );
-    }
+		networkView.fitContent();
+		networkView.updateView();
   }
 }
-

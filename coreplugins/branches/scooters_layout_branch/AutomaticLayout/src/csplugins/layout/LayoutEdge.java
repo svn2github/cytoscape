@@ -30,19 +30,19 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package csplugins.layout.algorithms.bioLayout;
+package csplugins.layout;
 
 import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 
-import csplugins.layout.algorithms.bioLayout.LayoutNode;
+import csplugins.layout.LayoutNode;
 
 /**
  * The LayoutEdge class
  */
-class LayoutEdge {
+public class LayoutEdge {
 	// static variables
 	static double logWeightCeiling;
 	static final double EPSILON = 0.0000001D;

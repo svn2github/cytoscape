@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package csplugins.layout.algorithms.bioLayout;
+package csplugins.layout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ import giny.view.*;
 /**
  * The LayoutNode class
  */
-class LayoutNode {
+public class LayoutNode {
 	// static (class) variables
 	private static int lockedNodes = 0;
 	static final double EPSILON = 0.0000001D;

@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package csplugins.layout.algorithms.bioLayout;
+package csplugins.layout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,9 +49,9 @@ import cytoscape.*;
 import cytoscape.view.*;
 import giny.view.*;
 
-import csplugins.layout.algorithms.bioLayout.LayoutNode;
-import csplugins.layout.algorithms.bioLayout.LayoutEdge;
-import csplugins.layout.algorithms.bioLayout.Profile;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutEdge;
+import csplugins.layout.Profile;
 
 import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.OpenIntObjectHashMap;
@@ -157,7 +157,7 @@ public class LayoutPartition {
 	/**
 	 * Randomize the graph locations.
 	 */
-	protected void randomizeLocations() {
+	public void randomizeLocations() {
 		// Get a seeded pseudo random-number generator
 		Date today = new Date();
 		Random random = new Random(today.getTime());
@@ -217,7 +217,7 @@ public class LayoutPartition {
 	 * edges from the calculation (not the graph) when certain conditions
 	 * are met.
 	 */
-	protected void calculateEdgeWeights() {
+	public void calculateEdgeWeights() {
 		// Normalize the weights to between 0 and 1
 		boolean logWeights = false;
 		ListIterator iter = edgeList.listIterator();
@@ -278,6 +278,16 @@ public class LayoutPartition {
 		Dimension result = new Dimension();
 		result.setSize(averageX/nodes, averageY/nodes);
 		return result;
+	}
+
+	public void offset(double xoffset, double yoffset) {
+		Iterator nodeIter = nodeIterator();
+		resetNodes();
+		while (nodeIter.hasNext()) {
+			LayoutNode node = (LayoutNode)nodeIter.next();
+			node.increment(xoffset-this.minX, yoffset-this.minY);
+			moveNodeToLocation(node);
+		}
 	}
 
 

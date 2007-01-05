@@ -50,9 +50,9 @@ import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import csplugins.layout.algorithms.bioLayout.LayoutNode;
-import csplugins.layout.algorithms.bioLayout.LayoutPartition;
-import csplugins.layout.algorithms.bioLayout.Profile;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.Profile;
 
 /**
  * Superclass for the two bioLayout algorithms (KK and FR).
@@ -365,25 +365,12 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 			while (partIter.hasNext()) {
 				LayoutPartition partition = (LayoutPartition)partIter.next();
 
-				/*
-				System.out.println("Partition "+partCount+" ("+partition.nodeCount()+" nodes and "+partition.edgeCount()+" edges)");
-				System.out.println("Partition "+partCount+" dimensions are ("+
-														partition.getMinX()+","+partition.getMinY()+") to ("+
-														partition.getMaxX()+","+partition.getMaxY()+")");
-				System.out.println("Partition "+partCount+" width, height is ("+
-														partition.getWidth()+","+partition.getHeight()+")");
-				System.out.print("Laying out partition "+partCount+"....");
-				*/
-
 				if (partition.nodeCount() > 1) {
 					layout(partition);
-					/*
-					System.out.println(" done");
-					System.out.println("Offsetting by ("+next_x_start+", "+next_y_start+")");
-					*/
+
 					// Offset if we have more than one partition
 					if (partitionList.size() > 1)
-						offset (partition, next_x_start, next_y_start);
+						partition.offset (next_x_start, next_y_start);
 				} else {
 					// System.out.println(" done");
 
@@ -397,12 +384,6 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 					node.setY (next_y_start);
 					partition.moveNodeToLocation(node);
 				}
-
-				/*
-				System.out.println("Partition "+partCount+" updated dimensions are ("+
-														partition.getMinX()+","+partition.getMinY()+") to ("+
-														partition.getMaxX()+","+partition.getMaxY()+")");
-				*/
 
 				double last_max_x = partition.getMaxX();
 				double last_max_y = partition.getMaxY();
@@ -421,18 +402,6 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		}
 		networkView.fitContent();
 		networkView.updateView();
-	}
-
-	private void offset (LayoutPartition partition, double next_x_start, double next_y_start) {
-		Iterator nodeIter = partition.nodeIterator();
-		double minX = partition.getMinX();
-		double minY = partition.getMinY();
-		partition.resetNodes();
-		while (nodeIter.hasNext()) {
-			LayoutNode node = (LayoutNode)nodeIter.next();
-			node.increment(next_x_start-minX, next_y_start-minY);
-			partition.moveNodeToLocation(node);
-		}
 	}
 
 	/**

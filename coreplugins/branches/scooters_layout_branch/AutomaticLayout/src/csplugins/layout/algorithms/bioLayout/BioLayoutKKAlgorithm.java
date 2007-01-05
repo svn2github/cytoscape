@@ -53,9 +53,10 @@ import giny.view.*;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import csplugins.layout.algorithms.bioLayout.LayoutNode;
-import csplugins.layout.algorithms.bioLayout.LayoutEdge;
-import csplugins.layout.algorithms.bioLayout.Profile;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutEdge;
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.Profile;
 
 /**
  * Lays out the nodes in a graph using a modification of the Kamada-Kawai
@@ -77,6 +78,8 @@ import csplugins.layout.algorithms.bioLayout.Profile;
  */
 
 public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
+
+	private int euclideanLoop = 0;
 
   /**
    * A small value used to avoid division by zero
@@ -422,6 +425,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
     {
       final double percentProgressPerIter;
+			Profile passTimer = new Profile();
+			passTimer.start();
 			if (m_layoutPass == 0) {
       	percentProgressPerIter =
        		 (percentCompletedAfterPass1 - percentCompletedBeforePasses) /
@@ -442,6 +447,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
       // Calculate all node distances.  Keep track of the furthest.
 			Iterator nodeIter = partition.nodeIterator();
+			euclideanLoop = 0;
 			while (nodeIter.hasNext()) 
 			{
 				LayoutNode v = (LayoutNode)nodeIter.next();
