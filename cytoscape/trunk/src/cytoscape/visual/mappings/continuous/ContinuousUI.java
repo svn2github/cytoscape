@@ -156,7 +156,9 @@ public class ContinuousUI extends JPanel implements ActionListener {
         for (int i = 0; i < cm.getPointCount(); i++) {
             ContinuousMappingPoint point = cm.getPoint(i);
             NumberFormat numberFormat = NumberFormat.getInstance();
-            numberFormat.setMaximumFractionDigits(6);
+            //17 -- The maximum number of significant digits in an IEEE 754 double, that
+            //is, in a Java double
+            numberFormat.setMaximumFractionDigits(17);
             String textValue = numberFormat.format(point.getValue());
             JTextField text = new JTextField(textValue);
             text.setColumns(6);
