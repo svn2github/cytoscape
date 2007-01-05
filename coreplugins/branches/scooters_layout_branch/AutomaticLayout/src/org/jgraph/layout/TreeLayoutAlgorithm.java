@@ -68,6 +68,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	protected int nodeDistance = 20;
 	protected boolean centerRoot = false;
 	protected boolean combineLevelNodes = true;
+	private HashMap nodesSeen = new HashMap();
 
 	protected JGraph graph;
 
@@ -145,13 +146,13 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
   public void run(JGraph graph, Object[] dynamic_cells, Object[] static_cells) {
 		this.graph = graph;
 
-		List roots = getRootVertices(dynamic_cells);
-		if (roots == null) return;
-
-		roots = buildTrees(roots);
-		if (roots == null) return;
-
 		try {
+			List roots = getRootVertices(dynamic_cells);
+			if (roots == null) return;
+
+			roots = buildTrees(roots);
+			if (roots == null) return;
+
 			layoutTrees(roots);
 			if (canceled) return;
 
@@ -161,7 +162,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
 			setPosition(roots);
 		} catch (Exception e) { 
-      JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e, "Error", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e, "Error", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
@@ -234,7 +235,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
 	/* Building Tree */
 
-    protected List buildTrees(List roots) {
+    protected List buildTrees(List roots) throws Exception {
 		List l = new ArrayList();
 		for (Iterator it = roots.iterator(); it.hasNext();) {
 			if (canceled) return null;
@@ -244,6 +245,11 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	}
 
     protected TreeNode buildTree(CellView view) {
+
+		if (nodesSeen.containsKey(view))
+			throw new RuntimeException("Detected loop in graph!");
+		else
+			nodesSeen.put(view,view);
 
 		List children = getChildren(view);
 		TreeNode node = getTreeNode(view);

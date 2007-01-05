@@ -219,18 +219,28 @@ public class LayoutPartition {
 	 */
 	protected void calculateEdgeWeights() {
 		// Normalize the weights to between 0 and 1
+		boolean logWeights = false;
 		ListIterator iter = edgeList.listIterator();
+		if (Math.abs(maxLogWeight - minLogWeight) > 3) 
+			logWeights = true;
 		while (iter.hasNext()) { 
 			LayoutEdge edge = (LayoutEdge)iter.next();
+			double weight = edge.getWeight();
 			// If we're only dealing with selected nodes, drop any edges
 			// that don't have any selected nodes
 			if (edge.getSource().isLocked() && edge.getTarget().isLocked()) {
 				iter.remove();
-			} else if (edge.getWeight() <= minWeightCutoff || edge.getWeight() > maxWeightCutoff) {
+			} else if (minWeight == maxWeight) {
+				continue; // unweighted
+			} else if (weight <= minWeightCutoff || weight > maxWeightCutoff) {
 			// Drop any edges that are outside of our bounds
 				iter.remove();
 			} else {
-				edge.normalizeWeight(minWeight,maxWeight,minLogWeight,maxLogWeight);
+				if (logWeights)
+					edge.normalizeWeight(minLogWeight,maxLogWeight,true);
+				else
+					edge.normalizeWeight(minWeight,maxWeight,false);
+
 				// Drop any edges where the normalized weight is small
 				if (edge.getWeight() < .001)
 					iter.remove();
@@ -283,7 +293,7 @@ public class LayoutPartition {
 		averageY = 0;
 	}
 
-	public void resetEdges() { 
+	public static void resetEdges() { 
 		maxWeight = -100000;
 		minWeight = 100000;
 		maxLogWeight = -100000;
@@ -379,6 +389,8 @@ public class LayoutPartition {
 		edgesSeenMap = new OpenIntIntHashMap(network.getEdgeCount());
 		OpenIntObjectHashMap nodesToViews = new 
 						OpenIntObjectHashMap(network.getNodeCount());
+		nodeToLayoutNode = new HashMap(network.getNodeCount());
+
 
 		// Initialize the maps
 		Iterator nodeViewIter = networkView.getNodeViewsIterator();
@@ -390,10 +402,8 @@ public class LayoutPartition {
 		}
 
 		// Initialize/reset edge weighting
-		// NOTE: unlike nodes, we don't want to reset the LayoutEdge
-		// statics each pass because in general, we want edge weights
-		// to be normalized across all partitions
 		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
+		LayoutPartition.resetEdges();
 
 		Iterator edgeIter = network.edgesIterator();
 		while (edgeIter.hasNext()) {

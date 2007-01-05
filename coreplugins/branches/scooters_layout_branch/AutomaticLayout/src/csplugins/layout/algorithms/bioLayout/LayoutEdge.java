@@ -51,7 +51,7 @@ class LayoutEdge {
 	// instance variables
 	private LayoutNode v1;
 	private LayoutNode v2;
-	private double weight;
+	private double weight = 0.5;
 	private double logWeight;
 	private CyEdge edge;
 
@@ -114,7 +114,7 @@ class LayoutEdge {
 			}
 		}
 		if (eValue == 0) {
-			this.logWeight = logWeightCeiling;
+			this.logWeight = 0;
 		} else {
 			this.logWeight = Math.min(-Math.log10(eValue),logWeightCeiling); 
 		}
@@ -128,22 +128,17 @@ class LayoutEdge {
 	 * also determines whether to use the log of the weight or
 	 * the weight itself.
 	 */
-	public void normalizeWeight(double minWeight, double maxWeight,
-	                            double minLogWeight, double maxLogWeight) {
+	public void normalizeWeight(double minWeight, double maxWeight, 
+	                            boolean useLogWeights) {
 		// Normalize the weights to fall between 0 and 1
-
-		// System.out.println("Normalizing weight -- from "+weight+" and "+logWeight);
-		// System.out.println(" minWeight = "+minWeight+" maxWeight = "+maxWeight);
-		// System.out.println(" minLogWeight = "+minLogWeight+" maxLogWeight = "+maxLogWeight);
-		if ((maxWeight-minWeight) == 0) {
-			weight = .5; // all weights are the same -- go unweighted
-		} else if (Math.abs(maxLogWeight - minLogWeight) > 3) {
-			// Three orders of magnitude!  Use the log
-			weight = (logWeight - minLogWeight) / (maxLogWeight-minLogWeight);
-		} else {
-			weight = (weight - minWeight) / (maxWeight-minWeight);
+		if (useLogWeights) {
+			if (logWeight == 0) 
+				weight = maxWeight+1;
+			else
+				weight = logWeight;
 		}
-		// System.out.println("                   -- to "+weight);
+		// System.out.println("Normalize weight ("+weight+") to between ("+minWeight+" and "+maxWeight+")");
+		weight = (weight - minWeight) / (maxWeight-minWeight);
 	}
 
 	public double getWeight() { return this.weight; }
@@ -156,7 +151,7 @@ class LayoutEdge {
 	public CyEdge getEdge() { return this.edge; }
 
 	public String toString() {
-		return "Edge "+edge.getIdentifier()+" connting "+v1.getIdentifier()+" and "+v2.getIdentifier()+" with weight "+weight;
+		return "Edge "+edge.getIdentifier()+" connecting "+v1.getIdentifier()+" and "+v2.getIdentifier()+" with weight "+weight;
 	}
 
 }

@@ -35,6 +35,7 @@ import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -71,11 +72,13 @@ public class MoenLayoutAlgorithm extends JGraphLayoutAlgorithm
     JGraph jgraph;
     protected int orientation;
     protected int childParentDistance;
+	private HashMap nodesSeen;
 
     public MoenLayoutAlgorithm()
     {
         setChildParentDistance(30);
         setLayoutOrientation(DEFAULT_ORIENTATION);
+		nodesSeen = new HashMap();
     }
 
 	/**
@@ -386,14 +389,18 @@ public class MoenLayoutAlgorithm extends JGraphLayoutAlgorithm
     public void run(JGraph graph, Object[] dynamic_cells, Object[] static_cells) {
 		this.jgraph = graph;
 
-		if (canceled) return;
-		List roots = getRootVertices(dynamic_cells);
-		if (canceled) return;
-		buildLayoutHelperTree(roots);
-		if (canceled) return;
-		layoutTrees(roots);
-		if (canceled) return;
-		display(roots);
+		try {
+			if (canceled) return;
+			List roots = getRootVertices(dynamic_cells);
+			if (canceled) return;
+			buildLayoutHelperTree(roots);
+			if (canceled) return;
+			layoutTrees(roots);
+			if (canceled) return;
+			display(roots);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e, "Error", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 
 	/**
@@ -499,36 +506,31 @@ public class MoenLayoutAlgorithm extends JGraphLayoutAlgorithm
     }
 
 
-    protected void layoutTrees(Collection roots)
+    protected void layoutTrees(Collection roots) throws Exception
     {
         for (Iterator iterator = roots.iterator(); iterator.hasNext();)
         {
-						if (canceled) return;
+			if (canceled) return;
             VertexView view = (VertexView) iterator.next();
             TreeLayoutNode root = getTreeLayoutNode(view);
 
-						try {
-            	// kick off Moen's algorithm
-            	layout(root);
+            // kick off Moen's algorithm
+            layout(root);
 
-            	Rectangle2D rect = view.getBounds();
-            	Point rootPos = new Point((int) rect.getX(), (int) rect.getY()); //view.getBounds().getLocation();
+            Rectangle2D rect = view.getBounds();
+            Point rootPos = new Point((int) rect.getX(), (int) rect.getY()); //view.getBounds().getLocation();
 
-            	switch (orientation)
-            	{
-            	case LEFT_TO_RIGHT:
-             	   leftRightNodeLayout(root, rootPos.x, rootPos.y);
-             	   break;
-            	case UP_TO_DOWN:
-             	   upDownNodeLayout(root, rootPos.x, rootPos.y);
-             	   break;
-            	default:
-             	   leftRightNodeLayout(root, rootPos.x, rootPos.y);
-            	}
-					} catch (Exception e) {
-						// Display error message
-            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e, "Error", JOptionPane.INFORMATION_MESSAGE);
-					}
+           	switch (orientation)
+           	{
+           	case LEFT_TO_RIGHT:
+           	   leftRightNodeLayout(root, rootPos.x, rootPos.y);
+           	   break;
+           	case UP_TO_DOWN:
+           	   upDownNodeLayout(root, rootPos.x, rootPos.y);
+           	   break;
+           	default:
+           	   leftRightNodeLayout(root, rootPos.x, rootPos.y);
+           	}
         }
     }
 
@@ -546,6 +548,12 @@ public class MoenLayoutAlgorithm extends JGraphLayoutAlgorithm
     {
         List cl = getChildren(node);
         TreeLayoutNode parent = getTreeLayoutNode(node);
+		// See if we're already traversed this node -- might have a loop
+		if (nodesSeen.containsKey(node)) {
+			throw new RuntimeException("Detected loop in graph!");
+		} else {
+			nodesSeen.put(node,node);
+		}
 
         if (cl.size() > 0)
         {
