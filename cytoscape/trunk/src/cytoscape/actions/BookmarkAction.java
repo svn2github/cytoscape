@@ -54,14 +54,12 @@ import cytoscape.util.CytoscapeAction;
 
 public class BookmarkAction extends CytoscapeAction {
 
-	public final static String MENU_LABEL = "Preferences...";
 
 	public BookmarkAction() {
-		// super (MENU_LABEL);
 		super("Bookmarks...");
 
-		System.out.println("PreferenceAction()...");
-		setPreferredMenu("Edit.Preference");
+		System.out.println("BookmarkAction()...");
+		setPreferredMenu("Edit.Preferences");
 	}
 
 	public void actionPerformed(ActionEvent e) {

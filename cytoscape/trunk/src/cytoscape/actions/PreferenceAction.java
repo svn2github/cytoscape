@@ -58,14 +58,11 @@ import cytoscape.util.CytoscapeAction;
 
 public class PreferenceAction extends CytoscapeAction  {
 
-    public final static String MENU_LABEL = "Preferences...";
-    
     public PreferenceAction () {
-        //super (MENU_LABEL);
         super ("Properties...");
 
         System.out.println("PreferenceAction()...");
-        setPreferredMenu( "Edit.Preference" );
+        setPreferredMenu( "Edit.Preferences" );
     }
 
     public void actionPerformed(ActionEvent e) {

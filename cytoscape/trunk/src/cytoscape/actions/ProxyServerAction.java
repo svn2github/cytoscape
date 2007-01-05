@@ -59,13 +59,11 @@ import cytoscape.dialogs.preferences.ProxyServerDialog;
 
 public class ProxyServerAction extends CytoscapeAction  {
 
-    //public final static String MENU_LABEL = "Preferences...";
     
     public ProxyServerAction () {
-        //super (MENU_LABEL);
         super ("Proxy Server...");
 
-        setPreferredMenu( "Edit.Preference" );
+        setPreferredMenu( "Edit.Preferences" );
     }
 
     public void actionPerformed(ActionEvent e) {
