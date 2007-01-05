@@ -153,6 +153,9 @@
 					<!-- this gets links -->
 					<replacestring from="/cgi-bin/moin.cgi" 
 					               to="http://cytoscape.org/cgi-bin/moin.cgi"/>
+					<!-- this forces the images to scale -->
+					<replacestring from="imagedata fileref" 
+					               to="imagedata scaletofit='1' width='100%' fileref"/>
 				</tokenfilter>
        		 	</filterchain>
 		</copy>
@@ -224,25 +227,26 @@
 		      includes="manual.xml"
 		      destdir="."
 		      style="${xsl}/javahelp/javahelp.xsl">
-		      <param name="base.dir" expression="docs/"/>
+		      <param name="base.dir" expression="help/"/>
 		</xslt>
 
 		<!-- Repair the jhelpset so that it doesn't include the index. 
 		     We do this because we don't generate index information in 
 		     our docbook. 
 		  -->
-		<xslt in="jhelpset.hs"
-		      out="jhelpset.hs.new"
+		<xslt in="help/jhelpset.hs"
+		      out="help/jhelpset.hs.new"
 		      classpathref="classpath"
 		      style="xsl/filter_index.xsl"/>
-		<move file="jhelpset.hs" tofile="jhelpset.hs.orig"/>
-		<move file="jhelpset.hs.new" tofile="jhelpset.hs"/>
+		<move file="help/jhelpset.hs" tofile="help/jhelpset.hs.orig"/>
+		<move file="help/jhelpset.hs.new" tofile="help/jhelpset.hs"/>
 
 		<!-- now clean up after ourselves and move everything into the help dir -->
 		<delete file="manual.html"/>
 		<copy todir="help/images">
 			<fileset dir="images"/>
 		</copy>
+		<!--
 		<move todir="help">
 			<fileset dir=".">
 				<include name="jhelp*"/>
@@ -254,6 +258,7 @@
 			</fileset>
 		</move>
 		<move file="index.html" todir="help"/>
+		-->
 
 	</target>
 
