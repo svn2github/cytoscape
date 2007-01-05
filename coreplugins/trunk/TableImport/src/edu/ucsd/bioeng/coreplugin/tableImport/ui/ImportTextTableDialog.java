@@ -1399,7 +1399,7 @@ public class ImportTextTableDialog extends JDialog implements
 		counterLabel.setText("entries.");
 
 		previewOptionPanel.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("Preview Oprions"));
+				.createTitledBorder("Preview Options"));
 		reloadButton.setText("Reload");
 		reloadButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		reloadButton.addActionListener(new java.awt.event.ActionListener() {
