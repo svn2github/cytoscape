@@ -413,4 +413,106 @@ public class CytoscapeTestSwing extends TestCase {
 
 		System.out.println("testSelectMenu start");
 	}
+	
+	/**
+	 * This test exercises the functionality of the Layout menu.
+	 */
+	public void testlayoutMenu() throws IllegalStateException,
+	                                    IllegalArgumentException, 
+	                                    ExecuteException, 
+	                                    ClassNotFoundException,
+	                                    InstantiationException, 
+	                                    IllegalAccessException,
+	                                    UnsupportedLookAndFeelException {
+		System.out.println("testLayoutMenu start");
+		//player.run(robot, "SHOW_HIDE_ATTRIBUTE_BROWSER");
+
+		// Import network 
+		scenario.setTestSetting("PAUSE", "DURATION", "1000");
+		scenario.setTestSetting("IMPORT_NETWORK_FILE", "IMPORT_DIR", "testData");
+		scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", "galFiltered.sif");
+		player.run(robot, "IMPORT_NETWORK_FILE");
+
+		// first try yFiles
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "yFiles");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Circular");
+		player.run(robot, "DO_LAYOUT");
+		
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "yFiles");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Organic");
+		player.run(robot, "DO_LAYOUT");
+
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "yFiles");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Hierarchic");
+		player.run(robot, "DO_LAYOUT");
+
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "yFiles");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Random");
+		player.run(robot, "DO_LAYOUT");
+
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "yFiles");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "MirrorX");
+		player.run(robot, "DO_LAYOUT");
+
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "yFiles");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "MirrorY");
+		player.run(robot, "DO_LAYOUT");
+
+		// JGraph Layouts
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "JGraph Layouts");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Radial");
+		player.run(robot, "DO_LAYOUT");
+
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "JGraph Layouts");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Spring");
+		player.run(robot, "DO_LAYOUT");
+
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "JGraph Layouts");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Sugiyama");
+		player.run(robot, "DO_LAYOUT");
+
+		// Cytoscape Layouts
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "Cytoscape Layouts");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Hierarchical");
+		player.run(robot, "DO_LAYOUT");
+
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_CATEGORY", "Cytoscape Layouts");
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_ALGORITHM", "Spring Embedded");
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_OPTION", "All Nodes");
+		player.run(robot, "DO_LAYOUT_WITH_OPTION");
+
+		// To do:  select some nodes first
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_CATEGORY", "Cytoscape Layouts");
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_ALGORITHM", "Spring Embedded");
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_OPTION", "Selected Nodes Only");
+		//player.run(robot, "DO_LAYOUT_WITH_OPTION");
+
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_CATEGORY", "Cytoscape Layouts");
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_ALGORITHM", "Attribute Circle Layout");
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_OPTION", "canonicalName");
+		player.run(robot, "DO_LAYOUT_WITH_OPTION");
+
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "Cytoscape Layouts");
+		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Degree Sorted Circle Layout");
+		player.run(robot, "DO_LAYOUT");
+
+		// To do: this case will fail, because labelParameter "canonicalName" appeared in previous case
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_CATEGORY", "Cytoscape Layouts");
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_ALGORITHM", "Group Attributes Layout");
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION", "LAYOUT_OPTION", "canonicalName");
+		//player.run(robot, "DO_LAYOUT_WITH_OPTION");
+
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION2", "LAYOUT_CATEGORY", "Cytoscape Layouts");
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION2", "LAYOUT_ALGORITHM", "Edge-weighted");
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION2", "LAYOUT_OPTION1", "Edge-weighted Spring Embedded");
+		scenario.setTestSetting("DO_LAYOUT_WITH_OPTION2", "LAYOUT_OPTION2", "(unweighted)");
+		player.run(robot, "DO_LAYOUT_WITH_OPTION2");
+
+		// To do: this case will fail, because labelParameter "(unweighted)" appeared in previous case		
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION2", "LAYOUT_CATEGORY", "Cytoscape Layouts");
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION2", "LAYOUT_ALGORITHM", "Edge-weighted");
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION2", "LAYOUT_OPTION1", "bioLayout");
+		//scenario.setTestSetting("DO_LAYOUT_WITH_OPTION2", "LAYOUT_OPTION2", "(unweighted)");
+		//player.run(robot, "DO_LAYOUT_WITH_OPTION2");
+	}
 }
