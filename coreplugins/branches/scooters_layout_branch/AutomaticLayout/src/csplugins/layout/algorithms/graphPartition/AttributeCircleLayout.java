@@ -188,11 +188,14 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
     // Compute angle step
     double phi = 2 * Math.PI / nodes.size();
     
+		partition.resetNodes();  // We want to figure out our mins & maxes anew
     // Arrange vertices in a circle
-    for (int i = 0; i < nodes.size(); i++) {
+    for (int i = 0; i < count; i++) {
       LayoutNode node = (LayoutNode)nodes.get( i );
-      node.setX( r + r * Math.sin(i * phi) );
-      node.setY( r + r * Math.cos(i * phi) );
+			double x = r + r * Math.sin(i * phi);
+			double y = r + r * Math.cos(i * phi);
+      node.setX( x );
+      node.setY( y );
 			partition.moveNodeToLocation( node );
     }
 
@@ -204,8 +207,8 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
     
     public int compare ( Object oo1, Object oo2 ) {
       
-      GraphObject o1 = (GraphObject)oo1;
-      GraphObject o2 = (GraphObject)oo2;
+      LayoutNode o1 = (LayoutNode)oo1;
+      LayoutNode o2 = (LayoutNode)oo2;
       
       byte type = data.getType( attribute );
       if ( type == CyAttributes.TYPE_STRING ) {
@@ -256,8 +259,4 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
       return 0;
     }
   }
-
-  
-
-
 }

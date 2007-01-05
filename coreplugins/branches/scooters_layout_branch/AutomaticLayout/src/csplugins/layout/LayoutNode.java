@@ -69,6 +69,14 @@ public class LayoutNode {
 		this.neighbors = new ArrayList();
 	}
 
+	public CyNode getNode() {
+		return this.node;
+	}
+
+	public NodeView getNodeView() {
+		return this.nodeView;
+	}
+
 	public void setLocation(double x, double y) {
 		this.x = x;
 		this.y = y;

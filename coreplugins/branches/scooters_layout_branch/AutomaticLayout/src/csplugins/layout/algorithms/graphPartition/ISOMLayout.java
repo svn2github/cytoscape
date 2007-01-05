@@ -1,3 +1,4 @@
+/* vim: set ts=2: */
 /*
  * This is based on the ISOMLayout from the JUNG project.
  */
@@ -8,10 +9,14 @@ import cern.colt.list.IntArrayList;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.map.OpenIntObjectHashMap;
+import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.PrimeFinder;
 
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.LayoutNode;
 
 import javax.swing.JPanel;
 import java.awt.GridLayout;
@@ -20,6 +25,7 @@ import cytoscape.CyNetwork;
 import giny.model.*;
 
 import java.util.Iterator;
+import java.util.List;
 
 
 public class ISOMLayout extends AbstractGraphPartition {
@@ -43,14 +49,16 @@ public class ISOMLayout extends AbstractGraphPartition {
 	private boolean done;
 
 	private LayoutProperties layoutProperties;
+	private LayoutPartition partition;
 
   //Queue, First In First Out, use add() and get(0)/remove(0)
   private IntArrayList q;
 	private String status = null;
 
   OpenIntObjectHashMap nodeIndexToDataMap;
+	OpenIntIntHashMap nodeIndexToLayoutIndex;
+
   double globalX, globalY;
-  GraphPerspective net;
   double squared_size;
   
   public ISOMLayout ( ) {
@@ -138,12 +146,13 @@ public class ISOMLayout extends AbstractGraphPartition {
 		layoutProperties.revertProperties();
 	}
 
-  public void layoutPartion ( GraphPerspective net) {
+  public void layoutPartion ( LayoutPartition partition) {
     
-    this.net = net;
+		this.partition = partition;
 
-		int nodeCount = net.getNodeCount();
+		int nodeCount = partition.nodeCount();
     nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( nodeCount ) );
+    nodeIndexToLayoutIndex = new OpenIntIntHashMap( PrimeFinder.nextPrime( nodeCount ) );
     squared_size = nodeCount*sizeFactor;
    
 		epoch = 1;
@@ -152,6 +161,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 
     System.out.println ( "Epoch: "+epoch+" maxEpoch: "+maxEpoch );
     while ( epoch < maxEpoch ) {
+			partition.resetNodes();
       adjust();
 			updateParameters();
 			if (canceled) break;
@@ -165,16 +175,20 @@ public class ISOMLayout extends AbstractGraphPartition {
   public int getClosestPosition ( double x, double y ) {
     double minDistance = Double.MAX_VALUE;
     int closest = 0;
-		Iterator nodeIter = net.nodesIterator();
+		Iterator nodeIter = partition.nodeIterator();
 		while (nodeIter.hasNext()) {
-			int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
+			LayoutNode node = (LayoutNode)nodeIter.next();
+			int rootGraphIndex = node.getNode().getRootGraphIndex();
 
-      double dx = layout.getX(  nodeIndex );
-      double dy = layout.getY(  nodeIndex );
+			nodeIndexToLayoutIndex.put(rootGraphIndex,
+			                           node.getIndex());
+
+      double dx = node.getX( );
+      double dy = node.getY( );
       double dist = dx * dx + dy * dy;
       if ( dist < minDistance ) {
         minDistance = dist;
-        closest = nodeIndex;
+        closest = rootGraphIndex;
       }
     }
     return closest;
@@ -194,9 +208,9 @@ public class ISOMLayout extends AbstractGraphPartition {
     //Get closest vertex to random position
     int winner = getClosestPosition( globalX, globalY );
     
-		Iterator nodeIter = net.nodesIterator();
+		Iterator nodeIter = partition.nodeIterator();
 		while (nodeIter.hasNext()) {
-			int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
+			int nodeIndex = ((LayoutNode)nodeIter.next()).getNode().getRootGraphIndex();
       ISOMVertexData ivd = getISOMVertexData(nodeIndex);
 			ivd.distance = 0;
 			ivd.visited = false;
@@ -220,15 +234,18 @@ public class ISOMLayout extends AbstractGraphPartition {
 		ivd.visited = true;
 		q.add(v);
 		int current;
+		List<LayoutNode> nodeList = partition.getNodeList();
 
     while ( !q.isEmpty() ) {
 			current =  q.get(0);
       q.remove(0);
+			int layoutIndex = nodeIndexToLayoutIndex.get(current);
+			LayoutNode currentNode = (LayoutNode)nodeList.get(layoutIndex);
 
 			ISOMVertexData currData = getISOMVertexData(current);
 			
-      double current_x = layout.getX( current );
-      double current_y = layout.getY( current );
+      double current_x = currentNode.getX();
+      double current_y = currentNode.getY();
       
 			double dx = globalX - current_x;
 			double dy = globalY - current_y;
@@ -237,12 +254,12 @@ public class ISOMLayout extends AbstractGraphPartition {
 			double factor = adaption / Math.pow(2, currData.distance) ;
       
 
-      layout.setX( current, current_x + factor * dx );
-      layout.setY( current, current_y + factor * dy );
-
+      currentNode.setX( current_x + factor * dx );
+      currentNode.setY( current_y + factor * dy );
+			partition.moveNodeToLocation(currentNode);
       
 			if (currData.distance < radius) {
-				int[] neighbors = neighborsArray( net, current );
+				int[] neighbors = neighborsArray( network, current );
 
         for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index ) {
           
@@ -310,7 +327,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 	}
 
 	// This is here to replace the deprecated neighborsArray function
-	public int[] neighborsArray ( GraphPerspective network, int nodeIndex ) {
+	public int[] neighborsArray ( CyNetwork network, int nodeIndex ) {
 		// Get a list of edges
 		int[] edges = network.getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
 		int[] neighbors = new int[edges.length];

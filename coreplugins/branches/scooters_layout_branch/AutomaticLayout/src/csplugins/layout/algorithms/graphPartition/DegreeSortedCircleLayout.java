@@ -1,3 +1,4 @@
+/* vim: set ts=2: */
 package csplugins.layout.algorithms.graphPartition;
 
 import java.util.*;
@@ -12,6 +13,9 @@ import giny.model.*;
 
 import filter.cytoscape.*;
 
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.LayoutNode;
+
 public class DegreeSortedCircleLayout extends AbstractGraphPartition
 {
   public DegreeSortedCircleLayout()
@@ -22,18 +26,17 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition
 	public String toString () { return "Degree Sorted Circle Layout"; }
 	public String getName () { return "degree-circle"; }
 
-  public void layoutPartion(GraphPerspective _graph)
+  public void layoutPartion(LayoutPartition partition)
   {
     // get an iterator over all of the nodes
-    Iterator nodeIter = _graph.nodesIterator();
+    Iterator nodeIter = partition.nodeIterator();
 
     // create a new array that is the Nodes corresponding to the node indices
-    Node sortedNodes[] = new Node[_graph.getNodeCount()];
+    LayoutNode sortedNodes[] = new LayoutNode[partition.nodeCount()];
     int i = 0;
     while (nodeIter.hasNext())
     {
-      int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
-      sortedNodes[i++] = _graph.getNode(nodeIndex);
+      sortedNodes[i++] = (LayoutNode)nodeIter.next();
     }
 		if (canceled) return;
 
@@ -42,8 +45,8 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition
       {
         public int compare(Object o1, Object o2)
         {
-          Node node1 = (Node) o1;
-          Node node2 = (Node) o2;
+          Node node1 = ((LayoutNode)o1).getNode();
+          Node node2 = ((LayoutNode)o2).getNode();
 
           return (Cytoscape.getCurrentNetwork().getDegree(
                                     node2.getRootGraphIndex()) -
@@ -62,11 +65,13 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition
     // place each Node in a circle
     int r = 100 * (int) Math.sqrt(sortedNodes.length);
     double phi = 2 * Math.PI / sortedNodes.length;
+		partition.resetNodes();  // We want to figure out our mins & maxes anew
     for (i = 0; i < sortedNodes.length; i++)
     {
-      Node node = sortedNodes[i];
-      layout.setX(node, r + r * Math.sin(i * phi));
-      layout.setY(node, r + r * Math.cos(i * phi));
+      LayoutNode node = sortedNodes[i];
+      node.setX(r + r * Math.sin(i * phi));
+      node.setY(r + r * Math.cos(i * phi));
+			partition.moveNodeToLocation(node);
     }
   }
 }

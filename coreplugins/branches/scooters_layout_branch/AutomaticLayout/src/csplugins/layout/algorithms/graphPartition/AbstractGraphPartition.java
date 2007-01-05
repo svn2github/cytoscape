@@ -1,3 +1,4 @@
+/* vim: set ts=2: */
 package csplugins.layout.algorithms.graphPartition;
 
 import giny.model.*;
@@ -55,10 +56,11 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
     double currentProgress = 0;
     double lengthOfTask = partitions.size();
     String statMessage = "Layout";
-    
+
 		// Set up offsets -- we start with the overall min and max
 		double xStart = ((LayoutPartition)partitions.get(0)).getMinX();
 		double yStart = ((LayoutPartition)partitions.get(0)).getMinY();
+
 		Iterator partIter = partitions.iterator();
 		while (partIter.hasNext()) {
 			LayoutPartition part = (LayoutPartition)partIter.next();
@@ -87,8 +89,10 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
     //System.out.println( "AbstractLayout::There are "+partitions.size()+" Partitions!!");
 
+		int part = 0;
     Iterator p = partitions.iterator();
     while ( p.hasNext() && !canceled ) {
+			part++;
       // get the partition
 			LayoutPartition partition = (LayoutPartition)p.next();
       if ( partition.nodeCount() == 0 ) {

@@ -282,10 +282,12 @@ public class LayoutPartition {
 
 	public void offset(double xoffset, double yoffset) {
 		Iterator nodeIter = nodeIterator();
+		double myMinX = this.minX;
+		double myMinY = this.minY;
 		resetNodes();
 		while (nodeIter.hasNext()) {
 			LayoutNode node = (LayoutNode)nodeIter.next();
-			node.increment(xoffset-this.minX, yoffset-this.minY);
+			node.increment(xoffset-myMinX, yoffset-myMinY);
 			moveNodeToLocation(node);
 		}
 	}
