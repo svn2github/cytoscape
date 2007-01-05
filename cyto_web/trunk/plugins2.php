@@ -567,6 +567,30 @@ The plugin API makes possible to use its functionality from another plugin.
 				</td>
 			</tr>
 
+			<tr>
+				<td width="20%" valign="top">
+					<b>Network Motif Finder</b><font size="-1">
+						<br> 
+						Version: 1.0
+						<br>
+						Release Date: October 19, 2006
+						</font>
+				</td>
+				<td width="40%" valign="top">
+				<p>
+				This pluging identifies network motifs, small repeatedly occurring mult-element components of a network, where the repetition suggests functional significance.  Statistical significance is applied to each motif type, and all identified motif types can be aggregated and extracted into smaller motif sub-networks.  This plugin has full functionality for multi-mode genetic networks created by the Cytoscape plugin ‘Phenotype Genetics’, and partial functionality for all other network types.  Specifically, motifs be identified and extracted for any network type, however statistical significance algorithms have been written for multi-mode netic networks only.  Network Motif Finder is open source and statistical significance algorithms for any network can be coded and easily incorporated.  Plugin, tutorial and sample data are packaged in the zip for download.
+				<p>
+					Released by: James Taylor, Galitski Lab, <a href="http://www.systemsbiology.org">Institute for Systems Biology</a>
+				</td>
+				<td width="20%" valign="top">
+					Verified to work in 2.3.2
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://db.systemsbiology.net/cytoscape/plugins/2.x/NetworkMotifFinder/NMFPlugin.zip">Download zip</a>]
+				</td>
+			</tr>
+
+
 		</tbody>
 	</table>
 
