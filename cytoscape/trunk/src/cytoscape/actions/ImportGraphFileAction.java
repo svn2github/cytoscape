@@ -96,7 +96,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	 *            WindowMenu Object.
 	 */
 	public ImportGraphFileAction(CyMenus windowMenu) {
-		super("Network...");
+		super("Network (multiple file types)...");
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_L, ActionEvent.CTRL_MASK);
 		this.windowMenu = windowMenu;

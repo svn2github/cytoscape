@@ -53,6 +53,7 @@ public class ImportNetworkDialog extends JDialog implements
 	private String bookmarkCategory = "network";
 	private String URLstr;
 	private BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
+	private String pleaseMessage = "Please provide URL or select from list";
 
 	/** Creates new form NetworkImportDialog 
 	 * @throws IOException 
@@ -395,7 +396,7 @@ public class ImportNetworkDialog extends JDialog implements
 
 		DataSource firstDataSource = new DataSource();
 		firstDataSource.setName("");
-		firstDataSource.setHref(" Please provide a URL to the network file");
+		firstDataSource.setHref(" " + pleaseMessage );
 
 		theModel.addElement(firstDataSource);
 
@@ -558,8 +559,7 @@ public class ImportNetworkDialog extends JDialog implements
 
 	class BookmarkComboBoxEditor implements javax.swing.ComboBoxEditor {
 		DataSource theDataSource = new DataSource();
-		JTextField tfInput = new JTextField(
-				"Please provide a URL to the network file");
+		JTextField tfInput = new JTextField(pleaseMessage);
 
 		public String getURLstr() {
 			return tfInput.getText();
