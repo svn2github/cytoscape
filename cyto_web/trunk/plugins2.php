@@ -567,6 +567,8 @@ The plugin API makes possible to use its functionality from another plugin.
 				</td>
 			</tr>
 
+  	 		<tr> <td colspan="4"> <hr> </td> </tr>
+
 			<tr>
 				<td width="20%" valign="top">
 					<b>Network Motif Finder</b><font size="-1">
