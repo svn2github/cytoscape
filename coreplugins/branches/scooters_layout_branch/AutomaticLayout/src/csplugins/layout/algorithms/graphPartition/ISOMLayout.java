@@ -87,9 +87,9 @@ public class ISOMLayout extends AbstractGraphPartition {
 		layoutProperties.add(new Tunable("maxEpoch", "Number of iterations",
 																		Tunable.INTEGER, new Integer(5000)));
 		layoutProperties.add(new Tunable("sizeFactor", "Size factor",
-																		Tunable.INTEGER, new Integer(100)));
+																		Tunable.INTEGER, new Integer(10)));
 		layoutProperties.add(new Tunable("radiusConstantTime", "Radius constant",
-																		Tunable.INTEGER, new Integer(100)));
+																		Tunable.INTEGER, new Integer(20)));
 		layoutProperties.add(new Tunable("radius", "Radius",
 																		Tunable.INTEGER, new Integer(5)));
 		layoutProperties.add(new Tunable("minRadius", "Minimum radius",
@@ -153,7 +153,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 		int nodeCount = partition.nodeCount();
     nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( nodeCount ) );
     nodeIndexToLayoutIndex = new OpenIntIntHashMap( PrimeFinder.nextPrime( nodeCount ) );
-    squared_size = nodeCount*sizeFactor;
+    squared_size = network.getNodeCount()*sizeFactor;
    
 		epoch = 1;
    

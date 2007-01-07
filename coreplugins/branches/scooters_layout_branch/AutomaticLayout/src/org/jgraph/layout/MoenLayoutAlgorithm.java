@@ -121,7 +121,7 @@ public class MoenLayoutAlgorithm extends JGraphLayoutAlgorithm
         childParentDistance = distance;
     }
 
-    protected void layout(TreeLayoutNode t) throws Exception
+    protected void layout(TreeLayoutNode t) 
     {
         TreeLayoutNode c;
 
@@ -133,11 +133,11 @@ public class MoenLayoutAlgorithm extends JGraphLayoutAlgorithm
         c = t.child;
         while (c != null)
         {
-						if (c.sibling == t.child) {
-							// Oops -- found a loop!
-							throw new Exception("Found a loop in the network!");
+						if (c.sibling != t.child) {
+							// Avoid loops
+							// throw new Exception("Found a loop in the network!");
+            	layout(c);
 						}
-            layout(c);
             c = c.sibling;
         }
 
@@ -550,7 +550,8 @@ public class MoenLayoutAlgorithm extends JGraphLayoutAlgorithm
         TreeLayoutNode parent = getTreeLayoutNode(node);
 		// See if we're already traversed this node -- might have a loop
 		if (nodesSeen.containsKey(node)) {
-			throw new RuntimeException("Detected loop in graph!");
+			// throw new RuntimeException("Detected loop in graph!");
+			return;
 		} else {
 			nodesSeen.put(node,node);
 		}

@@ -160,15 +160,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		// Set and (Possibly) override defaults
 		this.initializeProperties();
 
-		// Set defaults
-    m_nodeDistanceSpringScalars = new double[m_numLayoutPasses];
-		for (int i = 0; i < m_numLayoutPasses; i++) 
-			m_nodeDistanceSpringScalars[i] = 1.0;
-    m_anticollisionSpringScalars = new double[m_numLayoutPasses];
-		m_anticollisionSpringScalars[0] = 0.0;
-		for (int i = 1; i < m_numLayoutPasses; i++) 
-			m_anticollisionSpringScalars[i] = 1.0;
-
 	}
 
 	/**
@@ -364,6 +355,17 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		// local_initialize();
 		m_nodeCount = partition.nodeCount();
 
+		// Set defaults -- this is done here insted of in the constructor
+		// to allow users to change m_numLayoutPasses
+    m_nodeDistanceSpringScalars = new double[m_numLayoutPasses];
+		for (int i = 0; i < m_numLayoutPasses; i++) 
+			m_nodeDistanceSpringScalars[i] = 1.0;
+    m_anticollisionSpringScalars = new double[m_numLayoutPasses];
+		m_anticollisionSpringScalars[0] = 0.0;
+		for (int i = 1; i < m_numLayoutPasses; i++) 
+			m_anticollisionSpringScalars[i] = 1.0;
+
+
 		/*
 		System.out.println("BioLayoutKK Algorithm.  Laying out "+m_nodeCount+" nodes and "+partition.edgeCount()+" edges: ");
 		for (Iterator diter = partition.nodeIterator(); diter.hasNext(); ) {
@@ -415,7 +417,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
     final double percentCompletedBeforePasses = 5.0d;
     final double percentCompletedAfterPass1 = 60.0d;
-    final double percentCompletedAfterPass2 = 90.0d;
+    final double percentCompletedAfterFinalPass = 95.0d;
     double currentProgress = percentCompletedBeforePasses;
 
 		// Profile partialProfile = new Profile();
@@ -433,8 +435,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
         				(double) (m_nodeCount + numIterations);
 			} else {
       	percentProgressPerIter =
-        		(percentCompletedAfterPass2 - percentCompletedAfterPass1) /
-        				(double) (m_nodeCount + numIterations);
+        		(percentCompletedAfterFinalPass - percentCompletedAfterPass1) /
+        				(double) ((m_nodeCount + numIterations) * (m_numLayoutPasses - 1));
 			}
 
       // Initialize this layout pass.
@@ -491,7 +493,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     }
 
 
-    taskMonitor.setPercentCompleted((int) percentCompletedAfterPass2);
+    taskMonitor.setPercentCompleted((int) percentCompletedAfterFinalPass);
 		taskMonitor.setStatus("Updating display");
 
 		double xDelta = 0.0;
@@ -934,7 +936,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		} 
     double denominator = ((partials.xx * partials.yy) - (partials.xy * partials.xy));
     if (((float) denominator) == 0.0) {
-      throw new RuntimeException("denominator too close to 0 for node "+node);
+			return;
+      // throw new RuntimeException("denominator too close to 0 for node "+node);
 		}
     double deltaX = ( ((-partials.x * partials.yy) - (-partials.y * partials.xy)) / denominator);
     double deltaY = ( ((-partials.y * partials.xx) - (-partials.x * partials.xy)) / denominator);

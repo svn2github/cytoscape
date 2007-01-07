@@ -239,7 +239,10 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		List l = new ArrayList();
 		for (Iterator it = roots.iterator(); it.hasNext();) {
 			if (canceled) return null;
-			l.add(buildTree((CellView) it.next()));
+			TreeNode tn = buildTree((CellView) it.next());
+			if (tn != null) {
+				l.add(tn);
+			}
 		}
 		return l;
 	}
@@ -247,7 +250,8 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
     protected TreeNode buildTree(CellView view) {
 
 		if (nodesSeen.containsKey(view))
-			throw new RuntimeException("Detected loop in graph!");
+			// throw new RuntimeException("Detected loop in graph!");
+			return null;
 		else
 			nodesSeen.put(view,view);
 
