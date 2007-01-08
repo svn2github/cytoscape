@@ -11,9 +11,13 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -28,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBException;
 
 import cytoscape.Cytoscape;
@@ -472,13 +477,29 @@ public class ImportNetworkDialog extends JDialog implements
 					importButtonActionPerformed(e);
 				} else // case for remote import
 				{
-					doURLimport(e);
+					//doURLimport(e);
+					//we must run download in a seperate Thread,because of progress monitor 
+					URLImportThread theImportThread = new URLImportThread(e);
+					theImportThread.start();
 				}
 			} else if (_btn == cancelButton) {
 				cancelButtonActionPerformed(e);
 			}
 		}
 		if (_actionObject instanceof JTextField) {
+			//doURLimport(e);
+			//we must run download in a seperate Thread,because of progress monitor 
+			URLImportThread theImportThread = new URLImportThread(e);
+			theImportThread.start();
+		}
+	}
+
+	private class URLImportThread extends Thread {
+		java.awt.event.ActionEvent e;
+		public URLImportThread(java.awt.event.ActionEvent e) {
+			this.e = e;
+		}
+		public void run(){    	  
 			doURLimport(e);
 		}
 	}
@@ -489,7 +510,7 @@ public class ImportNetworkDialog extends JDialog implements
 
 		File tmpFile = null;
 		try {
-			tmpFile = theHandler.downloadFromURL(new URL(theURLstr));
+			tmpFile = theHandler.downloadFromURL(new URL(theURLstr), this);
 		} 
 		catch (MalformedURLException e1) {
 			JOptionPane.showMessageDialog(this, "URL error!", "Warning",
@@ -519,6 +540,7 @@ public class ImportNetworkDialog extends JDialog implements
 
 		importButtonActionPerformed(e);
 	}
+
 
 	class LocalRemoteListener implements java.awt.event.ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
