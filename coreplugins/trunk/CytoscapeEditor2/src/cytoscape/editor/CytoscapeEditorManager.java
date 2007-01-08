@@ -1008,36 +1008,36 @@ public abstract class CytoscapeEditorManager {
     }
 
     /**
-     * generate a unique name for the network under construction, utilizing time
-     * stamp
+     * generate a unique name (title) for the network under construction
+     * "Network 0", "Network 1","Network 2", ...
      *
      * @return
      */
     public static String createUniqueNetworkName() {
+    	
         int       iteration_limit = 100;
-        String    netName = "Net:";
-        CyNetwork cn;
+        String    netNamePre = "Network ";
+        String    netName = "";
 
+        //Get the set of network title
+        java.util.Set theNetworkSet = Cytoscape.getNetworkSet();
+        java.util.Set<String> networkTitleSet = new java.util.TreeSet<String>();        
+        for (Object cn : theNetworkSet) {
+        	networkTitleSet.add(((CyNetwork)cn).getTitle());
+        }
+                
         while (iteration_limit > 0) {
-            netName = "Net";
 
-            java.util.Date d1 = new java.util.Date();
-            long           t1 = d1.getTime();
-            String         s1 = Long.toString(t1);
-            netName += s1.substring(s1.length() - 3); // append last 4
-                                                      // digits of time
-                                                      // stamp to
-                                                      // name
-
-            cn = Cytoscape.getNetwork(netName);
-
-            if ((cn.getNodeCount() == 0) && (cn.getEdgeCount() == 0)) {
-                // we have the null network, so a network with netName was not
-                // found.
-                return netName;
+            netName = netNamePre + newNetworkTitleSuffix++;
+            
+            // Check if the created title already exists
+            if (networkTitleSet.contains(netName)) {
+            	iteration_limit--;
+            	continue;
             }
-
-            iteration_limit--;
+            else {
+            	return netName;
+            }            
         }
 
         // in the unlikely condition where we couldn't generate a
@@ -1045,6 +1045,8 @@ public abstract class CytoscapeEditorManager {
         // return a random string and hope for the best
         return new String("Agilent:" + Math.random());
     }
+   
+    private static int newNetworkTitleSuffix = 0;
 
     /**
      * reset attributes for a CyNode whose identifier has been reset, basically
