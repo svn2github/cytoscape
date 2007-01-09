@@ -337,6 +337,9 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 		Hyperbolic Focus Layout plugin.
 			<br>
 			<br>
+			This plug-in was created by Robert Ikeda, who was supported (partially) by the <a href="http://prime.ucsd.edu">PRIME</a> Program funded by NSF (OISE 0407508) and <a href="http://calit2.net">Calit2</a> 
+			<br>
+			<br>
 			Released by: <a href="http://chianti.ucsd.edu/idekerlab">Ideker Lab</a>, UCSD 
                          <br>
                          Licensed under GNU Public License.
