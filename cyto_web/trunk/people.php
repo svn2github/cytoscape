@@ -106,7 +106,6 @@
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td>Benjamin Gross</td>
-    <td>Richard<br/> Bonneau</td>
     <td>Alex Pico</td>
     <td>Kristina<br/> Hanspers</td>
     <td>John "Scooter"<br /> Morris</td>
@@ -117,7 +116,6 @@
     <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
      <td><img src="people_photos/ben.jpg"></img></td>
-        <td><img src="people_photos/rich.jpg"></img></td>
      <td><img src="people_photos/alex.jpg"></img></td>
      <td><img src="people_photos/kristina.jpg"></img></td>
      <td><img src="people_photos/scooter.jpg"></img></td>
