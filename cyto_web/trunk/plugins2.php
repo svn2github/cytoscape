@@ -323,6 +323,40 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 					<hr>
 				</td>
 			</tr>
+
+            <tr>
+                
+		<td width="20%" valign="top">
+			<b>Hyperbolic Focus</b>
+			<br>
+			<font size="-1">Version: 1.0
+				<br>
+				Release Date: </font>
+		</td>
+		<td width="40%" valign="top">
+		Hyperbolic Focus Layout plugin.
+			<br>
+			<br>
+			Released by: <a href="http://chianti.ucsd.edu/idekerlab">Ideker Lab</a>, UCSD 
+                         <br>
+                         Licensed under GNU Public License.
+		</td>
+ 		<td width="20%" valign="top">
+				 Verified to work in 2.4.
+				</td>
+		<td width="20%" valign="top">
+			[<a href="plugins/HypFocus/HypFocus.jar">HypFocus</a>]
+			<br>
+			<br>
+		</td>
+	</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+
+
 			<tr>
 
 		<td width="20%" valign="top">
