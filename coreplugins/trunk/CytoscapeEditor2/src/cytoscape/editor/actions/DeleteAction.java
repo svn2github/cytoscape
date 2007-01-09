@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Tue May 24 06:54:43 2005
-* Modified:     Wed Dec 27 07:03:52 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Tue Jan 09 05:16:48 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Tue Jan 09 05:15:18 2007 (Michael L. Creech) creech@w235krbza760
+*  Added setup of Delete keyboard accelerator to constructors.
 * Wed Dec 27 06:54:56 2006 (Michael L. Creech) creech@w235krbza760
 *  Removed use of _title and removed 2 parameter constructor, removed unused
 *  local variables.
@@ -43,6 +45,8 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.event.ActionEvent;
+// MLC 01/09/07:
+import java.awt.event.KeyEvent;
 
 import javax.swing.undo.AbstractUndoableEdit;
 
@@ -80,6 +84,8 @@ public class DeleteAction extends CytoscapeAction {
         this(null);
         // MLC 12/27/06:
         // this(null, null);
+	// MLC 01/09/07:
+	setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
     }
 
     /**
@@ -101,6 +107,8 @@ public class DeleteAction extends CytoscapeAction {
         setPreferredIndex(Cytoscape.getDesktop().getCyMenus().getEditMenu()
                                    .getItemCount() - 2);
         _cyObj = obj;
+	// MLC 01/09/07:
+	setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
         // MLC 12/27/06 END.
     }
 
