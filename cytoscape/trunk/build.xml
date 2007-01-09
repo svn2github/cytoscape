@@ -765,8 +765,8 @@
 		<copy file="testData/galExpData.pvals" todir="${release.dir}/sampleData" />
 		<copy file="testData/galExpData.probeset.pvals" todir="${release.dir}/sampleData" />
 		<copy file="testData/gal.probeset.na" todir="${release.dir}/sampleData" />
-
-
+		<copy file="testData/interactome_merged.networkTable.gz" todir="${release.dir}/sampleData" />
+		
 		<!-- Copy over Third Party Licenses -->
 		<echo>
             ---------------------------------------
