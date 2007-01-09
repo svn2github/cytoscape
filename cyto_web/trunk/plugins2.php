@@ -481,6 +481,36 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 				</td>
 			</tr>
 
+	<tr>
+		<td width="20%" valign="top">
+			<b>NetMatch Plugin</b>
+			<br>
+			<font size="-1">Version: 1.0.1
+				<br>
+				Release Date: Dec. 22, 2006</font>
+		</td>
+		<td width="40%" valign="top">
+			NetMatch finds user defined network motifs in any Cytoscape network. Node and edge
+			attributes of any type and paths of unknown length can be specified in the search.
+			<P>Released by: <a href="http://alpha.dmi.unict.it/~ctnyu/">Ferro, Giugno, Pulvirenti group, University of Catania</a>, <a href="http://baderlab.org/">Bader group,
+			University of Toronto</a> and <a href="http://cs.nyu.edu/cs/faculty/shasha/">Shasha group, New York University</a>.
+		</td>
+		<td width="20%" valign="top">
+				 Verified to work in 2.3, 2.4
+				</td>
+		<td width="20%" valign="top">
+			Download from: [<a href=" http://alpha.dmi.unict.it/~ctnyu/netmatch.html">NetMatch Official Site</a>] or
+			[<a href=" http://baderlab.org/Software/NetMatch">NetMatch Mirror</a>]
+			<br>
+		</td>
+	</tr>
+
+	<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+
 
 	<tr>
 		<td width="20%" valign="top">
