@@ -485,14 +485,14 @@ public class JSortTable extends JTable implements MouseListener,
 					return;
 				}
 				String export = exportTable(all);
-				// write to file
-				System.out.println("Write to: " + name + " " + export);
+				export = export.replace("[", "\"");
+				export = export.replace("]", "\"");
 				try {
-					File file = new File(name);
-					BufferedWriter writer = new BufferedWriter(new FileWriter(
-							file));
+					final BufferedWriter writer = new BufferedWriter(new FileWriter(
+							new File(name)));
 					writer.write(export);
 					writer.close();
+					export = null;
 				} catch (Exception ex) {
 					System.out.println("Table Export Write error");
 					ex.printStackTrace();
@@ -510,15 +510,15 @@ public class JSortTable extends JTable implements MouseListener,
 		return exportTable("\t", LS, all);
 	}
 
-	public String exportTable(String element_delim, String eol_delim,
+	public String exportTable(final String element_delim, final String eol_delim,
 			boolean all) {
 
 		if (all == true) {
 			this.selectAll();
 		}
 
-		int[] selectedCols = this.getSelectedColumns();
-		StringBuffer buf = new StringBuffer();
+		final int[] selectedCols = this.getSelectedColumns();
+		final StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < selectedCols.length; i++) {
 			buf.append(this.getColumnName(selectedCols[i]) + "\t");
 		}
@@ -873,20 +873,17 @@ public class JSortTable extends JTable implements MouseListener,
 		cellMenu.show(e.getComponent(), e.getX(), e.getY());
 	}
 
-	private void adjustMenuSize() {
-
-	}
-
 	private String copyToClipBoard() {
 
-		StringBuffer sbf = new StringBuffer();
-		// Check to ensure we have selected only a contiguous block of
-		// cells
-		int numcols = this.getSelectedColumnCount();
-		int numrows = this.getSelectedRowCount();
+		final StringBuffer sbf = new StringBuffer();
+		/*
+		 * Check to ensure we have selected only a contiguous block of cells.
+		 */
+		final int numcols = this.getSelectedColumnCount();
+		final int numrows = this.getSelectedRowCount();
 
-		int[] rowsselected = this.getSelectedRows();
-		int[] colsselected = this.getSelectedColumns();
+		final int[] rowsselected = this.getSelectedRows();
+		final int[] colsselected = this.getSelectedColumns();
 
 		// Return if no cell is selected.
 		if (numcols == 0 && numrows == 0) {
@@ -901,9 +898,13 @@ public class JSortTable extends JTable implements MouseListener,
 					JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
+		Object tempCell = null;
+		String oneCell = null;
 		for (int i = 0; i < numrows; i++) {
 			for (int j = 0; j < numcols; j++) {
-				sbf.append(this.getValueAt(rowsselected[i], colsselected[j]));
+				tempCell = this.getValueAt(rowsselected[i], colsselected[j]);
+				
+				sbf.append(tempCell);
 				if (j < numcols - 1)
 					sbf.append("\t");
 			}

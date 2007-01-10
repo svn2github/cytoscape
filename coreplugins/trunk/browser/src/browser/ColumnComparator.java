@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.Vector;
 
 public class ColumnComparator implements Comparator {
+
 	protected int index;
 	protected boolean ascending;
 
@@ -34,18 +35,43 @@ public class ColumnComparator implements Comparator {
 			if (firstObj == null && secondObj == null) {
 				return 0;
 			} else if (firstObj == null) {
-				return ascending ? -1 : 1;
+				return 1;
 			} else if (secondObj == null) {
-				return ascending ? 1 : -1;
+				return -1;
 			} else if (firstObj instanceof Comparable
 					&& secondObj instanceof Comparable) {
 
 				final Comparable firstComparableObj = (Comparable) firstObj;
 				final Comparable secondComparableObj = (Comparable) secondObj;
 
-				return ascending ? firstComparableObj
-						.compareTo(secondComparableObj) : secondComparableObj
-						.compareTo(firstComparableObj);
+				/*
+				 * If these values are Strings, treat empty values as null.
+				 */
+				if (firstComparableObj instanceof String
+						&& secondComparableObj instanceof String) {
+					final int firstLength = ((String) firstComparableObj)
+							.trim().length();
+					final int secondLength = ((String) secondComparableObj)
+							.trim().length();
+
+					if (firstLength == 0 && secondLength == 0) {
+						return 0;
+					} else if (firstLength == 0) {
+						return 1;
+					} else if (secondLength == 0) {
+						return -1;
+					} else {
+						return ascending ? firstComparableObj
+								.compareTo(secondComparableObj)
+								: secondComparableObj
+										.compareTo(firstComparableObj);
+					}
+				} else {
+
+					return ascending ? firstComparableObj
+							.compareTo(secondComparableObj)
+							: secondComparableObj.compareTo(firstComparableObj);
+				}
 			}
 		}
 		return 1;
@@ -59,10 +85,10 @@ public class ColumnComparator implements Comparator {
 	 * @return
 	 */
 	public int compare(final Number number1, final Number number2) {
-		
+
 		final double firstNumber = number1.doubleValue();
 		final double secondNumber = number2.doubleValue();
-		
+
 		if (firstNumber < secondNumber) {
 			return -1;
 		} else if (firstNumber > secondNumber) {

@@ -427,8 +427,10 @@ public class DataTableModel extends DefaultTableModel implements
 		// setTable();
 	}
 
-	// //////////////////////////////////////
-	// Implements JSortTable
+	/*
+	 * The following section is an implementation of 
+	 * JSortTable 
+	 */
 
 	public boolean isSortable(int col) {
 		return true;
