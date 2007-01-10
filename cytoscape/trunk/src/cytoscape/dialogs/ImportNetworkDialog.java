@@ -7,6 +7,7 @@
 package cytoscape.dialogs;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -36,13 +37,21 @@ import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBException;
 
 import cytoscape.Cytoscape;
+//import cytoscape.actions.ExportAsGMLTask;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
 import cytoscape.data.ImportHandler;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.util.BookmarksUtil;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
+
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 
 /**
  * 
@@ -478,39 +487,84 @@ public class ImportNetworkDialog extends JDialog implements
 				} else // case for remote import
 				{
 					//doURLimport(e);
-					//we must run download in a seperate Thread,because of progress monitor 
-					URLImportThread theImportThread = new URLImportThread(e);
-					theImportThread.start();
+					createURLimportTask(e); 
 				}
 			} else if (_btn == cancelButton) {
 				cancelButtonActionPerformed(e);
 			}
 		}
 		if (_actionObject instanceof JTextField) {
-			//doURLimport(e);
-			//we must run download in a seperate Thread,because of progress monitor 
-			URLImportThread theImportThread = new URLImportThread(e);
-			theImportThread.start();
+			createURLimportTask(e);
 		}
 	}
 
-	private class URLImportThread extends Thread {
+	private void createURLimportTask(java.awt.event.ActionEvent e) {
+		String theURLstr = bookmarkEditor.getURLstr().trim();
+		URL theURL = null;
+		try {
+			theURL = new URL(theURLstr);						
+		}
+		catch (MalformedURLException e1) {
+			JOptionPane.showMessageDialog(this, "URL error!", "Warning",
+					JOptionPane.INFORMATION_MESSAGE);
+			return;
+		} 
+		
+		// Create Task
+		Task task = new URLdownloadTask(theURL,e);						
+
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(false);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
+		jTaskConfig.displayCancelButton(true);
+
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);					
+	}
+	
+	private class URLdownloadTask implements Task{
+		private TaskMonitor taskMonitor;
+		URL url;
 		java.awt.event.ActionEvent e;
-		public URLImportThread(java.awt.event.ActionEvent e) {
+		
+		public URLdownloadTask(URL url,java.awt.event.ActionEvent e) {
+			this.url = url;
 			this.e = e;
 		}
-		public void run(){    	  
-			doURLimport(e);
-		}
-	}
+		
+		public void run(){
+			taskMonitor.setStatus("Downloading ...");
+			taskMonitor.setPercentCompleted(-1);
 
-	private void doURLimport(java.awt.event.ActionEvent e) {
-		String theURLstr = bookmarkEditor.getURLstr().trim();
+			doURLimport(url, e, taskMonitor);
+				
+			taskMonitor.setPercentCompleted(100);
+			taskMonitor.setStatus("Downloading successfully from " + url.toString());
+	    }
+	    
+	    public void halt(){
+	    }
+	    
+	    public void setTaskMonitor(TaskMonitor monitor)
+        throws IllegalThreadStateException {
+	    	this.taskMonitor = monitor;
+	    }
+	    
+	    public String getTitle() {
+	    	return "URL downloading";
+	    }
+	}
+	
+	
+	private void doURLimport(URL url, java.awt.event.ActionEvent e, TaskMonitor taskMonitor) {
 		cytoscape.data.ImportHandler theHandler = Cytoscape.getImportHandler();
 
 		File tmpFile = null;
 		try {
-			tmpFile = theHandler.downloadFromURL(new URL(theURLstr), this);
+			tmpFile = theHandler.downloadFromURL(url, taskMonitor);
 		} 
 		catch (MalformedURLException e1) {
 			JOptionPane.showMessageDialog(this, "URL error!", "Warning",
