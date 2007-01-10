@@ -18,7 +18,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
@@ -28,10 +27,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import javax.swing.JOptionPane;
-import javax.swing.ProgressMonitor;
-import javax.swing.SwingUtilities;
-
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTask;
 /**
  * Central registry for all Cytoscape import classes.
  *
@@ -146,7 +143,7 @@ public class ImportHandler {
     public GraphReader getReader(URL u) {
     	File tmpFile = null;
     	try {
-    		tmpFile = downloadFromURL(u);    		
+    		tmpFile = downloadFromURL(u, null);    		
     	}
     	catch (Exception e)
     	{
@@ -308,47 +305,11 @@ public class ImportHandler {
     }
 	
     
-	/**
-	 * Download a temporary file from the given URL. The file will be saved in the 
-	 * temporary directory and will be deleted after Cytoscape exits.
-	 */
-	public File downloadFromURL(URL url) throws IOException, FileNotFoundException{
-
-		URLConnection conn = null;
-
-		Proxy pProxyServer = ProxyHandler.getProxyServer();
-		if (pProxyServer == null) 
-			conn = url.openConnection();
-		else 
-			conn = url.openConnection(pProxyServer);
-
-
-		// create the temp file
-		tmpFile = createTempFile(url);
-
-		// now write the temp file
-		BufferedWriter out = null;
-		BufferedReader in = null;
-
-		out = new BufferedWriter(new FileWriter(tmpFile));
-		in = new BufferedReader(new InputStreamReader(conn.getInputStream()));	    	
-
-		String inputLine = null;
-		while ((inputLine = in.readLine()) != null) {
-			out.write(inputLine);
-			out.newLine();
-		}
-
-		in.close();
-		out.close();
-
-		return tmpFile;
-	}
     
 	// Create a temp file for URL download
-    private File createTempFile(URL url) throws IOException {
+    private File createTempFile(URLConnection conn, URL url) throws IOException {
 
-		tmpFile = null; 
+		File tmpFile = null; 
 		String tmpDir = System.getProperty("java.io.tmpdir"); 
 		String pURLstr = url.toString();
 		
@@ -381,49 +342,28 @@ public class ImportHandler {
 		return tmpFile;
     }
     
-	private URLConnection conn = null;
-	
-	private File tmpFile = null;
-	
 	
 	/**
 	 * Download a temporary file from the given URL. The file will be saved in the 
 	 * temporary directory and will be deleted after Cytoscape exits. 
-	 * Note: (1) progress monitor will be displayed during downloading
-	 *       (2) the method shouldn't be called in event dispatching thread
-	 *
-	 * @param u -- the URL string, parent Frame to display the progress monitor
+	 * @param u -- the URL string, TaskMonitor if any
 	 * @return -- a temporary file downloaded from the given URL.
 	 */
-	public File downloadFromURL(URL url, javax.swing.JDialog pParent) throws IOException, FileNotFoundException
+	public File downloadFromURL(URL url, TaskMonitor taskMonitor) throws IOException, FileNotFoundException
 	{
-		parent = pParent;
 		Proxy pProxyServer = ProxyHandler.getProxyServer();
+		URLConnection conn = null;
 		if (pProxyServer == null) 
 			conn = url.openConnection();
 		else 
 			conn = url.openConnection(pProxyServer);
 
 		// create the temp file
-		tmpFile = createTempFile(url);
+		File tmpFile = createTempFile(conn, url);
 
-		// Prepare for the progress monitor 
-		initProgressMonitor();
-		minCount = 0;
-		// debug only
-		maxCount = conn.getContentLength(); // -1 if unknown
-
-		if (maxCount == -1) {
-			maxCount = 9999999;
-		}
-		progressCount = 0;
-		downloadingCanceled = false;
-
-		try
-		{
-			SwingUtilities.invokeAndWait(setMinAndMax);
-		}
-		catch (Exception _e) {}
+		// This is needed for the progress monitor 
+		int maxCount = conn.getContentLength(); // -1 if unknown
+		int progressCount = 0;
 
 		// now write the temp file
 		BufferedWriter out = null;
@@ -433,103 +373,33 @@ public class ImportHandler {
 		in = new BufferedReader(new InputStreamReader(conn.getInputStream()));	    	
 
 		String inputLine = null;
+		double percent = 0.0d;
+		
 		while ((inputLine = in.readLine()) != null) {
 			progressCount += inputLine.length();
 
-			try
-			{
-				SwingUtilities.invokeAndWait(updateProgMon);
-			}
-			catch (Exception _e) {}
-
-			if (downloadingCanceled)
-			{
-				progressNote = "Please wait...";
-				try
-				{
-					SwingUtilities.invokeAndWait(updateProgMon);
+			//  Report on Progress
+		    if ( taskMonitor != null ) {
+				percent = ((double) progressCount / maxCount) * 100.0;
+				if (maxCount == -1) { // file size unknown
+					percent = -1;
+				}	
+				JTask jTask = (JTask) taskMonitor; 
+				if (jTask.haltRequested()) {//abort
+					tmpFile = null;
+					taskMonitor.setStatus("Canceling the download task ...");
+					taskMonitor.setPercentCompleted(100);
+					break;
 				}
-				catch (Exception _e) {}
-				tmpFile = null;
-				break;
-			}            
+				taskMonitor.setPercentCompleted((int) percent);
+			}
 
 			out.write(inputLine);
 			out.newLine();
 		}
 		in.close();
 		out.close();
-
-		try
-		{
-			SwingUtilities.invokeAndWait(closeProgMon);
-		}
-		catch (Exception _e) {}
-
+		
 		return tmpFile;
-	}	  
-
-	private javax.swing.JDialog parent = null;
-	private Runnable updateProgMon, closeProgMon, setMinAndMax;
-	private int progressCount = 0, minCount=0, maxCount=100;
-	private String progressNote = "";
-	private String progressTitle = "Downloading";
-	private boolean downloadingCanceled = false;
-
-	private void initProgressMonitor()
-	{
-		//progressTitle = "";
-		progressNote = "";
-		final ProgressMonitor pm = new ProgressMonitor(parent, progressTitle,progressNote,0,100);
-		pm.setMillisToDecideToPopup(300);
-		pm.setMillisToPopup(1000);
-
-		// Create these as inner classes to minimize the amount of thread creation (expensive!)...
-		updateProgMon = new Runnable()
-		{
-			double dCount = 0;
-			public void run()
-			{
-				if (pm.isCanceled())
-				{
-					downloadingCanceled = true;
-					pm.close();
-				}
-				else
-				{
-					dCount = ((double)progressCount/(double)pm.getMaximum());
-					progressNote = ((int)(dCount * 100.0) +"% complete");
-					if (maxCount == 9999999) {
-						progressNote = "File size unknown, please wait!";
-					
-						if (Math.random()>0.5) {
-							progressCount = 0;
-						}
-						else {
-							progressCount = maxCount-10;								
-						}
-					}
-					pm.setProgress(progressCount);						
-					pm.setNote(progressNote);
-				}
-			}
-		};
-
-		closeProgMon = new Runnable()
-		{
-			public void run()
-			{
-				pm.close();
-			}
-		};
-
-		setMinAndMax = new Runnable()
-		{
-			public void run()
-			{
-				pm.setMinimum(minCount);
-				pm.setMaximum(maxCount);
-			}
-		};      
-	}//end of initProgressMonitor()
+	}// End of downloadFromURL()
 }
