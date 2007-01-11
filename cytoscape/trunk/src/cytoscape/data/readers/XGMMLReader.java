@@ -236,30 +236,17 @@ public class XGMMLReader extends AbstractGraphReader {
 		metaTree = new ArrayList();
 	}
 
-	/**
-	 * Read XGMML file.<br>
-	 * This method is required for all network loading classes.
-	 * 
-	 */
 	public void read() throws IOException {
 		try {
 			this.readXGMML();
 		} catch (JAXBException e) {
 			if (taskMonitor != null) {
 				taskMonitor.setException(e, e.getMessage());
+			} else {
+				throw new IOException(
+						"Cannot unmarshall given XGMML file.  Given XGMML file may contain invalid entry: "
+								+ e.getMessage());
 			}
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FactoryConfigurationError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
@@ -267,21 +254,19 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * Actual method to read & unmarshall XGMML documents.
 	 * 
 	 * @throws JAXBException
+	 * 
+	 * @throws JAXBException
+	 * @throws IOException
 	 * @throws IOException
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 * @throws FactoryConfigurationError
 	 * @throws XMLStreamException
 	 */
-	private void readXGMML() throws JAXBException, IOException,
-			ParserConfigurationException, SAXException, XMLStreamException,
-			FactoryConfigurationError {
+	private void readXGMML() throws JAXBException, IOException {
+
 		JAXBElement<GraphicGraph> graphicGraphElement;
 
-//		XMLInputFactory factory = XMLInputFactory.newInstance();
-//		XMLStreamReader xmlStreamReader = factory
-//				.createXMLStreamReader(new BufferedReader(networkStream));
-		// Use JAXB-generated methods to create data structure
 		final JAXBContext jaxbContext = JAXBContext.newInstance(XGMML_PACKAGE,
 				this.getClass().getClassLoader());
 		// Unmarshall the XGMML file
@@ -304,8 +289,6 @@ public class XGMMLReader extends AbstractGraphReader {
 			 */
 			graphicGraphElement = (JAXBElement<GraphicGraph>) unmarshaller
 					.unmarshal(new BufferedInputStream(networkStream));
-
-			
 
 			networkName = graphicGraphElement.getValue().getLabel();
 			networkAtt = graphicGraphElement.getValue().getAtt();
@@ -996,17 +979,25 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * Part of interace contract
 	 */
 	public int[] getNodeIndicesArray() {
-		System.out.println("Size = " + giny_nodes.size());
-		giny_nodes.trimToSize();
-		return giny_nodes.elements();
+		if (giny_nodes == null) {
+			return new int[0];
+		} else {
+			giny_nodes.trimToSize();
+			return giny_nodes.elements();
+		}
 	}
 
 	/**
 	 * Part of interace contract
 	 */
 	public int[] getEdgeIndicesArray() {
-		giny_edges.trimToSize();
-		return giny_edges.elements();
+		if (giny_edges == null) {
+			return new int[0];
+		} else {
+			giny_edges.trimToSize();
+			return giny_edges.elements();
+		}
+
 	}
 
 	public String getNetworkID() {
