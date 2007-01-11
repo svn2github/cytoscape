@@ -80,7 +80,7 @@ public class MCODEMainPanelAction implements ActionListener {
             vmm.setVisualStyle(MCODEVS);
 
             mainPanel = new MCODEMainPanel(this, MCODEVS);
-            URL iconURL = this.getClass().getResource("resources/logo2.png");
+            URL iconURL = MCODEPlugin.class.getResource("resources/logo2.png");
             if (iconURL != null) {
                 ImageIcon icon = new ImageIcon(iconURL);
                 String tip = "MCODE Network Scoring/Cluster Finding Parameters";

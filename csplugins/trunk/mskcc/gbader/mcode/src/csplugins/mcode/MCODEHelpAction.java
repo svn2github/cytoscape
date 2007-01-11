@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
+ * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
  * * Code written by: Gary Bader
  * * Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -33,23 +33,15 @@ import java.awt.event.ActionListener;
  * * along with this library; if not, write to the Free Software Foundation,
  * * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  * *
- * * User: Gary Bader
- * * Date: Jun 25, 2004
- * * Time: 5:38:52 PM
- * * Description: The action to show the About dialog box
+ * * User: vukpavlovic
+ * * Date: Jan 10, 2007
+ * * Time: 5:55:40 PM
+ * * Description: Opens a browser with the MCODE wiki page.
  */
 
-/**
- * The action to show the About dialog box
- */
-public class MCODEAboutAction implements ActionListener {
-    /**
-     * Invoked when the about action occurs.
-     */
-    public void actionPerformed(ActionEvent e) {
-        //display about box
-        MCODEAboutDialog aboutDialog = new MCODEAboutDialog();
-        aboutDialog.pack();
-        aboutDialog.setVisible(true);
+public class MCODEHelpAction implements ActionListener {
+
+    public void actionPerformed(ActionEvent actionEvent) {
+        cytoscape.util.OpenBrowser.openURL("http://www.baderlab.org/Software/MCODE/");
     }
 }

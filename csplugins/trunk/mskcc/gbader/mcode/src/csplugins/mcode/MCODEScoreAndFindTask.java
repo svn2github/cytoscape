@@ -56,9 +56,9 @@ public class MCODEScoreAndFindTask implements Task {
      * Scores and finds clusters in a given network
      *
      * @param network The network to cluster
-     * @param analyze
-     * @param resultSet
-     * @param alg
+     * @param analyze Tells the task if we need to rescore and/or refind
+     * @param resultSet Identifier of the current result set
+     * @param alg reference to the algorithm for this network
      */
     public MCODEScoreAndFindTask(CyNetwork network, int analyze, String resultSet, MCODEAlgorithm alg) {
         this.network = network;
@@ -82,7 +82,6 @@ public class MCODEScoreAndFindTask implements Task {
                 taskMonitor.setPercentCompleted(0);
                 taskMonitor.setStatus("Scoring Network (Step 1 of 3)");
                 alg.scoreGraph(network, resultSet);
-                //TODO: this is where different scoring algorithms could be called based on parameters
                 if (interrupted) {
                     return;
                 }

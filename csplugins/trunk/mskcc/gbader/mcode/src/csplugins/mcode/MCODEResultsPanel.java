@@ -1,12 +1,9 @@
 package csplugins.mcode;
 
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.actions.GinyUtils;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
@@ -32,6 +29,39 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
+/**
+ * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
+ * *
+ * * Code written by: Gary Bader
+ * * Authors: Gary Bader, Ethan Cerami, Chris Sander
+ * *
+ * * This library is free software; you can redistribute it and/or modify it
+ * * under the terms of the GNU Lesser General Public License as published
+ * * by the Free Software Foundation; either version 2.1 of the License, or
+ * * any later version.
+ * *
+ * * This library is distributed in the hope that it will be useful, but
+ * * WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ * * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ * * documentation provided hereunder is on an "as is" basis, and
+ * * Memorial Sloan-Kettering Cancer Center
+ * * has no obligations to provide maintenance, support,
+ * * updates, enhancements or modifications.  In no event shall the
+ * * Memorial Sloan-Kettering Cancer Center
+ * * be liable to any party for direct, indirect, special,
+ * * incidental or consequential damages, including lost profits, arising
+ * * out of the use of this software and its documentation, even if
+ * * Memorial Sloan-Kettering Cancer Center
+ * * has been advised of the possibility of such damage.  See
+ * * the GNU Lesser General Public License for more details.
+ * *
+ * * You should have received a copy of the GNU Lesser General Public License
+ * * along with this library; if not, write to the Free Software Foundation,
+ * * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ * *
+ * * User: Vuk Pavlovic
+ * * Description: The Results Panel displaying found clusters
+ */
 
 /**
  * Reports the results of MCODE cluster finding. This class sets up the UI.
@@ -47,21 +77,26 @@ public class MCODEResultsPanel extends JPanel {
     protected final int defaultRowHeight = graphPicSize + 8;
     protected int preferredTableWidth = 0; // incremented below
     //Actual cluster data
-    CyNetwork network;                 //Keep a record of the original input record for use in the
-    //table row selection listener
-    CyNetworkView networkView;         //Keep a record of this too, if it exists
+    CyNetwork network;                     //Keep a record of the original input record for use in the
+                                           //table row selection listener
+    CyNetworkView networkView;             //Keep a record of this too, if it exists
     MCODECollapsablePanel explorePanel;
     JPanel[] exploreContent;
     MCODEParameterSet currentParamsCopy;
 
+    //Graphical classes
     GraphDrawer drawer;
     MCODELoader loader;
 
     /**
+     * Constructor for the Results Panel which displays the clusters in a browswer table and
+     * explore panels for each cluster.
      *
-     * @param clusters
-     * @param network
-     * @param imageList
+     * @param clusters Found clusters from the MCODEScoreAndFindTask
+     * @param alg A reference to the alg for this particular network
+     * @param network Network were these clusters were found
+     * @param imageList A list of images of the found clusters
+     * @param resultsTitle Title of these results as determined by MCODESCoreAndFindAction
      */
     public MCODEResultsPanel(MCODECluster[] clusters, MCODEAlgorithm alg, CyNetwork network, Image[] imageList, String resultsTitle) {
         setLayout(new BorderLayout());
@@ -73,7 +108,6 @@ public class MCODEResultsPanel extends JPanel {
         //the view may not exist, but we only test for that when we need to (in the
         //TableRowSelectionHandler below)
         networkView = Cytoscape.getNetworkView(network.getIdentifier());
-        network.addSelectEventListener(new MCODEResultsPanel.networkSelectionAction());
 
         currentParamsCopy = MCODECurrentParameters.getInstance().getResultParams(resultsTitle);
 
@@ -88,6 +122,7 @@ public class MCODEResultsPanel extends JPanel {
     }
 
     /**
+     * Creates a panel that contains the browser table with a scroll bar
      *
      * @param imageList images of cluster graphs
      * @return panel
@@ -105,8 +140,8 @@ public class MCODEResultsPanel extends JPanel {
 
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setDefaultRenderer(StringBuffer.class, new MCODEResultsPanel.JTextAreaRenderer(defaultRowHeight));
-        table.setIntercellSpacing(new Dimension(0, 4));
-        table.setFocusable(false);
+        table.setIntercellSpacing(new Dimension(0, 4));   //gives a little vertical room between clusters
+        table.setFocusable(false);  //removes an outline that appears when the user clicks on the images
 
         //Ask to be notified of selection changes.
         ListSelectionModel rowSM = table.getSelectionModel();
@@ -115,19 +150,13 @@ public class MCODEResultsPanel extends JPanel {
         JScrollPane tableScrollPane = new JScrollPane(table);
         tableScrollPane.getViewport().setBackground(Color.WHITE);
 
-        /*
-        //the Save button
-        JButton saveButton = new JButton("Export");
-        saveButton.addActionListener(new MCODEResultsPanel.ExportAction(this, clusters, network));
-        saveButton.setToolTipText("Save result summary to a file");
-        bottomPanel.add(saveButton, BorderLayout.CENTER);
-        */
         panel.add(tableScrollPane, BorderLayout.CENTER);
 
         return panel;
     }
 
     /**
+     * Creates a panel containing the explore collapsable panel and result set specific buttons
      *
      * @return Panel containing the explore cluster collapsable panel and button panel
      */
@@ -141,8 +170,12 @@ public class MCODEResultsPanel extends JPanel {
 
         JPanel buttonPanel = new JPanel();
 
+        //The Export button
         JButton exportAllButton = new JButton("Export All");
-        //TODO: DO THIS
+        exportAllButton.addActionListener(new MCODEResultsPanel.ExportAction());
+        exportAllButton.setToolTipText("Export result summary to a text file");
+
+        //The close button
         JButton closeButton = new JButton("Close Results");
         closeButton.addActionListener(new MCODEResultsPanel.CloseAction(this));
 
@@ -193,7 +226,7 @@ public class MCODEResultsPanel extends JPanel {
         sizeSlider.setLabelTable(labelTable);
         sizeSlider.setFont(new Font("Arial", Font.PLAIN, 8));
 
-        String sizeTip = "WRITE ME PLEASE!";//TODO: Write size slider tooltip
+        String sizeTip = "Move the slider to include or\nexclude nodes from the cluster";
         sizeSlider.setToolTipText(sizeTip);
 
         sizePanel.add(sizeSlider, BorderLayout.NORTH);
@@ -209,6 +242,7 @@ public class MCODEResultsPanel extends JPanel {
 
         sizeSlider.addChangeListener(new MCODEResultsPanel.SizeAction(selectedRow, nodeAttributesComboBox));
 
+        //Create a table listing the node attributes and their enumerations
         MCODEResultsPanel.MCODEResultsEnumeratorTableModel modelEnumerator;
         modelEnumerator = new MCODEResultsPanel.MCODEResultsEnumeratorTableModel(new HashMap());
 
@@ -222,6 +256,7 @@ public class MCODEResultsPanel extends JPanel {
         enumerationsTable.setDefaultRenderer(StringBuffer.class, new MCODEResultsPanel.JTextAreaRenderer(0));
         enumerationsTable.setFocusable(false);
 
+        //Create a combo box that lists all the available node attributes for enumeration
         nodeAttributesComboBox.addActionListener(new MCODEResultsPanel.enumerateAction(enumerationsTable, modelEnumerator, selectedRow));
 
         nodeAttributesPanel.add(nodeAttributesComboBox, BorderLayout.NORTH);
@@ -237,9 +272,10 @@ public class MCODEResultsPanel extends JPanel {
     }
 
     /**
+     * Creates a panel containing buttons for the cluster explore collapsable panel
      *
-     * @param selectedRow
-     * @return
+     * @param selectedRow Currently selected row in the cluster browser table
+     * @return panel
      */
     private JPanel createBottomExplorePanel(int selectedRow) {
         JPanel panel = new JPanel();
@@ -279,10 +315,7 @@ public class MCODEResultsPanel extends JPanel {
     private class CreateChildAction extends AbstractAction {
         int selectedRow;
         MCODEResultsPanel trigger;
-        /**
-         *
-         * @param selectedRow The selected cluster
-         */
+
         CreateChildAction (MCODEResultsPanel trigger, int selectedRow) {
             this.selectedRow = selectedRow;
             this.trigger = trigger;
@@ -294,53 +327,43 @@ public class MCODEResultsPanel extends JPanel {
             final MCODECluster cluster = clusters[selectedRow];
             final GraphPerspective gpCluster = cluster.getGPCluster();
             final String title = trigger.getResultsTitle() + ": " + cluster.getClusterName() + " (Score: "+ nf.format(cluster.getClusterScore()) + ")";
-            //check if a network has already been created
-            //String id = (String) hmNetworkNames.get(new Integer(selectedRow + 1));
-            //if (id != null) {
-                //just switch focus to the already created network
-            //    Cytoscape.getDesktop().setFocus(id);
-            //} else {
-                //create the child network and view
-                final SwingWorker worker = new SwingWorker() {
-                    public Object construct() {
-                        CyNetwork newNetwork = Cytoscape.createNetwork(gpCluster.getNodeIndicesArray(),
-                                gpCluster.getEdgeIndicesArray(), title, network);
-                        //hmNetworkNames.put(new Integer(selectedRow + 1), newNetwork.getIdentifier());
-                        DGraphView view = (DGraphView) Cytoscape.createNetworkView(newNetwork);
-                        //layout new cluster and fit it to window
-                        //randomize node positions before layout so that they don't all layout in a line
-                        //(so they don't fall into a local minimum for the SpringEmbedder)
-                        //If the SpringEmbedder implementation changes, this code may need to be removed
-                        NodeView nv;
-                        boolean layoutNecessary = false;
-                        for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
-                            nv = (NodeView) in.next();
-                            if (cluster.getPGView() != null && cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
-                                //If it does, then we take the layout position that was already generated for it
-                                nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
-                                nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
-                            } else {
-                                //this will likely never occur
-                                //Otherwise, randomize node positions before layout so that they don't all layout in a line
-                                //(so they don't fall into a local minimum for the SpringEmbedder)
-                                //If the SpringEmbedder implementation changes, this code may need to be removed
-                                nv.setXPosition(view.getCanvas().getWidth() * Math.random());
-                                //height is small for many default drawn graphs, thus +100
-                                nv.setYPosition((view.getCanvas().getHeight() + 100) * Math.random());
-                                layoutNecessary = true;
-                            }
+            //create the child network and view
+            final SwingWorker worker = new SwingWorker() {
+                public Object construct() {
+                    CyNetwork newNetwork = Cytoscape.createNetwork(gpCluster.getNodeIndicesArray(), gpCluster.getEdgeIndicesArray(), title, network);
+                    DGraphView view = (DGraphView) Cytoscape.createNetworkView(newNetwork);
+                    //layout new cluster and fit it to window
+                    //randomize node positions before layout so that they don't all layout in a line
+                    //(so they don't fall into a local minimum for the SpringEmbedder)
+                    //If the SpringEmbedder implementation changes, this code may need to be removed
+                    NodeView nv;
+                    boolean layoutNecessary = false;
+                    for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
+                        nv = (NodeView) in.next();
+                        if (cluster.getPGView() != null && cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
+                            //If it does, then we take the layout position that was already generated for it
+                            nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
+                            nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
+                        } else {
+                            //this will likely never occur
+                            //Otherwise, randomize node positions before layout so that they don't all layout in a line
+                            //(so they don't fall into a local minimum for the SpringEmbedder)
+                            //If the SpringEmbedder implementation changes, this code may need to be removed
+                            nv.setXPosition(view.getCanvas().getWidth() * Math.random());
+                            //height is small for many default drawn graphs, thus +100
+                            nv.setYPosition((view.getCanvas().getHeight() + 100) * Math.random());
+                            layoutNecessary = true;
                         }
-                        if (layoutNecessary) {
-                            SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
-                            lay.doLayout(0, 0, 0, null);
-                        }
-                        view.fitContent();
-                        return null;
                     }
-                };
-                worker.start();
-            //}
-
+                    if (layoutNecessary) {
+                        SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
+                        lay.doLayout(0, 0, 0, null);
+                    }
+                    view.fitContent();
+                    return null;
+                }
+            };
+            worker.start();
         }
     }
 
@@ -623,14 +646,14 @@ public class MCODEResultsPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             CytoscapeDesktop desktop = Cytoscape.getDesktop();
             CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
-
+            //Must make sure the user wants to close this results panel
             String message = "You are about to dispose of " + resultsTitle + ".\nDo you wish to continue?";
             int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[]{message}, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
             if (result == JOptionPane.YES_OPTION) {
                 cytoPanel.remove(trigger);
                 MCODECurrentParameters.removeResultParams(getResultsTitle());
             }
-            
+            //If there are no more tabs in the cytopanel then we hide it
             if (cytoPanel.getCytoPanelComponentCount() == 0) {
                 cytoPanel.setState(CytoPanelState.HIDE);
             }
@@ -639,41 +662,24 @@ public class MCODEResultsPanel extends JPanel {
 
     /**
      * Handles the Export press for this panel (export results to a text file)
-     * TODO: make this work
      */
     private class ExportAction extends AbstractAction {
-        private JPanel popup;
-        private CyNetwork network;
-
-        /**
-         * Export action constructor
-         *
-         * @param popup     The parent dialog
-         * @param network   Network clusters are from for information about cluster components
-         */
-        ExportAction(JPanel popup, CyNetwork network) {
-            super("");
-            this.popup = popup;
-            this.network = network;
-        }
 
         public void actionPerformed(ActionEvent e) {
             //call save method in MCODE
             //get the file name
-            File file = FileUtil.getFile("Save Graph as Interactions",
+            File file = FileUtil.getFile("Export Graph as Interactions",
                     FileUtil.SAVE, new CyFileFilter[]{});
 
             if (file != null) {
                 String fileName = file.getAbsolutePath();
-                MCODEUtil.saveMCODEResults(alg, clusters, network, fileName);
+                MCODEUtil.exportMCODEResults(alg, clusters, network, fileName);
             }
         }
     }
 
     /**
-     * Handler to selects nodes in graph or create a new network when a row is selected
-     * Note: There is some fairly detailed logic in here to deal with all the cases that a user can interact
-     * with this dialog box.  Be careful when editing this code.
+     * Handler to select nodes in graph when a row is selected
      */
     private class TableRowSelectionHandler implements ListSelectionListener {
 
@@ -723,8 +729,9 @@ public class MCODEResultsPanel extends JPanel {
     }
 
     /**
+     * Selects a cluster in the view that is selected by the user in the browser table
      *
-     * @param gpCluster
+     * @param gpCluster Cluster to be selected
      */
     private void selectCluster(GraphPerspective gpCluster) {
         NodeView nv;
@@ -798,62 +805,19 @@ public class MCODEResultsPanel extends JPanel {
         }
     }
 
-    /**
-     *
-     * @return
-     */
+    //Getter and Setter for this Result Set's Title/ID
     public String getResultsTitle() {
         return resultsTitle;
     }
 
-    /**
-     *
-     * @param title
-     */
     public void setResultsTitle(String title) {
         resultsTitle = title;
     }
 
-    /**
-     * 
-     * @return
-     */
+    //Getter for the browser table used in MCODEVisualStyleAction to reselect the selected
+    //cluster whenever the user focuses on this result set
     public JTable getClusterBrowserTable() {
         return table;
-    }
-
-    /**
-     *
-     */
-    private class networkSelectionAction implements SelectEventListener {
-
-        public void onSelectEvent(SelectEvent event) {
-            //TODO: check if any clusters match the selection and select them if they do and are not selected already
-
-            //table.clearSelection();
-            //if (table.getSelectedRowCount() > 0) {
-            ArrayList alSelection = new ArrayList();
-            for (Iterator in = event.getSource().getSelectedNodes().iterator(); in.hasNext();) {
-                CyNode n = (CyNode) in.next();
-                alSelection.add(new Integer (n.getRootGraphIndex()));
-            }
-            for (int c = 0; c < clusters.length; c++) {
-                ArrayList alCluster = clusters[c].getALCluster();
-
-                if (alCluster.containsAll(alSelection) && alSelection.containsAll(alCluster)) {
-                    //System.out.println("Should select " + clusters[c].getClusterName());
-                    if (table.getSelectedRow() != c) {
-                        //table.setRowSelectionInterval(c, c);
-                        //TODO: there must be some discriminator between user and computer actions!
-                    }
-                    break;
-                } else if (alSelection.size() > 0 && alCluster.containsAll(alSelection)) {
-                    //System.out.println("belongs to " + clusters[c].getClusterName());
-                    //TODO: how do you tell the user that the node the selected belongs to a cluster?
-                    //TODO: maybe set node attributes so the user can see it in the attribute browser
-                }
-            }
-        }
     }
 
     /**
@@ -934,14 +898,15 @@ public class MCODEResultsPanel extends JPanel {
     }
 
     /**
-     *
+     * Threaded method for drawing exploration graphs which allows the slider to move uninterruptedly despite MCODE's
+     * drawing efforts
      */
     private class GraphDrawer implements Runnable {
         private Thread t;
-        private boolean drawGraph;
+        private boolean drawGraph; //run switch
         MCODECluster cluster;
         SpringEmbeddedLayouter layouter;
-        MCODEResultsPanel.SizeAction slider;
+        MCODEResultsPanel.SizeAction trigger;
         boolean layoutNecessary;
 
         GraphDrawer () {
@@ -951,16 +916,17 @@ public class MCODEResultsPanel extends JPanel {
         }
 
         /**
+         * Constructor for drawing graphs during exploration
          *
-         * @param cluster
-         * @param layouter
-         * @param layoutNecessary
-         * @param slider
+         * @param cluster Cluster to be drawn
+         * @param layouter Interruptable layouter reference
+         * @param layoutNecessary True only if the cluster is expanding in size or lacks a PGView
+         * @param trigger Reference to the slider size action
          */
-        public void drawGraph(MCODECluster cluster, SpringEmbeddedLayouter layouter, boolean layoutNecessary, MCODEResultsPanel.SizeAction slider) {
+        public void drawGraph(MCODECluster cluster, SpringEmbeddedLayouter layouter, boolean layoutNecessary, MCODEResultsPanel.SizeAction trigger) {
             this.cluster = cluster;
             this.layouter = layouter;
-            this.slider = slider;
+            this.trigger = trigger;
             this.layoutNecessary = layoutNecessary;
 
             layouter.resetDoLayout();
@@ -979,7 +945,7 @@ public class MCODEResultsPanel extends JPanel {
                         Image image = MCODEUtil.convertNetworkToImage(loader, cluster, graphPicSize, graphPicSize, layouter, layoutNecessary);
                         if (image != null) {
                             table.setValueAt(new ImageIcon(image), cluster.getRank(), 0);
-                            slider.loaderSet = false;
+                            trigger.loaderSet = false;
                         }
                         //If the process was interrupted then the image will return null and the drawing will have to be recalled (with the new cluster)
                         drawGraph = false;

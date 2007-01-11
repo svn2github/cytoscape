@@ -45,11 +45,11 @@ import java.util.HashMap;
 public class MCODECluster {
     private ArrayList alCluster = null;
     private GraphPerspective gpCluster = null;
-    private PGraphView pgView = null;
+    private PGraphView pgView = null; //keeps track of layout so that layout process doesn't have to be repeated unecessarily
     private Integer seedNode;
     private HashMap nodeSeenHashMap; //stores the nodes that have already been included in higher ranking clusters
     private double clusterScore;
-    private String clusterName;
+    private String clusterName; //Pretty much unsed so far, but could store name by user's input
     private int rank;
     private String resultSet;
 

@@ -95,6 +95,15 @@ public class SpringEmbeddedLayouter {
         this.interrupted = false;
     }
 
+    /**
+     * Performs the layout of nodes.
+     *
+     * @param weightLayout Weighting of this process as calculated by MCODEUtil.convertNetworkToImage
+     * @param goalTotal Numerical aim as calculated by MCODEUtil.convertNetworkToImage based on number of processes required
+     * @param progress Amount of work completed in finding the cluster before this process started
+     * @param loader Loading animation which displays the progress of this process
+     * @return true if the layout was completed without interruption, false otherwise
+     */
     public boolean doLayout(int weightLayout, int goalTotal, double progress, MCODELoader loader) {
         // initialize the layouting.
         nodeCount = graphView.getNodeViewCount();
@@ -169,7 +178,7 @@ public class SpringEmbeddedLayouter {
                  iterations_i++
                     ) {
                 if (interrupted) {
-                    System.out.println("Interrupted: Layouter");
+                    System.err.println("Interrupted: Layouter");
                     resetDoLayout();
                     return false;
                 }

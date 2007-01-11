@@ -1,8 +1,13 @@
 package csplugins.mcode;
 
+import cytoscape.Cytoscape;
+
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
+import java.net.URL;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -45,21 +50,47 @@ import java.awt.*;
  */
 public class MCODEAboutDialog extends JDialog {
 
-    public MCODEAboutDialog(Frame parentFrame) {
-        super(parentFrame, "About MCODE", false);
+    public MCODEAboutDialog() {
+        super(Cytoscape.getDesktop(), "About MCODE", false);
         setResizable(false);
 
         //main panel for dialog box
         JEditorPane editorPane = new JEditorPane();
+        editorPane.setMargin(new Insets(10,10,10,10));
         editorPane.setEditable(false);
         editorPane.setEditorKit(new HTMLEditorKit());
-        //TODO: add a link to Cytoscape and the paper (see http://java.sun.com/j2se/1.4.2/docs/api/javax/swing/JEditorPane.html)
-        editorPane.setText("<html><body><P align=center>MCODE (Molecular Complex Detection) v1.1 (Jan 2005)<BR>" +
-                "A Cytoscape plugin<BR>written by Gary Bader (Sander group, MSKCC)<BR><BR>\n" +
-                "If you use this plugin in your research, please cite:<BR>\n" +
-                "Bader GD, Hogue CW<BR>\n" +
-                "An automated method for finding molecular complexes<BR>in large protein interaction networks.<BR>\n" +
-                "BMC Bioinformatics. 2003 Jan 13;4(1):2</P></body></html>");
+        editorPane.addHyperlinkListener(new HyperlinkAction(editorPane));
+
+        URL logoURL = MCODEPlugin.class.getResource("resources/logo1.png");
+        String logoCode = "";
+        if (logoURL != null) {
+            logoCode = "<center><img src='"+logoURL+"'></center>";
+        }
+
+        editorPane.setText("<html><body>"+logoCode+"<P align=center><b>MCODE (Molecular Complex Detection) v1.2 (Jan 2007)</b><BR>" +
+                "A Cytoscape PlugIn<BR><BR>" +
+                "Written by Gary Bader (now in the Bader Lab at the University of<BR>" +
+                "Toronto, formerly of Sander group at MSKCC)<BR>" +
+                "and Vuk Pavlovic (in the Bader Lab)<BR><BR>" +
+                "If you use this plugin in your research, please cite:<BR>" +
+                "Bader GD, Hogue CW<BR>" +
+                "<a href='http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12525261&dopt=Abstract'>An automated method for finding molecular complexes<BR>" +
+                "in large protein interaction networks.</a><BR>" +
+                "<i>BMC Bioinformatics</i>. 2003 Jan 13;4(1):2</P></body></html>");
         setContentPane(editorPane);
+    }
+
+    private class HyperlinkAction implements HyperlinkListener {
+        JEditorPane pane;
+
+        public HyperlinkAction(JEditorPane pane) {
+            this.pane = pane;
+        }
+
+        public void hyperlinkUpdate(HyperlinkEvent event) {
+            if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                cytoscape.util.OpenBrowser.openURL(event.getURL().toString());
+            }
+        }
     }
 }

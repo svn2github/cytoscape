@@ -56,9 +56,14 @@ public class MCODEVisualStyleAction implements CytoPanelListener {
     public void onStateChange(CytoPanelState newState) {}
 
     public void onComponentSelected(int componentIndex) {
+        //When the user selects a tab in the east cytopanel we want to see if it is a results panel
+        //and if it is we want to re-draw the network with the MCODE visual style and reselect the
+        //cluster that may be selected in the results panel
         Component component = cytoPanel.getSelectedComponent();
         if (component instanceof MCODEResultsPanel) {
+            //to re-initialize the calculators we need the highest score of this particular result set
             double maxScore = ((MCODEResultsPanel) component).setNodeAttributesAndGetMaxScore();
+            //we also need the selected row if one is selected at all
             int selectedRow = ((MCODEResultsPanel) component).getClusterBrowserTable().getSelectedRow();
             ((MCODEResultsPanel) component).getClusterBrowserTable().clearSelection();
             if (selectedRow >= 0) {

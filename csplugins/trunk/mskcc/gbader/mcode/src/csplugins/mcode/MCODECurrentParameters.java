@@ -64,6 +64,7 @@ public class MCODECurrentParameters {
      * Note: parameters can be changed by the user after you have your own copy,
      * so if you always need the latest, you should get the updated parameters again.                                                    
      *
+     * @param networkID Id of the network
      * @return A copy of the parameters
      */
     public MCODEParameterSet getParamsCopy(String networkID) {
@@ -81,8 +82,8 @@ public class MCODECurrentParameters {
      * between the last saved version of the parameters and the current user's version
      *
      * @param newParams The new current parameters to set
-     * @param resultSet
-     * @param networkID
+     * @param resultSet Id of the result set
+     * @param networkID Id of the network
      */
     public void setParams(MCODEParameterSet newParams, String resultSet, String networkID) {
         //cannot simply equate the params and newParams classes since that creates a permanent reference

@@ -15,6 +15,40 @@ import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
 /**
+ * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
+ * *
+ * * Code written by: Gary Bader
+ * * Authors: Gary Bader, Ethan Cerami, Chris Sander
+ * *
+ * * This library is free software; you can redistribute it and/or modify it
+ * * under the terms of the GNU Lesser General Public License as published
+ * * by the Free Software Foundation; either version 2.1 of the License, or
+ * * any later version.
+ * *
+ * * This library is distributed in the hope that it will be useful, but
+ * * WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ * * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ * * documentation provided hereunder is on an "as is" basis, and
+ * * Memorial Sloan-Kettering Cancer Center
+ * * has no obligations to provide maintenance, support,
+ * * updates, enhancements or modifications.  In no event shall the
+ * * Memorial Sloan-Kettering Cancer Center
+ * * be liable to any party for direct, indirect, special,
+ * * incidental or consequential damages, including lost profits, arising
+ * * out of the use of this software and its documentation, even if
+ * * Memorial Sloan-Kettering Cancer Center
+ * * has been advised of the possibility of such damage.  See
+ * * the GNU Lesser General Public License for more details.
+ * *
+ * * You should have received a copy of the GNU Lesser General Public License
+ * * along with this library; if not, write to the Free Software Foundation,
+ * * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ * *
+ * * User: Vuk Pavlovic
+ * * Description: The Main Panel allowing user to choose scope and other parameters
+ */
+
+/**
  * The parameter change cytpanel which the user can use to select scope and change the scoring and finding parameters
  */
 public class MCODEMainPanel extends JPanel {
@@ -110,26 +144,21 @@ public class MCODEMainPanel extends JPanel {
 
         JLabel scopeStarter = new JLabel("Find cluster(s)...");
         JRadioButton scopeNetwork = new JRadioButton("in Whole Network", currentParamsCopy.getScope().equals(MCODEParameterSet.NETWORK));
-        JRadioButton scopeNode = new JRadioButton("from Selected Node", currentParamsCopy.getScope().equals(MCODEParameterSet.NODE));
-        JRadioButton scopeNodeSet = new JRadioButton("from Selected Node Set", currentParamsCopy.getScope().equals(MCODEParameterSet.NODE_SET));
+        JRadioButton scopeSelection = new JRadioButton("from Selection", currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION));
 
         scopeNetwork.setActionCommand(MCODEParameterSet.NETWORK);
-        scopeNode.setActionCommand(MCODEParameterSet.NODE);
-        scopeNodeSet.setActionCommand(MCODEParameterSet.NODE_SET);
+        scopeSelection.setActionCommand(MCODEParameterSet.SELECTION);
 
         scopeNetwork.addActionListener(new ScopeAction());
-        scopeNode.addActionListener(new ScopeAction());
-        scopeNodeSet.addActionListener(new ScopeAction());
+        scopeSelection.addActionListener(new ScopeAction());
 
         ButtonGroup scopeOptions = new ButtonGroup();
         scopeOptions.add(scopeNetwork);
-        scopeOptions.add(scopeNode);
-        scopeOptions.add(scopeNodeSet);
+        scopeOptions.add(scopeSelection);
 
         panel.add(scopeStarter);
         panel.add(scopeNetwork);
-        panel.add(scopeNode);
-        panel.add(scopeNodeSet);
+        panel.add(scopeSelection);
         
         return panel;
     }
@@ -666,7 +695,7 @@ public class MCODEMainPanel extends JPanel {
                 }
             }
             if (invalid) {
-                JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
+                JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
             }
         }
     }

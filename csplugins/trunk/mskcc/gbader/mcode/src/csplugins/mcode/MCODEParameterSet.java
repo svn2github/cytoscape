@@ -44,8 +44,7 @@ public class MCODEParameterSet {
 
     //scope
     public static String NETWORK = "network";
-    public static String NODE = "node";
-    public static String NODE_SET = "node set";
+    public static String SELECTION = "selection";
     private String scope;
     private Integer[] selectedNodes;
 
@@ -84,6 +83,7 @@ public class MCODEParameterSet {
      * Results dialog box row height is still default 80 pixels.
      *
      * @param scope scope
+     * @param selectedNodes Node selection for selection-based scopes
      * @param includeLoops include loops
      * @param degreeCutoff degree cutoff
      * @param kCore K-core
@@ -130,24 +130,13 @@ public class MCODEParameterSet {
      */
     public void setDefaultParams() {
         setAllAlgorithmParams(NETWORK, new Integer[0], false, 2, 2, false, 100, 0.2, false, true, 0.1);
-        /*
-        scope = NETWORK;
-        includeLoops = false;
-        degreeCutOff = 2;               //don't count nodes of degree 1
-        kCore = 2;                      //only count clusters with a maximally connected core of at least 2 edges (3 nodes)
-        optimize = false;               //unless if otherwise specified, the default parameters should be used
-        maxDepthFromStart = 100;        //effectively unlimited
-        nodeScoreCutOff = 0.2;          //user should change this as the main parameter
-        fluff = false;
-        haircut = true;
-        fluffNodeDensityCutOff = 0.1;   //user should change this if fluffing
-        */
     }
 
     /**
      * Convenience method to set all the main algorithm parameters
      *
      * @param scope scope
+     * @param selectedNodes Node selection for selection-based scopes
      * @param includeLoops include loops
      * @param degreeCutoff degree cutoff
      * @param kCore K-core

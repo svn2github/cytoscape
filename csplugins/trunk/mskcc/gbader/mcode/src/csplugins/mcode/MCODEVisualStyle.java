@@ -50,11 +50,21 @@ import java.awt.*;
 public class MCODEVisualStyle extends VisualStyle {
     private double maxValue = 0.0;
 
+    /**
+     * Constructor for MCODE visual style
+     *
+     * @param name name dipsplayed in the vizmap select box
+     */
     public MCODEVisualStyle (String name) {
         super(name);
         initCalculators();
     }
 
+    /**
+     * Reinitialazes the calculators.  This method is called whenver different results are selected
+     * because they may have different node score attributes and may require a redrawing of shapes
+     * and colors given the new maximum score.
+     */
     public void initCalculators() {
         NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
 
@@ -66,7 +76,7 @@ public class MCODEVisualStyle extends VisualStyle {
 
     private void createNodeShape(NodeAppearanceCalculator nac) {
         DiscreteMapping discreteMapping = new DiscreteMapping(new Byte(ShapeNodeRealizer.RECT), "MCODE_Node_Status", ObjectMapping.NODE_MAPPING);
-
+        //Node shapes are determined by three discrete classifications
         discreteMapping.putMapValue("Clustered",
                 new Byte(ShapeNodeRealizer.ELLIPSE));
         discreteMapping.putMapValue("Seed",
@@ -86,15 +96,21 @@ public class MCODEVisualStyle extends VisualStyle {
         Interpolator fInt = new LinearNumberToColorInterpolator();
         continuousMapping.setInterpolator(fInt);
 
+        //Node color is based on the score, the lower the score the darker the color
         Color minColor = Color.BLACK;
         Color maxColor = Color.RED;
 
-        //Create Three Boundary Conditions
+        //Create two boundary conditions
+        //First we state that everything below or equalling 0 (min) will be white, and everything above that will
+        //start from black and fade into the next boundary color
         BoundaryRangeValues bv0 = new BoundaryRangeValues(Color.WHITE, Color.WHITE, minColor);
+        //Now we state that anything anything below the max score will fade into red from the lower boundary color
+        //and everything equal or greater than the max (never occurs since this is the upper boundary) will be red
         BoundaryRangeValues bv2 = new BoundaryRangeValues(maxColor, maxColor, maxColor);
 
         //Set Data Points
         double minValue = 0.0;
+        //the max value is set by MCODEVisualStyleAction based on the current result set's max score
         continuousMapping.addPoint(minValue, bv0);
         continuousMapping.addPoint(maxValue, bv2);
 

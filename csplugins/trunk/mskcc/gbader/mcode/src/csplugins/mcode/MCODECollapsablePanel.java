@@ -169,11 +169,11 @@ public class MCODECollapsablePanel extends JPanel {
         ImageIcon[] iconArrow = new ImageIcon[2];
         URL iconURL;
 
-        iconURL = this.getClass().getResource("resources/arrow_collapsed.gif");
+        iconURL = MCODEPlugin.class.getResource("resources/arrow_collapsed.gif");
         if (iconURL != null) {
             iconArrow[COLLAPSED] = new ImageIcon(iconURL);
         }
-        iconURL = this.getClass().getResource("resources/arrow_expanded.gif");
+        iconURL = MCODEPlugin.class.getResource("resources/arrow_expanded.gif");
         if (iconURL != null) {
             iconArrow[EXPANDED] = new ImageIcon(iconURL);
         }

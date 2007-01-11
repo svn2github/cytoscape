@@ -57,7 +57,7 @@ import java.util.Set;
  * Simple score and find action for MCODE. This should be the default for general users.
  */
 public class MCODEScoreAndFindAction implements ActionListener {
-    private HashMap networkManager;
+    private HashMap networkManager; //Keeps track of netowrks (id is key) and their respective algorithms
     private boolean resultFound = false;
     private MCODEResultsPanel resultPanel;
 
@@ -98,7 +98,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
         //MCODE needs a network of at least 1 node
         if (network.getNodeCount() < 1) {
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                    "You must have a network loaded\nto run this plugin.");
+                    "You must have a network loaded\nto run this plugin.", "Analysis Interrupted", JOptionPane.WARNING_MESSAGE);
             return;
         }
         Set selectedNodes = network.getSelectedNodes();
@@ -113,6 +113,11 @@ public class MCODEScoreAndFindAction implements ActionListener {
 
         MCODEAlgorithm alg;
         MCODEParameterSet savedParamsCopy;
+        //Here we determine if we have already run mcode on this network before
+        //if we have then we use the stored alg class and the last saved parameters
+        //of that network (so as to determine if rescoring/refinding is required for
+        //this network without interference by parameters of other networks)
+        //otherwise we construct a new alg class
         if (networkManager.containsKey(network.getIdentifier())) {
             alg = (MCODEAlgorithm) networkManager.get(network.getIdentifier());
             //get a copy of the last saved parameters for comparison with the current ones
@@ -155,18 +160,15 @@ public class MCODEScoreAndFindAction implements ActionListener {
         //finally we save the current parameters
         MCODECurrentParameters.getInstance().setParams(currentParamsCopy, "Results " + (resultsCounter + 1), network.getIdentifier());
 
-        //incase the user selected single node scope we must make sure that they selected a single node
-        if (currentParamsCopy.getScope().equals(MCODEParameterSet.NODE) && currentParamsCopy.getSelectedNodes().length != 1) {
+        //incase the user selected selection scope we must make sure that they selected at least 1 node
+        if (currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION) && currentParamsCopy.getSelectedNodes().length < 1) {
             analyze = INTERRUPTION;
-            interruptedMessage = "You must select ONE NODE\nfor this scope.";
-        } else if (currentParamsCopy.getScope().equals(MCODEParameterSet.NODE_SET) && currentParamsCopy.getSelectedNodes().length < 2) {
-            analyze = INTERRUPTION;
-            interruptedMessage = "You must select MORE THAN ONE NODE\nfor this scope.";
+            interruptedMessage = "You must select ONE OR MORE NODES\nfor this scope.";
         }
 
         if (analyze == INTERRUPTION) {
             System.err.println("Analysis: interrupted");
-            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), interruptedMessage);
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), interruptedMessage, "Analysis Interrupted", JOptionPane.WARNING_MESSAGE);
         } else {
             //run MCODE
             MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(
@@ -201,7 +203,12 @@ public class MCODEScoreAndFindAction implements ActionListener {
                     );
                 } else {
                     resultFound = false;
-                    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "No clusters were found.\nYou can try changing the MCODE parameters or\nmodifying your node selection if you are using\na selection-specific scope.");
+                    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                            "No clusters were found.\n" +
+                            "You can try changing the MCODE parameters or\n" +
+                            "modifying your node selection if you are using\n" +
+                            "a selection-specific scope.",
+                            "No Results", JOptionPane.WARNING_MESSAGE);
                 }
             }
         }
@@ -214,7 +221,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
             String resultTitle = "Results " + resultsCounter;
             resultPanel.setResultsTitle(resultTitle);
 
-            URL iconURL = this.getClass().getResource("resources/logo2.png");
+            URL iconURL = MCODEPlugin.class.getResource("resources/logo2.png");
             if (iconURL != null) {
                 Icon icon = new ImageIcon(iconURL);
                 String tip = "MCODE Cluster Finder";

@@ -58,6 +58,7 @@ import java.util.*;
 public class MCODEUtil {
 
     private static boolean INTERRUPTED = false;
+
     /**
      * Convert a network to an image.  This is used by the result dialog code.
      *
@@ -70,7 +71,6 @@ public class MCODEUtil {
     public static Image convertNetworkToImage(MCODELoader loader, MCODECluster cluster, int height, int width, SpringEmbeddedLayouter layouter, boolean layoutNecessary) {
         PGraphView view;
         Image image;
-        //boolean completedSuccessfully = true;
 
         //Progress reporters.  There are three basic tasks, the progress of each is calculated and then combined
         //using the respective weighting to get an overall progress
@@ -89,6 +89,7 @@ public class MCODEUtil {
         //TODO optionally apply a visual style here instead of doing this manually - visual style calls init code that might not be called manually
         for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
             if (INTERRUPTED) {
+                System.err.println("Interrupted: Node Setup");
                 resetLoading();
                 return null;
             }
@@ -133,6 +134,7 @@ public class MCODEUtil {
 
         for (Iterator ie = view.getEdgeViewsIterator(); ie.hasNext();) {
             if (INTERRUPTED) {
+                System.err.println("Interrupted: Edge Setup");
                 resetLoading();
                 return null;
             }
@@ -153,7 +155,9 @@ public class MCODEUtil {
                 layouter = new SpringEmbeddedLayouter();
             }
             layouter.setGraphView(view);
+            //The doLayout method should return true if the process completes without interruption
             if (!layouter.doLayout(weightLayout, goalTotal, progress, loader)) {
+                //Otherwise, if layout is not completed, set the interruption to false, and return null, not an image
                 resetLoading();
                 return null;
             }
@@ -264,7 +268,7 @@ public class MCODEUtil {
      * @param fileName  The file name to write to
      * @return True if the file was written, false otherwise
      */
-    public static boolean saveMCODEResults(MCODEAlgorithm alg, MCODECluster[] clusters, CyNetwork network, String fileName) {
+    public static boolean exportMCODEResults(MCODEAlgorithm alg, MCODECluster[] clusters, CyNetwork network, String fileName) {
         if (alg == null || clusters == null || network == null || fileName == null) {
             return false;
         }
@@ -276,7 +280,7 @@ public class MCODEUtil {
             fout.write("MCODE Plugin Results" + lineSep);
             fout.write("Date: " + DateFormat.getDateTimeInstance().format(new Date()) + lineSep + lineSep);
             fout.write("Parameters:" + lineSep + alg.getParams().toString() + lineSep);
-            fout.write("Cluster	Score (Density*#Proteins)\tProteins\tInteractions\tProtein names" + lineSep);
+            fout.write("Cluster	Score (Density*#Proteins)\tNodes\tEdges\tNode names" + lineSep);
             //get GraphPerspectives for all clusters, score and rank them
             //convert the ArrayList to an array of GraphPerspectives and sort it by cluster score
             //GraphPerspective[] gpClusterArray = MCODEUtil.convertClusterListToSortedNetworkList(clusters, network, alg);
