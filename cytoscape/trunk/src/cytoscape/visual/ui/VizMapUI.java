@@ -760,6 +760,8 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	private class ApplyAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			VMM.getNetworkView().redrawGraph(false, true);
+			//Set the focus to emit a NETWORK_VIEW_FOCUS event for sync the BirdsEyeView
+			Cytoscape.getDesktop().setFocus(VMM.getNetworkView().getIdentifier());
 		}
 	}
 
