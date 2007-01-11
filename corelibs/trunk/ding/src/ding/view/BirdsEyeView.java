@@ -136,17 +136,17 @@ public class BirdsEyeView extends Component {
                 m_myYCenter = 0.0d;
                 m_myScaleFactor = 1.0d;
             }
-
+            
             m_view.drawSnapshot(
                 m_img,
                 m_view.getGraphLOD(),
-                m_view.getBackgroundPaint(),
+                m_view.m_backgroundCanvas.getBackground(),
                 m_myXCenter,
                 m_myYCenter,
                 m_myScaleFactor);
             m_contentChanged = false;
         }
-
+        
         g.drawImage(m_img, 0, 0, null);
 
         final double rectWidth = m_myScaleFactor * (((double) m_viewWidth) / m_viewScaleFactor);
