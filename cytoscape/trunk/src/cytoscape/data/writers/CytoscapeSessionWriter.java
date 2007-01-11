@@ -398,15 +398,16 @@ public class CytoscapeSessionWriter {
 	 * 
 	 * @throws URISyntaxException
 	 * @throws JAXBException
-	 * @throws FactoryConfigurationError 
-	 * @throws XMLStreamException 
+	 * @throws FactoryConfigurationError
+	 * @throws XMLStreamException
 	 */
 	private void makeXGMML(final String xgmmlFile, final CyNetwork network,
 			final CyNetworkView view) throws IOException, JAXBException,
 			URISyntaxException {
 
 		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view);
-		BufferedWriter fileWriter = new BufferedWriter(new FileWriter(tmpDirName + xgmmlFile));
+		BufferedWriter fileWriter = new BufferedWriter(new FileWriter(
+				tmpDirName + xgmmlFile));
 
 		try {
 			xgmmlWriter.write(fileWriter);
@@ -445,11 +446,9 @@ public class CytoscapeSessionWriter {
 
 		// FileOutputStream fos = null;
 
-		BufferedWriter writer = new BufferedWriter(
-						new FileWriter(tmpDirName + CYSESSION_FILE_NAME));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(tmpDirName
+				+ CYSESSION_FILE_NAME));
 		try {
-			// fos = new FileOutputStream(tmpDirName + CYSESSION_FILE_NAME);
-			// Write session file
 			m.marshal(session, writer);
 		} finally {
 			writer.close();

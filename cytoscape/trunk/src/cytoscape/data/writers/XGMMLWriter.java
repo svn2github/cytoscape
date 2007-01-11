@@ -62,8 +62,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
@@ -129,7 +127,7 @@ public class XGMMLWriter {
 	public static final String GRAPH_VIEW_CENTER_X = "GRAPH_VIEW_CENTER_X";
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
-	// Default CSS file name. Maybe used in the future.
+	// Default CSS file name. Maybe used in future.
 	private static final String CSS_FILE = "base.css";
 
 	// These types are permitted by the XGMML standard
@@ -158,8 +156,6 @@ public class XGMMLWriter {
 	private ArrayList metanodeList;
 
 	private HashMap edgeMap;
-
-	private JAXBContext jc;
 
 	private ObjectFactory objFactory;
 
@@ -212,8 +208,7 @@ public class XGMMLWriter {
 		final Att formatVersion;
 		final Att globalGraphics;
 
-		jc = JAXBContext.newInstance(PACKAGE_NAME, this.getClass()
-				.getClassLoader());
+		
 		graph = objFactory.createGraphicGraph();
 
 		graphAtt = objFactory.createAtt();
@@ -279,12 +274,14 @@ public class XGMMLWriter {
 		 * type='text/css' href='" + CSS_FILE + "' ?>\n");
 		 */
 
-		final Marshaller m = jc.createMarshaller();
+		final JAXBContext jc = JAXBContext.newInstance(PACKAGE_NAME, this.getClass()
+				.getClassLoader());
+		final Marshaller marshaller = jc.createMarshaller();
 
 		// Set proper namespace prefix (mainly for metadata)
 		try {
-			m.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-			m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+			marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
 					new NamespacePrefixMapperImpl());
 		} catch (PropertyException e) {
 			// if the JAXB provider doesn't recognize the prefix mapper,
@@ -294,12 +291,15 @@ public class XGMMLWriter {
 			e.printStackTrace();
 		}
 
-		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		m.setProperty("com.sun.xml.bind.xmlDeclaration", true);
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", true);
+		
+		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+		
 		final JAXBElement<GraphicGraph> graphicGraphElement = objFactory
 				.createGraph(graph);
 
-		m.marshal(graphicGraphElement, writer);
+		marshaller.marshal(graphicGraphElement, writer);
 		if (writer != null) {
 			writer.close();
 		}
