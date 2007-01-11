@@ -43,6 +43,14 @@ The <b> Cytoscape </b> project is an ongoing collaboration between:
 	<td valign="middle">
 		<img border="0" align="middle" alt="Agilent" height="60" width="60" src="images/agilent60.gif"> <a href="http://www.agilent.com"> Agilent Technologies </a> 
 </td>
+</tr>
+<tr>
+	<td width="10">
+		<br>
+	</td>
+	<td valign="middle">
+		<img border="0" align="middle" alt="UCSF" height="30" width="60" src="images/ucsf60.gif"> <a href="http://www.ucsf.edu"> University of California at San Francisco </a> 
+</td>
 </tr></tbody>
 </table>
 </div>
