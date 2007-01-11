@@ -105,6 +105,11 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 	private final NetworkTreeTableModel treeTableModel;
 	private final CytoscapeDesktop cytoscapeDesktop;
 
+	/**
+	 * Constructor for the Network Panel.
+	 * 
+	 * @param desktop
+	 */
 	public NetworkPanel(final CytoscapeDesktop desktop) {
 		super();
 		this.cytoscapeDesktop = desktop;
@@ -214,6 +219,11 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		return pcs;
 	}
 
+	/**
+	 * Remove a network from the panel.
+	 * 
+	 * @param network_id
+	 */
 	public void removeNetwork(final String network_id) {
 
 		final NetworkTreeNode node = getNetworkNode(network_id);
@@ -231,7 +241,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		}
 		Cytoscape.getNetwork(network_id).removeSelectEventListener(this);
 		node.removeFromParent();
-		treeTable.getTree().collapsePath(new TreePath(new TreeNode[] { root }));
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
 	}
@@ -277,7 +286,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 			treeTable.getTree().scrollPathToVisible(path);
 			treeTable.doLayout();
 
-			focusNetworkNode( network_id );
+			focusNetworkNode(network_id);
 		}
 	}
 
