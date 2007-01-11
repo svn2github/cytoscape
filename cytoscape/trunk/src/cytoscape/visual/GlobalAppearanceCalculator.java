@@ -169,8 +169,8 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 
 	public void setDefaultNodeSelectionColor(Color c) {
 		if (c != null) {
-			this.fireStateChanged();
 			defaultNodeSelectionColor = c;
+			this.fireStateChanged();
 		}
 	}
 	
@@ -180,8 +180,8 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 
 	public void setDefaultNodeReverseSelectionColor(Color c) {
 		if (c != null) {
-			this.fireStateChanged();
 			defaultNodeReverseSelectionColor = c;
+			this.fireStateChanged();
 		}
 	}
 	
@@ -191,8 +191,8 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 
 	public void setDefaultEdgeSelectionColor(Color c) {
 		if (c != null) {
-			this.fireStateChanged();
 			defaultEdgeSelectionColor = c;
+			this.fireStateChanged();
 		}
 	}
 	
@@ -202,8 +202,8 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 
 	public void setDefaultEdgeReverseSelectionColor(Color c) {
 		if (c != null) {
-			this.fireStateChanged();
 			defaultEdgeReverseSelectionColor = c;
+			this.fireStateChanged();
 		}
 	}
 
