@@ -177,6 +177,7 @@ public class PreferenceValueDialog extends JDialog {
 	}
     } 
 
+	    /** @deprecated no longer used by anyting.  Will leave this world Dec 2007. */
 	    public String validatedPluginData(Component comp, String selection){
 		String validatedData = null;
 		File file = new File(selection);
@@ -232,26 +233,12 @@ public class PreferenceValueDialog extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-		    if (tableModel == grandmotherRef.pluginsTM) {
-			// plugins
-			String plugins = validatedPluginData(motherRef,
-					motherRef.value.getText());
-		      if (plugins != null && plugins.length() >0) {
-            	        grandmotherRef.setParameter(tableModel,
-					motherRef.preferenceName,
-					plugins);
-                        motherRef.dispose();
-		      } else {
-		        motherRef.value.setText("");
-		      }
-		    } else {
 			// properties
 		      motherRef.preferenceValue = motherRef.value.getText();
 		      grandmotherRef.setParameter(tableModel,
 					motherRef.preferenceName,
 					motherRef.preferenceValue);
 		      motherRef.dispose();
-		    }
 		}
 	    }
 

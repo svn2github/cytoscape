@@ -46,6 +46,11 @@ import javax.swing.table.*;
 import javax.swing.*;
 import java.util.*;
 
+/** 
+ * @deprecated This class is no longer used in cytoscape.  If you are using it, 
+ * let us know and we'll figure something out.  Otherwise, this will be
+ * removed December 2007.
+ */
 public class PluginsTableModel extends AbstractTableModel {
     static int[] columnWidth = new int[] {400};
     static int[] alignment = new int[] {JLabel.LEFT};

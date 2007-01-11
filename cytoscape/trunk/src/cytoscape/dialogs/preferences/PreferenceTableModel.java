@@ -59,8 +59,6 @@ public class PreferenceTableModel extends AbstractTableModel {
         super();
 	// use clone of CytoscapeInit properties
         properties = (Properties)(CytoscapeInit.getProperties().clone());
-	// remove "plugins" entry since that is in PluginsTableModel
-	properties.remove("plugins");
         loadProperties();
     }
     
@@ -142,8 +140,6 @@ public class PreferenceTableModel extends AbstractTableModel {
     public void restore(Properties restoreFromProps) {
 	properties.clear();
 	properties.putAll(restoreFromProps);
-	// don't include plugins= property
-	properties.remove("plugins");
 	loadProperties();
     }
 

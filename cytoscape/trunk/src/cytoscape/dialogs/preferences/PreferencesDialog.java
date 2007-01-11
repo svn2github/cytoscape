@@ -79,25 +79,13 @@ import cytoscape.CytoscapeInit;
 public class PreferencesDialog extends JDialog implements
 		PropertyChangeListener {
 
-	String[] pluginTypes = { "Local", "Remote/URL" };
-
-	static int LOCAL_PLUGIN_TYPE = 0;
-
-	static int URL_PLUGIN_TYPE = 1;
-
 	int[] selection = null;
 
 	JScrollPane propsTablePane = new JScrollPane();
 
-	JScrollPane pluginsTablePane = new JScrollPane();
-
-	JTable pluginsTable = new JTable();
-
 	JTable prefsTable = new JTable();
 
 	JPanel propBtnPane = new JPanel(new FlowLayout());
-
-	JPanel pluginBtnPane = new JPanel(new FlowLayout());
 
 	JPanel okButtonPane = new JPanel(new FlowLayout());
 
@@ -114,12 +102,6 @@ public class PreferencesDialog extends JDialog implements
         JTextArea cyPropsText = new JTextArea( "Only check this option if you want the current Cytoscape properties to be defaults in ALL future cytoscape sessions.  Your current Cytoscape properties are automatically saved in your Cytoscape session file and won't be lost." );
 
 
-	JComboBox pluginTypesComboBox = new JComboBox(pluginTypes);
-
-	JButton addPluginBtn = new JButton("Add");
-
-	JButton deletePluginBtn = new JButton("Delete");
-
 	JButton addPropBtn = new JButton("Add");
 
 	JButton deletePropBtn = new JButton("Delete");
@@ -131,8 +113,6 @@ public class PreferencesDialog extends JDialog implements
 	JButton cancelButton = new JButton("Cancel");
 
 	public PreferenceTableModel prefsTM = null;
-
-	public PluginsTableModel pluginsTM = null;
 
 	private ListSelectionModel lsm = null;
 
@@ -176,27 +156,8 @@ public class PreferencesDialog extends JDialog implements
 
 	public void setParameter(TableModel tm, String preferenceName,
 			String preferenceValue) {
-		// plugins
-		if (tm == pluginsTM) {
-			// catch at table - don't allow duplicate values for
-			// name/value pair
-			Vector listOfDuplicates = new Vector();
-			Vector listOfNew = new Vector();
-			pluginsTM.validateNewPlugins(preferenceValue, listOfDuplicates,
-					listOfNew);
-			for (int i = 0; i < listOfNew.size(); i++) {
-				pluginsTM.addPlugin((String) listOfNew.elementAt(i));
-			}
-			for (int i = 0; i < listOfDuplicates.size(); i++) {
-				// popup info dialog
-				JOptionPane.showMessageDialog(this, "Plugin: "
-						+ ((String) listOfDuplicates.elementAt(i))
-						+ " already included", "Information",
-						JOptionPane.INFORMATION_MESSAGE);
-			}
-
 			// preferences/properties
-		} else if (tm == prefsTM) {
+		if (tm == prefsTM) {
 
 			Cytoscape.firePropertyChange(Cytoscape.PREFERENCE_MODIFIED, prefsTM
 					.getProperty(preferenceName), preferenceValue);
@@ -209,20 +170,15 @@ public class PreferencesDialog extends JDialog implements
 		// since update of parameter will clear any selections
 		modifyPropBtn.setEnabled(false);
 		deletePropBtn.setEnabled(false);
-		deletePluginBtn.setEnabled(false);
 	}
 
 	public void refresh() {
 		// refresh the view
 		prefsTable.setModel(prefsTM);
-		pluginsTable.setModel(pluginsTM);
 
 		prefsTable.clearSelection();
 		prefsTable.revalidate();
 		prefsTable.repaint();
-		pluginsTable.clearSelection();
-		pluginsTable.revalidate();
-		pluginsTable.repaint();
 	}
 
 	private void initButtonPane() {
@@ -230,21 +186,14 @@ public class PreferencesDialog extends JDialog implements
 		propBtnPane.add(modifyPropBtn);
 		propBtnPane.add(deletePropBtn);
 
-		pluginTypesComboBox.setSelectedIndex(0);
-		pluginBtnPane.add(pluginTypesComboBox);
-		pluginBtnPane.add(addPluginBtn);
-		pluginBtnPane.add(deletePluginBtn);
 		okButtonPane.add(okButton);
 		okButtonPane.add(cancelButton);
 
 		modifyPropBtn.setEnabled(false);
 		deletePropBtn.setEnabled(false);
-		deletePluginBtn.setEnabled(false);
 		addPropBtn.addActionListener(new AddPropertyListener(this));
 		modifyPropBtn.addActionListener(new ModifyPropertyListener(this));
 		deletePropBtn.addActionListener(new DeletePropertyListener(this));
-		addPluginBtn.addActionListener(new AddPluginListener(this));
-		deletePluginBtn.addActionListener(new DeletePluginListener(this));
 		okButton.addActionListener(new OkButtonListener(this));
 		cancelButton.addActionListener(new CancelButtonListener(this));
 		saveVizmapBtn.addItemListener(new CheckBoxListener());
@@ -255,27 +204,16 @@ public class PreferencesDialog extends JDialog implements
 		return prefsTM;
 	}
 
-	public PluginsTableModel getPTMA() {
-		return pluginsTM;
-	}
-
 	private void initTable() {
 		prefsTM = new PreferenceTableModel();
-		pluginsTM = new PluginsTableModel();
 
 		prefsTable.setAutoCreateColumnsFromModel(false);
-		pluginsTable.setAutoCreateColumnsFromModel(false);
 		prefsTable.setRowSelectionAllowed(true);
-		pluginsTable.setRowSelectionAllowed(true);
 		lsm = prefsTable.getSelectionModel();
 		lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		lsmA = pluginsTable.getSelectionModel();
-		lsmA.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lsm.addListSelectionListener(new TableListener(this, lsm));
-		lsmA.addListSelectionListener(new TableListenerA(this, lsmA));
 
 		prefsTable.setModel(prefsTM);
-		pluginsTable.setModel(pluginsTM);
 
 		for (int i = 0; i < PreferenceTableModel.columnHeader.length; i++) {
 			DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
@@ -285,13 +223,6 @@ public class PreferencesDialog extends JDialog implements
 					PreferenceTableModel.columnWidth[i], renderer, null);
 			Column.setIdentifier(PreferenceTableModel.columnHeader[i]);
 			prefsTable.addColumn(Column);
-		}
-		for (int i = 0; i < PluginsTableModel.columnHeader.length; i++) {
-			DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-			renderer.setHorizontalAlignment(PluginsTableModel.alignment[i]);
-			TableColumn Column = new TableColumn(i,
-					PreferenceTableModel.columnWidth[i], renderer, null);
-			pluginsTable.addColumn(Column);
 		}
 	}
 
@@ -324,7 +255,7 @@ public class PreferencesDialog extends JDialog implements
 		Box propsTableBox = Box.createVerticalBox();
 		propsTablePane.setBorder(BorderFactory.createEmptyBorder(2, 9, 4, 9));
 		propsTablePane.getViewport().add(prefsTable, null);
-		prefsTable.setPreferredScrollableViewportSize(new Dimension(400, 100));
+		prefsTable.setPreferredScrollableViewportSize(new Dimension(400, 200));
 		propsTableBox.add(propsTablePane);
 		propsTableBox.add(Box.createVerticalStrut(5));
 		propsTableBox.add(propBtnPane);
@@ -332,18 +263,8 @@ public class PreferencesDialog extends JDialog implements
 		outerBox.add(propsTableBox);
 		outerBox.add(Box.createVerticalStrut(10));
 
-		Box pluginsTableBox = Box.createVerticalBox();
-		pluginsTablePane.setBorder(BorderFactory.createEmptyBorder(2, 9, 4, 9));
-		pluginsTablePane.getViewport().add(pluginsTable, null);
-		pluginsTable.setPreferredScrollableViewportSize(new Dimension(400, 100));
-		pluginsTableBox.add(pluginsTablePane);
-		pluginsTableBox.add(Box.createVerticalStrut(5));
-		pluginsTableBox.add(pluginBtnPane);
-		pluginsTableBox.setBorder(BorderFactory.createTitledBorder("Plugins"));
-		outerBox.add(pluginsTableBox);
-
 		outerBox.add(Box.createVerticalStrut(10));
-		JTextArea textArea = new JTextArea( "NOTE: Changes to these properties and plugins are used in the current session ONLY unless otherwise specified below." );
+		JTextArea textArea = new JTextArea( "NOTE: Changes to these properties are used in the current session ONLY unless otherwise specified below." );
 
 		textArea.setBackground(outerBox.getBackground());
 		textArea.setEditable(false);
@@ -384,23 +305,6 @@ public class PreferencesDialog extends JDialog implements
 		outerBox.add(okButtonPane);
 
 		this.getContentPane().add(outerBox, BorderLayout.CENTER);
-	}
-
-	class AddPluginListener implements ActionListener {
-		PreferencesDialog callerRef = null;
-
-		public AddPluginListener(PreferencesDialog caller) {
-			super();
-			callerRef = caller;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			int type = pluginTypesComboBox.getSelectedIndex();
-			PreferenceValueDialog pd = new PreferenceValueDialog(
-					PreferencesDialog.this, pluginTypes[type], "", callerRef,
-					pluginsTM, "Enter Plugin to be added:",
-					(type == LOCAL_PLUGIN_TYPE ? true : false));
-		}
 	}
 
 	class AddPropertyListener implements ActionListener {
@@ -468,28 +372,6 @@ public class PreferencesDialog extends JDialog implements
 		}
 	}
 
-	class DeletePluginListener implements ActionListener {
-		PreferencesDialog callerRef = null;
-
-		public DeletePluginListener(PreferencesDialog caller) {
-			super();
-			callerRef = caller;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			String plugins[] = new String[selection.length];
-			for (int i = 0; i < selection.length; i++) {
-				plugins[i] = (new String((String) (pluginsTM.getValueAt(
-						selection[i], 0))));
-			}
-			callerRef.pluginsTM.deletePlugins(plugins);
-
-			callerRef.pluginsTable.clearSelection();
-			callerRef.deletePluginBtn.setEnabled(false);
-			refresh();
-		}
-	}
-
 	class OkButtonListener implements ActionListener {
 		PreferencesDialog callerRef = null;
 
@@ -503,7 +385,6 @@ public class PreferencesDialog extends JDialog implements
 			// therefore use TableModel's putAll() into new Properties obj
 			// then clear Cytoscape's properties and
 			Properties newProps = new Properties();
-			callerRef.pluginsTM.save(newProps);
 			callerRef.prefsTM.save(newProps);
 			CytoscapeInit.getProperties().clear();
 			CytoscapeInit.getProperties().putAll(newProps);
@@ -558,54 +439,8 @@ public class PreferencesDialog extends JDialog implements
 
 		public void actionPerformed(ActionEvent e) {
 			Properties oldProps = CytoscapeInit.getProperties();
-			callerRef.pluginsTM.restore(oldProps);
 			callerRef.prefsTM.restore(oldProps);
 			callerRef.setVisible(false);
-		}
-	}
-
-	class TableListenerA implements ListSelectionListener {
-		private ListSelectionModel model = null;
-
-		private PreferencesDialog motherRef = null;
-
-		public TableListenerA(PreferencesDialog mother, ListSelectionModel lsm) {
-			motherRef = mother;
-			model = lsm;
-		}
-
-		public void valueChanged(ListSelectionEvent lse) {
-			if (!lse.getValueIsAdjusting()) {
-				StringBuffer buf = new StringBuffer();
-				selection = getSelectedIndices(model.getMinSelectionIndex(),
-						model.getMaxSelectionIndex());
-				if (selection.length == 0) {
-				} else {
-					int isPlugin = 1;
-					deletePluginBtn.setEnabled(true);
-				}
-			}
-		}
-
-		protected int[] getSelectedIndices(int start, int stop) {
-			if ((start == -1) || (stop == -1)) {
-				return new int[0];
-			}
-
-			int guesses[] = new int[stop - start + 1];
-			int index = 0;
-
-			for (int i = start; i <= stop; i++) {
-				if (model.isSelectedIndex(i)) {
-					guesses[index++] = i;
-				}
-			}
-			int realthing[] = new int[index];
-			System.arraycopy(guesses, 0, realthing, 0, index);
-			return realthing;
-		}
-
-		public void actionPerformed(ActionEvent e) {
 		}
 	}
 
