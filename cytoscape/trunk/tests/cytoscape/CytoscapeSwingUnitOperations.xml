@@ -3,7 +3,9 @@
 	windowFinder="CLASS_IS_EQUAL_STRICTLY"
 	windowClass="cytoscape.view.CytoscapeDesktop">
 
-
+	<!--  
+		Import Network file from local file system
+	-->
 	<scenario name="IMPORT_NETWORK_FILE">
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Import" />
@@ -35,6 +37,107 @@
 		</retriever>
 	</scenario>
 
+	<!--
+		Export network as XGMML
+	-->
+	<scenario name="EXPORT_AS_XGMML_FILE">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Export" />
+		<Click componentClass="JMenuItem"
+			label="Network and attributes as XGMML..." />
+
+		<Delay ms="500" />
+
+		<TypeText text="$(EXPORT_FILE_NAME)" waitTime="10" />
+		<KeyPress keyCodeString="TAB" />
+		<KeyRelease keyCodeString="TAB" />
+		<Delay ms="100" />
+		<KeyPress keyCodeString="TAB" />
+		<KeyRelease keyCodeString="TAB" />
+		<Delay ms="100" />
+		<KeyPress keyCodeString="SPACE" />
+		<KeyRelease keyCodeString="SPACE" />
+
+		<Delay ms="10000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<!--
+		Export network as SIF
+	-->
+	<scenario name="EXPORT_AS_SIF_FILE">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Export" />
+		<Click componentClass="JMenuItem"
+			label="Network as SIF File..." />
+
+		<Delay ms="500" />
+
+		<TypeText text="$(EXPORT_FILE_NAME)" waitTime="10" />
+		<KeyPress keyCodeString="TAB" />
+		<KeyRelease keyCodeString="TAB" />
+		<Delay ms="100" />
+		<KeyPress keyCodeString="TAB" />
+		<KeyRelease keyCodeString="TAB" />
+		<Delay ms="100" />
+		<KeyPress keyCodeString="SPACE" />
+		<KeyRelease keyCodeString="SPACE" />
+
+		<Delay ms="10000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
+
+	<!--
+		Export network as GML
+	-->
+	<scenario name="EXPORT_AS_GML_FILE">
+		<Click componentClass="JMenu" label="File" />
+		<Click componentClass="JMenuItem" label="Export" />
+		<Click componentClass="JMenuItem"
+			label="Network as GML..." />
+
+		<Delay ms="500" />
+
+		<TypeText text="$(EXPORT_FILE_NAME)" waitTime="10" />
+		<KeyPress keyCodeString="TAB" />
+		<KeyRelease keyCodeString="TAB" />
+		<Delay ms="100" />
+		<KeyPress keyCodeString="TAB" />
+		<KeyRelease keyCodeString="TAB" />
+		<Delay ms="100" />
+		<KeyPress keyCodeString="SPACE" />
+		<KeyRelease keyCodeString="SPACE" />
+
+		<Delay ms="10000" />
+		<retriever retryTime="10000" intervalTime="1000">
+			<if verifier="Verify" property="enabled" expected="true"
+				componentClass="JButton" label="    Close    "
+				windowFinder="CLASS_IS_ACCESSIBLE"
+				windowClass="cytoscape.task.ui.JTask">
+				<Click label="    Close    " componentClass="JButton"
+					windowFinder="CLASS_IS_ACCESSIBLE"
+					windowClass="cytoscape.task.ui.JTask" />
+			</if>
+		</retriever>
+	</scenario>
 
 	<scenario name="SHOW_HIDE_ATTRIBUTE_BROWSER">
 		<Click componentClass="JMenu" label="View" />
@@ -217,12 +320,14 @@
 
 	<scenario name="SELECT_ALL_NODES_AND_EDGES">
 		<Click componentClass="JMenu" label="Select" />
-		<Click componentClass="JMenuItem" label="Select all nodes and edges" />
+		<Click componentClass="JMenuItem"
+			label="Select all nodes and edges" />
 	</scenario>
 
 	<scenario name="DESELECT_ALL_NODES_AND_EDGES">
 		<Click componentClass="JMenu" label="Select" />
-		<Click componentClass="JMenuItem" label="Deselect All Nodes and Edges" />
+		<Click componentClass="JMenuItem"
+			label="Deselect All Nodes and Edges" />
 	</scenario>
 
 
@@ -288,7 +393,8 @@
 	<scenario name="IMPORT_VIZMAP">
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Import" />
-		<Click componentClass="JMenuItem" label="Vizmap Property File..." />
+		<Click componentClass="JMenuItem"
+			label="Vizmap Property File..." />
 		<retriever retryTime="2000">
 			<FileChooser dialogTitle="Import Vizmap Property File"
 				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
@@ -769,7 +875,8 @@
 	<scenario name="QUIT_CYTOSCAPE">
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Quit" />
-		<OptionPane title="Save Networks Before Quitting?" label="No, just quit" />
+		<OptionPane title="Save Networks Before Quitting?"
+			label="No, just quit" />
 	</scenario>
 
 
