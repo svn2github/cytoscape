@@ -35,7 +35,31 @@
 				<exclude name="README.txt"/>
 				<exclude name="cw.properties"/>
 				<exclude name="CVS*"/>
-                                <exclude name="cgi-bin/moin.cgi"/>
+                <exclude name="cgi-bin/moin.cgi"/>
+			</fileset>
+		</ftp>
+	</target>
+	
+	<!--	
+		Test Deployment Target <deploy_local_conklinwolf>
+		Written by Alex Pico to work with local Gladstone/UCSF server.
+		Future webmasters should develop their own testing devices.
+	-->
+	<target name="deploy_local_conklinwolf" description="Deploys Web Site to conklinwolf.ucsf.edu/cyto_web/ for testing"
+		depends="env, config_local">
+		<ftp server="conklinwolf.ucsf.edu" 
+			remotedir="." 
+			verbose="yes"
+			userid="${cyto.user}"
+			password="${password}"
+			depends="yes"
+			binary="yes">
+			<fileset dir=".">
+				<exclude name="build.xml"/>
+				<exclude name="README.txt"/>
+				<exclude name="cw.properties"/>
+				<exclude name="CVS*"/>
+                <exclude name="cgi-bin/moin.cgi"/>
 			</fileset>
 		</ftp>
 	</target>
