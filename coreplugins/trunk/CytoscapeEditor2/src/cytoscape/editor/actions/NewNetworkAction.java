@@ -72,7 +72,7 @@ public class NewNetworkAction extends CytoscapeAction {
             //	        CytoscapeEditorManager.log ("index of current palette = " + idx);
             if (idx >= 0) {
                 Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(
-                    Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent(
+                        Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent(
                         "Editor"));
             }
 
