@@ -153,7 +153,6 @@ public class CytoscapeInit {
 			initProperties();
 			properties.putAll(initParams.getProps());
 			visualProperties.putAll(initParams.getVizProps());
-			setVariablesFromProperties();
 
 			// Build the OntologyServer.
 			Cytoscape.buildOntologyServer();
@@ -442,57 +441,24 @@ public class CytoscapeInit {
 	}
 
 	/**
-	 * Use the Properties Object that was retrieved from the CyPropertiesReader
-	 * to set all known global variables
-	 */
-	private static void setVariablesFromProperties() {
-
-		// plugins
-		if (properties.getProperty("plugins") != null) {
-			String[] pargs = properties.getProperty("plugins").split(",");
-			for (int i = 0; i < pargs.length; i++) {
-				String plugin = pargs[i];
-				URL url;
-				try {
-					if (plugin.matches(FileUtil.urlPattern)) {
-						url = jarURL(plugin);
-					} else {
-						File pf = new File(plugin);
-						url = jarURL(pf.getAbsolutePath());
-					}
-					pluginURLs.add(url);
-				} catch (Exception mue) {
-					mue.printStackTrace();
-					System.err.println("property plugin: " + plugin
-							+ " NOT added");
-				}
-			}
-		}
-
-		mrud = new File(properties.getProperty("mrud", System
-				.getProperty("user.dir")));
-	}
-
-	/**
 	 * Parses the plugin input strings and transforms them into the appropriate
 	 * URLs or resource names. The method first checks to see if the
 	 */
 	private void loadPlugins() {
 
 		try {
-
 			Set plugins = new HashSet();
 			List p = initParams.getPlugins();
 			if (p != null)
 				plugins.addAll(p);
+
+			System.out.println("Looking for plugins in:");
 
 			// Parse the plugin strings and determine whether they're urls,
 			// files,
 			// directories, class names, or manifest file names.
 			for (Iterator iter = plugins.iterator(); iter.hasNext();) {
 				String plugin = (String) iter.next();
-				System.out
-						.println("preparing plugin(s) for loading: " + plugin);
 
 				File f = new File(plugin);
 
@@ -501,19 +467,23 @@ public class CytoscapeInit {
 
 					// If the name doesn't match a url, turn it into one.
 					if (!plugin.matches(FileUtil.urlPattern)) {
+						System.out.println(" - file: " + f.getAbsolutePath());
 						pluginURLs.add(jarURL(f.getAbsolutePath()));
 					} else {
+						System.out.println(" - url: " + f.getAbsolutePath());
 						pluginURLs.add(jarURL(plugin));
 					}
 
 					// If the file doesn't exists, assume that it's a
 					// resource plugin.
 				} else if (!f.exists()) {
+					System.out.println(" - classpath: " + f.getAbsolutePath());
 					resourcePlugins.add(plugin);
 
 					// If the file is a directory, load all of the jars
 					// in the directory.
 				} else if (f.isDirectory()) {
+					System.out.println(" - directory: " + f.getAbsolutePath());
 
 					String[] fileList = f.list();
 
@@ -528,6 +498,7 @@ public class CytoscapeInit {
 					// Assume the file is a manifest (i.e. list of jar names)
 					// and make urls out of them.
 				} else {
+					System.out.println(" - file manifest: " + f.getAbsolutePath());
 
 					try {
 						TextHttpReader reader = new TextHttpReader(plugin);
@@ -721,6 +692,9 @@ public class CytoscapeInit {
 	 * @return the most recently used directory
 	 */
 	public static File getMRUD() {
+		if ( mrud == null )
+			mrud = new File(properties.getProperty("mrud", System
+				            .getProperty("user.dir")));
 		return mrud;
 	}
 
