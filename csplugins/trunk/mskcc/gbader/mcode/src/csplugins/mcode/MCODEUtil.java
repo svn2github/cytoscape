@@ -66,6 +66,8 @@ public class MCODEUtil {
      * @param cluster Input network to convert to an image
      * @param height  Height that the resulting image should be
      * @param width   Width that the resulting image should be
+     * @param layouter Reference to the layout algorithm
+     * @param layoutNecessary Determinant of cluster size growth or shrinkage, the former requires layout
      * @return The resulting image
      */
     public static Image convertNetworkToImage(MCODELoader loader, MCODECluster cluster, int height, int width, SpringEmbeddedLayouter layouter, boolean layoutNecessary) {
@@ -172,10 +174,8 @@ public class MCODEUtil {
         if (view.getNodeViewCount() >= 1) {
             cluster.setPGView(view);
         }
-        if (loader != null) {
-            loader.loaded();
-        }
 
+        resetLoading();
         return (image);
     }
 

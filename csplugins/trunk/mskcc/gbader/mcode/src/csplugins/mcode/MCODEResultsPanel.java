@@ -744,7 +744,7 @@ public class MCODEResultsPanel extends JPanel {
             Cytoscape.getDesktop().setFocus(networkView.getIdentifier());
         } else {
             //Warn user that nothing will happen in this case because there is no view to select nodes with
-            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "You must have a network view created to select nodes.");
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "You must have a network view\ncreated to select nodes.", "No Network View", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -860,22 +860,11 @@ public class MCODEResultsPanel extends JPanel {
 
             //And compare the old and new
             if (!newCluster.equals(oldCluster)) {
-                //There is a small difference between expanding and retracting the cluster size
-                //When expanding, new nodes need random position and thus must go through the layout
-                //When retracting, we simply use the layout that was generated and stored
-                //This speeds up the drawing process greatly
-                boolean layoutNecessary = false;
-                if (newCluster.size() - oldCluster.size() > 0) {
-                    layoutNecessary = true;
-                }
                 //If the cluster has changed, then we:
                 //Interrupt the drawing
-                layouter.interruptDoLayout();
-                MCODEUtil.interruptLoading();
+                drawer.interruptDrawing();
                 //Update the cluster array
                 clusters[selectedRow] = cluster;
-                //Select the new cluster
-                selectCluster(cluster.getGPCluster());
                 //Update the details
                 StringBuffer details = getClusterDetails(cluster);
                 table.setValueAt(details, selectedRow, 1);
@@ -885,13 +874,22 @@ public class MCODEResultsPanel extends JPanel {
                 //Ensure that a loader is set with the selected row and table object
                 //Also, we want to set the loader only once during continuous exploration
                 //It is only set again when a graph is fully loaded and placed in the table
-                if (!loaderSet) { //cluster.getGPCluster().getNodeCount() > 15
+                if (!loaderSet) {
                     //internally, the loader is only drawn into the appropriate cell after a short sleep period
                     //to ensure that quick loads are not displayed unecessarily
                     loader.setLoader(selectedRow, table);
                     loaderSet = true;
                 }
-                //Draw Graph in a separate thread so that it can be interrupted by the slider movement
+                //There is a small difference between expanding and retracting the cluster size
+                //When expanding, new nodes need random position and thus must go through the layout
+                //When retracting, we simply use the layout that was generated and stored
+                //This speeds up the drawing process greatly
+                boolean layoutNecessary = false;
+                if (newCluster.size() - oldCluster.size() > 0) {
+                    layoutNecessary = true;
+                }
+                //Draw Graph and select the cluster in the view in a separate thread so that it can be
+                //interrupted by the slider movement
                 drawer.drawGraph(cluster, layouter, layoutNecessary, this);
             }
         }
@@ -929,9 +927,6 @@ public class MCODEResultsPanel extends JPanel {
             this.trigger = trigger;
             this.layoutNecessary = layoutNecessary;
 
-            layouter.resetDoLayout();
-            MCODEUtil.resetLoading();
-
             drawGraph = true;
         }
 
@@ -943,17 +938,27 @@ public class MCODEResultsPanel extends JPanel {
                     //In that case the drawing must occur for a new cluster using the drawGraph method
                     if (drawGraph) {
                         Image image = MCODEUtil.convertNetworkToImage(loader, cluster, graphPicSize, graphPicSize, layouter, layoutNecessary);
-                        if (image != null) {
+                        //If the drawing process was interrupted, a new cluster must have been found and
+                        //this will have returned null, the drawing will be recalled (with the new cluster)
+                        if (image != null && drawGraph) {
                             table.setValueAt(new ImageIcon(image), cluster.getRank(), 0);
                             trigger.loaderSet = false;
+                            loader.loaded();
+                            //Select the new cluster
+                            selectCluster(cluster.getGPCluster());
+                            drawGraph = false;
                         }
-                        //If the process was interrupted then the image will return null and the drawing will have to be recalled (with the new cluster)
-                        drawGraph = false;
                     }
                     //This sleep time produces the drawing response time of 1 20th of a second
                     Thread.sleep(100);
                 }
             } catch (Exception e) {}
+        }
+
+        public void interruptDrawing() {
+            drawGraph = false;
+            if (layouter != null) layouter.interruptDoLayout();
+            MCODEUtil.interruptLoading();
         }
     }
 }

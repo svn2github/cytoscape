@@ -579,10 +579,6 @@ public class MCODEMainPanel extends JPanel {
         MCODEMainPanel mainPanel;
         MCODEResultsPanel component;
 
-        /**
-         *
-         * @param mainPanel
-         */
         QuitAction (MCODEMainPanel mainPanel) {
             this.mainPanel = mainPanel;
         }

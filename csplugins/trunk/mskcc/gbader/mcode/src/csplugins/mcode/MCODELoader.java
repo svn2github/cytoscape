@@ -8,30 +8,67 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 /**
- * Created by IntelliJ IDEA.
- * User: vukpavlovic
- * Date: Dec 17, 2006
- * Time: 12:33:12 PM
- * TODO: Make the loader more general so that it can be used in different situations as well
+ * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
+ * *
+ * * Code written by: Gary Bader
+ * * Authors: Gary Bader, Ethan Cerami, Chris Sander
+ * *
+ * * This library is free software; you can redistribute it and/or modify it
+ * * under the terms of the GNU Lesser General Public License as published
+ * * by the Free Software Foundation; either version 2.1 of the License, or
+ * * any later version.
+ * *
+ * * This library is distributed in the hope that it will be useful, but
+ * * WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ * * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ * * documentation provided hereunder is on an "as is" basis, and
+ * * Memorial Sloan-Kettering Cancer Center
+ * * has no obligations to provide maintenance, support,
+ * * updates, enhancements or modifications.  In no event shall the
+ * * Memorial Sloan-Kettering Cancer Center
+ * * be liable to any party for direct, indirect, special,
+ * * incidental or consequential damages, including lost profits, arising
+ * * out of the use of this software and its documentation, even if
+ * * Memorial Sloan-Kettering Cancer Center
+ * * has been advised of the possibility of such damage.  See
+ * * the GNU Lesser General Public License for more details.
+ * *
+ * * You should have received a copy of the GNU Lesser General Public License
+ * * along with this library; if not, write to the Free Software Foundation,
+ * * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ * *
+ * * User: vukpavlovic
+ * * Date: Dec 17, 2006
+ * * Time: 12:33:12 PM
+ * * Description: Generates a loading picture with a progress bar for the cluster browser table
+ * * TODO: Make the loader more general so that it can be used in different situations as well
  */
-public class MCODELoader extends ImageIcon implements Runnable {
-    JTable table;
-    Rectangle bounds;
-    int selectedRow;
-    ImageIcon graphImage;
-    BufferedImage loader;
-    Graphics2D g2;
-    Color bg;
-    double fadeInAlpha;
-    int degreesForDisk;
 
-    int progress;
-    String process;
+public class MCODELoader extends ImageIcon implements Runnable {
+    JTable table; //cluster browser table reference
+    Rectangle bounds; //bounds of the cell containing loading cluster
+    int selectedRow; //row of cluster
+    ImageIcon graphImage; //picture of the graph as is before loading
+    BufferedImage loader; //picture of loader
+    Graphics2D g2; //graphics context of loader
+    Color bg; //background of cluster browser table cell
+    double fadeInAlpha; //global variable that allows the loader to fade in when it's first displayed
+    int degreesForDisk; //global variable keeping track of the loading disk rotation
+
+    int progress; //progress bar progress value
+    String process; //current process being computed
 
     Thread t;
-    boolean loading;
-    boolean loaderDisplayed;
+    boolean loading; // run switch
+    boolean loaderDisplayed; //allows mcode to display a continous loading animation during continous exploration
 
+    /**
+     * Constructer for the loader.
+     *
+     * @param table Reference to the cluster browser table
+     * @param width cell width
+     * @param height cell height
+     */
     MCODELoader (JTable table, int width, int height) {
         this.table = table;
 
@@ -43,14 +80,15 @@ public class MCODELoader extends ImageIcon implements Runnable {
 
         this.setImage(loader);
 
+        loading = false;
+
         t = new Thread(this);
         t.start();
     }
 
     /**
      * Sets the row and image on top of which the loader will be drawn.
-     * Sets progress to 0 and process to "Waiting" so that the progress bar is not drawn until
-     * actual processes are conducted.
+     * Sets progress to 0 and process to "Starting".
      *
      * @param selectedRow the row in a table where the loader is to be drawn
      * @param table an image of the cluster before the loader is drawn on top
@@ -63,9 +101,7 @@ public class MCODELoader extends ImageIcon implements Runnable {
         fadeInAlpha = 0.0;
         degreesForDisk = 0;
         progress = 0;
-        //To ensure that the progress bar is only drawn when actual processes are being conducted we use
-        //this state to keep it from being drawn
-        process = "Waiting";
+        process = "Starting";
 
         loaderDisplayed = false;
         loading = true;
@@ -75,22 +111,25 @@ public class MCODELoader extends ImageIcon implements Runnable {
         try {
             while (true) {
                 if (loading) {
-
+                    //First we make sure that if the loader is being displayed for the first time in this exploration
+                    //session, then we wait half a second to make sure it isn't displayed for process that are really
+                    //quick
                     if (loading && !loaderDisplayed) {
                         Thread.sleep(500);
                     }
+                    //Then we compute the loading picture if loading is still taking place
                     if (loading) {
                         drawLoader();
-                    }
-                    if (loading && !loaderDisplayed) {
-                        table.setValueAt(this, selectedRow, 0);
-                        loaderDisplayed = true;
-                    }
+                        //If the loader has not been displayed yet and loading is still taking place,
+                        //we put it in the table
+                        if (loading && !loaderDisplayed) {
+                            table.setValueAt(this, selectedRow, 0);
+                            loaderDisplayed = true;
+                        }
 
-                    //Since the table consolidates paint updates, the animation would not show up unless
-                    //we implicitly force it to repaint
-                    if (loading && loaderDisplayed) {
-                        table.paintImmediately(bounds);
+                        //Since the table consolidates paint updates, the animation would not show up unless
+                        //we implicitly force it to repaint
+                        if (loading) table.paintImmediately(bounds);
                     }
                 }
                 //This sleep time generates a ~30 fps animation
@@ -100,15 +139,16 @@ public class MCODELoader extends ImageIcon implements Runnable {
     }
 
     /**
-     * Sets the pivital boolean to false to stop the drawing process
+     * Sets the run switch to false to stop the drawing process
      */
     public void loaded() {
         loading = false;
+        loaderDisplayed = false;
     }
 
     /**
      * Initially, fades the graph into the background color, draws the Loading string and an animated disk to indicate
-     * responsiveness.  If the user has stopped adjusting the slider, the processes start and a progress bar is drawn.
+     * responsiveness as well as a progress bar and process status.
      */
     public void drawLoader() {
         //Get font info for centering
@@ -238,39 +278,43 @@ public class MCODELoader extends ImageIcon implements Runnable {
         g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2), (loader.getHeight() / 2) + (8 / 2));
 
         //Draw process text and progress bar and text
-        if (!process.equals("Waiting")) {
-            //Process
-            g2.setColor(Color.BLACK);
-            g2.drawString(process, 10, loader.getHeight()-2);
+        //Process
+        g2.setColor(Color.BLACK);
+        g2.drawString(process, 10, loader.getHeight() - 2);
 
-            //Progress Bar Fill
-            g2.setColor(Color.BLUE);
-            //The transparency of the bar occilates between 100 and 150 using the sin function and the degrees of the rotating disk
-            //completing one period with every turn of the disk
-            int progressBarAlpha = 150 - (int) (50.0 * Math.abs(Math.sin(2.0 * Math.PI * (((double) degreesForDisk / 2) / 360.0))));
-            g2.setColor(new Color(
-                    g2.getColor().getRed(),
-                    g2.getColor().getGreen(),
-                    g2.getColor().getBlue(),
-                    progressBarAlpha
-            ));
-            g2.fillRect(10, loader.getHeight()-20, (int) ((((double) progress) / 100)*(loader.getWidth()-20)), 10);
+        //Progress Bar Fill
+        g2.setColor(Color.BLUE);
+        //The transparency of the bar occilates between 100 and 150 using the sin function and the degrees of the rotating disk
+        //completing one period with every turn of the disk
+        int progressBarAlpha = 150 - (int) (50.0 * Math.abs(Math.sin(2.0 * Math.PI * (((double) degreesForDisk / 2) / 360.0))));
+        g2.setColor(new Color(
+                g2.getColor().getRed(),
+                g2.getColor().getGreen(),
+                g2.getColor().getBlue(),
+                progressBarAlpha
+        ));
+        g2.fillRect(10, loader.getHeight() - 20, (int) ((((double) progress) / 100) * (loader.getWidth() - 20)), 10);
 
-            //Progress Bar Outline
-            g2.setColor(new Color(0,0,0,100));
-            g2.drawRect(10, loader.getHeight()-20, loader.getWidth()-20, 10);
+        //Progress Bar Outline
+        g2.setColor(new Color(0, 0, 0, 100));
+        g2.drawRect(10, loader.getHeight() - 20, loader.getWidth() - 20, 10);
 
-            //Progress Text
-            String progressText = progress + "%";
-            //We add a black shadow to make it easier to read on top of any background
-            g2.setColor(Color.BLACK);
-            g2.drawString(progressText, (loader.getWidth() / 2) - (fm.stringWidth(progressText) / 2) + 1, loader.getHeight() - 11);
+        //Progress Text
+        String progressText = progress + "%";
+        //We add a black shadow to make it easier to read on top of any background
+        g2.setColor(Color.BLACK);
+        g2.drawString(progressText, (loader.getWidth() / 2) - (fm.stringWidth(progressText) / 2) + 1, loader.getHeight() - 11);
 
-            g2.setColor(Color.WHITE);
-            g2.drawString(progressText, (loader.getWidth() / 2) - (fm.stringWidth(progressText) / 2), loader.getHeight() - 12);
-        }
+        g2.setColor(Color.WHITE);
+        g2.drawString(progressText, (loader.getWidth() / 2) - (fm.stringWidth(progressText) / 2), loader.getHeight() - 12);
     }
 
+    /**
+     * Setter method that takes in a progress value from 0 - 100 and the current process.
+     *
+     * @param progress An integer from 0 - 100
+     * @param process a short description of the process being conducted (initially set to "Starting")
+     */
     public void setProgress(int progress, String process) {
         this.progress = progress;
         this.process = process;

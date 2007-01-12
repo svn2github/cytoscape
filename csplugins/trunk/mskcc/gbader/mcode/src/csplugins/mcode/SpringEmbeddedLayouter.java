@@ -182,8 +182,6 @@ public class SpringEmbeddedLayouter {
                     resetDoLayout();
                     return false;
                 }
-                // TODO: REMOVE
-                //System.out.println( "At iteration " + layoutPass + ":" + iterations_i + ", furthest_node_partials is " + furthest_node_partials + "." );
                 furthest_node_partials =
                         moveNode(furthest_node_partials, partials_list, potential_energy);
 
@@ -194,8 +192,9 @@ public class SpringEmbeddedLayouter {
                 }
 
             } // End for each iteration, attempt to minimize the total potential
-            // energy by moving the node that is furthest from where it should be.
+              // energy by moving the node that is furthest from where it should be.
         } // End for each layout pass
+        resetDoLayout();
         return true;
     } // End for doLayout()
 
