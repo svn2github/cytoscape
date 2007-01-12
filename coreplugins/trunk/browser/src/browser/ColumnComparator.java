@@ -17,6 +17,7 @@ import java.util.Vector;
 
 public class ColumnComparator implements Comparator {
 
+	private static final int EMPTY_STR_LENGTH = 2;
 	protected int index;
 	protected boolean ascending;
 
@@ -71,6 +72,24 @@ public class ColumnComparator implements Comparator {
 					return ascending ? firstComparableObj
 							.compareTo(secondComparableObj)
 							: secondComparableObj.compareTo(firstComparableObj);
+				}
+			} else {
+				/*
+				 * If not primitive, just compare as String
+				 */
+				
+				final String str1 = firstObj.toString();
+				final String str2 = secondObj.toString();
+
+				if (str1.length() == EMPTY_STR_LENGTH && str2.length() == EMPTY_STR_LENGTH) {
+					return 0;
+				} else if (str1.length() == EMPTY_STR_LENGTH) {
+					return 1;
+				} else if (str2.length() == EMPTY_STR_LENGTH) {
+					return -1;
+				} else {
+					return ascending ? str1.compareTo(str2) : str2
+							.compareTo(str1);
 				}
 			}
 		}
