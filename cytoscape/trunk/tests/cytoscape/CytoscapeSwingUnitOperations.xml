@@ -9,7 +9,8 @@
 	<scenario name="IMPORT_NETWORK_FILE">
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Import" />
-		<Click componentClass="JMenuItem" label="Network..." />
+		<Click componentClass="JMenuItem"
+			label="Network (multiple file types)..." />
 		<retriever retryTime="2000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
 				label="Select" windowFinder="CLASS_IS_ACCESSIBLE"
@@ -111,8 +112,7 @@
 	<scenario name="EXPORT_AS_GML_FILE">
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Export" />
-		<Click componentClass="JMenuItem"
-			label="Network as GML..." />
+		<Click componentClass="JMenuItem" label="Network as GML..." />
 
 		<Delay ms="500" />
 
@@ -151,7 +151,7 @@
 		<Click componentClass="JMenuItem" label="Cytoscape Layouts" />
 		<Click componentClass="JMenuItem" label="Spring Embedded" />
 		<Click componentClass="JMenuItem" label="All Nodes" />
-		<Delay ms="10000" />
+		<Delay ms="20000" />
 		<retriever retryTime="10000" intervalTime="1000">
 			<if verifier="Verify" property="enabled" expected="true"
 				componentClass="JButton" label="    Close    "
@@ -315,6 +315,7 @@
 		<Click componentClass="JMenuItem" label="Nodes" />
 		<Click componentClass="JMenuItem"
 			label="First neighbors of selected nodes" />
+		<Delay ms="3000" />
 	</scenario>
 
 
@@ -478,7 +479,8 @@
 	<scenario name="IMPORT_REMOTE_SIF_FILE">
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Import" />
-		<Click componentClass="JMenuItem" label="Network..." />
+		<Click componentClass="JMenuItem"
+			label="Network (multiple file types)..." />
 
 		<Click componentClass="JRadioButton" label="Remote"
 			windowFinder="CLASS_IS_ACCESSIBLE"
@@ -596,7 +598,7 @@
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
 			windowTitle="Use Filters" windowClass="JFrame" />
 
-		<Delay ms="5000" />
+		<Delay ms="10000" />
 
 		<WindowClosing
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
@@ -672,7 +674,8 @@
 	<scenario name="IMPORT_REMOTE_NETWORK_FILE">
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Import" />
-		<Click componentClass="JMenuItem" label="Network..." />
+		<Click componentClass="JMenuItem"
+			label="Network (multiple file types)..." />
 
 		<Click componentClass="JRadioButton" label="Remote"
 			windowFinder="CLASS_IS_ACCESSIBLE"
@@ -709,7 +712,8 @@
 	<scenario name="IMPORT_REMOTE_NETWORK_FILE_FROM_BOOKMARK">
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Import" />
-		<Click componentClass="JMenuItem" label="Network..." />
+		<Click componentClass="JMenuItem"
+			label="Network (multiple file types)..." />
 
 		<Click componentClass="JRadioButton" label="Remote"
 			windowFinder="CLASS_IS_ACCESSIBLE"
@@ -742,7 +746,8 @@
 	<scenario name="IMPORT_GML_FILE">
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Import" />
-		<Click componentClass="JMenuItem" label="Network..." />
+		<Click componentClass="JMenuItem"
+			label="Network (multiple file types)..." />
 		<retriever retryTime="2000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
 				label="Select" windowFinder="CLASS_IS_ACCESSIBLE"

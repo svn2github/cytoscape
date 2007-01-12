@@ -83,8 +83,7 @@ public class Tutorial1TestSwing extends TestCase {
 		 * This is necessary since SwingUnit does not support some Look & Feel.
 		 */
 		UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-
-		EventPlayer player = new EventPlayer(scenario);
+		final EventPlayer player = new EventPlayer(scenario);
 
 		/*
 		 * only do this because the attr browser takes up the whole screen in
@@ -152,7 +151,7 @@ public class Tutorial1TestSwing extends TestCase {
 
 		player.run(robot, "DELETE_SELECTED_EDGES");
 
-		player.run(robot, "TEST_FILTER_2");
+		//player.run(robot, "TEST_FILTER_2");
 
 	}
 
