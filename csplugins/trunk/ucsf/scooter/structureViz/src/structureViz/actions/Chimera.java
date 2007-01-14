@@ -75,6 +75,11 @@ public class Chimera {
 	static private ModelNavigatorDialog mnDialog = null;
 	static private AlignStructuresDialog alDialog = null;
     
+	/**
+	 * Create the Chimera object
+	 *
+	 * @param networkView the current CyNetworkView 
+	 */
   public Chimera(CyNetworkView networkView) {
   	/**
   	 * Null constructor, for now
@@ -85,33 +90,91 @@ public class Chimera {
 		this.networkView = networkView;
   }
 
+	/**
+	 * Return the list of all open models in this instance of Chimera
+	 *
+	 * @return list of ChimeraModels
+	 */
 	public List getChimeraModels () { return models; }
 
+	/**
+	 * Return our network view
+	 *
+	 * @return the network view we were created with
+	 */
 	public CyNetworkView getNetworkView () { return networkView; }
 
-	// We need this to be able to update selections
+	/**
+	 * Provide a handle to the ModelNavigatorDialog that is currently
+	 * up.  We need this so that we can update the selections in the
+	 * dialog when the selections change in Chimera.
+	 *
+	 * @param dialog the ModelNavigatorDialog that provides our interface
+	 */
 	public void setDialog(ModelNavigatorDialog dialog) { mnDialog = dialog; }
 
+	/**
+	 * Return the ModelNavigatorDialog that is providing our interface
+	 *
+	 * @return our ModelNavigatorDialog
+	 */
 	public ModelNavigatorDialog getDialog() { return mnDialog; }
 
+	/**
+	 * Provide a handle to the AlignStructuresDialog that is currently
+	 * up.  This does not necessarily need to be in the Chimera object,
+	 * but it has to be somewhere, and this seemed like a good place.
+	 *
+	 * @param dialog the AlignStructuresDialog that provides our interface
+	 */
 	public void setAlignDialog(AlignStructuresDialog dialog) { this.alDialog = dialog; }
 
+	/**
+	 * Return the AlignStructuresDialog that provides the interface to our align structures
+	 * functionality.
+	 *
+	 * @return our AlignStructuresDialog
+	 */
 	public AlignStructuresDialog getAlignDialog() { return this.alDialog; }
 
+	/**
+	 * Test to see if we currently have a particular model open
+	 *
+	 * @param modelNumber the model number expressed as an Integer object
+	 */
 	public boolean containsModel(Integer modelNumber) {
 		return modelHash.containsKey(modelNumber);
 	}
 
+	/**
+	 * Test to see if we currently have a particular model open
+	 *
+	 * @param modelNumber the model number expressed as an integer
+	 */
 	public boolean containsModel(int modelNumber) {
 		Integer mn = new Integer(modelNumber);
 		return modelHash.containsKey(mn);
 	}
 
+	/**
+	 * Return the ChimeraModel associated with the requested 
+	 * model number
+	 *
+	 * @param modelNumber the model number expressed as an integer
+	 * @return the ChimeraModel with a model number of modelNumber
+	 */
 	public ChimeraModel getModel(int modelNumber) {
 		Integer mn = new Integer(modelNumber);
 		return (ChimeraModel)modelHash.get(mn);
 	}
 
+	/**
+	 * Return the ChimeraModel associated with the requested 
+	 * model name
+	 *
+	 * @param modelName the model name expressed as a string
+	 * @return the ChimeraModel with a model name of modelName
+	 */
 	public ChimeraModel getModel(String modelName) {
 		Iterator modelIter = models.iterator();
 		while (modelIter.hasNext()) {
@@ -122,6 +185,9 @@ public class Chimera {
 		return null;
 	}
 
+	/**
+	 * Test to see if we currently have a running instance of Chimera
+	 */
 	public boolean isLaunched () {
 		if (chimera != null) 
 			return true;
@@ -327,18 +393,31 @@ public class Chimera {
 		// Done
 	}
 
+	/**
+	 * Inform our interface that the model has changed
+	 */
 	public void modelChanged() {
 		mnDialog.modelChanged();
 	}
 
+	/**
+	 * Inform our interface that the selection has changed
+	 */
 	public void updateSelection(List selectionList) {
 		mnDialog.updateSelection(selectionList);
 	}
 
+	/**
+	 * This is called by the selectionListener to let us know that
+	 * the user has changed their selection in Chimera.  We need
+	 * to go back to Chimera to find out what is currently selected
+	 * and update our list.
+	 */
 	public void updateSelection() {
 		HashMap modelSelHash = new HashMap();
 		ArrayList selectionList = new ArrayList();
 		Iterator lineIter;
+		// System.out.println("updateSelection()");
 
 		// Execute the command to get the list of models with selections
 		lineIter = commandReply("lists level molecule");
@@ -397,6 +476,11 @@ public class Chimera {
 		updateSelection(selectionList);
 	}
 
+	/**
+	 * Return the list of ChimeraModels currently open
+	 *
+	 * @return List of ChimeraModel's
+	 */
 	private List getModelList() {
 		ArrayList<ChimeraModel>modelList = new ArrayList<ChimeraModel>();
 		Iterator modelIter = this.commandReply ("listm");
@@ -408,6 +492,13 @@ public class Chimera {
 		return modelList;
 	}
 
+	/**
+	 * Return the ChimeraModel associated with this structure.  This
+	 * involves asking Chimera to provide us with the information.
+	 *
+	 * @param structure the Structure we want to get the ChimeraModel for
+	 * @return the ChimeraModel for this structure
+	 */
 	private ChimeraModel getModelInfo(Structure structure) {
 		String name = structure.name();
 
@@ -424,6 +515,12 @@ public class Chimera {
 		return null;
 	}
 
+	/**
+	 * Determine the color that Chimera is using for this model.
+	 *
+	 * @param model the ChimeraModel we want to get the Color for
+	 * @return the default model Color for this model in Chimera
+	 */
 	private Color getModelColor(ChimeraModel model) {
 		replyLog.clear();
 		this.command ("listm attr color spec "+model.toSpec());
@@ -443,6 +540,14 @@ public class Chimera {
 		}
 	}
 
+	/**
+	 * Get information about the residues associated with a model.  This
+	 * uses the Chimera listr command.  We don't return the resulting
+	 * residues, but we add the residues to the model.
+	 *
+	 * @param model the ChimeraModel to get residue information for
+	 * 
+	 */
 	private void getResidueInfo(ChimeraModel model) {
 		int modelNumber = model.getModelNumber();
 

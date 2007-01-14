@@ -34,6 +34,10 @@ package structureViz.model;
 
 import cytoscape.*;
 
+/**
+ * The Structure class provides a link between the Chimera data
+ * and the Cytoscape data.
+ */
 public class Structure {
 	static int nStructures = 0;
 	String structureName;
@@ -41,6 +45,12 @@ public class Structure {
 	CyNode cytoscapeNode;
 	int modelNumber;
 
+	/**
+ 	 * Create a new Structure
+	 *
+	 * @param name the name of the structure
+	 * @param node the CyNode that this structure points to
+	 */
 	public Structure (String name, CyNode node) {
 		this.structureName = name;
 		this.cytoscapeNode = node;
@@ -48,26 +58,69 @@ public class Structure {
 		this.residueList = null;
 	}
 
+	/**
+	 * Get the name of the structure
+	 *
+	 * @return the name of the structure as a String
+	 */
 	public String name() {return this.structureName;}
+
+	/**
+	 * Get the CyNode this structure is associated with
+	 *
+	 * @return the CyNode this structure is an attribute of
+	 */
 	public CyNode node() {return this.cytoscapeNode;}
+
+	/**
+	 * Get the modelNumber for this structure
+	 *
+	 * @return the model number as an integer
+	 */
 	public int modelNumber() {return this.modelNumber;}
 
+	/**
+	 * Set the modelNumber for this structure
+	 *
+	 * @param number the model number
+	 */
 	public void setModelNumber (int number) {
 		this.modelNumber = number;
 	}
 
+	/**
+	 * Get the identifier of the cytoscape node this structure
+	 * is an attribute of.
+	 *
+	 * @return identifier of the CyNode as a String
+	 */
 	public String getIdentifier() {
 		return cytoscapeNode.getIdentifier();
 	}
 
+	/**
+	 * Return the string representation of this structure
+	 *
+	 * @return String
+	 */
 	public String toString() {
 		return "Node "+getIdentifier()+"; model "+structureName;
 	}
 
+	/**
+	 * Return the "active site" or "special" residues
+	 *
+	 * @return String representation of the residues (comma separated)
+	 */
 	public String getResidueList() {
 		return residueList;
 	}
 
+	/**
+	 * Set the "active site" or "special" residues
+	 *
+	 * @param residues String representation of the residues (comma separated)
+	 */
 	public void setResidueList(String residues) {
 		this.residueList = residues;
 	}

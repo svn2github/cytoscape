@@ -67,7 +67,7 @@ class ListenerThreads extends Thread
 	}
 
 	public void run() {
-		System.out.println("ReplyLogListener running");
+		// System.out.println("ReplyLogListener running");
 		while (true) {
 			try {
 				ArrayList reply = getReply();
@@ -138,6 +138,7 @@ class ListenerThreads extends Thread
 
 		public void run() {
 			try {
+				// System.out.println("Calling updateSelection");
 				chimeraObject.updateSelection();
 			} catch (Exception e) {}
 		}

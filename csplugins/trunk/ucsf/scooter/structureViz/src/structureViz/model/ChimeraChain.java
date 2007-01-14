@@ -51,25 +51,71 @@ import structureViz.model.ChimeraModel;
  */
 
 public class ChimeraChain implements ChimeraStructuralObject {
+
+	/**
+	 * The model number this chain is a part of
+	 */
 	private int model;
+
+	/**
+	 * A pointer to the model this chain is a part of
+	 */
 	private ChimeraModel chimeraModel;
+
+	/**
+	 * The chainID (from the PDB record)
+	 */
 	private String chainId;
+
+	/**
+	 * The residues that are part of this chain
+	 */
 	private TreeMap residueList;
+
+	/**
+	 * userData to associate with this chain
+	 */
 	private Object userData;
+
+	/**
+	 * Flag to indicate the selection state
+	 */
 	private boolean selected = false;
 
+
+	/**
+	 * Constructor to create a new ChimeraChain
+	 *
+	 * @param model	the model number this chain is part of
+	 * @param chainId the chain ID for this chain
+	 */
 	public ChimeraChain(int model, String chainId) {
 		this.model = model;
 		this.chainId = chainId;
 		residueList = new TreeMap();
 	}
 
+	/**
+	 * set the selected state of this chain
+	 *
+	 * @param selected a boolean to set the selected state to
+	 */
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
 
+	/**
+	 * return the selected state of this chain
+	 *
+	 * @return the selected state
+	 */
 	public boolean isSelected() { return selected; }
 
+	/**
+	 * Add a residue to the chain.
+	 *
+	 * @param residue the ChimeraResidue to add to the chain.
+	 */
 	public void addResidue(ChimeraResidue residue) {
 		// Get the value of the index (should be an int!)
 		Integer index = new Integer(residue.getIndex());
@@ -77,21 +123,53 @@ public class ChimeraChain implements ChimeraStructuralObject {
 		residueList.put(index.intValue(), residue);
 	}
 
+	/**
+	 * Return the list of residues in this chain in pdb residue order
+	 *
+	 * @return a Collection of residues in residue order
+	 */
 	public Collection getResidues() { return residueList.values(); }
 
+	/**
+	 * Return the list of residues in this chain as a list
+	 *
+	 * @return List of residues
+	 */
 	public List getChildren() { 
 		return new ArrayList(residueList.values()); 
 	}
 
+	/**
+	 * Get a specific residue
+	 *
+	 * @param residueIndex String representation of the residue index
+	 * @return the ChimeraResidue represented by the residueIndex
+	 */
 	public ChimeraResidue getResidue(String residueIndex) {
 		Integer index = new Integer(residueIndex);
 		return (ChimeraResidue)residueList.get(index.intValue());
 	}
 
+	/**
+	 * Get the ID for this chain
+	 *
+	 * @return String value of the chainId
+	 */
 	public String getChainId() { return chainId; }
 
+	/**
+	 * Get the model number for this chain
+	 *
+	 * @return the model number
+	 */
 	public int getModelNumber() { return model; }
 		
+	/**
+	 * Return a string representation of this chain as follows:
+	 * 	Chain <i>chainId</i> (<i>residue_count</i> residues)
+	 *
+	 * @return String representation of chain
+	 */
 	public String toString() { 
 		if (chainId.equals("_")) {
 			return("Chain (no ID) ("+getResidueCount()+" residues)");
@@ -100,6 +178,11 @@ public class ChimeraChain implements ChimeraStructuralObject {
 		}
 	}
 
+	/**
+	 * Return the Chimera specification for this chain
+	 *
+	 * @return Chimera specification
+	 */
 	public String toSpec() { 
 		if (chainId.equals("_")) {
 			return("#"+model+":."); 
@@ -108,16 +191,40 @@ public class ChimeraChain implements ChimeraStructuralObject {
 		}		
 	}
 
+	/**
+	 * Return the number of residues in this chain
+	 *
+	 * @return integer number of residues
+	 */
 	public int getResidueCount() { return residueList.size(); }
 
+	/**
+	 * Set the ChimeraModel for this chain
+	 *
+	 * @param model ChimeraModel to associate with this chain
+	 */
 	public void setChimeraModel(ChimeraModel model) { this.chimeraModel = model; }
 
+	/**
+	 * Get the ChimeraModel for this chain
+	 *
+	 * @return ChimeraModel associated with this chain
+	 */
 	public ChimeraModel getChimeraModel() { return chimeraModel; }
 
+	/**
+	 * Get the user data for this Chain
+	 *
+	 * @return user data
+	 */
 	public Object getUserData () {return userData;}
 
+	/**
+	 * Set the user data for this Chain
+	 *
+	 * @param data the user data to associate with this chain
+	 */
 	public void setUserData (Object data) {
 		this.userData = data;
 	}
-
 }

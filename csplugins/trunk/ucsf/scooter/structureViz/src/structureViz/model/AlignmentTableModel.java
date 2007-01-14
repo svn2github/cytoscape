@@ -65,6 +65,12 @@ import structureViz.actions.Chimera;
 import structureViz.actions.Align;
 import structureViz.ui.AlignStructuresDialog;
 
+/**
+ * The AlignmentTableModel class provides the table model used by the AlignStructuresDialog
+ *
+ * @author scooter
+ * @see AlignStructuresDialog
+ */
 public class AlignmentTableModel extends AbstractTableModel implements ListSelectionListener {
 
 	public static final int NOREFERENCE = 0;
@@ -76,12 +82,19 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 	private String referenceStructure = null;
 	private List matchStructures = null;
 	private Chimera chimeraObject = null;
-	private List allStructures = null;
+	private List<Structure> allStructures = null;
 	private List selectedStructures = null;
 	private HashMap resultsMap;
 	private int state = NOREFERENCE;
 	AlignStructuresDialog asDialog = null;
 
+	/**
+	 * Create the table model
+	 *
+	 * @param chimeraObject the Chimera object that links to Chimera
+	 * @param structures the list of Structures involved
+	 * @param asDialog a back-pointer to the dialog itself
+	 */
 	public AlignmentTableModel(Chimera chimeraObject, List structures, 
 														 AlignStructuresDialog asDialog) {
 		this.chimeraObject = chimeraObject;
@@ -89,14 +102,34 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 		this.asDialog = asDialog;
 	}
 
+	/**
+	 * Return the number of rows in the table
+	 *
+	 * @return number of rows as an integer
+	 */
 	public int getRowCount() { 
 		if (referenceStructure == null)
 			return 0;
 		return matchStructures.size(); 
 	}
 
+	/**
+	 * Return the number of columns in the table
+	 *
+	 * @return 4
+	 */
 	public int getColumnCount() { return 4; }
 
+	/**
+	 * Return the value at the requested row and column.  In our case
+	 * the row provides information about our Structure and the column
+	 * indicates the specific data we want.
+	 *
+	 * @param row the row number
+	 * @param col the column number
+	 * @return an Object which represents the value at the requested 
+	 * row and column
+	 */
 	public Object getValueAt(int row, int col) {
 		if (referenceStructure == null) return null;
 
@@ -118,18 +151,44 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 		return null;
 	}
 
+	/**
+	 * This method indicates whether this cell is editable.  We
+	 * always return false.
+	 *
+	 * @param row row number as an integer
+	 * @param col column number as an integer
+	 * @return false
+	 */
 	public boolean isCellEditable(int row, int col) {return false;}
 
+	/**
+	 * Return the name of a column.
+	 *
+	 * @param col column number as an integer
+	 * @return column name as a String
+	 */
 	public String getColumnName(int col) {
 		return columnNames[col];
 	}
 
+	/**
+	 * Get the object class of a column.  This is used to determine how
+	 * the columns will be displayed
+	 *
+	 * @param c the column number as an integer
+	 * @return object Class of this column
+	 */
 	public Class getColumnClass(int c) {
 		if (c == 0) return String.class;
 		if (c == 1) return Integer.class;
 		return Double.class;
 	}
 
+	/**
+	 * Set the reference structure to use for the alignments
+	 *
+	 * @param refStruct the name of the structure
+	 */
 	public void setReferenceStruct (String refStruct) {
 		this.referenceStructure = refStruct;
 		if (refStruct == null) {
@@ -149,16 +208,37 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 		fireTableDataChanged();
 	}
 
+	/**
+	 * Force the table to update
+	 */
 	public void updateTable() { fireTableDataChanged(); }
 
+	/**
+	 * Sets the results from an alignment in the table.
+	 *
+	 * @param matchStruct the name of the structure that was aligned
+	 * @param results the 3 result values from the alignment
+	 */
 	public void setResults (String matchStruct, float[] results) {
 		resultsMap.put(matchStruct, results);
 	}
 
+	/**
+	 * Get the Structures that have been selected by the user
+	 *
+	 * @return a List of selected structures
+	 */
 	public List getSelectedStructures() {
 		return selectedStructures;
 	}
 
+	/**
+	 * This method is called whenever a value in the table is changed.
+	 * It is used to detect selection and add the selection to the list
+	 * of structures to be used for the alignment
+	 *
+	 * @param e a ListSelectionEvent
+	 */
 	public void valueChanged (ListSelectionEvent e) {
 		ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 		// Get the list of selected structures

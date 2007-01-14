@@ -57,6 +57,12 @@ import structureViz.model.Sequence;
 import structureViz.model.ChimeraModel;
 
 
+/**
+ * The CyChimera class provides some of the logic to interface between
+ * Cytoscape and Chimera objects and (user) interfaces.
+ *
+ * @author scooter
+ */
 public class CyChimera {
 	public static final String[] structureKeys = {"Structure","pdb","pdbFileName",null};
 	public static final String[] residueKeys = {"FunctionalResidues",null};
@@ -67,6 +73,12 @@ public class CyChimera {
 
   public CyChimera() { }
 
+	/**
+	 * Get the list of structures associated with this node
+	 *
+	 * @param nodeView the NodeView of the node we're looking at
+	 * @return a list of Structures associated with this node
+	 */
 	public static List getSelectedStructures(NodeView nodeView) {
 		String structureAttribute = getProperty("structureAttribute");
 		if (structureAttribute != null) {

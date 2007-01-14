@@ -54,16 +54,23 @@ import structureViz.model.Structure;
  */
 
 public class ChimeraModel implements ChimeraStructuralObject {
-	private String name;
-	private int identifier;
-	private TreeMap chains;
-	private TreeMap residues;
-	private HashMap residueMap;
-	private Structure structure;
-	private Color modelColor;
-	private Object userData;
-	private boolean selected = false;
+	private String name; 				// The name of this model
+	private int identifier; 		// The model number
+	private TreeMap chains; 		// The list of chains
+	private TreeMap residues; 	// The list of residues
+	private HashMap residueMap;	// A map of residue names and residues
+	private Structure structure;// A pointer to the structure
+	private Color modelColor;		// The color of this model (from Chimera)
+	private Object userData;		// User data associated with this model
+	private boolean selected = false;	// The selected state of this model
 
+	/**
+	 * Constructor to create a model 
+	 *
+	 * @param name the name of this model
+	 * @param structure the Structure associated with this ChimeraModel
+	 * @param color the model Color
+	 */
 	public ChimeraModel (String name, Structure structure, Color color) {
 		this.name = name;
 		if (structure != null)
@@ -75,6 +82,11 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		this.modelColor = color;
 	}
 
+	/**
+	 * Constructor to create a model from the Chimera input line
+	 *
+	 * @param inputLine Chimera input line from which to construct this model
+	 */
 	public ChimeraModel (String inputLine) {
 		this.name = parseModelName(inputLine);
 		this.identifier = parseModelNumber(inputLine);
@@ -83,6 +95,13 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		this.residueMap = new HashMap();
 	}
 
+	/**
+	 * Constructor to create a model from the Chimera input line when the
+	 * structure is known
+	 *
+	 * @param structure Chimera structure for this model
+	 * @param inputLine Chimera input line from which to construct this model
+	 */
 	public ChimeraModel (Structure structure, String inputLine) {
 		this.name = structure.name();
 		this.structure = structure;
@@ -92,66 +111,178 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		this.residueMap = new HashMap();
 	}
 
+	/**
+	 * Set the selected state of this model
+	 *
+	 * @param selected a boolean to set the selected state to
+	 */
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
 
+	/**
+	 * Return the selected state of this model
+	 *
+	 * @return the selected state
+	 */
 	public boolean isSelected() { return selected; }
 
+	/**
+	 * Get the list of chain names associated with this model
+	 *
+	 * @return return the list of chain names for this model
+	 */
 	public Set getChainNames () { return chains.keySet(); }
 
+	/**
+	 * Return the chains in this model as a colleciton
+	 *
+	 * @return the chains in this model
+	 */
 	public Collection getChains () { return chains.values(); }
 
+	/**
+	 * Return the chains in this model as a List
+	 *
+	 * @return the chains in this model as a list
+	 */
 	public List getChildren () {
 		return new ArrayList(chains.values());
 	}
 
+	/**
+	 * Get the model color of this model
+	 *
+	 * @return model color of this model
+	 */
 	public Color getModelColor () { return this.modelColor; }
 
+	/**
+	 * Set the color of this model
+	 *
+	 * @param color Color of this model
+	 */
 	public void setModelColor (Color color) { 
 		this.modelColor = color;
 	}
 
+	/**
+	 * Get a specific chain from the model
+	 *
+	 * @param chain the ID of the chain to return
+	 * @return ChimeraChain associated with the chain
+	 */
 	public ChimeraChain getChain(String chain) {
 		return (ChimeraChain)chains.get(chain);
 	}
 
+	/**
+	 * Get the residues associated with this model
+	 *
+	 * @return the list of residues in this model
+	 */
 	public Collection getResidues () { return residues.values(); }
 
+	/**
+	 * Return a specific residue based on its index
+	 *
+	 * @param index of the residue to return
+	 * @return the residue associated with that index
+	 */
 	public ChimeraResidue getResidue (String index) {
 		return (ChimeraResidue)residueMap.get(index);
 	}
 
+	/**
+	 * Return the name of this model
+	 *
+	 * @return model name
+	 */
 	public String getModelName () { return this.name; }
 
+	/**
+	 * Set the name of this model
+	 *
+	 * @param name model name
+	 */
 	public void setModelName (String name) { this.name = name; }
 
+	/**
+	 * Get the model number of this model
+	 *
+	 * @return integer model number 
+	 */
 	public int getModelNumber () { return this.identifier; }
 
+	/**
+	 * Set the model number of this model
+	 *
+	 * @param modelNumber integer model number 
+	 */
 	public void setModelNumber (int modelNumber) { this.identifier = modelNumber; }
 
+	/**
+	 * Get the ChimeraModel (required for ChimeraStructuralObject interface)
+	 *
+	 * @return ChimeraModel
+	 */
 	public ChimeraModel getChimeraModel () { return this; }
 
+	/**
+	 * Get the structure object associated with this model
+	 *
+	 * @return Structure associated with this model
+	 */
 	public Structure getStructure() { return this.structure; }
 
+	/**
+	 * Set the structure object for this model
+	 *
+	 * @param structure Structure to associate with this model
+	 */
 	public void setStructure(Structure structure) { this.structure = structure; }
 
+	/**
+	 * Get the number of chains in this model
+	 *
+	 * @return integer chain count
+	 */
 	public int getChainCount () { return chains.keySet().size(); }
 
+	/**
+	 * Get the number of residues in this model
+	 *
+	 * @return integer residues count
+	 */
 	public int getResidueCount () { return residues.size(); }
 
+	/**
+	 * Get the user data for this model
+	 *
+	 * @return user data
+	 */
 	public Object getUserData () {return userData;}
 
+	/**
+	 * Set the user data for this model
+	 *
+	 * @param data user data to associate with this model
+	 */
 	public void setUserData (Object data) {
 		this.userData = data;
 	}
 
+	/**
+	 * Add a residue to this model
+	 *
+	 * @param residue to add to the model
+	 */
 	public void addResidue (ChimeraResidue residue) {
 		residue.setChimeraModel(this);
 		residueMap.put(residue.getIndex(),residue);
 		String chainId = residue.getChainId();
 		if (chainId != null) {
-			addChain(chainId, residue);
+			addResidue(chainId, residue);
 			residues.put(residue.getIndex(),residue);
 		} else {
 			// Get the value of the index (should be an int!)
@@ -161,7 +292,14 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		}
 	}
 
-	public void addChain(String chainId, ChimeraResidue residue) {
+	/**
+	 * Add a residue to a chain in this model.  If the chain associated
+	 * with chainId doesn't exist, it will be created.
+	 *
+	 * @param chainId to add the residue to
+	 * @param residue to add to the chain
+	 */
+	public void addResidue(String chainId, ChimeraResidue residue) {
 		ChimeraChain chain = null;
 		if (!chains.containsKey(chainId)) {
 			chain = new ChimeraChain(this.identifier, chainId);
@@ -173,6 +311,9 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		chain.addResidue(residue);
 	}
 
+	/**
+	 * Return a string representation for the model
+	 */
 	public String toString() { 
 		String nodeName = "{none}";
 		if (structure != null)
@@ -184,8 +325,15 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		}
 	}
 
+	/**
+	 * Return the Chimera specification for this model
+	 */
 	public String toSpec() { return ("#"+identifier); }
 
+	/**
+	 * Parse the model number returned by Chimera and return
+	 * the integer value
+	 */
 	private int parseModelNumber(String inputLine) {
 		int hash = inputLine.indexOf('#');
 		int space = inputLine.indexOf(' ',hash);
@@ -194,10 +342,13 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		return modelInteger.intValue();
 	}
 
+	/**
+	 * Parse the model identifier returned by Chimera and return
+	 * the String value
+	 */
 	private String parseModelName(String inputLine) {
 		int start = inputLine.indexOf("name ");
 		if (start < 0) return null;
 		return inputLine.substring(start+5);
 	}
-
 }

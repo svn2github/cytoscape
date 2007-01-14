@@ -68,7 +68,10 @@ import structureViz.actions.CyChimera;
 import structureViz.actions.Chimera;
 import structureViz.actions.Align;
 
-
+/**
+ * The StructureViz class provides the primary interface to the
+ * Cytoscape plugin mechanism
+ */
 public class StructureViz extends CytoscapePlugin 
   implements NodeContextMenuListener, PropertyChangeListener {
 
@@ -105,10 +108,19 @@ public class StructureViz extends CytoscapePlugin
 
   }
 
+	/**
+	 * The StructureVizMenuListener provides the interface to the structure viz
+	 * Node context menu and the plugin menu.
+	 */
 	public class StructureVizMenuListener implements MenuListener {
 		private StructureVizCommandListener staticHandle;
 		private NodeView overNode = null;
 
+		/**
+		 * Create the structureViz menu listener
+		 *
+		 * @param nv the Cytoscape NodeView the mouse was over
+		 */
 		StructureVizMenuListener(NodeView nv) {
 			this.staticHandle = new StructureVizCommandListener(NONE,null);
 			this.overNode = nv;
@@ -116,6 +128,12 @@ public class StructureViz extends CytoscapePlugin
 
 	  public void menuCanceled (MenuEvent e) {};
 		public void menuDeselected (MenuEvent e) {};
+
+		/**
+		 * Process the selected menu
+		 *
+		 * @param e the MenuEvent for the selected menu
+		 */
 		public void menuSelected (MenuEvent e)
 		{
 			JMenu m = (JMenu)e.getSource();
@@ -175,6 +193,7 @@ public class StructureViz extends CytoscapePlugin
 				if (l.getChimera() == null || !l.getChimera().isLaunched()) item.setEnabled(false);
 				m.add(item);
 			}
+/*
 			m.addSeparator();
 			{
 				JMenuItem item = new JMenuItem("Compare sequences");
@@ -192,8 +211,18 @@ public class StructureViz extends CytoscapePlugin
 				item.addActionListener(l);
 				m.add(item);
 			}
+*/
 		}
 
+
+		/**
+		 * Add a submenu item to an existing menu
+		 *
+		 * @param menu the JMenu to add the new submenu to
+		 * @param label the label for the submenu
+		 * @param command the command to execute when selected
+		 * @param userData data associated with the menu
+		 */
 		private void addSubMenu(JMenu menu, String label, int command, Object userData) {
 			StructureVizCommandListener l = new StructureVizCommandListener(command, userData);
 			JMenuItem item = new JMenuItem(label);
@@ -238,10 +267,20 @@ public class StructureViz extends CytoscapePlugin
 			}
 		}
 
+		/**
+		 * Return the Chimera object.
+		 *
+		 * @return Chimera object for this
+		 */
 		public Chimera getChimera() {
 			return chimera;
 		}
 
+		/**
+		 * Return the list of open structures
+		 *
+		 * @return a List of Structures
+		 */
 		public List<Structure>getOpenStructs() {
 			List<Structure>st = new ArrayList<Structure>();
 			if (chimera == null) return st;
@@ -258,6 +297,11 @@ public class StructureViz extends CytoscapePlugin
 			return st;
 		}
 
+		/**
+		 * Perform the action associated with an align menu selection
+		 *
+		 * @param label the Label associated with this command
+		 */
 		private void alignAction(String label) {
 			// Launch Chimera (if necessary)
 			boolean isLaunched = (chimera != null && chimera.isLaunched());
@@ -282,6 +326,9 @@ public class StructureViz extends CytoscapePlugin
 			chimera.setAlignDialog(alDialog);
 		}
 
+		/**
+		 * Exit Chimera and the plugin
+		 */
 		private void exitAction() {
 			if (mnDialog != null) {
 				// get rid of the dialog
@@ -302,6 +349,9 @@ public class StructureViz extends CytoscapePlugin
 			}
 		}
 
+		/**
+		 * Close a Chimera molecule
+		 */
 		private void closeAction(String commandLabel) {
 			List<Structure>structList;
 			if (chimera != null) {
@@ -322,6 +372,9 @@ public class StructureViz extends CytoscapePlugin
 			if (mnDialog != null) mnDialog.modelChanged();
 		}
 
+		/**
+		 * Open a pdb model in Chimera
+		 */
 		private void openAction(String commandLabel) {
 			boolean isLaunched = (chimera != null && chimera.isLaunched());
 			if (!isLaunched) {
@@ -352,6 +405,9 @@ public class StructureViz extends CytoscapePlugin
 			}
 		}
 
+		/**
+		 * Align two sequences and open the resulting alignment in Chimera
+		 */
 		private void seqAlignAction(String commandLabel) {
 			List sequenceList = (List)userData;
 			// Start a new thread
@@ -359,6 +415,11 @@ public class StructureViz extends CytoscapePlugin
 			// Open resulting alignment in Chimera
 		}
 
+		/**
+		 * Compare two sequences and use the results to add or update
+		 * Cytoscape attributes on edges connecting the :w
+		 *
+		 */
 		private void seqCompareAction(String commandLabel) {
 			List sequenceList = (List)userData;
 			// Start a new thread
@@ -368,6 +429,10 @@ public class StructureViz extends CytoscapePlugin
 		}
   }
 
+	/**
+	 * Detect that a new network view has been created and add our
+	 * node context menu listener to nodes within this network
+	 */
   public void propertyChange(PropertyChangeEvent evt) {
     if ( evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED ){
       // Add menu to the context dialog
@@ -376,6 +441,11 @@ public class StructureViz extends CytoscapePlugin
     }
   }
 
+	/**
+	 * Launch UCSF Chimera and return the Chimera object
+	 *
+	 * @return the Chimera object associated with this Chimera instance
+	 */
 	private static Chimera launchChimera() {
 		Chimera chimera = null;
     // Launch Chimera
@@ -392,6 +462,12 @@ public class StructureViz extends CytoscapePlugin
 		return chimera;
 	}
 
+	/**
+	 * Create the ModelNavigatorDialog and associate the Chimera object with it
+	 *
+	 * @param chimera the Chimera object to use for Chimera interaction
+	 * @return the ModelNavigatorDialog that was created
+	 */
 	private static ModelNavigatorDialog initDialog(Chimera chimera) {
 		ModelNavigatorDialog mnDialog = new ModelNavigatorDialog(Cytoscape.getDesktop(), chimera);
 		mnDialog.pack();

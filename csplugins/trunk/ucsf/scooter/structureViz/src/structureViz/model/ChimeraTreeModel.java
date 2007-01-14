@@ -52,11 +52,25 @@ import structureViz.model.ChimeraChain;
 
 import structureViz.actions.Chimera;
 
+/**
+ * The ChimeraTreeModel class provides the underlying model
+ * for the navigation tree in the ModelNavigatorDialog.
+ *
+ * @author scooter
+ * @see ModelNavigatorDialog
+	 */
 public class ChimeraTreeModel extends DefaultTreeModel {
 	private Chimera chimeraObject;
 	private JTree navigationTree;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 
+	/**
+	 * Constructor for the ChimeraTreeModel.
+	 *
+	 * @param chimeraObject the Chimera object that this tree represents
+	 * @param tree the JTree used to display the object
+	 * @see Chimera
+	 */
 	public ChimeraTreeModel (Chimera chimeraObject, JTree tree) {
 		super(new DefaultMutableTreeNode());
 		this.chimeraObject = chimeraObject;
@@ -65,10 +79,24 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 		this.setRoot(rootNode);
 	}
 
+	/**
+	 * Set the display type for the residues.  The display type
+	 * must be one of:
+	 *
+	 *	ChimeraResidue.THREE_LETTER
+	 *	ChimeraResidue.SINGLE_LETTER
+	 *	ChimeraResidue.FULL_NAME
+	 *
+	 * @param newDisplay the display type
+	 * @see ChimeraResidue
+	 */
 	public void setResidueDisplay(int newDisplay) {
 		this.residueDisplay = newDisplay;
 	}
 		
+	/**
+	 * This method is called to rebuild the tree model "from scratch"
+	 */
 	public void reload() {
 		// First, rebuild the tree with the new data
 		DefaultMutableTreeNode rootNode = buildTree();
@@ -78,6 +106,21 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 		super.reload();
 	}
 
+	/**
+	 * Rebuild an existing tree
+	 */
+	public void rebuildTree() {
+		DefaultMutableTreeNode rootNode = buildTree();
+		DefaultTreeModel model = (DefaultTreeModel)navigationTree.getModel();
+		model.setRoot(rootNode);
+		model.reload();
+	}
+
+	/**
+	 * build the tree from the current chimera data
+	 *
+	 * @return DefaultMutableTreeNode that represents the currently loaded Chimera models
+	 */
 	private DefaultMutableTreeNode buildTree() {
 		int modelCount = chimeraObject.getChimeraModels().size();
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(modelCount+" Open Chimera Models");
@@ -99,13 +142,13 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 		return rootNode;
 	}
 
-	public void rebuildTree() {
-		DefaultMutableTreeNode rootNode = buildTree();
-		DefaultTreeModel model = (DefaultTreeModel)navigationTree.getModel();
-		model.setRoot(rootNode);
-		model.reload();
-	}
-
+	/**
+	 * add chains to a tree model
+	 *
+	 * @param chimeraModel the ChimeraModel to get the chains from
+	 * @param treeModel the tree model to add the chains to
+	 * @param treePath the tree path where the chains should be added
+	 */
 	private void addChainNodes(ChimeraModel chimeraModel, 
 														 DefaultMutableTreeNode treeModel,
 														 TreePath treePath) {
@@ -113,6 +156,7 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 		TreePath chainPath = null;
 		ChimeraChain chimeraChain = null; 
 
+		// Get the list of chains
 		Collection chainList = chimeraModel.getChains();
 
 		if (chainList.size() == 0) {
@@ -121,6 +165,8 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 			return;
 		}
 
+		// Iterate over the chains and add the chain and all of
+		// the chain's residues
 		Iterator chainIter = chainList.iterator();
 		while (chainIter.hasNext()) {
 			chimeraChain = (ChimeraChain)chainIter.next();
@@ -132,13 +178,21 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 		}
 	}
 
+	/**
+	 * add residues to a tree model
+	 *
+	 * @param residues the residues to add
+	 * @param treeModel the tree model to add the residues to
+	 * @param treePath the tree path where the residues should be added
+	 */
 	private void addResidues(Collection residues, 
 													 DefaultMutableTreeNode treeModel,
 													 TreePath treePath) {
 		DefaultMutableTreeNode residue = null;
 		TreePath residuePath = null;
-		Iterator resIter = residues.iterator();
 
+		// Iterate over all residues & add them to the tree
+		Iterator resIter = residues.iterator();
 		while (resIter.hasNext()) {
 			ChimeraResidue res = (ChimeraResidue)resIter.next();
 			res.setDisplayType(this.residueDisplay);

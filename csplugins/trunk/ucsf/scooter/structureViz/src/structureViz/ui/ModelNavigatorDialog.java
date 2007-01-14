@@ -245,9 +245,11 @@ public class ModelNavigatorDialog
 
 	public void updateSelection(List selectionList) {
 		TreePath path = null;
-		navigationTree.clearSelection();
-		Iterator selectionIter = selectionList.iterator();
 		this.ignoreSelection = true;
+		clearSelectionState();
+		navigationTree.clearSelection();
+		// Need to clear currently selected objects
+		Iterator selectionIter = selectionList.iterator();
 		while (selectionIter.hasNext()) {
 			ChimeraStructuralObject selectedObject = 
 				(ChimeraStructuralObject)selectionIter.next();
@@ -260,7 +262,8 @@ public class ModelNavigatorDialog
 		this.ignoreSelection = false;
 	}
 
-	public void clearSelectionState() {
+	private void clearSelectionState() {
+		selectedObjects.clear();
 		List models = chimeraObject.getChimeraModels();
 		if (models == null) return;
 		Iterator mIter = models.iterator();

@@ -50,27 +50,41 @@ import structureViz.model.ChimeraModel;
 
 public class ChimeraResidue implements ChimeraStructuralObject {
 
-	public static final int SINGLE_LETTER = 0;
-	public static final int THREE_LETTER = 1;
-	public static final int FULL_NAME = 2;
+	/* Constants */
+	public static final int SINGLE_LETTER = 0; // Display residues as a single letter
+	public static final int THREE_LETTER = 1; // Display residues as three letters
+	public static final int FULL_NAME = 2; // Display full residue names
 
-	private String type;
-	private String index;
-	private String chainId;
-	private int modelNumber;
-	private ChimeraModel chimeraModel;
-	private Object userData;
-	private HashMap aaNames = null;
-	private static int displayType = THREE_LETTER;
-	private boolean selected = false;
+	private String type;	// Residue type
+	private String index;	// Residue index
+	private String chainId; // ChainID for this residue
+	private int modelNumber; // model number for this residue
+	private ChimeraModel chimeraModel; // ChimeraModel thie residue is part of
+	private Object userData; // user data to associate with this residue
+	private static HashMap aaNames = null; // a map of amino acid names
+	private static int displayType = THREE_LETTER; // the current display type
+	private boolean selected = false; // the selection state
 
+	/**
+	 * Constructor to create a new ChimeraResidue
+	 *
+	 * @param type the residue type
+	 * @param index the index of the residue
+	 * @param modelNumber the model number this residue is part of
+	 */
 	public ChimeraResidue (String type, String index, int modelNumber) {
 		this.type = type;
 		this.index = index;
 		this.modelNumber = modelNumber;
-		initNames();
+		if (aaNames == null)
+			initNames();
 	}
 
+	/**
+	 * Constructor to create a new ChimeraResidue from an input line
+	 *
+	 * @param line a Chimera residue description
+	 */
 	public ChimeraResidue (String line) {
 		initNames();
 
@@ -98,21 +112,136 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 			this.index = rTokens[0];
 	}
 
+	/**
+	 * Set the selected state for this residue
+	 *
+	 * @param selected the selection state to set
+	 */
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
 
+	/**
+	 * Return the selected state of this residue
+	 *
+	 * @return the selected state
+	 */
 	public boolean isSelected() { return selected; }
 
+	/**
+	 * Return an array made up of this residue (required
+	 * for ChimeraStructuralObject interface
+	 *
+	 * @return a List with this residue as its sole member
+	 */
 	public List getChildren() { 
 		ArrayList v = new ArrayList();
 		v.add(this);
 		return v; 
 	}
 
-	private void initNames() {
+	/**
+	 * Return the string representation of this residue as follows:
+	 * 	"<i>residue_name</i> <i>index</i>" 
+	 * where <i>residue_name</i> could be either the single letter,
+	 * three letter, or full name representation of the amino acid.
+	 *
+	 * @return the string representation
+	 */
+	public String toString () {
+		if (displayType == FULL_NAME) {
+			return (toFullName(type)+" "+index);
+		} else if (displayType == SINGLE_LETTER) {
+			return (toSingleLetter(type)+" "+index);
+		} else if (displayType == THREE_LETTER) {
+			return (toThreeLetter(type)+" "+index);
+		} else {
+			return (type+" "+index);
+		}
+	}
+
+	/**
+	 * Return the Chimera specification for this Residue
+	 *
+	 * @return Chimera specification
+	 */
+	public String toSpec () {
+		if (!chainId.equals("_"))
+			return("#"+modelNumber+":"+index+"."+chainId);
+		else
+			return("#"+modelNumber+":"+index+".");
+	}
+
+	/**
+	 * Get the index of this residue
+	 *
+	 * @return residue index
+	 */
+	public String getIndex () { return this.index; }
+
+	/**
+	 * Get the chainID for this residue
+	 *
+	 * @return String value of the chainId
+	 */
+	public String getChainId () { return this.chainId; }
+
+	/**
+	 * Get the type for this residue
+	 *
+	 * @return residue type
+	 */
+	public String getType () { return this.type; }
+
+	/**
+	 * Get the model number for this residue
+	 *
+	 * @return the model number
+	 */
+	public int getModelNumber () { return this.modelNumber; }
+
+	/**
+	 * Get the model this residue is part of
+	 *
+	 * @return the ChimeraModel
+	 */
+	public ChimeraModel getChimeraModel () { return this.chimeraModel; }
+
+	/**
+	 * Set the model this residue is part of
+	 *
+	 * @param chimeraModel the ChimeraModel this model is part of
+	 */
+	public void setChimeraModel (ChimeraModel chimeraModel) { 
+		this.chimeraModel = chimeraModel; 
+	}
+
+	/**
+	 * Get the user data for this residue
+	 *
+	 * @return user data
+	 */
+	public Object getUserData () {return userData;}
+
+	/**
+	 * Set the user data for this Residue
+	 *
+	 * @param data the user data to associate with this residue
+	 */
+	public void setUserData (Object data) {
+		this.userData = data;
+	}
+
+	/**********************************************
+	 * Static routines
+	 *********************************************/
+
+	/**
+	 * Initialize the residue names
+	 */
+	private static void initNames() {
 		// Create our residue name table
-		this.aaNames = new HashMap();
+		aaNames = new HashMap();
 		aaNames.put("ALA","A Ala Alanine");
 		aaNames.put("ARG","R Arg Arginine");
 		aaNames.put("ASN","N Asn Asparagine");
@@ -139,62 +268,48 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 		aaNames.put("HOH","HOH HOH Water");
 	}
 
-	public String toString () {
-		if (displayType == FULL_NAME) {
-			return (toFullName(type)+" "+index);
-		} else if (displayType == SINGLE_LETTER) {
-			return (toSingleLetter(type)+" "+index);
-		} else if (displayType == THREE_LETTER) {
-			return (toThreeLetter(type)+" "+index);
-		} else {
-			return (type+" "+index);
-		}
-	}
-
-	public String toSpec () {
-		if (!chainId.equals("_"))
-			return("#"+modelNumber+":"+index+"."+chainId);
-		else
-			return("#"+modelNumber+":"+index+".");
-	}
-
-	public String getIndex () { return this.index; }
-
-	public String getChainId () { return this.chainId; }
-
-	public String getType () { return this.type; }
-
-	public int getModelNumber () { return this.modelNumber; }
-	public ChimeraModel getChimeraModel () { return this.chimeraModel; }
-	public void setChimeraModel (ChimeraModel chimeraModel) { 
-		this.chimeraModel = chimeraModel; 
-	}
-
+	/**
+	 * Set the display type.
+	 *
+	 * @param type the display type
+	 */
 	public static void setDisplayType (int type) {
 		displayType = type;
 	}
 
-	public Object getUserData () {return userData;}
-
-	public void setUserData (Object data) {
-		this.userData = data;
-	}
-
-	private String toFullName(String aaType) {
+	/**
+	 * Convert the amino acid type to a full name
+	 *
+	 * @param aaType the residue type to convert
+	 * @return the full name of the residue
+	 */
+	private static String toFullName(String aaType) {
 		if (!aaNames.containsKey(aaType))
 			return aaType;
 		String[] ids = ((String)aaNames.get(aaType)).split(" ");
 		return ids[2].replace('_',' ');
 	}
 
-	private String toSingleLetter(String aaType) {
+	/**
+	 * Convert the amino acid type to a single letter
+	 *
+	 * @param aaType the residue type to convert
+	 * @return the single letter representation of the residue
+	 */
+	private static String toSingleLetter(String aaType) {
 		if (!aaNames.containsKey(aaType))
 			return aaType;
 		String[] ids = ((String)aaNames.get(aaType)).split(" ");
 		return ids[0];
 	}
 
-	private String toThreeLetter(String aaType) {
+	/**
+	 * Convert the amino acid type to three letters
+	 *
+	 * @param aaType the residue type to convert
+	 * @return the three letter representation of the residue
+	 */
+	private static String toThreeLetter(String aaType) {
 		if (!aaNames.containsKey(aaType))
 			return aaType;
 		String[] ids = ((String)aaNames.get(aaType)).split(" ");
