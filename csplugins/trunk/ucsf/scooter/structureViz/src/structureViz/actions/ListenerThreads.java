@@ -80,7 +80,7 @@ class ListenerThreads extends Thread
 		// System.out.println("ReplyLogListener running");
 		while (true) {
 			try {
-				ArrayList reply = getReply();
+				List reply = getReply();
 				synchronized (replyLog) {
 					if (reply.size() > 0) {
 						replyLog.addAll(reply);

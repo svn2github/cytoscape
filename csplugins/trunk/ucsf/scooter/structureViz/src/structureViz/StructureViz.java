@@ -479,8 +479,8 @@ public class StructureViz extends CytoscapePlugin
 
 	/**
 	 * Implements addNodecontextMenuItems
-	 * @param nodeView
-	 * @param menu
+	 * @param nodeView the nodeView of the node to add our context menu to
+	 * @param pmenu the popup menu
 	 */
 	public void addNodeContextMenuItems (NodeView nodeView, JPopupMenu pmenu) {
 		if (pmenu == null) {

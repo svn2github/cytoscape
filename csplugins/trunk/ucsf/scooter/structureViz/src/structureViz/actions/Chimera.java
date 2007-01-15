@@ -187,6 +187,8 @@ public class Chimera {
 
 	/**
 	 * Test to see if we currently have a running instance of Chimera
+	 *
+	 * @return <b>true</b> if Chimera is already running
 	 */
 	public boolean isLaunched () {
 		if (chimera != null) 
@@ -196,8 +198,7 @@ public class Chimera {
     
   /**
    * Launch (start) an instance of Chimera
-   * @param pdbList
-   * @return
+   * @return "true" if the launch was successful
    * @throws IOException
  */
   public boolean launch() throws IOException {
@@ -236,9 +237,8 @@ public class Chimera {
   
   /**
    * Open a Chimera model
-   * @param pdb
-   * @param model
-   * @throws IOException
+	 *
+   * @param structure the Structure to open
    */
   public void open(Structure structure) {
 		this.command("listen stop models; listen stop selection; open "+structure.name());
@@ -274,8 +274,8 @@ public class Chimera {
 
 	/**
 	 * Close a Chimera model
-   * @param model
-   * @throws IOException
+	 *
+   * @param structure the Structure to close
 	 */
 	public void close(Structure structure) {
 		int model = structure.modelNumber();
@@ -292,6 +292,8 @@ public class Chimera {
 
 	/**
 	 * Select something in Chimera
+	 *
+	 * @param command the selection command to pass to Chimera
 	 */
 	public void select(String command) {
 		this.command("listen stop select; "+command+"; listen start select");
@@ -305,7 +307,8 @@ public class Chimera {
 
   /**
    * Send a string to the Chimera instance
-   * @param text
+	 *
+   * @param text the text to pass to Chimera
    */
   public void command(String text) {
   	if (chimera == null)
