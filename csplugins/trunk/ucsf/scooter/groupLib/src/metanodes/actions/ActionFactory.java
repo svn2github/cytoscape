@@ -26,9 +26,9 @@
  * @version %I%, %G%
  * @since 2.0
  */
-package org.isb.metanodes.actions;
-import org.isb.metanodes.model.*;
-import org.isb.metanodes.data.MetaNodeAttributesHandler;
+package csplugins.metanodes.actions;
+import csplugins.metanodes.model.*;
+import csplugins.metanodes.data.MetaNodeAttributesHandler;
 import cytoscape.*;
 import javax.swing.AbstractAction;
 import giny.model.*;

@@ -1,12 +1,10 @@
-package org.isb.metanodes.data;
+package csplugins.metanodes.data;
 
 import cytoscape.data.*;
 import giny.model.*;
 import cern.colt.map.AbstractIntIntMap;
 import cern.colt.function.IntIntProcedure;
 import java.util.*;
-
-import org.mskcc.dataservices.bio.vocab.CommonVocab;
 
 import cytoscape.*;
 

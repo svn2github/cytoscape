@@ -26,12 +26,12 @@
  * @version %I%, %G%
  * @since 2.0
  */
-package org.isb.metanodes.actions;
+package csplugins.metanodes.actions;
 import java.util.*;
-import org.isb.metanodes.model.AbstractMetaNodeModeler;
-import org.isb.metanodes.model.MetaNodeFactory;
-import org.isb.metanodes.MetaNodeUtils;
-import org.isb.metanodes.data.AbstractMetaNodeAttsHandler;
+import csplugins.metanodes.model.AbstractMetaNodeModeler;
+import csplugins.metanodes.model.MetaNodeFactory;
+import csplugins.metanodes.MetaNodeUtils;
+import csplugins.metanodes.data.AbstractMetaNodeAttsHandler;
 import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;

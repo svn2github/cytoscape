@@ -26,9 +26,9 @@
  * @version %I%, %G%
  * @since 2.0
  */
-package org.isb.metanodes.model;
+package csplugins.metanodes.model;
 
-import org.isb.metanodes.data.*;
+import csplugins.metanodes.data.*;
 import giny.model.*;
 import cytoscape.*;
 import cytoscape.data.*;
@@ -194,6 +194,8 @@ public class GPMetaNodeFactory {
 			rootNodes = new ArrayList();
 		}
 		rootNodes.add(new Integer(metaNode.getRootGraphIndex()));
+		netAttributes.setUserVisible(MetaNodeFactory.METANODES_IN_NETWORK, false);
+		netAttributes.setUserEditable(MetaNodeFactory.METANODES_IN_NETWORK, false);
 	    netAttributes.setAttributeList(cy_net.getIdentifier(),MetaNodeFactory.METANODES_IN_NETWORK,rootNodes);
         if (DEBUG) {
             System.err.println("GPMetaNodeFactory: Added metanode ID "+ metaNode.getRootGraphIndex()+" to "+cy_net.getIdentifier());
@@ -260,6 +262,8 @@ public class GPMetaNodeFactory {
             rootNodes = new ArrayList();
 		}
 		rootNodes.add( new Integer(node.getRootGraphIndex()) );
+		netAttributes.setUserVisible(MetaNodeFactory.METANODES_IN_NETWORK, false);
+		netAttributes.setUserEditable(MetaNodeFactory.METANODES_IN_NETWORK, false);
 		netAttributes.setAttributeList(cy_net.getIdentifier(),MetaNodeFactory.METANODES_IN_NETWORK,rootNodes);
     }
 

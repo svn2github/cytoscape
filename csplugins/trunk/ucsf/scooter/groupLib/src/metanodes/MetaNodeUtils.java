@@ -21,14 +21,14 @@
  **  along with this program; if not, write to the Free Software
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
-package org.isb.metanodes;
+package csplugins.metanodes;
 
 import java.util.*;
 import giny.model.RootGraph;
-import org.isb.metanodes.data.MetaNodeAttributesHandler;
-import org.isb.metanodes.model.AbstractMetaNodeModeler;
-import org.isb.metanodes.model.MetaNodeFactory;
-import org.isb.metanodes.model.MetaNodeModelerFactory;
+import csplugins.metanodes.data.MetaNodeAttributesHandler;
+import csplugins.metanodes.model.AbstractMetaNodeModeler;
+import csplugins.metanodes.model.MetaNodeFactory;
+import csplugins.metanodes.model.MetaNodeModelerFactory;
 import cytoscape.*;
 import cytoscape.data.*;
 

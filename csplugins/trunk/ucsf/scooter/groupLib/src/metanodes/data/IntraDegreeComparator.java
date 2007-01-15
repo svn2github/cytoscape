@@ -23,7 +23,7 @@
  **/
 
 //TODO: RootGraph does not have getConnectingEdgeIndicesArray, need it in method countIntraDegrees()
-package org.isb.metanodes.data;
+package csplugins.metanodes.data;
 
 import giny.model.RootGraph;
 import java.util.Comparator;

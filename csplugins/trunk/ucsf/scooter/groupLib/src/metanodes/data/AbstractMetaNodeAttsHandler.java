@@ -25,7 +25,7 @@
 //TODO: Implement removeFromAttributes()
 //TODO: Imeplemnt removeMetaEdgesFromAttributes()
 
-package org.isb.metanodes.data;
+package csplugins.metanodes.data;
 
 import java.util.*;
 import cytoscape.*;
@@ -34,7 +34,7 @@ import cytoscape.view.*;
 import cytoscape.visual.*;
 import cern.colt.map.*;
 import giny.view.*;
-import org.isb.metanodes.model.MetaNodeFactory;
+import csplugins.metanodes.model.MetaNodeFactory;
 
 /**
  * Specialized version of SimpleMetaNodeAttributesHandler.<br>
@@ -220,14 +220,20 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    	 	double diameter = 2 * Math.sqrt(area/Math.PI);
    	 	String diameterAsString = new Double(diameter).toString();
 	
+		nodeAtts.setUserVisible(NodeAppearanceCalculator.nodeWidthBypass,false);
+		nodeAtts.setUserEditable(NodeAppearanceCalculator.nodeWidthBypass,false);
    		nodeAtts.setAttribute(node.getIdentifier(),
    	   	     NodeAppearanceCalculator.nodeWidthBypass,
    	   	     diameterAsString);
+		nodeAtts.setUserVisible(NodeAppearanceCalculator.nodeHeightBypass,false);
+		nodeAtts.setUserEditable(NodeAppearanceCalculator.nodeHeightBypass,false);
    		nodeAtts.setAttribute(node.getIdentifier(),
       	     NodeAppearanceCalculator.nodeHeightBypass,
       	     diameterAsString);
 	}
 
+	nodeAtts.setUserVisible(MetaNodeFactory.METANODES_CHILDREN, false);
+	nodeAtts.setUserEditable(MetaNodeFactory.METANODES_CHILDREN, false);
 	nodeAtts.setAttribute(node.getIdentifier(),
 				MetaNodeFactory.METANODES_CHILDREN, new Integer(children.size()));
 

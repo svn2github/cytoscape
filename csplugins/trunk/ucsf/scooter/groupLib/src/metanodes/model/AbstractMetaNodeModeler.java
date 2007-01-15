@@ -22,8 +22,8 @@
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
 
-package org.isb.metanodes.model;
-import org.isb.metanodes.MetaNodeUtils;
+package csplugins.metanodes.model;
+import csplugins.metanodes.MetaNodeUtils;
 
 import java.util.*;
 import java.lang.*;
@@ -32,10 +32,10 @@ import giny.model.*;
 import giny.view.*;
 import cytoscape.*;
 import cytoscape.view.*;
-import cytoscape.layout.LayoutUtils;
 import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
-import org.isb.metanodes.data.MetaNodeAttributesHandler;
+import csplugins.metanodes.data.MetaNodeAttributesHandler;
+import csplugins.layout.algorithms.StackedNodeLayout;
 import cern.colt.list.IntArrayList;
 import cern.colt.list.ObjectArrayList;
 import cern.colt.map.AbstractIntIntMap;
@@ -467,6 +467,8 @@ public class AbstractMetaNodeModeler {
 		}
 
 		CyAttributes cyNodeAttributes = Cytoscape.getNodeAttributes();
+		cyNodeAttributes.setUserVisible(MetaNodeFactory.METANODES_HINTS, false);
+		cyNodeAttributes.setUserEditable(MetaNodeFactory.METANODES_HINTS, false);
 		if (minX > 0.0 && minY > 0.0 ) {
 			// Update the __metanodeHints attribute
 			for (int i = 0; i < descendantsIndices.length; i++) {
@@ -781,7 +783,7 @@ public class AbstractMetaNodeModeler {
 
 		if (!foundPos || !diffPos) {
 			// Don't have any position hints -- use the stack approach
-	    	if(childrenRindices.length > 0) LayoutUtils.layoutNodesInAStack(networkView,childNodes,metaX,metaY);
+	    	if(childrenRindices.length > 0) StackedNodeLayout.layoutNodesInAStack(networkView,childNodes,metaX,metaY);
 		}
 
 		profile_mark(startOfUndo,"undoModel time = ");

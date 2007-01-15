@@ -27,7 +27,7 @@
  * @since 2.0
  */
 
-package org.isb.metanodes.data;
+package csplugins.metanodes.data;
 import java.util.ArrayList;
 
 import cytoscape.CyNetwork;

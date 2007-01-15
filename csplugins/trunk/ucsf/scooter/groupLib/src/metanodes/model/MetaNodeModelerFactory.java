@@ -22,10 +22,10 @@
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
 
-package org.isb.metanodes.model;
+package csplugins.metanodes.model;
 import giny.model.RootGraph;
 import cytoscape.*;
-import org.isb.metanodes.data.*;
+import csplugins.metanodes.data.*;
 /**
  * A class that contains all the meta-node modelers (implementations of metaNodeViewer.model.GPMetaNodeModel) for Cytoscape. 
  * In most cases, a single modeler per/Cytoscape is needed, so most modeler's constructors are protected, 

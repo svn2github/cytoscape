@@ -211,7 +211,7 @@ public class GroupManager {
 	 */
 	public static CyNetwork getGroupMembers(CyNode group_node)
 	{
-		return (List) null;
+		return (CyNetwork) null;
 	}
 
 	/**
