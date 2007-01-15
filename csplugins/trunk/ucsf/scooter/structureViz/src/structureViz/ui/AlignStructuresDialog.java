@@ -69,6 +69,11 @@ import structureViz.actions.CyChimera;
 import structureViz.actions.Chimera;
 import structureViz.actions.Align;
 
+/**
+ * The AlignStructuresDialog is the dialog displayed to the user to allow them
+ * to select a reference structure, all of the structures to align to that
+ * reference structure, and the options controlling the alignment
+ */
 public class AlignStructuresDialog extends JDialog implements ActionListener {
 	// Instance variables
 	Chimera chimeraObject;
@@ -88,6 +93,13 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 	// Models
 	private AlignmentTableModel tableModel;
 
+	/**
+	 * Create an AlignStructuresDialog
+	 *
+	 * @param parent the Frame acting as the parent of this Dialog
+	 * @param object the Chimera interface object
+	 * @param structures the List of structures open in Chimera
+	 */
 	public AlignStructuresDialog (Frame parent, Chimera object, List structures) {
 		super(parent, false);
 		chimeraObject = object;
@@ -96,16 +108,31 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 		status = false;
 	}
 
+	/**
+	 * Set the reference structure for the pairwise alignments
+	 *
+	 * @param ref the Structure that will act as the reference structure
+	 */
 	public void setReferenceStruct(Structure ref) {
 		this.referenceStruct = ref;
 		// update the table model
 		tableModel.setReferenceStruct(this.referenceStruct.name());
 	}
 
+	/**
+	 * This method is called to set the <b>enabled</b> state of the
+	 * align button.  We only want to enable this button when we have
+	 * a reference structure and at least one structure to align to it.
+	 *
+	 * @param value "true" to enable the button, "false" to disable it
+	 */
 	public void setAlignEnabled(boolean value) {
 		if (alignButton != null) alignButton.setEnabled(value);
 	}
 
+	/**
+	 * Initialize all of the graphical components of the dialog
+	 */
 	private void initComponents() {
 		this.setTitle("Cytoscape/Chimera Structure Alignment Dialog");
 
@@ -174,6 +201,13 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 		setContentPane(dataPanel);
 	}
 	
+	/**
+	 * Return an array of objects that represent a List of structures, with the
+	 * first element being a String that indicates that nothing is selected.
+	 *
+	 * @param structures a List of structures to be included in the menu
+	 * @return an array of Objects to be used in a menu
+	 */
 	private Object[] structureList(List structures) {
 		Object[] structureList = new Object[structures.size()+1];
 		Iterator iter = structures.iterator();
@@ -186,6 +220,9 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 		return structureList;
 	}
 
+	/**
+	 * The method called to actually execute the command.
+	 */
 	public void actionPerformed(ActionEvent e) {
 		if ("done".equals(e.getActionCommand())) {
 			setVisible(false);

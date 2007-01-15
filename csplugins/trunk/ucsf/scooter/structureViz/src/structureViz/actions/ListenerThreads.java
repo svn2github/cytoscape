@@ -57,6 +57,13 @@ class ListenerThreads extends Thread
 	private Process chimera = null;
 	private List replyLog = null;
 
+	/**
+	 * Create a new listener thread to read the responses from Chimera
+	 *
+	 * @param chimera a handle to the Chimera Process
+	 * @param log a handle to a List to post the responses to
+	 * @param chimeraObject a handle to the Chimera Object
+	 */
 	ListenerThreads(Process chimera, List log, Chimera chimeraObject) {
 		this.chimera = chimera;
 		this.replyLog = log;
@@ -66,6 +73,9 @@ class ListenerThreads extends Thread
 		lineReader = new BufferedReader(new InputStreamReader(readChan));
 	}
 
+	/**
+	 * Start the thread running
+	 */
 	public void run() {
 		// System.out.println("ReplyLogListener running");
 		while (true) {
@@ -84,9 +94,11 @@ class ListenerThreads extends Thread
 	}
 
   /**
-	  * Read input from Chimera
+	 * Read input from Chimera
+	 *
+	 * @return a List containing the replies from Chimera
    */
-   private ArrayList getReply() throws IOException {
+   private List getReply() throws IOException {
  	 	if (chimera == null)
  	 		return null;
 

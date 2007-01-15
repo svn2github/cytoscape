@@ -55,7 +55,8 @@ import structureViz.actions.Chimera;
 
 /**
  * This class implements all of the actions for the popup menu as well
- * as providing the MouseListener itself.
+ * as providing the MouseListener itself. This is used to implement the
+ * context menu in the ModelNavigatorDialog.
  */
 
 public class ActionPopupMenu extends JPopupMenu {
@@ -72,6 +73,16 @@ public class ActionPopupMenu extends JPopupMenu {
 	public static final int CHAIN_CONTEXT = 3;
 	public static final int RESIDUE_CONTEXT = 4;
 
+	/**
+	 * Create a new ActionPopupMenu
+	 *
+	 * @param co the Chimera interface object
+	 * @param tree the JTree we are adding the context menu to
+	 * @param models the List of selected ChimeraModels
+	 * @param chains the List of selected ChimeraChains
+	 * @param residues the List of selected ChimeraResidues
+	 * @param context the context of the selection
+	 */
 	public ActionPopupMenu (Chimera co, JTree tree, List models,
 													List chains, List residues, int context) 
 	{
@@ -101,6 +112,9 @@ public class ActionPopupMenu extends JPopupMenu {
 		}
 	}
 
+	/**
+	 * Create the Generic context menu
+	 */
 	private void createGenericMenu() {
 		addHeader("Generic Actions");
 		JMenu submenu = null;
@@ -193,6 +207,9 @@ public class ActionPopupMenu extends JPopupMenu {
 		addItem(null, "Delete selection", "listen stop select; delete %sel; listen start select", PopupActionListener.DELETE);
 	}
 
+	/**
+	 * Create the model menu
+	 */
 	private void createModelMenu() { 
 		addHeader("Model Actions");
 		addItem(null, "Close model(s)", null,PopupActionListener.CLOSE);
@@ -210,20 +227,39 @@ public class ActionPopupMenu extends JPopupMenu {
 		return; 
 	}
 
+	/**
+	 * Create the chain menu (at this point, there aren't any special chain menu items)
+	 */
 	private void createChainMenu() { 
 		return; 
 	}
 
+	/**
+	 * Create the residue menu (at this point, there aren't any special residue menu items)
+	 */
 	private void createResidueMenu() { return; }
 
+	/**
+	 * Add a header to the menu
+	 *
+	 * @param header the String to use as the header
+	 */
 	private void addHeader(String header) {
-    // XXX Change this to use dk gray background instead of separators 
 		JMenuItem item = new JMenuItem(header);
 		item.setBackground(Color.gray);
 		item.setForeground(Color.white);
 		add(item);
 	}
 
+	/**
+	 * Add a menu item to a menu
+	 *
+	 * @param menu the menu to add this item to
+	 * @param text the label for the menu item
+	 * @param command the command to execute when selected
+	 * @param postCommand a flag to indicate which post command to process (if any)
+	 * @return the JMenuItem that was created
+	 */
 	private JMenuItem addItem(JMenu menu, String text, String command, int postCommand) {
 		JMenuItem item = new JMenuItem(text);
 		item.addActionListener(new PopupActionListener(command,postCommand));
@@ -234,6 +270,15 @@ public class ActionPopupMenu extends JPopupMenu {
 		return item;
 	}
 
+	/**
+	 * Add a color menu to a menu.  This is essentially a special version of addMenuItem that
+	 * puts up a color list to choose from.
+	 *
+	 * @param menu the menu to add the color list to
+	 * @param text the name of the item in the menu
+	 * @param prefix the prefix to use to pass this command to Chimera
+	 * @param suffix the suffix to use to pass this command to Chimera
+	 */
 	private void addColorMenu(JMenu menu, String text, String prefix, String suffix) {
 		String[] colorList = {"red", "orange red", "orange", "yellow", "green", "forest green",
 													"cyan", "light sea green", "blue", "cornflower blue", "medium blue",
@@ -271,16 +316,53 @@ public class ActionPopupMenu extends JPopupMenu {
 		menu.add(colorMenu);
 	}
 
+	/**
+	 * This ActionListener is used to listen for commands selected from the 
+	 * ModelNavigator popup menu
+	 */
 	private class PopupActionListener implements ActionListener {
 		String[] commandList;
+
+		/**
+		 * The post processing commands
+		 */
+
+		/**
+	 	 * No post processing
+		 */
 		public static final int NO_POST = 0;
+
+		/**
+	 	 * Clear the selection after executing the command
+		 */
 		public static final int CLEAR_SELECTION = 1;
+
+		/**
+	 	 * Close the selected model after executing the command
+		 */
 		public static final int CLOSE = 2;
+
+		/**
+	 	 * Special post processing for model selection
+		 */
 		public static final int MODEL_SELECTION = 3;
+
+		/**
+	 	 * Special post processing for functional residue selection
+		 */
 		public static final int FUNCTIONAL_RESIDUES = 4;
+
+		/**
+	 	 * Deleted the selected model after executing the command
+		 */
 		public static final int DELETE = 5;
 		int postCommand = NO_POST;
 
+		/**
+		 * Create an ActionListener with only the command to execute
+		 *
+		 * @param command the command to execute
+		 */
 		PopupActionListener (String command) {
 			commandList = command.split("\n");
 			if (commandList.length == 0) {
@@ -290,6 +372,12 @@ public class ActionPopupMenu extends JPopupMenu {
 			this.postCommand = 0;
 		}
 
+		/**
+		 * Create an ActionListener with only the command to execute
+		 *
+		 * @param command the command to execute
+		 * @param postCommand the post processing command to execute
+		 */
 		PopupActionListener (String command, int postCommand) {
 			// We need to be a little careful.  If the context is not generic,
 			// then the object might not be selected.  To make things easy,
@@ -322,6 +410,11 @@ public class ActionPopupMenu extends JPopupMenu {
 			}
 		}
 
+		/**
+		 * Execute the actual command and process the post command
+		 *
+		 * @param ev the ActionEvent (not used)
+		 */
 		public void actionPerformed(ActionEvent ev) {
 			// Special case for chemistry selection commands
 			if (postCommand == MODEL_SELECTION) {

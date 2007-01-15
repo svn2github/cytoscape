@@ -56,11 +56,32 @@ import structureViz.model.Structure;
 import structureViz.model.ChimeraModel;
 
 
+/**
+ * The Align class provides the interface to Chimera for processing
+ * requests to align structures.
+ */
 public class Align {
 	private static final String[] attributeKeys = {"RMSD","AlignmentScore","AlignedResidues"};
+
+	/**
+	 * Array offset to the RMSD result
+	 */
 	public static final int RMSD = 0;
+
+	/**
+	 * Array offset to the Alignment Score result
+	 */
 	public static final int SCORE = 1;
+
+	/**
+	 * Array offset to the number of aligned pairs result
+	 */
 	public static final int PAIRS = 2;
+
+	/**
+	 * The name of the Cytoscape interaction type to use if
+	 * we're asked to create an edge with the results
+	 */
 	public static final String structureInteraction = "structuralSimilarity";
 	private Chimera chimeraObject = null;
 	private HashMap results = null;
@@ -68,20 +89,57 @@ public class Align {
 	private boolean showSequence = false;
 	private boolean createNewEdges = true;
 
+	/**
+	 * Create a new Align object
+	 *
+	 * @param chimeraObject the Chimera interface object that provides our link
+	 * to Chimera
+	 */
   public Align(Chimera chimeraObject) { 
 		this.chimeraObject = chimeraObject;
 	}
 
+	/**
+	 * Set the flag that tells us whether to create an edge based on the results
+	 * or not.
+	 *
+	 * @param val the flag to set
+	 */
 	public void setCreateEdges(boolean val) { this.createEdges = val; };
 
+	/**
+	 * Set the flag that tells us whether to create a new edge based on the results
+	 * or not.
+	 *
+	 * @param val the flag to set
+	 */
 	public void setCreateNewEdges(boolean val) { this.createNewEdges = val; };
 
+	/**
+	 * Set the flag that tells us whether to show the sequence results when
+	 * an alignment is performed.
+	 *
+	 * @param val the flag to set
+	 */
 	public void setShowSequence(boolean val) { this.showSequence = val; };
 
+	/**
+	 * Get the results
+	 *
+	 * @param modelName the name of the model to return the results for
+	 * @return the array of 3 float results
+	 */
 	public float[] getResults(String modelName) {
 		return (float [])results.get(modelName);
 	}
 
+	/**
+	 * This method calls Chimera to perform a pairwise alignment
+	 * between the <i>reference</i> model and all other currently
+	 * open Chimera models.
+	 *
+	 * @param reference the reference model
+	 */
 	public void alignAll(ChimeraModel reference) {
 		List modelList = chimeraObject.getChimeraModels();
 		ArrayList matchList = new ArrayList();
@@ -97,6 +155,13 @@ public class Align {
 			setAllAttributes(reference, matchList);
 	}
 
+	/**
+	 * This method calls Chimera to perform a pairwise alignment
+	 * between the <i>reference</i> model and a List of models.
+	 *
+	 * @param reference the reference model
+	 * @param models a List of ChimeraModels to align to the reference
+	 */
 	public void align(ChimeraModel reference, List models) {
 		results = new HashMap();
 
@@ -111,7 +176,15 @@ public class Align {
 			setAllAttributes(reference, models);
 	}
 
-	// Special version for calling from the command menu
+	/**
+	 * This method calls Chimera to perform a pairwise alignment
+	 * between the <i>reference</i> model expressed as a Structure
+	 * and a List of Structures.  This is a special version to be 
+	 * called from the command menu.
+	 *
+	 * @param refStruct the reference model expressed as a Structure
+	 * @param structures a List of Structures to align to the reference
+	 */
 	public void align(Structure refStruct, List structures) {
 		results = new HashMap();
 		ArrayList modelList = new ArrayList();
@@ -129,6 +202,13 @@ public class Align {
 			setAllAttributes(reference, modelList);
 	}
 
+	/**
+	 * Ask Chimera to align a single ChimeraModel to a reference ChimeraModel
+	 *
+	 * @param reference the ChimeraModel to use as a reference model
+	 * @param match the ChimeraModel to align to the reference
+	 * @return an Iterator over the results
+	 */
 	private Iterator singleAlign(ChimeraModel reference, ChimeraModel match) {
 		String command = "matchmaker "+reference.toSpec()+" "+match.toSpec();
 		if (showSequence) {
@@ -137,6 +217,13 @@ public class Align {
 		return chimeraObject.commandReply(command);
 	}
 
+	/**
+	 * Parse the results returned by <b>singleAlign</b> and return an array of
+	 * 3 floats with the results of an alignment.
+	 *
+	 * @param lineIter the iterator over the lines of responses from Chimera
+	 * @return the array of floats containing the results from a single alignment
+	 */
 	private float[] parseResults(Iterator lineIter) {
 		float[] results = new float[3];
 		int index = -1;
@@ -156,6 +243,14 @@ public class Align {
 		return results;
 	}
 
+	/**
+	 * This method is used to set all of the Cytoscape edge attributes 
+	 * resulting from a series of alignments.
+	 *
+	 * @param source the ChimeraModel representing the source of the edge
+	 * (the reference structure)
+	 * @param targetList the list of targets (aligned structures)
+	 */
 	private void setAllAttributes(ChimeraModel source, List targetList) {
 		Iterator targetIter = targetList.iterator();
 		while (targetIter.hasNext()) {
@@ -165,6 +260,12 @@ public class Align {
 		}
 	}
 
+	/**
+	 *
+	 * @param results the results values to assign to the edge as attributes
+	 * @param from the ChimeraModel that represents the CyNode to use as the source of the edge
+	 * @param to the ChimeraModel that represents the CyNode to use as the destination of the edge
+	 */
 	private void setEdgeAttributes(float[] results, ChimeraModel from, ChimeraModel to) {
 		CyNetwork network = chimeraObject.getNetworkView().getNetwork();
 		CyNode source = from.getStructure().node();

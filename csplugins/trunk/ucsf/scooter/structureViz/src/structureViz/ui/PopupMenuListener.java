@@ -52,10 +52,20 @@ import structureViz.model.ChimeraTreeModel;
 import structureViz.ui.ActionPopupMenu;
 import structureViz.actions.Chimera;
 
+/**
+ * This class is used to implement the listener for the
+ * context menu on the ModelNavigatorDialog
+ */
 class PopupMenuListener implements MouseListener {
 	JTree navigationTree;
 	Chimera chimeraObject;
 
+	/**
+	 * Create a new PopupMenuListener
+	 *
+	 * @param object the Chimera object
+	 * @param tree the JTree to put this menu listener on
+	 */
 	public PopupMenuListener(Chimera object, JTree tree) {
 		this.navigationTree = tree;
 		this.chimeraObject = object;
@@ -65,16 +75,31 @@ class PopupMenuListener implements MouseListener {
 	public void mouseClicked(MouseEvent ev) {return;}
 	public void mouseExited(MouseEvent ev) {return;}
 
+	/**
+	 * Process a mouse pressed event
+	 *
+	 * @param ev the MouseEvent that triggered this event
+	 */
 	public void mousePressed(MouseEvent ev) {
 		if (ev.isPopupTrigger())
 			createPopupMenu(ev);
 	}
 
+	/**
+	 * Process a mouse released event
+	 *
+	 * @param ev the MouseEvent that triggered this event
+	 */
 	public void mouseReleased(MouseEvent ev) {
 		if (ev.isPopupTrigger())
 			createPopupMenu(ev);
 	}
 
+	/**
+	 * Create the popup menu
+	 *
+	 * @param ev the MouseEvent that triggered the popup menu
+	 */
 	private void createPopupMenu(MouseEvent ev) {
 		// Create our popup menu -- depends on what's selected.  If we
 		// have things selected at multiple levels of the hierarchy, see

@@ -70,6 +70,10 @@ import structureViz.actions.CyChimera;
 import structureViz.actions.Chimera;
 import structureViz.ui.PopupMenuListener;
 
+/**
+ * The ModelNavigatorDialog class is the class that implements the main interface for
+ * structureViz.
+ */
 public class ModelNavigatorDialog 
 			extends JDialog 
 			implements TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener {
@@ -95,6 +99,13 @@ public class ModelNavigatorDialog
 	private ChimeraTreeModel treeModel;
 	private JMenuItem alignMenu;
 
+	/**
+	 * Create a new ModelNavigatorDialog.
+	 *
+	 * @param parent the Frame that acts as a parent for the dialog
+	 * @param object the Chimera interface object associated with
+	 * this dialog
+	 */
 	public ModelNavigatorDialog (Frame parent, Chimera object) {
 		super(parent, false);
 		chimeraObject = object;
@@ -103,6 +114,10 @@ public class ModelNavigatorDialog
 		selectedObjects = new ArrayList();
 	}
 
+	/**
+	 * Call this method when something significant has changed in the model
+	 * such as a new model opened or closed
+	 */
 	public void modelChanged() {
 		// Something significant changed in the model (new open/closed structure?)
 		ignoreSelection = true;
@@ -118,6 +133,11 @@ public class ModelNavigatorDialog
 		ignoreSelection = false;
 	}
 
+	/**
+	 * This method is called when a tree is expanded
+	 *
+	 * @param e the TreeExpansionEvent
+	 */
 	public void treeExpanded(TreeExpansionEvent e) {
 		TreePath ePath = e.getPath();
 		// Get the path we are expanding
@@ -145,6 +165,11 @@ public class ModelNavigatorDialog
 		}
 	}
 
+	/**
+	 * This method is called when a tree is collapsed
+	 *
+	 * @param e the TreeExpansionEvent
+	 */
 	public void treeCollapsed(TreeExpansionEvent e) {
 		// Sort of a hack.  By default when a tree is collapsed, 
 		// the selection passes to the parent.  We don't what to 
@@ -169,6 +194,11 @@ public class ModelNavigatorDialog
 		}
 	}
 
+	/**
+	 * This method is called before the tree is actually collapsed
+	 *
+	 * @param e the TreeExpansionEvent
+	 */
 	public void treeWillCollapse(TreeExpansionEvent e) 
 			throws ExpandVetoException {
 		TreePath path = e.getPath();
@@ -179,10 +209,20 @@ public class ModelNavigatorDialog
 		return;
 	}
 
+	/**
+	 * This method is called before the tree is actually expanded
+	 *
+	 * @param e the TreeExpansionEvent
+	 */
 	public void treeWillExpand(TreeExpansionEvent e) throws ExpandVetoException {
 		return;
 	}
 
+	/**
+	 * This method is called when a path in the tree is selected or deselected
+	 *
+	 * @param e the TreeSelectionsionEvent
+	 */
 	public void valueChanged(TreeSelectionEvent e) {
 
 		// System.out.println("TreeSelectionEvent: "+e);
@@ -243,6 +283,12 @@ public class ModelNavigatorDialog
 												 						chimeraObject.getChimeraModels());
 	}
 
+	/**
+	 * This method is called to update the selected items in the navigation
+	 * tree.
+	 *
+	 * @param selectionList the List of ChimeraStructuralObjects to be selected
+	 */
 	public void updateSelection(List selectionList) {
 		TreePath path = null;
 		this.ignoreSelection = true;
@@ -262,6 +308,12 @@ public class ModelNavigatorDialog
 		this.ignoreSelection = false;
 	}
 
+	/**
+	 * This method is called to clear the selection state of
+	 * all ChimeraStructuralObjects.  It is accomplished by
+	 * iterating over all models and recursively decending
+	 * through the chains to the residues.
+	 */
 	private void clearSelectionState() {
 		selectedObjects.clear();
 		List models = chimeraObject.getChimeraModels();
@@ -287,6 +339,14 @@ public class ModelNavigatorDialog
 		}
 	}
 
+	/**
+	 * This method determines if a given ChimeraStructuralObject has
+	 * any selected children.
+	 *
+	 * @param obj the ChimeraStructuralObject to test
+	 * @return "true" if <b>obj</b> is selected itself or has 
+	 * any selected children
+	 */
 	public boolean hasSelectedChildren(ChimeraStructuralObject obj) {
 		if (obj.isSelected()) {
 			return true;
@@ -303,7 +363,14 @@ public class ModelNavigatorDialog
 		return false;
 	}
 
-	// Private methods
+	/*************************************************
+	 *                Private methods                *
+	 *************************************************/
+
+	/**
+	 * This method initializes all of the graphical components
+	 * in the dialog.
+	 */
 	private void initComponents() {
 		int modelCount = chimeraObject.getChimeraModels().size();
 		this.setTitle("Cytoscape Molecular Structure Navigator");
@@ -374,6 +441,15 @@ public class ModelNavigatorDialog
 		setContentPane(treeView);
 	}
 
+	/**
+	 * Add a menu item to a menu
+	 *
+	 * @param menu the menu to add the item to
+	 * @param label the label for the menu
+	 * @param type the command type
+	 * @param command the command to execute when this item is selected
+	 * @return the JMenuItem that was created
+	 */
 	private JMenuItem addMenuItem (JMenu menu, String label, 
 																	int type, String command) {
 		JMenuItem menuItem = new JMenuItem(label);
@@ -386,15 +462,32 @@ public class ModelNavigatorDialog
 	}
 
 	// Embedded classes
+
+	/**
+ 	 * The MenuActionListener class is used to attach a listener
+	 * to menu items to handle commands
+	 */
 	private class MenuActionListener extends AbstractAction {
 		int type;
 		String command = null;
 
+		/**
+	 	 * Create a new MenuActionListener
+		 *
+		 * @param type the listener type (COMMAND, CLEAR, EXIT, REFRESH, ALIGN,
+		 * or the residue display type
+		 * @param command the command to execute when this menu is selected
+		 */
 		public MenuActionListener (int type, String command) { 
 			this.type = type; 
 			this.command = command;
 		}
 
+		/**
+		 * This method is called when a menu item is selected
+		 *
+		 * @param ev the ActionEvent for this
+		 */
 		public void actionPerformed(ActionEvent ev) {
 			if (type == COMMAND) {
 				chimeraObject.select(command);
@@ -419,6 +512,9 @@ public class ModelNavigatorDialog
 			modelChanged();
 		}
 
+		/**
+		 * Create and instantiate the align dialog
+		 */
 		private void launchAlignDialog()
 		{
 			AlignStructuresDialog alDialog;
@@ -442,11 +538,26 @@ public class ModelNavigatorDialog
 		}
 	}
 
+	/**
+	 * The ObjectRenderer class is used to provide special rendering
+	 * capabilities for each row of the tree.  We use this to provide
+	 * a colored border around the model rows of the tree that matches
+	 * the Chimera model color and to set the color of collapsed models
+	 * and chains that have selected children.
+	 */
 	private class ObjectRenderer extends DefaultTreeCellRenderer {
 
+		/**
+		 * Create a new ObjectRenderer
+		 */
 		public ObjectRenderer() {
 		}
 
+		/**
+		 * This is the method actually called to render the tree cell
+		 *
+		 * @see DefaultTreeCellRenderer
+		 */
 		public Component getTreeCellRendererComponent( JTree tree, Object value,
 																									boolean sel, boolean expanded,
 																									boolean leaf, int row, 
