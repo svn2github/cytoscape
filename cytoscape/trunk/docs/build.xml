@@ -5,6 +5,7 @@
 	<property name="docbook-xsl" value="docbook-xsl-1.70.1"/>
 	<property name="xsl" value="${basedir}/xsl/${docbook-xsl}"/>
 	<property name="xep.home" value="/cellar/users/mes/XEP"/>
+	<property name="version" value="2.4.0"/>
 
         <!-- ick -->
 	<available file="images/cyto-logo-smaller.gif" type="file" property="images-exist"/>
@@ -148,17 +149,18 @@
 					<replaceregex pattern='/cgi-bin/moin.cgi/Cytoscape_User_Manual\S+target=' 
 					              replace='images/' 
 						      flags="g"/>
+					<replacestring from="&amp;amp;#8592;" to="&amp;#8592;" />
+					<replacestring from="&amp;amp;#8593;" to="&amp;#8593;" />
 					<replacestring from="&amp;amp;#8594;" to="&amp;#8594;" />
+					<replacestring from="&amp;amp;#8595;" to="&amp;#8595;" />
 					<replacestring from="@version@" to="${version}" />
 					<!-- this gets links -->
 					<replacestring from="/cgi-bin/moin.cgi" 
 					               to="http://cytoscape.org/cgi-bin/moin.cgi"/>
-					<!-- this forces the images to scale -->
-					<replacestring from="imagedata fileref" 
-					               to="imagedata scaletofit='1' width='100%' fileref"/>
 				</tokenfilter>
        		 	</filterchain>
 		</copy>
+
 
 		<!-- Add id to section elements -->
 		<xslt classpathref="classpath"
@@ -194,9 +196,22 @@
 		if="xep-exists" 
 		unless="pdf-up-to-date">
 
+		<!-- so that images scale correctly 
+		<copy file="manual.xml" 
+		      tofile="manual_pdf.xml" 
+		      overwrite="yes">
+       		 	<filterchain>
+				<tokenfilter>
+					<replacestring from="imagedata fileref" 
+					               to="imagedata scaletofit='1' width='100%' fileref"/>
+				</tokenfilter>
+       		 	</filterchain>
+		</copy>
+		-->
+
 		<!-- transform the manual to fo -->
 		<xslt classpathref="classpath"
-		      in="manual.xml"
+		      in="manual_pdf.xml"
 		      out="manual.fo"
 		      style="${xsl}/fo/docbook.xsl"/>
 
