@@ -42,7 +42,7 @@ import javax.swing.*;
 
 public class HelpContactHelpDeskAction extends AbstractAction {
 
-	private String helpDeskURL = "http://groups.google.com/group/cytoscape-helpdesk";
+	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
 	
 	public HelpContactHelpDeskAction() {
 		super("Contact Help Desk");
