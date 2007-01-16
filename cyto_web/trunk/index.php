@@ -101,9 +101,36 @@
 										New features include:	
 											<br>
 											<ul>
-												<li>list features here...</li>
+
+		<li> Publication quality image generation. 
+			<ul>
+		    <li> Node label position adjustment.</li>
+		    <li> Automatic Visual Legend generator.</li>
+		    <li> Node position fine-tuning by arrow keys.</li>
+		    <li> The ability to override selected VizMap settings. </li>
+			</ul></li>
+
+
+		<li>Quick Find plugin.</li>
+		<li>New icons for a cleaner user interface.</li>
+		<li>Consolidated network import capabilities.</li>
+			<ul>
+		    <li> Import network from remote data sources (through http or ftp).</li>
+		    <li> Default support for the following file formats: SBML, BioPAX, PSI-MI, Delimited text, Excel.</li>
+			</ul></li>
+
+		<li>New Ontology Server. 
+
+			<ul>
+		    <li> Native support for OBO format ontology files. </li>
+		    <li> Ability to visualize the ontology tree as a network (DAG).</li>
+		    <li> Full support for Gene Association files. </li>
+			</ul></li>
+
+		<li>Support for Java SE 5</li>
+		<li> Many, many bug fixes! </li>
 											</ul>
-											See the <a HREF="cyto_2_4_features.php">Release Notes</a> for mor detail.
+											See the <a HREF="cyto_2_4_features.php">Release Notes</a> for more detail.
 										</td>
 										<td valign="top">
 											<A HREF="screenshots/cytoscapeMainWindowv2_4.png">
