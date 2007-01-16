@@ -43,6 +43,7 @@
 package cytoscape.data;
 
 //---------------------------------------------------------------------------
+
 import giny.filter.Filter;
 import giny.model.Edge;
 import giny.model.GraphPerspective;
@@ -95,10 +96,10 @@ import java.util.Set;
  */
 public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 
-	GraphPerspective graph;
-	Set<Node> selectedNodes = new HashSet<Node>();
-	Set<Edge> selectedEdges = new HashSet<Edge>();
-	List listeners = new ArrayList();
+	private GraphPerspective graph;
+	private Set<Node> selectedNodes = new HashSet<Node>();
+	private Set<Edge> selectedEdges = new HashSet<Edge>();
+	private List listeners = new ArrayList();
 
 	/**
 	 * Standard Constructor. The argument is the graph that this filter will
@@ -107,8 +108,9 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 * @throws NullPointerException
 	 *             if the argument is null.
 	 */
-	public SelectFilter(GraphPerspective graph) {
+	public SelectFilter(final GraphPerspective graph) {
 		this.graph = graph;
+
 		// this throws a NullPointerException if the graph is null
 		graph.addGraphPerspectiveChangeListener(this);
 	}
@@ -171,25 +173,27 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 * 
 	 * @return true if an actual change was made, false otherwise
 	 */
-	public boolean setSelected(Node node, boolean newState) {
+	public boolean setSelected(final Node node, final boolean newState) {
+
+		boolean setChanged;
 		if (newState == true) {// set flag to on
 			// don't flag the node if it's not in the graph
 			if (!graph.containsNode(node)) {
 				return false;
 			}
-			boolean setChanged = selectedNodes.add(node);
+			setChanged = selectedNodes.add(node);
 			if (setChanged) {
 				fireEvent(node, true);
 			}
-			return setChanged;
+
 		} else {// set flag to off
 			// a node can't be selected unless it's in the graph
-			boolean setChanged = selectedNodes.remove(node);
+			setChanged = selectedNodes.remove(node);
 			if (setChanged) {
 				fireEvent(node, false);
 			}
-			return setChanged;
 		}
+		return setChanged;
 	}
 
 	/**
@@ -199,25 +203,28 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 * 
 	 * @return true if an actual change was made, false otherwise
 	 */
-	public boolean setSelected(Edge edge, boolean newState) {
+	public boolean setSelected(final Edge edge, final boolean newState) {
+
+		boolean setChanged;
+
 		if (newState == true) {// set flag to on
 			// don'tflagthe edge if it's not in the graph
 			if (!graph.containsEdge(edge)) {
 				return false;
 			}
-			boolean setChanged = selectedEdges.add(edge);
+			setChanged = selectedEdges.add(edge);
 			if (setChanged) {
 				fireEvent(edge, true);
 			}
-			return setChanged;
+
 		} else {// set flag to off
 			// an edge can't be selected unless it's in the graph
-			boolean setChanged = selectedEdges.remove(edge);
+			setChanged = selectedEdges.remove(edge);
 			if (setChanged) {
 				fireEvent(edge, false);
 			}
-			return setChanged;
 		}
+		return setChanged;
 	}
 
 	/**
@@ -232,22 +239,21 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 *             if the first argument contains objects other than
 	 *             giny.model.Node objects
 	 */
-	public Set<Node> setSelectedNodes(final Collection<Node> nodesToSet, final boolean newState) {
+	public Set<Node> setSelectedNodes(final Collection<Node> nodesToSet,
+			final boolean newState) {
 
 		final Set<Node> returnSet = new HashSet<Node>();
 		if (nodesToSet == null) {
 			return returnSet;
 		}
-		
-		if (newState == true) {
-			for (final Iterator i = nodesToSet.iterator(); i.hasNext();) {
-				Node node = (Node) i.next();
 
+		if (newState == true) {
+			for (Node node : nodesToSet) {
 				if (!graph.containsNode(node)) {
 					continue;
 				}
-				boolean setChanged = selectedNodes.add(node);
-				if (setChanged) {
+
+				if (selectedNodes.add(node)) {
 					returnSet.add(node);
 				}
 			}
@@ -255,10 +261,9 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 				fireEvent(returnSet, true);
 			}
 		} else {
-			for (final Iterator i = nodesToSet.iterator(); i.hasNext();) {
-				Node node = (Node) i.next();
-				boolean setChanged = selectedNodes.remove(node);
-				if (setChanged) {
+
+			for (Node node : nodesToSet) {
+				if (selectedNodes.remove(node)) {
 					returnSet.add(node);
 				}
 			}
@@ -266,6 +271,7 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 				fireEvent(returnSet, false);
 			}
 		}
+
 		return returnSet;
 	}
 
@@ -285,7 +291,6 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 			final boolean newState) {
 
 		final Set<Edge> returnSet = new HashSet<Edge>();
-		boolean setChanged;
 
 		if (edgesToSet == null) {
 			return returnSet;
@@ -296,8 +301,8 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 				if (!graph.containsEdge(edge)) {
 					continue;
 				}
-				setChanged = selectedEdges.add(edge);
-				if (setChanged) {
+
+				if (selectedEdges.add(edge)) {
 					returnSet.add(edge);
 				}
 			}
@@ -306,8 +311,7 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 			}
 		} else {
 			for (Edge edge : edgesToSet) {
-				setChanged = selectedEdges.remove(edge);
-				if (setChanged) {
+				if (selectedEdges.remove(edge)) {
 					returnSet.add(edge);
 				}
 			}
@@ -322,11 +326,11 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 * Sets the selected state to true for all Nodes in the GraphPerspective.
 	 */
 	public Set selectAllNodes() {
-		Set changes = new HashSet();
+		final Set<Node> changes = new HashSet<Node>();
+		
 		for (Iterator i = graph.nodesIterator(); i.hasNext();) {
 			Node node = (Node) i.next();
-			boolean setChanged = selectedNodes.add(node);
-			if (setChanged) {
+			if (selectedNodes.add(node)) {
 				changes.add(node);
 			}
 		}
@@ -340,11 +344,10 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 * Sets the selected state to true for all Edges in the GraphPerspective.
 	 */
 	public Set selectAllEdges() {
-		Set changes = new HashSet();
+		final Set<Edge> changes = new HashSet<Edge>();
 		for (Iterator i = graph.edgesIterator(); i.hasNext();) {
 			Edge edge = (Edge) i.next();
-			boolean setChanged = selectedEdges.add(edge);
-			if (setChanged) {
+			if (selectedEdges.add(edge)) {
 				changes.add(edge);
 			}
 		}
@@ -477,9 +480,9 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 * argument identifies the change; true for setting a flag and false for
 	 * removing it. Creates a suitable event and passes it to all listeners.
 	 */
-	protected void fireEvent(Object target, boolean selectOn) {
-		// assert(target != null);//should never get called with null target
-		SelectEvent event = new SelectEvent(this, target, selectOn);
+	protected void fireEvent(final Object target, final boolean selectOn) {
+		final SelectEvent event = new SelectEvent(this, target, selectOn);
+		
 		for (Iterator i = this.listeners.iterator(); i.hasNext();) {
 			SelectEventListener listener = (SelectEventListener) i.next();
 			listener.onSelectEvent(event);
