@@ -253,7 +253,7 @@ public abstract class CytoscapeEditorManager {
     private static boolean _initialized = false;
     
     // AJK: 12/06/06: flag for "logging" diagnostic output
-    private static boolean loggingEnabled = true;
+    private static boolean loggingEnabled = false;
 
     // MLC 08/06/06 BEGIN:
     //    /**
