@@ -105,11 +105,25 @@ public class InnerCanvas extends DingCanvas
     //AJK: 04/02/06 BEGIN
     private DropTarget dropTarget;
     private String CANVAS_DROP = "CanvasDrop";
+    
+    // AJK: 1/14/2007 BEGIN
+    //  for turning selection rectangle on and off
+    private boolean selecting = true;
+    // AJK: 1/14/2007 END
 
     /**
      * DOCUMENT ME!
      */
     public Vector listeners = new Vector();
+    
+    /**
+     * AJK: 01/12/07 
+     * Transfer handler components -- contain transfer handlers
+     * N.B. -- don't use this code -- just a quick fix that will be replaced in
+     * Cytosape 2.5.
+     */
+    private Vector transferComponents = new Vector();
+    
 
 	/**
 	 * The collection of objects
@@ -182,6 +196,7 @@ public class InnerCanvas extends DingCanvas
             }
         }
     }
+    
 
     /**
      * DOCUMENT ME!
@@ -234,7 +249,9 @@ public class InnerCanvas extends DingCanvas
 
         g.drawImage(m_img, 0, 0, null);
 
-        if (m_selectionRect != null) {
+        // AJK: 01/14/2007 only draw selection rectangle when selection flag is on
+//        if (m_selectionRect != null) {
+        if ((m_selectionRect != null) && (this.isSelecting())) {
             final Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.red);
             g2.draw(m_selectionRect);
@@ -1205,17 +1222,34 @@ public class InnerCanvas extends DingCanvas
         PhoebeCanvasDropEvent event) {
         Enumeration e = listeners.elements();
 
-        // AJK: 12/08/06 oy, what a hack.  try to send transferable to transferhandler
-        //               of cytoscapeDesktopPane
+//        // AJK: 12/08/06 oy, what a hack.  try to send transferable to transferhandler
+//        //               of cytoscapeDesktopPane
+//        Transferable t = event.getTransferable();
+//        TransferHandler th = Cytoscape.getDesktop().getNetworkViewManager().
+//        getDesktopPane().getTransferHandler();
+//        if (th != null)
+//        {
+//        	th.importData(Cytoscape.getDesktop().getNetworkViewManager().
+//        getDesktopPane(), t);
+//        }
+//        // AJK: 12/08/06 END       
+
+//      // AJK: 01/14/07 oy, what a hack.  try to send transferable to transferhandler
+//      //               of cytoscapeDesktopPane
         Transferable t = event.getTransferable();
-        TransferHandler th = Cytoscape.getDesktop().getNetworkViewManager().
-        getDesktopPane().getTransferHandler();
-        if (th != null)
+        TransferHandler th;
+        JComponent jComp;
+        Iterator it = transferComponents.iterator();
+        while (it.hasNext())
         {
-        	th.importData(Cytoscape.getDesktop().getNetworkViewManager().
-        getDesktopPane(), t);
+            jComp = (JComponent) it.next();
+            th = jComp.getTransferHandler();
+            if (th != null)
+            {
+//            	th.importData(jComp, t);
+            }       	
         }
-        // AJK: 12/08/06 END       
+        // AJK: 01/14/07 END
 
         while (e.hasMoreElements()) {
             PhoebeCanvasDropListener l = (PhoebeCanvasDropListener) e.nextElement();
@@ -1224,6 +1258,26 @@ public class InnerCanvas extends DingCanvas
     }
 
     // AJK: 04/02/06 END
+    
+ 
+ 
+    
+    // AJK: 01/12/07 BEGIN
+    // transfer handler listeners
+    public void addTransferComponent (JComponent comp)
+    {
+    	if (!transferComponents.contains(comp))
+    	{
+    		transferComponents.addElement(comp);
+    	}	
+    }
+    
+    public void removeTransferComponent (JComponent comp)
+    {
+    	transferComponents.removeElement(comp);
+    }   
+    // AJK: 01/12/07 END
+    
     // AJK: 04/27/06 BEGIN
     // for node context menus
 
@@ -1351,6 +1405,19 @@ public class InnerCanvas extends DingCanvas
 			innerCanvasListeners.removeElement(l);
 		}
 	}
+	
+	// AJK: 01/14/2007 BEGIN
+	//    turn on and off selection rectangle
+	public void setSelecting (boolean s)
+	{
+		selecting = s;
+	}
+	
+	public boolean isSelecting()
+	{
+		return selecting;
+	}
+	// 
 
 	/**
 	 * Called to get the tranform matrix used by the inner canvas
