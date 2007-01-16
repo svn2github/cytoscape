@@ -34,9 +34,9 @@ $chianti_base = "http://chianti.ucsd.edu/";
 # to update all refereces to the "latest" version,
 # including release notes and download links
 #################################################
-$latest_version = "2.3.2";
-$latest_release_notes_link = "cyto_2_3_features.php";
-$latest_download_link = "download.php?file=cyto2_3_2";
+$latest_version = "2.4.0";
+$latest_release_notes_link = "cyto_2_4_features.php";
+$latest_download_link = "download.php?file=cyto2_4_0";
 
 #################################################
 # Cytoscape 1.1 Release File Names
@@ -99,15 +99,15 @@ $cyto2_3_2_windows = $chianti_base."Cyto-2_3_2/Cytoscape_2_3_2_windows.exe";
 $cyto2_3_2_linux = $chianti_base."Cyto-2_3_2/Cytoscape_2_3_2_unix.sh";
 
 #################################################
-# Cytoscape 2.4 Release File Names
+# Cytoscape 2.4.0 Release File Names
 #################################################
-$cyto2_4_gz_east = $chianti_base."Cyto-2_4/cytoscape-v2.4.tar.gz";
-$cyto2_4_zip_east = $chianti_base."Cyto-2_4/cytoscape-v2.4.zip";
-$cyto2_4_source_east = $chianti_base."Cyto-2_4/cytoscapeSource-v2.4.tar.gz";
+$cyto2_4_0_gz_east = $chianti_base."Cyto-2_4_0/cytoscape-v2.4.0.tar.gz";
+$cyto2_4_0_zip_east = $chianti_base."Cyto-2_4_0/cytoscape-v2.4.0.zip";
+$cyto2_4_0_source_east = $chianti_base."Cyto-2_4_0/cytoscapeSource-v2.4.0.tar.gz";
 
-$cyto2_4_mac = $chianti_base."Cyto-2_4/Cytoscape_2_4_macos.dmg";
-$cyto2_4_windows = $chianti_base."Cyto-2_4/Cytoscape_2_4_windows.exe";
-$cyto2_4_linux = $chianti_base."Cyto-2_4/Cytoscape_2_4_unix.sh";
+$cyto2_4_0_mac = $chianti_base."Cyto-2_4_0/Cytoscape_2_4_0_macos.dmg";
+$cyto2_4_0_windows = $chianti_base."Cyto-2_4_0/Cytoscape_2_4_0_windows.exe";
+$cyto2_4_0_linux = $chianti_base."Cyto-2_4_0/Cytoscape_2_4_0_unix.sh";
 
 #################################################
 # URL for Cytoscape Install Anywhere

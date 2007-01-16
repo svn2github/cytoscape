@@ -31,7 +31,9 @@
 	
 	#  Determine the Download File and Page Title
 	$file = $_REQUEST["file"];
-	if ($file == "cyto2_3_2") {
+	if ($file == "cyto2_4_0") {
+		$title = "Download Cytoscape 2.4.0";
+	} else if ($file == "cyto2_3_2") {
 		$title = "Download Cytoscape 2.3.2";
 	} else if ($file == "cyto2_3_1") {
 		$title = "Download Cytoscape 2.3.1";
@@ -46,8 +48,8 @@
 	} else if ($file == "cyto1") {
 		$title = "Download Cytoscape 1.1";
 	} else  {
-		$file = "cyto2_3_2"; 
-		$title = "Download Cytoscape 2.3.2";
+		$file = "cyto2_4_0"; 
+		$title = "Download Cytoscape 2.4.0";
 	} 
 	if (isset($submit) && $error_flag == false) {
 		$title = "Thank you!";

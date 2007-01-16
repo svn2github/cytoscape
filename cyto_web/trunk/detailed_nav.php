@@ -2,19 +2,19 @@
 		<tr>
 			<td width="120" id="first">
 				<h1>
-					<a href="download.php?file=cyto2_3_2">
+					<a href="download.php?file=cyto2_4_0">
 						Download Cytoscape
 					</a>
 				</h1>
 				<p>
-					<a href="download.php?file=cyto2_3_2">
-						Download Version 2.3.2
+					<a href="download.php?file=cyto2_4_0">
+						Download Version 2.4.0
 					</a>
 				</p>
 				<p>
 					Requires
-					<a href="http://java.sun.com/j2se/1.4.2/index.jsp">
-						Java 1.4.2
+					<a href="http://java.sun.com/j2se/1.5.0/index.jsp">
+						Java 1.5.0
 					</a>
 				</p>
 			</td>
@@ -31,12 +31,15 @@
 			</td>
 			<td width="120">
 				<h1>
-					<a href="manual/Cytoscape2_3Manual.pdf">
+					<a href="manual/Cytoscape2_4Manual.html">
 						Manual
 					</a>
 				</h1>
 				<p>
-					<a href="manual/Cytoscape2_3Manual.pdf">
+					<a href="manual/Cytoscape2_4Manual.html">
+						HTML format
+					</a> or
+					<a href="manual/Cytoscape2_4Manual.pdf">
 						PDF format</a>, explains all basic features of Cytoscape.
 					<a href="http://www.adobe.com/products/acrobat/readstep2.html">
 						Get Acrobat reader
@@ -53,7 +56,7 @@
 					<a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Future_Cytoscape_Features">
 						Roadmap
 					</a> |
-    				<a href="http://chianti.ucsd.edu/Cyto-2_3_1/javadoc/">
+    				<a href="http://chianti.ucsd.edu/Cyto-2_4_0/javadoc/">
 						Javadoc API
 					</a> |
     			    <a href="cgi-bin/moin.cgi/">
