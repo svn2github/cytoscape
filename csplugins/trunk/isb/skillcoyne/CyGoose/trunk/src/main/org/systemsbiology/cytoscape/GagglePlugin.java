@@ -28,46 +28,52 @@ import cytoscape.plugin.CytoscapePlugin;
  */
 public class GagglePlugin extends CytoscapePlugin
 	{
+	private static Boss GaggleBoss;
+	private static GooseDialog Dialog;
+	private static boolean Initialized = false;
 	protected static String myGaggleName = "Cytoscape2.4";
 
-	private GooseDialog Dialog;
-
-	private int NetworkGeeseStartIndex;
-
-	private String targetGoose = "Boss";
-
 	// keeps track of all the network ids
-	private HashMap<String, String> NetworkGeese;
+	private static HashMap<String, String> NetworkGeese;
 
 	private static void print(String S) { System.out.println(S); }
 
 	public GagglePlugin()
 		{
-		this.NetworkGeese = new HashMap<String, String>();
-		this.Dialog = new GooseDialog();
+		// constructor gets called at load time and every time the toolbar is used
+		// if the toolbar could be attached to the CyMenu bar instead of the plugin
+		// this would not be an issue...I think.
+		if (Initialized) { return; }
+		print("**GagglePlugin constructor");
+		
+		NetworkGeese = new HashMap<String, String>();
+		Dialog = new GooseDialog();
 		// initial connection - this may not be the desired behaivior as this "goose" may not do anything
-		Boss GBoss = this.rmiConnect();
-		if (GBoss == null) 
+		GaggleBoss = this.rmiConnect();
+		if (GaggleBoss == null) 
 			{ 
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Failed to connect to the Boss", "Error", JOptionPane.ERROR_MESSAGE); 
-			this.Dialog.registerButton.setEnabled(true);
+			Dialog.registerButton.setEnabled(true);
 			return;
 			}
 		else
 			{ 
+			print("** adding action to update button **");
 			this.updateAction();
 			// this gives an initial goose that is cytoscape with a null network
-			CyNetwork CurrentNet = Cytoscape.getCurrentNetwork();
+			CyNetwork CurrentNet = Cytoscape.getNullNetwork();
 
 			this.createNewGoose(CurrentNet);
-			this.NetworkGeese.put(CurrentNet.getIdentifier(), CurrentNet.getTitle());
+			NetworkGeese.put(CurrentNet.getIdentifier(), CurrentNet.getTitle());
 			}
+		
+		Initialized = true;
 		}
 
 	/*
 	 * Exports and registers the goose with the Boss
 	 */
-	private void registerGoose(Boss B, Goose G)
+	private void registerGoose(Goose G)
 		{
 		try
 			{
@@ -82,15 +88,15 @@ public class GagglePlugin extends CytoscapePlugin
 		
 		try
 			{
-			B.register(G);
-			this.Dialog.registerButton.setEnabled(false); 
+			GaggleBoss.register(G);
+			Dialog.registerButton.setEnabled(false); 
 			}
 		catch (Exception E)
 			{
 			E.printStackTrace();
 			String errMsg = "Gaggle connection failed!\n" + "Make sure a Gaggle Boss has started and click \"Register\" to try again";
 			GagglePlugin.showDialogBox(errMsg, "Error", JOptionPane.ERROR_MESSAGE);
-			this.Dialog.registerButton.setEnabled(true); 
+			Dialog.registerButton.setEnabled(true); 
 			}
 		}
 	
@@ -117,9 +123,9 @@ public class GagglePlugin extends CytoscapePlugin
 	/*
 	 * action button
 	 */
-	private void updateAction()
+	protected void updateAction()
 		{
-		this.Dialog.updateButton.addActionListener(new ActionListener()
+		Dialog.updateButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
 					{
@@ -140,24 +146,24 @@ public class GagglePlugin extends CytoscapePlugin
 
 	protected void createNewGoose(CyNetwork Network)
 		{
-		Boss GaggleBoss = this.rmiConnect();
-		CyGoose Goose = new CyGoose(this.Dialog, GaggleBoss);
+		CyGoose Goose = new CyGoose(Dialog, GaggleBoss);
 		Goose.setNetworkId(Network.getIdentifier());
-		Goose.setName(myGaggleName + ": " + Network.getTitle() + "(" + Network.getTitle() + ")");
-		this.registerGoose(GaggleBoss, Goose);
-		MiscUtil.updateGooseChooser(GaggleBoss, this.Dialog.gooseChooser, Goose.getName(), null);
+		Goose.setName( this.createGooseName(Network) );
+		this.registerGoose(Goose);
+		MiscUtil.updateGooseChooser(GaggleBoss, Dialog.gooseChooser, Goose.getName(), null);
 		}
 
-
+	
+	private String createGooseName(CyNetwork Network)
+		{
+		return (myGaggleName + ": " + Network.getTitle() + "(" + Network.getIdentifier() + ")");
+		}
+	
+	
 	// TODO: remove closed networks from the boss
 	protected void updateNetworkGeese()
 		{
 		Iterator<CyNetwork> NetIter = Cytoscape.getNetworkSet().iterator();
-
-
-		// add separator to group network "geese" names
-		NetworkGeeseStartIndex = this.Dialog.gooseChooser.getItemCount();
-		//this.Dialog.gooseChooser.addItem("-- Cytoscape Networks --");
 
 		// this SHOULD be adding each network as a potential "goose" in the list
 		while (NetIter.hasNext())
@@ -165,18 +171,20 @@ public class GagglePlugin extends CytoscapePlugin
 			CyNetwork CurrentNet = NetIter.next();
 
 			// if the network is already in the hash it should be in the list of geese
-			if (this.NetworkGeese.containsKey(CurrentNet.getIdentifier())) continue;
+			if (NetworkGeese.containsKey(CurrentNet.getIdentifier())) continue;
 			else
 				{
 				this.createNewGoose(CurrentNet);
+				NetworkGeese.put(CurrentNet.getIdentifier(), CurrentNet.getTitle());
 				}
 			//this.removeOldNetworks();
 			}
 		}
-	// this needs to remove networks from the boss as well...not sure how to do that yet
+
+	// this needs to remove networks from the boss as well
 	private void removeOldNetworks()
 		{
-		Iterator<String> NetGeeseIter = this.NetworkGeese.keySet().iterator();
+		Iterator<String> NetGeeseIter = NetworkGeese.keySet().iterator();
 		java.util.Set<CyNetwork> AllCurrentNetworks = Cytoscape.getNetworkSet();
 
 		while (NetGeeseIter.hasNext())
@@ -185,9 +193,9 @@ public class GagglePlugin extends CytoscapePlugin
 			if (!AllCurrentNetworks.contains(Id))
 				{ // I don't know for sure that removes options from the chooser, we
 				// shall see
-				this.Dialog.gooseChooser.removeItem(Id + ":"
-						+ this.NetworkGeese.get(Id));
-				this.NetworkGeese.remove(Id);
+				Dialog.gooseChooser.removeItem(Id + ":"
+						+ NetworkGeese.get(Id));
+				NetworkGeese.remove(Id);
 				}
 			}
 

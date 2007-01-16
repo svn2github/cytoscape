@@ -56,7 +56,7 @@ public class CyGoose implements Goose
 
 	public CyGoose(GooseDialog GD, Boss boss)
 		{
-		print("***CyGoose constructor***");
+		//print("***CyGoose constructor***");
 		GaggleBoss = boss;
 		this.GDialog = GD;
 		
@@ -64,7 +64,6 @@ public class CyGoose implements Goose
 		this.addButtonActions();
 		// creates broadcast actions
 		CyBroadcast Broadcast = new CyBroadcast(GDialog, GaggleBoss, this);
-
 		}
 
 	// Deselect all nodes/edges.  
