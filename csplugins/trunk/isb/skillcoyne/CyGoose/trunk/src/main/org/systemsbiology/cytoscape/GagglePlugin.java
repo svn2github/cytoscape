@@ -33,7 +33,8 @@ public class GagglePlugin extends CytoscapePlugin
 	private static boolean Initialized = false;
 	protected static String myGaggleName = "Cytoscape2.4";
 
-	// keeps track of all the network ids
+	// keeps track of all the network ids 
+	// key = network id  value = goose name
 	private static HashMap<String, String> NetworkGeese;
 
 	private static void print(String S) { System.out.println(S); }
@@ -41,8 +42,6 @@ public class GagglePlugin extends CytoscapePlugin
 	public GagglePlugin()
 		{
 		// constructor gets called at load time and every time the toolbar is used
-		// if the toolbar could be attached to the CyMenu bar instead of the plugin
-		// this would not be an issue...I think.
 		if (Initialized) { return; }
 		print("**GagglePlugin constructor");
 		
@@ -62,11 +61,9 @@ public class GagglePlugin extends CytoscapePlugin
 			this.updateAction();
 			// this gives an initial goose that is cytoscape with a null network
 			CyNetwork CurrentNet = Cytoscape.getNullNetwork();
-
 			this.createNewGoose(CurrentNet);
-			NetworkGeese.put(CurrentNet.getIdentifier(), CurrentNet.getTitle());
+			NetworkGeese.put(CurrentNet.getIdentifier(), this.createGooseName(CurrentNet));
 			}
-		
 		Initialized = true;
 		}
 
@@ -123,8 +120,8 @@ public class GagglePlugin extends CytoscapePlugin
 	/*
 	 * action button
 	 */
-	protected void updateAction()
-		{
+	private void updateAction()
+		{ 
 		Dialog.updateButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
@@ -139,73 +136,83 @@ public class GagglePlugin extends CytoscapePlugin
 						}
 					}
 			});
-
 		}
 
-
-
-	protected void createNewGoose(CyNetwork Network)
+	/*
+	 * Creates a new goose for the given network
+	 */
+	private void createNewGoose(CyNetwork Network)
 		{
 		CyGoose Goose = new CyGoose(Dialog, GaggleBoss);
 		Goose.setNetworkId(Network.getIdentifier());
 		Goose.setName( this.createGooseName(Network) );
 		this.registerGoose(Goose);
+		//Dialog.gooseChooser.addItem(Goose.getName());
 		MiscUtil.updateGooseChooser(GaggleBoss, Dialog.gooseChooser, Goose.getName(), null);
 		}
 
+	/*
+	 * Creates a standard goose name for any network
+	 */
+	private String createGooseName(String Id, String Title)
+		{ return (myGaggleName + ": " + Title + "(" + Id +")"); }
 	
 	private String createGooseName(CyNetwork Network)
-		{
-		return (myGaggleName + ": " + Network.getTitle() + "(" + Network.getIdentifier() + ")");
-		}
+		{ return createGooseName(Network.getIdentifier(), Network.getTitle()); }
 	
 	
 	// TODO: remove closed networks from the boss
-	protected void updateNetworkGeese()
+	private void updateNetworkGeese()
 		{
 		Iterator<CyNetwork> NetIter = Cytoscape.getNetworkSet().iterator();
-
+		Set<String> CurrentNetIds = new HashSet<String>();
 		// this SHOULD be adding each network as a potential "goose" in the list
 		while (NetIter.hasNext())
 			{
 			CyNetwork CurrentNet = NetIter.next();
+			CurrentNetIds.add(CurrentNet.getIdentifier());
+			print(CurrentNet.getIdentifier());
 
 			// if the network is already in the hash it should be in the list of geese
 			if (NetworkGeese.containsKey(CurrentNet.getIdentifier())) continue;
 			else
 				{
+				NetworkGeese.put(CurrentNet.getIdentifier(), this.createGooseName(CurrentNet));
 				this.createNewGoose(CurrentNet);
-				NetworkGeese.put(CurrentNet.getIdentifier(), CurrentNet.getTitle());
 				}
-			//this.removeOldNetworks();
 			}
+		this.removeOldNetworks(CurrentNetIds);
 		}
 
-	// this needs to remove networks from the boss as well
-	private void removeOldNetworks()
+	
+	
+	// this needs to remove networks from the boss that have been destroyed
+	private void removeOldNetworks(Set<String> AllCurrentNetIds)
 		{
+		print("removeOldNetworks");
 		Iterator<String> NetGeeseIter = NetworkGeese.keySet().iterator();
-		java.util.Set<CyNetwork> AllCurrentNetworks = Cytoscape.getNetworkSet();
-
+		
+		Collection<String> DeadIds = new ArrayList<String>();
 		while (NetGeeseIter.hasNext())
 			{
 			String Id = NetGeeseIter.next();
-			if (!AllCurrentNetworks.contains(Id))
-				{ // I don't know for sure that removes options from the chooser, we
-				// shall see
-				Dialog.gooseChooser.removeItem(Id + ":"
-						+ NetworkGeese.get(Id));
-				NetworkGeese.remove(Id);
-				}
+			if (AllCurrentNetIds.contains(Id)) continue; 
+			else DeadIds.add(Id); 
 			}
 
+		Iterator<String> deadIter = DeadIds.iterator();
+		while(deadIter.hasNext())
+			{ 
+			String Id = deadIter.next();
+			print("Removeing "+Id+" from the boss");
+			NetworkGeese.remove(Id); 
+			try { GaggleBoss.remove( NetworkGeese.get(Id)); }
+			catch (Exception E) { E.printStackTrace(); }
+			Dialog.gooseChooser.removeItem( NetworkGeese.get(Id) );
+			MiscUtil.updateGooseChooser(GaggleBoss, Dialog.gooseChooser, null, null);
+			}
 		}
 
-	/*
-   * TODO: Create a new goose for each network opened. - do NOT create the
-   * dialog new each time - broadcast buttons will need to be aware of which
-   * network ("goose") they are looking at
-   */
 
 	public static void showDialogBox(String message, String title, int msgType)
 		{
