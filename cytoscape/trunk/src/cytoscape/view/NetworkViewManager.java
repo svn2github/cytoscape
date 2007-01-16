@@ -38,29 +38,32 @@
 
 package cytoscape.view;
 
+import java.awt.Component;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+import javax.swing.event.SwingPropertyChangeSupport;
+
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.CyEdge;
-
-import cytoscape.view.CyMenus;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
-import cytoscape.view.CyEdgeView;
-
-import cytoscape.giny.*;
-
 import ding.view.DGraphView;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import java.beans.*;
+import ding.view.InnerCanvas;
 
 public class NetworkViewManager 
   implements 
@@ -269,6 +272,21 @@ public class NetworkViewManager
       e = null;
       unsetFocus(); // in case the newly focused network doesn't have a view
       setFocus( network_id );
+      
+      // AJK: 01/14/07 BEGIN
+      //    hack to add transfer handlers to canvas
+      InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
+      if (this.getDesktopPane() != null)
+      {
+    	  canvas.addTransferComponent(this.getDesktopPane());
+      }
+      else if (this.getTabbedPane() != null)
+      {
+    	  canvas.addTransferComponent(this.getTabbedPane());
+      }
+      
+      
+      //
     } 
 
     // handle putting a newly created CyNetworkView into a Container
