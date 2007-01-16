@@ -133,8 +133,8 @@
 											See the <a HREF="cyto_2_4_features.php">Release Notes</a> for more detail.
 										</td>
 										<td valign="top">
-											<A HREF="screenshots/cytoscapeMainWindowv2_4.png">
-												<img src="screenshots/cyto_2_4_thumb.png" border="0" align="left" alt="Cytoscape 2.4.0 Screenshot" />
+											<A HREF="screenshots/2_4_ss1.png">
+												<img src="screenshots/2_4_ss1_thumb.png" border="0" align="left" alt="Cytoscape 2.4.0 Screenshot" />
 											</A>
 										</td>
 									</tr>
