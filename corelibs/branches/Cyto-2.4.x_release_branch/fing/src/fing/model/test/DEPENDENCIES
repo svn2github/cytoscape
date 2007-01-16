@@ -1,0 +1,4 @@
+fing.model
+lib:cytoscape-graph-dynamic.jar
+lib:cytoscape-graph-fixed.jar
+lib:giny.jar

@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<!--
+ Copyright 2002,2004 The Apache Software Foundation
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<document>
+
+ <properties>
+    <title>Home</title>
+    <author email="commons-dev@jakarta.apache.org">commons-dev</author>
+ </properties>
+
+  <body>
+<!-- ================================================== -->
+<section name="Commons CLI">
+<p>
+The Jakarta Commons CLI library provides an API for processing command line interfaces.
+It was formed by the merger of ideas and code from three different libraries -
+Werken, Avalon and Optz. 
+</p>
+</section>
+<!-- ================================================== -->
+<section name="Documentation">
+<p>
+A full <a href="introduction.html">User's Guide</a> is available
+as are various <a href="maven-reports.html">project reports</a>.
+</p>
+<p>
+The JavaDoc API documents are available online:
+</p>
+<ul>
+<li>The <a href="api-release/index.html">current release 1.0</a></li>
+<!--li>The <a href="api-n/index.html">previous version n</a></li-->
+<li>The <a href="apidocs/index.html">latest SVN</a></li>
+</ul>
+<p>
+The <a href="cvs-usage.html">subversion repository</a> can be
+<a href="http://svn.apache.org/viewcvs.cgi/jakarta/commons/proper/cli/trunk/">browsed</a>.
+</p>
+</section>
+<!-- ================================================== -->
+<section name="Releases">
+<p>
+The latest version is v1.0. - 
+<a href="http://jakarta.apache.org/site/downloads/downloads_commons-cli.cgi">Download now!</a><br />
+The <a href="release_1_0.html">release notes</a> are also available.
+</p>
+<p>
+For previous releases, see the <a href="http://archive.apache.org/dist/jakarta/commons/cli/">Apache Archive</a>
+</p>
+</section>
+<!-- ================================================== -->
+<section name="Support">
+<p>
+The <a href="mail-lists.html">commons mailing lists</a> act as the main support forum.
+The user list is suitable for most library usage queries.
+The dev list is intended for the development discussion.
+Please remember that the lists are shared between all commons components,
+so prefix your email by [cli].
+</p>
+<p>
+Issues may be reported via <a href="issue-tracking.html">ASF Bugzilla</a>.
+Please remember that Bugzilla is shared between all commons components,
+so prefix your issue by [cli].
+</p>
+</section>
+<!-- ================================================== -->
+
+<!--      <p>
+        CLI1 was formed by the merger of ideas and code from three different
+        libraries and allows most simple interfaces to be modelled.  CLI1
+        became increasingly difficult to maintain and develop further and so
+        CLI2 has been developed with the goals of clearer responsibilities and
+        being more flexible.  The intention is that CLI2 should be able to
+        model a far greater selection of interfaces and do so more completely,
+        validating as much as possible.
+      </p>
+      <p>
+        The redesigned CLI2 is rooted in the <code>org.apache.commons.cli2</code>
+        package and the distribution retains the <code>org.apache.commons.cli</code>
+        package so that the upgrade doesn't break old code.  The CLI1 package
+        should be regarded as deprecated to encourage the transition to the
+        more flexible CLI2 framework but minor bug fixes and patches may be
+        accepted to ensure that CLI1 based applications continue to function as
+        expected.
+      </p>
+      <p>
+        The rest of the documentation is split into the following three sections:
+        <ul>
+          <li><a href="manual/index.html">CLI2</a> - a reference manual for version 2</li>
+          <li><a href="introduction.html">CLI1</a> - documentation for version 1 </li>
+          <li><a href="examples/index.html">Examples</a> - a selection of worked examples demonstrating CLI2 features</li>
+        </ul>
+      </p>
+      <p>
+        The latest version of this documentation is available on the web:
+        <ul>
+          <li><a href="http://jakarta.apache.org/commons/cli/">http://jakarta.apache.org/commons/cli/</a></li>
+          <li>
+            <a href="http://jakarta.apache.org/commons/cli/commons-cli.pdf">http://jakarta.apache.org/commons/cli/commons-cli.pdf</a> 
+            <a href="http://jakarta.apache.org/commons/cli/commons-cli.pdf"><img border="0" src="images/pdf.gif"/></a> 
+          </li>
+        </ul>
+      </p>
+    </section>
+    <section name="Dependancies">
+      <p>
+        The generated list of <a href="dependencies.html">dependencies</a> 
+        lists the libraries needed to compile and test Commons CLI.  To use 
+        the precompiled distribution none of these dependancies are strictly 
+        necessary.  The following is a breakdown of what is required and when:
+      </p>
+      <table>
+        <tr>
+          <th>Library</th><th>Usage</th>
+        </tr>
+        <tr>
+          <td>Java 1.2</td>
+          <td>This is the minimum java level needed to use CLI2</td>
+        </tr>
+        <tr>
+          <td>Java 1.4</td>
+          <td>Needed if the PreferencesCommandLine is needed</td>
+        </tr>
+        <tr>
+          <td>commons-lang</td>
+          <td>Needed if the CLI1 package is being used</td>
+        </tr>
+        <tr>
+          <td>jdepend</td>
+          <td>Needed to build and test CLI2 only</td>
+        </tr>
+        <tr>
+          <td>junit</td>
+          <td>Needed to build and test CLI1 and CLI2</td>
+        </tr>
+      </table>
+    </section>
+-->
+  </body>
+
+</document>
