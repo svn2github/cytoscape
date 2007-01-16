@@ -24,7 +24,7 @@
 					</a>					
 					| 
 					<a href="download_list.php">
-						Download
+						Download All Releases
 					</a>
 					|
 					<a href="people.php">

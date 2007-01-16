@@ -34,6 +34,10 @@
 
 			<UL>
 		    <LI>
+					<A HREF="download.php?file=cyto2_4_0">Download Cytoscape 2.4.0</A>
+					[Binaries and/or Source Files]
+		    <LI>
+		    <LI>
 					<A HREF="download.php?file=cyto2_3_2">Download Cytoscape 2.3.2</A>
 					[Binaries and/or Source Files]
 		    <LI>

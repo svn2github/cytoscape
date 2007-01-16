@@ -90,7 +90,35 @@
 								<br>
 								<p>
 								<big><b>
-									<i>New!</i>&nbsp;&nbsp;Cytoscape 2.3.2
+									<i>New!</i>&nbsp;&nbsp;Cytoscape 2.4.0
+								</b></big>
+								<table width="100%">
+									<tr valign="top">
+										<td width="47%" valign="top">
+											<br>
+											(Updated 1/16/2007)
+											<br>
+										New features include:	
+											<br>
+											<ul>
+												<li>list features here...</li>
+											</ul>
+											See the <a HREF="cyto_2_4_features.php">Release Notes</a> for mor detail.
+										</td>
+										<td valign="top">
+											<A HREF="screenshots/cytoscapeMainWindowv2_4.png">
+												<img src="screenshots/cyto_2_4_thumb.png" border="0" align="left" alt="Cytoscape 2.4.0 Screenshot" />
+											</A>
+										</td>
+									</tr>
+								</table>
+							</div>
+								<p>
+							<div class="item">
+								<br>
+								<p>
+								<big><b>
+									Cytoscape 2.3.2
 								</b></big>
 								<table width="100%">
 									<tr valign="top">
