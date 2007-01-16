@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<! Updated for 2.3 by kono >
+<! Updated for 2.4 by kono >
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
@@ -21,22 +21,41 @@
 <? include "nav.php"; ?>
 <div id="indent">
 	<p>
-		(All images below are created by Cytoscape version 2.3)
+		(All images below are created by Cytoscape version 2.4)
 	</p>
 	<p>
-		Sample session file <i>galFiletred.cys</i> is opened.  In Cytoscape 2.3 and later, users can retreve all of these
-		data (networks, attributes, network metatdata, etc.) by just one click!
+		Sample session file <i>galFiletred.cys</i> is opened.  Cytoscape 2.4 uses new icon set for cleaner look. 
 	</p>
 	<p>
-		<img src="screenshots/2_3_ss2.png" alt="Main cytoscape window"> 
+		<img src="screenshots/2_4_ss1.png" alt="Main cytoscape window"> 
 	</p>
 	<hr width="100%" size="2">
 	<p>
-		A large network file (BINDYeast.sif, total 80,000+ nodes and edges) is loaded.  The new rendering engine enables
-		users to browse this size of network in real time. 
+		From version 2.4, Cytoscape can load network files from local file system and remote data sources.  
 		<br>
 		<br>
-		<img src="screenshots/2_3_ss1.png" alt="Huge Network">
+		<img src="screenshots/2_4_ss2.png" alt="Network Import">
+	</p>
+	<hr width="100%" size="2">
+	<p>
+		Cytoscape supports standard file formats (SBML, XGMML, GML, PSI-MI and BioPAX) by default.  In addition, users can import free-format tables in text or Microsoft Excel format.    
+		<br>
+		<p><img src="screenshots/2_4_ss3.png" alt="Table Import 1"></p>
+		<p><img src="screenshots/2_4_ss4.png" alt="Table Import 2"></p>
+	</p>
+	<hr width="100%" size="2">
+	<p>
+		Node label position can be controled by new GUI in VizMapper.    
+		<br>
+		<br>
+		<img src="screenshots/2_4_ss5.png" alt="Label Position">
+	</p>
+	<hr width="100%" size="2">
+	<p>
+		From 2.4, Cytoscape manage Ontology DAGs as regular network.  User can visualize DAGs using Cytoscape's function.    
+		<br>
+		<br>
+		<img src="screenshots/2_4_ss6.png" alt="GO DAG">
 	</p>
 	<hr width="100%" size="2">
 	<p>
