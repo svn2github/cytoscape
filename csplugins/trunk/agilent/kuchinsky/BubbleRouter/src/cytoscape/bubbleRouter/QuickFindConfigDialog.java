@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.regex.*;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -36,7 +35,6 @@ import csplugins.quickfind.util.QuickFindFactory;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.actions.ImportNodeAttributesAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.servers.BioDataServer;
@@ -44,7 +42,6 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 

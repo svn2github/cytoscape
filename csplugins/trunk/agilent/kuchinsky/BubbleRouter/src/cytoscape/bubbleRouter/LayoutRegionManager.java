@@ -87,6 +87,17 @@ public class LayoutRegionManager {
 		DingCanvas backgroundLayer = dview
 				.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
 		backgroundLayer.add(region);
+		
+		// AJK: 01/07/2007 BEGIN
+		//    oy what a hack: do an infinitesimal change of zoom factor so that it
+		//    forces a viewport changed event, 
+		//    which enables us to get original viewport centerpoint and scale factor
+		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
+//		System.out.println ("View bounds = " + dview.getComponent().getBounds());
+//		System.out.println("View scale factor = " + dview.getZoom());
+//		
+//		System.out.println("Canvas bounds = " + dview.getCanvas().getBounds());
+		// AJK: 01/07/2007 END
 	}
 	
 	public static void removeRegion(CyNetworkView view, LayoutRegion region) {

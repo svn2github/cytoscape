@@ -27,9 +27,13 @@ import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
+import ding.view.InnerCanvas;
+import ding.view.ViewportChangeListener;
 
-public class LayoutRegion extends JComponent {
-
+public class LayoutRegion extends JComponent
+// AJK: 01/4/07 ViewportListener for accommodating pan/zoom
+		implements ViewportChangeListener {
+//{
 	/**
 	 * Translucency level of region
 	 */
@@ -126,6 +130,15 @@ public class LayoutRegion extends JComponent {
 
 	private boolean selected = false;
 
+	// AJK: 01/04/06 for accommodating pan and zoom of InnerCanvas
+	private double currentZoom = Double.NaN;
+	private double currentCenterX = Double.NaN, currentCenterY = Double.NaN;
+	private boolean viewportSet = false;
+//	private double originalZoom = Double.NaN;
+//	private double originalOffsetX = Double.NaN, originalOffsetY = Double.NaN;
+	private int viewportWidth;
+	private int viewportHeight;
+
 	/**
 	 * @param x
 	 * @param y
@@ -140,23 +153,34 @@ public class LayoutRegion extends JComponent {
 
 		if (this.getRegionAttributeValue() == null) {
 			return;
+			
 		}
 
 		// AJK: 12/25/06 for stretching
 		savedCursor = this.getCursor();
 
-
 		// setbounds must come before populate nodeviews
 
 		// note that coordinates are in terms of screen coordinates, not node
 		// coordinates
-		setBounds((int) x, (int) y, (int) width, (int) height);
+		// AJK: 01/09/07 use double coordinates, to avoid roundoff errors
+//		setBounds((int) x, (int) y, (int) width, (int) height);
+		setBounds( x,  y,  width,  height);
 		nodeViews = populateNodeViews();
 
 		// determine color of layout region
 		colorIndex = (++colorIndex % colors.length == 0) ? 0 : colorIndex;
 		this.paint = colors[colorIndex];
 
+		// AJK: 01/04/07 add ViewportChangeListener for accommodating pan/zoom
+//		currentZoom = ((DGraphView) Cytoscape.getCurrentNetworkView())
+//				.getZoom();
+//		currentX = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCenter()
+//				.getX();
+//		currentY = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCenter()
+//				.getY();
+		((DGraphView) Cytoscape.getCurrentNetworkView())
+				.addViewportChangeListener(this);
 
 	}
 
@@ -280,7 +304,7 @@ public class LayoutRegion extends JComponent {
 		// new QuickFindConfigDialog();
 		new QuickFindConfigDialog(this);
 
-		System.out.println("Got attribute name: " + attributeName);
+//		System.out.println("Got attribute name: " + attributeName);
 		// AJK: 11/15/06 END
 
 		// }
@@ -301,7 +325,7 @@ public class LayoutRegion extends JComponent {
 	// public static void setAttributeName(String newAttributeKey) {
 	public void setAttributeName(String newAttributeKey) {
 		attributeName = newAttributeKey;
-		System.out.println("Attribute name selected: " + attributeName);
+//		System.out.println("Attribute name selected: " + attributeName);
 	}
 
 	/**
@@ -343,9 +367,147 @@ public class LayoutRegion extends JComponent {
 	// public static void setRegionAttributeValue(Object object) {
 	public void setRegionAttributeValue(Object object) {
 		regionAttributeValue = object;
-		System.out.println("Attribute value selected: " + regionAttributeValue);
+//		System.out.println("Attribute value selected: " + regionAttributeValue);
 
 	}
+	
+	
+
+	// AJK: 01/04/07 BEGIN
+	// respond to changes in viewport to zoom or scroll
+	/**
+	 * Our implementation of ViewportChangeListener.
+	 */
+	
+	public void resetViewportMappings ()
+	{
+		viewportSet = false;
+		
+	}
+	
+	/**
+	 * recalculate bounds of region when canvas is panned, zoomed, resized
+	 * equations are
+	 * 
+	 * if (newZoom == zoom) then just a translation
+	 *    newX1 = x1 + newXCenter - xCenter;
+	 * else
+	 *   (x1 - xCenter) / zoom = (newX1 - newXCenter) / newZoom
+	 *   known is x1, xCenter, zoom, newXCenter, newZoom, unknown is newX1
+	 *   newX1 = newXCenter + ((newZoom / zoom) * (x1 - xCenter)) 
+	 *   and if deltaZoom = newZoom / zoom and deltaX = x1 - xCenter
+	 *   then
+	 *   newX1 = newXCenter + deltaZoom * deltaX
+	 * 
+	 */
+	public void viewportChanged(int w, int h, double newXCenter,
+			double newYCenter, double newScaleFactor) {
+		
+
+		// new image coordinates
+//		double[] currentNodeCoordinates = new double[4];
+//		currentNodeCoordinates[0] = this.x1;
+//		currentNodeCoordinates[1] = this.y1;
+//		currentNodeCoordinates[2] = this.x1 + this.w1;
+//		currentNodeCoordinates[3] = this.y1 + this.h1;
+//		InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
+//		AffineTransform transform = canvas.getAffineTransform();
+//		transform.transform(currentNodeCoordinates, 0, currentNodeCoordinates, 0, 2);
+//		
+//		this.x1 = currentNodeCoordinates[0];
+//		this.y1 = currentNodeCoordinates[1];
+//		this.w1 = currentNodeCoordinates[2] - currentNodeCoordinates[0];
+//		this.h1 = currentNodeCoordinates[3] - currentNodeCoordinates[1];
+
+
+		
+		
+		System.out.println(" ");
+		System.out.println("Viewport changed, w = " + w + ", h = " + h 
+				+ ", newXCenter = " + newXCenter + ", newYCenter = "
+				+ newYCenter + ", newScaleFactor = " + newScaleFactor);
+		
+		
+		InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
+//		System.out.println("Inner Canvas: width = " + 
+//				canvas.getWidth() + ", height = " + canvas.getHeight() + 
+//				", centerX = " + (canvas.getX() + ((int) (canvas.getWidth() * 0.5))) + 
+//				", centerY = " + (canvas.getY() + ((int) (canvas.getHeight() * 0.5))) + 
+//				". zoom = " + Cytoscape.getCurrentNetworkView().getZoom());
+//		
+		// first time initialization of zoom and centerpoint, if needed
+		if (!viewportSet)
+		{
+			viewportSet = true;
+			currentZoom = newScaleFactor;
+			currentCenterX = newXCenter;
+			currentCenterY = newYCenter;
+			viewportWidth = w;
+			viewportHeight = h;
+		}
+		System.out.println ("currentZoom = " + currentZoom + 
+				", currentCenterX = " + currentCenterX +
+				", currentCenterY = " + currentCenterY);
+		
+	
+		double deltaZoom = newScaleFactor / currentZoom;
+		double deltaX = this.x1 - (0.5 * w);
+		double deltaY = this.y1 - (0.5 * h);
+		
+		if ((deltaZoom > 0.99) && (deltaZoom < 1.01) &&
+				(viewportWidth == w) && (viewportHeight == h))
+				// we are panning
+		{
+			this.x1 += (currentCenterX - newXCenter) * newScaleFactor;
+			this.y1 += (currentCenterY - newYCenter) * newScaleFactor;
+		}
+		else if ((viewportWidth != w) || (viewportHeight != h)){  // we are resizing
+			this.x1 += (0.5 * (w - viewportWidth));
+			this.y1 += (0.5 * (h - viewportHeight));
+			
+		}
+		else // we are zooming
+		{
+			this.w1 *= deltaZoom;
+			this.h1 *= deltaZoom;
+
+			deltaX *= deltaZoom;
+			deltaY *= deltaZoom;			
+
+			this.x1 = (0.5 * w) + deltaX;
+			this.y1 = (0.5 * h) + deltaY;
+//			this.x1 = ((this.x1 - currentCenterX) + (currentCenterX * deltaZoom)) / deltaZoom;
+//			this.y1 = ((this.y1 - currentCenterY) + (currentCenterY * deltaZoom)) / deltaZoom;		
+		}
+		
+		System.out.println("new scale factor: " + newScaleFactor +
+				" deltaZoom: " + deltaZoom);
+
+//		this.x1 = newXCenter + (deltaZoom * deltaX);
+//		this.y1 = newYCenter + (deltaZoom * deltaY);
+//		this.w1 *= deltaZoom;
+//		this.h1 *= deltaZoom;
+		currentZoom = newScaleFactor;
+		currentCenterX = newXCenter;
+		currentCenterY = newYCenter;
+		viewportWidth = w;
+		viewportHeight = h;
+		
+		System.out.println ("newX1 = " + this.x1 + ", newY1 = " + this.y1 + 
+				", newWidth = " + this.w1 + ", newHeight = " + this.h1);
+		System.out.println(" ");
+
+		// AJK: 01/09/07 use double coordinates to avoid roundoff error
+//		this.setBounds((int) this.x1, (int) this.y1, (int) this.w1,
+//				(int) this.h1);
+		this.setBounds( this.x1,  this.y1,  this.w1,
+				 this.h1);
+
+//		repaint();
+	}
+
+
+	// AJK: 01/04/07 END
 
 	// select all nodeViews with specified attribute value for attribute
 	public List populateNodeViews() {
@@ -402,13 +564,11 @@ public class LayoutRegion extends JComponent {
 			System.out.println("running hierarchical layout algorithm.");
 			hierarchicalListener.actionPerformed(null);
 
-			NodeViewsTransformer
-					.transform(Cytoscape.getCurrentNetworkView()
-							// AJK: 1/1/06 accommodate space for handles
-//							.getSelectedNodes(), new Rectangle2D.Double(x1, y1,
-							.getSelectedNodes(), new Rectangle2D.Double
-							(x1 + (HANDLE_SIZE / 2), y1 + (HANDLE_SIZE / 2),
-																w1, h1));
+			NodeViewsTransformer.transform(Cytoscape.getCurrentNetworkView()
+			// AJK: 1/1/06 accommodate space for handles
+					// .getSelectedNodes(), new Rectangle2D.Double(x1, y1,
+					.getSelectedNodes(), new Rectangle2D.Double(x1
+					+ (HANDLE_SIZE / 2), y1 + (HANDLE_SIZE / 2), w1, h1));
 
 			// AJK: 11/15/06 BEGIN
 			// undo/redo facility
@@ -493,10 +653,10 @@ public class LayoutRegion extends JComponent {
 
 	public void setBounds(int x, int y, int width, int height) {
 		// AJK: 1/1/06 BEGIN
-//		make room for handles
-//		super.setBounds(x, y, width, height);
-		super.setBounds(x - (HANDLE_SIZE / 2), y - (HANDLE_SIZE / 2), 
-				width + HANDLE_SIZE, height + HANDLE_SIZE);
+		// make room for handles
+		// super.setBounds(x, y, width, height);
+		super.setBounds(x - (HANDLE_SIZE / 2), y - (HANDLE_SIZE / 2), width
+				+ HANDLE_SIZE, height + HANDLE_SIZE);
 
 		// set member vars
 		this.x1 = x;
@@ -507,12 +667,37 @@ public class LayoutRegion extends JComponent {
 		// our bounds have changed, create a new image with new size
 		if ((width > 0) && (height > 0)) {
 			// AJK: 1/1/06 make room for handles
-//			image = new BufferedImage(width, height,
-			image = new BufferedImage(width + HANDLE_SIZE, height + HANDLE_SIZE,
-										BufferedImage.TYPE_INT_ARGB);
+			// image = new BufferedImage(width, height,
+			image = new BufferedImage(width + HANDLE_SIZE,
+					height + HANDLE_SIZE, BufferedImage.TYPE_INT_ARGB);
 		}
 	}
 
+	// AJK: 01/09/07 BEGIN
+	//     make a version of setBounds that takes double coordinates, to fix roundoff problems
+	public void setBounds(double x, double y, double width, double height) {
+		// AJK: 1/1/06 BEGIN
+		// make room for handles
+		// super.setBounds(x, y, width, height);
+		super.setBounds(((int) x - (HANDLE_SIZE / 2)),((int) y - (HANDLE_SIZE / 2)), 
+				((int) width
+				+ HANDLE_SIZE), ((int) height + HANDLE_SIZE));
+
+		// set member vars
+		this.x1 = x;
+		this.y1 = y;
+		this.w1 = width;
+		this.h1 = height;
+
+		// our bounds have changed, create a new image with new size
+		if ((width > 0) && (height > 0)) {
+			// AJK: 1/1/06 make room for handles
+			// image = new BufferedImage(width, height,
+			image = new BufferedImage(((int) width + HANDLE_SIZE),
+					((int) height + HANDLE_SIZE), BufferedImage.TYPE_INT_ARGB);
+		}
+	}	
+	
 	public void paint(Graphics g) {
 
 		// only paint if we have an image to paint onto
@@ -546,29 +731,31 @@ public class LayoutRegion extends JComponent {
 			image2D
 					.setComposite(AlphaComposite
 							.getInstance(AlphaComposite.SRC));
-			
-//			 AJK: 1/1/06 BEGIN 
-			// leave space for handles
-			
-//			// first clear background in case region has been deselected
-//			image2D.setPaint(Cytoscape.getCurrentNetworkView()
-//					.getVisualStyle().getGlobalAppearanceCalculator()
-//					.calculateBackgroundColor(Cytoscape.getCurrentNetwork()));
-//			image2D.fillRect(0, 0, image.getWidth(), image.getHeight());
 
-			VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
-			GlobalAppearanceCalculator gCalc = vs.getGlobalAppearanceCalculator();
+			// AJK: 1/1/06 BEGIN
+			// leave space for handles
+
+			// // first clear background in case region has been deselected
+			// image2D.setPaint(Cytoscape.getCurrentNetworkView()
+			// .getVisualStyle().getGlobalAppearanceCalculator()
+			// .calculateBackgroundColor(Cytoscape.getCurrentNetwork()));
+			// image2D.fillRect(0, 0, image.getWidth(), image.getHeight());
+
+			VisualStyle vs = Cytoscape.getVisualMappingManager()
+					.getVisualStyle();
+			GlobalAppearanceCalculator gCalc = vs
+					.getGlobalAppearanceCalculator();
 			Color backgroundColor = gCalc.getDefaultBackgroundColor();
-			image2D.setPaint(backgroundColor);			
+			image2D.setPaint(backgroundColor);
 			image2D.fillRect(0, 0, image.getWidth(), image.getHeight());
-			
+
 			image2D.setPaint(fillColor);
-			
-			
-//			image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
-			image2D.fillRect(HANDLE_SIZE / 2, HANDLE_SIZE / 2, 
-					image.getWidth(null) - HANDLE_SIZE, 
-					image.getHeight(null) - HANDLE_SIZE);
+
+			// image2D.fillRect(0, 0, image.getWidth(null),
+			// image.getHeight(null));
+			image2D.fillRect(HANDLE_SIZE / 2, HANDLE_SIZE / 2, image
+					.getWidth(null)
+					- HANDLE_SIZE, image.getHeight(null) - HANDLE_SIZE);
 
 			image2D.setColor(new Color(0, 0, 0, 255));
 			if (regionAttributeValue != null) {
@@ -578,37 +765,34 @@ public class LayoutRegion extends JComponent {
 
 			image2D.setColor(drawColor);
 			// adds thickness to border
-			
+
 			// AJK: 1/1/06 BEGIN
 			// leave space for handles
-//			image2D.drawRect(1, 1, image.getWidth(null) - 3, image
-//					.getHeight(null) - 3);
-//			// give border dimensionality
-//			image2D.draw3DRect(0, 0, image.getWidth(null) - 1, image
-//					.getHeight(null) - 1, true);
-			image2D.drawRect(1 + (HANDLE_SIZE / 2), 
-					1 + (HANDLE_SIZE / 2), 
-					image.getWidth(null) - 3 - HANDLE_SIZE, 
-					image.getHeight(null) - 3 - HANDLE_SIZE );
+			// image2D.drawRect(1, 1, image.getWidth(null) - 3, image
+			// .getHeight(null) - 3);
+			// // give border dimensionality
+			// image2D.draw3DRect(0, 0, image.getWidth(null) - 1, image
+			// .getHeight(null) - 1, true);
+			image2D.drawRect(1 + (HANDLE_SIZE / 2), 1 + (HANDLE_SIZE / 2),
+					image.getWidth(null) - 3 - HANDLE_SIZE, image
+							.getHeight(null)
+							- 3 - HANDLE_SIZE);
 			// give border dimensionality
-			image2D.draw3DRect(HANDLE_SIZE / 2, HANDLE_SIZE / 2, 
-					image.getWidth(null) - 1 - HANDLE_SIZE, 
-					image.getHeight(null) - 1 - HANDLE_SIZE, true);
+			image2D.draw3DRect(HANDLE_SIZE / 2, HANDLE_SIZE / 2, image
+					.getWidth(null)
+					- 1 - HANDLE_SIZE, image.getHeight(null) - 1 - HANDLE_SIZE,
+					true);
 			// AJK: 1/1/06 END
 
-			
 			// AJK: 12/29/06 BEGIN
 			// draw handles for stretching if selected
-			if (this.isSelected())
-			{
+			if (this.isSelected()) {
 				drawHandles(image2D);
 			}
-			
+
 			image2D.setComposite(origComposite);
 			((Graphics2D) g).drawImage(image, null, 0, 0);
 
-
-			
 		}
 	}
 
@@ -625,70 +809,59 @@ public class LayoutRegion extends JComponent {
 
 		// top left
 		image2D.fillOval(0, 0, HANDLE_SIZE, HANDLE_SIZE);
-		
+
 		// top center
-		image2D.fillOval(((int)(this.w1 / 2)),
-				0, HANDLE_SIZE, HANDLE_SIZE);
+		image2D.fillOval(((int) (this.w1 / 2)), 0, HANDLE_SIZE, HANDLE_SIZE);
 		// top right
-		image2D.fillOval((int) this.w1,
-				0, HANDLE_SIZE, HANDLE_SIZE);
+		image2D.fillOval((int) this.w1, 0, HANDLE_SIZE, HANDLE_SIZE);
 
 		// center left
-		image2D.fillOval(0, ((int) (this.h1 / 2)),
-				HANDLE_SIZE, HANDLE_SIZE);
+		image2D.fillOval(0, ((int) (this.h1 / 2)), HANDLE_SIZE, HANDLE_SIZE);
 
 		// center right
-		image2D.fillOval((int) this.w1, ((int) (this.h1 / 2)),
-				HANDLE_SIZE, HANDLE_SIZE);
-
-		// bottom left
-		image2D.fillOval(0, (int) this.h1, 
-				HANDLE_SIZE,
+		image2D.fillOval((int) this.w1, ((int) (this.h1 / 2)), HANDLE_SIZE,
 				HANDLE_SIZE);
 
+		// bottom left
+		image2D.fillOval(0, (int) this.h1, HANDLE_SIZE, HANDLE_SIZE);
+
 		// bottom center
-		image2D.fillOval(((int)(this.w1 / 2)),
-				(int) this.h1, HANDLE_SIZE,
+		image2D.fillOval(((int) (this.w1 / 2)), (int) this.h1, HANDLE_SIZE,
 				HANDLE_SIZE);
 
 		// bottom right
-		image2D.fillOval((int) this.w1, (int) this.h1, HANDLE_SIZE,
-				HANDLE_SIZE); // bottom right
-		
+		image2D
+				.fillOval((int) this.w1, (int) this.h1, HANDLE_SIZE,
+						HANDLE_SIZE); // bottom right
+
 		// now draw outline of handle
 		image2D.setColor(Color.black);
 		// top left
 		image2D.drawOval(0, 0, HANDLE_SIZE, HANDLE_SIZE);
-		
+
 		// top center
-		image2D.drawOval(((int)(this.w1 / 2)),
-				0, HANDLE_SIZE, HANDLE_SIZE);
+		image2D.drawOval(((int) (this.w1 / 2)), 0, HANDLE_SIZE, HANDLE_SIZE);
 		// top right
-		image2D.drawOval((int) this.w1,
-				0, HANDLE_SIZE, HANDLE_SIZE);
+		image2D.drawOval((int) this.w1, 0, HANDLE_SIZE, HANDLE_SIZE);
 
 		// center left
-		image2D.drawOval(0, ((int) (this.h1 / 2)),
-				HANDLE_SIZE, HANDLE_SIZE);
+		image2D.drawOval(0, ((int) (this.h1 / 2)), HANDLE_SIZE, HANDLE_SIZE);
 
 		// center right
-		image2D.drawOval((int) this.w1, ((int) (this.h1 / 2)),
-				HANDLE_SIZE, HANDLE_SIZE);
-
-		// bottom left
-		image2D.drawOval(0, (int) this.h1, 
-				HANDLE_SIZE,
+		image2D.drawOval((int) this.w1, ((int) (this.h1 / 2)), HANDLE_SIZE,
 				HANDLE_SIZE);
 
+		// bottom left
+		image2D.drawOval(0, (int) this.h1, HANDLE_SIZE, HANDLE_SIZE);
+
 		// bottom center
-		image2D.drawOval(((int)(this.w1 / 2)),
-				(int) this.h1, HANDLE_SIZE,
+		image2D.drawOval(((int) (this.w1 / 2)), (int) this.h1, HANDLE_SIZE,
 				HANDLE_SIZE);
 
 		// bottom right
-		image2D.drawOval((int) this.w1, (int) this.h1, HANDLE_SIZE,
-				HANDLE_SIZE); // bottom right
-		
+		image2D
+				.drawOval((int) this.w1, (int) this.h1, HANDLE_SIZE,
+						HANDLE_SIZE); // bottom right
 
 	}
 

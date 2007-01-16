@@ -202,9 +202,14 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			if (pickedRegion != null) {
 				pickedRegion.setX1(pickedRegion.getX1() + mousex - startx);
 				pickedRegion.setY1(pickedRegion.getY1() + mousey - starty);
-				pickedRegion.setBounds((int) pickedRegion.getX1(),
-						(int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
-						(int) pickedRegion.getH1());
+// AJK: 01/09/07: use double coordinates to avoid roundoff
+//				pickedRegion.setBounds((int) pickedRegion.getX1(),
+//						(int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
+//						(int) pickedRegion.getH1());
+				pickedRegion.setBounds(pickedRegion.getX1(),
+						 pickedRegion.getY1(),  pickedRegion.getW1(),
+						 pickedRegion.getH1());
+
 				NodeViewsTransformer.transform(boundedNodeViews,
 						pickedRegion.getBounds());
 				// System.out.println ("Region start point set to = " +
@@ -552,9 +557,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				regionToStretch.setH1(regionToStretch.getH1() + mousey - starty);;
 				regionToStretch.setW1(regionToStretch.getW1() + mousex - startx);
 			}			
-		}			
-		regionToStretch.setBounds((int) regionToStretch.getX1(), (int) regionToStretch
-				.getY1(), (int) regionToStretch.getW1(), (int) regionToStretch
+		}
+		// AJK: use double coordinates to avoid roundoff
+//		regionToStretch.setBounds((int) regionToStretch.getX1(), (int) regionToStretch
+//				.getY1(), (int) regionToStretch.getW1(), (int) regionToStretch
+//				.getH1());
+		regionToStretch.setBounds( regionToStretch.getX1(),  regionToStretch
+				.getY1(),  regionToStretch.getW1(),  regionToStretch
 				.getH1());
 		NodeViewsTransformer.transform(boundedNodeViews,
 				regionToStretch.getBounds());
@@ -671,9 +680,15 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 			} // end of if ()
 			else if ((label == REROUTE_REGION) && (pickedRegion != null)) {
-				pickedRegion.setBounds((int) pickedRegion.getX1(),
-						(int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
-						(int) pickedRegion.getH1());
+
+				// AJK: 01/09/06 use double coordinates to avoid roundoff errors
+//				pickedRegion.setBounds((int) pickedRegion.getX1(),
+//						(int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
+//						(int) pickedRegion.getH1());
+				pickedRegion.setBounds( pickedRegion.getX1(),
+						 pickedRegion.getY1(),  pickedRegion.getW1(),
+						 pickedRegion.getH1());
+
 				NodeViewsTransformer.transform(pickedRegion.getNodeViews(),
 						pickedRegion.getBounds());
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
