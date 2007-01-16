@@ -243,10 +243,10 @@ public class CyAttrDialog extends JDialog
 				}
 			String[] selectAttrName = new String[selectAttr.size()];
 			selectAttr.toArray(selectAttrName);
-			// close popup window
-			CyAttrDialog.this.dispose();
 			// callback
 			selectOk.takeAction(selectAttrName);
+			// close popup window
+			CyAttrDialog.this.dispose();
 			}
 		}
 	}
