@@ -56,7 +56,6 @@ public class CyGoose implements Goose
 
 	public CyGoose(GooseDialog GD, Boss boss)
 		{
-		//print("***CyGoose constructor***");
 		GaggleBoss = boss;
 		this.GDialog = GD;
 		
@@ -97,13 +96,15 @@ public class CyGoose implements Goose
 	// hides goose
 	public void doHide() throws RemoteException
 		{
-		Cytoscape.getDesktop().setVisible(false);
+		Cytoscape.getDesktop().toBack();
+		//Cytoscape.getDesktop().setVisible(false);
 		}
 
 	// shows goose
 	public void doShow() throws RemoteException
 		{
 		Cytoscape.getDesktop().setVisible(true);
+		Cytoscape.getDesktop().toFront();
 		}
 
 	// returns name of this goose
@@ -160,11 +161,10 @@ public class CyGoose implements Goose
 
 		// iterate over the attribute hash, key=attribute name, value=ArrayList
     Iterator<String> attrKeyIter = AttrMap.keySet().iterator();
-		print("handleMap HASHMAP");
     while (attrKeyIter.hasNext())
       {
       String attrName = attrKeyIter.next();
-			print("ATTR: "+attrName);
+			print("MAP TO ATTR: "+attrName);
 
       ArrayList AttrVals = (ArrayList) AttrMap.get(attrName);
 
@@ -182,18 +182,14 @@ public class CyGoose implements Goose
 
       // determine the data type of attribute in hashMap (should be DOUBLE, STRING, BOOLEAN, or INT)
       String valType = nodeValsClass.getComponentType().getName();
-      Collection<CyNode> NodeCollection = new ArrayList<CyNode>();
 
       for (int i = 0; i < NodeIds.length; i++)
         {
-				// !!! this method may get any matching node in any matching network, this may not be desireable
-				print("Id: "+NodeIds[i]);
         CyNode selectNode = Cytoscape.getCyNode(NodeIds[i]);
         CyAttributes NodeAtts = Cytoscape.getNodeAttributes();
 
         if (selectNode != null)
           {
-          NodeCollection.add(selectNode);
 					NodeAtts.setAttribute(selectNode.getIdentifier(), Semantics.SPECIES, species);
 					print("Value type: "+valType);          
 					// set all attributes from the map
@@ -224,10 +220,9 @@ public class CyGoose implements Goose
             }
           }
         }
-      //Net.setSelectedNodeState(NodeCollection, true);
       }
     // refresh network to flag selected nodes
-    Cytoscape.getDesktop().setFocus(Net.getIdentifier());
+    Cytoscape.getNetworkView(Net.getIdentifier()).redrawGraph(true, true);
 		}
 
 	public void handleMatrix(DataMatrix matrix) throws RemoteException
