@@ -57,7 +57,7 @@
 	     letters, "beta", etc.  to version.num.  
 	     Extra information can, however, be added to version. -->
 	<property name="version.num" value="2.4.0" />
-	<property name="version" value="${version.num}-b3" />
+	<property name="version" value="${version.num}" />
 	<property name="dirname.release.dir" value="cytoscape-v${version}" />
 
 	<!-- Web Start Directory -->
