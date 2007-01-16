@@ -324,28 +324,20 @@ public class ImportTextTableDialog extends JDialog implements
 			updatePrimaryKeyComboBox();
 		} else if (evt.getPropertyName()
 				.equals(NETWORK_IMPORT_TEMPLATE_CHANGED)) {
-
 			/*
 			 * This is a signal from network import options panel.
 			 */
 			List<Integer> columnIdx = (List<Integer>) evt.getNewValue();
 
-			AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) previewPanel
+			final AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) previewPanel
 					.getPreviewTable().getCellRenderer(0, 0);
 			rend.setSourceIndex(columnIdx.get(0));
 			rend.setTargetIndex(columnIdx.get(1));
 			rend.setInteractionIndex(columnIdx.get(2));
-
-			JTableHeader hd = previewPanel.getPreviewTable().getTableHeader();
-			((HeaderRenderer) hd.getDefaultRenderer()).setSourceIndex(columnIdx
-					.get(0));
-			((HeaderRenderer) hd.getDefaultRenderer()).setTargetIndex(columnIdx
-					.get(1));
-			((HeaderRenderer) hd.getDefaultRenderer())
-					.setInteractionIndex(columnIdx.get(2));
-
+			
+			previewPanel.getPreviewTable().getTableHeader().resizeAndRepaint();
 			previewPanel.getPreviewTable().repaint();
-			previewPanel.repaint();
+			//previewPanel.repaint();
 		}
 	}
 
@@ -2290,6 +2282,7 @@ public class ImportTextTableDialog extends JDialog implements
 	private void reloadButtonActionPerformed(java.awt.event.ActionEvent evt)
 			throws IOException {
 		displayPreview();
+		attrNameCheckBox.setSelected(false);
 	}
 
 	/**

@@ -58,11 +58,11 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.*
  * 
  */
 public class GeneAssociationReader implements TextTableReader {
+	
+	private static final String GO_PREFIX = "GO";
+	private static final String ANNOTATION_PREFIX = "annotation";
 
 	private static final String GA_DELIMITER = TAB.toString();
-
-	// This tag will be used by plugins
-	private static final String IS_ANNOTATION = "isAnnotation";
 
 	private static final String ID = "ID";
 	private static final int EXPECTED_COL_COUNT = GeneAssociationTags.values().length;
@@ -292,11 +292,11 @@ public class GeneAssociationReader implements TextTableReader {
 		if (geneOntology.getAspect(entries[GOID]) == null) {
 			return;
 		}
-
+		
 		/*
 		 * Create attribute name based on GO Aspect (a.k.a. Name Space)
 		 */
-		final String attributeName = "GO "
+		final String attributeName = ANNOTATION_PREFIX + "." + GO_PREFIX + " "
 				+ geneOntology.getAspect(entries[GOID]).name();
 
 		/*
@@ -336,7 +336,7 @@ public class GeneAssociationReader implements TextTableReader {
 		}
 	}
 
-	private void mapEntry(String[] entries, String key, String attributeName) {
+	private void mapEntry(final String[] entries, final String key, final String attributeName) {
 
 		String fullName = null;
 
@@ -361,26 +361,26 @@ public class GeneAssociationReader implements TextTableReader {
 						new ArrayList(goTermSet));
 				break;
 			case TAXON:
-				nodeAttributes.setAttribute(key, tag.toString(),
+				nodeAttributes.setAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(),
 						(String) speciesMap.get(entries[i].split(":")[1]));
 				break;
 			case EVIDENCE:
 				Map<String, String> evidences = nodeAttributes.getMapAttribute(
-						key, tag.toString());
+						key, ANNOTATION_PREFIX + "." + tag.toString());
 				if (evidences == null) {
 					evidences = new HashMap<String, String>();
 				}
 				evidences.put(entries[GOID], entries[i]);
-				nodeAttributes.setMapAttribute(key, tag.toString(), evidences);
+				nodeAttributes.setMapAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(), evidences);
 				break;
 			case DB_REFERENCE:
 				Map<String, String> references = nodeAttributes
-						.getMapAttribute(key, tag.toString());
+						.getMapAttribute(key, ANNOTATION_PREFIX + "." + tag.toString());
 				if (references == null) {
 					references = new HashMap<String, String>();
 				}
 				references.put(entries[GOID], entries[i]);
-				nodeAttributes.setMapAttribute(key, tag.toString(), references);
+				nodeAttributes.setMapAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(), references);
 				break;
 			case DB_OBJECT_SYMBOL:
 			case ASPECT:
@@ -388,7 +388,7 @@ public class GeneAssociationReader implements TextTableReader {
 				// Ignore these lines
 				break;
 			default:
-				nodeAttributes.setAttribute(key, tag.toString(), entries[i]);
+				nodeAttributes.setAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(), entries[i]);
 				break;
 			}
 		}

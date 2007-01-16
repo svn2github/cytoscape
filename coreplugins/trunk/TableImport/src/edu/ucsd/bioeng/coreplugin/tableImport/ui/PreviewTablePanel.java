@@ -1,5 +1,14 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
+import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogColorTheme.ALIAS_COLOR;
+import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogColorTheme.ONTOLOGY_COLOR;
+import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogColorTheme.PRIMARY_KEY_COLOR;
+import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogColorTheme.SPECIES_COLOR;
+import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogFontTheme.LABEL_FONT;
+import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.RIGHT_ARROW_ICON;
+import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON;
+import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.TEXT_FILE_ICON;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -57,10 +66,6 @@ import cytoscape.util.swing.ColumnResizer;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
 import edu.ucsd.bioeng.coreplugin.tableImport.ui.ImportTextTableDialog.FileTypes;
-
-import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogColorTheme.*;
-import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogFontTheme.*;
-import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.*;
 
 /**
  * General purpose preview table panel.
@@ -215,8 +220,6 @@ public class PreviewTablePanel extends JPanel {
 		keyPreviewList = new JList(keyListModel);
 		keyPreviewScrollPane = new JScrollPane();
 
-		// model = new DefaultTableModel();
-
 		previewTables = new HashMap<String, JTable>();
 		previewTable = new JTable();
 		previewTable.setName("previewTable");
@@ -258,15 +261,13 @@ public class PreviewTablePanel extends JPanel {
 		keyPreviewScrollPane.setViewportBorder(new CentredBackgroundBorder(bi));
 
 		tableTabbedPane.addTab(DEF_TAB_MESSAGE, previewScrollPane);
-		// tableTabbedPane.setBorder(new CentredBackgroundBorder(bi));
 
 		rightArrowLabel.setIcon(RIGHT_ARROW_ICON.getIcon());
 
 		JTableHeader hd = previewTable.getTableHeader();
 		hd.setReorderingAllowed(false);
-		hd
-				.setDefaultRenderer(new HeaderRenderer(hd.getDefaultRenderer(),
-						null));
+		hd.setDefaultRenderer(new HeaderRenderer(
+				hd.getDefaultRenderer(),null));
 
 		/*
 		 * Setting table properties
@@ -287,11 +288,9 @@ public class PreviewTablePanel extends JPanel {
 
 		instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		instructionLabel
-				.setText("Left Click: Edit Column  Right Click: ON/OFF Column");
+				.setText("Left Click: Enable/Disable Column, Right Click: Edit Column");
 		instructionLabel.setFont(LABEL_FONT.getFont());
 		instructionLabel.setForeground(Color.red);
-		instructionLabel.setOpaque(true);
-		instructionLabel.setBorder(new LineBorder(Color.red, 1, true));
 
 		legendLabel.setFont(LABEL_FONT.getFont());
 		legendLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -984,10 +983,10 @@ public class PreviewTablePanel extends JPanel {
 	private final class TableHeaderListener implements MouseListener {
 		public void mouseClicked(MouseEvent e) {
 
-			JTable targetTable = getPreviewTable();
+			final JTable targetTable = getPreviewTable();
 			final String selectedTabName = getSelectedSheetName();
-			Byte[] dataTypes = dataTypeMap.get(selectedTabName);
-			Byte[] listDataTypes = listDataTypeMap.get(selectedTabName);
+			final Byte[] dataTypes = dataTypeMap.get(selectedTabName);
+			final Byte[] listDataTypes = listDataTypeMap.get(selectedTabName);
 
 			final int column = targetTable.getColumnModel().getColumnIndexAtX(
 					e.getX());
@@ -1052,7 +1051,7 @@ public class PreviewTablePanel extends JPanel {
 				}
 			} else if (SwingUtilities.isLeftMouseButton(e)
 					&& e.getClickCount() == 1) {
-				AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) targetTable
+				final AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) targetTable
 						.getCellRenderer(0, column);
 				rend.setImportFlag(column, !rend.getImportFlag(column));
 				targetTable.getTableHeader().resizeAndRepaint();

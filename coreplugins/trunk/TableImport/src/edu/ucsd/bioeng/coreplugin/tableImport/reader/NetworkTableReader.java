@@ -114,7 +114,6 @@ public class NetworkTableReader extends AbstractGraphReader implements
 	}
 
 	public String getReport() {
-		// TODO Auto-generated method stub
 		final StringBuffer sb = new StringBuffer();
 		sb.append(getNodeIndicesArray().length + " nodes and " + getEdgeIndicesArray().length + " edges are loaded.\n");
 		sb.append("New network name is " + super.getNetworkName() + "\n\n");

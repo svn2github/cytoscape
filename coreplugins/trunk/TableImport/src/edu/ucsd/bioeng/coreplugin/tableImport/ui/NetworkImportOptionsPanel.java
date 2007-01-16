@@ -39,7 +39,6 @@ public class NetworkImportOptionsPanel extends JPanel {
 
 	private void initComponents() {
 
-		advancedOptionPanel = new javax.swing.JPanel();
 		sourceLabel = new javax.swing.JLabel();
 		sourceComboBox = new javax.swing.JComboBox();
 		interactionLabel = new javax.swing.JLabel();
@@ -312,7 +311,6 @@ public class NetworkImportOptionsPanel extends JPanel {
 
 	// Variables declaration - do not modify
 	private javax.swing.JLabel edgeAttributesLabel;
-	private javax.swing.JPanel advancedOptionPanel;
 	private javax.swing.JLabel iconLabel1;
 	private javax.swing.JLabel iconLabel2;
 	private javax.swing.JComboBox interactionComboBox;
