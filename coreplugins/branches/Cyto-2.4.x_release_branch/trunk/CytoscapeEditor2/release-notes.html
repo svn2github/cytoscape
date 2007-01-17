@@ -1,0 +1,136 @@
+<HTML>
+<HEAD>
+<TITLE>CytoscapeEditor Release Notes (version 2.4 alfa 4)</TITLE>
+</HEAD>
+<BODY>
+
+
+<H1>CytoscapeEditor Release Notes (version 2.4 alfa 4)</H1>
+<OL>
+<LI>Added keyboard accelerator for "Delete Selected Nodes and Edges"
+menu item.
+</OL>
+
+<H1>Prior Notes</H1>
+
+<H2>CytoscapeEditor Release Notes (version 2.4 alfa 3)</H2>
+<OL>
+
+<LI>Various changes and cleanup to allow easier subclassing of
+CytoscapeEditor and access to the DeleteAction.
+<OL type=a>
+
+<P><LI>Some cleanup of DeleteAction an removed 2 parameter
+       DeleteAction constructor.
+<LI>Cleanup and changed
+    BasicCytoscapeEditor.addNodeContextMenuItems(),
+    addEdgeContextMenuItems(), and
+    removeExistingDeleteMenuItemIfNecessary() to handle changes to
+    DeleteAction.
+<LI>Added CytoscapeEditorManagerSupport.getDeleteAction() and
+    DeleteAction parameter to constructor.
+<LI>Changed CytoscapeEditorManager.initialize() to send
+CytoscapeEditorManagerSupport the DeleteAction created for use by
+subclasses.
+</OL>
+</OL>
+
+<H2>CytoscapeEditor Release Notes (version 2.4 alfa 2)</H2>
+<OL>
+<LI>Changed the CytoscapeEditor to be intelligent about what drag
+cursor is shown when performing a drag-drop from a shape palette entry
+to a CyNetworkView of interest.
+
+<P>Built a flexible framework using DragSourceContextCursorSetters
+to determine cursor for each palette entry.
+</OL>
+
+<H2>CytoscapeEditor Release Notes (version 2.4 alfa 1)</H2>
+<OL>
+
+<LI>Refactored BasicNetworkEditEventHandler.finishEdge() into smaller
+pieces for subclass usage. Cleaned up
+BasicNetworkEditEventHandler.mousePressed() and a few protected
+instance variables that should be private.
+
+<P><LI>Cleaned up code and refactored
+PaletteNetworkEditEventHandler.itemDropped() and associated methods
+for easier use by subclasses and code cleanup.
+<P><LI>Removed BioPAXNetworkEditEventHandler.
+</OL>
+
+<H2>CytoscapeEditor Release Notes (version 2.3.03)</H2>
+<OL>
+
+<LI>Created a new way to easily produce ShapePalette entries for
+editors.
+
+<P>This involves the use of new interfaces ShapePaletteInfo and
+ShapePaletteInfoGenerator and their supporting classes. Refactored
+DefaultCytoscapeEditor to use this new ShapePaletteInfoGenerator.
+
+
+<P><LI>Added ability of ShapePalette entries to handle visual style
+size information.
+
+<P>Changed computation of BasicCytoShapeEntity size to allow for
+ larger CytoShapeIcons. Added CytoShapeIcon constructor for handling
+ size information. Changed getIconWidth/Height() to return real width
+ and height of icon. Changed the ShapePalette JList to no longer use
+ setFixedCellHeight() since BasicCytoShapeEntitys can now have
+ different sizes.
+
+<P><LI>Added CytoShapeIcon.DEFAULT_WIDTH and DEFAULT_HEIGHT and deprecated
+  CytoShapeIcon.WIDTH & HEIGHT.
+<P><LI>Removed SimpleBioPAX_Editor.
+</OL>
+
+
+<H2>CytoscapeEditor Release Notes (version 2.3.02)</H2>
+<OL>
+<LI>Fixed compilation problem caused by accidental release of changes
+to CytoscapeEditorManager.java.
+</OL>
+
+<H2>CytoscapeEditor Release Notes (version 2.3.01)</H2>
+
+<OL>
+
+<LI>CytoscapeEditorManagerSupport: Fixed updateEditorPalette() to not
+assume visualStyleName is the same as Editor name. Added some
+comments.
+
+<P><LI>BasicCytoscapeEditor: Removed setting of BIO_PAX attributes from
+addNode(). Fixed deprecated method usage in addNode().
+
+<P><LI>BasicCytoShapeEntity, ShapePalette, InvalidEditorException: Added
+generated serial version UUID for serializable classes.
+
+CytoscapeEditor: Updated to remove deprecated use of FlagEventListener
+(now is SelectEventListener)
+
+<P><LI>CytoscapeEditorManager:
+<OL type=a>
+  <LI> Fixed so visualStyleName can be different from the editor name.
+  <LI> Added getEditorNameForVisualStyleName() and changed
+     initializeEditor() to take a visualStyleName parameter.
+  <LI> Changed many instance variables to be private vs protected.
+  <LI> Added intialization of this manager if register() is called by
+       another plugin before this plugin is loaded.
+</OL>
+<P><LI>CytoscapeEditorPlugin:
+<OL type=a>
+  <LI> Removed deprecated call to CytoscapeInit.getDefaultVisualStyle() in
+     initializeCytoscapeEditor().
+  <LI> Removed some misleading code--println that editor is loaded and
+  initialization code as though editor is initialized via a menu item,
+  when it is not.
+</OL>
+
+</OL>
+
+<HR>
+<SMALL><EM>This page was last updated: 01/09/07</EM></SMALL>
+
+</BODY>
+</HTML>
