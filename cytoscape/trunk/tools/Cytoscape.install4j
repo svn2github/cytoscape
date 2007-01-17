@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="3.2.4">
   <directoryPresets config="./cytoscape-v%VERSION%" />
-  <application name="Cytoscape" distributionSourceDir="" applicationId="5211-3645-3154-2580" mediaDir="dist" mediaFilePattern="%SHORT_NAME%_%VERSION%_%PLATFORM%" compression="6" lzmaCompression="false" keepModificationTimes="false" shortName="Cytoscape" publisher="Cytoscape Consortium" publisherWeb="http://cytoscape.org" version="@version@" allPathsRelative="true" backupOnSave="false" autoSave="false" macSignature="????" javaMinVersion="1.4.2" javaMaxVersion="" allowBetaVM="true">
+  <application name="Cytoscape" distributionSourceDir="" applicationId="5211-3645-3154-2580" mediaDir="dist" mediaFilePattern="%SHORT_NAME%_%VERSION%_%PLATFORM%" compression="6" lzmaCompression="false" keepModificationTimes="false" shortName="Cytoscape" publisher="Cytoscape Consortium" publisherWeb="http://cytoscape.org" version="@version@" allPathsRelative="true" backupOnSave="false" autoSave="false" macSignature="????" javaMinVersion="1.5.0" javaMaxVersion="" allowBetaVM="true">
     <searchSequence>
       <registry />
       <envVar name="JAVA_HOME" />
