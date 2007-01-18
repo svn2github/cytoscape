@@ -114,6 +114,8 @@ public class JnlpWriterUtil
 	 */
 	public void writeToFile() throws java.io.IOException
 		{
+		File SaveDirCheck = new File(this.SaveDir);
+		if (!SaveDirCheck.exists()) SaveDirCheck.mkdir();
 		FileWriter writer = new FileWriter(this.SaveDir+"/"+Filename);
 		Out.output(this.Doc, writer);
 		}
