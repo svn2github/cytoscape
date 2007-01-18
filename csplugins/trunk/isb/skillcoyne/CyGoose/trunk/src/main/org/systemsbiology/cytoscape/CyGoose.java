@@ -1,13 +1,13 @@
 package org.systemsbiology.cytoscape;
 
-import org.systemsbiology.cytoscape.*;
+import org.systemsbiology.cytoscape.GagglePlugin;
+import org.systemsbiology.cytoscape.CyBroadcast;
+import org.systemsbiology.cytoscape.dialog.GooseDialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.UnmarshalException;
-import java.rmi.server.UnicastRemoteObject;
 
 import java.util.*;
 
@@ -18,15 +18,23 @@ import org.systemsbiology.gaggle.experiment.datamatrix.DataMatrix;
 import org.systemsbiology.gaggle.network.*;
 import org.systemsbiology.gaggle.boss.Boss;
 import org.systemsbiology.gaggle.geese.Goose;
-import org.systemsbiology.gaggle.util.MiscUtil;
 
 import cytoscape.*;
-import cytoscape.util.CytoscapeToolBar;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.*;
+import cytoscape.visual.ui.VizMapUI;
 import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
-import cytoscape.view.*;
-import giny.view.*;
-import giny.model.*;
+
+import giny.view.NodeView;
+import giny.view.EdgeView;
+import giny.view.GraphView;
+
+import giny.model.Node;
+import giny.model.Edge;
+
 
 /**
  * @author skillcoy
@@ -41,16 +49,17 @@ public class CyGoose implements Goose
 	private String GooseName;
 	private String GooseNetId;	
 
-	protected Boss GaggleBoss;
+	private Boss GaggleBoss;
 	private GooseDialog GDialog;
-
+	
+	private NodeAppearanceCalculator NAC; 
+	
 	private String BroadcastId;
-	private int NetworkGeeseStartIndex;
 	private String targetGoose = "Boss";
-
-	// keeps track of all the network ids
-	private HashMap<String, String> NetworkGeese = new HashMap<String, String>();;
-
+	
+	private boolean IsMovieAttributeMapped;
+	private boolean AttributeChecked = false;
+	
 	private static void print(String S)
 		{ System.out.println(S); }
 
@@ -76,15 +85,11 @@ public class CyGoose implements Goose
 
 	// the boss does not call this method, all connections are handled by GagglePlugin
 	public void connectToGaggle() throws Exception
-		{
-		print("Use GagglePlugin methods for connection");
-		}
+		{ print("Use GagglePlugin methods for connection"); }
 
 	// boss does not call this method
 	public void doBroadcastList() throws RemoteException
-		{
-		print("doBroadcastList() not implemented");
-		}
+		{ print("doBroadcastList() not implemented"); }
 
 	// exactly what it says
 	public void doExit() throws RemoteException, UnmarshalException
@@ -95,10 +100,7 @@ public class CyGoose implements Goose
 
 	// hides goose
 	public void doHide() throws RemoteException
-		{
-		Cytoscape.getDesktop().toBack();
-		//Cytoscape.getDesktop().setVisible(false);
-		}
+		{ Cytoscape.getDesktop().setVisible(false); }
 
 	// shows goose
 	public void doShow() throws RemoteException
@@ -107,19 +109,21 @@ public class CyGoose implements Goose
 		Cytoscape.getDesktop().toFront();
 		}
 
-	// returns name of this goose
+	/**
+	 * @return Name of the goose
+	 */
 	public String getName() //throws RemoteException
-		{
-		return this.GooseName;
-		}
+		{ return this.GooseName; }
 
-	// This should be used to get the network id for the network "goose" for use by all handle/broadcast methods
+	/**
+	 * @return Network id of goose
+	 */
 	public String getNetworkId()
-		{
-		return this.GooseNetId;
-		}
+		{ return this.GooseNetId; }
 
-	// Gets array of ids of selected nodes
+	/**
+	 * @return Array of selected node ids
+	 */
 	public String[] getSelection() throws RemoteException
 		{
 		CyNetwork Net = Cytoscape.getNetwork( this.getNetworkId() );
@@ -134,23 +138,26 @@ public class CyGoose implements Goose
 		return Selected;
 		}
 
-	// returns the count of all selected nodes
+	/**
+	 * @return Total number of selected nodes
+	 */
 	public int getSelectionCount() throws RemoteException
 		{
 		CyNetwork Net = Cytoscape.getNetwork( this.getNetworkId() );		
 		return Net.getSelectedNodes().size();
 		}
 
-	// this is how the 1.1 goose handles clusters, should be updated
+	// this is how the 1.1 goose handles clusters, should be updated?
  	// TODO: select all nodes that match geneNames with attributes in conditionNames of species specified should be selected
 	public void handleCluster(String species, String clusterName,
 			String[] rowNames, String[] columnNames) throws RemoteException
-		{
-		this.handleNameList(species, rowNames);
-		}
+		{ this.handleNameList(species, rowNames); }
 
-	// adds attributes to an existing network
-	// TODO: apparently this method is called for the "movies" from the DMV
+	// adds attributes to an existing network 
+	// this method is called for the "movies" from the DMV
+	// TODO: check that the attribute being used is part of a NodeAppearanceCalculator
+	// TODO: setup some default calculators for color/shape/size in cases where an attribute is not matched so a movie
+	// will do something regardless
 	public void handleMap(String species, String dataTitle, HashMap hashMap)
 			throws RemoteException
 		{
@@ -158,14 +165,22 @@ public class CyGoose implements Goose
 		print("********handleMap(String, String, HashMap) \"dataTitle\"***********");
 		CyNetwork Net = Cytoscape.getNetwork( this.getNetworkId() );
  		Cytoscape.getDesktop().setFocus(Net.getIdentifier());
-
+ 		Cytoscape.getDesktop().toFront();
+ 		
+ 		// if a user has anything previously selected it can obscure changes the movie makes
+ 		Net.unselectAllNodes();
+ 		Net.unselectAllEdges();
+ 		
 		// iterate over the attribute hash, key=attribute name, value=ArrayList
     Iterator<String> attrKeyIter = AttrMap.keySet().iterator();
     while (attrKeyIter.hasNext())
       {
       String attrName = attrKeyIter.next();
-			print("MAP TO ATTR: "+attrName);
-
+      
+      // this just lets us shortcut process
+      if (!this.IsMovieAttributeMapped && AttributeChecked) return;
+  			
+      
       ArrayList AttrVals = (ArrayList) AttrMap.get(attrName);
 
       // check the array contains other arrays as expected
@@ -220,6 +235,20 @@ public class CyGoose implements Goose
             }
           }
         }
+      
+      
+//      this.IsMovieAttributeMapped = this.isNodeAttributeMapped(attrName);
+//      if (!this.IsMovieAttributeMapped && !AttributeChecked)
+//				{ 
+//				GagglePlugin.showDialogBox("'" + attrName +"' is not mapped to anything in the vizmapper, movie may not show anything.<br>Please set up a visual style for this attribute", 
+//																	"Warning", JOptionPane.ERROR_MESSAGE); 
+//				this.MovieAttribute = attrName;
+//				Cytoscape.getDesktop().getVizMapUI().refreshUI();
+//				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().setVisible(true);		
+//				AttributeChecked = true;
+//				return;
+//				}
+
       }
     // refresh network to flag selected nodes
     Cytoscape.getNetworkView(Net.getIdentifier()).redrawGraph(true, true);
@@ -227,7 +256,7 @@ public class CyGoose implements Goose
 
 	public void handleMatrix(DataMatrix matrix) throws RemoteException
 		{
-    print("handleMatrix(DataMatrix)");
+    print("***** handleMatrix(DataMatrix) ****** ");
 		CyNetwork Net = Cytoscape.getNetwork( this.getNetworkId() );
     Cytoscape.getDesktop().setFocus(Net.getIdentifier());
     
@@ -266,21 +295,18 @@ public class CyGoose implements Goose
 
 
 
-	
 	// If this is sent to the default boss (Cytoscape, no network) nothing will happen
 	// If this is sent to a network boss it will select the appropriate nodes
 	public void handleNameList(String species, String[] names) throws RemoteException
 		{
+		print("**** handleNameList(String, String[]) *****");
 		CyNetwork Net = Cytoscape.getNetwork( this.getNetworkId() );
 
 		for ( String CurrentName: names )
 			{
 			CyNode SelectNode = Cytoscape.getCyNode(CurrentName);
-			print("Node found: "+SelectNode.getIdentifier());
 			if ( (SelectNode != null) ) 
-				{ 
-				Net.setSelectedNodeState( (Node)SelectNode, true );
-				}
+				{ Net.setSelectedNodeState( (Node)SelectNode, true ); }
  			}
 
 		if (Net.getSelectedNodes().size() <= 0)
@@ -305,15 +331,9 @@ public class CyGoose implements Goose
 		if (network.getInteractions().length > 0)
 			{
 	    if ( this.getNetworkId() == null || this.getNetworkId().equals("0") ) 
-	    	{
-				print("Creating new network, goose net id was "+this.getNetworkId());
-				handleNetwork(species, network, Cytoscape.createNetwork("Gaggle "+species), false);  
-				}
+	    	{ handleNetwork(species, network, Cytoscape.createNetwork("Gaggle "+species), false); }
 			else 
-				{
-				print("Adding to network, goose net id was "+this.getNetworkId());
-				handleNetwork(species, network, Cytoscape.getNetwork(this.getNetworkId()), true);
-				}
+				{ handleNetwork(species, network, Cytoscape.getNetwork(this.getNetworkId()), true); }
 			}
 		else
 			{
@@ -398,7 +418,33 @@ public class CyGoose implements Goose
 				}
 			}
 
-
+	private boolean isNodeAttributeMapped(String AttributeName)
+		{
+		boolean HasAttribute = false;
+		
+		VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
+		NAC = CurrentStyle.getNodeAppearanceCalculator();
+		List<Calculator> NodeCalcs = NAC.getCalculators();
+		Iterator<Calculator> nI = NodeCalcs.iterator();
+		while(nI.hasNext())
+			{
+			Calculator Current = nI.next();
+			print( "CALCULATOR CLASS: " + Current.getClass().getName() );
+			java.util.Vector<ObjectMapping> AllMaps = Current.getMappings();
+			Iterator<ObjectMapping> mI = AllMaps.iterator();
+			while(mI.hasNext())
+				{
+				ObjectMapping Map = mI.next();
+				String ControllingAttName = Map.getControllingAttributeName();
+				print("ATTRIBUTE: " + ControllingAttName + " COMPARE " + AttributeName);
+				if ( ControllingAttName != null &&
+						 ControllingAttName.equalsIgnoreCase(AttributeName) ) HasAttribute = true;
+				print(" Has attribute: "+HasAttribute);
+				}
+			}
+		return HasAttribute;
+		}
+		
 
 	// no point in this one
 	public void setGeometry(int x, int y, int width, int height) throws RemoteException
