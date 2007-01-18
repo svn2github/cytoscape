@@ -70,9 +70,12 @@
 			<fileset dir="${classes.dir}" />
 			<fileset dir="${build.dir}" />
 		</jar>
-
 	</target>
 
+	<target name="signJar" depends="jar" description="Sign jar file">
+		<!-- Important to use the same keypass info used for signing cytoscape -->
+		<signjar alias="cytoscape" storepass="secret" jar="${build.dir}/${jar.file}"/>
+	</target>
 
-
+		
 </project>
