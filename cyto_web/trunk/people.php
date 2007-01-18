@@ -84,7 +84,7 @@
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td>Ethan Cerami</td>
     <td>Mike Smoot</td>
-    <td>Keiichiro Ono</td>
+    <td><a href="http://www.cytoscape.org/cgi-bin/moin.cgi/KeiichiroOno">Keiichiro Ono</a></td>
     <td>Chris Workman</td>
     <td>Allan Kuchinsky</td>
     <td>Aditya Vailaya</td>

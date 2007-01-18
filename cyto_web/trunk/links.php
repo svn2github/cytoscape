@@ -35,48 +35,43 @@ provides the graphics engine used by Cytoscape, has a Zoomable User Interface(ZU
 and provides a powerful framework for user interaction and data display.
 <br><br>
 
-<P>
-<big><b>Software</b></big>
-<P>
-<a href="http://www.genmapp.org/">GenMAPP</a>
-<br>
-<a href="http://biodata.mshri.on.ca/osprey/servlet/Index">Osprey</a>
-<br>
-<a href="http://nemo-cyclone.sourceforge.net">Cyclone</a>
-<br><br>
+<P><big><b>Software</b></big></P>
+<ul>
+	<li><a href="http://www.genmapp.org/">GenMAPP</a>
+	<li><a href="http://biodata.mshri.on.ca/osprey/servlet/Index">Osprey</a>
+	<li><a href="http://nemo-cyclone.sourceforge.net">Cyclone</a>
+</ul>
 
-<big><b>Network Databases</b></big>
-<P>
-<a href="http://bind.ca">Biomolecular Interaction Network Database (BIND)</a>
-<br>
-<a href="http://www.cbio.mskcc.org/prl">BioPAX Directory</a>
-<br><br>
+<p><big><b>Network Databases</b></big></p>
+<ul>
+	<li><a href="http://bind.ca">Biomolecular Interaction Network Database (BIND)</a>
+	<li><a href="http://www.cbio.mskcc.org/prl">BioPAX Directory</a>
+</ul>
 
-<big><b>Data Exchange Formats</b></big>
-<P>
-<a href="http://www.biopax.org">BioPAX (Biological Pathway Exchange)</a>
-<br>
-<a href="http://psidev.sourceforge.net">PSI-MI (Proteomics Standards Initiative - Molecular Interaction)</a>
-<br>
-<a href="http://pynetconv.sourceforge.net/">pyNetConv - Interconverts network file formats e.g. .net, .gml, .sif</a>
-<br>
-<a href="http://www.geneontology.org/">The Gene Ontology (for data anotation)</a>
-<br><br>
+<p><big><b>Data Exchange Formats</b></big></p>
+<ul>
+	<li><a href="http://www.biopax.org">BioPAX (Biological Pathway Exchange)</a>
+	<li><a href="http://sbml.org/index.psp">SBML (Systems Biology Markup Language)</a>
+	<li><a href="http://psidev.sourceforge.net">PSI-MI (Proteomics Standards Initiative - Molecular Interaction)</a>
+	<li><a href="http://pynetconv.sourceforge.net/">pyNetConv - Interconverts network file formats e.g. .net, .gml, .sif</a>
+	<li><a href="http://www.cs.rpi.edu/~puninj/XGMML/">XGMML (eXtensible Graph Markup and Modeling Language)</a>
+	<li><a href="http://www.geneontology.org/">The Gene Ontology (for data anotation)</a>
+	<li><a href="http://obo.sourceforge.net/">Open Biomedical Ontologies</a>
+</ul>
 
-<big><b>Projects Using Cytoscape</b></big>
-<P>
-<a href="http://www.t1dbase.org">T1DBase - A Bioinformatics Resource for Type 1 Diabetes Researchers</a><BR>
-<a href="http://amdec-bioinfo.cu-genome.org/html/caWorkBench.htm">caWorkBench2.0 - A Platform for Integrated Genomics</a>
-<br><br>
+<p><big><b>Projects Using Cytoscape</b></big></p>
+<ul>
+	<li><a href="http://www.t1dbase.org">T1DBase - A Bioinformatics Resource for Type 1 Diabetes Researchers</a>
+	<li><a href="http://amdec-bioinfo.cu-genome.org/html/caWorkBench.htm">caWorkBench2.0 - A Platform for Integrated Genomics</a>
+	<li><a href="http://www.nalapro.com/products/genpac.html">GENPAC - NLP (Natural Language Processing) based information extraction system for life science domain.</a><BR>
+</ul>
 
-<big><b>Support</b></big>
-<P>
-<a href="http://grants1.nih.gov/grants/index.cfm">NIH NIGMS grant 1 R01 GM070743-01</a>
-<br>
-<a href="http://www.unilever.com/home/">Unilever</a>
-<br>
-<a href="http://www.nsf.gov/">National Science Foundation (NSF)</a>
-<br>
+<p><big><b>Support</b></big></p>
+<ul>
+	<li><a href="http://grants1.nih.gov/grants/index.cfm">NIH NIGMS grant 1 R01 GM070743-01</a>
+	<li><a href="http://www.unilever.com/home/">Unilever</a>
+	<li><a href="http://www.nsf.gov/">National Science Foundation (NSF)</a>
+</ul>
 <br><br>
     </div>
     <? include "footer.php"; ?>
