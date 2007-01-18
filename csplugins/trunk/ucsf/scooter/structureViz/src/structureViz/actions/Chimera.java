@@ -314,6 +314,7 @@ public class Chimera {
   	if (chimera == null)
   		return;
 
+		// System.out.println("To Chimera --> "+text);
 		text = text.concat("\n");
 
 		synchronized (replyLog) {
