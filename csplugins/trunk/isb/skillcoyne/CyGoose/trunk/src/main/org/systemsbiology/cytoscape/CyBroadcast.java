@@ -4,6 +4,8 @@
 package org.systemsbiology.cytoscape;
 
 import org.systemsbiology.cytoscape.*;
+import org.systemsbiology.cytoscape.dialog.CyAttrDialog;
+import org.systemsbiology.cytoscape.dialog.GooseDialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
