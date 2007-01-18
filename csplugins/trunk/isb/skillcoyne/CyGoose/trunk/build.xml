@@ -43,7 +43,6 @@
 		<!--		<pathelement location="${gaggle.dir}/gaggle.jar" /> -->
 	</path>
 
-
 	<target name="init" depends="check" description="Clean out old build, setup for new">
 		<delete dir="${build.dir}" />
 		<mkdir dir="${build.dir}" />
@@ -60,7 +59,6 @@
 		</javac>
 	</target>
 
-
 	<target name="jar" description="Create CyGoose jar file" depends="compile"> 
 		<jar destfile="${build.dir}/${jar.file}">
 			<manifest>
@@ -73,9 +71,22 @@
 	</target>
 
 	<target name="signJar" depends="jar" description="Sign jar file">
-		<!-- Important to use the same keypass info used for signing cytoscape -->
+		<!-- Important to use same keypass information as used for signing cytoscape -->
 		<signjar alias="cytoscape" storepass="secret" jar="${build.dir}/${jar.file}"/>
 	</target>
 
-		
+	<target name="checkWebstart">
+		<fail message="Missing property 'webstartDir', ant -DwebstartDir [ant target] ">
+			<condition>
+				<not>
+					<isset property="webstartDir" />
+				</not>
+			</condition>
+		</fail>
+	</target>
+
+	<target name="addToWebstart" depends="checkWebstart, signJar" description="Copy plugin to cytoscape webstart">
+		<copy file="${build.dir}/${jar.file}" toDir="${webstartDir}/plugins"/>
+	</target>
+	
 </project>
