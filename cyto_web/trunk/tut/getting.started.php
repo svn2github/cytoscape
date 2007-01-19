@@ -75,7 +75,7 @@
 			<a href="tutorial.php">instructions</a> for some places to get help.If at any point you wish
 			to restart this tutorial, just click again on the <b>WEB START</b> link.
 			</p>
-			<p><strong><font color="#ff2238">Note: Currently, we are updating this tutorial. Please <a title="2.4" href="download.php?file=cyto2_4_0">download Cytoscape 2.4</a> instead of using Webstart.</font></strong></p>
+			<p><strong><font color="#ff2238">Note: Currently, we are updating this tutorial. Please <a title="2.4" href="http://www.cytoscape.org/download.php?file=cyto2_4_0">download Cytoscape 2.4</a> instead of using Webstart.</font></strong></p>
 			<H3> Initial steps</H3>
 			Launch Cytoscape. You should see a window that looks like this:
 			<p><IMG SRC="getting.started/Fig1.png"><BR CLEAR=LEFT>
