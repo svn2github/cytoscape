@@ -368,9 +368,36 @@ changes.</P>
 				Then everything will be restored automatically from the file.
 			</p>
 			
-			<P><B>Congratulations! </B>You have bravely survived the least-exciting 
-portion of Cytoscape instruction: learning to navigate the menu system.  Go 
-reward yourself with a cup of coffee!</P>
+			<H3>(Optional) Loading various kinds of networks from public databases</H3>
+			<p>
+				Cytoscape supports some standard formats for molecular interaction/pathway data exchange including:
+				<ul>
+					<li><a href="http://www.biopax.org/">BioPAX</a>
+					<li><a href="http://sbml.org/index.psp">SBML</a>
+					<li><a href="http://psidev.sourceforge.net/mi/xml/doc/user/">PSI-MI</a>
+				</ul>
+				You can find many data files in public databases.  Comprehensive list of databases is available at:
+				<p><a href="http://www.pathguide.org/">Pathguide: the pathway resource list</a></p>
+				You can load remote data file by copy and paste URL from the web browser.  Here is an example:
+				<ol>
+					<li>Open <a href="http://reactome.org/cgi-bin/eventbrowser?DB=gk_current&ID=69306&ZOOM=2">DNA Replication</a> page in Reactome.
+					<li>On the bottom of this web page, there is a link <strong>SBML</strong>.  Right-click on the link and copy link location (URL).
+					<li>Back to Cytoscape Desktop and select <strong>File-->Import-->Network(multiple file types)...</strong>
+					<li>Click <strong>Remote</strong> radio button.
+					<li>Paste the URL to text box.
+					<li>Click <strong>Import</strong> button.
+				</ol>
+				After loading, you can apply any of the layout algorithms from <strong>Layout</strong> menu.  
+				Now the Cytoscape Desktop looks like the following:
+				<p><IMG SRC="getting.started/sbml.png"><BR CLEAR=LEFT></p>
+			</p>
+			
+
+			<P>
+				<B>Congratulations! </B>You have bravely survived the least-exciting 
+				portion of Cytoscape instruction: learning to navigate the menu system.  Go 
+				reward yourself with a cup of coffee!
+			</P>
 			<p><? include "tut.footer.php"; ?><? include "../footer.php"; ?></p>
 		</div>
 	</BODY>
