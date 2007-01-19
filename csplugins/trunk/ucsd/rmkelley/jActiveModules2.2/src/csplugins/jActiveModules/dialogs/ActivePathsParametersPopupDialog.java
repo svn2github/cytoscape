@@ -188,7 +188,6 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 		attrSelectPanel.add(desc);
 
 		
-		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
 		String[] names = (String[])apfParams.getExpressionAttributes().toArray(new String[0]); 
 		Arrays.sort(names);
 		int count = 0;

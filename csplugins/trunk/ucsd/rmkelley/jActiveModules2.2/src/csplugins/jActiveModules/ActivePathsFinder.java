@@ -123,7 +123,7 @@ public class ActivePathsFinder {
 	 * actually done
 	 */
 	private void setupScoring() {
-		GraphPerspective perspective = cyNetwork.getGraphPerspective();
+		GraphPerspective perspective = cyNetwork;
 		// Here we initialize the z table. We use this data structure when we
 		// want to get an adjusted z score
 		// based on how many conditions we are looking at.
@@ -270,8 +270,8 @@ public class ActivePathsFinder {
 								.ceil(apfParams.getTotalIterations()
 										/ (double) DISPLAY_STEP));
 			} // end of if ()
-			Thread thread = new SimulatedAnnealingSearchThread(cyNetwork
-					.getGraphPerspective(), resultPaths, nodes, apfParams,
+			Thread thread = new SimulatedAnnealingSearchThread(cyNetwork,
+					resultPaths, nodes, apfParams,
 					progress);
 			thread.start();
 			try {
@@ -289,8 +289,8 @@ public class ActivePathsFinder {
 				System.err.println("Starting quenching run");
 				SortedVector oldPaths = new SortedVector(resultPaths);
 				resultPaths = new Vector();
-				thread = new QuenchingSearchThread(cyNetwork
-						.getGraphPerspective(), resultPaths, nodes, apfParams,
+				thread = new QuenchingSearchThread(cyNetwork,
+						resultPaths, nodes, apfParams,
 						oldPaths);
 				thread.start();
 				try {
@@ -422,8 +422,8 @@ public class ActivePathsFinder {
 		int number_threads = apfParams.getMaxThreads();
 		Vector threadVector = new Vector();
 		for (int i = 0; i < number_threads; i++) {
-			GreedySearchThread gst = new GreedySearchThread(cyNetwork
-					.getGraphPerspective(), apfParams, seedList, progressMonitor,
+			GreedySearchThread gst = new GreedySearchThread(cyNetwork,
+					apfParams, seedList, progressMonitor,
 					node2BestComponent, nodes);
 			gst.start();
 			threadVector.add(gst);

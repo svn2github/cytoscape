@@ -599,7 +599,8 @@ public class Component implements Comparable{
     String [] result = new String[nodes.size()];
     Iterator it = displayNodes.iterator();
     for(int i=0;i<result.length;i++){
-      result[i] = (String)Cytoscape.getNodeAttributeValue((Node)it.next(),Semantics.CANONICAL_NAME);
+      //result[i] = (String)Cytoscape.getNodeAttributeValue((Node)it.next(),Semantics.CANONICAL_NAME);
+      result[i] = ((Node)it.next()).getIdentifier();
     }
     return result;
 	

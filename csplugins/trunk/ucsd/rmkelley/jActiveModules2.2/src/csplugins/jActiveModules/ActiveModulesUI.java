@@ -10,10 +10,14 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
+import java.beans.*;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import csplugins.jActiveModules.dialogs.ActivePathsParametersPopupDialog;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.plugin.CytoscapePlugin;
 
 //------------------------------------------------------------------------------
@@ -41,10 +45,12 @@ public class ActiveModulesUI extends CytoscapePlugin {
     //cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new RandomizeAndRunAction () );
 
     /* check for command line arguments to run right away */
-    String[] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
-    //String [] args = CytoscapeInit.getArgs();
+    String [] args = CytoscapeInit.getArgs();
     ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(args);
     apfParams = parser.getActivePathFinderParameters();
+    AttrChangeListener acl = new AttrChangeListener();
+    Cytoscape.getPropertyChangeSupport().addPropertyChangeListener( Cytoscape.ATTRIBUTES_CHANGED, acl );
+    Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener( acl );
     if (apfParams.getRun()) {
       activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);
       Thread t = new Thread(activePaths);
@@ -124,5 +130,29 @@ public class ActiveModulesUI extends CytoscapePlugin {
        Thread t = new ScoreDistributionThread(Cytoscape.getCurrentNetwork(),activePaths,apfParams);
        t.start();	
      }
+   }
+
+   /**
+    * This is used to update the expression attributes in the params object so that
+    * they match those that exist in CyAttributes.
+    */
+   protected class AttrChangeListener implements PropertyChangeListener, 
+                                                 MultiHashMapDefinitionListener {
+
+   	public void propertyChange(PropertyChangeEvent e) {
+		if ( e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED) ) 
+			apfParams.reloadExpressionAttributes();     
+	}
+
+	/**
+	 * There is no point in listening to attributeDefined events because
+	 * this only defines the attr and when this is fired, no attr values
+	 * actually exist.
+	 */
+	public void attributeDefined(String attributeName) { }
+
+	public void attributeUndefined(String attributeName) {
+		apfParams.reloadExpressionAttributes();     
+	}
    }
 }
