@@ -35,8 +35,9 @@
 		<? include "nav.php"; ?><? include "nav_tut.php"; ?>
 		<div id="indent">
 			<center>
-				<h2> Getting Started </h2>
+				<h2> Getting Started <font color="red">(Updated for 2.4)</font></h2>
 			</center>
+			
 			<p>
 				This tutorial introduces basic network browsing and menu navigation.
 				In this tutorial, you will learn about the following:
