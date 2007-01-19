@@ -66,7 +66,7 @@ This tutorial features the following plugin:
 </UL>
 
 <P>Begin by (a) opening a second web browser window, and (b) clicking here:
-<a href="webstart/cyto2.2.060106.jnlp">WEB START</a> 
+<a href="webstart/cyto.jnlp">WEB START</a> 
 (approximate download size: 22 MB) This starts Cytoscape on your own
 computer, after downloading the program and annotations from our
 website.  

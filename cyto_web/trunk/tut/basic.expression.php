@@ -87,7 +87,7 @@ Science 2001 292:929-34</a>. Before starting, please download these data
 files to your local disk by right-clicking on the links.
 
 <p>Begin by clicking here: <a href=
-"webstart/cyto2.2.060106.jnlp">WEB START</a> (approximate download
+"webstart/cyto.jnlp">WEB START</a> (approximate download
 size: 22 MB) This starts Cytoscape on your own computer, after
 downloading the program and annotations from our website. 
 
