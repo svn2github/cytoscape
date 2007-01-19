@@ -353,6 +353,21 @@ changes.</P>
 	select additional edges.</P>
 				
 			</OL>
+			
+			<H3>Save current workspace as session file</H3>
+			<p>
+				Cytoscape can save all workspace states, including networks, attributes, visual styles, properties, 
+				and window sizes into a <strong>session file</strong>.  You can restore everything if you save current 
+				workspace as session.  To save as session, click <strong>Save</strong> icon on the toolbar.
+			</p>
+			
+			<H3>Restore workspace from session file</H3>
+			<p>
+				To open the session file, click <strong>Open Session File...</strong> icon on the toolbar.
+				A warning pop-up window will be shown.  Click <strong>Yes</strong> and select a session file.  
+				Then everything will be restored automatically from the file.
+			</p>
+			
 			<P><B>Congratulations! </B>You have bravely survived the least-exciting 
 portion of Cytoscape instruction: learning to navigate the menu system.  Go 
 reward yourself with a cup of coffee!</P>
