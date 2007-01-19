@@ -31,7 +31,8 @@
 <h2>Cytoscape Tutorial Introduction</h2>
 </center>
 
-
+<p><strong><font color="red"><u>Note: This tutorial is based on version 2.2 and not up-to-date.  We will update 
+this for the latest version shortly.</u></font></strong></p>
 Cytoscape is an open-source package for visualization and analysis of 
 biological network data.  Cytoscape's core functionality includes methods for 
 automated graph layout, integrating network data with other data such as 
