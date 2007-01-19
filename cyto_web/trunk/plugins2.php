@@ -367,7 +367,7 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 			<br>
 			<font size="-1">Version: 1.0
 				<br>
-				Release Date: Jan. 16, 2006</font>
+				Release Date: Jan. 19, 2007</font>
 		</td>
 		<td width="40%" valign="top">
 			This plugin enables Cytoscape to search for significant networks as described in <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=12169552&amp;dopt=Abstract">Bioinformatics. 2002 Jul;18 Suppl 1:S233-40.</a>
@@ -376,15 +376,24 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 			Released by: <a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">The Ideker Lab</a>, Department of Bioengineering, UCSD
 		</td>
  		<td width="20%" valign="top">
-				 Verified to work in 2.2.
+				 Verified to work in 2.2 and 2.4
 				</td>
 		<td width="20%" valign="top">
-			[<a href="http://be-web.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/release/README.txt">Release Notes</a>]
+			<b>2.2</b> compatible version:
 			<br>
-			[<a href="http://be-web.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/release/jActiveModules.jar">Download Jar</a>]
+			[<a href="plugins/jActiveModules_2.2/jActiveModules.jar">Download Jar</a>]
 			<br>
-			[<a href="http://be-web.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/release/jActiveModules.tgz">Download Source</a>]
+			[<a href="plugins/jActiveModules_2.2/jActiveModules.tgz">Download Source</a>]
+
 			<br>
+			<hr>
+			<br>
+			<b>2.4</b> compatible version:	
+			<br>
+			[<a href="plugins/jActiveModules_2.4/jActiveModules.jar">Download Jar</a>]
+			<br>
+			[<a href="plugins/jActiveModules_2.4/jActiveModules_src.tgz">Download Source</a>]
+
 		</td>
 	</tr>
 			<tr>
