@@ -42,6 +42,9 @@ import cytoscape.data.CyAttributes;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.util.CyNetworkNaming;
+import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
+import cytoscape.view.CyNetworkView;
 
 import giny.model.RootGraph;
 import giny.view.GraphView;
@@ -91,33 +94,13 @@ public abstract class AbstractGraphReader implements GraphReader {
 	}
 
 	public void layout(GraphView view) {
-		// TODO 
-		// This is a basic, random square layout.
-		// This code shouldn't live here. 
-		// This code should exist somewhere in cytoscape.layout.	
-		// We're not fixing the duplication until we've cleaned up
-		// cytoscape.layout.
-		// When you fix this code, don't forget to fix 
-		// Cytoscape.createNetworkView() as well.
-		double distanceBetweenNodes = 80.0d;
-		int columns = (int) Math.sqrt(view.nodeCount());
-		Iterator nodeViews = view.getNodeViewsIterator();
-		double currX = 0.0d;
-		double currY = 0.0d;
-		int count = 0;
-		while (nodeViews.hasNext()) {
-			NodeView nView = (NodeView) nodeViews.next();
-			nView.setOffset(currX, currY);
-			count++;
-			if (count == columns) {
-				count = 0;
-				currX = 0.0d;
-				currY += distanceBetweenNodes;
-			} else {
-				currX += distanceBetweenNodes;
-			}
-		}
-	
+		LayoutAlgorithm layout = CyLayouts.getDefaultLayout();
+		layout.doLayout((CyNetworkView)view);	
+	}
+
+	public void layout() {
+		LayoutAlgorithm layout = CyLayouts.getDefaultLayout();
+		layout.doLayout();	
 	}
 
 	public int[] getNodeIndicesArray() {
