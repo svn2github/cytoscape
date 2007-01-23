@@ -174,6 +174,7 @@ public class SugiyamaLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		
 		Rectangle2D maxBounds = new Rectangle2D.Double();
 		for (int i = 0; i < selectedCellViews.length; i++) {
+			if (canceled) return;
 			// Add vertex to list
 			if (selectedCellViews[i] instanceof VertexView) {
 				// Fetch Bounds

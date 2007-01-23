@@ -21,8 +21,11 @@ import cern.colt.map.*;
 import cytoscape.view.*;
 
 import cytoscape.task.TaskMonitor;
+import cytoscape.Cytoscape;
 
-public class JGraphLayoutWrapper {
+import cytoscape.layout.AbstractLayout;
+
+public class JGraphLayoutWrapper extends AbstractLayout {
 
   public static final int ANNEALING       = 0;
   public static final int MOEN            = 1;
@@ -34,37 +37,114 @@ public class JGraphLayoutWrapper {
   public static final int TREE            = 7;
 
   int layout_type = 0;
-  protected GraphView graphView;
-  private TaskMonitor m_taskMonitor;
-  private boolean m_haveTaskMonitor;
+  private JGraphLayoutAlgorithm layout = null;
+	private JGraphLayoutSettings layoutSettings = null;
+	private boolean canceled = false;
 
-  public JGraphLayoutWrapper ( GraphView view, int layout_type) {
-    this.graphView = ( GraphView )view;
+  public JGraphLayoutWrapper ( int layout_type) {
+		super();
     this.layout_type = layout_type;
+		switch (layout_type) {
+    case ANNEALING:
+      layout = new AnnealingLayoutAlgorithm();
+			break;
+    case MOEN:
+      layout = new MoenLayoutAlgorithm();
+			break;
+    case CIRCLE_GRAPH:
+      layout = new CircleGraphLayout();
+			break;
+    case RADIAL_TREE:
+      layout = new RadialTreeLayoutAlgorithm();
+			break;
+    case GEM:
+      layout = new GEMLayoutAlgorithm( new AnnealingLayoutAlgorithm() );
+			break;
+    case SPRING_EMBEDDED:
+      layout = new SpringEmbeddedLayoutAlgorithm();
+			break;
+    case SUGIYAMA:
+      layout = new SugiyamaLayoutAlgorithm();
+			break;
+    case TREE:
+      layout = new TreeLayoutAlgorithm();
+			break;
+		}
+		layoutSettings = layout.createSettings();
   }
 
-  /**
-   * Allows a user to set a taskMonitor which can be used to provide
-   * visual feedback with regards to the progress made during a call
-   * to doLayout().
-   *
-   * @param taskMonitor a hook that a parent application may pass in
-   *   to get information regarding what percentage of the layout
-   *   has been completed etc., or <code>null</code> to stop this layout
-   *   algorithm from reporting how much progress it has made.
-   **/
-  public void setTaskMonitor(TaskMonitor taskMonitor)
-  {
-	  if (taskMonitor != null) {
-		  m_taskMonitor = taskMonitor;
-		  m_haveTaskMonitor = true;
-	  }
-  }
+	public String getName () { 
+		switch (layout_type) {
+		case ANNEALING:
+			return "jgraph-annealing";
+		case MOEN:
+			return "jgraph-moen";
+		case CIRCLE_GRAPH:
+			return "jgraph-circle";
+		case RADIAL_TREE:
+			return "jgraph-radial-tree";
+		case GEM:
+			return "jgraph-gem";
+		case SPRING_EMBEDDED:
+			return "jgraph-spring";
+		case SUGIYAMA:
+			return "jgraph-sugiyama";
+		case TREE:
+			return "jgraph-tree";
+		}
+		return "";
+	}
 
-  public void doLayout ( )
+	public String toString () { 
+		switch (layout_type) {
+		case ANNEALING:
+			return "Simulated Annealing Layout";
+		case MOEN:
+			return "MOEN Layout";
+		case CIRCLE_GRAPH:
+			return "Circle Layout";
+		case RADIAL_TREE:
+			return "Radial Tree Layout";
+		case GEM:
+			return "GEM Layout";
+		case SPRING_EMBEDDED:
+			return "Spring Embedded Layout";
+		case SUGIYAMA:
+			return "Sugiyama Layout";
+		case TREE:
+			return "Tree Layout";
+		}
+		return "";
+	}
+
+	/**
+	 * Get the settings panel for this layout
+	 */
+	public JPanel getSettingsPanel() {
+		return (JPanel)layoutSettings;
+	}
+
+	public void updateSettings() {
+		if (layoutSettings != null)
+			layoutSettings.apply();
+	}
+
+	public void revertSettings() {
+		if (layoutSettings != null)
+			layoutSettings.revert();
+	}
+
+	public void halt() {
+		canceled = true;
+		if (layout != null) layout.setCanceled();
+	}
+
+  public void construct ( )
   {
-	double currentProgress = 0, percentProgressPerIter = 0;
-    GraphPerspective perspective = graphView.getGraphPerspective();
+		canceled = false;
+		initialize();
+		double currentProgress = 0, percentProgressPerIter = 0;
+    GraphPerspective perspective = networkView.getGraphPerspective();
     Map j_giny_node_map = new HashMap( PrimeFinder.nextPrime( perspective.getNodeCount() ) );
     Map giny_j_node_map = new HashMap( PrimeFinder.nextPrime( perspective.getNodeCount() ) );
     Map j_giny_edge_map = new HashMap( PrimeFinder.nextPrime( perspective.getEdgeCount() ) );
@@ -72,10 +152,8 @@ public class JGraphLayoutWrapper {
     Iterator node_iterator = perspective.nodesIterator();
     Iterator edge_iterator = perspective.edgesIterator();
 
-    if (m_haveTaskMonitor) {
-		m_taskMonitor.setStatus("Executing Layout");
-		m_taskMonitor.setPercentCompleted((int)currentProgress);
-	}
+		taskMonitor.setStatus("Executing Layout");
+		taskMonitor.setPercentCompleted((int)currentProgress);
 
     // Construct Model and Graph
     //
@@ -89,19 +167,17 @@ public class JGraphLayoutWrapper {
    
     Set cells = new HashSet();
 
-	// update progress bar
-	if (m_haveTaskMonitor) {
+		// update progress bar
 		currentProgress = 20;
-		m_taskMonitor.setPercentCompleted((int)currentProgress);
-		percentProgressPerIter = 20 / (double) (graphView.getNodeViewCount());
-	}
+		taskMonitor.setPercentCompleted((int)currentProgress);
+		percentProgressPerIter = 20 / (double) (networkView.getNodeViewCount());
 
     // create Vertices
-    while ( node_iterator.hasNext() ) {
+    while ( node_iterator.hasNext() && !canceled ) {
 
       // get the GINY node and node view
       giny.model.Node giny = ( giny.model.Node )node_iterator.next();
-      NodeView node_view = graphView.getNodeView( giny );
+      NodeView node_view = networkView.getNodeView( giny );
 
       DefaultGraphCell jcell = new DefaultGraphCell( giny.getIdentifier() );
       
@@ -118,20 +194,15 @@ public class JGraphLayoutWrapper {
 
       cells.add( jcell );
 
-	  // update progress bar
-	  if (m_haveTaskMonitor) {
+	  	// update progress bar
 		  currentProgress += percentProgressPerIter;
-		  m_taskMonitor.setPercentCompleted((int)currentProgress);
+		  taskMonitor.setPercentCompleted((int)currentProgress);
 	  }
 
-    }
-    
-	// update progress bar
-    if (m_haveTaskMonitor) {
-		percentProgressPerIter = 20 / (double) (graphView.getEdgeViewCount());
-	}
+		// update progress bar
+		percentProgressPerIter = 20 / (double) (networkView.getEdgeViewCount());
 
-    while ( edge_iterator.hasNext() ) {
+    while ( edge_iterator.hasNext() && !canceled) {
       
       giny.model.Edge giny = ( giny.model.Edge )edge_iterator.next();
       
@@ -163,33 +234,11 @@ public class JGraphLayoutWrapper {
       
       cells.add( jedge );
 
-	  // update progress bar
-	  if (m_haveTaskMonitor) {
+	  	// update progress bar
 		  currentProgress += percentProgressPerIter;
-		  m_taskMonitor.setPercentCompleted((int)currentProgress);
-	  }
+		  taskMonitor.setPercentCompleted((int)currentProgress);
 
     }
-
-    // now do the layout
-    JGraphLayoutAlgorithm layout = null;
-
-    if ( layout_type == ANNEALING )
-      layout = new AnnealingLayoutAlgorithm();
-    else if ( layout_type == MOEN )
-      layout = new MoenLayoutAlgorithm();
-    else if ( layout_type == CIRCLE_GRAPH )
-      layout = new CircleGraphLayout();
-    else if ( layout_type == RADIAL_TREE )
-      layout = new RadialTreeLayoutAlgorithm();
-    else if ( layout_type == GEM )
-      layout = new GEMLayoutAlgorithm( new AnnealingLayoutAlgorithm() );
-    else if ( layout_type == SPRING_EMBEDDED )
-      layout = new SpringEmbeddedLayoutAlgorithm();
-    else if ( layout_type == SUGIYAMA )
-      layout = new SugiyamaLayoutAlgorithm();
-    else if ( layout_type == TREE )
-      layout = new TreeLayoutAlgorithm();
 
     layout.run( graph, cells.toArray());
     GraphLayoutCache cache = graph.getGraphLayoutCache();
@@ -197,13 +246,11 @@ public class JGraphLayoutWrapper {
     CellView cellViews[] = graph.getGraphLayoutCache().getAllDescendants(
                              graph.getGraphLayoutCache().getRoots());
 
-	// update progress bar
-	if (m_haveTaskMonitor) {
 		currentProgress = 80;
-		m_taskMonitor.setPercentCompleted((int)currentProgress);
+		taskMonitor.setPercentCompleted((int)currentProgress);
 		percentProgressPerIter = 20 / (double) (cellViews.length);
-	}
 
+		if (canceled) return;
     for (int i = 0; i < cellViews.length; i++)
     {
       CellView cell_view = cellViews[i];
@@ -212,16 +259,14 @@ public class JGraphLayoutWrapper {
         Rectangle2D rect = graph.getCellBounds(cell_view.getCell());
         giny.model.Node giny = (giny.model.Node) j_giny_node_map.get(
 	                                           cell_view.getCell());
-        NodeView node_view = graphView.getNodeView( giny );
+        NodeView node_view = networkView.getNodeView( giny );
         node_view.setXPosition( rect.getX(), false );
         node_view.setYPosition( rect.getY(), false );
         node_view.setNodePosition( true );
         
-		// update progress bar
-		if (m_haveTaskMonitor) {
-			currentProgress += percentProgressPerIter;
-			m_taskMonitor.setPercentCompleted((int)currentProgress);
-		}
+				// update progress bar
+				currentProgress += percentProgressPerIter;
+				taskMonitor.setPercentCompleted((int)currentProgress);
       }
     }
 
@@ -233,7 +278,7 @@ public class JGraphLayoutWrapper {
     attributes = null;
     cells = null;
     System.gc();
-
-    graphView.fitContent();
+		networkView.fitContent();
+		networkView.updateView();
   }
 }

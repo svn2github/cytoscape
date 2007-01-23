@@ -1,3 +1,4 @@
+/* vim: set ts=2: */
 /*
  * This is based on the ISOMLayout from the JUNG project.
  */
@@ -8,76 +9,162 @@ import cern.colt.list.IntArrayList;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.map.OpenIntObjectHashMap;
+import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.PrimeFinder;
+
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
+
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.LayoutNode;
+
+import javax.swing.JPanel;
+import java.awt.GridLayout;
 
 import cytoscape.CyNetwork;
 import giny.model.*;
 
 import java.util.Iterator;
+import java.util.List;
 
 
-public class ISOMLayout extends AbstractLayout {
-
+public class ISOMLayout extends AbstractGraphPartition {
   
-	private int maxEpoch;
+	private int maxEpoch = 5000;
 	private int epoch;
 
-	private int radiusConstantTime;
-	private int radius;
-	private int minRadius;
+	private int radiusConstantTime = 100;
+	private int radius = 5;
+	private int minRadius = 1;
 
 	private double adaption;
-	private double initialAdaption;
-	private double minAdaption;
+	private double initialAdaptation = 90.0D/100.0D;
+	private double minAdaptation = 0;
+	private double sizeFactor = 100;
 
 	private double factor;
-	private double coolingFactor;
+	private double coolingFactor = 2;
 
   private boolean trace;
 	private boolean done;
+
+	private LayoutProperties layoutProperties;
+	private LayoutPartition partition;
 
   //Queue, First In First Out, use add() and get(0)/remove(0)
   private IntArrayList q;
 	private String status = null;
 
   OpenIntObjectHashMap nodeIndexToDataMap;
+	OpenIntIntHashMap nodeIndexToLayoutIndex;
+
   double globalX, globalY;
-  GraphPerspective net;
   double squared_size;
   
-  public ISOMLayout ( CyNetwork network ) {
-    super( network );
+  public ISOMLayout ( ) {
+    super( );
   
     q = new IntArrayList();
 		trace = false;
+		layoutProperties = new LayoutProperties(getName());
+		initialize_properties();
  
   }
 
-  public void layoutPartion ( GraphPerspective net) {
-    
-    this.net = net;
+	public String toString () { return "Inverted Self-Organizing Map Layout"; }
+	public String getName () { return "isom"; }
 
-		int nodeCount = net.getNodeCount();
+	/**
+	 * Get the settings panel for this layout
+	 */
+	public JPanel getSettingsPanel() {
+		JPanel panel = new JPanel(new GridLayout(0,1));
+		panel.add(layoutProperties.getTunablePanel());
+		return panel;
+	}
+
+	protected void initialize_properties() {
+		layoutProperties.add(new Tunable("maxEpoch", "Number of iterations",
+																		Tunable.INTEGER, new Integer(5000)));
+		layoutProperties.add(new Tunable("sizeFactor", "Size factor",
+																		Tunable.INTEGER, new Integer(10)));
+		layoutProperties.add(new Tunable("radiusConstantTime", "Radius constant",
+																		Tunable.INTEGER, new Integer(20)));
+		layoutProperties.add(new Tunable("radius", "Radius",
+																		Tunable.INTEGER, new Integer(5)));
+		layoutProperties.add(new Tunable("minRadius", "Minimum radius",
+																		Tunable.INTEGER, new Integer(1)));
+		layoutProperties.add(new Tunable("initialAdaptation", "Initial adaptation",
+																		Tunable.DOUBLE, new Double(0.9)));
+		layoutProperties.add(new Tunable("minAdaptation", "Minimum adaptation value",
+																		Tunable.DOUBLE, new Double(0)));
+		layoutProperties.add(new Tunable("coolingFactor", "Cooling factor",
+																		Tunable.DOUBLE, new Double(2)));
+
+		// We've now set all of our tunables, so we can read the property 
+		// file now and adjust as appropriate
+		layoutProperties.initializeProperties();
+
+		// Finally, update everything.  We need to do this to update
+		// any of our values based on what we read from the property file
+		updateSettings(true);
+	}
+
+	public void updateSettings() {
+		updateSettings(false);
+	}
+
+	public void updateSettings(boolean force) {
+		layoutProperties.updateValues();
+		Tunable t = layoutProperties.get("maxEpoch");
+		if (t != null && (t.valueChanged() || force))
+			maxEpoch = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("sizeFactor");
+		if (t != null && (t.valueChanged() || force))
+			sizeFactor = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("radiusConstantTime");
+		if (t != null && (t.valueChanged() || force))
+			radiusConstantTime = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("radius");
+		if (t != null && (t.valueChanged() || force))
+			radius = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("minRadius");
+		if (t != null && (t.valueChanged() || force))
+			minRadius = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("initialAdaptation");
+		if (t != null && (t.valueChanged() || force))
+			initialAdaptation = ((Double)t.getValue()).doubleValue();
+		t = layoutProperties.get("minAdaptation");
+		if (t != null && (t.valueChanged() || force))
+			minAdaptation = ((Double)t.getValue()).doubleValue();
+		t = layoutProperties.get("coolingFactor");
+		if (t != null && (t.valueChanged() || force))
+			coolingFactor = ((Double)t.getValue()).doubleValue();
+	}
+
+	public void revertSettings() {
+		layoutProperties.revertProperties();
+	}
+
+  public void layoutPartion ( LayoutPartition partition) {
+    
+		this.partition = partition;
+
+		int nodeCount = partition.nodeCount();
     nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( nodeCount ) );
-    squared_size = nodeCount*50;
+    nodeIndexToLayoutIndex = new OpenIntIntHashMap( PrimeFinder.nextPrime( nodeCount ) );
+    squared_size = network.getNodeCount()*sizeFactor;
    
 		epoch = 1;
-    maxEpoch = 5000;
    
-		radiusConstantTime = 100;
-		radius = 5;
-		minRadius = 1;
-
-		initialAdaption = 90.0D / 100.0D;
-		adaption = initialAdaption;
-		minAdaption = 0;
-
-    coolingFactor = 2;
+		adaption = initialAdaptation;
 
     System.out.println ( "Epoch: "+epoch+" maxEpoch: "+maxEpoch );
     while ( epoch < maxEpoch ) {
+			partition.resetNodes();
       adjust();
 			updateParameters();
+			if (canceled) break;
     }
    
   }
@@ -88,16 +175,20 @@ public class ISOMLayout extends AbstractLayout {
   public int getClosestPosition ( double x, double y ) {
     double minDistance = Double.MAX_VALUE;
     int closest = 0;
-		Iterator nodeIter = net.nodesIterator();
+		Iterator nodeIter = partition.nodeIterator();
 		while (nodeIter.hasNext()) {
-			int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
+			LayoutNode node = (LayoutNode)nodeIter.next();
+			int rootGraphIndex = node.getNode().getRootGraphIndex();
 
-      double dx = layout.getX(  nodeIndex );
-      double dy = layout.getY(  nodeIndex );
+			nodeIndexToLayoutIndex.put(rootGraphIndex,
+			                           node.getIndex());
+
+      double dx = node.getX( );
+      double dy = node.getY( );
       double dist = dx * dx + dy * dy;
       if ( dist < minDistance ) {
         minDistance = dist;
-        closest = nodeIndex;
+        closest = rootGraphIndex;
       }
     }
     return closest;
@@ -117,9 +208,9 @@ public class ISOMLayout extends AbstractLayout {
     //Get closest vertex to random position
     int winner = getClosestPosition( globalX, globalY );
     
-		Iterator nodeIter = net.nodesIterator();
+		Iterator nodeIter = partition.nodeIterator();
 		while (nodeIter.hasNext()) {
-			int nodeIndex = ((Node)nodeIter.next()).getRootGraphIndex();
+			int nodeIndex = ((LayoutNode)nodeIter.next()).getNode().getRootGraphIndex();
       ISOMVertexData ivd = getISOMVertexData(nodeIndex);
 			ivd.distance = 0;
 			ivd.visited = false;
@@ -130,7 +221,7 @@ public class ISOMLayout extends AbstractLayout {
   public  void updateParameters() {
 		epoch++;
 		double factor = Math.exp(-1 * coolingFactor * (1.0 * epoch / maxEpoch));
-		adaption = Math.max(minAdaption, factor * initialAdaption);
+		adaption = Math.max(minAdaptation, factor * initialAdaptation);
     if ((radius > minRadius) && (epoch % radiusConstantTime == 0)) {
 			radius--;
 		}
@@ -143,15 +234,18 @@ public class ISOMLayout extends AbstractLayout {
 		ivd.visited = true;
 		q.add(v);
 		int current;
+		List<LayoutNode> nodeList = partition.getNodeList();
 
     while ( !q.isEmpty() ) {
 			current =  q.get(0);
       q.remove(0);
+			int layoutIndex = nodeIndexToLayoutIndex.get(current);
+			LayoutNode currentNode = (LayoutNode)nodeList.get(layoutIndex);
 
 			ISOMVertexData currData = getISOMVertexData(current);
 			
-      double current_x = layout.getX( current );
-      double current_y = layout.getY( current );
+      double current_x = currentNode.getX();
+      double current_y = currentNode.getY();
       
 			double dx = globalX - current_x;
 			double dy = globalY - current_y;
@@ -160,12 +254,12 @@ public class ISOMLayout extends AbstractLayout {
 			double factor = adaption / Math.pow(2, currData.distance) ;
       
 
-      layout.setX( current, current_x + factor * dx );
-      layout.setY( current, current_y + factor * dy );
-
+      currentNode.setX( current_x + factor * dx );
+      currentNode.setY( current_y + factor * dy );
+			partition.moveNodeToLocation(currentNode);
       
 			if (currData.distance < radius) {
-				int[] neighbors = neighborsArray( net, current );
+				int[] neighbors = neighborsArray( network, current );
 
         for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index ) {
           
@@ -178,6 +272,7 @@ public class ISOMLayout extends AbstractLayout {
 				}
 			}
 		}
+		// Add check to make sure we don't put nodes on top of each other
 	}
 
   public ISOMVertexData getISOMVertexData (  int v ) {
@@ -232,18 +327,19 @@ public class ISOMLayout extends AbstractLayout {
 	}
 
 	// This is here to replace the deprecated neighborsArray function
-	public int[] neighborsArray ( GraphPerspective network, int nodeIndex ) {
+	public int[] neighborsArray ( CyNetwork network, int nodeIndex ) {
 		// Get a list of edges
 		int[] edges = network.getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
 		int[] neighbors = new int[edges.length];
 		int offset = 0;
 		for (int edge = 0; edge < edges.length; edge++) {
-			int source = network.getEdgeSourceIndex(edge);
-			int target = network.getEdgeTargetIndex(edge);
-			if (source != nodeIndex)
+			int source = network.getEdgeSourceIndex(edges[edge]);
+			int target = network.getEdgeTargetIndex(edges[edge]);
+			if (source != nodeIndex) {
 				neighbors[offset++] = source;
-			else
+			} else {
 				neighbors[offset++] = target;
+			}
 		}
 		return neighbors;
 	}

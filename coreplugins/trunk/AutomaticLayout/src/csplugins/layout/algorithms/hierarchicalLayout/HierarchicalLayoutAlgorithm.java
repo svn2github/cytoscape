@@ -43,15 +43,18 @@ package csplugins.layout.algorithms.hierarchicalLayout;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
+import cytoscape.task.TaskMonitor;
+
 import giny.view.NodeView;
 import giny.view.EdgeView;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
+import cytoscape.layout.AbstractLayout;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
+
 import java.util.*;
+import java.awt.GridLayout;
+import javax.swing.JPanel;
 
 class HierarchyFlowLayoutOrderNode implements Comparable {
 	public NodeView nodeView;
@@ -111,9 +114,26 @@ class HierarchyFlowLayoutOrderNode implements Comparable {
  * Steps 2 through 6 are performed by calls to methods in the class
  * {@link csplugins.hierarchicallayout.Graph}
 */
-public class HierarchicalLayoutListener implements ActionListener, Task {
+public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	private TaskMonitor taskMonitor = null;
-	private boolean interrupted = false;
+	private int nodeHorizontalSpacing = 64;
+	private int nodeVerticalSpacing = 32;
+	private int componentSpacing = 64;
+	private int bandGap = 64;
+	private int leftEdge = 32;
+	private int topEdge = 32;
+	private int rightMargin = 1000;
+	private boolean selected_only = false;
+	private LayoutProperties layoutProperties;
+
+	public HierarchicalLayoutAlgorithm() {
+		super();
+		layoutProperties = new LayoutProperties(getName());
+		initialize_properties();
+	}
+
+	// We do support selected only
+	public boolean supportsSelectedOnly () {return true;}
 
 	/**
 	 * Lays out the graph. See this class' description for an outline
@@ -134,80 +154,68 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 	 * the center of the component.
 	 * @param event Menu Selection Event.
 	 */
-	public void actionPerformed(ActionEvent event) {
-		JTaskConfig config = new JTaskConfig();
-		config.setOwner(Cytoscape.getDesktop());
-		config.displayCancelButton(true);
-		config.displayStatus(true);
-		config.displayTimeElapsed(true);
-		TaskManager.executeTask(new HierarchicalLayoutListener(), config);
+	/**
+	 * Main entry point for AbstractLayout classes
+	 */
+	public void construct() {
+		taskMonitor.setStatus("Initializing");
+		initialize();  // Calls initialize_local
+		layout();
+		networkView.fitContent();
+		networkView.updateView();
 	}
 
-	public void run() {
-		if (taskMonitor == null) {
-			throw new IllegalStateException("Task Monitor is not set.");
-		}
-	try {
+	public void layout() {
 		taskMonitor.setPercentCompleted(0);
-		taskMonitor.setStatus("capturing snapshot of network and selected nodes");
-		Thread.yield();
-		if (interrupted) return;
-		//get the graph view object from the window.
-		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-		//get the network object; this contains the graph
-		CyNetwork network = Cytoscape.getCurrentNetwork();
-		//can't continue if either of these is null
-		if (networkView == null || network == null) {
-			return;
-		}
-		//and the view should be a view on this structure
-		if (networkView.getNetwork() != network) {
-			System.err.println("In HierarchicalLayoutListenr.run: ");
-			System.err.println("Current CyNetworkView is not a view on the current CyNetwork.");
-			return;
-		}
-		//Select all nodes as the default action if none are selected
-		if(network.getNodeCount() <= 0) {
-			return;
-		}
+		taskMonitor.setStatus("Capturing snapshot of network and selected nodes");
+		if (canceled) return;
 		/* construct node list with selected nodes first */
 		List selectedNodes = networkView.getSelectedNodes();
-		final int numSelectedNodes = selectedNodes.size();
+		int numSelectedNodes = selectedNodes.size();
+		if (!selectedOnly) numSelectedNodes = 0;
+		if (numSelectedNodes == 1) {
+			// We were asked to do a hierchical layout of a single node -- done!
+			return;
+		}
+
 		final int numNodes = networkView.getNodeViewCount();
-		final int numLayoutNodes = (numSelectedNodes <= 1) ? numNodes : numSelectedNodes;
+		final int numLayoutNodes = (numSelectedNodes < 1) ? numNodes : numSelectedNodes;
 		NodeView nodeView[] = new NodeView[numNodes];
 		int nextNode = 0;
-		HashMap ginyIndex2Index = new HashMap(numNodes*2);
+		HashMap<Integer,Integer> ginyIndex2Index = new HashMap(numNodes*2);
 		if (numSelectedNodes > 1) {
 			Iterator iter = selectedNodes.iterator();
-			while (iter.hasNext()) {
+			while (iter.hasNext() && !canceled) {
 				nodeView[nextNode] = (NodeView)(iter.next());
 				ginyIndex2Index.put(new Integer(nodeView[nextNode].getNode().getRootGraphIndex()), new Integer(nextNode));
 				nextNode++;
 			}
-		}
-		Iterator iter = networkView.getNodeViewsIterator() ; /* all nodes */
-		while (iter.hasNext()) {
-			NodeView nv = (NodeView)(iter.next());
-			Integer nodeIndexKey = new Integer(nv.getNode().getRootGraphIndex());
-			if (!ginyIndex2Index.containsKey(nodeIndexKey)) {
-				nodeView[nextNode] = nv;
-				ginyIndex2Index.put(nodeIndexKey, new Integer(nextNode));
-				nextNode++;
+		} else {
+			Iterator iter = networkView.getNodeViewsIterator() ; /* all nodes */
+			while (iter.hasNext() && !canceled) {
+				NodeView nv = (NodeView)(iter.next());
+				Integer nodeIndexKey = new Integer(nv.getNode().getRootGraphIndex());
+				if (!ginyIndex2Index.containsKey(nodeIndexKey)) {
+					nodeView[nextNode] = nv;
+					ginyIndex2Index.put(nodeIndexKey, new Integer(nextNode));
+					nextNode++;
+				}
 			}
 		}
+		if (canceled) return;
+
 		/* create edge list from edges between selected nodes */
-		LinkedList edges = new LinkedList();
-		iter = networkView.getEdgeViewsIterator();
+		LinkedList<Edge> edges = new LinkedList();
+		Iterator iter = networkView.getEdgeViewsIterator();
 		while (iter.hasNext()) {
 			EdgeView ev = (EdgeView)(iter.next());
 			Integer edgeFrom = (Integer)ginyIndex2Index.get(new Integer(ev.getEdge().getSource().getRootGraphIndex()));
 			Integer edgeTo = (Integer)ginyIndex2Index.get(new Integer(ev.getEdge().getTarget().getRootGraphIndex()));
 			if (edgeFrom == null || edgeTo == null) {
-			System.err.println("In HierarchicalLayoutListener.run: ");
-				System.err.println("Error in internal edge representation.");
-				return;
+				// Must be from an unselected node
+				continue;
 			}
+			if (canceled) return;
 			if (numSelectedNodes <= 1
 					|| (edgeFrom.intValue() < numSelectedNodes
 					&& edgeTo.intValue() < numSelectedNodes)) {
@@ -235,9 +243,8 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 		System.out.println("Partitioning into components:\n");
 		*/
 		taskMonitor.setPercentCompleted(10);
-		taskMonitor.setStatus("finding connected components");
-		Thread.yield();
-		if (interrupted) return;
+		taskMonitor.setStatus("Finding connected components");
+		if (canceled) return;
 		int renumber[] = new int[cI.length];
 		Graph component[] = graph.partition(cI,renumber);
 		final int numComponents = component.length;
@@ -261,12 +268,12 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 			taskMonitor.setPercentCompleted(20 + 60 * (x * 3) / numComponents / 3);
 			taskMonitor.setStatus("making acyclic transitive reduction");
 			Thread.yield();
-			if (interrupted) return;
+			if (canceled) return;
 			Graph reduced = component[x].getReducedGraph();
 			taskMonitor.setPercentCompleted(20 + 60 * (x * 3 + 1) / numComponents / 3);
 			taskMonitor.setStatus("layering nodes vertically");
 			Thread.yield();
-			if (interrupted) return;
+			if (canceled) return;
 			layer[x] = reduced.getVertexLayers();
 			/*
 			int y;
@@ -278,7 +285,7 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 			taskMonitor.setPercentCompleted(20 + 60 * (x * 3 + 2) / numComponents / 3);
 			taskMonitor.setStatus("positioning nodes within layer");
 			Thread.yield();
-			if (interrupted) return;
+			if (canceled) return;
 			horizontalPosition[x] = reduced.getHorizontalPosition(layer[x]);
 			/*
 			for (y=0;y<horizontalPosition[x].length;y++) {
@@ -287,9 +294,9 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 			*/
 		}
 		taskMonitor.setPercentCompleted(80);
-		taskMonitor.setStatus("repositioning nodes in view");
+		taskMonitor.setStatus("Repositioning nodes in view");
 		Thread.yield();
-		if (interrupted) return;
+		if (canceled) return;
 		/* order nodeviews by layout order */
 		HierarchyFlowLayoutOrderNode flowLayoutOrder[] = new HierarchyFlowLayoutOrderNode[numLayoutNodes];
 		for (x=0; x<numLayoutNodes; x++) {
@@ -298,13 +305,7 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 				layer[cI[x]][renumber[x]], horizontalPosition[cI[x]][renumber[x]]);
 		}
 		Arrays.sort(flowLayoutOrder);
-		final int nodeHorizontalSpacing = 64;
-		final int nodeVerticalSpacing = 32;
-		final int componentSpacing = 64;
-		final int bandGap = 64;
-		final int leftEdge = 32;
-		final int topEdge = 32;
-		final int rightMargin = 1000;
+
 		int lastComponent = -1;
 		int lastLayer = -1;
 		int startBandY = topEdge;
@@ -397,11 +398,11 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 			}
 		}
 
-                /* Delete edge anchors */
-                iter = networkView.getEdgeViewsIterator();
-                while (iter.hasNext()) {
-                  ((EdgeView) iter.next()).getBend().removeAllHandles();
-                } /* Done removing edge anchors */
+    /* Delete edge anchors */
+    iter = networkView.getEdgeViewsIterator();
+    while (iter.hasNext()) {
+	    ((EdgeView) iter.next()).getBend().removeAllHandles();
+    } /* Done removing edge anchors */
 
 		for (nodeIndex=0; nodeIndex<numLayoutNodes; nodeIndex++) {
 			HierarchyFlowLayoutOrderNode node = flowLayoutOrder[nodeIndex];
@@ -409,6 +410,7 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 			currentView.setOffset(node.getXPos(),node.getYPos());
 		}
 		/* layout any other nodes */
+/*
 		if (numNodes > numLayoutNodes) {
 			int highestY = Integer.MAX_VALUE;
 			for (x=numLayoutNodes; x<numNodes; x++) {
@@ -420,19 +422,98 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 				nodeView[x].setYPosition(nodeView[x].getYPosition() + shiftY,true);
 			}
 		}
+*/
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("hierarchical layout complete");
                 networkView.fitContent();
-	} catch (Throwable e) {
-		taskMonitor.setException(e, "Layout aborted due to unexpected condition");
-	}
 	}
 
 	/**
 	* Non-blocking call to interrupt the task.
 	*/
 	public void halt() {
-		interrupted = true;
+		canceled = true;
+	}
+
+	/**
+	 * Overrides for LayoutAlgorithm support
+	 */
+
+	public String getName () { return "hierarchical"; }
+
+	public String toString () { 
+		return "Hierarchical Layout";
+	}
+
+	/**
+	 * Get the settings panel for this layout
+	 */
+	public JPanel getSettingsPanel() {
+		JPanel panel = new JPanel(new GridLayout(0,1));
+		panel.add(layoutProperties.getTunablePanel());
+		return panel;
+	}
+
+	protected void initialize_properties() {
+		layoutProperties.add(new Tunable("nodeHorizontalSpacing", "Horizontal spacing between nodes",
+																		Tunable.INTEGER, new Integer(64)));
+		layoutProperties.add(new Tunable("nodeVerticalSpacing", "Vertical spacing between nodes",
+																		Tunable.INTEGER, new Integer(32)));
+		layoutProperties.add(new Tunable("componentSpacing", "Component spacing",
+																		Tunable.INTEGER, new Integer(64)));
+		layoutProperties.add(new Tunable("bandGap", "Band gap",
+																		Tunable.INTEGER, new Integer(64)));
+		layoutProperties.add(new Tunable("leftEdge", "Left edge margin",
+																		Tunable.INTEGER, new Integer(32)));
+		layoutProperties.add(new Tunable("topEdge", "Top edge margin", 
+																		Tunable.INTEGER, new Integer(32)));
+		layoutProperties.add(new Tunable("rightMargin", "Right edge margin", 
+																		Tunable.INTEGER, new Integer(1000)));
+		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes", Tunable.BOOLEAN, 
+																		new Boolean(false)));
+		// We've now set all of our tunables, so we can read the property 
+		// file now and adjust as appropriate
+		layoutProperties.initializeProperties();
+
+		// Finally, update everything.  We need to do this to update
+		// any of our values based on what we read from the property file
+		updateSettings(true);
+	}
+
+	public void updateSettings() {
+		updateSettings(false);
+	}
+
+	public void updateSettings(boolean force) {
+		layoutProperties.updateValues();
+		Tunable t = layoutProperties.get("nodeHorizontalSpacing");
+		if (t != null && (t.valueChanged() || force))
+			nodeVerticalSpacing = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("nodeVerticalSpacing");
+		if (t != null && (t.valueChanged() || force))
+			nodeVerticalSpacing = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("componentSpacing");
+		if (t != null && (t.valueChanged() || force))
+			componentSpacing = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("bandGap");
+		if (t != null && (t.valueChanged() || force))
+			bandGap = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("leftEdge");
+		if (t != null && (t.valueChanged() || force))
+			leftEdge = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("topEdge");
+		if (t != null && (t.valueChanged() || force))
+			topEdge = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("rightMargin");
+		if (t != null && (t.valueChanged() || force))
+			rightMargin = ((Integer)t.getValue()).intValue();
+		t = layoutProperties.get("selected_only");
+		if (t != null && (t.valueChanged() || force))
+			selected_only = ((Boolean)t.getValue()).booleanValue();
+	}
+
+	public void revertSettings() {
+		layoutProperties.revertProperties();
 	}
 
 	/**
@@ -441,9 +522,6 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 	* @param taskMonitor TaskMonitor Object.
 	*/
 	public void setTaskMonitor(TaskMonitor tm) {
-		if (taskMonitor != null) {
-			throw new IllegalStateException("Task Monitor is already set.");
-		}
 		taskMonitor = tm;
 	}
 

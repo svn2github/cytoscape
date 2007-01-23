@@ -37,16 +37,23 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.SwingConstants;
+import javax.swing.JOptionPane;
 
 import org.jgraph.JGraph;
 import org.jgraph.graph.CellView;
+import org.jgraph.graph.VertexView;
+import org.jgraph.graph.EdgeView;
+import org.jgraph.graph.PortView;
 import org.jgraph.graph.GraphConstants;
 import org.jgraph.graph.GraphModel;
+
+import cytoscape.Cytoscape;
 
 /**
  * TODO:COMMENT ME!
@@ -61,6 +68,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	protected int nodeDistance = 20;
 	protected boolean centerRoot = false;
 	protected boolean combineLevelNodes = true;
+	private HashMap nodesSeen = new HashMap();
 
 	protected JGraph graph;
 
@@ -135,47 +143,127 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
      * @param dynamic_cells List of all nodes the layout should move
      * @param static_cells List of node the layout should not move but allow for
 	 */
-    public void run(JGraph graph, Object[] dynamic_cells, Object[] static_cells) {
+  public void run(JGraph graph, Object[] dynamic_cells, Object[] static_cells) {
 		this.graph = graph;
-		CellView[] selectedCellViews =
-			graph.getGraphLayoutCache().getMapping(new Object[]{dynamic_cells[0]});
 
-		List roots = Arrays.asList(selectedCellViews);
+		try {
+			List roots = getRootVertices(dynamic_cells);
+			if (roots == null) return;
 
-		for (Iterator it = roots.iterator(); it.hasNext();) {
-			if (!(it.next() instanceof CellView)) {
-				it.remove();
+			roots = buildTrees(roots);
+			if (roots == null) return;
+
+			layoutTrees(roots);
+			if (canceled) return;
+
+			if (combineLevelNodes) {
+				setLevelHeights(roots);
+			}
+
+			setPosition(roots);
+		} catch (Exception e) { 
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e, "Error", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	/**
+	 * If it is a Vertex and it has no source, it must be a root vertex.
+	 *
+	 * !!!todo I will need to enforce that there is always at least one vertex,
+	 * and that is the acq portal.
+	 *
+	 * @return all the tree root vertices
+	 */
+	protected ArrayList getRootVertices(Object[] selectedCells)
+	{
+		HashSet potentialRoot = new HashSet();
+		HashSet notARoot = new HashSet();
+		CellView viewTargetPort;
+		CellView viewTarget;
+
+		/*
+		 * Loop through all the vertex and edge cells
+		 */
+		for (int i = 0; i < selectedCells.length; i++)
+		{
+			if (canceled) return null;
+
+			Object view = graph.getGraphLayoutCache()
+								   .getMapping(selectedCells[i], false);
+
+			/*
+			 * If the vertex is not in the notARoot bucket, it is a potential
+			 * root.
+			 */
+			if (view instanceof VertexView)
+			{
+				if (!(notARoot.contains(view)))
+				{
+					potentialRoot.add(view);
+				}
+			}
+
+			/*
+			 * The target of an edge is not a root.
+			 */
+			else if (view instanceof EdgeView)
+			{
+				viewTargetPort = ((EdgeView) view).getTarget();
+				viewTarget = viewTargetPort.getParentView();
+				potentialRoot.remove(viewTarget);
+				notARoot.add(viewTarget);
+			}
+
+			else if (view instanceof PortView)
+			{
+				// Ignore ports
+			}
+			/*
+			 * It should be impossible to get to the next statement
+			 */
+			else
+			{
+				throw new RuntimeException("Cell is other than Vertex or Edge.");
 			}
 		}
 
-		roots = buildTrees(roots);
-
-		layoutTrees(roots);
-
-		if (combineLevelNodes) {
-			setLevelHeights(roots);
-		}
-
-		setPosition(roots);
+		/*
+		 * When the loop ends, only tree roots are left
+		 */
+		return new ArrayList(potentialRoot);
 	}
 
 	/* Building Tree */
 
-    protected List buildTrees(List roots) {
+    protected List buildTrees(List roots) throws Exception {
 		List l = new ArrayList();
 		for (Iterator it = roots.iterator(); it.hasNext();) {
-			l.add(buildTree((CellView) it.next()));
+			if (canceled) return null;
+			TreeNode tn = buildTree((CellView) it.next());
+			if (tn != null) {
+				l.add(tn);
+			}
 		}
 		return l;
 	}
 
     protected TreeNode buildTree(CellView view) {
+
+		if (nodesSeen.containsKey(view))
+			// throw new RuntimeException("Detected loop in graph!");
+			return null;
+		else
+			nodesSeen.put(view,view);
+
 		List children = getChildren(view);
 		TreeNode node = getTreeNode(view);
 
 		for (Iterator it = children.iterator(); it.hasNext();) {
+			if (canceled) return null;
 			CellView c = (CellView) it.next();
+			if (c == node) return null;
 			TreeNode n = buildTree(c);
+			if (n == null) return null;
 			node.children.add(n);
 		}
 
@@ -188,6 +276,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		Object cell = view.getCell();
 
 		for (int i = 0; i < model.getChildCount(cell); i++) {
+			if (canceled) return null;
 			Object port = model.getChild(cell, i);
 
 			for (Iterator edges = model.edges(port); edges.hasNext();) {
@@ -217,18 +306,24 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
 	/* Layout trees */
 
-    protected void layoutTrees(List roots) {
+    protected void layoutTrees(List roots) throws Exception {
 		for (Iterator it = roots.iterator(); it.hasNext();) {
+			if (canceled) return;
 			layout((TreeNode) it.next());
 		}
 	}
 
-    protected void layout(TreeNode node) {
+    protected void layout(TreeNode node) throws Exception {
+		if (node.isDone()) return;
+		node.setDone();
 		if (node.children.size() == 0) {
 			//do nothing
 		} else if (node.children.size() == 1) {
 			TreeNode sub = (TreeNode) node.children.get(0);
 			sub.depth = node.depth + 1;
+			if (sub.isDone()) {
+				throw new Exception("Loop detected in graph!");
+			}
 			layout(sub);
 
 			sub.leftContour.dx = (sub.width - node.width) / 2;
@@ -240,6 +335,9 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 			for (Iterator it = node.children.iterator(); it.hasNext();) {
 				TreeNode n = (TreeNode) it.next();
 				n.depth = node.depth + 1;
+				if (n.isDone()) {
+					throw new Exception("Loop detected in graph!");
+				}
 				layout(n);
 			}
 
@@ -416,6 +514,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		PolyLine leftContour;
 		PolyLine rightContour;
 		int depth;
+		boolean done;
 		
 		CellView view;
 
@@ -432,6 +531,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 			this.leftContour = new PolyLine(width / 2);
 			this.rightContour = new PolyLine(width / 2);
 			this.depth = 0;
+			this.done = false;
 		}
 		
 		public Iterator getChildren() {
@@ -453,6 +553,14 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 			}
 			
 			return width;
+		}
+
+		public boolean isDone() {
+			return this.done;
+		}
+
+		public void setDone() {
+			this.done = true;
 		}
 		
 		public int getRightWidth() {

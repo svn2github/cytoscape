@@ -50,11 +50,13 @@ import cytoscape.data.*;
 import cytoscape.task.TaskMonitor;
 import giny.view.*;
 
-import csplugins.layout.AbstractLayout;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
 
-import csplugins.layout.algorithms.bioLayout.LayoutNode;
-import csplugins.layout.algorithms.bioLayout.LayoutEdge;
-import csplugins.layout.algorithms.bioLayout.Profile;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutEdge;
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.Profile;
 
 /**
  * Lays out the nodes in a graph using a modification of the Kamada-Kawai
@@ -68,26 +70,16 @@ import csplugins.layout.algorithms.bioLayout.Profile;
  * allows for its use for laying out similarity networks, which are useful
  * for biological problems.
  *
+ * @see "Tomihisa Kamada and Satoru Kawai: An algorithm for drawing general indirect graphs. Information Processing Letters 31(1):7-15, 1989"
+ * @see "Tomihisa Kamada: On visualization of abstract objects and relations. Ph.D. dissertation, Dept. of Information Science, Univ. of Tokyo, Dec. 1988."
+ *
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
 
 public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
-	/**
-	 * Property key for getting various tuning values
-	 */
-	private static final String propPrefix = "bioLayout.kk.";
 
-	/**
-	 * Tuning values
-	 */
-	private static final String iterationsProp = "iterations_pernode";
-	private static final String passcountProp = "layout_passes";
-	private static final String distanceStrengthProp = "distance_strength";
-	private static final String restLengthProp = "rest_length";
-	private static final String disconnectedStrengthProp = "disconnected_strength";
-	private static final String disconnectedRestProp = "disconnected_rest_length";
-	private static final String anticollissionProp = "anticollisionStrength";
+	private int euclideanLoop = 0;
 
   /**
    * A small value used to avoid division by zero
@@ -95,23 +87,9 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	protected double EPSILON = 0.0000001D;
 
   private static final
-    int DEFAULT_NUM_LAYOUT_PASSES = 2;
-  private static final
-    double DEFAULT_AVERAGE_ITERATIONS_PER_NODE = 40.0;
-  private static final
     double[] DEFAULT_NODE_DISTANCE_SPRING_SCALARS = new double[] { 1.0, 1.0, 1.0, 1.0 };
   private static final
-    double DEFAULT_NODE_DISTANCE_STRENGTH_CONSTANT = 15.0;
-  private static final
-    double DEFAULT_NODE_DISTANCE_REST_LENGTH_CONSTANT = 200.0;
-  private static final
-    double DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_STRENGTH = 0.05;
-  private static final
-    double DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_REST_LENGTH = 2500.0;
-  private static final
     double[] DEFAULT_ANTICOLLISION_SPRING_SCALARS = new double[] { 0.0, 1.0, 1.0, 1.0 };
-  private static final
-    double DEFAULT_ANTICOLLISION_SPRING_STRENGTH = 100.0;
 
 	/**
 	 * The total number of layout passes
@@ -136,7 +114,21 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 */
 	private double[][] m_nodeDistanceSpringRestLengths;
 	private double[][] m_nodeDistanceSpringStrengths;
+
+	/**
+	 * Current layout pass
+	 */
 	private int m_layoutPass;
+
+	/**
+	 * The number of nodes
+	 */
+	private int m_nodeCount;
+
+	/**
+	 * The Partition
+	 */
+	private LayoutPartition partition;
 
 	/**
 	 * Whether or not to initialize by randomizing all points
@@ -150,30 +142,42 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	private HashMap nodeToLayoutNode;
 
 	/**
-	 * This is the constructor for the bioLayout algorithm.
-	 * @param networkView the CyNetworkView of the network 
-	 *                    are going to lay out.
+	 * Profile data
 	 */
-	public BioLayoutKKAlgorithm (CyNetworkView networkView) {
-		super (networkView, propPrefix);
+	Profile calculationProfile;
+	Profile distanceProfile;
 
-		// Set defaults
-		m_numLayoutPasses = DEFAULT_NUM_LAYOUT_PASSES;
-    m_averageIterationsPerNode = DEFAULT_AVERAGE_ITERATIONS_PER_NODE;
-    m_nodeDistanceSpringScalars = DEFAULT_NODE_DISTANCE_SPRING_SCALARS;
-    m_nodeDistanceStrengthConstant = DEFAULT_NODE_DISTANCE_STRENGTH_CONSTANT;
-    m_nodeDistanceRestLengthConstant =
-      DEFAULT_NODE_DISTANCE_REST_LENGTH_CONSTANT;
-    m_disconnectedNodeDistanceSpringStrength =
-      DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_STRENGTH;
-    m_disconnectedNodeDistanceSpringRestLength =
-      DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_REST_LENGTH;
-    m_anticollisionSpringScalars = DEFAULT_ANTICOLLISION_SPRING_SCALARS;
-    m_anticollisionSpringStrength = DEFAULT_ANTICOLLISION_SPRING_STRENGTH;
+	/**
+	 * This is the constructor for the bioLayout algorithm.
+	 * @param supportEdgeWeights a boolean to indicate whether we should
+	 *									     		 behave as if we support weights
+	 */
+	public BioLayoutKKAlgorithm (boolean supportEdgeWeights) {
+		super ();
 
-		// (Possibly) override defaults
-		initializeProperties();
+		supportWeights = supportEdgeWeights;
 
+		// Set and (Possibly) override defaults
+		this.initializeProperties();
+
+	}
+
+	/**
+	 * Overrides for LayoutAlgorithm support
+	 */
+
+	public String getName () { 
+		if (supportWeights)
+			return "kamada-kawai-noweight"; 
+		else
+			return "kamada-kawai";
+		}
+
+	public String toString () { 
+		if (supportWeights)
+			return "Edge-weighted Spring Embedded";
+		else
+			return "Spring Embedded";
 	}
 
 	/**
@@ -276,103 +280,163 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
 	/**
 	 * Reads all of our properties from the cytoscape properties map and sets
-	 * the values as appropriates.
+	 * the values as appropriate.
 	 */
 	public void initializeProperties() {
-		// Initialize our tunables from the properties
-		Properties properties = CytoscapeInit.getProperties();
-		String pValue = null;
+		super.initializeProperties();
+		/**
+		 * Tuning values
+		 */
+		if (supportWeights)
+			layoutProperties.add(new Tunable("iterations_pernode", "Number of iteratations for each node", 
+																			Tunable.INTEGER, new Integer(40)));
+		else
+			layoutProperties.add(new Tunable("iterations_pernode", "Number of iteratations for each node", 
+																			Tunable.INTEGER, new Integer(20)));
+		layoutProperties.add(new Tunable("layout_passes", "Number of layout passes", 
+																		Tunable.INTEGER, new Integer(2)));
+		layoutProperties.add(new Tunable("distance_strength", "Spring strength", 
+																		Tunable.DOUBLE, new Double(15.0)));
+		layoutProperties.add(new Tunable("rest_length", "Spring rest length",
+																		Tunable.DOUBLE, new Double(15.0)));
+		layoutProperties.add(new Tunable("disconnected_strength", "Strength of a 'disconnected' spring",
+																		Tunable.DOUBLE, new Double(0.05)));
+		layoutProperties.add(new Tunable("disconnected_rest_length", "Rest length of a 'disconnected' spring",
+																		Tunable.DOUBLE, new Double(2000.0)));
+		layoutProperties.add(new Tunable("anticollisionStrength", "Strength to apply to avoid collisions",
+																		Tunable.DOUBLE, new Double(100.0)));
+		// We've now set all of our tunables, so we can read the property 
+		// file now and adjust as appropriate
+		layoutProperties.initializeProperties();
 
-		if ( (pValue = properties.getProperty(propPrefix+iterationsProp)) != null ) {
-			setNumberOfIterationsPerNode(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+passcountProp)) != null ) {
-			setNumberOfLayoutPasses(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+distanceStrengthProp)) != null ) {
-			setDistanceSpringStrength(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+restLengthProp)) != null ) {
-			setDistanceRestLength(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+disconnectedStrengthProp)) != null ) {
-			setDisconnectedSpringStrength(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+disconnectedRestProp)) != null ) {
-			setDisconnectedRestLength(pValue);
-		}
-		if ( (pValue = properties.getProperty(propPrefix+anticollissionProp)) != null ) {
-			setAnticollisionSpringStrength(pValue);
-		}
+		// Finally, update everything.  We need to do this to update
+		// any of our values based on what we read from the property file
+		updateSettings(true);
+	}
+
+	public void updateSettings() {
+		updateSettings(false);
+	}
+
+	public void updateSettings(boolean force) {
+		super.updateSettings(force);
+		Tunable t = layoutProperties.get("iterations_pernode");
+		if (t != null && (t.valueChanged() || force))
+			setNumberOfIterationsPerNode(t.getValue().toString());
+		t = layoutProperties.get("layout_passes");
+		if (t != null && (t.valueChanged() || force))
+			setNumberOfLayoutPasses(t.getValue().toString());
+		t = layoutProperties.get("distance_strength");
+		if (t != null && (t.valueChanged() || force))
+			setDistanceSpringStrength(t.getValue().toString());
+		t = layoutProperties.get("rest_length");
+		if (t != null && (t.valueChanged() || force))
+			setDistanceRestLength(t.getValue().toString());
+		t = layoutProperties.get("disconnected_strength");
+		if (t != null && (t.valueChanged() || force))
+			setDisconnectedSpringStrength(t.getValue().toString());
+		t = layoutProperties.get("disconnected_rest_length");
+		if (t != null && (t.valueChanged() || force))
+			setDisconnectedRestLength(t.getValue().toString());
+		t = layoutProperties.get("anticollisionStrength");
+		if (t != null && (t.valueChanged() || force))
+			setAnticollisionSpringStrength(t.getValue().toString());
 	}
 
 	/**
 	 * Perform a layout
 	 */
-	public void layout() {
+	public void layout(LayoutPartition partition) {
 		Iterator iter = null;
 		Dimension initialLocation = null;
+		this.partition = partition;
 		// Initialize all of our values.  This will create
 		// our internal objects and initialize them
 		// local_initialize();
+		m_nodeCount = partition.nodeCount();
 
+		// Set defaults -- this is done here insted of in the constructor
+		// to allow users to change m_numLayoutPasses
+    m_nodeDistanceSpringScalars = new double[m_numLayoutPasses];
+		for (int i = 0; i < m_numLayoutPasses; i++) 
+			m_nodeDistanceSpringScalars[i] = 1.0;
+    m_anticollisionSpringScalars = new double[m_numLayoutPasses];
+		m_anticollisionSpringScalars[0] = 0.0;
+		for (int i = 1; i < m_numLayoutPasses; i++) 
+			m_anticollisionSpringScalars[i] = 1.0;
+
+
+		/*
+		System.out.println("BioLayoutKK Algorithm.  Laying out "+m_nodeCount+" nodes and "+partition.edgeCount()+" edges: ");
+		for (Iterator diter = partition.nodeIterator(); diter.hasNext(); ) {
+			System.out.println("\t"+(LayoutNode)diter.next());
+		}
+		for (Iterator diter = partition.edgeIterator(); diter.hasNext(); ) {
+			System.out.println("\t"+(LayoutEdge)diter.next());
+		}
+		*/
+		
 		// Calculate a distance threshold
-		double euclideanDistanceThreshold =  (nodeList.size()+edgeList.size())/2;
+		double euclideanDistanceThreshold =  (m_nodeCount+partition.edgeCount())/10;
 
-		int numIterations = (int) ((nodeList.size() * m_averageIterationsPerNode) / m_numLayoutPasses);
+		int numIterations = (int) ((m_nodeCount * m_averageIterationsPerNode) / m_numLayoutPasses);
 
 		List partialsList = new ArrayList();
 		double[] potentialEnergy = new double[1];
 		if (potentialEnergy[0] != 0.0) throw new RuntimeException();
 	  PartialDerivatives partials;
     PartialDerivatives furthestNodePartials = null;
-		int m_nodeCount = nodeList.size();
 
     m_nodeDistanceSpringRestLengths = new double[m_nodeCount][m_nodeCount];
     m_nodeDistanceSpringStrengths = new double[m_nodeCount][m_nodeCount];
 
 		// Figure out our starting point
 		if (selectedOnly) {
-			initialLocation = calculateAverageLocation();
+			initialLocation = partition.getAverageLocation();
 		}
 
 		// Randomize our points, if any points lie
 		// outside of our bounds
-		if (randomize) randomizeLocations();
+		if (randomize) partition.randomizeLocations();
 
 		// Calculate our edge weights
-		calculateEdgeWeights();
+		partition.calculateEdgeWeights();
 
 		// Compute our distances
-    if (this.cancel) return;
+    if (canceled) return;
     taskMonitor.setPercentCompleted(2);
     taskMonitor.setStatus("Calculating node distances");
 
     int[][] nodeDistances = calculateNodeDistances();
 
-    if (this.cancel) return;
+    if (canceled) return;
     taskMonitor.setPercentCompleted(4);
     taskMonitor.setStatus("Calculating spring constants");
 
 		calculateSpringData(nodeDistances);
 
     final double percentCompletedBeforePasses = 5.0d;
-    final double percentCompletedAfterPass1 = 80.0d;
-    final double percentCompletedAfterPass2 = 90.0d;
+    final double percentCompletedAfterPass1 = 60.0d;
+    final double percentCompletedAfterFinalPass = 95.0d;
     double currentProgress = percentCompletedBeforePasses;
+
+		// Profile partialProfile = new Profile();
+		// Profile springProfile = new Profile();
 
 		// Compute our optimal lengths
     for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
     {
       final double percentProgressPerIter;
+			Profile passTimer = new Profile();
+			passTimer.start();
 			if (m_layoutPass == 0) {
       	percentProgressPerIter =
        		 (percentCompletedAfterPass1 - percentCompletedBeforePasses) /
         				(double) (m_nodeCount + numIterations);
 			} else {
       	percentProgressPerIter =
-        		(percentCompletedAfterPass2 - percentCompletedAfterPass1) /
-        				(double) (m_nodeCount + numIterations);
+        		(percentCompletedAfterFinalPass - percentCompletedAfterPass1) /
+        				(double) ((m_nodeCount + numIterations) * (m_numLayoutPasses - 1));
 			}
 
       // Initialize this layout pass.
@@ -380,23 +444,24 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
       partialsList.clear();
       furthestNodePartials = null;
 
+			taskMonitor.setStatus("Calculating partial derivatives -- pass "+(m_layoutPass+1)+" of "+m_numLayoutPasses); 
+			// partialProfile.start();
+
       // Calculate all node distances.  Keep track of the furthest.
-			Iterator nodeIter = nodeList.iterator();
+			Iterator nodeIter = partition.nodeIterator();
+			euclideanLoop = 0;
 			while (nodeIter.hasNext()) 
 			{
 				LayoutNode v = (LayoutNode)nodeIter.next();
 
-        if (this.cancel) return;
+        if (canceled) return;
 
-        if (m_layoutPass == 0) {
-          taskMonitor.setStatus("Calculating partial derivatives"); 
-				}
         taskMonitor.setPercentCompleted((int) currentProgress);
 				if (v.isLocked()) continue;
 
         partials = new PartialDerivatives(v);
         calculatePartials(partials, null, potentialEnergy, false);
- //       System.out.println(partials.printPartial()+" potentialEnergy = "+potentialEnergy[0]);
+				// System.out.println(partials.printPartial()+" potentialEnergy = "+potentialEnergy[0]);
         partialsList.add(partials);
         if ((furthestNodePartials == null) ||
             (partials.euclideanDistance >
@@ -405,17 +470,17 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
 				currentProgress += percentProgressPerIter;
       }
+			// partialProfile.done("Partial time for pass "+(m_layoutPass+1)+" is ");
 
+			taskMonitor.setStatus("Executing spring logic -- pass "+(m_layoutPass+1)+" of "+m_numLayoutPasses); 
+			// springProfile.start();
       for (int iterations_i = 0;
            (iterations_i < numIterations) &&
              (furthestNodePartials.euclideanDistance >=
               euclideanDistanceThreshold);
            iterations_i++)
       {
-        if (this.cancel) return;
-        if (m_layoutPass == 0) {
-          taskMonitor.setStatus("Executing spring logic"); 
-				}
+        if (canceled) return;
         taskMonitor.setPercentCompleted((int) currentProgress);
 
         furthestNodePartials = moveNode(furthestNodePartials, partialsList,
@@ -424,49 +489,54 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
         currentProgress += percentProgressPerIter;
       }
+			// springProfile.done("Spring time for pass "+(m_layoutPass+1)+" is ");
     }
 
-    taskMonitor.setPercentCompleted((int) percentCompletedAfterPass2);
+
+    taskMonitor.setPercentCompleted((int) percentCompletedAfterFinalPass);
 		taskMonitor.setStatus("Updating display");
 
 		double xDelta = 0.0;
 		double yDelta = 0.0;
 		if (selectedOnly) {
-			Dimension finalLocation = calculateAverageLocation();
+			Dimension finalLocation = partition.getAverageLocation();
 			xDelta = finalLocation.getWidth()-initialLocation.getWidth();
 			yDelta = finalLocation.getHeight()-initialLocation.getHeight();
 		}
 
 		// Actually move the pieces around
-		iter = nodeList.iterator();
+		// Note that we reset our min/max values before we start this
+		// so we can get an accurate min/max for paritioning
+		partition.resetNodes();
+		iter = partition.nodeIterator();
 		while (iter.hasNext()) {
 			LayoutNode v = (LayoutNode)iter.next();
 			if (!v.isLocked()) {
 				if (selectedOnly) {
 					v.decrement(xDelta, yDelta);
 				}
-				v.moveToLocation();
+				partition.moveNodeToLocation(v);
 			}
 		}
 	}
 
-  private static int[][] calculateNodeDistances()
+  private int[][] calculateNodeDistances()
   {
-    int[][] distances = new int[nodeList.size()][];
+    int[][] distances = new int[m_nodeCount][];
     LinkedList queue = new LinkedList();
-    boolean[] completedNodes = new boolean[nodeList.size()];
+    boolean[] completedNodes = new boolean[m_nodeCount];
     int toNode;
     int fromNode;
     int neighbor;
     int toNodeDistance;
     int neighborDistance;
-		Iterator nodeIter = nodeList.iterator();
+		Iterator nodeIter = partition.nodeIterator();
 		while (nodeIter.hasNext()) {
 			LayoutNode v = (LayoutNode) nodeIter.next();
 			fromNode = v.getIndex();
 
       if (distances[fromNode] == null)
-        distances[fromNode] = new int[nodeList.size()];
+        distances[fromNode] = new int[m_nodeCount];
       Arrays.fill(distances[fromNode], Integer.MAX_VALUE);
       distances[fromNode][fromNode] = 0;
       Arrays.fill(completedNodes, false);
@@ -482,7 +552,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
         {
           // Oh boy.  We've already got every distance from/to this node.
           int distanceThroughToNode;
-          for (int i = 0; i < nodeList.size(); i++)
+          for (int i = 0; i < m_nodeCount; i++)
           {
             if (distances[index][i] == Integer.MAX_VALUE) continue;
             distanceThroughToNode = toNodeDistance  + distances[index][i];
@@ -525,7 +595,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	private void calculateSpringData(int[][] nodeDistances) {
 
 		// Set all springs to the default
-    for (int node_i = 0; node_i < nodeList.size(); node_i++)
+    for (int node_i = 0; node_i < m_nodeCount; node_i++)
     {
 			Arrays.fill(m_nodeDistanceSpringRestLengths[node_i], 
 									m_disconnectedNodeDistanceSpringRestLength);
@@ -534,7 +604,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		}
 
     // Calculate rest lengths and strengths based on node distance data.
-		Iterator edgeIter = edgeList.iterator();
+		Iterator edgeIter = partition.edgeIterator();
 		while(edgeIter.hasNext()) {
 			LayoutEdge edge = (LayoutEdge)edgeIter.next();
 			int node_i = edge.getSource().getIndex();
@@ -543,7 +613,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			if (nodeDistances[node_i][node_j] != Integer.MAX_VALUE) {
       	// Compute spring rest lengths.
 				m_nodeDistanceSpringRestLengths[node_i][node_j] =
-       	     m_nodeDistanceRestLengthConstant * nodeDistances[node_i][node_j]/(weight*7.5);
+       	     m_nodeDistanceRestLengthConstant * nodeDistances[node_i][node_j]/(weight);
       	m_nodeDistanceSpringRestLengths[node_j][node_i] =
       		    m_nodeDistanceSpringRestLengths[node_i][node_j];
       	// Compute spring strengths.
@@ -666,16 +736,22 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     PartialDerivatives furthestPartials = null;
     Iterator iterator;
     if (partialsList == null) 
-			iterator = nodeList.iterator();
+			iterator = partition.nodeIterator();
     else
       iterator = partialsList.iterator();
     double deltaX;
     double deltaY;
+    double otherNodeX;
+    double otherNodeY;
     double euclideanDistance;
     double euclideanDistanceCubed;
     double distanceFromRest;
     double distanceFromTouching;
     double incrementalChange;
+		double xTable[] = {.01, .01, -.01, -.01};
+		double yTable[] = {.01, -.01, .01, -.01};
+		int offsetTable = 0;
+		int nodeIndex = node.getIndex();
 
     while (iterator.hasNext()) {
       if (partialsList == null) {
@@ -689,29 +765,34 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			// How does this every get to be > 0?
 			// Get the node size from the nodeView?
       otherNodeRadius = otherNode.getWidth()/2;
+			otherNodeX = otherNode.getX();
+			otherNodeY = otherNode.getY();
+
+      deltaX = nodeX - otherNodeX;
+      deltaY = nodeY - otherNodeY;
+      euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      if (((float) euclideanDistance) < 0.0001) {
+				otherNodeX = otherNodeX+xTable[offsetTable];
+				otherNodeY = otherNodeY+yTable[offsetTable++];
+				if (offsetTable >3) offsetTable = 0;
+				otherNode.setX(otherNodeX);
+				otherNode.setY(otherNodeY);
+      	euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+			}
 
 			//System.out.println("nodeX = "+nodeX);
       //System.out.println("nodeY = "+nodeY);
       //System.out.println("otherNodeX = "+otherNode.getX());
       //System.out.println("otherNodeY = "+otherNode.getY());
 
-      while (true) {
-        deltaX = nodeX - otherNode.getX();
-        deltaY = nodeY - otherNode.getY();
-        euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        if (((float) euclideanDistance) > 0.0001) break;
-				otherNode.setX(otherNode.getX()+(0.001d * (new java.util.Random()).nextDouble()));
-				otherNode.setY(otherNode.getY()+(0.001d * (new java.util.Random()).nextDouble())); 
-			}
-
-			int nodeIndex = node.getIndex();
 			int otherNodeIndex = otherNode.getIndex();
 			double radius = nodeRadius + otherNodeRadius;
 
-      euclideanDistanceCubed = Math.pow(euclideanDistance, 3);
+      euclideanDistanceCubed = euclideanDistance*euclideanDistance*euclideanDistance;
       distanceFromTouching = euclideanDistance - (nodeRadius + otherNodeRadius);
       distanceFromRest = (euclideanDistance - m_nodeDistanceSpringRestLengths[nodeIndex][otherNodeIndex]);
 
+			// calculationProfile.start();
 			if (!reversed) {
 				partials.x += calculateSpringPartial(m_layoutPass,distanceFromTouching,nodeIndex,
 																							otherNodeIndex,euclideanDistance,deltaX, radius);
@@ -764,6 +845,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
         if ((furthestPartials == null) || (otherPartials.euclideanDistance > furthestPartials.euclideanDistance))
           furthestPartials = otherPartials;
       }
+			// calculationProfile.checkpoint();
     } // end of while loop
 
     if (!reversed)
@@ -781,7 +863,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 * The PartialDerivatives class maintains the values for the partial derivatives
 	 * as they are computed.
 	 */
-  private static class PartialDerivatives
+  private class PartialDerivatives
   {
 
     final LayoutNode node;
@@ -838,19 +920,25 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     PartialDerivatives startingPartials = new PartialDerivatives(partials);
     calculatePartials(partials, partialsList, potentialEnergy, true);
     // System.out.println(partials.printPartial()+" potentialEnergy = "+potentialEnergy[0]);
-    simpleMoveNode(startingPartials);
+		try {
+    	simpleMoveNode(startingPartials);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
     return calculatePartials(partials, partialsList, potentialEnergy, false);
   }
 
-  private static void simpleMoveNode(PartialDerivatives partials)
+  private void simpleMoveNode(PartialDerivatives partials)
   {
     LayoutNode node = partials.node;
 		if (node.isLocked()) {
 			return;
 		} 
     double denominator = ((partials.xx * partials.yy) - (partials.xy * partials.xy));
-    if (((float) denominator) == 0.0)
-      throw new RuntimeException("denominator too close to 0");
+    if (((float) denominator) == 0.0) {
+			return;
+      // throw new RuntimeException("denominator too close to 0 for node "+node);
+		}
     double deltaX = ( ((-partials.x * partials.yy) - (-partials.y * partials.xy)) / denominator);
     double deltaY = ( ((-partials.y * partials.xx) - (-partials.x * partials.xy)) / denominator);
 		node.setLocation(node.getX() + deltaX, node.getY() + deltaY);

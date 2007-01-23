@@ -95,7 +95,7 @@ public class AnnealingLayoutSettings extends JPanel implements JGraphLayoutSetti
     public final static String KEY_LAYOUT_UPDATE_CLUSTERING_FACTOR      = "Layout Update clustering factor";
     public final static String KEY_LAYOUT_UPDATE_CLUSTERING_MOVE_SCALE  = "Layout Update clustering move scaling factor";
 
-	protected AnnealingLayoutAlgorithm layout;
+		protected AnnealingLayoutAlgorithm layout;
 	
     private JTextField tf_initTemperature;
     private JTextField tf_minTemperature;
@@ -180,6 +180,7 @@ public class AnnealingLayoutSettings extends JPanel implements JGraphLayoutSetti
      * Creates new form AnnealingLayoutConfigurationDialog
      */
     public AnnealingLayoutSettings(AnnealingLayoutAlgorithm layout, boolean isOptimizationAlgorithm) {
+
     	this.layout = layout;
     	// Populate presets
         Properties[] config = new Properties[2];
@@ -306,6 +307,8 @@ public class AnnealingLayoutSettings extends JPanel implements JGraphLayoutSetti
 	
 	public void revert() {
 		// TODO: Read config from algorithm
+    	layout.setPresetConfig(preSetConfigs[0]);
+      action_LoadPreSets(0); //default values
 	}
     
     public void apply() {
@@ -315,7 +318,7 @@ public class AnnealingLayoutSettings extends JPanel implements JGraphLayoutSetti
     public void setConfiguration(Properties config) {
 
 		// Read config
-    setInitTemperature(
+    	setInitTemperature(
             Double.parseDouble(
                 (String)config.get(KEY_INIT_TEMPERATURE)));
         setMinTemperature(

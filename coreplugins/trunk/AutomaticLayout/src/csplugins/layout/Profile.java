@@ -30,12 +30,12 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package csplugins.layout.algorithms.bioLayout;
+package csplugins.layout;
 
 /**
  * This class is used to provide some simple profiling
  */
-class Profile {
+public class Profile {
 	long startTime;
 	long totalTime;
 	
