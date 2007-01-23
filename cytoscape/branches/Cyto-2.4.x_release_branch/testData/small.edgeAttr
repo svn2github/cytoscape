@@ -1,5 +1,0 @@
-sample
-a (pp) b = 0.4 
-b (pp) c = 1.5
-c (pp) d = 1.6
-b (pp) d = 2.7
