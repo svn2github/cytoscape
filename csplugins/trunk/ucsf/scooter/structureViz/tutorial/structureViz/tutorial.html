@@ -83,7 +83,7 @@ agent to bridge between
 		<li>Explore the structure using the Molecular Navigator</li>
 		<li>Use Chimera to manipulate the structure</li>
 	</ol></li>
-	<li>Enhance the display of 1EZ2 using the Molecular Navigator
+	<li><a href="#enhance">Enhance the display of 1EZ2 using the Molecular Navigator</a>
 	<ol style="list-style: lower-alpha;">
 		<li>Delete the waters</li>
 		<li>Delete the second chain</li>
@@ -92,9 +92,11 @@ agent to bridge between
 		<li>Display functional residues</li>
 		<li>Display metal ions</li>
 	</ol></li>
-	<li>Load additional structures: 1BF6, 1PSC</li>
-	<li>Simplify</li>
-	<li>Align</li>
+	<li><a href="#load_additional">Load additional structures</a></li>
+	<li><a href="#simplify_additional">Simplify additional structures</a></li>
+	<li><a href="#align_structures">Align structures to 1EZ2</a></li>
+	<li><a href="#building_network">Building a <i>structureViz</i> compatible network</a></li>
+	<li><a href="#further_exploration">Further exploration</a></li>
 </ol>
 <hr/>
 
@@ -265,7 +267,9 @@ Note that when a display parameter is changed, the tree will need to reload isel
 the initial closed state.
 </p>
 <hr/>
+<a name="enhance">
 <h3>Enhance the display</h3>
+</a>
 <p>As we noted before, the structure <b>1EZ2</b> includes two polypetide chains, numerous 
 water molecules, and two ligands.  We want to simplify the structure to improve the visualization
 of the catalytic pocket as well as prepare the structure for doing alignments.  We will do this
@@ -372,7 +376,9 @@ and get an image similar to the one at the right.</p></li></ol>
 </li>
 </ol>
 <hr/>
+<a name="load_additional">
 <h3>Load additional structures</h3>
+</a>
 <p>Now that we have a nice visualization of <b>1EZ2</b>, we can load several additional
 structures to compare the family.  We need to go back to Cytoscape to accomplish
 this.  First, make sure that all of the nodes are selected by dragging your mouse
@@ -388,7 +394,9 @@ to the Molecular Structure Navigator.  The outline color of the Node represents 
 default color of the Chimera model.  This should allow you to quickly find each of the
 structures</p>
 <hr/>
+<a name="simplify_additional">
 <h3>Simplify additional structures</h3>
+</a>
 <p>We now want to go through some of the steps we did for the <b>1EZ2</b> structure for
 each of the new structures that we loaded.  In particular, we want to delete the
 extra chains and simplify <b class="menu">Chain A</b> of each structure to only show
@@ -416,7 +424,9 @@ Chimera window after loading all of the additional structures
 </center>
 
 <hr/>
+<a name="align_structures">
 <h3>Align structures to 1EZ2</h3>
+</a>
 <div class="image" style="width:300px; float:right;">
 <a href="alignDialog.png">
 <img src="alignDialog.png" width="285px" />
@@ -465,7 +475,9 @@ smallest to largest.
 </div>
 </center>
 <hr/>
+<a name="building_network">
 <h3>Building a <i>structureViz</i> compatible network</h3>
+</a>
 <p><i>structureViz</i> will operate on any Cytoscape network that has the necessary
 node attributes.  The table below shows the attributes used by <i>structureViz</i>
 and what they are used for.
@@ -486,7 +498,9 @@ and what they are used for.
 </tr>
 </table>
 <hr/>
-<h3>More exploration</h3>
+<a name="further_exploration">
+<h3>Further exploration</h3>
+</a>
 <p>If you wish to explore the capabilities of Cytoscape and <i>structureViz</i> more, you
 can download the data for the entire 
 <a href="http://www.cgl.ucsf.edu/Research/cytoscape/structureViz/AHCircle.xgmml">amidohydrolase superfamily</a>.  
