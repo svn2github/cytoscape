@@ -1,0 +1,527 @@
+<html>
+<head>
+<title>structureViz Tutorial</title>
+<style>
+DIV.image {
+	text-align: center;
+	padding: 5px 5px 5px 5px;
+	border: thin solid black;
+	margin: 10px 10px 10px 10px;
+	font-size: 90%;
+}
+B.menu {
+	font-size: 90%;
+	font-family: sans-serif;
+	color: DarkGreen;
+}
+B.button {
+	color: DarkBlue;
+	font-size: 90%;
+	font-family: sans-serif;
+	border: thin blue solid;
+}
+B.label {
+	font-size: 90%;
+	font-family: sans-serif;
+}
+</style>
+</head>
+<body>
+
+<p><map name="Top">
+    <area shape="rect" coords="167,72,213,92" href="/index.html">
+    <area shape="rect" coords="245,72,312,92" href="/Overview/index.html">
+    <area shape="rect" coords="353,73,416,92" href="/Research/index.html">
+    <area shape="rect" coords="465,73,539,92" href="/Resources/index.html">
+    <area shape="rect" coords="156,94,292,112" href="/Outreach/index.html">
+    <area shape="rect" coords="333,93,433,112" href="/Visitors/index.html">
+    <area shape="rect" coords="514,94,565,112" href="/Search/index.html">
+</map><img src="/Research/Top.gif" alt="Navigation Bar" align="bottom"
+border="0" usemap="#Top" ismap width="582" height="134" naturalsizeflag="3">
+</p>
+
+<h2 style="text-align: center;"> structureViz Tutorial</h2>
+
+<div class="image" style="float: right; width: 360px;"> 
+<img src="1ez2-image.png" align="middle" />
+<br/>The catalytic pocket for phosphotriesterase (PDB: 1EZ2)
+</div>
+<p>This tutorial provides a step-by-step approach to allow you to explore
+some of the features of the <i>structureViz</i> plugin as you investigate
+the structural relationships between some members of the amidohydrolase
+enzyme superfamily.  In particular, this tutorial will focus on those proteins
+that have been identified as phosphotriesterases (PTE) by PFAM.  The sample data is
+from the Structure-Function Linkage Database
+<a href="#ref1"><sup>1</sup></a> (<a href="http://sfld.rbvi.ucsf.edu/">SFLD</a>),
+which describes two subgroups for the PFAM PTE enzymes: 
+<i>phosphotriesterase-like</i> and <i>unkown119</i>.  While the <i>unkown119</i>
+proteins show close sequence similarity to the phosphotriesterases, they are known
+to not hydrolize organophosphates
+<a href="#ref2"><sup>2</sup></a>.  In this tutorial, we look at these two
+subgroups, and explore the structural similarity between the phosphotriesterases and
+the single available structure for the <i>unknown119</i> subgroup.  Along the way,
+we'll explore how to use <i>structureViz</i> as a front-end to 
+<a href="http://www.cgl.ucsf.edu/chimera">UCSF Chimera</a>
+<a href="#ref3"><sup>3</sup></a>, and an
+agent to bridge between 
+<a href="http://www.cytoscape.org">Cytoscape</a>
+<a href="#ref4"><sup>4</sup></a> and Chimera.
+</p>
+<h3>Tutorial Outline</h3>
+<ol>
+	<li><a href="#getting_started">Getting started</a>:
+	<ol style="list-style: lower-alpha;">
+		<li>Download &amp; install <b>Cytoscape</b></li>
+		<li>Download &amp; install <i>structureViz</i></li>
+		<li>Download &amp; install <b>UCSF Chimera</b></li>
+		<li>Load sample data: <i>pte.xgmml</i></li>
+		<li>Initial Test</li>
+		<li>Configure path to <b>Chimera</b> (if necessary)</li>
+	</ol></li>
+	<li><a href="#browsing_and_manipulating">Browsing and maniuplating structures</a>
+	<ol style="list-style: lower-alpha;">
+		<li>Explore the structure using the Molecular Navigator</li>
+		<li>Use Chimera to manipulate the structure</li>
+	</ol></li>
+	<li>Enhance the display of 1EZ2 using the Molecular Navigator
+	<ol style="list-style: lower-alpha;">
+		<li>Delete the waters</li>
+		<li>Delete the second chain</li>
+		<li>Delete the second het atom</li>
+		<li>Switch to a ribbon display</li>
+		<li>Display functional residues</li>
+		<li>Display metal ions</li>
+	</ol></li>
+	<li>Load additional structures: 1BF6, 1PSC</li>
+	<li>Simplify</li>
+	<li>Align</li>
+</ol>
+<hr/>
+
+<a name="getting_started">
+<h3>1. Getting Started</h3>
+</a>
+<p>There are three major components to <i>structureViz</i>.  First, is Cytoscape, which provides
+the foundation for <i>structureViz</i> as well as the tools to visualize biological networks,
+whether they be metabolic, regulatory, interaction, or similarity networks.  All of these 
+biological networks are visualized in the same way, but the meaning of the edges connecting the
+nodes implies very different relationships.  In the example we will use below, we will be dealing
+with a similarity network.</p>
+<p>The second component is the <i>structureViz</i> plugin itself.  This is a Cytoscape plugin that
+acts as an interface, or bridge between Cytoscape and Chimera.  It also provides an alternative
+interface to Chimera by taking advantage of the Tree widget provided by Java.  For many operations,
+this is a more intuitive way to browse the components of a structure, although the normal
+Chimera menus and command line interface is available for more advanced interaction.</p>
+<p>The final component is Chimera, which is an interactive molecular visualization and analysis
+system.  Chimera provides the visualizations and tools required to deal with molecular structures.
+A relatively recent version of Chimera (version 1.2309 or better) is required to interact with
+<i>structureViz</i>.</p>
+<ol style="list-style: lower-alpha;">
+<li>Download &amp; install <b>Cytoscape</b>
+<p>Cytoscape is available for download from the 
+<a href="http://www.cytoscape.org">Cytoscape web page</a>.  Cytoscape is a platform-independent
+Java application, but to ease installation, it is available in platform-specific bundles that
+generally do a very good job of installing Cytoscape in the appropriate place on your machine.
+Once you get to the download page (after agreeing to the license), select your platform under
+<b>Option 1</b>.  
+Once you have downloaded the installer, execute it (double-click on Windows or MacOS X, execute
+with a shell under Linux or Unix).  You will need to know the path where Cytoscape is installed
+for subsequent steps.
+</li>
+<li>Download &amp; install <i>structureViz</i>
+<p><i>structureViz</i> is available for download from the 
+<a href="http://www.rbvi.ucsf.edu">UCSF Resource for Biocomputing,
+Visualization, and Informatics</a> (RBVI) in the 
+<a href="http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz">structureViz project
+area</a>.  
+<a href="http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz/structureViz.jar">Download</a>
+the <i>structureViz</i> "jar" file.  You will need to move this file into the plugins folder 
+(directory) of your Cytoscape install.  This location is somewhat platform-dependent and 
+also depends on where you directed the installer to install Cytoscape.  </p>
+</li>
+<li>Download &amp; install <b>UCSF Chimera</b>
+<p>Chimera is available for download from the 
+<a href="http://www.rbvi.ucsf.edu/chimera/download.html">Chimera downloads area</a>.  Remember that
+you will need version 1.2309 or later to use <i>structureViz</i>.  Download the appropriate installer
+for your platform and install Chimera on your machine.</p></li>
+<div class="image" style="width: 319px;float:right;">
+<img src="remote_load.png" width="309px" />
+Cytoscape screenshot showing the <b>Import Network File</b> dialog.
+</div>
+<li>Load sample data: <i>pte.xgmml</i>
+<p>A sample XGMML network is available with information about the PTE family.  
+You can either:
+<ul><li style="position: relative;left:-20px;">Load it directly into Cytoscape as follows:
+<ol><li style="position:relative; left:-20px;">Launch Cytoscape</li>
+<li style="position:relative; left:-20px;"><b class="menu">File&rarr;Import&rarr;Network (multiple file types)...</b></li>
+<li style="position:relative; left:-20px;">When the dialog is availble, select <b class="button">Remote</b> for 
+<b class="label">Data Source Type</b> and
+type: 
+<b class="label">http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz/pte.xgmml</b>
+into the text field</li>
+<li style="position:relative; left:-20px;">Then press <b class="button">Import</b></li></ol>
+<li style="position:relative; left:-20px;">or, import it as a file:
+<ol><li style="position:relative; left:-20px;">Download 
+<a href="http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz/pte.xgmml">pte.xgmml</a>
+and save it on your disk</li>
+<li style="position:relative; left:-20px;">Launch Cytoscape</li>
+<li style="position:relative; left:-20px;"><b class="menu">File&rarr;Import&rarr;Network (multiple file types)...</b></li>
+<li style="position:relative; left:-20px;">When the dialog is availble, 
+select <b class="button">Local</b> for <b class="label">Data Source Type</b> and
+press the <b class="button">Select</b> button.</li>
+<li style="position:relative; left:-20px;">This 
+will bring up a file browser.  Browse to where you saved pte.xgmml and select it.</li>
+<li style="position:relative; left:-20px;">Press the <b class="button">Import</b> button</li>
+</ol>
+</ul>
+<p>The nodes in this network represent
+the proteins in the two subgroups, and the edges contain information about the e-Values calculated using
+the UCSF shotgun program.  The edge data was taken into consideration by using the Cytoscape 
+edge-weighted, spring-embedded layout algorithm 
+(<b class="menu">Layout&rarr;Cytoscape Layouts&rarr;Edge-weighted&rarr;Edge-weighted Spring Embedded</b>). 
+</p></li>
+<div class="image" style="float: right; width: 360px;">
+<img src="pte-network.png" width="350" height="300" />
+<br/>Cytoscape screenshot showing the Phosphotriesterases network loaded
+</div>
+<li><a name="initial_test">Initial Test</a>
+<p>Once you have successfully loaded the file, Cytoscape should look similar to the image
+at the right.  The next step is to see if <i>structureViz</i> is loaded correctly, and test connectivity to
+Chimera.  Begin by selecting a number of nodes in the Cytoscape window (just use your mouse 
+with the first button pressed, and drag over all of the purple nodes).  The selected nodes
+should turn yellow.  Now, see if <i>structureViz</i> can find any of the attributes by getting
+a list of structures: <b class="menu">Plugins&rarr;Sequence/Structure Tools&rarr;Open Structure(s)</b>.  This
+should display a list of structures.  If the <b>Sequence/Structure Tools</b> menu isn't available,
+then <i>structureViz</i> was not correctly installed.  If no PDB structure IDs are shown in the list,
+then the network was not correctly loaded.</p>
+<p>If everything works, go ahead and select the structure <b>1EZ2</b>, which is one
+of the structures for <i>phosphotriesterase</i>, GI 2098312.  If you get an error dialog, it
+probably means that the Chimera application is not on the default path.  This is common for MacOS X, but
+could also happen in Linux and Unix installations.   In this case, go to the next step.  If Chimera
+came up, go to the step on <a href="#browsing_and_manipulating">"Browsing and manipulating structures"</a>.
+</li>
+<p style="margin-top: 5em;"/>
+<li>Configure path to <b>Chimera</b> (if necessary)
+<div class="image" style="float: right; width: 245px;">
+<a href="preferences_editor.png">
+<img src="preferences_editor.png" width="237" height="288" />
+</a>
+<br/>Cytoscape screenshot showing the Preferences Editor (click for a larger view)
+</div>
+<p>Depending on your installation, it might be necessary to tell <i>structureViz</i> exactly
+where the Chimera binary is.  This is done by adding a new property: <b>structureViz.chimeraPath</b> 
+using the <b>Cytoscape Preferences Editor</b> (<b class="menu">Edit&rarr;Preferences&rarr;Properties</b>).   
+Click on
+the <b class="button">Add</b> button and enter the name of the property: <i>structureViz.chimeraPath</i>.  Click 
+<b class="button">OK</b>
+and enter the path to your Chimera application.  Note that on the Macintosh this should be the path
+to the Chimera executable, <i>not</i> the Chimera.app directory.  If you install Chimera in your <b>Applications</b>
+folder (the recommended install location), then set the path to: <b>/Applications/Chimera.app/Contents/MacOS/</b>.
+Once you have set the path, click <b class="button">OK</b>, then select the checkbox next to 
+"Make Current Cytoscape Properties Default", then click <b class="button">OK</b> one more time.  
+This will "remember" this setting
+so that you will not have to set it again.
+</p>
+<p>Now that you have set the Chimera path, go back to <a href="#initial_test">Initial Test</a> 
+and try to load <b>1EZ2</b> again.</li>
+</p>
+</li>
+</ol></li>
+<p></p>
+<hr style="margin-top: 10em;"/>
+<a name="browsing_and_manipulating">
+<h3>Browsing and manipulating structures</h3>
+</a>
+<p>Several things should have happened when you requested <i>structureViz</i> to load <b>1EZ2</b>.  First,
+Chimera should launch, then it will go to the RCSB <a href="http://www.rcsb.org/">web site</a> and load
+the coordinate information for <b>1EZ2</b> and display the model.  Finally, the <b>Cytoscape Molecular
+Structure Navigator</b> should popup.  When all three are loaded, 
+you should get an image similar to the one below.
+</p>
+<center>
+<div class="image" style="width:600px;">
+<a href="1EZ2-initial.png">
+<img src="1EZ2-initial.png" width="585px" height="295px"/>
+</a>
+<span>Screenshot showing the Cytoscape, the Molecular Structure 
+Navigator, and UCSF Chimera. (click for a larger view)</span>
+</div>
+</center>
+<p>The <b>Cytoscape Molecular Structure Navigator</b> provides a tree-oriented interface (similar to the 
+Windows file browser or the MacIntosh finder).  At the top level, all of the models currently loaded are displayed.  
+One level down, within each model is the list of chains, and finally, within each chain is the list of residues.  
+Lets go ahead and explore the structure for 1EZ2.  By opening up the model, you can see that there are 4 chains defined,
+the two amino acid chains, a "chain" of <i>het</i> residues, and a "chain" of water.  If you open up the "het" 
+chain and select one of the ligands, you should notice three things happen.  First, the ligand will highlight,
+second, the ligand will be outlined in green in the Chimera window, and third, the node that refers to the
+1EZ2 structure (gi12084365) will be highlighted in yellow (if it wasn't previously selected) or green (if it
+was already selected).
+</p><p>Lets take a look at "Chain A".  Open it up and notice that by default, the residue names use the
+standard three letter abbreviation.  The <b class="menu">View</b> menu allows you to set either the full name 
+(<b class="menu">View&rarr;Residues as&rarr;full name</b>), for those
+of us who constantly confuse asparagine with aspartic acid, or the single letter abbreviation 
+(<b class="menu">View&rarr;Residues as&rarr;single letter</b>).  
+Note that when a display parameter is changed, the tree will need to reload iself so it will return to
+the initial closed state.
+</p>
+<hr/>
+<h3>Enhance the display</h3>
+<p>As we noted before, the structure <b>1EZ2</b> includes two polypetide chains, numerous 
+water molecules, and two ligands.  We want to simplify the structure to improve the visualization
+of the catalytic pocket as well as prepare the structure for doing alignments.  We will do this
+in several steps.  First, we will delete all of the residues that are not necessary for either
+the visualization of the pocket or the alignment.  Next we will simplify the chain and change the
+depiction.  Finally, we will visualize the functional residues in the pocket as well as the associated
+ions.
+</p>
+<ol><li>Delete unnecessary residues
+<p>We only want to retain <b class="label">Chain A</b>, this can be done by opening up each chain and
+individually deleting the residues, or we can delete the entire chain.  Open up the
+<b class="label">Node</b> so that all of the chains are visible.  Move your mouse over the
+<b class="label">Chain water</b> label and do a <b class="button">right-click</b> 
+(or <b class="button">control-click</b> on the Mac) to bring up the context menu for
+the chain.  Select <b class="menu">Delete selection</b> on the pop-up menu to delete
+all of the waters in the structure.  You will be asked to confirm (click <b class="button">Yes</b>)
+and then the menu will collapse.  The waters will be deleted from the Chimera structure
+as well as from the Molecular Navigator.  This will also cause the <b class="menu">Node</b>
+menu to collapse.  Open
+the menu back up and delete <b class="menu">Chain het</b> and <b class="menu">Chain B</b>.</p></li>
+</ol>
+<center>
+<div class="image" style="width:500px;">
+<a href="Chain A only.png">
+<img src="Chain A only.png" width="485px"/>
+</a>
+<span>Screenshot showing the Cytoscape, the Molecular Structure 
+Navigator, and UCSF Chimera after deletion of het atoms, Chain B,
+and the water molecules. (click for a larger view)</span>
+</div>
+</center>
+<p/>
+<div class="image" style="width:250px;float: right;">
+<a href="RainbowRibbon.png">
+<img src="RainbowRibbon.png" width="240px" />
+</a>
+<span>Screenshot showing the ribbon backbone of Chain A of
+1EZ2 (click for a larger view)</span>
+</div>
+<ol start="2">
+<li>Simplify the chain and change the depiction
+<p>You should now be left with a structure in the Chimera window that includes only chain A 
+(see Figure above).  Next, we'll use the Cytoscape Molecular Structure Navigator to simplify
+the display and allow us to focus in on the functional residues.
+<ol><li>To begin, select <b class="menu">Chain A</b> and bring up the popup menu as before
+(<b class="button">right-click</b> or <b class="button">control-click</b> on the Mac).
+Select <b class="menu">Show&rarr;Backbone only</b>.  This will remove
+all of the side chains and display only the protein backbone.</li>
+<li>Now change the depiction of the molecule to a ribbon: select <b class="menu">Chain A</b>,
+bring up the popup menu, and select <b class="menu">Depict&rarr;Ribbon&rarr;Round</b>.  This
+will render the protein backbone as a ribbon.</li>
+<li>Finally, let's color the ribbon: <b class="menu">Color&rarr;Rainbow by residue</b>.</li>
+<li>Now clear the selection by using the <b class="menu">Select&rarr;Clear selection</b> menu
+in the top menu bar.  Your Chimera screen should be similar to the one at the right.
+</li></ol>
+<p/>
+</li>
+</ol>
+<ol start="3">
+<li>Visualize the functional residues and ions
+<p>The final step in visualizing our structure is to view the functional residues and ions in the 
+catalytic pocket.  This will utilize many of the same functions we saw before, plus the
+ability of <i>structureViz</i> to use the <b>FunctionalResidues</b> attribute associated with
+the nodes in Cytoscape.  This information is available from the
+<a href="http://sfld.rbvi.ucsf.edu">Structure Function Linkage Database</a>
+(SFLD) and can be downloaded in a format appropriate for use with Cytoscape.</p>
+<ol><li>Select the functional residues
+<p>Because the functional residue information is associated with the Cytoscape node,
+we need to select the <b class="menu">Node</b>, then bring up the popup menu, 
+and select <b class="menu">Select&rarr;Functional Residues</b>.  Note that you will see
+sections of the ribbon highlighted in green.  The Molecular Structure Navigator
+will also open up to display the selected residues.<p></li>
+</ol></li></ol>
+<div class="image" style="width:250px;float: right;">
+<a href="1ez2Pocket.png">
+<img src="1ez2Pocket.png" width="240px" />
+</a>
+<span>Screenshot showing the catalytic pocket of
+1EZ2 (click for a larger view)</span>
+</div>
+<ol start="4"><ol start="2">
+<li>Display and color the functional residues
+<p>Now that the functional residues are selected, we can display their side chains
+and change the color (we could change their depictions in other ways).  Position
+your mouse in the Molecular Structure Navigator into the blank space to the right of the 
+displayed residues.  Now bring up the popup menu.  The actions in this menu will apply
+to all selected residues (or chains, models, etc.).  Now, do a <b class="menu">Show&rarr;All</b>
+to display the side chains of the functional residues, and then a 
+<b class="menu">Color&rarr;Residues&rarr;magenta</b> to change the color of the side chains
+so that they will stand out a little.</p></li>
+<li>Select, display, and color the ions
+<p>Chimera's ability to manipulate molecular structures by chemistry is reflected in
+the features of the Molecular Structure Navigator.  To select the ions, we can either
+use the popup menu of the <b class="menu">Node</b> level of the structure to select
+only the ions of that structure, or the top menu bar <b class="menu">Select</b> menu
+to select all ions.  We'll use the <b class="menu">Node</b> approach.  Bring up
+the <b class="menu">Node</b> popup menu and select <b class="menu">Select&rarr;Ions</b>.
+Now, show the ions by bringing up the background popup menu (the one in the blank
+space to the right of the displayed residues) and do a <b class="menu">Show&rarr;All</b>
+to display them, a <b class="menu">Color&rarr;Residues&rarr;yellow</b> and finally,
+a <b class="menu">Depict&rarr;Sphere</b> to make them stand out.  If you move the
+structure around in Chimera, you should be able to focus in on the catalytic pocket
+and get an image similar to the one at the right.</p></li></ol>
+</li>
+</ol>
+<hr/>
+<h3>Load additional structures</h3>
+<p>Now that we have a nice visualization of <b>1EZ2</b>, we can load several additional
+structures to compare the family.  We need to go back to Cytoscape to accomplish
+this.  First, make sure that all of the nodes are selected by dragging your mouse
+over the entire network in Cytoscape.  Now, we want to load several different
+structures, including <b>1QW7</b>, <b>1PTA</b>, <b>1PSC</b>, <b>1HZY</b> ,and <b>1BF6</b>.
+All of these are solved structures for the <i>phosphotriesterases</i> except, <b>1BF6</b>,
+which is a structure for the SFLD subgroup <i>unknown119</i>.  To load each structure,
+<b class="menu">Plugins&rarr;Sequence/Structure Tools&rarr;Open structure(s)&rarr;1QW7</b>,
+for example.  Do this for all of the structures listed above.
+You call also load <b class="menu">All</b>, if you want.</p>
+<p>Note that as each structure is loaded, a new <b class="menu">Node</b> item is added
+to the Molecular Structure Navigator.  The outline color of the Node represents the
+default color of the Chimera model.  This should allow you to quickly find each of the
+structures</p>
+<hr/>
+<h3>Simplify additional structures</h3>
+<p>We now want to go through some of the steps we did for the <b>1EZ2</b> structure for
+each of the new structures that we loaded.  In particular, we want to delete the
+extra chains and simplify <b class="menu">Chain A</b> of each structure to only show
+the backbone.  For each of the structures:
+<ol><li>Open the <b class="menu">Node</b> by selecting the <b class="button">+</b> or 
+<b class="button">triangle</b> to the left of the Node</li>
+<li>Delete each chain (other than <b class="menu">Chain A</b>) by selecting
+all of the chains to be deleted, then bringing up
+the background popup menu, and selecting <b class="menu">Delete selection</b>.</li>
+<li>Simplify the chains by selecting each chain and bringing up the background
+popup menu and selecting <b class="menu">Select&rarr;Backbone only</b>.
+</li>
+</ol>
+<p>When you have completed simplifying all of the new structures, you should
+have a display that looks similar to the one below.</p>
+<center>
+<div class="image" style="width:600px;">
+<a href="allStructures.png">
+<img src="allStructures.png" width="585px" />
+</a>
+<span>Screenshot showing the Molecular Structure Navigator and the
+Chimera window after loading all of the additional structures
+(click for a larger view)</span>
+</div>
+</center>
+
+<hr/>
+<h3>Align structures to 1EZ2</h3>
+<div class="image" style="width:300px; float:right;">
+<a href="alignDialog.png">
+<img src="alignDialog.png" width="285px" />
+</a>
+<span>The Cytoscape/Chimera Structure Alignment Dialog
+(click for a larger view)</span>
+</div>
+<p>Our final step is to align all of these structures using Chimera's Sequence/Structure
+tools.  Some important notes about this procedure.  First, this is a <i>pairwise</i>
+alignment, so we're going to align each structure to <b>1EZ2</b>.  As a result, care
+must be taken when interpreting the results, just as when viewing the results from
+pairwise blast values.  Second, the alignment reports three values: <b>RMSD</b>,
+<b>Aligned Pairs</b>, and <b>Score</b>.  The alignment score takes
+into account the number of residue pairs aligned and the RMSD of the alignment and
+is probably the best overall score to use for comparing two structural alignments
+with Chimera.  Unfortunately, there is currently no agreed upon metric for structural
+alignment beyond RMSD, which might be misleading when only some of the residues
+are used for the alignment.</p>
+<p>To align the structures, we will use the <b class="menu">Chimera</b> menu of
+the Molecular Structure Navigator: <b class="menu">Chimera&rarr;Align</b>.  This will
+bring up the <b>Cytoscape/Chimera Structure Alignment Dialog</b>.  Because we
+are doing pairwise alignments, we need to select a reference structure, then select
+all of the structures we want to match (<b>Match Structures</b>).  Select <b>1EZ2</b>
+as our <b>Reference Structure</b>, and then select all of the other loaded structures
+as <b>Match Structures</b>.  You have the option of displaying the sequence panel for
+each alignment to see which residues were actually aligned, and to create new edges
+in Cytoscape to assign the alignment values (RMS, Aligned pairs, and Score) to the edge
+attributes.  To perform the alignment, click on <b class="button">Align</b>.  The results
+of the alignment are shown below.  The rows in the dialog have been sorted by clicking
+on the <b>Score</b> column to sort from smallest to largest score.  As can be seen,
+the structures for <b>1BF6</b> is by far the poorest alignment partner to <b>1EZ2</b>
+indicating a more distant relationship.  Of course, a more complete analysis would
+include aligning all structures to each other to determine if these two pairs are
+particularly structurally disparate, or if this does indicate a pattern between <b>1BF6</b>
+and the other <i>phosphotriesterase</i> structures.
+<center>
+<div class="image" style="width:600px;">
+<a href="alignResults.png">
+<img src="alignResults.png" width="585px" />
+</a>
+<span>The Cytoscape/Chimera Strucutre Alignment Dialog showing
+the results of aligning <b>1EZ2</b> to <b>1BF6, 1PTA, 1QW7, 1PSC</b>,
+and <b>1HZY</b>.  The rows have been sorted by <b>Score</b> from
+smallest to largest.
+(click for a larger view)</span>
+</div>
+</center>
+<hr/>
+<h3>Building a <i>structureViz</i> compatible network</h3>
+<p><i>structureViz</i> will operate on any Cytoscape network that has the necessary
+node attributes.  The table below shows the attributes used by <i>structureViz</i>
+and what they are used for.
+<h4 style="text-align: center;">Attributes used by <i>structureViz</i></h4>
+<table border="1" cellPadding="5px" style="font-family:sans-serif;font-size: 90%;">
+<tr style="text-align: center; font-weight: bold;"><td>Attribute</td><td>Alternatives</td><td>Format</td><td>Use<td></tr>
+<tr><td style="font-weight:bold;">pdbFileName</td>
+    <td>Structure, pdb</td><td>Comma-separated list</td>
+    <td>Names of pdb structures associated with the Node.  There must be at least one structure to load into Chimera</td>
+</tr>
+<tr><td style="font-weight:bold;">FunctionalResidues</td>
+    <td>.</td><td>Comma-separated list of residue specifiers (e.g. His234, Lys238)</td>
+    <td>Used to provide functional residue information for selection in Chimera</td>
+</tr>
+<tr><td style="font-weight:bold;">Sequence</td>
+    <td>.</td><td>Protein sequence as single-letter amino acids</td>
+    <td>For use in a future version of <i>structureViz</i> which will include sequence comparison capabilities</td>
+</tr>
+</table>
+<hr/>
+<h3>More exploration</h3>
+<p>If you wish to explore the capabilities of Cytoscape and <i>structureViz</i> more, you
+can download the data for the entire 
+<a href="http://www.cgl.ucsf.edu/Research/cytoscape/structureViz/AHCircle.xgmml">amidohydrolase superfamily</a>.  
+This contains 959 sequences and approximately 50,000 edges.  There are also references to about 100 PDB structures 
+of amidohydrolase proteins.  To see more information about the amidohydrolase superfamily, see the amidohydrolase
+superfamily page 
+in <a href="http://sfld.rbvi.ucsf.edu/cgi-bin/SFLDvm.py?view=superfamily&id=4">SFLD</a>.
+
+<hr/>
+<div style="font-size: 80%";>
+<a name="ref1"><sup>1</sup></a>Pegg SC, Brown SD, Ojha S, Seffernick J, Meng EC, Morris JH, Chang PJ, Huang CC, Ferrin TE, Babbitt PC. 
+<b>Leveraging enzyme structure-function relationships for functional inference and experimental design: 
+the structure-function linkage database.</b> <i>Biochemistry</i>, 2006 <b>45</b>(8).
+<p>
+<a name="ref2"><sup>2</sup></a>Buchbinder JL, Stephenson RC, Dresser MJ, Pitera JW, Scanlan TS, Fletterick RJ. 
+<b>Biochemical characterization and crystallographic structure of an 
+Escherichia coli protein from the phosphotriesterase gene family.</b>
+<i>Biochemistry</i>, 1998 <b>37</b>(15).
+<p>
+<a name="ref3"><sup>3</sup></a>Pettersen, E.F., Goddard, T.D., Huang, C.C., Couch, G.S., Greenblatt, D.M., Meng, E.C., and Ferrin, T.E. 
+<b>UCSF Chimera - A Visualization System for Exploratory Research and Analysis.</b>
+<i>J. Comput. Chem.</i>, 2004 <b>25</b>(13).
+<p>
+<a name="ref4"><sup>4</sup></a>Shannon P, Markiel A, Ozier O, Baliga NS, Wang JT, Ramage D, Amin N, Schwikowski B, Ideker T.
+<b>Cytoscape: a software environment for integrated models of biomolecular interaction networks.</b>
+<i>Genome Res.</i>, 2003 <b>13</b>(11).
+</div>
+
+<p><hr align=left></p>
+<p align=center>
+<a href="/Overview/index.html">Laboratory Overview</a>
+| <a href="/Research/index.html">Research</a>
+| <a href="/Outreach/index.html">Outreach &amp; Training</a>
+| <a href="/Resources/index.html">Available Resources</a>
+| <a href="/Visitors/index.html">Visitors Center</a>
+| <a href="/Search/index.html">Search</a></p>
+</body>
+</html>

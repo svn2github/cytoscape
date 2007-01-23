@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>structureViz: Linking Cytoscape and Chimera</title>
+<style>
+DIV.image {
+	float:right; 
+	width:416px;
+	border:thin black solid; 
+	margin:10px 10px 10px 10px; 
+	padding:10px 10px 10px 10px;
+}
+</style>
+</head>
+<body>
+
+<p><map name="Top">
+    <area shape="rect" coords="167,72,213,92" href="/index.html">
+    <area shape="rect" coords="245,72,312,92" href="/Overview/index.html">
+    <area shape="rect" coords="353,73,416,92" href="/Research/index.html">
+    <area shape="rect" coords="465,73,539,92" href="/Resources/index.html">
+    <area shape="rect" coords="156,94,292,112" href="/Outreach/index.html">
+    <area shape="rect" coords="333,93,433,112" href="/Visitors/index.html">
+    <area shape="rect" coords="514,94,565,112" href="/Search/index.html">
+</map><img src="/Research/Top.gif" alt="Navigation Bar" align="bottom"
+border="0" usemap="#Top" ismap width="582" height="134" naturalsizeflag="3">
+</p>
+
+<center>
+<h2> structureViz: Linking Cytoscape and Chimera </h2>
+
+<p>
+<a href="http://www.cgl.ucsf.edu/home/scooter">John "Scooter" Morris</a>&sup1;,
+<a href="http://www.cgl.ucsf.edu/home/conrad">Conrad Huang</a>&sup1;,
+and
+<a href="http://www.cgl.ucsf.edu/home/tef/">Thomas E. Ferrin</a>&sup1;
+
+<p>
+&sup1;
+<a href="http://www.rbvi.ucsf.edu/index.html">Resource for Biocomputing, Visualization, and Informatics</a><br>
+University of California, San Francisco
+</p>
+</center>
+
+<p><hr align="left"></p>
+<blockquote>
+<div class="image" style="float:right; width:416px;">
+<a href="structureViz.png"><img src="structureViz.png" width="406" height="225" style="text-align: center;" /></a>
+<p style="text-align: center; font-size: 90%;"><b>Figure 1</b>. structureViz in action.  In this screenshot the PFAM 
+family PTE (phosphotriesterase) has been opened in Cytoscape.  Three of the available structures have been
+opened in UCSF Chimera and aligned using Chimera's structural alignment tools.  The functional residues of
+one of the structures (pdb: 1EZ2) have also been selected (green highlights in Chimera).  Click on the image to
+get a higher resolution version.</p>
+</div>
+<h3 style="text-align:center;">Abstract</h3>
+<p>
+UCSF <i>structureViz</i> is a Cytoscape plugin that links the visualization of biological networks (and
+biological relationships expressed as networks) provided by Cytoscape with the visualization and analysis
+of macromolecular structures and sequences provided by UCSF Chimera.  <i>structureViz</i> provides commands
+to open structures in UCSF Chimera, align open structures using Chimera's Sequence/Structure tools, close 
+structures that are currently open, and exit Chimera.  In order to load a structure associated with a node, the
+Protein Databank (PDB) identifier (or identifiers if there are more than one) must be present as an attribute of 
+that node.  Currently, <i>structureViz</i> will look for an attribute named <b>Structure</b>, 
+<b>pdb</b>, or <b>pdbFileName</b>.  When a structure is opened, <i>structureViz</i> provides an alternative
+interface to Chimera: the <b>Cytoscape Molecular Structure Navigator</b>.  This interface uses a tree-based
+paradigm to allow users to select and effect the display of models, chains, and residues, mostly through the use
+of context menus.  Additional commands allow for selection by chemistry (Ligand, Ions, Solvent, 
+Secondary Structure, and in the model context menu, Functional Residues).  Users can also take advantage 
+of Chimera's structural alignment capabilities by using the "Align" command.
+</p>
+
+
+<h3 style="text-align:center;">Installation Instructions</h3>
+<ol>
+<li>
+<a href="structureViz.jar">Download</a> <b>structureViz.jar</b>
+</li>
+<li>Copy <b>structureViz.jar</b> to the <i>plugins</i> folder of your Cytoscape installation</li>
+<li>Restart Cytoscape</li>
+<li>structureViz commands are now available as node context menus or under the plugins menu</li>
+</ol>
+<p>A structureViz <a href="tutorial.html">tutorial</a> 
+is also available</p>
+</blockquote>
+
+<p><hr align=left></p>
+<p align=center>
+<a href="/Overview/index.html">Laboratory Overview</a>
+| <a href="/Research/index.html">Research</a>
+| <a href="/Outreach/index.html">Outreach &amp; Training</a>
+| <a href="/Resources/index.html">Available Resources</a>
+| <a href="/Visitors/index.html">Visitors Center</a>
+| <a href="/Search/index.html">Search</a></p>
+</body>
+</html>
