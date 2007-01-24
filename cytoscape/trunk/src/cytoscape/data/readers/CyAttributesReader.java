@@ -76,13 +76,19 @@ public class CyAttributesReader
         String className = foo.substring(searchStr.length()).trim();
         if (className.endsWith(")")) {
           className = className.substring(0, className.length() - 1); }
-        if (className.equalsIgnoreCase("java.lang.String")) {
+        if (className.equalsIgnoreCase("java.lang.String") || 
+	    className.equalsIgnoreCase("String")) {
           type = MultiHashMapDefinition.TYPE_STRING; }
-        else if (className.equalsIgnoreCase("java.lang.Boolean")) {
+        else if (className.equalsIgnoreCase("java.lang.Boolean") ||
+	         className.equalsIgnoreCase("Boolean")) {
           type = MultiHashMapDefinition.TYPE_BOOLEAN; }
-        else if (className.equalsIgnoreCase("java.lang.Integer")) {
+        else if (className.equalsIgnoreCase("java.lang.Integer") || 
+	         className.equalsIgnoreCase("Integer")) {
           type = MultiHashMapDefinition.TYPE_INTEGER; }
-        else if (className.equalsIgnoreCase("java.lang.Double")) {
+        else if (className.equalsIgnoreCase("java.lang.Double") || 
+	         className.equalsIgnoreCase("Double") ||
+		 className.equalsIgnoreCase("java.lang.Float") ||
+		 className.equalsIgnoreCase("Float") ) {
           type = MultiHashMapDefinition.TYPE_FLOATING_POINT; } }
     }
     if (attributeName.indexOf("(") >= 0) {
