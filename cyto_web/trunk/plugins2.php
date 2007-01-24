@@ -83,7 +83,7 @@ Cytoscape LGPL.
 						<li>animate the Cytoscape network based upon the experimental data, mapping (for instance) log10 ratios to node color, and statistical significance to node size</li>
 						<li>for the skilled user: use the python console, and write scripts to create custom operations on, or selections from, the data</li>
 					</ol>
-					Full documentation is <a href="http://db.systemsbiology.net/cytoscape/tutorial/cy2/DataMatrixPlugin"> here</a>.
+					Full documentation is <a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.0/tutorials/DataMatrixPlugin"> here</a>.
 					<p>
 						Released by: Paul Shannon, Baliga Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 					</p>
@@ -92,7 +92,7 @@ Cytoscape LGPL.
 				 Verified to work in 2.0.
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://db.systemsbiology.net/cytoscape/ftp/DataMatrixPlugin.jar">Download Plugin .jar</a>]
+					[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.0/plugins/DataMatrixPlugin.jar">Download jar</a>]
 					<br>
 				</td>
 			</tr>
@@ -664,7 +664,7 @@ The plugin API makes possible to use its functionality from another plugin.
 					Verified to work in 2.3.2
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://db.systemsbiology.net/cytoscape/plugins/2.x/NetworkMotifFinder/NMFPlugin.zip">Download zip</a>]
+					[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.3.2/plugins/NetworkMotifFinder/NMFPlugin.zip">Download zip</a>]
 				</td>
 			</tr>
 
