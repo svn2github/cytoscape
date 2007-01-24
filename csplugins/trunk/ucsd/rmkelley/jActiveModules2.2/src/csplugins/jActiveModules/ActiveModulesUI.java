@@ -28,6 +28,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 
   protected ActivePaths activePaths;
   protected ActivePathFinderParameters apfParams;
+  protected ThreadExceptionHandler xHandler;
 
   public ActiveModulesUI () {
     System.err.println("Starting jActiveModules plugin!\n");
@@ -51,9 +52,11 @@ public class ActiveModulesUI extends CytoscapePlugin {
     AttrChangeListener acl = new AttrChangeListener();
     Cytoscape.getPropertyChangeSupport().addPropertyChangeListener( Cytoscape.ATTRIBUTES_CHANGED, acl );
     Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener( acl );
+    xHandler = new ThreadExceptionHandler();
     if (apfParams.getRun()) {
       activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);
       Thread t = new Thread(activePaths);
+      // Since this is cmdline, there is no sense in using the ThreadExceptionHandler.
       t.start();
     }
   }
@@ -95,16 +98,26 @@ public class ActiveModulesUI extends CytoscapePlugin {
     FindActivePathsAction () { super ("Active Modules: Find Modules"); }
 	
     public void actionPerformed (ActionEvent ae) {
-      try{
+    	try {
 	activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);  
+	} catch (Exception e) {
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Error running jActiveModules!  " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		return;
+	}
 	Thread t = new Thread(activePaths);
+	t.setUncaughtExceptionHandler( xHandler );
 	t.start();
-      }
-      catch(Exception e){
-	JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-      }
     }
   } 
+
+  protected class ThreadExceptionHandler implements Thread.UncaughtExceptionHandler {
+	public void uncaughtException(Thread t, Throwable e) {
+		System.out.println("Non-fatal exception in Thread " + t.getName() + ":");
+		e.printStackTrace();
+		System.out.println("The previous exception was non-fatal - Don't panic!");
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Error running jActiveModules!  " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	}
+  }
      
   /**
    * This action will generate a score for the currently selected
@@ -128,6 +141,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
        JFrame mainFrame = Cytoscape.getDesktop();
        activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);
        Thread t = new ScoreDistributionThread(Cytoscape.getCurrentNetwork(),activePaths,apfParams);
+       t.setUncaughtExceptionHandler( xHandler );
        t.start();	
      }
    }

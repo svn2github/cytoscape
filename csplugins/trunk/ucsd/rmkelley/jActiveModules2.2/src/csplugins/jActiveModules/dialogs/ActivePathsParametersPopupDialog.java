@@ -41,7 +41,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.Collections;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 
@@ -188,11 +189,15 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 		attrSelectPanel.add(desc);
 
 		
-		String[] names = (String[])apfParams.getExpressionAttributes().toArray(new String[0]); 
-		Arrays.sort(names);
+		List<String> selectedNames = apfParams.getExpressionAttributes();
+		List<String> allNames = apfParams.getPossibleExpressionAttributes();
+		Collections.sort(allNames);
 		int count = 0;
-		for ( String name : names ) { 
-			JCheckBox j = new JCheckBox(name,false);
+		for ( String name : allNames ) { 
+			boolean checkState = false;
+			if ( selectedNames.contains(name) )
+				checkState = true;
+			JCheckBox j = new JCheckBox(name,checkState);
 			attrSelectPanel.add( j ); 
 			j.addItemListener(attrListen);
 			count++;

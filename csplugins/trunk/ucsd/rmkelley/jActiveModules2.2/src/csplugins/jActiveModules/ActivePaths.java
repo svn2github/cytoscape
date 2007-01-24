@@ -62,13 +62,13 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			throw new IllegalArgumentException("Please select a network");
 		}
 		//expressionData = Cytoscape.getExpressionData();
-		//if (expressionData == null) {
-		//	throw new RuntimeException("No expression data loaded");
-		//}
 
 		//attrNames = expressionData.getConditionNames();
 		attrNames = (String[])apfParams.getExpressionAttributes().toArray(new String[0]);
 		Arrays.sort(attrNames);
+		if (attrNames.length == 0) {
+			throw new RuntimeException("No expression data selected!");
+		}
 		menubar = Cytoscape.getDesktop().getCyMenus().getMenuBar();
 		mainFrame = Cytoscape.getDesktop();
 		this.cyNetwork = cyNetwork;

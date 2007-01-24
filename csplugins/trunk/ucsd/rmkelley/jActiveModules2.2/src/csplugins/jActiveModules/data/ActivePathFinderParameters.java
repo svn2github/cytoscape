@@ -48,7 +48,8 @@ public class ActivePathFinderParameters {
 	boolean greedySearch = true;
 	boolean enableFiltering = true;
 	boolean run = false;
-	List expressionAttrs = new ArrayList();
+	List<String> expressionAttrs = new ArrayList<String>();
+	List<String> possibleExpressionAttrs = new ArrayList<String>();
 
 	//boolean enableSpokePenalty = false;
 	
@@ -292,7 +293,7 @@ public class ActivePathFinderParameters {
 
 	public void reloadExpressionAttributes() {
 
-		expressionAttrs.clear();
+		possibleExpressionAttrs.clear();
 
 		// find all of the double type parameters
                 CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
@@ -314,16 +315,20 @@ public class ActivePathFinderParameters {
 				}
 					
 				if ( isPValue )
-					expressionAttrs.add(name);
+					possibleExpressionAttrs.add(name);
 			}
 		}
 	}
 
-	public Collection getExpressionAttributes() {
+	public List<String> getPossibleExpressionAttributes() {
+		return possibleExpressionAttrs;
+	}
+
+	public List<String> getExpressionAttributes() {
 		return expressionAttrs;
 	}
 
-	public void setExpressionAttributes(Collection names) {
+	public void setExpressionAttributes(Collection<String> names) {
 		expressionAttrs.clear();
 		expressionAttrs.addAll(names);
 	}
