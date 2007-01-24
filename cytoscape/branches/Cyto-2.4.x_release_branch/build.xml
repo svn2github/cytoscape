@@ -955,14 +955,9 @@
 
 
 	<target name="jnlp" depends="release, jnlp.jar" description="Creates jnlp for webstart">
-		<fail message="Missing build.properties file. Please copy build.properties.example and update to reflect your webstart URL.">
+		<fail message="You must specify a webstartURL argument when executing this task:    ant -DwebstartURL=http://yourdomain.com [ant target]">
 			<condition>
-				<not> <available file="build.properties"/> </not>
-			</condition>
-		</fail>
-		<fail message="Missing 'webstartURL' key in properties file">
-			<condition>
-				<not> <isset property="webstartURL" /> </not>
+				<not> <isset property="webstartURL"/> </not>
 			</condition>
 		</fail>
 
@@ -1002,8 +997,7 @@
             ---------------------------------------
 		</echo>
 
-		<copy file="${basedir}/resources/cy1.jnlp" tofile="${webstart.dir}/cy1.jnlp" />
-
+		<copy file="${basedir}/resources/webstart/cy1.jnlp" tofile="${webstart.dir}/cy1.jnlp" />
 
 		<copy file="${basedir}/cytoscape.jar" tofile="${webstart.dir}/cytoscape.jar" />
 		<signjar jar="${webstart.dir}/cytoscape.jar" alias="cytoscape" storepass="secret" />
@@ -1049,7 +1043,6 @@
 			<fileset dir="${webstart.dir}/plugins" includes="*.jar" />
 		</signjar>
 	</target>
-
 	<target name="webstart-extras" 
 	        depends="webstart" 
 		description="add extra plugins into webstart">
@@ -1062,6 +1055,9 @@
 			<fileset dir="plugins/extras">
 				<include name="*.jar" />
 			</fileset>
+		<signjar alias="cytoscape" storepass="secret">
+			<fileset dir="${webstart.dir}/plugins/extras"/>
+		</signjar>
 		</copy>
 	</target>
 
