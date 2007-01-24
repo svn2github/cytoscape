@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import cytoscape.data.readers.AbstractGraphReader;
 import cytoscape.util.URLUtil;
@@ -115,7 +117,10 @@ public class NetworkTableReader extends AbstractGraphReader implements
 
 	public String getReport() {
 		final StringBuffer sb = new StringBuffer();
-		sb.append(getNodeIndicesArray().length + " nodes and " + getEdgeIndicesArray().length + " edges are loaded.\n");
+		final Set uniqueNodes = new TreeSet(nodeList);
+		final Set uniqueEdges = new TreeSet(edgeList);
+		
+		sb.append(uniqueNodes.size() + " nodes and " + uniqueEdges.size() + " edges are loaded.\n");
 		sb.append("New network name is " + super.getNetworkName() + "\n\n");
 		return sb.toString();
 	}

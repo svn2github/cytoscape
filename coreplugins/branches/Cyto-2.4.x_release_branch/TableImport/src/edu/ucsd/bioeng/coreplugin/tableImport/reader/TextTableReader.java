@@ -26,7 +26,5 @@ public interface TextTableReader {
 	 * @return Description of
 	 */
 	public String getReport();
-	
-	//public void setColumnNames(String[] columnNames);
-	//public void setColumnNames(List<String> columnNames);
+
 }

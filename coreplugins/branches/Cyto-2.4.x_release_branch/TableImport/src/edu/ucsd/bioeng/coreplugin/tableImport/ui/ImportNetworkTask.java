@@ -3,6 +3,7 @@ package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 import java.io.IOException;
 import java.net.URL;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
@@ -12,6 +13,8 @@ import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
 public class ImportNetworkTask implements Task {
 	private final GraphReader reader;
 	private final URL source;
+	
+	private CyNetwork network;
 	
 	private TaskMonitor taskMonitor;
 	
@@ -28,8 +31,7 @@ public class ImportNetworkTask implements Task {
 		taskMonitor.setStatus("Loading network and edge attributes...");
 		taskMonitor.setPercentCompleted(-1);
 
-		//reader.read();
-		Cytoscape.createNetwork(reader, true, null);
+		network = Cytoscape.createNetwork(reader, true, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null,
 				source);
 		
@@ -77,5 +79,4 @@ public class ImportNetworkTask implements Task {
 	public String getTitle() {
 		return new String("Loading Annotation");
 	}
-
 }
