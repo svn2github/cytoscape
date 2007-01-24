@@ -85,6 +85,8 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.bookmarks.Bookmarks;
+import cytoscape.layout.CyLayouts;
+import cytoscape.layout.LayoutAlgorithm;
 
 /**
  * This class, Cytoscape is <i>the</i> primary class in the API.
@@ -1504,33 +1506,8 @@ public abstract class Cytoscape {
 			((GraphReader) network.getClientData(READER_CLIENT_KEY))
 					.layout(Cytoscape.getNetworkView(network.getIdentifier()));
 		} else {
-			// TODO
-			// This creates the default square layout.
-			// This code should not be here, rather it should
-			// be somewhere in the cytoscape.layout package.
-			// This change should be made when we add the
-			// layoutbroker code in 2.5.
-			// When you move this code, don't forget to update
-			// cytoscape.data.readers.AbstractGraphReader.doLayout()
-			// as well.
-			double distanceBetweenNodes = 80.0d;
-			int columns = (int) Math.sqrt(view.nodeCount());
-			Iterator nodeViews = view.getNodeViewsIterator();
-			double currX = 0.0d;
-			double currY = 0.0d;
-			int count = 0;
-			while (nodeViews.hasNext()) {
-				NodeView nView = (NodeView) nodeViews.next();
-				nView.setOffset(currX, currY);
-				count++;
-				if (count == columns) {
-					count = 0;
-					currX = 0.0d;
-					currY += distanceBetweenNodes;
-				} else {
-					currX += distanceBetweenNodes;
-				}
-			}
+			LayoutAlgorithm defautLayout = CyLayouts.getDefaultLayout();
+			defautLayout.doLayout(view);
 		}
 
 		getCurrentNetworkView().fitContent();
