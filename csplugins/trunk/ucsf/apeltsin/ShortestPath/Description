@@ -1,0 +1,17 @@
+ShortestPath Plugin
+Version: 1.0
+Release Date: January 25, 2007
+Verified to work in 2.4
+
+ShortestPath is a plugin for Cytoscape to show the shortest weighted path
+between 2 selected nodes in the current network. It is based on the
+<a href="http://csresources.sourceforge.net/ShortestPath/">ShortestPath</a>
+plugin developed by Marcio Rosa da Silva.  This updated version 
+supports the use of edge attributes to calculate the path lengths.
+It supports both directed and undirected networks and it gives the user
+the possibility to choose which node (of the selected ones) should be
+used as source and target (useful for directed networks). The plugin
+API makes possible to use its functionality from another plugin.
+
+Released by: Leonard Apeltsin and John "Scooter" Morris, 
+<a href="http://www.rbvi.ucsf.edu/">RBVI</a>, UCSF
