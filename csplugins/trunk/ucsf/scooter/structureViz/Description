@@ -1,0 +1,29 @@
+structureViz Plugin
+Version: 0.9
+Release Date: January 25, 2007
+Verified to work in 2.4
+
+This plugin links the visualization of biological (and biological
+relationships expressed as networks) provided by Cytoscape with the
+visualization and analysis of macromolecular structures and sequences
+provided by the molecular visualization package: 
+<a href="http://www.cgl.ucsf.edu/chimera/">UCSF Chimera</a>. 
+<i>structureViz</i> provides commands to open
+structures in UCSF Chimera, align open structures using Chimera's
+Sequence/Structure tools, close structures that are currently open, and
+exit Chimera. In order to load a structure associated with a node, the
+Protein Databank (PDB) identifier (or identifiers if there are more than
+one) must be present as an attribute of that node. Currently, <i>structureViz</i>
+will look for an attribute named Structure, pdb, or pdbFileName. When a
+structure is opened, structureViz provides an alternative interface to
+Chimera: the <b>Cytoscape Molecular Structure Navigator</b>. This interface
+uses a tree-based paradigm to allow users to select and effect the
+display of models, chains, and residues, mostly through the use of
+context menus. Additional commands allow for selection by chemistry
+(Ligand, Ions, Solvent, Secondary Structure, and in the model context
+menu, Functional Residues). Users can also take advantage of Chimera's
+structural alignment capabilities by using the "Align" command.
+
+Released by: John "Scooter" Morris, <a href="http://www.rbvi.ucsf.edu">RBVI</a>, UCSF
+
+[<a href="http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz/">Web Site and Download</a>]
