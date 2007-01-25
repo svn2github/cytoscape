@@ -1,23 +1,23 @@
 package ManualLayout;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import cytoscape.Cytoscape;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.SelectEvent;
-import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelListener;
-
+import cytoscape.view.CyNetworkView;
 import ManualLayout.common.GraphConverter2;
 import ManualLayout.rotate.RotatePanel;
 import ManualLayout.rotate.RotationLayouter;
@@ -34,34 +34,37 @@ import ManualLayout.scale.ScalePanel;
  *  version 0.2    9/17/2006  Peng-Liang Wang   Change the anonymous classes (listeners) to named classes  
  *  version 0.21   9/21/2006  Peng-Liang Wang   Fix a null pointer exception  
  *  version 0.3   10/03/2006  Peng-Liang Wang   Move the manualLayout to cytoPanel_SOUTH_WEST  
+ *  version 0.31  01/25/2007  Peng-Liang Wang   Add propertyChnageListener to cytoPanel5, to keep track of state for each view  
  * 
  */
 public class ManualLayoutAction extends CytoscapeAction {
 
 	private RotatePanelSliderListener rotatePanelSliderListener;
-
 	private ScalePanelSliderListener scalePanelSliderListener;
-
 	private TreeSelectListener treeSelectListener;
-
-	private CytoPanel3Listener cytoPanel3Listener;
-
+	private CytoPanel5Listener cytoPanel5Listener;
 	private RotatePanel rotatePanel = (RotatePanel) Cytoscape.getDesktop()
 			.getCytoPanel(SwingConstants.SOUTH_WEST).getComponentAt(0);
-
 	private ScalePanel scalePanel = (ScalePanel) Cytoscape.getDesktop()
 			.getCytoPanel(SwingConstants.SOUTH_WEST).getComponentAt(1);
-
 	private MutablePolyEdgeGraphLayout[] nativeGraph = null;
-
 	private RotationLayouter[] rotation = null;
-
 	private ScaleLayouter[] scale = null;
-
 	private int menuItemIndex = -1;
+	
+	private String preFocusedViewId = "none";
+	private String curFocusedViewId = "none";
 
+	private HashMap<String, int[]> layoutStateMap = new HashMap<String, int[]>();
+	
+	
 	public void actionPerformed(ActionEvent ev) {
 
+		// preFocusedViewId will be used to restore state, if it is focused again
+		if (preFocusedViewId.equals("none")) {
+			preFocusedViewId = Cytoscape.getCurrentNetworkView().getIdentifier();
+		}
+		
 		Object _source = ev.getSource();
 
 		if (_source instanceof JCheckBoxMenuItem) {
@@ -137,12 +140,12 @@ public class ManualLayoutAction extends CytoscapeAction {
 		scalePanel.jSlider.addChangeListener(scalePanelSliderListener);
 
 		treeSelectListener = new TreeSelectListener();
-		cytoPanel3Listener = new CytoPanel3Listener();
+		cytoPanel5Listener = new CytoPanel5Listener();
 
 		Cytoscape.getCurrentNetwork()
 				.addSelectEventListener(treeSelectListener);
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST)
-				.addCytoPanelListener(cytoPanel3Listener);
+				.addCytoPanelListener(cytoPanel5Listener);
 	} // addEventListeners()
 
 	private void removeEventListeners() {
@@ -153,7 +156,7 @@ public class ManualLayoutAction extends CytoscapeAction {
 		Cytoscape.getCurrentNetwork().removeSelectEventListener(
 				treeSelectListener);
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST)
-				.removeCytoPanelListener(cytoPanel3Listener);
+				.removeCytoPanelListener(cytoPanel5Listener);
 	}
 
 	// inner class definitions for all the event listeners
@@ -219,7 +222,50 @@ public class ManualLayoutAction extends CytoscapeAction {
 		}
 	} // End of class TreeSelectListener
 
-	public class CytoPanel3Listener implements CytoPanelListener {
+	public class CytoPanel5Listener implements CytoPanelListener, PropertyChangeListener {
+
+		public CytoPanel5Listener() {
+			Cytoscape.getDesktop().getNetworkViewManager().getSwingPropertyChangeSupport()
+			.addPropertyChangeListener(this);
+		}
+		
+		//Keep track of the state for each view focused
+		public void propertyChange(PropertyChangeEvent e) {
+
+			if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
+
+				curFocusedViewId = Cytoscape.getCurrentNetworkView().getIdentifier(); 
+				
+				// detect duplicate NETWORK_VIEW_FOCUSED event 
+				if (preFocusedViewId.equals(curFocusedViewId)) {
+					return;
+				}
+				
+				//save layout state for the previous network view
+				int[] stateValue = {rotatePanel.jSlider.getValue(),scalePanel.jSlider.getValue()};
+				layoutStateMap.put(preFocusedViewId, stateValue);
+
+				//Remove event listener before restore the value
+				removeEventListeners();
+				
+				//Restore layout state for the current network view, if any
+				stateValue = layoutStateMap.get(curFocusedViewId);
+				if (stateValue == null) {
+					rotatePanel.jSlider.setValue(0);
+					scalePanel.jSlider.setValue(1);
+				}
+				else {
+					rotatePanel.jSlider.setValue(stateValue[0]);
+					scalePanel.jSlider.setValue(stateValue[1]);					
+				}
+
+				//Restore event listener after restore the state value
+				addEventListeners();
+
+				preFocusedViewId = curFocusedViewId;				
+			}
+		}
+
 		public void onComponentAdded(int count) {
 		}
 
@@ -259,5 +305,5 @@ public class ManualLayoutAction extends CytoscapeAction {
 		public void onStateChange(CytoPanelState newState) {
 		}
 
-	} // End of CytoPanel3Listener
+	} // End of CytoPanel5Listener
 }
