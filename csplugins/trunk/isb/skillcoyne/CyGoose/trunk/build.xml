@@ -85,8 +85,5 @@
 		</fail>
 	</target>
 
-	<target name="addToWebstart" depends="checkWebstart, signJar" description="Copy plugin to cytoscape webstart">
-		<copy file="${build.dir}/${jar.file}" toDir="${webstartDir}/plugins"/>
-	</target>
 	
 </project>

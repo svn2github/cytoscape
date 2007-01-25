@@ -3,6 +3,7 @@ package org.systemsbiology.cytoscape;
 import org.systemsbiology.cytoscape.GagglePlugin;
 import org.systemsbiology.cytoscape.CyBroadcast;
 import org.systemsbiology.cytoscape.dialog.GooseDialog;
+import org.systemsbiology.cytoscape.visual.BasicMapping;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +24,7 @@ import cytoscape.*;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
 import cytoscape.visual.mappings.*;
 import cytoscape.visual.ui.VizMapUI;
 import cytoscape.data.Semantics;
@@ -72,6 +74,14 @@ public class CyGoose implements Goose
 		this.addButtonActions();
 		// creates broadcast actions
 		CyBroadcast Broadcast = new CyBroadcast(GDialog, GaggleBoss, this);
+		
+		VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
+		NAC = CurrentStyle.getNodeAppearanceCalculator();
+		
+		ObjectMapping Map = new BasicMapping().getNewMap("FooBar");
+		GenericNodeFillColorCalculator colorCalculator = 
+      	new GenericNodeFillColorCalculator("Sarah's Node Color", Map);
+		NAC.setCalculator(colorCalculator);
 		}
 
 	// Deselect all nodes/edges.  
@@ -161,6 +171,8 @@ public class CyGoose implements Goose
 	public void handleMap(String species, String dataTitle, HashMap hashMap)
 			throws RemoteException
 		{
+		GDialog.getMessageArea().setText(dataTitle);
+
 		HashMap<String,ArrayList> AttrMap = hashMap;
 		print("********handleMap(String, String, HashMap) \"dataTitle\"***********");
 		CyNetwork Net = Cytoscape.getNetwork( this.getNetworkId() );
@@ -465,14 +477,16 @@ public class CyGoose implements Goose
 	private void addButtonActions()
 		{ 
 		// set attribute to broadcast to other geese as the ID 
-		GDialog.setIdButton.addActionListener(new ActionListener()
+		/*
+		GDialog.getIdButton().addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
 					{ setBroadcastId(); }
 			});
+		*/
 
-		// listen in on the gooseChooser 
-		GDialog.gooseChooser.addActionListener(new ActionListener()
+		// listen in on the getGooseBox() 
+		GDialog.getGooseBox().addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
 					{
@@ -482,7 +496,7 @@ public class CyGoose implements Goose
 			});
 
     // show selected goose 
-    GDialog.showButton.addActionListener(new ActionListener()
+    GDialog.getShowButton().addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {
@@ -495,7 +509,7 @@ public class CyGoose implements Goose
 
 
 		// hide selected goose 
-		GDialog.hideButton.addActionListener(new ActionListener()
+		GDialog.getHideButton().addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
 					{

@@ -25,6 +25,9 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
+
 import cytoscape.CyNetwork;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeVersion;
@@ -53,16 +56,22 @@ public class GagglePlugin extends CytoscapePlugin
 		
 		NetworkGeese = new HashMap<String, Goose>();
 		Dialog = new GooseDialog();
+		
+		CytoPanel GoosePanel = Cytoscape.getDesktop().getCytoPanel(javax.swing.SwingConstants.WEST);
+		GoosePanel.add("CyGoose Plugin", null, Dialog, "Gaggle Goose");
+		GoosePanel.setSelectedIndex( GoosePanel.indexOfComponent(Dialog) );
+	
 		GaggleBoss = this.rmiConnect();
 		this.updateNetworkGeese();
 		if (GaggleBoss == null) 
 			{ 
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Failed to connect to the Boss", "Error", JOptionPane.ERROR_MESSAGE); 
-			Dialog.registerButton.setEnabled(true);
+			Dialog.getRegisterButton().setEnabled(true);
 			return;
 			}
 		else
 			{ 
+//			Dialog.getRegisterButton().setEnabled(false);
 			print("** adding action to update button **");
 			this.updateAction();
 			// this gives an initial goose that is cytoscape with a null network
@@ -92,14 +101,14 @@ public class GagglePlugin extends CytoscapePlugin
 			{
 			RegisteredName = GaggleBoss.register(G);
 			G.setName(RegisteredName);
-			Dialog.registerButton.setEnabled(false); 
+			Dialog.getRegisterButton().setEnabled(false); 
 			}
 		catch (Exception E)
 			{
 			E.printStackTrace();
 			String errMsg = "Gaggle connection failed!\n" + "Make sure a Gaggle Boss has started and click \"Register\" to try again";
 			GagglePlugin.showDialogBox(errMsg, "Error", JOptionPane.ERROR_MESSAGE);
-			Dialog.registerButton.setEnabled(true); 
+			Dialog.getRegisterButton().setEnabled(true); 
 			}
 		}
 	
@@ -118,11 +127,29 @@ public class GagglePlugin extends CytoscapePlugin
 		}
 	
 	/*
+	private void registerAction()
+		{
+		Dialog.getRegisterButton().addActionListener( new ActionListener()
+			{
+			public void actionPerformed(ActionEvent event)
+				{
+				try
+					{
+					GaggleBoss = rmiConnect();
+					//updateNetworkGeese();
+					}
+				catch (Exception E)
+					{ E.printStackTrace(); }
+				}
+			}	);
+		}*/
+	
+	/*
 	 * action button
 	 */
 	private void updateAction()
 		{ 
-		Dialog.updateButton.addActionListener(new ActionListener()
+		Dialog.getUpdateButton().addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
 					{
@@ -183,7 +210,7 @@ public class GagglePlugin extends CytoscapePlugin
 				}
 			}
 		this.removeOldNetworks(CurrentNetIds);
-		MiscUtil.updateGooseChooser(GaggleBoss, Dialog.gooseChooser, null, null);
+		MiscUtil.updateGooseChooser(GaggleBoss, Dialog.getGooseBox(), null, null);
 		}
 
 	// TODO Correct networks are slated for removal, but it isn't occurringx
@@ -210,7 +237,7 @@ public class GagglePlugin extends CytoscapePlugin
 				print("Removeing " + NetworkGeese.get(Id).getName() + " from the boss");
 				GaggleBoss.remove( NetworkGeese.get(Id).getName() ); 
 				UnicastRemoteObject.unexportObject(NetworkGeese.get(Id), true);
-				Dialog.gooseChooser.removeItem( NetworkGeese.get(Id).getName() );
+				Dialog.getGooseBox().removeItem( NetworkGeese.get(Id).getName() );
 				}
 			catch (Exception E) { E.printStackTrace(); }
 			NetworkGeese.remove(Id); 

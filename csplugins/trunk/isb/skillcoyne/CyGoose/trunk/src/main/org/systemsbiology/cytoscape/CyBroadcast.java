@@ -61,8 +61,8 @@ public class CyBroadcast
 
 	private String getTargetGoose()
 		{
-    int targetGooseIndex = this.GDialog.gooseChooser.getSelectedIndex();
-		String targetGooseName = (String)this.GDialog.gooseChooser.getSelectedItem();
+    int targetGooseIndex = this.GDialog.getGooseBox().getSelectedIndex();
+		String targetGooseName = (String)this.GDialog.getGooseBox().getSelectedItem();
 		print("Target index: "+targetGooseIndex+"  Target item: "+targetGooseName);
 		return targetGooseName;
 		}
@@ -355,7 +355,7 @@ public class CyBroadcast
 	private void addButtonActions()
 		{
     /* broadcast name list to other goose (geese) */
-    GDialog.bcastListButton.addActionListener(new ActionListener()
+    GDialog.getListButton().addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {
@@ -371,7 +371,7 @@ public class CyBroadcast
       });
 
     /* broadcast a network to other goose (geese) */
-    GDialog.bcastNetButton.addActionListener(new ActionListener()
+    GDialog.getNetButton().addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {
@@ -387,7 +387,7 @@ public class CyBroadcast
       });
 
     /* broadcast data matrix to other goose (geese) */
-    GDialog.bcastMatrixButton.addActionListener(new ActionListener()
+    GDialog.getMatrixButton().addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {
@@ -403,7 +403,7 @@ public class CyBroadcast
       });
 
     /* broadcast HashMap to other goose (geese) */
-    GDialog.bcastHashMapButton.addActionListener(new ActionListener()
+    GDialog.getMapButton().addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {

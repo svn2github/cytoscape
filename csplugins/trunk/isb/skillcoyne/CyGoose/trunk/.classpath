@@ -5,6 +5,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Gaggle"/>
 	<classpathentry kind="lib" path="/Users/skillcoy/java_lib/junit.jar"/>
-	<classpathentry kind="lib" path="/Cytoscape/cytoscape.jar"/>
+	<classpathentry kind="lib" path="lib/gaggle.jar"/>
+	<classpathentry kind="lib" path="/Cytoscape/lib/giny.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Cytoscape"/>
+	<classpathentry kind="lib" path="/Cytoscape/build/cytoscape-v2.4.0-b1/cytoscape.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
