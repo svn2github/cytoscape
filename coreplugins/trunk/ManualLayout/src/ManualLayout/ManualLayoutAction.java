@@ -6,6 +6,7 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
+import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -13,17 +14,19 @@ import cytoscape.Cytoscape;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.SelectEvent;
 import cytoscape.view.cytopanels.CytoPanelListener;
-import cytoscape.view.CyNetworkView;
 import ManualLayout.common.GraphConverter2;
 import ManualLayout.rotate.RotatePanel;
 import ManualLayout.rotate.RotationLayouter;
 import ManualLayout.scale.ScaleLayouter;
 import ManualLayout.scale.ScalePanel;
-
+import java.awt.Dimension;
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+import javax.swing.JPanel;
 /**
  * 
  * This class is enabled only when ManualLayout plugin is loaded. This action is
@@ -35,6 +38,7 @@ import ManualLayout.scale.ScalePanel;
  *  version 0.21   9/21/2006  Peng-Liang Wang   Fix a null pointer exception  
  *  version 0.3   10/03/2006  Peng-Liang Wang   Move the manualLayout to cytoPanel_SOUTH_WEST  
  *  version 0.31  01/25/2007  Peng-Liang Wang   Add propertyChnageListener to cytoPanel5, to keep track of state for each view  
+ *  version 0.32  01/28/2007  Peng-Liang Wang   Move it to BordLayout.SOUTH of cytopanel_1  
  * 
  */
 public class ManualLayoutAction extends CytoscapeAction {
@@ -56,7 +60,21 @@ public class ManualLayoutAction extends CytoscapeAction {
 	private String curFocusedViewId = "none";
 
 	private HashMap<String, int[]> layoutStateMap = new HashMap<String, int[]>();
+	private CytoPanelImp cytoPanel1 = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+	private CytoPanelImp manualLayoutPanel = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST);
+	private BiModalJSplitPane split; 
 	
+	public ManualLayoutAction() {
+		split = new BiModalJSplitPane(Cytoscape.getDesktop(),
+				JSplitPane.VERTICAL_SPLIT, BiModalJSplitPane.MODE_HIDE_SPLIT,
+				new JPanel(), manualLayoutPanel);
+		split.setResizeWeight(0);
+		manualLayoutPanel.setCytoPanelContainer(split);
+
+		manualLayoutPanel.setMinimumSize(new Dimension(180, 185));
+		manualLayoutPanel.setMaximumSize(new Dimension(180, 185));
+		manualLayoutPanel.setPreferredSize(new Dimension(180, 185));
+	}
 	
 	public void actionPerformed(ActionEvent ev) {
 
@@ -102,16 +120,23 @@ public class ManualLayoutAction extends CytoscapeAction {
 
 			addEventListeners();
 
+			cytoPanel1.addComponentToSouth(split);	
+
 			// Case 2: Panel is in the DOCK/FLOAT
 		} else if (isAnyCheckBoxSelected()) {
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST)
 					.setSelectedIndex(menuItemIndex);
+		
 		} else { // Case 3: The only checkBox is deSelected
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).setState(
 					CytoPanelState.HIDE);
 			removeEventListeners();
+			//Remove the manuallayoutPanel
+			//removeComponentAtSouth(split) does not work, overwrite it is a workaround
+			cytoPanel1.addComponentToSouth(new javax.swing.JLabel());
 		}
 
+		cytoPanel1.validate();
 	}// action performed
 
 	private boolean isAnyCheckBoxSelected() {
