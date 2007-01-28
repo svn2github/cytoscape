@@ -252,7 +252,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 		else{
 			throw new IllegalArgumentException("Illegal Argument:  "
 											   + compassDirection +
-											   ".  Must be one of:  SwingConstants.{NORTH,SOUTH,EAST,WEST.");
+											   ".  Must be one of:  SwingConstants.{NORTH,SOUTH,EAST,WEST,SOUTH_WEST}.");
 		}
 
 		// init listener list
@@ -676,6 +676,26 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	}
 
 	/**
+	 * Add a component to the CytoPanel just below the TabbedPane.
+	 * 
+     * @param pComponent    the component to be added.
+	 */
+	public void addComponentToSouth(Component pComponent)
+	{
+		add(pComponent, BorderLayout.SOUTH);
+	}
+
+	/**
+	 * Remove a component from the CytoPanel just below the TabbedPane.
+	 *
+     * @param pComponent  the component to be removed.
+	 */
+	public void removeComponentAtSouth(Component pComponent)
+	{
+		remove(pComponent);
+	}
+
+	/**
 	 * Initializes the label.
 	 */
 	private void initLabel() {
@@ -766,7 +786,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			// set location of external frame
 			setLocationOfExternalFrame(externalFrame);
 			// lets show it
-			externalFrame.show();
+			externalFrame.setVisible(true);
 
 			// set our new state
 			this.cytoPanelState = CytoPanelState.FLOAT;
@@ -776,6 +796,11 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 		
 			// re-layout
 			this.validate();
+
+			// SOUTH_WEST is used for manualLayout, it is nested in cytoPanel_1
+			if (compassDirection == SwingConstants.SOUTH_WEST) {
+				((CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)).validate();
+			}
 		}
 	}
 
@@ -817,6 +842,15 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 		
 			// re-layout
 			this.validate();
+			
+			// SOUTH_WEST is used for manualLayout, it is nested in cytoPanel_1
+			if (compassDirection == SwingConstants.SOUTH_WEST) {
+				try {
+					this.getParent().getParent().validate();											
+				}
+				catch (Exception e) {
+				}
+			}
 		}
 	}
 
@@ -872,7 +906,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 														   false);
 
         externalWindow.setLocation(p);
-        externalWindow.show();
+        externalWindow.setVisible(true);
     }
 
     /**
