@@ -50,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.InputMap;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -60,7 +59,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
 import javax.swing.ToolTipManager;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.event.TreeSelectionEvent;
@@ -80,7 +78,6 @@ import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
 import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanelImp;
 
 public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		TreeSelectionListener, SelectEventListener {
@@ -91,16 +88,14 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 	private final JTreeTable treeTable;
 	private final NetworkTreeNode root;
 	private JPanel navigatorPanel;
-
 	private JPopupMenu popup;
 	private PopupActionListener popupActionListener;
 	private JMenuItem createViewItem;
 	private JMenuItem destroyViewItem;
 	private JMenuItem destroyNetworkItem;
 	private JMenuItem editNetworkTitle;
+	private BiModalJSplitPane split;
 
-	private JSplitPane split;
-	private BiModalJSplitPane split_top;
 
 	private final NetworkTreeTableModel treeTableModel;
 	private final CytoscapeDesktop cytoscapeDesktop;
@@ -152,22 +147,11 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		navigatorPanel.setMaximumSize(new Dimension(180, 180));
 		navigatorPanel.setPreferredSize(new Dimension(180, 180));
 
-		final CytoPanelImp manualLayoutPanel = (CytoPanelImp) cytoscapeDesktop
-				.getCytoPanel(SwingConstants.SOUTH_WEST);
-		manualLayoutPanel.setMinimumSize(new Dimension(180, 185));
-		manualLayoutPanel.setMaximumSize(new Dimension(180, 185));
-		manualLayoutPanel.setPreferredSize(new Dimension(180, 185));
-
 		JScrollPane scroll = new JScrollPane(treeTable);
 
-		split_top = new BiModalJSplitPane(cytoscapeDesktop,
-				JSplitPane.VERTICAL_SPLIT, BiModalJSplitPane.MODE_HIDE_SPLIT,
-				scroll, manualLayoutPanel);
-		split_top.setResizeWeight(1);
-		manualLayoutPanel.setCytoPanelContainer(split_top);
-
-		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, split_top,
-				navigatorPanel);
+		split = new BiModalJSplitPane(cytoscapeDesktop,
+				JSplitPane.VERTICAL_SPLIT, BiModalJSplitPane.MODE_SHOW_SPLIT,
+				scroll, navigatorPanel);
 		split.setResizeWeight(1);
 
 		add(split);
