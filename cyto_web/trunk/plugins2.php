@@ -573,6 +573,30 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 		</td>
 	</tr>
 
+		 		<tr> <td colspan="4"> <hr> </td> </tr>
+
+			<tr>
+				<td width="20%" valign="top">
+					<b>Network Motif Finder</b><font size="-1">
+						<br> 
+						Version: 1.0
+						<br>
+						Release Date: October 19, 2006
+						</font>
+				</td>
+				<td width="40%" valign="top">
+				<p>
+				This pluging identifies network motifs, small repeatedly occurring mult-element components of a network, where the repetition suggests functional significance.  Statistical significance is applied to each motif type, and all identified motif types can be aggregated and extracted into smaller motif sub-networks.  This plugin has full functionality for multi-mode genetic networks created by the Cytoscape plugin ‘Phenotype Genetics’, and partial functionality for all other network types.  Specifically, motifs be identified and extracted for any network type, however statistical significance algorithms have been written for multi-mode netic networks only.  Network Motif Finder is open source and statistical significance algorithms for any network can be coded and easily incorporated.  Plugin, tutorial and sample data are packaged in the zip for download.
+				<p>
+					Released by: James Taylor, Galitski Lab, <a href="http://www.systemsbiology.org">Institute for Systems Biology</a>
+				</td>
+				<td width="20%" valign="top">
+					Verified to work in 2.3.2
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.3.2/plugins/NetworkMotifFinder/NMFPlugin.zip">Download zip</a>]
+				</td>
+			</tr>
 	<tr>
 				<td colspan="4">
 					<hr>
@@ -643,31 +667,50 @@ The plugin API makes possible to use its functionality from another plugin.
 				</td>
 			</tr>
 
-  	 		<tr> <td colspan="4"> <hr> </td> </tr>
+  		<tr> <td colspan="4"> <hr> </td> </tr>
 
 			<tr>
 				<td width="20%" valign="top">
-					<b>Network Motif Finder</b><font size="-1">
+					<b>StructureViz Plugin</b><font size="-1">
 						<br> 
-						Version: 1.0
+						Version: 0.9
 						<br>
-						Release Date: October 19, 2006
+						Release Date: January 25, 2007
 						</font>
 				</td>
 				<td width="40%" valign="top">
+				<p>		
+This plugin links the visualization of biological (and biological
+relationships expressed as networks) provided by Cytoscape with the
+visualization and analysis of macromolecular structures and sequences
+provided by the molecular visualization package: 
+<a href="http://www.cgl.ucsf.edu/chimera/">UCSF Chimera</a>. 
+<i>structureViz</i> provides commands to open
+structures in UCSF Chimera, align open structures using Chimera's
+Sequence/Structure tools, close structures that are currently open, and
+exit Chimera. In order to load a structure associated with a node, the
+Protein Databank (PDB) identifier (or identifiers if there are more than
+one) must be present as an attribute of that node. Currently, <i>structureViz</i>
+will look for an attribute named Structure, pdb, or pdbFileName. When a
+structure is opened, structureViz provides an alternative interface to
+Chimera: the <b>Cytoscape Molecular Structure Navigator</b>. This interface
+uses a tree-based paradigm to allow users to select and effect the
+display of models, chains, and residues, mostly through the use of
+context menus. Additional commands allow for selection by chemistry
+(Ligand, Ions, Solvent, Secondary Structure, and in the model context
+menu, Functional Residues). Users can also take advantage of Chimera's
+structural alignment capabilities by using the "Align" command.
 				<p>
-				This pluging identifies network motifs, small repeatedly occurring mult-element components of a network, where the repetition suggests functional significance.  Statistical significance is applied to each motif type, and all identified motif types can be aggregated and extracted into smaller motif sub-networks.  This plugin has full functionality for multi-mode genetic networks created by the Cytoscape plugin ‘Phenotype Genetics’, and partial functionality for all other network types.  Specifically, motifs be identified and extracted for any network type, however statistical significance algorithms have been written for multi-mode netic networks only.  Network Motif Finder is open source and statistical significance algorithms for any network can be coded and easily incorporated.  Plugin, tutorial and sample data are packaged in the zip for download.
-				<p>
-					Released by: James Taylor, Galitski Lab, <a href="http://www.systemsbiology.org">Institute for Systems Biology</a>
+					Released by: John "Scooter" Morris, <a href="http://www.rbvi.ucsf.edu">RBVI</a>, UCSF
 				</td>
 				<td width="20%" valign="top">
-					Verified to work in 2.3.2
+					Verified to work in 2.4
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.3.2/plugins/NetworkMotifFinder/NMFPlugin.zip">Download zip</a>]
+					[<a href="http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz/">Website and Download</a>]
 				</td>
 			</tr>
-
+  
 
 		</tbody>
 	</table>
