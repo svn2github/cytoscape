@@ -42,6 +42,7 @@ import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
+import ding.view.DGraphView;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -1467,6 +1468,22 @@ public class XGMMLReader extends AbstractGraphReader {
 	}
 
 	public void doPostProcessing(CyNetwork network) {
+
 		setNetworkAttributes(network);
+
+		CyNetworkView view = Cytoscape.getNetworkView( network.getIdentifier() );
+
+		if ( view == Cytoscape.getNullNetworkView() )
+			return;
+
+		// set view zoom
+		final Double zoomLevel = getGraphViewZoomLevel();
+		if (zoomLevel != null) 
+			view.setZoom(zoomLevel.doubleValue());
+
+		// set view center
+		final Point2D center = getGraphViewCenter();
+		if (center != null) 
+			((DGraphView) view).setCenter(center.getX(), center.getY());
 	}
 }

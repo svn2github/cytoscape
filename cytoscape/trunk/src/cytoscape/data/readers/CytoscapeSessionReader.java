@@ -131,13 +131,6 @@ public class CytoscapeSessionReader {
 
 	private List networkList;
 
-	/*
-	 * Stores networkName as the key and value is visualStyleName associated
-	 * with it.
-	 */
-	private HashMap vsMap;
-	private HashMap vsMapByName;
-
 	private Bookmarks bookmarks = null;
 
 	private HashMap<String, List<File>> pluginFileListMap;
@@ -154,8 +147,6 @@ public class CytoscapeSessionReader {
 	public CytoscapeSessionReader(final URL sourceName) throws IOException {
 		this.sourceURL = sourceName;
 		networkList = new ArrayList();
-		vsMap = new HashMap();
-		vsMapByName = new HashMap();
 		bookmarks = new Bookmarks();
 		pluginFileListMap = new HashMap<String, List<File>>();
 	}
@@ -465,20 +456,6 @@ public class CytoscapeSessionReader {
 
 		walkTree(netMap.get(NETWORK_ROOT), null, cysessionFileURL);
 
-		/*
-		 * Set VS for each network view
-		 */
-		String currentNetworkID = null;
-		final Iterator viewIt = vsMap.keySet().iterator();
-		while (viewIt.hasNext()) {
-			currentNetworkID = (String) viewIt.next();
-			final CyNetworkView targetView = Cytoscape
-					.getNetworkView(currentNetworkID);
-			if (targetView != Cytoscape.getNullNetworkView()) {
-				targetView.setVisualStyle((String) vsMap.get(currentNetworkID));
-				targetView.applyVizmapper(targetView.getVisualStyle());
-			}
-		}
 	}
 
 	private void restoreDesktopState() {
@@ -530,28 +507,17 @@ public class CytoscapeSessionReader {
 
 			final Child child = (Child) children.get(i);
 			final Network childNet = (Network) netMap.get(child.getId());
-			String vsName = childNet.getVisualStyle();
-			if (vsName == null) {
-				vsName = "default";
-			}
-
-			vsMapByName.put(child.getId(), vsName);
 
 			final URL targetNetworkURL = (URL) networkURLs.get(sessionID + "/"
 					+ childNet.getFilename());
 			final JarURLConnection jarConnection = (JarURLConnection) (targetNetworkURL)
 					.openConnection();
-			InputStream networkStream = (InputStream) jarConnection
-					.getContent();
+			InputStream networkStream = (InputStream) jarConnection.getContent();
 
-			final CyNetwork new_network = this.createNetwork(parent,
-					networkStream, childNet.isViewAvailable());
-
-			/*
-			 * Extract network view
-			 */
-			final CyNetworkView curNetView = Cytoscape
-					.getNetworkView(new_network.getIdentifier());
+			final CyNetwork new_network = Cytoscape.createNetwork( 
+			                                            new XGMMLReader(networkStream), 
+			                                            childNet.isViewAvailable(), 
+			                                            parent );
 
 			if (networkStream != null) {
 				try {
@@ -560,29 +526,37 @@ public class CytoscapeSessionReader {
 					networkStream = null;
 				}
 			}
-			vsMap.put(new_network.getIdentifier(), vsName);
+
 			networkList.add(new_network.getIdentifier());
 
-			/*
-			 * Set selected & hidden nodes/edges
-			 */
-			if (curNetView != Cytoscape.getNullNetworkView()) {
+			final CyNetworkView curNetView = Cytoscape
+					.getNetworkView(new_network.getIdentifier());
+
+			if ( curNetView != Cytoscape.getNullNetworkView() ) {
+
+				// Set visual style
+				String vsName = childNet.getVisualStyle();
+				if (vsName == null) 
+					vsName = "default";
+
+                        	curNetView.setVisualStyle(vsName);
+                        	Cytoscape.getDesktop().getVizMapUI().getStyleSelector().resetStyles(vsName);
+	                        Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+                        	Cytoscape.getDesktop().getVizMapUI().visualStyleChanged();
+				
+				// Set hidden nodes + edges
 				setHiddenNodes(curNetView, (HiddenNodes) childNet
 						.getHiddenNodes());
 				setHiddenEdges(curNetView, (HiddenEdges) childNet
 						.getHiddenEdges());
 			}
-			setSelectedNodes(new_network, (SelectedNodes) childNet
-					.getSelectedNodes());
-			setSelectedEdges(new_network, (SelectedEdges) childNet
-					.getSelectedEdges());
 
-			/*
-			 * Load child networks
-			 */
-			if (childNet.getChild().size() != 0) {
+			setSelectedNodes(new_network, (SelectedNodes) childNet.getSelectedNodes());
+			setSelectedEdges(new_network, (SelectedEdges) childNet.getSelectedEdges());
+
+			// Load child networks
+			if (childNet.getChild().size() != 0) 
 				walkTree(childNet, new_network, sessionSource);
-			}
 		}
 	}
 
@@ -688,114 +662,6 @@ public class CytoscapeSessionReader {
 			}
 		}
 		return targetEdge;
-	}
-
-	private CyNetwork createNetwork(final CyNetwork parent,
-			final InputStream is, final boolean viewAvailable)
-			throws IOException, JAXBException {
-
-		// Read an XGMML file
-		XGMMLReader reader = new XGMMLReader(is);
-		reader.read();
-
-		/*
-		 * Create the CyNetwork. First, set the view threshold to 0. By doing
-		 * so, we can disable the auto-creating of the CyNetworkView.
-		 */
-		final int realThreshold = Integer.valueOf(
-				CytoscapeInit.getProperties().getProperty("viewThreshold"))
-				.intValue();
-		CytoscapeInit.getProperties().setProperty("viewThreshold",
-				Integer.toString(0));
-
-		final CyNetwork network;
-		if (parent == null) {
-			network = Cytoscape.createNetwork(reader.getNodeIndicesArray(),
-					reader.getEdgeIndicesArray(), reader.getNetworkID());
-
-		} else {
-			network = Cytoscape
-					.createNetwork(reader.getNodeIndicesArray(), reader
-							.getEdgeIndicesArray(), reader.getNetworkID(),
-							parent);
-		}
-
-		// Set network Attributes here, not in the read() method in XGMMLReader!
-		// Otherwise, ID mismatch may happen.
-		reader.setNetworkAttributes(network);
-
-		// Reset back to the real View Threshold
-		CytoscapeInit.getProperties().setProperty("viewThreshold",
-				Integer.toString(realThreshold));
-
-		// Conditionally, Create the CyNetworkView
-		if (viewAvailable) {
-			createCyNetworkView(network);
-			final CyNetworkView curView = Cytoscape.getNetworkView(network
-					.getIdentifier());
-
-			if (curView != Cytoscape.getNullNetworkView()) {
-				((DingNetworkView) curView).getCanvas().setVisible(false);
-				reader.layout(curView);
-			}
-
-			// Lastly, make the GraphView Canvas Visible.
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					((DingNetworkView) curView).setGraphLOD(new CyGraphLOD());
-				}
-			});
-
-			final String curVS = (String) vsMapByName.get(network.getTitle());
-
-			if (curVS != null) {
-				curView.setVisualStyle(curVS);
-				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
-						.resetStyles(curVS);
-				Cytoscape.getVisualMappingManager().setVisualStyle(curVS);
-				Cytoscape.getDesktop().getVizMapUI().visualStyleChanged();
-
-			} else {
-				curView.setVisualStyle(Cytoscape.getVisualMappingManager()
-						.getVisualStyle().getName());
-			}
-
-			// set view zoom
-			final Double zoomLevel = reader.getGraphViewZoomLevel();
-			if (zoomLevel != null) {
-				curView.setZoom(zoomLevel.doubleValue());
-			}
-			// set view center
-			final Point2D center = reader.getGraphViewCenter();
-			if (center != null) {
-				((DGraphView) curView).setCenter(center.getX(), center.getY());
-			}
-			
-			((DingNetworkView) curView).getCanvas().setVisible(true);
-		}
-
-		// Execute any necessary post-processing.
-		reader.doPostProcessing(network);
-		reader = null;
-		return network;
-	}
-
-	// same as other loaders
-	//
-	private void createCyNetworkView(final CyNetwork cyNetwork) {
-		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork
-				.getTitle());
-		view.getCanvas().setVisible(false);
-		view.setIdentifier(cyNetwork.getIdentifier());
-		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
-		view.setTitle(cyNetwork.getTitle());
-
-		// set the selection mode on the view
-		Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
-
-		Cytoscape.firePropertyChange(
-				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
-				view);
 	}
 
 	/**
