@@ -24,11 +24,11 @@
 package metanodePlugin.ui;
 
 import metanodePlugin.MetaNodeViewerCytoPlugin;
-import org.isb.metanodes.actions.*;
+import csplugins.metanodes.actions.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import org.isb.metanodes.data.*;
+import csplugins.metanodes.data.*;
 
 /**
  * A simple dialog for creating/destroying/collapsing/expanding meta-nodes.

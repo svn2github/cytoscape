@@ -26,7 +26,7 @@ import cytoscape.*;
 import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.*;
-import org.isb.metanodes.model.*;
+import csplugins.metanodes.model.*;
 
 /**
  * A class with class methods that create and return custom visual styles for networks
@@ -47,7 +47,7 @@ public class VisualStyleFactory {
    * The name of the attribute that describes node type.
    * TODO: Maybe add to Semantics?
    */
-  public static final String NODE_TYPE_ATT = "nodeType";
+  public static final String NODE_TYPE_ATT = "NodeType";
   
   public static boolean sizeProportionalToNumChildren = true;
   
