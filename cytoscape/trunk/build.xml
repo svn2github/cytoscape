@@ -500,6 +500,7 @@
 	<!-- if a test fails.                                                    -->
 	<!-- =================================================================== -->
 	<target name="test" depends="jar">
+
 		<echo>
             ***********************************************
             Running all unit tests (quickly). 
@@ -967,7 +968,7 @@
 			<arg value="-cyto_dir" />
 			<arg value="${release.dir}" />
 			<arg value="-url" />
-			<arg value="${webstartURL}" />
+			<arg value="${webstartURL}/webstart" />
 			<arg value="-save_dir" /> 
 			<arg value="${basedir}/resources/webstart" />
 		</java>
@@ -1065,9 +1066,11 @@
   <!-- Create Cytoscape WebStart WAR file Distribution         -->
   <!-- ======================================================= -->
 	<target name="war" depends="webstart" description="Create war package for webstart distribution">
-		<!-- Using jar rather that war task because we don't have a webxml file and not sure we need one -->
- 		<jar destfile="Cytoscape.war">
-			<fileset dir="${webstart.dir}"/>
+		<!-- Using jar rather that war task because we don't have a webxml file -->
+ 		<jar destfile="${build.dir}/Cytoscape.war">
+			<fileset dir="${build.dir}">
+				<include name="webstart/**"/>
+			</fileset>
 			<fileset dir="${basedir}/resources/webstart"/>
 		</jar>
 	</target>
