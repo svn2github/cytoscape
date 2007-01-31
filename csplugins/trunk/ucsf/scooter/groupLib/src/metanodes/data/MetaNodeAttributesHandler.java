@@ -47,7 +47,7 @@ public interface MetaNodeAttributesHandler {
 	 * The default attribute that is used to label nodes, this is not the same as the unique ID of nodes
 	 * which are internal keys to nodes
 	 */
-	public static final String DEFAULT_NODE_LABEL_ATTRIBUTE = "nodeLabel";
+	public static final String DEFAULT_NODE_LABEL_ATTRIBUTE = "canonicalName";
 	
   
 	/**

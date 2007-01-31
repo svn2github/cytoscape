@@ -280,12 +280,15 @@ public class IntraDegreeComparator implements Comparator{
 	public static SortedSet sortNodes (CyNetwork cy_net, int [] nodes_to_be_sorted){
 		IntraDegreeComparator icomparator = new IntraDegreeComparator(cy_net, true, nodes_to_be_sorted);
 		SortedSet sortedNodes = new TreeSet(icomparator);
+		CyAttributes cyNodeAttributes = Cytoscape.getNodeAttributes();
 	    for(int i = 0; i < nodes_to_be_sorted.length; i++){
 	    	    CyNode node = (CyNode)cy_net.getNode(nodes_to_be_sorted[i]);
 	    	    sortedNodes.add(node);
-            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),"intra degree", 
+            cyNodeAttributes.setAttribute(node.getIdentifier(),"__intra degree", 
                     new Integer(icomparator.getIntraDegree(nodes_to_be_sorted[i])));
 	    }//for i
+		cyNodeAttributes.setUserVisible("__intra degree", false);
+		cyNodeAttributes.setUserEditable("__intra degree", false);
 	    return sortedNodes;
 	}//sortNodes
 	

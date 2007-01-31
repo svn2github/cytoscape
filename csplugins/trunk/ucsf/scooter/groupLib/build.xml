@@ -1,13 +1,13 @@
 <?xml version = "1.0"?>
-<project name = "groupLib" default = "compile_release" basedir = ".">
+<project name = "metanodeLib" default = "compile_release" basedir = ".">
    
    <property name = "src" location = "src"/>
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
    <!-- path to Cytoscape under development (CVS) -->
    <property name = "lib.dev" location = "../../../../cytoscape"/>
-   <!-- path to Cytoscape 2.2 official release -->
-   <property name = "lib.release" location = "../../../../cytoscape/build/cytoscape-v2.4.0-b3"/>
+   <!-- path to Cytoscape official release -->
+   <property name = "lib.release" location = "/opt/Cytoscape/"/>
    <property name = "jar"  location = "jar"/>
    <property name = "doc" location = "doc"/>
 
@@ -49,25 +49,25 @@
 
    <target name="jar_release" depends="compile_release" description="makes a jar for the current official Cytoscape release">
    <mkdir dir = "${jar}"/>
-   <jar jarfile="${jar}/grouplib.jar">
+   <jar jarfile="${jar}/metanodelib.jar">
       <fileset dir="${build}"/>
    </jar>
-	<copy file="${jar}/grouplib.jar" todir="../metaNodePlugin/lib"/>
-   <echo message="grouplib.jar is complete, it is located in ${jar} and in ../metaNodePlugin/lib"/>
+	<copy file="${jar}/metanodelib.jar" todir="../metaNodePlugin/lib"/>
+   <echo message="metanodelib.jar is complete, it is located in ${jar} and in ../metaNodePlugin/lib"/>
    </target>
 
    <target name="jar_dev" depends="compile_dev" description="makes a jar for Cytoscape under development">
    <mkdir dir = "${jar}"/>
-   <jar jarfile="${jar}/grouplib.jar">
+   <jar jarfile="${jar}/metanodelib.jar">
       <fileset dir="${build}"/>
    </jar>
-   	<copy file="${jar}/grouplib.jar" todir="../metaNodePlugin/lib"/>
-   <echo message="grouplib.jar is complete, it is located in ${jar} and in ../metaNodePlugin/lib"/>
+   	<copy file="${jar}/metanodelib.jar" todir="../metaNodePlugin/lib"/>
+   <echo message="metanodelib.jar is complete, it is located in ${jar} and in ../metaNodePlugin/lib"/>
    </target>
 
    <!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
-        <javadoc packagenames="edu.ucsf.groups.*" 
+        <javadoc packagenames="csplugins.metanodes" 
 		 sourcepath="src" 
 		 source="1.4" 
            	 classpathref="classpath_dev"
