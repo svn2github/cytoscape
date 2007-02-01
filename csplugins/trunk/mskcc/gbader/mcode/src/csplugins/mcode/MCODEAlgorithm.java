@@ -288,8 +288,18 @@ public class MCODEAlgorithm {
         long msTimeBefore = System.currentTimeMillis();
         HashMap nodeSeenHashMap = new HashMap(); //key is nodeIndex, value is true/false
         Integer currentNode;
-        int k = 0;
+        int findingProgress = 0;
+        int findingTotal = 0;
         Collection values = nodeScoreSortedMap.values(); //returns a Collection sorted by key order (descending)
+        //In order to track the progress without significant lags (for times when many nodes have the same score
+        //and no progress is reported) we count all the scored nodes and track those instead
+        for (Iterator iterator1 = values.iterator(); iterator1.hasNext();) {
+            ArrayList value = (ArrayList) iterator1.next();
+            for(Iterator iterator2 = value.iterator(); iterator2.hasNext();) {
+                iterator2.next();
+                findingTotal++;
+            }
+        }
         //stores the list of clusters as ArrayLists of node indices in the input Network
         ArrayList alClusters = new ArrayList();
         //iterate over node indices sorted descending by their score
@@ -320,7 +330,6 @@ public class MCODEAlgorithm {
                             if (params.isFluff()) {
                                 fluffClusterBoundary(alCluster, nodeSeenHashMap, nodeInfoHashMap);
                             }
-
                             currentCluster.setALCluster(alCluster);
                             gpCluster = createGraphPerspective(alCluster, inputNetwork);
                             currentCluster.setGPCluster(gpCluster);
@@ -332,13 +341,19 @@ public class MCODEAlgorithm {
                         }
                     }
                 }
-            }
-            if (taskMonitor != null) {
-                k++;
-                taskMonitor.setPercentCompleted((k * 100) / nodeScoreSortedMap.size());
-            }
-            if (cancelled) {
-                break;
+                if (taskMonitor != null) {
+                    findingProgress++;
+                    //We want to be sure that only progress changes are reported and not
+                    //miniscule decimal increments so that the taskMonitor isn't overwhelmed
+                    int newProgress = (findingProgress * 100) / findingTotal;
+                    int oldProgress = ((findingProgress-1) * 100) / findingTotal;
+                    if (newProgress != oldProgress) {
+                        taskMonitor.setPercentCompleted(newProgress);
+                    }
+                }
+                if (cancelled) {
+                    break;
+                }
             }
         }
         //Once the clusters have been found we either return them or in the case of selection scope, we select only

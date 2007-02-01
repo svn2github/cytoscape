@@ -74,10 +74,11 @@ public class MCODEMainPanelAction implements ActionListener {
 
         //First we must make sure that the plugin is not already open
         if (!opened) {
+            //if the MCODE visual style has not already been loaded, we load it
             if (!vmm.getCalculatorCatalog().getVisualStyleNames().contains("MCODE")) {
                 vmm.getCalculatorCatalog().addVisualStyle(MCODEVS);
             }
-            vmm.setVisualStyle(MCODEVS);
+            //The style is not actually applied until a result is produced (in MCODEScoreAndFindAction)
 
             mainPanel = new MCODEMainPanel(this, MCODEVS);
             URL iconURL = MCODEPlugin.class.getResource("resources/logo2.png");
@@ -100,7 +101,7 @@ public class MCODEMainPanelAction implements ActionListener {
 
     public void setOpened(boolean opened) {
         this.opened = opened;
-        if (!isOpened()) {
+        if (!isOpened() && vmm.getVisualStyle() == MCODEVS) {
             vmm.setVisualStyle("default");
             //TODO: non functonal code for removing a visual style...vmm.getCalculatorCatalog().removeVisualStyle("MCODE");
             vmm.applyAppearances();

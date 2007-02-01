@@ -50,7 +50,7 @@ public class MCODECollapsablePanel extends JPanel {
     //Border
     CollapsableTitledBorder border; //includes upper left component and line type
     Border collapsedBorderLine = BorderFactory.createEmptyBorder(2, 2, 2, 2); // no border
-    Border expandedBorderLine = null; // etched lowered border by default;
+    Border expandedBorderLine = null;//BorderFactory.createEtchedBorder();// etched lowered border on MAC by default;
 
     //Title
     AbstractButton titleComponent; // displayed in the titled border
@@ -79,6 +79,7 @@ public class MCODECollapsablePanel extends JPanel {
 
     /**
      * Special constructor for a label/button controlled collapsable panel
+     * 
      * @param text Title of the collapsable panel in string format, used to create a button with text and an arrow icon
      */
     public MCODECollapsablePanel (String text) {
@@ -189,11 +190,15 @@ public class MCODECollapsablePanel extends JPanel {
         button.setBorder(BorderFactory.createEmptyBorder(0,1,5,1));
         button.setVerticalTextPosition(AbstractButton.CENTER);
         button.setHorizontalTextPosition(AbstractButton.LEFT);
+        button.setMargin(new Insets(0,0,3,0));
 
-        //Temporary label to get its font
-        JLabel label = new JLabel("sample");
-        Font font = label.getFont();
+        //We want to use the same font as those in the titled border font
+        Font font = BorderFactory.createTitledBorder("Sample").getTitleFont();
+        Color color = BorderFactory.createTitledBorder("Sample").getTitleColor();
         button.setFont(font);
+        button.setForeground(color);
+        button.setFocusable(false);
+        button.setContentAreaFilled(false);
 
         button.addActionListener(new MCODECollapsablePanel.ExpandAndCollapseAction());
 
@@ -217,6 +222,7 @@ public class MCODECollapsablePanel extends JPanel {
      */
     private class CollapsableTitledBorder extends TitledBorder {
         JComponent component;
+        //Border border;
 
         public CollapsableTitledBorder(JComponent component) {
             this(null, component, LEFT, TOP);
@@ -281,7 +287,6 @@ public class MCODECollapsablePanel extends JPanel {
             g.setColor(c.getBackground());
             g.fillRect(compR.x, compR.y, compR.width, compR.height);
             g.setColor(col);
-            component.repaint();
         }
 
         public Insets getBorderInsets(Component c, Insets insets) {

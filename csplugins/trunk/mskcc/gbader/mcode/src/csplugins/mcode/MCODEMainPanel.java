@@ -89,7 +89,7 @@ public class MCODEMainPanel extends JPanel {
      * The actual parameter change dialog that builds the UI
      *
      * @param trigger A reference to the action that triggered the initiation of this class
-     * @param MCODEVS
+     * @param MCODEVS Reference to MCODE's visual style
      */
     public MCODEMainPanel(MCODEMainPanelAction trigger, MCODEVisualStyle MCODEVS) {
         this.trigger = trigger;
@@ -140,9 +140,8 @@ public class MCODEMainPanel extends JPanel {
     private JPanel createScopePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder("Scope"));
+        panel.setBorder(BorderFactory.createTitledBorder("Find Cluster(s)"));
 
-        JLabel scopeStarter = new JLabel("Find cluster(s)...");
         JRadioButton scopeNetwork = new JRadioButton("in Whole Network", currentParamsCopy.getScope().equals(MCODEParameterSet.NETWORK));
         JRadioButton scopeSelection = new JRadioButton("from Selection", currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION));
 
@@ -156,7 +155,6 @@ public class MCODEMainPanel extends JPanel {
         scopeOptions.add(scopeNetwork);
         scopeOptions.add(scopeSelection);
 
-        panel.add(scopeStarter);
         panel.add(scopeNetwork);
         panel.add(scopeSelection);
         
@@ -206,8 +204,8 @@ public class MCODEMainPanel extends JPanel {
             }
         };
         includeLoopsCheckBox.addItemListener(new MCODEMainPanel.IncludeLoopsCheckBoxAction());
-        String includeLoopsTip = "If checked, MCODE will include loops (self-edges) in the neighborhood\n" +
-                "density calculation.  This is expected to make a small difference in the results.";
+        String includeLoopsTip = "Self-edges may increase a\n" +
+                "node's score slightly";
         includeLoopsCheckBox.setToolTipText(includeLoopsTip);
         includeLoopsCheckBox.setSelected(currentParamsCopy.isIncludeLoops());
 
@@ -231,10 +229,8 @@ public class MCODEMainPanel extends JPanel {
         };
         degreeCutOffFormattedTextField.setColumns(3);
         degreeCutOffFormattedTextField.addPropertyChangeListener("value", new MCODEMainPanel.FormattedTextFieldAction());
-        String degreeCutOffTip = "Sets the degree cutoff below which a node will not be scored.\n" +
-                "Nodes with a degree equal or higher to this value will be scored.\n" +
-                "By default this is set to 2. Valid values are 2 or higher to prevent singly connected nodes\n" +
-                "from getting an artificially high node score.";
+        String degreeCutOffTip = "Sets the minimum number of\n" +
+                "edges for a node to be scored.";
         degreeCutOffFormattedTextField.setToolTipText(degreeCutOffTip);
         degreeCutOffFormattedTextField.setText((new Integer(currentParamsCopy.getDegreeCutoff()).toString()));
 
@@ -311,9 +307,9 @@ public class MCODEMainPanel extends JPanel {
         };
         nodeScoreCutoffFormattedTextField.setColumns(3);
         nodeScoreCutoffFormattedTextField.addPropertyChangeListener("value", new MCODEMainPanel.FormattedTextFieldAction());
-        String nodeScoreCutoffTip = "Sets the node score cutoff for expanding a cluster as a percentage from the seed node score.\n" +
-                "This is the most important parameter to control the size of MCODE clusters,\n" +
-                "with smaller values creating smaller clusters.";
+        String nodeScoreCutoffTip = "Sets the acceptable score deviance from\n" +
+                "the seed node's score for expanding a cluster\n" +
+                "(most influental parameter for cluster size).";
         nodeScoreCutoffFormattedTextField.setToolTipText(nodeScoreCutoffTip);
         nodeScoreCutoffFormattedTextField.setText((new Double(currentParamsCopy.getNodeScoreCutoff()).toString()));
 
@@ -336,7 +332,9 @@ public class MCODEMainPanel extends JPanel {
         };
         kCoreFormattedTextField.setColumns(3);
         kCoreFormattedTextField.addPropertyChangeListener("value", new MCODEMainPanel.FormattedTextFieldAction());
-        String kCoreTip = "WRITE ME PLEASE!";//TODO: Write k-core tooltip
+        String kCoreTip = "Filters out clusters lacking a\n" +
+                "maximally inter-connected core\n" +
+                "of at least k edges per node.";
         kCoreFormattedTextField.setToolTipText(kCoreTip);
         kCoreFormattedTextField.setText((new Integer(currentParamsCopy.getKCore()).toString()));
 
@@ -358,8 +356,8 @@ public class MCODEMainPanel extends JPanel {
             }
         };
         haircutCheckBox.addItemListener(new MCODEMainPanel.HaircutCheckBoxAction());
-        String haircutTip = "If checked, MCODE will give clusters a haircut\n" +
-                "(remove singly connected nodes).";
+        String haircutTip = "Remove singly connected\n" +
+                "nodes from clusters.";
         haircutCheckBox.setToolTipText(haircutTip);
         haircutCheckBox.setSelected(currentParamsCopy.isHaircut());
 
@@ -381,9 +379,9 @@ public class MCODEMainPanel extends JPanel {
             }
         };
         fluffCheckBox.addItemListener(new MCODEMainPanel.FluffCheckBoxAction());
-        String fluffTip = "If checked, MCODE will fluff clusters\n" +
-                "(expand core cluster one neighbour shell outwards according to fluff\n" +
-                "density cutoff). This is done after the optional haircut step.";
+        String fluffTip = "Expand core cluster by one\n" +
+                "neighbour shell (applied\n"+
+                "after the optional haircut).";
         fluffCheckBox.setToolTipText(fluffTip);
         fluffCheckBox.setSelected(currentParamsCopy.isFluff());
 
@@ -406,10 +404,9 @@ public class MCODEMainPanel extends JPanel {
         };
         fluffNodeDensityCutOffFormattedTextField.setColumns(3);
         fluffNodeDensityCutOffFormattedTextField.addPropertyChangeListener("value", new MCODEMainPanel.FormattedTextFieldAction());
-        String fluffNodeDensityCutoffTip = "Sets the fluff density cutoff for expanding a cluster according to the unadjusted\n" +
-                "node density (clustering coefficient) after the cluster has already been defined by the algorithm.\n" +
-                "This allows clusters to slightly overlap at their edges. This parameter is only valid if fluffing\n" +
-                "is turned on. A higher value will expand the cluster more.";
+        String fluffNodeDensityCutoffTip = "Limits fluffing by setting the acceptable\n" +
+                "node density deviance from the core cluster\n" +
+                "density (allows clusters' edges to overlap).";
         fluffNodeDensityCutOffFormattedTextField.setToolTipText(fluffNodeDensityCutoffTip);
         fluffNodeDensityCutOffFormattedTextField.setText((new Double(currentParamsCopy.getFluffNodeDensityCutoff()).toString()));
 
@@ -434,9 +431,9 @@ public class MCODEMainPanel extends JPanel {
         };
         maxDepthFormattedTextField.setColumns(3);
         maxDepthFormattedTextField.addPropertyChangeListener("value", new MCODEMainPanel.FormattedTextFieldAction());
-        String maxDepthTip = "Sets the maximum depth from a seed node in the network to search to expand a cluster.\n" +
-                "By default this is set to an arbitrarily large number. Set this to a small number\n" +
-                "to limit cluster size.";
+        String maxDepthTip = "Limits the cluster size by setting the\n" +
+                "maximum search distance from a seed\n" +
+                "node (100 virtually means no limit).";
         maxDepthFormattedTextField.setToolTipText(maxDepthTip);
         maxDepthFormattedTextField.setText((new Integer(currentParamsCopy.getMaxDepthFromStart()).toString()));
 
@@ -508,11 +505,11 @@ public class MCODEMainPanel extends JPanel {
         JButton analyzeButton = new JButton("Analyze");
         analyzeButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy, MCODEVS));
 
-        JButton quitButton = new JButton("Quit");
-        quitButton.addActionListener(new MCODEMainPanel.QuitAction(this));
+        JButton closeButton = new JButton("Close MCODE");
+        closeButton.addActionListener(new MCODEMainPanel.CloseAction(this));
 
         panel.add(analyzeButton);
-        panel.add(quitButton);
+        panel.add(closeButton);
 
         return panel;
     }
@@ -575,11 +572,11 @@ public class MCODEMainPanel extends JPanel {
     /**
      * Handles the press of the quit button
      */
-    private class QuitAction extends AbstractAction {
+    private class CloseAction extends AbstractAction {
         MCODEMainPanel mainPanel;
         MCODEResultsPanel component;
 
-        QuitAction (MCODEMainPanel mainPanel) {
+        CloseAction (MCODEMainPanel mainPanel) {
             this.mainPanel = mainPanel;
         }
 

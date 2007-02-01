@@ -64,6 +64,7 @@ public class MCODEVisualStyleAction implements CytoPanelListener {
             //to re-initialize the calculators we need the highest score of this particular result set
             double maxScore = ((MCODEResultsPanel) component).setNodeAttributesAndGetMaxScore();
             //we also need the selected row if one is selected at all
+            ((MCODEResultsPanel) component).selectCluster(null);
             int selectedRow = ((MCODEResultsPanel) component).getClusterBrowserTable().getSelectedRow();
             ((MCODEResultsPanel) component).getClusterBrowserTable().clearSelection();
             if (selectedRow >= 0) {
@@ -74,7 +75,7 @@ public class MCODEVisualStyleAction implements CytoPanelListener {
             MCODEVS.initCalculators();
             VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
             vmm.applyNodeAppearances();
-            Cytoscape.getDesktop().repaint();
+            //Cytoscape.getDesktop().repaint();
         }
     }
 

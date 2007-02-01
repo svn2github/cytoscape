@@ -9,6 +9,7 @@ import phoebe.PGraphView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -58,6 +59,7 @@ import java.util.*;
 public class MCODEUtil {
 
     private static boolean INTERRUPTED = false;
+    private static Image placeHolderImage = null;
 
     /**
      * Convert a network to an image.  This is used by the result dialog code.
@@ -88,10 +90,12 @@ public class MCODEUtil {
 
         view = new PGraphView(cluster.getGPCluster());
 
-        //TODO optionally apply a visual style here instead of doing this manually - visual style calls init code that might not be called manually
         for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
             if (INTERRUPTED) {
                 System.err.println("Interrupted: Node Setup");
+                //before we shortcircuit the method we reset the interruption so that the method can run without
+                //problems the next time around
+                if (layouter != null) layouter.resetDoLayout();
                 resetLoading();
                 return null;
             }
@@ -110,7 +114,8 @@ public class MCODEUtil {
             nv.setUnselectedPaint(Color.RED);
             nv.setBorderPaint(Color.BLACK);
 
-            //First we check if the MCODECluster already has a node view of this node
+            //First we check if the MCODECluster already has a node view of this node (posing the more generic condition
+            //first prevents the program from throwing a null pointer exception in the second condition)
             if (cluster.getPGView() != null && cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
                 //If it does, then we take the layout position that was already generated for it
                 nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
@@ -137,6 +142,7 @@ public class MCODEUtil {
         for (Iterator ie = view.getEdgeViewsIterator(); ie.hasNext();) {
             if (INTERRUPTED) {
                 System.err.println("Interrupted: Edge Setup");
+                if (layouter != null) layouter.resetDoLayout();
                 resetLoading();
                 return null;
             }
@@ -174,7 +180,7 @@ public class MCODEUtil {
         if (view.getNodeViewCount() >= 1) {
             cluster.setPGView(view);
         }
-
+        layouter.resetDoLayout();
         resetLoading();
         return (image);
     }
@@ -185,6 +191,38 @@ public class MCODEUtil {
 
     public static void resetLoading() {
         INTERRUPTED = false;
+    }
+
+    public static Image getPlaceHolderImage(int width, int height) {
+        //We only want to generate a place holder image once so that memory is not eaten up
+        if (placeHolderImage == null) {
+            Image image;
+            image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = (Graphics2D) image.getGraphics();
+            int fontSize = 10;
+            g2.setFont(new Font("Arial", Font.PLAIN, fontSize));
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            Font f = g2.getFont();
+            FontMetrics fm = g2.getFontMetrics(f);
+
+            //Place Holder text
+            String placeHolderText = "Too big to show";
+            //We want to center the text vertically in the top 20 pixels
+            height = 20;
+            //White outline
+            g2.setColor(Color.WHITE);
+            g2.drawString(placeHolderText, (width / 2) - (fm.stringWidth(placeHolderText) / 2) - 1, (height / 2) + (fontSize / 2) - 1);
+            g2.drawString(placeHolderText, (width / 2) - (fm.stringWidth(placeHolderText) / 2) - 1, (height / 2) + (fontSize / 2) + 1);
+            g2.drawString(placeHolderText, (width / 2) - (fm.stringWidth(placeHolderText) / 2) + 1, (height / 2) + (fontSize / 2) - 1);
+            g2.drawString(placeHolderText, (width / 2) - (fm.stringWidth(placeHolderText) / 2) + 1, (height / 2) + (fontSize / 2) + 1);
+            //Red text
+            g2.setColor(Color.RED);
+            g2.drawString(placeHolderText, (width / 2) - (fm.stringWidth(placeHolderText) / 2), (height / 2) + (fontSize / 2));
+
+            placeHolderImage = image;
+        }
+        return placeHolderImage;
     }
 
     /**

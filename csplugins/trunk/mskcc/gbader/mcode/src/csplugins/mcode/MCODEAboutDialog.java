@@ -67,11 +67,14 @@ public class MCODEAboutDialog extends JDialog {
             logoCode = "<center><img src='"+logoURL+"'></center>";
         }
 
-        editorPane.setText("<html><body>"+logoCode+"<P align=center><b>MCODE (Molecular Complex Detection) v1.2 (Jan 2007)</b><BR>" +
+        editorPane.setText(
+                "<html><body>"+logoCode+"<P align=center><b>MCODE (Molecular Complex Detection) v1.2 (Jan 2007)</b><BR>" +
                 "A Cytoscape PlugIn<BR><BR>" +
-                "Written by Gary Bader (now in the Bader Lab at the University of<BR>" +
-                "Toronto, formerly of Sander group at MSKCC)<BR>" +
-                "and Vuk Pavlovic (in the Bader Lab)<BR><BR>" +
+
+                "Version 1.2 by Vuk Pavlovic (<a href='http://www.baderlab.org/'>Bader Lab</a>, University of Toronto)<BR>" +
+                "Version 1.1 and 1.0 by Gary Bader (while in the <a href='http://cbio.mskcc.org/'>Sander Lab</a>,<BR>" +
+                "Memorial Sloan-Kettering Cancer Center)<BR><BR>" +
+
                 "If you use this plugin in your research, please cite:<BR>" +
                 "Bader GD, Hogue CW<BR>" +
                 "<a href='http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12525261&dopt=Abstract'>An automated method for finding molecular complexes<BR>" +

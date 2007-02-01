@@ -8,8 +8,10 @@ import java.util.*;
 
 /**
  * An implementation of Kamada and Kawai's spring embedded layout algorithm.
- * Note: this was copied from giny.util because it is being phased out.  Eventually
- * the layout API will be available to use (TODO: remove when layout API is available)
+ * Note 1: this was copied from giny.util because it is being phased out.  Eventually
+ * the layout API will be available to use (TODO: remove layouter when layout API is available)
+ * Note 2: this has been modified so that the doLayout method is interruptable and
+ * reports progress to the MCODELoader
  *  */
 public class SpringEmbeddedLayouter {
 
@@ -176,9 +178,11 @@ public class SpringEmbeddedLayouter {
                     (furthest_node_partials.euclideanDistance >=
                     euclidean_distance_threshold));
                  iterations_i++
-                    ) {
+                    ) {               
                 if (interrupted) {
                     System.err.println("Interrupted: Layouter");
+                    //Before we shortcircuit the method, we reset the interruption so that the method can run without
+                    //problems for the next cluster
                     resetDoLayout();
                     return false;
                 }
@@ -194,6 +198,8 @@ public class SpringEmbeddedLayouter {
             } // End for each iteration, attempt to minimize the total potential
               // energy by moving the node that is furthest from where it should be.
         } // End for each layout pass
+        //Just in case an interruption occured right before we exit the method, we reset it, such an interruption
+        //will be dealt with in the MCODEUtil class
         resetDoLayout();
         return true;
     } // End for doLayout()

@@ -1,6 +1,7 @@
 package csplugins.mcode;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
@@ -41,19 +42,22 @@ import java.awt.image.BufferedImage;
  * * Date: Dec 17, 2006
  * * Time: 12:33:12 PM
  * * Description: Generates a loading picture with a progress bar for the cluster browser table
- * * TODO: Make the loader more general so that it can be used in different situations as well
+ * * TODO: Make the loader more general so that it can be used in different situations as well (for example take in an object and painting bounds not table and selected row)
  */
 
 public class MCODELoader extends ImageIcon implements Runnable {
     JTable table; //cluster browser table reference
-    Rectangle bounds; //bounds of the cell containing loading cluster
     int selectedRow; //row of cluster
     ImageIcon graphImage; //picture of the graph as is before loading
-    BufferedImage loader; //picture of loader
-    Graphics2D g2; //graphics context of loader
-    Color bg; //background of cluster browser table cell
+    BufferedImage onScreenLoader; //picture of loader
+    BufferedImage offScreenLoader;
+    Graphics2D onScreenG2; //graphics context of loader
+    Graphics2D offScreenG2;
+    Color bgColor; //background of selected cluster browser table cell
+    Color fgColor; //color of foreground in the selected cluster browser table cell
     double fadeInAlpha; //global variable that allows the loader to fade in when it's first displayed
     int degreesForDisk; //global variable keeping track of the loading disk rotation
+    int fontSize;
 
     int progress; //progress bar progress value
     String process; //current process being computed
@@ -71,14 +75,24 @@ public class MCODELoader extends ImageIcon implements Runnable {
      */
     MCODELoader (JTable table, int width, int height) {
         this.table = table;
+        //First we get the tables colors and set the font
+        bgColor = table.getSelectionBackground();
+        fgColor = table.getSelectionForeground();
+        fontSize = 8;
 
-        loader = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        g2 = (Graphics2D) loader.getGraphics();
-        g2.setFont(new Font("Arial", Font.PLAIN, 8));
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        bg = table.getSelectionBackground();
+        //We create the on screen image which will always contain a completed picture for the table to paint whenever it can
+        onScreenLoader = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        onScreenG2 = (Graphics2D) onScreenLoader.getGraphics();
 
-        this.setImage(loader);
+        //We also create the off screen image which we will use to compute the image and eventually transfer the completed image to the onscreen image
+        offScreenLoader = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        offScreenG2 = (Graphics2D) offScreenLoader.getGraphics();
+
+        offScreenG2.setFont(new Font("Arial", Font.PLAIN, fontSize));
+        offScreenG2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        //the on screen image is the one that this ImageIcon will display        
+        this.setImage(onScreenLoader);
 
         loading = false;
 
@@ -96,8 +110,6 @@ public class MCODELoader extends ImageIcon implements Runnable {
     public void setLoader(int selectedRow, JTable table) {
         this.selectedRow = selectedRow;
         graphImage = (ImageIcon) table.getValueAt(selectedRow, 0);
-        //In order to make the loader efficient, only the one cell is updated
-        bounds = table.getCellRect(selectedRow, 0, false);
         fadeInAlpha = 0.0;
         degreesForDisk = 0;
         progress = 0;
@@ -129,7 +141,12 @@ public class MCODELoader extends ImageIcon implements Runnable {
 
                         //Since the table consolidates paint updates, the animation would not show up unless
                         //we implicitly force it to repaint
-                        if (loading) table.paintImmediately(bounds);
+                        //This paintImmediately function causes problems in windows (paints on every component sometimes)
+                        //Rectangle bounds = table.getCellRect(selectedRow, 0, false);
+                        //if (loading) table.paintImmediately(bounds);
+                        //This fireTableCellUpdated function seems to consolidate some painting too so it is not very responsive in windows
+                        if (loading) ((AbstractTableModel) table.getModel()).fireTableCellUpdated(selectedRow, 0);
+                        //Both work on the mac just fine
                     }
                 }
                 //This sleep time generates a ~30 fps animation
@@ -151,12 +168,16 @@ public class MCODELoader extends ImageIcon implements Runnable {
      * responsiveness as well as a progress bar and process status.
      */
     public void drawLoader() {
+        //We want to compute this image off screen so that partially completed images are never displayed
+        Graphics2D g2 = offScreenG2;
+        BufferedImage loader = offScreenLoader;
+
         //Get font info for centering
         Font f = g2.getFont();
         FontMetrics fm = g2.getFontMetrics(f);
 
         //Clear the image
-        g2.setColor(bg);
+        g2.setColor(bgColor);
         g2.fillRect(0, 0, loader.getWidth(), loader.getHeight());
 
         //draw graph as is, centered in the table cell
@@ -171,7 +192,7 @@ public class MCODELoader extends ImageIcon implements Runnable {
         } else {
             fadeInAlpha = 1.0;
         }
-        g2.setColor(bg);
+        g2.setColor(bgColor);
         g2.setColor(new Color(
                 g2.getColor().getRed(),
                 g2.getColor().getGreen(),
@@ -263,10 +284,10 @@ public class MCODELoader extends ImageIcon implements Runnable {
                 g2.getColor().getBlue(),
                 (int) (255.0 * fadeInAlpha)
         ));
-        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) - 1, (loader.getHeight() / 2) + (8 / 2) - 1);
-        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) - 1, (loader.getHeight() / 2) + (8 / 2) + 1);
-        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) + 1, (loader.getHeight() / 2) + (8 / 2) - 1);
-        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) + 1, (loader.getHeight() / 2) + (8 / 2) + 1);
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) - 1, (loader.getHeight() / 2) + (fontSize / 2) - 1);
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) - 1, (loader.getHeight() / 2) + (fontSize / 2) + 1);
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) + 1, (loader.getHeight() / 2) + (fontSize / 2) - 1);
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2) + 1, (loader.getHeight() / 2) + (fontSize / 2) + 1);
         //Red text
         g2.setColor(Color.RED);
         g2.setColor(new Color(
@@ -275,11 +296,11 @@ public class MCODELoader extends ImageIcon implements Runnable {
                 g2.getColor().getBlue(),
                 (int) (255.0 * fadeInAlpha)
         ));
-        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2), (loader.getHeight() / 2) + (8 / 2));
+        g2.drawString(loadingText, (loader.getWidth() / 2) - (fm.stringWidth(loadingText) / 2), (loader.getHeight() / 2) + (fontSize / 2));
 
         //Draw process text and progress bar and text
         //Process
-        g2.setColor(Color.BLACK);
+        g2.setColor(fgColor);
         g2.drawString(process, 10, loader.getHeight() - 2);
 
         //Progress Bar Fill
@@ -296,17 +317,26 @@ public class MCODELoader extends ImageIcon implements Runnable {
         g2.fillRect(10, loader.getHeight() - 20, (int) ((((double) progress) / 100) * (loader.getWidth() - 20)), 10);
 
         //Progress Bar Outline
-        g2.setColor(new Color(0, 0, 0, 100));
+        g2.setColor(fgColor);
+        g2.setColor(new Color(
+                g2.getColor().getRed(),
+                g2.getColor().getGreen(),
+                g2.getColor().getBlue(),
+                100
+        ));
         g2.drawRect(10, loader.getHeight() - 20, loader.getWidth() - 20, 10);
 
         //Progress Text
         String progressText = progress + "%";
         //We add a black shadow to make it easier to read on top of any background
-        g2.setColor(Color.BLACK);
+        g2.setColor(bgColor);
         g2.drawString(progressText, (loader.getWidth() / 2) - (fm.stringWidth(progressText) / 2) + 1, loader.getHeight() - 11);
 
-        g2.setColor(Color.WHITE);
+        g2.setColor(fgColor);
         g2.drawString(progressText, (loader.getWidth() / 2) - (fm.stringWidth(progressText) / 2), loader.getHeight() - 12);
+
+        //Lastly we paint the computed image onto the onscreen picture for display
+        onScreenG2.drawImage(offScreenLoader, 0, 0, null);
     }
 
     /**

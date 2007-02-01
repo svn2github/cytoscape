@@ -7,6 +7,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.visual.VisualMappingManager;
 import giny.model.Node;
 
 import javax.swing.*;
@@ -86,6 +87,8 @@ public class MCODEScoreAndFindAction implements ActionListener {
      * @param event Click of the analyzeButton on the MCODEMainPanel.
      */
     public void actionPerformed(ActionEvent event) {
+        String resultsTitlePartA = "Result ";
+
         String callerID = "MCODEScoreAndFindAction.actionPerformed";
         String interruptedMessage = "";
         //get the network object, this contains the graph
@@ -134,8 +137,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
         //Here we ensure that only relavant parameters are looked at.  For example, fluff density
         //parameter is irrelevant if fluff is not used in the current parameters.  Also, none of
         //the clustering parameters are relevant if the optimization is used
-        if (currentParamsCopy.getKCore() != savedParamsCopy.getKCore() ||
-                currentParamsCopy.isIncludeLoops() != savedParamsCopy.isIncludeLoops() ||
+        if (currentParamsCopy.isIncludeLoops() != savedParamsCopy.isIncludeLoops() ||
                 currentParamsCopy.getDegreeCutoff() != savedParamsCopy.getDegreeCutoff() ||
                 analyze == FIRST_TIME) {
             analyze = RESCORE;
@@ -145,7 +147,8 @@ public class MCODEScoreAndFindAction implements ActionListener {
                         currentParamsCopy.getSelectedNodes() != savedParamsCopy.getSelectedNodes()) ||
                 currentParamsCopy.isOptimize() != savedParamsCopy.isOptimize() ||
                 (!currentParamsCopy.isOptimize() &&
-                        (currentParamsCopy.getMaxDepthFromStart() != savedParamsCopy.getMaxDepthFromStart() ||
+                        (currentParamsCopy.getKCore() != savedParamsCopy.getKCore() ||
+                                currentParamsCopy.getMaxDepthFromStart() != savedParamsCopy.getMaxDepthFromStart() ||
                                 currentParamsCopy.isHaircut() != savedParamsCopy.isHaircut() ||
                                 currentParamsCopy.getNodeScoreCutoff() != savedParamsCopy.getNodeScoreCutoff() ||
                                 currentParamsCopy.isFluff() != savedParamsCopy.isFluff() ||
@@ -158,7 +161,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
             interruptedMessage = "The parameters you specified\nhave not changed.";
         }
         //finally we save the current parameters
-        MCODECurrentParameters.getInstance().setParams(currentParamsCopy, "Results " + (resultsCounter + 1), network.getIdentifier());
+        MCODECurrentParameters.getInstance().setParams(currentParamsCopy, resultsTitlePartA + (resultsCounter + 1), network.getIdentifier());
 
         //incase the user selected selection scope we must make sure that they selected at least 1 node
         if (currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION) && currentParamsCopy.getSelectedNodes().length < 1) {
@@ -171,12 +174,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(), interruptedMessage, "Analysis Interrupted", JOptionPane.WARNING_MESSAGE);
         } else {
             //run MCODE
-            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(
-                    network,
-                    analyze,
-                    "Results " + (resultsCounter + 1),
-                    alg
-            );
+            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network, analyze, resultsTitlePartA + (resultsCounter + 1), alg);
 
             //Configure JTask
             JTaskConfig config = new JTaskConfig();
@@ -199,7 +197,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
                             MCODEScoreAndFindTask.getAlg(),
                             network,
                             MCODEScoreAndFindTask.getImageList(),
-                            "Results " + resultsCounter
+                            resultsTitlePartA + resultsCounter
                     );
                 } else {
                     resultFound = false;
@@ -218,7 +216,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
         //if there is no change, then we simply focus the last produced results (below), otherwise we
         //load the new results panel
         if (resultFound) {
-            String resultTitle = "Results " + resultsCounter;
+            String resultTitle = resultsTitlePartA + resultsCounter;
             resultPanel.setResultsTitle(resultTitle);
 
             URL iconURL = MCODEPlugin.class.getResource("resources/logo2.png");
@@ -230,12 +228,17 @@ public class MCODEScoreAndFindAction implements ActionListener {
                 cytoPanel.add(resultTitle, resultPanel);
             }
         }
-        //this makes sure that the east cytopanel is not loaded if there are no results in it
+        //this if statemet ensures that the east cytopanel is not loaded if there are no results in it
         if (resultFound || (analyze == INTERRUPTION && cytoPanel.indexOfComponent(resultPanel) >= 0)) {
             //focus the result panel
             int index = cytoPanel.indexOfComponent(resultPanel);
             cytoPanel.setSelectedIndex(index);
             cytoPanel.setState(CytoPanelState.DOCK);
+
+            //We also make sure that the MCODE visual style is applied whenever new results are produced
+            VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+            vmm.setVisualStyle(MCODEVS);
+            vmm.applyAppearances();
         }
     }
 }
