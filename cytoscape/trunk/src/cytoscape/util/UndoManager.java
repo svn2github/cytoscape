@@ -44,9 +44,10 @@ import javax.swing.undo.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.undo.*;
 
-public class UndoManager   {
+public class UndoManager implements UndoableEditListener  {
 
   private  javax.swing.undo.UndoManager undo;
   private  UndoAction undoAction;
@@ -76,7 +77,10 @@ public class UndoManager   {
 //    System.out.println("Undo Menu item isEnabled = " + undoItem.isEnabled());
     System.out.println( "UndoManager initialized" );
   }
-  
+ 
+  public void undoableEditHappened( UndoableEditEvent editEvent ) {
+  	addEdit( editEvent.getEdit() );
+  }
   
 
   public  void addEdit ( UndoableEdit edit ) {
@@ -89,7 +93,6 @@ public class UndoManager   {
   
   /**
    * called when a network view switches
-   *
    */
   public void discardAllEdits ()
   {
