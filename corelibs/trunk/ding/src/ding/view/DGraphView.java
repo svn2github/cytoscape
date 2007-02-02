@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.event.UndoableEditListener;
+
 
 /**
  * DOCUMENT ME!
@@ -125,6 +127,10 @@ public class DGraphView
         m_selectedNodes = new IntBTree();
         m_selectedEdges = new IntBTree();
         m_selectedAnchors = new IntBTree();
+    }
+
+    public void addUndoableEditListener(UndoableEditListener uel) {
+    	m_networkCanvas.addUndoableEditListener(uel);
     }
 
     /**
