@@ -75,6 +75,7 @@ import structureViz.actions.Align;
 public class StructureViz extends CytoscapePlugin 
   implements NodeContextMenuListener, PropertyChangeListener {
 
+	public static final double VERSION = 0.9;
 	public static final int NONE = 0;
 	public static final int OPEN = 1;
 	public static final int CLOSE = 2;
@@ -105,6 +106,7 @@ public class StructureViz extends CytoscapePlugin
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
+		System.out.println("structureViz "+VERSION+" initialized");
 
   }
 
@@ -456,7 +458,8 @@ public class StructureViz extends CytoscapePlugin
     } catch (java.io.IOException e) {
       // Put up error panel
       JOptionPane.showMessageDialog(Cytoscape.getCurrentNetworkView().getComponent(),
-       	 			"Unable to launch Chimera", "Unable to launch Chimera",
+       	 			"Unable to launch Chimera: "+e.toString(), 
+			        "Unable to launch Chimera",
        	   			JOptionPane.ERROR_MESSAGE);
     }
 		return chimera;

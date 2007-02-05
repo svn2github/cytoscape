@@ -393,6 +393,7 @@ public class ModelNavigatorDialog
 		// View menu
 		JMenu viewMenu = new JMenu("View");
 		addMenuItem(viewMenu, "Refresh", REFRESH, null);
+		addMenuItem(viewMenu, "Refocus", COMMAND, "focus");
 
 		JMenu viewResidues = new JMenu("Residues as..");
 		addMenuItem(viewResidues, "single letter", 
