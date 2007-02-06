@@ -43,7 +43,6 @@ import nct.networkblast.search.*;
 import nct.networkblast.graph.*;
 import nct.networkblast.graph.compatibility.*;
 import nct.networkblast.score.*;
-import nct.networkblast.filter.*;
 import nct.graph.*;
 import nct.graph.basic.*;
 import nct.graph.util.*;

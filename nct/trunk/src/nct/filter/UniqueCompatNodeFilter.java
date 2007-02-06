@@ -23,7 +23,7 @@
 
 
 
-package nct.networkblast.filter;
+package nct.filter;
 
 import java.util.*;
 
