@@ -23,7 +23,7 @@
 
 
 
-package nct.service.homology.blast;
+package nct.service.homology;
 
 import junit.framework.*;
 

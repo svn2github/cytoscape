@@ -37,7 +37,7 @@ import nct.networkblast.graph.compatibility.*;
 import nct.networkblast.score.*;
 import nct.networkblast.search.*;
 import nct.networkblast.NetworkBlast;
-import nct.service.homology.sif.*;
+import nct.service.homology.*;
 
 public class ZIPSIFWriterTest extends TestCase {
 	protected void setUp() {

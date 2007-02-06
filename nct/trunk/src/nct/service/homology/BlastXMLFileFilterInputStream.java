@@ -23,7 +23,7 @@
 
 
 
-package nct.service.homology.blast;
+package nct.service.homology;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

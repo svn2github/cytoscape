@@ -1,7 +1,7 @@
 
 //============================================================================
 // 
-//  file: LocalBlast.java
+//  file: BiojavaLocalBlast.java
 // 
 //  Copyright (c) 2006, University of California San Diego 
 // 
@@ -23,18 +23,20 @@
 
 
 
-package nct.service.homology.blast;
+package nct.service.homology;
 
 
 import java.lang.*;
 import java.util.*;
 import java.io.*;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.helpers.DefaultHandler;
+import org.biojava.bio.program.sax.*;
+import org.biojava.bio.program.ssbind.*;
+import org.biojava.bio.search.*;
+import org.biojava.bio.program.sax.blastxml.BlastXMLParserFacade;
+import org.biojava.bio.seq.db.*;
+import org.xml.sax.*;
+import org.biojava.bio.*;
 
 import nct.graph.SequenceGraph;
 import nct.service.homology.HomologyModel;
@@ -42,7 +44,7 @@ import nct.service.synonyms.SynonymMapper;
 
 /**
  * A Blast implementation of the HomologyModel interface that runs Blast locally.
- * LocalBlast needs to know how to actually run Blast locally. This is accomplished 
+ * BiojavaLocalBlast needs to know how to actually run Blast locally. This is accomplished 
  * by specifying these details in a properties file. The specific properties that 
  * this command looks for are:
 <ul>
@@ -70,7 +72,7 @@ blast.formatdb.command=formatdb -i TARGET_DB
 blast.formatdb.location=/cellar/users/mes/software/blast-2.2.12/bin
 </pre>
  */
-public class LocalBlast implements HomologyModel { 
+public class BiojavaLocalBlast implements HomologyModel { 
 		
 	/**
 	 * Sentinel used to specify the target database name in the property string.
@@ -120,20 +122,16 @@ public class LocalBlast implements HomologyModel {
 	 */
 	protected String eValueThreshold;
 
-	/**
-	 * Whether or not to normalize e-values based on database size.  The normalization
-	 * function is evalue*matchLength/dbLength.
-	 */
-	protected boolean normalize;
-
 
 	/**
 	 * Constructor. Synonyms are set to null, meaning you get whatever id is present
 	 * in the blast results.
 	 * @param props The Properties that specify how and where to run Blast.
 	 * @param tmpOutFile A temporary output file that holds the blast output. 
+	 * @param eValue The expectation value threshold for the blastall command 
+	 * (the -e argument).
 	 */
-	public LocalBlast(Properties props, String tmpOutFile, double eValue ) {
+	public BiojavaLocalBlast(Properties props, String tmpOutFile, double eValue ) {
 		this (props,null,tmpOutFile,eValue);
 	}
 
@@ -144,10 +142,11 @@ public class LocalBlast implements HomologyModel {
 	 * blast results to meaningful names.  If it is set to null, you'll simply
 	 * get the id found in the blast results.
 	 * @param tmpOutFile A temporary output file that holds the blast output. 
+	 * @param eValue The expectation value threshold for the blastall command 
+	 * (the -e argument).
 	 */
-	public LocalBlast(Properties props, SynonymMapper synonyms, String tmpOutFile, double eValue ) { 
+	public BiojavaLocalBlast(Properties props, SynonymMapper synonyms, String tmpOutFile, double eValue ) { 
 		this.synonyms = synonyms;
-		this.normalize = false; // we should never normalize.  It is invalid.
 		try { 
 			this.props = props;
 			blastOutputFile = tmpOutFile; 
@@ -174,8 +173,8 @@ public class LocalBlast implements HomologyModel {
 
 		String db1 = sg1.getDBLocation() + "/" + sg1.getDBName();
 		String db2 = sg2.getDBLocation() + "/" + sg2.getDBName();
-		System.out.println("DB1 " + db1);
-		System.out.println("DB2 " + db2);
+		//System.out.println("DB1 " + db1);
+		//System.out.println("DB2 " + db2);
 
 		try {
 				
@@ -191,14 +190,24 @@ public class LocalBlast implements HomologyModel {
 		else
 			runBlast(db2, db1);
 
-	
-		XMLReader xr = XMLReaderFactory.createXMLReader();
+		InputStream is = new BlastXMLFileFilterInputStream( new FileInputStream(blastOutputFile), true ); 
+				
+		// Straight outta biojava...  (the BlastEcho code)
+
+		//make a BlastLikeSAXParser
+		BlastXMLParserFacade parser = new BlastXMLParserFacade();
+
+		//make the SAX event adapter that will pass events to a Handler.
+		SeqSimilarityAdapter adapter = new SeqSimilarityAdapter();
+
+		// set up the content handler
 		HitHandler hh = new HitHandler();
-		xr.setContentHandler(hh);
-		xr.setErrorHandler(hh);
+		adapter.setSearchContentHandler(hh);
 
-		xr.parse(new InputSource( new BlastXMLFileFilterInputStream( new FileInputStream(blastOutputFile), false ) ) ); 
+		//set the parsers SAX event adapter
+		parser.setContentHandler(adapter);
 
+		parser.parse(new InputSource(is));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -249,100 +258,69 @@ public class LocalBlast implements HomologyModel {
 	/**
 	 * A custom ContentHandler for extracting the expectation value and sequence ids
 	 */
-	private class HitHandler extends DefaultHandler {
+	private class HitHandler extends SearchContentAdapter {
 
 		String queryId;
 		String subjectId;
-		double evalue;
+		Double evalue;
 
-		boolean getValue;
-		StringBuffer value;
+		public void startSearch() {
+			//System.out.println("startSearch");
+			queryId = "";
+			subjectId = "";
+			evalue = null;
 
-
-		// Event handlers.
-
-		/**
-		 * Basic SAX event handler.
-		 */
-		public void startDocument () { 
-			value = new StringBuffer();
-			getValue = false;
 		}
-
-		/**
-		 * Basic SAX event handler.
-		 */
-		public void endDocument () { }
-
-		/**
-		 * Basic SAX event handler.
-		 */
-		public void startElement (String uri, String name,
-					      String qName, Attributes atts) {
-			if ( qName.equals("BlastOutput_query-def") )
-				getValue = true;	
-			else if ( qName.equals("Hit_def") )
-				getValue = true;	
-			else if ( qName.equals("Hsp_evalue") )
-				getValue = true;	
+		public void startHit() {
+			//System.out.println("startHit()");
+			subjectId = "";
+			evalue = null;
 		}
-
-		/**
-		 * Basic SAX event handler.
-		 */
-		public void endElement (String uri, String name, String qName) {
-
-			if ( qName.equals("BlastOutput_query-def") ) {
-				getValue = false;	
-				queryId = null;
-				if ( synonyms != null )
-					queryId = synonyms.getSynonym(value.toString(),"name");
-				if ( queryId == null )
-					queryId = value.toString();
-				if ( value.length() > 0 )
-					value.delete(0,value.length());
-			} else if ( qName.equals("Hit_def") ) {
-				getValue = false;	
-				subjectId = null;
-				if ( synonyms != null ) {
-					String[] syns = value.toString().split("\\|");	
-					subjectId = synonyms.getSynonym(syns[0],"name");
-				}
-			 	if ( subjectId == null )	
-					subjectId = value.toString();
-				if ( value.length() > 0 )
-					value.delete(0,value.length());
-			} else if ( qName.equals("Hsp_evalue") ) {
-				getValue = false;	
-				evalue = Double.parseDouble(value.toString());
-				add();
-				if ( value.length() > 0 )
-					value.delete(0,value.length());
-			}
+		public void startSubHit() {
+			//System.out.println("startSubHit");
+			evalue = null;
 		}
+		public void endSubHit() {
+			//System.out.println("endSubHit");
+			if ( evalue == null )
+				return;
 
-		/**
-		 * Basic SAX event handler.
-		 */
-		public void characters (char[] ch, int start, int length) {
-			if ( getValue ) { 
-				value.append(ch,start,length);
-			}
-		}
-
-		private void add() {
 			if ( !evalues.containsKey(queryId) ) {
 				Map<String,Double> map = new HashMap<String,Double>();
 				evalues.put(queryId,map);
 			}
-			Map<String,Double> evals = evalues.get(queryId);
+			Map<String,Double> map = evalues.get(queryId);
 
-			// because there can be multiple sub-hits for a sequence, just
+			// because there can be multiple subhits for a sequence, just
 			// pick the best one.
-			Double currentEvalue = evals.get( subjectId );
-			if ( currentEvalue == null || currentEvalue.doubleValue() > evalue ) {
-				//System.out.println("put " + queryId + " -> " + subjectId + " = " + evalue);
-				evals.put(subjectId,evalue);
+			Double currentEvalue = map.get( subjectId );
+			if ( currentEvalue != null )
+				evalue = Math.max( evalue, currentEvalue.doubleValue() );
+			map.put(subjectId,evalue);
+		}
+		public void addHitProperty(Object key, Object val) {
+			//System.out.println("\tHitProp:\t"+key+": "+val);
+			if ( ((String)key).equals("subjectDescription") ) {
+				if ( synonyms != null ) 
+					subjectId = synonyms.getSynonym((String)val,"name");
+				else
+					subjectId = (String)val;
+			}
+		}
+		public void addSearchProperty(Object key, Object val) {
+			//System.out.println("\tSearchProp:\t"+key+": "+val);
+			if ( ((String)key).equals("queryDescription") ) {
+				if ( synonyms != null ) 
+					queryId = synonyms.getSynonym((String)val,"name");
+				else
+					queryId = (String)val;
+			}
+		}
+		public void addSubHitProperty(Object key, Object val) {
+			//System.out.println("\tSubHitProp:\t"+key+": "+val);
+			if ( ((String)key).equals("expectValue") ) {
+				//System.out.println("\tSubHitProp:\t"+key+": "+val);
+				evalue = Double.parseDouble((String)val);
 			}
 		}
 	}

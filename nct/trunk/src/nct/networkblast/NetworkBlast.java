@@ -50,7 +50,7 @@ import nct.graph.util.*;
 import nct.filter.*;
 import nct.output.*;
 import nct.service.homology.HomologyModel;
-import nct.service.homology.sif.SIFHomologyReader;
+import nct.service.homology.SIFHomologyReader;
 
 /**
  * The main program (NetworkBlast.java) will create all the objects needed to

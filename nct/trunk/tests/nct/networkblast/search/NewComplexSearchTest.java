@@ -36,7 +36,7 @@ import nct.networkblast.score.*;
 import nct.networkblast.NetworkBlast;
 import nct.graph.*;
 import nct.graph.basic.*;
-import nct.service.homology.sif.*;
+import nct.service.homology.*;
 
 
 public class NewComplexSearchTest extends TestCase {

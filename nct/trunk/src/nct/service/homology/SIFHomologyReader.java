@@ -23,7 +23,7 @@
 
 
 
-package nct.service.homology.sif;
+package nct.service.homology;
 
 import java.lang.*;
 import java.util.*;
