@@ -1,0 +1,50 @@
+/*
+    Database schema for CyPluginDB
+
+	Version 0.1
+	Author: Peng-Liang Wang, UCSD
+	Date:   2/5/2007
+*/
+
+
+-- create database cyplugindb;
+
+use cyplugindb; 
+
+drop table if exists pluginlist;
+drop table if exists plugins;
+drop table if exists authors;
+drop table if exists categories;
+
+create table pluginlist (
+	id				int not null primary key auto_increment,
+    PluginName      varchar(20) not null,
+	decription		text,
+	license_info	text,
+	project_url		varchar(100),
+	category		varchar(40),
+    sysdat          Date
+);
+
+create table authors (
+	id				int not null primary key auto_increment,
+    lastName      	varchar(20) not null,
+    firstName      	varchar(20) not null,
+    email      		varchar(30) not null	
+);
+
+create table categories (
+	id				int not null primary key auto_increment,
+    Name      		varchar(20) not null
+);
+
+create table plugins (
+	id				int not null primary key auto_increment,
+    PluginName      varchar(20) not null,
+	version			varchar(20),
+	OS				varchar(10),
+	release_date	Date,
+	Jar				BLOB,
+	CyVersion2p5	boolean,
+    sysdat          Date
+);
