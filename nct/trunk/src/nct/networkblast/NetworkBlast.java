@@ -39,10 +39,11 @@ import java.io.*;
 import java.lang.*;
 import java.text.DecimalFormat;
 
-import nct.networkblast.search.*;
+import nct.networkblast.*;
 import nct.networkblast.graph.*;
 import nct.networkblast.graph.compatibility.*;
 import nct.score.*;
+import nct.search.*;
 import nct.graph.*;
 import nct.graph.basic.*;
 import nct.graph.util.*;
