@@ -321,7 +321,7 @@ public class StructureViz extends CytoscapePlugin
 
 			// Bring up the dialog
 			alDialog = 
-								new AlignStructuresDialog(Cytoscape.getDesktop(), chimera, structures);
+								new AlignStructuresDialog(mnDialog, chimera, structures);
 			alDialog.pack();
 			alDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			alDialog.setVisible(true);

@@ -107,7 +107,8 @@ public class ModelNavigatorDialog
 	 * this dialog
 	 */
 	public ModelNavigatorDialog (Frame parent, Chimera object) {
-		super(parent, false);
+		// super(parent, false);
+		super();
 		chimeraObject = object;
 		initComponents();
 		status = false;
@@ -531,7 +532,7 @@ public class ModelNavigatorDialog
 				structureList.add(model.getStructure());
 			}	
 			// Bring up the dialog
-			alDialog = new AlignStructuresDialog(Cytoscape.getDesktop(), 
+			alDialog = new AlignStructuresDialog(chimeraObject.getDialog(), 
 																						chimeraObject, structureList);
 			alDialog.pack();
 			alDialog.setVisible(true);
