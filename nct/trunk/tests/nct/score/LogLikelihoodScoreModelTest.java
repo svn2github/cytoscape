@@ -23,7 +23,7 @@
 
 
 
-package nct.networkblast.score;
+package nct.score;
 
 import junit.framework.*;
 import java.io.*;

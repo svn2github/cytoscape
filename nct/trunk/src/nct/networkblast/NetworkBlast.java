@@ -42,7 +42,7 @@ import java.text.DecimalFormat;
 import nct.networkblast.search.*;
 import nct.networkblast.graph.*;
 import nct.networkblast.graph.compatibility.*;
-import nct.networkblast.score.*;
+import nct.score.*;
 import nct.graph.*;
 import nct.graph.basic.*;
 import nct.graph.util.*;

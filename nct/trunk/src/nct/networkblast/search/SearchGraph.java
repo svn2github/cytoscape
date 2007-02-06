@@ -26,7 +26,7 @@
 package nct.networkblast.search;
 
 import java.util.*;
-import nct.networkblast.score.*;
+import nct.score.*;
 import nct.graph.Graph;
 
 /**

@@ -4,7 +4,7 @@ import nct.graph.*;
 import nct.graph.basic.*;
 import nct.networkblast.search.*;
 import java.util.*;
-import nct.networkblast.score.*;
+import nct.score.*;
 
 public class TestSearch {
     public static void main(String [] args) {

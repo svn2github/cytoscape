@@ -27,7 +27,7 @@ package nct.networkblast.search;
 
 import java.util.*;
 import java.util.logging.Logger;
-import nct.networkblast.score.ScoreModel;
+import nct.score.ScoreModel;
 import nct.graph.basic.BasicGraph;
 import nct.graph.Graph;
 import nct.graph.Edge;
