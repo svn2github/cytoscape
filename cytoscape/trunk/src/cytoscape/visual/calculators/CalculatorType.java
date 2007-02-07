@@ -9,8 +9,8 @@ package cytoscape.visual.calculators;
  * @author kono
  * 
  */
-public enum CalculatorTypes {
-	NODE_COLOR("Node Color", "nodeColorCalculator", "node.fillColor", "defaultNodeFillColor"), 
+public enum CalculatorType {
+	NODE_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor", "defaultNodeFillColor"), 
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor", "defaultNodeBorderColor"), 
 	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType", "defaultNodeLineType"), 
 	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape"), 
@@ -56,7 +56,7 @@ public enum CalculatorTypes {
 	/*
 	 * private constructor to put name into this enum.
 	 */
-	private CalculatorTypes(final String calcName, final String propertyLabel,
+	private CalculatorType(final String calcName, final String propertyLabel,
 			final String bypassAttrName, final String defaultPropertyLabel) {
 		this.calcName = calcName;
 		this.propertyLabel = propertyLabel;
@@ -116,7 +116,7 @@ public enum CalculatorTypes {
 		return (byte) ordinal();
 	}
 
-	public static CalculatorTypes getCalculatorTypes(byte type) {
+	public static CalculatorType getCalculatorTypes(byte type) {
 		/*
 		 * Type is always equal to ordinal.
 		 */
