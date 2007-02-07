@@ -31,7 +31,6 @@ import java.util.logging.Level;
 
 import nct.networkblast.NetworkBlast;
 import nct.graph.*;
-import nct.graph.basic.*;
 
 
 // A JUnit test class DegreePreservingRandomizer 

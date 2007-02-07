@@ -1,4 +1,4 @@
-package nct.graph.basic;
+package nct.graph;
 
 import nct.graph.WeightedNode;
 

@@ -45,7 +45,6 @@ import nct.networkblast.graph.compatibility.*;
 import nct.score.*;
 import nct.search.*;
 import nct.graph.*;
-import nct.graph.basic.*;
 import nct.graph.util.*;
 import nct.filter.*;
 import nct.output.*;

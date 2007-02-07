@@ -31,7 +31,6 @@ import java.lang.reflect.Array;
 import nct.score.*;
 import nct.networkblast.graph.*;
 import nct.graph.*;
-import nct.graph.basic.*;
 
 import nct.visualization.cytoscape.Monitorable;
 import nct.visualization.cytoscape.Monitor;

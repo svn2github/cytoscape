@@ -32,7 +32,7 @@ import java.util.logging.Level;
 import java.io.FileReader;
 
 import nct.graph.Graph;
-import nct.graph.basic.BasicGraph;
+import nct.graph.BasicGraph;
 import nct.parsers.SIFParser;
 
 

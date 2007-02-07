@@ -33,7 +33,6 @@ import java.io.*;
 import java.lang.*;
 
 import nct.graph.*;
-import nct.graph.basic.*;
 import nct.service.synonyms.*;
 import nct.service.interactions.*;
 import nct.xml.*;

@@ -23,7 +23,7 @@
 
 
 
-package nct.graph.basic;
+package nct.graph;
 
 import junit.framework.*;
 import java.util.*;

@@ -32,7 +32,6 @@ import java.util.logging.Level;
 
 import nct.score.*;
 import nct.networkblast.graph.compatibility.*;
-import nct.graph.basic.*;
 import nct.graph.*;
 import nct.service.homology.*;
 import nct.networkblast.NetworkBlast;

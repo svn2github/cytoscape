@@ -31,7 +31,6 @@ import java.util.*;
 import java.util.logging.Level;
 
 import nct.graph.*;
-import nct.graph.basic.*;
 import nct.networkblast.NetworkBlast;
 import nct.networkblast.graph.*;
 

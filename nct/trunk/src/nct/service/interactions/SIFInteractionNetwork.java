@@ -27,7 +27,7 @@ package nct.service.interactions;
 
 import java.util.*;
 import nct.graph.Graph;
-import nct.graph.basic.BasicGraph;
+import nct.graph.BasicGraph;
 import nct.parsers.SIFParser;
 
 /**

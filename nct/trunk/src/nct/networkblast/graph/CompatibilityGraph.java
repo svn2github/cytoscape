@@ -34,7 +34,7 @@ import nct.graph.Graph;
 import nct.graph.DistanceGraph;
 import nct.graph.KPartiteGraph;
 import nct.graph.Edge;
-import nct.graph.basic.BasicGraph;
+import nct.graph.BasicGraph;
 import nct.visualization.cytoscape.Monitor;
 
 /**

@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import java.io.*;
 
 import nct.graph.Graph;
-import nct.graph.basic.BasicKPartiteGraph;
+import nct.graph.BasicKPartiteGraph;
 import nct.graph.SequenceGraph;
 import nct.service.homology.HomologyModel;
 

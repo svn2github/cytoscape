@@ -1,7 +1,6 @@
 package nct.networkblast;
 
 import nct.graph.*;
-import nct.graph.basic.*;
 import nct.search.*;
 import java.util.*;
 import nct.score.*;

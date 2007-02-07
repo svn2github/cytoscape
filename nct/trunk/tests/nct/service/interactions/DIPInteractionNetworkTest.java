@@ -36,7 +36,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import nct.graph.*;
-import nct.graph.basic.*;
 
 // A JUnit test class for DIPInteractionNetworkTest.java
 public class DIPInteractionNetworkTest extends TestCase {

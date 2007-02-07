@@ -28,7 +28,7 @@ package nct.filter;
 import junit.framework.*;
 import java.util.*;
 import java.util.logging.Level;
-import nct.graph.basic.BasicGraph;
+import nct.graph.BasicGraph;
 import nct.graph.Graph;
 import nct.networkblast.NetworkBlast;
 import nct.filter.Filter;

@@ -28,7 +28,7 @@ package nct.search;
 import java.util.*;
 import java.util.logging.Logger;
 import nct.score.ScoreModel;
-import nct.graph.basic.BasicGraph;
+import nct.graph.BasicGraph;
 import nct.graph.Graph;
 import nct.graph.Edge;
 

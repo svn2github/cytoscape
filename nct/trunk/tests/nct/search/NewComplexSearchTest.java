@@ -35,7 +35,6 @@ import nct.networkblast.graph.compatibility.*;
 import nct.score.*;
 import nct.networkblast.NetworkBlast;
 import nct.graph.*;
-import nct.graph.basic.*;
 import nct.service.homology.*;
 
 

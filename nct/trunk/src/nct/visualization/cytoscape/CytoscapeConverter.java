@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nct.graph.Graph;
-import nct.graph.basic.BasicGraph;
+import nct.graph.BasicGraph;
 import nct.graph.Edge;
 import nct.visualization.cytoscape.Monitor;
 

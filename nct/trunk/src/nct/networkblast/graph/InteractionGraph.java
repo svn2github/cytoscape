@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.io.*;
 
-import nct.graph.basic.BasicDistanceGraph;
+import nct.graph.BasicDistanceGraph;
 import nct.graph.SequenceGraph;
 import nct.service.interactions.InteractionNetwork;
 import nct.service.interactions.SIFInteractionNetwork;

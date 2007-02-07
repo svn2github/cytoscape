@@ -31,7 +31,6 @@ import java.io.*;
 import java.util.logging.Level;
 
 import nct.graph.*;
-import nct.graph.basic.*;
 import nct.score.*;
 import nct.networkblast.graph.*;
 import nct.networkblast.graph.compatibility.*;
