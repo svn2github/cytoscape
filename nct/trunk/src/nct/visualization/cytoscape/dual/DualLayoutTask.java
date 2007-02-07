@@ -52,118 +52,130 @@ import cytoscape.data.CyAttributes;
 import cytoscape.view.GraphViewController;
 import cytoscape.data.readers.GMLTree;
 
+
 /**
  * The Thread that does the actual DualLayout calculations.
  */
 public class DualLayoutTask extends Thread{
-	private static String TITLE1 = "Split Graph";
-	private static String SPLIT_STRING = "\\|";
-	private double GAP = 200;
-	private double OFFSET = 500;
-	private CyNetwork sifNetwork;
-	HashMap<CyNode,Integer> node2Species;
-	NodePairSet homologyPairSet;
-	int k;
-	private String title;
+    private static String TITLE1 = "Split Graph";
+    private static String SPLIT_STRING = "\\|";
+    private double GAP = 100;
+    private CyNetwork sifNetwork;
+    HashMap<CyNode,Integer> node2Species;
+    NodePairSet homologyPairSet;
+    int k;
+    private String title;
+
+	private CyAttributes nodeAttrs;
+	private CyAttributes edgeAttrs;
 
 	/**
-	 * @param sifNetwork A subgraph of the compatability graph that is a conserved complex.
+	 *
 	 */
-	public DualLayoutTask(CyNetwork sifNetwork) {
-		this.sifNetwork = sifNetwork;
+	private String getCNodeName( CyNode node ) {
+		return nodeAttrs.getStringAttribute( node.getIdentifier(),"name" );
 	}
 
-	/**
-	 * Creates the layout of the network using the {@link SpringEmbeddedLayouter}.
-	 * @param view The graph view used for creating the layout.
-	 */
-	public void layoutNetwork(PGraphView view) {
+    /**
+     * @param sifNetwork A subgraph of the compatability 
+     * graph that is a conserved complex.
+     */
+    public DualLayoutTask(CyNetwork sifNetwork) {
+		this.sifNetwork = sifNetwork;
+
+		this.nodeAttrs = Cytoscape.getNodeAttributes();
+		this.edgeAttrs = Cytoscape.getEdgeAttributes();
+    }
+
+    /**
+     * Creates the layout of the network using the
+     * {@link SpringEmbeddedLayouter}.
+     * @param view The graph view used for creating the layout.
+     */
+    public void layoutNetwork(PGraphView view) {
 		((PGraphView)view).getCanvas().paintImmediately();
-		SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(view,node2Species,homologyPairSet);
+		SpringEmbeddedLayouter layouter =
+			new SpringEmbeddedLayouter(view,node2Species,homologyPairSet);
 		layouter.doLayout();
 		((PGraphView)view).getCanvas().paintImmediately();
 		
-		//this array holds the min x position for each species
+		// This array holds the min & max x positions for the species
 		double [] min_x = new double[k];		
-		//this array holds the max x position for each species
 		double [] max_x = new double[k];
-		{
-			Iterator nodeViewIt = view.getNodeViewsIterator();
-			while ( nodeViewIt.hasNext()) {
-				NodeView nodeView = (NodeView)nodeViewIt.next();
-				int species = node2Species.get(nodeView.getNode()).intValue();
-				min_x[species] = Math.min(min_x[species],nodeView.getXPosition());
-				max_x[species] = Math.max(max_x[species],nodeView.getXPosition());
-			} 
+		for( int i = 0; i < k; ++i ) {
+			min_x[i] = 1e70;
+			max_x[i] = 0.0;
 		}
-		//hold the offset for each species
+		Iterator nodeViewIt = view.getNodeViewsIterator();
+		while ( nodeViewIt.hasNext()) {
+			NodeView nodeView = (NodeView)nodeViewIt.next();
+			int species = node2Species.get(nodeView.getNode()).intValue();
+			min_x[species] = Math.min(min_x[species],nodeView.getXPosition());
+			max_x[species] = Math.max(max_x[species],nodeView.getXPosition());
+		} 
+
+		// Calculate the offset for each of species:
 		double [] offset = new double[k];
 		offset[0] = 0;
 		for ( int idx = 1;idx<k;idx++) {
-			offset[idx] = offset[idx-1]+GAP+max_x[idx-1]-min_x[idx-1];
-		} 
-		
-
-		{
-			//move all the nodes over an amount proportional to their species number
-			Iterator nodeViewIt = view.getNodeViewsIterator();
-			while (nodeViewIt.hasNext()) {
-				NodeView nodeView = (NodeView)nodeViewIt.next();
-				int species = node2Species.get(nodeView.getNode()).intValue();
-				nodeView.setXPosition(nodeView.getXPosition()+offset[species]);
-			} 
+			offset[idx] = offset[idx-1] + GAP + max_x[idx-1] - min_x[idx];
+			System.out.println( "DBG: Shifting sub-clusters: " + GAP +
+								" " + max_x[idx-1] +
+								" " + min_x[idx] + 
+								"= " + offset[idx] );
 		}
 		
-		//make sure all the nodes have their position updated
-		{
-			Iterator nodeViewIt = view.getNodeViewsIterator();
-			while(nodeViewIt.hasNext()) {
-				((NodeView)nodeViewIt.next()).setNodePosition(true);
-			}
+		// Shift nodes proportionally to their species number
+		nodeViewIt = view.getNodeViewsIterator();
+		while (nodeViewIt.hasNext()) {
+			NodeView nodeView = (NodeView)nodeViewIt.next();
+			int species = node2Species.get(nodeView.getNode()).intValue();
+			nodeView.setXPosition(nodeView.getXPosition()+offset[species]);
+		} 
+		
+		// Make sure all the nodes have their position updated
+		nodeViewIt = view.getNodeViewsIterator();
+		while(nodeViewIt.hasNext()) {
+			((NodeView)nodeViewIt.next()).setNodePosition(true);
 		}
 		((PGraphView)view).getCanvas().paintImmediately();
-	}
+    }
 
-	/**
-	 * Separates the network nodes into their constituent parts and creates the
-	 * homology edges between them.
-	 * @param splitNetwork The network to be separated.
-	 */
-	public void splitNetwork(CyNetwork splitNetwork) {
-		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-		CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-		//try to guess how many species we are tyring to align
-		k = 0;
-		{
-			//List nodes = sifNetwork.nodesList();
-			Iterator nodeIt = sifNetwork.nodesIterator();
-			if (nodeIt == null || !nodeIt.hasNext() ) {
-				throw new IllegalArgumentException("No nodes in this graph");
-			} 
-			CyNode firstNode = (CyNode)nodeIt.next();
-			String firstName = nodeAttrs.getStringAttribute(firstNode.getIdentifier(),"name");
-			//System.out.println("got firstname " + firstName);
-			String [] splat = firstName.split("\\|");
-			k = splat.length;
-			//System.out.println("splat len " + k);
-			if (k <= 1) {
-				throw new IllegalArgumentException("Must align at least 2 species");
-			} 
-		} 
-		
-		Vector<HashMap<String,CyNode>> name2Node_Vector = new Vector<HashMap<String,CyNode>>();
-		for (int	idx= 0;	idx<k ; idx++) {
-			name2Node_Vector.add(new HashMap<String,CyNode>());
-		} 
-	 
+    /**
+     * Separates the network nodes into their constituent parts and creates the
+     * homology edges between them.
+     * @param splitNetwork The network to be separated.
+     */
+    public void splitNetwork(CyNetwork splitNetwork) {
+		// Find out how many species we are tyring to align
+		Iterator nodeIt = sifNetwork.nodesIterator();
+		if (nodeIt == null || !nodeIt.hasNext() ) {
+			throw new IllegalArgumentException("No nodes in this graph");
+		}
+		CyNode firstNode = (CyNode)nodeIt.next();
+		String firstName = getCNodeName( firstNode );
+		//System.out.println("got firstname " + firstName);
+		String [] splat = firstName.split("\\|");
+		k = splat.length;
+		//System.out.println("splat len " + k);
+		if ( k < 1 || k > 2 ) {
+			throw new IllegalArgumentException(
+					  "ERROR: wrong input graph, 1 or 2 species supported" );
+		}
+
+		Vector<HashMap<String,CyNode>> name2Node_Vector =
+			new Vector<HashMap<String,CyNode>>();
+		for ( int idx = 0; idx < k; idx++ ) {
+			name2Node_Vector.add( new HashMap<String,CyNode>() );
+		}
+
 		Iterator compatNodeIt = sifNetwork.nodesIterator();
 		homologyPairSet = new NodePairSet();
-		//this maps from a node to the species that node belongs
-		//to
+		// This maps from a node to the species that node belongs to
 		node2Species = new HashMap<CyNode,Integer>();
 		while(compatNodeIt.hasNext()) {
 			CyNode current = (CyNode)compatNodeIt.next();
-			String name = nodeAttrs.getStringAttribute(current.getIdentifier(),"name");
+			String name = getCNodeName( current );
 			String [] names = name.split(SPLIT_STRING);
 			if (names.length != k) {
 				//awww, shit
@@ -184,16 +196,16 @@ public class DualLayoutTask extends Thread{
 					//System.out.println("node name : " + names[idx] + " species: " + idx);
 					node2Species.put(idxNode,new Integer(idx));
 					nodeAttrs.setAttribute(idxNode.getIdentifier(),"species",Integer.toString(idx));
-				} 
+				}
 				nodes.add(idxNode);
 				splitNetwork.addNode(idxNode);
-			} 
+			}
 			
 			for (int idx = 0;idx<k ;idx++) {
 				for (int idy = idx+1;idy<k;idy++) {
 					homologyPairSet.add(nodes.get(idx),nodes.get(idy));
-				} 
-			} 
+				}
+			}
 		}
 		
 		//System.out.println("got here 1");
@@ -205,37 +217,42 @@ public class DualLayoutTask extends Thread{
 		CyAttributes compatEdgeAttributes = Cytoscape.getEdgeAttributes();
 		while(compatEdgeIt.hasNext()) {
 			//System.out.println("handling edge " + k);
+			//Figure out the names of the four end points for the two edges:
 			CyEdge current = (CyEdge)compatEdgeIt.next();
-			//figure out the names of the four end points for the two edges
-			//System.out.println("got edge");
-			String [] sourceSplat = nodeAttrs.getStringAttribute(current.getSource().getIdentifier(),"name").split(SPLIT_STRING);
-			//System.out.println("got src splat");
-			String [] targetSplat = nodeAttrs.getStringAttribute(current.getTarget().getIdentifier(),"name").split(SPLIT_STRING);
-			//System.out.println("got target splat");
+			String [] sourceSplat = 
+				nodeAttrs.getStringAttribute(current.getSource().getIdentifier(),"name").split(SPLIT_STRING);
+			String [] targetSplat = 
+				nodeAttrs.getStringAttribute(current.getTarget().getIdentifier(),"name").split(SPLIT_STRING);
 
-			String compatInteraction = edgeAttrs.getStringAttribute(current.getIdentifier(),"name");
-			//System.out.println("got edge desc '" + compatInteraction + "'");
-			//this is a vector of interaction types which stores the equivalent interaction for each of the species
+
+			//Build a vector of interaction types which stores the equivalent 
+			// interaction for each of the species:
+			String compatInteraction = edgeAttrs.getStringAttribute( current.getIdentifier(),"name" );
 			Vector<String> interactionTypes = new Vector<String>(k);
 			if(compatInteraction.length() == k) {
-				//System.out.println("parsing edge desc");
-				
 				for (int idx = 0; idx < k; idx++) {
 					interactionTypes.add(compatInteraction.substring(idx,idx+1)+idx);
 				} 
 			} else {
-				//System.out.println("guessing edge desc");
+				System.out.println("WARNING!!: Illegal edge description, using defalt\n" );
 				for (int idx = 0; idx < k; idx++) {
 					interactionTypes.add("?"+idx);
 				} 
 			}
-		
-			//System.out.println("adding hom edge " + sourceSplat[0] + " " + sourceSplat[1]);
-			// add homology edges
-			splitNetwork.addEdge(Cytoscape.getCyEdge(sourceSplat[0],sourceSplat[0]+ " (hm) " + sourceSplat[1], sourceSplat[1],"hm")); 
-			splitNetwork.addEdge(Cytoscape.getCyEdge(targetSplat[0],targetSplat[0]+ " (hm) " + targetSplat[1], targetSplat[1],"hm")); 
+			//System.out.println("Edge '" + compatInteraction + "' -> " + interactionTypes );
 
-			for (int idx = 0;idx	< k; idx++) {
+			if( k > 1 ) {
+				// Actually, this only works for k == 2
+				// Add homology edges
+				//System.out.println( "DBG: Adding hom edge " + sourceSplat[0] + " " + sourceSplat[1] );
+				splitNetwork.addEdge( Cytoscape.getCyEdge(sourceSplat[0],sourceSplat[0] + " (hm) " + sourceSplat[1],
+														  sourceSplat[1],"hm") );
+				splitNetwork.addEdge( Cytoscape.getCyEdge(targetSplat[0],targetSplat[0] + " (hm) " + targetSplat[1],
+														  targetSplat[1],"hm") );
+			}
+
+			// Add in-specie weighted edges
+			for ( int idx = 0; idx < k; idx++ ) {
 				//System.out.println("index " + idx);
 				//creat the new nedge
 				//don't make self edges
@@ -250,10 +267,15 @@ public class DualLayoutTask extends Thread{
 					int[] possibleEdge = {sourceNode.getRootGraphIndex(),targetNode.getRootGraphIndex()};
 					int[] neighborEdges =  splitNetwork.getConnectingEdgeIndicesArray(possibleEdge); 
 					if (null == neighborEdges || neighborEdges.length == 0) {
-						splitNetwork.addEdge(Cytoscape.getCyEdge(sourceSplat[idx],idxName,targetSplat[idx],(String)interactionTypes.get(idx)));
-					} 
+						splitNetwork.addEdge(
+											 Cytoscape.getCyEdge( sourceSplat[idx],idxName,targetSplat[idx],
+																  (String)interactionTypes.get(idx) ) );
+						//System.out.println( "DBG: Added spec edge " + idxName );
+					}
 				} 
 			} 
 		}
-	}
+
+		System.out.println( "Finished splitting a network!" );
+    }
 }

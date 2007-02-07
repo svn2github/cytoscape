@@ -91,12 +91,13 @@ public class DualLayout {
 			int thumbWidth = 150; 
 			int thumbHeight = (int)((double)thumbWidth/ratio);
 			
+			BufferedImage thumbImage = new BufferedImage(thumbWidth, thumbHeight, Transparency.TRANSLUCENT);
 			//BufferedImage thumbImage = new BufferedImage(thumbWidth, thumbHeight, BufferedImage.TYPE_INT_RGB);
-			BufferedImage thumbImage=GraphicsEnvironment.getLocalGraphicsEnvironment().
-							getDefaultScreenDevice().
-							getDefaultConfiguration().
-							createCompatibleImage(thumbWidth,thumbHeight,
-							Transparency.BITMASK);
+			//BufferedImage thumbImage=GraphicsEnvironment.getLocalGraphicsEnvironment().
+			//				getDefaultScreenDevice().
+			//				getDefaultConfiguration().
+			//				createCompatibleImage(thumbWidth,thumbHeight,
+			//				Transparency.BITMASK);
 
 			Graphics2D thumbGraphics = thumbImage.createGraphics();
 			thumbGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
