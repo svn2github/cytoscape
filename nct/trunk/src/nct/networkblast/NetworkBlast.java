@@ -77,7 +77,8 @@ public class NetworkBlast {
 	
 	public static int complexMinSeedSize = 4;
 	public static int complexMaxSize = 15;
-	public static int pathSize = 4;
+	public static int pathSize;
+	public static int defaultPathSize = 4;
 	public static Level logLevel = null;
 
 	protected double expectation;
@@ -280,6 +281,15 @@ public class NetworkBlast {
 		options.addOption("z", "zero_edges", false, "Allow zero edges.");
 		options.addOption("V", "version", false, "Prints the version number and exits.");
 		options.addOption("S", "silent", false, "Don't print any output to the screen.");
+
+		options.addOption(OptionBuilder
+				.withLongOpt("path_length")
+				.withDescription( "The length of the path to search for.")
+				.withValueSeparator(' ')
+				.withArgName("integer")
+				.hasArg()
+				.create("p"));
+
 		options.addOption(OptionBuilder
 				.withLongOpt("random_seed")
 				.withDescription( "Seed the random generator (Java default - varies).")
@@ -287,6 +297,7 @@ public class NetworkBlast {
 				.withArgName("integer seed")
 				.hasArg()
 				.create("r"));
+
 		options.addOption(OptionBuilder
 				.withLongOpt("filter")
 				.withDescription( "Filter the results. Possible filters inlude:\nDUPE_PATH_PROTEINS\nDUPE_COMPLEX_PROTEINS\n(no filter).")
@@ -407,6 +418,12 @@ public class NetworkBlast {
 
 		// optional args
 
+		if (line.hasOption("p")) {
+			pathSize = Integer.parseInt(line.getOptionValue("p"));
+		} else {
+			pathSize = defaultPathSize; 
+		}
+		
 		if (line.hasOption("r")) {
 			randomNG = new Random(Long.parseLong(line.getOptionValue("r")));
 		} else {

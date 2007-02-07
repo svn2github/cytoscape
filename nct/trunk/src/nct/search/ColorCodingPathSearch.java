@@ -152,12 +152,12 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	Map<NodeType,Integer> minSegmentMap;
 
 	/** 
-	 *
+	 * A set of nodes where one of the nodes must be the first node in the path.
 	 */
 	Set<NodeType> beginSet;
 
 	/** 
-	 *
+	 * A set of nodes where one of the nodes must be the last node in the path.
 	 */
 	Set<NodeType> endSet;
 
@@ -205,7 +205,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 		numSolutions = numSols;
 		eps = epsilon;
 		rand = new Random((long)pathSize); // arbitrarily seed the prng with the path size
-		colorSet = twoToTheN(pathSize) - 1; 
+		colorSet = (1 << pathSize) - 1; 
 		nodeColorMap = new HashMap<NodeType,Integer>();
 		nodeIndexMap = new HashMap<NodeType,Integer>(); 
 		log.info("pathsize: " + size + " num solutions: " + numSols + " epsilon: " + epsilon);
@@ -459,18 +459,11 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	  { return monitor; }
 
 	/**
-	 * Calculates 2 to the Nth power. 
-	 */
-	private int twoToTheN( int N ) {
-		return (int)(Math.pow(2.0,(double)N));
-	}
-
-	/**
 	 * Returns a random color. The color will be 1 bit within
 	 * a bitmask the length of pathSize.
 	 */
 	private int getRandomColor() {
-		return twoToTheN((int)(Math.abs((double)(rand.nextInt()%pathSize))));
+		return 1 << ((int)(Math.abs((double)(rand.nextInt()%pathSize))));
 	}
 
 	/** 
@@ -499,7 +492,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	 * pathSize number of bits is found (an array of size pathSize^2 - 1).  
 	 */
 	private int[] getOrderedColorSetList() {
-		int twoPath = twoToTheN(pathSize);
+		int twoPath = 1 << pathSize;
 		int[] colors = new int[twoPath - 1];
 		int index = 0;
 		for ( int i = 1; i <= pathSize; i++ ) 
