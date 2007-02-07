@@ -163,6 +163,8 @@ public class XGMMLWriter {
 
 	private GraphicGraph graph = null;
 
+	private boolean noCytoscapeGraphics = false;
+
 	/**
 	 * Constructor.<br>
 	 * Initialize data objects to be saved in XGMML file.<br>
@@ -193,6 +195,29 @@ public class XGMMLWriter {
 
 		initializeJaxbObjects();
 	}
+
+	/**
+	 * Constructor.<br>
+	 * Initialize data objects to be saved in XGMML file.<br>
+	 * 
+	 * @param network
+	 *            CyNetwork object to be saved.
+	 * @param view
+	 *            CyNetworkView for the network.
+	 * @param noCytoscapeGraphics
+	 *            boolean to indicate whether cytoscape graphics
+	 *            attributes should be written
+	 * @throws URISyntaxException
+	 * @throws JAXBException
+	 */
+	public XGMMLWriter(final CyNetwork network, final CyNetworkView view, 
+			boolean noCytoscapeGraphics)
+			throws JAXBException, URISyntaxException {
+
+		this(network, view);
+		this.noCytoscapeGraphics = noCytoscapeGraphics;
+	}
+
 
 	/**
 	 * Make JAXB-generated objects for the XGMML file.
@@ -898,46 +923,48 @@ public class XGMMLWriter {
 			/**
 			 * Extended attributes supported by GINY
 			 */
-			// Store Cytoscap-local graphical attributes
-			final Att cytoscapeNodeAttr = objFactory.createAtt();
-			cytoscapeNodeAttr.setName("cytoscapeNodeGraphicsAttributes");
+			if (!noCytoscapeGraphics) {
+				// Store Cytoscap-local graphical attributes
+				final Att cytoscapeNodeAttr = objFactory.createAtt();
+				cytoscapeNodeAttr.setName("cytoscapeNodeGraphicsAttributes");
 
-			final Att transparency = objFactory.createAtt();
-			final Att nodeLabelFont = objFactory.createAtt();
-			final Att borderLineType = objFactory.createAtt();
+				final Att transparency = objFactory.createAtt();
+				final Att nodeLabelFont = objFactory.createAtt();
+				final Att borderLineType = objFactory.createAtt();
 
-			transparency.setName("nodeTransparency");
-			nodeLabelFont.setName("nodeLabelFont");
-			borderLineType.setName("borderLineType");
+				transparency.setName("nodeTransparency");
+				nodeLabelFont.setName("nodeLabelFont");
+				borderLineType.setName("borderLineType");
 
-			transparency.setValue(Double
-					.toString(curNodeView.getTransparency()));
-			nodeLabelFont
-					.setValue(encodeFont(curNodeView.getLabel().getFont()));
+				transparency.setValue(Double
+						.toString(curNodeView.getTransparency()));
+				nodeLabelFont
+						.setValue(encodeFont(curNodeView.getLabel().getFont()));
 
-			// Where should we store line-type info???
-			final float[] dash = borderType.getDashArray();
-			if (dash == null) {
-				// System.out.println("##Border is NORMAL LINE");
-				borderLineType.setValue("solid");
-			} else {
-				// System.out.println("##Border is DASHED LINE");
-				String dashArray = null;
-				final StringBuffer dashBuf = new StringBuffer();
-				for (int i = 0; i < dash.length; i++) {
-					dashBuf.append(Double.toString(dash[i]));
-					if (i < dash.length - 1) {
-						dashBuf.append(",");
+				// Where should we store line-type info???
+				final float[] dash = borderType.getDashArray();
+				if (dash == null) {
+					// System.out.println("##Border is NORMAL LINE");
+					borderLineType.setValue("solid");
+				} else {
+					// System.out.println("##Border is DASHED LINE");
+					String dashArray = null;
+					final StringBuffer dashBuf = new StringBuffer();
+					for (int i = 0; i < dash.length; i++) {
+						dashBuf.append(Double.toString(dash[i]));
+						if (i < dash.length - 1) {
+							dashBuf.append(",");
 					}
 				}
 				dashArray = dashBuf.toString();
 				borderLineType.setValue(dashArray);
-			}
-			cytoscapeNodeAttr.getContent().add(transparency);
-			cytoscapeNodeAttr.getContent().add(nodeLabelFont);
-			cytoscapeNodeAttr.getContent().add(borderLineType);
+				}
+				cytoscapeNodeAttr.getContent().add(transparency);
+				cytoscapeNodeAttr.getContent().add(nodeLabelFont);
+				cytoscapeNodeAttr.getContent().add(borderLineType);
 
-			graphics.getAtt().add(cytoscapeNodeAttr);
+				graphics.getAtt().add(cytoscapeNodeAttr);
+			}
 
 			/*
 			 * Hide the node if necessary
@@ -961,87 +988,89 @@ public class XGMMLWriter {
 			/**
 			 * Extended attributes supported by GINY
 			 */
-			// Store Cytoscap-local graphical attributes
-			final Att cytoscapeEdgeAttr = objFactory.createAtt();
-			cytoscapeEdgeAttr.setName("cytoscapeEdgeGraphicsAttributes");
+			// Store Cytoscape-local graphical attributes
+			if (!noCytoscapeGraphics) {
+				final Att cytoscapeEdgeAttr = objFactory.createAtt();
+				cytoscapeEdgeAttr.setName("cytoscapeEdgeGraphicsAttributes");
 
-			final Att sourceArrow = objFactory.createAtt();
-			final Att targetArrow = objFactory.createAtt();
-			final Att edgeLabelFont = objFactory.createAtt();
-			final Att edgeLineType = objFactory.createAtt();
-			final Att sourceArrowColor = objFactory.createAtt();
-			final Att targetArrowColor = objFactory.createAtt();
+				final Att sourceArrow = objFactory.createAtt();
+				final Att targetArrow = objFactory.createAtt();
+				final Att edgeLabelFont = objFactory.createAtt();
+				final Att edgeLineType = objFactory.createAtt();
+				final Att sourceArrowColor = objFactory.createAtt();
+				final Att targetArrowColor = objFactory.createAtt();
 
-			// Bend
-			final Att bend = objFactory.createAtt();
+				// Bend
+				final Att bend = objFactory.createAtt();
 
-			// Curved (Bezier Curves) or Straight line
-			final Att curved = objFactory.createAtt();
+				// Curved (Bezier Curves) or Straight line
+				final Att curved = objFactory.createAtt();
 
-			sourceArrow.setName("sourceArrow");
-			targetArrow.setName("targetArrow");
-			edgeLabelFont.setName("edgeLabelFont");
-			edgeLineType.setName("edgeLineType");
-			sourceArrowColor.setName("sourceArrowColor");
-			targetArrowColor.setName("targetArrowColor");
-			bend.setName("edgeBend");
-			curved.setName("curved");
+				sourceArrow.setName("sourceArrow");
+				targetArrow.setName("targetArrow");
+				edgeLabelFont.setName("edgeLabelFont");
+				edgeLineType.setName("edgeLineType");
+				sourceArrowColor.setName("sourceArrowColor");
+				targetArrowColor.setName("targetArrowColor");
+				bend.setName("edgeBend");
+				curved.setName("curved");
 
-			sourceArrow.setValue(Integer.toString(curEdgeView
-					.getSourceEdgeEnd()));
-			targetArrow.setValue(Integer.toString(curEdgeView
-					.getTargetEdgeEnd()));
+				sourceArrow.setValue(Integer.toString(curEdgeView
+						.getSourceEdgeEnd()));
+				targetArrow.setValue(Integer.toString(curEdgeView
+						.getTargetEdgeEnd()));
 
-			edgeLabelFont
-					.setValue(encodeFont(curEdgeView.getLabel().getFont()));
+				edgeLabelFont
+						.setValue(encodeFont(curEdgeView.getLabel().getFont()));
 
-			edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
+				edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
 
-			// Extract bend information
-			final Bend bendData = curEdgeView.getBend();
-			final List handles = bendData.getHandles();
+				// Extract bend information
+				final Bend bendData = curEdgeView.getBend();
+				final List handles = bendData.getHandles();
 
-			final Iterator bendIt = handles.iterator();
-			while (bendIt.hasNext()) {
-				final java.awt.geom.Point2D handle = (Point2D) bendIt.next();
-				final Att handlePoint = objFactory.createAtt();
-				final Att handleX = objFactory.createAtt();
-				final Att handleY = objFactory.createAtt();
+				final Iterator bendIt = handles.iterator();
+				while (bendIt.hasNext()) {
+					final java.awt.geom.Point2D handle = (Point2D) bendIt.next();
+					final Att handlePoint = objFactory.createAtt();
+					final Att handleX = objFactory.createAtt();
+					final Att handleY = objFactory.createAtt();
 
-				handlePoint.setName("handle");
-				handleX.setName("x");
-				handleY.setName("y");
+					handlePoint.setName("handle");
+					handleX.setName("x");
+					handleY.setName("y");
 
-				handleX.setValue(Double.toString(handle.getX()));
-				handleY.setValue(Double.toString(handle.getY()));
-				handlePoint.getContent().add(handleX);
-				handlePoint.getContent().add(handleY);
-				bend.getContent().add(handlePoint);
+					handleX.setValue(Double.toString(handle.getX()));
+					handleY.setValue(Double.toString(handle.getY()));
+					handlePoint.getContent().add(handleX);
+					handlePoint.getContent().add(handleY);
+					bend.getContent().add(handlePoint);
+				}
+
+				// Set curved or not
+				if (curEdgeView.getLineType() == EdgeView.CURVED_LINES) {
+					curved.setValue("CURVED_LINES");
+				} else if (curEdgeView.getLineType() == EdgeView.STRAIGHT_LINES) {
+					curved.setValue("STRAIGHT_LINES");
+				}
+
+				sourceArrowColor.setValue(paint2string(curEdgeView
+						.getSourceEdgeEndPaint()));
+				targetArrowColor.setValue(paint2string(curEdgeView
+						.getTargetEdgeEndPaint()));
+
+				cytoscapeEdgeAttr.getContent().add(sourceArrow);
+				cytoscapeEdgeAttr.getContent().add(targetArrow);
+				cytoscapeEdgeAttr.getContent().add(edgeLabelFont);
+				cytoscapeEdgeAttr.getContent().add(edgeLineType);
+				cytoscapeEdgeAttr.getContent().add(sourceArrowColor);
+				cytoscapeEdgeAttr.getContent().add(targetArrowColor);
+				if (bend.getContent().size() != 0) {
+					cytoscapeEdgeAttr.getContent().add(bend);
+				}
+				cytoscapeEdgeAttr.getContent().add(curved);
+				graphics.getAtt().add(cytoscapeEdgeAttr);
 			}
-
-			// Set curved or not
-			if (curEdgeView.getLineType() == EdgeView.CURVED_LINES) {
-				curved.setValue("CURVED_LINES");
-			} else if (curEdgeView.getLineType() == EdgeView.STRAIGHT_LINES) {
-				curved.setValue("STRAIGHT_LINES");
-			}
-
-			sourceArrowColor.setValue(paint2string(curEdgeView
-					.getSourceEdgeEndPaint()));
-			targetArrowColor.setValue(paint2string(curEdgeView
-					.getTargetEdgeEndPaint()));
-
-			cytoscapeEdgeAttr.getContent().add(sourceArrow);
-			cytoscapeEdgeAttr.getContent().add(targetArrow);
-			cytoscapeEdgeAttr.getContent().add(edgeLabelFont);
-			cytoscapeEdgeAttr.getContent().add(edgeLineType);
-			cytoscapeEdgeAttr.getContent().add(sourceArrowColor);
-			cytoscapeEdgeAttr.getContent().add(targetArrowColor);
-			if (bend.getContent().size() != 0) {
-				cytoscapeEdgeAttr.getContent().add(bend);
-			}
-			cytoscapeEdgeAttr.getContent().add(curved);
-			graphics.getAtt().add(cytoscapeEdgeAttr);
 
 			return graphics;
 		}

@@ -405,7 +405,9 @@ public class CytoscapeSessionWriter {
 			final CyNetworkView view) throws IOException, JAXBException,
 			URISyntaxException {
 
-		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view);
+		// Write the XGMML file *without* our graphics attributes
+		// We'll let the Vizmapper handle those
+		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);
 		BufferedWriter fileWriter = new BufferedWriter(new FileWriter(
 				tmpDirName + xgmmlFile));
 
