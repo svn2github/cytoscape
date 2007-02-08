@@ -14,7 +14,7 @@ import cytoscape.data.CyAttributes;
  *
  * @author Ethan Cerami
  */
-public class CyAttributesUtil {
+public class BRCyAttributesUtil {
 
     /**
      * Regardless of attribute type, this method will always return attribute
@@ -108,7 +108,7 @@ public class CyAttributesUtil {
         int counter = 0;
         while (iterator.hasNext() && counter < numDistinctValues) {
             GraphObject graphObject = (GraphObject) iterator.next();
-            String values [] = CyAttributesUtil.getAttributeValues
+            String values [] = BRCyAttributesUtil.getAttributeValues
                     (attributes, graphObject.getIdentifier(), attributeKey);
             if (values != null && values.length > 0) {
                 String singleStr = join(values);

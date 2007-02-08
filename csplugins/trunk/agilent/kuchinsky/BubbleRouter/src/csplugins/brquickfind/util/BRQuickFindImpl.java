@@ -235,7 +235,7 @@ class BRQuickFindImpl implements BRQuickFind {
                 index.addToIndex(value, graphObject);
             }
         } else {
-            String values[] = CyAttributesUtil.getAttributeValues
+            String values[] = BRCyAttributesUtil.getAttributeValues
                 (nodeAttributes, graphObject.getIdentifier(),
                 controllingAttribute);
             if (values != null) {
