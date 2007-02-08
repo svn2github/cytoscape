@@ -118,7 +118,6 @@ public class BRCyAttributesUtil {
                 }
             }
         }
-        set.add("unassigned");
         if (set.size() > 0) {
             return (String[]) set.toArray(new String [0]);
         } else {
