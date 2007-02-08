@@ -282,7 +282,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 			}
 		};
 		addTableModel(sampleAttributeValuesTable);
-		this.setVisibleRowCount(sampleAttributeValuesTable, 5);
+		this.setVisibleRowCount(sampleAttributeValuesTable, 7);
 		JScrollPane scrollPane = new JScrollPane(sampleAttributeValuesTable);
 		panel.add(scrollPane);
 		return panel;
@@ -371,6 +371,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		finalValues[0] = "unassigned";
 		int index = 1;
 		while (it.hasNext()) {
+			System.out.println("index: " + index);
 			finalValues[index] = (String) it.next();
 			index++;
 		}
