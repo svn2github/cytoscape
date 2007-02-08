@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.regex.*;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -30,13 +29,12 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import csplugins.brquickfind.util.CyAttributesUtil;
-import csplugins.brquickfind.util.BRQuickFind;
-import csplugins.brquickfind.util.BRQuickFindFactory;
+import csplugins.quickfind.util.CyAttributesUtil;
+import csplugins.quickfind.util.QuickFind;
+import csplugins.quickfind.util.QuickFindFactory;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.actions.ImportNodeAttributesAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.servers.BioDataServer;
@@ -44,7 +42,6 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 
@@ -218,7 +215,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 
 				String newAttribute = (String) attributeComboBox
 						.getSelectedItem();
-				ReindexBRQuickFind task = new ReindexBRQuickFind(currentNetwork,
+				ReindexQuickFind task = new ReindexQuickFind(currentNetwork,
 				// AJK: 11/15/06 make non-static
 						// newAttribute);
 						newAttribute, _region);
@@ -304,7 +301,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 			attributeKey = "NO_SELECTION";
 		}
 		String description;
-		if (attributeKey.equals(BRQuickFind.UNIQUE_IDENTIFIER)) {
+		if (attributeKey.equals(QuickFind.UNIQUE_IDENTIFIER)) {
 			description = "Each node and edge in Cytoscape is assigned a "
 					+ "unique identifier.  This is an alphanumeric value.";
 			// APico 10.7.06
@@ -594,7 +591,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		Collections.sort(attributeList);
 
 		// Add default: Unique Identifier
-		attributeList.insertElementAt(BRQuickFind.UNIQUE_IDENTIFIER, 0);
+		attributeList.insertElementAt(QuickFind.UNIQUE_IDENTIFIER, 0);
 		return attributeList;
 	}
 	private void setVisibleRowCount(JTable table, int rows) {
@@ -624,7 +621,7 @@ public class BRQuickFindConfigDialog extends JDialog {
  * @author Ethan Cerami.
  */
 
-class ReindexBRQuickFind implements Task {
+class ReindexQuickFind implements Task {
 	private String newAttributeKey;
 
 	private CyNetwork cyNetwork;
@@ -641,8 +638,8 @@ class ReindexBRQuickFind implements Task {
 	 *            New Attribute Key for Indexing.
 	 */
 	// AJK: 11/15/06 for non-static method
-	// ReindexBRQuickFind(CyNetwork cyNetwork, String newAttributeKey) {
-	ReindexBRQuickFind(CyNetwork cyNetwork, String newAttributeKey,
+	// ReindexQuickFind(CyNetwork cyNetwork, String newAttributeKey) {
+	ReindexQuickFind(CyNetwork cyNetwork, String newAttributeKey,
 			LayoutRegion region) {
 		this.cyNetwork = cyNetwork;
 		this.newAttributeKey = newAttributeKey;
@@ -654,7 +651,7 @@ class ReindexBRQuickFind implements Task {
 	 * Executes Task: Reindex.
 	 */
 	public void run() {
-		BRQuickFind quickFind = BRQuickFindFactory.getGlobalQuickFindInstance();
+		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 		// quickFind.reindexNetwork(cyNetwork, newAttributeKey, taskMonitor);
 
 		// APico 9.17.06
