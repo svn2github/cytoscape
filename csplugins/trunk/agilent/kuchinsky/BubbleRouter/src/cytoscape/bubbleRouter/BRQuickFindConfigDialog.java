@@ -371,7 +371,6 @@ public class BRQuickFindConfigDialog extends JDialog {
 		finalValues[0] = "unassigned";
 		int index = 1;
 		while (it.hasNext()) {
-			System.out.println("index: " + index);
 			finalValues[index] = (String) it.next();
 			index++;
 		}
