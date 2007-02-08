@@ -2,7 +2,7 @@ package csplugins.widgets.autocomplete.index;
 
 import java.util.ArrayList;
 
-import csplugins.quickfind.util.QuickFind;
+import csplugins.brquickfind.util.BRQuickFind;
 
 /**
  * Abstract Base class for all Index implementations.
@@ -10,7 +10,7 @@ import csplugins.quickfind.util.QuickFind;
  * @author Ethan Cerami
  */
 public abstract class GenericIndexImpl implements GenericIndex {
-    private String attributeName = QuickFind.UNIQUE_IDENTIFIER;
+    private String attributeName = BRQuickFind.UNIQUE_IDENTIFIER;
     private ArrayList observerList;
 
     /**
