@@ -8,17 +8,17 @@ import cytoscape.Cytoscape;
  *
  * @author Ethan Cerami.
  */
-public class QuickFindFactory {
-    private static QuickFind quickFind;
+public class BRQuickFindFactory {
+    private static BRQuickFind quickFind;
 
     /**
      * Gets instance of Global QuickFind Singleton.
      *
      * @return Global QuickFind Class.
      */
-    public static QuickFind getGlobalQuickFindInstance() {
+    public static BRQuickFind getGlobalQuickFindInstance() {
         if (quickFind == null) {
-            quickFind = new QuickFindImpl(Cytoscape.getNodeAttributes());
+            quickFind = new BRQuickFindImpl(Cytoscape.getNodeAttributes());
         }
         return quickFind;
     }

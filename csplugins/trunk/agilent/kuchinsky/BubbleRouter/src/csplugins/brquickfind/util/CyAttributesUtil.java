@@ -32,7 +32,7 @@ public class CyAttributesUtil {
     public static String[] getAttributeValues(CyAttributes attributes,
         String graphObjectId, String attributeKey) {
         String terms[] = new String[1];
-        if (attributeKey.equals(QuickFind.UNIQUE_IDENTIFIER)) {
+        if (attributeKey.equals(BRQuickFind.UNIQUE_IDENTIFIER)) {
             terms[0] = graphObjectId;
         } else {
             boolean hasAttribute = attributes.hasAttribute

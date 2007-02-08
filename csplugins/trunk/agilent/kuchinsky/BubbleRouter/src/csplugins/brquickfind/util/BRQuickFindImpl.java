@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import csplugins.brwidgets.autocomplete.index.GenericIndex;
-import csplugins.brwidgets.autocomplete.index.IndexFactory;
+import csplugins.brwidgets.autocomplete.index.BRGenericIndex;
+import csplugins.brwidgets.autocomplete.index.BRIndexFactory;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -16,11 +16,11 @@ import cytoscape.task.TaskMonitor;
 
 /**
  * Default implementation of the QuickFind interface.  For details, see
- * {@link QuickFind}.
+ * {@link BRQuickFind}.
  *
  * @author Ethan Cerami.
  */
-class QuickFindImpl implements QuickFind {
+class BRQuickFindImpl implements BRQuickFind {
     private ArrayList listenerList = new ArrayList();
     private HashMap networkMap = new HashMap();
     private CyAttributes nodeAttributes;
@@ -28,7 +28,7 @@ class QuickFindImpl implements QuickFind {
     private int currentProgress;
     private static final boolean OUTPUT_PERFORMANCE_STATS = false;
 
-    public QuickFindImpl(CyAttributes nodeAttributes) {
+    public BRQuickFindImpl(CyAttributes nodeAttributes) {
         this.nodeAttributes = nodeAttributes;
     }
 
@@ -40,10 +40,10 @@ class QuickFindImpl implements QuickFind {
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
         if (networkAttributes != null) {
             controllingAttribute = networkAttributes.getStringAttribute
-                    (network.getIdentifier(), QuickFind.DEFAULT_INDEX);
+                    (network.getIdentifier(), BRQuickFind.DEFAULT_INDEX);
         }
         if (controllingAttribute == null) {
-            controllingAttribute = QuickFind.UNIQUE_IDENTIFIER;
+            controllingAttribute = BRQuickFind.UNIQUE_IDENTIFIER;
         }
 
         //  Determine maxProgress
@@ -52,28 +52,28 @@ class QuickFindImpl implements QuickFind {
 
         // Notify all listeners of add event
         for (int i = 0; i < listenerList.size(); i++) {
-            QuickFindListener listener = (QuickFindListener)
+            BRQuickFindListener listener = (BRQuickFindListener)
                     listenerList.get(i);
             listener.networkAddedToIndex(network);
         }
 
         // Notify all listeners of index start event
         for (int i = 0; i < listenerList.size(); i++) {
-            QuickFindListener listener = (QuickFindListener)
+            BRQuickFindListener listener = (BRQuickFindListener)
                     listenerList.get(i);
             listener.indexingStarted();
         }
 
         //  Create Appropriate Index Type, based on attribute type.
         int attributeType = nodeAttributes.getType(controllingAttribute);
-        GenericIndex index = createIndex(attributeType, controllingAttribute);
+        BRGenericIndex index = createIndex(attributeType, controllingAttribute);
         indexNetwork(network, attributeType, controllingAttribute, index,
                 taskMonitor);
         networkMap.put(network, index);
 
         // Notify all listeners of end index event
         for (int i = 0; i < listenerList.size(); i++) {
-            QuickFindListener listener = (QuickFindListener)
+            BRQuickFindListener listener = (BRQuickFindListener)
                     listenerList.get(i);
             listener.indexingEnded();
         }
@@ -84,22 +84,22 @@ class QuickFindImpl implements QuickFind {
 
         // Notify all listeners of remove event
         for (int i = 0; i < listenerList.size(); i++) {
-            QuickFindListener listener = (QuickFindListener)
+            BRQuickFindListener listener = (BRQuickFindListener)
                     listenerList.get(i);
             listener.networkRemovedfromIndex(network);
         }
     }
 
-    public GenericIndex getIndex(CyNetwork network) {
-        return (GenericIndex) networkMap.get(network);
+    public BRGenericIndex getIndex(CyNetwork network) {
+        return (BRGenericIndex) networkMap.get(network);
     }
 
-    public GenericIndex reindexNetwork(CyNetwork cyNetwork,
+    public BRGenericIndex reindexNetwork(CyNetwork cyNetwork,
             String controllingAttribute, TaskMonitor taskMonitor) {
 
         // Notify all listeners of index start event
         for (int i = 0; i < listenerList.size(); i++) {
-            QuickFindListener listener = (QuickFindListener)
+            BRQuickFindListener listener = (BRQuickFindListener)
                     listenerList.get(i);
             listener.indexingStarted();
         }
@@ -119,7 +119,7 @@ class QuickFindImpl implements QuickFind {
             maxProgress = getGraphObjectCount(cyNetwork);
 //        }
 
-        GenericIndex index = null;
+        BRGenericIndex index = null;
 
 //APico 10.7.06
 //        if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
@@ -144,24 +144,24 @@ class QuickFindImpl implements QuickFind {
 
         // Notify all listeners of index start event
         for (int i = 0; i < listenerList.size(); i++) {
-            QuickFindListener listener = (QuickFindListener)
+            BRQuickFindListener listener = (BRQuickFindListener)
                     listenerList.get(i);
             listener.indexingEnded();
         }
         return index;
     }
 
-    public void addQuickFindListener(QuickFindListener listener) {
+    public void addQuickFindListener(BRQuickFindListener listener) {
         this.listenerList.add(listener);
     }
 
-    public void removeQuickFindListener(QuickFindListener listener) {
+    public void removeQuickFindListener(BRQuickFindListener listener) {
         this.listenerList.remove(listener);
     }
 
-    public QuickFindListener[] getQuickFindListeners() {
-        return (QuickFindListener[]) listenerList.toArray(
-                new QuickFindListener[listenerList.size()]);
+    public BRQuickFindListener[] getQuickFindListeners() {
+        return (BRQuickFindListener[]) listenerList.toArray(
+                new BRQuickFindListener[listenerList.size()]);
     }
 
     private int getGraphObjectCount(CyNetwork network) {
@@ -169,7 +169,7 @@ class QuickFindImpl implements QuickFind {
     }
 
     private void indexNetwork(CyNetwork network, int attributeType,
-            String controllingAttribute, GenericIndex index,
+            String controllingAttribute, BRGenericIndex index,
             TaskMonitor taskMonitor) {
         Date start = new Date();
         Iterator iterator = network.nodesIterator();
@@ -199,14 +199,14 @@ class QuickFindImpl implements QuickFind {
      * @param controllingAttribute  Controlling attribute.
      * @return GenericIndex Object.
      */
-    private GenericIndex createIndex (int attributeType,
+    private BRGenericIndex createIndex (int attributeType,
             String controllingAttribute) {
-        GenericIndex index;
+        BRGenericIndex index;
         if (attributeType == CyAttributes.TYPE_INTEGER
             || attributeType == CyAttributes.TYPE_FLOATING) {
-            index = IndexFactory.createDefaultNumberIndex();
+            index = BRIndexFactory.createDefaultNumberIndex();
         } else {
-            index = IndexFactory.createDefaultTextIndex();
+            index = BRIndexFactory.createDefaultTextIndex();
         }
         index.setControllingAttribute(controllingAttribute);
         return index;
@@ -220,7 +220,7 @@ class QuickFindImpl implements QuickFind {
      * @param index                 Index to add to.
      */
     private void addToIndex(int attributeType, GraphObject graphObject,
-            String controllingAttribute, GenericIndex index) {
+            String controllingAttribute, BRGenericIndex index) {
         //  Get attribute values, and index
         if (attributeType == CyAttributes.TYPE_INTEGER) {
             Integer value = nodeAttributes.getIntegerAttribute
@@ -251,7 +251,7 @@ class QuickFindImpl implements QuickFind {
      * @param index         Index to add to.
      */
     private void addStringsToIndex(String value[], GraphObject graphObject,
-            GenericIndex index) {
+            BRGenericIndex index) {
         //  Add to index
         for (int i = 0; i < value.length; i++) {
             index.addToIndex(value[i], graphObject);

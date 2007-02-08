@@ -1,6 +1,6 @@
 package csplugins.brquickfind.util;
 
-import csplugins.brwidgets.autocomplete.index.GenericIndex;
+import csplugins.brwidgets.autocomplete.index.BRGenericIndex;
 import cytoscape.CyNetwork;
 import cytoscape.task.TaskMonitor;
 
@@ -23,7 +23,7 @@ import cytoscape.task.TaskMonitor;
  * </pre>
  * After this network is loaded, it can be automatically added to the quick
  * find index via the
- * {@link QuickFind#addNetwork(cytoscape.CyNetwork, cytoscape.task.TaskMonitor)}
+ * {@link BRQuickFind#addNetwork(cytoscape.CyNetwork, cytoscape.task.TaskMonitor)}
  * method.  By default, this method iterates through each node in the network,
  * and indexes each node by its unique identifier, e.g. node.getIdentifier().
  * <p/>
@@ -33,14 +33,14 @@ import cytoscape.task.TaskMonitor;
  * <p/>
  * To do so, we must first obtain the text index associated with this network
  * via the
- * {@link QuickFind#getIndex(cytoscape.CyNetwork)} method.  For example:
+ * {@link BRQuickFind#getIndex(cytoscape.CyNetwork)} method.  For example:
  * <BR/>
  * <PRE>
  * CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
  * TextIndex textIndex = QuickFind.getIndex (currentNetwork);
  * </PRE>
  * We can then retrieve all hits that begin with the prefix:  "YLR" via the
- * {@link csplugins.brwidgets.autocomplete.index.TextIndex#getHits(String, int)}
+ * {@link csplugins.brwidgets.autocomplete.index.BRTextIndex#getHits(String, int)}
  * method.
  * <BR/>
  * <PRE>
@@ -51,18 +51,18 @@ import cytoscape.task.TaskMonitor;
  * <LI>By default, this class will automatically index node objects based on the
  * their unique node identifier, e.g. node.getIdentifier().</LI>
  * <LI>You can index by a different attribute by calling the
- * {@link QuickFind#reindexNetwork(CyNetwork, String,
+ * {@link BRQuickFind#reindexNetwork(CyNetwork, String,
  * cytoscape.task.TaskMonitor)}.
  * <LI>You can specify any attribute name you like.  However, QuickFind
  * is not yet capable of indexing attributes of type CyAttributes.TYPE_COMPLEX.
- * <LI>QuickFind uses a {@link csplugins.brwidgets.autocomplete.index.Trie}
+ * <LI>QuickFind uses a {@link csplugins.brwidgets.autocomplete.index.BRTrie}
  * data structure for very fast look-ups.</LI>
  * </UL>
  * <p/>
  *
  * @author Ethan Cerami.
  */
-public interface QuickFind {
+public interface BRQuickFind {
     /**
      * Node / Edge Unique Identifier.
      */
@@ -120,7 +120,7 @@ public interface QuickFind {
      * @param network Cytoscape Network.
      * @return Index Object.
      */
-    GenericIndex getIndex(CyNetwork network);
+    BRGenericIndex getIndex(CyNetwork network);
 
     /**
      * Reindexes a network with the specified controlling attribute.
@@ -140,7 +140,7 @@ public interface QuickFind {
      *                             progress of task.
      * @return GenericIndex Object.
      */
-    GenericIndex reindexNetwork(CyNetwork cyNetwork,
+    BRGenericIndex reindexNetwork(CyNetwork cyNetwork,
             String controllingAttribute, TaskMonitor taskMonitor);
 
     /**
@@ -148,19 +148,19 @@ public interface QuickFind {
      *
      * @param listener QuickFindListener Object.
      */
-    void addQuickFindListener(QuickFindListener listener);
+    void addQuickFindListener(BRQuickFindListener listener);
 
     /**
      * Removes the specified QuickFind Listener Object.
      *
      * @param listener QuickFindListener Object.
      */
-    void removeQuickFindListener(QuickFindListener listener);
+    void removeQuickFindListener(BRQuickFindListener listener);
 
     /**
      * Gets an array of all registered QuickFind Listener Objects.
      *
      * @return Array of QuickFindListener Objects.
      */
-    QuickFindListener[] getQuickFindListeners();
+    BRQuickFindListener[] getQuickFindListeners();
 }

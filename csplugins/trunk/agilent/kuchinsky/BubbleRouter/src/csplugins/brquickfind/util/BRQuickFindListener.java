@@ -8,7 +8,7 @@ import cytoscape.CyNetwork;
  *
  * @author Ethan Cerami.
  */
-public interface QuickFindListener {
+public interface BRQuickFindListener {
 
     /**
      * Network has been added to the Quick Find Index.
