@@ -146,7 +146,8 @@ class UnCrossAction extends CytoscapeAction {
 	public UnCrossAction() {
 		super("Minimize Edge Crossings for Selected Nodes");
 		setPreferredMenu("Layout");
-		setAcceleratorCombo(java.awt.event.KeyEvent.VK_U,
+		//Note: Alt-U is used by default on MacOS; use Alt-X instead
+		setAcceleratorCombo(java.awt.event.KeyEvent.VK_X,
 				ActionEvent.ALT_MASK);
 	}
 
