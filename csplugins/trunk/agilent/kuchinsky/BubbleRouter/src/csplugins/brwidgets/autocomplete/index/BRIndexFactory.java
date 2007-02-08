@@ -5,22 +5,22 @@ package csplugins.brwidgets.autocomplete.index;
  *
  * @author Ethan Cerami.
  */
-public class IndexFactory {
+public class BRIndexFactory {
 
     /**
      * Gets the default implementation of the TextIndex interface.
      *
      * @return TextIndex Object.
      */
-    public static TextIndex createDefaultTextIndex() {
-        return new TextIndexImpl();
+    public static BRTextIndex createDefaultTextIndex() {
+        return new BRTextIndexImpl();
     }
 
     /**
      * Gets the default implementation of the NumberIndex interface.
      * @return NumberIndex Object.
      */
-    public static NumberIndex createDefaultNumberIndex() {
-        return new NumberIndexImpl();
+    public static BRNumberIndex createDefaultNumberIndex() {
+        return new BRNumberIndexImpl();
     }
 }

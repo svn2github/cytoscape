@@ -83,10 +83,10 @@ package csplugins.brwidgets.autocomplete.index;
  *
  * @author GraphBuilder.com
  */
-public class Trie {
+public class BRTrie {
 
-    protected Trie parent = null;
-    protected Trie[] child = new Trie[1];
+    protected BRTrie parent = null;
+    protected BRTrie[] child = new BRTrie[1];
     protected int numChildren = 0;
     protected char ch;
     protected boolean isWord = false;
@@ -94,7 +94,7 @@ public class Trie {
     /**
      * Creates a Trie using the root symbol as the character.
      */
-    public Trie() {
+    public BRTrie() {
         this((char) 251);
     }
 
@@ -103,7 +103,7 @@ public class Trie {
      *
      * @param c Character.
      */
-    public Trie(char c) {
+    public BRTrie(char c) {
         ch = c;
     }
 
@@ -159,8 +159,8 @@ public class Trie {
      * @param c Character.
      * @return Trie Object.
      */
-    protected Trie createNode(char c) {
-        return new Trie(c);
+    protected BRTrie createNode(char c) {
+        return new BRTrie(c);
     }
 
     /**
@@ -169,7 +169,7 @@ public class Trie {
      * @param t Trie Object.
      * @see #insertChild(Trie, int).
      */
-    public void addChild(Trie t) {
+    public void addChild(BRTrie t) {
         insertChild(t, numChildren);
     }
 
@@ -189,7 +189,7 @@ public class Trie {
      * @throws IllegalArgumentException if this trie is a descendent of
      *                                  the specified trie.
      */
-    public void insertChild(Trie t, int index) throws IllegalArgumentException {
+    public void insertChild(BRTrie t, int index) throws IllegalArgumentException {
         if (index < 0 || index > numChildren) {
             throw new IllegalArgumentException
                     ("required: (index >= 0 && index <= numChildren) "
@@ -217,7 +217,7 @@ public class Trie {
         t.parent = this;
 
         if (numChildren == child.length) {
-            Trie[] arr = new Trie[2 * (numChildren + 1)];
+            BRTrie[] arr = new BRTrie[2 * (numChildren + 1)];
             for (int i = 0; i < numChildren; i++) {
                 arr[i] = child[i];
             }
@@ -239,7 +239,7 @@ public class Trie {
      *
      * @param t Trie Object.
      */
-    public void removeChild(Trie t) {
+    public void removeChild(BRTrie t) {
         for (int i = 0; i < numChildren; i++) {
             if (t == child[i]) {
                 for (int j = i + 1; j < numChildren; j++) {
@@ -270,7 +270,7 @@ public class Trie {
      * @return Trie object.
      * @throws IllegalArgumentException if index < 0 or index >= numChildren.
      */
-    public Trie child(int index) throws IllegalArgumentException {
+    public BRTrie child(int index) throws IllegalArgumentException {
         if (index < 0 || index >= numChildren) {
             throw new IllegalArgumentException
                     ("required: (index >= 0 && index < numChildren) "
@@ -286,7 +286,7 @@ public class Trie {
      *
      * @return Trie Object.
      */
-    public Trie getParent() {
+    public BRTrie getParent() {
         return parent;
     }
 
@@ -297,8 +297,8 @@ public class Trie {
      * @param t Trie Object.
      * @return true or false.
      */
-    public boolean isDescendent(Trie t) {
-        Trie r = this;
+    public boolean isDescendent(BRTrie t) {
+        BRTrie r = this;
 
         while (r != null) {
             if (r == t) {
@@ -345,11 +345,11 @@ public class Trie {
         // checks for cyclic references.  This prevents quadratic runtime.
 
         int i = s.length() - 1;
-        Trie t = createNode(s.charAt(i--));
+        BRTrie t = createNode(s.charAt(i--));
         t.isWord = true;
 
         while (i >= index) {
-            Trie n = createNode(s.charAt(i--));
+            BRTrie n = createNode(s.charAt(i--));
             n.addChild(t);
             t = n;
         }
@@ -366,7 +366,7 @@ public class Trie {
      * @param c Character.
      * @return Trie Object.
      */
-    public Trie getNode(char c) {
+    public BRTrie getNode(char c) {
         for (int i = 0; i < numChildren; i++) {
             if (child[i].ch == c) {
                 return child[i];
@@ -383,11 +383,11 @@ public class Trie {
      * @param prefix String prefix.
      * @return Trie Object.
      */
-    public Trie getNode(String prefix) {
+    public BRTrie getNode(String prefix) {
         return getNode(prefix, 0);
     }
 
-    private Trie getNode(String prefix, int index) {
+    private BRTrie getNode(String prefix, int index) {
         if (index == prefix.length()) {
             return this;
         }
@@ -411,7 +411,7 @@ public class Trie {
      * @return true or false.
      */
     public boolean remove(String s) {
-        Trie t = getNode(s);
+        BRTrie t = getNode(s);
 
         if (t == null || !t.isWord) {
             return false;
@@ -420,7 +420,7 @@ public class Trie {
         t.isWord = false;
 
         while (t != null && t.numChildren == 0 && !t.isWord) {
-            Trie p = t.parent;
+            BRTrie p = t.parent;
             if (p != null) {
                 p.removeChild(t);
             }
@@ -438,7 +438,7 @@ public class Trie {
      * @return true or false.
      */
     public boolean removeAll(String prefix) {
-        Trie t = getNode(prefix);
+        BRTrie t = getNode(prefix);
 
         if (t == null) {
             return false;
@@ -459,7 +459,7 @@ public class Trie {
             return true;
         }
 
-        Trie p = t.parent;
+        BRTrie p = t.parent;
         p.removeChild(t);
         t = p;
 
@@ -512,7 +512,7 @@ public class Trie {
      * @return Array of Strings.
      */
     public String[] getWords(String prefix) {
-        Trie n = getNode(prefix);
+        BRTrie n = getNode(prefix);
         if (n == null) {
             return new String[0];
         }
@@ -566,7 +566,7 @@ public class Trie {
     }
 
     private boolean contains(String s, boolean prefix) {
-        Trie t = getNode(s);
+        BRTrie t = getNode(s);
 
         if (t == null) {
             return false;
@@ -603,7 +603,7 @@ public class Trie {
     public int getHeight() {
         int h = -1;
 
-        Trie t = this;
+        BRTrie t = this;
 
         while (t != null) {
             h++;
@@ -622,7 +622,7 @@ public class Trie {
      */
     public String toString() {
         StringBuffer sb = new StringBuffer(getHeight());
-        Trie t = this;
+        BRTrie t = this;
 
         while (t.parent != null) {
             sb.append(t.ch);

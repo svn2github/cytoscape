@@ -14,7 +14,7 @@ package csplugins.brwidgets.autocomplete.index;
  *
  * @author Ethan Cerami.
  */
-public class Hit {
+public class BRHit {
     private String keyword;
     private Object objects[];
 
@@ -24,7 +24,7 @@ public class Hit {
      * @param keyword Keyword String.
      * @param objects Objects associated with this hit.
      */
-    public Hit(String keyword, Object objects[]) {
+    public BRHit(String keyword, Object objects[]) {
         this.keyword = keyword;
         this.objects = objects;
     }

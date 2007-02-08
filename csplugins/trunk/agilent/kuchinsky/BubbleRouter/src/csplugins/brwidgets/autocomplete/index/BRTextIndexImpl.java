@@ -14,8 +14,8 @@ import java.util.Set;
  *
  * @author Ethan Cerami.
  */
-class TextIndexImpl extends GenericIndexImpl implements TextIndex {
-    private Trie trie;
+class BRTextIndexImpl extends BRGenericIndexImpl implements BRTextIndex {
+    private BRTrie trie;
     private HashMap map;
     private static final boolean OUTPUT_PERFORMANCE_STATS = false;
     private HashMap cache = new HashMap();
@@ -25,8 +25,8 @@ class TextIndexImpl extends GenericIndexImpl implements TextIndex {
     /**
      * Constructor.
      */
-    public TextIndexImpl() {
-        maxKeyLength = TextIndex.DEFAULT_MAX_KEY_LENGTH;
+    public BRTextIndexImpl() {
+        maxKeyLength = BRTextIndex.DEFAULT_MAX_KEY_LENGTH;
         init();
     }
 
@@ -80,13 +80,13 @@ class TextIndexImpl extends GenericIndexImpl implements TextIndex {
      * @param maxHits Maximum number of hits
      * @return Array of Strings, which begin with the specified prefix.
      */
-    public Hit[] getHits(String prefix, int maxHits) {
+    public BRHit[] getHits(String prefix, int maxHits) {
         Date start = new Date();
-        Hit hits[] = null;
+        BRHit hits[] = null;
 
         //  Deal with wild card cases.
         if (prefix.equals("")) {
-            hits = (Hit[]) cache.get(prefix);
+            hits = (BRHit[]) cache.get(prefix);
         } else if (prefix.endsWith(WILD_CARD)) {
             hits = getWildCardHits(prefix);
         }
@@ -94,7 +94,7 @@ class TextIndexImpl extends GenericIndexImpl implements TextIndex {
         if (hits == null) {
             String keys[] = trie.getWords(prefix.toLowerCase());
             int size = Math.min(keys.length, maxHits);
-            hits = new Hit[size];
+            hits = new BRHit[size];
 
             //  By default, strings are ordered lexicographically -- meaning
             //  that the unicode value for each character is used for
@@ -116,7 +116,7 @@ class TextIndexImpl extends GenericIndexImpl implements TextIndex {
 
             //  Create the Hits
             for (int i = 0; i < size; i++) {
-                hits[i] = new Hit(keys[i], getObjectsByKey(keys[i]));
+                hits[i] = new BRHit(keys[i], getObjectsByKey(keys[i]));
             }
         }
 
@@ -158,8 +158,8 @@ class TextIndexImpl extends GenericIndexImpl implements TextIndex {
      * @param prefix prefix ending in *.
      * @return An array containing 1 hit object or null.
      */
-    private Hit[] getWildCardHits(String prefix) {
-        Hit[] hits = null;
+    private BRHit[] getWildCardHits(String prefix) {
+        BRHit[] hits = null;
 
         //  Remove wildcard.
         String regex = prefix.toLowerCase().substring(0, prefix.length() - 1);
@@ -178,10 +178,10 @@ class TextIndexImpl extends GenericIndexImpl implements TextIndex {
 
         //  Return result set
         if (graphObjectSet.size() > 0) {
-            hits = new Hit[1];
+            hits = new BRHit[1];
             Object graphObjects[] = graphObjectSet.toArray
                     (new Object[graphObjectSet.size()]);
-            hits[0] = new Hit(prefix, graphObjects);
+            hits[0] = new BRHit(prefix, graphObjects);
         }
         return hits;
     }
@@ -209,7 +209,7 @@ class TextIndexImpl extends GenericIndexImpl implements TextIndex {
      * Initializes the Text Index.
      */
     private void init() {
-        trie = new Trie();
+        trie = new BRTrie();
         map = new HashMap();
         cache = new HashMap();
     }

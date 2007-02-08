@@ -5,7 +5,7 @@ package csplugins.brwidgets.autocomplete.index;
  *
  * @author Ethan Cerami.
  */
-public interface IndexListener {
+public interface BRIndexListener {
 
     /**
      * Index has been reset.

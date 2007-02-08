@@ -11,10 +11,10 @@ import java.util.TreeMap;
  *
  * @author Ethan Cerami.
  */
-class NumberIndexImpl extends GenericIndexImpl implements NumberIndex {
+class BRNumberIndexImpl extends BRGenericIndexImpl implements BRNumberIndex {
     private TreeMap treeMap;
 
-    public NumberIndexImpl() {
+    public BRNumberIndexImpl() {
         treeMap = new TreeMap();
     }
 

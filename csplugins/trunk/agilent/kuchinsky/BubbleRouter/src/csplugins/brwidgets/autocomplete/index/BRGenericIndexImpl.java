@@ -9,14 +9,14 @@ import csplugins.brquickfind.util.BRQuickFind;
  *
  * @author Ethan Cerami
  */
-public abstract class GenericIndexImpl implements GenericIndex {
+public abstract class BRGenericIndexImpl implements BRGenericIndex {
     private String attributeName = BRQuickFind.UNIQUE_IDENTIFIER;
     private ArrayList observerList;
 
     /**
      * Default constructor.
      */
-    public GenericIndexImpl() {
+    public BRGenericIndexImpl() {
         observerList = new ArrayList();
     }
 
@@ -26,8 +26,8 @@ public abstract class GenericIndexImpl implements GenericIndex {
     public void resetIndex() {
         //  Explicitly notify all observers
         for (int i = 0; i < observerList.size(); i++) {
-            IndexListener observer =
-                    (IndexListener) observerList.get(i);
+            BRIndexListener observer =
+                    (BRIndexListener) observerList.get(i);
             observer.indexReset();
         }
     }
@@ -40,8 +40,8 @@ public abstract class GenericIndexImpl implements GenericIndex {
     public void addToIndex(Object key, Object o) {
         //  Explicitly notify all observers
         for (int i = 0; i < observerList.size(); i++) {
-            IndexListener observer =
-                    (IndexListener) observerList.get(i);
+            BRIndexListener observer =
+                    (BRIndexListener) observerList.get(i);
             observer.itemAddedToIndex(key, o);
         }
     }
@@ -71,7 +71,7 @@ public abstract class GenericIndexImpl implements GenericIndex {
      *
      * @param listener IndexListener Object.
      */
-    public void addIndexListener(IndexListener listener) {
+    public void addIndexListener(BRIndexListener listener) {
         observerList.add(listener);
     }
 
@@ -82,7 +82,7 @@ public abstract class GenericIndexImpl implements GenericIndex {
      *
      * @param listener IndexListener Object.
      */
-    public void deleteIndexListener(IndexListener listener) {
+    public void deleteIndexListener(BRIndexListener listener) {
         observerList.remove(listener);
     }
 

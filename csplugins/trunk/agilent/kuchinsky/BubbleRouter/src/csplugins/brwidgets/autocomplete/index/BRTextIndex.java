@@ -8,7 +8,7 @@ package csplugins.brwidgets.autocomplete.index;
  *
  * @author Ethan Cerami.
  */
-public interface TextIndex extends GenericIndex {
+public interface BRTextIndex extends BRGenericIndex {
     /**
      * Default Max Key Length
      */
@@ -18,7 +18,7 @@ public interface TextIndex extends GenericIndex {
      * Set max key length;  all keys greater than this length will
      * be automatically truncated.
      *
-     * <P>Default is set to {@link TextIndex#DEFAULT_MAX_KEY_LENGTH}
+     * <P>Default is set to {@link BRTextIndex#DEFAULT_MAX_KEY_LENGTH}
      * @param len max key length.
      */
     void setMaxKeyLength (int len);
@@ -26,7 +26,7 @@ public interface TextIndex extends GenericIndex {
     /**
      * Gets max key length;  all keys greater than this length will
      * be automatically truncated.
-     * <P>Default is set to {@link TextIndex#DEFAULT_MAX_KEY_LENGTH}
+     * <P>Default is set to {@link BRTextIndex#DEFAULT_MAX_KEY_LENGTH}
      *
      * @return max key length.
      */
@@ -39,7 +39,7 @@ public interface TextIndex extends GenericIndex {
      * @param maxHits Maximum number of hits.
      * @return Array of Hits.
      */
-    Hit[] getHits(String prefix, int maxHits);
+    BRHit[] getHits(String prefix, int maxHits);
 
     /**
      * Gets total number of keys in index.

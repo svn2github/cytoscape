@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Ethan Cerami.
  */
-public interface NumberIndex extends GenericIndex {
+public interface BRNumberIndex extends BRGenericIndex {
 
     /**
      * Gets a closed range of indexed values between lower and upper.

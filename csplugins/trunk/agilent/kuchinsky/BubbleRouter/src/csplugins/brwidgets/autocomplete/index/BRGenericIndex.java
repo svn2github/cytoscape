@@ -5,7 +5,7 @@ package csplugins.brwidgets.autocomplete.index;
  *
  * @author Ethan Cerami
  */
-public interface GenericIndex {
+public interface BRGenericIndex {
     /**
      * Resets the index, wipes everything clean.
      */
@@ -47,7 +47,7 @@ public interface GenericIndex {
      *
      * @param listener IndexListener Object.
      */
-    void addIndexListener(IndexListener listener);
+    void addIndexListener(BRIndexListener listener);
 
     /**
      * Deletes the specified IndexListener Object.
@@ -56,7 +56,7 @@ public interface GenericIndex {
      *
      * @param listener IndexListener Object.
      */
-    void deleteIndexListener(IndexListener listener);
+    void deleteIndexListener(BRIndexListener listener);
 
     /**
      * Gets number of registered listeners who are receving notification events.
