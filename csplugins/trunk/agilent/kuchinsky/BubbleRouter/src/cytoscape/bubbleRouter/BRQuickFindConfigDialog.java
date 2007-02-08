@@ -29,9 +29,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import csplugins.quickfind.util.CyAttributesUtil;
-import csplugins.quickfind.util.QuickFind;
-import csplugins.quickfind.util.QuickFindFactory;
+import csplugins.brquickfind.util.BRCyAttributesUtil;
+import csplugins.brquickfind.util.BRQuickFind;
+import csplugins.brquickfind.util.BRQuickFindFactory;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -301,7 +301,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 			attributeKey = "NO_SELECTION";
 		}
 		String description;
-		if (attributeKey.equals(QuickFind.UNIQUE_IDENTIFIER)) {
+		if (attributeKey.equals(BRQuickFind.UNIQUE_IDENTIFIER)) {
 			description = "Each node and edge in Cytoscape is assigned a "
 					+ "unique identifier.  This is an alphanumeric value.";
 			// APico 10.7.06
@@ -346,7 +346,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		Iterator nodeIterator = network.nodesIterator();
 
-		String values[] = CyAttributesUtil.getDistinctAttributeValues(
+		String values[] = BRCyAttributesUtil.getDistinctAttributeValues(
 				nodeIterator, nodeAttributes, attributeKey, 50);
 
 		// INSERT PATTERN split here (12/5/06 meeting)
@@ -591,7 +591,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		Collections.sort(attributeList);
 
 		// Add default: Unique Identifier
-		attributeList.insertElementAt(QuickFind.UNIQUE_IDENTIFIER, 0);
+		attributeList.insertElementAt(BRQuickFind.UNIQUE_IDENTIFIER, 0);
 		return attributeList;
 	}
 	private void setVisibleRowCount(JTable table, int rows) {
@@ -651,7 +651,7 @@ class ReindexQuickFind implements Task {
 	 * Executes Task: Reindex.
 	 */
 	public void run() {
-		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+		BRQuickFind quickFind = BRQuickFindFactory.getGlobalQuickFindInstance();
 		// quickFind.reindexNetwork(cyNetwork, newAttributeKey, taskMonitor);
 
 		// APico 9.17.06

@@ -302,7 +302,7 @@ public class LayoutRegion extends JComponent
 		// and perhaps an all-value "brick" layout too
 		// if (attributeName == null) {
 		// new QuickFindConfigDialog();
-		new QuickFindConfigDialog(this);
+		new BRQuickFindConfigDialog(this);
 
 //		System.out.println("Got attribute name: " + attributeName);
 		// AJK: 11/15/06 END
