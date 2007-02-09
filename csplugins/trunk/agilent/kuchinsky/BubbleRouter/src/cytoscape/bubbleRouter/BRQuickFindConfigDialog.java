@@ -4,12 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
+import java.awt.event.MouseAdapter;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -210,34 +212,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		applyButton = new JButton(BUTTON_TEXT);
 		applyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BRQuickFindConfigDialog.this.setVisible(false);
-				BRQuickFindConfigDialog.this.dispose();
-
-				String newAttribute = (String) attributeComboBox
-						.getSelectedItem();
-				ReindexQuickFind task = new ReindexQuickFind(currentNetwork,
-				// AJK: 11/15/06 make non-static
-						// newAttribute);
-						newAttribute, _region);
-				JTaskConfig config = new JTaskConfig();
-				config.setAutoDispose(true);
-				config.displayStatus(true);
-				config.displayTimeElapsed(false);
-				config.displayCloseButton(true);
-				config.setOwner(Cytoscape.getDesktop());
-				config.setModal(true);
-
-				// Execute Task via TaskManager
-				// This automatically pops-open a JTask Dialog Box.
-				// This method will block until the JTask Dialog Box
-				// is disposed.
-				TaskManager.executeTask(task, config);
-
-				// APico 10.7.06
-				// AJK: 11/15/06 make LayoutRegion non-static so name can vary
-				// across regions
-				// LayoutRegion.setRegionAttributeValue(selectedValue);
-				_region.setRegionAttributeValue(selectedValue);
+				applyAction(selectedValue);
 			}
 		});
 		buttonPanel.add(Box.createHorizontalGlue());
@@ -418,6 +393,14 @@ public class BRQuickFindConfigDialog extends JDialog {
 			}
 
 		});
+		
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					applyAction(selectedValue);
+				}
+			}
+		});
 	}
 
 	/**
@@ -439,7 +422,6 @@ public class BRQuickFindConfigDialog extends JDialog {
 		
 		fileBrowserButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("fileBrowserButton pressed");
 
 //			  Use a Default CyFileFilter:  enables user to select any file type.
 		        CyFileFilter nf = new CyFileFilter();
@@ -593,6 +575,31 @@ public class BRQuickFindConfigDialog extends JDialog {
 		// Add default: Unique Identifier
 		attributeList.insertElementAt(BRQuickFind.UNIQUE_IDENTIFIER, 0);
 		return attributeList;
+	}
+	private void applyAction (Object selectedValue){
+		BRQuickFindConfigDialog.this.setVisible(false);
+		BRQuickFindConfigDialog.this.dispose();
+		String newAttribute = (String) attributeComboBox
+				.getSelectedItem();
+		ReindexQuickFind task = new ReindexQuickFind(
+				currentNetwork,
+				// AJK: 11/15/06 make non-static
+				// newAttribute);
+				newAttribute, _region);
+		JTaskConfig config = new JTaskConfig();
+		config.setAutoDispose(true);
+		config.displayStatus(true);
+		config.displayTimeElapsed(false);
+		config.displayCloseButton(true);
+		config.setOwner(Cytoscape.getDesktop());
+		config.setModal(true);
+
+		// Execute Task via TaskManager
+		// This automatically pops-open a JTask Dialog Box.
+		// This method will block until the JTask Dialog Box
+		// is disposed.
+		TaskManager.executeTask(task, config);
+		_region.setRegionAttributeValue(selectedValue);
 	}
 	private void setVisibleRowCount(JTable table, int rows) {
 		int height = 0;
