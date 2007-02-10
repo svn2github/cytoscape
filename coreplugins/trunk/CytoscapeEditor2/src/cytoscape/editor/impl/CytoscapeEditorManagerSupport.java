@@ -395,6 +395,9 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
         nodeAttribs.setAttribute(node.getIdentifier(),
                                  "Y_pos",
                                  new Double(offset.getY()));
+        // AJK: 01/11/07: make X_pos, Y_pos invisible to user
+        nodeAttribs.setUserVisible("X_pos", false);
+        nodeAttribs.setUserVisible("Y_pos", false);
 
         // setup the clipboard and undo manager to be able to undo the deletion
         CytoscapeEditorManager.getNodeClipBoard().elements(nodes);
