@@ -211,7 +211,14 @@ public class LayoutEdge {
 	 *          and the current weight.
 	 */
 	public String toString() {
-		return "Edge "+edge.getIdentifier()+" connecting "+v1.getIdentifier()+" and "+v2.getIdentifier()+" with weight "+weight;
+		String source = "undefined";
+		String target = "undefined";
+		if (v1 != null)
+			source = v1.getIdentifier();
+		if (v2 != null)
+			target = v2.getIdentifier();
+
+		return "Edge "+edge.getIdentifier()+" connecting "+source+" and "+target+" with weight "+weight;
 	}
 
 	/**

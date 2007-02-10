@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
@@ -129,11 +128,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 * The Partition
 	 */
 	private LayoutPartition partition;
-
-	/**
-	 * Whether or not to initialize by randomizing all points
-	 */
-	private boolean randomize = true;
 
 	/**
 	 * This hashmap provides a quick way to get an index into
@@ -366,15 +360,15 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			m_anticollisionSpringScalars[i] = 1.0;
 
 
-		/*
 		System.out.println("BioLayoutKK Algorithm.  Laying out "+m_nodeCount+" nodes and "+partition.edgeCount()+" edges: ");
+/*
 		for (Iterator diter = partition.nodeIterator(); diter.hasNext(); ) {
 			System.out.println("\t"+(LayoutNode)diter.next());
 		}
 		for (Iterator diter = partition.edgeIterator(); diter.hasNext(); ) {
 			System.out.println("\t"+(LayoutEdge)diter.next());
 		}
-		*/
+*/
 		
 		// Calculate a distance threshold
 		double euclideanDistanceThreshold =  (m_nodeCount+partition.edgeCount())/10;
@@ -398,6 +392,10 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		// Randomize our points, if any points lie
 		// outside of our bounds
 		if (randomize) partition.randomizeLocations();
+
+		System.out.println("Bounding box = ("+partition.getMinX()+", "+partition.getMinY()+
+		                   ", "+partition.getMaxX()+", "+partition.getMaxY()+")");
+		System.out.println("Width = "+partition.getWidth()+", height = "+partition.getHeight());
 
 		// Calculate our edge weights
 		partition.calculateEdgeWeights();
@@ -496,26 +494,31 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
     taskMonitor.setPercentCompleted((int) percentCompletedAfterFinalPass);
 		taskMonitor.setStatus("Updating display");
 
-		double xDelta = 0.0;
-		double yDelta = 0.0;
-		if (selectedOnly) {
-			Dimension finalLocation = partition.getAverageLocation();
-			xDelta = finalLocation.getWidth()-initialLocation.getWidth();
-			yDelta = finalLocation.getHeight()-initialLocation.getHeight();
-		}
-
 		// Actually move the pieces around
 		// Note that we reset our min/max values before we start this
 		// so we can get an accurate min/max for paritioning
 		partition.resetNodes();
 		iter = partition.nodeIterator();
 		while (iter.hasNext()) {
-			LayoutNode v = (LayoutNode)iter.next();
-			if (!v.isLocked()) {
-				if (selectedOnly) {
+			LayoutNode v = (LayoutNode) iter.next();
+			partition.moveNodeToLocation(v);
+		}
+
+		// Not quite done, yet.  If we're only laying out selected nodes, we need
+		// to migrate the selected nodes back to their starting position
+		if (selectedOnly) {
+			double xDelta = 0.0;
+			double yDelta = 0.0;
+			Dimension finalLocation = partition.getAverageLocation();
+			xDelta = finalLocation.getWidth()-initialLocation.getWidth();
+			yDelta = finalLocation.getHeight()-initialLocation.getHeight();
+			iter = partition.nodeIterator();
+			while (iter.hasNext()) {
+				LayoutNode v = (LayoutNode) iter.next();
+				if (!v.isLocked()) {
 					v.decrement(xDelta, yDelta);
+					partition.moveNodeToLocation(v);
 				}
-				partition.moveNodeToLocation(v);
 			}
 		}
 	}
@@ -610,6 +613,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			int node_i = edge.getSource().getIndex();
 			int node_j = edge.getTarget().getIndex();
 			double weight = edge.getWeight();
+			// System.out.println(edge);
 			if (nodeDistances[node_i][node_j] != Integer.MAX_VALUE) {
       	// Compute spring rest lengths.
 				m_nodeDistanceSpringRestLengths[node_i][node_j] =

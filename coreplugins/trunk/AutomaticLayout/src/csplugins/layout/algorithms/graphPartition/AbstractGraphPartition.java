@@ -142,7 +142,8 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
       }
 
     } // end iterate through partitions
-		networkView.fitContent();
+		if (!selectedOnly)
+			networkView.fitContent();
 		networkView.updateView();
   }
 }

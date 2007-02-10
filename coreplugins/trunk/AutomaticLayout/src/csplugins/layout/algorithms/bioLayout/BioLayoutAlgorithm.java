@@ -339,25 +339,28 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 			// Set up offsets -- we start with the overall min and max
 			double xStart = partitionList.get(0).getMinX();
 			double yStart = partitionList.get(0).getMinY();
+			System.out.println("Initial xStart = "+xStart);
 			Iterator partIter = partitionList.iterator();
 			while (partIter.hasNext()) {
 				LayoutPartition part = (LayoutPartition)partIter.next();
 				xStart = Math.min(xStart, part.getMinX());
 				yStart = Math.min(yStart, part.getMinY());
 			}
+			System.out.println("Final xStart = "+xStart);
 
 	    double next_x_start = xStart;
 			double next_y_start = yStart;
 			double current_max_y = 0;
 			double incr = 50;
 
+			System.out.println("Node count = "+(double)network.getNodeCount());
 			double max_dimensions = Math.sqrt( ( double )network.getNodeCount() );
 			// give each node room
 			max_dimensions *= incr;
 			max_dimensions += xStart;
 
-			// System.out.println("Laying out with "+partitionList.size()+" partitions");
-			// System.out.println("max_dimensions = "+max_dimensions);
+			System.out.println("Laying out with "+partitionList.size()+" partitions");
+			System.out.println("max_dimensions = "+max_dimensions);
 			int partCount = 1;
 
 			// For each partition, layout the graph
@@ -400,7 +403,9 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 				partCount++;
 			}
 		}
-		networkView.fitContent();
+		if (!selectedOnly) {
+			networkView.fitContent();
+		}
 		networkView.updateView();
 	}
 
@@ -416,8 +421,9 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	protected void initialize_local() {
 		LayoutPartition.setWeightCutoffs(minWeightCutoff, maxWeightCutoff);
 		// Depending on whether we are partitioned or not,
-		// we use different initialization
-		if (!partitionGraph) {
+		// we use different initialization.  Note that if the user only wants
+	  // to lay out selected nodes, partitioning becomes a very bad idea!
+		if (!partitionGraph || selectedOnly) {
 			// We still use the partition abstraction, even if we're
 			// not partitioning.  This makes the code further down
 			// much cleaner

@@ -124,7 +124,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * The initial temperature factor.  This will get damped
 	 * out through the iterations
 	 */
-	private double temperature = 100;
+	private double temperature = 20;
 
 	/**
 	 * The number of iterations to run.
@@ -306,13 +306,13 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		 * Tuning values
 		 */
 		layoutProperties.add(new Tunable("repulsion_multiplier", "Multiplier to calculate the repulsion force", 
-																		Tunable.DOUBLE,new Double(0.04)));
+																		Tunable.DOUBLE,new Double(0.2)));
 		layoutProperties.add(new Tunable("attraction_multiplier", "Multiplier to calculate the attraction force", 
 																		Tunable.DOUBLE, new Double(0.15)));
 		layoutProperties.add(new Tunable("iterations", "Number of iterations", 
 																		Tunable.INTEGER, new Integer(1000)));
 		layoutProperties.add(new Tunable("temperature", "Initial temperature", 
-																		Tunable.DOUBLE, new Double(100)));
+																		Tunable.DOUBLE, new Double(20)));
 		layoutProperties.add(new Tunable("spread_factor", "Amount of extra room for layout", 
 																		Tunable.DOUBLE, new Double(2)));
 		layoutProperties.add(new Tunable("update_iterations", "Number of iterations before updating display", 
@@ -386,6 +386,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		// nodes * 2
 		calculateSize();
 
+		System.out.println("BioLayoutFR Algorithm.  Laying out "+partition.nodeCount()+
+		                   " nodes and "+partition.edgeCount()+" edges: ");
+
 		// Initialize our temperature
 		double temp;
 		if (temperature == 0) {
@@ -395,8 +398,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		}
 
 		// Figure out our starting point
-		if (selectedOnly)
+		if (selectedOnly) {
 			initialLocation = partition.getAverageLocation();
+		}
 
 		// Randomize our points, if any points lie
 		// outside of our bounds
@@ -445,14 +449,6 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 		taskMonitor.setStatus("Updating display");
 
-		double xDelta = 0.0;
-		double yDelta = 0.0;
-		if (selectedOnly) {
-			Dimension finalLocation = partition.getAverageLocation();
-			xDelta = finalLocation.getWidth()-initialLocation.getWidth();
-			yDelta = finalLocation.getHeight()-initialLocation.getHeight();
-		}
-
 		// Actually move the pieces around
 		// Note that we reset our min/max values before we start this
 		// so we can get an accurate min/max for paritioning
@@ -460,12 +456,28 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		iter = partition.nodeIterator();
 		while (iter.hasNext()) {
 			LayoutNode v = (LayoutNode) iter.next();
-			if (selectedOnly && !v.isLocked()) {
-				v.decrement(xDelta, yDelta);
-			}
 			partition.moveNodeToLocation(v);
 		}
-		// System.out.println("Layout complete after "+iteration+" iterations");
+
+		// Not quite done, yet.  If we're only laying out selected nodes, we need
+		// to migrate the selected nodes back to their starting position
+		if (selectedOnly) {
+			double xDelta = 0.0;
+			double yDelta = 0.0;
+			Dimension finalLocation = partition.getAverageLocation();
+			xDelta = finalLocation.getWidth()-initialLocation.getWidth();
+			yDelta = finalLocation.getHeight()-initialLocation.getHeight();
+			iter = partition.nodeIterator();
+			while (iter.hasNext()) {
+				LayoutNode v = (LayoutNode) iter.next();
+				if (!v.isLocked()) {
+					v.decrement(xDelta, yDelta);
+					partition.moveNodeToLocation(v);
+				}
+			}
+		}
+
+		System.out.println("Layout complete after "+iteration+" iterations");
 	}
 
 	/**
@@ -581,37 +593,52 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		v1.setDisp(0,0);
 		double width = v1.getWidth();
 		double height = v1.getHeight();
-		double y = v1.getY();
-		double x = v1.getX();
+		double radius = v1.getWidth()/2;
+
 		Iterator iter = partition.nodeIterator();
 		while (iter.hasNext()) {
 			LayoutNode v2 = (LayoutNode)iter.next();
 			if (v1 == v2) continue;
 
-			double xDelta = x - v2.getX();
-			// If they are on top of each other, offset
-			if (xDelta == 0.0) xDelta = width*Math.random()*2;
-			double yDelta = y - v2.getY();
-			if (yDelta == 0.0) yDelta = height*Math.random()*2;
+			// Get the 
+			double xSign = Math.signum(v1.getX() - v2.getX());
+			double ySign = Math.signum(v1.getY() - v2.getY());
+			
+			// Get our euclidean distance
 			double deltaDistance = v1.distance(v2);
+			if (deltaDistance == 0.0) deltaDistance = EPSILON;
 			double force = forceR(repulsion_constant,deltaDistance);
 
 			// If its too close, increase the force by a constant
-			if (xDelta < ((width + v2.getWidth())/2) ||
-			    yDelta < ((height + v2.getHeight())/2)) {
+			if (deltaDistance < (radius+v2.getWidth()/2)) {
 				force += conflict_avoidance;
 			}
+
 			if (Double.isNaN(force)) {
-				force = EPSILON;
+				force = 500;
 			}
 
 /*
-			debugln("Repulsive force between "+v1.getIdentifier()
+			System.out.println("Repulsive force between "+v1.getIdentifier()
 							 +" and "+v2.getIdentifier()+" is "+force);
+			System.out.println("   distance = "+deltaDistance);
+			System.out.println("   incrementing "+v1.getIdentifier()+" by ("+
+			                       xSign*force+", "+ySign*force+")");
 */
 
-			v1.incrementDisp( (xDelta/deltaDistance) * force,
-										    (yDelta/deltaDistance) * force);
+			// Adjust the displacement.  In the case of doing selectedOnly,
+			// we increase the force to enhance the discrimination power.
+			// Also note that we only update the displacement of the movable
+			// node since the other node won't move anyways.
+			if (v1.isLocked()) {
+				return; // shouldn't happen
+			} else if (v2.isLocked()) {
+				v1.incrementDisp( xSign * force * 2,
+										  		ySign * force * 2);
+			} else {
+				v1.incrementDisp( xSign * force,
+											    ySign * force);
+			}
 		}
 	}
 
@@ -625,20 +652,23 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	private void calculateAttraction(LayoutEdge e) {
 		LayoutNode v1 = e.getSource();
 		LayoutNode v2 = e.getTarget();
-		double xDelta = v1.getX() - v2.getX();
-		double yDelta = v1.getY() - v2.getY();
+		double xSign = Math.signum(v1.getX() - v2.getX());
+		double ySign = Math.signum(v1.getY() - v2.getY());
 		double deltaDistance = v1.distance(v2);
 
 		double force = forceA(attraction_constant,deltaDistance,e.getWeight());
 		if (Double.isNaN(force)) {
 			force = EPSILON;
 		}
+
 /*
-		debugln("Attractive force between "+v1.getIdentifier()
+		System.out.println("Attractive force between "+v1.getIdentifier()
 						 +" and "+v2.getIdentifier()+" is "+force);
-		debugln("   distance = "+deltaDistance);
-		debugln("   constant = "+attraction_constant);
-		debugln("   weight = "+e.getWeight());
+		System.out.println("   distance = "+deltaDistance);
+		System.out.println("   decrementing "+v1.getIdentifier()+" by ("+
+		                       xSign*force+", "+ySign*force+")");
+		System.out.println("   incrementing "+v2.getIdentifier()+" by ("+
+		                       xSign*force+", "+ySign*force+")");
 */
 
 		// Adjust the displacement.  In the case of doing selectedOnly,
@@ -648,16 +678,16 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		if (v2.isLocked() && v1.isLocked()) {
 			return; // shouldn't happen
 		} else if (v2.isLocked()) {
-			v1.decrementDisp( (xDelta/deltaDistance) * force * 5,
-									  		(yDelta/deltaDistance) * force * 5);
+			v1.decrementDisp( xSign * force * 2,
+									  		ySign * force * 2);
 		} else if (v1.isLocked()) {
-			v2.incrementDisp( (xDelta/deltaDistance) * force * 5,
-									  		(yDelta/deltaDistance) * force * 5);
+			v2.incrementDisp( xSign * force * 2,
+									  		ySign * force * 2);
 		} else {
-			v1.decrementDisp( (xDelta/deltaDistance) * force,
-									  		(yDelta/deltaDistance) * force);
-			v2.incrementDisp( (xDelta/deltaDistance) * force,
-									  		(yDelta/deltaDistance) * force);
+			v1.decrementDisp( xSign * force,
+									  		ySign * force);
+			v2.incrementDisp( xSign * force,
+									  		ySign * force);
 		}
 	}
 
@@ -678,13 +708,6 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		double newYDisp = v.getYDisp() / deltaDistance
 											* Math.min(deltaDistance, temp);
 		if (Double.isNaN(newYDisp)) {newYDisp = 0;}
-
-		// Governor: this prevents a hysterisis where the values
-		// occillate wildly
-		// newXDisp = govern(newXDisp);
-		// newYDisp = govern(newYDisp);
-
-		// v.setDisp(newXDisp, newYDisp);
 
 /*
 		debugln("calculatePosition: Node "+v.getIdentifier()
@@ -770,9 +793,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		this.maxDistance = Math.max(Math.max(averageWidth*10,averageHeight*10),
 															 	Math.max(width,height)/max_distance_factor);
 /*
-		debugln("Size: "+width+" x "+height);
-		debugln("maxDistance = "+maxDistance);
-		debugln("maxVelocity = "+maxVelocity);
+		System.out.println("Size: "+width+" x "+height);
+		System.out.println("maxDistance = "+maxDistance);
+		System.out.println("maxVelocity = "+maxVelocity);
 */
 	}
 
@@ -784,7 +807,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		attraction_constant = force*attraction_multiplier;
 		repulsion_constant = force*repulsion_multiplier;
 /*
-		debugln("attraction_constant = "+attraction_constant
+		System.out.println("attraction_constant = "+attraction_constant
 						+", repulsion_constant = "+repulsion_constant);
 */
 	}

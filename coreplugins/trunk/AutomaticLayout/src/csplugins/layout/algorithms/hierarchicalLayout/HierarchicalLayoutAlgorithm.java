@@ -161,7 +161,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		taskMonitor.setStatus("Initializing");
 		initialize();  // Calls initialize_local
 		layout();
-		networkView.fitContent();
+		if (!selectedOnly)
+			networkView.fitContent();
 		networkView.updateView();
 	}
 
@@ -425,7 +426,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 */
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("hierarchical layout complete");
-                networkView.fitContent();
+		if (!selectedOnly)
+    	networkView.fitContent();
 	}
 
 	/**

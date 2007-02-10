@@ -137,6 +137,10 @@ public class LayoutPartition {
 		if (nodeToLayoutNode == null)
 			nodeToLayoutNode = new HashMap(network.getNodeCount());
 
+		// Initialize/reset edge weighting
+		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
+		LayoutPartition.resetEdges();
+
 		// Now, walk the iterators and fill in the values
 		nodeListInitialize(network, networkView, selectedOnly);
 		edgeListInitialize(network, networkView, edgeAttribute);
@@ -160,8 +164,10 @@ public class LayoutPartition {
 			lockedNodes++;
 		} else {
 			updateMinMax(nv.getXPosition(), nv.getYPosition());
-			this.width += Math.sqrt(nv.getWidth());
-			this.height += Math.sqrt(nv.getHeight());
+			// this.width += Math.sqrt(nv.getWidth());
+			// this.height += Math.sqrt(nv.getHeight());
+			this.width += nv.getWidth();
+			this.height += nv.getHeight();
 		}
 	}
 
@@ -212,6 +218,8 @@ public class LayoutPartition {
 				double y = random.nextDouble()*height;
 				node.setLocation(x, y);
 				updateMinMax(x, y);
+			} else {
+				updateMinMax(node.getX(), node.getY());
 			}
 		}
 	}
@@ -226,6 +234,8 @@ public class LayoutPartition {
 	public void moveNodeToLocation(LayoutNode node) {
 		// We provide this routine so that we can keep our
 		// min/max values updated
+		if (node.isLocked())
+			return;
 		node.moveToLocation();
 		updateMinMax(node.getX(), node.getY());
 	}
@@ -274,7 +284,7 @@ public class LayoutPartition {
 			} else if (minWeight == maxWeight) {
 				continue; // unweighted
 			} else if (weight <= minWeightCutoff || weight > maxWeightCutoff) {
-			// Drop any edges that are outside of our bounds
+				// Drop any edges that are outside of our bounds
 				iter.remove();
 			} else {
 				if (logWeights)
@@ -531,6 +541,9 @@ public class LayoutPartition {
 		minWeight = Math.min(minWeight,newEdge.getWeight());
 		maxLogWeight = Math.max(maxLogWeight,newEdge.getLogWeight());
 		minLogWeight = Math.min(minLogWeight,newEdge.getLogWeight());
+		// System.out.println("Updating "+newEdge);
+		// System.out.println("maxWeight = "+maxWeight+", minWeight = "+minWeight);
+		// System.out.println("maxLogWeight = "+maxLogWeight+", minLogWeight = "+minLogWeight);
 	}
 
 	// Static routines
