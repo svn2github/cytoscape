@@ -339,28 +339,24 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 			// Set up offsets -- we start with the overall min and max
 			double xStart = partitionList.get(0).getMinX();
 			double yStart = partitionList.get(0).getMinY();
-			System.out.println("Initial xStart = "+xStart);
 			Iterator partIter = partitionList.iterator();
 			while (partIter.hasNext()) {
 				LayoutPartition part = (LayoutPartition)partIter.next();
 				xStart = Math.min(xStart, part.getMinX());
 				yStart = Math.min(yStart, part.getMinY());
 			}
-			System.out.println("Final xStart = "+xStart);
 
 	    double next_x_start = xStart;
 			double next_y_start = yStart;
 			double current_max_y = 0;
 			double incr = 50;
 
-			System.out.println("Node count = "+(double)network.getNodeCount());
 			double max_dimensions = Math.sqrt( ( double )network.getNodeCount() );
 			// give each node room
 			max_dimensions *= incr;
 			max_dimensions += xStart;
 
-			System.out.println("Laying out with "+partitionList.size()+" partitions");
-			System.out.println("max_dimensions = "+max_dimensions);
+			// System.out.println("Laying out with "+partitionList.size()+" partitions");
 			int partCount = 1;
 
 			// For each partition, layout the graph

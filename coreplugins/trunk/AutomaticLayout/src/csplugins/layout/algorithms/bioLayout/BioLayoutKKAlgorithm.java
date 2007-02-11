@@ -83,7 +83,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
   /**
    * A small value used to avoid division by zero
 	 */
-	protected double EPSILON = 0.0000001D;
+	protected static double EPSILON = 0.0000001D;
 
   private static final
     double[] DEFAULT_NODE_DISTANCE_SPRING_SCALARS = new double[] { 1.0, 1.0, 1.0, 1.0 };
@@ -153,7 +153,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
 		// Set and (Possibly) override defaults
 		this.initializeProperties();
-
 	}
 
 	/**
@@ -393,10 +392,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		// outside of our bounds
 		if (randomize) partition.randomizeLocations();
 
-		System.out.println("Bounding box = ("+partition.getMinX()+", "+partition.getMinY()+
-		                   ", "+partition.getMaxX()+", "+partition.getMaxY()+")");
-		System.out.println("Width = "+partition.getWidth()+", height = "+partition.getHeight());
-
 		// Calculate our edge weights
 		partition.calculateEdgeWeights();
 
@@ -568,7 +563,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
             }
           }
           // End for every node, update the distance using the distance
-          // from tuNode.  So now we don't need to put any neighbors on the
+          // from toNode.  So now we don't need to put any neighbors on the
           // queue or anything, since they've already been taken care of by
           // the previous calculation.
           continue;
@@ -620,12 +615,14 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
        	     m_nodeDistanceRestLengthConstant * nodeDistances[node_i][node_j]/(weight);
       	m_nodeDistanceSpringRestLengths[node_j][node_i] =
       		    m_nodeDistanceSpringRestLengths[node_i][node_j];
+				// System.out.println("Setting spring ("+node_i+","+node_j+") ["+weight+"] length to "+m_nodeDistanceSpringRestLengths[node_j][node_i]);
       	// Compute spring strengths.
       	m_nodeDistanceSpringStrengths[node_i][node_j] =
        	     m_nodeDistanceStrengthConstant /
        	     (nodeDistances[node_i][node_j] * nodeDistances[node_i][node_j]);
       	m_nodeDistanceSpringStrengths[node_j][node_i] =
        	   m_nodeDistanceSpringStrengths[node_i][node_j];
+				// System.out.println("Setting spring ("+node_i+","+node_j+") strength to "+m_nodeDistanceSpringStrengths[node_j][node_i]);
 			}
     }
 	}
@@ -784,10 +781,12 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
       	euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 			}
 
-			//System.out.println("nodeX = "+nodeX);
-      //System.out.println("nodeY = "+nodeY);
-      //System.out.println("otherNodeX = "+otherNode.getX());
-      //System.out.println("otherNodeY = "+otherNode.getY());
+/*
+			System.out.println("nodeX = "+nodeX);
+      System.out.println("nodeY = "+nodeY);
+      System.out.println("otherNodeX = "+otherNode.getX());
+      System.out.println("otherNodeY = "+otherNode.getY());
+*/
 
 			int otherNodeIndex = otherNode.getIndex();
 			double radius = nodeRadius + otherNodeRadius;
@@ -943,8 +942,11 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			return;
       // throw new RuntimeException("denominator too close to 0 for node "+node);
 		}
+		// System.out.println(partials.printPartial());
     double deltaX = ( ((-partials.x * partials.yy) - (-partials.y * partials.xy)) / denominator);
     double deltaY = ( ((-partials.y * partials.xx) - (-partials.x * partials.xy)) / denominator);
+		/* System.out.println("Moving node "+node.getIdentifier()+" from "+node.getX()+", "+node.getY()+
+		                    " to "+(node.getX()+deltaX)+", "+(node.getY()+deltaY)); */
 		node.setLocation(node.getX() + deltaX, node.getY() + deltaY);
   }
 

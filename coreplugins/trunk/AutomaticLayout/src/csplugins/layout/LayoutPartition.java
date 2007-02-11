@@ -94,8 +94,8 @@ public class LayoutPartition {
 	// static because we want to normalize weights across all partitions
 	private static double minWeight = 100000;
 	private static double maxWeight = -100000;
-	private static double maxLogWeight = 0.0;
-	private static double minLogWeight = 0.0;
+	private static double maxLogWeight = -100000;
+	private static double minLogWeight = 100000;
 
   // private constants
   private static final int m_NODE_HAS_NOT_BEEN_SEEN = 0;
@@ -276,6 +276,7 @@ public class LayoutPartition {
 			logWeights = true;
 		while (iter.hasNext()) { 
 			LayoutEdge edge = (LayoutEdge)iter.next();
+      // System.out.println("Edge "+edge.getEdge().getIdentifier()+" has weight "+edge.getWeight());
 			double weight = edge.getWeight();
 			// If we're only dealing with selected nodes, drop any edges
 			// that don't have any selected nodes
@@ -287,15 +288,19 @@ public class LayoutPartition {
 				// Drop any edges that are outside of our bounds
 				iter.remove();
 			} else {
-				if (logWeights)
-					edge.normalizeWeight(minLogWeight,maxLogWeight,true);
-				else
+				if (logWeights) {
+					// edge.normalizeWeight(minLogWeight-1,maxLogWeight+1,true);
+					// The KK algorithm works much better when weights are not too close
+					// to zero -- set 0 as our minLogWeight to force better bounding
+					edge.normalizeWeight(0,maxLogWeight,true);
+				} else
 					edge.normalizeWeight(minWeight,maxWeight,false);
 
 				// Drop any edges where the normalized weight is small
 				if (edge.getWeight() < .001)
 					iter.remove();
 			}
+      // System.out.println("Edge "+edge.getEdge().getIdentifier()+" now has weight "+edge.getWeight());
 		}
 	}
 

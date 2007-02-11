@@ -139,7 +139,7 @@ public class LayoutEdge {
 			}
 		}
 		if (eValue == 0) {
-			this.logWeight = 0;
+			this.logWeight = logWeightCeiling;
 		} else {
 			this.logWeight = Math.min(-Math.log10(eValue),logWeightCeiling); 
 		}
