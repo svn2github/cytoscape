@@ -1127,7 +1127,7 @@ for downloading and installation information.
 Associations extracted from these documents are then converted into interactions, which are further grouped into a network.
 The sentences and source hyperlinks for each association are further stored as attributes of the corresponding nodes and links in the network.
 The networks can be viewed and manipulated in Cytoscape.
-<p>Enhancements in version 2.3 include
+<p>Enhancements in version 2.4 include
 <ul>
 <li> Improved file-based lexicon management, supporting arbitrary file names
 <li> Cytoscape session load/save compatible
