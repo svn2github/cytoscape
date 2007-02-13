@@ -27,21 +27,13 @@ public class GooseDialog extends JPanel
 	private JComboBox gooseChooser;
 
 	private JButton registerButton;
-
 	private JButton updateButton;
-
 	private JButton setIdButton;
-
 	private JButton showButton;
-
 	private JButton hideButton;
-
 	private JButton bcastListButton;
-
 	private JButton bcastNetButton;
-
 	private JButton bcastMatrixButton;
-
 	private JButton bcastHashMapButton;
 
 	private JTextArea messageArea;
@@ -53,8 +45,9 @@ public class GooseDialog extends JPanel
 		createDialog();
 		}
 
-	// TODO would be cleaner to just have a method to add an action to a button I
-  // think
+	/*
+	 *  TODO would be cleaner to just have a method to add an action to a button I think
+	 */
 
 	public JComboBox getGooseBox()
 		{
@@ -116,51 +109,40 @@ public class GooseDialog extends JPanel
 		return messageLabel;
 		}
 
-	private Box getConnectionPanel()
+	private Box getDisplayControlPanel()
 		{
-		Box ConnectPanel = Box.createHorizontalBox();
-
-		// register this goose with the boss
-		registerButton = new JButton("Register");
-		registerButton.setEnabled(true);
-
-//		// update button to re-populate boss and all active geese
-//		updateButton = new JButton("Update");
+		Box DisplayControl = Box.createVerticalBox();
 
 		// drop-down menu for goose selection
 		gooseChooser = new JComboBox();
 		gooseChooser.addItem("Boss");
 
-		JPanel ButtonPane = new JPanel();
-		// ButtonPane.add(registerButton);
-		//ButtonPane.add(updateButton);
-
-		ConnectPanel.add(ButtonPane);
-		ConnectPanel.add(gooseChooser);
-
-		ConnectPanel.add(Box.createHorizontalStrut(20));
-
-		return ConnectPanel;
-		}
-
-	private Box getDisplayControlPanel()
-		{
-		Box DisplayControl = Box.createHorizontalBox();
-
+		JPanel ButtonPanel = new JPanel();
+		
+		registerButton = new JButton("Register");
+		registerButton.setToolTipText("Register with the Boss"); // currently not in use
+		// DisplayControl.add(registerButton);
+		
 		// update button to re-populate boss and all active geese
 		updateButton = new JButton("Update");
 		updateButton.setToolTipText("Update goose list");
-		DisplayControl.add(updateButton);
+		//DisplayControl.add(updateButton);
+		ButtonPanel.add(updateButton);
 		
 		// Show selected goose
 		showButton = new JButton(" Show ");
 		showButton.setToolTipText("Show selected goose");
-		DisplayControl.add(showButton);
+		//DisplayControl.add(showButton);
+		ButtonPanel.add(showButton);
 
 		// Hide selected goose
 		hideButton = new JButton(" Hide ");
 		hideButton.setToolTipText("Hide selected goose");
-		DisplayControl.add(hideButton);
+		//DisplayControl.add(hideButton);
+		ButtonPanel.add(hideButton);
+		
+		DisplayControl.add(gooseChooser);
+		DisplayControl.add(ButtonPanel);
 
 		return DisplayControl;
 		}
@@ -174,21 +156,6 @@ public class GooseDialog extends JPanel
 		BroadcastPanel.add(createNetworkButton());
 		BroadcastPanel.add(createListButton());
 		
-		
-//		JPanel MapMatrixPane = new JPanel();
-//		MapMatrixPane.add(createMapButton());
-//		MapMatrixPane.add(createMatrixButton());
-//
-//		JPanel ListNetworkPane = new JPanel();
-//		ListNetworkPane.add(createNetworkButton());
-//		ListNetworkPane.add(createListButton());
-//
-//		JPanel All = new JPanel();
-//		All.add(ListNetworkPane);
-//		All.add(MapMatrixPane);
-//
-//		BroadcastPanel.add(All);
-
 		return BroadcastPanel;
 		}
 
@@ -254,8 +221,7 @@ public class GooseDialog extends JPanel
 		Blank.setSize(5, 30);
 
 		JPanel ConnectDisplayPane = new JPanel(new BorderLayout());
-		ConnectDisplayPane.add(new JToolBar().add(getConnectionPanel()), BorderLayout.NORTH);
-		ConnectDisplayPane.add( new JToolBar().add(getDisplayControlPanel()), BorderLayout.CENTER);
+		ConnectDisplayPane.add( new JToolBar().add(getDisplayControlPanel()), BorderLayout.NORTH);
 		ConnectDisplayPane.add(Blank, BorderLayout.SOUTH);
 
 		JPanel Broadcast = new JPanel(new BorderLayout());
