@@ -216,8 +216,6 @@ public class GroupAttributesLayout extends AbstractLayout
       else
         offsetx += spacingx;
     }
-		networkView.fitContent();
-		networkView.updateView();
   }
 
   private void makeDiscrete(Map<Comparable, List<Node>> map, List<Node> invalidNodes)

@@ -278,7 +278,5 @@ public class JGraphLayoutWrapper extends AbstractLayout {
     attributes = null;
     cells = null;
     System.gc();
-		networkView.fitContent();
-		networkView.updateView();
   }
 }

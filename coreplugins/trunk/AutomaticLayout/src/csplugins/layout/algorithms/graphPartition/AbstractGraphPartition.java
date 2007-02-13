@@ -26,7 +26,6 @@ import csplugins.layout.LayoutNode;
 
 public abstract class AbstractGraphPartition extends AbstractLayout {
   protected TaskMonitor taskMonitor = null;
-	protected boolean selectedOnly = false;
     
   double incr = 100;
 
@@ -39,7 +38,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	public boolean supportsSelectedOnly() { return true; }
 
 	public void setSelectedOnly (boolean v) {
-		this.selectedOnly = v;
+		selectedOnly = v;
 	}
 
 
@@ -142,8 +141,5 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
       }
 
     } // end iterate through partitions
-		if (!selectedOnly)
-			networkView.fitContent();
-		networkView.updateView();
   }
 }

@@ -109,11 +109,6 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	protected boolean randomize = true;
 
 	/**
-	 * Whether or not to layout all nodes or only selected nodes
-	 */
-	protected boolean selectedOnly = false;
-
-	/**
 	 * Whether or not to use edge weights for layout
 	 */
 	protected boolean supportWeights = true;
@@ -181,7 +176,8 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 * @param value the name of the attribute
 	 */
 	public void setSelectedOnly(boolean value) {
-		this.selectedOnly = value;
+		// Inherited by AbstractLayout
+		selectedOnly = value;
 	}
 
 	public void setSelectedOnly(String value) {
@@ -399,10 +395,6 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 				partCount++;
 			}
 		}
-		if (!selectedOnly) {
-			networkView.fitContent();
-		}
-		networkView.updateView();
 	}
 
 	/**
