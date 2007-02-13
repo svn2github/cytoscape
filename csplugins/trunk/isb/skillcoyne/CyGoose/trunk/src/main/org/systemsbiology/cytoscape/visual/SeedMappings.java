@@ -2,6 +2,8 @@ package org.systemsbiology.cytoscape.visual;
 
 import java.awt.Color;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 import cytoscape.*;
 import cytoscape.visual.mappings.BoundaryRangeValues;
@@ -30,9 +32,17 @@ public class SeedMappings
 	
 	public void seedMappings(String Attribute, double UpperPoint, double LowerPoint)
 		{
-		if (MappedAttributes.contains(Attribute)) return; // this is already mapped
+		if (MappedAttributes.contains(Attribute) || isNodeAttributeMapped(Attribute)) 
+			{
+			// this way if it's already present we will only have gone through the calculators to determine that once
+			MappedAttributes.add(Attribute);
+			System.out.println(" *** " + Attribute + " is mapped to a calculator, skipping seed");
+
+			return; 
+			}
 		else
 			{
+			System.out.println("*** " + Attribute + " NOT mapped, creating seed");
 			MappedAttributes.add(Attribute);
 			double MidPoint = (UpperPoint + LowerPoint)/2;
 			
@@ -72,6 +82,30 @@ public class SeedMappings
 			CountMapping++;
 			}
 		}
+	
+
+	private boolean isNodeAttributeMapped(String AttributeName)
+		{
+		boolean HasAttribute = false;
+		
+		List<Calculator> NodeCalcs = this.NAC.getCalculators();
+		Iterator<Calculator> nI = NodeCalcs.iterator();
+		while(nI.hasNext())
+			{
+			Calculator Current = nI.next();
+			java.util.Vector<ObjectMapping> AllMaps = Current.getMappings();
+			Iterator<ObjectMapping> mI = AllMaps.iterator();
+			while(mI.hasNext())
+				{
+				ObjectMapping Map = mI.next();
+				String ControllingAttName = Map.getControllingAttributeName();
+				if ( ControllingAttName != null &&
+						 ControllingAttName.equalsIgnoreCase(AttributeName) ) HasAttribute = true;
+				}
+			}
+		return HasAttribute;
+		}
+
 	
 	private ContinuousMapping getNodeColor(String Attribute, double UpperPoint, double MidPoint, double LowerPoint)
 		{
