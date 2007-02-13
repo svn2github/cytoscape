@@ -317,7 +317,8 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 					nv.setYPosition(p.getY());
 				}
 
-				networkView.fitContent();
+				if (!selectedOnly)
+					networkView.fitContent();
 				networkView.updateView();
 			}
 
@@ -416,7 +417,8 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	public void run() {
 		construct();
 		saveNewPositions();
-		networkView.fitContent();
+		if (!selectedOnly)
+			networkView.fitContent();
 		networkView.updateView();
 	}
 
