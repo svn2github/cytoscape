@@ -293,52 +293,53 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 
 	private void setupUndo() {
 		Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
-			public String getPresentationName() {
-				return "Layout";
-			}
-
-			public String getRedoPresentationName() {
-				return "Redo: Layout";
-			}
-
-			public String getUndoPresentationName() {
-				return "Undo: Layout";
-			}
-
-			public void redo() {
-				super.redo();
-
-				Iterator it = networkView.getNodeViewsIterator();
-
-				while (it.hasNext()) {
-					NodeView nv = (NodeView) it.next();
-					Point2D.Double p = newPoints.get(nv);
-					nv.setXPosition(p.getX());
-					nv.setYPosition(p.getY());
+				public String getPresentationName() {
+					return "Layout";
 				}
 
-				if (!selectedOnly)
-					networkView.fitContent();
-				networkView.updateView();
-			}
-
-			public void undo() {
-				super.undo();
-
-				Iterator it = networkView.getNodeViewsIterator();
-
-				while (it.hasNext()) {
-					NodeView nv = (NodeView) it.next();
-					Point2D.Double p = origPoints.get(nv);
-					nv.setXPosition(p.getX());
-					nv.setYPosition(p.getY());
+				public String getRedoPresentationName() {
+					return "Redo: Layout";
 				}
 
-				networkView.setZoom(origZoom);
-				((DGraphView) networkView).setCenter(origCenter.getX(), origCenter.getY());
-				networkView.updateView();
-			}
-		});
+				public String getUndoPresentationName() {
+					return "Undo: Layout";
+				}
+
+				public void redo() {
+					super.redo();
+
+					Iterator it = networkView.getNodeViewsIterator();
+
+					while (it.hasNext()) {
+						NodeView nv = (NodeView) it.next();
+						Point2D.Double p = newPoints.get(nv);
+						nv.setXPosition(p.getX());
+						nv.setYPosition(p.getY());
+					}
+
+					if (!selectedOnly)
+						networkView.fitContent();
+
+					networkView.updateView();
+				}
+
+				public void undo() {
+					super.undo();
+
+					Iterator it = networkView.getNodeViewsIterator();
+
+					while (it.hasNext()) {
+						NodeView nv = (NodeView) it.next();
+						Point2D.Double p = origPoints.get(nv);
+						nv.setXPosition(p.getX());
+						nv.setYPosition(p.getY());
+					}
+
+					networkView.setZoom(origZoom);
+					((DGraphView) networkView).setCenter(origCenter.getX(), origCenter.getY());
+					networkView.updateView();
+				}
+			});
 	}
 
 	/**
@@ -417,8 +418,10 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	public void run() {
 		construct();
 		saveNewPositions();
+
 		if (!selectedOnly)
 			networkView.fitContent();
+
 		networkView.updateView();
 	}
 

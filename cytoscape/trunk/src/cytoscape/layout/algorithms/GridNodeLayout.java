@@ -1,58 +1,64 @@
 /*
-  File: GridNodeLayout.java 
-  
+  File: GridNodeLayout.java
+
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
+
+  The Cytoscape Consortium is:
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
   - Pasteur Institute
   - Agilent Technologies
-  
+
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
   any later version.
-  
+
   This library is distributed in the hope that it will be useful, but
   WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
   documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have no obligations to provide maintenance, support,
   updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   be liable to any party for direct, indirect, special,
   incidental or consequential damages, including lost profits, arising
   out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have been advised of the possibility of such damage.  See
   the GNU Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.layout.algorithms;
 
-import cytoscape.util.*;
-import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-import cytoscape.CyEdge;
+import cytoscape.Cytoscape;
+
 import cytoscape.layout.AbstractLayout;
 
-import cytoscape.view.CyNetworkView;
 import cytoscape.task.Task;
 
+import cytoscape.util.*;
+
+import cytoscape.view.CyNetworkView;
+
+import giny.model.*;
+
+import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
-import giny.view.EdgeView;
-import giny.model.*;
+
 import java.awt.Dimension;
+
 import java.util.*;
+
 import javax.swing.JPanel;
 
 
@@ -60,28 +66,73 @@ import javax.swing.JPanel;
  * The GridNodeLayout provides a very simple layout, suitable as
  * the default layout for Cytoscape data readers.
  */
-public class GridNodeLayout extends AbstractLayout { 
+public class GridNodeLayout extends AbstractLayout {
+	/**
+	 * Creates a new GridNodeLayout object.
+	 */
+	public GridNodeLayout() {
+	}
 
-	public GridNodeLayout ( ) { }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String getName() {
+		return "grid";
+	}
 
-  public String getName () { return "grid"; } 
-  public String toString () { return "Grid Layout"; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String toString() {
+		return "Grid Layout";
+	}
 
 	// We do support selected only
-	public boolean supportsSelectedOnly () {return true;}
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean supportsSelectedOnly() {
+		return true;
+	}
+
 	// We dont support node or edge attribute-based layouts
-	public byte[] supportsNodeAttributes () {return null;}
-	public byte[] supportsEdgeAttributes () {return null;}
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public byte[] supportsNodeAttributes() {
+		return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public byte[] supportsEdgeAttributes() {
+		return null;
+	}
 
 	/**
 	 * Returns a JPanel to be used as part of the Settings dialog for this layout
 	 * algorithm.
 	 *
 	 */
-	public JPanel createSettings() { return null; }
+	public JPanel createSettings() {
+		return null;
+	}
 
-
-	public void construct () {
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void construct() {
 		// This creates the default square layout.
 		double distanceBetweenNodes = 80.0d;
 		double currX = 0.0d;
@@ -95,34 +146,43 @@ public class GridNodeLayout extends AbstractLayout {
 			// Yes, our size and starting points need to be different
 			int nodeCount = networkView.nodeCount() - staticNodes.size();
 			columns = (int) Math.sqrt(nodeCount);
+
 			// Calculate our starting point as the geographical center of the
 			// selected nodes.
 			Iterator nodeViews = networkView.getNodeViewsIterator();
+
 			while (nodeViews.hasNext()) {
 				NodeView nView = (NodeView) nodeViews.next();
+
 				if (!isLocked(nView)) {
-					initialX += nView.getXPosition()/nodeCount;
-					initialY += nView.getYPosition()/nodeCount;
+					initialX += (nView.getXPosition() / nodeCount);
+					initialY += (nView.getYPosition() / nodeCount);
 				}
 			}
+
 			// initialX and initialY reflect the center of our grid, so we
 			// need to offset by distance*columns/2 in each direction
-			initialX = initialX - distanceBetweenNodes*(columns-1)/2;
-			initialY = initialY - distanceBetweenNodes*(columns-1)/2;
+			initialX = initialX - ((distanceBetweenNodes * (columns - 1)) / 2);
+			initialY = initialY - ((distanceBetweenNodes * (columns - 1)) / 2);
 			currX = initialX;
 			currY = initialY;
 		} else {
 			columns = (int) Math.sqrt(networkView.nodeCount());
 		}
+
 		Iterator nodeViews = networkView.getNodeViewsIterator();
 		int count = 0;
+
 		while (nodeViews.hasNext()) {
 			NodeView nView = (NodeView) nodeViews.next();
+
 			if (isLocked(nView)) {
 				continue;
 			}
+
 			nView.setOffset(currX, currY);
 			count++;
+
 			if (count == columns) {
 				count = 0;
 				currX = initialX;

@@ -1,584 +1,613 @@
-
 /*
-  File: PhoebeNodeControl.java 
-  
+  File: PhoebeNodeControl.java
+
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
+
+  The Cytoscape Consortium is:
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
   - Institut Pasteur
   - Agilent Technologies
-  
+
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
   any later version.
-  
+
   This library is distributed in the hope that it will be useful, but
   WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
   documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have no obligations to provide maintenance, support,
   updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   be liable to any party for direct, indirect, special,
   incidental or consequential damages, including lost profits, arising
   out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have been advised of the possibility of such damage.  See
   the GNU Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.dialogs;
 
-import phoebe.*;
 import giny.model.*;
+
 import giny.view.*;
+
+import phoebe.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
-import java.util.*;
 
+import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.colorchooser.*;
+import javax.swing.event.*;
+
 
 /**
  * An Adobe style node organizer.
  * Thanks KK!
  */
-public class PhoebeNodeControl  {
+public class PhoebeNodeControl {
+	GraphView view;
+	double Xmin;
+	double Ymin;
+	double Xmax;
+	double Ymax;
+	boolean setToCircle;
+	double side;
+	JSlider radius;
+	JSlider rotation;
+	JSlider twist;
 
-  
-  GraphView view;
-  double Xmin, Ymin;
-  double Xmax, Ymax;
-  boolean setToCircle;
-  double side;
+	/**
+	 * Creates a new PhoebeNodeControl object.
+	 *
+	 * @param view  DOCUMENT ME!
+	 */
+	public PhoebeNodeControl(GraphView view) {
+		JFrame frame = new JFrame("Node Control");
+		JTabbedPane tabbed = new JTabbedPane();
 
-  JSlider radius, rotation, twist;
+		this.view = view;
 
-  public PhoebeNodeControl ( GraphView view ) {
+		//Add Control tabs
+		tabbed.addTab("Align", createAlignTab());
+		tabbed.addTab("Circular", createCircularTab());
 
-    JFrame frame = new JFrame( "Node Control" );
-    JTabbedPane tabbed = new JTabbedPane();
+		frame.getContentPane().add(tabbed);
+		frame.pack();
+		frame.setVisible(true);
+	}
 
-    this.view = view;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JComponent createAlignTab() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0, 1));
 
-    //Add Control tabs
-    tabbed.addTab( "Align", createAlignTab() );
-    tabbed.addTab( "Circular", createCircularTab() );
+		JPanel align = new JPanel();
+		align.setBorder(new TitledBorder("Alignment"));
 
-    frame.getContentPane().add( tabbed );
-    frame.pack();
-    frame.setVisible( true );
-  }
+		JPanel dist = new JPanel();
+		dist.setBorder(new TitledBorder("Distribution"));
 
- 
+		align.setLayout(new BorderLayout());
+		dist.setLayout(new BorderLayout());
 
-  public JComponent createAlignTab () {
+		JPanel aButtons = new JPanel();
+		JPanel bButtons = new JPanel();
+		JPanel dButtons = new JPanel();
 
-        
-    JPanel panel = new JPanel();
-    panel.setLayout( new GridLayout( 0,1 ) );
+		aButtons.add(createHorizontalAlignLeft());
+		aButtons.add(createHorizontalAlignCenter());
+		aButtons.add(createHorizontalAlignRight());
+		bButtons.add(createVerticalAlignTop());
+		bButtons.add(createVerticalAlignCenter());
+		bButtons.add(createVerticalAlignBottom());
 
-    JPanel align = new JPanel();
-    align.setBorder( new TitledBorder( "Alignment" ) );
-    JPanel dist = new JPanel();
-    dist.setBorder( new TitledBorder( "Distribution" ) );
+		align.add(aButtons, BorderLayout.NORTH);
+		align.add(bButtons, BorderLayout.SOUTH);
 
-    align.setLayout( new BorderLayout() );
-    dist.setLayout( new BorderLayout() );
+		dButtons.add(createHorizontalDistributeCenter());
+		dButtons.add(createVerticalDistributeCenter());
 
-    JPanel aButtons = new JPanel();
-    JPanel bButtons = new JPanel();
-    JPanel dButtons = new JPanel();
+		dist.add(dButtons);
 
-    aButtons.add( createHorizontalAlignLeft() );
-    aButtons.add( createHorizontalAlignCenter() );
-    aButtons.add( createHorizontalAlignRight() );
-    bButtons.add( createVerticalAlignTop() );
-    bButtons.add( createVerticalAlignCenter() );
-    bButtons.add( createVerticalAlignBottom() );
+		panel.add(align);
+		panel.add(dist);
 
-    align.add( aButtons, BorderLayout.NORTH );
-    align.add( bButtons, BorderLayout.SOUTH );
+		return panel;
+	}
 
-    dButtons.add( createHorizontalDistributeCenter() );
-    dButtons.add( createVerticalDistributeCenter() );
-  
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JButton createHorizontalAlignLeft() {
+		return new JButton(new AbstractAction("HorizontalAlignLeft") {
+				public void actionPerformed(ActionEvent e) {
+					// Do this in the GUI Event Dispatch thread...
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								// do it.
+								double h;
+								NodeView node_view;
+								Node node;
+								Iterator sel_nodes;
+								sel_nodes = view.getSelectedNodes().iterator();
+								h = ((NodeView) sel_nodes.next()).getXPosition();
 
-    dist.add( dButtons );
-    
-    panel.add( align );
-    panel.add( dist );
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
 
-    return panel;
-  }
+									if (node_view.getXPosition() < h) {
+										h = node_view.getXPosition();
+									}
+								}
 
-  public JButton createHorizontalAlignLeft () {
-    return 
-      new JButton(
-                  new AbstractAction( "HorizontalAlignLeft" ) {
-                    public void actionPerformed ( ActionEvent e ) {
-                      // Do this in the GUI Event Dispatch thread...
-                      SwingUtilities.invokeLater( new Runnable() {
-                          public void run() {
-                            // do it.
-                            
-                            double h;
-                            NodeView node_view;
-                            Node node;
-                            Iterator sel_nodes;
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            h = ( ( NodeView )sel_nodes.next() ).getXPosition();
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              if ( node_view.getXPosition() < h ) {
-                                h = node_view.getXPosition();
-                              }
-                            }
-                            
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            while ( sel_nodes.hasNext() ) {
-                              ( ( NodeView )sel_nodes.next() ).setXPosition( h );
-                            }
-                            // done doing it
-                          }
-                        }
-                                                  );
-                    }
-                  }
-                  );
-  }
-  
-  public JButton createHorizontalAlignRight () {
-    return 
-      new JButton(
-                  new AbstractAction( "HorizontalAlignRight" ) {
-                    public void actionPerformed ( ActionEvent e ) {
-                      // Do this in the GUI Event Dispatch thread...
-                      SwingUtilities.invokeLater( new Runnable() {
-                          public void run() {
-                            // do it.
-                            double h;
-                            NodeView node_view;
-                            Node node;
-                            Iterator sel_nodes;
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            h = ( ( NodeView )sel_nodes.next() ).getXPosition();
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              if ( node_view.getXPosition() > h ) {
-                                h = node_view.getXPosition();
-                              }
-                            }
-                            
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            while ( sel_nodes.hasNext() ) {
-                              ( ( NodeView )sel_nodes.next() ).setXPosition( h );
-                            }
-                           
-                            // done doing it
-                          }
-                        }
-                                                  );
-                    }
-                  }
-                  );
+								sel_nodes = view.getSelectedNodes().iterator();
 
-  }
+								while (sel_nodes.hasNext()) {
+									((NodeView) sel_nodes.next()).setXPosition(h);
+								}
 
-  public JButton createHorizontalAlignCenter () {
-    return 
-      new JButton(
-                  new AbstractAction( "HorizontalAlignCenter" ) {
-                    public void actionPerformed ( ActionEvent e ) {
-                      // Do this in the GUI Event Dispatch thread...
-                      SwingUtilities.invokeLater( new Runnable() {
-                          public void run() {
-                            // do it.
-                            
-                            double min;
-                            double max;
-                            NodeView node_view;
-                            Iterator sel_nodes;
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            min = ( ( NodeView )sel_nodes.next() ).getXPosition();
-                            max = min;
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              if ( node_view.getXPosition() > max ) {
-                                max = node_view.getXPosition();
-                              }
-                              if ( node_view.getXPosition() < min ) {
-                                min = node_view.getXPosition();
-                              }
+								// done doing it
+							}
+						});
+				}
+			});
+	}
 
-                            }
-                            min = ( min + (max - min) / 2 );
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            while ( sel_nodes.hasNext() ) {
-                              ( ( NodeView )sel_nodes.next() ).setXPosition( min );
-                            }                        }
-                             
-                            // done doing it
-                        
-                        }
-                                                  );
-                    }
-                  }
-                  );
-    
-  }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JButton createHorizontalAlignRight() {
+		return new JButton(new AbstractAction("HorizontalAlignRight") {
+				public void actionPerformed(ActionEvent e) {
+					// Do this in the GUI Event Dispatch thread...
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								// do it.
+								double h;
+								NodeView node_view;
+								Node node;
+								Iterator sel_nodes;
+								sel_nodes = view.getSelectedNodes().iterator();
+								h = ((NodeView) sel_nodes.next()).getXPosition();
 
-  public JButton createVerticalAlignBottom () {
-return 
-      new JButton(
-                  new AbstractAction( "VerticalAlignBottom" ) {
-                    public void actionPerformed ( ActionEvent e ) {
-                      // Do this in the GUI Event Dispatch thread...
-                      SwingUtilities.invokeLater( new Runnable() {
-                          public void run() {
-                            // do it.
-                            double h;
-                            NodeView node_view;
-                            Node node;
-                            Iterator sel_nodes;
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            h = ( ( NodeView )sel_nodes.next() ).getYPosition();
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              if ( node_view.getYPosition() > h ) {
-                                h = node_view.getYPosition();
-                              }
-                            }
-                            
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            while ( sel_nodes.hasNext() ) {
-                              ( ( NodeView )sel_nodes.next() ).setYPosition( h );
-                            }
-                          
-                            // done doing it
-                          }
-                        }
-                                                  );
-                    }
-                  }
-                  );
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
 
-  }
+									if (node_view.getXPosition() > h) {
+										h = node_view.getXPosition();
+									}
+								}
 
-  public JButton createVerticalAlignCenter () {
-    return 
-      new JButton(
-                  new AbstractAction( "VerticalAlignCenter" ) {
-                    public void actionPerformed ( ActionEvent e ) {
-                      // Do this in the GUI Event Dispatch thread...
-                      SwingUtilities.invokeLater( new Runnable() {
-                          public void run() {
-                            // do it.
-                                 
-                            double min;
-                            double max;
-                            NodeView node_view;
-                            Iterator sel_nodes;
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            min = ( ( NodeView )sel_nodes.next() ).getYPosition();
-                            max = min;
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              if ( node_view.getYPosition() > max ) {
-                                max = node_view.getYPosition();
-                              }
-                              if ( node_view.getYPosition() < min ) {
-                                min = node_view.getYPosition();
-                              }
+								sel_nodes = view.getSelectedNodes().iterator();
 
-                            }
-                            min = ( min + (max - min) / 2 );
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            while ( sel_nodes.hasNext() ) {
-                              ( ( NodeView )sel_nodes.next() ).setYPosition( min );
-                            }                        
-                            
-                             
-                          
-                            // done doing it
-                          }
-                        }
-                                                  );
-                    }
-                  }
-                  );
-  
-  }
+								while (sel_nodes.hasNext()) {
+									((NodeView) sel_nodes.next()).setXPosition(h);
+								}
 
-  public JButton createVerticalAlignTop () {
-    return 
-      new JButton(
-                  new AbstractAction( "VerticalAlignTop" ) {
-                    public void actionPerformed ( ActionEvent e ) {
-                      // Do this in the GUI Event Dispatch thread...
-                      SwingUtilities.invokeLater( new Runnable() {
-                          public void run() {
-                            // do it.
-                            double h;
-                            NodeView node_view;
-                            Node node;
-                            Iterator sel_nodes;
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            h = ( ( NodeView )sel_nodes.next() ).getYPosition();
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              if ( node_view.getYPosition() < h ) {
-                                h = node_view.getYPosition();
-                              }
-                            }
-                            
-                            sel_nodes = view.getSelectedNodes().iterator();
-                            while ( sel_nodes.hasNext() ) {
-                              ( ( NodeView )sel_nodes.next() ).setYPosition( h );
-                            }
-                          
-                            // done doing it
-                          }
-                        }
-                                                  );
-                    }
-                  }
-                  );
+								// done doing it
+							}
+						});
+				}
+			});
+	}
 
-  }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JButton createHorizontalAlignCenter() {
+		return new JButton(new AbstractAction("HorizontalAlignCenter") {
+				public void actionPerformed(ActionEvent e) {
+					// Do this in the GUI Event Dispatch thread...
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								// do it.
+								double min;
+								double max;
+								NodeView node_view;
+								Iterator sel_nodes;
+								sel_nodes = view.getSelectedNodes().iterator();
+								min = ((NodeView) sel_nodes.next()).getXPosition();
+								max = min;
 
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
 
-  public JButton createVerticalDistributeCenter () {
-   
- return 
-      new JButton(
-                  new AbstractAction( "VerticalDistributeBottom" ) {
-                    public void actionPerformed ( ActionEvent e ) {
-                      // Do this in the GUI Event Dispatch thread...
-                      SwingUtilities.invokeLater( new Runnable() {
-                          public void run() {
-                            // do it.
-                            
-                            double min = 0;
-                            double max = 0;
-                            NodeView node_view = null;
-                            List sel_nodes_list = view.getSelectedNodes();
+									if (node_view.getXPosition() > max) {
+										max = node_view.getXPosition();
+									}
 
-                            if ( sel_nodes_list.size() == 0 )
-                              return;
+									if (node_view.getXPosition() < min) {
+										min = node_view.getXPosition();
+									}
+								}
 
-                            Iterator sel_nodes;
-                            sel_nodes = sel_nodes_list.iterator();
-                            min = ( ( NodeView )sel_nodes.next() ).getYPosition();
-                            max = min;
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              
-                              if ( node_view.getYPosition() > max ) {
-                                max = node_view.getYPosition();
-                              }
-                              if ( node_view.getYPosition() < min ) {
-                                min = node_view.getYPosition();
-                              }
-                            }
-                            
-                            double diff =  ( min + (max - min) / 2 ) / sel_nodes_list.size() + node_view.getHeight() ;
-                            double loc = min + (max - min) / 2;
+								min = (min + ((max - min) / 2));
+								sel_nodes = view.getSelectedNodes().iterator();
 
-                            sel_nodes = sel_nodes_list.iterator();
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              node_view.setYPosition( loc );
-                              loc += diff;
-                            }
-                            // done doing it
-                          }
-                        }
-                                                  );
-                    }
-                  }
-                  );
+								while (sel_nodes.hasNext()) {
+									((NodeView) sel_nodes.next()).setXPosition(min);
+								}
+							}
 
+							// done doing it
+						});
+				}
+			});
+	}
 
-  }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JButton createVerticalAlignBottom() {
+		return new JButton(new AbstractAction("VerticalAlignBottom") {
+				public void actionPerformed(ActionEvent e) {
+					// Do this in the GUI Event Dispatch thread...
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								// do it.
+								double h;
+								NodeView node_view;
+								Node node;
+								Iterator sel_nodes;
+								sel_nodes = view.getSelectedNodes().iterator();
+								h = ((NodeView) sel_nodes.next()).getYPosition();
 
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
 
-  public JButton createHorizontalDistributeCenter () {
-      return new JButton(
-                  new AbstractAction( "HorizontalDistributeCenter" ) {
-                    public void actionPerformed ( ActionEvent e ) {
-                      // Do this in the GUI Event Dispatch thread...
-                      SwingUtilities.invokeLater( new Runnable() {
-                          public void run() {
-                            // do it.
-                            double min = 0;
-                            double max = 0;
-                            NodeView node_view = null;
-                            List sel_nodes_list = view.getSelectedNodes();
+									if (node_view.getYPosition() > h) {
+										h = node_view.getYPosition();
+									}
+								}
 
-                            if ( sel_nodes_list.size() == 0 )
-                              return;
+								sel_nodes = view.getSelectedNodes().iterator();
 
-                            Iterator sel_nodes;
-                            sel_nodes = sel_nodes_list.iterator();
-                            min = ( ( NodeView )sel_nodes.next() ).getXPosition();
-                            max = min;
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              
-                              if ( node_view.getXPosition() > max ) {
-                                max = node_view.getXPosition();
-                              }
-                              if ( node_view.getXPosition() < min ) {
-                                min = node_view.getXPosition();
-                              }
-                            }
-                            
-                            double diff =  ( min + (max - min) / 2 ) / sel_nodes_list.size() + node_view.getWidth() ;
-                            double loc = min + (max - min) / 2;
+								while (sel_nodes.hasNext()) {
+									((NodeView) sel_nodes.next()).setYPosition(h);
+								}
 
-                            sel_nodes = sel_nodes_list.iterator();
-                            while ( sel_nodes.hasNext() ) {
-                              node_view = ( NodeView )sel_nodes.next();
-                              node_view.setXPosition( loc );
-                              loc += diff;
-                            }
-                        
-                            // done doing it
-                          }
-                        }
-                                                  );
-                    }
-                  }
-                  );
+								// done doing it
+							}
+						});
+				}
+			});
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JButton createVerticalAlignCenter() {
+		return new JButton(new AbstractAction("VerticalAlignCenter") {
+				public void actionPerformed(ActionEvent e) {
+					// Do this in the GUI Event Dispatch thread...
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								// do it.
+								double min;
+								double max;
+								NodeView node_view;
+								Iterator sel_nodes;
+								sel_nodes = view.getSelectedNodes().iterator();
+								min = ((NodeView) sel_nodes.next()).getYPosition();
+								max = min;
 
-  }
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
 
+									if (node_view.getYPosition() > max) {
+										max = node_view.getYPosition();
+									}
 
-  protected JComponent createCircularTab () {
+									if (node_view.getYPosition() < min) {
+										min = node_view.getYPosition();
+									}
+								}
 
-    radius = new JSlider( 0, 2000 );
-    radius.addChangeListener( new SliderListener() );
-    
-    rotation = new JSlider( 0, 360 );
-    rotation.addChangeListener( new SliderListener() );
+								min = (min + ((max - min) / 2));
+								sel_nodes = view.getSelectedNodes().iterator();
 
-    twist = new JSlider( 0, 50000 );
-    twist.addChangeListener( new SliderListener() );
-    
-    rotation.setValue( 90 );
-    radius.setValue( 100 );
-    twist.setValue( 0 );
+								while (sel_nodes.hasNext()) {
+									((NodeView) sel_nodes.next()).setYPosition(min);
+								}
 
-    JPanel panel = new JPanel();
-    panel.setLayout( new GridLayout( 0,1 ) );
-    JPanel rad = new JPanel();
-    rad.setLayout( new BorderLayout() );
-    rad.setBorder( new TitledBorder( "Radius" ) );
-    rad.add( radius );
+								// done doing it
+							}
+						});
+				}
+			});
+	}
 
-    JPanel rot = new JPanel();
-    rot.setBorder( new TitledBorder( "Rotation" ) );
-    rot.add( rotation );
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JButton createVerticalAlignTop() {
+		return new JButton(new AbstractAction("VerticalAlignTop") {
+				public void actionPerformed(ActionEvent e) {
+					// Do this in the GUI Event Dispatch thread...
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								// do it.
+								double h;
+								NodeView node_view;
+								Node node;
+								Iterator sel_nodes;
+								sel_nodes = view.getSelectedNodes().iterator();
+								h = ((NodeView) sel_nodes.next()).getYPosition();
 
-    JPanel twt = new JPanel();
-    twt.setBorder( new TitledBorder( "Twist" ) );
-    twt.add( twist );
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
 
-    panel.add(rad);
-    panel.add(rot);
-    panel.add(twt);
+									if (node_view.getYPosition() < h) {
+										h = node_view.getYPosition();
+									}
+								}
 
-    return panel;    
-  }
+								sel_nodes = view.getSelectedNodes().iterator();
 
-  protected void updateSliders () {
+								while (sel_nodes.hasNext()) {
+									((NodeView) sel_nodes.next()).setYPosition(h);
+								}
 
-    double theta;
-    double thetaIncr;
-   
-    int ra = radius.getValue();
-    int ro = rotation.getValue();
-    int tw = twist.getValue();
-    double radius = ( new Integer(ra) ).doubleValue();
-    double rotation = ( new Integer(ro )).doubleValue();
-    double radians = Math.toRadians( tw );
-    NodeView node_view;
-   
-    List sel_nodes_list = view.getSelectedNodes();
-    if ( sel_nodes_list.size() == 0 ) {
-      return;
-    }
-    
-    Iterator sel_nodes;
-    sel_nodes = sel_nodes_list.iterator();
-    double maxX, maxY, minX, minY;
-    node_view = ( NodeView )sel_nodes.next();
-    maxY = node_view.getYPosition();
-    minY = maxY;
-    maxX = node_view.getXPosition();
-    minX = maxX;
-    while ( sel_nodes.hasNext() ) {
-      node_view = ( NodeView )sel_nodes.next();
-      
-      if ( node_view.getXPosition() > maxX ) {
-        maxX = node_view.getXPosition();
-      }
-      if ( node_view.getXPosition() < minX ) {
-        minX = node_view.getXPosition();
-      }
-      if ( node_view.getYPosition() > maxY ) {
-        maxY = node_view.getYPosition();
-      }
-      if ( node_view.getYPosition() < minY ) {
-        minY = node_view.getYPosition();
-      }
-    }
-    double midX = minX + ( ( maxX - minX ) /2 );
-    double midY = minY + ( ( maxY - minY ) /2 );
-      
-    theta = Math.acos( ( ( maxX - minX ) /2 ) / radius );
-    theta += Math.toRadians( rotation );
-    thetaIncr = ( Math.PI - (2 * theta)  ) / sel_nodes_list.size() ;
-    
-    sel_nodes = sel_nodes_list.iterator();
-    while ( sel_nodes.hasNext() ) {
-      node_view = ( NodeView )sel_nodes.next();
-      node_view.setXPosition( Math.cos(theta + Math.toRadians( radians )) * radius + midX );
-      node_view.setYPosition( Math.sin(theta + Math.toRadians( radians )) * radius + midY );
-      theta += thetaIncr;
-    }
-    
-  }
+								// done doing it
+							}
+						});
+				}
+			});
+	}
 
-  public  class SliderListener implements ChangeListener {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JButton createVerticalDistributeCenter() {
+		return new JButton(new AbstractAction("VerticalDistributeBottom") {
+				public void actionPerformed(ActionEvent e) {
+					// Do this in the GUI Event Dispatch thread...
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								// do it.
+								double min = 0;
+								double max = 0;
+								NodeView node_view = null;
+								List sel_nodes_list = view.getSelectedNodes();
 
-   public  SliderListener (  ) {
-    }
+								if (sel_nodes_list.size() == 0)
+									return;
 
-   public   void stateChanged(ChangeEvent e) {
-   
-      updateSliders();
-   
-   }
+								Iterator sel_nodes;
+								sel_nodes = sel_nodes_list.iterator();
+								min = ((NodeView) sel_nodes.next()).getYPosition();
+								max = min;
 
-  } // class SliderListener
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
 
+									if (node_view.getYPosition() > max) {
+										max = node_view.getYPosition();
+									}
+
+									if (node_view.getYPosition() < min) {
+										min = node_view.getYPosition();
+									}
+								}
+
+								double diff = ((min + ((max - min) / 2)) / sel_nodes_list.size())
+								              + node_view.getHeight();
+								double loc = min + ((max - min) / 2);
+
+								sel_nodes = sel_nodes_list.iterator();
+
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
+									node_view.setYPosition(loc);
+									loc += diff;
+								}
+
+								// done doing it
+							}
+						});
+				}
+			});
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JButton createHorizontalDistributeCenter() {
+		return new JButton(new AbstractAction("HorizontalDistributeCenter") {
+				public void actionPerformed(ActionEvent e) {
+					// Do this in the GUI Event Dispatch thread...
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								// do it.
+								double min = 0;
+								double max = 0;
+								NodeView node_view = null;
+								List sel_nodes_list = view.getSelectedNodes();
+
+								if (sel_nodes_list.size() == 0)
+									return;
+
+								Iterator sel_nodes;
+								sel_nodes = sel_nodes_list.iterator();
+								min = ((NodeView) sel_nodes.next()).getXPosition();
+								max = min;
+
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
+
+									if (node_view.getXPosition() > max) {
+										max = node_view.getXPosition();
+									}
+
+									if (node_view.getXPosition() < min) {
+										min = node_view.getXPosition();
+									}
+								}
+
+								double diff = ((min + ((max - min) / 2)) / sel_nodes_list.size())
+								              + node_view.getWidth();
+								double loc = min + ((max - min) / 2);
+
+								sel_nodes = sel_nodes_list.iterator();
+
+								while (sel_nodes.hasNext()) {
+									node_view = (NodeView) sel_nodes.next();
+									node_view.setXPosition(loc);
+									loc += diff;
+								}
+
+								// done doing it
+							}
+						});
+				}
+			});
+	}
+
+	protected JComponent createCircularTab() {
+		radius = new JSlider(0, 2000);
+		radius.addChangeListener(new SliderListener());
+
+		rotation = new JSlider(0, 360);
+		rotation.addChangeListener(new SliderListener());
+
+		twist = new JSlider(0, 50000);
+		twist.addChangeListener(new SliderListener());
+
+		rotation.setValue(90);
+		radius.setValue(100);
+		twist.setValue(0);
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0, 1));
+
+		JPanel rad = new JPanel();
+		rad.setLayout(new BorderLayout());
+		rad.setBorder(new TitledBorder("Radius"));
+		rad.add(radius);
+
+		JPanel rot = new JPanel();
+		rot.setBorder(new TitledBorder("Rotation"));
+		rot.add(rotation);
+
+		JPanel twt = new JPanel();
+		twt.setBorder(new TitledBorder("Twist"));
+		twt.add(twist);
+
+		panel.add(rad);
+		panel.add(rot);
+		panel.add(twt);
+
+		return panel;
+	}
+
+	protected void updateSliders() {
+		double theta;
+		double thetaIncr;
+
+		int ra = radius.getValue();
+		int ro = rotation.getValue();
+		int tw = twist.getValue();
+		double radius = (new Integer(ra)).doubleValue();
+		double rotation = (new Integer(ro)).doubleValue();
+		double radians = Math.toRadians(tw);
+		NodeView node_view;
+
+		List sel_nodes_list = view.getSelectedNodes();
+
+		if (sel_nodes_list.size() == 0) {
+			return;
+		}
+
+		Iterator sel_nodes;
+		sel_nodes = sel_nodes_list.iterator();
+
+		double maxX;
+		double maxY;
+		double minX;
+		double minY;
+		node_view = (NodeView) sel_nodes.next();
+		maxY = node_view.getYPosition();
+		minY = maxY;
+		maxX = node_view.getXPosition();
+		minX = maxX;
+
+		while (sel_nodes.hasNext()) {
+			node_view = (NodeView) sel_nodes.next();
+
+			if (node_view.getXPosition() > maxX) {
+				maxX = node_view.getXPosition();
+			}
+
+			if (node_view.getXPosition() < minX) {
+				minX = node_view.getXPosition();
+			}
+
+			if (node_view.getYPosition() > maxY) {
+				maxY = node_view.getYPosition();
+			}
+
+			if (node_view.getYPosition() < minY) {
+				minY = node_view.getYPosition();
+			}
+		}
+
+		double midX = minX + ((maxX - minX) / 2);
+		double midY = minY + ((maxY - minY) / 2);
+
+		theta = Math.acos(((maxX - minX) / 2) / radius);
+		theta += Math.toRadians(rotation);
+		thetaIncr = (Math.PI - (2 * theta)) / sel_nodes_list.size();
+
+		sel_nodes = sel_nodes_list.iterator();
+
+		while (sel_nodes.hasNext()) {
+			node_view = (NodeView) sel_nodes.next();
+			node_view.setXPosition((Math.cos(theta + Math.toRadians(radians)) * radius) + midX);
+			node_view.setYPosition((Math.sin(theta + Math.toRadians(radians)) * radius) + midY);
+			theta += thetaIncr;
+		}
+	}
+
+	public class SliderListener implements ChangeListener {
+		public SliderListener() {
+		}
+
+		public void stateChanged(ChangeEvent e) {
+			updateSliders();
+		}
+	} // class SliderListener
 }
- 

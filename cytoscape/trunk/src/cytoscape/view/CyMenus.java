@@ -1,35 +1,35 @@
 /*
- File: CyMenus.java 
- 
+ File: CyMenus.java
+
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
- 
- The Cytoscape Consortium is: 
+
+ The Cytoscape Consortium is:
  - Institute for Systems Biology
  - University of California San Diego
  - Memorial Sloan-Kettering Cancer Center
  - Institut Pasteur
  - Agilent Technologies
- 
+
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
  any later version.
- 
+
  This library is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have no obligations to provide maintenance, support,
  updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  be liable to any party for direct, indirect, special,
  incidental or consequential damages, including lost profits, arising
  out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have been advised of the possibility of such damage.  See
  the GNU Lesser General Public License for more details.
- 
+
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -38,36 +38,9 @@
 //------------------------------------------------------------------------------
 package cytoscape.view;
 
-//------------------------------------------------------------------------------
-
-import giny.view.GraphViewChangeEvent;
-import giny.view.GraphViewChangeListener;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-
-import javax.help.CSH;
-import javax.help.HelpBroker;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.KeyStroke;
-import javax.swing.MenuElement;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+
 import cytoscape.actions.AlphabeticalSelectionAction;
 import cytoscape.actions.BendSelectedEdgesAction;
 import cytoscape.actions.BirdsEyeViewAction;
@@ -122,10 +95,41 @@ import cytoscape.actions.UnHideSelectedEdgesAction;
 import cytoscape.actions.UnHideSelectedNodesAction;
 import cytoscape.actions.ZoomAction;
 import cytoscape.actions.ZoomSelectedAction;
+
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
+
 import cytoscape.view.cytopanels.CytoPanel;
+
+//------------------------------------------------------------------------------
+import giny.view.GraphViewChangeEvent;
+import giny.view.GraphViewChangeListener;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
+import javax.help.CSH;
+import javax.help.HelpBroker;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
+import javax.swing.MenuElement;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+
 
 //------------------------------------------------------------------------------
 /**
@@ -137,57 +141,65 @@ import cytoscape.view.cytopanels.CytoPanel;
  * </p>
  */
 public class CyMenus implements GraphViewChangeListener {
-
 	boolean menusInitialized = false;
-
 	CytoscapeMenuBar menuBar;
-
-	JMenu fileMenu, loadSubMenu, saveSubMenu, newSubMenu, newSubMenu2;
-
+	JMenu fileMenu;
+	JMenu loadSubMenu;
+	JMenu saveSubMenu;
+	JMenu newSubMenu;
+	JMenu newSubMenu2;
 	JMenu editMenu;
 
 	// JMenuItem undoMenuItem, redoMenuItem;
 	// AJK 06/07/06: BEGIN
 	// more deletion functionality to the editor
 	// JMenuItem deleteSelectionMenuItem;
-	JMenu viewMenu, viewSubMenu;
+	JMenu viewMenu;
 
+	// JMenuItem undoMenuItem, redoMenuItem;
+	// AJK 06/07/06: BEGIN
+	// more deletion functionality to the editor
+	// JMenuItem deleteSelectionMenuItem;
+	JMenu viewSubMenu;
 	JMenu selectMenu;
-
 	JMenu displayNWSubMenu;
-
 	JMenu layoutMenu;
-
 	JMenu vizMenu;
-
 	JMenu helpMenu;
-
 	JMenu cytoPanelMenu;
-
-	CytoscapeAction menuPrintAction, menuExportAction, menuSaveSessionAction,
-			menuSaveSessionAsAction, menuOpenSessionAction,
-			networkOverviewAction;
-
-	JMenuItem vizMenuItem, vizMapperItem;
-
-	JCheckBoxMenuItem cytoPanelWestItem, cytoPanelEastItem, cytoPanelSouthItem,
-			networkOverviewItem;
-
-	JMenuItem helpContentsMenuItem, // helpContextSensitiveMenuItem,
-			helpAboutMenuItem, helpContactHelpDeskMenuItem;
-
-	JButton openSessionButton, saveButton, zoomInButton, zoomOutButton,
-			zoomSelectedButton, zoomDisplayAllButton, showAllButton,
-			hideSelectedButton, annotationButton, vizButton;
-
+	CytoscapeAction menuPrintAction;
+	CytoscapeAction menuExportAction;
+	CytoscapeAction menuSaveSessionAction;
+	CytoscapeAction menuSaveSessionAsAction;
+	CytoscapeAction menuOpenSessionAction;
+	CytoscapeAction networkOverviewAction;
+	JMenuItem vizMenuItem;
+	JMenuItem vizMapperItem;
+	JCheckBoxMenuItem cytoPanelWestItem;
+	JCheckBoxMenuItem cytoPanelEastItem;
+	JCheckBoxMenuItem cytoPanelSouthItem;
+	JCheckBoxMenuItem networkOverviewItem;
+	JMenuItem helpContentsMenuItem;
+	JMenuItem helpAboutMenuItem;
+	JMenuItem helpContactHelpDeskMenuItem;
+	JButton openSessionButton;
+	JButton saveButton;
+	JButton zoomInButton;
+	JButton zoomOutButton;
+	JButton zoomSelectedButton;
+	JButton zoomDisplayAllButton;
+	JButton showAllButton;
+	JButton hideSelectedButton;
+	JButton annotationButton;
+	JButton vizButton;
 	JMenu opsMenu;
-
 	CytoscapeToolBar toolBar;
-
 	boolean nodesRequiredItemsEnabled;
 
+	/**
+	 * Creates a new CyMenus object.
+	 */
 	public CyMenus() {
-
 		// the following methods construct the basic bar objects, but
 		// don't fill them with menu items and associated action listeners
 		createMenuBar();
@@ -288,10 +300,21 @@ public class CyMenus implements GraphViewChangeListener {
 		return toolBar;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param action DOCUMENT ME!
+	 */
 	public void addAction(CytoscapeAction action) {
 		addCytoscapeAction(action);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param action DOCUMENT ME!
+	 * @param index DOCUMENT ME!
+	 */
 	public void addAction(CytoscapeAction action, int index) {
 		addCytoscapeAction(action, index);
 	}
@@ -304,15 +327,15 @@ public class CyMenus implements GraphViewChangeListener {
 		if (action.isInMenuBar()) {
 			getMenuBar().addAction(action);
 		}
+
 		if (action.isInToolBar()) {
 			getToolBar().addAction(action);
 		}
-
 	}
 
 	/**
 	 * Add the menu item in a specific position
-	 * 
+	 *
 	 * @param action
 	 * @param index
 	 */
@@ -320,10 +343,10 @@ public class CyMenus implements GraphViewChangeListener {
 		if (action.isInMenuBar()) {
 			getMenuBar().addAction(action, index);
 		}
+
 		if (action.isInToolBar()) {
 			getToolBar().addAction(action);
 		}
-
 	}
 
 	// AJK: 06/07/06 BEGIN
@@ -363,10 +386,14 @@ public class CyMenus implements GraphViewChangeListener {
 	public void setVisualMapperItemsEnabled(boolean newState) {
 		vizMenuItem.setEnabled(newState);
 		vizButton.setEnabled(newState);
-		vizMapperItem.setText(newState ? "Lock VizMapper\u2122"
-				: "Unlock VizMapper\u2122");
+		vizMapperItem.setText(newState ? "Lock VizMapper\u2122" : "Unlock VizMapper\u2122");
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param newState DOCUMENT ME!
+	 */
 	public void setOverviewEnabled(boolean newState) {
 		networkOverviewItem.setSelected(newState);
 	}
@@ -380,7 +407,8 @@ public class CyMenus implements GraphViewChangeListener {
 	public void setNodesRequiredItemsEnabled() {
 		boolean newState = Cytoscape.getCurrentNetwork().getNodeCount() > 0;
 		newState = true; // TODO: remove this once the
-		// GraphViewChangeListener system is working
+		                 // GraphViewChangeListener system is working
+
 		if (newState == nodesRequiredItemsEnabled)
 			return;
 
@@ -397,16 +425,16 @@ public class CyMenus implements GraphViewChangeListener {
 	 * method is the listener which will update the UI items, enabling or
 	 * disabling items which are only available when the graph view is
 	 * non-empty.
-	 * 
+	 *
 	 * @param e
 	 */
 	public void graphViewChanged(GraphViewChangeEvent e) {
 		// Do this in the GUI Event Dispatch thread...
 		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				setNodesRequiredItemsEnabled();
-			}
-		});
+				public void run() {
+					setNodesRequiredItemsEnabled();
+				}
+			});
 	}
 
 	/**
@@ -421,53 +449,54 @@ public class CyMenus implements GraphViewChangeListener {
 	 * so it can be called from CytoscapeInit.Init(), because we need the
 	 * CytoscapeDesktop to be instantiated first.
 	 */
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void initCytoPanelMenus() {
 		CytoPanel cytoPanel;
 
 		// setup cytopanel west (enabled/shown by default)
 		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
 		cytoPanelWestItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
-		initCytoPanelMenuItem(cytoPanel, cytoPanelWestItem, true, true,
-				"cytoPanelWest", KeyEvent.VK_1);
+		initCytoPanelMenuItem(cytoPanel, cytoPanelWestItem, true, true, "cytoPanelWest",
+		                      KeyEvent.VK_1);
 
 		// setup cytopanel east (disabled/hidden by default)
 		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
 		cytoPanelEastItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
-		initCytoPanelMenuItem(cytoPanel, cytoPanelEastItem, false, false,
-				"cytoPanelEast", KeyEvent.VK_3);
+		initCytoPanelMenuItem(cytoPanel, cytoPanelEastItem, false, false, "cytoPanelEast",
+		                      KeyEvent.VK_3);
 
 		// setup cytopanel south (disabled/hidden by default)
 		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
 		cytoPanelSouthItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
-		initCytoPanelMenuItem(cytoPanel, cytoPanelSouthItem, false, false,
-				"cytoPanelSouth", KeyEvent.VK_2);
+		initCytoPanelMenuItem(cytoPanel, cytoPanelSouthItem, false, false, "cytoPanelSouth",
+		                      KeyEvent.VK_2);
 
 		// add cytopanel menu items to CytoPanels Menu
 		menuBar.getMenu("View").add(new JSeparator());
 		menuBar.getMenu("View.Desktop").add(cytoPanelWestItem);
 		menuBar.getMenu("View.Desktop").add(cytoPanelSouthItem);
 		menuBar.getMenu("View.Desktop").add(cytoPanelEastItem);
+
 		// menuBar.getMenu( "View" ).add(new JSeparator());
 	}
 
-	private void initCytoPanelMenuItem(CytoPanel cytoPanel,
-			JCheckBoxMenuItem menuItem, boolean selected, boolean enabled,
-			String mapObject, int keyCode) {
-
+	private void initCytoPanelMenuItem(CytoPanel cytoPanel, JCheckBoxMenuItem menuItem,
+	                                   boolean selected, boolean enabled, String mapObject,
+	                                   int keyCode) {
 		// setup action
-		CytoPanelAction cytoPanelAction = new CytoPanelAction(menuItem,
-				cytoPanel);
+		CytoPanelAction cytoPanelAction = new CytoPanelAction(menuItem, cytoPanel);
 		menuItem.addActionListener(cytoPanelAction);
 		// enabled/disabled - shown/hidden
 		menuItem.setSelected(selected);
 		menuItem.setEnabled(enabled);
+
 		// setup menu item key accel
-		KeyStroke accel = KeyStroke.getKeyStroke(keyCode,
-				java.awt.event.InputEvent.CTRL_MASK);
+		KeyStroke accel = KeyStroke.getKeyStroke(keyCode, java.awt.event.InputEvent.CTRL_MASK);
 		menuItem.setAccelerator(accel);
 		// setup global key accel
-		menuItem.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-				.put(accel, mapObject);
+		menuItem.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(accel, mapObject);
 		menuItem.getActionMap().put(mapObject, cytoPanelAction);
 	}
 
@@ -478,41 +507,44 @@ public class CyMenus implements GraphViewChangeListener {
 	private void createMenuBar() {
 		menuBar = new CytoscapeMenuBar();
 		fileMenu = menuBar.getMenu("File");
+
 		final JMenu f_fileMenu = fileMenu;
 		fileMenu.addMenuListener(new MenuListener() {
-			public void menuCanceled(MenuEvent e) {
-			}
+				public void menuCanceled(MenuEvent e) {
+				}
 
-			public void menuDeselected(MenuEvent e) {
-			}
+				public void menuDeselected(MenuEvent e) {
+				}
 
-			public void menuSelected(MenuEvent e) {
-				CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
-				CyNetwork graph = Cytoscape.getCurrentNetwork();
-				boolean inactive = false;
-				if (graphView == null || graphView.nodeCount() == 0)
-					inactive = true;
-				boolean networkExists = (graph != null);
-				MenuElement[] popup = f_fileMenu.getSubElements();
-				if (popup[0] instanceof JPopupMenu) {
-					MenuElement[] submenus = ((JPopupMenu) popup[0])
-							.getSubElements();
-					for (int i = 0; i < submenus.length; i++) {
-						if (submenus[i] instanceof JMenuItem) {
-							JMenuItem item = (JMenuItem) submenus[i];
-							if (item.getText().equals(
-									ExportAsGraphicsAction.MENU_LABEL)
-									|| item.getText().equals(
-											PrintAction.MENU_LABEL)) {
-								item.setEnabled(!inactive);
-							} else if (item.getText().equals("Save")) {
-								item.setEnabled(networkExists);
+				public void menuSelected(MenuEvent e) {
+					CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+					CyNetwork graph = Cytoscape.getCurrentNetwork();
+					boolean inactive = false;
+
+					if ((graphView == null) || (graphView.nodeCount() == 0))
+						inactive = true;
+
+					boolean networkExists = (graph != null);
+					MenuElement[] popup = f_fileMenu.getSubElements();
+
+					if (popup[0] instanceof JPopupMenu) {
+						MenuElement[] submenus = ((JPopupMenu) popup[0]).getSubElements();
+
+						for (int i = 0; i < submenus.length; i++) {
+							if (submenus[i] instanceof JMenuItem) {
+								JMenuItem item = (JMenuItem) submenus[i];
+
+								if (item.getText().equals(ExportAsGraphicsAction.MENU_LABEL)
+								    || item.getText().equals(PrintAction.MENU_LABEL)) {
+									item.setEnabled(!inactive);
+								} else if (item.getText().equals("Save")) {
+									item.setEnabled(networkExists);
+								}
 							}
 						}
 					}
 				}
-			}
-		});
+			});
 
 		// Create submenues for "File" menu item
 		newSubMenu = menuBar.getMenu("File.New", 0);
@@ -521,61 +553,59 @@ public class CyMenus implements GraphViewChangeListener {
 		saveSubMenu = menuBar.getMenu("File.Export", 2);
 
 		editMenu = menuBar.getMenu("Edit");
+
 		final JMenu f_editMenu = editMenu;
 		editMenu.addMenuListener(new MenuListener() {
-			public void menuCanceled(MenuEvent e) {
-			}
+				public void menuCanceled(MenuEvent e) {
+				}
 
-			public void menuDeselected(MenuEvent e) {
-			}
+				public void menuDeselected(MenuEvent e) {
+				}
 
-			public void menuSelected(MenuEvent e) {
-				CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
-				boolean inactive = false;
+				public void menuSelected(MenuEvent e) {
+					CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+					boolean inactive = false;
 
-//				System.out.println("GraphView = " + graphView);
-//				System.out.println("graphView.nodeCount() == "
-//						+ graphView.nodeCount());
-				if (graphView == null || graphView.nodeCount() == 0)
-					inactive = true;
-//				System.out.println(" inactive = " + inactive);
-				MenuElement[] popup = f_editMenu.getSubElements();
-				if (popup[0] instanceof JPopupMenu) {
-					MenuElement[] submenus = ((JPopupMenu) popup[0])
-							.getSubElements();
-					for (int i = 0; i < submenus.length; i++) {
-						if (submenus[i] instanceof JMenuItem) {
-							JMenuItem item = (JMenuItem) submenus[i];
-							if (inactive
-									&& ((item.getText()
-											.equals("Delete Selected Nodes and Edges"))
-											|| (item.getText().equals("Undo"))
-											|| (item.getText().equals("Redo"))
-											|| (item.getText()
-													.equals("Destroy Network"))
-											|| (item.getText()
-													.equals("Destroy View")))) {
-								item.setEnabled(false);
-							} else {
-								item.setEnabled(true);
-							}
-							if (item.getText().equals("Connect Selected Nodes")) {
-								if ((graphView.getSelectedNodes() != null)
-										&& (graphView.getSelectedNodes().size() > 1))
+					//				System.out.println("GraphView = " + graphView);
+					//				System.out.println("graphView.nodeCount() == "
+					//						+ graphView.nodeCount());
+					if ((graphView == null) || (graphView.nodeCount() == 0))
+						inactive = true;
 
-								{
+					//				System.out.println(" inactive = " + inactive);
+					MenuElement[] popup = f_editMenu.getSubElements();
 
-									item.setEnabled(true);
-								} else {
+					if (popup[0] instanceof JPopupMenu) {
+						MenuElement[] submenus = ((JPopupMenu) popup[0]).getSubElements();
+
+						for (int i = 0; i < submenus.length; i++) {
+							if (submenus[i] instanceof JMenuItem) {
+								JMenuItem item = (JMenuItem) submenus[i];
+
+								if (inactive
+								    && ((item.getText().equals("Delete Selected Nodes and Edges"))
+								       || (item.getText().equals("Undo"))
+								       || (item.getText().equals("Redo"))
+								       || (item.getText().equals("Destroy Network"))
+								       || (item.getText().equals("Destroy View")))) {
 									item.setEnabled(false);
+								} else {
+									item.setEnabled(true);
+								}
+
+								if (item.getText().equals("Connect Selected Nodes")) {
+									if ((graphView.getSelectedNodes() != null)
+									    && (graphView.getSelectedNodes().size() > 1)) {
+										item.setEnabled(true);
+									} else {
+										item.setEnabled(false);
+									}
 								}
 							}
-
 						}
 					}
 				}
-			}
-		});
+			});
 
 		// 
 		// Data menu. disabled by default.
@@ -583,98 +613,105 @@ public class CyMenus implements GraphViewChangeListener {
 		viewMenu = menuBar.getMenu("View");
 
 		// final JMenu f_dataMenu = viewMenu;
-
 		viewMenu.setEnabled(true);
 
 		viewMenu.addMenuListener(new MenuListener() {
-			public void menuCanceled(MenuEvent e) {
-			}
+				public void menuCanceled(MenuEvent e) {
+				}
 
-			public void menuDeselected(MenuEvent e) {
-			}
+				public void menuDeselected(MenuEvent e) {
+				}
 
-			public void menuSelected(MenuEvent e) {
-				// CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
-				// boolean inactive = false;
-				// if (graphView == null || graphView.nodeCount() == 0) inactive
-				// = true;
-				// CyNetwork graph = Cytoscape.getCurrentNetwork();
-				// boolean inactive = false;
-				// if (graph == null || graph.getNodeCount() == 0)
-				// inactive = true;
-				// MenuElement[] popup = f_dataMenu.getSubElements();
-				// if (popup[0] instanceof JPopupMenu) {
-				// MenuElement[] submenus = ((JPopupMenu) popup[0])
-				// .getSubElements();
-				// for (int i = 0; i < submenus.length; i++) {
-				// if (submenus[i] instanceof JMenuItem) {
-				// if (inactive)
-				// ((JMenuItem) submenus[i]).setEnabled(false);
-				// else
-				// ((JMenuItem) submenus[i]).setEnabled(true);
-				// }
-				// }
-				// }
-			}
-		});
+				public void menuSelected(MenuEvent e) {
+					// CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+					// boolean inactive = false;
+					// if (graphView == null || graphView.nodeCount() == 0) inactive
+					// = true;
+					// CyNetwork graph = Cytoscape.getCurrentNetwork();
+					// boolean inactive = false;
+					// if (graph == null || graph.getNodeCount() == 0)
+					// inactive = true;
+					// MenuElement[] popup = f_dataMenu.getSubElements();
+					// if (popup[0] instanceof JPopupMenu) {
+					// MenuElement[] submenus = ((JPopupMenu) popup[0])
+					// .getSubElements();
+					// for (int i = 0; i < submenus.length; i++) {
+					// if (submenus[i] instanceof JMenuItem) {
+					// if (inactive)
+					// ((JMenuItem) submenus[i]).setEnabled(false);
+					// else
+					// ((JMenuItem) submenus[i]).setEnabled(true);
+					// }
+					// }
+					// }
+				}
+			});
 		selectMenu = menuBar.getMenu("Select");
+
 		final JMenu f_selectMenu = selectMenu;
 		selectMenu.addMenuListener(new MenuListener() {
-			public void menuCanceled(MenuEvent e) {
-			}
+				public void menuCanceled(MenuEvent e) {
+				}
 
-			public void menuDeselected(MenuEvent e) {
-			}
+				public void menuDeselected(MenuEvent e) {
+				}
 
-			public void menuSelected(MenuEvent e) {
-				CyNetwork graph = Cytoscape.getCurrentNetwork();
-				boolean inactive = false;
-				if (graph == null || graph.getNodeCount() == 0)
-					inactive = true;
-				MenuElement[] popup = f_selectMenu.getSubElements();
-				if (popup[0] instanceof JPopupMenu) {
-					MenuElement[] submenus = ((JPopupMenu) popup[0])
-							.getSubElements();
-					for (int i = 0; i < submenus.length; i++) {
-						if (submenus[i] instanceof JMenuItem) {
-							if (inactive)
-								((JMenuItem) submenus[i]).setEnabled(false);
-							else
-								((JMenuItem) submenus[i]).setEnabled(true);
+				public void menuSelected(MenuEvent e) {
+					CyNetwork graph = Cytoscape.getCurrentNetwork();
+					boolean inactive = false;
+
+					if ((graph == null) || (graph.getNodeCount() == 0))
+						inactive = true;
+
+					MenuElement[] popup = f_selectMenu.getSubElements();
+
+					if (popup[0] instanceof JPopupMenu) {
+						MenuElement[] submenus = ((JPopupMenu) popup[0]).getSubElements();
+
+						for (int i = 0; i < submenus.length; i++) {
+							if (submenus[i] instanceof JMenuItem) {
+								if (inactive)
+									((JMenuItem) submenus[i]).setEnabled(false);
+								else
+									((JMenuItem) submenus[i]).setEnabled(true);
+							}
 						}
 					}
 				}
-			}
-		});
+			});
 		layoutMenu = menuBar.getMenu("Layout");
+
 		final JMenu f_layoutMenu = layoutMenu;
 		layoutMenu.addMenuListener(new MenuListener() {
-			public void menuCanceled(MenuEvent e) {
-			}
+				public void menuCanceled(MenuEvent e) {
+				}
 
-			public void menuDeselected(MenuEvent e) {
-			}
+				public void menuDeselected(MenuEvent e) {
+				}
 
-			public void menuSelected(MenuEvent e) {
-				CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
-				boolean inactive = false;
-				if (graphView == null || graphView.nodeCount() == 0)
-					inactive = true;
-				MenuElement[] popup = f_layoutMenu.getSubElements();
-				if (popup[0] instanceof JPopupMenu) {
-					MenuElement[] submenus = ((JPopupMenu) popup[0])
-							.getSubElements();
-					for (int i = 0; i < submenus.length; i++) {
-						if (submenus[i] instanceof JMenuItem) {
-							if (inactive)
-								((JMenuItem) submenus[i]).setEnabled(false);
-							else
-								((JMenuItem) submenus[i]).setEnabled(true);
+				public void menuSelected(MenuEvent e) {
+					CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+					boolean inactive = false;
+
+					if ((graphView == null) || (graphView.nodeCount() == 0))
+						inactive = true;
+
+					MenuElement[] popup = f_layoutMenu.getSubElements();
+
+					if (popup[0] instanceof JPopupMenu) {
+						MenuElement[] submenus = ((JPopupMenu) popup[0]).getSubElements();
+
+						for (int i = 0; i < submenus.length; i++) {
+							if (submenus[i] instanceof JMenuItem) {
+								if (inactive)
+									((JMenuItem) submenus[i]).setEnabled(false);
+								else
+									((JMenuItem) submenus[i]).setEnabled(true);
+							}
 						}
 					}
 				}
-			}
-		});
+			});
 		// vizMenu = menuBar.getMenu("Visualization");
 		opsMenu = menuBar.getMenu("Plugins");
 		// cytoPanelMenu = menuBar.getMenu("CytoPanels");
@@ -687,7 +724,7 @@ public class CyMenus implements GraphViewChangeListener {
 	 * bars with items and action listeners that respond when those items are
 	 * activated. This needs to come after the constructor is done, because some
 	 * of the listeners try to access this object in their constructors.
-	 * 
+	 *
 	 * Any calls to this method after the first will do nothing.
 	 */
 	public void initializeMenus() {
@@ -705,7 +742,6 @@ public class CyMenus implements GraphViewChangeListener {
 
 			// menuSaveSessionAction.setEnabled(false);
 			// menuOpenSessionAction.setEnabled(true);
-
 		}
 	}
 
@@ -714,7 +750,6 @@ public class CyMenus implements GraphViewChangeListener {
 	 * attached action listener objects.
 	 */
 	private void fillMenuBar() {
-
 		// fill the New submenu
 		// newSubMenu2.add("Empty Network"); // This should be added by the
 		// Editor
@@ -754,7 +789,6 @@ public class CyMenus implements GraphViewChangeListener {
 
 		fileMenu.add(new JSeparator(), 4);
 		// Print Actions
-
 		menuPrintAction = new PrintAction();
 		// menuExportAction = new ExportAsGraphicsAction();
 		addAction(menuPrintAction);
@@ -781,11 +815,9 @@ public class CyMenus implements GraphViewChangeListener {
 		// addAction( new GraphObjectSelectionAction() );
 
 		// fill the Select menu
-
 		selectMenu.add(new SelectionModeAction());
 
 		// displayNWSubMenu = menuBar.getMenu("Select.To New Network");
-
 		addAction(new InvertSelectedNodesAction());
 		addAction(new HideSelectedNodesAction());
 		addAction(new UnHideSelectedNodesAction());
@@ -821,11 +853,9 @@ public class CyMenus implements GraphViewChangeListener {
 		menuBar.getMenu("View").add(networkOverviewItem);
 
 		// fill View Menu
-
-		ImageIcon vizmapperIcon = new ImageIcon(getClass().getResource(
-				"images/ximian/stock_file-with-objects-16.png"));
-		vizMenuItem = new JMenuItem(
-				new SetVisualPropertiesAction(vizmapperIcon));
+		ImageIcon vizmapperIcon = new ImageIcon(getClass()
+		                                            .getResource("images/ximian/stock_file-with-objects-16.png"));
+		vizMenuItem = new JMenuItem(new SetVisualPropertiesAction(vizmapperIcon));
 		vizMapperItem = new JMenuItem(new ToggleVisualMapperAction());
 		menuBar.getMenu("View").add(new JSeparator());
 		menuBar.getMenu("View").add(vizMenuItem);
@@ -858,27 +888,24 @@ public class CyMenus implements GraphViewChangeListener {
 		// helpMenu.add(helpContextSensitiveMenuItem);
 		helpMenu.addSeparator();
 		helpMenu.add(helpAboutMenuItem);
-
 	}
 
 	/**
 	 * Fills the toolbar for easy access to commonly used actions.
 	 */
 	private void fillToolBar() {
-
 		// loadButton = toolBar.add(new ImportGraphFileAction(this, false));
 		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
 		openSessionButton.setToolTipText("Open Session File...");
-		openSessionButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/ximian/stock_open.png")));
+		openSessionButton.setIcon(new ImageIcon(getClass()
+		                                            .getResource("images/ximian/stock_open.png")));
 		openSessionButton.setBorderPainted(false);
 		openSessionButton.setRolloverEnabled(true);
 
 		// saveButton = toolBar.add(new ExportAsGMLAction(false));
 		saveButton = toolBar.add(new SaveSessionAction());
 		saveButton.setToolTipText("Save Current Session As...");
-		saveButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/ximian/stock_save.png")));
+		saveButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_save.png")));
 
 		saveButton.setBorderPainted(false);
 		saveButton.setRolloverEnabled(true);
@@ -888,91 +915,89 @@ public class CyMenus implements GraphViewChangeListener {
 
 		final ZoomAction zoom_in = new ZoomAction(1.1);
 		zoomInButton = new JButton();
-		zoomInButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/ximian/stock_zoom-in.png")));
+		zoomInButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_zoom-in.png")));
 		zoomInButton.setToolTipText("Zoom In");
 		zoomInButton.setBorderPainted(false);
 		zoomInButton.setRolloverEnabled(true);
 		zoomInButton.addMouseListener(new MouseListener() {
-			public void mouseClicked(MouseEvent e) {
-				zoom_in.zoom();
-			}
+				public void mouseClicked(MouseEvent e) {
+					zoom_in.zoom();
+				}
 
-			public void mouseEntered(MouseEvent e) {
-			}
+				public void mouseEntered(MouseEvent e) {
+				}
 
-			public void mouseExited(MouseEvent e) {
-			}
+				public void mouseExited(MouseEvent e) {
+				}
 
-			public void mousePressed(MouseEvent e) {
-				zoomInButton.setSelected(true);
-			}
+				public void mousePressed(MouseEvent e) {
+					zoomInButton.setSelected(true);
+				}
 
-			public void mouseReleased(MouseEvent e) {
-				zoomInButton.setSelected(false);
-			}
-		});
+				public void mouseReleased(MouseEvent e) {
+					zoomInButton.setSelected(false);
+				}
+			});
 
 		final ZoomAction zoom_out = new ZoomAction(0.9);
 		zoomOutButton = new JButton();
-		zoomOutButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/ximian/stock_zoom-out.png")));
+		zoomOutButton.setIcon(new ImageIcon(getClass()
+		                                        .getResource("images/ximian/stock_zoom-out.png")));
 		zoomOutButton.setToolTipText("Zoom Out");
 		zoomOutButton.setBorderPainted(false);
 		zoomOutButton.setRolloverEnabled(true);
 		zoomOutButton.addMouseListener(new MouseListener() {
-			public void mouseClicked(MouseEvent e) {
-				zoom_out.zoom();
-			}
+				public void mouseClicked(MouseEvent e) {
+					zoom_out.zoom();
+				}
 
-			public void mouseEntered(MouseEvent e) {
-			}
+				public void mouseEntered(MouseEvent e) {
+				}
 
-			public void mouseExited(MouseEvent e) {
-			}
+				public void mouseExited(MouseEvent e) {
+				}
 
-			public void mousePressed(MouseEvent e) {
-				zoomOutButton.setSelected(true);
-			}
+				public void mousePressed(MouseEvent e) {
+					zoomOutButton.setSelected(true);
+				}
 
-			public void mouseReleased(MouseEvent e) {
-				zoomOutButton.setSelected(false);
-			}
-		});
+				public void mouseReleased(MouseEvent e) {
+					zoomOutButton.setSelected(false);
+				}
+			});
 
 		zoomOutButton.addMouseWheelListener(new MouseWheelListener() {
-			public void mouseWheelMoved(MouseWheelEvent e) {
-				if (e.getWheelRotation() < 0) {
-					zoom_in.zoom();
-				} else {
-					zoom_out.zoom();
+				public void mouseWheelMoved(MouseWheelEvent e) {
+					if (e.getWheelRotation() < 0) {
+						zoom_in.zoom();
+					} else {
+						zoom_out.zoom();
+					}
 				}
-			}
-		});
+			});
 		zoomInButton.addMouseWheelListener(new MouseWheelListener() {
-			public void mouseWheelMoved(MouseWheelEvent e) {
-				if (e.getWheelRotation() < 0) {
-					zoom_in.zoom();
-				} else {
-					zoom_out.zoom();
+				public void mouseWheelMoved(MouseWheelEvent e) {
+					if (e.getWheelRotation() < 0) {
+						zoom_in.zoom();
+					} else {
+						zoom_out.zoom();
+					}
 				}
-			}
-		});
+			});
 
 		toolBar.add(zoomOutButton);
 		toolBar.add(zoomInButton);
 
 		zoomSelectedButton = toolBar.add(new ZoomSelectedAction());
-		zoomSelectedButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/ximian/stock_zoom-object.png")));
+		zoomSelectedButton.setIcon(new ImageIcon(getClass()
+		                                             .getResource("images/ximian/stock_zoom-object.png")));
 		zoomSelectedButton.setToolTipText("Zoom Selected Region");
 		zoomSelectedButton.setBorderPainted(false);
 
 		zoomDisplayAllButton = toolBar.add(new FitContentAction());
-		zoomDisplayAllButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/ximian/stock_zoom-1.png")));
-		zoomDisplayAllButton
-				.setToolTipText("Zoom out to display all of current Network");
+		zoomDisplayAllButton.setIcon(new ImageIcon(getClass()
+		                                               .getResource("images/ximian/stock_zoom-1.png")));
+		zoomDisplayAllButton.setToolTipText("Zoom out to display all of current Network");
 		zoomDisplayAllButton.setBorderPainted(false);
 
 		toolBar.addSeparator();
@@ -994,30 +1019,26 @@ public class CyMenus implements GraphViewChangeListener {
 		// hideSelectedButton.setToolTipText("Hide Selected Region");
 		// hideSelectedButton.setBorderPainted(false);
 		// toolBar.addSeparator();
-
 		toolBar.addSeparator();
 
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
-		vizButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/ximian/stock_file-with-objects.png")));
+		vizButton.setIcon(new ImageIcon(getClass()
+		                                    .getResource("images/ximian/stock_file-with-objects.png")));
 		vizButton.setToolTipText("Set Visual Style");
 		vizButton.setBorderPainted(false);
-
-	}// createToolBar
+	} // createToolBar
 
 	/**
 	 * Register the help set and help broker with the various components
 	 */
 	void initializeHelp(HelpBroker hb) {
 		hb.enableHelp(helpContentsMenuItem, "d0e1", null); // comes from jhelptoc.xml
-		helpContentsMenuItem
-				.addActionListener(new CSH.DisplayHelpFromSource(hb));
+		helpContentsMenuItem.addActionListener(new CSH.DisplayHelpFromSource(hb));
 
 		// Add Help Button to main tool bar
 		JButton helpButton = new JButton();
 		helpButton.addActionListener(new CSH.DisplayHelpFromSource(hb));
-		helpButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/ximian/stock_help.png")));
+		helpButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_help.png")));
 		helpButton.setToolTipText("Help");
 		helpButton.setBorderPainted(false);
 
@@ -1041,7 +1062,5 @@ public class CyMenus implements GraphViewChangeListener {
 		 * 06/07/06 END // hb.enableHelp(annotationButton, "toolbar-annotate",
 		 * null); hb.enableHelp(vizButton, "toolbar-setVisProps", null);
 		 */
-
 	}
-
 }

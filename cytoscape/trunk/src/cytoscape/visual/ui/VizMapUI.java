@@ -1,35 +1,35 @@
 /*
- File: VizMapUI.java 
- 
+ File: VizMapUI.java
+
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
- 
- The Cytoscape Consortium is: 
+
+ The Cytoscape Consortium is:
  - Institute for Systems Biology
  - University of California San Diego
  - Memorial Sloan-Kettering Cancer Center
  - Institut Pasteur
  - Agilent Technologies
- 
+
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
  any later version.
- 
+
  This library is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have no obligations to provide maintenance, support,
  updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  be liable to any party for direct, indirect, special,
  incidental or consequential damages, including lost profits, arising
  out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have been advised of the possibility of such damage.  See
  the GNU Lesser General Public License for more details.
- 
+
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -42,6 +42,22 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.ui;
 
+import cytoscape.CyNetwork;
+import cytoscape.CyNetworkEvent;
+import cytoscape.CyNetworkListener;
+import cytoscape.Cytoscape;
+
+import cytoscape.dialogs.GridBagGroup;
+import cytoscape.dialogs.MiscGB;
+
+import cytoscape.util.SwingWorker;
+
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+
+import cytoscape.visual.calculators.Calculator;
+
 //------------------------------------------------------------------------------
 import java.awt.Component;
 import java.awt.Container;
@@ -52,13 +68,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Vector;
 
-import javax.swing.SwingUtilities;
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -71,20 +87,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyNetworkEvent;
-import cytoscape.CyNetworkListener;
-import cytoscape.Cytoscape;
-import cytoscape.dialogs.GridBagGroup;
-import cytoscape.dialogs.MiscGB;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.util.SwingWorker;
 
 //------------------------------------------------------------------------------
 
@@ -93,64 +99,169 @@ import cytoscape.util.SwingWorker;
  */
 public class VizMapUI extends JDialog implements CyNetworkListener {
 	// constants for attribute types, one for each tab
+	/**
+	 * 
+	 */
 	public static final byte NODE_COLOR = 0;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_BORDER_COLOR = 1;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_LINETYPE = 2;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_SHAPE = 3;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_SIZE = 4;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_LABEL = 5;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_LABEL_FONT = 6;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_LABEL_COLOR = 7;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_COLOR = 8;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_LINETYPE = 9;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_SRCARROW = 10;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_TGTARROW = 11;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_LABEL = 12;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_LABEL_FONT = 13;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_TOOLTIP = 14;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_TOOLTIP = 15;
 
 	// for node and edge label position... if you hadn't already guessed
+	/**
+	 * 
+	 */
 	public static final byte NODE_LABEL_POSITION = 16;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_LABEL_POSITION = 17;
 
+	/**
+	 * 
+	 */
 	public static final byte EDGE_LABEL_COLOR = 18;
 
 	// for creating VizMapTabs with font face/size on one page
+	/**
+	 * 
+	 */
 	public static final byte NODE_FONT_FACE = 122;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_FONT_SIZE = 123;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_FONT_FACE = 124;
+
+	/**
+	 * 
+	 */
 	public static final byte EDGE_FONT_SIZE = 125;
 
 	// for creating VizMapTabs with locked node height/width
+	/**
+	 * 
+	 */
 	public static final byte NODE_HEIGHT = 126;
+
+	/**
+	 * 
+	 */
 	public static final byte NODE_WIDTH = 127;
 
 	// VisualMappingManager for the graph.
 	protected VisualMappingManager VMM;
+
 	/** The content pane for the dialog */
 	private JPanel mainPane;
+
 	// private GridBagGroup mainGBG;
-	private JPanel actionButtonsPanel, attrSelectorPanel;
+	private JPanel actionButtonsPanel;
+
+	// private GridBagGroup mainGBG;
+	private JPanel attrSelectorPanel;
+
 	/** The content pane for the JTabbedPanes */
 	private JPanel tabPaneContainer;
+
 	/** Keeps track of contained tabs */
 	// private VizMapTab[] tabs;
 	private List<VizMapTab> tabs;
+
 	/**
 	 * All known VisualStyles
 	 */
 	protected Collection styles;
+
 	/**
 	 * StyleSelector sub-dialog
 	 */
 	protected StyleSelector styleSelector;
+
 	// kludge!
 	private boolean initialized = false;
 
 	/**
 	 * Make and display the Set Visual Properties UI.
-	 * 
+	 *
 	 * @param VMM
 	 *            VisualMappingManager for the graph
 	 */
@@ -177,41 +288,25 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 		nodePane.setName("nodePane");
 		edgePane.setName("edgePane");
-		
-		// add panels to tabbed panes
-		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 0, VMM,
-				NODE_COLOR));
-		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 1, VMM,
-				NODE_BORDER_COLOR));
-		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 2, VMM,
-				NODE_LINETYPE));
-		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 3, VMM,
-				NODE_SHAPE));
-		addTab(tabs, nodePane, new VizMapSizeTab(this, nodePane, 4, VMM,
-				NODE_SIZE));
-		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 5, VMM,
-				NODE_LABEL));
-		addTab(tabs, nodePane, new VizMapFontTab(this, nodePane, 6, VMM,
-				NODE_LABEL_FONT));
-		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 7, VMM,
-				NODE_LABEL_COLOR));
-		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 8, VMM,
-				NODE_LABEL_POSITION));
 
-		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 0, VMM,
-				EDGE_COLOR));
-		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 1, VMM,
-				EDGE_LINETYPE));
-		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 2, VMM,
-				EDGE_SRCARROW));
-		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 3, VMM,
-				EDGE_TGTARROW));
-		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 4, VMM,
-				EDGE_LABEL));
-		addTab(tabs, edgePane, new VizMapFontTab(this, edgePane, 5, VMM,
-				EDGE_LABEL_FONT));
-		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 6, VMM,
-				EDGE_LABEL_COLOR));
+		// add panels to tabbed panes
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 0, VMM, NODE_COLOR));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 1, VMM, NODE_BORDER_COLOR));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 2, VMM, NODE_LINETYPE));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 3, VMM, NODE_SHAPE));
+		addTab(tabs, nodePane, new VizMapSizeTab(this, nodePane, 4, VMM, NODE_SIZE));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 5, VMM, NODE_LABEL));
+		addTab(tabs, nodePane, new VizMapFontTab(this, nodePane, 6, VMM, NODE_LABEL_FONT));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 7, VMM, NODE_LABEL_COLOR));
+		addTab(tabs, nodePane, new VizMapAttrTab(this, nodePane, 8, VMM, NODE_LABEL_POSITION));
+
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 0, VMM, EDGE_COLOR));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 1, VMM, EDGE_LINETYPE));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 2, VMM, EDGE_SRCARROW));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 3, VMM, EDGE_TGTARROW));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 4, VMM, EDGE_LABEL));
+		addTab(tabs, edgePane, new VizMapFontTab(this, edgePane, 5, VMM, EDGE_LABEL_FONT));
+		addTab(tabs, edgePane, new VizMapAttrTab(this, edgePane, 6, VMM, EDGE_LABEL_COLOR));
 
 		// global default pane
 		JPanel defaultPane = new DefaultPanel(this, VMM);
@@ -235,7 +330,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		attrSelectorPanel.add(edgeSelect);
 		attrSelectorPanel.add(defSelect);
 		// attrSelectorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
 		this.styleSelector = new StyleSelector(this, mainFrame);
 
 		// MiscGB.insert(mainGBG, vizStylePanel, 0, 0, 1, 1, 1, 0,
@@ -250,6 +344,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 		JButton applyButton = new JButton("Apply to Network");
 		applyButton.addActionListener(new ApplyAction());
+
 		JButton closeButton = new JButton("Close");
 
 		closeButton.addActionListener(new CloseAction());
@@ -258,7 +353,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 		// MiscGB.insert(mainGBG, actionButtonsPanel, 0, 3, 1, 1, 1, 0,
 		// GridBagConstraints.HORIZONTAL);
-
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
@@ -290,6 +384,11 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		pane.add(t);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public StyleSelector getStyleSelector() {
 		return this.styleSelector;
 	}
@@ -351,7 +450,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		 * Flag to trap events triggered by myself
 		 */
 		protected boolean rebuilding = false;
-
 		protected JFrame mainFrame;
 
 		protected StyleSelector(VizMapUI styleDef, JFrame mainFrame) {
@@ -363,9 +461,11 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			styles = catalog.getVisualStyles();
 			this.styleGBG = new GridBagGroup("Visual Styles");
 			this.myself = this;
+
 			// attach listener
 			StyleSelectionListener listen = new StyleSelectionListener();
 			this.styleComboBox.addItemListener(listen);
+
 			// the duplicate styleComboBox doesn't need a listener because
 			// JComboBox fires ItemEvents when the underlying model changes.
 			// this.styleComboBoxDupe.addItemListener(listen);
@@ -380,90 +480,87 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			// new style button
 			JButton newStyle = new JButton("New");
 			newStyle.addActionListener(new NewStyleListener());
-			MiscGB.insert(styleGBG, newStyle, 0, 1, 1, 1, 1, 0,
-					GridBagConstraints.HORIZONTAL);
+			MiscGB.insert(styleGBG, newStyle, 0, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 			newStyle.setToolTipText("Create a new style");
 
 			// duplicate style button
 			JButton dupeStyle = new JButton("Duplicate");
 			dupeStyle.addActionListener(new DupeStyleListener());
-			MiscGB.insert(styleGBG, dupeStyle, 1, 1, 1, 1, 1, 0,
-					GridBagConstraints.HORIZONTAL);
+			MiscGB.insert(styleGBG, dupeStyle, 1, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 			dupeStyle.setToolTipText("Duplicate the current style");
 
 			// rename style button
 			JButton renStyle = new JButton("Rename");
 			renStyle.addActionListener(new RenameStyleListener());
-			MiscGB.insert(styleGBG, renStyle, 2, 1, 1, 1, 1, 0,
-					GridBagConstraints.HORIZONTAL);
+			MiscGB.insert(styleGBG, renStyle, 2, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 			renStyle.setToolTipText("Rename the current style");
 
 			// remove style button
 			JButton rmStyle = new JButton("Delete");
 			rmStyle.addActionListener(new RemoveStyleListener());
-			MiscGB.insert(styleGBG, rmStyle, 3, 1, 1, 1, 1, 0,
-					GridBagConstraints.HORIZONTAL);
+			MiscGB.insert(styleGBG, rmStyle, 3, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 			rmStyle.setToolTipText("Delete the current style");
 
 			// create legend button
-
 			JButton createLegend = new JButton("Create Legend");
 			createLegend.addActionListener(new LegendListener(this));
-			MiscGB.insert(styleGBG, createLegend, 4, 1, 1, 1, 1, 0,
-					GridBagConstraints.HORIZONTAL);
-			createLegend
-					.setToolTipText("Create a figure legend for the selected visual style");
+			MiscGB.insert(styleGBG, createLegend, 4, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+			createLegend.setToolTipText("Create a figure legend for the selected visual style");
 
 			// close button
 			JButton closeBut = new JButton("Close");
 			closeBut.addActionListener(new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-					dispose();
-				}
-			});
-			MiscGB.insert(styleGBG, closeBut, 5, 1, 1, 1, 1, 0,
-					GridBagConstraints.HORIZONTAL);
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
+			MiscGB.insert(styleGBG, closeBut, 5, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 			closeBut.setToolTipText("Close this dialog");
 
 			// define style button
 			JButton defStyle = new JButton("Define");
 			defStyle.addActionListener(new DefStyleListener());
-			MiscGB.insert(styleGBG, defStyle, 5, 0, 1, 1, 1, 0,
-					GridBagConstraints.HORIZONTAL);
+			MiscGB.insert(styleGBG, defStyle, 5, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 			defStyle.setToolTipText("Change the current style's settings");
 
 			MiscGB.insert(this.styleGBG, this.styleComboBox, 0, 0, 5, 1, 1, 0,
-					GridBagConstraints.HORIZONTAL);
+			              GridBagConstraints.HORIZONTAL);
 			setContentPane(styleGBG.panel);
-			styleGBG.panel
-					.setToolTipText("Visual styles are a collection of attribute mappings.");
+			styleGBG.panel.setToolTipText("Visual styles are a collection of attribute mappings.");
 			pack();
 		}
 
 		public String getStyleName(VisualStyle s) {
 			String suggestedName = null;
+
 			if (s != null)
 				suggestedName = this.catalog.checkVisualStyleName(s.getName());
+
 			// keep prompting for input until user cancels or we get a valid
 			// name
 			while (true) {
-				String ret = (String) JOptionPane
-						.showInputDialog(myself, "Name for new visual style",
-								"Visual Style Name Input",
-								JOptionPane.QUESTION_MESSAGE, null, null,
-								suggestedName);
+				String ret = (String) JOptionPane.showInputDialog(myself,
+				                                                  "Name for new visual style",
+				                                                  "Visual Style Name Input",
+				                                                  JOptionPane.QUESTION_MESSAGE,
+				                                                  null, null, suggestedName);
+
 				if (ret == null) {
 					return null;
 				}
+
 				String newName = catalog.checkVisualStyleName(ret);
+
 				if (newName.equals(ret))
 					return ret;
+
 				int alt = JOptionPane.showConfirmDialog(myself,
-						"Visual style with name " + ret
-								+ " already exists,\nrename to " + newName
-								+ " okay?", "Duplicate visual style name",
-						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-						null);
+				                                        "Visual style with name " + ret
+				                                        + " already exists,\nrename to " + newName
+				                                        + " okay?", "Duplicate visual style name",
+				                                        JOptionPane.YES_NO_OPTION,
+				                                        JOptionPane.WARNING_MESSAGE, null);
+
 				if (alt == JOptionPane.YES_OPTION)
 					return newName;
 			}
@@ -475,6 +572,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 					styleDefUI.visualStyleChanged();
 					styleDefNeedsUpdate = false;
 				}
+
 				styleDefUI.setVisible(true);
 			}
 		}
@@ -491,9 +589,11 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 					public Object construct() {
 						LegendDialog ld = new LegendDialog(parent, currentStyle);
 						ld.setVisible(true);
+
 						return null;
 					}
 				};
+
 				worker.start();
 			}
 		}
@@ -503,31 +603,32 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 				// just create a new style with all mappers set to none
 				// get a name for the new calculator
 				String name = getStyleName(null);
+
 				if (name == null) {
 					return;
 				}
+
 				// create the new style
 				currentStyle = new VisualStyle(name);
 				// add it to the catalog
 				catalog.addVisualStyle(currentStyle);
 				resetStyles(); // rebuild the combo box
-				// set the new style in VMM, which will trigger an update
-				// to the current selection in the combo box
+				               // set the new style in VMM, which will trigger an update
+				               // to the current selection in the combo box
+
 				VMM.setVisualStyle(currentStyle);
 
-				Cytoscape.getNetworkView(
-						Cytoscape.getCurrentNetwork().getIdentifier())
-						.setVisualStyle(currentStyle.getName());
+				Cytoscape.getNetworkView(Cytoscape.getCurrentNetwork().getIdentifier())
+				         .setVisualStyle(currentStyle.getName());
 
 				// this applies the new style to the graph
 				VMM.getNetworkView().redrawGraph(false, true);
-
 			}
 		}
 
 		/**
 		 * Rename a Visual Style<br>
-		 * 
+		 *
 		 */
 		protected class RenameStyleListener extends AbstractAction {
 			public void actionPerformed(ActionEvent e) {
@@ -536,7 +637,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 				// System.out.println("******** Old VS name = " + oldName + ",
 				// New VS name = " + name);
-
 				if (name == null) {
 					return;
 				}
@@ -558,27 +658,34 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			public void actionPerformed(ActionEvent e) {
 				if (styles.size() == 1) {
 					JOptionPane.showMessageDialog(myself,
-							"There must be at least one visual style",
-							"Cannot remove style", JOptionPane.ERROR_MESSAGE);
+					                              "There must be at least one visual style",
+					                              "Cannot remove style", JOptionPane.ERROR_MESSAGE);
+
 					return;
 				}
+
 				// make sure the user really wants to do this
 				String styleName = currentStyle.getName();
 				String checkString = "Are you sure you want to permanently delete"
-						+ " the visual style named '" + styleName + "'?";
+				                     + " the visual style named '" + styleName + "'?";
 				int ich = JOptionPane.showConfirmDialog(myself, checkString,
-						"Confirm Delete Style", JOptionPane.YES_NO_OPTION);
+				                                        "Confirm Delete Style",
+				                                        JOptionPane.YES_NO_OPTION);
+
 				if (ich == JOptionPane.YES_OPTION) {
 					catalog.removeVisualStyle(currentStyle.getName());
 					// try to switch to the default style
 					currentStyle = catalog.getVisualStyle("default");
-					if (currentStyle == null) {// not found, pick the first
-						// valid style
+
+					if (currentStyle == null) { // not found, pick the first
+						                        // valid style
 						currentStyle = (VisualStyle) styles.iterator().next();
 					}
+
 					resetStyles(); // rebuild the combo box
-					// set the new style in VMM, which will trigger an update
-					// to the current selection in the combo box
+					               // set the new style in VMM, which will trigger an update
+					               // to the current selection in the combo box
+
 					VMM.setVisualStyle(currentStyle);
 					// this applies the new style to the graph
 					VMM.getNetworkView().redrawGraph(false, true);
@@ -589,23 +696,28 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		protected class DupeStyleListener extends AbstractAction {
 			public void actionPerformed(ActionEvent e) {
 				VisualStyle clone = null;
+
 				try {
 					clone = (VisualStyle) currentStyle.clone();
 				} catch (CloneNotSupportedException exc) {
 					System.err.println("Clone not supported exception!");
 				}
+
 				// get new name for clone
 				String newName = getStyleName(clone);
+
 				if (newName == null) {
 					return;
 				}
+
 				clone.setName(newName);
 				// add new style to the catalog
 				catalog.addVisualStyle(clone);
 				currentStyle = clone;
 				resetStyles(); // rebuild the combo box
-				// set the new style in VMM, which will trigger an update
-				// to the current selection in the combo box
+				               // set the new style in VMM, which will trigger an update
+				               // to the current selection in the combo box
+
 				VMM.setVisualStyle(currentStyle);
 				// this applies the new style to the graph
 				VMM.getNetworkView().redrawGraph(false, true);
@@ -620,7 +732,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			 * 'rebuilding' flag set by refreshStyleComboBox that tells this
 			 * method to skip the event.
 			 * <P>
-			 * 
+			 *
 			 * Second, when the visual style is changed in the underlying
 			 * VisualMappingManager, it calls the stateChanged method. That
 			 * method updates the current style and selects it in the combo box,
@@ -628,7 +740,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			 * do in this case, we recognize this by doing nothing if the 'new'
 			 * style is the same as the current style.
 			 * <P>
-			 * 
+			 *
 			 * The third case is when the user actually selected a style from
 			 * the user interface, and this method is supposed to make a change
 			 * in the underlying VisualMappingManager. In that case (after
@@ -642,10 +754,11 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 				if (rebuilding) {
 					return;
 				}
+
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					VisualStyle newStyle = (VisualStyle) ((JComboBox) e
-							.getSource()).getSelectedItem();
-					if (newStyle != currentStyle && newStyle != null) {
+					VisualStyle newStyle = (VisualStyle) ((JComboBox) e.getSource()).getSelectedItem();
+
+					if ((newStyle != currentStyle) && (newStyle != null)) {
 						// this call triggers an event caught by a listener in
 						// this class
 						// that updates the currentStyle held by this class
@@ -653,17 +766,14 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 						// this call will apply the new visual style
 						// VMM.getNetworkView().redrawGraph(false, true);
-						Cytoscape.getNetworkView(
-								Cytoscape.getCurrentNetwork().getIdentifier())
-								.setVisualStyle(newStyle.getName());
+						Cytoscape.getNetworkView(Cytoscape.getCurrentNetwork().getIdentifier())
+						         .setVisualStyle(newStyle.getName());
 
-						Cytoscape.getCurrentNetworkView().redrawGraph(false,
-								true);
+						Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 						// Need to update CyNetworkView's VS
 						// Cytoscape.getCurrentNetworkView().setVisualStyle(
 						// newStyle.getName());
-
 					}
 				}
 			}
@@ -689,13 +799,16 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			 */
 			this.rebuilding = true;
 			this.styleComboModel.removeAllElements();
+
 			for (Iterator styleIter = styles.iterator(); styleIter.hasNext();) {
 				this.styleComboModel.addElement(styleIter.next());
 			}
+
 			if (selectedStyle != null)
 				this.styleComboModel.setSelectedItem(selectedStyle);
 			else
 				this.styleComboModel.setSelectedItem(currentStyle);
+
 			this.rebuilding = false;
 		}
 
@@ -708,6 +821,11 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			refreshStyleComboBox(null);
 		}
 
+		/**
+		 *  DOCUMENT ME!
+		 *
+		 * @param selected DOCUMENT ME!
+		 */
 		public void resetStyles(String selected) {
 			// reset local style collection
 			styles = catalog.getVisualStyles();
@@ -720,16 +838,19 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		public void stateChanged(ChangeEvent ce) {
 			if (currentStyle != VMM.getVisualStyle()) {
 				currentStyle = VMM.getVisualStyle();
-				if (styleComboModel.getIndexOf(currentStyle) == -1) {// not
-					// in
-					// combo
-					// box
+
+				if (styleComboModel.getIndexOf(currentStyle) == -1) { // not
+					                                                  // in
+					                                                  // combo
+					                                                  // box
 					styleComboModel.addElement(currentStyle);
 				}
+
 				// this triggers an event from the combo box that will be
 				// ignored
 				// since we've already updated the current style
 				styleComboModel.setSelectedItem(currentStyle);
+
 				// let the style definition UI know it should update
 				if (styleDefUI.isShowing()) {
 					visualStyleChanged();
@@ -738,7 +859,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 				}
 			}
 		}
-
 	} // StyleSelector
 
 	private class AttrSelector implements ActionListener {
@@ -780,6 +900,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		for (int i = 0; i < tabs.size(); i++) {
 			tabs.get(i).refreshUI();
 		}
+
 		validate();
 		repaint();
 	}
@@ -793,6 +914,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		for (int i = 0; i < tabs.size(); i++) {
 			tabs.get(i).visualStyleChanged();
 		}
+
 		validate();
 		pack();
 		repaint();
@@ -805,7 +927,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	 * Color. Each VizMapTab calls this method when switching calculators to
 	 * ensure that the newly selected calculator is not already selected
 	 * elsewhere.
-	 * 
+	 *
 	 * @param selectedCalc
 	 *            Calculator that the calling VizMapTab is trying to switch to.
 	 * @return true if calculator already selected elsewhere, false otherwise
@@ -813,11 +935,14 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	VizMapTab checkCalcSelected(Calculator selectedCalc) {
 		if (!initialized)
 			return null;
+
 		VizMapTab selected = null;
-		for (int i = 0; i < tabs.size() && (selected == null); i++) {
+
+		for (int i = 0; (i < tabs.size()) && (selected == null); i++) {
 			VizMapTab t = tabs.get(i);
 			selected = t.checkCalcSelected(selectedCalc);
 		}
+
 		return selected;
 	}
 
@@ -825,19 +950,22 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	 * Ensure that the calculator to be removed isn't used in other visual
 	 * styles. If it is, return the names of visual styles that are currently
 	 * using it.
-	 * 
+	 *
 	 * @param c
 	 *            calculator to check usage for
 	 * @return names of visual styles using the calculator
 	 */
 	public Vector checkCalculatorUsage(Calculator c) {
 		Vector conflicts = new Vector();
+
 		for (Iterator iter = styles.iterator(); iter.hasNext();) {
 			VisualStyle vs = (VisualStyle) iter.next();
 			Vector styleName = vs.checkConflictingCalculator(c);
+
 			if (styleName.size() != 1)
 				conflicts.add(styleName);
 		}
+
 		return conflicts;
 	}
 

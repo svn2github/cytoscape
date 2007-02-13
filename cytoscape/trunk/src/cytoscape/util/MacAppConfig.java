@@ -1,56 +1,57 @@
-
 /*
-  File: MacAppConfig.java 
-  
+  File: MacAppConfig.java
+
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
+
+  The Cytoscape Consortium is:
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
   - Institut Pasteur
   - Agilent Technologies
-  
+
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
   any later version.
-  
+
   This library is distributed in the hope that it will be useful, but
   WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
   documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have no obligations to provide maintenance, support,
   updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   be liable to any party for direct, indirect, special,
   incidental or consequential damages, including lost profits, arising
   out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have been advised of the possibility of such damage.  See
   the GNU Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.util;
 
-import org.jdom.input.SAXBuilder;
+import cytoscape.Cytoscape;
+
 import org.jdom.Document;
-import org.jdom.JDOMException;
 import org.jdom.Element;
+import org.jdom.JDOMException;
+
+import org.jdom.input.SAXBuilder;
+
 import org.jdom.output.XMLOutputter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import cytoscape.Cytoscape;
 
 /**
  * Configures the Mac OS X Info.plist file associated with Cytoscape.
@@ -71,97 +72,98 @@ import cytoscape.Cytoscape;
  * @author Ethan Cerami
  */
 public class MacAppConfig {
+	/**
+	 * Name of Jar Bundler Configuration File.
+	 */
+	private String configFile = "Cytoscape.app/Contents/Info.plist";
 
-    /**
-     * Name of Jar Bundler Configuration File.
-     */
-    private String configFile = "Cytoscape.app/Contents/Info.plist";
+	/**
+	 * Configures the Info.plist list with all cytoscape/*.jar files.
+	 * @throws IOException Error Reading Document.
+	 * @throws JDOMException Error Processing XML Document.
+	 */
+	public void configure() throws IOException, JDOMException {
+		// Parse Info.plist file
+		Document doc = getConfiguration();
 
-    /**
-     * Configures the Info.plist list with all cytoscape/*.jar files.
-     * @throws IOException Error Reading Document.
-     * @throws JDOMException Error Processing XML Document.
-     */
-    public void configure () throws IOException, JDOMException {
+		//  Get all files in cytocape/lib
+		String[] files = getJarList();
 
-        // Parse Info.plist file
-        Document doc = getConfiguration();
+		//  Get the Correct JAR_ARRAY Element Placeholder.
+		Element root = doc.getRootElement();
+		Element dict = root.getChild("dict");
+		dict = dict.getChild("dict");
 
-        //  Get all files in cytocape/lib
-        String[] files = getJarList();
+		Element array = dict.getChild("JAR_ARRAY");
+		array.setName("array");
+		addJars(files, array);
 
-        //  Get the Correct JAR_ARRAY Element Placeholder.
-        Element root = doc.getRootElement();
-        Element dict = root.getChild("dict");
-        dict = dict.getChild("dict");
-        Element array = dict.getChild("JAR_ARRAY");
-        array.setName("array");
-        addJars(files, array);
+		//  Overwrite existing Info.plist file.
+		XMLOutputter outputter = new XMLOutputter("     ", false);
+		FileWriter writer = new FileWriter(configFile);
+		outputter.output(doc, writer);
+		writer.close();
+		System.out.println("File is now updated with correct JARs:  " + configFile);
+	}
 
-        //  Overwrite existing Info.plist file.
-        XMLOutputter outputter = new XMLOutputter("     ", false);
-        FileWriter writer = new FileWriter(configFile);
-        outputter.output(doc, writer);
-        writer.close();
-        System.out.println("File is now updated with correct JARs:  " +
-                configFile);
-    }
+	/**
+	 * Add all JAR Files to Info.plist
+	 * @param files Array of Files in cytocape/lib.
+	 * @param array Array Element in Info.plist.
+	 */
+	private void addJars(String[] files, Element array) {
+		for (int i = 0; i < files.length; i++) {
+			String file = files[i];
 
-    /**
-     * Add all JAR Files to Info.plist
-     * @param files Array of Files in cytocape/lib.
-     * @param array Array Element in Info.plist.
-     */
-    private void addJars(String[] files, Element array) {
-        for (int i=0; i<files.length; i++) {
-            String file = files[i];
-            if (file.endsWith("jar")) {
-                Element jar = new Element ("string");
-                jar.setText("$JAVAROOT/" + file);
-                array.addContent(jar);
-                array.addContent("\n");
-            }
-        }
-    }
+			if (file.endsWith("jar")) {
+				Element jar = new Element("string");
+				jar.setText("$JAVAROOT/" + file);
+				array.addContent(jar);
+				array.addContent("\n");
+			}
+		}
+	}
 
-    /**
-     * Gets all Files in cytoscape/lib
-     * @return Array of File Strings.
-     */
-    private String[] getJarList() {
-        File dir = new File ("lib");
-        String files[] = dir.list();
-        return files;
-    }
+	/**
+	 * Gets all Files in cytoscape/lib
+	 * @return Array of File Strings.
+	 */
+	private String[] getJarList() {
+		File dir = new File("lib");
+		String[] files = dir.list();
 
-    /**
-     * Parses Info.Plist file into JDOM Document object.
-     * @return JDOM Document Object.
-     * @throws IOException Error Reading Document.
-     * @throws JDOMException Error Processing XML Document.
-     */
-    private Document getConfiguration()
-            throws IOException, JDOMException {
-        Document  doc = null;
-        try {
-            FileReader reader = new FileReader (configFile);
-            SAXBuilder saxBuilder = new SAXBuilder ();
-            doc = saxBuilder.build(reader);
-        } catch (FileNotFoundException e) {
-            System.out.println("Cannot find:  " + configFile);
-            System.out.println("Try running:  'ant mac' first.");
-            Cytoscape.exit(-1);
-        }
-        return doc;
-    }
+		return files;
+	}
 
-    /**
-     * Main Method.
-     * @param args Command Line Arguments.
-     * @throws Exception All Exceptions.
-     */
-    public static void main(String[] args) throws Exception {
-        MacAppConfig mac = new MacAppConfig();
-        mac.configure();
-    }
+	/**
+	 * Parses Info.Plist file into JDOM Document object.
+	 * @return JDOM Document Object.
+	 * @throws IOException Error Reading Document.
+	 * @throws JDOMException Error Processing XML Document.
+	 */
+	private Document getConfiguration() throws IOException, JDOMException {
+		Document doc = null;
+
+		try {
+			FileReader reader = new FileReader(configFile);
+			SAXBuilder saxBuilder = new SAXBuilder();
+			doc = saxBuilder.build(reader);
+		} catch (FileNotFoundException e) {
+			System.out.println("Cannot find:  " + configFile);
+			System.out.println("Try running:  'ant mac' first.");
+			Cytoscape.exit(-1);
+		}
+
+		return doc;
+	}
+
+	/**
+	 * Main Method.
+	 * @param args Command Line Arguments.
+	 * @throws Exception All Exceptions.
+	 */
+	public static void main(String[] args) throws Exception {
+		MacAppConfig mac = new MacAppConfig();
+		mac.configure();
+	}
 }

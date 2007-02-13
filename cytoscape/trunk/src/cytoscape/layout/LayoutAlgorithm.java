@@ -1,65 +1,71 @@
 /* vim: set ts=2:
-  File: LayoutAlgorithm.java 
-  
+  File: LayoutAlgorithm.java
+
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
+
+  The Cytoscape Consortium is:
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
   - Institut Pasteur
   - Agilent Technologies
-  
+
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
   any later version.
-  
+
   This library is distributed in the hope that it will be useful, but
   WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
   documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have no obligations to provide maintenance, support,
   updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   be liable to any party for direct, indirect, special,
   incidental or consequential damages, including lost profits, arising
   out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have been advised of the possibility of such damage.  See
   the GNU Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.layout;
 
-import java.util.List;
-import javax.swing.JPanel;
+import cytoscape.task.TaskMonitor;
 
 import cytoscape.util.*;
+
 import cytoscape.view.CyNetworkView;
-import cytoscape.task.TaskMonitor;
+
 import giny.view.NodeView;
 
-public interface LayoutAlgorithm {
+import java.util.List;
 
+import javax.swing.JPanel;
+
+
+/**
+ * 
+  */
+public interface LayoutAlgorithm {
 	/**
 	 * This method performs the layout on the current network using the
 	 * current network view.
 	 *
 	 */
-  public void doLayout ( );
+	public void doLayout();
 
 	/**
 	 * This method performs the layout on the current network.
 	 *
 	 * @param networkView the CyNetworkView on which to perform the layout
 	 */
-  public void doLayout ( CyNetworkView networkView );
+	public void doLayout(CyNetworkView networkView);
 
 	/**
 	 * This method performs the layout on the current network, but assumes
@@ -68,7 +74,7 @@ public interface LayoutAlgorithm {
 	 * @param networkView the CyNetworkView on which to perform the layout
 	 * @param monitor the task monitor to use
 	 */
-  public void doLayout ( CyNetworkView networkView, TaskMonitor monitor);
+	public void doLayout(CyNetworkView networkView, TaskMonitor monitor);
 
 	/**
 	 * Tests to see if this layout supports doing a layout on a subset of the
@@ -76,7 +82,7 @@ public interface LayoutAlgorithm {
 	 *
 	 * @return true if layout supports layouts on a subset of the nodes
 	 */
-	public boolean supportsSelectedOnly ();
+	public boolean supportsSelectedOnly();
 
 	/**
 	 * Sets the "selectedOnly" flag
@@ -92,7 +98,7 @@ public interface LayoutAlgorithm {
 	 * @return byte array of allowable attribute types or "null" if not supported.  If the
 	 *              first type is "-1", all types are supported
 	 */
-	public byte[] supportsNodeAttributes ();
+	public byte[] supportsNodeAttributes();
 
 	/**
 	 * Tests to see if this layout supports doing a layout based on edge attributes.
@@ -100,7 +106,7 @@ public interface LayoutAlgorithm {
 	 * @return type array of allowable attribute types or "null" if not supported.  If the
 	 *              first type is "-1", all types are supported
 	 */
-	public byte[] supportsEdgeAttributes ();
+	public byte[] supportsEdgeAttributes();
 
 	/**
 	 * Sets the attribute to use for node- or edge- based attribute layouts
@@ -120,7 +126,7 @@ public interface LayoutAlgorithm {
 	 *
 	 * @return List of Strings
 	 */
-	public List<String>getInitialAttributeList();
+	public List<String> getInitialAttributeList();
 
 	/**
 	 * This method should return a JPanel that implements the UI to set
@@ -157,14 +163,31 @@ public interface LayoutAlgorithm {
 	 *
 	 * @return String representing the name of the layout.
 	 */
-	public String getName ();
+	public String getName();
 
-  public void lockNodes ( NodeView[] nodes );
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nodes DOCUMENT ME!
+	 */
+	public void lockNodes(NodeView[] nodes);
 
-  public void lockNode ( NodeView v );
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param v DOCUMENT ME!
+	 */
+	public void lockNode(NodeView v);
 
-  public void unlockNode( NodeView v );
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param v DOCUMENT ME!
+	 */
+	public void unlockNode(NodeView v);
 
-  public void unlockAllNodes( );
-
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void unlockAllNodes();
 }

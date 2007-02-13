@@ -1,26 +1,29 @@
 // vim: set ts=2: */
 package cytoscape.layout;
 
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Iterator;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.List;
-import java.util.ArrayList;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
+import cytoscape.data.CyAttributes;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
-import cytoscape.CytoscapeInit;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 
 /**
  * The Tunable class provides a convenient way to encapsulate
@@ -31,12 +34,13 @@ import cytoscape.data.CyAttributes;
  * or the lower and upper bounds for the value.  These are meant
  * to be used as part of the LayoutSettingsDialog (see getPanel).
  */
-
 public class Tunable {
 	String name;
 	String desc;
 	int type = STRING;
-	int flag = 0;;
+	int flag = 0;
+	;
+
 	Object value;
 	Object lowerBound;
 	Object upperBound;
@@ -47,16 +51,40 @@ public class Tunable {
 	 * Types
 	 */
 	final public static int INTEGER = 0;
+
+	/**
+	 * 
+	 */
 	final public static int DOUBLE = 1;
+
+	/**
+	 * 
+	 */
 	final public static int BOOLEAN = 2;
+
+	/**
+	 * 
+	 */
 	final public static int STRING = 3;
+
+	/**
+	 * 
+	 */
 	final public static int NODEATTRIBUTE = 4;
+
+	/**
+	 * 
+	 */
 	final public static int EDGEATTRIBUTE = 5;
 
 	/**
 	 * Flags
 	 */
 	final public static int NOINPUT = 0x1;
+
+	/**
+	 * 
+	 */
 	final public static int NUMERICATTRIBUTE = 0x2;
 
 	/**
@@ -71,9 +99,7 @@ public class Tunable {
 	 *             the component used for the LayoutSettingsDialog
 	 * @param value The initial (default) value of the Tunable
 	 */
-
-	public Tunable (String name, String desc,
-									int type, Object value) {
+	public Tunable(String name, String desc, int type, Object value) {
 		this.name = name;
 		this.desc = desc;
 		this.type = type;
@@ -82,7 +108,6 @@ public class Tunable {
 		this.upperBound = null;
 		this.flag = 0;
 	}
-
 
 	/**
 	 * Constructor to create a Tunable with no bounds
@@ -100,8 +125,7 @@ public class Tunable {
 	 *             changeable (e.g. debug), or to indicate if there
 	 *             is a specific type for the attributes.
 	 */
-	public Tunable (String name, String desc,
-									int type, Object value, int flag) {
+	public Tunable(String name, String desc, int type, Object value, int flag) {
 		this.name = name;
 		this.desc = desc;
 		this.type = type;
@@ -132,10 +156,8 @@ public class Tunable {
 	 *             changeable (e.g. debug), or to indicate if there
 	 *             is a specific type for the attributes.
 	 */
-	public Tunable (String name, String desc,
-									int type, Object value,
-									Object lowerBound, Object upperBound,
-									int flag) {
+	public Tunable(String name, String desc, int type, Object value, Object lowerBound,
+	               Object upperBound, int flag) {
 		this.name = name;
 		this.desc = desc;
 		this.type = type;
@@ -176,21 +198,29 @@ public class Tunable {
 		if (value.getClass() == String.class) {
 			switch (type) {
 				case INTEGER:
-					this.value = new Integer((String)value);
+					this.value = new Integer((String) value);
+
 					break;
+
 				case DOUBLE:
-					this.value = new Double((String)value);
+					this.value = new Double((String) value);
+
 					break;
+
 				case BOOLEAN:
-					this.value = new Boolean((String)value);
+					this.value = new Boolean((String) value);
+
 					break;
+
 				default:
 					this.value = value;
+
 					break;
 			}
 		} else {
 			this.value = value;
 		}
+
 		valueChanged = true;
 	}
 
@@ -203,6 +233,7 @@ public class Tunable {
 	 */
 	public Object getValue() {
 		valueChanged = false;
+
 		return value;
 	}
 
@@ -232,7 +263,9 @@ public class Tunable {
 	 *
 	 * @return String value of the name of the Tunable.
 	 */
-	public String getName() { return name; }
+	public String getName() {
+		return name;
+	}
 
 	/**
 	 * This method returns a JPanel suitable for inclusion in the
@@ -245,19 +278,22 @@ public class Tunable {
 	 * @return JPanel that can be used to enter values for this Tunable
 	 */
 	public JPanel getPanel() {
-		if ((flag & NOINPUT) != 0) return null;
-		JPanel tunablePanel = new JPanel(new BorderLayout(10,2));
-		tunablePanel.add(new JLabel(desc),BorderLayout.LINE_START);
-		if (type == DOUBLE || type == INTEGER) {
-			JTextField field = new JTextField(value.toString(),8);
+		if ((flag & NOINPUT) != 0)
+			return null;
+
+		JPanel tunablePanel = new JPanel(new BorderLayout(10, 2));
+		tunablePanel.add(new JLabel(desc), BorderLayout.LINE_START);
+
+		if ((type == DOUBLE) || (type == INTEGER)) {
+			JTextField field = new JTextField(value.toString(), 8);
 			field.setHorizontalAlignment(JTextField.RIGHT);
 			inputField = field;
-			tunablePanel.add(inputField,BorderLayout.LINE_END);
+			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		} else if (type == BOOLEAN) {
 			JCheckBox box = new JCheckBox();
-			box.setSelected(((Boolean)value).booleanValue());
+			box.setSelected(((Boolean) value).booleanValue());
 			inputField = box;
-			tunablePanel.add(inputField,BorderLayout.LINE_END);
+			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		} else if (type == NODEATTRIBUTE) {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 			inputField = getAttributePanel(nodeAttributes);
@@ -267,6 +303,7 @@ public class Tunable {
 			inputField = getAttributePanel(edgeAttributes);
 			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		}
+
 		return tunablePanel;
 	}
 
@@ -281,21 +318,25 @@ public class Tunable {
 	private JComboBox getAttributePanel(CyAttributes attributes) {
 		String[] attList = attributes.getAttributeNames();
 		ArrayList list = new ArrayList();
+
 		// See if we have any initial attributes (mapped into lowerBound)
 		if (lowerBound != null) {
-			list.addAll((List)lowerBound);
+			list.addAll((List) lowerBound);
 		}
+
 		for (int i = 0; i < attList.length; i++) {
 			byte type = attributes.getType(attList[i]);
-			if (((flag & NUMERICATTRIBUTE) == 0) || (type == CyAttributes.TYPE_FLOATING ||
-					type == CyAttributes.TYPE_INTEGER)) {
+
+			if (((flag & NUMERICATTRIBUTE) == 0)
+			    || ((type == CyAttributes.TYPE_FLOATING) || (type == CyAttributes.TYPE_INTEGER))) {
 				list.add(attList[i]);
 			}
 		}
 
 		// Set our current value as selected
 		JComboBox box = new JComboBox(list.toArray());
-		box.setSelectedItem((String)value);
+		box.setSelectedItem((String) value);
+
 		return box;
 	}
 
@@ -305,21 +346,26 @@ public class Tunable {
 	 */
 	public void updateValue() {
 		Object newValue;
-		if (inputField == null) return;
+
+		if (inputField == null)
+			return;
+
 		if (type == DOUBLE) {
-			newValue = new Double(((JTextField)inputField).getText());
+			newValue = new Double(((JTextField) inputField).getText());
 		} else if (type == INTEGER) {
-			newValue = new Integer(((JTextField)inputField).getText());
+			newValue = new Integer(((JTextField) inputField).getText());
 		} else if (type == BOOLEAN) {
-			newValue = new Boolean(((JCheckBox)inputField).isSelected());
-		} else if (type == NODEATTRIBUTE || type == EDGEATTRIBUTE) {
-			newValue = (String)((JComboBox)inputField).getSelectedItem();
+			newValue = new Boolean(((JCheckBox) inputField).isSelected());
+		} else if ((type == NODEATTRIBUTE) || (type == EDGEATTRIBUTE)) {
+			newValue = (String) ((JComboBox) inputField).getSelectedItem();
 		} else {
-			newValue = ((JTextField)inputField).getText();
+			newValue = ((JTextField) inputField).getText();
 		}
+
 		if (!value.equals(newValue)) {
 			valueChanged = true;
 		}
+
 		value = newValue;
 	}
 }

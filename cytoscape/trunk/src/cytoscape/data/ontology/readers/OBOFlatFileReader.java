@@ -1,5 +1,48 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package cytoscape.data.ontology.readers;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
+
+import cytoscape.data.ontology.Ontology;
 import static cytoscape.data.ontology.readers.OBOTags.BROAD_SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.DEF;
 import static cytoscape.data.ontology.readers.OBOTags.EXACT_SYNONYM;
@@ -12,6 +55,7 @@ import static cytoscape.data.ontology.readers.OBOTags.RELATIONSHIP;
 import static cytoscape.data.ontology.readers.OBOTags.SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.XREF;
 import static cytoscape.data.ontology.readers.OBOTags.XREF_ANALOG;
+
 import giny.model.Edge;
 import giny.model.Node;
 
@@ -21,7 +65,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,43 +76,41 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
-import cytoscape.data.ontology.Ontology;
 
 /**
  * OBO file reader.<br>
- * 
+ *
  * <p>
  * This is a general OBO (Open Biomedical Ontologies:
  * http://obo.sourceforge.net/) flatfile reader.<br>
- * 
+ *
  * In Cytoscape, This will be used mainly for reading gene ontology. However, it
  * is compatible with all files written in OBO format.<br>
  * </p>
- * 
+ *
  * <p>
  * OBO files are available at:<br>
  * http://obo.sourceforge.net/cgi-bin/table.cgi
  * </p>
- * 
+ *
  * @since Cytoscape 2.4
  * @version 0.7
  * @author Keiichiro Ono
- * 
+ *
  */
 public class OBOFlatFileReader implements OntologyReader {
-
+	/**
+	 * 
+	 */
 	public static final String ONTOLOGY_DAG_ROOT = "Ontology DAGs";
 
+	/**
+	 * 
+	 */
 	public static final String OBO_PREFIX = "ontology";
-
 	private static final String DEF_ORIGIN = "def_origin";
 	protected static final String TERM_TAG = "[Term]";
 	private static final String DEF_ONTOLOGY_NAME = "Ontology DAG";
-
 	private ArrayList<String[]> interactionList;
 	private CyNetwork ontologyDAG;
 
@@ -79,24 +123,21 @@ public class OBOFlatFileReader implements OntologyReader {
 	 * Attribute for the Ontology DAG.
 	 */
 	private CyAttributes networkAttributes;
-
 	private Map<String, String> header;
 	private String name;
-
 	private InputStream inputStream;
 
 	/**
-	 * 
+	 *
 	 * @param fileName
 	 * @throws FileNotFoundException
 	 */
-	public OBOFlatFileReader(final String fileName, String name)
-			throws FileNotFoundException {
+	public OBOFlatFileReader(final String fileName, String name) throws FileNotFoundException {
 		this(new FileInputStream(fileName), name);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param dataSource
 	 * @throws IOException
 	 */
@@ -105,7 +146,7 @@ public class OBOFlatFileReader implements OntologyReader {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param oboStream
 	 * @param name
 	 */
@@ -134,9 +175,10 @@ public class OBOFlatFileReader implements OntologyReader {
 		networkAttributes.setUserEditable(Ontology.IS_ONTOLOGY, false);
 
 		String rootID = Cytoscape.getOntologyRootID();
-		if (rootID == null) {
 
+		if (rootID == null) {
 			Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
+
 			for (CyNetwork net : networkSet) {
 				if (net.getTitle().equals(ONTOLOGY_DAG_ROOT)) {
 					rootID = net.getIdentifier();
@@ -144,28 +186,26 @@ public class OBOFlatFileReader implements OntologyReader {
 			}
 
 			if (rootID == null) {
-				rootID = Cytoscape.createNetwork(ONTOLOGY_DAG_ROOT, false)
-						.getIdentifier();
+				rootID = Cytoscape.createNetwork(ONTOLOGY_DAG_ROOT, false).getIdentifier();
 				Cytoscape.setOntologyRootID(rootID);
 			}
 		}
-		ontologyDAG = Cytoscape.createNetwork(name, Cytoscape
-				.getNetwork(rootID), false);
+
+		ontologyDAG = Cytoscape.createNetwork(name, Cytoscape.getNetwork(rootID), false);
 	}
 
 	/**
 	 * @throws IOException
 	 */
 	public void readOntology() throws IOException {
-
-		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(
-				inputStream));
+		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(inputStream));
 		String line;
 
 		while ((line = bufRd.readLine()) != null) {
 			// Read header
 			if (line.startsWith(TERM_TAG)) {
 				readEntry(bufRd);
+
 				break;
 			} else if (line.length() != 0) {
 				final int colonInx = line.indexOf(':');
@@ -197,7 +237,7 @@ public class OBOFlatFileReader implements OntologyReader {
 
 	/**
 	 * Read one Ontology Term
-	 * 
+	 *
 	 * @param rd
 	 * @throws IOException
 	 */
@@ -206,10 +246,11 @@ public class OBOFlatFileReader implements OntologyReader {
 		String line = null;
 
 		while (true) {
-
 			line = rd.readLine().trim();
+
 			if (line.length() == 0)
 				break;
+
 			final int colonInx = line.indexOf(':');
 			final String key = line.substring(0, colonInx).trim();
 			final String val = line.substring(colonInx + 1).trim();
@@ -221,23 +262,23 @@ public class OBOFlatFileReader implements OntologyReader {
 			} else if (key.equals(DEF.toString())) {
 				// System.out.println("DEF: " + id + " = " + val);
 				String[] definitionParts = val.split("\"");
-				termAttributes.setAttribute(id, OBO_PREFIX + "." + key,
-						definitionParts[1]);
-				List<String> originList = getReferences(val
-						.substring(definitionParts[1].length() + 2));
+				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, definitionParts[1]);
+
+				List<String> originList = getReferences(val.substring(definitionParts[1].length()
+				                                                      + 2));
+
 				if (originList != null) {
-					termAttributes.setListAttribute(id, OBO_PREFIX + "."
-							+ DEF_ORIGIN, originList);
+					termAttributes.setListAttribute(id, OBO_PREFIX + "." + DEF_ORIGIN, originList);
 				}
 			} else if (key.equals(EXACT_SYNONYM.toString())
-					|| key.equals(RELATED_SYNONYM.toString())
-					|| key.equals(BROAD_SYNONYM.toString())
-					|| key.equals(NARROW_SYNONYM.toString())
-					|| key.equals(SYNONYM.toString())) {
-
+			           || key.equals(RELATED_SYNONYM.toString())
+			           || key.equals(BROAD_SYNONYM.toString())
+			           || key.equals(NARROW_SYNONYM.toString()) || key.equals(SYNONYM.toString())) {
 				String[] synonymParts = val.split("\"");
-				Map<String, String> synoMap = termAttributes.getMapAttribute(
-						id, OBO_PREFIX + "." + OBOTags.SYNONYM.toString());
+				Map<String, String> synoMap = termAttributes.getMapAttribute(id,
+				                                                             OBO_PREFIX + "."
+				                                                             + OBOTags.SYNONYM
+				                                                                                                                                                                                                                                                                         .toString());
 
 				if (synoMap == null) {
 					synoMap = new HashMap<String, String>();
@@ -249,15 +290,14 @@ public class OBOFlatFileReader implements OntologyReader {
 					synoMap.put(synonymParts[1], key);
 				}
 
-				termAttributes.setMapAttribute(id, OBO_PREFIX + "."
-						+ OBOTags.SYNONYM.toString(), synoMap);
-
+				termAttributes.setMapAttribute(id, OBO_PREFIX + "." + OBOTags.SYNONYM.toString(),
+				                               synoMap);
 			} else if (key.equals(RELATIONSHIP.toString())) {
-
 				if (source == null) {
 					source = Cytoscape.getCyNode(id, true);
 					ontologyDAG.addNode(source);
 				}
+
 				String[] entry = val.split(" ");
 
 				final String[] itr = new String[3];
@@ -272,18 +312,22 @@ public class OBOFlatFileReader implements OntologyReader {
 				 * written here.
 				 */
 				final Node target;
+
 				if (source == null) {
 					source = Cytoscape.getCyNode(id, true);
 					ontologyDAG.addNode(source);
 				}
+
 				int colonidx = val.indexOf('!');
 				final String targetId;
+
 				if (colonidx == -1) {
 					// GO Slim.
 					targetId = val.trim();
 				} else {
 					targetId = val.substring(0, colonidx).trim();
 				}
+
 				target = Cytoscape.getCyNode(targetId, true);
 				ontologyDAG.addNode(target);
 
@@ -292,48 +336,64 @@ public class OBOFlatFileReader implements OntologyReader {
 				itr[1] = targetId;
 				itr[2] = "is_a";
 				interactionList.add(itr);
-
 			} else if (key.equals(IS_OBSOLETE.toString())) {
-				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, Boolean
-						.parseBoolean(val));
-			} else if (key.equals(XREF.toString())
-					|| key.equals(XREF_ANALOG.toString())) {
+				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, Boolean.parseBoolean(val));
+			} else if (key.equals(XREF.toString()) || key.equals(XREF_ANALOG.toString())) {
 				List xrefAnalog = termAttributes.getListAttribute(id,
-						OBO_PREFIX + "." + XREF.toString());
+				                                                  OBO_PREFIX + "."
+				                                                  + XREF.toString());
+
 				if (xrefAnalog == null) {
 					xrefAnalog = new ArrayList<String>();
 				}
+
 				if (val != null) {
 					xrefAnalog.add(val.toString());
 				}
-				termAttributes.setListAttribute(id, OBO_PREFIX + "."
-						+ XREF.toString(), xrefAnalog);
+
+				termAttributes.setListAttribute(id, OBO_PREFIX + "." + XREF.toString(), xrefAnalog);
 			} else {
 				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, val);
 			}
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Map<String, String> getHeader() {
 		return header;
 	}
 
 	private void buildDag() {
 		Iterator<String[]> it = interactionList.iterator();
+
 		while (it.hasNext()) {
 			String[] interaction = it.next();
 
-			Edge isA = Cytoscape.getCyEdge(Cytoscape.getCyNode(interaction[0],
-					true), Cytoscape.getCyNode(interaction[1], true),
-					Semantics.INTERACTION, interaction[2], true, true);
+			Edge isA = Cytoscape.getCyEdge(Cytoscape.getCyNode(interaction[0], true),
+			                               Cytoscape.getCyNode(interaction[1], true),
+			                               Semantics.INTERACTION, interaction[2], true, true);
 			ontologyDAG.addEdge(isA);
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public CyAttributes getTermsAttributes() {
 		return termAttributes;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public CyNetwork getDag() {
 		return ontologyDAG;
 	}
@@ -341,13 +401,16 @@ public class OBOFlatFileReader implements OntologyReader {
 	private List<String> getReferences(String list) {
 		String trimed = list.trim();
 		trimed = trimed.substring(trimed.indexOf("[") + 1, trimed.indexOf("]"));
+
 		if (trimed.length() == 0) {
 			return null;
 		} else {
 			List<String> entries = new ArrayList<String>();
+
 			for (String entry : trimed.split(",")) {
 				entries.add(entry.trim());
 			}
+
 			return entries;
 		}
 	}
@@ -355,15 +418,15 @@ public class OBOFlatFileReader implements OntologyReader {
 	private void setAttributeDescriptions() {
 		String[] attrNames = termAttributes.getAttributeNames();
 		Set<String> attrNameSet = new TreeSet<String>();
+
 		for (String name : attrNames) {
 			attrNameSet.add(name);
 		}
 
 		for (OBOTags tags : OBOTags.values()) {
-			if (attrNameSet.contains(OBOTags.getPrefix() + "."
-					+ tags.toString())) {
-				termAttributes.setAttributeDescription(OBOTags.getPrefix()
-						+ "." + tags.toString(), tags.getDescription());
+			if (attrNameSet.contains(OBOTags.getPrefix() + "." + tags.toString())) {
+				termAttributes.setAttributeDescription(OBOTags.getPrefix() + "." + tags.toString(),
+				                                       tags.getDescription());
 			}
 		}
 	}

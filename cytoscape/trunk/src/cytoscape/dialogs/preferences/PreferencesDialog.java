@@ -1,42 +1,43 @@
-
 /*
-  File: PreferencesDialog.java 
-  
+  File: PreferencesDialog.java
+
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
+
+  The Cytoscape Consortium is:
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
   - Institut Pasteur
   - Agilent Technologies
-  
+
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
   any later version.
-  
+
   This library is distributed in the hope that it will be useful, but
   WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
   documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have no obligations to provide maintenance, support,
   updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   be liable to any party for direct, indirect, special,
   incidental or consequential damages, including lost profits, arising
   out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have been advised of the possibility of such damage.  See
   the GNU Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.dialogs.preferences;
+
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -46,12 +47,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 import java.util.Properties;
 import java.util.Vector;
 
@@ -73,55 +77,43 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 
-public class PreferencesDialog extends JDialog implements
-		PropertyChangeListener {
-
+/**
+ *
+ */
+public class PreferencesDialog extends JDialog implements PropertyChangeListener {
 	int[] selection = null;
-
 	JScrollPane propsTablePane = new JScrollPane();
-
 	JTable prefsTable = new JTable();
-
 	JPanel propBtnPane = new JPanel(new FlowLayout());
-
 	JPanel okButtonPane = new JPanel(new FlowLayout());
-
 	JPanel vizmapPane = new JPanel(new FlowLayout());
-
 	JPanel cyPropsPane = new JPanel(new FlowLayout());
-
-	JCheckBox saveVizmapBtn = new JCheckBox("Make Current Visual Styles Default",false);
-
-	JCheckBox saveCyPropsBtn = new JCheckBox("Make Current Cytoscape Properties Default",false);
-
-	JTextArea vizmapText = new JTextArea( "Only check this option if you want the current visual styles to be defaults in ALL future cytoscape sessions.  Your current visual styles are automatically saved in your Cytoscape session file and won't be lost." );
-
-        JTextArea cyPropsText = new JTextArea( "Only check this option if you want the current Cytoscape properties to be defaults in ALL future cytoscape sessions.  Your current Cytoscape properties are automatically saved in your Cytoscape session file and won't be lost." );
-
-
+	JCheckBox saveVizmapBtn = new JCheckBox("Make Current Visual Styles Default", false);
+	JCheckBox saveCyPropsBtn = new JCheckBox("Make Current Cytoscape Properties Default", false);
+	JTextArea vizmapText = new JTextArea("Only check this option if you want the current visual styles to be defaults in ALL future cytoscape sessions.  Your current visual styles are automatically saved in your Cytoscape session file and won't be lost.");
+	JTextArea cyPropsText = new JTextArea("Only check this option if you want the current Cytoscape properties to be defaults in ALL future cytoscape sessions.  Your current Cytoscape properties are automatically saved in your Cytoscape session file and won't be lost.");
 	JButton addPropBtn = new JButton("Add");
-
 	JButton deletePropBtn = new JButton("Delete");
-
 	JButton modifyPropBtn = new JButton("Modify");
-
 	JButton okButton = new JButton("OK");
-
 	JButton cancelButton = new JButton("Cancel");
 
+	/**
+	 * 
+	 */
 	public PreferenceTableModel prefsTM = null;
-
 	private ListSelectionModel lsm = null;
-
 	private ListSelectionModel lsmA = null;
-
 	private boolean saveCyPropsAsDefault = false;
 	private boolean saveVizmapAsDefault = false;
 
 	// When properties are changed, it will be processed here.
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equals(Cytoscape.PREFERENCE_MODIFIED)) {
 			System.out.println("Cytoscape Prop. has changed: ");
@@ -129,42 +121,44 @@ public class PreferencesDialog extends JDialog implements
 			System.out.println(" - New value is " + e.getNewValue());
 
 			String propName = null;
-			if (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e
-					.getOldValue() || CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e
-					.getNewValue()) {
+
+			if ((CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getOldValue())
+			    || (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getNewValue())) {
 				propName = "defaultSpeciesName";
-			} else if (CytoscapeInit.getProperties().getProperty(
-					"defaultWebBrowser") == e.getOldValue() ||
-					CytoscapeInit.getProperties().getProperty(
-					"defaultWebBrowser") == e.getNewValue()) {
+			} else if ((CytoscapeInit.getProperties().getProperty("defaultWebBrowser") == e
+			                                                                                                                     .getOldValue())
+			           || (CytoscapeInit.getProperties().getProperty("defaultWebBrowser") == e
+			                                                                                                                       .getNewValue())) {
 				propName = "defaultWebBrowser";
 			}
 
 			if (propName != null) {
 				// Set to new val
-				CytoscapeInit.getProperties().setProperty( propName,
-						(String) e.getNewValue());
-				prefsTM.setProperty( propName, (String) e
-						.getNewValue());
+				CytoscapeInit.getProperties().setProperty(propName, (String) e.getNewValue());
+				prefsTM.setProperty(propName, (String) e.getNewValue());
 				// refresh();
 				System.out.println(propName + " updated to "
-						+ CytoscapeInit.getProperties().getProperty(
-								propName));
+				                   + CytoscapeInit.getProperties().getProperty(propName));
 			}
 		}
 	}
 
-	public void setParameter(TableModel tm, String preferenceName,
-			String preferenceValue) {
-			// preferences/properties
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param tm DOCUMENT ME!
+	 * @param preferenceName DOCUMENT ME!
+	 * @param preferenceValue DOCUMENT ME!
+	 */
+	public void setParameter(TableModel tm, String preferenceName, String preferenceValue) {
+		// preferences/properties
 		if (tm == prefsTM) {
-
-			Cytoscape.firePropertyChange(Cytoscape.PREFERENCE_MODIFIED, prefsTM
-					.getProperty(preferenceName), preferenceValue);
+			Cytoscape.firePropertyChange(Cytoscape.PREFERENCE_MODIFIED,
+			                             prefsTM.getProperty(preferenceName), preferenceValue);
 			prefsTM.setProperty(preferenceName, preferenceValue);
 		}
 
-		 refresh();
+		refresh();
 
 		// reset state of Modify and Delete buttons to inactive
 		// since update of parameter will clear any selections
@@ -172,6 +166,9 @@ public class PreferencesDialog extends JDialog implements
 		deletePropBtn.setEnabled(false);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void refresh() {
 		// refresh the view
 		prefsTable.setModel(prefsTM);
@@ -200,6 +197,11 @@ public class PreferencesDialog extends JDialog implements
 		saveCyPropsBtn.addItemListener(new CheckBoxListener());
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public PreferenceTableModel getPTM() {
 		return prefsTM;
 	}
@@ -219,21 +221,26 @@ public class PreferencesDialog extends JDialog implements
 			DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
 			renderer.setHorizontalAlignment(PreferenceTableModel.alignment[i]);
 
-			TableColumn Column = new TableColumn(i,
-					PreferenceTableModel.columnWidth[i], renderer, null);
+			TableColumn Column = new TableColumn(i, PreferenceTableModel.columnWidth[i], renderer,
+			                                     null);
 			Column.setIdentifier(PreferenceTableModel.columnHeader[i]);
 			prefsTable.addColumn(Column);
 		}
 	}
 
+	/**
+	 * Creates a new PreferencesDialog object.
+	 *
+	 * @param owner  DOCUMENT ME!
+	 */
 	public PreferencesDialog(Frame owner) {
 		super(owner);
 
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				this);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
 		initButtonPane();
 		initTable();
+
 		try {
 			prefPopupInit();
 		} catch (Exception e) {
@@ -248,7 +255,6 @@ public class PreferencesDialog extends JDialog implements
 	}
 
 	private void prefPopupInit() throws Exception {
-
 		Box outerBox = Box.createVerticalBox();
 		outerBox.setBorder(BorderFactory.createEmptyBorder(10, 10, 8, 10));
 
@@ -264,7 +270,8 @@ public class PreferencesDialog extends JDialog implements
 		outerBox.add(Box.createVerticalStrut(10));
 
 		outerBox.add(Box.createVerticalStrut(10));
-		JTextArea textArea = new JTextArea( "NOTE: Changes to these properties are used in the current session ONLY unless otherwise specified below." );
+
+		JTextArea textArea = new JTextArea("NOTE: Changes to these properties are used in the current session ONLY unless otherwise specified below.");
 
 		textArea.setBackground(outerBox.getBackground());
 		textArea.setEditable(false);
@@ -274,6 +281,7 @@ public class PreferencesDialog extends JDialog implements
 		outerBox.add(textArea);
 
 		outerBox.add(Box.createVerticalStrut(10));
+
 		Box vizmapBox = Box.createVerticalBox();
 		vizmapBox.setBorder(BorderFactory.createTitledBorder("Default Visual Styles"));
 		vizmapText.setBackground(outerBox.getBackground());
@@ -288,6 +296,7 @@ public class PreferencesDialog extends JDialog implements
 		outerBox.add(vizmapBox);
 
 		outerBox.add(Box.createVerticalStrut(10));
+
 		Box cyPropsBox = Box.createVerticalBox();
 		cyPropsBox.setBorder(BorderFactory.createTitledBorder("Default Cytoscape Properties"));
 		cyPropsText.setBackground(outerBox.getBackground());
@@ -316,13 +325,15 @@ public class PreferencesDialog extends JDialog implements
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			String key = JOptionPane.showInputDialog(addPropBtn,
-					"Enter property name:", "Add Property",
-					JOptionPane.QUESTION_MESSAGE);
+			String key = JOptionPane.showInputDialog(addPropBtn, "Enter property name:",
+			                                         "Add Property", JOptionPane.QUESTION_MESSAGE);
+
 			if (key != null) {
 				String value = JOptionPane.showInputDialog(addPropBtn,
-						"Enter value for property " + key + ":",
-						"Add Property Value", JOptionPane.QUESTION_MESSAGE);
+				                                           "Enter value for property " + key + ":",
+				                                           "Add Property Value",
+				                                           JOptionPane.QUESTION_MESSAGE);
+
 				if (value != null) {
 					String[] vals = { key, value };
 					prefsTM.addProperty(vals);
@@ -342,14 +353,12 @@ public class PreferencesDialog extends JDialog implements
 
 		public void actionPerformed(ActionEvent e) {
 			for (int i = 0; i < selection.length; i++) {
-				String name = new String((String) (prefsTM.getValueAt(
-						selection[i], 0)));
-				String value = new String((String) (prefsTM.getValueAt(
-						selection[i], 1)));
+				String name = new String((String) (prefsTM.getValueAt(selection[i], 0)));
+				String value = new String((String) (prefsTM.getValueAt(selection[i], 1)));
 
-				PreferenceValueDialog pd = new PreferenceValueDialog(
-						PreferencesDialog.this, name, value, callerRef,
-						prefsTM, "Modify value...", false);
+				PreferenceValueDialog pd = new PreferenceValueDialog(PreferencesDialog.this, name,
+				                                                     value, callerRef, prefsTM,
+				                                                     "Modify value...", false);
 			}
 		}
 	}
@@ -364,10 +373,10 @@ public class PreferencesDialog extends JDialog implements
 
 		public void actionPerformed(ActionEvent e) {
 			for (int i = 0; i < selection.length; i++) {
-				String name = new String((String) (prefsTM.getValueAt(
-						selection[i], 0)));
+				String name = new String((String) (prefsTM.getValueAt(selection[i], 0)));
 				prefsTM.deleteProperty(name);
 			}
+
 			refresh();
 		}
 	}
@@ -390,40 +399,45 @@ public class PreferencesDialog extends JDialog implements
 			CytoscapeInit.getProperties().putAll(newProps);
 			callerRef.setVisible(false);
 
-			if ( saveVizmapAsDefault ) {
-				Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null, null); 
+			if (saveVizmapAsDefault) {
+				Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null, null);
 				saveVizmapAsDefault = false;
 				saveVizmapBtn.setSelected(false);
 			}
-			if ( saveCyPropsAsDefault ) {
+
+			if (saveCyPropsAsDefault) {
 				try {
-				File file = CytoscapeInit.getConfigFile( "cytoscape.props" );
-				FileOutputStream output = new FileOutputStream( file );
-				CytoscapeInit.getProperties().store( output, "Cytoscape Property File" );
-				System.out.println("wrote Cytoscape properties file to: " + file.getAbsolutePath());
+					File file = CytoscapeInit.getConfigFile("cytoscape.props");
+					FileOutputStream output = new FileOutputStream(file);
+					CytoscapeInit.getProperties().store(output, "Cytoscape Property File");
+					System.out.println("wrote Cytoscape properties file to: "
+					                   + file.getAbsolutePath());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					System.out.println("Could not write cytoscape.props file!");
 				}
+
 				saveCyPropsAsDefault = false;
 				saveCyPropsBtn.setSelected(false);
 			}
-			Cytoscape.firePropertyChange(Cytoscape.PREFERENCES_UPDATED, null, null); 
+
+			Cytoscape.firePropertyChange(Cytoscape.PREFERENCES_UPDATED, null, null);
 		}
 	}
 
-	class CheckBoxListener implements ItemListener { 
-
+	class CheckBoxListener implements ItemListener {
 		public CheckBoxListener() {
 			super();
 		}
 
 		public void itemStateChanged(ItemEvent e) {
-	        	Object source = e.getItemSelectable();
-		        if (e.getStateChange() == ItemEvent.SELECTED) {
-		    		if (source == saveVizmapBtn) 
+			Object source = e.getItemSelectable();
+
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				if (source == saveVizmapBtn)
 					saveVizmapAsDefault = true;
-		    		if (source == saveCyPropsBtn) 
+
+				if (source == saveCyPropsBtn)
 					saveCyPropsAsDefault = true;
 			}
 		}
@@ -446,7 +460,6 @@ public class PreferencesDialog extends JDialog implements
 
 	class TableListener implements ListSelectionListener {
 		private ListSelectionModel model = null;
-
 		private PreferencesDialog motherRef = null;
 
 		public TableListener(PreferencesDialog mother, ListSelectionModel lsm) {
@@ -458,7 +471,8 @@ public class PreferencesDialog extends JDialog implements
 			if (!lse.getValueIsAdjusting()) {
 				StringBuffer buf = new StringBuffer();
 				selection = getSelectedIndices(model.getMinSelectionIndex(),
-						model.getMaxSelectionIndex());
+				                               model.getMaxSelectionIndex());
+
 				if (selection.length == 0) {
 				} else {
 					modifyPropBtn.setEnabled(true);
@@ -472,7 +486,7 @@ public class PreferencesDialog extends JDialog implements
 				return new int[0];
 			}
 
-			int guesses[] = new int[stop - start + 1];
+			int[] guesses = new int[stop - start + 1];
 			int index = 0;
 
 			for (int i = start; i <= stop; i++) {
@@ -480,13 +494,14 @@ public class PreferencesDialog extends JDialog implements
 					guesses[index++] = i;
 				}
 			}
-			int realthing[] = new int[index];
+
+			int[] realthing = new int[index];
 			System.arraycopy(guesses, 0, realthing, 0, index);
+
 			return realthing;
 		}
 
 		public void actionPerformed(ActionEvent e) {
 		}
 	}
-
 }

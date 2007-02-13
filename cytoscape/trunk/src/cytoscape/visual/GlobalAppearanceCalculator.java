@@ -1,35 +1,35 @@
 /*
- File: GlobalAppearanceCalculator.java 
- 
+ File: GlobalAppearanceCalculator.java
+
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
- 
- The Cytoscape Consortium is: 
+
+ The Cytoscape Consortium is:
  - Institute for Systems Biology
  - University of California San Diego
  - Memorial Sloan-Kettering Cancer Center
  - Institut Pasteur
  - Agilent Technologies
- 
+
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
  any later version.
- 
+
  This library is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have no obligations to provide maintenance, support,
  updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  be liable to any party for direct, indirect, special,
  incidental or consequential damages, including lost profits, arising
  out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have been advised of the possibility of such damage.  See
  the GNU Lesser General Public License for more details.
- 
+
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -42,13 +42,16 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-//----------------------------------------------------------------------------
-import java.awt.Color;
-import java.util.Properties;
-
 import cytoscape.CyNetwork;
+
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.ObjectToString;
+
+//----------------------------------------------------------------------------
+import java.awt.Color;
+
+import java.util.Properties;
+
 
 //----------------------------------------------------------------------------
 /**
@@ -56,18 +59,14 @@ import cytoscape.visual.parsers.ObjectToString;
  * of the graph window. Currently dynamic calculators for these values are not
  * supported, only default values.
  */
-public class GlobalAppearanceCalculator extends SubjectBase implements
-		Cloneable {
-
+public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable {
 	/*
 	 * Set default colors
 	 */
 	Color defaultBackgroundColor = Color.WHITE;
 	Color defaultSloppySelectionColor = Color.GRAY;
-	
 	private Color defaultNodeSelectionColor = Color.YELLOW;
 	private Color defaultNodeReverseSelectionColor = Color.GREEN;
-	
 	private Color defaultEdgeSelectionColor = Color.RED;
 	private Color defaultEdgeReverseSelectionColor = Color.GREEN;
 
@@ -77,9 +76,13 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 	public Object clone() throws CloneNotSupportedException {
 		Object copy = null;
 		copy = super.clone();
+
 		return copy;
 	}
 
+	/**
+	 * Creates a new GlobalAppearanceCalculator object.
+	 */
 	public GlobalAppearanceCalculator() {
 	}
 
@@ -103,8 +106,8 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 	 * Creates a new GlobalAppearanceCalculator and immediately customizes it by
 	 * calling applyProperties with the supplied arguments.
 	 */
-	public GlobalAppearanceCalculator(String name, Properties gProps,
-			String baseKey, CalculatorCatalog catalog) {
+	public GlobalAppearanceCalculator(String name, Properties gProps, String baseKey,
+	                                  CalculatorCatalog catalog) {
 		applyProperties(name, gProps, baseKey, catalog);
 	}
 
@@ -115,6 +118,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 	public GlobalAppearance calculateGlobalAppearance(CyNetwork network) {
 		GlobalAppearance appr = new GlobalAppearance();
 		calculateGlobalAppearance(appr, network);
+
 		return appr;
 	}
 
@@ -122,8 +126,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 	 * The supplied GlobalAppearance object will be changed to hold new values
 	 * for the known global visual attributes.
 	 */
-	public void calculateGlobalAppearance(GlobalAppearance appr,
-			CyNetwork network) {
+	public void calculateGlobalAppearance(GlobalAppearance appr, CyNetwork network) {
 		appr.setBackgroundColor(calculateBackgroundColor(network));
 		appr.setSloppySelectionColor(calculateSloppySelectionColor(network));
 		appr.setNodeSelectionColor(calculateNodeSelectionColor(network));
@@ -132,10 +135,20 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 		appr.setEdgeReverseSelectionColor(calculateEdgeReverseSelectionColor(network));
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color getDefaultBackgroundColor() {
 		return defaultBackgroundColor;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
 	public void setDefaultBackgroundColor(Color c) {
 		if (c != null) {
 			defaultBackgroundColor = c;
@@ -151,55 +164,104 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 		return defaultBackgroundColor;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color getDefaultSloppySelectionColor() {
 		return defaultSloppySelectionColor;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
 	public void setDefaultSloppySelectionColor(Color c) {
 		if (c != null) {
 			this.fireStateChanged();
 			defaultSloppySelectionColor = c;
 		}
 	}
-	
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color getDefaultNodeSelectionColor() {
 		return defaultNodeSelectionColor;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
 	public void setDefaultNodeSelectionColor(Color c) {
 		if (c != null) {
 			defaultNodeSelectionColor = c;
 			this.fireStateChanged();
 		}
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color getDefaultNodeReverseSelectionColor() {
 		return defaultNodeReverseSelectionColor;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
 	public void setDefaultNodeReverseSelectionColor(Color c) {
 		if (c != null) {
 			defaultNodeReverseSelectionColor = c;
 			this.fireStateChanged();
 		}
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color getDefaultEdgeSelectionColor() {
 		return defaultEdgeSelectionColor;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
 	public void setDefaultEdgeSelectionColor(Color c) {
 		if (c != null) {
 			defaultEdgeSelectionColor = c;
 			this.fireStateChanged();
 		}
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color getDefaultEdgeReverseSelectionColor() {
 		return defaultEdgeReverseSelectionColor;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
 	public void setDefaultEdgeReverseSelectionColor(Color c) {
 		if (c != null) {
 			defaultEdgeReverseSelectionColor = c;
@@ -214,19 +276,47 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 	public Color calculateSloppySelectionColor(CyNetwork network) {
 		return defaultSloppySelectionColor;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param network DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color calculateNodeSelectionColor(CyNetwork network) {
 		return defaultNodeSelectionColor;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param network DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color calculateNodeReverseSelectionColor(CyNetwork network) {
 		return defaultNodeReverseSelectionColor;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param network DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color calculateEdgeSelectionColor(CyNetwork network) {
 		return defaultEdgeSelectionColor;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param network DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Color calculateEdgeReverseSelectionColor(CyNetwork network) {
 		return defaultEdgeReverseSelectionColor;
 	}
@@ -242,6 +332,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 		sb.append(defaultBackgroundColor).append(lineSep);
 		sb.append("defaultSloppySelectionColor = ");
 		sb.append(defaultSloppySelectionColor).append(lineSep);
+
 		return sb.toString();
 	}
 
@@ -254,54 +345,66 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 	 * supported for global visual attributes, the catalog argument is currently
 	 * ignored.
 	 */
-	public void applyProperties(String name, Properties nacProps,
-			String baseKey, CalculatorCatalog catalog) {
+	public void applyProperties(String name, Properties nacProps, String baseKey,
+	                            CalculatorCatalog catalog) {
 		String value = null;
 
 		// look for default values
 		value = nacProps.getProperty(baseKey + ".defaultBackgroundColor");
+
 		if (value != null) {
 			Color c = (new ColorParser()).parseColor(value);
+
 			if (c != null) {
 				setDefaultBackgroundColor(c);
 			}
 		}
-		
+
 		value = nacProps.getProperty(baseKey + ".defaultSloppySelectionColor");
+
 		if (value != null) {
 			Color c = (new ColorParser()).parseColor(value);
+
 			if (c != null) {
 				setDefaultSloppySelectionColor(c);
 			}
 		}
-		
+
 		value = nacProps.getProperty(baseKey + ".defaultNodeSelectionColor");
+
 		if (value != null) {
 			Color c = (new ColorParser()).parseColor(value);
+
 			if (c != null) {
 				setDefaultNodeSelectionColor(c);
 			}
 		}
-		
+
 		value = nacProps.getProperty(baseKey + ".defaultNodeReverseSelectionColor");
+
 		if (value != null) {
 			Color c = (new ColorParser()).parseColor(value);
+
 			if (c != null) {
 				setDefaultNodeReverseSelectionColor(c);
 			}
 		}
-		
+
 		value = nacProps.getProperty(baseKey + ".defaultEdgeSelectionColor");
+
 		if (value != null) {
 			Color c = (new ColorParser()).parseColor(value);
+
 			if (c != null) {
 				setDefaultEdgeSelectionColor(c);
 			}
 		}
-		
+
 		value = nacProps.getProperty(baseKey + ".defaultEdgeReverseSelectionColor");
+
 		if (value != null) {
 			Color c = (new ColorParser()).parseColor(value);
+
 			if (c != null) {
 				setDefaultEdgeReverseSelectionColor(c);
 			}
@@ -321,7 +424,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 		key = baseKey + ".defaultBackgroundColor";
 		value = ObjectToString.getStringValue(getDefaultBackgroundColor());
 		newProps.setProperty(key, value);
-		
+
 		key = baseKey + ".defaultSloppySelectionColor";
 		value = ObjectToString.getStringValue(getDefaultSloppySelectionColor());
 		newProps.setProperty(key, value);
@@ -329,19 +432,19 @@ public class GlobalAppearanceCalculator extends SubjectBase implements
 		key = baseKey + ".defaultNodeSelectionColor";
 		value = ObjectToString.getStringValue(getDefaultNodeSelectionColor());
 		newProps.setProperty(key, value);
-		
+
 		key = baseKey + ".defaultNodeReverseSelectionColor";
 		value = ObjectToString.getStringValue(getDefaultNodeReverseSelectionColor());
 		newProps.setProperty(key, value);
-		
+
 		key = baseKey + ".defaultEdgeSelectionColor";
 		value = ObjectToString.getStringValue(getDefaultEdgeSelectionColor());
 		newProps.setProperty(key, value);
-		
+
 		key = baseKey + ".defaultEdgeReverseSelectionColor";
 		value = ObjectToString.getStringValue(getDefaultEdgeReverseSelectionColor());
 		newProps.setProperty(key, value);
-		
+
 		return newProps;
 	}
 }

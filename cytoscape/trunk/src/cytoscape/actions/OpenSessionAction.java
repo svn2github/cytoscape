@@ -1,75 +1,85 @@
 /*
- File: OpenSessionAction.java 
- 
+ File: OpenSessionAction.java
+
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
- 
- The Cytoscape Consortium is: 
+
+ The Cytoscape Consortium is:
  - Institute for Systems Biology
  - University of California San Diego
  - Memorial Sloan-Kettering Cancer Center
  - Institut Pasteur
  - Agilent Technologies
- 
+
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
  any later version.
- 
+
  This library is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have no obligations to provide maintenance, support,
  updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  be liable to any party for direct, indirect, special,
  incidental or consequential damages, including lost profits, arising
  out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have been advised of the possibility of such damage.  See
  the GNU Lesser General Public License for more details.
- 
+
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package cytoscape.actions;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.data.readers.CytoscapeSessionReader;
+import cytoscape.data.readers.XGMMLException;
+
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+
+import cytoscape.task.ui.JTaskConfig;
+
+import cytoscape.task.util.TaskManager;
+
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.util.FileUtil;
+
+import cytoscape.view.CyMenus;
+
 import java.awt.event.ActionEvent;
+
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
+
 import javax.xml.bind.JAXBException;
 
-import cytoscape.Cytoscape;
-import cytoscape.data.readers.CytoscapeSessionReader;
-import cytoscape.data.readers.XGMMLException;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.FileUtil;
-import cytoscape.view.CyMenus;
 
 /**
  * Call the session reader and read everything in the zip archive.<br>
- * 
+ *
  * @version 1.0
  * @since Cytoscape 2.3
  * @see cytoscape.data.readers.CytoscapeSessionReader
  * @author kono
- * 
+ *
  */
 public class OpenSessionAction extends CytoscapeAction {
-
 	protected CyMenus windowMenu;
 
 	// Extension for the new cytoscape session file
+	/**
+	 * 
+	 */
 	public static final String SESSION_EXT = "cys";
 
 	/**
@@ -85,7 +95,7 @@ public class OpenSessionAction extends CytoscapeAction {
 
 	/**
 	 * Constructor for the Icon button on the toolbar.<br>
-	 * 
+	 *
 	 * @param windowMenu
 	 * @param label
 	 */
@@ -98,12 +108,10 @@ public class OpenSessionAction extends CytoscapeAction {
 	 * Clear current session and open the cys file.
 	 */
 	public void actionPerformed(ActionEvent e) {
-
 		String name; // Name of the file to be opened.
 		final boolean proceed = prepare();
 
 		if (proceed) {
-
 			// Create FileFilters
 			final CyFileFilter sessionFilter = new CyFileFilter();
 
@@ -114,7 +122,7 @@ public class OpenSessionAction extends CytoscapeAction {
 			// Open Dialog to ask user the file name.
 			try {
 				name = FileUtil.getFile("Open a Session File", FileUtil.LOAD,
-						new CyFileFilter[] { sessionFilter }).toString();
+				                        new CyFileFilter[] { sessionFilter }).toString();
 			} catch (Exception exp) {
 				// this is because the selection was canceled
 				return;
@@ -145,19 +153,18 @@ public class OpenSessionAction extends CytoscapeAction {
 
 	/**
 	 * Before loading the new session, we need to clean up current session.
-	 * 
+	 *
 	 */
 	private boolean prepare() {
-
 		final int currentNetworkCount = Cytoscape.getNetworkSet().size();
+
 		if (currentNetworkCount != 0) {
 			// Show warning
 			final String warning = "Current session will be lost.\nDo you want to continue?";
 
-			final int result = JOptionPane.showConfirmDialog(Cytoscape
-					.getDesktop(), warning, "Caution!",
-					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-					null);
+			final int result = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), warning,
+			                                                 "Caution!", JOptionPane.YES_NO_OPTION,
+			                                                 JOptionPane.WARNING_MESSAGE, null);
 
 			if (result == JOptionPane.YES_OPTION) {
 				return true;
@@ -168,17 +175,16 @@ public class OpenSessionAction extends CytoscapeAction {
 			return true;
 		}
 	}
-
 } // SaveAsGMLAction
 
-class OpenSessionTask implements Task {
 
+class OpenSessionTask implements Task {
 	private String fileName;
 	private TaskMonitor taskMonitor;
 
 	/**
 	 * Constructor.<br>
-	 * 
+	 *
 	 * @param fileName
 	 *            Session file name
 	 */
@@ -188,19 +194,18 @@ class OpenSessionTask implements Task {
 
 	/**
 	 * Executes Task
-	 * 
+	 *
 	 * @throws
 	 * @throws Exception
 	 */
 	public void run() {
-		taskMonitor
-				.setStatus("Opening Session File.\n\nIt may take a while.\nPlease wait...");
+		taskMonitor.setStatus("Opening Session File.\n\nIt may take a while.\nPlease wait...");
 		taskMonitor.setPercentCompleted(-1);
+
 		CytoscapeSessionReader sr;
 
 		// Turn off the network panel & bird's eye view
-		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
-				false);
+		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(false);
 
 		try {
 			sr = new CytoscapeSessionReader(fileName);
@@ -216,19 +221,18 @@ class OpenSessionTask implements Task {
 			taskMonitor.setException(e, e.getMessage());
 		} finally {
 			sr = null;
-			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
-					true);
+			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(true);
 			System.gc();
 		}
 
 		taskMonitor.setPercentCompleted(100);
-		taskMonitor.setStatus("Session file " + fileName
-				+ " successfully loaded.");
+		taskMonitor.setStatus("Session file " + fileName + " successfully loaded.");
 
 		Cytoscape.setCurrentSessionFileName(fileName);
+
 		final File sessionFile = new File(fileName);
-		Cytoscape.getDesktop().setTitle(
-				"Cytoscape Desktop (Session: " + sessionFile.getName() + ")");
+		Cytoscape.getDesktop().setTitle("Cytoscape Desktop (Session: " + sessionFile.getName()
+		                                + ")");
 	}
 
 	/**
@@ -240,22 +244,20 @@ class OpenSessionTask implements Task {
 
 	/**
 	 * Sets the Task Monitor.
-	 * 
+	 *
 	 * @param taskMonitor
 	 *            TaskMonitor Object.
 	 */
-	public void setTaskMonitor(TaskMonitor taskMonitor)
-			throws IllegalThreadStateException {
+	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
 		this.taskMonitor = taskMonitor;
 	}
 
 	/**
 	 * Gets the Task Title.
-	 * 
+	 *
 	 * @return Task Title.
 	 */
 	public String getTitle() {
 		return "Opening Session File";
 	}
-
 }

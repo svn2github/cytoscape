@@ -34,9 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.data;
-
 
 
 /**
@@ -47,21 +45,20 @@ package cytoscape.data;
  *
  */
 public interface AttributeValueVisitor {
-    /**
-     * Perform whatever operations are desired on the given attribute value.
-     * @param  objTraversedID the identifier of the object for which we have
-     *                  obtained an attribute value.
-     * @param attrName the attribute name for which this is a value.
-     * @param attrs the CyAttributes where this attribute value is stored.
-     * @param keySpace the key used to obtain this value. For complex
-     * values, this may consist of several elements (e.g., new
-     * Object[] {"url1", new Integer(1), new Integer(0)). Modification
-     * of this key may lead to unexpected traversal results or errors,
-     * so copy this key if you wish to make modifications.
-     * @param visitedValue the actual visited.
-     * @see cytoscape.data.CyAttributesUtils#traverseAttributeValues
-     */
-    void visitingAttributeValue(String objTraverseID, String attrName,
-                                CyAttributes attrs, Object[] keySpace,
-                                Object visitedValue);
+	/**
+	 * Perform whatever operations are desired on the given attribute value.
+	 * @param  objTraversedID the identifier of the object for which we have
+	 *                  obtained an attribute value.
+	 * @param attrName the attribute name for which this is a value.
+	 * @param attrs the CyAttributes where this attribute value is stored.
+	 * @param keySpace the key used to obtain this value. For complex
+	 * values, this may consist of several elements (e.g., new
+	 * Object[] {"url1", new Integer(1), new Integer(0)). Modification
+	 * of this key may lead to unexpected traversal results or errors,
+	 * so copy this key if you wish to make modifications.
+	 * @param visitedValue the actual visited.
+	 * @see cytoscape.data.CyAttributesUtils#traverseAttributeValues
+	 */
+	void visitingAttributeValue(String objTraverseID, String attrName, CyAttributes attrs,
+	                            Object[] keySpace, Object visitedValue);
 }

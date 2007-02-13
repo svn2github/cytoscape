@@ -1,69 +1,78 @@
 /*
- File: BioDataServerWizard.java 
- 
+ File: BioDataServerWizard.java
+
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
- 
- The Cytoscape Consortium is: 
+
+ The Cytoscape Consortium is:
  - Institute for Systems Biology
  - University of California San Diego
  - Memorial Sloan-Kettering Cancer Center
  - Institut Pasteur
  - Agilent Technologies
- 
+
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
  any later version.
- 
+
  This library is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have no obligations to provide maintenance, support,
  updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  be liable to any party for direct, indirect, special,
  incidental or consequential damages, including lost profits, arising
  out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have been advised of the possibility of such damage.  See
  the GNU Lesser General Public License for more details.
- 
+
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package cytoscape.data.servers.ui;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import com.nexes.wizard.Wizard;
 import com.nexes.wizard.WizardPanelDescriptor;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+
 import cytoscape.actions.MapOntologyAction;
+
 import cytoscape.data.annotation.OntologyMapperDialog;
+
 import cytoscape.data.servers.BioDataServer;
+
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+
 import cytoscape.task.ui.JTaskConfig;
+
 import cytoscape.task.util.TaskManager;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+
 
 /*
  * Bio Data Server Wizard utility.
  */
+/**
+ *
+ */
 public class GeneOntologyWizard {
-
 	// The wizard object
 	Wizard wizard;
 
@@ -78,20 +87,21 @@ public class GeneOntologyWizard {
 
 	// Panel for selecting GA files
 	WizardPanelDescriptor annotationDescriptor;
-	
+
 	// Panel to overwrite default species name
 	WizardPanelDescriptor speciesDescriptor;
 
 	// Parameters obtained from the wizard session
 	private boolean flip;
 	private String species;
-
 	private String oldManifest;
 	private final String FS = System.getProperty("file.separator");
 	private final String AUTO_MANIFEST = "auto_generated_manifest";
-
 	String manifestFullPath = null;
 
+	/**
+	 * Creates a new GeneOntologyWizard object.
+	 */
 	public GeneOntologyWizard() {
 		flip = false;
 		oldManifest = null;
@@ -102,32 +112,32 @@ public class GeneOntologyWizard {
 		wizard.getDialog().setTitle("Gene Ontology Wizard");
 
 		startDescriptor = new SelectFormatPanelDescriptor();
-		wizard.registerWizardPanel(SelectFormatPanelDescriptor.IDENTIFIER,
-				startDescriptor);
+		wizard.registerWizardPanel(SelectFormatPanelDescriptor.IDENTIFIER, startDescriptor);
 
 		manifestDescriptor = new ManifestFileSelectionPanelDescriptor();
 		wizard.registerWizardPanel(ManifestFileSelectionPanelDescriptor.IDENTIFIER,
-				manifestDescriptor);
+		                           manifestDescriptor);
 
 		annotationDescriptor = new AnotationPanelDescriptor();
-		wizard.registerWizardPanel(AnotationPanelDescriptor.IDENTIFIER,
-				annotationDescriptor);
+		wizard.registerWizardPanel(AnotationPanelDescriptor.IDENTIFIER, annotationDescriptor);
 
 		oboDescriptor = new OboPanelDescriptor();
-		wizard
-				.registerWizardPanel(OboPanelDescriptor.IDENTIFIER,
-						oboDescriptor);
-		
-//		speciesDescriptor = new SpeciesPanelDescriptor();
-//		wizard.registerWizardPanel(SpeciesPanelDescriptor.IDENTIFIER,
-//				speciesDescriptor);
-		
+		wizard.registerWizardPanel(OboPanelDescriptor.IDENTIFIER, oboDescriptor);
+
+		//		speciesDescriptor = new SpeciesPanelDescriptor();
+		//		wizard.registerWizardPanel(SpeciesPanelDescriptor.IDENTIFIER,
+		//				speciesDescriptor);
+
 		// Set the start panel
 		wizard.setCurrentPanel(SelectFormatPanelDescriptor.IDENTIFIER);
-
 	}
 
 	// Show the wizard.
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public int show() {
 		int ret = wizard.showModalDialog();
 
@@ -136,12 +146,11 @@ public class GeneOntologyWizard {
 			LoadGeneOntologyTask task;
 
 			oldManifest = ((ManifestFileSelectionPanelDescriptor) manifestDescriptor)
-					.getManifestFileName();
+			                                                                                                                                         .getManifestFileName();
 
 			// First, create manifest if necessary.
 			if (oldManifest == null) {
-				flip = ((AnotationPanelDescriptor) annotationDescriptor)
-						.isFlip();
+				flip = ((AnotationPanelDescriptor) annotationDescriptor).isFlip();
 				System.out.println("Flip = " + flip);
 				generateManifest();
 				task = new LoadGeneOntologyTask(manifestFullPath);
@@ -164,17 +173,23 @@ public class GeneOntologyWizard {
 			//AnnotationGui antGui = new AnnotationGui();
 			MapOntologyAction mapGO = new MapOntologyAction();
 			mapGO.actionPerformed(null);
-
 		}
+
 		return ret;
 	}
 
 	/*
 	 * This file append species name to the end of new manifest files
 	 */
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param parentPath DOCUMENT ME!
+	 */
 	public void appendSpecies(String parentPath) {
 		boolean append = true;
 		String autoManifest = parentPath + FS + "auto_generated_manifest";
+
 		try {
 			FileWriter fw = new FileWriter(autoManifest, append);
 			BufferedWriter br = new BufferedWriter(fw);
@@ -186,10 +201,20 @@ public class GeneOntologyWizard {
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public boolean getFlip() {
 		return flip;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getManifestFileName() {
 		return manifestFullPath;
 	}
@@ -197,28 +222,27 @@ public class GeneOntologyWizard {
 	// Create manifest file here.
 	private void generateManifest() {
 		try {
-
 			HashMap gaMap = (HashMap) ((AnotationPanelDescriptor) annotationDescriptor)
-					.getAnotationFiles();
+			                                                                                                                                                                                                                      .getAnotationFiles();
 			Iterator it = gaMap.keySet().iterator();
 			File[] gaList = new File[gaMap.size()];
 			int idx = 0;
+
 			while (it.hasNext()) {
 				gaList[idx] = (File) gaMap.get(it.next());
 				idx++;
 			}
 
 			File oboFile = ((OboPanelDescriptor) oboDescriptor).getOboFile();
-			// Create List of Gene Association files
 
+			// Create List of Gene Association files
 			String parentPath = null;
 
 			if (oboFile.canRead() == true) {
 				parentPath = oboFile.getParent() + FS;
 				manifestFullPath = parentPath + AUTO_MANIFEST;
 
-				PrintWriter wt = new PrintWriter(new BufferedWriter(
-						new FileWriter(manifestFullPath)));
+				PrintWriter wt = new PrintWriter(new BufferedWriter(new FileWriter(manifestFullPath)));
 				wt.println("flip=" + flip);
 				wt.println("obo=" + oboFile.getName());
 
@@ -228,24 +252,28 @@ public class GeneOntologyWizard {
 
 				wt.close();
 			}
+
 			System.out.println("Manifest Created.");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
-
 }
+
 
 /**
  * Task to Load New Network Data.
  */
 class LoadGeneOntologyTask implements Task {
-
 	private TaskMonitor taskMonitor;
-
 	private String manifest;
 
+	/**
+	 * Creates a new LoadGeneOntologyTask object.
+	 *
+	 * @param target  DOCUMENT ME!
+	 */
 	public LoadGeneOntologyTask(String target) {
 		this.manifest = target;
 	}
@@ -258,28 +286,27 @@ class LoadGeneOntologyTask implements Task {
 
 		taskMonitor.setPercentCompleted(-1);
 		Cytoscape.loadBioDataServer(manifest);
-		// taskMonitor.setPercentCompleted(80);
 
+		// taskMonitor.setPercentCompleted(80);
 		BioDataServer bds = Cytoscape.getBioDataServer();
 
 		if (bds.getAnnotationCount() != 0) {
 			informUserOfServerStats(bds);
+
 			// taskMonitor.setStatus("Gene Ontology Server loaded
 			// successfully.");
 		} else {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Could not load Gene Ontology Server.");
-			sb
-					.append("\nSome of the data file may not be a valid ontology or annotation file.");
-			taskMonitor.setException(new IOException(sb.toString()), sb
-					.toString());
+			sb.append("\nSome of the data file may not be a valid ontology or annotation file.");
+			taskMonitor.setException(new IOException(sb.toString()), sb.toString());
 		}
+
 		taskMonitor.setPercentCompleted(100);
 		Cytoscape.firePropertyChange(Cytoscape.DATASERVER_CHANGED, null, null);
 	}
 
 	private void informUserOfServerStats(BioDataServer server) {
-
 		//
 		// Display the summary of the Gene Ontology Server
 		//
@@ -296,18 +323,17 @@ class LoadGeneOntologyTask implements Task {
 
 			if (element.length > 2) {
 				for (int j = 0; j < element.length; j++) {
-
 					if (element[j].startsWith("annotation") == false) {
 						newMessage = newMessage + element[j] + "\n     ";
 					}
 				}
+
 				newMessage = newMessage + "\n";
 			}
-
 		}
 
 		status = "Summary of the Gene Ontology Server:\n\n" + newMessage
-				+ "\n\nGene Ontology Server loaded successfully.";
+		         + "\n\nGene Ontology Server loaded successfully.";
 
 		taskMonitor.setStatus(status);
 	}
@@ -321,18 +347,17 @@ class LoadGeneOntologyTask implements Task {
 
 	/**
 	 * Sets the Task Monitor.
-	 * 
+	 *
 	 * @param taskMonitor
 	 *            TaskMonitor Object.
 	 */
-	public void setTaskMonitor(TaskMonitor taskMonitor)
-			throws IllegalThreadStateException {
+	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
 		this.taskMonitor = taskMonitor;
 	}
 
 	/**
 	 * Gets the Task Title.
-	 * 
+	 *
 	 * @return Task Title.
 	 */
 	public String getTitle() {

@@ -34,9 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.data;
-
 
 
 /**
@@ -46,20 +44,20 @@ package cytoscape.data;
  * @see cytoscape.data.CyAttributesUtils#copyAttributes
  */
 public interface AttributeFilter {
-    /**
-     * Return true iff a given attribute should be included in
-     * some operation, such as {@link
-     * cytoscape.data.CyAttributesUtils#copyAttributes
-     * CyAttributesUtils.copyAttributes()}.
-     * @param CyAttributes attrs the CyAttributes where attrName
-     *        is stored.
-     * @param objID the identifer of the object whose attrName attribute
-     *              is stored in attrs.
-     * @param attrName the name of the Attribute to test.
-     * For example, if we were performing a CyAttributesUtils.copyAttributes(),
-     * returning true would mean to copy the attribute attrName
-     * for the object with key objID, within the CyAttributes attrs.
-     * @see cytoscape.data.CyAttributesUtils#copyAttributes
-     */
-    boolean includeAttribute(CyAttributes attrs, String objID, String attrName);
+	/**
+	 * Return true iff a given attribute should be included in
+	 * some operation, such as {@link
+	 * cytoscape.data.CyAttributesUtils#copyAttributes
+	 * CyAttributesUtils.copyAttributes()}.
+	 * @param CyAttributes attrs the CyAttributes where attrName
+	 *        is stored.
+	 * @param objID the identifer of the object whose attrName attribute
+	 *              is stored in attrs.
+	 * @param attrName the name of the Attribute to test.
+	 * For example, if we were performing a CyAttributesUtils.copyAttributes(),
+	 * returning true would mean to copy the attribute attrName
+	 * for the object with key objID, within the CyAttributes attrs.
+	 * @see cytoscape.data.CyAttributesUtils#copyAttributes
+	 */
+	boolean includeAttribute(CyAttributes attrs, String objID, String attrName);
 }

@@ -1,42 +1,41 @@
-
 /*
-  File: CytoscapeMenuBar.java 
-  
+  File: CytoscapeMenuBar.java
+
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
+
+  The Cytoscape Consortium is:
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
   - Institut Pasteur
   - Agilent Technologies
-  
+
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
   any later version.
-  
+
   This library is distributed in the hope that it will be useful, but
   WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
   documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have no obligations to provide maintenance, support,
   updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   be liable to any party for direct, indirect, special,
   incidental or consequential damages, including lost profits, arising
   out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have been advised of the possibility of such damage.  See
   the GNU Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.util;
+
 
 //import shadegrown.Reidentifiable;
 //import shadegrown.CollectionListener;
@@ -46,7 +45,6 @@ package cytoscape.util;
 //import shadegrown.PropertyMap;
 
 //import shadegrown.filters.TypeFilter;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -57,13 +55,16 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+
+/**
+ *
+ */
 public class CytoscapeMenuBar extends JMenuBar {
-
+	/**
+	 * 
+	 */
 	public static final String DEFAULT_MENU_SPECIFIER = "Tools";
-	
 	protected static final int NO_INDEX = -2;
-	
-
 	protected String defaultMenuSpecifier = DEFAULT_MENU_SPECIFIER;
 	protected Set actionMembersSet = null;
 	protected Map actionMenuItemMap = null;
@@ -89,11 +90,21 @@ public class CytoscapeMenuBar extends JMenuBar {
 		setMinimumSize(getMenu("File").getPreferredSize());
 	} // initializeCytoscapeMenuBar()
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param menu_name DOCUMENT ME!
+	 */
 	public void setDefaultMenuSpecifier(String menu_name) {
 		// TODO: If the existing menu exists, should we rename it?
 		defaultMenuSpecifier = menu_name;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getDefaultMenuSpecifier() {
 		return defaultMenuSpecifier;
 	}
@@ -104,13 +115,20 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 * preferredMenu property, or null if it does not have that property.
 	 */
 	public boolean addAction(Action action) {
-		
 		return addAction(action, NO_INDEX);
 	} // addAction( action )
-	
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param action DOCUMENT ME!
+	 * @param index DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public boolean addAction(Action action, int index) {
 		String menu_name = null;
+
 		if (action instanceof CytoscapeAction) {
 			if (((CytoscapeAction) action).isInMenuBar()) {
 				menu_name = ((CytoscapeAction) action).getPreferredMenu();
@@ -127,23 +145,34 @@ public class CytoscapeMenuBar extends JMenuBar {
 			// menu_name = ( String )map.get( "preferredMenu" );
 			menu_name = DEFAULT_MENU_SPECIFIER;
 		}
-		if(index != NO_INDEX) {
+
+		if (index != NO_INDEX) {
 			((CytoscapeAction) action).setPreferredIndex(index);
 		}
+
 		return addAction(menu_name, action);
 	}
 
-	 
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param menu_name DOCUMENT ME!
+	 * @param action DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public boolean addAction(String menu_name, Action action) {
 		// At present we allow an Action to be in this menu bar only once.
 		JMenuItem menu_item = null;
+
 		if (actionMenuItemMap != null) {
 			menu_item = (JMenuItem) actionMenuItemMap.get(action);
 		}
+
 		if (menu_item != null) {
 			return false;
 		}
+
 		JMenu menu = getMenu(menu_name);
 		menu_item = createJMenuItem(action);
 
@@ -151,18 +180,21 @@ public class CytoscapeMenuBar extends JMenuBar {
 
 		// If it wants to be anywhere in particular, try to put it there..
 		Object index_object = new Integer(-1);
+
 		if (action instanceof CytoscapeAction) {
 			index_object = ((CytoscapeAction) action).getPrefferedIndex();
-			if (((CytoscapeAction) action).isAccelerated()) {
-				menu_item.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-						((CytoscapeAction) action).getKeyCode(),
-						((CytoscapeAction) action).getKeyModifiers()));
-			}
 
+			if (((CytoscapeAction) action).isAccelerated()) {
+				menu_item.setAccelerator(javax.swing.KeyStroke.getKeyStroke(((CytoscapeAction) action)
+				                                                            .getKeyCode(),
+				                                                            ((CytoscapeAction) action)
+				                                                            .getKeyModifiers()));
+			}
 		}
 
 		if (index_object != null) {
 			int index = -1;
+
 			if (index_object instanceof Integer) {
 				index = ((Integer) index_object).intValue();
 			} else if (index_object instanceof String) {
@@ -170,43 +202,41 @@ public class CytoscapeMenuBar extends JMenuBar {
 					index = Integer.parseInt((String) index_object);
 				} catch (NumberFormatException e) {
 					// TODO: Error handling
-					System.err
-							.println("WARNING: The action "
-									+ action
-									+ " has an \"index\" property but its String value cannot be converted to an int.  Ignoring.");
+					System.err.println("WARNING: The action " + action
+					                   + " has an \"index\" property but its String value cannot be converted to an int.  Ignoring.");
 					index_object = null;
 				}
 			} else {
 				// TODO: Error handling
-				System.err
-						.println("WARNING: The action "
-								+ action
-								+ " has an \"index\" property but its value is neither an Integer nor a String.  Ignoring.");
+				System.err.println("WARNING: The action " + action
+				                   + " has an \"index\" property but its value is neither an Integer nor a String.  Ignoring.");
 				index_object = null;
 			}
+
 			if (index_object != null) {
 				if (index < 0) {
 					index = (menu.getItemCount() + (index + 1));
+
 					if (index < 0) {
 						index = 0;
 					} else {
 						if (menuEffectiveLastIndexMap == null) {
 							menuEffectiveLastIndexMap = createMenuEffectiveLastIndexMap();
 						}
-						Integer effective_last_index = (Integer) menuEffectiveLastIndexMap
-								.get(menu);
+
+						Integer effective_last_index = (Integer) menuEffectiveLastIndexMap.get(menu);
+
 						if (effective_last_index == null) {
 							// Add a separator.
 							// menu.insertSeparator( index );
-							menuEffectiveLastIndexMap.put(menu, new Integer(
-									index));
+							menuEffectiveLastIndexMap.put(menu, new Integer(index));
 							index += 1;
 						} else if (effective_last_index.intValue() >= index) {
-							menuEffectiveLastIndexMap.put(menu, new Integer(
-									index));
+							menuEffectiveLastIndexMap.put(menu, new Integer(index));
 						}
 					}
 				}
+
 				// TODO: REMOVE
 				// System.err.println( "Adding action " + action + " to menu " +
 				// menu_name + " at index " + index + " since its \"index\"
@@ -214,22 +244,25 @@ public class CytoscapeMenuBar extends JMenuBar {
 				menu.insert(menu_item, index);
 			}
 		}
+
 		if (index_object == null) {
 			boolean added_it = false;
+
 			if (menuEffectiveLastIndexMap != null) {
-				Integer effective_last_index = (Integer) menuEffectiveLastIndexMap
-						.get(menu);
+				Integer effective_last_index = (Integer) menuEffectiveLastIndexMap.get(menu);
+
 				if (effective_last_index != null) {
 					// TODO: REMOVE
 					// System.err.println( "Adding action " + action + " to menu
 					// " + menu_name + " at the effective_last_index, which is "
 					// + effective_last_index + "." );
 					menu.insert(menu_item, effective_last_index.intValue());
-					menuEffectiveLastIndexMap.put(menu, new Integer(
-							effective_last_index.intValue() + 1));
+					menuEffectiveLastIndexMap.put(menu,
+					                              new Integer(effective_last_index.intValue() + 1));
 					added_it = true;
 				}
 			}
+
 			if (!added_it) {
 				// TODO: REMOVE
 				// System.err.println( "Adding action " + action + " to menu " +
@@ -237,16 +270,17 @@ public class CytoscapeMenuBar extends JMenuBar {
 				menu.add(menu_item);
 			}
 		}
+
 		if (actionMenuItemMap == null) {
 			actionMenuItemMap = createActionMenuItemMap();
 		}
+
 		actionMenuItemMap.put(action, menu_item);
+
 		// updateUI();
 		return true;
 	} // addAction( menu_name, action )
 
-	
-	
 	/**
 	 * If the given Action has a present and false inMenuBar property, return;
 	 * otherwise if there's a menu item for the action, remove it. Its menu is
@@ -257,11 +291,15 @@ public class CytoscapeMenuBar extends JMenuBar {
 		if (actionMenuItemMap == null) {
 			return false;
 		}
+
 		JMenuItem menu_item = (JMenuItem) actionMenuItemMap.remove(action);
+
 		if (menu_item == null) {
 			return false;
 		}
+
 		String menu_name = null;
+
 		if (action instanceof CytoscapeAction) {
 			if (((CytoscapeAction) action).isInMenuBar()) {
 				menu_name = ((CytoscapeAction) action).getPreferredMenu();
@@ -278,18 +316,27 @@ public class CytoscapeMenuBar extends JMenuBar {
 			// menu_name = ( String )map.get( "preferredMenu" );
 			menu_name = DEFAULT_MENU_SPECIFIER;
 		}
+
 		if (menu_name == null) {
 			menu_name = defaultMenuSpecifier;
 		}
+
 		getMenu(menu_name).remove(menu_item);
+
 		return true;
 	} // removeAction( action )
 
-	
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param menu_string DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public JMenu getMenu(String menu_string) {
-		return getMenu( menu_string, -1 );
+		return getMenu(menu_string, -1);
 	}
-	
+
 	/**
 	 * @return the menu named in the given String. The String may contain
 	 *         multiple menu names, separated by dots ('.'). If any contained
@@ -318,19 +365,23 @@ public class CytoscapeMenuBar extends JMenuBar {
 				parent_menu = (JMenu) menuMap.get(menu_token);
 			} else {
 				menu = createJMenu(menu_token);
+
 				if (parent_menu == null) {
 					this.add(menu);
 					invalidate();
 				} else {
 					parent_menu.add(menu, parentPosition);
 				}
+
 				menuMap.put(menu_token, menu);
 				parent_menu = menu;
 			}
 		}
+
 		if (menu == null) {
 			return parent_menu;
 		}
+
 		return menu;
 	} // getMenu(..)
 
@@ -343,6 +394,11 @@ public class CytoscapeMenuBar extends JMenuBar {
 	} // equals( Object )
 
 	// implements CommunityMember
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getIdentifier() {
 		return identifier;
 	} // getIdentifier()
@@ -350,6 +406,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 	/**
 	 * @beaninfo (rwb)
 	 */
+
 	// imlements Reidentifiable
 	public void setIdentifier(String new_identifier) {
 		if (identifier == null) {
@@ -361,6 +418,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 				return;
 			}
 		}
+
 		String old_identifier = identifier;
 		identifier = new_identifier;
 		firePropertyChange("identifier", old_identifier, new_identifier);
@@ -369,6 +427,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 	/**
 	 * @return true (always)
 	 */
+
 	// imlements Reidentifiable
 	public boolean isReidentificationEnabled() {
 		return true;
@@ -388,6 +447,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 		JMenu menu = new JMenu(title);
 		revalidate();
 		repaint();
+
 		return menu;
 	}
 
@@ -419,5 +479,4 @@ public class CytoscapeMenuBar extends JMenuBar {
 	protected Map createMenuEffectiveLastIndexMap() {
 		return new HashMap();
 	}
-
 } // class CytoscapeMenuBar

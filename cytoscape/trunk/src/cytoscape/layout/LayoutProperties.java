@@ -1,27 +1,29 @@
 // vim: set ts=2: */
 package cytoscape.layout;
 
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Iterator;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.List;
-import java.util.ArrayList;
+import cytoscape.CytoscapeInit;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
-import cytoscape.CytoscapeInit;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 
 /**
  * The LayoutProperties class is a helper class to support the management
- * of settings and properties for layout algorithms that implement 
+ * of settings and properties for layout algorithms that implement
  * LayoutAlgorithm or extend AbstractLayout.  LayoutProperties objects
  * maintain a list of Tunables that are supplied by the individual
  * algorithms.  Each Tunable represents a value that should be loaded
@@ -30,14 +32,12 @@ import cytoscape.CytoscapeInit;
  * using the <tt>add</tt> method and are retrieved with the <tt>get</tt>
  * method.
  */
-
 public class LayoutProperties {
-  private HashMap<String,String> propertyMap = null;
-  private HashMap<String,String> savedPropertyMap = null;
-  private HashMap<String,Tunable> tunablesMap = null;
-  private List<Tunable> tunablesList = null;
-  private String propertyPrefix = null;
-	
+	private HashMap<String, String> propertyMap = null;
+	private HashMap<String, String> savedPropertyMap = null;
+	private HashMap<String, Tunable> tunablesMap = null;
+	private List<Tunable> tunablesList = null;
+	private String propertyPrefix = null;
 
 	/**
 	 * Constructor.
@@ -46,7 +46,7 @@ public class LayoutProperties {
 	 *                       when pulling properties from the property
 	 *                       list.
 	 */
-	public LayoutProperties (String propertyPrefix) {
+	public LayoutProperties(String propertyPrefix) {
 		this.propertyPrefix = propertyPrefix;
 		this.tunablesMap = new HashMap();
 		this.tunablesList = new ArrayList();
@@ -54,14 +54,14 @@ public class LayoutProperties {
 
 	/**
 	 * This method is used to add a new Tunable to the LayoutProperties
-	 * list.  The Tunable can later be retrieved by name using the 
+	 * list.  The Tunable can later be retrieved by name using the
 	 * <tt>get</tt> method.
 	 *
 	 * @param tunable The Tunable to add to this LayoutProperties
 	 */
-	public void add (Tunable tunable) {
-		tunablesMap.put (tunable.getName(), tunable);
-		tunablesList.add (tunable);
+	public void add(Tunable tunable) {
+		tunablesMap.put(tunable.getName(), tunable);
+		tunablesList.add(tunable);
 	}
 
 	/**
@@ -74,27 +74,30 @@ public class LayoutProperties {
 	 * @return Tunable associated with <tt>name</tt> or null if
 	 *         there is no Tunable with that name.
 	 */
-	public Tunable get (String name) {
+	public Tunable get(String name) {
 		if (tunablesMap.containsKey(name))
-			return (Tunable)tunablesMap.get(name);
+			return (Tunable) tunablesMap.get(name);
+
 		return null;
 	}
 
 	/**
-	 * This method is used to get the value from the Tunable 
+	 * This method is used to get the value from the Tunable
 	 * named <tt>name</tt> from this LayoutProperties.  The
 	 * value is always returned as a String.
 	 *
-	 * @param name The name of the Tunable whose value you 
+	 * @param name The name of the Tunable whose value you
 	 *             want to retrieve.
 	 * @return String value from the Tunable or null if
 	 *         there is no Tunable with that name.
 	 */
-	public String getValue (String name) {
+	public String getValue(String name) {
 		if (tunablesMap.containsKey(name)) {
-			Tunable t = (Tunable)tunablesMap.get(name);
+			Tunable t = (Tunable) tunablesMap.get(name);
+
 			return t.getValue().toString();
 		}
+
 		return null;
 	}
 
@@ -103,81 +106,101 @@ public class LayoutProperties {
 	 * Tunable that is part of this LayoutProperty.
 	 */
 	public void updateValues() {
-		for (Iterator iter = tunablesList.iterator(); iter.hasNext(); ) {
-			Tunable tunable = (Tunable)iter.next();
+		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
+			Tunable tunable = (Tunable) iter.next();
 			tunable.updateValue();
 		}
 	}
 
-  /**
-   * These methods provide some simple convenience methods for property
-   * handling.  They are intended to be used as a mechanism to track
-   * settings and tuneables.
-   */
+	/**
+	 * These methods provide some simple convenience methods for property
+	 * handling.  They are intended to be used as a mechanism to track
+	 * settings and tuneables.
+	 */
 
-  /**
-   * getProperties is used to extract properties from the Cytoscape properties
-   * file.  getProperties should always be called first to initialize the property
-   * maps.
-   *
-   * @return HashMap containing the resulting properties
-   */
-  public HashMap getProperties() {
-    String prefix = getPrefix();
-    Properties props = CytoscapeInit.getProperties();
-    propertyMap = new HashMap();
-    savedPropertyMap = new HashMap();
+	/**
+	 * getProperties is used to extract properties from the Cytoscape properties
+	 * file.  getProperties should always be called first to initialize the property
+	 * maps.
+	 *
+	 * @return HashMap containing the resulting properties
+	 */
+	public HashMap getProperties() {
+		String prefix = getPrefix();
+		Properties props = CytoscapeInit.getProperties();
+		propertyMap = new HashMap();
+		savedPropertyMap = new HashMap();
 
-    // Find all properties with this prefix
-    Enumeration iter = props.propertyNames();
-    while (iter.hasMoreElements()) {
-      String property = (String)iter.nextElement();
-      if (property.startsWith(prefix)) {
-        int start = prefix.length()+1;
-        propertyMap.put(property.substring(start+1), props.getProperty(property));
-        savedPropertyMap.put(property.substring(start+1), props.getProperty(property));
-      }
-    }
-    return propertyMap;
-  }
+		// Find all properties with this prefix
+		Enumeration iter = props.propertyNames();
 
-  /**
-   * saveProperties is used to add modified properties to the Cytoscape properties
-   * so they can be saved in the properties file.
-   *
-   */
-  public void saveProperties() {
-    String prefix = getPrefix();
-    Properties props = CytoscapeInit.getProperties();
-    for (Iterator iter = propertyMap.keySet().iterator(); iter.hasNext();) {
-      String key = (String)iter.next();
-      props.setProperty(prefix+key, (String)propertyMap.get(key));
-    }
-  }
+		while (iter.hasMoreElements()) {
+			String property = (String) iter.nextElement();
 
-  public void setProperty(String property, String value) {
-    propertyMap.put(property, value);
-  }
+			if (property.startsWith(prefix)) {
+				int start = prefix.length() + 1;
+				propertyMap.put(property.substring(start + 1), props.getProperty(property));
+				savedPropertyMap.put(property.substring(start + 1), props.getProperty(property));
+			}
+		}
 
-  public void setSavedProperty(String property, String value) {
-    savedPropertyMap.put(property, value);
-  }
+		return propertyMap;
+	}
 
-  /**
-   * revertProperties is used primarily by the settings dialog mechanism when
-   * the user does a "Cancel".
-   */
-  public void revertProperties() {
-    propertyMap = new HashMap();
-    Set keys = savedPropertyMap.keySet();
-    for (Iterator iter = keys.iterator(); iter.hasNext();) {
-      String key = (String)iter.next();
-      propertyMap.put(new String(key),
-                      new String((String)savedPropertyMap.get(key)));
-			Tunable t = (Tunable)tunablesMap.get(key);
-			if (t != null) t.setValue((String)savedPropertyMap.get(key));
-    }
-  }
+	/**
+	 * saveProperties is used to add modified properties to the Cytoscape properties
+	 * so they can be saved in the properties file.
+	 *
+	 */
+	public void saveProperties() {
+		String prefix = getPrefix();
+		Properties props = CytoscapeInit.getProperties();
+
+		for (Iterator iter = propertyMap.keySet().iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+			props.setProperty(prefix + key, (String) propertyMap.get(key));
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param property DOCUMENT ME!
+	 * @param value DOCUMENT ME!
+	 */
+	public void setProperty(String property, String value) {
+		propertyMap.put(property, value);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param property DOCUMENT ME!
+	 * @param value DOCUMENT ME!
+	 */
+	public void setSavedProperty(String property, String value) {
+		savedPropertyMap.put(property, value);
+	}
+
+	/**
+	 * revertProperties is used primarily by the settings dialog mechanism when
+	 * the user does a "Cancel".
+	 */
+	public void revertProperties() {
+		propertyMap = new HashMap();
+
+		Set keys = savedPropertyMap.keySet();
+
+		for (Iterator iter = keys.iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+			propertyMap.put(new String(key), new String((String) savedPropertyMap.get(key)));
+
+			Tunable t = (Tunable) tunablesMap.get(key);
+
+			if (t != null)
+				t.setValue((String) savedPropertyMap.get(key));
+		}
+	}
 
 	/**
 	 * This method is used to read the properties from the Cytoscape properties
@@ -188,9 +211,10 @@ public class LayoutProperties {
 	public void initializeProperties() {
 		getProperties();
 
-		for (Iterator iter = tunablesList.iterator(); iter.hasNext(); ) {
-			Tunable tunable = (Tunable)iter.next();
-			String property =  tunable.getName();
+		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
+			Tunable tunable = (Tunable) iter.next();
+			String property = tunable.getName();
+
 			// Do we have this property?
 			if (propertyMap.containsKey(property)) {
 				// Yes -- set it in our array
@@ -210,21 +234,25 @@ public class LayoutProperties {
 	 * @return JPanel that contains all of the Tunable widgets
 	 */
 	public JPanel getTunablePanel() {
-		JPanel tunablesPanel = new JPanel(new GridLayout(0,1));
-		for (Iterator iter = tunablesList.iterator(); iter.hasNext(); ) {
-			Tunable tunable = (Tunable)iter.next();
+		JPanel tunablesPanel = new JPanel(new GridLayout(0, 1));
+
+		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
+			Tunable tunable = (Tunable) iter.next();
 			JPanel p = tunable.getPanel();
-			if (p != null) 
+
+			if (p != null)
 				tunablesPanel.add(p);
 		}
+
 		return tunablesPanel;
 	}
 
-  private String getPrefix() {
-    String prefix = "layout."+propertyPrefix;
-    if (prefix.lastIndexOf('.') != prefix.length())
-      prefix = prefix+".";
-    return prefix;
-  }
+	private String getPrefix() {
+		String prefix = "layout." + propertyPrefix;
 
+		if (prefix.lastIndexOf('.') != prefix.length())
+			prefix = prefix + ".";
+
+		return prefix;
+	}
 }

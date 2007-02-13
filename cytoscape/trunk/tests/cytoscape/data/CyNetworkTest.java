@@ -36,11 +36,6 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//-------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//-------------------------------------------------------------------------
 package cytoscape.data;
 
 import junit.framework.*;
@@ -72,7 +67,7 @@ public class CyNetworkTest extends TestCase {
 
   public void tearDown() throws Exception {}
 
-  public void testBasic() throws Exception {}// { 
+  public void testBasic() throws Exception {} { 
 //     System.out.println ("testBasic");
     
 //     CyNetwork defaultNetwork = Cytoscape.createNetwork();
@@ -181,9 +176,9 @@ public class CyNetworkTest extends TestCase {
 //     assertTrue( nullNodeAttributes.getCanonicalName(n2).equals("YBR043C") );
 //     assertTrue( nullEdgeAttributes.getCanonicalName(e1).equals("YDR277C (pp) YDL124W") );
 //     assertTrue( nullEdgeAttributes.getCanonicalName(e2).equals("YBL026W (pp) YOR127C") );
-//   }
-  //-------------------------------------------------------------------------
-  public void testListeners() throws Exception {}// {
+   }
+
+  public void testListeners() throws Exception {} {
 //     String callerID = "CyNetworkTest.testListeners";
 //     CyNetwork network = new CyNetwork();
 //     network.addCyNetworkListener(listener);
@@ -233,11 +228,11 @@ public class CyNetworkTest extends TestCase {
 //     assertTrue(network.getCyNetworkListeners().size() == 0);
 //     boolean stillThere = network.removeCyNetworkListener(listener);
 //     assertTrue(stillThere == false);
-//   }
-  //-------------------------------------------------------------------------
+   }
+  
   public static void main (String[] args)  {
     junit.textui.TestRunner.run(new TestSuite(CyNetworkTest.class));
   }
-  //-------------------------------------------------------------------------
+ 
 }
 

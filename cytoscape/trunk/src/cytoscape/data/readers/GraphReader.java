@@ -34,15 +34,18 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.data.readers;
 
-import cytoscape.data.CyAttributes;
 import cytoscape.CyNetwork;
+
+import cytoscape.data.CyAttributes;
+
 import giny.model.RootGraph;
+
 import giny.view.GraphView;
 
 import java.io.IOException;
+
 
 /**
  * Interface for Reading in Cytoscape Graphs.
@@ -50,63 +53,62 @@ import java.io.IOException;
  * @author Cytoscape Development Group.
  */
 public interface GraphReader {
+	/**
+	 * Reads/imports the graph.
+	 *
+	 * @throws IOException IO Errors.
+	 */
+	public void read() throws IOException;
 
-    /**
-     * Reads/imports the graph.
-     *
-     * @throws IOException IO Errors.
-     */
-    public void read() throws IOException;
+	/**
+	 * Lays out the graph.
+	 *
+	 * @param myView
+	 */
+	public void layout(GraphView myView);
 
-    /**
-     * Lays out the graph.
-     *
-     * @param myView
-     */
-    public void layout(GraphView myView);
+	/**
+	 * Gets an array of node indices that participate in the newly created graph.
+	 *
+	 * @return array of node indices from the root graph.
+	 */
+	public int[] getNodeIndicesArray();
 
-    /**
-     * Gets an array of node indices that participate in the newly created graph.
-     *
-     * @return array of node indices from the root graph.
-     */
-    public int[] getNodeIndicesArray();
+	/**
+	 * Gets an array of edges indices that participate in the newly created graph.
+	 *
+	 * @return array of edges indices from the root graph.
+	 */
+	public int[] getEdgeIndicesArray();
 
-    /**
-     * Gets an array of edges indices that participate in the newly created graph.
-     *
-     * @return array of edges indices from the root graph.
-     */
-    public int[] getEdgeIndicesArray();
+	/**
+	 * Execute whatever post-processing is required.
+	 */
+	public void doPostProcessing(CyNetwork network);
 
-    /**
-     * Execute whatever post-processing is required.
-     */
-    public void doPostProcessing(CyNetwork network);
+	/**
+	 * @deprecated Use read() instead.  Will be removed Dec 2006.
+	 */
+	public void read(boolean canonicalizeNodeNames) throws IOException;
 
-    /**
-     * @deprecated Use read() instead.  Will be removed Dec 2006.
-     */
-    public void read(boolean canonicalizeNodeNames) throws IOException;
+	/**
+	 * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
+	 */
+	public RootGraph getRootGraph();
 
-    /**
-     * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
-     */
-    public RootGraph getRootGraph();
+	/**
+	 * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
+	 */
+	public CyAttributes getNodeAttributes();
 
-    /**
-     * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
-     */
-    public CyAttributes getNodeAttributes();
+	/**
+	 * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
+	 */
+	public CyAttributes getEdgeAttributes();
 
-    /**
-     * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
-     */
-    public CyAttributes getEdgeAttributes();
-
-    /**
-     * Gets the name of the network.
-     * @return network name.
-     */
-    public String getNetworkName();
+	/**
+	 * Gets the name of the network.
+	 * @return network name.
+	 */
+	public String getNetworkName();
 }

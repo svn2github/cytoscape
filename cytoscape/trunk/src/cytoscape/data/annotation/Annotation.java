@@ -1,55 +1,47 @@
 /*
- File: Annotation.java 
- 
+ File: Annotation.java
+
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
- 
- The Cytoscape Consortium is: 
+
+ The Cytoscape Consortium is:
  - Institute for Systems Biology
  - University of California San Diego
  - Memorial Sloan-Kettering Cancer Center
  - Institut Pasteur
  - Agilent Technologies
- 
+
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
  any later version.
- 
+
  This library is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have no obligations to provide maintenance, support,
  updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  be liable to any party for direct, indirect, special,
  incidental or consequential damages, including lost profits, arising
  out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have been advised of the possibility of such damage.  See
  the GNU Lesser General Public License for more details.
- 
+
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
-// Annotation.java
-
-//------------------------------------------------------------------------------
-// $Revision$   
-// $Date$ 
-// $Author$
-//-----------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
-//-----------------------------------------------------------------------------------
 import java.io.Serializable;
+
 import java.util.HashMap;
 import java.util.Vector;
 
-//------------------------------------------------------------------------------
+
 /**
  * Store any number of classifications for named entities, each of which is from
  * a specified species, and where the classifications are all terms from an
@@ -65,7 +57,7 @@ import java.util.Vector;
  * <li> Propanoate metabolism
  * </ol>
  * </ul>
- * 
+ *
  * This simple assignment of two classifications to one gene becomes richer when
  * we refer to the ontology: in the KEGG ontology, these two terms belong to a
  * tree, expressed linearly, and from the top (most general term) down as
@@ -74,7 +66,7 @@ import java.util.Vector;
  * degradation
  * <li> metabolism -> carbohydrate metabolism -> propanoate metabolism
  * <ul>
- * 
+ *
  * Thus the combination of an annotation (the present class) with an ontology
  * provides a means to richly and flexibly describe an object.
  */
@@ -83,54 +75,87 @@ public class Annotation implements Serializable {
 	protected String curator;
 	protected String species;
 	protected String type;
-	protected HashMap hash; // (name, Vector) pairs, the Vector contains
-							// Integers
-	// ------------------------------------------------------------------------------
+	protected HashMap hash; // (name, Vector) pairs, the Vector contains Integers
 
+	/**
+	 * Creates a new Annotation object.
+	 *
+	 * @param species  DOCUMENT ME!
+	 * @param type  DOCUMENT ME!
+	 * @param ontology  DOCUMENT ME!
+	 */
 	public Annotation(String species, String type, Ontology ontology) {
 		this.ontology = ontology;
 		this.species = species;
 		this.type = type;
 		this.curator = ontology.getCurator();
 		hash = new HashMap();
+	}
 
-	} // ctor
-	// ------------------------------------------------------------------------------
-
+	/**
+	 * Creates a new Annotation object.
+	 *
+	 * @param species  DOCUMENT ME!
+	 * @param type  DOCUMENT ME!
+	 * @param curator  DOCUMENT ME!
+	 */
 	public Annotation(String species, String type, String curator) {
 		this.curator = curator;
 		this.species = species;
 		this.type = type;
 		hash = new HashMap();
+	}
 
-	} // ctor
-	// ------------------------------------------------------------------------------
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public HashMap getMap() {
 		return hash;
 	}
 
-	// ------------------------------------------------------------------------------
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param newValue DOCUMENT ME!
+	 */
 	public void setOntology(Ontology newValue) {
 		ontology = newValue;
 	}
 
-	// ------------------------------------------------------------------------------
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Ontology getOntology() {
 		return ontology;
 	}
 
-	// ------------------------------------------------------------------------------
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getCurator() {
 		return curator;
 	}
 
-	// ------------------------------------------------------------------------------
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getType() {
 		return type;
 	}
 
-	// ------------------------------------------------------------------------------
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getOntologyType() {
 		if (ontology != null)
 			return ontology.getType();
@@ -138,17 +163,20 @@ public class Annotation implements Serializable {
 		return "unknown";
 	}
 
-	// ------------------------------------------------------------------------------
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getSpecies() {
 		return species;
 	}
 
-	// ------------------------------------------------------------------------------
 	/**
 	 * create a new annotation for an entity (typically a gene) of the current
 	 * species and with respect to the current ontology. an entity may have more
 	 * than one classification.
-	 * 
+	 *
 	 * @param name
 	 *            usually an ORF name, a unique identifier for this species
 	 * @param classificationID
@@ -156,6 +184,7 @@ public class Annotation implements Serializable {
 	 */
 	public void add(String name, int classificationID) {
 		Vector classifications;
+
 		if (hash.containsKey(name))
 			classifications = (Vector) hash.get(name);
 		else {
@@ -164,11 +193,10 @@ public class Annotation implements Serializable {
 		}
 
 		Integer classificationInteger = new Integer(classificationID);
+
 		if (!classifications.contains(classificationInteger))
 			classifications.add(new Integer(classificationID));
-
-	} // add
-	// ------------------------------------------------------------------------------
+	}
 
 	/**
 	 * returns an array of all the names (usually ORFs) currently annotated
@@ -177,18 +205,17 @@ public class Annotation implements Serializable {
 		return (String[]) hash.keySet().toArray(new String[0]);
 	}
 
-	// ------------------------------------------------------------------------------
 	/**
 	 * returns an array of all the classifications in the current annotation
 	 */
 	public int[] getClassifications() {
-		Vector[] arrayOfIntegerVectors = (Vector[]) hash.values().toArray(
-				new Vector[0]);
+		Vector[] arrayOfIntegerVectors = (Vector[]) hash.values().toArray(new Vector[0]);
 
 		Vector collector = new Vector();
 
 		for (int v = 0; v < arrayOfIntegerVectors.length; v++) {
 			Vector vec = arrayOfIntegerVectors[v];
+
 			for (int i = 0; i < vec.size(); i++)
 				collector.add(vec.get(i));
 		} // for v
@@ -199,9 +226,7 @@ public class Annotation implements Serializable {
 			result[i] = ((Integer) collector.get(i)).intValue();
 
 		return result;
-
-	} // getClassifications
-	// ------------------------------------------------------------------------------
+	}
 
 	/**
 	 * all of the ontology identifiers registered for the specified entity
@@ -209,15 +234,15 @@ public class Annotation implements Serializable {
 	public int[] getClassifications(String name) {
 		if (!hash.containsKey(name))
 			return new int[0];
+
 		Vector classifications = (Vector) hash.get(name);
 		int[] result = new int[classifications.size()];
+
 		for (int i = 0; i < result.length; i++)
 			result[i] = ((Integer) classifications.get(i)).intValue();
 
 		return result;
-
-	} // getClassifications
-	// ------------------------------------------------------------------------------
+	}
 
 	/**
 	 * all of the ontology identifiers registered for the specified entity, as a
@@ -227,39 +252,46 @@ public class Annotation implements Serializable {
 		if (!hash.containsKey(name))
 			return new Vector();
 		else
+
 			return (Vector) hash.get(name);
+	}
 
-	} // getClassificationsVector
-	// ------------------------------------------------------------------------------
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param name DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String[][] getAllHierarchyPathsAsNames(String name) {
 		if (ontology == null)
 			return new String[0][0];
 
 		int[] leafClassifications = getClassifications(name);
 		String[][] result;
+
 		if (leafClassifications.length == 0) {
 			result = new String[0][0];
 		}
 
 		Vector collector = new Vector();
+
 		for (int i = 0; i < leafClassifications.length; i++) {
-			String[][] paths = ontology
-					.getAllHierarchyPathsAsNames(leafClassifications[i]);
+			String[][] paths = ontology.getAllHierarchyPathsAsNames(leafClassifications[i]);
+
 			for (int p = 0; p < paths.length; p++)
 				collector.add(paths[p]);
 		}
 
 		result = new String[collector.size()][];
+
 		for (int i = 0; i < collector.size(); i++) {
 			String[] path = (String[]) collector.get(i);
 			result[i] = path;
 		}
 
 		return result;
-
-	} // getAllHierarchyPathsAsNames
-	// ------------------------------------------------------------------------------
+	}
 
 	/**
 	 * total number of entities, usually ORFs.
@@ -268,7 +300,6 @@ public class Annotation implements Serializable {
 		return hash.size();
 	}
 
-	// ------------------------------------------------------------------------------
 	/**
 	 * total number of classifications. this will usually be larget than count
 	 * (), since entities are frequently given two or more classifications,
@@ -277,14 +308,13 @@ public class Annotation implements Serializable {
 	public int size() {
 		String[] names = getNames();
 		int total = 0;
+
 		for (int i = 0; i < names.length; i++) {
 			total += ((Vector) hash.get(names[i])).size();
 		}
 
 		return total;
-
-	} // size
-	// ------------------------------------------------------------------------------
+	}
 
 	/**
 	 * get all of the full paths (as ints) from the ontology for all of the
@@ -300,16 +330,20 @@ public class Annotation implements Serializable {
 
 		for (int i = 0; i < classifications.length; i++) {
 			int[][] paths = ontology.getAllHierarchyPaths(classifications[i]);
+
 			for (int p = 0; p < paths.length; p++)
 				if (paths[p].length > max)
 					max = paths[p].length;
 		} // for i
 
 		return max;
+	}
 
-	} // maxDepth
-	// ------------------------------------------------------------------------------
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("annotation: ");
@@ -322,8 +356,5 @@ public class Annotation implements Serializable {
 		sb.append(" (" + size() + " classifications)  ");
 
 		return sb.toString();
-
-	} // toString
-	// ------------------------------------------------------------------------------
-} // class Annotation
-
+	}
+}

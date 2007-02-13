@@ -1,28 +1,69 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package cytoscape;
+
+import cytoscape.view.CyNetworkView;
 
 import giny.view.NodeView;
 
-import java.awt.Robot;
-import java.util.List;
-
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import junit.framework.TestCase;
+
 import swingunit.extensions.ExtendedRobotEventFactory;
+
 import swingunit.framework.EventPlayer;
 import swingunit.framework.ExecuteException;
 import swingunit.framework.FinderMethodSet;
 import swingunit.framework.RobotEventFactory;
 import swingunit.framework.Scenario;
 import swingunit.framework.TestUtility;
-import cytoscape.view.CyNetworkView;
+
+import java.awt.Robot;
+
+import java.util.List;
+
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 
 /**
- * 
+ *
  * Swing Unite Tests based on Cytoscape tutorial section 1 and 2
- * 
+ *
  * @since Cytoscape 2.4
  * @version 0.5
  * @author kono, pwang
@@ -33,7 +74,6 @@ public class Tutorial1TestSwing extends TestCase {
 	private RobotEventFactory robotEventFactory = new ExtendedRobotEventFactory();
 	private FinderMethodSet methodSet = new FinderMethodSet();
 	private Robot robot;
-
 	private CyMain application;
 
 	/*
@@ -53,6 +93,7 @@ public class Tutorial1TestSwing extends TestCase {
 				}
 			}
 		};
+
 		SwingUtilities.invokeAndWait(r);
 
 		robot = new Robot();
@@ -60,8 +101,8 @@ public class Tutorial1TestSwing extends TestCase {
 
 		// To make sure to load the scenario file.
 		// CytoscapeTestSwing.xml is placed on the same package directory.
-		String filePath = CytoscapeTestSwing.class.getResource(
-				"CytoscapeSwingUnitOperations.xml").getFile();
+		String filePath = CytoscapeTestSwing.class.getResource("CytoscapeSwingUnitOperations.xml")
+		                                          .getFile();
 		// Create Scenario object and create XML file.
 		scenario = new Scenario(robotEventFactory, methodSet);
 		scenario.read(filePath);
@@ -76,13 +117,23 @@ public class Tutorial1TestSwing extends TestCase {
 		robot = null;
 	}
 
-	public void testTutorialOne() throws ExecuteException,
-			ClassNotFoundException, InstantiationException,
-			IllegalAccessException, UnsupportedLookAndFeelException {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @throws ExecuteException DOCUMENT ME!
+	 * @throws ClassNotFoundException DOCUMENT ME!
+	 * @throws InstantiationException DOCUMENT ME!
+	 * @throws IllegalAccessException DOCUMENT ME!
+	 * @throws UnsupportedLookAndFeelException DOCUMENT ME!
+	 */
+	public void testTutorialOne()
+	    throws ExecuteException, ClassNotFoundException, InstantiationException,
+	               IllegalAccessException, UnsupportedLookAndFeelException {
 		/*
 		 * This is necessary since SwingUnit does not support some Look & Feel.
 		 */
 		UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+
 		final EventPlayer player = new EventPlayer(scenario);
 
 		/*
@@ -112,28 +163,26 @@ public class Tutorial1TestSwing extends TestCase {
 
 		List selNodes = view.getSelectedNodes();
 		assertEquals("num selected nodes", 1, selNodes.size());
-		assertEquals("node id", "7157", ((NodeView) selNodes.get(0)).getNode()
-				.getIdentifier());
+		assertEquals("node id", "7157", ((NodeView) selNodes.get(0)).getNode().getIdentifier());
 
 		player.run(robot, "SELECT_FIRST_NEIGHBORS");
 		selNodes = view.getSelectedNodes();
 		assertEquals("num selected neighbor nodes", 64, selNodes.size());
 
 		player.run(robot, "NEW_NETWORK_FROM_SELECTED_NODES_ALL_EDGES");
-		assertEquals("Number of networks in this session", 2, Cytoscape
-				.getNetworkSet().size());
+		assertEquals("Number of networks in this session", 2, Cytoscape.getNetworkSet().size());
 
-		scenario.setTestSetting("IMPORT_NODE_ATTRIBUTES", "FILE_TO_IMPORT",
-				"RUAL.na");
-		scenario.setTestSetting("IMPORT_NODE_ATTRIBUTES", "IMPORT_DIR",
-				"testData");
+		scenario.setTestSetting("IMPORT_NODE_ATTRIBUTES", "FILE_TO_IMPORT", "RUAL.na");
+		scenario.setTestSetting("IMPORT_NODE_ATTRIBUTES", "IMPORT_DIR", "testData");
 		player.run(robot, "IMPORT_NODE_ATTRIBUTES");
-		assertEquals("node attr", "TP53", Cytoscape.getNodeAttributes()
-				.getStringAttribute("7157", "Official HUGO Symbol"));
-		assertEquals("node attr", "GORASP2", Cytoscape.getNodeAttributes()
-				.getStringAttribute("26003", "Official HUGO Symbol"));
-		assertEquals("node attr", "RUFY1", Cytoscape.getNodeAttributes()
-				.getStringAttribute("80230", "Official HUGO Symbol"));
+		assertEquals("node attr", "TP53",
+		             Cytoscape.getNodeAttributes().getStringAttribute("7157", "Official HUGO Symbol"));
+		assertEquals("node attr", "GORASP2",
+		             Cytoscape.getNodeAttributes()
+		                      .getStringAttribute("26003", "Official HUGO Symbol"));
+		assertEquals("node attr", "RUFY1",
+		             Cytoscape.getNodeAttributes()
+		                      .getStringAttribute("80230", "Official HUGO Symbol"));
 
 		player.run(robot, "SET_VIZMAPPER");
 
@@ -146,13 +195,11 @@ public class Tutorial1TestSwing extends TestCase {
 
 		player.run(robot, "TEST_FILTER_1");
 
-		assertEquals("Number of Selected Edges", 660, Cytoscape
-				.getCurrentNetwork().getSelectedEdges().size());
+		assertEquals("Number of Selected Edges", 660,
+		             Cytoscape.getCurrentNetwork().getSelectedEdges().size());
 
 		player.run(robot, "DELETE_SELECTED_EDGES");
 
 		//player.run(robot, "TEST_FILTER_2");
-
 	}
-
 }

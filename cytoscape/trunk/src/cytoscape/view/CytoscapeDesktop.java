@@ -1,41 +1,55 @@
 /*
- File: CytoscapeDesktop.java 
- 
+ File: CytoscapeDesktop.java
+
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
- 
- The Cytoscape Consortium is: 
+
+ The Cytoscape Consortium is:
  - Institute for Systems Biology
  - University of California San Diego
  - Memorial Sloan-Kettering Cancer Center
  - Institut Pasteur
  - Agilent Technologies
- 
+
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
  any later version.
- 
+
  This library is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have no obligations to provide maintenance, support,
  updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  be liable to any party for direct, indirect, special,
  incidental or consequential damages, including lost profits, arising
  out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have been advised of the possibility of such damage.  See
  the GNU Lesser General Public License for more details.
- 
+
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package cytoscape.view;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeVersion;
+
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanelState;
+
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+
+import cytoscape.visual.ui.VizMapBypassNetworkListener;
+import cytoscape.visual.ui.VizMapUI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,12 +59,15 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.util.HashMap;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -66,36 +83,44 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeVersion;
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.ui.VizMapUI;
-import cytoscape.visual.ui.VizMapBypassNetworkListener;
 
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
-
 public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
-
 	protected long lastPluginRegistryUpdate;
 	protected int returnVal;
-	// --------------------//
-	// Static variables
 
+	// --------------------//
+	/**
+	 * 
+	 */
 	public static final String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
+
+	/**
+	 * 
+	 */
 	public static final String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
+
+	/**
+	 * 
+	 */
 	public static final String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
+
+	/**
+	 * 
+	 */
 	public static final String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
 
 	// state variables
+	/**
+	 * 
+	 */
 	public static final String VISUAL_STYLE = "VISUAL_STYLE";
+
+	/**
+	 * 
+	 */
 	public static final String VIZMAP_ENABLED = "VIZMAP_ENABLED";
 
 	/**
@@ -127,7 +152,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * The type of view, should be considered final
 	 */
 	protected int VIEW_TYPE;
-
 	protected VisualStyle defaultVisualStyle;
 
 	/**
@@ -159,8 +183,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	/**
 	 * provides support for property change events
 	 */
-	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(
-			this);
+	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 
 	/**
 	 * The GraphViewController for all NetworkViews that we know about
@@ -181,7 +204,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * {@link #vizMapper vizMapper}.
 	 */
 	protected VizMapUI vizMapUI;
-
 	protected String currentNetworkID;
 	protected String currentNetworkViewID;
 
@@ -193,7 +215,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	// create cytopanel with tabs along the top for manual layout
 	protected CytoPanelImp cytoPanelSouthWest = new CytoPanelImp(SwingConstants.SOUTH_WEST,
-			JTabbedPane.TOP, CytoPanelState.HIDE);
+	                                                             JTabbedPane.TOP,
+	                                                             CytoPanelState.HIDE);
 
 	// Status Bar
 	protected JLabel statusBar;
@@ -201,7 +224,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// kono@ucsd.edu
 	// Association between network and VS.
 	protected HashMap vsAssociationMap;
-
 	protected JPanel main_panel;
 
 	// This is used to keep track of the visual style combo box in EXTERNAL_VIEW
@@ -230,7 +252,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * Create a CytoscapeDesktop that conforms the given view type.
-	 * 
+	 *
 	 * @param view_type
 	 *            one of the ViewTypes
 	 */
@@ -241,12 +263,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	}
 
 	protected void initialize() {
-
 		// ///////////TODO: REMOVE
 		this.VIEW_TYPE = INTERNAL_VIEW;
 
-		setIconImage(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("images/c16.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/c16.png")));
 
 		// initialize Help system with Cytoscape help set - define
 		// context-sensitive
@@ -264,16 +284,13 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// ------------------------------//
 		// Set up the Panels, Menus, and Event Firing
-
 		networkPanel = new NetworkPanel(this);
 		// enable context-sensitive help for networkPanel
 		// getHelpBroker().enableHelp(networkPanel, "network-view-manager",
 		// null);
-
 		cyMenus = new CyMenus();
 		// enable context-sensitive help for menus/menubar
 		// getHelpBroker().enableHelp(cyMenus.getMenuBar(), "menus", null);
-
 		networkViewManager = new NetworkViewManager(this);
 
 		// Listener Setup
@@ -295,31 +312,27 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// The CytoscapeDesktop listens to NETWORK_VIEW_CREATED events,
 		// and passes them on, The NetworkPanel listens for them
 		// The Desktop also keeps Cytoscape up2date, but NOT via events
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				this);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
 		// The Networkviewmanager listens to the CytoscapeDesktop to know when
 		// to
 		// put new NetworkViews in the userspace and to get passed focus events
 		// from
 		// the NetworkPanel. The CytoscapeDesktop also listens to the NVM
-		this.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				networkViewManager);
-		networkViewManager.getSwingPropertyChangeSupport()
-				.addPropertyChangeListener(this);
+		this.getSwingPropertyChangeSupport().addPropertyChangeListener(networkViewManager);
+		networkViewManager.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
 		// The NetworkPanel listens to the CytoscapeDesktop for
 		// NETWORK_CREATED_EVENTS a
 		// as well as for passing focused events from the Networkviewmanager.
 		// The
 		// CytoscapeDesktop also listens to the NetworkPanel
-		this.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				networkPanel);
-		networkPanel.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				this);
-	
+		this.getSwingPropertyChangeSupport().addPropertyChangeListener(networkPanel);
+		networkPanel.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+
 		// add a listener for node bypass
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(new VizMapBypassNetworkListener());
+		Cytoscape.getSwingPropertyChangeSupport()
+		         .addPropertyChangeListener(new VizMapBypassNetworkListener());
 
 		// initialize undo manager
 		undo = new cytoscape.util.UndoManager(cyMenus);
@@ -331,11 +344,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		cyMenus.initializeHelp(cyHelpBroker.getHelpBroker());
 
 		// create the CytoscapeDesktop
-		BiModalJSplitPane masterPane = setupCytoPanels(networkPanel,
-				networkViewManager);
+		BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
+
 		// note - proper networkViewManager has been properly selected in
 		// setupCytoPanels()
-		if (VIEW_TYPE == TABBED_VIEW || VIEW_TYPE == INTERNAL_VIEW) {
+		if ((VIEW_TYPE == TABBED_VIEW) || (VIEW_TYPE == INTERNAL_VIEW)) {
 			main_panel.add(masterPane, BorderLayout.CENTER);
 			main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
 			initStatusBar(main_panel);
@@ -360,47 +373,49 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent we) {
-				Cytoscape.exit(returnVal);
-			}
+				public void windowClosing(WindowEvent we) {
+					Cytoscape.exit(returnVal);
+				}
 
-			public void windowClosed() {
-
-			}
-		});
+				public void windowClosed() {
+				}
+			});
 
 		// show the Desktop
 		setContentPane(main_panel);
 		pack();
+
 		if (VIEW_TYPE != EXTERNAL_VIEW)
 			setSize(800, 700);
+
 		setVisible(true);
 		toFront();
 
 		/*
 		 * Enable the bird's eye view.
-		 * 
+		 *
 		 * kono: no longer necessary.  called after CYTOSCAPE_INITIALIZED signal.
 		 */
-//		final CyMenus fCyMenus = cyMenus;
-//		Runnable birdViewEnabler = new Runnable() {
-//			public void run() {
-//				try {
-//					Thread.sleep(5000);
-//				} catch (InterruptedException e) {
-//					return;
-//				}
-//				SwingUtilities.invokeLater(new Runnable() {
-//					public void run() {
-//						cyMenus.networkOverviewAction
-//								.actionPerformed(new ActionEvent(
-//										cyMenus.networkOverviewItem, 1001,
-//										"Show Network Overview"));
-//					}
-//				});
-//			}
-//		};
-//		(new Thread(birdViewEnabler)).start();
+
+		//		final CyMenus fCyMenus = cyMenus;
+		//		Runnable birdViewEnabler = new Runnable() {
+		//			public void run() {
+		//				try {
+		//					Thread.sleep(5000);
+		//				} catch (InterruptedException e) {
+		//					return;
+		//				}
+		//				SwingUtilities.invokeLater(new Runnable() {
+		//					public void run() {
+		//						cyMenus.networkOverviewAction
+		//								.actionPerformed(new ActionEvent(
+		//										cyMenus.networkOverviewItem, 1001,
+		//										"Show Network Overview"));
+		//					}
+		//				});
+		//			}
+		//		};
+		//		(new Thread(birdViewEnabler)).start();
 	}
 
 	private void initStatusBar(JPanel panel) {
@@ -408,14 +423,13 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		statusBar.setBorder(new EmptyBorder(0, 7, 5, 7));
 		statusBar.setForeground(new Color(75, 75, 75));
 		panel.add(statusBar, BorderLayout.SOUTH);
-		setStatusBarMsg("Welcome to Cytoscape "
-				+ CytoscapeVersion.version
-				+ "              Right-click + drag  to  ZOOM             Middle-click + drag  to  PAN");
+		setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version
+		                + "              Right-click + drag  to  ZOOM             Middle-click + drag  to  PAN");
 	}
 
 	/**
 	 * Sets the Status Bar Message.
-	 * 
+	 *
 	 * @param msg
 	 *            Status Bar Message.
 	 */
@@ -431,21 +445,39 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		statusBar.setText("   ");
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public NetworkPanel getNetworkPanel() {
 		return networkPanel;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public HelpBroker getHelpBroker() {
 		return cyHelpBroker.getHelpBroker();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public HelpSet getHelpSet() {
 		return cyHelpBroker.getHelpSet();
 	}
 
 	// ----------------------------------------//
-	// Common Desktop Variables
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param edit DOCUMENT ME!
+	 */
 	public void addEdit(javax.swing.undo.UndoableEdit edit) {
 		// if ( undo == null )
 		// undo = new cytoscape.util.UndoManager();
@@ -459,17 +491,27 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		return VIEW_TYPE;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public CyMenus getCyMenus() {
 		return cyMenus;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param newNetwork DOCUMENT ME!
+	 */
 	public void setNewNetwork(CyNetwork newNetwork) {
 	}
 
 	/**
 	 * Returns the visual mapping manager that controls the appearance of nodes
 	 * and edges in this display.
-	 * 
+	 *
 	 * @deprecated Use Cytoscape.getVisualMappingManager() instead. This will be
 	 *             removed at 03/2007 (possibly sooner).
 	 */
@@ -488,7 +530,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * Create the VizMapper and the UI for it.
 	 */
 	public void setupVizMapper() {
-
 		this.vizMapper = Cytoscape.getVisualMappingManager();
 
 		// create the VizMapUI
@@ -502,10 +543,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// Add the StyleSelector to the ToolBar
 		// TODO: maybe put this somewhere else to make it easier to make
 		// vertical ToolBars.
-
 		JComboBox styleBox = vizMapUI.getStyleSelector().getToolbarComboBox();
-		Dimension newSize = new Dimension(150, (int) styleBox
-				.getPreferredSize().getHeight());
+		Dimension newSize = new Dimension(150, (int) styleBox.getPreferredSize().getHeight());
 		styleBox.setMaximumSize(newSize);
 		styleBox.setPreferredSize(newSize);
 
@@ -515,7 +554,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 			main_panel.add(styleBox, BorderLayout.SOUTH);
 			currentStyleBox = styleBox;
-
 		} else {
 			JToolBar toolBar = cyMenus.getToolBar();
 
@@ -531,8 +569,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 				toolBar.add(styleBox, styleBoxIndex);
 			}
 		}
-
-
 	}
 
 	// ----------------------------------------//
@@ -544,9 +580,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return the OLD VisualStyle
 	 */
 	public VisualStyle setVisualStyle(VisualStyle style) {
-
-		VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector()
-				.getToolbarComboBox().getSelectedItem();
+		VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
+		                                              .getSelectedItem();
 
 		vizMapper.setVisualStyle(style);
 		vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(style);
@@ -555,30 +590,27 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	}
 
 	protected void updateFocus(String network_id) {
-
 		// System.out.println( "CD: setting focus to: "+network_id );
 
 		// deal with the old Network
-		VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector()
-				.getToolbarComboBox().getSelectedItem();
+		VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
+		                                              .getSelectedItem();
 
 		CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
+
 		if (old_view != null) {
 			old_view.putClientData(VISUAL_STYLE, old_style);
-			old_view.putClientData(VIZMAP_ENABLED, new Boolean(old_view
-					.getVisualMapperEnabled()));
+			old_view.putClientData(VIZMAP_ENABLED, new Boolean(old_view.getVisualMapperEnabled()));
 		}
 
 		// set the current Network/View
 		Cytoscape.setCurrentNetwork(network_id);
-		if (Cytoscape.setCurrentNetworkView(network_id)) {
 
+		if (Cytoscape.setCurrentNetworkView(network_id)) {
 			// deal with the new Network
 			CyNetworkView new_view = Cytoscape.getCurrentNetworkView();
-			VisualStyle new_style = (VisualStyle) new_view
-					.getClientData(VISUAL_STYLE);
-			Boolean vizmap_enabled = ((Boolean) new_view
-					.getClientData(VIZMAP_ENABLED));
+			VisualStyle new_style = (VisualStyle) new_view.getClientData(VISUAL_STYLE);
+			Boolean vizmap_enabled = ((Boolean) new_view.getClientData(VIZMAP_ENABLED));
 
 			if (new_style == null)
 				new_style = defaultVisualStyle;
@@ -587,25 +619,29 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 				vizmap_enabled = new Boolean(true);
 
 			vizMapper.setNetworkView(new_view);
+
 			if (new_style != null) {
 				vizMapper.setVisualStyle(new_style);
-				vizMapUI.getStyleSelector().getToolbarComboBox()
-						.setSelectedItem(new_style);
+				vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(new_style);
 			}
 
 			cyMenus.setNodesRequiredItemsEnabled();
 			cyMenus.setVisualMapperItemsEnabled(vizmap_enabled.booleanValue());
+
 			if (vizmap_enabled.booleanValue()) {
 				new_view.redrawGraph(false, false);
 			}
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param network_id DOCUMENT ME!
+	 */
 	public void setFocus(String network_id) {
-		pcs.firePropertyChange(new PropertyChangeEvent(this,
-				NETWORK_VIEW_FOCUSED, null, network_id));
-		pcs.firePropertyChange(new PropertyChangeEvent(this,
-				NETWORK_VIEW_FOCUS, null, network_id));
+		pcs.firePropertyChange(new PropertyChangeEvent(this, NETWORK_VIEW_FOCUSED, null, network_id));
+		pcs.firePropertyChange(new PropertyChangeEvent(this, NETWORK_VIEW_FOCUS, null, network_id));
 	}
 
 	/**
@@ -619,77 +655,74 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		return graphViewController;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
 		return pcs;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void propertyChange(PropertyChangeEvent e) {
-
 		if (e.getPropertyName() == NETWORK_VIEW_CREATED) {
-
 			// add the new view to the GraphViewController
-			getGraphViewController().addGraphView(
-					(CyNetworkView) e.getNewValue());
+			getGraphViewController().addGraphView((CyNetworkView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
 
-			networkPanel.focusNetworkNode(((CyNetworkView) e.getNewValue())
-					.getIdentifier());
-			networkPanel.fireFocus(((CyNetworkView) e.getNewValue())
-					.getIdentifier());
+			networkPanel.focusNetworkNode(((CyNetworkView) e.getNewValue()).getIdentifier());
+			networkPanel.fireFocus(((CyNetworkView) e.getNewValue()).getIdentifier());
 		}
-
 		else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
 			// get focus event from NetworkViewManager
-
 			updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
 		}
-
 		else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
 			// get Focus from NetworkPanel
-
 			updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
 		}
-
 		else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
 		}
-
 		else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
-			// Check new session or not
 
-			if (Cytoscape.getNetworkSet().size() == 0
-					&& Cytoscape.getSessionstate() != Cytoscape.SESSION_OPENED) {
+			// Check new session or not
+			if ((Cytoscape.getNetworkSet().size() == 0)
+			    && (Cytoscape.getSessionstate() != Cytoscape.SESSION_OPENED)) {
 				String message = "Do you want to create a new session?.\n(All attributes will be lost!)";
 
-				int result = JOptionPane.showConfirmDialog(this, message,
-						"Create New Session?", JOptionPane.YES_NO_OPTION,
-						JOptionPane.WARNING_MESSAGE, null);
+				int result = JOptionPane.showConfirmDialog(this, message, "Create New Session?",
+				                                           JOptionPane.YES_NO_OPTION,
+				                                           JOptionPane.WARNING_MESSAGE, null);
+
 				if (result == JOptionPane.YES_OPTION) {
 					Cytoscape.createNewSession();
 				}
 			}
 		} else if (e.getPropertyName() == NETWORK_VIEW_DESTROYED) {
 			// remove the view from the GraphViewController
-			getGraphViewController().removeGraphView(
-					(CyNetworkView) e.getNewValue());
+			getGraphViewController().removeGraphView((CyNetworkView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED) {
 			/*
 			 * Create bird's eye view
 			 */
-			cyMenus.networkOverviewAction
-					.actionPerformed(new ActionEvent(
-							cyMenus.networkOverviewItem, 1001,
-							"Show Network Overview"));
+			cyMenus.networkOverviewAction.actionPerformed(new ActionEvent(cyMenus.networkOverviewItem,
+			                                                              1001,
+			                                                              "Show Network Overview"));
 		}
-
 	}
 
 	// ---------------------------------------------------------------------------//
@@ -697,35 +730,36 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * Gets a cytoPanel given a Compass direction.
-	 * 
+	 *
 	 * @param compassDirection
 	 *            Compass Direction (SwingConstants.{SOUTH,EAST,WEST}).
 	 * @return CytoPanel The CytoPanel that lives in the region specified by
 	 *         compass direction.
 	 */
 	public CytoPanel getCytoPanel(int compassDirection) {
-
 		// return appropriate cytoPanel based on compass direction
 		switch (compassDirection) {
-		case SwingConstants.SOUTH:
-			return (CytoPanel) cytoPanelSouth;
-		case SwingConstants.EAST:
-			return (CytoPanel) cytoPanelEast;
-		case SwingConstants.WEST:
-			return (CytoPanel) cytoPanelWest;
-		case SwingConstants.SOUTH_WEST:
-			return (CytoPanel) cytoPanelSouthWest;			
+			case SwingConstants.SOUTH:
+				return (CytoPanel) cytoPanelSouth;
+
+			case SwingConstants.EAST:
+				return (CytoPanel) cytoPanelEast;
+
+			case SwingConstants.WEST:
+				return (CytoPanel) cytoPanelWest;
+
+			case SwingConstants.SOUTH_WEST:
+				return (CytoPanel) cytoPanelSouthWest;
 		}
 
 		// houston we have a problem
-		throw new IllegalArgumentException("Illegal Argument:  "
-				+ compassDirection
-				+ ".  Must be one of:  SwingConstants.{SOUTH,EAST,WEST,SOUTH_WEST}.");
+		throw new IllegalArgumentException("Illegal Argument:  " + compassDirection
+		                                   + ".  Must be one of:  SwingConstants.{SOUTH,EAST,WEST,SOUTH_WEST}.");
 	}
 
 	/**
 	 * Create the CytoPanels UI.
-	 * 
+	 *
 	 * @param networkPanel
 	 *            to load on left side of right bimodal.
 	 * @param networkViewManager
@@ -733,8 +767,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return BiModalJSplitPane Object.
 	 */
 	protected BiModalJSplitPane setupCytoPanels(NetworkPanel networkPanel,
-			NetworkViewManager networkViewManager) {
-
+	                                            NetworkViewManager networkViewManager) {
 		// bimodals that our Cytopanels Live within
 		BiModalJSplitPane topRightPane = createTopRightPane(networkViewManager);
 		BiModalJSplitPane rightPane = createRightPane(topRightPane);
@@ -745,20 +778,18 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * Creates the TopRight Pane.
-	 * 
+	 *
 	 * @param networkViewManager
 	 *            to load on left side of top right bimodal.
 	 * @return BiModalJSplitPane Object.
 	 */
-	protected BiModalJSplitPane createTopRightPane(
-			NetworkViewManager networkViewManager) {
-
+	protected BiModalJSplitPane createTopRightPane(NetworkViewManager networkViewManager) {
 		// create cytopanel with tabs along the top
-		cytoPanelEast = new CytoPanelImp(SwingConstants.EAST, JTabbedPane.TOP,
-				CytoPanelState.HIDE);
+		cytoPanelEast = new CytoPanelImp(SwingConstants.EAST, JTabbedPane.TOP, CytoPanelState.HIDE);
 
 		// determine proper network view manager component
 		Component networkViewComp = null;
+
 		if (VIEW_TYPE == TABBED_VIEW) {
 			networkViewComp = (Component) networkViewManager.getTabbedPane();
 		} else if (VIEW_TYPE == INTERNAL_VIEW) {
@@ -768,9 +799,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		}
 
 		// create the split pane - we show this on startup
-		BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
-				JSplitPane.HORIZONTAL_SPLIT, BiModalJSplitPane.MODE_HIDE_SPLIT,
-				networkViewComp, cytoPanelEast);
+		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.HORIZONTAL_SPLIT,
+		                                                    BiModalJSplitPane.MODE_HIDE_SPLIT,
+		                                                    networkViewComp, cytoPanelEast);
 
 		// set the cytopanelcontainer
 		cytoPanelEast.setCytoPanelContainer(splitPane);
@@ -784,21 +815,20 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * Creates the Right Panel.
-	 * 
+	 *
 	 * @param topRightPane
 	 *            TopRightPane Object.
 	 * @return BiModalJSplitPane Object
 	 */
 	protected BiModalJSplitPane createRightPane(BiModalJSplitPane topRightPane) {
-
 		// create cytopanel with tabs along the bottom
-		cytoPanelSouth = new CytoPanelImp(SwingConstants.SOUTH,
-				JTabbedPane.BOTTOM, CytoPanelState.HIDE);
+		cytoPanelSouth = new CytoPanelImp(SwingConstants.SOUTH, JTabbedPane.BOTTOM,
+		                                  CytoPanelState.HIDE);
 
 		// create the split pane - hidden by default
-		BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
-				JSplitPane.VERTICAL_SPLIT, BiModalJSplitPane.MODE_HIDE_SPLIT,
-				topRightPane, cytoPanelSouth);
+		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.VERTICAL_SPLIT,
+		                                                    BiModalJSplitPane.MODE_HIDE_SPLIT,
+		                                                    topRightPane, cytoPanelSouth);
 
 		// set the cytopanel container
 		cytoPanelSouth.setCytoPanelContainer(splitPane);
@@ -812,7 +842,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * Creates the Master Split Pane.
-	 * 
+	 *
 	 * @param networkPanel
 	 *            to load on left side of CytoPanel (cytoPanelWest).
 	 * @param rightPane
@@ -820,23 +850,19 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return BiModalJSplitPane Object.
 	 */
 	protected BiModalJSplitPane createMasterPane(NetworkPanel networkPanel,
-			BiModalJSplitPane rightPane) {
-
+	                                             BiModalJSplitPane rightPane) {
 		// create cytopanel with tabs along the top
-		cytoPanelWest = new CytoPanelImp(SwingConstants.WEST, JTabbedPane.TOP,
-				CytoPanelState.DOCK);
-		
+		cytoPanelWest = new CytoPanelImp(SwingConstants.WEST, JTabbedPane.TOP, CytoPanelState.DOCK);
+
 		// add the network panel to our tab
 		String tab1Name = new String("Network");
-		cytoPanelWest
-				.add(tab1Name, new ImageIcon(getClass().getResource(
-						"images/class_hi.gif")), networkPanel,
-						"Cytoscape Network List");
+		cytoPanelWest.add(tab1Name, new ImageIcon(getClass().getResource("images/class_hi.gif")),
+		                  networkPanel, "Cytoscape Network List");
 
 		// create the split pane - hidden by default
-		BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
-				JSplitPane.HORIZONTAL_SPLIT, BiModalJSplitPane.MODE_SHOW_SPLIT,
-				cytoPanelWest, rightPane);
+		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.HORIZONTAL_SPLIT,
+		                                                    BiModalJSplitPane.MODE_SHOW_SPLIT,
+		                                                    cytoPanelWest, rightPane);
 
 		// set the cytopanel container
 		cytoPanelWest.setCytoPanelContainer(splitPane);
@@ -850,26 +876,34 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * Gets the NetworkView Manager.
-	 * 
+	 *
 	 * @return NetworkViewManager Object.
 	 */
 	public NetworkViewManager getNetworkViewManager() {
 		return this.networkViewManager;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vt DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static int parseViewType(String vt) {
 		int type = -1;
-		if (vt == null || vt.equals("tabbed"))
+
+		if ((vt == null) || vt.equals("tabbed"))
 			type = TABBED_VIEW;
 		else if (vt.equals("internal"))
 			type = INTERNAL_VIEW;
 		else if (vt.equals("external"))
 			type = EXTERNAL_VIEW;
 		else {
-			System.out.println("Couldn't parse view type: " + vt
-					+ " -- using TABBED");
+			System.out.println("Couldn't parse view type: " + vt + " -- using TABBED");
 			type = TABBED_VIEW;
 		}
+
 		return type;
 	}
 }

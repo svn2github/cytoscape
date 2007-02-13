@@ -1,4 +1,47 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package cytoscape.dialogs.preferences;
+
+import cytoscape.Cytoscape;
+
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.bookmarks.DataSource;
+
+import cytoscape.util.BookmarksUtil;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -7,8 +50,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
 import java.io.IOException;
+
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,18 +68,18 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import javax.xml.bind.JAXBException;
 
-import cytoscape.Cytoscape;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.DataSource;
-import cytoscape.util.BookmarksUtil;
 
-public class BookmarkDialog extends JDialog implements ActionListener,
-		ListSelectionListener, ItemListener {
-
+/**
+ *
+ */
+public class BookmarkDialog extends JDialog implements ActionListener, ListSelectionListener,
+                                                       ItemListener {
 	private String bookmarkCategory;
 	private Bookmarks theBookmarks = null;
+
 	// private Category theCategory = new Category();;
 	private String[] bookmarkCategories = { "network", "annotation" };
 
@@ -41,7 +87,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 
 	/**
 	 * Creates new BookmarkDialog
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
@@ -66,13 +112,12 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 	private javax.swing.JComboBox cmbCategory;
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JScrollPane jScrollPane1;
+
 	// private javax.swing.JLabel lbTitle;
 	private javax.swing.JList listBookmark;
 
 	// End of variables declaration
-
 	private void initComponents() {
-
 		java.awt.GridBagConstraints gridBagConstraints;
 
 		// lbTitle = new javax.swing.JLabel();
@@ -90,7 +135,6 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		// lbTitle.setText("Title");
 		// getContentPane().add(lbTitle, new java.awt.GridBagConstraints());
-
 		cmbCategory.setToolTipText("Bookmark category");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridy = 1;
@@ -150,6 +194,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 		for (String AnItem : bookmarkCategories) {
 			cmbCategory.addItem(AnItem);
 		}
+
 		cmbCategory.addItemListener(this);
 
 		btnEditBookmark.setEnabled(false);
@@ -167,21 +212,32 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 		listBookmark.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		// pack();
-	}// </editor-fold>
+	} // </editor-fold>
 
 	private void loadBookmarks() {
-		List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(
-				bookmarkCategory, theBookmarks.getCategory());
+		List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory,
+		                                                                     theBookmarks
+		                                                                                                                                                                                                                    .getCategory());
 
 		MyListModel theModel = new MyListModel(theDataSourceList);
 		listBookmark.setModel(theModel);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void itemStateChanged(ItemEvent e) {
 		bookmarkCategory = cmbCategory.getSelectedItem().toString();
 		loadBookmarks();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void actionPerformed(ActionEvent e) {
 		Object _actionObject = e.getSource();
 
@@ -192,33 +248,31 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 			if (_btn == btnOK) {
 				this.dispose();
 			} else if (_btn == btnAddBookmark) {
-				EditBookmarkDialog theNewDialog = new EditBookmarkDialog(this,
-						true, theBookmarks, bookmarkCategory, "new", null);
+				EditBookmarkDialog theNewDialog = new EditBookmarkDialog(this, true, theBookmarks,
+				                                                         bookmarkCategory, "new",
+				                                                         null);
 				theNewDialog.setSize(300, 250);
 				theNewDialog.setLocationRelativeTo(this);
 
 				theNewDialog.setVisible(true);
 				loadBookmarks(); // reload is required to update the GUI
 			} else if (_btn == btnEditBookmark) {
-				DataSource theDataSource = (DataSource) listBookmark
-						.getSelectedValue();
-				EditBookmarkDialog theEditDialog = new EditBookmarkDialog(this,
-						true, theBookmarks, bookmarkCategory, "edit",
-						theDataSource);
+				DataSource theDataSource = (DataSource) listBookmark.getSelectedValue();
+				EditBookmarkDialog theEditDialog = new EditBookmarkDialog(this, true, theBookmarks,
+				                                                          bookmarkCategory, "edit",
+				                                                          theDataSource);
 				theEditDialog.setSize(300, 250);
 				theEditDialog.setLocationRelativeTo(this);
 
 				theEditDialog.setVisible(true);
 				loadBookmarks(); // reload is required to update the GUI
 			} else if (_btn == btnDeleteBookmark) {
-				DataSource theDataSource = (DataSource) listBookmark
-						.getSelectedValue();
+				DataSource theDataSource = (DataSource) listBookmark.getSelectedValue();
 
 				MyListModel theModel = (MyListModel) listBookmark.getModel();
 				theModel.removeElement(listBookmark.getSelectedIndex());
 
-				BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory,
-						theDataSource);
+				BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
 
 				if (theModel.getSize() == 0) {
 					btnEditBookmark.setEnabled(false);
@@ -230,7 +284,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 
 	/**
 	 * Called by ListSelectionListener interface when a table item is selected.
-	 * 
+	 *
 	 * @param pListSelectionEvent
 	 */
 	public void valueChanged(ListSelectionEvent pListSelectionEvent) {
@@ -242,7 +296,6 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 			btnEditBookmark.setEnabled(true);
 			btnDeleteBookmark.setEnabled(true);
 		}
-
 	}
 
 	class MyListModel extends javax.swing.AbstractListModel {
@@ -256,6 +309,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 			if (theDataSourceList == null) {
 				return 0;
 			}
+
 			return theDataSourceList.size();
 		}
 
@@ -263,6 +317,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 			if (theDataSourceList == null) {
 				return null;
 			}
+
 			return theDataSourceList.get(i);
 		}
 
@@ -274,7 +329,6 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 			theDataSourceList.remove(pIndex);
 			fireContentsChanged(this, pIndex, pIndex);
 		}
-
 	} // MyListModel
 
 	// class MyListCellrenderer
@@ -283,19 +337,19 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 			setOpaque(true);
 		}
 
-		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList list, Object value, int index,
+		                                              boolean isSelected, boolean cellHasFocus) {
 			DataSource theDataSource = (DataSource) value;
 			setText(theDataSource.getName());
 			setToolTipText(theDataSource.getHref());
 			setBackground(isSelected ? Color.red : Color.white);
 			setForeground(isSelected ? Color.white : Color.black);
+
 			return this;
 		}
 	}
 
 	public class EditBookmarkDialog extends JDialog implements ActionListener {
-
 		private String name;
 		private String URLstr;
 		private JDialog parent;
@@ -306,9 +360,8 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 		private DataSource dataSource = null;
 
 		/** Creates new form NewBookmarkDialog */
-		public EditBookmarkDialog(JDialog parent, boolean modal,
-				Bookmarks pBookmarks, String categoryName, String pMode,
-				DataSource pDataSource) {
+		public EditBookmarkDialog(JDialog parent, boolean modal, Bookmarks pBookmarks,
+		                          String categoryName, String pMode, DataSource pDataSource) {
 			super(parent, modal);
 			this.parent = parent;
 			this.theBookmarks = pBookmarks;
@@ -319,9 +372,11 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 			initComponents();
 
 			lbCategoryValue.setText(categoryName);
+
 			if (pMode.equalsIgnoreCase("new")) {
 				this.setTitle("Add new bookmark");
 			}
+
 			if (pMode.equalsIgnoreCase("edit")) {
 				this.setTitle("Edit bookmark");
 				tfName.setText(dataSource.getName());
@@ -338,7 +393,6 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 				JButton _btn = (JButton) _actionObject;
 
 				if ((_btn == btnOK) && (mode.equalsIgnoreCase("new"))) {
-
 					name = tfName.getText();
 					URLstr = tfURL.getText();
 
@@ -346,7 +400,8 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 						String msg = "Please provide a name/URL!";
 						// display info dialog
 						JOptionPane.showMessageDialog(parent, msg, "Warning",
-								JOptionPane.INFORMATION_MESSAGE);
+						                              JOptionPane.INFORMATION_MESSAGE);
+
 						return;
 					}
 
@@ -354,21 +409,20 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 					theDataSource.setName(name);
 					theDataSource.setHref(URLstr);
 
-					if (BookmarksUtil.isInBookmarks(bookmarkURL, categoryName,
-							theDataSource)) {
+					if (BookmarksUtil.isInBookmarks(bookmarkURL, categoryName, theDataSource)) {
 						String msg = "Bookmark already existed!";
 						// display info dialog
 						JOptionPane.showMessageDialog(parent, msg, "Warning",
-								JOptionPane.INFORMATION_MESSAGE);
+						                              JOptionPane.INFORMATION_MESSAGE);
+
 						return;
 					}
 
-					BookmarksUtil.saveBookmark(theBookmarks, categoryName,
-							theDataSource);
+					BookmarksUtil.saveBookmark(theBookmarks, categoryName, theDataSource);
 					this.dispose();
 				}
-				if ((_btn == btnOK) && (mode.equalsIgnoreCase("edit"))) {
 
+				if ((_btn == btnOK) && (mode.equalsIgnoreCase("edit"))) {
 					name = tfName.getText();
 					URLstr = tfURL.getText();
 
@@ -376,7 +430,8 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 						String msg = "URL is empty!";
 						// display info dialog
 						JOptionPane.showMessageDialog(parent, msg, "Warning",
-								JOptionPane.INFORMATION_MESSAGE);
+						                              JOptionPane.INFORMATION_MESSAGE);
+
 						return;
 					}
 
@@ -386,13 +441,10 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 
 					// first dellete the old one, then add (note: name is key of
 					// DataSource)
-					BookmarksUtil.deleteBookmark(theBookmarks,
-							bookmarkCategory, theDataSource);
-					BookmarksUtil.saveBookmark(theBookmarks, categoryName,
-							theDataSource);
+					BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
+					BookmarksUtil.saveBookmark(theBookmarks, categoryName, theDataSource);
 					this.dispose();
 				}
-
 				else if (_btn == btnCancel) {
 					this.dispose();
 				}
@@ -404,6 +456,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 		 * form. WARNING: Do NOT modify this code. The content of this method is
 		 * always regenerated by the Form Editor.
 		 */
+
 		// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 		private void initComponents() {
 			java.awt.GridBagConstraints gridBagConstraints;
@@ -483,7 +536,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 			btnCancel.addActionListener(this);
 
 			pack();
-		}// </editor-fold>
+		} // </editor-fold>
 
 		// Variables declaration - do not modify
 		private javax.swing.JButton btnCancel;
@@ -495,6 +548,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 		private javax.swing.JLabel lbURL;
 		private javax.swing.JTextField tfName;
 		private javax.swing.JTextField tfURL;
+
 		// End of variables declaration
 	}
 
@@ -509,6 +563,9 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 	}
 
 	// for test only
+	/**
+	 * Creates a new BookmarkDialog object.
+	 */
 	public BookmarkDialog() {
 		this.setTitle("Bookmark manager");
 
@@ -516,7 +573,6 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 		initComponents();
 		bookmarkCategory = cmbCategory.getSelectedItem().toString();
 		// theBookmarks = Cytoscape.getBookmarks();
-
 		loadBookmarks();
 	}
 
@@ -525,8 +581,7 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 		Bookmarks tmpBookmarks = null;
 
 		java.io.File tmpBookmarkFile = new java.io.File("bookmarks_kei.xml");
-		System.out.println("tmpBookmarkFile ="
-				+ tmpBookmarkFile.getAbsolutePath());
+		System.out.println("tmpBookmarkFile =" + tmpBookmarkFile.getAbsolutePath());
 
 		// Load the Bookmarks object from given xml file
 		try {
@@ -536,11 +591,9 @@ public class BookmarkDialog extends JDialog implements ActionListener,
 		} catch (JAXBException e) {
 			System.out.println("JAXBException -- bookmarkSource");
 		} catch (Exception e) {
-			System.out
-					.println("Can not read the bookmark file, the bookmark file may not exist!");
+			System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
 		}
 
 		return tmpBookmarks;
 	}
-
 }

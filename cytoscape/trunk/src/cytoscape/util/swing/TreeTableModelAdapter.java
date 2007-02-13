@@ -14,8 +14,8 @@
  *
  * Copyright (C) 2003 Sapient Corporation. All Rights Reserved.
  */
-
 package cytoscape.util.swing;
+
 
 /*
  * @(#)TreeTableModelAdapter.java    1.2 98/10/27
@@ -30,7 +30,6 @@ package cytoscape.util.swing;
  * it only in accordance with the terms of the license agreement
  * you entered into with Sun.
  */
-
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeExpansionEvent;
@@ -39,6 +38,7 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.TreePath;
+
 
 /**
  * This is a wrapper class takes a TreeTableModel and implements
@@ -51,103 +51,156 @@ import javax.swing.tree.TreePath;
  * @author Philip Milne
  * @author Scott Violet
  */
-public class TreeTableModelAdapter extends AbstractTableModel
-{
-    JTree tree;
-    TreeTableModel treeTableModel;
+public class TreeTableModelAdapter extends AbstractTableModel {
+	JTree tree;
+	TreeTableModel treeTableModel;
 
-    public TreeTableModelAdapter(TreeTableModel treeTableModel, JTree tree) {
-        this.tree = tree;
-        this.treeTableModel = treeTableModel;
+	/**
+	 * Creates a new TreeTableModelAdapter object.
+	 *
+	 * @param treeTableModel  DOCUMENT ME!
+	 * @param tree  DOCUMENT ME!
+	 */
+	public TreeTableModelAdapter(TreeTableModel treeTableModel, JTree tree) {
+		this.tree = tree;
+		this.treeTableModel = treeTableModel;
 
-    tree.addTreeExpansionListener(new TreeExpansionListener() {
-        // Don't use fireTableRowsInserted() here; the selection model
-        // would get updated twice.
-        public void treeExpanded(TreeExpansionEvent event) {
-          fireTableDataChanged();
-        }
-            public void treeCollapsed(TreeExpansionEvent event) {
-          fireTableDataChanged();
-        }
-    });
+		tree.addTreeExpansionListener(new TreeExpansionListener() {
+				// Don't use fireTableRowsInserted() here; the selection model
+				// would get updated twice.
+				public void treeExpanded(TreeExpansionEvent event) {
+					fireTableDataChanged();
+				}
 
-    // Install a TreeModelListener that can update the table when
-    // tree changes. We use delayedFireTableDataChanged as we can
-    // not be guaranteed the tree will have finished processing
-    // the event before us.
-    treeTableModel.addTreeModelListener(new TreeModelListener() {
-        public void treeNodesChanged(TreeModelEvent e) {
-        delayedFireTableDataChanged();
-        }
+				public void treeCollapsed(TreeExpansionEvent event) {
+					fireTableDataChanged();
+				}
+			});
 
-        public void treeNodesInserted(TreeModelEvent e) {
-        delayedFireTableDataChanged();
-        }
+		// Install a TreeModelListener that can update the table when
+		// tree changes. We use delayedFireTableDataChanged as we can
+		// not be guaranteed the tree will have finished processing
+		// the event before us.
+		treeTableModel.addTreeModelListener(new TreeModelListener() {
+				public void treeNodesChanged(TreeModelEvent e) {
+					delayedFireTableDataChanged();
+				}
 
-        public void treeNodesRemoved(TreeModelEvent e) {
-        delayedFireTableDataChanged();
-        }
+				public void treeNodesInserted(TreeModelEvent e) {
+					delayedFireTableDataChanged();
+				}
 
-        public void treeStructureChanged(TreeModelEvent e) {
-        delayedFireTableDataChanged();
-        }
-    });
-    }
+				public void treeNodesRemoved(TreeModelEvent e) {
+					delayedFireTableDataChanged();
+				}
 
-    // Wrappers, implementing TableModel interface.
+				public void treeStructureChanged(TreeModelEvent e) {
+					delayedFireTableDataChanged();
+				}
+			});
+	}
 
-    public int getColumnCount() {
-    return treeTableModel.getColumnCount();
-    }
+	// Wrappers, implementing TableModel interface.
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int getColumnCount() {
+		return treeTableModel.getColumnCount();
+	}
 
-    public String getColumnName(int column) {
-    return treeTableModel.getColumnName(column);
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param column DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String getColumnName(int column) {
+		return treeTableModel.getColumnName(column);
+	}
 
-    public Class getColumnClass(int column) {
-    return treeTableModel.getColumnClass(column);
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param column DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Class getColumnClass(int column) {
+		return treeTableModel.getColumnClass(column);
+	}
 
-    public int getRowCount() {
-    return tree.getRowCount();
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int getRowCount() {
+		return tree.getRowCount();
+	}
 
-    protected Object nodeForRow(int row) {
-      TreePath treePath = tree.getPathForRow(row);
-      
-      if(treePath != null) {
-    	  return treePath.getLastPathComponent();
-      } else 
-    	  return null;
-    }
+	protected Object nodeForRow(int row) {
+		TreePath treePath = tree.getPathForRow(row);
 
-    public Object getValueAt(int row, int column) {
-    	Object tempObj = nodeForRow(row);
-    	if(tempObj != null) {
-    		return treeTableModel.getValueAt(tempObj, column);
-    	} else {
-    		return null;
-    	}
-    }
+		if (treePath != null) {
+			return treePath.getLastPathComponent();
+		} else
 
-    public boolean isCellEditable(int row, int column) {
-         return treeTableModel.isCellEditable(nodeForRow(row), column);
-    }
+			return null;
+	}
 
-    public void setValueAt(Object value, int row, int column) {
-    treeTableModel.setValueAt(value, nodeForRow(row), column);
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param row DOCUMENT ME!
+	 * @param column DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getValueAt(int row, int column) {
+		Object tempObj = nodeForRow(row);
 
-    /**
-     * Invokes fireTableDataChanged after all the pending events have been
-     * processed. SwingUtilities.invokeLater is used to handle this.
-     */
-    protected void delayedFireTableDataChanged() {
-    SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-        fireTableDataChanged();
-        }
-    });
-    }
+		if (tempObj != null) {
+			return treeTableModel.getValueAt(tempObj, column);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param row DOCUMENT ME!
+	 * @param column DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean isCellEditable(int row, int column) {
+		return treeTableModel.isCellEditable(nodeForRow(row), column);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 * @param row DOCUMENT ME!
+	 * @param column DOCUMENT ME!
+	 */
+	public void setValueAt(Object value, int row, int column) {
+		treeTableModel.setValueAt(value, nodeForRow(row), column);
+	}
+
+	/**
+	 * Invokes fireTableDataChanged after all the pending events have been
+	 * processed. SwingUtilities.invokeLater is used to handle this.
+	 */
+	protected void delayedFireTableDataChanged() {
+		SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					fireTableDataChanged();
+				}
+			});
+	}
 }
-
