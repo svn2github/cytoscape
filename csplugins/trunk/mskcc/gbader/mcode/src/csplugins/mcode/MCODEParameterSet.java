@@ -66,9 +66,17 @@ public class MCODEParameterSet {
 
     /**
      * Constructor for the parameter set object. Default parameters are:
-     * loops=false, degree cutoff=2, max depth=100, node score cutoff=0.2, fluff=false, haircut=true
-     * fluff node density cutoff=0.1, preprocess network (directed mode)=true, default row height for
-     * results table=80 pixels.
+     * scope = NETWORK,
+     * selectedNodes = new Integer[0],
+     * loops = false,
+     * degree cutoff = 2,
+     * max depth = 100,
+     * k-core = 2,
+     * node score cutoff = 0.2,
+     * fluff = false,
+     * haircut = true,
+     * fluff node density cutoff = 0.1,
+     * row height for results table = 80 pixels.
      */
     public MCODEParameterSet() {
         //default parameters
@@ -79,11 +87,12 @@ public class MCODEParameterSet {
     }
 
     /**
-     * Constructor for no default algorithm parameters.
-     * Results dialog box row height is still default 80 pixels.
+     * Constructor for non-default algorithm parameters.
+     * Once an alalysis is conducted, new parameters must be saved so that they can be retrieved in the result panel
+     * for exploration and export purposes.
      *
-     * @param scope scope
-     * @param selectedNodes Node selection for selection-based scopes
+     * @param scope scope of the search (equal to one of the two fields NETWORK or SELECTION)
+     * @param selectedNodes Node selection for selection-based scope
      * @param includeLoops include loops
      * @param degreeCutoff degree cutoff
      * @param kCore K-core
@@ -292,6 +301,13 @@ public class MCODEParameterSet {
     public void setDefaultRowHeight(int defaultRowHeight) {
         this.defaultRowHeight = defaultRowHeight;
     }
+
+    /**
+     * Generates a summary of the parameters. Only parameters that are necessary are included.
+     * For example, if fluff is not turned on, the fluff density cutoff will not be included.
+     * 
+     * @return Buffered string summarizing the parameters
+     */
     public String toString() {
         String lineSep = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();

@@ -72,12 +72,12 @@ public class MCODEAlgorithm {
     private TreeMap currentNodeScoreSortedMap = null; //key is node score, value is nodeIndex
     //because every network can be scored and clustered several times with different parameters
     //these results have to be stored so that the same scores are used during exploration when
-    //the suer is switching between the various results
-    //Since the network is not always rescored whenever a new result set is generated (if the scoring parameters
+    //the user is switching between the various results
+    //Since the network is not always rescored whenever a new result is generated (if the scoring parameters
     //haven't changed for example) the clustering method must save the current node scores under the new result
-    //set title for later reference
-    private HashMap nodeScoreResultsMap = new HashMap();//key is result set, value is nodeScoreSortedMap
-    private HashMap nodeInfoResultsMap = new HashMap(); //key is result set, value is nodeInfroHashMap
+    //title for later reference
+    private HashMap nodeScoreResultsMap = new HashMap();//key is result, value is nodeScoreSortedMap
+    private HashMap nodeInfoResultsMap = new HashMap(); //key is result, value is nodeInfroHashMap
 
     private MCODEParameterSet params;   //the parameters used for this instance of the algorithm
     //stats
@@ -141,16 +141,16 @@ public class MCODEAlgorithm {
     }
 
     /**
-     * Gets the calculated node score of a node from a given result set.  Used in MCODEResultsPanel
+     * Gets the calculated node score of a node from a given result.  Used in MCODEResultsPanel
      * during the attribute setting method.
      *
      * @param rootGraphIndex Integer which is used to identify the nodes in the score-sorted tree map
-     * @param resultSet Title of the results for which we are retrieving a node score
+     * @param resultTitle Title of the results for which we are retrieving a node score
      * @return node score as a Double
      */
-    public Double getNodeScore(int rootGraphIndex, String resultSet) {
+    public Double getNodeScore(int rootGraphIndex, String resultTitle) {
         Double nodeScore = new Double(0.0);
-        TreeMap nodeScoreSortedMap = (TreeMap) nodeScoreResultsMap.get(resultSet);
+        TreeMap nodeScoreSortedMap = (TreeMap) nodeScoreResultsMap.get(resultTitle);
 
         for (Iterator score = nodeScoreSortedMap.keySet().iterator(); score.hasNext();) {
             nodeScore = (Double) score.next();
@@ -163,14 +163,14 @@ public class MCODEAlgorithm {
     }
 
     /**
-     * Gets the highest node score in a given result set.  Used in the MCODEVisualStyleAction class to
+     * Gets the highest node score in a given result.  Used in the MCODEVisualStyleAction class to
      * re-initialize the visual calculators.
      *
-     * @param resultSet Title of the results
+     * @param resultTitle Title of the result
      * @return First key in the nodeScoreSortedMap corresponding to the highest score
      */
-    public double getMaxScore(String resultSet) {
-        TreeMap nodeScoreSortedMap = (TreeMap) nodeScoreResultsMap.get(resultSet);
+    public double getMaxScore(String resultTitle) {
+        TreeMap nodeScoreSortedMap = (TreeMap) nodeScoreResultsMap.get(resultTitle);
         //Since the map is sorted, the first key is the highest value
         Double nodeScore = (Double) nodeScoreSortedMap.firstKey();
         return nodeScore.doubleValue();
@@ -180,10 +180,10 @@ public class MCODEAlgorithm {
      * Step 1: Score the graph and save scores as node attributes.  Scores are also
      * saved internally in your instance of MCODEAlgorithm.
      *
-     * @param inputNetwork - The network that will be scored
-     * @param resultSet Title of the result set used to identify the results
+     * @param inputNetwork The network that will be scored
+     * @param resultTitle Title of the result, used as an identifier in various hash maps
      */
-    public void scoreGraph(CyNetwork inputNetwork, String resultSet) {
+    public void scoreGraph(CyNetwork inputNetwork, String resultTitle) {
         params = getParams();
         String callerID = "MCODEAlgorithm.MCODEAlgorithm";
         if (inputNetwork == null) {
@@ -236,8 +236,8 @@ public class MCODEAlgorithm {
                 taskMonitor.setPercentCompleted((i * 100) / inputNetwork.getNodeCount());
             }
         }
-        nodeScoreResultsMap.put(resultSet, nodeScoreSortedMap);
-        nodeInfoResultsMap.put(resultSet, nodeInfoHashMap);
+        nodeScoreResultsMap.put(resultTitle, nodeScoreSortedMap);
+        nodeInfoResultsMap.put(resultTitle, nodeInfoHashMap);
 
         currentNodeScoreSortedMap = nodeScoreSortedMap;
         currentNodeInfoHashMap = nodeInfoHashMap;
@@ -251,26 +251,26 @@ public class MCODEAlgorithm {
      * this method will return null.  This method is called when the user selects network scope or
      * single node scope.
      *
-     * @param inputNetwork - The scored network to find clusters in.
-     * @param resultSet Title of the result set
+     * @param inputNetwork The scored network to find clusters in.
+     * @param resultTitle Title of the result
      * @return An array containing an MCODECluster object for each cluster.
      */
-    public MCODECluster[] findClusters(CyNetwork inputNetwork, String resultSet) {
+    public MCODECluster[] findClusters(CyNetwork inputNetwork, String resultTitle) {
         TreeMap nodeScoreSortedMap;
         HashMap nodeInfoHashMap;
-        //First we check if the network has been scored under this result set title (i.e. scoring
+        //First we check if the network has been scored under this result title (i.e. scoring
         //was required due to a scoring parameter change).  If it hasn't then we want to use the
         //current scores that were generated the last time the network was scored and store them
         //under the title of this result set for later use
-        if (!nodeScoreResultsMap.containsKey(resultSet)) {
+        if (!nodeScoreResultsMap.containsKey(resultTitle)) {
             nodeScoreSortedMap = currentNodeScoreSortedMap;
             nodeInfoHashMap = currentNodeInfoHashMap;
             
-            nodeScoreResultsMap.put(resultSet, nodeScoreSortedMap);
-            nodeInfoResultsMap.put(resultSet, nodeInfoHashMap);
+            nodeScoreResultsMap.put(resultTitle, nodeScoreSortedMap);
+            nodeInfoResultsMap.put(resultTitle, nodeInfoHashMap);
         } else {
-            nodeScoreSortedMap = (TreeMap) nodeScoreResultsMap.get(resultSet);
-            nodeInfoHashMap = (HashMap) nodeInfoResultsMap.get(resultSet);
+            nodeScoreSortedMap = (TreeMap) nodeScoreResultsMap.get(resultTitle);
+            nodeInfoHashMap = (HashMap) nodeInfoResultsMap.get(resultTitle);
         }
         params = getParams();
         MCODECluster currentCluster;
@@ -335,7 +335,7 @@ public class MCODEAlgorithm {
                             currentCluster.setGPCluster(gpCluster);
                             currentCluster.setClusterScore(scoreCluster(currentCluster));
                             currentCluster.setNodeSeenHashMap(nodeSeenHashMapSnapShot);//store the list of all the nodes that have already been seen and incorporated in other clusters
-                            currentCluster.setResultSet(resultSet);
+                            currentCluster.setResultTitle(resultTitle);
                             //store detected cluster for later
                             alClusters.add(currentCluster);
                         }
@@ -404,14 +404,14 @@ public class MCODEAlgorithm {
      * @param cluster cluster being explored
      * @param nodeScoreCutoff slider source value
      * @param inputNetwork network
-     * @param resultSet title of the result set being explored
+     * @param resultTitle title of the result set being explored
      * @return explored cluster
      */
-    public MCODECluster exploreCluster(MCODECluster cluster, double nodeScoreCutoff, CyNetwork inputNetwork, String resultSet) {
+    public MCODECluster exploreCluster(MCODECluster cluster, double nodeScoreCutoff, CyNetwork inputNetwork, String resultTitle) {
         //This method is similar to the finding method with the exception of the filtering so that the decrease of the cluster size
         //can produce a single node, also the use of the node seen hash map is differentially applied...
-        HashMap nodeInfoHashMap = (HashMap) nodeInfoResultsMap.get(resultSet);
-        MCODEParameterSet params = MCODECurrentParameters.getResultParams(cluster.getResultSet());
+        HashMap nodeInfoHashMap = (HashMap) nodeInfoResultsMap.get(resultTitle);
+        MCODEParameterSet params = MCODECurrentParameters.getResultParams(cluster.getResultTitle());
         HashMap nodeSeenHashMap;
         //if the size slider is below the set node score cutoff we use the node seen hash map so that clusters
         //with higher scoring seeds have priority, however when the slider moves higher than the node score cutoff

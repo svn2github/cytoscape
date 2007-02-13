@@ -86,7 +86,7 @@ public class MCODEMainPanel extends JPanel {
     JFormattedTextField maxDepthFormattedTextField;
 
     /**
-     * The actual parameter change dialog that builds the UI
+     * The actual parameter change panel that builds the UI
      *
      * @param trigger A reference to the action that triggered the initiation of this class
      * @param MCODEVS Reference to MCODE's visual style
@@ -595,7 +595,7 @@ public class MCODEMainPanel extends JPanel {
                 String componentTitle;
                 if (component instanceof MCODEResultsPanel) {
                     this.component = (MCODEResultsPanel) component;
-                    componentTitle = this.component.getResultsTitle();
+                    componentTitle = this.component.getResultTitle();
                     String message = "You are about to dispose of " + componentTitle + ".\nDo you wish to continue?";
                     int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[] {message}, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
                     if (result == JOptionPane.YES_OPTION){

@@ -99,6 +99,10 @@ public class MCODEMainPanelAction implements ActionListener {
         setOpened(true);
     }
 
+    /**
+     * Allows the MCODE plugin to limit the number of open instances of the MCODEMainPanel to 1. If the plugin is being
+     * closed, then it sets the visual style to default if the MCODE visual style was last used.
+     */
     public void setOpened(boolean opened) {
         this.opened = opened;
         if (!isOpened() && vmm.getVisualStyle() == MCODEVS) {

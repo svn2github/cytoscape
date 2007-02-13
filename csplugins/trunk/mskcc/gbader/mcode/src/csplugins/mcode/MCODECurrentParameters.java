@@ -39,7 +39,9 @@ import java.util.HashMap;
  **/
 
 /**
- * Stores the current parameters for MCODE.  Parameters are set in the MCODEMainPanel
+ * Stores the current parameters for MCODE.  Parameters are entered in the MCODEMainPanel and
+ * stored in a hash map for the particular network being analyzed by the MCODEScoreAndFindAction
+ * if the analysis produced a result.
  */
 public class MCODECurrentParameters {
     private static MCODECurrentParameters ourInstance = new MCODECurrentParameters();
@@ -56,7 +58,7 @@ public class MCODECurrentParameters {
     }
 
     /**
-     * Get a copy of the current parameters. Only a copy of the current param object is
+     * Get a copy of the current parameters for a particular network. Only a copy of the current param object is
      * returned to avoid side effects.  The user should use the following code to get their
      * own copy of the current parameters:
      * MCODECurrentParameters.getInstance().getParamsCopy();
@@ -79,7 +81,7 @@ public class MCODECurrentParameters {
     /**
      * Current parameters can only be updated using this method.
      * This method is called by MCODEScoreAndFindAction after comparisons have been conducted
-     * between the last saved version of the parameters and the current user's version
+     * between the last saved version of the parameters and the current user's version.
      *
      * @param newParams The new current parameters to set
      * @param resultSet Id of the result set

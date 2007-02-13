@@ -67,11 +67,11 @@ import java.util.List;
  * Reports the results of MCODE cluster finding. This class sets up the UI.
  */
 public class MCODEResultsPanel extends JPanel {
-    protected String resultsTitle;
+    protected String resultTitle;
     protected MCODEAlgorithm alg;
     protected MCODECluster[] clusters;
     protected JTable table;
-    protected MCODEResultsPanel.MCODEResultsBrowserTableModel modelBrowser;
+    protected MCODEResultsPanel.MCODEClusterBrowserTableModel modelBrowser;
     //table size parameters
     protected final int graphPicSize = 80;
     protected final int defaultRowHeight = graphPicSize + 8;
@@ -97,20 +97,20 @@ public class MCODEResultsPanel extends JPanel {
      * @param alg A reference to the alg for this particular network
      * @param network Network were these clusters were found
      * @param imageList A list of images of the found clusters
-     * @param resultsTitle Title of these results as determined by MCODESCoreAndFindAction
+     * @param resultTitle Title of this result as determined by MCODESCoreAndFindAction
      */
-    public MCODEResultsPanel(MCODECluster[] clusters, MCODEAlgorithm alg, CyNetwork network, Image[] imageList, String resultsTitle) {
+    public MCODEResultsPanel(MCODECluster[] clusters, MCODEAlgorithm alg, CyNetwork network, Image[] imageList, String resultTitle) {
         setLayout(new BorderLayout());
 
         this.alg = alg;
-        this.resultsTitle = resultsTitle;
+        this.resultTitle = resultTitle;
         this.clusters = clusters;
         this.network = network;
         //the view may not exist, but we only test for that when we need to (in the
         //TableRowSelectionHandler below)
         networkView = Cytoscape.getNetworkView(network.getIdentifier());
 
-        currentParamsCopy = MCODECurrentParameters.getInstance().getResultParams(resultsTitle);
+        currentParamsCopy = MCODECurrentParameters.getInstance().getResultParams(resultTitle);
 
         JPanel clusterBrowserPanel = createClusterBrowserPanel(imageList);
         JPanel bottomPanel = createBottomPanel();
@@ -125,7 +125,7 @@ public class MCODEResultsPanel extends JPanel {
     }
 
     /**
-     * Creates a panel that contains the browser table with a scroll bar
+     * Creates a panel that contains the browser table with a scroll bar.
      *
      * @param imageList images of cluster graphs
      * @return panel
@@ -137,7 +137,7 @@ public class MCODEResultsPanel extends JPanel {
         panel.setBorder(BorderFactory.createTitledBorder("Cluster Browser"));
 
         //main data table
-        modelBrowser = new MCODEResultsPanel.MCODEResultsBrowserTableModel(imageList);
+        modelBrowser = new MCODEResultsPanel.MCODEClusterBrowserTableModel(imageList);
 
         table = new JTable(modelBrowser);
 
@@ -322,9 +322,9 @@ public class MCODEResultsPanel extends JPanel {
                     }
                 }
             }
-            Cytoscape.getNodeAttributes().setAttribute(n.getIdentifier(), "MCODE_Score", alg.getNodeScore(n.getRootGraphIndex(), resultsTitle));
+            Cytoscape.getNodeAttributes().setAttribute(n.getIdentifier(), "MCODE_Score", alg.getNodeScore(n.getRootGraphIndex(), resultTitle));
         }
-        return alg.getMaxScore(resultsTitle);
+        return alg.getMaxScore(resultTitle);
     }
 
     /**
@@ -344,7 +344,7 @@ public class MCODEResultsPanel extends JPanel {
             nf.setMaximumFractionDigits(3);
             final MCODECluster cluster = clusters[selectedRow];
             final GraphPerspective gpCluster = cluster.getGPCluster();
-            final String title = trigger.getResultsTitle() + ": " + cluster.getClusterName() + " (Score: "+ nf.format(cluster.getClusterScore()) + ")";
+            final String title = trigger.getResultTitle() + ": " + cluster.getClusterName() + " (Score: "+ nf.format(cluster.getClusterScore()) + ")";
             //create the child network and view
             final SwingWorker worker = new SwingWorker() {
                 public Object construct() {
@@ -388,13 +388,13 @@ public class MCODEResultsPanel extends JPanel {
     /**
      * Handles the data to be displayed in the cluster browser table
      */
-    private class MCODEResultsBrowserTableModel extends AbstractTableModel {
+    private class MCODEClusterBrowserTableModel extends AbstractTableModel {
 
         //Create column headings
         String[] columnNames = {"Network", "Details"};
         Object[][] data;    //the actual table data
 
-        public MCODEResultsBrowserTableModel(Image imageList[]) {
+        public MCODEClusterBrowserTableModel(Image imageList[]) {
             exploreContent = new JPanel[clusters.length];
 
             data = new Object[clusters.length][columnNames.length];
@@ -545,7 +545,7 @@ public class MCODEResultsPanel extends JPanel {
     * @param map Has values mapped to keys
     * @return outputList of Map.Entries
     */
-    public ArrayList sortMap(Map map) {
+    private ArrayList sortMap(Map map) {
         ArrayList outputList = null;
         int count = 0;
         Set set = null;
@@ -668,11 +668,11 @@ public class MCODEResultsPanel extends JPanel {
             CytoscapeDesktop desktop = Cytoscape.getDesktop();
             CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
             //Must make sure the user wants to close this results panel
-            String message = "You are about to dispose of " + resultsTitle + ".\nDo you wish to continue?";
+            String message = "You are about to dispose of " + resultTitle + ".\nDo you wish to continue?";
             int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[]{message}, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
             if (result == JOptionPane.YES_OPTION) {
                 cytoPanel.remove(trigger);
-                MCODECurrentParameters.removeResultParams(getResultsTitle());
+                MCODECurrentParameters.removeResultParams(getResultTitle());
             }
             //If there are no more tabs in the cytopanel then we hide it
             if (cytoPanel.getCytoPanelComponentCount() == 0) {
@@ -842,16 +842,18 @@ public class MCODEResultsPanel extends JPanel {
     }
 
     //Getter and Setter for this Result Set's Title/ID
-    public String getResultsTitle() {
-        return resultsTitle;
+    public String getResultTitle() {
+        return resultTitle;
     }
 
-    public void setResultsTitle(String title) {
-        resultsTitle = title;
+    public void setResultTitle(String title) {
+        resultTitle = title;
     }
 
-    //Getter for the browser table used in MCODEVisualStyleAction to reselect the selected
-    //cluster whenever the user focuses on this result set
+    /**
+     * Getter for the browser table used in MCODEVisualStyleAction to reselect the selected
+     * cluster whenever the user focuses on this result set
+     */
     public JTable getClusterBrowserTable() {
         return table;
     }
@@ -891,7 +893,7 @@ public class MCODEResultsPanel extends JPanel {
             ArrayList oldCluster = clusters[selectedRow].getALCluster();
 
             //Find the new cluster given the node score cutoff
-            MCODECluster cluster = alg.exploreCluster(clusters[selectedRow], nodeScoreCutoff, network, resultsTitle);
+            MCODECluster cluster = alg.exploreCluster(clusters[selectedRow], nodeScoreCutoff, network, resultTitle);
 
             //We only want to do the following work if the newly found cluster is actually different
             //So we get the new cluster content

@@ -68,7 +68,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
     final static int INTERRUPTION = 3;
     int analyze = FIRST_TIME;
 
-    int resultsCounter = 0;
+    int resultCounter = 0;
 
     MCODEParameterSet currentParamsCopy;
     MCODEVisualStyle MCODEVS;
@@ -87,7 +87,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
      * @param event Click of the analyzeButton on the MCODEMainPanel.
      */
     public void actionPerformed(ActionEvent event) {
-        String resultsTitlePartA = "Result ";
+        String resultTitlePartA = "Result ";
 
         String callerID = "MCODEScoreAndFindAction.actionPerformed";
         String interruptedMessage = "";
@@ -161,7 +161,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
             interruptedMessage = "The parameters you specified\nhave not changed.";
         }
         //finally we save the current parameters
-        MCODECurrentParameters.getInstance().setParams(currentParamsCopy, resultsTitlePartA + (resultsCounter + 1), network.getIdentifier());
+        MCODECurrentParameters.getInstance().setParams(currentParamsCopy, resultTitlePartA + (resultCounter + 1), network.getIdentifier());
 
         //incase the user selected selection scope we must make sure that they selected at least 1 node
         if (currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION) && currentParamsCopy.getSelectedNodes().length < 1) {
@@ -174,7 +174,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(), interruptedMessage, "Analysis Interrupted", JOptionPane.WARNING_MESSAGE);
         } else {
             //run MCODE
-            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network, analyze, resultsTitlePartA + (resultsCounter + 1), alg);
+            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network, analyze, resultTitlePartA + (resultCounter + 1), alg);
 
             //Configure JTask
             JTaskConfig config = new JTaskConfig();
@@ -190,14 +190,14 @@ public class MCODEScoreAndFindAction implements ActionListener {
             if (MCODEScoreAndFindTask.isCompletedSuccessfully()) {
                 if (MCODEScoreAndFindTask.getClusters().length > 0) {
                     resultFound = true;
-                    resultsCounter++;
+                    resultCounter++;
 
                     resultPanel = new MCODEResultsPanel(
                             MCODEScoreAndFindTask.getClusters(),
                             MCODEScoreAndFindTask.getAlg(),
                             network,
                             MCODEScoreAndFindTask.getImageList(),
-                            resultsTitlePartA + resultsCounter
+                            resultTitlePartA + resultCounter
                     );
                 } else {
                     resultFound = false;
@@ -216,8 +216,8 @@ public class MCODEScoreAndFindAction implements ActionListener {
         //if there is no change, then we simply focus the last produced results (below), otherwise we
         //load the new results panel
         if (resultFound) {
-            String resultTitle = resultsTitlePartA + resultsCounter;
-            resultPanel.setResultsTitle(resultTitle);
+            String resultTitle = resultTitlePartA + resultCounter;
+            resultPanel.setResultTitle(resultTitle);
 
             URL iconURL = MCODEPlugin.class.getResource("resources/logo2.png");
             if (iconURL != null) {

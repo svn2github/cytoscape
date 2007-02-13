@@ -42,6 +42,9 @@ import java.util.HashMap;
  * Description: Stores various cluster information for simple get/set purposes
  */
 
+/**
+ * Stores various cluster information for simple get/set purposes.
+ */
 public class MCODECluster {
     private ArrayList alCluster = null;
     private GraphPerspective gpCluster = null;
@@ -51,16 +54,16 @@ public class MCODECluster {
     private double clusterScore;
     private String clusterName; //Pretty much unsed so far, but could store name by user's input
     private int rank;
-    private String resultSet;
+    private String resultTitle;
 
     public MCODECluster() {}
 
-    public String getResultSet() {
-        return resultSet;
+    public String getResultTitle() {
+        return resultTitle;
     }
 
-    public void setResultSet(String resultSet) {
-        this.resultSet = resultSet;
+    public void setResultTitle(String resultTitle) {
+        this.resultTitle = resultTitle;
     }
 
     public String getClusterName() {

@@ -62,9 +62,9 @@ public class MCODEUtil {
     private static Image placeHolderImage = null;
 
     /**
-     * Convert a network to an image.  This is used by the result dialog code.
+     * Convert a network to an image.  This is used by the MCODEResultsPanel.
      *
-     * @param loader results panel
+     * @param loader Graphic loader displaying progress and process
      * @param cluster Input network to convert to an image
      * @param height  Height that the resulting image should be
      * @param width   Width that the resulting image should be
@@ -193,6 +193,13 @@ public class MCODEUtil {
         INTERRUPTED = false;
     }
 
+    /**
+     * Generates an image of a place holder saying "Too big to show".
+     *
+     * @param width width of the image
+     * @param height height of the image
+     * @return place holder
+     */
     public static Image getPlaceHolderImage(int width, int height) {
         //We only want to generate a place holder image once so that memory is not eaten up
         if (placeHolderImage == null) {

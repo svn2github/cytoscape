@@ -47,6 +47,9 @@ import java.awt.*;
  * * Description: A visual style for MCODE modifying node shape and color
  */
 
+/**
+ * A visual style for MCODE modifying node shape and color.
+ */
 public class MCODEVisualStyle extends VisualStyle {
     private double maxValue = 0.0;
 

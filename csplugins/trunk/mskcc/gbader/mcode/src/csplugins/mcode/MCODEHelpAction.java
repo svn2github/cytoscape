@@ -39,6 +39,10 @@ import java.awt.event.ActionListener;
  * * Description: Opens a browser with the MCODE wiki page.
  */
 
+/**
+ * Opens a browser with the MCODE wiki page.
+ */
+
 public class MCODEHelpAction implements ActionListener {
 
     public void actionPerformed(ActionEvent actionEvent) {

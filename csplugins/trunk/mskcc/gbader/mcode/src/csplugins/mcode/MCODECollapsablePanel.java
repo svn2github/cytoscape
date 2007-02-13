@@ -46,6 +46,9 @@ import java.net.URL;
  * Description: The user-triggered collapsable panel containing the component (trigger) in the titled border
  */
 
+/**
+ * The user-triggered collapsable panel containing the component (trigger) in the titled border
+ */
 public class MCODECollapsablePanel extends JPanel {
     //Border
     CollapsableTitledBorder border; //includes upper left component and line type
@@ -67,7 +70,8 @@ public class MCODECollapsablePanel extends JPanel {
     boolean collapsed; // stores curent state of the collapsable panel
 
     /**
-     * Special constructor for an option button controlled collapsable panel
+     * Special constructor for an option button controlled collapsable panel.
+     *
      * @param component Radio button that expands and collapses the panel based on if it is selected or not
      */
     public MCODECollapsablePanel (JRadioButton component) {
@@ -78,7 +82,7 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * Special constructor for a label/button controlled collapsable panel
+     * Special constructor for a label/button controlled collapsable panel.
      * 
      * @param text Title of the collapsable panel in string format, used to create a button with text and an arrow icon
      */
@@ -90,10 +94,10 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * Sets layout, creates the content panel and adds it and the title component to the container
-     * All constructors have this procedure incommon
+     * Sets layout, creates the content panel and adds it and the title component to the container,
+     * all constructors have this procedure in common.
      */
-    public void commonConstructor () {
+    private void commonConstructor () {
         setLayout(new BorderLayout());
 
         panel = new JPanel();
@@ -107,7 +111,7 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * Sets the bounds of the border title component so that it is properly positioned
+     * Sets the bounds of the border title component so that it is properly positioned.
      */
     public void placeTitleComponent() {
         Insets insets = this.getInsets();
@@ -124,7 +128,8 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * This class requires that all content be placed within a designated panel, this method returns that panel
+     * This class requires that all content be placed within a designated panel, this method returns that panel.
+     *
      * @return panel The content panel
      */
     public JPanel getContentPane() {
@@ -132,9 +137,10 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * Collapses or expands the panel by adding or removing the content pane,
-     * alternating between an etched and empty border, and changing the title arrow.
-     * Also, the current state is stored in the collapsed boolean
+     * Collapses or expands the panel.  This is done by adding or removing the content pane,
+     * alternating between a frame and empty border, and changing the title arrow.
+     * Also, the current state is stored in the collapsed boolean.
+     *
      * @param collapse When set to true, the panel is collapsed, else it is expanded
      */
     public void setCollapsed(boolean collapse) {
@@ -155,7 +161,8 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * Returns the current state of the panel, collapsed (true) or expanded (false)
+     * Returns the current state of the panel, collapsed (true) or expanded (false).
+     *
      * @return collapsed Returns true if the panel is collapsed and false if it is expanded
      */
     public boolean isCollapsed() {
@@ -163,10 +170,11 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * Returns an ImageIcon array with arrow images used for the different states of the panel 
+     * Returns an ImageIcon array with arrow images used for the different states of the panel.
+     *
      * @return iconArrow An ImageIcon array holding the collapse and expanded versions of the right hand side arrow
      */
-    public ImageIcon[] createExpandAndCollapseIcon () {
+    private ImageIcon[] createExpandAndCollapseIcon () {
         ImageIcon[] iconArrow = new ImageIcon[2];
         URL iconURL;
 
@@ -185,7 +193,7 @@ public class MCODECollapsablePanel extends JPanel {
      * Returns a button with an arrow icon and a collapse/expand action listener
      * @return button Button which is used in the titled border component
      */
-    public JButton createArrowButton () {
+    private JButton createArrowButton () {
         JButton button = new JButton("arrow", iconArrow[COLLAPSED]);
         button.setBorder(BorderFactory.createEmptyBorder(0,1,5,1));
         button.setVerticalTextPosition(AbstractButton.CENTER);

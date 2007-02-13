@@ -45,6 +45,9 @@ import java.awt.image.BufferedImage;
  * * TODO: Make the loader more general so that it can be used in different situations as well (for example take in an object and painting bounds not table and selected row)
  */
 
+/**
+ * Generates a loading picture with a progress bar for the cluster browser table
+ */
 public class MCODELoader extends ImageIcon implements Runnable {
     JTable table; //cluster browser table reference
     int selectedRow; //row of cluster
@@ -101,8 +104,8 @@ public class MCODELoader extends ImageIcon implements Runnable {
     }
 
     /**
-     * Sets the row and image on top of which the loader will be drawn.
-     * Sets progress to 0 and process to "Starting".
+     * Sets the row and network image on top of which the loader will be drawn as well as
+     * progress to 0 and process to "Starting".
      *
      * @param selectedRow the row in a table where the loader is to be drawn
      * @param table an image of the cluster before the loader is drawn on top
@@ -340,7 +343,7 @@ public class MCODELoader extends ImageIcon implements Runnable {
     }
 
     /**
-     * Setter method that takes in a progress value from 0 - 100 and the current process.
+     * Sets progress and current process which are displayed in the loader.
      *
      * @param progress An integer from 0 - 100
      * @param process a short description of the process being conducted (initially set to "Starting")

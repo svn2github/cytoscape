@@ -41,6 +41,10 @@ import java.awt.*;
  * * Time: 8:41:53 PM
  * * Description: MCODE Score network and find cluster task
  */
+
+/**
+ * MCODE Score network and find cluster task.
+ */
 public class MCODEScoreAndFindTask implements Task {
     private TaskMonitor taskMonitor = null;
     private boolean interrupted = false;

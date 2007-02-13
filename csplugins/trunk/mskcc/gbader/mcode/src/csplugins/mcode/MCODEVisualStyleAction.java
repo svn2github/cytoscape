@@ -44,6 +44,9 @@ import java.awt.*;
  * * Description: A controller for the MCODE attributes used for visualization
  */
 
+/**
+ * A controller for the MCODE attributes used for visualization.
+ */
 public class MCODEVisualStyleAction implements CytoPanelListener {
     private CytoPanel cytoPanel;
     private MCODEVisualStyle MCODEVS;
@@ -75,7 +78,6 @@ public class MCODEVisualStyleAction implements CytoPanelListener {
             MCODEVS.initCalculators();
             VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
             vmm.applyNodeAppearances();
-            //Cytoscape.getDesktop().repaint();
         }
     }
 
