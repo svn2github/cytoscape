@@ -74,11 +74,17 @@ public class GagglePlugin extends CytoscapePlugin
 //			Dialog.getRegisterButton().setEnabled(false);
 			print("** adding action to update button **");
 			this.updateAction();
+
 			// this gives an initial goose that is cytoscape with a null network
 			CyNetwork CurrentNet = Cytoscape.getNullNetwork();
 			CurrentNet.setTitle(myGaggleName);
 			Goose NewGoose = this.createNewGoose(CurrentNet);
 			NetworkGeese.put(CurrentNet.getIdentifier(), NewGoose);
+			try
+				{
+				Cytoscape.getDesktop().setTitle("Goose: " + NewGoose.getName());
+				}
+			catch (Exception E) { E.printStackTrace(); }
 			}
 		Initialized = true;
 		}
@@ -179,6 +185,11 @@ public class GagglePlugin extends CytoscapePlugin
 
 	/*
 	 * Creates a standard goose name for any network
+	 * TODO: 
+	 * Burak suggested that renaming the network to the gaggle name would be useful
+	 * for some reason Network.setTitle("title") isn't working for me though
+	 * Ideally geese could be assigned ids rather than id'd by their name, this would make it easier 
+	 * but that's up to gaggle
 	 */
 	private String createGooseName(String Id, String Title)
 		{ return (Title + "(" + Id +")"); }
@@ -213,10 +224,12 @@ public class GagglePlugin extends CytoscapePlugin
 		MiscUtil.updateGooseChooser(GaggleBoss, Dialog.getGooseBox(), null, null);
 		}
 
-	// TODO Correct networks are slated for removal, but it isn't occurringx
+	/* 
+	 * Remove dead geese from the boss
+	 * This will only remove networks that have been completely deleted, a network with no view is still a goose
+	 */
 	private void removeOldNetworks(Set<String> AllCurrentNetIds)
 		{
-		print("removeOldNetworks");
 		Iterator<String> NetGeeseIter = NetworkGeese.keySet().iterator();
 		
 		Collection<String> DeadIds = new ArrayList<String>();
@@ -234,7 +247,7 @@ public class GagglePlugin extends CytoscapePlugin
 			String Id = deadIter.next();
 			try 
 				{ 
-				print("Removeing " + NetworkGeese.get(Id).getName() + " from the boss");
+				print("Removing " + NetworkGeese.get(Id).getName() + " from the boss");
 				GaggleBoss.remove( NetworkGeese.get(Id).getName() ); 
 				UnicastRemoteObject.unexportObject(NetworkGeese.get(Id), true);
 				Dialog.getGooseBox().removeItem( NetworkGeese.get(Id).getName() );
