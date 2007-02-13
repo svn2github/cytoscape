@@ -120,6 +120,8 @@ public class MCODEResultsPanel extends JPanel {
 
         drawer = new GraphDrawer();
         loader = new MCODELoader(table, graphPicSize, graphPicSize);
+
+        this.setSize(this.getMinimumSize());
     }
 
     /**

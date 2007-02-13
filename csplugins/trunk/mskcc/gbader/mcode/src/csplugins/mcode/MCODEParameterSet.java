@@ -295,11 +295,12 @@ public class MCODEParameterSet {
     public String toString() {
         String lineSep = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();
-        sb.append("Scoring Step: Include Loops: " + includeLoops + " Degree Cutoff: " + degreeCutoff + " K-Core: " + kCore + lineSep);
-        sb.append("Cluster Finding Step: Optimize: " + optimize
-                + ((optimize) ? "" : (" Node Score Cutoff: " + nodeScoreCutoff + " Haircut: " + haircut + " Fluff: " + fluff
-                + ((fluff) ? (" Fluff Density Cutoff " + fluffNodeDensityCutoff) : "")
-                + " Max. Depth from Seed: " + maxDepthFromStart)) + lineSep);
+        sb.append("   Network Scoring:" + lineSep
+                + "      Include Loops: " + includeLoops + "  Degree Cutoff: " + degreeCutoff + lineSep);
+        sb.append("   Cluster Finding:" + lineSep
+                + "      Node Score Cutoff: " + nodeScoreCutoff + "  Haircut: " + haircut + "  Fluff: " + fluff
+                + ((fluff) ? ("  Fluff Density Cutoff " + fluffNodeDensityCutoff) : "")
+                + "  K-Core: " + kCore + "  Max. Depth from Seed: " + maxDepthFromStart + lineSep);
         return sb.toString();
     }
 }

@@ -1,75 +1,101 @@
-MCODE PlugIn v1.1
------------------
+MCODE PlugIn v1.2
+=================
 
-I.  Introduction
-================
-This directory contains a copy of the MCODE PlugIn.
 
-This PlugIn enables Cytoscape to cluster a network.
+I.    Introduction
+      ------------
+      This directory contains a copy of the MCODE PlugIn.
 
-The current release includes support for basic clustering of the network.  Directed mode is
-currently not implemented, but will be in MCODE v2.0.
+      This PlugIn enables Cytoscape to cluster a network.
 
-II.  Installation Instructions
-==============================
+      The current release includes support for basic clustering of the
+      network with many parameter customizations and interactive result
+      exploration.
 
-To use the MCODE PlugIn, you must first obtain a copy of Cytoscape,
-Version 2.1.  You can download a copy from:  http://www.cytsoscape.org.
-Once you have downloaded Cytoscape and verified that it works, proceed with
-the next steps.
+      This software is made available under the LGPL (Lesser General
+      Public License).
 
-1.  Copy the MCODE.jar file to your [Cytoscape_Home]/plugins directory.
 
-2.  Start Cytoscape.  For example, on Unix/Linux or MacOS X, run:
+II.   Resources
+      ---------
+      MCODE website: http://www.baderlab.org/Software/MCODE
+        *   Latest updates as well as previous version downloads
+        *   Future developments
+        *   Links to Javadoc and source for developers
 
-cytoscape.sh
+      Documentation: http://www.baderlab.org/Software/MCODE/UsersManual
+        *   Guide, Reference, and Tutorials
 
-On Windows, run:
+      MCODE Publication: http://www.biomedcentral.com/1471-2105/4/2
+        *   Bader GD, Hogue CW. An automated method for finding molecular
+            complexes in large protein interaction networks. BMC
+            Bioinformatics. 2003 Jan 13;4(1):2.
+        *   Abstract: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12525261&dopt=Abstract
 
-cytoscape.bat
 
-You may also load the plugin via the Plugin menu in Cytoscape.
+III.  Installation Instructions
+      -------------------------
 
-III.  Using the PlugIn
-======================
+      To use the MCODE PlugIn, you must first obtain a copy of Cytoscape,
+      Version 2.3 or later.  You can download a copy from:
+      http://www.cytsoscape.org.
 
-Once Cytoscape starts, load your network following the Cytoscape instruction manual.
-Under the PlugIns->MCODE menu, set the parameters for MCODE and then select the menu
-option to run MCODE.  If you want to run MCODE with different parameters again on the
-same network, you should load the network up again and run MCODE with the new parameters.
-You can also force MCODE to run again using the Advanced submenu.
+      Once you have downloaded Cytoscape and verified that it works,
+      proceed with the next steps.
 
-IV.  Bugs / Feature Requests
-============================
+        1.  Copy the MCODE.jar file to your [Cytoscape_Home]/plugins
+            directory.
 
-If you encounter a bug with this PlugIn, or have a feature suggestion, please
-e-mail Gary Bader (details below).  Please look at TODO.txt before e-mailing a
-feature request.
+        2.  Start Cytoscape.  For example:
+            *   on Unix/Linux or MacOS X, run:    cytoscape.sh
+            *   On Windows, run:                  cytoscape.bat
 
-This software is open-source.  If you modify the source code and would like the
-modification to be included in a subsequent release, e-mail a pre-built JAR file
-for evaluation of the feature.  If the feature is deemed suitable for inclusion,
-a source code patch will be requested.
 
-V.  Contacts
-=============
+IV.   Bugs / Feature Requests
+      -----------------------
 
-Sander Group, Computational Biology Center
-Memorial Sloan-Kettering Cancer Center, New York City
-http://www.cbio.mskcc.org/
+      If you encounter a bug with this PlugIn, or have a feature
+      suggestion, please e-mail Gary Bader (details below).  Please look
+      at the Future Developments at the MCODE website before e-mailing a
+      feature request.
 
-For any questions concerning this PlugIn, please contact:
+      This software is open-source.  If you modify the source code and
+      would like the modification to be included in a subsequent release,
+      e-mail a pre-built JAR file for evaluation of the feature.  If the
+      feature is deemed suitable for inclusion, a source code patch will
+      be requested.
 
-Gary Bader:  baderg AT mskcc.org
 
-This software is made available under the LGPL (Lesser General Public License).
+V.    Credits
+      -------
 
-Please see the following paper for more information:
+      Version 1.2 was produced by Vuk Pavlovic in the Bader Lab. Thanks
+      to Christopher Workman (The Technical University of Denmark) and
+      Carlo Laudanna (University of Verona) for their expert input during
+      beta-testing.
 
-Bader GD, Hogue CW.
+      This software was originally released as a command-line-only program
+      from the Hogue Lab. It was created by Gary Bader, currently based in
+      the Bader Lab at the University of Toronto (formerly in the Sander
+      Group, Computational Biology Center, Memorial Sloan-Kettering Cancer
+      Center, New York City)
 
-An automated method for finding molecular complexes in large protein interaction networks.
-BMC Bioinformatics. 2003 Jan 13;4(1):2.
-http://www.biomedcentral.com/1471-2105/4/2
+      This software is made available under the LGPL (Lesser General Public
+      License), which means that you can freely use it within your own
+      software, but if you alter the code itself and distribute it, you
+      must make the source code alterations freely available as well.
 
-http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12525261&dopt=Abstract
+
+VI.   Contacts
+      --------
+
+      Bader Lab, University of Toronto
+      http://www.baderlab.org/
+
+      Sander Group, Computational Biology Center
+      Memorial Sloan-Kettering Cancer Center, New York City
+      http://www.cbio.mskcc.org/
+
+      For any questions concerning this PlugIn, please contact:
+
+      Gary Bader:  gary.bader AT utoronto.ca

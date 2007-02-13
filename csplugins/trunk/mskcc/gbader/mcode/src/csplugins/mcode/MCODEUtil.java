@@ -318,7 +318,7 @@ public class MCODEUtil {
             fout.write("MCODE Plugin Results" + lineSep);
             fout.write("Date: " + DateFormat.getDateTimeInstance().format(new Date()) + lineSep + lineSep);
             fout.write("Parameters:" + lineSep + alg.getParams().toString() + lineSep);
-            fout.write("Cluster	Score (Density*#Proteins)\tNodes\tEdges\tNode names" + lineSep);
+            fout.write("Cluster	Score (Density*#Nodes)\tNodes\tEdges\tNode IDs" + lineSep);
             //get GraphPerspectives for all clusters, score and rank them
             //convert the ArrayList to an array of GraphPerspectives and sort it by cluster score
             //GraphPerspective[] gpClusterArray = MCODEUtil.convertClusterListToSortedNetworkList(clusters, network, alg);
