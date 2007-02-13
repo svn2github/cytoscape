@@ -3,7 +3,7 @@ package org.systemsbiology.cytoscape;
 import org.systemsbiology.cytoscape.GagglePlugin;
 import org.systemsbiology.cytoscape.CyBroadcast;
 import org.systemsbiology.cytoscape.dialog.GooseDialog;
-import org.systemsbiology.cytoscape.visual.BasicMapping;
+import org.systemsbiology.cytoscape.visual.SeedMappings;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -55,13 +55,14 @@ public class CyGoose implements Goose
 	private GooseDialog GDialog;
 	
 	private NodeAppearanceCalculator NAC; 
+	private SeedMappings VisualMap;
 	
 	private String BroadcastId;
 	private String targetGoose = "Boss";
 	
 	private boolean IsMovieAttributeMapped;
 	private boolean AttributeChecked = false;
-	
+
 	private static void print(String S)
 		{ System.out.println(S); }
 
@@ -77,11 +78,7 @@ public class CyGoose implements Goose
 		
 		VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
 		NAC = CurrentStyle.getNodeAppearanceCalculator();
-		
-		ObjectMapping Map = new BasicMapping().getNewMap("FooBar");
-		GenericNodeFillColorCalculator colorCalculator = 
-      	new GenericNodeFillColorCalculator("Sarah's Node Color", Map);
-		NAC.setCalculator(colorCalculator);
+		VisualMap = new SeedMappings(NAC);
 		}
 
 	// Deselect all nodes/edges.  
@@ -183,15 +180,14 @@ public class CyGoose implements Goose
  		Net.unselectAllNodes();
  		Net.unselectAllEdges();
  		
-		// iterate over the attribute hash, key=attribute name, value=ArrayList
+    double UpperValue = 0;
+    double LowerValue = 0;
+
+		// iterate over the attribute hash, key=attribute name, value= attribute values ArrayList
     Iterator<String> attrKeyIter = AttrMap.keySet().iterator();
     while (attrKeyIter.hasNext())
       {
       String attrName = attrKeyIter.next();
-      
-      // this just lets us shortcut process
-      if (!this.IsMovieAttributeMapped && AttributeChecked) return;
-  			
       
       ArrayList AttrVals = (ArrayList) AttrMap.get(attrName);
 
@@ -210,30 +206,53 @@ public class CyGoose implements Goose
       // determine the data type of attribute in hashMap (should be DOUBLE, STRING, BOOLEAN, or INT)
       String valType = nodeValsClass.getComponentType().getName();
 
-      for (int i = 0; i < NodeIds.length; i++)
+      for (int i=0; i<NodeIds.length; i++)
         {
         CyNode selectNode = Cytoscape.getCyNode(NodeIds[i]);
         CyAttributes NodeAtts = Cytoscape.getNodeAttributes();
 
+        // I can seed mappings currently only for DOUBLE's or INT's as these are continuous mappings
         if (selectNode != null)
           {
 					NodeAtts.setAttribute(selectNode.getIdentifier(), Semantics.SPECIES, species);
 					print("Value type: "+valType);          
+					
 					// set all attributes from the map
           if (valType.equals("double"))
             { // DOUBLE
             double[] Value = (double[]) AttrVals.get(1);
             NodeAtts.setAttribute(selectNode.getIdentifier(), attrName, new Double(Value[i]));
-            }
-          else if (valType.equals("boolean"))
-            { // BOOLEAN
-            boolean[] Value = (boolean[]) AttrVals.get(1);
-            NodeAtts.setAttribute(selectNode.getIdentifier(), attrName, new Boolean(Value[i]));
+            // first node we'll just set the values for a base
+            if (i == 0)
+            	{
+            	UpperValue = Value[i];
+            	LowerValue = Value[i];
+            	}
+            else
+            	{ 
+            	if (Value[i] > UpperValue) UpperValue = Value[i];
+            	if (Value[i] < LowerValue) LowerValue = Value[i];
+            	}
             }
           else if (valType.equals("int"))
             { // INT
             int[] Value = (int[]) AttrVals.get(1);
             NodeAtts.setAttribute(selectNode.getIdentifier(), attrName, new Integer(Value[i]));
+            if (i == 0)
+            	{
+            	UpperValue = Value[i];
+            	LowerValue = Value[i];
+            	}
+            else
+            	{ 
+            	if (Value[i] > UpperValue) UpperValue = Value[i];
+            	if (Value[i] < LowerValue) LowerValue = Value[i];
+            	}
+            }
+          else if (valType.equals("boolean"))
+            { // BOOLEAN
+            boolean[] Value = (boolean[]) AttrVals.get(1);
+            NodeAtts.setAttribute(selectNode.getIdentifier(), attrName, new Boolean(Value[i]));
             }
           else if (valType.equals("java.lang.String"))
             { // STRING
@@ -247,21 +266,12 @@ public class CyGoose implements Goose
             }
           }
         }
+      UpperValue = UpperValue + (UpperValue * 0.2);
+      LowerValue = LowerValue - (LowerValue * 0.2);
       
-      
-//      this.IsMovieAttributeMapped = this.isNodeAttributeMapped(attrName);
-//      if (!this.IsMovieAttributeMapped && !AttributeChecked)
-//				{ 
-//				GagglePlugin.showDialogBox("'" + attrName +"' is not mapped to anything in the vizmapper, movie may not show anything.<br>Please set up a visual style for this attribute", 
-//																	"Warning", JOptionPane.ERROR_MESSAGE); 
-//				this.MovieAttribute = attrName;
-//				Cytoscape.getDesktop().getVizMapUI().refreshUI();
-//				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().setVisible(true);		
-//				AttributeChecked = true;
-//				return;
-//				}
-
+      this.VisualMap.seedMappings(attrName, UpperValue, LowerValue);
       }
+
     // refresh network to flag selected nodes
     Cytoscape.getNetworkView(Net.getIdentifier()).redrawGraph(true, true);
 		}
@@ -275,12 +285,10 @@ public class CyGoose implements Goose
 		String[] GeneNames = matrix.getRowTitles();
     String[] ConditionNames = matrix.getColumnTitles();
 
-
     for (int row=0; row<GeneNames.length; row++)
       {
       String NodeId = GeneNames[row];
 			
-			// !!! I beleive this gets any node that matches in any open network this may not be desireable
       CyNode SelectNode = Cytoscape.getCyNode(NodeId); 
 
       if (SelectNode != null)
