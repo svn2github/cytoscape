@@ -114,6 +114,7 @@ public class CyGoose implements Goose
 		{
 		Cytoscape.getDesktop().setVisible(true);
 		Cytoscape.getDesktop().toFront();
+		if (!this.getNetworkId().equals("0")) Cytoscape.getDesktop().setFocus(this.getNetworkId());
 		}
 
 	/**
@@ -215,7 +216,6 @@ public class CyGoose implements Goose
         if (selectNode != null)
           {
 					NodeAtts.setAttribute(selectNode.getIdentifier(), Semantics.SPECIES, species);
-					print("Value type: "+valType);          
 					
 					// set all attributes from the map
           if (valType.equals("double"))
@@ -271,8 +271,6 @@ public class CyGoose implements Goose
       
       this.VisualMap.seedMappings(attrName, UpperValue, LowerValue);
       }
-
-    // refresh network to flag selected nodes
     Cytoscape.getNetworkView(Net.getIdentifier()).redrawGraph(true, true);
 		}
 
@@ -437,33 +435,6 @@ public class CyGoose implements Goose
 				else  currX += distanceBetweenNodes; 
 				}
 			}
-
-	private boolean isNodeAttributeMapped(String AttributeName)
-		{
-		boolean HasAttribute = false;
-		
-		VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
-		NAC = CurrentStyle.getNodeAppearanceCalculator();
-		List<Calculator> NodeCalcs = NAC.getCalculators();
-		Iterator<Calculator> nI = NodeCalcs.iterator();
-		while(nI.hasNext())
-			{
-			Calculator Current = nI.next();
-			print( "CALCULATOR CLASS: " + Current.getClass().getName() );
-			java.util.Vector<ObjectMapping> AllMaps = Current.getMappings();
-			Iterator<ObjectMapping> mI = AllMaps.iterator();
-			while(mI.hasNext())
-				{
-				ObjectMapping Map = mI.next();
-				String ControllingAttName = Map.getControllingAttributeName();
-				print("ATTRIBUTE: " + ControllingAttName + " COMPARE " + AttributeName);
-				if ( ControllingAttName != null &&
-						 ControllingAttName.equalsIgnoreCase(AttributeName) ) HasAttribute = true;
-				print(" Has attribute: "+HasAttribute);
-				}
-			}
-		return HasAttribute;
-		}
 		
 
 	// no point in this one
