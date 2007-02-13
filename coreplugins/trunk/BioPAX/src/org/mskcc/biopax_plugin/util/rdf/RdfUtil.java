@@ -31,24 +31,24 @@
  **/
 package org.mskcc.biopax_plugin.util.rdf;
 
+
 /**
  * Misc RDF Utilities.
  *
  * @author Ethan Cerami
  */
 public class RdfUtil {
+	/**
+	 * Strips out leading hash mark #, if necessary.
+	 *
+	 * @param referenceId String with leading hash mark.
+	 * @return String without hashmark.
+	 */
+	public static String removeHashMark(String referenceId) {
+		if (referenceId.startsWith("#")) {
+			referenceId = referenceId.substring(1);
+		}
 
-    /**
-     * Strips out leading hash mark #, if necessary.
-     *
-     * @param referenceId String with leading hash mark.
-     * @return String without hashmark.
-     */
-    public static String removeHashMark(String referenceId) {
-        if (referenceId.startsWith("#")) {
-            referenceId = referenceId.substring(1);
-        }
-        return referenceId;
-    }
-
+		return referenceId;
+	}
 }

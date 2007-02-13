@@ -1,28 +1,28 @@
 /*
- * @(#)ConnectionSet.java	1.0 03-JUL-04
- * 
+ * @(#)ConnectionSet.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
 import java.io.Serializable;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * An object that represents a set of connections. Connections are equal, if
  * equals returns true. Connections that are added later replace earlier
  * connections.
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public class ConnectionSet implements Serializable {
-
 	/** Contents of the connection set. */
 	protected Set connections = new HashSet();
 
@@ -34,11 +34,12 @@ public class ConnectionSet implements Serializable {
 	 * of <code>cells</code> in <code>model</code> based on
 	 * <code>disconnect</code>.
 	 */
-	public static ConnectionSet create(GraphModel m, Object[] cells,
-			boolean disconnect) {
+	public static ConnectionSet create(GraphModel m, Object[] cells, boolean disconnect) {
 		ConnectionSet cs = new ConnectionSet();
+
 		for (int i = 0; i < cells.length; i++) {
 			Object cell = cells[i];
+
 			// Edge
 			if (m.isEdge(cell)) {
 				if (disconnect)
@@ -46,17 +47,21 @@ public class ConnectionSet implements Serializable {
 				else
 					cs.connect(cell, m.getSource(cell), m.getTarget(cell));
 			}
+
 			// Port
 			Iterator it = m.edges(cell);
+
 			while (it.hasNext()) {
 				// Edge At Port
 				Object edge = it.next();
+
 				if (m.getSource(edge) == cell)
 					connect(cs, edge, cell, true, disconnect);
 				else if (m.getTarget(edge) == cell)
 					connect(cs, edge, cell, false, disconnect);
 			}
 		}
+
 		return cs;
 	}
 
@@ -79,7 +84,9 @@ public class ConnectionSet implements Serializable {
 	 */
 	public ConnectionSet(Set connections) {
 		setConnections(connections);
+
 		Iterator it = connections.iterator();
+
 		while (it.hasNext()) {
 			Connection conn = (Connection) it.next();
 			edges.add(conn.getEdge());
@@ -99,8 +106,8 @@ public class ConnectionSet implements Serializable {
 	 * <code>target</code> in <code>cs</code> based on
 	 * <code>disconnect</code>.
 	 */
-	protected static void connect(ConnectionSet cs, Object edge, Object port,
-			boolean source, boolean disconnect) {
+	protected static void connect(ConnectionSet cs, Object edge, Object port, boolean source,
+	                              boolean disconnect) {
 		if (disconnect)
 			cs.disconnect(edge, source);
 		else
@@ -118,11 +125,15 @@ public class ConnectionSet implements Serializable {
 				CellView sourceView = edgeView.getSource();
 				CellView targetView = edgeView.getTarget();
 				Object source = null;
+
 				if (sourceView != null)
 					source = sourceView.getCell();
+
 				Object target = null;
+
 				if (targetView != null)
 					target = targetView.getCell();
+
 				connect(edge, source, target);
 			}
 		}
@@ -140,7 +151,7 @@ public class ConnectionSet implements Serializable {
 	}
 
 	/**
-	 * Connect <code>edge</code> to <code>port</code> passed in. The 
+	 * Connect <code>edge</code> to <code>port</code> passed in. The
 	 * <code>source</code> indicates if <code>port</code> is the source of
 	 * <code>edge</code> object. The previous connections between
 	 * <code>edge</code> and its source or target in the set is replaced.
@@ -210,12 +221,15 @@ public class ConnectionSet implements Serializable {
 	public Object getPort(Object edge, boolean source) {
 		if (edges.contains(edge)) {
 			Iterator it = connections.iterator();
+
 			while (it.hasNext()) {
 				Connection c = (Connection) it.next();
-				if (c.getEdge() == edge && c.isSource() == source)
+
+				if ((c.getEdge() == edge) && (c.isSource() == source))
 					return c.getPort();
 			}
 		}
+
 		return null;
 	}
 
@@ -232,20 +246,25 @@ public class ConnectionSet implements Serializable {
 	public ConnectionSet clone(Map map) {
 		ConnectionSet cs = new ConnectionSet();
 		Iterator it = connections();
+
 		while (it.hasNext()) {
 			// Shortcut Vars
 			Connection c = (Connection) it.next();
 			Object edge = map.get(c.getEdge());
 			Object port = c.getPort();
+
 			if (port != null)
 				port = map.get(port);
+
 			// New Port
-			if (edge != null && port != null)
+			if ((edge != null) && (port != null))
 				cs.connect(edge, port, c.isSource());
+
 			// Old Port
 			else if (edge != null)
 				cs.connect(edge, c.getPort(), c.isSource());
 		}
+
 		return cs;
 	}
 
@@ -253,7 +272,6 @@ public class ConnectionSet implements Serializable {
 	 * Object that represents the connection between an edge and a port.
 	 */
 	public static class Connection implements Serializable {
-
 		/** The edge that will be connected to the port. */
 		protected Object edge;
 
@@ -309,8 +327,10 @@ public class ConnectionSet implements Serializable {
 		public boolean equals(Object obj) {
 			if (obj instanceof Connection) {
 				Connection other = (Connection) obj;
-				return (other.getEdge().equals(edge) && other.isSource() == isSource);
+
+				return (other.getEdge().equals(edge) && (other.isSource() == isSource));
 			}
+
 			return false;
 		}
 
@@ -341,7 +361,6 @@ public class ConnectionSet implements Serializable {
 		public void setPort(Object object) {
 			port = object;
 		}
-
 	}
 
 	/**
@@ -371,5 +390,4 @@ public class ConnectionSet implements Serializable {
 	public void setEdges(Set set) {
 		edges = set;
 	}
-
 }

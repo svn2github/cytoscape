@@ -31,59 +31,60 @@
  **/
 package org.mskcc.biopax_plugin.util.links;
 
+
 /**
  * Model Object for Encapsulating an External Link.
  *
  * @author Ethan Cerami
  */
 public class ExternalLink {
-    private String dbName;
-    private String id;
+	private String dbName;
+	private String id;
 
-    /**
-     * Constructor.
-     *
-     * @param dbName Database name.
-     * @param id     Unique ID.
-     */
-    public ExternalLink(String dbName, String id) {
-        this.dbName = dbName;
-        this.id = id;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param dbName Database name.
+	 * @param id     Unique ID.
+	 */
+	public ExternalLink(String dbName, String id) {
+		this.dbName = dbName;
+		this.id = id;
+	}
 
-    /**
-     * Gets the Database Name.
-     *
-     * @return Database Name.
-     */
-    public String getDbName() {
-        return dbName;
-    }
+	/**
+	 * Gets the Database Name.
+	 *
+	 * @return Database Name.
+	 */
+	public String getDbName() {
+		return dbName;
+	}
 
-    /**
-     * Sets the Database Name.
-     *
-     * @param dbName Database Name.
-     */
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
-    }
+	/**
+	 * Sets the Database Name.
+	 *
+	 * @param dbName Database Name.
+	 */
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
 
-    /**
-     * Gets the Unique ID.
-     *
-     * @return Unique ID.
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * Gets the Unique ID.
+	 *
+	 * @return Unique ID.
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * Sets the Unique ID.
-     *
-     * @param id Unique ID.
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * Sets the Unique ID.
+	 *
+	 * @param id Unique ID.
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 }

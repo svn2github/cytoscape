@@ -41,15 +41,20 @@ import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
+
 import org.jdom.Text;
+
+import java.io.StringReader;
+
+import java.math.BigInteger;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 
 /**
  * Maps PSI-MI Level 1 Document to Interaction Objects.
@@ -58,423 +63,445 @@ import java.util.HashMap;
  * @author Nisha Vinod
  */
 public class MapPsiOneToInteractions implements Mapper {
-    private HashMap interactorMap;
-    private HashMap experimentMap;
-    private ArrayList interactions;
-    private String xml;
+	private HashMap interactorMap;
+	private HashMap experimentMap;
+	private ArrayList interactions;
+	private String xml;
 
-    /**
-     * Constructor.
-     *
-     * @param xml          XML Document.
-     * @param interactions ArrayList of Interaction objects.
-     */
-    public MapPsiOneToInteractions(String xml, ArrayList interactions) {
-        this.xml = xml;
-        this.interactions = interactions;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param xml          XML Document.
+	 * @param interactions ArrayList of Interaction objects.
+	 */
+	public MapPsiOneToInteractions(String xml, ArrayList interactions) {
+		this.xml = xml;
+		this.interactions = interactions;
+	}
 
-    /**
-     * Perform Mapping.
-     *
-     * @throws MapperException Problem Performing mapping.
-     */
-    public void doMapping() throws MapperException {
-        parseXml(xml);
-    }
+	/**
+	 * Perform Mapping.
+	 *
+	 * @throws MapperException Problem Performing mapping.
+	 */
+	public void doMapping() throws MapperException {
+		parseXml(xml);
+	}
 
-    /**
-     * Parses the PSI XML Document.
-     */
-    private void parseXml(String content) throws MapperException {
-        try {
-            interactorMap = new HashMap();
-            experimentMap = new HashMap();
-            StringReader reader = new StringReader(content);
+	/**
+	 * Parses the PSI XML Document.
+	 */
+	private void parseXml(String content) throws MapperException {
+		try {
+			interactorMap = new HashMap();
+			experimentMap = new HashMap();
 
-            //  Note to self.  The following method will not work
-            //  JAXBContext jc = JAXBContext.newInstance(
-            //       "org.cytoscape.coreplugin.psi_mi.schema.mi1");
-            //  Using the line above results in the following exception:
-            //  javax.xml.bind.JAXBException: "org.cytoscape.coreplugin.psi_mi.schema.mi1"
-            //  doesnt contain ObjectFactory.class or jaxb.index
+			StringReader reader = new StringReader(content);
 
-            //  The alternative is to use the syntax below.  I don't know why this works,
-            //  but the tip is described online here:
-            //  http://forums.java.net/jive/thread.jspa?forumID=46&threadID=20124&messageID=174472
-            Class classes[] = new Class[2];
-            classes[0] = org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet.class;
-            classes[1] = ObjectFactory.class;
-            JAXBContext jc = JAXBContext.newInstance(classes);
-            Unmarshaller u = jc.createUnmarshaller();
-            org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet entrySet =
-                    (org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet) u.unmarshal(reader);
-            ListUtil.setPsiOneEntrySet(entrySet);
-            int entryCount = entrySet.getEntry().size();
-            for (int i = 0; i < entryCount; i++) {
-                EntrySet.Entry entry = entrySet.getEntry().get(i);
-                extractEntry(entry);
-            }
-        } catch (JAXBException e) {
-            throw new MapperException(e, "PSI-MI XML File is invalid:  "
-                    + e.getMessage());
-        }
-    }
+			//  Note to self.  The following method will not work
+			//  JAXBContext jc = JAXBContext.newInstance(
+			//       "org.cytoscape.coreplugin.psi_mi.schema.mi1");
+			//  Using the line above results in the following exception:
+			//  javax.xml.bind.JAXBException: "org.cytoscape.coreplugin.psi_mi.schema.mi1"
+			//  doesnt contain ObjectFactory.class or jaxb.index
 
-    /**
-     * Extracts PSI Entry Root Element.
-     */
-    private void extractEntry(EntrySet.Entry entry) throws MapperException {
-        EntrySet.Entry.ExperimentList expList = entry.getExperimentList();
-        extractExperimentList(expList);
-        EntrySet.Entry.InteractorList interactorList = entry.getInteractorList();
-        extractInteractorList(interactorList);
-        EntrySet.Entry.InteractionList interactionList = entry.getInteractionList();
-        extractInteractionList(interactionList);
-    }
+			//  The alternative is to use the syntax below.  I don't know why this works,
+			//  but the tip is described online here:
+			//  http://forums.java.net/jive/thread.jspa?forumID=46&threadID=20124&messageID=174472
+			Class[] classes = new Class[2];
+			classes[0] = org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet.class;
+			classes[1] = ObjectFactory.class;
 
-    /**
-     * Extracts Experiment List, and places into HashMap.
-     */
-    private void extractExperimentList(EntrySet.Entry.ExperimentList expList) {
-        if (expList != null) {
-            int count = expList.getExperimentDescription().size();
-            for (int i = 0; i < count; i++) {
-                ExperimentType expType = expList.getExperimentDescription().get(i);
-                String id = expType.getId();
-                experimentMap.put(id, expType);
-            }
-        }
-    }
+			JAXBContext jc = JAXBContext.newInstance(classes);
+			Unmarshaller u = jc.createUnmarshaller();
+			org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet entrySet = (org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet) u
+			                                                                                                                 .unmarshal(reader);
+			ListUtil.setPsiOneEntrySet(entrySet);
 
-    /**
-     * Extracts PSI InteractorList, and places into HashMap.
-     */
-    private void extractInteractorList(EntrySet.Entry.InteractorList interactorList) {
-        if (interactorList != null) {
-            int count = interactorList.getProteinInteractor().size();
-            ListUtil.setInteractorCount(count);
-            for (int i = 0; i < count; i++) {
-                ProteinInteractorType cProtein =
-                        interactorList.getProteinInteractor().get(i);
-                String id = cProtein.getId();
-                interactorMap.put(id, cProtein);
-            }
-        }
-    }
+			int entryCount = entrySet.getEntry().size();
 
-    /**
-     * Extracts PSI Interaction List
-     */
-    private void extractInteractionList(EntrySet.Entry.InteractionList interactionList)
-            throws MapperException {
-        int count = interactionList.getInteraction().size();
-        for (int i = 0; i < count; i++) {
-            Interaction interaction = new Interaction();
-            InteractionElementType cInteraction =
-                    interactionList.getInteraction().get(i);
-            interaction.setInteractionId(cInteraction.getInteractionType().size());
-            InteractionElementType.ParticipantList pList = cInteraction.getParticipantList();
-            int pCount = pList.getProteinParticipant().size();
-            ArrayList interactorList = new ArrayList();
-            HashMap interactorRoles = new HashMap();
-            for (int j = 0; j < pCount; j++) {
-                Interactor interactor =
-                        extractInteractorRefOrElement(pList, j);
-                interactorList.add(interactor);
-                ProteinParticipantType participant = pList.getProteinParticipant().get(j);
-                String role = participant.getRole();
-                if (role != null) {
-                    interactorRoles.put(interactor.getName(), role);
-                }
-            }
-            interaction.setInteractors(interactorList);
+			for (int i = 0; i < entryCount; i++) {
+				EntrySet.Entry entry = entrySet.getEntry().get(i);
+				extractEntry(entry);
+			}
+		} catch (JAXBException e) {
+			throw new MapperException(e, "PSI-MI XML File is invalid:  " + e.getMessage());
+		}
+	}
 
-            ArrayList list = extractExperimentalData
-                    (cInteraction, interaction);
+	/**
+	 * Extracts PSI Entry Root Element.
+	 */
+	private void extractEntry(EntrySet.Entry entry) throws MapperException {
+		EntrySet.Entry.ExperimentList expList = entry.getExperimentList();
+		extractExperimentList(expList);
 
-            //  Add BAIT MAP / Names To all Interactions.
-            for (int j = 0; j < list.size(); j++) {
-                interaction = (Interaction) list.get(j);
-                interaction.addAttribute(InteractionVocab.BAIT_MAP,
-                        interactorRoles);
-                extractInteractionNamesXrefs(cInteraction, interaction);
-            }
-            interactions.addAll(list);
-        }
-    }
+		EntrySet.Entry.InteractorList interactorList = entry.getInteractorList();
+		extractInteractorList(interactorList);
 
-    /**
-     * Extracts Interaction Names.
-     */
-    private void extractInteractionNamesXrefs
-            (InteractionElementType cInteraction, Interaction interaction) {
-        NamesType names = cInteraction.getNames();
-        if (names != null) {
-            String shortLabel = names.getShortLabel();
-            String fullName = names.getFullName();
-            if (shortLabel != null) {
-                interaction.addAttribute
-                        (InteractionVocab.INTERACTION_SHORT_NAME,
-                                shortLabel);
-            }
-            if (fullName != null) {
-                interaction.addAttribute
-                        (InteractionVocab.INTERACTION_FULL_NAME,
-                                fullName);
-            }
-        }
-        XrefType xref = cInteraction.getXref();
-        ExternalReference refs[] = this.extractExternalRefs(xref);
-        if (refs != null && refs.length > 0) {
-            interaction.setExternalRefs(refs);
-        }
-    }
+		EntrySet.Entry.InteractionList interactionList = entry.getInteractionList();
+		extractInteractionList(interactionList);
+	}
 
-    /**
-     * Extracts Interactor From Reference or Element.
-     */
-    private Interactor extractInteractorRefOrElement(InteractionElementType.ParticipantList pList,
-            int j) throws MapperException {
-        Interactor interactor = null;
-        ProteinInteractorType cInteractor;
-        ProteinParticipantType participant = pList.getProteinParticipant().get(j);
-        RefType ref = participant.getProteinInteractorRef();
-        if (ref != null) {
-            String key = ref.getRef();
-            cInteractor = (ProteinInteractorType) interactorMap.get(key);
-            if (cInteractor == null) {
-                throw new MapperException("No Interactor Found for "
-                        + "proteinInteractorRef:  " + key);
-            }
-        } else {
-            cInteractor = participant.getProteinInteractor();
-        }
-        if (cInteractor != null) {
-            interactor = createInteractor(cInteractor);
-        }
-        return interactor;
-    }
+	/**
+	 * Extracts Experiment List, and places into HashMap.
+	 */
+	private void extractExperimentList(EntrySet.Entry.ExperimentList expList) {
+		if (expList != null) {
+			int count = expList.getExperimentDescription().size();
 
+			for (int i = 0; i < count; i++) {
+				ExperimentType expType = expList.getExperimentDescription().get(i);
+				String id = expType.getId();
+				experimentMap.put(id, expType);
+			}
+		}
+	}
 
-    /**
-     * Extracts Interactor Name
-     */
-    private void extractInteractorName(ProteinInteractorType cProtein,
-            Interactor interactor) throws MapperException {
-        NamesType names = cProtein.getNames();
-        if (names != null) {
-            String name = MapperUtil.extractName(cProtein,
-                    interactor.getExternalRefs());
+	/**
+	 * Extracts PSI InteractorList, and places into HashMap.
+	 */
+	private void extractInteractorList(EntrySet.Entry.InteractorList interactorList) {
+		if (interactorList != null) {
+			int count = interactorList.getProteinInteractor().size();
+			ListUtil.setInteractorCount(count);
 
-            //  Remove all surrounding and internal white space.
-            Text jdomText = new Text(name);
-            name = jdomText.getTextNormalize();
+			for (int i = 0; i < count; i++) {
+				ProteinInteractorType cProtein = interactorList.getProteinInteractor().get(i);
+				String id = cProtein.getId();
+				interactorMap.put(id, cProtein);
+			}
+		}
+	}
 
-            interactor.setName(name);
-            String fullName = names.getFullName();
-            interactor.addAttribute(InteractorVocab.FULL_NAME, fullName);
-        }
-    }
+	/**
+	 * Extracts PSI Interaction List
+	 */
+	private void extractInteractionList(EntrySet.Entry.InteractionList interactionList)
+	    throws MapperException {
+		int count = interactionList.getInteraction().size();
 
-    /**
-     * Extracts All Interactor External References.
-     */
-    private ExternalReference[] extractExternalRefs(XrefType xref) {
-        ArrayList refList = new ArrayList();
-        if (xref != null) {
-            DbReferenceType primaryRef = xref.getPrimaryRef();
-            createExternalReference(primaryRef.getDb(), primaryRef.getId(),
-                    refList);
-            int count = xref.getSecondaryRef().size();
-            for (int i = 0; i < count; i++) {
-                DbReferenceType secondaryRef = xref.getSecondaryRef().get(i);
-                createExternalReference(secondaryRef.getDb(),
-                        secondaryRef.getId(), refList);
-            }
-            ExternalReference refs [] =
-                    new ExternalReference[refList.size()];
-            refs = (ExternalReference[]) refList.toArray(refs);
-            return refs;
-        } else {
-            return null;
-        }
-    }
+		for (int i = 0; i < count; i++) {
+			Interaction interaction = new Interaction();
+			InteractionElementType cInteraction = interactionList.getInteraction().get(i);
+			interaction.setInteractionId(cInteraction.getInteractionType().size());
 
-    /**
-     * Creates ExternalReference.
-     */
-    private void createExternalReference(String db, String id,
-            ArrayList refList) {
-        ExternalReference ref = new ExternalReference(db, id);
-        refList.add(ref);
-    }
+			InteractionElementType.ParticipantList pList = cInteraction.getParticipantList();
+			int pCount = pList.getProteinParticipant().size();
+			ArrayList interactorList = new ArrayList();
+			HashMap interactorRoles = new HashMap();
 
-    /**
-     * Extracts Experimental Data.
-     * <p/>
-     * Notes:  In PSI-MI, each interaction element can have 1 or more
-     * experimentDescriptions.  For each experimentDescription, we
-     * create a new DataServices Interaction object.
-     * <p/>
-     * In other words, a Data Services Interaction object contains
-     * data for one interaction, determined under exactly one experimental
-     * condition.
-     */
-    private ArrayList extractExperimentalData(InteractionElementType
-            cInteraction, Interaction interactionTemplate)
-            throws MapperException {
-        InteractionElementType.ExperimentList expList = cInteraction.getExperimentList();
-        ArrayList list = new ArrayList();
-        if (expList != null) {
-            int expCount = expList.getExperimentRefOrExperimentDescription().size();
-            for (int i = 0; i < expCount; i++) {
-                Interaction interaction = cloneInteractionTemplate
-                        (interactionTemplate);
-                Object expItem = expList.getExperimentRefOrExperimentDescription().get(i);
-                ExperimentType expType =
-                        extractExperimentReferenceOrElement(expItem);
-                String id = getPubMedId(expType);
-                if (id != null) {
-                    interaction.addAttribute(InteractionVocab.PUB_MED_ID, id);
-                }
-                extractInteractionDetection(expType, interaction);
-                list.add(interaction);
-            }
-        } else {
-            throw new MapperException("Could not determine experimental "
-                    + "data for one of the PSI-MI interactions");
-        }
-        return list;
-    }
+			for (int j = 0; j < pCount; j++) {
+				Interactor interactor = extractInteractorRefOrElement(pList, j);
+				interactorList.add(interactor);
 
-    /**
-     * Clones the InteractionTemplate.  Only clones the Interactors
-     * contained within the interaction, and none of the Interaction
-     * attributes.
-     */
-    private Interaction cloneInteractionTemplate(Interaction
-            interactionTemplate) {
-        Interaction interaction = new Interaction();
-        ArrayList interactors = interactionTemplate.getInteractors();
-        interaction.setInteractors(interactors);
-        return interaction;
-    }
+				ProteinParticipantType participant = pList.getProteinParticipant().get(j);
+				String role = participant.getRole();
 
-    /**
-     * Extracts an Experiment Reference or Sub-Element.
-     */
-    private ExperimentType extractExperimentReferenceOrElement(Object expItem) {
-        if (expItem instanceof RefType) {
-            RefType refType = (RefType) expItem;
-            return (ExperimentType) experimentMap.get(refType.getRef());
-        } else {
-            return (ExperimentType) expItem;
-        }
-    }
+				if (role != null) {
+					interactorRoles.put(interactor.getName(), role);
+				}
+			}
 
-    /**
-     * Gets Interaction Detection.
-     */
-    private void extractInteractionDetection(ExperimentType expDesc,
-            Interaction interaction) {
-        String expSystem = null;
-        if (expDesc != null) {
-            CvType detection = expDesc.getInteractionDetection();
-            NamesType names = detection.getNames();
-            expSystem = names.getShortLabel();
-            if (expSystem != null) {
-                interaction.addAttribute
-                        (InteractionVocab.EXPERIMENTAL_SYSTEM_NAME, expSystem);
-            }
-            XrefType xref = detection.getXref();
-            if (xref != null) {
-                DbReferenceType primaryRef = xref.getPrimaryRef();
-                if (primaryRef != null) {
-                    interaction.addAttribute
-                            (InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB,
-                                    primaryRef.getDb());
-                    interaction.addAttribute
-                            (InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID,
-                                    primaryRef.getId());
-                }
-            }
-        }
-    }
+			interaction.setInteractors(interactorList);
 
-    /**
-     * Extracts Pub Med ID.
-     */
-    private String getPubMedId(ExperimentType expDesc) {
-        String id = null;
-        if (expDesc != null) {
-            BibrefType bibRef = expDesc.getBibref();
-            if (bibRef != null) {
-                XrefType xRef = bibRef.getXref();
-                if (xRef != null) {
-                    DbReferenceType primaryRef = xRef.getPrimaryRef();
-                    if (primaryRef != null) {
-                        id = primaryRef.getId();
-                    }
-                }
-            }
-        }
-        return id;
-    }
+			ArrayList list = extractExperimentalData(cInteraction, interaction);
 
-    /**
-     * Extracts Single PSI Interactor.
-     */
-    private Interactor createInteractor(ProteinInteractorType cProtein)
-            throws MapperException {
-        org.cytoscape.coreplugin.psi_mi.model.Interactor interactor =
-                new org.cytoscape.coreplugin.psi_mi.model.Interactor();
-        extractOrganismInfo(cProtein, interactor);
-        extractSequenceData(cProtein, interactor);
-        ExternalReference refs[] = extractExternalRefs(cProtein.getXref());
-        if (refs != null && refs.length > 0) {
-            interactor.setExternalRefs(refs);
-        }
+			//  Add BAIT MAP / Names To all Interactions.
+			for (int j = 0; j < list.size(); j++) {
+				interaction = (Interaction) list.get(j);
+				interaction.addAttribute(InteractionVocab.BAIT_MAP, interactorRoles);
+				extractInteractionNamesXrefs(cInteraction, interaction);
+			}
 
-        //  Set Local Id.
-        String localId = cProtein.getId();
-        interactor.addAttribute(InteractorVocab.LOCAL_ID,
-                localId);
+			interactions.addAll(list);
+		}
+	}
 
-        //  Set Interactor Name Last, as it may be dependent on
-        //  external references.
-        extractInteractorName(cProtein, interactor);
-        return interactor;
-    }
+	/**
+	 * Extracts Interaction Names.
+	 */
+	private void extractInteractionNamesXrefs(InteractionElementType cInteraction,
+	                                          Interaction interaction) {
+		NamesType names = cInteraction.getNames();
 
-    /**
-     * Extracts Sequence Data.
-     */
-    private void extractSequenceData(ProteinInteractorType cProtein,
-            Interactor interactor) {
-        String sequence = cProtein.getSequence();
-        if (sequence != null) {
-            interactor.addAttribute(InteractorVocab.SEQUENCE_DATA, sequence);
-        }
-    }
+		if (names != null) {
+			String shortLabel = names.getShortLabel();
+			String fullName = names.getFullName();
 
-    /**
-     * Extracts Organism Information.
-     */
-    private void extractOrganismInfo(ProteinInteractorType cProtein,
-            Interactor interactor) {
-        ProteinInteractorType.Organism organism = cProtein.getOrganism();
-        if (organism != null) {
-            NamesType names = organism.getNames();
-            String commonName = names.getShortLabel();
-            String fullName = names.getFullName();
-            BigInteger ncbiTaxID = organism.getNcbiTaxId();
-            interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME,
-                    commonName);
-            interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME,
-                    fullName);
-            interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID,
-                    ncbiTaxID.toString());
-        }
-    }
+			if (shortLabel != null) {
+				interaction.addAttribute(InteractionVocab.INTERACTION_SHORT_NAME, shortLabel);
+			}
+
+			if (fullName != null) {
+				interaction.addAttribute(InteractionVocab.INTERACTION_FULL_NAME, fullName);
+			}
+		}
+
+		XrefType xref = cInteraction.getXref();
+		ExternalReference[] refs = this.extractExternalRefs(xref);
+
+		if ((refs != null) && (refs.length > 0)) {
+			interaction.setExternalRefs(refs);
+		}
+	}
+
+	/**
+	 * Extracts Interactor From Reference or Element.
+	 */
+	private Interactor extractInteractorRefOrElement(InteractionElementType.ParticipantList pList,
+	                                                 int j) throws MapperException {
+		Interactor interactor = null;
+		ProteinInteractorType cInteractor;
+		ProteinParticipantType participant = pList.getProteinParticipant().get(j);
+		RefType ref = participant.getProteinInteractorRef();
+
+		if (ref != null) {
+			String key = ref.getRef();
+			cInteractor = (ProteinInteractorType) interactorMap.get(key);
+
+			if (cInteractor == null) {
+				throw new MapperException("No Interactor Found for " + "proteinInteractorRef:  "
+				                          + key);
+			}
+		} else {
+			cInteractor = participant.getProteinInteractor();
+		}
+
+		if (cInteractor != null) {
+			interactor = createInteractor(cInteractor);
+		}
+
+		return interactor;
+	}
+
+	/**
+	 * Extracts Interactor Name
+	 */
+	private void extractInteractorName(ProteinInteractorType cProtein, Interactor interactor)
+	    throws MapperException {
+		NamesType names = cProtein.getNames();
+
+		if (names != null) {
+			String name = MapperUtil.extractName(cProtein, interactor.getExternalRefs());
+
+			//  Remove all surrounding and internal white space.
+			Text jdomText = new Text(name);
+			name = jdomText.getTextNormalize();
+
+			interactor.setName(name);
+
+			String fullName = names.getFullName();
+			interactor.addAttribute(InteractorVocab.FULL_NAME, fullName);
+		}
+	}
+
+	/**
+	 * Extracts All Interactor External References.
+	 */
+	private ExternalReference[] extractExternalRefs(XrefType xref) {
+		ArrayList refList = new ArrayList();
+
+		if (xref != null) {
+			DbReferenceType primaryRef = xref.getPrimaryRef();
+			createExternalReference(primaryRef.getDb(), primaryRef.getId(), refList);
+
+			int count = xref.getSecondaryRef().size();
+
+			for (int i = 0; i < count; i++) {
+				DbReferenceType secondaryRef = xref.getSecondaryRef().get(i);
+				createExternalReference(secondaryRef.getDb(), secondaryRef.getId(), refList);
+			}
+
+			ExternalReference[] refs = new ExternalReference[refList.size()];
+			refs = (ExternalReference[]) refList.toArray(refs);
+
+			return refs;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Creates ExternalReference.
+	 */
+	private void createExternalReference(String db, String id, ArrayList refList) {
+		ExternalReference ref = new ExternalReference(db, id);
+		refList.add(ref);
+	}
+
+	/**
+	 * Extracts Experimental Data.
+	 * <p/>
+	 * Notes:  In PSI-MI, each interaction element can have 1 or more
+	 * experimentDescriptions.  For each experimentDescription, we
+	 * create a new DataServices Interaction object.
+	 * <p/>
+	 * In other words, a Data Services Interaction object contains
+	 * data for one interaction, determined under exactly one experimental
+	 * condition.
+	 */
+	private ArrayList extractExperimentalData(InteractionElementType cInteraction,
+	                                          Interaction interactionTemplate)
+	    throws MapperException {
+		InteractionElementType.ExperimentList expList = cInteraction.getExperimentList();
+		ArrayList list = new ArrayList();
+
+		if (expList != null) {
+			int expCount = expList.getExperimentRefOrExperimentDescription().size();
+
+			for (int i = 0; i < expCount; i++) {
+				Interaction interaction = cloneInteractionTemplate(interactionTemplate);
+				Object expItem = expList.getExperimentRefOrExperimentDescription().get(i);
+				ExperimentType expType = extractExperimentReferenceOrElement(expItem);
+				String id = getPubMedId(expType);
+
+				if (id != null) {
+					interaction.addAttribute(InteractionVocab.PUB_MED_ID, id);
+				}
+
+				extractInteractionDetection(expType, interaction);
+				list.add(interaction);
+			}
+		} else {
+			throw new MapperException("Could not determine experimental "
+			                          + "data for one of the PSI-MI interactions");
+		}
+
+		return list;
+	}
+
+	/**
+	 * Clones the InteractionTemplate.  Only clones the Interactors
+	 * contained within the interaction, and none of the Interaction
+	 * attributes.
+	 */
+	private Interaction cloneInteractionTemplate(Interaction interactionTemplate) {
+		Interaction interaction = new Interaction();
+		ArrayList interactors = interactionTemplate.getInteractors();
+		interaction.setInteractors(interactors);
+
+		return interaction;
+	}
+
+	/**
+	 * Extracts an Experiment Reference or Sub-Element.
+	 */
+	private ExperimentType extractExperimentReferenceOrElement(Object expItem) {
+		if (expItem instanceof RefType) {
+			RefType refType = (RefType) expItem;
+
+			return (ExperimentType) experimentMap.get(refType.getRef());
+		} else {
+			return (ExperimentType) expItem;
+		}
+	}
+
+	/**
+	 * Gets Interaction Detection.
+	 */
+	private void extractInteractionDetection(ExperimentType expDesc, Interaction interaction) {
+		String expSystem = null;
+
+		if (expDesc != null) {
+			CvType detection = expDesc.getInteractionDetection();
+			NamesType names = detection.getNames();
+			expSystem = names.getShortLabel();
+
+			if (expSystem != null) {
+				interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_NAME, expSystem);
+			}
+
+			XrefType xref = detection.getXref();
+
+			if (xref != null) {
+				DbReferenceType primaryRef = xref.getPrimaryRef();
+
+				if (primaryRef != null) {
+					interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB,
+					                         primaryRef.getDb());
+					interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID,
+					                         primaryRef.getId());
+				}
+			}
+		}
+	}
+
+	/**
+	 * Extracts Pub Med ID.
+	 */
+	private String getPubMedId(ExperimentType expDesc) {
+		String id = null;
+
+		if (expDesc != null) {
+			BibrefType bibRef = expDesc.getBibref();
+
+			if (bibRef != null) {
+				XrefType xRef = bibRef.getXref();
+
+				if (xRef != null) {
+					DbReferenceType primaryRef = xRef.getPrimaryRef();
+
+					if (primaryRef != null) {
+						id = primaryRef.getId();
+					}
+				}
+			}
+		}
+
+		return id;
+	}
+
+	/**
+	 * Extracts Single PSI Interactor.
+	 */
+	private Interactor createInteractor(ProteinInteractorType cProtein) throws MapperException {
+		org.cytoscape.coreplugin.psi_mi.model.Interactor interactor = new org.cytoscape.coreplugin.psi_mi.model.Interactor();
+		extractOrganismInfo(cProtein, interactor);
+		extractSequenceData(cProtein, interactor);
+
+		ExternalReference[] refs = extractExternalRefs(cProtein.getXref());
+
+		if ((refs != null) && (refs.length > 0)) {
+			interactor.setExternalRefs(refs);
+		}
+
+		//  Set Local Id.
+		String localId = cProtein.getId();
+		interactor.addAttribute(InteractorVocab.LOCAL_ID, localId);
+
+		//  Set Interactor Name Last, as it may be dependent on
+		//  external references.
+		extractInteractorName(cProtein, interactor);
+
+		return interactor;
+	}
+
+	/**
+	 * Extracts Sequence Data.
+	 */
+	private void extractSequenceData(ProteinInteractorType cProtein, Interactor interactor) {
+		String sequence = cProtein.getSequence();
+
+		if (sequence != null) {
+			interactor.addAttribute(InteractorVocab.SEQUENCE_DATA, sequence);
+		}
+	}
+
+	/**
+	 * Extracts Organism Information.
+	 */
+	private void extractOrganismInfo(ProteinInteractorType cProtein, Interactor interactor) {
+		ProteinInteractorType.Organism organism = cProtein.getOrganism();
+
+		if (organism != null) {
+			NamesType names = organism.getNames();
+			String commonName = names.getShortLabel();
+			String fullName = names.getFullName();
+			BigInteger ncbiTaxID = organism.getNcbiTaxId();
+			interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME, commonName);
+			interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME, fullName);
+			interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID, ncbiTaxID.toString());
+		}
+	}
 }

@@ -37,9 +37,11 @@ package org.cytoscape.coreplugin.psi_mi.test;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.cytoscape.coreplugin.psi_mi.test.bio.BioSuite;
 import org.cytoscape.coreplugin.psi_mi.test.cyto_mapper.CytoMapperSuite;
 import org.cytoscape.coreplugin.psi_mi.test.data_mapper.DataMapperSuite;
+
 
 /**
  * Runs all Unit Tests.
@@ -47,33 +49,32 @@ import org.cytoscape.coreplugin.psi_mi.test.data_mapper.DataMapperSuite;
  * @author Ethan Cerami
  */
 public class AllTest extends TestCase {
+	/**
+	 * The suite method kicks off all of the tests.
+	 *
+	 * @return junit.framework.Test
+	 */
+	public static Test suite() {
+		TestSuite suite = new TestSuite();
+		suite.addTest(BioSuite.suite());
+		suite.addTest(DataMapperSuite.suite());
+		suite.addTest(CytoMapperSuite.suite());
+		suite.setName("PSI-MI Unit Tests");
 
-    /**
-     * The suite method kicks off all of the tests.
-     *
-     * @return junit.framework.Test
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTest(BioSuite.suite());
-        suite.addTest(DataMapperSuite.suite());
-        suite.addTest(CytoMapperSuite.suite());
-        suite.setName("PSI-MI Unit Tests");
-        return suite;
-    }
+		return suite;
+	}
 
-    /**
-     * Run the all tests method.
-     *
-     * @param args java.lang.String[]
-     */
-    public static void main(String[] args) {
-        if (args.length > 0 && args[0] != null && args[0].equals("-ui")) {
-            String newargs[] = {"org.cytoscape.coreplugin.psi_mi.test.AllLocalTest",
-                    "-noloading"};
-            junit.swingui.TestRunner.main(newargs);
-        } else {
-            junit.textui.TestRunner.run(suite());
-        }
-    }
+	/**
+	 * Run the all tests method.
+	 *
+	 * @param args java.lang.String[]
+	 */
+	public static void main(String[] args) {
+		if ((args.length > 0) && (args[0] != null) && args[0].equals("-ui")) {
+			String[] newargs = { "org.cytoscape.coreplugin.psi_mi.test.AllLocalTest", "-noloading" };
+			junit.swingui.TestRunner.main(newargs);
+		} else {
+			junit.textui.TestRunner.run(suite());
+		}
+	}
 }

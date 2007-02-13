@@ -1,13 +1,20 @@
 /*
- * @(#)DefaultGraphSelectionModel.java	1.0 03-JUL-04
- * 
+ * @(#)DefaultGraphSelectionModel.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
+import org.jgraph.JGraph;
+
+import org.jgraph.event.GraphSelectionEvent;
+import org.jgraph.event.GraphSelectionListener;
+
 import java.beans.PropertyChangeListener;
+
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.Hashtable;
@@ -20,19 +27,14 @@ import java.util.Vector;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-import org.jgraph.JGraph;
-import org.jgraph.event.GraphSelectionEvent;
-import org.jgraph.event.GraphSelectionListener;
 
 /**
  * Default implementation of GraphSelectionModel. Listeners are notified
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-public class DefaultGraphSelectionModel implements GraphSelectionModel,
-		Cloneable, Serializable {
-
+public class DefaultGraphSelectionModel implements GraphSelectionModel, Cloneable, Serializable {
 	/** Property name for selectionMode. */
 	public static final String SELECTION_MODE_PROPERTY = "selectionMode";
 
@@ -78,12 +80,14 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 		int oldMode = selectionMode;
 
 		selectionMode = mode;
-		if (selectionMode != GraphSelectionModel.MULTIPLE_GRAPH_SELECTION
-				&& selectionMode != GraphSelectionModel.SINGLE_GRAPH_SELECTION)
+
+		if ((selectionMode != GraphSelectionModel.MULTIPLE_GRAPH_SELECTION)
+		    && (selectionMode != GraphSelectionModel.SINGLE_GRAPH_SELECTION))
 			selectionMode = GraphSelectionModel.MULTIPLE_GRAPH_SELECTION;
-		if (oldMode != selectionMode && changeSupport != null)
-			changeSupport.firePropertyChange(SELECTION_MODE_PROPERTY,
-					new Integer(oldMode), new Integer(selectionMode));
+
+		if ((oldMode != selectionMode) && (changeSupport != null))
+			changeSupport.firePropertyChange(SELECTION_MODE_PROPERTY, new Integer(oldMode),
+			                                 new Integer(selectionMode));
 	}
 
 	/**
@@ -116,14 +120,16 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	 */
 	protected boolean isChildrenSelectable(Object cell) {
 		AttributeMap attr = graph.getModel().getAttributes(cell);
-		if (attr != null && childrenSelectable)
+
+		if ((attr != null) && childrenSelectable)
 			return GraphConstants.isChildrenSelectable(attr);
+
 		return childrenSelectable;
 	}
 
 	/**
 	 * Selects the specified cell.
-	 * 
+	 *
 	 * @param cell
 	 *            the cell to select
 	 */
@@ -139,38 +145,46 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	 * the GraphSelectionListeners are notified. Potentially paths will be held
 	 * by this object; in other words don't change any of the objects in the
 	 * array once passed in.
-	 * 
+	 *
 	 * @param cells
 	 *            new selection
 	 */
 	public void setSelectionCells(Object[] cells) {
 		if (cells != null) {
-			if (selectionMode == GraphSelectionModel.SINGLE_GRAPH_SELECTION
-					&& cells.length > 0)
+			if ((selectionMode == GraphSelectionModel.SINGLE_GRAPH_SELECTION) && (cells.length > 0))
 				cells = new Object[] { cells[cells.length - 1] };
+
 			cellStates.clear();
+
 			Vector change = new Vector();
 			List newSelection = new ArrayList();
+
 			for (int i = 0; i < cells.length; i++) {
 				if (cells[i] != null) {
 					selection.remove(cells[i]);
-					change.addElement(new CellPlaceHolder(cells[i], !selection
-							.remove(cells[i])));
+					change.addElement(new CellPlaceHolder(cells[i], !selection.remove(cells[i])));
 					select(newSelection, cells[i]);
+
 					Object parent = graph.getModel().getParent(cells[i]);
+
 					if (parent != null)
 						change.addElement(new CellPlaceHolder(parent, false));
 				}
 			}
+
 			Iterator it = selection.iterator();
+
 			while (it.hasNext()) {
 				Object cell = it.next();
+
 				while (cell != null) {
 					change.addElement(new CellPlaceHolder(cell, false));
 					cell = graph.getModel().getParent(cell);
 				}
 			}
+
 			selection = newSelection;
+
 			if (change.size() > 0) {
 				notifyCellChange(change);
 			}
@@ -179,7 +193,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 
 	/**
 	 * Adds the specified cell to the current selection
-	 * 
+	 *
 	 * @param cell
 	 *            the cell to add to the current selection
 	 */
@@ -190,7 +204,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 
 	/**
 	 * Adds cells to the current selection.
-	 * 
+	 *
 	 * @param cells
 	 *            the cells to be added to the current selection
 	 */
@@ -200,20 +214,22 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 				setSelectionCells(cells);
 			else {
 				Vector change = new Vector();
+
 				for (int i = 0; i < cells.length; i++) {
 					if (cells[i] != null) {
 						boolean newness = select(selection, cells[i]);
+
 						if (newness) {
-							change.addElement(new CellPlaceHolder(cells[i],
-									true));
-							Object parent = graph.getModel()
-									.getParent(cells[i]);
+							change.addElement(new CellPlaceHolder(cells[i], true));
+
+							Object parent = graph.getModel().getParent(cells[i]);
+
 							if (parent != null)
-								change.addElement(new CellPlaceHolder(parent,
-										false));
+								change.addElement(new CellPlaceHolder(parent, false));
 						}
 					}
 				}
+
 				if (change.size() > 0)
 					notifyCellChange(change);
 			}
@@ -222,7 +238,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 
 	/**
 	 * Removes the specified cell from the selection.
-	 * 
+	 *
 	 * @param cell
 	 *            the cell to remove from the current selection
 	 */
@@ -233,26 +249,29 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 
 	/**
 	 * Removes the specified cells from the selection.
-	 * 
+	 *
 	 * @param cells
 	 *            the cells to remove from the current selection
 	 */
 	public void removeSelectionCells(Object[] cells) {
 		if (cells != null) {
 			Vector change = new Vector();
+
 			for (int i = 0; i < cells.length; i++) {
 				if (cells[i] != null) {
 					boolean removed = deselect(cells[i]);
+
 					if (removed) {
 						change.addElement(new CellPlaceHolder(cells[i], false));
+
 						Object parent = graph.getModel().getParent(cells[i]);
+
 						if (parent != null)
-							change
-									.addElement(new CellPlaceHolder(parent,
-											false));
+							change.addElement(new CellPlaceHolder(parent, false));
 					}
 				}
 			}
+
 			if (change.size() > 0)
 				notifyCellChange(change);
 		}
@@ -265,24 +284,30 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	public Object[] getSelectables() {
 		if (isChildrenSelectable()) {
 			List result = new ArrayList();
+
 			// Roots Are Always Selectable
 			Stack s = new Stack();
 			GraphModel model = graph.getModel();
+
 			for (int i = 0; i < model.getRootCount(); i++)
 				s.add(model.getRootAt(i));
+
 			while (!s.isEmpty()) {
 				Object cell = s.pop();
 				AttributeMap attrs = graph.getAttributes(cell);
-				if (!model.isPort(cell)
-						&& (attrs == null || GraphConstants.isSelectable(attrs)))
+
+				if (!model.isPort(cell) && ((attrs == null) || GraphConstants.isSelectable(attrs)))
 					result.add(cell);
+
 				if (isChildrenSelectable(cell)) {
 					for (int i = 0; i < model.getChildCount(cell); i++)
 						s.add(model.getChild(cell, i));
 				}
 			}
+
 			return result.toArray();
 		}
+
 		return graph.getRoots();
 	}
 
@@ -291,8 +316,9 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	 * one item currently selected.
 	 */
 	public Object getSelectionCell() {
-		if (selection != null && selection.size() > 0)
+		if ((selection != null) && (selection.size() > 0))
 			return selection.toArray()[0];
+
 		return null;
 	}
 
@@ -303,6 +329,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	public Object[] getSelectionCells() {
 		if (selection != null)
 			return selection.toArray();
+
 		return null;
 	}
 
@@ -319,6 +346,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	 */
 	public boolean isCellSelected(Object cell) {
 		int count = getSelectedChildCount(cell);
+
 		return (count == SELECTED);
 	}
 
@@ -327,6 +355,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	 */
 	public boolean isChildrenSelected(Object cell) {
 		int count = getSelectedChildCount(cell);
+
 		return (count > 0);
 	}
 
@@ -345,16 +374,20 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 		if (selection != null) {
 			Vector change = new Vector();
 			Iterator it = cellStates.entrySet().iterator();
+
 			while (it.hasNext()) {
 				Map.Entry entry = (Map.Entry) it.next();
 				Object cell = entry.getKey();
+
 				while (cell != null) {
 					change.addElement(new CellPlaceHolder(cell, false));
 					cell = graph.getModel().getParent(cell);
 				}
 			}
+
 			selection.clear();
 			cellStates.clear();
+
 			if (change.size() > 0)
 				notifyCellChange(change);
 		}
@@ -370,12 +403,15 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	protected int getSelectedChildCount(Object cell) {
 		if (cell != null) {
 			Integer state = (Integer) cellStates.get(cell);
+
 			if (state == null) {
 				state = UNSELECTED;
 				cellStates.put(cell, state);
 			}
+
 			return state.intValue();
 		}
+
 		return 0;
 	}
 
@@ -394,17 +430,21 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	 */
 	protected boolean select(List list, Object cell) {
 		AttributeMap attrs = graph.getAttributes(cell);
-		if (!isCellSelected(cell)
-				&& graph.getGraphLayoutCache().isVisible(cell)
-				&& (attrs == null || GraphConstants.isSelectable(attrs))) {
+
+		if (!isCellSelected(cell) && graph.getGraphLayoutCache().isVisible(cell)
+		    && ((attrs == null) || GraphConstants.isSelectable(attrs))) {
 			GraphModel model = graph.getModel();
+
 			// Deselect and Update All Parents
 			Object parent = model.getParent(cell);
+
 			while (parent != null) {
 				int count = getSelectedChildCount(parent);
+
 				// Deselect Selected Parents
 				if (count == SELECTED)
 					count = 0;
+
 				// Increase Child Count
 				count++;
 				setSelectedChildCount(parent, count);
@@ -413,26 +453,33 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 				// Next Parent
 				parent = model.getParent(parent);
 			}
+
 			// Deselect All Children
 			Object[] tmp = new Object[] { cell };
 			List childs = DefaultGraphModel.getDescendants(model, tmp);
 			// Remove Current Cell From Flat-View
 			childs.remove(cell);
+
 			Iterator it = childs.iterator();
+
 			while (it.hasNext()) {
 				Object child = it.next();
-				if (child != null && !model.isPort(child)) {
+
+				if ((child != null) && !model.isPort(child)) {
 					// Remove Child From Selection
 					selection.remove(child);
 					// Remove Child State
 					cellStates.remove(child);
 				}
 			}
+
 			// Set Selected State for Current
 			setSelectedChildCount(cell, SELECTED);
+
 			// Add Current To HashSet and Return
 			return list.add(cell);
 		}
+
 		return false;
 	}
 
@@ -446,26 +493,32 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 			Object parent = graph.getModel().getParent(cell);
 			boolean firstParent = true;
 			int change = -1;
-			while (parent != null && change != 0) {
+
+			while ((parent != null) && (change != 0)) {
 				int count = getSelectedChildCount(parent);
 				count += change;
+
 				// Select First Parent If No More Children
-				if (count == 0 && firstParent) {
+				if ((count == 0) && firstParent) {
 					change = 0;
 					count = SELECTED;
 					selection.add(parent);
 				}
+
 				// Update Selection Count
 				setSelectedChildCount(parent, count);
 				// Next Parent
 				parent = graph.getModel().getParent(parent);
 				firstParent = false;
 			}
+
 			// Remove State of Current Cell
 			cellStates.remove(cell);
+
 			// Remove Current from Selection and Return
 			return selection.remove(cell);
 		}
+
 		return false;
 	}
 
@@ -476,7 +529,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	/**
 	 * Adds x to the list of listeners that are notified each time the set of
 	 * selected TreePaths changes.
-	 * 
+	 *
 	 * @param x
 	 *            the new listener to be added
 	 */
@@ -487,7 +540,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	/**
 	 * Removes x from the list of listeners that are notified each time the set
 	 * of selected TreePaths changes.
-	 * 
+	 *
 	 * @param x
 	 *            the listener to remove
 	 */
@@ -498,13 +551,14 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	/**
 	 * Notifies all listeners that are registered for tree selection events on
 	 * this object.
-	 * 
+	 *
 	 * @see #addGraphSelectionListener
 	 * @see EventListenerList
 	 */
 	protected void fireValueChanged(GraphSelectionEvent e) {
 		// Guaranteed to return a non-null array
 		Object[] listeners = listenerList.getListenerList();
+
 		// TreeSelectionEvent e = null;
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
@@ -521,10 +575,10 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	/**
 	 * Returns an array of all the listeners of the given type that were added
 	 * to this model.
-	 * 
+	 *
 	 * @return all of the objects receiving <em>listenerType</em>
 	 *         notifications from this model
-	 * 
+	 *
 	 * @since 1.3
 	 */
 	public EventListener[] getListeners(Class listenerType) {
@@ -536,31 +590,30 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	 * registered for all properties.
 	 * <p>
 	 * A PropertyChangeEvent will get fired when the selection mode changes.
-	 * 
+	 *
 	 * @param listener
 	 *            the PropertyChangeListener to be added
 	 */
-	public synchronized void addPropertyChangeListener(
-			PropertyChangeListener listener) {
+	public synchronized void addPropertyChangeListener(PropertyChangeListener listener) {
 		if (changeSupport == null) {
 			changeSupport = new SwingPropertyChangeSupport(this);
 		}
+
 		changeSupport.addPropertyChangeListener(listener);
 	}
 
 	/**
 	 * Removes a PropertyChangeListener from the listener list. This removes a
 	 * PropertyChangeListener that was registered for all properties.
-	 * 
+	 *
 	 * @param listener
 	 *            the PropertyChangeListener to be removed
 	 */
-
-	public synchronized void removePropertyChangeListener(
-			PropertyChangeListener listener) {
+	public synchronized void removePropertyChangeListener(PropertyChangeListener listener) {
 		if (changeSupport == null) {
 			return;
 		}
+
 		changeSupport.removePropertyChangeListener(listener);
 	}
 
@@ -580,8 +633,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 			cells[counter] = placeholder.cell;
 		}
 
-		GraphSelectionEvent event = new GraphSelectionEvent(this, cells,
-				newness);
+		GraphSelectionEvent event = new GraphSelectionEvent(this, cells, newness);
 
 		fireValueChanged(event);
 	}
@@ -589,17 +641,19 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	/**
 	 * Returns a clone of this object with the same selection. This method does
 	 * not duplicate selection listeners and property listeners.
-	 * 
+	 *
 	 * @exception CloneNotSupportedException
 	 *                never thrown by instances of this class
 	 */
 	public Object clone() throws CloneNotSupportedException {
-		DefaultGraphSelectionModel clone = (DefaultGraphSelectionModel) super
-				.clone();
+		DefaultGraphSelectionModel clone = (DefaultGraphSelectionModel) super.clone();
 		clone.changeSupport = null;
+
 		if (selection != null)
 			clone.selection = new ArrayList(selection);
+
 		clone.listenerList = new EventListenerList();
+
 		return clone;
 	}
 
@@ -608,7 +662,6 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 	 */
 	protected class CellPlaceHolder {
 		protected boolean isNew;
-
 		protected Object cell;
 
 		protected CellPlaceHolder(Object cell, boolean isNew) {
@@ -618,7 +671,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 
 		/**
 		 * Returns the cell.
-		 * 
+		 *
 		 * @return Object
 		 */
 		public Object getCell() {
@@ -627,7 +680,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 
 		/**
 		 * Returns the isNew.
-		 * 
+		 *
 		 * @return boolean
 		 */
 		public boolean isNew() {
@@ -636,7 +689,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 
 		/**
 		 * Sets the cell.
-		 * 
+		 *
 		 * @param cell
 		 *            The cell to set
 		 */
@@ -646,14 +699,12 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel,
 
 		/**
 		 * Sets the isNew.
-		 * 
+		 *
 		 * @param isNew
 		 *            The isNew to set
 		 */
 		public void setNew(boolean isNew) {
 			this.isNew = isNew;
 		}
-
 	}
-
 }

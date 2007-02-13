@@ -36,6 +36,7 @@ package org.cytoscape.coreplugin.psi_mi.util;
 
 import org.cytoscape.coreplugin.psi_mi.model.Interaction;
 
+
 /**
  * Misc Utility Class for Extracting / Manipulating Attributes and Attribute
  * Values.
@@ -43,61 +44,66 @@ import org.cytoscape.coreplugin.psi_mi.model.Interaction;
  * @author Ethan Cerami
  */
 public class AttributeUtil {
+	private static int baitStatus = 0;
 
-    private static int baitStatus = 0;
+	/**
+	 * Gets Interaction Attribute with specified key.
+	 *
+	 * @param interaction Interaction Object.
+	 * @param key         Key.
+	 * @return Attribute Value.
+	 */
+	public static String getAttribute(Interaction interaction, String key) {
+		String value = (String) interaction.getAttribute(key);
 
-    /**
-     * Gets Interaction Attribute with specified key.
-     *
-     * @param interaction Interaction Object.
-     * @param key         Key.
-     * @return Attribute Value.
-     */
-    public static String getAttribute(Interaction interaction, String key) {
-        String value = (String) interaction.getAttribute(key);
-        if (value == null) {
-            value = "";
-        }
-        return value;
-    }
+		if (value == null) {
+			value = "";
+		}
 
-    /**
-     * Appends a String to the specified Object.
-     *
-     * @param object Object (either a String or a String[]).
-     * @param value  String to append.
-     * @return Array of Strings.
-     */
-    public static String[] appendString(Object object, String value) {
-        String newValues[] = null;
-        if (object instanceof String) {
-            newValues = new String[2];
-            newValues[0] = (String) object;
-            newValues[1] = value;
-        } else if (object instanceof String[]) {
-            String strs[] = (String[]) object;
-            newValues = new String[strs.length + 1];
-            for (int i = 0; i < strs.length; i++) {
-                newValues[i] = strs[i];
-            }
-            newValues[strs.length] = value;
-        }
-        return newValues;
-    }
+		return value;
+	}
 
-    /**
-     * Sets the Bait Status.
-     * @param s Bait Status.
-     */
-    public static void setbaitStatus(int s) {
-        baitStatus = s;
-    }
+	/**
+	 * Appends a String to the specified Object.
+	 *
+	 * @param object Object (either a String or a String[]).
+	 * @param value  String to append.
+	 * @return Array of Strings.
+	 */
+	public static String[] appendString(Object object, String value) {
+		String[] newValues = null;
 
-    /**
-     * Gets the Bait Status.
-     * @return Bait Status.
-     */
-    public static int getbaitStatus() {
-        return baitStatus;
-    }
+		if (object instanceof String) {
+			newValues = new String[2];
+			newValues[0] = (String) object;
+			newValues[1] = value;
+		} else if (object instanceof String[]) {
+			String[] strs = (String[]) object;
+			newValues = new String[strs.length + 1];
+
+			for (int i = 0; i < strs.length; i++) {
+				newValues[i] = strs[i];
+			}
+
+			newValues[strs.length] = value;
+		}
+
+		return newValues;
+	}
+
+	/**
+	 * Sets the Bait Status.
+	 * @param s Bait Status.
+	 */
+	public static void setbaitStatus(int s) {
+		baitStatus = s;
+	}
+
+	/**
+	 * Gets the Bait Status.
+	 * @return Bait Status.
+	 */
+	public static int getbaitStatus() {
+		return baitStatus;
+	}
 }

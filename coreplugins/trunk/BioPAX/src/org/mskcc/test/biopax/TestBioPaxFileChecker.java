@@ -32,11 +32,13 @@
 package org.mskcc.test.biopax;
 
 import junit.framework.TestCase;
+
 import org.mskcc.biopax_plugin.util.biopax.BioPaxFileChecker;
 import org.mskcc.biopax_plugin.util.net.WebFileConnect;
 
 import java.io.File;
 import java.io.StringReader;
+
 
 /**
  * Tests the BioPAX File Checker.
@@ -44,44 +46,39 @@ import java.io.StringReader;
  * @author Ethan Cerami.
  */
 public class TestBioPaxFileChecker extends TestCase {
+	/**
+	 * Tests the File Checker.
+	 *
+	 * @throws Exception All Exceptions.
+	 */
+	public void testFileCheckerValid() throws Exception {
+		String str = WebFileConnect.retrieveDocument(new File("testData/biopax_sample1.owl"));
+		StringReader reader = new StringReader(str);
+		BioPaxFileChecker checker = new BioPaxFileChecker(reader);
+		assertTrue(checker.isProbablyBioPaxFile());
+	}
 
-    /**
-     * Tests the File Checker.
-     *
-     * @throws Exception All Exceptions.
-     */
-    public void testFileCheckerValid() throws Exception {
-        String str = WebFileConnect.retrieveDocument
-                (new File("testData/biopax_sample1.owl"));
-        StringReader reader = new StringReader(str);
-        BioPaxFileChecker checker = new BioPaxFileChecker(reader);
-        assertTrue(checker.isProbablyBioPaxFile());
-    }
+	/**
+	 * Tests the File Checker.
+	 *
+	 * @throws Exception All Exceptions.
+	 */
+	public void testFileCheckerInvalid1() throws Exception {
+		String str = WebFileConnect.retrieveDocument(new File("testData/psi_sample1.xml"));
+		StringReader reader = new StringReader(str);
+		BioPaxFileChecker checker = new BioPaxFileChecker(reader);
+		assertTrue(!checker.isProbablyBioPaxFile());
+	}
 
-    /**
-     * Tests the File Checker.
-     *
-     * @throws Exception All Exceptions.
-     */
-    public void testFileCheckerInvalid1() throws Exception {
-        String str = WebFileConnect.retrieveDocument
-                (new File("testData/psi_sample1.xml"));
-        StringReader reader = new StringReader(str);
-        BioPaxFileChecker checker = new BioPaxFileChecker(reader);
-        assertTrue(!checker.isProbablyBioPaxFile());
-    }
-
-    /**
-     * Tests the File Checker.
-     *
-     * @throws Exception All Exceptions.
-     */
-    public void testFileCheckerInvalid2() throws Exception {
-        String str = WebFileConnect.retrieveDocument
-                (new File("testData/soft1.txt"));
-        StringReader reader = new StringReader(str);
-        BioPaxFileChecker checker = new BioPaxFileChecker(reader);
-        assertTrue(!checker.isProbablyBioPaxFile());
-    }
-
+	/**
+	 * Tests the File Checker.
+	 *
+	 * @throws Exception All Exceptions.
+	 */
+	public void testFileCheckerInvalid2() throws Exception {
+		String str = WebFileConnect.retrieveDocument(new File("testData/soft1.txt"));
+		StringReader reader = new StringReader(str);
+		BioPaxFileChecker checker = new BioPaxFileChecker(reader);
+		assertTrue(!checker.isProbablyBioPaxFile());
+	}
 }

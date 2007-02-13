@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2001-2006 Gaudenz Alder
- *  
+ *
  * See LICENSE file in distribution for licensing details of this source file
  */
 package org.jgraph.graph;
@@ -9,15 +9,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+
 /**
  * A simple implementation for a port.
  *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public class DefaultPort extends DefaultGraphCell implements Port {
-
 	/** Edges that are connected to the port */
 	// TODO After Java 1.3 is EOL, this could be changed into a LinkHashSet
 	// to retain ordering
@@ -115,7 +114,7 @@ public class DefaultPort extends DefaultGraphCell implements Port {
 	public Object clone() {
 		DefaultPort c = (DefaultPort) super.clone();
 		c.edges = new HashSet();
+
 		return c;
 	}
-
 }

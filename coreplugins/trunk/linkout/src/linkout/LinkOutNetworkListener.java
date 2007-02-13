@@ -1,9 +1,12 @@
 /*$Id$*/
 package linkout;
 
-import ding.view.*;
 import cytoscape.Cytoscape;
+
 import cytoscape.view.CytoscapeDesktop;
+
+import ding.view.*;
+
 import java.beans.*;
 
 
@@ -12,34 +15,33 @@ import java.beans.*;
  * When a new cytoscape network view is created it registers the LinkOutContextMenuListener
  * with the new DGraphView.
 **/
-public class LinkOutNetworkListener implements PropertyChangeListener{
+public class LinkOutNetworkListener implements PropertyChangeListener {
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void LinkOutNetworkListener() {
+		//System.out.println("[LinkOutNetworkListener]: constructor called");
+	}
 
-    public void LinkOutNetworkListener(){
+	/**
+	 * Register a LinkOut[Node/Edge]ContextMenuListener for all new DGraphView
+	 * objects (ie new network instances).
+	 * @param evnt PropertyChangeEvent
+	 */
+	public void propertyChange(PropertyChangeEvent evnt) {
+		if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			//System.out.println("[LinkOutNetworkListener]: propertyChange called");
 
-        //System.out.println("[LinkOutNetworkListener]: constructor called");
-    }
+			//Register NodeContext...
+			LinkOutNodeContextMenuListener nodeMenuListener = new LinkOutNodeContextMenuListener();
+			((DGraphView) Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(nodeMenuListener);
 
-    /**
-     * Register a LinkOut[Node/Edge]ContextMenuListener for all new DGraphView
-     * objects (ie new network instances).
-     * @param evnt PropertyChangeEvent
-     */
-    public void propertyChange (PropertyChangeEvent evnt){
-        if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED){
-            //System.out.println("[LinkOutNetworkListener]: propertyChange called");
-
-            //Register NodeContext...
-            LinkOutNodeContextMenuListener nodeMenuListener=new LinkOutNodeContextMenuListener();
-            ((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(nodeMenuListener);
-
-            //Register EdgeContext...
-            LinkOutEdgeContextMenuListener edgeMenuListener=new LinkOutEdgeContextMenuListener();
-            ((DGraphView)Cytoscape.getCurrentNetworkView()).addEdgeContextMenuListener(edgeMenuListener);
-
-        }
-    }
+			//Register EdgeContext...
+			LinkOutEdgeContextMenuListener edgeMenuListener = new LinkOutEdgeContextMenuListener();
+			((DGraphView) Cytoscape.getCurrentNetworkView()).addEdgeContextMenuListener(edgeMenuListener);
+		}
+	}
 }
-
 /*$Log: LinkOutNetworkListener.java,v $
 /*Revision 1.1  2006/06/14 18:12:46  mes
 /*updated project to actually compile and work with ant

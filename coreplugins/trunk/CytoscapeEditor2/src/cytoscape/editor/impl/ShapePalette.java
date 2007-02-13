@@ -72,221 +72,220 @@ import javax.swing.ListCellRenderer;
  *
  */
 public class ShapePalette extends JPanel {
-    // MLC 08/06/06:
-    private static final long serialVersionUID = -4018789452330887392L;
+	// MLC 08/06/06:
+	private static final long serialVersionUID = -4018789452330887392L;
 
-    /**
-     * mapping of shapes to their titles
-     */
-    static Map<String, BasicCytoShapeEntity> _shapeMap = new HashMap<String, BasicCytoShapeEntity>();
+	/**
+	 * mapping of shapes to their titles
+	 */
+	static Map<String, BasicCytoShapeEntity> _shapeMap = new HashMap<String, BasicCytoShapeEntity>();
 
-    /**
-     * the user interface for the ShapePalette
-     */
-    protected JList dataList;
-    protected DefaultListModel listModel;
-    private JPanel             _controlPane;
-    protected JScrollPane      scrollPane;
-    protected JPanel           _shapePane;
+	/**
+	 * the user interface for the ShapePalette
+	 */
+	protected JList dataList;
+	protected DefaultListModel listModel;
+	private JPanel _controlPane;
+	protected JScrollPane scrollPane;
+	protected JPanel _shapePane;
 
-    public ShapePalette() {
-        super();
+	/**
+	 * Creates a new ShapePalette object.
+	 */
+	public ShapePalette() {
+		super();
 
-        _controlPane = new JPanel();
-        _controlPane.setLayout(new BoxLayout(_controlPane, BoxLayout.Y_AXIS));
+		_controlPane = new JPanel();
+		_controlPane.setLayout(new BoxLayout(_controlPane, BoxLayout.Y_AXIS));
 
-        listModel = new DefaultListModel();
-        dataList  = new JList(listModel);
-        dataList.setCellRenderer(new MyCellRenderer());
-        dataList.setDragEnabled(true);
+		listModel = new DefaultListModel();
+		dataList = new JList(listModel);
+		dataList.setCellRenderer(new MyCellRenderer());
+		dataList.setDragEnabled(true);
 
-        dataList.setTransferHandler(new PaletteListTransferHandler());
-        // AJK: 09/16/05 BEGIN
-        //     set internal spacing via fixed cell height and width
-        // MLC 12/04/06:
-        // dataList.setFixedCellHeight(CytoShapeIcon.HEIGHT + 5);
-        // AJK: 09/16/05 END
-        _shapePane = new JPanel();
-        _shapePane.setLayout(new BoxLayout(_shapePane, BoxLayout.Y_AXIS));
+		dataList.setTransferHandler(new PaletteListTransferHandler());
+		// AJK: 09/16/05 BEGIN
+		//     set internal spacing via fixed cell height and width
+		// MLC 12/04/06:
+		// dataList.setFixedCellHeight(CytoShapeIcon.HEIGHT + 5);
+		// AJK: 09/16/05 END
+		_shapePane = new JPanel();
+		_shapePane.setLayout(new BoxLayout(_shapePane, BoxLayout.Y_AXIS));
 
-        scrollPane = new JScrollPane(_shapePane);
+		scrollPane = new JScrollPane(_shapePane);
 
-        scrollPane.setBorder(BorderFactory.createEtchedBorder());
-        dataList.setBackground(Cytoscape.getDesktop().getBackground());
-        scrollPane.setBackground(Cytoscape.getDesktop().getBackground());
+		scrollPane.setBorder(BorderFactory.createEtchedBorder());
+		dataList.setBackground(Cytoscape.getDesktop().getBackground());
+		scrollPane.setBackground(Cytoscape.getDesktop().getBackground());
 
-        // AJK: 12/10/06 BEGIN
-        //     get scrollpane working so that it is always visible at both ends
-        //        scrollPane.setHorizontalScrollBarPolicy
-        //        (ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		// AJK: 12/10/06 BEGIN
+		//     get scrollpane working so that it is always visible at both ends
+		//        scrollPane.setHorizontalScrollBarPolicy
+		//        (ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        //        scrollPane.setPreferredSize(
-        //            new Dimension(
-        //                ((JPanel) Cytoscape.getDesktop()
-        //                        // AJK: 12/09/06 set size smaller to enable scrolling to bottom?
-        //                                  .getCytoPanel(SwingConstants.WEST)).getSize().width -
-        //                                   5,  
-        //                                   ((JPanel) Cytoscape.getDesktop()
-        //                                   .getCytoPanel(SwingConstants.WEST)).getSize().height
-        //                                   - 5
-        //                                 ));
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.setLayout(new BorderLayout());
-        this.add(scrollPane, BorderLayout.CENTER);
-        this.setPreferredSize(new Dimension(300, 300));
-        this.setMaximumSize(new Dimension(300, 300));
-        // AJK: 12/10/06 END
-        CytoscapeEditorManager.setCurrentShapePalette(this);
+		//        scrollPane.setPreferredSize(
+		//            new Dimension(
+		//                ((JPanel) Cytoscape.getDesktop()
+		//                        // AJK: 12/09/06 set size smaller to enable scrolling to bottom?
+		//                                  .getCytoPanel(SwingConstants.WEST)).getSize().width -
+		//                                   5,  
+		//                                   ((JPanel) Cytoscape.getDesktop()
+		//                                   .getCytoPanel(SwingConstants.WEST)).getSize().height
+		//                                   - 5
+		//                                 ));
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		this.setLayout(new BorderLayout());
+		this.add(scrollPane, BorderLayout.CENTER);
+		this.setPreferredSize(new Dimension(300, 300));
+		this.setMaximumSize(new Dimension(300, 300));
+		// AJK: 12/10/06 END
+		CytoscapeEditorManager.setCurrentShapePalette(this);
 
-        CyNetworkView view = Cytoscape.getCurrentNetworkView();
-        CytoscapeEditorManager.setShapePaletteForView(view, this);
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		CytoscapeEditorManager.setShapePaletteForView(view, this);
 
-        // AJK: 12/10/06 fix so that scrolling to bottom of pane works
-        //        _controlPane.add(scrollPane);
-        //        this.add(_controlPane);
-        //        this.add(scrollPane);
-        this.setBackground(Cytoscape.getDesktop().getBackground());
-        this.setVisible(true);
-    }
+		// AJK: 12/10/06 fix so that scrolling to bottom of pane works
+		//        _controlPane.add(scrollPane);
+		//        this.add(_controlPane);
+		//        this.add(scrollPane);
+		this.setBackground(Cytoscape.getDesktop().getBackground());
+		this.setVisible(true);
+	}
 
-    /**
-     * clear the ShapePalette by removing all its shape components
-     *
-     */
-    public void clear() {
-        _shapePane.removeAll();
-    }
+	/**
+	 * clear the ShapePalette by removing all its shape components
+	 *
+	 */
+	public void clear() {
+		_shapePane.removeAll();
+	}
 
-    /**
-    * add a shape to the palette
-    * @param attributeName attribute name for the shape, should be one of "NodeType" or "EdgeType"
-    * @param attributeValue value for the attribute assigned to the shape, for example a "NodeType" of "protein"
-    * @param img the icon for the shape
-    * @param name the title of the shape
-     * @param cursorSetter a possibly null DragSourceContextCursorSetter used to specify
-     *                     the cursor so show when dragging over the current network view.
-    */
-    // MLC 12/16/06 BEGIN:
-    public void addShape(String attributeName, String attributeValue, Icon img,
-                         String name,
-			 DragSourceContextCursorSetter cursorSetter) {
-        BasicCytoShapeEntity cytoShape = new BasicCytoShapeEntity(attributeName,
-                                                                  attributeValue,
-                                                                  img, name,
-								  cursorSetter);
-	//    public void addShape(String attributeName, String attributeValue, Icon img,
-	//			 String name) {
-	//        BasicCytoShapeEntity cytoShape = new BasicCytoShapeEntity(attributeName,
-	//                                                                  attributeValue,
-	//                                                                  img, name);
-    // MLC 12/16/06 END.
-        cytoShape.setTransferHandler(new BasicCytoShapeTransferHandler(cytoShape,
-                                                                       null));
-        _shapeMap.put(cytoShape.getTitle(),
-                      cytoShape);
+	/**
+	* add a shape to the palette
+	* @param attributeName attribute name for the shape, should be one of "NodeType" or "EdgeType"
+	* @param attributeValue value for the attribute assigned to the shape, for example a "NodeType" of "protein"
+	* @param img the icon for the shape
+	* @param name the title of the shape
+	 * @param cursorSetter a possibly null DragSourceContextCursorSetter used to specify
+	 *                     the cursor so show when dragging over the current network view.
+	*/
 
-        if (attributeName.equals(CytoscapeEditorManager.EDGE_TYPE)) {
-            CytoscapeEditorManager.addEdgeTypeForVisualStyle(Cytoscape.getCurrentNetworkView()
-                                                                      .getVisualStyle(),
-                                                             attributeValue);
-        }
+	// MLC 12/16/06 BEGIN:
+	public void addShape(String attributeName, String attributeValue, Icon img, String name,
+	                     DragSourceContextCursorSetter cursorSetter) {
+		BasicCytoShapeEntity cytoShape = new BasicCytoShapeEntity(attributeName, attributeValue,
+		                                                          img, name, cursorSetter);
+		//    public void addShape(String attributeName, String attributeValue, Icon img,
+		//			 String name) {
+		//        BasicCytoShapeEntity cytoShape = new BasicCytoShapeEntity(attributeName,
+		//                                                                  attributeValue,
+		//                                                                  img, name);
+		// MLC 12/16/06 END.
+		cytoShape.setTransferHandler(new BasicCytoShapeTransferHandler(cytoShape, null));
+		_shapeMap.put(cytoShape.getTitle(), cytoShape);
 
-        _shapePane.add(cytoShape);
-    }
+		if (attributeName.equals(CytoscapeEditorManager.EDGE_TYPE)) {
+			CytoscapeEditorManager.addEdgeTypeForVisualStyle(Cytoscape.getCurrentNetworkView()
+			                                                          .getVisualStyle(),
+			                                                 attributeValue);
+		}
 
-    /**
-     * show the palette in the WEST cytopanel
-     *
-     */
-    public void showPalette() {
-        CyNetworkView view = Cytoscape.getCurrentNetworkView();
-        CytoscapeEditorManager.setShapePaletteForView(view, this);
-        this.setVisible(true);
-    }
+		_shapePane.add(cytoShape);
+	}
 
-    /**
-     *
-     * @param key the name of the shape to be returned
-     * @return return the BasicCytoShapeEntity associated with the input shape name
-     */
-    public static BasicCytoShapeEntity getBasicCytoShapeEntity(String key) {
-        Object val = _shapeMap.get(key);
+	/**
+	 * show the palette in the WEST cytopanel
+	 *
+	 */
+	public void showPalette() {
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		CytoscapeEditorManager.setShapePaletteForView(view, this);
+		this.setVisible(true);
+	}
 
-        if (val instanceof BasicCytoShapeEntity) {
-            return ((BasicCytoShapeEntity) val);
-        } else {
-            return null;
-        }
-    }
+	/**
+	 *
+	 * @param key the name of the shape to be returned
+	 * @return return the BasicCytoShapeEntity associated with the input shape name
+	 */
+	public static BasicCytoShapeEntity getBasicCytoShapeEntity(String key) {
+		Object val = _shapeMap.get(key);
 
-    /**
-         * renders each cell of the ShapePalette
-         * @author Allan Kuchinsky
-         * @version 1.0
-         *
-         */
-    class MyCellRenderer extends JLabel implements ListCellRenderer {
-        // This is the only method defined by ListCellRenderer.
-        // We just reconfigure the JLabel each time we're called.
-        // MLC 08/06/06:
-        private static final long serialVersionUID = -4704405703871398609L;
+		if (val instanceof BasicCytoShapeEntity) {
+			return ((BasicCytoShapeEntity) val);
+		} else {
+			return null;
+		}
+	}
 
-        public Component getListCellRendererComponent(JList list, Object value, // value to display
-                                                      int index, // cell index
-                                                      boolean isSelected, // is the cell selected
-                                                      boolean cellHasFocus) // the list and the cell have the focus
-         {
-            if (value instanceof BasicCytoShapeEntity) {
-                BasicCytoShapeEntity cytoShape = (BasicCytoShapeEntity) value;
-                setText(cytoShape.getTitle());
-                setIcon(cytoShape.getIcon());
-                setToolTipText(cytoShape.getToolTipText());
-            }
+	/**
+	     * renders each cell of the ShapePalette
+	     * @author Allan Kuchinsky
+	     * @version 1.0
+	     *
+	     */
+	class MyCellRenderer extends JLabel implements ListCellRenderer {
+		// This is the only method defined by ListCellRenderer.
+		// We just reconfigure the JLabel each time we're called.
+		// MLC 08/06/06:
+		private static final long serialVersionUID = -4704405703871398609L;
 
-            if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
-            } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
-            }
+		public Component getListCellRendererComponent(JList list, Object value, // value to display
+		                                              int index, // cell index
+		                                              boolean isSelected, // is the cell selected
+		                                              boolean cellHasFocus) // the list and the cell have the focus
+		 {
+			if (value instanceof BasicCytoShapeEntity) {
+				BasicCytoShapeEntity cytoShape = (BasicCytoShapeEntity) value;
+				setText(cytoShape.getTitle());
+				setIcon(cytoShape.getIcon());
+				setToolTipText(cytoShape.getToolTipText());
+			}
 
-            setEnabled(list.isEnabled());
-            setFont(list.getFont());
-            setOpaque(true);
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
 
-            return this;
-        }
-    }
+			setEnabled(list.isEnabled());
+			setFont(list.getFont());
+			setOpaque(true);
 
-    /**
-     * bundles up the name of the BasicCytoShapeEntity for export via drag/drop from the palette
-     * @author Allan Kuchinsky
-     * @version 1.0
-     *
-     */
-    class PaletteListTransferHandler extends StringTransferHandler {
-        // MLC 08/06/06:
-        private static final long serialVersionUID = -3858539899491771525L;
+			return this;
+		}
+	}
 
-        protected void cleanup(JComponent c, boolean remove) {
-        }
+	/**
+	 * bundles up the name of the BasicCytoShapeEntity for export via drag/drop from the palette
+	 * @author Allan Kuchinsky
+	 * @version 1.0
+	 *
+	 */
+	class PaletteListTransferHandler extends StringTransferHandler {
+		// MLC 08/06/06:
+		private static final long serialVersionUID = -3858539899491771525L;
 
-        protected void importString(JComponent c, String str) {
-        }
+		protected void cleanup(JComponent c, boolean remove) {
+		}
 
-        //Bundle up the selected items in the list
-        //as a single string, for export.
-        protected String exportString(JComponent c) {
-            JList  list = (JList) c;
-            Object val = list.getSelectedValue();
+		protected void importString(JComponent c, String str) {
+		}
 
-            if (val instanceof BasicCytoShapeEntity) {
-                return ((BasicCytoShapeEntity) val).getTitle();
-            } else {
-                return null;
-            }
-        }
-    }
+		//Bundle up the selected items in the list
+		//as a single string, for export.
+		protected String exportString(JComponent c) {
+			JList list = (JList) c;
+			Object val = list.getSelectedValue();
+
+			if (val instanceof BasicCytoShapeEntity) {
+				return ((BasicCytoShapeEntity) val).getTitle();
+			} else {
+				return null;
+			}
+		}
+	}
 }

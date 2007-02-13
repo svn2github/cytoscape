@@ -34,119 +34,111 @@ package org.mskcc.biopax_plugin.util.biopax;
 import java.util.HashSet;
 import java.util.Set;
 
+
 /**
  * Controlled Vocabulary Terms associated with the BioPAX CONTROL-TYPE Element.
  *
  * @author Ethan Cerami.
  */
 public class ControlTypeConstants {
-    private static HashSet inhibitionSet;
-    private static HashSet activationSet;
+	private static HashSet inhibitionSet;
+	private static HashSet activationSet;
 
-    /**
-     * Control Type:  INHIBITION
-     */
-    public static final String CONTROL_TYPE_INHIBITION = "INHIBITION";
+	/**
+	 * Control Type:  INHIBITION
+	 */
+	public static final String CONTROL_TYPE_INHIBITION = "INHIBITION";
 
-    /**
-     * Control Type:  INHIBITION-COMPETITIVE
-     */
-    public static final String CONTROL_TYPE_INHIBITION_COMPETITIVE
-            = "INHIBITION-COMPETITIVE";
+	/**
+	 * Control Type:  INHIBITION-COMPETITIVE
+	 */
+	public static final String CONTROL_TYPE_INHIBITION_COMPETITIVE = "INHIBITION-COMPETITIVE";
 
-    /**
-     * Control Type:  INHIBITION-IRREVERSIBLE
-     */
-    public static final String CONTROL_TYPE_INHIBITION_IRREVERSIBLE
-            = "INHIBITION-IRREVERSIBLE";
+	/**
+	 * Control Type:  INHIBITION-IRREVERSIBLE
+	 */
+	public static final String CONTROL_TYPE_INHIBITION_IRREVERSIBLE = "INHIBITION-IRREVERSIBLE";
 
-    /**
-     * Control Type:  INHIBITION-OTHER
-     */
-    public static final String CONTROL_TYPE_INHIBITION_OTHER
-            = "INHIBITION-OTHER";
+	/**
+	 * Control Type:  INHIBITION-OTHER
+	 */
+	public static final String CONTROL_TYPE_INHIBITION_OTHER = "INHIBITION-OTHER";
 
-    /**
-     * Control Type:  INHIBITION-UNKMECH
-     */
-    public static final String CONTROL_TYPE_INHIBITION_UNKMECH
-            = "INHIBITION-UNKMECH";
+	/**
+	 * Control Type:  INHIBITION-UNKMECH
+	 */
+	public static final String CONTROL_TYPE_INHIBITION_UNKMECH = "INHIBITION-UNKMECH";
 
-    /**
-     * Control Type:  INHIBITION-UNCOMPETITIVE
-     */
-    public static final String CONTROL_TYPE_INHIBITION_UNCOMPETITIVE
-            = "INHIBITION-UNCOMPETITIVE";
+	/**
+	 * Control Type:  INHIBITION-UNCOMPETITIVE
+	 */
+	public static final String CONTROL_TYPE_INHIBITION_UNCOMPETITIVE = "INHIBITION-UNCOMPETITIVE";
 
-    /**
-     * Conrol Type:  INHIBITION-NONCOMPETITIVE
-     */
-    public static final String CONTROL_TYPE_INHIBITION_NONCOMPETITIVE
-            = "INHIBITION-NONCOMPETITIVE";
+	/**
+	 * Conrol Type:  INHIBITION-NONCOMPETITIVE
+	 */
+	public static final String CONTROL_TYPE_INHIBITION_NONCOMPETITIVE = "INHIBITION-NONCOMPETITIVE";
 
-    /**
-     * Control Type:  INHIBITION-ALLOSTERIC
-     */
-    public static final String CONTROL_TYPE_INHIBITION_ALLOSTERIC =
-            "INHIBITION-ALLOSTERIC";
+	/**
+	 * Control Type:  INHIBITION-ALLOSTERIC
+	 */
+	public static final String CONTROL_TYPE_INHIBITION_ALLOSTERIC = "INHIBITION-ALLOSTERIC";
 
-    /**
-     * Control Type:  ACTIVATION
-     */
-    public static final String CONTROL_TYPE_ACTIVATION = "ACTIVATION";
+	/**
+	 * Control Type:  ACTIVATION
+	 */
+	public static final String CONTROL_TYPE_ACTIVATION = "ACTIVATION";
 
-    /**
-     * Control Type:  ACTIVATION-ALLOSTERIC
-     */
-    public static final String CONTROL_TYPE_ACTIVATION_ALLOSTERIC
-            = "ACTIVATION-ALLOSTERIC";
+	/**
+	 * Control Type:  ACTIVATION-ALLOSTERIC
+	 */
+	public static final String CONTROL_TYPE_ACTIVATION_ALLOSTERIC = "ACTIVATION-ALLOSTERIC";
 
-    /**
-     * Control Type: ACTIVATION-NONALLOSTERIC
-     */
-    public static final String CONTROL_TYPE_ACTIVATION_NONALLOSTERIC
-            = "ACTIVATION-NONALLOSTERIC";
+	/**
+	 * Control Type: ACTIVATION-NONALLOSTERIC
+	 */
+	public static final String CONTROL_TYPE_ACTIVATION_NONALLOSTERIC = "ACTIVATION-NONALLOSTERIC";
 
-    /**
-     * Control Type:  ACTIVATION-UNKMECH
-     */
-    public static final String CONTROL_TYPE_ACTIVATION_UNKMECH
-            = "ACTIVATION-UNKMECH";
+	/**
+	 * Control Type:  ACTIVATION-UNKMECH
+	 */
+	public static final String CONTROL_TYPE_ACTIVATION_UNKMECH = "ACTIVATION-UNKMECH";
 
-    /**
-     * Gets a Set of Inhibition Control Types.
-     *
-     * @return Set of Strings.
-     */
-    public static Set getInhibitionSet() {
-        if (inhibitionSet == null) {
-            inhibitionSet = new HashSet();
-            inhibitionSet.add(CONTROL_TYPE_INHIBITION);
-            inhibitionSet.add(CONTROL_TYPE_INHIBITION_COMPETITIVE);
-            inhibitionSet.add(CONTROL_TYPE_INHIBITION_IRREVERSIBLE);
-            inhibitionSet.add(CONTROL_TYPE_INHIBITION_OTHER);
-            inhibitionSet.add(CONTROL_TYPE_INHIBITION_UNKMECH);
-            inhibitionSet.add(CONTROL_TYPE_INHIBITION_UNCOMPETITIVE);
-            inhibitionSet.add(CONTROL_TYPE_INHIBITION_NONCOMPETITIVE);
-            inhibitionSet.add(CONTROL_TYPE_INHIBITION_ALLOSTERIC);
-        }
-        return inhibitionSet;
-    }
+	/**
+	 * Gets a Set of Inhibition Control Types.
+	 *
+	 * @return Set of Strings.
+	 */
+	public static Set getInhibitionSet() {
+		if (inhibitionSet == null) {
+			inhibitionSet = new HashSet();
+			inhibitionSet.add(CONTROL_TYPE_INHIBITION);
+			inhibitionSet.add(CONTROL_TYPE_INHIBITION_COMPETITIVE);
+			inhibitionSet.add(CONTROL_TYPE_INHIBITION_IRREVERSIBLE);
+			inhibitionSet.add(CONTROL_TYPE_INHIBITION_OTHER);
+			inhibitionSet.add(CONTROL_TYPE_INHIBITION_UNKMECH);
+			inhibitionSet.add(CONTROL_TYPE_INHIBITION_UNCOMPETITIVE);
+			inhibitionSet.add(CONTROL_TYPE_INHIBITION_NONCOMPETITIVE);
+			inhibitionSet.add(CONTROL_TYPE_INHIBITION_ALLOSTERIC);
+		}
 
-    /**
-     * Gets a Set of Activation Control Types.
-     *
-     * @return Set of Strings.
-     */
-    public static Set getActivationSet() {
-        if (activationSet == null) {
-            activationSet = new HashSet();
-            activationSet.add(CONTROL_TYPE_ACTIVATION);
-            activationSet.add(CONTROL_TYPE_ACTIVATION_ALLOSTERIC);
-            activationSet.add(CONTROL_TYPE_ACTIVATION_NONALLOSTERIC);
-            activationSet.add(CONTROL_TYPE_ACTIVATION_UNKMECH);
+		return inhibitionSet;
+	}
 
-        }
-        return activationSet;
-    }
+	/**
+	 * Gets a Set of Activation Control Types.
+	 *
+	 * @return Set of Strings.
+	 */
+	public static Set getActivationSet() {
+		if (activationSet == null) {
+			activationSet = new HashSet();
+			activationSet.add(CONTROL_TYPE_ACTIVATION);
+			activationSet.add(CONTROL_TYPE_ACTIVATION_ALLOSTERIC);
+			activationSet.add(CONTROL_TYPE_ACTIVATION_NONALLOSTERIC);
+			activationSet.add(CONTROL_TYPE_ACTIVATION_UNKMECH);
+		}
+
+		return activationSet;
+	}
 }

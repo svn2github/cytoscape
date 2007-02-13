@@ -32,12 +32,15 @@
 package org.mskcc.biopax_plugin.action;
 
 import cytoscape.util.OpenBrowser;
+
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
 
+import java.net.URL;
+
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import java.net.URL;
+
 
 /**
  * Launches the User's External Web Browser.
@@ -45,33 +48,33 @@ import java.net.URL;
  * @author Ethan Cerami.
  */
 public class LaunchExternalBrowser implements HyperlinkListener {
-    private BioPaxDetailsPanel detailsPanel;
+	private BioPaxDetailsPanel detailsPanel;
 
-    /**
-     * Constructor.
-     *
-     * @param detailsPanel BioPAX Details Panel.
-     */
-    public LaunchExternalBrowser(BioPaxDetailsPanel detailsPanel) {
-        this.detailsPanel = detailsPanel;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param detailsPanel BioPAX Details Panel.
+	 */
+	public LaunchExternalBrowser(BioPaxDetailsPanel detailsPanel) {
+		this.detailsPanel = detailsPanel;
+	}
 
-    /**
-     * User has clicked on a HyperLink.
-     *
-     * @param evt HyperLink Event Object.
-     */
-    public void hyperlinkUpdate(HyperlinkEvent evt) {
-        URL url = evt.getURL();
-        if (url != null) {
-            if (evt.getEventType() == HyperlinkEvent.EventType.ENTERED) {
-                CytoscapeWrapper.setStatusBarMsg(url.toString());
-            } else if (evt.getEventType() == HyperlinkEvent.EventType.EXITED) {
-                CytoscapeWrapper.clearStatusBar();
-            } else if (evt.getEventType()
-                    == HyperlinkEvent.EventType.ACTIVATED) {
-                OpenBrowser.openURL(url.toString());
-            }
-        }
-    }
+	/**
+	 * User has clicked on a HyperLink.
+	 *
+	 * @param evt HyperLink Event Object.
+	 */
+	public void hyperlinkUpdate(HyperlinkEvent evt) {
+		URL url = evt.getURL();
+
+		if (url != null) {
+			if (evt.getEventType() == HyperlinkEvent.EventType.ENTERED) {
+				CytoscapeWrapper.setStatusBarMsg(url.toString());
+			} else if (evt.getEventType() == HyperlinkEvent.EventType.EXITED) {
+				CytoscapeWrapper.clearStatusBar();
+			} else if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+				OpenBrowser.openURL(url.toString());
+			}
+		}
+	}
 }

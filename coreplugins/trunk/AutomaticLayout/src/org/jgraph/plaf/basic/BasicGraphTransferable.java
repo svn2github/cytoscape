@@ -1,14 +1,15 @@
 /*
- * @(#)BasicGraphTransferable	1.0 03-JUL-04
- * 
+ * @(#)BasicGraphTransferable    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.plaf.basic;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -18,9 +19,11 @@ import java.io.StringReader;
 
 import javax.swing.plaf.UIResource;
 
-public class BasicGraphTransferable
-	implements Transferable, UIResource, Serializable {
 
+/**
+ *
+ */
+public class BasicGraphTransferable implements Transferable, UIResource, Serializable {
 	private static DataFlavor[] htmlFlavors;
 	private static DataFlavor[] stringFlavors;
 	private static DataFlavor[] plainFlavors;
@@ -30,26 +33,19 @@ public class BasicGraphTransferable
 			htmlFlavors = new DataFlavor[3];
 			htmlFlavors[0] = new DataFlavor("text/html;class=java.lang.String");
 			htmlFlavors[1] = new DataFlavor("text/html;class=java.io.Reader");
-			htmlFlavors[2] =
-				new DataFlavor("text/html;charset=unicode;class=java.io.InputStream");
+			htmlFlavors[2] = new DataFlavor("text/html;charset=unicode;class=java.io.InputStream");
 
 			plainFlavors = new DataFlavor[3];
-			plainFlavors[0] =
-				new DataFlavor("text/plain;class=java.lang.String");
+			plainFlavors[0] = new DataFlavor("text/plain;class=java.lang.String");
 			plainFlavors[1] = new DataFlavor("text/plain;class=java.io.Reader");
-			plainFlavors[2] =
-				new DataFlavor("text/plain;charset=unicode;class=java.io.InputStream");
+			plainFlavors[2] = new DataFlavor("text/plain;charset=unicode;class=java.io.InputStream");
 
 			stringFlavors = new DataFlavor[2];
-			stringFlavors[0] =
-				new DataFlavor(
-					DataFlavor.javaJVMLocalObjectMimeType
-						+ ";class=java.lang.String");
+			stringFlavors[0] = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType
+			                                  + ";class=java.lang.String");
 			stringFlavors[1] = DataFlavor.stringFlavor;
-
 		} catch (ClassNotFoundException cle) {
-			System.err.println(
-				"error initializing javax.swing.plaf.basic.BasicTranserable");
+			System.err.println("error initializing javax.swing.plaf.basic.BasicTranserable");
 		}
 	}
 
@@ -70,22 +66,27 @@ public class BasicGraphTransferable
 
 		// fill in the array
 		int nDone = 0;
+
 		if (nRicher > 0) {
 			System.arraycopy(richerFlavors, 0, flavors, nDone, nRicher);
 			nDone += nRicher;
 		}
+
 		if (nHTML > 0) {
 			System.arraycopy(htmlFlavors, 0, flavors, nDone, nHTML);
 			nDone += nHTML;
 		}
+
 		if (nPlain > 0) {
 			System.arraycopy(plainFlavors, 0, flavors, nDone, nPlain);
 			nDone += nPlain;
 		}
+
 		if (nString > 0) {
 			System.arraycopy(stringFlavors, 0, flavors, nDone, nString);
 			nDone += nString;
 		}
+
 		return flavors;
 	}
 
@@ -97,11 +98,13 @@ public class BasicGraphTransferable
 	 */
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		DataFlavor[] flavors = getTransferDataFlavors();
+
 		for (int i = 0; i < flavors.length; i++) {
 			if (flavors[i].equals(flavor)) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -116,53 +119,56 @@ public class BasicGraphTransferable
 	 * @exception UnsupportedFlavorException if the requested data flavor is
 	 *              not supported.
 	 */
-	public Object getTransferData(DataFlavor flavor)
-		throws UnsupportedFlavorException, IOException {
+	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
 		if (isRicherFlavor(flavor)) {
 			return getRicherData(flavor);
 		} else if (isHTMLFlavor(flavor)) {
 			String data = getHTMLData();
 			data = (data == null) ? "" : data;
+
 			if (String.class.equals(flavor.getRepresentationClass())) {
 				return data;
 			} else if (Reader.class.equals(flavor.getRepresentationClass())) {
 				return new StringReader(data);
-			} else if (
-				InputStream.class.equals(flavor.getRepresentationClass())) {
+			} else if (InputStream.class.equals(flavor.getRepresentationClass())) {
 				return new StringBufferInputStream(data);
 			}
+
 			// fall through to unsupported
 		} else if (isPlainFlavor(flavor)) {
 			String data = getPlainData();
 			data = (data == null) ? "" : data;
+
 			if (String.class.equals(flavor.getRepresentationClass())) {
 				return data;
 			} else if (Reader.class.equals(flavor.getRepresentationClass())) {
 				return new StringReader(data);
-			} else if (
-				InputStream.class.equals(flavor.getRepresentationClass())) {
+			} else if (InputStream.class.equals(flavor.getRepresentationClass())) {
 				return new StringBufferInputStream(data);
 			}
-			// fall through to unsupported
 
+			// fall through to unsupported
 		} else if (isStringFlavor(flavor)) {
 			String data = getPlainData();
 			data = (data == null) ? "" : data;
+
 			return data;
 		}
+
 		throw new UnsupportedFlavorException(flavor);
 	}
 
 	// --- richer subclass flavors ----------------------------------------------
-
 	protected boolean isRicherFlavor(DataFlavor flavor) {
 		DataFlavor[] richerFlavors = getRicherFlavors();
 		int nFlavors = (richerFlavors != null) ? richerFlavors.length : 0;
+
 		for (int i = 0; i < nFlavors; i++) {
 			if (richerFlavors[i].equals(flavor)) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -175,8 +181,7 @@ public class BasicGraphTransferable
 		return null;
 	}
 
-	protected Object getRicherData(DataFlavor flavor)
-		throws UnsupportedFlavorException {
+	protected Object getRicherData(DataFlavor flavor) throws UnsupportedFlavorException {
 		return null;
 	}
 
@@ -190,11 +195,13 @@ public class BasicGraphTransferable
 	 */
 	protected boolean isHTMLFlavor(DataFlavor flavor) {
 		DataFlavor[] flavors = htmlFlavors;
+
 		for (int i = 0; i < flavors.length; i++) {
 			if (flavors[i].equals(flavor)) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -223,11 +230,13 @@ public class BasicGraphTransferable
 	 */
 	protected boolean isPlainFlavor(DataFlavor flavor) {
 		DataFlavor[] flavors = plainFlavors;
+
 		for (int i = 0; i < flavors.length; i++) {
 			if (flavors[i].equals(flavor)) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -256,12 +265,13 @@ public class BasicGraphTransferable
 	 */
 	protected boolean isStringFlavor(DataFlavor flavor) {
 		DataFlavor[] flavors = stringFlavors;
+
 		for (int i = 0; i < flavors.length; i++) {
 			if (flavors[i].equals(flavor)) {
 				return true;
 			}
 		}
+
 		return false;
 	}
-
 }

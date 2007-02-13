@@ -1,14 +1,18 @@
 /*
- * @(#)DefaultGraphModel.java	1.0 03-JUL-04
- * 
+ * @(#)DefaultGraphModel.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.event.GraphModelEvent;
+import org.jgraph.event.GraphModelListener;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -30,19 +34,14 @@ import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.UndoableEditSupport;
 
-import org.jgraph.event.GraphModelEvent;
-import org.jgraph.event.GraphModelListener;
 
 /**
  * A simple implementation of a graph model.
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
-public class DefaultGraphModel extends UndoableEditSupport implements
-		Serializable, GraphModel {
-
+public class DefaultGraphModel extends UndoableEditSupport implements Serializable, GraphModel {
 	/**
 	 * The list of listeners that listen to the model.
 	 */
@@ -83,6 +82,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			this.roots = roots;
 		else
 			this.roots = new ArrayList();
+
 		if (attributes != null)
 			this.attributes = attributes;
 		else
@@ -93,12 +93,16 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Constructs a model using the specified information to construct the
 	 * cells, attributes and connection data.
 	 */
-	public DefaultGraphModel(List roots, AttributeMap attributes,
-			ConnectionSet cs) {
+	public DefaultGraphModel(List roots, AttributeMap attributes, ConnectionSet cs) {
 		this(roots, attributes);
 		handleConnectionSet(cs);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public List getRoots() {
 		return roots;
 	}
@@ -110,7 +114,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	/**
 	 * Returns the number of roots in the model. Returns 0 if the model is
 	 * empty.
-	 * 
+	 *
 	 * @return the number of roots in the model
 	 */
 	public int getRootCount() {
@@ -121,7 +125,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns the root at index <I>index </I> in the model. This should not
 	 * return null if <i>index </i> is a valid index for the model (that is
 	 * <i>index </i>>= 0 && <i>index </i>< getRootCount()).
-	 * 
+	 *
 	 * @return the root of at index <I>index </I>
 	 */
 	public Object getRootAt(int index) {
@@ -131,7 +135,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	/**
 	 * Returns the index of <code>root</code> in the model. If root is
 	 * <code>null</code>, returns -1.
-	 * 
+	 *
 	 * @param root
 	 *            a root in the model, obtained from this data source
 	 * @return the index of the root in the model, or -1 if the parent is
@@ -144,13 +148,15 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	/**
 	 * Returns <code>true</code> if <code>node</code> or one of its
 	 * ancestors is in the model.
-	 * 
+	 *
 	 * @return <code>true</code> if <code>node</code> is in the model
 	 */
 	public boolean contains(Object node) {
 		Object parentNode = null;
+
 		while ((parentNode = getParent(node)) != null)
 			node = parentNode;
+
 		return roots.contains(node);
 	}
 
@@ -158,7 +164,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns a <code>Map</code> that represents the attributes for the
 	 * specified cell. This attributes have precedence over each view's
 	 * attributes, regardless of isAttributeStore.
-	 * 
+	 *
 	 * @return attributes of <code>node</code> as a <code>Map</code>
 	 */
 	public AttributeMap getAttributes(Object node) {
@@ -166,6 +172,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			return ((GraphCell) node).getAttributes();
 		else if (node == null)
 			return attributes;
+
 		return null;
 	}
 
@@ -177,13 +184,14 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	public Object getValue(Object cell) {
 		if (cell instanceof DefaultMutableTreeNode)
 			return ((DefaultMutableTreeNode) cell).getUserObject();
+
 		return null;
 	}
 
 	/**
 	 * Returns the graph model's attribute. Shortcut to <code>
 	 * getAttributes(null)</code>.
-	 * 
+	 *
 	 * @return attributes of <code>node</code> as a <code>Map</code>
 	 */
 	public Map getAttributes() {
@@ -197,24 +205,26 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	/**
 	 * Returns the source of <code>edge</code>. <I>edge </I> must be an
 	 * object previously obtained from this data source.
-	 * 
+	 *
 	 * @return <code>Object</code> that represents the source of <i>edge </i>
 	 */
 	public Object getSource(Object edge) {
 		if (edge instanceof Edge)
 			return ((Edge) edge).getSource();
+
 		return null;
 	}
 
 	/**
 	 * Returns the target of <code>edge</code>. <I>edge </I> must be an
 	 * object previously obtained from this data source.
-	 * 
+	 *
 	 * @return <code>Object</code> that represents the target of <i>edge </i>
 	 */
 	public Object getTarget(Object edge) {
 		if (edge instanceof Edge)
 			return ((Edge) edge).getTarget();
+
 		return null;
 	}
 
@@ -222,7 +232,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns <code>true</code> if <code>port</code> is a valid source for
 	 * <code>edge</code>. <I>edge </I> and <I>port </I> must be objects
 	 * previously obtained from this data source.
-	 * 
+	 *
 	 * @return <code>true</code> if <code>port</code> is a valid source for
 	 *         <code>edge</code>.
 	 */
@@ -234,7 +244,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns <code>true</code> if <code>port</code> is a valid target for
 	 * <code>edge</code>. <I>edge </I> and <I>port </I> must be objects
 	 * previously obtained from this data source.
-	 * 
+	 *
 	 * @return <code>true</code> if <code>port</code> is a valid target for
 	 *         <code>edge</code>.
 	 */
@@ -246,7 +256,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns an iterator of the edges connected to <code>port</code>.
 	 * <I>port </I> must be a object previously obtained from this data source.
 	 * This method never returns null.
-	 * 
+	 *
 	 * @param port
 	 *            a port in the graph, obtained from this data source
 	 * @return <code>Iterator</code> that represents the connected edges
@@ -254,12 +264,13 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	public Iterator edges(Object port) {
 		if (port instanceof Port)
 			return ((Port) port).edges();
+
 		return emptyIterator;
 	}
 
 	/**
 	 * Returns <code>true</code> if <code>edge</code> is a valid edge.
-	 * 
+	 *
 	 * @return <code>true</code> if <code>edge</code> is a valid edge.
 	 */
 	public boolean isEdge(Object edge) {
@@ -269,7 +280,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	/**
 	 * Returns <code>true</code> if <code>port</code> is a valid port,
 	 * possibly supporting edge connection.
-	 * 
+	 *
 	 * @return <code>true</code> if <code>port</code> is a valid port.
 	 */
 	public boolean isPort(Object port) {
@@ -282,8 +293,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * connection data stored in the cells.
 	 */
 	public ConnectionSet getConnectionSet() {
-		return ConnectionSet
-				.create(this, DefaultGraphModel.getAll(this), false);
+		return ConnectionSet.create(this, DefaultGraphModel.getAll(this), false);
 	}
 
 	//
@@ -299,12 +309,17 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	public Map cloneCells(Object[] cells) {
 		Map map = new Hashtable();
+
 		// Add Cells to Queue
 		for (int i = 0; i < cells.length; i++)
 			map.put(cells[i], cloneCell(cells[i]));
+
 		// Replace Parent and Anchors
 		Iterator it = map.entrySet().iterator();
-		Object obj, cell, parent;
+		Object obj;
+		Object cell;
+		Object parent;
+
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
 			obj = entry.getValue();
@@ -312,19 +327,22 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 			// Replaces the cloned cell's parent with the parent's clone
 			parent = getParent(cell);
+
 			if (parent != null)
 				parent = map.get(parent);
+
 			if (parent != null)
-				((DefaultMutableTreeNode) parent)
-						.add((DefaultMutableTreeNode) obj);
+				((DefaultMutableTreeNode) parent).add((DefaultMutableTreeNode) obj);
 
 			// Replaces the anchors for ports
 			if (obj instanceof Port) {
 				Object anchor = ((Port) obj).getAnchor();
+
 				if (anchor != null)
 					((Port) obj).setAnchor((Port) map.get(anchor));
 			}
 		}
+
 		return map;
 	}
 
@@ -332,8 +350,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Sets the parent of the specified cell.
 	 */
 	protected void setParent(Object child, Object parent) {
-		if (child instanceof DefaultMutableTreeNode
-				&& parent instanceof DefaultMutableTreeNode) {
+		if (child instanceof DefaultMutableTreeNode && parent instanceof DefaultMutableTreeNode) {
 			DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) parent;
 			parentNode.add((DefaultMutableTreeNode) child);
 		}
@@ -351,8 +368,10 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			DefaultGraphCell clone = (DefaultGraphCell) cell.clone();
 			// Clones the user object
 			clone.setUserObject(cloneUserObject(cell.getUserObject()));
+
 			return clone;
 		}
+
 		return cellObj;
 	}
 
@@ -371,21 +390,22 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns the parent of <I>child </I> in the model. <I>child </I> must be a
 	 * node previously obtained from this data source. This returns null if
 	 * <i>child </i> is a root in the model.
-	 * 
+	 *
 	 * @param child
 	 *            a node in the graph, obtained from this data source
 	 * @return the parent of <I>child </I>
 	 */
 	public Object getParent(Object child) {
-		if (child != null && child instanceof TreeNode)
+		if ((child != null) && child instanceof TreeNode)
 			return ((TreeNode) child).getParent();
+
 		return null;
 	}
 
 	/**
 	 * Returns the index of child in parent. If either the parent or child is
 	 * <code>null</code>, returns -1.
-	 * 
+	 *
 	 * @param parent
 	 *            a note in the tree, obtained from this data source
 	 * @param child
@@ -394,8 +414,9 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 *         or the child is <code>null</code>
 	 */
 	public int getIndexOfChild(Object parent, Object child) {
-		if (parent == null || child == null)
+		if ((parent == null) || (child == null))
 			return -1;
+
 		return ((TreeNode) parent).getIndex((TreeNode) child);
 	}
 
@@ -405,7 +426,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * from this data source. This should not return null if <i>index </i> is a
 	 * valid index for <i>parent </i> (that is <i>index </i>>= 0 && <i>index
 	 * </i>< getChildCount( <i>parent </i>)).
-	 * 
+	 *
 	 * @param parent
 	 *            a node in the tree, obtained from this data source
 	 * @return the child of <I>parent </I> at index <I>index </I>
@@ -413,6 +434,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	public Object getChild(Object parent, int index) {
 		if (parent instanceof TreeNode)
 			return ((TreeNode) parent).getChildAt(index);
+
 		return null;
 	}
 
@@ -420,7 +442,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns the number of children of <I>parent </I>. Returns 0 if the node
 	 * is a leaf or if it has no children. <I>parent </I> must be a node
 	 * previously obtained from this data source.
-	 * 
+	 *
 	 * @param parent
 	 *            a node in the tree, obtained from this data source
 	 * @return the number of children of the node <I>parent </I>
@@ -428,13 +450,14 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	public int getChildCount(Object parent) {
 		if (parent instanceof TreeNode)
 			return ((TreeNode) parent).getChildCount();
+
 		return 0;
 	}
 
 	/**
 	 * Returns whether the specified node is a leaf node. The way the test is
 	 * performed depends on the.
-	 * 
+	 *
 	 * @param node
 	 *            the node to check
 	 * @return true if the node is a leaf node
@@ -442,6 +465,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	public boolean isLeaf(Object node) {
 		if (asksAllowsChildren && node instanceof TreeNode)
 			return !((TreeNode) node).getAllowsChildren();
+
 		return ((TreeNode) node).isLeaf();
 	}
 
@@ -458,17 +482,19 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * passed-in propertyMap may contain <code>PortView</code> s which must be
 	 * turned into <code>Point</code> s when stored in the model.
 	 */
-	public void insert(Object[] roots, Map attributes, ConnectionSet cs,
-			ParentMap pm, UndoableEdit[] edits) {
+	public void insert(Object[] roots, Map attributes, ConnectionSet cs, ParentMap pm,
+	                   UndoableEdit[] edits) {
 		GraphModelEdit edit = createEdit(roots, null, attributes, cs, pm, edits);
+
 		if (edit != null) {
 			edit.execute(); // fires graphChangeEvent
+
 			if (edits != null) {
 				for (int i = 0; i < edits.length; i++)
 					if (edits[i] instanceof GraphLayoutCache.GraphLayoutCacheEdit)
-						((GraphLayoutCache.GraphLayoutCacheEdit) edits[i])
-								.execute();
+						((GraphLayoutCache.GraphLayoutCacheEdit) edits[i]).execute();
 			}
+
 			postEdit(edit); // fires undoableedithappened
 		}
 	}
@@ -479,6 +505,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	public void remove(Object[] roots) {
 		GraphModelEdit edit = createRemoveEdit(roots);
+
 		if (edit != null) {
 			edit.execute();
 			postEdit(edit);
@@ -489,8 +516,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Shortcut to the new edit method which allows inserts and removes to go
 	 * along with an edit.
 	 */
-	public void edit(Map attributes, ConnectionSet cs, ParentMap pm,
-			UndoableEdit[] edits) {
+	public void edit(Map attributes, ConnectionSet cs, ParentMap pm, UndoableEdit[] edits) {
 		edit(null, null, attributes, cs, pm, edits);
 	}
 
@@ -506,27 +532,28 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * UndoableEditListeners. Note: The passed-in propertyMap may contains
 	 * PortViews which must be turned into Points when stored in the model.
 	 */
-	public void edit(Object[] inserted, Object[] removed, Map attributes,
-			ConnectionSet cs, ParentMap pm, UndoableEdit[] edits) {
-		if ((inserted == null || inserted.length == 0)
-				&& (removed == null || removed.length == 0)
-				&& (attributes == null || attributes.isEmpty())
-				&& (cs == null || cs.isEmpty()) && pm == null && edits != null
-				&& edits.length == 1) {
+	public void edit(Object[] inserted, Object[] removed, Map attributes, ConnectionSet cs,
+	                 ParentMap pm, UndoableEdit[] edits) {
+		if (((inserted == null) || (inserted.length == 0))
+		    && ((removed == null) || (removed.length == 0))
+		    && ((attributes == null) || attributes.isEmpty()) && ((cs == null) || cs.isEmpty())
+		    && (pm == null) && (edits != null) && (edits.length == 1)) {
 			if (edits[0] instanceof GraphLayoutCache.GraphLayoutCacheEdit)
 				((GraphLayoutCache.GraphLayoutCacheEdit) edits[0]).execute();
+
 			postEdit(edits[0]); // UndoableEdit Relay
 		} else {
-			GraphModelEdit edit = createEdit(inserted, removed, attributes, cs,
-					pm, edits);
+			GraphModelEdit edit = createEdit(inserted, removed, attributes, cs, pm, edits);
+
 			if (edit != null) {
 				edit.execute();
+
 				if (edits != null) {
 					for (int i = 0; i < edits.length; i++)
 						if (edits[i] instanceof GraphLayoutCache.GraphLayoutCacheEdit)
-							((GraphLayoutCache.GraphLayoutCacheEdit) edits[i])
-									.execute();
+							((GraphLayoutCache.GraphLayoutCacheEdit) edits[i]).execute();
 				}
+
 				postEdit(edit);
 			}
 		}
@@ -536,8 +563,8 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Sends <code>cells</code> to back.
 	 */
 	public void toBack(Object[] cells) {
-		GraphModelLayerEdit edit = createLayerEdit(cells,
-				GraphModelLayerEdit.BACK);
+		GraphModelLayerEdit edit = createLayerEdit(cells, GraphModelLayerEdit.BACK);
+
 		if (edit != null) {
 			edit.execute();
 			postEdit(edit);
@@ -548,8 +575,8 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Brings <code>cells</code> to front.
 	 */
 	public void toFront(Object[] cells) {
-		GraphModelLayerEdit edit = createLayerEdit(cells,
-				GraphModelLayerEdit.FRONT);
+		GraphModelLayerEdit edit = createLayerEdit(cells, GraphModelLayerEdit.FRONT);
+
 		if (edit != null) {
 			edit.execute();
 			postEdit(edit);
@@ -567,6 +594,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	/**
 	 * Returns an edit that represents an insert.
 	 */
+
 	// protected GraphModelEdit createInsertEdit(Object[] cells, Map
 	// attributeMap,
 	// ConnectionSet cs, ParentMap pm, UndoableEdit[] edits) {
@@ -578,25 +606,31 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	protected GraphModelEdit createRemoveEdit(Object[] cells) {
 		// Remove from GraphStructure
 		ConnectionSet cs = ConnectionSet.create(this, cells, true);
+
 		// Remove from Group Structure
 		ParentMap pm = ParentMap.create(this, cells, true, false);
+
 		// Construct Edit
 		GraphModelEdit edit = createEdit(null, cells, null, cs, pm, null);
+
 		if (edit != null)
 			edit.end();
+
 		return edit;
 	}
 
-	protected GraphModelEdit createEdit(Object[] inserted, Object[] removed,
-			Map attributes, ConnectionSet cs, ParentMap pm, UndoableEdit[] edits) {
-		GraphModelEdit edit = new GraphModelEdit(inserted, removed, attributes,
-				cs, pm);
+	protected GraphModelEdit createEdit(Object[] inserted, Object[] removed, Map attributes,
+	                                    ConnectionSet cs, ParentMap pm, UndoableEdit[] edits) {
+		GraphModelEdit edit = new GraphModelEdit(inserted, removed, attributes, cs, pm);
+
 		if (edit != null) {
 			if (edits != null)
 				for (int i = 0; i < edits.length; i++)
 					edit.addEdit(edits[i]);
+
 			edit.end();
 		}
+
 		return edit;
 	}
 
@@ -610,14 +644,18 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	protected Object[] handleInsert(Object[] cells) {
 		Object[] inserted = null;
+
 		if (cells != null) {
 			for (int i = 0; i < cells.length; i++)
+
 				// Add to Roots if no parent
 				if (getParent(cells[i]) == null)
 					roots.add(cells[i]);
+
 			// Return *all* inserted cells
 			inserted = getDescendants(this, cells).toArray();
 		}
+
 		return inserted;
 	}
 
@@ -627,10 +665,12 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	protected Object[] handleRemove(Object[] cells) {
 		List removedRoots = new ArrayList();
+
 		if (cells != null)
 			for (int i = 0; i < cells.length; i++)
-				if (getParent(cells[i]) == null && roots.remove(cells[i]))
+				if ((getParent(cells[i]) == null) && roots.remove(cells[i]))
 					removedRoots.add(cells[i]);
+
 		return removedRoots.toArray();
 	}
 
@@ -643,35 +683,38 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			ParentMap undo = new ParentMap();
 			HashSet rootsSet = new HashSet(roots);
 			Iterator it = parentMap.entries();
+
 			while (it.hasNext()) {
 				ParentMap.Entry entry = (ParentMap.Entry) it.next();
 				Object child = entry.getChild();
 				Object parent = entry.getParent();
 				undo.addEntry(child, getParent(child));
+
 				if (parent == null) {
 					if (child instanceof MutableTreeNode) {
 						((MutableTreeNode) child).removeFromParent();
 					}
 				} else {
 					if (parent instanceof DefaultMutableTreeNode
-							&& child instanceof MutableTreeNode) {
-						((DefaultMutableTreeNode) parent)
-								.add((MutableTreeNode) child);
+					    && child instanceof MutableTreeNode) {
+						((DefaultMutableTreeNode) parent).add((MutableTreeNode) child);
 					}
 				}
 
 				boolean isRoot = rootsSet.contains(child);
-				if (parent == null && !isRoot) {
+
+				if ((parent == null) && !isRoot) {
 					roots.add(child);
 					rootsSet.add(child);
-				}
-				else if (parent != null && isRoot) {
+				} else if ((parent != null) && isRoot) {
 					roots.remove(child);
 					rootsSet.remove(child);
 				}
 			}
+
 			return undo;
 		}
+
 		return null;
 	}
 
@@ -683,15 +726,18 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 		if (attributes != null) {
 			Hashtable undo = new Hashtable(attributes.size());
 			Iterator it = attributes.entrySet().iterator();
+
 			while (it.hasNext()) {
 				Map.Entry entry = (Map.Entry) it.next();
 				Object cell = entry.getKey();
 				Map deltaNew = (Map) entry.getValue();
+
 				// System.out.println("deltaNew="+deltaNew);
 				// System.out.println("stateOld="+getAttributes(cell));
 				// Handle New Values
 				Map deltaOld = null;
 				AttributeMap attr = getAttributes(cell);
+
 				if (attr != null) {
 					deltaOld = attr.applyMap(deltaNew);
 					// System.out.println("stateNew="+getAttributes(cell));
@@ -701,20 +747,26 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 					// Make room for the value
 					deltaOld = new Hashtable(2);
 				}
+
 				// Handle new values
 				Object newValue = deltaNew.get(GraphConstants.VALUE);
+
 				if (newValue != null) {
 					Object oldValue = valueForCellChanged(cell, newValue);
+
 					if (oldValue != null)
 						GraphConstants.setValue(deltaOld, oldValue);
+
 					// TODO: Userobject of null is probably invalid
 					else
 						GraphConstants.setRemoveAttributes(deltaOld,
-								new Object[] { GraphConstants.VALUE });
+						                                   new Object[] { GraphConstants.VALUE });
 				}
 			}
+
 			return undo;
 		}
+
 		return null;
 	}
 
@@ -723,7 +775,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * the user object you must still override the attribute map and provide a
 	 * custom cloneUserObject method. This is because the cloning of a cell is
 	 * local to the cell, which in turn has a reference to its attribute map.
-	 * 
+	 *
 	 * @param cell
 	 * @param newValue
 	 * @return the old value for the cell, if any
@@ -733,8 +785,10 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) cell;
 			Object oldValue = node.getUserObject();
 			node.setUserObject(newValue);
+
 			return oldValue;
 		}
+
 		return null;
 	}
 
@@ -750,14 +804,16 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 		if (cs != null) {
 			ConnectionSet csundo = new ConnectionSet();
 			Iterator it = cs.connections();
+
 			while (it.hasNext()) {
-				ConnectionSet.Connection c = (ConnectionSet.Connection) it
-						.next();
+				ConnectionSet.Connection c = (ConnectionSet.Connection) it.next();
 				Object edge = c.getEdge();
+
 				if (c.isSource())
 					csundo.connect(edge, getSource(edge), true);
 				else
 					csundo.connect(edge, getTarget(edge), false);
+
 				handleConnection(c, false);
 			}
 
@@ -767,21 +823,22 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			// Therefore, we first need to remove all old connections
 			// and then add all new connections in two steps.
 			it = cs.connections();
+
 			while (it.hasNext())
 				handleConnection((ConnectionSet.Connection) it.next(), true);
+
 			return csundo;
 		}
+
 		return null;
 	}
 
 	/**
 	 * Inserts the specified connection into the model.
 	 */
-	protected void handleConnection(ConnectionSet.Connection c,
-			boolean establish) {
+	protected void handleConnection(ConnectionSet.Connection c, boolean establish) {
 		Object edge = c.getEdge();
-		Object port = (establish) ? c.getPort()
-				: (c.isSource()) ? getSource(edge) : getTarget(edge);
+		Object port = (establish) ? c.getPort() : ((c.isSource()) ? getSource(edge) : getTarget(edge));
 		connect(edge, port, c.isSource(), establish);
 	}
 
@@ -790,19 +847,19 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * <code>remove</code>. Subclassers should override this to update
 	 * connectivity datastructures.
 	 */
-	protected void connect(Object edge, Object port, boolean isSource,
-			boolean insert) {
+	protected void connect(Object edge, Object port, boolean isSource, boolean insert) {
 		if (port instanceof Port)
 			if (insert)
 				((Port) port).addEdge(edge);
 
 			// Only removes if opposite is not
 			// connected to same port
-			else if ((isSource) ? getTarget(edge) != port
-					: getSource(edge) != port)
+			else if ((isSource) ? (getTarget(edge) != port) : (getSource(edge) != port))
 				((Port) port).removeEdge(edge);
+
 		if (!insert)
 			port = null;
+
 		if (edge instanceof Edge) {
 			if (isSource)
 				((Edge) edge).setSource(port);
@@ -817,7 +874,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 	/**
 	 * Adds a listener for the GraphModelEvent posted after the graph changes.
-	 * 
+	 *
 	 * @see #removeGraphModelListener
 	 * @param l
 	 *            the listener to add
@@ -828,7 +885,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 	/**
 	 * Removes a listener previously added with <B>addGraphModelListener() </B>.
-	 * 
+	 *
 	 * @see #addGraphModelListener
 	 * @param l
 	 *            the listener to remove
@@ -843,60 +900,59 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	public void cellsChanged(final Object[] cells) {
 		if (cells != null) {
-			fireGraphChanged(this, new GraphModelEvent.GraphModelChange() {
+			fireGraphChanged(this,
+			                 new GraphModelEvent.GraphModelChange() {
+					public Object[] getInserted() {
+						return null;
+					}
 
-				public Object[] getInserted() {
-					return null;
-				}
+					public Object[] getRemoved() {
+						return null;
+					}
 
-				public Object[] getRemoved() {
-					return null;
-				}
+					public Map getPreviousAttributes() {
+						return null;
+					}
 
-				public Map getPreviousAttributes() {
-					return null;
-				}
+					public ConnectionSet getConnectionSet() {
+						return null;
+					}
 
-				public ConnectionSet getConnectionSet() {
-					return null;
-				}
+					public ConnectionSet getPreviousConnectionSet() {
+						return null;
+					}
 
-				public ConnectionSet getPreviousConnectionSet() {
-					return null;
-				}
+					public ParentMap getParentMap() {
+						return null;
+					}
 
-				public ParentMap getParentMap() {
-					return null;
-				}
+					public ParentMap getPreviousParentMap() {
+						return null;
+					}
 
-				public ParentMap getPreviousParentMap() {
-					return null;
-				}
+					public void putViews(GraphLayoutCache view, CellView[] cellViews) {
+					}
 
-				public void putViews(GraphLayoutCache view, CellView[] cellViews) {
-				}
+					public CellView[] getViews(GraphLayoutCache view) {
+						return null;
+					}
 
-				public CellView[] getViews(GraphLayoutCache view) {
-					return null;
-				}
+					public Object getSource() {
+						return this;
+					}
 
-				public Object getSource() {
-					return this;
-				}
+					public Object[] getChanged() {
+						return cells;
+					}
 
-				public Object[] getChanged() {
-					return cells;
-				}
+					public Map getAttributes() {
+						return null;
+					}
 
-				public Map getAttributes() {
-					return null;
-				}
-
-				public Object[] getContext() {
-					return null;
-				}
-
-			});
+					public Object[] getContext() {
+						return null;
+					}
+				});
 		}
 	}
 
@@ -904,14 +960,14 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Notify all listeners that have registered interest for notification on
 	 * this event type. The event instance is lazily created using the
 	 * parameters passed into the fire method.
-	 * 
+	 *
 	 * @see EventListenerList
 	 */
-	protected void fireGraphChanged(Object source,
-			GraphModelEvent.GraphModelChange edit) {
+	protected void fireGraphChanged(Object source, GraphModelEvent.GraphModelChange edit) {
 		// Guaranteed to return a non-null array
 		Object[] listeners = listenerList.getListenerList();
 		GraphModelEvent e = null;
+
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
 		for (int i = listeners.length - 2; i >= 0; i -= 2) {
@@ -919,6 +975,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 				// Lazily create the event:
 				if (e == null)
 					e = new GraphModelEvent(source, edit);
+
 				((GraphModelListener) listeners[i + 1]).graphChanged(e);
 			}
 		}
@@ -928,8 +985,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Return an array of all GraphModelListeners that were added to this model.
 	 */
 	public GraphModelListener[] getGraphModelListeners() {
-		return (GraphModelListener[]) listenerList
-				.getListeners(GraphModelListener.class);
+		return (GraphModelListener[]) listenerList.getListeners(GraphModelListener.class);
 	}
 
 	//
@@ -940,33 +996,55 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * An implementation of GraphModelChange that can be added to the model
 	 * event.
 	 */
-	public class GraphModelEdit extends CompoundEdit implements
-			GraphModelEvent.GraphModelChange {
+	public class GraphModelEdit extends CompoundEdit implements GraphModelEvent.GraphModelChange {
+		/* Cells that were inserted/removed/changed during the last execution. */
+		protected Object[] insert;
 
 		/* Cells that were inserted/removed/changed during the last execution. */
-		protected Object[] insert, changed, remove, context;
+		protected Object[] changed;
 
 		/* Cells that were inserted/removed/changed during the last execution. */
-		protected Object[] inserted, removed;
+		protected Object[] remove;
+
+		/* Cells that were inserted/removed/changed during the last execution. */
+		protected Object[] context;
+
+		/* Cells that were inserted/removed/changed during the last execution. */
+		protected Object[] inserted;
+
+		/* Cells that were inserted/removed/changed during the last execution. */
+		protected Object[] removed;
 
 		/*
 		 * Property map for the next execution. Attribute Map is passed to the
 		 * views on inserts.
 		 */
-		protected Map attributes, previousAttributes;
+		protected Map attributes;
+
+		/*
+		 * Property map for the next execution. Attribute Map is passed to the
+		 * views on inserts.
+		 */
+		protected Map previousAttributes;
 
 		/* Parent map for the next execution. */
-		protected ParentMap parentMap, previousParentMap;
+		protected ParentMap parentMap;
+
+		/* Parent map for the next execution. */
+		protected ParentMap previousParentMap;
 
 		/* ConnectionSet for the next execution. */
-		protected ConnectionSet connectionSet, previousConnectionSet;
+		protected ConnectionSet connectionSet;
+
+		/* ConnectionSet for the next execution. */
+		protected ConnectionSet previousConnectionSet;
 
 		/* Piggybacked undo from the views. */
 		protected Map cellViews = new Hashtable();
 
 		/**
 		 * Constructs an edit record.
-		 * 
+		 *
 		 * @param inserted
 		 *            a set of roots that were inserted
 		 * @param removed
@@ -978,8 +1056,8 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 		 * @param parentMap
 		 *            the map of changed parents
 		 */
-		public GraphModelEdit(Object[] inserted, Object[] removed,
-				Map attributes, ConnectionSet connectionSet, ParentMap parentMap) {
+		public GraphModelEdit(Object[] inserted, Object[] removed, Map attributes,
+		                      ConnectionSet connectionSet, ParentMap parentMap) {
 			super();
 			this.insert = inserted;
 			this.remove = removed;
@@ -989,23 +1067,28 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			previousAttributes = null;
 			previousConnectionSet = connectionSet;
 			previousParentMap = parentMap;
+
 			// Remove Empty Parents
 			if (parentMap != null) {
 				// Compute Empty Group
 				Map childCount = new Hashtable();
 				Iterator it = parentMap.entries();
+
 				while (it.hasNext()) {
 					ParentMap.Entry entry = (ParentMap.Entry) it.next();
 					Object child = entry.getChild();
+
 					if (!isPort(child)) {
 						Object oldParent = getParent(child);
 						Object newParent = entry.getParent();
+
 						if (oldParent != newParent) {
 							changeChildCount(childCount, oldParent, -1);
 							changeChildCount(childCount, newParent, 1);
 						}
 					}
 				}
+
 				handleEmptyGroups(filterParents(childCount, 0));
 			}
 		}
@@ -1013,23 +1096,27 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 		public Object[] filterParents(Map childCount, int children) {
 			ArrayList list = new ArrayList();
 			Iterator it = childCount.entrySet().iterator();
+
 			while (it.hasNext()) {
 				Map.Entry entry = (Map.Entry) it.next();
+
 				if (entry.getValue() instanceof Integer) {
 					if (((Integer) entry.getValue()).intValue() == children)
 						list.add(entry.getKey());
 				}
 			}
+
 			return list.toArray();
 		}
 
-		protected void changeChildCount(Map childCount, Object parent,
-				int change) {
+		protected void changeChildCount(Map childCount, Object parent, int change) {
 			if (parent != null) {
 				Integer count = (Integer) childCount.get(parent);
+
 				if (count == null) {
 					count = new Integer(getChildCount(parent));
 				}
+
 				int newValue = count.intValue() + change;
 				childCount.put(parent, new Integer(newValue));
 			}
@@ -1041,9 +1128,10 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 		 * and the parent- child relations will be restored.
 		 */
 		protected void handleEmptyGroups(Object[] groups) {
-			if (groups != null && groups.length > 0) {
+			if ((groups != null) && (groups.length > 0)) {
 				if (remove == null)
-					remove = new Object[] {};
+					remove = new Object[] {  };
+
 				Object[] tmp = new Object[remove.length + groups.length];
 				System.arraycopy(remove, 0, tmp, 0, remove.length);
 				System.arraycopy(groups, 0, tmp, remove.length, groups.length);
@@ -1112,7 +1200,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 		/**
 		 * Returns the connectionSet.
-		 * 
+		 *
 		 * @return ConnectionSet
 		 */
 		public ConnectionSet getConnectionSet() {
@@ -1125,7 +1213,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 		/**
 		 * Returns the parentMap.
-		 * 
+		 *
 		 * @return ParentMap
 		 */
 		public ParentMap getParentMap() {
@@ -1138,7 +1226,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 		/**
 		 * Redoes a change.
-		 * 
+		 *
 		 * @exception CannotRedoException
 		 *                if the change cannot be redone
 		 */
@@ -1149,7 +1237,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 		/**
 		 * Undoes a change.
-		 * 
+		 *
 		 * @exception CannotUndoException
 		 *                if the change cannot be undone
 		 */
@@ -1165,18 +1253,24 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 		public void execute() {
 			// Compute Changed Cells
 			Set tmp = new HashSet();
+
 			if (attributes != null)
 				tmp.addAll(attributes.keySet());
+
 			if (parentMap != null)
 				tmp.addAll(parentMap.getChangedNodes());
+
 			// Note: One must also include the previous parents!
 			if (connectionSet != null)
 				tmp.addAll(connectionSet.getChangedEdges());
+
 			if (remove != null) {
 				for (int i = 0; i < remove.length; i++)
 					tmp.remove(remove[i]);
 			}
+
 			changed = tmp.toArray();
+
 			// Context cells
 			Set ctx = getEdges(DefaultGraphModel.this, changed);
 			context = ctx.toArray();
@@ -1186,9 +1280,11 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			remove = handleInsert(inserted);
 			previousParentMap = parentMap;
 			parentMap = handleParentMap(parentMap);
+
 			// Adds previous parents
 			if (parentMap != null)
 				tmp.addAll(parentMap.getChangedNodes());
+
 			previousConnectionSet = connectionSet;
 			connectionSet = handleConnectionSet(connectionSet);
 			insert = handleRemove(removed);
@@ -1200,7 +1296,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 		}
 
 		public void putViews(GraphLayoutCache view, CellView[] views) {
-			if (view != null && views != null)
+			if ((view != null) && (views != null))
 				cellViews.put(view, views);
 		}
 
@@ -1210,47 +1306,50 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 		public String toString() {
 			String s = new String();
+
 			if (inserted != null) {
 				s += "Inserted:\n";
+
 				for (int i = 0; i < inserted.length; i++)
-					s += "  " + inserted[i] + "\n";
+					s += ("  " + inserted[i] + "\n");
 			} else
 				s += "None inserted\n";
+
 			if (removed != null) {
 				s += "Removed:\n";
+
 				for (int i = 0; i < removed.length; i++)
-					s += "  " + removed[i] + "\n";
+					s += ("  " + removed[i] + "\n");
 			} else
 				s += "None removed\n";
-			if (changed != null && changed.length > 0) {
+
+			if ((changed != null) && (changed.length > 0)) {
 				s += "Changed:\n";
+
 				for (int i = 0; i < changed.length; i++)
-					s += "  " + changed[i] + "\n";
+					s += ("  " + changed[i] + "\n");
 			} else
 				s += "None changed\n";
+
 			if (parentMap != null)
 				s += parentMap.toString();
 			else
 				s += "No parent map\n";
+
 			return s;
 		}
-
 	}
 
 	/**
 	 * An implementation of GraphViewChange.
 	 */
-	public class GraphModelLayerEdit extends AbstractUndoableEdit implements
-			GraphModelEvent.GraphModelChange {
-
-		public static final int FRONT = -1, BACK = -2;
-
+	public class GraphModelLayerEdit extends AbstractUndoableEdit implements GraphModelEvent.GraphModelChange {
+		public static final int FRONT = -1;
+		public static final int BACK = -2;
 		protected Object changeSource;
-
 		protected transient Object[] cells;
-
-		protected transient int[] next, prev;
-
+		protected transient int[] next;
+		protected transient int[] prev;
 		protected int layer;
 
 		// The cell that change are the parents, because they need to
@@ -1267,14 +1366,19 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			next = new int[cells.length];
 			prev = new int[cells.length];
 			updateNext();
+
 			// Compute array of changed cells (roots or parents of cells)
 			Set par = new HashSet();
+
 			for (int i = 0; i < cells.length; i++) {
 				Object cell = DefaultGraphModel.this.getParent(cells[i]);
+
 				if (cell == null)
 					cell = cells[i];
+
 				par.add(cell);
 			}
+
 			changed = par.toArray();
 		}
 
@@ -1384,7 +1488,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 		/**
 		 * Redoes a change.
-		 * 
+		 *
 		 * @exception CannotRedoException
 		 *                if the change cannot be redone
 		 */
@@ -1396,7 +1500,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 
 		/**
 		 * Undoes a change.
-		 * 
+		 *
 		 * @exception CannotUndoException
 		 *                if the change cannot be undone
 		 */
@@ -1412,20 +1516,26 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 		public void execute() {
 			for (int i = 0; i < cells.length; i++) {
 				List list = getParentList(cells[i]);
+
 				if (list != null) {
 					prev[i] = list.indexOf(cells[i]);
+
 					if (prev[i] >= 0) {
 						list.remove(prev[i]);
+
 						int n = next[i];
+
 						if (n == FRONT)
 							n = list.size();
 						else if (n == BACK)
 							n = 0;
+
 						list.add(n, cells[i]);
 						next[i] = prev[i];
 					}
 				}
 			}
+
 			updateListeners();
 		}
 
@@ -1438,16 +1548,18 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 		 */
 		protected List getParentList(Object cell) {
 			List list = null;
+
 			if (cell instanceof DefaultMutableTreeNode) {
 				Object parent = ((DefaultMutableTreeNode) cell).getParent();
+
 				if (parent instanceof DefaultGraphCell)
 					list = ((DefaultGraphCell) parent).getChildren();
 				else
 					list = roots;
 			}
+
 			return list;
 		}
-
 	}
 
 	//
@@ -1458,8 +1570,8 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns a deep clone of the specified cell, including all children.
 	 */
 	public static Object cloneCell(GraphModel model, Object cell) {
-		Map clones = model.cloneCells(getDescendants(model,
-				new Object[] { cell }).toArray());
+		Map clones = model.cloneCells(getDescendants(model, new Object[] { cell }).toArray());
+
 		return clones.get(cell);
 	}
 
@@ -1468,9 +1580,11 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	public static Object[] cloneCell(GraphModel model, Object[] cells) {
 		Map clones = model.cloneCells(getDescendants(model, cells).toArray());
+
 		for (int i = 0; i < cells.length; i++) {
 			cells[i] = clones.get(cells[i]);
 		}
+
 		return cells;
 	}
 
@@ -1497,6 +1611,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	public static Object getSourceVertex(GraphModel model, Object edge) {
 		if (model != null)
 			return model.getParent(model.getSource(edge));
+
 		return null;
 	}
 
@@ -1507,6 +1622,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	public static Object getTargetVertex(GraphModel model, Object edge) {
 		if (model != null)
 			return model.getParent(model.getTarget(edge));
+
 		return null;
 	}
 
@@ -1514,12 +1630,13 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * @return Returns the user object of the given cell. This implementation
 	 *         checks if the cell is a default mutable tree node and returns
 	 *         it's user object.
-	 * 
+	 *
 	 * @deprecated Use {@link GraphModel#getValue(Object)} instead.
 	 */
 	public static Object getUserObject(Object cell) {
 		if (cell instanceof DefaultMutableTreeNode)
 			return ((DefaultMutableTreeNode) cell).getUserObject();
+
 		return null;
 	}
 
@@ -1527,7 +1644,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Checks whether the cell has at least one child which is not a port. This
 	 * implementation operates on the model, not taking into account visibility
 	 * of cells. It returns true for groups regardless of their folded state.
-	 * 
+	 *
 	 * @param cell
 	 *            the cell to check for being a group
 	 * @return Returns true if the cell contains at least one cell which is not
@@ -1538,14 +1655,15 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			if (!model.isPort(model.getChild(cell, i)))
 				return true;
 		}
+
 		return false;
 	}
 
 	/**
 	 * Returns all cells of the model in an array.
-	 * 
+	 *
 	 * @see #getDescendants(GraphModel, Object[])
-	 * 
+	 *
 	 * @return Returns all cells in the model including all descandants.
 	 */
 	public static Object[] getAll(GraphModel model) {
@@ -1560,17 +1678,20 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	public static Object[] getRoots(GraphModel model) {
 		Object[] cells = null;
+
 		if (model != null) {
 			// If model is DefaultGraphModel, we can do a linear time getRoots
 			if (model instanceof DefaultGraphModel) {
 				cells = ((DefaultGraphModel) model).getRoots().toArray();
 			} else {
 				cells = new Object[model.getRootCount()];
+
 				for (int i = 0; i < cells.length; i++) {
 					cells[i] = model.getRootAt(i);
 				}
 			}
 		}
+
 		return cells;
 	}
 
@@ -1581,6 +1702,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	public static Object[] getRoots(GraphModel model, Object[] cells) {
 		List roots = new ArrayList();
+
 		if (cells != null) {
 			for (int i = 0; i < cells.length; i++) {
 				if (model.getParent(cells[i]) == null) {
@@ -1588,6 +1710,7 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 				}
 			}
 		}
+
 		return roots.toArray();
 	}
 
@@ -1597,27 +1720,33 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	public static Object[] getTopmostCells(GraphModel model, Object[] cells) {
 		Set cellSet = new HashSet();
+
 		for (int i = 0; i < cells.length; i++)
 			cellSet.add(cells[i]);
+
 		List parents = new ArrayList();
+
 		for (int i = 0; i < cells.length; i++) {
 			if (!hasAncestorIn(model, cellSet, cells[i]))
 				parents.add(cells[i]);
 		}
+
 		return parents.toArray();
 	}
 
 	/**
 	 * Returns true if the specified child has an ancestor in parents.
 	 */
-	public static boolean hasAncestorIn(GraphModel model, Set parents,
-			Object child) {
+	public static boolean hasAncestorIn(GraphModel model, Set parents, Object child) {
 		Object parent = model.getParent(child);
+
 		while (parent != null) {
 			if (parents.contains(parent))
 				return true;
+
 			parent = model.getParent(parent);
 		}
+
 		return false;
 	}
 
@@ -1632,18 +1761,25 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	public static List getDescendants(GraphModel model, Object[] cells) {
 		if (cells != null) {
 			Stack stack = new Stack();
+
 			for (int i = cells.length - 1; i >= 0; i--)
 				stack.add(cells[i]);
+
 			LinkedList result = new LinkedList();
+
 			while (!stack.isEmpty()) {
 				Object tmp = stack.pop();
+
 				for (int i = model.getChildCount(tmp) - 1; i >= 0; i--)
 					stack.add(model.getChild(tmp, i));
+
 				if (tmp != null)
 					result.add(tmp);
 			}
+
 			return result;
 		}
+
 		return null;
 	}
 
@@ -1653,21 +1789,30 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	public static Object[] order(GraphModel model, Object[] cells) {
 		if (cells != null) {
 			Set cellSet = new HashSet();
+
 			for (int i = 0; i < cells.length; i++)
 				cellSet.add(cells[i]);
+
 			Stack stack = new Stack();
+
 			for (int i = model.getRootCount() - 1; i >= 0; i--)
 				stack.add(model.getRootAt(i));
+
 			LinkedList result = new LinkedList();
+
 			while (!stack.isEmpty()) {
 				Object tmp = stack.pop();
+
 				for (int i = model.getChildCount(tmp) - 1; i >= 0; i--)
 					stack.add(model.getChild(tmp, i));
+
 				if (cellSet.remove(tmp))
 					result.add(tmp);
 			}
+
 			return result.toArray();
 		}
+
 		return null;
 	}
 
@@ -1678,27 +1823,35 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	public static Set getEdges(GraphModel model, Object[] cells) {
 		Set result = new HashSet();
+
 		if (cells != null) {
 			// We know the minimum initial capacity of this set is cells.length
 			// We assume the cell has one port at a minimum
-			int setSize = ((int)(cells.length * 1.33) + 1);
+			int setSize = ((int) (cells.length * 1.33) + 1);
 			Set allCells = new HashSet(setSize, 0.75f);
+
 			for (int i = 0; i < cells.length; i++) {
 				allCells.add(cells[i]);
 			}
+
 			// Include descendants
 			allCells.addAll(getDescendants(model, cells));
+
 			if (allCells != null) {
 				Iterator it = allCells.iterator();
+
 				while (it.hasNext()) {
 					Iterator edges = model.edges(it.next());
+
 					while (edges.hasNext())
 						result.add(edges.next());
 				}
+
 				for (int i = 0; i < cells.length; i++)
 					result.remove(cells[i]);
 			}
 		}
+
 		return result;
 	}
 
@@ -1707,12 +1860,12 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 */
 	public static Object getOpposite(GraphModel model, Object edge, Object cell) {
 		boolean isPort = model.isPort(cell);
-		Object source = (isPort) ? model.getSource(edge) : getSourceVertex(
-				model, edge);
+		Object source = (isPort) ? model.getSource(edge) : getSourceVertex(model, edge);
+
 		if (cell == source)
-			return (isPort) ? model.getTarget(edge) : getTargetVertex(model,
-					edge);
+			return (isPort) ? model.getTarget(edge) : getTargetVertex(model, edge);
 		else
+
 			return source;
 	}
 
@@ -1720,10 +1873,10 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns true if the given vertices are conntected by a single edge in
 	 * this document.
 	 */
-	public static boolean containsEdgeBetween(GraphModel model, Object v1,
-			Object v2) {
+	public static boolean containsEdgeBetween(GraphModel model, Object v1, Object v2) {
 		Object[] edges = getEdgesBetween(model, v1, v2, false);
-		return (edges != null && edges.length > 0);
+
+		return ((edges != null) && (edges.length > 0));
 	}
 
 	/**
@@ -1732,24 +1885,26 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * returned edges. This method never returns null. If there are no edges
 	 * between the specified cells, then an array of length 0 is returned.
 	 */
-	public static Object[] getEdgesBetween(GraphModel model, Object cell1,
-			Object cell2, boolean directed) {
+	public static Object[] getEdgesBetween(GraphModel model, Object cell1, Object cell2,
+	                                       boolean directed) {
 		boolean isPort1 = model.isPort(cell1);
 		boolean isPort2 = model.isPort(cell2);
 		ArrayList result = new ArrayList();
 		Set edges = DefaultGraphModel.getEdges(model, new Object[] { cell1 });
 		Iterator it = edges.iterator();
+
 		while (it.hasNext()) {
 			Object edge = it.next();
+
 			// TODO: Handle edge groups
-			Object source = (isPort1) ? model.getSource(edge)
-					: getSourceVertex(model, edge);
-			Object target = (isPort2) ? model.getTarget(edge)
-					: getTargetVertex(model, edge);
-			if ((source == cell1 && target == cell2)
-					|| (!directed && source == cell2 && target == cell1))
+			Object source = (isPort1) ? model.getSource(edge) : getSourceVertex(model, edge);
+			Object target = (isPort2) ? model.getTarget(edge) : getTargetVertex(model, edge);
+
+			if (((source == cell1) && (target == cell2))
+			    || (!directed && (source == cell2) && (target == cell1)))
 				result.add(edge);
 		}
+
 		return result.toArray();
 	}
 
@@ -1771,28 +1926,30 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	 * Returns the incoming or outgoing edges for cell. Cell should be a port or
 	 * a vertex.
 	 */
-	public static Object[] getEdges(GraphModel model, Object cell,
-			boolean incoming) {
+	public static Object[] getEdges(GraphModel model, Object cell, boolean incoming) {
 		Set edges = DefaultGraphModel.getEdges(model, new Object[] { cell });
+
 		// Base initial capacity on size of set, it can't be any larger
 		ArrayList result = new ArrayList(edges.size());
 		Iterator it = edges.iterator();
 
 		while (it.hasNext()) {
 			Object edge = it.next();
+
 			// TODO: Handle edge groups
-			Object port = (incoming) ? model.getTarget(edge) : model
-					.getSource(edge);
+			Object port = (incoming) ? model.getTarget(edge) : model.getSource(edge);
 			Object parent = model.getParent(port);
-			if (port == cell || parent == cell)
+
+			if ((port == cell) || (parent == cell))
 				result.add(edge);
 		}
+
 		return result.toArray();
 	}
 
 	/**
 	 * Returns <code>true</code> if <code>vertex</code> is a valid vertex.
-	 * 
+	 *
 	 * @return <code>true</code> if <code>vertex</code> is a valid vertex.
 	 */
 	public static boolean isVertex(GraphModel model, Object vertex) {
@@ -1800,15 +1957,13 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 	}
 
 	// Serialization support
-	private void readObject(ObjectInputStream s) throws IOException,
-			ClassNotFoundException {
+	private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
 		s.defaultReadObject();
 		listenerList = new EventListenerList();
 		emptyIterator = new EmptyIterator();
 	}
 
 	public static class EmptyIterator implements Iterator, Serializable {
-
 		public boolean hasNext() {
 			return false;
 		}
@@ -1821,5 +1976,4 @@ public class DefaultGraphModel extends UndoableEditSupport implements
 			// nop
 		}
 	}
-
 }

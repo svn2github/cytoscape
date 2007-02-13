@@ -1,103 +1,187 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package filter.view;
 
-import java.awt.event.*;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import java.util.*;
-import filter.model.*;
-import javax.swing.border.*;
-import java.beans.*;
-import javax.swing.event.SwingPropertyChangeSupport;
- 
 import ViolinStrings.Strings;
+
+import filter.model.*;
+
+import java.awt.*;
+import java.awt.event.*;
+
+import java.beans.*;
+
+import java.util.*;
+
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+import javax.swing.event.SwingPropertyChangeSupport;
+
 
 /**
  * A FilterListPanel will
  * be able to search through its contents based on the Filter title using
  * wildcard search
  */
-public class FilterListPanel 
-  extends JPanel 
-  implements PropertyChangeListener,
-             ListSelectionListener,
-             ListDataListener{
+public class FilterListPanel extends JPanel implements PropertyChangeListener,
+                                                       ListSelectionListener, ListDataListener {
+	JList filterList;
+	DefaultListModel filterModel;
 
-  
-  JList filterList;
-  DefaultListModel filterModel;
-  public static String FILTER_SELECTED = "FILTER_SELECTED";
-  public static String NO_SELECTION = "NO_SELECTION";
-  protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport( this );
+	/**
+	 * 
+	 */
+	public static String FILTER_SELECTED = "FILTER_SELECTED";
 
-  public FilterListPanel () {
-    super();
-    initialize();
-  }
+	/**
+	 * 
+	 */
+	public static String NO_SELECTION = "NO_SELECTION";
+	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 
-  public JList getFilterList()
-  {
-	 return filterList; 
-  }
+	/**
+	 * Creates a new FilterListPanel object.
+	 */
+	public FilterListPanel() {
+		super();
+		initialize();
+	}
 
-  protected void initialize () {
-    FilterManager.defaultManager().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public JList getFilterList() {
+		return filterList;
+	}
 
-    JPanel listPanel = new JPanel(new BorderLayout());
-    listPanel.setBorder( new TitledBorder( "Available Filters" ) );
+	protected void initialize() {
+		FilterManager.defaultManager().getSwingPropertyChangeSupport()
+		             .addPropertyChangeListener(this);
 
-    //FilterManager.defaultManager().addListDataListener(this);
-    filterList = new JList(FilterManager.defaultManager());
-    filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    filterList.addListSelectionListener( this );
-    
-    
-    JScrollPane scroll = new JScrollPane( filterList );
-    listPanel.add( scroll, BorderLayout.CENTER);
-    setLayout( new BorderLayout() );
-    add( listPanel, BorderLayout.CENTER );
-    //scroll.setPreferredSize(new Dimension(250,100));
-  }
+		JPanel listPanel = new JPanel(new BorderLayout());
+		listPanel.setBorder(new TitledBorder("Available Filters"));
 
-  public SwingPropertyChangeSupport getSwingPropertyChangeSupport () {
-    return pcs;
-  }
+		//FilterManager.defaultManager().addListDataListener(this);
+		filterList = new JList(FilterManager.defaultManager());
+		filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		filterList.addListSelectionListener(this);
 
-  protected void fireFilterSelected () {
-    pcs.firePropertyChange( FILTER_SELECTED, null, null );
- }
+		JScrollPane scroll = new JScrollPane(filterList);
+		listPanel.add(scroll, BorderLayout.CENTER);
+		setLayout(new BorderLayout());
+		add(listPanel, BorderLayout.CENTER);
 
+		//scroll.setPreferredSize(new Dimension(250,100));
+	}
 
-  protected void handleEvent(EventObject e){
-    if(filterList.getSelectedValue() == null){
-      pcs.firePropertyChange( NO_SELECTION,null,null );
-    }
-    else{
-      pcs.firePropertyChange( FILTER_SELECTED,null,null);
-    }
-  }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
+		return pcs;
+	}
 
-  public void valueChanged ( ListSelectionEvent e ) {
-    handleEvent(e);
-  }
+	protected void fireFilterSelected() {
+		pcs.firePropertyChange(FILTER_SELECTED, null, null);
+	}
 
-  public void contentsChanged(ListDataEvent e){}
+	protected void handleEvent(EventObject e) {
+		if (filterList.getSelectedValue() == null) {
+			pcs.firePropertyChange(NO_SELECTION, null, null);
+		} else {
+			pcs.firePropertyChange(FILTER_SELECTED, null, null);
+		}
+	}
 
-  public void intervalAdded(ListDataEvent e){
-    handleEvent(e);
-  }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void valueChanged(ListSelectionEvent e) {
+		handleEvent(e);
+	}
 
-  public void intervalRemoved(ListDataEvent e){
-    handleEvent(e);
-  }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void contentsChanged(ListDataEvent e) {
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void intervalAdded(ListDataEvent e) {
+		handleEvent(e);
+	}
 
-  public Filter getSelectedFilter(){
-    return (Filter)filterList.getSelectedValue();
-  }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void intervalRemoved(ListDataEvent e) {
+		handleEvent(e);
+	}
 
-  public void propertyChange ( PropertyChangeEvent e ) {
-    //updateLists();
-  }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Filter getSelectedFilter() {
+		return (Filter) filterList.getSelectedValue();
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void propertyChange(PropertyChangeEvent e) {
+		//updateLists();
+	}
 }

@@ -1,4 +1,41 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package legacy;
+
 
 /**
  * A bare-minimum definition of a graph.  A given edge in a graph can
@@ -49,69 +86,67 @@ package legacy;
  * exposes mutable functionality.
  */
 public interface GraphTopology {
+	/**
+	 * Returns the number of nodes in this graph.  In other methods of this
+	 * interface a node is referenced by its index.  Indexes of nodes start
+	 * at <code>0</code> and end at <nobr><code>getNumNodes() - 1</code></nobr>,
+	 * inclusive.<p>
+	 * Note: a graph which contains an edge must also contain at least one
+	 * node; therefore, there are certain constraints on allowable return values.
+	 * For example, if <code>getNumEdges()</code> returns <code>1</code>
+	 * then <code>getNumNodes()</code> must return a value greater than zero.
+	 *
+	 * @return number of nodes in this graph.
+	 */
+	public int getNumNodes();
 
-    /**
-     * Returns the number of nodes in this graph.  In other methods of this
-     * interface a node is referenced by its index.  Indexes of nodes start
-     * at <code>0</code> and end at <nobr><code>getNumNodes() - 1</code></nobr>,
-     * inclusive.<p>
-     * Note: a graph which contains an edge must also contain at least one
-     * node; therefore, there are certain constraints on allowable return values.
-     * For example, if <code>getNumEdges()</code> returns <code>1</code>
-     * then <code>getNumNodes()</code> must return a value greater than zero.
-     *
-     * @return number of nodes in this graph.
-     */
-    public int getNumNodes();
+	/**
+	 * Returns the number of edges in this graph.  In other methods of this
+	 * interface an edge is referenced by its index.  Indexes of edges start
+	 * at <code>0</code> and end at <nobr><code>getNumEdges() - 1</code></nobr>,
+	 * inclusive.<p>
+	 * Note: a graph which contains an edge must also contain at least one
+	 * node; therefore, there are certain constraints on allowable return values.
+	 * For example, if <code>getNumEdges()</code> returns <code>1</code>
+	 * then <code>getNumNodes()</code> must return a value greater than zero.
+	 *
+	 * @return number of edges in this graph.
+	 */
+	public int getNumEdges();
 
-    /**
-     * Returns the number of edges in this graph.  In other methods of this
-     * interface an edge is referenced by its index.  Indexes of edges start
-     * at <code>0</code> and end at <nobr><code>getNumEdges() - 1</code></nobr>,
-     * inclusive.<p>
-     * Note: a graph which contains an edge must also contain at least one
-     * node; therefore, there are certain constraints on allowable return values.
-     * For example, if <code>getNumEdges()</code> returns <code>1</code>
-     * then <code>getNumNodes()</code> must return a value greater than zero.
-     *
-     * @return number of edges in this graph.
-     */
-    public int getNumEdges();
+	/**
+	 * Returns the directedness of edge at index <code>edgeIndex</code>.
+	 *
+	 * @param edgeIndex index of edge whose directedness we're seeking.
+	 * @return <code>true</code> if directed edge, <code>false</code> if
+	 *         undirected edge.
+	 * @throws IndexOutOfBoundsException if <code>edgeIndex</code> is not
+	 *                                   in the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
+	 */
+	public boolean isDirectedEdge(int edgeIndex);
 
-    /**
-     * Returns the directedness of edge at index <code>edgeIndex</code>.
-     *
-     * @param edgeIndex index of edge whose directedness we're seeking.
-     * @return <code>true</code> if directed edge, <code>false</code> if
-     *         undirected edge.
-     * @throws IndexOutOfBoundsException if <code>edgeIndex</code> is not
-     *                                   in the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
-     */
-    public boolean isDirectedEdge(int edgeIndex);
+	/*
+	* Returns <code>true</code> if and only if edges in this graph are
+	* either all directed or all undirected.
 
-    /*
-    * Returns <code>true</code> if and only if edges in this graph are
-    * either all directed or all undirected.
+	public boolean areAllEdgesSimilar();
+	*/
 
-   public boolean areAllEdgesSimilar();
-    */
-
-    /**
-     * Returns an index to a node which is either the source node or the
-     * target node of edge at index <code>edgeIndex</code>.
-     *
-     * @param edgeIndex the index of the edge whose end nodes we are seeking.
-     * @param sourceNode if <code>true</code>, returns the source node of this
-     *   edge; if <code>false</code>, returns the target node of this edge -
-     *   for undirected edges &quot;source node&quot; should be interpreted
-     *   as &quot;node 0&quot; and &quot;target node&quot; should be
-     *   interpreted as &quot;node 1&quot;.
-     * @return the index of the node we are asking for; the return value
-     *   shall lie in the interval
-     *   <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
-     * @exception IndexOutOfBoundsException if <code>edgeIndex</code> is not
-     *   in the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
-     **/
-    public int getEdgeNodeIndex(int edgeIndex, boolean sourceNode);
-
+	/**
+	 * Returns an index to a node which is either the source node or the
+	 * target node of edge at index <code>edgeIndex</code>.
+	 *
+	 * @param edgeIndex the index of the edge whose end nodes we are seeking.
+	 * @param sourceNode if <code>true</code>, returns the source node of this
+	 *   edge; if <code>false</code>, returns the target node of this edge -
+	 *   for undirected edges &quot;source node&quot; should be interpreted
+	 *   as &quot;node 0&quot; and &quot;target node&quot; should be
+	 *   interpreted as &quot;node 1&quot;.
+	 * @return the index of the node we are asking for; the return value
+	 *   shall lie in the interval
+	 *   <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
+	 * @exception IndexOutOfBoundsException if <code>edgeIndex</code> is not
+	 *   in the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
+	 **/
+	public int getEdgeNodeIndex(int edgeIndex, boolean sourceNode);
 }

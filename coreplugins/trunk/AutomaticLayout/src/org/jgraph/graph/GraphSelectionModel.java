@@ -1,14 +1,15 @@
 /*
- * @(#)GraphSelectionModel.java	0.1 03-JUL-04
- * 
+ * @(#)GraphSelectionModel.java    0.1 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
+import org.jgraph.event.GraphSelectionListener;
+
 import java.beans.PropertyChangeListener;
 
-import org.jgraph.event.GraphSelectionListener;
 
 /**
   * This interface represents the current state of the selection for
@@ -22,9 +23,7 @@ import org.jgraph.event.GraphSelectionListener;
   * @version 0.1 1/1/02
   * @author Gaudenz Alder
   */
-
 public interface GraphSelectionModel {
-
 	/** Selection can only contain one cell at a time. */
 	public static final int SINGLE_GRAPH_SELECTION = 1;
 

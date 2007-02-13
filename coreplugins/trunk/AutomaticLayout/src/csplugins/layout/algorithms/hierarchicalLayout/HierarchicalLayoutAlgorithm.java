@@ -37,41 +37,112 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-
 package csplugins.layout.algorithms.hierarchicalLayout;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
-import cytoscape.task.TaskMonitor;
-
-import giny.view.NodeView;
-import giny.view.EdgeView;
 
 import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import java.util.*;
+import cytoscape.task.TaskMonitor;
+
+import cytoscape.view.CyNetworkView;
+
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
 import java.awt.GridLayout;
+
+import java.util.*;
+
 import javax.swing.JPanel;
 
+
 class HierarchyFlowLayoutOrderNode implements Comparable {
+	/**
+	 * 
+	 */
 	public NodeView nodeView;
+
+	/**
+	 * 
+	 */
 	public int componentNumber;
+
+	/**
+	 * 
+	 */
 	public int componentSize;
+
+	/**
+	 * 
+	 */
 	public int layer;
+
+	/**
+	 * 
+	 */
 	public int horizontalPosition;
+
+	/**
+	 * 
+	 */
 	public int xPos;
+
+	/**
+	 * 
+	 */
 	public int yPos;
 
-	public int getXPos() { return xPos; }
-	public int getYPos() { return yPos; }
-	public void setXPos(int a_xPos) { xPos = a_xPos; }
-	public void setYPos(int a_yPos) { yPos = a_yPos; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int getXPos() {
+		return xPos;
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int getYPos() {
+		return yPos;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param a_xPos DOCUMENT ME!
+	 */
+	public void setXPos(int a_xPos) {
+		xPos = a_xPos;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param a_yPos DOCUMENT ME!
+	 */
+	public void setYPos(int a_yPos) {
+		yPos = a_yPos;
+	}
+
+	/**
+	 * Creates a new HierarchyFlowLayoutOrderNode object.
+	 *
+	 * @param a_nodeView  DOCUMENT ME!
+	 * @param a_componentNumber  DOCUMENT ME!
+	 * @param a_componentSize  DOCUMENT ME!
+	 * @param a_layer  DOCUMENT ME!
+	 * @param a_horizontalPosition  DOCUMENT ME!
+	 */
 	public HierarchyFlowLayoutOrderNode(NodeView a_nodeView, int a_componentNumber,
-			int a_componentSize, int a_layer, int a_horizontalPosition) {
+	                                    int a_componentSize, int a_layer, int a_horizontalPosition) {
 		nodeView = a_nodeView;
 		componentNumber = a_componentNumber;
 		componentSize = a_componentSize;
@@ -79,17 +150,35 @@ class HierarchyFlowLayoutOrderNode implements Comparable {
 		horizontalPosition = a_horizontalPosition;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param o DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public int compareTo(Object o) {
-		HierarchyFlowLayoutOrderNode y = (HierarchyFlowLayoutOrderNode)o;
+		HierarchyFlowLayoutOrderNode y = (HierarchyFlowLayoutOrderNode) o;
 		int diff = y.componentSize - componentSize;
-		if (diff != 0) return diff;
+
+		if (diff != 0)
+			return diff;
+
 		diff = componentNumber - y.componentNumber;
-		if (diff != 0) return diff;
+
+		if (diff != 0)
+			return diff;
+
 		diff = y.layer - layer;
-		if (diff != 0) return diff;
+
+		if (diff != 0)
+			return diff;
+
 		return horizontalPosition - y.horizontalPosition;
 	}
-};
+}
+;
+
 
 /**
  * Lays out graph in tree-like pattern.
@@ -126,6 +215,9 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	private boolean selected_only = false;
 	private LayoutProperties layoutProperties;
 
+	/**
+	 * Creates a new HierarchicalLayoutAlgorithm object.
+	 */
 	public HierarchicalLayoutAlgorithm() {
 		super();
 		layoutProperties = new LayoutProperties(getName());
@@ -133,7 +225,14 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	}
 
 	// We do support selected only
-	public boolean supportsSelectedOnly () {return true;}
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean supportsSelectedOnly() {
+		return true;
+	}
 
 	/**
 	 * Lays out the graph. See this class' description for an outline
@@ -154,23 +253,33 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	 * the center of the component.
 	 * @param event Menu Selection Event.
 	 */
+
 	/**
 	 * Main entry point for AbstractLayout classes
 	 */
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
-		initialize();  // Calls initialize_local
+		initialize(); // Calls initialize_local
 		layout();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void layout() {
 		taskMonitor.setPercentCompleted(0);
 		taskMonitor.setStatus("Capturing snapshot of network and selected nodes");
-		if (canceled) return;
+
+		if (canceled)
+			return;
+
 		/* construct node list with selected nodes first */
 		List selectedNodes = networkView.getSelectedNodes();
 		int numSelectedNodes = selectedNodes.size();
-		if (!selectedOnly) numSelectedNodes = 0;
+
+		if (!selectedOnly)
+			numSelectedNodes = 0;
+
 		if (numSelectedNodes == 1) {
 			// We were asked to do a hierchical layout of a single node -- done!
 			return;
@@ -178,21 +287,26 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 		final int numNodes = networkView.getNodeViewCount();
 		final int numLayoutNodes = (numSelectedNodes < 1) ? numNodes : numSelectedNodes;
-		NodeView nodeView[] = new NodeView[numNodes];
+		NodeView[] nodeView = new NodeView[numNodes];
 		int nextNode = 0;
-		HashMap<Integer,Integer> ginyIndex2Index = new HashMap(numNodes*2);
+		HashMap<Integer, Integer> ginyIndex2Index = new HashMap(numNodes * 2);
+
 		if (numSelectedNodes > 1) {
 			Iterator iter = selectedNodes.iterator();
+
 			while (iter.hasNext() && !canceled) {
-				nodeView[nextNode] = (NodeView)(iter.next());
-				ginyIndex2Index.put(new Integer(nodeView[nextNode].getNode().getRootGraphIndex()), new Integer(nextNode));
+				nodeView[nextNode] = (NodeView) (iter.next());
+				ginyIndex2Index.put(new Integer(nodeView[nextNode].getNode().getRootGraphIndex()),
+				                    new Integer(nextNode));
 				nextNode++;
 			}
 		} else {
-			Iterator iter = networkView.getNodeViewsIterator() ; /* all nodes */
+			Iterator iter = networkView.getNodeViewsIterator(); /* all nodes */
+
 			while (iter.hasNext() && !canceled) {
-				NodeView nv = (NodeView)(iter.next());
+				NodeView nv = (NodeView) (iter.next());
 				Integer nodeIndexKey = new Integer(nv.getNode().getRootGraphIndex());
+
 				if (!ginyIndex2Index.containsKey(nodeIndexKey)) {
 					nodeView[nextNode] = nv;
 					ginyIndex2Index.put(nodeIndexKey, new Integer(nextNode));
@@ -200,55 +314,71 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 				}
 			}
 		}
-		if (canceled) return;
+
+		if (canceled)
+			return;
 
 		/* create edge list from edges between selected nodes */
 		LinkedList<Edge> edges = new LinkedList();
 		Iterator iter = networkView.getEdgeViewsIterator();
+
 		while (iter.hasNext()) {
-			EdgeView ev = (EdgeView)(iter.next());
-			Integer edgeFrom = (Integer)ginyIndex2Index.get(new Integer(ev.getEdge().getSource().getRootGraphIndex()));
-			Integer edgeTo = (Integer)ginyIndex2Index.get(new Integer(ev.getEdge().getTarget().getRootGraphIndex()));
-			if (edgeFrom == null || edgeTo == null) {
+			EdgeView ev = (EdgeView) (iter.next());
+			Integer edgeFrom = (Integer) ginyIndex2Index.get(new Integer(ev.getEdge().getSource()
+			                                                               .getRootGraphIndex()));
+			Integer edgeTo = (Integer) ginyIndex2Index.get(new Integer(ev.getEdge().getTarget()
+			                                                             .getRootGraphIndex()));
+
+			if ((edgeFrom == null) || (edgeTo == null)) {
 				// Must be from an unselected node
 				continue;
 			}
-			if (canceled) return;
-			if (numSelectedNodes <= 1
-					|| (edgeFrom.intValue() < numSelectedNodes
-					&& edgeTo.intValue() < numSelectedNodes)) {
+
+			if (canceled)
+				return;
+
+			if ((numSelectedNodes <= 1)
+			    || ((edgeFrom.intValue() < numSelectedNodes)
+			       && (edgeTo.intValue() < numSelectedNodes))) {
 				/* add edge to graph */
-				edges.add(new Edge(edgeFrom.intValue(),edgeTo.intValue()));
+				edges.add(new Edge(edgeFrom.intValue(), edgeTo.intValue()));
 			}
 		}
+
 		/* find horizontal and vertical coordinates of each node */
-		Edge edge[] = new Edge[edges.size()];
+		Edge[] edge = new Edge[edges.size()];
 		edges.toArray(edge);
-		Graph graph = new Graph(numLayoutNodes,edge);
+
+		Graph graph = new Graph(numLayoutNodes, edge);
+
 		/*
 		int edgeIndex;
 		for (edgeIndex = 0; edgeIndex<edge.length; edgeIndex++) {
-			 System.out.println("Edge: " + edge[edgeIndex].getFrom() + " - " + edge[edgeIndex].getTo());
+		     System.out.println("Edge: " + edge[edgeIndex].getFrom() + " - " + edge[edgeIndex].getTo());
 		}
 		*/
-		int cI[] = graph.componentIndex();
+		int[] cI = graph.componentIndex();
 		int x;
 		/*
 		System.out.println("Node index:\n");
 		for (x=0; x<graph.getNodecount(); x++) {
-			System.out.println(cI[x]);
+		    System.out.println(cI[x]);
 		}
 		System.out.println("Partitioning into components:\n");
 		*/
 		taskMonitor.setPercentCompleted(10);
 		taskMonitor.setStatus("Finding connected components");
-		if (canceled) return;
-		int renumber[] = new int[cI.length];
-		Graph component[] = graph.partition(cI,renumber);
+
+		if (canceled)
+			return;
+
+		int[] renumber = new int[cI.length];
+		Graph[] component = graph.partition(cI, renumber);
 		final int numComponents = component.length;
-		int layer[][] = new int[numComponents][];
-		int horizontalPosition[][] = new int[numComponents][];
-		for (x=0; x<component.length; x++) {
+		int[][] layer = new int[numComponents][];
+		int[][] horizontalPosition = new int[numComponents][];
+
+		for (x = 0; x < component.length; x++) {
 			/*
 			System.out.println("plain component:\n");
 			System.out.println(component[x]);
@@ -263,45 +393,62 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			System.out.println(component[x].getReducedGraph());
 			System.out.println("layer assignment:\n");
 			*/
-			taskMonitor.setPercentCompleted(20 + 60 * (x * 3) / numComponents / 3);
+			taskMonitor.setPercentCompleted(20 + ((60 * (x * 3)) / numComponents / 3));
 			taskMonitor.setStatus("making acyclic transitive reduction");
 			Thread.yield();
-			if (canceled) return;
+
+			if (canceled)
+				return;
+
 			Graph reduced = component[x].getReducedGraph();
-			taskMonitor.setPercentCompleted(20 + 60 * (x * 3 + 1) / numComponents / 3);
+			taskMonitor.setPercentCompleted(20 + ((60 * ((x * 3) + 1)) / numComponents / 3));
 			taskMonitor.setStatus("layering nodes vertically");
 			Thread.yield();
-			if (canceled) return;
+
+			if (canceled)
+				return;
+
 			layer[x] = reduced.getVertexLayers();
 			/*
 			int y;
 			for (y=0;y<layer[x].length;y++) {
-				System.out.println("" + y + " : " + layer[x][y]);
+			    System.out.println("" + y + " : " + layer[x][y]);
 			}
 			System.out.println("horizontal position:\n");
 			*/
-			taskMonitor.setPercentCompleted(20 + 60 * (x * 3 + 2) / numComponents / 3);
+			taskMonitor.setPercentCompleted(20 + ((60 * ((x * 3) + 2)) / numComponents / 3));
 			taskMonitor.setStatus("positioning nodes within layer");
 			Thread.yield();
-			if (canceled) return;
+
+			if (canceled)
+				return;
+
 			horizontalPosition[x] = reduced.getHorizontalPosition(layer[x]);
+
 			/*
 			for (y=0;y<horizontalPosition[x].length;y++) {
-				System.out.println("" + y + " : " + horizontalPosition[x][y]);
+			    System.out.println("" + y + " : " + horizontalPosition[x][y]);
 			}
 			*/
 		}
+
 		taskMonitor.setPercentCompleted(80);
 		taskMonitor.setStatus("Repositioning nodes in view");
 		Thread.yield();
-		if (canceled) return;
+
+		if (canceled)
+			return;
+
 		/* order nodeviews by layout order */
-		HierarchyFlowLayoutOrderNode flowLayoutOrder[] = new HierarchyFlowLayoutOrderNode[numLayoutNodes];
-		for (x=0; x<numLayoutNodes; x++) {
-			flowLayoutOrder[x] = new HierarchyFlowLayoutOrderNode(
-				nodeView[x], cI[x], component[cI[x]].getNodecount(),
-				layer[cI[x]][renumber[x]], horizontalPosition[cI[x]][renumber[x]]);
+		HierarchyFlowLayoutOrderNode[] flowLayoutOrder = new HierarchyFlowLayoutOrderNode[numLayoutNodes];
+
+		for (x = 0; x < numLayoutNodes; x++) {
+			flowLayoutOrder[x] = new HierarchyFlowLayoutOrderNode(nodeView[x], cI[x],
+			                                                      component[cI[x]].getNodecount(),
+			                                                      layer[cI[x]][renumber[x]],
+			                                                      horizontalPosition[cI[x]][renumber[x]]);
 		}
+
 		Arrays.sort(flowLayoutOrder);
 
 		int lastComponent = -1;
@@ -313,15 +460,18 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		int startLayerY = topEdge;
 		int cleanLayerY = topEdge;
 		int cleanLayerX = leftEdge;
-		int layerCenter[] = new int[numLayoutNodes+1];
+		int[] layerCenter = new int[numLayoutNodes + 1];
 		int maxLayerCenter = -1;
+
 		/* layout nodes which are selected */
 		int nodeIndex;
-		for (nodeIndex=0; nodeIndex<numLayoutNodes; nodeIndex++) {
+
+		for (nodeIndex = 0; nodeIndex < numLayoutNodes; nodeIndex++) {
 			HierarchyFlowLayoutOrderNode node = flowLayoutOrder[nodeIndex];
 			int currentComponent = node.componentNumber;
 			int currentLayer = node.layer;
 			NodeView currentView = node.nodeView;
+
 			if (lastComponent == -1) {
 				/* this is the first component */
 				lastComponent = currentComponent;
@@ -329,23 +479,32 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 				layerCenter[currentLayer] = -1;
 				maxLayerCenter = -1;
 			}
+
 			if (lastComponent != currentComponent) {
 				/* new component */
-				layerCenter[lastLayer] = (startComponentX + cleanLayerX - nodeHorizontalSpacing) / 2;
-				if (layerCenter[lastLayer] > maxLayerCenter) maxLayerCenter = layerCenter[lastLayer];
+				layerCenter[lastLayer] = ((startComponentX + cleanLayerX) - nodeHorizontalSpacing) / 2;
+
+				if (layerCenter[lastLayer] > maxLayerCenter)
+					maxLayerCenter = layerCenter[lastLayer];
+
 				/* adjust centers of last component */
 				int backIndex;
-				for (backIndex=nodeIndex - 1;  backIndex >= 0; backIndex--) {
+
+				for (backIndex = nodeIndex - 1; backIndex >= 0; backIndex--) {
 					HierarchyFlowLayoutOrderNode backNode = flowLayoutOrder[backIndex];
 					int backComponent = backNode.componentNumber;
+
 					if (backComponent != lastComponent) {
 						break;
 					}
+
 					int backLayer = backNode.layer;
-					backNode.setXPos(backNode.getXPos() + maxLayerCenter - layerCenter[backLayer]);
+					backNode.setXPos((backNode.getXPos() + maxLayerCenter) - layerCenter[backLayer]);
 				}
+
 				/* initialize for new component */
 				startComponentX = cleanComponentX + componentSpacing;
+
 				if (startComponentX > rightMargin) {
 					/* new band */
 					startBandY = cleanBandY + bandGap;
@@ -353,6 +512,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 					startComponentX = leftEdge;
 					cleanComponentX = leftEdge;
 				}
+
 				startLayerY = startBandY;
 				cleanLayerY = startLayerY;
 				cleanLayerX = startComponentX;
@@ -360,67 +520,90 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 				maxLayerCenter = -1;
 			} else if (lastLayer != currentLayer) {
 				/* new layer */
-				layerCenter[lastLayer] = (startComponentX + cleanLayerX - nodeHorizontalSpacing) / 2;
-				if (layerCenter[lastLayer] > maxLayerCenter) maxLayerCenter = layerCenter[lastLayer];
+				layerCenter[lastLayer] = ((startComponentX + cleanLayerX) - nodeHorizontalSpacing) / 2;
+
+				if (layerCenter[lastLayer] > maxLayerCenter)
+					maxLayerCenter = layerCenter[lastLayer];
+
 				startLayerY = cleanLayerY + nodeVerticalSpacing;
 				cleanLayerY = startLayerY;
 				cleanLayerX = startComponentX;
 				layerCenter[currentLayer] = -1;
 			}
+
 			node.setXPos(cleanLayerX);
 			node.setYPos(startLayerY);
 			cleanLayerX += nodeHorizontalSpacing;
-			int currentBottom = startLayerY + (int)(currentView.getHeight());
-			int currentRight = cleanLayerX + (int)(currentView.getWidth());
-			if (currentBottom > cleanBandY) cleanBandY = currentBottom;
-			if (currentRight > cleanComponentX) cleanComponentX = currentRight;
-			if (currentBottom > cleanLayerY) cleanLayerY = currentBottom;
-			if (currentRight > cleanLayerX) cleanLayerX = currentRight;
+
+			int currentBottom = startLayerY + (int) (currentView.getHeight());
+			int currentRight = cleanLayerX + (int) (currentView.getWidth());
+
+			if (currentBottom > cleanBandY)
+				cleanBandY = currentBottom;
+
+			if (currentRight > cleanComponentX)
+				cleanComponentX = currentRight;
+
+			if (currentBottom > cleanLayerY)
+				cleanLayerY = currentBottom;
+
+			if (currentRight > cleanLayerX)
+				cleanLayerX = currentRight;
+
 			lastComponent = currentComponent;
 			lastLayer = currentLayer;
-			if (nodeIndex == numLayoutNodes - 1) {
+
+			if (nodeIndex == (numLayoutNodes - 1)) {
 				/* this is the last node of the last component */
-				layerCenter[currentLayer] = (startComponentX + cleanLayerX - nodeHorizontalSpacing) / 2;
-				if (layerCenter[currentLayer] > maxLayerCenter) maxLayerCenter = layerCenter[currentLayer];
+				layerCenter[currentLayer] = ((startComponentX + cleanLayerX)
+				                            - nodeHorizontalSpacing) / 2;
+
+				if (layerCenter[currentLayer] > maxLayerCenter)
+					maxLayerCenter = layerCenter[currentLayer];
+
 				/* adjust centers of this component */
 				int backIndex;
-				for (backIndex=nodeIndex;  backIndex >= 0; backIndex--) {
+
+				for (backIndex = nodeIndex; backIndex >= 0; backIndex--) {
 					HierarchyFlowLayoutOrderNode backNode = flowLayoutOrder[backIndex];
 					int backComponent = backNode.componentNumber;
+
 					if (backComponent != currentComponent) {
 						break;
 					}
+
 					int backLayer = backNode.layer;
-					backNode.setXPos(backNode.getXPos() + maxLayerCenter - layerCenter[backLayer]);
+					backNode.setXPos((backNode.getXPos() + maxLayerCenter) - layerCenter[backLayer]);
 				}
 			}
 		}
 
-    /* Delete edge anchors */
-    iter = networkView.getEdgeViewsIterator();
-    while (iter.hasNext()) {
-	    ((EdgeView) iter.next()).getBend().removeAllHandles();
-    } /* Done removing edge anchors */
+		/* Delete edge anchors */
+		iter = networkView.getEdgeViewsIterator();
 
-		for (nodeIndex=0; nodeIndex<numLayoutNodes; nodeIndex++) {
+		while (iter.hasNext()) {
+			((EdgeView) iter.next()).getBend().removeAllHandles();
+		} /* Done removing edge anchors */
+		for (nodeIndex = 0; nodeIndex < numLayoutNodes; nodeIndex++) {
 			HierarchyFlowLayoutOrderNode node = flowLayoutOrder[nodeIndex];
 			NodeView currentView = node.nodeView;
-			currentView.setOffset(node.getXPos(),node.getYPos());
+			currentView.setOffset(node.getXPos(), node.getYPos());
 		}
+
 		/* layout any other nodes */
-/*
-		if (numNodes > numLayoutNodes) {
-			int highestY = Integer.MAX_VALUE;
-			for (x=numLayoutNodes; x<numNodes; x++) {
-				int nodeY = (int)(nodeView[x].getYPosition());
-				if (nodeY < highestY) highestY = nodeY;
-			}
-			int shiftY = cleanBandY + bandGap - highestY;
-			for (x=numLayoutNodes; x<numNodes; x++) {
-				nodeView[x].setYPosition(nodeView[x].getYPosition() + shiftY,true);
-			}
-		}
-*/
+		/*
+		        if (numNodes > numLayoutNodes) {
+		            int highestY = Integer.MAX_VALUE;
+		            for (x=numLayoutNodes; x<numNodes; x++) {
+		                int nodeY = (int)(nodeView[x].getYPosition());
+		                if (nodeY < highestY) highestY = nodeY;
+		            }
+		            int shiftY = cleanBandY + bandGap - highestY;
+		            for (x=numLayoutNodes; x<numNodes; x++) {
+		                nodeView[x].setYPosition(nodeView[x].getYPosition() + shiftY,true);
+		            }
+		        }
+		*/
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("hierarchical layout complete");
 	}
@@ -435,10 +618,16 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	/**
 	 * Overrides for LayoutAlgorithm support
 	 */
+	public String getName() {
+		return "hierarchical";
+	}
 
-	public String getName () { return "hierarchical"; }
-
-	public String toString () { 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String toString() {
 		return "Hierarchical Layout";
 	}
 
@@ -446,28 +635,29 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	 * Get the settings panel for this layout
 	 */
 	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0,1));
+		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(layoutProperties.getTunablePanel());
+
 		return panel;
 	}
 
 	protected void initialize_properties() {
-		layoutProperties.add(new Tunable("nodeHorizontalSpacing", "Horizontal spacing between nodes",
-																		Tunable.INTEGER, new Integer(64)));
+		layoutProperties.add(new Tunable("nodeHorizontalSpacing",
+		                                 "Horizontal spacing between nodes", Tunable.INTEGER,
+		                                 new Integer(64)));
 		layoutProperties.add(new Tunable("nodeVerticalSpacing", "Vertical spacing between nodes",
-																		Tunable.INTEGER, new Integer(32)));
-		layoutProperties.add(new Tunable("componentSpacing", "Component spacing",
-																		Tunable.INTEGER, new Integer(64)));
-		layoutProperties.add(new Tunable("bandGap", "Band gap",
-																		Tunable.INTEGER, new Integer(64)));
-		layoutProperties.add(new Tunable("leftEdge", "Left edge margin",
-																		Tunable.INTEGER, new Integer(32)));
-		layoutProperties.add(new Tunable("topEdge", "Top edge margin", 
-																		Tunable.INTEGER, new Integer(32)));
-		layoutProperties.add(new Tunable("rightMargin", "Right edge margin", 
-																		Tunable.INTEGER, new Integer(1000)));
-		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes", Tunable.BOOLEAN, 
-																		new Boolean(false)));
+		                                 Tunable.INTEGER, new Integer(32)));
+		layoutProperties.add(new Tunable("componentSpacing", "Component spacing", Tunable.INTEGER,
+		                                 new Integer(64)));
+		layoutProperties.add(new Tunable("bandGap", "Band gap", Tunable.INTEGER, new Integer(64)));
+		layoutProperties.add(new Tunable("leftEdge", "Left edge margin", Tunable.INTEGER,
+		                                 new Integer(32)));
+		layoutProperties.add(new Tunable("topEdge", "Top edge margin", Tunable.INTEGER,
+		                                 new Integer(32)));
+		layoutProperties.add(new Tunable("rightMargin", "Right edge margin", Tunable.INTEGER,
+		                                 new Integer(1000)));
+		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
+		                                 Tunable.BOOLEAN, new Boolean(false)));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties();
@@ -477,38 +667,65 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		updateSettings(true);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void updateSettings() {
 		updateSettings(false);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param force DOCUMENT ME!
+	 */
 	public void updateSettings(boolean force) {
 		layoutProperties.updateValues();
+
 		Tunable t = layoutProperties.get("nodeHorizontalSpacing");
-		if (t != null && (t.valueChanged() || force))
-			nodeVerticalSpacing = ((Integer)t.getValue()).intValue();
+
+		if ((t != null) && (t.valueChanged() || force))
+			nodeVerticalSpacing = ((Integer) t.getValue()).intValue();
+
 		t = layoutProperties.get("nodeVerticalSpacing");
-		if (t != null && (t.valueChanged() || force))
-			nodeVerticalSpacing = ((Integer)t.getValue()).intValue();
+
+		if ((t != null) && (t.valueChanged() || force))
+			nodeVerticalSpacing = ((Integer) t.getValue()).intValue();
+
 		t = layoutProperties.get("componentSpacing");
-		if (t != null && (t.valueChanged() || force))
-			componentSpacing = ((Integer)t.getValue()).intValue();
+
+		if ((t != null) && (t.valueChanged() || force))
+			componentSpacing = ((Integer) t.getValue()).intValue();
+
 		t = layoutProperties.get("bandGap");
-		if (t != null && (t.valueChanged() || force))
-			bandGap = ((Integer)t.getValue()).intValue();
+
+		if ((t != null) && (t.valueChanged() || force))
+			bandGap = ((Integer) t.getValue()).intValue();
+
 		t = layoutProperties.get("leftEdge");
-		if (t != null && (t.valueChanged() || force))
-			leftEdge = ((Integer)t.getValue()).intValue();
+
+		if ((t != null) && (t.valueChanged() || force))
+			leftEdge = ((Integer) t.getValue()).intValue();
+
 		t = layoutProperties.get("topEdge");
-		if (t != null && (t.valueChanged() || force))
-			topEdge = ((Integer)t.getValue()).intValue();
+
+		if ((t != null) && (t.valueChanged() || force))
+			topEdge = ((Integer) t.getValue()).intValue();
+
 		t = layoutProperties.get("rightMargin");
-		if (t != null && (t.valueChanged() || force))
-			rightMargin = ((Integer)t.getValue()).intValue();
+
+		if ((t != null) && (t.valueChanged() || force))
+			rightMargin = ((Integer) t.getValue()).intValue();
+
 		t = layoutProperties.get("selected_only");
-		if (t != null && (t.valueChanged() || force))
-			selected_only = ((Boolean)t.getValue()).booleanValue();
+
+		if ((t != null) && (t.valueChanged() || force))
+			selected_only = ((Boolean) t.getValue()).booleanValue();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void revertSettings() {
 		layoutProperties.revertProperties();
 	}

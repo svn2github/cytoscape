@@ -1,9 +1,9 @@
 /*
  * @(#)TreeLayoutSettings.java 1.0 12-JUL-2004
- * 
+ *
  * Copyright (c) 2004-2005, Gaudenz Alder
- * All rights reserved. 
- * 
+ * All rights reserved.
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -38,25 +38,25 @@ import javax.swing.JTextField;
  * @version 1.0 init
  */
 public class MoenLayoutSettings extends JPanel implements JGraphLayoutSettings {
-
 	protected MoenLayoutAlgorithm layout;
-	
-    private JComboBox orientationCombo = new JComboBox(new Object[]{"West-East", "North-South"});
-    private JTextField nodeDistanceTextField = new JTextField();
-    /**
-     * Creates new form SugiyamaLayoutConfigurationDialog
-     */
-    public MoenLayoutSettings(MoenLayoutAlgorithm layout) {
-    	this.layout = layout;
-        JPanel jPanel1 = new javax.swing.JPanel(new GridLayout(2,2,4,4));
-        jPanel1.add(new JLabel("Orientation"));
-        jPanel1.add(orientationCombo);
-        jPanel1.add(new JLabel("Node Distance"));
-        jPanel1.add(nodeDistanceTextField);
-        add(jPanel1, BorderLayout.CENTER);
-        revert();
-    }
-    
+	private JComboBox orientationCombo = new JComboBox(new Object[] { "West-East", "North-South" });
+	private JTextField nodeDistanceTextField = new JTextField();
+
+	/**
+	 * Creates new form SugiyamaLayoutConfigurationDialog
+	 */
+	public MoenLayoutSettings(MoenLayoutAlgorithm layout) {
+		this.layout = layout;
+
+		JPanel jPanel1 = new javax.swing.JPanel(new GridLayout(2, 2, 4, 4));
+		jPanel1.add(new JLabel("Orientation"));
+		jPanel1.add(orientationCombo);
+		jPanel1.add(new JLabel("Node Distance"));
+		jPanel1.add(nodeDistanceTextField);
+		add(jPanel1, BorderLayout.CENTER);
+		revert();
+	}
+
 	/**
 	 * Implementation.
 	 */
@@ -64,15 +64,15 @@ public class MoenLayoutSettings extends JPanel implements JGraphLayoutSettings {
 		setOrientation(layout.orientation);
 		nodeDistanceTextField.setText(String.valueOf(layout.childParentDistance));
 	}
-    
-    private void check() {
-        try {
-            Integer.parseInt(nodeDistanceTextField.getText());
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-	
+
+	private void check() {
+		try {
+			Integer.parseInt(nodeDistanceTextField.getText());
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+	}
+
 	/**
 	 * Implementation.
 	 */
@@ -81,30 +81,32 @@ public class MoenLayoutSettings extends JPanel implements JGraphLayoutSettings {
 		layout.orientation = getOrientation();
 		layout.childParentDistance = Integer.parseInt(nodeDistanceTextField.getText());
 	}
-    
-    /**
-     * Returns the value of the "Vertical spacing" as text.
-     */
-    public int getOrientation() {
-    	int result = MoenLayoutAlgorithm.LEFT_TO_RIGHT;
-    	switch (orientationCombo.getSelectedIndex()) {
-    		case 1:
-    			result = MoenLayoutAlgorithm.UP_TO_DOWN;
-    	}
-    	return result;
-    }
-    
-    /**
-     * Set the value of the "Vertical Spacing" text field.
-     */
-    public void setOrientation(int orientation) {
-    	int index = 0;
-    	switch (orientation) {
-    		case MoenLayoutAlgorithm.UP_TO_DOWN:
-    			index = 1;
-    	}
-    	orientationCombo.setSelectedIndex(index);
-    }
 
+	/**
+	 * Returns the value of the "Vertical spacing" as text.
+	 */
+	public int getOrientation() {
+		int result = MoenLayoutAlgorithm.LEFT_TO_RIGHT;
+
+		switch (orientationCombo.getSelectedIndex()) {
+			case 1:
+				result = MoenLayoutAlgorithm.UP_TO_DOWN;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Set the value of the "Vertical Spacing" text field.
+	 */
+	public void setOrientation(int orientation) {
+		int index = 0;
+
+		switch (orientation) {
+			case MoenLayoutAlgorithm.UP_TO_DOWN:
+				index = 1;
+		}
+
+		orientationCombo.setSelectedIndex(index);
+	}
 }
-

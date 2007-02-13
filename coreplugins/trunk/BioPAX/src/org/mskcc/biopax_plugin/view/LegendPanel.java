@@ -33,10 +33,14 @@ package org.mskcc.biopax_plugin.view;
 
 import org.mskcc.biopax_plugin.util.net.WebFileConnect;
 
-import javax.swing.*;
 import java.awt.*;
+
 import java.io.IOException;
+
 import java.net.URL;
+
+import javax.swing.*;
+
 
 /**
  * Displays the Default Visual Style Legend for the BioPAX Mapper.
@@ -44,35 +48,35 @@ import java.net.URL;
  * @author Ethan Cerami
  */
 public class LegendPanel extends JPanel {
+	/**
+	 * Constructor.
+	 *
+	 * @param bgColor Background Color.
+	 */
+	public LegendPanel(Color bgColor) {
+		this.setBackground(bgColor);
+		this.setLayout(new BorderLayout());
 
-    /**
-     * Constructor.
-     *
-     * @param bgColor Background Color.
-     */
-    public LegendPanel(Color bgColor) {
-        this.setBackground(bgColor);
-        this.setLayout(new BorderLayout());
-        JTextPane textPane = new JTextPane();
-        textPane.setEditable(false);
-        textPane.setContentType("text/html");
-        textPane.setBackground(BioPaxDetailsPanel.BG_COLOR);
+		JTextPane textPane = new JTextPane();
+		textPane.setEditable(false);
+		textPane.setContentType("text/html");
+		textPane.setBackground(BioPaxDetailsPanel.BG_COLOR);
 
-        URL legendUrl = LegendPanel.class.getResource
-                ("resources/legend.html");
-        StringBuffer temp = new StringBuffer();
-        temp.append("<HTML><BODY>");
+		URL legendUrl = LegendPanel.class.getResource("resources/legend.html");
+		StringBuffer temp = new StringBuffer();
+		temp.append("<HTML><BODY>");
 
-        try {
-            String legendHtml = WebFileConnect.retrieveDocument
-                    (legendUrl.toString());
-            temp.append(legendHtml);
-        } catch (IOException e) {
-            temp.append("Could not load legend...");
-        }
-        temp.append("</BODY></HTML>");
-        textPane.setText(temp.toString());
-        JScrollPane scrollPane = new JScrollPane(textPane);
-        this.add(scrollPane, BorderLayout.CENTER);
-    }
+		try {
+			String legendHtml = WebFileConnect.retrieveDocument(legendUrl.toString());
+			temp.append(legendHtml);
+		} catch (IOException e) {
+			temp.append("Could not load legend...");
+		}
+
+		temp.append("</BODY></HTML>");
+		textPane.setText(temp.toString());
+
+		JScrollPane scrollPane = new JScrollPane(textPane);
+		this.add(scrollPane, BorderLayout.CENTER);
+	}
 }

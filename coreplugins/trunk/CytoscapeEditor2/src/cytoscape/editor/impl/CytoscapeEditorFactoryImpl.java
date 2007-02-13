@@ -45,15 +45,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * 
+ *
  * builds new instances of editors and network edit event adapters. Before an
  * editor and its network edit event adapter can be built, the editor first
  * needs to be registered with the CytoscapeEditorManager.
- * 
+ *
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
- * 
+ *
  * @see CytoscapeEditorManager
  */
 public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
@@ -66,7 +67,7 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 
 	/**
 	 * get the Cytoscape editor for the specified type
-	 * 
+	 *
 	 * @param editorType
 	 *            the type of the editor
 	 * @param args
@@ -74,8 +75,7 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 	 * @return the Cytoscape editor for the specified editor type
 	 * @throws InvalidEditorException
 	 */
-	public CytoscapeEditor getEditor(String editorType, List args)
-			throws InvalidEditorException {
+	public CytoscapeEditor getEditor(String editorType, List args) throws InvalidEditorException {
 		Class editorClass;
 		CytoscapeEditor cyEditor = null;
 
@@ -90,29 +90,26 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 		if (editorType == null) {
 			editorType = CytoscapeEditorManager.DEFAULT_EDITOR_TYPE;
 			cyEditor = (CytoscapeEditor) editors.get(editorType);
+
 			if (cyEditor != null) {
 				return cyEditor;
 			}
 		}
 
 		// AJK: 12/10/06 END
-
 		try {
 			// AJK: 12/09/06 have the CytoscapeEditorFactory take a fully
 			// qualified path
 			// for editor
 			// editorClass = Class.forName("cytoscape.editor.editors." +
-			CytoscapeEditorManager.log("trying to instantiate editor type: "
-					+ editorType);
+			CytoscapeEditorManager.log("trying to instantiate editor type: " + editorType);
 			// AJK: we have to now correct for a null editorType, since we are
 			// no longer
 			// prepending a "cytoscape.editor.editors." to a string, so we
 			// can get a NullPointerException on Class.forName
-
 			editorClass = Class.forName(editorType);
 			editorTypes.add(editorType);
-			CytoscapeEditorManager.log("trying to instantiate editor class: "
-					+ editorClass);
+			CytoscapeEditorManager.log("trying to instantiate editor class: " + editorClass);
 			cyEditor = (CytoscapeEditor) editorClass.newInstance();
 			CytoscapeEditorManager.log("got editor: " + cyEditor);
 			editors.put(editorType, cyEditor);
@@ -122,8 +119,7 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 			// for backward compatibility, try prepending
 			// "cytoscape.editor.editors" to editorType
 			try {
-				editorClass = Class.forName((new String(
-						"cytoscape.editor.editors." + editorType)));
+				editorClass = Class.forName((new String("cytoscape.editor.editors." + editorType)));
 				editorTypes.add(editorType);
 				cyEditor = (CytoscapeEditor) editorClass.newInstance();
 				CytoscapeEditorManager.log("got editor: " + cyEditor);
@@ -132,7 +128,7 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 			} catch (ClassNotFoundException e1) {
 				String msg = "Cannot create editor of type: " + editorType;
 				InvalidEditorException ex = new InvalidEditorException(msg,
-						new Throwable("type not found"));
+				                                                       new Throwable("type not found"));
 
 				// ex.printStackTrace();
 				throw ex;
@@ -141,6 +137,7 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 			} catch (IllegalAccessException ex) {
 				ex.printStackTrace();
 			}
+
 			// AJK: 12/10/06 END
 		} catch (InstantiationException ex) {
 			ex.printStackTrace();
@@ -151,17 +148,26 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 		CytoscapeEditorManager.setCurrentEditor(cyEditor);
 
 		CytoscapeEditorManager.log("returning editor: " + cyEditor);
+
 		return cyEditor;
 	}
 
-	public CytoscapeEditor getEditor(String editorType)
-			throws InvalidEditorException {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param editorType DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 *
+	 * @throws InvalidEditorException DOCUMENT ME!
+	 */
+	public CytoscapeEditor getEditor(String editorType) throws InvalidEditorException {
 		return getEditor(editorType, null);
 	}
 
 	/**
 	 * Get the set of valid editor types
-	 * 
+	 *
 	 * @return non null collection of editor types (String)
 	 */
 	public Collection getEditorTypes() {
@@ -169,13 +175,18 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 	}
 
 	// implements CytoscapeEditorFactory interface:
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Iterator<String> getEditorNames() {
 		return Collections.unmodifiableCollection(this.editorTypes).iterator();
 	}
 
 	/**
 	 * adds a new editorType to the collection of editor types
-	 * 
+	 *
 	 * @param editorType
 	 */
 	public void addEditorType(String editorType) {
@@ -189,23 +200,34 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 	 * keystrokes. Each NetworkEditEventAdapter is specialized for the editor
 	 * that is is associated with. This is written by the developer and is at
 	 * the heart of the specialized behaviour of the editor.
-	 * 
+	 *
 	 * @param editor
 	 * @return the NetworkEditEventAdapter that is assigned to the editor
-	 * 
+	 *
 	 */
-	public NetworkEditEventAdapter getNetworkEditEventAdapter(
-			CytoscapeEditor editor) {
+	public NetworkEditEventAdapter getNetworkEditEventAdapter(CytoscapeEditor editor) {
 		return editor.getNetworkEditEventAdapter();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public ShapePaletteInfoGenerator createShapePaletteInfoGenerator() {
 		return new ShapePaletteInfoGeneratorImpl();
 	}
 
-	public ShapePaletteInfo createShapePaletteInfo(
-			String controllingAttributeName, String controllingAttributeValue) {
-		return new ShapePaletteInfoImpl(controllingAttributeName,
-				controllingAttributeValue);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param controllingAttributeName DOCUMENT ME!
+	 * @param controllingAttributeValue DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public ShapePaletteInfo createShapePaletteInfo(String controllingAttributeName,
+	                                               String controllingAttributeValue) {
+		return new ShapePaletteInfoImpl(controllingAttributeName, controllingAttributeValue);
 	}
 }

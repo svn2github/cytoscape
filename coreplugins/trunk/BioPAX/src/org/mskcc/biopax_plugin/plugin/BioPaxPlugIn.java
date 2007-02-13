@@ -32,11 +32,15 @@
 package org.mskcc.biopax_plugin.plugin;
 
 import cytoscape.CytoscapeInit;
+
 import cytoscape.data.ImportHandler;
+
 import cytoscape.plugin.CytoscapePlugin;
+
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import java.util.Properties;
+
 
 /**
  * BioPAX Import PlugIn.
@@ -44,55 +48,54 @@ import java.util.Properties;
  * @author Ethan Cerami.
  */
 public class BioPaxPlugIn extends CytoscapePlugin {
+	/**
+	 * Version Major Number.
+	 */
+	public static final int VERSION_MAJOR_NUM = 0;
 
-    /**
-     * Version Major Number.
-     */
-    public static final int VERSION_MAJOR_NUM = 0;
+	/**
+	 * Version Minor Number.
+	 */
+	public static final int VERSION_MINOR_NUM = 5;
 
-    /**
-     * Version Minor Number.
-     */
-    public static final int VERSION_MINOR_NUM = 5;
+	/**
+	 * Attribute Name for BioPAX Utility Class.
+	 */
+	public static final String BP_UTIL = "BIO_PAX_UTIL";
 
-    /**
-     * Attribute Name for BioPAX Utility Class.
-     */
-    public static final String BP_UTIL = "BIO_PAX_UTIL";
+	/**
+	 * Proxy Host Property Name
+	 */
+	public static final String PROXY_HOST_PROPERTY = "dataservice.proxy_host";
 
-    /**
-     * Proxy Host Property Name
-     */
-    public static final String PROXY_HOST_PROPERTY = "dataservice.proxy_host";
+	/**
+	 * Proxy Port Property Name
+	 */
+	public static final String PROXY_PORT_PROPERTY = "dataservice.proxy_port";
 
-    /**
-     * Proxy Port Property Name
-     */
-    public static final String PROXY_PORT_PROPERTY = "dataservice.proxy_port";
+	/**
+	 * Constructor.
+	 * This method is called by the main Cytoscape Application upon startup.
+	 */
+	public BioPaxPlugIn() {
+		ImportHandler importHandler = new ImportHandler();
+		importHandler.addFilter(new BioPaxFilter());
 
+		//  Optionally set up HTTP Proxy
+		Properties cytoProps = CytoscapeInit.getProperties();
+		String proxyHost = (String) cytoProps.get(PROXY_HOST_PROPERTY);
+		String proxyPort = (String) cytoProps.get(PROXY_PORT_PROPERTY);
 
-    /**
-     * Constructor.
-     * This method is called by the main Cytoscape Application upon startup.
-     */
-    public BioPaxPlugIn() {
-        ImportHandler importHandler = new ImportHandler();
-        importHandler.addFilter(new BioPaxFilter());
+		if ((proxyHost != null) && (proxyPort != null)) {
+			System.getProperties().put("proxySet", "true");
+			System.getProperties().put("proxyHost", proxyHost);
+			System.getProperties().put("proxyPort", proxyPort);
+		}
 
-        //  Optionally set up HTTP Proxy
-        Properties cytoProps = CytoscapeInit.getProperties();
-        String proxyHost = (String) cytoProps.get(PROXY_HOST_PROPERTY);
-        String proxyPort = (String) cytoProps.get(PROXY_PORT_PROPERTY);
-        if (proxyHost != null && proxyPort != null) {
-            System.getProperties().put("proxySet", "true");
-            System.getProperties().put("proxyHost", proxyHost);
-            System.getProperties().put("proxyPort", proxyPort);
-        }
-
-        // we are now interested in receiving all network events
-        // like a load of a network from a session
-        // to start listening to network events, we grab an instance of
-        // a BioPaxContainerClass - this contains the network listener
-        BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-    }
+		// we are now interested in receiving all network events
+		// like a load of a network from a session
+		// to start listening to network events, we grab an instance of
+		// a BioPaxContainerClass - this contains the network listener
+		BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+	}
 }

@@ -36,6 +36,7 @@ package org.cytoscape.coreplugin.cpath.model;
 
 import java.util.Observable;
 
+
 /**
  * Encapsulates Current Selections of the User.
  * For example, this class stores which Search Request/Response has the
@@ -44,88 +45,94 @@ import java.util.Observable;
  * @author Ethan Cerami
  */
 public class UserSelection extends Observable {
-    /**
-     * Property Change:  Interactor Focus Has Changed.
-     */
-    public static final Integer INTERACTOR_CHANGED = new Integer(1);
+	/**
+	 * Property Change:  Interactor Focus Has Changed.
+	 */
+	public static final Integer INTERACTOR_CHANGED = new Integer(1);
 
-    /**
-     * Property Change:  Interaction Focus Has Changed.
-     */
-    public static final Integer INTERACTION_CHANGED = new Integer(2);
+	/**
+	 * Property Change:  Interaction Focus Has Changed.
+	 */
+	public static final Integer INTERACTION_CHANGED = new Integer(2);
 
-    /**
-     * The Currently Selected Interactor.
-     */
-//    private Interactor selectedInteractor;
+	/**
+	 * The Currently Selected Interactor.
+	 */
 
-    /**
-     * Selected Node ID.
-     */
-    private String selectedNodeId;
+	//    private Interactor selectedInteractor;
 
-    /**
-     * The Currently Selected Interaction.
-     */
-//    private Interaction selectedInteraction;
+	/**
+	 * Selected Node ID.
+	 */
+	private String selectedNodeId;
 
-    /**
-     * Current Search Request / Response that is in Focus.
-     */
-    private int currentSearchIndex;
+	/**
+	 * The Currently Selected Interaction.
+	 */
 
-    /**
-     * Gets the Currently Selected Interactor.
-     *
-     * @return Interactor Object.
-     */
-//    public Interactor getSelectedInteractor() {
-//        return selectedInteractor;
-//    }
+	//    private Interaction selectedInteraction;
 
-    /**
-     * Gets the ID of the Currently Selected Node.
-     *
-     * @return Node ID.
-     */
-    public String getSelectedNodeId () {
-        return this.selectedNodeId;
-    }
+	/**
+	 * Current Search Request / Response that is in Focus.
+	 */
+	private int currentSearchIndex;
 
-    /**
-     * Gets the Currently Selected Interaction.
-     *
-     * @return Interaction Object.
-     */
-//    public Interaction getSelectedInteraction() {
-//        return selectedInteraction;
-//    }
+	/**
+	 * Gets the Currently Selected Interactor.
+	 *
+	 * @return Interactor Object.
+	 */
 
-    /**
-     * Sets the Currently Selected Interactor.
-     *
-     * @param nodeId             Node Identifier.
-     * @param selectedInteractor Interactor Object.
-     */
-//    public void setSelectedInteractor(String nodeId,
-//            Interactor selectedInteractor) {
-//        this.selectedInteractor = selectedInteractor;
-//        this.selectedNodeId = nodeId;
-//        this.selectedInteraction = null;
-//        this.setChanged();
-//        this.notifyObservers(INTERACTOR_CHANGED);
-//    }
+	//    public Interactor getSelectedInteractor() {
+	//        return selectedInteractor;
+	//    }
 
-    /**
-     * Sets the Currently Selected Interaction.
-     *
-     * @param selectedInteraction Interaction Object.
-     */
-//    public void setSelectedInteraction(Interaction selectedInteraction) {
-//        this.selectedInteraction = selectedInteraction;
-//        this.selectedInteractor = null;
-//        this.selectedNodeId = null;
-//        this.setChanged();
-//        this.notifyObservers(INTERACTION_CHANGED);
-//    }
+	/**
+	 * Gets the ID of the Currently Selected Node.
+	 *
+	 * @return Node ID.
+	 */
+	public String getSelectedNodeId() {
+		return this.selectedNodeId;
+	}
+
+	/**
+	 * Gets the Currently Selected Interaction.
+	 *
+	 * @return Interaction Object.
+	 */
+
+	//    public Interaction getSelectedInteraction() {
+	//        return selectedInteraction;
+	//    }
+
+	/**
+	 * Sets the Currently Selected Interactor.
+	 *
+	 * @param nodeId             Node Identifier.
+	 * @param selectedInteractor Interactor Object.
+	 */
+
+	//    public void setSelectedInteractor(String nodeId,
+	//            Interactor selectedInteractor) {
+	//        this.selectedInteractor = selectedInteractor;
+	//        this.selectedNodeId = nodeId;
+	//        this.selectedInteraction = null;
+	//        this.setChanged();
+	//        this.notifyObservers(INTERACTOR_CHANGED);
+	//    }
+
+	/**
+	 * Sets the Currently Selected Interaction.
+	 *
+	 * @param selectedInteraction Interaction Object.
+	 */
+
+	//    public void setSelectedInteraction(Interaction selectedInteraction) {
+	//        this.selectedInteraction = selectedInteraction;
+	//        this.selectedInteractor = null;
+	//        this.selectedNodeId = null;
+	//        this.setChanged();
+	//        this.notifyObservers(INTERACTION_CHANGED);
+	//    }
 }

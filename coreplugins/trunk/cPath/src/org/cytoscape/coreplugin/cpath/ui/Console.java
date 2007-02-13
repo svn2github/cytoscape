@@ -34,29 +34,29 @@
 */
 package org.cytoscape.coreplugin.cpath.ui;
 
+
 /**
  * Console Interface.
  *
  * @author Ethan Cerami.
  */
 public interface Console {
+	/**
+	 * Logs Message to the Console.
+	 *
+	 * @param msg Message
+	 */
+	void logMessage(String msg);
 
-    /**
-     * Logs Message to the Console.
-     *
-     * @param msg Message
-     */
-    void logMessage (String msg);
+	/**
+	 * Logs Message in Bold.
+	 *
+	 * @param msg Message
+	 */
+	void logMessageBold(String msg);
 
-    /**
-     * Logs Message in Bold.
-     *
-     * @param msg Message
-     */
-    void logMessageBold (String msg);
-
-    /**
-     * Clears the Console.
-     */
-    void clear ();
+	/**
+	 * Clears the Console.
+	 */
+	void clear();
 }

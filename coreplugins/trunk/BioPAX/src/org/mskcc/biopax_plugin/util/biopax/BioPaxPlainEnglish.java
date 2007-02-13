@@ -33,6 +33,7 @@ package org.mskcc.biopax_plugin.util.biopax;
 
 import java.util.HashMap;
 
+
 /**
  * A simple Utility for converting BioPAX Types into "Plain English".
  * For example, the type "biochemicalReaction" is converted to
@@ -41,68 +42,68 @@ import java.util.HashMap;
  * @author Ethan Cerami.
  */
 public class BioPaxPlainEnglish {
-    private static HashMap map;
+	private static HashMap map;
 
-    /**
-     * Converts the specified type into "Plain English".
-     * For example, the type "biochemicalReaction" is converted to
-     * "Biochemical Reaction".
-     * <p/>
-     * If the type is not know, the origianl argument type is simply returned.
-     *
-     * @param type BioPAX Type String.
-     * @return BioPAX Type String, in "Plain English".
-     */
-    public static String getTypeInPlainEnglish(String type) {
-        if (map == null) {
-            initMap();
-        }
-        String plainEnglish = (String) map.get(type);
-        if (plainEnglish == null) {
-            return type;
-        } else {
-            return plainEnglish;
-        }
-    }
+	/**
+	 * Converts the specified type into "Plain English".
+	 * For example, the type "biochemicalReaction" is converted to
+	 * "Biochemical Reaction".
+	 * <p/>
+	 * If the type is not know, the origianl argument type is simply returned.
+	 *
+	 * @param type BioPAX Type String.
+	 * @return BioPAX Type String, in "Plain English".
+	 */
+	public static String getTypeInPlainEnglish(String type) {
+		if (map == null) {
+			initMap();
+		}
 
-    private static void initMap() {
-        map = new HashMap();
-        map.put("protein", "Protein");
-        map.put("smallMolecule", "Small Molecule");
-        map.put("physicalEntity", "Physical Entity");
-        map.put("complex", "Complex");
-        map.put("dna", "DNA");
-        map.put("rna", "RNA");
-        map.put("interaction", "Interaction");
-        map.put("physicalInteraction", "Physical Interaction");
-        map.put("control", "Control");
-        map.put("catalysis", "Catalysis");
-        map.put("modulation", "Modulation");
-        map.put("conversion", "Conversion");
-        map.put("biochemicalReaction", "Biochemical Reaction");
-        map.put("complexAssembly", "Complex Assembly");
-        map.put("transportWithBiochemicalReaction",
-                "Transport with Biochemical Reaction");
-        map.put("transport", "Transport");
-        map.put("transportWithBiochemicalReaction",
-                "Transport with Biochemical Reaction");
-        // chemical modifications
-        map.put("acetylation site", "Acetylation Site");
-        map.put("glycosylation site", "Glycosylation Site");
-        map.put("phosphorylation site", "Phosphorylation Site");
-        map.put("sumoylation site", "Sumoylation Site");
-        map.put("ubiquitination site", "Ubiquitination Site");
-        // cellular locations
-        map.put("cellular component unknown", "Cellular Component Unknown");
-        map.put("centrosome", "Centrosome");
-        map.put("cytoplasm", "Cytoplasm");
-        map.put("endoplasmic reticulum", "Endoplasmic Reticulum");
-        map.put("endosome", "Endosome");
-        map.put("extracellular", "Extracellular");
-        map.put("golgi apparatus", "Golgi Apparatus");
-        map.put("mitochondrion", "Mitochondrion");
-        map.put("nucleus", "Nucleus");
-        map.put("plasma membrane", "Plasma Membrane");
-        map.put("ribosome", "Ribosome");
-    }
+		String plainEnglish = (String) map.get(type);
+
+		if (plainEnglish == null) {
+			return type;
+		} else {
+			return plainEnglish;
+		}
+	}
+
+	private static void initMap() {
+		map = new HashMap();
+		map.put("protein", "Protein");
+		map.put("smallMolecule", "Small Molecule");
+		map.put("physicalEntity", "Physical Entity");
+		map.put("complex", "Complex");
+		map.put("dna", "DNA");
+		map.put("rna", "RNA");
+		map.put("interaction", "Interaction");
+		map.put("physicalInteraction", "Physical Interaction");
+		map.put("control", "Control");
+		map.put("catalysis", "Catalysis");
+		map.put("modulation", "Modulation");
+		map.put("conversion", "Conversion");
+		map.put("biochemicalReaction", "Biochemical Reaction");
+		map.put("complexAssembly", "Complex Assembly");
+		map.put("transportWithBiochemicalReaction", "Transport with Biochemical Reaction");
+		map.put("transport", "Transport");
+		map.put("transportWithBiochemicalReaction", "Transport with Biochemical Reaction");
+		// chemical modifications
+		map.put("acetylation site", "Acetylation Site");
+		map.put("glycosylation site", "Glycosylation Site");
+		map.put("phosphorylation site", "Phosphorylation Site");
+		map.put("sumoylation site", "Sumoylation Site");
+		map.put("ubiquitination site", "Ubiquitination Site");
+		// cellular locations
+		map.put("cellular component unknown", "Cellular Component Unknown");
+		map.put("centrosome", "Centrosome");
+		map.put("cytoplasm", "Cytoplasm");
+		map.put("endoplasmic reticulum", "Endoplasmic Reticulum");
+		map.put("endosome", "Endosome");
+		map.put("extracellular", "Extracellular");
+		map.put("golgi apparatus", "Golgi Apparatus");
+		map.put("mitochondrion", "Mitochondrion");
+		map.put("nucleus", "Nucleus");
+		map.put("plasma membrane", "Plasma Membrane");
+		map.put("ribosome", "Ribosome");
+	}
 }

@@ -33,6 +33,7 @@ package org.mskcc.biopax_plugin.util.biopax;
 
 import java.util.HashMap;
 
+
 /**
  * Hashmap which maps BioPax Chemical Modifications to Abbreviations.
  * <p/>
@@ -41,21 +42,20 @@ import java.util.HashMap;
  * @author Benjamin Gross
  */
 public class BioPaxCellularLocationMap extends HashMap {
-
-    /**
-     * Constructor.
-     */
-    public BioPaxCellularLocationMap() {
-        put("cellular component unknown", "");
-        put("centrosome", "CE");
-        put("cytoplasm", "CY");
-        put("endoplasmic reticulum", "ER");
-        put("endosome", "EN");
-        put("extracellular", "EM");
-        put("golgi apparatus", "GA");
-        put("mitochondrion", "MI");
-        put("nucleus", "NU");
-        put("plasma membrane", "PM");
-        put("ribosome", "RI");
-    }
+	/**
+	 * Constructor.
+	 */
+	public BioPaxCellularLocationMap() {
+		put("cellular component unknown", "");
+		put("centrosome", "CE");
+		put("cytoplasm", "CY");
+		put("endoplasmic reticulum", "ER");
+		put("endosome", "EN");
+		put("extracellular", "EM");
+		put("golgi apparatus", "GA");
+		put("mitochondrion", "MI");
+		put("nucleus", "NU");
+		put("plasma membrane", "PM");
+		put("ribosome", "RI");
+	}
 }

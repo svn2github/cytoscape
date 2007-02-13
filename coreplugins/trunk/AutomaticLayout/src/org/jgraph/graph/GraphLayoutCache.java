@@ -1,13 +1,19 @@
 /*
  * @(#)GraphLayoutCache.java 1.0 03-JUL-04
- * 
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
+import org.jgraph.event.GraphLayoutCacheEvent;
+import org.jgraph.event.GraphLayoutCacheListener;
+import org.jgraph.event.GraphModelEvent;
+
 import java.awt.geom.Rectangle2D;
+
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,9 +32,6 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoableEdit;
 
-import org.jgraph.event.GraphLayoutCacheEvent;
-import org.jgraph.event.GraphLayoutCacheListener;
-import org.jgraph.event.GraphModelEvent;
 
 /**
  * An object that defines the view of a graphmodel. This object maps between
@@ -36,12 +39,11 @@ import org.jgraph.event.GraphModelEvent;
  * The view may also contain its own set of attributes and is therefore an
  * extension of an Observable, which may be observed by the GraphUI. It uses the
  * model to send its changes to the command history.
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
 public class GraphLayoutCache implements CellMapper, Serializable {
-
 	/**
 	 * True if the cells should be auto-sized when their values change. Default
 	 * is false.
@@ -144,12 +146,18 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Specified the initial x- and y-scaling factor for initial collapsed group
 	 * bounds. Default is 1.0, ie. no scaling.
 	 */
-	protected double collapseXScale = 1.0, collapseYScale = 1.0;
+	protected double collapseXScale = 1.0;
+
+	/**
+	 * Specified the initial x- and y-scaling factor for initial collapsed group
+	 * bounds. Default is 1.0, ie. no scaling.
+	 */
+	protected double collapseYScale = 1.0;
 
 	/**
 	 * Boolean indicating whether edges should be reconneted to visible parents
 	 * on collapse/expand. Default is false.
-	 * 
+	 *
 	 * @deprecated edges are moved to parent view and back automatically
 	 */
 	protected boolean reconnectsEdgesToVisibleParent = false;
@@ -170,7 +178,15 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * must weak keys for the cells since when cells are removed hiddenMapping
 	 * is not updated.
 	 */
-	protected Map mapping = new Hashtable(), hiddenMapping = new WeakHashMap();
+	protected Map mapping = new Hashtable();
+
+	/**
+	 * Maps cells to views. The hidden mapping is used to remembed cell views
+	 * that are hidden, based on the remembersCellViews setting. hiddenMapping
+	 * must weak keys for the cells since when cells are removed hiddenMapping
+	 * is not updated.
+	 */
+	protected Map hiddenMapping = new WeakHashMap();
 
 	/**
 	 * Factory to create the views.
@@ -222,7 +238,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	/**
 	 * Constructs a view for the specified model that uses <code>factory</code>
 	 * to create its views.
-	 * 
+	 *
 	 * @param model
 	 *            the model that constitues the data source
 	 */
@@ -233,44 +249,48 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	/**
 	 * Constructs a view for the specified model that uses <code>factory</code>
 	 * to create its views.
-	 * 
+	 *
 	 * @param model
 	 *            the model that constitues the data source
 	 */
-	public GraphLayoutCache(GraphModel model, CellViewFactory factory,
-			boolean partial) {
+	public GraphLayoutCache(GraphModel model, CellViewFactory factory, boolean partial) {
 		this(model, factory, null, null, partial);
 	}
 
 	/**
 	 * Constructs a view for the specified model that uses <code>factory</code>
 	 * to create its views.
-	 * 
+	 *
 	 * @param model
 	 *            the model that constitues the data source
 	 */
-	public GraphLayoutCache(GraphModel model, CellViewFactory factory,
-			CellView[] cellViews, CellView[] hiddenCellViews, boolean partial) {
+	public GraphLayoutCache(GraphModel model, CellViewFactory factory, CellView[] cellViews,
+	                        CellView[] hiddenCellViews, boolean partial) {
 		this.factory = factory;
 		this.partial = partial;
+
 		if (cellViews != null) {
 			graphModel = model;
+
 			for (int i = 0; i < cellViews.length; i++) {
 				if (cellViews[i] != null) {
 					putMapping(cellViews[i].getCell(), cellViews[i]);
+
 					if (partial)
 						visibleSet.add(cellViews[i].getCell());
 				}
 			}
+
 			insertViews(cellViews);
+
 			// Notify observers for autosizing?
 		} else {
 			setModel(model);
 		}
+
 		if (hiddenCellViews != null) {
 			for (int i = 0; i < hiddenCellViews.length; i++)
-				hiddenMapping.put(hiddenCellViews[i].getCell(),
-						hiddenCellViews[i]);
+				hiddenMapping.put(hiddenCellViews[i].getCell(), hiddenCellViews[i]);
 		}
 	}
 
@@ -281,7 +301,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	/**
 	 * Adds a listener for the GraphLayoutCacheEvent posted after the graph
 	 * layout cache changes.
-	 * 
+	 *
 	 * @see #removeGraphLayoutCacheListener
 	 * @param l
 	 *            the listener to add
@@ -293,7 +313,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	/**
 	 * Removes a listener previously added with <B>addGraphLayoutCacheListener()
 	 * </B>.
-	 * 
+	 *
 	 * @see #addGraphLayoutCacheListener
 	 * @param l
 	 *            the listener to remove
@@ -309,37 +329,35 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public void cellViewsChanged(final CellView[] cellViews) {
 		if (cellViews != null) {
 			fireGraphLayoutCacheChanged(this,
-					new GraphLayoutCacheEvent.GraphLayoutCacheChange() {
+			                            new GraphLayoutCacheEvent.GraphLayoutCacheChange() {
+					public Object[] getInserted() {
+						return null;
+					}
 
-						public Object[] getInserted() {
-							return null;
-						}
+					public Object[] getRemoved() {
+						return null;
+					}
 
-						public Object[] getRemoved() {
-							return null;
-						}
+					public Map getPreviousAttributes() {
+						return null;
+					}
 
-						public Map getPreviousAttributes() {
-							return null;
-						}
+					public Object getSource() {
+						return this;
+					}
 
-						public Object getSource() {
-							return this;
-						}
+					public Object[] getChanged() {
+						return cellViews;
+					}
 
-						public Object[] getChanged() {
-							return cellViews;
-						}
+					public Map getAttributes() {
+						return null;
+					}
 
-						public Map getAttributes() {
-							return null;
-						}
-
-						public Object[] getContext() {
-							return null;
-						}
-
-					});
+					public Object[] getContext() {
+						return null;
+					}
+				});
 		}
 	}
 
@@ -347,14 +365,15 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Notify all listeners that have registered interest for notification on
 	 * this event type. The event instance is lazily created using the
 	 * parameters passed into the fire method.
-	 * 
+	 *
 	 * @see EventListenerList
 	 */
 	protected void fireGraphLayoutCacheChanged(Object source,
-			GraphLayoutCacheEvent.GraphLayoutCacheChange edit) {
+	                                           GraphLayoutCacheEvent.GraphLayoutCacheChange edit) {
 		// Guaranteed to return a non-null array
 		Object[] listeners = listenerList.getListenerList();
 		GraphLayoutCacheEvent e = null;
+
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
 		for (int i = listeners.length - 2; i >= 0; i -= 2) {
@@ -362,8 +381,8 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 				// Lazily create the event:
 				if (e == null)
 					e = new GraphLayoutCacheEvent(source, edit);
-				((GraphLayoutCacheListener) listeners[i + 1])
-						.graphLayoutCacheChanged(e);
+
+				((GraphLayoutCacheListener) listeners[i + 1]).graphLayoutCacheChanged(e);
 			}
 		}
 	}
@@ -373,8 +392,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * model.
 	 */
 	public GraphLayoutCacheListener[] getGraphLayoutCacheListeners() {
-		return (GraphLayoutCacheListener[]) listenerList
-				.getListeners(GraphLayoutCacheListener.class);
+		return (GraphLayoutCacheListener[]) listenerList.getListeners(GraphLayoutCacheListener.class);
 	}
 
 	//
@@ -404,11 +422,13 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		hiddenMapping.clear();
 		visibleSet.clear();
 		graphModel = model;
+
 		if (!isPartial()) {
 			Object[] cells = DefaultGraphModel.getRoots(getModel());
 			CellView[] cellViews = getMapping(cells, true);
 			insertViews(cellViews);
 		}
+
 		// Update PortView Cache and Notify Observers
 		updatePorts();
 		cellViewsChanged(getRoots());
@@ -421,6 +441,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		Collection coll = mapping.values();
 		CellView[] result = new CellView[coll.size()];
 		coll.toArray(result);
+
 		return result;
 	}
 
@@ -428,11 +449,13 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Returns the bounding box for the specified cell views.
 	 */
 	public static Rectangle2D getBounds(CellView[] views) {
-		if (views != null && views.length > 0) {
+		if ((views != null) && (views.length > 0)) {
 			Rectangle2D r = views[0].getBounds();
 			Rectangle2D ret = (r != null) ? (Rectangle2D) r.clone() : null;
+
 			for (int i = 1; i < views.length; i++) {
-					r = views[i].getBounds();
+				r = views[i].getBounds();
+
 				if (r != null) {
 					if (ret == null)
 						ret = (r != null) ? (Rectangle2D) r.clone() : null;
@@ -440,8 +463,10 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 						Rectangle2D.union(ret, r, ret);
 				}
 			}
+
 			return ret;
 		}
+
 		return null;
 	}
 
@@ -451,38 +476,40 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * <code>graph.getSelectionCells(graph.getGraphLayoutCache().getCells(false, true,
 	 false, false));</code>
 	 */
-	public Object[] getCells(boolean groups, boolean vertices, boolean ports,
-			boolean edges) {
+	public Object[] getCells(boolean groups, boolean vertices, boolean ports, boolean edges) {
 		CellView[] views = getCellViews();
 		List result = new ArrayList(views.length);
 		GraphModel model = getModel();
+
 		for (int i = 0; i < views.length; i++) {
 			Object cell = views[i].getCell();
 			boolean isEdge = model.isEdge(cell);
-			if ((ports || !model.isPort(cell))) {
-				if (((((ports || vertices) && !isEdge) || (edges && isEdge)) && views[i]
-						.isLeaf())
-						|| (groups && !views[i].isLeaf()))
-					result.add(views[i].getCell());
 
+			if ((ports || !model.isPort(cell))) {
+				if (((((ports || vertices) && !isEdge) || (edges && isEdge)) && views[i].isLeaf())
+				    || (groups && !views[i].isLeaf()))
+					result.add(views[i].getCell());
 			}
 		}
+
 		return result.toArray();
 	}
 
 	/**
 	 * Returns a nested map of (cell, map) pairs that represent all attributes
 	 * of all cell views in this view.
-	 * 
+	 *
 	 * @see #getCellViews
 	 */
 	public Map createNestedMap() {
 		CellView[] cellViews = getCellViews();
 		Map nested = new Hashtable();
+
 		for (int i = 0; i < cellViews.length; i++) {
-			nested.put(cellViews[i].getCell(), new Hashtable((Map) cellViews[i]
-					.getAllAttributes().clone()));
+			nested.put(cellViews[i].getCell(),
+			           new Hashtable((Map) cellViews[i].getAllAttributes().clone()));
 		}
+
 		return nested;
 	}
 
@@ -493,25 +520,32 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		Collection coll = hiddenMapping.values();
 		CellView[] result = new CellView[coll.size()];
 		coll.toArray(result);
+
 		return result;
 	}
 
 	// Remaps all existing views using the CellViewFactory
-	// and replaces the respective root views.
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public synchronized void reload() {
 		List newRoots = new ArrayList();
 		Map oldMapping = new Hashtable(mapping);
 		mapping.clear();
+
 		Iterator it = oldMapping.keySet().iterator();
+
 		while (it.hasNext()) {
 			Object cell = it.next();
 			CellView oldView = (CellView) oldMapping.get(cell);
 			CellView newView = getMapping(cell, true);
 			newView.changeAttributes(oldView.getAttributes());
+
 			// newView.refresh(getModel(), this, false);
 			if (roots.contains(oldView))
 				newRoots.add(newView);
 		}
+
 		// replace hidden
 		hiddenMapping.clear();
 		roots = newRoots;
@@ -530,6 +564,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public CellView[] getRoots() {
 		CellView[] views = new CellView[roots.size()];
 		roots.toArray(views);
+
 		return views;
 	}
 
@@ -539,11 +574,14 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public CellView[] getRoots(Rectangle2D clip) {
 		java.util.List result = new ArrayList();
 		CellView[] views = getRoots();
+
 		for (int i = 0; i < views.length; i++)
 			if (views[i].getBounds().intersects(clip))
 				result.add(views[i]);
+
 		views = new CellView[result.size()];
 		result.toArray(views);
+
 		return views;
 	}
 
@@ -553,11 +591,14 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public Object[] getVisibleCells(Object[] cells) {
 		if (cells != null) {
 			List result = new ArrayList(cells.length);
+
 			for (int i = 0; i < cells.length; i++)
 				if (isVisible(cells[i]))
 					result.add(cells[i]);
+
 			return result.toArray();
 		}
+
 		return null;
 	}
 
@@ -574,49 +615,80 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	protected void updatePorts() {
 		Object[] roots = DefaultGraphModel.getRoots(graphModel);
 		List list = DefaultGraphModel.getDescendants(graphModel, roots);
+
 		if (list != null) {
 			ArrayList result = new ArrayList();
 			Iterator it = list.iterator();
+
 			while (it.hasNext()) {
 				Object cell = it.next();
+
 				if (graphModel.isPort(cell)) {
 					CellView portView = getMapping(cell, false);
+
 					if (portView != null) {
 						result.add(portView);
 						portView.refresh(getModel(), this, false);
 					}
 				}
 			}
+
 			ports = new PortView[result.size()];
 			result.toArray(ports);
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param views DOCUMENT ME!
+	 * @param create DOCUMENT ME!
+	 */
 	public void refresh(CellView[] views, boolean create) {
 		if (views != null)
 			for (int i = 0; i < views.length; i++)
 				refresh(views[i], create);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param view DOCUMENT ME!
+	 * @param create DOCUMENT ME!
+	 */
 	public void refresh(CellView view, boolean create) {
 		if (view != null) {
 			view.refresh(getModel(), this, create);
+
 			CellView[] children = view.getChildViews();
+
 			for (int i = 0; i < children.length; i++)
 				refresh(children[i], create);
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param views DOCUMENT ME!
+	 */
 	public void update(CellView[] views) {
 		if (views != null)
 			for (int i = 0; i < views.length; i++)
 				update(views[i]);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param view DOCUMENT ME!
+	 */
 	public void update(CellView view) {
 		if (view != null) {
 			view.update();
+
 			CellView[] children = view.getChildViews();
+
 			for (int i = 0; i < children.length; i++)
 				update(children[i]);
 		}
@@ -633,6 +705,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		// Get Old Attributes From GraphModelChange (Undo) -- used to remap
 		// removed cells
 		CellView[] views = change.getViews(this);
+
 		if (views != null) {
 			// Only ex-visible views are piggybacked
 			for (int i = 0; i < views.length; i++)
@@ -640,9 +713,11 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 					// Do not use putMapping because cells are invisible
 					mapping.put(views[i].getCell(), views[i]);
 				}
+
 			// Ensure visible state
 			setVisibleImpl(getCells(views), true);
 		}
+
 		// Fetch View Order Of Changed Cells (Before any changes)
 		Object[] changed = change.getChanged();
 		// Fetch Views to Insert before Removal (Special case: two step process,
@@ -652,6 +727,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		views = removeCells(change.getRemoved());
 		// Store Removed Attributes In GraphModelChange (Undo)
 		change.putViews(this, views);
+
 		// Insert New Roots
 		// insertViews(insertViews);
 		// Hide edges with invisible source or target
@@ -661,11 +737,13 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 			// First hide
 			hideCellsForChange(change);
 		}
+
 		// Refresh Changed Cells
-		if (changed != null && changed.length > 0) {
+		if ((changed != null) && (changed.length > 0)) {
 			// Restore All Cells in Model Order (Replace Roots)
 			for (int i = 0; i < changed.length; i++) {
 				CellView view = getMapping(changed[i], false);
+
 				if (view != null) {
 					view.refresh(getModel(), this, true);
 					// Update child edges in groups (routing)
@@ -673,6 +751,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 				}
 			}
 		}
+
 		reloadRoots();
 		// Refresh Context of Changed Cells (=Connected Edges)
 		refresh(getMapping(getContext(change), false), false);
@@ -688,15 +767,19 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		// Reorder roots
 		Object[] orderedCells = DefaultGraphModel.getAll(graphModel);
 		List newRoots = new ArrayList();
+
 		for (int i = 0; i < orderedCells.length; i++) {
 			CellView view = getMapping(orderedCells[i], false);
+
 			if (view != null) {
 				view.refresh(getModel(), this, true);
+
 				if (view.getParentView() == null) {
 					newRoots.add(view);
 				}
 			}
 		}
+
 		roots = newRoots;
 	}
 
@@ -716,27 +799,32 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		// invisible.
 		Object[] tmp = change.getRemoved();
 		Set removed = new HashSet();
+
 		if (tmp != null)
 			for (int i = 0; i < tmp.length; i++)
 				removed.add(tmp[i]);
+
 		if (hidesDanglingConnections || hidesExistingConnections) {
 			Object[] changed = change.getChanged();
+
 			for (int i = 0; i < changed.length; i++) {
 				CellView view = getMapping(changed[i], false);
+
 				if (view instanceof EdgeView) {
 					EdgeView edge = (EdgeView) view;
-					Object oldSource = (edge.getSource() == null) ? null : edge
-							.getSource().getCell();
-					Object oldTarget = (edge.getTarget() == null) ? null : edge
-							.getTarget().getCell();
+					Object oldSource = (edge.getSource() == null) ? null : edge.getSource().getCell();
+					Object oldTarget = (edge.getTarget() == null) ? null : edge.getTarget().getCell();
 					Object newSource = graphModel.getSource(changed[i]);
 					Object newTarget = graphModel.getTarget(changed[i]);
-					boolean hideExisting = (hidesExistingConnections && ((newSource != null && !hasVisibleParent(
-							newSource, null)) || (newTarget != null && !hasVisibleParent(
-							newTarget, null))));
-					if ((hidesDanglingConnections && (removed
-							.contains(oldSource) || removed.contains(oldTarget)))
-							|| hideExisting) {
+					boolean hideExisting = (hidesExistingConnections
+					                       && (((newSource != null)
+					                           && !hasVisibleParent(newSource, null))
+					                          || ((newTarget != null)
+					                             && !hasVisibleParent(newTarget, null))));
+
+					if ((hidesDanglingConnections
+					    && (removed.contains(oldSource) || removed.contains(oldTarget)))
+					    || hideExisting) {
 						setVisibleImpl(new Object[] { changed[i] }, false);
 					}
 				}
@@ -749,38 +837,44 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 */
 	protected boolean hasVisibleParent(Object cell, Set invisible) {
 		boolean isVisible = false;
+
 		do {
-			isVisible = (invisible == null || !invisible.contains(cell)) ? isVisible(cell)
-					: false;
+			isVisible = ((invisible == null) || !invisible.contains(cell)) ? isVisible(cell) : false;
 			cell = getModel().getParent(cell);
-		} while (cell != null && !isVisible);
+		} while ((cell != null) && !isVisible);
+
 		return isVisible;
 	}
 
 	protected void showCellsForChange(GraphModelEvent.GraphModelChange change) {
 		Object[] inserted = change.getInserted();
-		if (inserted != null && showsInsertedConnections) {
+
+		if ((inserted != null) && showsInsertedConnections) {
 			for (int i = 0; i < inserted.length; i++) {
 				if (!isVisible(inserted[i])) {
 					Object source = graphModel.getSource(inserted[i]);
 					Object target = graphModel.getTarget(inserted[i]);
-					if ((source != null || target != null)
-							&& (isVisible(source) && isVisible(target)))
+
+					if (((source != null) || (target != null))
+					    && (isVisible(source) && isVisible(target)))
 						setVisibleImpl(new Object[] { inserted[i] }, true);
 				}
 			}
 		}
+
 		if (change.getConnectionSet() != null) {
 			Set changedSet = change.getConnectionSet().getChangedEdges();
-			if (changedSet != null && showsChangedConnections) {
+
+			if ((changedSet != null) && showsChangedConnections) {
 				Object[] changed = changedSet.toArray();
+
 				for (int i = 0; i < changed.length; i++) {
 					if (!isVisible(changed[i])) {
 						Object source = graphModel.getSource(changed[i]);
 						Object target = graphModel.getTarget(changed[i]);
-						if ((source != null || target != null)
-								&& (isVisible(source) && isVisible(target))
-								&& !isVisible(changed[i]))
+
+						if (((source != null) || (target != null))
+						    && (isVisible(source) && isVisible(target)) && !isVisible(changed[i]))
 							setVisibleImpl(new Object[] { changed[i] }, true);
 					}
 				}
@@ -795,14 +889,13 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public void insertViews(CellView[] views) {
 		if (views != null) {
 			refresh(views, true);
+
 			for (int i = 0; i < views.length; i++) {
-				if (views[i] != null
-						&& getMapping(views[i].getCell(), false) != null) {
+				if ((views[i] != null) && (getMapping(views[i].getCell(), false) != null)) {
 					CellView parentView = views[i].getParentView();
-					Object parent = (parentView != null) ? parentView.getCell()
-							: null;
-					if (!graphModel.isPort(views[i].getCell())
-							&& parent == null) {
+					Object parent = (parentView != null) ? parentView.getCell() : null;
+
+					if (!graphModel.isPort(views[i].getCell()) && (parent == null)) {
 						roots.add(views[i]);
 					}
 				}
@@ -817,16 +910,20 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public CellView[] removeCells(Object[] cells) {
 		if (cells != null) {
 			CellView[] views = new CellView[cells.length];
+
 			for (int i = 0; i < cells.length; i++) {
 				views[i] = removeMapping(cells[i]);
+
 				if (views[i] != null) {
 					views[i].removeFromParent();
 					roots.remove(views[i]);
 					visibleSet.remove(views[i].getCell());
 				}
 			}
+
 			return views;
 		}
+
 		return null;
 	}
 
@@ -840,11 +937,14 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public Object[] getCells(CellView[] views) {
 		if (views != null) {
 			Object[] cells = new Object[views.length];
+
 			for (int i = 0; i < views.length; i++)
 				if (views[i] != null)
 					cells[i] = views[i].getCell();
+
 			return cells;
 		}
+
 		return null;
 	}
 
@@ -855,9 +955,12 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public CellView getMapping(Object cell, boolean create) {
 		if (cell == null)
 			return null;
+
 		CellView view = (CellView) mapping.get(cell);
-		if (view == null && create && isVisible(cell)) {
+
+		if ((view == null) && create && isVisible(cell)) {
 			view = (CellView) hiddenMapping.get(cell);
+
 			if (view != null) {
 				putMapping(cell, view);
 				hiddenMapping.remove(cell);
@@ -865,10 +968,12 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 				view = factory.createView(graphModel, cell);
 				putMapping(cell, view);
 				view.refresh(getModel(), this, true); // Create Dependent
-				// Views
+				                                      // Views
+
 				view.update();
 			}
 		}
+
 		return view;
 	}
 
@@ -888,10 +993,13 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public CellView[] getMapping(Object[] cells, boolean create) {
 		if (cells != null) {
 			CellView[] result = new CellView[cells.length];
+
 			for (int i = 0; i < cells.length; i++)
 				result[i] = getMapping(cells[i], create);
+
 			return result;
 		}
+
 		return null;
 	}
 
@@ -899,7 +1007,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Associates the specified model cell with the specified view.
 	 */
 	public void putMapping(Object cell, CellView view) {
-		if (cell != null && view != null)
+		if ((cell != null) && (view != null))
 			mapping.put(cell, view);
 	}
 
@@ -911,31 +1019,59 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public CellView removeMapping(Object cell) {
 		if (cell != null) {
 			CellView view = (CellView) mapping.remove(cell);
+
 			return view;
 		}
+
 		return null;
 	}
 
 	//
-	// Partial View
-	//
-	// Null is always visible!
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param cell DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public boolean isVisible(Object cell) {
-		return !isPartial() || visibleSet.contains(cell) || cell == null;
+		return !isPartial() || visibleSet.contains(cell) || (cell == null);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Set getVisibleSet() {
 		return new HashSet(visibleSet);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param visible DOCUMENT ME!
+	 */
 	public void setVisibleSet(Set visible) {
 		visibleSet = visible;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param cell DOCUMENT ME!
+	 * @param visible DOCUMENT ME!
+	 */
 	public void setVisible(Object cell, boolean visible) {
 		setVisible(new Object[] { cell }, visible);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param cells DOCUMENT ME!
+	 * @param visible DOCUMENT ME!
+	 */
 	public void setVisible(Object[] cells, boolean visible) {
 		if (visible)
 			setVisible(cells, null);
@@ -943,14 +1079,25 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 			setVisible(null, cells);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param visible DOCUMENT ME!
+	 * @param invisible DOCUMENT ME!
+	 */
 	public void setVisible(Object[] visible, Object[] invisible) {
 		setVisible(visible, invisible, null);
 	}
 
-	public void setVisible(Object[] visible, Object[] invisible,
-			ConnectionSet cs) {
-		GraphLayoutCacheEdit edit = new GraphLayoutCacheEdit(null, null,
-				visible, invisible);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param visible DOCUMENT ME!
+	 * @param invisible DOCUMENT ME!
+	 * @param cs DOCUMENT ME!
+	 */
+	public void setVisible(Object[] visible, Object[] invisible, ConnectionSet cs) {
+		GraphLayoutCacheEdit edit = new GraphLayoutCacheEdit(null, null, visible, invisible);
 		edit.end();
 		graphModel.edit(null, cs, null, new UndoableEdit[] { edit });
 	}
@@ -961,73 +1108,98 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 			if (visible) {
 				// Make ports and source and target vertex visible
 				Set all = new HashSet();
+
 				for (int i = 0; i < cells.length; i++) {
 					all.add(cells[i]);
 					// Add ports
 					all.addAll(getPorts(cells[i]));
+
 					// Add source vertex and ports
-					Collection coll = getParentPorts(graphModel
-							.getSource(cells[i]));
+					Collection coll = getParentPorts(graphModel.getSource(cells[i]));
+
 					if (coll != null)
 						all.addAll(coll);
+
 					// Add target vertex and ports
 					coll = getParentPorts(graphModel.getTarget(cells[i]));
+
 					if (coll != null)
 						all.addAll(coll);
 				}
+
 				if (showsExistingConnections) {
 					Set tmp = DefaultGraphModel.getEdges(getModel(), cells);
 					Iterator it = tmp.iterator();
+
 					while (it.hasNext()) {
 						Object obj = it.next();
 						Object source = graphModel.getSource(obj);
 						Object target = graphModel.getTarget(obj);
+
 						if ((isVisible(source) || all.contains(source))
-								&& (isVisible(target) || all.contains(target)))
+						    && (isVisible(target) || all.contains(target)))
 							all.add(obj);
 					}
 				}
+
 				all.removeAll(visibleSet);
 				all.remove(null);
+
 				return all.toArray();
 			} else {
 				if (hidesExistingConnections) {
 					Set all = new HashSet();
+
 					for (int i = 0; i < cells.length; i++) {
 						all.addAll(getPorts(cells[i]));
 						all.add(cells[i]);
 					}
-					Iterator it = DefaultGraphModel.getEdges(graphModel, cells)
-							.iterator();
+
+					Iterator it = DefaultGraphModel.getEdges(graphModel, cells).iterator();
+
 					while (it.hasNext()) {
 						Object edge = it.next();
 						Object newSource = graphModel.getSource(edge);
 						Object newTarget = graphModel.getTarget(edge);
+
 						// Note: At this time the cells are not yet hidden
-						if ((newSource != null && !hasVisibleParent(newSource,
-								all))
-								|| (newTarget != null && !hasVisibleParent(
-										newTarget, all))) {
+						if (((newSource != null) && !hasVisibleParent(newSource, all))
+						    || ((newTarget != null) && !hasVisibleParent(newTarget, all))) {
 							all.add(edge);
 						}
 					}
+
 					all.remove(null);
+
 					return all.toArray();
 				}
 			}
 		}
+
 		return cells;
 	}
 
 	// You must call update ports if this method returns true.
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param cells DOCUMENT ME!
+	 * @param visible DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public boolean setVisibleImpl(Object[] cells, boolean visible) {
 		cells = addVisibleDependencies(cells, visible);
-		if (cells != null && isPartial()) {
+
+		if ((cells != null) && isPartial()) {
 			boolean updatePorts = false;
+
 			// Update Visible Set
 			CellView[] views = new CellView[cells.length];
+
 			if (!visible)
 				views = removeCells(cells);
+
 			for (int i = 0; i < cells.length; i++) {
 				if (cells[i] != null) {
 					if (visible) {
@@ -1035,71 +1207,93 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 						views[i] = getMapping(cells[i], true);
 					} else {
 						if (views[i] != null) {
-							if (graphModel.contains(views[i].getCell())
-									&& remembersCellViews)
+							if (graphModel.contains(views[i].getCell()) && remembersCellViews)
 								hiddenMapping.put(views[i].getCell(), views[i]);
+
 							updatePorts = true;
 						}
 					}
 				}
 			}
+
 			// Make Cell Views Visible (if not already in place)
 			if (visible) {
 				Set parentSet = new HashSet();
+
 				for (int i = 0; i < views.length; i++) {
 					if (views[i] != null) {
 						CellView view = views[i];
+
 						// Remove all children from roots
-						CellView[] children = AbstractCellView
-								.getDescendantViews(new CellView[] { view });
+						CellView[] children = AbstractCellView.getDescendantViews(new CellView[] {
+						                                                              view
+						                                                          });
+
 						for (int j = 0; j < children.length; j++)
 							roots.remove(children[j]);
+
 						view.refresh(getModel(), this, false);
+
 						// Link cellView into graphLayoutCache
 						CellView parentView = view.getParentView();
+
 						if (parentView != null)
 							parentSet.add(parentView);
+
 						updatePorts = true;
 					}
 				}
+
 				CellView[] parentViews = new CellView[parentSet.size()];
 				parentSet.toArray(parentViews);
 				refresh(parentViews, true);
 			}
+
 			return updatePorts;
 		}
+
 		return false;
 	}
 
 	protected Collection getParentPorts(Object cell) {
 		// does nothing if a parent is already visible
 		Object parent = graphModel.getParent(cell);
+
 		while (parent != null) {
 			if (isVisible(parent))
 				return null;
+
 			parent = graphModel.getParent(parent);
 		}
 
 		// Else returns the parent and all ports
 		parent = graphModel.getParent(cell);
+
 		Collection collection = getPorts(parent);
 		collection.add(parent);
+
 		return collection;
 	}
 
 	protected Collection getPorts(Object cell) {
 		LinkedList list = new LinkedList();
+
 		for (int i = 0; i < graphModel.getChildCount(cell); i++) {
 			Object child = graphModel.getChild(cell, i);
+
 			if (graphModel.isPort(child))
 				list.add(child);
 		}
+
 		return list;
 	}
 
 	//
-	// Change Support
-	//
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public boolean isPartial() {
 		return partial;
 	}
@@ -1112,23 +1306,28 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 */
 	public void valueForCellChanged(Object cell, Object newValue) {
 		Map nested = null;
+
 		if (isAutoSizeOnValueChange()) {
 			CellView view = getMapping(cell, false);
+
 			if (view != null) {
 				AttributeMap attrs = view.getAllAttributes();
 				Rectangle2D bounds = GraphConstants.getBounds(attrs);
+
 				// Force the model to store the old bounds
-				Rectangle2D dummyBounds = attrs.createRect(bounds.getX(),
-						bounds.getY(), 0, 0);
+				Rectangle2D dummyBounds = attrs.createRect(bounds.getX(), bounds.getY(), 0, 0);
 				nested = GraphConstants.createAttributes(new Object[] { cell },
-						new Object[] { GraphConstants.RESIZE,
-								GraphConstants.BOUNDS }, new Object[] {
-								Boolean.TRUE, dummyBounds });
+				                                         new Object[] {
+				                                             GraphConstants.RESIZE,
+				                                             GraphConstants.BOUNDS
+				                                         },
+				                                         new Object[] { Boolean.TRUE, dummyBounds });
 			}
 		} else {
 			nested = new Hashtable();
 			nested.put(cell, new Hashtable());
 		}
+
 		augmentNestedMapForValueChange(nested, cell, newValue);
 		edit(nested, null, null, null);
 	}
@@ -1137,9 +1336,9 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Hook for subclassers to add more stuff for value changes. Currently this
 	 * adds the new value to the change.
 	 */
-	protected void augmentNestedMapForValueChange(Map nested, Object cell,
-			Object newValue) {
+	protected void augmentNestedMapForValueChange(Map nested, Object cell, Object newValue) {
 		Map attrs = (Map) nested.get(cell);
+
 		if (attrs != null)
 			GraphConstants.setValue(attrs, newValue);
 	}
@@ -1149,20 +1348,24 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * absorbs the local attributes. This implementation sets the inserted cells
 	 * visible and selects the new roots depending on graph.selectNewCells.
 	 */
-	public void insert(Object[] roots, Map attributes, ConnectionSet cs,
-			ParentMap pm, UndoableEdit[] e) {
+	public void insert(Object[] roots, Map attributes, ConnectionSet cs, ParentMap pm,
+	                   UndoableEdit[] e) {
 		Object[] visible = null;
+
 		if (isPartial() && showsInsertedCells) {
 			List tmp = DefaultGraphModel.getDescendants(graphModel, roots);
 			tmp.removeAll(visibleSet);
+
 			if (!tmp.isEmpty())
 				visible = tmp.toArray();
 		}
+
 		// Absorb local attributes
-		GraphLayoutCacheEdit edit = createLocalEdit(roots, attributes, visible,
-				null);
+		GraphLayoutCacheEdit edit = createLocalEdit(roots, attributes, visible, null);
+
 		if (edit != null)
 			e = augment(e, edit);
+
 		graphModel.insert(roots, attributes, cs, pm, e);
 	}
 
@@ -1171,34 +1374,41 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * arguments according to the clone map before insertion and returns the
 	 * clones in order of the cells. This example shows how to clone the current
 	 * selection and get a reference to the clones:
-	 * 
+	 *
 	 * <pre>
 	 * Object[] cells = graph.getDescendants(graph.order(graph.getSelectionCells()));
 	 * ConnectionSet cs = ConnectionSet.create(graphModel, cells, false);
 	 * ParentMap pm = ParentMap.create(graphModel, cells, false, true);
 	 * cells = graphLayoutCache.insertClones(cells, graph.cloneCells(cells),
-	 * 		attributes, cs, pm, 0, 0);
+	 *         attributes, cs, pm, 0, 0);
 	 * </pre>
 	 */
-	public Object[] insertClones(Object[] cells, Map clones, Map nested,
-			ConnectionSet cs, ParentMap pm, double dx, double dy) {
+	public Object[] insertClones(Object[] cells, Map clones, Map nested, ConnectionSet cs,
+	                             ParentMap pm, double dx, double dy) {
 		if (cells != null) {
 			if (cs != null)
 				cs = cs.clone(clones);
+
 			if (pm != null)
 				pm = pm.clone(clones);
+
 			if (nested != null) {
 				nested = GraphConstants.replaceKeys(clones, nested);
 				AttributeMap.translate(nested.values(), dx, dy);
 			}
+
 			// Replace cells in order
 			Object[] newCells = new Object[cells.length];
+
 			for (int i = 0; i < cells.length; i++)
 				newCells[i] = clones.get(cells[i]);
+
 			// Insert into cache/model
 			insert(newCells, nested, cs, pm, null);
+
 			return newCells;
 		}
+
 		return null;
 	}
 
@@ -1207,7 +1417,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * fact nothing, it calls insert edge with the vertex and the source and
 	 * target port set to null. This example shows how to add a vertex with a
 	 * port and a black border:
-	 * 
+	 *
 	 * <pre>
 	 * DefaultGraphCell vertex = new DefaultGraphCell(&quot;Hello, world!&quot;);
 	 * Map attrs = vertex.getAttributes();
@@ -1218,7 +1428,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * port.setParent(vertex);
 	 * graph.getGraphLayoutCache().insert(vertex);
 	 * </pre>
-	 * 
+	 *
 	 * @param cell
 	 *            inserts the specified cell in the cache
 	 */
@@ -1229,7 +1439,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	/**
 	 * Inserts the specified edge into the graph model. This method does in fact
 	 * nothing, it calls insert with a default connection set.
-	 * 
+	 *
 	 * @param edge
 	 *            the edge to be inserted
 	 * @param source
@@ -1238,8 +1448,8 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 *            the target port this edge is connected to
 	 */
 	public void insertEdge(Object edge, Object source, Object target) {
-		insert(new Object[] { edge }, new Hashtable(), new ConnectionSet(edge,
-				source, target), new ParentMap());
+		insert(new Object[] { edge }, new Hashtable(), new ConnectionSet(edge, source, target),
+		       new ParentMap());
 	}
 
 	/**
@@ -1249,7 +1459,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * attributes from the specified edge and the egdge's children to construct
 	 * the insert call. This example shows how to insert an edge with a special
 	 * arrow between two known vertices:
-	 * 
+	 *
 	 * <pre>
 	 * Object source = graph.getDefaultPortForCell(sourceVertex).getCell();
 	 * Object target = graph.getDefaultPortForCell(targetVertex).getCell();
@@ -1269,24 +1479,28 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Variant of the insert method that allows to pass a default connection set
 	 * and parent map and nested map.
 	 */
-	public void insert(Object[] cells, Map nested, ConnectionSet cs,
-			ParentMap pm) {
+	public void insert(Object[] cells, Map nested, ConnectionSet cs, ParentMap pm) {
 		if (cells != null) {
 			if (nested == null)
 				nested = new Hashtable();
+
 			if (cs == null)
 				cs = new ConnectionSet();
+
 			if (pm == null)
 				pm = new ParentMap();
+
 			for (int i = 0; i < cells.length; i++) {
 				// Using the children of the vertex we construct the parent map.
 				int childCount = getModel().getChildCount(cells[i]);
+
 				for (int j = 0; j < childCount; j++) {
 					Object child = getModel().getChild(cells[i], j);
 					pm.addEntry(child, cells[i]);
 
 					// And add their attributes to the nested map
 					AttributeMap attrs = getModel().getAttributes(child);
+
 					if (attrs != null)
 						nested.put(child, attrs);
 				}
@@ -1296,22 +1510,26 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 				// is required for the model.
 				Map attrsTmp = (Map) nested.get(cells[i]);
 				Map attrs = getModel().getAttributes(cells[i]);
+
 				if (attrsTmp != null)
 					attrs.putAll(attrsTmp);
+
 				nested.put(cells[i], attrs);
 
 				// Check if we have parameters for a connection set.
 				Object sourcePort = getModel().getSource(cells[i]);
+
 				if (sourcePort != null)
 					cs.connect(cells[i], sourcePort, true);
 
 				Object targetPort = getModel().getTarget(cells[i]);
+
 				if (targetPort != null)
 					cs.connect(cells[i], targetPort, false);
 			}
+
 			// Create an array with the parent and its children.
-			cells = DefaultGraphModel.getDescendants(getModel(), cells)
-					.toArray();
+			cells = DefaultGraphModel.getDescendants(getModel(), cells).toArray();
 
 			// Finally call the insert method on the parent class.
 			insert(cells, nested, cs, pm, null);
@@ -1323,23 +1541,23 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * are not yet in the model will be inserted. This example shows how to
 	 * group the current selection and pass the group default bounds in case it
 	 * is later collapsed:
-	 * 
+	 *
 	 * <pre>
 	 * DefaultGraphCell group = new DefaultGraphCell(&quot;Hello, world!&quot;);
 	 * Object[] cells = DefaultGraphModel.order(graph.getModel(), graph
-	 * 		.getSelectionCells());
+	 *         .getSelectionCells());
 	 * Rectangle2D bounds = graph.getCellBounds(cells);
 	 * if (bounds != null) {
-	 * 	bounds = new Rectangle2D.Double(bounds.getX() + bounds.getWidth() / 4,
-	 * 			bounds.getY() + bounds.getHeight() / 4, bounds.getWidth() / 2,
-	 * 			bounds.getHeight() / 2);
-	 * 	GraphConstants.setBounds(group.getAttributes(), bounds);
+	 *     bounds = new Rectangle2D.Double(bounds.getX() + bounds.getWidth() / 4,
+	 *             bounds.getY() + bounds.getHeight() / 4, bounds.getWidth() / 2,
+	 *             bounds.getHeight() / 2);
+	 *     GraphConstants.setBounds(group.getAttributes(), bounds);
 	 * }
 	 * graph.getGraphLayoutCache().insertGroup(group, cells);
 	 * </pre>
 	 */
 	public void insertGroup(Object group, Object[] children) {
-		if (group != null && children != null && children.length > 0) {
+		if ((group != null) && (children != null) && (children.length > 0)) {
 			Map nested = new Hashtable();
 
 			// List to store all children that are not in the model
@@ -1357,15 +1575,20 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 			// the insert method will only collect the group
 			// attributes, but will ignore the child attributes.
 			ParentMap pm = new ParentMap();
+
 			for (int i = 0; i < children.length; i++) {
 				pm.addEntry(children[i], group);
+
 				if (!getModel().contains(children[i])) {
 					newCells.add(children[i]);
+
 					AttributeMap attrs = getModel().getAttributes(children[i]);
+
 					if (attrs != null)
 						nested.put(children[i], attrs);
 				}
 			}
+
 			if (newCells.isEmpty())
 				edit(nested, null, pm, null);
 			else
@@ -1383,7 +1606,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	/**
 	 * Removes cells from the model, including all children and connected edges
 	 * if <code>children</code> or <code>edges</code> is true, respectively.
-	 * 
+	 *
 	 * @param cells
 	 *            The cells to remove.
 	 * @param descendants
@@ -1392,18 +1615,18 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 *            Whether to remove all connected edges as well.
 	 */
 	public void remove(Object[] cells, boolean descendants, boolean edges) {
-		if (cells != null && cells.length > 0) {
+		if ((cells != null) && (cells.length > 0)) {
 			if (edges) {
-				Object[] tmp = DefaultGraphModel.getEdges(getModel(), cells)
-						.toArray();
+				Object[] tmp = DefaultGraphModel.getEdges(getModel(), cells).toArray();
 				Object[] newCells = new Object[cells.length + tmp.length];
 				System.arraycopy(cells, 0, newCells, 0, cells.length);
 				System.arraycopy(tmp, 0, newCells, cells.length, tmp.length);
 				cells = newCells;
 			}
+
 			if (descendants)
-				cells = DefaultGraphModel.getDescendants(getModel(), cells)
-						.toArray();
+				cells = DefaultGraphModel.getDescendants(getModel(), cells).toArray();
+
 			remove(cells);
 		}
 	}
@@ -1413,10 +1636,10 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * is true.
 	 */
 	public void hideCells(Object[] cells, boolean descandants) {
-		if (cells != null && cells.length > 0) {
+		if ((cells != null) && (cells.length > 0)) {
 			if (descandants)
-				cells = DefaultGraphModel.getDescendants(getModel(), cells)
-						.toArray();
+				cells = DefaultGraphModel.getDescendants(getModel(), cells).toArray();
+
 			setVisible(cells, false);
 		}
 	}
@@ -1426,10 +1649,10 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * is true.
 	 */
 	public void showCells(Object[] cells, boolean descandants) {
-		if (cells != null && cells.length > 0) {
+		if ((cells != null) && (cells.length > 0)) {
 			if (descandants)
-				cells = DefaultGraphModel.getDescendants(getModel(), cells)
-						.toArray();
+				cells = DefaultGraphModel.getDescendants(getModel(), cells).toArray();
+
 			setVisible(cells, true);
 		}
 	}
@@ -1440,14 +1663,17 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * structure.
 	 */
 	public Object[] ungroup(Object[] cells) {
-		if (cells != null && cells.length > 0) {
+		if ((cells != null) && (cells.length > 0)) {
 			ArrayList toRemove = new ArrayList();
 			ArrayList children = new ArrayList();
 			boolean groupExists = false;
+
 			for (int i = 0; i < cells.length; i++) {
 				boolean childExists = false;
+
 				for (int j = 0; j < getModel().getChildCount(cells[i]); j++) {
 					Object child = getModel().getChild(cells[i], j);
+
 					if (!getModel().isPort(child)) {
 						children.add(child);
 						childExists = true;
@@ -1455,38 +1681,42 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 						toRemove.add(child);
 					}
 				}
+
 				if (childExists) {
 					toRemove.add(cells[i]);
 					groupExists = true;
 				}
 			}
+
 			if (groupExists)
 				remove(toRemove.toArray());
+
 			return children.toArray();
 		}
+
 		return null;
 	}
 
 	/**
 	 * Toggles the collapsed state of the specified cells.
-	 * 
+	 *
 	 * @param cells
 	 *            The cells to toggle the collapsed state for.
 	 * @param collapseOnly
 	 *            Whether cells should only be collapsed.
 	 * @param expandOnly
 	 *            Whether cells should only be expanded.
-	 * 
+	 *
 	 */
-	public void toggleCollapsedState(Object[] cells, boolean collapseOnly,
-			boolean expandOnly) {
+	public void toggleCollapsedState(Object[] cells, boolean collapseOnly, boolean expandOnly) {
 		List toExpand = new ArrayList();
 		List toCollapse = new ArrayList();
+
 		for (int i = 0; i < cells.length; i++) {
 			Object cell = cells[i];
 			CellView view = getMapping(cell, false);
-			if (view != null) {
 
+			if (view != null) {
 				// Adds to list of expansion cells if it is a leaf in the layout
 				// cache and we do not only want to collapse.
 				if (view.isLeaf() && !collapseOnly)
@@ -1498,13 +1728,14 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 					toCollapse.add(view.getCell());
 			}
 		}
+
 		if (!toCollapse.isEmpty() || !toExpand.isEmpty())
 			setCollapsedState(toCollapse.toArray(), toExpand.toArray());
 	}
 
 	/**
 	 * Collapses all groups by hiding all their descendants.
-	 * 
+	 *
 	 * @param groups
 	 */
 	public void collapse(Object[] groups) {
@@ -1521,7 +1752,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Collapses and/or expands the specified cell(s)
-	 * 
+	 *
 	 * @param collapse
 	 *            the cells to be collapsed
 	 * @param expand
@@ -1533,18 +1764,22 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 		// Collapse cells
 		List toHide = DefaultGraphModel.getDescendants(getModel(), collapse);
+
 		if (collapse != null) {
 			// Remove the groups themselfes
 			for (int i = 0; i < collapse.length; i++) {
 				toHide.remove(collapse[i]);
 				cellWillCollapse(collapse[i]);
 			}
+
 			// Remove the ports (will be hidden automatically)
 			for (int i = 0; i < collapse.length; i++) {
 				int childCount = getModel().getChildCount(collapse[i]);
+
 				if (childCount > 0) {
 					for (int j = 0; j < childCount; j++) {
 						Object child = getModel().getChild(collapse[i], j);
+
 						if (getModel().isPort(child)) {
 							toHide.remove(child);
 						}
@@ -1555,16 +1790,18 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 		// Expand cells
 		Set toShow = new HashSet();
+
 		if (expand != null) {
 			for (int i = 0; i < expand.length; i++) {
 				int childCount = getModel().getChildCount(expand[i]);
+
 				for (int j = 0; j < childCount; j++) {
 					toShow.add(getModel().getChild(expand[i], j));
 				}
 			}
 		}
-		setVisible(toShow.toArray(),
-				(toHide != null) ? toHide.toArray() : null, cs);
+
+		setVisible(toShow.toArray(), (toHide != null) ? toHide.toArray() : null, cs);
 	}
 
 	/**
@@ -1577,18 +1814,23 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 */
 	protected Object getParentPort(Object edge, boolean source) {
 		// Contains the parent of the parent vertex, eg. the group
-		Object parent = getModel().getParent(
-				(source) ? DefaultGraphModel.getSourceVertex(getModel(), edge)
-						: DefaultGraphModel.getTargetVertex(getModel(), edge));
+		Object parent = getModel()
+		                    .getParent((source)
+		                               ? DefaultGraphModel.getSourceVertex(getModel(), edge)
+		                               : DefaultGraphModel.getTargetVertex(getModel(), edge));
+
 		// Finds a port in the group
 		int c = getModel().getChildCount(parent);
-		for (int i = (source) ? c - 1 : 0; i < getModel().getChildCount(parent)
-				&& i >= 0; i += (source) ? -1 : +1) {
+
+		for (int i = (source) ? (c - 1) : 0; (i < getModel().getChildCount(parent)) && (i >= 0);
+		     i += ((source) ? (-1) : (+1))) {
 			Object child = getModel().getChild(parent, i);
+
 			if (getModel().isPort(child)) {
 				return child;
 			}
 		}
+
 		return null;
 	}
 
@@ -1599,24 +1841,29 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 */
 	protected Object getChildPort(Object edge, boolean source) {
 		GraphModel model = getModel();
+
 		// Contains the parent of the port, eg. the group
-		Object parent = (source) ? DefaultGraphModel.getSourceVertex(model,
-				edge) : DefaultGraphModel.getTargetVertex(model, edge);
+		Object parent = (source) ? DefaultGraphModel.getSourceVertex(model, edge)
+		                         : DefaultGraphModel.getTargetVertex(model, edge);
+
 		// Finds a vertex in the group
 		int c = model.getChildCount(parent);
-		for (int i = (source) ? c - 1 : 0; i < c && i >= 0; i += (source) ? -1
-				: +1) {
+
+		for (int i = (source) ? (c - 1) : 0; (i < c) && (i >= 0); i += ((source) ? (-1) : (+1))) {
 			Object child = model.getChild(parent, i);
+
 			if (!model.isEdge(child) && !model.isPort(child)) {
 				// Finds a port in the vertex
 				for (int j = 0; j < model.getChildCount(child); j++) {
 					Object port = model.getChild(child, j);
+
 					if (model.isPort(port)) {
 						return port;
 					}
 				}
 			}
 		}
+
 		return null;
 	}
 
@@ -1627,26 +1874,33 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * listeners of the change. Note: The passed in attributes may contain
 	 * PortViews.
 	 */
-	public void edit(Map attributes, ConnectionSet cs, ParentMap pm,
-			UndoableEdit[] e) {
-		if (attributes != null || cs != null || pm != null || e != null) {
+	public void edit(Map attributes, ConnectionSet cs, ParentMap pm, UndoableEdit[] e) {
+		if ((attributes != null) || (cs != null) || (pm != null) || (e != null)) {
 			Object[] visible = null;
+
 			if (isPartial() && showsInvisibleEditedCells) {
 				Set tmp = new HashSet();
+
 				if (attributes != null)
 					tmp.addAll(attributes.keySet());
+
 				if (cs != null)
 					tmp.addAll(cs.getChangedEdges());
+
 				if (pm != null)
 					tmp.addAll(pm.getChangedNodes());
+
 				tmp.removeAll(visibleSet);
+
 				if (!tmp.isEmpty())
 					visible = tmp.toArray();
 			}
-			GraphLayoutCacheEdit edit = createLocalEdit(null, attributes,
-					visible, null);
+
+			GraphLayoutCacheEdit edit = createLocalEdit(null, attributes, visible, null);
+
 			if (edit != null)
 				e = augment(e, edit);
+
 			// Pass to model
 			graphModel.edit(attributes, cs, pm, e);
 		}
@@ -1664,7 +1918,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Applies the <code>attributes</code> to all <code>cells</code> by
 	 * creating a map that contains the attributes for each cell and passing it
 	 * to edit on this layout cache. Example:
-	 * 
+	 *
 	 * <pre>
 	 * Map attrs = new java.util.Hashtable();
 	 * GraphConstants.setBackground(attrs, Color.RED);
@@ -1672,10 +1926,12 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * </pre>
 	 */
 	public void edit(Object[] cells, Map attributes) {
-		if (attributes != null && cells != null && cells.length > 0) {
+		if ((attributes != null) && (cells != null) && (cells.length > 0)) {
 			Map nested = new Hashtable();
+
 			for (int i = 0; i < cells.length; i++)
 				nested.put(cells[i], attributes);
+
 			edit(nested, null, null, null);
 		}
 	}
@@ -1684,7 +1940,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Applies the <code>attributes</code> to a single <code>cell</code> by
 	 * creating a map that contains the attributes for this cell and passing it
 	 * to edit on this layout cache. Example:
-	 * 
+	 *
 	 * <pre>
 	 * Map attrs = new java.util.Hashtable();
 	 * GraphConstants.setBackground(attrs, Color.RED);
@@ -1692,20 +1948,24 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * </pre>
 	 */
 	public void editCell(Object cell, Map attributes) {
-		if (attributes != null && cell != null) {
+		if ((attributes != null) && (cell != null)) {
 			edit(new Object[] { cell }, attributes);
 		}
 	}
 
 	protected UndoableEdit[] augment(UndoableEdit[] e, UndoableEdit edit) {
 		if (edit != null) {
-			int size = (e != null) ? e.length + 1 : 1;
+			int size = (e != null) ? (e.length + 1) : 1;
 			UndoableEdit[] result = new UndoableEdit[size];
+
 			if (e != null)
 				System.arraycopy(e, 0, result, 0, size - 2);
+
 			result[size - 1] = edit;
+
 			return result;
 		}
+
 		return e;
 	}
 
@@ -1713,7 +1973,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Sends <code>cells</code> to back. Note: This expects an array of cells!
 	 */
 	public void toBack(Object[] cells) {
-		if (cells != null && cells.length > 0) {
+		if ((cells != null) && (cells.length > 0)) {
 			graphModel.toBack(cells);
 		}
 	}
@@ -1723,7 +1983,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * cells!
 	 */
 	public void toFront(Object[] cells) {
-		if (cells != null && cells.length > 0) {
+		if ((cells != null) && (cells.length > 0)) {
 			graphModel.toFront(cells);
 		}
 	}
@@ -1734,61 +1994,77 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * local, and all control attributes. <br>
 	 * Note: You must use cells as keys for the nested map, not cell views.
 	 */
-	protected GraphLayoutCacheEdit createLocalEdit(Object[] inserted,
-			Map nested, Object[] visible, Object[] invisible) {
+	protected GraphLayoutCacheEdit createLocalEdit(Object[] inserted, Map nested, Object[] visible,
+	                                               Object[] invisible) {
 		// Create an edit if there are any view-local attributes set
-		if ((nested != null && !nested.isEmpty())
-				&& (!localAttributes.isEmpty() || isAllAttributesLocal())) {
+		if (((nested != null) && !nested.isEmpty())
+		    && (!localAttributes.isEmpty() || isAllAttributesLocal())) {
 			// Move or Copy Local Attributes to Local View
 			Map globalMap = new Hashtable();
 			Map localMap = new Hashtable();
 			Map localAttr;
 			Iterator it = nested.entrySet().iterator();
+
 			while (it.hasNext()) {
 				localAttr = new Hashtable();
+
 				Map.Entry entry = (Map.Entry) it.next();
+
 				// (cell, Hashtable)
 				Object cell = entry.getKey();
 				Map attr = (Map) entry.getValue();
+
 				// Create Difference of Existing and New Attributes
 				CellView tmpView = getMapping(cell, false);
+
 				if (tmpView != null)
 					attr = tmpView.getAllAttributes().diff(attr);
+
 				// End of Diff
 				Iterator it2 = attr.entrySet().iterator();
+
 				while (it2.hasNext()) {
 					Map.Entry entry2 = (Map.Entry) it2.next();
+
 					// (key, value)
 					Object key = entry2.getKey();
 					Object value = entry2.getValue();
-					boolean isControlAttribute = isControlAttribute(cell, key,
-							value);
+					boolean isControlAttribute = isControlAttribute(cell, key, value);
+
 					if (isAllAttributesLocal() || isControlAttribute
-							|| isLocalAttribute(cell, key, value)) {
+					    || isLocalAttribute(cell, key, value)) {
 						localAttr.put(key, value);
+
 						if (!isControlAttribute)
 							it2.remove();
 					}
 				}
+
 				if (!localAttr.isEmpty())
 					localMap.put(cell, localAttr);
+
 				if (!attr.isEmpty())
 					globalMap.put(cell, attr);
 			}
+
 			nested.clear();
 			nested.putAll(globalMap);
-			if (visible != null || invisible != null || !localMap.isEmpty()) {
+
+			if ((visible != null) || (invisible != null) || !localMap.isEmpty()) {
 				GraphLayoutCacheEdit edit = new GraphLayoutCacheEdit(inserted,
-						new Hashtable(localMap), visible, invisible);
+				                                                     new Hashtable(localMap),
+				                                                     visible, invisible);
 				edit.end();
+
 				return edit;
 			}
-		} else if (visible != null || invisible != null) {
-			GraphLayoutCacheEdit edit = new GraphLayoutCacheEdit(inserted,
-					null, visible, invisible);
+		} else if ((visible != null) || (invisible != null)) {
+			GraphLayoutCacheEdit edit = new GraphLayoutCacheEdit(inserted, null, visible, invisible);
 			edit.end();
+
 			return edit;
 		}
+
 		return null;
 	}
 
@@ -1803,8 +2079,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Returns true if <code>key</code> is a control attribute
 	 */
 	protected boolean isControlAttribute(Object cell, Object key, Object value) {
-		return GraphConstants.REMOVEALL.equals(key)
-				|| GraphConstants.REMOVEATTRIBUTES.equals(key);
+		return GraphConstants.REMOVEALL.equals(key) || GraphConstants.REMOVEATTRIBUTES.equals(key);
 	}
 
 	/**
@@ -1812,7 +2087,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * are only being stored in the view, the option is provided to
 	 * copy the values for that key into the model. Without this, those
 	 * values are lost.
-	 * 
+	 *
 	 * @param key
 	 *            the key of the view local attribute
 	 * @param addToModel
@@ -1830,9 +2105,12 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 				copyRemovedViewValue(key, addToModel, override, mapping.values());
 				copyRemovedViewValue(key, addToModel, override, hiddenMapping.values());
 			}
-			localAttributes.remove(key);				
+
+			localAttributes.remove(key);
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -1847,17 +2125,22 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 *            cell's attribute map if it exists
 	 * @param coll the current collection being analysed
 	 */
-	private void copyRemovedViewValue(Object key, boolean addToModel, boolean override, Collection coll) {
+	private void copyRemovedViewValue(Object key, boolean addToModel, boolean override,
+	                                  Collection coll) {
 		Iterator iter = coll.iterator();
-		while(iter.hasNext()) {
-			CellView cellView = (CellView)iter.next();
+
+		while (iter.hasNext()) {
+			CellView cellView = (CellView) iter.next();
 			Map attributes = cellView.getAttributes();
+
 			if (attributes.containsKey(key)) {
 				if (addToModel) {
 					Object cell = cellView.getCell();
 					Map cellAttributes = graphModel.getAttributes(cell);
+
 					if (cellAttributes != null) {
 						boolean cellContainsKey = cellAttributes.containsKey(key);
+
 						// Write the model cell's attribute map key
 						// if overriding is enabled or if key doesn't
 						// exist
@@ -1867,24 +2150,24 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 						}
 					}
 				}
+
 				attributes.remove(key);
 			}
 		}
 	}
-	
+
 	/**
 	 * An implementation of GraphViewChange.
 	 */
-	public class GraphLayoutCacheEdit extends CompoundEdit implements
-			GraphLayoutCacheEvent.GraphLayoutCacheChange {
-
-		protected Object[] cells, previousCells = null;
-
-		protected CellView[] context, hidden;
-
-		protected Map attributes, previousAttributes;
-
-		protected Object[] visible, invisible;
+	public class GraphLayoutCacheEdit extends CompoundEdit implements GraphLayoutCacheEvent.GraphLayoutCacheChange {
+		protected Object[] cells;
+		protected Object[] previousCells = null;
+		protected CellView[] context;
+		protected CellView[] hidden;
+		protected Map attributes;
+		protected Map previousAttributes;
+		protected Object[] visible;
+		protected Object[] invisible;
 
 		// Remember which cells have changed for finding their context
 		protected Set changedCells = new HashSet();
@@ -1892,7 +2175,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		/**
 		 * Constructs a GraphViewEdit. This modifies the attributes of the
 		 * specified views and may be used to notify UndoListeners.
-		 * 
+		 *
 		 * @param nested
 		 *            the map that defines the new attributes
 		 */
@@ -1911,7 +2194,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		 * method should be extended to accept and instantly execute sub-
 		 * sequent edits (implicit changes to the view, such as removing a
 		 * mapping, hiding a view or the like).
-		 * 
+		 *
 		 * @param inserted
 		 *            an array of inserted cells
 		 * @param attributes
@@ -1921,8 +2204,8 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		 * @param invisible
 		 *            an array defining which cells are invisible
 		 */
-		public GraphLayoutCacheEdit(Object[] inserted, Map attributes,
-				Object[] visible, Object[] invisible) {
+		public GraphLayoutCacheEdit(Object[] inserted, Map attributes, Object[] visible,
+		                            Object[] invisible) {
 			super();
 			this.attributes = attributes;
 			this.previousAttributes = attributes;
@@ -1984,7 +2267,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 		/**
 		 * Redoes a change.
-		 * 
+		 *
 		 * @exception CannotRedoException
 		 *                if the change cannot be redone
 		 */
@@ -1995,7 +2278,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 		/**
 		 * Undoes a change.
-		 * 
+		 *
 		 * @exception CannotUndoException
 		 *                if the change cannot be undone
 		 */
@@ -2011,16 +2294,19 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		public void execute() {
 			GraphModel model = getModel();
 			changedCells.clear();
+
 			// Remember or restore hidden cells
 			if (hidden != null)
 				for (int i = 0; i < hidden.length; i++)
 					if (hidden[i] != null)
 						mapping.put(hidden[i].getCell(), hidden[i]);
+
 			if (!remembersCellViews) // already remembered
 				hidden = getMapping(invisible);
+
 			// Handle visibility
-			boolean updatePorts = setVisibleImpl(visible, true)
-					| setVisibleImpl(invisible, false);
+			boolean updatePorts = setVisibleImpl(visible, true) | setVisibleImpl(invisible, false);
+
 			if (visible != null) {
 				for (int i = 0; i < visible.length; i++) {
 					changedCells.add(visible[i]);
@@ -2030,38 +2316,46 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 						cellExpanded(visible[i]);
 				}
 			}
+
 			if (invisible != null)
 				for (int i = 0; i < invisible.length; i++)
 					changedCells.add(invisible[i]);
+
 			// Swap arrays
 			Object[] tmp = visible;
 			visible = invisible;
 			invisible = tmp;
+
 			// Handle attributes
 			if (attributes != null) {
 				previousAttributes = attributes;
 				changedCells.addAll(attributes.keySet());
 				attributes = handleAttributes(attributes);
 			}
+
 			if (updatePorts)
 				updatePorts();
+
 			// Add ancestor cells to changed cells
 			Set parentSet = new HashSet();
 			Iterator it = changedCells.iterator();
+
 			while (it.hasNext()) {
 				Object parent = model.getParent(it.next());
+
 				while (parent != null) {
 					parentSet.add(parent);
 					parent = model.getParent(parent);
 				}
 			}
+
 			changedCells.addAll(parentSet);
 			// Refresh all changed cells
 			refresh(getMapping(changedCells.toArray(), false), false);
+
 			// Updates the connected edges. Make sure that changedCells
 			// contains no edges, as these will be removed from the result.
-			Set ctx = DefaultGraphModel.getEdges(getModel(), changedCells
-					.toArray());
+			Set ctx = DefaultGraphModel.getEdges(getModel(), changedCells.toArray());
 			context = getMapping(ctx.toArray());
 			refresh(context, false);
 			tmp = cells;
@@ -2080,19 +2374,19 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 */
 	protected void cellExpanded(Object cell) {
 		GraphModel model = getModel();
+
 		// Moves the child to the group origin if it is not a port
 		if (movesChildrenOnExpand && !model.isPort(cell)) {
 			CellView view = getMapping(cell, false);
 
 			if (view != null) {
 				CellView parent = getMapping(model.getParent(cell), false);
+
 				if (parent != null) {
 					if (parent instanceof VertexView) {
-
 						// Computes the offset of the parent group
 						VertexView vertex = (VertexView) parent;
-						Rectangle2D src = GraphConstants.getBounds(parent
-								.getAllAttributes());
+						Rectangle2D src = GraphConstants.getBounds(parent.getAllAttributes());
 						Rectangle2D rect = vertex.getBounds();
 						double dx = src.getX() - rect.getX();
 						double dy = src.getY() - rect.getY();
@@ -2100,8 +2394,10 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 						// Gets the attributes from the cell view or
 						// cell and translates the bounds or points
 						AttributeMap attrs = view.getAttributes();
+
 						if (!attrs.contains(GraphConstants.BOUNDS))
 							attrs = model.getAttributes(view.getCell());
+
 						attrs.translate(dx, dy);
 					}
 				}
@@ -2111,27 +2407,30 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	protected void cellWillCollapse(Object cell) {
 		GraphModel model = getModel();
+
 		if (movesParentsOnCollapse) {
 			CellView view = getMapping(cell, false);
-			if (view != null && !view.isLeaf()) {
+
+			if ((view != null) && !view.isLeaf()) {
 				// Uses view-local attribute if available
 				AttributeMap attrs = view.getAttributes();
+
 				if (!attrs.contains(GraphConstants.BOUNDS)
-						&& !localAttributes.contains(GraphConstants.BOUNDS))
+				    && !localAttributes.contains(GraphConstants.BOUNDS))
 					attrs = model.getAttributes(cell);
 
 				// Moves the group to the origin of the children
 				Rectangle2D src = GraphConstants.getBounds(attrs);
 				Rectangle2D b = (Rectangle2D) view.getBounds();
+
 				// FIXME: What if the group is exactly at "defaultBounds"?
-				if (resizesParentsOnCollapse || src == null
-						|| src.equals(VertexView.defaultBounds)) {
-					src = attrs.createRect(b.getX(), b.getY(), b.getWidth()
-							* collapseXScale, b.getHeight() * collapseYScale);
+				if (resizesParentsOnCollapse || (src == null)
+				    || src.equals(VertexView.defaultBounds)) {
+					src = attrs.createRect(b.getX(), b.getY(), b.getWidth() * collapseXScale,
+					                       b.getHeight() * collapseYScale);
 					attrs.applyValue(GraphConstants.BOUNDS, src);
 				} else {
-					src.setFrame(b.getX(), b.getY(), src.getWidth(), src
-							.getHeight());
+					src.setFrame(b.getX(), b.getY(), src.getWidth(), src.getHeight());
 				}
 			}
 		}
@@ -2149,13 +2448,16 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 		CellView[] views = new CellView[attributes.size()];
 		Iterator it = attributes.entrySet().iterator();
 		int i = 0;
+
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
 			CellView cv = getMapping(entry.getKey(), false);
 			views[i] = cv;
 			i += 1;
-			if (cv != null && cv.getAttributes() != null) {
+
+			if ((cv != null) && (cv.getAttributes() != null)) {
 				Map deltaNew = (Map) entry.getValue();
+
 				// System.out.println("state=" + cv.getAttributes());
 				// System.out.println("change=" + deltaNew);
 				Map deltaOld = cv.getAttributes().applyMap(deltaNew);
@@ -2165,8 +2467,10 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 				undo.put(cv.getCell(), deltaOld);
 			}
 		}
+
 		// Re-route all child edges
 		update(views);
+
 		return undo;
 	}
 
@@ -2175,7 +2479,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	//
 	/**
 	 * Translates the specified views by the given amount.
-	 * 
+	 *
 	 * @param views
 	 *            an array of cell view to each be translated
 	 * @param dx
@@ -2194,7 +2498,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	/**
 	 * Returns a collection of cells that are connected to the specified cell by
 	 * edges. Any cells specified in the exclude set will be ignored.
-	 * 
+	 *
 	 * @param cell
 	 *            The cell from which the neighbours will be determined
 	 * @param exclude
@@ -2205,32 +2509,31 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 *            whether or not to only consider visible cells
 	 * @return Returns the list of neighbours for <code>cell</code>
 	 */
-	public List getNeighbours(Object cell, Set exclude, boolean directed,
-			boolean visibleCells) {
+	public List getNeighbours(Object cell, Set exclude, boolean directed, boolean visibleCells) {
 		// Traverse Graph
 		GraphModel model = getModel();
-		Object[] fanout = (directed) ? DefaultGraphModel.getOutgoingEdges(
-				model, cell) : DefaultGraphModel.getEdges(model,
-				new Object[] { cell }).toArray();
+		Object[] fanout = (directed) ? DefaultGraphModel.getOutgoingEdges(model, cell)
+		                             : DefaultGraphModel.getEdges(model, new Object[] { cell })
+		                                                .toArray();
 		List neighbours = new ArrayList(fanout.length);
 		Set localExclude = new HashSet(fanout.length + 8, (float) 0.75);
+
 		for (int i = 0; i < fanout.length; i++) {
-			Object neighbour = DefaultGraphModel.getOpposite(model, fanout[i],
-					cell);
-			if (neighbour != null
-					&& (exclude == null || !exclude.contains(neighbour))
-					&& !localExclude.contains(neighbour)
-					&& (!visibleCells || isVisible(neighbour))) {
+			Object neighbour = DefaultGraphModel.getOpposite(model, fanout[i], cell);
+
+			if ((neighbour != null) && ((exclude == null) || !exclude.contains(neighbour))
+			    && !localExclude.contains(neighbour) && (!visibleCells || isVisible(neighbour))) {
 				localExclude.add(neighbour);
 				neighbours.add(neighbour);
 			}
 		}
+
 		return neighbours;
 	}
 
 	/**
 	 * Returns the outgoing edges for cell. Cell should be a port or a vertex.
-	 * 
+	 *
 	 * @param cell
 	 *            The cell from which the outgoing edges will be determined
 	 * @param exclude
@@ -2241,14 +2544,13 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 *            whether or not to include self loops in the returned list
 	 * @return Returns the list of outgoing edges for <code>cell</code>
 	 */
-	public List getOutgoingEdges(Object cell, Set exclude,
-			boolean visibleCells, boolean selfLoops) {
+	public List getOutgoingEdges(Object cell, Set exclude, boolean visibleCells, boolean selfLoops) {
 		return getEdges(cell, exclude, visibleCells, selfLoops, false);
 	}
 
 	/**
 	 * Returns the incoming edges for cell. Cell should be a port or a vertex.
-	 * 
+	 *
 	 * @param cell
 	 *            The cell from which the incoming edges will be determined
 	 * @param exclude
@@ -2259,15 +2561,14 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 *            whether or not to include self loops in the returned list
 	 * @return Returns the list of incoming edges for <code>cell</code>
 	 */
-	public List getIncomingEdges(Object cell, Set exclude,
-			boolean visibleCells, boolean selfLoops) {
+	public List getIncomingEdges(Object cell, Set exclude, boolean visibleCells, boolean selfLoops) {
 		return getEdges(cell, exclude, visibleCells, selfLoops, true);
 	}
 
 	/**
 	 * Returns the incoming or outgoing edges for cell. Cell should be a port or
 	 * a vertex.
-	 * 
+	 *
 	 * @param cell
 	 *            The cell from which the edges will be determined
 	 * @param exclude
@@ -2282,31 +2583,31 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * @return Returns the list of incoming or outgoing edges for
 	 *         <code>cell</code>
 	 */
-	protected List getEdges(Object cell, Set exclude, boolean visibleCells,
-			boolean selfLoops, boolean incoming) {
+	protected List getEdges(Object cell, Set exclude, boolean visibleCells, boolean selfLoops,
+	                        boolean incoming) {
 		GraphModel model = getModel();
 		Object[] edges = DefaultGraphModel.getEdges(model, cell, incoming);
 
 		List edgeList = new ArrayList(edges.length);
 		Set localExclude = new HashSet(edges.length);
+
 		for (int i = 0; i < edges.length; i++) {
 			// Check that the edge is neiter in the passed in exclude set or
 			// the local exclude set. Also, if visibleCells is true check
 			// the edge is visible in the cache.
-			if ((exclude == null || !exclude.contains(edges[i]))
-					&& !localExclude.contains(edges[i])
-					&& (!visibleCells || isVisible(edges[i]))) {
+			if (((exclude == null) || !exclude.contains(edges[i]))
+			    && !localExclude.contains(edges[i]) && (!visibleCells || isVisible(edges[i]))) {
 				// Add the edge to the list if all edges, including self loops
 				// are allowed. If self loops are not allowed, ensure the
 				// source and target of the edge are different
-				if (selfLoops == true
-						|| model.getSource(edges[i]) != model
-								.getTarget(edges[i])) {
+				if ((selfLoops == true) || (model.getSource(edges[i]) != model.getTarget(edges[i]))) {
 					edgeList.add(edges[i]);
 				}
+
 				localExclude.add(edges[i]);
 			}
 		}
+
 		return edgeList;
 	}
 
@@ -2324,34 +2625,44 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 */
 	public CellView[] getAllDescendants(CellView[] views) {
 		Stack stack = new Stack();
+
 		for (int i = 0; i < views.length; i++)
 			if (views[i] != null)
 				stack.add(views[i]);
+
 		ArrayList result = new ArrayList();
+
 		while (!stack.isEmpty()) {
 			CellView tmp = (CellView) stack.pop();
 			Object[] children = tmp.getChildViews();
+
 			for (int i = 0; i < children.length; i++)
 				stack.add(children[i]);
+
 			result.add(tmp);
+
 			// Add Port Views
 			for (int i = 0; i < graphModel.getChildCount(tmp.getCell()); i++) {
 				Object child = graphModel.getChild(tmp.getCell(), i);
+
 				if (graphModel.isPort(child)) {
 					CellView view = getMapping(child, false);
+
 					if (view != null)
 						stack.add(view);
 				}
 			}
 		}
+
 		CellView[] ret = new CellView[result.size()];
 		result.toArray(ret);
+
 		return ret;
 	}
 
 	/**
 	 * Returns the hiddenMapping.
-	 * 
+	 *
 	 * @return Map
 	 */
 	public Map getHiddenMapping() {
@@ -2360,7 +2671,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Sets the showsExistingConnections
-	 * 
+	 *
 	 * @param showsExistingConnections
 	 */
 	public void setShowsExistingConnections(boolean showsExistingConnections) {
@@ -2369,7 +2680,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Returns the showsExistingConnections.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isShowsExistingConnections() {
@@ -2378,7 +2689,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Sets the showsInsertedConnections
-	 * 
+	 *
 	 * @param showsInsertedConnections
 	 */
 	public void setShowsInsertedConnections(boolean showsInsertedConnections) {
@@ -2387,7 +2698,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Returns the showsInsertedConnections.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isShowsInsertedConnections() {
@@ -2396,7 +2707,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Sets the hidesExistingConnections
-	 * 
+	 *
 	 * @param hidesExistingConnections
 	 */
 	public void setHidesExistingConnections(boolean hidesExistingConnections) {
@@ -2405,7 +2716,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Returns the hidesExistingConnections.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isHidesExistingConnections() {
@@ -2414,7 +2725,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Sets the hidesDanglingConnections
-	 * 
+	 *
 	 * @param hidesDanglingConnections
 	 */
 	public void setHidesDanglingConnections(boolean hidesDanglingConnections) {
@@ -2423,7 +2734,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Returns the hidesDanglingConnections.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isHidesDanglingConnections() {
@@ -2432,7 +2743,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Sets the rememberCellViews.
-	 * 
+	 *
 	 * @param rememberCellViews
 	 *            The rememberCellViews to set
 	 */
@@ -2442,7 +2753,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Returns the remembersCellViews.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isRemembersCellViews() {
@@ -2451,7 +2762,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Sets the hiddenSet.
-	 * 
+	 *
 	 * @param hiddenSet
 	 *            The hiddenSet to set
 	 */
@@ -2491,7 +2802,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 
 	/**
 	 * Returns true if cells should be auto-sized when their values change
-	 * 
+	 *
 	 * @return true if cells should be auto-sized when their values change
 	 */
 	public boolean isAutoSizeOnValueChange() {
@@ -2502,7 +2813,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 * Determines whether cells should be auto-sized when their values change.
 	 * Fires a property change event if the new setting is different from the
 	 * existing setting.
-	 * 
+	 *
 	 * @param flag
 	 *            a boolean value, true if cells should be auto-sized when their
 	 *            values change
@@ -2554,8 +2865,7 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	 *            The reconnectsEdgesToVisibleParent to set.
 	 * @deprecated edges are moved to parent view and back automatically
 	 */
-	public void setReconnectsEdgesToVisibleParent(
-			boolean reconnectsEdgesToVisibleParent) {
+	public void setReconnectsEdgesToVisibleParent(boolean reconnectsEdgesToVisibleParent) {
 		this.reconnectsEdgesToVisibleParent = reconnectsEdgesToVisibleParent;
 	}
 
@@ -2648,5 +2958,4 @@ public class GraphLayoutCache implements CellMapper, Serializable {
 	public void setResizesParentsOnCollapse(boolean resizesParentsOnCollapse) {
 		this.resizesParentsOnCollapse = resizesParentsOnCollapse;
 	}
-
 }

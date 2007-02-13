@@ -35,6 +35,7 @@
 package org.cytoscape.coreplugin.psi_mi.test.bio;
 
 import junit.framework.TestCase;
+
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.GoVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
@@ -42,57 +43,55 @@ import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 /**
  * Tests the Interactor Class.
  *
  * @author Ethan Cerami
  */
 public class TestInteractor extends TestCase {
+	/**
+	 * Tests the Interactor Class.
+	 *
+	 * @throws Exception All Exceptions.
+	 */
+	public void testInteractor() throws Exception {
+		Interactor interactor = new Interactor();
+		interactor.setName("YHR119W");
+		interactor.setDescription("Gene has a SET or TROMO domain at its "
+		                          + "carboxyterminus like the trithorax gene family from human "
+		                          + "and Drosophila with postulated function in chromatin-"
+		                          + "mediated gene regulation.");
 
-    /**
-     * Tests the Interactor Class.
-     *
-     * @throws Exception All Exceptions.
-     */
-    public void testInteractor() throws Exception {
-        Interactor interactor = new Interactor();
-        interactor.setName("YHR119W");
-        interactor.setDescription("Gene has a SET or TROMO domain at its "
-                + "carboxyterminus like the trithorax gene family from human "
-                + "and Drosophila with postulated function in chromatin-"
-                + "mediated gene regulation.");
+		//  Set Gene Names
+		ArrayList geneNameList = new ArrayList();
+		geneNameList.add("SET1");
+		geneNameList.add("YTX1");
+		interactor.addAttribute(InteractorVocab.GENE_NAME, geneNameList);
 
-        //  Set Gene Names
-        ArrayList geneNameList = new ArrayList();
-        geneNameList.add("SET1");
-        geneNameList.add("YTX1");
-        interactor.addAttribute(InteractorVocab.GENE_NAME,
-                geneNameList);
+		//  Set GO Process Terms
+		ArrayList goProcessTerms = new ArrayList();
+		HashMap goTerm = new HashMap();
+		goTerm.put(GoVocab.GO_ID, "GO:0006348");
+		goTerm.put(GoVocab.GO_NAME, "chromatin silencing at telomere");
+		goProcessTerms.add(goTerm);
+		goTerm = new HashMap();
+		goTerm.put(GoVocab.GO_ID, "GO:0016571");
+		goTerm.put(GoVocab.GO_NAME, "histone methylation");
+		goProcessTerms.add(goTerm);
+		interactor.addAttribute(GoVocab.GO_CATEGORY_PROCESS, goProcessTerms);
+		validateAttributes(interactor);
+	}
 
-        //  Set GO Process Terms
-        ArrayList goProcessTerms = new ArrayList();
-        HashMap goTerm = new HashMap();
-        goTerm.put(GoVocab.GO_ID, "GO:0006348");
-        goTerm.put(GoVocab.GO_NAME, "chromatin silencing at telomere");
-        goProcessTerms.add(goTerm);
-        goTerm = new HashMap();
-        goTerm.put(GoVocab.GO_ID, "GO:0016571");
-        goTerm.put(GoVocab.GO_NAME, "histone methylation");
-        goProcessTerms.add(goTerm);
-        interactor.addAttribute(GoVocab.GO_CATEGORY_PROCESS, goProcessTerms);
-        validateAttributes(interactor);
-    }
-
-    /**
-     * Validates the First Go Term.
-     */
-    private void validateAttributes(Interactor interactor) {
-        ArrayList list = (ArrayList)
-                interactor.getAttribute(GoVocab.GO_CATEGORY_PROCESS);
-        HashMap map = (HashMap) list.get(0);
-        String id = (String) map.get(GoVocab.GO_ID);
-        String name = (String) map.get(GoVocab.GO_NAME);
-        assertEquals("GO:0006348", id);
-        assertEquals("chromatin silencing at telomere", name);
-    }
+	/**
+	 * Validates the First Go Term.
+	 */
+	private void validateAttributes(Interactor interactor) {
+		ArrayList list = (ArrayList) interactor.getAttribute(GoVocab.GO_CATEGORY_PROCESS);
+		HashMap map = (HashMap) list.get(0);
+		String id = (String) map.get(GoVocab.GO_ID);
+		String name = (String) map.get(GoVocab.GO_NAME);
+		assertEquals("GO:0006348", id);
+		assertEquals("chromatin silencing at telomere", name);
+	}
 }

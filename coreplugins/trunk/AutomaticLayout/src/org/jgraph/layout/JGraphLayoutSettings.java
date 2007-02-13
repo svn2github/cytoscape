@@ -1,9 +1,9 @@
 /*
  * @(#)JGraphLayoutSettings.java 1.0 12-JUL-2004
- * 
+ *
  * Copyright (c) 2001-2004, Gaudenz Alder
- * All rights reserved. 
- * 
+ * All rights reserved.
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -20,12 +20,12 @@
  */
 package org.jgraph.layout;
 
+
 /**
  * Allows the algorithm to create an object that
  * may be applied back to the algorithm.
  */
 public interface JGraphLayoutSettings {
-	
 	/**
 	 * (Re)read settings from layout algorithm.
 	 */
@@ -36,5 +36,4 @@ public interface JGraphLayoutSettings {
 	 * created this object.
 	 */
 	public void apply();
-
 }

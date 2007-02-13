@@ -45,148 +45,150 @@ import javax.swing.event.ChangeListener;
  * Implementation of ShapePaletteInfoGenerator.
  */
 public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator {
-    protected ShapePaletteInfoGeneratorImpl() {
-    }
+	protected ShapePaletteInfoGeneratorImpl() {
+	}
 
-    public Iterator<ShapePaletteInfo> buildShapePaletteInfo(Object                 appearanceCalc,
-                                                                 byte[]                 calcsToUse,
-                                                                 String                 controllingAttribute,
-                                                                 ChangeListener         listener,
-                                                                 ShapePaletteInfoFilter filter) {
-        // setup listening for changes when needed:
-        if (listener != null) {
-            for (byte calcType : calcsToUse) {
-                // Calculator calc = getCalculator(appearanceCalc, calcType);
-                // if ((calc != null) && (listener != null)) {
-                DiscreteMapping dm = getDiscreteMapping(getCalculator(appearanceCalc,
-                                                                      calcType),
-                                                        controllingAttribute);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param appearanceCalc DOCUMENT ME!
+	 * @param calcsToUse DOCUMENT ME!
+	 * @param controllingAttribute DOCUMENT ME!
+	 * @param listener DOCUMENT ME!
+	 * @param filter DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Iterator<ShapePaletteInfo> buildShapePaletteInfo(Object appearanceCalc,
+	                                                        byte[] calcsToUse,
+	                                                        String controllingAttribute,
+	                                                        ChangeListener listener,
+	                                                        ShapePaletteInfoFilter filter) {
+		// setup listening for changes when needed:
+		if (listener != null) {
+			for (byte calcType : calcsToUse) {
+				// Calculator calc = getCalculator(appearanceCalc, calcType);
+				// if ((calc != null) && (listener != null)) {
+				DiscreteMapping dm = getDiscreteMapping(getCalculator(appearanceCalc, calcType),
+				                                        controllingAttribute);
 
-                if (dm != null) {
-                    // addChangeListener will duplicate entries,
-                    // ensure it is unique:
-                    dm.removeChangeListener(listener);
-                    dm.addChangeListener(listener);
-                }
-            }
-        }
+				if (dm != null) {
+					// addChangeListener will duplicate entries,
+					// ensure it is unique:
+					dm.removeChangeListener(listener);
+					dm.addChangeListener(listener);
+				}
+			}
+		}
 
-        // get union of all DiscreteMapping keys:
-        List<ShapePaletteInfo> spInfos     = new ArrayList<ShapePaletteInfo>();
-        Set<String>            mappingKeys = computeAllMappingKeys(appearanceCalc,
-                                                                   calcsToUse,
-                                                                   controllingAttribute);
+		// get union of all DiscreteMapping keys:
+		List<ShapePaletteInfo> spInfos = new ArrayList<ShapePaletteInfo>();
+		Set<String> mappingKeys = computeAllMappingKeys(appearanceCalc, calcsToUse,
+		                                                controllingAttribute);
 
-        for (String key : mappingKeys) {
-            ShapePaletteInfo pi = CytoscapeEditorFactory.INSTANCE.createShapePaletteInfo(controllingAttribute,
-                                                                                         key);
+		for (String key : mappingKeys) {
+			ShapePaletteInfo pi = CytoscapeEditorFactory.INSTANCE.createShapePaletteInfo(controllingAttribute,
+			                                                                             key);
 
-            for (byte calcType : calcsToUse) {
-                Object          value = null;
-                DiscreteMapping dm = getDiscreteMapping(getCalculator(appearanceCalc,
-                                                                      calcType),
-                                                        controllingAttribute);
+			for (byte calcType : calcsToUse) {
+				Object value = null;
+				DiscreteMapping dm = getDiscreteMapping(getCalculator(appearanceCalc, calcType),
+				                                        controllingAttribute);
 
-                if (dm != null) {
-                    value = dm.getMapValue(key);
-                }
+				if (dm != null) {
+					value = dm.getMapValue(key);
+				}
 
-                if (value == null) {
-                    value = getDefaultAppearanceValue(appearanceCalc, calcType);
-                }
+				if (value == null) {
+					value = getDefaultAppearanceValue(appearanceCalc, calcType);
+				}
 
-                pi.add(calcType, value);
-            }
+				pi.add(calcType, value);
+			}
 
-            if ((filter == null) || (filter.useEntry(pi))) {
-                spInfos.add(pi);
-            }
-        }
+			if ((filter == null) || (filter.useEntry(pi))) {
+				spInfos.add(pi);
+			}
+		}
 
-        return spInfos.iterator();
-    }
+		return spInfos.iterator();
+	}
 
-    /**
-     * Across a set of given calculators types, create the set
-     * of all the unique discrete mapping keys from
-     * calculators with the given type from the given Node or Edge
-     * AppearanceCalculator.
-     * @return a non-null Set of the String mapping keys
-     */
-    private Set<String> computeAllMappingKeys(Object appearanceCalc,
-                                              byte[] calculatorTypes,
-                                              String controllingAttribute) {
-        Set<String> mappingKeys = new HashSet<String>();
+	/**
+	 * Across a set of given calculators types, create the set
+	 * of all the unique discrete mapping keys from
+	 * calculators with the given type from the given Node or Edge
+	 * AppearanceCalculator.
+	 * @return a non-null Set of the String mapping keys
+	 */
+	private Set<String> computeAllMappingKeys(Object appearanceCalc, byte[] calculatorTypes,
+	                                          String controllingAttribute) {
+		Set<String> mappingKeys = new HashSet<String>();
 
-        for (byte calcType : calculatorTypes) {
-            mappingKeys.addAll(getMappingKeys(getCalculator(appearanceCalc,
-                                                            calcType),
-                                              controllingAttribute));
-        }
+		for (byte calcType : calculatorTypes) {
+			mappingKeys.addAll(getMappingKeys(getCalculator(appearanceCalc, calcType),
+			                                  controllingAttribute));
+		}
 
-        return mappingKeys;
-    }
+		return mappingKeys;
+	}
 
-    private Calculator getCalculator(Object appearanceCalc, byte calcType) {
-        // The Cytoscape API should be changed to have an AppearanceCalculator that
-        // underlies NodeAppearanceCalculator and EdgeAppearanceCalculator. For now,
-        // check type:
-        if (appearanceCalc instanceof NodeAppearanceCalculator) {
-            return ((NodeAppearanceCalculator) appearanceCalc).getCalculator(calcType);
-        } else if (appearanceCalc instanceof EdgeAppearanceCalculator) {
-            return ((EdgeAppearanceCalculator) appearanceCalc).getCalculator(calcType);
-        }
+	private Calculator getCalculator(Object appearanceCalc, byte calcType) {
+		// The Cytoscape API should be changed to have an AppearanceCalculator that
+		// underlies NodeAppearanceCalculator and EdgeAppearanceCalculator. For now,
+		// check type:
+		if (appearanceCalc instanceof NodeAppearanceCalculator) {
+			return ((NodeAppearanceCalculator) appearanceCalc).getCalculator(calcType);
+		} else if (appearanceCalc instanceof EdgeAppearanceCalculator) {
+			return ((EdgeAppearanceCalculator) appearanceCalc).getCalculator(calcType);
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    private Object getDefaultAppearanceValue(Object appearanceCalc,
-                                             byte calcType) {
-        // The Cytoscape API should be changed to have an AppearanceCalculator that
-        // underlies NodeAppearanceCalculator and EdgeAppearanceCalculator. For now,
-        // check type:
-        if (appearanceCalc instanceof NodeAppearanceCalculator) {
-            return ((NodeAppearanceCalculator) appearanceCalc).getDefaultAppearance()
-                    .get(calcType);
-        } else if (appearanceCalc instanceof EdgeAppearanceCalculator) {
-            return ((EdgeAppearanceCalculator) appearanceCalc).getDefaultAppearance()
-                    .get(calcType);
-        }
+	private Object getDefaultAppearanceValue(Object appearanceCalc, byte calcType) {
+		// The Cytoscape API should be changed to have an AppearanceCalculator that
+		// underlies NodeAppearanceCalculator and EdgeAppearanceCalculator. For now,
+		// check type:
+		if (appearanceCalc instanceof NodeAppearanceCalculator) {
+			return ((NodeAppearanceCalculator) appearanceCalc).getDefaultAppearance().get(calcType);
+		} else if (appearanceCalc instanceof EdgeAppearanceCalculator) {
+			return ((EdgeAppearanceCalculator) appearanceCalc).getDefaultAppearance().get(calcType);
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    private Set<String> getMappingKeys(Calculator calc,
-                                       String controllingAttribute) {
-        DiscreteMapping dm = getDiscreteMapping(calc, controllingAttribute);
+	private Set<String> getMappingKeys(Calculator calc, String controllingAttribute) {
+		DiscreteMapping dm = getDiscreteMapping(calc, controllingAttribute);
 
-        if (dm == null) {
-            return new HashSet<String>(0);
-        }
+		if (dm == null) {
+			return new HashSet<String>(0);
+		}
 
-        Map<String, Object> keyValuePairs = (Map<String, Object>) dm.getAll();
+		Map<String, Object> keyValuePairs = (Map<String, Object>) dm.getAll();
 
-        // don't know if the map can ever be null, but check anyway:
-        if (keyValuePairs == null) {
-            return new HashSet<String>(0);
-        }
+		// don't know if the map can ever be null, but check anyway:
+		if (keyValuePairs == null) {
+			return new HashSet<String>(0);
+		}
 
-        return keyValuePairs.keySet();
-    }
+		return keyValuePairs.keySet();
+	}
 
-    private DiscreteMapping getDiscreteMapping(Calculator calc,
-                                               String controllingAttribute) {
-        if (calc != null) {
-            // Vector edgeMappings = calc.getMappings();
-            // for (int i = 0; i < edgeMappings.size(); i++) {
-            for (ObjectMapping possibleMatch : (Vector<ObjectMapping>) calc.getMappings()) {
-                if ((possibleMatch instanceof DiscreteMapping) &&
-                    controllingAttribute.equals(((DiscreteMapping) possibleMatch).getControllingAttributeName())) {
-                    return (DiscreteMapping) possibleMatch;
-                }
-            }
-        }
+	private DiscreteMapping getDiscreteMapping(Calculator calc, String controllingAttribute) {
+		if (calc != null) {
+			// Vector edgeMappings = calc.getMappings();
+			// for (int i = 0; i < edgeMappings.size(); i++) {
+			for (ObjectMapping possibleMatch : (Vector<ObjectMapping>) calc.getMappings()) {
+				if ((possibleMatch instanceof DiscreteMapping)
+				    && controllingAttribute.equals(((DiscreteMapping) possibleMatch)
+				                                                                                                                                                                          .getControllingAttributeName())) {
+					return (DiscreteMapping) possibleMatch;
+				}
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 }

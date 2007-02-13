@@ -36,99 +36,102 @@ package org.cytoscape.coreplugin.cpath.model;
 
 import java.util.Vector;
 
+
 /**
  * Contains a Single Option for the MaxHits Pull-Down Menu.
  *
  * @author Ethan Cerami
  */
 public class MaxHitsOption {
-    /**
-     * Get All Description.
-     */
-    public static final String GET_ALL_DESCRIPTION = "No Limit";
+	/**
+	 * Get All Description.
+	 */
+	public static final String GET_ALL_DESCRIPTION = "No Limit";
 
-    /**
-     * Default Number of Hits.
-     */
-    public static final MaxHitsOption DEFAULT_NUM_HITS =
-            new MaxHitsOption(10);
+	/**
+	 * Default Number of Hits.
+	 */
+	public static final MaxHitsOption DEFAULT_NUM_HITS = new MaxHitsOption(10);
 
-    /**
-     * Max Number of Hits.
-     */
-    private int maxHits;
+	/**
+	 * Max Number of Hits.
+	 */
+	private int maxHits;
 
-    /**
-     * Description of Option (as displayed in pull-down menu).
-     */
-    private String description;
+	/**
+	 * Description of Option (as displayed in pull-down menu).
+	 */
+	private String description;
 
-    /**
-     * Constructor.
-     *
-     * @param maxHits MaxHits int value.
-     */
-    public MaxHitsOption (int maxHits) {
-        this.maxHits = maxHits;
-        if (maxHits == Integer.MAX_VALUE) {
-            this.description = GET_ALL_DESCRIPTION;
-        } else {
-            this.description = "Limit to " + maxHits;
-        }
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param maxHits MaxHits int value.
+	 */
+	public MaxHitsOption(int maxHits) {
+		this.maxHits = maxHits;
 
-    /**
-     * Gets Max Number of Hits.
-     *
-     * @return max hits integer value.
-     */
-    public int getMaxHits () {
-        return maxHits;
-    }
+		if (maxHits == Integer.MAX_VALUE) {
+			this.description = GET_ALL_DESCRIPTION;
+		} else {
+			this.description = "Limit to " + maxHits;
+		}
+	}
 
-    /**
-     * Gets Description of Option (as displayed in pull-down menu).
-     *
-     * @return Option description.
-     */
-    public String getDescription () {
-        return description;
-    }
+	/**
+	 * Gets Max Number of Hits.
+	 *
+	 * @return max hits integer value.
+	 */
+	public int getMaxHits() {
+		return maxHits;
+	}
 
-    /**
-     * Gets Description of Option (as displayed in pull-down menu).
-     *
-     * @return Option description.
-     */
-    public String toString () {
-        return this.description;
-    }
+	/**
+	 * Gets Description of Option (as displayed in pull-down menu).
+	 *
+	 * @return Option description.
+	 */
+	public String getDescription() {
+		return description;
+	}
 
-    /**
-     * Gets All Options for the Pull-Down Menu.
-     *
-     * @return Vector of MaxHitsOption Objects.
-     */
-    public static Vector getAllOptions () {
-        Vector allOptions = new Vector();
-        allOptions.add(MaxHitsOption.DEFAULT_NUM_HITS);
-        allOptions.add(new MaxHitsOption(20));
-        allOptions.add(new MaxHitsOption(50));
-        allOptions.add(new MaxHitsOption(100));
-        allOptions.add(new MaxHitsOption(500));
-        allOptions.add(new MaxHitsOption(1000));
-        allOptions.add(new MaxHitsOption(5000));
-        allOptions.add(new MaxHitsOption(Integer.MAX_VALUE));
-        return allOptions;
-    }
+	/**
+	 * Gets Description of Option (as displayed in pull-down menu).
+	 *
+	 * @return Option description.
+	 */
+	public String toString() {
+		return this.description;
+	}
 
-    /**
-     * Clone Object.
-     *
-     * @return Cloned Object.
-     */
-    public Object clone () {
-        MaxHitsOption option = new MaxHitsOption(maxHits);
-        return option;
-    }
+	/**
+	 * Gets All Options for the Pull-Down Menu.
+	 *
+	 * @return Vector of MaxHitsOption Objects.
+	 */
+	public static Vector getAllOptions() {
+		Vector allOptions = new Vector();
+		allOptions.add(MaxHitsOption.DEFAULT_NUM_HITS);
+		allOptions.add(new MaxHitsOption(20));
+		allOptions.add(new MaxHitsOption(50));
+		allOptions.add(new MaxHitsOption(100));
+		allOptions.add(new MaxHitsOption(500));
+		allOptions.add(new MaxHitsOption(1000));
+		allOptions.add(new MaxHitsOption(5000));
+		allOptions.add(new MaxHitsOption(Integer.MAX_VALUE));
+
+		return allOptions;
+	}
+
+	/**
+	 * Clone Object.
+	 *
+	 * @return Cloned Object.
+	 */
+	public Object clone() {
+		MaxHitsOption option = new MaxHitsOption(maxHits);
+
+		return option;
+	}
 }

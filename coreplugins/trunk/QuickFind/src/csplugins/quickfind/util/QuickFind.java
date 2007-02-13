@@ -1,9 +1,48 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.Hit;
+
 import cytoscape.CyNetwork;
+
 import cytoscape.task.TaskMonitor;
+
 
 /**
  * Cytoscape Quick Find.
@@ -64,132 +103,131 @@ import cytoscape.task.TaskMonitor;
  * @author Ethan Cerami.
  */
 public interface QuickFind {
-    /**
-     * Index Nodes
-     */
-    int INDEX_NODES = 0;
+	/**
+	 * Index Nodes
+	 */
+	int INDEX_NODES = 0;
 
-    /**
-     * Index Edges
-     */
-    int INDEX_EDGES = 1;
+	/**
+	 * Index Edges
+	 */
+	int INDEX_EDGES = 1;
 
-    /**
-     * Node / Edge Unique Identifier.
-     */
-    String UNIQUE_IDENTIFIER = "Unique Identifier";
+	/**
+	 * Node / Edge Unique Identifier.
+	 */
+	String UNIQUE_IDENTIFIER = "Unique Identifier";
 
-    /**
-     * Index all attributes.
-     */
-    String INDEX_ALL_ATTRIBUTES =
-            "[ Index all attributes ]";
+	/**
+	 * Index all attributes.
+	 */
+	String INDEX_ALL_ATTRIBUTES = "[ Index all attributes ]";
 
-    /**
-     * Network attribute, used to set default index.
-     */
-    String DEFAULT_INDEX = "quickfind.default_index";
+	/**
+	 * Network attribute, used to set default index.
+	 */
+	String DEFAULT_INDEX = "quickfind.default_index";
 
-    /**
-     * Adds a new network to the global index, and indexes all nodes
-     * described by this network.
-     * <P>By default, this class will first determine if the network includes
-     * a default index setting.  It does so by determining if the network
-     * has a network attribute named:  quickfind.default_index.  For
-     * example, if you would like your network to be indexed by
-     * "biopax.short_name" by default, you would use the following code:
-     *
-     * <P>
-     * <CODE>
-     * CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-     * <BR>networkAttributes.setAttribute(cyNetwork.getIdentifier(),
-     *     "quickfind.default_index", "biopax.short_name");
-     * </CODE>
-     *
-     * <P>If no default index is found, this class will automatically
-     * index node objects based on their unique identifier,
-     * e.g. node.getIdentifier().
-     *
-     * @param network     Cytoscape Network.
-     * @param taskMonitor TaskMonitor Object.
-     */
-    void addNetwork(CyNetwork network, TaskMonitor taskMonitor);
+	/**
+	 * Adds a new network to the global index, and indexes all nodes
+	 * described by this network.
+	 * <P>By default, this class will first determine if the network includes
+	 * a default index setting.  It does so by determining if the network
+	 * has a network attribute named:  quickfind.default_index.  For
+	 * example, if you would like your network to be indexed by
+	 * "biopax.short_name" by default, you would use the following code:
+	 *
+	 * <P>
+	 * <CODE>
+	 * CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+	 * <BR>networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+	 *     "quickfind.default_index", "biopax.short_name");
+	 * </CODE>
+	 *
+	 * <P>If no default index is found, this class will automatically
+	 * index node objects based on their unique identifier,
+	 * e.g. node.getIdentifier().
+	 *
+	 * @param network     Cytoscape Network.
+	 * @param taskMonitor TaskMonitor Object.
+	 */
+	void addNetwork(CyNetwork network, TaskMonitor taskMonitor);
 
-    /**
-     * Removes the specified network from the global index.
-     * <p/>
-     * To free up memory, this method should be called whenever a network
-     * is destroyed.
-     *
-     * @param network CyNetwork Object.
-     */
-    void removeNetwork(CyNetwork network);
+	/**
+	 * Removes the specified network from the global index.
+	 * <p/>
+	 * To free up memory, this method should be called whenever a network
+	 * is destroyed.
+	 *
+	 * @param network CyNetwork Object.
+	 */
+	void removeNetwork(CyNetwork network);
 
-    /**
-     * Gets the index associated with the specified network.
-     *
-     * @param network Cytoscape Network.
-     * @return Index Object.
-     */
-    GenericIndex getIndex(CyNetwork network);
+	/**
+	 * Gets the index associated with the specified network.
+	 *
+	 * @param network Cytoscape Network.
+	 * @return Index Object.
+	 */
+	GenericIndex getIndex(CyNetwork network);
 
-    /**
-     * Reindexes a network with the specified controlling attribute.
-     * <p/>
-     * This method will iterate through all nodes/edges within the
-     * registered network, and add each node/edge to the text index.
-     * For each node/edge, the attribute specified will be used to create the
-     * text index.
-     * <p/>For example, if you want to index all nodes by their
-     * "BIOPAX_NAME" attribute, you would use this code:
-     * <br/>
-     * <pre>reindexNetwork (cyNetwork, QuickFind.INDEX_NODES, "BIOPAX_NAME", tm);</pre>
-     *
-     * @param cyNetwork            Cytoscape network.
-     * @param indexType            INDEX_NODES or INDEX_EDGES.
-     * @param controllingAttribute Attribute used to index all nodes.
-     * @param taskMonitor          Task Monitor, used to monitor long-term
-     *                             progress of task.
-     * @return GenericIndex Object.
-     */
-    GenericIndex reindexNetwork(CyNetwork cyNetwork,
-            int indexType, String controllingAttribute, TaskMonitor taskMonitor);
+	/**
+	 * Reindexes a network with the specified controlling attribute.
+	 * <p/>
+	 * This method will iterate through all nodes/edges within the
+	 * registered network, and add each node/edge to the text index.
+	 * For each node/edge, the attribute specified will be used to create the
+	 * text index.
+	 * <p/>For example, if you want to index all nodes by their
+	 * "BIOPAX_NAME" attribute, you would use this code:
+	 * <br/>
+	 * <pre>reindexNetwork (cyNetwork, QuickFind.INDEX_NODES, "BIOPAX_NAME", tm);</pre>
+	 *
+	 * @param cyNetwork            Cytoscape network.
+	 * @param indexType            INDEX_NODES or INDEX_EDGES.
+	 * @param controllingAttribute Attribute used to index all nodes.
+	 * @param taskMonitor          Task Monitor, used to monitor long-term
+	 *                             progress of task.
+	 * @return GenericIndex Object.
+	 */
+	GenericIndex reindexNetwork(CyNetwork cyNetwork, int indexType, String controllingAttribute,
+	                            TaskMonitor taskMonitor);
 
-    /**
-     * Select a specific text item in QuickFind.
-     *
-     * @param network       the current CyNetwork.
-     * @param hit           Hit chosen by the user.
-     */
-    void selectHit (CyNetwork network, Hit hit);
+	/**
+	 * Select a specific text item in QuickFind.
+	 *
+	 * @param network       the current CyNetwork.
+	 * @param hit           Hit chosen by the user.
+	 */
+	void selectHit(CyNetwork network, Hit hit);
 
-    /**
-     * Select a range in QuickFind.
-     *
-     * @param network       the current CyNetwork.
-     * @param low           the low value of the range.
-     * @param high          the high value of the range.
-     */
-    void selectRange (CyNetwork network, Number low, Number high);
+	/**
+	 * Select a range in QuickFind.
+	 *
+	 * @param network       the current CyNetwork.
+	 * @param low           the low value of the range.
+	 * @param high          the high value of the range.
+	 */
+	void selectRange(CyNetwork network, Number low, Number high);
 
-    /**
-     * Adds a new QuickFind Listener.
-     *
-     * @param listener QuickFindListener Object.
-     */
-    void addQuickFindListener(QuickFindListener listener);
+	/**
+	 * Adds a new QuickFind Listener.
+	 *
+	 * @param listener QuickFindListener Object.
+	 */
+	void addQuickFindListener(QuickFindListener listener);
 
-    /**
-     * Removes the specified QuickFind Listener Object.
-     *
-     * @param listener QuickFindListener Object.
-     */
-    void removeQuickFindListener(QuickFindListener listener);
+	/**
+	 * Removes the specified QuickFind Listener Object.
+	 *
+	 * @param listener QuickFindListener Object.
+	 */
+	void removeQuickFindListener(QuickFindListener listener);
 
-    /**
-     * Gets an array of all registered QuickFind Listener Objects.
-     *
-     * @return Array of QuickFindListener Objects.
-     */
-    QuickFindListener[] getQuickFindListeners();
+	/**
+	 * Gets an array of all registered QuickFind Listener Objects.
+	 *
+	 * @return Array of QuickFindListener Objects.
+	 */
+	QuickFindListener[] getQuickFindListeners();
 }

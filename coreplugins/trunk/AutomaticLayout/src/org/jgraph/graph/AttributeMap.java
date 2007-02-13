@@ -9,10 +9,12 @@ package org.jgraph.graph;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * A map specifically for the storage of attributes of graph cells. The main
  * advantage of the AttributeMap is that it allows to override cell view
@@ -29,7 +32,6 @@ import java.util.Set;
  * basis without having to change the GraphConstants class
  */
 public class AttributeMap extends Hashtable implements Cloneable {
-
 	/**
 	 * Shared empty attribute map to return instead of null in applyMap.
 	 */
@@ -48,7 +50,7 @@ public class AttributeMap extends Hashtable implements Cloneable {
 
 	/**
 	 * Creates a new attribute map with the specified initial capacity
-	 * 
+	 *
 	 * @param initialCapacity
 	 *            the initial capacity of the new map
 	 */
@@ -59,7 +61,7 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	/**
 	 * Constructs a new, empty hashtable with the specified initial capacity and
 	 * the specified load factor.
-	 * 
+	 *
 	 * @param initialCapacity
 	 *            the initial capacity of the hashtable.
 	 * @param loadCapacity
@@ -71,7 +73,7 @@ public class AttributeMap extends Hashtable implements Cloneable {
 
 	/**
 	 * Constructs a new AttributeMap with the same mappings as the given Map.
-	 * 
+	 *
 	 * @param map
 	 *            the input map to copy
 	 */
@@ -81,7 +83,7 @@ public class AttributeMap extends Hashtable implements Cloneable {
 
 	/**
 	 * Creates a point of suitable type for this attribute map
-	 * 
+	 *
 	 * @return a new point
 	 */
 	public Point2D createPoint() {
@@ -91,7 +93,7 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	/**
 	 * Creates a point of suitable type for this attribute map with the same
 	 * values as the point passed in
-	 * 
+	 *
 	 * @param p
 	 *            the point whose values the new point are to be based on
 	 * @return a new copy of the point passed in
@@ -100,13 +102,14 @@ public class AttributeMap extends Hashtable implements Cloneable {
 		if (p != null) {
 			return createPoint(p.getX(), p.getY());
 		}
+
 		return null;
 	}
 
 	/**
 	 * Creates a point of suitable type for this attribute map with the same
 	 * values as those passed in
-	 * 
+	 *
 	 * @param x
 	 *            the x-coordinate position of the new point
 	 * @param y
@@ -119,7 +122,7 @@ public class AttributeMap extends Hashtable implements Cloneable {
 
 	/**
 	 * Creates a rectangle of suitable type for this attribute map
-	 * 
+	 *
 	 * @return a new rectangle
 	 */
 	public Rectangle2D createRect() {
@@ -129,7 +132,7 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	/**
 	 * Creates a rectangle of suitable type for this attribute map with the same
 	 * values as those passed in
-	 * 
+	 *
 	 * @param x
 	 *            the x-coordinate position of the new rectangle
 	 * @param y
@@ -148,7 +151,7 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	/**
 	 * Creates a rectangle of suitable type for this attribute map at the
 	 * position of the point passed in
-	 * 
+	 *
 	 * @param pt
 	 *            the position of the new rectangle
 	 * @return a new rectangle the specified coordinates of zero size
@@ -160,7 +163,7 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	/**
 	 * Creates a rectangle of suitable type for this attribute map at the
 	 * position of the point passed in with lengths <code>size</code>
-	 * 
+	 *
 	 * @param pt
 	 *            the position of the new rectangle
 	 * @param size
@@ -171,28 +174,29 @@ public class AttributeMap extends Hashtable implements Cloneable {
 		if (pt != null) {
 			return createRect(pt.getX(), pt.getY(), size, size);
 		}
+
 		return null;
 	}
 
 	/**
 	 * Clones the rectangle passed in
-	 * 
+	 *
 	 * @param rect
 	 *            the rectangle to clone
-	 * 
+	 *
 	 * @return a copy of the rectangle passed in
 	 */
 	public Rectangle2D createRect(Rectangle2D rect) {
 		if (rect != null) {
-			return createRect(rect.getX(), rect.getY(), rect.getWidth(), rect
-					.getHeight());
+			return createRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 		}
+
 		return null;
 	}
 
 	/**
 	 * Creates a rectangle of suitable type for this attribute map
-	 * 
+	 *
 	 * @param x
 	 *            the x-coordinate position of the new rectangle
 	 * @param y
@@ -210,16 +214,14 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	 * @return a new rectangle at the coordinates and of the dimensions passed
 	 *         in
 	 */
-	public Rectangle2D createRect(double x, double y, double w, double h,
-			double grow1, double grow2) {
-		return createRect(x - grow1, y - grow1, w + grow1 + grow2, h + grow1
-				+ grow2);
+	public Rectangle2D createRect(double x, double y, double w, double h, double grow1, double grow2) {
+		return createRect(x - grow1, y - grow1, w + grow1 + grow2, h + grow1 + grow2);
 	}
 
 	/**
 	 * Creates a clone of the rectangle passed in and manipulates it by
 	 * <code>grow1</code> and <code>grow2</code>
-	 * 
+	 *
 	 * @param grow1
 	 *            the amount both dimensions are to be increased by and the
 	 *            position coorindates of the rectangle are to be decreased by
@@ -231,9 +233,10 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	 */
 	public Rectangle2D createRect(Rectangle2D rect, double grow1, double grow2) {
 		if (rect != null) {
-			return createRect(rect.getX(), rect.getY(), rect.getWidth(), rect
-					.getHeight(), grow1, grow2);
+			return createRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), grow1,
+			                  grow2);
 		}
+
 		return null;
 	}
 
@@ -241,63 +244,72 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	 * Apply the <code>change</code> to this views attributes.
 	 * <code>change</code> must be a <code>Map</code> previously obtained
 	 * from this object.
-	 * 
+	 *
 	 * @param change
 	 *            the change to apply
 	 * @return a map that may be used to undo the change to target.
 	 */
 	public AttributeMap applyMap(Map change) {
 		AttributeMap undo = new AttributeMap();
+
 		if (change != null) {
 			// Handle Remove All
 			if (GraphConstants.isRemoveAll(change)) {
 				undo.putAll(this);
 				clear();
 			}
+
 			// Handle Remove Individual
 			Object[] remove = GraphConstants.getRemoveAttributes(change);
+
 			if (remove != null) {
 				// don't store command
 				for (int i = 0; i < remove.length; i++) {
 					Object oldValue = remove(remove[i]);
+
 					if (oldValue != null)
 						undo.put(remove[i], oldValue);
 				}
 			}
+
 			// Attributes that were empty are added to removeattibutes.
 			// Performance and transient memory peak are reduced by lazily
 			// instantiating the set.
 			Set removeAttributes = null;
 			Iterator it = change.entrySet().iterator();
+
 			while (it.hasNext()) {
 				Map.Entry entry = (Map.Entry) it.next();
 				Object key = entry.getKey();
+
 				if (!key.equals(GraphConstants.REMOVEALL)
-						&& !key.equals(GraphConstants.REMOVEATTRIBUTES)
-						&& !key.equals(GraphConstants.VALUE)) {
+				    && !key.equals(GraphConstants.REMOVEATTRIBUTES)
+				    && !key.equals(GraphConstants.VALUE)) {
 					Object oldValue = applyValue(key, entry.getValue());
+
 					if (oldValue == null) {
 						if (removeAttributes == null) {
 							removeAttributes = new HashSet();
 						}
+
 						removeAttributes.add(key);
-					}
-					else {
+					} else {
 						undo.put(key, oldValue);
 					}
 				}
 			}
-			if (removeAttributes != null && !removeAttributes.isEmpty()) {
-				GraphConstants.setRemoveAttributes(undo, removeAttributes
-						.toArray());
+
+			if ((removeAttributes != null) && !removeAttributes.isEmpty()) {
+				GraphConstants.setRemoveAttributes(undo, removeAttributes.toArray());
 			}
 		}
+
 		return undo;
 	}
 
 	/**
 	 * Apply the <code>key</code> to <code>value</code>
-	 * 
+	 *
 	 * @param key
 	 *            the map key whose value is to be altered
 	 * @param value
@@ -311,19 +323,23 @@ public class AttributeMap extends Hashtable implements Cloneable {
 		// replacing the rectangle/points with serializable objects.
 		if (value instanceof Rectangle2D)
 			value = createRect((Rectangle2D) value);
+
 		if (value instanceof Point2D)
 			value = createPoint((Point2D) value);
+
 		if (value instanceof Point2D[])
 			value = clonePoints((Point2D[]) value);
+
 		if (value instanceof List) // FIXME: PointList interface?
 			value = clonePoints((List) value);
+
 		return put(key, value);
 	}
 
 	/**
 	 * Returns a list where all instances of PortView are replaced by their
 	 * correspnding Point instance.
-	 * 
+	 *
 	 * @param points
 	 *            the points to be cloned
 	 * @return the cloned points
@@ -332,13 +348,14 @@ public class AttributeMap extends Hashtable implements Cloneable {
 		List pts = clonePoints(points, true);
 		Point2D[] newPoints = new Point2D[pts.size()];
 		pts.toArray(newPoints);
+
 		return newPoints;
 	}
 
 	/**
 	 * Returns a list where all instances of PortView are replaced by their
 	 * correspnding Point instance.
-	 * 
+	 *
 	 * @param points
 	 *            the points to be cloned
 	 * @return the cloned points
@@ -354,15 +371,19 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	public List clonePoints(Object[] points, boolean convertPortViews) {
 		// TODO: Change the list in-place?
 		ArrayList newList = new ArrayList(points.length);
+
 		for (int i = 0; i < points.length; i++) {
 			// Clone Point
 			Object point = points[i];
+
 			if (point instanceof PortView && convertPortViews)
 				point = createPoint(((PortView) point).getLocation());
 			else if (point instanceof Point2D)
 				point = createPoint((Point2D) point);
+
 			newList.add(point);
 		}
+
 		return newList;
 	}
 
@@ -372,8 +393,10 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	 */
 	public static void translate(Collection c, double dx, double dy) {
 		Iterator it = c.iterator();
+
 		while (it.hasNext()) {
 			Object map = it.next();
+
 			if (map instanceof AttributeMap)
 				((AttributeMap) map).translate(dx, dy);
 		}
@@ -386,20 +409,26 @@ public class AttributeMap extends Hashtable implements Cloneable {
 		// Translate Bounds
 		if (GraphConstants.isMoveable(this)) {
 			Rectangle2D bounds = GraphConstants.getBounds(this);
+
 			if (bounds != null) {
 				int moveableAxis = GraphConstants.getMoveableAxis(this);
+
 				if (moveableAxis == GraphConstants.X_AXIS)
 					dy = 0;
 				else if (moveableAxis == GraphConstants.Y_AXIS)
 					dx = 0;
-				bounds.setFrame(bounds.getX() + dx, bounds.getY() + dy, bounds
-						.getWidth(), bounds.getHeight());
+
+				bounds.setFrame(bounds.getX() + dx, bounds.getY() + dy, bounds.getWidth(),
+				                bounds.getHeight());
 			}
+
 			// Translate Points
 			List points = GraphConstants.getPoints(this);
+
 			if (points != null) {
 				for (int i = 0; i < points.size(); i++) {
 					Object obj = points.get(i);
+
 					if (obj instanceof Point2D) {
 						Point2D pt = (Point2D) obj;
 						pt.setLocation(pt.getX() + dx, pt.getY() + dy);
@@ -415,40 +444,44 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	public void scale(double sx, double sy, Point2D origin) {
 		// Scale Bounds
 		Rectangle2D bounds = GraphConstants.getBounds(this);
+
 		if (bounds != null) {
 			Point2D p = createPoint(bounds.getX(), bounds.getY());
 			Point2D loc = (Point2D) p.clone();
-			p.setLocation(origin.getX()
-					+ Math.round((p.getX() - origin.getX()) * sx), origin
-					.getY()
-					+ Math.round((p.getY() - origin.getY()) * sy));
+			p.setLocation(origin.getX() + Math.round((p.getX() - origin.getX()) * sx),
+			              origin.getY() + Math.round((p.getY() - origin.getY()) * sy));
+
 			if (!p.equals(loc)) // Scale Location
 				translate(p.getX() - loc.getX(), p.getY() - loc.getY());
+
 			int sizeableAxis = GraphConstants.getSizeableAxis(this);
+
 			if (sizeableAxis == GraphConstants.X_AXIS)
 				sy = 1;
 			else if (sizeableAxis == GraphConstants.Y_AXIS)
 				sx = 1;
+
 			double w = Math.max(1, Math.round(bounds.getWidth() * sx));
 			double h = Math.max(1, Math.round(bounds.getHeight() * sy));
 			// Scale Bounds
 			bounds.setFrame(bounds.getX(), bounds.getY(), w, h);
 		}
+
 		// Scale Points
 		List points = GraphConstants.getPoints(this);
+
 		if (points != null) {
 			Iterator it = points.iterator();
+
 			while (it.hasNext()) {
 				Object obj = it.next();
+
 				if (obj instanceof Point2D) {
 					// Scale Point
 					Point2D loc = (Point2D) obj;
 					Point2D p = (Point2D) loc.clone();
-					p.setLocation(origin.getX()
-							+ Math.round((p.getX() - origin.getX()) * sx),
-							origin.getY()
-									+ Math.round((p.getY() - origin.getY())
-											* sy));
+					p.setLocation(origin.getX() + Math.round((p.getX() - origin.getX()) * sx),
+					              origin.getY() + Math.round((p.getY() - origin.getY()) * sy));
 					// Move Point
 					loc.setLocation(p);
 				}
@@ -462,20 +495,23 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	 * different for key in <code>oldState</code>. In other words, this
 	 * method removes the common entries from oldState and newState, and returns
 	 * the "difference" between the two.
-	 * 
+	 *
 	 * This method never returns null.
 	 */
 	public Map diff(Map newState) {
 		Map diff = new Hashtable();
 		Iterator it = newState.entrySet().iterator();
+
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
 			Object key = entry.getKey();
 			Object newValue = entry.getValue();
 			Object oldValue = get(key);
-			if (oldValue == null || !oldValue.equals(newValue))
+
+			if ((oldValue == null) || !oldValue.equals(newValue))
 				diff.put(key, newValue);
 		}
+
 		return diff;
 	}
 
@@ -496,27 +532,32 @@ public class AttributeMap extends Hashtable implements Cloneable {
 	public AttributeMap cloneEntries(AttributeMap newMap) {
 		// Clone Bounds
 		Rectangle2D bounds = GraphConstants.getBounds(newMap);
+
 		if (bounds != null)
 			GraphConstants.setBounds(newMap, (Rectangle2D) (bounds.clone()));
+
 		// Clone List Of Points
 		List points = GraphConstants.getPoints(newMap);
+
 		if (points != null)
 			GraphConstants.setPoints(newMap, clonePoints(points));
+
 		// Clone extra label positions
 		Point2D[] positions = GraphConstants.getExtraLabelPositions(newMap);
+
 		if (positions != null)
-			GraphConstants.setExtraLabelPositions(newMap,
-					clonePoints(positions));
+			GraphConstants.setExtraLabelPositions(newMap, clonePoints(positions));
+
 		// Clone Edge Label
 		Point2D label = GraphConstants.getLabelPosition(newMap);
+
 		if (label != null)
 			GraphConstants.setLabelPosition(newMap, (Point2D) label.clone());
+
 		return newMap;
 	}
 
-	public static class SerializablePoint2D extends Point2D.Double implements
-			Serializable {
-
+	public static class SerializablePoint2D extends Point2D.Double implements Serializable {
 		public SerializablePoint2D() {
 			super();
 		}
@@ -539,25 +580,21 @@ public class AttributeMap extends Hashtable implements Cloneable {
 			out.writeObject(new java.lang.Double(getY()));
 		}
 
-		private void readObject(ObjectInputStream in) throws IOException,
-				ClassNotFoundException {
+		private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 			in.defaultReadObject();
+
 			java.lang.Double x = (java.lang.Double) in.readObject();
 			java.lang.Double y = (java.lang.Double) in.readObject();
 			setLocation(x.doubleValue(), y.doubleValue());
 		}
-
 	}
 
-	public static class SerializableRectangle2D extends Rectangle2D.Double
-			implements Serializable {
-
+	public static class SerializableRectangle2D extends Rectangle2D.Double implements Serializable {
 		public SerializableRectangle2D() {
 			super();
 		}
 
-		public SerializableRectangle2D(double x, double y, double width,
-				double height) {
+		public SerializableRectangle2D(double x, double y, double width, double height) {
 			super(x, y, width, height);
 		}
 
@@ -585,15 +622,14 @@ public class AttributeMap extends Hashtable implements Cloneable {
 			out.writeObject(new java.lang.Double(getHeight()));
 		}
 
-		private void readObject(ObjectInputStream in) throws IOException,
-				ClassNotFoundException {
+		private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 			in.defaultReadObject();
+
 			java.lang.Double x = (java.lang.Double) in.readObject();
 			java.lang.Double y = (java.lang.Double) in.readObject();
 			java.lang.Double width = (java.lang.Double) in.readObject();
 			java.lang.Double height = (java.lang.Double) in.readObject();
-			setFrame(x.doubleValue(), y.doubleValue(), width.doubleValue(),
-					height.doubleValue());
+			setFrame(x.doubleValue(), y.doubleValue(), width.doubleValue(), height.doubleValue());
 		}
 	}
 }

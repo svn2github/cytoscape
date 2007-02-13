@@ -35,7 +35,9 @@
 package org.cytoscape.coreplugin.cpath.test.task;
 
 import junit.framework.TestCase;
+
 import org.cytoscape.coreplugin.cpath.task.CPathTimeEstimator;
+
 
 /**
  * Tests the CPathTimeEstimator.
@@ -43,25 +45,20 @@ import org.cytoscape.coreplugin.cpath.task.CPathTimeEstimator;
  * @author Ethan Cerami.
  */
 public class TestCPathTimeEstimator extends TestCase {
+	/**
+	 * Tests the Time Estimator.
+	 */
+	public void testEstimator() {
+		//  Last Request took 1 sec, and we have just retrieved the firt
+		//  100 of 1000 interactions, in 100 value increments.
+		//  Time Remaining Should be: 9 seconds
+		long timeRemaining = CPathTimeEstimator.calculateEsimatedTimeRemaining(1000, 0, 100, 1000);
+		assertEquals(9000, timeRemaining);
 
-    /**
-     * Tests the Time Estimator.
-     */
-    public void testEstimator () {
-        //  Last Request took 1 sec, and we have just retrieved the firt
-        //  100 of 1000 interactions, in 100 value increments.
-        //  Time Remaining Should be: 9 seconds
-        long timeRemaining =
-                CPathTimeEstimator.calculateEsimatedTimeRemaining
-                        (1000, 0, 100, 1000);
-        assertEquals(9000, timeRemaining);
-
-        //  Last Request took 100 ms, and we have just retrieved
-        //  900 of 1000 interactions, in 100 value increments.
-        //  Time Remaining Should be:  100 ms
-        timeRemaining =
-                CPathTimeEstimator.calculateEsimatedTimeRemaining
-                        (100, 800, 100, 1000);
-        assertEquals(100, timeRemaining);
-    }
+		//  Last Request took 100 ms, and we have just retrieved
+		//  900 of 1000 interactions, in 100 value increments.
+		//  Time Remaining Should be:  100 ms
+		timeRemaining = CPathTimeEstimator.calculateEsimatedTimeRemaining(100, 800, 100, 1000);
+		assertEquals(100, timeRemaining);
+	}
 }

@@ -6,37 +6,9 @@
  */
 package org.jgraph;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import javax.accessibility.Accessible;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JViewport;
-import javax.swing.Scrollable;
-import javax.swing.SwingConstants;
-
 import org.jgraph.event.GraphSelectionEvent;
 import org.jgraph.event.GraphSelectionListener;
+
 import org.jgraph.graph.AbstractCellView;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.BasicMarqueeHandler;
@@ -52,7 +24,41 @@ import org.jgraph.graph.GraphLayoutCache;
 import org.jgraph.graph.GraphModel;
 import org.jgraph.graph.GraphSelectionModel;
 import org.jgraph.graph.PortView;
+
 import org.jgraph.plaf.GraphUI;
+
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.accessibility.Accessible;
+
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JViewport;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
+
 
 /**
  * A control that displays a network of related objects using the well-known
@@ -169,25 +175,34 @@ import org.jgraph.plaf.GraphUI;
  * {@link javax.swing.InputMap}and {@link javax.swing.ActionMap}to associate
  * an {@link javax.swing.Action}object with a {@link javax.swing.KeyStroke}and
  * execute the action under specified conditions.
- * 
+ *
  * @author Gaudenz Alder
  * @version 2.1 16/03/03
- * 
+ *
  */
-public class JGraph
-// DO NOT REMOVE OR MODIFY THIS LINE!
-		extends JComponent // JAVA13:
-		// org.jgraph.plaf.basic.TransferHandler.JAdapterComponent
-		implements Scrollable, Accessible, Serializable {
-
+public class JGraph extends JComponent // JAVA13:
+                                       // org.jgraph.plaf.basic.TransferHandler.JAdapterComponent
+    implements Scrollable, Accessible, Serializable {
+	/**
+	 * 
+	 */
 	public static final String VERSION = "JGraph (v5.7.4.7)";
 
+	/**
+	 * 
+	 */
 	public static final int DOT_GRID_MODE = 0;
 
+	/**
+	 * 
+	 */
 	public static final int CROSS_GRID_MODE = 1;
 
+	/**
+	 * 
+	 */
 	public static final int LINE_GRID_MODE = 2;
-	
+
 	/**
 	 * @see #getUIClassID
 	 * @see #readObject
@@ -273,7 +288,13 @@ public class JGraph
 	 * Color of the handles and locked handles. Changes when the Look-and-Feel
 	 * changes.
 	 */
-	protected Color handleColor, lockedHandleColor;
+	protected Color handleColor;
+
+	/**
+	 * Color of the handles and locked handles. Changes when the Look-and-Feel
+	 * changes.
+	 */
+	protected Color lockedHandleColor;
 
 	/** Color of the marquee. Changes when the Look-and-Feel changes. */
 	protected Color marqueeColor;
@@ -471,98 +492,105 @@ public class JGraph
 	public static void addSampleData(GraphModel model) {
 		ConnectionSet cs = new ConnectionSet();
 		Map attributes = new Hashtable();
+
 		// Styles For Implement/Extend/Aggregation
 		AttributeMap implementStyle = new AttributeMap();
-		GraphConstants.setLineBegin(implementStyle,
-				GraphConstants.ARROW_TECHNICAL);
+		GraphConstants.setLineBegin(implementStyle, GraphConstants.ARROW_TECHNICAL);
 		GraphConstants.setBeginSize(implementStyle, 10);
 		GraphConstants.setDashPattern(implementStyle, new float[] { 3, 3 });
-		GraphConstants.setFont(implementStyle, GraphConstants.DEFAULTFONT
-				.deriveFont(10));
+		GraphConstants.setFont(implementStyle, GraphConstants.DEFAULTFONT.deriveFont(10));
+
 		AttributeMap extendStyle = new AttributeMap();
-		GraphConstants
-				.setLineBegin(extendStyle, GraphConstants.ARROW_TECHNICAL);
+		GraphConstants.setLineBegin(extendStyle, GraphConstants.ARROW_TECHNICAL);
 		GraphConstants.setBeginFill(extendStyle, true);
 		GraphConstants.setBeginSize(extendStyle, 10);
-		GraphConstants.setFont(extendStyle, GraphConstants.DEFAULTFONT
-				.deriveFont(10));
+		GraphConstants.setFont(extendStyle, GraphConstants.DEFAULTFONT.deriveFont(10));
+
 		AttributeMap aggregateStyle = new AttributeMap();
-		GraphConstants.setLineBegin(aggregateStyle,
-				GraphConstants.ARROW_DIAMOND);
+		GraphConstants.setLineBegin(aggregateStyle, GraphConstants.ARROW_DIAMOND);
 		GraphConstants.setBeginFill(aggregateStyle, true);
 		GraphConstants.setBeginSize(aggregateStyle, 6);
 		GraphConstants.setLineEnd(aggregateStyle, GraphConstants.ARROW_SIMPLE);
 		GraphConstants.setEndSize(aggregateStyle, 8);
-		GraphConstants.setLabelPosition(aggregateStyle, new Point2D.Double(500,
-				0));
-		GraphConstants.setFont(aggregateStyle, GraphConstants.DEFAULTFONT
-				.deriveFont(10));
+		GraphConstants.setLabelPosition(aggregateStyle, new Point2D.Double(500, 0));
+		GraphConstants.setFont(aggregateStyle, GraphConstants.DEFAULTFONT.deriveFont(10));
+
 		//
 		// The Swing MVC Pattern
 		//
 		// Model Column
 		DefaultGraphCell gm = new DefaultGraphCell("GraphModel");
-		attributes.put(gm,
-				createBounds(new AttributeMap(), 20, 100, Color.blue));
-		gm.addPort(null,"GraphModel/Center");
+		attributes.put(gm, createBounds(new AttributeMap(), 20, 100, Color.blue));
+		gm.addPort(null, "GraphModel/Center");
+
 		DefaultGraphCell dgm = new DefaultGraphCell("DefaultGraphModel");
-		attributes.put(dgm, createBounds(new AttributeMap(), 20, 180,
-				Color.blue));
+		attributes.put(dgm, createBounds(new AttributeMap(), 20, 180, Color.blue));
 		dgm.addPort(null, "DefaultGraphModel/Center");
+
 		DefaultEdge dgmImplementsGm = new DefaultEdge("implements");
 		cs.connect(dgmImplementsGm, gm.getChildAt(0), dgm.getChildAt(0));
 		attributes.put(dgmImplementsGm, implementStyle);
+
 		DefaultGraphCell modelGroup = new DefaultGraphCell("ModelGroup");
 		modelGroup.add(gm);
 		modelGroup.add(dgm);
 		modelGroup.add(dgmImplementsGm);
+
 		// JComponent Column
 		DefaultGraphCell jc = new DefaultGraphCell("JComponent");
-		attributes.put(jc, createBounds(new AttributeMap(), 180, 20,
-				Color.green));
+		attributes.put(jc, createBounds(new AttributeMap(), 180, 20, Color.green));
 		jc.addPort(null, "JComponent/Center");
+
 		DefaultGraphCell jg = new DefaultGraphCell("JGraph");
-		attributes.put(jg, createBounds(new AttributeMap(), 180, 100,
-				Color.green));
+		attributes.put(jg, createBounds(new AttributeMap(), 180, 100, Color.green));
 		jg.addPort(null, "JGraph/Center");
+
 		DefaultEdge jgExtendsJc = new DefaultEdge("extends");
 		cs.connect(jgExtendsJc, jc.getChildAt(0), jg.getChildAt(0));
 		attributes.put(jgExtendsJc, extendStyle);
+
 		// UI Column
 		DefaultGraphCell cu = new DefaultGraphCell("ComponentUI");
-		attributes
-				.put(cu, createBounds(new AttributeMap(), 340, 20, Color.red));
+		attributes.put(cu, createBounds(new AttributeMap(), 340, 20, Color.red));
 		cu.addPort(null, "ComponentUI/Center");
+
 		DefaultGraphCell gu = new DefaultGraphCell("GraphUI");
-		attributes.put(gu,
-				createBounds(new AttributeMap(), 340, 100, Color.red));
+		attributes.put(gu, createBounds(new AttributeMap(), 340, 100, Color.red));
 		gu.addPort(null, "GraphUI/Center");
+
 		DefaultGraphCell dgu = new DefaultGraphCell("BasicGraphUI");
-		attributes.put(dgu, createBounds(new AttributeMap(), 340, 180,
-				Color.red));
+		attributes.put(dgu, createBounds(new AttributeMap(), 340, 180, Color.red));
 		dgu.addPort(null, "BasicGraphUI/Center");
+
 		DefaultEdge guExtendsCu = new DefaultEdge("extends");
 		cs.connect(guExtendsCu, cu.getChildAt(0), gu.getChildAt(0));
 		attributes.put(guExtendsCu, extendStyle);
+
 		DefaultEdge dguImplementsDu = new DefaultEdge("implements");
 		cs.connect(dguImplementsDu, gu.getChildAt(0), dgu.getChildAt(0));
 		attributes.put(dguImplementsDu, implementStyle);
+
 		DefaultGraphCell uiGroup = new DefaultGraphCell("UIGroup");
 		uiGroup.add(cu);
 		uiGroup.add(gu);
 		uiGroup.add(dgu);
 		uiGroup.add(dguImplementsDu);
 		uiGroup.add(guExtendsCu);
+
 		// Aggregations
 		DefaultEdge jgAggregatesGm = new DefaultEdge("model");
 		cs.connect(jgAggregatesGm, jg.getChildAt(0), gm.getChildAt(0));
 		attributes.put(jgAggregatesGm, aggregateStyle);
+
 		DefaultEdge jcAggregatesCu = new DefaultEdge("ui");
 		cs.connect(jcAggregatesCu, jc.getChildAt(0), cu.getChildAt(0));
 		attributes.put(jcAggregatesCu, aggregateStyle);
+
 		// Insert Cells into model
-		Object[] cells = new Object[] { jgAggregatesGm, jcAggregatesCu,
-				modelGroup, jc, jg, jgExtendsJc, uiGroup };
+		Object[] cells = new Object[] {
+		                     jgAggregatesGm, jcAggregatesCu, modelGroup, jc, jg, jgExtendsJc,
+		                     uiGroup
+		                 };
 		model.insert(cells, attributes, cs, null, null);
 	}
 
@@ -573,12 +601,11 @@ public class JGraph
 		GraphConstants.setBounds(map, map.createRect(x, y, 90, 30));
 		GraphConstants.setBorder(map, BorderFactory.createRaisedBevelBorder());
 		GraphConstants.setBackground(map, c.darker().darker());
-		GraphConstants
-				.setGradientColor(map, c.brighter().brighter().brighter());
+		GraphConstants.setGradientColor(map, c.brighter().brighter().brighter());
 		GraphConstants.setForeground(map, Color.white);
-		GraphConstants.setFont(map, GraphConstants.DEFAULTFONT.deriveFont(
-				Font.BOLD, 12));
+		GraphConstants.setFont(map, GraphConstants.DEFAULTFONT.deriveFont(Font.BOLD, 12));
 		GraphConstants.setOpaque(map, true);
+
 		return map;
 	}
 
@@ -592,7 +619,7 @@ public class JGraph
 	/**
 	 * Returns an instance of <code>JGraph</code> which displays the the
 	 * specified data model.
-	 * 
+	 *
 	 * @param model
 	 *            the <code>GraphModel</code> to use as the data model
 	 */
@@ -603,7 +630,7 @@ public class JGraph
 	/**
 	 * Returns an instance of <code>JGraph</code> which displays the data
 	 * model using the specified view.
-	 * 
+	 *
 	 * @param cache
 	 *            the <code>GraphLayoutCache</code> to use as the view
 	 */
@@ -614,7 +641,7 @@ public class JGraph
 	/**
 	 * Returns an instance of <code>JGraph</code> which displays the specified
 	 * data model using the specified view.
-	 * 
+	 *
 	 * @param model
 	 *            the <code>GraphModel</code> to use as the data model
 	 * @param cache
@@ -627,7 +654,7 @@ public class JGraph
 	/**
 	 * Returns an instance of <code>JGraph</code> which displays the specified
 	 * data model and assigns the specified marquee handler
-	 * 
+	 *
 	 * @param model
 	 *            the <code>GraphModel</code> to use as the data model
 	 * @param mh
@@ -642,7 +669,7 @@ public class JGraph
 	 * Returns an instance of <code>JGraph</code> which displays the specified
 	 * data model using the specified view and assigns the specified marquee
 	 * handler
-	 * 
+	 *
 	 * @param model
 	 *            the <code>GraphModel</code> to use as the data model
 	 * @param layoutCache
@@ -651,21 +678,22 @@ public class JGraph
 	 *            the <code>BasicMarqueeHandler</code> to use as the marquee
 	 *            handler
 	 */
-	public JGraph(GraphModel model, GraphLayoutCache layoutCache,
-			BasicMarqueeHandler mh) {
+	public JGraph(GraphModel model, GraphLayoutCache layoutCache, BasicMarqueeHandler mh) {
 		setDoubleBuffered(true);
 		selectionModel = new DefaultGraphSelectionModel(this);
 		setLayout(null);
 		marquee = mh;
+
 		if (model == null) {
 			model = new DefaultGraphModel();
 			setModel(model);
 			addSampleData(model);
 		} else
 			setModel(model);
+
 		if (layoutCache == null)
-			layoutCache = new GraphLayoutCache(model,
-					new DefaultCellViewFactory());
+			layoutCache = new GraphLayoutCache(model, new DefaultCellViewFactory());
+
 		setGraphLayoutCache(layoutCache);
 		updateUI();
 	}
@@ -675,7 +703,7 @@ public class JGraph
 	//
 	/**
 	 * Returns the L&F object that renders this component.
-	 * 
+	 *
 	 * @return the GraphUI object that renders this component
 	 */
 	public GraphUI getUI() {
@@ -684,11 +712,11 @@ public class JGraph
 
 	/**
 	 * Sets the L&F object that renders this component.
-	 * 
+	 *
 	 * @param ui
 	 *            the GraphUI L&F object
 	 * @see javax.swing.UIDefaults#getUI(JComponent)
-	 * 
+	 *
 	 */
 	public void setUI(GraphUI ui) {
 		if ((GraphUI) this.ui != ui) {
@@ -701,9 +729,9 @@ public class JGraph
 	 * Replaces the current UI object with the latest version from the
 	 * <code>UIManager</code>. Subclassers can override this to support
 	 * different GraphUIs.
-	 * 
+	 *
 	 * @see JComponent#updateUI
-	 * 
+	 *
 	 */
 	public void updateUI() {
 		setUI(new org.jgraph.plaf.basic.BasicGraphUI());
@@ -712,10 +740,10 @@ public class JGraph
 
 	/**
 	 * Returns the name of the L&F class that renders this component.
-	 * 
+	 *
 	 * @return the string "GraphUI"
 	 * @see JComponent#getUIClassID
-	 * 
+	 *
 	 */
 	public String getUIClassID() {
 		return uiClassID;
@@ -737,8 +765,10 @@ public class JGraph
 	public Object[] getRoots(Rectangle clip) {
 		CellView[] views = graphLayoutCache.getRoots(clip);
 		Object[] cells = new Object[views.length];
+
 		for (int i = 0; i < views.length; i++)
 			cells[i] = views[i].getCell();
+
 		return cells;
 	}
 
@@ -772,25 +802,26 @@ public class JGraph
 	 * bounds on non-leafs to check for containment. If reverse is true this
 	 * will return the innermost view.
 	 */
-	public CellView getTopmostViewAt(double x, double y, boolean reverse,
-			boolean leafsOnly) {
+	public CellView getTopmostViewAt(double x, double y, boolean reverse, boolean leafsOnly) {
 		Rectangle2D r = new Rectangle2D.Double(x, y, 1, 1);
 		Object[] cells = getDescendants(getRoots());
-		for (int i = (reverse) ? cells.length - 1 : 0; i >= 0
-				&& i < cells.length; i += (reverse) ? -1 : +1) {
+
+		for (int i = (reverse) ? (cells.length - 1) : 0; (i >= 0) && (i < cells.length);
+		     i += ((reverse) ? (-1) : (+1))) {
 			CellView view = getGraphLayoutCache().getMapping(cells[i], false);
-			if (view != null
-					&& (!leafsOnly || view.isLeaf())
-					&& ((view.isLeaf() && view.intersects(this, r)) || (!view
-							.isLeaf() && view.getBounds().contains(x, y))))
+
+			if ((view != null) && (!leafsOnly || view.isLeaf())
+			    && ((view.isLeaf() && view.intersects(this, r))
+			       || (!view.isLeaf() && view.getBounds().contains(x, y))))
 				return view;
 		}
+
 		return null;
 	}
 
 	/**
 	 * Returns the topmost cell at the specified location.
-	 * 
+	 *
 	 * @param x
 	 *            an integer giving the number of pixels horizontally from the
 	 *            left edge of the display area, minus any left margin
@@ -812,8 +843,10 @@ public class JGraph
 	public Object getNextCellForLocation(Object current, double x, double y) {
 		CellView cur = graphLayoutCache.getMapping(current, false);
 		CellView cell = getNextViewAt(cur, x, y);
+
 		if (cell != null)
 			return cell.getCell();
+
 		return null;
 	}
 
@@ -822,8 +855,10 @@ public class JGraph
 	 */
 	public Rectangle2D getCellBounds(Object cell) {
 		CellView view = graphLayoutCache.getMapping(cell, false);
+
 		if (view != null)
 			return view.getBounds();
+
 		return null;
 	}
 
@@ -831,11 +866,13 @@ public class JGraph
 	 * Returns the bounding rectangle of the specified cells.
 	 */
 	public Rectangle2D getCellBounds(Object[] cells) {
-		if (cells != null && cells.length > 0) {
+		if ((cells != null) && (cells.length > 0)) {
 			Rectangle2D r = getCellBounds(cells[0]);
 			Rectangle2D ret = (r != null) ? (Rectangle2D) r.clone() : null;
+
 			for (int i = 1; i < cells.length; i++) {
 				r = getCellBounds(cells[i]);
+
 				if (r != null) {
 					if (ret == null)
 						ret = (r != null) ? (Rectangle2D) r.clone() : null;
@@ -843,8 +880,10 @@ public class JGraph
 						Rectangle2D.union(ret, r, ret);
 				}
 			}
+
 			return ret;
 		}
+
 		return null;
 	}
 
@@ -866,10 +905,9 @@ public class JGraph
 	 * Note: This returns the next <i>selectable </i> view. <br>
 	 * Note: Arguments are not expected to be scaled (they are scaled in here).
 	 */
-	public CellView getNextViewAt(CellView current, double x, double y,
-			boolean leafsOnly) {
-		CellView[] cells = AbstractCellView
-				.getDescendantViews(getGraphLayoutCache().getRoots());
+	public CellView getNextViewAt(CellView current, double x, double y, boolean leafsOnly) {
+		CellView[] cells = AbstractCellView.getDescendantViews(getGraphLayoutCache().getRoots());
+
 		return getNextViewAt(cells, current, x, y, leafsOnly);
 	}
 
@@ -877,8 +915,9 @@ public class JGraph
 	 * Note: Arguments are not expected to be scaled (they are scaled in here).
 	 */
 	public CellView getNextSelectableViewAt(CellView current, double x, double y) {
-		CellView[] selectables = getGraphLayoutCache().getMapping(
-				getSelectionModel().getSelectables(), false);
+		CellView[] selectables = getGraphLayoutCache()
+		                             .getMapping(getSelectionModel().getSelectables(), false);
+
 		return getNextViewAt(selectables, current, x, y);
 	}
 
@@ -887,8 +926,7 @@ public class JGraph
 	 * the specified array of views. The views must be in order, as returned,
 	 * for example, by GraphLayoutCache.order(Object[]).
 	 */
-	public CellView getNextViewAt(CellView[] cells, CellView c, double x,
-			double y) {
+	public CellView getNextViewAt(CellView[] cells, CellView c, double x, double y) {
 		return getNextViewAt(cells, c, x, y, false);
 	}
 
@@ -897,33 +935,36 @@ public class JGraph
 	 * the specified array of views. The views must be in order, as returned,
 	 * for example, by GraphLayoutCache.order(Object[]).
 	 */
-	public CellView getNextViewAt(CellView[] cells, CellView c, double x,
-			double y, boolean leafsOnly) {
+	public CellView getNextViewAt(CellView[] cells, CellView c, double x, double y,
+	                              boolean leafsOnly) {
 		if (cells != null) {
-			Rectangle2D r = fromScreen(new Rectangle2D.Double(x - tolerance, y
-					- tolerance, 2 * tolerance, 2 * tolerance));
+			Rectangle2D r = fromScreen(new Rectangle2D.Double(x - tolerance, y - tolerance,
+			                                                  2 * tolerance, 2 * tolerance));
+
 			// Iterate through cells and switch to active
 			// if current is traversed. Cache first cell.
 			CellView first = null;
 			boolean active = (c == null);
+
 			for (int i = 0; i < cells.length; i++) {
-				if (cells[i] != null && (!leafsOnly || cells[i].isLeaf())
-						&& cells[i].intersects(this, r)) {
+				if ((cells[i] != null) && (!leafsOnly || cells[i].isLeaf())
+				    && cells[i].intersects(this, r)) {
 					// TODO: This behaviour is specific to selection and
 					// should be parametrized (it only returns a group with
 					// selected children if no other portview is available)
-					if (active
-							&& !selectionModel.isChildrenSelected(cells[i]
-									.getCell())) {
+					if (active && !selectionModel.isChildrenSelected(cells[i].getCell())) {
 						return cells[i];
 					} else if (first == null)
 						first = cells[i];
+
 					active = active | (cells[i] == c);
 				}
 			}
+
 			if (first != null)
 				return first;
 		}
+
 		return null;
 	}
 
@@ -941,8 +982,10 @@ public class JGraph
 	 */
 	public Object getPortForLocation(double x, double y) {
 		PortView view = getPortViewAt(x, y, tolerance);
+
 		if (view != null)
 			return view.getCell();
+
 		return null;
 	}
 
@@ -961,32 +1004,37 @@ public class JGraph
 	public PortView getPortViewAt(double x, double y, int tolerance) {
 		double sx = x / scale;
 		double sy = y / scale;
-		Rectangle2D r = new Rectangle2D.Double(sx - tolerance, sy - tolerance,
-				2 * tolerance, 2 * tolerance);
+		Rectangle2D r = new Rectangle2D.Double(sx - tolerance, sy - tolerance, 2 * tolerance,
+		                                       2 * tolerance);
 		PortView[] ports = graphLayoutCache.getPorts();
+
 		if (ports != null) {
 			for (int i = ports.length - 1; i >= 0; i--)
-				if (ports[i] != null && ports[i].intersects(this, r))
+				if ((ports[i] != null) && ports[i].intersects(this, r))
 					return ports[i];
+
 			if (isJumpToDefaultPort()) {
 				CellView cellView = getNextViewAt(null, x, y, true);
 
 				// Finds a non-edge cell under the mousepointer
-				if (cellView != null && graphModel.isEdge(cellView.getCell())) {
+				if ((cellView != null) && graphModel.isEdge(cellView.getCell())) {
 					CellView nextView = getNextViewAt(cellView, x, y, true);
-					while (nextView != cellView
-							&& graphModel.isEdge(nextView.getCell())) {
+
+					while ((nextView != cellView) && graphModel.isEdge(nextView.getCell())) {
 						nextView = getNextViewAt(nextView, x, y, true);
 					}
+
 					cellView = nextView;
 				}
+
 				if (cellView != null) {
-					PortView defaultPort = getDefaultPortForCell(cellView
-							.getCell());
+					PortView defaultPort = getDefaultPortForCell(cellView.getCell());
+
 					return defaultPort;
 				}
 			}
 		}
+
 		return null;
 	}
 
@@ -995,26 +1043,28 @@ public class JGraph
 	 * implementation returns the first floating port (ie. the first port that
 	 * does not define an offset) or <b>the </b> port, if there is only one
 	 * port.
-	 * 
+	 *
 	 * @param cell
 	 *            the cell whose port is to be obtained
 	 * @return the port view of the specified cell
 	 */
 	public PortView getDefaultPortForCell(Object cell) {
-		if (cell != null && !getModel().isEdge(cell)) {
+		if ((cell != null) && !getModel().isEdge(cell)) {
 			int childCount = getModel().getChildCount(cell);
+
 			for (int i = 0; i < childCount; i++) {
 				Object childCell = getModel().getChild(cell, i);
-				CellView child = getGraphLayoutCache().getMapping(childCell,
-						false);
+				CellView child = getGraphLayoutCache().getMapping(childCell, false);
+
 				if (child instanceof PortView) {
-					Point2D offset = GraphConstants.getOffset(child
-							.getAllAttributes());
-					if (offset == null || childCount == 1)
+					Point2D offset = GraphConstants.getOffset(child.getAllAttributes());
+
+					if ((offset == null) || (childCount == 1))
 						return (PortView) child;
 				}
 			}
 		}
+
 		return null;
 	}
 
@@ -1025,6 +1075,7 @@ public class JGraph
 	public String convertValueToString(Object value) {
 		if (value instanceof CellView)
 			value = ((CellView) value).getCell();
+
 		return String.valueOf(value);
 	}
 
@@ -1033,57 +1084,60 @@ public class JGraph
 	//
 	/**
 	 * Returns the given point applied to the grid.
-	 * 
+	 *
 	 * @param p
 	 *            a point in screen coordinates.
 	 * @return the same point applied to the grid.
 	 */
 	public Point2D snap(Point2D p) {
-		if (gridEnabled && p != null) {
+		if (gridEnabled && (p != null)) {
 			double sgs = gridSize * getScale();
-			p.setLocation(Math.round(Math.round(p.getX() / sgs) * sgs), Math
-					.round(Math.round(p.getY() / sgs) * sgs));
+			p.setLocation(Math.round(Math.round(p.getX() / sgs) * sgs),
+			              Math.round(Math.round(p.getY() / sgs) * sgs));
 		}
+
 		return p;
 	}
 
 	/**
 	 * Returns the given rectangle applied to the grid.
-	 * 
+	 *
 	 * @param r
 	 *            a rectangle in screen coordinates.
 	 * @return the same rectangle applied to the grid.
 	 */
 	public Rectangle2D snap(Rectangle2D r) {
-		if (gridEnabled && r != null) {
+		if (gridEnabled && (r != null)) {
 			double sgs = gridSize * getScale();
-			r.setFrame(Math.round(Math.round(r.getX() / sgs) * sgs), Math
-					.round(Math.round(r.getY() / sgs) * sgs), 1 + Math
-					.round(Math.round(r.getWidth() / sgs) * sgs), 1 + Math
-					.round(Math.round(r.getHeight() / sgs) * sgs));
+			r.setFrame(Math.round(Math.round(r.getX() / sgs) * sgs),
+			           Math.round(Math.round(r.getY() / sgs) * sgs),
+			           1 + Math.round(Math.round(r.getWidth() / sgs) * sgs),
+			           1 + Math.round(Math.round(r.getHeight() / sgs) * sgs));
 		}
+
 		return r;
 	}
 
 	/**
 	 * Returns the given dimension applied to the grid.
-	 * 
+	 *
 	 * @param d
 	 *            a dimension in screen coordinates to snap to.
 	 * @return the same dimension applied to the grid.
 	 */
 	public Dimension2D snap(Dimension2D d) {
-		if (gridEnabled && d != null) {
+		if (gridEnabled && (d != null)) {
 			double sgs = gridSize * getScale();
 			d.setSize(1 + Math.round(Math.round(d.getWidth() / sgs) * sgs),
-					1 + Math.round(Math.round(d.getHeight() / sgs) * sgs));
+			          1 + Math.round(Math.round(d.getHeight() / sgs) * sgs));
 		}
+
 		return d;
 	}
 
 	/**
 	 * Upscale the given point in place, using the given instance.
-	 * 
+	 *
 	 * @param p
 	 *            the point to be upscaled
 	 * @return the upscaled point instance
@@ -1091,14 +1145,15 @@ public class JGraph
 	public Point2D toScreen(Point2D p) {
 		if (p == null)
 			return null;
-		p.setLocation(Math.round(p.getX() * scale), Math
-				.round(p.getY() * scale));
+
+		p.setLocation(Math.round(p.getX() * scale), Math.round(p.getY() * scale));
+
 		return p;
 	}
 
 	/**
 	 * Downscale the given point in place, using the given instance.
-	 * 
+	 *
 	 * @param p
 	 *            the point to be downscaled
 	 * @return the downscaled point instance
@@ -1106,14 +1161,15 @@ public class JGraph
 	public Point2D fromScreen(Point2D p) {
 		if (p == null)
 			return null;
-		p.setLocation(Math.round(p.getX() / scale), Math
-				.round(p.getY() / scale));
+
+		p.setLocation(Math.round(p.getX() / scale), Math.round(p.getY() / scale));
+
 		return p;
 	}
 
 	/**
 	 * Upscale the given rectangle in place, using the given instance.
-	 * 
+	 *
 	 * @param rect
 	 *            the rectangle to be upscaled
 	 * @return the upscaled rectangle instance
@@ -1121,14 +1177,16 @@ public class JGraph
 	public Rectangle2D toScreen(Rectangle2D rect) {
 		if (rect == null)
 			return null;
-		rect.setFrame(rect.getX() * scale, rect.getY() * scale, rect.getWidth()
-				* scale, rect.getHeight() * scale);
+
+		rect.setFrame(rect.getX() * scale, rect.getY() * scale, rect.getWidth() * scale,
+		              rect.getHeight() * scale);
+
 		return rect;
 	}
 
 	/**
 	 * Downscale the given rectangle in place, using the given instance.
-	 * 
+	 *
 	 * @param rect
 	 *            the rectangle to be downscaled
 	 * @return the down-scaled rectangle instance
@@ -1136,8 +1194,10 @@ public class JGraph
 	public Rectangle2D fromScreen(Rectangle2D rect) {
 		if (rect == null)
 			return null;
-		rect.setFrame(rect.getX() / scale, rect.getY() / scale, rect.getWidth()
-				/ scale, rect.getHeight() / scale);
+
+		rect.setFrame(rect.getX() / scale, rect.getY() / scale, rect.getWidth() / scale,
+		              rect.getHeight() / scale);
+
 		return rect;
 	}
 
@@ -1145,29 +1205,31 @@ public class JGraph
 	 * Computes and updates the size for <code>view</code>.
 	 */
 	public void updateAutoSize(CellView view) {
-		if (view != null && !isEditing()) {
-			Rectangle2D bounds = (view.getAttributes() != null) ? GraphConstants
-					.getBounds(view.getAttributes())
-					: null;
+		if ((view != null) && !isEditing()) {
+			Rectangle2D bounds = (view.getAttributes() != null)
+			                     ? GraphConstants.getBounds(view.getAttributes()) : null;
 			AttributeMap attrs = getModel().getAttributes(view.getCell());
+
 			if (bounds == null)
 				bounds = GraphConstants.getBounds(attrs);
+
 			if (bounds != null) {
-				boolean autosize = GraphConstants.isAutoSize(view
-						.getAllAttributes());
-				boolean resize = GraphConstants.isResize(view
-						.getAllAttributes());
+				boolean autosize = GraphConstants.isAutoSize(view.getAllAttributes());
+				boolean resize = GraphConstants.isResize(view.getAllAttributes());
+
 				if (autosize || resize) {
 					Dimension2D d = getUI().getPreferredSize(this, view);
-					bounds.setFrame(bounds.getX(), bounds.getY(), d.getWidth(),
-							d.getHeight());
+					bounds.setFrame(bounds.getX(), bounds.getY(), d.getWidth(), d.getHeight());
 					// Remove resize attribute
 					snap(bounds);
+
 					if (resize) {
 						if (view.getAttributes() != null)
 							view.getAttributes().remove(GraphConstants.RESIZE);
+
 						attrs.remove(GraphConstants.RESIZE);
 					}
+
 					view.refresh(getModel(), getGraphLayoutCache(), false);
 				}
 			}
@@ -1182,11 +1244,13 @@ public class JGraph
 	public AttributeMap getAttributes(Object cell) {
 		AttributeMap attrs;
 		CellView cellView = getGraphLayoutCache().getMapping(cell, false);
+
 		if (cellView != null) {
 			attrs = cellView.getAllAttributes();
 		} else {
 			attrs = getModel().getAttributes(cell);
 		}
+
 		return attrs;
 	}
 
@@ -1237,6 +1301,11 @@ public class JGraph
 
 	/*
 	 * Returns true if the graph allows movement of cells.
+	 */
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
 	 */
 	public boolean isMoveable() {
 		return moveable;
@@ -1385,9 +1454,9 @@ public class JGraph
 
 	/**
 	 * Returns true if the grid is active.
-	 * 
+	 *
 	 * @see #snap(Point2D)
-	 * 
+	 *
 	 */
 	public boolean isGridEnabled() {
 		return gridEnabled;
@@ -1395,9 +1464,9 @@ public class JGraph
 
 	/**
 	 * If set to true, the grid will be active.
-	 * 
+	 *
 	 * @see #snap(Point2D)
-	 * 
+	 *
 	 */
 	public void setGridEnabled(boolean flag) {
 		gridEnabled = flag;
@@ -1564,7 +1633,7 @@ public class JGraph
 	//
 	/**
 	 * Returns the current scale.
-	 * 
+	 *
 	 * @return the current scale as a double
 	 */
 	public double getScale() {
@@ -1575,7 +1644,7 @@ public class JGraph
 	 * Sets the current scale.
 	 * <p>
 	 * Fires a property change for the SCALE_PROPERTY.
-	 * 
+	 *
 	 * @param newValue
 	 *            the new scale
 	 */
@@ -1589,7 +1658,7 @@ public class JGraph
 
 	/**
 	 * Returns the size of the grid in pixels.
-	 * 
+	 *
 	 * @return the size of the grid as an int
 	 */
 	public double getGridSize() {
@@ -1607,7 +1676,7 @@ public class JGraph
 	 * Sets the size of the grid.
 	 * <p>
 	 * Fires a property change for the GRID_SIZE_PROPERTY.
-	 * 
+	 *
 	 * @param newSize
 	 *            the new size of the grid in pixels
 	 */
@@ -1619,15 +1688,14 @@ public class JGraph
 
 	/**
 	 * Sets the current grid view mode.
-	 * 
+	 *
 	 * @param mode
 	 *            The current grid view mode. Valid values are <CODE>
 	 *            DOT_GRID_MODE</CODE>,<CODE>CROSS_GRID_MODE</CODE>, and
 	 *            <CODE>LINE_GRID_MODE</CODE>.
 	 */
 	public void setGridMode(int mode) {
-		if (mode == DOT_GRID_MODE || mode == CROSS_GRID_MODE
-				|| mode == LINE_GRID_MODE) {
+		if ((mode == DOT_GRID_MODE) || (mode == CROSS_GRID_MODE) || (mode == LINE_GRID_MODE)) {
 			gridMode = mode;
 			repaint();
 		}
@@ -1635,7 +1703,7 @@ public class JGraph
 
 	/**
 	 * Returns true if the grid will be visible.
-	 * 
+	 *
 	 * @return true if the grid is visible
 	 */
 	public boolean isGridVisible() {
@@ -1655,7 +1723,7 @@ public class JGraph
 
 	/**
 	 * Returns true if the ports will be visible.
-	 * 
+	 *
 	 * @return true if the ports are visible
 	 */
 	public boolean isPortsVisible() {
@@ -1675,7 +1743,7 @@ public class JGraph
 
 	/**
 	 * Returns true if the ports will be scaled.
-	 * 
+	 *
 	 * @return true if the ports are visible
 	 */
 	public boolean isPortsScaled() {
@@ -1695,7 +1763,7 @@ public class JGraph
 
 	/**
 	 * Returns true if the graph will be anti aliased.
-	 * 
+	 *
 	 * @return true if the graph is anti aliased
 	 */
 	public boolean isAntiAliased() {
@@ -1706,7 +1774,7 @@ public class JGraph
 	 * Sets antialiasing on or off based on the boolean value.
 	 * <p>
 	 * Fires a property change for the ANTIALIASED_PROPERTY.
-	 * 
+	 *
 	 * @param newValue
 	 *            whether to turn antialiasing on or off
 	 */
@@ -1718,7 +1786,7 @@ public class JGraph
 
 	/**
 	 * Returns true if the graph is editable (if it allows cells to be edited).
-	 * 
+	 *
 	 * @return true if the graph is editable
 	 */
 	public boolean isEditable() {
@@ -1732,7 +1800,7 @@ public class JGraph
 	 * Note: Editable determines whether the graph allows editing. This is not
 	 * to be confused with enabled, which allows the graph to handle mouse
 	 * events (including editing).
-	 * 
+	 *
 	 * @param flag
 	 *            a boolean value, true if the graph is editable
 	 */
@@ -1744,7 +1812,7 @@ public class JGraph
 
 	/**
 	 * Returns true if the cell selection is enabled
-	 * 
+	 *
 	 * @return true if the cell selection is enabled
 	 */
 	public boolean isSelectionEnabled() {
@@ -1754,7 +1822,7 @@ public class JGraph
 	/**
 	 * Determines whether cell selection is enabled. Fires a property change
 	 * event if the new setting is different from the existing setting.
-	 * 
+	 *
 	 * @param flag
 	 *            a boolean value, true if cell selection is enabled
 	 */
@@ -1766,7 +1834,7 @@ public class JGraph
 
 	/**
 	 * Returns true if graph allows invalid null ports during previews
-	 * 
+	 *
 	 * @return true if the graph allows invalid null ports during previews
 	 */
 	public boolean isPreviewInvalidNullPorts() {
@@ -1775,7 +1843,7 @@ public class JGraph
 
 	/**
 	 * Determines whether the graph allows invalid null ports during previews
-	 * 
+	 *
 	 * @param flag
 	 *            a boolean value, true if the graph allows invalid null ports
 	 *            during previews
@@ -1786,7 +1854,7 @@ public class JGraph
 
 	/**
 	 * Returns the <code>GraphModel</code> that is providing the data.
-	 * 
+	 *
 	 * @return the model that is providing the data
 	 */
 	public GraphModel getModel() {
@@ -1799,7 +1867,7 @@ public class JGraph
 	 * GraphLayoutCache points to a different model.
 	 * <p>
 	 * Fires a property change for the GRAPH_MODEL_PROPERTY.
-	 * 
+	 *
 	 * @param newModel
 	 *            the <code>GraphModel</code> that is to provide the data
 	 */
@@ -1807,10 +1875,11 @@ public class JGraph
 		GraphModel oldModel = graphModel;
 		graphModel = newModel;
 		firePropertyChange(GRAPH_MODEL_PROPERTY, oldModel, graphModel);
+
 		// FIX: Use Listener
-		if (graphLayoutCache != null
-				&& graphLayoutCache.getModel() != graphModel)
+		if ((graphLayoutCache != null) && (graphLayoutCache.getModel() != graphModel))
 			graphLayoutCache.setModel(graphModel);
+
 		clearSelection();
 		invalidate();
 	}
@@ -1818,7 +1887,7 @@ public class JGraph
 	/**
 	 * Returns the <code>GraphLayoutCache</code> that is providing the
 	 * view-data.
-	 * 
+	 *
 	 * @return the view that is providing the view-data
 	 */
 	public GraphLayoutCache getGraphLayoutCache() {
@@ -1832,7 +1901,7 @@ public class JGraph
 	 * cache.
 	 * <p>
 	 * Fires a property change for the GRAPH_LAYOUT_CACHE_PROPERTY.
-	 * 
+	 *
 	 * @param newLayoutCache
 	 *            the <code>GraphLayoutCache</code> that is to provide the
 	 *            view-data
@@ -1840,11 +1909,11 @@ public class JGraph
 	public void setGraphLayoutCache(GraphLayoutCache newLayoutCache) {
 		GraphLayoutCache oldLayoutCache = graphLayoutCache;
 		graphLayoutCache = newLayoutCache;
-		firePropertyChange(GRAPH_LAYOUT_CACHE_PROPERTY, oldLayoutCache,
-				graphLayoutCache);
-		if (graphLayoutCache != null
-				&& graphLayoutCache.getModel() != getModel())
+		firePropertyChange(GRAPH_LAYOUT_CACHE_PROPERTY, oldLayoutCache, graphLayoutCache);
+
+		if ((graphLayoutCache != null) && (graphLayoutCache.getModel() != getModel()))
 			setModel(graphLayoutCache.getModel());
+
 		invalidate();
 	}
 
@@ -1859,7 +1928,7 @@ public class JGraph
 	/**
 	 * Sets the <code>MarqueeHandler</code> that will handle marquee
 	 * selection.
-	 * 
+	 *
 	 * @param newMarquee
 	 *            the <code>BasicMarqueeHandler</code> that is to provide
 	 *            marquee handling
@@ -1878,7 +1947,7 @@ public class JGraph
 	 * automatically saved when editing is interrupted.
 	 * <p>
 	 * Fires a property change for the INVOKES_STOP_CELL_EDITING_PROPERTY.
-	 * 
+	 *
 	 * @param newValue
 	 *            true means that <code>stopCellEditing</code> is invoked when
 	 *            editing is interruped, and data is saved; false means that
@@ -1888,17 +1957,16 @@ public class JGraph
 	public void setInvokesStopCellEditing(boolean newValue) {
 		boolean oldValue = invokesStopCellEditing;
 		invokesStopCellEditing = newValue;
-		firePropertyChange(INVOKES_STOP_CELL_EDITING_PROPERTY, oldValue,
-				newValue);
+		firePropertyChange(INVOKES_STOP_CELL_EDITING_PROPERTY, oldValue, newValue);
 	}
 
 	/**
 	 * Returns the indicator that tells what happens when editing is
 	 * interrupted.
-	 * 
+	 *
 	 * @return the indicator that tells what happens when editing is interrupted
 	 * @see #setInvokesStopCellEditing
-	 * 
+	 *
 	 */
 	public boolean getInvokesStopCellEditing() {
 		return invokesStopCellEditing;
@@ -1908,19 +1976,20 @@ public class JGraph
 	 * Returns <code>true</code> if the graph and the cell are editable. This
 	 * is invoked from the UI before editing begins to ensure that the given
 	 * cell can be edited.
-	 * 
+	 *
 	 * @return true if the specified cell is editable
 	 * @see #isEditable
-	 * 
+	 *
 	 */
 	public boolean isCellEditable(Object cell) {
 		if (cell != null) {
 			CellView view = graphLayoutCache.getMapping(cell, false);
+
 			if (view != null) {
-				return isEditable()
-						&& GraphConstants.isEditable(view.getAllAttributes());
+				return isEditable() && GraphConstants.isEditable(view.getAllAttributes());
 			}
 		}
+
 		return false;
 	}
 
@@ -1935,7 +2004,7 @@ public class JGraph
 	 * <code>ToolTipManager</code>. This can be done by invoking
 	 * <code>ToolTipManager.sharedInstance().registerComponent(graph)</code>.
 	 * This is not done automatically!
-	 * 
+	 *
 	 * @param e
 	 *            the <code>MouseEvent</code> that initiated the
 	 *            <code>ToolTip</code> display
@@ -1946,23 +2015,25 @@ public class JGraph
 		if (e != null) {
 			Object cell = getFirstCellForLocation(e.getX(), e.getY());
 			CellView view = getGraphLayoutCache().getMapping(cell, false);
+
 			if (view != null) {
-				Component c = view.getRendererComponent(this, false, false,
-						false);
+				Component c = view.getRendererComponent(this, false, false, false);
+
 				if (c instanceof JComponent) {
 					Rectangle2D rect = getCellBounds(cell);
 					Point2D where = fromScreen(e.getPoint());
 					// Pass the event to the renderer in graph coordinates;
 					// the renderer is ignorant of screen scaling
-					e = new MouseEvent(c, e.getID(), e.getWhen(), e
-							.getModifiers(),
-							(int) (where.getX() - rect.getX()), (int) (where
-									.getY() - rect.getY()), e.getClickCount(),
-							e.isPopupTrigger());
+					e = new MouseEvent(c, e.getID(), e.getWhen(), e.getModifiers(),
+					                   (int) (where.getX() - rect.getX()),
+					                   (int) (where.getY() - rect.getY()), e.getClickCount(),
+					                   e.isPopupTrigger());
+
 					return ((JComponent) c).getToolTipText(e);
 				}
 			}
 		}
+
 		return super.getToolTipText(e);
 	}
 
@@ -1974,27 +2045,30 @@ public class JGraph
 	 * Sets the graph's selection model. When a <code>null</code> value is
 	 * specified an emtpy <code>selectionModel</code> is used, which does not
 	 * allow selections.
-	 * 
+	 *
 	 * @param selectionModel
 	 *            the <code>GraphSelectionModel</code> to use, or
 	 *            <code>null</code> to disable selections
 	 * @see GraphSelectionModel
-	 * 
+	 *
 	 */
 	public void setSelectionModel(GraphSelectionModel selectionModel) {
 		if (selectionModel == null)
 			selectionModel = EmptySelectionModel.sharedInstance();
+
 		GraphSelectionModel oldValue = this.selectionModel;
+
 		// Remove Redirector From Old Selection Model
-		if (this.selectionModel != null && selectionRedirector != null)
-			this.selectionModel
-					.removeGraphSelectionListener(selectionRedirector);
+		if ((this.selectionModel != null) && (selectionRedirector != null))
+			this.selectionModel.removeGraphSelectionListener(selectionRedirector);
+
 		this.selectionModel = selectionModel;
+
 		// Add Redirector To New Selection Model
 		if (selectionRedirector != null)
 			this.selectionModel.addGraphSelectionListener(selectionRedirector);
-		firePropertyChange(SELECTION_MODEL_PROPERTY, oldValue,
-				this.selectionModel);
+
+		firePropertyChange(SELECTION_MODEL_PROPERTY, oldValue, this.selectionModel);
 	}
 
 	/**
@@ -2002,10 +2076,10 @@ public class JGraph
 	 * <code>null</code> value. If you don't want to allow anything to be
 	 * selected set the selection model to <code>null</code>, which forces an
 	 * empty selection model to be used.
-	 * 
+	 *
 	 * @return the current selection model
 	 * @see #setSelectionModel
-	 * 
+	 *
 	 */
 	public GraphSelectionModel getSelectionModel() {
 		return selectionModel;
@@ -2020,7 +2094,7 @@ public class JGraph
 
 	/**
 	 * Returns true if the selection is currently empty.
-	 * 
+	 *
 	 * @return true if the selection is currently empty
 	 */
 	public boolean isSelectionEmpty() {
@@ -2029,7 +2103,7 @@ public class JGraph
 
 	/**
 	 * Adds a listener for <code>GraphSelection</code> events.
-	 * 
+	 *
 	 * @param tsl
 	 *            the <code>GraphSelectionListener</code> that will be
 	 *            notified when a cell is selected or deselected (a "negative
@@ -2037,8 +2111,9 @@ public class JGraph
 	 */
 	public void addGraphSelectionListener(GraphSelectionListener tsl) {
 		listenerList.add(GraphSelectionListener.class, tsl);
-		if (listenerList.getListenerCount(GraphSelectionListener.class) != 0
-				&& selectionRedirector == null) {
+
+		if ((listenerList.getListenerCount(GraphSelectionListener.class) != 0)
+		    && (selectionRedirector == null)) {
 			selectionRedirector = new GraphSelectionRedirector();
 			selectionModel.addGraphSelectionListener(selectionRedirector);
 		}
@@ -2046,14 +2121,15 @@ public class JGraph
 
 	/**
 	 * Removes a <code>GraphSelection</code> listener.
-	 * 
+	 *
 	 * @param tsl
 	 *            the <code>GraphSelectionListener</code> to remove
 	 */
 	public void removeGraphSelectionListener(GraphSelectionListener tsl) {
 		listenerList.remove(GraphSelectionListener.class, tsl);
-		if (listenerList.getListenerCount(GraphSelectionListener.class) == 0
-				&& selectionRedirector != null) {
+
+		if ((listenerList.getListenerCount(GraphSelectionListener.class) == 0)
+		    && (selectionRedirector != null)) {
 			selectionModel.removeGraphSelectionListener(selectionRedirector);
 			selectionRedirector = null;
 		}
@@ -2063,17 +2139,18 @@ public class JGraph
 	 * Notifies all listeners that have registered interest for notification on
 	 * this event type. The event instance is lazily created using the
 	 * parameters passed into the fire method.
-	 * 
+	 *
 	 * @param e
 	 *            the <code>GraphSelectionEvent</code> generated by the
 	 *            <code>GraphSelectionModel</code> when a cell is selected or
 	 *            deselected
 	 * @see javax.swing.event.EventListenerList
-	 * 
+	 *
 	 */
 	protected void fireValueChanged(GraphSelectionEvent e) {
 		// Guaranteed to return a non-null array
 		Object[] listeners = listenerList.getListenerList();
+
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
 		for (int i = listeners.length - 2; i >= 0; i -= 2) {
@@ -2085,7 +2162,7 @@ public class JGraph
 
 	/**
 	 * Selects the specified cell.
-	 * 
+	 *
 	 * @param cell
 	 *            the <code>Object</code> specifying the cell to select
 	 */
@@ -2095,7 +2172,7 @@ public class JGraph
 
 	/**
 	 * Selects the specified cells.
-	 * 
+	 *
 	 * @param cells
 	 *            an array of objects that specifies the cells to select
 	 */
@@ -2106,7 +2183,7 @@ public class JGraph
 	/**
 	 * Adds the cell identified by the specified <code>Object</code> to the
 	 * current selection.
-	 * 
+	 *
 	 * @param cell
 	 *            the cell to be added to the selection
 	 */
@@ -2116,7 +2193,7 @@ public class JGraph
 
 	/**
 	 * Adds each cell in the array of cells to the current selection.
-	 * 
+	 *
 	 * @param cells
 	 *            an array of objects that specifies the cells to add
 	 */
@@ -2127,7 +2204,7 @@ public class JGraph
 	/**
 	 * Removes the cell identified by the specified Object from the current
 	 * selection.
-	 * 
+	 *
 	 * @param cell
 	 *            the cell to be removed from the selection
 	 */
@@ -2137,7 +2214,7 @@ public class JGraph
 
 	/**
 	 * Returns the first selected cell.
-	 * 
+	 *
 	 * @return the <code>Object</code> for the first selected cell, or
 	 *         <code>null</code> if nothing is currently selected
 	 */
@@ -2147,7 +2224,7 @@ public class JGraph
 
 	/**
 	 * Returns all selected cells.
-	 * 
+	 *
 	 * @return an array of objects representing the selected cells, or
 	 *         <code>null</code> if nothing is currently selected
 	 */
@@ -2161,34 +2238,40 @@ public class JGraph
 	public Object[] getSelectionCells(Object[] cells) {
 		if (cells != null) {
 			List selected = new ArrayList(cells.length);
+
 			for (int i = 0; i < cells.length; i++) {
 				if (isCellSelected(cells[i]))
 					selected.add(cells[i]);
 			}
+
 			return selected.toArray();
 		}
+
 		return null;
 	}
 
 	/**
 	 * Returns the selection cell at the specified location.
-	 * 
+	 *
 	 * @return Returns the selection cell for <code>pt</code>.
 	 */
 	public Object getSelectionCellAt(Point2D pt) {
 		pt = fromScreen((Point2D) pt.clone());
+
 		Object[] cells = getSelectionCells();
+
 		if (cells != null) {
 			for (int i = 0; i < cells.length; i++)
 				if (getCellBounds(cells[i]).contains(pt.getX(), pt.getY()))
 					return cells[i];
 		}
+
 		return null;
 	}
 
 	/**
 	 * Returns the number of cells selected.
-	 * 
+	 *
 	 * @return the number of cells selected
 	 */
 	public int getSelectionCount() {
@@ -2197,7 +2280,7 @@ public class JGraph
 
 	/**
 	 * Returns true if the cell is currently selected.
-	 * 
+	 *
 	 * @param cell
 	 *            an object identifying a cell
 	 * @return true if the cell is selected
@@ -2209,43 +2292,45 @@ public class JGraph
 	/**
 	 * Scrolls to the specified cell. Only works when this <code>JGraph</code>
 	 * is contained in a <code>JScrollPane</code>.
-	 * 
+	 *
 	 * @param cell
 	 *            the object identifying the cell to bring into view
 	 */
 	public void scrollCellToVisible(Object cell) {
 		Rectangle2D bounds = getCellBounds(cell);
+
 		if (bounds != null) {
 			Rectangle2D b2 = toScreen((Rectangle2D) bounds.clone());
 			scrollRectToVisible(new Rectangle((int) b2.getX(), (int) b2.getY(),
-					(int) b2.getWidth(), (int) b2.getHeight()));
+			                                  (int) b2.getWidth(), (int) b2.getHeight()));
 		}
 	}
 
 	/**
 	 * Makes sure the specified point is visible.
-	 * 
+	 *
 	 * @param p
 	 *            the point that should be visible
 	 */
 	public void scrollPointToVisible(Point2D p) {
 		if (p != null)
-			scrollRectToVisible(new Rectangle((int) p.getX(), (int) p.getY(),
-					1, 1));
+			scrollRectToVisible(new Rectangle((int) p.getX(), (int) p.getY(), 1, 1));
 	}
 
 	/**
 	 * Returns true if the graph is being edited. The item that is being edited
 	 * can be obtained using <code>getEditingCell</code>.
-	 * 
+	 *
 	 * @return true if the user is currently editing a cell
 	 * @see #getSelectionCell
-	 * 
+	 *
 	 */
 	public boolean isEditing() {
 		GraphUI graph = getUI();
+
 		if (graph != null)
 			return graph.isEditing(this);
+
 		return false;
 	}
 
@@ -2257,14 +2342,16 @@ public class JGraph
 	 * <b>Note: </b> <br>
 	 * To make edit-saves automatic whenever the user changes their position in
 	 * the graph, use {@link #setInvokesStopCellEditing}. </blockquote>
-	 * 
+	 *
 	 * @return true if editing was in progress and is now stopped, false if
 	 *         editing was not in progress
 	 */
 	public boolean stopEditing() {
 		GraphUI graph = getUI();
+
 		if (graph != null)
 			return graph.stopEditing(this);
+
 		return false;
 	}
 
@@ -2274,6 +2361,7 @@ public class JGraph
 	 */
 	public void cancelEditing() {
 		GraphUI graph = getUI();
+
 		if (graph != null)
 			graph.cancelEditing(this);
 	}
@@ -2285,19 +2373,22 @@ public class JGraph
 	 */
 	public void startEditingAtCell(Object cell) {
 		GraphUI graph = getUI();
+
 		if (graph != null)
 			graph.startEditingAtCell(this, cell);
 	}
 
 	/**
 	 * Returns the cell that is currently being edited.
-	 * 
+	 *
 	 * @return the cell being edited
 	 */
 	public Object getEditingCell() {
 		GraphUI graph = getUI();
+
 		if (graph != null)
 			return graph.getEditingCell(this);
+
 		return null;
 	}
 
@@ -2320,33 +2411,37 @@ public class JGraph
 	 * the bg color. Therefore, one should only use a null background if the
 	 * fileformat support transparency, eg. GIF and PNG. For JPG, you can use
 	 * <code>Color.WHITE</code> for example.
-	 * 
+	 *
 	 * @return Returns an image of the graph.
 	 */
 	public BufferedImage getImage(Color bg, int inset) {
 		Object[] cells = getRoots();
 		Rectangle2D bounds = getCellBounds(cells);
+
 		if (bounds != null) {
 			toScreen(bounds);
-			BufferedImage img = new BufferedImage((int) bounds.getWidth() + 2
-					* inset, (int) bounds.getHeight() + 2 * inset,
-					(bg != null) ? BufferedImage.TYPE_INT_RGB
-							: BufferedImage.TYPE_INT_ARGB);
+
+			BufferedImage img = new BufferedImage((int) bounds.getWidth() + (2 * inset),
+			                                      (int) bounds.getHeight() + (2 * inset),
+			                                      (bg != null) ? BufferedImage.TYPE_INT_RGB
+			                                                   : BufferedImage.TYPE_INT_ARGB);
 			Graphics2D graphics = img.createGraphics();
+
 			if (bg != null) {
 				graphics.setColor(bg);
 				graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
 			} else {
-				graphics.setComposite(AlphaComposite.getInstance(
-						AlphaComposite.CLEAR, 0.0f));
+				graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
 				graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
 				graphics.setComposite(AlphaComposite.SrcOver);
 			}
-			graphics.translate((int) (-bounds.getX() + inset), (int) (-bounds
-					.getY() + inset));
+
+			graphics.translate((int) (-bounds.getX() + inset), (int) (-bounds.getY() + inset));
 			print(graphics);
+
 			return img;
 		}
+
 		return null;
 	}
 
@@ -2356,33 +2451,39 @@ public class JGraph
 	private void writeObject(ObjectOutputStream s) throws IOException {
 		Vector values = new Vector();
 		s.defaultWriteObject();
+
 		// Save the cellEditor, if its Serializable.
 		if (graphModel instanceof Serializable) {
 			values.addElement("graphModel");
 			values.addElement(graphModel);
 		}
+
 		// Save the graphModel, if its Serializable.
 		if (graphLayoutCache instanceof Serializable) {
 			values.addElement("graphLayoutCache");
 			values.addElement(graphLayoutCache);
 		}
+
 		// Save the selectionModel, if its Serializable.
 		if (selectionModel instanceof Serializable) {
 			values.addElement("selectionModel");
 			values.addElement(selectionModel);
 		}
+
 		// Save the marquee handler, if its Serializable.
 		if (marquee instanceof Serializable) {
 			values.addElement("marquee");
 			values.addElement(marquee);
 		}
+
 		s.writeObject(values);
+
 		if (getUIClassID().equals(uiClassID)) {
 			/*
 			 * byte count = JComponent.getWriteObjCounter(this);
 			 * JComponent.setWriteObjCounter(this, --count);
 			 */
-			if (/* count == 0 && */
+			if ( /* count == 0 && */
 			ui != null) {
 				ui.installUI(this);
 			}
@@ -2392,34 +2493,34 @@ public class JGraph
 	/**
 	 * Serialization support.
 	 */
-	private void readObject(ObjectInputStream s) throws IOException,
-			ClassNotFoundException {
+	private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
 		s.defaultReadObject();
+
 		Vector values = (Vector) s.readObject();
 		int indexCounter = 0;
 		int maxCounter = values.size();
-		if (indexCounter < maxCounter
-				&& values.elementAt(indexCounter).equals("graphModel")) {
+
+		if ((indexCounter < maxCounter) && values.elementAt(indexCounter).equals("graphModel")) {
 			graphModel = (GraphModel) values.elementAt(++indexCounter);
 			indexCounter++;
 		}
-		if (indexCounter < maxCounter
-				&& values.elementAt(indexCounter).equals("graphLayoutCache")) {
-			graphLayoutCache = (GraphLayoutCache) values
-					.elementAt(++indexCounter);
+
+		if ((indexCounter < maxCounter)
+		    && values.elementAt(indexCounter).equals("graphLayoutCache")) {
+			graphLayoutCache = (GraphLayoutCache) values.elementAt(++indexCounter);
 			indexCounter++;
 		}
-		if (indexCounter < maxCounter
-				&& values.elementAt(indexCounter).equals("selectionModel")) {
-			selectionModel = (GraphSelectionModel) values
-					.elementAt(++indexCounter);
+
+		if ((indexCounter < maxCounter) && values.elementAt(indexCounter).equals("selectionModel")) {
+			selectionModel = (GraphSelectionModel) values.elementAt(++indexCounter);
 			indexCounter++;
 		}
-		if (indexCounter < maxCounter
-				&& values.elementAt(indexCounter).equals("marquee")) {
+
+		if ((indexCounter < maxCounter) && values.elementAt(indexCounter).equals("marquee")) {
 			marquee = (BasicMarqueeHandler) values.elementAt(++indexCounter);
 			indexCounter++;
 		}
+
 		// Reinstall the redirector.
 		if (listenerList.getListenerCount(GraphSelectionListener.class) != 0) {
 			selectionRedirector = new GraphSelectionRedirector();
@@ -2438,7 +2539,6 @@ public class JGraph
 	 * for long term persistence.
 	 */
 	public static class EmptySelectionModel extends DefaultGraphSelectionModel {
-
 		/** Unique shared instance. */
 		protected static final EmptySelectionModel sharedInstance = new EmptySelectionModel();
 
@@ -2479,13 +2579,11 @@ public class JGraph
 	 * the same version of Swing. A future release of Swing will provide support
 	 * for long term persistence.
 	 */
-	protected class GraphSelectionRedirector implements Serializable,
-			GraphSelectionListener {
-
+	protected class GraphSelectionRedirector implements Serializable, GraphSelectionListener {
 		/**
 		 * Invoked by the <code>GraphSelectionModel</code> when the selection
 		 * changes.
-		 * 
+		 *
 		 * @param e
 		 *            the <code>GraphSelectionEvent</code> generated by the
 		 *            <code>GraphSelectionModel</code>
@@ -2503,7 +2601,7 @@ public class JGraph
 	/**
 	 * Returns the preferred display size of a <code>JGraph</code>. The
 	 * height is determined from <code>getPreferredWidth</code>.
-	 * 
+	 *
 	 * @return the graph's preferred size
 	 */
 	public Dimension getPreferredScrollableViewportSize() {
@@ -2512,7 +2610,7 @@ public class JGraph
 
 	/**
 	 * Returns the amount to increment when scrolling. The amount is 4.
-	 * 
+	 *
 	 * @param visibleRect
 	 *            the view area visible within the viewport
 	 * @param orientation
@@ -2523,20 +2621,20 @@ public class JGraph
 	 *            down/right
 	 * @return the "unit" increment for scrolling in the specified direction
 	 * @see javax.swing.JScrollBar#setUnitIncrement(int)
-	 * 
+	 *
 	 */
-	public int getScrollableUnitIncrement(Rectangle visibleRect,
-			int orientation, int direction) {
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
 		if (orientation == SwingConstants.VERTICAL) {
 			return 2;
 		}
+
 		return 4;
 	}
 
 	/**
 	 * Returns the amount for a block increment, which is the height or width of
 	 * <code>visibleRect</code>, based on <code>orientation</code>.
-	 * 
+	 *
 	 * @param visibleRect
 	 *            the view area visible within the viewport
 	 * @param orientation
@@ -2547,12 +2645,10 @@ public class JGraph
 	 *            down/right.
 	 * @return the "block" increment for scrolling in the specified direction
 	 * @see javax.swing.JScrollBar#setBlockIncrement(int)
-	 * 
+	 *
 	 */
-	public int getScrollableBlockIncrement(Rectangle visibleRect,
-			int orientation, int direction) {
-		return (orientation == SwingConstants.VERTICAL) ? visibleRect.height
-				: visibleRect.width;
+	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+		return (orientation == SwingConstants.VERTICAL) ? visibleRect.height : visibleRect.width;
 	}
 
 	/**
@@ -2560,15 +2656,16 @@ public class JGraph
 	 * determine the width of the graph, unless the preferred width of the graph
 	 * is smaller than the viewports width. In other words: ensure that the
 	 * graph is never smaller than its viewport.
-	 * 
+	 *
 	 * @return false
 	 * @see Scrollable#getScrollableTracksViewportWidth
-	 * 
+	 *
 	 */
 	public boolean getScrollableTracksViewportWidth() {
 		if (getParent() instanceof JViewport) {
 			return (((JViewport) getParent()).getWidth() > getPreferredSize().width);
 		}
+
 		return false;
 	}
 
@@ -2577,15 +2674,16 @@ public class JGraph
 	 * determine the height of the graph, unless the preferred height of the
 	 * graph is smaller than the viewports height. In other words: ensure that
 	 * the graph is never smaller than its viewport.
-	 * 
+	 *
 	 * @return false
 	 * @see Scrollable#getScrollableTracksViewportHeight
-	 * 
+	 *
 	 */
 	public boolean getScrollableTracksViewportHeight() {
 		if (getParent() instanceof JViewport) {
 			return (((JViewport) getParent()).getHeight() > getPreferredSize().height);
 		}
+
 		return false;
 	}
 
@@ -2595,17 +2693,22 @@ public class JGraph
 	 * content and format of the returned string may vary between
 	 * implementations. The returned string may be empty but may not be
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @return a string representation of this <code>JGraph</code>.
 	 */
 	protected String paramString() {
 		String editableString = (editable ? "true" : "false");
-		String invokesStopCellEditingString = (invokesStopCellEditing ? "true"
-				: "false");
-		return super.paramString() + ",editable=" + editableString
-				+ ",invokesStopCellEditing=" + invokesStopCellEditingString;
+		String invokesStopCellEditingString = (invokesStopCellEditing ? "true" : "false");
+
+		return super.paramString() + ",editable=" + editableString + ",invokesStopCellEditing="
+		       + invokesStopCellEditingString;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param args DOCUMENT ME!
+	 */
 	public static void main(String[] args) {
 		System.out.println(VERSION);
 	}

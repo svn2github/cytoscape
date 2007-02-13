@@ -35,19 +35,26 @@
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
 import cytoscape.CyNetwork;
+
 import cytoscape.data.CyAttributes;
+
 import cytoscape.data.readers.GraphReader;
+
 import giny.model.RootGraph;
+
 import giny.view.GraphView;
 import giny.view.NodeView;
+
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+
 
 /**
  * GraphReader Implementation for PSI-MI Files.
@@ -55,157 +62,159 @@ import java.util.Iterator;
  * @author Ethan Cerami.
  */
 public class PsiMiGraphReader implements GraphReader {
-    private int nodeIndices[];
-    private int edgeIndices[];
-    private String fileName;
-    private String networkName;
+	private int[] nodeIndices;
+	private int[] edgeIndices;
+	private String fileName;
+	private String networkName;
 
-    /**
-     * Constructor
-     *
-     * @param fileName File Name.
-     */
-    public PsiMiGraphReader(String fileName) {
-        this.fileName = fileName;
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param fileName File Name.
+	 */
+	public PsiMiGraphReader(String fileName) {
+		this.fileName = fileName;
+	}
 
-    /**
-     * Read file.
-     *
-     * @throws IOException IO Error.
-     */
-    public void read() throws IOException {
-        try {
-            //  set network name - use pathway name
-            networkName = fileName;
+	/**
+	 * Read file.
+	 *
+	 * @throws IOException IO Error.
+	 */
+	public void read() throws IOException {
+		try {
+			//  set network name - use pathway name
+			networkName = fileName;
 
-            ContentReader reader = new ContentReader();
-            String xml = reader.retrieveContent(fileName);
+			ContentReader reader = new ContentReader();
+			String xml = reader.retrieveContent(fileName);
 
-            //  Map BioPAX Data to Cytoscape Nodes/Edges
-            ArrayList interactions = new ArrayList();
+			//  Map BioPAX Data to Cytoscape Nodes/Edges
+			ArrayList interactions = new ArrayList();
 
-            //  Pick one of two mappers
-            int level2 = xml.indexOf("level=\"2\"");
-            if (level2 > 0 && level2 < 500) {
-                MapPsiTwoFiveToInteractions mapper = new MapPsiTwoFiveToInteractions(xml,
-                        interactions);
-                mapper.doMapping();
-            } else {
-                MapPsiOneToInteractions mapper = new MapPsiOneToInteractions(xml, interactions);
-                mapper.doMapping();
-            }
+			//  Pick one of two mappers
+			int level2 = xml.indexOf("level=\"2\"");
 
-            //  Now Map to Cytocape Network Objects.
-            MapToCytoscape mapper2 = new MapToCytoscape
-                    (interactions, MapToCytoscape.SPOKE_VIEW);
-            mapper2.doMapping();
-            nodeIndices = mapper2.getNodeIndices();
-            edgeIndices = mapper2.getEdgeIndices();
-        } catch (Exception e) {
-            throw new IOException(e.getMessage());
-        }
-    }
+			if ((level2 > 0) && (level2 < 500)) {
+				MapPsiTwoFiveToInteractions mapper = new MapPsiTwoFiveToInteractions(xml,
+				                                                                     interactions);
+				mapper.doMapping();
+			} else {
+				MapPsiOneToInteractions mapper = new MapPsiOneToInteractions(xml, interactions);
+				mapper.doMapping();
+			}
 
-    /**
-     * Perform matrix layout;  same as that provided by the SIF reader.
-     *
-     * @param view GraphView Object.
-     */
-    public void layout(GraphView view) {
-        double distanceBetweenNodes = 50.0d;
-        int columns = (int) Math.sqrt(view.nodeCount());
-        Iterator nodeViews = view.getNodeViewsIterator();
-        double currX = 0.0d;
-        double currY = 0.0d;
-        int count = 0;
-        while (nodeViews.hasNext()) {
-            NodeView nView = (NodeView) nodeViews.next();
-            nView.setOffset(currX, currY);
-            count++;
-            if (count == columns) {
-                count = 0;
-                currX = 0.0d;
-                currY += distanceBetweenNodes;
-            } else {
-                currX += distanceBetweenNodes;
-            }
-        }
-    }
+			//  Now Map to Cytocape Network Objects.
+			MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.SPOKE_VIEW);
+			mapper2.doMapping();
+			nodeIndices = mapper2.getNodeIndices();
+			edgeIndices = mapper2.getEdgeIndices();
+		} catch (Exception e) {
+			throw new IOException(e.getMessage());
+		}
+	}
 
-    /**
-     * Get Node Indices.
-     *
-     * @return array of root graph node indices.
-     */
-    public int[] getNodeIndicesArray() {
-        return nodeIndices;
-    }
+	/**
+	 * Perform matrix layout;  same as that provided by the SIF reader.
+	 *
+	 * @param view GraphView Object.
+	 */
+	public void layout(GraphView view) {
+		double distanceBetweenNodes = 50.0d;
+		int columns = (int) Math.sqrt(view.nodeCount());
+		Iterator nodeViews = view.getNodeViewsIterator();
+		double currX = 0.0d;
+		double currY = 0.0d;
+		int count = 0;
 
-    /**
-     * Get Edge Indices.
-     *
-     * @return array of root graph edge indices.
-     */
-    public int[] getEdgeIndicesArray() {
-        return edgeIndices;
-    }
+		while (nodeViews.hasNext()) {
+			NodeView nView = (NodeView) nodeViews.next();
+			nView.setOffset(currX, currY);
+			count++;
 
-    /**
-     * Gets network name.
-     *
-     * @return network name.
-     */
-    public String getNetworkName() {
-        return networkName;
-    }
+			if (count == columns) {
+				count = 0;
+				currX = 0.0d;
+				currY += distanceBetweenNodes;
+			} else {
+				currX += distanceBetweenNodes;
+			}
+		}
+	}
 
-    /**
-     * Executes Post-Processing on newly created network.
-     *
-     * @param cyNetwork CyNetwork object.
-     */
-    public void doPostProcessing(CyNetwork cyNetwork) {
-        //  Currently no-op
-    }
+	/**
+	 * Get Node Indices.
+	 *
+	 * @return array of root graph node indices.
+	 */
+	public int[] getNodeIndicesArray() {
+		return nodeIndices;
+	}
 
-    /**
-     * Read in graph;  canonicalize all names.
-     *
-     * @param canonicalizeNodeNames flag for canonicalization.
-     * @throws IOException IO Error.
-     * @deprecated Use read() instead.  Will be removed Dec 2006.
-     */
-    public void read(boolean canonicalizeNodeNames) throws IOException {
-    }
+	/**
+	 * Get Edge Indices.
+	 *
+	 * @return array of root graph edge indices.
+	 */
+	public int[] getEdgeIndicesArray() {
+		return edgeIndices;
+	}
 
-    /**
-     * Get root graph.
-     *
-     * @return RootGraph Object.
-     * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
-     */
-    public RootGraph getRootGraph() {
-        return null;
-    }
+	/**
+	 * Gets network name.
+	 *
+	 * @return network name.
+	 */
+	public String getNetworkName() {
+		return networkName;
+	}
 
-    /**
-     * Get node attributes.
-     *
-     * @return CyAttributes object.
-     * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
-     */
-    public CyAttributes getNodeAttributes() {
-        return null;
-    }
+	/**
+	 * Executes Post-Processing on newly created network.
+	 *
+	 * @param cyNetwork CyNetwork object.
+	 */
+	public void doPostProcessing(CyNetwork cyNetwork) {
+		//  Currently no-op
+	}
 
-    /**
-     * Get edge attributes.
-     *
-     * @return CyAttributes object.
-     * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
-     */
-    public CyAttributes getEdgeAttributes() {
-        return null;
-    }
+	/**
+	 * Read in graph;  canonicalize all names.
+	 *
+	 * @param canonicalizeNodeNames flag for canonicalization.
+	 * @throws IOException IO Error.
+	 * @deprecated Use read() instead.  Will be removed Dec 2006.
+	 */
+	public void read(boolean canonicalizeNodeNames) throws IOException {
+	}
+
+	/**
+	 * Get root graph.
+	 *
+	 * @return RootGraph Object.
+	 * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
+	 */
+	public RootGraph getRootGraph() {
+		return null;
+	}
+
+	/**
+	 * Get node attributes.
+	 *
+	 * @return CyAttributes object.
+	 * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
+	 */
+	public CyAttributes getNodeAttributes() {
+		return null;
+	}
+
+	/**
+	 * Get edge attributes.
+	 *
+	 * @return CyAttributes object.
+	 * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
+	 */
+	public CyAttributes getEdgeAttributes() {
+		return null;
+	}
 }

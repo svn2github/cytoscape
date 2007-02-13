@@ -36,66 +36,73 @@ package org.cytoscape.coreplugin.psi_mi.model;
 
 import java.util.ArrayList;
 
+
 /**
  * Encapsulates a Single Interaction.
  *
  * @author Ethan Cerami
  */
 public class Interaction extends AttributeBag {
-    private ArrayList interactors;
+	private ArrayList interactors;
 
-    /**
-     * Gets All Interactors
-     *
-     * @return ArrayList of Interactors.
-     */
-    public ArrayList getInteractors() {
-        return interactors;
-    }
+	/**
+	 * Gets All Interactors
+	 *
+	 * @return ArrayList of Interactors.
+	 */
+	public ArrayList getInteractors() {
+		return interactors;
+	}
 
-    /**
-     * Sets All Interactors.
-     *
-     * @param interactors ArrayList of Interactors.
-     */
-    public void setInteractors(ArrayList interactors) {
-        this.interactors = interactors;
-    }
+	/**
+	 * Sets All Interactors.
+	 *
+	 * @param interactors ArrayList of Interactors.
+	 */
+	public void setInteractors(ArrayList interactors) {
+		this.interactors = interactors;
+	}
 
-    /**
-     * To String Method.
-     *
-     * @return Interaction Description.
-     */
-    public String toString() {
-        StringBuffer buffer = new StringBuffer("Interaction: ");
-        String description = this.getDescription();
-        buffer.append(description);
-        return buffer.toString();
-    }
+	/**
+	 * To String Method.
+	 *
+	 * @return Interaction Description.
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer("Interaction: ");
+		String description = this.getDescription();
+		buffer.append(description);
 
-    /**
-     * Gets Interaction Description.
-     *
-     * @return Interaction Description.
-     */
-    public String getDescription() {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < interactors.size(); i++) {
-            Interactor interactor = (Interactor) interactors.get(i);
-            String name = interactor.getName();
-            buffer.append(" [" + name + "]");
-        }
-        ExternalReference xrefs[] = getExternalRefs();
-        buffer.append(" [Interaction XREFs --> ");
-        if (xrefs == null || xrefs.length == 0) {
-            buffer.append("None");
-        } else {
-            for (int i = 0; i < xrefs.length; i++) {
-                buffer.append(xrefs[i].toString() + " ");
-            }
-        }
-        buffer.append("]");
-        return buffer.toString();
-    }
+		return buffer.toString();
+	}
+
+	/**
+	 * Gets Interaction Description.
+	 *
+	 * @return Interaction Description.
+	 */
+	public String getDescription() {
+		StringBuffer buffer = new StringBuffer();
+
+		for (int i = 0; i < interactors.size(); i++) {
+			Interactor interactor = (Interactor) interactors.get(i);
+			String name = interactor.getName();
+			buffer.append(" [" + name + "]");
+		}
+
+		ExternalReference[] xrefs = getExternalRefs();
+		buffer.append(" [Interaction XREFs --> ");
+
+		if ((xrefs == null) || (xrefs.length == 0)) {
+			buffer.append("None");
+		} else {
+			for (int i = 0; i < xrefs.length; i++) {
+				buffer.append(xrefs[i].toString() + " ");
+			}
+		}
+
+		buffer.append("]");
+
+		return buffer.toString();
+	}
 }

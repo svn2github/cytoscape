@@ -38,25 +38,26 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+
 /**
  * Suite of all Cache Unit Tests.
  *
  * @author Ethan Cerami
  */
 public class DataMapperSuite extends TestCase {
+	/**
+	 * The suite method runs all the tests.
+	 *
+	 * @return Suite of JUnit tests.
+	 */
+	public static Test suite() {
+		TestSuite suite = new TestSuite();
+		suite.addTestSuite(TestMapPsiOneToInteractions.class);
+		suite.addTestSuite(TestMapPsiTwoFiveToInteractions.class);
+		suite.addTestSuite(TestMapInteractionsToPsiOne.class);
+		suite.addTestSuite(TestMapInteractionsToPsiTwoFive.class);
+		suite.setName("Data Mapper Unit Tests");
 
-    /**
-     * The suite method runs all the tests.
-     *
-     * @return Suite of JUnit tests.
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(TestMapPsiOneToInteractions.class);
-        suite.addTestSuite(TestMapPsiTwoFiveToInteractions.class);
-        suite.addTestSuite(TestMapInteractionsToPsiOne.class);
-        suite.addTestSuite(TestMapInteractionsToPsiTwoFive.class);
-        suite.setName("Data Mapper Unit Tests");
-        return suite;
-    }
+		return suite;
+	}
 }

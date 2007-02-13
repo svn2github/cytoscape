@@ -33,11 +33,13 @@ package org.mskcc.biopax_plugin.util.biopax;
 
 import org.jdom.Attribute;
 import org.jdom.Element;
+
 import org.mskcc.biopax_plugin.util.links.ExternalLink;
 import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 /**
  * Utility for easily extract BioPAX Fields.
@@ -45,197 +47,216 @@ import java.util.HashMap;
  * @author Ethan Cerami.
  */
 public class BioPaxEntityParser {
-    private Element resource;
-    private RdfQuery rdfQuery;
+	private Element resource;
+	private RdfQuery rdfQuery;
 
-    /**
-     * Constructor.
-     *
-     * @param resource Resource Element.
-     * @param rdfMap   HashMap of RDF Elements.
-     */
-    public BioPaxEntityParser(Element resource, HashMap rdfMap) {
-        this.resource = resource;
-        this.rdfQuery = new RdfQuery(rdfMap);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param resource Resource Element.
+	 * @param rdfMap   HashMap of RDF Elements.
+	 */
+	public BioPaxEntityParser(Element resource, HashMap rdfMap) {
+		this.resource = resource;
+		this.rdfQuery = new RdfQuery(rdfMap);
+	}
 
-    /**
-     * Gets the BioPAX Type.
-     *
-     * @return BioPAX Type String.
-     */
-    public String getType() {
-        return resource.getName();
-    }
+	/**
+	 * Gets the BioPAX Type.
+	 *
+	 * @return BioPAX Type String.
+	 */
+	public String getType() {
+		return resource.getName();
+	}
 
-    /**
-     * Gets the Short Name field.
-     *
-     * @return short name field, or null if not available.
-     */
-    public String getShortName() {
-        String shortName = null;
-        Element shortNameElement = rdfQuery.getNode(resource, "SHORT-NAME");
-        if (shortNameElement != null) {
-            shortName = shortNameElement.getTextNormalize();
-        }
-        return shortName;
-    }
+	/**
+	 * Gets the Short Name field.
+	 *
+	 * @return short name field, or null if not available.
+	 */
+	public String getShortName() {
+		String shortName = null;
+		Element shortNameElement = rdfQuery.getNode(resource, "SHORT-NAME");
 
-    /**
-     * Gets the Name Field.
-     *
-     * @return name field, or null if not available.
-     */
-    public String getName() {
-        String name = null;
-        Element nameElement = rdfQuery.getNode(resource, "NAME");
-        if (nameElement != null) {
-            name = nameElement.getTextNormalize();
-        }
-        return name;
-    }
+		if (shortNameElement != null) {
+			shortName = shortNameElement.getTextNormalize();
+		}
 
-    /**
-     * Gets the RDF ID.
-     *
-     * @return RDF ID, or null if not available.
-     */
-    public String getRdfId() {
-        Attribute idAttribute = BioPaxUtil.extractRdfIdAttribute(resource);
-        if (idAttribute != null) {
-            return idAttribute.getValue();
-        } else {
-            return null;
-        }
-    }
+		return shortName;
+	}
 
-    /**
-     * Gets ArrayList of Synonyms.
-     *
-     * @return ArrayList of Synonym String Objects.
-     */
-    public ArrayList getSynonymList() {
-        ArrayList synList = new ArrayList();
-        ArrayList synListElements = rdfQuery.getNodes(resource, "SYNONYMS");
-        if (synListElements.size() > 0) {
-            for (int i = 0; i < synListElements.size(); i++) {
-                Element synElement = (Element) synListElements.get(i);
-                synList.add(synElement.getTextNormalize());
-            }
-        }
-        return synList;
-    }
+	/**
+	 * Gets the Name Field.
+	 *
+	 * @return name field, or null if not available.
+	 */
+	public String getName() {
+		String name = null;
+		Element nameElement = rdfQuery.getNode(resource, "NAME");
 
-    /**
-     * Gets the Organism Name.
-     *
-     * @return organism field, or null if not available.
-     */
-    public String getOrganismName() {
-        String organism = null;
-        Element orgElement = rdfQuery.getNode(resource, "ORGANISM/*/NAME");
-        if (orgElement != null) {
-            organism = orgElement.getTextNormalize();
-        }
-        return organism;
-    }
+		if (nameElement != null) {
+			name = nameElement.getTextNormalize();
+		}
 
-    /**
-     * Gets the NCBI Taxonomy ID.
-     *
-     * @return taxonomyId, or -1, if not available.
-     */
-    public int getOrganismTaxonomyId() {
-        int taxonomyId = -1;
-        Element taxonomyElement = rdfQuery.getNode(resource,
-                "ORGANISM/*/TAXON-XREF/*/ID");
-        if (taxonomyElement != null) {
-            String taxId = taxonomyElement.getTextNormalize();
-            try {
-                taxonomyId = Integer.parseInt(taxId);
-            } catch (NumberFormatException e) {
-                taxonomyId = -1;
-            }
-        }
-        return taxonomyId;
-    }
+		return name;
+	}
 
-    /**
-     * Gets the Comment field.
-     *
-     * @return comment field or null, if not available.
-     */
-    public String getComment() {
-        String comment = null;
-        Element commentElement = rdfQuery.getNode(resource, "COMMENT");
-        if (commentElement != null) {
-            comment = commentElement.getTextNormalize();
-        }
-        return comment;
-    }
+	/**
+	 * Gets the RDF ID.
+	 *
+	 * @return RDF ID, or null if not available.
+	 */
+	public String getRdfId() {
+		Attribute idAttribute = BioPaxUtil.extractRdfIdAttribute(resource);
 
-    /**
-     * Gets the Availability Field.
-     *
-     * @return availability field or null, if not available.
-     */
-    public String getAvailability() {
-        String availability = null;
-        Element availElement = rdfQuery.getNode(resource, "AVAILABILITY");
-        if (availElement != null) {
-            availability = availElement.getTextNormalize();
-        }
-        return availability;
-    }
+		if (idAttribute != null) {
+			return idAttribute.getValue();
+		} else {
+			return null;
+		}
+	}
 
-    /**
-     * Gets an ArrayList of all Unification XRefs.
-     *
-     * @return ArrayList of ExternalLink Objects.
-     */
-    public ArrayList getUnificationXRefs() {
-        ArrayList xrefListElements = rdfQuery.getNodes(resource,
-                "XREF/unificationXref");
-        return extractXrefs(xrefListElements);
-    }
+	/**
+	 * Gets ArrayList of Synonyms.
+	 *
+	 * @return ArrayList of Synonym String Objects.
+	 */
+	public ArrayList getSynonymList() {
+		ArrayList synList = new ArrayList();
+		ArrayList synListElements = rdfQuery.getNodes(resource, "SYNONYMS");
 
-    /**
-     * Gets an ArrayList of all Relationship XRefs.
-     *
-     * @return ArrayList of ExternalLink Objects.
-     */
-    public ArrayList getRelationshipXRefs() {
-        ArrayList xrefListElements = rdfQuery.getNodes(resource,
-                "XREF/relationshipXref");
-        return extractXrefs(xrefListElements);
-    }
+		if (synListElements.size() > 0) {
+			for (int i = 0; i < synListElements.size(); i++) {
+				Element synElement = (Element) synListElements.get(i);
+				synList.add(synElement.getTextNormalize());
+			}
+		}
 
-    /**
-     * Gets an ArrayList of all XRefs.
-     *
-     * @return ArrayList of ExternalLink Objects.
-     */
-    public ArrayList getAllXRefs() {
-        ArrayList xrefListElements = rdfQuery.getNodes(resource, "XREF/*");
-        return extractXrefs(xrefListElements);
-    }
+		return synList;
+	}
 
-    private ArrayList extractXrefs(ArrayList xrefListElements) {
-        ArrayList dbList = new ArrayList();
-        if (xrefListElements.size() > 0) {
-            for (int i = 0; i < xrefListElements.size(); i++) {
-                Element ref = (Element) xrefListElements.get(i);
-                Element dbElement = rdfQuery.getNode(ref, "DB");
-                Element idElement = rdfQuery.getNode(ref, "ID");
-                if (dbElement != null && idElement != null) {
-                    String dbName = dbElement.getTextNormalize();
-                    String id = idElement.getTextNormalize();
-                    ExternalLink link = new ExternalLink(dbName, id);
-                    dbList.add(link);
-                }
-            }
-        }
-        return dbList;
-    }
+	/**
+	 * Gets the Organism Name.
+	 *
+	 * @return organism field, or null if not available.
+	 */
+	public String getOrganismName() {
+		String organism = null;
+		Element orgElement = rdfQuery.getNode(resource, "ORGANISM/*/NAME");
+
+		if (orgElement != null) {
+			organism = orgElement.getTextNormalize();
+		}
+
+		return organism;
+	}
+
+	/**
+	 * Gets the NCBI Taxonomy ID.
+	 *
+	 * @return taxonomyId, or -1, if not available.
+	 */
+	public int getOrganismTaxonomyId() {
+		int taxonomyId = -1;
+		Element taxonomyElement = rdfQuery.getNode(resource, "ORGANISM/*/TAXON-XREF/*/ID");
+
+		if (taxonomyElement != null) {
+			String taxId = taxonomyElement.getTextNormalize();
+
+			try {
+				taxonomyId = Integer.parseInt(taxId);
+			} catch (NumberFormatException e) {
+				taxonomyId = -1;
+			}
+		}
+
+		return taxonomyId;
+	}
+
+	/**
+	 * Gets the Comment field.
+	 *
+	 * @return comment field or null, if not available.
+	 */
+	public String getComment() {
+		String comment = null;
+		Element commentElement = rdfQuery.getNode(resource, "COMMENT");
+
+		if (commentElement != null) {
+			comment = commentElement.getTextNormalize();
+		}
+
+		return comment;
+	}
+
+	/**
+	 * Gets the Availability Field.
+	 *
+	 * @return availability field or null, if not available.
+	 */
+	public String getAvailability() {
+		String availability = null;
+		Element availElement = rdfQuery.getNode(resource, "AVAILABILITY");
+
+		if (availElement != null) {
+			availability = availElement.getTextNormalize();
+		}
+
+		return availability;
+	}
+
+	/**
+	 * Gets an ArrayList of all Unification XRefs.
+	 *
+	 * @return ArrayList of ExternalLink Objects.
+	 */
+	public ArrayList getUnificationXRefs() {
+		ArrayList xrefListElements = rdfQuery.getNodes(resource, "XREF/unificationXref");
+
+		return extractXrefs(xrefListElements);
+	}
+
+	/**
+	 * Gets an ArrayList of all Relationship XRefs.
+	 *
+	 * @return ArrayList of ExternalLink Objects.
+	 */
+	public ArrayList getRelationshipXRefs() {
+		ArrayList xrefListElements = rdfQuery.getNodes(resource, "XREF/relationshipXref");
+
+		return extractXrefs(xrefListElements);
+	}
+
+	/**
+	 * Gets an ArrayList of all XRefs.
+	 *
+	 * @return ArrayList of ExternalLink Objects.
+	 */
+	public ArrayList getAllXRefs() {
+		ArrayList xrefListElements = rdfQuery.getNodes(resource, "XREF/*");
+
+		return extractXrefs(xrefListElements);
+	}
+
+	private ArrayList extractXrefs(ArrayList xrefListElements) {
+		ArrayList dbList = new ArrayList();
+
+		if (xrefListElements.size() > 0) {
+			for (int i = 0; i < xrefListElements.size(); i++) {
+				Element ref = (Element) xrefListElements.get(i);
+				Element dbElement = rdfQuery.getNode(ref, "DB");
+				Element idElement = rdfQuery.getNode(ref, "ID");
+
+				if ((dbElement != null) && (idElement != null)) {
+					String dbName = dbElement.getTextNormalize();
+					String id = idElement.getTextNormalize();
+					ExternalLink link = new ExternalLink(dbName, id);
+					dbList.add(link);
+				}
+			}
+		}
+
+		return dbList;
+	}
 }

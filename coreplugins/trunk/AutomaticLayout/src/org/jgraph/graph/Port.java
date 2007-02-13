@@ -1,12 +1,13 @@
 /*
- * @(#)Port.java	1.0 03-JUL-04
- * 
+ * @(#)Port.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
 import java.util.Iterator;
+
 
 /**
  * Defines the requirements for an object that
@@ -15,9 +16,7 @@ import java.util.Iterator;
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public interface Port extends GraphCell {
-
 	/**
 	 * Returns an iterator of the edges connected
 	 * to the port.
@@ -43,5 +42,4 @@ public interface Port extends GraphCell {
 	 * Sets the anchor of the port.
 	 */
 	void setAnchor(Port port);
-
 }

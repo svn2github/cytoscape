@@ -1,5 +1,5 @@
 /*
- * @(#)GraphModelEvent.java	1.0 03-JUL-04
+ * @(#)GraphModelEvent.java    1.0 03-JUL-04
  *
  * Copyright (c) 2001-2005 Gaudenz Alder
  *
@@ -10,6 +10,7 @@ package org.jgraph.event;
 import java.util.EventObject;
 import java.util.Map;
 
+
 /**
  * Encapsulates information describing changes to a graph layout cache, and is
  * used to notify graph layout cache listeners of the change. Note that graph
@@ -18,7 +19,6 @@ import java.util.Map;
  * information on what has changed in the graph layout cache only.
  */
 public class GraphLayoutCacheEvent extends EventObject {
-
 	/**
 	 * The object that constitutes the change.
 	 */
@@ -27,12 +27,12 @@ public class GraphLayoutCacheEvent extends EventObject {
 	/**
 	 * Used to create an event when cells have been changed, inserted, or
 	 * removed, identifying the change as a GraphLayoutCacheChange object.
-	 * 
+	 *
 	 * @param source
 	 *            the Object responsible for generating the event (typically the
 	 *            creator of the event object passes <code>this</code> for its
 	 *            value)
-	 * 
+	 *
 	 * @param change
 	 *            the object that describes the change
 	 */
@@ -43,7 +43,7 @@ public class GraphLayoutCacheEvent extends EventObject {
 
 	/**
 	 * Returns the object that constitutes the change.
-	 * 
+	 *
 	 * @return the object that constitutes the change
 	 */
 	public GraphLayoutCacheChange getChange() {
@@ -55,34 +55,33 @@ public class GraphLayoutCacheEvent extends EventObject {
 	 * to the graph layout cache.
 	 */
 	public static interface GraphLayoutCacheChange {
-
 		/**
 		 * Returns the source of this change. This can either be a view or a
 		 * model, if this change is a GraphModelChange. Note: This is not
 		 * necessarily the same as the source of the event and is used
 		 * separately in the graphundomanager.
-		 * 
+		 *
 		 * @return the source fo this change
 		 */
 		public Object getSource();
 
 		/**
 		 * Returns the cells that have changed.
-		 * 
+		 *
 		 * @return the cell changed
 		 */
 		public Object[] getChanged();
 
 		/**
 		 * Returns the cells that have been inserted.
-		 * 
+		 *
 		 * @return the cells that were inserted by the change
 		 */
 		public Object[] getInserted();
 
 		/**
 		 * Returns the cells that have been removed.
-		 * 
+		 *
 		 * @return the cells that were removed by the change
 		 */
 		public Object[] getRemoved();
@@ -99,7 +98,7 @@ public class GraphLayoutCacheEvent extends EventObject {
 		/**
 		 * Returns a map that contains (object, map) pairs which holds the
 		 * previous attributes for the changed cells.
-		 * 
+		 *
 		 * @return map of attributes before the change
 		 */
 		public Map getPreviousAttributes();
@@ -109,11 +108,9 @@ public class GraphLayoutCacheEvent extends EventObject {
 		 * because one of their dependent cells has changed. This is typically
 		 * used to return the edges that are attached to vertices, which in turn
 		 * have been resized or moved.
-		 * 
+		 *
 		 * @return array of contextual cells
 		 */
 		public Object[] getContext();
-
 	}
-
 }

@@ -38,130 +38,130 @@ import org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet;
 
 import java.util.Map;
 
+
 /**
  * Misc. List Utilities.
  *
  * @author Nisha Vinod
  */
 public class ListUtil {
-    private static int totalInteractors;
-    private static String level;
-    private static String version;
-    private static int fileCount;
-    private static EntrySet entrySet;
-    private static org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet psiOneEntrySet;
-    private static Map interactionMap;
+	private static int totalInteractors;
+	private static String level;
+	private static String version;
+	private static int fileCount;
+	private static EntrySet entrySet;
+	private static org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet psiOneEntrySet;
+	private static Map interactionMap;
 
-    /**
-     * Gets PSI One Entry Set.
-     * @return PSI One Entry Set.
-     */
-    public static org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet getPsiOneEntrySet() {
-        return psiOneEntrySet;
-    }
+	/**
+	 * Gets PSI One Entry Set.
+	 * @return PSI One Entry Set.
+	 */
+	public static org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet getPsiOneEntrySet() {
+		return psiOneEntrySet;
+	}
 
-    /**
-     * Set PSI One Entry Set.
-     * @param psiOneEntrySet PSI One Entry Set.
-     */
-    public static void setPsiOneEntrySet(org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet
-            psiOneEntrySet) {
-        ListUtil.psiOneEntrySet = psiOneEntrySet;
-    }
+	/**
+	 * Set PSI One Entry Set.
+	 * @param psiOneEntrySet PSI One Entry Set.
+	 */
+	public static void setPsiOneEntrySet(org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet psiOneEntrySet) {
+		ListUtil.psiOneEntrySet = psiOneEntrySet;
+	}
 
-    /**
-     * Gets the Interaction Map.
-     * @return Interaction Map.
-     */
-    public static Map getInteractionMap() {
-        return interactionMap;
-    }
+	/**
+	 * Gets the Interaction Map.
+	 * @return Interaction Map.
+	 */
+	public static Map getInteractionMap() {
+		return interactionMap;
+	}
 
-    /**
-     * Sets the Interaction Map.
-     * @param interactionMap Interaction Map.
-     */
-    public static void setInteractionMap(Map interactionMap) {
-        ListUtil.interactionMap = interactionMap;
-    }
+	/**
+	 * Sets the Interaction Map.
+	 * @param interactionMap Interaction Map.
+	 */
+	public static void setInteractionMap(Map interactionMap) {
+		ListUtil.interactionMap = interactionMap;
+	}
 
-    /**
-     * Gets the Entry Set.
-     * @return EntrySet Object.
-     */
-    public static EntrySet getEntrySet() {
-        return entrySet;
-    }
+	/**
+	 * Gets the Entry Set.
+	 * @return EntrySet Object.
+	 */
+	public static EntrySet getEntrySet() {
+		return entrySet;
+	}
 
-    /**
-     * Sets the Entry Set.
-     * @param eSet Entry Set Object.
-     */
-    public static void setEntrySet(EntrySet eSet) {
-        entrySet = eSet;
-    }
+	/**
+	 * Sets the Entry Set.
+	 * @param eSet Entry Set Object.
+	 */
+	public static void setEntrySet(EntrySet eSet) {
+		entrySet = eSet;
+	}
 
-    /**
-     * Sets the Interactor Count.
-     * @param interactorCount interactor count.
-     */
-    public static void setInteractorCount(int interactorCount) {
-        totalInteractors = interactorCount;
-    }
+	/**
+	 * Sets the Interactor Count.
+	 * @param interactorCount interactor count.
+	 */
+	public static void setInteractorCount(int interactorCount) {
+		totalInteractors = interactorCount;
+	}
 
-    /**
-     * Gets the Interactor Count.
-     * @return interactorCount.
-     */
-    public static int getInteractorCount() {
-        return totalInteractors;
-    }
+	/**
+	 * Gets the Interactor Count.
+	 * @return interactorCount.
+	 */
+	public static int getInteractorCount() {
+		return totalInteractors;
+	}
 
-    /**
-     * Sets the PSI-MI Level.
-     * @param l PSI-MI Level.
-     */
-    public static void setLevel(String l) {
-        level = l;
-    }
+	/**
+	 * Sets the PSI-MI Level.
+	 * @param l PSI-MI Level.
+	 */
+	public static void setLevel(String l) {
+		level = l;
+	}
 
-    /**
-     * Gets the PSI-MI Level.
-     * @return PSI-MI Level.
-     */
-    public static String getLevel() {
-        return level;
-    }
+	/**
+	 * Gets the PSI-MI Level.
+	 * @return PSI-MI Level.
+	 */
+	public static String getLevel() {
+		return level;
+	}
 
-    /**
-     * Sets the PSI-MI Version #.
-     * @param v PSI-MI Version #.
-     */
-    public static void setVersion(String v) {
-        version = v;
-    }
+	/**
+	 * Sets the PSI-MI Version #.
+	 * @param v PSI-MI Version #.
+	 */
+	public static void setVersion(String v) {
+		version = v;
+	}
 
-    /**
-     * Gets the PSI-MI Version #.
-     * @return PSI-MI Version #.
-     */
-    public static String getVersion() {
-        return version;
-    }
+	/**
+	 * Gets the PSI-MI Version #.
+	 * @return PSI-MI Version #.
+	 */
+	public static String getVersion() {
+		return version;
+	}
 
-    /**
-     * Sets the File Entry Count.
-     * @param count file entry count.
-     */
-    public static void setFileEntryCount(int count) {
-        fileCount = count;
-    }
+	/**
+	 * Sets the File Entry Count.
+	 * @param count file entry count.
+	 */
+	public static void setFileEntryCount(int count) {
+		fileCount = count;
+	}
 
-    /**
-     * Gets the File Entry Count.
-     * @return file entry count.
-     */
-    public static int getFileEntryCount() {
-        return fileCount;
-    }
+	/**
+	 * Gets the File Entry Count.
+	 * @return file entry count.
+	 */
+	public static int getFileEntryCount() {
+		return fileCount;
+	}
 }

@@ -38,94 +38,94 @@ import org.cytoscape.coreplugin.psi_mi.schema.mi25.CvType;
 
 import java.util.HashMap;
 
+
 /**
  * Encapsulates a Generic Bag of Attributes.
  *
  * @author Ethan Cerami
  */
 public class AttributeBag {
-    private HashMap attributes = new HashMap();
-    private ExternalReference[] externalRefs;
-    private CvType cvType;
-    private int interactionId;
+	private HashMap attributes = new HashMap();
+	private ExternalReference[] externalRefs;
+	private CvType cvType;
+	private int interactionId;
 
-    /**
-     * Gets Interaction ID;
-     * @return Interaction ID.
-     */
-    public int getInteractionId() {
-        return interactionId;
-    }
+	/**
+	 * Gets Interaction ID;
+	 * @return Interaction ID.
+	 */
+	public int getInteractionId() {
+		return interactionId;
+	}
 
-    /**
-     * Sets Interaction ID.
-     * @param interactionId Interaction ID.
-     */
-    public void setInteractionId(int interactionId) {
-        this.interactionId = interactionId;
-    }
+	/**
+	 * Sets Interaction ID.
+	 * @param interactionId Interaction ID.
+	 */
+	public void setInteractionId(int interactionId) {
+		this.interactionId = interactionId;
+	}
 
-    /**
-     * Gets CV Type.
-     * @return CV Type Object.
-     */
-    public CvType getCvType() {
-        return cvType;
-    }
+	/**
+	 * Gets CV Type.
+	 * @return CV Type Object.
+	 */
+	public CvType getCvType() {
+		return cvType;
+	}
 
-    /**
-     * Sets CV Type.
-     * @param cvType CV Type Object.
-     */
-    public void setCvType(CvType cvType) {
-        this.cvType = cvType;
-    }
+	/**
+	 * Sets CV Type.
+	 * @param cvType CV Type Object.
+	 */
+	public void setCvType(CvType cvType) {
+		this.cvType = cvType;
+	}
 
+	/**
+	 * Gets Attribute with specified key.
+	 *
+	 * @param key Attribute Key.
+	 * @return Attribute object value.
+	 */
+	public Object getAttribute(String key) {
+		return attributes.get(key);
+	}
 
-    /**
-     * Gets Attribute with specified key.
-     *
-     * @param key Attribute Key.
-     * @return Attribute object value.
-     */
-    public Object getAttribute(String key) {
-        return attributes.get(key);
-    }
+	/**
+	 * Gets all Attributes.
+	 *
+	 * @return HashMap of all attributes.
+	 */
+	public HashMap getAllAttributes() {
+		return attributes;
+	}
 
-    /**
-     * Gets all Attributes.
-     *
-     * @return HashMap of all attributes.
-     */
-    public HashMap getAllAttributes() {
-        return attributes;
-    }
+	/**
+	 * Adds new Attribute.
+	 *
+	 * @param name  Attribute key.
+	 * @param value Object value.
+	 */
+	public void addAttribute(String name, Object value) {
+		attributes.put(name, value);
+	}
 
-    /**
-     * Adds new Attribute.
-     *
-     * @param name  Attribute key.
-     * @param value Object value.
-     */
-    public void addAttribute(String name, Object value) {
-        attributes.put(name, value);
-    }
+	/**
+	 * Gets the External References.
+	 *
+	 * @return Array of External Reference objects.
+	 */
+	public ExternalReference[] getExternalRefs() {
+		return externalRefs;
+	}
 
-    /**
-     * Gets the External References.
-     *
-     * @return Array of External Reference objects.
-     */
-    public ExternalReference[] getExternalRefs() {
-        return externalRefs;
-    }
-
-    /**
-     * Sets the External References.
-     *
-     * @param externalRefs Array of External Reference objects.
-     */
-    public void setExternalRefs(ExternalReference[] externalRefs) {
-        this.externalRefs = externalRefs;
-    }
+	/**
+	 * Sets the External References.
+	 *
+	 * @param externalRefs Array of External Reference objects.
+	 */
+	public void setExternalRefs(ExternalReference[] externalRefs) {
+		this.externalRefs = externalRefs;
+	}
 }

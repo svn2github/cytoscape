@@ -4,6 +4,14 @@
  */
 package cytoscape.editor.event;
 
+import cytoscape.editor.CytoscapeEditor;
+
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
+
+import phoebe.PhoebeCanvasDropEvent;
+import phoebe.PhoebeCanvasDropListener;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -12,14 +20,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import phoebe.PhoebeCanvasDropEvent;
-import phoebe.PhoebeCanvasDropListener;
-import cytoscape.editor.CytoscapeEditor;
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
 
 /**
- * 
+ *
  * The <b>NetworkEditEventAdapter</b> class provides stub methods for
  * specialized network edit event handlers, as part of the graph editing
  * framework. The specialized network edit event handler is the key class in the
@@ -30,31 +33,28 @@ import ding.view.InnerCanvas;
  *  * revised: 04/15/2006 to integrate with Cytoscape 2.3 renderer Phase 1:
  * switch underlying node identification and edge drawing code Phase 2: remove
  * dependencies upon Piccolo
- * 
+ *
  * @author Allan Kuchinsky
  * @version 1.0
- * 
+ *
  */
-public class NetworkEditEventAdapter
-// AJK: 04/15/06 for Cytoscape 2.3
-		// extends PBasicInputEventHandler implements
-		implements MouseListener, MouseMotionListener, ActionListener,
-		PhoebeCanvasDropListener, KeyListener,
-		cytoscape.data.attr.MultiHashMapListener {
-
+public class NetworkEditEventAdapter implements MouseListener, MouseMotionListener, ActionListener,
+                                                PhoebeCanvasDropListener, KeyListener,
+                                                cytoscape.data.attr.MultiHashMapListener {
 	protected InnerCanvas canvas;
-
 	protected DGraphView view;
-
 	CytoscapeEditor _caller;
 
+	/**
+	 * Creates a new NetworkEditEventAdapter object.
+	 */
 	public NetworkEditEventAdapter() {
 	}
 
 	/**
 	 * starts up the event handler on the input network view adds an input event
 	 * listener to the view's canvas
-	 * 
+	 *
 	 * @param view
 	 *            a Cytoscape network view
 	 */
@@ -68,6 +68,7 @@ public class NetworkEditEventAdapter
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addKeyListener(this);
+
 		// CytoscapeEditorManager.log("Mouse and MotionListeners added to " + canvas);
 		// CytoscapeEditorManager.log("Canvas has total number of Listeners = " +
 		// canvas.getMouseListeners().length);
@@ -76,7 +77,7 @@ public class NetworkEditEventAdapter
 	/**
 	 * stops the event handler by removing the input event listener from the
 	 * canvas this is called when the user switches between editors
-	 * 
+	 *
 	 */
 	public void stop() {
 		if (canvas != null) {
@@ -91,7 +92,7 @@ public class NetworkEditEventAdapter
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the current canvas
 	 */
 
@@ -100,33 +101,83 @@ public class NetworkEditEventAdapter
 		return canvas;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void mouseExited(MouseEvent e) {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void mouseEntered(MouseEvent e) {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void mousePressed(MouseEvent e) {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void mouseMoved(MouseEvent e) {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void mouseDragged(MouseEvent e) {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void mouseClicked(MouseEvent e) {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void mouseReleased(MouseEvent e) {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param event DOCUMENT ME!
+	 */
 	public void keyPressed(KeyEvent event) {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param event DOCUMENT ME!
+	 */
 	public void keyReleased(KeyEvent event) {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param event DOCUMENT ME!
+	 */
 	public void keyTyped(KeyEvent event) {
 	}
 
@@ -134,17 +185,15 @@ public class NetworkEditEventAdapter
 	 * method for rendering an edge under construction as the user moves the
 	 * mouse typically this may be done via a rubberband-line that udpates as
 	 * the mouse position changes
-	 * 
+	 *
 	 */
 	public void updateEdge() {
-
 	}
 
 	/**
 	 * actionPerformed() method should be overwritten by child classes
 	 */
 	public void actionPerformed(ActionEvent evt) {
-
 	}
 
 	/**
@@ -153,28 +202,38 @@ public class NetworkEditEventAdapter
 	 * Cytoscape network.
 	 */
 	public void itemDropped(PhoebeCanvasDropEvent dte) {
-
 	}
 
 	/**
-	 * 
+	 *
 	 * MultiHashMapListener methods
 	 */
-	public void attributeValueAssigned(java.lang.String objectKey,
-			java.lang.String attributeName, java.lang.Object[] keyIntoValue,
-			java.lang.Object oldAttributeValue,
-			java.lang.Object newAttributeValue) {
+	public void attributeValueAssigned(java.lang.String objectKey, java.lang.String attributeName,
+	                                   java.lang.Object[] keyIntoValue,
+	                                   java.lang.Object oldAttributeValue,
+	                                   java.lang.Object newAttributeValue) {
 	}
 
-	public void attributeValueRemoved(java.lang.String objectKey,
-			java.lang.String attributeName, java.lang.Object[] keyIntoValue,
-			java.lang.Object attributeValue) {
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param objectKey DOCUMENT ME!
+	 * @param attributeName DOCUMENT ME!
+	 * @param keyIntoValue DOCUMENT ME!
+	 * @param attributeValue DOCUMENT ME!
+	 */
+	public void attributeValueRemoved(java.lang.String objectKey, java.lang.String attributeName,
+	                                  java.lang.Object[] keyIntoValue,
+	                                  java.lang.Object attributeValue) {
 	}
 
-	public void allAttributeValuesRemoved(java.lang.String objectKey,
-			java.lang.String attributeName) {
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param objectKey DOCUMENT ME!
+	 * @param attributeName DOCUMENT ME!
+	 */
+	public void allAttributeValuesRemoved(java.lang.String objectKey, java.lang.String attributeName) {
 	}
 
 	/**
@@ -195,6 +254,7 @@ public class NetworkEditEventAdapter
 	/**
 	 * @return Returns the view.
 	 */
+
 	// public PGraphView getView() {
 	public DGraphView getView() {
 		return view;
@@ -204,9 +264,9 @@ public class NetworkEditEventAdapter
 	 * @param view
 	 *            The view to set.
 	 */
+
 	// public void setView(PGraphView view) {
 	public void setView(DGraphView view) {
 		this.view = view;
 	}
-
 }

@@ -41,109 +41,103 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.io.IOException;
 import java.io.StringReader;
 
+
 /**
  * provides XML validation for mi1 documents against schema.
  *
  * @author Robert Sheridan modified from Ethan Cerami
  */
 public class XmlValidator extends DefaultHandler {
+	// Validation feature id
+	protected static final String VALIDATION_FEATURE_ID = "http://xml.org/sax/features/validation";
 
-    // Validation feature id
-    protected static final String VALIDATION_FEATURE_ID =
-            "http://xml.org/sax/features/validation";
+	//  Schema validation feature id.
+	protected static final String SCHEMA_VALIDATION_FEATURE_ID = "http://apache.org/xml/features/validation/schema";
 
-    //  Schema validation feature id.
-    protected static final String SCHEMA_VALIDATION_FEATURE_ID =
-            "http://apache.org/xml/features/validation/schema";
+	// Dynamic validation feature id
+	protected static final String DYNAMIC_VALIDATION_FEATURE_ID = "http://apache.org/xml/features/validation/dynamic";
 
-    // Dynamic validation feature id
-    protected static final String DYNAMIC_VALIDATION_FEATURE_ID
-            = "http://apache.org/xml/features/validation/dynamic";
+	/**
+	 * Warning.
+	 *
+	 * @param ex SAXParseException Object.
+	 * @throws org.xml.sax.SAXException SAXException.
+	 */
+	public void warning(SAXParseException ex) throws SAXException {
+		System.out.println(makeErrorMessage("Warning", ex));
+	}
 
-    /**
-     * Warning.
-     *
-     * @param ex SAXParseException Object.
-     * @throws org.xml.sax.SAXException SAXException.
-     */
-    public void warning(SAXParseException ex) throws SAXException {
-        System.out.println(makeErrorMessage("Warning", ex));
-    }
+	/**
+	 * Error.
+	 *
+	 * @param ex SAXParseException Object.
+	 * @throws org.xml.sax.SAXException SAXException.
+	 */
+	public void error(SAXParseException ex) throws SAXException {
+		throw new SAXException(makeErrorMessage("Error", ex));
+	}
 
-    /**
-     * Error.
-     *
-     * @param ex SAXParseException Object.
-     * @throws org.xml.sax.SAXException SAXException.
-     */
-    public void error(SAXParseException ex) throws SAXException {
-        throw new SAXException(makeErrorMessage("Error", ex));
-    }
+	/**
+	 * Fatal Error.
+	 *
+	 * @param ex SAXParseException Object.
+	 * @throws org.xml.sax.SAXException SAXException.
+	 */
+	public void fatalError(SAXParseException ex) throws SAXException {
+		throw new SAXException(makeErrorMessage("Fatal Error", ex));
+	}
 
-    /**
-     * Fatal Error.
-     *
-     * @param ex SAXParseException Object.
-     * @throws org.xml.sax.SAXException SAXException.
-     */
-    public void fatalError(SAXParseException ex) throws SAXException {
-        throw new SAXException(makeErrorMessage("Fatal Error", ex));
-    }
+	/**
+	 * formats an error message.
+	 */
+	protected String makeErrorMessage(String type, SAXParseException ex) {
+		if (ex == null) {
+			return "[" + type + "] " + "!!!";
+		}
 
-    /**
-     * formats an error message.
-     */
-    protected String makeErrorMessage(String type, SAXParseException ex) {
+		String systemId = ex.getSystemId();
 
-        if (ex == null) {
-            return "[" + type + "] " + "!!!";
-        }
-        String systemId = ex.getSystemId();
-        if (systemId != null) {
-            int index = systemId.lastIndexOf('/');
-            if (index != -1) {
-                systemId = systemId.substring(index + 1);
-            }
-        }
-        return "[" + type + "] "
-                + ':' + ex.getLineNumber() + ':' + ex.getColumnNumber() + ": "
-                + ex.getMessage();
-    }
+		if (systemId != null) {
+			int index = systemId.lastIndexOf('/');
 
-    /**
-     * validates the content of an XML document according to a schema.
-     * Errors or fatal errors cause exceptions to be thrown.
-     * Warnings are printed to System.out and then ignored.
-     *
-     * @param content a string containing the XML content to validate.
-     * @throws DataServiceException DataServiceException.
-     */
-    public static void validate(String content) throws DataServiceException {
+			if (index != -1) {
+				systemId = systemId.substring(index + 1);
+			}
+		}
 
-        XmlValidator validator = new XmlValidator();
-        try {
-            XMLReader parser = XMLReaderFactory.createXMLReader();
-            parser.setFeature(VALIDATION_FEATURE_ID, true);
-            parser.setFeature(SCHEMA_VALIDATION_FEATURE_ID, true);
-            parser.setFeature(DYNAMIC_VALIDATION_FEATURE_ID, true);
-            parser.setContentHandler(validator);
-            parser.setErrorHandler(validator);
-            parser.parse(new InputSource(new StringReader(content)));
-        } catch (SAXNotRecognizedException e) {
-            throw new DataServiceException(e, e.toString());
-        } catch (SAXNotSupportedException e) {
-            throw new DataServiceException(e, e.toString());
-        } catch (SAXParseException e) {
-            throw new DataServiceException(e, e.toString());
-        } catch (SAXException e) {
-            throw new DataServiceException(e, e.toString());
-        } catch (IOException e) {
-            throw new DataServiceException(e, e.toString());
-        }
-    }
+		return "[" + type + "] " + ':' + ex.getLineNumber() + ':' + ex.getColumnNumber() + ": "
+		       + ex.getMessage();
+	}
 
+	/**
+	 * validates the content of an XML document according to a schema.
+	 * Errors or fatal errors cause exceptions to be thrown.
+	 * Warnings are printed to System.out and then ignored.
+	 *
+	 * @param content a string containing the XML content to validate.
+	 * @throws DataServiceException DataServiceException.
+	 */
+	public static void validate(String content) throws DataServiceException {
+		XmlValidator validator = new XmlValidator();
+
+		try {
+			XMLReader parser = XMLReaderFactory.createXMLReader();
+			parser.setFeature(VALIDATION_FEATURE_ID, true);
+			parser.setFeature(SCHEMA_VALIDATION_FEATURE_ID, true);
+			parser.setFeature(DYNAMIC_VALIDATION_FEATURE_ID, true);
+			parser.setContentHandler(validator);
+			parser.setErrorHandler(validator);
+			parser.parse(new InputSource(new StringReader(content)));
+		} catch (SAXNotRecognizedException e) {
+			throw new DataServiceException(e, e.toString());
+		} catch (SAXNotSupportedException e) {
+			throw new DataServiceException(e, e.toString());
+		} catch (SAXParseException e) {
+			throw new DataServiceException(e, e.toString());
+		} catch (SAXException e) {
+			throw new DataServiceException(e, e.toString());
+		} catch (IOException e) {
+			throw new DataServiceException(e, e.toString());
+		}
+	}
 }
-
-
-
-

@@ -1,9 +1,9 @@
 /*
  * @(#)TreeLayoutSettings.java 1.0 12-JUL-2004
- * 
+ *
  * Copyright (c) 2004-2005, Gaudenz Alder
- * All rights reserved. 
- * 
+ * All rights reserved.
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -22,6 +22,7 @@ package org.jgraph.layout;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+
 import java.util.Properties;
 
 import javax.swing.JLabel;
@@ -38,45 +39,45 @@ import javax.swing.JTextField;
  * @version 1.0 init
  */
 public class RadialTreeLayoutSettings extends JPanel implements JGraphLayoutSettings {
-
 	protected RadialTreeLayoutAlgorithm layout;
-	
-    private JTextField widthTextField = new JTextField(),
-    				   heightTextField = new JTextField(),
-    				   radiusXTextField = new JTextField(),
-					   radiusYTextField = new JTextField(),
-					   centerXTextField = new JTextField(),
-					   centerYTextField = new JTextField();
+	private JTextField widthTextField = new JTextField();
+	private JTextField heightTextField = new JTextField();
+	private JTextField radiusXTextField = new JTextField();
+	private JTextField radiusYTextField = new JTextField();
+	private JTextField centerXTextField = new JTextField();
+	private JTextField centerYTextField = new JTextField();
 
-    /**
-     * Creates new form SugiyamaLayoutConfigurationDialog
-     */
-    public RadialTreeLayoutSettings(RadialTreeLayoutAlgorithm layout) {
-    	this.layout = layout;
-        JPanel jPanel1 = new javax.swing.JPanel(new GridLayout(6,2,4,4));
-        jPanel1.add(new JLabel("Width"));
-        jPanel1.add(widthTextField);
-        jPanel1.add(new JLabel("Height"));
-        jPanel1.add(heightTextField);
-        // XOr
-        jPanel1.add(new JLabel("Radius X"));
-        jPanel1.add(radiusXTextField);
-        jPanel1.add(new JLabel("Radius Y"));
-        jPanel1.add(radiusYTextField);
-        jPanel1.add(new JLabel("Center X"));
-        jPanel1.add(centerXTextField);
-        jPanel1.add(new JLabel("Center Y"));
-        jPanel1.add(centerYTextField);
-        add(jPanel1, BorderLayout.CENTER);
-        revert();
-    }
-    
+	/**
+	 * Creates new form SugiyamaLayoutConfigurationDialog
+	 */
+	public RadialTreeLayoutSettings(RadialTreeLayoutAlgorithm layout) {
+		this.layout = layout;
+
+		JPanel jPanel1 = new javax.swing.JPanel(new GridLayout(6, 2, 4, 4));
+		jPanel1.add(new JLabel("Width"));
+		jPanel1.add(widthTextField);
+		jPanel1.add(new JLabel("Height"));
+		jPanel1.add(heightTextField);
+		// XOr
+		jPanel1.add(new JLabel("Radius X"));
+		jPanel1.add(radiusXTextField);
+		jPanel1.add(new JLabel("Radius Y"));
+		jPanel1.add(radiusYTextField);
+		jPanel1.add(new JLabel("Center X"));
+		jPanel1.add(centerXTextField);
+		jPanel1.add(new JLabel("Center Y"));
+		jPanel1.add(centerYTextField);
+		add(jPanel1, BorderLayout.CENTER);
+		revert();
+	}
+
 	/**
 	 * Implementation.
 	 */
 	public void revert() {
 		widthTextField.setText(String.valueOf(layout.WIDTH));
 		heightTextField.setText(String.valueOf(layout.HEIGHT));
+
 		if (layout.WIDTH == 0) {
 			centerXTextField.setText(String.valueOf(layout.ROOTX));
 			radiusXTextField.setText(String.valueOf(layout.RADIUSX));
@@ -84,6 +85,7 @@ public class RadialTreeLayoutSettings extends JPanel implements JGraphLayoutSett
 			centerXTextField.setText("0");
 			radiusXTextField.setText("0");
 		}
+
 		if (layout.HEIGHT == 0) {
 			centerYTextField.setText(String.valueOf(layout.ROOTY));
 			radiusYTextField.setText(String.valueOf(layout.RADIUSY));
@@ -92,25 +94,26 @@ public class RadialTreeLayoutSettings extends JPanel implements JGraphLayoutSett
 			radiusYTextField.setText("0");
 		}
 	}
-    
-    private void check() {
-        try {
-        	Double.parseDouble(widthTextField.getText());
-        	Double.parseDouble(heightTextField.getText());
-        	Double.parseDouble(centerXTextField.getText());
-        	Double.parseDouble(centerYTextField.getText());
-        	Double.parseDouble(radiusXTextField.getText());
-        	Double.parseDouble(radiusYTextField.getText());
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-	
+
+	private void check() {
+		try {
+			Double.parseDouble(widthTextField.getText());
+			Double.parseDouble(heightTextField.getText());
+			Double.parseDouble(centerXTextField.getText());
+			Double.parseDouble(centerYTextField.getText());
+			Double.parseDouble(radiusXTextField.getText());
+			Double.parseDouble(radiusYTextField.getText());
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+	}
+
 	/**
 	 * Implementation.
 	 */
 	public void apply() {
 		check();
+
 		Properties props = new Properties();
 		props.put(RadialTreeLayoutAlgorithm.KEY_WIDTH, widthTextField.getText());
 		props.put(RadialTreeLayoutAlgorithm.KEY_HEIGHT, heightTextField.getText());
@@ -120,6 +123,4 @@ public class RadialTreeLayoutSettings extends JPanel implements JGraphLayoutSett
 		props.put(RadialTreeLayoutAlgorithm.KEY_RADIUS_Y, radiusYTextField.getText());
 		layout.setConfiguration(props);
 	}
-
 }
-

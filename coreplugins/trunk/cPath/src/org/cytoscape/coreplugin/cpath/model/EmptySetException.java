@@ -34,6 +34,7 @@
 */
 package org.cytoscape.coreplugin.cpath.model;
 
+
 /**
  * Empty Set Exception.
  *

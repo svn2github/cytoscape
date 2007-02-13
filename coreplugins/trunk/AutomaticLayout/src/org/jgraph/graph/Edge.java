@@ -1,24 +1,24 @@
 /*
- * @(#)Edge.java	1.0 03-JUL-04
- * 
+ * @(#)Edge.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
 import java.io.Serializable;
+
 import java.util.List;
+
 
 /**
  * Defines the requirements for an object that represents an Edge in a
  * GraphModel.
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public interface Edge extends GraphCell {
-
 	/**
 	 * Returns the source of the edge.
 	 */
@@ -42,14 +42,12 @@ public interface Edge extends GraphCell {
 	//
 	// Routing
 	//
-
 	public static interface Routing extends Serializable {
-
 		public static final int NO_PREFERENCE = -1;
 
 		/**
 		 * Returns the points to be used for the edge.
-		 * 
+		 *
 		 * @param edge
 		 *            The edge view to route the points for.
 		 */
@@ -60,7 +58,5 @@ public interface Edge extends GraphCell {
 		 * {@link #NO_PREFERENCE} means no preference.
 		 */
 		public int getPreferredLineStyle(EdgeView edge);
-
 	}
-
 }

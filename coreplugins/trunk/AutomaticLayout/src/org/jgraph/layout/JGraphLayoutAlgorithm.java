@@ -1,9 +1,9 @@
 /*
  * @(#)JGraphLayoutAlgorithm.java 1.0 18-MAY-2004
- * 
+ *
  * Copyright (c) 2001-2005, Gaudenz Alder
- * All rights reserved. 
- * 
+ * All rights reserved.
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -20,12 +20,22 @@
  */
 package org.jgraph.layout;
 
+import cytoscape.task.TaskMonitor;
+
+import org.jgraph.JGraph;
+
+import org.jgraph.graph.CellView;
+import org.jgraph.graph.GraphConstants;
+import org.jgraph.graph.GraphLayoutCache;
+import org.jgraph.graph.VertexView;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
+
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
@@ -36,42 +46,43 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.jgraph.JGraph;
-import org.jgraph.graph.CellView;
-import org.jgraph.graph.GraphConstants;
-import org.jgraph.graph.GraphLayoutCache;
-import org.jgraph.graph.VertexView;
-
-import cytoscape.task.TaskMonitor;
 
 /**
  *
  */
 public abstract class JGraphLayoutAlgorithm {
-
 	protected static Set LAYOUT_ATTRIBUTES = new HashSet();
-	
+
 	static {
 		LAYOUT_ATTRIBUTES.add(GraphConstants.BOUNDS);
 		LAYOUT_ATTRIBUTES.add(GraphConstants.POINTS);
 		LAYOUT_ATTRIBUTES.add(GraphConstants.LABELPOSITION);
 		LAYOUT_ATTRIBUTES.add(GraphConstants.ROUTING);
 	}
-	
+
 	/**
 	 * Set to false if the algorithm should terminate immediately
 	 */
 	boolean isAllowedToRun = true;
-	
+
 	/**
 	 * Set to non zero if you want to indicate progress
 	 */
-	int progress = 0, maximumProgress = 0;
+	int progress = 0;
+
+	/**
+	 * Set to non zero if you want to indicate progress
+	 */
+	int maximumProgress = 0;
 
 	/**
 	 * Added for Cytoscape support
 	 */
 	public TaskMonitor taskMonitor = null;
+
+	/**
+	 * 
+	 */
 	public boolean canceled = false;
 
 	/**
@@ -85,14 +96,14 @@ public abstract class JGraphLayoutAlgorithm {
 	public JGraphLayoutSettings createSettings() {
 		return null;
 	}
-	
+
 	/**
 	 * Get a human readable hint for using this layout.
 	 */
 	public String getHint() {
 		return "";
 	}
-	
+
 	/**
 	 * Executes the layout algorithm with the given cells to be moved
 	 * @param graph JGraph to be altered by layout
@@ -101,7 +112,7 @@ public abstract class JGraphLayoutAlgorithm {
 	public void run(JGraph graph, Object[] cells) {
 		run(graph, cells, null);
 	}
-	
+
 	/**
 	 * Executes the layout algorithm specifying which cells are to remain
 	 * in place after the layout is applied.
@@ -109,9 +120,7 @@ public abstract class JGraphLayoutAlgorithm {
 	 * @param dynamic_cells Cells that are to be moved by the layout
 	 * @param static_cells Cells that are not to be moved, but allowed for by the layout
 	 */
-	public abstract void run(	JGraph jgraph,
-								Object[] dynamic_cells,
-								Object[] static_cells);
+	public abstract void run(JGraph jgraph, Object[] dynamic_cells, Object[] static_cells);
 
 	/**
 	 * @return Returns the isAllowedToRun.
@@ -119,13 +128,14 @@ public abstract class JGraphLayoutAlgorithm {
 	public boolean isAllowedToRun() {
 		return isAllowedToRun;
 	}
+
 	/**
 	 * @param isAllowedToRun The isAllowedToRun to set.
 	 */
 	public void setAllowedToRun(boolean isAllowedToRun) {
 		this.isAllowedToRun = isAllowedToRun;
 	}
-	
+
 	/**
 	 * Returns the maximum progress
 	 */
@@ -152,8 +162,9 @@ public abstract class JGraphLayoutAlgorithm {
 	 */
 	public void setProgress(int progress) {
 		this.progress = progress;
-		if (taskMonitor != null) 
-			taskMonitor.setPercentCompleted((int)progress);
+
+		if (taskMonitor != null)
+			taskMonitor.setPercentCompleted((int) progress);
 	}
 
 	/**
@@ -166,14 +177,14 @@ public abstract class JGraphLayoutAlgorithm {
 	 * @param apply Text for apply button
 	 * @return JDialog dialog to be displayed
 	 */
-	public static JDialog createDialog(final JGraphLayoutSettings settings, 
-				JFrame parent, String title, String close, String apply)
-	{
+	public static JDialog createDialog(final JGraphLayoutSettings settings, JFrame parent,
+	                                   String title, String close, String apply) {
 		if (settings instanceof Component)
 			return populateDialog(settings, new JDialog(parent, title, true), close, apply);
+
 		return null;
 	}
-	
+
 	/**
 	 * A utility method to create a simple dialog with
 	 * close and apply button.
@@ -184,14 +195,14 @@ public abstract class JGraphLayoutAlgorithm {
 	 * @param apply Text for apply button
 	 * @return JDialog dialog to be displayed
 	 */
-	public static JDialog createDialog(final JGraphLayoutSettings settings, 
-				JDialog parent, String title, String close, String apply)
-	{
+	public static JDialog createDialog(final JGraphLayoutSettings settings, JDialog parent,
+	                                   String title, String close, String apply) {
 		if (settings instanceof Component)
 			return populateDialog(settings, new JDialog(parent, title, true), close, apply);
+
 		return null;
 	}
-	
+
 	/**
 	 * A utility method to create a simple dialog with
 	 * close and apply button.
@@ -201,32 +212,36 @@ public abstract class JGraphLayoutAlgorithm {
 	 * @param apply Text for apply button
 	 * @return JDialog showing the settings for the layout
 	 */
-	public static JDialog populateDialog(final JGraphLayoutSettings settings, 
-				final JDialog dialog, String close, String apply)
-	{
-		if (dialog != null && settings instanceof Component) {
+	public static JDialog populateDialog(final JGraphLayoutSettings settings, final JDialog dialog,
+	                                     String close, String apply) {
+		if ((dialog != null) && settings instanceof Component) {
 			dialog.getContentPane().setLayout(new BorderLayout());
 			dialog.getContentPane().add((Component) settings, BorderLayout.CENTER);
+
 			JButton cancelButton = new JButton(close);
 			cancelButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					dialog.dispose();
-				}
-			});
+					public void actionPerformed(ActionEvent e) {
+						dialog.dispose();
+					}
+				});
+
 			JButton applyButton = new JButton(apply);
 			applyButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					settings.apply();
-					dialog.dispose();
-				}
-			});
+					public void actionPerformed(ActionEvent e) {
+						settings.apply();
+						dialog.dispose();
+					}
+				});
+
 			JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 			buttonPanel.add(applyButton);
 			buttonPanel.add(cancelButton);
 			dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 			dialog.getRootPane().setDefaultButton(applyButton);
+
 			return dialog;
 		}
+
 		return dialog;
 	}
 
@@ -236,15 +251,10 @@ public abstract class JGraphLayoutAlgorithm {
 	 * @param layout The layout algorithm to be applied
 	 * @param cells Cells that are to be moved by the layout
 	 */
-	public static void applyLayout(	JGraph sourceGraph,
-			JGraphLayoutAlgorithm layout,
-			Object[] cells ) {
-		JGraphLayoutAlgorithm.applyLayout(sourceGraph,
-											layout,
-											cells,
-											null);
+	public static void applyLayout(JGraph sourceGraph, JGraphLayoutAlgorithm layout, Object[] cells) {
+		JGraphLayoutAlgorithm.applyLayout(sourceGraph, layout, cells, null);
 	}
-	
+
 	/**
 	 * Takes a local clone of the JGraph and calls the run() method on the
 	 * specified layout algorithm on the local JGraph. After the layout has
@@ -255,28 +265,32 @@ public abstract class JGraphLayoutAlgorithm {
 	 * @param dynamic_cells Cells that are to be moved by the layout
 	 * @param static_cells Cells that are not to be moved, but allowed for by the layout
 	 */
-	public static void applyLayout(	JGraph sourceGraph,
-									JGraphLayoutAlgorithm layout,
-									Object[] dynamic_cells,
-									Object[] static_cells ) {
+	public static void applyLayout(JGraph sourceGraph, JGraphLayoutAlgorithm layout,
+	                               Object[] dynamic_cells, Object[] static_cells) {
 		JGraph localGraph = new JGraph(sourceGraph.getModel());
 		localGraph.setBounds(sourceGraph.getBounds());
+
 		GraphLayoutCache cache = localGraph.getGraphLayoutCache();
 		cache.setLocalAttributes(LAYOUT_ATTRIBUTES);
 		layout.run(localGraph, dynamic_cells, static_cells);
+
 		if (layout.isAllowedToRun()) {
 			// fetch attributes from cellview and write to source Graph
 			Map nested = new Hashtable();
 			CellView[] cellViews = cache.getAllDescendants(cache.getRoots());
+
 			for (int i = 0; i < cellViews.length; i++) {
 				Map attrs = cellViews[i].getAttributes();
 				Rectangle2D bounds = GraphConstants.getBounds(attrs);
-				if (cellViews[i] instanceof VertexView && bounds == null) {
+
+				if (cellViews[i] instanceof VertexView && (bounds == null)) {
 					GraphConstants.setBounds(attrs, cellViews[i].getBounds());
 				}
+
 				if (!attrs.isEmpty())
 					nested.put(cellViews[i].getCell(), attrs);
 			}
+
 			if (!nested.isEmpty())
 				sourceGraph.getGraphLayoutCache().edit(nested, null, null, null);
 		}
@@ -285,13 +299,14 @@ public abstract class JGraphLayoutAlgorithm {
 	/**
 	 * Added for Cytoscape support
 	 */
-	public void setTaskMonitor (TaskMonitor taskMonitor) {
+	public void setTaskMonitor(TaskMonitor taskMonitor) {
 		this.taskMonitor = taskMonitor;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void setCanceled() {
 		this.canceled = true;
 	}
-	
-	
 }

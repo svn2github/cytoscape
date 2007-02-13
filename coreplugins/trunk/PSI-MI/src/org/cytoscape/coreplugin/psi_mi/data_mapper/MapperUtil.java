@@ -39,105 +39,110 @@ import org.cytoscape.coreplugin.psi_mi.schema.mi1.ProteinInteractorType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractorElementType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.NamesType;
 
+
 /**
  * Mapper Utility Class.
  *
  * @author Ethan Cerami.
  */
 public class MapperUtil {
+	/**
+	 * If there is no short label, we need to determine an interactor
+	 * name from an External Reference or the full name.
+	 * <p/>
+	 * Here are the rules:
+	 * <OL>
+	 * <LI>If an interactor has a short label, we use it.
+	 * <LI>Otherwise, try to use a SWISS-PROT or UNIPROT ID.
+	 * <LI>Otherwise, try to use the FullName.
+	 * <LI>Otherwise, try to use XML ID.
+	 * <LI>Otherwise, throw a MapperException.
+	 * </OL>
+	 *
+	 * @param interactor ProteinInteractor
+	 * @param refs       Array of External Reference Objects.
+	 * @return Name Substitute.
+	 * @throws MapperException Error in Mapping.
+	 */
+	public static String extractName(InteractorElementType interactor, ExternalReference[] refs)
+	    throws MapperException {
+		String shortLabel = null;
+		String fullName = null;
+		NamesType names = interactor.getNames();
 
-    /**
-     * If there is no short label, we need to determine an interactor
-     * name from an External Reference or the full name.
-     * <p/>
-     * Here are the rules:
-     * <OL>
-     * <LI>If an interactor has a short label, we use it.
-     * <LI>Otherwise, try to use a SWISS-PROT or UNIPROT ID.
-     * <LI>Otherwise, try to use the FullName.
-     * <LI>Otherwise, try to use XML ID.
-     * <LI>Otherwise, throw a MapperException.
-     * </OL>
-     *
-     * @param interactor ProteinInteractor
-     * @param refs       Array of External Reference Objects.
-     * @return Name Substitute.
-     * @throws MapperException Error in Mapping.
-     */
-    public static String extractName(InteractorElementType interactor,
-            ExternalReference refs[]) throws MapperException {
-        String shortLabel = null;
-        String fullName = null;
-        NamesType names = interactor.getNames();
-        if (names != null) {
-            shortLabel = names.getShortLabel();
-            fullName = names.getFullName();
-        }
-        if (shortLabel != null && shortLabel.trim().length() > 0) {
-            return shortLabel;
-        } else {
-            if (refs != null) {
-                for (int i = 0; i < refs.length; i++) {
-                    String dbName = refs[i].getDatabase();
-                    if (dbName.equals("SWP")
-                            || dbName.equals("SWISS-PROT")
-                            || dbName.equalsIgnoreCase("SwissProt")
-                            || dbName.equalsIgnoreCase("UniProt")) {
-                        return refs[i].getId();
-                    }
-                }
-            }
-        }
-        if (fullName != null && fullName.trim().length() > 0) {
-            return fullName;
-        } else if (("" + interactor.getId()) != null
-                && ("" + interactor.getId()).trim().length() > 0) {
-            return "" + interactor.getId();
-        } else {
-            throw new MapperException("Unable to determine name"
-                    + "for interactor:  " + interactor.getId());
-        }
-    }
+		if (names != null) {
+			shortLabel = names.getShortLabel();
+			fullName = names.getFullName();
+		}
 
-    /**
-     * Exracts Interactor Name.
-     * @param interactor Interactor Object.
-     * @param refs Array of External References.
-     * @return Interaction name.
-     * @throws MapperException Mapper Error.
-     */
-    public static String extractName(ProteinInteractorType interactor,
-            ExternalReference refs[]) throws MapperException {
-        String shortLabel = null;
-        String fullName = null;
-        org.cytoscape.coreplugin.psi_mi.schema.mi1.NamesType names = interactor.getNames();
-        if (names != null) {
-            shortLabel = names.getShortLabel();
-            fullName = names.getFullName();
-        }
-        if (shortLabel != null && shortLabel.trim().length() > 0) {
-            return shortLabel;
-        } else {
-            if (refs != null) {
-                for (int i = 0; i < refs.length; i++) {
-                    String dbName = refs[i].getDatabase();
-                    if (dbName.equals("SWP")
-                            || dbName.equals("SWISS-PROT")
-                            || dbName.equalsIgnoreCase("SwissProt")
-                            || dbName.equalsIgnoreCase("UniProt")) {
-                        return refs[i].getId();
-                    }
-                }
-            }
-        }
-        if (fullName != null && fullName.trim().length() > 0) {
-            return fullName;
-        } else if (interactor.getId() != null
-                && interactor.getId().trim().length() > 0) {
-            return interactor.getId();
-        } else {
-            throw new MapperException("Unable to determine name"
-                    + "for interactor:  " + interactor.getId());
-        }
-    }
+		if ((shortLabel != null) && (shortLabel.trim().length() > 0)) {
+			return shortLabel;
+		} else {
+			if (refs != null) {
+				for (int i = 0; i < refs.length; i++) {
+					String dbName = refs[i].getDatabase();
+
+					if (dbName.equals("SWP") || dbName.equals("SWISS-PROT")
+					    || dbName.equalsIgnoreCase("SwissProt")
+					    || dbName.equalsIgnoreCase("UniProt")) {
+						return refs[i].getId();
+					}
+				}
+			}
+		}
+
+		if ((fullName != null) && (fullName.trim().length() > 0)) {
+			return fullName;
+		} else if ((("" + interactor.getId()) != null)
+		           && (("" + interactor.getId()).trim().length() > 0)) {
+			return "" + interactor.getId();
+		} else {
+			throw new MapperException("Unable to determine name" + "for interactor:  "
+			                          + interactor.getId());
+		}
+	}
+
+	/**
+	 * Exracts Interactor Name.
+	 * @param interactor Interactor Object.
+	 * @param refs Array of External References.
+	 * @return Interaction name.
+	 * @throws MapperException Mapper Error.
+	 */
+	public static String extractName(ProteinInteractorType interactor, ExternalReference[] refs)
+	    throws MapperException {
+		String shortLabel = null;
+		String fullName = null;
+		org.cytoscape.coreplugin.psi_mi.schema.mi1.NamesType names = interactor.getNames();
+
+		if (names != null) {
+			shortLabel = names.getShortLabel();
+			fullName = names.getFullName();
+		}
+
+		if ((shortLabel != null) && (shortLabel.trim().length() > 0)) {
+			return shortLabel;
+		} else {
+			if (refs != null) {
+				for (int i = 0; i < refs.length; i++) {
+					String dbName = refs[i].getDatabase();
+
+					if (dbName.equals("SWP") || dbName.equals("SWISS-PROT")
+					    || dbName.equalsIgnoreCase("SwissProt")
+					    || dbName.equalsIgnoreCase("UniProt")) {
+						return refs[i].getId();
+					}
+				}
+			}
+		}
+
+		if ((fullName != null) && (fullName.trim().length() > 0)) {
+			return fullName;
+		} else if ((interactor.getId() != null) && (interactor.getId().trim().length() > 0)) {
+			return interactor.getId();
+		} else {
+			throw new MapperException("Unable to determine name" + "for interactor:  "
+			                          + interactor.getId());
+		}
+	}
 }

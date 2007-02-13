@@ -1,10 +1,42 @@
 /*
- * @(#)BasicGraphUI.java	1.0 03-JUL-04
- * 
+ * @(#)BasicGraphUI.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.plaf.basic;
+
+import org.jgraph.JGraph;
+
+import org.jgraph.event.GraphLayoutCacheEvent;
+import org.jgraph.event.GraphLayoutCacheListener;
+import org.jgraph.event.GraphModelEvent;
+import org.jgraph.event.GraphModelListener;
+import org.jgraph.event.GraphSelectionEvent;
+import org.jgraph.event.GraphSelectionListener;
+
+import org.jgraph.graph.AbstractCellView;
+import org.jgraph.graph.AttributeMap;
+import org.jgraph.graph.BasicMarqueeHandler;
+import org.jgraph.graph.CellHandle;
+import org.jgraph.graph.CellView;
+import org.jgraph.graph.CellViewRenderer;
+import org.jgraph.graph.ConnectionSet;
+import org.jgraph.graph.DefaultGraphModel;
+import org.jgraph.graph.EdgeRenderer;
+import org.jgraph.graph.EdgeView;
+import org.jgraph.graph.GraphCell;
+import org.jgraph.graph.GraphCellEditor;
+import org.jgraph.graph.GraphConstants;
+import org.jgraph.graph.GraphContext;
+import org.jgraph.graph.GraphLayoutCache;
+import org.jgraph.graph.GraphModel;
+import org.jgraph.graph.GraphSelectionModel;
+import org.jgraph.graph.GraphTransferHandler;
+import org.jgraph.graph.ParentMap;
+import org.jgraph.graph.PortView;
+
+import org.jgraph.plaf.GraphUI;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -38,9 +70,12 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.io.Serializable;
+
 import java.util.Map;
 import java.util.TooManyListenersException;
 
@@ -65,53 +100,23 @@ import javax.swing.plaf.ActionMapUIResource;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
 
-import org.jgraph.JGraph;
-import org.jgraph.event.GraphLayoutCacheEvent;
-import org.jgraph.event.GraphLayoutCacheListener;
-import org.jgraph.event.GraphModelEvent;
-import org.jgraph.event.GraphModelListener;
-import org.jgraph.event.GraphSelectionEvent;
-import org.jgraph.event.GraphSelectionListener;
-import org.jgraph.graph.AbstractCellView;
-import org.jgraph.graph.AttributeMap;
-import org.jgraph.graph.BasicMarqueeHandler;
-import org.jgraph.graph.CellHandle;
-import org.jgraph.graph.CellView;
-import org.jgraph.graph.CellViewRenderer;
-import org.jgraph.graph.ConnectionSet;
-import org.jgraph.graph.DefaultGraphModel;
-import org.jgraph.graph.EdgeRenderer;
-import org.jgraph.graph.EdgeView;
-import org.jgraph.graph.GraphCell;
-import org.jgraph.graph.GraphCellEditor;
-import org.jgraph.graph.GraphConstants;
-import org.jgraph.graph.GraphContext;
-import org.jgraph.graph.GraphLayoutCache;
-import org.jgraph.graph.GraphModel;
-import org.jgraph.graph.GraphSelectionModel;
-import org.jgraph.graph.GraphTransferHandler;
-import org.jgraph.graph.ParentMap;
-import org.jgraph.graph.PortView;
-import org.jgraph.plaf.GraphUI;
 
 /**
  * The basic L&F for a graph data structure.
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public class BasicGraphUI extends GraphUI implements Serializable {
-
 	/**
 	 * Controls live-preview in dragEnabled mode. This is used to disable
 	 * live-preview in dragEnabled mode on Java 1.4.0 to workaround a bug that
 	 * cause the VM to hang during concurrent DnD and repaints. Is this still
 	 * required?
 	 */
-	public static final boolean DNDPREVIEW = System.getProperty("java.version")
-			.compareTo("1.4.0") < 0
-			|| System.getProperty("java.version").compareTo("1.4.0") > 0;
+	public static final boolean DNDPREVIEW = (System.getProperty("java.version").compareTo("1.4.0") < 0)
+	                                         || (System.getProperty("java.version")
+	                                                   .compareTo("1.4.0") > 0);
 
 	/** Border in pixels to scroll if marquee or dragging are active. */
 	public static int SCROLLBORDER = 18;
@@ -175,7 +180,10 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	protected Component editingComponent;
 
 	/** The focused cell under the mousepointer and the last focused cell. */
-	protected CellView focus, lastFocus;
+	protected CellView focus;
+
+	/** The focused cell under the mousepointer and the last focused cell. */
+	protected CellView lastFocus;
 
 	/** Path that is being edited. */
 	protected Object editingCell;
@@ -233,10 +241,20 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	/** The drop target where the default listener was last installed. */
 	protected DropTarget dropTarget = null;
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param x DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static ComponentUI createUI(JComponent x) {
 		return new BasicGraphUI();
 	}
 
+	/**
+	 * Creates a new BasicGraphUI object.
+	 */
 	public BasicGraphUI() {
 		super();
 	}
@@ -252,11 +270,15 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	protected void setModel(GraphModel model) {
 		cancelEditing(graph);
-		if (graphModel != null && graphModelListener != null)
+
+		if ((graphModel != null) && (graphModelListener != null))
 			graphModel.removeGraphModelListener(graphModelListener);
+
 		graphModel = model;
-		if (graphModel != null && graphModelListener != null)
+
+		if ((graphModel != null) && (graphModelListener != null))
 			graphModel.addGraphModelListener(graphModelListener);
+
 		if (graphModel != null) // jmv : to avoid NullPointerException
 			updateSize();
 	}
@@ -267,13 +289,15 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	protected void setGraphLayoutCache(GraphLayoutCache cache) {
 		cancelEditing(graph);
-		if (graphLayoutCache != null && graphLayoutCacheListener != null)
-			graphLayoutCache
-					.removeGraphLayoutCacheListener(graphLayoutCacheListener);
+
+		if ((graphLayoutCache != null) && (graphLayoutCacheListener != null))
+			graphLayoutCache.removeGraphLayoutCacheListener(graphLayoutCacheListener);
+
 		graphLayoutCache = cache;
-		if (graphLayoutCache != null && graphLayoutCacheListener != null)
-			graphLayoutCache
-					.addGraphLayoutCacheListener(graphLayoutCacheListener);
+
+		if ((graphLayoutCache != null) && (graphLayoutCacheListener != null))
+			graphLayoutCache.addGraphLayoutCacheListener(graphLayoutCacheListener);
+
 		updateSize();
 	}
 
@@ -290,13 +314,15 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	protected void setSelectionModel(GraphSelectionModel newLSM) {
 		cancelEditing(graph);
-		if (graphSelectionListener != null && graphSelectionModel != null)
-			graphSelectionModel
-					.removeGraphSelectionListener(graphSelectionListener);
+
+		if ((graphSelectionListener != null) && (graphSelectionModel != null))
+			graphSelectionModel.removeGraphSelectionListener(graphSelectionListener);
+
 		graphSelectionModel = newLSM;
-		if (graphSelectionModel != null && graphSelectionListener != null)
-			graphSelectionModel
-					.addGraphSelectionListener(graphSelectionListener);
+
+		if ((graphSelectionModel != null) && (graphSelectionListener != null))
+			graphSelectionModel.addGraphSelectionListener(graphSelectionListener);
+
 		if (graph != null)
 			graph.repaint();
 	}
@@ -306,7 +332,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	//
 
 	/**
-	 * 
+	 *
 	 */
 
 	/**
@@ -331,6 +357,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	protected Object getFocusedCell() {
 		if (focus != null)
 			return focus.getCell();
+
 		return null;
 	}
 
@@ -340,30 +367,36 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		if (view != null) {
 			Object cell = view.getCell();
 			String valueStr = graph.convertValueToString(cell);
-			boolean label = (valueStr != null && valueStr.length() > 0);
+			boolean label = ((valueStr != null) && (valueStr.length() > 0));
 			boolean icon = GraphConstants.getIcon(view.getAllAttributes()) != null;
+
 			if (label || icon) {
 				boolean focus = (getFocusedCell() == cell) && graph.hasFocus();
+
 				// Only ever removed when UI changes, this is OK!
-				Component component = view.getRendererComponent(graph, focus,
-						false, false);
+				Component component = view.getRendererComponent(graph, focus, false, false);
+
 				if (component != null) {
 					graph.add(component);
 					component.validate();
+
 					Dimension d = component.getPreferredSize();
-					int inset = 2 * GraphConstants.getInset(view
-							.getAllAttributes());
+					int inset = 2 * GraphConstants.getInset(view.getAllAttributes());
 					d.width += inset;
 					d.height += inset;
+
 					return d;
 				}
 			}
+
 			if (view.getBounds() == null)
 				view.update();
+
 			Rectangle2D bounds = view.getBounds();
-			return new Dimension((int) bounds.getWidth(), (int) bounds
-					.getHeight());
+
+			return new Dimension((int) bounds.getWidth(), (int) bounds.getHeight());
 		}
+
 		return null;
 	}
 
@@ -395,8 +428,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	/**
 	 * From GraphUI interface.
 	 */
-	public void selectCellsForEvent(JGraph graph, Object[] cells,
-			MouseEvent event) {
+	public void selectCellsForEvent(JGraph graph, Object[] cells, MouseEvent event) {
 		selectCellsForEvent(cells, event);
 	}
 
@@ -406,7 +438,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 * selected, or deselected. Otherwise the cells are selected.
 	 */
 	public void selectCellsForEvent(Object[] cells, MouseEvent event) {
-		if (cells == null || !graph.isSelectionEnabled())
+		if ((cells == null) || !graph.isSelectionEnabled())
 			return;
 
 		// Toggle selection
@@ -464,14 +496,17 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	public boolean isToggleSelectionEvent(MouseEvent e) {
 		switch (Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) {
-		case InputEvent.CTRL_MASK:
-			return e.isControlDown();
-		case InputEvent.ALT_MASK:
-			return e.isAltDown();
-		case InputEvent.META_MASK:
-			return e.isMetaDown();
-		default:
-			return false;
+			case InputEvent.CTRL_MASK:
+				return e.isControlDown();
+
+			case InputEvent.ALT_MASK:
+				return e.isAltDown();
+
+			case InputEvent.META_MASK:
+				return e.isMetaDown();
+
+			default:
+				return false;
 		}
 	}
 
@@ -482,6 +517,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	public boolean isForceMarqueeEvent(MouseEvent event) {
 		if (marquee != null)
 			return marquee.isForceMarqueeEvent(event);
+
 		return false;
 	}
 
@@ -491,6 +527,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	public boolean isConstrainedMoveEvent(MouseEvent event) {
 		if (event != null)
 			return event.isShiftDown();
+
 		return false;
 	}
 
@@ -512,10 +549,12 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 * stop.
 	 */
 	public boolean stopEditing(JGraph graph) {
-		if (editingComponent != null && cellEditor.stopCellEditing()) {
+		if ((editingComponent != null) && cellEditor.stopCellEditing()) {
 			completeEditing(false, false, true);
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -525,6 +564,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	public void cancelEditing(JGraph graph) {
 		if (editingComponent != null)
 			completeEditing(false, true, false);
+
 		// Escape key is handled by the KeyHandler.keyPressed inner class method
 	}
 
@@ -534,6 +574,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	public void startEditingAtCell(JGraph graph, Object cell) {
 		graph.scrollCellToVisible(cell);
+
 		if (cell != null)
 			startEditing(cell, null);
 	}
@@ -546,13 +587,14 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	}
 
 	//
-	// Install methods
-	//
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
 	public void installUI(JComponent c) {
 		if (c == null)
-			throw new NullPointerException(
-					"null component passed to BasicGraphUI.installUI()");
+			throw new NullPointerException("null component passed to BasicGraphUI.installUI()");
 
 		graph = (JGraph) c;
 		marquee = graph.getMarqueeHandler();
@@ -594,11 +636,11 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 * and feel specific variables in JGraph.
 	 */
 	protected void installDefaults() {
-		if (graph.getBackground() == null
-				|| graph.getBackground() instanceof UIResource) {
+		if ((graph.getBackground() == null) || graph.getBackground() instanceof UIResource) {
 			graph.setBackground(UIManager.getColor("Tree.background"));
 		}
-		if (graph.getFont() == null || graph.getFont() instanceof UIResource) {
+
+		if ((graph.getFont() == null) || graph.getFont() instanceof UIResource) {
 			// UIManager.getFont not supported in headless environment
 			try {
 				graph.setFont(UIManager.getFont("Tree.font"));
@@ -606,11 +648,10 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 				// No default font
 			}
 		}
+
 		// Set JGraph's laf-specific colors
 		graph.setMarqueeColor(UIManager.getColor("Table.gridColor"));
-		graph
-				.setHandleColor(UIManager
-						.getColor("MenuItem.selectionBackground"));
+		graph.setHandleColor(UIManager.getColor("MenuItem.selectionBackground"));
 		graph.setLockedHandleColor(UIManager.getColor("MenuItem.background"));
 		graph.setGridColor(UIManager.getColor("Tree.selectionBackground"));
 		graph.setOpaque(true);
@@ -623,8 +664,10 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	protected void installListeners() {
 		// Install Local Handlers
 		TransferHandler th = graph.getTransferHandler();
-		if (th == null || th instanceof UIResource) {
+
+		if ((th == null) || th instanceof UIResource) {
 			defaultTransferHandler = createTransferHandler();
+
 			// Not supported in headless environment
 			try {
 				graph.setTransferHandler(defaultTransferHandler);
@@ -632,12 +675,14 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 				// No default font
 			}
 		}
+
 		if (graphLayoutCache != null) {
 			graphLayoutCacheListener = createGraphLayoutCacheListener();
-			graphLayoutCache
-					.addGraphLayoutCacheListener(graphLayoutCacheListener);
+			graphLayoutCache.addGraphLayoutCacheListener(graphLayoutCacheListener);
 		}
+
 		dropTarget = graph.getDropTarget();
+
 		try {
 			if (dropTarget != null) {
 				defaultDropTargetListener = new GraphDropTargetListener();
@@ -650,23 +695,25 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		// Install Listeners
 		if ((propertyChangeListener = createPropertyChangeListener()) != null)
 			graph.addPropertyChangeListener(propertyChangeListener);
+
 		if ((mouseListener = createMouseListener()) != null) {
 			graph.addMouseListener(mouseListener);
+
 			if (mouseListener instanceof MouseMotionListener) {
-				graph
-						.addMouseMotionListener((MouseMotionListener) mouseListener);
+				graph.addMouseMotionListener((MouseMotionListener) mouseListener);
 			}
 		}
+
 		if ((keyListener = createKeyListener()) != null) {
 			graph.addKeyListener(keyListener);
 		}
-		if ((graphModelListener = createGraphModelListener()) != null
-				&& graphModel != null)
+
+		if (((graphModelListener = createGraphModelListener()) != null) && (graphModel != null))
 			graphModel.addGraphModelListener(graphModelListener);
-		if ((graphSelectionListener = createGraphSelectionListener()) != null
-				&& graphSelectionModel != null)
-			graphSelectionModel
-					.addGraphSelectionListener(graphSelectionListener);
+
+		if (((graphSelectionListener = createGraphSelectionListener()) != null)
+		    && (graphSelectionModel != null))
+			graphSelectionModel.addGraphSelectionListener(graphSelectionListener);
 	}
 
 	/**
@@ -674,8 +721,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	protected void installKeyboardActions() {
 		InputMap km = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-		SwingUtilities.replaceUIInputMap(graph,
-				JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, km);
+		SwingUtilities.replaceUIInputMap(graph, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, km);
 		km = getInputMap(JComponent.WHEN_FOCUSED);
 		SwingUtilities.replaceUIInputMap(graph, JComponent.WHEN_FOCUSED, km);
 		SwingUtilities.replaceUIActionMap(graph, createActionMap());
@@ -689,6 +735,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 			return (InputMap) UIManager.get("Tree.ancestorInputMap");
 		else if (condition == JComponent.WHEN_FOCUSED)
 			return (InputMap) UIManager.get("Tree.focusInputMap");
+
 		return null;
 	}
 
@@ -699,33 +746,27 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		// 1: Up, 2: Right, 3: Down, 4: Left
 		ActionMap map = new ActionMapUIResource();
 
-		map
-				.put("selectPrevious", new GraphIncrementAction(1,
-						"selectPrevious"));
-		map.put("selectPreviousChangeLead", new GraphIncrementAction(1,
-				"selectPreviousLead"));
-		map.put("selectPreviousExtendSelection", new GraphIncrementAction(1,
-				"selectPreviousExtendSelection"));
+		map.put("selectPrevious", new GraphIncrementAction(1, "selectPrevious"));
+		map.put("selectPreviousChangeLead", new GraphIncrementAction(1, "selectPreviousLead"));
+		map.put("selectPreviousExtendSelection",
+		        new GraphIncrementAction(1, "selectPreviousExtendSelection"));
 
 		map.put("selectParent", new GraphIncrementAction(4, "selectParent"));
-		map.put("selectParentChangeLead", new GraphIncrementAction(4,
-				"selectParentChangeLead"));
+		map.put("selectParentChangeLead", new GraphIncrementAction(4, "selectParentChangeLead"));
 
 		map.put("selectNext", new GraphIncrementAction(3, "selectNext"));
-		map.put("selectNextChangeLead", new GraphIncrementAction(3,
-				"selectNextLead"));
-		map.put("selectNextExtendSelection", new GraphIncrementAction(3,
-				"selectNextExtendSelection"));
+		map.put("selectNextChangeLead", new GraphIncrementAction(3, "selectNextLead"));
+		map.put("selectNextExtendSelection",
+		        new GraphIncrementAction(3, "selectNextExtendSelection"));
 
 		map.put("selectChild", new GraphIncrementAction(2, "selectChild"));
-		map.put("selectChildChangeLead", new GraphIncrementAction(2,
-				"selectChildChangeLead"));
+		map.put("selectChildChangeLead", new GraphIncrementAction(2, "selectChildChangeLead"));
 
 		map.put("cancel", new GraphCancelEditingAction("cancel"));
 		map.put("startEditing", new GraphEditAction("startEditing"));
 		map.put("selectAll", new GraphSelectAllAction("selectAll", true));
-		map.put("clearSelection", new GraphSelectAllAction("clearSelection",
-				false));
+		map.put("clearSelection", new GraphSelectAllAction("clearSelection", false));
+
 		return map;
 	}
 
@@ -816,9 +857,11 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	}
 
 	//
-	// Uninstall methods
-	//
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
 	public void uninstallUI(JComponent c) {
 		cancelEditing(graph);
 		uninstallListeners();
@@ -844,36 +887,42 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	protected void uninstallListeners() {
 		// Uninstall Handlers
 		TransferHandler th = graph.getTransferHandler();
+
 		if (th == defaultTransferHandler)
 			graph.setTransferHandler(null);
+
 		if (graphLayoutCacheListener != null)
-			graphLayoutCache
-					.removeGraphLayoutCacheListener(graphLayoutCacheListener);
-		if (dropTarget != null && defaultDropTargetListener != null)
+			graphLayoutCache.removeGraphLayoutCacheListener(graphLayoutCacheListener);
+
+		if ((dropTarget != null) && (defaultDropTargetListener != null))
 			dropTarget.removeDropTargetListener(defaultDropTargetListener);
+
 		if (componentListener != null)
 			graph.removeComponentListener(componentListener);
+
 		if (propertyChangeListener != null)
 			graph.removePropertyChangeListener(propertyChangeListener);
+
 		if (mouseListener != null) {
 			graph.removeMouseListener(mouseListener);
+
 			if (mouseListener instanceof MouseMotionListener)
-				graph
-						.removeMouseMotionListener((MouseMotionListener) mouseListener);
+				graph.removeMouseMotionListener((MouseMotionListener) mouseListener);
 		}
+
 		if (keyListener != null)
 			graph.removeKeyListener(keyListener);
-		if (graphModel != null && graphModelListener != null)
+
+		if ((graphModel != null) && (graphModelListener != null))
 			graphModel.removeGraphModelListener(graphModelListener);
-		if (graphSelectionListener != null && graphSelectionModel != null)
-			graphSelectionModel
-					.removeGraphSelectionListener(graphSelectionListener);
+
+		if ((graphSelectionListener != null) && (graphSelectionModel != null))
+			graphSelectionModel.removeGraphSelectionListener(graphSelectionListener);
 	}
 
 	protected void uninstallKeyboardActions() {
 		SwingUtilities.replaceUIActionMap(graph, null);
-		SwingUtilities.replaceUIInputMap(graph,
-				JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, null);
+		SwingUtilities.replaceUIInputMap(graph, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, null);
 		SwingUtilities.replaceUIInputMap(graph, JComponent.WHEN_FOCUSED, null);
 	}
 
@@ -894,16 +943,17 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	public void paint(Graphics g, JComponent c) {
 		if (graph != c)
-			throw new InternalError("BasicGraphUI cannot paint " + c.toString()
-					+ "; " + graph + " was expected.");
+			throw new InternalError("BasicGraphUI cannot paint " + c.toString() + "; " + graph
+			                        + " was expected.");
 
 		Graphics2D g2 = (Graphics2D) g;
 		Rectangle2D tmp = g.getClipBounds();
-		Rectangle2D paintBounds = new Rectangle2D.Double(tmp.getX(),
-				tmp.getY(), tmp.getWidth(), tmp.getHeight());
-		Rectangle2D real = graph.fromScreen(new Rectangle2D.Double(paintBounds
-				.getX(), paintBounds.getY(), paintBounds.getWidth(),
-				paintBounds.getHeight()));
+		Rectangle2D paintBounds = new Rectangle2D.Double(tmp.getX(), tmp.getY(), tmp.getWidth(),
+		                                                 tmp.getHeight());
+		Rectangle2D real = graph.fromScreen(new Rectangle2D.Double(paintBounds.getX(),
+		                                                           paintBounds.getY(),
+		                                                           paintBounds.getWidth(),
+		                                                           paintBounds.getHeight()));
 
 		// Paint Background (Typically Grid)
 		paintBackground(g);
@@ -913,8 +963,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 
 		// Use anti aliasing
 		if (graph.isAntiAliased())
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		// Use Swing's scaling
 		double scale = graph.getScale();
@@ -922,19 +971,21 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 
 		// Paint cells
 		CellView[] views = graphLayoutCache.getRoots();
+
 		for (int i = 0; i < views.length; i++) {
 			Rectangle2D bounds = views[i].getBounds();
-			if (bounds != null && real != null && bounds.intersects(real))
+
+			if ((bounds != null) && (real != null) && bounds.intersects(real))
 				paintCell(g, views[i], bounds, false);
 		}
 
 		// Reset affine transform and antialias
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_OFF);
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
 		// Paint Foreground (Typically Ports)
 		if (!graph.isPortsScaled())
 			g2.setTransform(at);
+
 		paintForeground(g);
 		g2.setTransform(at);
 
@@ -960,21 +1011,21 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 * <code>insets</code>. The <code>preview</code> flag is passed to the
 	 * renderer, and is not used here.
 	 */
-	public void paintCell(Graphics g, CellView view, Rectangle2D bounds,
-			boolean preview) {
+	public void paintCell(Graphics g, CellView view, Rectangle2D bounds, boolean preview) {
 		// First Paint View
-		if (view != null && bounds != null) {
+		if ((view != null) && (bounds != null)) {
 			boolean bfocus = (view == this.focus);
 			boolean sel = graph.isCellSelected(view.getCell());
-			Component component = view.getRendererComponent(graph, sel, bfocus,
-					preview);
-			rendererPane.paintComponent(g, component, graph, (int) bounds
-					.getX(), (int) bounds.getY(), (int) bounds.getWidth(),
-					(int) bounds.getHeight(), true);
+			Component component = view.getRendererComponent(graph, sel, bfocus, preview);
+			rendererPane.paintComponent(g, component, graph, (int) bounds.getX(),
+			                            (int) bounds.getY(), (int) bounds.getWidth(),
+			                            (int) bounds.getHeight(), true);
 		}
+
 		// Then Paint Children
 		if (!view.isLeaf()) {
 			CellView[] children = view.getChildViews();
+
 			for (int i = 0; i < children.length; i++)
 				paintCell(g, children[i], children[i].getBounds(), preview);
 		}
@@ -996,9 +1047,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 * Paint the grid.
 	 */
 	protected void paintGrid(double gs, Graphics g, Rectangle2D r) {
-
 		// Parameter "r" is never used: remove it.
-
 		Rectangle rr = (Rectangle) g.getClipBounds();
 		double xl = rr.x;
 		double yt = rr.y;
@@ -1014,65 +1063,54 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		g.setColor(graph.getGridColor());
 
 		switch (graph.getGridMode()) {
+			case JGraph.CROSS_GRID_MODE: {
+				int cs = (sgs > 16.0) ? 2 : ((sgs < 8.0) ? 0 : 1);
 
-		case JGraph.CROSS_GRID_MODE: {
+				for (double x = xs; x <= xe; x += sgs) {
+					for (double y = ys; y <= ye; y += sgs) {
+						int ix = (int) Math.round(x);
+						int iy = (int) Math.round(y);
 
-			int cs = (sgs > 16.0) ? 2 : ((sgs < 8.0) ? 0 : 1);
-
-			for (double x = xs; x <= xe; x += sgs) {
-				for (double y = ys; y <= ye; y += sgs) {
-					int ix = (int) Math.round(x);
-					int iy = (int) Math.round(y);
-
-					g.drawLine(ix - cs, iy, ix + cs, iy);
-					g.drawLine(ix, iy - cs, ix, iy + cs);
-
+						g.drawLine(ix - cs, iy, ix + cs, iy);
+						g.drawLine(ix, iy - cs, ix, iy + cs);
+					}
 				}
 			}
 
-		}
 			break;
 
-		case JGraph.LINE_GRID_MODE: {
+			case JGraph.LINE_GRID_MODE: {
+				xe += (int) Math.ceil(sgs);
+				ye += (int) Math.ceil(sgs);
 
-			xe += (int) Math.ceil(sgs);
-			ye += (int) Math.ceil(sgs);
-
-			for (double x = xs; x <= xe; x += sgs) {
-
-				int ix = (int) Math.round(x);
-
-				g.drawLine(ix, ys, ix, ye);
-
-			}
-
-			for (double y = ys; y <= ye; y += sgs) {
-
-				int iy = (int) Math.round(y);
-
-				g.drawLine(xs, iy, xe, iy);
-
-			}
-
-		}
-			break;
-
-		case JGraph.DOT_GRID_MODE:
-		default:
-			for (double x = xs; x <= xe; x += sgs) {
-				for (double y = ys; y <= ye; y += sgs) {
-
+				for (double x = xs; x <= xe; x += sgs) {
 					int ix = (int) Math.round(x);
+
+					g.drawLine(ix, ys, ix, ye);
+				}
+
+				for (double y = ys; y <= ye; y += sgs) {
 					int iy = (int) Math.round(y);
 
-					g.drawLine(ix, iy, ix, iy);
-
+					g.drawLine(xs, iy, xe, iy);
 				}
 			}
+
 			break;
 
-		}
+			case JGraph.DOT_GRID_MODE:default:
 
+				for (double x = xs; x <= xe; x += sgs) {
+					for (double y = ys; y <= ye; y += sgs) {
+						int ix = (int) Math.round(x);
+						int iy = (int) Math.round(y);
+
+						g.drawLine(ix, iy, ix, iy);
+					}
+				}
+
+				break;
+		}
 	}
 
 	//
@@ -1093,19 +1131,22 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	public void paintPorts(Graphics g, CellView[] ports) {
 		if (ports != null) {
 			Rectangle r = g.getClipBounds();
+
 			for (int i = 0; i < ports.length; i++) {
 				if (ports[i] != null) {
 					Rectangle2D tmp = ports[i].getBounds();
-					Rectangle2D bounds = new Rectangle2D.Double(tmp.getX(), tmp
-							.getY(), tmp.getWidth(), tmp.getHeight());
-					Point2D center = new Point2D.Double(bounds.getCenterX(),
-							bounds.getCenterY());
+					Rectangle2D bounds = new Rectangle2D.Double(tmp.getX(), tmp.getY(),
+					                                            tmp.getWidth(), tmp.getHeight());
+					Point2D center = new Point2D.Double(bounds.getCenterX(), bounds.getCenterY());
+
 					if (!graph.isPortsScaled())
 						center = graph.toScreen(center);
-					bounds.setFrame(center.getX() - bounds.getWidth() / 2,
-							center.getY() - bounds.getHeight() / 2, bounds
-									.getWidth(), bounds.getHeight());
-					if (r == null || bounds.intersects(r))
+
+					bounds.setFrame(center.getX() - (bounds.getWidth() / 2),
+					                center.getY() - (bounds.getHeight() / 2), bounds.getWidth(),
+					                bounds.getHeight());
+
+					if ((r == null) || bounds.intersects(r))
 						paintCell(g, ports[i], bounds, false);
 				}
 			}
@@ -1121,9 +1162,9 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	public void updateHandle() {
 		if (graphLayoutCache != null) {
-			Object[] cells = graphLayoutCache.getVisibleCells(graph
-					.getSelectionCells());
-			if (cells != null && cells.length > 0)
+			Object[] cells = graphLayoutCache.getVisibleCells(graph.getSelectionCells());
+
+			if ((cells != null) && (cells.length > 0))
 				handle = createHandle(createContext(graph, cells));
 			else
 				handle = null;
@@ -1136,18 +1177,19 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 
 	/**
 	 * Constructs the "root handle" for <code>context</code>.
-	 * 
+	 *
 	 * @param context
 	 *            reference to the context of the current selection.
 	 */
 	public CellHandle createHandle(GraphContext context) {
-		if (context != null && !context.isEmpty() && graph.isEnabled()) {
+		if ((context != null) && !context.isEmpty() && graph.isEnabled()) {
 			try {
 				return new RootHandle(context);
 			} catch (NullPointerException e) {
 				// ignore for now...
 			}
 		}
+
 		return null;
 	}
 
@@ -1165,26 +1207,26 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 * returned from <code>getPreferredSize()</code>.
 	 */
 	protected void updateCachedPreferredSize() {
-		Rectangle2D size = AbstractCellView.getBounds(graphLayoutCache
-				.getRoots());
+		Rectangle2D size = AbstractCellView.getBounds(graphLayoutCache.getRoots());
+
 		if (size == null)
 			size = new Rectangle2D.Double();
-		Point2D psize = new Point2D.Double(size.getX() + size.getWidth(), size
-				.getY()
-				+ size.getHeight());
+
+		Point2D psize = new Point2D.Double(size.getX() + size.getWidth(),
+		                                   size.getY() + size.getHeight());
 		Dimension d = graph.getMinimumSize();
-		Point2D min = (d != null) ? graph
-				.toScreen(new Point(d.width, d.height)) : new Point(0, 0);
+		Point2D min = (d != null) ? graph.toScreen(new Point(d.width, d.height)) : new Point(0, 0);
 		Point2D scaled = graph.toScreen(psize);
-		preferredSize = new Dimension(
-				(int) Math.max(min.getX(), scaled.getX()), (int) Math.max(min
-						.getY(), scaled.getY()));
+		preferredSize = new Dimension((int) Math.max(min.getX(), scaled.getX()),
+		                              (int) Math.max(min.getY(), scaled.getY()));
+
 		Insets in = graph.getInsets();
+
 		if (in != null) {
-			preferredSize.setSize(
-					preferredSize.getWidth() + in.left + in.right,
-					preferredSize.getHeight() + in.top + in.bottom);
+			preferredSize.setSize(preferredSize.getWidth() + in.left + in.right,
+			                      preferredSize.getHeight() + in.top + in.bottom);
 		}
+
 		validCachedPreferredSize = true;
 	}
 
@@ -1201,6 +1243,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	public Dimension getPreferredMinSize() {
 		if (preferredMinSize == null)
 			return null;
+
 		return new Dimension(preferredMinSize);
 	}
 
@@ -1212,15 +1255,17 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 
 		if (!validCachedPreferredSize)
 			updateCachedPreferredSize();
+
 		if (graph != null) {
 			if (pSize != null)
-				return new Dimension(
-						Math.max(pSize.width, preferredSize.width), Math.max(
-								pSize.height, preferredSize.height));
+				return new Dimension(Math.max(pSize.width, preferredSize.width),
+				                     Math.max(pSize.height, preferredSize.height));
+
 			return new Dimension(preferredSize.width, preferredSize.height);
 		} else if (pSize != null)
 			return pSize;
 		else
+
 			return new Dimension(0, 0);
 	}
 
@@ -1231,6 +1276,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	public Dimension getMinimumSize(JComponent c) {
 		if (this.getPreferredMinSize() != null)
 			return this.getPreferredMinSize();
+
 		return new Dimension(0, 0);
 	}
 
@@ -1241,8 +1287,10 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	public Dimension getMaximumSize(JComponent c) {
 		if (graph != null)
 			return getPreferredSize(graph);
+
 		if (this.getPreferredMinSize() != null)
 			return this.getPreferredMinSize();
+
 		return new Dimension(0, 0);
 	}
 
@@ -1256,9 +1304,10 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	protected void completeEditing() {
 		/* If should invoke stopCellEditing, try that */
 		if (graph.getInvokesStopCellEditing() && stopEditingInCompleteEditing
-				&& editingComponent != null) {
+		    && (editingComponent != null)) {
 			cellEditor.stopCellEditing();
 		}
+
 		/*
 		 * Invoke cancelCellEditing, this will do nothing if stopCellEditing was
 		 * succesful.
@@ -1272,31 +1321,38 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 * cancelEditing. If messageGraph is true the graphModel is messaged with
 	 * valueForCellChanged.
 	 */
-	protected void completeEditing(boolean messageStop, boolean messageCancel,
-			boolean messageGraph) {
-		if (stopEditingInCompleteEditing && editingComponent != null) {
+	protected void completeEditing(boolean messageStop, boolean messageCancel, boolean messageGraph) {
+		if (stopEditingInCompleteEditing && (editingComponent != null)) {
 			Component oldComponent = editingComponent;
 			Object oldCell = editingCell;
 			GraphCellEditor oldEditor = cellEditor;
-			boolean requestFocus = (graph != null && (graph.hasFocus() || SwingUtilities
-					.findFocusOwner(editingComponent) != null));
+			boolean requestFocus = ((graph != null)
+			                       && (graph.hasFocus()
+			                          || (SwingUtilities.findFocusOwner(editingComponent) != null)));
 			editingCell = null;
 			editingComponent = null;
+
 			if (messageStop)
 				oldEditor.stopCellEditing();
 			else if (messageCancel)
 				oldEditor.cancelCellEditing();
+
 			graph.remove(oldComponent);
+
 			if (requestFocus)
 				graph.requestFocus();
+
 			if (messageGraph) {
 				Object newValue = oldEditor.getCellEditorValue();
 				graphLayoutCache.valueForCellChanged(oldCell, newValue);
 			}
+
 			updateSize();
+
 			// Remove Editor Listener
-			if (oldEditor != null && cellEditorListener != null)
+			if ((oldEditor != null) && (cellEditorListener != null))
 				oldEditor.removeCellEditorListener(cellEditorListener);
+
 			cellEditor = null;
 		}
 	}
@@ -1309,11 +1365,13 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	protected boolean startEditing(Object cell, MouseEvent event) {
 		completeEditing();
+
 		if (graph.isCellEditable(cell)) {
 			CellView tmp = graphLayoutCache.getMapping(cell, false);
 			cellEditor = tmp.getEditor();
-			editingComponent = cellEditor.getGraphCellEditorComponent(graph,
-					cell, graph.isCellSelected(cell));
+			editingComponent = cellEditor.getGraphCellEditorComponent(graph, cell,
+			                                                          graph.isCellSelected(cell));
+
 			if (cellEditor.isCellEditable(event)) {
 				Rectangle2D cellBounds = graph.getCellBounds(cell);
 
@@ -1322,33 +1380,37 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 				Dimension2D editorSize = editingComponent.getPreferredSize();
 
 				graph.add(editingComponent);
-				Point2D p = getEditorLocation(cell, editorSize, graph
-						.toScreen(new Point2D.Double(cellBounds.getX(),
-								cellBounds.getY())));
+
+				Point2D p = getEditorLocation(cell, editorSize,
+				                              graph.toScreen(new Point2D.Double(cellBounds.getX(),
+				                                                                cellBounds.getY())));
 
 				editingComponent.setBounds((int) p.getX(), (int) p.getY(),
-						(int) editorSize.getWidth(), (int) editorSize
-								.getHeight());
+				                           (int) editorSize.getWidth(), (int) editorSize.getHeight());
 				editingCell = cell;
 				editingComponent.validate();
 
 				// Add Editor Listener
 				if (cellEditorListener == null)
 					cellEditorListener = createCellEditorListener();
-				if (cellEditor != null && cellEditorListener != null)
+
+				if ((cellEditor != null) && (cellEditorListener != null))
 					cellEditor.addCellEditorListener(cellEditorListener);
+
 				Rectangle2D visRect = graph.getVisibleRect();
 				graph.paintImmediately((int) p.getX(), (int) p.getY(),
-						(int) (visRect.getWidth() + visRect.getX() - cellBounds
-								.getX()), (int) editorSize.getHeight());
-				if (cellEditor.shouldSelectCell(event)
-						&& graph.isSelectionEnabled()) {
+				                       (int) ((visRect.getWidth() + visRect.getX())
+				                       - cellBounds.getX()), (int) editorSize.getHeight());
+
+				if (cellEditor.shouldSelectCell(event) && graph.isSelectionEnabled()) {
 					stopEditingInCompleteEditing = false;
+
 					try {
 						graph.setSelectionCell(cell);
 					} catch (Exception e) {
 						System.err.println("Editing exception: " + e);
 					}
+
 					stopEditingInCompleteEditing = true;
 				}
 
@@ -1358,27 +1420,32 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 					 * events until mouseReleased.
 					 */
 					Point componentPoint = SwingUtilities.convertPoint(graph,
-							new Point(event.getX(), event.getY()),
-							editingComponent);
+					                                                   new Point(event.getX(),
+					                                                             event.getY()),
+					                                                   editingComponent);
 
 					/*
 					 * Create an instance of BasicTreeMouseListener to handle
 					 * passing the mouse/motion events to the necessary
 					 * component.
 					 */
+
 					// We really want similiar behavior to getMouseEventTarget,
 					// but it is package private.
-					Component activeComponent = SwingUtilities
-							.getDeepestComponentAt(editingComponent,
-									componentPoint.x, componentPoint.y);
+					Component activeComponent = SwingUtilities.getDeepestComponentAt(editingComponent,
+					                                                                 componentPoint.x,
+					                                                                 componentPoint.y);
+
 					if (activeComponent != null) {
 						new MouseInputHandler(graph, activeComponent, event);
 					}
 				}
+
 				return true;
 			} else
 				editingComponent = null;
 		}
+
 		return false;
 	}
 
@@ -1387,26 +1454,29 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 * in-place editing of edges (if you do not inherit from the EdgeRenderer
 	 * class).
 	 */
-	protected Point2D getEditorLocation(Object cell, Dimension2D editorSize,
-			Point2D pt) {
+	protected Point2D getEditorLocation(Object cell, Dimension2D editorSize, Point2D pt) {
 		// Edges have different editor position and size
 		CellView view = graphLayoutCache.getMapping(cell, false);
+
 		if (view instanceof EdgeView) {
 			EdgeView edgeView = (EdgeView) view;
 			CellViewRenderer renderer = edgeView.getRenderer();
+
 			if (renderer instanceof EdgeRenderer) {
-				Point2D tmp = ((EdgeRenderer) renderer)
-						.getLabelPosition(edgeView);
+				Point2D tmp = ((EdgeRenderer) renderer).getLabelPosition(edgeView);
+
 				if (tmp != null)
 					pt = tmp;
 				else
 					pt = AbstractCellView.getCenterPoint(edgeView);
-				pt.setLocation(Math.max(0, pt.getX() - editorSize.getWidth()
-						/ 2), Math.max(0, pt.getY() - editorSize.getHeight()
-						/ 2));
+
+				pt.setLocation(Math.max(0, pt.getX() - (editorSize.getWidth() / 2)),
+				               Math.max(0, pt.getY() - (editorSize.getHeight() / 2)));
 			}
+
 			graph.toScreen(pt);
 		}
+
 		return pt;
 	}
 
@@ -1415,20 +1485,27 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 */
 	public static void autoscroll(JGraph graph, Point p) {
 		Rectangle view = graph.getBounds();
+
 		if (graph.getParent() instanceof JViewport)
 			view = ((JViewport) graph.getParent()).getViewRect();
+
 		if (view.contains(p)) {
 			Point target = new Point(p);
 			int dx = (int) (graph.getWidth() * SCROLLSTEP);
 			int dy = (int) (graph.getHeight() * SCROLLSTEP);
-			if (target.x - view.x < SCROLLBORDER)
+
+			if ((target.x - view.x) < SCROLLBORDER)
 				target.x -= dx;
-			if (target.y - view.y < SCROLLBORDER)
+
+			if ((target.y - view.y) < SCROLLBORDER)
 				target.y -= dy;
-			if (view.x + view.width - target.x < SCROLLBORDER)
+
+			if (((view.x + view.width) - target.x) < SCROLLBORDER)
 				target.x += dx;
-			if (view.y + view.height - target.y < SCROLLBORDER)
+
+			if (((view.y + view.height) - target.y) < SCROLLBORDER)
 				target.y += dy;
+
 			graph.scrollPointToVisible(target);
 		}
 	}
@@ -1436,8 +1513,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	/**
 	 * Updates the preferred size when scrolling (if necessary).
 	 */
-	public class ComponentHandler extends ComponentAdapter implements
-			ActionListener {
+	public class ComponentHandler extends ComponentAdapter implements ActionListener {
 		/**
 		 * Timer used when inside a scrollpane and the scrollbar is adjusting.
 		 */
@@ -1454,10 +1530,11 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 					updateSize();
 				else {
 					scrollBar = scrollPane.getVerticalScrollBar();
-					if (scrollBar == null || !scrollBar.getValueIsAdjusting()) {
+
+					if ((scrollBar == null) || !scrollBar.getValueIsAdjusting()) {
 						// Try the horizontal scrollbar.
-						if ((scrollBar = scrollPane.getHorizontalScrollBar()) != null
-								&& scrollBar.getValueIsAdjusting())
+						if (((scrollBar = scrollPane.getHorizontalScrollBar()) != null)
+						    && scrollBar.getValueIsAdjusting())
 							startTimer();
 						else
 							updateSize();
@@ -1476,6 +1553,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 				timer = new Timer(200, this);
 				timer.setRepeats(true);
 			}
+
 			timer.start();
 		}
 
@@ -1486,10 +1564,12 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		protected JScrollPane getScrollPane() {
 			Component c = graph.getParent();
 
-			while (c != null && !(c instanceof JScrollPane))
+			while ((c != null) && !(c instanceof JScrollPane))
 				c = c.getParent();
+
 			if (c instanceof JScrollPane)
 				return (JScrollPane) c;
+
 			return null;
 		}
 
@@ -1498,9 +1578,10 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 * adjusting, this stops the timer and updates the sizing.
 		 */
 		public void actionPerformed(ActionEvent ae) {
-			if (scrollBar == null || !scrollBar.getValueIsAdjusting()) {
+			if ((scrollBar == null) || !scrollBar.getValueIsAdjusting()) {
 				if (timer != null)
 					timer.stop();
+
 				updateSize();
 				timer = null;
 				scrollBar = null;
@@ -1512,104 +1593,107 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	 * Listens for changes in the graph model and updates the view accordingly.
 	 */
 	public class GraphModelHandler implements GraphModelListener, Serializable {
-
 		public void graphChanged(GraphModelEvent e) {
 			Object[] removed = e.getChange().getRemoved();
+
 			// Remove from selection & focus
-			if (removed != null && removed.length > 0) {
+			if ((removed != null) && (removed.length > 0)) {
 				// Update Focus If Necessary
 				if (focus != null) {
 					Object focusedCell = focus.getCell();
+
 					for (int i = 0; i < removed.length; i++) {
 						if (removed[i] == focusedCell) {
 							lastFocus = focus;
 							focus = null;
+
 							break;
 						}
 					}
 				}
+
 				// Remove from selection
 				graph.getSelectionModel().removeSelectionCells(removed);
 			}
+
 			if (graphLayoutCache != null)
 				graphLayoutCache.graphChanged(e.getChange());
+
 			// Get arrays
 			Object[] inserted = e.getChange().getInserted();
 			Object[] changed = e.getChange().getChanged();
+
 			// Insert
-			if (inserted != null && inserted.length > 0) {
+			if ((inserted != null) && (inserted.length > 0)) {
 				// Update focus to first inserted cell
 				for (int i = 0; i < inserted.length; i++)
-					graph.updateAutoSize(graphLayoutCache.getMapping(
-							inserted[i], false));
-				}
+					graph.updateAutoSize(graphLayoutCache.getMapping(inserted[i], false));
+			}
+
 			// Change (update size)
-			if (changed != null && changed.length > 0) {
+			if ((changed != null) && (changed.length > 0)) {
 				for (int i = 0; i < changed.length; i++)
-					graph.updateAutoSize(graphLayoutCache.getMapping(
-							changed[i], false));
-								}
+					graph.updateAutoSize(graphLayoutCache.getMapping(changed[i], false));
+			}
+
 			// Select if not partial
-			if (!graphLayoutCache.isPartial()
-					&& graphLayoutCache.isSelectsAllInsertedCells()
-					&& graph.isEnabled()) {
-				Object[] roots = DefaultGraphModel.getRoots(graphModel,
-						inserted);
-				if (roots != null && roots.length > 0) {
+			if (!graphLayoutCache.isPartial() && graphLayoutCache.isSelectsAllInsertedCells()
+			    && graph.isEnabled()) {
+				Object[] roots = DefaultGraphModel.getRoots(graphModel, inserted);
+
+				if ((roots != null) && (roots.length > 0)) {
 					lastFocus = focus;
 					focus = graphLayoutCache.getMapping(roots[0], false);
 					graph.setSelectionCells(roots);
 				}
 			}
-				updateSize();
-			}
 
+			updateSize();
+		}
 	} // End of BasicGraphUI.GraphModelHandler
 
 	/**
 	 * Listens for changes in the graph view and updates the size accordingly.
 	 */
-	public class GraphLayoutCacheHandler implements GraphLayoutCacheListener,
-			Serializable {
-
+	public class GraphLayoutCacheHandler implements GraphLayoutCacheListener, Serializable {
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.jgraph.event.GraphLayoutCacheListener#graphLayoutCacheChanged(org.jgraph.event.GraphLayoutCacheEvent)
 		 */
 		public void graphLayoutCacheChanged(GraphLayoutCacheEvent e) {
 			Object[] changed = e.getChange().getChanged();
-			if (changed != null && changed.length > 0) {
+
+			if ((changed != null) && (changed.length > 0)) {
 				for (int i = 0; i < changed.length; i++) {
-					graph.updateAutoSize(graphLayoutCache.getMapping(
-							changed[i], false));
+					graph.updateAutoSize(graphLayoutCache.getMapping(changed[i], false));
 				}
 			}
+
 			Object[] inserted = e.getChange().getInserted();
-			if (inserted != null
-					&& inserted.length > 0
-					&& graphLayoutCache.isSelectsLocalInsertedCells()
-					&& !(graphLayoutCache.isSelectsAllInsertedCells() && !graphLayoutCache
-							.isPartial()) && graph.isEnabled()) {
-				Object[] roots = DefaultGraphModel.getRoots(graphModel,
-						inserted);
-				if (roots != null && roots.length > 0) {
+
+			if ((inserted != null) && (inserted.length > 0)
+			    && graphLayoutCache.isSelectsLocalInsertedCells()
+			    && !(graphLayoutCache.isSelectsAllInsertedCells() && !graphLayoutCache.isPartial())
+			    && graph.isEnabled()) {
+				Object[] roots = DefaultGraphModel.getRoots(graphModel, inserted);
+
+				if ((roots != null) && (roots.length > 0)) {
 					lastFocus = focus;
 					focus = graphLayoutCache.getMapping(roots[0], false);
 					graph.setSelectionCells(roots);
 				}
 			}
+
 			updateSize();
 		}
-
 	} // End of BasicGraphUI.GraphLayoutCacheHandler
 
 	/**
 	 * Listens for changes in the selection model and updates the display
 	 * accordingly.
 	 */
-	public class GraphSelectionHandler implements GraphSelectionListener,
-			Serializable {
+	public class GraphSelectionHandler implements GraphSelectionListener, Serializable {
 		/**
 		 * Messaged when the selection changes in the graph we're displaying
 		 * for. Stops editing, updates handles and displays the changed cells.
@@ -1617,8 +1701,10 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		public void valueChanged(GraphSelectionEvent event) {
 			// cancelEditing(graph);
 			updateHandle();
+
 			Object[] cells = event.getCells();
-			if (cells != null && cells.length <= MAXCLIPCELLS) {
+
+			if ((cells != null) && (cells.length <= MAXCLIPCELLS)) {
 				Rectangle2D r = graph.toScreen(graph.getCellBounds(cells));
 
 				// Includes dirty region of focused cell
@@ -1636,13 +1722,13 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 					else
 						r = lastFocus.getBounds();
 				}
+
 				if (r != null) {
 					int hsize = (int) (graph.getHandleSize() * graph.getScale()) + 1;
 					updateHandle();
-					graph.repaint((int) r.getX() - hsize, (int) r.getY()
-							- hsize, (int) r.getWidth() + 2 * hsize, (int) r
-							.getHeight()
-							+ 2 * hsize);
+					graph.repaint((int) r.getX() - hsize, (int) r.getY() - hsize,
+					              (int) r.getWidth() + (2 * hsize),
+					              (int) r.getHeight() + (2 * hsize));
 				}
 			} else
 				graph.repaint();
@@ -1677,13 +1763,11 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		protected boolean isKeyDown;
 
 		public void keyPressed(KeyEvent e) {
-			if (graph != null && graph.hasFocus() && graph.isEnabled()) {
-				KeyStroke keyStroke = KeyStroke.getKeyStroke(e.getKeyCode(), e
-						.getModifiers());
+			if ((graph != null) && graph.hasFocus() && graph.isEnabled()) {
+				KeyStroke keyStroke = KeyStroke.getKeyStroke(e.getKeyCode(), e.getModifiers());
 
 				if (graph.getConditionForKeyStroke(keyStroke) == JComponent.WHEN_FOCUSED) {
-					ActionListener listener = graph
-							.getActionForKeyStroke(keyStroke);
+					ActionListener listener = graph.getActionForKeyStroke(keyStroke);
 
 					if (listener instanceof Action)
 						repeatKeyAction = (Action) listener;
@@ -1691,19 +1775,23 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 						repeatKeyAction = null;
 				} else {
 					repeatKeyAction = null;
+
 					if (keyStroke.getKeyCode() == KeyEvent.VK_ESCAPE) {
 						// System.out.println("Calling release on " + marquee);
 						if (marquee != null)
 							marquee.mouseReleased(null);
+
 						if (mouseListener != null)
 							mouseListener.mouseReleased(null);
+
 						updateHandle();
 						graph.repaint();
 					}
 				}
-				if (isKeyDown && repeatKeyAction != null) {
+
+				if (isKeyDown && (repeatKeyAction != null)) {
 					repeatKeyAction.actionPerformed(new ActionEvent(graph,
-							ActionEvent.ACTION_PERFORMED, ""));
+					                                                ActionEvent.ACTION_PERFORMED, ""));
 					e.consume();
 				} else
 					isKeyDown = true;
@@ -1713,22 +1801,18 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		public void keyReleased(KeyEvent e) {
 			isKeyDown = false;
 		}
-
 	} // End of BasicGraphUI.KeyHandler
 
 	/**
 	 * TreeMouseListener is responsible for updating the selection based on
 	 * mouse events.
 	 */
-	public class MouseHandler extends MouseAdapter implements
-			MouseMotionListener, Serializable {
-
+	public class MouseHandler extends MouseAdapter implements MouseMotionListener, Serializable {
 		/* The cell under the mousepointer. */
 		protected CellView cell;
 
 		/* The object that handles mouse operations. */
 		protected Object handler;
-
 		protected transient Cursor previousCursor = null;
 
 		/**
@@ -1736,25 +1820,27 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 */
 		public void mousePressed(MouseEvent e) {
 			handler = null;
+
 			if (!e.isConsumed() && graph.isEnabled()) {
 				graph.requestFocus();
+
 				int s = graph.getTolerance();
-				Rectangle2D r = graph.fromScreen(new Rectangle2D.Double(e
-						.getX()
-						- s, e.getY() - s, 2 * s, 2 * s));
+				Rectangle2D r = graph.fromScreen(new Rectangle2D.Double(e.getX() - s, e.getY() - s,
+				                                                        2 * s, 2 * s));
 				lastFocus = focus;
-				focus = (focus != null && focus.intersects(graph, r)) ? focus
-						: null;
+				focus = ((focus != null) && focus.intersects(graph, r)) ? focus : null;
 				cell = graph.getNextSelectableViewAt(focus, e.getX(), e.getY());
+
 				if (focus == null)
 					focus = cell;
+
 				completeEditing();
+
 				if (!isForceMarqueeEvent(e)) {
-					if (e.getClickCount() == graph.getEditClickCount()
-							&& focus != null && focus.isLeaf()
-							&& focus.getParentView() == null
-							&& graph.isCellEditable(focus.getCell())
-							&& handleEditTrigger(cell.getCell(), e)) {
+					if ((e.getClickCount() == graph.getEditClickCount()) && (focus != null)
+					    && focus.isLeaf() && (focus.getParentView() == null)
+					    && graph.isCellEditable(focus.getCell())
+					    && handleEditTrigger(cell.getCell(), e)) {
 						e.consume();
 						cell = null;
 					} else if (!isToggleSelectionEvent(e)) {
@@ -1762,23 +1848,27 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 							handle.mousePressed(e);
 							handler = handle;
 						}
+
 						// Immediate Selection
-						if (!e.isConsumed() && cell != null
-								&& !graph.isCellSelected(cell.getCell())) {
+						if (!e.isConsumed() && (cell != null)
+						    && !graph.isCellSelected(cell.getCell())) {
 							selectCellForEvent(cell.getCell(), e);
 							focus = cell;
+
 							if (handle != null) {
 								handle.mousePressed(e);
 								handler = handle;
 							}
+
 							e.consume();
 							cell = null;
 						}
 					}
 				}
+
 				// Marquee Selection
-				if (!e.isConsumed() && marquee != null
-						&& (!isToggleSelectionEvent(e) || focus == null)) {
+				if (!e.isConsumed() && (marquee != null)
+				    && (!isToggleSelectionEvent(e) || (focus == null))) {
 					marquee.mousePressed(e);
 					handler = marquee;
 				}
@@ -1788,7 +1878,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		/**
 		 * Handles edit trigger by starting the edit and return true if the
 		 * editing has already started.
-		 * 
+		 *
 		 * @param cell
 		 *            the cell being edited
 		 * @param e
@@ -1797,26 +1887,32 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 */
 		protected boolean handleEditTrigger(Object cell, MouseEvent e) {
 			graph.scrollCellToVisible(cell);
+
 			if (cell != null)
 				startEditing(cell, e);
+
 			return graph.isEditing();
 		}
 
 		public void mouseDragged(MouseEvent e) {
 			autoscroll(graph, e.getPoint());
+
 			if (graph.isEnabled()) {
-				if (handler != null && handler == marquee)
+				if ((handler != null) && (handler == marquee))
 					marquee.mouseDragged(e);
-				else if (handler == null && !isEditing(graph) && focus != null) {
+				else if ((handler == null) && !isEditing(graph) && (focus != null)) {
 					if (!graph.isCellSelected(focus.getCell())) {
 						selectCellForEvent(focus.getCell(), e);
 						cell = null;
 					}
+
 					if (handle != null)
 						handle.mousePressed(e);
+
 					handler = handle;
 				}
-				if (handle != null && handler == handle)
+
+				if ((handle != null) && (handler == handle))
 					handle.mouseDragged(e);
 			}
 		}
@@ -1829,16 +1925,21 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 			if (previousCursor == null) {
 				previousCursor = graph.getCursor();
 			}
-			if (graph != null && graph.isEnabled()) {
+
+			if ((graph != null) && graph.isEnabled()) {
 				if (marquee != null)
 					marquee.mouseMoved(e);
+
 				if (handle != null)
 					handle.mouseMoved(e);
-				if (!e.isConsumed() && previousCursor != null) {
+
+				if (!e.isConsumed() && (previousCursor != null)) {
 					Cursor currentCursor = graph.getCursor();
+
 					if (currentCursor != previousCursor) {
 						graph.setCursor(previousCursor);
 					}
+
 					previousCursor = null;
 				}
 			}
@@ -1847,17 +1948,18 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		// Event may be null when called to cancel the current operation.
 		public void mouseReleased(MouseEvent e) {
 			try {
-				if (e != null && !e.isConsumed() && graph != null
-						&& graph.isEnabled()) {
-					if (handler == marquee && marquee != null)
+				if ((e != null) && !e.isConsumed() && (graph != null) && graph.isEnabled()) {
+					if ((handler == marquee) && (marquee != null))
 						marquee.mouseReleased(e);
-					else if (handler == handle && handle != null)
+					else if ((handler == handle) && (handle != null))
 						handle.mouseReleased(e);
-					if (isDescendant(cell, focus) && e.getModifiers() != 0) {
+
+					if (isDescendant(cell, focus) && (e.getModifiers() != 0)) {
 						// Do not switch to parent if Special Selection
 						cell = focus;
 					}
-					if (!e.isConsumed() && cell != null) {
+
+					if (!e.isConsumed() && (cell != null)) {
 						Object tmp = cell.getCell();
 						boolean wasSelected = graph.isCellSelected(tmp);
 						// if (!wasSelected || e.getModifiers() != 0)
@@ -1878,15 +1980,15 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 * selected, in which case this implementation selects the parent.
 		 * Override if you want different behaviour, such as start editing.
 		 */
-		protected void postProcessSelection(MouseEvent e, Object cell,
-				boolean wasSelected) {
-			if (wasSelected && graph.isCellSelected(cell)
-					&& e.getModifiers() != 0) {
+		protected void postProcessSelection(MouseEvent e, Object cell, boolean wasSelected) {
+			if (wasSelected && graph.isCellSelected(cell) && (e.getModifiers() != 0)) {
 				Object parent = cell;
 				Object nextParent = null;
+
 				while (((nextParent = graphModel.getParent(parent)) != null)
-						&& graphLayoutCache.isVisible(nextParent))
+				       && graphLayoutCache.isVisible(nextParent))
 					parent = nextParent;
+
 				selectCellForEvent(parent, e);
 				lastFocus = focus;
 				focus = graphLayoutCache.getMapping(parent, false);
@@ -1894,7 +1996,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		}
 
 		protected boolean isDescendant(CellView parentView, CellView childView) {
-			if (parentView == null || childView == null) {
+			if ((parentView == null) || (childView == null)) {
 				return false;
 			}
 
@@ -1909,7 +2011,6 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 
 			return false;
 		}
-
 	} // End of BasicGraphUI.MouseHandler
 
 	public class RootHandle implements CellHandle, Serializable {
@@ -1917,24 +2018,19 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		// view that is returned by a findViewForPoint().
 		// These are used only when the isSnapSelectedView mode is enabled.
 		protected transient double _mouseToViewDelta_x = 0;
-
 		protected transient double _mouseToViewDelta_y = 0;
 
 		// Double Buffered
 		protected transient Image offscreen;
-
 		protected transient Graphics offgraphics;
-
 		protected transient boolean firstDrag = true;
 
 		/* Temporary views for the cells. */
 		protected transient CellView[] views;
-
 		protected transient CellView[] contextViews;
-
 		protected transient CellView[] portViews;
-
-		protected transient CellView targetGroup, ignoreTargetGroup;
+		protected transient CellView targetGroup;
+		protected transient CellView ignoreTargetGroup;
 
 		/* Bounds of the cells. Non-null if too many cells. */
 		protected transient Rectangle2D cachedBounds;
@@ -1946,7 +2042,16 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		protected transient CellHandle[] handles;
 
 		/* The point where the mouse was pressed. */
-		protected transient Point2D start = null, last, snapStart, snapLast;
+		protected transient Point2D start = null;
+
+		/* The point where the mouse was pressed. */
+		protected transient Point2D last;
+
+		/* The point where the mouse was pressed. */
+		protected transient Point2D snapStart;
+
+		/* The point where the mouse was pressed. */
+		protected transient Point2D snapLast;
 
 		/**
 		 * Indicates whether this handle is currently moving cells. Start may be
@@ -1972,7 +2077,6 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 * background.
 		 */
 		protected boolean isContextVisible = true;
-
 		protected boolean blockPaint = false;
 
 		/* Defines the Disconnection if DisconnectOnMove is True */
@@ -1985,26 +2089,31 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 */
 		public RootHandle(GraphContext ctx) {
 			this.context = ctx;
+
 			if (!ctx.isEmpty()) {
 				// Temporary cells
 				views = ctx.createTemporaryCellViews();
-				Rectangle2D tmpBounds = graph.toScreen(graph.getCellBounds(ctx
-						.getCells()));
+
+				Rectangle2D tmpBounds = graph.toScreen(graph.getCellBounds(ctx.getCells()));
+
 				if (ctx.getDescendantCount() < MAXCELLS) {
 					contextViews = ctx.createTemporaryContextViews();
-					initialLocation = graph.toScreen(getInitialLocation(ctx
-							.getCells()));
+					initialLocation = graph.toScreen(getInitialLocation(ctx.getCells()));
 				} else
 					cachedBounds = tmpBounds;
+
 				if (initialLocation == null)
-					initialLocation = new Point2D.Double(tmpBounds.getX(),
-							tmpBounds.getY());
+					initialLocation = new Point2D.Double(tmpBounds.getX(), tmpBounds.getY());
+
 				// Sub-Handles
 				Object[] cells = ctx.getCells();
+
 				if (cells.length < MAXHANDLES) {
 					handles = new CellHandle[views.length];
+
 					for (int i = 0; i < views.length; i++)
 						handles[i] = views[i].getHandle(ctx);
+
 					// PortView Preview
 					portViews = ctx.createTemporaryPortViews();
 				}
@@ -2016,54 +2125,60 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 * selection, ignoring all connected endpoints of edges.
 		 */
 		protected Point2D getInitialLocation(Object[] cells) {
-			if (cells != null && cells.length > 0) {
+			if ((cells != null) && (cells.length > 0)) {
 				Rectangle2D ret = null;
+
 				for (int i = 0; i < cells.length; i++) {
 					if (graphModel.isEdge(cells[i])) {
-						CellView cellView = graphLayoutCache.getMapping(
-								cells[i], false);
+						CellView cellView = graphLayoutCache.getMapping(cells[i], false);
+
 						if (cellView instanceof EdgeView) {
 							EdgeView edgeView = (EdgeView) cellView;
+
 							if (edgeView.getSource() == null) {
 								Point2D pt = edgeView.getPoint(0);
+
 								if (pt != null) {
 									if (ret == null)
-										ret = new Rectangle2D.Double(pt.getX(),
-												pt.getY(), 0, 0);
+										ret = new Rectangle2D.Double(pt.getX(), pt.getY(), 0, 0);
 									else
 										Rectangle2D.union(ret,
-												new Rectangle2D.Double(pt
-														.getX(), pt.getY(), 0,
-														0), ret);
+										                  new Rectangle2D.Double(pt.getX(),
+										                                         pt.getY(), 0, 0),
+										                  ret);
 								}
 							}
+
 							if (edgeView.getTarget() == null) {
-								Point2D pt = edgeView.getPoint(edgeView
-										.getPointCount() - 1);
+								Point2D pt = edgeView.getPoint(edgeView.getPointCount() - 1);
+
 								if (pt != null) {
 									if (ret == null)
-										ret = new Rectangle2D.Double(pt.getX(),
-												pt.getY(), 0, 0);
+										ret = new Rectangle2D.Double(pt.getX(), pt.getY(), 0, 0);
 									else
 										Rectangle2D.union(ret,
-												new Rectangle2D.Double(pt
-														.getX(), pt.getY(), 0,
-														0), ret);
+										                  new Rectangle2D.Double(pt.getX(),
+										                                         pt.getY(), 0, 0),
+										                  ret);
 								}
 							}
 						}
 					} else {
 						Rectangle2D r = graph.getCellBounds(cells[i]);
+
 						if (r != null) {
 							if (ret == null)
 								ret = (Rectangle2D) r.clone();
+
 							Rectangle2D.union(ret, r, ret);
 						}
 					}
 				}
+
 				if (ret != null)
 					return new Point2D.Double(ret.getX(), ret.getY());
 			}
+
 			return null;
 		}
 
@@ -2074,54 +2189,57 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 
 		/* Paint the handles. Use overlay to paint the current state. */
 		public void paint(Graphics g) {
-			if (handles != null && handles.length < MAXHANDLES)
+			if ((handles != null) && (handles.length < MAXHANDLES))
 				for (int i = 0; i < handles.length; i++)
 					if (handles[i] != null)
 						handles[i].paint(g);
+
 			blockPaint = true;
 		}
 
 		public void overlay(Graphics g) {
 			if (isDragging && !DNDPREVIEW) // BUG IN 1.4.0 (FREEZE)
 				return;
+
 			if (cachedBounds != null) { // Paint Cached Bounds
 				g.setColor(Color.black);
-				g.drawRect((int) cachedBounds.getX(),
-						(int) cachedBounds.getY(), (int) cachedBounds
-								.getWidth() - 2,
-						(int) cachedBounds.getHeight() - 2);
-
+				g.drawRect((int) cachedBounds.getX(), (int) cachedBounds.getY(),
+				           (int) cachedBounds.getWidth() - 2, (int) cachedBounds.getHeight() - 2);
 			} else {
 				Graphics2D g2 = (Graphics2D) g;
 				AffineTransform oldTransform = g2.getTransform();
 				g2.scale(graph.getScale(), graph.getScale());
+
 				if (views != null) { // Paint Temporary Views
+
 					for (int i = 0; i < views.length; i++)
 						paintCell(g, views[i], views[i].getBounds(), true);
 				}
+
 				// Paint temporary context
-				if (contextViews != null && isContextVisible) {
+				if ((contextViews != null) && isContextVisible) {
 					for (int i = 0; i < contextViews.length; i++)
-						paintCell(g, contextViews[i], contextViews[i]
-								.getBounds(), true);
+						paintCell(g, contextViews[i], contextViews[i].getBounds(), true);
 				}
+
 				if (!graph.isPortsScaled())
 					g2.setTransform(oldTransform);
-				if (portViews != null && graph.isPortsVisible())
+
+				if ((portViews != null) && graph.isPortsVisible())
 					paintPorts(g, portViews);
+
 				g2.setTransform(oldTransform);
 			}
 
 			// Paints the target group to move into
 			if (targetGroup != null) {
-				Rectangle2D b = graph.toScreen((Rectangle2D) targetGroup
-						.getBounds().clone());
+				Rectangle2D b = graph.toScreen((Rectangle2D) targetGroup.getBounds().clone());
 				g.setColor(graph.getHandleColor());
-				g.fillRect((int) b.getX() - 1, (int) b.getY() - 1, (int) b
-						.getWidth() + 2, (int) b.getHeight() + 2);
+				g.fillRect((int) b.getX() - 1, (int) b.getY() - 1, (int) b.getWidth() + 2,
+				           (int) b.getHeight() + 2);
 				g.setColor(graph.getMarqueeColor());
-				g.draw3DRect((int) b.getX() - 2, (int) b.getY() - 2, (int) b
-						.getWidth() + 3, (int) b.getHeight() + 3, true);
+				g.draw3DRect((int) b.getX() - 2, (int) b.getY() - 2, (int) b.getWidth() + 3,
+				             (int) b.getHeight() + 3, true);
 			}
 		}
 
@@ -2130,8 +2248,8 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 * buttons down).
 		 */
 		public void mouseMoved(MouseEvent event) {
-			if (!event.isConsumed() && handles != null) {
-				for (int i = handles.length - 1; i >= 0 && !event.isConsumed(); i--)
+			if (!event.isConsumed() && (handles != null)) {
+				for (int i = handles.length - 1; (i >= 0) && !event.isConsumed(); i--)
 					if (handles[i] != null)
 						handles[i].mouseMoved(event);
 			}
@@ -2140,63 +2258,67 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		public void mousePressed(MouseEvent event) {
 			if (!event.isConsumed() && graph.isMoveable()) {
 				if (handles != null) { // Find Handle
+
 					for (int i = handles.length - 1; i >= 0; i--) {
 						if (handles[i] != null) {
 							handles[i].mousePressed(event);
+
 							if (event.isConsumed()) {
 								activeHandle = handles[i];
+
 								return;
 							}
 						}
 					}
 				}
+
 				if (views != null) { // Start Move if over cell
+
 					Point2D screenPoint = event.getPoint();
-					Point2D pt = graph
-							.fromScreen((Point2D) screenPoint.clone());
+					Point2D pt = graph.fromScreen((Point2D) screenPoint.clone());
 					CellView view = findViewForPoint(pt);
+
 					if (view != null) {
 						if (snapSelectedView) {
 							Rectangle2D bounds = view.getBounds();
-							start = graph.toScreen(new Point2D.Double(bounds
-									.getX(), bounds.getY()));
+							start = graph.toScreen(new Point2D.Double(bounds.getX(), bounds.getY()));
 							snapStart = graph.snap((Point2D) start.clone());
-							_mouseToViewDelta_x = screenPoint.getX()
-									- start.getX();
-							_mouseToViewDelta_y = screenPoint.getY()
-									- start.getY();
+							_mouseToViewDelta_x = screenPoint.getX() - start.getX();
+							_mouseToViewDelta_y = screenPoint.getY() - start.getY();
 						} else { // this is the original RootHandle's mode.
-							snapStart = graph.snap((Point2D) screenPoint
-									.clone());
-							_mouseToViewDelta_x = snapStart.getX()
-									- screenPoint.getX();
-							_mouseToViewDelta_y = snapStart.getY()
-									- screenPoint.getY();
+							snapStart = graph.snap((Point2D) screenPoint.clone());
+							_mouseToViewDelta_x = snapStart.getX() - screenPoint.getX();
+							_mouseToViewDelta_y = snapStart.getY() - screenPoint.getY();
 							start = (Point2D) snapStart.clone();
 						}
+
 						last = (Point2D) start.clone();
 						snapLast = (Point2D) snapStart.clone();
-						isContextVisible = contextViews != null
-								&& contextViews.length < MAXCELLS
-								&& (!event.isControlDown() || !graph
-										.isCloneable());
+						isContextVisible = (contextViews != null)
+						                   && (contextViews.length < MAXCELLS)
+						                   && (!event.isControlDown() || !graph.isCloneable());
 						event.consume();
 					}
 				}
+
 				// Analyze for common parent
 				if (graph.isMoveIntoGroups() || graph.isMoveOutOfGroups()) {
 					Object[] cells = context.getCells();
 					Object ignoreGroup = graph.getModel().getParent(cells[0]);
+
 					for (int i = 1; i < cells.length; i++) {
 						Object tmp = graph.getModel().getParent(cells[i]);
+
 						if (ignoreGroup != tmp) {
 							ignoreGroup = null;
+
 							break;
 						}
 					}
+
 					if (ignoreGroup != null)
 						ignoreTargetGroup = graph.getGraphLayoutCache()
-								.getMapping(ignoreGroup, false);
+						                         .getMapping(ignoreGroup, false);
 				}
 			}
 		}
@@ -2208,11 +2330,13 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 */
 		protected CellView findViewForPoint(Point2D pt) {
 			double snap = graph.getTolerance();
-			Rectangle2D r = new Rectangle2D.Double(pt.getX() - snap, pt.getY()
-					- snap, 2 * snap, 2 * snap);
+			Rectangle2D r = new Rectangle2D.Double(pt.getX() - snap, pt.getY() - snap, 2 * snap,
+			                                       2 * snap);
+
 			for (int i = 0; i < views.length; i++)
 				if (views[i].intersects(graph, r))
 					return views[i];
+
 			return null;
 		}
 
@@ -2221,24 +2345,27 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 */
 		protected CellView findUnselectedInnermostGroup(double x, double y) {
 			Object[] cells = graph.getDescendants(graph.getRoots());
+
 			for (int i = cells.length - 1; i >= 0; i--) {
-				CellView view = graph.getGraphLayoutCache().getMapping(
-						cells[i], false);
-				if (view != null && !view.isLeaf()
-						&& !context.contains(view.getCell())
-						&& view.getBounds().contains(x, y))
+				CellView view = graph.getGraphLayoutCache().getMapping(cells[i], false);
+
+				if ((view != null) && !view.isLeaf() && !context.contains(view.getCell())
+				    && view.getBounds().contains(x, y))
 					return view;
 			}
+
 			return null;
 		}
 
 		protected void startDragging(MouseEvent event) {
 			isDragging = true;
+
 			if (graph.isDragEnabled()) {
 				int action = (event.isControlDown() && graph.isCloneable()) ? TransferHandler.COPY
-						: TransferHandler.MOVE;
+				                                                            : TransferHandler.MOVE;
 				TransferHandler th = graph.getTransferHandler();
 				setInsertionLocation(event.getPoint());
+
 				try {
 					th.exportAsDrag(graph, event, action);
 				} catch (Exception ex) {
@@ -2253,12 +2380,15 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		public Component getFirstOpaqueParent(Component component) {
 			if (component != null) {
 				Component parent = component;
+
 				while (parent != null) {
 					if (parent.isOpaque() && !(parent instanceof JViewport))
 						return parent;
+
 					parent = parent.getParent();
 				}
 			}
+
 			return component;
 		}
 
@@ -2271,8 +2401,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 				 * offscreen = repMan.getVolatileOffscreenBuffer(graph, (int)
 				 * rect.getWidth(), (int) rect.getHeight());
 				 */
-				offscreen = new BufferedImage(rect.width, rect.height,
-						BufferedImage.TYPE_INT_RGB);
+				offscreen = new BufferedImage(rect.width, rect.height, BufferedImage.TYPE_INT_RGB);
 				offgraphics = offscreen.getGraphics();
 				offgraphics.setClip(0, 0, rect.width, rect.height);
 				/*
@@ -2298,39 +2427,43 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 			boolean constrained = isConstrainedMoveEvent(event);
 			boolean spread = false;
 			Rectangle2D dirty = null;
-			if (firstDrag && graph.isDoubleBuffered() && cachedBounds == null) {
+
+			if (firstDrag && graph.isDoubleBuffered() && (cachedBounds == null)) {
 				initOffscreen();
 				firstDrag = false;
 			}
-			if (event != null && !event.isConsumed()) {
+
+			if ((event != null) && !event.isConsumed()) {
 				if (activeHandle != null) // Paint Active Handle
 					activeHandle.mouseDragged(event);
+
 				// Invoke Mouse Dragged
 				else if (start != null) { // Move Cells
-					Graphics g = (offgraphics != null) ? offgraphics : graph
-							.getGraphics();
+
+					Graphics g = (offgraphics != null) ? offgraphics : graph.getGraphics();
 					Point ep = event.getPoint();
-					Point2D point = new Point2D.Double(ep.getX()
-							- _mouseToViewDelta_x, ep.getY()
-							- _mouseToViewDelta_y);
+					Point2D point = new Point2D.Double(ep.getX() - _mouseToViewDelta_x,
+					                                   ep.getY() - _mouseToViewDelta_y);
 					Point2D snapCurrent = graph.snap(point);
 					Point2D current = snapCurrent;
 					int thresh = graph.getMinimumMove();
 					double dx = current.getX() - start.getX();
 					double dy = current.getY() - start.getY();
-					if (isMoving || Math.abs(dx) > thresh
-							|| Math.abs(dy) > thresh) {
+
+					if (isMoving || (Math.abs(dx) > thresh) || (Math.abs(dy) > thresh)) {
 						boolean overlayed = false;
 						isMoving = true;
-						if (disconnect == null && graph.isDisconnectOnMove())
-							disconnect = context.disconnect(graphLayoutCache
-									.getAllDescendants(views));
+
+						if ((disconnect == null) && graph.isDisconnectOnMove())
+							disconnect = context.disconnect(graphLayoutCache.getAllDescendants(views));
+
 						// Constrained movement
 						double totDx = current.getX() - start.getX();
 						double totDy = current.getY() - start.getY();
 						dx = current.getX() - last.getX();
 						dy = current.getY() - last.getY();
-						if (constrained && cachedBounds == null) {
+
+						if (constrained && (cachedBounds == null)) {
 							if (Math.abs(totDx) < Math.abs(totDy)) {
 								dx = 0;
 								dy = totDy;
@@ -2338,16 +2471,16 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 								dx = totDx;
 								dy = 0;
 							}
-						} else if (!graph.isMoveBelowZero() && last != null
-								&& initialLocation != null && start != null) {
+						} else if (!graph.isMoveBelowZero() && (last != null)
+						           && (initialLocation != null) && (start != null)) {
 							// TODO: remove?
-							if (initialLocation.getX() + totDx < 0)
-								dx = start.getX() - last.getX()
-										- initialLocation.getX();
-							if (initialLocation.getY() + totDy < 0)
-								dy = start.getY() - last.getY()
-										- initialLocation.getY();
+							if ((initialLocation.getX() + totDx) < 0)
+								dx = start.getX() - last.getX() - initialLocation.getX();
+
+							if ((initialLocation.getY() + totDy) < 0)
+								dy = start.getY() - last.getY() - initialLocation.getY();
 						}
+
 						double scale = graph.getScale();
 						dx = (int) (dx / scale);
 						// we don't want to round. The best thing is to get just
@@ -2368,85 +2501,86 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 						// Start Drag and Drop
 						if (graph.isDragEnabled() && !isDragging)
 							startDragging(event);
-						if (dx != 0 || dy != 0) {
-							if (!snapLast.equals(snapStart)
-									&& (offscreen != null || !blockPaint)) {
+
+						if ((dx != 0) || (dy != 0)) {
+							if (!snapLast.equals(snapStart) && ((offscreen != null) || !blockPaint)) {
 								overlay(g);
 								overlayed = true;
 							}
-							isContextVisible = (!event.isControlDown() || !graph
-									.isCloneable())
-									&& contextViews != null
-									&& (contextViews.length < MAXCELLS);
+
+							isContextVisible = (!event.isControlDown() || !graph.isCloneable())
+							                   && (contextViews != null)
+							                   && (contextViews.length < MAXCELLS);
 							blockPaint = false;
+
 							if (offscreen != null) {
-								dirty = graph.toScreen(AbstractCellView
-										.getBounds(views));
-								Rectangle2D t = graph.toScreen(AbstractCellView
-										.getBounds(contextViews));
+								dirty = graph.toScreen(AbstractCellView.getBounds(views));
+
+								Rectangle2D t = graph.toScreen(AbstractCellView.getBounds(contextViews));
+
 								if (t != null)
 									dirty.add(t);
 							}
-							if (constrained && cachedBounds == null) {
+
+							if (constrained && (cachedBounds == null)) {
 								// Reset Initial Positions
-								CellView[] all = graphLayoutCache
-										.getAllDescendants(views);
+								CellView[] all = graphLayoutCache.getAllDescendants(views);
+
 								for (int i = 0; i < all.length; i++) {
-									CellView orig = graphLayoutCache
-											.getMapping(all[i].getCell(), false);
+									CellView orig = graphLayoutCache.getMapping(all[i].getCell(),
+									                                            false);
 									AttributeMap attr = orig.getAllAttributes();
-									all[i].changeAttributes((AttributeMap) attr
-											.clone());
-									all[i].refresh(graph.getModel(), context,
-											false);
+									all[i].changeAttributes((AttributeMap) attr.clone());
+									all[i].refresh(graph.getModel(), context, false);
 								}
 							}
+
 							if (cachedBounds != null)
-								cachedBounds.setFrame(cachedBounds.getX() + dx
-										* scale, cachedBounds.getY() + dy
-										* scale, cachedBounds.getWidth(),
-										cachedBounds.getHeight());
+								cachedBounds.setFrame(cachedBounds.getX() + (dx * scale),
+								                      cachedBounds.getY() + (dy * scale),
+								                      cachedBounds.getWidth(),
+								                      cachedBounds.getHeight());
 							else {
 								// Translate
 								GraphLayoutCache.translateViews(views, dx, dy);
+
 								if (views != null)
 									graphLayoutCache.update(views);
+
 								if (contextViews != null)
 									graphLayoutCache.update(contextViews);
 							}
+
 							// Change preferred size of graph
 							if (graph.isAutoResizeGraph()
-									&& (event.getX() > graph.getWidth()
-											- SCROLLBORDER || event.getY() > graph
-											.getHeight()
-											- SCROLLBORDER)) {
-
+							    && ((event.getX() > (graph.getWidth() - SCROLLBORDER))
+							       || (event.getY() > (graph.getHeight() - SCROLLBORDER)))) {
 								int SPREADSTEP = 25;
 								Rectangle view = null;
+
 								if (graph.getParent() instanceof JViewport)
-									view = ((JViewport) graph.getParent())
-											.getViewRect();
+									view = ((JViewport) graph.getParent()).getViewRect();
+
 								if (view != null) {
 									if (view.contains(event.getPoint())) {
-										if (view.x + view.width
-												- event.getPoint().x < SCROLLBORDER) {
-											preferredSize.width = Math.max(
-													preferredSize.width,
-													(int) view.getWidth())
-													+ SPREADSTEP;
+										if (((view.x + view.width) - event.getPoint().x) < SCROLLBORDER) {
+											preferredSize.width = Math.max(preferredSize.width,
+											                               (int) view.getWidth())
+											                      + SPREADSTEP;
 											spread = true;
 										}
-										if (view.y + view.height
-												- event.getPoint().y < SCROLLBORDER) {
-											preferredSize.height = Math.max(
-													preferredSize.height,
-													(int) view.getHeight())
-													+ SPREADSTEP;
+
+										if (((view.y + view.height) - event.getPoint().y) < SCROLLBORDER) {
+											preferredSize.height = Math.max(preferredSize.height,
+											                                (int) view.getHeight())
+											                       + SPREADSTEP;
 											spread = true;
 										}
+
 										if (spread) {
 											graph.revalidate();
 											autoscroll(graph, event.getPoint());
+
 											if (graph.isDoubleBuffered())
 												initOffscreen();
 										}
@@ -2455,41 +2589,46 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 							}
 
 							// Move into groups
-							Rectangle2D ignoredRegion = (ignoreTargetGroup != null) ? (Rectangle2D) ignoreTargetGroup
-									.getBounds().clone()
-									: null;
+							Rectangle2D ignoredRegion = (ignoreTargetGroup != null)
+							                            ? (Rectangle2D) ignoreTargetGroup.getBounds()
+							                                                             .clone()
+							                            : null;
+
 							if (targetGroup != null) {
-								Rectangle2D tmp = graph
-										.toScreen((Rectangle2D) targetGroup
-												.getBounds().clone());
+								Rectangle2D tmp = graph.toScreen((Rectangle2D) targetGroup.getBounds()
+								                                                          .clone());
+
 								if (dirty != null)
 									dirty.add(tmp);
 								else
 									dirty = tmp;
 							}
+
 							targetGroup = null;
+
 							if (graph.isMoveIntoGroups()
-									&& (ignoredRegion == null || !ignoredRegion
-											.intersects(AbstractCellView
-													.getBounds(views)))) {
+							    && ((ignoredRegion == null)
+							       || !ignoredRegion.intersects(AbstractCellView.getBounds(views)))) {
 								targetGroup = (event.isControlDown()) ? null
-										: findUnselectedInnermostGroup(
-												snapCurrent.getX() / scale,
-												snapCurrent.getY() / scale);
+								                                      : findUnselectedInnermostGroup(snapCurrent
+								                                                                     .getX() / scale,
+								                                                                     snapCurrent
+								                                                                     .getY() / scale);
+
 								if (targetGroup == ignoreTargetGroup)
 									targetGroup = null;
 							}
+
 							if (!snapCurrent.equals(snapStart)
-									&& (offscreen != null || !blockPaint)
-									&& !spread) {
+							    && ((offscreen != null) || !blockPaint) && !spread) {
 								overlay(g);
 								overlayed = true;
 							}
+
 							if (constrained)
 								last = (Point2D) start.clone();
-							last.setLocation(last.getX() + dx * scale, last
-									.getY()
-									+ dy * scale);
+
+							last.setLocation(last.getX() + (dx * scale), last.getY() + (dy * scale));
 							// It is better to translate <code>last<code> by a
 							// scaled dx/dy
 							// instead of making it to be the
@@ -2497,34 +2636,41 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 							// so that the view would be catching up with a
 							// mouse pointer
 							snapLast = snapCurrent;
-							if (overlayed && offscreen != null) {
-								dirty.add(graph.toScreen(AbstractCellView
-										.getBounds(views)));
-								Rectangle2D t = graph.toScreen(AbstractCellView
-										.getBounds(contextViews));
+
+							if (overlayed && (offscreen != null)) {
+								dirty.add(graph.toScreen(AbstractCellView.getBounds(views)));
+
+								Rectangle2D t = graph.toScreen(AbstractCellView.getBounds(contextViews));
+
 								if (t != null)
 									dirty.add(t);
+
 								// TODO: Should use real ports if portsVisible
 								// and check if ports are scaled
 								int border = PortView.SIZE + 4;
+
 								if (graph.isPortsScaled())
 									border = (int) (graph.getScale() * border);
+
 								int border2 = border / 2;
-								dirty.setFrame(dirty.getX() - border2, dirty
-										.getY()
-										- border2, dirty.getWidth() + border,
-										dirty.getHeight() + border);
+								dirty.setFrame(dirty.getX() - border2, dirty.getY() - border2,
+								               dirty.getWidth() + border, dirty.getHeight()
+								               + border);
+
 								double sx1 = Math.max(0, dirty.getX());
 								double sy1 = Math.max(0, dirty.getY());
 								double sx2 = sx1 + dirty.getWidth();
 								double sy2 = sy1 + dirty.getHeight();
+
 								if (isDragging && !DNDPREVIEW) // BUG IN 1.4.0
-									// (FREEZE)
+								                               // (FREEZE)
+
 									return;
-								graph.getGraphics().drawImage(offscreen,
-										(int) sx1, (int) sy1, (int) sx2,
-										(int) sy2, (int) sx1, (int) sy1,
-										(int) sx2, (int) sy2, graph);
+
+								graph.getGraphics()
+								     .drawImage(offscreen, (int) sx1, (int) sy1, (int) sx2,
+								                (int) sy2, (int) sx1, (int) sy1, (int) sx2,
+								                (int) sy2, graph);
 							}
 						}
 					} // end if (isMoving or ...)
@@ -2535,7 +2681,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 
 		public void mouseReleased(MouseEvent event) {
 			try {
-				if (event != null && !event.isConsumed()) {
+				if ((event != null) && !event.isConsumed()) {
 					if (activeHandle != null) {
 						activeHandle.mouseReleased(event);
 						activeHandle = null;
@@ -2543,64 +2689,61 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 						if (cachedBounds != null) {
 							double dx = event.getX() - start.getX();
 							double dy = event.getY() - start.getY();
-							Point2D tmp = graph.fromScreen(new Point2D.Double(
-									dx, dy));
-							GraphLayoutCache.translateViews(views, tmp.getX(),
-									tmp.getY());
+							Point2D tmp = graph.fromScreen(new Point2D.Double(dx, dy));
+							GraphLayoutCache.translateViews(views, tmp.getX(), tmp.getY());
 						}
-						CellView[] all = graphLayoutCache
-								.getAllDescendants(views);
-						Map attributes = GraphConstants.createAttributes(all,
-								null);
+
+						CellView[] all = graphLayoutCache.getAllDescendants(views);
+						Map attributes = GraphConstants.createAttributes(all, null);
+
 						if (event.isControlDown() && graph.isCloneable()) { // Clone
-							// Cells
-							Object[] cells = graph.getDescendants(graph
-									.order(context.getCells()));
+							                                                // Cells
+
+							Object[] cells = graph.getDescendants(graph.order(context.getCells()));
+
 							// Include properties from hidden cells
-							Map hiddenMapping = graphLayoutCache
-									.getHiddenMapping();
+							Map hiddenMapping = graphLayoutCache.getHiddenMapping();
+
 							for (int i = 0; i < cells.length; i++) {
 								Object witness = attributes.get(cells[i]);
+
 								if (witness == null) {
-									CellView view = (CellView) hiddenMapping
-											.get(cells[i]);
-									if (view != null
-											&& !graphModel.isPort(view
-													.getCell())) {
+									CellView view = (CellView) hiddenMapping.get(cells[i]);
+
+									if ((view != null) && !graphModel.isPort(view.getCell())) {
 										// TODO: Clone required? Same in
 										// GraphConstants.
-										AttributeMap attrs = (AttributeMap) view
-												.getAllAttributes().clone();
+										AttributeMap attrs = (AttributeMap) view.getAllAttributes()
+										                                        .clone();
 										// Maybe translate?
 										// attrs.translate(dx, dy);
 										attributes.put(cells[i], attrs.clone());
 									}
 								}
 							}
-							ConnectionSet cs = ConnectionSet.create(graphModel,
-									cells, false);
-							ParentMap pm = ParentMap.create(graphModel, cells,
-									false, true);
-							cells = graphLayoutCache.insertClones(cells, graph
-									.cloneCells(cells), attributes, cs, pm, 0,
-									0);
+
+							ConnectionSet cs = ConnectionSet.create(graphModel, cells, false);
+							ParentMap pm = ParentMap.create(graphModel, cells, false, true);
+							cells = graphLayoutCache.insertClones(cells, graph.cloneCells(cells),
+							                                      attributes, cs, pm, 0, 0);
 						} else if (graph.isMoveable()) { // Move Cells
+
 							ParentMap pm = null;
 
 							// Moves into group
 							if (targetGroup != null) {
-								pm = new ParentMap(context.getCells(),
-										targetGroup.getCell());
+								pm = new ParentMap(context.getCells(), targetGroup.getCell());
 							} else if (graph.isMoveOutOfGroups()
-									&& (ignoreTargetGroup != null && !ignoreTargetGroup
-											.getBounds().intersects(
-													AbstractCellView
-															.getBounds(views)))) {
+							           && ((ignoreTargetGroup != null)
+							              && !ignoreTargetGroup.getBounds()
+							                                   .intersects(AbstractCellView
+							                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        .getBounds(views)))) {
 								pm = new ParentMap(context.getCells(), null);
 							}
-							graph.getGraphLayoutCache().edit(attributes,
-									disconnect, pm, null);
+
+							graph.getGraphLayoutCache().edit(attributes, disconnect, pm, null);
 						}
+
 						event.consume();
 					}
 				}
@@ -2617,18 +2760,17 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 				start = null;
 			}
 		}
-
 	}
 
 	/**
 	 * PropertyChangeListener for the graph. Updates the appropriate variable
 	 * and takes the appropriate actions, based on what changes.
 	 */
-	public class PropertyChangeHandler implements PropertyChangeListener,
-			Serializable {
+	public class PropertyChangeHandler implements PropertyChangeListener, Serializable {
 		public void propertyChange(PropertyChangeEvent event) {
 			if (event.getSource() == graph) {
 				String changeName = event.getPropertyName();
+
 				if (changeName.equals("minimumSize"))
 					updateCachedPreferredSize();
 				else if (changeName.equals(JGraph.GRAPH_MODEL_PROPERTY))
@@ -2640,32 +2782,31 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 					setMarquee((BasicMarqueeHandler) event.getNewValue());
 				else if (changeName.equals("transferHandler")) {
 					if (dropTarget != null)
-						dropTarget
-								.removeDropTargetListener(defaultDropTargetListener);
+						dropTarget.removeDropTargetListener(defaultDropTargetListener);
+
 					dropTarget = graph.getDropTarget();
+
 					try {
 						if (dropTarget != null)
-							dropTarget
-									.addDropTargetListener(defaultDropTargetListener);
+							dropTarget.addDropTargetListener(defaultDropTargetListener);
 					} catch (TooManyListenersException tmle) {
 						// should not happen... swing drop target is multicast
 					}
 				} else if (changeName.equals(JGraph.EDITABLE_PROPERTY)) {
-					boolean editable = ((Boolean) event.getNewValue())
-							.booleanValue();
+					boolean editable = ((Boolean) event.getNewValue()).booleanValue();
+
 					if (!editable && isEditing(graph))
 						cancelEditing(graph);
 				} else if (changeName.equals(JGraph.SELECTION_MODEL_PROPERTY))
 					setSelectionModel(graph.getSelectionModel());
 				else if (changeName.equals(JGraph.GRID_VISIBLE_PROPERTY)
-						|| changeName.equals(JGraph.GRID_SIZE_PROPERTY)
-						|| changeName.equals(JGraph.GRID_COLOR_PROPERTY)
-						|| changeName.equals(JGraph.HANDLE_COLOR_PROPERTY)
-						|| changeName
-								.equals(JGraph.LOCKED_HANDLE_COLOR_PROPERTY)
-						|| changeName.equals(JGraph.HANDLE_SIZE_PROPERTY)
-						|| changeName.equals(JGraph.PORTS_VISIBLE_PROPERTY)
-						|| changeName.equals(JGraph.ANTIALIASED_PROPERTY))
+				         || changeName.equals(JGraph.GRID_SIZE_PROPERTY)
+				         || changeName.equals(JGraph.GRID_COLOR_PROPERTY)
+				         || changeName.equals(JGraph.HANDLE_COLOR_PROPERTY)
+				         || changeName.equals(JGraph.LOCKED_HANDLE_COLOR_PROPERTY)
+				         || changeName.equals(JGraph.HANDLE_SIZE_PROPERTY)
+				         || changeName.equals(JGraph.PORTS_VISIBLE_PROPERTY)
+				         || changeName.equals(JGraph.ANTIALIASED_PROPERTY))
 					graph.repaint();
 				else if (changeName.equals(JGraph.SCALE_PROPERTY))
 					updateSize();
@@ -2695,6 +2836,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 			if (graph != null) {
 				int step = 70;
 				Rectangle rect = graph.getVisibleRect();
+
 				if (direction == 1)
 					rect.translate(0, -step); // up
 				else if (direction == 2)
@@ -2703,14 +2845,14 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 					rect.translate(0, step); // down
 				else if (direction == 4)
 					rect.translate(-step, 0); // left
+
 				graph.scrollRectToVisible(rect);
 			}
 		}
 
 		public boolean isEnabled() {
-			return (graph != null && graph.isEnabled());
+			return ((graph != null) && graph.isEnabled());
 		}
-
 	} // End of class BasicGraphUI.GraphIncrementAction
 
 	/**
@@ -2726,7 +2868,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		}
 
 		public boolean isEnabled() {
-			return (graph != null && graph.isEnabled());
+			return ((graph != null) && graph.isEnabled());
 		}
 	} // End of class BasicGraphUI.GraphCancelEditingAction
 
@@ -2746,7 +2888,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		}
 
 		public boolean isEnabled() {
-			return (graph != null && graph.isEnabled());
+			return ((graph != null) && graph.isEnabled());
 		}
 	} // End of BasicGraphUI.GraphEditAction
 
@@ -2764,14 +2906,14 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 			if (graph != null) {
 				if (selectAll) {
 					graph.setSelectionCells(graph.getGraphLayoutCache()
-							.getVisibleCells(graph.getRoots()));
+					                             .getVisibleCells(graph.getRoots()));
 				} else
 					graph.clearSelection();
 			}
 		}
 
 		public boolean isEnabled() {
-			return (graph != null && graph.isEnabled());
+			return ((graph != null) && graph.isEnabled());
 		}
 	} // End of BasicGraphUI.GraphSelectAllAction
 
@@ -2788,21 +2930,18 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		/** Destination that receives all events. */
 		protected Component destination;
 
-		public MouseInputHandler(Component source, Component destination,
-				MouseEvent event) {
+		public MouseInputHandler(Component source, Component destination, MouseEvent event) {
 			this.source = source;
 			this.destination = destination;
 			this.source.addMouseListener(this);
 			this.source.addMouseMotionListener(this);
 			/* Dispatch the editing event */
-			destination.dispatchEvent(SwingUtilities.convertMouseEvent(source,
-					event, destination));
+			destination.dispatchEvent(SwingUtilities.convertMouseEvent(source, event, destination));
 		}
 
 		public void mouseClicked(MouseEvent e) {
 			if (destination != null)
-				destination.dispatchEvent(SwingUtilities.convertMouseEvent(
-						source, e, destination));
+				destination.dispatchEvent(SwingUtilities.convertMouseEvent(source, e, destination));
 		}
 
 		public void mousePressed(MouseEvent e) {
@@ -2810,8 +2949,8 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 
 		public void mouseReleased(MouseEvent e) {
 			if (destination != null)
-				destination.dispatchEvent(SwingUtilities.convertMouseEvent(
-						source, e, destination));
+				destination.dispatchEvent(SwingUtilities.convertMouseEvent(source, e, destination));
+
 			removeFromSource();
 		}
 
@@ -2825,13 +2964,13 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 			if (!SwingUtilities.isLeftMouseButton(e)) {
 				removeFromSource();
 			}
+
 			// insertionLocation = null;
 		}
 
 		public void mouseDragged(MouseEvent e) {
 			if (destination != null)
-				destination.dispatchEvent(SwingUtilities.convertMouseEvent(
-						source, e, destination));
+				destination.dispatchEvent(SwingUtilities.convertMouseEvent(source, e, destination));
 		}
 
 		public void mouseMoved(MouseEvent e) {
@@ -2843,17 +2982,16 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 				source.removeMouseListener(this);
 				source.removeMouseMotionListener(this);
 			}
+
 			source = destination = null;
 		}
-
 	} // End of class BasicGraphUI.MouseInputHandler
 
 	/**
 	 * Graph Drop Target Listener
 	 */
 	public class GraphDropTargetListener extends BasicGraphDropTargetListener
-			implements Serializable {
-
+	    implements Serializable {
 		/**
 		 * called to save the state of a component in case it needs to be
 		 * restored because a drop is not performed.
@@ -2876,12 +3014,11 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 		 */
 		protected void updateInsertionLocation(JComponent comp, Point p) {
 			setInsertionLocation(p);
+
 			if (handle != null) {
 				// How to fetch the shift state?
-				int mod = (dropAction == TransferHandler.COPY) ? InputEvent.CTRL_MASK
-						: 0;
-				handle.mouseDragged(new MouseEvent(comp, 0, 0, mod, p.x, p.y,
-						1, false));
+				int mod = (dropAction == TransferHandler.COPY) ? InputEvent.CTRL_MASK : 0;
+				handle.mouseDragged(new MouseEvent(comp, 0, 0, mod, p.x, p.y, 1, false));
 			}
 		}
 
@@ -2894,7 +3031,6 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 			dropAction = e.getDropAction();
 			super.dropActionChanged(e);
 		}
-
 	} // End of BasicGraphUI.GraphDropTargetListener
 
 	/**
@@ -2913,7 +3049,7 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 
 	/**
 	 * Sets the mode of the snapSelectedView drag operation.
-	 * 
+	 *
 	 * @param snapSelectedView
 	 *            specifies if the snap-to-grid mode should be applied during a
 	 *            drag operation. If it is enabled, the view, that is returned
@@ -2927,5 +3063,4 @@ public class BasicGraphUI extends GraphUI implements Serializable {
 	public void setSnapSelectedView(boolean snapSelectedView) {
 		this.snapSelectedView = snapSelectedView;
 	}
-
 } // End of class BasicGraphUI

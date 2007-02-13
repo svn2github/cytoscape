@@ -35,19 +35,24 @@
 package org.cytoscape.coreplugin.cpath.action;
 
 import cytoscape.task.ui.JTaskConfig;
+
 import cytoscape.task.util.TaskManager;
+
 import org.cytoscape.coreplugin.cpath.model.OrganismOption;
 import org.cytoscape.coreplugin.cpath.model.SearchBundleList;
 import org.cytoscape.coreplugin.cpath.model.SearchRequest;
 import org.cytoscape.coreplugin.cpath.task.QueryCPathTask;
 import org.cytoscape.coreplugin.cpath.ui.Console;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 import java.util.HashMap;
+
+import javax.swing.*;
+
 
 /**
  * Executes cPath Searches.
@@ -55,86 +60,85 @@ import java.util.HashMap;
  * @author Ethan Cerami
  */
 public class ExecuteQuery extends KeyAdapter implements ActionListener {
-    private HashMap cyMap;
-    private SearchRequest searchRequest;
-    private JFrame parent;
-    private QueryCPathTask task;
-    private SearchBundleList searchBundleList;
-    private JButton searchButton;
-    private Console console;
+	private HashMap cyMap;
+	private SearchRequest searchRequest;
+	private JFrame parent;
+	private QueryCPathTask task;
+	private SearchBundleList searchBundleList;
+	private JButton searchButton;
+	private Console console;
 
-    /**
-     * Constructor.
-     *
-     * @param cyMap        CyMap Object.
-     * @param request      SearchRequest Object.
-     * @param searchList   List of Searches.
-     * @param console      Console Panel.
-     * @param searchButton Search Button.
-     * @param parent       Parent Component.
-     */
-    public ExecuteQuery (HashMap cyMap, SearchRequest request,
-            SearchBundleList searchList,
-            Console console, JButton searchButton, JFrame parent) {
-        this.cyMap = cyMap;
-        this.searchRequest = request;
-        this.parent = parent;
-        this.searchBundleList = searchList;
-        this.searchButton = searchButton;
-        this.console = console;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param cyMap        CyMap Object.
+	 * @param request      SearchRequest Object.
+	 * @param searchList   List of Searches.
+	 * @param console      Console Panel.
+	 * @param searchButton Search Button.
+	 * @param parent       Parent Component.
+	 */
+	public ExecuteQuery(HashMap cyMap, SearchRequest request, SearchBundleList searchList,
+	                    Console console, JButton searchButton, JFrame parent) {
+		this.cyMap = cyMap;
+		this.searchRequest = request;
+		this.parent = parent;
+		this.searchBundleList = searchList;
+		this.searchButton = searchButton;
+		this.console = console;
+	}
 
-    /**
-     * Execute cPath Query.
-     *
-     * @param e ActionEvent Object.
-     */
-    public void actionPerformed (ActionEvent e) {
-        executeQuery();
-    }
+	/**
+	 * Execute cPath Query.
+	 *
+	 * @param e ActionEvent Object.
+	 */
+	public void actionPerformed(ActionEvent e) {
+		executeQuery();
+	}
 
-    /**
-     * Listen to Key Press Events in Search Box.
-     *
-     * @param e Key Event.
-     */
-    public void keyPressed (KeyEvent e) {
-        int keyCode = e.getKeyCode();
-        if (keyCode == 10) {
-            JTextField textField = (JTextField) e.getSource();
-            searchRequest.setQuery(textField.getText());
-            executeQuery();
-        }
-    }
+	/**
+	 * Listen to Key Press Events in Search Box.
+	 *
+	 * @param e Key Event.
+	 */
+	public void keyPressed(KeyEvent e) {
+		int keyCode = e.getKeyCode();
 
-    /**
-     * Execute Query Against cPath.
-     */
-    private void executeQuery () {
-        if (searchRequest.getQuery().length() == 0
-                && searchRequest.getOrganism().equals
-                (OrganismOption.ALL_ORGANISMS)) {
-            JOptionPane.showMessageDialog(parent,
-                    "Please Specify a Keyword and/or an Organism, and "
-                            + "try again.", "cPath PlugIn",
-                    JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            // Disable search button so that user cannot initiate
-            // multiple concurrent searches.
-            searchButton.setEnabled(false);
-            console.clear();
-            //  Instantiate QueryCPathTask
-            //  Task runs in a new thread, so that GUI remains responsive.
-            task = new QueryCPathTask(cyMap, searchRequest,
-                    searchBundleList, console);
-            JTaskConfig config = new JTaskConfig();
-            config.setAutoDispose(true);
-            config.displayCancelButton(true);
-            config.displayTimeElapsed(true);
-            config.displayTimeRemaining(true);
-            config.displayStatus(true);
-            config.setOwner(parent);
-            TaskManager.executeTask(task, config);
-        }
-    }
+		if (keyCode == 10) {
+			JTextField textField = (JTextField) e.getSource();
+			searchRequest.setQuery(textField.getText());
+			executeQuery();
+		}
+	}
+
+	/**
+	 * Execute Query Against cPath.
+	 */
+	private void executeQuery() {
+		if ((searchRequest.getQuery().length() == 0)
+		    && searchRequest.getOrganism().equals(OrganismOption.ALL_ORGANISMS)) {
+			JOptionPane.showMessageDialog(parent,
+			                              "Please Specify a Keyword and/or an Organism, and "
+			                              + "try again.", "cPath PlugIn",
+			                              JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			// Disable search button so that user cannot initiate
+			// multiple concurrent searches.
+			searchButton.setEnabled(false);
+			console.clear();
+			//  Instantiate QueryCPathTask
+			//  Task runs in a new thread, so that GUI remains responsive.
+			task = new QueryCPathTask(cyMap, searchRequest, searchBundleList, console);
+
+			JTaskConfig config = new JTaskConfig();
+			config.setAutoDispose(true);
+			config.displayCancelButton(true);
+			config.displayTimeElapsed(true);
+			config.displayTimeRemaining(true);
+			config.displayStatus(true);
+			config.setOwner(parent);
+			TaskManager.executeTask(task, config);
+		}
+	}
 }

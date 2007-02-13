@@ -34,6 +34,7 @@
 */
 package org.cytoscape.coreplugin.cpath.model;
 
+
 /**
  * Encapsulates a Search Request and its corresponding Search Response.
  * Each SearchBundle is identified with a unique integer ID value.
@@ -41,71 +42,71 @@ package org.cytoscape.coreplugin.cpath.model;
  * @author Ethan Cerami
  */
 public class SearchBundle {
-    /**
-     * The Search Request Object.
-     */
-    private SearchRequest request;
+	/**
+	 * The Search Request Object.
+	 */
+	private SearchRequest request;
 
-    /**
-     * The Search Respone Object.
-     */
-    private SearchResponse response;
+	/**
+	 * The Search Respone Object.
+	 */
+	private SearchResponse response;
 
-    /**
-     * A Unique Identifier
-     */
-    private int id;
+	/**
+	 * A Unique Identifier
+	 */
+	private int id;
 
-    /**
-     * Stores the Next Bundle ID.
-     */
-    private static int nextId = 0;
+	/**
+	 * Stores the Next Bundle ID.
+	 */
+	private static int nextId = 0;
 
-    /**
-     * Constructor.
-     *
-     * @param request  SearchRequest.
-     * @param response SearchResponse.
-     */
-    public SearchBundle (SearchRequest request, SearchResponse response) {
-        this.id = generateId();
-        this.request = request;
-        this.response = response;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param request  SearchRequest.
+	 * @param response SearchResponse.
+	 */
+	public SearchBundle(SearchRequest request, SearchResponse response) {
+		this.id = generateId();
+		this.request = request;
+		this.response = response;
+	}
 
-    /**
-     * Gets Unique Identifier.
-     *
-     * @return Unique Identifier.
-     */
-    public int getId () {
-        return id;
-    }
+	/**
+	 * Gets Unique Identifier.
+	 *
+	 * @return Unique Identifier.
+	 */
+	public int getId() {
+		return id;
+	}
 
-    /**
-     * Gets Search Request Object.
-     *
-     * @return Search Request.
-     */
-    public SearchRequest getRequest () {
-        return request;
-    }
+	/**
+	 * Gets Search Request Object.
+	 *
+	 * @return Search Request.
+	 */
+	public SearchRequest getRequest() {
+		return request;
+	}
 
-    /**
-     * Gets Search Response Object.
-     *
-     * @return Search Response.
-     */
-    public SearchResponse getResponse () {
-        return response;
-    }
+	/**
+	 * Gets Search Response Object.
+	 *
+	 * @return Search Response.
+	 */
+	public SearchResponse getResponse() {
+		return response;
+	}
 
-    /**
-     * Generates a Unique ID based on Static next_id variable.
-     *
-     * @return
-     */
-    private synchronized int generateId () {
-        return nextId++;
-    }
+	/**
+	 * Generates a Unique ID based on Static next_id variable.
+	 *
+	 * @return
+	 */
+	private synchronized int generateId() {
+		return nextId++;
+	}
 }

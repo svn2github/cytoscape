@@ -34,9 +34,12 @@
 */
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
-import cytoscape.data.ImportHandler;
-import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
+
+import cytoscape.data.ImportHandler;
+
+import cytoscape.plugin.CytoscapePlugin;
+
 
 /**
  * PSI-MI PlugIn.
@@ -45,19 +48,15 @@ import cytoscape.Cytoscape;
  * @author Nisha Vinod.
  */
 public class PsiMiPlugIn extends CytoscapePlugin {
+	/**
+	 * PSI-MI Plugin
+	 */
+	public PsiMiPlugIn() {
+		//  Register PsiMiFilter
+		ImportHandler importHandler = new ImportHandler();
+		importHandler.addFilter(new PsiMiFilter());
 
-    /**
-     * PSI-MI Plugin
-     */
-    public PsiMiPlugIn() {
-
-        //  Register PsiMiFilter
-        ImportHandler importHandler = new ImportHandler();
-        importHandler.addFilter(new PsiMiFilter());
-
-        Cytoscape.getDesktop().getCyMenus().addAction (
-                new ExportNetworkAsPsiMiOne());        
-        Cytoscape.getDesktop().getCyMenus().addAction (
-                new ExportNetworkAsPsiMiTwoFive());
-    }
+		Cytoscape.getDesktop().getCyMenus().addAction(new ExportNetworkAsPsiMiOne());
+		Cytoscape.getDesktop().getCyMenus().addAction(new ExportNetworkAsPsiMiTwoFive());
+	}
 }

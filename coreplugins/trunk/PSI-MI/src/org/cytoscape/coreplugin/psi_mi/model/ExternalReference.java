@@ -34,116 +34,120 @@
 */
 package org.cytoscape.coreplugin.psi_mi.model;
 
+
 /**
  * Encapsulates a Single External Reference.
  *
  * @author Ethan Cerami
  */
 public class ExternalReference implements Comparable {
-    /**
-     * Database Name.
-     */
-    private String database;
+	/**
+	 * Database Name.
+	 */
+	private String database;
 
-    /**
-     * Database ID.
-     */
-    private String id;
+	/**
+	 * Database ID.
+	 */
+	private String id;
 
-    /**
-     * Constructor.
-     *
-     * @param db Database name.
-     * @param id Database id.
-     */
-    public ExternalReference(String db, String id) {
-        this.database = db;
-        this.id = id;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param db Database name.
+	 * @param id Database id.
+	 */
+	public ExternalReference(String db, String id) {
+		this.database = db;
+		this.id = id;
+	}
 
-    /**
-     * Gets the Database Name.
-     *
-     * @return Database name.
-     */
-    public String getDatabase() {
-        return database;
-    }
+	/**
+	 * Gets the Database Name.
+	 *
+	 * @return Database name.
+	 */
+	public String getDatabase() {
+		return database;
+	}
 
-    /**
-     * Sets the Database Name.
-     *
-     * @param db Database name.
-     */
-    public void setDatabase(String db) {
-        this.database = db;
-    }
+	/**
+	 * Sets the Database Name.
+	 *
+	 * @param db Database name.
+	 */
+	public void setDatabase(String db) {
+		this.database = db;
+	}
 
-    /**
-     * Gets the Database ID.
-     *
-     * @return Database ID.
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * Gets the Database ID.
+	 *
+	 * @return Database ID.
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * Overrides default equals() method.
-     * Two external references are considered equal if they share the same
-     * database and id.
-     *
-     * @param obj Object to test.
-     * @return true or false.
-     */
-    public boolean equals(Object obj) {
-        if (obj instanceof ExternalReference) {
-            ExternalReference other = (ExternalReference) obj;
-            return (database.equals(other.getDatabase())
-                    && id.equals(other.getId()));
-        } else {
-            return super.equals(obj);
-        }
-    }
+	/**
+	 * Overrides default equals() method.
+	 * Two external references are considered equal if they share the same
+	 * database and id.
+	 *
+	 * @param obj Object to test.
+	 * @return true or false.
+	 */
+	public boolean equals(Object obj) {
+		if (obj instanceof ExternalReference) {
+			ExternalReference other = (ExternalReference) obj;
 
-    /**
-     * Gets Hash Code.
-     *
-     * @return Integer Hash Code.
-     */
-    public int hashCode() {
-        String str = new String(database + ":" + id);
-        return str.hashCode();
-    }
+			return (database.equals(other.getDatabase()) && id.equals(other.getId()));
+		} else {
+			return super.equals(obj);
+		}
+	}
 
-    /**
-     * Overrides default toString() method.
-     *
-     * @return String Representation.
-     */
-    public String toString() {
-        return new String("External Reference  -->  Database:  ["
-                + database + "], ID:  [" + id + "]");
-    }
+	/**
+	 * Gets Hash Code.
+	 *
+	 * @return Integer Hash Code.
+	 */
+	public int hashCode() {
+		String str = new String(database + ":" + id);
 
-    /**
-     * Comparison Operator.
-     *
-     * @param o Other Object.
-     * @return integer value.
-     */
-    public int compareTo(Object o) {
-        if (o instanceof ExternalReference) {
-            ExternalReference other = (ExternalReference) o;
-            String otherDbName = other.getDatabase();
-            if (!otherDbName.equals(database)) {
-                return otherDbName.compareToIgnoreCase(database);
-            } else {
-                String otherId = other.getId();
-                return otherId.compareToIgnoreCase(id);
-            }
-        } else {
-            return 0;
-        }
-    }
+		return str.hashCode();
+	}
+
+	/**
+	 * Overrides default toString() method.
+	 *
+	 * @return String Representation.
+	 */
+	public String toString() {
+		return new String("External Reference  -->  Database:  [" + database + "], ID:  [" + id
+		                  + "]");
+	}
+
+	/**
+	 * Comparison Operator.
+	 *
+	 * @param o Other Object.
+	 * @return integer value.
+	 */
+	public int compareTo(Object o) {
+		if (o instanceof ExternalReference) {
+			ExternalReference other = (ExternalReference) o;
+			String otherDbName = other.getDatabase();
+
+			if (!otherDbName.equals(database)) {
+				return otherDbName.compareToIgnoreCase(database);
+			} else {
+				String otherId = other.getId();
+
+				return otherId.compareToIgnoreCase(id);
+			}
+		} else {
+			return 0;
+		}
+	}
 }

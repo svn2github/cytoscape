@@ -33,6 +33,7 @@ package org.mskcc.biopax_plugin.util.biopax;
 
 import java.util.HashMap;
 
+
 /**
  * Hashmap which maps BioPax Chemical Modifications to Abbreviations.
  * <p/>
@@ -41,16 +42,15 @@ import java.util.HashMap;
  * @author Benjamin Gross
  */
 public class BioPaxChemicalModificationMap extends HashMap {
-
-    /**
-     * Constructor.
-     */
-    public BioPaxChemicalModificationMap() {
-        put("acetylation site", "A");
-        put("glycosylation site", "G");
-        put("phosphorylation site", "P");
-        put("proteolytic cleavage site", "PCS");
-        put("sumoylation site", "S");
-        put("ubiquitination site", "U");
-    }
+	/**
+	 * Constructor.
+	 */
+	public BioPaxChemicalModificationMap() {
+		put("acetylation site", "A");
+		put("glycosylation site", "G");
+		put("phosphorylation site", "P");
+		put("proteolytic cleavage site", "PCS");
+		put("sumoylation site", "S");
+		put("ubiquitination site", "U");
+	}
 }

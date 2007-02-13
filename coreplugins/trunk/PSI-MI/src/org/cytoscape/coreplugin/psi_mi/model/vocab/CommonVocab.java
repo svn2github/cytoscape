@@ -34,21 +34,20 @@
 */
 package org.cytoscape.coreplugin.psi_mi.model.vocab;
 
+
 /**
  * Common Vocab Terms.
  *
  * @author Ethan Cerami
  */
 public class CommonVocab {
+	/**
+	 * XREF_DB_NAME.
+	 */
+	public static final String XREF_DB_NAME = "XREF_DB_NAME";
 
-    /**
-     * XREF_DB_NAME.
-     */
-    public static final String XREF_DB_NAME = "XREF_DB_NAME";
-
-    /**
-     * XREF_DB_NAME.
-     */
-    public static final String XREF_DB_ID = "XREF_DB_ID";
-
+	/**
+	 * XREF_DB_NAME.
+	 */
+	public static final String XREF_DB_ID = "XREF_DB_ID";
 }

@@ -1,16 +1,17 @@
 /*
- * @(#)GraphCellEditor.java	1.0 03-JUL-04
- * 
+ * @(#)GraphCellEditor.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.JGraph;
 
 import java.awt.Component;
 
 import javax.swing.CellEditor;
 
-import org.jgraph.JGraph;
 
 /**
   * Adds to CellEditor the extensions necessary to configure an editor
@@ -19,7 +20,6 @@ import org.jgraph.JGraph;
   * @version 1.0 1/1/02
   * @author Gaudenz Alder
   */
-
 public interface GraphCellEditor extends CellEditor {
 	/**
 	 * Sets an initial <I>value</I> for the editor.  This will cause
@@ -30,15 +30,12 @@ public interface GraphCellEditor extends CellEditor {
 	 * Component hierarchy.  Once installed in the client's hierarchy
 	 * this component will then be able to draw and receive user input.
 	 *
-	 * @param	graph		the JGraph that is asking the editor to edit
-	 *				This parameter can be null.
-	 * @param	value		the value of the cell to be edited.
-	 * @param	isSelected	true if the cell is to be rendered with
-	 *				selection highlighting
-	 * @return	the component for editing
+	 * @param    graph        the JGraph that is asking the editor to edit
+	 *                This parameter can be null.
+	 * @param    value        the value of the cell to be edited.
+	 * @param    isSelected    true if the cell is to be rendered with
+	 *                selection highlighting
+	 * @return    the component for editing
 	 */
-	Component getGraphCellEditorComponent(
-		JGraph graph,
-		Object value,
-		boolean isSelected);
+	Component getGraphCellEditorComponent(JGraph graph, Object value, boolean isSelected);
 }

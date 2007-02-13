@@ -1,9 +1,9 @@
 /*
  * @(#)JGraphLayoutRegistry.java 1.0 18-MAY-2004
- * 
+ *
  * Copyright (c) 2001-2005, Gaudenz Alder
- * All rights reserved. 
- * 
+ * All rights reserved.
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -22,28 +22,24 @@ package org.jgraph.layout;
 
 import java.util.ArrayList;
 
+
 /**
  * @author Gaudenz Alder
- * 
+ *
  * Allows to maintain a list of layout algorithms. Contains all default
  * algorithms that ship with this package. This is a singleton class.
  */
 public class JGraphLayoutRegistry {
-
 	/**
 	 * Contains the shared registry instance
 	 */
 	protected static JGraphLayoutRegistry sharedJGraphLayoutRegistry = new JGraphLayoutRegistry();
 
-	/**
-	 * Class initialization
-	 */
 	static {
 		// Register Local Layouts
 		sharedJGraphLayoutRegistry.add(new AnnealingLayoutAlgorithm());
 		sharedJGraphLayoutRegistry.add(new CircleGraphLayout());
-		sharedJGraphLayoutRegistry.add(new GEMLayoutAlgorithm(
-				new AnnealingLayoutAlgorithm(true)));
+		sharedJGraphLayoutRegistry.add(new GEMLayoutAlgorithm(new AnnealingLayoutAlgorithm(true)));
 		sharedJGraphLayoutRegistry.add(new MoenLayoutAlgorithm());
 		sharedJGraphLayoutRegistry.add(new RadialTreeLayoutAlgorithm());
 		sharedJGraphLayoutRegistry.add(new SpringEmbeddedLayoutAlgorithm());
@@ -77,5 +73,4 @@ public class JGraphLayoutRegistry {
 	public ArrayList getLayouts() {
 		return layouts;
 	}
-
 }

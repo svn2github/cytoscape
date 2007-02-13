@@ -36,7 +36,9 @@ package org.cytoscape.coreplugin.psi_mi.test.cyto_mapper;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+
 import junit.framework.TestCase;
+
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
@@ -47,64 +49,67 @@ import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 
 import java.util.ArrayList;
 
+
 /**
  * Tests the MapFromCytoscape Class.
  *
  * @author Ethan Cerami.
  */
 public class TestMapFromCytoscape extends TestCase {
+	/**
+	 * Tests the Mapper.
+	 *
+	 * @throws Exception All Exceptions.
+	 */
+	public void testMapper1() throws Exception {
+		//  First, get some interactions from sample data file.
+		ArrayList interactions = new ArrayList();
+		ContentReader reader = new ContentReader();
+		String xml = reader.retrieveContent("testData/psi_sample1.xml");
 
-    /**
-     * Tests the Mapper.
-     *
-     * @throws Exception All Exceptions.
-     */
-    public void testMapper1() throws Exception {
-        //  First, get some interactions from sample data file.
-        ArrayList interactions = new ArrayList();
-        ContentReader reader = new ContentReader();
-        String xml = reader.retrieveContent("testData/psi_sample1.xml");
+		//  Map from PSI 1.5 --> DataService Interaction Objects.
+		MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions(xml, interactions);
+		mapper1.doMapping();
 
-        //  Map from PSI 1.5 --> DataService Interaction Objects.
-        MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions(xml, interactions);
-        mapper1.doMapping();
+		//  Now Map from Data Service Objects --> Cytocape Network Objects.
+		CyNetwork cyNetwork = Cytoscape.createNetwork("network1");
+		MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.MATRIX_VIEW);
+		mapper2.doMapping();
 
-        //  Now Map from Data Service Objects --> Cytocape Network Objects.
-        CyNetwork cyNetwork = Cytoscape.createNetwork("network1");
-        MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.MATRIX_VIEW);
-        mapper2.doMapping();
+		//  Add new nodes/edges to network
+		int[] nodeIndices = mapper2.getNodeIndices();
+		int[] edgeIndices = mapper2.getEdgeIndices();
 
-        //  Add new nodes/edges to network
-        int nodeIndices[] = mapper2.getNodeIndices();
-        int edgeIndices[] = mapper2.getEdgeIndices();
-        for (int i = 0; i < nodeIndices.length; i++) {
-            cyNetwork.addNode(nodeIndices[i]);
-        }
-        for (int i = 0; i < edgeIndices.length; i++) {
-            cyNetwork.addEdge(edgeIndices[i]);
-        }
+		for (int i = 0; i < nodeIndices.length; i++) {
+			cyNetwork.addNode(nodeIndices[i]);
+		}
 
-        //  And, now map back from Cytoscape --> DataService Interaction Objects
-        MapFromCytoscape mapper3 = new MapFromCytoscape(cyNetwork);
-        mapper3.doMapping();
+		for (int i = 0; i < edgeIndices.length; i++) {
+			cyNetwork.addEdge(edgeIndices[i]);
+		}
 
-        //  Verify that we have 6 interactions still
-        interactions = mapper3.getInteractions();
-        assertEquals(6, interactions.size());
+		//  And, now map back from Cytoscape --> DataService Interaction Objects
+		MapFromCytoscape mapper3 = new MapFromCytoscape(cyNetwork);
+		mapper3.doMapping();
 
-        //  Verify that Sample Interaction with XRefs is mapped over.
-        Interaction interaction = (Interaction) interactions.get(3);
-        assertTrue(interaction.toString().startsWith("Interaction:  [YCR038C] [YDR532C]"));
-        ExternalReference refs[] = interaction.getExternalRefs();
-        assertEquals(2, refs.length);
-        assertEquals("DIP", refs[0].getDatabase());
-        assertEquals("61E", refs[0].getId());
-        assertEquals("CPATH", refs[1].getDatabase());
-        assertEquals("12345", refs[1].getId());
+		//  Verify that we have 6 interactions still
+		interactions = mapper3.getInteractions();
+		assertEquals(6, interactions.size());
 
-        //  Validate sample interactor with XRefs
-        Interactor interactor = (Interactor) interaction.getInteractors().get(0);
-        assertEquals("YCR038C", interactor.getName());
-        assertEquals(15, interactor.getExternalRefs().length);
-    }
+		//  Verify that Sample Interaction with XRefs is mapped over.
+		Interaction interaction = (Interaction) interactions.get(3);
+		assertTrue(interaction.toString().startsWith("Interaction:  [YCR038C] [YDR532C]"));
+
+		ExternalReference[] refs = interaction.getExternalRefs();
+		assertEquals(2, refs.length);
+		assertEquals("DIP", refs[0].getDatabase());
+		assertEquals("61E", refs[0].getId());
+		assertEquals("CPATH", refs[1].getDatabase());
+		assertEquals("12345", refs[1].getId());
+
+		//  Validate sample interactor with XRefs
+		Interactor interactor = (Interactor) interaction.getInteractors().get(0);
+		assertEquals("YCR038C", interactor.getName());
+		assertEquals(15, interactor.getExternalRefs().length);
+	}
 }

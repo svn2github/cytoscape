@@ -34,37 +34,34 @@
 */
 package org.cytoscape.coreplugin.cpath.task;
 
+
 /**
  * Estimates Time Remaining for a Long-Running cPath Query.
  *
  * @author Ethan Cerami.
  */
 public class CPathTimeEstimator {
+	/**
+	 * Calculates Estimated Time Remaining.
+	 *
+	 * @param lastRequestTime      Time Interval for Last Request.
+	 * @param startIndex           Start Index for just completed request.
+	 * @param increment            Number of Interactions retrieved per request.
+	 * @param totalNumInteractions Total Number of Interactions to Retrieve.
+	 * @return estimated time, in milliseconds.
+	 */
+	public static long calculateEsimatedTimeRemaining(long lastRequestTime, int startIndex,
+	                                                  int increment, int totalNumInteractions) {
+		//  How Many more interactions do we need to donwload?
+		int numInteractionsRemaining = totalNumInteractions - startIndex - increment;
+		numInteractionsRemaining = Math.max(numInteractionsRemaining, 0);
 
-    /**
-     * Calculates Estimated Time Remaining.
-     *
-     * @param lastRequestTime      Time Interval for Last Request.
-     * @param startIndex           Start Index for just completed request.
-     * @param increment            Number of Interactions retrieved per request.
-     * @param totalNumInteractions Total Number of Interactions to Retrieve.
-     * @return estimated time, in milliseconds.
-     */
-    public static long calculateEsimatedTimeRemaining (long lastRequestTime,
-            int startIndex, int increment, int totalNumInteractions) {
+		//  How Many more network request do we need to make?
+		int numRequestsRemaining = (int) Math.ceil(numInteractionsRemaining / (double) increment);
 
-        //  How Many more interactions do we need to donwload?
-        int numInteractionsRemaining =
-                totalNumInteractions - startIndex - increment;
-        numInteractionsRemaining = Math.max(numInteractionsRemaining, 0);
+		//  Based on last request, approximate time remaining.
+		long totalTimeRemaining = lastRequestTime * numRequestsRemaining;
 
-        //  How Many more network request do we need to make?
-        int numRequestsRemaining = (int) Math.ceil(numInteractionsRemaining
-                / (double) increment);
-
-        //  Based on last request, approximate time remaining.
-        long totalTimeRemaining = lastRequestTime * numRequestsRemaining;
-
-        return totalTimeRemaining;
-    }
+		return totalTimeRemaining;
+	}
 }

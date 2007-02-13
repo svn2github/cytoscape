@@ -37,8 +37,10 @@ package org.cytoscape.coreplugin.cpath.test;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.cytoscape.coreplugin.cpath.test.protocol.ProtocolSuite;
 import org.cytoscape.coreplugin.cpath.test.task.TaskSuite;
+
 
 /**
  * Runs All JUnit Tests.
@@ -46,33 +48,33 @@ import org.cytoscape.coreplugin.cpath.test.task.TaskSuite;
  * @author Ethan Cerami
  */
 public class AllTests extends TestCase {
+	/**
+	 * The suite method kicks off all of the tests.
+	 *
+	 * @return junit.framework.Test
+	 */
+	public static Test suite() {
+		//  Organize all suites into one master suite.
+		TestSuite suite = new TestSuite();
+		suite.addTest(TaskSuite.suite());
+		suite.addTest(ProtocolSuite.suite());
+		suite.setName("Cytoscape cPath Plugin Tests");
 
-    /**
-     * The suite method kicks off all of the tests.
-     *
-     * @return junit.framework.Test
-     */
-    public static Test suite () {
-        //  Organize all suites into one master suite.
-        TestSuite suite = new TestSuite();
-        suite.addTest(TaskSuite.suite());
-        suite.addTest(ProtocolSuite.suite());
-        suite.setName("Cytoscape cPath Plugin Tests");
-        return suite;
-    }
+		return suite;
+	}
 
-    /**
-     * Runs all Cytoscape Unit Tests.
-     *
-     * @param args Command Line Arguments. use -ui to run the JUnit Graphical
-     *             interface.
-     */
-    public static void main (String[] args) {
-        if (args.length > 0 && args[0] != null && args[0].equals("-ui")) {
-            String newargs[] = {"org.cytoscape.coreplugin.cpath.test.AllTests", "-noloading"};
-            junit.swingui.TestRunner.main(newargs);
-        } else {
-            junit.textui.TestRunner.run(suite());
-        }
-    }
+	/**
+	 * Runs all Cytoscape Unit Tests.
+	 *
+	 * @param args Command Line Arguments. use -ui to run the JUnit Graphical
+	 *             interface.
+	 */
+	public static void main(String[] args) {
+		if ((args.length > 0) && (args[0] != null) && args[0].equals("-ui")) {
+			String[] newargs = { "org.cytoscape.coreplugin.cpath.test.AllTests", "-noloading" };
+			junit.swingui.TestRunner.main(newargs);
+		} else {
+			junit.textui.TestRunner.run(suite());
+		}
+	}
 }

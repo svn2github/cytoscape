@@ -35,21 +35,32 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
+
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+
 import cytoscape.view.CyNetworkView;
+
 import ding.view.DGraphView;
+
 import giny.view.NodeView;
+
 import legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
+
 import legacy.layout.impl.SpringEmbeddedLayouter2;
+
 import legacy.util.GraphConverter;
+
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
-import javax.swing.*;
 import java.util.Iterator;
+
+import javax.swing.*;
+
 
 /**
  * A Utility Class for Creating CyNetwork Views.
@@ -57,115 +68,109 @@ import java.util.Iterator;
  * @author Ethan Cerami
  */
 public class CyNetworkViewUtil {
+	/**
+	 * Creates a CyNetworkView from the specified CyNetwork.
+	 *
+	 * @param cyNetwork           CyNetwork Object.
+	 * @param taskMonitor         TaskMonitor Object.
+	 * @param executeSpringLayout Flag to Execute Spring Layout.
+	 * @param applyVisualStyle    Flag to Apply Current Visual Style.
+	 */
+	public static void createNetworkView(CyNetwork cyNetwork, TaskMonitor taskMonitor,
+	                                     boolean executeSpringLayout, boolean applyVisualStyle) {
+		// hack to make sure progress bar get set to 100%
+		// after network creation is complete
+		taskMonitor.setPercentCompleted(100);
 
-    /**
-     * Creates a CyNetworkView from the specified CyNetwork.
-     *
-     * @param cyNetwork           CyNetwork Object.
-     * @param taskMonitor         TaskMonitor Object.
-     * @param executeSpringLayout Flag to Execute Spring Layout.
-     * @param applyVisualStyle    Flag to Apply Current Visual Style.
-     */
-    public static void createNetworkView(CyNetwork cyNetwork, TaskMonitor
-            taskMonitor, boolean executeSpringLayout,
-            boolean applyVisualStyle) {
+		//  Conditionally Create Network View
+		if (cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+		                                                             .getProperty("viewThreshold"))) {
+			taskMonitor.setStatus("Creating Network View");
+			taskMonitor.setPercentCompleted(-1);
 
-        // hack to make sure progress bar get set to 100%
-        // after network creation is complete
-        taskMonitor.setPercentCompleted(100);
+			CyNetworkView networkView = createCyNetworkView(cyNetwork, applyVisualStyle);
 
-        //  Conditionally Create Network View
-        if (cyNetwork.getNodeCount()
-                < Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold"))) {
-            taskMonitor.setStatus("Creating Network View");
-            taskMonitor.setPercentCompleted(-1);
-            CyNetworkView networkView = createCyNetworkView(cyNetwork, applyVisualStyle);
+			//  Execute the Spring Embedder Layout Algorithm
+			if (executeSpringLayout) {
+				taskMonitor.setStatus("Executing Spring Layout...");
+				executeLayout(networkView, taskMonitor);
+			}
 
-            //  Execute the Spring Embedder Layout Algorithm
-            if (executeSpringLayout) {
-                taskMonitor.setStatus("Executing Spring Layout...");
-                executeLayout(networkView, taskMonitor);
-            }
+			if (applyVisualStyle) {
+				taskMonitor.setStatus("Applying Visual Styles");
+				Cytoscape.getVisualMappingManager().applyAppearances();
+				MapNodeAttributes.customNodes(networkView);
+			}
 
-            if (applyVisualStyle) {
-                taskMonitor.setStatus("Applying Visual Styles");
-                Cytoscape.getVisualMappingManager().applyAppearances();
-                MapNodeAttributes.customNodes(networkView);
-            }
+			//  Lastly, make the GraphView Canvas Visible.
+			//  After everthing is done, show the network view instantly.
+			SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						DingNetworkView view = (DingNetworkView) Cytoscape.getCurrentNetworkView();
+						view.setGraphLOD(new CyGraphLOD());
+						((DGraphView) view).fitContent();
+					}
+				});
+		}
+	}
 
-            //  Lastly, make the GraphView Canvas Visible.
-            //  After everthing is done, show the network view instantly.
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    DingNetworkView view = (DingNetworkView) Cytoscape
-                            .getCurrentNetworkView();
-                    view.setGraphLOD(new CyGraphLOD());
-                    ((DGraphView) view).fitContent();
-                }
-            });
-        }
-    }
+	/**
+	 * Creates the CyNetworkView.
+	 * Most of this code is copied directly from Cytoscape.createCyNetworkView.
+	 * However, it requires a bit of a hack to actually hide the network
+	 * view from the user, and I didn't want to use this hack in the core
+	 * Cytoscape.java class.
+	 *
+	 * @param cyNetwork        CyNetwork
+	 * @param applyVisualStyle Flag to Apply Current Visual Style.
+	 * @return CyNetworkView
+	 */
+	private static CyNetworkView createCyNetworkView(CyNetwork cyNetwork, boolean applyVisualStyle) {
+		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork.getTitle());
 
-    /**
-     * Creates the CyNetworkView.
-     * Most of this code is copied directly from Cytoscape.createCyNetworkView.
-     * However, it requires a bit of a hack to actually hide the network
-     * view from the user, and I didn't want to use this hack in the core
-     * Cytoscape.java class.
-     *
-     * @param cyNetwork        CyNetwork
-     * @param applyVisualStyle Flag to Apply Current Visual Style.
-     * @return CyNetworkView
-     */
-    private static CyNetworkView createCyNetworkView(CyNetwork cyNetwork,
-            boolean applyVisualStyle) {
-        final DingNetworkView view = new DingNetworkView(cyNetwork,
-                cyNetwork.getTitle());
+		view.setIdentifier(cyNetwork.getIdentifier());
+		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
+		view.setTitle(cyNetwork.getTitle());
 
-        view.setIdentifier(cyNetwork.getIdentifier());
-        Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
-        view.setTitle(cyNetwork.getTitle());
-        if (applyVisualStyle) {
-            view.setVisualStyle(BioPaxVisualStyleUtil.BIO_PAX_VISUAL_STYLE);
-        }
+		if (applyVisualStyle) {
+			view.setVisualStyle(BioPaxVisualStyleUtil.BIO_PAX_VISUAL_STYLE);
+		}
 
-        // set the selection mode on the view
-        Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
+		// set the selection mode on the view
+		Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
 
-        Cytoscape.firePropertyChange
-                (cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
-                        view);
+		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
+		                             view);
 
-        // outta here
-        return view;
-    }
+		// outta here
+		return view;
+	}
 
-    /**
-     * Executes the Spring Embedded Layout2.
-     *
-     * @param networkView CyNetworkView
-     * @param taskMonitor TaskMonitor
-     */
-    private static void executeLayout(CyNetworkView networkView, TaskMonitor taskMonitor) {
+	/**
+	 * Executes the Spring Embedded Layout2.
+	 *
+	 * @param networkView CyNetworkView
+	 * @param taskMonitor TaskMonitor
+	 */
+	private static void executeLayout(CyNetworkView networkView, TaskMonitor taskMonitor) {
+		// move a network node to jumpstart the SpringEmbeddedLayouter2
+		Iterator i = networkView.getNetwork().nodesIterator();
 
-        // move a network node to jumpstart the SpringEmbeddedLayouter2
-        Iterator i = networkView.getNetwork().nodesIterator();
-        if (i.hasNext()) {
-            CyNode node = (CyNode) i.next();
-            NodeView nodeView = networkView.getNodeView(node);
-            double xPos = nodeView.getXPosition();
-            double yPos = nodeView.getYPosition();
-            nodeView.setXPosition(xPos + 2500);
-            nodeView.setYPosition(yPos + 2500);
-        }
+		if (i.hasNext()) {
+			CyNode node = (CyNode) i.next();
+			NodeView nodeView = networkView.getNodeView(node);
+			double xPos = nodeView.getXPosition();
+			double yPos = nodeView.getYPosition();
+			nodeView.setXPosition(xPos + 2500);
+			nodeView.setYPosition(yPos + 2500);
+		}
 
-        final MutablePolyEdgeGraphLayout nativeGraph =
-                GraphConverter.getGraphCopy(0.0d, false, false);
+		final MutablePolyEdgeGraphLayout nativeGraph = GraphConverter.getGraphCopy(0.0d, false,
+		                                                                           false);
 
-        Task task = new SpringEmbeddedLayouter2(nativeGraph);
-        task.setTaskMonitor(taskMonitor);
-        task.run();
-        GraphConverter.updateCytoscapeLayout(nativeGraph);
-
-    }
+		Task task = new SpringEmbeddedLayouter2(nativeGraph);
+		task.setTaskMonitor(taskMonitor);
+		task.run();
+		GraphConverter.updateCytoscapeLayout(nativeGraph);
+	}
 }

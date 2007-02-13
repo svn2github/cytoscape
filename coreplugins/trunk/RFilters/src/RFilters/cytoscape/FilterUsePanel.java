@@ -1,54 +1,119 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package filter.cytoscape;
 
-import javax.swing.*;
-import javax.swing.border.*;
-import filter.model.*;
-import filter.view.*;
-import java.beans.*;
-import java.awt.*;
-import java.awt.event.*;
-
-import java.util.*;
-import java.util.List;
-
 import cytoscape.*;
+
 import cytoscape.data.*;
+
 import cytoscape.view.*;
-import giny.model.*;
-import giny.view.*;
 
 import edu.umd.cs.piccolo.*;
 import edu.umd.cs.piccolo.activities.*;
 import edu.umd.cs.piccolo.util.*;
-import java.awt.geom.*;
+
+import filter.model.*;
+
+import filter.view.*;
+
+import giny.model.*;
+
+import giny.view.*;
+
 import phoebe.*;
 
-public class FilterUsePanel extends JPanel implements PropertyChangeListener,
-		ActionListener {
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.*;
+
+import java.beans.*;
+
+import java.util.*;
+import java.util.List;
+
+import javax.swing.*;
+import javax.swing.border.*;
+
+
+/**
+ *
+ */
+public class FilterUsePanel extends JPanel implements PropertyChangeListener, ActionListener {
 	private FilterEditorPanel filterEditorPanel;
 	private FilterListPanel filterListPanel;
-
-	private JRadioButton hideFailed, grayFailed, selectPassed;
-	private JButton apply, addFilters, removeFilters;
+	private JRadioButton hideFailed;
+	private JRadioButton grayFailed;
+	private JRadioButton selectPassed;
+	private JButton apply;
+	private JButton addFilters;
+	private JButton removeFilters;
 	private JList selectedFilters;
 	private JDialog createFilterDialog;
-
-	private JButton addButton, removeButton;
-	private JCheckBox select, gray, hide, overwrite;
-	private JRadioButton pulsate, spiral;
+	private JButton addButton;
+	private JButton removeButton;
+	private JCheckBox select;
+	private JCheckBox gray;
+	private JCheckBox hide;
+	private JCheckBox overwrite;
+	private JRadioButton pulsate;
+	private JRadioButton spiral;
 	private JFrame frame;
-
-	private Runnable updateProgMon, closeProgMon, setMinAndMax;
-	private int progressCount = 0, minCount = 0, maxCount = 100;
+	private Runnable updateProgMon;
+	private Runnable closeProgMon;
+	private Runnable setMinAndMax;
+	private int progressCount = 0;
+	private int minCount = 0;
+	private int maxCount = 100;
 	private String progressNote = "";
 	private String progressTitle = "Applying filter";
 	private boolean applyFilterCanceled = false;
-
 	private static final int TYPE_NODE = 1;
 	private static final int TYPE_EDGE = 2;
 
+	/**
+	 * 
+	 */
 	public static final String NEW_FILTER_ADDED = "NEW_FILTER_ADDED";
 
+	/**
+	 * Creates a new FilterUsePanel object.
+	 *
+	 * @param frame  DOCUMENT ME!
+	 */
 	public FilterUsePanel(JFrame frame) {
 		super();
 		this.frame = frame;
@@ -58,8 +123,7 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 		// --------------------//
 		// FilterEditorPanel
 		filterEditorPanel = new FilterEditorPanel();
-		filterEditorPanel.getPropertyChangeSupport().addPropertyChangeListener(
-				this);
+		filterEditorPanel.getPropertyChangeSupport().addPropertyChangeListener(this);
 
 		// --------------------//
 		// Selected Filter Panel
@@ -70,25 +134,33 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 		selected_filter_panel.add(createManagePanel(), BorderLayout.NORTH);
 		selected_filter_panel.add(createActionPanel(), BorderLayout.SOUTH);
 
-		JSplitPane pane0 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				selected_filter_panel, filterEditorPanel);
+		JSplitPane pane0 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, selected_filter_panel,
+		                                  filterEditorPanel);
 		add(pane0);
-		filterListPanel.getSwingPropertyChangeSupport()
-				.addPropertyChangeListener(filterEditorPanel);
-		filterListPanel.getSwingPropertyChangeSupport()
-				.addPropertyChangeListener(this);
+		filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener(filterEditorPanel);
+		filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 		initProgressMonitor();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public FilterListPanel getFilterListPanel() {
 		return filterListPanel;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void propertyChange(PropertyChangeEvent e) {
-
 		if (e.getPropertyName() == FilterListPanel.FILTER_SELECTED) {
 			removeButton.setEnabled(true);
 			apply.setEnabled(true);
+
 			// do something on a Filter Selected
 		} else if (e.getPropertyName() == FilterListPanel.NO_SELECTION) {
 			removeButton.setEnabled(false);
@@ -100,12 +172,16 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 		} else if (e.getPropertyName() == NEW_FILTER_ADDED) {
 			// Select the new filter just created
 			// New filter created is always added at the end of a vector
-			int lastIndex = filterListPanel.getFilterList().getModel()
-					.getSize() - 1;
+			int lastIndex = filterListPanel.getFilterList().getModel().getSize() - 1;
 			filterListPanel.getFilterList().setSelectedIndex(lastIndex);
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public JPanel createManagePanel() {
 		JPanel result = new JPanel();
 		result.setBorder(new TitledBorder("Manage Filters"));
@@ -116,36 +192,41 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 		removeButton.setEnabled(false);
 		result.add(addButton);
 		result.add(removeButton);
+
 		return result;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == addButton) {
-
 			if (createFilterDialog == null) {
-				createFilterDialog = new CreateFilterDialog(FilterEditorManager
-						.defaultManager());
+				createFilterDialog = new CreateFilterDialog(FilterEditorManager.defaultManager());
 			}
 
-			int pre_filterCount = filterListPanel.getFilterList().getModel()
-					.getSize();
+			int pre_filterCount = filterListPanel.getFilterList().getModel().getSize();
 			createFilterDialog.setVisible(true);
-			int post_filterCount = filterListPanel.getFilterList().getModel()
-					.getSize();
+
+			int post_filterCount = filterListPanel.getFilterList().getModel().getSize();
 
 			/*
 			 * Fire an event to notify the JList to select it, if new filter is
 			 * added
 			 */
-			if (post_filterCount - pre_filterCount > 0) {
-				java.beans.PropertyChangeEvent evt = new java.beans.PropertyChangeEvent(
-						this, NEW_FILTER_ADDED, null, null);
-				filterListPanel.getSwingPropertyChangeSupport()
-						.firePropertyChange(evt);
+			if ((post_filterCount - pre_filterCount) > 0) {
+				java.beans.PropertyChangeEvent evt = new java.beans.PropertyChangeEvent(this,
+				                                                                        NEW_FILTER_ADDED,
+				                                                                        null, null);
+				filterListPanel.getSwingPropertyChangeSupport().firePropertyChange(evt);
 			}
 		}
+
 		if (e.getSource() == removeButton) {
 			Filter filter = filterListPanel.getSelectedFilter();
+
 			if (filter != null) {
 				FilterManager.defaultManager().removeFilter(filter);
 			}
@@ -155,41 +236,41 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 	private void initProgressMonitor() {
 		progressTitle = "Applying filter";
 		progressNote = "";
-		final ProgressMonitor pm = new ProgressMonitor(frame, progressTitle,
-				progressNote, 0, 100);
+
+		final ProgressMonitor pm = new ProgressMonitor(frame, progressTitle, progressNote, 0, 100);
 		pm.setMillisToDecideToPopup(500);
 		pm.setMillisToPopup(2000);
 
 		// Create these as inner classes to minimize the amount of thread
 		// creation (expensive!)...
 		updateProgMon = new Runnable() {
-			double dCount = 0;
+				double dCount = 0;
 
-			public void run() {
-				if (pm.isCanceled()) {
-					applyFilterCanceled = true;
-					pm.close();
-				} else {
-					dCount = ((double) progressCount / (double) pm.getMaximum());
-					progressNote = ((int) (dCount * 100.0) + "% complete");
-					pm.setProgress(progressCount);
-					pm.setNote(progressNote);
+				public void run() {
+					if (pm.isCanceled()) {
+						applyFilterCanceled = true;
+						pm.close();
+					} else {
+						dCount = ((double) progressCount / (double) pm.getMaximum());
+						progressNote = ((int) (dCount * 100.0) + "% complete");
+						pm.setProgress(progressCount);
+						pm.setNote(progressNote);
+					}
 				}
-			}
-		};
+			};
 
 		closeProgMon = new Runnable() {
-			public void run() {
-				pm.close();
-			}
-		};
+				public void run() {
+					pm.close();
+				}
+			};
 
 		setMinAndMax = new Runnable() {
-			public void run() {
-				pm.setMinimum(minCount);
-				pm.setMaximum(maxCount);
-			}
-		};
+				public void run() {
+					pm.setMinimum(minCount);
+					pm.setMaximum(maxCount);
+				}
+			};
 	}
 
 	/**
@@ -197,34 +278,26 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 	 * according to what the available actions are.
 	 */
 	protected void passObject(Object object, boolean passes) {
-
 		// Should not use this... Event should fire only once in the filtering
 		// process!
-
 		if (passes) {
-
 			if (object instanceof Node) {
-				Cytoscape.getCurrentNetwork().setSelectedNodeState(
-						(Node) object, true);
+				Cytoscape.getCurrentNetwork().setSelectedNodeState((Node) object, true);
 			} else if (object instanceof Edge) {
-				Cytoscape.getCurrentNetwork().setSelectedEdgeState(
-						(Edge) object, true);
+				Cytoscape.getCurrentNetwork().setSelectedEdgeState((Edge) object, true);
 			}
 		}
 	}
 
 	private void fireEvent(final List selectedObjList, final int type) {
 		if (type == TYPE_NODE) {
-			Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedObjList,
-					true);
+			Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedObjList, true);
 		} else if (type == TYPE_EDGE) {
-			Cytoscape.getCurrentNetwork().setSelectedEdgeState(selectedObjList,
-					true);
+			Cytoscape.getCurrentNetwork().setSelectedEdgeState(selectedObjList, true);
 		}
 	}
 
 	protected void testObjects() {
-
 		final Filter filter = filterListPanel.getSelectedFilter();
 		final CyNetwork network = Cytoscape.getCurrentNetwork();
 
@@ -247,7 +320,6 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 
 			for (int idx = 0; idx < passingTypes.length; idx++) {
 				if (passingTypes[idx].equals(Node.class)) {
-
 					final List<Node> passedNodes = new ArrayList<Node>();
 
 					for (Node node : nodes_list) {
@@ -255,11 +327,14 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 							if (filter.passesFilter(node)) {
 								passedNodes.add(node);
 							}
+
 							// passObject(node, filter.passesFilter(node));
 						} catch (StackOverflowError soe) {
 							soe.printStackTrace();
+
 							return;
 						}
+
 						progressCount++;
 
 						try {
@@ -270,16 +345,18 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 
 						if (applyFilterCanceled) {
 							progressNote = "Please wait...";
+
 							try {
 								SwingUtilities.invokeAndWait(updateProgMon);
 							} catch (Exception _e) {
 							}
+
 							break;
 						}
 					}
+
 					fireEvent(passedNodes, TYPE_NODE);
 				} else if (passingTypes[idx].equals(Edge.class)) {
-
 					final List<Edge> passedEdges = new ArrayList<Edge>();
 
 					for (Edge edge : edges_list) {
@@ -287,30 +364,36 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 							if (filter.passesFilter(edge)) {
 								passedEdges.add(edge);
 							}
+
 							// passObject(edge, filter.passesFilter(edge));
 						} catch (StackOverflowError soe) {
 							soe.printStackTrace();
+
 							return;
 						}
 
 						progressCount++;
+
 						try {
 							SwingUtilities.invokeAndWait(updateProgMon);
 						} catch (Exception _e) {
 						}
+
 						if (applyFilterCanceled) {
 							progressNote = "Please wait...";
+
 							try {
 								SwingUtilities.invokeAndWait(updateProgMon);
 							} catch (Exception _e) {
 							}
+
 							break;
 						}
 					}
-					fireEvent(passedEdges, TYPE_EDGE);
 
+					fireEvent(passedEdges, TYPE_EDGE);
 				}
-			}// for loop
+			} // for loop
 
 			try {
 				SwingUtilities.invokeAndWait(closeProgMon);
@@ -321,9 +404,9 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 	}
 
 	// Calculate the total tasks for the progress monitor
-	private int getTaskEstimation(Class[] pClassTypes, List pNodeList,
-			List pEdgeList) {
+	private int getTaskEstimation(Class[] pClassTypes, List pNodeList, List pEdgeList) {
 		int taskCount = 0;
+
 		for (int idx = 0; idx < pClassTypes.length; idx++) {
 			if (pClassTypes[idx].equals(Node.class)) {
 				taskCount += pNodeList.size();
@@ -331,26 +414,33 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener,
 				taskCount += pEdgeList.size();
 			}
 		}
+
 		return taskCount;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public JPanel createActionPanel() {
 		final JPanel actionPanel = new JPanel();
 
 		apply = new JButton(new AbstractAction("Apply selected filter") {
-			public void actionPerformed(ActionEvent e) {
-				/*
-				 * We have to run "Apply filter" in a seperate thread, becasue
-				 * we want to monitor the progress
-				 */
-				ApplyFilterThread applyFilterThread = new ApplyFilterThread();
-				applyFilterThread.start();
-			}
-		});
+				public void actionPerformed(ActionEvent e) {
+					/*
+					 * We have to run "Apply filter" in a seperate thread, becasue
+					 * we want to monitor the progress
+					 */
+					ApplyFilterThread applyFilterThread = new ApplyFilterThread();
+					applyFilterThread.start();
+				}
+			});
 
 		apply.setEnabled(false);
 
 		actionPanel.add(apply);
+
 		return actionPanel;
 	}
 

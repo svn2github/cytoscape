@@ -1,23 +1,22 @@
 /*
- * @(#)PortView.java	1.0 03-JUL-04
- * 
+ * @(#)PortView.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+
 /**
  * The default implementation of a port view.
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public class PortView extends AbstractCellView {
-
 	/** Default size for all ports is 6. */
 	public static transient int SIZE = 6;
 
@@ -43,7 +42,7 @@ public class PortView extends AbstractCellView {
 	/**
 	 * Constructs a view that holds a reference to the specified cell, anchor
 	 * and parent vertex.
-	 * 
+	 *
 	 * @param cell
 	 *            reference to the cell in the model
 	 */
@@ -63,10 +62,12 @@ public class PortView extends AbstractCellView {
 	 */
 	public CellView getParentView() {
 		CellView parent = super.getParentView();
+
 		if (parent == null)
 			parent = lastParent;
 		else
 			lastParent = parent;
+
 		return parent;
 	}
 
@@ -77,13 +78,15 @@ public class PortView extends AbstractCellView {
 		Point2D loc = getLocation();
 		double x = 0;
 		double y = 0;
+
 		if (loc != null) {
 			x = loc.getX();
 			y = loc.getY();
 		}
+
 		Rectangle2D bounds = new Rectangle2D.Double(x, y, 0, 0);
-		bounds.setFrame(bounds.getX() - SIZE / 2, bounds.getY() - SIZE / 2,
-				SIZE, SIZE);
+		bounds.setFrame(bounds.getX() - (SIZE / 2), bounds.getY() - (SIZE / 2), SIZE, SIZE);
+
 		return bounds;
 	}
 
@@ -127,34 +130,44 @@ public class PortView extends AbstractCellView {
 	 */
 	public Point2D getLocation(EdgeView edge, Point2D nearest) {
 		Object modelAnchor = null;
+
 		if (cell instanceof Port)
 			modelAnchor = ((Port) cell).getAnchor();
+
 		CellView vertex = getParentView();
 		Point2D pos = null;
+
 		if (vertex != null) {
 			PortView anchor = null; // FIXME: (PortView)
-			// mapper.getMapping(modelAnchor, false); //
-			// Use refresh to get anchor view
+			                        // mapper.getMapping(modelAnchor, false); //
+			                        // Use refresh to get anchor view
+
 			Point2D offset = GraphConstants.getOffset(allAttributes);
+
 			// If No Edge Return Center
-			if (edge == null && offset == null)
+			if ((edge == null) && (offset == null))
 				pos = getCenterPoint(vertex);
+
 			// Apply Offset
 			if (offset != null) {
 				double x = offset.getX();
 				double y = offset.getY();
 				Rectangle2D r = vertex.getBounds();
+
 				// Absolute Offset
 				boolean isAbsoluteX = GraphConstants.isAbsoluteX(allAttributes);
 				boolean isAbsoluteY = GraphConstants.isAbsoluteY(allAttributes);
+
 				if (!isAbsoluteX) {
-					x = x * (r.getWidth() - 1) / GraphConstants.PERMILLE;
+					x = (x * (r.getWidth() - 1)) / GraphConstants.PERMILLE;
 				}
+
 				if (!isAbsoluteY) {
-					y = y * (r.getHeight() - 1) / GraphConstants.PERMILLE;
+					y = (y * (r.getHeight() - 1)) / GraphConstants.PERMILLE;
 				} // Offset from Anchor
+
 				pos = (anchor != null) ? anchor.getLocation(edge, nearest)
-						: new Point2D.Double(r.getX(), r.getY());
+				                       : new Point2D.Double(r.getX(), r.getY());
 				pos = new Point2D.Double(pos.getX() + x, pos.getY() + y);
 			} else if (edge != null) {
 				// Floating Port
@@ -162,32 +175,35 @@ public class PortView extends AbstractCellView {
 					// If "Dangling" Port Return Center
 					return getCenterPoint(vertex);
 				}
+
 				pos = vertex.getPerimeterPoint(edge, pos, nearest);
+
 				if (shouldInvokePortMagic(edge)) {
 					if (nearest != null) {
 						Rectangle2D r = vertex.getBounds();
-						if (nearest.getX() >= r.getX()
-								&& nearest.getX() <= r.getX() + r.getWidth()) {
+
+						if ((nearest.getX() >= r.getX())
+						    && (nearest.getX() <= (r.getX() + r.getWidth()))) {
 							pos.setLocation(nearest.getX(), pos.getY());
-						} else if (nearest.getY() >= r.getY()
-								&& nearest.getY() <= r.getY() + r.getHeight()) { // vertical
+						} else if ((nearest.getY() >= r.getY())
+						           && (nearest.getY() <= (r.getY() + r.getHeight()))) { // vertical
 							pos.setLocation(pos.getX(), nearest.getY());
 						}
+
 						if (nearest.getX() < r.getX())
 							pos.setLocation(r.getX(), pos.getY());
-						else if (nearest.getX() > r.getX() + r.getWidth())
-							pos
-									.setLocation(r.getX() + r.getWidth(), pos
-											.getY());
+						else if (nearest.getX() > (r.getX() + r.getWidth()))
+							pos.setLocation(r.getX() + r.getWidth(), pos.getY());
+
 						if (nearest.getY() < r.getY())
 							pos.setLocation(pos.getX(), r.getY());
-						else if (nearest.getY() > r.getY() + r.getHeight())
-							pos.setLocation(pos.getX(), r.getY()
-									+ r.getHeight());
+						else if (nearest.getY() > (r.getY() + r.getHeight()))
+							pos.setLocation(pos.getX(), r.getY() + r.getHeight());
 					}
 				}
 			}
 		}
+
 		return pos;
 	}
 
@@ -198,10 +214,8 @@ public class PortView extends AbstractCellView {
 	 * the bounds of the parent vertex.)
 	 */
 	protected boolean shouldInvokePortMagic(EdgeView edge) {
-		return allowPortMagic
-				&& !(getParentView() instanceof EdgeView)
-				&& edge.getPointCount() > 2
-				&& GraphConstants.getLineStyle(edge.getAllAttributes()) == GraphConstants.STYLE_ORTHOGONAL;
+		return allowPortMagic && !(getParentView() instanceof EdgeView)
+		       && (edge.getPointCount() > 2)
+		       && (GraphConstants.getLineStyle(edge.getAllAttributes()) == GraphConstants.STYLE_ORTHOGONAL);
 	}
-
 }

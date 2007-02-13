@@ -1,17 +1,18 @@
 /*
- * @(#)GraphUndoManager.java	1.0 03-JUL-04
- * 
+ * @(#)GraphUndoManager.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.event.GraphLayoutCacheEvent;
 
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
-import org.jgraph.event.GraphLayoutCacheEvent;
 
 /**
  * An UndoManager that may be shared among multiple GraphLayoutCache's.
@@ -19,9 +20,7 @@ import org.jgraph.event.GraphLayoutCacheEvent;
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public class GraphUndoManager extends UndoManager {
-
 	/**
 	 * Overridden to preserve usual semantics: returns true if an undo
 	 * operation would be successful now for the given view, false otherwise
@@ -29,7 +28,8 @@ public class GraphUndoManager extends UndoManager {
 	public synchronized boolean canUndo(Object source) {
 		if (isInProgress()) {
 			UndoableEdit edit = editToBeUndone(source);
-			return edit != null && edit.canUndo();
+
+			return (edit != null) && edit.canUndo();
 		} else {
 			return super.canUndo();
 		}
@@ -42,7 +42,8 @@ public class GraphUndoManager extends UndoManager {
 	public synchronized boolean canRedo(Object source) {
 		if (isInProgress()) {
 			UndoableEdit edit = editToBeRedone(source);
-			return edit != null && edit.canRedo();
+
+			return (edit != null) && edit.canRedo();
 		} else {
 			return super.canRedo();
 		}
@@ -59,13 +60,15 @@ public class GraphUndoManager extends UndoManager {
 	 * @see UndoManager#undo
 	 */
 	public void undo(Object source) {
-		if (source == null || !isInProgress())
+		if ((source == null) || !isInProgress())
 			super.undo();
 		else {
 			UndoableEdit edit = editToBeUndone(source);
+
 			//System.out.println("undoTo edit="+edit);
 			if (edit == null)
 				throw new CannotUndoException();
+
 			undoTo(edit);
 		}
 	}
@@ -73,13 +76,17 @@ public class GraphUndoManager extends UndoManager {
 	protected UndoableEdit editToBeUndone(Object source) {
 		UndoableEdit edit = null;
 		Object src = null;
+
 		do {
 			edit = nextEditToBeUndone(edit);
+
 			if (edit instanceof GraphLayoutCacheEvent.GraphLayoutCacheChange)
 				src = ((GraphLayoutCacheEvent.GraphLayoutCacheChange) edit).getSource();
+
 			if (!(src instanceof GraphLayoutCache))
 				src = null;
-		} while (edit != null && src != null && src != source);
+		} while ((edit != null) && (src != null) && (src != source));
+
 		return edit;
 	}
 
@@ -92,9 +99,11 @@ public class GraphUndoManager extends UndoManager {
 			return editToBeUndone();
 		else {
 			int index = edits.indexOf(current) - 1;
+
 			if (index >= 0)
 				return (UndoableEdit) edits.get(index);
 		}
+
 		return null;
 	}
 
@@ -108,13 +117,15 @@ public class GraphUndoManager extends UndoManager {
 	 * is ignored and super's routine is called.</p>
 	 */
 	public void redo(Object source) {
-		if (source == null || !isInProgress())
+		if ((source == null) || !isInProgress())
 			super.redo();
 		else {
 			UndoableEdit edit = editToBeRedone(source);
+
 			//System.out.println("redoTo edit="+edit);
 			if (edit == null)
 				throw new CannotRedoException();
+
 			redoTo(edit);
 		}
 	}
@@ -123,14 +134,18 @@ public class GraphUndoManager extends UndoManager {
 		UndoableEdit edit = nextEditToBeRedone(null);
 		UndoableEdit last = null;
 		Object src = null;
+
 		do {
 			last = edit;
 			edit = nextEditToBeRedone(edit);
+
 			if (edit instanceof GraphLayoutCacheEvent.GraphLayoutCacheChange)
 				src = ((GraphLayoutCacheEvent.GraphLayoutCacheChange) edit).getSource();
+
 			if (!(src instanceof GraphLayoutCache))
 				src = null;
-		} while (edit != null && src != null && src != source);
+		} while ((edit != null) && (src != null) && (src != source));
+
 		return last;
 	}
 
@@ -143,10 +158,11 @@ public class GraphUndoManager extends UndoManager {
 			return editToBeRedone();
 		else {
 			int index = edits.indexOf(current) + 1;
+
 			if (index < edits.size())
 				return (UndoableEdit) edits.get(index);
 		}
+
 		return null;
 	}
-
 }

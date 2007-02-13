@@ -34,39 +34,40 @@
 */
 package org.cytoscape.coreplugin.psi_mi.model.vocab;
 
+
 /**
  * Package Comments
  *
  * @author cerami
  */
 public class GoVocab {
-    /**
-     * GO ID.
-     */
-    public static final String GO_ID = "GO_ID";
+	/**
+	 * GO ID.
+	 */
+	public static final String GO_ID = "GO_ID";
 
-    /**
-     * GO Name.
-     */
-    public static final String GO_NAME = "GO_NAME";
+	/**
+	 * GO Name.
+	 */
+	public static final String GO_NAME = "GO_NAME";
 
-    /**
-     * GO Category:  Process.
-     */
-    public static final String GO_CATEGORY_PROCESS = "GO_CATEGORY_PROCESS";
+	/**
+	 * GO Category:  Process.
+	 */
+	public static final String GO_CATEGORY_PROCESS = "GO_CATEGORY_PROCESS";
 
-    /**
-     * GO Category:  Function.
-     */
-    public static final String GO_CATEGORY_FUNCTION = "GO_CATEGORY_FUNCTION";
+	/**
+	 * GO Category:  Function.
+	 */
+	public static final String GO_CATEGORY_FUNCTION = "GO_CATEGORY_FUNCTION";
 
-    /**
-     * GO Category:  Component.
-     */
-    public static final String GO_CATEGORY_COMPONENT = "GO_CATEGORY_COMPONENT";
+	/**
+	 * GO Category:  Component.
+	 */
+	public static final String GO_CATEGORY_COMPONENT = "GO_CATEGORY_COMPONENT";
 
-    /**
-     * GO Category:  Special.
-     */
-    public static final String GO_CATEGORY_SPECIAL = "GO_CATEGORY_SPECIAL";
+	/**
+	 * GO Category:  Special.
+	 */
+	public static final String GO_CATEGORY_SPECIAL = "GO_CATEGORY_SPECIAL";
 }

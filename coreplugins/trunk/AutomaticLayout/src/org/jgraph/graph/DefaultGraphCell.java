@@ -1,12 +1,13 @@
 /*
- * @(#)AbstractGraphCell.java	1.0 03-JUL-04
- * 
+ * @(#)AbstractGraphCell.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2006 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
 import java.awt.geom.Point2D;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,16 +15,14 @@ import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
+
 /**
  * The default implementation for the GraphCell interface.
  *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
-public class DefaultGraphCell extends DefaultMutableTreeNode implements
-		GraphCell, Cloneable {
-
+public class DefaultGraphCell extends DefaultMutableTreeNode implements GraphCell, Cloneable {
 	/** Hashtable for properties. Initially empty */
 	protected AttributeMap attributes = null;
 
@@ -54,7 +53,6 @@ public class DefaultGraphCell extends DefaultMutableTreeNode implements
 	 */
 	public DefaultGraphCell(Object userObject, AttributeMap storageMap) {
 		this(userObject, storageMap, null);
-
 	}
 
 	/**
@@ -66,10 +64,10 @@ public class DefaultGraphCell extends DefaultMutableTreeNode implements
 	 * @param storageMap the storage attribute map for this cell
 	 * @param children array of children
 	 */
-	public DefaultGraphCell(Object userObject, AttributeMap storageMap,
-			MutableTreeNode[] children) {
+	public DefaultGraphCell(Object userObject, AttributeMap storageMap, MutableTreeNode[] children) {
 		super(userObject, true);
 		setAttributes(storageMap);
+
 		if (children != null)
 			for (int i = 0; i < children.length; i++)
 				add(children[i]);
@@ -83,6 +81,7 @@ public class DefaultGraphCell extends DefaultMutableTreeNode implements
 	public List getChildren() {
 		if (children == null)
 			return Collections.EMPTY_LIST;
+
 		return children;
 	}
 
@@ -95,7 +94,7 @@ public class DefaultGraphCell extends DefaultMutableTreeNode implements
 
 	/**
 	 * Changes the <code>attributes</code> of the cell.
-	 * 
+	 *
 	 * @deprecated Use getAttributes().applyMap
 	 */
 	public Map changeAttributes(Map change) {
@@ -109,6 +108,7 @@ public class DefaultGraphCell extends DefaultMutableTreeNode implements
 	public void setAttributes(AttributeMap attributes) {
 		if (attributes == null)
 			attributes = new AttributeMap();
+
 		this.attributes = attributes;
 	}
 
@@ -139,6 +139,7 @@ public class DefaultGraphCell extends DefaultMutableTreeNode implements
 	 */
 	public void addPort(Point2D offset, Object userObject) {
 		DefaultPort port = new DefaultPort(userObject);
+
 		if (offset == null) {
 			add(port);
 		} else {
@@ -151,7 +152,7 @@ public class DefaultGraphCell extends DefaultMutableTreeNode implements
 	 * Create a clone of the cell. This method uses the superclass
 	 * implementation (which does not clone the children), then
 	 * uses clone on the attribute map. This method does not
-	 * clone the user object. You should override the 
+	 * clone the user object. You should override the
 	 * cloneUserObject in the graph model to implement cloning
 	 * of custom user objects.
 	 *
@@ -160,7 +161,7 @@ public class DefaultGraphCell extends DefaultMutableTreeNode implements
 	public Object clone() {
 		DefaultGraphCell c = (DefaultGraphCell) super.clone();
 		c.attributes = (AttributeMap) attributes.clone();
+
 		return c;
 	}
-
 }

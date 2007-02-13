@@ -1,17 +1,19 @@
 /*
- * @(#)CellView.java	1.0 03-JUL-04
- * 
+ * @(#)CellView.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.JGraph;
 
 import java.awt.Component;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
 import java.util.Map;
 
-import org.jgraph.JGraph;
 
 /**
  * Defines the requirements for an object that
@@ -20,9 +22,7 @@ import org.jgraph.JGraph;
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public interface CellView {
-
 	//
 	// Data Source
 	//
@@ -94,7 +94,7 @@ public interface CellView {
 	 * subclassers.
 	 */
 	Point2D getPerimeterPoint(EdgeView edge, Point2D source, Point2D p);
-	
+
 	/**
 	 * Apply the specified map of attributes on the view.
 	 */
@@ -114,11 +114,7 @@ public interface CellView {
 	/**
 	 * Returns a renderer component, configured for the view.
 	 */
-	Component getRendererComponent(
-		JGraph graph,
-		boolean selected,
-		boolean focus,
-		boolean preview);
+	Component getRendererComponent(JGraph graph, boolean selected, boolean focus, boolean preview);
 
 	/**
 	 * Returns a cell handle for the view.
@@ -129,5 +125,4 @@ public interface CellView {
 	 * Returns a cell editor for the view.
 	 */
 	GraphCellEditor getEditor();
-
 }

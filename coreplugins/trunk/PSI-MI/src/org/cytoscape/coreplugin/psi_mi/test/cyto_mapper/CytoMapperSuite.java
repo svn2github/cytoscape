@@ -38,23 +38,24 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+
 /**
  * Suite of Mapper JUnit Tests.
  *
  * @author Ethan Cerami.
  */
 public class CytoMapperSuite extends TestCase {
+	/**
+	 * The suite method runs all the tests.
+	 *
+	 * @return Suite of JUnit tests.
+	 */
+	public static Test suite() {
+		TestSuite suite = new TestSuite();
+		suite.addTestSuite(TestMapToCytoscape.class);
+		suite.addTestSuite(TestMapFromCytoscape.class);
+		suite.setName("CytoMapper Tests");
 
-    /**
-     * The suite method runs all the tests.
-     *
-     * @return Suite of JUnit tests.
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(TestMapToCytoscape.class);
-        suite.addTestSuite(TestMapFromCytoscape.class);
-        suite.setName("CytoMapper Tests");
-        return suite;
-    }
+		return suite;
+	}
 }

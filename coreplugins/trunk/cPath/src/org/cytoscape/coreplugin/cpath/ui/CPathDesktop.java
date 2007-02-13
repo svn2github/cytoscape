@@ -39,14 +39,17 @@ import org.cytoscape.coreplugin.cpath.action.UpdateSearchRequest;
 import org.cytoscape.coreplugin.cpath.model.*;
 import org.cytoscape.coreplugin.cpath.util.CPathProperties;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
+
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+
 
 /**
  * cPath Frame with Search Box and Search Results.
@@ -54,237 +57,236 @@ import java.util.Vector;
  * @author Ethan Cerami
  */
 public class CPathDesktop extends JFrame implements Observer {
+	/**
+	 * The Current Search Query (Data Model Object)
+	 */
+	private SearchRequest searchRequest;
 
-    /**
-     * The Current Search Query (Data Model Object)
-     */
-    private SearchRequest searchRequest;
+	/**
+	 * List of All Searches (Data Model Object)
+	 */
+	private static SearchBundleList searchList = new SearchBundleList();
 
-    /**
-     * List of All Searches (Data Model Object)
-     */
-    private static SearchBundleList searchList = new SearchBundleList();
+	/**
+	 * Console Panel.
+	 */
+	private ConsolePanel consolePanel;
 
-    /**
-     * Console Panel.
-     */
-    private ConsolePanel consolePanel;
+	/**
+	 * Current User Node / Edge Selection.
+	 */
+	private UserSelection userSelection;
 
-    /**
-     * Current User Node / Edge Selection.
-     */
-    private UserSelection userSelection;
+	/**
+	 * CyMap of all Interactors/Interactions Index by Node/Edge Id.
+	 */
+	private HashMap cyMap;
 
-    /**
-     * CyMap of all Interactors/Interactions Index by Node/Edge Id.
-     */
-    private HashMap cyMap;
+	/**
+	 * Search Button.
+	 */
+	private JButton searchButton;
 
-    /**
-     * Search Button.
-     */
-    private JButton searchButton;
+	/**
+	 * Preferred Width of Component.
+	 */
+	private static final int WIDTH = 400;
 
-    /**
-     * Preferred Width of Component.
-     */
-    private static final int WIDTH = 400;
+	/**
+	 * Preferred Height of Component.
+	 */
+	private static final int HEIGHT = 400;
 
-    /**
-     * Preferred Height of Component.
-     */
-    private static final int HEIGHT = 400;
+	/**
+	 * Constructor.
+	 *
+	 * @param parent Parent Frame.3
+	 */
+	public CPathDesktop(JFrame parent) {
+		super("cPath PlugIn");
 
-    /**
-     * Constructor.
-     *
-     * @param parent Parent Frame.3
-     */
-    public CPathDesktop (JFrame parent) {
-        super("cPath PlugIn");
+		//  Initialize User Selection Object and CyMap
+		userSelection = new UserSelection();
+		cyMap = new HashMap();
 
-        //  Initialize User Selection Object and CyMap
-        userSelection = new UserSelection();
-        cyMap = new HashMap();
+		//  Create Empty Search Query Object
+		searchRequest = new SearchRequest();
 
-        //  Create Empty Search Query Object
-        searchRequest = new SearchRequest();
+		//  Register to Listen to changes to SearchList
+		searchList.addObserver(this);
 
-        //  Register to Listen to changes to SearchList
-        searchList.addObserver(this);
+		//  Use Border Layout
+		Container cPane = getContentPane();
+		cPane.setLayout(new BorderLayout());
 
-        //  Use Border Layout
-        Container cPane = getContentPane();
-        cPane.setLayout(new BorderLayout());
+		//  Create Center Panel (Console plus Details)
+		consolePanel = new ConsolePanel();
 
-        //  Create Center Panel (Console plus Details)
-        consolePanel = new ConsolePanel();
-        String url = CPathProperties.getCPathUrl();
-        consolePanel.logMessage("PlugIn is currently set to retrieve data "
-                + "from:  " + url);
-        cPane.add(consolePanel, BorderLayout.CENTER);
+		String url = CPathProperties.getCPathUrl();
+		consolePanel.logMessage("PlugIn is currently set to retrieve data " + "from:  " + url);
+		cPane.add(consolePanel, BorderLayout.CENTER);
 
-        //  Create Northern Panel (cPath Search)
-        JPanel northPanel = createPanelNorth();
-        cPane.add(northPanel, BorderLayout.NORTH);
+		//  Create Northern Panel (cPath Search)
+		JPanel northPanel = createPanelNorth();
+		cPane.add(northPanel, BorderLayout.NORTH);
 
-        //  Pack it, Size it, Center it.
-        pack();
-        setLocationRelativeTo(parent);
-    }
+		//  Pack it, Size it, Center it.
+		pack();
+		setLocationRelativeTo(parent);
+	}
 
-    /**
-     * Creates Nothern Panel with cPath Search Box.
-     */
-    private JPanel createPanelNorth () {
-        int hspace = 5;
-        JPanel northPanel = new JPanel();
-        northPanel.setLayout(new GridLayout(2, 1));
+	/**
+	 * Creates Nothern Panel with cPath Search Box.
+	 */
+	private JPanel createPanelNorth() {
+		int hspace = 5;
+		JPanel northPanel = new JPanel();
+		northPanel.setLayout(new GridLayout(2, 1));
 
-        //  Create Titled Border
-        TitledBorder border = new TitledBorder("Search cPath");
-        northPanel.setBorder(border);
+		//  Create Titled Border
+		TitledBorder border = new TitledBorder("Search cPath");
+		northPanel.setBorder(border);
 
-        JPanel buttonBar = new JPanel();
-        buttonBar.setLayout(new BoxLayout(buttonBar, BoxLayout.X_AXIS));
+		JPanel buttonBar = new JPanel();
+		buttonBar.setLayout(new BoxLayout(buttonBar, BoxLayout.X_AXIS));
 
-        //  Create Listener
-        searchButton = new JButton("Search");
-        searchButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        ExecuteQuery queryListener = new ExecuteQuery(cyMap, searchRequest,
-                searchList, consolePanel, searchButton, this);
-        buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
+		//  Create Listener
+		searchButton = new JButton("Search");
+		searchButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        //  Create Search Text Field
-        JTextField textField = new JTextField("", 8);
-        Font font = textField.getFont();
-        textField.setFont(new Font(font.getName(), Font.PLAIN, 11));
-        textField.setToolTipText("Enter Search Term(s)");
-        UpdateSearchRequest textListener =
-                new UpdateSearchRequest(searchRequest);
-        textField.addFocusListener(textListener);
-        textField.addKeyListener(queryListener);
-        textField.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        textField.setMinimumSize(new Dimension(100, 50));
-        buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
-        buttonBar.add(textField);
-        buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
+		ExecuteQuery queryListener = new ExecuteQuery(cyMap, searchRequest, searchList,
+		                                              consolePanel, searchButton, this);
+		buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
 
-        //  Create Organism Combo Box
-        JComboBox orgCombo = createOrganismComboBox();
-        orgCombo.setFont(new Font(font.getName(), Font.PLAIN, 11));
-        orgCombo.setToolTipText("Filter by Organism");
-        //  Used to specify a default size for pull down menu
-        orgCombo.setPrototypeDisplayValue
-                (new String("Saccharomyces cerevisiae"));
-        orgCombo.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        buttonBar.add(orgCombo);
-        buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
+		//  Create Search Text Field
+		JTextField textField = new JTextField("", 8);
+		Font font = textField.getFont();
+		textField.setFont(new Font(font.getName(), Font.PLAIN, 11));
+		textField.setToolTipText("Enter Search Term(s)");
 
-        //  Create Result Limit Combo Box
-        JComboBox limitCombo = createResultLimitComboBox();
-        limitCombo.setFont(new Font(font.getName(), Font.PLAIN, 11));
-        limitCombo.setToolTipText("Limit Result Set or Get All");
-        limitCombo.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		UpdateSearchRequest textListener = new UpdateSearchRequest(searchRequest);
+		textField.addFocusListener(textListener);
+		textField.addKeyListener(queryListener);
+		textField.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		textField.setMinimumSize(new Dimension(100, 50));
+		buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
+		buttonBar.add(textField);
+		buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
 
-        //  Used to specify a default size for pull down menu;
-        //  Particularly important for Windows, see Bug #520.
-        limitCombo.setPrototypeDisplayValue
-                (new String("Get All --- Get All"));
-        buttonBar.add(limitCombo);
-        buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
+		//  Create Organism Combo Box
+		JComboBox orgCombo = createOrganismComboBox();
+		orgCombo.setFont(new Font(font.getName(), Font.PLAIN, 11));
+		orgCombo.setToolTipText("Filter by Organism");
+		//  Used to specify a default size for pull down menu
+		orgCombo.setPrototypeDisplayValue(new String("Saccharomyces cerevisiae"));
+		orgCombo.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		buttonBar.add(orgCombo);
+		buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
 
-        //  Create Search Button
-        searchButton.setToolTipText("Execute Search Query");
-        searchButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        buttonBar.add(searchButton);
-        buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
-        searchButton.addActionListener(queryListener);
+		//  Create Result Limit Combo Box
+		JComboBox limitCombo = createResultLimitComboBox();
+		limitCombo.setFont(new Font(font.getName(), Font.PLAIN, 11));
+		limitCombo.setToolTipText("Limit Result Set or Get All");
+		limitCombo.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 
-        JButton helpButton = new JButton("Help");
-        helpButton.setToolTipText("View Quick Reference Manual");
-        helpButton.addActionListener(new QuickReferenceDialog((JFrame) this));
-        helpButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        buttonBar.add(helpButton);
-        buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
+		//  Used to specify a default size for pull down menu;
+		//  Particularly important for Windows, see Bug #520.
+		limitCombo.setPrototypeDisplayValue(new String("Get All --- Get All"));
+		buttonBar.add(limitCombo);
+		buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
 
-        JButton aboutButton = new JButton("About");
-        aboutButton.setToolTipText("About the cPath PlugIn");
-        aboutButton.addActionListener(new AboutDialog((JFrame) this));
-        aboutButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        buttonBar.add(aboutButton);
-        buttonBar.add(Box.createHorizontalGlue());
+		//  Create Search Button
+		searchButton.setToolTipText("Execute Search Query");
+		searchButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		buttonBar.add(searchButton);
+		buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
+		searchButton.addActionListener(queryListener);
 
-        northPanel.add(buttonBar);
+		JButton helpButton = new JButton("Help");
+		helpButton.setToolTipText("View Quick Reference Manual");
+		helpButton.addActionListener(new QuickReferenceDialog((JFrame) this));
+		helpButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		buttonBar.add(helpButton);
+		buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
 
-        //  Create Search Examples Label
-        JLabel examples = new JLabel("Examples:  p53  |  rad51");
-        examples.setBorder(new EmptyBorder(hspace, 10, 5, 5));
-        northPanel.add(examples);
-        return northPanel;
-    }
+		JButton aboutButton = new JButton("About");
+		aboutButton.setToolTipText("About the cPath PlugIn");
+		aboutButton.addActionListener(new AboutDialog((JFrame) this));
+		aboutButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		buttonBar.add(aboutButton);
+		buttonBar.add(Box.createHorizontalGlue());
 
-    /**
-     * Creates Result Set Limit Pull-Down Menu.
-     */
-    private JComboBox createResultLimitComboBox () {
-        Vector options = MaxHitsOption.getAllOptions();
-        JComboBox limitCombo = new JComboBox(options);
-        UpdateSearchRequest maxHitsListener =
-                new UpdateSearchRequest(searchRequest);
-        limitCombo.addActionListener(maxHitsListener);
+		northPanel.add(buttonBar);
 
-        return limitCombo;
-    }
+		//  Create Search Examples Label
+		JLabel examples = new JLabel("Examples:  p53  |  rad51");
+		examples.setBorder(new EmptyBorder(hspace, 10, 5, 5));
+		northPanel.add(examples);
 
-    /**
-     * Creates Organism Pull-Down Menu.
-     */
-    private JComboBox createOrganismComboBox () {
-        Vector options = OrganismOption.getAllOptions();
-        JComboBox orgCombo = new JComboBox(options);
-        UpdateSearchRequest organismListener =
-                new UpdateSearchRequest(searchRequest);
-        orgCombo.addActionListener(organismListener);
-        return orgCombo;
-    }
+		return northPanel;
+	}
 
-    /**
-     * Receive Notification of Changes to the Search List.
-     *
-     * @param o   Observable Object.
-     * @param arg Observable Arguments.
-     */
-    public void update (Observable o, Object arg) {
-        this.setVisible(true);
-        int numSearches = searchList.getNumSearchBundles();
-        SearchBundle bundle = searchList.getSearchBundleByIndex
-                (numSearches - 1);
-        SearchResponse searchResponse = bundle.getResponse();
-        Throwable exception = searchResponse.getException();
-        if (exception != null) {
-            if (exception instanceof EmptySetException) {
-                String msg = "No Matching Results Found.  Please Try Again.";
-                JOptionPane.showMessageDialog(this, msg, "cPath PlugIn",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else if (exception instanceof InterruptedException) {
-                //  Do Nothing
-            } else {
-                showError(exception);
-            }
-        }
+	/**
+	 * Creates Result Set Limit Pull-Down Menu.
+	 */
+	private JComboBox createResultLimitComboBox() {
+		Vector options = MaxHitsOption.getAllOptions();
+		JComboBox limitCombo = new JComboBox(options);
+		UpdateSearchRequest maxHitsListener = new UpdateSearchRequest(searchRequest);
+		limitCombo.addActionListener(maxHitsListener);
 
-        // Re-enable search button.
-        searchButton.setEnabled(true);
-    }
+		return limitCombo;
+	}
 
-    /**
-     * Show Error Message.
-     *
-     * @param exception Exception.
-     */
-    private void showError (Throwable exception) {
-        ErrorDisplay errorDisplay = new ErrorDisplay(this);
-        errorDisplay.displayError(exception, consolePanel);
-    }
+	/**
+	 * Creates Organism Pull-Down Menu.
+	 */
+	private JComboBox createOrganismComboBox() {
+		Vector options = OrganismOption.getAllOptions();
+		JComboBox orgCombo = new JComboBox(options);
+		UpdateSearchRequest organismListener = new UpdateSearchRequest(searchRequest);
+		orgCombo.addActionListener(organismListener);
+
+		return orgCombo;
+	}
+
+	/**
+	 * Receive Notification of Changes to the Search List.
+	 *
+	 * @param o   Observable Object.
+	 * @param arg Observable Arguments.
+	 */
+	public void update(Observable o, Object arg) {
+		this.setVisible(true);
+
+		int numSearches = searchList.getNumSearchBundles();
+		SearchBundle bundle = searchList.getSearchBundleByIndex(numSearches - 1);
+		SearchResponse searchResponse = bundle.getResponse();
+		Throwable exception = searchResponse.getException();
+
+		if (exception != null) {
+			if (exception instanceof EmptySetException) {
+				String msg = "No Matching Results Found.  Please Try Again.";
+				JOptionPane.showMessageDialog(this, msg, "cPath PlugIn",
+				                              JOptionPane.INFORMATION_MESSAGE);
+			} else if (exception instanceof InterruptedException) {
+				//  Do Nothing
+			} else {
+				showError(exception);
+			}
+		}
+
+		// Re-enable search button.
+		searchButton.setEnabled(true);
+	}
+
+	/**
+	 * Show Error Message.
+	 *
+	 * @param exception Exception.
+	 */
+	private void showError(Throwable exception) {
+		ErrorDisplay errorDisplay = new ErrorDisplay(this);
+		errorDisplay.displayError(exception, consolePanel);
+	}
 }

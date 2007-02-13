@@ -1,20 +1,22 @@
 /*$Id$*/
-
-
 package linkout;
 
 import cytoscape.*;
+
 import cytoscape.plugin.*;
+
 import ding.view.*;
+
 import java.util.*;
+
 
 /**
  * Linkout plugin for customized url links
  * this is the old implementation of the plugin using previous node context menu
  **
 public class LinkOutPlugin
-  extends 
-    CytoscapePlugin 
+  extends
+    CytoscapePlugin
   implements
     PropertyChangeListener  {
 
@@ -52,58 +54,54 @@ public class LinkOutPlugin
 /**
  * LinkOut plugin for customized URL links
  * **/
-public class LinkOutPlugin
-        extends CytoscapePlugin  {
+public class LinkOutPlugin extends CytoscapePlugin {
+	/**
+	 * Creates a new LinkOutPlugin object.
+	 */
+	public LinkOutPlugin() {
+		try {
+			//Create a Network create event listener
+			LinkOutNetworkListener m_listener = new LinkOutNetworkListener();
+			Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(m_listener);
 
-    public LinkOutPlugin () {
+			// Create a new ContextMenuListener and register with the pre-loaded networks.
+			// Cases where networks are loaded before the plugins. For example, when running Cytoscape
+			// from the command line.
+			//Todo - To be tested
+			Set networkSet = Cytoscape.getNetworkSet();
 
-        try{
+			for (Iterator it = networkSet.iterator(); it.hasNext();) {
+				CyNetwork cyNetwork = (CyNetwork) it.next();
 
-            //Create a Network create event listener
-            LinkOutNetworkListener m_listener=new LinkOutNetworkListener();
-            Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(m_listener);
+				LinkOutNodeContextMenuListener nodeMenuListener = new LinkOutNodeContextMenuListener();
+				((DGraphView) Cytoscape.getNetworkView(cyNetwork.getIdentifier()))
+				                                                              .addNodeContextMenuListener(nodeMenuListener);
 
-            // Create a new ContextMenuListener and register with the pre-loaded networks.
-            // Cases where networks are loaded before the plugins. For example, when running Cytoscape
-            // from the command line.
-            //Todo - To be tested
-            Set networkSet = Cytoscape.getNetworkSet();
-            for (Iterator it = networkSet.iterator(); it.hasNext();) {
+				LinkOutEdgeContextMenuListener edgeMenuListener = new LinkOutEdgeContextMenuListener();
+				((DGraphView) Cytoscape.getNetworkView(cyNetwork.getIdentifier()))
+				                                                                  .addEdgeContextMenuListener(edgeMenuListener);
+			}
 
-                CyNetwork cyNetwork = (CyNetwork) it.next();
+			/*
+			            DGraphView currentNetwork=((DGraphView)Cytoscape.getCurrentNetworkView());
 
-                LinkOutNodeContextMenuListener nodeMenuListener= new LinkOutNodeContextMenuListener();
-                ((DGraphView)Cytoscape.getNetworkView(cyNetwork.getIdentifier())).addNodeContextMenuListener(nodeMenuListener);
+			            if(currentNetwork!=null){
 
-                LinkOutEdgeContextMenuListener edgeMenuListener=new LinkOutEdgeContextMenuListener();
-                ((DGraphView)Cytoscape.getNetworkView(cyNetwork.getIdentifier())).addEdgeContextMenuListener(edgeMenuListener);
+			                LinkOutNodeContextMenuListener nodeMenuListener=new LinkOutNodeContextMenuListener();
+			                currentNetwork.addNodeContextMenuListener(nodeMenuListener);
 
-            }
+			                LinkOutEdgeContextMenuListener edgeMenuListener=new LinkOutEdgeContextMenuListener();
+			                currentNetwork.addEdgeContextMenuListener(edgeMenuListener);
 
+			            }
+			*/
+		} catch (ClassCastException e) {
+			System.out.println(e.getMessage());
 
-/*
-            DGraphView currentNetwork=((DGraphView)Cytoscape.getCurrentNetworkView());
-
-            if(currentNetwork!=null){
-
-                LinkOutNodeContextMenuListener nodeMenuListener=new LinkOutNodeContextMenuListener();
-                currentNetwork.addNodeContextMenuListener(nodeMenuListener);
-
-                LinkOutEdgeContextMenuListener edgeMenuListener=new LinkOutEdgeContextMenuListener();
-                currentNetwork.addEdgeContextMenuListener(edgeMenuListener);
-
-            }
-*/
-
-        }
-        catch (ClassCastException e){
-            System.out.println(e.getMessage());
-            return;
-        }
-    }
-
+			return;
+		}
+	}
 }
-
 /*
 $Log: LinkOutPlugin.java,v $
 Revision 1.1  2006/06/14 18:12:46  mes

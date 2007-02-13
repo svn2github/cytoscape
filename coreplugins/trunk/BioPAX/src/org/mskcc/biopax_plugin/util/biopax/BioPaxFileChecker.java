@@ -34,11 +34,14 @@ package org.mskcc.biopax_plugin.util.biopax;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+
 import org.jdom.input.SAXBuilder;
 
 import java.io.IOException;
 import java.io.Reader;
+
 import java.util.List;
+
 
 /**
  * Tries to ascertain whether the given file is a BioPAX document.
@@ -46,52 +49,53 @@ import java.util.List;
  * @author Ethan Cerami.
  */
 public class BioPaxFileChecker {
-    private boolean bioPaxFlag = false;
+	private boolean bioPaxFlag = false;
 
-    /**
-     * Constructor.
-     *
-     * @param reader Reader reader.
-     * @throws IOException File Reading Error.
-     */
-    public BioPaxFileChecker(Reader reader) throws IOException {
-        try {
-            //  Read in File via JDOM SAX Builder
-            SAXBuilder builder = new SAXBuilder();
-            Document bioPaxDoc = builder.build(reader);
+	/**
+	 * Constructor.
+	 *
+	 * @param reader Reader reader.
+	 * @throws IOException File Reading Error.
+	 */
+	public BioPaxFileChecker(Reader reader) throws IOException {
+		try {
+			//  Read in File via JDOM SAX Builder
+			SAXBuilder builder = new SAXBuilder();
+			Document bioPaxDoc = builder.build(reader);
 
-            //  Get Root Element
-            Element root = bioPaxDoc.getRootElement();
+			//  Get Root Element
+			Element root = bioPaxDoc.getRootElement();
 
-            String name = root.getName();
+			String name = root.getName();
 
-            //  If the Root Element is RDF, and at least one of the children
-            //  is in the BioPAX Namespace, we probably have a BioPAX Document.
-            if (name.equalsIgnoreCase("RDF")) {
-                List children = root.getChildren();
-                for (int i = 0; i < children.size(); i++) {
-                    Element child = (Element) children.get(i);
-                    String namespaceUri = child.getNamespaceURI();
-                    if (namespaceUri.equals
-                            (BioPaxConstants.BIOPAX_LEVEL_1_NAMESPACE_URI)
-                            || namespaceUri.equals
-                            (BioPaxConstants.BIOPAX_LEVEL_2_NAMESPACE_URI)) {
-                        bioPaxFlag = true;
-                        break;
-                    }
-                }
-            }
-        } catch (JDOMException e) {
-            bioPaxFlag = false;
-        }
-    }
+			//  If the Root Element is RDF, and at least one of the children
+			//  is in the BioPAX Namespace, we probably have a BioPAX Document.
+			if (name.equalsIgnoreCase("RDF")) {
+				List children = root.getChildren();
 
-    /**
-     * Indicates whether the File is probably a BioPAX Document.
-     *
-     * @return true or false.
-     */
-    public boolean isProbablyBioPaxFile() {
-        return bioPaxFlag;
-    }
+				for (int i = 0; i < children.size(); i++) {
+					Element child = (Element) children.get(i);
+					String namespaceUri = child.getNamespaceURI();
+
+					if (namespaceUri.equals(BioPaxConstants.BIOPAX_LEVEL_1_NAMESPACE_URI)
+					    || namespaceUri.equals(BioPaxConstants.BIOPAX_LEVEL_2_NAMESPACE_URI)) {
+						bioPaxFlag = true;
+
+						break;
+					}
+				}
+			}
+		} catch (JDOMException e) {
+			bioPaxFlag = false;
+		}
+	}
+
+	/**
+	 * Indicates whether the File is probably a BioPAX Document.
+	 *
+	 * @return true or false.
+	 */
+	public boolean isProbablyBioPaxFile() {
+		return bioPaxFlag;
+	}
 }

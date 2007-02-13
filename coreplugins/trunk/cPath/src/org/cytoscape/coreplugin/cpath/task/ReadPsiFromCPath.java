@@ -35,8 +35,11 @@
 package org.cytoscape.coreplugin.cpath.task;
 
 import cytoscape.Cytoscape;
+
 import cytoscape.data.ImportHandler;
+
 import cytoscape.data.readers.GraphReader;
+
 import org.cytoscape.coreplugin.cpath.model.CPathException;
 import org.cytoscape.coreplugin.cpath.model.EmptySetException;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
@@ -44,128 +47,135 @@ import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+
 /**
  * Reads PSI Interactions from cPath.
  *
  * @author Ethan Cerami
  */
 public class ReadPsiFromCPath {
-    /**
-     * Parameter Not Specified.
-     */
-    public static final int NOT_SPECIFIED = -1;
-    private String uri;
+	/**
+	 * Parameter Not Specified.
+	 */
+	public static final int NOT_SPECIFIED = -1;
+	private String uri;
 
-    /**
-     * Gets ArrayList of Interactions by Keyword
-     *
-     * @param keyword    Keyword String.
-     * @param taxonomyId TaxonomyID.
-     * @param maxHits    MaxHits.
-     * @return ArrayList of Interactions.
-     * @throws CPathException    cPath Connection Error.
-     * @throws EmptySetException No Matching Interactions Found.
-     */
-    public GraphReader getInteractionsByKeyword (String keyword, int taxonomyId,
-            int maxHits) throws CPathException, EmptySetException {
-        return process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword, taxonomyId,
-                0, maxHits);
-    }
+	/**
+	 * Gets ArrayList of Interactions by Keyword
+	 *
+	 * @param keyword    Keyword String.
+	 * @param taxonomyId TaxonomyID.
+	 * @param maxHits    MaxHits.
+	 * @return ArrayList of Interactions.
+	 * @throws CPathException    cPath Connection Error.
+	 * @throws EmptySetException No Matching Interactions Found.
+	 */
+	public GraphReader getInteractionsByKeyword(String keyword, int taxonomyId, int maxHits)
+	    throws CPathException, EmptySetException {
+		return process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword, taxonomyId, 0, maxHits);
+	}
 
-    /**
-     * Gets ArrayList of Interactions by Keyword
-     *
-     * @param keyword    Keyword String.
-     * @param taxonomyId TaxonomyID.
-     * @param startIndex StartIndex.
-     * @param maxHits    MaxHits.
-     * @return GraphReader Object.
-     * @throws CPathException    cPath Connection Error.
-     * @throws EmptySetException No Matching Interactions Found.
-     */
-    public GraphReader getInteractionsByKeyword (String keyword, int taxonomyId,
-            int startIndex, int maxHits) throws CPathException,
-            EmptySetException {
-        return process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword, taxonomyId,
-                startIndex, maxHits);
-    }
+	/**
+	 * Gets ArrayList of Interactions by Keyword
+	 *
+	 * @param keyword    Keyword String.
+	 * @param taxonomyId TaxonomyID.
+	 * @param startIndex StartIndex.
+	 * @param maxHits    MaxHits.
+	 * @return GraphReader Object.
+	 * @throws CPathException    cPath Connection Error.
+	 * @throws EmptySetException No Matching Interactions Found.
+	 */
+	public GraphReader getInteractionsByKeyword(String keyword, int taxonomyId, int startIndex,
+	                                            int maxHits)
+	    throws CPathException, EmptySetException {
+		return process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword, taxonomyId, startIndex,
+		               maxHits);
+	}
 
-    /**
-     * Gets Total Number of Interactions for specified search parameters.
-     *
-     * @param keyword    Search Keyword.
-     * @param taxonomyId Taxonomy ID.
-     * @return number of interactions.
-     * @throws CPathException    Data Service Error.
-     * @throws EmptySetException No Results Found.
-     */
-    public int getInteractionsCount (String keyword, int taxonomyId)
-            throws CPathException, EmptySetException {
-        CPathProtocol cpath = new CPathProtocol();
-        cpath.setCommand(CPathProtocol.COMMAND_GET_BY_KEYWORD);
-        cpath.setFormat(CPathProtocol.FORMAT_COUNT_ONLY);
-        cpath.setQuery(keyword);
-        if (taxonomyId != NOT_SPECIFIED) {
-            cpath.setOrganism(taxonomyId);
-        }
-        uri = cpath.getURI();
-        String value = cpath.connect();
-        int count;
-        try {
-            count = Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            throw new CPathException("Error Occurred while connecting "
-                    + "to the cPath Web Service (Details:  Invalid data "
-                    + "returned.  Double check that you are using the correct "
-                    + "cPath URL.)");
-        }
-        return count;
-    }
+	/**
+	 * Gets Total Number of Interactions for specified search parameters.
+	 *
+	 * @param keyword    Search Keyword.
+	 * @param taxonomyId Taxonomy ID.
+	 * @return number of interactions.
+	 * @throws CPathException    Data Service Error.
+	 * @throws EmptySetException No Results Found.
+	 */
+	public int getInteractionsCount(String keyword, int taxonomyId)
+	    throws CPathException, EmptySetException {
+		CPathProtocol cpath = new CPathProtocol();
+		cpath.setCommand(CPathProtocol.COMMAND_GET_BY_KEYWORD);
+		cpath.setFormat(CPathProtocol.FORMAT_COUNT_ONLY);
+		cpath.setQuery(keyword);
 
-    /**
-     * Gets ArrayList of Interactions by Keyword
-     *
-     * @param keyword Keyword String.
-     * @param maxHits MaxHits.
-     * @return ArrayList of Interactions.
-     * @throws CPathException    Indicates error connecting to data service.
-     * @throws EmptySetException No Matching Interactions Found.
-     */
-    public GraphReader getInteractionsByKeyword (String keyword, int maxHits)
-            throws CPathException, EmptySetException {
-        return process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword,
-                NOT_SPECIFIED, 0, maxHits);
-    }
+		if (taxonomyId != NOT_SPECIFIED) {
+			cpath.setOrganism(taxonomyId);
+		}
 
-    /**
-     * Gets URI of Last Query.
-     *
-     * @return URI String.
-     */
-    public String getLastQueryURI () {
-        return uri;
-    }
+		uri = cpath.getURI();
 
-    /**
-     * Process Service.
-     */
-    private GraphReader process (String command, String query, int taxonomyId,
-            int startIndex, int maxHits) throws CPathException {
-        CPathProtocol cpath = new CPathProtocol();
-        cpath.setCommand(command);
-        cpath.setFormat(CPathProtocol.FORMAT_XML);
-        cpath.setQuery(query);
-        cpath.setStartIndex(startIndex);
-        cpath.setMaxHits(maxHits);
-        if (taxonomyId != NOT_SPECIFIED) {
-            cpath.setOrganism(taxonomyId);
-        }
-        try {
-            URL url = new URL(cpath.getURI());
-            GraphReader reader = Cytoscape.getImportHandler().getReader(url);
-            return reader;
-        } catch (MalformedURLException e) {
-            throw new CPathException("Could not parse URL", e);
-        }
-    }
+		String value = cpath.connect();
+		int count;
+
+		try {
+			count = Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			throw new CPathException("Error Occurred while connecting "
+			                         + "to the cPath Web Service (Details:  Invalid data "
+			                         + "returned.  Double check that you are using the correct "
+			                         + "cPath URL.)");
+		}
+
+		return count;
+	}
+
+	/**
+	 * Gets ArrayList of Interactions by Keyword
+	 *
+	 * @param keyword Keyword String.
+	 * @param maxHits MaxHits.
+	 * @return ArrayList of Interactions.
+	 * @throws CPathException    Indicates error connecting to data service.
+	 * @throws EmptySetException No Matching Interactions Found.
+	 */
+	public GraphReader getInteractionsByKeyword(String keyword, int maxHits)
+	    throws CPathException, EmptySetException {
+		return process(CPathProtocol.COMMAND_GET_BY_KEYWORD, keyword, NOT_SPECIFIED, 0, maxHits);
+	}
+
+	/**
+	 * Gets URI of Last Query.
+	 *
+	 * @return URI String.
+	 */
+	public String getLastQueryURI() {
+		return uri;
+	}
+
+	/**
+	 * Process Service.
+	 */
+	private GraphReader process(String command, String query, int taxonomyId, int startIndex,
+	                            int maxHits) throws CPathException {
+		CPathProtocol cpath = new CPathProtocol();
+		cpath.setCommand(command);
+		cpath.setFormat(CPathProtocol.FORMAT_XML);
+		cpath.setQuery(query);
+		cpath.setStartIndex(startIndex);
+		cpath.setMaxHits(maxHits);
+
+		if (taxonomyId != NOT_SPECIFIED) {
+			cpath.setOrganism(taxonomyId);
+		}
+
+		try {
+			URL url = new URL(cpath.getURI());
+			GraphReader reader = Cytoscape.getImportHandler().getReader(url);
+
+			return reader;
+		} catch (MalformedURLException e) {
+			throw new CPathException("Could not parse URL", e);
+		}
+	}
 }

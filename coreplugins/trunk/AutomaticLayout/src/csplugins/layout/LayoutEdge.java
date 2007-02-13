@@ -32,12 +32,16 @@
  */
 package csplugins.layout;
 
+import csplugins.layout.LayoutNode;
+
 import cytoscape.*;
+
 import cytoscape.data.*;
-import cytoscape.view.*;
+
 import cytoscape.util.*;
 
-import csplugins.layout.LayoutNode;
+import cytoscape.view.*;
+
 
 /**
  * The LayoutEdge class.  This class is used as a container for information
@@ -61,7 +65,7 @@ public class LayoutEdge {
 	/**
 	 * An empty constructor
 	 */
-	public LayoutEdge() { 
+	public LayoutEdge() {
 		if (edgeAttributes == null)
 			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
@@ -70,10 +74,11 @@ public class LayoutEdge {
 	 * Create a LayoutEdge that will contain information about this edge.
 	 * Additional information must be filled in later.
 	 *
-	 * @param	edge	CyEdge that this LayoutEdge represents
+	 * @param    edge    CyEdge that this LayoutEdge represents
 	 */
-	public LayoutEdge(CyEdge edge) { 
+	public LayoutEdge(CyEdge edge) {
 		this.edge = edge;
+
 		if (edgeAttributes == null)
 			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
@@ -82,18 +87,20 @@ public class LayoutEdge {
 	 * Create a LayoutEdge that will contains information about this edge,
 	 * and that record that it connects LayoutNodes v1 and v2.
 	 *
-	 * @param	edge	CyEdge that this LayoutEdge represents
-	 * @param	v1	The LayoutNode that represents the source of the edge
-	 * @param	v2	The LayoutNode that represents the target of the edge
+	 * @param    edge    CyEdge that this LayoutEdge represents
+	 * @param    v1    The LayoutNode that represents the source of the edge
+	 * @param    v2    The LayoutNode that represents the target of the edge
 	 */
 	public LayoutEdge(CyEdge edge, LayoutNode v1, LayoutNode v2) {
 		this.edge = edge;
 		this.v1 = v1;
 		this.v2 = v2;
+
 		if (v1 != v2) {
 			v1.addNeighbor(v2);
 			v2.addNeighbor(v1);
 		}
+
 		if (edgeAttributes == null)
 			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
@@ -104,12 +111,13 @@ public class LayoutEdge {
 	 * source and target nodes since we don't always know that information
 	 * at the time the edge is encountered.
 	 *
-	 * @param	v1	The LayoutNode that represents the source of the edge
-	 * @param	v2	The LayoutNode that represents the target of the edge
+	 * @param    v1    The LayoutNode that represents the source of the edge
+	 * @param    v2    The LayoutNode that represents the target of the edge
 	 */
 	public void addNodes(LayoutNode v1, LayoutNode v2) {
 		this.v1 = v1;
 		this.v2 = v2;
+
 		if (v1 != v2) {
 			v1.addNeighbor(v2);
 			v2.addNeighbor(v1);
@@ -123,109 +131,124 @@ public class LayoutEdge {
 	 *
 	 * @param weightedAttribute the name of the attribute to use to get the weight
 	 */
-	public void setWeight(String weightedAttribute) { 
+	public void setWeight(String weightedAttribute) {
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		double eValue = 1;
-		if ((weightedAttribute != null) && 
-			  edgeAttributes.hasAttribute(edge.getIdentifier(),weightedAttribute)) {
+
+		if ((weightedAttribute != null)
+		    && edgeAttributes.hasAttribute(edge.getIdentifier(), weightedAttribute)) {
 			if (edgeAttributes.getType(weightedAttribute) == CyAttributes.TYPE_INTEGER) {
 				Integer val = edgeAttributes.getIntegerAttribute(edge.getIdentifier(),
-																														weightedAttribute);
- 				eValue = (double)val.intValue();
+				                                                 weightedAttribute);
+				eValue = (double) val.intValue();
 			} else {
 				Double val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(),
-																										weightedAttribute);
+				                                               weightedAttribute);
 				eValue = val.doubleValue();
 			}
 		}
+
 		if (eValue == 0) {
 			this.logWeight = logWeightCeiling;
 		} else {
-			this.logWeight = Math.min(-Math.log10(eValue),logWeightCeiling); 
+			this.logWeight = Math.min(-Math.log10(eValue), logWeightCeiling);
 		}
 
 		// System.out.println("Setting weight to "+eValue+" logWeight to "+logWeight);
-		this.weight = eValue; 
+		this.weight = eValue;
 	}
 
 	/**
 	 * Normalize the weights to fall between 0 and 1.
 	 *
-	 * @param minWeight	The minimum weight value
-	 * @param maxWeight	The maximum weight value
+	 * @param minWeight    The minimum weight value
+	 * @param maxWeight    The maximum weight value
 	 * @param useLogWeights If "true", set the weight to be the logWeight.  minWeight
 	 *                      and maxWeight values are already in log format.
 	 */
-	public void normalizeWeight(double minWeight, double maxWeight, 
-	                            boolean useLogWeights) {
+	public void normalizeWeight(double minWeight, double maxWeight, boolean useLogWeights) {
 		// Normalize the weights to fall between 0 and 1
 		if (useLogWeights) {
-			if (logWeight == 0) 
-				weight = maxWeight+1;
+			if (logWeight == 0)
+				weight = maxWeight + 1;
 			else
 				weight = logWeight;
 		}
+
 		// System.out.println("Normalize weight ("+weight+") to between ("+minWeight+" and "+maxWeight+")");
-		weight = (weight - minWeight) / (maxWeight-minWeight);
+		weight = (weight - minWeight) / (maxWeight - minWeight);
 	}
 
 	/**
 	 * Return the current value for this edge's weight.
 	 *
-	 * @return 	This edge's weight as a double
+	 * @return     This edge's weight as a double
 	 */
-	public double getWeight() { return this.weight; }
+	public double getWeight() {
+		return this.weight;
+	}
 
 	/**
 	 * Return the current value for this edge's logWeight (-log(weight)).
 	 *
-	 * @return 	This edge's logWeight as a double
+	 * @return     This edge's logWeight as a double
 	 */
-	public double getLogWeight() { return this.logWeight; }
+	public double getLogWeight() {
+		return this.logWeight;
+	}
 
 	/**
 	 * Return the source of this edge
 	 *
-	 * @return 	This edge's source
+	 * @return     This edge's source
 	 */
-	public LayoutNode getSource() { return this.v1; }
+	public LayoutNode getSource() {
+		return this.v1;
+	}
 
 	/**
 	 * Return the target of this edge
 	 *
-	 * @return 	This edge's target
+	 * @return     This edge's target
 	 */
-	public LayoutNode getTarget() { return this.v2; }
+	public LayoutNode getTarget() {
+		return this.v2;
+	}
 
 	/**
 	 * Return the CyEdge this LayoutEdge represents
 	 *
-	 * @return 	The CyEdge for this LayoutEdge
+	 * @return     The CyEdge for this LayoutEdge
 	 */
-	public CyEdge getEdge() { return this.edge; }
+	public CyEdge getEdge() {
+		return this.edge;
+	}
 
 	/**
 	 * Return a string representation for this LayoutEdge.
 	 *
-	 * @return	A String containting the name of the CyEdge, the connecting LayoutNodes
+	 * @return    A String containting the name of the CyEdge, the connecting LayoutNodes
 	 *          and the current weight.
 	 */
 	public String toString() {
 		String source = "undefined";
 		String target = "undefined";
+
 		if (v1 != null)
 			source = v1.getIdentifier();
+
 		if (v2 != null)
 			target = v2.getIdentifier();
 
-		return "Edge "+edge.getIdentifier()+" connecting "+source+" and "+target+" with weight "+weight;
+		return "Edge " + edge.getIdentifier() + " connecting " + source + " and " + target
+		       + " with weight " + weight;
 	}
 
 	/**
 	 * Set the maximum log weight that we will consider.  This is a static and only needs to be
 	 * set once for all LayoutEdges.
 	 *
-	 * @param ceiling	the maximum log weight to consider.  Edges with weights above this
+	 * @param ceiling    the maximum log weight to consider.  Edges with weights above this
 	 *                value will be dropped.
 	 */
 	public static void setLogWeightCeiling(double ceiling) {

@@ -43,10 +43,12 @@ import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
 
 import java.math.BigInteger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+
 
 /**
  * Converts Data Services Object Model to the PSI-MI, Level 1 Format.
@@ -54,471 +56,489 @@ import java.util.Iterator;
  * @author Ethan Cerami
  */
 public class MapInteractionsToPsiOne implements Mapper {
+	private static final String EXP_AFFINITY_PRECIPITATION = "Affinity Precipitation";
+	private static final String EXP_AFFINITY_CHROMOTOGRAPHY = "Affinity Chromatography";
+	private static final String EXP_TWO_HYBRID = "Two Hybrid";
+	private static final String EXP_PURIFIED_COMPLEX = "Purified Complex";
 
-    private static final String EXP_AFFINITY_PRECIPITATION =
-            "Affinity Precipitation";
+	/**
+	 * Pub Med Database.
+	 */
+	private static final String PUB_MED_DB = "pubmed";
+	private EntrySet entrySet;
 
-    private static final String EXP_AFFINITY_CHROMOTOGRAPHY =
-            "Affinity Chromatography";
+	/**
+	 * ArrayList of Protein-Protein Interactions.
+	 */
+	private ArrayList interactions;
 
-    private static final String EXP_TWO_HYBRID = "Two Hybrid";
+	/**
+	 * Constructor.
+	 *
+	 * @param interactions ArrayList of Interactions.
+	 */
+	public MapInteractionsToPsiOne(ArrayList interactions) {
+		this.interactions = interactions;
+	}
 
-    private static final String EXP_PURIFIED_COMPLEX = "Purified Complex";
+	/**
+	 * Perform Mapping.
+	 */
+	public void doMapping() {
+		// Create Entry Set and Entry
+		entrySet = new EntrySet();
+		entrySet.setLevel(new BigInteger("1"));
+		entrySet.setVersion(new BigInteger("1"));
 
-    /**
-     * Pub Med Database.
-     */
-    private static final String PUB_MED_DB = "pubmed";
+		EntrySet.Entry entry = new EntrySet.Entry();
 
-    private EntrySet entrySet;
+		//  Get Interactor List
+		EntrySet.Entry.InteractorList interactorList = getInteractorList();
 
-    /**
-     * ArrayList of Protein-Protein Interactions.
-     */
-    private ArrayList interactions;
+		//  Get Interaction List
+		EntrySet.Entry.InteractionList interactionList = getInteractionList();
 
-    /**
-     * Constructor.
-     *
-     * @param interactions ArrayList of Interactions.
-     */
-    public MapInteractionsToPsiOne(ArrayList interactions) {
-        this.interactions = interactions;
-    }
+		//  Add to Entry node
+		entry.setInteractorList(interactorList);
+		entry.setInteractionList(interactionList);
+		entrySet.getEntry().add(entry);
+	}
 
-    /**
-     * Perform Mapping.
-     */
-    public void doMapping() {
-        // Create Entry Set and Entry
-        entrySet = new EntrySet();
-        entrySet.setLevel(new BigInteger("1"));
-        entrySet.setVersion(new BigInteger("1"));
-        EntrySet.Entry entry = new EntrySet.Entry();
+	/**
+	 * Gets PSI XML.
+	 *
+	 * @return Root PSI Element.
+	 */
+	public EntrySet getPsiXml() {
+		return entrySet;
+	}
 
-        //  Get Interactor List
-        EntrySet.Entry.InteractorList interactorList = getInteractorList();
+	/**
+	 * Gets Interactor List.
+	 *
+	 * @return Castor InteractorList.
+	 */
+	private EntrySet.Entry.InteractorList getInteractorList() {
+		HashMap proteinSet = getNonRedundantInteractors();
+		EntrySet.Entry.InteractorList interactorList = new EntrySet.Entry.InteractorList();
 
-        //  Get Interaction List
-        EntrySet.Entry.InteractionList interactionList = getInteractionList();
+		//  Iterate through all Interactors
+		Iterator iterator = proteinSet.values().iterator();
 
-        //  Add to Entry node
-        entry.setInteractorList(interactorList);
-        entry.setInteractionList(interactionList);
-        entrySet.getEntry().add(entry);
-    }
+		while (iterator.hasNext()) {
+			//  Create new Interactor
+			Interactor interactor = (Interactor) iterator.next();
+			ProteinInteractorType jaxbInteractor = new ProteinInteractorType();
+			setNameId(interactor, jaxbInteractor);
+			setOrganism(interactor, jaxbInteractor);
+			setSequence(interactor, jaxbInteractor);
 
-    /**
-     * Gets PSI XML.
-     *
-     * @return Root PSI Element.
-     */
-    public EntrySet getPsiXml() {
-        return entrySet;
-    }
+			XrefType xref = createExternalRefs(interactor);
 
-    /**
-     * Gets Interactor List.
-     *
-     * @return Castor InteractorList.
-     */
-    private EntrySet.Entry.InteractorList getInteractorList() {
-        HashMap proteinSet = getNonRedundantInteractors();
-        EntrySet.Entry.InteractorList interactorList = new EntrySet.Entry.InteractorList();
+			if (xref != null) {
+				jaxbInteractor.setXref(xref);
+			}
 
-        //  Iterate through all Interactors
-        Iterator iterator = proteinSet.values().iterator();
-        while (iterator.hasNext()) {
-            //  Create new Interactor
-            Interactor interactor = (Interactor) iterator.next();
-            ProteinInteractorType jaxbInteractor = new ProteinInteractorType();
-            setNameId(interactor, jaxbInteractor);
-            setOrganism(interactor, jaxbInteractor);
-            setSequence(interactor, jaxbInteractor);
-            XrefType xref = createExternalRefs(interactor);
-            if (xref != null) {
-                jaxbInteractor.setXref(xref);
-            }
+			//  Add to Interactor List
+			interactorList.getProteinInteractor().add(jaxbInteractor);
+		}
 
-            //  Add to Interactor List
-            interactorList.getProteinInteractor().add(jaxbInteractor);
-        }
-        return interactorList;
-    }
+		return interactorList;
+	}
 
-    /**
-     * Sets Sequence Data.
-     */
-    private void setSequence(Interactor interactor, ProteinInteractorType jaxbInteractor) {
-        String seqData = (String) interactor.getAttribute(InteractorVocab.SEQUENCE_DATA);
-        if (seqData != null) {
-            jaxbInteractor.setSequence(seqData);
-        }
-    }
+	/**
+	 * Sets Sequence Data.
+	 */
+	private void setSequence(Interactor interactor, ProteinInteractorType jaxbInteractor) {
+		String seqData = (String) interactor.getAttribute(InteractorVocab.SEQUENCE_DATA);
 
-    /**
-     * Sets Interactor Name and ID.
-     *
-     * @param interactor     Data Services Interactor object.
-     * @param jaxbInteractor JAXB Protein Interactor Object.
-     */
-    private void setNameId(Interactor interactor, ProteinInteractorType jaxbInteractor) {
-        NamesType names = new NamesType();
-        names.setShortLabel(interactor.getName());
-        String fullName = (String) interactor.getAttribute(InteractorVocab.FULL_NAME);
-        if (fullName != null) {
-            names.setFullName(fullName);
-        }
-        jaxbInteractor.setNames(names);
-        jaxbInteractor.setId(interactor.getName());
-    }
+		if (seqData != null) {
+			jaxbInteractor.setSequence(seqData);
+		}
+	}
 
-    /**
-     * Sets Interactor Organism.
-     *
-     * @param interactor     Data Services Interactor Object.
-     * @param jaxbInteractor JAXB Protein Interactor Object.
-     */
-    private void setOrganism(Interactor interactor, ProteinInteractorType jaxbInteractor) {
-        ProteinInteractorType.Organism organism = new ProteinInteractorType.Organism();
-        String taxonomyID = (String) interactor.getAttribute
-                (InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID);
-        if (taxonomyID != null) {
-            organism.setNcbiTaxId(new BigInteger(taxonomyID));
-        }
+	/**
+	 * Sets Interactor Name and ID.
+	 *
+	 * @param interactor     Data Services Interactor object.
+	 * @param jaxbInteractor JAXB Protein Interactor Object.
+	 */
+	private void setNameId(Interactor interactor, ProteinInteractorType jaxbInteractor) {
+		NamesType names = new NamesType();
+		names.setShortLabel(interactor.getName());
 
-        NamesType orgNames = new NamesType();
-        String commonName = (String) interactor.getAttribute(InteractorVocab.ORGANISM_COMMON_NAME);
-        if (commonName != null) {
-            orgNames.setShortLabel(commonName);
-        }
+		String fullName = (String) interactor.getAttribute(InteractorVocab.FULL_NAME);
 
-        String speciesName = (String) interactor.getAttribute
-                (InteractorVocab.ORGANISM_SPECIES_NAME);
-        if (speciesName != null) {
-            orgNames.setFullName(speciesName);
-        }
-        organism.setNames(orgNames);
-        jaxbInteractor.setOrganism(organism);
-    }
+		if (fullName != null) {
+			names.setFullName(fullName);
+		}
 
-    /**
-     * Sets Interactor External References.
-     * Filters out any redundant external references.
-     */
-    private XrefType createExternalRefs(AttributeBag bag) {
-        HashSet set = new HashSet();
-        ExternalReference refs [] = bag.getExternalRefs();
-        XrefType xref = new XrefType();
+		jaxbInteractor.setNames(names);
+		jaxbInteractor.setId(interactor.getName());
+	}
 
-        if (refs != null && refs.length > 0) {
-            //  Add Primary Reference
-            createPrimaryKey(refs[0], xref);
+	/**
+	 * Sets Interactor Organism.
+	 *
+	 * @param interactor     Data Services Interactor Object.
+	 * @param jaxbInteractor JAXB Protein Interactor Object.
+	 */
+	private void setOrganism(Interactor interactor, ProteinInteractorType jaxbInteractor) {
+		ProteinInteractorType.Organism organism = new ProteinInteractorType.Organism();
+		String taxonomyID = (String) interactor.getAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID);
 
-            //  All others become Secondary References
-            if (refs.length > 1) {
-                for (int i = 1; i < refs.length; i++) {
-                    String key = this.generateXRefKey(refs[i]);
-                    if (!set.contains(key)) {
-                        createSecondaryKey(refs[i], xref);
-                        set.add(key);
-                    }
-                }
-            }
-        }
-        if (xref.getPrimaryRef() != null) {
-            return xref;
-        } else {
-            return null;
-        }
-    }
+		if (taxonomyID != null) {
+			organism.setNcbiTaxId(new BigInteger(taxonomyID));
+		}
 
-    /**
-     * Generates XRef Key.
-     *
-     * @param ref External Reference
-     * @return Hash Key.
-     */
-    private String generateXRefKey(ExternalReference ref) {
-        return ref.getDatabase() + "." + ref.getId();
-    }
+		NamesType orgNames = new NamesType();
+		String commonName = (String) interactor.getAttribute(InteractorVocab.ORGANISM_COMMON_NAME);
 
-    /**
-     * Creates Primary Key.
-     *
-     * @param ref  External Reference.
-     * @param xref Castor XRef.
-     */
-    private void createPrimaryKey(ExternalReference ref, XrefType xref) {
-        DbReferenceType primaryRef = new DbReferenceType();
-        primaryRef.setDb(ref.getDatabase());
-        primaryRef.setId(ref.getId());
-        xref.setPrimaryRef(primaryRef);
-    }
+		if (commonName != null) {
+			orgNames.setShortLabel(commonName);
+		}
 
-    /**
-     * Creates Secondary Key.
-     *
-     * @param ref  External Reference
-     * @param xref Castro XRef.
-     */
-    private void createSecondaryKey(ExternalReference ref, XrefType xref) {
-        DbReferenceType secondaryRef = new DbReferenceType();
-        secondaryRef.setDb(ref.getDatabase());
-        secondaryRef.setId(ref.getId());
-        xref.getSecondaryRef().add(secondaryRef);
-    }
+		String speciesName = (String) interactor.getAttribute(InteractorVocab.ORGANISM_SPECIES_NAME);
 
-    /**
-     * Gets a complete list of NonRedundant Proteins.
-     *
-     * @return HashMap of NonRedundant Proteins.
-     */
-    private HashMap getNonRedundantInteractors() {
-        HashMap interactorMap = new HashMap();
-        for (int i = 0; i < interactions.size(); i++) {
-            Interaction interaction = (Interaction) interactions.get(i);
-            ArrayList interactors = interaction.getInteractors();
-            for (int j = 0; j < interactors.size(); j++) {
-                Interactor interactor = (Interactor) interactors.get(j);
-                addToHashMap(interactor, interactorMap);
-            }
-        }
-        return interactorMap;
-    }
+		if (speciesName != null) {
+			orgNames.setFullName(speciesName);
+		}
 
-    /**
-     * Conditionally adds Protein to HashMap.
-     *
-     * @param interactor    Interactor Object.
-     * @param interactorMap HashMap of NonRedundant Interactors.
-     */
-    private void addToHashMap(Interactor interactor, HashMap interactorMap) {
-        String orfName = interactor.getName();
-        if (!interactorMap.containsKey(orfName)) {
-            interactorMap.put(orfName, interactor);
-        }
-    }
+		organism.setNames(orgNames);
+		jaxbInteractor.setOrganism(organism);
+	}
 
-    /**
-     * Gets Interaction List.
-     *
-     * @return Castor InteractionList.
-     */
-    private EntrySet.Entry.InteractionList getInteractionList() {
-        EntrySet.Entry.InteractionList interactionList = new EntrySet.Entry.InteractionList();
-        //  Iterate through all interactions
-        for (int i = 0; i < interactions.size(); i++) {
+	/**
+	 * Sets Interactor External References.
+	 * Filters out any redundant external references.
+	 */
+	private XrefType createExternalRefs(AttributeBag bag) {
+		HashSet set = new HashSet();
+		ExternalReference[] refs = bag.getExternalRefs();
+		XrefType xref = new XrefType();
 
-            //  Create New Interaction
-            InteractionElementType jaxbInteraction = new InteractionElementType();
-            Interaction interaction = (Interaction) interactions.get(i);
+		if ((refs != null) && (refs.length > 0)) {
+			//  Add Primary Reference
+			createPrimaryKey(refs[0], xref);
 
-            //  Add Experiment List
-            InteractionElementType.ExperimentList expList =
-                    getExperimentDescription(interaction, i);
-            jaxbInteraction.setExperimentList(expList);
+			//  All others become Secondary References
+			if (refs.length > 1) {
+				for (int i = 1; i < refs.length; i++) {
+					String key = this.generateXRefKey(refs[i]);
 
-            //  Add Participants
-            InteractionElementType.ParticipantList participantList =
-                    getParticipantList(interaction);
-            jaxbInteraction.setParticipantList(participantList);
+					if (!set.contains(key)) {
+						createSecondaryKey(refs[i], xref);
+						set.add(key);
+					}
+				}
+			}
+		}
 
-            //  Add to Interaction List
-            interactionList.getInteraction().add(jaxbInteraction);
+		if (xref.getPrimaryRef() != null) {
+			return xref;
+		} else {
+			return null;
+		}
+	}
 
-            //  Add Xrefs
-            XrefType xref = createExternalRefs(interaction);
-            if (xref != null) {
-                jaxbInteraction.setXref(xref);
-            }
-        }
-        return interactionList;
-    }
+	/**
+	 * Generates XRef Key.
+	 *
+	 * @param ref External Reference
+	 * @return Hash Key.
+	 */
+	private String generateXRefKey(ExternalReference ref) {
+		return ref.getDatabase() + "." + ref.getId();
+	}
 
-    /**
-     * Gets Experiment Description.
-     *
-     * @param interaction Interaction object.
-     * @return Castor InteractionElementTypeChoice object.
-     */
-    private InteractionElementType.ExperimentList getExperimentDescription
-            (Interaction interaction, int index) {
-        //  Create New Experiment List
-        InteractionElementType.ExperimentList expList = new InteractionElementType.ExperimentList();
+	/**
+	 * Creates Primary Key.
+	 *
+	 * @param ref  External Reference.
+	 * @param xref Castor XRef.
+	 */
+	private void createPrimaryKey(ExternalReference ref, XrefType xref) {
+		DbReferenceType primaryRef = new DbReferenceType();
+		primaryRef.setDb(ref.getDatabase());
+		primaryRef.setId(ref.getId());
+		xref.setPrimaryRef(primaryRef);
+	}
 
-        //  Create New Experiment Description
-        ExperimentType expType = new ExperimentType();
+	/**
+	 * Creates Secondary Key.
+	 *
+	 * @param ref  External Reference
+	 * @param xref Castro XRef.
+	 */
+	private void createSecondaryKey(ExternalReference ref, XrefType xref) {
+		DbReferenceType secondaryRef = new DbReferenceType();
+		secondaryRef.setDb(ref.getDatabase());
+		secondaryRef.setId(ref.getId());
+		xref.getSecondaryRef().add(secondaryRef);
+	}
 
-        //  Set Experimental ID
-        expType.setId("exp" + index);
+	/**
+	 * Gets a complete list of NonRedundant Proteins.
+	 *
+	 * @return HashMap of NonRedundant Proteins.
+	 */
+	private HashMap getNonRedundantInteractors() {
+		HashMap interactorMap = new HashMap();
 
-        //  Set Bibliographic Reference
-        BibrefType bibRef = null;
+		for (int i = 0; i < interactions.size(); i++) {
+			Interaction interaction = (Interaction) interactions.get(i);
+			ArrayList interactors = interaction.getInteractors();
 
-        Object pmid = interaction.getAttribute(InteractionVocab.PUB_MED_ID);
-        if (pmid != null && pmid instanceof String) {
-            bibRef = createBibRef(PUB_MED_DB, (String) pmid);
-            expType.setBibref(bibRef);
-        }
+			for (int j = 0; j < interactors.size(); j++) {
+				Interactor interactor = (Interactor) interactors.get(j);
+				addToHashMap(interactor, interactorMap);
+			}
+		}
 
-        //  Set Interaction Detection
-        CvType interactionDetection =
-                getInteractionDetection(interaction);
-        expType.setInteractionDetection(interactionDetection);
+		return interactorMap;
+	}
 
-        //  Set Choice Element
-        expList.getExperimentRefOrExperimentDescription().add(expType);
-        return expList;
-    }
+	/**
+	 * Conditionally adds Protein to HashMap.
+	 *
+	 * @param interactor    Interactor Object.
+	 * @param interactorMap HashMap of NonRedundant Interactors.
+	 */
+	private void addToHashMap(Interactor interactor, HashMap interactorMap) {
+		String orfName = interactor.getName();
 
-    /**
-     * Creates a Bibliography Reference.
-     *
-     * @param database Database.
-     * @param id       ID String.
-     * @return Castor Bibref Object.
-     */
-    private BibrefType createBibRef(String database, String id) {
-        XrefType xref = createXRef(database, id);
-        BibrefType bibRef = new BibrefType();
-        bibRef.setXref(xref);
-        return bibRef;
-    }
+		if (!interactorMap.containsKey(orfName)) {
+			interactorMap.put(orfName, interactor);
+		}
+	}
 
-    /**
-     * Creates a Primary Reference.
-     *
-     * @param database Database.
-     * @param id       ID String.
-     * @return Castor XRef object
-     */
-    private XrefType createXRef(String database, String id) {
-        XrefType xref = new XrefType();
-        DbReferenceType primaryRef = new DbReferenceType();
-        primaryRef.setDb(database);
-        primaryRef.setId(id);
-        xref.setPrimaryRef(primaryRef);
-        return xref;
-    }
+	/**
+	 * Gets Interaction List.
+	 *
+	 * @return Castor InteractionList.
+	 */
+	private EntrySet.Entry.InteractionList getInteractionList() {
+		EntrySet.Entry.InteractionList interactionList = new EntrySet.Entry.InteractionList();
 
-    /**
-     * Gets Interaction Detection element.
-     * It is possible that an interaction is missing important attributes,
-     * such as Experimental System Name, XRef DB, and XRef ID.  All of these
-     * attributes are required by PSI.  Rather than throwing an exception
-     * here, the data_mapper manually specifies "Not Specified" for all missing
-     * attributes.
-     *
-     * @param interaction Interaction.
-     * @return InteractionDetection Object.
-     */
-    private CvType getInteractionDetection
-            (Interaction interaction) {
-        CvType interactionDetection = new CvType();
-        String idStr = null;
-        try {
-            idStr = (String) interaction.getAttribute
-                    (InteractionVocab.EXPERIMENTAL_SYSTEM_NAME);
-        } catch (ClassCastException e) {
-            idStr = null;
-        }
+		//  Iterate through all interactions
+		for (int i = 0; i < interactions.size(); i++) {
+			//  Create New Interaction
+			InteractionElementType jaxbInteraction = new InteractionElementType();
+			Interaction interaction = (Interaction) interactions.get(i);
 
-        if (idStr == null) {
-            idStr = "Not Specified";
-        }
+			//  Add Experiment List
+			InteractionElementType.ExperimentList expList = getExperimentDescription(interaction, i);
+			jaxbInteraction.setExperimentList(expList);
 
-        String idRef = null;
-        try {
-            idRef = (String) interaction.getAttribute
-                    (InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID);
-        } catch (ClassCastException e) {
-            idRef = null;
-        }
+			//  Add Participants
+			InteractionElementType.ParticipantList participantList = getParticipantList(interaction);
+			jaxbInteraction.setParticipantList(participantList);
 
-        //  If there is no ID Ref, find a best match.
-        if (idRef == null) {
-            if (idStr.equals(EXP_AFFINITY_PRECIPITATION)
-                    || idStr.equals(EXP_AFFINITY_CHROMOTOGRAPHY)) {
-                idStr = "affinity chromatography technologies";
-                idRef = "MI:0004";
-            } else if (idStr.equals(EXP_TWO_HYBRID)) {
-                idStr = "classical two hybrid";
-                idRef = "MI:0018";
-            } else if (idStr.equals(EXP_PURIFIED_COMPLEX)) {
-                idStr = "copurification";
-                idRef = "MI:0025";
-            } else {
-                idRef = "Not Specified";
-            }
-        }
-        NamesType names = createName(idStr, null);
-        interactionDetection.setNames(names);
+			//  Add to Interaction List
+			interactionList.getInteraction().add(jaxbInteraction);
 
-        String dbRef = null;
-        try {
-            dbRef = (String) interaction.getAttribute
-                    (InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB);
-        } catch (ClassCastException e) {
-            dbRef = null;
-        }
-        if (dbRef == null) {
-            dbRef = "PSI-MI";
-        }
+			//  Add Xrefs
+			XrefType xref = createExternalRefs(interaction);
 
-        XrefType xref = createXRef(dbRef, idRef);
-        interactionDetection.setXref(xref);
-        return interactionDetection;
-    }
+			if (xref != null) {
+				jaxbInteraction.setXref(xref);
+			}
+		}
 
-    /**
-     * Creates a new Names Object.
-     *
-     * @param shortLabel Short Name Label.
-     * @param fullName   Full Name/Description.
-     * @return Castor Names Object.
-     */
-    private NamesType createName(String shortLabel, String fullName) {
-        NamesType names = new NamesType();
-        names.setShortLabel(shortLabel);
-        if (fullName != null) {
-            names.setFullName(fullName);
-        }
-        return names;
-    }
+		return interactionList;
+	}
 
-    /**
-     * Gets the Interaction Participant List.
-     *
-     * @param interaction Interaction object.
-     * @return Castor Participant List.
-     */
-    private InteractionElementType.ParticipantList getParticipantList(Interaction interaction) {
-        InteractionElementType.ParticipantList participantList =
-                new InteractionElementType.ParticipantList();
+	/**
+	 * Gets Experiment Description.
+	 *
+	 * @param interaction Interaction object.
+	 * @return Castor InteractionElementTypeChoice object.
+	 */
+	private InteractionElementType.ExperimentList getExperimentDescription(Interaction interaction,
+	                                                                       int index) {
+		//  Create New Experiment List
+		InteractionElementType.ExperimentList expList = new InteractionElementType.ExperimentList();
 
-        ArrayList interactors = interaction.getInteractors();
+		//  Create New Experiment Description
+		ExperimentType expType = new ExperimentType();
 
-        for (int i = 0; i < interactors.size(); i++) {
-            Interactor interactor = (Interactor) interactors.get(i);
-            String name = interactor.getName();
-            ProteinParticipantType participant1 = createParticipant(name);
-            participantList.getProteinParticipant().add(participant1);
-        }
-        return participantList;
-    }
+		//  Set Experimental ID
+		expType.setId("exp" + index);
 
-    /**
-     * Create New Protein Participant.
-     *
-     * @param id Protein ID.
-     * @return Castor Protein Participant Object.
-     */
-    private ProteinParticipantType createParticipant(String id) {
-        ProteinParticipantType participant = new ProteinParticipantType();
-        RefType ref = new RefType();
-        ref.setRef(id);
-        participant.setProteinInteractorRef(ref);
-        return participant;
-    }
+		//  Set Bibliographic Reference
+		BibrefType bibRef = null;
+
+		Object pmid = interaction.getAttribute(InteractionVocab.PUB_MED_ID);
+
+		if ((pmid != null) && pmid instanceof String) {
+			bibRef = createBibRef(PUB_MED_DB, (String) pmid);
+			expType.setBibref(bibRef);
+		}
+
+		//  Set Interaction Detection
+		CvType interactionDetection = getInteractionDetection(interaction);
+		expType.setInteractionDetection(interactionDetection);
+
+		//  Set Choice Element
+		expList.getExperimentRefOrExperimentDescription().add(expType);
+
+		return expList;
+	}
+
+	/**
+	 * Creates a Bibliography Reference.
+	 *
+	 * @param database Database.
+	 * @param id       ID String.
+	 * @return Castor Bibref Object.
+	 */
+	private BibrefType createBibRef(String database, String id) {
+		XrefType xref = createXRef(database, id);
+		BibrefType bibRef = new BibrefType();
+		bibRef.setXref(xref);
+
+		return bibRef;
+	}
+
+	/**
+	 * Creates a Primary Reference.
+	 *
+	 * @param database Database.
+	 * @param id       ID String.
+	 * @return Castor XRef object
+	 */
+	private XrefType createXRef(String database, String id) {
+		XrefType xref = new XrefType();
+		DbReferenceType primaryRef = new DbReferenceType();
+		primaryRef.setDb(database);
+		primaryRef.setId(id);
+		xref.setPrimaryRef(primaryRef);
+
+		return xref;
+	}
+
+	/**
+	 * Gets Interaction Detection element.
+	 * It is possible that an interaction is missing important attributes,
+	 * such as Experimental System Name, XRef DB, and XRef ID.  All of these
+	 * attributes are required by PSI.  Rather than throwing an exception
+	 * here, the data_mapper manually specifies "Not Specified" for all missing
+	 * attributes.
+	 *
+	 * @param interaction Interaction.
+	 * @return InteractionDetection Object.
+	 */
+	private CvType getInteractionDetection(Interaction interaction) {
+		CvType interactionDetection = new CvType();
+		String idStr = null;
+
+		try {
+			idStr = (String) interaction.getAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_NAME);
+		} catch (ClassCastException e) {
+			idStr = null;
+		}
+
+		if (idStr == null) {
+			idStr = "Not Specified";
+		}
+
+		String idRef = null;
+
+		try {
+			idRef = (String) interaction.getAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID);
+		} catch (ClassCastException e) {
+			idRef = null;
+		}
+
+		//  If there is no ID Ref, find a best match.
+		if (idRef == null) {
+			if (idStr.equals(EXP_AFFINITY_PRECIPITATION)
+			    || idStr.equals(EXP_AFFINITY_CHROMOTOGRAPHY)) {
+				idStr = "affinity chromatography technologies";
+				idRef = "MI:0004";
+			} else if (idStr.equals(EXP_TWO_HYBRID)) {
+				idStr = "classical two hybrid";
+				idRef = "MI:0018";
+			} else if (idStr.equals(EXP_PURIFIED_COMPLEX)) {
+				idStr = "copurification";
+				idRef = "MI:0025";
+			} else {
+				idRef = "Not Specified";
+			}
+		}
+
+		NamesType names = createName(idStr, null);
+		interactionDetection.setNames(names);
+
+		String dbRef = null;
+
+		try {
+			dbRef = (String) interaction.getAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB);
+		} catch (ClassCastException e) {
+			dbRef = null;
+		}
+
+		if (dbRef == null) {
+			dbRef = "PSI-MI";
+		}
+
+		XrefType xref = createXRef(dbRef, idRef);
+		interactionDetection.setXref(xref);
+
+		return interactionDetection;
+	}
+
+	/**
+	 * Creates a new Names Object.
+	 *
+	 * @param shortLabel Short Name Label.
+	 * @param fullName   Full Name/Description.
+	 * @return Castor Names Object.
+	 */
+	private NamesType createName(String shortLabel, String fullName) {
+		NamesType names = new NamesType();
+		names.setShortLabel(shortLabel);
+
+		if (fullName != null) {
+			names.setFullName(fullName);
+		}
+
+		return names;
+	}
+
+	/**
+	 * Gets the Interaction Participant List.
+	 *
+	 * @param interaction Interaction object.
+	 * @return Castor Participant List.
+	 */
+	private InteractionElementType.ParticipantList getParticipantList(Interaction interaction) {
+		InteractionElementType.ParticipantList participantList = new InteractionElementType.ParticipantList();
+
+		ArrayList interactors = interaction.getInteractors();
+
+		for (int i = 0; i < interactors.size(); i++) {
+			Interactor interactor = (Interactor) interactors.get(i);
+			String name = interactor.getName();
+			ProteinParticipantType participant1 = createParticipant(name);
+			participantList.getProteinParticipant().add(participant1);
+		}
+
+		return participantList;
+	}
+
+	/**
+	 * Create New Protein Participant.
+	 *
+	 * @param id Protein ID.
+	 * @return Castor Protein Participant Object.
+	 */
+	private ProteinParticipantType createParticipant(String id) {
+		ProteinParticipantType participant = new ProteinParticipantType();
+		RefType ref = new RefType();
+		ref.setRef(id);
+		participant.setProteinInteractorRef(ref);
+
+		return participant;
+	}
 }

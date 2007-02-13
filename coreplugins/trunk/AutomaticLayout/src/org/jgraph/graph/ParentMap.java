@@ -1,12 +1,13 @@
 /*
- * @(#)ParentMap.java	1.0 03-JUL-04
- * 
+ * @(#)ParentMap.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -14,15 +15,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * An object that describes relations between childs and parents.
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public class ParentMap implements Serializable {
-
 	/** Contents of the parent map. */
 	protected ArrayList entries = new ArrayList();
 
@@ -61,29 +61,36 @@ public class ParentMap implements Serializable {
 	 * allowed parents. This is only used if remove is not true.
 	 */
 	public static ParentMap create(GraphModel m, Object[] c, boolean remove,
-			boolean onlyUsePassedInCells) {
+	                               boolean onlyUsePassedInCells) {
 		Set cellSet = new HashSet();
+
 		for (int i = 0; i < c.length; i++)
 			cellSet.add(c[i]);
+
 		ParentMap parentMap = new ParentMap();
+
 		for (int i = 0; i < c.length; i++) {
 			// Collect Parent Information
 			Object parent = m.getParent(c[i]);
-			if (parent != null
-					&& (!onlyUsePassedInCells || (!remove && cellSet
-							.contains(parent))))
+
+			if ((parent != null)
+			    && (!onlyUsePassedInCells || (!remove && cellSet.contains(parent))))
 				parentMap.addEntry(c[i], (remove) ? null : parent);
+
 			if (remove) {
 				// Move Orphans to First Unselected Parent
 				while (cellSet.contains(parent))
 					parent = m.getParent(parent);
+
 				for (int j = 0; j < m.getChildCount(c[i]); j++) {
 					Object child = m.getChild(c[i], j);
+
 					if (!cellSet.contains(child))
 						parentMap.addEntry(child, parent);
 				}
 			}
 		}
+
 		return parentMap;
 	}
 
@@ -100,6 +107,7 @@ public class ParentMap implements Serializable {
 			entries.add(new Entry(child, parent));
 			// Update Changed Nodes
 			changedNodes.add(child);
+
 			if (parent != null)
 				changedNodes.add(parent);
 		}
@@ -144,17 +152,22 @@ public class ParentMap implements Serializable {
 	public ParentMap clone(Map map) {
 		ParentMap pm = new ParentMap();
 		Iterator it = entries();
+
 		while (it.hasNext()) {
 			Entry e = (Entry) it.next();
 			Object child = map.get(e.getChild());
 			Object parent = map.get(e.getParent());
+
 			if (child == null)
 				child = e.getChild();
+
 			if (parent == null)
 				parent = e.getParent();
-			if (child != null && parent != null)
+
+			if ((child != null) && (parent != null))
 				pm.addEntry(child, parent);
 		}
+
 		return pm;
 	}
 
@@ -162,9 +175,11 @@ public class ParentMap implements Serializable {
 	 * Object that represents the relation between a child an a parent.
 	 */
 	public class Entry implements Serializable {
+		/** Child and parent of the relation this entry describes. */
+		protected Object child;
 
 		/** Child and parent of the relation this entry describes. */
-		protected Object child, parent;
+		protected Object parent;
 
 		/**
 		 * Constructs a new relation between <code>child</code> and
@@ -190,15 +205,20 @@ public class ParentMap implements Serializable {
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String toString() {
 		String s = super.toString() + "\n";
 		Iterator it = entries();
+
 		while (it.hasNext()) {
 			Entry entry = (Entry) it.next();
-			s += " child=" + entry.getChild() + " parent=" + entry.getParent()
-					+ "\n";
+			s += (" child=" + entry.getChild() + " parent=" + entry.getParent() + "\n");
 		}
+
 		return s;
 	}
-
 }

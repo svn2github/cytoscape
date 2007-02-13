@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -21,6 +22,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+
 
 /**
  * A collection of well known or common attribute keys and methods to apply to
@@ -31,22 +33,17 @@ import javax.swing.border.Border;
  * with the userObject of a GraphCell. The isMoveable, isAutoSize and isSizeable
  * are used indepedently (see
  * http://sourceforge.net/forum/forum.php?thread_id=770111&forum_id=140880)
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
 public class GraphConstants {
-
 	/**
 	 * Default font is derived from
 	 * UIManager.getDefaults().getFont("Label.font")
 	 */
 	public static Font DEFAULTFONT = null;
 
-	/**
-	 * GetFont in UIDefaults requires a valid framebuffer, so we implement a
-	 * fallback to a static default setting.
-	 */
 	static {
 		try {
 			DEFAULTFONT = UIManager.getDefaults().getFont("Label.font");
@@ -67,12 +64,16 @@ public class GraphConstants {
 	/** Global Stroke To Highlight Selection */
 	static protected float[] dash = { 5f, 5f };
 
-	static public Stroke SELECTION_STROKE = new BasicStroke(1,
-			BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+	/**
+	 * 
+	 */
+	static public Stroke SELECTION_STROKE = new BasicStroke(1, BasicStroke.CAP_BUTT,
+	                                                        BasicStroke.JOIN_MITER, 10.0f, dash,
+	                                                        0.0f);
 
 	/**
 	 * Represents no decoration for the beginning or ending of edges.
-	 * 
+	 *
 	 * @see #setLineBegin(Map, int)
 	 * @see #getLineBegin(Map)
 	 * @see #setLineEnd(Map, int)
@@ -83,7 +84,7 @@ public class GraphConstants {
 	/**
 	 * Represents a classic arrow decoration for the beginning or ending of
 	 * edges.
-	 * 
+	 *
 	 * @see #setLineBegin(Map,int)
 	 * @see #getLineBegin(Map)
 	 * @see #setLineEnd(Map, int)
@@ -94,7 +95,7 @@ public class GraphConstants {
 	/**
 	 * Represents a technical arrow decoration for the beginning or ending of
 	 * edges.
-	 * 
+	 *
 	 * @see #setLineBegin(Map, int)
 	 * @see #getLineBegin(Map)
 	 * @see #setLineEnd(Map, int)
@@ -105,7 +106,7 @@ public class GraphConstants {
 	/**
 	 * Represents a simple arrow decoration for the beginning or ending of
 	 * edges.
-	 * 
+	 *
 	 * @see #setLineBegin(Map,int)
 	 * @see #getLineBegin(Map)
 	 * @see #setLineEnd(Map, int)
@@ -115,7 +116,7 @@ public class GraphConstants {
 
 	/**
 	 * Represents a circle decoration for the beginning or ending of edges.
-	 * 
+	 *
 	 * @see #setLineBegin(Map, int)
 	 * @see #getLineBegin(Map)
 	 * @see #setLineEnd(Map, int)
@@ -125,7 +126,7 @@ public class GraphConstants {
 
 	/**
 	 * Represents a line decoration for the beginning or ending of edges.
-	 * 
+	 *
 	 * @see #setLineBegin(Map, int)
 	 * @see #getLineBegin(Map)
 	 * @see #setLineEnd(Map, int)
@@ -135,7 +136,7 @@ public class GraphConstants {
 
 	/**
 	 * Represents a double line decoration for the beginning or ending of edges.
-	 * 
+	 *
 	 * @see #setLineBegin(Map, int)
 	 * @see #getLineBegin(Map)
 	 * @see #setLineEnd(Map, int)
@@ -145,7 +146,7 @@ public class GraphConstants {
 
 	/**
 	 * Represents a diamond decoration for the beginning or ending of edges.
-	 * 
+	 *
 	 * @see #setLineBegin(Map, int)
 	 * @see #getLineBegin(Map)
 	 * @see #setLineEnd(Map, int)
@@ -522,16 +523,14 @@ public class GraphConstants {
 	 * Overloaded method that passes arguments on as arrays
 	 */
 	public static Map createAttributes(Object cell, Object key, Object value) {
-		return createAttributes(new Object[] { cell }, new Object[] { key },
-				new Object[] { value });
+		return createAttributes(new Object[] { cell }, new Object[] { key }, new Object[] { value });
 	}
 
 	/**
 	 * Overloaded method that passes arguments on as arrays
 	 */
 	public static Map createAttributes(Object[] cells, Object key, Object value) {
-		return createAttributes(cells, new Object[] { key },
-				new Object[] { value });
+		return createAttributes(cells, new Object[] { key }, new Object[] { value });
 	}
 
 	/**
@@ -540,21 +539,24 @@ public class GraphConstants {
 	 * arrays. The <code>keys</code> and <code>values</code> parameters must
 	 * match in size.
 	 */
-	public static Map createAttributes(Object[] cells, Object[] keys,
-			Object[] values) {
-		if (keys != null && values != null && keys.length != values.length)
-			throw new IllegalArgumentException(
-					"Keys and values must have same length");
+	public static Map createAttributes(Object[] cells, Object[] keys, Object[] values) {
+		if ((keys != null) && (values != null) && (keys.length != values.length))
+			throw new IllegalArgumentException("Keys and values must have same length");
+
 		Map nested = new Hashtable();
+
 		for (int i = 0; i < cells.length; i++) {
 			if (cells[i] != null) {
 				Map attributes = new Hashtable();
+
 				for (int j = 0; j < keys.length; j++)
-					if (keys[j] != null && values[j] != null)
+					if ((keys[j] != null) && (values[j] != null))
 						attributes.put(keys[j], values[j]);
+
 				nested.put(cells[i], attributes);
 			}
 		}
+
 		return nested;
 	}
 
@@ -574,32 +576,45 @@ public class GraphConstants {
 	 */
 	public static Map createAttributes(Object[] elements, CellMapper cm) {
 		Map attributes = new Hashtable();
+
 		for (int i = 0; i < elements.length; i++) {
 			CellView view = null;
 			Object key = elements[i];
+
 			if (key instanceof CellView) {
 				view = (CellView) key;
 				key = view.getCell();
 			} else if (cm != null) // else is assumed by clients!
 				view = cm.getMapping(key, false);
+
 			if (view != null)
 				attributes.put(key, view.getAllAttributes().clone()); // FIXME:
-			// clone
-			// required?
+				                                                      // clone
+				                                                      // required?
 		}
+
 		return attributes;
 	}
 
 	// Returns a nested map of cell, Map pairs where the map reflects
-	// the attributes returned by the model for this cell.
-	public static Map createAttributesFromModel(Object[] elements,
-			GraphModel model) {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param elements DOCUMENT ME!
+	 * @param model DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static Map createAttributesFromModel(Object[] elements, GraphModel model) {
 		Map attributes = new Hashtable();
+
 		for (int i = 0; i < elements.length; i++) {
 			AttributeMap attr = model.getAttributes(elements[i]);
-			if (attr != null && attr.size() > 0)
+
+			if ((attr != null) && (attr.size() > 0))
 				attributes.put(elements[i], (AttributeMap) attr.clone());
 		}
+
 		return attributes;
 	}
 
@@ -611,17 +626,20 @@ public class GraphConstants {
 	public static Map replaceKeys(Map keyMap, Map map) {
 		Map newMap = new Hashtable();
 		Iterator it = map.entrySet().iterator();
+
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
+
 			if (entry.getValue() instanceof Map) {
 				Object newKey = keyMap.get(entry.getKey());
+
 				if (newKey != null) {
-					AttributeMap val = (AttributeMap) ((AttributeMap) entry
-							.getValue()).clone();
+					AttributeMap val = (AttributeMap) ((AttributeMap) entry.getValue()).clone();
 					newMap.put(newKey, val);
 				}
 			}
 		}
+
 		return newMap;
 	}
 
@@ -630,20 +648,23 @@ public class GraphConstants {
 	 * to the attributes for the cell in target, if the cell does not exist in
 	 * target, then a new entry is added with all attributes from change.
 	 * Returns the modified target map.
-	 * 
+	 *
 	 * Note: This method removes entries from <code>change</code> and adds
 	 * entries to <code>target</code> in-place!
-	 * 
+	 *
 	 * @return a map including all attributes from change merged with target
 	 */
 	public static Map merge(Map change, Map target) {
-		if (change != null && target != null) {
+		if ((change != null) && (target != null)) {
 			change = new Hashtable(change);
+
 			Iterator it = target.entrySet().iterator();
+
 			while (it.hasNext()) {
 				Map.Entry entry = (Map.Entry) it.next();
 				Map map = (Map) entry.getValue();
 				Map additional = (Map) change.remove(entry.getKey());
+
 				if (additional != null)
 					map.putAll(additional);
 			}
@@ -651,13 +672,14 @@ public class GraphConstants {
 			// Adds remaining attributes
 			target.putAll(change);
 		}
+
 		return target;
 	}
 
 	/**
 	 * Sets the value attribute in the specified map to the specified font
 	 * value.
-	 * 
+	 *
 	 * @param map
 	 *            The map to store the font attribute in.
 	 * @param font
@@ -673,8 +695,10 @@ public class GraphConstants {
 	 */
 	public static Font getFont(Map map) {
 		Font font = (Font) map.get(FONT);
+
 		if (font == null)
 			font = DEFAULTFONT;
+
 		return font;
 	}
 
@@ -707,8 +731,10 @@ public class GraphConstants {
 	 */
 	public static final int getMoveableAxis(Map map) {
 		Integer intObj = (Integer) map.get(MOVEABLEAXIS);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return 0;
 	}
 
@@ -725,8 +751,10 @@ public class GraphConstants {
 	 */
 	public static final int getSizeableAxis(Map map) {
 		Integer intObj = (Integer) map.get(SIZEABLEAXIS);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return 0;
 	}
 
@@ -756,8 +784,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isOpaque(Map map) {
 		Boolean bool = (Boolean) map.get(OPAQUE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -773,8 +803,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isGroupOpaque(Map map) {
 		Boolean bool = (Boolean) map.get(GROUPOPAQUE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -833,8 +865,10 @@ public class GraphConstants {
 	 */
 	public static final float getLineWidth(Map map) {
 		Float floatObj = (Float) map.get(LINEWIDTH);
+
 		if (floatObj != null)
 			return floatObj.floatValue();
+
 		return 1;
 	}
 
@@ -896,8 +930,10 @@ public class GraphConstants {
 	 */
 	public static final int getVerticalAlignment(Map map) {
 		Integer intObj = (Integer) map.get(VERTICAL_ALIGNMENT);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return JLabel.CENTER;
 	}
 
@@ -915,8 +951,10 @@ public class GraphConstants {
 	 */
 	public static final int getHorizontalAlignment(Map map) {
 		Integer intObj = (Integer) map.get(HORIZONTAL_ALIGNMENT);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return JLabel.CENTER;
 	}
 
@@ -933,8 +971,10 @@ public class GraphConstants {
 	 */
 	public static final int getVerticalTextPosition(Map map) {
 		Integer intObj = (Integer) map.get(VERTICAL_TEXT_POSITION);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return JLabel.BOTTOM;
 	}
 
@@ -951,8 +991,10 @@ public class GraphConstants {
 	 */
 	public static final int getHorizontalTextPosition(Map map) {
 		Integer intObj = (Integer) map.get(HORIZONTAL_TEXT_POSITION);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return JLabel.CENTER;
 	}
 
@@ -984,8 +1026,10 @@ public class GraphConstants {
 	 */
 	public static final float getDashOffset(Map map) {
 		Float floatObj = (Float) map.get(DASHOFFSET);
+
 		if (floatObj != null)
 			return floatObj.floatValue();
+
 		return 1;
 	}
 
@@ -1001,8 +1045,10 @@ public class GraphConstants {
 	 */
 	public static final int getLineStyle(Map map) {
 		Integer intObj = (Integer) map.get(LINESTYLE);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return STYLE_ORTHOGONAL;
 	}
 
@@ -1018,8 +1064,10 @@ public class GraphConstants {
 	 */
 	public static final int getBeginSize(Map map) {
 		Integer intObj = (Integer) map.get(BEGINSIZE);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return DEFAULTDECORATIONSIZE;
 	}
 
@@ -1035,8 +1083,10 @@ public class GraphConstants {
 	 */
 	public static final int getEndSize(Map map) {
 		Integer intObj = (Integer) map.get(ENDSIZE);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return DEFAULTDECORATIONSIZE;
 	}
 
@@ -1044,7 +1094,7 @@ public class GraphConstants {
 	 * Sets the LINEBEGIN attribute in the specified map to the specified value.
 	 * This attribute indicates what sort of decoration should be applied to the
 	 * beginning of edges when they are rendered.
-	 * 
+	 *
 	 * @see #ARROW_NONE
 	 * @see #ARROW_CLASSIC
 	 * @see #ARROW_TECHNICAL
@@ -1062,7 +1112,7 @@ public class GraphConstants {
 	 * Returns the LINEBEGIN attribute from the specified map. This attribute
 	 * indicates what sort of decoration should be applied to the beginning of
 	 * edges when they are rendered.
-	 * 
+	 *
 	 * @see #ARROW_NONE
 	 * @see #ARROW_CLASSIC
 	 * @see #ARROW_TECHNICAL
@@ -1074,8 +1124,10 @@ public class GraphConstants {
 	 */
 	public static final int getLineBegin(Map map) {
 		Integer intObj = (Integer) map.get(LINEBEGIN);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return ARROW_NONE;
 	}
 
@@ -1083,7 +1135,7 @@ public class GraphConstants {
 	 * Sets the LINEEND attribute in the specified map to the specified value.
 	 * This attribute indicates what sort of decoration should be applied to the
 	 * ends of edges when they are rendered.
-	 * 
+	 *
 	 * @see #ARROW_NONE
 	 * @see #ARROW_CLASSIC
 	 * @see #ARROW_TECHNICAL
@@ -1101,7 +1153,7 @@ public class GraphConstants {
 	 * Returns the LINEEND attribute from the specified map. This attribute
 	 * indicates what sort of decoration should be applied to the ends of edges
 	 * when they are rendered.
-	 * 
+	 *
 	 * @see #ARROW_NONE
 	 * @see #ARROW_CLASSIC
 	 * @see #ARROW_TECHNICAL
@@ -1113,8 +1165,10 @@ public class GraphConstants {
 	 */
 	public static final int getLineEnd(Map map) {
 		Integer intObj = (Integer) map.get(LINEEND);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return ARROW_NONE;
 	}
 
@@ -1173,7 +1227,7 @@ public class GraphConstants {
 	 * value. The Point instance at a particular index corresponds to the object
 	 * at the same index in the extralabels array attribute. Extra labels only
 	 * work with edges currently.
-	 * 
+	 *
 	 * @see #getLabelPosition(Map)
 	 */
 	public static final void setExtraLabelPositions(Map map, Point2D[] positions) {
@@ -1201,8 +1255,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isLabelAlongEdge(Map map) {
 		Boolean bool = (Boolean) map.get(LABELALONGEDGE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -1218,8 +1274,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isEditable(Map map) {
 		Boolean bool = (Boolean) map.get(EDITABLE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return true;
 	}
 
@@ -1235,8 +1293,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isMoveable(Map map) {
 		Boolean bool = (Boolean) map.get(MOVEABLE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return true;
 	}
 
@@ -1252,8 +1312,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isSizeable(Map map) {
 		Boolean bool = (Boolean) map.get(SIZEABLE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return true;
 	}
 
@@ -1269,8 +1331,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isAutoSize(Map map) {
 		Boolean bool = (Boolean) map.get(AUTOSIZE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -1286,8 +1350,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isResize(Map map) {
 		Boolean bool = (Boolean) map.get(RESIZE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -1304,8 +1370,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isConstrained(Map map) {
 		Boolean bool = (Boolean) map.get(CONSTRAINED);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -1320,13 +1388,15 @@ public class GraphConstants {
 
 	/**
 	 * Returns the selectable attribute from the specified map.
-	 * 
+	 *
 	 * @see #setSelectable(Map, boolean)
 	 */
 	public static final boolean isSelectable(Map map) {
 		Boolean bool = (Boolean) map.get(SELECTABLE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return true;
 	}
 
@@ -1343,8 +1413,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isChildrenSelectable(Map map) {
 		Boolean bool = (Boolean) map.get(CHILDRENSELECTABLE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return true;
 	}
 
@@ -1360,8 +1432,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isBendable(Map map) {
 		Boolean bool = (Boolean) map.get(BENDABLE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return true;
 	}
 
@@ -1378,8 +1452,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isConnectable(Map map) {
 		Boolean bool = (Boolean) map.get(CONNECTABLE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return true;
 	}
 
@@ -1396,8 +1472,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isDisconnectable(Map map) {
 		Boolean bool = (Boolean) map.get(DISCONNECTABLE);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return true;
 	}
 
@@ -1415,7 +1493,7 @@ public class GraphConstants {
 
 	/**
 	 * Returns the points attribute from the specified map.
-	 * 
+	 *
 	 * @see #setPoints(Map, java.util.List)
 	 */
 	public static final java.util.List getPoints(Map map) {
@@ -1434,8 +1512,10 @@ public class GraphConstants {
 	 */
 	public static final Edge.Routing getRouting(Map map) {
 		Edge.Routing routing = (Edge.Routing) map.get(ROUTING);
+
 		if (routing == null)
 			routing = ROUTING_DEFAULT;
+
 		return routing;
 	}
 
@@ -1467,8 +1547,10 @@ public class GraphConstants {
 	 */
 	public static final int getInset(Map map) {
 		Integer intObj = (Integer) map.get(INSET);
+
 		if (intObj != null)
 			return intObj.intValue();
+
 		return DEFAULTINSET;
 	}
 
@@ -1516,8 +1598,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isBeginFill(Map map) {
 		Boolean bool = (Boolean) map.get(BEGINFILL);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -1533,8 +1617,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isEndFill(Map map) {
 		Boolean bool = (Boolean) map.get(ENDFILL);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -1558,8 +1644,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isAbsoluteY(Map map) {
 		Boolean bool = (Boolean) map.get(ABSOLUTEY);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -1575,8 +1663,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isAbsoluteX(Map map) {
 		Boolean bool = (Boolean) map.get(ABSOLUTEX);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -1592,8 +1682,10 @@ public class GraphConstants {
 	 */
 	public static final boolean isRemoveAll(Map map) {
 		Boolean bool = (Boolean) map.get(REMOVEALL);
+
 		if (bool != null)
 			return bool.booleanValue();
+
 		return false;
 	}
 
@@ -1610,5 +1702,4 @@ public class GraphConstants {
 	public static Edge.Routing getROUTING_DEFAULT() {
 		return ROUTING_DEFAULT;
 	}
-
 }

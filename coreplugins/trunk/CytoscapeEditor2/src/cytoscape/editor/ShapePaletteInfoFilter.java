@@ -18,16 +18,15 @@
 package cytoscape.editor;
 
 
-
 /**
  * Interface for defining filters to determing which ShapePaletteInfoImpl objects
  * should be used.
  */
 public interface ShapePaletteInfoFilter {
-    /**
-     * Should we use a given ShapePaletteInfoImpl entry?
-     * @param info the ShapePaletteInfoImpl under consideration.
-     * @return true if the info should be used. false otherwise.
-     */
-    public boolean useEntry(ShapePaletteInfo info);
+	/**
+	 * Should we use a given ShapePaletteInfoImpl entry?
+	 * @param info the ShapePaletteInfoImpl under consideration.
+	 * @return true if the info should be used. false otherwise.
+	 */
+	public boolean useEntry(ShapePaletteInfo info);
 }

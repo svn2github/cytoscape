@@ -1,10 +1,15 @@
 /*
- * @(#)EdgeView.java	1.0 03-JUL-04
- * 
+ * @(#)EdgeView.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.JGraph;
+
+import org.jgraph.plaf.GraphUI;
+import org.jgraph.plaf.basic.BasicGraphUI;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -19,29 +24,26 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
-import org.jgraph.JGraph;
-import org.jgraph.plaf.GraphUI;
-import org.jgraph.plaf.basic.BasicGraphUI;
 
 /**
  * The default implementation of an edge view. The getEdgeRenderer method
  * assumes a renderer of type EdgeRenderer. If you provide a custom renderer to
  * a subclass, you must also override the methods that call this method, namely:
  * getShape, getLabelBounds, getExtraLabelBounds, intersects and getBounds.
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public class EdgeView extends AbstractCellView {
-
 	/** Renderer for the class. */
 	public static transient EdgeRenderer renderer = new EdgeRenderer();
 
@@ -49,27 +51,31 @@ public class EdgeView extends AbstractCellView {
 	protected List points;
 
 	/** Cached source and target portview of the edge. */
-	protected CellView source, target;
+	protected CellView source;
 
-	protected CellView sourceParentView, targetParentView;
+	/** Cached source and target portview of the edge. */
+	protected CellView target;
+	protected CellView sourceParentView;
+	protected CellView targetParentView;
 
 	/** Cached label position of the edge. */
 	protected Point2D labelPosition;
-
 	protected Point2D[] extraLabelPositions;
-
 	protected transient Rectangle2D cachedLabelBounds = null;
-
 	protected transient Rectangle2D[] cachedExtraLabelBounds = null;
-
 	protected transient Point2D labelVector = null;
 
 	/** Drawing attributes that are created on the fly */
-	public transient Shape beginShape, endShape, lineShape;
+	public transient Shape beginShape;
+
+	/** Drawing attributes that are created on the fly */
+	public transient Shape endShape;
+
+	/** Drawing attributes that are created on the fly */
+	public transient Shape lineShape;
 
 	/** Shared-path tune-up. */
 	public transient GeneralPath sharedPath = null;
-
 	protected transient Rectangle2D cachedBounds = null;
 
 	/**
@@ -81,7 +87,7 @@ public class EdgeView extends AbstractCellView {
 
 	/**
 	 * Constructs an edge view for the specified model object.
-	 * 
+	 *
 	 * @param cell
 	 *            reference to the model object
 	 */
@@ -98,35 +104,38 @@ public class EdgeView extends AbstractCellView {
 	 * target port. If the source or target is removed, a point is inserted into
 	 * the array of points.
 	 */
-	public void refresh(GraphModel model, CellMapper mapper,
-			boolean createDependentViews) {
+	public void refresh(GraphModel model, CellMapper mapper, boolean createDependentViews) {
 		// Makes sure the manual control points are passed to
 		// the router instead of the cached control points after
 		// changes to the edge (normally manual point changes).
 		points = null;
 		super.refresh(model, mapper, createDependentViews);
+
 		// Re-sync source- and targetportviews
 		Object modelSource = model.getSource(cell);
 		Object modelTarget = model.getTarget(cell);
 		setSource(mapper.getMapping(modelSource, createDependentViews));
 		setTarget(mapper.getMapping(modelTarget, createDependentViews));
-		if (modelSource != null && getSource() == null)
+
+		if ((modelSource != null) && (getSource() == null))
 			sourceParentView = getVisibleParent(model, mapper, modelSource);
 		else
 			sourceParentView = null;
-		if (modelTarget != null && getTarget() == null)
+
+		if ((modelTarget != null) && (getTarget() == null))
 			targetParentView = getVisibleParent(model, mapper, modelTarget);
 		else
 			targetParentView = null;
 	}
 
-	protected CellView getVisibleParent(GraphModel model, CellMapper mapper,
-			Object port) {
+	protected CellView getVisibleParent(GraphModel model, CellMapper mapper, Object port) {
 		CellView view = null;
+
 		do {
 			view = mapper.getMapping(port, false);
 			port = model.getParent(port);
-		} while (view == null && port != null);
+		} while ((view == null) && (port != null));
+
 		return view;
 	}
 
@@ -135,9 +144,11 @@ public class EdgeView extends AbstractCellView {
 	 */
 	public void update() {
 		super.update();
+
 		// Save the reference to the points so they can be changed
 		// in-place by use of setPoint, setSource, setTarget methods.
 		List controlPoints = GraphConstants.getPoints(allAttributes);
+
 		if (controlPoints == null) {
 			controlPoints = new ArrayList(4);
 			controlPoints.add(allAttributes.createPoint(10, 10));
@@ -152,29 +163,32 @@ public class EdgeView extends AbstractCellView {
 
 		Edge.Routing routing = GraphConstants.getRouting(allAttributes);
 		List routedPoints = null;
+
 		// Passes the current cached points to the router
 		if (routing != null)
 			routedPoints = routing.route(this);
 
 		// Shadows the manual control points with the
 		// routed control points
-		points = (routedPoints != null && !routedPoints.isEmpty()) ? routedPoints
-				: controlPoints;
+		points = ((routedPoints != null) && !routedPoints.isEmpty()) ? routedPoints : controlPoints;
 
 		// Overrides manual point locations with the real port views
 		if (points == controlPoints) {
 			if (source != null)
 				setSource(source);
+
 			if (target != null)
 				setTarget(target);
 		}
 
 		// Checks and caches label positions
 		checkDefaultLabelPosition();
-		Point2D[] positions = GraphConstants
-				.getExtraLabelPositions(allAttributes);
+
+		Point2D[] positions = GraphConstants.getExtraLabelPositions(allAttributes);
+
 		if (positions != null) {
 			extraLabelPositions = new Point2D[positions.length];
+
 			for (int i = 0; i < positions.length; i++)
 				extraLabelPositions[i] = positions[i];
 		} else
@@ -192,8 +206,10 @@ public class EdgeView extends AbstractCellView {
 	 */
 	protected void checkDefaultLabelPosition() {
 		labelPosition = GraphConstants.getLabelPosition(allAttributes);
+
 		String label = String.valueOf(getCell());
-		if (labelPosition == null && label != null && label.length() > 0) {
+
+		if ((labelPosition == null) && (label != null) && (label.length() > 0)) {
 			int center = GraphConstants.PERMILLE / 2;
 			labelPosition = new Point(center, 0);
 			GraphConstants.setLabelPosition(allAttributes, labelPosition);
@@ -229,8 +245,7 @@ public class EdgeView extends AbstractCellView {
 		if (cachedLabelBounds != null) {
 			return cachedLabelBounds;
 		} else {
-			return cachedLabelBounds = getEdgeRenderer().getLabelBounds(null,
-					this);
+			return cachedLabelBounds = getEdgeRenderer().getLabelBounds(null, this);
 		}
 	}
 
@@ -238,12 +253,12 @@ public class EdgeView extends AbstractCellView {
 	 * Returns the bounds of label according to the last rendering state
 	 */
 	public Rectangle2D getExtraLabelBounds(int index) {
-		if (cachedLabelBounds != null && index < cachedExtraLabelBounds.length
-				&& cachedExtraLabelBounds[index] != null) {
+		if ((cachedLabelBounds != null) && (index < cachedExtraLabelBounds.length)
+		    && (cachedExtraLabelBounds[index] != null)) {
 			return cachedExtraLabelBounds[index];
 		} else {
 			return cachedExtraLabelBounds[index] = getEdgeRenderer()
-					.getExtraLabelBounds(null, this, index);
+			                                           .getExtraLabelBounds(null, this, index);
 		}
 	}
 
@@ -256,13 +271,16 @@ public class EdgeView extends AbstractCellView {
 	 */
 	public boolean intersects(JGraph graph, Rectangle2D rect) {
 		boolean intersects = super.intersects(graph, rect);
+
 		if (!isLeaf()) {
 			return intersects;
 		} else if (intersects) {
 			Rectangle r = new Rectangle((int) rect.getX(), (int) rect.getY(),
-					(int) rect.getWidth(), (int) rect.getHeight());
+			                            (int) rect.getWidth(), (int) rect.getHeight());
+
 			return getEdgeRenderer().intersects(graph, this, r);
 		}
+
 		return false;
 	}
 
@@ -271,12 +289,15 @@ public class EdgeView extends AbstractCellView {
 	 */
 	public Rectangle2D getBounds() {
 		Rectangle2D rect = super.getBounds();
+
 		if (rect == null) {
 			if (cachedBounds == null) {
 				cachedBounds = getEdgeRenderer().getBounds(this);
 			}
+
 			rect = cachedBounds;
 		}
+
 		return rect;
 	}
 
@@ -313,6 +334,11 @@ public class EdgeView extends AbstractCellView {
 		return source;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public CellView getSourceParentView() {
 		return sourceParentView;
 	}
@@ -323,10 +349,12 @@ public class EdgeView extends AbstractCellView {
 	public void setSource(CellView sourceView) {
 		sourceParentView = null;
 		source = sourceView;
+
 		if (source != null)
 			points.set(0, source);
 		else
 			points.set(0, getPoint(0));
+
 		invalidate();
 	}
 
@@ -337,6 +365,11 @@ public class EdgeView extends AbstractCellView {
 		return target;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public CellView getTargetParentView() {
 		return targetParentView;
 	}
@@ -347,11 +380,14 @@ public class EdgeView extends AbstractCellView {
 	public void setTarget(CellView targetView) {
 		target = targetView;
 		targetParentView = null;
+
 		int n = points.size() - 1;
+
 		if (target != null)
 			points.set(n, target);
 		else
 			points.set(n, getPoint(n));
+
 		invalidate();
 	}
 
@@ -393,17 +429,17 @@ public class EdgeView extends AbstractCellView {
 	 * Returns true if the edge is a loop.
 	 */
 	public boolean isLoop() {
-		return (getSource() != null && getSource() == getTarget())
-				|| (sourceParentView != null && sourceParentView == targetParentView)
-				|| (sourceParentView != null && getTarget() != null && getTarget()
-						.getParentView() == sourceParentView)
-				|| (targetParentView != null && getSource() != null && getSource()
-						.getParentView() == targetParentView);
+		return ((getSource() != null) && (getSource() == getTarget()))
+		       || ((sourceParentView != null) && (sourceParentView == targetParentView))
+		       || ((sourceParentView != null) && (getTarget() != null)
+		          && (getTarget().getParentView() == sourceParentView))
+		       || ((targetParentView != null) && (getSource() != null)
+		          && (getSource().getParentView() == targetParentView));
 	}
 
 	/**
 	 * Returns the points.
-	 * 
+	 *
 	 * @return List
 	 */
 	public List getPoints() {
@@ -422,25 +458,27 @@ public class EdgeView extends AbstractCellView {
 	 */
 	public Point2D getPoint(int index) {
 		Object obj = points.get(index);
-		if (index == 0 && sourceParentView != null) {
-			return sourceParentView.getPerimeterPoint(this,
-					getCenterPoint(sourceParentView),
-					getNearestPoint(index == 0));
-		} else if (index == getPointCount() - 1 && targetParentView != null) {
-			return targetParentView.getPerimeterPoint(this,
-					getCenterPoint(targetParentView),
-					getNearestPoint(index == 0));
+
+		if ((index == 0) && (sourceParentView != null)) {
+			return sourceParentView.getPerimeterPoint(this, getCenterPoint(sourceParentView),
+			                                          getNearestPoint(index == 0));
+		} else if ((index == (getPointCount() - 1)) && (targetParentView != null)) {
+			return targetParentView.getPerimeterPoint(this, getCenterPoint(targetParentView),
+			                                          getNearestPoint(index == 0));
 		} else if (obj instanceof PortView)
+
 			// Port Location Seen From This Edge
-			return ((PortView) obj).getLocation(this,
-					getNearestPoint(index == 0));
+			return ((PortView) obj).getLocation(this, getNearestPoint(index == 0));
 		else if (obj instanceof CellView) {
 			// Should not happen
 			Rectangle2D r = ((CellView) obj).getBounds();
+
 			return new Point2D.Double(r.getX(), r.getY());
 		} else if (obj instanceof Point2D)
+
 			// Regular Point
 			return (Point2D) obj;
+
 		return null;
 	}
 
@@ -454,23 +492,23 @@ public class EdgeView extends AbstractCellView {
 	 */
 	protected Point2D getNearestPoint(boolean source) {
 		if (getPointCount() == 2) {
-			if (source
-					&& target instanceof PortView
-					&& GraphConstants.getOffset(target.getAllAttributes()) != null) {
+			if (source && target instanceof PortView
+			    && (GraphConstants.getOffset(target.getAllAttributes()) != null)) {
 				return ((PortView) target).getLocation(this);
 			}
-			if (!source
-					&& this.source instanceof PortView
-					&& GraphConstants.getOffset(this.source.getAllAttributes()) != null) {
+
+			if (!source && this.source instanceof PortView
+			    && (GraphConstants.getOffset(this.source.getAllAttributes()) != null)) {
 				return ((PortView) this.source).getLocation(this);
 			}
-			if (source && targetParentView != null && targetParentView.isLeaf())
+
+			if (source && (targetParentView != null) && targetParentView.isLeaf())
 				return getCenterPoint(targetParentView);
-			else if (!source && sourceParentView != null
-					&& sourceParentView.isLeaf())
+			else if (!source && (sourceParentView != null) && sourceParentView.isLeaf())
 				return getCenterPoint(sourceParentView);
 		}
-		return getPointLocation((source) ? 1 : getPointCount() - 2);
+
+		return getPointLocation((source) ? 1 : (getPointCount() - 2));
 	}
 
 	/**
@@ -483,13 +521,16 @@ public class EdgeView extends AbstractCellView {
 	 */
 	protected Point2D getPointLocation(int index) {
 		Object obj = points.get(index);
+
 		if (obj instanceof Point2D)
 			return (Point2D) obj;
 		else if (obj instanceof PortView) {
 			CellView vertex = ((CellView) obj).getParentView();
+
 			if (vertex != null)
 				return getCenterPoint(vertex);
 		}
+
 		return null;
 	}
 
@@ -521,10 +562,8 @@ public class EdgeView extends AbstractCellView {
 	 * Adds an extra label.
 	 */
 	public void addExtraLabel(Point2D location, Object label) {
-		Object[] extraLabels = GraphConstants
-				.getExtraLabels(getAllAttributes());
-		Point2D[] positions = GraphConstants
-				.getExtraLabelPositions(getAllAttributes());
+		Object[] extraLabels = GraphConstants.getExtraLabels(getAllAttributes());
+		Point2D[] positions = GraphConstants.getExtraLabelPositions(getAllAttributes());
 
 		// Inserts a new extra label
 		if (extraLabels == null) {
@@ -534,10 +573,12 @@ public class EdgeView extends AbstractCellView {
 			Object[] tmp = new Object[extraLabels.length + 1];
 			System.arraycopy(extraLabels, 0, tmp, 0, extraLabels.length);
 			extraLabels = tmp;
+
 			Point2D[] pts = new Point2D[positions.length + 1];
 			System.arraycopy(positions, 0, pts, 0, positions.length);
 			positions = pts;
 		}
+
 		int newIndex = extraLabels.length - 1;
 		extraLabels[newIndex] = label;
 		positions[newIndex] = location;
@@ -550,26 +591,27 @@ public class EdgeView extends AbstractCellView {
 	 */
 	public void removeExtraLabel(int index) {
 		Object[] labels = GraphConstants.getExtraLabels(getAllAttributes());
-		Point2D[] pts = GraphConstants
-				.getExtraLabelPositions(getAllAttributes());
-		if (labels == null || labels.length > 1) {
+		Point2D[] pts = GraphConstants.getExtraLabelPositions(getAllAttributes());
+
+		if ((labels == null) || (labels.length > 1)) {
 			Object[] newLabels = new Object[labels.length - 1];
 			Point2D[] newPts = new Point2D[pts.length - 1];
 			System.arraycopy(labels, 0, newLabels, 0, index);
+
 			if (index < newLabels.length)
-				System.arraycopy(labels, index + 1, newLabels, index,
-						newLabels.length - index);
+				System.arraycopy(labels, index + 1, newLabels, index, newLabels.length - index);
+
 			System.arraycopy(pts, 0, newPts, 0, index);
+
 			if (index < newPts.length)
-				System.arraycopy(pts, index + 1, newPts, index, newPts.length
-						- index);
+				System.arraycopy(pts, index + 1, newPts, index, newPts.length - index);
+
 			GraphConstants.setExtraLabels(getAllAttributes(), newLabels);
 			GraphConstants.setExtraLabelPositions(getAllAttributes(), newPts);
 		} else {
 			// TODO: Remove via REMOVEATTRIBUTES
 			GraphConstants.setExtraLabels(getAllAttributes(), new Object[0]);
-			GraphConstants.setExtraLabelPositions(getAllAttributes(),
-					new Point2D[0]);
+			GraphConstants.setExtraLabelPositions(getAllAttributes(), new Point2D[0]);
 		}
 	}
 
@@ -587,43 +629,57 @@ public class EdgeView extends AbstractCellView {
 			// Finds an average distance
 			dx = 0;
 			dy = 0;
+
 			int n = getPointCount();
+
 			if (isLoop()) {
 				for (int i = 1; i < n; i++) {
 					Point2D point = getPoint(i);
-					dx += point.getX() - p0.getX();
-					dy += point.getY() - p0.getY();
+					dx += (point.getX() - p0.getX());
+					dy += (point.getY() - p0.getY());
 				}
+
 				n /= 2;
 				dx /= (double) n;
 				dy /= (double) n;
 				labelVector = new Point2D.Double(dx, dy);
 			} else {
 				Point2D point = getPoint(n - 1);
-				dx += point.getX() - p0.getX();
-				dy += point.getY() - p0.getY();
+				dx += (point.getX() - p0.getX());
+				dy += (point.getY() - p0.getY());
 				labelVector = new Point2D.Double(dx, dy);
 			}
 		}
+
 		return labelVector;
 	}
 
 	//
-	// Routing
-	//
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param view DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static double getLength(CellView view) {
 		double cost = 1;
+
 		if (view instanceof EdgeView) {
 			EdgeView edge = (EdgeView) view;
-			Point2D last = null, current = null;
+			Point2D last = null;
+			Point2D current = null;
+
 			for (int i = 0; i < edge.getPointCount(); i++) {
 				current = edge.getPoint(i);
+
 				if (last != null)
 					cost += last.distance(current);
+
 				last = current;
 			}
 		}
+
 		return cost;
 	}
 
@@ -636,22 +692,41 @@ public class EdgeView extends AbstractCellView {
 	// during
 	// the move operation.
 	public static class EdgeHandle implements CellHandle, Serializable {
-
 		protected JGraph graph;
 
 		/* Pointer to the edge and its clone. */
-		protected EdgeView edge, orig;
+		protected EdgeView edge;
+
+		/* Pointer to the edge and its clone. */
+		protected EdgeView orig;
 
 		/*
 		 * Boolean indicating whether the source, target or label is being
 		 * edited.
 		 */
-		protected boolean label = false, source = false, target = false;
+		protected boolean label = false;
+
+		/*
+		 * Boolean indicating whether the source, target or label is being
+		 * edited.
+		 */
+		protected boolean source = false;
+
+		/*
+		 * Boolean indicating whether the source, target or label is being
+		 * edited.
+		 */
+		protected boolean target = false;
 
 		/**
 		 * Holds the index of the current (editing) label or point.
 		 */
-		protected int currentLabel = -1, currentIndex = -1;
+		protected int currentLabel = -1;
+
+		/**
+		 * Holds the index of the current (editing) label or point.
+		 */
+		protected int currentIndex = -1;
 
 		/* Pointer to the currently selected point. */
 		protected Point2D currentPoint;
@@ -661,13 +736,9 @@ public class EdgeView extends AbstractCellView {
 
 		/* A control point for the label position. */
 		protected transient Rectangle2D loc;
-
 		protected transient Rectangle2D[] extraLabelLocations;
-
 		protected boolean firstOverlayCall = true;
-
 		protected boolean isEdgeConnectable = true;
-
 		protected EdgeView relevantEdge = null;
 
 		/**
@@ -691,111 +762,119 @@ public class EdgeView extends AbstractCellView {
 			this.edge = edge;
 			editing = graph.getEditingCell() == edge.getCell();
 			loc = new Rectangle();
-			Object[] labels = GraphConstants.getExtraLabels(edge
-					.getAllAttributes());
+
+			Object[] labels = GraphConstants.getExtraLabels(edge.getAllAttributes());
+
 			if (labels != null) {
 				extraLabelLocations = new Rectangle[labels.length];
+
 				for (int i = 0; i < extraLabelLocations.length; i++)
 					extraLabelLocations[i] = new Rectangle();
 			}
-			orig = (EdgeView) graph.getGraphLayoutCache().getMapping(
-					edge.getCell(), false);
+
+			orig = (EdgeView) graph.getGraphLayoutCache().getMapping(edge.getCell(), false);
 			reloadPoints(orig);
-			isEdgeConnectable = GraphConstants.isConnectable(edge
-					.getAllAttributes());
+			isEdgeConnectable = GraphConstants.isConnectable(edge.getAllAttributes());
 		}
 
 		protected void reloadPoints(EdgeView edge) {
 			relevantEdge = edge;
 			r = new Rectangle[edge.getPointCount()];
+
 			for (int i = 0; i < r.length; i++)
 				r[i] = new Rectangle();
+
 			invalidate();
 		}
 
 		// Update and paint control points
 		public void paint(Graphics g) {
 			invalidate();
+
 			if (!edge.isLeaf())
 				return;
+
 			for (int i = 0; i < r.length; i++) {
 				if (isEdgeConnectable && !editing)
 					g.setColor(graph.getHandleColor());
 				else
 					g.setColor(graph.getLockedHandleColor());
-				g.fill3DRect((int) r[i].getX(), (int) r[i].getY(), (int) r[i]
-						.getWidth(), (int) r[i].getHeight(), true);
+
+				g.fill3DRect((int) r[i].getX(), (int) r[i].getY(), (int) r[i].getWidth(),
+				             (int) r[i].getHeight(), true);
+
 				CellView port = null;
-				if (i == 0 && edge.getSource() != null)
+
+				if ((i == 0) && (edge.getSource() != null))
 					port = edge.getSource();
-				else if (i == r.length - 1 && edge.getTarget() != null)
+				else if ((i == (r.length - 1)) && (edge.getTarget() != null))
 					port = edge.getTarget();
-				if (port != null
-						|| (i == 0 && edge.getSourceParentView() != null)
-						|| (i == r.length - 1 && edge.getTargetParentView() != null)) {
+
+				if ((port != null) || ((i == 0) && (edge.getSourceParentView() != null))
+				    || ((i == (r.length - 1)) && (edge.getTargetParentView() != null))) {
 					g.setColor(graph.getLockedHandleColor());
-					Point2D tmp = (port != null) ? GraphConstants
-							.getOffset(port.getAllAttributes()) : null;
+
+					Point2D tmp = (port != null)
+					              ? GraphConstants.getOffset(port.getAllAttributes()) : null;
+
 					if (tmp != null) {
+						g.drawLine((int) r[i].getX() + 1, (int) r[i].getY() + 1,
+						           (int) (r[i].getX() + r[i].getWidth()) - 3,
+						           (int) (r[i].getY() + r[i].getHeight()) - 3);
 						g.drawLine((int) r[i].getX() + 1,
-								(int) r[i].getY() + 1,
-								(int) (r[i].getX() + r[i].getWidth()) - 3,
-								(int) (r[i].getY() + r[i].getHeight()) - 3);
-						g.drawLine((int) r[i].getX() + 1,
-								(int) (r[i].getY() + r[i].getHeight()) - 3,
-								(int) (r[i].getX() + r[i].getWidth()) - 3,
-								(int) r[i].getY() + 1);
+						           (int) (r[i].getY() + r[i].getHeight()) - 3,
+						           (int) (r[i].getX() + r[i].getWidth()) - 3, (int) r[i].getY() + 1);
 					} else
-						g.drawRect((int) r[i].getX() + 2,
-								(int) r[i].getY() + 2,
-								(int) r[i].getWidth() - 5, (int) r[i]
-										.getHeight() - 5);
+						g.drawRect((int) r[i].getX() + 2, (int) r[i].getY() + 2,
+						           (int) r[i].getWidth() - 5, (int) r[i].getHeight() - 5);
 				}
 			}
 		}
 
 		public void overlay(Graphics g) {
-			if (edge != null && !firstOverlayCall && edge.isLeaf()) {
+			if ((edge != null) && !firstOverlayCall && edge.isLeaf()) {
 				// g.setColor(graph.getBackground()); // JDK 1.3
 				g.setColor(graph.getForeground());
 				g.setXORMode(graph.getBackground().darker());
+
 				Graphics2D g2 = (Graphics2D) g;
 				AffineTransform oldTransform = g2.getTransform();
 				g2.scale(graph.getScale(), graph.getScale());
 				graph.getUI().paintCell(g, edge, edge.getBounds(), true);
 				g2.setTransform(oldTransform);
-				if (isSourceEditing() && edge.getSource() != null)
+
+				if (isSourceEditing() && (edge.getSource() != null))
 					paintPort(g, edge.getSource());
-				else if (isTargetEditing() && edge.getTarget() != null)
+				else if (isTargetEditing() && (edge.getTarget() != null))
 					paintPort(g, edge.getTarget());
 			}
+
 			firstOverlayCall = false;
 		}
 
 		protected void paintPort(Graphics g, CellView p) {
 			boolean offset = (GraphConstants.getOffset(p.getAllAttributes()) != null);
-			Rectangle2D r = (offset) ? p.getBounds() : p.getParentView()
-					.getBounds();
+			Rectangle2D r = (offset) ? p.getBounds() : p.getParentView().getBounds();
 			r = graph.toScreen((Rectangle2D) r.clone());
+
 			int s = 3;
-			r.setFrame(r.getX() - s, r.getY() - s, r.getWidth() + 2 * s, r
-					.getHeight()
-					+ 2 * s);
+			r.setFrame(r.getX() - s, r.getY() - s, r.getWidth() + (2 * s), r.getHeight() + (2 * s));
 			graph.getUI().paintCell(g, p, r, true);
 		}
 
 		protected boolean snap(boolean source, Point2D point) {
 			boolean connect = graph.isConnectable() && isEdgeConnectable;
 			Object port = graph.getPortForLocation(point.getX(), point.getY());
-			if (port != null
-					&& graph.getModel().getParent(port) == edge.getCell())
+
+			if ((port != null) && (graph.getModel().getParent(port) == edge.getCell()))
 				port = null;
-			if (port != null && connect) {
-				CellView portView = graph.getGraphLayoutCache().getMapping(
-						port, false);
-				if (GraphConstants.isConnectable(portView.getParentView()
-						.getAllAttributes())) {
+
+			if ((port != null) && connect) {
+				CellView portView = graph.getGraphLayoutCache().getMapping(port, false);
+
+				if (GraphConstants.isConnectable(portView.getParentView().getAllAttributes())) {
 					Object cell = edge.getCell();
+
 					if (source && graph.getModel().acceptsSource(cell, port)) {
 						if (edge.getSource() != portView) {
 							edgeModified = true;
@@ -804,9 +883,9 @@ public class EdgeView extends AbstractCellView {
 							edge.update();
 							overlay(graph.getGraphics());
 						}
+
 						return true;
-					} else if (!source
-							&& graph.getModel().acceptsTarget(cell, port)) {
+					} else if (!source && graph.getModel().acceptsTarget(cell, port)) {
 						if (edge.getTarget() != portView) {
 							edgeModified = true;
 							overlay(graph.getGraphics());
@@ -814,17 +893,21 @@ public class EdgeView extends AbstractCellView {
 							edge.update();
 							overlay(graph.getGraphics());
 						}
+
 						return true;
 					}
 				}
 			}
+
 			return false;
 		}
 
 		public boolean isConstrainedMoveEvent(MouseEvent e) {
 			GraphUI ui = graph.getUI();
+
 			if (ui instanceof BasicGraphUI)
 				return ((BasicGraphUI) ui).isConstrainedMoveEvent(e);
+
 			return false;
 		}
 
@@ -832,16 +915,14 @@ public class EdgeView extends AbstractCellView {
 		 * Returning true signifies a mouse event adds a new point to an edge.
 		 */
 		public boolean isAddPointEvent(MouseEvent event) {
-			return event.isPopupTrigger()
-					|| SwingUtilities.isRightMouseButton(event);
+			return event.isPopupTrigger() || SwingUtilities.isRightMouseButton(event);
 		}
 
 		/**
 		 * Returning true signifies a mouse event removes a given point.
 		 */
 		public boolean isRemovePointEvent(MouseEvent event) {
-			return event.isPopupTrigger()
-					|| SwingUtilities.isRightMouseButton(event);
+			return event.isPopupTrigger() || SwingUtilities.isRightMouseButton(event);
 		}
 
 		protected boolean isSourceEditing() {
@@ -857,8 +938,7 @@ public class EdgeView extends AbstractCellView {
 		 * edited.
 		 */
 		protected boolean isEditing() {
-			return source || target || label || currentLabel >= 0
-					|| currentPoint != null;
+			return source || target || label || (currentLabel >= 0) || (currentPoint != null);
 		}
 
 		/**
@@ -870,15 +950,18 @@ public class EdgeView extends AbstractCellView {
 				if (r[i].contains(event.getPoint())) {
 					graph.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 					event.consume();
+
 					return;
 				}
+
 			if (loc.contains(event.getPoint()) && graph.isMoveable()
-					&& GraphConstants.isMoveable(edge.getAllAttributes())) {
+			    && GraphConstants.isMoveable(edge.getAllAttributes())) {
 				graph.setCursor(new Cursor(Cursor.HAND_CURSOR));
 				event.consume();
 			}
-			if (extraLabelLocations != null && graph.isMoveable()
-					&& GraphConstants.isMoveable(edge.getAllAttributes())) {
+
+			if ((extraLabelLocations != null) && graph.isMoveable()
+			    && GraphConstants.isMoveable(edge.getAllAttributes())) {
 				for (int i = 0; i < extraLabelLocations.length; i++) {
 					if (extraLabelLocations[i].contains(event.getPoint())) {
 						graph.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -893,79 +976,82 @@ public class EdgeView extends AbstractCellView {
 			/* INV: currentPoint = null; source = target = label = false; */
 			if (!edge.isLeaf())
 				return;
+
 			boolean bendable = graph.isBendable()
-					&& GraphConstants.isBendable(edge.getAllAttributes());
+			                   && GraphConstants.isBendable(edge.getAllAttributes());
 			int x = event.getX();
 			int y = event.getY();
+
 			// Detect hit on control point
 			int index = 0;
+
 			for (index = 0; index < r.length; index++) {
 				if (r[index].contains(x, y)) {
 					currentPoint = edge.getPoint(index);
 					currentIndex = index;
 					source = index == 0;
-					target = index == r.length - 1;
+					target = index == (r.length - 1);
+
 					break;
 				}
 			}
+
 			// Detect hit on label
 			if (!isEditing() && graph.isMoveable()
-					&& GraphConstants.isMoveable(edge.getAllAttributes())
-					&& loc != null && loc.contains(x, y)
-					&& !isAddPointEvent(event) && !isRemovePointEvent(event)) {
-				initialLabelLocation = (Point2D) edge.getLabelPosition()
-						.clone();
+			    && GraphConstants.isMoveable(edge.getAllAttributes()) && (loc != null)
+			    && loc.contains(x, y) && !isAddPointEvent(event) && !isRemovePointEvent(event)) {
+				initialLabelLocation = (Point2D) edge.getLabelPosition().clone();
 				label = true;
 			}
 			// Detect hit on extra labels
-			else if (extraLabelLocations != null && !isEditing()
-					&& graph.isMoveable()
-					&& GraphConstants.isMoveable(edge.getAllAttributes())) {
+			else if ((extraLabelLocations != null) && !isEditing() && graph.isMoveable()
+			         && GraphConstants.isMoveable(edge.getAllAttributes())) {
 				for (int i = 0; i < extraLabelLocations.length; i++) {
-					if (extraLabelLocations[i] != null
-							&& extraLabelLocations[i].contains(x, y)) {
+					if ((extraLabelLocations[i] != null) && extraLabelLocations[i].contains(x, y)) {
 						currentLabel = i;
-						initialLabelLocation = (Point2D) edge
-								.getExtraLabelPosition(currentLabel).clone();
+						initialLabelLocation = (Point2D) edge.getExtraLabelPosition(currentLabel)
+						                                     .clone();
+
 						if (isRemovePointEvent(event)) {
 							edge.removeExtraLabel(i);
 							edgeModified = true;
 							mouseReleased(event);
 						}
+
 						break;
 					}
 				}
 			}
+
 			// Remove Point
-			if (isRemovePointEvent(event)
-					&& currentPoint != null
-					&& !source
-					&& !target
-					&& bendable
-					&& (edge.getSource() == null || currentIndex > 0)
-					&& (edge.getTarget() == null || currentIndex < edge
-							.getPointCount() - 1)) {
+			if (isRemovePointEvent(event) && (currentPoint != null) && !source && !target
+			    && bendable && ((edge.getSource() == null) || (currentIndex > 0))
+			    && ((edge.getTarget() == null) || (currentIndex < (edge.getPointCount() - 1)))) {
 				edge.removePoint(index);
 				edgeModified = true;
 				mouseReleased(event);
+
 				// Add Point
 			} else if (isAddPointEvent(event) && !isEditing() && bendable) {
 				int s = graph.getHandleSize();
-				Rectangle2D rect = graph.fromScreen(new Rectangle(x - s, y - s,
-						2 * s, 2 * s));
+				Rectangle2D rect = graph.fromScreen(new Rectangle(x - s, y - s, 2 * s, 2 * s));
+
 				if (edge.intersects(graph, rect)) {
-					Point2D point = graph.fromScreen(graph.snap(new Point(event
-							.getPoint())));
-					double min = Double.MAX_VALUE, dist = 0;
-					for (int i = 0; i < edge.getPointCount() - 1; i++) {
+					Point2D point = graph.fromScreen(graph.snap(new Point(event.getPoint())));
+					double min = Double.MAX_VALUE;
+					double dist = 0;
+
+					for (int i = 0; i < (edge.getPointCount() - 1); i++) {
 						Point2D p = edge.getPoint(i);
 						Point2D p1 = edge.getPoint(i + 1);
 						dist = new Line2D.Double(p, p1).ptSegDistSq(point);
+
 						if (dist < min) {
 							min = dist;
 							index = i + 1;
 						}
 					}
+
 					edge.addPoint(index, point);
 					edgeModified = true;
 					currentPoint = point;
@@ -973,17 +1059,21 @@ public class EdgeView extends AbstractCellView {
 					paint(graph.getGraphics());
 				}
 			}
+
 			if (isEditing())
 				event.consume();
 		}
 
 		public void mouseDragged(MouseEvent event) {
 			Point2D p = graph.fromScreen(new Point(event.getPoint()));
+
 			// Move Label
-			if (label || currentLabel >= 0) {
+			if (label || (currentLabel >= 0)) {
 				Rectangle2D r = edge.getBounds();
+
 				if (r != null) {
 					edgeModified = true;
+
 					double x = p.getX();
 					double y = p.getY();
 
@@ -999,91 +1089,98 @@ public class EdgeView extends AbstractCellView {
 					double pex = p0.getX() + dx;
 					double pey = p0.getY() + dy;
 
-					double len = Math.sqrt(dx * dx + dy * dy);
+					double len = Math.sqrt((dx * dx) + (dy * dy));
+
 					if (len > 0) {
 						double u = GraphConstants.PERMILLE;
-						double posy = len
-								* (-y * dx + p0y * dx + x * dy - p0x * dy)
-								/ (-pey * dy + p0y * dy - dx * pex + dx * p0x);
-						double posx = u
-								* (-y * pey + y * p0y + p0y * pey - p0y * p0y
-										- pex * x + pex * p0x + p0x * x - p0x
-										* p0x)
-								/ (-pey * dy + p0y * dy - dx * pex + dx * p0x);
+						double posy = (len * (((-y * dx) + (p0y * dx) + (x * dy)) - (p0x * dy))) / (((-pey * dy)
+						                                                                            + (p0y * dy))
+						                                                                           - (dx * pex)
+						                                                                           + (dx * p0x));
+						double posx = (u * ((((-y * pey) + (y * p0y) + (p0y * pey)) - (p0y * p0y)
+						                    - (pex * x) + (pex * p0x) + (p0x * x)) - (p0x * p0x))) / (((-pey * dy)
+						                                                                              + (p0y * dy))
+						                                                                             - (dx * pex)
+						                                                                             + (dx * p0x));
 						p = new Point2D.Double(posx, posy);
 					} else {
 						p = new Point2D.Double(x - p0.getX(), y - p0.getY());
 					}
+
 					overlay(graph.getGraphics());
+
 					if (label)
 						edge.setLabelPosition(p);
 					else
 						edge.setExtraLabelPosition(currentLabel, p);
+
 					edge.update();
 					overlay(graph.getGraphics());
 				}
-			} else if (isEditing() && currentPoint != null) {
+			} else if (isEditing() && (currentPoint != null)) {
 				boolean disconnectable = (!source && !target)
-						|| (graph.isDisconnectable() && GraphConstants
-								.isDisconnectable(orig.getAllAttributes()));
+				                         || (graph.isDisconnectable()
+				                            && GraphConstants.isDisconnectable(orig.getAllAttributes()));
+
 				if (source)
 					disconnectable = disconnectable
-							&& ((orig.getSource() == null && orig
-									.getSourceParentView() == null)
-									|| (orig.getSource() != null && GraphConstants
-											.isDisconnectable(orig.getSource()
-													.getParentView()
-													.getAllAttributes())) || (orig
-									.getSourceParentView() != null && GraphConstants
-									.isDisconnectable(orig
-											.getSourceParentView()
-											.getAllAttributes())));
+					                 && (((orig.getSource() == null)
+					                     && (orig.getSourceParentView() == null))
+					                    || ((orig.getSource() != null)
+					                       && GraphConstants.isDisconnectable(orig.getSource()
+					                                                              .getParentView()
+					                                                              .getAllAttributes()))
+					                    || ((orig.getSourceParentView() != null)
+					                       && GraphConstants.isDisconnectable(orig.getSourceParentView()
+					                                                              .getAllAttributes())));
+
 				if (target)
 					disconnectable = disconnectable
-							&& ((orig.getTarget() == null && orig
-									.getTargetParentView() == null)
-									|| (orig.getTarget() != null && GraphConstants
-											.isDisconnectable(orig.getTarget()
-													.getParentView()
-													.getAllAttributes())) || (orig
-									.getTargetParentView() != null && GraphConstants
-									.isDisconnectable(orig
-											.getTargetParentView()
-											.getAllAttributes())));
+					                 && (((orig.getTarget() == null)
+					                     && (orig.getTargetParentView() == null))
+					                    || ((orig.getTarget() != null)
+					                       && GraphConstants.isDisconnectable(orig.getTarget()
+					                                                              .getParentView()
+					                                                              .getAllAttributes()))
+					                    || ((orig.getTargetParentView() != null)
+					                       && GraphConstants.isDisconnectable(orig.getTargetParentView()
+					                                                              .getAllAttributes())));
+
 				// Find Source/Target Port
-				if (!((source && snap(true, event.getPoint())) || (target && snap(
-						false, event.getPoint())))
-						&& disconnectable) {
+				if (!((source && snap(true, event.getPoint()))
+				    || (target && snap(false, event.getPoint()))) && disconnectable) {
 					// Else Use Point
 					boolean acceptSource = source
-							&& (graph.getModel().acceptsSource(edge.getCell(),
-									null) || graph.isPreviewInvalidNullPorts());
+					                       && (graph.getModel().acceptsSource(edge.getCell(), null)
+					                          || graph.isPreviewInvalidNullPorts());
 					boolean acceptTarget = target
-							&& (graph.getModel().acceptsTarget(edge.getCell(),
-									null) || graph.isPreviewInvalidNullPorts());
+					                       && (graph.getModel().acceptsTarget(edge.getCell(), null)
+					                          || graph.isPreviewInvalidNullPorts());
+
 					if (acceptSource || acceptTarget || !(source || target)) {
 						edgeModified = true;
 						overlay(graph.getGraphics());
-						p = graph.fromScreen(graph.snap(new Point(event
-								.getPoint())));
+						p = graph.fromScreen(graph.snap(new Point(event.getPoint())));
+
 						// Constrained movement
-						if (isConstrainedMoveEvent(event) && currentIndex >= 0) {
+						if (isConstrainedMoveEvent(event) && (currentIndex >= 0)) {
 							// Reset Initial Positions
-							EdgeView orig = (EdgeView) graph
-									.getGraphLayoutCache().getMapping(
-											edge.getCell(), false);
+							EdgeView orig = (EdgeView) graph.getGraphLayoutCache()
+							                                .getMapping(edge.getCell(), false);
 							Point2D origPoint = orig.getPoint(currentIndex);
 							double totDx = p.getX() - origPoint.getX();
 							double totDy = p.getY() - origPoint.getY();
+
 							if (Math.abs(totDx) < Math.abs(totDy))
 								p.setLocation(origPoint.getX(), p.getY());
 							else
 								p.setLocation(p.getX(), origPoint.getY());
 						}
+
 						// Do not move into negative space
-						p.setLocation(Math.max(0, p.getX()), Math.max(0, p
-								.getY()));
+						p.setLocation(Math.max(0, p.getX()), Math.max(0, p.getY()));
 						currentPoint.setLocation(p);
+
 						if (source) {
 							edge.setPoint(0, p);
 							edge.setSource(null);
@@ -1091,6 +1188,7 @@ public class EdgeView extends AbstractCellView {
 							edge.setPoint(edge.getPointCount() - 1, p);
 							edge.setTarget(null);
 						}
+
 						edge.update();
 						overlay(graph.getGraphics());
 					}
@@ -1102,34 +1200,30 @@ public class EdgeView extends AbstractCellView {
 		public void mouseReleased(MouseEvent e) {
 			boolean clone = e.isControlDown() && graph.isCloneable();
 			GraphModel model = graph.getModel();
-			Object source = (edge.getSource() != null) ? edge.getSource()
-					.getCell() : null;
-			Object target = (edge.getTarget() != null) ? edge.getTarget()
-					.getCell() : null;
+			Object source = (edge.getSource() != null) ? edge.getSource().getCell() : null;
+			Object target = (edge.getTarget() != null) ? edge.getTarget().getCell() : null;
+
 			if (edgeModified && model.acceptsSource(edge.getCell(), source)
-					&& model.acceptsTarget(edge.getCell(), target)) {
-
+			    && model.acceptsTarget(edge.getCell(), target)) {
 				// Creates an extra label if the label was cloned
-				if (clone && initialLabelLocation != null) {
-
+				if (clone && (initialLabelLocation != null)) {
 					// Resets the dragging label position and adds a new label
 					// instead. Note: label locations are modified in-place
 					// which is why we need to clone at beginning.
 					Object value = null;
 					Point2D location = null;
-					Object[] extraLabels = GraphConstants.getExtraLabels(edge
-							.getAllAttributes());
+					Object[] extraLabels = GraphConstants.getExtraLabels(edge.getAllAttributes());
+
 					if (label) {
 						location = (Point2D) edge.getLabelPosition().clone();
 						value = graph.convertValueToString(orig);
 						edge.setLabelPosition(initialLabelLocation);
 					} else {
-						location = (Point2D) edge.getExtraLabelPosition(
-								currentLabel).clone();
+						location = (Point2D) edge.getExtraLabelPosition(currentLabel).clone();
 						value = extraLabels[currentLabel];
-						edge.setExtraLabelPosition(currentLabel,
-								initialLabelLocation);
+						edge.setExtraLabelPosition(currentLabel, initialLabelLocation);
 					}
+
 					edge.addExtraLabel(location, value);
 					edge.update();
 					clone = false;
@@ -1137,8 +1231,7 @@ public class EdgeView extends AbstractCellView {
 
 				// Creates the data required for the edit/insert call
 				ConnectionSet cs = createConnectionSet(edge, clone);
-				Map nested = GraphConstants.createAttributes(
-						new CellView[] { edge }, null);
+				Map nested = GraphConstants.createAttributes(new CellView[] { edge }, null);
 
 				// The cached points may be different from what's
 				// in the attribute map if the edge is routed.
@@ -1151,28 +1244,27 @@ public class EdgeView extends AbstractCellView {
 				// in the control point list.
 				if (controlPoints != currentPoints) {
 					controlPoints.set(0, edge.getPoint(0));
-					controlPoints.set(controlPoints.size() - 1, edge
-							.getPoint(edge.getPointCount() - 1));
+					controlPoints.set(controlPoints.size() - 1,
+					                  edge.getPoint(edge.getPointCount() - 1));
 				}
 
 				if (clone) {
-					Map cellMap = graph.cloneCells(graph
-							.getDescendants(new Object[] { edge.getCell() }));
+					Map cellMap = graph.cloneCells(graph.getDescendants(new Object[] { edge.getCell() }));
 					processNestedMap(nested, true);
 					nested = GraphConstants.replaceKeys(cellMap, nested);
 					cs = cs.clone(cellMap);
+
 					Object[] cells = cellMap.values().toArray();
-					graph.getGraphLayoutCache().insert(cells, nested, cs, null,
-							null);
+					graph.getGraphLayoutCache().insert(cells, nested, cs, null, null);
 				} else {
 					processNestedMap(nested, false);
 					graph.getGraphLayoutCache().edit(nested, cs, null, null);
 				}
 			} else {
 				overlay(graph.getGraphics());
-				edge.refresh(graph.getModel(), graph.getGraphLayoutCache(),
-						false);
+				edge.refresh(graph.getModel(), graph.getGraphLayoutCache(), false);
 			}
+
 			initialLabelLocation = null;
 			currentPoint = null;
 			this.edgeModified = false;
@@ -1189,26 +1281,32 @@ public class EdgeView extends AbstractCellView {
 			// subclassers can override this to modify the attributes
 		}
 
-		protected ConnectionSet createConnectionSet(EdgeView view,
-				boolean verbose) {
+		protected ConnectionSet createConnectionSet(EdgeView view, boolean verbose) {
 			Object edge = view.getCell();
 			GraphModel model = graph.getModel();
 			ConnectionSet cs = new ConnectionSet();
-			Object sourcePort = null, targetPort = null;
+			Object sourcePort = null;
+			Object targetPort = null;
+
 			if (view.getSource() != null)
 				sourcePort = view.getSource().getCell();
 			else if (view.getSourceParentView() != null)
 				sourcePort = model.getSource(edge);
+
 			if (view.getTarget() != null)
 				targetPort = view.getTarget().getCell();
 			else if (view.getTargetParentView() != null)
 				targetPort = model.getTarget(edge);
+
 			if (view.getTarget() != null)
 				targetPort = view.getTarget().getCell();
-			if (verbose || (sourcePort != model.getSource(edge) && source))
+
+			if (verbose || ((sourcePort != model.getSource(edge)) && source))
 				cs.connect(edge, sourcePort, true);
-			if (verbose || (targetPort != model.getTarget(edge) && target))
+
+			if (verbose || ((targetPort != model.getTarget(edge)) && target))
 				cs.connect(edge, targetPort, false);
+
 			return cs;
 		}
 
@@ -1217,46 +1315,60 @@ public class EdgeView extends AbstractCellView {
 			EdgeView e = relevantEdge;
 			int handlesize = graph.getHandleSize();
 			EdgeRenderer er = (EdgeRenderer) edge.getRenderer();
+
 			for (int i = 0; i < r.length; i++) {
 				Point2D p = e.getPoint(i);
 				p = graph.toScreen(new Point2D.Double(p.getX(), p.getY()));
-				r[i].setFrame(p.getX() - handlesize, p.getY() - handlesize,
-						2 * handlesize, 2 * handlesize);
+				r[i].setFrame(p.getX() - handlesize, p.getY() - handlesize, 2 * handlesize,
+				              2 * handlesize);
 				p = graph.toScreen(er.getLabelPosition(e));
+
 				Dimension d = er.getLabelSize(e, graph.convertValueToString(e));
-				if (p != null && d != null) {
-					Point2D s = graph.toScreen(new Point2D.Double(d.width,
-							d.height));
-					loc.setFrame(p.getX() - s.getX() / 2, p.getY() - s.getY()
-							/ 2, s.getX(), s.getY());
+
+				if ((p != null) && (d != null)) {
+					Point2D s = graph.toScreen(new Point2D.Double(d.width, d.height));
+					loc.setFrame(p.getX() - (s.getX() / 2), p.getY() - (s.getY() / 2), s.getX(),
+					             s.getY());
 				}
 			}
+
 			if (extraLabelLocations != null) {
 				for (int i = 0; i < extraLabelLocations.length; i++) {
 					Point2D p = er.getExtraLabelPosition(e, i);
+
 					if (p != null) {
 						p = graph.toScreen((Point2D) p.clone());
+
 						Dimension d = er.getExtraLabelSize(graph, e, i);
+
 						if (d != null) {
-							Point2D s = graph.toScreen(new Point2D.Double(
-									d.width, d.height));
-							extraLabelLocations[i].setFrame(p.getX() - s.getX()
-									/ 2, p.getY() - s.getY() / 2, s.getX(), s
-									.getY());
+							Point2D s = graph.toScreen(new Point2D.Double(d.width, d.height));
+							extraLabelLocations[i].setFrame(p.getX() - (s.getX() / 2),
+							                                p.getY() - (s.getY() / 2), s.getX(),
+							                                s.getY());
 						}
 					}
 				}
 			}
 		}
-
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param edge DOCUMENT ME!
+	 * @param source DOCUMENT ME!
+	 * @param p DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Point2D getPerimeterPoint(EdgeView edge, Point2D source, Point2D p) {
 		if (getPointCount() > 2)
 			return getPoint(getPointCount() / 2);
+
 		Point2D p0 = getPoint(0);
 		Point2D pe = getPoint(getPointCount() - 1);
-		return new Point2D.Double((pe.getX() + p0.getX()) / 2, (pe.getY() + p0
-				.getY()) / 2);
+
+		return new Point2D.Double((pe.getX() + p0.getX()) / 2, (pe.getY() + p0.getY()) / 2);
 	}
 }

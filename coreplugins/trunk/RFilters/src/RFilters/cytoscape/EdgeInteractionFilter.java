@@ -1,197 +1,324 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package filter.cytoscape;
 
-import java.awt.event.*;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import java.util.*;
-import java.util.List;
-import filter.model.*;
-import javax.swing.border.*;
-import java.beans.*;
-import javax.swing.event.SwingPropertyChangeSupport;
-
 import cytoscape.*;
+import cytoscape.CyNetwork;
+
 import cytoscape.data.*;
 
+import filter.model.*;
+
 import giny.model.*;
-import cytoscape.CyNetwork;
+
+import java.awt.*;
+import java.awt.event.*;
+
+import java.beans.*;
+
+import java.util.*;
+import java.util.List;
+
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+import javax.swing.event.SwingPropertyChangeSupport;
 
 
 /**
- * This filter will pass nodes based on the edges that 
+ * This filter will pass nodes based on the edges that
  * they have.
  */
-public class EdgeInteractionFilter 
-  implements Filter {
+public class EdgeInteractionFilter implements Filter {
+	//----------------------------------------//
+	// Filter specific properties 
+	//----------------------------------------//
+	protected int filter;
+	protected String target;
 
-  //----------------------------------------//
-  // Filter specific properties 
-  //----------------------------------------//
-  protected int filter;
-  protected String target;
+	/**
+	 * 
+	 */
+	public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
 
-  public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
-  public static String FILTER_BOX_EVENT = "FILTER_BOX_EVENT";
-  public static String TARGET_BOX_EVENT = "TARGET_BOX_EVENT";
-  public static String FILTER_ID = "EdgeInteractionFilter";
-  public static String FILTER_DESCRIPTION = "Select edges based on adjacent nodes";
-  public static String SOURCE = "source";
-  public static String TARGET = "target";
-  public static String EITHER = "source or target";
-  //----------------------------------------//
-  // Cytoscape specific Variables
-  //----------------------------------------//
-  
-  //----------------------------------------//
-  // Needed Variables
-  //----------------------------------------//
-  protected String identifier = "EdgeInteractionFilter";
-  protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
-  
-  
-  //---------------------------------------//
-  // Constructor
-  //----------------------------------------//
+	/**
+	 * 
+	 */
+	public static String FILTER_BOX_EVENT = "FILTER_BOX_EVENT";
 
-  /**
-   * Creates a new InteractionFilter
-   */  
-  public EdgeInteractionFilter ( int filter, 
-			     String target,
-			     String identifier ) {
-    this.filter = filter;
-    this.target = target;  
-    this.identifier =identifier;
-  }
-  
-  public EdgeInteractionFilter(String desc){
-    input(desc);
-  }
+	/**
+	 * 
+	 */
+	public static String TARGET_BOX_EVENT = "TARGET_BOX_EVENT";
 
-  //----------------------------------------//
-  // Implements Filter
-  //----------------------------------------//
+	/**
+	 * 
+	 */
+	public static String FILTER_ID = "EdgeInteractionFilter";
 
-  /**
-   * Returns the name for this Filter
-   */
-  public String toString () {
-    return identifier;
-  }
+	/**
+	 * 
+	 */
+	public static String FILTER_DESCRIPTION = "Select edges based on adjacent nodes";
 
-  /**
-   * sets a new name for this filter
-   */
-  public void setIdentifier ( String new_id ) {
-    this.identifier = new_id;
-    pcs.firePropertyChange(FILTER_NAME_EVENT,null,new_id);
-  }
+	/**
+	 * 
+	 */
+	public static String SOURCE = "source";
 
-  /**
-   * This is usually the same as the class name
-   */
-  public String getFilterID () {
-    return FILTER_ID;
-  }
+	/**
+	 * 
+	 */
+	public static String TARGET = "target";
 
-  public String getDescription(){
-    return FILTER_DESCRIPTION;
-  }
-  /**
-   * An object passes this Filter if it is the source/target
-   * node for an edge that has a matching property for
-   * the given Edge atttribute.
-   */
-  public boolean passesFilter ( Object object ) {
-    Filter filter = FilterManager.defaultManager().getFilter(this.filter);
-    if(filter == null){
-      return false;
-    }
-    if(!(object instanceof Edge)){
-      return false;
-    }
-    Edge edge = (Edge)object;
-    //get the list of all relevant edges
-    Node adjacentNode;
-    if(target == SOURCE){
-    	return filter.passesFilter(edge.getSource());
-    }else if(target == TARGET){
-      return filter.passesFilter(edge.getTarget());
-    }else{
-      return filter.passesFilter(edge.getSource()) || filter.passesFilter(edge.getTarget());
-    }
-  }
-  
-  public Class[] getPassingTypes () {
-    return new Class[]{Edge.class};
-  }
-  
-  public boolean equals ( Object other_object ) {
-    return super.equals(other_object);
-  }
-  
-  public Object clone () {
-    return new EdgeInteractionFilter ( filter,target,identifier+"_new" );
-  }
-  
-  public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
-    return pcs;
-  }
+	/**
+	 * 
+	 */
+	public static String EITHER = "source or target";
 
-  //----------------------------------------//
-  // InteractionFilter methods
-  //----------------------------------------//
+	//----------------------------------------//
+	// Cytoscape specific Variables
+	//----------------------------------------//
 
+	//----------------------------------------//
+	// Needed Variables
+	//----------------------------------------//
+	protected String identifier = "EdgeInteractionFilter";
+	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 
+	//---------------------------------------//
+	// Constructor
+	//----------------------------------------//
 
-  public String getTarget () {
-    return target;
-  }
+	/**
+	 * Creates a new InteractionFilter
+	 */
+	public EdgeInteractionFilter(int filter, String target, String identifier) {
+		this.filter = filter;
+		this.target = target;
+		this.identifier = identifier;
+	}
 
-  public void setTarget ( String target ) {
-    this.target = target;
-    pcs.firePropertyChange( TARGET_BOX_EVENT, null, target );
-  }
+	/**
+	 * Creates a new EdgeInteractionFilter object.
+	 *
+	 * @param desc  DOCUMENT ME!
+	 */
+	public EdgeInteractionFilter(String desc) {
+		input(desc);
+	}
 
-  public void setFilter(int filter){
-    int oldvalue = this.filter;
-    this.filter = filter;
-    pcs.firePropertyChange(FILTER_BOX_EVENT,oldvalue,filter);
-  }
-  public int getFilter(){
-    return filter;
-  }
+	//----------------------------------------//
+	// Implements Filter
+	//----------------------------------------//
 
+	/**
+	 * Returns the name for this Filter
+	 */
+	public String toString() {
+		return identifier;
+	}
 
-  //----------------------------------------//
-  // IO
-  //----------------------------------------//
+	/**
+	 * sets a new name for this filter
+	 */
+	public void setIdentifier(String new_id) {
+		this.identifier = new_id;
+		pcs.firePropertyChange(FILTER_NAME_EVENT, null, new_id);
+	}
 
-  public String output () {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append( getFilter()+"," );
-    buffer.append( getTarget()+"," );
-    buffer.append( toString() );
-    return buffer.toString();
-  }
-  
-  public void input ( String desc ) {
-    String [] array = desc.split(",");
-    setFilter((new Integer(array[0])).intValue());
-    if(array[1].equals(TARGET)){
-      setTarget(TARGET);
-    }
-    else if(array[1].equals(SOURCE)){
-      setTarget(SOURCE);
-    }
-    else if(array[1].equals(EITHER)){
-      setTarget(EITHER);
-    }
-    else{
-      throw new IllegalArgumentException(array[1]+" is not a valid interaction type");
-    }
-    setIdentifier(array[2]);
-  }
+	/**
+	 * This is usually the same as the class name
+	 */
+	public String getFilterID() {
+		return FILTER_ID;
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String getDescription() {
+		return FILTER_DESCRIPTION;
+	}
+
+	/**
+	 * An object passes this Filter if it is the source/target
+	 * node for an edge that has a matching property for
+	 * the given Edge atttribute.
+	 */
+	public boolean passesFilter(Object object) {
+		Filter filter = FilterManager.defaultManager().getFilter(this.filter);
+
+		if (filter == null) {
+			return false;
+		}
+
+		if (!(object instanceof Edge)) {
+			return false;
+		}
+
+		Edge edge = (Edge) object;
+
+		//get the list of all relevant edges
+		Node adjacentNode;
+
+		if (target == SOURCE) {
+			return filter.passesFilter(edge.getSource());
+		} else if (target == TARGET) {
+			return filter.passesFilter(edge.getTarget());
+		} else {
+			return filter.passesFilter(edge.getSource()) || filter.passesFilter(edge.getTarget());
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Class[] getPassingTypes() {
+		return new Class[] { Edge.class };
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param other_object DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean equals(Object other_object) {
+		return super.equals(other_object);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object clone() {
+		return new EdgeInteractionFilter(filter, target, identifier + "_new");
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
+		return pcs;
+	}
+
+	//----------------------------------------//
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String getTarget() {
+		return target;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param target DOCUMENT ME!
+	 */
+	public void setTarget(String target) {
+		this.target = target;
+		pcs.firePropertyChange(TARGET_BOX_EVENT, null, target);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param filter DOCUMENT ME!
+	 */
+	public void setFilter(int filter) {
+		int oldvalue = this.filter;
+		this.filter = filter;
+		pcs.firePropertyChange(FILTER_BOX_EVENT, oldvalue, filter);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int getFilter() {
+		return filter;
+	}
+
+	//----------------------------------------//
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String output() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(getFilter() + ",");
+		buffer.append(getTarget() + ",");
+		buffer.append(toString());
+
+		return buffer.toString();
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param desc DOCUMENT ME!
+	 */
+	public void input(String desc) {
+		String[] array = desc.split(",");
+		setFilter((new Integer(array[0])).intValue());
+
+		if (array[1].equals(TARGET)) {
+			setTarget(TARGET);
+		} else if (array[1].equals(SOURCE)) {
+			setTarget(SOURCE);
+		} else if (array[1].equals(EITHER)) {
+			setTarget(EITHER);
+		} else {
+			throw new IllegalArgumentException(array[1] + " is not a valid interaction type");
+		}
+
+		setIdentifier(array[2]);
+	}
 }

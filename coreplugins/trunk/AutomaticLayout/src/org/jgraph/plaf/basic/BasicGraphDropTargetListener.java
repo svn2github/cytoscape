@@ -1,8 +1,8 @@
 /*
- * @(#)BasicGraphDropTargetListener	1.0 03-JUL-04
- * 
+ * @(#)BasicGraphDropTargetListener    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.plaf.basic;
 
@@ -24,9 +24,11 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.plaf.UIResource;
 
-public class BasicGraphDropTargetListener
-	implements DropTargetListener, UIResource, ActionListener {
 
+/**
+ *
+ */
+public class BasicGraphDropTargetListener implements DropTargetListener, UIResource, ActionListener {
 	/**
 	 * construct a DropTargetAutoScroller
 	 */
@@ -83,36 +85,18 @@ public class BasicGraphDropTargetListener
 		// compute the insets
 		// TBD - the thing with the scrollable
 		Insets i = new Insets(0, 0, 0, 0);
+
 		if (c instanceof Scrollable) {
 			Scrollable s = (Scrollable) c;
-			i.left =
-				s.getScrollableUnitIncrement(
-					visible,
-					SwingConstants.HORIZONTAL,
-					1);
-			i.top =
-				s.getScrollableUnitIncrement(
-					visible,
-					SwingConstants.VERTICAL,
-					1);
-			i.right =
-				s.getScrollableUnitIncrement(
-					visible,
-					SwingConstants.HORIZONTAL,
-					-1);
-			i.bottom =
-				s.getScrollableUnitIncrement(
-					visible,
-					SwingConstants.VERTICAL,
-					-1);
+			i.left = s.getScrollableUnitIncrement(visible, SwingConstants.HORIZONTAL, 1);
+			i.top = s.getScrollableUnitIncrement(visible, SwingConstants.VERTICAL, 1);
+			i.right = s.getScrollableUnitIncrement(visible, SwingConstants.HORIZONTAL, -1);
+			i.bottom = s.getScrollableUnitIncrement(visible, SwingConstants.VERTICAL, -1);
 		}
 
 		// set the inner from the insets
-		inner.setBounds(
-			visible.x + i.left,
-			visible.y + i.top,
-			visible.width - (i.left + i.right),
-			visible.height - (i.top + i.bottom));
+		inner.setBounds(visible.x + i.left, visible.y + i.top, visible.width - (i.left + i.right),
+		                visible.height - (i.top + i.bottom));
 	}
 
 	/**
@@ -137,28 +121,25 @@ public class BasicGraphDropTargetListener
 			Integer interval = new Integer(100);
 
 			try {
-				initial =
-					(Integer) t.getDesktopProperty(
-						"DnD.Autoscroll.initialDelay");
+				initial = (Integer) t.getDesktopProperty("DnD.Autoscroll.initialDelay");
 			} catch (Exception e) {
 				// ignore
 			}
+
 			try {
-				interval =
-					(Integer) t.getDesktopProperty("DnD.Autoscroll.interval");
+				interval = (Integer) t.getDesktopProperty("DnD.Autoscroll.interval");
 			} catch (Exception e) {
 				// ignore
 			}
+
 			timer = new Timer(interval.intValue(), this);
 
 			timer.setCoalesce(true);
 			timer.setInitialDelay(initial.intValue());
 
 			try {
-				hysteresis =
-					((Integer) t
-						.getDesktopProperty("DnD.Autoscroll.cursorHysteresis"))
-						.intValue();
+				hysteresis = ((Integer) t.getDesktopProperty("DnD.Autoscroll.cursorHysteresis"))
+				                                                                                                                              .intValue();
 			} catch (Exception e) {
 				// ignore
 			}
@@ -167,6 +148,7 @@ public class BasicGraphDropTargetListener
 
 	static JComponent getComponent(DropTargetEvent e) {
 		DropTargetContext context = e.getDropTargetContext();
+
 		return (JComponent) context.getComponent();
 	}
 
@@ -180,22 +162,26 @@ public class BasicGraphDropTargetListener
 	 */
 	public synchronized void actionPerformed(ActionEvent e) {
 		updateAutoscrollRegion(component);
+
 		if (outer.contains(lastPosition) && !inner.contains(lastPosition)) {
 			autoscroll(component, lastPosition);
 		}
 	}
 
 	// --- DropTargetListener methods -----------------------------------
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void dragEnter(DropTargetDragEvent e) {
 		component = getComponent(e);
-			// DO NOT REMOVE OR MODIFY THIS LINE!
-			javax.swing.TransferHandler // JAVA13: org.jgraph.plaf.basic.TransferHandler
-				th = (
-			// DO NOT REMOVE OR MODIFY THIS LINE!
-			(JComponent) // JAVA13: (org.jgraph.plaf.basic.TransferHandler.JDNDAdapter)
-	component).getTransferHandler();
+
+		// DO NOT REMOVE OR MODIFY THIS LINE!
+		javax.swing.TransferHandler // JAVA13: org.jgraph.plaf.basic.TransferHandler
+		 th = ((JComponent) component).getTransferHandler();
 		canImport = th.canImport(component, e.getCurrentDataFlavors());
+
 		if (canImport) {
 			saveComponentState(component);
 			lastPosition = e.getLocation();
@@ -204,6 +190,11 @@ public class BasicGraphDropTargetListener
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void dragOver(DropTargetDragEvent e) {
 		if (canImport) {
 			Point p = e.getLocation();
@@ -211,8 +202,8 @@ public class BasicGraphDropTargetListener
 
 			// check autoscroll
 			synchronized (this) {
-				if (Math.abs(p.x - lastPosition.x) > hysteresis
-					|| Math.abs(p.y - lastPosition.y) > hysteresis) {
+				if ((Math.abs(p.x - lastPosition.x) > hysteresis)
+				    || (Math.abs(p.y - lastPosition.y) > hysteresis)) {
 					// no autoscroll
 					if (timer.isRunning())
 						timer.stop();
@@ -220,25 +211,43 @@ public class BasicGraphDropTargetListener
 					if (!timer.isRunning())
 						timer.start();
 				}
+
 				lastPosition = p;
 			}
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void dragExit(DropTargetEvent e) {
 		if (canImport) {
 			restoreComponentState(component);
 		}
+
 		cleanup();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void drop(DropTargetDropEvent e) {
 		if (canImport) {
 			restoreComponentStateForDrop(component);
 		}
+
 		cleanup();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void dropActionChanged(DropTargetDragEvent e) {
 	}
 
@@ -250,12 +259,12 @@ public class BasicGraphDropTargetListener
 		if (timer != null) {
 			timer.stop();
 		}
+
 		component = null;
 		lastPosition = null;
 	}
 
 	// --- fields --------------------------------------------------
-
 	private Timer timer;
 	private Point lastPosition;
 	private Rectangle outer = new Rectangle();
@@ -268,6 +277,4 @@ public class BasicGraphDropTargetListener
 	 * by the timer. When a drag exits or a drop occurs, this value is cleared.
 	 */
 	private JComponent component;
-
 }
-

@@ -2,8 +2,11 @@
 package linkout;
 
 import ding.view.*;
-import javax.swing.*;
+
 import giny.view.*;
+
+import javax.swing.*;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,23 +16,25 @@ import giny.view.*;
  * To change this template use File | Settings | File Templates.
  */
 public class LinkOutEdgeContextMenuListener implements EdgeContextMenuListener {
-    public LinkOutEdgeContextMenuListener(){
-        //System.out.println("[LinkOutContextMenuListener]: Constructor called");
-    }
+	/**
+	 * Creates a new LinkOutEdgeContextMenuListener object.
+	 */
+	public LinkOutEdgeContextMenuListener() {
+		//System.out.println("[LinkOutContextMenuListener]: Constructor called");
+	}
 
-    /**
-     * @param edgeView The clicked NodeView
-     * @param menu popup menu to add the LinkOut menu
-     */
-    public void addEdgeContextMenuItems (EdgeView edgeView, JPopupMenu menu){
-        //System.out.println("[LinkOutContextMenuListener]: addNodeContextMenuItem called");
+	/**
+	 * @param edgeView The clicked NodeView
+	 * @param menu popup menu to add the LinkOut menu
+	 */
+	public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
+		//System.out.println("[LinkOutContextMenuListener]: addNodeContextMenuItem called");
+		LinkOut lo = new LinkOut();
 
+		if (menu == null) {
+			menu = new JPopupMenu();
+		}
 
-        LinkOut lo= new LinkOut();
-        if(menu==null){
-            menu=new JPopupMenu();
-        }
-        menu.add(lo.addLinks(edgeView));
-    }
-
+		menu.add(lo.addLinks(edgeView));
+	}
 }

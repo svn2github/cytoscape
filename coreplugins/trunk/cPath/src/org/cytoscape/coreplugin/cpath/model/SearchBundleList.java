@@ -39,6 +39,7 @@ import cytoscape.CyNetwork;
 import java.util.ArrayList;
 import java.util.Observable;
 
+
 /**
  * Encapsulates a Complete History of All Search Requests and Search
  * Responses executed by a user.
@@ -46,76 +47,81 @@ import java.util.Observable;
  * @author Ethan Cerami
  */
 public class SearchBundleList extends Observable {
-    /**
-     * List of All Search Buncldes.
-     */
-    private ArrayList searchBundles = new ArrayList();
+	/**
+	 * List of All Search Buncldes.
+	 */
+	private ArrayList searchBundles = new ArrayList();
 
-    /**
-     * Adds a new Search Request / Response Pair.
-     *
-     * @param bundle SearchBundle Object.
-     */
-    public void add (SearchBundle bundle) {
-        searchBundles.add(bundle);
-        this.setChanged();
-        this.notifyObservers();
-    }
+	/**
+	 * Adds a new Search Request / Response Pair.
+	 *
+	 * @param bundle SearchBundle Object.
+	 */
+	public void add(SearchBundle bundle) {
+		searchBundles.add(bundle);
+		this.setChanged();
+		this.notifyObservers();
+	}
 
-    /**
-     * Gets Total Number of Search Bundles.
-     *
-     * @return Number of Search Bundles.
-     */
-    public int getNumSearchBundles () {
-        return searchBundles.size();
-    }
+	/**
+	 * Gets Total Number of Search Bundles.
+	 *
+	 * @return Number of Search Bundles.
+	 */
+	public int getNumSearchBundles() {
+		return searchBundles.size();
+	}
 
-    /**
-     * Gets the Search Bundle at the Specified Index.
-     *
-     * @param index Index Value.
-     * @return SearchBundle Object.
-     */
-    public SearchBundle getSearchBundleByIndex (int index) {
-        return (SearchBundle) searchBundles.get(index);
-    }
+	/**
+	 * Gets the Search Bundle at the Specified Index.
+	 *
+	 * @param index Index Value.
+	 * @return SearchBundle Object.
+	 */
+	public SearchBundle getSearchBundleByIndex(int index) {
+		return (SearchBundle) searchBundles.get(index);
+	}
 
-    /**
-     * Gets the Search Bundle with the Specified Bundle ID.
-     *
-     * @param bundleId Unique Bundle Identifier.
-     * @return SearchBundle Object.
-     */
-    public SearchBundle getSearchBundleByBundleId (int bundleId) {
-        for (int i = 0; i < searchBundles.size(); i++) {
-            SearchBundle bundle = (SearchBundle) searchBundles.get(i);
-            int id = bundle.getId();
-            if (bundleId == id) {
-                return bundle;
-            }
-        }
-        return null;
-    }
+	/**
+	 * Gets the Search Bundle with the Specified Bundle ID.
+	 *
+	 * @param bundleId Unique Bundle Identifier.
+	 * @return SearchBundle Object.
+	 */
+	public SearchBundle getSearchBundleByBundleId(int bundleId) {
+		for (int i = 0; i < searchBundles.size(); i++) {
+			SearchBundle bundle = (SearchBundle) searchBundles.get(i);
+			int id = bundle.getId();
 
-    /**
-     * Gets the Search Bundle with the Specified CyNewtork ID.
-     *
-     * @param networkId Unique CyNetwork Identifier.
-     * @return SearchBundle Object.
-     */
-    public SearchBundle getSearchBundleByCynetworkId (int networkId) {
-        for (int i = 0; i < searchBundles.size(); i++) {
-            SearchBundle bundle = (SearchBundle) searchBundles.get(i);
-            SearchResponse response = bundle.getResponse();
-            CyNetwork network = response.getCyNetwork();
-            if (network != null) {
-                int id = Integer.parseInt(network.getIdentifier());
-                if (networkId == id) {
-                    return bundle;
-                }
-            }
-        }
-        return null;
-    }
+			if (bundleId == id) {
+				return bundle;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the Search Bundle with the Specified CyNewtork ID.
+	 *
+	 * @param networkId Unique CyNetwork Identifier.
+	 * @return SearchBundle Object.
+	 */
+	public SearchBundle getSearchBundleByCynetworkId(int networkId) {
+		for (int i = 0; i < searchBundles.size(); i++) {
+			SearchBundle bundle = (SearchBundle) searchBundles.get(i);
+			SearchResponse response = bundle.getResponse();
+			CyNetwork network = response.getCyNetwork();
+
+			if (network != null) {
+				int id = Integer.parseInt(network.getIdentifier());
+
+				if (networkId == id) {
+					return bundle;
+				}
+			}
+		}
+
+		return null;
+	}
 }

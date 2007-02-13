@@ -34,41 +34,41 @@
 */
 package org.cytoscape.coreplugin.psi_mi.util;
 
+
 /**
  * Indicates communication error with the data service.
  *
  * @author Ethan Cerami
  */
 public class DataServiceException extends Exception {
-    private String humanReadableErrorMessage;
+	private String humanReadableErrorMessage;
 
-    /**
-     * Constructor.
-     *
-     * @param rootCause Root Cause.
-     * @param humanReadableErrorMessage Human Readable Error Message.
-     */
-    public DataServiceException(Throwable rootCause,
-            String humanReadableErrorMessage) {
-        super(rootCause);
-        this.humanReadableErrorMessage = humanReadableErrorMessage;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param rootCause Root Cause.
+	 * @param humanReadableErrorMessage Human Readable Error Message.
+	 */
+	public DataServiceException(Throwable rootCause, String humanReadableErrorMessage) {
+		super(rootCause);
+		this.humanReadableErrorMessage = humanReadableErrorMessage;
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param humanReadableErrorMessage Message.
-     */
-    public DataServiceException(String humanReadableErrorMessage) {
-        this.humanReadableErrorMessage = humanReadableErrorMessage;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param humanReadableErrorMessage Message.
+	 */
+	public DataServiceException(String humanReadableErrorMessage) {
+		this.humanReadableErrorMessage = humanReadableErrorMessage;
+	}
 
-    /**
-     * Gets Exception Message.
-     *
-     * @return Error Message.
-     */
-    public String getMessage() {
-        return this.humanReadableErrorMessage;
-    }
+	/**
+	 * Gets Exception Message.
+	 *
+	 * @return Error Message.
+	 */
+	public String getMessage() {
+		return this.humanReadableErrorMessage;
+	}
 }

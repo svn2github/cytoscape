@@ -1,4 +1,44 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package browser;
+
+import cytoscape.Cytoscape;
+
+import cytoscape.data.CyAttributes;
 
 import giny.model.GraphObject;
 
@@ -10,11 +50,11 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.undo.AbstractUndoableEdit;
 
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
 
+/**
+ *
+ */
 public class MultiDataEditAction extends AbstractUndoableEdit {
-
 	final List objects;
 	final String attributeTo;
 	final String attributeFrom;
@@ -27,20 +67,30 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	final String input;
 	CyAttributes data;
 	byte attType;
-
 	static String ADD = "Add";
 	static String SET = "Set";
 	static String MUL = "Mul";
 	static String DIV = "Div";
 	static String COPY = "Copy";
 	static String CLEAR = "Clear";
-
 	private String newAttrType;
 
-	public MultiDataEditAction(String input, String action, List objects,
-			String attributeTo, String attributeFrom, String[] keys,
-			int graphObjectType, DataTableModel table, String dataType) {
-
+	/**
+	 * Creates a new MultiDataEditAction object.
+	 *
+	 * @param input  DOCUMENT ME!
+	 * @param action  DOCUMENT ME!
+	 * @param objects  DOCUMENT ME!
+	 * @param attributeTo  DOCUMENT ME!
+	 * @param attributeFrom  DOCUMENT ME!
+	 * @param keys  DOCUMENT ME!
+	 * @param graphObjectType  DOCUMENT ME!
+	 * @param table  DOCUMENT ME!
+	 * @param dataType  DOCUMENT ME!
+	 */
+	public MultiDataEditAction(String input, String action, List objects, String attributeTo,
+	                           String attributeFrom, String[] keys, int graphObjectType,
+	                           DataTableModel table, String dataType) {
 		this.input = input;
 		this.action = action;
 		this.table = table;
@@ -53,17 +103,31 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		this.newAttrType = dataType;
 
 		initEdit();
-
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getPresentationName() {
 		return "Attribute " + attributeTo + " changed.";
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getRedoPresentationName() {
 		return "Redo: " + action;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getUndoPresentationName() {
 		return "Undo: " + action;
 	}
@@ -85,7 +149,6 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 	// Extract attribute value
 	private Object getAttributeValue(String id, String att) {
-
 		attType = data.getType(att);
 
 		if (attType == CyAttributes.TYPE_INTEGER)
@@ -100,41 +163,50 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			return data.getAttributeList(id, att);
 		else if (attType == CyAttributes.TYPE_SIMPLE_MAP)
 			return data.getAttributeMap(id, att);
+
 		return null;
 	}
 
 	// put back the new_values
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void redo() {
 		for (int i = 0; i < objects.size(); ++i) {
 			GraphObject go = (GraphObject) objects.get(i);
+
 			if (new_values.get(i) == null) {
-				data.getMultiHashMap().removeAllAttributeValues(
-						go.getIdentifier(), attributeTo);
+				data.getMultiHashMap().removeAllAttributeValues(go.getIdentifier(), attributeTo);
 			} else {
-				setAttributeValue(go.getIdentifier(), attributeTo, new_values
-						.get(i));
+				setAttributeValue(go.getIdentifier(), attributeTo, new_values.get(i));
 			}
 		}
+
 		table.setTable();
 	}
 
 	// put back the old_values
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void undo() {
 		for (int i = 0; i < objects.size(); ++i) {
 			GraphObject go = (GraphObject) objects.get(i);
+
 			if (old_values.get(i) == null) {
-				data.getMultiHashMap().removeAllAttributeValues(
-						go.getIdentifier(), attributeTo);
+				data.getMultiHashMap().removeAllAttributeValues(go.getIdentifier(), attributeTo);
 			} else {
-				setAttributeValue(go.getIdentifier(), attributeTo, old_values
-						.get(i));
+				setAttributeValue(go.getIdentifier(), attributeTo, old_values.get(i));
 			}
 		}
+
 		table.setTable();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void initEdit() {
-
 		// get proper Global CytoscapeData object
 		if (graphObjectType == 0) {
 			// node
@@ -149,7 +221,6 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		} else if (action == CLEAR) {
 			deleteAtt();
 		} else {
-
 			try {
 				attType = data.getType(attributeTo);
 			} catch (Exception ex) {
@@ -159,7 +230,6 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 				attType = CyAttributes.TYPE_STRING;
 
 				// TODO Type guessing!!!!
-
 			}
 
 			if (attType == -1) {
@@ -183,12 +253,12 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 				// TODO: HANDLE
 			}
 		}
-		if(graphObjectType != DataTable.NETWORK) {
+
+		if (graphObjectType != DataTable.NETWORK) {
 			table.setTable();
 		} else {
 			table.setNetworkTable();
 		}
-		
 	} // initEdit
 
 	/**
@@ -196,9 +266,9 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 * attributeTo the values that were copied will be saved to "new_values"
 	 */
 	private void copyAtt() {
-
 		if (data.getType(attributeFrom) != data.getType(attributeTo)) {
 			showErrorWindow("Copy Failed: Incompatible data types.");
+
 			return;
 		}
 
@@ -207,7 +277,6 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 		// System.out.println("####FROM: " + attributeFrom);
 		// System.out.println("####TO: " + attributeTo);
-
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
@@ -227,13 +296,11 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		old_values = new ArrayList(objects.size());
 
 		// Check data compatibility
-
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
 			old_values.add(getAttributeValue(go.getIdentifier(), attributeTo));
-			data.getMultiHashMap().removeAllAttributeValues(go.getIdentifier(),
-					attributeTo);
+			data.getMultiHashMap().removeAllAttributeValues(go.getIdentifier(), attributeTo);
 
 			new_values.add(null);
 		}
@@ -242,7 +309,8 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	// Pop-up window for error message
 	private void showErrorWindow(String errMessage) {
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), errMessage, "Error!",
-				JOptionPane.ERROR_MESSAGE);
+		                              JOptionPane.ERROR_MESSAGE);
+
 		return;
 	}
 
@@ -251,18 +319,18 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 * values.
 	 */
 	private void doubleAction(double input) {
-
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
+
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
 			// get the current value and set the old_value to it
-			Double d = (Double) getAttributeValue(go.getIdentifier(),
-					attributeTo);
+			Double d = (Double) getAttributeValue(go.getIdentifier(), attributeTo);
 			old_values.add(d);
 
 			double new_v;
+
 			if (action == SET)
 				new_v = input;
 			else if (action == ADD)
@@ -275,8 +343,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 				new_v = input;
 
 			new_values.add(new Double(new_v));
-			setAttributeValue(go.getIdentifier(), attributeTo,
-					new Double(new_v));
+			setAttributeValue(go.getIdentifier(), attributeTo, new Double(new_v));
 		} // iterator
 	} // doubleAction
 
@@ -285,18 +352,18 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 * values.
 	 */
 	private void integerAction(int input) {
-
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
+
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
 			// get the current value and set the old_value to it
-			Integer d = (Integer) getAttributeValue(go.getIdentifier(),
-					attributeTo);
+			Integer d = (Integer) getAttributeValue(go.getIdentifier(), attributeTo);
 			old_values.add(d);
 
 			int new_v;
+
 			if (action == SET)
 				new_v = input;
 			else if (action == ADD)
@@ -309,8 +376,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 				new_v = input;
 
 			new_values.add(new Integer(new_v));
-			setAttributeValue(go.getIdentifier(), attributeTo, new Integer(
-					new_v));
+			setAttributeValue(go.getIdentifier(), attributeTo, new Integer(new_v));
 		} // iterator
 	} // integerAction
 
@@ -320,19 +386,21 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 */
 	private void stringAction(String input) {
 		// return if number only action
-		if (action == DIV || action == MUL)
+		if ((action == DIV) || (action == MUL))
 			return;
 
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
+
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
 			// get the current value and set the old_value to it
-			String s = (String) getAttributeValue(go.getIdentifier(),
-					attributeTo);
+			String s = (String) getAttributeValue(go.getIdentifier(), attributeTo);
 			old_values.add(s);
+
 			String new_v;
+
 			if (action == SET)
 				new_v = input;
 			else
@@ -340,27 +408,24 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 			new_values.add(new_v);
 			setAttributeValue(go.getIdentifier(), attributeTo, new_v);
-
 		} // iterator
 	} // stringAction
 
 	private void booleanAction(Boolean input) {
-
-		if (action == DIV || action == MUL || action == ADD)
+		if ((action == DIV) || (action == MUL) || (action == ADD))
 			return;
 
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
+
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
 			// get the current value and set the old_value to it
-			Boolean b = (Boolean) getAttributeValue(go.getIdentifier(),
-					attributeTo);
+			Boolean b = (Boolean) getAttributeValue(go.getIdentifier(), attributeTo);
 			old_values.add(b);
 			setAttributeValue(go.getIdentifier(), attributeTo, input);
 			new_values.add(input);
 		} // iterator
 	} // booleanAction
-
 }

@@ -35,11 +35,14 @@
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
 import cytoscape.data.ImportHandler;
+
 import cytoscape.data.readers.GraphReader;
+
 import cytoscape.util.CyFileFilter;
 
 import java.io.File;
 import java.io.IOException;
+
 
 /**
  * PsiMi Filter class.  Extends CyFileFilter for integration into the Cytoscape ImportHandler
@@ -48,71 +51,74 @@ import java.io.IOException;
  * @author Ethan Cerami.
  */
 public class PsiMiFilter extends CyFileFilter {
+	/**
+	 * PSI-MI Files are Graphs.
+	 */
+	private static String fileNature = ImportHandler.GRAPH_NATURE;
 
-    /**
-     * PSI-MI Files are Graphs.
-     */
-    private static String fileNature = ImportHandler.GRAPH_NATURE;
+	/**
+	 * File Extensions.
+	 */
+	private static String[] fileExtensions = { "xml" };
 
-    /**
-     * File Extensions.
-     */
-    private static String[] fileExtensions = {"xml"};
+	/**
+	 * Filter Description.
+	 */
+	private static String description = "PSI-MI files";
 
-    /**
-     * Filter Description.
-     */
-    private static String description = "PSI-MI files";
+	/**
+	 * Constructor.
+	 */
+	public PsiMiFilter() {
+		super(fileExtensions, description, fileNature);
+	}
 
-    /**
-     * Constructor.
-     */
-    public PsiMiFilter() {
-        super(fileExtensions, description, fileNature);
-    }
+	/**
+	 * Indicates which files the PsiMiFilter accepts.
+	 * <p/>
+	 * This method will return true only if:
+	 * <UL>
+	 * <LI>File ends in .xml;  and
+	 * <LI>File header includes the root entrySet element.
+	 * </UL>
+	 *
+	 * @param file File
+	 * @return true or false.
+	 */
+	public boolean accept(File file) {
+		String fileName = file.getName();
+		boolean firstPass = false;
 
-    /**
-     * Indicates which files the PsiMiFilter accepts.
-     * <p/>
-     * This method will return true only if:
-     * <UL>
-     * <LI>File ends in .xml;  and
-     * <LI>File header includes the root entrySet element.
-     * </UL>
-     *
-     * @param file File
-     * @return true or false.
-     */
-    public boolean accept(File file) {
-        String fileName = file.getName();
-        boolean firstPass = false;
-        //  First test:  file must end with one of the registered file extensions.
-        for (int i = 0; i < fileExtensions.length; i++) {
-            if (fileName.endsWith(fileExtensions[i])) {
-                firstPass = true;
-            }
-        }
-        if (firstPass) {
-            //  Second test:  file header must contain the root PSI-MI entry set
-            try {
-                String header = getHeader(file);
-                if (header.indexOf("<entrySet") > -1) {
-                    return true;
-                }
-            } catch (IOException e) {
-                firstPass = false;
-            }
-        }
-        return false;
-    }
+		//  First test:  file must end with one of the registered file extensions.
+		for (int i = 0; i < fileExtensions.length; i++) {
+			if (fileName.endsWith(fileExtensions[i])) {
+				firstPass = true;
+			}
+		}
 
-    /**
-     * Gets the appropirate GraphReader object.
-     *
-     * @param fileName File Name.
-     * @return GraphReader Object.
-     */
-    public GraphReader getReader(String fileName) {
-        return new PsiMiGraphReader(fileName);
-    }
+		if (firstPass) {
+			//  Second test:  file header must contain the root PSI-MI entry set
+			try {
+				String header = getHeader(file);
+
+				if (header.indexOf("<entrySet") > -1) {
+					return true;
+				}
+			} catch (IOException e) {
+				firstPass = false;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Gets the appropirate GraphReader object.
+	 *
+	 * @param fileName File Name.
+	 * @return GraphReader Object.
+	 */
+	public GraphReader getReader(String fileName) {
+		return new PsiMiGraphReader(fileName);
+	}
 }

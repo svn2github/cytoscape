@@ -2,36 +2,55 @@
 package linkout;
 
 import cytoscape.*;
-import cytoscape.view.*;
+
+import cytoscape.init.*;
+
 //import cytoscape.browsers.*;
 import cytoscape.util.*;
-import cytoscape.init.*;
-import java.util.*;
-import giny.model.*;
-import giny.view.*;
-import phoebe.*;
+
+import cytoscape.view.*;
+
 import edu.umd.cs.piccolo.*;
 import edu.umd.cs.piccolo.activities.*;
-import javax.swing.*;
+
+import giny.model.*;
+
+import giny.view.*;
+
+import phoebe.*;
+
 import java.awt.event.*;
 
+import java.util.*;
+
+import javax.swing.*;
+
+
+/**
+ *
+ */
 public class LinkOutTester {
-	public static void main (String [] args){
-		LinkOut lo= new LinkOut();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param args DOCUMENT ME!
+	 */
+	public static void main(String[] args) {
+		LinkOut lo = new LinkOut();
 
-        //JMenuItem jmi=lo.AddLinks();
+		//JMenuItem jmi=lo.AddLinks();
 
-/*
-        for(Iterator entry=lo.GetMap().keySet().iterator(); entry.hasNext();){
-            String[] temp=((String)entry.next()).split("\\.");
+		/*
+		        for(Iterator entry=lo.GetMap().keySet().iterator(); entry.hasNext();){
+		            String[] temp=((String)entry.next()).split("\\.");
 
-            //System.out.println("entering menu "+temp[0]);
+		            //System.out.println("entering menu "+temp[0]);
 
-            ArrayList keys=new ArrayList (Arrays.asList(temp));
-            lo.GenerateLinks(keys, link_menu);
-        }
-*/
+		            ArrayList keys=new ArrayList (Arrays.asList(temp));
+		            lo.GenerateLinks(keys, link_menu);
+		        }
+		*/
 
-        //lo.PrintMenu((JMenu)jmi);
-    }
+		//lo.PrintMenu((JMenu)jmi);
+	}
 }

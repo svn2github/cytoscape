@@ -1,10 +1,12 @@
 /*
- * @(#)VertexRenderer.java	1.0 03-JUL-04
- * 
+ * @(#)VertexRenderer.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.JGraph;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -16,14 +18,15 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
 import java.io.Serializable;
+
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 
-import org.jgraph.JGraph;
 
 /**
  * This renderer displays entries that implement the CellView interface and
@@ -35,32 +38,44 @@ import org.jgraph.JGraph;
  * GraphConstants.VERTICAL_ALIGNMENT GraphConstants.HORIZONTAL_ALIGNMENT
  * GraphConstants.VERTICAL_TEXT_POSITION GraphConstants.HORIZONTAL_TEXT_POSITION
  * </li>
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
-public class VertexRenderer extends JLabel implements CellViewRenderer,
-		Serializable {
-
+public class VertexRenderer extends JLabel implements CellViewRenderer, Serializable {
 	/** Cache the current shape for drawing. */
 	transient protected VertexView view;
 
 	/** Cached hasFocus and selected value. */
-	transient protected boolean hasFocus, selected, preview, childrenSelected;
+	transient protected boolean hasFocus;
+
+	/** Cached hasFocus and selected value. */
+	transient protected boolean selected;
+
+	/** Cached hasFocus and selected value. */
+	transient protected boolean preview;
+
+	/** Cached hasFocus and selected value. */
+	transient protected boolean childrenSelected;
 
 	/** Cached default foreground and default background. */
-	transient protected Color defaultForeground, defaultBackground,
-			bordercolor;
+	transient protected Color defaultForeground;
+
+	/** Cached default foreground and default background. */
+	transient protected Color defaultBackground;
+
+	/** Cached default foreground and default background. */
+	transient protected Color bordercolor;
 
 	/** Cached borderwidth. */
 	transient protected int borderWidth;
 
 	/** Cached value of the double buffered state */
 	transient protected boolean isDoubleBuffered = false;
-
-	transient protected Color gradientColor = null, gridColor = Color.black,
-			highlightColor = Color.black, lockedHandleColor = Color.black;
+	transient protected Color gradientColor = null;
+	transient protected Color gridColor = Color.black;
+	transient protected Color highlightColor = Color.black;
+	transient protected Color lockedHandleColor = Color.black;
 
 	/**
 	 * Constructs a renderer that may be used to render vertices.
@@ -75,7 +90,7 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 	 * The value is typically set from messaging the graph with
 	 * <code>convertValueToString</code>. We recommend you check the value's
 	 * class and throw an illegal argument exception if it's not correct.
-	 * 
+	 *
 	 * @param graph
 	 *            the graph that that defines the rendering context.
 	 * @param view
@@ -88,35 +103,40 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 	 *            whether we are drawing a preview.
 	 * @return the component used to render the value.
 	 */
-	public Component getRendererComponent(JGraph graph, CellView view,
-			boolean sel, boolean focus, boolean preview) {
+	public Component getRendererComponent(JGraph graph, CellView view, boolean sel, boolean focus,
+	                                      boolean preview) {
 		gridColor = graph.getGridColor();
 		highlightColor = graph.getHighlightColor();
 		lockedHandleColor = graph.getLockedHandleColor();
 		isDoubleBuffered = graph.isDoubleBuffered();
+
 		if (view instanceof VertexView) {
 			this.view = (VertexView) view;
 			setComponentOrientation(graph.getComponentOrientation());
+
 			if (graph.getEditingCell() != view.getCell()) {
 				Object label = graph.convertValueToString(view);
+
 				if (label != null)
 					setText(label.toString());
 				else
 					setText(null);
 			} else
 				setText(null);
+
 			this.hasFocus = focus;
-			this.childrenSelected = graph.getSelectionModel()
-					.isChildrenSelected(view.getCell());
+			this.childrenSelected = graph.getSelectionModel().isChildrenSelected(view.getCell());
 			this.selected = sel;
 			this.preview = preview;
-			if (this.view.isLeaf()
-					|| GraphConstants.isGroupOpaque(view.getAllAttributes()))
+
+			if (this.view.isLeaf() || GraphConstants.isGroupOpaque(view.getAllAttributes()))
 				installAttributes(view);
 			else
 				resetAttributes();
+
 			return this;
 		}
+
 		return null;
 	}
 
@@ -124,7 +144,7 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 	 * Hook for subclassers that is invoked when the installAttributes is not
 	 * called to reset all attributes to the defaults. <br>
 	 * Subclassers must invoke the superclass implementation.
-	 * 
+	 *
 	 */
 	protected void resetAttributes() {
 		setText(null);
@@ -138,7 +158,7 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 	 * Install the attributes of specified cell in this renderer instance. This
 	 * means, retrieve every published key from the cells hashtable and set
 	 * global variables or superclass properties accordingly.
-	 * 
+	 *
 	 * @param view
 	 *            the cell view to retrieve the attribute values from.
 	 */
@@ -153,12 +173,16 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 		setHorizontalTextPosition(GraphConstants.getHorizontalTextPosition(map));
 		bordercolor = GraphConstants.getBorderColor(map);
 		borderWidth = Math.max(1, Math.round(GraphConstants.getLineWidth(map)));
-		if (getBorder() == null && bordercolor != null)
+
+		if ((getBorder() == null) && (bordercolor != null))
 			setBorder(BorderFactory.createLineBorder(bordercolor, borderWidth));
+
 		Color foreground = GraphConstants.getForeground(map);
 		setForeground((foreground != null) ? foreground : defaultForeground);
+
 		Color gradientColor = GraphConstants.getGradientColor(map);
 		setGradientColor(gradientColor);
+
 		Color background = GraphConstants.getBackground(map);
 		setBackground((background != null) ? background : defaultBackground);
 		setFont(GraphConstants.getFont(map));
@@ -169,13 +193,15 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 	 */
 	public void paint(Graphics g) {
 		try {
-			if (gradientColor != null && !preview && isOpaque()) {
+			if ((gradientColor != null) && !preview && isOpaque()) {
 				setOpaque(false);
+
 				Graphics2D g2d = (Graphics2D) g;
-				g2d.setPaint(new GradientPaint(0, 0, getBackground(),
-						getWidth(), getHeight(), gradientColor, true));
+				g2d.setPaint(new GradientPaint(0, 0, getBackground(), getWidth(), getHeight(),
+				                               gradientColor, true));
 				g2d.fillRect(0, 0, getWidth(), getHeight());
 			}
+
 			super.paint(g);
 			paintSelectionBorder(g);
 		} catch (IllegalArgumentException e) {
@@ -190,6 +216,7 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 		Graphics2D g2 = (Graphics2D) g;
 		Stroke previousStroke = g2.getStroke();
 		g2.setStroke(GraphConstants.SELECTION_STROKE);
+
 		if (childrenSelected || selected) {
 			if (childrenSelected)
 				g.setColor(gridColor);
@@ -197,9 +224,11 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 				g.setColor(lockedHandleColor);
 			else if (selected)
 				g.setColor(highlightColor);
+
 			Dimension d = getSize();
 			g.drawRect(0, 0, d.width - 1, d.height - 1);
 		}
+
 		g2.setStroke(previousStroke);
 	}
 
@@ -214,29 +243,32 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 		double y = bounds.getY();
 		double width = bounds.getWidth();
 		double height = bounds.getHeight();
-		double xCenter = x + width / 2;
-		double yCenter = y + height / 2;
+		double xCenter = x + (width / 2);
+		double yCenter = y + (height / 2);
 		double dx = p.getX() - xCenter; // Compute Angle
 		double dy = p.getY() - yCenter;
 		double alpha = Math.atan2(dy, dx);
-		double xout = 0, yout = 0;
+		double xout = 0;
+		double yout = 0;
 		double pi = Math.PI;
 		double pi2 = Math.PI / 2.0;
 		double beta = pi2 - alpha;
 		double t = Math.atan2(height, width);
-		if (alpha < -pi + t || alpha > pi - t) { // Left edge
+
+		if ((alpha < (-pi + t)) || (alpha > (pi - t))) { // Left edge
 			xout = x;
-			yout = yCenter - width * Math.tan(alpha) / 2;
+			yout = yCenter - ((width * Math.tan(alpha)) / 2);
 		} else if (alpha < -t) { // Top Edge
 			yout = y;
-			xout = xCenter - height * Math.tan(beta) / 2;
+			xout = xCenter - ((height * Math.tan(beta)) / 2);
 		} else if (alpha < t) { // Right Edge
 			xout = x + width;
-			yout = yCenter + width * Math.tan(alpha) / 2;
+			yout = yCenter + ((width * Math.tan(alpha)) / 2);
 		} else { // Bottom Edge
 			yout = y + height;
-			xout = xCenter + height * Math.tan(beta) / 2;
+			xout = xCenter + ((height * Math.tan(beta)) / 2);
 		}
+
 		return new Point2D.Double(xout, yout);
 	}
 
@@ -272,8 +304,7 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 	 * Overridden for performance reasons. See the <a
 	 * href="#override">Implementation Note </a> for more information.
 	 */
-	protected void firePropertyChange(String propertyName, Object oldValue,
-			Object newValue) {
+	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		// Strings get interned...
 		if (propertyName == "text")
 			super.firePropertyChange(propertyName, oldValue, newValue);
@@ -283,64 +314,56 @@ public class VertexRenderer extends JLabel implements CellViewRenderer,
 	 * Overridden for performance reasons. See the <a
 	 * href="#override">Implementation Note </a> for more information.
 	 */
-	public void firePropertyChange(String propertyName, byte oldValue,
-			byte newValue) {
+	public void firePropertyChange(String propertyName, byte oldValue, byte newValue) {
 	}
 
 	/**
 	 * Overridden for performance reasons. See the <a
 	 * href="#override">Implementation Note </a> for more information.
 	 */
-	public void firePropertyChange(String propertyName, char oldValue,
-			char newValue) {
+	public void firePropertyChange(String propertyName, char oldValue, char newValue) {
 	}
 
 	/**
 	 * Overridden for performance reasons. See the <a
 	 * href="#override">Implementation Note </a> for more information.
 	 */
-	public void firePropertyChange(String propertyName, short oldValue,
-			short newValue) {
+	public void firePropertyChange(String propertyName, short oldValue, short newValue) {
 	}
 
 	/**
 	 * Overridden for performance reasons. See the <a
 	 * href="#override">Implementation Note </a> for more information.
 	 */
-	public void firePropertyChange(String propertyName, int oldValue,
-			int newValue) {
+	public void firePropertyChange(String propertyName, int oldValue, int newValue) {
 	}
 
 	/**
 	 * Overridden for performance reasons. See the <a
 	 * href="#override">Implementation Note </a> for more information.
 	 */
-	public void firePropertyChange(String propertyName, long oldValue,
-			long newValue) {
+	public void firePropertyChange(String propertyName, long oldValue, long newValue) {
 	}
 
 	/**
 	 * Overridden for performance reasons. See the <a
 	 * href="#override">Implementation Note </a> for more information.
 	 */
-	public void firePropertyChange(String propertyName, float oldValue,
-			float newValue) {
+	public void firePropertyChange(String propertyName, float oldValue, float newValue) {
 	}
 
 	/**
 	 * Overridden for performance reasons. See the <a
 	 * href="#override">Implementation Note </a> for more information.
 	 */
-	public void firePropertyChange(String propertyName, double oldValue,
-			double newValue) {
+	public void firePropertyChange(String propertyName, double oldValue, double newValue) {
 	}
 
 	/**
 	 * Overridden for performance reasons. See the <a
 	 * href="#override">Implementation Note </a> for more information.
 	 */
-	public void firePropertyChange(String propertyName, boolean oldValue,
-			boolean newValue) {
+	public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
 	}
 
 	/**

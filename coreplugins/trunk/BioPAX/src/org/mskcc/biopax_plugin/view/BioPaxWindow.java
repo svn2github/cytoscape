@@ -33,9 +33,12 @@ package org.mskcc.biopax_plugin.view;
 
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 
-import javax.swing.*;
 import java.awt.*;
+
 import java.io.FileReader;
+
+import javax.swing.*;
+
 
 /**
  * BioPAX Window.
@@ -45,48 +48,47 @@ import java.io.FileReader;
  * @author Ethan Cerami.
  */
 public class BioPaxWindow extends JFrame {
-    private static BioPaxContainer bpContainer = null;
-    private Color bgColor = new Color(236, 233, 216);
+	private static BioPaxContainer bpContainer = null;
+	private Color bgColor = new Color(236, 233, 216);
 
-    //  Window Width/Height
-    private int width = 350;
-    private int height = 400;
+	//  Window Width/Height
+	private int width = 350;
+	private int height = 400;
 
-    /**
-     * Private Constructor, to enforce singleton pattern.
-     */
-    public BioPaxWindow() {
-        this.setResizable(false);
-        this.setBackground(bgColor);
-        this.setTitle("BioPAX Extension");
-        Container container = this.getContentPane();
-        bpContainer = BioPaxContainer.getInstance();
-        container.add(bpContainer);
-        setSize(width, height);
-    }
+	/**
+	 * Private Constructor, to enforce singleton pattern.
+	 */
+	public BioPaxWindow() {
+		this.setResizable(false);
+		this.setBackground(bgColor);
+		this.setTitle("BioPAX Extension");
 
-    /**
-     * Used to local testing purposes only.
-     *
-     * @param args Command Line Arguments
-     * @throws Exception All Exceptions.
-     */
-    public static void main(String[] args) throws Exception {
-        FileReader fileReader = new FileReader("testData/biopax_complex.owl");
-        final BioPaxUtil bpUtil = new BioPaxUtil(fileReader);
-        BioPaxWindow bioPaxWindow = new BioPaxWindow();
-        SwingUtilities.invokeAndWait(new Runnable() {
-            public void run() {
-                try {
-                    BioPaxContainer bpContainer =
-                            BioPaxContainer.getInstance();
-                    BioPaxDetailsPanel bpPanel =
-                            bpContainer.getBioPaxDetailsPanel();
-                    bpPanel.showDetails("CPATH-124");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+		Container container = this.getContentPane();
+		bpContainer = BioPaxContainer.getInstance();
+		container.add(bpContainer);
+		setSize(width, height);
+	}
+
+	/**
+	 * Used to local testing purposes only.
+	 *
+	 * @param args Command Line Arguments
+	 * @throws Exception All Exceptions.
+	 */
+	public static void main(String[] args) throws Exception {
+		FileReader fileReader = new FileReader("testData/biopax_complex.owl");
+		final BioPaxUtil bpUtil = new BioPaxUtil(fileReader);
+		BioPaxWindow bioPaxWindow = new BioPaxWindow();
+		SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					try {
+						BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+						BioPaxDetailsPanel bpPanel = bpContainer.getBioPaxDetailsPanel();
+						bpPanel.showDetails("CPATH-124");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+	}
 }

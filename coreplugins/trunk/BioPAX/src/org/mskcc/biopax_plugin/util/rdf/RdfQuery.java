@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
+
 /**
  * Enables XPath-"lite" Queries on RDF Documents.
  * <p/>
@@ -48,90 +49,95 @@ import java.util.StringTokenizer;
  * @author Ethan Cerami.
  */
 public class RdfQuery {
-    private HashMap rdfMap;
+	private HashMap rdfMap;
 
-    /**
-     * A Hashmap of all XML Elements, keyed by RDF ID.
-     *
-     * @param rdfMap HashMap of RDF ID to XML Element.
-     */
-    public RdfQuery(HashMap rdfMap) {
-        this.rdfMap = rdfMap;
-    }
+	/**
+	 * A Hashmap of all XML Elements, keyed by RDF ID.
+	 *
+	 * @param rdfMap HashMap of RDF ID to XML Element.
+	 */
+	public RdfQuery(HashMap rdfMap) {
+		this.rdfMap = rdfMap;
+	}
 
-    /**
-     * Gets all Nodes that match the XPath-"lite" Query.
-     *
-     * @param e     Target Element.
-     * @param query XPath-"lite" Query.
-     * @return ArrayList of JDOM Elements, which match the query.
-     */
-    public ArrayList getNodes(Element e, String query) {
-        StringTokenizer tokenizer = new StringTokenizer(query, "/");
-        ArrayList queryList = new ArrayList();
-        while (tokenizer.hasMoreElements()) {
-            String target = tokenizer.nextToken();
-            queryList.add(target);
-        }
-        return traverse(e, queryList, 0);
-    }
+	/**
+	 * Gets all Nodes that match the XPath-"lite" Query.
+	 *
+	 * @param e     Target Element.
+	 * @param query XPath-"lite" Query.
+	 * @return ArrayList of JDOM Elements, which match the query.
+	 */
+	public ArrayList getNodes(Element e, String query) {
+		StringTokenizer tokenizer = new StringTokenizer(query, "/");
+		ArrayList queryList = new ArrayList();
 
-    /**
-     * Gets First Node that match the XPath-"lite" Query.
-     *
-     * @param e     Target Element.
-     * @param query XPath-"lite" Query.
-     * @return ArrayList of JDOM Elements, which match the query.
-     */
-    public Element getNode(Element e, String query) {
-        StringTokenizer tokenizer = new StringTokenizer(query, "/");
-        ArrayList queryList = new ArrayList();
-        while (tokenizer.hasMoreElements()) {
-            String target = tokenizer.nextToken();
-            queryList.add(target);
-        }
-        ArrayList list = traverse(e, queryList, 0);
-        if (list.size() > 0) {
-            return (Element) list.get(0);
-        } else {
-            return null;
-        }
-    }
+		while (tokenizer.hasMoreElements()) {
+			String target = tokenizer.nextToken();
+			queryList.add(target);
+		}
 
-    /**
-     * Traverse the Document Tree, matching the query one level at a time.
-     */
-    private ArrayList traverse(Element e, ArrayList queryList,
-            int index) {
-        String target = (String) queryList.get(index);
-        List children = new ArrayList();
+		return traverse(e, queryList, 0);
+	}
 
-        //  If this element points to something via RDF, go get the reference,
-        //  and keep walking from there.
-        Attribute rdfResourceAttribute = e.getAttribute
-                (RdfConstants.RESOURCE_ATTRIBUTE,
-                        RdfConstants.RDF_NAMESPACE);
-        if (rdfResourceAttribute != null) {
-            String rdfKey = RdfUtil.removeHashMark
-                    (rdfResourceAttribute.getValue());
-            Element resource = (Element) rdfMap.get(rdfKey);
-            children.add(resource);
-        } else {
-            children = e.getChildren();
-        }
+	/**
+	 * Gets First Node that match the XPath-"lite" Query.
+	 *
+	 * @param e     Target Element.
+	 * @param query XPath-"lite" Query.
+	 * @return ArrayList of JDOM Elements, which match the query.
+	 */
+	public Element getNode(Element e, String query) {
+		StringTokenizer tokenizer = new StringTokenizer(query, "/");
+		ArrayList queryList = new ArrayList();
 
-        ArrayList targetNodes = new ArrayList();
-        for (int i = 0; i < children.size(); i++) {
-            Element child = (Element) children.get(i);
-            if (target.equals("*")
-                    || child.getName().equalsIgnoreCase(target)) {
-                if (index < queryList.size() - 1) {
-                    targetNodes.addAll(traverse(child, queryList, index + 1));
-                } else {
-                    targetNodes.add(child);
-                }
-            }
-        }
-        return targetNodes;
-    }
+		while (tokenizer.hasMoreElements()) {
+			String target = tokenizer.nextToken();
+			queryList.add(target);
+		}
+
+		ArrayList list = traverse(e, queryList, 0);
+
+		if (list.size() > 0) {
+			return (Element) list.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Traverse the Document Tree, matching the query one level at a time.
+	 */
+	private ArrayList traverse(Element e, ArrayList queryList, int index) {
+		String target = (String) queryList.get(index);
+		List children = new ArrayList();
+
+		//  If this element points to something via RDF, go get the reference,
+		//  and keep walking from there.
+		Attribute rdfResourceAttribute = e.getAttribute(RdfConstants.RESOURCE_ATTRIBUTE,
+		                                                RdfConstants.RDF_NAMESPACE);
+
+		if (rdfResourceAttribute != null) {
+			String rdfKey = RdfUtil.removeHashMark(rdfResourceAttribute.getValue());
+			Element resource = (Element) rdfMap.get(rdfKey);
+			children.add(resource);
+		} else {
+			children = e.getChildren();
+		}
+
+		ArrayList targetNodes = new ArrayList();
+
+		for (int i = 0; i < children.size(); i++) {
+			Element child = (Element) children.get(i);
+
+			if (target.equals("*") || child.getName().equalsIgnoreCase(target)) {
+				if (index < (queryList.size() - 1)) {
+					targetNodes.addAll(traverse(child, queryList, index + 1));
+				} else {
+					targetNodes.add(child);
+				}
+			}
+		}
+
+		return targetNodes;
+	}
 }

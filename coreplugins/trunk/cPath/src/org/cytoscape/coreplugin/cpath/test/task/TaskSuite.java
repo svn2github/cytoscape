@@ -38,22 +38,23 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+
 /**
  * Suite of Mapper JUnit Tests.
  *
  * @author Ethan Cerami.
  */
 public class TaskSuite extends TestCase {
+	/**
+	 * The suite method runs all the tests.
+	 *
+	 * @return Suite of JUnit tests.
+	 */
+	public static Test suite() {
+		TestSuite suite = new TestSuite();
+		suite.addTestSuite(TestCPathTimeEstimator.class);
+		suite.setName("Test cPath Tasks");
 
-    /**
-     * The suite method runs all the tests.
-     *
-     * @return Suite of JUnit tests.
-     */
-    public static Test suite () {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(TestCPathTimeEstimator.class);
-        suite.setName("Test cPath Tasks");
-        return suite;
-    }
+		return suite;
+	}
 }

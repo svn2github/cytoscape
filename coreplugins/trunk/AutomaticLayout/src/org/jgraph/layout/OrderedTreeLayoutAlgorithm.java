@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004, Alain Michaud
- * All rights reserved. 
- * 
+ * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
  * - Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation 
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  * - Neither the name of JGraph nor the names of its contributors may be used
  *   to endorse or promote products derived from this software without specific
@@ -26,13 +26,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package org.jgraph.layout;
- 
+
+import org.jgraph.graph.CellView;
+import org.jgraph.graph.GraphModel;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jgraph.graph.CellView;
-import org.jgraph.graph.GraphModel;
 
 /**
  * This class is similar to the TreeLayoutAlgorithm but it will sort
@@ -42,24 +43,23 @@ import org.jgraph.graph.GraphModel;
  * @author Alain Michaud
  */
 public class OrderedTreeLayoutAlgorithm extends TreeLayoutAlgorithm {
-
 	private Comparator comparator = null;
 
 	/**
 	 * Constructor
 	 * @param comparator use to sort the cells
 	 */
-	public OrderedTreeLayoutAlgorithm(Comparator comparator){
-	    super();
-	    setComparator(comparator);
+	public OrderedTreeLayoutAlgorithm(Comparator comparator) {
+		super();
+		setComparator(comparator);
 	}
 
 	/**
 	 * Constructor (will use the default comparator)
 	 */
-	public OrderedTreeLayoutAlgorithm(){
-	    super();
-	    setComparator(new DefaultComparator());
+	public OrderedTreeLayoutAlgorithm() {
+		super();
+		setComparator(new DefaultComparator());
 	}
 
 	/**
@@ -70,41 +70,40 @@ public class OrderedTreeLayoutAlgorithm extends TreeLayoutAlgorithm {
 		return "Ordered Tree Layout";
 	}
 
-    /**
-     * @param comparator The cell's comparator
-     */
-    public void setComparator(Comparator comparator) {
-        this.comparator = comparator;
-    }
+	/**
+	 * @param comparator The cell's comparator
+	 */
+	public void setComparator(Comparator comparator) {
+		this.comparator = comparator;
+	}
 
-    /**
-     * @return the cell comparator
-     */
-    public Comparator getComparator(){
-        return this.comparator;
-    }
+	/**
+	 * @return the cell comparator
+	 */
+	public Comparator getComparator() {
+		return this.comparator;
+	}
 
-    /**
-     * Gets the children of the given cell view and sorts
-     * it using a supplied comparator or the default comparator if
-     * none is specified
-     */
+	/**
+	 * Gets the children of the given cell view and sorts
+	 * it using a supplied comparator or the default comparator if
+	 * none is specified
+	 */
 	public List getChildren(CellView view) {
-	    //call in the getChildren methode of the TreeLayoutAlgorithm
-	    List children = super.getChildren(view);
+		//call in the getChildren methode of the TreeLayoutAlgorithm
+		List children = super.getChildren(view);
 
 		//Sort the list using the provided comparator
-		if(null == comparator){
-		    Collections.sort(children);
+		if (null == comparator) {
+			Collections.sort(children);
+		} else {
+			Collections.sort(children, comparator);
 		}
-		else{
-		    Collections.sort(children, comparator);
-		}
+
 		return children;
 	}
-	
-	public class DefaultComparator implements Comparator {
 
+	public class DefaultComparator implements Comparator {
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
@@ -117,11 +116,11 @@ public class OrderedTreeLayoutAlgorithm extends TreeLayoutAlgorithm {
 				Object p2 = m.getParent(c2);
 				int index1 = (p1 == null) ? m.getIndexOfRoot(c1) : m.getIndexOfChild(p1, c1);
 				int index2 = (p2 == null) ? m.getIndexOfRoot(c2) : m.getIndexOfChild(p2, c2);
+
 				return new Integer(index1).compareTo(new Integer(index2));
 			}
+
 			return -1;
 		}
-		
 	}
- 
 }

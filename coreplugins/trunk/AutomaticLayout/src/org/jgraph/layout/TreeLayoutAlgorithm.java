@@ -1,16 +1,16 @@
 /*
  * @(#)TreeLayoutAlgorithm.java 1.0 12-MAY-2004
- * 
+ *
  * Copyright (c) 2004, Martin Krueger
- * All rights reserved. 
- * 
+ * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
  * - Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation 
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  * - Neither the name of JGraph nor the names of its contributors may be used
  *   to endorse or promote products derived from this software without specific
@@ -29,11 +29,23 @@
  */
 package org.jgraph.layout;
 
+import cytoscape.Cytoscape;
+
+import org.jgraph.JGraph;
+
+import org.jgraph.graph.CellView;
+import org.jgraph.graph.EdgeView;
+import org.jgraph.graph.GraphConstants;
+import org.jgraph.graph.GraphModel;
+import org.jgraph.graph.PortView;
+import org.jgraph.graph.VertexView;
+
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,26 +54,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.SwingConstants;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 
-import org.jgraph.JGraph;
-import org.jgraph.graph.CellView;
-import org.jgraph.graph.VertexView;
-import org.jgraph.graph.EdgeView;
-import org.jgraph.graph.PortView;
-import org.jgraph.graph.GraphConstants;
-import org.jgraph.graph.GraphModel;
-
-import cytoscape.Cytoscape;
 
 /**
  * TODO:COMMENT ME!
- * 
+ *
  * @author krueger
  */
 public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
-
 	protected int alignment = SwingConstants.TOP;
 	protected int orientation = SwingConstants.NORTH;
 	protected int levelDistance = 30;
@@ -69,9 +71,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	protected boolean centerRoot = false;
 	protected boolean combineLevelNodes = true;
 	private HashMap nodesSeen = new HashMap();
-
 	protected JGraph graph;
-
 	protected Map cell2node = new HashMap(); //CellView -> TreeNode
 
 	/**
@@ -81,7 +81,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	public String toString() {
 		return "Tree Layout";
 	}
-	
+
 	/**
 	 * Get a human readable hint for using this layout.
 	 */
@@ -89,10 +89,15 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		return "Select a root node";
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public JGraphLayoutSettings createSettings() {
 		return new TreeLayoutSettings(this);
 	}
-	
+
 	/**
 	 * SwingConstants.TOP
 	 * SwingConstants.CENTER
@@ -100,9 +105,8 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	 * @param alignment
 	 */
 	public void setAlignment(int alignment) {
-		if (alignment != SwingConstants.TOP
-			&& alignment != SwingConstants.CENTER
-			&& alignment != SwingConstants.BOTTOM) {
+		if ((alignment != SwingConstants.TOP) && (alignment != SwingConstants.CENTER)
+		    && (alignment != SwingConstants.BOTTOM)) {
 			throw new IllegalArgumentException("Alignment must be one of TOP, CENTER or BOTTOM"); //$NON-NLS-1$
 		}
 
@@ -117,52 +121,80 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	 * @param orientation
 	 */
 	public void setOrientation(int orientation) {
-		if (orientation != SwingConstants.NORTH
-			&& orientation != SwingConstants.EAST
-			&& orientation != SwingConstants.SOUTH
-			&& orientation != SwingConstants.WEST) {
+		if ((orientation != SwingConstants.NORTH) && (orientation != SwingConstants.EAST)
+		    && (orientation != SwingConstants.SOUTH) && (orientation != SwingConstants.WEST)) {
 			throw new IllegalArgumentException("Orientation must be one of NORTH, EAST, SOUTH or WEST");
 		}
+
 		this.orientation = orientation;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param distance DOCUMENT ME!
+	 */
 	public void setLevelDistance(int distance) {
 		levelDistance = distance;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param distance DOCUMENT ME!
+	 */
 	public void setNodeDistance(int distance) {
 		nodeDistance = distance;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param b DOCUMENT ME!
+	 */
 	public void setCenterRoot(boolean b) {
 		centerRoot = b;
 	}
 
 	/*
-     * @param graph JGraph instance
-     * @param dynamic_cells List of all nodes the layout should move
-     * @param static_cells List of node the layout should not move but allow for
+	 * @param graph JGraph instance
+	 * @param dynamic_cells List of all nodes the layout should move
+	 * @param static_cells List of node the layout should not move but allow for
 	 */
-  public void run(JGraph graph, Object[] dynamic_cells, Object[] static_cells) {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param graph DOCUMENT ME!
+	 * @param dynamic_cells DOCUMENT ME!
+	 * @param static_cells DOCUMENT ME!
+	 */
+	public void run(JGraph graph, Object[] dynamic_cells, Object[] static_cells) {
 		this.graph = graph;
 
 		try {
 			List roots = getRootVertices(dynamic_cells);
-			if (roots == null) return;
+
+			if (roots == null)
+				return;
 
 			roots = buildTrees(roots);
-			if (roots == null) return;
+
+			if (roots == null)
+				return;
 
 			layoutTrees(roots);
-			if (canceled) return;
+
+			if (canceled)
+				return;
 
 			if (combineLevelNodes) {
 				setLevelHeights(roots);
 			}
 
 			setPosition(roots);
-		} catch (Exception e) { 
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e, "Error", JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e, "Error",
+			                              JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
@@ -174,8 +206,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	 *
 	 * @return all the tree root vertices
 	 */
-	protected ArrayList getRootVertices(Object[] selectedCells)
-	{
+	protected ArrayList getRootVertices(Object[] selectedCells) {
 		HashSet potentialRoot = new HashSet();
 		HashSet notARoot = new HashSet();
 		CellView viewTargetPort;
@@ -184,45 +215,37 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		/*
 		 * Loop through all the vertex and edge cells
 		 */
-		for (int i = 0; i < selectedCells.length; i++)
-		{
-			if (canceled) return null;
+		for (int i = 0; i < selectedCells.length; i++) {
+			if (canceled)
+				return null;
 
-			Object view = graph.getGraphLayoutCache()
-								   .getMapping(selectedCells[i], false);
+			Object view = graph.getGraphLayoutCache().getMapping(selectedCells[i], false);
 
 			/*
 			 * If the vertex is not in the notARoot bucket, it is a potential
 			 * root.
 			 */
-			if (view instanceof VertexView)
-			{
-				if (!(notARoot.contains(view)))
-				{
+			if (view instanceof VertexView) {
+				if (!(notARoot.contains(view))) {
 					potentialRoot.add(view);
 				}
 			}
-
 			/*
 			 * The target of an edge is not a root.
 			 */
-			else if (view instanceof EdgeView)
-			{
+			else if (view instanceof EdgeView) {
 				viewTargetPort = ((EdgeView) view).getTarget();
 				viewTarget = viewTargetPort.getParentView();
 				potentialRoot.remove(viewTarget);
 				notARoot.add(viewTarget);
 			}
-
-			else if (view instanceof PortView)
-			{
+			else if (view instanceof PortView) {
 				// Ignore ports
 			}
 			/*
 			 * It should be impossible to get to the next statement
 			 */
-			else
-			{
+			else {
 				throw new RuntimeException("Cell is other than Vertex or Edge.");
 			}
 		}
@@ -234,49 +257,63 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	}
 
 	/* Building Tree */
-
-    protected List buildTrees(List roots) throws Exception {
+	protected List buildTrees(List roots) throws Exception {
 		List l = new ArrayList();
+
 		for (Iterator it = roots.iterator(); it.hasNext();) {
-			if (canceled) return null;
+			if (canceled)
+				return null;
+
 			TreeNode tn = buildTree((CellView) it.next());
+
 			if (tn != null) {
 				l.add(tn);
 			}
 		}
+
 		return l;
 	}
 
-    protected TreeNode buildTree(CellView view) {
-
+	protected TreeNode buildTree(CellView view) {
 		if (nodesSeen.containsKey(view))
+
 			// throw new RuntimeException("Detected loop in graph!");
 			return null;
 		else
-			nodesSeen.put(view,view);
+			nodesSeen.put(view, view);
 
 		List children = getChildren(view);
 		TreeNode node = getTreeNode(view);
 
 		for (Iterator it = children.iterator(); it.hasNext();) {
-			if (canceled) return null;
+			if (canceled)
+				return null;
+
 			CellView c = (CellView) it.next();
-			if (c == node) return null;
+
+			if (c == node)
+				return null;
+
 			TreeNode n = buildTree(c);
-			if (n == null) return null;
+
+			if (n == null)
+				return null;
+
 			node.children.add(n);
 		}
 
 		return node;
 	}
 
-    protected List getChildren(CellView view) {
+	protected List getChildren(CellView view) {
 		ArrayList children = new ArrayList();
 		GraphModel model = graph.getModel();
 		Object cell = view.getCell();
 
 		for (int i = 0; i < model.getChildCount(cell); i++) {
-			if (canceled) return null;
+			if (canceled)
+				return null;
+
 			Object port = model.getChild(cell, i);
 
 			for (Iterator edges = model.edges(port); edges.hasNext();) {
@@ -293,37 +330,45 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		return children;
 	}
 
-    protected TreeNode getTreeNode(CellView view) {
+	protected TreeNode getTreeNode(CellView view) {
 		Object o = cell2node.get(view);
+
 		if (o != null) {
 			return (TreeNode) o;
 		}
 
 		TreeNode node = new TreeNode(view);
 		cell2node.put(view, node);
+
 		return node;
 	}
 
 	/* Layout trees */
-
-    protected void layoutTrees(List roots) throws Exception {
+	protected void layoutTrees(List roots) throws Exception {
 		for (Iterator it = roots.iterator(); it.hasNext();) {
-			if (canceled) return;
+			if (canceled)
+				return;
+
 			layout((TreeNode) it.next());
 		}
 	}
 
-    protected void layout(TreeNode node) throws Exception {
-		if (node.isDone()) return;
+	protected void layout(TreeNode node) throws Exception {
+		if (node.isDone())
+			return;
+
 		node.setDone();
+
 		if (node.children.size() == 0) {
 			//do nothing
 		} else if (node.children.size() == 1) {
 			TreeNode sub = (TreeNode) node.children.get(0);
 			sub.depth = node.depth + 1;
+
 			if (sub.isDone()) {
 				throw new Exception("Loop detected in graph!");
 			}
+
 			layout(sub);
 
 			sub.leftContour.dx = (sub.width - node.width) / 2;
@@ -335,9 +380,11 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 			for (Iterator it = node.children.iterator(); it.hasNext();) {
 				TreeNode n = (TreeNode) it.next();
 				n.depth = node.depth + 1;
+
 				if (n.isDone()) {
 					throw new Exception("Loop detected in graph!");
 				}
+
 				layout(n);
 			}
 
@@ -346,9 +393,9 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	}
 
 	/* Joining trees */
-
-    protected void join(TreeNode node) {
+	protected void join(TreeNode node) {
 		int distance = 0;
+
 		for (int i = 0; i < node.children.size(); i++) {
 			TreeNode n1 = (TreeNode) node.children.get(i);
 
@@ -357,88 +404,88 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 				int dist = distance(n1.rightContour, n2.leftContour) / (j - i);
 				distance = Math.max(distance, dist);
 			}
-
 		}
 
 		distance += nodeDistance;
 
 		//set relative position
 		int left;
-		if (node.children.size() % 2 == 0) {
-			left = (node.children.size() / 2 - 1) * distance + distance / 2;
+
+		if ((node.children.size() % 2) == 0) {
+			left = (((node.children.size() / 2) - 1) * distance) + (distance / 2);
 		} else {
 			left = node.children.size() / 2 * distance;
 		}
 
 		Iterator it = node.children.iterator();
+
 		for (int i = 0; it.hasNext(); i++) {
-			((TreeNode) it.next()).x = -left + i * distance;
+			((TreeNode) it.next()).x = -left + (i * distance);
 		}
 
 		//new contour		
-	    TreeNode first = getLeftMostX(node);
-	    TreeNode last = getRightMostX(node); 
+		TreeNode first = getLeftMostX(node);
+		TreeNode last = getRightMostX(node);
 
 		node.leftContour.next = first.leftContour;
 		node.rightContour.next = last.rightContour;
 
 		for (int i = 1; i < node.children.size(); i++) {
 			TreeNode n = (TreeNode) node.children.get(i);
-			merge(node.leftContour.next, n.leftContour, i * distance + node.width);
+			merge(node.leftContour.next, n.leftContour, (i * distance) + node.width);
 		}
 
 		for (int i = node.children.size() - 2; i >= 0; i--) {
 			TreeNode n = (TreeNode) node.children.get(i);
-			merge(node.rightContour.next, n.rightContour, i * distance + node.width);
+			merge(node.rightContour.next, n.rightContour, (i * distance) + node.width);
 		}
-		
-		distance = (node.children.size() - 1) * distance / 2;
 
-		node.leftContour.next.dx += distance - node.width / 2;
-		node.rightContour.next.dx += distance - node.width / 2;
+		distance = ((node.children.size() - 1) * distance) / 2;
+
+		node.leftContour.next.dx += (distance - (node.width / 2));
+		node.rightContour.next.dx += (distance - (node.width / 2));
 	}
 
-    protected TreeNode getLeftMostX(TreeNode node)
-    {
-          int tmp = Integer.MAX_VALUE;
-          TreeNode mostLeft = null;
-          Iterator iter = node.getChildren();
-          while (iter.hasNext())
-          {
-             TreeNode child = (TreeNode) iter.next();
+	protected TreeNode getLeftMostX(TreeNode node) {
+		int tmp = Integer.MAX_VALUE;
+		TreeNode mostLeft = null;
+		Iterator iter = node.getChildren();
 
-             int leftPos = child.x - child.getLeftWidth();
-             if (leftPos < tmp)
-             {
-                mostLeft = child;
-                tmp = leftPos;
-             }
-          }
-          return (mostLeft != null) ? mostLeft : (TreeNode) node.children.get(0);
-    }
+		while (iter.hasNext()) {
+			TreeNode child = (TreeNode) iter.next();
 
-    protected TreeNode getRightMostX(TreeNode node)
-    {
-          int tmp = Integer.MIN_VALUE;
+			int leftPos = child.x - child.getLeftWidth();
 
-          TreeNode mostRight = null;
-          Iterator iter = node.getChildren();
-          while (iter.hasNext())
-          {
-             TreeNode child = (TreeNode) iter.next();
+			if (leftPos < tmp) {
+				mostLeft = child;
+				tmp = leftPos;
+			}
+		}
 
-             int rightPos = child.x + child.getRightWidth();
-             if (rightPos > tmp)
-             {
-                mostRight = child;
-                tmp = rightPos;
-             }
-          }
-          return (mostRight != null) ? mostRight : (TreeNode) node.children.get(0);
-     } 
-          
-     protected void merge(PolyLine main, PolyLine left, int distance) {
+		return (mostLeft != null) ? mostLeft : (TreeNode) node.children.get(0);
+	}
 
+	protected TreeNode getRightMostX(TreeNode node) {
+		int tmp = Integer.MIN_VALUE;
+
+		TreeNode mostRight = null;
+		Iterator iter = node.getChildren();
+
+		while (iter.hasNext()) {
+			TreeNode child = (TreeNode) iter.next();
+
+			int rightPos = child.x + child.getRightWidth();
+
+			if (rightPos > tmp) {
+				mostRight = child;
+				tmp = rightPos;
+			}
+		}
+
+		return (mostRight != null) ? mostRight : (TreeNode) node.children.get(0);
+	}
+
+	protected void merge(PolyLine main, PolyLine left, int distance) {
 		while (main != null) {
 			if (left.next == null) {
 				return;
@@ -446,10 +493,11 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
 			if (main.next == null) {
 				left = left.next;
+
 				break;
 			}
 
-			distance += main.dx - left.dx;
+			distance += (main.dx - left.dx);
 			main = main.next;
 			left = left.next;
 		}
@@ -458,11 +506,12 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		main.next = left;
 	}
 
-    protected int distance(PolyLine right, PolyLine left) {
+	protected int distance(PolyLine right, PolyLine left) {
 		int distance = 0;
 
-		for (int i = 0; right != null && left != null;) {
-			i += right.dx + left.dx;
+		for (int i = 0; (right != null) && (left != null);) {
+			i += (right.dx + left.dx);
+
 			if (i > 0) {
 				distance += i;
 				i = 0;
@@ -476,18 +525,18 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	}
 
 	/* Positioning */
-
-    protected void setPosition(List roots) {
+	protected void setPosition(List roots) {
 		for (Iterator it = roots.iterator(); it.hasNext();) {
 			((TreeNode) it.next()).setPosition(null, 0);
 		}
 	}
 
-    protected void setLevelHeights(List roots) {
+	protected void setLevelHeights(List roots) {
 		for (Iterator it = roots.iterator(); it.hasNext();) {
 			List level = ((TreeNode) it.next()).getNodesByLevel();
 
 			int max = 0;
+
 			for (int i = 0; i < level.size(); i++) {
 				List l = (List) level.get(i);
 
@@ -504,7 +553,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		}
 	}
 
-    protected class TreeNode {
+	protected class TreeNode {
 		List children;
 		int width;
 		int height;
@@ -515,43 +564,47 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		PolyLine rightContour;
 		int depth;
 		boolean done;
-		
 		CellView view;
 
 		public TreeNode(CellView view) {
 			this.view = view;
-			if (orientation == SwingConstants.NORTH || orientation == SwingConstants.SOUTH) {
+
+			if ((orientation == SwingConstants.NORTH) || (orientation == SwingConstants.SOUTH)) {
 				width = (int) view.getBounds().getWidth();
 				height = (int) view.getBounds().getHeight();
 			} else {
 				width = (int) view.getBounds().getHeight();
 				height = (int) view.getBounds().getWidth();
 			}
+
 			this.children = new ArrayList();
 			this.leftContour = new PolyLine(width / 2);
 			this.rightContour = new PolyLine(width / 2);
 			this.depth = 0;
 			this.done = false;
 		}
-		
+
 		public Iterator getChildren() {
 			return children.iterator();
 		}
-		
+
 		public int getLeftWidth() {
 			int width = 0;
-			
+
 			PolyLine poly = leftContour;
 			int tmp = 0;
-			while(poly != null) {
+
+			while (poly != null) {
 				tmp += poly.dx;
-				if(tmp > 0) {
+
+				if (tmp > 0) {
 					width += tmp;
 					tmp = 0;
 				}
+
 				poly = poly.next;
 			}
-			
+
 			return width;
 		}
 
@@ -562,96 +615,103 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 		public void setDone() {
 			this.done = true;
 		}
-		
+
 		public int getRightWidth() {
 			int width = 0;
-			
+
 			PolyLine poly = rightContour;
 			int tmp = 0;
-			while(poly != null) {
+
+			while (poly != null) {
 				tmp += poly.dx;
-				if(tmp > 0) {
+
+				if (tmp > 0) {
 					width += tmp;
 					tmp = 0;
 				}
+
 				poly = poly.next;
 			}
-			
+
 			return width;
 		}
-		
+
 		public int getHeight() {
-			if(children.isEmpty()) {
-				return levelheight; 
+			if (children.isEmpty()) {
+				return levelheight;
 			}
-			
+
 			int height = 0;
-			
-			for(Iterator it = children.iterator(); it.hasNext(); ) {
+
+			for (Iterator it = children.iterator(); it.hasNext();) {
 				height = Math.max(height, ((TreeNode) it.next()).getHeight());
 			}
-			
+
 			return height + levelDistance + levelheight;
 		}
 
 		public void setPosition(Point parent, int levelHeight) {
 			int nextLevelHeight = 0;
+
 			for (Iterator it = children.iterator(); it.hasNext();) {
 				nextLevelHeight = Math.max(nextLevelHeight, ((TreeNode) it.next()).height);
 			}
 
 			if (parent == null) {
 				Rectangle2D b = view.getBounds();
-				Rectangle bounds = new Rectangle((int) b.getX(),(int) b.getY(), (int) b.getWidth(), (int) b.getHeight());
+				Rectangle bounds = new Rectangle((int) b.getX(), (int) b.getY(),
+				                                 (int) b.getWidth(), (int) b.getHeight());
 				Point p = bounds.getLocation();
-				
-				if(centerRoot) {
+
+				if (centerRoot) {
 					int lw = getLeftWidth();
 					int rw = getRightWidth();
 					int h = getHeight();
-					
-					
+
 					Insets i = graph.getInsets();
-					
-					if(orientation == SwingConstants.NORTH) {
-						bounds.x = lw - width / 2;
+
+					if (orientation == SwingConstants.NORTH) {
+						bounds.x = lw - (width / 2);
 						bounds.y = i.top;
 					} else if (orientation == SwingConstants.EAST) {
-						bounds.x = i.left + h - width;
-						bounds.y = lw - height / 2;
+						bounds.x = (i.left + h) - width;
+						bounds.y = lw - (height / 2);
 					} else if (orientation == SwingConstants.SOUTH) {
-						bounds.x = lw - width / 2;
+						bounds.x = lw - (width / 2);
 						bounds.y = i.top + h;
 					} else if (orientation == SwingConstants.WEST) {
 						bounds.x = i.right;
-						bounds.y = lw - width / 2;
+						bounds.y = lw - (width / 2);
 					}
-					
+
 					Object cell = view.getCell();
-					Map attributes =
-						GraphConstants.createAttributes(cell, GraphConstants.BOUNDS, bounds);
+					Map attributes = GraphConstants.createAttributes(cell, GraphConstants.BOUNDS,
+					                                                 bounds);
 					graph.getGraphLayoutCache().edit(attributes, null, null, null);
-					
-					if (orientation == SwingConstants.WEST || orientation == SwingConstants.EAST) {
-						graph.setPreferredSize(new Dimension(h + i.left + i.right, lw+rw+ i.top+ i.bottom));
+
+					if ((orientation == SwingConstants.WEST)
+					    || (orientation == SwingConstants.EAST)) {
+						graph.setPreferredSize(new Dimension(h + i.left + i.right,
+						                                     lw + rw + i.top + i.bottom));
 					} else {
-						graph.setPreferredSize(new Dimension(lw+rw + i.left + i.right, h + i.top + i.bottom));
+						graph.setPreferredSize(new Dimension(lw + rw + i.left + i.right,
+						                                     h + i.top + i.bottom));
 					}
-					
+
 					p = bounds.getLocation();
 				}
 
-				if (orientation == SwingConstants.WEST || orientation == SwingConstants.EAST) {
+				if ((orientation == SwingConstants.WEST) || (orientation == SwingConstants.EAST)) {
 					int tmp = p.x;
 					p.x = p.y;
 					p.y = tmp;
 				}
 
-				if (orientation == SwingConstants.NORTH || orientation == SwingConstants.WEST) {
-					parent = new Point(p.x + width / 2, p.y + height);
-				} else if (
-					orientation == SwingConstants.SOUTH || orientation == SwingConstants.EAST) {
-					parent = new Point(p.x + width / 2, p.y);
+				if ((orientation == SwingConstants.NORTH) || (orientation == SwingConstants.WEST)) {
+					parent = new Point(p.x + (width / 2), p.y + height);
+				} else if ((orientation == SwingConstants.SOUTH)
+				           || (orientation == SwingConstants.EAST)) {
+					parent = new Point(p.x + (width / 2), p.y);
 				}
 
 				for (Iterator it = children.iterator(); it.hasNext();) {
@@ -666,23 +726,22 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 			}
 
 			Rectangle cellBounds = new Rectangle(width, height);
-			
 
-			if (orientation == SwingConstants.NORTH || orientation == SwingConstants.WEST) {
-				cellBounds.x = x + parent.x - width / 2;
+			if ((orientation == SwingConstants.NORTH) || (orientation == SwingConstants.WEST)) {
+				cellBounds.x = (x + parent.x) - (width / 2);
 				cellBounds.y = parent.y + levelDistance;
 			} else {
-				cellBounds.x = x + parent.x - width / 2;
+				cellBounds.x = (x + parent.x) - (width / 2);
 				cellBounds.y = parent.y - levelDistance - levelheight;
 			}
 
 			if (alignment == SwingConstants.CENTER) {
-				cellBounds.y += (levelHeight - height) / 2;
+				cellBounds.y += ((levelHeight - height) / 2);
 			} else if (alignment == SwingConstants.BOTTOM) {
-				cellBounds.y += levelHeight - height;
+				cellBounds.y += (levelHeight - height);
 			}
 
-			if (orientation == SwingConstants.WEST || orientation == SwingConstants.EAST) {
+			if ((orientation == SwingConstants.WEST) || (orientation == SwingConstants.EAST)) {
 				int tmp = cellBounds.x;
 				cellBounds.x = cellBounds.y;
 				cellBounds.y = tmp;
@@ -693,11 +752,10 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 			}
 
 			Object cell = view.getCell();
-			Map attributes =
-				GraphConstants.createAttributes(cell, GraphConstants.BOUNDS, cellBounds);
+			Map attributes = GraphConstants.createAttributes(cell, GraphConstants.BOUNDS, cellBounds);
 			graph.getGraphLayoutCache().edit(attributes, null, null, null);
 
-			if (orientation == SwingConstants.NORTH || orientation == SwingConstants.WEST) {
+			if ((orientation == SwingConstants.NORTH) || (orientation == SwingConstants.WEST)) {
 				y = parent.y + levelDistance + levelHeight;
 			} else {
 				y = parent.y - levelDistance - levelHeight;
@@ -710,6 +768,7 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
 		public List getNodesByLevel() {
 			List level = new ArrayList();
+
 			for (Iterator it = children.iterator(); it.hasNext();) {
 				List l2 = ((TreeNode) it.next()).getNodesByLevel();
 
@@ -730,10 +789,9 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
 			return level;
 		}
-
 	}
 
-    protected class PolyLine {
+	protected class PolyLine {
 		int dx;
 		PolyLine next;
 
@@ -748,36 +806,42 @@ public class TreeLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	public boolean isCombineLevelNodes() {
 		return combineLevelNodes;
 	}
+
 	/**
 	 * @param combineLevelNodes The combineLevelNodes to set.
 	 */
 	public void setCombineLevelNodes(boolean combineLevelNodes) {
 		this.combineLevelNodes = combineLevelNodes;
 	}
+
 	/**
 	 * @return Returns the alignment.
 	 */
 	public int getAlignment() {
 		return alignment;
 	}
+
 	/**
 	 * @return Returns the centerRoot.
 	 */
 	public boolean isCenterRoot() {
 		return centerRoot;
 	}
+
 	/**
 	 * @return Returns the levelDistance.
 	 */
 	public int getLevelDistance() {
 		return levelDistance;
 	}
+
 	/**
 	 * @return Returns the nodeDistance.
 	 */
 	public int getNodeDistance() {
 		return nodeDistance;
 	}
+
 	/**
 	 * @return Returns the orientation.
 	 */

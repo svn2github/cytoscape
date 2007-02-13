@@ -41,10 +41,10 @@ package org.cytoscape.coreplugin.psi_mi.data_mapper;
  * @author Ethan Cerami
  */
 public interface Mapper {
-    /**
-     * Perform Mapping.
-     *
-     * @throws MapperException Problem Performing mapping.
-     */
-    void doMapping() throws MapperException;
+	/**
+	 * Perform Mapping.
+	 *
+	 * @throws MapperException Problem Performing mapping.
+	 */
+	void doMapping() throws MapperException;
 }

@@ -34,41 +34,41 @@
 */
 package org.cytoscape.coreplugin.psi_mi.data_mapper;
 
+
 /**
  * Encapsulates a Mapping Exception.
  *
  * @author Ethan Cerami
  */
 public class MapperException extends Exception {
-    private String humanReadableErrorMessage;
+	private String humanReadableErrorMessage;
 
-    /**
-     * Constructor.
-     *
-     * @param rootCause                 Root Cause.
-     * @param humanReadableErrorMessage HumanReadableErrorMessage
-     */
-    public MapperException(Throwable rootCause,
-            String humanReadableErrorMessage) {
-        super(rootCause);
-        this.humanReadableErrorMessage = humanReadableErrorMessage;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param rootCause                 Root Cause.
+	 * @param humanReadableErrorMessage HumanReadableErrorMessage
+	 */
+	public MapperException(Throwable rootCause, String humanReadableErrorMessage) {
+		super(rootCause);
+		this.humanReadableErrorMessage = humanReadableErrorMessage;
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param humanReadableErrorMessage HumanReadableErrorMessage
-     */
-    public MapperException(String humanReadableErrorMessage) {
-        this.humanReadableErrorMessage = humanReadableErrorMessage;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param humanReadableErrorMessage HumanReadableErrorMessage
+	 */
+	public MapperException(String humanReadableErrorMessage) {
+		this.humanReadableErrorMessage = humanReadableErrorMessage;
+	}
 
-    /**
-     * Gets Human Readable Error Message.
-     *
-     * @return msg Message
-     */
-    public String getHumanReadableErrorMessage() {
-        return this.humanReadableErrorMessage;
-    }
+	/**
+	 * Gets Human Readable Error Message.
+	 *
+	 * @return msg Message
+	 */
+	public String getHumanReadableErrorMessage() {
+		return this.humanReadableErrorMessage;
+	}
 }

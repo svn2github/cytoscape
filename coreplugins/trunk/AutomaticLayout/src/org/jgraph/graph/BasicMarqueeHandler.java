@@ -1,10 +1,12 @@
 /*
- * @(#)BasicMarqueeHandler.java	1.0 03-JUL-04
- * 
+ * @(#)BasicMarqueeHandler.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.JGraph;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -13,19 +15,17 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
 import java.util.ArrayList;
 
-import org.jgraph.JGraph;
 
 /**
  * A simple implementation of a marquee handler for JGraph.
- * 
+ *
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public class BasicMarqueeHandler {
-
 	/* Restore previous cursor after operation. */
 	protected transient Cursor previousCursor = null;
 
@@ -33,9 +33,19 @@ public class BasicMarqueeHandler {
 	protected Rectangle2D marqueeBounds;
 
 	/* The start start and current point of the marquee session. */
-	protected Point2D startPoint, currentPoint;
+	protected Point2D startPoint;
+
+	/* The start start and current point of the marquee session. */
+	protected Point2D currentPoint;
 
 	/* Return true if this handler should be preferred over other handlers. */
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param event DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public boolean isForceMarqueeEvent(MouseEvent event) {
 		return event.isAltDown();
 	}
@@ -45,19 +55,20 @@ public class BasicMarqueeHandler {
 	 */
 	public void mouseReleased(MouseEvent e) {
 		try {
-			if (e != null && marqueeBounds != null) {
+			if ((e != null) && (marqueeBounds != null)) {
 				if (!(e.getSource() instanceof JGraph))
 					throw new IllegalArgumentException("MarqueeHandler cannot "
-							+ "handle event from unknown source: " + e);
+					                                   + "handle event from unknown source: " + e);
+
 				JGraph graph = (JGraph) e.getSource();
-				Rectangle2D bounds = graph
-						.fromScreen((Rectangle2D) marqueeBounds.clone());
+				Rectangle2D bounds = graph.fromScreen((Rectangle2D) marqueeBounds.clone());
 				handleMarqueeEvent(e, graph, bounds);
 				graph.setCursor(previousCursor);
+
 				Rectangle dirty = new Rectangle((int) marqueeBounds.getX(),
-						(int) marqueeBounds.getY(), (int) marqueeBounds
-								.getWidth() + 1, (int) marqueeBounds
-								.getHeight() + 1);
+				                                (int) marqueeBounds.getY(),
+				                                (int) marqueeBounds.getWidth() + 1,
+				                                (int) marqueeBounds.getHeight() + 1);
 				dirty.width++;
 				dirty.height++;
 				graph.repaint(dirty);
@@ -75,14 +86,16 @@ public class BasicMarqueeHandler {
 	 * enabled. This is called from mouseReleased to execute the marquee
 	 * selection.
 	 */
-	public void handleMarqueeEvent(MouseEvent e, JGraph graph,
-			Rectangle2D bounds) {
+	public void handleMarqueeEvent(MouseEvent e, JGraph graph, Rectangle2D bounds) {
 		CellView[] views = graph.getGraphLayoutCache().getRoots(bounds);
 		ArrayList list = new ArrayList();
+
 		for (int i = 0; i < views.length; i++)
+
 			// above returns intersection, we want containment
 			if (bounds.contains(views[i].getBounds()))
 				list.add(views[i].getCell());
+
 		Object[] cells = list.toArray();
 		graph.getUI().selectCellsForEvent(graph, cells, e);
 	}
@@ -94,9 +107,9 @@ public class BasicMarqueeHandler {
 	public void mouseDragged(MouseEvent e) {
 		if (startPoint != null) {
 			if (!(e.getSource() instanceof JGraph))
-				throw new IllegalArgumentException(
-						"MarqueeHandler cannot handle event from unknown source: "
-								+ e);
+				throw new IllegalArgumentException("MarqueeHandler cannot handle event from unknown source: "
+				                                   + e);
+
 			JGraph graph = (JGraph) e.getSource();
 			Graphics g = graph.getGraphics();
 
@@ -122,8 +135,7 @@ public class BasicMarqueeHandler {
 	protected void processMouseDraggedEvent(MouseEvent e) {
 		if (startPoint != null) {
 			currentPoint = e.getPoint();
-			marqueeBounds = new Rectangle2D.Double(startPoint.getX(),
-					startPoint.getY(), 0, 0);
+			marqueeBounds = new Rectangle2D.Double(startPoint.getX(), startPoint.getY(), 0, 0);
 			marqueeBounds.add(currentPoint);
 		}
 	}
@@ -146,14 +158,13 @@ public class BasicMarqueeHandler {
 	 * always possible to clear the screen with an exact repaint the caller
 	 * passes a flag to indicate if the graphics object should be cleared with
 	 * this call (eg. if a subsequent call follows).
-	 * 
+	 *
 	 * @param g
 	 */
 	public void overlay(JGraph graph, Graphics g, boolean clear) {
 		if (marqueeBounds != null)
 			g.drawRect((int) marqueeBounds.getX(), (int) marqueeBounds.getY(),
-					(int) marqueeBounds.getWidth(), (int) marqueeBounds
-							.getHeight());
+			           (int) marqueeBounds.getWidth(), (int) marqueeBounds.getHeight());
 	}
 
 	/**
@@ -162,14 +173,15 @@ public class BasicMarqueeHandler {
 	 */
 	public void mousePressed(MouseEvent e) {
 		startPoint = e.getPoint();
-		marqueeBounds = new Rectangle2D.Double(startPoint.getX(), startPoint
-				.getY(), 0, 0);
+		marqueeBounds = new Rectangle2D.Double(startPoint.getX(), startPoint.getY(), 0, 0);
+
 		if (e != null) {
 			if (!(e.getSource() instanceof JGraph))
-				throw new IllegalArgumentException(
-						"MarqueeHandler cannot handle event from unknown source: "
-								+ e);
+				throw new IllegalArgumentException("MarqueeHandler cannot handle event from unknown source: "
+				                                   + e);
+
 			JGraph graph = (JGraph) e.getSource();
+
 			if (isMarqueeTriggerEvent(e, graph)) {
 				previousCursor = graph.getCursor();
 				graph.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
@@ -195,7 +207,7 @@ public class BasicMarqueeHandler {
 
 	/**
 	 * Returns the currentPoint.
-	 * 
+	 *
 	 * @return Point
 	 */
 	public Point2D getCurrentPoint() {
@@ -204,7 +216,7 @@ public class BasicMarqueeHandler {
 
 	/**
 	 * Returns the marqueeBounds.
-	 * 
+	 *
 	 * @return Rectangle
 	 */
 	public Rectangle2D getMarqueeBounds() {
@@ -213,7 +225,7 @@ public class BasicMarqueeHandler {
 
 	/**
 	 * Returns the previousCursor.
-	 * 
+	 *
 	 * @return Cursor
 	 */
 	public Cursor getPreviousCursor() {
@@ -222,7 +234,7 @@ public class BasicMarqueeHandler {
 
 	/**
 	 * Returns the startPoint.
-	 * 
+	 *
 	 * @return Point
 	 */
 	public Point2D getStartPoint() {
@@ -231,7 +243,7 @@ public class BasicMarqueeHandler {
 
 	/**
 	 * Sets the currentPoint.
-	 * 
+	 *
 	 * @param currentPoint
 	 *            The currentPoint to set
 	 */
@@ -241,7 +253,7 @@ public class BasicMarqueeHandler {
 
 	/**
 	 * Sets the marqueeBounds.
-	 * 
+	 *
 	 * @param marqueeBounds
 	 *            The marqueeBounds to set
 	 */
@@ -251,7 +263,7 @@ public class BasicMarqueeHandler {
 
 	/**
 	 * Sets the previousCursor.
-	 * 
+	 *
 	 * @param previousCursor
 	 *            The previousCursor to set
 	 */
@@ -261,7 +273,7 @@ public class BasicMarqueeHandler {
 
 	/**
 	 * Sets the startPoint.
-	 * 
+	 *
 	 * @param startPoint
 	 *            The startPoint to set
 	 */
@@ -275,7 +287,7 @@ public class BasicMarqueeHandler {
 	public static JGraph getGraphForEvent(MouseEvent event) {
 		if (event.getSource() instanceof JGraph)
 			return (JGraph) event.getSource();
+
 		return null;
 	}
-
 }

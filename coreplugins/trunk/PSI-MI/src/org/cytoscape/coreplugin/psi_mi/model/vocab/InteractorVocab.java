@@ -34,68 +34,65 @@
 */
 package org.cytoscape.coreplugin.psi_mi.model.vocab;
 
+
 /**
  * Controlled Vocabularly for Interactors.
  *
  * @author Ethan Cerami
  */
 public class InteractorVocab extends CommonVocab {
-    /**
-     * Gene Name.
-     */
-    public static final String GENE_NAME = "GENE_NAME";
+	/**
+	 * Gene Name.
+	 */
+	public static final String GENE_NAME = "GENE_NAME";
 
-    /**
-     * Go Term.
-     */
-    public static final String GO_TERM = "GO_TERM";
+	/**
+	 * Go Term.
+	 */
+	public static final String GO_TERM = "GO_TERM";
 
-    /**
-     * Organism (Species Name).
-     */
-    public static final String ORGANISM_SPECIES_NAME = "ORGANISM_SPECIES";
+	/**
+	 * Organism (Species Name).
+	 */
+	public static final String ORGANISM_SPECIES_NAME = "ORGANISM_SPECIES";
 
-    /**
-     * Organism (Common Name).
-     */
-    public static final String ORGANISM_COMMON_NAME = "ORGANISM_COMMON_NAME";
+	/**
+	 * Organism (Common Name).
+	 */
+	public static final String ORGANISM_COMMON_NAME = "ORGANISM_COMMON_NAME";
 
-    /**
-     * Organism (NCBI Taxonomy ID).
-     */
-    public static final String ORGANISM_NCBI_TAXONOMY_ID =
-            "ORGANISM_NCBI_TAXON_ID";
+	/**
+	 * Organism (NCBI Taxonomy ID).
+	 */
+	public static final String ORGANISM_NCBI_TAXONOMY_ID = "ORGANISM_NCBI_TAXON_ID";
 
-    /**
-     * Local ID.
-     */
-    public static final String LOCAL_ID = "LOCAL_ID";
+	/**
+	 * Local ID.
+	 */
+	public static final String LOCAL_ID = "LOCAL_ID";
 
-    /**
-     * GenBank Flat File.
-     */
-    public static final String GEN_BANK_FLAT_FILE = "GEN_BANK_FLAT_FILE";
+	/**
+	 * GenBank Flat File.
+	 */
+	public static final String GEN_BANK_FLAT_FILE = "GEN_BANK_FLAT_FILE";
 
-    /**
-     * Bio Java Sequence.
-     */
-    public static final String BIO_JAVA_SEQUENCE_LIST =
-            "BIO_JAVA_SEQUENCE_LIST";
+	/**
+	 * Bio Java Sequence.
+	 */
+	public static final String BIO_JAVA_SEQUENCE_LIST = "BIO_JAVA_SEQUENCE_LIST";
 
-    /**
-     * Full Name.
-     */
-    public static final String FULL_NAME = "FULL_NAME";
+	/**
+	 * Full Name.
+	 */
+	public static final String FULL_NAME = "FULL_NAME";
 
-    /**
-     * Sequence Data.
-     */
-    public static final String SEQUENCE_DATA = "SEQUENCE_DATA";
+	/**
+	 * Sequence Data.
+	 */
+	public static final String SEQUENCE_DATA = "SEQUENCE_DATA";
 
-    /**
-     * XML Document is Result Set Format.
-     */
-    public static final String XML_RESULT_SET = "XML_RESULT_SET";
-
-
+	/**
+	 * XML Document is Result Set Format.
+	 */
+	public static final String XML_RESULT_SET = "XML_RESULT_SET";
 }

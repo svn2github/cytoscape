@@ -1,10 +1,79 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
+import cytoscape.bookmarks.Attribute;
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.bookmarks.DataSource;
+
+import cytoscape.data.CyAttributes;
+
+import cytoscape.data.readers.GraphReader;
+
+import cytoscape.task.ui.JTaskConfig;
+
+import cytoscape.task.util.TaskManager;
+
+import cytoscape.util.BookmarksUtil;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
+
+import cytoscape.util.swing.JStatusBar;
+
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeAndOntologyMappingParameters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeMappingParameters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.DefaultAttributeTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelAttributeSheetReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelNetworkSheetReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationReader;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.DB_OBJECT_SYMBOL;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.GO_ID;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.TAXON;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableMappingParameters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.OntologyAnnotationReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.PIPE;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.EDGE;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.NETWORK;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.NODE;
@@ -25,6 +94,15 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSe
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON_LARGE;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.STRING_ICON;
 
+import giny.model.Edge;
+import giny.model.Node;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import org.jdesktop.layout.GroupLayout;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
@@ -34,14 +112,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,67 +155,46 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+
 import javax.xml.bind.JAXBException;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.jdesktop.layout.GroupLayout;
-
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.bookmarks.Attribute;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.DataSource;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import cytoscape.util.BookmarksUtil;
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.FileUtil;
-import cytoscape.util.swing.JStatusBar;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeAndOntologyMappingParameters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeMappingParameters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.DefaultAttributeTableReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelAttributeSheetReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelNetworkSheetReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableMappingParameters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.OntologyAnnotationReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
-import giny.model.Edge;
-import giny.model.Node;
 
 /**
- * 
+ *
  * @author kono
  */
-public class ImportTextTableDialog extends JDialog implements
-		PropertyChangeListener, TableModelListener {
-
+public class ImportTextTableDialog extends JDialog implements PropertyChangeListener,
+                                                              TableModelListener {
 	/**
 	 * This dialog GUI will be switched based on the following parameters:
-	 * 
+	 *
 	 * SIMPLE_ATTRIBUTE_IMPORT: Import attributes in text table.
-	 * 
+	 *
 	 * ONTOLOGY_AND_ANNOTATION_IMPORT: Load ontology and map attributes in text
 	 * table.
-	 * 
+	 *
 	 * NETWORK_IMPORT: Import text table as a network.
 	 */
 	public static final int SIMPLE_ATTRIBUTE_IMPORT = 1;
+
+	/**
+	 * 
+	 */
 	public static final int ONTOLOGY_AND_ANNOTATION_IMPORT = 2;
+
+	/**
+	 * 
+	 */
 	public static final int NETWORK_IMPORT = 3;
 
 	/**
 	 * Enums for file types.
 	 */
 	public static enum FileTypes {
-		ATTRIBUTE_FILE, NETWORK_FILE, GENE_ASSOCIATION_FILE, CUSTOM_ANNOTATION_FILE;
+		ATTRIBUTE_FILE,
+		NETWORK_FILE,
+		GENE_ASSOCIATION_FILE,
+		CUSTOM_ANNOTATION_FILE;
 	}
 
 	/*
@@ -155,22 +216,17 @@ public class ImportTextTableDialog extends JDialog implements
 	 * HTML strings for tool tip text
 	 */
 	private String ontologyHtml = "<html><body bgcolor=\"white\"><p><strong><font size=\"+1\" face=\"serif\"><u>%DataSourceName%</u></font></strong></p><br>"
-			+ "<p><em>Data Source URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br><p><em>Description</em>:<br>"
-			+ "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\"><tr>"
-			+ "<td rowspan=\"1\" colspan=\"1\">%Description%</td></tr></table></p></body></html>";
-
+	                              + "<p><em>Data Source URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br><p><em>Description</em>:<br>"
+	                              + "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\"><tr>"
+	                              + "<td rowspan=\"1\" colspan=\"1\">%Description%</td></tr></table></p></body></html>";
 	private String annotationHtml = "<html><body bgcolor=\"white\"><p><strong><font size=\"+1\" face=\"serif\"><u>%DataSourceName%</u></font></strong></p><br>"
-			+ "<p><em>Annotation File URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br>"
-			+ "<p><em>Data Format</em>: <font color=\"green\">%Format%</font></p><br>"
-			+ "<p><em>Other Information</em>:<br>"
-			+ "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\">"
-			+ "%AttributeTable%</table></p></body></html>";
-
+	                                + "<p><em>Annotation File URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br>"
+	                                + "<p><em>Data Format</em>: <font color=\"green\">%Format%</font></p><br>"
+	                                + "<p><em>Other Information</em>:<br>"
+	                                + "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\">"
+	                                + "%AttributeTable%</table></p></body></html>";
 	private static final String DEF_ANNOTATION_ITEM = "Please select an annotation data source...";
-
-	private static final String keyTable[] = { "Alias?",
-			"Column (Attribute Name)", "Data Type" };
-
+	private static final String[] keyTable = { "Alias?", "Column (Attribute Name)", "Data Type" };
 	private static final String ID = "ID";
 	private static final String EXCEL_EXT = ".xls";
 	private static final String GENE_ASSOCIATION = "gene_association";
@@ -180,17 +236,13 @@ public class ImportTextTableDialog extends JDialog implements
 
 	// Data Type
 	private edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType objType;
-
 	private final int dialogType;
-
 	private Map<String, String> annotationUrlMap;
 	private Map<String, String> annotationFormatMap;
 	private Map<String, Map<String, String>> annotationAttributesMap;
-
 	private Map<String, String> ontologyUrlMap;
 	private Map<String, String> ontologyTypeMap;
 	private Map<String, String> ontologyDescriptionMap;
-
 	private List<Byte> attributeDataTypes;
 
 	/*
@@ -204,30 +256,24 @@ public class ImportTextTableDialog extends JDialog implements
 	private Map<String, AliasTableModel> aliasTableModelMap;
 	private Map<String, JTable> aliasTableMap;
 	private Map<String, Integer> primaryKeyMap;
-
 	private String[] columnHeaders;
-
 	private String listDelimiter;
-
 	private boolean[] importFlag;
-
 	private CyAttributes selectedAttributes;
-
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
 	/**
 	 * Creates new form ImportAttributesDialog
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	public ImportTextTableDialog(Frame parent, boolean modal)
-			throws JAXBException, IOException {
+	public ImportTextTableDialog(Frame parent, boolean modal) throws JAXBException, IOException {
 		this(parent, modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
 	}
 
 	public ImportTextTableDialog(Frame parent, boolean modal, int dialogType)
-			throws JAXBException, IOException {
+	    throws JAXBException, IOException {
 		super(parent, modal);
 
 		// Default Attribute is node attr.
@@ -254,7 +300,6 @@ public class ImportTextTableDialog extends JDialog implements
 		updateComponents();
 
 		previewPanel.addPropertyChangeListener(this);
-
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -274,31 +319,32 @@ public class ImportTextTableDialog extends JDialog implements
 			 * List delimiter has been changed by preview table GUI.
 			 */
 			listDelimiter = evt.getNewValue().toString();
-
 		} else if (evt.getPropertyName().equals(LIST_DATA_TYPE_CHANGED)) {
 			listDataTypes = (Byte[]) evt.getNewValue();
 		} else if (evt.getPropertyName().equals(ATTR_DATA_TYPE_CHANGED)) {
 			/*
 			 * Data type of an attribute has been chabged.
 			 */
-
 			final Vector vec = (Vector) evt.getNewValue();
 			final Integer key = (Integer) vec.get(0);
 			final Byte newType = (Byte) vec.get(1);
+
 			if (key > attributeDataTypes.size()) {
 				attributeDataTypes = new ArrayList<Byte>();
+
 				for (Byte type : previewPanel.getCurrentDataTypes()) {
 					attributeDataTypes.add(type);
 				}
 			}
+
 			attributeDataTypes.set(key, newType);
 
 			if (dialogType != NETWORK_IMPORT) {
-				final JTable curTable = aliasTableMap.get(previewPanel
-						.getSelectedSheetName());
+				final JTable curTable = aliasTableMap.get(previewPanel.getSelectedSheetName());
 				curTable.setDefaultRenderer(Object.class,
-						new AliasTableRenderer(attributeDataTypes,
-								primaryKeyComboBox.getSelectedIndex()));
+				                            new AliasTableRenderer(attributeDataTypes,
+				                                                   primaryKeyComboBox
+				                                                                                                                                                                                                                                                                                                                                           .getSelectedIndex()));
 				curTable.repaint();
 			}
 		} else if (evt.getPropertyName().equals(ATTRIBUTE_NAME_CHANGED)) {
@@ -315,28 +361,28 @@ public class ImportTextTableDialog extends JDialog implements
 			/*
 			 * Only when the file is in Excel format.
 			 */
-			final int columnCount = previewPanel.getPreviewTable()
-					.getColumnCount();
+			final int columnCount = previewPanel.getPreviewTable().getColumnCount();
 			aliasTableModelMap.put(previewPanel.getSelectedSheetName(),
-					new AliasTableModel(keyTable, columnCount));
+			                       new AliasTableModel(keyTable, columnCount));
 
 			initializeAliasTable(columnCount, null);
 			updatePrimaryKeyComboBox();
-		} else if (evt.getPropertyName()
-				.equals(NETWORK_IMPORT_TEMPLATE_CHANGED)) {
+		} else if (evt.getPropertyName().equals(NETWORK_IMPORT_TEMPLATE_CHANGED)) {
 			/*
 			 * This is a signal from network import options panel.
 			 */
 			List<Integer> columnIdx = (List<Integer>) evt.getNewValue();
 
-			final AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) previewPanel
-					.getPreviewTable().getCellRenderer(0, 0);
+			final AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) previewPanel.getPreviewTable()
+			                                                                                               .getCellRenderer(0,
+			                                                                                                                0);
 			rend.setSourceIndex(columnIdx.get(0));
 			rend.setTargetIndex(columnIdx.get(1));
 			rend.setInteractionIndex(columnIdx.get(2));
-			
+
 			previewPanel.getPreviewTable().getTableHeader().resizeAndRepaint();
 			previewPanel.getPreviewTable().repaint();
+
 			//previewPanel.repaint();
 		}
 	}
@@ -346,13 +392,12 @@ public class ImportTextTableDialog extends JDialog implements
 	 * WARNING: Do NOT modify this code. The content of this method is always
 	 * regenerated by the Form Editor.
 	 */
+
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code">
 	private void initComponents() {
-
 		statusBar = new JStatusBar();
 
-		importAllCheckBox = new JCheckBox(
-				"Import everything without checking matches (Gene Association only)");
+		importAllCheckBox = new JCheckBox("Import everything without checking matches (Gene Association only)");
 
 		importTypeButtonGroup = new ButtonGroup();
 
@@ -433,15 +478,13 @@ public class ImportTextTableDialog extends JDialog implements
 		titleLabel.setFont(TITLE_FONT.getFont());
 
 		if (dialogType == NETWORK_IMPORT) {
-			previewPanel = new PreviewTablePanel(null,
-					PreviewTablePanel.NETWORK_PREVIEW);
+			previewPanel = new PreviewTablePanel(null, PreviewTablePanel.NETWORK_PREVIEW);
 		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			defaultInteractionLabel.setEnabled(false);
 			defaultInteractionTextField.setEnabled(false);
 			commentLineTextField.setText("!");
 			importAllCheckBox.setEnabled(false);
-			previewPanel = new PreviewTablePanel(null,
-					PreviewTablePanel.ONTOLOGY_PREVIEW);
+			previewPanel = new PreviewTablePanel(null, PreviewTablePanel.ONTOLOGY_PREVIEW);
 		} else {
 			defaultInteractionLabel.setEnabled(false);
 			defaultInteractionTextField.setEnabled(false);
@@ -453,10 +496,10 @@ public class ImportTextTableDialog extends JDialog implements
 		primaryKeyComboBox = new JComboBox();
 		primaryKeyComboBox.setEnabled(false);
 		primaryKeyComboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				primaryKeyComboBoxActionPerformed(evt);
-			}
-		});
+				public void actionPerformed(ActionEvent evt) {
+					primaryKeyComboBoxActionPerformed(evt);
+				}
+			});
 
 		/*
 		 * Set tooltips options.
@@ -469,31 +512,30 @@ public class ImportTextTableDialog extends JDialog implements
 
 		titleIconLabel2.setIcon(RIGHT_ARROW_ICON.getIcon());
 
-		titleIconLabel3.setIcon(new ImageIcon(Cytoscape.class
-				.getResource("images/icon48.png")));
+		titleIconLabel3.setIcon(new ImageIcon(Cytoscape.class.getResource("images/icon48.png")));
 
 		titleSeparator.setForeground(java.awt.Color.blue);
 
 		importButton.setText("Import");
 		importButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					importButtonActionPerformed(evt);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					try {
+						importButtonActionPerformed(evt);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
 
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cancelButtonActionPerformed(evt);
-			}
-		});
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					cancelButtonActionPerformed(evt);
+				}
+			});
 
 		helpButton.setBackground(new java.awt.Color(255, 255, 255));
 		helpButton.setText("?");
@@ -501,100 +543,80 @@ public class ImportTextTableDialog extends JDialog implements
 		helpButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
 		helpButton.setPreferredSize(new java.awt.Dimension(14, 14));
 		helpButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				helpButtonActionPerformed(arg0);
-			}
-		});
+				public void actionPerformed(ActionEvent arg0) {
+					helpButtonActionPerformed(arg0);
+				}
+			});
 
 		/*
 		 * Data Source Panel Layouts.
 		 */
-		basicPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-				"Data Sources",
-				javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-				javax.swing.border.TitledBorder.DEFAULT_POSITION,
-				new java.awt.Font("Dialog", 1, 11)));
+		basicPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Data Sources",
+		                                                                  javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+		                                                                  javax.swing.border.TitledBorder.DEFAULT_POSITION,
+		                                                                  new java.awt.Font("Dialog",
+		                                                                                    1, 11)));
 
-		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT
-				|| dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+		if ((dialogType == SIMPLE_ATTRIBUTE_IMPORT)
+		    || (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT)) {
 			attribuiteLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 			attribuiteLabel.setText("Attributes");
 
 			nodeRadioButton.setText("Node");
-			nodeRadioButton.setBorder(javax.swing.BorderFactory
-					.createEmptyBorder(0, 0, 0, 0));
+			nodeRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 			nodeRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			nodeRadioButton.setSelected(true);
-			nodeRadioButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							attributeRadioButtonActionPerformed(evt);
-						}
-					});
+			nodeRadioButton.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						attributeRadioButtonActionPerformed(evt);
+					}
+				});
 
 			edgeRadioButton.setText("Edge");
-			edgeRadioButton.setBorder(javax.swing.BorderFactory
-					.createEmptyBorder(0, 0, 0, 0));
+			edgeRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 			edgeRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			edgeRadioButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							attributeRadioButtonActionPerformed(evt);
-						}
-					});
+			edgeRadioButton.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						attributeRadioButtonActionPerformed(evt);
+					}
+				});
 
 			networkRadioButton.setText("Network");
-			networkRadioButton.setBorder(javax.swing.BorderFactory
-					.createEmptyBorder(0, 0, 0, 0));
+			networkRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 			networkRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			networkRadioButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							attributeRadioButtonActionPerformed(evt);
-						}
-					});
+			networkRadioButton.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						attributeRadioButtonActionPerformed(evt);
+					}
+				});
 
-			org.jdesktop.layout.GroupLayout attrTypePanelLayout = new org.jdesktop.layout.GroupLayout(
-					attrTypePanel);
+			org.jdesktop.layout.GroupLayout attrTypePanelLayout = new org.jdesktop.layout.GroupLayout(attrTypePanel);
 			attrTypePanel.setLayout(attrTypePanelLayout);
-			attrTypePanelLayout
-					.setHorizontalGroup(attrTypePanelLayout
-							.createParallelGroup(
-									org.jdesktop.layout.GroupLayout.LEADING)
-							.add(
-									attrTypePanelLayout
-											.createSequentialGroup()
-											.add(attribuiteLabel)
-											.add(24, 24, 24)
-											.add(nodeRadioButton)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(edgeRadioButton)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(networkRadioButton)
-											.addContainerGap(
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)));
-			attrTypePanelLayout.setVerticalGroup(attrTypePanelLayout
-					.createParallelGroup(
-							org.jdesktop.layout.GroupLayout.LEADING).add(
-							attrTypePanelLayout.createParallelGroup(
-									org.jdesktop.layout.GroupLayout.BASELINE)
-									.add(attribuiteLabel).add(nodeRadioButton)
-									.add(edgeRadioButton).add(
-											networkRadioButton)));
-
+			attrTypePanelLayout.setHorizontalGroup(attrTypePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                                                          .add(attrTypePanelLayout.createSequentialGroup()
+			                                                                                  .add(attribuiteLabel)
+			                                                                                  .add(24,
+			                                                                                       24,
+			                                                                                       24)
+			                                                                                  .add(nodeRadioButton)
+			                                                                                  .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                  .add(edgeRadioButton)
+			                                                                                  .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                  .add(networkRadioButton)
+			                                                                                  .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                                                                   Short.MAX_VALUE)));
+			attrTypePanelLayout.setVerticalGroup(attrTypePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                                                        .add(attrTypePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+			                                                                                .add(attribuiteLabel)
+			                                                                                .add(nodeRadioButton)
+			                                                                                .add(edgeRadioButton)
+			                                                                                .add(networkRadioButton)));
 		}
 
 		/*
 		 * This panel is necessary only when this is an ontology import dialog.
 		 */
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
-
 			titleIconLabel1.setIcon(REMOTE_SOURCE_ICON_LARGE.getIcon());
 
 			ontologyLabel.setFont(LABEL_FONT.getFont());
@@ -603,68 +625,67 @@ public class ImportTextTableDialog extends JDialog implements
 
 			// ontologyComboBox.setFont(new java.awt.Font("SansSerif", 1, 14));
 			ontologyComboBox.setPreferredSize(new java.awt.Dimension(68, 25));
+
 			final ListCellRenderer ontologyLcr = ontologyComboBox.getRenderer();
 			ontologyComboBox.setFont(ITEM_FONT.getFont());
 			ontologyComboBox.setForeground(ONTOLOGY_COLOR.getColor());
 			ontologyComboBox.setRenderer(new ListCellRenderer() {
-				public Component getListCellRendererComponent(JList list,
-						Object value, int index, boolean isSelected,
-						boolean cellHasFocus) {
-					JLabel ontologyItem = (JLabel) ontologyLcr
-							.getListCellRendererComponent(list, value, index,
-									isSelected, cellHasFocus);
-					String url = ontologyUrlMap.get(value);
+					public Component getListCellRendererComponent(JList list, Object value,
+					                                              int index, boolean isSelected,
+					                                              boolean cellHasFocus) {
+						JLabel ontologyItem = (JLabel) ontologyLcr.getListCellRendererComponent(list,
+						                                                                        value,
+						                                                                        index,
+						                                                                        isSelected,
+						                                                                        cellHasFocus);
+						String url = ontologyUrlMap.get(value);
 
-					if (url != null && url.startsWith("http://")) {
-						ontologyItem.setIcon(REMOTE_SOURCE_ICON.getIcon());
-					} else {
-						ontologyItem.setIcon(LOCAL_SOURCE_ICON.getIcon());
-					}
+						if ((url != null) && url.startsWith("http://")) {
+							ontologyItem.setIcon(REMOTE_SOURCE_ICON.getIcon());
+						} else {
+							ontologyItem.setIcon(LOCAL_SOURCE_ICON.getIcon());
+						}
 
-					if (Cytoscape.getOntologyServer().getOntologyNames()
-							.contains(value)) {
-						ontologyItem.setForeground(ONTOLOGY_COLOR.getColor());
-					} else {
-						ontologyItem.setForeground(NOT_LOADED_COLOR.getColor());
+						if (Cytoscape.getOntologyServer().getOntologyNames().contains(value)) {
+							ontologyItem.setForeground(ONTOLOGY_COLOR.getColor());
+						} else {
+							ontologyItem.setForeground(NOT_LOADED_COLOR.getColor());
+						}
+
+						return ontologyItem;
 					}
-					return ontologyItem;
-				}
-			});
+				});
 
 			ontologyComboBox.addMouseListener(new MouseListener() {
-				public void mouseClicked(MouseEvent arg0) {
-				}
+					public void mouseClicked(MouseEvent arg0) {
+					}
 
-				public void mouseEntered(MouseEvent arg0) {
-				}
+					public void mouseEntered(MouseEvent arg0) {
+					}
 
-				public void mouseExited(MouseEvent arg0) {
-				}
+					public void mouseExited(MouseEvent arg0) {
+					}
 
-				public void mousePressed(MouseEvent arg0) {
-				}
+					public void mousePressed(MouseEvent arg0) {
+					}
 
-				public void mouseReleased(MouseEvent arg0) {
-				}
-			});
+					public void mouseReleased(MouseEvent arg0) {
+					}
+				});
 
-			ontologyComboBox
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							ontologyComboBoxActionPerformed(evt);
-						}
-					});
+			ontologyComboBox.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						ontologyComboBoxActionPerformed(evt);
+					}
+				});
 
 			browseOntologyButton.setText("Browse");
 			browseOntologyButton.setToolTipText("Browse local ontology file");
-			browseOntologyButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							browseOntologyButtonActionPerformed(evt);
-						}
-					});
+			browseOntologyButton.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						browseOntologyButtonActionPerformed(evt);
+					}
+				});
 
 			sourceLabel.setFont(LABEL_FONT.getFont());
 			sourceLabel.setText("Annotation");
@@ -675,292 +696,200 @@ public class ImportTextTableDialog extends JDialog implements
 
 			final ListCellRenderer lcr = annotationComboBox.getRenderer();
 			annotationComboBox.setRenderer(new ListCellRenderer() {
-				public Component getListCellRendererComponent(JList list,
-						Object value, int index, boolean isSelected,
-						boolean cellHasFocus) {
-					JLabel cmp = (JLabel) lcr.getListCellRendererComponent(
-							list, value, index, isSelected, cellHasFocus);
-					String url = annotationUrlMap.get(value);
+					public Component getListCellRendererComponent(JList list, Object value,
+					                                              int index, boolean isSelected,
+					                                              boolean cellHasFocus) {
+						JLabel cmp = (JLabel) lcr.getListCellRendererComponent(list, value, index,
+						                                                       isSelected,
+						                                                       cellHasFocus);
+						String url = annotationUrlMap.get(value);
 
-					if (value.toString().equals(DEF_ANNOTATION_ITEM)) {
-						cmp.setIcon(null);
-					} else if (url != null && url.startsWith("http://")) {
-						cmp.setIcon(REMOTE_SOURCE_ICON.getIcon());
-					} else {
-						cmp.setIcon(LOCAL_SOURCE_ICON.getIcon());
-					}
-
-					return cmp;
-				}
-			});
-			annotationComboBox
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							annotationComboBoxActionPerformed(evt);
+						if (value.toString().equals(DEF_ANNOTATION_ITEM)) {
+							cmp.setIcon(null);
+						} else if ((url != null) && url.startsWith("http://")) {
+							cmp.setIcon(REMOTE_SOURCE_ICON.getIcon());
+						} else {
+							cmp.setIcon(LOCAL_SOURCE_ICON.getIcon());
 						}
-					});
+
+						return cmp;
+					}
+				});
+			annotationComboBox.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						annotationComboBoxActionPerformed(evt);
+					}
+				});
 
 			browseAnnotationButton.setText("Browse");
-			browseAnnotationButton
-					.setToolTipText("Browse local annotation file...");
-			browseAnnotationButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							browseAnnotationButtonActionPerformed(evt);
-						}
-					});
+			browseAnnotationButton.setToolTipText("Browse local annotation file...");
+			browseAnnotationButton.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						browseAnnotationButtonActionPerformed(evt);
+					}
+				});
 
-			GroupLayout annotationAndOntologyImportPanelLayout = new GroupLayout(
-					annotationAndOntologyImportPanel);
-			annotationAndOntologyImportPanel
-					.setLayout(annotationAndOntologyImportPanelLayout);
+			GroupLayout annotationAndOntologyImportPanelLayout = new GroupLayout(annotationAndOntologyImportPanel);
+			annotationAndOntologyImportPanel.setLayout(annotationAndOntologyImportPanelLayout);
 
-			annotationAndOntologyImportPanelLayout
-					.setHorizontalGroup(annotationAndOntologyImportPanelLayout
-							.createParallelGroup(GroupLayout.LEADING)
-							.add(
-									annotationAndOntologyImportPanelLayout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													annotationAndOntologyImportPanelLayout
-															.createParallelGroup(
-																	GroupLayout.LEADING)
-															.add(sourceLabel)
-															.add(ontologyLabel))
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													annotationAndOntologyImportPanelLayout
-															.createParallelGroup(
-																	GroupLayout.TRAILING)
-															.add(
-																	annotationComboBox,
-																	0,
-																	100,
-																	Short.MAX_VALUE)
-															.add(
-																	ontologyComboBox,
-																	0,
-																	100,
-																	Short.MAX_VALUE))
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													annotationAndOntologyImportPanelLayout
-															.createParallelGroup(
-																	GroupLayout.LEADING)
-															.add(
-																	browseAnnotationButton)
-															.add(
-																	browseOntologyButton))
-											.addContainerGap()));
-			annotationAndOntologyImportPanelLayout
-					.setVerticalGroup(annotationAndOntologyImportPanelLayout
-							.createParallelGroup(GroupLayout.LEADING)
-							.add(
-									annotationAndOntologyImportPanelLayout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													annotationAndOntologyImportPanelLayout
-															.createParallelGroup(
-																	GroupLayout.CENTER)
-															.add(sourceLabel)
-															.add(
-																	browseAnnotationButton)
-															.add(
-																	annotationComboBox,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													annotationAndOntologyImportPanelLayout
-															.createParallelGroup(
-																	GroupLayout.CENTER)
-															.add(ontologyLabel)
-															.add(
-																	ontologyComboBox,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE)
-															.add(
-																	browseOntologyButton))
-											.addContainerGap(
-													GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)));
+			annotationAndOntologyImportPanelLayout.setHorizontalGroup(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                                                .add(annotationAndOntologyImportPanelLayout.createSequentialGroup()
+			                                                                                                                                           .addContainerGap()
+			                                                                                                                                           .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                                                                                                                                      .add(sourceLabel)
+			                                                                                                                                                                                      .add(ontologyLabel))
+			                                                                                                                                           .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                                                           .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.TRAILING)
+			                                                                                                                                                                                      .add(annotationComboBox,
+			                                                                                                                                                                                           0,
+			                                                                                                                                                                                           100,
+			                                                                                                                                                                                           Short.MAX_VALUE)
+			                                                                                                                                                                                      .add(ontologyComboBox,
+			                                                                                                                                                                                           0,
+			                                                                                                                                                                                           100,
+			                                                                                                                                                                                           Short.MAX_VALUE))
+			                                                                                                                                           .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                                                           .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                                                                                                                                      .add(browseAnnotationButton)
+			                                                                                                                                                                                      .add(browseOntologyButton))
+			                                                                                                                                           .addContainerGap()));
+			annotationAndOntologyImportPanelLayout.setVerticalGroup(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                                              .add(annotationAndOntologyImportPanelLayout.createSequentialGroup()
+			                                                                                                                                         .addContainerGap()
+			                                                                                                                                         .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.CENTER)
+			                                                                                                                                                                                    .add(sourceLabel)
+			                                                                                                                                                                                    .add(browseAnnotationButton)
+			                                                                                                                                                                                    .add(annotationComboBox,
+			                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE,
+			                                                                                                                                                                                         GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE))
+			                                                                                                                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                                                         .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.CENTER)
+			                                                                                                                                                                                    .add(ontologyLabel)
+			                                                                                                                                                                                    .add(ontologyComboBox,
+			                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE,
+			                                                                                                                                                                                         GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE)
+			                                                                                                                                                                                    .add(browseOntologyButton))
+			                                                                                                                                         .addContainerGap(GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                                          Short.MAX_VALUE)));
 		}
 
-		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT
-				|| dialogType == NETWORK_IMPORT) {
-
+		if ((dialogType == SIMPLE_ATTRIBUTE_IMPORT) || (dialogType == NETWORK_IMPORT)) {
 			titleIconLabel1.setIcon(SPREADSHEET_ICON_LARGE.getIcon());
 
 			attributeFileLabel.setText("Input File");
 			attributeFileLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 			selectAttributeFileButton.setText("Select File");
-			selectAttributeFileButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							try {
-								selectAttributeFileButtonActionPerformed(evt);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+			selectAttributeFileButton.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						try {
+							selectAttributeFileButtonActionPerformed(evt);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-					});
+					}
+				});
 
-			GroupLayout simpleAttributeImportPanelLayout = new GroupLayout(
-					simpleAttributeImportPanel);
-			simpleAttributeImportPanel
-					.setLayout(simpleAttributeImportPanelLayout);
-			simpleAttributeImportPanelLayout
-					.setHorizontalGroup(simpleAttributeImportPanelLayout
-							.createParallelGroup(
-									org.jdesktop.layout.GroupLayout.LEADING)
-							.add(
-									simpleAttributeImportPanelLayout
-											.createSequentialGroup()
-											.add(attributeFileLabel)
-											.add(24, 24, 24)
-											.add(
-													targetDataSourceTextField,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													300, Short.MAX_VALUE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(selectAttributeFileButton)
-											.addContainerGap()));
-			simpleAttributeImportPanelLayout
-					.setVerticalGroup(simpleAttributeImportPanelLayout
-							.createParallelGroup(
-									org.jdesktop.layout.GroupLayout.LEADING)
-							.add(
-									simpleAttributeImportPanelLayout
-											.createParallelGroup(
-													org.jdesktop.layout.GroupLayout.BASELINE)
-											.add(selectAttributeFileButton)
-											.add(
-													targetDataSourceTextField,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.add(attributeFileLabel)));
+			GroupLayout simpleAttributeImportPanelLayout = new GroupLayout(simpleAttributeImportPanel);
+			simpleAttributeImportPanel.setLayout(simpleAttributeImportPanelLayout);
+			simpleAttributeImportPanelLayout.setHorizontalGroup(simpleAttributeImportPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                                                                                    .add(simpleAttributeImportPanelLayout.createSequentialGroup()
+			                                                                                                                         .add(attributeFileLabel)
+			                                                                                                                         .add(24,
+			                                                                                                                              24,
+			                                                                                                                              24)
+			                                                                                                                         .add(targetDataSourceTextField,
+			                                                                                                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                                                                                              300,
+			                                                                                                                              Short.MAX_VALUE)
+			                                                                                                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                                         .add(selectAttributeFileButton)
+			                                                                                                                         .addContainerGap()));
+			simpleAttributeImportPanelLayout.setVerticalGroup(simpleAttributeImportPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                                                                                  .add(simpleAttributeImportPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+			                                                                                                                       .add(selectAttributeFileButton)
+			                                                                                                                       .add(targetDataSourceTextField,
+			                                                                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                                                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+			                                                                                                                       .add(attributeFileLabel)));
 		}
 
 		GroupLayout basicPanelLayout = new GroupLayout(basicPanel);
 		basicPanel.setLayout(basicPanelLayout);
 
-		basicPanelLayout
-				.setHorizontalGroup(basicPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								basicPanelLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												basicPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																basicPanelLayout
-																		.createSequentialGroup()
-																		.add(
-																				simpleAttributeImportPanel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				Short.MAX_VALUE)
-																		.addContainerGap())
-														.add(
-																basicPanelLayout
-																		.createSequentialGroup()
-																		.add(
-																				annotationAndOntologyImportPanel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				Short.MAX_VALUE)
-																		.addContainerGap())
-														.add(
-																basicPanelLayout
-																		.createSequentialGroup()
-																		.add(
-																				attrTypePanel,
-																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-																		.addContainerGap(
-																				50,
-																				Short.MAX_VALUE)))));
-		basicPanelLayout
-				.setVerticalGroup(basicPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								basicPanelLayout
-										.createSequentialGroup()
-										.add(
-												attrTypePanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												simpleAttributeImportPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.add(
-												annotationAndOntologyImportPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		basicPanelLayout.setHorizontalGroup(basicPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                    .add(basicPanelLayout.createSequentialGroup()
+		                                                                         .addContainerGap()
+		                                                                         .add(basicPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                                              .add(basicPanelLayout.createSequentialGroup()
+		                                                                                                                   .add(simpleAttributeImportPanel,
+		                                                                                                                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                        Short.MAX_VALUE)
+		                                                                                                                   .addContainerGap())
+		                                                                                              .add(basicPanelLayout.createSequentialGroup()
+		                                                                                                                   .add(annotationAndOntologyImportPanel,
+		                                                                                                                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                        Short.MAX_VALUE)
+		                                                                                                                   .addContainerGap())
+		                                                                                              .add(basicPanelLayout.createSequentialGroup()
+		                                                                                                                   .add(attrTypePanel,
+		                                                                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                                                   .addContainerGap(50,
+		                                                                                                                                    Short.MAX_VALUE)))));
+		basicPanelLayout.setVerticalGroup(basicPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                  .add(basicPanelLayout.createSequentialGroup()
+		                                                                       .add(attrTypePanel,
+		                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                       .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                       .add(simpleAttributeImportPanel,
+		                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                       .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+		                                                                                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                        Short.MAX_VALUE)
+		                                                                       .add(annotationAndOntologyImportPanel,
+		                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
 		/*
 		 * Layout data for advanced panel
 		 */
-		advancedPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				null, "Advanced",
-				javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-				javax.swing.border.TitledBorder.DEFAULT_POSITION,
-				new java.awt.Font("Dialog", 1, 11)));
+		advancedPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Advanced",
+		                                                                     javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+		                                                                     javax.swing.border.TitledBorder.DEFAULT_POSITION,
+		                                                                     new java.awt.Font("Dialog",
+		                                                                                       1, 11)));
 
-		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT
-				|| dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+		if ((dialogType == SIMPLE_ATTRIBUTE_IMPORT)
+		    || (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT)) {
 			advancedOptionCheckBox.setText("Show Mapping Options");
-			advancedOptionCheckBox.setBorder(javax.swing.BorderFactory
-					.createEmptyBorder(0, 0, 0, 0));
+			advancedOptionCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 			advancedOptionCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			advancedOptionCheckBox
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							advancedOptionCheckBoxActionPerformed(evt);
-						}
-					});
+			advancedOptionCheckBox.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						advancedOptionCheckBoxActionPerformed(evt);
+					}
+				});
 
-			attr2annotationPanel
-					.setBackground(new java.awt.Color(250, 250, 250));
-			attr2annotationPanel
-					.setBorder(javax.swing.BorderFactory
-							.createTitledBorder(
-									new javax.swing.border.SoftBevelBorder(
-											javax.swing.border.BevelBorder.RAISED),
-									"Annotation File to Attribute Mapping",
-									javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-									javax.swing.border.TitledBorder.DEFAULT_POSITION,
-									new java.awt.Font("Dialog", 1, 11)));
+			attr2annotationPanel.setBackground(new java.awt.Color(250, 250, 250));
+			attr2annotationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED),
+			                                                                            "Annotation File to Attribute Mapping",
+			                                                                            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+			                                                                            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+			                                                                            new java.awt.Font("Dialog",
+			                                                                                              1,
+			                                                                                              11)));
 			primaryKeyLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 			primaryKeyLabel.setForeground(new java.awt.Color(51, 51, 255));
 			primaryKeyLabel.setText("Key Column in Annotation File");
@@ -969,16 +898,13 @@ public class ImportTextTableDialog extends JDialog implements
 			nodeKeyLabel.setForeground(new java.awt.Color(255, 0, 51));
 			nodeKeyLabel.setText("Key Attribute for Network");
 
-			mappingAttributeComboBox.setForeground(new java.awt.Color(255, 0,
-					51));
+			mappingAttributeComboBox.setForeground(new java.awt.Color(255, 0, 51));
 			mappingAttributeComboBox.setEnabled(false);
-			mappingAttributeComboBox
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							nodeKeyComboBoxActionPerformed(evt);
-						}
-					});
+			mappingAttributeComboBox.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						nodeKeyComboBoxActionPerformed(evt);
+					}
+				});
 
 			arrowButton1.setBackground(new java.awt.Color(250, 250, 250));
 			arrowButton1.setOpaque(false);
@@ -986,140 +912,84 @@ public class ImportTextTableDialog extends JDialog implements
 			arrowButton1.setBorder(null);
 			arrowButton1.setBorderPainted(false);
 
-			GroupLayout attr2annotationPanelLayout = new GroupLayout(
-					attr2annotationPanel);
+			GroupLayout attr2annotationPanelLayout = new GroupLayout(attr2annotationPanel);
 			attr2annotationPanel.setLayout(attr2annotationPanelLayout);
-			attr2annotationPanelLayout
-					.setHorizontalGroup(attr2annotationPanelLayout
-							.createParallelGroup(GroupLayout.LEADING)
-							.add(
-									attr2annotationPanelLayout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													attr2annotationPanelLayout
-															.createParallelGroup(
-																	GroupLayout.LEADING)
-															.add(
-																	attr2annotationPanelLayout
-																			.createSequentialGroup()
-																			.add(
-																					primaryKeyLabel)
-																			.add(
-																					100,
-																					100,
-																					100))
-															.add(
-																	attr2annotationPanelLayout
-																			.createSequentialGroup()
-																			.add(
-																					primaryLabel)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					primaryKeyComboBox,
-																					0,
-																					0,
-																					Short.MAX_VALUE))
-															.add(
-																	aliasScrollPane,
-																	GroupLayout.DEFAULT_SIZE,
-																	100,
-																	Short.MAX_VALUE))
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(arrowButton1)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													attr2annotationPanelLayout
-															.createParallelGroup(
-																	GroupLayout.LEADING)
-															.add(
-																	mappingAttributeComboBox,
-																	0,
-																	100,
-																	Short.MAX_VALUE)
-															.add(nodeKeyLabel))
-											.addContainerGap()));
-			attr2annotationPanelLayout
-					.setVerticalGroup(attr2annotationPanelLayout
-							.createParallelGroup(GroupLayout.LEADING)
-							.add(
-									attr2annotationPanelLayout
-											.createSequentialGroup()
-											.add(
-													attr2annotationPanelLayout
-															.createParallelGroup(
-																	GroupLayout.BASELINE)
-															.add(
-																	primaryKeyLabel)
-															.add(nodeKeyLabel))
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													attr2annotationPanelLayout
-															.createParallelGroup(
-																	GroupLayout.BASELINE)
-															.add(primaryLabel)
-															.add(
-																	primaryKeyComboBox,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													attr2annotationPanelLayout
-															.createParallelGroup(
-																	GroupLayout.LEADING)
-															.add(
-																	aliasScrollPane,
-																	GroupLayout.DEFAULT_SIZE,
-																	100,
-																	Short.MAX_VALUE)
-															.add(
-																	attr2annotationPanelLayout
-																			.createSequentialGroup()
-																			.add(
-																					attr2annotationPanelLayout
-																							.createParallelGroup(
-																									GroupLayout.TRAILING)
-																							.add(
-																									mappingAttributeComboBox,
-																									GroupLayout.PREFERRED_SIZE,
-																									GroupLayout.DEFAULT_SIZE,
-																									GroupLayout.PREFERRED_SIZE)
-																							.add(
-																									arrowButton1))
-																			.addContainerGap()))));
-
+			attr2annotationPanelLayout.setHorizontalGroup(attr2annotationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                        .add(attr2annotationPanelLayout.createSequentialGroup()
+			                                                                                                       .addContainerGap()
+			                                                                                                       .add(attr2annotationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                                                                                      .add(attr2annotationPanelLayout.createSequentialGroup()
+			                                                                                                                                                                     .add(primaryKeyLabel)
+			                                                                                                                                                                     .add(100,
+			                                                                                                                                                                          100,
+			                                                                                                                                                                          100))
+			                                                                                                                                      .add(attr2annotationPanelLayout.createSequentialGroup()
+			                                                                                                                                                                     .add(primaryLabel)
+			                                                                                                                                                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                                                                                     .add(primaryKeyComboBox,
+			                                                                                                                                                                          0,
+			                                                                                                                                                                          0,
+			                                                                                                                                                                          Short.MAX_VALUE))
+			                                                                                                                                      .add(aliasScrollPane,
+			                                                                                                                                           GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                           100,
+			                                                                                                                                           Short.MAX_VALUE))
+			                                                                                                       .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                       .add(arrowButton1)
+			                                                                                                       .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                       .add(attr2annotationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                                                                                      .add(mappingAttributeComboBox,
+			                                                                                                                                           0,
+			                                                                                                                                           100,
+			                                                                                                                                           Short.MAX_VALUE)
+			                                                                                                                                      .add(nodeKeyLabel))
+			                                                                                                       .addContainerGap()));
+			attr2annotationPanelLayout.setVerticalGroup(attr2annotationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                      .add(attr2annotationPanelLayout.createSequentialGroup()
+			                                                                                                     .add(attr2annotationPanelLayout.createParallelGroup(GroupLayout.BASELINE)
+			                                                                                                                                    .add(primaryKeyLabel)
+			                                                                                                                                    .add(nodeKeyLabel))
+			                                                                                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                     .add(attr2annotationPanelLayout.createParallelGroup(GroupLayout.BASELINE)
+			                                                                                                                                    .add(primaryLabel)
+			                                                                                                                                    .add(primaryKeyComboBox,
+			                                                                                                                                         GroupLayout.PREFERRED_SIZE,
+			                                                                                                                                         GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                         GroupLayout.PREFERRED_SIZE))
+			                                                                                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                     .add(attr2annotationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                                                                                    .add(aliasScrollPane,
+			                                                                                                                                         GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                         100,
+			                                                                                                                                         Short.MAX_VALUE)
+			                                                                                                                                    .add(attr2annotationPanelLayout.createSequentialGroup()
+			                                                                                                                                                                   .add(attr2annotationPanelLayout.createParallelGroup(GroupLayout.TRAILING)
+			                                                                                                                                                                                                  .add(mappingAttributeComboBox,
+			                                                                                                                                                                                                       GroupLayout.PREFERRED_SIZE,
+			                                                                                                                                                                                                       GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                                                                                       GroupLayout.PREFERRED_SIZE)
+			                                                                                                                                                                                                  .add(arrowButton1))
+			                                                                                                                                                                   .addContainerGap()))));
 		}
 
 		textImportCheckBox.setText("Show Text File Import Options");
-		textImportCheckBox.setBorder(javax.swing.BorderFactory
-				.createEmptyBorder(0, 0, 0, 0));
+		textImportCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		textImportCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		textImportCheckBox
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						textImportCheckBoxActionPerformed(evt);
-					}
-				});
+		textImportCheckBox.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					textImportCheckBoxActionPerformed(evt);
+				}
+			});
 
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
-
-			ontology2annotationPanel.setBackground(new java.awt.Color(250, 250,
-					250));
-			ontology2annotationPanel
-					.setBorder(javax.swing.BorderFactory
-							.createTitledBorder(
-									new javax.swing.border.SoftBevelBorder(
-											javax.swing.border.BevelBorder.RAISED),
-									"Annotation File to Ontology Mapping",
-									javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-									javax.swing.border.TitledBorder.DEFAULT_POSITION,
-									new java.awt.Font("Dialog", 1, 11)));
+			ontology2annotationPanel.setBackground(new java.awt.Color(250, 250, 250));
+			ontology2annotationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED),
+			                                                                                "Annotation File to Ontology Mapping",
+			                                                                                javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+			                                                                                javax.swing.border.TitledBorder.DEFAULT_POSITION,
+			                                                                                new java.awt.Font("Dialog",
+			                                                                                                  1,
+			                                                                                                  11)));
 			targetOntologyLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 			targetOntologyLabel.setForeground(new java.awt.Color(73, 127, 235));
 			targetOntologyLabel.setText("Ontology");
@@ -1128,105 +998,64 @@ public class ImportTextTableDialog extends JDialog implements
 			ontologyTextField.setForeground(ONTOLOGY_COLOR.getColor());
 			ontologyTextField.setBackground(Color.WHITE);
 			ontologyTextField.setEditable(false);
-			ontologyTextField
-					.setToolTipText("This ontology will be used for mapping.");
+			ontologyTextField.setToolTipText("This ontology will be used for mapping.");
 
-			ontologyInAnnotationLabel.setFont(new java.awt.Font("SansSerif", 1,
-					12));
-			ontologyInAnnotationLabel.setForeground(new java.awt.Color(0, 255,
-					255));
+			ontologyInAnnotationLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
+			ontologyInAnnotationLabel.setForeground(new java.awt.Color(0, 255, 255));
 			ontologyInAnnotationLabel.setText("Key Column in Annotation File");
 
-			ontologyInAnnotationComboBox.setForeground(ONTOLOGY_COLOR
-					.getColor());
-			ontologyInAnnotationComboBox
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							ontologyInAnnotationComboBoxActionPerformed(evt);
-						}
-					});
+			ontologyInAnnotationComboBox.setForeground(ONTOLOGY_COLOR.getColor());
+			ontologyInAnnotationComboBox.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						ontologyInAnnotationComboBoxActionPerformed(evt);
+					}
+				});
 
 			arrowButton2.setBackground(new java.awt.Color(250, 250, 250));
-			arrowButton2.setIcon(new javax.swing.ImageIcon(Cytoscape.class
-					.getResource("images/ximian/stock_right-16.png")));
+			arrowButton2.setIcon(new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/stock_right-16.png")));
 			arrowButton2.setBorder(null);
 			arrowButton2.setBorderPainted(false);
 
-			GroupLayout ontology2annotationPanelLayout = new GroupLayout(
-					ontology2annotationPanel);
+			GroupLayout ontology2annotationPanelLayout = new GroupLayout(ontology2annotationPanel);
 			ontology2annotationPanel.setLayout(ontology2annotationPanelLayout);
-			ontology2annotationPanelLayout
-					.setHorizontalGroup(ontology2annotationPanelLayout
-							.createParallelGroup(GroupLayout.LEADING)
-							.add(
-									ontology2annotationPanelLayout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													ontology2annotationPanelLayout
-															.createParallelGroup(
-																	GroupLayout.LEADING)
-															.add(
-																	ontologyInAnnotationLabel)
-															.add(
-																	ontologyInAnnotationComboBox,
-																	0,
-																	100,
-																	Short.MAX_VALUE))
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(arrowButton2)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													ontology2annotationPanelLayout
-															.createParallelGroup(
-																	GroupLayout.TRAILING)
-															.add(
-																	GroupLayout.LEADING,
-																	targetOntologyLabel)
-															.add(
-																	ontologyTextField,
-																	GroupLayout.DEFAULT_SIZE,
-																	100,
-																	Short.MAX_VALUE))
-											.addContainerGap()));
-			ontology2annotationPanelLayout
-					.setVerticalGroup(ontology2annotationPanelLayout
-							.createParallelGroup(GroupLayout.LEADING)
-							.add(
-									ontology2annotationPanelLayout
-											.createSequentialGroup()
-											.add(
-													ontology2annotationPanelLayout
-															.createParallelGroup(
-																	GroupLayout.BASELINE)
-															.add(
-																	ontologyInAnnotationLabel)
-															.add(
-																	targetOntologyLabel))
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													ontology2annotationPanelLayout
-															.createParallelGroup(
-																	GroupLayout.BASELINE)
-															.add(
-																	ontologyInAnnotationComboBox,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE)
-															.add(
-																	ontologyTextField,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE)
-															.add(arrowButton2))
-											.addContainerGap(
-													GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)));
-
+			ontology2annotationPanelLayout.setHorizontalGroup(ontology2annotationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                                .add(ontology2annotationPanelLayout.createSequentialGroup()
+			                                                                                                                   .addContainerGap()
+			                                                                                                                   .add(ontology2annotationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                                                                                                      .add(ontologyInAnnotationLabel)
+			                                                                                                                                                      .add(ontologyInAnnotationComboBox,
+			                                                                                                                                                           0,
+			                                                                                                                                                           100,
+			                                                                                                                                                           Short.MAX_VALUE))
+			                                                                                                                   .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                                   .add(arrowButton2)
+			                                                                                                                   .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                                   .add(ontology2annotationPanelLayout.createParallelGroup(GroupLayout.TRAILING)
+			                                                                                                                                                      .add(GroupLayout.LEADING,
+			                                                                                                                                                           targetOntologyLabel)
+			                                                                                                                                                      .add(ontologyTextField,
+			                                                                                                                                                           GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                                           100,
+			                                                                                                                                                           Short.MAX_VALUE))
+			                                                                                                                   .addContainerGap()));
+			ontology2annotationPanelLayout.setVerticalGroup(ontology2annotationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+			                                                                              .add(ontology2annotationPanelLayout.createSequentialGroup()
+			                                                                                                                 .add(ontology2annotationPanelLayout.createParallelGroup(GroupLayout.BASELINE)
+			                                                                                                                                                    .add(ontologyInAnnotationLabel)
+			                                                                                                                                                    .add(targetOntologyLabel))
+			                                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                                                                 .add(ontology2annotationPanelLayout.createParallelGroup(GroupLayout.BASELINE)
+			                                                                                                                                                    .add(ontologyInAnnotationComboBox,
+			                                                                                                                                                         GroupLayout.PREFERRED_SIZE,
+			                                                                                                                                                         GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                                         GroupLayout.PREFERRED_SIZE)
+			                                                                                                                                                    .add(ontologyTextField,
+			                                                                                                                                                         GroupLayout.PREFERRED_SIZE,
+			                                                                                                                                                         GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                                         GroupLayout.PREFERRED_SIZE)
+			                                                                                                                                                    .add(arrowButton2))
+			                                                                                                                 .addContainerGap(GroupLayout.DEFAULT_SIZE,
+			                                                                                                                                  Short.MAX_VALUE)));
 		}
 
 		/*
@@ -1235,508 +1064,394 @@ public class ImportTextTableDialog extends JDialog implements
 		if (dialogType == NETWORK_IMPORT) {
 			networkImportPanel = new NetworkImportOptionsPanel();
 			networkImportPanel.addPropertyChangeListener(this);
-
 		}
 
-		textImportOptionPanel.setBorder(javax.swing.BorderFactory
-				.createTitledBorder(new javax.swing.border.SoftBevelBorder(
-						javax.swing.border.BevelBorder.RAISED),
-						"Text File Import Options",
-						javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-						javax.swing.border.TitledBorder.DEFAULT_POSITION,
-						new java.awt.Font("Dialog", 1, 11)));
-		delimiterPanel.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("Delimiter"));
+		textImportOptionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED),
+		                                                                             "Text File Import Options",
+		                                                                             javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+		                                                                             javax.swing.border.TitledBorder.DEFAULT_POSITION,
+		                                                                             new java.awt.Font("Dialog",
+		                                                                                               1,
+		                                                                                               11)));
+		delimiterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Delimiter"));
 		tabCheckBox.setText("Tab");
-		tabCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0,
-				0, 0));
+		tabCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		tabCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		tabCheckBox.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					delimiterCheckBoxActionPerformed(evt);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					try {
+						delimiterCheckBoxActionPerformed(evt);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
 
 		commaCheckBox.setText("Comma");
-		commaCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,
-				0, 0, 0));
+		commaCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		commaCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		commaCheckBox.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					delimiterCheckBoxActionPerformed(evt);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					try {
+						delimiterCheckBoxActionPerformed(evt);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
 
 		semicolonCheckBox.setText("Semicolon");
-		semicolonCheckBox.setBorder(javax.swing.BorderFactory
-				.createEmptyBorder(0, 0, 0, 0));
+		semicolonCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		semicolonCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		semicolonCheckBox
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						try {
-							delimiterCheckBoxActionPerformed(evt);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+		semicolonCheckBox.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					try {
+						delimiterCheckBoxActionPerformed(evt);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				});
+				}
+			});
 
 		spaceCheckBox.setText("Space");
-		spaceCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,
-				0, 0, 0));
+		spaceCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		spaceCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		spaceCheckBox.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					delimiterCheckBoxActionPerformed(evt);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					try {
+						delimiterCheckBoxActionPerformed(evt);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
 
 		otherCheckBox.setText("Other");
-		otherCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,
-				0, 0, 0));
+		otherCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		otherCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		otherCheckBox.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					delimiterCheckBoxActionPerformed(evt);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					try {
+						delimiterCheckBoxActionPerformed(evt);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
 
 		otherDelimiterTextField.addKeyListener(new KeyListener() {
-
-			public void keyPressed(KeyEvent evt) {
-				try {
-					otherTextFieldActionPerformed(evt);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				public void keyPressed(KeyEvent evt) {
+					try {
+						otherTextFieldActionPerformed(evt);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
 
-			public void keyReleased(KeyEvent arg0) {
-			}
+				public void keyReleased(KeyEvent arg0) {
+				}
 
-			public void keyTyped(KeyEvent evt) {
-			}
-		});
+				public void keyTyped(KeyEvent evt) {
+				}
+			});
 
 		GroupLayout delimiterPanelLayout = new GroupLayout(delimiterPanel);
 		delimiterPanel.setLayout(delimiterPanelLayout);
-		delimiterPanelLayout
-				.setHorizontalGroup(delimiterPanelLayout.createParallelGroup(
-						GroupLayout.LEADING).add(
-						delimiterPanelLayout.createSequentialGroup().add(
-								tabCheckBox).addPreferredGap(
-								org.jdesktop.layout.LayoutStyle.RELATED).add(
-								commaCheckBox).addPreferredGap(
-								org.jdesktop.layout.LayoutStyle.RELATED).add(
-								semicolonCheckBox).addPreferredGap(
-								org.jdesktop.layout.LayoutStyle.RELATED).add(
-								spaceCheckBox).addPreferredGap(
-								org.jdesktop.layout.LayoutStyle.RELATED).add(
-								otherCheckBox).addPreferredGap(
-								org.jdesktop.layout.LayoutStyle.RELATED).add(
-								otherDelimiterTextField,
-								GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)));
-		delimiterPanelLayout.setVerticalGroup(delimiterPanelLayout
-				.createParallelGroup(GroupLayout.LEADING).add(
-						delimiterPanelLayout.createSequentialGroup().add(
-								delimiterPanelLayout.createParallelGroup(
-										GroupLayout.BASELINE).add(tabCheckBox)
-										.add(commaCheckBox).add(
-												semicolonCheckBox).add(
-												spaceCheckBox).add(
-												otherCheckBox).add(
-												otherDelimiterTextField,
-												GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
-								.addContainerGap(GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)));
+		delimiterPanelLayout.setHorizontalGroup(delimiterPanelLayout.createParallelGroup(GroupLayout.LEADING)
+		                                                            .add(delimiterPanelLayout.createSequentialGroup()
+		                                                                                     .add(tabCheckBox)
+		                                                                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                     .add(commaCheckBox)
+		                                                                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                     .add(semicolonCheckBox)
+		                                                                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                     .add(spaceCheckBox)
+		                                                                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                     .add(otherCheckBox)
+		                                                                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                     .add(otherDelimiterTextField,
+		                                                                                          GroupLayout.DEFAULT_SIZE,
+		                                                                                          31,
+		                                                                                          Short.MAX_VALUE)));
+		delimiterPanelLayout.setVerticalGroup(delimiterPanelLayout.createParallelGroup(GroupLayout.LEADING)
+		                                                          .add(delimiterPanelLayout.createSequentialGroup()
+		                                                                                   .add(delimiterPanelLayout.createParallelGroup(GroupLayout.BASELINE)
+		                                                                                                            .add(tabCheckBox)
+		                                                                                                            .add(commaCheckBox)
+		                                                                                                            .add(semicolonCheckBox)
+		                                                                                                            .add(spaceCheckBox)
+		                                                                                                            .add(otherCheckBox)
+		                                                                                                            .add(otherDelimiterTextField,
+		                                                                                                                 GroupLayout.PREFERRED_SIZE,
+		                                                                                                                 GroupLayout.DEFAULT_SIZE,
+		                                                                                                                 GroupLayout.PREFERRED_SIZE))
+		                                                                                   .addContainerGap(GroupLayout.DEFAULT_SIZE,
+		                                                                                                    Short.MAX_VALUE)));
 
 		attrNameCheckBox.setEnabled(false);
 
-		SpinnerNumberModel spinnerModel = new SpinnerNumberModel(100, 1,
-				10000000, 10);
+		SpinnerNumberModel spinnerModel = new SpinnerNumberModel(100, 1, 10000000, 10);
 		counterSpinner.setModel(spinnerModel);
-		counterSpinner
-				.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
-					public void mouseWheelMoved(
-							java.awt.event.MouseWheelEvent evt) {
-						counterSpinnerMouseWheelMoved(evt);
-					}
-				});
+		counterSpinner.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+				public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+					counterSpinnerMouseWheelMoved(evt);
+				}
+			});
 
 		counterLabel.setText("entries.");
 
-		previewOptionPanel.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("Preview Options"));
+		previewOptionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Preview Options"));
 		reloadButton.setText("Reload");
 		reloadButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		reloadButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					reloadButtonActionPerformed(evt);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					try {
+						reloadButtonActionPerformed(evt);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
 
 		showAllRadioButton.setText("Show all entries in the file");
-		showAllRadioButton.setBorder(javax.swing.BorderFactory
-				.createEmptyBorder(0, 0, 0, 0));
+		showAllRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		showAllRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
 		counterRadioButton.setText("Show first ");
-		counterRadioButton.setBorder(javax.swing.BorderFactory
-				.createEmptyBorder(0, 0, 0, 0));
+		counterRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		counterRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-		org.jdesktop.layout.GroupLayout previewOptionPanelLayout = new org.jdesktop.layout.GroupLayout(
-				previewOptionPanel);
+		org.jdesktop.layout.GroupLayout previewOptionPanelLayout = new org.jdesktop.layout.GroupLayout(previewOptionPanel);
 		previewOptionPanel.setLayout(previewOptionPanelLayout);
 
-		previewOptionPanelLayout
-				.setHorizontalGroup(previewOptionPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								previewOptionPanelLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(showAllRadioButton)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(counterRadioButton)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												counterSpinner,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												58,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(counterLabel).addContainerGap(76,
-												Short.MAX_VALUE)));
-		previewOptionPanelLayout.setVerticalGroup(previewOptionPanelLayout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-				.add(counterRadioButton).add(counterSpinner,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).add(
-						counterLabel).add(showAllRadioButton));
+		previewOptionPanelLayout.setHorizontalGroup(previewOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                    .add(previewOptionPanelLayout.createSequentialGroup()
+		                                                                                                 .addContainerGap()
+		                                                                                                 .add(showAllRadioButton)
+		                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                 .add(counterRadioButton)
+		                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                 .add(counterSpinner,
+		                                                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                      58,
+		                                                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                 .add(counterLabel)
+		                                                                                                 .addContainerGap(76,
+		                                                                                                                  Short.MAX_VALUE)));
+		previewOptionPanelLayout.setVerticalGroup(previewOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                  .add(counterRadioButton)
+		                                                                  .add(counterSpinner,
+		                                                                       org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                       org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                       org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                  .add(counterLabel)
+		                                                                  .add(showAllRadioButton));
 
-		attributeNamePanel.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("Attribute Names"));
+		attributeNamePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Attribute Names"));
 
 		attrNameCheckBox.setText("Transfer first line as attribute names");
 
 		attrNameCheckBox.setBorder(null);
 		attrNameCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		attrNameCheckBox.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				attrNameCheckBoxActionPerformed(evt);
-			}
-		});
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					attrNameCheckBoxActionPerformed(evt);
+				}
+			});
 
 		startRowLabel.setText("Start Import Row: ");
 		startRowLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		startRowSpinner.setName("startRowSpinner");
-		SpinnerNumberModel startRowSpinnerModel = new SpinnerNumberModel(1, 1,
-				10000000, 1);
+
+		SpinnerNumberModel startRowSpinnerModel = new SpinnerNumberModel(1, 1, 10000000, 1);
 		startRowSpinner.setModel(startRowSpinnerModel);
-		startRowSpinner
-				.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
-					public void mouseWheelMoved(
-							java.awt.event.MouseWheelEvent evt) {
-						startRowSpinnerMouseWheelMoved(evt);
-					}
-				});
-		startRowSpinner
-				.setToolTipText("<html>Load entries from this line. <p>"
-						+ "(Click on the <strong><i>Reload</i></strong> button to refresh preview.)</p></html>");
+		startRowSpinner.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+				public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+					startRowSpinnerMouseWheelMoved(evt);
+				}
+			});
+		startRowSpinner.setToolTipText("<html>Load entries from this line. <p>"
+		                               + "(Click on the <strong><i>Reload</i></strong> button to refresh preview.)</p></html>");
 
 		commentLineLabel.setText("Comment Line:");
 
-		commentLineTextField
-				.setToolTipText("<html>Lines start with this string will be ignored. <br>"
-						+ "(Click on the <strong><i>Reload</i></strong> button to refresh preview.)</html>");
+		commentLineTextField.setToolTipText("<html>Lines start with this string will be ignored. <br>"
+		                                    + "(Click on the <strong><i>Reload</i></strong> button to refresh preview.)</html>");
 
-		GroupLayout attributeNamePanelLayout = new org.jdesktop.layout.GroupLayout(
-				attributeNamePanel);
+		GroupLayout attributeNamePanelLayout = new org.jdesktop.layout.GroupLayout(attributeNamePanel);
 		attributeNamePanel.setLayout(attributeNamePanelLayout);
 
-		attributeNamePanelLayout
-				.setHorizontalGroup(attributeNamePanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								attributeNamePanelLayout
-										.createSequentialGroup()
-										.add(attrNameCheckBox)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(startRowLabel)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												startRowSpinner,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												51,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(commentLineLabel)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												commentLineTextField,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												24,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addContainerGap(12, Short.MAX_VALUE)));
-		attributeNamePanelLayout
-				.setVerticalGroup(attributeNamePanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								attributeNamePanelLayout
-										.createSequentialGroup()
-										.add(
-												attributeNamePanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(
-																attrNameCheckBox,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																21,
-																Short.MAX_VALUE)
-														.add(startRowLabel)
-														.add(
-																startRowSpinner,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(commentLineLabel)
-														.add(
-																commentLineTextField,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-										.addContainerGap()));
+		attributeNamePanelLayout.setHorizontalGroup(attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                    .add(attributeNamePanelLayout.createSequentialGroup()
+		                                                                                                 .add(attrNameCheckBox)
+		                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                 .add(startRowLabel)
+		                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                 .add(startRowSpinner,
+		                                                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                      51,
+		                                                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                 .add(commentLineLabel)
+		                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                 .add(commentLineTextField,
+		                                                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                      24,
+		                                                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                                 .addContainerGap(12,
+		                                                                                                                  Short.MAX_VALUE)));
+		attributeNamePanelLayout.setVerticalGroup(attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                  .add(attributeNamePanelLayout.createSequentialGroup()
+		                                                                                               .add(attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                                                                            .add(attrNameCheckBox,
+		                                                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                                 21,
+		                                                                                                                                 Short.MAX_VALUE)
+		                                                                                                                            .add(startRowLabel)
+		                                                                                                                            .add(startRowSpinner,
+		                                                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                                                            .add(commentLineLabel)
+		                                                                                                                            .add(commentLineTextField,
+		                                                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+		                                                                                               .addContainerGap()));
 
-		networkImportOptionPanel.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("Network Import Options"));
+		networkImportOptionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Network Import Options"));
 		defaultInteractionLabel.setText("Default Interaction:");
 		defaultInteractionTextField.setText(DEFAULT_INTERACTION);
-		defaultInteractionTextField
-				.setToolTipText("<html>If <font color=\"red\"><i>Default Interaction</i></font>"
-						+ " is selected, this value will be used for <i>Interaction Type</i>.<br></html>");
+		defaultInteractionTextField.setToolTipText("<html>If <font color=\"red\"><i>Default Interaction</i></font>"
+		                                           + " is selected, this value will be used for <i>Interaction Type</i>.<br></html>");
 
-		org.jdesktop.layout.GroupLayout networkImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(
-				networkImportOptionPanel);
+		org.jdesktop.layout.GroupLayout networkImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(networkImportOptionPanel);
 		networkImportOptionPanel.setLayout(networkImportOptionPanelLayout);
 
-		networkImportOptionPanelLayout
-				.setHorizontalGroup(networkImportOptionPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								networkImportOptionPanelLayout
-										.createSequentialGroup()
-										.addContainerGap(
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.add(defaultInteractionLabel)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												defaultInteractionTextField,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												58,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
-		networkImportOptionPanelLayout
-				.setVerticalGroup(networkImportOptionPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING).add(
-								defaultInteractionLabel).add(
-								defaultInteractionTextField,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE));
+		networkImportOptionPanelLayout.setHorizontalGroup(networkImportOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                                .add(networkImportOptionPanelLayout.createSequentialGroup()
+		                                                                                                                   .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                                    Short.MAX_VALUE)
+		                                                                                                                   .add(defaultInteractionLabel)
+		                                                                                                                   .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                                   .add(defaultInteractionTextField,
+		                                                                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                                        58,
+		                                                                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		networkImportOptionPanelLayout.setVerticalGroup(networkImportOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                              .add(defaultInteractionLabel)
+		                                                                              .add(defaultInteractionTextField,
+		                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                   org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE));
 
-		org.jdesktop.layout.GroupLayout textImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(
-				textImportOptionPanel);
+		org.jdesktop.layout.GroupLayout textImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(textImportOptionPanel);
 		textImportOptionPanel.setLayout(textImportOptionPanelLayout);
 
-		textImportOptionPanelLayout
-				.setHorizontalGroup(textImportOptionPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								org.jdesktop.layout.GroupLayout.TRAILING,
-								textImportOptionPanelLayout
-										.createSequentialGroup()
-										.add(
-												attributeNamePanel,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												networkImportOptionPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.add(29, 29, 29).add(reloadButton))
-						.add(
-								org.jdesktop.layout.GroupLayout.TRAILING,
-								textImportOptionPanelLayout
-										.createSequentialGroup()
-										.add(
-												delimiterPanel,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												previewOptionPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
-		textImportOptionPanelLayout
-				.setVerticalGroup(textImportOptionPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								textImportOptionPanelLayout
-										.createSequentialGroup()
-										.add(
-												textImportOptionPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																delimiterPanel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																49,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(
-																previewOptionPanel,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																50,
-																Short.MAX_VALUE))
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												textImportOptionPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																networkImportOptionPanel,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																45,
-																Short.MAX_VALUE)
-														.add(
-																attributeNamePanel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																45,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(
-																org.jdesktop.layout.GroupLayout.TRAILING,
-																reloadButton))));
+		textImportOptionPanelLayout.setHorizontalGroup(textImportOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                          .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                                                               textImportOptionPanelLayout.createSequentialGroup()
+		                                                                                                          .add(attributeNamePanel,
+		                                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                               Short.MAX_VALUE)
+		                                                                                                          .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                          .add(networkImportOptionPanel,
+		                                                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                                          .add(29,
+		                                                                                                               29,
+		                                                                                                               29)
+		                                                                                                          .add(reloadButton))
+		                                                                          .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                                                               textImportOptionPanelLayout.createSequentialGroup()
+		                                                                                                          .add(delimiterPanel,
+		                                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                               Short.MAX_VALUE)
+		                                                                                                          .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                          .add(previewOptionPanel,
+		                                                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		textImportOptionPanelLayout.setVerticalGroup(textImportOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                        .add(textImportOptionPanelLayout.createSequentialGroup()
+		                                                                                                        .add(textImportOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                                                                                        .add(delimiterPanel,
+		                                                                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                                                             49,
+		                                                                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                                                                        .add(previewOptionPanel,
+		                                                                                                                                             org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                                             50,
+		                                                                                                                                             Short.MAX_VALUE))
+		                                                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                        .add(textImportOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                                                                                        .add(networkImportOptionPanel,
+		                                                                                                                                             org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                                             45,
+		                                                                                                                                             Short.MAX_VALUE)
+		                                                                                                                                        .add(attributeNamePanel,
+		                                                                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                                                             45,
+		                                                                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                                                                        .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                                                                                                                             reloadButton))));
 
-		org.jdesktop.layout.GroupLayout advancedPanelLayout = new org.jdesktop.layout.GroupLayout(
-				advancedPanel);
+		org.jdesktop.layout.GroupLayout advancedPanelLayout = new org.jdesktop.layout.GroupLayout(advancedPanel);
 		advancedPanel.setLayout(advancedPanelLayout);
 
-		advancedPanelLayout
-				.setHorizontalGroup(advancedPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								advancedPanelLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(advancedOptionCheckBox)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(textImportCheckBox)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(importAllCheckBox))
-						.add(attr2annotationPanel,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE).add(ontology2annotationPanel,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE).add(textImportOptionPanel,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE));
-		advancedPanelLayout
-				.setVerticalGroup(advancedPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								advancedPanelLayout
-										.createSequentialGroup()
-										.add(
-												advancedPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(
-																advancedOptionCheckBox)
-														.add(textImportCheckBox)
-														.add(importAllCheckBox))
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												attr2annotationPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												ontology2annotationPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												textImportOptionPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		advancedPanelLayout.setHorizontalGroup(advancedPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                          .add(advancedPanelLayout.createSequentialGroup()
+		                                                                                  .addContainerGap()
+		                                                                                  .add(advancedOptionCheckBox)
+		                                                                                  .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                  .add(textImportCheckBox)
+		                                                                                  .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                  .add(importAllCheckBox))
+		                                                          .add(attr2annotationPanel,
+		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                               Short.MAX_VALUE)
+		                                                          .add(ontology2annotationPanel,
+		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                               Short.MAX_VALUE)
+		                                                          .add(textImportOptionPanel,
+		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                               Short.MAX_VALUE));
+		advancedPanelLayout.setVerticalGroup(advancedPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                        .add(advancedPanelLayout.createSequentialGroup()
+		                                                                                .add(advancedPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                                                        .add(advancedOptionCheckBox)
+		                                                                                                        .add(textImportCheckBox)
+		                                                                                                        .add(importAllCheckBox))
+		                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                .add(attr2annotationPanel,
+		                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                .add(ontology2annotationPanel,
+		                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                .add(textImportOptionPanel,
+		                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
 		globalLayout();
 
@@ -1746,7 +1461,7 @@ public class ImportTextTableDialog extends JDialog implements
 		textImportOptionPanel.setVisible(false);
 
 		pack();
-	}// </editor-fold>
+	} // </editor-fold>
 
 	private void primaryKeyComboBoxActionPerformed(ActionEvent evt) {
 		if (dialogType == NETWORK_IMPORT) {
@@ -1755,16 +1470,15 @@ public class ImportTextTableDialog extends JDialog implements
 
 		keyInFile = primaryKeyComboBox.getSelectedIndex();
 
-		previewPanel.getPreviewTable().setDefaultRenderer(Object.class,
-				getRenderer(previewPanel.getFileType()));
+		previewPanel.getPreviewTable()
+		            .setDefaultRenderer(Object.class, getRenderer(previewPanel.getFileType()));
 
 		try {
-			if (dialogType == SIMPLE_ATTRIBUTE_IMPORT
-					|| dialogType == NETWORK_IMPORT) {
+			if ((dialogType == SIMPLE_ATTRIBUTE_IMPORT) || (dialogType == NETWORK_IMPORT)) {
 				setStatusBar(new URL(targetDataSourceTextField.getText()));
 			} else {
-				setStatusBar(new URL(annotationUrlMap.get(annotationComboBox
-						.getSelectedItem().toString())));
+				setStatusBar(new URL(annotationUrlMap.get(annotationComboBox.getSelectedItem()
+				                                                            .toString())));
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -1772,19 +1486,15 @@ public class ImportTextTableDialog extends JDialog implements
 
 		previewPanel.repaint();
 
-		JTable curTable = aliasTableMap
-				.get(previewPanel.getSelectedSheetName());
-		curTable.setModel(aliasTableModelMap.get(previewPanel
-				.getSelectedSheetName()));
+		JTable curTable = aliasTableMap.get(previewPanel.getSelectedSheetName());
+		curTable.setModel(aliasTableModelMap.get(previewPanel.getSelectedSheetName()));
 
 		if (curTable.getCellRenderer(0, 1) != null) {
-
-			((AliasTableRenderer) curTable.getCellRenderer(0, 1))
-					.setPrimaryKey(keyInFile);
+			((AliasTableRenderer) curTable.getCellRenderer(0, 1)).setPrimaryKey(keyInFile);
 			aliasScrollPane.setViewportView(curTable);
 
 			primaryKeyMap.put(previewPanel.getSelectedSheetName(),
-					primaryKeyComboBox.getSelectedIndex());
+			                  primaryKeyComboBox.getSelectedIndex());
 
 			aliasScrollPane.setViewportView(curTable);
 			curTable.repaint();
@@ -1792,7 +1502,6 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private void helpButtonActionPerformed(ActionEvent evt) {
-
 	}
 
 	private void otherTextFieldActionPerformed(KeyEvent evt) throws IOException {
@@ -1802,7 +1511,6 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private void attributeRadioButtonActionPerformed(ActionEvent evt) {
-
 		if (nodeRadioButton.isSelected()) {
 			selectedAttributes = Cytoscape.getNodeAttributes();
 			objType = NODE;
@@ -1813,9 +1521,9 @@ public class ImportTextTableDialog extends JDialog implements
 			selectedAttributes = Cytoscape.getNetworkAttributes();
 			objType = NETWORK;
 		}
+
 		updateMappingAttributeComboBox();
 		setKeyList();
-
 	}
 
 	private void advancedOptionCheckBoxActionPerformed(ActionEvent evt) {
@@ -1830,70 +1538,67 @@ public class ImportTextTableDialog extends JDialog implements
 		if (dialogType == ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT) {
 			ontology2annotationPanel.setVisible(false);
 		}
+
 		pack();
 	}
 
 	private void nodeKeyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		keyInFile = mappingAttributeComboBox.getSelectedIndex();
 
-		previewPanel.getPreviewTable().setDefaultRenderer(Object.class,
-				getRenderer(previewPanel.getFileType()));
+		previewPanel.getPreviewTable()
+		            .setDefaultRenderer(Object.class, getRenderer(previewPanel.getFileType()));
 
 		setKeyList();
 	}
 
-	private void browseOntologyButtonActionPerformed(
-			java.awt.event.ActionEvent evt) {
-		DataSourceSelectDialog dssd = new DataSourceSelectDialog(
-				DataSourceSelectDialog.ONTOLOGY_TYPE, Cytoscape.getDesktop(),
-				true);
+	private void browseOntologyButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		DataSourceSelectDialog dssd = new DataSourceSelectDialog(DataSourceSelectDialog.ONTOLOGY_TYPE,
+		                                                         Cytoscape.getDesktop(), true);
 		dssd.setLocationRelativeTo(Cytoscape.getDesktop());
 		dssd.setVisible(true);
 
 		String key = dssd.getSourceName();
+
 		if (key != null) {
 			ontologyComboBox.insertItemAt(key, 0);
 			ontologyUrlMap.put(key, dssd.getSourceUrlString());
 			ontologyComboBox.setSelectedItem(key);
 			ontologyComboBox.setToolTipText(getOntologyTooltip());
 		}
-
 	}
 
 	private void attrNameCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
-		final DefaultTableModel model = (DefaultTableModel) previewPanel
-				.getPreviewTable().getModel();
+		final DefaultTableModel model = (DefaultTableModel) previewPanel.getPreviewTable().getModel();
 
 		if (attrNameCheckBox.isSelected()) {
+			if ((previewPanel.getPreviewTable() != null) && (model != null)) {
+				columnHeaders = new String[previewPanel.getPreviewTable().getColumnCount()];
 
-			if (previewPanel.getPreviewTable() != null && model != null) {
-				columnHeaders = new String[previewPanel.getPreviewTable()
-						.getColumnCount()];
 				for (int i = 0; i < columnHeaders.length; i++) {
 					// Save the header
-					columnHeaders[i] = previewPanel.getPreviewTable()
-							.getColumnModel().getColumn(i).getHeaderValue()
-							.toString();
-					previewPanel.getPreviewTable().getColumnModel()
-							.getColumn(i).setHeaderValue(
-									(String) model.getValueAt(0, i));
-
+					columnHeaders[i] = previewPanel.getPreviewTable().getColumnModel().getColumn(i)
+					                               .getHeaderValue().toString();
+					previewPanel.getPreviewTable().getColumnModel().getColumn(i)
+					            .setHeaderValue((String) model.getValueAt(0, i));
 				}
+
 				model.removeRow(0);
-				previewPanel.getPreviewTable().getTableHeader()
-						.resizeAndRepaint();
+				previewPanel.getPreviewTable().getTableHeader().resizeAndRepaint();
 			}
+
 			startRowSpinner.setEnabled(false);
 		} else {
 			// Restore row
 			String currentName = null;
+
 			for (int i = 0; i < columnHeaders.length; i++) {
-				currentName = previewPanel.getPreviewTable().getColumnModel()
-						.getColumn(i).getHeaderValue().toString();
+				currentName = previewPanel.getPreviewTable().getColumnModel().getColumn(i)
+				                          .getHeaderValue().toString();
 				previewPanel.getPreviewTable().getColumnModel().getColumn(i)
-						.setHeaderValue(columnHeaders[i]);
+				            .setHeaderValue(columnHeaders[i]);
 				columnHeaders[i] = currentName;
 			}
+
 			model.insertRow(0, columnHeaders);
 			previewPanel.getPreviewTable().getTableHeader().resizeAndRepaint();
 			startRowSpinner.setEnabled(true);
@@ -1902,7 +1607,6 @@ public class ImportTextTableDialog extends JDialog implements
 		updateAliasTable();
 		updatePrimaryKeyComboBox();
 		repaint();
-
 	}
 
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1911,12 +1615,11 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/**
 	 * Load from the data source.<br>
-	 * 
+	 *
 	 * @param evt
 	 * @throws Exception
 	 */
 	private void importButtonActionPerformed(ActionEvent evt) throws Exception {
-
 		if (checkDataSourceError() == false) {
 			return;
 		}
@@ -1926,8 +1629,8 @@ public class ImportTextTableDialog extends JDialog implements
 		 * reading from the second line.
 		 */
 		int startLineNumber;
-		final int spinnerNumber = Integer.parseInt(startRowSpinner.getValue()
-				.toString());
+		final int spinnerNumber = Integer.parseInt(startRowSpinner.getValue().toString());
+
 		if (attrNameCheckBox.isSelected()) {
 			startLineNumber = spinnerNumber;
 		} else {
@@ -1939,50 +1642,51 @@ public class ImportTextTableDialog extends JDialog implements
 		/*
 		 * Get Attribute Names
 		 */
-		final String[] attributeNames = new String[previewPanel
-				.getPreviewTable().getColumnModel().getColumnCount()];
-		for (int i = 0; i < previewPanel.getPreviewTable().getColumnModel()
-				.getColumnCount(); i++) {
-			attributeNames[i] = previewPanel.getPreviewTable().getColumnModel()
-					.getColumn(i).getHeaderValue().toString();
+		final String[] attributeNames = new String[previewPanel.getPreviewTable().getColumnModel()
+		                                                       .getColumnCount()];
+
+		for (int i = 0; i < previewPanel.getPreviewTable().getColumnModel().getColumnCount();
+		     i++) {
+			attributeNames[i] = previewPanel.getPreviewTable().getColumnModel().getColumn(i)
+			                                .getHeaderValue().toString();
 		}
 
 		/*
 		 * Get import flags
 		 */
-		final boolean[] importFlag = new boolean[previewPanel.getPreviewTable()
-				.getColumnCount()];
+		final boolean[] importFlag = new boolean[previewPanel.getPreviewTable().getColumnCount()];
+
 		for (int i = 0; i < previewPanel.getPreviewTable().getColumnCount(); i++) {
-			importFlag[i] = ((AttributePreviewTableCellRenderer) previewPanel
-					.getPreviewTable().getCellRenderer(0, i)).getImportFlag(i);
+			importFlag[i] = ((AttributePreviewTableCellRenderer) previewPanel.getPreviewTable()
+			                                                                 .getCellRenderer(0, i))
+			                .getImportFlag(i);
 		}
 
 		/*
 		 * Get attribute data types
 		 */
+
 		// final byte[] attributeTypes = new byte[previewPanel.getPreviewTable()
 		// .getColumnCount()];
-		final Byte[] test = previewPanel.getDataTypes(previewPanel
-				.getSelectedSheetName());
+		final Byte[] test = previewPanel.getDataTypes(previewPanel.getSelectedSheetName());
 		final Byte[] attributeTypes = new Byte[test.length];
 
 		for (int i = 0; i < test.length; i++) {
 			attributeTypes[i] = test[i];
 		}
+
 		// for (int i = 0; i < attributeTypes.length; i++) {
 		// attributeTypes[i] = attributeDataTypes.get(i);
 		// }
-
 		final List<Integer> aliasList = new ArrayList<Integer>();
 		String mappingAttribute = ID;
-		if (dialogType != NETWORK_IMPORT) {
 
+		if (dialogType != NETWORK_IMPORT) {
 			/*
 			 * Get column indecies for alias
 			 */
+			JTable curTable = aliasTableMap.get(previewPanel.getSelectedSheetName());
 
-			JTable curTable = aliasTableMap.get(previewPanel
-					.getSelectedSheetName());
 			if (curTable != null) {
 				for (int i = 0; i < curTable.getModel().getRowCount(); i++) {
 					if ((Boolean) curTable.getModel().getValueAt(i, 0) == true) {
@@ -1994,14 +1698,12 @@ public class ImportTextTableDialog extends JDialog implements
 			/*
 			 * Get mapping attribute
 			 */
-			mappingAttribute = mappingAttributeComboBox.getSelectedItem()
-					.toString();
-
+			mappingAttribute = mappingAttributeComboBox.getSelectedItem().toString();
 		}
 
 		ObjectType objType = null;
-		if (dialogType != NETWORK_IMPORT) {
 
+		if (dialogType != NETWORK_IMPORT) {
 			if (nodeRadioButton.isSelected()) {
 				objType = NODE;
 			} else if (edgeRadioButton.isSelected()) {
@@ -2015,181 +1717,197 @@ public class ImportTextTableDialog extends JDialog implements
 		 * Switch readers based on the dialog type.
 		 */
 		switch (dialogType) {
-		case SIMPLE_ATTRIBUTE_IMPORT:
-			/*
-			 * Case 1: Attribute table import.
-			 */
+			case SIMPLE_ATTRIBUTE_IMPORT:
 
-			// Extract URL from the text table.
-			final URL source = new URL(targetDataSourceTextField.getText());
-
-			// Build mapping parameter object.
-			final AttributeMappingParameters mapping = new AttributeMappingParameters(
-					objType, checkDelimiter(), listDelimiter, keyInFile,
-					mappingAttribute, aliasList, attributeNames,
-					attributeTypes, listDataTypes, importFlag);
-
-			if (source.toString().endsWith(EXCEL_EXT)) {
 				/*
-				 * Read one sheet at a time
+				 * Case 1: Attribute table import.
 				 */
 
-				POIFSFileSystem excelIn = new POIFSFileSystem(source
-						.openStream());
-				HSSFWorkbook wb = new HSSFWorkbook(excelIn);
+				// Extract URL from the text table.
+				final URL source = new URL(targetDataSourceTextField.getText());
 
-				// Load all sheets in the table
-				for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+				// Build mapping parameter object.
+				final AttributeMappingParameters mapping = new AttributeMappingParameters(objType,
+				                                                                          checkDelimiter(),
+				                                                                          listDelimiter,
+				                                                                          keyInFile,
+				                                                                          mappingAttribute,
+				                                                                          aliasList,
+				                                                                          attributeNames,
+				                                                                          attributeTypes,
+				                                                                          listDataTypes,
+				                                                                          importFlag);
 
-					HSSFSheet sheet = wb.getSheetAt(i);
-					loadAnnotation(new ExcelAttributeSheetReader(sheet,
-							mapping, startLineNumber), source.toString());
-				}
+				if (source.toString().endsWith(EXCEL_EXT)) {
+					/*
+					 * Read one sheet at a time
+					 */
+					POIFSFileSystem excelIn = new POIFSFileSystem(source.openStream());
+					HSSFWorkbook wb = new HSSFWorkbook(excelIn);
 
-			} else {
-				loadAnnotation(new DefaultAttributeTableReader(source, mapping,
-						startLineNumber, null), source.toString());
-			}
-
-			break;
-		case ONTOLOGY_AND_ANNOTATION_IMPORT:
-			/*
-			 * Case 2: Import Ontology and its annotation.
-			 */
-			final String selectedOntologyName = ontologyComboBox
-					.getSelectedItem().toString();
-			final String ontologySourceLocation = ontologyUrlMap
-					.get(selectedOntologyName);
-
-			/*
-			 * If selected ontology is not loaded, load it first.
-			 */
-			if (Cytoscape.getOntologyServer().getOntologyNames().contains(
-					selectedOntologyName) == false) {
-				loadOntology(ontologySourceLocation, selectedOntologyName);
-			}
-
-			/*
-			 * Now, load & map annotation.
-			 */
-			final String annotationSource = annotationUrlMap
-					.get(annotationComboBox.getSelectedItem());
-
-			if (previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
-				/*
-				 * This is a Gene Association file.
-				 */
-				final GeneAssociationReader gaReader;
-				if (importAllCheckBox.isSelected()) {
-					gaReader = new GeneAssociationReader(selectedOntologyName,
-							new URL(annotationSource), mappingAttribute, true);
+					// Load all sheets in the table
+					for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+						HSSFSheet sheet = wb.getSheetAt(i);
+						loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping, startLineNumber),
+						               source.toString());
+					}
 				} else {
-					gaReader = new GeneAssociationReader(selectedOntologyName,
-							new URL(annotationSource), mappingAttribute);
+					loadAnnotation(new DefaultAttributeTableReader(source, mapping,
+					                                               startLineNumber, null),
+					               source.toString());
 				}
-				loadGeneAssociation(gaReader, selectedOntologyName,
-						annotationSource);
 
-			} else {
+				break;
+
+			case ONTOLOGY_AND_ANNOTATION_IMPORT:
+
 				/*
-				 * This is a custom annotation file.
+				 * Case 2: Import Ontology and its annotation.
 				 */
-				final int ontologyIndex = ontologyInAnnotationComboBox
-						.getSelectedIndex();
+				final String selectedOntologyName = ontologyComboBox.getSelectedItem().toString();
+				final String ontologySourceLocation = ontologyUrlMap.get(selectedOntologyName);
 
-				final AttributeAndOntologyMappingParameters aoMapping = new AttributeAndOntologyMappingParameters(
-						objType, checkDelimiter(), listDelimiter, keyInFile,
-						mappingAttribute, aliasList, attributeNames,
-						attributeTypes, listDataTypes, importFlag,
-						ontologyIndex, selectedOntologyName);
-				final OntologyAnnotationReader oaReader = new OntologyAnnotationReader(
-						new URL(annotationSource), aoMapping, commentChar,
-						startLineNumber);
-
-				loadAnnotation(oaReader, annotationSource);
-
-			}
-
-			break;
-		case NETWORK_IMPORT:
-			/*
-			 * Case 3: read as network table (Network + Edge Attributes)
-			 */
-
-			// Extract URL from the text table.
-			final URL networkSource = new URL(targetDataSourceTextField
-					.getText());
-			final String networkName;
-
-			final int sourceColumnIndex = networkImportPanel.getSourceIndex();
-			final int targetColumnIndex = networkImportPanel.getTargetIndex();
-
-			final String defaultInteraction = defaultInteractionTextField
-					.getText();
-
-			final int interactionColumnIndex = networkImportPanel
-					.getInteractionIndex();
-
-			final NetworkTableMappingParameters nmp = new NetworkTableMappingParameters(
-					checkDelimiter(), listDelimiter, attributeNames,
-					attributeTypes, null, importFlag, sourceColumnIndex,
-					targetColumnIndex, interactionColumnIndex,
-					defaultInteraction);
-
-			final NetworkTableReader reader;
-			if (networkSource.toString().endsWith(EXCEL_EXT)) {
-				// Extract name from the sheet name.
-				final POIFSFileSystem excelIn = new POIFSFileSystem(
-						networkSource.openStream());
-				HSSFWorkbook wb = new HSSFWorkbook(excelIn);
-				HSSFSheet sheet = wb.getSheetAt(0);
-				networkName = wb.getSheetName(0);
-
-				reader = new ExcelNetworkSheetReader(networkName, sheet, nmp,
-						startLineNumber);
-
-			} else {
-				// Get name from URL.
-				if (commentChar != null && commentChar.length() != 0
-						&& attrNameCheckBox.isSelected()) {
-					startLineNumber++;
+				/*
+				 * If selected ontology is not loaded, load it first.
+				 */
+				if (Cytoscape.getOntologyServer().getOntologyNames().contains(selectedOntologyName) == false) {
+					loadOntology(ontologySourceLocation, selectedOntologyName);
 				}
-				final String[] parts = networkSource.toString().split("/");
-				networkName = parts[parts.length - 1];
-				reader = new NetworkTableReader(networkName, networkSource,
-						nmp, startLineNumber, commentChar);
-			}
 
-			loadNetwork(networkName, reader, networkSource);
+				/*
+				 * Now, load & map annotation.
+				 */
+				final String annotationSource = annotationUrlMap.get(annotationComboBox
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     .getSelectedItem());
 
-			break;
-		default:
-			return;
+				if (previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
+					/*
+					 * This is a Gene Association file.
+					 */
+					final GeneAssociationReader gaReader;
+
+					if (importAllCheckBox.isSelected()) {
+						gaReader = new GeneAssociationReader(selectedOntologyName,
+						                                     new URL(annotationSource),
+						                                     mappingAttribute, true);
+					} else {
+						gaReader = new GeneAssociationReader(selectedOntologyName,
+						                                     new URL(annotationSource),
+						                                     mappingAttribute);
+					}
+
+					loadGeneAssociation(gaReader, selectedOntologyName, annotationSource);
+				} else {
+					/*
+					 * This is a custom annotation file.
+					 */
+					final int ontologyIndex = ontologyInAnnotationComboBox.getSelectedIndex();
+
+					final AttributeAndOntologyMappingParameters aoMapping = new AttributeAndOntologyMappingParameters(objType,
+					                                                                                                  checkDelimiter(),
+					                                                                                                  listDelimiter,
+					                                                                                                  keyInFile,
+					                                                                                                  mappingAttribute,
+					                                                                                                  aliasList,
+					                                                                                                  attributeNames,
+					                                                                                                  attributeTypes,
+					                                                                                                  listDataTypes,
+					                                                                                                  importFlag,
+					                                                                                                  ontologyIndex,
+					                                                                                                  selectedOntologyName);
+					final OntologyAnnotationReader oaReader = new OntologyAnnotationReader(new URL(annotationSource),
+					                                                                       aoMapping,
+					                                                                       commentChar,
+					                                                                       startLineNumber);
+
+					loadAnnotation(oaReader, annotationSource);
+				}
+
+				break;
+
+			case NETWORK_IMPORT:
+
+				/*
+				 * Case 3: read as network table (Network + Edge Attributes)
+				 */
+
+				// Extract URL from the text table.
+				final URL networkSource = new URL(targetDataSourceTextField.getText());
+				final String networkName;
+
+				final int sourceColumnIndex = networkImportPanel.getSourceIndex();
+				final int targetColumnIndex = networkImportPanel.getTargetIndex();
+
+				final String defaultInteraction = defaultInteractionTextField.getText();
+
+				final int interactionColumnIndex = networkImportPanel.getInteractionIndex();
+
+				final NetworkTableMappingParameters nmp = new NetworkTableMappingParameters(checkDelimiter(),
+				                                                                            listDelimiter,
+				                                                                            attributeNames,
+				                                                                            attributeTypes,
+				                                                                            null,
+				                                                                            importFlag,
+				                                                                            sourceColumnIndex,
+				                                                                            targetColumnIndex,
+				                                                                            interactionColumnIndex,
+				                                                                            defaultInteraction);
+
+				final NetworkTableReader reader;
+
+				if (networkSource.toString().endsWith(EXCEL_EXT)) {
+					// Extract name from the sheet name.
+					final POIFSFileSystem excelIn = new POIFSFileSystem(networkSource.openStream());
+					HSSFWorkbook wb = new HSSFWorkbook(excelIn);
+					HSSFSheet sheet = wb.getSheetAt(0);
+					networkName = wb.getSheetName(0);
+
+					reader = new ExcelNetworkSheetReader(networkName, sheet, nmp, startLineNumber);
+				} else {
+					// Get name from URL.
+					if ((commentChar != null) && (commentChar.length() != 0)
+					    && attrNameCheckBox.isSelected()) {
+						startLineNumber++;
+					}
+
+					final String[] parts = networkSource.toString().split("/");
+					networkName = parts[parts.length - 1];
+					reader = new NetworkTableReader(networkName, networkSource, nmp,
+					                                startLineNumber, commentChar);
+				}
+
+				loadNetwork(networkName, reader, networkSource);
+
+				break;
+
+			default:
+				return;
 		}
+
 		dispose();
 	}
 
-	private void ontologyInAnnotationComboBoxActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void ontologyInAnnotationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		/*
 		 * Change color of the column in the preview panel.
 		 */
 		int ontologyCol = ontologyInAnnotationComboBox.getSelectedIndex();
 		List<Integer> gaAlias = new ArrayList<Integer>();
 		gaAlias.add(DB_OBJECT_SYNONYM.getPosition());
-		previewPanel.getPreviewTable().setDefaultRenderer(
-				Object.class,
-				new AttributePreviewTableCellRenderer(keyInFile, gaAlias,
-						ontologyCol, TAXON.getPosition(), importFlag,
-						listDelimiter));
+		previewPanel.getPreviewTable()
+		            .setDefaultRenderer(Object.class,
+		                                new AttributePreviewTableCellRenderer(keyInFile, gaAlias,
+		                                                                      ontologyCol,
+		                                                                      TAXON.getPosition(),
+		                                                                      importFlag,
+		                                                                      listDelimiter));
 
 		try {
-			if (dialogType == SIMPLE_ATTRIBUTE_IMPORT
-					|| dialogType == NETWORK_IMPORT) {
+			if ((dialogType == SIMPLE_ATTRIBUTE_IMPORT) || (dialogType == NETWORK_IMPORT)) {
 				setStatusBar(new URL(targetDataSourceTextField.getText()));
 			} else {
-				setStatusBar(new URL(annotationUrlMap.get(annotationComboBox
-						.getSelectedItem().toString())));
+				setStatusBar(new URL(annotationUrlMap.get(annotationComboBox.getSelectedItem()
+				                                                            .toString())));
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -2198,16 +1916,14 @@ public class ImportTextTableDialog extends JDialog implements
 		previewPanel.repaint();
 	}
 
-	private void browseAnnotationButtonActionPerformed(
-			java.awt.event.ActionEvent evt) {
-
-		DataSourceSelectDialog dssd = new DataSourceSelectDialog(
-				DataSourceSelectDialog.ANNOTATION_TYPE, Cytoscape.getDesktop(),
-				true);
+	private void browseAnnotationButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		DataSourceSelectDialog dssd = new DataSourceSelectDialog(DataSourceSelectDialog.ANNOTATION_TYPE,
+		                                                         Cytoscape.getDesktop(), true);
 		dssd.setLocationRelativeTo(Cytoscape.getDesktop());
 		dssd.setVisible(true);
 
 		String key = dssd.getSourceName();
+
 		if (key != null) {
 			annotationComboBox.addItem(key);
 			annotationUrlMap.put(key, dssd.getSourceUrlString());
@@ -2216,20 +1932,18 @@ public class ImportTextTableDialog extends JDialog implements
 		}
 	}
 
-	private void annotationComboBoxActionPerformed(
-			java.awt.event.ActionEvent evt) {
-		if (annotationComboBox.getSelectedItem().toString().equals(
-				DEF_ANNOTATION_ITEM)) {
-
+	private void annotationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
+		if (annotationComboBox.getSelectedItem().toString().equals(DEF_ANNOTATION_ITEM)) {
 			annotationComboBox.setToolTipText(null);
+
 			return;
 		}
+
 		annotationComboBox.setToolTipText(getAnnotationTooltip());
+
 		try {
-			final String selectedSourceName = annotationComboBox
-					.getSelectedItem().toString();
-			final URL sourceURL = new URL(annotationUrlMap
-					.get(selectedSourceName));
+			final String selectedSourceName = annotationComboBox.getSelectedItem().toString();
+			final URL sourceURL = new URL(annotationUrlMap.get(selectedSourceName));
 			readAnnotationForPreview(sourceURL, checkDelimiter());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -2238,99 +1952,93 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private void ontologyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-
 		ontologyComboBox.setToolTipText(getOntologyTooltip());
-		ontologyTextField
-				.setText(ontologyComboBox.getSelectedItem().toString());
-
+		ontologyTextField.setText(ontologyComboBox.getSelectedItem().toString());
 	}
 
-	private void selectAttributeFileButtonActionPerformed(
-			java.awt.event.ActionEvent evt) throws IOException {
-
+	private void selectAttributeFileButtonActionPerformed(java.awt.event.ActionEvent evt)
+	    throws IOException {
 		File sourceUrl = FileUtil.getFile("Select local file", FileUtil.LOAD,
-				new CyFileFilter[] {});
+		                                  new CyFileFilter[] {  });
+
 		if (sourceUrl != null) {
 			targetDataSourceTextField.setText(sourceUrl.toURL().toString());
 
 			final URL sourceURL = new URL(targetDataSourceTextField.getText());
 
 			readAnnotationForPreview(sourceURL, checkDelimiter());
-			columnHeaders = new String[previewPanel.getPreviewTable()
-					.getColumnCount()];
+			columnHeaders = new String[previewPanel.getPreviewTable().getColumnCount()];
 			attrNameCheckBox.setEnabled(true);
 			attrNameCheckBox.setSelected(false);
 		}
 	}
 
-	private void delimiterCheckBoxActionPerformed(ActionEvent evt)
-			throws IOException {
+	private void delimiterCheckBoxActionPerformed(ActionEvent evt) throws IOException {
 		attrNameCheckBox.setSelected(false);
 		displayPreview();
 	}
 
-	private void textImportCheckBoxActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void textImportCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		if (textImportCheckBox.isSelected()) {
 			textImportOptionPanel.setVisible(true);
 		} else {
 			textImportOptionPanel.setVisible(false);
 		}
+
 		pack();
 	}
 
 	private void reloadButtonActionPerformed(java.awt.event.ActionEvent evt)
-			throws IOException {
+	    throws IOException {
 		displayPreview();
 		attrNameCheckBox.setSelected(false);
 	}
 
 	/**
 	 * Actions for mouse wheel movement
-	 * 
+	 *
 	 * @param evt
 	 */
-	private void counterSpinnerMouseWheelMoved(
-			java.awt.event.MouseWheelEvent evt) {
+	private void counterSpinnerMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
 		JSpinner source = (JSpinner) evt.getSource();
 
 		SpinnerNumberModel model = (SpinnerNumberModel) source.getModel();
 		Integer oldValue = (Integer) source.getValue();
-		int intValue = oldValue.intValue() - evt.getWheelRotation()
-				* model.getStepSize().intValue() * 10;
+		int intValue = oldValue.intValue()
+		               - (evt.getWheelRotation() * model.getStepSize().intValue() * 10);
 		Integer newValue = new Integer(intValue);
-		if (model.getMaximum().compareTo(newValue) >= 0
-				&& model.getMinimum().compareTo(newValue) <= 0) {
+
+		if ((model.getMaximum().compareTo(newValue) >= 0)
+		    && (model.getMinimum().compareTo(newValue) <= 0)) {
 			source.setValue(newValue);
 		}
 	}
 
 	/**
 	 * Actions for selecting start line.
-	 * 
+	 *
 	 * @param evt
 	 */
-	private void startRowSpinnerMouseWheelMoved(
-			java.awt.event.MouseWheelEvent evt) {
+	private void startRowSpinnerMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
 		JSpinner source = (JSpinner) evt.getSource();
 
 		SpinnerNumberModel model = (SpinnerNumberModel) source.getModel();
 		Integer oldValue = (Integer) source.getValue();
-		int intValue = oldValue.intValue() - evt.getWheelRotation()
-				* model.getStepSize().intValue();
+		int intValue = oldValue.intValue()
+		               - (evt.getWheelRotation() * model.getStepSize().intValue());
 		Integer newValue = new Integer(intValue);
-		if (model.getMaximum().compareTo(newValue) >= 0
-				&& model.getMinimum().compareTo(newValue) <= 0) {
+
+		if ((model.getMaximum().compareTo(newValue) >= 0)
+		    && (model.getMinimum().compareTo(newValue) <= 0)) {
 			source.setValue(newValue);
 		}
 	}
 
 	/* =============================================================================================== */
-
 	private List<Integer> getAliasList() {
 		final List<Integer> aliasList = new ArrayList<Integer>();
-		AliasTableModel curModel = aliasTableModelMap.get(previewPanel
-				.getSelectedSheetName());
+		AliasTableModel curModel = aliasTableModelMap.get(previewPanel.getSelectedSheetName());
+
 		if (curModel == null) {
 			return aliasList;
 		}
@@ -2340,15 +2048,16 @@ public class ImportTextTableDialog extends JDialog implements
 				aliasList.add(i);
 			}
 		}
+
 		return aliasList;
 	}
 
 	private void displayPreview() throws IOException {
 		final String selectedSourceName;
 		final URL sourceURL;
+
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
-			selectedSourceName = annotationComboBox.getSelectedItem()
-					.toString();
+			selectedSourceName = annotationComboBox.getSelectedItem().toString();
 			sourceURL = new URL(annotationUrlMap.get(selectedSourceName));
 		} else {
 			selectedSourceName = targetDataSourceTextField.getText();
@@ -2381,8 +2090,7 @@ public class ImportTextTableDialog extends JDialog implements
 			 */
 			setAnnotationComboBox();
 
-			ontologyTextField.setText(ontologyComboBox.getSelectedItem()
-					.toString());
+			ontologyTextField.setText(ontologyComboBox.getSelectedItem().toString());
 		} else if (dialogType == NETWORK_IMPORT) {
 			setTitle("Import Network and Edge Attributes from Table");
 			titleLabel.setText("Import Network from Table");
@@ -2394,8 +2102,7 @@ public class ImportTextTableDialog extends JDialog implements
 		reloadButton.setEnabled(false);
 		startRowSpinner.setEnabled(false);
 		startRowLabel.setEnabled(false);
-		previewPanel.getPreviewTable().getTableHeader().setReorderingAllowed(
-				false);
+		previewPanel.getPreviewTable().getTableHeader().setReorderingAllowed(false);
 		setRadioButtonGroup();
 		pack();
 
@@ -2405,30 +2112,31 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private void updatePrimaryKeyComboBox() {
-		final DefaultTableModel model = (DefaultTableModel) previewPanel
-				.getPreviewTable().getModel();
+		final DefaultTableModel model = (DefaultTableModel) previewPanel.getPreviewTable().getModel();
 
-		primaryKeyComboBox
-				.setRenderer(new ComboBoxRenderer(attributeDataTypes));
-		if (model != null && model.getColumnCount() > 0) {
+		primaryKeyComboBox.setRenderer(new ComboBoxRenderer(attributeDataTypes));
 
+		if ((model != null) && (model.getColumnCount() > 0)) {
 			primaryKeyComboBox.removeAllItems();
+
 			Object curValue = null;
+
 			for (int i = 0; i < model.getColumnCount(); i++) {
-				curValue = previewPanel.getPreviewTable().getColumnModel()
-						.getColumn(i).getHeaderValue();
+				curValue = previewPanel.getPreviewTable().getColumnModel().getColumn(i)
+				                       .getHeaderValue();
+
 				if (curValue != null) {
 					primaryKeyComboBox.addItem(curValue.toString());
 				} else {
 					primaryKeyComboBox.addItem("");
 				}
-
 			}
 		}
+
 		primaryKeyComboBox.setEnabled(true);
 
-		Integer selectedIndex = primaryKeyMap.get(previewPanel
-				.getSelectedSheetName());
+		Integer selectedIndex = primaryKeyMap.get(previewPanel.getSelectedSheetName());
+
 		if (selectedIndex == null) {
 			primaryKeyComboBox.setSelectedIndex(0);
 		} else {
@@ -2438,6 +2146,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 	protected static ImageIcon getDataTypeIcon(byte dataType) {
 		ImageIcon dataTypeIcon = null;
+
 		if (dataType == CyAttributes.TYPE_STRING) {
 			dataTypeIcon = STRING_ICON.getIcon();
 		} else if (dataType == CyAttributes.TYPE_INTEGER) {
@@ -2449,6 +2158,7 @@ public class ImportTextTableDialog extends JDialog implements
 		} else if (dataType == CyAttributes.TYPE_SIMPLE_LIST) {
 			dataTypeIcon = LIST_ICON.getIcon();
 		}
+
 		return dataTypeIcon;
 	}
 
@@ -2467,6 +2177,7 @@ public class ImportTextTableDialog extends JDialog implements
 		commaCheckBox.setEnabled(false);
 
 		spaceCheckBox.setEnabled(false);
+
 		if (dialogType == NETWORK_IMPORT) {
 			spaceCheckBox.setSelected(true);
 		} else {
@@ -2479,50 +2190,47 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private void setOntologyInAnnotationComboBox() {
-		final DefaultTableModel model = (DefaultTableModel) previewPanel
-				.getPreviewTable().getModel();
+		final DefaultTableModel model = (DefaultTableModel) previewPanel.getPreviewTable().getModel();
 
-		if (model != null && model.getColumnCount() > 0) {
-
+		if ((model != null) && (model.getColumnCount() > 0)) {
 			ontologyInAnnotationComboBox.removeAllItems();
+
 			for (int i = 0; i < model.getColumnCount(); i++) {
-				ontologyInAnnotationComboBox.addItem(previewPanel
-						.getPreviewTable().getColumnModel().getColumn(i)
-						.getHeaderValue().toString());
+				ontologyInAnnotationComboBox.addItem(previewPanel.getPreviewTable().getColumnModel()
+				                                                 .getColumn(i).getHeaderValue()
+				                                                 .toString());
 			}
 		}
+
 		ontologyInAnnotationComboBox.setEnabled(true);
 	}
 
 	/**
 	 * Setup ontology data source combo box.<br>
 	 * Basically, this method just load informaiton from bookmark.
-	 * @throws IOException 
-	 * @throws JAXBException 
-	 * 
 	 * @throws IOException
 	 * @throws JAXBException
-	 * 
+	 *
+	 * @throws IOException
+	 * @throws JAXBException
+	 *
 	 */
 	private void setOntologyComboBox() throws JAXBException, IOException {
 		Bookmarks bookmarks = Cytoscape.getBookmarks();
-		List<DataSource> annotations = BookmarksUtil.getDataSourceList(
-				"ontology", bookmarks.getCategory());
+		List<DataSource> annotations = BookmarksUtil.getDataSourceList("ontology",
+		                                                               bookmarks.getCategory());
 		String key = null;
 
-		Set<String> ontologyNames = Cytoscape.getOntologyServer()
-				.getOntologyNames();
+		Set<String> ontologyNames = Cytoscape.getOntologyServer().getOntologyNames();
 
 		for (DataSource source : annotations) {
 			key = source.getName();
 			ontologyComboBox.addItem(key);
 			ontologyUrlMap.put(key, source.getHref());
-			ontologyDescriptionMap.put(key, BookmarksUtil.getAttribute(source,
-					"description"));
-			ontologyTypeMap.put(key, BookmarksUtil.getAttribute(source,
-					"ontologyType"));
-
+			ontologyDescriptionMap.put(key, BookmarksUtil.getAttribute(source, "description"));
+			ontologyTypeMap.put(key, BookmarksUtil.getAttribute(source, "ontologyType"));
 		}
+
 		ontologyComboBox.setToolTipText(getOntologyTooltip());
 	}
 
@@ -2530,6 +2238,7 @@ public class ImportTextTableDialog extends JDialog implements
 		final String key = ontologyComboBox.getSelectedItem().toString();
 		String tooltip = ontologyHtml.replace("%DataSourceName%", key);
 		final String description = ontologyDescriptionMap.get(key);
+
 		if (description == null) {
 			tooltip = tooltip.replace("%Description%", "N/A");
 		} else {
@@ -2541,52 +2250,55 @@ public class ImportTextTableDialog extends JDialog implements
 		} else {
 			return tooltip.replace("%SourceURL%", "N/A");
 		}
-
 	}
 
 	private String getAnnotationTooltip() {
 		final String key = annotationComboBox.getSelectedItem().toString();
 		String tooltip = annotationHtml.replace("%DataSourceName%", key);
+
 		if (annotationUrlMap.get(key) == null) {
 			return "";
 		}
+
 		tooltip = tooltip.replace("%SourceURL%", annotationUrlMap.get(key));
 
 		if (annotationFormatMap.get(key) != null) {
 			tooltip = tooltip.replace("%Format%", annotationFormatMap.get(key));
 		} else {
 			String[] parts = annotationUrlMap.get(key).split("/");
+
 			if (parts[parts.length - 1].startsWith(GENE_ASSOCIATION)) {
 				tooltip = tooltip.replace("%Format%", "Gene Association");
 			}
-			tooltip = tooltip.replace("%Format%",
-					"General Annotation Text Table");
+
+			tooltip = tooltip.replace("%Format%", "General Annotation Text Table");
 		}
 
 		if (annotationAttributesMap.get(key) != null) {
 			StringBuffer table = new StringBuffer();
-			final Map<String, String> annotations = annotationAttributesMap
-					.get(key);
+			final Map<String, String> annotations = annotationAttributesMap.get(key);
+
 			for (String anno : annotations.keySet()) {
 				table.append("<tr>");
-				table.append("<td><strong>" + anno + "</strong></td><td>"
-						+ annotations.get(anno) + "</td>");
+				table.append("<td><strong>" + anno + "</strong></td><td>" + annotations.get(anno)
+				             + "</td>");
 				table.append("</tr>");
 			}
 
 			return tooltip.replace("%AttributeTable%", table.toString());
 		}
+
 		return tooltip.replace("%AttributeTable%", "");
 	}
 
 	private void setAnnotationComboBox() throws JAXBException, IOException {
-
 		Bookmarks bookmarks = Cytoscape.getBookmarks();
-		List<DataSource> annotations = BookmarksUtil.getDataSourceList(
-				"annotation", bookmarks.getCategory());
+		List<DataSource> annotations = BookmarksUtil.getDataSourceList("annotation",
+		                                                               bookmarks.getCategory());
 		String key = null;
 
 		annotationComboBox.addItem(DEF_ANNOTATION_ITEM);
+
 		for (DataSource source : annotations) {
 			key = source.getName();
 			annotationComboBox.addItem(key);
@@ -2594,9 +2306,11 @@ public class ImportTextTableDialog extends JDialog implements
 			annotationFormatMap.put(key, source.getFormat());
 
 			final Map<String, String> attrMap = new HashMap<String, String>();
+
 			for (Attribute attr : source.getAttribute()) {
 				attrMap.put(attr.getName(), attr.getContent());
 			}
+
 			annotationAttributesMap.put(key, attrMap);
 		}
 
@@ -2605,48 +2319,44 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/**
 	 * Generate preview table.<br>
-	 * 
+	 *
 	 * <p>
 	 * </p>
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private void readAnnotationForPreview(URL sourceURL, List<String> delimiters)
-			throws IOException {
-
+	    throws IOException {
 		/*
 		 * Check number of lines we should load. if -1, load everything in the
 		 * file.
 		 */
 		final int previewSize;
+
 		if (showAllRadioButton.isSelected()) {
 			previewSize = -1;
 		} else {
-			previewSize = Integer
-					.parseInt(counterSpinner.getValue().toString());
+			previewSize = Integer.parseInt(counterSpinner.getValue().toString());
 		}
 
 		/*
 		 * Load data from the given URL.
 		 */
 		final String commentChar = commentLineTextField.getText();
-		final int startLine = Integer.parseInt(startRowSpinner.getValue()
-				.toString());
-		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize,
-				commentChar, startLine - 1);
+		final int startLine = Integer.parseInt(startRowSpinner.getValue().toString());
+		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize, commentChar,
+		                             startLine - 1);
 
 		listDataTypes = previewPanel.getCurrentListDataTypes();
 
 		/*
 		 * Initialize all Alias Tables
 		 */
-
 		if (dialogType == NETWORK_IMPORT) {
-			final String[] columnNames = new String[previewPanel
-					.getPreviewTable().getColumnCount()];
+			final String[] columnNames = new String[previewPanel.getPreviewTable().getColumnCount()];
+
 			for (int i = 0; i < columnNames.length; i++) {
-				columnNames[i] = previewPanel.getPreviewTable()
-						.getColumnName(i);
+				columnNames[i] = previewPanel.getPreviewTable().getColumnName(i);
 			}
 
 			networkImportPanel.setComboBoxes(columnNames);
@@ -2656,44 +2366,38 @@ public class ImportTextTableDialog extends JDialog implements
 			} else {
 				switchDelimiterCheckBoxes(true);
 			}
-			AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) previewPanel
-					.getPreviewTable().getCellRenderer(0, 0);
-			rend
-					.setSourceIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
-			rend
-					.setTargetIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
-			rend
-					.setInteractionIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
 
+			AttributePreviewTableCellRenderer rend = (AttributePreviewTableCellRenderer) previewPanel.getPreviewTable()
+			                                                                                         .getCellRenderer(0,
+			                                                                                                          0);
+			rend.setSourceIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
+			rend.setTargetIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
+			rend.setInteractionIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
 		} else {
 			for (int i = 0; i < previewPanel.getTableCount(); i++) {
-				final int columnCount = previewPanel.getPreviewTable(i)
-						.getColumnCount();
+				final int columnCount = previewPanel.getPreviewTable(i).getColumnCount();
 
 				aliasTableModelMap.put(previewPanel.getSheetName(i),
-						new AliasTableModel(keyTable, columnCount));
+				                       new AliasTableModel(keyTable, columnCount));
 
 				if (previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
-					TableModel previewModel = previewPanel.getPreviewTable(i)
-							.getModel();
-					String[] columnNames = new String[previewModel
-							.getColumnCount()];
+					TableModel previewModel = previewPanel.getPreviewTable(i).getModel();
+					String[] columnNames = new String[previewModel.getColumnCount()];
+
 					for (int j = 0; j < columnNames.length; j++) {
 						columnNames[j] = previewModel.getColumnName(j);
 					}
-					initializeAliasTable(columnCount, columnNames, i);
-					AliasTableModel curModel = aliasTableModelMap
-							.get(previewPanel.getSheetName(i));
-					curModel.setValueAt(Boolean.valueOf(true),
-							DB_OBJECT_SYNONYM.getPosition(), 0);
-					disableComponentsForGA();
 
+					initializeAliasTable(columnCount, columnNames, i);
+
+					AliasTableModel curModel = aliasTableModelMap.get(previewPanel.getSheetName(i));
+					curModel.setValueAt(Boolean.valueOf(true), DB_OBJECT_SYNONYM.getPosition(), 0);
+					disableComponentsForGA();
 				} else {
 					initializeAliasTable(columnCount, null, i);
 				}
 
 				updatePrimaryKeyComboBox();
-
 			}
 
 			setOntologyInAnnotationComboBox();
@@ -2701,15 +2405,12 @@ public class ImportTextTableDialog extends JDialog implements
 			/*
 			 * If this is not an Excel file, enable delimiter checkboxes.
 			 */
-
 			FileTypes type = checkFileType(sourceURL);
-			if (type == FileTypes.GENE_ASSOCIATION_FILE) {
-				primaryKeyComboBox.setSelectedIndex(DB_OBJECT_SYMBOL
-						.getPosition());
-				ontologyInAnnotationComboBox.setSelectedIndex(GO_ID
-						.getPosition());
-				disableComponentsForGA();
 
+			if (type == FileTypes.GENE_ASSOCIATION_FILE) {
+				primaryKeyComboBox.setSelectedIndex(DB_OBJECT_SYMBOL.getPosition());
+				ontologyInAnnotationComboBox.setSelectedIndex(GO_ID.getPosition());
+				disableComponentsForGA();
 			} else if (sourceURL.toString().endsWith(EXCEL_EXT) == false) {
 				switchDelimiterCheckBoxes(true);
 				nodeRadioButton.setEnabled(true);
@@ -2739,8 +2440,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 	private void disableComponentsForGA() {
 		primaryKeyComboBox.setEnabled(false);
-		aliasTableMap.get(previewPanel.getSelectedSheetName())
-				.setEnabled(false);
+		aliasTableMap.get(previewPanel.getSelectedSheetName()).setEnabled(false);
 		ontologyInAnnotationComboBox.setEnabled(false);
 
 		nodeRadioButton.setSelected(true);
@@ -2773,12 +2473,11 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private FileTypes checkFileType(URL source) {
-
 		String[] parts = source.toString().split("/");
 		final String fileName = parts[parts.length - 1];
 
 		if (fileName.startsWith("gene_association")
-				&& dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+		    && (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT)) {
 			return FileTypes.GENE_ASSOCIATION_FILE;
 		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			return FileTypes.CUSTOM_ANNOTATION_FILE;
@@ -2792,124 +2491,131 @@ public class ImportTextTableDialog extends JDialog implements
 	private void setStatusBar(URL sourceURL) {
 		final String centerMessage;
 		final String rightMessage;
+
 		if (showAllRadioButton.isSelected()) {
 			centerMessage = "All entries are loaded for preview.";
 		} else {
 			centerMessage = "First " + counterSpinner.getValue().toString()
-					+ " entries are loaded for preview.";
+			                + " entries are loaded for preview.";
 		}
 
 		if (sourceURL.toString().startsWith("file:")) {
 			int fileSize = 0;
+
 			try {
-				BufferedInputStream fis = (BufferedInputStream) sourceURL
-						.openStream();
+				BufferedInputStream fis = (BufferedInputStream) sourceURL.openStream();
 				fileSize = fis.available();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
 			if ((fileSize / 1000) == 0) {
 				rightMessage = "File Size: " + fileSize + " Bytes";
 			} else {
-				rightMessage = "File Size: " + fileSize / 1000 + " KBytes";
+				rightMessage = "File Size: " + (fileSize / 1000) + " KBytes";
 			}
-
 		} else {
 			rightMessage = "File Size Unknown (Remote Data Source)";
 		}
 
 		setStatusBar("Key Matched: "
-				+ previewPanel.checkKeyMatch(primaryKeyComboBox
-						.getSelectedIndex()), centerMessage, rightMessage);
+		             + previewPanel.checkKeyMatch(primaryKeyComboBox.getSelectedIndex()),
+		             centerMessage, rightMessage);
 	}
 
 	/**
 	 * Update the list of mapping attributes.
-	 * 
+	 *
 	 */
 	private void setKeyList() {
-
 		if (mappingAttributeComboBox.getSelectedItem() == null) {
 			return;
 		}
-		String selectedKeyAttribute = mappingAttributeComboBox
-				.getSelectedItem().toString();
+
+		String selectedKeyAttribute = mappingAttributeComboBox.getSelectedItem().toString();
 
 		Iterator it;
 
 		Set<Object> valueSet = new TreeSet<Object>();
+
 		if (selectedKeyAttribute.equals(ID)) {
 			if (objType == NODE) {
 				it = Cytoscape.getRootGraph().nodesIterator();
+
 				while (it.hasNext()) {
 					Node node = (Node) it.next();
 					valueSet.add(node.getIdentifier());
 				}
 			} else if (objType == EDGE) {
 				it = Cytoscape.getRootGraph().edgesIterator();
+
 				while (it.hasNext()) {
 					valueSet.add(((Edge) it.next()).getIdentifier());
 				}
 			} else {
 				it = Cytoscape.getNetworkSet().iterator();
+
 				while (it.hasNext()) {
 					valueSet.add(((CyNetwork) it.next()).getTitle());
 				}
 			}
-
 		} else {
-
-			final byte attrType = selectedAttributes
-					.getType(selectedKeyAttribute);
+			final byte attrType = selectedAttributes.getType(selectedKeyAttribute);
 
 			Object value = null;
 
 			Iterator attrIt = selectedAttributes.getMultiHashMap()
-					.getObjectKeys(selectedKeyAttribute);
+			                                    .getObjectKeys(selectedKeyAttribute);
 
 			String stringValue = null;
 			Double dblValue = 0.;
 			Integer intValue = 0;
 			Boolean boolValue = false;
 			List listValue = null;
+
 			while (attrIt.hasNext()) {
 				value = attrIt.next();
 
 				switch (attrType) {
-				case CyAttributes.TYPE_STRING:
-					stringValue = selectedAttributes.getStringAttribute(
-							(String) value, selectedKeyAttribute);
-					valueSet.add(stringValue);
-					break;
-				case CyAttributes.TYPE_FLOATING:
+					case CyAttributes.TYPE_STRING:
+						stringValue = selectedAttributes.getStringAttribute((String) value,
+						                                                    selectedKeyAttribute);
+						valueSet.add(stringValue);
 
-					dblValue = selectedAttributes.getDoubleAttribute(
-							(String) value, selectedKeyAttribute);
-					valueSet.add(dblValue);
-					break;
-				case CyAttributes.TYPE_INTEGER:
-					intValue = selectedAttributes.getIntegerAttribute(
-							(String) value, selectedKeyAttribute);
-					valueSet.add(intValue);
-					break;
-				case CyAttributes.TYPE_BOOLEAN:
+						break;
 
-					boolValue = selectedAttributes.getBooleanAttribute(
-							(String) value, selectedKeyAttribute);
-					valueSet.add(boolValue);
-					break;
-				case CyAttributes.TYPE_SIMPLE_LIST:
+					case CyAttributes.TYPE_FLOATING:
+						dblValue = selectedAttributes.getDoubleAttribute((String) value,
+						                                                 selectedKeyAttribute);
+						valueSet.add(dblValue);
 
-					listValue = selectedAttributes.getAttributeList(
-							(String) value, selectedKeyAttribute);
-					valueSet.addAll(listValue);
-					break;
+						break;
 
-				default:
-					break;
+					case CyAttributes.TYPE_INTEGER:
+						intValue = selectedAttributes.getIntegerAttribute((String) value,
+						                                                  selectedKeyAttribute);
+						valueSet.add(intValue);
+
+						break;
+
+					case CyAttributes.TYPE_BOOLEAN:
+						boolValue = selectedAttributes.getBooleanAttribute((String) value,
+						                                                   selectedKeyAttribute);
+						valueSet.add(boolValue);
+
+						break;
+
+					case CyAttributes.TYPE_SIMPLE_LIST:
+						listValue = selectedAttributes.getAttributeList((String) value,
+						                                                selectedKeyAttribute);
+						valueSet.addAll(listValue);
+
+						break;
+
+					default:
+						break;
 				}
 			}
-
 		}
 
 		previewPanel.setKeyAttributeList(valueSet);
@@ -2918,12 +2624,12 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private void updateAliasTableCell(String name, int columnIndex) {
-		JTable curTable = aliasTableMap
-				.get(previewPanel.getSelectedSheetName());
-		curTable.setDefaultRenderer(Object.class, new AliasTableRenderer(
-				attributeDataTypes, primaryKeyComboBox.getSelectedIndex()));
-		AliasTableModel curModel = aliasTableModelMap.get(previewPanel
-				.getSelectedSheetName());
+		JTable curTable = aliasTableMap.get(previewPanel.getSelectedSheetName());
+		curTable.setDefaultRenderer(Object.class,
+		                            new AliasTableRenderer(attributeDataTypes,
+		                                                   primaryKeyComboBox.getSelectedIndex()));
+
+		AliasTableModel curModel = aliasTableModelMap.get(previewPanel.getSelectedSheetName());
 		curModel.setValueAt(name, columnIndex, 1);
 		curTable.setModel(curModel);
 		curTable.repaint();
@@ -2935,28 +2641,28 @@ public class ImportTextTableDialog extends JDialog implements
 		if (dialogType == NETWORK_IMPORT) {
 			return;
 		}
-		JTable curTable = aliasTableMap
-				.get(previewPanel.getSelectedSheetName());
 
-		curTable.setDefaultRenderer(Object.class, new AliasTableRenderer(
-				attributeDataTypes, primaryKeyComboBox.getSelectedIndex()));
+		JTable curTable = aliasTableMap.get(previewPanel.getSelectedSheetName());
 
-		AliasTableModel curModel = aliasTableModelMap.get(previewPanel
-				.getSelectedSheetName());
+		curTable.setDefaultRenderer(Object.class,
+		                            new AliasTableRenderer(attributeDataTypes,
+		                                                   primaryKeyComboBox.getSelectedIndex()));
+
+		AliasTableModel curModel = aliasTableModelMap.get(previewPanel.getSelectedSheetName());
 
 		Object curValue = null;
+
 		for (int i = 0; i < previewPanel.getPreviewTable().getColumnCount(); i++) {
-			curValue = previewPanel.getPreviewTable().getColumnModel()
-					.getColumn(i).getHeaderValue();
+			curValue = previewPanel.getPreviewTable().getColumnModel().getColumn(i).getHeaderValue();
+
 			if (curValue != null) {
 				curModel.setValueAt(curValue.toString(), i, 1);
 			} else {
-				previewPanel.getPreviewTable().getColumnModel().getColumn(i)
-						.setHeaderValue("");
+				previewPanel.getPreviewTable().getColumnModel().getColumn(i).setHeaderValue("");
 				curModel.setValueAt("", i, 1);
 			}
-
 		}
+
 		curTable.setModel(curModel);
 		aliasScrollPane.setViewportView(curTable);
 		aliasScrollPane.repaint();
@@ -2964,11 +2670,9 @@ public class ImportTextTableDialog extends JDialog implements
 
 	private void initializeAliasTable(int rowCount, String[] columnNames) {
 		initializeAliasTable(rowCount, columnNames, -1);
-
 	}
 
-	private void initializeAliasTable(int rowCount, String[] columnNames,
-			int sheetIndex) {
+	private void initializeAliasTable(int rowCount, String[] columnNames, int sheetIndex) {
 		Object[][] keyTableData = new Object[rowCount][keyTable.length];
 
 		AliasTableModel curModel = null;
@@ -2979,15 +2683,18 @@ public class ImportTextTableDialog extends JDialog implements
 		} else {
 			tabName = previewPanel.getSheetName(sheetIndex);
 		}
+
 		curModel = aliasTableModelMap.get(tabName);
 
 		curModel = new AliasTableModel();
+
 		Byte[] dataTypeArray = previewPanel.getDataTypes(tabName);
+
 		for (int i = 0; i < rowCount; i++) {
 			keyTableData[i][0] = new Boolean(false);
+
 			if (columnNames == null) {
 				keyTableData[i][1] = "Column " + (i + 1);
-
 			} else {
 				keyTableData[i][1] = columnNames[i];
 			}
@@ -2997,6 +2704,7 @@ public class ImportTextTableDialog extends JDialog implements
 			} else {
 				attributeDataTypes.add(dataTypeArray[i]);
 			}
+
 			keyTableData[i][2] = "String";
 		}
 
@@ -3014,8 +2722,9 @@ public class ImportTextTableDialog extends JDialog implements
 		curTable.setModel(curModel);
 		aliasTableMap.put(tabName, curTable);
 
-		curTable.setDefaultRenderer(Object.class, new AliasTableRenderer(
-				attributeDataTypes, primaryKeyComboBox.getSelectedIndex()));
+		curTable.setDefaultRenderer(Object.class,
+		                            new AliasTableRenderer(attributeDataTypes,
+		                                                   primaryKeyComboBox.getSelectedIndex()));
 		curTable.setEnabled(true);
 		curTable.setSelectionBackground(Color.white);
 		curTable.getTableHeader().setReorderingAllowed(false);
@@ -3030,44 +2739,45 @@ public class ImportTextTableDialog extends JDialog implements
 
 	private void updateMappingAttributeComboBox() {
 		mappingAttributeComboBox.removeAllItems();
+
 		final ListCellRenderer lcr = mappingAttributeComboBox.getRenderer();
 		mappingAttributeComboBox.setRenderer(new ListCellRenderer() {
-			public Component getListCellRendererComponent(JList list,
-					Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
-				JLabel cmp = (JLabel) lcr.getListCellRendererComponent(list,
-						value, index, isSelected, cellHasFocus);
-				if (value.equals(ID)) {
-					cmp.setIcon(ID_ICON.getIcon());
-				} else {
-					cmp.setIcon(getDataTypeIcon(selectedAttributes
-							.getType(value.toString())));
+				public Component getListCellRendererComponent(JList list, Object value, int index,
+				                                              boolean isSelected,
+				                                              boolean cellHasFocus) {
+					JLabel cmp = (JLabel) lcr.getListCellRendererComponent(list, value, index,
+					                                                       isSelected, cellHasFocus);
+
+					if (value.equals(ID)) {
+						cmp.setIcon(ID_ICON.getIcon());
+					} else {
+						cmp.setIcon(getDataTypeIcon(selectedAttributes.getType(value.toString())));
+					}
+
+					return cmp;
 				}
-				return cmp;
-			}
-		});
+			});
 
 		mappingAttributeComboBox.addItem(ID);
+
 		for (String name : selectedAttributes.getAttributeNames()) {
-			if (selectedAttributes.getType(name) != CyAttributes.TYPE_COMPLEX
-					&& selectedAttributes.getType(name) != CyAttributes.TYPE_SIMPLE_MAP
-					&& selectedAttributes.getType(name) != CyAttributes.TYPE_UNDEFINED) {
+			if ((selectedAttributes.getType(name) != CyAttributes.TYPE_COMPLEX)
+			    && (selectedAttributes.getType(name) != CyAttributes.TYPE_SIMPLE_MAP)
+			    && (selectedAttributes.getType(name) != CyAttributes.TYPE_UNDEFINED)) {
 				mappingAttributeComboBox.addItem(name);
 			}
 		}
 	}
 
 	private TableCellRenderer getRenderer(FileTypes type) {
-
 		final TableCellRenderer rend;
 
 		if (type == FileTypes.GENE_ASSOCIATION_FILE) {
-			int ontologyCol = this.ontologyInAnnotationComboBox
-					.getSelectedIndex();
+			int ontologyCol = this.ontologyInAnnotationComboBox.getSelectedIndex();
 			List<Integer> gaAlias = new ArrayList<Integer>();
 
-			AliasTableModel curModel = aliasTableModelMap.get(previewPanel
-					.getSelectedSheetName());
+			AliasTableModel curModel = aliasTableModelMap.get(previewPanel.getSelectedSheetName());
+
 			for (int i = 0; i < curModel.getColumnCount(); i++) {
 				if ((Boolean) curModel.getValueAt(i, 0)) {
 					gaAlias.add(i);
@@ -3075,14 +2785,13 @@ public class ImportTextTableDialog extends JDialog implements
 			}
 
 			gaAlias.add(DB_OBJECT_SYNONYM.getPosition());
-			rend = new AttributePreviewTableCellRenderer(keyInFile, gaAlias,
-					ontologyCol, TAXON.getPosition(), null, listDelimiter);
+			rend = new AttributePreviewTableCellRenderer(keyInFile, gaAlias, ontologyCol,
+			                                             TAXON.getPosition(), null, listDelimiter);
 		} else {
-			rend = new AttributePreviewTableCellRenderer(keyInFile,
-					new ArrayList<Integer>(),
-					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
-					AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
-					null, listDelimiter);
+			rend = new AttributePreviewTableCellRenderer(keyInFile, new ArrayList<Integer>(),
+			                                             AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+			                                             AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
+			                                             null, listDelimiter);
 		}
 
 		return rend;
@@ -3090,15 +2799,14 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/**
 	 * Create task for annotation reader and run it. tablechanged
-	 * 
+	 *
 	 * @param reader
 	 * @param ontology
 	 * @param source
 	 */
 	private void loadAnnotation(TextTableReader reader, String source) {
 		// Create LoadNetwork Task
-		ImportAttributeTableTask task = new ImportAttributeTableTask(reader,
-				source);
+		ImportAttributeTableTask task = new ImportAttributeTableTask(reader, source);
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
@@ -3113,15 +2821,16 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/**
 	 * Create task for ontology reader and run the task.<br>
-	 * 
+	 *
 	 * @param dataSource
 	 * @param ontologyName
 	 */
 	private void loadOntology(String dataSource, String ontologyName) {
 		// Create LoadNetwork Task
 		ImportOntologyTask task = new ImportOntologyTask(dataSource,
-				ontologyTypeMap.get(ontologyName), ontologyName,
-				ontologyDescriptionMap.get(ontologyName));
+		                                                 ontologyTypeMap.get(ontologyName),
+		                                                 ontologyName,
+		                                                 ontologyDescriptionMap.get(ontologyName));
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
@@ -3136,16 +2845,15 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/**
 	 * Create task for annotation reader and run it.
-	 * 
+	 *
 	 * @param reader
 	 * @param ontology
 	 * @param source
 	 */
-	private void loadGeneAssociation(TextTableReader reader, String ontology,
-			String source) {
+	private void loadGeneAssociation(TextTableReader reader, String ontology, String source) {
 		// Create LoadNetwork Task
-		ImportOntologyAnnotationTask task = new ImportOntologyAnnotationTask(
-				reader, ontology, source);
+		ImportOntologyAnnotationTask task = new ImportOntologyAnnotationTask(reader, ontology,
+		                                                                     source);
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
@@ -3158,8 +2866,7 @@ public class ImportTextTableDialog extends JDialog implements
 		TaskManager.executeTask(task, jTaskConfig);
 	}
 
-	private void loadNetwork(final String networkName,
-			final GraphReader reader, final URL source) {
+	private void loadNetwork(final String networkName, final GraphReader reader, final URL source) {
 		// Create LoadNetwork Task
 		ImportNetworkTask task = new ImportNetworkTask(reader, source);
 
@@ -3175,7 +2882,6 @@ public class ImportTextTableDialog extends JDialog implements
 	}
 
 	private void setStatusBar(String message1, String message2, String message3) {
-
 		statusBar.setLeftLabel(message1);
 		statusBar.setCenterLabel(message2);
 		statusBar.setRightLabel(message3);
@@ -3187,12 +2893,10 @@ public class ImportTextTableDialog extends JDialog implements
 	public void tableChanged(TableModelEvent evt) {
 		final int row = evt.getFirstRow();
 		final int col = evt.getColumn();
-		AliasTableModel curModel = aliasTableModelMap.get(previewPanel
-				.getSelectedSheetName());
+		AliasTableModel curModel = aliasTableModelMap.get(previewPanel.getSelectedSheetName());
 
 		if (col == 0) {
-			previewPanel.setAliasColumn(row, (Boolean) curModel.getValueAt(row,
-					col));
+			previewPanel.setAliasColumn(row, (Boolean) curModel.getValueAt(row, col));
 		}
 
 		aliasScrollPane.repaint();
@@ -3200,6 +2904,7 @@ public class ImportTextTableDialog extends JDialog implements
 
 	private List<String> checkDelimiter() {
 		final List<String> delList = new ArrayList<String>();
+
 		if (tabCheckBox.isSelected()) {
 			delList.add(TextFileDelimiters.TAB.toString());
 		}
@@ -3225,49 +2930,46 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/**
 	 * Error checker for imput table.<br>
-	 * 
+	 *
 	 * @return true if table looks OK.
 	 */
 	private boolean checkDataSourceError() {
 		/*
 		 * Number of ENABLED columns should be 2 or more.
-		 * 
+		 *
 		 */
 		JTable table = previewPanel.getPreviewTable();
 
-		if (table == null || table.getModel() == null
-				|| table.getColumnCount() == 0) {
-			JOptionPane.showMessageDialog(this, "No table selected.",
-					"Invalid Table!", JOptionPane.INFORMATION_MESSAGE);
+		if ((table == null) || (table.getModel() == null) || (table.getColumnCount() == 0)) {
+			JOptionPane.showMessageDialog(this, "No table selected.", "Invalid Table!",
+			                              JOptionPane.INFORMATION_MESSAGE);
+
 			return false;
 		} else if (table.getColumnCount() < 2) {
-			JOptionPane.showMessageDialog(this,
-					"Table should contain at least 2 columns.",
-					"Invalid Table!", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Table should contain at least 2 columns.",
+			                              "Invalid Table!", JOptionPane.INFORMATION_MESSAGE);
+
 			return false;
 		}
 
 		if (dialogType == NETWORK_IMPORT) {
-
 			final int sIdx = networkImportPanel.getSourceIndex();
 			final int tIdx = networkImportPanel.getTargetIndex();
 			final int iIdx = networkImportPanel.getInteractionIndex();
 
-			if (sIdx == -1 || tIdx == -1) {
-				JOptionPane.showMessageDialog(this,
-						"Source or Target index not selected.",
-						"Please select both source & target index.",
-						JOptionPane.INFORMATION_MESSAGE);
+			if ((sIdx == -1) || (tIdx == -1)) {
+				JOptionPane.showMessageDialog(this, "Source or Target index not selected.",
+				                              "Please select both source & target index.",
+				                              JOptionPane.INFORMATION_MESSAGE);
+
 				return false;
 			}
 
-			if (sIdx == tIdx || ((iIdx == sIdx || iIdx == tIdx) && iIdx != -1)) {
-				JOptionPane
-						.showMessageDialog(
-								this,
-								"Columns for source, target, and tinteraction type must be distinct.",
-								"Same column index!",
-								JOptionPane.INFORMATION_MESSAGE);
+			if ((sIdx == tIdx) || (((iIdx == sIdx) || (iIdx == tIdx)) && (iIdx != -1))) {
+				JOptionPane.showMessageDialog(this,
+				                              "Columns for source, target, and tinteraction type must be distinct.",
+				                              "Same column index!", JOptionPane.INFORMATION_MESSAGE);
+
 				return false;
 			}
 		}
@@ -3277,9 +2979,9 @@ public class ImportTextTableDialog extends JDialog implements
 
 	/*
 	 * Layout Information for the entire dialog.<br>
-	 * 
+	 *
 	 * <p> This layout will be switched by dialog type parameter. </p>
-	 * 
+	 *
 	 */
 	private void globalLayout() {
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -3289,516 +2991,292 @@ public class ImportTextTableDialog extends JDialog implements
 		 * Case 1: Simple Attribute Import
 		 */
 		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
-
-			layout
-					.setHorizontalGroup(layout
-							.createParallelGroup(
-									org.jdesktop.layout.GroupLayout.LEADING)
-							.add(
-									layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													layout
-															.createParallelGroup(
-																	org.jdesktop.layout.GroupLayout.LEADING)
-															.add(
-																	org.jdesktop.layout.GroupLayout.TRAILING,
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					statusBar,
-																					org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																					org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																					Short.MAX_VALUE)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					importButton)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					cancelButton))
-															.add(
-																	previewPanel,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	org.jdesktop.layout.GroupLayout.TRAILING,
-																	advancedPanel,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	basicPanel,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	org.jdesktop.layout.GroupLayout.TRAILING,
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					titleIconLabel1)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					titleIconLabel2)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					titleIconLabel3)
-																			.add(
-																					20,
-																					20,
-																					20)
-																			.add(
-																					titleLabel)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED,
-																					350,
-																					Short.MAX_VALUE)
-																			.add(
-																					helpButton,
-																					org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																					org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																					org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-															.add(
-																	titleSeparator,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	700,
-																	Short.MAX_VALUE))
-											.addContainerGap()));
-			layout
-					.setVerticalGroup(layout
-							.createParallelGroup(
-									org.jdesktop.layout.GroupLayout.LEADING)
-							.add(
-									layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													layout
-															.createParallelGroup(
-																	org.jdesktop.layout.GroupLayout.TRAILING)
-															.add(
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					layout
-																							.createParallelGroup(
-																									org.jdesktop.layout.GroupLayout.BASELINE)
-																							.add(
-																									helpButton,
-																									org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																									20,
-																									org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-																							.add(
-																									titleIconLabel1)
-																							.add(
-																									titleIconLabel2)
-																							.add(
-																									titleIconLabel3))
-																			.add(
-																					2,
-																					2,
-																					2))
-															.add(
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					titleLabel)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)))
-											.add(
-													titleSeparator,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													10,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													basicPanel,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													advancedPanel,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													previewPanel,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													layout
-															.createParallelGroup(
-																	org.jdesktop.layout.GroupLayout.LEADING,
-																	false)
-															.add(
-																	layout
-																			.createParallelGroup(
-																					org.jdesktop.layout.GroupLayout.BASELINE)
-																			.add(
-																					cancelButton)
-																			.add(
-																					importButton))
-															.add(
-																	statusBar,
-																	org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-											.addContainerGap()));
+			layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                                .add(layout.createSequentialGroup().addContainerGap()
+			                                           .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
+			                                                           layout.createSequentialGroup()
+			                                                                 .add(statusBar,
+			                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                                      Short.MAX_VALUE)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(importButton)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(cancelButton))
+			                                                      .add(previewPanel,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
+			                                                           advancedPanel,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(basicPanel,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
+			                                                           layout.createSequentialGroup()
+			                                                                 .add(titleIconLabel1)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(titleIconLabel2)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(titleIconLabel3)
+			                                                                 .add(20, 20, 20)
+			                                                                 .add(titleLabel)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+			                                                                                  350,
+			                                                                                  Short.MAX_VALUE)
+			                                                                 .add(helpButton,
+			                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+			                                                      .add(titleSeparator,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           700, Short.MAX_VALUE))
+			                                           .addContainerGap()));
+			layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                              .add(layout.createSequentialGroup().addContainerGap()
+			                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+			                                                    .add(layout.createSequentialGroup()
+			                                                               .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+			                                                                          .add(helpButton,
+			                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                                                               20,
+			                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+			                                                                          .add(titleIconLabel1)
+			                                                                          .add(titleIconLabel2)
+			                                                                          .add(titleIconLabel3))
+			                                                               .add(2, 2, 2))
+			                                                    .add(layout.createSequentialGroup()
+			                                                               .add(titleLabel)
+			                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+			                                         .add(titleSeparator,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                              10,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(basicPanel,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(advancedPanel,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(previewPanel,
+			                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                              Short.MAX_VALUE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING,
+			                                                                         false)
+			                                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+			                                                               .add(cancelButton)
+			                                                               .add(importButton))
+			                                                    .add(statusBar,
+			                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+			                                         .addContainerGap()));
 			pack();
-
 		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
-			layout
-					.setHorizontalGroup(layout
-							.createParallelGroup(
-									org.jdesktop.layout.GroupLayout.LEADING)
-							.add(
-									layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													layout
-															.createParallelGroup(
-																	org.jdesktop.layout.GroupLayout.LEADING)
-															.add(
-																	org.jdesktop.layout.GroupLayout.TRAILING,
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					statusBar,
-																					org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																					org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																					Short.MAX_VALUE)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					importButton)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					cancelButton))
-															.add(
-																	previewPanel,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	org.jdesktop.layout.GroupLayout.TRAILING,
-																	advancedPanel,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	basicPanel,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	org.jdesktop.layout.GroupLayout.TRAILING,
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					titleIconLabel1)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					titleIconLabel2)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					titleIconLabel3)
-																			.add(
-																					20,
-																					20,
-																					20)
-																			.add(
-																					titleLabel)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED,
-																					250,
-																					Short.MAX_VALUE)
-																			.add(
-																					helpButton,
-																					org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																					org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																					org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-															.add(
-																	titleSeparator,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	300,
-																	Short.MAX_VALUE))
-											.addContainerGap()));
-			layout
-					.setVerticalGroup(layout
-							.createParallelGroup(
-									org.jdesktop.layout.GroupLayout.LEADING)
-							.add(
-									layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													layout
-															.createParallelGroup(
-																	org.jdesktop.layout.GroupLayout.TRAILING)
-															.add(
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					layout
-																							.createParallelGroup(
-																									org.jdesktop.layout.GroupLayout.BASELINE)
-																							.add(
-																									helpButton,
-																									org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																									20,
-																									org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-																							.add(
-																									titleIconLabel1)
-																							.add(
-																									titleIconLabel2)
-																							.add(
-																									titleIconLabel3))
-																			.add(
-																					2,
-																					2,
-																					2))
-															.add(
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					titleLabel)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)))
-											.add(
-													titleSeparator,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													10,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													basicPanel,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													advancedPanel,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													previewPanel,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													layout
-															.createParallelGroup(
-																	org.jdesktop.layout.GroupLayout.LEADING,
-																	false)
-															.add(
-																	layout
-																			.createParallelGroup(
-																					org.jdesktop.layout.GroupLayout.BASELINE)
-																			.add(
-																					cancelButton)
-																			.add(
-																					importButton))
-															.add(
-																	statusBar,
-																	org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																	org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																	org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-											.addContainerGap()));
+			layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                                .add(layout.createSequentialGroup().addContainerGap()
+			                                           .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
+			                                                           layout.createSequentialGroup()
+			                                                                 .add(statusBar,
+			                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                                      Short.MAX_VALUE)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(importButton)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(cancelButton))
+			                                                      .add(previewPanel,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
+			                                                           advancedPanel,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(basicPanel,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
+			                                                           layout.createSequentialGroup()
+			                                                                 .add(titleIconLabel1)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(titleIconLabel2)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(titleIconLabel3)
+			                                                                 .add(20, 20, 20)
+			                                                                 .add(titleLabel)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+			                                                                                  250,
+			                                                                                  Short.MAX_VALUE)
+			                                                                 .add(helpButton,
+			                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                                      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+			                                                      .add(titleSeparator,
+			                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                           300, Short.MAX_VALUE))
+			                                           .addContainerGap()));
+			layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			                              .add(layout.createSequentialGroup().addContainerGap()
+			                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+			                                                    .add(layout.createSequentialGroup()
+			                                                               .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+			                                                                          .add(helpButton,
+			                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                                                               20,
+			                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+			                                                                          .add(titleIconLabel1)
+			                                                                          .add(titleIconLabel2)
+			                                                                          .add(titleIconLabel3))
+			                                                               .add(2, 2, 2))
+			                                                    .add(layout.createSequentialGroup()
+			                                                               .add(titleLabel)
+			                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+			                                         .add(titleSeparator,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                              10,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(basicPanel,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(advancedPanel,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(previewPanel,
+			                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                              Short.MAX_VALUE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING,
+			                                                                         false)
+			                                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+			                                                               .add(cancelButton)
+			                                                               .add(importButton))
+			                                                    .add(statusBar,
+			                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+			                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+			                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+			                                         .addContainerGap()));
 
 			annotationAndOntologyImportPanel.setVisible(true);
 			attrTypePanel.setVisible(true);
-			
-			
 		} else if (dialogType == NETWORK_IMPORT) {
 			/*
 			 * Layout for network import.
 			 */
-			layout
-					.setHorizontalGroup(layout
-							.createParallelGroup(GroupLayout.LEADING)
-							.add(
-									layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													layout
-															.createParallelGroup(
-																	GroupLayout.LEADING)
-															.add(
-																	GroupLayout.TRAILING,
-																	previewPanel,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	GroupLayout.TRAILING,
-																	advancedPanel,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	GroupLayout.TRAILING,
-																	networkImportPanel,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	basicPanel,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	Short.MAX_VALUE)
-															.add(
-																	GroupLayout.TRAILING,
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					titleIconLabel1)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					titleIconLabel2)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					titleIconLabel3)
-																			.add(
-																					20,
-																					20,
-																					20)
-																			.add(
-																					titleLabel)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED,
-																					350,
-																					Short.MAX_VALUE)
-																			.add(
-																					helpButton,
-																					GroupLayout.PREFERRED_SIZE,
-																					GroupLayout.DEFAULT_SIZE,
-																					GroupLayout.PREFERRED_SIZE))
-															.add(
-																	titleSeparator,
-																	GroupLayout.DEFAULT_SIZE,
-																	700,
-																	Short.MAX_VALUE)
-															.add(
-																	GroupLayout.TRAILING,
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					importButton)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)
-																			.add(
-																					cancelButton)))
-											.addContainerGap()));
-			layout
-					.setVerticalGroup(layout
-							.createParallelGroup(GroupLayout.LEADING)
-							.add(
-									layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.add(
-													layout
-															.createParallelGroup(
-																	GroupLayout.TRAILING)
-															.add(
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					layout
-																							.createParallelGroup(
-																									GroupLayout.BASELINE)
-																							.add(
-																									helpButton,
-																									GroupLayout.PREFERRED_SIZE,
-																									20,
-																									GroupLayout.PREFERRED_SIZE)
-																							.add(
-																									titleIconLabel1)
-																							.add(
-																									titleIconLabel2)
-																							.add(
-																									titleIconLabel3))
-																			.add(
-																					2,
-																					2,
-																					2))
-															.add(
-																	layout
-																			.createSequentialGroup()
-																			.add(
-																					titleLabel)
-																			.addPreferredGap(
-																					org.jdesktop.layout.LayoutStyle.RELATED)))
-											.add(titleSeparator,
-													GroupLayout.PREFERRED_SIZE,
-													10,
-													GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(basicPanel,
-													GroupLayout.PREFERRED_SIZE,
-													GroupLayout.DEFAULT_SIZE,
-													GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(networkImportPanel,
-													GroupLayout.PREFERRED_SIZE,
-													GroupLayout.DEFAULT_SIZE,
-													GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(advancedPanel,
-													GroupLayout.PREFERRED_SIZE,
-													GroupLayout.DEFAULT_SIZE,
-													GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(previewPanel,
-													GroupLayout.DEFAULT_SIZE,
-													GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)
-											.addPreferredGap(
-													org.jdesktop.layout.LayoutStyle.RELATED)
-											.add(
-													layout
-															.createParallelGroup(
-																	GroupLayout.BASELINE)
-															.add(cancelButton)
-															.add(importButton))
-											.addContainerGap()));
+			layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
+			                                .add(layout.createSequentialGroup().addContainerGap()
+			                                           .add(layout.createParallelGroup(GroupLayout.LEADING)
+			                                                      .add(GroupLayout.TRAILING,
+			                                                           previewPanel,
+			                                                           GroupLayout.DEFAULT_SIZE,
+			                                                           GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(GroupLayout.TRAILING,
+			                                                           advancedPanel,
+			                                                           GroupLayout.DEFAULT_SIZE,
+			                                                           GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(GroupLayout.TRAILING,
+			                                                           networkImportPanel,
+			                                                           GroupLayout.DEFAULT_SIZE,
+			                                                           GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(basicPanel,
+			                                                           GroupLayout.DEFAULT_SIZE,
+			                                                           GroupLayout.DEFAULT_SIZE,
+			                                                           Short.MAX_VALUE)
+			                                                      .add(GroupLayout.TRAILING,
+			                                                           layout.createSequentialGroup()
+			                                                                 .add(titleIconLabel1)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(titleIconLabel2)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(titleIconLabel3)
+			                                                                 .add(20, 20, 20)
+			                                                                 .add(titleLabel)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+			                                                                                  350,
+			                                                                                  Short.MAX_VALUE)
+			                                                                 .add(helpButton,
+			                                                                      GroupLayout.PREFERRED_SIZE,
+			                                                                      GroupLayout.DEFAULT_SIZE,
+			                                                                      GroupLayout.PREFERRED_SIZE))
+			                                                      .add(titleSeparator,
+			                                                           GroupLayout.DEFAULT_SIZE,
+			                                                           700, Short.MAX_VALUE)
+			                                                      .add(GroupLayout.TRAILING,
+			                                                           layout.createSequentialGroup()
+			                                                                 .add(importButton)
+			                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                                                 .add(cancelButton)))
+			                                           .addContainerGap()));
+			layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
+			                              .add(layout.createSequentialGroup().addContainerGap()
+			                                         .add(layout.createParallelGroup(GroupLayout.TRAILING)
+			                                                    .add(layout.createSequentialGroup()
+			                                                               .add(layout.createParallelGroup(GroupLayout.BASELINE)
+			                                                                          .add(helpButton,
+			                                                                               GroupLayout.PREFERRED_SIZE,
+			                                                                               20,
+			                                                                               GroupLayout.PREFERRED_SIZE)
+			                                                                          .add(titleIconLabel1)
+			                                                                          .add(titleIconLabel2)
+			                                                                          .add(titleIconLabel3))
+			                                                               .add(2, 2, 2))
+			                                                    .add(layout.createSequentialGroup()
+			                                                               .add(titleLabel)
+			                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+			                                         .add(titleSeparator,
+			                                              GroupLayout.PREFERRED_SIZE, 10,
+			                                              GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(basicPanel, GroupLayout.PREFERRED_SIZE,
+			                                              GroupLayout.DEFAULT_SIZE,
+			                                              GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(networkImportPanel,
+			                                              GroupLayout.PREFERRED_SIZE,
+			                                              GroupLayout.DEFAULT_SIZE,
+			                                              GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(advancedPanel,
+			                                              GroupLayout.PREFERRED_SIZE,
+			                                              GroupLayout.DEFAULT_SIZE,
+			                                              GroupLayout.PREFERRED_SIZE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(previewPanel, GroupLayout.DEFAULT_SIZE,
+			                                              GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+			                                         .add(layout.createParallelGroup(GroupLayout.BASELINE)
+			                                                    .add(cancelButton).add(importButton))
+			                                         .addContainerGap()));
 
 			// annotationAndOntologyImportPanel.setVisible(false);
 			networkImportPanel.setVisible(true);
 			attrTypePanel.setVisible(false);
 			advancedOptionCheckBox.setVisible(false);
+
 			// advancedOptionPanel.setVisible(false);
 		}
 
@@ -3808,6 +3286,7 @@ public class ImportTextTableDialog extends JDialog implements
 	// Variables declaration - do not modify
 	private javax.swing.JCheckBox advancedOptionCheckBox;
 	private javax.swing.JPanel advancedPanel;
+
 	// private JTable aliasTable;
 	private javax.swing.JScrollPane aliasScrollPane;
 	private javax.swing.JPanel annotationAndOntologyImportPanel;
@@ -3859,7 +3338,6 @@ public class ImportTextTableDialog extends JDialog implements
 	private javax.swing.JSeparator titleSeparator;
 	private JComboBox primaryKeyComboBox;
 	private JLabel primaryLabel;
-
 	private JPanel attrTypePanel;
 	private javax.swing.JRadioButton showAllRadioButton;
 	private javax.swing.JLabel counterLabel;
@@ -3867,67 +3345,75 @@ public class ImportTextTableDialog extends JDialog implements
 	private javax.swing.JButton reloadButton;
 	private javax.swing.JSpinner counterSpinner;
 	private javax.swing.ButtonGroup importTypeButtonGroup;
-
 	private JPanel attributeNamePanel;
 	private JPanel previewOptionPanel;
 	private JPanel networkImportOptionPanel;
-
 	private JLabel defaultInteractionLabel;
 	private JTextField defaultInteractionTextField;
-
 	private JLabel startRowLabel;
 	private JSpinner startRowSpinner;
-
 	private JLabel commentLineLabel;
 	private JTextField commentLineTextField;
 
 	// End of variables declaration
-
 	JStatusBar statusBar;
-
 	private NetworkImportOptionsPanel networkImportPanel;
 
 	// private DefaultTableModel model;
 	private AliasTableModel aliasTableModel;
 	private JTable aliasTable;
-
 	private JCheckBox importAllCheckBox;
 }
 
-class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 
+class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 	private List<Byte> attributeDataTypes;
 
+	/**
+	 * Creates a new ComboBoxRenderer object.
+	 *
+	 * @param attributeDataTypes  DOCUMENT ME!
+	 */
 	public ComboBoxRenderer(List<Byte> attributeDataTypes) {
 		this.attributeDataTypes = attributeDataTypes;
 	}
 
-	public Component getListCellRendererComponent(JList list, Object value,
-			int index, boolean isSelected, boolean cellHasFocus) {
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param list DOCUMENT ME!
+	 * @param value DOCUMENT ME!
+	 * @param index DOCUMENT ME!
+	 * @param isSelected DOCUMENT ME!
+	 * @param cellHasFocus DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Component getListCellRendererComponent(JList list, Object value, int index,
+	                                              boolean isSelected, boolean cellHasFocus) {
 		setText(value.toString());
 
-		if (attributeDataTypes != null && attributeDataTypes.size() != 0
-				&& index < attributeDataTypes.size() && index >= 0) {
+		if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
+		    && (index < attributeDataTypes.size()) && (index >= 0)) {
 			final Byte dataType = attributeDataTypes.get(index);
+
 			if (dataType == null) {
 				setIcon(null);
 			} else {
 				setIcon(ImportTextTableDialog.getDataTypeIcon(dataType));
 			}
-		} else if (attributeDataTypes != null && attributeDataTypes.size() != 0
-				&& index < attributeDataTypes.size()) {
-
-			setIcon(ImportTextTableDialog.getDataTypeIcon(attributeDataTypes
-					.get(list.getSelectedIndex())));
+		} else if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
+		           && (index < attributeDataTypes.size())) {
+			setIcon(ImportTextTableDialog.getDataTypeIcon(attributeDataTypes.get(list
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .getSelectedIndex())));
 		}
-		return this;
 
+		return this;
 	}
 }
 
-class AliasTableModel extends DefaultTableModel {
 
+class AliasTableModel extends DefaultTableModel {
 	AliasTableModel(String[] columnNames, int rowNum) {
 		super(columnNames, rowNum);
 	}
@@ -3940,10 +3426,25 @@ class AliasTableModel extends DefaultTableModel {
 		super();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param col DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Class getColumnClass(int col) {
 		return getValueAt(0, col).getClass();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param row DOCUMENT ME!
+	 * @param column DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public boolean isCellEditable(int row, int column) {
 		if (column == 0) {
 			return true;

@@ -32,9 +32,11 @@
 package org.mskcc.test.util;
 
 import junit.framework.TestCase;
+
 import org.mskcc.biopax_plugin.util.net.WebFileConnect;
 
 import java.io.File;
+
 
 /**
  * Tests the WebFileConnect Utility Class.
@@ -42,27 +44,23 @@ import java.io.File;
  * @author Ethan Cerami.
  */
 public class TestWebFileConnect extends TestCase {
+	/**
+	 * Tests the File Connect.
+	 *
+	 * @throws Exception All Exceptions.
+	 */
+	public void testFileConnect() throws Exception {
+		String str = WebFileConnect.retrieveDocument(new File("testData/biopax_sample1.owl"));
+		assertTrue(str.startsWith("<?xml version=\"1.0\" " + "encoding=\"UTF-8\" ?>"));
+	}
 
-    /**
-     * Tests the File Connect.
-     *
-     * @throws Exception All Exceptions.
-     */
-    public void testFileConnect() throws Exception {
-        String str = WebFileConnect.retrieveDocument
-                (new File("testData/biopax_sample1.owl"));
-        assertTrue(str.startsWith("<?xml version=\"1.0\" "
-                + "encoding=\"UTF-8\" ?>"));
-    }
-
-    /**
-     * Tests the Web Connect.
-     *
-     * @throws Exception All Exceptions.
-     */
-    public void testWebConnect() throws Exception {
-        String str = WebFileConnect.retrieveDocument
-                ("http://www.google.com");
-        assertTrue(str.startsWith("<html><head>"));
-    }
+	/**
+	 * Tests the Web Connect.
+	 *
+	 * @throws Exception All Exceptions.
+	 */
+	public void testWebConnect() throws Exception {
+		String str = WebFileConnect.retrieveDocument("http://www.google.com");
+		assertTrue(str.startsWith("<html><head>"));
+	}
 }

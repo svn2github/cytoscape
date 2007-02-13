@@ -38,22 +38,23 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+
 /**
  * Suite of all Cache Unit Tests.
  *
  * @author Ethan Cerami
  */
 public class BioSuite extends TestCase {
+	/**
+	 * The suite method runs all the tests.
+	 *
+	 * @return Suite of JUnit tests.
+	 */
+	public static Test suite() {
+		TestSuite suite = new TestSuite();
+		suite.addTestSuite(TestInteractor.class);
+		suite.setName("Bio Unit Tests");
 
-    /**
-     * The suite method runs all the tests.
-     *
-     * @return Suite of JUnit tests.
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(TestInteractor.class);
-        suite.setName("Bio Unit Tests");
-        return suite;
-    }
+		return suite;
+	}
 }

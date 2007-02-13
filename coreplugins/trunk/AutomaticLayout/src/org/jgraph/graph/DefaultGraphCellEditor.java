@@ -1,10 +1,15 @@
 /*
- * @(#)DefaultGraphCellEditor.java	1.0 03-JUL-04
- * 
+ * @(#)DefaultGraphCellEditor.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.JGraph;
+
+import org.jgraph.event.GraphSelectionEvent;
+import org.jgraph.event.GraphSelectionListener;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -15,10 +20,12 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
 import java.util.EventObject;
 import java.util.Vector;
 
@@ -30,13 +37,12 @@ import javax.swing.border.Border;
 import javax.swing.event.CellEditorListener;
 import javax.swing.plaf.FontUIResource;
 
-import org.jgraph.JGraph;
-import org.jgraph.event.GraphSelectionEvent;
-import org.jgraph.event.GraphSelectionListener;
 
-public class DefaultGraphCellEditor
-	implements ActionListener, GraphCellEditor, GraphSelectionListener, Serializable {
-
+/**
+ *
+ */
+public class DefaultGraphCellEditor implements ActionListener, GraphCellEditor,
+                                               GraphSelectionListener, Serializable {
 	/** Editor handling the editing. */
 	protected GraphCellEditor realEditor;
 
@@ -90,11 +96,12 @@ public class DefaultGraphCellEditor
 	 */
 	public DefaultGraphCellEditor(GraphCellEditor editor) {
 		realEditor = editor;
+
 		if (realEditor == null)
 			realEditor = createGraphCellEditor();
+
 		editingContainer = createContainer();
-		setBorderSelectionColor(
-			UIManager.getColor("Tree.editorBorderSelectionColor"));
+		setBorderSelectionColor(UIManager.getColor("Tree.editorBorderSelectionColor"));
 	}
 
 	/**
@@ -141,25 +148,22 @@ public class DefaultGraphCellEditor
 	/**
 	 * Configures the editor.  Passed onto the realEditor.
 	 */
-	public Component getGraphCellEditorComponent(
-		JGraph graph,
-		Object cell,
-		boolean isSelected) {
-
+	public Component getGraphCellEditorComponent(JGraph graph, Object cell, boolean isSelected) {
 		setGraph(graph);
 
-		editingComponent =
-			realEditor.getGraphCellEditorComponent(graph, cell, isSelected);
+		editingComponent = realEditor.getGraphCellEditorComponent(graph, cell, isSelected);
 
 		determineOffset(graph, cell, isSelected);
 
-		canEdit = (lastCell != null && cell != null && lastCell.equals(cell));
+		canEdit = ((lastCell != null) && (cell != null) && lastCell.equals(cell));
 
 		CellView view = graph.getGraphLayoutCache().getMapping(cell, false);
+
 		if (view != null)
 			setFont(GraphConstants.getFont(view.getAllAttributes()));
+
 		editingContainer.setFont(font);
-		
+
 		return editingContainer;
 	}
 
@@ -179,10 +183,13 @@ public class DefaultGraphCellEditor
 
 		if (!realEditor.isCellEditable(event))
 			return false;
+
 		if (canEditImmediately(event))
 			retValue = true;
+
 		if (retValue)
 			prepareForEditing();
+
 		return retValue;
 	}
 
@@ -201,9 +208,12 @@ public class DefaultGraphCellEditor
 		if (realEditor.stopCellEditing()) {
 			if (editingComponent != null)
 				editingContainer.remove(editingComponent);
+
 			editingComponent = null;
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -213,8 +223,10 @@ public class DefaultGraphCellEditor
 	 */
 	public void cancelCellEditing() {
 		realEditor.cancelCellEditing();
+
 		if (editingComponent != null)
 			editingContainer.remove(editingComponent);
+
 		editingComponent = null;
 	}
 
@@ -273,7 +285,9 @@ public class DefaultGraphCellEditor
 		if (graph != newGraph) {
 			if (graph != null)
 				graph.removeGraphSelectionListener(this);
+
 			graph = newGraph;
+
 			if (graph != null)
 				graph.addGraphSelectionListener(this);
 		}
@@ -284,13 +298,12 @@ public class DefaultGraphCellEditor
 	 * count is 1.
 	 */
 	protected boolean shouldStartEditingTimer(EventObject event) {
-		if ((event instanceof MouseEvent)
-			&& SwingUtilities.isLeftMouseButton((MouseEvent) event)) {
+		if ((event instanceof MouseEvent) && SwingUtilities.isLeftMouseButton((MouseEvent) event)) {
 			MouseEvent me = (MouseEvent) event;
 
-			return (
-				me.getClickCount() == 1 && inHitRegion(me.getX(), me.getY()));
+			return ((me.getClickCount() == 1) && inHitRegion(me.getX(), me.getY()));
 		}
+
 		return false;
 	}
 
@@ -299,12 +312,12 @@ public class DefaultGraphCellEditor
 	 * with a click count > 2 and inHitRegion returns true.
 	 */
 	protected boolean canEditImmediately(EventObject event) {
-		if ((event instanceof MouseEvent)
-			&& SwingUtilities.isLeftMouseButton((MouseEvent) event)) {
+		if ((event instanceof MouseEvent) && SwingUtilities.isLeftMouseButton((MouseEvent) event)) {
 			MouseEvent me = (MouseEvent) event;
 
 			return inHitRegion(me.getX(), me.getY());
 		}
+
 		return (event == null);
 	}
 
@@ -322,10 +335,7 @@ public class DefaultGraphCellEditor
 		return true;
 	}
 
-	protected void determineOffset(
-		JGraph graph,
-		Object value,
-		boolean isSelected) {
+	protected void determineOffset(JGraph graph, Object value, boolean isSelected) {
 		editingIcon = null;
 		offsetX = graph.getHandleSize();
 		offsetY = graph.getHandleSize();
@@ -353,17 +363,18 @@ public class DefaultGraphCellEditor
 	 */
 	protected GraphCellEditor createGraphCellEditor() {
 		Border aBorder = UIManager.getBorder("Tree.editorBorder");
-		DefaultRealEditor editor =
-			new DefaultRealEditor(new DefaultTextField(aBorder)) {
+		DefaultRealEditor editor = new DefaultRealEditor(new DefaultTextField(aBorder)) {
 			public boolean shouldSelectCell(EventObject event) {
 				boolean retValue = super.shouldSelectCell(event);
 				getComponent().requestFocus();
+
 				return retValue;
 			}
 		};
 
 		// One click to edit.
 		editor.setClickCountToStart(1);
+
 		return editor;
 	}
 
@@ -372,24 +383,24 @@ public class DefaultGraphCellEditor
 		Vector values = new Vector();
 
 		s.defaultWriteObject();
+
 		// Save the realEditor, if its Serializable.
 		if (realEditor instanceof Serializable) {
 			values.addElement("realEditor");
 			values.addElement(realEditor);
 		}
+
 		s.writeObject(values);
 	}
 
-	private void readObject(ObjectInputStream s)
-		throws IOException, ClassNotFoundException {
+	private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
 		s.defaultReadObject();
 
 		Vector values = (Vector) s.readObject();
 		int indexCounter = 0;
 		int maxCounter = values.size();
 
-		if (indexCounter < maxCounter
-			&& values.elementAt(indexCounter).equals("realEditor")) {
+		if ((indexCounter < maxCounter) && values.elementAt(indexCounter).equals("realEditor")) {
 			realEditor = (GraphCellEditor) values.elementAt(++indexCounter);
 			indexCounter++;
 		}
@@ -431,9 +442,10 @@ public class DefaultGraphCellEditor
 			if (font instanceof FontUIResource) {
 				Container parent = getParent();
 
-				if (parent != null && parent.getFont() != null)
+				if ((parent != null) && (parent.getFont() != null))
 					font = parent.getFont();
 			}
+
 			return font;
 		}
 	}
@@ -465,10 +477,12 @@ public class DefaultGraphCellEditor
 
 			// Border selection color
 			Color background = getBorderSelectionColor();
+
 			if (background != null) {
 				g.setColor(background);
 				g.drawRect(0, 0, size.width - 1, size.height - 1);
 			}
+
 			super.paint(g);
 		}
 
@@ -481,18 +495,16 @@ public class DefaultGraphCellEditor
 				Dimension cSize = getSize();
 				int h = (int) editingComponent.getPreferredSize().getHeight();
 				int minw = 45;
-				int w = (int) editingComponent.getPreferredSize().getWidth()+5;
+				int w = (int) editingComponent.getPreferredSize().getWidth() + 5;
 				int maxw = (int) editingComponent.getMaximumSize().getWidth();
-				if (editingContainer.getParent() != null
-						&& maxw > editingContainer.getParent().getWidth())
+
+				if ((editingContainer.getParent() != null)
+				    && (maxw > editingContainer.getParent().getWidth()))
 					w = cSize.width - offsetX;
 				else
 					w = Math.max(minw, Math.min(w, maxw));
-				editingComponent.setBounds(
-					offsetX,
-					offsetY,
-					w,
-					h);
+
+				editingComponent.setBounds(offsetX, offsetY, w, h);
 			}
 		}
 
@@ -504,19 +516,23 @@ public class DefaultGraphCellEditor
 			if (editingComponent != null) {
 				Dimension pSize = editingComponent.getPreferredSize();
 
-				pSize.width += offsetX + 2;
-				pSize.height += offsetY + 2;
+				pSize.width += (offsetX + 2);
+				pSize.height += (offsetY + 2);
 
 				// Make sure width is at least 50.
 				// and height at least 20
 				int iwidth = 50;
+
 				if (editingIcon != null) {
 					iwidth = Math.max(editingIcon.getIconWidth(), iwidth);
 				}
+
 				pSize.height = Math.max(pSize.height, 24); // Offset 4
-				pSize.width = Math.max(pSize.width+5, iwidth);
+				pSize.width = Math.max(pSize.width + 5, iwidth);
+
 				return pSize;
 			}
+
 			return new Dimension(0, 0);
 		}
 	}

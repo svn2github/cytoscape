@@ -37,19 +37,26 @@ package org.cytoscape.coreplugin.cpath.task;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+
 import cytoscape.data.readers.GraphReader;
+
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+
 import cytoscape.view.CyNetworkView;
+
 import org.cytoscape.coreplugin.cpath.model.*;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 import org.cytoscape.coreplugin.cpath.ui.Console;
 import org.cytoscape.coreplugin.cpath.util.CPathProperties;
 
-import javax.swing.*;
 import java.io.IOException;
+
 import java.util.Date;
 import java.util.HashMap;
+
+import javax.swing.*;
+
 
 /**
  * Task to Query cPath.
@@ -57,257 +64,263 @@ import java.util.HashMap;
  * @author Ethan Cerami.
  */
 public class QueryCPathTask implements Task {
-    private HashMap cyMap;
-    private SearchRequest searchRequest;
-    private SearchResponse searchResponse;
-    private SearchBundle searchBundle;
-    private SearchBundleList searchList;
-    private Console console;
-    private static final int DEFAULT_INCREMENT = 10;
-    private static final int LARGER_INCREMENT = 50;
-    private TaskMonitor taskMonitor;
-    private boolean isInterrupted;
+	private HashMap cyMap;
+	private SearchRequest searchRequest;
+	private SearchResponse searchResponse;
+	private SearchBundle searchBundle;
+	private SearchBundleList searchList;
+	private Console console;
+	private static final int DEFAULT_INCREMENT = 10;
+	private static final int LARGER_INCREMENT = 50;
+	private TaskMonitor taskMonitor;
+	private boolean isInterrupted;
 
-    /**
-     * Constructor.
-     *
-     * @param cyMap         HashMap
-     * @param searchRequest SearchRequest Object.
-     * @param searchList    List of Search Bundles.
-     * @param console       Console Object.
-     */
-    public QueryCPathTask (HashMap cyMap, SearchRequest searchRequest,
-            SearchBundleList searchList, Console console) {
-        this.logToConsoleBold("Retrieving Data from cPath:  "
-                + searchRequest.toString() + "...");
+	/**
+	 * Constructor.
+	 *
+	 * @param cyMap         HashMap
+	 * @param searchRequest SearchRequest Object.
+	 * @param searchList    List of Search Bundles.
+	 * @param console       Console Object.
+	 */
+	public QueryCPathTask(HashMap cyMap, SearchRequest searchRequest, SearchBundleList searchList,
+	                      Console console) {
+		this.logToConsoleBold("Retrieving Data from cPath:  " + searchRequest.toString() + "...");
 
-        String url = CPathProperties.getCPathUrl();
-        logToConsole("Connecting to cPath:  " + url);
+		String url = CPathProperties.getCPathUrl();
+		logToConsole("Connecting to cPath:  " + url);
 
-        this.cyMap = cyMap;
-        this.searchRequest = searchRequest;
-        this.searchList = searchList;
-        this.console = console;
-    }
+		this.cyMap = cyMap;
+		this.searchRequest = searchRequest;
+		this.searchList = searchList;
+		this.console = console;
+	}
 
-    /**
-     * Halts cPath Task.
-     */
-    public void halt () {
-        isInterrupted = true;
-    }
+	/**
+	 * Halts cPath Task.
+	 */
+	public void halt() {
+		isInterrupted = true;
+	}
 
-    /**
-     * Sets Task Monitor.
-     *
-     * @param taskMonitor TaskMonitor Object.
-     * @throws IllegalThreadStateException Illegal Thread State.
-     */
-    public void setTaskMonitor (TaskMonitor taskMonitor) throws IllegalThreadStateException {
-        this.taskMonitor = taskMonitor;
-    }
+	/**
+	 * Sets Task Monitor.
+	 *
+	 * @param taskMonitor TaskMonitor Object.
+	 * @throws IllegalThreadStateException Illegal Thread State.
+	 */
+	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+		this.taskMonitor = taskMonitor;
+	}
 
-    /**
-     * Gets Task Title.
-     *
-     * @return task title.
-     */
-    public String getTitle () {
-        return "Connecting to cPath:  " + searchRequest.toString();
-    }
+	/**
+	 * Gets Task Title.
+	 *
+	 * @return task title.
+	 */
+	public String getTitle() {
+		return "Connecting to cPath:  " + searchRequest.toString();
+	}
 
-    /**
-     * Executes Task
-     */
-    public void run () {
-        //  Set Initial Messages
-        taskMonitor.setPercentCompleted(-1);
-        taskMonitor.setStatus("Connecting to cPath...");
-        searchResponse = new SearchResponse();
-        try {
-            OrganismOption organism = searchRequest.getOrganism();
-            int taxonomyId = organism.getTaxonomyId();
-            if (organism == OrganismOption.ALL_ORGANISMS) {
-                taxonomyId = CPathProtocol.NOT_SPECIFIED;
-            }
-            int maxHits = searchRequest.getMaxHitsOption().getMaxHits();
-            getAllInteractions(taxonomyId, maxHits);
-            taskMonitor.setPercentCompleted(100);
-        } catch (EmptySetException e) {
-            console.logMessage("No Matching Results Found.  Please Try Again.");
-            searchResponse.setException(e);
-        } catch (RuntimeException e) {
-            searchResponse.setException(e);
-        } catch (Exception e) {
-            searchResponse.setException(e);
-        } catch (Throwable e) {
-            searchResponse.setException(e);
-        } finally {
-            searchBundle = new SearchBundle
-                    ((SearchRequest) searchRequest.clone(), searchResponse);
-            searchList.add(searchBundle);
-            if (isInterrupted) {
-                logToConsole("Data Retrieval Cancelled by User.");
-            }
-        }
-    }
+	/**
+	 * Executes Task
+	 */
+	public void run() {
+		//  Set Initial Messages
+		taskMonitor.setPercentCompleted(-1);
+		taskMonitor.setStatus("Connecting to cPath...");
+		searchResponse = new SearchResponse();
 
-    /**
-     * Gets All Interactions.
-     */
-    private void getAllInteractions (int taxonomyId, int maxHits)
-            throws InterruptedException, CPathException, EmptySetException, IOException {
-        searchResponse = new SearchResponse();
+		try {
+			OrganismOption organism = searchRequest.getOrganism();
+			int taxonomyId = organism.getTaxonomyId();
 
-        //  First, determine how many interactions we have in total
-        ReadPsiFromCPath reader = new ReadPsiFromCPath();
-        int totalNumInteractions = reader.getInteractionsCount
-                (searchRequest.getQuery(), taxonomyId);
-        logToConsole("Total Number of Matching Interactions:  "
-                + totalNumInteractions);
+			if (organism == OrganismOption.ALL_ORGANISMS) {
+				taxonomyId = CPathProtocol.NOT_SPECIFIED;
+			}
 
-        //  0% Complete
-        taskMonitor.setPercentCompleted(0);
+			int maxHits = searchRequest.getMaxHitsOption().getMaxHits();
+			getAllInteractions(taxonomyId, maxHits);
+			taskMonitor.setPercentCompleted(100);
+		} catch (EmptySetException e) {
+			console.logMessage("No Matching Results Found.  Please Try Again.");
+			searchResponse.setException(e);
+		} catch (RuntimeException e) {
+			searchResponse.setException(e);
+		} catch (Exception e) {
+			searchResponse.setException(e);
+		} catch (Throwable e) {
+			searchResponse.setException(e);
+		} finally {
+			searchBundle = new SearchBundle((SearchRequest) searchRequest.clone(), searchResponse);
+			searchList.add(searchBundle);
 
-        //  Retrieve the interactions
-        int index = 0;
-        int endIndex = Math.min(maxHits, totalNumInteractions);
-        int increment = DEFAULT_INCREMENT;
-        if (maxHits > 100) {
-            increment = LARGER_INCREMENT;
-        }
+			if (isInterrupted) {
+				logToConsole("Data Retrieval Cancelled by User.");
+			}
+		}
+	}
 
-        //  Create CyNetwork
-        String title = searchRequest.toString();
+	/**
+	 * Gets All Interactions.
+	 */
+	private void getAllInteractions(int taxonomyId, int maxHits)
+	    throws InterruptedException, CPathException, EmptySetException, IOException {
+		searchResponse = new SearchResponse();
 
-        if (title.length() > 25) {
-            title = new String(title + "...");
-        }
+		//  First, determine how many interactions we have in total
+		ReadPsiFromCPath reader = new ReadPsiFromCPath();
+		int totalNumInteractions = reader.getInteractionsCount(searchRequest.getQuery(), taxonomyId);
+		logToConsole("Total Number of Matching Interactions:  " + totalNumInteractions);
 
-        //  Create Network w/o view
-        CyNetwork cyNetwork = Cytoscape.createNetwork(title, false);
+		//  0% Complete
+		taskMonitor.setPercentCompleted(0);
 
-        GraphReader graphReader = null;
-        while (index < endIndex && !isInterrupted) {
-            graphReader = getInteractions(taxonomyId, index, increment, endIndex);
-            graphReader.read();
-            addToCyNetwork(graphReader, cyNetwork);
-            index += increment;
-            if (isInterrupted) {
-                throw new InterruptedException();
-            }
+		//  Retrieve the interactions
+		int index = 0;
+		int endIndex = Math.min(maxHits, totalNumInteractions);
+		int increment = DEFAULT_INCREMENT;
 
-        }
+		if (maxHits > 100) {
+			increment = LARGER_INCREMENT;
+		}
 
-        CyNetworkView networkView = createNetworkView(cyNetwork);
-        if (networkView != null) {
-            graphReader.layout(networkView);
-        }
-    }
+		//  Create CyNetwork
+		String title = searchRequest.toString();
 
-    /**
-     * Iteratively Get Interactions from cPath.
-     */
-    private GraphReader getInteractions (int taxonomyId, int startIndex, int increment,
-            int totalNumInteractions) throws CPathException, EmptySetException {
+		if (title.length() > 25) {
+			title = new String(title + "...");
+		}
 
-        ReadPsiFromCPath reader = new ReadPsiFromCPath();
-        int endIndex = Math.min(startIndex + increment, totalNumInteractions);
-        taskMonitor.setStatus("Getting Interactions:  " + startIndex
-                + " - " + endIndex + " of "
-                + totalNumInteractions);
+		//  Create Network w/o view
+		CyNetwork cyNetwork = Cytoscape.createNetwork(title, false);
 
-        Date start = new Date();
-        GraphReader graphReader = reader.getInteractionsByKeyword
-                (searchRequest.getQuery(), taxonomyId,
-                        startIndex, increment);
-        Date stop = new Date();
-        long interval = stop.getTime() - start.getTime();
+		GraphReader graphReader = null;
 
-        //  Estimate Remaining Time
-        long totalTimeInRemaining =
-                CPathTimeEstimator.calculateEsimatedTimeRemaining(interval,
-                        startIndex, increment, totalNumInteractions);
+		while ((index < endIndex) && !isInterrupted) {
+			graphReader = getInteractions(taxonomyId, index, increment, endIndex);
+			graphReader.read();
+			addToCyNetwork(graphReader, cyNetwork);
+			index += increment;
 
-        logToConsole("Getting Interactions:  " + startIndex
-                + " - " + endIndex + " of "
-                + totalNumInteractions + " [OK]");
+			if (isInterrupted) {
+				throw new InterruptedException();
+			}
+		}
 
-        double percentCompleted = (startIndex + increment) / (double) totalNumInteractions;
-        int percent = (int) (percentCompleted * 100.0);
-        if (percent > 100) {
-            percent = 100;
-        }
-        taskMonitor.setPercentCompleted(percent);
-        taskMonitor.setEstimatedTimeRemaining(totalTimeInRemaining);
-        return graphReader;
-    }
+		CyNetworkView networkView = createNetworkView(cyNetwork);
 
-    private void addToCyNetwork (GraphReader reader, CyNetwork cyNetwork) {
-        //  Add new nodes/edges to network
-        int nodeIndices[] = reader.getNodeIndicesArray();
-        int edgeIndices[] = reader.getEdgeIndicesArray();
-        for (int i = 0; i < nodeIndices.length; i++) {
-            cyNetwork.addNode(nodeIndices[i]);
-        }
-        for (int i = 0; i < edgeIndices.length; i++) {
-            cyNetwork.addEdge(edgeIndices[i]);
-        }
-    }
+		if (networkView != null) {
+			graphReader.layout(networkView);
+		}
+	}
 
-    private CyNetworkView createNetworkView (CyNetwork cyNetwork) {
-        //  Conditionally Create a View, based on Number of Nodes.
-        //  GetViewThreshold is settable by the End User.
-        logToConsole("Total Number of Nodes in Network:  "
-                + cyNetwork.getNodeCount());
-        logToConsole("Total Number of Edges in Network:  "
-                + cyNetwork.getEdgeCount());
-        int threshold = Integer.parseInt(CytoscapeInit.getProperties().getProperty
-                ("viewThreshold", "5000"));
-        CyNetworkView view = null;
-        if (cyNetwork.getNodeCount() < threshold) {
-            logToConsole("Your Network is Under "
-                    + threshold
-                    + " nodes --> a Cytoscape View  will be "
-                    + "automatically created.");
-            taskMonitor.setStatus("Creating Network View.  Please wait.");
-            view = Cytoscape.createNetworkView(cyNetwork);
-            searchResponse.setCyNetworkView(view);
-            taskMonitor.setStatus("Applying Visual Styles.");
-            Cytoscape.getVisualMappingManager().applyAppearances();
-        } else {
-            logToConsole("Your Network is Over " + threshold
-                    + " nodes --> a Cytoscape View  will not be "
-                    + "automatically created.");
-        }
-        return view;
-    }
+	/**
+	 * Iteratively Get Interactions from cPath.
+	 */
+	private GraphReader getInteractions(int taxonomyId, int startIndex, int increment,
+	                                    int totalNumInteractions)
+	    throws CPathException, EmptySetException {
+		ReadPsiFromCPath reader = new ReadPsiFromCPath();
+		int endIndex = Math.min(startIndex + increment, totalNumInteractions);
+		taskMonitor.setStatus("Getting Interactions:  " + startIndex + " - " + endIndex + " of "
+		                      + totalNumInteractions);
 
-    /**
-     * Logs to Console by queing an event to the Event-Dispatch Thread.
-     *
-     * @param msg Message to Log.
-     */
-    private void logToConsole (final String msg) {
-        Runnable runnable = new Runnable() {
-            public void run () {
-                console.logMessage(msg);
-            }
-        };
-        SwingUtilities.invokeLater(runnable);
-    }
+		Date start = new Date();
+		GraphReader graphReader = reader.getInteractionsByKeyword(searchRequest.getQuery(),
+		                                                          taxonomyId, startIndex, increment);
+		Date stop = new Date();
+		long interval = stop.getTime() - start.getTime();
 
-    /**
-     * Logs to Console by queing an event to the Event-Dispatch Thread.
-     *
-     * @param msg Message to Log.
-     */
-    private void logToConsoleBold (final String msg) {
-        Runnable runnable = new Runnable() {
-            public void run () {
-                console.logMessageBold(msg);
-            }
-        };
-        SwingUtilities.invokeLater(runnable);
-    }
+		//  Estimate Remaining Time
+		long totalTimeInRemaining = CPathTimeEstimator.calculateEsimatedTimeRemaining(interval,
+		                                                                              startIndex,
+		                                                                              increment,
+		                                                                              totalNumInteractions);
+
+		logToConsole("Getting Interactions:  " + startIndex + " - " + endIndex + " of "
+		             + totalNumInteractions + " [OK]");
+
+		double percentCompleted = (startIndex + increment) / (double) totalNumInteractions;
+		int percent = (int) (percentCompleted * 100.0);
+
+		if (percent > 100) {
+			percent = 100;
+		}
+
+		taskMonitor.setPercentCompleted(percent);
+		taskMonitor.setEstimatedTimeRemaining(totalTimeInRemaining);
+
+		return graphReader;
+	}
+
+	private void addToCyNetwork(GraphReader reader, CyNetwork cyNetwork) {
+		//  Add new nodes/edges to network
+		int[] nodeIndices = reader.getNodeIndicesArray();
+		int[] edgeIndices = reader.getEdgeIndicesArray();
+
+		for (int i = 0; i < nodeIndices.length; i++) {
+			cyNetwork.addNode(nodeIndices[i]);
+		}
+
+		for (int i = 0; i < edgeIndices.length; i++) {
+			cyNetwork.addEdge(edgeIndices[i]);
+		}
+	}
+
+	private CyNetworkView createNetworkView(CyNetwork cyNetwork) {
+		//  Conditionally Create a View, based on Number of Nodes.
+		//  GetViewThreshold is settable by the End User.
+		logToConsole("Total Number of Nodes in Network:  " + cyNetwork.getNodeCount());
+		logToConsole("Total Number of Edges in Network:  " + cyNetwork.getEdgeCount());
+
+		int threshold = Integer.parseInt(CytoscapeInit.getProperties()
+		                                              .getProperty("viewThreshold", "5000"));
+		CyNetworkView view = null;
+
+		if (cyNetwork.getNodeCount() < threshold) {
+			logToConsole("Your Network is Under " + threshold
+			             + " nodes --> a Cytoscape View  will be " + "automatically created.");
+			taskMonitor.setStatus("Creating Network View.  Please wait.");
+			view = Cytoscape.createNetworkView(cyNetwork);
+			searchResponse.setCyNetworkView(view);
+			taskMonitor.setStatus("Applying Visual Styles.");
+			Cytoscape.getVisualMappingManager().applyAppearances();
+		} else {
+			logToConsole("Your Network is Over " + threshold
+			             + " nodes --> a Cytoscape View  will not be " + "automatically created.");
+		}
+
+		return view;
+	}
+
+	/**
+	 * Logs to Console by queing an event to the Event-Dispatch Thread.
+	 *
+	 * @param msg Message to Log.
+	 */
+	private void logToConsole(final String msg) {
+		Runnable runnable = new Runnable() {
+			public void run() {
+				console.logMessage(msg);
+			}
+		};
+
+		SwingUtilities.invokeLater(runnable);
+	}
+
+	/**
+	 * Logs to Console by queing an event to the Event-Dispatch Thread.
+	 *
+	 * @param msg Message to Log.
+	 */
+	private void logToConsoleBold(final String msg) {
+		Runnable runnable = new Runnable() {
+			public void run() {
+				console.logMessageBold(msg);
+			}
+		};
+
+		SwingUtilities.invokeLater(runnable);
+	}
 }

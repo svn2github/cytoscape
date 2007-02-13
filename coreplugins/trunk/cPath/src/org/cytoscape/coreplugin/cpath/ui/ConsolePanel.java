@@ -34,9 +34,11 @@
 */
 package org.cytoscape.coreplugin.cpath.ui;
 
+import java.awt.*;
+
 import javax.swing.*;
 import javax.swing.text.*;
-import java.awt.*;
+
 
 /**
  * Console Panel Component.
@@ -44,109 +46,111 @@ import java.awt.*;
  * @author Ethan Cerami
  */
 public class ConsolePanel extends JPanel implements Console {
-    private JTextPane ta;
-    private JScrollPane scrollPane;
+	private JTextPane ta;
+	private JScrollPane scrollPane;
 
-    /**
-     * No Arg Constructor.
-     */
-    public ConsolePanel () {
-        this.setLayout(new BorderLayout());
-        ta = new JTextPane();
-        ta.setMargin(new Insets(5, 7, 5, 7));
-        ta.setEditable(false);
-        ta.setBackground(Color.WHITE);
-        ta.setForeground(Color.BLACK);
-        addStylesToDocument(ta.getStyledDocument());
-        Font font = new Font("Courier", Font.PLAIN, 12);
-        ta.setFont(font);
-        scrollPane = new JScrollPane(ta);
+	/**
+	 * No Arg Constructor.
+	 */
+	public ConsolePanel() {
+		this.setLayout(new BorderLayout());
+		ta = new JTextPane();
+		ta.setMargin(new Insets(5, 7, 5, 7));
+		ta.setEditable(false);
+		ta.setBackground(Color.WHITE);
+		ta.setForeground(Color.BLACK);
+		addStylesToDocument(ta.getStyledDocument());
 
-        StyledDocument doc = ta.getStyledDocument();
-        try {
-            doc.insertString(doc.getLength(), "Welcome to Cytoscape"
-                    + "\n", doc.getStyle("regular"));
-        } catch (BadLocationException e) {
-        }
-        add(scrollPane, BorderLayout.CENTER);
-    }
+		Font font = new Font("Courier", Font.PLAIN, 12);
+		ta.setFont(font);
+		scrollPane = new JScrollPane(ta);
 
-    /**
-     * Sets the Main Status Message.
-     *
-     * @param msg Status Message.
-     */
-    public void logMessage (String msg) {
-        logMessage(msg, "regular");
-    }
+		StyledDocument doc = ta.getStyledDocument();
 
-    /**
-     * Sets the Main Status Message in Bold.
-     *
-     * @param msg Status Message.
-     */
-    public void logMessageBold (String msg) {
-        logMessage(msg, "bold");
-    }
+		try {
+			doc.insertString(doc.getLength(), "Welcome to Cytoscape" + "\n", doc.getStyle("regular"));
+		} catch (BadLocationException e) {
+		}
 
-    /**
-     * Clears the Console.
-     */
-    public void clear () {
-        ta.setText("");
-    }
+		add(scrollPane, BorderLayout.CENTER);
+	}
 
-    /**
-     * Sets the Main Status Message in the Specified Style.
-     *
-     * @param msg   Status Message.
-     * @param style Style, e.g. "regular", "bold".
-     */
-    private void logMessage (String msg, String style) {
-        StyledDocument doc = ta.getStyledDocument();
-        try {
-            doc.insertString(doc.getLength(), msg + "\n", doc.getStyle(style));
-        } catch (BadLocationException e) {
-        }
+	/**
+	 * Sets the Main Status Message.
+	 *
+	 * @param msg Status Message.
+	 */
+	public void logMessage(String msg) {
+		logMessage(msg, "regular");
+	}
 
-        //  Causes the ScrollPane to automatically scroll down.
-        //  The line below used to use this code:  ta.getText().length()
-        //  However, it resulted in error when running on Windows
-        //  (see bug #509).  To fix the bug, use ta.getDocument().getLength().
-        ta.setCaretPosition(ta.getDocument().getLength());
-    }
+	/**
+	 * Sets the Main Status Message in Bold.
+	 *
+	 * @param msg Status Message.
+	 */
+	public void logMessageBold(String msg) {
+		logMessage(msg, "bold");
+	}
 
-    /**
-     * Adds Styles to the JTextArea.
-     *
-     * @param doc StyledDocument Object.
-     */
-    protected void addStylesToDocument (StyledDocument doc) {
-        Style def = StyleContext.getDefaultStyleContext().
-                getStyle(StyleContext.DEFAULT_STYLE);
+	/**
+	 * Clears the Console.
+	 */
+	public void clear() {
+		ta.setText("");
+	}
 
-        Style regular = doc.addStyle("regular", def);
-        StyleConstants.setFontFamily(def, "SansSerif");
+	/**
+	 * Sets the Main Status Message in the Specified Style.
+	 *
+	 * @param msg   Status Message.
+	 * @param style Style, e.g. "regular", "bold".
+	 */
+	private void logMessage(String msg, String style) {
+		StyledDocument doc = ta.getStyledDocument();
 
-        Style s = doc.addStyle("italic", regular);
-        StyleConstants.setItalic(s, true);
+		try {
+			doc.insertString(doc.getLength(), msg + "\n", doc.getStyle(style));
+		} catch (BadLocationException e) {
+		}
 
-        s = doc.addStyle("bold", regular);
-        StyleConstants.setBold(s, true);
+		//  Causes the ScrollPane to automatically scroll down.
+		//  The line below used to use this code:  ta.getText().length()
+		//  However, it resulted in error when running on Windows
+		//  (see bug #509).  To fix the bug, use ta.getDocument().getLength().
+		ta.setCaretPosition(ta.getDocument().getLength());
+	}
 
-        s = doc.addStyle("small", regular);
-        StyleConstants.setFontSize(s, 10);
+	/**
+	 * Adds Styles to the JTextArea.
+	 *
+	 * @param doc StyledDocument Object.
+	 */
+	protected void addStylesToDocument(StyledDocument doc) {
+		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 
-        s = doc.addStyle("large", regular);
-        StyleConstants.setFontSize(s, 16);
-    }
+		Style regular = doc.addStyle("regular", def);
+		StyleConstants.setFontFamily(def, "SansSerif");
 
-    /**
-     * Gets te Preferred Size.
-     *
-     * @return Dimension Object.CP
-     */
-    public Dimension getPreferredSize () {
-        return new Dimension(2, 100);
-    }
+		Style s = doc.addStyle("italic", regular);
+		StyleConstants.setItalic(s, true);
+
+		s = doc.addStyle("bold", regular);
+		StyleConstants.setBold(s, true);
+
+		s = doc.addStyle("small", regular);
+		StyleConstants.setFontSize(s, 10);
+
+		s = doc.addStyle("large", regular);
+		StyleConstants.setFontSize(s, 16);
+	}
+
+	/**
+	 * Gets te Preferred Size.
+	 *
+	 * @return Dimension Object.CP
+	 */
+	public Dimension getPreferredSize() {
+		return new Dimension(2, 100);
+	}
 }

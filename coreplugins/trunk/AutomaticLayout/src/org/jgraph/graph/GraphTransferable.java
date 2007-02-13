@@ -1,10 +1,12 @@
 /*
- * @(#)GraphTransferable.java	1.0 03-JUL-04
- * 
+ * @(#)GraphTransferable.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.plaf.basic.BasicGraphTransferable;
 
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -12,10 +14,11 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.geom.Rectangle2D;
+
 import java.io.Serializable;
+
 import java.util.Map;
 
-import org.jgraph.plaf.basic.BasicGraphTransferable;
 
 /**
  * An object that represents the clipboard contents for a graph selection.
@@ -31,11 +34,8 @@ import org.jgraph.plaf.basic.BasicGraphTransferable;
  * @version 1.0 1/1/02
  *
  */
-
-public class GraphTransferable
-	extends BasicGraphTransferable
-	implements Serializable, ClipboardOwner {
-
+public class GraphTransferable extends BasicGraphTransferable implements Serializable,
+                                                                         ClipboardOwner {
 	/** Local Machine Reference Data Flavor. */
 	public static DataFlavor dataFlavor;
 
@@ -45,8 +45,8 @@ public class GraphTransferable
 	/** Object that describes the connection between cells. */
 	protected ConnectionSet cs;
 
-        /** Object that describes the group structure between cells. */
-        protected ParentMap pm;
+	/** Object that describes the group structure between cells. */
+	protected ParentMap pm;
 
 	/** (Cell, Map) entries that hold the view attributes for the cells. */
 	protected Map attributeMap;
@@ -58,13 +58,8 @@ public class GraphTransferable
 	 * Constructs a new transferable selection for <code>cells</code>,
 	 * <code>cs</code>and <code>attrMap</code>.
 	 */
-	public GraphTransferable(
-		Object[] cells,
-		Map attrMap,
-		Rectangle2D bounds,
-		ConnectionSet cs,
-		ParentMap pm) {
-
+	public GraphTransferable(Object[] cells, Map attrMap, Rectangle2D bounds, ConnectionSet cs,
+	                         ParentMap pm) {
 		attributeMap = attrMap;
 		this.bounds = bounds;
 		this.cells = cells;
@@ -87,8 +82,13 @@ public class GraphTransferable
 		return cs;
 	}
 
-        public ParentMap getParentMap() {
-	    return pm;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public ParentMap getParentMap() {
+		return pm;
 	}
 
 	/**
@@ -99,11 +99,22 @@ public class GraphTransferable
 		return attributeMap;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Rectangle2D getBounds() {
 		return bounds;
 	}
 
 	// from ClipboardOwner
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param clip DOCUMENT ME!
+	 * @param contents DOCUMENT ME!
+	 */
 	public void lostOwnership(Clipboard clip, Transferable contents) {
 		// do nothing
 	}
@@ -120,8 +131,7 @@ public class GraphTransferable
 	/**
 	 * Fetch the data in a jvm-localreference format.
 	 */
-	public Object getRicherData(DataFlavor flavor)
-		throws UnsupportedFlavorException {
+	public Object getRicherData(DataFlavor flavor) throws UnsupportedFlavorException {
 		if (flavor.equals(dataFlavor))
 			return this;
 		else
@@ -134,7 +144,7 @@ public class GraphTransferable
 	 * Returns true if the transferable support a text/plain format.
 	 */
 	public boolean isPlainSupported() {
-		return (cells != null && cells.length == 1);
+		return ((cells != null) && (cells.length == 1));
 	}
 
 	/**
@@ -143,9 +153,11 @@ public class GraphTransferable
 	public String getPlainData() {
 		if (cells[0] instanceof DefaultGraphCell) {
 			Object obj = ((DefaultGraphCell) cells[0]).getUserObject();
+
 			if (obj != null)
 				return obj.toString();
 		}
+
 		return cells[0].toString();
 	}
 
@@ -166,21 +178,20 @@ public class GraphTransferable
 		buf.append("<html><body><p>");
 		buf.append(getPlainData());
 		buf.append("</p></body></html>");
+
 		return buf.toString();
 	}
 
-	/* Local Machine Reference Data Flavor. */
 	static {
 		DataFlavor localDataFlavor;
+
 		try {
-			localDataFlavor =
-				new DataFlavor(
-					DataFlavor.javaJVMLocalObjectMimeType
-						+ "; class=org.jgraph.graph.GraphTransferable");
+			localDataFlavor = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType
+			                                 + "; class=org.jgraph.graph.GraphTransferable");
 		} catch (ClassNotFoundException cnfe) {
 			localDataFlavor = null;
 		}
+
 		dataFlavor = localDataFlavor;
 	}
-
 }

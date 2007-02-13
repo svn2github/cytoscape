@@ -3,12 +3,12 @@
 *
 * File:         PaletteNetworkEditEventHandler.java
 * RCS:          $Header: $
-* Description:  
+* Description:
 * Author:       Allan Kuchinsky
 * Created:      Fri Jul 31 05:14:41 2005
 * Modified:     Fri Dec 08 05:45:55 2006 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
-* Package:      
+* Package:
 * Status:       Experimental
 *
 * (c) Copyright 2006, Agilent Technologies, all rights reserved.
@@ -22,27 +22,31 @@
 *  smaller methods.  Removed findEdgeDropTarget().
 ********************************************************************************
 */
-
 package cytoscape.editor.event;
 
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+
+import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.CytoscapeEditorManager;
+
+import cytoscape.editor.impl.BasicCytoShapeEntity;
+import cytoscape.editor.impl.ShapePalette;
+
+import cytoscape.view.CyNetworkView;
+
 import giny.view.NodeView;
+
+import phoebe.PhoebeCanvasDropEvent;
 
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+
 import java.io.IOException;
 
 import javax.swing.TransferHandler;
-
-import phoebe.PhoebeCanvasDropEvent;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.editor.impl.BasicCytoShapeEntity;
-import cytoscape.editor.impl.ShapePalette;
-import cytoscape.view.CyNetworkView;
 
 
 /**
@@ -51,22 +55,21 @@ import cytoscape.view.CyNetworkView;
  * capability to drag and drop shapes from a palette onto
  * the canvas, resulting in the addition of nodes and edges to the current
  * Cytoscape network.
- * 
+ *
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
  * @see SimpleBioMoleculeEditor
- * 
- * 
+ *
+ *
  */
-public class PaletteNetworkEditEventHandler extends
-		BasicNetworkEditEventHandler {
+public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler {
 	// MLC 12/07/06:
 	// BasicNetworkEditEventHandler editEvent;
 	// MLC 12/07/06:
 	// public static final String NODE_TYPE = "NODE_TYPE";
 
 	/**
-	 * 
+	 *
 	 */
 	public PaletteNetworkEditEventHandler() {
 		super();
@@ -80,42 +83,39 @@ public class PaletteNetworkEditEventHandler extends
 	}
 
 	/**
-	 * 
+	 *
 	 * @param caller
 	 * @param view
 	 */
-	public PaletteNetworkEditEventHandler(CytoscapeEditor caller,
-			CyNetworkView view) {
+	public PaletteNetworkEditEventHandler(CytoscapeEditor caller, CyNetworkView view) {
 		super(caller, view);
 	}
 
-	protected BasicCytoShapeEntity getShapeEntityForLocation(Point location,
-			Transferable t) {
+	protected BasicCytoShapeEntity getShapeEntityForLocation(Point location, Transferable t) {
 		Object shape = null;
 		BasicCytoShapeEntity myShape = null;
 		Class shapeClass = null;
 
 		try {
-			shapeClass = Class
-					.forName("cytoscape.editor.impl.BasicCytoShapeEntity");
+			shapeClass = Class.forName("cytoscape.editor.impl.BasicCytoShapeEntity");
 		} catch (Exception except) {
 			except.printStackTrace();
+
 			return null;
 		}
 
 		DataFlavor[] dfl = t.getTransferDataFlavors();
 
 		for (DataFlavor d : dfl) {
-			CytoscapeEditorManager.log("Item dropped of Mime Type: "
-					+ d.getMimeType());
+			CytoscapeEditorManager.log("Item dropped of Mime Type: " + d.getMimeType());
 			CytoscapeEditorManager.log("Mime subtype is:  " + d.getSubType());
-			CytoscapeEditorManager.log("Mime class is: "
-					+ d.getRepresentationClass());
+			CytoscapeEditorManager.log("Mime class is: " + d.getRepresentationClass());
+
 			Class mimeClass = d.getRepresentationClass();
 
 			if (mimeClass == shapeClass) {
-				CytoscapeEditorManager.log("got shape: "
-						+ d.getRepresentationClass());
+				CytoscapeEditorManager.log("got shape: " + d.getRepresentationClass());
+
 				try {
 					shape = t.getTransferData(d);
 				} catch (UnsupportedFlavorException exc) {
@@ -127,9 +127,11 @@ public class PaletteNetworkEditEventHandler extends
 
 					return null;
 				}
+
 				break;
 			} else if (d.isMimeTypeEqual("application/x-java-url")) {
 				handleDroppedURL(t, d, location);
+
 				break;
 			}
 		}
@@ -147,29 +149,27 @@ public class PaletteNetworkEditEventHandler extends
 	 * correspond to the shape being dragged and dropped from the palette. These
 	 * include Cytoscape nodes and edges, as well as URLs that can be dragged
 	 * and dropped from other applications onto the palette.
-	 * 
+	 *
 	 */
+
 	// MLC 12/07/06 BEGIN:
 	// implements PhoebeCanvasDropListener interface:
 	public void itemDropped(PhoebeCanvasDropEvent e) {
-
 		Point location = e.getLocation();
-		BasicCytoShapeEntity myShape = getShapeEntityForLocation(location, e
-				.getTransferable());
+		BasicCytoShapeEntity myShape = getShapeEntityForLocation(location, e.getTransferable());
 
 		if (myShape != null) {
 			// need to handle nodes and edges differently
 			String attributeName = myShape.getAttributeName();
 			String attributeValue = myShape.getAttributeValue();
+
 			// CytoscapeEditorManager.log("Item dropped of type: " +
 			// attributeName);
-			if (attributeName
-					.equals(get_caller().getControllingNodeAttribute())) {
+			if (attributeName.equals(get_caller().getControllingNodeAttribute())) {
 				setNodeAttributeName(attributeName);
 				setNodeAttributeValue(attributeValue);
 				handleDroppedNode(attributeName, attributeValue, location);
-			} else if (attributeName.equals(get_caller()
-					.getControllingEdgeAttribute())) {
+			} else if (attributeName.equals(get_caller().getControllingEdgeAttribute())) {
 				setEdgeAttributeName(attributeName);
 				setEdgeAttributeValue(attributeValue);
 				handleDroppedEdge(attributeName, attributeValue, location);
@@ -178,16 +178,13 @@ public class PaletteNetworkEditEventHandler extends
 	}
 
 	// overwridden by subclasses:
-	protected void handleDroppedNode(String attributeName,
-			String attributeValue, Point location) {
-		get_caller().addNode("node" + counter, attributeName, attributeValue,
-				location);
+	protected void handleDroppedNode(String attributeName, String attributeValue, Point location) {
+		get_caller().addNode("node" + counter, attributeName, attributeValue, location);
 		counter++;
 	}
 
 	// overwridden by subclasses:
-	protected void handleDroppedEdge(String attributeName,
-			String attributeValue, Point location) {
+	protected void handleDroppedEdge(String attributeName, String attributeValue, Point location) {
 		if (isEdgeStarted()) {
 			// if there is another edit in progress, then don't
 			// process a drag/drop
@@ -408,7 +405,7 @@ public class PaletteNetworkEditEventHandler extends
 	 * could be added to the network for that gene, with certain pieces of
 	 * information on that Web extracted and assigned as attributes for that
 	 * gene.
-	 * 
+	 *
 	 * @param t
 	 *            the Transferable that is dropped onto the canvas
 	 * @param d
@@ -418,6 +415,7 @@ public class PaletteNetworkEditEventHandler extends
 	 */
 	public void handleDroppedURL(Transferable t, DataFlavor d, Point location) {
 		Object URL;
+
 		// AJK: 12/08/06 oy, what a hack. try to send transferable to
 		// transferhandler
 		// of cytoscapeDesktopPane

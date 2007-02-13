@@ -1,13 +1,14 @@
 /*
- * @(#)CellHandle.java	1.0 03-JUL-04
- * 
+ * @(#)CellHandle.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
 
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+
 
 /**
  * Defines the requirements for objects that may be used as handles.
@@ -16,9 +17,7 @@ import java.awt.event.MouseEvent;
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
-
 public interface CellHandle {
-
 	/**
 	 * Paint the handle on the given graphics object once.
 	 *
@@ -64,5 +63,4 @@ public interface CellHandle {
 	 * @param event   the drop event to be processed
 	 */
 	void mouseReleased(MouseEvent event);
-
 }

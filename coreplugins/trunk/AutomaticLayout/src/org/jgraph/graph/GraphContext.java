@@ -1,10 +1,12 @@
 /*
- * @(#)GraphContext.java	1.0 03-JUL-04
- * 
+ * @(#)GraphContext.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.graph;
+
+import org.jgraph.JGraph;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jgraph.JGraph;
 
 /*
  * This object is used for interactive operations such as move and copy. It
@@ -24,12 +25,13 @@ import org.jgraph.JGraph;
  * Consequently, if an edge points to a selected and an unselected port, the
  * selected port is replaced by its temporary view, but the unselected port is
  * not.
- * 
+ *
  * @version 1.0 1/1/02 @author Gaudenz Alder
  */
-
+/**
+ *
+ */
 public class GraphContext implements CellMapper {
-
 	/** Reference to the parent graph. */
 	protected JGraph graph;
 
@@ -40,7 +42,10 @@ public class GraphContext implements CellMapper {
 	protected Object[] cells;
 
 	/** Set of all cells including all descendants. */
-	protected Set allCells, cellSet;
+	protected Set allCells;
+
+	/** Set of all cells including all descendants. */
+	protected Set cellSet;
 
 	/** Number of all descendants without ports. */
 	protected int cellCount;
@@ -61,11 +66,15 @@ public class GraphContext implements CellMapper {
 		this.cells = cells;
 		// Count Visible Non-Port Cells
 		cellSet = new HashSet();
+
 		Iterator it = allCells.iterator();
+
 		while (it.hasNext()) {
 			Object cell = it.next();
+
 			if (graphLayoutCache.isVisible(cell)) {
 				cellSet.add(cell);
+
 				if (!model.isPort(cell))
 					cellCount++;
 			}
@@ -76,7 +85,7 @@ public class GraphContext implements CellMapper {
 	 * Returns <code>true</code> if this object contains no cells.
 	 */
 	public boolean isEmpty() {
-		return (cells == null || cells.length == 0);
+		return ((cells == null) || (cells.length == 0));
 	}
 
 	/**
@@ -113,9 +122,11 @@ public class GraphContext implements CellMapper {
 	 */
 	public CellView[] createTemporaryCellViews() {
 		CellView[] cellViews = new CellView[cells.length];
+
 		for (int i = 0; i < cells.length; i++)
 			// Get View For Cell
 			cellViews[i] = getMapping(cells[i], true);
+
 		return cellViews;
 	}
 
@@ -126,15 +137,18 @@ public class GraphContext implements CellMapper {
 		GraphModel model = graph.getModel();
 		ArrayList result = new ArrayList();
 		Iterator it = allCells.iterator();
+
 		while (it.hasNext()) {
 			Object cand = it.next();
-			if (model.isPort(cand)
-					&& graph.getGraphLayoutCache().isVisible(cand))
+
+			if (model.isPort(cand) && graph.getGraphLayoutCache().isVisible(cand))
 				result.add(getMapping(cand, true));
 		}
+
 		// List -> CellView[] Conversion
 		CellView[] array = new PortView[result.size()];
 		result.toArray(array);
+
 		return array;
 	}
 
@@ -152,28 +166,34 @@ public class GraphContext implements CellMapper {
 	 */
 	public CellView[] createTemporaryContextViews(Set cellSet) {
 		Object[] cells = cellSet.toArray();
+
 		// Retrieve Edges From Model (recursively for edges connected
 		// to edges connected to edges...)
 		List result = new ArrayList();
 		Set delta = DefaultGraphModel.getEdges(graph.getModel(), cells);
+
 		do {
 			// Iterate over Edges
 			Iterator it = delta.iterator();
+
 			while (it.hasNext()) {
 				Object obj = it.next();
 				CellView edge = graphLayoutCache.getMapping(obj, false);
+
 				// If Edge not in cellset, add its view is visible in graphview
-				if (!cellSet.contains(obj) && graphLayoutCache.isVisible(obj)
-						&& edge != null && edge.isLeaf())
+				if (!cellSet.contains(obj) && graphLayoutCache.isVisible(obj) && (edge != null)
+				    && edge.isLeaf())
 					// Note: Do not use getMapping, it ignores the create flag
 					result.add(createMapping(obj));
 			}
-			delta = DefaultGraphModel.getEdges(graph.getModel(), delta
-					.toArray());
+
+			delta = DefaultGraphModel.getEdges(graph.getModel(), delta.toArray());
 		} while (!delta.isEmpty());
+
 		// List -> CellView[] Conversion
 		CellView[] array = new CellView[result.size()];
 		result.toArray(array);
+
 		return array;
 	}
 
@@ -185,30 +205,42 @@ public class GraphContext implements CellMapper {
 	public CellView getMapping(Object cell, boolean create) {
 		if (cell != null) {
 			CellView view = (CellView) views.get(cell);
+
 			if (view != null)
 				return view;
 			else if (contains(cell)
-					|| (graph.getModel().isPort(cell) && create && graph
-							.getGraphLayoutCache().isVisible(cell)))
+			         || (graph.getModel().isPort(cell) && create
+			            && graph.getGraphLayoutCache().isVisible(cell)))
 				return createMapping(cell);
 			else
+
 				return graphLayoutCache.getMapping(cell, false);
 		}
+
 		return null;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param cell DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public CellView createMapping(Object cell) {
-		CellView view = graphLayoutCache.getFactory().createView(
-				graph.getModel(), cell);
+		CellView view = graphLayoutCache.getFactory().createView(graph.getModel(), cell);
 		putMapping(cell, view);
 		view.refresh(graph.getModel(), this, true); // Create Dependent Views
-		// Fetch Attributes From Original View
+		                                            // Fetch Attributes From Original View
+
 		CellView src = graphLayoutCache.getMapping(cell, false);
+
 		if (src != null) {
 			view.changeAttributes((AttributeMap) src.getAttributes().clone());
 			// Inserts portviews into points list
 			view.refresh(graph.getModel(), this, false);
 		}
+
 		return view;
 	}
 
@@ -219,29 +251,32 @@ public class GraphContext implements CellMapper {
 	 */
 	public ConnectionSet disconnect(CellView[] cells) {
 		ConnectionSet cs = new ConnectionSet();
+
 		for (int i = 0; i < cells.length; i++) {
 			if (cells[i] instanceof EdgeView) {
 				EdgeView view = (EdgeView) cells[i];
 				CellView port = view.getSource();
+
 				if (GraphConstants.isDisconnectable(view.getAllAttributes())) {
-					if (port != null
-							&& GraphConstants.isDisconnectable(port
-									.getParentView().getAllAttributes())
-							&& !contains(port.getCell())) {
+					if ((port != null)
+					    && GraphConstants.isDisconnectable(port.getParentView().getAllAttributes())
+					    && !contains(port.getCell())) {
 						view.setSource(null);
 						cs.disconnect(view.getCell(), true);
 					}
+
 					port = view.getTarget();
-					if (port != null
-							&& GraphConstants.isDisconnectable(port
-									.getParentView().getAllAttributes())
-							&& !contains(port.getCell())) {
+
+					if ((port != null)
+					    && GraphConstants.isDisconnectable(port.getParentView().getAllAttributes())
+					    && !contains(port.getCell())) {
 						view.setTarget(null);
 						cs.disconnect(view.getCell(), false);
 					}
 				}
 			}
 		}
+
 		return cs;
 	}
 
@@ -252,5 +287,4 @@ public class GraphContext implements CellMapper {
 	public void putMapping(Object cell, CellView view) {
 		views.put(cell, view);
 	}
-
 }

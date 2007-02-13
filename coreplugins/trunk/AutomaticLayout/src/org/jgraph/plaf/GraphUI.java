@@ -1,10 +1,15 @@
 /*
- * @(#)GraphUI.java	1.0 03-JUL-04
- * 
+ * @(#)GraphUI.java    1.0 03-JUL-04
+ *
  * Copyright (c) 2001-2004 Gaudenz Alder
- *  
+ *
  */
 package org.jgraph.plaf;
+
+import org.jgraph.JGraph;
+
+import org.jgraph.graph.CellHandle;
+import org.jgraph.graph.CellView;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -14,9 +19,6 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.plaf.ComponentUI;
 
-import org.jgraph.JGraph;
-import org.jgraph.graph.CellHandle;
-import org.jgraph.graph.CellView;
 
 /**
  * Pluggable look and feel interface for JGraph.
@@ -25,16 +27,11 @@ import org.jgraph.graph.CellView;
  * @author Gaudenz Alder
  */
 public abstract class GraphUI extends ComponentUI {
-
 	/**
 	 * Paints the renderer of <code>view</code> to <code>g</code>
 	 * at <code>bounds</code>.
 	 */
-	public abstract void paintCell(
-		Graphics g,
-		CellView view,
-		Rectangle2D bounds,
-		boolean preview);
+	public abstract void paintCell(Graphics g, CellView view, Rectangle2D bounds, boolean preview);
 
 	/**
 	 * Paints the renderers of <code>portViews</code> to <code>g</code>.
@@ -46,10 +43,7 @@ public abstract class GraphUI extends ComponentUI {
 	 * cells. If the event is a toggle selection event, the cells are either
 	 * selected, or deselected. Otherwise the cells are selected.
 	 */
-	public abstract void selectCellsForEvent(
-		JGraph graph,
-		Object[] cells,
-		MouseEvent event);
+	public abstract void selectCellsForEvent(JGraph graph, Object[] cells, MouseEvent event);
 
 	/**
 	  * Returns the preferred size for <code>view</code>.
@@ -108,10 +102,9 @@ public abstract class GraphUI extends ComponentUI {
 	 * Updates the handle.
 	 */
 	public abstract void updateHandle();
-	
+
 	/**
 	 * Returns the current drop action.
 	 */
 	public abstract int getDropAction();
-
 }

@@ -32,27 +32,34 @@
  */
 package csplugins.layout.algorithms.bioLayout;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Properties;
-import java.awt.GridLayout;
-import javax.swing.JPanel;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.Profile;
 
 import cytoscape.*;
-import cytoscape.view.*;
-import cytoscape.util.*;
+
 import cytoscape.data.*;
-import giny.view.*;
 
 import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import csplugins.layout.LayoutNode;
-import csplugins.layout.LayoutPartition;
-import csplugins.layout.Profile;
+import cytoscape.util.*;
+
+import cytoscape.view.*;
+
+import giny.view.*;
+
+import java.awt.GridLayout;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
+import javax.swing.JPanel;
+
 
 /**
  * Superclass for the two bioLayout algorithms (KK and FR).
@@ -60,7 +67,6 @@ import csplugins.layout.Profile;
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-
 public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	/**
 	 * Properties
@@ -71,12 +77,11 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	private static final int MAXWEIGHT = 3;
 	private static final int SELECTEDONLY = 4;
 	private static final int LAYOUTATTRIBUTE = 5;
-
 	LayoutProperties layoutProperties;
 
-  /**
-   * A small value used to avoid division by zero
-	 */
+	/**
+	 * A small value used to avoid division by zero
+	   */
 	protected double EPSILON = 0.0000001D;
 
 	/**
@@ -84,9 +89,9 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 */
 	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
 
-  /**
-   * Enables/disables debugging messages
-   */
+	/**
+	 * Enables/disables debugging messages
+	 */
 	private final static boolean DEBUG = false;
 	protected static boolean debug = DEBUG; // so we can overload it with a property
 
@@ -126,31 +131,53 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	/**
 	 * This is the constructor for the bioLayout algorithm.
 	 */
-	public BioLayoutAlgorithm () {
-		super ();
+	public BioLayoutAlgorithm() {
+		super();
 		layoutProperties = new LayoutProperties(getName());
 	}
 
 	// We do support selected only
-	public boolean supportsSelectedOnly () {return true;}
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean supportsSelectedOnly() {
+		return true;
+	}
+
 	// We don't support node attribute-based layouts
-	public byte[] supportsNodeAttributes () {return null;}
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public byte[] supportsNodeAttributes() {
+		return null;
+	}
+
 	// We do support edge attribute-based layouts
-	public byte[] supportsEdgeAttributes () {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public byte[] supportsEdgeAttributes() {
 		if (!supportWeights)
 			return null;
 
 		byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
+
 		return attrs;
 	}
-		
+
 	/**
 	 * Sets the attribute to use for the weights
 	 *
 	 * @param value the name of the attribute
 	 */
 	public void setLayoutAttribute(String value) {
-		if (value == null || value.equals(UNWEIGHTEDATTRIBUTE)) {
+		if ((value == null) || value.equals(UNWEIGHTEDATTRIBUTE)) {
 			edgeAttribute = null;
 		} else {
 			edgeAttribute = value;
@@ -166,6 +193,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	public List getInitialAttributeList() {
 		ArrayList list = new ArrayList();
 		list.add(UNWEIGHTEDATTRIBUTE);
+
 		return list;
 	}
 
@@ -180,6 +208,11 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		selectedOnly = value;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 */
 	public void setSelectedOnly(String value) {
 		Boolean val = new Boolean(value);
 		selectedOnly = val.booleanValue();
@@ -194,6 +227,11 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		debug = flag;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 */
 	public void setDebug(String value) {
 		Boolean val = new Boolean(value);
 		debug = val.booleanValue();
@@ -208,6 +246,11 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		partitionGraph = flag;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 */
 	public void setPartition(String value) {
 		Boolean val = new Boolean(value);
 		partitionGraph = val.booleanValue();
@@ -222,6 +265,11 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		randomize = flag;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 */
 	public void setRandomize(String value) {
 		Boolean val = new Boolean(value);
 		randomize = val.booleanValue();
@@ -236,6 +284,11 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		this.minWeightCutoff = value;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 */
 	public void setMinWeight(String value) {
 		Double val = new Double(value);
 		this.minWeightCutoff = val.doubleValue();
@@ -250,6 +303,11 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		this.maxWeightCutoff = value;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 */
 	public void setMaxWeight(String value) {
 		Double val = new Double(value);
 		this.maxWeightCutoff = val.doubleValue();
@@ -260,63 +318,90 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 * the values as appropriates.
 	 */
 	protected void initializeProperties() {
-
-		layoutProperties.add(new Tunable("debug", "Enable debugging", Tunable.BOOLEAN, 
-																		new Boolean(false),Tunable.NOINPUT));
-		layoutProperties.add(new Tunable("partition", "Partition graph before layout", Tunable.BOOLEAN, 
-																		new Boolean(true)));
-		layoutProperties.add(new Tunable("randomize", "Randomize graph before layout", Tunable.BOOLEAN, 
-																		new Boolean(true)));
-		layoutProperties.add(new Tunable("min_weight", "The minimum edge weight to consider", Tunable.DOUBLE, 
-																		new Double(0)));
-		layoutProperties.add(new Tunable("max_weight", "The maximum edge weight to consider", Tunable.DOUBLE, 
-																		new Double(Double.MAX_VALUE)));
-		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes", Tunable.BOOLEAN, 
-																		new Boolean(false)));
-		layoutProperties.add(new Tunable("edge_attribute", "The edge attribute that contains the weights", 
-																		Tunable.EDGEATTRIBUTE, "weight",(Object)getInitialAttributeList(),
-																		(Object)null,Tunable.NUMERICATTRIBUTE));
+		layoutProperties.add(new Tunable("debug", "Enable debugging", Tunable.BOOLEAN,
+		                                 new Boolean(false), Tunable.NOINPUT));
+		layoutProperties.add(new Tunable("partition", "Partition graph before layout",
+		                                 Tunable.BOOLEAN, new Boolean(true)));
+		layoutProperties.add(new Tunable("randomize", "Randomize graph before layout",
+		                                 Tunable.BOOLEAN, new Boolean(true)));
+		layoutProperties.add(new Tunable("min_weight", "The minimum edge weight to consider",
+		                                 Tunable.DOUBLE, new Double(0)));
+		layoutProperties.add(new Tunable("max_weight", "The maximum edge weight to consider",
+		                                 Tunable.DOUBLE, new Double(Double.MAX_VALUE)));
+		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
+		                                 Tunable.BOOLEAN, new Boolean(false)));
+		layoutProperties.add(new Tunable("edge_attribute",
+		                                 "The edge attribute that contains the weights",
+		                                 Tunable.EDGEATTRIBUTE, "weight",
+		                                 (Object) getInitialAttributeList(), (Object) null,
+		                                 Tunable.NUMERICATTRIBUTE));
 	}
 
 	/**
 	 * Get the settings panel for this layout
 	 */
 	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0,1));
+		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(layoutProperties.getTunablePanel());
+
 		return panel;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void updateSettings() {
 		updateSettings(false);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param force DOCUMENT ME!
+	 */
 	public void updateSettings(boolean force) {
 		layoutProperties.updateValues();
+
 		Tunable t = layoutProperties.get("debug");
-		if (t != null && (t.valueChanged() || force))
+
+		if ((t != null) && (t.valueChanged() || force))
 			setDebug(t.getValue().toString());
+
 		t = layoutProperties.get("partition");
-		if (t != null && (t.valueChanged() || force))
+
+		if ((t != null) && (t.valueChanged() || force))
 			setPartition(t.getValue().toString());
+
 		t = layoutProperties.get("randomize");
-		if (t != null && (t.valueChanged() || force))
+
+		if ((t != null) && (t.valueChanged() || force))
 			setRandomize(t.getValue().toString());
+
 		t = layoutProperties.get("min_weight");
-		if (t != null && (t.valueChanged() || force))
+
+		if ((t != null) && (t.valueChanged() || force))
 			setMinWeight(t.getValue().toString());
+
 		t = layoutProperties.get("max_weight");
-		if (t != null && (t.valueChanged() || force))
+
+		if ((t != null) && (t.valueChanged() || force))
 			setMaxWeight(t.getValue().toString());
+
 		t = layoutProperties.get("selected_only");
-		if (t != null && (t.valueChanged() || force))
+
+		if ((t != null) && (t.valueChanged() || force))
 			setSelectedOnly(t.getValue().toString());
+
 		t = layoutProperties.get("edge_attribute");
-		if (t != null && (t.valueChanged() || force)) {
+
+		if ((t != null) && (t.valueChanged() || force)) {
 			setLayoutAttribute(t.getValue().toString());
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void revertSettings() {
 		layoutProperties.revertProperties();
 	}
@@ -326,28 +411,30 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 */
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
-		initialize();  // Calls initialize_local
+		initialize(); // Calls initialize_local
 
 		if (partitionList == null) {
 			System.out.println("Nothing to layout!");
+
 			return;
 		} else {
 			// Set up offsets -- we start with the overall min and max
 			double xStart = partitionList.get(0).getMinX();
 			double yStart = partitionList.get(0).getMinY();
 			Iterator partIter = partitionList.iterator();
+
 			while (partIter.hasNext()) {
-				LayoutPartition part = (LayoutPartition)partIter.next();
+				LayoutPartition part = (LayoutPartition) partIter.next();
 				xStart = Math.min(xStart, part.getMinX());
 				yStart = Math.min(yStart, part.getMinY());
 			}
 
-	    double next_x_start = xStart;
+			double next_x_start = xStart;
 			double next_y_start = yStart;
 			double current_max_y = 0;
 			double incr = 50;
 
-			double max_dimensions = Math.sqrt( ( double )network.getNodeCount() );
+			double max_dimensions = Math.sqrt((double) network.getNodeCount());
 			// give each node room
 			max_dimensions *= incr;
 			max_dimensions += xStart;
@@ -357,41 +444,50 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 
 			// For each partition, layout the graph
 			partIter = partitionList.iterator();
+
 			while (partIter.hasNext()) {
-				LayoutPartition partition = (LayoutPartition)partIter.next();
+				LayoutPartition partition = (LayoutPartition) partIter.next();
 
 				if (partition.nodeCount() > 1) {
 					layout(partition);
 
 					// Offset if we have more than one partition
 					if (partitionList.size() > 1)
-						partition.offset (next_x_start, next_y_start);
+						partition.offset(next_x_start, next_y_start);
 				} else {
 					// System.out.println(" done");
 
 					// NodeList is either empty or contains a single node
-					if (partition.nodeCount() == 0) continue;
+					if (partition.nodeCount() == 0)
+						continue;
+
 					// Reset our bounds
 					partition.resetNodes();
+
 					// Single node -- get it
-					LayoutNode node = (LayoutNode)partition.getNodeList().get(0);
-					node.setX (next_x_start);
-					node.setY (next_y_start);
+					LayoutNode node = (LayoutNode) partition.getNodeList().get(0);
+					node.setX(next_x_start);
+					node.setY(next_y_start);
 					partition.moveNodeToLocation(node);
 				}
 
 				double last_max_x = partition.getMaxX();
 				double last_max_y = partition.getMaxY();
-				if (last_max_y > current_max_y) {current_max_y = last_max_y;}
+
+				if (last_max_y > current_max_y) {
+					current_max_y = last_max_y;
+				}
+
 				if (last_max_x > max_dimensions) {
 					max_dimensions = last_max_x;
 					next_x_start = xStart;
 					next_y_start = current_max_y;
-					next_y_start += incr*2;
+					next_y_start += (incr * 2);
 				} else {
 					next_x_start = last_max_x;
-					next_x_start += incr*2;
+					next_x_start += (incr * 2);
 				}
+
 				partCount++;
 			}
 		}
@@ -408,33 +504,50 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 */
 	protected void initialize_local() {
 		LayoutPartition.setWeightCutoffs(minWeightCutoff, maxWeightCutoff);
+
 		// Depending on whether we are partitioned or not,
 		// we use different initialization.  Note that if the user only wants
-	  // to lay out selected nodes, partitioning becomes a very bad idea!
+		// to lay out selected nodes, partitioning becomes a very bad idea!
 		if (!partitionGraph || selectedOnly) {
 			// We still use the partition abstraction, even if we're
 			// not partitioning.  This makes the code further down
 			// much cleaner
-			LayoutPartition partition = new LayoutPartition(network, networkView,
-			                                                selectedOnly, edgeAttribute);
+			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly,
+			                                                edgeAttribute);
 			partitionList = new ArrayList(1);
 			partitionList.add(partition);
 		} else {
-			partitionList = LayoutPartition.partition(network, networkView, 
-			                                          selectedOnly, edgeAttribute);
+			partitionList = LayoutPartition.partition(network, networkView, selectedOnly,
+			                                          edgeAttribute);
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param message DOCUMENT ME!
+	 */
 	public static void debugln(String message) {
-		if (debug) { System.err.println(message); }
+		if (debug) {
+			System.err.println(message);
+		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param message DOCUMENT ME!
+	 */
 	public static void debug(String message) {
-		if (debug) { System.err.print(message); }
+		if (debug) {
+			System.err.print(message);
+		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void setCancel() {
 		canceled = true;
 	}
-
 }

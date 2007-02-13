@@ -37,8 +37,10 @@ package org.cytoscape.coreplugin.psi_mi.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
 
 /**
  * General String Parsing Utility Methods.
@@ -46,43 +48,45 @@ import java.util.StringTokenizer;
  * @author Ethan Cerami
  */
 public class StringParser {
+	/**
+	 * Creates ArrayList of all Lines in File.
+	 *
+	 * @param content String content.
+	 * @return ArrayList of all lines in File.
+	 * @throws java.io.IOException Input Output Exception.
+	 */
+	public static ArrayList createArrayList(String content) throws IOException {
+		StringReader strReader = new StringReader(content);
+		BufferedReader bufReader = new BufferedReader(strReader);
+		String line = bufReader.readLine();
+		ArrayList lines = new ArrayList();
 
-    /**
-     * Creates ArrayList of all Lines in File.
-     *
-     * @param content String content.
-     * @return ArrayList of all lines in File.
-     * @throws java.io.IOException Input Output Exception.
-     */
-    public static ArrayList createArrayList(String content)
-            throws IOException {
-        StringReader strReader = new StringReader(content);
-        BufferedReader bufReader = new BufferedReader(strReader);
-        String line = bufReader.readLine();
-        ArrayList lines = new ArrayList();
-        while (line != null) {
-            lines.add(line);
-            line = bufReader.readLine();
-        }
-        return lines;
-    }
+		while (line != null) {
+			lines.add(line);
+			line = bufReader.readLine();
+		}
 
-    /**
-     * Counts Total Number of Columns.
-     * Note:  This method determines number of columns by examining the first
-     * line of data only.
-     *
-     * @param lines ArrayList of Tab Delimited Lines.
-     * @return Number of Columns.
-     */
-    public static int countColumns(ArrayList lines) {
-        int counter = 0;
-        String line = (String) lines.get(0);
-        StringTokenizer tokenizer = new StringTokenizer(line, "\t");
-        while (tokenizer.hasMoreElements()) {
-            tokenizer.nextElement();
-            counter++;
-        }
-        return counter;
-    }
+		return lines;
+	}
+
+	/**
+	 * Counts Total Number of Columns.
+	 * Note:  This method determines number of columns by examining the first
+	 * line of data only.
+	 *
+	 * @param lines ArrayList of Tab Delimited Lines.
+	 * @return Number of Columns.
+	 */
+	public static int countColumns(ArrayList lines) {
+		int counter = 0;
+		String line = (String) lines.get(0);
+		StringTokenizer tokenizer = new StringTokenizer(line, "\t");
+
+		while (tokenizer.hasMoreElements()) {
+			tokenizer.nextElement();
+			counter++;
+		}
+
+		return counter;
+	}
 }

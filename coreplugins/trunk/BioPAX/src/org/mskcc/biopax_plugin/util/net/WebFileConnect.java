@@ -32,8 +32,10 @@
 package org.mskcc.biopax_plugin.util.net;
 
 import java.io.*;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+
 
 /**
  * Web/File Connect Utility Class.
@@ -41,49 +43,48 @@ import java.net.URL;
  * @author Ethan Cerami.
  */
 public class WebFileConnect {
+	/**
+	 * Retrieves the Document from the Specified URL.
+	 *
+	 * @param urlStr URL String.
+	 * @return String Object containing the full Document Content.
+	 * @throws MalformedURLException URL is Malformed.
+	 * @throws IOException           Network Error.
+	 */
+	public static String retrieveDocument(String urlStr) throws MalformedURLException, IOException {
+		URL url = new URL(urlStr);
+		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 
-    /**
-     * Retrieves the Document from the Specified URL.
-     *
-     * @param urlStr URL String.
-     * @return String Object containing the full Document Content.
-     * @throws MalformedURLException URL is Malformed.
-     * @throws IOException           Network Error.
-     */
-    public static String retrieveDocument(String urlStr)
-            throws MalformedURLException, IOException {
-        URL url = new URL(urlStr);
-        BufferedReader in = new BufferedReader
-                (new InputStreamReader(url.openStream()));
-        return readFile(in);
-    }
+		return readFile(in);
+	}
 
-    /**
-     * Retrieves the Document from the Specified File.
-     *
-     * @param file File Object.
-     * @return String Object containing the full Document Content.
-     * @throws FileNotFoundException File Not Found.
-     * @throws IOException           Read Error.
-     */
-    public static String retrieveDocument(File file)
-            throws FileNotFoundException, IOException {
-        BufferedReader in = new BufferedReader
-                (new FileReader(file));
-        return readFile(in);
-    }
+	/**
+	 * Retrieves the Document from the Specified File.
+	 *
+	 * @param file File Object.
+	 * @return String Object containing the full Document Content.
+	 * @throws FileNotFoundException File Not Found.
+	 * @throws IOException           Read Error.
+	 */
+	public static String retrieveDocument(File file) throws FileNotFoundException, IOException {
+		BufferedReader in = new BufferedReader(new FileReader(file));
 
-    /**
-     * Reads a Document from a Buffered Reader.
-     */
-    private static String readFile(BufferedReader in)
-            throws IOException {
-        StringBuffer buf = new StringBuffer();
-        String str;
-        while ((str = in.readLine()) != null) {
-            buf.append(str + "\n");
-        }
-        in.close();
-        return buf.toString();
-    }
+		return readFile(in);
+	}
+
+	/**
+	 * Reads a Document from a Buffered Reader.
+	 */
+	private static String readFile(BufferedReader in) throws IOException {
+		StringBuffer buf = new StringBuffer();
+		String str;
+
+		while ((str = in.readLine()) != null) {
+			buf.append(str + "\n");
+		}
+
+		in.close();
+
+		return buf.toString();
+	}
 }

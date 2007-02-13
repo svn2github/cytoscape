@@ -36,92 +36,94 @@ package org.cytoscape.coreplugin.cpath.model;
 
 import java.util.Vector;
 
+
 /**
  * Contains a Single Option for the Organism Pull-Down Menu.
  *
  * @author Ethan Cerami
  */
 public class OrganismOption {
-    /**
-     * All Organisms Option.
-     */
-    public static final OrganismOption ALL_ORGANISMS =
-            new OrganismOption(-9999, "All Organisms");
+	/**
+	 * All Organisms Option.
+	 */
+	public static final OrganismOption ALL_ORGANISMS = new OrganismOption(-9999, "All Organisms");
 
-    /**
-     * NCBI Taxonomy ID.
-     */
-    private int taxonomyId;
+	/**
+	 * NCBI Taxonomy ID.
+	 */
+	private int taxonomyId;
 
-    /**
-     * Organism Species Name.
-     */
-    private String speciesName;
+	/**
+	 * Organism Species Name.
+	 */
+	private String speciesName;
 
-    /**
-     * Constructor.
-     *
-     * @param taxonomyId  NCBI Taxonomy ID.
-     * @param speciesName Organism Species Name.
-     */
-    public OrganismOption (int taxonomyId, String speciesName) {
-        this.taxonomyId = taxonomyId;
-        this.speciesName = speciesName;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param taxonomyId  NCBI Taxonomy ID.
+	 * @param speciesName Organism Species Name.
+	 */
+	public OrganismOption(int taxonomyId, String speciesName) {
+		this.taxonomyId = taxonomyId;
+		this.speciesName = speciesName;
+	}
 
-    /**
-     * Gets NCBI Taxonomy ID.
-     *
-     * @return NCBI Taxonomy ID.
-     */
-    public int getTaxonomyId () {
-        return taxonomyId;
-    }
+	/**
+	 * Gets NCBI Taxonomy ID.
+	 *
+	 * @return NCBI Taxonomy ID.
+	 */
+	public int getTaxonomyId() {
+		return taxonomyId;
+	}
 
-    /**
-     * Gets Organism Species Name.
-     *
-     * @return Organism Species Name.
-     */
-    public String getSpeciesName () {
-        return speciesName;
-    }
+	/**
+	 * Gets Organism Species Name.
+	 *
+	 * @return Organism Species Name.
+	 */
+	public String getSpeciesName() {
+		return speciesName;
+	}
 
-    /**
-     * Gets Description of Option (as displayed in pull-down menu).
-     *
-     * @return Option description.
-     */
-    public String toString () {
-        return this.speciesName;
-    }
+	/**
+	 * Gets Description of Option (as displayed in pull-down menu).
+	 *
+	 * @return Option description.
+	 */
+	public String toString() {
+		return this.speciesName;
+	}
 
-    /**
-     * Gets All Options for the Pull-Down Menu.
-     *
-     * @return Vector of OrganismOption Objects.
-     */
-    public static Vector getAllOptions () {
-        Vector items = new Vector();
-        items.add(ALL_ORGANISMS);
-        items.add(new OrganismOption(6239, "Caenorhabditis elegans"));
-        items.add(new OrganismOption(7227, "Drosophila melanogaster"));
-        items.add(new OrganismOption(562, "Escherichia coli"));
-        items.add(new OrganismOption(9606, "Homo Sapiens"));
-        items.add(new OrganismOption(85962, "Helicobacter pylori 26695"));
-        items.add(new OrganismOption(10090, "Mus Musculus"));
-        items.add(new OrganismOption(4932, "Saccharomyces cerevisiae"));
-        items.add(new OrganismOption(10116, "Rattus norvegicus"));
-        return items;
-    }
+	/**
+	 * Gets All Options for the Pull-Down Menu.
+	 *
+	 * @return Vector of OrganismOption Objects.
+	 */
+	public static Vector getAllOptions() {
+		Vector items = new Vector();
+		items.add(ALL_ORGANISMS);
+		items.add(new OrganismOption(6239, "Caenorhabditis elegans"));
+		items.add(new OrganismOption(7227, "Drosophila melanogaster"));
+		items.add(new OrganismOption(562, "Escherichia coli"));
+		items.add(new OrganismOption(9606, "Homo Sapiens"));
+		items.add(new OrganismOption(85962, "Helicobacter pylori 26695"));
+		items.add(new OrganismOption(10090, "Mus Musculus"));
+		items.add(new OrganismOption(4932, "Saccharomyces cerevisiae"));
+		items.add(new OrganismOption(10116, "Rattus norvegicus"));
 
-    /**
-     * Clone Object.
-     *
-     * @return Cloned Object.
-     */
-    public Object clone () {
-        OrganismOption option = new OrganismOption(taxonomyId, speciesName);
-        return option;
-    }
+		return items;
+	}
+
+	/**
+	 * Clone Object.
+	 *
+	 * @return Cloned Object.
+	 */
+	public Object clone() {
+		OrganismOption option = new OrganismOption(taxonomyId, speciesName);
+
+		return option;
+	}
 }

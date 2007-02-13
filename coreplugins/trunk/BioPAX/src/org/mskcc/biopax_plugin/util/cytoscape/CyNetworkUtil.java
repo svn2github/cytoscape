@@ -36,7 +36,9 @@ import cytoscape.CytoscapeInit;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+
 import java.util.ArrayList;
+
 
 /**
  * Utility for Creating CyNetwork Objects.
@@ -44,44 +46,42 @@ import java.util.ArrayList;
  * @author Ethan Cerami
  */
 public class CyNetworkUtil {
+	/**
+	 * Gets Network Stats, for presentation to end-user.
+	 *
+	 * @param network     CyNetwork Object.
+	 * @param warningList ArrayList of Warning Messages.
+	 * @return Human Readable String.
+	 */
+	public static String getNetworkStats(CyNetwork network, ArrayList warningList) {
+		NumberFormat formatter = new DecimalFormat("#,###,###");
+		StringBuffer sb = new StringBuffer();
 
-    /**
-     * Gets Network Stats, for presentation to end-user.
-     *
-     * @param network     CyNetwork Object.
-     * @param warningList ArrayList of Warning Messages.
-     * @return Human Readable String.
-     */
-    public static String getNetworkStats(CyNetwork network,
-            ArrayList warningList) {
-        NumberFormat formatter = new DecimalFormat("#,###,###");
-        StringBuffer sb = new StringBuffer();
+		sb.append("Successfully loaded pathway.\n\n");
+		sb.append("Network contains " + formatter.format(network.getNodeCount()));
+		sb.append(" nodes and " + formatter.format(network.getEdgeCount()));
+		sb.append(" edges.  ");
 
-        sb.append("Successfully loaded pathway.\n\n");
-        sb.append("Network contains " + formatter.format
-                (network.getNodeCount()));
-        sb.append(" nodes and " + formatter.format(network.getEdgeCount()));
-        sb.append(" edges.  ");
+		int thresh = Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold"));
 
-	int thresh = Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold"));
-        if (network.getNodeCount() > thresh) {
-            sb.append("Network is over "
-                    + thresh 
-                    + " nodes.  A view has not been created."
-                    + "  If you wish to view this network, use "
-                    + "\"Create View\" from the \"Edit\" menu.");
-        }
+		if (network.getNodeCount() > thresh) {
+			sb.append("Network is over " + thresh + " nodes.  A view has not been created."
+			          + "  If you wish to view this network, use "
+			          + "\"Create View\" from the \"Edit\" menu.");
+		}
 
-        if (warningList.size() > 0) {
-            sb.append("\n\nWhile importing data to Cytoscape, a total "
-                    + "of " + warningList.size() + " warning messages were "
-                    + "generated.  First few warning messages are "
-                    + "shown below:\n\n");
-            int min = Math.min(3, warningList.size());
-            for (int i = 0; i < min; i++) {
-                sb.append(i + ". " + warningList.get(i) + "\n");
-            }
-        }
-        return sb.toString();
-    }
+		if (warningList.size() > 0) {
+			sb.append("\n\nWhile importing data to Cytoscape, a total " + "of "
+			          + warningList.size() + " warning messages were "
+			          + "generated.  First few warning messages are " + "shown below:\n\n");
+
+			int min = Math.min(3, warningList.size());
+
+			for (int i = 0; i < min; i++) {
+				sb.append(i + ". " + warningList.get(i) + "\n");
+			}
+		}
+
+		return sb.toString();
+	}
 }

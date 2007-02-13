@@ -38,59 +38,60 @@ import org.cytoscape.coreplugin.cpath.model.MaxHitsOption;
 import org.cytoscape.coreplugin.cpath.model.OrganismOption;
 import org.cytoscape.coreplugin.cpath.model.SearchRequest;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+
+import javax.swing.*;
+
 
 /**
  * Updates the SearchRequest Object based on User Input.
  *
  * @author Ethan Cerami
  */
-public class UpdateSearchRequest extends FocusAdapter
-        implements ActionListener {
+public class UpdateSearchRequest extends FocusAdapter implements ActionListener {
+	/**
+	 * Search Request Object.
+	 */
+	private SearchRequest searchRequest;
 
-    /**
-     * Search Request Object.
-     */
-    private SearchRequest searchRequest;
+	/**
+	 * Constructor.
+	 *
+	 * @param searchRequest Search Request Object.
+	 */
+	public UpdateSearchRequest(SearchRequest searchRequest) {
+		this.searchRequest = searchRequest;
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param searchRequest Search Request Object.
-     */
-    public UpdateSearchRequest (SearchRequest searchRequest) {
-        this.searchRequest = searchRequest;
-    }
+	/**
+	 * User has selected an item from the pull-down menu.
+	 *
+	 * @param e ActionEvent.
+	 */
+	public void actionPerformed(ActionEvent e) {
+		JComboBox cb = (JComboBox) e.getSource();
 
-    /**
-     * User has selected an item from the pull-down menu.
-     *
-     * @param e ActionEvent.
-     */
-    public void actionPerformed (ActionEvent e) {
-        JComboBox cb = (JComboBox) e.getSource();
+		Object object = cb.getSelectedItem();
 
-        Object object = cb.getSelectedItem();
-        if (object instanceof MaxHitsOption) {
-            MaxHitsOption maxHitsOption = (MaxHitsOption) object;
-            searchRequest.setMaxHits(maxHitsOption);
-        } else if (object instanceof OrganismOption) {
-            OrganismOption organismOption = (OrganismOption) object;
-            searchRequest.setOrganism(organismOption);
-        }
-    }
+		if (object instanceof MaxHitsOption) {
+			MaxHitsOption maxHitsOption = (MaxHitsOption) object;
+			searchRequest.setMaxHits(maxHitsOption);
+		} else if (object instanceof OrganismOption) {
+			OrganismOption organismOption = (OrganismOption) object;
+			searchRequest.setOrganism(organismOption);
+		}
+	}
 
-    /**
-     * Users has Entered New Text in the Search Text Box.
-     *
-     * @param e Focus Event.
-     */
-    public void focusLost (FocusEvent e) {
-        JTextField textField = (JTextField) e.getSource();
-        searchRequest.setQuery(textField.getText());
-    }
+	/**
+	 * Users has Entered New Text in the Search Text Box.
+	 *
+	 * @param e Focus Event.
+	 */
+	public void focusLost(FocusEvent e) {
+		JTextField textField = (JTextField) e.getSource();
+		searchRequest.setQuery(textField.getText());
+	}
 }

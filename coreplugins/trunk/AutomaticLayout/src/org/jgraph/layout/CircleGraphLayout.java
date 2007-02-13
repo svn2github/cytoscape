@@ -1,9 +1,9 @@
 /*
  * @(#)CircleLayoutAlgorithm.java 1.0 18-MAY-2004
- * 
+ *
  * Copyright (c) 2004-2005, Gaudenz Alder
- * All rights reserved. 
- * 
+ * All rights reserved.
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -20,13 +20,15 @@
  */
 package org.jgraph.layout;
 
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jgraph.JGraph;
+
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.VertexView;
+
+import java.awt.geom.Rectangle2D;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -36,7 +38,6 @@ import org.jgraph.graph.VertexView;
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class CircleGraphLayout extends JGraphLayoutAlgorithm {
-	
 	/**
 	 * Returns the name of this algorithm in human
 	 * readable form.
@@ -47,45 +48,56 @@ public class CircleGraphLayout extends JGraphLayoutAlgorithm {
 
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
-     * @param graph JGraph instance
-     * @param dynamic_cells List of all nodes the layout should move
-     * @param static_cells List of node the layout should not move but allow for
+	 * @param graph JGraph instance
+	 * @param dynamic_cells List of all nodes the layout should move
+	 * @param static_cells List of node the layout should not move but allow for
 	 */
-    public void run(JGraph graph, Object[] dynamic_cells, Object[] static_cells) {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param graph DOCUMENT ME!
+	 * @param dynamic_cells DOCUMENT ME!
+	 * @param static_cells DOCUMENT ME!
+	 */
+	public void run(JGraph graph, Object[] dynamic_cells, Object[] static_cells) {
 		// Fetch All Views
 		CellView[] views = graph.getGraphLayoutCache().getMapping(dynamic_cells);
+
 		// Create list to hold vertices
 		List vertices = new ArrayList();
+
 		// Maximum width or height
 		int max = 0;
+
 		// Loop through all views
 		for (int i = 0; i < views.length; i++) {
 			// Add vertex to list
 			if (views[i] instanceof VertexView) {
 				vertices.add(views[i]);
+
 				// Fetch Bounds
 				Rectangle2D bounds = views[i].getBounds();
+
 				// Update Maximum
 				if (bounds != null)
-					max = (int) Math.max(max, 
-							Math.max(bounds.getWidth(), bounds.getHeight()));
+					max = (int) Math.max(max, Math.max(bounds.getWidth(), bounds.getHeight()));
 			}
 		}
+
 		// Compute Radius
-		int r = (int) Math.max(vertices.size() * max / Math.PI, 100);
+		int r = (int) Math.max((vertices.size() * max) / Math.PI, 100);
+
 		// Compute angle step
-		double phi = 2 * Math.PI / vertices.size();
+		double phi = (2 * Math.PI) / vertices.size();
+
 		// Arrange vertices in a circle
 		for (int i = 0; i < vertices.size(); i++) {
 			Rectangle2D bounds = ((CellView) vertices.get(i)).getBounds();
+
 			// Update Location
 			if (bounds != null)
-				bounds.setFrame(
-					r + r * Math.sin(i * phi),
-					r + r * Math.cos(i * phi),
-					bounds.getWidth(),
-					bounds.getHeight());
+				bounds.setFrame(r + (r * Math.sin(i * phi)), r + (r * Math.cos(i * phi)),
+				                bounds.getWidth(), bounds.getHeight());
 		}
 	}
-	
 }

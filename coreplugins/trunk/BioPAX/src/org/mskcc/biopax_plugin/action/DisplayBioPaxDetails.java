@@ -34,16 +34,21 @@ package org.mskcc.biopax_plugin.action;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.data.SelectEventListener;
-import cytoscape.data.SelectEvent;
-import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
-import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
-import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 
-import javax.swing.*;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
+
+import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
+import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
+import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
+
 import java.awt.*;
+
 import java.util.HashSet;
 import java.util.Iterator;
+
+import javax.swing.*;
+
 
 /**
  * Displays BioPAX Details when user clicks on a Node.
@@ -56,96 +61,101 @@ import java.util.Iterator;
  * @author Ethan Cerami
  */
 public class DisplayBioPaxDetails implements SelectEventListener {
-    private int totalNumNodesSelected = 0;
-    private BioPaxDetailsPanel bpPanel;
+	private int totalNumNodesSelected = 0;
+	private BioPaxDetailsPanel bpPanel;
 
-    /**
-     * Constructor.
-     *
-     * @param bpPanel BioPaxDetailsPanel Object that will actually display
-     *                the BioPax details.
-     */
-    public DisplayBioPaxDetails(BioPaxDetailsPanel bpPanel) {
-        this.bpPanel = bpPanel;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param bpPanel BioPaxDetailsPanel Object that will actually display
+	 *                the BioPax details.
+	 */
+	public DisplayBioPaxDetails(BioPaxDetailsPanel bpPanel) {
+		this.bpPanel = bpPanel;
+	}
 
-    /**
-     * User has selected/unselected one or more nodes.
-     *
-     * @param event Select Event.
-     */
-    public void onSelectEvent(SelectEvent event) {
-        int targetType = event.getTargetType();
+	/**
+	 * User has selected/unselected one or more nodes.
+	 *
+	 * @param event Select Event.
+	 */
+	public void onSelectEvent(SelectEvent event) {
+		int targetType = event.getTargetType();
 
-        //  Only show details when exactly one node/edge is selected.
-        //  This is done by keeping a running total of number of nodes/edges
-        //  currently selected.
+		//  Only show details when exactly one node/edge is selected.
+		//  This is done by keeping a running total of number of nodes/edges
+		//  currently selected.
 
-        //  A simpler option would be to obtain a SelectFilter object from
-        //  the current network, and simply query it for a list of selected
-        //  nodes/edges.  However, we want the listener to work on multiple
-        //  networks.  For example, we want to display node/edge details
-        //  for a parent network and any of its subnetworks.
-        if (targetType == SelectEvent.NODE_SET) {
-            HashSet set = (HashSet) event.getTarget();
-            trackTotalNumberNodesSelected(event, set);
-            if (event.getEventType() && totalNumNodesSelected == 1) {
-                Iterator iterator = set.iterator();
-                CyNode node = (CyNode) iterator.next();
+		//  A simpler option would be to obtain a SelectFilter object from
+		//  the current network, and simply query it for a list of selected
+		//  nodes/edges.  However, we want the listener to work on multiple
+		//  networks.  For example, we want to display node/edge details
+		//  for a parent network and any of its subnetworks.
+		if (targetType == SelectEvent.NODE_SET) {
+			HashSet set = (HashSet) event.getTarget();
+			trackTotalNumberNodesSelected(event, set);
 
-                //  Get the BioPAX Util Object from the current network
-                CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-                String id = node.getIdentifier();
-                if (id != null) {
-                    displayDetails(id);
-                }
-            }
-        }
+			if (event.getEventType() && (totalNumNodesSelected == 1)) {
+				Iterator iterator = set.iterator();
+				CyNode node = (CyNode) iterator.next();
 
-        // update custom nodes
-        MapNodeAttributes.customNodes(Cytoscape.getCurrentNetworkView());
-    }
+				//  Get the BioPAX Util Object from the current network
+				CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+				String id = node.getIdentifier();
 
-    private void displayDetails(String id) {
-        //  Conditionally, set up BP UI
-        CytoscapeWrapper.initBioPaxPlugInUI();
-        
-        //  Show the details
-        bpPanel.showDetails(id);
+				if (id != null) {
+					displayDetails(id);
+				}
+			}
+		}
 
-        //  If we are part of an embedded set of tabs, activate our Tab(s)
-        activateTabs(bpPanel);
-    }
+		// update custom nodes
+		MapNodeAttributes.customNodes(Cytoscape.getCurrentNetworkView());
+	}
 
-    /**
-     * Recursive Method for Walking up a Containment Tree, looking for
-     * a CytoPanel
-     *
-     * @param c Container Object.
-     */
-    private void activateTabs(Container c) {
-        Container parent = c.getParent();
-        if (parent != null) {
-            if (parent instanceof JTabbedPane) {
-                JTabbedPane parentTabbedPane = (JTabbedPane) parent;
-                int index = parentTabbedPane.indexOfComponent(c);
-                parentTabbedPane.setSelectedIndex(index);
-            }
-            activateTabs(parent);
-        }
-    }
+	private void displayDetails(String id) {
+		//  Conditionally, set up BP UI
+		CytoscapeWrapper.initBioPaxPlugInUI();
 
-    /**
-     * Keeps track of total number of Nodes currently selected by the user.
-     */
-    private void trackTotalNumberNodesSelected(SelectEvent event, HashSet set) {
-        if (event.getEventType()) {
-            totalNumNodesSelected += set.size();
-        } else {
-            totalNumNodesSelected -= set.size();
-            if (totalNumNodesSelected < 0) {
-                totalNumNodesSelected = 0;
-            }
-        }
-    }
+		//  Show the details
+		bpPanel.showDetails(id);
+
+		//  If we are part of an embedded set of tabs, activate our Tab(s)
+		activateTabs(bpPanel);
+	}
+
+	/**
+	 * Recursive Method for Walking up a Containment Tree, looking for
+	 * a CytoPanel
+	 *
+	 * @param c Container Object.
+	 */
+	private void activateTabs(Container c) {
+		Container parent = c.getParent();
+
+		if (parent != null) {
+			if (parent instanceof JTabbedPane) {
+				JTabbedPane parentTabbedPane = (JTabbedPane) parent;
+				int index = parentTabbedPane.indexOfComponent(c);
+				parentTabbedPane.setSelectedIndex(index);
+			}
+
+			activateTabs(parent);
+		}
+	}
+
+	/**
+	 * Keeps track of total number of Nodes currently selected by the user.
+	 */
+	private void trackTotalNumberNodesSelected(SelectEvent event, HashSet set) {
+		if (event.getEventType()) {
+			totalNumNodesSelected += set.size();
+		} else {
+			totalNumNodesSelected -= set.size();
+
+			if (totalNumNodesSelected < 0) {
+				totalNumNodesSelected = 0;
+			}
+		}
+	}
 }

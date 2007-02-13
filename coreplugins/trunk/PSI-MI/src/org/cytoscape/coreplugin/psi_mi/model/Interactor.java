@@ -34,60 +34,58 @@
 */
 package org.cytoscape.coreplugin.psi_mi.model;
 
+
 /**
  * Encapsulates data for a single Interactor.
  *
  * @author Ethan Cerami
  */
 public class Interactor extends AttributeBag {
-    private String name;
-    private String description;
+	private String name;
+	private String description;
 
+	/**
+	 * Gets Interactor Name.
+	 *
+	 * @return Interactor Name.
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Gets Interactor Name.
-     *
-     * @return Interactor Name.
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Sets Interactor Name.
+	 *
+	 * @param name Interactor Name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * Sets Interactor Name.
-     *
-     * @param name Interactor Name.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Gets Interactor Description.
+	 *
+	 * @return Interactor Description.
+	 */
+	public String getDescription() {
+		return description;
+	}
 
-    /**
-     * Gets Interactor Description.
-     *
-     * @return Interactor Description.
-     */
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * Sets Interactor Description.
+	 *
+	 * @param description Interactor Descriptor.
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    /**
-     * Sets Interactor Description.
-     *
-     * @param description Interactor Descriptor.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Provides Interactor Name.
-     *
-     * @return Interactor String Name.
-     */
-    public String toString() {
-        return "Interactor:  " + this.getName();
-    }
-
-
+	/**
+	 * Provides Interactor Name.
+	 *
+	 * @return Interactor String Name.
+	 */
+	public String toString() {
+		return "Interactor:  " + this.getName();
+	}
 }

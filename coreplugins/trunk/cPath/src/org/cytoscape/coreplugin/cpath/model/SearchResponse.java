@@ -35,9 +35,11 @@
 package org.cytoscape.coreplugin.cpath.model;
 
 import cytoscape.CyNetwork;
+
 import cytoscape.view.CyNetworkView;
 
 import java.util.ArrayList;
+
 
 /**
  * Encapsulates a Search Response received by cPath.
@@ -45,96 +47,96 @@ import java.util.ArrayList;
  * @author Ethan Cerami
  */
 public class SearchResponse {
-    /**
-     * Array List of DataService Interaction Objects.
-     */
-    private ArrayList interactions;
+	/**
+	 * Array List of DataService Interaction Objects.
+	 */
+	private ArrayList interactions;
 
-    /**
-     * An Exception Object (if one has occurred).
-     */
-    private Throwable exception;
+	/**
+	 * An Exception Object (if one has occurred).
+	 */
+	private Throwable exception;
 
-    /**
-     * The Corresponding CyNetwork in Cytoscape.
-     */
-    private CyNetwork cyNetwork;
+	/**
+	 * The Corresponding CyNetwork in Cytoscape.
+	 */
+	private CyNetwork cyNetwork;
 
-    /**
-     * The Corresponding CyNetworkView in Cytoscape.
-     */
-    private CyNetworkView cyNetworkView;
+	/**
+	 * The Corresponding CyNetworkView in Cytoscape.
+	 */
+	private CyNetworkView cyNetworkView;
 
-    /**
-     * Gets List of Interaction Objects.
-     *
-     * @return ArrayList of Data Service Interaction Object.
-     */
-    public ArrayList getInteractions () {
-        return interactions;
-    }
+	/**
+	 * Gets List of Interaction Objects.
+	 *
+	 * @return ArrayList of Data Service Interaction Object.
+	 */
+	public ArrayList getInteractions() {
+		return interactions;
+	}
 
-    /**
-     * Sets List of Interaction Objects.
-     *
-     * @param interactions ArrayList of Data Service Interaction Object.
-     */
-    public void setInteractions (ArrayList interactions) {
-        this.interactions = interactions;
-    }
+	/**
+	 * Sets List of Interaction Objects.
+	 *
+	 * @param interactions ArrayList of Data Service Interaction Object.
+	 */
+	public void setInteractions(ArrayList interactions) {
+		this.interactions = interactions;
+	}
 
-    /**
-     * Gets Exception (if one has occurred).
-     * If no exception has occurred, this method will return null.
-     *
-     * @return exception or null.
-     */
-    public Throwable getException () {
-        return exception;
-    }
+	/**
+	 * Gets Exception (if one has occurred).
+	 * If no exception has occurred, this method will return null.
+	 *
+	 * @return exception or null.
+	 */
+	public Throwable getException() {
+		return exception;
+	}
 
-    /**
-     * Sets the Exception.
-     *
-     * @param exception Exception Object.
-     */
-    public void setException (Throwable exception) {
-        this.exception = exception;
-    }
+	/**
+	 * Sets the Exception.
+	 *
+	 * @param exception Exception Object.
+	 */
+	public void setException(Throwable exception) {
+		this.exception = exception;
+	}
 
-    /**
-     * Gets the CyNetwork Corresponding to this list of interactions.
-     *
-     * @return Cytoscape CyNetwork Object.
-     */
-    public CyNetwork getCyNetwork () {
-        return cyNetwork;
-    }
+	/**
+	 * Gets the CyNetwork Corresponding to this list of interactions.
+	 *
+	 * @return Cytoscape CyNetwork Object.
+	 */
+	public CyNetwork getCyNetwork() {
+		return cyNetwork;
+	}
 
-    /**
-     * Sets the CyNetwork Corresponding to this list of interactions.
-     *
-     * @param cyNetwork Cytoscape CyNetwork Object.
-     */
-    public void setCyNetwork (CyNetwork cyNetwork) {
-        this.cyNetwork = cyNetwork;
-    }
+	/**
+	 * Sets the CyNetwork Corresponding to this list of interactions.
+	 *
+	 * @param cyNetwork Cytoscape CyNetwork Object.
+	 */
+	public void setCyNetwork(CyNetwork cyNetwork) {
+		this.cyNetwork = cyNetwork;
+	}
 
-    /**
-     * Gets the CyNetworkView Corresponding to this list of interactions.
-     *
-     * @return Cytoscape CyNetworkView Object.
-     */
-    public CyNetworkView getCyNetworkView () {
-        return cyNetworkView;
-    }
+	/**
+	 * Gets the CyNetworkView Corresponding to this list of interactions.
+	 *
+	 * @return Cytoscape CyNetworkView Object.
+	 */
+	public CyNetworkView getCyNetworkView() {
+		return cyNetworkView;
+	}
 
-    /**
-     * Sets the CyNetworkView Corresponding to this list of interactions.
-     *
-     * @param cyNetworkView Cytoscape CyNetworkView Object.
-     */
-    public void setCyNetworkView (CyNetworkView cyNetworkView) {
-        this.cyNetworkView = cyNetworkView;
-    }
+	/**
+	 * Sets the CyNetworkView Corresponding to this list of interactions.
+	 *
+	 * @param cyNetworkView Cytoscape CyNetworkView Object.
+	 */
+	public void setCyNetworkView(CyNetworkView cyNetworkView) {
+		this.cyNetworkView = cyNetworkView;
+	}
 }

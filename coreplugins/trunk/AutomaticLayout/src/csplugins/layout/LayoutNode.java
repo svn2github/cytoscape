@@ -32,14 +32,17 @@
  */
 package csplugins.layout;
 
+import cytoscape.*;
+
+import cytoscape.view.*;
+
+import giny.view.*;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
-import cytoscape.*;
-import cytoscape.view.*;
-import giny.view.*;
 
 /**
  * The LayoutNode class.  This class is used as a container for information
@@ -54,28 +57,33 @@ public class LayoutNode {
 	static final double EPSILON = 0.0000001D;
 
 	// instance variables
-	private double x, y;
-	private double dispX, dispY;
+	private double x;
+
+	// instance variables
+	private double y;
+	private double dispX;
+	private double dispY;
 	private CyNode node;
 	private NodeView nodeView;
 	private int index;
 	private boolean isLocked = false;
 	private ArrayList neighbors = null;
 
-  /**
-	 * Empty constructor
-	 */
-	public LayoutNode() { }
+	/**
+	   * Empty constructor
+	   */
+	public LayoutNode() {
+	}
 
 	/**
-	 * The main constructor for a LayoutNode. 
+	 * The main constructor for a LayoutNode.
 	 *
 	 * @param nodeView The NodeView of this node
 	 * @param index The index (usually in a node array) of this node
 	 */
-	public LayoutNode(NodeView nodeView, int index) { 
+	public LayoutNode(NodeView nodeView, int index) {
 		this.nodeView = nodeView;
-		this.node = (CyNode)nodeView.getNode();
+		this.node = (CyNode) nodeView.getNode();
 		this.index = index;
 		this.x = nodeView.getXPosition();
 		this.y = nodeView.getYPosition();
@@ -86,7 +94,7 @@ public class LayoutNode {
 	 * Accessor function to return the CyNode associated with
 	 * this LayoutNode.
 	 *
-	 * @return	CyNode that is associated with this LayoutNode
+	 * @return    CyNode that is associated with this LayoutNode
 	 */
 	public CyNode getNode() {
 		return this.node;
@@ -96,7 +104,7 @@ public class LayoutNode {
 	 * Accessor function to return the NodeView associated with
 	 * this LayoutNode.
 	 *
-	 * @return	NodeView that is associated with this LayoutNode
+	 * @return    NodeView that is associated with this LayoutNode
 	 */
 	public NodeView getNodeView() {
 		return this.nodeView;
@@ -108,8 +116,8 @@ public class LayoutNode {
 	 * that location.  Users should call moveToLocation to actually
 	 * accomplish the move.
 	 *
-	 * @param	x	Double representing the new X corrdinate of this node
-	 * @param	y	Double representing the new Y corrdinate of this node
+	 * @param    x    Double representing the new X corrdinate of this node
+	 * @param    y    Double representing the new Y corrdinate of this node
 	 */
 	public void setLocation(double x, double y) {
 		this.x = x;
@@ -122,7 +130,7 @@ public class LayoutNode {
 	 * that location.  Users should call moveToLocation to actually
 	 * accomplish the move.
 	 *
-	 * @param	x	Double representing the new X corrdinate of this node
+	 * @param    x    Double representing the new X corrdinate of this node
 	 */
 	public void setX(double x) {
 		this.x = x;
@@ -134,7 +142,7 @@ public class LayoutNode {
 	 * that location.  Users should call moveToLocation to actually
 	 * accomplish the move.
 	 *
-	 * @param	y	Double representing the new Y corrdinate of this node
+	 * @param    y    Double representing the new Y corrdinate of this node
 	 */
 	public void setY(double y) {
 		this.y = y;
@@ -146,8 +154,8 @@ public class LayoutNode {
 	 * the current location.  This is useful for algorithms such as Kamada Kawai
 	 * and Fructerman Rheingold, which update positions iteratively.
 	 *
-	 * @param	x	Double representing the amount to offset in the x direction
-	 * @param	y	Double representing the amount to offset in the y direction
+	 * @param    x    Double representing the amount to offset in the x direction
+	 * @param    y    Double representing the amount to offset in the y direction
 	 */
 	public void setDisp(double x, double y) {
 		this.dispX = x;
@@ -159,67 +167,67 @@ public class LayoutNode {
 	 * used to improve the performance of algorithms that try to determine the edge
 	 * partners of nodes.
 	 *
-	 * @param	v	LayoutNode that is a neighbor of this LayoutNode
+	 * @param    v    LayoutNode that is a neighbor of this LayoutNode
 	 */
-  public void addNeighbor(LayoutNode v) {
-    this.neighbors.add(v);
-  }
+	public void addNeighbor(LayoutNode v) {
+		this.neighbors.add(v);
+	}
 
 	/**
 	 * Convenience function to return the list of neighbors (connected nodes) of this node.
 	 *
-	 * @return		List of all of the neighbors (nodes with shared edges) of this node.
+	 * @return        List of all of the neighbors (nodes with shared edges) of this node.
 	 */
-  public List getNeighbors() {
-    return (List)this.neighbors;
-  }
+	public List getNeighbors() {
+		return (List) this.neighbors;
+	}
 
 	/**
 	 * Returns the index of this LayoutNode.  This is <em>not</em> the same as the
 	 * rootGraphIndex of the node.  Its primarily used by LayoutPartition to keep
 	 * track of the offset in the node array that holds this LayoutNode.
 	 *
-	 * @return		The index of this node
-	 * @see	LayoutPartition
+	 * @return        The index of this node
+	 * @see    LayoutPartition
 	 */
-  public int getIndex() {
-    return this.index;
-  }
+	public int getIndex() {
+		return this.index;
+	}
 
 	/**
 	 * Register this node as being "locked".  Locked nodes are exempt from being moved
 	 * during layout.  Usually, these are the unselected nodes when a selected-only
 	 * layout is being executed.
 	 */
-  public void lock() {
+	public void lock() {
 		this.isLocked = true;
 		lockedNodes += 1;
-  }
+	}
 
 	/**
 	 * Register this node as being "unlocked".  Locked nodes are exempt from being moved
 	 * during layout.  Usually, these are the unselected nodes when a selected-only
 	 * layout is being executed.  The "unlocked" state is the default.
 	 */
-  public void unLock() {
-    this.isLocked = false;
+	public void unLock() {
+		this.isLocked = false;
 		lockedNodes -= 1;
-  }
+	}
 
 	/**
 	 * Returns "true" if this node is locked, false otherwise.
 	 *
-	 * @return		true if locked, false if unlocked.
+	 * @return        true if locked, false if unlocked.
 	 */
-  public boolean isLocked() {
-  	return isLocked;
-  }
+	public boolean isLocked() {
+		return isLocked;
+	}
 
 	/**
 	 * Increment the displacement recorded for this node by (x,y).
 	 *
-	 * @param	x	the additional amount to displace in the x direction
-	 * @param	y	the additional amount to displace in the y direction
+	 * @param    x    the additional amount to displace in the x direction
+	 * @param    y    the additional amount to displace in the y direction
 	 */
 	public void incrementDisp(double x, double y) {
 		this.dispX += x;
@@ -230,8 +238,8 @@ public class LayoutNode {
 	 * Increment the location of this node by (x,y).  Note that location
 	 * values are merely recorded until moveToLocation is called.
 	 *
-	 * @param	x	the amount to move in the x direction
-	 * @param	y	the amount to move in the y direction
+	 * @param    x    the amount to move in the x direction
+	 * @param    y    the amount to move in the y direction
 	 */
 	public void increment(double x, double y) {
 		this.x += x;
@@ -241,8 +249,8 @@ public class LayoutNode {
 	/**
 	 * Decrement the displacement recorded for this node by (x,y).
 	 *
-	 * @param	x	the additional amount to displace in the -x direction
-	 * @param	y	the additional amount to displace in the -y direction
+	 * @param    x    the additional amount to displace in the -x direction
+	 * @param    y    the additional amount to displace in the -y direction
 	 */
 	public void decrementDisp(double x, double y) {
 		this.dispX -= x;
@@ -253,8 +261,8 @@ public class LayoutNode {
 	 * Decrement the location of this node by (x,y).  Note that location
 	 * values are merely recorded until moveToLocation is called.
 	 *
-	 * @param	x	the amount to move in the -x direction
-	 * @param	y	the amount to move in the -y direction
+	 * @param    x    the amount to move in the -x direction
+	 * @param    y    the amount to move in the -y direction
 	 */
 	public void decrement(double x, double y) {
 		this.x -= x;
@@ -264,68 +272,82 @@ public class LayoutNode {
 	/**
 	 * Return the current X value for this LayoutNode.
 	 *
-	 * @return		current X value
+	 * @return        current X value
 	 */
-	public double getX () { return this.x; }
+	public double getX() {
+		return this.x;
+	}
 
 	/**
 	 * Return the current Y value for this LayoutNode.
 	 *
-	 * @return		current Y value
+	 * @return        current Y value
 	 */
-	public double getY () { return this.y; }
+	public double getY() {
+		return this.y;
+	}
 
 	/**
 	 * Return the current X displacement value for this LayoutNode.
 	 *
-	 * @return		current X displacement value
+	 * @return        current X displacement value
 	 */
-	public double getXDisp () { return this.dispX; }
+	public double getXDisp() {
+		return this.dispX;
+	}
 
 	/**
 	 * Return the current Y displacement value for this LayoutNode.
 	 *
-	 * @return		current Y displacement value
+	 * @return        current Y displacement value
 	 */
-	public double getYDisp () { return this.dispY; }
+	public double getYDisp() {
+		return this.dispY;
+	}
 
 	/**
 	 * Return the width of this node
 	 *
-	 * @return		width of this node
+	 * @return        width of this node
 	 */
-	public double getWidth() { return this.nodeView.getWidth(); }
+	public double getWidth() {
+		return this.nodeView.getWidth();
+	}
 
 	/**
 	 * Return the height of this node
 	 *
-	 * @return		height of this node
+	 * @return        height of this node
 	 */
-	public double getHeight() { return this.nodeView.getHeight(); }
+	public double getHeight() {
+		return this.nodeView.getHeight();
+	}
 
 	/**
 	 * Return the euclidean distance between this node and another node
 	 *
-	 * @param	otherNode	the node to measure the distance to
-	 * @return		the euclidean distance from this node to otherNode
+	 * @param    otherNode    the node to measure the distance to
+	 * @return        the euclidean distance from this node to otherNode
 	 */
-	public double distance (LayoutNode otherNode) {
+	public double distance(LayoutNode otherNode) {
 		double deltaX = this.x - otherNode.getX();
 		double deltaY = this.y - otherNode.getY();
-		return Math.max(EPSILON,Math.sqrt(deltaX*deltaX + deltaY*deltaY));
+
+		return Math.max(EPSILON, Math.sqrt((deltaX * deltaX) + (deltaY * deltaY)));
 	}
 
 	/**
 	 * Return the euclidean distance between this node and a location
 	 *
-	 * @param	uX	the X location to measure the distance to
-	 * @param	uY	the Y location to measure the distance to
-	 * @return		the euclidean distance from this node to (uX,uY)
+	 * @param    uX    the X location to measure the distance to
+	 * @param    uY    the Y location to measure the distance to
+	 * @return        the euclidean distance from this node to (uX,uY)
 	 */
-	public double distance (double uX, double uY) {
+	public double distance(double uX, double uY) {
 		double deltaX = this.x - uX;
 		double deltaY = this.y - uY;
-		return Math.max(EPSILON,Math.sqrt(deltaX*deltaX + deltaY*deltaY));
+
+		return Math.max(EPSILON, Math.sqrt((deltaX * deltaX) + (deltaY * deltaY)));
 	}
 
 	/**
@@ -344,7 +366,7 @@ public class LayoutNode {
 	/**
 	 * Return the node's identifier.
 	 *
-	 * @return		String containing the node's identifier
+	 * @return        String containing the node's identifier
 	 */
 	public String getIdentifier() {
 		return node.getIdentifier();
@@ -353,29 +375,31 @@ public class LayoutNode {
 	/**
 	 * Return a string representation of the node
 	 *
-	 * @return		String containing the node's identifier and location
+	 * @return        String containing the node's identifier and location
 	 */
 	public String toString() {
-		return "Node "+getIdentifier()+" at "+printLocation();
+		return "Node " + getIdentifier() + " at " + printLocation();
 	}
 
 	/**
 	 * Return a string representation of the node's displacement
 	 *
-	 * @return		String containing the node's X,Y displacement
+	 * @return        String containing the node's X,Y displacement
 	 */
 	public String printDisp() {
-		String ret = new String(""+dispX+", "+dispY);
+		String ret = new String("" + dispX + ", " + dispY);
+
 		return ret;
 	}
 
 	/**
 	 * Return a string representation of the node's location
 	 *
-	 * @return		String containing the node's X,Y location
+	 * @return        String containing the node's X,Y location
 	 */
 	public String printLocation() {
-		String ret = new String(""+x+", "+y);
+		String ret = new String("" + x + ", " + y);
+
 		return ret;
 	}
 
@@ -385,10 +409,9 @@ public class LayoutNode {
 	 * algorithms that only want to get the number of unlocked nodes for the purposes of their
 	 * layout loops.
 	 *
-	 * @return		the number of unlocked nodes.
+	 * @return        the number of unlocked nodes.
 	 */
 	public static int lockedNodeCount() {
 		return lockedNodes;
 	}
-
 }

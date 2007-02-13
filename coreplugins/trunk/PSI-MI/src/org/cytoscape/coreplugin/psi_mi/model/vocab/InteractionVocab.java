@@ -34,65 +34,60 @@
 */
 package org.cytoscape.coreplugin.psi_mi.model.vocab;
 
+
 /**
  * Controlled Vocabulary for Interactions.
  *
  * @author Ethan Cerami
  */
 public class InteractionVocab extends CommonVocab {
+	/**
+	 * Interaction Short Name.
+	 */
+	public static final String INTERACTION_SHORT_NAME = "INTERACTION_SHORT_NAME";
 
-    /**
-     * Interaction Short Name.
-     */
-    public static final String INTERACTION_SHORT_NAME =
-            "INTERACTION_SHORT_NAME";
+	/**
+	 * Interaction Full Name.
+	 */
+	public static final String INTERACTION_FULL_NAME = "INTERACTION_FULL_NAME";
 
-    /**
-     * Interaction Full Name.
-     */
-    public static final String INTERACTION_FULL_NAME =
-            "INTERACTION_FULL_NAME";
+	/**
+	 * Experimental System Name.
+	 */
+	public static final String EXPERIMENTAL_SYSTEM_NAME = "EXPERIMENTAL_SYSTEM_NAME";
 
-    /**
-     * Experimental System Name.
-     */
-    public static final String EXPERIMENTAL_SYSTEM_NAME =
-            "EXPERIMENTAL_SYSTEM_NAME";
+	/**
+	 * Experimental System XRef Database.
+	 */
+	public static final String EXPERIMENTAL_SYSTEM_XREF_DB = "EXPERIMENTAL_SYSTEM_XREF_DB";
 
-    /**
-     * Experimental System XRef Database.
-     */
-    public static final String EXPERIMENTAL_SYSTEM_XREF_DB =
-            "EXPERIMENTAL_SYSTEM_XREF_DB";
+	/**
+	 * Experimental System XRef Database.
+	 */
+	public static final String EXPERIMENTAL_SYSTEM_XREF_ID = "EXPERIMENTAL_SYSTEM_XREF_ID";
 
-    /**
-     * Experimental System XRef Database.
-     */
-    public static final String EXPERIMENTAL_SYSTEM_XREF_ID =
-            "EXPERIMENTAL_SYSTEM_XREF_ID";
+	/**
+	 * Interaction Direction.
+	 */
+	public static final String DIRECTION = "DIRECTION";
 
-    /**
-     * Interaction Direction.
-     */
-    public static final String DIRECTION = "DIRECTION";
+	/**
+	 * Interaction Owner.
+	 */
+	public static final String OWNER = "OWNER";
 
-    /**
-     * Interaction Owner.
-     */
-    public static final String OWNER = "OWNER";
+	/**
+	 * Interaction PubMed ID
+	 */
+	public static final String PUB_MED_ID = "PUB_MED_ID";
 
-    /**
-     * Interaction PubMed ID
-     */
-    public static final String PUB_MED_ID = "PUB_MED_ID";
+	/**
+	 * Bait Map.
+	 */
+	public static final String BAIT_MAP = "BAIT_MAP";
 
-    /**
-     * Bait Map.
-     */
-    public static final String BAIT_MAP = "BAIT_MAP";
-
-    /**
-     * Interaction Type
-     */
-    public static final String INTERACTION_TYPE = "interaction";
+	/**
+	 * Interaction Type
+	 */
+	public static final String INTERACTION_TYPE = "interaction";
 }

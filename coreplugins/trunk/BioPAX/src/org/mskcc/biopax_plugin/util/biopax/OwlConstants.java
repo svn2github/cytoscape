@@ -33,38 +33,36 @@ package org.mskcc.biopax_plugin.util.biopax;
 
 import org.jdom.Namespace;
 
+
 /**
  * OWL (Web Ontology Language) Constants.
  *
  * @author Ethan Cerami
  */
 public class OwlConstants {
+	/**
+	 * OWL Namespace URI.
+	 */
+	public static final String OWL_NAMESPACE_URI = "http://www.w3.org/2002/07/owl#";
 
-    /**
-     * OWL Namespace URI.
-     */
-    public static final String OWL_NAMESPACE_URI =
-            "http://www.w3.org/2002/07/owl#";
+	/**
+	 * OWL Namespace Prefix
+	 */
+	public static final String OWL_NAMESPACE_PREFIX = "owl";
 
-    /**
-     * OWL Namespace Prefix
-     */
-    public static final String OWL_NAMESPACE_PREFIX = "owl";
+	/**
+	 * RDF Namespace Object.
+	 */
+	public static final Namespace OWL_NAMESPACE = Namespace.getNamespace(OWL_NAMESPACE_PREFIX,
+	                                                                     OWL_NAMESPACE_URI);
 
-    /**
-     * RDF Namespace Object.
-     */
-    public static final Namespace OWL_NAMESPACE = Namespace.getNamespace
-            (OWL_NAMESPACE_PREFIX, OWL_NAMESPACE_URI);
+	/**
+	 * OWL Imports Element Name
+	 */
+	public static final String OWL_IMPORTS_ELEMENT = "imports";
 
-    /**
-     * OWL Imports Element Name
-     */
-    public static final String OWL_IMPORTS_ELEMENT = "imports";
-
-    /**
-     * OWL Ontology Element
-     */
-    public static final String OWL_ONTOLOGY_ELEMENT = "Ontology";
-
+	/**
+	 * OWL Ontology Element
+	 */
+	public static final String OWL_ONTOLOGY_ELEMENT = "Ontology";
 }

@@ -32,14 +32,19 @@
 package org.mskcc.biopax_plugin.util.cytoscape;
 
 import cytoscape.Cytoscape;
+
 import cytoscape.view.CytoscapeDesktop;
+
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
+
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
 
-import javax.swing.*;
 import java.net.URL;
+
+import javax.swing.*;
+
 
 /**
  * Wrapper Class for Cytoscape 2.1 and 2.2 Specific Code.
@@ -47,74 +52,70 @@ import java.net.URL;
  * @author Ethan Cerami.
  */
 public class CytoscapeWrapper {
-    private static boolean bioPaxUIInitialized = false;
+	private static boolean bioPaxUIInitialized = false;
 
-    /**
-     * Sets the Status Bar Message.
-     * Feature only available in Cytoscape 2.2.
-     *
-     * @param msg User msg.
-     */
-    public static void setStatusBarMsg(String msg) {
-        //cytoscape 2.1 code
-        //  BioPaxDetailsPanel bpPanel = BioPaxDetailsPanel.getInstance();
-        //  bpPanel.setStatusBarMsg(msg);
+	/**
+	 * Sets the Status Bar Message.
+	 * Feature only available in Cytoscape 2.2.
+	 *
+	 * @param msg User msg.
+	 */
+	public static void setStatusBarMsg(String msg) {
+		//cytoscape 2.1 code
+		//  BioPaxDetailsPanel bpPanel = BioPaxDetailsPanel.getInstance();
+		//  bpPanel.setStatusBarMsg(msg);
 
-        // cytoscape 2.2 code
-        CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        desktop.setStatusBarMsg(msg);
-    }
+		// cytoscape 2.2 code
+		CytoscapeDesktop desktop = Cytoscape.getDesktop();
+		desktop.setStatusBarMsg(msg);
+	}
 
-    /**
-     * Clears the Status Bar Message.
-     * Feature only available in Cytoscape 2.2.
-     */
-    public static void clearStatusBar() {
-        // cytoscape 2.1 code
-        // BioPaxDetailsPanel bpPanel = BioPaxDetailsPanel.getInstance();
-        // bpPanel.clearStatusBarMsg();
+	/**
+	 * Clears the Status Bar Message.
+	 * Feature only available in Cytoscape 2.2.
+	 */
+	public static void clearStatusBar() {
+		// cytoscape 2.1 code
+		// BioPaxDetailsPanel bpPanel = BioPaxDetailsPanel.getInstance();
+		// bpPanel.clearStatusBarMsg();
 
-        // cytoscape 2.2 code
-        CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        desktop.clearStatusBar();
-    }
+		// cytoscape 2.2 code
+		CytoscapeDesktop desktop = Cytoscape.getDesktop();
+		desktop.clearStatusBar();
+	}
 
-    /**
-     * Activates the BioPaxPlugIn Tab in a Cytopanel.
-     * Feature only available in Cytoscape 2.2.
-     *
-     * @param bpContainer BioPaxContainer Object.
-     */
-    public static void activateBioPaxPlugInTab(BioPaxContainer bpContainer) {
-        // cytoscape 2.2 code
-        CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        CytoPanel cytoPanel = desktop.getCytoPanel
-                (BioPaxContainer.CYTO_PANEL_LOCATION);
-        int index = cytoPanel.indexOfComponent(bpContainer);
-        cytoPanel.setSelectedIndex(index);
-    }
+	/**
+	 * Activates the BioPaxPlugIn Tab in a Cytopanel.
+	 * Feature only available in Cytoscape 2.2.
+	 *
+	 * @param bpContainer BioPaxContainer Object.
+	 */
+	public static void activateBioPaxPlugInTab(BioPaxContainer bpContainer) {
+		// cytoscape 2.2 code
+		CytoscapeDesktop desktop = Cytoscape.getDesktop();
+		CytoPanel cytoPanel = desktop.getCytoPanel(BioPaxContainer.CYTO_PANEL_LOCATION);
+		int index = cytoPanel.indexOfComponent(bpContainer);
+		cytoPanel.setSelectedIndex(index);
+	}
 
-    /**
-     * Initializes the BioPax PlugIn UI.
-     */
-    public static void initBioPaxPlugInUI() {
-        if (!bioPaxUIInitialized) {
+	/**
+	 * Initializes the BioPax PlugIn UI.
+	 */
+	public static void initBioPaxPlugInUI() {
+		if (!bioPaxUIInitialized) {
+			//  cytoscape 2.1 code
+			//  BioPaxDetailsWindow bpWindow =
+			//      BioPaxDetailsWindow.getInstance();
 
-            //  cytoscape 2.1 code
-            //  BioPaxDetailsWindow bpWindow =
-            //      BioPaxDetailsWindow.getInstance();
-
-            //  cytoscape 2.2 code
-            BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-            CytoscapeDesktop desktop = Cytoscape.getDesktop();
-            CytoPanel cytoPanel = desktop.getCytoPanel
-                    (BioPaxContainer.CYTO_PANEL_LOCATION);
-            URL url = BioPaxDetailsPanel.class.getResource
-                    ("resources/read_obj.gif");
-            Icon icon = new ImageIcon(url);
-            cytoPanel.add("BioPAX Extension", icon, bpContainer, "BioPAX Extension");
-            cytoPanel.setState(CytoPanelState.DOCK);
-            bioPaxUIInitialized = true;
-        }
-    }
+			//  cytoscape 2.2 code
+			BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+			CytoscapeDesktop desktop = Cytoscape.getDesktop();
+			CytoPanel cytoPanel = desktop.getCytoPanel(BioPaxContainer.CYTO_PANEL_LOCATION);
+			URL url = BioPaxDetailsPanel.class.getResource("resources/read_obj.gif");
+			Icon icon = new ImageIcon(url);
+			cytoPanel.add("BioPAX Extension", icon, bpContainer, "BioPAX Extension");
+			cytoPanel.setState(CytoPanelState.DOCK);
+			bioPaxUIInitialized = true;
+		}
+	}
 }

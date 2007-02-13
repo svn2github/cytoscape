@@ -34,13 +34,15 @@
 */
 package org.cytoscape.coreplugin.cpath.ui;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 
 /**
  * Displays Information About the cPath PlugIn.
@@ -48,105 +50,103 @@ import java.awt.event.MouseEvent;
  * @author Ethan Cerami.
  */
 public class AboutDialog extends MouseAdapter implements ActionListener {
-    /**
-     * Current Version Number.
-     */
-    public static final String VERSION = "Beta 3";
+	/**
+	 * Current Version Number.
+	 */
+	public static final String VERSION = "Beta 3";
 
-    /**
-     * Current Release Date.
-     */
-    public static final String RELEASE_DATE = "June, 2006";
+	/**
+	 * Current Release Date.
+	 */
+	public static final String RELEASE_DATE = "June, 2006";
+	private JFrame parent;
+	private JDialog dialog;
+	private static final int WIDTH = 400;
+	private static final int HEIGHT = 450;
 
-    private JFrame parent;
-    private JDialog dialog;
-    private static final int WIDTH = 400;
-    private static final int HEIGHT = 450;
+	/**
+	 * Constructor.
+	 *
+	 * @param parent Parent Frame.
+	 */
+	public AboutDialog(JFrame parent) {
+		this.parent = parent;
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param parent Parent Frame.
-     */
-    public AboutDialog (JFrame parent) {
-        this.parent = parent;
-    }
+	/**
+	 * User has requested that we shows the About Dialog.
+	 *
+	 * @param event ActionEvent Object.
+	 */
+	public void actionPerformed(ActionEvent event) {
+		dialog = new JDialog(parent, "About the cPath PlugIn", true);
 
-    /**
-     * User has requested that we shows the About Dialog.
-     *
-     * @param event ActionEvent Object.
-     */
-    public void actionPerformed (ActionEvent event) {
-        dialog = new JDialog(parent, "About the cPath PlugIn", true);
-        Container contentPane = dialog.getContentPane();
-        contentPane.setLayout(new BorderLayout());
+		Container contentPane = dialog.getContentPane();
+		contentPane.setLayout(new BorderLayout());
 
-        JEditorPane htmlPane = new JEditorPane();
-        htmlPane.addMouseListener(this);
-        EmptyBorder border = new EmptyBorder(5, 5, 5, 5);
-        htmlPane.setBorder(border);
-        htmlPane.setContentType("text/html");
-        htmlPane.setEditable(false);
-        htmlPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		JEditorPane htmlPane = new JEditorPane();
+		htmlPane.addMouseListener(this);
 
-        String html = this.getAboutHtml();
-        htmlPane.setText(html);
+		EmptyBorder border = new EmptyBorder(5, 5, 5, 5);
+		htmlPane.setBorder(border);
+		htmlPane.setContentType("text/html");
+		htmlPane.setEditable(false);
+		htmlPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-        JScrollPane scrollPane = new JScrollPane(htmlPane);
-        contentPane.add(scrollPane, BorderLayout.CENTER);
+		String html = this.getAboutHtml();
+		htmlPane.setText(html);
 
-        Point point = parent.getLocation();
-        Dimension size = parent.getSize();
-        int x = (int) (point.getX() + size.getWidth() / 2 - WIDTH / 2);
-        int y = (int) (point.getY() + size.getHeight() / 2 - HEIGHT / 2);
-        dialog.setLocation(x, y);
-        dialog.pack();
-        dialog.setVisible(true);
-    }
+		JScrollPane scrollPane = new JScrollPane(htmlPane);
+		contentPane.add(scrollPane, BorderLayout.CENTER);
 
-    private String getAboutHtml () {
-        StringBuffer html = new StringBuffer();
-        html.append("<FONT FACE=ARIAL>");
-        html.append("<IMG SRC='http://www.mskcc.org/mskcc_resources/"
-                + "images/logos/336699.gif'>");
-        html.append("<BR>cPath PlugIn Version:  " + VERSION);
-        html.append("<BR>Release Date:  " + RELEASE_DATE);
+		Point point = parent.getLocation();
+		Dimension size = parent.getSize();
+		int x = (int) ((point.getX() + (size.getWidth() / 2)) - (WIDTH / 2));
+		int y = (int) ((point.getY() + (size.getHeight() / 2)) - (HEIGHT / 2));
+		dialog.setLocation(x, y);
+		dialog.pack();
+		dialog.setVisible(true);
+	}
 
-//        PropertyManager pManager = PropertyManager.getInstance();
-//        String url = pManager.getProperty(PropertyManager.CPATH_READ_LOCATION);
-//        html.append("<P>Your PlugIn is currently configured to retrieve "
-//                + "data from:  " + url);
+	private String getAboutHtml() {
+		StringBuffer html = new StringBuffer();
+		html.append("<FONT FACE=ARIAL>");
+		html.append("<IMG SRC='http://www.mskcc.org/mskcc_resources/" + "images/logos/336699.gif'>");
+		html.append("<BR>cPath PlugIn Version:  " + VERSION);
+		html.append("<BR>Release Date:  " + RELEASE_DATE);
 
-        html.append("<P>The Cytoscape cPath Plugin is maintained by ");
-        html.append("the Sander group at the Computational Biology Center ");
-        html.append("of Memorial Sloan-Kettering Cancer Center.");
-        html.append("<P>");
-        html.append("cPath is available at:  "
-                + "http://cbio.mskcc.org/cpath.");
-        html.append("<P>");
-        html.append("For scientific questions regarding cPath or the cPath"
-                + " PlugIn, please contact Gary Bader:  &lt;"
-                + "bader@cbio.mskcc.org&gt;.");
-        html.append("<P>");
-        html.append("For technical / programming questions regarding cPath or"
-                + " the cPath PlugIn, please contact Ethan Cerami:  "
-                + " &lt;cerami@cbio.mskcc.org&gt;");
-        html.append("</FONT>");
-        html.append("<P><HR><FONT FACE=ARIAL SIZE=-1>");
-        html.append("Copyright © 2004 Memorial Sloan-Kettering Cancer Center.");
-        html.append("</FONT>");
-        return html.toString();
-    }
+		//        PropertyManager pManager = PropertyManager.getInstance();
+		//        String url = pManager.getProperty(PropertyManager.CPATH_READ_LOCATION);
+		//        html.append("<P>Your PlugIn is currently configured to retrieve "
+		//                + "data from:  " + url);
+		html.append("<P>The Cytoscape cPath Plugin is maintained by ");
+		html.append("the Sander group at the Computational Biology Center ");
+		html.append("of Memorial Sloan-Kettering Cancer Center.");
+		html.append("<P>");
+		html.append("cPath is available at:  " + "http://cbio.mskcc.org/cpath.");
+		html.append("<P>");
+		html.append("For scientific questions regarding cPath or the cPath"
+		            + " PlugIn, please contact Gary Bader:  &lt;" + "bader@cbio.mskcc.org&gt;.");
+		html.append("<P>");
+		html.append("For technical / programming questions regarding cPath or"
+		            + " the cPath PlugIn, please contact Ethan Cerami:  "
+		            + " &lt;cerami@cbio.mskcc.org&gt;");
+		html.append("</FONT>");
+		html.append("<P><HR><FONT FACE=ARIAL SIZE=-1>");
+		html.append("Copyright ï¿½ 2004 Memorial Sloan-Kettering Cancer Center.");
+		html.append("</FONT>");
 
-    /**
-     * Mouse Clicked.  Dialog if Disposed.
-     *
-     * @param e MouseEvent.
-     */
-    public void mouseClicked (MouseEvent e) {
-        if (dialog != null) {
-            dialog.dispose();
-        }
-    }
+		return html.toString();
+	}
+
+	/**
+	 * Mouse Clicked.  Dialog if Disposed.
+	 *
+	 * @param e MouseEvent.
+	 */
+	public void mouseClicked(MouseEvent e) {
+		if (dialog != null) {
+			dialog.dispose();
+		}
+	}
 }

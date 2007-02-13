@@ -33,52 +33,51 @@ package org.mskcc.biopax_plugin.util.rdf;
 
 import org.jdom.Namespace;
 
+
 /**
  * RDF (Resource Description Framework) Constants.
  *
  * @author Ethan Cerami.
  */
 public class RdfConstants {
+	/**
+	 * RDF Root Name.
+	 */
+	public static final String RDF_ROOT_NAME = "RDF";
 
-    /**
-     * RDF Root Name.
-     */
-    public static final String RDF_ROOT_NAME = "RDF";
+	/**
+	 * RDF ID Attribute
+	 */
+	public static final String ID_ATTRIBUTE = "ID";
 
-    /**
-     * RDF ID Attribute
-     */
-    public static final String ID_ATTRIBUTE = "ID";
+	/**
+	 * RDF Resource Attribute
+	 */
+	public static final String RESOURCE_ATTRIBUTE = "resource";
 
-    /**
-     * RDF Resource Attribute
-     */
-    public static final String RESOURCE_ATTRIBUTE = "resource";
+	/**
+	 * RDF About Attribute
+	 */
+	public static final String ABOUT_ATTRIBUTE = "about";
 
-    /**
-     * RDF About Attribute
-     */
-    public static final String ABOUT_ATTRIBUTE = "about";
+	/**
+	 * RDF Datatype Attribute
+	 */
+	public static final String DATATYPE_ATTRIBUTE = "datatype";
 
-    /**
-     * RDF Datatype Attribute
-     */
-    public static final String DATATYPE_ATTRIBUTE = "datatype";
+	/**
+	 * RDF Namespace URI
+	 */
+	public static final String RDF_NAMESPACE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
-    /**
-     * RDF Namespace URI
-     */
-    public static final String RDF_NAMESPACE_URI =
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	/**
+	 * RDF Namespace Prefix
+	 */
+	public static final String RDF_NAMESPACE_PREFIX = "rdf";
 
-    /**
-     * RDF Namespace Prefix
-     */
-    public static final String RDF_NAMESPACE_PREFIX = "rdf";
-
-    /**
-     * RDF Namespace Object.
-     */
-    public static final Namespace RDF_NAMESPACE = Namespace.getNamespace
-            (RdfConstants.RDF_NAMESPACE_PREFIX, RdfConstants.RDF_NAMESPACE_URI);
+	/**
+	 * RDF Namespace Object.
+	 */
+	public static final Namespace RDF_NAMESPACE = Namespace.getNamespace(RdfConstants.RDF_NAMESPACE_PREFIX,
+	                                                                     RdfConstants.RDF_NAMESPACE_URI);
 }

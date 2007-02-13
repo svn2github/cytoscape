@@ -32,12 +32,16 @@
 package org.mskcc.test.rdf;
 
 import junit.framework.TestCase;
+
 import org.jdom.Element;
+
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 
 import java.io.FileReader;
+
 import java.util.List;
+
 
 /**
  * Tests the RdfQuery Class.
@@ -45,27 +49,26 @@ import java.util.List;
  * @author Ethan Cerami
  */
 public class TestRdfQuery extends TestCase {
+	/**
+	 * Tests the RdfQuery using a Sample RDF Document.
+	 *
+	 * @throws Exception All Exceptions.
+	 */
+	public void testQuery() throws Exception {
+		FileReader reader = new FileReader("testData/rdf_sample.xml");
+		BioPaxUtil bpUtil = new BioPaxUtil(reader);
 
-    /**
-     * Tests the RdfQuery using a Sample RDF Document.
-     *
-     * @throws Exception All Exceptions.
-     */
-    public void testQuery() throws Exception {
-        FileReader reader = new FileReader("testData/rdf_sample.xml");
-        BioPaxUtil bpUtil = new BioPaxUtil(reader);
+		//  Get Root Element
+		Element root = bpUtil.getRootElement();
+		RdfQuery rdfQuery = new RdfQuery(bpUtil.getRdfResourceMap());
 
-        //  Get Root Element
-        Element root = bpUtil.getRootElement();
-        RdfQuery rdfQuery = new RdfQuery(bpUtil.getRdfResourceMap());
+		//  Try a Wild Card Query that requires RDF Resource Look Ups
+		List targetNodes = rdfQuery.getNodes(root, "CONTROLLED/*/LEFT/*/PHYSICAL-ENTITY/*/NAME");
+		assertEquals(2, targetNodes.size());
 
-        //  Try a Wild Card Query that requires RDF Resource Look Ups
-        List targetNodes = rdfQuery.getNodes
-                (root, "CONTROLLED/*/LEFT/*/PHYSICAL-ENTITY/*/NAME");
-        assertEquals(2, targetNodes.size());
-        Element e0 = (Element) targetNodes.get(0);
-        Element e1 = (Element) targetNodes.get(1);
-        assertEquals("alpha-D-glucose", e0.getTextNormalize());
-        assertEquals("Adenosine 5'-triphosphate", e1.getTextNormalize());
-    }
+		Element e0 = (Element) targetNodes.get(0);
+		Element e1 = (Element) targetNodes.get(1);
+		assertEquals("alpha-D-glucose", e0.getTextNormalize());
+		assertEquals("Adenosine 5'-triphosphate", e1.getTextNormalize());
+	}
 }

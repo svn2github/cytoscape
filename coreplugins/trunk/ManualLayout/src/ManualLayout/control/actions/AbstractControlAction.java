@@ -1,39 +1,92 @@
 
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package ManualLayout.control.actions;
 
 import cytoscape.*;
-import cytoscape.util.*;
-import cytoscape.view.*;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
 import cytoscape.data.*;
 
-import giny.view.*;
-import giny.model.*;
+import cytoscape.util.*;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
+import cytoscape.view.*;
 import cytoscape.view.CyNetworkView;
 
-import java.util.*;
+import giny.model.*;
+
+import giny.view.*;
+
 import java.awt.event.*;
+
+import java.util.*;
+
 import javax.swing.*;
 
-public abstract class AbstractControlAction extends CytoscapeAction {
 
+/**
+ *
+ */
+public abstract class AbstractControlAction extends CytoscapeAction {
 	protected double X_min;
 	protected double X_max;
 	protected double Y_min;
 	protected double Y_max;
 	protected NodeView node_view;
 	protected Iterator sel_nodes;
- 
-	public AbstractControlAction ( ImageIcon icon ) {
-		super( "", icon );
+
+	/**
+	 * Creates a new AbstractControlAction object.
+	 *
+	 * @param icon  DOCUMENT ME!
+	 */
+	public AbstractControlAction(ImageIcon icon) {
+		super("", icon);
 	}
 
-	public void actionPerformed ( ActionEvent e ) {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void actionPerformed(ActionEvent e) {
 		GraphView view = Cytoscape.getCurrentNetworkView();
 		computeDimensions(view);
-		control( view.getSelectedNodes() );
+		control(view.getSelectedNodes());
 		view.updateView();
 	}
 
@@ -56,90 +109,100 @@ public abstract class AbstractControlAction extends CytoscapeAction {
 	}
 
 	protected void computeDimensions(GraphView view) {
-   
-		X_min = Double.POSITIVE_INFINITY; 
+		X_min = Double.POSITIVE_INFINITY;
 		X_max = Double.NEGATIVE_INFINITY;
-		Y_min = Double.POSITIVE_INFINITY; 
+		Y_min = Double.POSITIVE_INFINITY;
 		Y_max = Double.NEGATIVE_INFINITY;
 		sel_nodes = view.getSelectedNodes().iterator();
 
-		while ( sel_nodes.hasNext() ) {
-			node_view = ( NodeView )sel_nodes.next();
+		while (sel_nodes.hasNext()) {
+			node_view = (NodeView) sel_nodes.next();
 
 			double X = getX(node_view);
-		
-			if ( X > X_max )
+
+			if (X > X_max)
 				X_max = X;
-		
-			if ( X < X_min ) 
+
+			if (X < X_min)
 				X_min = X;
 
 			double Y = getY(node_view);
-		
-			if ( Y > Y_max )
+
+			if (Y > Y_max)
 				Y_max = Y;
-		
-			if ( Y < Y_min ) 
+
+			if (Y < Y_min)
 				Y_min = Y;
 		}
-  	}
+	}
 
-	public boolean isInToolBar () {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean isInToolBar() {
 		return false;
 	}
 
-	public boolean isInMenuBar () {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean isInMenuBar() {
 		return false;
 	}
-
 
 	public class XComparator implements Comparator {
 		public int compare(Object o1, Object o2) {
+			NodeView n1 = (NodeView) o1;
+			NodeView n2 = (NodeView) o2;
 
-			NodeView n1 = (NodeView)o1;
-			NodeView n2 = (NodeView)o2;
-
-			if ( getX(n1) == getX(n2) ) 
+			if (getX(n1) == getX(n2))
 				return 0;
-			else if ( getX(n1) < getX(n2) ) 
+			else if (getX(n1) < getX(n2))
 				return -1;
-			else 
+			else
+
 				return 1;
 		}
 
 		public boolean equals(Object o1, Object o2) {
-			NodeView n1 = (NodeView)o1;
-			NodeView n2 = (NodeView)o2;
-			if ( getX(n1) == getX(n2) ) 
+			NodeView n1 = (NodeView) o1;
+			NodeView n2 = (NodeView) o2;
+
+			if (getX(n1) == getX(n2))
 				return true;
 			else
+
 				return false;
 		}
 	}
-
 
 	public class YComparator implements Comparator {
 		public int compare(Object o1, Object o2) {
+			NodeView n1 = (NodeView) o1;
+			NodeView n2 = (NodeView) o2;
 
-			NodeView n1 = (NodeView)o1;
-			NodeView n2 = (NodeView)o2;
-
-			if ( getY(n1) == getY(n2) )
+			if (getY(n1) == getY(n2))
 				return 0;
-			else if ( getY(n1) < getY(n2) )
+			else if (getY(n1) < getY(n2))
 				return -1;
 			else
+
 				return 1;
 		}
 
 		public boolean equals(Object o1, Object o2) {
-			NodeView n1 = (NodeView)o1;
-			NodeView n2 = (NodeView)o2;
-			if ( getY(n1) == getY(n2) )
+			NodeView n1 = (NodeView) o1;
+			NodeView n2 = (NodeView) o2;
+
+			if (getY(n1) == getY(n2))
 				return true;
 			else
+
 				return false;
 		}
 	}
-
 }
