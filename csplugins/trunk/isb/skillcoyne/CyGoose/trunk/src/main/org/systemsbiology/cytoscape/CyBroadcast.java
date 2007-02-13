@@ -3,27 +3,20 @@
  */
 package org.systemsbiology.cytoscape;
 
-import org.systemsbiology.cytoscape.*;
 import org.systemsbiology.cytoscape.dialog.CyAttrDialog;
 import org.systemsbiology.cytoscape.dialog.GooseDialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.Naming;
-import java.rmi.RemoteException;
-import java.rmi.UnmarshalException;
-import java.rmi.server.UnicastRemoteObject;
 
 import java.util.*;
 
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
 import org.systemsbiology.gaggle.boss.Boss;
 import org.systemsbiology.gaggle.experiment.datamatrix.DataMatrix;
 import org.systemsbiology.gaggle.network.*;
 import org.systemsbiology.gaggle.geese.Goose;
-import org.systemsbiology.gaggle.util.MiscUtil;
 
 import cytoscape.*;
 import cytoscape.data.CyAttributes;
@@ -116,7 +109,7 @@ public class CyBroadcast
 
     // pass string of attribute names
     String[] AllAttrNames = Cytoscape.getNodeAttributes().getAttributeNames();
-
+    
     // confirmAttrSelection(AllAttrNames, "HashMap");
     AttrSelectAction okAction = new AttrSelectAction()
       {
@@ -204,8 +197,6 @@ public class CyBroadcast
 		catch (Exception E) { E.printStackTrace(); }
 		}
 
-
-	
 	public void broadcastDataMatrix()
 		{
 		print("broadcastDataMatrix"); 
@@ -243,10 +234,17 @@ public class CyBroadcast
           }
       };
 
-    CyAttrDialog dialog = new CyAttrDialog(attributeNames, okAction, CyAttrDialog.MULTIPLE_SELECT);
-    dialog.setDialogText(broadcastStr);
-    dialog.preSelectCheckBox(condNames);
-    dialog.buildDialogWin();
+    if (condNames.length > 0)
+    	{
+	    CyAttrDialog dialog = new CyAttrDialog(condNames, okAction, CyAttrDialog.MULTIPLE_SELECT);
+	    dialog.setDialogText(broadcastStr);
+	    dialog.preSelectCheckBox(condNames);
+	    dialog.buildDialogWin();
+    	}
+    else
+    	{
+      GagglePlugin.showDialogBox("The selected nodes do not have numerical attributes for a matrix", "Warning", JOptionPane.WARNING_MESSAGE);
+    	}
 		}
 	
   private void broadcastDataMatrix(String[] condNames)
