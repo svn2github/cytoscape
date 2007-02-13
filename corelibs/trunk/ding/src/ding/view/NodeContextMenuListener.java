@@ -21,12 +21,13 @@ import javax.swing.JPopupMenu;
  * @author Allan Kuchinsky
  *
  */
+
 /**
  * an interface for responding to PhoebeCanvasDropEvents.
  */
 public interface NodeContextMenuListener extends EventListener {
-    /**
-     * method for responding to a drop
-     */
-    void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu);
+	/**
+	 * method for responding to a drop
+	 */
+	void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu);
 }

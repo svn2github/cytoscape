@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 /** <p>Main entry-point into the library.</p>
  *
  * <p>Options represents a collection of {@link Option} objects, which
@@ -40,245 +41,226 @@ import java.util.Map;
  * @version $Revision: 155404 $
  */
 public class Options {
+	/** a map of the options with the character key */
+	private Map shortOpts = new HashMap();
 
-    /** a map of the options with the character key */
-    private Map shortOpts = new HashMap();
+	/** a list for storing the help options in the order they were created */
+	private List helpOpts = new ArrayList();
 
-    /** a list for storing the help options in the order they were created */
-    private List helpOpts = new ArrayList();
+	/** a map of the options with the long key */
+	private Map longOpts = new HashMap();
 
-    /** a map of the options with the long key */
-    private Map longOpts = new HashMap();
+	/** a map of the required options */
+	private List requiredOpts = new ArrayList();
 
-    /** a map of the required options */
-    private List requiredOpts = new ArrayList();
+	/** a map of the option groups */
+	private Map optionGroups = new HashMap();
 
-    /** a map of the option groups */
-    private Map optionGroups = new HashMap();
+	/** Construct a new Options descriptor
+	 */
+	public Options() {
+		// nothing to do
+	}
 
-    /** Construct a new Options descriptor
-     */
-    public Options()
-    {
-        // nothing to do
-    }
+	/**
+	 * Add the specified option group.
+	 *
+	 * @param group the OptionGroup that is to be added
+	 * @return the resulting Options instance
+	 */
+	public Options addOptionGroup(OptionGroup group) {
+		Iterator options = group.getOptions().iterator();
 
-    /**
-     * Add the specified option group.
-     *
-     * @param group the OptionGroup that is to be added
-     * @return the resulting Options instance
-     */
-    public Options addOptionGroup(OptionGroup group)
-    {
-        Iterator options = group.getOptions().iterator();
+		if (group.isRequired()) {
+			requiredOpts.add(group);
+		}
 
-        if (group.isRequired())
-        {
-            requiredOpts.add(group);
-        }
+		while (options.hasNext()) {
+			Option option = (Option) options.next();
 
-        while (options.hasNext())
-        {
-            Option option = (Option) options.next();
+			// an Option cannot be required if it is in an
+			// OptionGroup, either the group is required or
+			// nothing is required
+			option.setRequired(false);
+			addOption(option);
 
+			optionGroups.put(option.getKey(), group);
+		}
 
-            // an Option cannot be required if it is in an
-            // OptionGroup, either the group is required or
-            // nothing is required
-            option.setRequired(false);
-            addOption(option);
+		return this;
+	}
 
-            optionGroups.put(option.getKey(), group);
-        }
+	/**
+	 * Lists the OptionGroups that are members of this Options instance.
+	 * @return a Collection of OptionGroup instances.
+	 */
+	Collection getOptionGroups() {
+		return new HashSet(optionGroups.values());
+	}
 
-        return this;
-    }
-    
-    /**
-     * Lists the OptionGroups that are members of this Options instance.
-     * @return a Collection of OptionGroup instances.
-     */
-    Collection getOptionGroups(){
-    	return new HashSet(optionGroups.values());
-    }
+	/**
+	 * Add an option that only contains a short-name.
+	 * It may be specified as requiring an argument.
+	 *
+	 * @param opt Short single-character name of the option.
+	 * @param hasArg flag signally if an argument is required after this option
+	 * @param description Self-documenting description
+	 * @return the resulting Options instance
+	 */
+	public Options addOption(String opt, boolean hasArg, String description) {
+		addOption(opt, null, hasArg, description);
 
-    /** 
-     * Add an option that only contains a short-name.
-     * It may be specified as requiring an argument.
-     *
-     * @param opt Short single-character name of the option.
-     * @param hasArg flag signally if an argument is required after this option
-     * @param description Self-documenting description
-     * @return the resulting Options instance
-     */
-    public Options addOption(String opt, boolean hasArg, String description)
-    {
-        addOption(opt, null, hasArg, description);
+		return this;
+	}
 
-        return this;
-    }
+	/**
+	 * Add an option that contains a short-name and a long-name.
+	 * It may be specified as requiring an argument.
+	 *
+	 * @param opt Short single-character name of the option.
+	 * @param longOpt Long multi-character name of the option.
+	 * @param hasArg flag signally if an argument is required after this option
+	 * @param description Self-documenting description
+	 * @return the resulting Options instance
+	 */
+	public Options addOption(String opt, String longOpt, boolean hasArg, String description) {
+		addOption(new Option(opt, longOpt, hasArg, description));
 
-    /** 
-     * Add an option that contains a short-name and a long-name.
-     * It may be specified as requiring an argument.
-     *
-     * @param opt Short single-character name of the option.
-     * @param longOpt Long multi-character name of the option.
-     * @param hasArg flag signally if an argument is required after this option
-     * @param description Self-documenting description
-     * @return the resulting Options instance
-     */
-    public Options addOption(String opt, String longOpt, boolean hasArg, 
-                             String description)
-    {
-        addOption(new Option(opt, longOpt, hasArg, description));
+		return this;
+	}
 
-        return this;
-    }
+	/**
+	 * Adds an option instance
+	 *
+	 * @param opt the option that is to be added
+	 * @return the resulting Options instance
+	 */
+	public Options addOption(Option opt) {
+		String key = opt.getKey();
 
-    /**
-     * Adds an option instance
-     *
-     * @param opt the option that is to be added 
-     * @return the resulting Options instance
-     */
-    public Options addOption(Option opt)
-    {
-        String key = opt.getKey();
+		// add it to the long option list
+		if (opt.hasLongOpt()) {
+			longOpts.put(opt.getLongOpt(), opt);
+		}
 
-        // add it to the long option list
-        if (opt.hasLongOpt())
-        {
-            longOpts.put(opt.getLongOpt(), opt);
-        }
+		// if the option is required add it to the required list
+		if (opt.isRequired()) {
+			if (requiredOpts.contains(key)) {
+				requiredOpts.remove(requiredOpts.indexOf(key));
+			}
 
-        // if the option is required add it to the required list
-        if (opt.isRequired() ) 
-        {
-            if( requiredOpts.contains(key) ) {
-                requiredOpts.remove( requiredOpts.indexOf(key) );
-            }
-            requiredOpts.add(key);
-        }
+			requiredOpts.add(key);
+		}
 
-        shortOpts.put(key, opt);
-	helpOpts.add(opt);
+		shortOpts.put(key, opt);
+		helpOpts.add(opt);
 
-        return this;
-    }
+		return this;
+	}
 
-    /** 
-     * Retrieve a read-only list of options in this set
-     *
-     * @return read-only Collection of {@link Option} objects in this descriptor
-     */
-    public Collection getOptions()
-    {
-        return Collections.unmodifiableCollection(helpOptions());
-    }
+	/**
+	 * Retrieve a read-only list of options in this set
+	 *
+	 * @return read-only Collection of {@link Option} objects in this descriptor
+	 */
+	public Collection getOptions() {
+		return Collections.unmodifiableCollection(helpOptions());
+	}
 
-    /**
-     * Returns the Options for use by the HelpFormatter.
-     *
-     * @return the List of Options
-     */
-    List helpOptions()
-    {
-    /*
-        List opts = new ArrayList(shortOpts.values());
+	/**
+	 * Returns the Options for use by the HelpFormatter.
+	 *
+	 * @return the List of Options
+	 */
+	List helpOptions() {
+		/*
+		    List opts = new ArrayList(shortOpts.values());
 
-        // now look through the long opts to see if there are any Long-opt
-        // only options
-        Iterator iter = longOpts.values().iterator();
+		    // now look through the long opts to see if there are any Long-opt
+		    // only options
+		    Iterator iter = longOpts.values().iterator();
 
-        while (iter.hasNext())
-        {
-            Object item = iter.next();
+		    while (iter.hasNext())
+		    {
+		        Object item = iter.next();
 
-            if (!opts.contains(item))
-            {
-                opts.add(item);
-            }
-        }
+		        if (!opts.contains(item))
+		        {
+		            opts.add(item);
+		        }
+		    }
 
-        return new ArrayList(opts);
-	*/
-	return helpOpts;
-    }
+		    return new ArrayList(opts);
+		*/
+		return helpOpts;
+	}
 
-    /** 
-     * Returns the required options as a
-     * <code>java.util.Collection</code>.
-     *
-     * @return Collection of required options
-     */
-    public List getRequiredOptions()
-    {
-        return requiredOpts;
-    }
+	/**
+	 * Returns the required options as a
+	 * <code>java.util.Collection</code>.
+	 *
+	 * @return Collection of required options
+	 */
+	public List getRequiredOptions() {
+		return requiredOpts;
+	}
 
-    /** 
-     * Retrieve the named {@link Option}
-     *
-     * @param opt short or long name of the {@link Option}
-     * @return the option represented by opt
-     */
-    public Option getOption(String opt)
-    {
-        opt = Util.stripLeadingHyphens(opt);
+	/**
+	 * Retrieve the named {@link Option}
+	 *
+	 * @param opt short or long name of the {@link Option}
+	 * @return the option represented by opt
+	 */
+	public Option getOption(String opt) {
+		opt = Util.stripLeadingHyphens(opt);
 
-        if (shortOpts.containsKey(opt))
-        {
-            return (Option) shortOpts.get(opt);
-        }
+		if (shortOpts.containsKey(opt)) {
+			return (Option) shortOpts.get(opt);
+		}
 
-        return (Option) longOpts.get(opt);
-    }
+		return (Option) longOpts.get(opt);
+	}
 
-    /** 
-     * Returns whether the named {@link Option} is a member
-     * of this {@link Options}.
-     *
-     * @param opt short or long name of the {@link Option}
-     * @return true if the named {@link Option} is a member
-     * of this {@link Options}
-     */
-    public boolean hasOption(String opt)
-    {
-        opt = Util.stripLeadingHyphens(opt);
+	/**
+	 * Returns whether the named {@link Option} is a member
+	 * of this {@link Options}.
+	 *
+	 * @param opt short or long name of the {@link Option}
+	 * @return true if the named {@link Option} is a member
+	 * of this {@link Options}
+	 */
+	public boolean hasOption(String opt) {
+		opt = Util.stripLeadingHyphens(opt);
 
-        return shortOpts.containsKey(opt) || longOpts.containsKey(opt);
-    }
+		return shortOpts.containsKey(opt) || longOpts.containsKey(opt);
+	}
 
-    /** 
-     * Returns the OptionGroup the <code>opt</code>
-     * belongs to.
-     * @param opt the option whose OptionGroup is being queried.
-     *
-     * @return the OptionGroup if <code>opt</code> is part
-     * of an OptionGroup, otherwise return null
-     */
-    public OptionGroup getOptionGroup(Option opt)
-    {
-        return (OptionGroup) optionGroups.get(opt.getKey());
-    }
+	/**
+	 * Returns the OptionGroup the <code>opt</code>
+	 * belongs to.
+	 * @param opt the option whose OptionGroup is being queried.
+	 *
+	 * @return the OptionGroup if <code>opt</code> is part
+	 * of an OptionGroup, otherwise return null
+	 */
+	public OptionGroup getOptionGroup(Option opt) {
+		return (OptionGroup) optionGroups.get(opt.getKey());
+	}
 
-    /** 
-     * Dump state, suitable for debugging.
-     *
-     * @return Stringified form of this object
-     */
-    public String toString()
-    {
-        StringBuffer buf = new StringBuffer();
+	/**
+	 * Dump state, suitable for debugging.
+	 *
+	 * @return Stringified form of this object
+	 */
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
 
-        buf.append("[ Options: [ short ");
-        buf.append(shortOpts.toString());
-        buf.append(" ] [ long ");
-        buf.append(longOpts);
-        buf.append(" ]");
+		buf.append("[ Options: [ short ");
+		buf.append(shortOpts.toString());
+		buf.append(" ] [ long ");
+		buf.append(longOpts);
+		buf.append(" ]");
 
-        return buf.toString();
-    }
+		return buf.toString();
+	}
 }

@@ -19,98 +19,98 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+
 /**
  * @author John Keyes (john at integralsource.com)
  * @version $Revision: 155404 $
  */
-public class ParseRequiredTest extends TestCase
-{
+public class ParseRequiredTest extends TestCase {
+	private Options _options = null;
+	private CommandLineParser parser = new PosixParser();
 
-    private Options _options = null;
-    private CommandLineParser parser = new PosixParser();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static Test suite() {
+		return new TestSuite(ParseRequiredTest.class);
+	}
 
-    public static Test suite() { 
-        return new TestSuite(ParseRequiredTest.class); 
-    }
+	/**
+	 * Creates a new ParseRequiredTest object.
+	 *
+	 * @param name  DOCUMENT ME!
+	 */
+	public ParseRequiredTest(String name) {
+		super(name);
+	}
 
-    public ParseRequiredTest(String name)
-    {
-        super(name);
-    }
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void setUp() {
+		_options = new Options().addOption("a", "enable-a", false, "turn [a] on or off")
+		                        .addOption(OptionBuilder.withLongOpt("bfile").hasArg().isRequired()
+		                                                .withDescription("set the value of [b]")
+		                                                .create('b'));
+	}
 
-    public void setUp()
-    {
-        _options = new Options()
-            .addOption("a",
-                       "enable-a",
-                       false,
-                       "turn [a] on or off")
-            .addOption( OptionBuilder.withLongOpt( "bfile" )
-                                     .hasArg()
-                                     .isRequired()
-                                     .withDescription( "set the value of [b]" )
-                                     .create( 'b' ) );
-    }
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void tearDown() {
+	}
 
-    public void tearDown()
-    {
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void testWithRequiredOption() {
+		String[] args = new String[] { "-b", "file" };
 
-    }
+		try {
+			CommandLine cl = parser.parse(_options, args);
 
-    public void testWithRequiredOption()
-    {
-        String[] args = new String[] {  "-b", "file" };
+			assertTrue("Confirm -a is NOT set", !cl.hasOption("a"));
+			assertTrue("Confirm -b is set", cl.hasOption("b"));
+			assertTrue("Confirm arg of -b", cl.getOptionValue("b").equals("file"));
+			assertTrue("Confirm NO of extra args", cl.getArgList().size() == 0);
+		} catch (ParseException e) {
+			fail(e.toString());
+		}
+	}
 
-        try
-        {
-            CommandLine cl = parser.parse(_options,args);
-            
-            assertTrue( "Confirm -a is NOT set", !cl.hasOption("a") );
-            assertTrue( "Confirm -b is set", cl.hasOption("b") );
-            assertTrue( "Confirm arg of -b", cl.getOptionValue("b").equals("file") );
-            assertTrue( "Confirm NO of extra args", cl.getArgList().size() == 0);
-        }
-        catch (ParseException e)
-        {
-            fail( e.toString() );
-        }
-    }
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void testOptionAndRequiredOption() {
+		String[] args = new String[] { "-a", "-b", "file" };
 
-    public void testOptionAndRequiredOption()
-    {
-        String[] args = new String[] {  "-a", "-b", "file" };
+		try {
+			CommandLine cl = parser.parse(_options, args);
 
-        try
-        {
-            CommandLine cl = parser.parse(_options,args);
+			assertTrue("Confirm -a is set", cl.hasOption("a"));
+			assertTrue("Confirm -b is set", cl.hasOption("b"));
+			assertTrue("Confirm arg of -b", cl.getOptionValue("b").equals("file"));
+			assertTrue("Confirm NO of extra args", cl.getArgList().size() == 0);
+		} catch (ParseException e) {
+			fail(e.toString());
+		}
+	}
 
-            assertTrue( "Confirm -a is set", cl.hasOption("a") );
-            assertTrue( "Confirm -b is set", cl.hasOption("b") );
-            assertTrue( "Confirm arg of -b", cl.getOptionValue("b").equals("file") );
-            assertTrue( "Confirm NO of extra args", cl.getArgList().size() == 0);
-        }
-        catch (ParseException e)
-        {
-            fail( e.toString() );
-        }
-    }
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void testMissingRequiredOption() {
+		String[] args = new String[] { "-a" };
 
-    public void testMissingRequiredOption()
-    {
-        String[] args = new String[] { "-a" };
-
-        try
-        {
-            CommandLine cl = parser.parse(_options,args);
-            fail( "exception should have been thrown" );
-        }
-        catch (ParseException e)
-        {
-            if( !( e instanceof MissingOptionException ) )
-            {
-                fail( "expected to catch MissingOptionException" );
-            }
-        }
-    }
-
+		try {
+			CommandLine cl = parser.parse(_options, args);
+			fail("exception should have been thrown");
+		} catch (ParseException e) {
+			if (!(e instanceof MissingOptionException)) {
+				fail("expected to catch MissingOptionException");
+			}
+		}
+	}
 }

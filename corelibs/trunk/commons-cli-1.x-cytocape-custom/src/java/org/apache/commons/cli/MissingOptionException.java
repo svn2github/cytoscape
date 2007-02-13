@@ -15,23 +15,21 @@
  */
 package org.apache.commons.cli;
 
-/** 
+
+/**
  * <p>Thrown when a required option has not been provided.</p>
  *
  * @author John Keyes ( john at integralsource.com )
  * @see ParseException
  */
-public class MissingOptionException
-    extends ParseException {
-
-    /** 
-     * <p>Construct a new <code>MissingSelectedException</code> 
-     * with the specified detail message.</p>
-     *
-     * @param message the detail message
-     */
-    public MissingOptionException(String message)
-    {
-        super(message);
-    }
+public class MissingOptionException extends ParseException {
+	/**
+	 * <p>Construct a new <code>MissingSelectedException</code>
+	 * with the specified detail message.</p>
+	 *
+	 * @param message the detail message
+	 */
+	public MissingOptionException(String message) {
+		super(message);
+	}
 }

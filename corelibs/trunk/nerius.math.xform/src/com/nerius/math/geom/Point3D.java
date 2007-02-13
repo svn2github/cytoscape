@@ -7,12 +7,12 @@
   are met:
 
   1. Redistributions of source code must retain the above copyright
-     notice, this list of conditions and the following disclaimer. 
+     notice, this list of conditions and the following disclaimer.
   2. Redistributions in binary form must reproduce the above copyright
      notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution. 
+     documentation and/or other materials provided with the distribution.
   3. The name of the author may be used to endorse or promote products
-     derived from this software without specific prior written permission. 
+     derived from this software without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR
   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -25,41 +25,55 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.nerius.math.geom;
+
 
 /**
  * Immutable class.
  * @version $Revision: 1.1.1.1 $
  **/
-public final class Point3D
-{
+public final class Point3D {
+	/**
+	 * 
+	 */
+	public final double x;
 
-  public final double x;
-  public final double y;
-  public final double z;
+	/**
+	 * 
+	 */
+	public final double y;
 
-  public Point3D(double x, double y, double z)
-  {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
+	/**
+	 * 
+	 */
+	public final double z;
 
-//    public Point3D scale(float scaleFactor)
-//    {
-//      return new Point3D(x * scaleFactor, y * scaleFactor, z * scaleFactor);
-//    }
+	/**
+	 * Creates a new Point3D object.
+	 *
+	 * @param x  DOCUMENT ME!
+	 * @param y  DOCUMENT ME!
+	 * @param z  DOCUMENT ME!
+	 */
+	public Point3D(double x, double y, double z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
 
-//    public float distance(Point3D pt3D)
-//    {
-//      return (float) Math.sqrt(square(x - pt3D.x) + square(y - pt3D.y) +
-//                               square(z - pt3D.z));
-//    }
+	//    public Point3D scale(float scaleFactor)
+	//    {
+	//      return new Point3D(x * scaleFactor, y * scaleFactor, z * scaleFactor);
+	//    }
 
-//    private float square(float f)
-//    {
-//      return f * f;
-//    }
+	//    public float distance(Point3D pt3D)
+	//    {
+	//      return (float) Math.sqrt(square(x - pt3D.x) + square(y - pt3D.y) +
+	//                               square(z - pt3D.z));
+	//    }
 
+	//    private float square(float f)
+	//    {
+	//      return f * f;
+	//    }
 }

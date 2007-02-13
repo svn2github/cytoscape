@@ -15,24 +15,22 @@
  */
 package org.apache.commons.cli;
 
-/** 
+
+/**
  * <p>Exception thrown during parsing signalling an unrecognized
  * option was seen.<p>
  *
  * @author bob mcwhiter (bob @ werken.com)
  * @version $Revision: 155404 $
  */
-public class UnrecognizedOptionException
-    extends ParseException {
-
-    /** 
-     * <p>Construct a new <code>UnrecognizedArgumentException</code> 
-     * with the specified detail message.</p>
-     *
-     * @param message the detail message
-     */
-    public UnrecognizedOptionException(String message)
-    {
-        super(message);
-    }
+public class UnrecognizedOptionException extends ParseException {
+	/**
+	 * <p>Construct a new <code>UnrecognizedArgumentException</code>
+	 * with the specified detail message.</p>
+	 *
+	 * @param message the detail message
+	 */
+	public UnrecognizedOptionException(String message) {
+		super(message);
+	}
 }

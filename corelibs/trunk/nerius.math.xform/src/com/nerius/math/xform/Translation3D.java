@@ -7,12 +7,12 @@
   are met:
 
   1. Redistributions of source code must retain the above copyright
-     notice, this list of conditions and the following disclaimer. 
+     notice, this list of conditions and the following disclaimer.
   2. Redistributions in binary form must reproduce the above copyright
      notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution. 
+     documentation and/or other materials provided with the distribution.
   3. The name of the author may be used to endorse or promote products
-     derived from this software without specific prior written permission. 
+     derived from this software without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR
   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -25,31 +25,36 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.nerius.math.xform;
+
 
 /**
  * @version $Revision: 1.1.1.1 $
  **/
-public class Translation3D extends AffineTransform3D
-{
+public class Translation3D extends AffineTransform3D {
+	/**
+	 * Creates a new Translation3D object.
+	 *
+	 * @param x  DOCUMENT ME!
+	 * @param y  DOCUMENT ME!
+	 * @param z  DOCUMENT ME!
+	 */
+	public Translation3D(double x, double y, double z) {
+		super(new Matrix4x4(new double[][] {
+		                        { 1.0d, 0.0d, 0.0d, x },
+		                        { 0.0d, 1.0d, 0.0d, y },
+		                        { 0.0d, 0.0d, 1.0d, z },
+		                        { 0.0d, 0.0d, 0.0d, 1.0d }
+		                    }));
+	}
 
-  public Translation3D(double x, double y, double z)
-  {
-    super(new Matrix4x4(new double[][]
-                        {
-                          { 1.0d, 0.0d, 0.0d, x },
-                          { 0.0d, 1.0d, 0.0d, y },
-                          { 0.0d, 0.0d, 1.0d, z },
-                          { 0.0d, 0.0d, 0.0d, 1.0d }
-                        } ));
-  }
-
-  public Translation3D getInverse()
-  {
-    return new Translation3D(- m_matrix.m_entries[0][3],
-                             - m_matrix.m_entries[1][3],
-                             - m_matrix.m_entries[2][3]);
-  }
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Translation3D getInverse() {
+		return new Translation3D(-m_matrix.m_entries[0][3], -m_matrix.m_entries[1][3],
+		                         -m_matrix.m_entries[2][3]);
+	}
 }
