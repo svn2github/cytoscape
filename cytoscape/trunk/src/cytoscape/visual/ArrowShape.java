@@ -17,6 +17,8 @@ public enum ArrowShape {
 	ARROW("COLOR_ARROW", EdgeView.EDGE_COLOR_ARROW), 
 	COLOR_T("COLOR_T", EdgeView.EDGE_COLOR_T),
 	CIRCLE("COLOR_CIRCLE", EdgeView.EDGE_COLOR_CIRCLE), 
+	
+	// Not yet implemented
 	REVERSE_ARROW("REVERSE_ARROW", 100);
 	
 	private String shapeName;
@@ -27,14 +29,29 @@ public enum ArrowShape {
 		this.ginyType = ginyType;
 	}
 
+	/**
+	 * Returns arrow type in GINY.
+	 * 
+	 * @return
+	 */
 	public int getGinyArrow() {
 		return ginyType;
 	}
 	
+	/**
+	 * Returns name of arrow shape.
+	 * 
+	 * @return
+	 */
 	public String getName() {
 		return shapeName;
 	}
 	
+	/**
+	 * 
+	 * @param text
+	 * @return
+	 */
 	public static ArrowShape parseArrowText(String text) {
 		return valueOf(text);
 	}
