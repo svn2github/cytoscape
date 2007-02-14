@@ -136,36 +136,45 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Set the flag that indicates that this algorithm
+	 * should only operate on the currently selected nodes.
 	 *
-	 * @param selectedOnly DOCUMENT ME!
+	 * @param selectedOnly set to "true" if the algorithm should
+	 * only apply to selected nodes only
 	 */
 	public void setSelectedOnly(boolean selectedOnly) {
 		this.selectedOnly = selectedOnly;
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Returns the types of node attributes supported by
+	 * this algorithm.  This should be overloaded by the
+	 * specific algorithm
 	 *
-	 * @return DOCUMENT ME!
+	 * @return the list of supported attribute types, or null
+	 * if node attributes are not supported
 	 */
 	public byte[] supportsNodeAttributes() {
 		return null;
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Returns the types of edge attributes supported by
+	 * this algorithm.  This should be overloaded by the
+	 * specific algorithm
 	 *
-	 * @return DOCUMENT ME!
+	 * @return the list of supported attribute types, or null
+	 * if edge attributes are not supported
 	 */
 	public byte[] supportsEdgeAttributes() {
 		return null;
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Set the name of the attribute to use for attribute
+	 * dependent layout algorithms.
 	 *
-	 * @param attributeName DOCUMENT ME!
+	 * @param attributeName The name of the attribute
 	 */
 	public void setLayoutAttribute(String attributeName) {
 		if (supportsNodeAttributes() != null) {
@@ -180,9 +189,13 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	 */
 
 	/**
-	 * DOCUMENT ME!
+	 * This returns the list of "attributes" that are provided
+	 * by an algorithm for internal purposes.  For example, 
+	 * an edge-weighted algorithmn might seed the list of
+	 * attributes with "unweighted".  This should be overloaded
+	 * by algorithms that intend to return custom attributes.
 	 *
-	 * @return DOCUMENT ME!
+	 * @return A (possibly empty) list of attributes
 	 */
 	public List<String> getInitialAttributeList() {
 		return new ArrayList();
@@ -366,9 +379,9 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Lock these nodes (i.e. prevent them from moving).
 	 *
-	 * @param nodes DOCUMENT ME!
+	 * @param nodes An array of NodeView's to lock
 	 */
 	public void lockNodes(NodeView[] nodes) {
 		for (int i = 0; i < nodes.length; ++i) {
@@ -377,18 +390,18 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Lock this node (i.e. prevent it from moving).
 	 *
-	 * @param v DOCUMENT ME!
+	 * @param v A NodeView to lock
 	 */
 	public void lockNode(NodeView v) {
 		staticNodes.add(v);
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Unlock this node 
 	 *
-	 * @param v DOCUMENT ME!
+	 * @param v A NodeView to unlock
 	 */
 	public void unlockNode(NodeView v) {
 		staticNodes.remove(v);
@@ -399,7 +412,7 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Unlock all nodes
 	 */
 	public void unlockAllNodes() {
 		staticNodes.clear();
@@ -413,7 +426,7 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Run the algorithm.  This is required for Task.
 	 */
 	public void run() {
 		construct();
@@ -426,16 +439,16 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Halt the algorithm.  This is required for Task.
 	 */
 	public void halt() {
 		canceled = true;
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Get the "nice" title of this algorithm
 	 *
-	 * @return DOCUMENT ME!
+	 * @return algorithm title
 	 */
 	public String getTitle() {
 		return "Performing " + toString();
