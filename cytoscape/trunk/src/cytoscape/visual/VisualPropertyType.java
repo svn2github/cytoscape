@@ -144,7 +144,7 @@ public enum VisualPropertyType {
 			"Edge Tooltip", "edgeTooltipCalculator", "edge.toolTip",
 			"defaultEdgeToolTip", GenericEdgeToolTipCalculator.class),
 
-	// New from 2.5: line can have arbitrary width.
+	/* New from 2.5: line can have arbitrary width.
 	NODE_LINE_WIDTH("Node Line Width", "nodeLineWidthCalculator",
 			"node.lineWidth", "defaultNodeLineWidth",
 			GenericNodeLineWidthCalculator.class), 
@@ -169,7 +169,7 @@ public enum VisualPropertyType {
 			"Edge Target Arrow Color", "edgeTargetArrowColorCalculator",
 			"edge.targetArrowColor", "defaultEdgeTargetArrowColor",
 			GenericEdgeTargetArrowColorCalculator.class),
-
+*/
 	// Will be used in future.
 	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator",
 			"edge.labelPosition", "defaultEdgeLabelPosition", null);
