@@ -1146,7 +1146,7 @@ The networks can be viewed and manipulated in Cytoscape.
 				Verified to work in 2.3 (Agilent Literature Search 2.3).
 				<br>
 				Verified to work in 2.1, 2.2 (Agilent Literature Search 2.0).
-				
+				 
 				</td>
 				<td width="20%" valign="top">
 					<br>
