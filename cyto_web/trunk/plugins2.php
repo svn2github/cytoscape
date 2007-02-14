@@ -1129,9 +1129,7 @@ The sentences and source hyperlinks for each association are further stored as a
 The networks can be viewed and manipulated in Cytoscape.
 <p>Enhancements in version 2.4 include
 <ul>
-<li> Improved file-based lexicon management, supporting arbitrary file names
-<li> Cytoscape session load/save compatible
-<li> Paged results view.
+<li> Extend a Cytoscape network with associations extracted from the literature.
 </ul>
 
 
@@ -1144,12 +1142,15 @@ The networks can be viewed and manipulated in Cytoscape.
 					</p>
 				</td>
 				<td width="20%" valign="top">
+				Verified to work in 2.4 (Agilent Literature Search 2.4).
 				Verified to work in 2.3 (Agilent Literature Search 2.3).
 				<br>
 				Verified to work in 2.1, 2.2 (Agilent Literature Search 2.0).
 				
 				</td>
 				<td width="20%" valign="top">
+					<br>
+				[<a href="http://www.cytoscape.org/download_agilent_literature_search_v2.4.php?file=litsearch_v2.4">Download Agilent Literature Search version 2.4 for Cytoscape v2.4 </a>]
 					<br>
 				[<a href="http://www.cytoscape.org/download_agilent_literature_search_v2.3.php?file=litsearch_v2.3">Download Agilent Literature Search version 2.3 for Cytoscape v2.3 </a>]
 				<br>					<br>
