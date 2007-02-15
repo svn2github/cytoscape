@@ -15,11 +15,11 @@ public enum ArrowShape {
 	DIAMOND("COLOR_DIAMOND",EdgeView.EDGE_COLOR_DIAMOND), 
 	DELTA("COLOR_DELTA", EdgeView.EDGE_COLOR_DELTA), 
 	ARROW("COLOR_ARROW", EdgeView.EDGE_COLOR_ARROW), 
-	COLOR_T("COLOR_T", EdgeView.EDGE_COLOR_T),
+	T("COLOR_T", EdgeView.EDGE_COLOR_T),
 	CIRCLE("COLOR_CIRCLE", EdgeView.EDGE_COLOR_CIRCLE), 
 	
 	// Not yet implemented
-	REVERSE_ARROW("REVERSE_ARROW", 100);
+	REVERSE_ARROW("REVERSE_ARROW", -1);
 	
 	private String shapeName;
 	private int ginyType;
