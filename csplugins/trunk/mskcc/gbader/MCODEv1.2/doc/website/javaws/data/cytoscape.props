@@ -1,0 +1,6 @@
+viewType=tabbed
+defaultSpeciesName=Saccharomyces cerevisiae
+viewThreshold=500
+
+plugin.yeastContext.load=csplugins.contextmenu.yeast.YeastPlugin
+plugin.mcode.load=csplugins.mcode.MCODEPlugin
