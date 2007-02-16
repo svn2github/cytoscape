@@ -1340,7 +1340,7 @@ processing technique with supercomputing center resources.
 			<tr>
 				<td width="20%" valign="top">
 					<b>CyGoose Plugin</b>
-					<br>
+					<br><font size="-1">
 					Version: 2.4.1
 					<br>
 					Release Date: February 13, 2007</font>
