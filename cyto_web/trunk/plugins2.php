@@ -1341,9 +1341,9 @@ processing technique with supercomputing center resources.
 				<td width="20%" valign="top">
 					<b>CyGoose Plugin</b>
 					<br>
-					<font size="-1">Version: BETA
-						<br>
-						Release Date: September 25, 2006</font>
+					Version: 2.4.1
+					<br>
+					Release Date: February 13, 2007</font>
 				</td>
 				<td width="40%" valign="top">
 				<p>
@@ -1354,16 +1354,21 @@ processing technique with supercomputing center resources.
 				the Gaggle Boss) can be found at
 				<a href="http://gaggle.systemsbiology.org/docs/geese/">http://gaggle.systemsbiology.org/docs/geese/</a>
 				</p>
-
+				Added features for 2.4:</b><br>
+				<ul>
+					<li> Each network within Cytoscape is recognized as a separate goose in the Gaggle Boss
+					<li> Automatic creation of a Visual Style when handling movies to give users a starting point to visualize network change 
+				</ul>
+					
 				<p>
-				Released by: John Lin, Kevin Drew and Richard Bonneau, <a href="http://homepages.nyu.edu/%7erb133/">NYU Bonneau Lab</a>.
+				Released by: Sarah Killcoyne, <a href="http://systemsbiology.org">Institute for Systems Biology</a>, John Lin, Kevin Drew and Richard Bonneau, <a href="http://homepages.nyu.edu/%7erb133/">NYU Bonneau Lab</a>.
 				</p>
 		</td>
 		<td width="20%" valign="top">
-				 Verified to work in 2.3, 2.3.1.
+				 Verified to work in 2.3.2, 2.4
 				</td>
 		<td width="20%" valign="top">
-			[<a href="http://err.bio.nyu.edu/cytoscape/gaggle">Project Website</a>]
+			[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.4/plugins/CyGoose_2.4.1.jar">Download Jar</a>]
 			<br>
 		</td>
 	</tr>
