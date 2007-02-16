@@ -342,10 +342,6 @@ public class ActivePathFinderParameters {
 		expressionAttrs.remove(name); 
 	}
 
-	public void shuffleExpressionAttributes(Random r) {
-		Collections.shuffle(expressionAttrs,r);
-	}
-
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 

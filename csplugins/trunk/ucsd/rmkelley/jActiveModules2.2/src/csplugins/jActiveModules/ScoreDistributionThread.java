@@ -19,14 +19,12 @@ public class ScoreDistributionThread extends Thread{
   CyNetwork cyNetwork;
   ActivePaths activePaths;
   ActivePathFinderParameters apfParams;
-  Random randomGenerator;
   public ScoreDistributionThread(CyNetwork cyNetwork,
 				 ActivePaths activePaths,
 				 ActivePathFinderParameters apfParams){
     this.cyNetwork = cyNetwork;
     this.activePaths = activePaths;
     this.apfParams = apfParams;
-    randomGenerator = new Random();
   }
 
   
@@ -60,7 +58,7 @@ public class ScoreDistributionThread extends Thread{
 
     activePaths.showTable = false;
     activePaths.hideOthers = false;
-    apfParams.shuffleExpressionAttributes(randomGenerator);
+    activePaths.randomize = true;
     Thread t = new Thread(activePaths);
     t.start();
     try{
@@ -77,7 +75,6 @@ public class ScoreDistributionThread extends Thread{
     }
 				MyProgressMonitor monitor = new MyProgressMonitor(mainFrame,"Running random trials","",0,numberOfRuns);
     for (i=1; i<numberOfRuns; i++) {
-      apfParams.shuffleExpressionAttributes(randomGenerator);
       t = new Thread(activePaths);
       t.start();
       try{
@@ -100,30 +97,4 @@ public class ScoreDistributionThread extends Thread{
     }
 
   }
-/*
-  private void randomizeGeneNames() {
-    Vector newNames = new Vector();
-    Vector newDescripts = new Vector();
-    ExpressionData expressionData = cyNetwork.getExpressionData();
-    Vector geneNames = expressionData.getGeneNamesVector();
-    Vector geneDescripts = expressionData.getGeneDescriptorsVector();
-    int s = geneNames.size();
-    int i;
-    String name, descript;
-    System.out.println("size = " + s);
-    while (s > 0) {
-      i = randomGenerator.nextInt(s--);
-      name = (String) geneNames.remove(i);
-      descript = (String) geneDescripts.remove(i);
-      newNames.add(name);
-      newDescripts.add(descript);
-      // System.out.println(name);
-    }
-    //System.out.println("size = " + newNames.size());
-    expressionData.setGeneNames(newNames);
-    expressionData.setGeneDescriptors(newDescripts);
-  }
-  */
-  
-
 }

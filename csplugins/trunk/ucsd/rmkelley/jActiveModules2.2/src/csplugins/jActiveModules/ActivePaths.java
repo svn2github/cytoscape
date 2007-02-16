@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -39,6 +42,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 	protected boolean showTable = true;
 	protected boolean hideOthers = true;
+	protected boolean randomize = false;
+
 	//protected ExpressionData expressionData = null;
 	protected JMenuBar menubar;
 	protected JMenu expressionConditionsMenu;
@@ -130,37 +135,52 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		System.err.println("Processing Expression Data into Hash");
 		HashMap tempHash = new HashMap();
 		System.err.println("Do some testing of the ExpressionData object");
-		//System.err.println(expressionData.getConditionNames());
-		//System.err.println(expressionData.getNumberOfGenes());
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		// GraphObjAttributes nodeAttributes = cyNetwork.getNodeAttributes();
+
+		// Create two identical lists of genes
+		List<Node> geneList = new ArrayList<Node>();
+		List<Node> shuffledList = new ArrayList<Node>();
 		for (Iterator nodeIt = cyNetwork.nodesIterator(); nodeIt.hasNext();) {
+			Node n = (Node) nodeIt.next();
+			geneList.add(n);
+			shuffledList.add(n);
+		}
+
+		// If randomize, permute the second list of genes
+		if ( randomize ) 
+			Collections.shuffle(shuffledList);
+
+		for (int i = 0; i < geneList.size(); i++) {
+		
+			// If not randomizing these will be identical.
+			Node current = geneList.get(i); 
+			Node shuffle = shuffledList.get(i);
+
+			// If randomizing, you'll get p-values for a different gene. 
+			String canonicalName = shuffle.getIdentifier();
+
 			double[] tempArray = new double[attrNames.length];
-			Node current = (Node) nodeIt.next();
 			for (int j = 0; j < attrNames.length; j++) {
-				String canonicalName = current.getIdentifier();
 				Double d = nodeAttributes.getDoubleAttribute(canonicalName,attrNames[j]);
 
-				//mRNAMeasurement tempmRNA = expressionData.getMeasurement(
-				//		canonicalName, attrNames[j]);
 				if (d == null) {
 					tempArray[j] = ZStatistics.oneMinusNormalCDFInverse(.5);
 				} else {
 					double sigValue = d.doubleValue();
 					if (sigValue < MIN_SIG) {
 						sigValue = MIN_SIG;
-						System.err.println("Warning: value for "
-								+ canonicalName + " adjusted to " + MIN_SIG);
-					} // end of if ()
+						System.err.println("Warning: value for " + current.getIdentifier() + 
+						                   " (" + canonicalName + ") adjusted to " + MIN_SIG);
+					} 
 					if (sigValue > MAX_SIG) {
 						sigValue = MAX_SIG;
-						System.err.println("Warning: value for "
-								+ canonicalName + " adjusted to " + MAX_SIG);
-					} // end of if ()
+						System.err.println("Warning: value for " + current.getIdentifier() + 
+						                   " (" + canonicalName + ") adjusted to " + MAX_SIG);
+					} 
+
 					// transform the p-value into a z-value and store it in the
 					// array of z scores for this particular node
-					tempArray[j] = ZStatistics
-							.oneMinusNormalCDFInverse(sigValue);
+					tempArray[j] = ZStatistics.oneMinusNormalCDFInverse(sigValue);
 				}
 			}
 			tempHash.put(current, tempArray);
