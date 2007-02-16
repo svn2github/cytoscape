@@ -45,7 +45,8 @@ import java.awt.*;
  */
 
 /**
- * A controller for the MCODE attributes used for visualization.
+ * A controller for the MCODE attributes used for visualization. Only the onComponentSelected method is
+ * used in this listener to determine when a result has been selected.
  */
 public class MCODEVisualStyleAction implements CytoPanelListener {
     private CytoPanel cytoPanel;
@@ -58,6 +59,13 @@ public class MCODEVisualStyleAction implements CytoPanelListener {
     
     public void onStateChange(CytoPanelState newState) {}
 
+    /**
+     * Whenever a result tab is selected in the east CytoPanel, the MCODE attributes
+     * have to be rewritten to correspond to that particular result. At the same time the
+     * Visual Style has to redraw the network given the new attributes.
+     *
+     * @param componentIndex The index of the component that was selected in the east Cytopanel.  This action only occurs if the component is an instance of the MCODEResultsPanel
+     */
     public void onComponentSelected(int componentIndex) {
         //When the user selects a tab in the east cytopanel we want to see if it is a results panel
         //and if it is we want to re-draw the network with the MCODE visual style and reselect the

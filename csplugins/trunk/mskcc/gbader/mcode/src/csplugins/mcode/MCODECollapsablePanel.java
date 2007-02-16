@@ -51,9 +51,9 @@ import java.net.URL;
  */
 public class MCODECollapsablePanel extends JPanel {
     //Border
-    CollapsableTitledBorder border; //includes upper left component and line type
+    CollapsableTitledBorder border; // includes upper left component and line type
     Border collapsedBorderLine = BorderFactory.createEmptyBorder(2, 2, 2, 2); // no border
-    Border expandedBorderLine = null;//BorderFactory.createEtchedBorder();// etched lowered border on MAC by default;
+    Border expandedBorderLine = null; // because this is null, default is used, etched lowered border on MAC
 
     //Title
     AbstractButton titleComponent; // displayed in the titled border
@@ -70,7 +70,11 @@ public class MCODECollapsablePanel extends JPanel {
     boolean collapsed; // stores curent state of the collapsable panel
 
     /**
-     * Special constructor for an option button controlled collapsable panel.
+     * Constructor for an option button controlled collapsable panel.
+     * This is useful when a group of options each have unique sub contents. The radio buttons should be created,
+     * grouped, and then used to construct their own collapsable panels. This way choosing a different option in
+     * the same option group will collapse all unselected options. Expanded panels draw a border around the
+     * contents and through the radio button in the fashion of a titled border.
      *
      * @param component Radio button that expands and collapses the panel based on if it is selected or not
      */
@@ -82,7 +86,9 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * Special constructor for a label/button controlled collapsable panel.
+     * Constructor for a label/button controlled collapsable panel. Displays a clickable title that resembles a
+     * native titled border except for an arrow on the right side indicating an expandable panel. The actual border
+     * only appears when the panel is expanded.
      * 
      * @param text Title of the collapsable panel in string format, used to create a button with text and an arrow icon
      */
@@ -113,7 +119,7 @@ public class MCODECollapsablePanel extends JPanel {
     /**
      * Sets the bounds of the border title component so that it is properly positioned.
      */
-    public void placeTitleComponent() {
+    private void placeTitleComponent() {
         Insets insets = this.getInsets();
         Rectangle containerRectangle = this.getBounds();
         Rectangle componentRectangle = border.getComponentRect(containerRectangle, insets);
@@ -190,7 +196,8 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * Returns a button with an arrow icon and a collapse/expand action listener
+     * Returns a button with an arrow icon and a collapse/expand action listener.
+     *
      * @return button Button which is used in the titled border component
      */
     private JButton createArrowButton () {
@@ -214,7 +221,7 @@ public class MCODECollapsablePanel extends JPanel {
     }
 
     /**
-     * Handles expanding and collapsing of extra content on the user's click of the titledBorder component
+     * Handles expanding and collapsing of extra content on the user's click of the titledBorder component.
      */
     private class ExpandAndCollapseAction extends AbstractAction implements ActionListener, ItemListener {
         public void actionPerformed(ActionEvent e) {

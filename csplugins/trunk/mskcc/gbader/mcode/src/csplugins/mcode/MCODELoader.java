@@ -170,7 +170,7 @@ public class MCODELoader extends ImageIcon implements Runnable {
      * Initially, fades the graph into the background color, draws the Loading string and an animated disk to indicate
      * responsiveness as well as a progress bar and process status.
      */
-    public void drawLoader() {
+    private void drawLoader() {
         //We want to compute this image off screen so that partially completed images are never displayed
         Graphics2D g2 = offScreenG2;
         BufferedImage loader = offScreenLoader;
