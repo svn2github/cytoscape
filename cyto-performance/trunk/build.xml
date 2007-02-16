@@ -1,0 +1,135 @@
+<project name="cyto-performance" default="all" basedir=".">
+<!-- =================================================================== -->
+<!-- Initialization target                                               -->
+<!-- =================================================================== -->
+ <target name="static-init">
+  <tstamp/>
+  <property name="name" value="cyto-performance"/>
+  <property name="version" value="1.0.1"/>
+  <echo message="Building ${name} version ${version} ..."/>
+  <property name="root.dir" value="."/>
+  <property name="lib.dir" value="${root.dir}/lib"/>
+  <property name="src.dir" value="${root.dir}/src"/>
+  <property name="tests.dir" value="${root.dir}/tests"/>
+  <property name="build.dir" value="${root.dir}/build"/>
+  <property name="javadoc.dir" value="${root.dir}/API"/>
+  <property name="log.dir" value="${build.dir}/logs" />
+  <property name="junit.report.dir" value="${log.dir}/junit-reports" />
+<!-- Define the relevant files -->
+  <property name="project.jar" value="${name}.jar"/>
+  <property name="test.jar" value="${name}-tests.jar"/>
+ </target>
+ <target name="init" depends="static-init">
+  <fail message="You must specify the cytoscape source location:    ant -Dcytoscape.dir=/path/to/cytoscape [ant target]">
+   <condition>
+    <not>
+     <isset property="cytoscape.dir"/>
+    </not>
+   </condition>
+  </fail>
+<!-- Define the directories -->
+  <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+<!-- Define the class path - Defaults to everything in the lib.dir -->
+  <path id="build.class.path">
+   <fileset dir="${lib.dir}">
+    <include name="*.jar"/>
+   </fileset>
+   <fileset dir="${cytoscape.dir}/lib">
+    <include name="*.jar"/>
+   </fileset>
+   <fileset dir="${cytoscape.dir}/plugins/core">
+    <include name="*.jar"/>
+   </fileset>
+  </path>
+ </target>
+<!-- =================================================================== -->
+<!-- Compiles the project                                                -->
+<!-- =================================================================== -->
+ <target name="compile" 
+          depends="init" >
+  <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+   <classpath>
+    <pathelement location="${lib.dir}/aspectjtools.jar"/>
+    <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
+   </classpath>
+  </taskdef>
+  <mkdir dir="${build.dir}"/>
+  <iajc classpathref="build.class.path"
+        destdir="${build.dir}"
+        source="1.5" >
+   <sourceroots>
+    <pathelement location="${src.dir}"/>
+    <pathelement location="${cytoscape.dir}/src"/>
+   </sourceroots>
+  </iajc>
+ </target>
+<!-- =================================================================== -->
+<!-- Creates the project jar file                                        -->
+<!-- =================================================================== -->
+ <target name="jar" 
+         depends="compile" >
+  <copy file="${src.dir}/cytoscape/performance/Cyto_2.4_ops.xml"
+        todir="${build.dir}/cytoscape/performance"/>
+  <path id="local.classpath">
+   <fileset dir="${lib.dir}">
+    <include name="*.jar" />
+   </fileset>
+  </path>
+  <pathconvert property="local.classpath.string"
+               pathsep=" ">
+   <path refid="local.classpath"/>
+   <chainedmapper>
+    <flattenmapper/>
+    <globmapper from="*" to="lib/*" handledirsep="yes"/>
+   </chainedmapper>
+  </pathconvert>
+  <path id="cytoscape.classpath">
+   <fileset dir="${cytoscape.dir}/lib">
+    <include name="*.jar" />
+   </fileset>
+  </path>
+  <pathconvert property="cytoscape.classpath.string"
+               pathsep=" ">
+   <path refid="cytoscape.classpath"/>
+   <chainedmapper>
+    <flattenmapper/>
+    <globmapper from="*" to="${cytoscape.dir}/lib/*" handledirsep="yes"/>
+   </chainedmapper>
+  </pathconvert>
+  <jar destfile="${project.jar}" >
+   <fileset dir="${build.dir}"
+               includes="**"/>
+   <manifest>
+    <attribute name="Main-Class" 
+               value="cytoscape.performance.RunCytoscape"/>
+    <attribute name="Class-Path" 
+             value="${local.classpath.string} ${cytoscape.classpath.string} ${cytoscape.dir}/cytoscape.jar"/>
+   </manifest>
+  </jar>
+  <echo message="Successfully ran jar task!"/>
+ </target>
+<!-- =================================================================== -->
+<!-- Do everything                                                       -->
+<!-- =================================================================== -->
+ <target name="run"
+         depends="jar"
+         description="Runs Cytoscape">
+  <java jar="${root.dir}/cyto-performance.jar" 
+        fork="true">
+   <jvmarg value="-Xmx512M"/>
+   <arg value="-p"/>
+   <arg value="${cytoscape.dir}/plugins/core"/>
+  </java>
+ </target>
+<!-- =================================================================== -->
+<!-- Clean up, get back to original state                                -->
+<!-- =================================================================== -->
+ <target name="clean" 
+         depends="static-init">
+  <delete dir="${build.dir}"/>
+  <delete dir="${javadoc.dir}"/>
+  <delete file="${project.jar}"/>
+  <delete file="${test.jar}"/>
+  <echo message="Successfully ran clean task!"/>
+ </target>
+</project>
