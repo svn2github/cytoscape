@@ -89,18 +89,20 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 	public void run() {
 		System.gc();
-		// GraphViewController gvc =
-		// Cytoscape.getDesktop().getGraphViewController();
-		// gvc.stopListening();
 		long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
 		// run the path finding algorithm
-		ActivePathsFinder apf = new ActivePathsFinder(expressionMap, attrNames,
-				cyNetwork, apfParams, mainFrame);
-		activePaths = apf.findActivePaths();
+	 ActivePathsFinder apf = null;
+  if(randomize){
+    apf = new ActivePathsFinder(expressionMap, attrNames,
+				  cyNetwork, apfParams, null);
+  }else{
+    apf = new ActivePathsFinder(expressionMap, attrNames,
+				  cyNetwork, apfParams, mainFrame);
+		}
+  activePaths = apf.findActivePaths();
 
 		tableDialog = null;
-		// gvc.resumeListening();
 		if (apfParams.getExit()) {
 			System.exit(0);
 		}

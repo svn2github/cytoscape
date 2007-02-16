@@ -95,6 +95,7 @@ public class ScoreDistributionThread extends Thread{
       System.err.println("Failed to close output file");
       System.exit(-1);
     }
-
+				activePaths.randomize = false;
+    activePaths.showTable = true;
   }
 }
