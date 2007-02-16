@@ -37,6 +37,8 @@
 package cytoscape;
 
 import cytoscape.giny.CytoscapeFingRootGraph;
+import java.util.List;
+import java.util.ArrayList;
 
 import giny.model.*;
 
@@ -50,6 +52,7 @@ public class CyNode implements giny.model.Node {
 	CytoscapeFingRootGraph m_rootGraph = null;
 	int m_rootGraphIndex = 0;
 	String m_identifier = null;
+	ArrayList<CyGroup> groupList = null;
 
 	/**
 	 * Creates a new CyNode object.
@@ -140,5 +143,62 @@ public class CyNode implements giny.model.Node {
 		m_identifier = new_id;
 
 		return true;
+	}
+
+	/**
+	 * Add this node to the specified group.
+	 *
+	 * @param group CyGroup to add this group to
+	 */
+	public void addToGroup(CyGroup group) {
+		// We want to create this lazily to avoid any unnecessary performance/memory
+		// hits on CyNodes!
+		if (groupList == null)
+			groupList = new ArrayList();
+		groupList.add(group);
+		if (!group.contains(this))
+			group.addNode(this);
+	}
+
+	/**
+	 * Remove this node from the specified group.
+	 *
+	 * @param group CyGroup to remove this group from
+	 */
+	public void removeFromGroup(CyGroup group) {
+		groupList.remove(group);
+		groupList.trimToSize();
+		if (group.contains(this))
+			group.removeNode(this);
+	}
+
+	/**
+	 * Return the list of groups this node is a member of
+	 *
+	 * @return list of CyGroups this group is a member of
+	 */
+	public List<CyGroup> getGroups() {
+		return groupList;
+	}
+	
+	/**
+	 * Check to see if this node is a member of the requested group
+	 *
+	 * @param group the group to check
+	 * @return 'true' if this node is in group
+	 */
+	public boolean inGroup(CyGroup group) {
+		if (groupList == null)
+			return false;
+		return groupList.contains(group);
+	}
+
+	/**
+	 * Check to see if this node is a group
+	 *
+	 * @return 'true' if this node is a group
+	 */
+	public boolean isaGroup() {
+		return CyGroup.isaGroup(this);
 	}
 }

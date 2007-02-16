@@ -41,6 +41,7 @@ import cern.colt.list.IntArrayList;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
+import cytoscape.CyGroup;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -123,9 +124,6 @@ import javax.xml.stream.events.XMLEvent;
  *
  */
 public class XGMMLReader extends AbstractGraphReader {
-	// Name of metanode attribute
-	private static final String METANODE_KEY = "__metaNodeRindices";
-
 	// Graph Tags
 	protected static final String GRAPH = "graph";
 	protected static final String NODE = "node";
@@ -178,7 +176,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 	// private GraphicGraph network;
 	private ArrayList rootNodes;
-	private ArrayList metaTree;
+	private ArrayList groupTree;
 	private CyAttributes networkCyAttributes = Cytoscape.getNetworkAttributes();
 	private HashMap<String, Graphics> nodeGraphicsMap;
 	private HashMap<String, Graphics> edgeGraphicsMap;
@@ -240,7 +238,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		edges = new ArrayList<GraphicEdge>();
 		nodeGraphicsMap = new HashMap<String, Graphics>();
 		edgeGraphicsMap = new HashMap<String, Graphics>();
-		metaTree = new ArrayList();
+		groupTree = new ArrayList();
 	}
 
 	/**
@@ -312,7 +310,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			/*
 			 * Two passes: Pass 1: recursive descent to get all nodes and edges.
 			 * We build the complete list of nodes and the list of edges. Along
-			 * the way, we also build a list of metaNodes, and handle all node
+			 * the way, we also build a list of groups, and handle all node
 			 * attributes. Pass 2: walk the node and edge list and add them to
 			 * the network.
 			 *
@@ -348,12 +346,12 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * Recursively build the list of nodes and edges
 	 *
 	 * @param network
-	 * @param metanodes
+	 * @param groups
 	 */
 	protected void getNodesAndEdges(final GraphicGraph network, final GraphicNode parent) {
 		// Get all nodes and edges as one List object.
 		final List nodesAndEdges = network.getNodeOrEdge();
-		final List metaChildren = new ArrayList();
+		final List groupChildren = new ArrayList();
 
 		for (Object curObj : nodesAndEdges) {
 			if (curObj.getClass() == GraphicNode.class) {
@@ -361,17 +359,17 @@ public class XGMMLReader extends AbstractGraphReader {
 				// recursive if this node contains a <graph>
 				addNode((GraphicNode) curObj);
 
-				// Add the object to the metaNode tree. Links will be resolved
+				// Add the object to the group tree. Links will be resolved
 				// later
-				metaChildren.add(curObj);
+				groupChildren.add(curObj);
 			} else if (curObj.getClass() == GraphicEdge.class) {
 				edges.add((GraphicEdge) curObj);
 			}
 		}
 
 		if (parent != null) {
-			metaTree.add(parent.getLabel());
-			metaTree.add(metaChildren);
+			groupTree.add(parent);
+			groupTree.add(groupChildren);
 		}
 	}
 
@@ -545,11 +543,11 @@ public class XGMMLReader extends AbstractGraphReader {
 
 	/**
 	 *
-	 * Create the metanodes from the list of children. Note that the order
-	 * metaNodes are processed is very important. This assumes that the
-	 * lowest-level metaNode is processed first, which results in the
-	 * placeholder <--> metaNode swap happening before any parent metanode
-	 * processing happens. This allows the child metanodes to be correctly
+	 * Create the groups from the list of children. Note that the order
+	 * groups are processed is very important. This assumes that the
+	 * lowest-level groups are processed first, which results in the
+	 * placeholder <--> group swap happening before any parent group
+	 * processing happens. This allows the child groups to be correctly
 	 * included in the parent's child list.
 	 *
 	 * @param name
@@ -557,14 +555,13 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param cy_net
 	 * @return
 	 */
-	private CyNode createMetaNode(final String name, final List children, final CyNetwork cy_net) {
+	private CyGroup createGroup(final String name, final List children, final CyNetwork cy_net) {
 		final Iterator it = children.iterator();
 
 		// Get the actual node of the parent
-		final Node parent = (Node) Cytoscape.getCyNode(name, false);
+		final CyNode groupNode = Cytoscape.getCyNode(name, false);
 
-		final int[] childrenNodeIndices = new int[children.size()];
-		int counter = 0;
+		List<CyNode>nodeList = new ArrayList();
 
 		while (it.hasNext()) {
 			GraphicNode childNode = (GraphicNode) it.next();
@@ -582,40 +579,13 @@ public class XGMMLReader extends AbstractGraphReader {
 			if (targetNodeName == null)
 				continue;
 
-			Node targetChildNode = Cytoscape.getRootGraph().getNode(targetNodeName);
+			CyNode targetChildNode = (CyNode)Cytoscape.getRootGraph().getNode(targetNodeName);
 
-			childrenNodeIndices[counter] = targetChildNode.getRootGraphIndex();
-			counter++;
+			nodeList.add(targetChildNode);
 		}
 
-		int[] edgeIndices = Cytoscape.getRootGraph()
-		                             .getConnectingEdgeIndicesArray(childrenNodeIndices);
-
-		int rgParentNodeIndex = Cytoscape.getRootGraph().createNode(childrenNodeIndices, edgeIndices);
-		CyNode metaNode = (CyNode) Cytoscape.getRootGraph().getNode(rgParentNodeIndex);
-
-		if (metaNode == null) {
-			throw new XGMMLException("CyNode from RootGraph with index = " + rgParentNodeIndex
-			                         + " is null!!!");
-		}
-
-		// Remember that this RootGraph node belongs to cyNetwork
-		ArrayList rootNodes = (ArrayList) networkCyAttributes.getListAttribute(cy_net.getIdentifier(),
-		                                                                       METANODE_KEY);
-
-		if (rootNodes == null) {
-			rootNodes = new ArrayList();
-		}
-
-		// Delete the parent we made as a placeholder
-		String parentId = parent.getIdentifier();
-		cy_net.removeNode(parent.getRootGraphIndex(), true);
-		metaNode.setIdentifier(parentId);
-
-		rootNodes.add(new Integer(metaNode.getRootGraphIndex()));
-		networkCyAttributes.setListAttribute(cy_net.getIdentifier(), METANODE_KEY, rootNodes);
-
-		return null;
+		// Create the group
+		return CyGroup.createGroup(groupNode, nodeList, null);
 	}
 
 	/**
@@ -623,7 +593,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getMetanodeList() {
+	public List getGroupList() {
 		return rootNodes;
 	}
 
@@ -660,15 +630,17 @@ public class XGMMLReader extends AbstractGraphReader {
 		if ((myView == null) || (myView.nodeCount() == 0)) {
 			return;
 		}
+		CyNetwork network = ((CyNetworkView) myView).getNetwork();
 
 		/*
-		 * Now that we have a network (and a view), handle the metanodes. Note
+		 * Now that we have a network (and a view), handle the groups. Note
 		 * that this must be done in depth-first order!
 		 */
-		for (int i = 0; i < metaTree.size(); i++) {
-			String name = (String) metaTree.get(i++);
-			List children = (List) metaTree.get(i);
-			createMetaNode(name, children, ((CyNetworkView) myView).getNetwork());
+		ArrayList<CyGroup> groupList = new ArrayList();
+		for (int i = 0; i < groupTree.size(); i++) {
+			GraphicNode parent = (GraphicNode) groupTree.get(i++);
+			List children = (List) groupTree.get(i);
+			groupList.add(createGroup(parent.getLabel(), children, network));
 		}
 
 		// Set background clolor
@@ -690,6 +662,22 @@ public class XGMMLReader extends AbstractGraphReader {
 				                                                null);
 				vsb.buildStyle();
 			}
+		}
+
+		// Finally, for each group, we want to remove the parent from the network and set
+		// (and notify) the appropriate viewer.
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		for (int i = 0; i < groupList.size(); i++) {
+			CyGroup group = groupList.get(i);
+			CyNode groupNode = group.getGroupNode();
+			// Get the viewer
+			String viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
+			                                                  CyGroup.GROUP_VIEWER_ATTR); 
+			// Remove the group node from the network (but not from the rootGraph)
+			network.removeNode(groupNode.getRootGraphIndex(), false);
+
+			// Set and notify the viewer
+			CyGroup.setGroupViewer(group, viewer, true);
 		}
 	}
 
@@ -1086,16 +1074,17 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param type -
 	 *            the attribute type (for recursion)
 	 * @param parent -
-	 *            the parent of this graph (for metaNode support)
+	 *            the parent of this graph (for group support)
 	 */
 	private void readAttribute(final CyAttributes attributes, final String targetName,
 	                           final Att curAtt, final String type, final GraphicNode parent) {
 		final ObjectType dataType = curAtt.getType();
 
-		// check args
+		/* check args
 		if (dataType == null) {
 			return;
 		}
+		*/
 
 		// null value only ok when type is list or map
 		if (((dataType == null)
@@ -1117,7 +1106,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 			if (attrName == null) {
 				// Bail
-				return;
+				attrName = "__unknown";
 			}
 		}
 
@@ -1453,7 +1442,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param type -
 	 *            the attribute type (for recursion)
 	 * @param parent -
-	 *            the parent of this graph (for metaNode support)
+	 *            the parent of this graph (for group support)
 	 */
 	private void readEmbeddedAtt(String targetName, Att curAtt, String type, GraphicNode parent) {
 		if (curAtt.getContent() == null) {
@@ -1468,9 +1457,9 @@ public class XGMMLReader extends AbstractGraphReader {
 
 			if (curObj.getClass() == Att.class) {
 				attrs.add(curObj);
-			} else if (curObj.getClass() == GraphicGraph.class) {
+			} else if (curObj.getClass() == JAXBElement.class) {
 				// Recurse
-				getNodesAndEdges((GraphicGraph) curObj, parent);
+				getNodesAndEdges(((JAXBElement<GraphicGraph>)curObj).getValue(), parent);
 			}
 		}
 

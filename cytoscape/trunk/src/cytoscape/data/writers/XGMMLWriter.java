@@ -39,6 +39,7 @@ package cytoscape.data.writers;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 import cytoscape.CyEdge;
+import cytoscape.CyGroup;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -119,12 +120,9 @@ public class XGMMLWriter {
 	private static final String METADATA_NAME = "networkMetadata";
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
 
-	// Attribute name for metaData support
-	private static final String METANODE_KEY = "__metaNodeRindices";
-
 	// Node types
 	protected static final String NORMAL = "normal";
-	protected static final String METANODE = "metanode";
+	protected static final String METANODE = "group";
 	protected static final String REFERENCE = "reference";
 
 	// Object types
@@ -174,7 +172,7 @@ public class XGMMLWriter {
 	private CyNetwork network;
 	private CyNetworkView networkView;
 	private ArrayList nodeList;
-	private ArrayList metanodeList;
+	private ArrayList groupList;
 	private HashMap edgeMap;
 	private ObjectFactory objFactory;
 	private MetadataParser mdp;
@@ -202,7 +200,7 @@ public class XGMMLWriter {
 		networkAttributes = Cytoscape.getNetworkAttributes();
 
 		nodeList = new ArrayList();
-		metanodeList = new ArrayList();
+		groupList = new ArrayList();
 		edgeMap = new HashMap();
 
 		nodeAttNames = nodeAttributes.getAttributeNames();
@@ -294,7 +292,7 @@ public class XGMMLWriter {
 		writeNetworkAttributes();
 
 		writeBaseNodes();
-		writeMetanodes();
+		writeGroups();
 
 		// Create edge objects
 		writeEdges();
@@ -360,7 +358,7 @@ public class XGMMLWriter {
 			}
 		}
 
-		// The edges left should all be from collapsed metaNodes
+		// The edges left should all be from collapsed group Nodes
 		it = edgeMap.keySet().iterator();
 
 		while (it.hasNext()) {
@@ -464,8 +462,7 @@ public class XGMMLWriter {
 			// process each attribute type
 			for (int i = 0; i < networkAttNames.length; i++) {
 				// ignore Metadata object.
-				if (!networkAttNames[i].equals(METADATA_ATTR_NAME)
-				    && !networkAttNames[i].equals(METANODE_KEY)) {
+				if (!networkAttNames[i].equals(METADATA_ATTR_NAME)) {
 					Att att = createAttribute(id, networkAttributes, networkAttNames[i]);
 
 					if (att != null)
@@ -1096,18 +1093,18 @@ public class XGMMLWriter {
 	}
 
 	/**
-	 * This is for metanode. Currently, this is not used.
+	 * This is for group. Currently, this is not used.
 	 *
 	 * @param node
-	 * @param metanode
+	 * @param group
 	 * @param childrenIndices
 	 * @throws JAXBException
 	 */
-	private void expand(CyNode node, GraphicNode metanode, int[] childrenIndices)
+	private void expand(CyNode node, GraphicNode group, int[] childrenIndices)
 	    throws JAXBException {
 		CyNode childNode = null;
 		Att children = objFactory.createAtt();
-		children.setName("metanodeChildren");
+		children.setName("groupList");
 
 		GraphicGraph subGraph = objFactory.createGraphicGraph();
 		GraphicNode jxbChildNode = null;
@@ -1123,20 +1120,20 @@ public class XGMMLWriter {
 
 			int[] grandChildrenIndices = Cytoscape.getRootGraph()
 			                                      .getNodeMetaChildIndicesArray(childNode
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          .getRootGraphIndex());
+			                                                       .getRootGraphIndex());
 
 			if ((grandChildrenIndices == null) || (grandChildrenIndices.length == 0)) {
 				attributeWriter(NODE, childNode.getIdentifier(), jxbChildNode);
-				metanode.setGraphics(getGraphics(NODE, networkView.getNodeView(node)));
+				group.setGraphics(getGraphics(NODE, networkView.getNodeView(node)));
 			} else {
 				expand(childNode, jxbChildNode, grandChildrenIndices);
 			}
 		}
 
-		attributeWriter(NODE, metanode.getId(), metanode);
+		attributeWriter(NODE, group.getId(), group);
 
 		children.getContent().add(subGraph);
-		metanode.getAtt().add(children);
+		group.getAtt().add(children);
 	}
 
 	/**
@@ -1203,23 +1200,9 @@ public class XGMMLWriter {
 
 		while (it.hasNext()) {
 			curNode = (CyNode) it.next();
-			jxbNode = objFactory.createGraphicNode();
-			jxbNode.setId(Integer.toString(curNode.getRootGraphIndex()));
-			jxbNode.setLabel(curNode.getIdentifier());
-			jxbNode.setName("base");
+			jxbNode = buildJAXBNode(curNode);
 
-			// Add graphics if available
-			if (networkView != null) {
-				final NodeView curNodeView = networkView.getNodeView(curNode);
-
-				if (curNodeView != null) {
-					jxbNode.setGraphics(getGraphics(NODE, curNodeView));
-				}
-			}
-
-			attributeWriter(NODE, curNode.getIdentifier(), jxbNode);
-
-			if (isMetanode(curNode)) {
+			if (CyGroup.isaGroup(curNode)) {
 				nodeList.add(curNode);
 				expandChildren(curNode);
 			} else {
@@ -1246,8 +1229,12 @@ public class XGMMLWriter {
 		jxbNode.setId(Integer.toString(node.getRootGraphIndex()));
 		jxbNode.setLabel(node.getIdentifier());
 
-		if (networkView != Cytoscape.getNullNetworkView()) {
-			jxbNode.setGraphics(getGraphics(NODE, networkView.getNodeView(node)));
+		if (networkView != null) {
+			final NodeView curNodeView = networkView.getNodeView(node);
+
+			if (curNodeView != null) {
+				jxbNode.setGraphics(getGraphics(NODE, curNodeView));
+			}
 		}
 
 		attributeWriter(NODE, node.getIdentifier(), jxbNode);
@@ -1256,7 +1243,7 @@ public class XGMMLWriter {
 	}
 
 	/**
-	 * This is for Metanodes.
+	 * This is for Groups.
 	 *
 	 * @param node
 	 * @throws JAXBException
@@ -1264,14 +1251,16 @@ public class XGMMLWriter {
 	private void expandChildren(final CyNode node) throws JAXBException {
 		CyNode childNode = null;
 		GraphicNode jxbNode = null;
+		CyGroup group = CyGroup.getCyGroup(node);
 
-		final int[] childrenIndices = Cytoscape.getRootGraph()
-		                                       .getNodeMetaChildIndicesArray(node.getRootGraphIndex());
+		List <CyNode> nodeList = group.getNodes();
+		if (nodeList == null || nodeList.size() == 0)
+			return;
+		Iterator nIter = nodeList.iterator();
+		while (nIter.hasNext()) {
+			childNode = (CyNode) nIter.next();
 
-		for (int i = 0; i < childrenIndices.length; i++) {
-			childNode = (CyNode) Cytoscape.getRootGraph().getNode(childrenIndices[i]);
-
-			if (isMetanode(childNode)) {
+			if (CyGroup.isaGroup(childNode)) {
 				nodeList.add(childNode);
 				expandChildren(childNode);
 			} else {
@@ -1284,103 +1273,104 @@ public class XGMMLWriter {
 	}
 
 	/**
-	 * Metanode has different format in XML. It is a node with subgraph.
+	 * Groups have different format in XML. It is a node with subgraph.
 	 *
 	 * @throws JAXBException
 	 *
 	 */
-	private void writeMetanodes() throws JAXBException {
+	private void writeGroups() throws JAXBException {
 		Iterator it;
 		RootGraph rootGraph = Cytoscape.getRootGraph();
 
 		// Two pass approach. First, walk through the list
-		// and see if any of the children of a metanode are
-		// themselves a metanode. If so, remove them from
+		// and see if any of the children of a group are
+		// themselves a group. If so, remove them from
 		// the list & will pick them up on recursion
-		metanodeList = (ArrayList) networkAttributes.getListAttribute(network.getIdentifier(),
-		                                                              METANODE_KEY);
+		groupList = (ArrayList) CyGroup.getGroupList();
 
-		if ((metanodeList == null) || metanodeList.isEmpty())
+		if ((groupList == null) || groupList.isEmpty())
 			return;
 
-		it = metanodeList.iterator();
+		it = groupList.iterator();
 
-		HashMap embeddedMetaList = new HashMap();
+		HashMap embeddedGroupList = new HashMap();
 
 		while (it.hasNext()) {
-			int curNodeID = ((Integer) it.next()).intValue();
-			int[] childrenIndices = rootGraph.getNodeMetaChildIndicesArray(curNodeID);
+			CyGroup group = (CyGroup)it.next();
+			List <CyNode> nodeList = group.getNodes();
 
-			if (childrenIndices == null)
+			if (nodeList == null || nodeList.size() == 0)
 				continue;
 
-			for (int i = 0; i < childrenIndices.length; i++) {
-				CyNode childNode = (CyNode) Cytoscape.getRootGraph().getNode(childrenIndices[i]);
+			Iterator nIter = nodeList.iterator();
+			while (nIter.hasNext()) {
+				CyNode childNode = (CyNode) nIter.next();
 
-				if (isMetanode(childNode)) {
-					embeddedMetaList.put(childNode.getIdentifier(), childNode);
+				if (CyGroup.isaGroup(childNode)) {
+					// Get the actual group
+					CyGroup embGroup = CyGroup.getCyGroup(childNode);
+					embeddedGroupList.put(embGroup, embGroup);
 				}
 			}
 		}
 
 		// Reset the iterator
-		it = metanodeList.iterator();
+		it = groupList.iterator();
 
 		while (it.hasNext()) {
-			CyNode curNode = (CyNode) rootGraph.getNode(((Integer) it.next()).intValue());
+			CyGroup group = (CyGroup) it.next();
 
-			// Is this an embedded metaNode?
-			if (embeddedMetaList.containsKey(curNode.getIdentifier()))
+			// Is this an embedded group?
+			if (embeddedGroupList.containsKey(group))
 				continue; // Yes, skip it
 
-			GraphicNode mNode = writeMetanode(curNode);
+			GraphicNode mNode = writeGroup(group);
 
 			if (mNode != null) {
-				Att metanodeAtt = objFactory.createAtt();
-				metanodeAtt.getContent().add(metanodeAtt);
-				graph.getAtt().add(metanodeAtt);
+				graph.getNodeOrEdge().add(mNode);
 			}
 		}
 	}
 
-	private GraphicNode writeMetanode(CyNode curNode) throws JAXBException {
+	private GraphicNode writeGroup(CyGroup group) throws JAXBException {
 		GraphicNode jxbNode = null;
+		CyNode curNode = group.getGroupNode();
 		jxbNode = buildJAXBNode(curNode);
 
 		HashMap childMap = new HashMap();
 
-		int[] childrenIndices = Cytoscape.getRootGraph()
-		                                 .getNodeMetaChildIndicesArray(curNode.getRootGraphIndex());
 		Att children = objFactory.createAtt();
 		GraphicGraph subGraph = objFactory.createGraphicGraph();
 
-		for (int i = 0; (childrenIndices != null) && (i < childrenIndices.length); i++) {
-			CyNode childNode = null;
+		List <CyNode> nodeList = group.getNodes();
+		for (Iterator nodeIter = nodeList.iterator(); nodeIter.hasNext(); ) {
+			CyNode childNode = (CyNode)nodeIter.next();
 			GraphicNode childJxbNode = null;
 
-			childNode = (CyNode) Cytoscape.getRootGraph().getNode(childrenIndices[i]);
 			childMap.put(childNode.getIdentifier(), childNode);
 
 			String targetnodeID = Integer.toString(childNode.getRootGraphIndex());
 
-			if (!isMetanode(childNode)) {
+			if (!CyGroup.isaGroup(childNode)) {
 				childJxbNode = objFactory.createGraphicNode();
 				childJxbNode.setHref("#" + targetnodeID);
 			} else {
-				// We have an embedded metanode -- recurse
-				childJxbNode = writeMetanode(childNode);
+				// We have an embedded group -- recurse
+				CyGroup childGroup = CyGroup.getCyGroup(childNode);
+				childJxbNode = writeGroup(childGroup);
 			}
 
 			subGraph.getNodeOrEdge().add(childJxbNode);
 		}
 
-		children.getContent().add(subGraph);
+		final JAXBElement<GraphicGraph> graphicGraphElement = objFactory.createGraph(subGraph);
+		children.getContent().add(graphicGraphElement);
 		jxbNode.getAtt().add(children);
 
 		// Finally add any edges from this sub-network
 		// Note this iterator is over the RootGraph, which
 		// is intentional, otherwise we lose the edges between
-		// the metanode children and the other nodes in the network
+		// the group children and the other nodes in the network
 		Iterator it = Cytoscape.getRootGraph().edgesIterator();
 
 		while (it.hasNext()) {
@@ -1393,23 +1383,6 @@ public class XGMMLWriter {
 		}
 
 		return jxbNode;
-	}
-
-	/**
-	 * Returns true if the node is a metanode.
-	 *
-	 * @param node
-	 * @return
-	 */
-	private boolean isMetanode(final CyNode node) {
-		final int[] childrenIndices = Cytoscape.getRootGraph()
-		                                       .getNodeMetaChildIndicesArray(node.getRootGraphIndex());
-
-		if ((childrenIndices == null) || (childrenIndices.length == 0)) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 	/**
