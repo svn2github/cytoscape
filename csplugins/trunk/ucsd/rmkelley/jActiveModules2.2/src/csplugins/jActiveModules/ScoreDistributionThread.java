@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -42,8 +43,15 @@ public class ScoreDistributionThread extends Thread{
     int numberOfRuns = Integer.parseInt(inputValue);
     PrintStream p = null;	
     try{
-      FileOutputStream out = new FileOutputStream(JOptionPane.showInputDialog(mainFrame, "Output file"));
-      p = new PrintStream(out);	
+				  JFileChooser chooser = new JFileChooser();
+					 int result = chooser.showSaveDialog(mainFrame);
+						if(result == JFileChooser.APPROVE_OPTION){
+							FileOutputStream out = new FileOutputStream(chooser.getSelectedFile());
+       p = new PrintStream(out);
+      }
+						else{
+						  return;
+						}
     }catch(Exception e){
       e.printStackTrace();
       System.out.println("Problem opening file for output");
@@ -67,6 +75,7 @@ public class ScoreDistributionThread extends Thread{
       apfParams.setToUseMCFile(true);
       apfParams.setMcFileName("last.mc");
     }
+				MyProgressMonitor monitor = new MyProgressMonitor(mainFrame,"Running random trials","",0,numberOfRuns);
     for (i=1; i<numberOfRuns; i++) {
       apfParams.shuffleExpressionAttributes(randomGenerator);
       t = new Thread(activePaths);
@@ -78,8 +87,10 @@ public class ScoreDistributionThread extends Thread{
 	e.printStackTrace();
 	System.err.println("Failed to join thread");
 	System.exit(-1);
-      }   
+      }
+						monitor.update();
     }
+				monitor.close();
     try{
       p.close();
     }catch(Exception e){

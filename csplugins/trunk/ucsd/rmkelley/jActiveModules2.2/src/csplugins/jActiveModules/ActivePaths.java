@@ -253,7 +253,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		}
 		flagger.setFlaggedNodes(activePath.getDisplayNodes(), true);
 		// cyNetwork.setFlaggedNodes(activePath.getNodes(),true);
-
+  Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 	// ------------------------------------------------------------------------------
 	public void displayPath(csplugins.jActiveModules.Component activePath,
