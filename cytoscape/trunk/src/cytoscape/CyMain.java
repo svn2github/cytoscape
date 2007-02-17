@@ -126,30 +126,30 @@ public class CyMain implements CyInitParams {
 		//		options.addOption("H", "headless", false, "Run in headless (no gui) mode.");
 		options.addOption(OptionBuilder.withLongOpt("session")
 		                               .withDescription("Load a cytoscape session (.cys) file.")
-		                               .withValueSeparator(' ').withArgName("file").hasArg() // only allow one session!!!
+		                               .withValueSeparator('\0').withArgName("file").hasArg() // only allow one session!!!
 		.create("s"));
 
 		options.addOption(OptionBuilder.withLongOpt("network")
 		                               .withDescription("Load a network file (any format).")
-		                               .withValueSeparator(' ').withArgName("file").hasArgs()
+		                               .withValueSeparator('\0').withArgName("file").hasArgs()
 		                               .create("N"));
 
 		options.addOption(OptionBuilder.withLongOpt("edge-attrs")
 		                               .withDescription("Load an edge attributes file (edge attribute format).")
-		                               .withValueSeparator(' ').withArgName("file").hasArgs()
+		                               .withValueSeparator('\0').withArgName("file").hasArgs()
 		                               .create("e"));
 		options.addOption(OptionBuilder.withLongOpt("node-attrs")
 		                               .withDescription("Load a node attributes file (node attribute format).")
-		                               .withValueSeparator(' ').withArgName("file").hasArgs()
+		                               .withValueSeparator('\0').withArgName("file").hasArgs()
 		                               .create("n"));
 		options.addOption(OptionBuilder.withLongOpt("matrix")
 		                               .withDescription("Load a node attribute matrix file (table).")
-		                               .withValueSeparator(' ').withArgName("file").hasArgs()
+		                               .withValueSeparator('\0').withArgName("file").hasArgs()
 		                               .create("m"));
 
 		options.addOption(OptionBuilder.withLongOpt("plugin")
 		                               .withDescription("Load a plugin jar file, directory of jar files, plugin class name, or plugin jar URL.")
-		                               .withValueSeparator(' ').withArgName("file").hasArgs()
+		                               .withValueSeparator('\0').withArgName("file").hasArgs()
 		                               .create("p"));
 
 		options.addOption(OptionBuilder.withLongOpt("props")
@@ -158,7 +158,7 @@ public class CyMain implements CyInitParams {
 		                               .create("P"));
 		options.addOption(OptionBuilder.withLongOpt("vizmap")
 		                               .withDescription("Load vizmap properties file (Java properties format).")
-		                               .withValueSeparator(' ').withArgName("file").hasArgs()
+		                               .withValueSeparator('\0').withArgName("file").hasArgs()
 		                               .create("V"));
 
 		// try to parse the cmd line
