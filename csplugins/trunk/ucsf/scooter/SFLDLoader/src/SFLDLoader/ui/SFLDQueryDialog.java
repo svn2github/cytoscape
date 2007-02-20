@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package SFLDLoader;
+package SFLDLoader.ui;
 
 // System imports
 import javax.swing.JOptionPane;
@@ -47,65 +47,34 @@ import giny.view.NodeView;
 
 // Cytoscape imports
 import cytoscape.*;
-import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
 
 /**
- * The SFLDLoader class provides the primary interface to the
- * Cytoscape plugin mechanism
+ * The SFLDQueryDialog provides the user interface for SFLDLoader.  The
+ * interface allows the users to browse through the SFLD database in a
+ * hierarchical fashion and display certain (limited) information about
+ * each superfamily, subgroup, and family.  It also provides the capability
+ * to load the XGMML for the entire superfamily or a single subgroup or family
+ * within that superfamily.
+ *
+ * The components of the SFLDQueryDialog include a table with three columns
+ * (one for each of superfamily, subgroup, and family).  When we first create
+ * the queryDialog, we initialize the table by querying the SFLD.  This 
+ * takes quite awhile and so we pop up a progress bar.  There is also a
+ * text field with information about the selected group, and two control
+ * buttons: one to dismiss the dialog, and one to load the network.
+ * 
  */
-public class SFLDLoader extends CytoscapePlugin {
-	final static float VERSION = 0.1;
-	static JDialog sfldQueryDialog = null;
 
-  /**
-   * Create our action and add it to the plugins menu
-   */
-  public SFLDLoader() {
-		JMenu menu = new JMenu("SFLD Loader");
-		JMenuItem loader = new JMenuItem("Load network from SFLD");
-		loader.addMenuListener(new SFLDLoaderMenuListener(null));
-		menu.add(loader);
+public class SFLDQueryDialog extends JDialog implements ActionListener {
+	// Dialog components
+	private JTable queryTable;
+	private JTextPane description;
+	private JButtonBox buttonBox;
+	private JButton loadNetworkButton;
+	private JButton closeButton;
 
-		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
-																.getMenu("Plugins");
-		pluginMenu.add(menu);
-		System.out.println("SFLD Loader "+VERSION+" initialized");
-
-  }
-
-	/**
-	 * The SFLDLoaderMenuListener launches the loader dialog
-	 */
-	public class SFLDLoaderMenuListener implements MenuListener {
-
-		/**
-		 * Create the menu listener
-		 *
-		 */
-		SFLDLoaderMenuListener() {
-		}
-
-	  public void menuCanceled (MenuEvent e) {};
-		public void menuDeselected (MenuEvent e) {};
-
-		/**
-		 * Process the selected menu
-		 *
-		 * @param e the MenuEvent for the selected menu
-		 */
-		public void menuSelected (MenuEvent e)
-		{
-			// See if the dialog is already created
-			if (sfldQueryDialog != null) {
-				// Yes, pop it up
-				return;
-			}
-			// No, create it
-			sfldQueryDialog = new SFLDQueryDialog();
-		}
-	}
 }
