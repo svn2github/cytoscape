@@ -879,8 +879,23 @@ public class LayoutRegion extends JComponent
 		return selected;
 	}
 
-	public void setSelected(boolean selected) {
-		this.selected = selected;
+	
+	// AJK: 02/20/07 BEGIN
+	//     selection and de-selection of a region
+	
+	public void setSelected(boolean isSelected) {
+		this.selected = isSelected;
+		// select nodes in this region 
+		// TODO: should *all* other nodes be unselected?
+		Iterator itx = this.getNodeViews().iterator();
+		while (itx.hasNext())
+		{
+			NodeView nv = (NodeView) itx.next();
+			nv.setSelected(selected);
+		}			
+		this.repaint();	
 	}
-
+	
+	
+	// AJK: 02/20/07 END
 }

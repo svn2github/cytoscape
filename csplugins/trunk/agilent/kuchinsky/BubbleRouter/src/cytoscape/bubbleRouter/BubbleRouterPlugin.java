@@ -289,6 +289,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		} else {
 			menu.setVisible(false);
 			// TODO: refactor processRegionMousePressEvent
+			// AJK: 02/20/07 process selection/deselection of region
+			setRegionSelection (e);
 		}
 	}
 
@@ -317,7 +319,18 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 	}
 
-	public void mouseClicked(MouseEvent e) {
+
+	
+	// AJK: 02/20/07 BEGIN
+	//       Selection/Deselection of a region on mouse click or mouse press
+	
+	public void mouseClicked (MouseEvent e)
+	{
+		setRegionSelection (e);
+		
+	}
+	
+	public void setRegionSelection (MouseEvent e) {
 		// AJK: 12/24/06 BEGIN
 		// set picked region
 		LayoutRegion oldPickedRegion = pickedRegion;
@@ -326,33 +339,15 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		if ((oldPickedRegion != null) && (oldPickedRegion != pickedRegion))
 		{
 			oldPickedRegion.setSelected(false);
-			// unselect nodes in oldPickedRegion
-			Iterator itx = oldPickedRegion.getNodeViews().iterator();
-			while (itx.hasNext())
-			{
-				NodeView nv = (NodeView) itx.next();
-				nv.setSelected(false);
-			}
-			oldPickedRegion.repaint();
 		}
 		if (pickedRegion != null)
 		{
 			pickedRegion.setSelected(true);
-			// select nodes in this region 
-			// TODO: should *all* other nodes be unselected?
-			Iterator itx = pickedRegion.getNodeViews().iterator();
-			while (itx.hasNext())
-			{
-				NodeView nv = (NodeView) itx.next();
-				nv.setSelected(true);
-			}			
-			pickedRegion.repaint();
 			
-			//AP 1.2.07
-			//collect NodeViews bounded by current region
 			boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion.getNodeViews(), pickedRegion.getBounds());
 		}
 	}
+	// AJK: 02/20/07 END
 
 	public void propertyChange(PropertyChangeEvent e) {
 
