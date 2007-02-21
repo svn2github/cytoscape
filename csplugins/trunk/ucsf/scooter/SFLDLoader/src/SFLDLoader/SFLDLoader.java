@@ -32,6 +32,9 @@
  */
 package SFLDLoader;
 
+import SFLDLoader.ui.SFLDQueryDialog;
+import SFLDLoader.model.Superfamily;
+
 // System imports
 import javax.swing.JOptionPane;
 import java.util.List;
@@ -42,13 +45,14 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-// giny imports
-import giny.view.NodeView;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 // Cytoscape imports
 import cytoscape.*;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
@@ -58,8 +62,10 @@ import cytoscape.util.CytoscapeAction;
  * Cytoscape plugin mechanism
  */
 public class SFLDLoader extends CytoscapePlugin {
-	final static float VERSION = 0.1;
+	final static float VERSION = 0.1f;
 	static JDialog sfldQueryDialog = null;
+	static List<Superfamily> superFamilies = null;
+	public final String URLBase = "http://sfldtest.rbvi.ucsf.edu/cgi-bin/SFLDvm.py";
 
   /**
    * Create our action and add it to the plugins menu
@@ -67,7 +73,7 @@ public class SFLDLoader extends CytoscapePlugin {
   public SFLDLoader() {
 		JMenu menu = new JMenu("SFLD Loader");
 		JMenuItem loader = new JMenuItem("Load network from SFLD");
-		loader.addMenuListener(new SFLDLoaderMenuListener(null));
+		loader.addActionListener(new SFLDLoaderMenuListener());
 		menu.add(loader);
 
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
@@ -75,12 +81,16 @@ public class SFLDLoader extends CytoscapePlugin {
 		pluginMenu.add(menu);
 		System.out.println("SFLD Loader "+VERSION+" initialized");
 
+		// Load the initial data from the SFLD
+		SFLDEnumerator enumerator = new SFLDEnumerator();
+		enumerator.start();
+
   }
 
 	/**
 	 * The SFLDLoaderMenuListener launches the loader dialog
 	 */
-	public class SFLDLoaderMenuListener implements MenuListener {
+	public class SFLDLoaderMenuListener implements ActionListener {
 
 		/**
 		 * Create the menu listener
@@ -89,23 +99,61 @@ public class SFLDLoader extends CytoscapePlugin {
 		SFLDLoaderMenuListener() {
 		}
 
-	  public void menuCanceled (MenuEvent e) {};
-		public void menuDeselected (MenuEvent e) {};
-
 		/**
 		 * Process the selected menu
 		 *
 		 * @param e the MenuEvent for the selected menu
 		 */
-		public void menuSelected (MenuEvent e)
+		public void actionPerformed (ActionEvent e)
 		{
 			// See if the dialog is already created
 			if (sfldQueryDialog != null) {
 				// Yes, pop it up
+				sfldQueryDialog.setVisible(true);
 				return;
 			}
 			// No, create it
-			sfldQueryDialog = new SFLDQueryDialog();
+			sfldQueryDialog = new SFLDQueryDialog(superFamilies);
+			sfldQueryDialog.pack();
+			sfldQueryDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+			sfldQueryDialog.setVisible(true);
+		}
+	}
+
+	/**
+	 * The SFLDEnumerator is a thread that loads the initial data set, parse
+	 * the XML and fill out the model information
+	 */
+	public class SFLDEnumerator extends Thread {
+
+		public SFLDEnumerator() {
+		}
+
+		public void run() {
+			System.out.println("Initializing SFLD enumeration");
+			DocumentBuilder builder = null;
+			Document enumeration = null;
+			try {
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				builder = factory.newDocumentBuilder();
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+				e.printStackTrace();
+				return;
+			}
+			try {
+				enumeration = builder.parse(URLBase+"?query=enumerate&level=all&id=0");
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+				e.printStackTrace();
+				return;
+			}
+			NodeList superNodes = enumeration.getElementsByTagName("superfamily");
+			superFamilies = new ArrayList(superNodes.getLength());
+			for (int i = 0; i < superNodes.getLength(); i++) {
+				superFamilies.add(new Superfamily(superNodes.item(i)));
+			}
+			System.out.println("SFLD enumeration complete");
 		}
 	}
 }
