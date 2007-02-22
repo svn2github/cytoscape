@@ -109,7 +109,7 @@
    <fileset dir="${root.dir}">
     <include name="*.jar"/>
    </fileset>
-   <fileset dir="${plugin.dir/lib}">
+   <fileset dir="${plugin.dir}/lib">
     <include name="*.jar"/>
    </fileset>
    <fileset dir="${cytoscape.dir}/lib">

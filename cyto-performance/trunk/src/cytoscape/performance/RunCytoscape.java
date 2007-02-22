@@ -181,14 +181,14 @@ public class RunCytoscape extends TestCase {
 		scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", "yeastHighQuality.sif");
 		player.run(robot, "IMPORT_NETWORK_FILE");
 
-		// LARGE SIF
-		scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", "BINDyeast.sif");
-		player.run(robot, "IMPORT_NETWORK_FILE");
-
 		// GML
 		scenario.setTestSetting("IMPORT_GML_FILE", "IMPORT_DIR", "testData");
 		scenario.setTestSetting("IMPORT_GML_FILE", "FILE_TO_IMPORT", "galFiltered.gml");
 		player.run(robot, "IMPORT_GML_FILE");
+
+		// LARGE SIF
+		scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", "BINDyeast.sif");
+		player.run(robot, "IMPORT_NETWORK_FILE");
 
 		System.out.println("loadNetworks stop");
 	}
@@ -285,17 +285,21 @@ public class RunCytoscape extends TestCase {
 		System.out.println("export network and attributes start");
 		final String exportFileName = "network_export";
 
-		scenario.setTestSetting("EXPORT_AS_XGMML_FILE", "EXPORT_FILE_NAME",
-		                        exportFileName + ".xgmml");
-		player.run(robot, "EXPORT_AS_XGMML_FILE");
+		// We need a semi-large file with a view as current network so that export
+		// will take more than the 100ms needed to achieve popup.
+		scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", "yeastHighQuality.sif");
+		player.run(robot, "IMPORT_NETWORK_FILE");
 
+		scenario.setTestSetting("EXPORT_AS_XGMML_FILE", "EXPORT_FILE_NAME", exportFileName + ".xgmml");
+		player.run(robot, "EXPORT_AS_XGMML_FILE");
+/*
 		scenario.setTestSetting("EXPORT_AS_SIF_FILE", "EXPORT_FILE_NAME", exportFileName + ".sif");
 		player.run(robot, "EXPORT_AS_SIF_FILE");
 
 		scenario.setTestSetting("EXPORT_AS_GML_FILE", "EXPORT_FILE_NAME", exportFileName + ".gml");
 		player.run(robot, "EXPORT_AS_GML_FILE");
-
-		System.out.println("export network and attributes start stop");
+*/
+		System.out.println("export network and attributes stop");
 	}
 
 	/**

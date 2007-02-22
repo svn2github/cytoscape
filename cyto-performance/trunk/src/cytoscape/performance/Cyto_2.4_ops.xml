@@ -11,16 +11,16 @@
 		<Click componentClass="JMenuItem" label="Import" />
 		<Click componentClass="JMenuItem"
 			label="Network (multiple file types)..." />
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
 				label="Select" windowFinder="CLASS_IS_ACCESSIBLE"
 				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
 		</retriever>
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<FileChooser dialogTitle="Import Network Files"
 				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
 		</retriever>
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
 				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
 				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
@@ -45,28 +45,20 @@
 		<Click componentClass="JMenuItem"
 			label="Network and attributes as XGMML..." />
 
-		<Delay ms="500" />
+        <retriever retryTime="10000">
+            <FileChooser dialogTitle="Export Network and Attributes as XGMML"
+                fileName="$(EXPORT_FILE_NAME)" waitTime="5"/>
+        </retriever>
 
-		<TypeText text="$(EXPORT_FILE_NAME)" waitTime="10" />
-		<KeyPress keyCodeString="TAB" />
-		<KeyRelease keyCodeString="TAB" />
-		<Delay ms="100" />
-		<KeyPress keyCodeString="TAB" />
-		<KeyRelease keyCodeString="TAB" />
-		<Delay ms="100" />
-		<KeyPress keyCodeString="SPACE" />
-		<KeyRelease keyCodeString="SPACE" />
-
-
-		<retriever retryTime="300000" intervalTime="1000">
-			<Verify property="enabled" expected="true" 
-			        componentClass="JButton" label="    Close    " 
-				    windowFinder="CLASS_IS_ACCESSIBLE"
-				    windowClass="cytoscape.task.ui.JTask" />
-		</retriever>
-		<Click label="    Close    " componentClass="JButton"
-				windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.task.ui.JTask" />
+        <retriever retryTime="300000" intervalTime="1000">
+            <Verify property="enabled" expected="true"
+                    componentClass="JButton" label="    Close    "
+                    windowFinder="CLASS_IS_ACCESSIBLE"
+                    windowClass="cytoscape.task.ui.JTask" />
+        </retriever>
+        <Click label="    Close    " componentClass="JButton"
+                windowFinder="CLASS_IS_ACCESSIBLE"
+                windowClass="cytoscape.task.ui.JTask" />
 	
 	</scenario>
 
@@ -79,17 +71,20 @@
 		<Click componentClass="JMenuItem"
 			label="Network as SIF File..." />
 
-		<Delay ms="500" />
+        <retriever retryTime="10000">
+            <FileChooser dialogTitle="Save Network as Interactions"
+                fileName="$(EXPORT_FILE_NAME)" />
+        </retriever>
 
-		<TypeText text="$(EXPORT_FILE_NAME)" waitTime="10" />
-		<KeyPress keyCodeString="TAB" />
-		<KeyRelease keyCodeString="TAB" />
-		<Delay ms="100" />
-		<KeyPress keyCodeString="TAB" />
-		<KeyRelease keyCodeString="TAB" />
-		<Delay ms="100" />
-		<KeyPress keyCodeString="SPACE" />
-		<KeyRelease keyCodeString="SPACE" />
+        <retriever retryTime="300000" intervalTime="1000">
+            <Verify property="enabled" expected="true"
+                    componentClass="JButton" label="    Close    "
+                    windowFinder="CLASS_IS_ACCESSIBLE"
+                    windowClass="cytoscape.task.ui.JTask" />
+        </retriever>
+        <Click label="    Close    " componentClass="JButton"
+                windowFinder="CLASS_IS_ACCESSIBLE"
+                windowClass="cytoscape.task.ui.JTask" />
 
 	</scenario>
 
@@ -101,17 +96,20 @@
 		<Click componentClass="JMenuItem" label="Export" />
 		<Click componentClass="JMenuItem" label="Network as GML..." />
 
-		<Delay ms="500" />
+        <retriever retryTime="10000">
+            <FileChooser dialogTitle="Export Network as GML"
+                fileName="$(EXPORT_FILE_NAME)" />
+        </retriever>
 
-		<TypeText text="$(EXPORT_FILE_NAME)" waitTime="10" />
-		<KeyPress keyCodeString="TAB" />
-		<KeyRelease keyCodeString="TAB" />
-		<Delay ms="100" />
-		<KeyPress keyCodeString="TAB" />
-		<KeyRelease keyCodeString="TAB" />
-		<Delay ms="100" />
-		<KeyPress keyCodeString="SPACE" />
-		<KeyRelease keyCodeString="SPACE" />
+        <retriever retryTime="300000" intervalTime="1000">
+            <Verify property="enabled" expected="true"
+                    componentClass="JButton" label="    Close    "
+                    windowFinder="CLASS_IS_ACCESSIBLE"
+                    windowClass="cytoscape.task.ui.JTask" />
+        </retriever>
+        <Click label="    Close    " componentClass="JButton"
+                windowFinder="CLASS_IS_ACCESSIBLE"
+                windowClass="cytoscape.task.ui.JTask" />
 
 	</scenario>
 
@@ -121,22 +119,6 @@
 			label="Show/Hide attribute browser" />
 	</scenario>
 
-
-	<scenario name="APPLY_SPRING_LAYOUT">
-		<Click componentClass="JMenu" label="Layout" />
-		<Click componentClass="JMenuItem" label="Cytoscape Layouts" />
-		<Click componentClass="JMenuItem" label="Spring Embedded" />
-		<Click componentClass="JMenuItem" label="All Nodes" />
-		<retriever retryTime="300000" intervalTime="1000">
-			<Verify property="enabled" expected="true" 
-			        componentClass="JButton" label="    Close    " 
-				    windowFinder="CLASS_IS_ACCESSIBLE"
-				    windowClass="cytoscape.task.ui.JTask" />
-		</retriever>
-		<Click label="    Close    " componentClass="JButton"
-				windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.task.ui.JTask" />
-	</scenario>
 
     <scenario name="APPLY_CY_SPRING_LAYOUT">
         <Click componentClass="JMenu" label="Layout" />
@@ -156,51 +138,6 @@
         </retriever>
     </scenario>
 
-
-	<scenario name="DO_LAYOUT">
-		<Click componentClass="JMenu" label="Layout" />
-		<Click componentClass="JMenuItem" label="$(LAYOUT_CATEGORY)" />
-		<Click componentClass="JMenuItem" label="$(LAYOUT_ALGORITHM)" />
-
-		<retriever retryTime="600000" intervalTime="1000">
-			<OptionPane optionType="OK_BUTTON"/>
-		</retriever>
-	</scenario>
-
-	<scenario name="DO_LAYOUT_WITH_OPTION">
-		<Click componentClass="JMenu" label="Layout" />
-		<Click componentClass="JMenuItem" label="$(LAYOUT_CATEGORY)" />
-		<Click componentClass="JMenuItem" label="$(LAYOUT_ALGORITHM)" />
-		<Click componentClass="JMenuItem" label="$(LAYOUT_OPTION)" />
-
-		<retriever retryTime="300000" intervalTime="1000">
-			<Verify property="enabled" expected="true" 
-			        componentClass="JButton" label="    Close    " 
-				    windowFinder="CLASS_IS_ACCESSIBLE"
-				    windowClass="cytoscape.task.ui.JTask" />
-		</retriever>
-		<Click label="    Close    " componentClass="JButton"
-				windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.task.ui.JTask" />
-	</scenario>
-
-	<scenario name="DO_LAYOUT_WITH_OPTION2">
-		<Click componentClass="JMenu" label="Layout" />
-		<Click componentClass="JMenuItem" label="$(LAYOUT_CATEGORY)" />
-		<Click componentClass="JMenuItem" label="$(LAYOUT_ALGORITHM)" />
-		<Click componentClass="JMenuItem" label="$(LAYOUT_OPTION1)" />
-		<Click componentClass="JMenuItem" label="$(LAYOUT_OPTION2)" />
-
-		<retriever retryTime="300000" intervalTime="1000">
-			<Verify property="enabled" expected="true" 
-			        componentClass="JButton" label="    Close    " 
-				    windowFinder="CLASS_IS_ACCESSIBLE"
-				    windowClass="cytoscape.task.ui.JTask" />
-		</retriever>
-		<Click label="    Close    " componentClass="JButton"
-				windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.task.ui.JTask" />
-	</scenario>
 
 	<scenario name="SELECT_ALL_EDGES">
 		<Click componentClass="JMenu" label="Select" />
@@ -266,7 +203,7 @@
 		<Click componentClass="JMenu" label="Select" />
 		<Click componentClass="JMenuItem" label="Nodes" />
 		<Click componentClass="JMenuItem" label="From File..." />
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<FileChooser dialogTitle="Load Gene Selection File"
 				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
 		</retriever>
@@ -277,7 +214,7 @@
 		<Click componentClass="JMenu" label="Select" />
 		<Click componentClass="JMenuItem" label="Nodes" />
 		<Click componentClass="JMenuItem" label="By Name..." />
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<TypeText text="$(NODE_NAME)"
 				windowFinder="CLASS_IS_ACCESSIBLE" windowClass="JDialog" />
 			<Click componentClass="JButton" label="Search"
@@ -331,7 +268,7 @@
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Import" />
 		<Click componentClass="JMenuItem" label="Node Attributes..." />
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<FileChooser dialogTitle="Import Node Attributes"
 				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
 		</retriever>
@@ -350,7 +287,7 @@
 		<Click componentClass="JMenu" label="File" />
 		<Click componentClass="JMenuItem" label="Import" />
 		<Click componentClass="JMenuItem" label="Edge Attributes..." />
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<FileChooser dialogTitle="Import Edge Attributes"
 				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
 		</retriever>
@@ -370,7 +307,7 @@
 		<Click componentClass="JMenuItem" label="Import" />
 		<Click componentClass="JMenuItem"
 			label="Vizmap Property File..." />
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<FileChooser dialogTitle="Import Vizmap Property File"
 				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
 		</retriever>
@@ -470,7 +407,7 @@
 			text="http://www.cytoscape.org/tut/getting.started/RUAL.subset.sif"
 			waitTime="20" />
 
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
 				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
 				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
@@ -661,7 +598,7 @@
 
 		<TypeText text="$(REMORE_NETWORK_FILE)" waitTime="10" />
 
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
 				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
 				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
@@ -693,7 +630,7 @@
 			targetIndex="$(BOOKMARK_INDEX)" windowFinder="CLASS_IS_ACCESSIBLE"
 			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
 
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
 				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
 				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
@@ -714,16 +651,16 @@
 		<Click componentClass="JMenuItem" label="Import" />
 		<Click componentClass="JMenuItem"
 			label="Network (multiple file types)..." />
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
 				label="Select" windowFinder="CLASS_IS_ACCESSIBLE"
 				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
 		</retriever>
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<FileChooser dialogTitle="Import Network Files"
 				directory="$(IMPORT_DIR)" fileName="$(FILE_TO_IMPORT)" />
 		</retriever>
-		<retriever retryTime="2000">
+		<retriever retryTime="10000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
 				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
 				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
