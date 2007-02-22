@@ -36,6 +36,8 @@ package SFLDLoader.model;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.lang.Comparable;
+import java.util.Arrays;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
@@ -47,9 +49,9 @@ import org.w3c.dom.NamedNodeMap;
  * 
  */
 
-public class Superfamily {
+public class Superfamily implements Comparable {
 	private String name;
-	private List<Subgroup> subgroups;
+	private List subgroups;
 	private String description;
 	private int id;
 
@@ -68,6 +70,11 @@ public class Superfamily {
 			if (!"#text".equals(child.getNodeName()))
 				subgroups.add(new Subgroup(child));
 		}
+
+		// Sort our children
+		Object[] sortable = subgroups.toArray();
+		Arrays.sort(sortable);
+		subgroups = Arrays.asList(sortable);
 	}
 
 	public Superfamily(String name, int id) {
@@ -108,7 +115,7 @@ public class Superfamily {
 	}
 
 	public Subgroup getSubgroup(int index) {
-		return subgroups.get(index);
+		return (Subgroup)subgroups.get(index);
 	}
 
 	public int getProteinCount() {
@@ -117,5 +124,10 @@ public class Superfamily {
 		while (iter.hasNext())
 			nProteins += ((Subgroup)iter.next()).getProteinCount();
 		return nProteins;
+	}
+
+	public int compareTo(Object o) {
+		Superfamily other = (Superfamily) o;
+		return name.compareToIgnoreCase(other.getName());
 	}
 }

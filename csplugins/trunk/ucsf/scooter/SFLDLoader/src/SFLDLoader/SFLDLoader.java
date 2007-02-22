@@ -64,17 +64,19 @@ import cytoscape.util.CytoscapeAction;
 public class SFLDLoader extends CytoscapePlugin {
 	final static float VERSION = 0.1f;
 	static JDialog sfldQueryDialog = null;
-	static List<Superfamily> superFamilies = null;
+	static List superFamilies = null;
 	public final String URLBase = "http://sfldtest.rbvi.ucsf.edu/cgi-bin/SFLDvm.py";
+	static JMenuItem loadMenu = null;
 
   /**
    * Create our action and add it to the plugins menu
    */
   public SFLDLoader() {
 		JMenu menu = new JMenu("SFLD Loader");
-		JMenuItem loader = new JMenuItem("Load network from SFLD");
-		loader.addActionListener(new SFLDLoaderMenuListener());
-		menu.add(loader);
+		loadMenu = new JMenuItem("Initializing...");
+		loadMenu.addActionListener(new SFLDLoaderMenuListener());
+		loadMenu.setEnabled(false);
+		menu.add(loadMenu);
 
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
@@ -113,7 +115,7 @@ public class SFLDLoader extends CytoscapePlugin {
 				return;
 			}
 			// No, create it
-			sfldQueryDialog = new SFLDQueryDialog(superFamilies);
+			sfldQueryDialog = new SFLDQueryDialog(superFamilies, URLBase);
 			sfldQueryDialog.pack();
 			sfldQueryDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			sfldQueryDialog.setVisible(true);
@@ -153,7 +155,13 @@ public class SFLDLoader extends CytoscapePlugin {
 			for (int i = 0; i < superNodes.getLength(); i++) {
 				superFamilies.add(new Superfamily(superNodes.item(i)));
 			}
+			// Sort the list (and descendents)
+			Object[] sortable = superFamilies.toArray();
+			Arrays.sort(sortable);
+			superFamilies = Arrays.asList(sortable);
 			System.out.println("SFLD enumeration complete");
+			loadMenu.setLabel("Browse SFLD...");
+			loadMenu.setEnabled(true);
 		}
 	}
 }

@@ -36,6 +36,7 @@ package SFLDLoader.model;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.lang.Comparable;
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
 
@@ -45,7 +46,7 @@ import org.w3c.dom.NamedNodeMap;
  * used to actually pull the network.
  */
 
-public class Family {
+public class Family implements Comparable {
 	private String name;
 	private String description;
 	private int id;
@@ -91,5 +92,12 @@ public class Family {
 
 	public int getProteinCount() {
 		return proteinCount;
+	}
+
+	public String toString() { return name; }
+
+	public int compareTo(Object o) {
+		Family other = (Family) o;
+		return name.compareToIgnoreCase(other.getName());
 	}
 }

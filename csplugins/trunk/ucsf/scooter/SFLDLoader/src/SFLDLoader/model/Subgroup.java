@@ -36,6 +36,8 @@ package SFLDLoader.model;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Arrays;
+import java.lang.Comparable;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
@@ -47,9 +49,9 @@ import org.w3c.dom.NamedNodeMap;
  * 
  */
 
-public class Subgroup {
+public class Subgroup implements Comparable {
 	private String name;
-	private List<Family> families;
+	private List families;
 	private String description;
 	private int id;
 	private int proteinCount;
@@ -78,6 +80,10 @@ public class Subgroup {
 				if (!"#text".equals(child.getNodeName()))
 					families.add(new Family(child));
 			}
+			// Sort our children
+			Object[] sortable = families.toArray();
+			Arrays.sort(sortable);
+			families = Arrays.asList(sortable);
 		}
 	}
 
@@ -124,7 +130,7 @@ public class Subgroup {
 	}
 
 	public Family getFamily(int index) {
-		return families.get(index);
+		return (Family)families.get(index);
 	}
 
 	public int getProteinCount() {
@@ -133,5 +139,10 @@ public class Subgroup {
 		while (iter.hasNext())
 			nProteins += ((Family)iter.next()).getProteinCount();
 		return nProteins;
+	}
+
+	public int compareTo(Object o) {
+		Subgroup other = (Subgroup) o;
+		return name.compareToIgnoreCase(other.getName());
 	}
 }

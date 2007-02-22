@@ -46,9 +46,12 @@ import javax.swing.text.Position;
 import javax.swing.border.*;
 import javax.swing.WindowConstants.*;
 
+import java.net.URL;
+
 // Cytoscape imports
 import cytoscape.*;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.actions.LoadNetworkTask;
 
 // SFLDLoader imports
 import SFLDLoader.model.*;
@@ -73,7 +76,7 @@ import SFLDLoader.model.*;
 public class SFLDQueryDialog extends JDialog implements ActionListener {
 	// Dialog components
 	private JTable queryTable;
-	private JTextPane description;
+	private	JPanel infoTextPanel;
 	private JPanel buttonBox;
 	private JPanel tableFrame;
 	private JButton loadNetworkButton;
@@ -81,10 +84,15 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 	private TitledBorder descTitleBorder;
 	private BrowseTableModel tableModel;
 	private List<Superfamily> superfamilies;
+	private Superfamily selSuper = null;
+	private Subgroup selSubgroup = null;
+	private Family selFamily = null;
+	private String URLBase = null;
 
-	public SFLDQueryDialog(List<Superfamily> superfamilies) {
+	public SFLDQueryDialog(List<Superfamily> superfamilies, String URLBase) {
 		super();	// Create the dialog
 		this.superfamilies = superfamilies;
+		this.URLBase = URLBase;
 
 		setTitle("SFLD Browse Interface");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -121,7 +129,9 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 
 		// Put this in a scroll pane
 		JScrollPane scrollPane = new JScrollPane(queryTable);
-		queryTable.setPreferredScrollableViewportSize(new Dimension(500,500));
+		scrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
+		scrollPane.setPreferredSize(new Dimension(700, 200));
+		scrollPane.setMinimumSize(new Dimension(700, 10));
 		tablePanel.add(scrollPane);
 
 		// Create the border
@@ -133,10 +143,13 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		browsePanel.add(tablePanel);
 
 		// Add the description elements
-		JPanel infoTextPanel = new JPanel();
-		description = new JTextPane();
-		description.setEditable(false);
-		infoTextPanel.add(description);
+		infoTextPanel = new JPanel();
+		JEditorPane description = new JEditorPane();
+		JScrollPane descScrollPane = new JScrollPane(description);
+		descScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
+		descScrollPane.setPreferredSize(new Dimension(800, 200));
+		descScrollPane.setMinimumSize(new Dimension(700, 10));
+		infoTextPanel.add(descScrollPane);
 
 		// Border it
 		Border descBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -172,17 +185,71 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		}
 		else if ("load".equals(e.getActionCommand())) {
 			// Get the currently selected item
+			int id = 0;
+			String loadURL = URLBase+"?query=pairs&scores=pairwise_blast&level=";
+			if (selFamily != null) {
+				id = selFamily.getId();
+				loadURL = loadURL+"family&id="+id;
+			} else if (selSubgroup != null) {
+				id = selSubgroup.getId();
+				if (id < 0) {
+					loadURL = loadURL+"family&id="+(-id);
+				} else {
+					loadURL = loadURL+"subgroup&id="+id;
+				}
+			} else if (selSuper != null) {
+				id = selSuper.getId();
+				loadURL = loadURL+"superfamily&id="+id;
+			} else {
+				return;
+			}
 			// Load it
+			try {
+				LoadNetworkTask.loadURL(new URL(loadURL), false);
+			} catch (Exception ex) {
+				System.err.println(ex.getMessage());
+			}
 		}
 	}
+
+	public void getDescription(Object group) {
+		String URI = URLBase+"?query=description&";
+		if (group.getClass() == Superfamily.class) {
+			Superfamily sf = (Superfamily)group;
+			URI = URI + "level=superfamily&id="+sf.getId();
+		} else if (group.getClass() == Subgroup.class) {
+			Subgroup sg = (Subgroup)group;
+			if (sg.getId() < 0) {
+				URI = URI + "level=family&id="+(-sg.getId());
+			} else {
+				URI = URI + "level=subgroup&id="+sg.getId();
+			}
+		} else if (group.getClass() == Family.class) {
+			Family fam = (Family)group;
+			URI = URI + "level=family&id="+fam.getId();
+		}
+		infoTextPanel.removeAll();
+		JEditorPane description = null;
+		try {
+			description = new JEditorPane(URI);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		JScrollPane scrollPane = new JScrollPane(description);
+		scrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
+		scrollPane.setPreferredSize(new Dimension(800, 200));
+		scrollPane.setMinimumSize(new Dimension(700, 10));
+		infoTextPanel.add(scrollPane);
+		pack();
+		setVisible(true);
+		infoTextPanel.repaint();
+	}
+			
 
 	public class BrowseTableModel extends AbstractTableModel 
 	                              implements ListSelectionListener {
 		final String[] columnNames = {"Superfamily","SubGroup","Family"};
 		SFLDQueryDialog dialog;
-		Superfamily selSuper = null;
-		Subgroup selSubgroup = null;
-		Family selFamily = null;
 
 		public BrowseTableModel(SFLDQueryDialog dialog) {
 			this.dialog = dialog;
@@ -237,6 +304,10 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		public Class getColumnClass(int c) {
 			if (c == 0) 
 				return Superfamily.class;
+			else if (c == 1)
+				return Subgroup.class;
+			else if (c == 2)
+				return Family.class;
 			return String.class;
 		}
 
@@ -254,9 +325,9 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 			if (col == 0 && row < superfamilies.size()) {
 				return superfamilies.get(row);
 			} else if (col == 1 && selSuper != null && row < selSuper.getSubgroupCount()) {
-				return selSuper.getSubgroup(row).getName();
+				return selSuper.getSubgroup(row);
 			} else if (col == 2 && selSubgroup != null && row < selSubgroup.getFamilyCount()) {
-				return selSubgroup.getFamily(row).getName();
+				return selSubgroup.getFamily(row);
 			}
 			return null;
 		}
@@ -286,50 +357,87 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 				// Fill out next column over (if appropriate)
 				if (selectedCol == 0) {
 					selSuper = superfamilies.get(selectedRow);
+					descTitleBorder.setTitle("Description of superfamily "+selSuper.getName());
+					getDescription(selSuper);
 					selSubgroup = null;
 					selFamily = null;
 					fireTableDataChanged();
 				} else if (selectedCol == 1 && selSuper != null) {
 					selSubgroup = selSuper.getSubgroup(selectedRow);
+					getDescription(selSubgroup);
+					descTitleBorder.setTitle("Description of subgroup "+selSubgroup.getName());
 					selFamily = null;
 					fireTableDataChanged();
 				} else if (selectedCol == 2 && selSubgroup != null) {
 					selFamily = selSubgroup.getFamily(selectedRow);
+					getDescription(selFamily);
+					descTitleBorder.setTitle("Description of family "+selFamily.getName());
 				}
 				loadNetworkButton.setEnabled(true);
+				repaint();
 			}
 		}
 	}
 
-	public class SuperFamilyRenderer implements TableCellRenderer {
+	public class SuperFamilyRenderer extends DefaultTableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table, Object value,
 		                                               boolean isSelected, boolean hasFocus,
 		                                               int row, int col) {
 			if (value != null) {
 				Superfamily superfamily = (Superfamily) value;
-				JLabel label = new JLabel(superfamily.getName());
-				if (isSelected) {
-					label.setForeground(Color.WHITE);
-					label.setBackground(Color.BLACK);
-				}
-				return label;
+				String label = null;
+				if (isSelected || superfamily == selSuper)
+					label = "<html><b>"+superfamily.getName()+"</b>   --></html>";
+				else
+					label = "<html>" + superfamily.getName()+"</html>";
+
+				Component cell = super.getTableCellRendererComponent(table, label, 
+				                                                     isSelected, hasFocus,
+				                                                     row, col);
+				return cell;
 			}
 			return null;
 		}
 	}
 
-	public class SubgroupRenderer implements TableCellRenderer {
+	public class SubgroupRenderer extends DefaultTableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table, Object value,
 		                                               boolean isSelected, boolean hasFocus,
 		                                               int row, int col) {
+			if (value != null) {
+				Subgroup subgroup = (Subgroup) value;
+				String label = null;
+				if (isSelected || subgroup == selSubgroup)
+					label = "<html><b>"+subgroup.getName()+"</b>   --></html>";
+				else
+					label = "<html>" + subgroup.getName()+"</html>";
+
+				Component cell = super.getTableCellRendererComponent(table, label, 
+				                                                     isSelected, hasFocus,
+				                                                     row, col);
+				return cell;
+			}
 			return null;
 		}
 	}
 
-	public class FamilyRenderer implements TableCellRenderer {
+	public class FamilyRenderer extends DefaultTableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table, Object value,
 		                                               boolean isSelected, boolean hasFocus,
 		                                               int row, int col) {
+			if (value != null) {
+				Family family = (Family) value;
+				String label = null;
+				if (isSelected || family == selFamily)
+					label = "<html><b>"+family.getName()+"</b></html>";
+				else
+					label = "<html>" + family.getName()+"</html>";
+
+				Component cell = super.getTableCellRendererComponent(table, label, 
+				                                                     isSelected, hasFocus,
+				                                                     row, col);
+				return cell;
+			}
 			return null;
 		}
 	}
