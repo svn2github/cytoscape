@@ -42,11 +42,16 @@ public class Tracker {
 		results.add(new TrackedEvent(begin.signature,begin.timeStamp,end.timeStamp,beginStack.size()));
 	}
 
+	public static List<TrackedEvent> getEvents() {
+		return results;
+	}
+
 	public static void dumpResults() {
 		for (TrackedEvent t : results)
 			System.out.println(t.toString());
 
 		//new CyPerformanceUI(results);
+		/*
 		ResultPanel rp = new ResultPanel(results);
 		BufferedImage bi = new BufferedImage(ResultPanel.width,ResultPanel.height,BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = bi.createGraphics();
@@ -56,6 +61,29 @@ public class Tracker {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 
+	}
+
+
+	static class Trackable {
+
+		State state;
+		long timeStamp;
+		String signature;
+
+		Trackable(State s, String sig, long ts) { 
+			state = s;
+			signature = sig;
+			timeStamp = ts; 
+		}
+
+		Trackable(State s, String sig) { 
+			this(s,sig,System.nanoTime());
+		}
+
+		public String toString() {
+			return state.toString() + " " + signature + ": " + timeStamp;
+		}
 	}
 }

@@ -9,7 +9,6 @@ import cytoscape.layout.*;
 import cytoscape.task.*;
 
 import javax.swing.JOptionPane;
-import yfiles.*; 
 
 public aspect CytoscapeProfiler {
 
@@ -24,6 +23,8 @@ public aspect CytoscapeProfiler {
 	                //execution(* VisualMappingManager.applyEdgeAppearances(CyNetwork,CyNetworkView)) ||
 	                execution(* LayoutAlgorithm.doLayout(CyNetworkView)) || 
 	                execution(* LayoutAlgorithm.doLayout(CyNetworkView, TaskMonitor)) || 
+                    execution(* csplugins.layout.algorithms.springEmbedded.SpringEmbeddedLayoutAction.actionPerformed(..)) ||
+                    execution(* csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutListener.run())  ||
 	                execution(* CytoscapeAction.actionPerformed(..)) //|| 
 			      ;
 	
@@ -40,11 +41,13 @@ public aspect CytoscapeProfiler {
 	 * it will popup a dialog that will be used by swingunit to know when a layout
 	 * are finished.
 	 */
-	pointcut layoutSupport() : execution(* LayoutAlgorithm.doLayout(CyNetworkView)); 
+	pointcut layoutSupport() : execution(* LayoutAlgorithm.doLayout(CyNetworkView)) ||
+	                           execution(* csplugins.layout.algorithms.springEmbedded.SpringEmbeddedLayoutAction.actionPerformed(..)) ||
+	                           execution(* csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutListener.run())  
+							   ; 
 
 	after() : layoutSupport() {
 		 JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Layout Finished", 
 		                               "Layout Finished", JOptionPane.INFORMATION_MESSAGE);
 	}
-		
 }

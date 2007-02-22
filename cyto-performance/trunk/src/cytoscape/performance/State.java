@@ -6,5 +6,4 @@ import cytoscape.*;
 public enum State {
 	BEGIN,
 	END,
-	TOTAL,
 }

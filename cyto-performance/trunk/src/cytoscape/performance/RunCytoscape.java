@@ -37,6 +37,7 @@
 package cytoscape.performance;
 
 import cytoscape.*;
+import cytoscape.performance.ui.*;
 
 import junit.framework.*;
 
@@ -79,7 +80,8 @@ public class RunCytoscape extends TestCase {
 	public static void main(String[] args) {
 		RunCytoscape.args = args;
 		junit.textui.TestRunner.run(new TestSuite(RunCytoscape.class));
-		Tracker.dumpResults();
+		FileUI fu = new FileUI(Tracker.getEvents(),System.getProperty("cytoscape.dir"));
+		fu.dumpResults();
 		System.exit(0);
 	}
 
@@ -104,7 +106,7 @@ public class RunCytoscape extends TestCase {
 
 		// To make sure to load the scenario file.
 		// CytoscapeTestSwing.xml is placed on the same package directory.
-		URL fileURL = ClassLoader.getSystemResource("cytoscape/performance/Cyto_2.4_ops.xml");
+		URL fileURL = getOps();
 		
 		// Create Scenario object and create XML file.
 		scenario = new Scenario(robotEventFactory, methodSet);
@@ -151,7 +153,7 @@ public class RunCytoscape extends TestCase {
 		exportNetworks();
 		saveSession();
 		restoreSessionFromFile();
-		selectCheck();
+		//selectCheck();
 		layoutCheck();
 	}
 
@@ -471,15 +473,29 @@ public class RunCytoscape extends TestCase {
 		scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", "galFiltered.sif");
 		player.run(robot, "IMPORT_NETWORK_FILE");
 
-		// Cytoscape Layouts
-		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "Cytoscape Layouts");
-		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Hierarchical Layout");
-		player.run(robot, "DO_LAYOUT");
-
-		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_CATEGORY", "Cytoscape Layouts");
-		scenario.setTestSetting("DO_LAYOUT", "LAYOUT_ALGORITHM", "Spring Embedded");
-		player.run(robot, "DO_LAYOUT");
+		player.run(robot, "APPLY_CY_HEIRARCHICAL_LAYOUT");
+		player.run(robot, "APPLY_CY_SPRING_LAYOUT");
 
 		System.out.println("layoutCheck stop");
+	}
+
+	private URL getOps() {
+		String version = CytoscapeVersion.version;
+
+		URL ret;
+
+		if ( version.matches( "2.3" ) ) {
+			ret = ClassLoader.getSystemResource("cytoscape/performance/Cyto_2.3_ops.xml");
+			System.out.println("got 2.3:  " + version);
+
+		} else if ( version.matches( "2.4" ) ) {
+			ret = ClassLoader.getSystemResource("cytoscape/performance/Cyto_2.4_ops.xml");
+			System.out.println("got 2.4:  " + version);
+
+		} else {
+			ret = ClassLoader.getSystemResource("cytoscape/performance/Cyto_2.4_ops.xml");
+			System.out.println("got nothing:  " + version);
+		}
+		return ret;
 	}
 }

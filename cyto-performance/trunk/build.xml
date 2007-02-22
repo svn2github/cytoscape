@@ -12,10 +12,9 @@
   <property name="src.dir" value="${root.dir}/src"/>
   <property name="tests.dir" value="${root.dir}/tests"/>
   <property name="build.dir" value="${root.dir}/build"/>
-  <property name="javadoc.dir" value="${root.dir}/API"/>
+  <property name="plugins.dir" value="${root.dir}/plugins"/>
   <property name="log.dir" value="${build.dir}/logs" />
-  <property name="junit.report.dir" value="${log.dir}/junit-reports" />
-<!-- Define the relevant files -->
+  <!-- Define the relevant files -->
   <property name="project.jar" value="${name}.jar"/>
   <property name="test.jar" value="${name}-tests.jar"/>
  </target>
@@ -27,9 +26,17 @@
     </not>
    </condition>
   </fail>
-<!-- Define the directories -->
+  <fail message="You must specify the plugin source location:    ant -Dplugin.root.dir=/path/to/plugin [ant target]">
+   <condition>
+    <not>
+     <isset property="plugin.root.dir"/>
+    </not>
+   </condition>
+  </fail>
+
+  <!-- Define the directories -->
   <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
-<!-- Define the class path - Defaults to everything in the lib.dir -->
+  <!-- Define the class path - Defaults to everything in the lib.dir -->
   <path id="build.class.path">
    <fileset dir="${lib.dir}">
     <include name="*.jar"/>
@@ -46,7 +53,7 @@
 <!-- Compiles the project                                                -->
 <!-- =================================================================== -->
  <target name="compile" 
-          depends="init" >
+         depends="compile-plugins" >
   <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
    <classpath>
     <pathelement location="${lib.dir}/aspectjtools.jar"/>
@@ -64,12 +71,96 @@
   </iajc>
  </target>
 <!-- =================================================================== -->
+<!-- Compiles the plugins                                                -->
+<!-- =================================================================== -->
+ <target name="compile-plugins" 
+         depends="init" >
+  <property name="plugin.name" value="AutomaticLayout"/>
+  <property name="plugin.dir" value="${plugin.root.dir}/AutomaticLayout"/>
+  <ant target="compile-one-plugin" />
+  <!-- reset plugin.name and plugin.dir -->
+  <!-- and run again for a different plugin-->
+ </target>
+<!-- =================================================================== -->
+<!-- Compiles a single plugin                                            -->
+<!-- =================================================================== -->
+ <target name="compile-one-plugin"> 
+  <fail message="You must specify the plugin name property (plugin.name)!">
+   <condition>
+    <not>
+     <isset property="plugin.name"/>
+    </not>
+   </condition>
+  </fail>
+  <fail message="You must specify the plugin source dir property (plugin.dir)!">
+   <condition>
+    <not>
+     <isset property="plugin.dir"/>
+    </not>
+   </condition>
+  </fail>
+
+  <!-- Define the plugin class path -->
+  <mkdir dir="${plugin.dir}/lib"/>
+  <path id="plugin.build.class.path">
+   <fileset dir="${lib.dir}">
+    <include name="*.jar"/>
+   </fileset>
+   <fileset dir="${root.dir}">
+    <include name="*.jar"/>
+   </fileset>
+   <fileset dir="${plugin.dir/lib}">
+    <include name="*.jar"/>
+   </fileset>
+   <fileset dir="${cytoscape.dir}/lib">
+    <include name="*.jar"/>
+   </fileset>
+   <fileset dir="${cytoscape.dir}/plugins/core">
+    <include name="*.jar"/>
+   </fileset>
+   <fileset dir="${cytoscape.dir}">
+    <include name="*.jar"/>
+   </fileset>
+  </path>
+
+  <!-- setup -->
+  <property name="plugin.build.dir" value="${plugins.dir}/${plugin.name}-plugin"/>
+  <mkdir dir="${plugin.build.dir}"/>
+   
+  <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+   <classpath>
+    <pathelement location="${lib.dir}/aspectjtools.jar"/>
+    <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
+   </classpath>
+  </taskdef>
+
+  <!-- compile the plugin -->
+  <iajc classpathref="plugin.build.class.path"
+        destdir="${plugin.build.dir}"
+        source="1.5" >
+   <sourceroots>
+    <pathelement location="${plugin.dir}/src"/>
+    <pathelement location="${src.dir}"/>
+   </sourceroots>
+  </iajc>
+
+  <!-- create a jar file and put it in the plugins dir -->
+  <jar destfile="${plugins.dir}/${plugin.name}.jar" >
+   <fileset dir="${plugin.build.dir}"
+            includes="**"/>
+  </jar>
+  <echo message="Successfully ran jar task!"/>
+ </target>
+<!-- =================================================================== -->
 <!-- Creates the project jar file                                        -->
 <!-- =================================================================== -->
  <target name="jar" 
          depends="compile" >
-  <copy file="${src.dir}/cytoscape/performance/Cyto_2.4_ops.xml"
-        todir="${build.dir}/cytoscape/performance"/>
+  <copy todir="${build.dir}/cytoscape/performance">
+   <fileset dir="${src.dir}/cytoscape/performance">
+    <include name="*.xml"/>
+   </fileset>
+  </copy>
   <path id="local.classpath">
    <fileset dir="${lib.dir}">
     <include name="*.jar" />
@@ -114,11 +205,19 @@
  <target name="run"
          depends="jar"
          description="Runs Cytoscape">
+  <mkdir dir="${plugins.dir}"/>
+  <copy todir="${plugins.dir}"
+        overwrite="false"> <!-- we don't want to overwrite the plugins we just built -->
+   <fileset dir="${cytoscape.dir}/plugins/core">
+    <include name="*.jar"/>
+   </fileset>
+  </copy>
   <java jar="${root.dir}/cyto-performance.jar" 
         fork="true">
    <jvmarg value="-Xmx512M"/>
+   <jvmarg value="-Dcytoscape.dir=${cytoscape.dir}"/>
    <arg value="-p"/>
-   <arg value="${cytoscape.dir}/plugins/core"/>
+   <arg value="${plugins.dir}"/>
   </java>
  </target>
 <!-- =================================================================== -->
@@ -127,7 +226,7 @@
  <target name="clean" 
          depends="static-init">
   <delete dir="${build.dir}"/>
-  <delete dir="${javadoc.dir}"/>
+  <delete dir="${plugins.dir}"/>
   <delete file="${project.jar}"/>
   <delete file="${test.jar}"/>
   <echo message="Successfully ran clean task!"/>
