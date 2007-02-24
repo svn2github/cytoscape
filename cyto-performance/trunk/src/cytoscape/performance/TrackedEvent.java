@@ -45,4 +45,16 @@ public class TrackedEvent {
 	public String toParsable() {
 		return signature + ";" + begin + ";" + end + ";" + level;
 	}
+
+	public boolean equals(Object o) {
+		if ( o == this )
+			return true;
+
+		if ( o instanceof TrackedEvent ) {
+			TrackedEvent t = (TrackedEvent)o;
+			return t.signature.equals(this.signature);
+		} else { 
+			return false;
+		}
+	}
 }

@@ -66,6 +66,7 @@ public class AlignedResults {
 	}
 
 	List<List<TrackedEvent>> allResults;
+	List<List<TrackedEvent>> alignedResults;
 	long maxRunTime = Long.MIN_VALUE;
 	int maxLevel = Integer.MIN_VALUE;
 	Map<String,Color> colorMap;
@@ -84,9 +85,10 @@ public class AlignedResults {
 		for ( String fileName : args )
 			allResults.add( readResults( fileName ) );
 
-		NeedlemanWunsch nw = new NeedlemanWunsch(allResults.get(0), allResults.get(1));
+		MultipleAlign nw = new MultipleAlign(allResults);
+		alignedResults = nw.getAlignment();
 
-		createImage(nw.getAligned1(), nw.getAligned2());
+		createImage();
 		writeHTML();
 	}
 
@@ -111,7 +113,7 @@ public class AlignedResults {
 			}
 			long diff = localEnd - localBegin;
 			maxRunTime = Math.max( maxRunTime, diff );
-			maxRunTime *= 1.2;
+			maxRunTime *= 1.1;
 			br.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -122,10 +124,10 @@ public class AlignedResults {
 
 
     
-	private void createImage(List<TrackedEvent> l1, List<TrackedEvent> l2) {
+	private void createImage() {
         BufferedImage bi = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = bi.createGraphics();
-        paint(g2,l1,l2);
+        paint(g2);
 		try {
 			ImageIO.write(bi,"png",new File("marge.png"));
 		} catch (Exception e) {
@@ -133,7 +135,7 @@ public class AlignedResults {
 		}
 	}
 
-	private void paint(Graphics g, List<TrackedEvent> l1, List<TrackedEvent> l2) {
+	private void paint(Graphics g) {
 		areaBuffer = new StringBuffer();
 
 		Graphics2D g2 = (Graphics2D)g;
@@ -142,62 +144,47 @@ public class AlignedResults {
 
 		int separation = 12;
 		int w = separation;
-		int h1 = 0;
-		int h2 = 0;
-
-		int x1Offset = separation;
-		int x2Offset = (separation * (maxLevel + 3));
+		int h = 0;
 
 		int yOffset = 3*separation;
 		int totalHeight = height - yOffset;
 		int yLoc = yOffset;
 		int xLoc = 0;
 
-		g2.setColor(Color.black);
-		g2.drawString(args[0], x1Offset, separation);
-		g2.drawString(args[1], x2Offset, separation);
 
-		for (int i = 0; i < l1.size(); i++) {
+		int length = alignedResults.get(0).size();
 
-			TrackedEvent t1 = l1.get(i);
-			TrackedEvent t2 = l2.get(i);
+		// draw the rows first
+		for (int j = 0; j < length; j++) {
+			int maxY = 0;
+			int level = 0;
+			for (int i = 0; i < alignedResults.size(); i++) {
 
-				System.out.println( "========================================");
-			if ( t1 != null ) {
-				System.out.println("---- 1     " + t1.toString()); 
-				g2.setColor(colorMap.get(t1.signature));
+				int xOffset = i * (separation * (maxLevel + 3));
+	
+				if ( j == 0 ) {
+					g2.setColor(Color.black);
+					g2.drawString(args[i], xOffset, separation);
+				}
 
-				xLoc = x1Offset + (separation * t1.level); 
-				h1 = (int)(((double)(t1.end - t1.begin)/(double)maxRunTime)*(double)totalHeight);
-				h1 = h1>2?h1:2; 
-				g2.fillRect(xLoc,yLoc,w,h1);
-				String sig = t1.signature + ": " + (t1.end - t1.begin);
-				addMap(xLoc,yLoc,xLoc+w,yLoc+h1,sig);
+				TrackedEvent t = alignedResults.get(i).get(j);
+
+				if ( t != null ) {
+					g2.setColor(colorMap.get(t.signature));
+	
+					xLoc = xOffset + (separation * t.level); 
+					h = (int)(((double)(t.end - t.begin)/(double)maxRunTime)*(double)totalHeight);
+					h = h>2?h:2; 
+					g2.fillRect(xLoc,yLoc,w,h);
+					String sig = t.signature + ": " + (t.end - t.begin);
+					addMap(xLoc,yLoc,xLoc+w,yLoc+h,sig);
+
+					maxY = Math.max(maxY,h);
+					level = Math.max(t.level,level);
+				}
 			}
-
-			if ( t2 != null ) {
-				System.out.println("---- 2     " + t2.toString()); 
-				g2.setColor(colorMap.get(t2.signature));
-
-				xLoc = x2Offset + (separation * t2.level); 
-				h2 = (int)(((double)(t2.end - t2.begin)/(double)maxRunTime)*(double)totalHeight);
-				h2 = h2>2?h2:2; 
-				g2.fillRect(xLoc,yLoc,w,h2);
-				String sig = t2.signature + ": " + (t2.end - t2.begin);
-				addMap(xLoc,yLoc,xLoc+w,yLoc+h2,sig);
-			} 
-
-			if ( t1 != null && t2 != null && t1.level == 0 && t2.level == 0 ) {
-				yLoc = yLoc + Math.max(h1,h2) + separation;
-				System.out.println("t1 and t2: " + yLoc);
-			} else if ( t1 != null && t2 == null && t1.level == 0 ) {
-				yLoc = yLoc + h1 + separation;
-				System.out.println("t1: " + yLoc);
-			} else if ( t2 != null && t1 == null && t2.level == 0 ) {
-				yLoc = yLoc + h2 + separation;
-				System.out.println("t2: " + yLoc);
-			}	
-
+			if ( level == 0 )
+				yLoc = yLoc + maxY + separation;
 		}
 	}
 

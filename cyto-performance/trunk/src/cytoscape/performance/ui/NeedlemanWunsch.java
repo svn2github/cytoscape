@@ -35,18 +35,17 @@
 
 package cytoscape.performance.ui;
 
-import cytoscape.*;
-import cytoscape.performance.*;
-
 import java.util.*;
 
 
-public class NeedlemanWunsch {
+public class NeedlemanWunsch<T> {
 
-	private List<TrackedEvent> seq1;
-	private List<TrackedEvent> seq2;
-	private LinkedList<TrackedEvent> aligned1;
-	private LinkedList<TrackedEvent> aligned2;
+	private List<T> seq1;
+	private List<T> seq2;
+	private LinkedList<T> aligned1;
+	private LinkedList<T> aligned2;
+
+	private LinkedList<T> merged;
 
 	private int gapPenalty;
 	private int match;
@@ -59,21 +58,31 @@ public class NeedlemanWunsch {
 	private static final int ACROSS = 2;
 	private static final int DIAG = 4;
 	
-	public NeedlemanWunsch(List<TrackedEvent> s1, List<TrackedEvent> s2) {
+	public NeedlemanWunsch(List<T> s1, List<T> s2) {
+
 		seq1  = s1;
 		seq2  = s2;
-		aligned1 = new LinkedList<TrackedEvent>(); 
-		aligned2 = new LinkedList<TrackedEvent>(); 
+		aligned1 = new LinkedList<T>(); 
+		aligned2 = new LinkedList<T>(); 
+		merged = new LinkedList<T>(); 
 
 		gapPenalty = 0;
 		match = 2;
 		mismatch = -2;
 
-		align();
+		if ( s1 != null )
+			align();
+		else {
+			aligned1 = null;
+			aligned2 = new LinkedList<T>(s2);
+			merged = new LinkedList<T>(s2);
+			optimalScore = 0;
+		}
 	}
 
-	public List<TrackedEvent> getAligned1() { return aligned1; }
-	public List<TrackedEvent> getAligned2() { return aligned2; }
+	public List<T> getAligned1() { return aligned1; }
+	public List<T> getAligned2() { return aligned2; }
+	public List<T> getMerged() { return merged; }
 	public int getAlignmentScore() { return optimalScore; }
 
 	private void align() {
@@ -98,7 +107,7 @@ public class NeedlemanWunsch {
 
 			for ( int j = 1; j < S[i].length; j++ ) {
 				int ijmatch = mismatch; 
-				if ( seq1.get(i-1).signature.equals( seq2.get(j-1).signature ) )
+				if ( seq1.get(i-1).equals( seq2.get(j-1) ) )
 					ijmatch = match;
 
 				S[i][j] = Math.max( S[i-1][j-1] + ijmatch ,
@@ -144,6 +153,17 @@ public class NeedlemanWunsch {
 				// hacky
 				break;
 			}
+		}
+
+		mergeAligned();
+	}
+
+	private void mergeAligned() {
+		for ( int i = 0; i < aligned1.size(); i++ ) {
+			T t = aligned1.get(i);
+			if ( t == null )
+				t = aligned2.get(i);
+			merged.add(t);
 		}
 	}
 }
