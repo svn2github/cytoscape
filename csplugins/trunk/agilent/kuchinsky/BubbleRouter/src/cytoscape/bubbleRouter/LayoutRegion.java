@@ -570,6 +570,9 @@ public class LayoutRegion extends JComponent
 					.getSelectedNodes(), new Rectangle2D.Double(x1
 					+ (HANDLE_SIZE / 2), y1 + (HANDLE_SIZE / 2), w1, h1));
 
+			//AP: 2/25/07 add automatic edge minimization following region routing
+			UnCrossAction.unCross(Cytoscape.getCurrentNetworkView().getSelectedNodes());
+			
 			// AJK: 11/15/06 BEGIN
 			// undo/redo facility
 			for (int k = 0; k < _selectedNodeViews.length; k++) {
