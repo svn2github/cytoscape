@@ -1365,7 +1365,7 @@ processing technique with supercomputing center resources.
 				</p>
 		</td>
 		<td width="20%" valign="top">
-				 Verified to work in 2.3.2, 2.4
+				 Verified to work in 2.4
 				</td>
 		<td width="20%" valign="top">
 			[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.4/plugins/CyGoose_2.4.1.jar">Download Jar</a>]
