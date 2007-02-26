@@ -144,11 +144,11 @@ class UnCrossAction extends CytoscapeAction {
 	private static int iteration = 0;
 
 	public UnCrossAction() {
-		super("Minimize Edge Crossings for Selected Nodes");
-		setPreferredMenu("Layout");
+//		super("Minimize Edge Crossings for Selected Nodes");
+//		setPreferredMenu("Layout");
 		//Note: Alt-U is used by default on MacOS; use Alt-X instead
-		setAcceleratorCombo(java.awt.event.KeyEvent.VK_X,
-				ActionEvent.ALT_MASK);
+//		setAcceleratorCombo(java.awt.event.KeyEvent.VK_X,
+//				ActionEvent.ALT_MASK);
 	}
 
 	public UnCrossAction(boolean label) {
@@ -156,7 +156,7 @@ class UnCrossAction extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		unCross(Cytoscape.getCurrentNetworkView().getSelectedNodes());
+//		unCross(Cytoscape.getCurrentNetworkView().getSelectedNodes());
 	}
 
 	public List get_selectedNodes() {
@@ -167,9 +167,20 @@ class UnCrossAction extends CytoscapeAction {
 		_selectedNodes = nodes;
 	}
 
-	public void unCross(List nodes) {
+	// AP: 2.25.07 now takes list of nodes WITHIN bounds of a region
+	public static void unCross(List nodes) {
+		
+		//AP: 2/25/07 warn if no nodes are selected
+		if (nodes.size() <= 0)
+		{
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
+					"You must first select some nodes in order to minimize edge crossings.");
+			return;	
+		}
+		else {
+		UnCrossAction uncross = new UnCrossAction();
 
-		Task unCrossTask = new UnCrossTask(nodes);
+		Task unCrossTask = uncross.new UnCrossTask(nodes);
 		JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
@@ -180,6 +191,7 @@ class UnCrossAction extends CytoscapeAction {
 
 		// Execute Task in New Thread; pops open JTask Dialog Box.
 		TaskManager.executeTask(unCrossTask, jTaskConfig);
+		}
 
 	}
 
@@ -201,13 +213,6 @@ class UnCrossAction extends CytoscapeAction {
 				throw new IllegalStateException("Task Monitor is not set");
 			}
 			
-			if (nodes.size() <= 0)
-			{
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-						"You must first select some nodes in order to minimize edge crossings.");
-				return;	
-			}
-
 			initialize(nodes);
 
 			for (int j = 0; j < _nodeViews.length; j++) {
