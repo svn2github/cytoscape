@@ -105,6 +105,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	public static String DELETE_REGION = "Delete Region";
 	public static String REROUTE_REGION = "Reroute Region";
+	public static String UNCROSS_EDGES = "Uncross Edges";
 
 	JPopupMenu menu = new JPopupMenu("Layout Region");
 
@@ -128,14 +129,18 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
 		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 				.addMouseListener(this);
-
+		
+		//AP: 2/25/07 add edge uncross to context menu
+		JMenuItem uncrossEdgesItem = new JMenuItem(this.UNCROSS_EDGES);
 		JMenuItem deleteRegionItem = new JMenuItem(this.DELETE_REGION);
 		JMenuItem rerouteRegionItem = new JMenuItem(this.REROUTE_REGION);
 		RegionPopupActionListener popupActionListener = new RegionPopupActionListener();
 		deleteRegionItem.addActionListener(popupActionListener);
 		rerouteRegionItem.addActionListener(popupActionListener);
+		uncrossEdgesItem.addActionListener(popupActionListener);
 		menu.add(deleteRegionItem);
 		menu.add(rerouteRegionItem);
+		menu.add(uncrossEdgesItem);
 		menu.setVisible(false);
 		// AJK: 12/01/06 END
 		
@@ -143,11 +148,11 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		savedCursor = Cytoscape.getDesktop().getCursor();
 		
 		// AJK: 1/2/07 add edge cross minimization functionality
-		UnCrossAction uncross = new UnCrossAction();
-		Cytoscape.getDesktop().getCyMenus().addAction(uncross);
+//		UnCrossAction uncross = new UnCrossAction();
+//		Cytoscape.getDesktop().getCyMenus().addAction(uncross);
 
-		MainPluginAction mpa = new MainPluginAction();
-		mpa.initializeBubbleRouter();
+//		MainPluginAction mpa = new MainPluginAction();
+//		mpa.initializeBubbleRouter();
 
 	}
 
@@ -285,6 +290,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	public void mousePressed(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON3) {
+			setRegionSelection (e);
 			processRegionContextMenu(e);
 		} else {
 			menu.setVisible(false);
@@ -363,8 +369,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	protected void processRegionContextMenu(MouseEvent event) {
 
-		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(event
-				.getPoint());
+//		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(event
+//				.getPoint());
 		if (pickedRegion == null) {
 			menu.setVisible(false);
 			return;
@@ -692,6 +698,11 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				//AP 1.2.07
 				//collect NodeViews bounded by current region
 				boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion.getNodeViews(), pickedRegion.getBounds());
+				UnCrossAction.unCross(boundedNodeViews);
+			}
+			else if ((label == UNCROSS_EDGES) && (pickedRegion !=null)) {
+				//AP: 2/25/07  uncross edges of nodes selected only WITHIN a region
+				UnCrossAction.unCross(boundedNodeViews);
 			}
 			else {
 				// throw an exception here?
