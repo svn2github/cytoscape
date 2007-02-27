@@ -321,7 +321,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		Iterator nodeIterator = network.nodesIterator();
 
-		String values[] = BRCyAttributesUtil.getDistinctAttributeValues(
+		String valueSet[] = BRCyAttributesUtil.getDistinctAttributeValues(
 				nodeIterator, nodeAttributes, attributeKey, 50);
 
 		// INSERT PATTERN split here (12/5/06 meeting)
@@ -329,17 +329,23 @@ public class BRQuickFindConfigDialog extends JDialog {
 		// Kristina Hanspers and others 12/11/06
 		// Parsing of attributes that are separated by the pipe character 
 
+		// AP: 2.26.07  BRCyAttributesUtil already handles LIST type nodeAttributes
 		Vector valueList = new Vector();
-		String splitValues[] = null;
+//		for (int i = 0; i < (valueSet.length); i++) {
+//			valueList.add(valueSet[i]);
+//		}
 
-		for (int i = 0; i < (values.length); i++) {
-			splitValues = values[i].split("[|]");
-			for (int j = 0; j < (splitValues.length); j++) {
-				if (!valueList.contains(splitValues[j])) {
-					valueList.add(splitValues[j]);
+		String splitValueSet[] = null;
+
+		for (int i = 0; i < (valueSet.length); i++) {
+			splitValueSet = valueSet[i].split(", ");
+			for (int j = 0; j < (splitValueSet.length); j++) {
+				if (!valueList.contains(splitValueSet[j])) {
+					valueList.add(splitValueSet[j]);
 				}
 			}
 		}
+		
 
 		String[] finalValues = new String[valueList.size() + 1];
 		Iterator it = valueList.iterator();
