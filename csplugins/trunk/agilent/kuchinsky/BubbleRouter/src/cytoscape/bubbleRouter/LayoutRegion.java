@@ -30,10 +30,12 @@ import ding.view.DingCanvas;
 import ding.view.InnerCanvas;
 import ding.view.ViewportChangeListener;
 
+import csplugins.brquickfind.util.*;
+
 public class LayoutRegion extends JComponent
 // AJK: 01/4/07 ViewportListener for accommodating pan/zoom
 		implements ViewportChangeListener {
-//{
+	// {
 	/**
 	 * Translucency level of region
 	 */
@@ -132,11 +134,16 @@ public class LayoutRegion extends JComponent
 
 	// AJK: 01/04/06 for accommodating pan and zoom of InnerCanvas
 	private double currentZoom = Double.NaN;
+
 	private double currentCenterX = Double.NaN, currentCenterY = Double.NaN;
+
 	private boolean viewportSet = false;
-//	private double originalZoom = Double.NaN;
-//	private double originalOffsetX = Double.NaN, originalOffsetY = Double.NaN;
+
+	// private double originalZoom = Double.NaN;
+	// private double originalOffsetX = Double.NaN, originalOffsetY =
+	// Double.NaN;
 	private int viewportWidth;
+
 	private int viewportHeight;
 
 	/**
@@ -153,7 +160,7 @@ public class LayoutRegion extends JComponent
 
 		if (this.getRegionAttributeValue() == null) {
 			return;
-			
+
 		}
 
 		// AJK: 12/25/06 for stretching
@@ -164,8 +171,8 @@ public class LayoutRegion extends JComponent
 		// note that coordinates are in terms of screen coordinates, not node
 		// coordinates
 		// AJK: 01/09/07 use double coordinates, to avoid roundoff errors
-//		setBounds((int) x, (int) y, (int) width, (int) height);
-		setBounds( x,  y,  width,  height);
+		// setBounds((int) x, (int) y, (int) width, (int) height);
+		setBounds(x, y, width, height);
 		nodeViews = populateNodeViews();
 
 		// determine color of layout region
@@ -173,12 +180,14 @@ public class LayoutRegion extends JComponent
 		this.paint = colors[colorIndex];
 
 		// AJK: 01/04/07 add ViewportChangeListener for accommodating pan/zoom
-//		currentZoom = ((DGraphView) Cytoscape.getCurrentNetworkView())
-//				.getZoom();
-//		currentX = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCenter()
-//				.getX();
-//		currentY = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCenter()
-//				.getY();
+		// currentZoom = ((DGraphView) Cytoscape.getCurrentNetworkView())
+		// .getZoom();
+		// currentX = ((DGraphView)
+		// Cytoscape.getCurrentNetworkView()).getCenter()
+		// .getX();
+		// currentY = ((DGraphView)
+		// Cytoscape.getCurrentNetworkView()).getCenter()
+		// .getY();
 		((DGraphView) Cytoscape.getCurrentNetworkView())
 				.addViewportChangeListener(this);
 
@@ -304,7 +313,7 @@ public class LayoutRegion extends JComponent
 		// new QuickFindConfigDialog();
 		new BRQuickFindConfigDialog(this);
 
-//		System.out.println("Got attribute name: " + attributeName);
+		// System.out.println("Got attribute name: " + attributeName);
 		// AJK: 11/15/06 END
 
 		// }
@@ -325,7 +334,7 @@ public class LayoutRegion extends JComponent
 	// public static void setAttributeName(String newAttributeKey) {
 	public void setAttributeName(String newAttributeKey) {
 		attributeName = newAttributeKey;
-//		System.out.println("Attribute name selected: " + attributeName);
+		// System.out.println("Attribute name selected: " + attributeName);
 	}
 
 	/**
@@ -367,77 +376,71 @@ public class LayoutRegion extends JComponent
 	// public static void setRegionAttributeValue(Object object) {
 	public void setRegionAttributeValue(Object object) {
 		regionAttributeValue = object;
-//		System.out.println("Attribute value selected: " + regionAttributeValue);
+		// System.out.println("Attribute value selected: " +
+		// regionAttributeValue);
 
 	}
-	
-	
 
 	// AJK: 01/04/07 BEGIN
 	// respond to changes in viewport to zoom or scroll
 	/**
 	 * Our implementation of ViewportChangeListener.
 	 */
-	
-	public void resetViewportMappings ()
-	{
+
+	public void resetViewportMappings() {
 		viewportSet = false;
-		
+
 	}
-	
+
 	/**
 	 * recalculate bounds of region when canvas is panned, zoomed, resized
 	 * equations are
 	 * 
-	 * if (newZoom == zoom) then just a translation
-	 *    newX1 = x1 + newXCenter - xCenter;
-	 * else
-	 *   (x1 - xCenter) / zoom = (newX1 - newXCenter) / newZoom
-	 *   known is x1, xCenter, zoom, newXCenter, newZoom, unknown is newX1
-	 *   newX1 = newXCenter + ((newZoom / zoom) * (x1 - xCenter)) 
-	 *   and if deltaZoom = newZoom / zoom and deltaX = x1 - xCenter
-	 *   then
-	 *   newX1 = newXCenter + deltaZoom * deltaX
+	 * if (newZoom == zoom) then just a translation newX1 = x1 + newXCenter -
+	 * xCenter; else (x1 - xCenter) / zoom = (newX1 - newXCenter) / newZoom
+	 * known is x1, xCenter, zoom, newXCenter, newZoom, unknown is newX1 newX1 =
+	 * newXCenter + ((newZoom / zoom) * (x1 - xCenter)) and if deltaZoom =
+	 * newZoom / zoom and deltaX = x1 - xCenter then newX1 = newXCenter +
+	 * deltaZoom * deltaX
 	 * 
 	 */
 	public void viewportChanged(int w, int h, double newXCenter,
 			double newYCenter, double newScaleFactor) {
-		
 
 		// new image coordinates
-//		double[] currentNodeCoordinates = new double[4];
-//		currentNodeCoordinates[0] = this.x1;
-//		currentNodeCoordinates[1] = this.y1;
-//		currentNodeCoordinates[2] = this.x1 + this.w1;
-//		currentNodeCoordinates[3] = this.y1 + this.h1;
-//		InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
-//		AffineTransform transform = canvas.getAffineTransform();
-//		transform.transform(currentNodeCoordinates, 0, currentNodeCoordinates, 0, 2);
-//		
-//		this.x1 = currentNodeCoordinates[0];
-//		this.y1 = currentNodeCoordinates[1];
-//		this.w1 = currentNodeCoordinates[2] - currentNodeCoordinates[0];
-//		this.h1 = currentNodeCoordinates[3] - currentNodeCoordinates[1];
+		// double[] currentNodeCoordinates = new double[4];
+		// currentNodeCoordinates[0] = this.x1;
+		// currentNodeCoordinates[1] = this.y1;
+		// currentNodeCoordinates[2] = this.x1 + this.w1;
+		// currentNodeCoordinates[3] = this.y1 + this.h1;
+		// InnerCanvas canvas = ((DGraphView)
+		// Cytoscape.getCurrentNetworkView()).getCanvas();
+		// AffineTransform transform = canvas.getAffineTransform();
+		// transform.transform(currentNodeCoordinates, 0,
+		// currentNodeCoordinates, 0, 2);
+		//		
+		// this.x1 = currentNodeCoordinates[0];
+		// this.y1 = currentNodeCoordinates[1];
+		// this.w1 = currentNodeCoordinates[2] - currentNodeCoordinates[0];
+		// this.h1 = currentNodeCoordinates[3] - currentNodeCoordinates[1];
 
-
-		
-		
 		System.out.println(" ");
-		System.out.println("Viewport changed, w = " + w + ", h = " + h 
+		System.out.println("Viewport changed, w = " + w + ", h = " + h
 				+ ", newXCenter = " + newXCenter + ", newYCenter = "
 				+ newYCenter + ", newScaleFactor = " + newScaleFactor);
-		
-		
-		InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
-//		System.out.println("Inner Canvas: width = " + 
-//				canvas.getWidth() + ", height = " + canvas.getHeight() + 
-//				", centerX = " + (canvas.getX() + ((int) (canvas.getWidth() * 0.5))) + 
-//				", centerY = " + (canvas.getY() + ((int) (canvas.getHeight() * 0.5))) + 
-//				". zoom = " + Cytoscape.getCurrentNetworkView().getZoom());
-//		
+
+		InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView())
+				.getCanvas();
+		// System.out.println("Inner Canvas: width = " +
+		// canvas.getWidth() + ", height = " + canvas.getHeight() +
+		// ", centerX = " + (canvas.getX() + ((int) (canvas.getWidth() * 0.5)))
+		// +
+		// ", centerY = " + (canvas.getY() + ((int) (canvas.getHeight() * 0.5)))
+		// +
+		// ". zoom = " + Cytoscape.getCurrentNetworkView().getZoom());
+		//		
 		// first time initialization of zoom and centerpoint, if needed
-		if (!viewportSet)
-		{
+		if (!viewportSet) {
 			viewportSet = true;
 			currentZoom = newScaleFactor;
 			currentCenterX = newXCenter;
@@ -445,67 +448,65 @@ public class LayoutRegion extends JComponent
 			viewportWidth = w;
 			viewportHeight = h;
 		}
-		System.out.println ("currentZoom = " + currentZoom + 
-				", currentCenterX = " + currentCenterX +
-				", currentCenterY = " + currentCenterY);
-		
-	
+		System.out.println("currentZoom = " + currentZoom
+				+ ", currentCenterX = " + currentCenterX
+				+ ", currentCenterY = " + currentCenterY);
+
 		double deltaZoom = newScaleFactor / currentZoom;
 		double deltaX = this.x1 - (0.5 * w);
 		double deltaY = this.y1 - (0.5 * h);
-		
-		if ((deltaZoom > 0.99) && (deltaZoom < 1.01) &&
-				(viewportWidth == w) && (viewportHeight == h))
-				// we are panning
+
+		if ((deltaZoom > 0.99) && (deltaZoom < 1.01) && (viewportWidth == w)
+				&& (viewportHeight == h))
+		// we are panning
 		{
 			this.x1 += (currentCenterX - newXCenter) * newScaleFactor;
 			this.y1 += (currentCenterY - newYCenter) * newScaleFactor;
-		}
-		else if ((viewportWidth != w) || (viewportHeight != h)){  // we are resizing
+		} else if ((viewportWidth != w) || (viewportHeight != h)) { // we are
+																	// resizing
 			this.x1 += (0.5 * (w - viewportWidth));
 			this.y1 += (0.5 * (h - viewportHeight));
-			
-		}
-		else // we are zooming
+
+		} else // we are zooming
 		{
 			this.w1 *= deltaZoom;
 			this.h1 *= deltaZoom;
 
 			deltaX *= deltaZoom;
-			deltaY *= deltaZoom;			
+			deltaY *= deltaZoom;
 
 			this.x1 = (0.5 * w) + deltaX;
 			this.y1 = (0.5 * h) + deltaY;
-//			this.x1 = ((this.x1 - currentCenterX) + (currentCenterX * deltaZoom)) / deltaZoom;
-//			this.y1 = ((this.y1 - currentCenterY) + (currentCenterY * deltaZoom)) / deltaZoom;		
+			// this.x1 = ((this.x1 - currentCenterX) + (currentCenterX *
+			// deltaZoom)) / deltaZoom;
+			// this.y1 = ((this.y1 - currentCenterY) + (currentCenterY *
+			// deltaZoom)) / deltaZoom;
 		}
-		
-		System.out.println("new scale factor: " + newScaleFactor +
-				" deltaZoom: " + deltaZoom);
 
-//		this.x1 = newXCenter + (deltaZoom * deltaX);
-//		this.y1 = newYCenter + (deltaZoom * deltaY);
-//		this.w1 *= deltaZoom;
-//		this.h1 *= deltaZoom;
+		System.out.println("new scale factor: " + newScaleFactor
+				+ " deltaZoom: " + deltaZoom);
+
+		// this.x1 = newXCenter + (deltaZoom * deltaX);
+		// this.y1 = newYCenter + (deltaZoom * deltaY);
+		// this.w1 *= deltaZoom;
+		// this.h1 *= deltaZoom;
 		currentZoom = newScaleFactor;
 		currentCenterX = newXCenter;
 		currentCenterY = newYCenter;
 		viewportWidth = w;
 		viewportHeight = h;
-		
-		System.out.println ("newX1 = " + this.x1 + ", newY1 = " + this.y1 + 
-				", newWidth = " + this.w1 + ", newHeight = " + this.h1);
+
+		System.out.println("newX1 = " + this.x1 + ", newY1 = " + this.y1
+				+ ", newWidth = " + this.w1 + ", newHeight = " + this.h1);
 		System.out.println(" ");
 
 		// AJK: 01/09/07 use double coordinates to avoid roundoff error
-//		this.setBounds((int) this.x1, (int) this.y1, (int) this.w1,
-//				(int) this.h1);
-		this.setBounds( this.x1,  this.y1,  this.w1,
-				 this.h1);
+		// this.setBounds((int) this.x1, (int) this.y1, (int) this.w1,
+		// (int) this.h1);
+		this.setBounds(this.x1, this.y1, this.w1, this.h1);
 
-//		repaint();
+		// repaint();
 	}
-
 
 	// AJK: 01/04/07 END
 
@@ -517,12 +518,28 @@ public class LayoutRegion extends JComponent
 		while (it.hasNext()) {
 			Cytoscape.getCurrentNetwork().unselectAllNodes();
 			Node node = (Node) it.next();
-			String val = attribs.getStringAttribute(node.getIdentifier(),
+			String val = null;
+			String terms[] = new String[1];
+			//AP: 2/26/07 add support for parsing List type attributes
+			if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST){
+				List valList = attribs.getListAttribute(node.getIdentifier(), attributeName);
+                //  Iterate through all elements in the list
+                if (valList != null && valList.size() > 0) {
+                    terms = new String [valList.size()];
+                    for (int i = 0; i < valList.size(); i++) {
+                        Object o = valList.get(i);
+                        terms[i] = o.toString();
+                    }
+                }          
+				val = join(terms);
+			}
+			else {
+				val = attribs.getStringAttribute(node.getIdentifier(),
 					attributeName);
-			// val is a string with pipes, needs to get split into array, loop
-			// through elements in array
-			// below and match
-			if (val != null) {
+			}
+			System.out.println("VAL= " + val + "; REGION= " + regionAttributeValue);
+			// loop through elements in array below and match
+			if (!val.equals("null")) {
 				System.out.println("this.regionAttributeValue = "
 						+ this.regionAttributeValue);
 				// if
@@ -570,9 +587,11 @@ public class LayoutRegion extends JComponent
 					.getSelectedNodes(), new Rectangle2D.Double(x1
 					+ (HANDLE_SIZE / 2), y1 + (HANDLE_SIZE / 2), w1, h1));
 
-			//AP: 2/25/07 add automatic edge minimization following region routing
-			UnCrossAction.unCross(Cytoscape.getCurrentNetworkView().getSelectedNodes());
-			
+			// AP: 2/25/07 add automatic edge minimization following region
+			// routing
+			UnCrossAction.unCross(Cytoscape.getCurrentNetworkView()
+					.getSelectedNodes());
+
 			// AJK: 11/15/06 BEGIN
 			// undo/redo facility
 			for (int k = 0; k < _selectedNodeViews.length; k++) {
@@ -677,14 +696,15 @@ public class LayoutRegion extends JComponent
 	}
 
 	// AJK: 01/09/07 BEGIN
-	//     make a version of setBounds that takes double coordinates, to fix roundoff problems
+	// make a version of setBounds that takes double coordinates, to fix
+	// roundoff problems
 	public void setBounds(double x, double y, double width, double height) {
 		// AJK: 1/1/06 BEGIN
 		// make room for handles
 		// super.setBounds(x, y, width, height);
-		super.setBounds(((int) x - (HANDLE_SIZE / 2)),((int) y - (HANDLE_SIZE / 2)), 
-				((int) width
-				+ HANDLE_SIZE), ((int) height + HANDLE_SIZE));
+		super.setBounds(((int) x - (HANDLE_SIZE / 2)),
+				((int) y - (HANDLE_SIZE / 2)), ((int) width + HANDLE_SIZE),
+				((int) height + HANDLE_SIZE));
 
 		// set member vars
 		this.x1 = x;
@@ -699,8 +719,8 @@ public class LayoutRegion extends JComponent
 			image = new BufferedImage(((int) width + HANDLE_SIZE),
 					((int) height + HANDLE_SIZE), BufferedImage.TYPE_INT_ARGB);
 		}
-	}	
-	
+	}
+
 	public void paint(Graphics g) {
 
 		// only paint if we have an image to paint onto
@@ -882,23 +902,31 @@ public class LayoutRegion extends JComponent
 		return selected;
 	}
 
-	
 	// AJK: 02/20/07 BEGIN
-	//     selection and de-selection of a region
-	
+	// selection and de-selection of a region
+
 	public void setSelected(boolean isSelected) {
 		this.selected = isSelected;
-		// select nodes in this region 
+		// select nodes in this region
 		// TODO: should *all* other nodes be unselected?
 		Iterator itx = this.getNodeViews().iterator();
-		while (itx.hasNext())
-		{
+		while (itx.hasNext()) {
 			NodeView nv = (NodeView) itx.next();
 			nv.setSelected(selected);
-		}			
-		this.repaint();	
+		}
+		this.repaint();
 	}
-	
-	
+
 	// AJK: 02/20/07 END
+	
+	   private static String join(String values[]) {
+	        StringBuffer buf = new StringBuffer();
+	        for (int i = 0; i < values.length; i++) {
+	            buf.append(values[i]);
+	            if (i < values.length - 1) {
+	                buf.append(", ");
+	            }
+	        }
+	        return buf.toString();
+	    }
 }
