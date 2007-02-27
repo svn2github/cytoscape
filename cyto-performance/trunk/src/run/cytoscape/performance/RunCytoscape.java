@@ -37,6 +37,7 @@
 package cytoscape.performance;
 
 import cytoscape.*;
+import cytoscape.performance.track.*;
 import cytoscape.performance.ui.*;
 
 import junit.framework.*;
@@ -80,7 +81,7 @@ public class RunCytoscape extends TestCase {
 	public static void main(String[] args) {
 		RunCytoscape.args = args;
 		junit.textui.TestRunner.run(new TestSuite(RunCytoscape.class));
-		FileUI fu = new FileUI(Tracker.getEvents(),System.getProperty("cytoscape.dir"));
+		FileUI fu = new FileUI(Tracker.getEvents(),System.getProperty("cytoscape.dir"),System.getProperty("perf.version"));
 		fu.dumpResults();
 		System.exit(0);
 	}

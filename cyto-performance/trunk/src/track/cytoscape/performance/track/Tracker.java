@@ -1,7 +1,6 @@
-package cytoscape.performance;
+package cytoscape.performance.track;
 
 import cytoscape.*;
-import cytoscape.performance.ui.*;
 import java.util.*;
 import java.util.Iterator;
 import java.io.File;
@@ -49,20 +48,6 @@ public class Tracker {
 	public static void dumpResults() {
 		for (TrackedEvent t : results)
 			System.out.println(t.toString());
-
-		//new CyPerformanceUI(results);
-		/*
-		ResultPanel rp = new ResultPanel(results);
-		BufferedImage bi = new BufferedImage(ResultPanel.width,ResultPanel.height,BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = bi.createGraphics();
-		rp.paint(g2);
-		try {
-		ImageIO.write(bi,"png",new File("homer.png"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
-
 	}
 
 

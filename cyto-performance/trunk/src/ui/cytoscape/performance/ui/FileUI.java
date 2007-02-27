@@ -3,6 +3,7 @@ package cytoscape.performance.ui;
 
 import cytoscape.*;
 import cytoscape.performance.*;
+import cytoscape.performance.track.*;
 import java.util.*;
 
 
@@ -17,16 +18,16 @@ import javax.swing.border.*;
 import java.beans.*;
 import java.io.*;
 
-public class FileUI extends JPanel {
+public class FileUI {
 
 	List<TrackedEvent> results;
 	String inputDir;
 	String outFile;
 
-	public FileUI(List<TrackedEvent> results, String inputDir) {
+	public FileUI(List<TrackedEvent> results, String inputDir,String vers) {
 		this.results = results;
 		this.inputDir = inputDir; 	
-
+/*
 		outFile = inputDir.replace('/', '-');
 		outFile = outFile.replace('\\', '-');
 		outFile = outFile.replace(':', '-');
@@ -35,6 +36,9 @@ public class FileUI extends JPanel {
 		if ( outFile.charAt(0) == '-' || outFile.charAt(0) == '_' )
 			outFile = outFile.substring(1,outFile.length());
 		outFile = outFile + ".perf";
+		*/
+
+		outFile = vers + ".perf";
 	}
 
 	public void dumpResults() {

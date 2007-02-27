@@ -1,4 +1,4 @@
-package cytoscape.performance;
+package cytoscape.performance.track;
 
 import cytoscape.*;
 

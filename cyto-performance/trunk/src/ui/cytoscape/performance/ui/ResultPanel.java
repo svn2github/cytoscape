@@ -3,6 +3,7 @@ package cytoscape.performance.ui;
 
 import cytoscape.*;
 import cytoscape.performance.*;
+import cytoscape.performance.track.*;
 import java.util.*;
 
 
@@ -29,6 +30,7 @@ public class ResultPanel extends JPanel {
 	StringBuffer areaBuffer;
 
 	private static Random rand = new Random(15);
+	private static final long serialVersionUID = 1850355553690996166L;
 
     public ResultPanel(List<TrackedEvent> l) {
 		super();

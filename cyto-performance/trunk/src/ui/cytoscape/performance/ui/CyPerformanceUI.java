@@ -38,6 +38,7 @@ package cytoscape.performance.ui;
 
 import cytoscape.*;
 import cytoscape.performance.*;
+import cytoscape.performance.track.*;
 
 import java.awt.event.*;
 import java.awt.geom.*;

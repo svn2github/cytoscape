@@ -2,23 +2,36 @@
 <!-- =================================================================== -->
 <!-- Initialization target                                               -->
 <!-- =================================================================== -->
- <target name="static-init">
+ <target name="init">
   <tstamp/>
-  <property name="name" value="cyto-performance"/>
+  <property name="name" value="cyperf"/>
   <property name="version" value="1.0.1"/>
   <echo message="Building ${name} version ${version} ..."/>
   <property name="root.dir" value="."/>
   <property name="lib.dir" value="${root.dir}/lib"/>
-  <property name="src.dir" value="${root.dir}/src"/>
-  <property name="tests.dir" value="${root.dir}/tests"/>
+
   <property name="build.dir" value="${root.dir}/build"/>
+  <mkdir dir="${build.dir}"/>
+  <property name="run.build.dir" value="${build.dir}/run"/>
+  <property name="track.build.dir" value="${build.dir}/track"/>
+  <property name="ui.build.dir" value="${build.dir}/ui"/>
+
+  <property name="src.dir" value="${root.dir}/src"/>
+  <property name="run.src.dir" value="${src.dir}/run"/>
+  <property name="track.src.dir" value="${src.dir}/track"/>
+  <property name="ui.src.dir" value="${src.dir}/ui"/>
+
   <property name="plugins.dir" value="${root.dir}/plugins"/>
-  <property name="log.dir" value="${build.dir}/logs" />
-  <!-- Define the relevant files -->
-  <property name="project.jar" value="${name}.jar"/>
-  <property name="test.jar" value="${name}-tests.jar"/>
+
+  <property name="run.project.jar" value="run.${name}.jar"/>
+  <property name="track.project.jar" value="track.${name}.jar"/>
+  <property name="ui.project.jar" value="ui.${name}.jar"/>
  </target>
- <target name="init" depends="static-init">
+
+<!-- =================================================================== -->
+<!-- Initialization specific to running.                                 -->
+<!-- =================================================================== -->
+ <target name="run_init" depends="init">
   <fail message="You must specify the cytoscape source location:    ant -Dcytoscape.dir=/path/to/cytoscape [ant target]">
    <condition>
     <not>
@@ -34,10 +47,18 @@
    </condition>
   </fail>
 
+  <fail message="You must specify the cytoscape version:    ant -Dcytoscape.version=2.3.X [ant target]">
+   <condition>
+    <not>
+     <isset property="cytoscape.version"/>
+    </not>
+   </condition>
+  </fail>
+
   <!-- Define the directories -->
   <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
   <!-- Define the class path - Defaults to everything in the lib.dir -->
-  <path id="build.class.path">
+  <path id="run.class.path">
    <fileset dir="${lib.dir}">
     <include name="*.jar"/>
    </fileset>
@@ -47,25 +68,27 @@
    <fileset dir="${cytoscape.dir}/plugins/core">
     <include name="*.jar"/>
    </fileset>
+   <pathelement location="${track.project.jar}"/>
+   <pathelement location="${ui.project.jar}"/>
   </path>
  </target>
 <!-- =================================================================== -->
 <!-- Compiles the project                                                -->
 <!-- =================================================================== -->
- <target name="compile" 
-         depends="compile-plugins" >
+ <target name="run_compile" 
+         depends="track_jar,ui_jar,run_compile_plugins" >
   <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
    <classpath>
     <pathelement location="${lib.dir}/aspectjtools.jar"/>
     <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
    </classpath>
   </taskdef>
-  <mkdir dir="${build.dir}"/>
-  <iajc classpathref="build.class.path"
-        destdir="${build.dir}"
+  <mkdir dir="${run.build.dir}"/>
+  <iajc classpathref="run.class.path"
+        destdir="${run.build.dir}"
         source="1.5" >
    <sourceroots>
-    <pathelement location="${src.dir}"/>
+    <pathelement location="${run.src.dir}"/>
     <pathelement location="${cytoscape.dir}/src"/>
    </sourceroots>
   </iajc>
@@ -73,18 +96,18 @@
 <!-- =================================================================== -->
 <!-- Compiles the plugins                                                -->
 <!-- =================================================================== -->
- <target name="compile-plugins" 
-         depends="init" >
+ <target name="run_compile_plugins" 
+         depends="run_init" >
   <property name="plugin.name" value="AutomaticLayout"/>
   <property name="plugin.dir" value="${plugin.root.dir}/AutomaticLayout"/>
-  <ant target="compile-one-plugin" />
+  <ant target="run_compile_one_plugin" />
   <!-- reset plugin.name and plugin.dir -->
   <!-- and run again for a different plugin-->
  </target>
 <!-- =================================================================== -->
 <!-- Compiles a single plugin                                            -->
 <!-- =================================================================== -->
- <target name="compile-one-plugin"> 
+ <target name="run_compile_one_plugin"> 
   <fail message="You must specify the plugin name property (plugin.name)!">
    <condition>
     <not>
@@ -102,7 +125,7 @@
 
   <!-- Define the plugin class path -->
   <mkdir dir="${plugin.dir}/lib"/>
-  <path id="plugin.build.class.path">
+  <path id="plugin.run.class.path">
    <fileset dir="${lib.dir}">
     <include name="*.jar"/>
    </fileset>
@@ -121,6 +144,8 @@
    <fileset dir="${cytoscape.dir}">
     <include name="*.jar"/>
    </fileset>
+   <pathelement location="${track.project.jar}"/>
+   <pathelement location="${ui.project.jar}"/>
   </path>
 
   <!-- setup -->
@@ -135,12 +160,12 @@
   </taskdef>
 
   <!-- compile the plugin -->
-  <iajc classpathref="plugin.build.class.path"
+  <iajc classpathref="plugin.run.class.path"
         destdir="${plugin.build.dir}"
         source="1.5" >
    <sourceroots>
     <pathelement location="${plugin.dir}/src"/>
-    <pathelement location="${src.dir}"/>
+    <pathelement location="${run.src.dir}"/>
    </sourceroots>
   </iajc>
 
@@ -154,10 +179,10 @@
 <!-- =================================================================== -->
 <!-- Creates the project jar file                                        -->
 <!-- =================================================================== -->
- <target name="jar" 
-         depends="compile" >
-  <copy todir="${build.dir}/cytoscape/performance">
-   <fileset dir="${src.dir}/cytoscape/performance">
+ <target name="run_jar" 
+         depends="run_compile" >
+  <copy todir="${run.build.dir}/cytoscape/performance">
+   <fileset dir="${run.src.dir}/cytoscape/performance">
     <include name="*.xml"/>
    </fileset>
   </copy>
@@ -187,14 +212,14 @@
     <globmapper from="*" to="${cytoscape.dir}/lib/*" handledirsep="yes"/>
    </chainedmapper>
   </pathconvert>
-  <jar destfile="${project.jar}" >
-   <fileset dir="${build.dir}"
+  <jar destfile="${run.project.jar}" >
+   <fileset dir="${run.build.dir}"
                includes="**"/>
    <manifest>
     <attribute name="Main-Class" 
                value="cytoscape.performance.RunCytoscape"/>
     <attribute name="Class-Path" 
-             value="${local.classpath.string} ${cytoscape.classpath.string} ${cytoscape.dir}/cytoscape.jar"/>
+             value="${local.classpath.string} ${cytoscape.classpath.string} ${ui.project.jar} ${track.project.jar} ${cytoscape.dir}/cytoscape.jar"/>
    </manifest>
   </jar>
   <echo message="Successfully ran jar task!"/>
@@ -203,7 +228,7 @@
 <!-- Do everything                                                       -->
 <!-- =================================================================== -->
  <target name="run"
-         depends="jar"
+         depends="run_jar"
          description="Runs Cytoscape">
   <mkdir dir="${plugins.dir}"/>
   <copy todir="${plugins.dir}"
@@ -212,10 +237,11 @@
     <include name="*.jar"/>
    </fileset>
   </copy>
-  <java jar="${root.dir}/cyto-performance.jar" 
+  <java jar="${root.dir}/${run.project.jar}" 
         fork="true">
    <jvmarg value="-Xmx512M"/>
    <jvmarg value="-Dcytoscape.dir=${cytoscape.dir}"/>
+   <jvmarg value="-Dperf.version=${cytoscape.version}"/>
    <arg value="-p"/>
    <arg value="${plugins.dir}"/>
   </java>
@@ -224,11 +250,50 @@
 <!-- Clean up, get back to original state                                -->
 <!-- =================================================================== -->
  <target name="clean" 
-         depends="static-init">
+         depends="init">
   <delete dir="${build.dir}"/>
   <delete dir="${plugins.dir}"/>
-  <delete file="${project.jar}"/>
-  <delete file="${test.jar}"/>
+  <delete file="${run.project.jar}"/>
+  <delete file="${ui.project.jar}"/>
+  <delete file="${track.project.jar}"/>
   <echo message="Successfully ran clean task!"/>
  </target>
+<!-- =================================================================== -->
+<!-- Create a jar containing only the track classes.                     -->
+<!-- =================================================================== -->
+ <target name="track_jar" 
+         depends="init">
+    <mkdir dir="${track.build.dir}"/>
+    <javac srcdir="${track.src.dir}"
+           destdir="${track.build.dir}"
+           deprecation="true">
+     </javac>
+    <jar destfile="${track.project.jar}" >
+      <fileset dir="${track.build.dir}"
+               includes="**"/>
+    </jar>
+    <echo message="Successfully created track jar!"/>
+ </target>
+
+<!-- =================================================================== -->
+<!-- Create a jar containing only the UI classes.                        -->
+<!-- =================================================================== -->
+ <target name="ui_jar" 
+         depends="init,track_jar">
+    <mkdir dir="${ui.build.dir}"/>
+    <javac srcdir="${ui.src.dir}"
+           destdir="${ui.build.dir}"
+           deprecation="true">
+   <classpath>
+    <pathelement location="${track.project.jar}"/>
+   </classpath>
+   <compilerarg line="-Xlint:all -Xlint:-path"/>
+     </javac>
+    <jar destfile="${ui.project.jar}" >
+      <fileset dir="${ui.build.dir}"
+               includes="**"/>
+    </jar>
+    <echo message="Successfully created ui jar!"/>
+ </target>
+
 </project>

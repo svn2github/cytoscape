@@ -39,6 +39,7 @@ package cytoscape.performance.ui;
 
 import cytoscape.*;
 import cytoscape.performance.*;
+import cytoscape.performance.track.*;
 
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -71,7 +72,6 @@ public class HTMLResults {
 	public static int width = 800;
 	public static int height = 800;
 	StringBuffer areaBuffer;
-	private static Random rand = new Random(15);
 	String[] args;
 
 
@@ -101,7 +101,7 @@ public class HTMLResults {
 				localBegin = Math.min( t.begin, localBegin );
 				localEnd = Math.max( t.end, localEnd );
 				if ( !colorMap.containsKey(	t.signature ) ) 
-					colorMap.put( t.signature, new Color(rand.nextInt()) ); 	
+					colorMap.put( t.signature, new Color(t.signature.hashCode()) ); 	
 				line = br.readLine();
 			}
 			long diff = localEnd - localBegin;

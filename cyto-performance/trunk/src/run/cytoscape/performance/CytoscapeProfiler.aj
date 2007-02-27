@@ -8,6 +8,8 @@ import cytoscape.view.*;
 import cytoscape.layout.*;
 import cytoscape.task.*;
 
+import cytoscape.performance.track.*;
+
 import javax.swing.JOptionPane;
 
 public aspect CytoscapeProfiler {

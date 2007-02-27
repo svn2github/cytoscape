@@ -39,6 +39,7 @@ package cytoscape.performance.ui;
 
 import cytoscape.*;
 import cytoscape.performance.*;
+import cytoscape.performance.track.*;
 
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -73,7 +74,6 @@ public class AlignedResults {
 	public static int width = 800;
 	public static int height = 800;
 	StringBuffer areaBuffer;
-	private static Random rand = new Random(15);
 	String[] args;
 
 
@@ -85,7 +85,7 @@ public class AlignedResults {
 		for ( String fileName : args )
 			allResults.add( readResults( fileName ) );
 
-		MultipleAlign nw = new MultipleAlign(allResults);
+		MultipleAlign<TrackedEvent> nw = new MultipleAlign<TrackedEvent>(allResults);
 		alignedResults = nw.getAlignment();
 
 		createImage();
@@ -107,7 +107,7 @@ public class AlignedResults {
 				localBegin = Math.min( t.begin, localBegin );
 				localEnd = Math.max( t.end, localEnd );
 				if ( !colorMap.containsKey(	t.signature ) ) 
-					colorMap.put( t.signature, new Color(rand.nextInt()) ); 	
+					colorMap.put( t.signature, new Color(t.signature.hashCode()) ); 	
 				line = br.readLine();
 				maxLevel = Math.max(maxLevel,t.level);
 			}
