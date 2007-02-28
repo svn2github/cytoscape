@@ -41,6 +41,7 @@ import java.io.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import java.beans.*;
 
 // giny imports
 import giny.view.NodeView;
@@ -54,12 +55,17 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
 
+// our imports
+import namedSelection.ui.GroupPanel;
+
 /**
  * The NamedSelection class provides the primary interface to the
  * Cytoscape plugin mechanism
  */
 public class NamedSelection extends CytoscapePlugin 
-                            implements CyGroupViewer {
+                            implements CyGroupViewer, 
+                                       NodeContextMenuListener,
+                                       PropertyChangeListener {
 
 	public static final String viewerName = "namedSelection";
 	public static final double VERSION = 0.1;
@@ -68,16 +74,21 @@ public class NamedSelection extends CytoscapePlugin
 	public static final int UNSELECT = 2;
 	public static final int NEW = 3;
 	public static final int REMOVE = 4;
+	public static final int ADD = 5;
+	public static final int DELETE = 6;
 
 	// State values
-	private static final int SELECTED = 1;
-	private static final int UNSELECTED = 2;
+	public static final int SELECTED = 1;
+	public static final int UNSELECTED = 2;
 
-	private CyGroupViewer groupViewer = null;
+	private static CyGroupViewer groupViewer = null;
+
+	private static GroupPanel groupPanel = null;
 
   /**
    * Create our action and add it to the plugins menu
    */
+	/*
   public NamedSelection() {
 		JMenu menu = new JMenu("Named Selection Tool");
 		menu.addMenuListener(new NamedSelectionMenuListener(null));
@@ -89,8 +100,40 @@ public class NamedSelection extends CytoscapePlugin
 		CyGroup.registerGroupViewer(this);
 		this.groupViewer = this; // this makes it easier to get at from inner classes
 		System.out.println("namedSelectionPlugin "+VERSION+" initialized");
-
   }
+	*/
+
+	/**
+	 * Future version....
+	 */
+	public NamedSelection() {
+		// Listen for network changes (so we can add our context menu)
+		try {
+			// Add ourselves to the network view created change list
+			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+			          .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
+			// Add our context menu
+			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+		} catch (ClassCastException e) {
+			System.out.println(e.getMessage());
+		}
+		// Create our main plugin menu
+		JMenu menu = new JMenu("Named Selection Tool");
+		menu.addMenuListener(new NamedSelectionMenuListener(null));
+
+		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
+																.getMenu("Plugins");
+		pluginMenu.add(menu);
+
+		// Add our interface to CytoPanel 1
+		groupPanel = new GroupPanel(this);
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Groups", groupPanel);
+
+		// Register with CyGroup
+		CyGroup.registerGroupViewer(this);
+		this.groupViewer = this; // this makes it easier to get at from inner classes
+		System.out.println("namedSelectionPlugin "+VERSION+" initialized");
+	}
 
 	// These are required by the CyGroupViewer interface
 
@@ -109,7 +152,9 @@ public class NamedSelection extends CytoscapePlugin
 	 *
 	 * @param group the CyGroup that was just created
 	 */
-	public void groupCreated(CyGroup group) { }
+	public void groupCreated(CyGroup group) { 
+		groupPanel.groupCreated(group);
+	}
 
 	/**
 	 * This is called when a group we care about is about to 
@@ -119,7 +164,47 @@ public class NamedSelection extends CytoscapePlugin
 	 *
 	 * @param group the CyGroup that will be deleted
 	 */
-	public void groupWillBeRemoved(CyGroup group) { }
+	public void groupWillBeRemoved(CyGroup group) { 
+		groupPanel.groupRemoved(group);
+	}
+
+	// PropertyChange support
+
+	/**
+	 * Implements propertyChange
+	 *
+	 * @param e the property change event
+	 */
+	public void propertyChange (PropertyChangeEvent e) {
+		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+		}
+	}
+
+	/**
+	 * Implements addNodeContextMenuItems
+	 *
+	 * @param nodeView the views to add this to
+	 * @param menu the menu to add
+	 */
+	public void addNodeContextMenuItems (NodeView nodeView, JPopupMenu menu) {
+		if (menu == null) {
+			menu = new JPopupMenu();
+		}
+		menu.add(getNodePopupMenu(nodeView));
+	}
+
+	/**
+	 * return the context menu to popup for a node.  The menu depends not
+	 * only on the context of the node it's over, but also the number of
+	 * other selected items, etc.
+	 *
+	 */
+	private JMenu getNodePopupMenu(NodeView nodeView) {
+		JMenu menu = new JMenu("Group operations");
+		menu.addMenuListener(new NamedSelectionMenuListener(nodeView));
+		return menu;
+	}
 
 
 	/**
@@ -136,7 +221,7 @@ public class NamedSelection extends CytoscapePlugin
 		 * @param nv the Cytoscape NodeView the mouse was over
 		 */
 		NamedSelectionMenuListener(NodeView nv) {
-			this.staticHandle = new NamedSelectionCommandListener(NONE,null);
+			this.staticHandle = new NamedSelectionCommandListener(NONE,null,null);
 			this.overNode = nv;
 		}
 
@@ -162,7 +247,7 @@ public class NamedSelection extends CytoscapePlugin
 			// Add our menu items
 			{
 			  JMenuItem item = new JMenuItem("Create new named selection");
-				NamedSelectionCommandListener l = new NamedSelectionCommandListener(NEW, null);
+				NamedSelectionCommandListener l = new NamedSelectionCommandListener(NEW, null,null);
 				item.addActionListener(l);
 				if (currentNodes.size() > 0) {
 					item.setEnabled(true);
@@ -174,7 +259,7 @@ public class NamedSelection extends CytoscapePlugin
 
 			if (groupList != null && groupList.size() > 0) {
 			  JMenu item = new JMenu("Remove named selection");
-				addGroupMenu(item, REMOVE, groupList);
+				addGroupMenu(item, REMOVE, groupList, null);
 				m.add(item);
 			} else {
 			  JMenuItem item = new JMenuItem("Remove named selection");
@@ -184,7 +269,7 @@ public class NamedSelection extends CytoscapePlugin
 
 			if (groupList != null && groupList.size() > 0) {
 			  JMenu item = new JMenu("Select");
-				addGroupMenu(item, SELECT, groupList);
+				addGroupMenu(item, SELECT, groupList, null);
 				m.add(item);
 			} else {
 			  JMenuItem item = new JMenuItem("Select");
@@ -194,25 +279,43 @@ public class NamedSelection extends CytoscapePlugin
 
 			if (groupList != null && groupList.size() > 0) {
 			  JMenu item = new JMenu("Unselect");
-				addGroupMenu(item, UNSELECT, groupList);
+				addGroupMenu(item, UNSELECT, groupList, null);
 				m.add(item);
 			} else {
 			  JMenuItem item = new JMenuItem("Unselect");
 				item.setEnabled(false);
 				m.add(item);
 			}
+
+			if (overNode != null) {
+				CyNode contextNode = (CyNode)overNode.getNode();
+				if (groupList != null && groupList.size() > 0) {
+					JMenu item = new JMenu("Add node to");
+					addGroupMenu(item, ADD, groupList, contextNode);
+					m.add(item);
+				}
+
+				List<CyGroup>nodeGroups = contextNode.getGroups();
+				if (nodeGroups != null && nodeGroups.size() > 0) {
+ 					JMenu item = new JMenu("Remove node from");
+					// Figure out what groups this node is part of
+					addGroupMenu(item, DELETE, nodeGroups, (CyNode)overNode.getNode());
+					m.add(item);
+				}
+			}
 		}
 
 		/**
 		 * Add all groups to a menu
 		 */
-		private void addGroupMenu(JMenu menu, int command, List<CyGroup>groupList) {
+		private void addGroupMenu(JMenu menu, int command, List<CyGroup>groupList,
+		                          CyNode node) {
 				if (groupList == null) return;
 				// List current named selections
 				Iterator iter = groupList.iterator();
 				while (iter.hasNext()) {
 					CyGroup group = (CyGroup)iter.next();
-					addSubMenu(menu, group.getGroupName(), command, group);
+					addSubMenu(menu, group.getGroupName(), command, group, node);
 				}
 		}
 
@@ -221,10 +324,11 @@ public class NamedSelection extends CytoscapePlugin
 		 *
 		 * @param menu the JMenu to add the new submenu to
 		 * @param group the group node
+		 * @param node the node
 		 */
-		private void addSubMenu(JMenu menu, String label, int command, CyGroup group) {
+		private void addSubMenu(JMenu menu, String label, int command, CyGroup group, CyNode node) {
 			JMenuItem item = new JMenuItem(label);
-			NamedSelectionCommandListener l = new NamedSelectionCommandListener(command, group);
+			NamedSelectionCommandListener l = new NamedSelectionCommandListener(command, group, node);
 			item.addActionListener(l);
 		  menu.add(item);
 		}
@@ -237,10 +341,12 @@ public class NamedSelection extends CytoscapePlugin
   	private static final long serialVersionUID = 1;
 		private int command;
 		private CyGroup group = null; // The group we care about
+		private CyNode node = null; // The node this is refering to
 
-		NamedSelectionCommandListener(int command, CyGroup group) {
+		NamedSelectionCommandListener(int command, CyGroup group, CyNode node) {
 			this.command = command;
 			this.group = group;
+			this.node = node;
 		}
 
     /**
@@ -256,6 +362,10 @@ public class NamedSelection extends CytoscapePlugin
 				newGroup();
 			} else if (command == REMOVE) {
 				removeGroup();
+			} else if (command == ADD) {
+				addToGroup(node);
+			} else if (command == DELETE) {
+				removeFromGroup(node);
 			}
 		}
 
@@ -269,6 +379,7 @@ public class NamedSelection extends CytoscapePlugin
 			List<CyGroup> groupList = CyGroup.getGroupList();
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this selection");
 			CyGroup group = CyGroup.createGroup(groupName, currentNodes, viewerName);
+			groupPanel.groupCreated(group);
 			group.setState(SELECTED);
 		}
 
@@ -277,6 +388,23 @@ public class NamedSelection extends CytoscapePlugin
 		 */
 		private void removeGroup() {
 			CyGroup.removeGroup(group);
+			groupPanel.groupRemoved(group);
+		}
+
+		/**
+		 * Add a node to a group
+		 */
+		private void addToGroup(CyNode node) {
+			node.addToGroup(group);
+			groupPanel.groupChanged(group);
+		}
+
+		/**
+		 * Remove a node to a group
+		 */
+		private void removeFromGroup(CyNode node) {
+			node.removeFromGroup(group);
+			groupPanel.groupChanged(group);
 		}
 
 		/**
@@ -285,6 +413,8 @@ public class NamedSelection extends CytoscapePlugin
 		private void select() {
 			List<CyNode> nodeList = group.getNodes();
 			Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, true);
+			Cytoscape.getCurrentNetworkView().updateView();
+			groupPanel.groupChanged(group);
 			group.setState(SELECTED);
 		}
 
@@ -294,6 +424,8 @@ public class NamedSelection extends CytoscapePlugin
 		private void unselect() {
 			List<CyNode> nodeList = group.getNodes();
 			Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, false);
+			Cytoscape.getCurrentNetworkView().updateView();
+			groupPanel.groupChanged(group);
 			group.setState(UNSELECTED);
 		}
 	}
