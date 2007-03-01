@@ -46,6 +46,35 @@ public class LayoutRegionManager {
 		regionList.remove(index);
 		regionViewMap.put(view, regionList);
 	}
+	
+	// AJK: 02/20/07 BEGIN
+	//     get number of regions for the view
+	public static int getNumRegionsForView (CyNetworkView view)
+	{
+		List regionList = (List) regionViewMap.get(view);
+		if (regionList == null) {
+			return 0;
+		}
+		else 
+		{
+			return regionList.size();
+		}
+	}
+	
+	public static void removeAllRegionsForView (CyNetworkView view)
+	{
+		List regionList = (List) regionViewMap.get(view);
+		if (regionList == null) {
+			return;
+		}
+		while (regionList.size() > 0)
+		{
+			removeRegion (view, (LayoutRegion) regionList.get(0));
+		}
+		regionViewMap.put(view, null);
+	}
+	
+	// AJK: 02/20/07 END
 
 	// AJK: 11/15/06 BEGIN
 	// for undo/redo
