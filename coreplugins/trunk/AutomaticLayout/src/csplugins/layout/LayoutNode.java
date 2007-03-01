@@ -373,6 +373,15 @@ public class LayoutNode {
 	}
 
 	/**
+	 * Return the node's degree (i.e. number of nodes it's connected to).
+	 *
+	 * @return        Degree of this node
+	 */
+	public double getDegree() {
+		return (double)neighbors.size();
+	}
+
+	/**
 	 * Return a string representation of the node
 	 *
 	 * @return        String containing the node's identifier and location
