@@ -147,7 +147,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		JEditorPane description = new JEditorPane();
 		JScrollPane descScrollPane = new JScrollPane(description);
 		descScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
-		descScrollPane.setPreferredSize(new Dimension(800, 200));
+		descScrollPane.setPreferredSize(new Dimension(800, 300));
 		descScrollPane.setMinimumSize(new Dimension(700, 10));
 		infoTextPanel.add(descScrollPane);
 
@@ -237,7 +237,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		}
 		JScrollPane scrollPane = new JScrollPane(description);
 		scrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
-		scrollPane.setPreferredSize(new Dimension(800, 200));
+		scrollPane.setPreferredSize(new Dimension(800, 300));
 		scrollPane.setMinimumSize(new Dimension(700, 10));
 		infoTextPanel.add(scrollPane);
 		pack();
