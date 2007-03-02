@@ -87,7 +87,7 @@ public class NodeShapeIcon extends VisualPropertyIcon {
         }
 
         if (miny < 0) {
-            af.setToTranslation(0, 2);
+            af.setToTranslation(0, Math.abs(miny));
             newShape = af.createTransformedShape(newShape);
         }
 
@@ -99,6 +99,8 @@ public class NodeShapeIcon extends VisualPropertyIcon {
                                      .getHeight()) / 2);
         newShape = af.createTransformedShape(newShape);
 
+        //System.out.println("Shape: " + name + ", " + newShape.getBounds2D());
+        
         g2d.draw(newShape);
     }
 }
