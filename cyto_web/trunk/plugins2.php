@@ -10,8 +10,8 @@
 <table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
 	<tbody>
 		<tr>
-			<td width="10">
-				&nbsp;
+			<td width="10">&nbsp;
+				
 			</td>
 			<td valign="bottom">
 				<h1>Cytoscape 2.x Plugins</h1>
@@ -63,7 +63,66 @@ Cytoscape LGPL.
 <div id="indent">
 	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%" bgcolor="#ebebff">
 
-		<tbody>
+		<tbody>		
+			<tr>
+				<td width="20%" valign="top">
+					<b>Cerebral Plugin</b><font size="-1">
+						<br>
+						Version: 1.0
+						<br>
+						Release Date: February 20, 2007</font>
+				</td>
+				<td width="40%" valign="top">
+					<P>
+						Cerebral (Cell Region-Based Rendering And Layout) is an open-source
+						Java plugin for the Cytoscape biomolecular interaction viewer. Given
+						an interaction network and subcellular localization annotation,
+						Cerebral automatically generates a view of the network in the style of
+						traditional pathway diagrams, providing an intuitive interface for the
+						exploration of a biological pathway or system. The molecules are
+						separated into layers according to their subcellular localization.
+						Potential products or outcomes of the pathway can be shown at the
+						bottom of the view, clustered according to any molecular attribute
+						data - protein function - for example. Cerebral scales well to
+						networks containing thousands of nodes.
+					</P>
+					<P>	Another plugin named DomainWebLinks
+						provides context-dependent web links to Pfam, InterDom, and 3did
+						for DomainNetworkBuilder.
+					</P>
+					<P>
+						Reference:<BR>
+						Aaron Barsky, Jennifer L. Gardy, Robert E.W. Hancock and Tamara Munzner<br>
+						<i>Cerebral: a Cytoscape plugin for layout of and interaction with biological 
+						networks using subcellular localization annotation</i> 
+						<a href="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/btm057">
+							Bioinformatics, Feb. 19, 2007</a>
+					</P>
+					<P>
+						<A HREF="http://www.pathogenomics.ca/cerebral">Project web site</A>.
+					</P>
+					<P>
+						Released by: Jennifer Gardy & Aaron Barsky
+						University of British Columbia.
+					</P>
+				</td>
+				<TD WIDTH=20%>
+					<P>
+						Verified to work in 2.4
+					</P>
+				</TD>
+				<TD WIDTH=20%>
+					<P>
+						[<A HREF="http://www.pathogenomics.ca/cerebral">Download from Project Web Site</A>]
+					</P>
+				</TD>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>		
+		
 			<tr>
 				<td width="20%" valign="top">
 					<b>DataMatrix Plugin</b><font size="-1">
@@ -405,9 +464,9 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 				<td width="20%" valign="top">
 					<b>MCODE Plugin</b><font size="-1">
 						<br>
-						Version: 1.1
+						Version: 1.2
 						<br>
-						Release Date: February 15, 2005</font>
+						Release Date: February 7, 2007</font>
 				</td>
 				<td width="40%" valign="top">
 					The MCODE Cytoscape Plugin finds clusters (highly interconnected regions) in any network loaded into Cytoscape. Depending on the type of network, clusters may mean different things. For instance, clusters in a protein-protein interaction network have been shown to be protein complexes and parts of pathways. Clusters in a protein similarity network represent protein families.
@@ -416,10 +475,10 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1, 2.2.
+				Verified to work in 2.0, 2.1, 2.2., 2.4
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/index.html">MCODE Plugin Web Site</a>]
+					[<a href="http://baderlab.org/Software/MCODE">MCODE Plugin Web Site</a>]
 				</td>
 			</tr>
 			<tr>
@@ -1365,7 +1424,7 @@ processing technique with supercomputing center resources.
 				</p>
 		</td>
 		<td width="20%" valign="top">
-				 Verified to work in 2.4
+				 Verified to work in 2.3.2, 2.4
 				</td>
 		<td width="20%" valign="top">
 			[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.4/plugins/CyGoose_2.4.1.jar">Download Jar</a>]
