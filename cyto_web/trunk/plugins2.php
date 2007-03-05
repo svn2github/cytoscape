@@ -61,7 +61,7 @@ Cytoscape LGPL.
 </div>
 
 <div id="indent">
-	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%" bgcolor="#ebebff">
+	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="98%" bgcolor="#ebebff">
 
 		<tbody>		
 			<tr>
@@ -351,30 +351,31 @@ Toronto, Canada
 		<td width="20%" valign="top">
 			<b>GOlorize</b>
 			<br>
-			<font size="-1">Version: 1.0
-				<br>
-				Release Date: Oct. 17, 2006</font>
+		  <font size="-1">Version: 1.1<br>
+			  Release Date: Feb. 12, 2007</font>
 		</td>
 		<td width="40%" valign="top">
-GOlorize provides an automated network visualization in Cytoscape, where Gene Ontology (GO) categories are used to direct the network graph layout process and to emphasize the biological function of the nodes. GOlorize is used in conjunction with BiNGO plug-in, an efficient tool to find the GO categories that are overrepresented in a selected part of a given network. GOlorize first highlights the nodes that belong to the same category using color-coding and then constructs an enhanced visualization of the network using a class-directed layout algorithm.
-
-			<br>
-			<br>
-			Released by: <a href="http://www.pasteur.fr/recherche/unites/Biolsys/index.htm">Schwikowski Group</a>, Institut Pasteur
-                         <br>
-                         Licensed under GNU Public License.
+			<p>
+				GOlorize provides an automated network visualization in Cytoscape, where Gene Ontology (GO) categories are 				used to direct the network graph layout process and to emphasize the biological function of the nodes. 						
+				GOlorize is used in conjunction with BiNGO plug-in, an efficient tool to find the GO categories that are 	
+				overrepresented in a selected part of a given network. GOlorize first highlights the nodes that belong to 
+				the same category using color-coding and then constructs an enhanced visualization of the network using a 
+				class-directed layout algorithm.
+			</p>
+			<p>
+				Released by: <a href="http://www.pasteur.fr/recherche/unites/Biolsys/index.htm">Schwikowski Group</a>, 		
+				Institut Pasteur
+			</p>
+                Licensed under GNU Public License.
 		</td>
  		<td width="20%" valign="top">
-				 Verified to work in 2.2.
-				</td>
+				 Verified to work in 2.2 and 2.4
+			  </td>
 		<td width="20%" valign="top">
-			[<a href="plugins/GOlorize/GOlorizeUserGuide.pdf">User Guide</a>]
-			<br>
-			[<a href="plugins/GOlorize/GOlorize.jar">Download Jar</a>]
-			<br>
-			<br>
-			[<a href="plugins/GOlorize/GOlorize.tar.gz">Source Code</a>]
-			<br>
+		[<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/GOlorize2-4UserGuide.pdf">User Guide</a>]
+		<br>[<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/GOlorize2-4.jar">Download Jar</a>]
+		<br>[<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/src.tar.gz">Source Code</a>]
+		<br>[<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/javadoc.tar.gz">JavaDoc</a>]
 		</td>
 	</tr>
 			<tr>
@@ -405,7 +406,7 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 		</td>
  		<td width="20%" valign="top">
 				 Verified to work in 2.4.
-				</td>
+			  </td>
 		<td width="20%" valign="top">
 			[<a href="plugins/HypFocus/HypFocus.jar">HypFocus</a>]
 			<br>
@@ -436,7 +437,7 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 		</td>
  		<td width="20%" valign="top">
 				 Verified to work in 2.2 and 2.4
-				</td>
+			  </td>
 		<td width="20%" valign="top">
 			<b>2.2</b> compatible version:
 			<br>
@@ -502,7 +503,7 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.2.
-				</td>
+		</td>
 		<td width="20%" valign="top">
 			[<a href="http://www.petterlini.it/metabolica/">Download Plugin</a>]
 			<br>
@@ -537,7 +538,7 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.
-				</td>
+		</td>
 		<td width="20%" valign="top">
 			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/motifFinder.jar">Download Plugin .jar</a>]
 			<br>
@@ -565,7 +566,7 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.3, 2.4
-				</td>
+		</td>
 		<td width="20%" valign="top">
 			Download from: [<a href=" http://alpha.dmi.unict.it/~ctnyu/netmatch.html">NetMatch Official Site</a>] or
 			[<a href=" http://baderlab.org/Software/NetMatch">NetMatch Mirror</a>]
@@ -577,7 +578,7 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>
+		  </tr>
 
 
 	<tr>
@@ -625,7 +626,7 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.1, 2.2.
-				</td>
+		</td>
 		<td width="20%" valign="top">
 			[<a href="http://med.bioinf.mpi-inf.mpg.de/netanalyzer/index.php">NetworkAnalyzer Project Page</a>]
 			<br>
@@ -660,7 +661,7 @@ GOlorize provides an automated network visualization in Cytoscape, where Gene On
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>
+		  </tr>
 
 
 			<tr>
@@ -772,7 +773,7 @@ structural alignment capabilities by using the "Align" command.
   
 
 		</tbody>
-	</table>
+  </table>
 
 
 <div id="indent">
@@ -1070,9 +1071,9 @@ plugin.
 Please see:
 http://www.wligtenberg.nl
 for downloading and installation information.
-					<p>
+				  <p>
 						Released by: W.P.A. Ligtenberg M.Sc. Eindhoven University of Technology and Maastricht University
-					</p>
+				  </p>
 				</td>
 				<td width="20%" valign="top">
 				Verified to work in 2.2.
@@ -1253,7 +1254,7 @@ processing technique with supercomputing center resources.
                 </td>
                 <td width="20%" valign="top">
                                  Verified to work in 2.1, 2.2, 2.3.
-                                </td>
+          </td>
                 <td width="20%" valign="top">
                         [<a href="http://delsol.kaist.ac.kr/~monet/home/downloads.html">Download Plugin</a>]
                         <br>
@@ -1284,7 +1285,7 @@ processing technique with supercomputing center resources.
 				<td width="20%" valign="top">
                                                                                         [<a href="http://labs.systemsbiology.net/galitski/projs/system_genetics/protected/tutorial/index_pg.html">Phenotype Genetics Web-Site and Download (includes a tutorial)</a>]
 				</td>
-			</tr>
+		  </tr>
 		</tbody>
 	</table>
 	<div id="indent">
@@ -1425,7 +1426,7 @@ processing technique with supercomputing center resources.
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.3.2, 2.4
-				</td>
+			  </td>
 		<td width="20%" valign="top">
 			[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.4/plugins/CyGoose_2.4.1.jar">Download Jar</a>]
 			<br>
@@ -1462,7 +1463,7 @@ processing technique with supercomputing center resources.
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.
-				</td>
+			  </td>
 		<td width="20%" valign="top">
 			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/cytoTalk.jar">Download Plugin .jar</a>]
 			<br>
