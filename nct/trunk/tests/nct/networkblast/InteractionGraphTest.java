@@ -23,13 +23,12 @@
 
 
 
-package nct.networkblast.graph;
+package nct.networkblast;
 
 import junit.framework.*;
 import java.io.*;
 import java.util.logging.Level;
 
-import nct.networkblast.NetworkBlast;
 
 // A JUnit test class for InteractionGraph.java
 public class InteractionGraphTest extends TestCase {

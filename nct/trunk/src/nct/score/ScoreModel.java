@@ -52,4 +52,6 @@ public interface ScoreModel<NodeType extends Comparable<? super NodeType>,
      * @return The score for the node in the given graph.
      */
     public double scoreNode(NodeType node, Graph<NodeType,WeightType> g);
+
+    public double scoreGraph(Graph<NodeType,WeightType> g);
 }

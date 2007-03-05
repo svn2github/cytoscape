@@ -209,12 +209,12 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 	 * @return The edge specified.
 	 */
 	public Edge<NodeType,WeightType> getEdge(NodeType nodeA, NodeType nodeB) {
-		Map<NodeType,WeightType> mef = weightMap.get(nodeA);
-		if ( mef != null )
-			return new BasicEdge<NodeType,WeightType>(nodeA,nodeB,mef.get(nodeB));
+		if ( isEdge(nodeA,nodeB) )
+			return new BasicEdge<NodeType,WeightType>(nodeA,nodeB,weightMap.get(nodeA).get(nodeB));
 		else
 			return null;
 	}
+
 
         /**
          * Returns a set containing all nodes in the graph.
@@ -272,6 +272,10 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 			return weightMap.get(node).size();
 		else
 			return 0;
+	}
+
+	public List<Edge<NodeType,WeightType>> getEdgeList() { 
+		return new ArrayList<Edge<NodeType,WeightType>>( getEdges() );
 	}
 
         /**

@@ -31,8 +31,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import nct.graph.*;
-import nct.networkblast.NetworkBlast;
-import nct.networkblast.graph.*;
+import nct.networkblast.*;
 
 
 public class LogLikelihoodScoreModelTest extends TestCase {

@@ -29,6 +29,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import nct.graph.Graph;
+import nct.graph.BasicGraph;
 import nct.graph.Edge;
 
 /**
@@ -92,6 +93,8 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
 	this.backgroundProbability = backgroundProbability;
 	assert(truthFactor > 0);  // otherwise everything is always false
 	assert(model >= 0 && model <= 1);
+	idList = new ArrayList<Graph<NodeType,Double>>();
+	scoreList = new ArrayList<Graph<NodeType,Double>>();
 /*	// TODO
 	int l1 = log.getLevel().intValue();
 	int l2 = Level.FINE.intValue();
@@ -107,7 +110,7 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
      * A method that calculates the necessary probabilities for the given graph.
      * @param graph The graph to calculate the probabilities for.
      */
-    private void scoreGraph( Graph<NodeType,Double> graph) {
+    private void calcGraphStats( Graph<NodeType,Double> graph) {
 	assert(graph != null);
 
 	if (!graphMap.containsKey(graph)) {  // set up the probabilities
@@ -168,18 +171,27 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
      */
     public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,Double> graph) {
 
-	if ( graph == null || srcNode == null || destNode == null || 
-	     !graph.isNode(srcNode) || !graph.isNode(destNode) )
+	if ( graph == null || srcNode == null || destNode == null ) 
 		return Double.NEGATIVE_INFINITY; // is this right?
 
-	// ok, now actually start doing stuff
-	if (!graphMap.containsKey(graph)) 
-		scoreGraph(graph);
+	// get the score if we've already calculated it
+	Double dval = getScore(srcNode,destNode,graph);
+	if ( dval != null )
+		return dval.doubleValue();
 
-    	GraphProbs probs = graphMap.get(graph);
+	// some checks
+	if ( !graph.isNode(srcNode) || !graph.isNode(destNode) )
+		return Double.NEGATIVE_INFINITY; // is this right?
 
 	if (srcNode == destNode) 
 		return 0.0; // is this right?
+
+	// ok, now actually start doing the calculation
+	if (!graphMap.containsKey(graph)) 
+		calcGraphStats(graph);
+
+    	GraphProbs probs = graphMap.get(graph);
+
 
 	int numOfNodes = graph.numberOfNodes();
 
@@ -219,7 +231,46 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
 		log.info("return " + ret);
 	} 
 
+	addScore(srcNode,destNode,graph,ret);
+
 	return ret;
+    }
+   
+    List<Graph<NodeType,Double>> idList;
+    List<Graph<NodeType,Double>> scoreList;
+
+    private Double getScore(NodeType src, NodeType tar, Graph<NodeType,Double> g) {
+    	Graph<NodeType,Double> scrGraph = null;
+    	for (int i = 0; i < idList.size(); i++ ) {
+		if ( idList.get(i) == g ) {
+			scrGraph = scoreList.get(i);	
+			break;
+		}
+	}
+	if ( scrGraph == null )
+		return null;
+	else
+		return scrGraph.getEdgeWeight(src,tar);
+    }
+
+    private void addScore( NodeType src, NodeType tar, Graph<NodeType,Double> g, Double score) {
+    	Graph<NodeType,Double> scrGraph = null;
+    	for (int i = 0; i < idList.size(); i++ ) {
+		if ( idList.get(i) == g ) {
+			scrGraph = scoreList.get(i);	
+			break;
+		}
+	}
+
+	if ( scrGraph == null ) {
+		idList.add(g);
+		scrGraph = new BasicGraph<NodeType,Double>();
+		scoreList.add( scrGraph ); 
+	}
+
+	scrGraph.addNode( src );
+	scrGraph.addNode( tar );
+	scrGraph.addEdge( src,tar,score );
     }
 
     public double scoreNode(NodeType node, Graph<NodeType,Double> g) {
@@ -238,7 +289,7 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
 
 	if ( d == null ) {
 
-		// we assume that scoreGraph() has been run
+		// we assume that calcGraphStats() has been run
     		GraphProbs probs = graphMap.get(graph);
 		double exDegNode = ((double)(graph.numberOfNodes() - graph.degreeOfNode(node) - 1))*probs.pTrueGivenNotObs;
 		for ( NodeType neighbor: graph.getNeighbors(node) ) 
@@ -250,6 +301,13 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
 	}
 	
 	return  d.doubleValue();
+    }
+
+    public double scoreGraph(Graph<NodeType,Double> g) {
+    	double score = 0;
+	for ( Edge<NodeType,Double> e : g.getEdges() ) 
+		score += e.getWeight().doubleValue();
+	return score;
     }
 }
 

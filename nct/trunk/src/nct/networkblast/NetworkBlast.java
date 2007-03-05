@@ -26,7 +26,6 @@
 package nct.networkblast;
 
 import org.apache.commons.cli.*; // for CLI
-import java.util.*;
 import java.util.logging.Handler;
 import java.util.logging.FileHandler;
 import java.util.logging.ConsoleHandler;
@@ -35,21 +34,19 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+import java.text.DecimalFormat;
+import java.util.*;
 import java.io.*;
 import java.lang.*;
-import java.text.DecimalFormat;
 
-import nct.networkblast.*;
-import nct.networkblast.graph.*;
-import nct.networkblast.graph.compatibility.*;
-import nct.score.*;
 import nct.search.*;
 import nct.graph.*;
-import nct.graph.util.*;
+import nct.score.*;
 import nct.filter.*;
+import nct.graph.*;
+import nct.graph.util.*;
 import nct.output.*;
-import nct.service.homology.HomologyModel;
-import nct.service.homology.SIFHomologyReader;
+import nct.service.homology.*;
 
 /**
  * The main program (NetworkBlast.java) will create all the objects needed to
@@ -77,11 +74,13 @@ public class NetworkBlast {
 	
 	public static int complexMinSeedSize = 4;
 	public static int complexMaxSize = 15;
-	public static int pathSize;
+	public static int pathSize; 
 	public static int defaultPathSize = 4;
 	public static Level logLevel = null;
 
 	protected double expectation;
+	protected double epsilon;
+	protected int numPathsPerNode;
 	protected double backgroundProb;
 	protected double truthFactor;
 	protected double modelTruth;
@@ -141,26 +140,25 @@ public class NetworkBlast {
 			print("num edges in homology graph: " + homologyGraph.numberOfEdges() );
 			// create classes for compat graph 
 			ScoreModel<String,Double> logScore = new LogLikelihoodScoreModel<String>(truthFactor, modelTruth, backgroundProb);
-			CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore,useZero);
 
 			// initialize the search classes
-			List<Graph<String,Double>> resultPaths;
-			SearchGraph<String,Double> colorCoding = new ColorCodingPathSearch<String>(pathSize);
+			List<Graph<CompatibilityNode<String,Double>,Double>> resultPaths;
+			SearchGraph<CompatibilityNode<String,Double>,Double> colorCoding = new CompatColorCodingPathSearch<CompatibilityNode<String,Double>>(pathSize,numPathsPerNode,epsilon);
 
-			List<Graph<String,Double>> resultComplexes;
-			NewComplexSearch<String> greedyComplexes = new NewComplexSearch<String>( complexMinSeedSize, complexMaxSize);
+			List<Graph<CompatibilityNode<String,Double>,Double>> resultComplexes;
+			CompatComplexSearch<CompatibilityNode<String,Double>> greedyComplexes = new CompatComplexSearch<CompatibilityNode<String,Double>>( complexMinSeedSize, complexMaxSize );
 			
 			// initialize filter
-			Filter<String,Double> dupeFilter = new DuplicateThresholdFilter<String,Double>(dupeThreshold);
-			Filter<String,Double> dupeNodeFilter = new UniqueCompatNodeFilter();
-			Filter<String,Double> sortFilter = new SortFilter<String,Double>(true);
+			Filter<CompatibilityNode<String,Double>,Double> dupeFilter = new DuplicateThresholdFilter<CompatibilityNode<String,Double>,Double>(dupeThreshold);
+			Filter<CompatibilityNode<String,Double>,Double> sortFilter = new SortFilter<CompatibilityNode<String,Double>,Double>(true);
 
 			// initialize the randomization classes
 			GraphRandomizer<String,Double> homologyShuffle = new EdgeWeightShuffle<String,Double>(randomNG);
 			GraphRandomizer<String,Double> edgeShuffle = new ThresholdRandomizer(randomNG,0.2);
 
 			// define the scoring model for the search algorithms
-			ScoreModel<String,Double> edgeScore = new SimpleEdgeScoreModel<String>();
+			ScoreModel<CompatibilityNode<String,Double>,Double> edgeScore = new SimpleEdgeScoreModel<CompatibilityNode<String,Double>>();
+			ScoreModel<CompatibilityNode<String,Double>,Double> compatScore = new CompatibilityScoreModel(inputSpecies,logScore);
 
 			if ( numSimulations > 0 ) 
 				print("run 0 is NOT randomized - it is run on the unaltered input data"); 
@@ -171,6 +169,8 @@ public class NetworkBlast {
 				print("filter duplicate complex nodes: " + filterDuplicateComplexNodes); 
 				print("filter duplicate path nodes: " + filterDuplicatePathNodes); 
 				print("expectation: " + expectation); 
+				print("epsilon: " + epsilon); 
+				print("num paths per node: " + numPathsPerNode); 
 				print("background prob: " + backgroundProb);
 				print("truth factor: " + truthFactor);
 				print("model truth: " + modelTruth);
@@ -182,16 +182,18 @@ public class NetworkBlast {
 
 
 				print("begin creating compatibility graph");
-				CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, inputSpecies, compatCalc, null );
+				CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, inputSpecies, logScore );
+				compatGraph.allowZero = useZero;
+
 				print("num nodes compatibility graph: " + compatGraph.numberOfNodes() );
 				print("num edges compatibility graph: " + compatGraph.numberOfEdges() );
 
 				print("begin path search");
-				resultPaths = colorCoding.searchGraph(compatGraph, edgeScore);
+				resultPaths = colorCoding.searchGraph(compatGraph, compatScore);
 
 				print("begin complexes search");
 				greedyComplexes.setSeeds( resultPaths );
-				resultComplexes = greedyComplexes.searchGraph(compatGraph, edgeScore);
+				resultComplexes = greedyComplexes.searchGraph(compatGraph, compatScore);
 
 				print("found " + resultPaths.size() + " unfiltered paths");
 				print("found " + resultComplexes.size() + " unfiltered complexes");
@@ -199,11 +201,6 @@ public class NetworkBlast {
 				resultPaths = dupeFilter.filter(resultPaths);
 				resultComplexes = dupeFilter.filter(resultComplexes);
 
-				if ( filterDuplicatePathNodes ) 
-					resultPaths = dupeNodeFilter.filter(resultPaths);
-
-				if ( filterDuplicateComplexNodes ) 
-					resultComplexes = dupeNodeFilter.filter(resultComplexes);
 				resultPaths = sortFilter.filter(resultPaths);
 				resultComplexes = sortFilter.filter(resultComplexes);
 
@@ -217,6 +214,7 @@ public class NetworkBlast {
 				print("complexes results: " );
 				for (int i = 0; i < resultComplexes.size(); i++) 
 					print("complex " + i + ": " + resultComplexes.get(i).toString());
+					/*
 				if (FILEOUTPUT) {
 					
 					String zname = outFile; 
@@ -246,6 +244,7 @@ public class NetworkBlast {
 
 					zipper.write();
 				}
+				*/
 
 				count++;	
 				if ( numSimulations > 0 && count <= numSimulations ) {
@@ -283,8 +282,8 @@ public class NetworkBlast {
 		options.addOption("S", "silent", false, "Don't print any output to the screen.");
 
 		options.addOption(OptionBuilder
-				.withLongOpt("path_length")
-				.withDescription( "The length of the path to search for.")
+				.withLongOpt("pathsize")
+				.withDescription( "Length of path to search for.")
 				.withValueSeparator(' ')
 				.withArgName("integer")
 				.hasArg()
@@ -306,14 +305,29 @@ public class NetworkBlast {
 				.hasArg()
 				.create("f"));
 
-
 		options.addOption(OptionBuilder
 				.withLongOpt("expectation")
-				.withDescription( "Expectation threshold level (" + expectationDefault + ").")
+				.withDescription( "Expectation threshold for establishing homology (" + expectationDefault + ").")
 				.withValueSeparator(' ')
 				.withArgName( "value")
 				.hasArg()
 				.create("e"));
+
+		options.addOption(OptionBuilder
+				.withLongOpt("epsilon")
+				.withDescription( "Probility that the algorithm will miss an optimal path (" + CompatColorCodingPathSearch.DEFAULT_EPSILON + ").")
+				.withValueSeparator(' ')
+				.withArgName( "value")
+				.hasArg()
+				.create("E"));
+
+		options.addOption(OptionBuilder
+				.withLongOpt("num_paths_per_node")
+				.withDescription( "Max number of result paths per node (" + CompatColorCodingPathSearch.NUM_PATHS_PER_NODE + ").")
+				.withValueSeparator(' ')
+				.withArgName( "value")
+				.hasArg()
+				.create("N"));
 
 		options.addOption(OptionBuilder
 				.withLongOpt("background")
@@ -423,7 +437,7 @@ public class NetworkBlast {
 		} else {
 			pathSize = defaultPathSize; 
 		}
-		
+
 		if (line.hasOption("r")) {
 			randomNG = new Random(Long.parseLong(line.getOptionValue("r")));
 		} else {
@@ -442,6 +456,18 @@ public class NetworkBlast {
 			expectation = Double.parseDouble(line.getOptionValue("e"));
 		} else {
 			expectation = expectationDefault;
+		}
+
+		if (line.hasOption("E")) {
+			epsilon = Double.parseDouble(line.getOptionValue("E"));
+		} else {
+			epsilon = CompatColorCodingPathSearch.DEFAULT_EPSILON;
+		}
+
+		if (line.hasOption("N")) {
+			numPathsPerNode = Integer.parseInt(line.getOptionValue("N"));
+		} else {
+			numPathsPerNode = CompatColorCodingPathSearch.NUM_PATHS_PER_NODE;
 		}
 
 		if (line.hasOption("b")) {

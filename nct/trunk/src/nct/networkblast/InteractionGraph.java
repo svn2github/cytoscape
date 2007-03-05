@@ -23,7 +23,7 @@
 
 
 
-package nct.networkblast.graph;
+package nct.networkblast;
 
 import java.util.*;
 import java.util.logging.Logger;

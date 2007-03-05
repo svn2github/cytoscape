@@ -179,6 +179,7 @@ public interface Graph<NodeType extends Comparable<? super NodeType>,
 	 * @return A set of edge objects containing all edges in the graph. 
 	 */
 	public Set<Edge<NodeType,WeightType>> getEdges();
+	public List<Edge<NodeType,WeightType>> getEdgeList();
 
 	/**
 	 * Returns a clone of this object.

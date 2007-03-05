@@ -38,20 +38,28 @@ import nct.graph.WeightedNode;
  */
 public class SimpleNodeScoreModel<NodeType extends WeightedNode<?,Double>> 
 	implements ScoreModel<NodeType,Double> {
-    /**
-     * For the two nodes from the specified graph graph, return the log
-     * likelihood score between the complex model and the null model. 
-     * @param srcNode node bewteen which it and destNode generates a score
-     * @param destNode node between which it and srcNode generates a score
-     * @param graph graph containing both srcNode and destNode
-     * @return the score of the pathway between the nodes or 0 if the same node
-     */
-    public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,Double> graph) {
-	return 0;	
-    }
+	/**
+	 * For the two nodes from the specified graph graph, return the log
+	 * likelihood score between the complex model and the null model. 
+	 * @param srcNode node bewteen which it and destNode generates a score
+	 * @param destNode node between which it and srcNode generates a score
+	 * @param graph graph containing both srcNode and destNode
+	 * @return the score of the pathway between the nodes or 0 if the same node
+	 */
+	public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,Double> graph) {
+		return 0;	
+	}
 
-    public double scoreNode(NodeType node, Graph<NodeType,Double> graph){
-	return node.getWeight();	
-    }
+	public double scoreNode(NodeType node, Graph<NodeType,Double> graph){
+		return node.getWeight();	
+	}
+
+	public double scoreGraph(Graph<NodeType,Double> g) {
+		double score = 0;
+		for ( NodeType n : g.getNodes() ) 
+			score += n.getWeight().doubleValue();
+		return score;
+	}
+
 }	
 

@@ -1,7 +1,8 @@
+/* vim: set ts=2: */
 
 //============================================================================
 // 
-//  file: ColorCodingPathSearch.java
+//  file: CompatColorCodingPathSearch.java
 // 
 //  Copyright (c) 2006, University of California San Diego 
 // 
@@ -23,16 +24,14 @@
 
 
 
-package nct.search;
+package nct.networkblast;
 
 import java.util.*;
 import java.util.logging.Logger;
 import java.lang.reflect.Array;
-import nct.score.*;
 import nct.graph.*;
-
-import nct.visualization.cytoscape.Monitorable;
-import nct.visualization.cytoscape.Monitor;
+import nct.score.*;
+import nct.search.*;
 
 /**
  * This class implements a color coding algorithm to search for pathways 
@@ -40,7 +39,8 @@ import nct.visualization.cytoscape.Monitor;
  * 2005, Efficient Algorithms for Detecting Signaling Pathways in Protein 
  * Interaction Networks, Lecture Notes in Computer Science, vol. 3500.
  */
-public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>> implements SearchGraph<NodeType,Double>, Monitorable {
+public class CompatColorCodingPathSearch<NodeType extends Comparable<? super NodeType>> 
+	implements SearchGraph<NodeType,Double>/*, Monitorable*/ {
 
 	/**
 	 * The default epsilon value.
@@ -48,6 +48,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	 * we iterate the correct number of times.
 	 */
 	 public static double DEFAULT_EPSILON = 0.0001;
+	 public static int NUM_PATHS_PER_NODE = 3;
    
 	/**
 	 * The length of path that we're looking for.
@@ -82,7 +83,8 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	 * are the set of nodes and the second dimension 
 	 * indices are the possible color sets.
 	 */
-	private double[][] W;
+	//private double[][] W;
+	private List<List<PathGraph<NodeType>>> W;
 
 	/**
 	 * A matrix containing the last node used to calculate the score
@@ -112,7 +114,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	/**
 	 * The maximum number of solutions we will return.
 	 */
-	private int numSolutions;
+	private int numSolutions = NUM_PATHS_PER_NODE;
 
 	/**
 	 * The logging object we will write to. 
@@ -151,38 +153,38 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	Map<NodeType,Integer> minSegmentMap;
 
 	/** 
-	 * A set of nodes where one of the nodes must be the first node in the path.
+	 *
 	 */
 	Set<NodeType> beginSet;
 
 	/** 
-	 * A set of nodes where one of the nodes must be the last node in the path.
+	 *
 	 */
 	Set<NodeType> endSet;
 
 	/**
 	 * Used for tracking the progress of searchGraph()
 	 */
-	protected Monitor monitor = null;
+	//protected Monitor monitor = null;
 
 	/**
 	 * @param size the integer size of paths to search for
 	 */
-	public ColorCodingPathSearch(int size) {
+	public CompatColorCodingPathSearch(int size) {
 		this(size,0);
 	}
 
 	/**
 	 * @param size The lengths of the paths to search for.
-	 * @param  numSols The maximum number of solution paths to return.
+	 * @param  numSols The maximum number of solution paths PER NODE to return.
 	 */
-	public ColorCodingPathSearch(int size,int numSols) {
-		this(size,numSols,ColorCodingPathSearch.DEFAULT_EPSILON);
+	public CompatColorCodingPathSearch(int size,int numSols) {
+		this(size,numSols,CompatColorCodingPathSearch.DEFAULT_EPSILON);
 	}
 
 	/**
 	 * @param size The lengths of the paths to search for.
-	 * @param  numSols The maximum number of solution paths to return.
+	 * @param  numSols The maximum number of solution paths PER NODE to return.
 	 * @param  epsilon The probability that we won't find a best path. The
 	 * lower the probability, the longer this algorithm takes, however the
 	 * length increases logarithmically, so .01 isn't orders of magnitude
@@ -199,7 +201,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	 * rigorous and use a small epsilon (e.g. .00001), if not, then use a
 	 * reasonable number of iterations (e.g. 20).</b>
 	 */
-	public ColorCodingPathSearch(int size,int numSols, double epsilon) {
+	public CompatColorCodingPathSearch(int size,int numSols, double epsilon) {
 		pathSize = size;
 		numSolutions = numSols;
 		eps = epsilon;
@@ -274,6 +276,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	 * @return a List of Graph objects that represent the found paths, or null 
 	 * if the given arguments are invalid.
 	 */
+	 @SuppressWarnings("unchecked") // for clone call below
 	public List<Graph<NodeType,Double>> searchGraph(Graph<NodeType,Double> graph, ScoreModel<NodeType,Double> scoreObj) {
 		Long beginTime = System.currentTimeMillis();
 
@@ -305,157 +308,123 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 
 		int[] orderedColorSetList = getOrderedColorSetList();
 
-		W = new double[numNodes][colorSet+1];
-		path = new ArrayList<List<NodeType>>();
+		W = new ArrayList<List<PathGraph<NodeType>>>();
 		for ( int i = 0; i < numNodes; i++ ) {
-			List<NodeType> templ = new ArrayList<NodeType>();
-			for ( int j = 0; j <= colorSet; j++ )
-				templ.add(null);
-			path.add( templ ); 
+			List<PathGraph<NodeType>> tempw = new ArrayList<PathGraph<NodeType>>();
+			for ( int j = 0; j <= colorSet; j++ ) 
+				tempw.add(null);
+			W.add( tempw );
 		}
 
 		double currentMinScore = Double.NEGATIVE_INFINITY;
 
 		if ( numSolutions == 0 )
-			numSolutions = numNodes;
-		System.out.println("expected number of solutions: " + numSolutions);
+			numSolutions = NUM_PATHS_PER_NODE;
+		System.out.println("expected number of solutions: " + numSolutions*numNodes);
 
-		SortedSet<Graph<NodeType,Double>> resultSet = new TreeSet<Graph<NodeType,Double>>();
+		List<SortedSet<Graph<NodeType,Double>>> resultSets = new ArrayList<SortedSet<Graph<NodeType,Double>>>();
+		for ( int i = 0; i < numNodes; i++ )	
+			resultSets.add(  new TreeSet<Graph<NodeType,Double>>() );
+
 		initNodeIndices(graph);
 
 		Set<NodeType> nodeSet = graph.getNodes();
 
 		for ( int x = 0; x < numTrials; x++ ) {
-			if(x % 1000 == 0){
-				log.info("Iteration "+x);
-			}
-			if (monitor != null)
-			{
-				if (monitor.needToHalt()) return null;
-				monitor.setPercentCompleted(x * 100 / numTrials);
-			}
 			
 			log.config("trial " + x);
-			//System.out.println("trial " + x);
 
 			// re-initialize storage
-			for ( int i = 0; i < numNodes; i++){
-				for ( int j = 0; j <= colorSet; j++ ) {
-					W[i][j] = Double.NEGATIVE_INFINITY; 
-					path.get(i).set(j,null); 
-				}
-			}
+			for ( int i = 0; i < numNodes; i++ )	
+				for ( int j = 0; j <= colorSet; j++ )
+					W.get(i).set(j,null); 
 
 			initNodeColors(graph);	
 
 			// dynamic programming over all color combinations
 			for ( int i = 0; i < orderedColorSetList.length; i++ ) {
+
 				int colorCombo = orderedColorSetList[i];
 
 				for (NodeType node: nodeSet) { 
 					int nodeColor = getNodeColor(node);
-					//System.out.println("node " + nodeColor);
 
 					// only consider nodes in this particular color combination
-					if ( (nodeColor & colorCombo) != nodeColor )
+					if ( (nodeColor & colorCombo) != nodeColor ) 
 						continue;
 
 					int prevCombo = colorCombo - nodeColor;
-					//System.out.println("prevcolor combo " + prevCombo);
 
 					// for the first color combinations initialize the score
 					// and skip the rest of the processing
 					if ( prevCombo == 0 ) {
 						if ( beginSet == null || beginSet.contains(node) ) 
-							W[nodeIndex(node)][nodeColor] = this.scoreObj.scoreNode(node,graph);
+							W.get(nodeIndex(node)).set(colorCombo, new PathGraph<NodeType>(node));
 						continue;
 					}
 
-					// now compare the node to all of its neighbors that are 
-					// within the color combination excluding the node color
-					for (NodeType neighbor: graph.getNeighbors(node) ) {
+					// we're beyond the initialization bits, so compare 
+					// the node to all of its neighbors that are within 
+					// the color combination that excludes the color of 
+					// the node itself
+					for ( NodeType neighbor: graph.getNeighbors(node) ) {
 						int neighborColor = getNodeColor(neighbor);
-						//System.out.println("neigh " + neighborColor);
 
+						// check if the neighbor is ok for this color combo
 						if ( (neighborColor & prevCombo) == neighborColor ) {
-							double score = scoreObj.scoreNode(neighbor,graph)+scoreObj.scoreEdge(node,neighbor,graph) + W[nodeIndex(neighbor)][prevCombo];	
-							int nodeInd = nodeIndex(node);
 
-							//System.out.println("score " + score);
-							if ( score > W[nodeInd][colorCombo] ) {
-								W[nodeInd][colorCombo] = score; 
-								path.get(nodeInd).set(colorCombo,neighbor);
+							// get the old graph
+							PathGraph<NodeType> bfg = W.get(nodeIndex(neighbor)).get(prevCombo);
+							if ( bfg == null ) 
+								continue;
+
+							// clone the old graph and add the new node/edge
+							PathGraph<NodeType> fg = (PathGraph<NodeType>)bfg.clone();
+							fg.addNode( node ); // implicit edge
+
+							// score the new graph
+							double score = scoreObj.scoreGraph( fg );
+							fg.setScore( score ); 
+
+							int nodeInd = nodeIndex(node);
+							
+							// if the we're at the end of dp, just add the graph to the results
+							// because this is a sorted set we automatically get the top results
+							if ( colorCombo == colorSet ) { 
+								SortedSet<Graph<NodeType,Double>> res = resultSets.get(nodeInd);
+								res.add( fg );	
+								if ( res.size() > numSolutions ) 
+									res.remove(res.first());
+							// otherwise update the dp matrix with the new graph if appropriate
+							} else {
+								PathGraph<NodeType> cfg = W.get(nodeInd).get(colorCombo);
+								if ( cfg == null || score > cfg.getScore().doubleValue() ) 
+									W.get(nodeInd).set(colorCombo,fg);
+								else
+									fg = null;
 							}
 						}
 					}
 				}
 			}
-
-			// traceback through the W matrix to extract the actual path
-			for (NodeType node: nodeSet) {
-				if ( endSet != null && !endSet.contains(node) )
-					continue;
-				int color = colorSet;
-				int nodeInd = nodeIndex(node); 
-				if ( W[nodeInd][color] > currentMinScore || resultSet.size() < numSolutions ) {
-					//System.out.println("trial " + x + " curr min: " + currentMinScore + "  w: " + W[nodeInd][color]);
-					Graph<NodeType,Double> sg = new BasicGraph<NodeType,Double>();
-					sg.setScore( W[nodeInd][color] );
-					int constraintCount = 0;
-					if ( constraintSet != null && constraintSet.contains(node) )
-							constraintCount++;
-					while ( path.get(nodeInd).get(color) != null && 
-					        consistentSegmentation(node,color)) {
-						NodeType next = path.get(nodeInd).get(color);
-						if ( constraintSet != null && constraintSet.contains(next) )
-							constraintCount++;
-						sg.addNode(node);
-						sg.addNode(next);
-						sg.addEdge(node,next,scoreObj.scoreEdge(node,next,graph));
-						sg.setEdgeDescription(node,next,graph.getEdgeDescription(node,next));
-						color -= getNodeColor(node);
-						node = next;
-						nodeInd = nodeIndex(node);
-
-					}
-
-					// Add the path to the result set if the score is high enough
-					// avoid adding to the set promiscuously because each add
-					// requires a sort.
-					//
-					// However, this bit of code only takes a fraction (~5%) of the
-					// overall time of this method.
-					//System.out.println("evaluating: " + sg.toString());
-					if ( sg.numberOfNodes() == pathSize && checkConstraint(constraintCount) ) {
-						resultSet.add(sg);
-						//System.out.println("Adding!");
-						//System.out.println("result set size: " + resultSet.size());
-						if ( resultSet.size() > numSolutions ) {
-							resultSet.remove(resultSet.first());
-							//System.out.println("Removing!");
-						}
-					} else 
-						sg = null; // space concerns
-				} 
-			}
-			if ( resultSet.size() > 0 ) 
-				currentMinScore = resultSet.first().getScore();
 		} 
 
-		graphList.addAll( resultSet );	
+		for ( SortedSet<Graph<NodeType,Double>> s : resultSets ) {
+			for ( Graph<NodeType,Double> tg : s ) {
+				// create new graphs so that we're not using the specialized PathGraphs
+				Graph<NodeType,Double> xg = new BasicGraph<NodeType,Double>(tg); 
+				graphList.add( xg );
+			}
+		}
+
+		Collections.sort(graphList);
 
 		Long totalTime = System.currentTimeMillis() - beginTime;
-		log.info("path search elapsed time: " + totalTime);
-		log.info("resultSet size: " + resultSet.size());
+		System.out.println("path search elapsed time: " + totalTime);
+		System.out.println("resultSets size: " + resultSets.size());
 		
 		return  graphList;
 	}
-
-	public void setMonitor(Monitor monitor)
-	  { this.monitor = monitor; } 
-
-	public Monitor getMonitor()
-	  { return monitor; }
 
 	/**
 	 * Returns a random color. The color will be 1 bit within

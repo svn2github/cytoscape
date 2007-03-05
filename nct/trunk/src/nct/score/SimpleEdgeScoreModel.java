@@ -37,24 +37,27 @@ import nct.graph.Edge;
  */
 public class SimpleEdgeScoreModel<NodeType extends Comparable<? super NodeType>> 
 	implements ScoreModel<NodeType,Double> {
-    /**
-     * For the two nodes from the specified graph graph, return the log
-     * likelihood score between the complex model and the null model. 
-     * @param srcNode node bewteen which it and destNode generates a score
-     * @param destNode node between which it and srcNode generates a score
-     * @param graph graph containing both srcNode and destNode
-     * @return the score of the pathway between the nodes or 0 if the same node
-     */
-    public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,Double> graph) {
-    	Double edgeWeight = graph.getEdgeWeight(srcNode, destNode);
-	if (edgeWeight == null)
-		return 0.0;
-	else
-		return edgeWeight.doubleValue();
-    }
+	/**
+	 * For the two nodes from the specified graph graph, return the log
+	 * likelihood score between the complex model and the null model. 
+	 * @param srcNode node bewteen which it and destNode generates a score
+	 * @param destNode node between which it and srcNode generates a score
+	 * @param graph graph containing both srcNode and destNode
+	 * @return the score of the pathway between the nodes or 0 if the same node
+	 */
+	public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,Double> graph) {
+		return graph.getEdgeWeight(srcNode, destNode).doubleValue();
+	}
 
-    public double scoreNode(NodeType node, Graph<NodeType,Double> graph){
-	return 0; 
-    }
+	public double scoreNode(NodeType node, Graph<NodeType,Double> graph){
+		return 0; 
+	}
+
+	public double scoreGraph(Graph<NodeType,Double> g) {
+		double score = 0;
+		for ( Edge<NodeType,Double> e : g.getEdges() ) 
+			score += e.getWeight().doubleValue();
+		return score;
+	}
 }	
 

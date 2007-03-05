@@ -21,7 +21,7 @@
 // 
 //============================================================================
 
-package nct.networkblast.graph;
+package nct.networkblast;
 
 import nct.graph.util.*;
 import java.util.*;
