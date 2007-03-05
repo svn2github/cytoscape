@@ -61,18 +61,18 @@ Cytoscape LGPL.
 </div>
 
 <div id="indent">
-	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="98%" bgcolor="#ebebff">
+	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="95%" bgcolor="#ebebff">
 
 		<tbody>		
 			<tr>
-				<td width="20%" valign="top">
+				<td width="25%" valign="top">
 					<b>Cerebral Plugin</b><font size="-1">
 						<br>
 						Version: 1.0
 						<br>
 						Release Date: February 20, 2007</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="45%" valign="top">
 					<P>
 						Cerebral (Cell Region-Based Rendering And Layout) is an open-source
 						Java plugin for the Cytoscape biomolecular interaction viewer. Given
@@ -105,17 +105,17 @@ Cytoscape LGPL.
 						Released by: Jennifer Gardy & Aaron Barsky
 						University of British Columbia.
 					</P>
-				</td>
-				<TD WIDTH=20%>
+			  </td>
+				<TD WIDTH=15%>
 					<P>
 						Verified to work in 2.4
 					</P>
-				</TD>
-				<TD WIDTH=20%>
+			  </TD>
+				<TD WIDTH=15%>
 					<P>
 						[<A HREF="http://www.pathogenomics.ca/cerebral">Download from Project Web Site</A>]
 					</P>
-				</TD>
+			  </TD>
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -124,14 +124,14 @@ Cytoscape LGPL.
 			</tr>		
 		
 			<tr>
-				<td width="20%" valign="top">
+				<td width="26%" valign="top">
 					<b>DataMatrix Plugin</b><font size="-1">
 						<br>
 						Version: .8 BETA
 						<br>
 						Release Date: August 15, 2004</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="32%" valign="top">
 					This plugin provides a number of integrated tools for exploring and visualizing experimental data in association with the Cytoscape network view. Read in tab-delimited text files, in which there is one row for each gene or protein, and as many columns as there are experimental conditions. The following operations are then possible:
 					<ol>
 						<li>examine the numerical data in a spreadsheet display</li>
@@ -146,14 +146,13 @@ Cytoscape LGPL.
 					<p>
 						Released by: Paul Shannon, Baliga Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 					</p>
-				</td>
-				<td width="20%" valign="top">
-				 Verified to work in 2.0.
-				</td>
-				<td width="20%" valign="top">
+			  </td>
+				<td width="24%" valign="top">
+				 Verified to work in 2.0.				</td>
+				<td width="18%" valign="top">
 					[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.0/plugins/DataMatrixPlugin.jar">Download jar</a>]
 					<br>
-				</td>
+			  </td>
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -163,14 +162,14 @@ Cytoscape LGPL.
 
 
 			<tr>
-				<td width="20%" valign="top">
+				<td width="26%" valign="top">
 					<b>DomainNetworkBuilder Plugin</b><font size="-1">
 						<br>
 						Version: 1.0
 						<br>
 						Release Date: September 21, 2005</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="32%" valign="top">
 					<P>This plugin decomposes protein networks into domain-domain interactions.
 						Basically, it transforms each protein node into a chain of
 						consecutive domain nodes and constructs a putative network of
@@ -193,17 +192,17 @@ Cytoscape LGPL.
 					<P>Released by: Mario Albrecht, Carola
 						Huthmacher, Lengauer Group, <A HREF="http://www.mpi-sb.mpg.de/">Max Planck Institute for Informatics</A>.
 					</P>
-				</td>
-				<TD WIDTH=20%>
+			  </td>
+				<TD WIDTH=24%>
 					<P>Verified to work in 2.1, 2.2.
 					<BR>Not tested in Cytoscape 2.0
 					</P>
-				</TD>
-				<TD WIDTH=20%>
+			  </TD>
+				<TD WIDTH=18%>
 					<P>[<A HREF="http://med.bioinf.mpi-sb.mpg.de/domainnet/index.html">
 						Download from Project Web Site</A>]
 					</P>
-				</TD>
+			  </TD>
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -214,14 +213,14 @@ Cytoscape LGPL.
 
 
 			<tr>
-				<td width="20%" valign="top">
+				<td width="26%" valign="top">
 					<b>Dynamic Expression Plugin</b><font size="-1">
 						<br>
 						Version: 1.0
 						<br>
 						Release Date: August 9, 2005</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="32%" valign="top">
 					This plug-in loads an expression data file (consult the Cytoscape manual to learn
 					about the format of this type of file) and then allows the user to color the nodes
 					in a network according to their expression values. The GUI works like a VCR, with
@@ -232,15 +231,16 @@ Cytoscape LGPL.
 					<p>
 						Released by: Iliana Avila-Campillo, Galitski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 					</p>
-				</td>
-				<td width="20%" valign="top">
-				 Verified to work in 2.1. <br>Not tested in Cytoscape 2.0.
-				</td>
-				<td width="20%" valign="top">
+			  </td>
+				<td width="24%" valign="top">
+				 Verified to work in 2.1. <br>
+				 Not tested in Cytoscape 2.0.
+			  </td>
+				<td width="18%" valign="top">
 					[<a href="plugins/DynamicXpr/dynxpr.jar">Download Plugin .jar</a>]
 					<br>
 					[<a href="plugins/DynamicXpr/README.txt">Download README</a>]
-				</td>
+			  </td>
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -250,27 +250,25 @@ Cytoscape LGPL.
 
 
 			<tr>
-				<td width="20%" valign="top">
+				<td width="26%" valign="top">
 					<b>Expression Correlation Network Plugin</b><font size="-1">
 						<br>
 						Version: 1
 						<br>
 						Release Date: January 19, 2005</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="32%" valign="top">
 					<p>
 					This plugin enables Cytoscape users to correlate genes or conditions in an expression matrix file loaded into Cytoscape. The resulting correlations are visualized as a network in Cytoscape.  A condition correlation network is an alternate way of representing expression condition clustering results which can sometimes make it easier to notice clusters compared to the normal 'heat-map' view.
 					<p>
 						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
 					</p>
-				</td>
-				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1, 2.2.
-				</td>
-				<td width="20%" valign="top">
+			  </td>
+				<td width="24%" valign="top">
+				Verified to work in 2.0, 2.1, 2.2.				</td>
+				<td width="18%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/ExpressionCorrelationReadme.txt">Release Notes</a>]
-					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/ExpressionCorrelation.zip">Download</a>]
-				</td>
+					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/ExpressionCorrelation.zip">Download</a>]				</td>
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -281,14 +279,14 @@ Cytoscape LGPL.
 
 
 			<tr>
-				<td valign="top" width="20%">
+				<td valign="top" width="26%">
 					<b>GenePro Plugin</b><font size="-1">
 						<br>
 						Version: 1
 						<br>
 						Release Date: April, 2006</font>
-				</td>
-				<td valign="top" width="40%">
+			  </td>
+				<td valign="top" width="32%">
 					<p>
 GenePro is a Cytoscape 2.2 plugin for the visualization and analysis of  
 protein-protein interaction networks and functional modules.
@@ -332,13 +330,11 @@ University of Toronto
 Toronto, Canada
 
 					<p></p>
-				</td>
-				<td valign="top" width="20%">
-				Verified to work in 2.2.
-				</td>
-				<td valign="top" width="20%">
-					[<a href="http://genepro.ccb.sickkids.ca/">Download</a>]
-				</td>
+			  </td>
+				<td valign="top" width="24%">
+				Verified to work in 2.2.				</td>
+				<td valign="top" width="18%">
+					[<a href="http://genepro.ccb.sickkids.ca/">Download</a>]				</td>
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -348,13 +344,13 @@ Toronto, Canada
 
             <tr>
                 
-		<td width="20%" valign="top">
+		<td width="26%" valign="top">
 			<b>GOlorize</b>
 			<br>
 		  <font size="-1">Version: 1.1<br>
 			  Release Date: Feb. 12, 2007</font>
 		</td>
-		<td width="40%" valign="top">
+		<td width="32%" valign="top">
 			<p>
 				GOlorize provides an automated network visualization in Cytoscape, where Gene Ontology (GO) categories are 				used to direct the network graph layout process and to emphasize the biological function of the nodes. 						
 				GOlorize is used in conjunction with BiNGO plug-in, an efficient tool to find the GO categories that are 	
@@ -368,12 +364,12 @@ Toronto, Canada
 			</p>
                 Licensed under GNU Public License.
 		</td>
- 		<td width="20%" valign="top">
-				 Verified to work in 2.2 and 2.4
-			  </td>
-		<td width="20%" valign="top">
+ 		<td width="24%" valign="top">
+				 Verified to work in 2.2 and 2.4			  </td>
+		<td width="18%" valign="top">
 		[<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/GOlorize2-4UserGuide.pdf">User Guide</a>]
-		<br>[<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/GOlorize2-4.jar">Download Jar</a>]
+		<br>
+		[<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/GOlorize2-4.jar">Download Jar</a>]
 		<br>[<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/src.tar.gz">Source Code</a>]
 		<br>[<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/javadoc.tar.gz">JavaDoc</a>]
 		</td>
@@ -386,14 +382,14 @@ Toronto, Canada
 
             <tr>
                 
-		<td width="20%" valign="top">
+		<td width="26%" valign="top">
 			<b>Hyperbolic Focus</b>
 			<br>
 			<font size="-1">Version: 1.0
 				<br>
 				Release Date: </font>
 		</td>
-		<td width="40%" valign="top">
+		<td width="32%" valign="top">
 		Hyperbolic Focus Layout plugin.
 			<br>
 			<br>
@@ -404,10 +400,9 @@ Toronto, Canada
                          <br>
                          Licensed under GNU Public License.
 		</td>
- 		<td width="20%" valign="top">
-				 Verified to work in 2.4.
-			  </td>
-		<td width="20%" valign="top">
+ 		<td width="24%" valign="top">
+				 Verified to work in 2.4.			  </td>
+		<td width="18%" valign="top">
 			[<a href="plugins/HypFocus/HypFocus.jar">HypFocus</a>]
 			<br>
 			<br>
@@ -422,23 +417,22 @@ Toronto, Canada
 
 			<tr>
 
-		<td width="20%" valign="top">
+		<td width="26%" valign="top">
 			<b>jActiveModules</b>
 			<br>
 			<font size="-1">Version: 1.0
 				<br>
 				Release Date: Jan. 19, 2007</font>
 		</td>
-		<td width="40%" valign="top">
+		<td width="32%" valign="top">
 			This plugin enables Cytoscape to search for significant networks as described in <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=12169552&amp;dopt=Abstract">Bioinformatics. 2002 Jul;18 Suppl 1:S233-40.</a>
 			<br>
 			<br>
 			Released by: <a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">The Ideker Lab</a>, Department of Bioengineering, UCSD
 		</td>
- 		<td width="20%" valign="top">
-				 Verified to work in 2.2 and 2.4
-			  </td>
-		<td width="20%" valign="top">
+ 		<td width="24%" valign="top">
+				 Verified to work in 2.2 and 2.4			  </td>
+		<td width="18%" valign="top">
 			<b>2.2</b> compatible version:
 			<br>
 			[<a href="plugins/jActiveModules_2.2/jActiveModules.jar">Download Jar</a>]
@@ -462,25 +456,23 @@ Toronto, Canada
 				</td>
 			</tr>
 			<tr>
-				<td width="20%" valign="top">
+				<td width="26%" valign="top">
 					<b>MCODE Plugin</b><font size="-1">
 						<br>
 						Version: 1.2
 						<br>
 						Release Date: February 7, 2007</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="32%" valign="top">
 					The MCODE Cytoscape Plugin finds clusters (highly interconnected regions) in any network loaded into Cytoscape. Depending on the type of network, clusters may mean different things. For instance, clusters in a protein-protein interaction network have been shown to be protein complexes and parts of pathways. Clusters in a protein similarity network represent protein families.
 					<p>
 						Released by: Gary Bader, Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
 					</p>
-				</td>
-				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1, 2.2., 2.4
-				</td>
-				<td width="20%" valign="top">
-					[<a href="http://baderlab.org/Software/MCODE">MCODE Plugin Web Site</a>]
-				</td>
+			  </td>
+				<td width="24%" valign="top">
+				Verified to work in 2.0, 2.1, 2.2., 2.4				</td>
+				<td width="18%" valign="top">
+					[<a href="http://baderlab.org/Software/MCODE">MCODE Plugin Web Site</a>]				</td>
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -489,22 +481,21 @@ Toronto, Canada
 			</tr>
 
 	<tr>
-		<td width="20%" valign="top">
+		<td width="26%" valign="top">
 			<b>Metabolica Plugin</b>
 			<br>
 			<font size="-1">Version: 1.0
 				<br>
 				Release Date: Dec. 8, 2005</font>
 		</td>
-		<td width="40%" valign="top">
+		<td width="32%" valign="top">
 			Metabolica plugin find network motifs of arbitrary length in the current network.
 			<p>
 			Released by: Michele Petterlini, Giovanni Scardoni.
 		</td>
-		<td width="20%" valign="top">
-				 Verified to work in 2.2.
-		</td>
-		<td width="20%" valign="top">
+		<td width="24%" valign="top">
+				 Verified to work in 2.2.		</td>
+		<td width="18%" valign="top">
 			[<a href="http://www.petterlini.it/metabolica/">Download Plugin</a>]
 			<br>
 		</td>
@@ -518,14 +509,14 @@ Toronto, Canada
 
 
 	<tr>
-		<td width="20%" valign="top">
+		<td width="26%" valign="top">
 			<b>Motif Finder Plugin</b>
 			<br>
 			<font size="-1">Version: .1 BETA
 				<br>
 				Release Date: Sept. 3, 2004</font>
 		</td>
-		<td width="40%" valign="top">
+		<td width="32%" valign="top">
 			Run a Gibbs sampling motif detector on sequences corresponding to the selected nodes in the current network. This currently implements the most basic of the motif detection algorithms available from the <a href="http://sf.net/projects/netmotsa">Gibbs sampling motif detection library</a> described in <a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/20/suppl_1/i274">Bioinformatics</a>.
 			<br>
 			This plugin requires that the "sequence fetcher" (part of the HTTP Data plugin) be run first, to fetch the sequences, or they may be pre-loaded as node attributes. It may be used on protein or DNA sequences (detected automatically). Various types of information such as motif logos, alignment tables, and motif positions are displayed at the end of the detection run (<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/software.jpg">screenshot</a>).
@@ -536,10 +527,9 @@ Toronto, Canada
 			<br>
 			Released by: David J. Reiss, Schwikowski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 		</td>
-		<td width="20%" valign="top">
-				 Verified to work in 2.0, 2.1.
-		</td>
-		<td width="20%" valign="top">
+		<td width="24%" valign="top">
+				 Verified to work in 2.0, 2.1.		</td>
+		<td width="18%" valign="top">
 			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/motifFinder.jar">Download Plugin .jar</a>]
 			<br>
 		</td>
@@ -551,23 +541,22 @@ Toronto, Canada
 			</tr>
 
 	<tr>
-		<td width="20%" valign="top">
+		<td width="26%" valign="top">
 			<b>NetMatch Plugin</b>
 			<br>
 			<font size="-1">Version: 1.0.1
 				<br>
 				Release Date: Dec. 22, 2006</font>
 		</td>
-		<td width="40%" valign="top">
+		<td width="32%" valign="top">
 			NetMatch finds user defined network motifs in any Cytoscape network. Node and edge
 			attributes of any type and paths of unknown length can be specified in the search.
 			<P>Released by: <a href="http://alpha.dmi.unict.it/~ctnyu/">Ferro, Giugno, Pulvirenti group, University of Catania</a>, <a href="http://baderlab.org/">Bader group,
 			University of Toronto</a> and <a href="http://cs.nyu.edu/cs/faculty/shasha/">Shasha group, New York University</a>.
 		</td>
-		<td width="20%" valign="top">
-				 Verified to work in 2.3, 2.4
-		</td>
-		<td width="20%" valign="top">
+		<td width="24%" valign="top">
+				 Verified to work in 2.3, 2.4		</td>
+		<td width="18%" valign="top">
 			Download from: [<a href=" http://alpha.dmi.unict.it/~ctnyu/netmatch.html">NetMatch Official Site</a>] or
 			[<a href=" http://baderlab.org/Software/NetMatch">NetMatch Mirror</a>]
 			<br>
@@ -582,18 +571,19 @@ Toronto, Canada
 
 
 	<tr>
-		<td width="20%" valign="top">
+		<td width="26%" valign="top">
 			<b>NetworkAnalyzer Plugin</b>
 			<br>
 			<font size="-1">Version: 1.0
 				<br>
 				Release Date: Jan. 23, 2006</font>
 		</td>
-		<td width="40%" valign="top">
+		<td width="32%" valign="top">
 			NetworkAnalyzer is a Java plugin for Cytoscape, a software platform
 			for the analysis and visualization of molecular interaction networks.
 			The plugin computes specific parameters describing the network topology.
-			<br><br>Feature List:<br>
+			<br>
+			<br>Feature List:<br>
 		<ul>
 			<li>Analysis of undirected networks:
 				<ul>
@@ -624,10 +614,9 @@ Toronto, Canada
 		</ul>
 			<P>Released by: Mario Albrecht, <a href="http://www.mpi-inf.mpg.de/">Max Planck Institute for Informatics</a>.
 		</td>
-		<td width="20%" valign="top">
-				 Verified to work in 2.1, 2.2.
-		</td>
-		<td width="20%" valign="top">
+		<td width="24%" valign="top">
+				 Verified to work in 2.1, 2.2.		</td>
+		<td width="18%" valign="top">
 			[<a href="http://med.bioinf.mpi-inf.mpg.de/netanalyzer/index.php">NetworkAnalyzer Project Page</a>]
 			<br>
 		</td>
@@ -636,26 +625,24 @@ Toronto, Canada
 		 		<tr> <td colspan="4"> <hr> </td> </tr>
 
 			<tr>
-				<td width="20%" valign="top">
+				<td width="26%" valign="top">
 					<b>Network Motif Finder</b><font size="-1">
 						<br> 
 						Version: 1.0
 						<br>
 						Release Date: October 19, 2006
 						</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="32%" valign="top">
 				<p>
 				This pluging identifies network motifs, small repeatedly occurring mult-element components of a network, where the repetition suggests functional significance.  Statistical significance is applied to each motif type, and all identified motif types can be aggregated and extracted into smaller motif sub-networks.  This plugin has full functionality for multi-mode genetic networks created by the Cytoscape plugin ‘Phenotype Genetics’, and partial functionality for all other network types.  Specifically, motifs be identified and extracted for any network type, however statistical significance algorithms have been written for multi-mode netic networks only.  Network Motif Finder is open source and statistical significance algorithms for any network can be coded and easily incorporated.  Plugin, tutorial and sample data are packaged in the zip for download.
 				<p>
 					Released by: James Taylor, Galitski Lab, <a href="http://www.systemsbiology.org">Institute for Systems Biology</a>
-				</td>
-				<td width="20%" valign="top">
-					Verified to work in 2.3.2
-				</td>
-				<td width="20%" valign="top">
-					[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.3.2/plugins/NetworkMotifFinder/NMFPlugin.zip">Download zip</a>]
-				</td>
+			  </td>
+				<td width="24%" valign="top">
+					Verified to work in 2.3.2				</td>
+				<td width="18%" valign="top">
+					[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.3.2/plugins/NetworkMotifFinder/NMFPlugin.zip">Download zip</a>]				</td>
 			</tr>
 	<tr>
 				<td colspan="4">
@@ -665,14 +652,14 @@ Toronto, Canada
 
 
 			<tr>
-				<td width="20%" valign="top">
+				<td width="26%" valign="top">
 					<b>PeSca (Path Extraction by Smallest Cost Algorithm) Project</b><font size="-1">
 						<br>
 						Version: 1.0
 						<br>
 						Release Date: March, 2005</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="32%" valign="top">
 					<p>
 					PeSca is a Cytoscape's plugin able to find the shortest interaction
 					path between two proteins in a Cytoscape's network. It is tested under
@@ -681,13 +668,11 @@ Toronto, Canada
 						Released by: Michele Petterlini, Giovanni
 Scardoni.
 					</p>
-				</td>
-				<td width="20%" valign="top">
-				Verified to work in 2.1, 2.2.
-				</td>
-				<td width="20%" valign="top">
-					[<a href="http://www.petterlini.it/pesca/">PeSca Web Site and Download</a>]
-				</td>
+			  </td>
+				<td width="24%" valign="top">
+				Verified to work in 2.1, 2.2.				</td>
+				<td width="18%" valign="top">
+					[<a href="http://www.petterlini.it/pesca/">PeSca Web Site and Download</a>]				</td>
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -698,14 +683,14 @@ Scardoni.
 
 
 			<tr>
-				<td width="20%" valign="top">
+				<td width="26%" valign="top">
 					<b>ShortestPath Plugin</b><font size="-1">
 						<br>
 						Version: 0.3
 						<br>
 						Release Date: July 13, 2005</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="32%" valign="top">
 					<p>
 					ShortestPath is a plugin for Cytoscape 2.1 to show the shortest path
 between 2 selected nodes in the current network.
@@ -718,27 +703,25 @@ The plugin API makes possible to use its functionality from another plugin.
 					<p>
 						Released by: Marcio Rosa da Silva
 					</p>
-				</td>
-				<td width="20%" valign="top">
-				Verified to work in 2.1, 2.2.
-				</td>
-				<td width="20%" valign="top">
-					[<a href="http://csresources.sourceforge.net/ShortestPath/">Web Site and Download</a>]
-				</td>
+			  </td>
+				<td width="24%" valign="top">
+				Verified to work in 2.1, 2.2.				</td>
+				<td width="18%" valign="top">
+					[<a href="http://csresources.sourceforge.net/ShortestPath/">Web Site and Download</a>]				</td>
 			</tr>
 
   		<tr> <td colspan="4"> <hr> </td> </tr>
 
 			<tr>
-				<td width="20%" valign="top">
+				<td width="26%" valign="top">
 					<b>StructureViz Plugin</b><font size="-1">
 						<br> 
 						Version: 0.9
 						<br>
 						Release Date: January 25, 2007
 						</font>
-				</td>
-				<td width="40%" valign="top">
+			  </td>
+				<td width="32%" valign="top">
 				<p>		
 This plugin links the visualization of biological (and biological
 relationships expressed as networks) provided by Cytoscape with the
@@ -762,13 +745,11 @@ menu, Functional Residues). Users can also take advantage of Chimera's
 structural alignment capabilities by using the "Align" command.
 				<p>
 					Released by: John "Scooter" Morris, <a href="http://www.rbvi.ucsf.edu">RBVI</a>, UCSF
-				</td>
-				<td width="20%" valign="top">
-					Verified to work in 2.4
-				</td>
-				<td width="20%" valign="top">
-					[<a href="http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz/">Website and Download</a>]
-				</td>
+			  </td>
+				<td width="24%" valign="top">
+					Verified to work in 2.4				</td>
+				<td width="18%" valign="top">
+					[<a href="http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz/">Website and Download</a>]				</td>
 			</tr>
   
 
@@ -779,18 +760,18 @@ structural alignment capabilities by using the "Align" command.
 <div id="indent">
 <p><b><big><a name="IO_PLUGINS">Current Cytoscape 2.x Network and Attribute I/O Plugins</a></big></b></p>
 </div>
-	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%" bgcolor="#ebebff">
+	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="95%" bgcolor="#ebebff">
 
 		<tbody>
 			<tr>
-				<td width="20%" valign="top">
+				<td width="25%" valign="top">
 					<b>BioNetBuilder Plugin</b> <font size="-1">
 						<br>
 						Version: 1.0 
 						<br> 
 						Release Date: September 25, 2006</font>
 				</td>
-				<td width="40%" valign="top">
+				<td width="45%" valign="top">
 				<p>
 				BioNetBuilder is an open-source client-server Cytoscape plugin that
 				offers a user-friendly interface to create biological networks
@@ -806,10 +787,10 @@ structural alignment capabilities by using the "Align" command.
 				and Richard Bonneau, <a href="http://homepages.nyu.edu/%7erb133/">NYU Bonneau Lab</a>.
 				</p>
 				</td>
-				<td width="20%" valign="top">
+				<td width="15%" valign="top">
 					Verified to work in 2.3, 2.3.1	
 				</td>
-				<td width="20%" valign="top">
+				<td width="15%" valign="top">
 					[<a href="http://err.bio.nyu.edu/cytoscape/bionetbuilder/">Project Website</a>]
 				</td>
 			</tr>
@@ -1163,18 +1144,18 @@ for downloading and installation information.
 		<big><b><a name="NET_INFERENCE_PLUGINS">Current Cytoscape 2.x Network Inference Plugins</a></b></big>
 	</p>
 	</div>
-	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%" bgcolor="#ebebff">
+	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="95%" bgcolor="#ebebff">
 
 		<tbody>
 			<tr>
-				<td width="20%" valign="top">
+				<td width="25%" valign="top">
 					<b>Agilent Literature Search</b><font size="-1">
 						<br>
 						Version: 2.3
 						<br>
 						Release Date: June 27, 2006</font>
 				</td>
-				<td width="40%" valign="top">
+				<td width="45%" valign="top">
 
 					<p><em>Agilent Literature Search</em> is a meta-search tool for automatically querying multiple text-based search engines in order to aid biologists faced with the daunting task of manually searching and extracting associations among genes/proteins of interest.  Computationally extracted associations are grouped into a network that is viewed and manipulated in Cytoscape.
 					<p>The meta-search engine peforms Information Retrieval (IR) and Knowledge Extraction (KE),
@@ -1201,14 +1182,14 @@ The networks can be viewed and manipulated in Cytoscape.
 						<a href="http://www.agilent.com/">Agilent Technologies</a>.
 					</p>
 				</td>
-				<td width="20%" valign="top">
+				<td width="15%" valign="top">
 				Verified to work in 2.4 (Agilent Literature Search 2.4).
 				Verified to work in 2.3 (Agilent Literature Search 2.3).
 				<br>
 				Verified to work in 2.1, 2.2 (Agilent Literature Search 2.0).
 				 
 				</td>
-				<td width="20%" valign="top">
+				<td width="15%" valign="top">
 					<br>
 				[<a href="http://www.cytoscape.org/download_agilent_literature_search_v2.4.php?file=litsearch_v2.4">Download Agilent Literature Search version 2.4 for Cytoscape v2.4 </a>]
 					<br>
@@ -1293,27 +1274,27 @@ processing technique with supercomputing center resources.
 		<big><b><a name="FUNC_ENRICHMENT_PLUGINS">Current Cytoscape 2.x Functional Enrichment Plugins</a></b></big>
 	</p>
 	</div>
-	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%" bgcolor="#ebebff">
+	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="95%" bgcolor="#ebebff">
 
 		<tbody>
 			<tr>
-				<td width="20%" valign="top">
+				<td width="25%" valign="top">
 					<b>BiNGO Plugin</b> <font size="-1">
 						<br>
 						Version: 1
 						<br>
 						Release Date: May 2, 2005</font>
 				</td>
-				<td width="40%" valign="top">
+				<td width="45%" valign="top">
 					BiNGO is a Cytoscape 2.1 plugin to determine which Gene Ontology (GO) categories are statistically over-represented in a set of genes. BiNGO maps the predominant functional themes of a given gene set on the GO hierarchy, and outputs this mapping as a Cytoscape graph. A gene set can either be selected from a Cytoscape network or compiled from other sources (e.g. a list of genes that are significantly upregulated in a microarray experiment).<BR>
 					<p>
 						Released by: <a href="http://www.psb.ugent.be/cbd/">Computational Biology Division</a>, Dept. of Plant Systems Biology, Flanders Interuniversitary Institute for Biotechnology (VIB)
 					</p>
 				</td>
-				<td width="20%" valign="top">
+				<td width="15%" valign="top">
 				Verified to work in 2.1, 2.2.
 				</td>
-				<td width="20%" valign="top">
+				<td width="15%" valign="top">
 					[<a href="http://www.psb.ugent.be/cbd/papers/BiNGO/">Download</a>]
 				</td>
 			</tr>
@@ -1394,18 +1375,18 @@ processing technique with supercomputing center resources.
 		<big><b><a name="SCRIPTING_PLUGINS">Current Cytoscape 2.x Communication/Scripting Plugins</a></b></big>
 	</p>
 	</div>
-	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%" bgcolor="#ebebff">
+	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="95%" bgcolor="#ebebff">
 
 		<tbody>
 			<tr>
-				<td width="20%" valign="top">
+				<td width="25%" valign="top">
 					<b>CyGoose Plugin</b>
 					<br><font size="-1">
 					Version: 2.4.1
 					<br>
 					Release Date: February 13, 2007</font>
 				</td>
-				<td width="40%" valign="top">
+				<td width="45%" valign="top">
 				<p>
 				The CyGoose Cytoscape Plugin gives any network in Cytoscape full access
 				to <a href="http://gaggle.systemsbiology.org/">the Gaggle</a>.  The Gaggle is a tool
@@ -1424,10 +1405,10 @@ processing technique with supercomputing center resources.
 				Released by: Sarah Killcoyne, <a href="http://systemsbiology.org">Institute for Systems Biology</a>, John Lin, Kevin Drew and Richard Bonneau, <a href="http://homepages.nyu.edu/%7erb133/">NYU Bonneau Lab</a>.
 				</p>
 		</td>
-		<td width="20%" valign="top">
+		<td width="15%" valign="top">
 				 Verified to work in 2.3.2, 2.4
 			  </td>
-		<td width="20%" valign="top">
+		<td width="15%" valign="top">
 			[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.4/plugins/CyGoose_2.4.1.jar">Download Jar</a>]
 			<br>
 		</td>
