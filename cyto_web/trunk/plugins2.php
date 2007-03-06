@@ -86,10 +86,6 @@ Cytoscape LGPL.
 						data - protein function - for example. Cerebral scales well to
 						networks containing thousands of nodes.
 					</P>
-					<P>	Another plugin named DomainWebLinks
-						provides context-dependent web links to Pfam, InterDom, and 3did
-						for DomainNetworkBuilder.
-					</P>
 					<P>
 						Reference:<BR>
 						Aaron Barsky, Jennifer L. Gardy, Robert E.W. Hancock and Tamara Munzner<br>
@@ -361,6 +357,9 @@ Toronto, Canada
 			<p>
 				Released by: <a href="http://www.pasteur.fr/recherche/unites/Biolsys/index.htm">Schwikowski Group</a>, 		
 				Institut Pasteur
+			</p>
+			<p>
+				<a href="http://www.pasteur.fr/recherche/unites/Biolsys/GOlorize/index.htm">Project Website</a>
 			</p>
                 Licensed under GNU Public License.
 		</td>
