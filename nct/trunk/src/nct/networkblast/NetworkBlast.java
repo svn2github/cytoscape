@@ -214,7 +214,7 @@ public class NetworkBlast {
 				print("complexes results: " );
 				for (int i = 0; i < resultComplexes.size(); i++) 
 					print("complex " + i + ": " + resultComplexes.get(i).toString());
-					/*
+
 				if (FILEOUTPUT) {
 					
 					String zname = outFile; 
@@ -222,21 +222,21 @@ public class NetworkBlast {
 						zname = zname + "_" + count;
 	
 					print("writing results to file: " + zname + ".zip" );
-					ZIPSIFWriter<String,Double> zipper = new ZIPSIFWriter<String,Double>(zname);
+					ZIPSIFWriter<CompatibilityNode<String,Double>,Double> zipper = new ZIPSIFWriter<CompatibilityNode<String,Double>,Double>(zname);
 					int ct = 0;		
-					for ( Graph<String,Double> p : resultPaths )
+					for ( Graph<CompatibilityNode<String,Double>,Double> p : resultPaths )
 						zipper.add(p, "path_" + ct++);
 
 					ct = 0;		
-					for ( Graph<String,Double> p : resultComplexes )
+					for ( Graph<CompatibilityNode<String,Double>,Double> p : resultComplexes )
 						zipper.add(p, "complex_" + ct++);
 
 					zipper.add(compatGraph,"compat_graph");
-					zipper.add(homologyGraph,"homology_graph");
 
-					ct = 0;
-					for ( Graph<String,Double> spec : inputSpecies )
-						zipper.add( spec, "interaction_graph_" + ct++ );
+					//zipper.add(homologyGraph,"homology_graph");
+					//ct = 0;
+					//for ( Graph<String,Double> spec : inputSpecies )
+					//	zipper.add( spec, "interaction_graph_" + ct++ );
 
 					zipper.add(networkBlastRecord.toString(),"networkblast_record.txt");
 					networkBlastRecord.delete(0,networkBlastRecord.length()-1);
@@ -244,7 +244,7 @@ public class NetworkBlast {
 
 					zipper.write();
 				}
-				*/
+
 
 				count++;	
 				if ( numSimulations > 0 && count <= numSimulations ) {
@@ -283,7 +283,7 @@ public class NetworkBlast {
 
 		options.addOption(OptionBuilder
 				.withLongOpt("pathsize")
-				.withDescription( "Length of path to search for.")
+				.withDescription( "Length of path to search for (" + defaultPathSize +").")
 				.withValueSeparator(' ')
 				.withArgName("integer")
 				.hasArg()
