@@ -162,9 +162,12 @@ public class AlignedResults {
 
 				int xOffset = i * (separation * (maxLevel + 3));
 	
-				if ( j == 0 ) {
+				if ( j == 0 ) {                    
 					g2.setColor(Color.black);
-					g2.drawString(args[i], xOffset, separation);
+                    // create a title
+                    // alignedresults appended at end list; so title is inverse of args[]
+                    String title = args[alignedResults.size() - (i+1)]; 
+					g2.drawString(title, xOffset, separation);
 				}
 
 				TrackedEvent t = alignedResults.get(i).get(j);
