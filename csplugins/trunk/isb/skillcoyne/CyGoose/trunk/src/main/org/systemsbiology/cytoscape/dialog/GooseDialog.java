@@ -121,18 +121,16 @@ public class GooseDialog extends JPanel
 		
 		registerButton = new JButton("Register");
 		registerButton.setToolTipText("Register with the Boss"); // currently not in use
-		// DisplayControl.add(registerButton);
+		ButtonPanel.add(registerButton);
 		
 		// update button to re-populate boss and all active geese
 		updateButton = new JButton("Update");
 		updateButton.setToolTipText("Update goose list");
-		//DisplayControl.add(updateButton);
 		ButtonPanel.add(updateButton);
 		
 		// Show selected goose
 		showButton = new JButton(" Show ");
 		showButton.setToolTipText("Show selected goose");
-		//DisplayControl.add(showButton);
 		ButtonPanel.add(showButton);
 
 		// Hide selected goose
