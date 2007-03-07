@@ -1399,8 +1399,9 @@ processing technique with supercomputing center resources.
 					<li> Each network within Cytoscape is recognized as a separate goose in the Gaggle Boss
 					<li> Automatic creation of a Visual Style when handling movies to give users a starting point to visualize network change 
 				</ul>
-					
-				<p>
+				<b>Known issue:</b> This goose does not work with a local install of Cytoscape on a Windows machine.  It will work with Mac or Linux and as a webstart on Mac/Linux/Windows.  We are 
+working on this and will release a fix as soon as we can.				
+<p>
 				Released by: Sarah Killcoyne, <a href="http://systemsbiology.org">Institute for Systems Biology</a>, John Lin, Kevin Drew and Richard Bonneau, <a href="http://homepages.nyu.edu/%7erb133/">NYU Bonneau Lab</a>.
 				</p>
 		</td>
