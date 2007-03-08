@@ -534,6 +534,26 @@ public class CyGroup
 	}
 
 	/**
+	 * Add an outer edge to the map.  Some viewers may need to do this
+	 * if they add and remove edges, for example.
+	 *
+	 * @param edge the CyEdge to add to the outer edge map
+	 */
+	public void addOuterEdge(CyEdge edge) {
+		outerEdgeMap.put(edge,edge);
+	}
+
+	/**
+	 * Add an innter edge to the map.  Some viewers may need to do this
+	 * if they add and remove edges, for example.
+	 *
+	 * @param edge the CyEdge to add to the innter edge map
+	 */
+	public void addInnterEdge(CyEdge edge) {
+		innerEdgeMap.put(edge,edge);
+	}
+
+	/**
 	 * Determine if a node is a member of this group
 	 *
 	 * @param node the CyNode to test
