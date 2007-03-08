@@ -8,6 +8,8 @@
         <!-- have as many of these as you like -->
         <plugin>
                 <name> foobar </name>
+        				<author> me </author>
+        				<institution> SomeWhere U </institution>
                 <description> blah </description>
                 <pluginVersion> 1.0 </pluginVersion>
                 <cytoscapeVersion> 2.5 </cytoscapeVersion>
