@@ -1,0 +1,18 @@
+<!-- Example xml file describing plugins and where to d/l them -->
+<project>
+				<!-- global info regarding the project these plugins come from -->
+				<name> Cytoscape Plugins </name>
+        <description> Test </description>
+        <url> http://cytoscape.org/plugin-inquiry-url </url>
+
+        <!-- have as many of these as you like -->
+        <plugin>
+                <name> foobar </name>
+                <description> blah </description>
+                <pluginVersion> 1.0 </pluginVersion>
+                <cytoscapeVersion> 2.5 </cytoscapeVersion>
+        				<filetype> jar </filetype>
+                <url> http://url/to/download/jar-or-zip-file.xxx </url>
+        </plugin>
+
+</project>
