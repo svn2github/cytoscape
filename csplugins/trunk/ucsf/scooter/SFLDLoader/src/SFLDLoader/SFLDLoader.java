@@ -65,7 +65,7 @@ public class SFLDLoader extends CytoscapePlugin {
 	final static float VERSION = 0.1f;
 	static JDialog sfldQueryDialog = null;
 	static List superFamilies = null;
-	public final String URLBase = "http://sfldtest.rbvi.ucsf.edu/cgi-bin/SFLDvm.py";
+	public final String URLBase = "http://sfld.rbvi.ucsf.edu/cgi-bin/SFLDvm.py";
 	static JMenuItem loadMenu = null;
 
   /**
@@ -160,7 +160,7 @@ public class SFLDLoader extends CytoscapePlugin {
 			Arrays.sort(sortable);
 			superFamilies = Arrays.asList(sortable);
 			System.out.println("SFLD enumeration complete");
-			loadMenu.setLabel("Browse SFLD...");
+			loadMenu.setText("Browse SFLD...");
 			loadMenu.setEnabled(true);
 		}
 	}
