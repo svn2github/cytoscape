@@ -33,8 +33,6 @@
 <a href="http://www.cs.umd.edu/hcil/piccolo/">Piccolo</a>
 provides the graphics engine used by Cytoscape, has a Zoomable User Interface(ZUI) <br>
 and provides a powerful framework for user interaction and data display.
-<br><br>
-
 <P><big><b>Software</b></big></P>
 <ul>
 	<li><a href="http://www.genmapp.org/">GenMAPP</a>
@@ -74,6 +72,11 @@ and provides a powerful framework for user interaction and data display.
 	<li><a href="http://grants1.nih.gov/grants/index.cfm">NIH NIGMS grant 1 R01 GM070743-01</a>
 	<li><a href="http://www.unilever.com/home/">Unilever</a>
 	<li><a href="http://www.nsf.gov/">National Science Foundation (NSF)</a>
+</ul>
+
+<p><big><b>Documentation in Other Languages</b></big></p>
+<ul>
+	<li><a href="http://cydoc.sourceforge.jp/">CyDoc - Cytoscape Japanese Documentation Project</a>
 </ul>
 <br><br>
     </div>
