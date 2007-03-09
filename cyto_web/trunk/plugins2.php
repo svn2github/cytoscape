@@ -483,9 +483,9 @@ Toronto, Canada
 		<td width="26%" valign="top">
 			<b>Metabolica Plugin</b>
 			<br>
-			<font size="-1">Version: 1.0
+			<font size="-1">Version: 1.2
 				<br>
-				Release Date: Dec. 8, 2005</font>
+				Release Date: Feb. 22, 2007</font>
 		</td>
 		<td width="32%" valign="top">
 			Metabolica plugin find network motifs of arbitrary length in the current network.
@@ -493,7 +493,7 @@ Toronto, Canada
 			Released by: Michele Petterlini, Giovanni Scardoni.
 		</td>
 		<td width="24%" valign="top">
-				 Verified to work in 2.2.		</td>
+				 Verified to work in 2.4.</td>
 		<td width="18%" valign="top">
 			[<a href="http://www.petterlini.it/metabolica/">Download Plugin</a>]
 			<br>
