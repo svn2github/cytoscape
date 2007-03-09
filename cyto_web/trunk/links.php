@@ -43,10 +43,8 @@ and provides a powerful framework for user interaction and data display.
 </ul>
 
 <p><big><b>Network Databases</b></big></p>
-<ul>
-	<li><a href="http://www.pathguide.org/">Pathguide (pathway resource list)</a>
-	<li><a href="http://bind.ca">Biomolecular Interaction Network Database (BIND)</a>
-	<li><a href="http://www.cbio.mskcc.org/prl">BioPAX Directory</a>
+<ul><li><a href="http://bind.ca">Biomolecular Interaction Network Database (BIND)</a>
+	<li><a href="http://www.cbio.mskcc.org/prl">BioPAX Directory</a> (Pathguide)
 </ul>
 
 <p><big><b>Data Exchange Formats</b></big></p>
