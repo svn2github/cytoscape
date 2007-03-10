@@ -60,8 +60,45 @@ public class PluginManager
 			showError("Failed to get plugin information from the url '" + Url + "'"); 
 			E.printStackTrace();
 			}
-		
 		return Plugins;
+		}
+
+	public Map<String, List<PluginInfo>> getPluginsByCategory()
+		{
+		return getPluginsByCategory(DefaultUrl);
+		}
+	
+	public Map<String, List<PluginInfo>> getPluginsByCategory(String Url)
+		{
+		HashMap<String, List<PluginInfo>> Categories = new HashMap<String, List<PluginInfo>>();
+		
+		Iterator<PluginInfo> pI = inquire(Url).iterator();
+		while(pI.hasNext())
+			{
+			PluginInfo Info = pI.next();
+			String CategoryName = Info.getCategory();
+			if (CategoryName == null || CategoryName.length() <= 0)
+				CategoryName = "Uncategorized";
+
+			if (Categories.containsKey(CategoryName)) // add to existing list
+				Categories.get(CategoryName).add(Info);
+			else // create new list
+				{
+				List<PluginInfo> pList = new ArrayList<PluginInfo>();
+				pList.add(Info);
+				Categories.put(CategoryName, pList);
+				}
+			}
+		return Categories;
+		}
+
+	/*
+	 * Aborts install of jar/zip files
+	 */
+	public void abortInstall()
+		{ 
+		HttpUtils.STOP = true;
+		UnzipUtil.STOP = true;
 		}
 	
 	/**
@@ -71,6 +108,7 @@ public class PluginManager
 	 */
 	public boolean install(PluginInfo obj)
 		{ 
+		System.out.println("INSTALLING " + obj.getName());
 		/* currently installs jar and zip files only 
 		 * If jar file just drop it in the plugin dir
 		 * If zip file check to see that it's set up with directories:
@@ -85,18 +123,17 @@ public class PluginManager
 			case (PluginInfo.JAR):
 				// write jar directly to the plugins dir
 				try
-				{
-				java.io.File Installed = HttpUtils.downloadFile(obj.getUrl(), obj.getName()+".jar", "plugins/");
-				obj.addFileName(Installed.getAbsolutePath());
-				installOk = true;
-				}
-			catch (java.io.IOException E)
-				{
-				showError("Error installing plugin '" + obj.getName() + "' from " + obj.getUrl());
-				E.printStackTrace();
-				}
-				
-			break;
+					{
+					java.io.File Installed = HttpUtils.downloadFile(obj.getUrl(), obj.getName()+".jar", "plugins/");
+					obj.addFileName(Installed.getAbsolutePath());
+					if (!HttpUtils.STOP) installOk = true;
+					}
+				catch (java.io.IOException E)
+					{
+					showError("Error installing plugin '" + obj.getName() + "' from " + obj.getUrl());
+					E.printStackTrace();
+					}
+				break;
 			case (PluginInfo.ZIP):
 				try
 					{		
@@ -104,10 +141,11 @@ public class PluginManager
 						{
 						List<String> InstalledFiles = UnzipUtil.unzip( HttpUtils.getInputStream(obj.getUrl()));
 						obj.setFileList(InstalledFiles);
-						installOk = true;
+						if(!UnzipUtil.STOP) installOk = true;
+						else this.delete(obj);
 						}
 					else
-						{ showError( "Zip file " + obj.getName() + " did not contain a plugin directory with a jar file."); }
+						showError( "Zip file " + obj.getName() + " did not contain a plugin directory with a jar file."); 
 					}
 				catch (java.io.IOException E)
 					{
