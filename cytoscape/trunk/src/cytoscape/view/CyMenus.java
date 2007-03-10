@@ -41,6 +41,7 @@ package cytoscape.view;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
+import cytoscape.actions.PluginManagerAction;
 import cytoscape.actions.AlphabeticalSelectionAction;
 import cytoscape.actions.BendSelectedEdgesAction;
 import cytoscape.actions.BirdsEyeViewAction;
@@ -149,7 +150,7 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu newSubMenu;
 	JMenu newSubMenu2;
 	JMenu editMenu;
-
+	
 	// JMenuItem undoMenuItem, redoMenuItem;
 	// AJK 06/07/06: BEGIN
 	// more deletion functionality to the editor
@@ -753,6 +754,7 @@ public class CyMenus implements GraphViewChangeListener {
 		// fill the New submenu
 		// newSubMenu2.add("Empty Network"); // This should be added by the
 		// Editor
+		addAction(new PluginManagerAction());
 		addAction(new NewSessionAction());
 		addAction(new NewWindowSelectedNodesOnlyAction());
 		addAction(new NewWindowSelectedNodesEdgesAction());
