@@ -6,6 +6,7 @@ package cytoscape.plugin;
 import java.util.List;
 import java.util.ArrayList;
 
+
 /**
  * @author skillcoy Object describes a plugin
  */
@@ -13,21 +14,21 @@ public class PluginInfo
 	{
 	public static final int JAR = 1;
 	public static final int ZIP = 2;
-
 	private String Name;
-	private String Author;
-	private String Institution;
+	private List<AuthorInfo> Authors;
 	private String Description;
 	private String PluginVersion;
 	private String CytoscapeVersion;
 	private String Url;
 	private String ProjectUrl;
+	private String Category;
 	private List<String> PluginFiles;
 	private int FileType;
 
 	public PluginInfo()
 		{
 		PluginFiles = new ArrayList<String>();
+		Authors = new ArrayList<AuthorInfo>();
 		}
 
 	// TODO These maybe should check to be sure nothing is being set to null
@@ -42,16 +43,6 @@ public class PluginInfo
 		this.Description = arg;
 		}
 
-	public void setAuthor(String arg)
-		{
-		this.Author = arg;
-		}
-	
-	public void setInstitution(String arg)
-		{
-		this.Institution = arg;
-		}
-	
 	public void setPluginVersion(String arg)
 		{
 		this.PluginVersion = arg;
@@ -78,13 +69,23 @@ public class PluginInfo
 		}
 
 	public void setFileList(List<String> list)
-		{ 
-		this.PluginFiles = list; 
+		{
+		this.PluginFiles = list;
+		}
+
+	public void setCategory(String arg)
+		{
+		this.Category = arg;
 		}
 	
 	public void addFileName(String arg)
 		{
 		this.PluginFiles.add(arg);
+		}
+
+	public void addAuthor(String Name, String Institution)
+		{
+		Authors.add(new AuthorInfo(Name, Institution));
 		}
 
 	/* GET */
@@ -98,16 +99,11 @@ public class PluginInfo
 		return this.Name;
 		}
 
-	public String getAuthor()
-		{
-		return this.Author;
+	public List<AuthorInfo> getAuthors()
+		{ 
+		return this.Authors;
 		}
 	
-	public String getInstitution()
-		{
-		return this.Institution;
-		}
-
 	public String getDescription()
 		{
 		return this.Description;
@@ -124,20 +120,25 @@ public class PluginInfo
 		}
 
 	/**
-   * @return Url to download plugin from
-   */
+	 * @return Url to download plugin from
+	 */
 	public String getUrl()
 		{
 		return this.Url;
 		}
 
 	/**
-   * @return Url that returns the document of available plugins this plugin came
-   *         from
-   */
+	 * @return Url that returns the document of available plugins this plugin came
+	 *         from
+	 */
 	public String getProjectUrl()
 		{
 		return this.ProjectUrl;
+		}
+	
+	public String getCategory()
+		{
+		return this.Category;
 		}
 
 	public List<String> getFileList()
@@ -145,4 +146,24 @@ public class PluginInfo
 		return this.PluginFiles;
 		}
 
+	public String toString()
+		{ return getName(); }
+	
+	public class AuthorInfo
+		{
+		private String AuthName;
+		private String InstName;
+
+		public AuthorInfo(String Name, String Institution)
+			{
+			this.AuthName = Name;
+			this.InstName = Institution;
+			}
+
+		public String getAuthor()
+			{ return this.AuthName; }
+
+		public String getInstitution()
+			{ return this.InstName; }
+		}
 	}
