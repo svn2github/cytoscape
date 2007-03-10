@@ -128,6 +128,8 @@ public class NamedSelection extends CytoscapePlugin
 		// Add our interface to CytoPanel 1
 		groupPanel = new GroupPanel(this);
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Groups", groupPanel);
+		// We want to listen for graph perspective changes (primarily SELECT/UNSELECT)
+		Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(groupPanel);
 
 		// Register with CyGroup
 		CyGroup.registerGroupViewer(this);
@@ -178,6 +180,7 @@ public class NamedSelection extends CytoscapePlugin
 	public void propertyChange (PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(groupPanel);
 		}
 	}
 
