@@ -1150,9 +1150,9 @@ for downloading and installation information.
 				<td width="25%" valign="top">
 					<b>Agilent Literature Search</b><font size="-1">
 						<br>
-						Version: 2.3
+						Version: 2.4
 						<br>
-						Release Date: June 27, 2006</font>
+						Release Date: March 9, 2007</font>
 				</td>
 				<td width="45%" valign="top">
 
@@ -1170,6 +1170,7 @@ The networks can be viewed and manipulated in Cytoscape.
 <p>Enhancements in version 2.4 include
 <ul>
 <li> Extend a Cytoscape network with associations extracted from the literature.
+<li> Highlight search terms in the Cytoscape network.
 </ul>
 
 
