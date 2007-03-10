@@ -18,4 +18,4 @@ proxy.server.port=
 proxy.server.type=
 cytoscape.version.number=@version@
 exportTextAsShape=true
-defaultPluginUrl=http://resonance:8080/test/plugins.xml
+defaultPluginUrl=
