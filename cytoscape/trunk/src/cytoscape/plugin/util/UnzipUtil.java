@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
  */
 public class UnzipUtil
 	{
+	public static boolean STOP = false;
+	
 	private static void print(String S)
 		{
 		System.out.println(S);
@@ -37,7 +39,7 @@ public class UnzipUtil
 
 		ZipInputStream zis = new ZipInputStream(is);
 		ZipEntry entry;
-		while ((entry = zis.getNextEntry()) != null)
+		while ((entry = zis.getNextEntry()) != null && !STOP)
 			{
 			int BUFFER = 2048;
 			File ZipFile = new File(entry.getName());
@@ -76,7 +78,7 @@ public class UnzipUtil
 		
 		ZipInputStream zis = new ZipInputStream(is);
 		ZipEntry entry; 
-		while (( entry = zis.getNextEntry()) != null)
+		while (( entry = zis.getNextEntry()) != null && !STOP)
 			{
 			System.out.println("  * Matching " + entry.getName() + " " + p.pattern());
 			Matcher m = p.matcher(entry.getName());

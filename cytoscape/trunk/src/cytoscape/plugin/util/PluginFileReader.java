@@ -50,7 +50,8 @@ public class PluginFileReader
 		{
 		List<PluginInfo> Plugins = new ArrayList<PluginInfo>();
 		
-		Iterator<Element> pluginI = Doc.getRootElement().getChildren("plugin").iterator();
+		Iterator<Element> pluginI = Doc.getRootElement().getChild("pluginlist").
+			getChildren("plugin").iterator();
 		while(pluginI.hasNext())
 			{
 			Element CurrentPlugin = pluginI.next();
@@ -62,24 +63,27 @@ public class PluginFileReader
 			Info.setCytoscapeVersion( CurrentPlugin.getChild("cytoscapeVersion").getTextTrim() );
 			Info.setUrl( CurrentPlugin.getChild("url").getTextTrim() );
 			Info.setProjectUrl( getProjectUrl() );
-			Info.setAuthor( CurrentPlugin.getChild("author").getTextTrim() );
-			Info.setInstitution( CurrentPlugin.getChild("institution").getTextTrim() );
 			
 			String Type = CurrentPlugin.getChild("filetype").getTextTrim();
 			if (Type.equalsIgnoreCase("jar"))
-				{
 				Info.setFiletype( PluginInfo.JAR );
-				}
 			else if (Type.equalsIgnoreCase("zip"))
-				{
 				Info.setFiletype( PluginInfo.ZIP );
-				}
 			else
 				{
 				// unknown type error and move on
 				System.err.println("Unknown plugin file type '" + Type + " skipping");
 				continue;
 				}
+
+			Iterator<Element> authI = CurrentPlugin.getChild("authorlist").getChildren("authors").iterator();
+			while(authI.hasNext())
+				{
+				Element CurrentAuthor = authI.next();
+				Info.addAuthor( CurrentAuthor.getChild("name").getTextTrim(), 
+												CurrentAuthor.getChild("institution").getTextTrim() );
+				}
+			
 			Plugins.add(Info);
 			}
 		

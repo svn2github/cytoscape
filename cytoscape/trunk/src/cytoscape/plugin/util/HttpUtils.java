@@ -15,7 +15,8 @@ import java.io.*;
  */
 public class HttpUtils
 	{
-
+	public static boolean STOP = false;
+	
 	private static HttpURLConnection buildConnection(URL url)
 			throws java.io.IOException
 		{
@@ -34,18 +35,19 @@ public class HttpUtils
 		return Connection.getInputStream();
 		}
 	
-	public static String download(String url) throws java.io.IOException
-		{
-		InputStream is = getInputStream(url);
-		
-		StringBuffer buffer = new StringBuffer();
-		int c;
-		while ((c = is.read()) != -1)
-			{
-			buffer.append((char) c);
-			}
-		return buffer.toString();
-		}
+	
+//	public static String download(String url) throws java.io.IOException
+//		{
+//		InputStream is = getInputStream(url);
+//		
+//		StringBuffer buffer = new StringBuffer();
+//		int c;
+//		while ((c = is.read()) != -1)
+//			{
+//			buffer.append((char) c);
+//			}
+//		return buffer.toString();
+//		}
 
 	public static File downloadFile(String url, String fileName, String Dir) throws java.io.IOException
 		{
@@ -55,22 +57,26 @@ public class HttpUtils
 		java.util.List<Byte> FileBytes = new java.util.ArrayList<Byte>();
 		
 		byte[] buffer = new byte[1];
-		while ( (is.read(buffer)) != -1)
+		while ( (is.read(buffer)) != -1 && !STOP)
 			{
 			FileBytes.add( buffer[0] );
 			}
 
 		System.out.println("total bytes: " + FileBytes.size());
-		FileOutputStream os = new FileOutputStream( new File(Dir+fileName));
+		File Download = new File(Dir + fileName);
+		FileOutputStream os = new FileOutputStream( Download );
 		
 		for (int i=0; i<FileBytes.size(); i++)
 			{
-			os.write( new byte[] {FileBytes.get(i)});
+			if (!STOP) os.write( new byte[] {FileBytes.get(i)});
+			else break;
 			}
 		os.flush();
 		os.close();
 		
-		return null;
+		if (STOP) Download.delete();
+		
+		return Download;
 		}
 	
 	}
