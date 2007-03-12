@@ -22,11 +22,32 @@ public class PluginManager
 	{
 	private String DefaultUrl;
 	private String CyVersion;
+	private PluginTracker Tracker;
 	
 	public PluginManager() 
 		{
 		DefaultUrl = CytoscapeInit.getProperties().getProperty("defaultPluginUrl");
-		CyVersion = CytoscapeVersion.version;
+		init();
+		}
+	
+	// is this a good idea?
+	public PluginManager(String Url)
+		{
+		DefaultUrl = Url;
+		init();
+		}
+	
+	private void init()
+		{
+		try
+			{
+			Tracker = new PluginTracker();
+			CyVersion = CytoscapeVersion.version;
+			}
+		catch (java.io.IOException E)
+			{
+			E.printStackTrace(); // TODO do soething useful with error
+			}
 		}
 	
 	/**
@@ -43,6 +64,16 @@ public class PluginManager
 	public List<PluginInfo> inquire()
 		{
 		return inquire(DefaultUrl);
+		}
+	
+	/**
+	 * NOT SURE THIS IS REALLY NECESSARY!!
+	 * 
+	 * @return PluginTracker object
+	 */
+	public PluginTracker getPluginTracker() 
+		{
+		return this.Tracker;
 		}
 	
 	/**
@@ -194,6 +225,20 @@ public class PluginManager
 		return deleteOk;
 		}
 	
+	public void register(CytoscapePlugin Plugin)
+		{
+		if (Plugin.getPluginInfoObject() == null)
+			{
+			System.out.println("*** Plugin " + Plugin.getClass().getName() + " does not implement a plugin info object");
+			}
+		else
+			{
+			// registers the plugin with the tracker object?
+			Tracker.addInstalledPlugin( Plugin.getPluginInfoObject(), true);
+			}
+		}
+	
+	
 	/**
 	 * 
 	 * @return List containing PluginInfo objects for each installed
@@ -201,7 +246,7 @@ public class PluginManager
 	 */
 	public List<PluginInfo> listCurrentlyInstalled()
 		{
-		return PluginTracker.getInstalledPlugins();
+		return this.Tracker.getInstalledPlugins();
 		}
 	
 	private void showError(String Msg)

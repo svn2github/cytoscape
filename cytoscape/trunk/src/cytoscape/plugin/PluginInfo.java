@@ -6,6 +6,8 @@ package cytoscape.plugin;
 import java.util.List;
 import java.util.ArrayList;
 
+import cytoscape.CytoscapeInit;
+
 
 /**
  * @author skillcoy Object describes a plugin
@@ -14,6 +16,8 @@ public class PluginInfo
 	{
 	public static final int JAR = 1;
 	public static final int ZIP = 2;
+	
+	private String PluginClassName;
 	private String Name;
 	private List<AuthorInfo> Authors;
 	private String Description;
@@ -29,8 +33,22 @@ public class PluginInfo
 		{
 		PluginFiles = new ArrayList<String>();
 		Authors = new ArrayList<AuthorInfo>();
+		init();
 		}
 
+	/*
+	 * Sets all the fields that are required to a default value in case it is not called
+	 */
+	private void init()
+		{
+		setName("Unknown");
+		setDescription("No description");
+		setPluginVersion("0.1");
+		setCytoscapeVersion( cytoscape.CytoscapeVersion.version );
+		setCategory("Uncategorized");
+		setProjectUrl(CytoscapeInit.getProperties().getProperty("defaultPluginUrl"));
+		}
+	
 	// TODO These maybe should check to be sure nothing is being set to null
 	/* SET */
 	public void setName(String arg)
@@ -38,6 +56,11 @@ public class PluginInfo
 		this.Name = arg;
 		}
 
+	public void setPluginClassName(String arg)
+		{
+		this.PluginClassName = arg;
+		}
+	
 	public void setDescription(String arg)
 		{
 		this.Description = arg;
@@ -99,6 +122,11 @@ public class PluginInfo
 		return this.Name;
 		}
 
+	public String getPluginClassName()
+		{
+		return this.PluginClassName;
+		}
+	
 	public List<AuthorInfo> getAuthors()
 		{ 
 		return this.Authors;
