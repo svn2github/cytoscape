@@ -63,6 +63,11 @@ public class PluginFileReader
 			Info.setCytoscapeVersion( CurrentPlugin.getChild("cytoscapeVersion").getTextTrim() );
 			Info.setUrl( CurrentPlugin.getChild("url").getTextTrim() );
 			Info.setProjectUrl( getProjectUrl() );
+
+			if (CurrentPlugin.getChild("category") != null)
+				Info.setCategory( CurrentPlugin.getChild("category").getTextTrim() );
+			else 
+				Info.setCategory("");
 			
 			String Type = CurrentPlugin.getChild("filetype").getTextTrim();
 			if (Type.equalsIgnoreCase("jar"))
