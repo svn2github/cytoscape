@@ -5,6 +5,8 @@ package cytoscape.plugin;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.CytoscapeVersion;
+
 import cytoscape.plugin.util.*;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -19,10 +21,12 @@ import javax.swing.JOptionPane;
 public class PluginManager
 	{
 	private String DefaultUrl;
+	private String CyVersion;
 	
 	public PluginManager() 
 		{
 		DefaultUrl = CytoscapeInit.getProperties().getProperty("defaultPluginUrl");
+		CyVersion = CytoscapeVersion.version;
 		}
 	
 	/**
@@ -63,11 +67,19 @@ public class PluginManager
 		return Plugins;
 		}
 
+	/**
+	 * @return A hashmap of plugins for the current version of Cytoscape listed by their category from the default url
+	 */
 	public Map<String, List<PluginInfo>> getPluginsByCategory()
 		{
 		return getPluginsByCategory(DefaultUrl);
 		}
 	
+	/**
+	 * 
+	 * @param Url
+	 * @return A hashmap of plugins for the current version of Cytoscape listed by their category
+	 */
 	public Map<String, List<PluginInfo>> getPluginsByCategory(String Url)
 		{
 		HashMap<String, List<PluginInfo>> Categories = new HashMap<String, List<PluginInfo>>();
@@ -76,6 +88,12 @@ public class PluginManager
 		while(pI.hasNext())
 			{
 			PluginInfo Info = pI.next();
+
+			System.out.println("CyVersion: " + CyVersion);
+			System.out.println("PluginCyVersion: "  + Info.getCytoscapeVersion());
+			// don't list anything not implemented to the current version
+			if (!Info.getCytoscapeVersion().equals(this.CyVersion)) continue;
+
 			String CategoryName = Info.getCategory();
 			if (CategoryName == null || CategoryName.length() <= 0)
 				CategoryName = "Uncategorized";
@@ -117,13 +135,13 @@ public class PluginManager
 		 * 		someDir/propsfile.props
 		 * etc...
 		 */
+		
 		boolean installOk = false;
 		switch (obj.getFileType())
 			{
 			case (PluginInfo.JAR):
-				// write jar directly to the plugins dir
 				try
-					{
+					{ // write jar directly to the plugins dir
 					java.io.File Installed = HttpUtils.downloadFile(obj.getUrl(), obj.getName()+".jar", "plugins/");
 					obj.addFileName(Installed.getAbsolutePath());
 					if (!HttpUtils.STOP) installOk = true;
@@ -136,7 +154,7 @@ public class PluginManager
 				break;
 			case (PluginInfo.ZIP):
 				try
-					{		
+					{	// unzip, this will put things in the directories set up within the zip file
 					if (UnzipUtil.zipContains(HttpUtils.getInputStream(obj.getUrl()), "plugins/\\w+\\.jar"))
 						{
 						List<String> InstalledFiles = UnzipUtil.unzip( HttpUtils.getInputStream(obj.getUrl()));
@@ -144,7 +162,7 @@ public class PluginManager
 						if(!UnzipUtil.STOP) installOk = true;
 						else this.delete(obj);
 						}
-					else
+					else // at least one jar file is required to be in the plugin directory in order to unzip correctly
 						showError( "Zip file " + obj.getName() + " did not contain a plugin directory with a jar file."); 
 					}
 				catch (java.io.IOException E)
