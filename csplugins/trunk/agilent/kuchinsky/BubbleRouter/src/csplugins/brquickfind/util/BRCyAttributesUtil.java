@@ -40,7 +40,6 @@ public class BRCyAttributesUtil {
             if (hasAttribute) {
                 //  Convert all types to String array.
                 byte type = attributes.getType(attributeKey);
-                System.out.println("Type: " + type + "(" + CyAttributes.TYPE_SIMPLE_LIST + ")");
                 if (type == CyAttributes.TYPE_BOOLEAN) {
                     terms[0] = attributes.getBooleanAttribute
                             (graphObjectId, attributeKey).toString();
