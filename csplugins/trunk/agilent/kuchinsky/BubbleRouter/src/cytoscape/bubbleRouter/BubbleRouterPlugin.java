@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
@@ -105,6 +106,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	public static String DELETE_REGION = "Delete Region";
 	public static String REROUTE_REGION = "Reroute Region";
+
+	// AJK: 02/20/07 delete all regions
+	public static String DELETE_ALL_REGIONS = "Delete All Regions";
+
 	public static String UNCROSS_EDGES = "Uncross Edges";
 
 	JPopupMenu menu = new JPopupMenu("Layout Region");
@@ -143,7 +148,17 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		menu.add(uncrossEdgesItem);
 		menu.setVisible(false);
 		// AJK: 12/01/06 END
-		
+
+		// AJK: 02/20/07 BEGIN
+		// Delete All Regions
+		JMenuItem deleteAllRegionsItem = new JMenuItem(
+				BubbleRouterPlugin.DELETE_ALL_REGIONS);
+		DeleteAllRegionsActionListener deleteAllRegionsListener = new DeleteAllRegionsActionListener();
+		deleteAllRegionsItem.addActionListener(deleteAllRegionsListener);
+		Cytoscape.getDesktop().getCyMenus().getLayoutMenu().add(
+				deleteAllRegionsItem);
+		// AJK: 02/20/07 END
+
 		// AJK: 12/28/06 save cursor for restoration after move/stretch
 		savedCursor = Cytoscape.getDesktop().getCursor();
 		
@@ -184,10 +199,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			starty = e.getY();
 			startPoint = e.getPoint();
 		
-			System.out.println ("setting cursor from: " +
-					Cytoscape.getDesktop().getCursor());
-			recursiveSetCursor(Cytoscape.getDesktop(), 
-					Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			System.out.println("setting cursor from: "
+					+ Cytoscape.getDesktop().getCursor());
+			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+					.getPredefinedCursor(Cursor.HAND_CURSOR));
 //			Cytoscape.getDesktop().setCursor(
 //			Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			
@@ -349,10 +364,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		if (pickedRegion != null)
 		{
 			pickedRegion.setSelected(true);
-			
-			boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion.getNodeViews(), pickedRegion.getBounds());
+
+			boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion
+					.getNodeViews(), pickedRegion.getBounds());
 		}
 	}
+
 	// AJK: 02/20/07 END
 
 	public void propertyChange(PropertyChangeEvent e) {
@@ -377,8 +394,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 
 		if (pickedRegion.getRegionAttributeValue() != null) {
-//			System.out.println("clicked on region: "
-//					+ pickedRegion.getRegionAttributeValue());
+			// System.out.println("clicked on region: "
+			// + pickedRegion.getRegionAttributeValue());
 
 			menu.setLabel(pickedRegion.getRegionAttributeValue().toString());
 
@@ -402,8 +419,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	// AJK: 12/24/06 BEGIN
 	// for stretching
 	private int calculateOnEdge(Point2D pt, LayoutRegion region) {
-		if (region == null)
-		{
+		if (region == null) {
 			return NOT_ON_EDGE;
 		}
 		if ((pt.getX() >= region.getX1() - edgeTolerance)
@@ -712,4 +728,32 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	}
 	// AJK: 12/01/06 END
 
+	// AJK 02/20/07 BEGIN
+	// Delete All Regions
+	/**
+	 * This class prompts the user for confirmation and, if confirmed, deletes
+	 * all of the regions from the network view.
+	 */
+	class DeleteAllRegionsActionListener implements ActionListener {
+
+		/**
+		 * Based on the action event, destroy or create a view, or destroy a
+		 * network
+		 */
+		public void actionPerformed(ActionEvent ae) {
+			
+			int confirm = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), 
+					"Do you really want to delete all layout regions?");
+			if (confirm == JOptionPane.YES_OPTION)
+			{
+				LayoutRegionManager.removeAllRegionsForView
+				(Cytoscape.getCurrentNetworkView());
+				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+			}
+		}
+	}
+	
+	// AJK: 02/20/07 END
+	
+	// AJK: 12/01/06 END
 }
