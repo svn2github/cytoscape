@@ -921,6 +921,70 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				</td>
 			</tr>
 
+
+
+
+
+
+
+			<tr>
+				<td width="20%" valign="top">
+					<b>MiMI Plugin</b>
+					<br>
+					<font size="-1">Version: 1.0 
+						<br>
+						Release Date: March 1, 2007</font>
+				</td>
+
+				<td width="40%" valign="top">
+
+
+This plugin retrieves and displays molecular interaction data from
+the <a href="http://mimi.ncibi.org">Michigan Molecular Interactions (MiMI) database</a>(1).  MiMI gathers
+and merges data from well-known protein interaction databases
+including BIND, DIP, and HPRD.  A provenance model has been developed
+that tracks the source of each data element and what processes have
+been performed upon it.
+
+					<br>
+					<br>
+Within Cytoscape, each set of interactions are displayed in a
+separate network view. Use the MiMI dialog box from the plugins menu
+to query MiMI, view help and about pages, and to download the latest
+version of the plugin.
+
+					<br>
+					<br>
+1) Jayapandian M, Chapman A, Tarcea VG, Yu C, Elkiss A, Ianni A, Liu
+B, Nandi A, Santos C, Andrews P, Athey B, States D, Jagadish HV.
+(2007) "Michigan Molecular Interactions (MiMI): putting the jigsaw
+puzzle together." Nucleic Acids Res. 35(Database issue):D566-71. Epub
+2006 Nov 27.
+
+					<br>
+					<br>
+
+					Released by: Jing Gao, Alex Ade, <a href="http://www.ncibi.org/">National Center for Integrative Biomedical Informatics, University of Michigan</a>
+				</td>
+
+				<td width="20%" valign="top">
+				 Verified to work in 2.4
+				</td>
+
+				<td width="20%" valign="top">
+					[<a href="http://mimi.ncibi.org/cytoscape/plugins/MiMI.jar">Download</a>]
+					<br>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+
+
+
+
 			<tr>
 				<td width="20%" valign="top">
 					<b>Oracle Spatial Network Data Model Plugin</b><font size="-1">
