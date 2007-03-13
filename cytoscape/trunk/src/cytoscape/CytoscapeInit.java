@@ -42,6 +42,7 @@ import cytoscape.data.readers.TextHttpReader;
 import cytoscape.init.CyInitParams;
 
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginManager;
 
 import cytoscape.util.FileUtil;
 
@@ -125,7 +126,8 @@ public class CytoscapeInit {
 
 	private static CyInitParams initParams;
 	private static URLClassLoader classLoader;
-
+	private static PluginManager pluginMgr;
+	
 	// Most-Recently-Used directories and files
 	private static File mrud;
 	private static File mruf;
@@ -183,7 +185,7 @@ public class CytoscapeInit {
 
 				setUpAttributesChangedListener();
 			}
-
+			
 			loadPlugins();
 
 			System.out.println("loading session...");
@@ -252,6 +254,13 @@ public class CytoscapeInit {
 		return properties.getProperty(key);
 	}
 
+	/**
+	 * @return The PluginManager object responsible for tracking/installing/deleting plugins
+	 */
+	public static PluginManager getPluginManager() {
+		return pluginMgr;
+	}
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -465,14 +474,13 @@ public class CytoscapeInit {
 	 * URLs or resource names. The method first checks to see if the
 	 */
 	private void loadPlugins() {
+		pluginMgr = new PluginManager();
 		try {
 			Set plugins = new HashSet();
 			List p = initParams.getPlugins();
 
 			if (p != null)
 				plugins.addAll(p);
-
-			System.out.println("Looking for plugins in:");
 
 			// Parse the plugin strings and determine whether they're urls,
 			// files,
@@ -553,6 +561,7 @@ public class CytoscapeInit {
 			System.out.println("failed loading plugin!");
 			e.printStackTrace();
 		}
+	//System.out.println(pluginMgr.getPluginTracker().getInstalledPlugins().size() + " installed plugins registered");
 	}
 
 	/**
@@ -681,7 +690,12 @@ public class CytoscapeInit {
 	 *
 	 * @param plugin DOCUMENT ME!
 	 */
+	/* TODO add warning to user that another plugin with the same namespace as a previously loaded plugin has been found and will not be
+	 * loaded
+	 */
 	public void loadPlugin(Class plugin) {
+	System.out.println("Plugin class: " + plugin.getName());
+	
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)
 		    && !loadedPlugins.contains(plugin.getName())) {
 			try {
@@ -690,6 +704,8 @@ public class CytoscapeInit {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if (loadedPlugins.contains(plugin.getName())) {
+			// TODO warn user class of this name has already been loaded and can't be loaded again
 		}
 	}
 
