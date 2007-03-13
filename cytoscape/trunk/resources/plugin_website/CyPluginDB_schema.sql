@@ -51,8 +51,8 @@ create table plugin_version (
 create table plugin_files (
 	plugin_file_auto_id	int not null primary key auto_increment,
 	file_data		mediumblob, -- up to 16M
-	blobType		varchar(50),
-	blobTitle 		varchar(50)
+	file_type		varchar(50),
+	file_name 		varchar(50)
 );
 
 create table authors (
@@ -82,7 +82,8 @@ create table usagelog (
     sysdat          Date
 );
 
-grant select on cyplugindb.* to cytoscapeuser identified by 'cytoscapeuser';
+grant select, insert on cyplugindb.* to cytouser identified by 'cytouser';
+grant all on cyplugindb.* to cytoadmin identified by 'cytoadmin';
 
 insert into categories (category_id, name, description) 
             values (1, 'Analysis Plugins', 'Used for analyzing existing networks');
