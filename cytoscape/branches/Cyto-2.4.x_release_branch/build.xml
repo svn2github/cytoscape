@@ -373,8 +373,10 @@
 
             <packageset dir="${src.dir}">
                 <include name="cytoscape/**" />
+				<!-- exclude xjc generated code -->
                 <exclude name="cytoscape/generated/" />
                 <exclude name="cytoscape/generated2/" />
+                <exclude name="cytoscape/bookmarks/" />
             </packageset>
             <link href="http://java.sun.com/j2se/1.5/docs/api/" />
             <link href="http://csbi.sourceforge.net/API/" />
