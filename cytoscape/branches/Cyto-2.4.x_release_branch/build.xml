@@ -73,8 +73,7 @@
 	<property name="manifest.file" value="${build.dir}/Cytoscape.manifest" />
 
 	<!-- Javadoc directories -->
-	<property name="javadoc.private.dir" value="${build.dir}/API-private" />
-	<property name="javadoc.public.dir" value="${build.dir}/API-public" />
+	<property name="javadoc.dir" value="${build.dir}/API" />
 
 	<!-- The XML Schema Directory used by JAXB -->
 	<property name="schema.dir" value="${basedir}/resources/schema" />
@@ -362,73 +361,27 @@
 	<!-- ======================================================= -->
 	<!-- Make the JavaDocs for Cytoscape                         -->
 	<!-- ======================================================= -->
+    <target name="doc" description="Runs JavaDoc.">
+        <javadoc destdir="${javadoc.dir}"
+                 source="1.5"
+                 breakiterator="true"
+                 Windowtitle="Cytoscape ${version} API"
+                 header="Cytoscape ${version} (c) 2006,2007 ISB, MSKCC, UCSD"
+                 footer="www.cytoscape.org"
+                 classpathref="classpath"
+                 access="public">
 
-	<!-- Target to Run JavaDoc -->
-	<target name="doc-private" description="Runs JavaDoc.">
-		<javadoc destdir="${javadoc.private.dir}" 
-		         source="1.5" 
-			 breakiterator="true" 
-			 classpathref="classpath" 
-			 link="http://java.sun.com/j2se/1.5/docs/api/">
+            <packageset dir="${src.dir}">
+                <include name="cytoscape/**" />
+                <exclude name="cytoscape/generated/" />
+                <exclude name="cytoscape/generated2/" />
+            </packageset>
+            <link href="http://java.sun.com/j2se/1.5/docs/api/" />
+            <link href="http://csbi.sourceforge.net/API/" />
+        </javadoc>
+    </target>
 
-			<packageset dir="${src.dir}">
-				<include name="cytoscape/**" />
-				<exclude name="cytoscape/data/servers/archive/" />
-				<exclude name="cytoscape/data/servers/unitTests/" />
-				<exclude name="cytoscape/unitTests/deferred/" />
-				<exclude name="**test/**" />
-				<exclude name="**/unitTests/**" />
-			</packageset>
-		</javadoc>
-	</target>
 
-	<!-- ======================================================= -->
-	<!-- Make the Public JavaDocs for Cytoscape                         -->
-	<!-- ======================================================= -->
-
-	<!-- Target to Run JavaDoc -->
-	<target name="doc" description="Runs JavaDoc.">
-		<javadoc destdir="${javadoc.public.dir}" 
-		         source="1.5" 
-			 breakiterator="true" 
-			 Windowtitle="Cytoscape ${version} API" 
-			 header="Cytoscape ${version} (c) 2006 ISB, MSKCC, UCSD" 
-			 footer="www.cytoscape.org" 
-			 classpathref="classpath" 
-			 access="public">
-
-			<fileset dir="${src.dir}">
-				<include name="cytoscape/*.java" />
-				<include name="cytoscape/util/*.java" />
-				<include name="cytoscape/util/swing/*.java" />
-				<include name="cytoscape/plugin/*.java" />
-				<include name="cytoscape/plugin/jar/JarLoader.java" />
-				<include name="cytoscape/plugin/jar/SimpleClassLoader.java" />
-				<include name="cytoscape/data/ExpressionData.java" />
-				<include name="cytoscape/data/Semantics.java" />
-				<include name="cytoscape/data/CyAttributes.java" />
-				<include name="cytoscape/view/CytoscapeDesktop.java" />
-				<include name="cytoscape/view/CyNetworkView.java" />
-				<include name="cytoscape/view/CyMenus.java" />
-				<include name="cytoscape/view/cytopanels/*.java" />
-				<include name="cytoscape/visual/VisualStyle.java" />
-				<include name="cytoscape/visual/VisualMappingManager.java" />
-				<include name="cytoscape/layout/*.java" />
-				<include name="cytoscape/data/servers/BioDataServer*.java" />
-			</fileset>
-			<packageset dir="${src.dir}" defaultexcludes="yes">
-				<include name="cytoscape/task/**" />
-			</packageset>
-			<packageset dir="${src.dir}" defaultexcludes="yes">
-				<include name="cytoscape/data/attr/**" />
-				<exclude name="cytoscape/data/attr/util/test/**" />
-			</packageset>
-
-			<link href="http://java.sun.com/j2se/1.5/docs/api/" />
-			<link href="http://csbi.sourceforge.net/API/" />
-			<doctitle>Cytoscape ${version} API</doctitle>
-		</javadoc>
-	</target>
 
 	<!-- ======================================================= -->
 	<!-- Manfiest Target                                         -->
