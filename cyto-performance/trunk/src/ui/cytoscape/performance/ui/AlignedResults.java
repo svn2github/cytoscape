@@ -164,10 +164,7 @@ public class AlignedResults {
 	
 				if ( j == 0 ) {                    
 					g2.setColor(Color.black);
-                    // create a title
-                    // alignedresults appended at end list; so title is inverse of args[]
-                    String title = args[alignedResults.size() - (i+1)]; 
-					g2.drawString(title, xOffset, separation);
+					g2.drawString(args[i], xOffset, separation);
 				}
 
 				TrackedEvent t = alignedResults.get(i).get(j);

@@ -82,9 +82,10 @@ public class MultipleAlign<T> {
 			merged = b; 
 		}
 		results.add(b);
+		Collections.reverse(results);
 	}
 
 	public List<List<T>> getAlignment() {
-		return results;
+		return results; 
 	}
 }
