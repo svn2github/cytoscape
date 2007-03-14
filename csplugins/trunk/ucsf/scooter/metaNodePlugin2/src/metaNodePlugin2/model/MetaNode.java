@@ -205,7 +205,7 @@ public class MetaNode {
 			// Yes, show them
 			Iterator <CyEdge>edgeIter = newEdgeMap.keySet().iterator();
 			while (edgeIter.hasNext()) { 
-				network.addEdge(edgeIter.next()); 
+				network.restoreEdge(edgeIter.next()); 
 			}
 		}
 
@@ -232,6 +232,20 @@ public class MetaNode {
 
 		// Initialize
 		update();
+
+		// First, find all of our edges.  This will include any metaEdges as well
+		// as any edges that were created by external applications
+		int [] edgeArray = network.getAdjacentEdgeIndicesArray(groupNode.getRootGraphIndex(),true,true,true);
+
+		// Now, go through a (hopefully) quick loop to add any edges we don't already have into
+		// our edge map
+		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
+			CyEdge edge = (CyEdge)network.getEdge(edgeArray[edgeIndex]);
+			if (!newEdgeMap.containsKey(edge)) {
+				newEdgeMap.put(edge, new ArrayList());
+			}
+			network.hideEdge(edge);
+		}
 
 		// Hide the extra edges we created
 		if (newEdgeMap != null) {
