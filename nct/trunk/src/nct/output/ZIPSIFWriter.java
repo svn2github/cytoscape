@@ -75,7 +75,7 @@ public class ZIPSIFWriter<NodeType extends Comparable<? super NodeType>,
     public void add(Graph<NodeType,WeightType> graph, String name ) throws IOException {
 	    out.putNextEntry(new ZipEntry( name +  ".sif" ));
 	    content.delete(0,content.length());
-	    content.append(getSIFString(graph));
+	    content.append(SIFWriter.getSIFString(graph));
 	    bytes = content.toString().getBytes();
 	    out.write(bytes,0,bytes.length);
     }
@@ -101,19 +101,5 @@ public class ZIPSIFWriter<NodeType extends Comparable<? super NodeType>,
      */
     public void write() throws IOException {
         out.close();
-    }
-
-    private String getSIFString(Graph<NodeType,WeightType> g) {
-    	StringBuffer b = new StringBuffer();
-	String newline = System.getProperty("line.separator");
-	for ( Edge<NodeType,WeightType> e : g.getEdges() ) {
-		b.append( e.getSourceNode().toString() );
-		b.append(" ");
-		b.append( e.getDescription() );
-		b.append(" ");
-		b.append( e.getTargetNode().toString() );
-		b.append( newline );
-	}
-	return b.toString();
     }
 }

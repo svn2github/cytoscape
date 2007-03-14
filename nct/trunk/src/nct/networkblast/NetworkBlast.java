@@ -187,6 +187,9 @@ public class NetworkBlast {
 
 				print("num nodes compatibility graph: " + compatGraph.numberOfNodes() );
 				print("num edges compatibility graph: " + compatGraph.numberOfEdges() );
+				// used for debugging
+				//new SIFWriter<CompatibilityNode<String,Double>,Double>(compatGraph,"cgraph.sif");
+				//count++;
 
 				print("begin path search");
 				resultPaths = colorCoding.searchGraph(compatGraph, compatScore);

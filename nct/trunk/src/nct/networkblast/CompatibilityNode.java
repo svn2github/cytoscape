@@ -78,6 +78,20 @@ public class CompatibilityNode<NodeType extends Comparable<? super NodeType>,
 		return null;
 	}
 
+	public int getIndex(NodeType n) {
+		for ( int i = 0; i < nodeList.size(); i++ ) 
+			if ( nodeList.get(i) == n )
+				return i;
+		return -1;
+	}
+
+	public int getIndex(Graph<NodeType,WeightType> g) {
+		for ( int i = 0; i < graphList.size(); i++ ) 
+			if ( graphList.get(i) == g )
+				return i;
+		return -1;
+	}
+
 	public Collection<NodeType> getNodes() {
 		return nodeList; 
 	}

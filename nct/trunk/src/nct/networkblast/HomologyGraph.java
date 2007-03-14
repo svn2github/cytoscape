@@ -122,14 +122,16 @@ public class HomologyGraph
 		//System.out.println("homologyMap size " + homologyMap.size());
 
 		for ( String nodeA: homologyMap.keySet() ) {
-			//System.err.println ("A node: " + nodeA );
+			//System.out.println ("A node: " + nodeA );
 			for ( String nodeB: homologyMap.get(nodeA).keySet() ) {
-				//System.err.print ("B node: " + nodeB );
+				//System.out.print ("B node: " + nodeB );
 				Double score = homologyMap.get(nodeA).get(nodeB);
-				//System.err.println ("  value: " + score);
-				if ( score != null && score.doubleValue() <= exThresh )
+				//System.out.println ("  value: " + score);
+				if ( score != null && score.doubleValue() <= exThresh ) 
 					if ( ! addEdge(nodeA,nodeB,score) )
 						System.out.println("didn't add edge: " + nodeA + " " + nodeB);
+					//else
+					//	System.out.println("added edge: " + nodeA + " " + nodeB + " " + score);
 			}
 		}
 		//System.out.println("number of homology edges: " + numberOfEdges());
