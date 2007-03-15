@@ -78,6 +78,9 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 		// save the vizmapper catalog
 		CyNetwork current_network = Cytoscape.getCurrentNetwork();
 
+		if ( current_network == null || current_network == Cytoscape.getNullNetwork() )
+			return;
+
 		Set nodes = current_network.getSelectedNodes();
 		Set edges = current_network.getSelectedEdges();
 

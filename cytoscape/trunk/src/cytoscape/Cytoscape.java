@@ -955,6 +955,9 @@ public abstract class Cytoscape {
 	 *            network, but no other are also destroyed.
 	 */
 	public static void destroyNetwork(CyNetwork network, boolean destroy_unique) {
+		if ( network == null || network == nullNetwork )
+			return;
+
 		String networkId = network.getIdentifier();
 
 		firePropertyChange(NETWORK_DESTROYED, null, networkId);
