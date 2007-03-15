@@ -404,6 +404,7 @@ public class LayoutRegion extends JComponent
 	 * deltaZoom * deltaX
 	 * 
 	 */
+
 	public void viewportChanged(int w, int h, double newXCenter,
 			double newYCenter, double newScaleFactor) {
 
@@ -458,12 +459,12 @@ public class LayoutRegion extends JComponent
 
 		if ((deltaZoom > 0.99) && (deltaZoom < 1.01) && (viewportWidth == w)
 				&& (viewportHeight == h))
-		// we are panning
+		// we are just panning
 		{
 			this.x1 += (currentCenterX - newXCenter) * newScaleFactor;
 			this.y1 += (currentCenterY - newYCenter) * newScaleFactor;
 		} else if ((viewportWidth != w) || (viewportHeight != h)) { // we are
-																	// resizing
+																	// resizing viewport
 			this.x1 += (0.5 * (w - viewportWidth));
 			this.y1 += (0.5 * (h - viewportHeight));
 
@@ -472,15 +473,26 @@ public class LayoutRegion extends JComponent
 			this.w1 *= deltaZoom;
 			this.h1 *= deltaZoom;
 
-			deltaX *= deltaZoom;
+			deltaX *= deltaZoom; 
 			deltaY *= deltaZoom;
 
 			this.x1 = (0.5 * w) + deltaX;
 			this.y1 = (0.5 * h) + deltaY;
-			// this.x1 = ((this.x1 - currentCenterX) + (currentCenterX *
-			// deltaZoom)) / deltaZoom;
-			// this.y1 = ((this.y1 - currentCenterY) + (currentCenterY *
-			// deltaZoom)) / deltaZoom;
+//			 this.x1 = ((this.x1 - currentCenterX) + (currentCenterX * deltaZoom))
+//					/ deltaZoom;
+//			this.y1 = ((this.y1 - currentCenterY) + (currentCenterY * deltaZoom))
+//					/ deltaZoom;
+			// if we are both zooming and panning, then do the pan
+//			this.x1 += (currentCenterX - newXCenter) * deltaZoom;
+//			this.y1 += (currentCenterY - newYCenter) * deltaZoom;
+//			this.x1 = newXCenter + (deltaZoom * (this.x1 - currentCenterX));
+//			this.y1 = newXCenter + (deltaZoom * (this.y1 - currentCenterY));
+//			this.x1 += currentCenterX - newXCenter;
+//			this.y1 += currentCenterY - newYCenter;
+			
+			// do whatever translation is necessary
+			this.x1 += (currentCenterX - newXCenter) * newScaleFactor;
+			this.y1 += (currentCenterY - newYCenter) * newScaleFactor;
 		}
 
 		System.out.println("new scale factor: " + newScaleFactor
@@ -508,6 +520,58 @@ public class LayoutRegion extends JComponent
 		// repaint();
 	}
 
+
+	/*
+		public void viewportChanged(int w, int h, double newXCenter,
+				double newYCenter, double newScaleFactor) {
+
+
+			InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView())
+					.getCanvas();
+			if (!viewportSet) {
+				viewportSet = true;
+				currentZoom = newScaleFactor;
+				currentCenterX = newXCenter;
+				currentCenterY = newYCenter;
+				viewportWidth = w;
+				viewportHeight = h;
+			}
+			System.out.println("currentZoom = " + currentZoom
+					+ ", currentCenterX = " + currentCenterX
+					+ ", currentCenterY = " + currentCenterY);
+
+			double deltaZoom = newScaleFactor / currentZoom;
+			double deltaX = newXCenter - currentCenterX;
+			double deltaY = newYCenter - currentCenterY;
+			double deltaViewWidth = w - viewportWidth;
+			double deltaViewHeight = h - viewportHeight;
+			
+			
+			
+
+			
+			
+			
+			
+			currentZoom = newScaleFactor;
+			currentCenterX = newXCenter;
+			currentCenterY = newYCenter;
+			viewportWidth = w;
+			viewportHeight = h;
+
+			System.out.println("newX1 = " + this.x1 + ", newY1 = " + this.y1
+					+ ", newWidth = " + this.w1 + ", newHeight = " + this.h1);
+			System.out.println(" ");
+
+			// AJK: 01/09/07 use double coordinates to avoid roundoff error
+			// this.setBounds((int) this.x1, (int) this.y1, (int) this.w1,
+			// (int) this.h1);
+			this.setBounds(this.x1, this.y1, this.w1, this.h1);
+
+			// repaint();
+		}
+
+*/
 	// AJK: 01/04/07 END
 
 	// select all nodeViews with specified attribute value for attribute
