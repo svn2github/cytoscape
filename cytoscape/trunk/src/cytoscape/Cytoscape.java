@@ -1044,6 +1044,8 @@ public abstract class Cytoscape {
 	 * destroys the networkview, including any layout information
 	 */
 	public static void destroyNetworkView(CyNetworkView view) {
+		if ( view == null || view == nullNetworkView )
+			return;
 		// System.out.println( "destroying: "+view.getIdentifier()+" :
 		// "+getNetworkViewMap().get( view.getIdentifier() ) );
 		String viewID = view.getIdentifier();
