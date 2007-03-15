@@ -457,7 +457,7 @@ public class LayoutRegion extends JComponent
 		double deltaX = this.x1 - (0.5 * w);
 		double deltaY = this.y1 - (0.5 * h);
 
-		if ((deltaZoom > 0.99) && (deltaZoom < 1.01) && (viewportWidth == w)
+		if ((deltaZoom > 0.999999) && (deltaZoom < 1.000001) && (viewportWidth == w)
 				&& (viewportHeight == h))
 		// we are just panning
 		{
