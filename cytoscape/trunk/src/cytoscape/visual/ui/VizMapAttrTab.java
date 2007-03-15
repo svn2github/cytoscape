@@ -344,6 +344,9 @@ public class VizMapAttrTab extends VizMapTab {
 	 * appropriate panel after first removing any previous combo box.
 	 */
 	protected void rebuildCalcComboBox() {
+	    if (this.mapPanelGBG == null ) {
+	        this.mapPanelGBG = new GridBagGroup("Mapping");
+	    }
 		if (this.calcComboBox != null) {
 			mapPanelGBG.panel.remove(this.calcComboBox);
 		}
