@@ -161,6 +161,22 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 			GagglePlugin.showDialogBox(ErrorMsg, "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		print("BOSS: " + GaggleBoss.toString() );
+
+		String FilePath = null;
+		java.util.Iterator pI = cytoscape.CytoscapeInit.getPluginURLs().iterator();
+		while (pI.hasNext())
+			{
+			java.net.URL url = (java.net.URL)pI.next();
+			if (url.getPath().contains("CyGoose.jar"))
+				{
+				FilePath = url.getPath();
+				FilePath = FilePath.replace("/", System.getProperty("file.separator"));
+				FilePath = FilePath.replaceFirst("file:", "");
+				}
+			}
+//		System.setProperty("java.rmi.server.codebase", FilePath);
+//		System.out.println( "CLASSPATH: " + System.getProperty("java.class.path"));
+//		System.out.println("RMI CODEBASE: " + System.getProperty("java.rmi.server.codebase"));
 		RegisteredName = GaggleBoss.register(G);
 		G.setName(RegisteredName);
 		Dialog.getRegisterButton().setEnabled(false); 

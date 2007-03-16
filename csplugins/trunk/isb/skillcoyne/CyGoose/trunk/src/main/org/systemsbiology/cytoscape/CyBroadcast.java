@@ -322,10 +322,16 @@ public class CyBroadcast
       // again if there's more than one species we'll only get the last one!!!
       Species = this.getSpecies(SourceNodeId);
       }
-
-		try 
-			{ this.GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), Species, GaggleNetwork); }
-		catch (Exception E) { E.printStackTrace(); }
+    if (GaggleNetwork.edgeCount() <= 0)
+    	{
+    	GagglePlugin.showDialogBox("This network contains no interactions and will not be broadcast", "Warning", JOptionPane.WARNING_MESSAGE);
+    	}
+    else
+    	{
+			try 
+				{ this.GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), Species, GaggleNetwork); }
+			catch (Exception E) { E.printStackTrace(); }
+    	}
 		}
 
 	private String getSpecies(String NodeId)
