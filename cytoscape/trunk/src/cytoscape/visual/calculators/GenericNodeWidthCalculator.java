@@ -94,8 +94,16 @@ public class GenericNodeWidthCalculator extends GenericNodeSizeCalculator
 		return "Node Width";
 	}
 
+	/** 
+	 * Used to set the various properties throughout the hierarchy.
+	 */
+	private void set() {
+		set( VizMapUI.NODE_WIDTH, "nodeWidthCalculator", "Node Width" );
+	}
+
 	GenericNodeWidthCalculator() {
 		super();
+		set();
 	}
 
 	/**
@@ -106,6 +114,7 @@ public class GenericNodeWidthCalculator extends GenericNodeSizeCalculator
 	 */
 	public GenericNodeWidthCalculator(String name, ObjectMapping m) {
 		super(name, m);
+		set();
 	}
 
 	/**
@@ -117,6 +126,7 @@ public class GenericNodeWidthCalculator extends GenericNodeSizeCalculator
 	 */
 	public GenericNodeWidthCalculator(String name, Properties props, String baseKey) {
 		super(name, props, baseKey);
+		set();
 	}
 
 	/**

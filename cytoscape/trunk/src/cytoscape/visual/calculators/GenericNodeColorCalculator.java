@@ -137,9 +137,9 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
 	 * @param network DOCUMENT ME!
 	 */
 	public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-		if (colType == VizMapUI.NODE_COLOR)
+		if (getType() == VizMapUI.NODE_COLOR)
 			apply(appr, node, network, FILL);
-		else if (colType == VizMapUI.NODE_BORDER_COLOR)
+		else if (getType() == VizMapUI.NODE_BORDER_COLOR)
 			apply(appr, node, network, BORDER);
 		else
 			System.err.println("don't know what kind of calculator this is!");
@@ -157,9 +157,9 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
 		NodeAppearance ea = new NodeAppearance();
 		apply(ea, e, n);
 
-		if (colType == VizMapUI.NODE_COLOR)
+		if (getType() == VizMapUI.NODE_COLOR)
 			return ea.getFillColor();
-		else if (colType == VizMapUI.NODE_BORDER_COLOR)
+		else if (getType() == VizMapUI.NODE_BORDER_COLOR)
 			return ea.getBorderColor();
 		else
 

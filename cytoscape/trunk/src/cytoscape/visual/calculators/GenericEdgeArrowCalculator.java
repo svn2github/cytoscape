@@ -146,9 +146,9 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
 	 * @param network DOCUMENT ME!
 	 */
 	public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-		if (arrowType == VizMapUI.EDGE_SRCARROW)
+		if (getType() == VizMapUI.EDGE_SRCARROW)
 			apply(appr, edge, network, SOURCE);
-		else if (arrowType == VizMapUI.EDGE_TGTARROW)
+		else if (getType() == VizMapUI.EDGE_TGTARROW)
 			apply(appr, edge, network, TARGET);
 		else
 			System.err.println("don't know what kind of calculator this is!");
@@ -166,9 +166,9 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
 		EdgeAppearance ea = new EdgeAppearance();
 		apply(ea, e, n);
 
-		if (arrowType == VizMapUI.EDGE_SRCARROW)
+		if (getType() == VizMapUI.EDGE_SRCARROW)
 			return ea.getSourceArrow();
-		else if (arrowType == VizMapUI.EDGE_TGTARROW)
+		else if (getType() == VizMapUI.EDGE_TGTARROW)
 			return ea.getTargetArrow();
 		else
 

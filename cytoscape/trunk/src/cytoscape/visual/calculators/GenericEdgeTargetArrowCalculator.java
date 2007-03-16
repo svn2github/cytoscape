@@ -93,8 +93,17 @@ public class GenericEdgeTargetArrowCalculator extends GenericEdgeArrowCalculator
 		return "Edge Target Arrow";
 	}
 
+    /**
+     * Used to set the various properties throughout the hierarchy.
+     */
+    private void set() {
+        set( VizMapUI.EDGE_TGTARROW, "edgeTargetArrowCalculator", "Edge Target Arrow" );
+    }
+
+
 	GenericEdgeTargetArrowCalculator() {
 		super();
+		set();
 	}
 
 	/**
@@ -105,6 +114,7 @@ public class GenericEdgeTargetArrowCalculator extends GenericEdgeArrowCalculator
 	 */
 	public GenericEdgeTargetArrowCalculator(String name, ObjectMapping m) {
 		super(name, m);
+		set();
 	}
 
 	/**
@@ -116,6 +126,7 @@ public class GenericEdgeTargetArrowCalculator extends GenericEdgeArrowCalculator
 	 */
 	public GenericEdgeTargetArrowCalculator(String name, Properties props, String baseKey) {
 		super(name, props, baseKey);
+		set();
 	}
 
 	/**

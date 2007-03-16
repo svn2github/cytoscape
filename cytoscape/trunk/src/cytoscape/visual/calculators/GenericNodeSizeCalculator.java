@@ -146,11 +146,11 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
 	 * @param network DOCUMENT ME!
 	 */
 	public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-		if (sizeType == VizMapUI.NODE_WIDTH)
+		if (getType() == VizMapUI.NODE_WIDTH)
 			apply(appr, node, network, WIDTH);
-		else if (sizeType == VizMapUI.NODE_HEIGHT)
+		else if (getType() == VizMapUI.NODE_HEIGHT)
 			apply(appr, node, network, HEIGHT);
-		else if (sizeType == VizMapUI.NODE_SIZE)
+		else if (getType() == VizMapUI.NODE_SIZE)
 			apply(appr, node, network, SIZE);
 		else
 			System.err.println("don't know what kind of calculator this is!");
@@ -168,11 +168,11 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
 		NodeAppearance ea = new NodeAppearance();
 		apply(ea, e, n);
 
-		if (sizeType == VizMapUI.NODE_WIDTH)
+		if (getType() == VizMapUI.NODE_WIDTH)
 			return ea.getWidth();
-		else if (sizeType == VizMapUI.NODE_HEIGHT)
+		else if (getType() == VizMapUI.NODE_HEIGHT)
 			return ea.getHeight();
-		else if (sizeType == VizMapUI.NODE_SIZE)
+		else if (getType() == VizMapUI.NODE_SIZE)
 			return ea.getSize();
 		else
 

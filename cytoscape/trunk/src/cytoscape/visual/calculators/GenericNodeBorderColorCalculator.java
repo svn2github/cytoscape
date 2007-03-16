@@ -96,8 +96,17 @@ public class GenericNodeBorderColorCalculator extends GenericNodeColorCalculator
 		return "Node Border Color";
 	}
 
+    /**
+     * Used to set the various properties throughout the hierarchy.
+     */
+    private void set() {
+        set( VizMapUI.NODE_BORDER_COLOR, "nodeBorderColorCalculator", "Node Border Color" );
+    }
+
+
 	GenericNodeBorderColorCalculator() {
 		super();
+		set();
 	}
 
 	/**
@@ -108,6 +117,7 @@ public class GenericNodeBorderColorCalculator extends GenericNodeColorCalculator
 	 */
 	public GenericNodeBorderColorCalculator(String name, ObjectMapping m) {
 		super(name, m);
+		set();
 	}
 
 	/**
@@ -119,6 +129,7 @@ public class GenericNodeBorderColorCalculator extends GenericNodeColorCalculator
 	 */
 	public GenericNodeBorderColorCalculator(String name, Properties props, String baseKey) {
 		super(name, props, baseKey);
+		set();
 	}
 
 	/**

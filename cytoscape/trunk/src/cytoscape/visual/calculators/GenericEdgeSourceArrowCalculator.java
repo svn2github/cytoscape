@@ -93,8 +93,17 @@ public class GenericEdgeSourceArrowCalculator extends GenericEdgeArrowCalculator
 		return "Edge Source Arrow";
 	}
 
+    /**
+	 * Used to set the various properties throughout the hierarchy.
+	 */
+	private void set() {
+		set( VizMapUI.EDGE_SRCARROW, "edgeSourceArrowCalculator", "Edge Source Arrow" );
+	}
+
+
 	GenericEdgeSourceArrowCalculator() {
 		super();
+		set();
 	}
 
 	/**
@@ -105,6 +114,7 @@ public class GenericEdgeSourceArrowCalculator extends GenericEdgeArrowCalculator
 	 */
 	public GenericEdgeSourceArrowCalculator(String name, ObjectMapping m) {
 		super(name, m);
+		set();
 	}
 
 	/**
@@ -116,6 +126,7 @@ public class GenericEdgeSourceArrowCalculator extends GenericEdgeArrowCalculator
 	 */
 	public GenericEdgeSourceArrowCalculator(String name, Properties props, String baseKey) {
 		super(name, props, baseKey);
+		set();
 	}
 
 	/**
