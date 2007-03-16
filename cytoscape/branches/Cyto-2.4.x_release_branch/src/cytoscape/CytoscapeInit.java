@@ -1,52 +1,68 @@
 /*
- File: CytoscapeInit.java 
- 
+ File: CytoscapeInit.java
+
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
- 
- The Cytoscape Consortium is: 
+
+ The Cytoscape Consortium is:
  - Institute for Systems Biology
  - University of California San Diego
  - Memorial Sloan-Kettering Cancer Center
  - Institut Pasteur
  - Agilent Technologies
- 
+
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
  any later version.
- 
+
  This library is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have no obligations to provide maintenance, support,
  updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  be liable to any party for direct, indirect, special,
  incidental or consequential damages, including lost profits, arising
  out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute 
+ Institute for Systems Biology and the Whitehead Institute
  have been advised of the possibility of such damage.  See
  the GNU Lesser General Public License for more details.
- 
+
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package cytoscape;
 
+import cytoscape.data.readers.CytoscapeSessionReader;
+import cytoscape.data.readers.TextHttpReader;
+
+import cytoscape.init.CyInitParams;
+
+import cytoscape.plugin.CytoscapePlugin;
+
+import cytoscape.util.FileUtil;
+
+import cytoscape.util.shadegrown.WindowUtilities;
+
+import cytoscape.view.CytoscapeDesktop;
+
 import java.awt.Cursor;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,13 +75,6 @@ import java.util.jar.Manifest;
 
 import javax.swing.ImageIcon;
 
-import cytoscape.data.readers.CytoscapeSessionReader;
-import cytoscape.data.readers.TextHttpReader;
-import cytoscape.init.CyInitParams;
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.util.FileUtil;
-import cytoscape.util.shadegrown.WindowUtilities;
-import cytoscape.view.CytoscapeDesktop;
 
 /**
  * <p>
@@ -77,13 +86,13 @@ import cytoscape.view.CytoscapeDesktop;
  * support a "headless" mode (meaning there is no GUI). We do, however, hope to
  * support this in the future.
  * </p>
- * 
+ *
  * <p>
  * The two main modes of running Cytoscape are either in "headless" mode or in
  * "script" mode. This class will use the command-line options to figure out
  * which mode is desired, and run things accordingly.
  * </p>
- * 
+ *
  * The order for doing things will be the following:<br>
  * <ol>
  * <li>deterimine script mode, or headless mode</li>
@@ -95,12 +104,11 @@ import cytoscape.view.CytoscapeDesktop;
  * <li>Initialize all plugins, in order if specified.</li>
  * <li>Start Desktop/Print Output exit.</li>
  * </ol>
- * 
+ *
  * @since Cytoscape 1.0
  * @author Cytoscape Core Team
  */
 public class CytoscapeInit {
-
 	private static Properties properties;
 	private static Properties visualProperties;
 	private static Set pluginURLs;
@@ -114,9 +122,8 @@ public class CytoscapeInit {
 		loadedPlugins = new HashSet();
 		initProperties();
 	}
-	
-	private static CyInitParams initParams;
 
+	private static CyInitParams initParams;
 	private static URLClassLoader classLoader;
 
 	// Most-Recently-Used directories and files
@@ -126,18 +133,20 @@ public class CytoscapeInit {
 	// Configuration variables
 	private static boolean useView = true;
 	private static boolean suppressView = false;
-
 	private static int secondaryViewThreshold;
 
 	// View Only Variables
 	private static String vizmapPropertiesLocation;
 
+	/**
+	 * Creates a new CytoscapeInit object.
+	 */
 	public CytoscapeInit() {
 	}
 
 	/**
 	 * Cytoscape Init must be initialized using the command line arguments.
-	 * 
+	 *
 	 * @param args
 	 *            the arguments from the command line
 	 * @return false, if we fail to initialize for some reason
@@ -146,7 +155,6 @@ public class CytoscapeInit {
 		long begintime = System.currentTimeMillis();
 
 		try {
-
 			initParams = params;
 
 			// setup properties
@@ -160,20 +168,18 @@ public class CytoscapeInit {
 			// see if we are in headless mode
 			// show splash screen, if appropriate
 			System.out.println("init mode: " + initParams.getMode());
-			if (initParams.getMode() == CyInitParams.GUI
-					|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
 
+			if ((initParams.getMode() == CyInitParams.GUI)
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				final ImageIcon image = new ImageIcon(this.getClass()
-						.getResource(
-								"/cytoscape/images/CytoscapeSplashScreen.png"));
+				                                          .getResource("/cytoscape/images/CytoscapeSplashScreen.png"));
 				WindowUtilities.showSplash(image, 8000);
 
 				// creates the desktop
 				Cytoscape.getDesktop();
 
 				// set the wait cursor
-				Cytoscape.getDesktop().setCursor(
-						Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				Cytoscape.getDesktop().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 				setUpAttributesChangedListener();
 			}
@@ -181,8 +187,9 @@ public class CytoscapeInit {
 			loadPlugins();
 
 			System.out.println("loading session...");
-			if (initParams.getMode() == CyInitParams.GUI
-					|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)
+
+			if ((initParams.getMode() == CyInitParams.GUI)
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
 				loadSessionFile();
 
 			System.out.println("loading networks...");
@@ -193,12 +200,11 @@ public class CytoscapeInit {
 
 			System.out.println("loading expression files...");
 			loadExpressionFiles();
-
 		} finally {
 			// Always restore the cursor and hide the splash, even there is
 			// exception
-			if (initParams.getMode() == CyInitParams.GUI
-					|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW) {
+			if ((initParams.getMode() == CyInitParams.GUI)
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				WindowUtilities.hideSplash();
 				Cytoscape.getDesktop().setCursor(Cursor.getDefaultCursor());
 
@@ -246,14 +252,29 @@ public class CytoscapeInit {
 		return properties.getProperty(key);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static URLClassLoader getClassLoader() {
 		return classLoader;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static Set getPluginURLs() {
 		return pluginURLs;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static Set getResourcePlugins() {
 		return resourcePlugins;
 	}
@@ -367,14 +388,13 @@ public class CytoscapeInit {
 	 *             CytoscapeDesktop.parseViewType(CytoscapeInit.getProperties().getProperty("viewType"));
 	 */
 	public static int getViewType() {
-		return CytoscapeDesktop.parseViewType(properties
-				.getProperty("viewType"));
+		return CytoscapeDesktop.parseViewType(properties.getProperty("viewType"));
 	}
 
 	/**
 	 * Gets the ViewThreshold. Networks with number of nodes below this
 	 * threshold will automatically have network views created.
-	 * 
+	 *
 	 * @return view threshold.
 	 * @deprecated Will be removed April 2007. Use getProperty( "viewThreshold" )
 	 *             instead.
@@ -386,7 +406,7 @@ public class CytoscapeInit {
 	/**
 	 * Sets the ViewThreshold. Networks with number of nodes below this
 	 * threshold will automatically have network views created.
-	 * 
+	 *
 	 * @param threshold
 	 *            view threshold.
 	 * @deprecated Will be removed April 2007. Use setProperty( "viewThreshold",
@@ -400,7 +420,7 @@ public class CytoscapeInit {
 	 * Gets the Secondary View Threshold. This value is a secondary check on
 	 * rendering very large networks. It is primarily checked when a user wishes
 	 * to create a view for a large network.
-	 * 
+	 *
 	 * @return threshold value, indicating number of nodes.
 	 * @deprecated Will be removed April 2007. Use getProperty(
 	 *             "secondaryViewThreshold" ) instead.
@@ -413,7 +433,7 @@ public class CytoscapeInit {
 	 * Sets the Secondary View Threshold. This value is a secondary check on
 	 * rendering very large networks. It is primarily checked when a user wishes
 	 * to create a view for a large network.
-	 * 
+	 *
 	 * @param threshold
 	 *            value, indicating number of nodes.
 	 * @deprecated Will be removed April 2007. Use getProperties().setProperty(
@@ -445,10 +465,10 @@ public class CytoscapeInit {
 	 * URLs or resource names. The method first checks to see if the
 	 */
 	private void loadPlugins() {
-
 		try {
 			Set plugins = new HashSet();
 			List p = initParams.getPlugins();
+
 			if (p != null)
 				plugins.addAll(p);
 
@@ -464,7 +484,6 @@ public class CytoscapeInit {
 
 				// If the file name ends with .jar add it to the list as a url.
 				if (plugin.endsWith(".jar")) {
-
 					// If the name doesn't match a url, turn it into one.
 					if (!plugin.matches(FileUtil.urlPattern)) {
 						System.out.println(" - file: " + f.getAbsolutePath());
@@ -490,9 +509,9 @@ public class CytoscapeInit {
 					for (int j = 0; j < fileList.length; j++) {
 						if (!fileList[j].endsWith(".jar"))
 							continue;
+
 						pluginURLs.add(jarURL(f.getAbsolutePath()
-								+ System.getProperty("file.separator")
-								+ fileList[j]));
+						                      + System.getProperty("file.separator") + fileList[j]));
 					}
 
 					// Assume the file is a manifest (i.e. list of jar names)
@@ -503,29 +522,26 @@ public class CytoscapeInit {
 					try {
 						TextHttpReader reader = new TextHttpReader(plugin);
 						reader.read();
+
 						String text = reader.getText();
 						String lineSep = System.getProperty("line.separator");
 						String[] allLines = text.split(lineSep);
+
 						for (int j = 0; j < allLines.length; j++) {
 							String pluginLoc = allLines[j];
+
 							if (pluginLoc.endsWith(".jar")) {
 								if (pluginLoc.matches(FileUtil.urlPattern))
 									pluginURLs.add(pluginLoc);
 								else
-									System.err
-											.println("Plugin location specified in "
-													+ plugin
-													+ " is not a valid url: "
-													+ pluginLoc
-													+ " -- NOT adding it.");
-
+									System.err.println("Plugin location specified in " + plugin
+									                   + " is not a valid url: " + pluginLoc
+									                   + " -- NOT adding it.");
 							}
 						}
 					} catch (Exception exp) {
 						exp.printStackTrace();
-						System.err
-								.println("error reading plugin manifest file "
-										+ plugin);
+						System.err.println("error reading plugin manifest file " + plugin);
 					}
 				}
 			}
@@ -533,12 +549,10 @@ public class CytoscapeInit {
 			// now load the plugins in the appropriate manner
 			loadURLPlugins(pluginURLs);
 			loadResourcePlugins(resourcePlugins);
-
 		} catch (Exception e) {
 			System.out.println("failed loading plugin!");
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -547,9 +561,9 @@ public class CytoscapeInit {
 	 * that are CytoscapePlugins
 	 */
 	private void loadURLPlugins(Set plugin_urls) {
-
 		URL[] urls = new URL[plugin_urls.size()];
 		int count = 0;
+
 		for (Iterator iter = plugin_urls.iterator(); iter.hasNext();) {
 			urls[count] = (URL) iter.next();
 			count++;
@@ -564,9 +578,9 @@ public class CytoscapeInit {
 			System.out.println("");
 			System.out.println("attempting to load plugin url: ");
 			System.out.println(urls[i]);
+
 			try {
-				JarURLConnection jc = (JarURLConnection) urls[i]
-						.openConnection();
+				JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
 				JarFile jar = jc.getJarFile();
 
 				// if the jar file is null, do nothing
@@ -576,13 +590,17 @@ public class CytoscapeInit {
 
 				// try the new school way of loading plugins
 				Manifest m = jar.getManifest();
-				if ( m != null ) {
+
+				if (m != null) {
 					String className = m.getMainAttributes().getValue("Cytoscape-Plugin");
-					if ( className != null ) {
+
+					if (className != null) {
 						Class pc = getPluginClass(className);
-						if ( pc != null ) {
+
+						if (pc != null) {
 							System.out.println("Loading from manifest");
-							loadPlugin( pc );
+							loadPlugin(pc);
+
 							continue;
 						}
 					}
@@ -590,6 +608,7 @@ public class CytoscapeInit {
 
 				// new-school failed, so revert to old school 
 				Enumeration entries = jar.entries();
+
 				if (entries == null) {
 					continue;
 				}
@@ -597,7 +616,6 @@ public class CytoscapeInit {
 				int totalPlugins = 0;
 
 				while (entries.hasMoreElements()) {
-
 					// get the entry
 					String entry = entries.nextElement().toString();
 
@@ -611,22 +629,25 @@ public class CytoscapeInit {
 						entry = entry.replaceAll("/|\\\\", ".");
 
 						Class pc = getPluginClass(entry);
-						if ( pc == null )
+
+						if (pc == null)
 							continue;
 
 						totalPlugins++;
 						loadPlugin(pc);
-						break; 
+
+						break;
 					}
 				}
+
 				if (totalPlugins == 0)
 					System.out.println("No plugin found in specified jar - assuming it's a library.");
-
 			} catch (Exception e) {
 				System.out.println("Couldn't load plugin url!");
 				System.err.println("Error: " + e.getMessage());
 			}
 		}
+
 		System.out.println("");
 	}
 
@@ -635,26 +656,34 @@ public class CytoscapeInit {
 		for (Iterator rpi = rp.iterator(); rpi.hasNext();) {
 			String resource = (String) rpi.next();
 			System.out.println("");
-			System.out.println("attempting to load plugin resourse: "
-					+ resource);
+			System.out.println("attempting to load plugin resourse: " + resource);
+
 			// try to get the class
 			Class rclass = null;
+
 			try {
 				rclass = Class.forName(resource);
 			} catch (Exception exc) {
 				System.out.println("Getting class: " + resource + " failed");
 				exc.printStackTrace();
+
 				return;
 			}
+
 			loadPlugin(rclass);
 		}
+
 		System.out.println("");
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param plugin DOCUMENT ME!
+	 */
 	public void loadPlugin(Class plugin) {
-
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)
-				&& !loadedPlugins.contains(plugin.getName())) {
+		    && !loadedPlugins.contains(plugin.getName())) {
 			try {
 				CytoscapePlugin.loadPlugin(plugin);
 				loadedPlugins.add(plugin.getName());
@@ -667,24 +696,29 @@ public class CytoscapeInit {
 	/**
 	 * Determines whether the class with a particular name extends
 	 * CytoscapePlugin.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the putative plugin class
 	 */
 	protected Class getPluginClass(String name) {
 		Class c = null;
+
 		try {
 			c = classLoader.loadClass(name);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+
 			return null;
 		} catch (NoClassDefFoundError e) {
 			e.printStackTrace();
+
 			return null;
 		}
-		if ( CytoscapePlugin.class.isAssignableFrom(c) )
+
+		if (CytoscapePlugin.class.isAssignableFrom(c))
 			return c;
 		else
+
 			return null;
 	}
 
@@ -692,9 +726,9 @@ public class CytoscapeInit {
 	 * @return the most recently used directory
 	 */
 	public static File getMRUD() {
-		if ( mrud == null )
-			mrud = new File(properties.getProperty("mrud", System
-				            .getProperty("user.dir")));
+		if (mrud == null)
+			mrud = new File(properties.getProperty("mrud", System.getProperty("user.dir")));
+
 		return mrud;
 	}
 
@@ -744,15 +778,17 @@ public class CytoscapeInit {
 
 	/**
 	 * If .cytoscape directory does not exist, it creates it and returns it
-	 * 
+	 *
 	 * @return the directory ".cytoscape" in the users home directory.
 	 */
 	public static File getConfigDirectory() {
 		File dir = null;
+
 		try {
 			String dirName = properties.getProperty("alternative.config.dir",
-					System.getProperty("user.home"));
+			                                        System.getProperty("user.home"));
 			File parent_dir = new File(dirName, ".cytoscape");
+
 			if (parent_dir.mkdir())
 				System.err.println("Parent_Dir: " + parent_dir + " created.");
 
@@ -760,35 +796,50 @@ public class CytoscapeInit {
 		} catch (Exception e) {
 			System.err.println("error getting config directory");
 		}
+
 		return null;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param file_name DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static File getConfigFile(String file_name) {
 		try {
 			File parent_dir = getConfigDirectory();
 			File file = new File(parent_dir, file_name);
+
 			if (file.createNewFile())
 				System.err.println("Config file: " + file + " created.");
-			return file;
 
+			return file;
 		} catch (Exception e) {
 			System.err.println("error getting config file:" + file_name);
 		}
+
 		return null;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static Properties getVisualProperties() {
 		return visualProperties;
 	}
 
-	private static void loadStaticProperties(String defaultName,
-			Properties props) {
+	private static void loadStaticProperties(String defaultName, Properties props) {
 		if (props == null) {
 			System.out.println("input props is null");
 			props = new Properties();
 		}
 
 		String tryName = "";
+
 		try {
 			// load the props from the jar file
 			tryName = "cytoscape.jar";
@@ -798,41 +849,41 @@ public class CytoscapeInit {
 			ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
 			URL vmu = null;
+
 			if (cl != null)
 				vmu = cl.getResource(defaultName);
 			else
-				System.out
-						.println("ClassLoader for reading cytoscape.jar is null");
+				System.out.println("ClassLoader for reading cytoscape.jar is null");
 
 			if (vmu != null)
 				props.load(vmu.openStream());
 			else
-				System.out.println("couldn't read " + defaultName + " from "
-						+ tryName);
+				System.out.println("couldn't read " + defaultName + " from " + tryName);
 
 			// load the props file from $HOME/.cytoscape
 			tryName = "$HOME/.cytoscape";
+
 			File vmp = CytoscapeInit.getConfigFile(defaultName);
+
 			if (vmp != null)
 				props.load(new FileInputStream(vmp));
 			else
-				System.out.println("couldn't read " + defaultName + " from "
-						+ tryName);
-
+				System.out.println("couldn't read " + defaultName + " from " + tryName);
 		} catch (IOException ioe) {
 			System.err.println("couldn't open " + tryName + " " + defaultName
-					+ " file - creating a hardcoded default");
+			                   + " file - creating a hardcoded default");
 			ioe.printStackTrace();
 		}
-
 	}
 
 	private static void loadExpressionFiles() {
 		// load expression data if specified
 		List ef = initParams.getExpressionFiles();
-		if (ef != null && ef.size() > 0) {
+
+		if ((ef != null) && (ef.size() > 0)) {
 			for (Iterator iter = ef.iterator(); iter.hasNext();) {
 				String expDataFilename = (String) iter.next();
+
 				if (expDataFilename != null) {
 					try {
 						Cytoscape.loadExpressionData(expDataFilename, true);
@@ -846,17 +897,21 @@ public class CytoscapeInit {
 
 	private static URL jarURL(String urlString) {
 		URL url = null;
+
 		try {
 			String uString;
+
 			if (urlString.matches(FileUtil.urlPattern))
 				uString = "jar:" + urlString + "!/";
 			else
 				uString = "jar:file:" + urlString + "!/";
+
 			url = new URL(uString);
 		} catch (MalformedURLException mue) {
 			mue.printStackTrace();
 			System.out.println("couldn't create jar url from '" + urlString + "'");
 		}
+
 		return url;
 	}
 
@@ -865,12 +920,15 @@ public class CytoscapeInit {
 
 		// Turn off the network panel (for loading speed)
 		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(false);
+
 		try {
 			String sessionName = "";
+
 			if (sessionFile != null) {
 				Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
 				Cytoscape.createNewSession();
 				Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
+
 				CytoscapeSessionReader reader = null;
 
 				if (sessionFile.matches(FileUtil.urlPattern)) {
@@ -879,6 +937,7 @@ public class CytoscapeInit {
 					sessionName = u.getFile();
 				} else {
 					Cytoscape.setCurrentSessionFileName(sessionFile);
+
 					File shortName = new File(sessionFile);
 					URL sessionURL = shortName.toURL();
 					reader = new CytoscapeSessionReader(sessionURL);
@@ -887,18 +946,19 @@ public class CytoscapeInit {
 
 				if (reader != null) {
 					reader.read();
-					Cytoscape.getDesktop().setTitle( "Cytoscape Desktop (Session Name: "
-										+ sessionName + ")");
+					Cytoscape.getDesktop()
+					         .setTitle("Cytoscape Desktop (Session Name: " + sessionName + ")");
+
 					return true;
 				}
-			} 
-
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("couldn't create session from file: '" + sessionFile + "'");
 		} finally {
 			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(true);
 		}
+
 		return false;
 	}
 
@@ -934,24 +994,32 @@ public class CytoscapeInit {
 			}
 		};
 
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				attsChangeListener);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(attsChangeListener);
 	}
-
 
 	// Load all requested networks
 	private void loadNetworks() {
 		for (Iterator i = initParams.getGraphFiles().iterator(); i.hasNext();) {
 			String net = (String) i.next();
 			System.out.println("Load: " + net);
+
 			CyNetwork network = null;
 
-			// be careful not to assume that a view has been created
-			if (initParams.getMode() == CyInitParams.GUI
-					|| initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)
-				network = Cytoscape.createNetworkFromFile(net, true);
-			else
-				network = Cytoscape.createNetworkFromFile(net, false);
+            boolean createView = false;
+            if ((initParams.getMode() == CyInitParams.GUI)
+                || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
+                createView = true;
+
+            if ( net.matches(FileUtil.urlPattern) ) {
+                try {
+                    network = Cytoscape.createNetworkFromURL(new URL(net), createView);
+                } catch ( MalformedURLException mue ) {
+                    mue.printStackTrace();
+                    System.out.println("Couldn't load network.  Bad URL!");
+                }
+            } else {
+                network = Cytoscape.createNetworkFromFile(net, createView);
+            }
 
 			// This is for browser and other plugins.
 			Object[] ret_val = new Object[3];
@@ -959,18 +1027,17 @@ public class CytoscapeInit {
 			ret_val[1] = net;
 			ret_val[2] = new Integer(0);
 
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null,
-					ret_val);
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 		}
 	}
 
 	// load any specified data attribute files
 	private void loadAttributes() {
 		try {
-			Cytoscape.loadAttributes((String[]) initParams
-					.getNodeAttributeFiles().toArray(new String[] {}),
-					(String[]) initParams.getEdgeAttributeFiles().toArray(
-							new String[] {}));
+			Cytoscape.loadAttributes((String[]) initParams.getNodeAttributeFiles()
+			                                              .toArray(new String[] {  }),
+			                         (String[]) initParams.getEdgeAttributeFiles()
+			                                              .toArray(new String[] {  }));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			System.out.println("failure loading specified attributes");
