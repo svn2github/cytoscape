@@ -1020,13 +1020,22 @@ public class CytoscapeInit {
 			System.out.println("Load: " + net);
 
 			CyNetwork network = null;
-
-			// be careful not to assume that a view has been created
+			
+			boolean createView = false;
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
+				createView = true;
+
+			if ( net.matches(FileUtil.urlPattern) ) {
+				try { 
+					network = Cytoscape.createNetworkFromURL(new URL(net), true);
+				} catch ( MalformedURLException mue ) { 
+					mue.printStackTrace();
+					System.out.println("Couldn't load network.  Bad URL!");
+				}
+			} else {
 				network = Cytoscape.createNetworkFromFile(net, true);
-			else
-				network = Cytoscape.createNetworkFromFile(net, false);
+			}
 
 			// This is for browser and other plugins.
 			Object[] ret_val = new Object[3];
