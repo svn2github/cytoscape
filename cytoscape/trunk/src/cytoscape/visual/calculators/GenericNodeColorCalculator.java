@@ -88,12 +88,13 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
 	}
 
 	protected String getClassName() {
-		if (colType == VizMapUI.NODE_COLOR)
+		if (getType() == VizMapUI.NODE_COLOR)
 			return "cytoscape.visual.calculators.GenericNodeFillColorCalculator";
 
-		if (colType == VizMapUI.NODE_BORDER_COLOR)
+		if (getType() == VizMapUI.NODE_BORDER_COLOR)
 			return "cytoscape.visual.calculators.GenericNodeBorderColorCalculator";
 
+		System.out.println("GenericNodeColorCalculator unknown type:  " + getType() + " " + colType);
 		return getClass().getName();
 	}
 

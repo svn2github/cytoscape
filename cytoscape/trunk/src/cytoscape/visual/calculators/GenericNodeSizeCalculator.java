@@ -93,14 +93,16 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
 	}
 
 	protected String getClassName() {
-		if (sizeType == VizMapUI.NODE_SIZE)
+		if (getType() == VizMapUI.NODE_SIZE)
 			return "cytoscape.visual.calculators.GenericNodeUniformSizeCalculator";
 
-		if (sizeType == VizMapUI.NODE_WIDTH)
+		if (getType() == VizMapUI.NODE_WIDTH)
 			return "cytoscape.visual.calculators.GenericNodeWidthCalculator";
 
-		if (sizeType == VizMapUI.NODE_HEIGHT)
+		if (getType() == VizMapUI.NODE_HEIGHT)
 			return "cytoscape.visual.calculators.GenericNodeHeightCalculator";
+
+		System.out.println("GenericNodeSizeCalculator unknown type: " + getType() + " " + sizeType);
 
 		return getClass().getName();
 	}
