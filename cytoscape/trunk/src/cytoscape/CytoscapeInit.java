@@ -1028,13 +1028,13 @@ public class CytoscapeInit {
 
 			if ( net.matches(FileUtil.urlPattern) ) {
 				try { 
-					network = Cytoscape.createNetworkFromURL(new URL(net), true);
+					network = Cytoscape.createNetworkFromURL(new URL(net), createView);
 				} catch ( MalformedURLException mue ) { 
 					mue.printStackTrace();
 					System.out.println("Couldn't load network.  Bad URL!");
 				}
 			} else {
-				network = Cytoscape.createNetworkFromFile(net, true);
+				network = Cytoscape.createNetworkFromFile(net, createView);
 			}
 
 			// This is for browser and other plugins.
