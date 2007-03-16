@@ -98,13 +98,17 @@ public class BRQuickFindConfigDialog extends JDialog {
 	private static final String BUTTON_TEXT = "Select";
 
 	private static final String FILE_SELECT_BUTTON_TEXT = "Load attributes from file";
+	
+	private static final String HELP_BUTTON_TEXT = "Help";
 
 	/**
-	 * Apply Button.
+	 * Apply Button, Attributes Button and Help Button.
 	 */
 	private JButton applyButton;
 
 	private JButton fileBrowserButton;
+	
+	private JButton helpButton;
 
 	// AJK: 11/15/06 BEGIN
 	// make LayoutRegion non-static so that we can label different regions
@@ -196,9 +200,20 @@ public class BRQuickFindConfigDialog extends JDialog {
 	 * @return JPanel Object.
 	 */
 	private JPanel createButtonPanel() {
-		JPanel buttonPanel = new JPanel();
+		JPanel buttonPanel = new JPanel (); 
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-
+		
+        
+		// Help Button 03/14/07
+		
+		helpButton = new JButton(HELP_BUTTON_TEXT);
+		
+		helpButton.addActionListener(new ActionListener() {
+			private String helpURL = "http://www.genmapp.org/InteractiveLayout/index.htm";
+			public void actionPerformed(ActionEvent e) {
+			cytoscape.util.OpenBrowser.openURL(helpURL);
+			}});
+		
 		// Cancel Button
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
@@ -216,8 +231,11 @@ public class BRQuickFindConfigDialog extends JDialog {
 			}
 		});
 		buttonPanel.add(Box.createHorizontalGlue());
+		buttonPanel.add(helpButton); 
+		buttonPanel.add(Box.createRigidArea(new Dimension(15, 0)));
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(applyButton);
+		
 		return buttonPanel;
 	}
 
@@ -464,7 +482,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 			}
 
 		});
-
+		
 		// Obtain Node Attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		//String attributeNames[] = nodeAttributes.getAttributeNames();

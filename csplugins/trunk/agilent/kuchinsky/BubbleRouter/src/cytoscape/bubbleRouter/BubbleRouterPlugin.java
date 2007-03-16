@@ -21,6 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
@@ -110,6 +111,9 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	// AJK: 02/20/07 delete all regions
 	public static String DELETE_ALL_REGIONS = "Delete All Regions";
 
+	// KH: 03/14/07
+	public static String BUBBLE_HELP = "Interactive Layout Help";
+	
 	public static String UNCROSS_EDGES = "Uncross Edges";
 
 	JPopupMenu menu = new JPopupMenu("Layout Region");
@@ -158,6 +162,19 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Cytoscape.getDesktop().getCyMenus().getLayoutMenu().add(
 				deleteAllRegionsItem);
 		// AJK: 02/20/07 END
+		
+		// KH: 03/14/07 BEGIN
+		// Add BubbleRouter Help to menu
+		
+		JMenuItem getBubbleHelp = new JMenuItem(
+				BubbleRouterPlugin.BUBBLE_HELP);
+		GetBubbleHelpListener getBubbleHelpListener = new GetBubbleHelpListener();
+		getBubbleHelp.addActionListener(getBubbleHelpListener);
+		Cytoscape.getDesktop().getCyMenus().getHelpMenu().add(new JSeparator());
+		Cytoscape.getDesktop().getCyMenus().getHelpMenu().add(
+				getBubbleHelp);
+		
+		// KH: 03/14/07 END
 
 		// AJK: 12/28/06 save cursor for restoration after move/stretch
 		savedCursor = Cytoscape.getDesktop().getCursor();
@@ -753,6 +770,16 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 	}
 	
+	//KH: 03/14/07
+	class GetBubbleHelpListener implements ActionListener {
+		private String helpURL = "http://www.genmapp.org/InteractiveLayout/index.htm";
+		public void actionPerformed(ActionEvent ae) {
+		cytoscape.util.OpenBrowser.openURL(helpURL);
+	}
+		
+	
+	
+}
 	// AJK: 02/20/07 END
 	
 	// AJK: 12/01/06 END
