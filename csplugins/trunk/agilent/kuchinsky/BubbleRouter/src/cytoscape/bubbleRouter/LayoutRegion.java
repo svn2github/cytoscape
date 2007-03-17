@@ -604,7 +604,7 @@ public class LayoutRegion extends JComponent
 			System.out.println("VAL= " + val + "; REGION= " + regionAttributeValue);
 			// loop through elements in array below and match
 
-			if ((!(val == null) && (!val.equals("null")))) {
+			if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
 				System.out.println("this.regionAttributeValue = "
 						+ this.regionAttributeValue);
 				// if
