@@ -603,7 +603,8 @@ public class LayoutRegion extends JComponent
 			}
 			System.out.println("VAL= " + val + "; REGION= " + regionAttributeValue);
 			// loop through elements in array below and match
-			if (!val.equals("null")) {
+
+			if ((!(val == null) && (!val.equals("null")))) {
 				System.out.println("this.regionAttributeValue = "
 						+ this.regionAttributeValue);
 				// if
@@ -653,9 +654,15 @@ public class LayoutRegion extends JComponent
 
 			// AP: 2/25/07 add automatic edge minimization following region
 			// routing
-			UnCrossAction.unCross(Cytoscape.getCurrentNetworkView()
-					.getSelectedNodes());
+			// AJK: 03/17/07 for performance reasons, only call unCross if we are below a certain 
+			//     threshold for network size
+			if (Cytoscape.getCurrentNetwork().getNodeCount() < UnCrossAction.UNCROSS_THRESHOLD)
+			{
+				UnCrossAction.unCross(Cytoscape.getCurrentNetworkView()
+						.getSelectedNodes());
 
+			}
+	
 			// AJK: 11/15/06 BEGIN
 			// undo/redo facility
 			for (int k = 0; k < _selectedNodeViews.length; k++) {

@@ -44,8 +44,6 @@ import cytoscape.view.CytoscapeDesktop;
 
 class UnCrossAction extends CytoscapeAction {
 
-
-
 	private static List _selectedNodes;
 
 	/**
@@ -138,17 +136,22 @@ class UnCrossAction extends CytoscapeAction {
 	 */
 	// for debugging set to 1
 	private static final int ITERATION_LIMIT = 10; // play with this via
+	
+	/**
+	 * for performance reasons, set threshold so that this doesn't execute with large networks
+	 */
+	public static final int UNCROSS_THRESHOLD = 50;
 
 	// heuristics on performance
 
 	private static int iteration = 0;
 
 	public UnCrossAction() {
-//		super("Minimize Edge Crossings for Selected Nodes");
-//		setPreferredMenu("Layout");
-		//Note: Alt-U is used by default on MacOS; use Alt-X instead
-//		setAcceleratorCombo(java.awt.event.KeyEvent.VK_X,
-//				ActionEvent.ALT_MASK);
+		// super("Minimize Edge Crossings for Selected Nodes");
+		// setPreferredMenu("Layout");
+		// Note: Alt-U is used by default on MacOS; use Alt-X instead
+		// setAcceleratorCombo(java.awt.event.KeyEvent.VK_X,
+		// ActionEvent.ALT_MASK);
 	}
 
 	public UnCrossAction(boolean label) {
@@ -156,7 +159,7 @@ class UnCrossAction extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-//		unCross(Cytoscape.getCurrentNetworkView().getSelectedNodes());
+		// unCross(Cytoscape.getCurrentNetworkView().getSelectedNodes());
 	}
 
 	public List get_selectedNodes() {
@@ -167,30 +170,53 @@ class UnCrossAction extends CytoscapeAction {
 		_selectedNodes = nodes;
 	}
 
-	// AP: 2.25.07 now takes list of nodes WITHIN bounds of a region
+	// AJK: 03/15/07 BEGIN
+	// don't do undo/redo logic if called by a higher-level action, such as
+	// reroute region
+
 	public static void unCross(List nodes) {
+		unCross(nodes, true);
+	}
+
+	// AP: 2.25.07 now takes list of nodes WITHIN bounds of a region
+	public static void unCross(List nodes, boolean calledByEndUser) {
+
+		// AP: 2/25/07 warn if no nodes are selected
+		if (nodes.size() <= 0) {
+			JOptionPane
+					.showMessageDialog(Cytoscape.getDesktop(),
+							"You must first select some nodes in order to minimize edge crossings.");
+			return;
 		
-		//AP: 2/25/07 warn if no nodes are selected
-		if (nodes.size() <= 0)
+		} 
+		else if (Cytoscape.getCurrentNetwork().getNodeCount() > UNCROSS_THRESHOLD)
 		{
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-					"You must first select some nodes in order to minimize edge crossings.");
-			return;	
+			if (calledByEndUser)
+			{
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+						"Sorry, this network is too large to run incremental edge cross miminization." + 
+						"\nYou should one of the automated layout tools instead.");
+			}
+			return;
 		}
+		
 		else {
-		UnCrossAction uncross = new UnCrossAction();
+			UnCrossAction uncross = new UnCrossAction();
 
-		Task unCrossTask = uncross.new UnCrossTask(nodes);
-		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
-		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayStatus(true);
-		jTaskConfig.displayTimeElapsed(true);
+			Task unCrossTask = uncross.new UnCrossTask(nodes, calledByEndUser);
+			
+			
+			JTaskConfig jTaskConfig = new JTaskConfig();
+			jTaskConfig.setOwner(Cytoscape.getDesktop());
+			jTaskConfig.displayCloseButton(true);
+			jTaskConfig.displayStatus(true);
+			jTaskConfig.displayTimeElapsed(true);
 
-		jTaskConfig.setAutoDispose(true);
+			jTaskConfig.setAutoDispose(true);
+			
 
-		// Execute Task in New Thread; pops open JTask Dialog Box.
-		TaskManager.executeTask(unCrossTask, jTaskConfig);
+			// Execute Task in New Thread; pops open JTask Dialog Box.
+			TaskManager.executeTask(unCrossTask, jTaskConfig);
 		}
 
 	}
@@ -201,10 +227,19 @@ class UnCrossAction extends CytoscapeAction {
 		boolean interrupted = false;
 
 		private TaskMonitor taskMonitor = null;
+		
 
 		private List nodes;
 
-		public UnCrossTask(List nodeList) {
+		// AJK: 03/15/07 BEGIN
+		// only implement undo/redo logic if we are called by the end user,
+		// rather than by
+		// another class
+		private boolean _calledByEndUser = true;
+
+		public UnCrossTask(List nodeList, boolean needUndo) {
+			_calledByEndUser = needUndo;
+			// AJK: 03/15/07 END
 			nodes = nodeList;
 		}
 
@@ -212,13 +247,15 @@ class UnCrossAction extends CytoscapeAction {
 			if (taskMonitor == null) {
 				throw new IllegalStateException("Task Monitor is not set");
 			}
-			
+
 			initialize(nodes);
 
 			for (int j = 0; j < _nodeViews.length; j++) {
 				_undoOffsets[j] = _nodeViews[j].getOffset();
 			}
 
+
+			
 			for (iteration = 0; iteration < ITERATION_LIMIT; iteration++) {
 				taskMonitor.setStatus("Iteration " + iteration + " of "
 						+ ITERATION_LIMIT);
@@ -238,9 +275,26 @@ class UnCrossAction extends CytoscapeAction {
 					}
 					permuteToBestFit(i);
 				}
-				for (int m = 0; m < _nodeViews.length; m++) {
-					_redoOffsets[m] = _nodeViews[m].getOffset();
+				
+				// AJK: 03/17/2007 BEGIN
+				//    performance tuning
+				if (nodes.size() <= UNCROSS_THRESHOLD)
+				{
+					_view.redrawGraph(true, true);
 				}
+				// AJK: 03/17/2007
+				
+				// _view.updateView();
+			}
+			for (int m = 0; m < _nodeViews.length; m++) {
+				_redoOffsets[m] = _nodeViews[m].getOffset();
+			}
+
+			// AJK: 03/15/07 BEGIN
+			// only implement undo/redo logic if we are called by the end user,
+			// rather than by
+			// another class
+			if (_calledByEndUser) {
 				CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
 
 					public String getPresentationName() {
@@ -270,11 +324,10 @@ class UnCrossAction extends CytoscapeAction {
 						}
 					}
 				});
-
-				_view.redrawGraph(true, true);
-				// _view.updateView();
 			}
-			// _view.redrawGraph(true, true);
+
+			// AJK: 03/17/2007 redraw one last time, just in case we haven't been incrementally redrawing
+			 _view.redrawGraph(true, true);
 		}
 
 		private void initialize(List nodes) {
@@ -375,19 +428,15 @@ class UnCrossAction extends CytoscapeAction {
 					for (int j = 0; j < _nodeViews.length; j++) {
 						NodeView newNv = _nodeViews[j];
 						Point2D locn = newNv.getOffset();
-						
-						// efficiency hack: use cached values for all but 
+
+						// efficiency hack: use cached values for all but
 						// but the candidate and swapped nodeViews
-						if ((j == index) || (j == i))
-						{
-							_afterEdgeCrossings[j] = calculateEdgeCrossings(newNv,
-									locn, null, null);
-						}
-						else
-						{
+						if ((j == index) || (j == i)) {
+							_afterEdgeCrossings[j] = calculateEdgeCrossings(
+									newNv, locn, null, null);
+						} else {
 							_afterEdgeCrossings[j] = _beforeEdgeCrossings[j];
 						}
-						
 
 						// for debugging
 						// System.out.println (newNv.getNode().getIdentifier()
@@ -422,17 +471,16 @@ class UnCrossAction extends CytoscapeAction {
 				// movement
 				NodeView swapNv = _nodeViews[_index_for_best_fit];
 				_tmpPoint = swapNv.getOffset();
-				swapNv.setOffset(_nodeViews[index].getXPosition()
-						,
-//						- (0.1 * swapNv.getWidth())
-//						+ (0.2* Math.random() * swapNv.getWidth()),
+				swapNv.setOffset(_nodeViews[index].getXPosition(),
+				// - (0.1 * swapNv.getWidth())
+						// + (0.2* Math.random() * swapNv.getWidth()),
 
 						_nodeViews[index].getYPosition());
-				_nodeViews[index].setOffset(_tmpPoint.getX()
-						,
+				_nodeViews[index].setOffset(_tmpPoint.getX(),
 
-						//						- (0.1 * _nodeViews[index].getWidth())
-//						+ (0.2 * Math.random() * _nodeViews[index].getWidth()),
+				// - (0.1 * _nodeViews[index].getWidth())
+						// + (0.2 * Math.random() *
+						// _nodeViews[index].getWidth()),
 						_tmpPoint.getY());
 				_totalEdgeCrossings[_index_for_best_fit] = _totalEdgeCrossings[index];
 				_totalEdgeCrossings[index] = _nbr_crossings_for_best_fit;
@@ -714,6 +762,5 @@ class UnCrossAction extends CytoscapeAction {
 	 * return new Line2D.Double (sourceLocn.getX(), sourceLocn.getY(),
 	 * targetLocn.getX(), targetLocn.getY()); }
 	 */
-
 
 }
