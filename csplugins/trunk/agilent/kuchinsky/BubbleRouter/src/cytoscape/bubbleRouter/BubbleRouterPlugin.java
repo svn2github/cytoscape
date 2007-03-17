@@ -5,6 +5,7 @@ import giny.view.NodeView;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -13,7 +14,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import javax.swing.undo.AbstractUndoableEdit;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
@@ -62,20 +63,28 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	private static final int BOTTOM_RIGHT = 8;
 
+	private static Point2D[] _undoOffsets;
+
+	private static Point2D[] _redoOffsets;
+
+	/**
+	 * Array of NodeViews
+	 */
+	private static NodeView[] _nodeViews;
+
 	private int onEdge = NOT_ON_EDGE;
 
 	private int edgeTolerance = 5; // number of pixels 'cushion' for edge
-	
+
 	private Cursor savedCursor;
-	
+
 	private LayoutRegion changedCursorRegion = null;
-	
-	// need to store region being stretched and edge being stretched because 
+
+	// need to store region being stretched and edge being stretched because
 	// mouse movement may get ahead of the stretching.
 	private LayoutRegion regionToStretch = null;
-	
+
 	private int edgeBeingStretched = NOT_ON_EDGE;
-	
 
 	// selection
 	// AJK: 12/24/06 END
@@ -106,6 +115,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 * for popup menu
 	 */
 	public static String DELETE_REGION = "Delete Region";
+
 	public static String REROUTE_REGION = "Reroute Region";
 
 	// AJK: 02/20/07 delete all regions
@@ -113,12 +123,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	// KH: 03/14/07
 	public static String BUBBLE_HELP = "Interactive Layout Help";
-	
+
 	public static String UNCROSS_EDGES = "Uncross Edges";
 
 	JPopupMenu menu = new JPopupMenu("Layout Region");
 
 	LayoutRegion pickedRegion = null;
+
 	private List boundedNodeViews;
 
 	/**
@@ -138,8 +149,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
 		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 				.addMouseListener(this);
-		
-		//AP: 2/25/07 add edge uncross to context menu
+
+		// AP: 2/25/07 add edge uncross to context menu
 		JMenuItem uncrossEdgesItem = new JMenuItem(this.UNCROSS_EDGES);
 		JMenuItem deleteRegionItem = new JMenuItem(this.DELETE_REGION);
 		JMenuItem rerouteRegionItem = new JMenuItem(this.REROUTE_REGION);
@@ -162,38 +173,36 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Cytoscape.getDesktop().getCyMenus().getLayoutMenu().add(
 				deleteAllRegionsItem);
 		// AJK: 02/20/07 END
-		
+
 		// KH: 03/14/07 BEGIN
 		// Add BubbleRouter Help to menu
-		
-		JMenuItem getBubbleHelp = new JMenuItem(
-				BubbleRouterPlugin.BUBBLE_HELP);
+
+		JMenuItem getBubbleHelp = new JMenuItem(BubbleRouterPlugin.BUBBLE_HELP);
 		GetBubbleHelpListener getBubbleHelpListener = new GetBubbleHelpListener();
 		getBubbleHelp.addActionListener(getBubbleHelpListener);
 		Cytoscape.getDesktop().getCyMenus().getHelpMenu().add(new JSeparator());
-		Cytoscape.getDesktop().getCyMenus().getHelpMenu().add(
-				getBubbleHelp);
-		
+		Cytoscape.getDesktop().getCyMenus().getHelpMenu().add(getBubbleHelp);
+
 		// KH: 03/14/07 END
 
 		// AJK: 12/28/06 save cursor for restoration after move/stretch
 		savedCursor = Cytoscape.getDesktop().getCursor();
-		
-		// AJK: 1/2/07 add edge cross minimization functionality
-//		UnCrossAction uncross = new UnCrossAction();
-//		Cytoscape.getDesktop().getCyMenus().addAction(uncross);
 
-//		MainPluginAction mpa = new MainPluginAction();
-//		mpa.initializeBubbleRouter();
+		// AJK: 1/2/07 add edge cross minimization functionality
+		// UnCrossAction uncross = new UnCrossAction();
+		// Cytoscape.getDesktop().getCyMenus().addAction(uncross);
+
+		// MainPluginAction mpa = new MainPluginAction();
+		// mpa.initializeBubbleRouter();
 
 	}
 
 	public void mouseDragged(MouseEvent e) {
 		// If a dragging operation is in progress, get the new
 		// values for mousex and mousey, and repaint.
-		
+
 		onEdge = calculateOnEdge(e.getPoint(), pickedRegion);
-//		.out.println ("OnEdge = " + onEdge);
+		// .out.println ("OnEdge = " + onEdge);
 		if (e.isShiftDown() && !dragging) {
 			dragging = true;
 			startx = e.getX();
@@ -209,25 +218,27 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		// AJK: 12/24/06 BEGIN
 		// moving and stretching
 		// TODO: refactor to remove redundancies
-		else if ((onEdge == NOT_ON_EDGE) && (!moving) && (!stretching) && (pickedRegion != null)) {
+		else if ((onEdge == NOT_ON_EDGE) && (!moving) && (!stretching)
+				&& (pickedRegion != null)) {
 			moving = true;
 			stretching = false;
 			startx = e.getX();
 			starty = e.getY();
 			startPoint = e.getPoint();
-		
+
 			System.out.println("setting cursor from: "
 					+ Cytoscape.getDesktop().getCursor());
 			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
 					.getPredefinedCursor(Cursor.HAND_CURSOR));
-//			Cytoscape.getDesktop().setCursor(
-//			Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			
-//			Cytoscape.getCurrentNetworkView().getComponent().setCursor(
-//					Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			System.out.println ("setting cursor to: " + Cytoscape.getDesktop().getCursor());
-//			System.out.println("Region start point = " + pickedRegion.getX1()
-//					+ "," + pickedRegion.getY1());
+			// Cytoscape.getDesktop().setCursor(
+			// Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+			// Cytoscape.getCurrentNetworkView().getComponent().setCursor(
+			// Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			System.out.println("setting cursor to: "
+					+ Cytoscape.getDesktop().getCursor());
+			// System.out.println("Region start point = " + pickedRegion.getX1()
+			// + "," + pickedRegion.getY1());
 			e.consume(); // don't have canvas draw drag rect
 			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 					.setSelecting(false);
@@ -239,16 +250,15 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			if (pickedRegion != null) {
 				pickedRegion.setX1(pickedRegion.getX1() + mousex - startx);
 				pickedRegion.setY1(pickedRegion.getY1() + mousey - starty);
-// AJK: 01/09/07: use double coordinates to avoid roundoff
-//				pickedRegion.setBounds((int) pickedRegion.getX1(),
-//						(int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
-//						(int) pickedRegion.getH1());
-				pickedRegion.setBounds(pickedRegion.getX1(),
-						 pickedRegion.getY1(),  pickedRegion.getW1(),
-						 pickedRegion.getH1());
+				// AJK: 01/09/07: use double coordinates to avoid roundoff
+				// pickedRegion.setBounds((int) pickedRegion.getX1(),
+				// (int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
+				// (int) pickedRegion.getH1());
+				pickedRegion.setBounds(pickedRegion.getX1(), pickedRegion
+						.getY1(), pickedRegion.getW1(), pickedRegion.getH1());
 
-				NodeViewsTransformer.transform(boundedNodeViews,
-						pickedRegion.getBounds());
+				NodeViewsTransformer.transform(boundedNodeViews, pickedRegion
+						.getBounds());
 				// System.out.println ("Region start point set to = " +
 				// pickedRegion.getX1() + "," + pickedRegion.getY1());
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
@@ -262,7 +272,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			return;
 
 		}
-		
+
 		if ((onEdge != NOT_ON_EDGE) && !stretching) {
 			stretching = true;
 			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
@@ -272,9 +282,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			startPoint = e.getPoint();
 			regionToStretch = pickedRegion;
 			edgeBeingStretched = onEdge;
-		}
-		else if (stretching)
-		{
+		} else if (stretching) {
 			stretchRegion(regionToStretch, edgeBeingStretched, e);
 		}
 		// AJK: 12/26/06 END
@@ -304,13 +312,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		edgeBeingStretched = NOT_ON_EDGE;
 		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 				.setSelecting(true);
-//		if (pickedRegion != null)
-//		{
-//			pickedRegion.setCursor(savedCursor);
-//		}
-		recursiveSetCursor(Cytoscape.getDesktop(), 
-				Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		
+		// if (pickedRegion != null)
+		// {
+		// pickedRegion.setCursor(savedCursor);
+		// }
+		recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+				.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
 		// AJK: 12/24/06 END
 	}
 
@@ -322,64 +330,55 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	public void mousePressed(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON3) {
-			setRegionSelection (e);
+			setRegionSelection(e);
 			processRegionContextMenu(e);
 		} else {
 			menu.setVisible(false);
 			// TODO: refactor processRegionMousePressEvent
 			// AJK: 02/20/07 process selection/deselection of region
-			setRegionSelection (e);
+			setRegionSelection(e);
 		}
 	}
 
 	public void mouseMoved(MouseEvent e) {
-		LayoutRegion overRegion = LayoutRegionManager.getPickedLayoutRegion(e.getPoint());
-		int hoveringOnEdge = calculateOnEdge(e.getPoint(), overRegion);	
-		if (hoveringOnEdge == NOT_ON_EDGE)
-		{
-			if (changedCursorRegion != null)
-			{
-				recursiveSetCursor(Cytoscape.getDesktop(), 
-						Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		LayoutRegion overRegion = LayoutRegionManager.getPickedLayoutRegion(e
+				.getPoint());
+		int hoveringOnEdge = calculateOnEdge(e.getPoint(), overRegion);
+		if (hoveringOnEdge == NOT_ON_EDGE) {
+			if (changedCursorRegion != null) {
+				recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				changedCursorRegion = null;
 			}
-		}
-		else
-		{
-			if ((changedCursorRegion != null) && (changedCursorRegion != overRegion))
-			{
-				recursiveSetCursor(Cytoscape.getDesktop(), 
-						Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));	
-//				changedCursorRegion.setCursor(changedCursorRegion.getSavedCursor());
+		} else {
+			if ((changedCursorRegion != null)
+					&& (changedCursorRegion != overRegion)) {
+				recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				// changedCursorRegion.setCursor(changedCursorRegion.getSavedCursor());
 				changedCursorRegion = overRegion;
-				setResizeCursor (changedCursorRegion, hoveringOnEdge);
+				setResizeCursor(changedCursorRegion, hoveringOnEdge);
 			}
 		}
 	}
 
-
-	
 	// AJK: 02/20/07 BEGIN
-	//       Selection/Deselection of a region on mouse click or mouse press
-	
-	public void mouseClicked (MouseEvent e)
-	{
-		setRegionSelection (e);
-		
+	// Selection/Deselection of a region on mouse click or mouse press
+
+	public void mouseClicked(MouseEvent e) {
+		setRegionSelection(e);
+
 	}
-	
-	public void setRegionSelection (MouseEvent e) {
+
+	public void setRegionSelection(MouseEvent e) {
 		// AJK: 12/24/06 BEGIN
 		// set picked region
 		LayoutRegion oldPickedRegion = pickedRegion;
-		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(e
-				.getPoint());
-		if ((oldPickedRegion != null) && (oldPickedRegion != pickedRegion))
-		{
+		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(e.getPoint());
+		if ((oldPickedRegion != null) && (oldPickedRegion != pickedRegion)) {
 			oldPickedRegion.setSelected(false);
 		}
-		if (pickedRegion != null)
-		{
+		if (pickedRegion != null) {
 			pickedRegion.setSelected(true);
 
 			boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion
@@ -403,8 +402,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	protected void processRegionContextMenu(MouseEvent event) {
 
-//		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(event
-//				.getPoint());
+		// pickedRegion = LayoutRegionManager.getPickedLayoutRegion(event
+		// .getPoint());
 		if (pickedRegion == null) {
 			menu.setVisible(false);
 			return;
@@ -483,124 +482,129 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	}
 
 	// not working
-	
-	private void setResizeCursor (LayoutRegion region, int whichEdge)
-	{
-		if (whichEdge == TOP) { recursiveSetCursor(Cytoscape.getDesktop(),Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR)); }
-		else if (whichEdge == BOTTOM) { recursiveSetCursor(Cytoscape.getDesktop(),Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR)); }
-		else if (whichEdge == LEFT) { recursiveSetCursor(Cytoscape.getDesktop(),Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR)); }
-		else if (whichEdge == RIGHT) { recursiveSetCursor(Cytoscape.getDesktop(),Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR)); }
-		else if (whichEdge == TOP_LEFT) { recursiveSetCursor(Cytoscape.getDesktop(),Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR)); }
-		else if (whichEdge == TOP_RIGHT) { recursiveSetCursor(Cytoscape.getDesktop(),Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR)); }
-		else if (whichEdge == BOTTOM_LEFT) { recursiveSetCursor(Cytoscape.getDesktop(),Cursor.getPredefinedCursor(Cursor.SW_RESIZE_CURSOR)); }
-		else if (whichEdge == BOTTOM_RIGHT) { recursiveSetCursor(Cytoscape.getDesktop(),Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR)); }
+
+	private void setResizeCursor(LayoutRegion region, int whichEdge) {
+		if (whichEdge == TOP) {
+			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+					.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
+		} else if (whichEdge == BOTTOM) {
+			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+					.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
+		} else if (whichEdge == LEFT) {
+			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+					.getPredefinedCursor(Cursor.W_RESIZE_CURSOR));
+		} else if (whichEdge == RIGHT) {
+			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+					.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+		} else if (whichEdge == TOP_LEFT) {
+			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+					.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR));
+		} else if (whichEdge == TOP_RIGHT) {
+			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+					.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR));
+		} else if (whichEdge == BOTTOM_LEFT) {
+			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+					.getPredefinedCursor(Cursor.SW_RESIZE_CURSOR));
+		} else if (whichEdge == BOTTOM_RIGHT) {
+			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+					.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
+		}
 	}
-	
-	private void recursiveSetCursor(Container comp, Cursor cursor)
-	{
+
+	private void recursiveSetCursor(Container comp, Cursor cursor) {
 		comp.setCursor(cursor);
 		Component children[] = comp.getComponents();
-		for (int i = 0; i < children.length; i++)
-		{
+		for (int i = 0; i < children.length; i++) {
 			children[i].setCursor(cursor);
-			if (children[i] instanceof Container)
-			{
-				recursiveSetCursor ((Container) children[i], cursor);
+			if (children[i] instanceof Container) {
+				recursiveSetCursor((Container) children[i], cursor);
 			}
 		}
 	}
-	
 
 	private void stretchRegion(LayoutRegion region, int whichEdge,
 			MouseEvent event) {
-//		System.out.println ("Stretching region: " + region + " on edge " + whichEdge);
-//		if ((region == null) || (whichEdge == NOT_ON_EDGE)) {
-//			return;
-//		}
+		// System.out.println ("Stretching region: " + region + " on edge " +
+		// whichEdge);
+		// if ((region == null) || (whichEdge == NOT_ON_EDGE)) {
+		// return;
+		// }
 		mousex = event.getX();
 		mousey = event.getY();
 		nextPoint = event.getPoint();
-		
-		if (whichEdge == TOP)
-		{
-			if (mousey < (regionToStretch.getY1() + regionToStretch.getH1()))
-			{
+
+		if (whichEdge == TOP) {
+			if (mousey < (regionToStretch.getY1() + regionToStretch.getH1())) {
 				regionToStretch.setY1(mousey);
-				regionToStretch.setH1(regionToStretch.getH1() + starty - mousey);
-			}			
-		}
-		else if (whichEdge == BOTTOM)
-		{
-			if (mousey > regionToStretch.getY1())
-			{
-//				System.out.println("stetching from edge: " + whichEdge);
-				regionToStretch.setH1(regionToStretch.getH1() + mousey - starty);
-			}			
-		}
-		else if (whichEdge == LEFT)
-		{
-			if (mousex < (regionToStretch.getX1() + regionToStretch.getW1()))
-			{
+				regionToStretch
+						.setH1(regionToStretch.getH1() + starty - mousey);
+			}
+		} else if (whichEdge == BOTTOM) {
+			if (mousey > regionToStretch.getY1()) {
+				// System.out.println("stetching from edge: " + whichEdge);
+				regionToStretch
+						.setH1(regionToStretch.getH1() + mousey - starty);
+			}
+		} else if (whichEdge == LEFT) {
+			if (mousex < (regionToStretch.getX1() + regionToStretch.getW1())) {
 				regionToStretch.setX1(mousex);
-				regionToStretch.setW1(regionToStretch.getW1() + startx - mousex);
-			}			
-		}		
-		else if (whichEdge == RIGHT)
-		{
-			if (mousex > regionToStretch.getX1())
-			{
-				regionToStretch.setW1(regionToStretch.getW1() + mousex - startx);
-			}			
-		}
-		else if (whichEdge == TOP_LEFT)
-		{
-			if ((mousey < (regionToStretch.getY1() + regionToStretch.getH1()))  &&
-					(mousex < (regionToStretch.getX1() + regionToStretch.getW1())))
-			{
+				regionToStretch
+						.setW1(regionToStretch.getW1() + startx - mousex);
+			}
+		} else if (whichEdge == RIGHT) {
+			if (mousex > regionToStretch.getX1()) {
+				regionToStretch
+						.setW1(regionToStretch.getW1() + mousex - startx);
+			}
+		} else if (whichEdge == TOP_LEFT) {
+			if ((mousey < (regionToStretch.getY1() + regionToStretch.getH1()))
+					&& (mousex < (regionToStretch.getX1() + regionToStretch
+							.getW1()))) {
 				regionToStretch.setY1(mousey);
-				regionToStretch.setH1(regionToStretch.getH1() + starty - mousey);
+				regionToStretch
+						.setH1(regionToStretch.getH1() + starty - mousey);
 				regionToStretch.setX1(mousex);
-				regionToStretch.setW1(regionToStretch.getW1() + startx - mousex);
-			}			
-		}		
-		else if (whichEdge == TOP_RIGHT)
-		{
-			if ((mousey < (regionToStretch.getY1() + regionToStretch.getH1()))  &&
-					(mousex > regionToStretch.getX1()))
-			{
+				regionToStretch
+						.setW1(regionToStretch.getW1() + startx - mousex);
+			}
+		} else if (whichEdge == TOP_RIGHT) {
+			if ((mousey < (regionToStretch.getY1() + regionToStretch.getH1()))
+					&& (mousex > regionToStretch.getX1())) {
 				regionToStretch.setY1(mousey);
-				regionToStretch.setH1(regionToStretch.getH1() + starty - mousey);
-				regionToStretch.setW1(regionToStretch.getW1() + mousex - startx);
-			}			
-		}			
-		else if (whichEdge == BOTTOM_LEFT)
-		{
-			if ((mousey > regionToStretch.getY1())  &&
-					(mousex < (regionToStretch.getX1() + regionToStretch.getW1())))
-			{
-				regionToStretch.setH1(regionToStretch.getH1() + mousey - starty);
+				regionToStretch
+						.setH1(regionToStretch.getH1() + starty - mousey);
+				regionToStretch
+						.setW1(regionToStretch.getW1() + mousex - startx);
+			}
+		} else if (whichEdge == BOTTOM_LEFT) {
+			if ((mousey > regionToStretch.getY1())
+					&& (mousex < (regionToStretch.getX1() + regionToStretch
+							.getW1()))) {
+				regionToStretch
+						.setH1(regionToStretch.getH1() + mousey - starty);
 				regionToStretch.setX1(mousex);
-				regionToStretch.setW1(regionToStretch.getW1() + startx - mousex);
-			}			
-		}		
-		else if (whichEdge == BOTTOM_RIGHT)
-		{
-			if ((mousey > regionToStretch.getY1())  &&
-					(mousex > regionToStretch.getX1()))
-			{
-				regionToStretch.setH1(regionToStretch.getH1() + mousey - starty);;
-				regionToStretch.setW1(regionToStretch.getW1() + mousex - startx);
-			}			
+				regionToStretch
+						.setW1(regionToStretch.getW1() + startx - mousex);
+			}
+		} else if (whichEdge == BOTTOM_RIGHT) {
+			if ((mousey > regionToStretch.getY1())
+					&& (mousex > regionToStretch.getX1())) {
+				regionToStretch
+						.setH1(regionToStretch.getH1() + mousey - starty);
+				;
+				regionToStretch
+						.setW1(regionToStretch.getW1() + mousex - startx);
+			}
 		}
 		// AJK: use double coordinates to avoid roundoff
-//		regionToStretch.setBounds((int) regionToStretch.getX1(), (int) regionToStretch
-//				.getY1(), (int) regionToStretch.getW1(), (int) regionToStretch
-//				.getH1());
-		regionToStretch.setBounds( regionToStretch.getX1(),  regionToStretch
-				.getY1(),  regionToStretch.getW1(),  regionToStretch
-				.getH1());
-		NodeViewsTransformer.transform(boundedNodeViews,
-				regionToStretch.getBounds());
+		// regionToStretch.setBounds((int) regionToStretch.getX1(), (int)
+		// regionToStretch
+		// .getY1(), (int) regionToStretch.getW1(), (int) regionToStretch
+		// .getH1());
+		regionToStretch.setBounds(regionToStretch.getX1(), regionToStretch
+				.getY1(), regionToStretch.getW1(), regionToStretch.getH1());
+		NodeViewsTransformer.transform(boundedNodeViews, regionToStretch
+				.getBounds());
 		// System.out.println ("Region start point set to = " +
 		// regionToStretch.getX1() + "," + regionToStretch.getY1());
 		Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
@@ -644,7 +648,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				// consolidate adding to region list and adding to canvas
 				LayoutRegionManager.addRegion(
 						Cytoscape.getCurrentNetworkView(), region);
-				
 
 				// // Add region to list of regions for this view
 				// LayoutRegionManager.addRegionForView(Cytoscape
@@ -707,42 +710,119 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			String label = ((JMenuItem) ae.getSource()).getText();
 			// Figure out the appropriate action
 			if ((label == DELETE_REGION) && (pickedRegion != null)) {
-//				System.out.println("delete region: "
-//						+ pickedRegion.getAttributeName());
-				LayoutRegionManager.removeRegion(Cytoscape
-						.getCurrentNetworkView(), pickedRegion);
+				// System.out.println("delete region: "
+				// + pickedRegion.getAttributeName());
+
+				// AJK: 03/17/2007 BEGIN
+				// confirm deletion
+				int confirm = JOptionPane.showConfirmDialog(Cytoscape
+						.getDesktop(),
+						"Do you really want to delete this layout region?");
+				if (confirm == JOptionPane.YES_OPTION) {
+
+					LayoutRegionManager.removeRegion(Cytoscape
+							.getCurrentNetworkView(), pickedRegion);
+				}
 
 			} // end of if ()
 			else if ((label == REROUTE_REGION) && (pickedRegion != null)) {
 
 				// AJK: 01/09/06 use double coordinates to avoid roundoff errors
-//				pickedRegion.setBounds((int) pickedRegion.getX1(),
-//						(int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
-//						(int) pickedRegion.getH1());
-				pickedRegion.setBounds( pickedRegion.getX1(),
-						 pickedRegion.getY1(),  pickedRegion.getW1(),
-						 pickedRegion.getH1());
+				// pickedRegion.setBounds((int) pickedRegion.getX1(),
+				// (int) pickedRegion.getY1(), (int) pickedRegion.getW1(),
+				// (int) pickedRegion.getH1());
+				pickedRegion.setBounds(pickedRegion.getX1(), pickedRegion
+						.getY1(), pickedRegion.getW1(), pickedRegion.getH1());
+
+				// AJK: 03/16/07: BEGIN
+				// set up for Undo/Redo
+
+				List myNodeViews = pickedRegion.getNodeViews();
+				Rectangle oldBounds = pickedRegion.getBounds();
+				_nodeViews = new NodeView[myNodeViews.size()];
+				_undoOffsets = new Point2D[myNodeViews.size()];
+				_redoOffsets = new Point2D[myNodeViews.size()];
+
+				System.out.println("_nodeViews = " + _nodeViews + ", length = "
+						+ _nodeViews.length);
+				for (int j = 0; j < _nodeViews.length; j++) {
+					_nodeViews[j] = (NodeView) myNodeViews.get(j);
+					System.out.println("Getting offset for _nodeviews[" + j
+							+ "], " + _nodeViews[j]);
+					System.out.println("Got offset "
+							+ _nodeViews[j].getOffset());
+					_undoOffsets[j] = _nodeViews[j].getOffset();
+				}
+
+				/**
+				 * for undo/redo of uncrossing
+				 */
 
 				NodeViewsTransformer.transform(pickedRegion.getNodeViews(),
 						pickedRegion.getBounds());
+
+				// AJK: 03/16/07 END
+
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 				pickedRegion.repaint();
 				System.out.println("Region rerouted");
-				//AP 1.2.07
-				//collect NodeViews bounded by current region
-				boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion.getNodeViews(), pickedRegion.getBounds());
+				// AP 1.2.07
+				// collect NodeViews bounded by current region
+				boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion
+						.getNodeViews(), pickedRegion.getBounds());
+				UnCrossAction.unCross(boundedNodeViews, false);
+				// boolean indicates that UnCrossAction is not the top level
+				// caller, does
+				// not need undo/redo logic
+
+				for (int m = 0; m < _nodeViews.length; m++) {
+					_redoOffsets[m] = _nodeViews[m].getOffset();
+				}
+
+				CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
+
+					public String getPresentationName() {
+						return "ReRoute Region";
+					}
+
+					public String getRedoPresentationName() {
+
+						return "Redo: Reroute region";
+					}
+
+					public String getUndoPresentationName() {
+						return "Undo: Reroute region";
+					}
+
+					public void redo() {
+						NodeView nv;
+						for (int m = 0; m < _nodeViews.length; m++) {
+							nv = (NodeView) _nodeViews[m];
+							nv.setOffset(_redoOffsets[m].getX(),
+									_redoOffsets[m].getY());
+						}
+					}
+
+					public void undo() {
+						NodeView nv;
+						for (int m = 0; m < _nodeViews.length; m++) {
+							nv = (NodeView) _nodeViews[m];
+							nv.setOffset(_undoOffsets[m].getX(),
+									_undoOffsets[m].getY());
+						}
+					}
+				});
+			} else if ((label == UNCROSS_EDGES) && (pickedRegion != null)) {
+				// AP: 2/25/07 uncross edges of nodes selected only WITHIN a
+				// region
 				UnCrossAction.unCross(boundedNodeViews);
-			}
-			else if ((label == UNCROSS_EDGES) && (pickedRegion !=null)) {
-				//AP: 2/25/07  uncross edges of nodes selected only WITHIN a region
-				UnCrossAction.unCross(boundedNodeViews);
-			}
-			else {
+			} else {
 				// throw an exception here?
 				System.err.println("Unexpected Region popup option");
 			} // end of else
 		}
 	}
+
 	// AJK: 12/01/06 END
 
 	// AJK 02/20/07 BEGIN
@@ -758,29 +838,27 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		 * network
 		 */
 		public void actionPerformed(ActionEvent ae) {
-			
-			int confirm = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), 
+
+			int confirm = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(),
 					"Do you really want to delete all layout regions?");
-			if (confirm == JOptionPane.YES_OPTION)
-			{
-				LayoutRegionManager.removeAllRegionsForView
-				(Cytoscape.getCurrentNetworkView());
+			if (confirm == JOptionPane.YES_OPTION) {
+				LayoutRegionManager.removeAllRegionsForView(Cytoscape
+						.getCurrentNetworkView());
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 			}
 		}
 	}
-	
-	//KH: 03/14/07
+
+	// KH: 03/14/07
 	class GetBubbleHelpListener implements ActionListener {
 		private String helpURL = "http://www.genmapp.org/InteractiveLayout/index.htm";
+
 		public void actionPerformed(ActionEvent ae) {
-		cytoscape.util.OpenBrowser.openURL(helpURL);
+			cytoscape.util.OpenBrowser.openURL(helpURL);
+		}
+
 	}
-		
-	
-	
-}
 	// AJK: 02/20/07 END
-	
+
 	// AJK: 12/01/06 END
 }
