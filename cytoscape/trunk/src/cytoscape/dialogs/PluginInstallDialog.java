@@ -69,12 +69,11 @@ public class PluginInstallDialog extends JDialog implements
 		}
 
 	private void displayInfo(PluginInfo obj)
-		{ // TODO obviously this needs work
-		InfoPanel.setText(obj.getName() + " \n " + obj.getDescription());
+		{ 
+		InfoPanel.setText(obj.prettyOutput());
 		}
 
-	public void addCategory(String CategoryName, List<PluginInfo> Plugins,
-			int index)
+	public void addCategory(String CategoryName, List<PluginInfo> Plugins, int index)
 		{
 		DefaultMutableTreeNode Category = new DefaultMutableTreeNode(CategoryName);
 		RootNode.insert(Category, index);
@@ -87,7 +86,7 @@ public class PluginInstallDialog extends JDialog implements
 			i++;
 			}
 		}
-
+	
 	private void initDialog()
 		{
 		setPreferredSize(new Dimension(700, 500));
@@ -104,7 +103,6 @@ public class PluginInstallDialog extends JDialog implements
 	 */
 	private void initTree()
 		{
-		GridBagConstraints gridBagConstraints;
 		TreeScroll = new JScrollPane(Tree);
 		Tree = new JTree();
 		Tree.getSelectionModel().setSelectionMode(
@@ -120,10 +118,11 @@ public class PluginInstallDialog extends JDialog implements
 		Label.setFont(new java.awt.Font("Tahoma", java.awt.Font.BOLD, 24));
 		TreeScroll.add(Label);
 		TreeScroll.setViewportView(Tree);
+		TreeScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		InfoPanel = new JEditorPane();
 		InfoPanel.setEditable(false);
 		// label panel
-		gridBagConstraints = new GridBagConstraints();
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.insets = new Insets(10, 0, 10, 0);
 		getContentPane().add(new JLabel("Cytoscape Plugins"), gridBagConstraints);
 		}
@@ -133,13 +132,12 @@ public class PluginInstallDialog extends JDialog implements
 	 */
 	private void initSplit()
 		{
-		GridBagConstraints gridBagConstraints;
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		// set up split panel
 		JSplitPane Split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		Split.setLeftComponent(TreeScroll);
 		Split.setRightComponent(InfoPanel);
 		// add split panel
-		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
@@ -153,10 +151,9 @@ public class PluginInstallDialog extends JDialog implements
 	 */
 	private void initButtons()
 		{
-		GridBagConstraints gridBagConstraints;
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		// set up button panel
 		ButtonPanel = new JPanel(new GridBagLayout());
-		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.insets = new Insets(5, 0, 0, 5);
 		Install = new JButton("Install");
 		Install.addActionListener(new ActionListener()
@@ -216,7 +213,7 @@ public class PluginInstallDialog extends JDialog implements
 				public Object construct()
 					{
 					GridBagConstraints gridBagConstraints = new GridBagConstraints();
-					final PluginManager Mgr = new PluginManager();
+					final PluginManager Mgr = cytoscape.CytoscapeInit.getPluginManager();
 					final IndeterminateProgressBar InstallBar = new IndeterminateProgressBar(
 							Dialog, "Installing Plugin", info.getName()
 									+ " installation in progress...");
