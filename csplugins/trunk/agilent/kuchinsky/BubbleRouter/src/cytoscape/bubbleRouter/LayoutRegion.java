@@ -425,10 +425,10 @@ public class LayoutRegion extends JComponent
 		// this.w1 = currentNodeCoordinates[2] - currentNodeCoordinates[0];
 		// this.h1 = currentNodeCoordinates[3] - currentNodeCoordinates[1];
 
-		System.out.println(" ");
-		System.out.println("Viewport changed, w = " + w + ", h = " + h
-				+ ", newXCenter = " + newXCenter + ", newYCenter = "
-				+ newYCenter + ", newScaleFactor = " + newScaleFactor);
+//		System.out.println(" ");
+//		System.out.println("Viewport changed, w = " + w + ", h = " + h
+//				+ ", newXCenter = " + newXCenter + ", newYCenter = "
+//				+ newYCenter + ", newScaleFactor = " + newScaleFactor);
 
 		InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView())
 				.getCanvas();
@@ -449,9 +449,9 @@ public class LayoutRegion extends JComponent
 			viewportWidth = w;
 			viewportHeight = h;
 		}
-		System.out.println("currentZoom = " + currentZoom
-				+ ", currentCenterX = " + currentCenterX
-				+ ", currentCenterY = " + currentCenterY);
+//		System.out.println("currentZoom = " + currentZoom
+//				+ ", currentCenterX = " + currentCenterX
+//				+ ", currentCenterY = " + currentCenterY);
 
 		double deltaZoom = newScaleFactor / currentZoom;
 		double deltaX = this.x1 - (0.5 * w);
@@ -495,8 +495,8 @@ public class LayoutRegion extends JComponent
 			this.y1 += (currentCenterY - newYCenter) * newScaleFactor;
 		}
 
-		System.out.println("new scale factor: " + newScaleFactor
-				+ " deltaZoom: " + deltaZoom);
+//		System.out.println("new scale factor: " + newScaleFactor
+//				+ " deltaZoom: " + deltaZoom);
 
 		// this.x1 = newXCenter + (deltaZoom * deltaX);
 		// this.y1 = newYCenter + (deltaZoom * deltaY);
@@ -508,9 +508,9 @@ public class LayoutRegion extends JComponent
 		viewportWidth = w;
 		viewportHeight = h;
 
-		System.out.println("newX1 = " + this.x1 + ", newY1 = " + this.y1
-				+ ", newWidth = " + this.w1 + ", newHeight = " + this.h1);
-		System.out.println(" ");
+//		System.out.println("newX1 = " + this.x1 + ", newY1 = " + this.y1
+//				+ ", newWidth = " + this.w1 + ", newHeight = " + this.h1);
+//		System.out.println(" ");
 
 		// AJK: 01/09/07 use double coordinates to avoid roundoff error
 		// this.setBounds((int) this.x1, (int) this.y1, (int) this.w1,
@@ -601,12 +601,12 @@ public class LayoutRegion extends JComponent
 				val = attribs.getStringAttribute(node.getIdentifier(),
 					attributeName);
 			}
-			System.out.println("VAL= " + val + "; REGION= " + regionAttributeValue);
+//			System.out.println("VAL= " + val + "; REGION= " + regionAttributeValue);
 			// loop through elements in array below and match
 
 			if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
-				System.out.println("this.regionAttributeValue = "
-						+ this.regionAttributeValue);
+//				System.out.println("this.regionAttributeValue = "
+//						+ this.regionAttributeValue);
 				// if
 				// (val.equalsIgnoreCase(this.regionAttributeValue.toString()))
 				// {
@@ -618,8 +618,8 @@ public class LayoutRegion extends JComponent
 			}
 		}
 		Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedNodes, true);
-		System.out.println("selected " + selectedNodes.size()
-				+ " nodes for layout.");
+		System.out.println("\n\rSelected " + selectedNodes.size()
+				+ " nodes for layout in " + this.regionAttributeValue.toString());
 
 		// If some nodes were select, then it's safe to run the hierarchical
 		// layout
@@ -643,7 +643,7 @@ public class LayoutRegion extends JComponent
 			// AJK: 11/15/96 END
 
 			HierarchicalLayoutListener hierarchicalListener = new HierarchicalLayoutListener();
-			System.out.println("running hierarchical layout algorithm.");
+			System.out.println("Running hierarchical layout algorithm");
 			hierarchicalListener.actionPerformed(null);
 
 			NodeViewsTransformer.transform(Cytoscape.getCurrentNetworkView()
