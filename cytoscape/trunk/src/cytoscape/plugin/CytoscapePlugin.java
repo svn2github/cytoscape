@@ -80,7 +80,9 @@ public abstract class CytoscapePlugin implements PropertyChangeListener
 	 *    setPluginVersion()
 	 *    setCytoscapeVersion()
 	 *    setCategory()
-	 *    setProjectUrl()
+	 *    setUrl()
+	 *    
+	 *    All other methods that PluginInfo sets are optional.
 	 *    
 	 * Use this to control what is displayed about your plugin in the Plugin Manage screens.
 	 */
@@ -145,9 +147,9 @@ public abstract class CytoscapePlugin implements PropertyChangeListener
    * 
    * @return true if the plugin was successfulyl constructed, false otherwise
    */
-	public static boolean loadPlugin(Class pluginClass)
+	public static boolean loadPlugin(Class pluginClass, String JarFileName)
 		{
-		System.out.println("Loading: " + pluginClass);
+		System.out.println("Loading: " + pluginClass + " from " + JarFileName);
 
 		if (pluginClass == null) { return false; }
 
@@ -158,7 +160,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener
 		try
 			{
 			object = pluginClass.newInstance();
-			Mgr.register( (CytoscapePlugin)object );
+			Mgr.register( (CytoscapePlugin)object, JarFileName );
 			}
 		catch (InstantiationException e)
 			{
