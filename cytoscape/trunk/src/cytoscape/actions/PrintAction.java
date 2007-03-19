@@ -53,8 +53,11 @@ import cytoscape.util.*;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.InternalFrameComponent;
+import cytoscape.ding.DingNetworkView;
 
 import ding.view.DGraphView;
+
 
 import java.awt.Component;
 import java.awt.Graphics;
@@ -90,6 +93,9 @@ public class PrintAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
+	    DingNetworkView dingView = (DingNetworkView)Cytoscape.getCurrentNetworkView();
+	    InternalFrameComponent ifc =
+			Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent((CyNetworkView)dingView);
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 
 		// Export text as shape/font based on user's setting
@@ -99,7 +105,7 @@ public class PrintAction extends CytoscapeAction {
 		                                                                                           .booleanValue();
 		theViewToPrint.setPrintingTextAsShape(exportTextAsShape);
 
-		printJob.setPrintable(theViewToPrint);
+		printJob.setPrintable(ifc);
 
 		if (printJob.printDialog()) {
 			try {
