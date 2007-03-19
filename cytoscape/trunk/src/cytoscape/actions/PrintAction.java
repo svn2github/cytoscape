@@ -93,16 +93,16 @@ public class PrintAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-	    DingNetworkView dingView = (DingNetworkView)Cytoscape.getCurrentNetworkView();
+
+		CyNetworkView curr = Cytoscape.getCurrentNetworkView();
 	    InternalFrameComponent ifc =
-			Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent((CyNetworkView)dingView);
+			Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(curr);
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 
 		// Export text as shape/font based on user's setting
 		DGraphView theViewToPrint = (DingNetworkView) Cytoscape.getCurrentNetworkView();
-		boolean exportTextAsShape = new Boolean(CytoscapeInit.getProperties()
-		                                                     .getProperty("exportTextAsShape"))
-		                                                                                           .booleanValue();
+		boolean exportTextAsShape =
+			new Boolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")).booleanValue();
 		theViewToPrint.setPrintingTextAsShape(exportTextAsShape);
 
 		printJob.setPrintable(ifc);
