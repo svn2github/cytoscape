@@ -184,7 +184,7 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 		//    correct for edge case where there is only one node
 		if (numSelectedNodes == 1)
 		{
-			System.out.println ("Sorry, you need two or more notes to route a region.");
+//			System.out.println ("Sorry, you need two or more nodes to route a region.");
 			return;
 		}
 		
