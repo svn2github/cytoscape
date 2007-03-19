@@ -115,6 +115,7 @@ public class CytoscapeInit {
 	private static Set pluginURLs;
 	private static Set loadedPlugins;
 	private static Set resourcePlugins;
+	private static PluginManager pluginMgr;
 
 	static {
 		System.out.println("CytoscapeInit static initialization");
@@ -122,11 +123,11 @@ public class CytoscapeInit {
 		resourcePlugins = new HashSet();
 		loadedPlugins = new HashSet();
 		initProperties();
+		pluginMgr = new PluginManager();
 	}
 
 	private static CyInitParams initParams;
 	private static URLClassLoader classLoader;
-	private static PluginManager pluginMgr;
 	
 	// Most-Recently-Used directories and files
 	private static File mrud;
@@ -474,7 +475,6 @@ public class CytoscapeInit {
 	 * URLs or resource names. The method first checks to see if the
 	 */
 	private void loadPlugins() {
-		pluginMgr = new PluginManager();
 		try {
 			Set plugins = new HashSet();
 			List p = initParams.getPlugins();
@@ -561,7 +561,6 @@ public class CytoscapeInit {
 			System.out.println("failed loading plugin!");
 			e.printStackTrace();
 		}
-	//System.out.println(pluginMgr.getPluginTracker().getInstalledPlugins().size() + " installed plugins registered");
 	}
 
 	/**
@@ -569,15 +568,12 @@ public class CytoscapeInit {
 	 * URLClassLoader, then interating through each Jar file looking for classes
 	 * that are CytoscapePlugins
 	 */
-	private void loadURLPlugins(Set plugin_urls) {
+	protected void loadURLPlugins(Set plugin_urls) {
 		URL[] urls = new URL[plugin_urls.size()];
 		int count = 0;
 
-		for (Iterator iter = plugin_urls.iterator(); iter.hasNext();) {
-			urls[count] = (URL) iter.next();
-			count++;
-		}
-
+		plugin_urls.toArray(urls);
+		
 		// the creation of the class loader automatically loads the plugins
 		classLoader = new URLClassLoader(urls, Cytoscape.class.getClassLoader());
 
@@ -608,7 +604,7 @@ public class CytoscapeInit {
 
 						if (pc != null) {
 							System.out.println("Loading from manifest");
-							loadPlugin(pc);
+							loadPlugin(pc, jar.getName());
 
 							continue;
 						}
@@ -617,7 +613,6 @@ public class CytoscapeInit {
 
 				// new-school failed, so revert to old school 
 				Enumeration entries = jar.entries();
-
 				if (entries == null) {
 					continue;
 				}
@@ -643,7 +638,7 @@ public class CytoscapeInit {
 							continue;
 
 						totalPlugins++;
-						loadPlugin(pc);
+						loadPlugin(pc, jar.getName());
 
 						break;
 					}
@@ -679,7 +674,7 @@ public class CytoscapeInit {
 				return;
 			}
 
-			loadPlugin(rclass);
+			loadPlugin(rclass, null);
 		}
 
 		System.out.println("");
@@ -693,13 +688,11 @@ public class CytoscapeInit {
 	/* TODO add warning to user that another plugin with the same namespace as a previously loaded plugin has been found and will not be
 	 * loaded
 	 */
-	public void loadPlugin(Class plugin) {
-	System.out.println("Plugin class: " + plugin.getName());
-	
+	public void loadPlugin(Class plugin, String PluginJarFile) {
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)
 		    && !loadedPlugins.contains(plugin.getName())) {
 			try {
-				CytoscapePlugin.loadPlugin(plugin);
+				CytoscapePlugin.loadPlugin(plugin, PluginJarFile);
 				loadedPlugins.add(plugin.getName());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -718,7 +711,6 @@ public class CytoscapeInit {
 	 */
 	protected Class getPluginClass(String name) {
 		Class c = null;
-
 		try {
 			c = classLoader.loadClass(name);
 		} catch (ClassNotFoundException e) {
