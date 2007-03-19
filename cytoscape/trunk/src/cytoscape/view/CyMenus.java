@@ -40,7 +40,6 @@ package cytoscape.view;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-
 import cytoscape.actions.PluginManagerAction;
 import cytoscape.actions.AlphabeticalSelectionAction;
 import cytoscape.actions.BendSelectedEdgesAction;
@@ -150,7 +149,7 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu newSubMenu;
 	JMenu newSubMenu2;
 	JMenu editMenu;
-	
+
 	// JMenuItem undoMenuItem, redoMenuItem;
 	// AJK 06/07/06: BEGIN
 	// more deletion functionality to the editor
