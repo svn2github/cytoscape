@@ -42,7 +42,6 @@ import cytoscape.data.readers.TextHttpReader;
 import cytoscape.init.CyInitParams;
 
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.PluginManager;
 
 import cytoscape.util.FileUtil;
 
@@ -115,7 +114,6 @@ public class CytoscapeInit {
 	private static Set pluginURLs;
 	private static Set loadedPlugins;
 	private static Set resourcePlugins;
-	private static PluginManager pluginMgr;
 
 	static {
 		System.out.println("CytoscapeInit static initialization");
@@ -123,7 +121,6 @@ public class CytoscapeInit {
 		resourcePlugins = new HashSet();
 		loadedPlugins = new HashSet();
 		initProperties();
-		pluginMgr = new PluginManager();
 	}
 
 	private static CyInitParams initParams;
@@ -253,13 +250,6 @@ public class CytoscapeInit {
 	 */
 	public static String getProperty(String key) {
 		return properties.getProperty(key);
-	}
-
-	/**
-	 * @return The PluginManager object responsible for tracking/installing/deleting plugins
-	 */
-	public static PluginManager getPluginManager() {
-		return pluginMgr;
 	}
 
 	/**
