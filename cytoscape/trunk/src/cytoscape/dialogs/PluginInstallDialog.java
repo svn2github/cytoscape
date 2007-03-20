@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.dialogs;
 
 import cytoscape.Cytoscape;
@@ -79,13 +77,14 @@ import javax.swing.tree.TreeSelectionModel;
  *
  */
 public class PluginInstallDialog extends JDialog implements TreeSelectionListener {
-	private JEditorPane InfoPanel;
-	private JTree Tree;
-	private JScrollPane TreeScroll;
-	private DefaultMutableTreeNode RootNode;
-	private JPanel ButtonPanel;
-	private JButton Install;
-	private JButton Cancel;
+	private JEditorPane infoPanel;
+	private JTree tree;
+	private JScrollPane treeScroll;
+	private DefaultMutableTreeNode rootNode;
+	private JPanel buttonPanel;
+	private JButton installButton;
+	private JButton closeButton;
+	private JButton changeSite;
 	protected static int InstallStopped = 0;
 
 	/**
@@ -102,8 +101,8 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 	/** Required by TreeSelectionListener interface. */
 	public void valueChanged(TreeSelectionEvent e) { // displays the info for each plugin
 
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) Tree
-		                                                                                                  .getLastSelectedPathComponent();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+		                                                                                                 .getLastSelectedPathComponent();
 
 		if (node == null)
 			return;
@@ -117,7 +116,7 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 	}
 
 	private void displayInfo(PluginInfo obj) {
-		InfoPanel.setText(obj.prettyOutput());
+		infoPanel.setText(obj.prettyOutput());
 	}
 
 	/**
@@ -129,7 +128,7 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 	 */
 	public void addCategory(String CategoryName, List<PluginInfo> Plugins, int index) {
 		DefaultMutableTreeNode Category = new DefaultMutableTreeNode(CategoryName);
-		RootNode.insert(Category, index);
+		rootNode.insert(Category, index);
 
 		Iterator<PluginInfo> pI = Plugins.iterator();
 		int i = 0;
@@ -155,24 +154,26 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 	 * Set up the tree/info pane widgets for plugin categories
 	 */
 	private void initTree() {
-		TreeScroll = new JScrollPane(Tree);
-		Tree = new JTree();
-		Tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		treeScroll = new JScrollPane(tree);
+		tree = new JTree();
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		// Set up tree
-		Tree.addTreeSelectionListener(this); // give tree a listener
-		RootNode = new DefaultMutableTreeNode("Cytoscape Plugin Categories");
+		tree.addTreeSelectionListener(this); // give tree a listener
+		                                     // would rather this root was not visible
 
-		DefaultTreeModel model = new DefaultTreeModel(RootNode);
-		Tree.setModel(model);
+		rootNode = new DefaultMutableTreeNode("Cytoscape Plugin Categories");
 
-		// Tree.setRootVisible(false);
+		DefaultTreeModel model = new DefaultTreeModel(rootNode);
+		tree.setModel(model);
+
+		// tree.setRootVisible(false);
 		JLabel Label = new JLabel("Cytoscape Plugins By Category");
 		Label.setFont(new java.awt.Font("Tahoma", java.awt.Font.BOLD, 24));
-		TreeScroll.add(Label);
-		TreeScroll.setViewportView(Tree);
-		TreeScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		InfoPanel = new JEditorPane();
-		InfoPanel.setEditable(false);
+		treeScroll.add(Label);
+		treeScroll.setViewportView(tree);
+		treeScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		infoPanel = new JEditorPane();
+		infoPanel.setEditable(false);
 
 		// label panel
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -188,8 +189,8 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 
 		// set up split panel
 		JSplitPane Split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		Split.setLeftComponent(TreeScroll);
-		Split.setRightComponent(InfoPanel);
+		Split.setLeftComponent(treeScroll);
+		Split.setRightComponent(infoPanel);
 		// add split panel
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.fill = GridBagConstraints.BOTH;
@@ -205,13 +206,14 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 	private void initButtons() {
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		// set up button panel
-		ButtonPanel = new JPanel(new GridBagLayout());
+		buttonPanel = new JPanel(new GridBagLayout());
 		gridBagConstraints.insets = new Insets(5, 0, 0, 5);
-		Install = new JButton("Install");
-		Install.addActionListener(new ActionListener() {
+
+		installButton = new JButton("Install");
+		installButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent Event) {
-					DefaultMutableTreeNode node = (DefaultMutableTreeNode) Tree
-					                                                                                                                                                                                                  .getLastSelectedPathComponent();
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+					                                                                                                                                                                                                    .getLastSelectedPathComponent();
 					System.out.println(node.toString());
 
 					if (node == null) {
@@ -233,22 +235,32 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 			});
 		PluginInstallDialog.InstallStopped = 0;
 
-		Install.setPreferredSize(new Dimension(81, 23));
-		ButtonPanel.add(Install, gridBagConstraints);
-		Cancel = new JButton("Close");
-		Cancel.addActionListener(new ActionListener() {
+		installButton.setPreferredSize(new Dimension(81, 23));
+		buttonPanel.add(installButton, gridBagConstraints);
+		closeButton = new JButton("Close");
+		closeButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent Event) {
 					dispose();
 				}
 			});
-		Cancel.setPreferredSize(new Dimension(81, 23));
-		ButtonPanel.add(Cancel, gridBagConstraints);
+		closeButton.setPreferredSize(new Dimension(81, 23));
+		buttonPanel.add(closeButton, gridBagConstraints);
+
+		changeSite = new JButton("Change Download Site");
+		changeSite.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent Event) {
+					// bring up the bookmarks dialog, choose/add a url?
+					JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+					                              "Currently Not Implemented");
+				}
+			});
+		buttonPanel.add(changeSite, gridBagConstraints);
 
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 5;
 		gridBagConstraints.insets = new Insets(10, 0, 10, 0);
-		getContentPane().add(ButtonPanel, gridBagConstraints);
+		getContentPane().add(buttonPanel, gridBagConstraints);
 	}
 
 	/*
@@ -260,24 +272,24 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 		SwingWorker worker = new SwingWorker() {
 			public Object construct() {
 				GridBagConstraints gridBagConstraints = new GridBagConstraints();
-				final PluginManager Mgr = cytoscape.CytoscapeInit.getPluginManager();
+				final PluginManager Mgr = PluginManager.getPluginManager();
 				final IndeterminateProgressBar InstallBar = new IndeterminateProgressBar(Dialog,
 				                                                                         "Installing Plugin",
 				                                                                         info
-				                                                                                                                                                                                                                                                           .getName()
+				                                                                                                                                                                                                                                                                       .getName()
 				                                                                         + " installation in progress...");
 				InstallBar.setLayout(new GridBagLayout());
 
-				JButton Cancel = new JButton("Cancel Install");
-				Cancel.setSize(new Dimension(81, 23));
-				Cancel.addActionListener(new ActionListener() {
+				JButton CancelInstall = new JButton("Cancel Install");
+				CancelInstall.setSize(new Dimension(81, 23));
+				CancelInstall.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent E) {
 							InstallBar.dispose();
 							Mgr.abortInstall();
 						}
 					});
 				gridBagConstraints.gridy = 2;
-				InstallBar.add(Cancel, gridBagConstraints);
+				InstallBar.add(CancelInstall, gridBagConstraints);
 				InstallBar.pack();
 				InstallBar.setLocationRelativeTo(Dialog);
 				InstallBar.setVisible(true);
