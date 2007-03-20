@@ -43,12 +43,17 @@ import ding.view.DingCanvas;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Component;
+import java.awt.Rectangle;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.awt.image.BufferedImage;
 
+import javax.swing.JLabel;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
+import javax.swing.ImageIcon;
 
 
 /**
@@ -157,6 +162,29 @@ public class InternalFrameComponent extends JComponent implements Printable {
 
 			return NO_SUCH_PAGE;
 	}
+
+    /**
+     * This method is invoked by at least ExportDialog.showExportDialog() when exporting
+	 * a network as some type of graphics (ie, svg).
+	 *
+	 * The rub is what exactly do we export ?  As we know, the InternalFrameComponent
+	 * comprises multiple components - one for each layer.  For now, get the background
+	 * layer and network layer working, later we can address the other layers.
+     *
+     * @return Component
+     */
+    public Component getComponent() {
+		Rectangle bounds = backgroundCanvas.getBounds();
+		BufferedImage image = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graphics = image.createGraphics();
+		backgroundCanvas.paint(graphics);
+		networkCanvas.paint(graphics);
+		foregroundCanvas.paint(graphics);
+		JLabel toReturn = new JLabel(new ImageIcon(image));
+		// the following line must be there to work
+		toReturn.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+		return toReturn;
+    }
 
 	/**
 	 * Places the canvas on the layeredPane in the following manner:
