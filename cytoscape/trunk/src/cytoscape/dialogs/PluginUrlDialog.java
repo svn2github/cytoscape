@@ -109,7 +109,7 @@ public class PluginUrlDialog extends JDialog {
 		Ok = new JButton("Ok");
 		Ok.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent Event) {
-					PluginManager Mgr = CytoscapeInit.getPluginManager();
+					PluginManager Mgr = PluginManager.getPluginManager();
 
 					// TODO bring up the install dialog, add entered url to list
 					String Url = (String) Combo.getSelectedItem();

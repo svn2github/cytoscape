@@ -6,6 +6,7 @@ package cytoscape.dialogs;
 import cytoscape.*;
 
 import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.PluginManager;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -14,6 +15,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -29,19 +34,21 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 
+// TODO Turn the table into a JTree like the install dialog
+
 /**
  * @author skillcoy
  *
  */
 public class PluginListDialog extends JDialog {
-	private JTable Table;
-	private JScrollPane TableScroll;
-	private JPanel ButtonPanel;
-	private JButton Delete;
-	private JButton SearchForNew;
-	private JButton FindUpdates;
-	private JButton Cancel;
-	private PluginInfo[] TableData;
+	private JTable table;
+	private JScrollPane tableScroll;
+	private JPanel buttonPanel;
+	private JButton deleteButton; // TODO button should be inactive when nothing is selected
+	private JButton newButton;
+	private JButton findUpdateButton;
+	private JButton cancelButton;
+	private PluginInfo[] tableData;
 
 	/**
 	 * Creates a new PluginListDialog object.
@@ -73,18 +80,18 @@ public class PluginListDialog extends JDialog {
 		Label.setFont(new java.awt.Font("Tahoma", java.awt.Font.BOLD, 24));
 		TablePanel.add(Label, gridBagConstraints);
 
-		Table = new JTable();
-		Table.setPreferredScrollableViewportSize(new Dimension(450, 200));
-		TableScroll = new JScrollPane(Table);
+		table = new JTable();
+		table.setPreferredScrollableViewportSize(new Dimension(450, 200));
+		tableScroll = new JScrollPane(table);
 
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.insets = new Insets(10, 0, 10, 0);
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
 
-		TableScroll.setViewportView(Table);
-		TableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		TablePanel.add(TableScroll, gridBagConstraints);
+		tableScroll.setViewportView(table);
+		tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		TablePanel.add(tableScroll, gridBagConstraints);
 
 		getContentPane().add(TablePanel);
 	}
@@ -95,50 +102,59 @@ public class PluginListDialog extends JDialog {
 		gridBagConstraints.gridy = 0;
 
 		// set up button panel
-		ButtonPanel = new JPanel(new GridBagLayout());
+		buttonPanel = new JPanel(new GridBagLayout());
 
-		Delete = new JButton("Delete");
+		deleteButton = new JButton("Delete");
 		this.deleteAction();
-		ButtonPanel.add(Delete, gridBagConstraints);
+		buttonPanel.add(deleteButton, gridBagConstraints);
 
-		SearchForNew = new JButton("Get New Plugins");
-		SearchForNew.addActionListener(new ActionListener() {
+		newButton = new JButton("Get New Plugins");
+		newButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent Event) {
-					PluginListDialog.this.dispose();
+					//PluginListDialog.this.dispose();
+					PluginManager Mgr = PluginManager.getPluginManager();
+					PluginInstallDialog Install = new PluginInstallDialog();
 
-					String[] Urls = new String[] {
-					                    CytoscapeInit.getProperties().getProperty("defaultPluginUrl")
-					                };
-					PluginUrlDialog url = new PluginUrlDialog();
-					url.createComboBox(Urls);
-					url.pack();
-					url.setVisible(true);
+					Map<String, List<PluginInfo>> Plugins = Mgr.getPluginsByCategory();
+					Iterator<String> pI = Plugins.keySet().iterator();
+					int index = 0;
+
+					while (pI.hasNext()) {
+						String Category = pI.next();
+						Install.addCategory(Category, Plugins.get(Category), index);
+
+						if (index <= 0)
+							index++; // apparenlty just need 0/1
+					}
+
+					Install.pack();
+					Install.setVisible(true);
 				}
 			});
-		ButtonPanel.add(SearchForNew, gridBagConstraints);
+		buttonPanel.add(newButton, gridBagConstraints);
 
-		FindUpdates = new JButton("Find Updates");
-		FindUpdates.addActionListener(new ActionListener() {
+		findUpdateButton = new JButton("Find Updates");
+		findUpdateButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent Event) {
 					// TODO search each plugin for updates
 					System.out.println("will search for updates");
 				}
 			});
-		ButtonPanel.add(FindUpdates, gridBagConstraints);
+		buttonPanel.add(findUpdateButton, gridBagConstraints);
 
-		Cancel = new JButton("Cancel");
-		Cancel.addActionListener(new ActionListener() {
+		cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent Event) {
 					PluginListDialog.this.dispose();
 				}
 			});
-		ButtonPanel.add(Cancel, gridBagConstraints);
+		buttonPanel.add(cancelButton, gridBagConstraints);
 
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.insets = new Insets(10, 0, 10, 0);
-		getContentPane().add(ButtonPanel, gridBagConstraints);
+		getContentPane().add(buttonPanel, gridBagConstraints);
 	}
 
 	/**
@@ -151,15 +167,15 @@ public class PluginListDialog extends JDialog {
 	 *         int array of indecies to the columns that should be centered
 	 */
 	public void createTable(PluginInfo[] InfoObjs) {
-		TableData = InfoObjs;
+		tableData = InfoObjs;
 
 		String[] ColNames = new String[] { "Plugin Name", "Version", "Category" };
-		String[][] Data = new String[TableData.length][ColNames.length];
+		String[][] Data = new String[tableData.length][ColNames.length];
 
-		for (int i = 0; i < TableData.length; i++) {
-			Data[i][0] = TableData[i].getName();
-			Data[i][1] = TableData[i].getPluginVersion();
-			Data[i][2] = TableData[i].getCategory();
+		for (int i = 0; i < tableData.length; i++) {
+			Data[i][0] = tableData[i].getName();
+			Data[i][1] = tableData[i].getPluginVersion();
+			Data[i][2] = tableData[i].getCategory();
 		}
 
 		createTable(ColNames, Data, new int[] { 1 });
@@ -167,13 +183,13 @@ public class PluginListDialog extends JDialog {
 
 	private void createTable(String[] ColumnNames, Object[][] Data, int[] CenterCols) {
 		TableModel Model = new TableModel(ColumnNames, Data);
-		Table.setModel(Model);
+		table.setModel(Model);
 
 		//  Create cell renderer
 		TableCellRenderer centerRenderer = new CenterRenderer();
 
 		for (int i = 0; i < CenterCols.length; i++) {
-			TableColumn column = Table.getColumnModel().getColumn(CenterCols[i]);
+			TableColumn column = table.getColumnModel().getColumn(CenterCols[i]);
 			column.setCellRenderer(centerRenderer);
 		}
 
@@ -181,23 +197,23 @@ public class PluginListDialog extends JDialog {
 	}
 
 	private void initColumnSizes() {
-		TableModel model = (TableModel) Table.getModel();
+		TableModel model = (TableModel) table.getModel();
 		TableColumn column = null;
 		Component comp = null;
 		int headerWidth = 0;
 		int cellWidth = 0;
 		Object[] longValues = model.getLongestValues();
-		TableCellRenderer headerRenderer = Table.getTableHeader().getDefaultRenderer();
+		TableCellRenderer headerRenderer = table.getTableHeader().getDefaultRenderer();
 
 		for (int i = 0; i < longValues.length; i++) {
-			column = Table.getColumnModel().getColumn(i);
+			column = table.getColumnModel().getColumn(i);
 
 			comp = headerRenderer.getTableCellRendererComponent(null, column.getHeaderValue(),
 			                                                    false, false, 0, 0);
 			headerWidth = comp.getPreferredSize().width;
 
-			comp = Table.getDefaultRenderer(model.getColumnClass(i))
-			            .getTableCellRendererComponent(Table, longValues[i], false, false, 0, i);
+			comp = table.getDefaultRenderer(model.getColumnClass(i))
+			            .getTableCellRendererComponent(table, longValues[i], false, false, 0, i);
 			cellWidth = comp.getPreferredSize().width;
 
 			column.setPreferredWidth(Math.max(headerWidth, cellWidth));
@@ -205,18 +221,18 @@ public class PluginListDialog extends JDialog {
 	}
 
 	private void deleteAction() {
-		Delete.addActionListener(new ActionListener() {
+		deleteButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent Event) {
 					boolean delete = false;
-					int Row = Table.getSelectedRow();
-					PluginInfo Obj = PluginListDialog.this.TableData[Row];
+					int Row = table.getSelectedRow();
+					PluginInfo Obj = PluginListDialog.this.tableData[Row];
 					System.out.println("Deleting " + Obj.getName());
 
 					String Msg = "This is a 'core' plugin and other plugins may depend on it, are you sure you want to delete it?";
 
 					if (Obj.getCategory().equalsIgnoreCase("core")) {
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Cytoscape
-						                                                                                                                                                                                                   .getDesktop(),
+						                                                                                                                                                                                                                   .getDesktop(),
 						                                                            Msg,
 						                                                            "Core Plugin Removal",
 						                                                            JOptionPane.YES_NO_OPTION,
@@ -226,7 +242,7 @@ public class PluginListDialog extends JDialog {
 						delete = true;
 
 					if (delete) {
-						if (CytoscapeInit.getPluginManager().delete(Obj))
+						if (PluginManager.getPluginManager().delete(Obj))
 							JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 							                              "Plugin " + Obj.getName()
 							                              + " successfully deleted.",
@@ -242,7 +258,7 @@ public class PluginListDialog extends JDialog {
 					}
 
 					// TODO how do I remove a row from the table?
-					((PluginListDialog.TableModel) Table.getModel()).removeRow(Row);
+					((PluginListDialog.TableModel) table.getModel()).removeRow(Row);
 				}
 			});
 	}
