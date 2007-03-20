@@ -60,9 +60,9 @@ import java.util.List;
  */
 public abstract class CytoscapePlugin implements PropertyChangeListener {
 	/**
-	* There are no arguments required or allowed in a CytoscapePlugin
-	* constructor.
-	*/
+	 * There are no arguments required or allowed in a CytoscapePlugin
+	 * constructor.
+	 */
 	public CytoscapePlugin() {
 		Cytoscape.getPropertyChangeSupport()
 		         .addPropertyChangeListener(Cytoscape.SAVE_PLUGIN_STATE, this);
@@ -72,17 +72,14 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 	/**
 	 *
-	 * @return a PluginInfo object with the following methods set:
-	 *    setName()
-	 *    setDescription()
-	 *    setPluginVersion()
-	 *    setCytoscapeVersion()
-	 *    setCategory()
-	 *    setUrl()
+	 * @return a PluginInfo object with the following methods set: setName()
+	 *         setDescription() setPluginVersion() setCytoscapeVersion()
+	 *         setCategory() setUrl()
 	 *
-	 *    All other methods that PluginInfo sets are optional.
+	 * All other methods that PluginInfo sets are optional.
 	 *
-	 * Use this to control what is displayed about your plugin in the Plugin Manage screens.
+	 * Use this to control what is displayed about your plugin in the Plugin
+	 * Manage screens.
 	 */
 	public PluginInfo getPluginInfoObject() {
 		return null;
@@ -96,48 +93,49 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	}
 
 	/**
-	* If true, this plugin is capable if accepting scripts, and we will find out
-	* what its script name is
-	*/
+	 * If true, this plugin is capable if accepting scripts, and we will find
+	 * out what its script name is
+	 */
 	public boolean isScriptable() {
 		return false;
 	}
 
 	/**
-	* If this plugin is scriptable, then this will return a unique script name,
-	* that will come after the colon like: :name
-	*/
+	 * If this plugin is scriptable, then this will return a unique script name,
+	 * that will come after the colon like: :name
+	 */
 	public String getScriptName() {
 		return "default";
 	}
 
 	/**
-	* Take a CyNetwork as input along with some arguments, and return a
-	* CyNetwork, which can be the same, or different, it doesn't really matter,
-	* and is up to the individual plugin.
-	*/
+	 * Take a CyNetwork as input along with some arguments, and return a
+	 * CyNetwork, which can be the same, or different, it doesn't really matter,
+	 * and is up to the individual plugin.
+	 */
 	public CyNetwork interpretScript(String[] args, CyNetwork network) {
 		return null;
 	}
 
 	/**
-	* If implemented, then this plugin will be activated after being initialized
-	*/
+	 * If implemented, then this plugin will be activated after being
+	 * initialized
+	 */
 	public void activate() {
 	}
 
 	/**
-	* If implemented then this plugin can remove itself from the Menu system, and
-	* anything else, when the user decides to deactivate it.
-	*/
+	 * If implemented then this plugin can remove itself from the Menu system,
+	 * and anything else, when the user decides to deactivate it.
+	 */
 	public void deactivate() {
 	}
 
 	/**
-	* Attempts to instantiate a plugin of the class argument.
-	*
-	* @return true if the plugin was successfulyl constructed, false otherwise
-	*/
+	 * Attempts to instantiate a plugin of the class argument.
+	 *
+	 * @return true if the plugin was successfulyl constructed, false otherwise
+	 */
 	public static boolean loadPlugin(Class pluginClass, String JarFileName) {
 		System.out.println("Loading: " + pluginClass + " from " + JarFileName);
 
@@ -145,7 +143,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			return false;
 		}
 
-		PluginManager Mgr = CytoscapeInit.getPluginManager();
+		PluginManager Mgr = PluginManager.getPluginManager();
 
 		Object object = null;
 
@@ -162,7 +160,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			e.printStackTrace();
 		} catch (Exception e) {
 			// Here's a bit of Java strangeness: newInstance() throws
-			// two exceptions (above) -- however, it also propagates any exception
+			// two exceptions (above) -- however, it also propagates any
+			// exception
 			// that occurs during the creation of that new instance. Here,
 			// we need to catch whatever other exceptions might be thrown --
 			// for example, attempting to load an older plugin that looks
@@ -191,11 +190,11 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	private HashMap<String, List<File>> pluginFileListMap;
 
 	/**
-	* DOCUMENT ME!
-	*
-	* @param e
-	*          DOCUMENT ME!
-	*/
+	 * DOCUMENT ME!
+	 *
+	 * @param e
+	 *            DOCUMENT ME!
+	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		String pluginName = this.getClass().getName();
 		int index = pluginName.lastIndexOf(".");
@@ -225,20 +224,20 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 	// override the following two methods to save state.
 	/**
-	* DOCUMENT ME!
-	*
-	* @param pStateFileList
-	*          DOCUMENT ME!
-	*/
+	 * DOCUMENT ME!
+	 *
+	 * @param pStateFileList
+	 *            DOCUMENT ME!
+	 */
 	public void restoreSessionState(List<File> pStateFileList) {
 	}
 
 	/**
-	* DOCUMENT ME!
-	*
-	* @param pFileList
-	*          DOCUMENT ME!
-	*/
+	 * DOCUMENT ME!
+	 *
+	 * @param pFileList
+	 *            DOCUMENT ME!
+	 */
 	public void saveSessionStateFiles(List<File> pFileList) {
 	}
 }
