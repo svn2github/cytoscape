@@ -25,6 +25,11 @@ public class LayoutRegionManager {
 		return attributeViewMap.get(view);
 	}
 
+	/**
+	 * add a region/view association in the regionViewMap data structure
+	 * @param view the CyNetworkView to add to
+	 * @param region the region you are adding
+	 */
 	public static void addRegionForView(CyNetworkView view, LayoutRegion region) {
 		List regionList = (List) regionViewMap.get(view);
 		if (regionList == null) {
@@ -36,6 +41,11 @@ public class LayoutRegionManager {
 		regionViewMap.put(view, regionList);
 	}
 
+	/**
+	 * remove the region and index from the view
+	 * @param view
+	 * @param index
+	 */
 	// APico 9.16.06
 	// TODO: use this to delete regions
 	public static void removeRegionFromView(CyNetworkView view, Integer index) {
