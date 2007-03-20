@@ -44,29 +44,16 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
-import cytoscape.ding.DingNetworkView;
-
-import cytoscape.giny.*;
-
-import cytoscape.util.CytoscapeAction;
-
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.InternalFrameComponent;
+import cytoscape.ding.DingNetworkView;
+import cytoscape.util.CytoscapeAction;
 
 import ding.view.DGraphView;
 
 import org.freehep.util.export.ExportDialog;
-
-import phoebe.util.*;
-
-//-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
-import java.awt.print.PageFormat;
-import java.awt.print.PrinterJob;
-
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-
 
 //-------------------------------------------------------------------------
 /**
@@ -97,6 +84,8 @@ public class ExportAsGraphicsAction extends CytoscapeAction {
 		System.out.println("netwok as graphics");
 
 		CyNetworkView curr = Cytoscape.getCurrentNetworkView();
+	    InternalFrameComponent ifc =
+			Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(curr);
 
 		if (curr != Cytoscape.getNullNetworkView()) {
 			// Export text as shape/font based on user's setting
@@ -107,7 +96,7 @@ public class ExportAsGraphicsAction extends CytoscapeAction {
 			theViewToPrint.setPrintingTextAsShape(exportTextAsShape);
 
 			ExportDialog export = new ExportDialog();
-			export.showExportDialog(curr.getComponent(), "Export view as ...", curr.getComponent(),
+			export.showExportDialog(ifc.getComponent(), "Export view as ...", ifc.getComponent(),
 			                        "export");
 		} else {
 			JOptionPane.showMessageDialog(null,
