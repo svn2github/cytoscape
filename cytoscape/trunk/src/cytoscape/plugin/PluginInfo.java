@@ -1,6 +1,39 @@
-/**
- *
- */
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package cytoscape.plugin;
 
 import cytoscape.CytoscapeInit;
@@ -14,48 +47,72 @@ import java.util.List;
  */
 public class PluginInfo {
 	/**
-	 * 
+	 * Jar and Zip files currently supported
+	 *
+	 * @author skillcoy
+	 *
 	 */
-	public static final int JAR = 1;
+	public enum FileType {
+		JAR("jar"),
+		ZIP("zip");
 
-	/**
-	 * 
-	 */
-	public static final int ZIP = 2;
-	private String PluginClassName;
-	private String Name;
-	private List<AuthorInfo> Authors;
-	private String Description;
-	private String PluginVersion;
-	private String CytoscapeVersion;
-	private String Url;
-	private String ProjectUrl;
-	private String Category;
-	private List<String> PluginFiles;
-	private int FileType;
-	protected String EnclosingJar;
+		private String typeText;
+
+		private FileType(String type) {
+			this.typeText = type;
+		}
+
+		public String toString() {
+			return typeText;
+		}
+	}
+
+	private FileType fileType;
+	private String uniqueID;
+	private String pluginClassName;
+	private String pluginName;
+	private List<AuthorInfo> authors;
+	private String pluginDescription;
+	private String pluginVersion;
+	private String cytoscapeVersion;
+	private String pluginUrl;
+	private String projectUrl;
+	private String pluginCategory;
+	private List<String> pluginFiles;
+	protected String enclosingJar;
 
 	/**
 	 * Initializes a PluginInfo object with the following defaults:
-	 *    setName("Unknown");
-	 *    setDescription("No description");
-	 *    setPluginVersion("0.1");
-	 *    setCytoscapeVersion( cytoscape.CytoscapeVersion.version );
-	 *    setCategory("Uncategorized");
-	 *    setProjectUrl(CytoscapeInit.getProperties().getProperty("defaultPluginUrl"));
+	 * setName("Unknown"); setDescription("No pluginDescription");
+	 * setPluginVersion("0.1"); setCytoscapeVersion(
+	 * cytoscape.cytoscapeVersion.version ); setCategory("Uncategorized");
+	 * setProjectUrl(CytoscapeInit.getProperties().getProperty("defaultPluginUrl"));
 	 */
 	public PluginInfo() {
-		PluginFiles = new ArrayList<String>();
-		Authors = new ArrayList<AuthorInfo>();
+		init();
+	}
+
+	/**
+	 * See PluginInfo()
+	 *
+	 * @param UniqueID
+	 *            Additionally this sets the unique identifier that will be used
+	 *            to find a new version of the plugin at the given project url.
+	 */
+	public PluginInfo(String UniqueID) {
+		this.uniqueID = UniqueID;
 		init();
 	}
 
 	/*
-	 * Sets all the fields that are required to a default value in case it is not called
+	 * Sets all the fields that are required to a default value in case it is
+	 * not called
 	 */
 	private void init() {
+		pluginFiles = new ArrayList<String>();
+		authors = new ArrayList<AuthorInfo>();
 		setName("Unknown");
-		setDescription("No description");
+		setDescription("No pluginDescription");
 		setPluginVersion("0.1");
 		setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		setCategory("Uncategorized");
@@ -66,195 +123,221 @@ public class PluginInfo {
 	/* SET */
 
 	/**
-	 * Sets name of plugin.  This will be displayed to users.
-	 * @param arg
+	 * Sets name of plugin. This will be displayed to users.
+	 *
+	 * @param name
 	 */
-	public void setName(String arg) {
-		this.Name = arg;
+	public void setName(String name) {
+		this.pluginName = name;
 	}
 
 	/**
-	 * Sets the plugin class name.  Used for tracking plugins.
-	 * @param arg
+	 * Sets the plugin class name. Used for tracking plugins.
+	 *
+	 * @param className
 	 */
-	public void setPluginClassName(String arg) {
-		this.PluginClassName = arg;
+	public void setPluginClassName(String className) {
+		this.pluginClassName = className;
 	}
 
 	/**
-	 * Sets a description of the plugin.  This will be displayed to users.
-	 * @param arg
+	 * Sets a description of the plugin. This will be displayed to users.
+	 *
+	 * @param description
 	 */
-	public void setDescription(String arg) {
-		this.Description = arg;
+	public void setDescription(String description) {
+		this.pluginDescription = description;
 	}
 
 	/**
-	 * Sets the version of the plugin.  Defaults to 0.1
-	 * @param arg
+	 * Sets the version of the plugin. Defaults to 0.1
+	 *
+	 * @param version
 	 */
-	public void setPluginVersion(String arg) {
-		this.PluginVersion = arg;
+	public void setPluginVersion(String version) {
+		this.pluginVersion = version;
 	}
 
 	/**
 	 * Sets the Cytoscape version this plugin is compatible with.
-	 * @param arg
+	 *
+	 * @param version
 	 */
-	public void setCytoscapeVersion(String arg) {
-		this.CytoscapeVersion = arg;
+	public void setCytoscapeVersion(String version) {
+		this.cytoscapeVersion = version;
 	}
 
 	/**
-	 * Url this plugin was downloaded from.  It is presumed this can be used for update later.
-	 * @param arg
+	 * pluginUrl this plugin was downloaded from. It is presumed this can be
+	 * used for update later.
+	 *
+	 * @param url
 	 */
-	public void setUrl(String arg) {
-		this.Url = arg;
+	public void setUrl(String url) {
+		this.pluginUrl = url;
 	}
 
 	/**
-	 * Url for the xml file describing all plugins from any given project (ex. http://cytoscape.org/plugins/plugin.xml)
-	 * @param arg
+	 * pluginUrl for the xml file describing all plugins from any given project
+	 * (ex. http://cytoscape.org/plugins/plugin.xml)
+	 *
+	 * @param url
 	 */
-	public void setProjectUrl(String arg) {
-		this.ProjectUrl = arg;
+	public void setProjectUrl(String url) {
+		this.projectUrl = url;
 	}
 
 	/**
-	 * Jar or Zip are currently supported.  Use PluginInfo.JAR or PluginInfo.ZIP.
+	 * Jar or Zip are currently supported. Use PluginInfo.JAR or PluginInfo.ZIP.
+	 *
 	 * @param type
 	 */
-	public void setFiletype(int type) {
-		this.FileType = type;
+	public void setFiletype(FileType type) {
+		this.fileType = type;
 	}
 
 	/**
-	 * Sets a list of files (prefer full paths) installed with this plugin.  Includes the jar file.
+	 * Sets a list of files (prefer full paths) installed with this plugin.
+	 * Includes the jar file.
+	 *
 	 * @param list
 	 */
 	public void setFileList(List<String> list) {
-		this.PluginFiles = list;
+		this.pluginFiles = list;
 	}
 
 	/**
-	 * Category for the plugin.  Defaults to "Uncategorized"
-	 * @param arg
+	 * category for the plugin. Defaults to "Uncategorized"
+	 *
+	 * @param category
 	 */
-	public void setCategory(String arg) {
-		this.Category = arg;
+	public void setCategory(String category) {
+		this.pluginCategory = category;
 	}
 
 	/**
 	 * Adds a file to the list of installed files.
-	 * @param arg
+	 *
+	 * @param fileName
 	 */
-	public void addFileName(String arg) {
-		this.PluginFiles.add(arg);
+	public void addFileName(String fileName) {
+		this.pluginFiles.add(fileName);
 	}
 
 	/**
 	 * Adds an author to the list of authors.
-	 * @param Name
-	 * @param Institution
+	 *
+	 * @param authorName
+	 * @param institution
 	 */
-	public void addAuthor(String Name, String Institution) {
-		Authors.add(new AuthorInfo(Name, Institution));
+	public void addAuthor(String authorName, String institution) {
+		authors.add(new AuthorInfo(authorName, institution));
 	}
 
 	/* GET */
+
 	/**
-	 * @return int of file type for plugin.  PluginInfo.JAR or PluginInfo.ZIP
+	 * @return The unique id for this object.
 	 */
-	public int getFileType() {
-		return this.FileType;
+	public String getID() {
+		return this.uniqueID;
 	}
 
 	/**
-	 * @return Name of plugin
+	 * @return FileType of file type for plugin. PluginInfo.JAR or
+	 *         PluginInfo.ZIP
+	 */
+	public FileType getFileType() {
+		return this.fileType;
+	}
+
+	/**
+	 * @return pluginName of plugin
 	 */
 	public String getName() {
-		return this.Name;
+		return this.pluginName;
 	}
 
 	/**
 	 * @return Java class name
 	 */
 	public String getPluginClassName() {
-		return this.PluginClassName;
+		return this.pluginClassName;
 	}
 
 	/**
 	 * @return List of authors.
 	 */
 	public List<AuthorInfo> getAuthors() {
-		return this.Authors;
+		return this.authors;
 	}
 
 	/**
-	 * @return Plugin description.
+	 * @return Plugin pluginDescription.
 	 */
 	public String getDescription() {
-		return this.Description;
+		return this.pluginDescription;
 	}
 
 	/**
 	 * @return Plugin version.
 	 */
 	public String getPluginVersion() {
-		return this.PluginVersion;
+		return this.pluginVersion;
 	}
 
 	/**
 	 * @return Compatible Cytoscape version
 	 */
 	public String getCytoscapeVersion() {
-		return this.CytoscapeVersion;
+		return this.cytoscapeVersion;
 	}
 
 	/**
 	 * @return Url to download plugin from
 	 */
 	public String getUrl() {
-		return this.Url;
+		return this.pluginUrl;
 	}
 
 	/**
-	 * @return Url that returns the document of available plugins this plugin came
-	 *         from
+	 * @return Url that returns the document of available plugins this plugin
+	 *         came from
 	 */
 	public String getProjectUrl() {
-		return this.ProjectUrl;
+		return this.projectUrl;
 	}
 
 	/**
 	 * @return Plugin category.
 	 */
 	public String getCategory() {
-		return this.Category;
+		return this.pluginCategory;
 	}
 
 	/**
-	 * @return List of files installed with this plugin (includes plugin jar file).
+	 * @return List of files installed with this plugin (includes plugin jar
+	 *         file).
 	 */
 	public List<String> getFileList() {
-		return this.PluginFiles;
+		return this.pluginFiles;
 	}
 
 	/**
-	 * @return Returns plugin name ( getName() )
+	 * @return Returns String of plugin name and version
 	 */
 	public String toString() {
-		return getName();
+		return getName() + " " + getPluginVersion();
 	}
 
 	/**
-	 * @return String of nice output for the information contained by the PluginInfo object.
+	 * @return String of nice output for the information contained by the
+	 *         PluginInfo object.
 	 */
 	public String prettyOutput() {
 		String Text = getName() + "\n\n";
 		Text += ("Version: " + getPluginVersion() + "\n\n");
-		Text += ("Category: " + getCategory() + "\n\n");
+		Text += ("category: " + getCategory() + "\n\n");
 
 		// don't current have a release date, might be nice
 		Text += (getDescription() + "\n\n");
@@ -276,23 +359,24 @@ public class PluginInfo {
 
 	/**
 	 * Describes an author for a given plugin.
+	 *
 	 * @author skillcoy
 	 */
 	public class AuthorInfo {
-		private String AuthName;
-		private String InstName;
+		private String authorName;
+		private String institutionName;
 
 		public AuthorInfo(String Name, String Institution) {
-			this.AuthName = Name;
-			this.InstName = Institution;
+			this.authorName = Name;
+			this.institutionName = Institution;
 		}
 
 		public String getAuthor() {
-			return this.AuthName;
+			return this.authorName;
 		}
 
 		public String getInstitution() {
-			return this.InstName;
+			return this.institutionName;
 		}
 	}
 }
