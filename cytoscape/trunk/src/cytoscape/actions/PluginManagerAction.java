@@ -38,9 +38,6 @@ public class PluginManagerAction extends CytoscapeAction {
 		setPreferredMenu("Plugins");
 	}
 
-	/* (non-Javadoc)
-	 * @see cytoscape.util.CytoscapeAction#actionPerformed(java.awt.event.ActionEvent)
-	 */
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -52,7 +49,7 @@ public class PluginManagerAction extends CytoscapeAction {
 		 * This will actually pop up the "currently installed" dialog box which will
 		 * have a button to "install plugins" poping up the PluginInstallDialog
 		 */
-		PluginManager Mgr = CytoscapeInit.getPluginManager();
+		PluginManager Mgr = PluginManager.getPluginManager();
 		PluginInfo[] Info = Mgr.getInstalledPlugins();
 
 		PluginListDialog dialog = new PluginListDialog();
