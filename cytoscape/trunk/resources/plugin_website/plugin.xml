@@ -8,6 +8,7 @@
 	<pluginlist>				
 
 		<plugin>
+			<uniqueID> A string that will not change from one version to another</uniqueID>
 			<name> foobar </name>
 			<description> blah </description>
 			<pluginVersion> 1.0 </pluginVersion>
