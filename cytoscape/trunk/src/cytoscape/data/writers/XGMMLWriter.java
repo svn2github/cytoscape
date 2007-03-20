@@ -66,6 +66,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.LineType;
 
 import ding.view.DGraphView;
+import ding.view.DingCanvas;
 
 import giny.model.RootGraph;
 
@@ -272,7 +273,10 @@ public class XGMMLWriter {
 			globalGraphics = objFactory.createAtt();
 			globalGraphics.setName(BACKGROUND);
 
-			globalGraphics.setValue(paint2string(networkView.getBackgroundPaint()));
+			DingCanvas backgroundCanvas = 
+				((DGraphView)Cytoscape.getCurrentNetworkView()).
+				getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+			globalGraphics.setValue(paint2string(backgroundCanvas.getBackground()));
 			graph.getAtt().add(globalGraphics);
 		}
 	}
