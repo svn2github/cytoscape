@@ -10,6 +10,7 @@ import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
+import ding.view.DGraphView.Canvas;
 
 public class LayoutRegionManager {
 
@@ -20,6 +21,8 @@ public class LayoutRegionManager {
 	public static List getRegionListForView(CyNetworkView view) {
 		return (List) regionViewMap.get(view);
 	}
+	
+	public static int count = 0;
 
 	public static Object getAttributeForView(CyNetworkView view) {
 		return attributeViewMap.get(view);
@@ -126,6 +129,7 @@ public class LayoutRegionManager {
 		DingCanvas backgroundLayer = dview
 				.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
 		backgroundLayer.add(region);
+//		backgroundLayer.add(region, count++);
 		
 		// AJK: 01/07/2007 BEGIN
 		//    oy what a hack: do an infinitesimal change of zoom factor so that it
@@ -170,14 +174,23 @@ public class LayoutRegionManager {
 		
 		// next go down list of regions and see if there is a hit
 		List regionList = getRegionListForView (Cytoscape.getCurrentNetworkView());
-		if (regionList == null)
+		
+		DingCanvas myCanvas = 
+		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(Canvas.BACKGROUND_CANVAS);
+		
+		for (int i = myCanvas.getComponentCount(); i > 0; i--)
 		{
-			return null;
-		}
-		Iterator it = regionList.iterator();
-		while (it.hasNext())
-		{
-			LayoutRegion region = (LayoutRegion) it.next();
+			LayoutRegion region = (LayoutRegion) myCanvas.getComponent(i - 1);
+		
+		
+//		if (regionList == null)
+//		{
+//			return null;
+//		}
+//		Iterator it = regionList.iterator();
+//		while (it.hasNext())
+//		{
+//			LayoutRegion region = (LayoutRegion) it.next();
 			if (region != null)
 			{
 				if (isPointOnRegion (pt, region))
